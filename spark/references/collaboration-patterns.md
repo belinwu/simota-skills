@@ -498,3 +498,318 @@ LOW IMPACT
 | **Echo** | Proposal validation | Draft proposal ready | SPARK_TO_ECHO_VALIDATION |
 | **Scout** | Technical investigation | Feasibility unclear | Scout Investigation Request |
 | **Growth** | SEO/CRO requirements | Growth feature proposed | SPARK_TO_GROWTH_HANDOFF |
+
+---
+
+## Pattern G: Metrics-Driven Proposal
+
+**Flow**: Pulse → Spark → Implementation
+
+**Purpose**: Transform quantitative metrics and funnel data into actionable feature proposals.
+
+### Pulse → Spark Handoff Format
+
+```markdown
+## PULSE_TO_SPARK_HANDOFF
+
+**Analysis Period**: [Date range]
+**Primary Metric**: [North Star Metric name]
+
+**Funnel Drop-off Analysis**:
+| Stage | Current Rate | Target Rate | Drop-off % | Priority |
+|-------|--------------|-------------|------------|----------|
+| [Stage 1] | [X%] | [Y%] | [Z%] | [P1/P2/P3] |
+| [Stage 2] | [X%] | [Y%] | [Z%] | [P1/P2/P3] |
+
+**KPI Trends**:
+| Metric | Current | 30-day Trend | Anomaly? |
+|--------|---------|--------------|----------|
+| [Metric 1] | [Value] | [↑/↓/→] [%] | [Yes/No] |
+| [Metric 2] | [Value] | [↑/↓/→] [%] | [Yes/No] |
+
+**Segment Insights**:
+- [Segment A]: [Key finding with metric]
+- [Segment B]: [Key finding with metric]
+
+**Hypothesis from Data**:
+- Drop-off at [Stage]: Likely caused by [hypothesis]
+- [Metric] decline: Possibly due to [hypothesis]
+
+**Recommended Focus**: [Highest-impact opportunity based on data]
+**Success Criteria Baseline**: [Current metric values to improve]
+```
+
+### Spark Response: Metrics-to-Proposal Conversion
+
+```markdown
+## SPARK_METRICS_PROPOSAL
+
+**Source**: Pulse funnel analysis [Date]
+**Target Metric**: [Metric from Pulse handoff]
+
+**Proposal**: [Feature name]
+
+**Data-Driven Rationale**:
+- Current: [Baseline metric]
+- Gap: [Target - Current]
+- Root cause hypothesis: [From Pulse analysis]
+
+**Acceptance Criteria** (from Pulse baseline):
+- [ ] [Metric] improves from [X] to [Y]
+- [ ] No regression in [Guardrail metric]
+
+**Validation Plan**:
+- A/B test with [Sample size from Pulse]
+- Duration: [Based on traffic data]
+- MDE: [Minimum detectable effect]
+
+**Handoff**: Experiment (for validation) OR Sherpa (for implementation)
+```
+
+### Metrics → Feature Mapping Patterns
+
+| Metric Issue | Feature Pattern | Example |
+|--------------|-----------------|---------|
+| Signup drop-off | Reduce friction | Remove optional fields |
+| Low engagement | Add value earlier | Quick wins onboarding |
+| High churn | Improve retention | Re-engagement triggers |
+| Low conversion | Clarify value | Social proof, testimonials |
+| Feature discovery | Improve visibility | Feature hints, tours |
+
+---
+
+## Pattern H: Security Review
+
+**Flow**: Spark → Sentinel → Spark iteration
+
+**Purpose**: Ensure security and privacy considerations are addressed before implementation.
+
+### When to Trigger
+
+- Feature involves user data handling
+- Feature adds authentication/authorization
+- Feature integrates external services
+- Feature processes sensitive information (PII, financial, health)
+- Feature adds new input surfaces
+
+### Spark → Sentinel Handoff Format
+
+```markdown
+## SPARK_TO_SENTINEL_HANDOFF
+
+**Feature Proposal**: [Feature name]
+**Proposal Doc**: [Link to proposal file]
+
+**Security-Relevant Aspects**:
+
+**Data Handling**:
+- [ ] Collects new user data: [Yes/No - specify types]
+- [ ] Stores sensitive data: [Yes/No - specify]
+- [ ] Transmits data externally: [Yes/No - to where]
+- [ ] Data retention requirements: [Specify]
+
+**Authentication/Authorization**:
+- [ ] New auth flows: [Describe if any]
+- [ ] Permission changes: [Describe if any]
+- [ ] Session handling: [Describe if any]
+
+**Input Surfaces**:
+- [ ] New user inputs: [List input types]
+- [ ] File uploads: [Yes/No - formats]
+- [ ] External data ingestion: [Describe sources]
+
+**External Integrations**:
+- [ ] Third-party APIs: [List with data exchanged]
+- [ ] Webhooks: [Inbound/Outbound]
+- [ ] OAuth/SSO: [Describe]
+
+**Risk Assessment Request**:
+1. What security controls are needed?
+2. Are there compliance implications (GDPR, CCPA, etc.)?
+3. What threat vectors should be considered?
+
+**Expected Output**: Security requirements to add to proposal
+```
+
+### Sentinel → Spark Security Requirements
+
+```markdown
+## SENTINEL_TO_SPARK_SECURITY_REQUIREMENTS
+
+**Feature**: [Feature name]
+**Review Date**: [Date]
+**Risk Level**: [Critical/High/Medium/Low]
+
+**Required Security Controls**:
+1. **[Control Type]**: [Specific requirement]
+   - Implementation: [How to implement]
+   - Priority: [Must have / Should have]
+
+2. **[Control Type]**: [Specific requirement]
+   - Implementation: [How to implement]
+   - Priority: [Must have / Should have]
+
+**Compliance Considerations**:
+- [Regulation]: [Specific requirements]
+
+**Threat Vectors Identified**:
+| Threat | Likelihood | Impact | Mitigation |
+|--------|------------|--------|------------|
+| [Threat 1] | [H/M/L] | [H/M/L] | [Required control] |
+
+**Security Acceptance Criteria**:
+- [ ] [Specific security test or validation]
+- [ ] [Specific security test or validation]
+
+**Approval Status**: [Approved with requirements / Needs revision / Blocked]
+
+**Next Steps**:
+- If Approved: Add security requirements to proposal, proceed to implementation
+- If Needs Revision: Iterate proposal to address concerns
+- If Blocked: Escalate to security team
+```
+
+### Security Feature Checklist
+
+Use this checklist when proposing features with security implications:
+
+```markdown
+### Security Feature Checklist
+
+**Input Validation**:
+- [ ] All user inputs validated
+- [ ] Input length limits defined
+- [ ] File type restrictions (if uploads)
+- [ ] Sanitization for XSS prevention
+
+**Authentication & Authorization**:
+- [ ] Auth requirements documented
+- [ ] Permission model defined
+- [ ] Session timeout specified
+- [ ] Rate limiting considered
+
+**Data Protection**:
+- [ ] Encryption at rest requirements
+- [ ] Encryption in transit (HTTPS)
+- [ ] PII handling documented
+- [ ] Data retention policy defined
+
+**Audit & Logging**:
+- [ ] Security events logged
+- [ ] Audit trail requirements
+- [ ] No sensitive data in logs
+
+**Error Handling**:
+- [ ] No sensitive data in errors
+- [ ] Graceful failure modes
+- [ ] Error logging (secure)
+```
+
+---
+
+## Pattern I: Growth Integration
+
+**Flow**: Spark → Growth → Spark refinement
+
+**Purpose**: Validate SEO, Social, and Conversion optimization aspects of feature proposals.
+
+### When to Trigger
+
+- Feature adds new pages or routes
+- Feature changes user-facing content
+- Feature affects conversion funnels
+- Feature impacts social sharing
+- Feature modifies landing pages
+
+### Spark → Growth Handoff Format
+
+```markdown
+## SPARK_TO_GROWTH_HANDOFF
+
+**Feature Proposal**: [Feature name]
+**Feature Type**: [New page / Enhancement / Flow change]
+
+**SEO Impact Assessment**:
+- [ ] Adds new pages: [Yes/No - list URLs]
+- [ ] Changes URL structure: [Yes/No - before/after]
+- [ ] Modifies content: [Yes/No - which pages]
+- [ ] Affects meta tags: [Yes/No - specify]
+
+**Social Sharing Impact**:
+- [ ] New shareable content: [Yes/No - type]
+- [ ] OG image requirements: [Describe]
+- [ ] Share text recommendations: [Describe]
+
+**Conversion Impact**:
+- [ ] Funnel position: [Where in journey]
+- [ ] CTA changes: [Describe]
+- [ ] Form changes: [Describe]
+
+**Current Metrics** (from Pulse if available):
+- Page views: [Current]
+- Conversion rate: [Current]
+- Social shares: [Current]
+
+**Validation Questions**:
+1. What SEO optimizations are needed?
+2. How should social previews look?
+3. What CRO opportunities exist?
+
+**Expected Output**: Growth requirements to add to proposal
+```
+
+### Growth → Spark Optimization Requirements
+
+```markdown
+## GROWTH_TO_SPARK_REQUIREMENTS
+
+**Feature**: [Feature name]
+**Review Date**: [Date]
+
+**SEO Requirements**:
+| Requirement | Priority | Specification |
+|-------------|----------|---------------|
+| Meta title | Must | [Format/template] |
+| Meta description | Must | [Character limit, keywords] |
+| Heading structure | Should | [H1/H2 hierarchy] |
+| Schema markup | Should | [JSON-LD type] |
+| Canonical URL | Must | [Pattern] |
+
+**OGP/Social Requirements**:
+| Platform | Image Spec | Title Limit | Description Limit |
+|----------|------------|-------------|-------------------|
+| Facebook | 1200x630 | 60 chars | 155 chars |
+| Twitter | 1200x628 | 70 chars | 200 chars |
+
+**CRO Recommendations**:
+1. **CTA Optimization**: [Specific recommendation]
+2. **Trust Signals**: [What to add/where]
+3. **Form Optimization**: [Reduce friction how]
+
+**A/B Test Suggestions**:
+- Hypothesis: [CRO hypothesis]
+- Variants: [A vs B description]
+- Primary metric: [Conversion metric]
+
+**Growth Acceptance Criteria**:
+- [ ] Meta tags implemented per spec
+- [ ] OG images generated correctly
+- [ ] CTA follows best practices
+- [ ] Mobile-first design verified
+
+**Expected Impact**:
+- SEO: [Traffic increase estimate]
+- Social: [Share rate improvement]
+- Conversion: [CVR improvement estimate]
+```
+
+### Feature Type → Growth Focus Matrix
+
+| Feature Type | SEO Focus | Social Focus | CRO Focus |
+|--------------|-----------|--------------|-----------|
+| New landing page | High (meta, structure, schema) | High (OG, share text) | High (CTA, trust) |
+| Feature page | Medium (meta, internal links) | Medium (OG) | Medium (adoption CTA) |
+| Dashboard/App page | Low (noindex often) | Low | Medium (engagement) |
+| Blog/Content | High (all SEO) | High (all social) | Medium (email signup) |
+| Checkout flow | Low (noindex) | Low | Critical (friction removal) |
+| Settings page | Low | Low | Low |

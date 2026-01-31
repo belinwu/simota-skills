@@ -151,6 +151,11 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_EXPERIMENT_REQUEST | ON_COMPLETION | When proposing A/B test to Experiment |
 | ON_EXPERIMENT_RESULT | ON_COMPLETION | When receiving test results from Experiment |
 | ON_VALIDATION_LOOP | ON_DECISION | When deciding next step after Echo validation |
+| ON_PULSE_METRICS | ON_DECISION | When converting funnel data to feature proposal |
+| ON_SECURITY_FEATURE | ON_RISK | When proposing feature with security/privacy implications |
+| ON_GROWTH_HANDOFF | ON_DECISION | When handing off for SEO/CRO optimization review |
+| ON_SHERPA_FEEDBACK | ON_DECISION | When receiving feasibility concerns from Sherpa |
+| ON_BUILDER_DIRECT | ON_DECISION | When bypassing Sherpa for simple features |
 
 ### Question Templates
 
@@ -356,6 +361,89 @@ questions:
     multiSelect: false
 ```
 
+### Extended Collaboration Trigger Templates
+
+**ON_PULSE_METRICS:**
+```yaml
+questions:
+  - question: "Pulse metrics indicate an opportunity. How should we propose the feature?"
+    header: "Metrics Approach"
+    options:
+      - label: "Target highest drop-off (Recommended)"
+        description: "Focus on the biggest conversion gap identified"
+      - label: "Address trend anomaly"
+        description: "Respond to significant metric change"
+      - label: "Improve lagging segment"
+        description: "Target underperforming user segment"
+      - label: "Request deeper analysis"
+        description: "Need more data before proposing"
+    multiSelect: false
+```
+
+**ON_SECURITY_FEATURE:**
+```yaml
+questions:
+  - question: "This feature has security/privacy implications. How to proceed?"
+    header: "Security Review"
+    options:
+      - label: "Request Sentinel review (Recommended)"
+        description: "Get security requirements before finalizing proposal"
+      - label: "Include basic security requirements"
+        description: "Add standard security criteria to proposal"
+      - label: "Scope down to avoid sensitive data"
+        description: "Reduce feature scope to minimize security concerns"
+      - label: "Flag for security team review"
+        description: "Mark proposal as requiring external security review"
+    multiSelect: false
+```
+
+**ON_GROWTH_HANDOFF:**
+```yaml
+questions:
+  - question: "This feature may impact SEO/Conversion. Request Growth review?"
+    header: "Growth Review"
+    options:
+      - label: "Request Growth optimization review (Recommended)"
+        description: "Get SEO/CRO requirements before implementation"
+      - label: "Include basic SEO requirements"
+        description: "Add standard meta tags and structure requirements"
+      - label: "Skip Growth review"
+        description: "Feature has no significant SEO/CRO impact"
+    multiSelect: false
+```
+
+**ON_SHERPA_FEEDBACK:**
+```yaml
+questions:
+  - question: "Sherpa raised feasibility concerns. How should we adjust?"
+    header: "Scope Adjust"
+    options:
+      - label: "Reduce to MVP scope (Recommended)"
+        description: "Accept Sherpa's recommended scope reduction"
+      - label: "Phase into multiple releases"
+        description: "Split feature into smaller, phased deliveries"
+      - label: "Request Scout investigation"
+        description: "Need technical investigation before deciding"
+      - label: "Explore alternative approach"
+        description: "Consider different implementation strategy"
+    multiSelect: false
+```
+
+**ON_BUILDER_DIRECT:**
+```yaml
+questions:
+  - question: "This feature seems simple. Bypass Sherpa and hand off directly to Builder?"
+    header: "Direct Handoff"
+    options:
+      - label: "Direct to Builder (Recommended for simple features)"
+        description: "Feature is straightforward, existing patterns apply"
+      - label: "Route through Sherpa"
+        description: "Want breakdown and risk assessment first"
+      - label: "Request Scout feasibility check"
+        description: "Verify simplicity assumption before deciding"
+    multiSelect: false
+```
+
 ---
 
 ## SPARK'S DAILY PROCESS
@@ -490,6 +578,152 @@ Spark acts as a feature hub, receiving inputs from research agents and outputtin
 | **Scout** | Technical investigation | Feasibility unclear |
 
 See `references/collaboration-patterns.md` for detailed handoff formats.
+
+### Extended Collaboration Partners
+
+| Partner | Direction | Purpose | Pattern Reference |
+|---------|-----------|---------|-------------------|
+| **Pulse** | → Spark | Metrics-driven proposals | Pattern G |
+| **Sentinel** | Spark → | Security review for features | Pattern H |
+| **Growth** | Spark → | SEO/CRO optimization | Pattern I |
+| **Builder** | Spark → (Direct) | Simple feature handoff | Technical Integration |
+| **Sherpa** | ← Spark | Feasibility feedback | Technical Integration |
+
+See `references/collaboration-patterns.md` for Patterns G/H/I.
+See `references/technical-integration.md` for Builder/Sherpa integration.
+
+---
+
+## PROPOSAL LIFECYCLE
+
+Proposal Lifecycle（提案ライフサイクル）の全体図。
+
+### Lifecycle Flowchart
+
+```mermaid
+flowchart TD
+    subgraph IGNITE["1. IGNITE (Input Gathering)"]
+        I1[Echo: Latent Needs]
+        I2[Pulse: Metrics Data]
+        I3[Compete: Gap Analysis]
+        I4[Voice: User Feedback]
+        I5[Researcher: Insights]
+    end
+
+    subgraph SYNTHESIZE["2. SYNTHESIZE (Proposal Creation)"]
+        S1[Draft Proposal]
+        S2[JTBD Analysis]
+        S3[Prioritization RICE/IE]
+    end
+
+    subgraph VALIDATE["3. VALIDATE (Validation Loop)"]
+        V1[Echo Persona Validation]
+        V2[Sentinel Security Review]
+        V3[Growth SEO/CRO Review]
+        V4[Scout Technical Feasibility]
+    end
+
+    subgraph EXPERIMENT["4. EXPERIMENT (Optional)"]
+        E1[Experiment A/B Design]
+        E2[Test Execution]
+        E3{Verdict}
+    end
+
+    subgraph IMPLEMENT["5. IMPLEMENT (Handoff)"]
+        H1{Complex?}
+        H2[Sherpa Breakdown]
+        H3[Builder Direct]
+        H4[Implementation]
+    end
+
+    I1 & I2 & I3 & I4 & I5 --> S1
+    S1 --> S2 --> S3
+
+    S3 --> V1
+    S3 -.->|Security concern| V2
+    S3 -.->|Growth impact| V3
+    S3 -.->|Feasibility unclear| V4
+
+    V1 -->|Approved| EXPERIMENT
+    V1 -->|Issues| S1
+    V2 -->|Requirements| S1
+    V3 -->|Requirements| S1
+    V4 -->|Feasible| S3
+    V4 -->|Concerns| S1
+
+    E1 --> E2 --> E3
+    E3 -->|VALIDATED| H1
+    E3 -->|INCONCLUSIVE| E1
+    E3 -->|INVALIDATED| S1
+
+    V1 -->|Skip test| H1
+    H1 -->|Yes| H2
+    H1 -->|No| H3
+    H2 --> H4
+    H3 --> H4
+    H2 -.->|Feedback| S1
+```
+
+### Stage Exit Criteria
+
+| Stage | Exit Criteria | Proceed To |
+|-------|---------------|------------|
+| **IGNITE** | Input data collected from ≥1 source | SYNTHESIZE |
+| **SYNTHESIZE** | Proposal doc complete with RICE score | VALIDATE |
+| **VALIDATE (Echo)** | Persona validation positive | EXPERIMENT or IMPLEMENT |
+| **VALIDATE (Sentinel)** | Security requirements incorporated | Continue validation |
+| **VALIDATE (Growth)** | SEO/CRO requirements incorporated | Continue validation |
+| **VALIDATE (Scout)** | Technical feasibility confirmed | Continue validation |
+| **EXPERIMENT** | Verdict: VALIDATED or Skip authorized | IMPLEMENT |
+| **IMPLEMENT** | Sherpa breakdown or Builder handoff | Development |
+
+### Parallel Execution Matrix
+
+| Stage Pair | Parallelizable? | Notes |
+|------------|-----------------|-------|
+| Sentinel + Growth review | ✅ Yes | Independent validation |
+| Sentinel + Echo validation | ✅ Yes | Different concerns |
+| Scout + Proposal draft | ✅ Yes | Technical check while drafting |
+| Experiment + Implementation | ❌ No | Sequential dependency |
+| Sherpa + Builder | ❌ No | Sequential dependency |
+
+### Feedback Loop Definitions
+
+```
+Loop 1: Validation Rejection
+  Echo finds issues → Iterate proposal → Re-validate
+
+Loop 2: Experiment Iteration
+  Inconclusive → Adjust hypothesis → Retest
+  Invalidated → Pivot or Kill → New proposal
+
+Loop 3: Feasibility Feedback
+  Sherpa concerns → Scope adjustment → Re-breakdown
+
+Loop 4: Security/Growth Requirements
+  Requirements added → Update proposal → Continue
+```
+
+---
+
+## EXTENDED REFERENCES
+
+### Core References
+
+| Reference | Purpose | Link |
+|-----------|---------|------|
+| Prioritization Frameworks | RICE/Impact-Effort scoring | `references/prioritization-frameworks.md` |
+| Persona & JTBD | User analysis templates | `references/persona-jtbd.md` |
+| Collaboration Patterns | Agent handoff formats (A-I) | `references/collaboration-patterns.md` |
+| Proposal Templates | Feature proposal formats | `references/proposal-templates.md` |
+
+### Extended References (New)
+
+| Reference | Purpose | Link |
+|-----------|---------|------|
+| Experiment Lifecycle | A/B test result handling | `references/experiment-lifecycle.md` |
+| Compete Conversion | Gap-to-spec conversion | `references/compete-conversion.md` |
+| Technical Integration | Builder/Sherpa patterns | `references/technical-integration.md` |
 
 ---
 
