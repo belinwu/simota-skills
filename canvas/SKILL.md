@@ -78,8 +78,15 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_ABSTRACTION_LEVEL | ON_DECISION | When detail level (overview/detailed/code-level) selection is needed |
 | ON_MULTIPLE_DIAGRAMS | ON_DECISION | When multiple diagrams are deemed necessary |
 | ON_CONTEXT_UNCLEAR | ON_AMBIGUITY | When information from current context is insufficient |
+| ON_DIAGRAM_SAVE | ON_COMPLETION | When diagram generation is complete, offer to save |
+| ON_DIAGRAM_UPDATE | ON_DECISION | When existing diagram may need update |
+| ON_JOURNEY_VISUALIZATION | BEFORE_START | When Echo data needs visualization format selection |
+| ON_DIFF_FORMAT | BEFORE_START | When diff visualization format selection is needed |
+| ON_C4_LEVEL | BEFORE_START | When C4 diagram level selection is needed |
+| ON_ACCESSIBILITY | ON_DECISION | When accessibility options should be offered |
 
 See `_common/INTERACTION.md` for standard question templates.
+See `references/diagram-library.md`, `references/echo-integration.md` for additional templates.
 
 ---
 
@@ -206,6 +213,202 @@ See `references/ascii-templates.md` for ASCII art templates.
 
 ---
 
+## DIAGRAM LIBRARY
+
+生成した図をプロジェクト固有のライブラリとして保存・再利用。
+
+### Commands
+
+```
+/Canvas save diagram                    # 生成した図を保存
+/Canvas save diagram as [name]          # 名前を指定して保存
+/Canvas list diagrams                   # 保存済み図一覧
+/Canvas show [diagram-name]             # 保存済み図を表示
+/Canvas update [diagram-name]           # 図を更新
+/Canvas regenerate [diagram-name]       # ソースから再生成
+```
+
+### Storage
+
+保存先: `.agents/diagrams/{project}/`
+
+```
+.agents/diagrams/
+└── {project-name}/
+    ├── _index.md                       # 図の一覧
+    ├── architecture-overview.md        # システム概要図
+    ├── auth-sequence.md                # 認証シーケンス
+    └── db-er.md                        # ER図
+```
+
+### Auto-Suggestion
+
+- 図生成後に保存を提案
+- コード変更時に関連図の更新を提案
+- 図が見つからない場合は新規作成を提案
+
+**詳細**: `references/diagram-library.md`
+
+---
+
+## ECHO INTEGRATION
+
+Echo エージェントとの連携。Journey Map、Emotion Score 可視化。
+
+### Visualization Types
+
+| Type | Description | Trigger |
+|------|-------------|---------|
+| Journey Map | Emotion Score 付きユーザージャーニー | `/Canvas visualize journey` |
+| Friction Heatmap | 摩擦ポイントを色で可視化 | `/Canvas friction heatmap` |
+| Cross-Persona | 複数ペルソナの比較マトリクス | `/Canvas visualize cross-persona` |
+| Emotion Trend | 感情スコアの推移グラフ | `/Canvas emotion trend` |
+
+### Color Scale (Emotion Score)
+
+| Score | Color | Meaning |
+|-------|-------|---------|
+| +3, +2 | Green | Positive |
+| +1, 0 | Yellow | Neutral |
+| -1 | Orange | Warning |
+| -2, -3 | Red | Critical |
+
+### Saved Persona Integration
+
+Echo の保存済みペルソナ (`.agents/personas/`) と連携し、Journey を自動保存。
+
+**詳細**: `references/echo-integration.md`
+
+---
+
+## REVERSE ENGINEERING
+
+コードから図を自動生成するパターン集。
+
+### Patterns
+
+| # | Pattern | Target | Output | Command |
+|---|---------|--------|--------|---------|
+| 1 | Component Tree | React/Vue | Mind Map | `/Canvas components` |
+| 2 | API Route Map | Next.js/Express | Flowchart | `/Canvas api routes` |
+| 3 | State Machine | Redux/Zustand | State Diagram | `/Canvas state` |
+| 4 | Database Schema | Prisma/SQL | ER Diagram | `/Canvas schema` |
+| 5 | Test Structure | Jest/Vitest | Mind Map | `/Canvas tests` |
+| 6 | Dependency Graph | package.json | Class Diagram | `/Canvas deps` |
+| 7 | Auth Flow | Auth handlers | Sequence | `/Canvas auth flow` |
+| 8 | Data Flow | API handlers | Sequence | `/Canvas data flow` |
+
+### Auto-Detection
+
+```
+/Canvas analyze                        # 自動検出して提案
+```
+
+**詳細**: `references/reverse-engineering.md`
+
+---
+
+## ACCESSIBILITY
+
+アクセシブルな図の作成。
+
+### Features
+
+- **CVD-Safe Palette**: 色覚多様性対応の8色パレット
+- **Alt Text**: スクリーンリーダー向け代替テキスト自動生成
+- **ASCII Fallback**: プレーンテキスト環境向け自動変換
+- **Shape Differentiation**: 色だけでなく形状でも区別
+
+### CVD-Safe Colors
+
+| 用途 | Hex | Name |
+|------|-----|------|
+| Process | #4477AA | Blue |
+| Success | #228833 | Teal |
+| Warning | #CCBB44 | Yellow |
+| Error | #EE6677 | Coral |
+
+### Accessibility Checklist
+
+- [ ] CVD-safe colors used
+- [ ] Shapes differentiate meaning
+- [ ] Alt text included
+- [ ] ASCII fallback available
+
+**詳細**: `references/accessibility.md`
+
+---
+
+## DIFF VISUALIZATION
+
+Before/After 比較、変更の可視化。
+
+### Commands
+
+```
+/Canvas diff [file1] [file2]           # 2ファイル比較
+/Canvas diff --before [commit]         # コミット前後比較
+/Canvas diff schema                    # スキーマ変更を可視化
+/Canvas diff architecture              # アーキテクチャ変更を可視化
+```
+
+### Diff Styles
+
+| 変更タイプ | 色 | スタイル |
+|-----------|-----|---------|
+| Added | Green | 太線 |
+| Removed | Red | 破線 |
+| Modified | Yellow | 二重線 |
+| Unchanged | Gray | 通常 |
+
+### Formats
+
+- **Side-by-Side**: 左右並列比較
+- **Overlay**: 追加/削除をハイライト
+- **Timeline**: 時系列変化
+
+**詳細**: `references/diff-visualization.md`
+
+---
+
+## C4 MODEL
+
+C4 Model によるアーキテクチャ図。
+
+### Levels
+
+| Level | Name | Scope | Audience |
+|-------|------|-------|----------|
+| 1 | Context | システム境界 | ビジネス |
+| 2 | Container | アプリ/DB構成 | アーキテクト |
+| 3 | Component | 内部構造 | 開発者 |
+| 4 | Code | クラス/関数 | 実装者 |
+
+### Commands
+
+```
+/Canvas c4 context                     # Level 1
+/Canvas c4 container                   # Level 2
+/Canvas c4 component [container]       # Level 3
+/Canvas c4 code [component]            # Level 4
+/Canvas c4 zoom [element]              # ズームイン
+/Canvas c4 zoom out                    # ズームアウト
+```
+
+### C4 Color Palette
+
+| Element | Color |
+|---------|-------|
+| Person | #08427B |
+| System | #1168BD |
+| Container | #438DD5 |
+| Component | #85BBF0 |
+| External | #999999 |
+
+**詳細**: `references/c4-model.md`
+
+---
+
 ## AGENT COLLABORATION
 
 ### With Atlas
@@ -238,6 +441,26 @@ Spark feature proposals -> Canvas visualization
 - User stories -> Journey map
 - Feature relationships -> Mind map
 - Data flows -> Sequence diagram
+```
+
+### With Echo
+```
+Echo walkthrough results -> Canvas visualization
+- Emotion scores -> Journey map with color coding
+- Cross-persona comparison -> Comparison matrix
+- Friction points -> Friction heatmap
+- Persona triggers -> Emotion trend chart
+```
+
+**Handoff Format (Echo → Canvas):**
+```markdown
+## Echo → Canvas Journey Visualization
+
+**Flow**: [フロー名]
+**Persona**: [ペルソナ名]
+**Data**: [Step | Action | Score | Friction Type]
+
+→ `/Canvas visualize journey`
 ```
 
 ---
