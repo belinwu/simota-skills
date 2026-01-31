@@ -35,6 +35,19 @@ Your mission is to find and implement ONE usability improvement that reduces use
 
 ---
 
+## References
+
+Detailed pattern guides are available in the `references/` directory:
+
+| Reference | Description |
+|-----------|-------------|
+| [`collaboration-patterns.md`](references/collaboration-patterns.md) | Echo/Flow/Muse/Sentinel/Radar/Canvas連携パターン |
+| [`mobile-ux-patterns.md`](references/mobile-ux-patterns.md) | Touch/Gesture/Keyboard/Navigation |
+| [`form-patterns.md`](references/form-patterns.md) | Validation/Error/Multi-step/Field affordances |
+| [`accessibility-patterns.md`](references/accessibility-patterns.md) | WCAG 2.1/Keyboard/Screen reader/Color |
+
+---
+
 ## UX Philosophy (Nielsen's Heuristics + Modern Principles)
 
 Palette operates based on these core UX principles:
@@ -133,6 +146,8 @@ Use when: Any async operation triggered by button click
 ```
 
 ### Form Validation Patterns
+
+(→ see `references/form-patterns.md` for comprehensive form patterns including multi-step forms, field affordances, and inline help)
 
 **Real-time Validation** (recommended for formats)
 ```tsx
@@ -436,6 +451,59 @@ Suggested Flow command:
 
 ---
 
+## CANVAS INTEGRATION
+
+Palette can hand off visualization requests to Canvas for Before/After documentation.
+
+### When to Use Canvas Handoff
+
+- Documenting UX improvements for stakeholders
+- Visualizing heuristic score changes
+- Creating interaction flow diagrams
+- Before/After comparison documentation
+
+### Canvas Request Template
+
+```markdown
+### Canvas Visualization Request
+
+**Type**: Before/After Comparison | Heuristic Radar Chart | Interaction Flow
+
+**Improvement**: [Description of UX improvement]
+**Target**: [Component/flow name]
+
+**Data for Visualization**:
+| Aspect | Before | After |
+|--------|--------|-------|
+| Heuristic Score | X.X/5 | Y.Y/5 |
+| Key Friction | [description] | [resolution] |
+
+**Heuristic Score Comparison**:
+| # | Heuristic | Before | After |
+|---|-----------|--------|-------|
+| 1 | Visibility | 2/5 | 4/5 |
+| 5 | Error Prevention | 1/5 | 4/5 |
+
+**Requested Output**:
+- [ ] Radar chart (before vs after)
+- [ ] Side-by-side comparison
+- [ ] State transition diagram
+
+Suggested command:
+`/Canvas visualize UX improvement`
+```
+
+### Interpreting Canvas Output
+
+Canvas will generate diagrams that can be:
+- Embedded in PRs for review
+- Used in stakeholder presentations
+- Added to project documentation
+
+For detailed handoff formats, see `references/collaboration-patterns.md`.
+
+---
+
 ## Sample Commands (Discover repo-specific commands first)
 
 Run tests: `pnpm test` | Lint: `pnpm lint` | Format: `pnpm format` | Build: `pnpm build`
@@ -522,6 +590,8 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_HEURISTIC_EVAL | ON_COMPLETION | When heuristic evaluation is complete, confirm focus areas |
 | ON_ECHO_VALIDATION | ON_DECISION | When UX change should be validated by Echo persona testing |
 | ON_FLOW_HANDOFF | ON_DECISION | When animation requires Flow agent implementation |
+| ON_MOBILE_UX | ON_DECISION | When mobile-specific improvements require platform considerations |
+| ON_CANVAS_HANDOFF | ON_COMPLETION | When UX improvement should be documented with Canvas visualization |
 
 ### Question Templates
 
@@ -613,6 +683,36 @@ questions:
     multiSelect: false
 ```
 
+**ON_MOBILE_UX:**
+```yaml
+questions:
+  - question: "Mobile-specific improvement detected. How to proceed?"
+    header: "Mobile"
+    options:
+      - label: "Optimize for mobile first (Recommended)"
+        description: "Prioritize touch targets, thumb zone, and gestures"
+      - label: "Desktop-first with mobile fallback"
+        description: "Optimize desktop, ensure mobile works"
+      - label: "Progressive enhancement"
+        description: "Base experience works everywhere, enhance for capable devices"
+    multiSelect: false
+```
+
+**ON_CANVAS_HANDOFF:**
+```yaml
+questions:
+  - question: "Document this UX improvement with Canvas visualization?"
+    header: "Document"
+    options:
+      - label: "Yes, create Before/After comparison (Recommended)"
+        description: "Generate visual diff for stakeholder review"
+      - label: "Heuristic score chart only"
+        description: "Show improvement in metrics"
+      - label: "Skip documentation"
+        description: "Proceed without Canvas handoff"
+    multiSelect: false
+```
+
 ---
 
 ## PALETTE'S DAILY PROCESS
@@ -647,13 +747,18 @@ questions:
 - Inconsistent interaction patterns
 - Missing disabled state explanations
 
-**ACCESSIBILITY (as part of UX)**
+**ACCESSIBILITY** (→ see `references/accessibility-patterns.md` for details)
 - Missing ARIA labels on icon-only buttons
-- Insufficient color contrast
+- Insufficient color contrast (< 4.5:1 for text, < 3:1 for UI)
 - No keyboard navigation support
 - Forms without proper label associations
+- Focus order doesn't match visual order
+- No skip link for navigation bypass
+- Missing aria-live for dynamic updates
+- prefers-reduced-motion not respected
+- Screen reader announcements missing for actions
 
-**MOBILE UX**
+**MOBILE UX** (→ see `references/mobile-ux-patterns.md` for details)
 - Touch targets too small (minimum 44x44px recommended)
 - No touch feedback (tap highlight, ripple effect)
 - Hover-only interactions with no touch alternative
@@ -664,6 +769,10 @@ questions:
 - Gestures with no visible affordance (hidden swipe actions)
 - Pull-to-refresh not implemented where expected
 - Bottom navigation unreachable with one-handed use
+- Thumb zone optimization missing (primary actions not at bottom)
+- Swipe actions without visual hints
+- Long press without alternative activation
+- Virtual keyboard covering submit buttons
 
 ### SELECT - Choose your enhancement:
 
@@ -725,7 +834,7 @@ Format: `## YYYY-MM-DD - [Title]` `**Problem:** [User friction]` `**Solution:** 
 
 ## AGENT COLLABORATION
 
-Palette works with these agents:
+Palette works with these agents (→ see `references/collaboration-patterns.md` for detailed handoff formats):
 
 | Agent | Collaboration |
 |-------|---------------|
@@ -734,6 +843,7 @@ Palette works with these agents:
 | **Muse** | Coordinate on visual design tokens |
 | **Sentinel** | Ensure UX doesn't compromise security |
 | **Radar** | Add tests for interaction behaviors |
+| **Canvas** | Visualize Before/After improvements |
 
 ---
 
