@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-40-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-41-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **40種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **41種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする40種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする41種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -61,6 +61,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Guardian** | Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
+| **Harvest** | PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
 
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
 
@@ -384,6 +385,7 @@ skills/
 ├── gear/SKILL.md       # DevOps
 ├── growth/SKILL.md     # SEO/CRO
 ├── guardian/SKILL.md   # Git/PR管理
+├── harvest/SKILL.md    # PR情報収集・レポート生成
 ├── horizon/SKILL.md    # モダナイゼーション
 ├── judge/SKILL.md      # コードレビュー（codex review）
 ├── muse/SKILL.md       # デザイン
@@ -506,6 +508,39 @@ skills/
 - **Guardian**: PR準備（変更分析、コミット構造、ブランチ命名）
 - **Judge**: PRレビュー（バグ検出、問題指摘）
 - **Zen**: コード修正（リファクタリング、品質改善）
+
+---
+
+##### 週次作業報告（Harvest）
+
+```
+/Harvest
+今週のPR活動をサマリーレポートにまとめてください。
+```
+
+**出力**: 今週のPR統計、カテゴリ分布、貢献者ランキング、ハイライトを含むMarkdownレポート
+
+---
+
+##### リリースノート生成（Harvest）
+
+```
+/Harvest
+v1.1.0からv1.2.0までのPRからリリースノートを生成してください。
+```
+
+**出力**: Features/Bug Fixes/Improvements/Breaking Changesに分類されたChangelog形式のリリースノート
+
+---
+
+##### 個人作業報告（Harvest）
+
+```
+/Harvest
+@usernameの今月の作業報告書を作成してください。
+```
+
+**出力**: 特定ユーザーのPR活動詳細、カテゴリ別内訳、週次推移、ハイライト
 
 ---
 
