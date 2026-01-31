@@ -21,6 +21,13 @@ _AGENT_CONTEXT:
 - Noise detection and reporting
 - Release notes draft generation
 - Handoff format generation
+- **Quality score calculation**
+- **Commit message analysis**
+- **Risk factor assessment**
+- **Hotspot detection**
+- **Reviewer recommendations**
+- **Branch health check**
+- **Pre-merge checklist generation**
 
 ## Pause for Confirmation
 
@@ -29,6 +36,10 @@ _AGENT_CONTEXT:
 - Force-push suggestions
 - History rewriting operations
 - Destructive Git operations
+- **Quality score < 35 (F grade)**
+- **Risk score > 85 (CRITICAL)**
+- **High-risk file changes without security review**
+- **Hotspot refactoring recommendations**
 
 ## Guardian-Specific Guardrails
 
@@ -58,6 +69,26 @@ error_handling:
     detection: "Noise ratio > 80%"
     action: "Handoff to Zen for bulk cleanup"
     recovery: "Wait for cleanup, re-analyze clean diff"
+
+  quality_score_critical:
+    detection: "Quality score < 35"
+    action: "Pause for user decision"
+    recovery: "Wait for split/restructure decision"
+
+  risk_score_critical:
+    detection: "Risk score > 85"
+    action: "Require Sentinel review"
+    recovery: "Wait for security clearance"
+
+  hotspot_overload:
+    detection: "More than 5 Problem Child hotspots modified"
+    action: "Recommend Zen refactoring first"
+    recovery: "Continue after cleanup or user override"
+
+  branch_health_severe:
+    detection: "Health score < 25"
+    action: "Recommend rebase/split"
+    recovery: "Continue after remediation"
 ```
 
 ## Recovery Strategies
@@ -93,6 +124,80 @@ guardian_analysis:
     size_rating: L
     reviewability: 4/10
 
+  # New: Quality Metrics
+  quality:
+    score: 68
+    grade: B
+    components:
+      size: 65
+      focus: 70
+      commits: 80
+      tests: 60
+      docs: 75
+      risk: 55
+
+  # New: Risk Assessment
+  risk:
+    score: 72
+    category: HIGH
+    factors:
+      sensitivity: 80
+      complexity: 65
+      hotspot_overlap: 75
+      dependency_impact: 60
+      test_coverage: 70
+      author_familiarity: 55
+    high_risk_files:
+      - path: src/auth/jwt.ts
+        score: 92
+        reason: "Auth + hotspot"
+    mitigations:
+      - "Sentinel security review"
+      - "Add token refresh tests"
+
+  # New: Branch Health
+  branch_health:
+    score: 65
+    grade: warning
+    indicators:
+      sync: 75  # 12 behind
+      age: 60   # 8 days
+      conflict_risk: 100
+      ci_status: 100
+      size_creep: 50
+
+  # New: Commit Analysis
+  commit_analysis:
+    count: 5
+    avg_score: 72
+    wip_count: 1
+    rebase_needed: true
+    issues:
+      - commit: d4e5f6
+        score: 25
+        issue: "Vague message"
+
+  # New: Hotspots
+  hotspots:
+    modified_count: 3
+    problem_children: 2
+    files:
+      - path: src/api/users.ts
+        type: problem_child
+        churn: 68%
+        bugs: 8
+
+  # New: Reviewer Recommendations
+  reviewers:
+    primary:
+      id: "@alice"
+      ownership: 45%
+      score: 92
+    secondary:
+      id: "@bob"
+      ownership: 32%
+      score: 85
+
   change_breakdown:
     essential: 12 files (25%)
     supporting: 8 files (17%)
@@ -116,14 +221,41 @@ guardian_analysis:
       confidence: HIGH
       reason: "58% noise ratio detected"
 
+    - action: SECURITY_REVIEW
+      confidence: HIGH
+      reason: "Risk score 72, auth files modified"
+
+    - action: REBASE
+      confidence: MEDIUM
+      reason: "12 commits behind main"
+
   suggested:
     branch_name: "feat/oauth2-provider"
     merge_strategy: "squash"
     pr_title: "feat(auth): add OAuth2 provider integration"
 
+  # New: Pre-Merge Checklist
+  pre_merge_checklist:
+    required:
+      - item: "CI passing"
+        status: true
+      - item: "No conflicts"
+        status: true
+      - item: "Approvals obtained"
+        status: false
+    conditional:
+      - item: "Security review"
+        status: false
+        reason: "Auth changes detected"
+      - item: "Test coverage"
+        status: false
+        reason: "High-risk files need tests"
+
   next_steps:
     - "Review suggested PR splits"
     - "Separate formatting changes"
+    - "Request Sentinel security review"
+    - "Rebase onto main"
     - "Generate PR description"
 ```
 
@@ -152,11 +284,55 @@ _STEP_COMPLETE:
       supporting: 4
       noise: 2
 
+    # New: Quality Assessment
+    quality:
+      score: 78
+      grade: "B+"
+      improvements:
+        - "Add edge case tests (+5)"
+        - "Update API docs (+3)"
+
+    # New: Risk Assessment
+    risk:
+      score: 65
+      category: MEDIUM
+      mitigations_needed:
+        - "Integration testing"
+        - "Monitor after deploy"
+
+    # New: Branch Health
+    branch_health:
+      score: 85
+      issues: []
+
+    # New: Commit Quality
+    commit_quality:
+      avg_score: 85
+      rebase_needed: false
+
+    # New: Hotspots
+    hotspots:
+      count: 1
+      action_needed: false
+
+    # New: Reviewers
+    reviewers:
+      recommended: ["@alice", "@bob"]
+      coverage: 87%
+
+    # New: Checklist
+    pre_merge:
+      blockers: 0
+      warnings: 2
+      items:
+        - "CI passing: true"
+        - "Security review: not required"
+
   Handoff:
     Format: GUARDIAN_TO_BUILDER_HANDOFF | GUARDIAN_TO_JUDGE_HANDOFF
     Content: [Full handoff content]
 
-  Next: Builder | Judge | Canvas | Sherpa | DONE
+  Next: Builder | Judge | Canvas | Sherpa | Sentinel | Radar | Zen | DONE
 
   Notes: [Any important observations or warnings]
 ```

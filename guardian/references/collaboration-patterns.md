@@ -225,4 +225,132 @@ Detailed collaboration patterns and flows with partner agents.
 | **Sentinel** | Security review request | CRITICAL/SENSITIVE changes | GUARDIAN_TO_SENTINEL_HANDOFF |
 | **Probe** | DAST request | API/Auth changes detected | GUARDIAN_TO_PROBE_HANDOFF |
 | **Atlas** | Architecture analysis | Cross-module changes | GUARDIAN_TO_ATLAS_HANDOFF |
+| **Radar** | Test coverage request | Risk mitigation needed | GUARDIAN_TO_RADAR_HANDOFF |
+| **Zen** | Hotspot refactoring | Tech debt cleanup needed | GUARDIAN_TO_ZEN_HANDOFF |
 | **Nexus** | AUTORUN results | Chain execution | _STEP_COMPLETE format |
+
+---
+
+## Pattern H: Risk-Aware Review
+
+**Flow**: `Guardian → Radar`
+
+**Purpose**: Request test coverage for high-risk changes to mitigate regression risk.
+
+```
+┌──────────┐   High-Risk Files   ┌─────────┐   Test Coverage   ┌──────────┐
+│ Guardian │ ──────────────────▶ │  Radar  │ ────────────────▶ │ Guardian │
+└──────────┘                     └─────────┘                   └──────────┘
+     │         Risk assessment        │          New tests          │
+     │         Hotspot files          │          Coverage report    │
+     │         Coverage gaps          │                             │
+     └────────────────────────────────┴─────────────────────────────┘
+                              Risk mitigated
+```
+
+**Trigger Conditions**:
+- Risk score > 65 (HIGH)
+- Hotspot files modified
+- Coverage gap detected
+- Regression history in affected files
+
+**Guardian Actions**:
+1. Identify high-risk files
+2. Calculate coverage gaps
+3. Request Radar test additions
+4. Re-assess risk after coverage
+5. Update PR recommendations
+
+---
+
+## Pattern I: Hotspot Refactoring
+
+**Flow**: `Guardian → Zen`
+
+**Purpose**: Proactively address technical debt in frequently changed files.
+
+```
+┌──────────┐   Hotspot Analysis   ┌─────────┐   Refactored Code  ┌──────────┐
+│ Guardian │ ───────────────────▶ │   Zen   │ ─────────────────▶ │ Guardian │
+└──────────┘                      └─────────┘                    └──────────┘
+     │         Problem child files     │          Clean code          │
+     │         Growing monsters        │          Separate commits    │
+     │         Churn analysis          │                              │
+     └─────────────────────────────────┴──────────────────────────────┘
+                              Tech debt reduced
+```
+
+**Trigger Conditions**:
+- Problem Child hotspot detected
+- Growing Monster pattern found
+- Churn rate > 50%
+- Multiple bug fixes in file history
+
+**Guardian Actions**:
+1. Detect hotspot patterns
+2. Analyze technical debt
+3. Request Zen refactoring
+4. Incorporate cleanup into PR strategy
+5. Separate refactoring commits
+
+---
+
+## Pattern J: Quality Gate Flow
+
+**Flow**: `Guardian ↔ Judge (Quality Gate)`
+
+**Purpose**: Verify PR quality meets standards before review.
+
+```
+┌──────────┐    Quality Score    ┌─────────┐    Gate Result    ┌──────────┐
+│ Guardian │ ──────────────────▶ │  Judge  │ ────────────────▶ │ Guardian │
+└──────────┘                     └─────────┘                   └──────────┘
+     │         Quality metrics        │          Pass/Fail          │
+     │         Risk assessment        │          Improvements       │
+     │         Commit analysis        │          needed             │
+     └────────────────────────────────┴─────────────────────────────┘
+                              Quality verified
+```
+
+**Trigger Conditions**:
+- Quality score calculated
+- Risk assessment complete
+- Before PR creation
+
+**Guardian Actions**:
+1. Calculate quality score
+2. Assess risk factors
+3. Request Judge quality gate
+4. Apply gate recommendations
+5. Finalize PR strategy
+
+---
+
+## Pattern K: Reviewer Assignment
+
+**Flow**: `Guardian → Harvest → Guardian`
+
+**Purpose**: Recommend optimal reviewers based on code ownership.
+
+```
+┌──────────┐   Ownership Query   ┌─────────┐   Ownership Data   ┌──────────┐
+│ Guardian │ ──────────────────▶ │ Harvest │ ────────────────▶ │ Guardian │
+└──────────┘                     └─────────┘                   └──────────┘
+     │         Changed files          │          Author history     │
+     │         Module scope           │          Review patterns    │
+     │                                │          Availability       │
+     └────────────────────────────────┴─────────────────────────────┘
+                              Reviewers recommended
+```
+
+**Trigger Conditions**:
+- PR preparation complete
+- Reviewer assignment needed
+- Large or sensitive changes
+
+**Guardian Actions**:
+1. Identify changed files/modules
+2. Query Harvest for ownership data
+3. Calculate reviewer scores
+4. Recommend primary/secondary reviewers
+5. Include in PR preparation

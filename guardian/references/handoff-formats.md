@@ -360,3 +360,205 @@ edges:
 
 **Recommendation**: [Fix issues before commit | Proceed with warnings | Block]
 ```
+
+---
+
+## Extended Handoffs (New Capabilities)
+
+### GUARDIAN_TO_RADAR_HANDOFF
+
+```markdown
+## GUARDIAN_TO_RADAR_HANDOFF
+
+**Branch**: [branch] → [target]
+**Trigger**: Risk mitigation / Coverage gap
+
+**High-Risk Files Needing Tests**:
+| File | Risk Score | Current Coverage | Gap |
+|------|------------|------------------|-----|
+| src/auth/jwt.ts | 92 | 45% | 55% |
+| src/payment/retry.ts | 85 | 60% | 40% |
+
+**Hotspot Files**:
+| File | Churn Rate | Bug History | Priority |
+|------|------------|-------------|----------|
+| src/api/users.ts | 68% | 8 bugs | HIGH |
+| src/auth/session.ts | 55% | 5 bugs | MEDIUM |
+
+**Regression Risk**:
+- Recent bugs: #456 (token refresh), #472 (session timeout)
+- Add regression tests for these scenarios
+
+**Coverage Goals**:
+- [ ] Token refresh edge cases
+- [ ] Session expiration handling
+- [ ] Payment retry scenarios
+
+**Request**: Add tests to mitigate risk before merge
+```
+
+### GUARDIAN_TO_ZEN_HANDOFF
+
+```markdown
+## GUARDIAN_TO_ZEN_HANDOFF
+
+**Branch**: [branch] → [target]
+**Trigger**: Hotspot / Technical debt cleanup
+
+**Hotspot Analysis**:
+| File | Type | Churn | Bugs | Recommendation |
+|------|------|-------|------|----------------|
+| src/api/users.ts | Problem Child | 68% | 8 | Full refactor |
+| src/payment/calc.ts | Growing Monster | 71% | 3 | Decompose |
+| src/utils/date.ts | Change Magnet | 42% | 2 | Stabilize API |
+
+**Specific Issues**:
+1. `users.ts:45-120` - God function, split into smaller units
+2. `calc.ts` - 500 lines, extract modules
+3. `date.ts` - Inconsistent API, standardize
+
+**Refactoring Goals**:
+- [ ] Extract user validation logic
+- [ ] Split payment calculations by type
+- [ ] Create consistent date formatting API
+
+**Commit Strategy**:
+- Refactoring in separate commits before feature
+- Tests first approach recommended
+
+**Request**: Clean up hotspots, return with separate refactoring commits
+```
+
+### GUARDIAN_QUALITY_REPORT_HANDOFF
+
+```markdown
+## GUARDIAN_QUALITY_REPORT_HANDOFF
+
+**Branch**: [branch] → [target]
+**PR Title**: [title]
+
+**Quality Score**: {score}/100 ({grade})
+
+### Score Breakdown
+| Component | Score | Weight | Notes |
+|-----------|-------|--------|-------|
+| Size | 85 | 25% | 12 files, 340 lines |
+| Focus | 70 | 20% | Related concerns |
+| Commits | 80 | 15% | 3 atomic commits |
+| Tests | 75 | 15% | Core logic covered |
+| Docs | 80 | 10% | API docs updated |
+| Risk | 70 | 15% | Auth changes |
+
+### Risk Assessment
+**Overall Risk**: 72/100 (HIGH)
+
+| Factor | Score | Primary Concern |
+|--------|-------|-----------------|
+| Sensitivity | 80 | Auth file changes |
+| Complexity | 65 | Moderate logic |
+| Hotspots | 75 | 3 hotspot files |
+| Dependencies | 60 | Shared utils |
+| Coverage | 70 | Core covered |
+
+### Commit Quality
+| Commit | Score | Issues |
+|--------|-------|--------|
+| a1b2c3 | 95 | - |
+| d4e5f6 | 25 | Vague message |
+| g7h8i9 | 90 | - |
+
+### Branch Health
+| Indicator | Status | Score |
+|-----------|--------|-------|
+| Sync | 12 behind | 75 |
+| Age | 8 days | 60 |
+| Conflicts | None | 100 |
+| CI | Passing | 100 |
+
+### Reviewer Recommendations
+| Reviewer | Ownership | Score |
+|----------|-----------|-------|
+| @alice | 45% | 92 |
+| @bob | 32% | 85 |
+
+### Pre-Merge Checklist
+- [x] CI passing
+- [x] No conflicts
+- [ ] Security review (Sentinel)
+- [ ] Additional tests needed
+
+### Action Items
+1. Rebase onto main
+2. Reword commit d4e5f6
+3. Complete Sentinel security review
+```
+
+### HARVEST_TO_GUARDIAN_HANDOFF
+
+```markdown
+## HARVEST_TO_GUARDIAN_HANDOFF
+
+**Request**: Code ownership data for [files]
+
+**Ownership Data**:
+| File | Primary Owner | Secondary | Last Touch |
+|------|---------------|-----------|------------|
+| src/auth/jwt.ts | @alice (78%) | @bob (15%) | 3 days |
+| src/api/users.ts | @bob (55%) | @alice (30%) | 1 day |
+
+**Review Patterns**:
+| Reviewer | PRs Reviewed | Avg Response | Quality |
+|----------|--------------|--------------|---------|
+| @alice | 45 | 4 hours | 95% |
+| @bob | 38 | 8 hours | 90% |
+| @charlie | 22 | 12 hours | 85% |
+
+**Team Conventions**:
+- Commit format: Conventional Commits (87% compliance)
+- Branch pattern: `<type>/<issue>-<description>`
+- PR size median: 8 files, 180 lines
+- Merge strategy: Squash (78%)
+
+**Historical Patterns**:
+- Similar changes reviewed by: @alice, @bob
+- Average review cycles: 1.8
+- Common issues: Missing tests, incomplete docs
+```
+
+### GUARDIAN_BRANCH_HEALTH_HANDOFF
+
+```markdown
+## GUARDIAN_BRANCH_HEALTH_HANDOFF
+
+**Branch**: [branch]
+**Target**: [target]
+
+**Health Score**: {score}/100 ({grade})
+
+### Status Summary
+| Indicator | Status | Value | Action |
+|-----------|--------|-------|--------|
+| Sync | Warning | 12 behind | Rebase needed |
+| Age | Warning | 8 days | Merge soon |
+| Conflicts | Healthy | None | - |
+| CI | Healthy | Passing | - |
+| Size | Warning | Growing | Consider split |
+
+### Timeline
+```
+main ────●────●────●────●────●────●────●──── HEAD
+         │
+         └────●────●────●────●────● [branch]
+              ↑                   ↑
+           Created             12 behind
+```
+
+### Recommended Actions
+1. `git fetch origin main && git rebase origin/main`
+2. Consider splitting (45 files)
+3. Complete review within 3 days
+
+### Conflict Prediction
+No conflicts expected.
+Watch: `src/api/middleware.ts` (active in main)
+```
