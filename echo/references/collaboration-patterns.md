@@ -226,11 +226,59 @@ Echo（提案をペルソナ視点で検証）
 → `/Spark propose feature`
 ```
 
+## Pattern G: Persona Generation (Echo ↔ Researcher)
+
+コード/ドキュメントからペルソナを生成し、Researcher の実データで検証:
+
+```
+Echo（コード/ドキュメント分析 → ペルソナ生成）
+  ↓
+Researcher（実ユーザーデータで検証）
+  ↓
+Echo（ペルソナ精度向上・更新）
+```
+
+**Handoff Format (Echo → Researcher):**
+```markdown
+## Echo → Researcher Persona Validation Request
+
+**Generated Persona**: [ペルソナ名]
+**Source**: [分析したファイル]
+**Key Assumptions**:
+- [仮定1: 例「モバイル利用が70%」]
+- [仮定2: 例「初回購入者が主要ターゲット」]
+
+**Validation Needed**:
+- [ ] ユーザータイプの割合
+- [ ] 実際の利用デバイス比率
+- [ ] ペインポイントの優先度
+
+→ `/Researcher validate persona assumptions`
+```
+
+**Handoff Format (Researcher → Echo):**
+```markdown
+## Researcher → Echo Persona Update
+
+**Persona**: [ペルソナ名]
+**Validation Result**:
+| 仮定 | 実データ | ギャップ |
+|------|---------|---------|
+| モバイル70% | モバイル82% | +12% |
+| 初回購入者中心 | リピーター40% | 要ペルソナ追加 |
+
+**Recommended Updates**:
+- [Profile 更新内容]
+- [Emotion Triggers 更新内容]
+
+→ Echo updates `.agents/personas/{service}/{persona}.md`
+```
+
 ## Bidirectional Collaboration Matrix
 
 | Partner | Echo → Partner | Partner → Echo |
 |---------|----------------|----------------|
-| **Researcher** | ペルソナ検証結果 | 実データに基づくペルソナ定義 |
+| **Researcher** | ペルソナ検証結果、生成ペルソナの検証依頼 | 実データに基づくペルソナ定義、ペルソナ更新提案 |
 | **Voice** | 予測との比較データ | 実ユーザー感情フィードバック |
 | **Palette** | フリクションポイント | 改善後の検証依頼 |
 | **Experiment** | A/Bテスト仮説 | 勝者バリアント検証依頼 |

@@ -247,3 +247,89 @@ questions:
         description: "Keep the markdown report format"
     multiSelect: false
 ```
+
+---
+
+## Persona Generation Templates
+
+### ON_PERSONA_GENERATION
+
+```yaml
+questions:
+  - question: "どのソースからペルソナを生成しますか？"
+    header: "Source"
+    options:
+      - label: "Auto-detect (Recommended)"
+        description: "README、docs、srcを自動分析"
+      - label: "Documentation only"
+        description: "ドキュメントファイルのみ分析"
+      - label: "Code only"
+        description: "ソースコードのみ分析"
+      - label: "Specify files"
+        description: "分析対象ファイルを指定"
+    multiSelect: false
+```
+
+### ON_PERSONA_COUNT
+
+```yaml
+questions:
+  - question: "何体のペルソナを生成しますか？"
+    header: "Count"
+    options:
+      - label: "3 (Recommended)"
+        description: "Primary, Secondary, Edge Case"
+      - label: "5"
+        description: "より詳細なセグメント分け"
+      - label: "Auto"
+        description: "発見されたユーザータイプ数に応じて"
+    multiSelect: false
+```
+
+### ON_PERSONA_SAVE
+
+```yaml
+questions:
+  - question: "生成されたペルソナを保存しますか？"
+    header: "Save"
+    options:
+      - label: "Yes, save all (Recommended)"
+        description: ".agents/personas/{service}/ に保存"
+      - label: "Review and edit first"
+        description: "内容を確認してから保存"
+      - label: "Save selected only"
+        description: "一部のペルソナのみ保存"
+    multiSelect: false
+```
+
+### ON_PERSONA_REVIEW
+
+```yaml
+questions:
+  - question: "保存済みペルソナでレビューしますか？"
+    header: "Persona"
+    options:
+      - label: "Use saved personas (Recommended)"
+        description: ".agents/personas/ から読み込み"
+      - label: "Use Echo base personas"
+        description: "標準ペルソナを使用"
+      - label: "Generate new personas"
+        description: "新たにペルソナを生成"
+    multiSelect: false
+```
+
+### BEFORE_PERSONA_GENERATION
+
+```yaml
+questions:
+  - question: "サービス特化ペルソナが見つかりません。生成しますか？"
+    header: "Persona"
+    options:
+      - label: "Yes, generate personas (Recommended)"
+        description: "コード/ドキュメントから自動生成"
+      - label: "Use Echo base personas"
+        description: "標準ペルソナでレビューを続行"
+      - label: "I'll provide personas"
+        description: "手動でペルソナを定義"
+    multiSelect: false
+```

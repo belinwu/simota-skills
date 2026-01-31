@@ -104,6 +104,99 @@ Use Privacy for:       Sign-up, permissions, data sharing
 
 ---
 
+## PERSONA GENERATION
+
+Echo はコード/ドキュメントを分析してサービス特化ペルソナを自動生成できます。
+
+### Trigger Commands
+
+```
+/Echo generate personas              # 自動検出で生成
+/Echo generate personas for [name]   # サービス名を指定
+/Echo generate personas from [path]  # 分析対象を指定
+```
+
+### Generation Workflow
+
+```
+1. ANALYZE  - README、docs、src を分析
+2. EXTRACT  - ユーザータイプ、ゴール、ペインポイントを抽出
+3. GENERATE - テンプレートに沿ってペルソナ生成
+4. SAVE     - .agents/personas/{service}/ に保存
+```
+
+### Auto-Suggestion
+
+ペルソナ未定義でレビュー開始時、自動的に生成を提案します。
+
+### Analysis Targets
+
+| ファイル | 抽出内容 |
+|---------|---------|
+| README.md | ターゲットユーザー、使用シナリオ |
+| docs/**/* | ユーザーガイド想定読者 |
+| src/**/user*, auth* | ユーザーモデル、役割定義 |
+| tests/**/* | テストシナリオ → ユースケース |
+
+### Output
+
+生成されたペルソナは `.agents/personas/{service}/` に保存:
+
+```
+.agents/personas/
+└── ec-platform/
+    ├── first-time-buyer.md
+    ├── power-shopper.md
+    └── enterprise-admin.md
+```
+
+**詳細**: `references/persona-generation.md`
+**テンプレート**: `references/persona-template.md`
+
+---
+
+## SERVICE-SPECIFIC REVIEW
+
+保存済みペルソナを使用したサービス特化UXレビュー。
+
+### Load & Review Commands
+
+```
+/Echo review with saved personas           # 保存済みペルソナを使用
+/Echo review [flow] as [persona-name]      # 特定ペルソナでレビュー
+```
+
+### Review Process
+
+1. **LOAD** - `.agents/personas/{service}/` からペルソナ読み込み
+2. **SELECT** - レビュー対象フローとペルソナを選択
+3. **WALK** - ペルソナ固有の Emotion Triggers を適用
+4. **SCORE** - サービス特化の文脈でスコアリング
+5. **REPORT** - Testing Focus に基づくレポート生成
+
+### Benefits
+
+| 観点 | 標準ペルソナ | サービス特化ペルソナ |
+|------|------------|-------------------|
+| 精度 | 汎用的 | サービス固有の文脈を反映 |
+| Triggers | 一般的 | 実ユーザーの反応パターン |
+| Focus | 広範囲 | 重要フローに集中 |
+| JTBD | 推測 | コード/ドキュメントに基づく |
+
+### Cross-Persona Analysis
+
+複数の保存済みペルソナでフローを比較:
+
+```markdown
+| Step | First-Time | Power | Enterprise | Issue Type |
+|------|------------|-------|------------|------------|
+| 1    | +1         | +2    | +1         | Non-Issue  |
+| 2    | -2         | +1    | -1         | Segment    |
+| 3    | -3         | -2    | -3         | Universal  |
+```
+
+---
+
 ## EMOTION SCORING
 
 ### Score Definitions
@@ -715,7 +808,8 @@ Use `AskUserQuestion` tool to confirm with user at these decision points.
 
 | Timing | Triggers |
 |--------|----------|
-| **BEFORE_START** | PERSONA_SELECT, CONTEXT_SELECT, ACCESSIBILITY_CHECK, COMPETITOR_COMPARISON, ANALYSIS_DEPTH, MULTI_PERSONA |
+| **BEFORE_START** | PERSONA_SELECT, CONTEXT_SELECT, ACCESSIBILITY_CHECK, COMPETITOR_COMPARISON, ANALYSIS_DEPTH, MULTI_PERSONA, PERSONA_REVIEW |
+| **ON_GENERATION** | PERSONA_GENERATION, PERSONA_COUNT, PERSONA_SAVE |
 | **ON_DECISION** | UX_FRICTION, DARK_PATTERN, FLOW_AMBIGUITY, PALETTE_HANDOFF, SCOUT_HANDOFF |
 | **ON_COMPLETION** | EXPERIMENT_HANDOFF, CANVAS_HANDOFF, SPARK_HANDOFF, VOICE_VALIDATION, SCORE_SUMMARY |
 
@@ -770,12 +864,15 @@ Before starting the walkthrough:
 
 ### 2. MASK ON - Select Persona + Context
 
-Choose from Core or Extended personas AND add environmental context:
+Choose from Core, Extended, or **Saved Service-Specific** personas AND add environmental context:
 ```
-1. Select primary persona (e.g., "Mobile User")
-2. Add context scenario (e.g., "Rushing Parent" or "Commuter")
-3. Adjust requirements based on context
-4. Consider multi-persona comparison if comprehensive analysis needed
+1. Check for saved personas in .agents/personas/{service}/
+   - If found: offer to use saved personas (ON_PERSONA_REVIEW)
+   - If not found: offer to generate (BEFORE_PERSONA_GENERATION)
+2. Select primary persona (e.g., "Mobile User" or "first-time-buyer")
+3. Add context scenario (e.g., "Rushing Parent" or "Commuter")
+4. Adjust requirements based on context
+5. Consider multi-persona comparison if comprehensive analysis needed
 ```
 
 ### 3. WALK - Traverse the Path (Enhanced)
