@@ -368,46 +368,49 @@ skills/
 │   └── INTERACTION.md  # 対話ルール共通定義
 ├── _templates/
 │   └── PROJECT.md      # プロジェクト知識テンプレート
-├── Anvil/SKILL.md      # CLI/TUI構築
-├── Artisan/SKILL.md    # フロントエンド実装
-├── Atlas/SKILL.md      # アーキテクチャ
-├── Bolt/SKILL.md       # パフォーマンス
-├── Canvas/SKILL.md     # 可視化
-├── Compete/SKILL.md    # 競合調査
-├── Echo/SKILL.md       # ペルソナ検証
-├── Experiment/SKILL.md # A/Bテスト設計
-├── Flow/SKILL.md       # アニメーション
-├── Forge/SKILL.md      # プロトタイプ
-├── Gateway/SKILL.md    # API設計
-├── Gear/SKILL.md       # DevOps
-├── Guardian/SKILL.md   # Git/PR管理
-├── Growth/SKILL.md     # SEO/CRO
-├── Horizon/SKILL.md    # モダナイゼーション
-├── Judge/SKILL.md      # コードレビュー（codex review）
-├── Builder/SKILL.md      # 本番実装
-├── Muse/SKILL.md       # デザイン
-├── Nexus/SKILL.md      # オーケストレーター
-├── Palette/SKILL.md    # UX
-├── Polyglot/SKILL.md   # i18n
-├── Probe/SKILL.md      # セキュリティ動的テスト（DAST）
-├── Pulse/SKILL.md      # メトリクス設計
-├── Quill/SKILL.md      # ドキュメント
-├── Radar/SKILL.md      # テスト
-├── Researcher/SKILL.md # ユーザーリサーチ
-├── Retain/SKILL.md     # リテンション
-├── Scaffold/SKILL.md   # インフラ
-├── Schema/SKILL.md     # DBスキーマ設計
-├── Scout/SKILL.md      # バグ調査
-├── Showcase/SKILL.md   # Storybookストーリー管理
-├── Sentinel/SKILL.md   # セキュリティ静的分析（SAST）
-├── Sherpa/SKILL.md     # タスク分解
-├── Spark/SKILL.md      # 機能提案
-├── Triage/SKILL.md     # 障害対応
-├── Tuner/SKILL.md      # DBパフォーマンス最適化
-├── Vision/SKILL.md     # クリエイティブディレクション
-├── Voice/SKILL.md      # ユーザーフィードバック
-├── Voyager/SKILL.md    # E2Eテスト
-└── Zen/SKILL.md        # リファクタリング
+├── anvil/SKILL.md      # CLI/TUI構築
+├── arena/SKILL.md      # 複数AI並列実装
+├── artisan/SKILL.md    # フロントエンド実装
+├── atlas/SKILL.md      # アーキテクチャ
+├── bolt/SKILL.md       # パフォーマンス
+├── builder/SKILL.md    # 本番実装
+├── canvas/SKILL.md     # 可視化
+├── compete/SKILL.md    # 競合調査
+├── echo/SKILL.md       # ペルソナ検証
+├── experiment/SKILL.md # A/Bテスト設計
+├── flow/SKILL.md       # アニメーション
+├── forge/SKILL.md      # プロトタイプ
+├── gateway/SKILL.md    # API設計
+├── gear/SKILL.md       # DevOps
+├── growth/SKILL.md     # SEO/CRO
+├── guardian/SKILL.md   # Git/PR管理
+├── horizon/SKILL.md    # モダナイゼーション
+├── judge/SKILL.md      # コードレビュー（codex review）
+├── muse/SKILL.md       # デザイン
+├── navigator/SKILL.md  # ブラウザ自動化
+├── nexus/SKILL.md      # オーケストレーター
+├── palette/SKILL.md    # UX
+├── polyglot/SKILL.md   # i18n
+├── probe/SKILL.md      # セキュリティ動的テスト（DAST）
+├── pulse/SKILL.md      # メトリクス設計
+├── quill/SKILL.md      # ドキュメント
+├── radar/SKILL.md      # テスト
+├── researcher/SKILL.md # ユーザーリサーチ
+├── retain/SKILL.md     # リテンション
+├── scaffold/SKILL.md   # インフラ
+├── schema/SKILL.md     # DBスキーマ設計
+├── scout/SKILL.md      # バグ調査
+├── sentinel/SKILL.md   # セキュリティ静的分析（SAST）
+├── sherpa/SKILL.md     # タスク分解
+├── showcase/SKILL.md   # Storybookストーリー管理
+├── spark/SKILL.md      # 機能提案
+├── sweep/SKILL.md      # 不要コード検出
+├── triage/SKILL.md     # 障害対応
+├── tuner/SKILL.md      # DBパフォーマンス最適化
+├── vision/SKILL.md     # クリエイティブディレクション
+├── voice/SKILL.md      # ユーザーフィードバック
+├── voyager/SKILL.md    # E2Eテスト
+└── zen/SKILL.md        # リファクタリング
 ```
 
 ## 使用例

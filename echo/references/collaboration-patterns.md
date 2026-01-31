@@ -1,0 +1,275 @@
+# Echo Collaboration Patterns Reference
+
+Detailed collaboration patterns and handoff formats for Echo agent.
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    INPUT PROVIDERS                          │
+│  Researcher → ペルソナデータ                                │
+│  Voice → 実ユーザーフィードバック                           │
+│  Pulse → 定量メトリクス                                     │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+            ┌─────────────────┐
+            │      ECHO       │
+            │  UX検証エンジン │
+            └────────┬────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│                   OUTPUT CONSUMERS                          │
+│  Palette → インタラクション改善                             │
+│  Experiment → A/Bテスト仮説                                 │
+│  Growth → CRO施策                                           │
+│  Canvas → フロー可視化                                      │
+│  Spark → 新機能提案                                         │
+│  Scout → 根本原因分析                                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Pattern A: Validation Loop (Echo ↔ Palette)
+
+```
+Echo（friction発見: -2.5/5）
+  ↓ handoff
+Palette（改善案: loading state追加）
+  ↓ handoff back
+Echo（改善後検証: +3.8/5）
+  ↓ 検証完了
+```
+
+**Handoff Format (Echo → Palette):**
+```markdown
+## Echo → Palette Handoff
+
+**Friction Point**: [具体的な問題箇所]
+**Persona**: [検証ペルソナ]
+**Emotion Score**: [Before score]
+**Root Cause**: [認知的原因 - mental model gap type]
+**User Quote**: [ペルソナの発言]
+**Suggested Focus**: [改善の方向性]
+
+→ `/Palette improve interaction`
+```
+
+**Handoff Format (Palette → Echo):**
+```markdown
+## Palette → Echo Validation Request
+
+**Improvement Made**: [実施した改善]
+**Target Metric**: [改善したい指標]
+**Validation Persona**: [検証すべきペルソナ]
+**Expected Outcome**: [期待する結果]
+
+→ `/Echo validate with [persona]`
+```
+
+## Pattern B: Hypothesis Generation Loop (Echo → Experiment → Pulse)
+
+```
+Echo（フリクション発見 + JTBD分析）
+  ↓
+Experiment（A/Bテスト仮説設計）
+  ↓
+Pulse（成功メトリクス定義）
+  ↓
+実験実行
+  ↓
+Echo（勝者バリアントをペルソナ検証）
+```
+
+**Handoff Format (Echo → Experiment):**
+```markdown
+## Echo → Experiment Handoff
+
+**Finding**: [発見した問題]
+**Location**: [フロー内の位置]
+**Affected Personas**: [影響を受けるペルソナ]
+**JTBD Insight**: [潜在ニーズ]
+**Current Emotion Score**: [現在スコア]
+
+**Hypothesis**: If [変更] then [結果] because [理由]
+**Suggested Variants**:
+- Control: [現状]
+- Variant A: [提案1]
+- Variant B: [提案2（オプション）]
+
+**Metrics to Track**:
+- Primary: [主要指標]
+- Guardrail: [悪化させたくない指標]
+
+→ `/Experiment design A/B test`
+```
+
+## Pattern C: Prediction Validation Loop (Echo ↔ Voice)
+
+```
+Echo（フリクション予測）
+  ↓
+Voice（実ユーザーフィードバック収集）
+  ↓
+比較・精度測定
+  ↓
+Echo（シミュレーション精度向上）
+```
+
+**Validation Report Format:**
+```markdown
+## Echo-Voice Prediction Validation
+
+**Flow**: [検証フロー名]
+**Period**: [Voice収集期間]
+
+| Echo Prediction | Voice Finding | Match |
+|-----------------|---------------|-------|
+| [予測1] | [実際のフィードバック] | ✅/❌ |
+| [予測2] | [実際のフィードバック] | ✅/❌ |
+
+**Prediction Accuracy**: [%]
+**False Positives**: [Echoが予測したが発生しなかった]
+**False Negatives**: [Echoが見逃した実際の問題]
+
+**Calibration Actions**:
+- [学習した内容]
+- [ペルソナ調整が必要な場合]
+```
+
+## Pattern D: Visualization (Echo → Canvas)
+
+```
+Echo（ジャーニーデータ + emotion scores）
+  ↓
+Canvas（Journey Map / Friction Heatmap生成）
+  ↓
+ステークホルダー共有
+```
+
+**Handoff Format (Echo → Canvas):**
+```markdown
+## Echo → Canvas Visualization Request
+
+**Visualization Type**: Journey Map | Friction Heatmap | Before/After Comparison
+**Flow**: [フロー名]
+**Persona**: [ペルソナ名]
+**Data**:
+| Step | Action | Score | Friction Type |
+|------|--------|-------|---------------|
+| 1 | [action] | +2 | None |
+| 2 | [action] | -1 | Mental Model Gap |
+| 3 | [action] | -3 | Cognitive Overload |
+
+**Highlight Points**:
+- Peak: Step [N]
+- End: Step [N]
+- Critical Friction: Step [N]
+
+→ `/Canvas visualize journey`
+```
+
+## Pattern E: Root Cause Analysis (Echo → Scout)
+
+UIバグとUXフリクションの切り分け：
+
+```
+Echo（「ボタンが反応しない」→ UIバグの可能性）
+  ↓
+Scout（技術的根本原因分析）
+  ↓
+Builder or Palette（修正実装）
+  ↓
+Echo（修正後検証）
+```
+
+**Handoff Format (Echo → Scout):**
+```markdown
+## Echo → Scout Investigation Request
+
+**Symptom**: [ユーザー視点の症状]
+**Location**: [発生箇所]
+**Persona Quote**: [ペルソナの発言]
+**Suspected Type**: UI Bug | UX Design Issue | Both
+**Reproduction Steps**: [再現手順（あれば）]
+
+→ `/Scout investigate`
+```
+
+## Pattern F: Feature Proposal (Echo → Spark)
+
+潜在ニーズを新機能アイデアに変換：
+
+```
+Echo（JTBD分析で潜在ニーズ発見）
+  ↓
+Spark（機能提案仕様書作成）
+  ↓
+Echo（提案をペルソナ視点で検証）
+```
+
+**Handoff Format (Echo → Spark):**
+```markdown
+## Echo → Spark Feature Opportunity
+
+**Latent Need Discovered**:
+- Functional Job: [達成したいこと]
+- Emotional Job: [感じたいこと]
+- Social Job: [見られたいこと]
+
+**Evidence**:
+- Persona: [ペルソナ]
+- Behavior Observed: [観察された行動]
+- Friction Score: [スコア]
+- User Quote: [発言]
+
+**Opportunity Size**: [影響を受けるペルソナ数/頻度]
+
+→ `/Spark propose feature`
+```
+
+## Bidirectional Collaboration Matrix
+
+| Partner | Echo → Partner | Partner → Echo |
+|---------|----------------|----------------|
+| **Researcher** | ペルソナ検証結果 | 実データに基づくペルソナ定義 |
+| **Voice** | 予測との比較データ | 実ユーザー感情フィードバック |
+| **Palette** | フリクションポイント | 改善後の検証依頼 |
+| **Experiment** | A/Bテスト仮説 | 勝者バリアント検証依頼 |
+| **Growth** | CRO対象フローの検証 | コンバージョン改善策の検証依頼 |
+| **Canvas** | ジャーニーデータ | 可視化済みフロー図 |
+| **Scout** | UIバグ疑いの調査依頼 | 根本原因に基づく再検証依頼 |
+| **Spark** | 潜在ニーズ/JTBD | 新機能案の検証依頼 |
+| **Muse** | デザイン一貫性問題 | トークン適用後の検証依頼 |
+| **Pulse** | 感情スコアのメトリクス化 | 定量データに基づく検証対象 |
+
+## With Lens (Journey Evidence)
+
+**When to involve Lens:**
+- At each step of UX walkthrough
+- When friction points are discovered (score -2 or below)
+- For before/after UX improvement comparisons
+- To document accessibility issues
+
+**Walkthrough Flow with Lens:**
+```
+1. Echo selects persona
+2. Echo → Lens: "Start journey capture"
+3. Echo performs each step of the flow
+4. Echo → Lens: "Capture step N with emotion score X"
+5. Lens captures screenshot with score metadata
+6. Echo completes walkthrough
+7. Echo → Lens: "Generate journey evidence report"
+8. Lens outputs journey map data for Canvas
+```
+
+**Handoff to Lens:**
+```markdown
+## Echo → Lens Journey Capture
+
+- Persona: [persona name]
+- Flow: [flow being tested]
+- Step: [step number]
+- Action: [user action]
+- Emotion Score: [score -3 to +3]
+- Highlight: [elements to focus on]
+- Note: [observation about this step]
+```
