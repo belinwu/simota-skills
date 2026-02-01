@@ -243,18 +243,131 @@ Only add entries when you discover:
 
 ---
 
+## VAGUE REPORT HANDLING
+
+### Principle: Investigate First, Ask Last
+
+When receiving vague reports, **investigate what you can before asking questions**.
+
+| Priority | Action | Example |
+|----------|--------|---------|
+| 1st | Infer from context | Reporter's role, recent changes, related features |
+| 2nd | Explore codebase | Related files, recent commits, error logs |
+| 3rd | Form and test hypotheses | Investigate most likely causes first |
+| Last | Ask only when truly necessary | When essential reproduction info is missing |
+
+### Intent Inference Strategy
+
+#### Inferring Intent from Report Patterns
+
+| Pattern | Example Report | Inferred Intent | Investigation Start Point |
+|---------|----------------|-----------------|--------------------------|
+| **Total Denial** | "It's broken", "Doesn't work" | Core feature unusable | Main flow, recent changes |
+| **Comparison** | "It worked before", "Until yesterday" | Regression | git log --since, deploy history |
+| **Vague Feeling** | "Something's off", "Feels wrong" | Subtle deviation from expectation | UI display, data, timing |
+| **Urgency** | "Fix ASAP", "Urgent" | Business blocker | Impact scope, workarounds |
+| **Tech Term Mixed** | "API returns null", "500 error" | Specific technical issue | Mentioned API, data flow |
+| **Image Only** | [Screenshot only] | Visual problem | Elements in image, error displays |
+
+#### Leveraging Context Information
+
+Information that can supplement the report text:
+
+| Source | Information Gained | How to Use |
+|--------|-------------------|------------|
+| Report timing | Right after deploy? Monday morning? | Regression vs existing bug |
+| Reporter's role | Developer? End user? | Technical accuracy, features used |
+| Recent commits | What was changed? | Change-related causes |
+| Related Issues/PRs | Similar reports? | Pattern identification |
+| Error logs | Actual error content | Symptom identification |
+
+See `references/vague-report-handling.md` for detailed patterns and inference techniques.
+
+### Hypothesis-Driven Investigation
+
+#### Hypothesis Generation Rules
+
+Generate 3 hypotheses from vague reports and investigate in order of likelihood:
+
+1. **Most Frequent Hypothesis**: Similar issues that occurred before in this codebase
+2. **Recent Change Hypothesis**: Possibly affected by recent commits/deploys
+3. **Pattern Hypothesis**: Typical causes inferred from the report pattern
+
+#### Investigation Priority
+
+| Priority | Target | Reason |
+|----------|--------|--------|
+| 1 | Recently changed files | Possible regression |
+| 2 | Area around mentioned feature | Directly related |
+| 3 | Previously problematic areas | Possible recurrence |
+| 4 | Common foundation code | Possible wide impact |
+
+#### Hypothesis Verification Flow
+
+```
+Generate hypotheses → Verify most likely hypothesis →
+  ├─ Confirmed → Report as root cause
+  ├─ Rejected → Move to next hypothesis
+  └─ Inconclusive → Additional investigation or minimal confirmation
+```
+
+### Investigation Completion Criteria
+
+Objective criteria for concluding investigation:
+
+#### Required Criteria (must satisfy all)
+- [ ] Reproducible (or reproduction conditions identified)
+- [ ] Root cause identified (can specify file:line)
+- [ ] Impact scope understood
+- [ ] Fix approach can be articulated
+
+#### Confidence Levels
+
+| Level | Condition | How to Report |
+|-------|-----------|---------------|
+| **HIGH** | Reproduction success + root cause code identified | Report as confirmed |
+| **MEDIUM** | Reproduction success + cause estimated | Report as estimated, provide verification method |
+| **LOW** | Cannot reproduce + hypothesis only | Report as hypothesis, specify info needed for further investigation |
+
+---
+
 ## INVESTIGATION PROCESS
 
-### 6-Step Process
+### 7-Step Process
 
 | Step | Action | Key Output |
 |------|--------|------------|
+| **0. TRIAGE** | Identify report pattern, infer intent, generate hypotheses, determine strategy | Inferred problem, investigation start point |
 | **1. RECEIVE** | Gather error messages, steps, environment, timing | Initial report understanding |
 | **2. REPRODUCE** | Confirm bug with minimal reproduction case | Reproducible test case |
 | **3. TRACE** | Follow execution path, add logging, check git history | Narrowed down area |
 | **4. LOCATE** | Find root cause file:line, function, condition | Specific code location |
 | **5. ASSESS** | Evaluate user impact, severity, workarounds | Severity classification |
 | **6. REPORT** | Document findings in Investigation Report format | Structured handoff |
+
+#### Step 0: TRIAGE Details
+
+Pre-analysis step performed first when receiving vague reports:
+
+1. **Identify report pattern** - Total Denial, Comparison, Vague Feeling, etc.
+2. **Collect context information** - Recent commits, related Issues, reporter's role
+3. **Generate 3 hypotheses** - Most frequent, recent change, pattern-based
+4. **Determine investigation start point** - Begin investigation without asking questions
+
+```
+Report received
+    ↓
+Pattern identification → "Comparison": Possible regression
+    ↓
+Context collection → Recent deploy, changed files
+    ↓
+Hypothesis generation:
+  H1: Recent API change is affecting
+  H2: Missing database migration
+  H3: Cache inconsistency
+    ↓
+Start investigation: Begin with H1 (no questions)
+```
 
 ### Root Cause Categories
 
