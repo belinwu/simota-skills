@@ -106,86 +106,112 @@ Use Privacy for:       Sign-up, permissions, data sharing
 
 ## PERSONA GENERATION
 
-Echo はコード/ドキュメントを分析してサービス特化ペルソナを自動生成できます。
+Echo can analyze code/documentation to auto-generate service-specific personas.
 
 ### Trigger Commands
 
 ```
-/Echo generate personas              # 自動検出で生成
-/Echo generate personas for [name]   # サービス名を指定
-/Echo generate personas from [path]  # 分析対象を指定
+/Echo generate personas              # Auto-detect and generate
+/Echo generate personas for [name]   # Specify service name
+/Echo generate personas from [path]  # Specify analysis target
+/Echo generate internal personas     # Generate development organization personas
+/Echo generate internal personas for [name]  # Internal personas for specific service
 ```
 
 ### Generation Workflow
 
 ```
-1. ANALYZE  - README、docs、src を分析
-2. EXTRACT  - ユーザータイプ、ゴール、ペインポイントを抽出
-3. GENERATE - テンプレートに沿ってペルソナ生成
-4. SAVE     - .agents/personas/{service}/ に保存
+1. ANALYZE  - Analyze README, docs, src
+2. EXTRACT  - Extract user types, goals, pain points
+3. GENERATE - Generate personas following template
+4. SAVE     - Save to .agents/personas/{service}/
 ```
 
 ### Auto-Suggestion
 
-ペルソナ未定義でレビュー開始時、自動的に生成を提案します。
+Auto-suggests generation when starting review without defined personas.
 
 ### Analysis Targets
 
-| ファイル | 抽出内容 |
-|---------|---------|
-| README.md | ターゲットユーザー、使用シナリオ |
-| docs/**/* | ユーザーガイド想定読者 |
-| src/**/user*, auth* | ユーザーモデル、役割定義 |
-| tests/**/* | テストシナリオ → ユースケース |
+| File | Extraction Target |
+|------|-------------------|
+| README.md | Target users, usage scenarios |
+| docs/**/* | User guide target readers |
+| src/**/user*, auth* | User models, role definitions |
+| tests/**/* | Test scenarios → use cases |
+
+### Analysis Targets (Internal Persona)
+
+| File | Extraction Target |
+|------|-------------------|
+| CODEOWNERS | Team structure, responsibility areas |
+| .github/workflows/* | CI/CD workflows |
+| docs/CONTRIBUTING.md | Development flow |
+| .vscode/**, .editorconfig | Development environment |
+| docs/runbook*, docs/onboarding* | Operations/onboarding docs |
 
 ### Output
 
-生成されたペルソナは `.agents/personas/{service}/` に保存:
+Generated personas are saved to `.agents/personas/{service}/`:
 
 ```
 .agents/personas/
 └── ec-platform/
-    ├── first-time-buyer.md
-    ├── power-shopper.md
-    └── enterprise-admin.md
+    ├── first-time-buyer.md      # User persona
+    ├── power-shopper.md         # User persona
+    ├── enterprise-admin.md      # User persona
+    └── internal/
+        ├── frontend-developer.md  # Internal persona
+        └── ops-manager.md         # Internal persona
 ```
 
-**詳細**: `references/persona-generation.md`
-**テンプレート**: `references/persona-template.md`
+**Details**: `references/persona-generation.md`
+**Template**: `references/persona-template.md`
 
 ---
 
 ## SERVICE-SPECIFIC REVIEW
 
-保存済みペルソナを使用したサービス特化UXレビュー。
+Service-specific UX review using saved personas.
 
 ### Load & Review Commands
 
 ```
-/Echo review with saved personas           # 保存済みペルソナを使用
-/Echo review [flow] as [persona-name]      # 特定ペルソナでレビュー
+/Echo review with saved personas           # Use saved personas
+/Echo review [flow] as [persona-name]      # Review with specific persona
+/Echo review [target] with internal personas  # Review with internal personas
 ```
 
 ### Review Process
 
-1. **LOAD** - `.agents/personas/{service}/` からペルソナ読み込み
-2. **SELECT** - レビュー対象フローとペルソナを選択
-3. **WALK** - ペルソナ固有の Emotion Triggers を適用
-4. **SCORE** - サービス特化の文脈でスコアリング
-5. **REPORT** - Testing Focus に基づくレポート生成
+1. **LOAD** - Load personas from `.agents/personas/{service}/`
+2. **SELECT** - Select review target flow and persona
+3. **WALK** - Apply persona-specific Emotion Triggers
+4. **SCORE** - Score in service-specific context
+5. **REPORT** - Generate report based on Testing Focus
 
 ### Benefits
 
-| 観点 | 標準ペルソナ | サービス特化ペルソナ |
-|------|------------|-------------------|
-| 精度 | 汎用的 | サービス固有の文脈を反映 |
-| Triggers | 一般的 | 実ユーザーの反応パターン |
-| Focus | 広範囲 | 重要フローに集中 |
-| JTBD | 推測 | コード/ドキュメントに基づく |
+| Aspect | Standard Personas | Service-Specific Personas |
+|--------|------------------|---------------------------|
+| Accuracy | Generic | Reflects service-specific context |
+| Triggers | General | Real user response patterns |
+| Focus | Wide range | Concentrated on key flows |
+| JTBD | Assumed | Based on code/documentation |
+
+### Internal Persona Review Targets
+
+| Target | Recommended Persona | Purpose |
+|--------|---------------------|---------|
+| Admin Panel | Ops Manager, CS Rep | Operations usability |
+| Dev Tools/CI/CD | Frontend/Backend Dev | Developer experience (DX) |
+| Documentation | New Engineer, PdM | Comprehensibility |
+| Error Messages/Logs | QA Engineer, Ops | Debugging usefulness |
+| API/SDK | Backend Developer | Interface design |
 
 ### Cross-Persona Analysis
 
-複数の保存済みペルソナでフローを比較:
+Compare flows across multiple saved personas:
 
 ```markdown
 | Step | First-Time | Power | Enterprise | Issue Type |
@@ -809,8 +835,8 @@ Use `AskUserQuestion` tool to confirm with user at these decision points.
 | Timing | Triggers |
 |--------|----------|
 | **BEFORE_START** | PERSONA_SELECT, CONTEXT_SELECT, ACCESSIBILITY_CHECK, COMPETITOR_COMPARISON, ANALYSIS_DEPTH, MULTI_PERSONA, PERSONA_REVIEW |
-| **ON_GENERATION** | PERSONA_GENERATION, PERSONA_COUNT, PERSONA_SAVE |
-| **ON_DECISION** | UX_FRICTION, DARK_PATTERN, FLOW_AMBIGUITY, PALETTE_HANDOFF, SCOUT_HANDOFF |
+| **ON_GENERATION** | PERSONA_TYPE_SELECTION, PERSONA_GENERATION, PERSONA_COUNT, PERSONA_SAVE, INTERNAL_PERSONA_GENERATION, INTERNAL_PERSONA_ROLES |
+| **ON_DECISION** | UX_FRICTION, DARK_PATTERN, FLOW_AMBIGUITY, PALETTE_HANDOFF, SCOUT_HANDOFF, INTERNAL_REVIEW_TARGET |
 | **ON_COMPLETION** | EXPERIMENT_HANDOFF, CANVAS_HANDOFF, SPARK_HANDOFF, VOICE_VALIDATION, SCORE_SUMMARY |
 
 **Full YAML templates**: See `references/question-templates.md`

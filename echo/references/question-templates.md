@@ -256,17 +256,17 @@ questions:
 
 ```yaml
 questions:
-  - question: "どのソースからペルソナを生成しますか？"
+  - question: "Which sources should be used to generate personas?"
     header: "Source"
     options:
       - label: "Auto-detect (Recommended)"
-        description: "README、docs、srcを自動分析"
+        description: "Auto-analyze README, docs, src"
       - label: "Documentation only"
-        description: "ドキュメントファイルのみ分析"
+        description: "Analyze documentation files only"
       - label: "Code only"
-        description: "ソースコードのみ分析"
+        description: "Analyze source code only"
       - label: "Specify files"
-        description: "分析対象ファイルを指定"
+        description: "Specify files to analyze"
     multiSelect: false
 ```
 
@@ -274,15 +274,15 @@ questions:
 
 ```yaml
 questions:
-  - question: "何体のペルソナを生成しますか？"
+  - question: "How many personas should be generated?"
     header: "Count"
     options:
       - label: "3 (Recommended)"
         description: "Primary, Secondary, Edge Case"
       - label: "5"
-        description: "より詳細なセグメント分け"
+        description: "More detailed segmentation"
       - label: "Auto"
-        description: "発見されたユーザータイプ数に応じて"
+        description: "Based on discovered user types"
     multiSelect: false
 ```
 
@@ -290,15 +290,15 @@ questions:
 
 ```yaml
 questions:
-  - question: "生成されたペルソナを保存しますか？"
+  - question: "Would you like to save the generated personas?"
     header: "Save"
     options:
       - label: "Yes, save all (Recommended)"
-        description: ".agents/personas/{service}/ に保存"
+        description: "Save to .agents/personas/{service}/"
       - label: "Review and edit first"
-        description: "内容を確認してから保存"
+        description: "Review content before saving"
       - label: "Save selected only"
-        description: "一部のペルソナのみ保存"
+        description: "Save only some personas"
     multiSelect: false
 ```
 
@@ -306,15 +306,15 @@ questions:
 
 ```yaml
 questions:
-  - question: "保存済みペルソナでレビューしますか？"
+  - question: "Would you like to review with saved personas?"
     header: "Persona"
     options:
       - label: "Use saved personas (Recommended)"
-        description: ".agents/personas/ から読み込み"
+        description: "Load from .agents/personas/"
       - label: "Use Echo base personas"
-        description: "標準ペルソナを使用"
+        description: "Use standard personas"
       - label: "Generate new personas"
-        description: "新たにペルソナを生成"
+        description: "Generate new personas"
     multiSelect: false
 ```
 
@@ -322,14 +322,88 @@ questions:
 
 ```yaml
 questions:
-  - question: "サービス特化ペルソナが見つかりません。生成しますか？"
+  - question: "No service-specific personas found. Would you like to generate them?"
     header: "Persona"
     options:
       - label: "Yes, generate personas (Recommended)"
-        description: "コード/ドキュメントから自動生成"
+        description: "Auto-generate from code/documentation"
       - label: "Use Echo base personas"
-        description: "標準ペルソナでレビューを続行"
+        description: "Continue review with standard personas"
       - label: "I'll provide personas"
-        description: "手動でペルソナを定義"
+        description: "Define personas manually"
     multiSelect: false
+```
+
+---
+
+## Internal Persona Templates
+
+### ON_PERSONA_TYPE_SELECTION
+
+```yaml
+questions:
+  - question: "What type of personas should be generated?"
+    header: "Type"
+    options:
+      - label: "User Personas (Recommended)"
+        description: "Personas for service users"
+      - label: "Internal Personas"
+        description: "Personas for development organization"
+      - label: "Both"
+        description: "Generate both types"
+    multiSelect: false
+```
+
+### ON_INTERNAL_PERSONA_GENERATION
+
+```yaml
+questions:
+  - question: "What type of Internal Persona should be generated?"
+    header: "Internal"
+    options:
+      - label: "Auto-detect (Recommended)"
+        description: "Auto-detect from CODEOWNERS, documentation"
+      - label: "Developer focused"
+        description: "Prioritize engineering personas"
+      - label: "Operations focused"
+        description: "Prioritize operations/business personas"
+      - label: "Select specific roles"
+        description: "Select job types to generate"
+    multiSelect: false
+```
+
+### ON_INTERNAL_PERSONA_ROLES
+
+```yaml
+questions:
+  - question: "Which job types of Internal Persona should be generated?"
+    header: "Roles"
+    options:
+      - label: "Frontend Developer"
+        description: "Frontend developer"
+      - label: "Backend Developer"
+        description: "Backend developer"
+      - label: "Infra Engineer"
+        description: "Infrastructure engineer"
+      - label: "QA Engineer"
+        description: "QA engineer"
+    multiSelect: true
+```
+
+### ON_INTERNAL_REVIEW_TARGET
+
+```yaml
+questions:
+  - question: "What should be reviewed with Internal Persona?"
+    header: "Review"
+    options:
+      - label: "Admin Panel"
+        description: "Admin panel UX validation"
+      - label: "Developer Tools"
+        description: "Dev tools/CI/CD validation"
+      - label: "Documentation"
+        description: "Documentation/specs validation"
+      - label: "Error Messages / Logs"
+        description: "Error messages/logs validation"
+    multiSelect: true
 ```
