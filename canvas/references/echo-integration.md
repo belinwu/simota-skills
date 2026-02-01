@@ -781,3 +781,320 @@ questions:
 - Echo Team Analysis: 2026-01-31
 - Team config: .github/CODEOWNERS
 ```
+
+---
+
+## Visual Journey Map (Navigator → Echo → Canvas)
+
+Visualize the results of Echo's review of Navigator screenshots.
+
+### Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      NAVIGATOR                               │
+│  Screenshot capture → Device context → Flow documentation   │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓ NAVIGATOR_TO_ECHO_HANDOFF
+┌─────────────────────────────────────────────────────────────┐
+│                        ECHO                                  │
+│  Visual Review: First Glance → Scan Pattern → Emotion Score │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓ ECHO_TO_CANVAS_VISUAL_HANDOFF
+┌─────────────────────────────────────────────────────────────┐
+│                       CANVAS                                 │
+│  Visual Journey Map → Friction Heatmap → Comparison         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Handoff Format (Echo → Canvas)
+
+```markdown
+## ECHO_TO_CANVAS_VISUAL_HANDOFF
+
+**Task ID**: [ID]
+**Visualization Type**: Visual Journey Map | Friction Heatmap | Before/After
+
+**Flow**: [Flow Name]
+**Persona**: [Persona Name]
+**Device**: [Device Context]
+
+**Visual Journey Data**:
+| Screenshot | State | Score | Friction Type | Note |
+|------------|-------|-------|---------------|------|
+| 01_landing.png | Initial | +1 | None | Hero clear |
+| 02_form.png | Form | −2 | Touch Target | CTA too small |
+| 03_error.png | Error | −3 | Readability | Error text unclear |
+
+**Screenshot References**:
+- Path: `.navigator/screenshots/[id]/`
+- Files: [list of files]
+
+**Highlight Points**:
+- Peak (Best): Screenshot [N], Score [S]
+- Valley (Worst): Screenshot [N], Score [S]
+- End: Screenshot [N], Score [S]
+
+**Mermaid Journey Data**:
+\`\`\`mermaid
+journey
+    title [Flow] - [Persona] Visual Review
+    section Landing
+      View homepage: 4: User
+    section Signup
+      Open form: 3: User
+      Submit: 1: User
+\`\`\`
+
+→ `/Canvas visualize visual-journey`
+```
+
+### Visual Journey Map Template
+
+Journey Map with screenshot references:
+
+```mermaid
+journey
+    title Signup Flow - Mobile User Visual Review
+    section Landing
+      View homepage: 4: User
+      Find CTA: 3: User
+    section Signup Form
+      Open form: 3: User
+      Fill email: 2: User
+      Fill password: 2: User
+      Submit: 1: User
+    section Result
+      See error: 1: User
+
+    %% Screenshot References
+    %% Step 1-2: 01_landing.png
+    %% Step 3-6: 02_form.png
+    %% Step 7: 03_error.png
+```
+
+### Visual Friction Heatmap
+
+Overlay friction points on screenshots:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Screenshot: 02_form.png                   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                                                      │   │
+│  │    [Logo]                               [Menu] ← 🟡  │   │
+│  │                                                      │   │
+│  │    ┌────────────────────────────────────────────┐   │   │
+│  │    │              Signup Form                    │   │   │
+│  │    │                                            │   │   │
+│  │    │   Email: [________________] ← 🟢           │   │   │
+│  │    │                                            │   │   │
+│  │    │   Password: [____________] ← 🟡            │   │   │
+│  │    │   (hint text too small)                    │   │   │
+│  │    │                                            │   │   │
+│  │    │         [Sign Up] ← 🔴                     │   │   │
+│  │    │         (touch target too small)           │   │   │
+│  │    │                                            │   │   │
+│  │    └────────────────────────────────────────────┘   │   │
+│  │                                                      │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  Friction Legend:                                           │
+│  🔴 Critical (−3)  🟡 Moderate (−2)  🟢 Minor (−1)         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Visual Friction Heatmap (Mermaid)
+
+```mermaid
+flowchart TD
+    classDef good fill:#d5e8d4,stroke:#82b366
+    classDef warning fill:#fff2cc,stroke:#d6b656
+    classDef bad fill:#f8cecc,stroke:#b85450
+    classDef critical fill:#ff0000,stroke:#b85450,color:#fff
+
+    subgraph Screenshot["02_form.png - Signup Form"]
+        direction TB
+        Header[Header/Logo]:::good
+        Email[Email Input +1]:::good
+        Password[Password Input -1]:::warning
+        Hint[Password Hint -2]:::bad
+        Submit[Submit Button -3]:::critical
+    end
+
+    Header --> Email --> Password --> Hint --> Submit
+```
+
+### Before/After Comparison
+
+Before/after improvement comparison template:
+
+```mermaid
+flowchart LR
+    subgraph Before["BEFORE"]
+        direction TB
+        B1[CTA: 32x32px]
+        B2[Score: -2]
+        B3[Touch target too small]
+    end
+
+    subgraph After["AFTER"]
+        direction TB
+        A1[CTA: 48x48px]
+        A2[Score: +2]
+        A3[Comfortable touch target]
+    end
+
+    Before --> |Palette fix| After
+
+    classDef before fill:#f8cecc,stroke:#b85450
+    classDef after fill:#d5e8d4,stroke:#82b366
+    class B1,B2,B3 before
+    class A1,A2,A3 after
+```
+
+### Screenshot Reference Card
+
+```mermaid
+flowchart TB
+    subgraph Card["Visual Review Card"]
+        direction TB
+        subgraph Meta["Metadata"]
+            M1["Screenshot: 02_form.png"]
+            M2["Persona: Mobile User"]
+            M3["Device: iPhone 14 Pro"]
+        end
+
+        subgraph Scores["Visual Scores"]
+            S1["Layout: +2"]
+            S2["Typography: -1"]
+            S3["CTA: -2"]
+            S4["Trust: -1"]
+        end
+
+        subgraph Summary["Summary"]
+            SUM["Average: -0.5 (Grade C)"]
+        end
+    end
+
+    Meta --> Scores --> Summary
+```
+
+### Question Templates
+
+#### ON_VISUAL_JOURNEY_FORMAT
+
+```yaml
+questions:
+  - question: "What format should be used to visualize the Visual Journey?"
+    header: "Format"
+    options:
+      - label: "Visual Journey Map (Recommended)"
+        description: "Journey with screenshot references and emotion scores"
+      - label: "Friction Heatmap"
+        description: "Overlay friction points on screenshots"
+      - label: "Before/After Comparison"
+        description: "Side-by-side improvement comparison"
+      - label: "All formats"
+        description: "Generate complete visual documentation"
+    multiSelect: false
+```
+
+#### ON_FRICTION_HIGHLIGHT
+
+```yaml
+questions:
+  - question: "Which friction points should be highlighted in the visualization?"
+    header: "Highlight"
+    options:
+      - label: "Critical only (-3)"
+        description: "Focus on most severe issues"
+      - label: "Critical and Moderate (-2, -3) (Recommended)"
+        description: "Show significant friction points"
+      - label: "All friction (-1, -2, -3)"
+        description: "Comprehensive friction view"
+    multiSelect: false
+```
+
+### Output Example
+
+#### Visual Journey Map Report
+
+```markdown
+## Canvas Visual Journey Map
+
+### Signup Flow - Mobile User Visual Review
+
+**Task ID**: NAV-2026-0201-001
+**Persona**: Mobile User (Commuter scenario)
+**Device**: iPhone 14 Pro (390x844), Chrome Mobile, 4G
+**Source**: Echo Visual Review
+
+### Journey Diagram
+
+\`\`\`mermaid
+journey
+    title Signup Flow - Mobile User
+    section Landing
+      View homepage: 4: User
+      Find CTA: 3: User
+    section Signup
+      Open form: 3: User
+      Fill fields: 2: User
+      Submit: 1: User
+    section Result
+      See error: 1: User
+\`\`\`
+
+### Screenshot Reference Table
+
+| Step | Screenshot | State | Score | Friction |
+|------|------------|-------|-------|----------|
+| 1-2 | 01_landing.png | Landing | +3.5 avg | None |
+| 3-5 | 02_form.png | Form | +2.0 avg | Touch Target (-2) |
+| 6 | 03_error.png | Error | -3.0 | Readability (-3) |
+
+### Friction Heatmap
+
+[ASCII/Mermaid visualization of friction points]
+
+### Key Findings
+
+| Metric | Value | Assessment |
+|--------|-------|------------|
+| Overall Score | -0.8 | Needs Improvement |
+| Peak (Worst) | Step 6: -3.0 | Critical |
+| End Experience | Step 6: -3.0 | Poor |
+| Grade | D | Action Required |
+
+### Recommended Actions
+
+1. **Critical**: Fix error message readability (Step 6)
+2. **High**: Increase submit button touch target (Step 5)
+3. **Medium**: Improve password hint visibility (Step 4)
+
+### Sources
+
+- Navigator screenshots: `.navigator/screenshots/NAV-2026-0201-001/`
+- Echo Visual Review: 2026-02-01
+- Persona: Mobile User (Commuter)
+```
+
+### File Linking
+
+```markdown
+---
+name: signup-visual-journey-mobile
+type: visual-journey
+format: mermaid
+persona: Mobile User
+persona_type: user
+flow: signup
+device: iPhone 14 Pro
+screenshots:
+  - .navigator/screenshots/NAV-2026-0201-001/01_landing.png
+  - .navigator/screenshots/NAV-2026-0201-001/02_form.png
+  - .navigator/screenshots/NAV-2026-0201-001/03_error.png
+created: 2026-02-01
+---
+```

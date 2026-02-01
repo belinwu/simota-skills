@@ -828,6 +828,132 @@ journey
 
 ---
 
+## VISUAL REVIEW MODE
+
+Visual review mode for analyzing screenshots from Navigator with persona perspective.
+
+### Trigger Commands
+
+```
+/Echo visual review                    # Start visual review from Navigator handoff
+/Echo visual review [screenshot_path]  # Review specific screenshot
+/Echo visual review with [persona]     # Review with specific persona
+```
+
+### 6-Step Visual Review Process
+
+```
+1. RECEIVE  - Receive handoff data from Navigator
+2. ORIENT   - Understand device context and flow information
+3. PERCEIVE - First Glance analysis (0-3 sec), scan pattern simulation
+4. REACT    - Record emotional reactions as persona
+5. INTERACT - Evaluate expected interactions
+6. SCORE    - Visual Emotion Scoring, generate report
+```
+
+### Screenshot Analysis Dimensions
+
+| Dimension | Analysis Focus | Persona Impact |
+|-----------|----------------|----------------|
+| **Visual Hierarchy** | Eye flow, prominence of key elements | Newbie: Can't find important things |
+| **Trust Signals** | Logo, security badges, reviews | Skeptic: Judging trustworthiness |
+| **Touch Targets** | Button size, tap areas | Mobile User: Can I tap it? |
+| **Readability** | Font size, contrast | Senior: Can I read it? |
+| **Information Density** | Text amount, whitespace | Power User: Is there enough info? |
+| **Error States** | Clarity of error display | Low-Literacy: Understanding what's wrong |
+| **Loading Indicators** | Progress display, feedback | Distracted User: Can I tell the state? |
+
+### Visual Emotion Scoring
+
+Score visual elements for each screenshot:
+
+```markdown
+### Visual Emotion Score
+
+| Element | Score | Reaction | Note |
+|---------|-------|----------|------|
+| Layout | +2 | 😊 | Key elements stand out |
+| Typography | -1 | 😕 | Too small to read |
+| CTA | +1 | 😌 | Found it |
+| Trust Signals | -2 | 😤 | No security badges |
+| White Space | 0 | 😐 | Normal |
+
+**Visual Average**: 0.0
+**First Glance Impression**: [Positive/Negative/Neutral]
+```
+
+### Visual Review Report Format
+
+```markdown
+## Visual Persona Review Report
+
+**Task ID**: [Navigator Task ID]
+**Persona**: [Selected Persona]
+**Device**: [Viewport / Browser]
+**Flow**: [Flow Name]
+
+### First Glance Analysis (0-3 seconds)
+
+**What I noticed first**: [First element that caught attention]
+**What I expected to see**: [Expected element]
+**Emotional reaction**: [Score] [Emoji] [Quote]
+
+### Scan Pattern Simulation
+
+**Path taken**: [Eye flow - A → B → C]
+**Missed elements**: [Important elements missed]
+**Confusion points**: [Where I got confused]
+
+### Screenshot-by-Screenshot Analysis
+
+#### Screenshot 1: [State Name]
+| Element | Score | Persona Reaction |
+|---------|-------|------------------|
+| ... | ... | ... |
+
+**Quote**: "[Persona quote]"
+
+### Visual Friction Points
+
+| Priority | Screenshot | Element | Friction Type | Score |
+|----------|------------|---------|---------------|-------|
+| 1 | 02_form.png | Submit Button | Too Small | -2 |
+| 2 | 01_landing.png | Navigation | Hidden Menu | -1 |
+
+### Canvas Integration: Visual Journey Data
+
+\`\`\`mermaid
+journey
+    title [Flow] - Visual Review
+    section [Phase]
+      [Screenshot 1]: [score]: User
+      [Screenshot 2]: [score]: User
+\`\`\`
+
+→ `/Canvas visualize visual-journey`
+```
+
+### Device Context Considerations
+
+| Device | Key Visual Checks |
+|--------|-------------------|
+| **Mobile** | Touch targets ≥44px, scroll depth, thumb zone |
+| **Tablet** | Landscape/portrait support, split view |
+| **Desktop** | F-pattern support, sidebar visibility, hover states |
+| **Low-End** | Image loading, animation performance |
+
+### Integration with Canvas
+
+After Visual Review completion, pass the following data to Canvas:
+
+1. **Visual Journey Map** - Journey with screenshot references
+2. **Visual Friction Heatmap** - Visualization of friction points
+3. **Before/After Comparison** - Before/after improvement comparison
+
+**Details**: `references/visual-review.md`
+
+---
+
 ## INTERACTION_TRIGGERS
 
 Use `AskUserQuestion` tool to confirm with user at these decision points.

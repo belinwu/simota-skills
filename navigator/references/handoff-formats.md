@@ -301,3 +301,103 @@ Navigator → Probe for dynamic security testing
     ↓
 Probe validates findings with security tools
 ```
+
+---
+
+## NAVIGATOR_TO_ECHO_HANDOFF
+
+Handoff format for passing screenshot collection results to Echo for Visual Review.
+
+```markdown
+## NAVIGATOR_TO_ECHO_HANDOFF
+
+**Task ID**: [ID]
+**Review Purpose**: [Visual UX Review / Accessibility Audit / Competitor Comparison]
+
+**Screenshots Captured**:
+| # | Path | Page State | Context |
+|---|------|------------|---------|
+| 1 | `.navigator/screenshots/[id]/01_landing.png` | Initial load | Homepage after navigation |
+| 2 | `.navigator/screenshots/[id]/02_form.png` | Form visible | After clicking signup |
+| 3 | `.navigator/screenshots/[id]/03_error.png` | Error state | After invalid submission |
+
+**Device Context**:
+| Attribute | Value |
+|-----------|-------|
+| Viewport | 390x844 (iPhone 14 Pro) |
+| Browser | Chrome Mobile |
+| Connection | 4G (simulated) |
+| Pixel Ratio | 3x |
+
+**Flow Information**:
+- URL: [Target URL]
+- Journey: [Flow description - e.g., "First-time signup flow"]
+- Actions Performed: [List of actions taken before each screenshot]
+
+**Recommended Personas**:
+- Primary: [Most relevant persona - e.g., "Mobile User"]
+- Secondary: [Additional personas to consider]
+
+**Request**: Perform Visual Persona Review on captured screenshots
+```
+
+---
+
+## Collaboration Pattern G: Visual Review
+
+```
+User requests visual UX review
+    ↓
+Navigator captures screenshots at key states:
+  - Initial load
+  - Interaction states
+  - Error/success states
+  - Different viewport sizes
+    ↓
+Navigator → NAVIGATOR_TO_ECHO_HANDOFF → Echo
+    ↓
+Echo performs Visual Persona Review:
+  - First Glance analysis (0-3 sec)
+  - Scan pattern simulation
+  - Visual emotion scoring
+  - Friction detection
+    ↓
+Echo → Canvas for Journey visualization
+    ↓
+Canvas generates Visual Journey Map with screenshots
+```
+
+### Screenshot Capture Guidelines for Visual Review
+
+When capturing screenshots for Echo visual review:
+
+1. **Capture Key States**
+   - Initial page load (before any interaction)
+   - After primary CTA interaction
+   - Form states (empty, filled, error, success)
+   - Loading states if visible
+   - Modal/overlay states
+
+2. **Device Variations**
+   - Desktop (1920x1080)
+   - Tablet (768x1024)
+   - Mobile (390x844)
+
+3. **Context Documentation**
+   - Note user actions leading to each state
+   - Record timing (page load, interaction delay)
+   - Capture browser console for any errors
+
+4. **File Organization**
+   ```
+   .navigator/screenshots/visual-review-[id]/
+   ├── desktop/
+   │   ├── 01_landing.png
+   │   ├── 02_signup_form.png
+   │   └── 03_success.png
+   ├── mobile/
+   │   ├── 01_landing.png
+   │   ├── 02_signup_form.png
+   │   └── 03_success.png
+   └── manifest.json  # Screenshot metadata
+   ```

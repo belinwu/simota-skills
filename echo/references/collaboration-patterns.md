@@ -321,3 +321,137 @@ Echo（ペルソナ精度向上・更新）
 - Highlight: [elements to focus on]
 - Note: [observation about this step]
 ```
+
+## Pattern H: Visual Review (Navigator → Echo → Canvas)
+
+Flow where Echo reviews Navigator screenshots from persona perspective and Canvas visualizes the results.
+
+```
+Navigator (Screenshot capture)
+  ↓ NAVIGATOR_TO_ECHO_HANDOFF
+Echo (Visual Persona Review)
+  - First Glance analysis
+  - Scan Pattern simulation
+  - Visual Emotion Scoring
+  - Friction Point detection
+  ↓ ECHO_TO_CANVAS_VISUAL_HANDOFF
+Canvas (Visual Journey Map generation)
+  ↓
+Stakeholder sharing
+```
+
+### Trigger
+
+```
+/Echo visual review                    # Start visual review from Navigator handoff
+/Echo visual review [screenshot_path]  # Review specific screenshot
+/Echo visual review with [persona]     # Review with specific persona
+```
+
+### Workflow Steps
+
+1. **Navigator Screenshot Capture**
+   - Capture screenshots at key screen states
+   - Record device context (viewport, browser, connection)
+   - Document flow information (URL, journey, actions)
+
+2. **Echo Visual Review**
+   - RECEIVE: Receive handoff data
+   - ORIENT: Understand device context
+   - PERCEIVE: First Glance analysis (0-3 sec)
+   - REACT: Persona emotional reactions
+   - INTERACT: Interaction evaluation
+   - SCORE: Visual Emotion Scoring
+
+3. **Canvas Visualization**
+   - Visual Journey Map with screenshot references
+   - Friction Heatmap on screenshots
+   - Before/After comparison (if applicable)
+
+### Handoff Format (Navigator → Echo)
+
+```markdown
+## NAVIGATOR_TO_ECHO_HANDOFF
+
+**Task ID**: [ID]
+**Review Purpose**: [Visual UX Review / Accessibility Audit / Competitor Comparison]
+
+**Screenshots Captured**:
+| # | Path | Page State | Context |
+|---|------|------------|---------|
+| 1 | `.navigator/screenshots/[id]/01_landing.png` | Initial load | Homepage after navigation |
+| 2 | `.navigator/screenshots/[id]/02_form.png` | Form visible | After clicking signup |
+
+**Device Context**:
+| Attribute | Value |
+|-----------|-------|
+| Viewport | 390x844 (iPhone 14 Pro) |
+| Browser | Chrome Mobile |
+| Connection | 4G (simulated) |
+
+**Flow Information**:
+- URL: [Target URL]
+- Journey: [Flow description]
+- Actions Performed: [Actions before each screenshot]
+
+**Recommended Personas**:
+- Primary: [Most relevant persona]
+- Secondary: [Additional personas]
+
+**Request**: Perform Visual Persona Review on captured screenshots
+```
+
+### Handoff Format (Echo → Canvas)
+
+```markdown
+## ECHO_TO_CANVAS_VISUAL_HANDOFF
+
+**Task ID**: [ID]
+**Visualization Type**: Visual Journey Map | Friction Heatmap | Before/After
+
+**Flow**: [Flow Name]
+**Persona**: [Persona Name]
+**Device**: [Device Context]
+
+**Visual Journey Data**:
+| Screenshot | State | Score | Friction Type | Note |
+|------------|-------|-------|---------------|------|
+| 01_landing.png | Initial | +1 | None | Hero clear |
+| 02_form.png | Form | −2 | Touch Target | CTA too small |
+
+**Screenshot References**:
+- Path: `.navigator/screenshots/[id]/`
+- Files: [list of files]
+
+**Highlight Points**:
+- Peak (Best): Screenshot [N], Score [S]
+- Valley (Worst): Screenshot [N], Score [S]
+- End: Screenshot [N], Score [S]
+
+**Mermaid Journey Data**:
+\`\`\`mermaid
+journey
+    title [Flow] - [Persona] Visual Review
+    section Landing
+      View homepage: 4: User
+    section Signup
+      Open form: 3: User
+      Submit: 1: User
+\`\`\`
+
+→ `/Canvas visualize visual-journey`
+```
+
+### Use Cases
+
+| Scenario | Navigator Action | Echo Focus | Canvas Output |
+|----------|------------------|------------|---------------|
+| **Mobile UX Audit** | Mobile viewport screenshots | Touch targets, thumb zones | Friction Heatmap |
+| **Signup Flow Review** | Step-by-step captures | Trust signals, form friction | Visual Journey Map |
+| **Error State Analysis** | Error scenarios | Error message clarity | Before/After Template |
+| **Competitor Comparison** | Both site screenshots | Feature parity, patterns | Side-by-side Comparison |
+| **Accessibility Audit** | High contrast / zoom modes | Readability, contrast | Accessibility Report |
+
+### Detailed Reference
+
+See `references/visual-review.md` for detailed Visual Review procedures and scoring criteria.
