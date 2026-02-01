@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-41-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-42-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **41種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **42種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする41種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする42種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -45,6 +45,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 |------------|------|------|
 | **Nexus** | チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを設計 | プロンプト、進行管理 |
 | **Sherpa** | タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
+| **Architect** | 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
 
 ### 調査・企画（コードを書かない）
 
@@ -369,6 +370,7 @@ skills/
 │   └── INTERACTION.md  # 対話ルール共通定義
 ├── _templates/
 │   └── PROJECT.md      # プロジェクト知識テンプレート
+├── architect/SKILL.md  # エージェント設計メタデザイナー
 ├── anvil/SKILL.md      # CLI/TUI構築
 ├── arena/SKILL.md      # 複数AI並列実装
 ├── artisan/SKILL.md    # フロントエンド実装
@@ -419,7 +421,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全41エージェントの使用例を紹介します。
+> カテゴリ別に全42エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
@@ -442,6 +444,18 @@ skills/
 ```
 
 **出力**: 15分以内で完了できるAtomic Stepのリスト、進捗チェックリスト、最初に着手すべきタスクの具体的指示
+
+---
+
+##### エージェント設計（Architect）
+
+```
+/Architect
+入力バリデーション専門のエージェントを設計してください。
+Zod/Yupによるスキーマ検証、エラーメッセージ生成を担当させたいです。
+```
+
+**出力**: SKILL.md（完全な仕様書）、references/*.md（3-7個のドメイン固有知識ファイル）、Nexus統合設計
 
 ---
 
