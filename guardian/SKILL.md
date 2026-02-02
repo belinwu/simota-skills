@@ -1156,38 +1156,115 @@ Are all commits meaningful and well-structured?
 
 ## 14. PR Description Generator
 
-Guardian generates PR descriptions from change analysis:
+Guardian generates PR descriptions from change analysis.
 
-### Generated PR Description Template
+### PR Description Best Practices
+
+| Section | Purpose | Required |
+|---------|---------|----------|
+| **Summary** | 1-3 bullet points explaining "what" and "why" | Yes |
+| **Test plan** | How to verify the changes work | Yes |
+| **Changes** | Key files/components modified | Recommended |
+| **Breaking changes** | Migration steps for breaking changes | If applicable |
+| **Related issues** | Links to issues/tickets | Recommended |
+| **Screenshots** | Visual changes demonstration | If UI changes |
+
+### Good vs Bad PR Descriptions
+
+#### Bad Example (Avoid)
 
 ```markdown
 ## Summary
-[Auto-generated from essential changes]
+Fixed stuff
+
+## Changes
+- Changed some files
+```
+
+**Problems:**
+- Vague summary with no context
+- No test plan
+- No explanation of "why"
+
+#### Good Example (Follow)
+
+```markdown
+## Summary
+- Fix token refresh race condition that caused intermittent 401 errors
+- Add mutex lock to prevent concurrent refresh requests
+
+## Test plan
+- [ ] Trigger concurrent API calls with expired token
+- [ ] Verify only one refresh request is made
+- [ ] Confirm no 401 errors in rapid succession
+
+## Changes
+- `src/auth/token.ts` - Add mutex for refresh operation
+- `src/auth/interceptor.ts` - Queue requests during refresh
+
+Closes #456
+```
+
+**Why it's good:**
+- Clear "what" and "why" in summary
+- Actionable test plan with specific steps
+- Key files listed with their purpose
+- Links to related issue
+
+### PR Description Template
+
+```markdown
+## Summary
+[1-3 bullet points: what changed and why]
+
+## Test plan
+[Checklist of verification steps]
+
+## Changes (optional for small PRs)
+[Key files with brief description]
+
+## Breaking changes (if applicable)
+[Migration steps]
+
+## Notes (optional)
+[Additional context, related issues]
+```
+
+### Generated PR Description Example
+
+```markdown
+## Summary
+- Add OAuth2 provider integration for Google and GitHub
+- Implement secure token refresh with automatic retry
+- Enable session persistence across browser restart
+
+## Test plan
+- [ ] Complete OAuth2 login flow with Google account
+- [ ] Complete OAuth2 login flow with GitHub account
+- [ ] Verify token refresh with expired access token
+- [ ] Confirm session persists after browser close/reopen
+- [ ] Run existing auth test suite (all should pass)
 
 ## Changes
 
 ### Features
-- OAuth2 provider integration (`src/auth/oauth.ts`)
+- `src/auth/oauth.ts` - OAuth2 provider integration
+- `src/auth/providers/` - Google, GitHub provider configs
 
 ### Fixes
-- Token refresh edge case handling (`src/api/middleware.ts`)
+- `src/api/middleware.ts` - Token refresh edge case handling
 
 ### Supporting
-- Unit tests for OAuth2 flow
-- Type definitions update
+- `tests/auth/oauth.test.ts` - OAuth2 flow tests
+- `types/auth.d.ts` - Type definitions update
 
-## Review Focus
-- [ ] OAuth2 implementation (`src/auth/oauth.ts`) - Core logic
-- [ ] Token refresh (`src/api/middleware.ts`) - Edge cases
-
-## Testing
-- [ ] OAuth2 login flow tested
-- [ ] Token refresh with expired tokens
-- [ ] All existing auth tests pass
+## Breaking changes
+- Auth API now requires `scope` parameter
+- Migration: Add `scope: "read"` to existing auth requests
 
 ## Notes
-- Breaking change: Auth API now requires `scope` parameter
 - Related to #123
+- Requires OAuth credentials in environment variables
 ```
 
 ---
@@ -1486,15 +1563,63 @@ git branch -d feat/completed-feature
 
 ### PR Operations with gh CLI
 
+> **Note**: PR body should follow best practices in Section 14. Key sections: Summary → Test plan → Changes.
+
 ```bash
-# Create PR with generated description
+# Create PR with generated description (file-based)
 gh pr create --title "feat(auth): add OAuth2" --body-file pr-body.md
+
+# Create PR with inline body using HEREDOC (recommended for automation)
+# Structure: Summary (what & why) → Test plan (verification) → Changes (optional)
+gh pr create --title "feat(auth): add OAuth2 provider" --body "$(cat <<'EOF'
+## Summary
+- Add OAuth2 provider integration for Google and GitHub
+- Implement token refresh mechanism with automatic retry
+- Enable session persistence across browser restart
+
+## Test plan
+- [ ] Complete OAuth2 login flow with Google account
+- [ ] Complete OAuth2 login flow with GitHub account
+- [ ] Verify token refresh with expired access token
+- [ ] Confirm session persists after browser close/reopen
+- [ ] Run existing auth test suite (all should pass)
+
+## Changes
+- `src/auth/oauth.ts` - OAuth2 provider implementation
+- `src/auth/providers/` - Google, GitHub provider configs
+- `src/api/middleware.ts` - Token validation middleware
+
+## Breaking changes
+- Auth API now requires `scope` parameter
+- Migration: Add `scope: "read"` to existing auth requests
+
+Closes #123
+EOF
+)"
+
+# Minimal PR for small fixes (Summary + Test plan is sufficient)
+gh pr create --base main --title "fix(auth): resolve token refresh race condition" --body "$(cat <<'EOF'
+## Summary
+- Fix race condition that caused intermittent 401 errors during concurrent requests
+- Add mutex lock to prevent duplicate refresh requests
+
+## Test plan
+- [ ] Trigger 10+ concurrent API calls with expired token
+- [ ] Verify only one refresh request is made (check network tab)
+- [ ] Confirm no 401 errors in rapid succession
+
+Closes #456
+EOF
+)"
 
 # View PR diff stats
 gh pr diff 123 --stat
 
 # List files changed in PR
 gh pr view 123 --json files --jq '.files[].path'
+
+# View PR details
+gh pr view 123
 ```
 
 ### Hotspot Analysis Commands
