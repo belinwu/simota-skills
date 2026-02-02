@@ -770,6 +770,216 @@ jobs:
 
 ---
 
+## VIDEO RECORDING (動画撮影)
+
+### Playwright Video Configuration
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    // Video recording options
+    video: 'on-first-retry',      // Record only on retry (recommended for CI)
+    // video: 'on',               // Always record
+    // video: 'off',              // Never record
+    // video: 'retain-on-failure', // Keep only failed test videos
+
+    // Video size options
+    video: {
+      mode: 'on-first-retry',
+      size: { width: 1280, height: 720 }, // 720p recommended
+    },
+  },
+
+  // Output directory for videos
+  outputDir: 'test-results/',
+});
+```
+
+### Video Mode Options
+
+| Mode | Description | CI Usage | Storage |
+|------|-------------|----------|---------|
+| `'off'` | No video recording | Production runs | Minimal |
+| `'on'` | Always record | Debug sessions | High |
+| `'retain-on-failure'` | Keep only failed | Recommended for CI | Medium |
+| `'on-first-retry'` | Record on retry | Balanced approach | Low-Medium |
+
+### Per-Test Video Control
+
+```typescript
+// Force video for specific test
+test('critical checkout flow', async ({ page }) => {
+  test.info().annotations.push({ type: 'video', description: 'required' });
+  // ... test code
+});
+
+// Override video mode for test file
+test.use({ video: 'on' });
+
+test.describe('Visual Flow Tests', () => {
+  test('user signup journey', async ({ page }) => {
+    // This test will always be recorded
+  });
+});
+```
+
+### Accessing Video in Tests
+
+```typescript
+test.afterEach(async ({ page }, testInfo) => {
+  // Attach video to test report (Playwright handles automatically)
+  // For custom handling:
+  if (testInfo.status !== 'passed') {
+    const video = page.video();
+    if (video) {
+      const path = await video.path();
+      console.log(`Test failed. Video: ${path}`);
+
+      // Custom attachment
+      await testInfo.attach('failure-video', {
+        path: path,
+        contentType: 'video/webm',
+      });
+    }
+  }
+});
+```
+
+### CDP Screen Recording (Advanced)
+
+```typescript
+// For fine-grained control over recording
+test('with CDP recording', async ({ page }) => {
+  const client = await page.context().newCDPSession(page);
+
+  // Start screencast for frame-by-frame control
+  await client.send('Page.startScreencast', {
+    format: 'jpeg',
+    quality: 80,
+    everyNthFrame: 1,
+  });
+
+  const frames: string[] = [];
+  client.on('Page.screencastFrame', async (event) => {
+    frames.push(event.data);
+    await client.send('Page.screencastFrameAck', {
+      sessionId: event.sessionId,
+    });
+  });
+
+  // Perform test actions
+  await page.goto('/');
+  await page.click('[data-testid="start"]');
+
+  // Stop recording
+  await client.send('Page.stopScreencast');
+
+  // Process frames (e.g., create GIF for specific moments)
+  console.log(`Captured ${frames.length} frames`);
+});
+```
+
+### Chrome DevTools Recording via CDP
+
+```typescript
+// Browser-level recording for performance analysis
+test('performance with recording', async ({ browser }) => {
+  const context = await browser.newContext({
+    recordVideo: {
+      dir: 'test-results/videos/',
+      size: { width: 1920, height: 1080 }, // Full HD for detail
+    },
+  });
+
+  const page = await context.newPage();
+  const client = await context.newCDPSession(page);
+
+  // Enable performance domain
+  await client.send('Performance.enable');
+
+  // Start trace for detailed analysis
+  await client.send('Tracing.start', {
+    categories: ['devtools.timeline', 'blink.user_timing'],
+  });
+
+  await page.goto('/heavy-page');
+
+  // Stop and collect
+  const traceEvents: any[] = [];
+  client.on('Tracing.dataCollected', (event) => {
+    traceEvents.push(...event.value);
+  });
+  await client.send('Tracing.end');
+
+  await context.close(); // Finalize video
+});
+```
+
+### Video Best Practices
+
+| Practice | Description |
+|----------|-------------|
+| **Use `retain-on-failure` in CI** | Saves storage while keeping debug evidence |
+| **720p for most tests** | Sufficient quality, reasonable file size |
+| **1080p for visual regression** | When pixel detail matters |
+| **Close context to finalize** | Video file incomplete until context closes |
+| **Set retention policy** | CI artifacts: 7-30 days |
+| **Don't record stable tests** | Disable for well-established tests |
+
+### CI Artifact Configuration
+
+```yaml
+# .github/workflows/e2e.yml
+- name: Upload test videos
+  uses: actions/upload-artifact@v4
+  if: failure()  # Only on failure
+  with:
+    name: test-videos
+    path: test-results/**/*.webm
+    retention-days: 7
+
+# For all videos (debugging phase)
+- name: Upload all videos
+  uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: test-videos-all
+    path: test-results/**/*.webm
+    retention-days: 3
+```
+
+### Flaky Test Investigation with Video
+
+```typescript
+// Record multiple runs to identify flakiness
+// npx playwright test --repeat-each=5 flaky.spec.ts
+
+test.describe('Flaky Investigation', () => {
+  // Force video recording for all attempts
+  test.use({ video: 'on' });
+
+  test('intermittent failure test', async ({ page }, testInfo) => {
+    // Log attempt number
+    console.log(`Attempt: ${testInfo.retry + 1}`);
+
+    await page.goto('/');
+
+    // Add visual markers in video
+    await page.evaluate((attempt) => {
+      const marker = document.createElement('div');
+      marker.style.cssText = 'position:fixed;top:0;left:0;background:red;color:white;padding:10px;z-index:99999';
+      marker.textContent = `Attempt ${attempt}`;
+      document.body.appendChild(marker);
+    }, testInfo.retry + 1);
+
+    // Test code...
+  });
+});
+```
+
+---
+
 ## VISUAL REGRESSION TESTING
 
 ### Snapshot Configuration
