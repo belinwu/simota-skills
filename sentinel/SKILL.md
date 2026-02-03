@@ -18,6 +18,42 @@ Spend time figuring out the associated commands for this repo.
 
 ---
 
+## Agent Boundaries
+
+### Sentinel vs Probe vs Scout vs Judge
+
+| Responsibility | Sentinel | Probe | Scout | Judge |
+|----------------|----------|-------|-------|-------|
+| Static security analysis (SAST) | ✓ Primary | | | |
+| Hardcoded secrets detection | ✓ Primary | | | |
+| Code-level vulnerability fixes | ✓ Primary | | | |
+| Security header configuration | ✓ Primary | | | |
+| Input validation implementation | ✓ Primary | | | |
+| Dynamic security testing (DAST) | | ✓ Primary | | |
+| Penetration testing | | ✓ Primary | | |
+| Runtime vulnerability scanning | | ✓ Primary | | |
+| Bug investigation & RCA | | | ✓ Primary | |
+| Vulnerability root cause analysis | ✓ Support | | ✓ Primary | |
+| Code review (general) | | | | ✓ Primary |
+| Security-focused code review | ✓ Primary | | | ✓ Support |
+| Dependency CVE detection | ✓ Primary | | | |
+| Exploit verification | | ✓ Primary | | |
+
+### When to Use Each Agent
+
+| Scenario | Agent | Reason |
+|----------|-------|--------|
+| "Find hardcoded secrets in code" | **Sentinel** | Static code analysis |
+| "Test if SQL injection is exploitable" | **Probe** | Dynamic testing required |
+| "Why did this auth bypass happen?" | **Scout** | Root cause investigation |
+| "Review this PR for security issues" | **Judge** + **Sentinel** | Review + security expertise |
+| "Add input validation to user form" | **Sentinel** | Code-level implementation |
+| "Run OWASP ZAP scan" | **Probe** | Dynamic scanner integration |
+| "Check npm audit for vulnerabilities" | **Sentinel** | Dependency analysis |
+| "Verify XSS fix works in browser" | **Probe** | Runtime verification |
+
+---
+
 ## OWASP TOP 10 CHECKLIST (2021)
 
 Use this checklist for systematic security audits.
@@ -207,6 +243,492 @@ fs.readFile(baseDir + req.params.file);
 const safePath = path.join(baseDir, path.basename(req.params.file));
 if (!safePath.startsWith(baseDir)) throw new Error('Invalid path');
 fs.readFile(safePath);
+```
+
+---
+
+## SECURITY HEADERS CONFIGURATION
+
+### Essential Security Headers
+
+| Header | Purpose | Priority |
+|--------|---------|----------|
+| `Content-Security-Policy` | Prevent XSS, injection attacks | Critical |
+| `Strict-Transport-Security` | Force HTTPS | Critical |
+| `X-Content-Type-Options` | Prevent MIME sniffing | High |
+| `X-Frame-Options` | Prevent clickjacking | High |
+| `X-XSS-Protection` | Legacy XSS filter | Medium |
+| `Referrer-Policy` | Control referrer info | Medium |
+| `Permissions-Policy` | Control browser features | Medium |
+
+### Next.js Configuration
+
+```typescript
+// next.config.js
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Tighten in production
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https:",
+      "font-src 'self'",
+      "connect-src 'self' https://api.example.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join('; '),
+  },
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains; preload',
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'DENY',
+  },
+  {
+    key: 'X-XSS-Protection',
+    value: '1; mode=block',
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
+  },
+];
+
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ];
+  },
+};
+```
+
+### Express.js Configuration
+
+```typescript
+// Using helmet middleware
+import helmet from 'helmet';
+
+app.use(helmet());
+
+// Or configure individually
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'", 'https://api.example.com'],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+
+app.use(helmet.hsts({
+  maxAge: 31536000,
+  includeSubDomains: true,
+  preload: true,
+}));
+
+app.use(helmet.frameguard({ action: 'deny' }));
+app.use(helmet.noSniff());
+app.use(helmet.xssFilter());
+app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
+```
+
+### CSP Violation Reporting
+
+```typescript
+// Report-only mode for testing CSP
+{
+  key: 'Content-Security-Policy-Report-Only',
+  value: "default-src 'self'; report-uri /api/csp-report",
+}
+
+// API endpoint to collect reports
+app.post('/api/csp-report', express.json({ type: 'application/csp-report' }), (req, res) => {
+  console.warn('CSP Violation:', req.body);
+  // Send to logging service
+  res.status(204).end();
+});
+```
+
+---
+
+## INPUT VALIDATION PATTERNS
+
+### Zod Schema Examples
+
+```typescript
+import { z } from 'zod';
+
+// Email validation
+const emailSchema = z.string()
+  .email('Invalid email format')
+  .max(254, 'Email too long');
+
+// Password validation
+const passwordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(128, 'Password too long')
+  .regex(/[A-Z]/, 'Must contain uppercase letter')
+  .regex(/[a-z]/, 'Must contain lowercase letter')
+  .regex(/[0-9]/, 'Must contain number')
+  .regex(/[^A-Za-z0-9]/, 'Must contain special character');
+
+// URL validation
+const urlSchema = z.string()
+  .url('Invalid URL')
+  .refine(
+    (url) => url.startsWith('https://'),
+    'URL must use HTTPS'
+  );
+
+// UUID validation
+const uuidSchema = z.string().uuid('Invalid ID format');
+
+// Number with bounds
+const amountSchema = z.number()
+  .positive('Amount must be positive')
+  .max(1000000, 'Amount exceeds maximum');
+
+// Sanitized string (no HTML)
+const safeStringSchema = z.string()
+  .max(1000)
+  .transform((val) => val.replace(/<[^>]*>/g, ''));
+
+// Form validation example
+const userFormSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  name: z.string().min(1).max(100).trim(),
+  age: z.number().int().min(13).max(120).optional(),
+});
+
+// Usage
+function validateUserInput(data: unknown) {
+  const result = userFormSchema.safeParse(data);
+  if (!result.success) {
+    throw new Error(result.error.issues[0].message);
+  }
+  return result.data;
+}
+```
+
+### Common Validation Patterns
+
+```typescript
+// SQL-safe identifier (table/column names)
+const identifierSchema = z.string()
+  .regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, 'Invalid identifier');
+
+// File path (prevent traversal)
+const safePathSchema = z.string()
+  .refine(
+    (path) => !path.includes('..') && !path.startsWith('/'),
+    'Invalid path'
+  );
+
+// JSON input with size limit
+const jsonInputSchema = z.string()
+  .max(10000, 'Payload too large')
+  .transform((val) => JSON.parse(val));
+
+// Array with length limit
+const tagsSchema = z.array(z.string().max(50))
+  .max(10, 'Too many tags');
+
+// Enum validation
+const statusSchema = z.enum(['active', 'inactive', 'pending']);
+```
+
+### Express Middleware
+
+```typescript
+import { z, ZodSchema } from 'zod';
+import { Request, Response, NextFunction } from 'express';
+
+function validate(schema: ZodSchema) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse({
+      body: req.body,
+      query: req.query,
+      params: req.params,
+    });
+
+    if (!result.success) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: result.error.issues.map((i) => ({
+          path: i.path.join('.'),
+          message: i.message,
+        })),
+      });
+    }
+
+    req.validated = result.data;
+    next();
+  };
+}
+
+// Usage
+const createUserSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+  }),
+});
+
+app.post('/users', validate(createUserSchema), (req, res) => {
+  const { email, password } = req.validated.body;
+  // Safe to use
+});
+```
+
+---
+
+## SECRET MANAGEMENT
+
+### Environment Variables Best Practices
+
+```typescript
+// ❌ BAD: Hardcoded secrets
+const API_KEY = 'sk_live_abc123';
+
+// ✅ GOOD: From environment
+const API_KEY = process.env.API_KEY;
+
+// ✅ BETTER: With validation
+import { z } from 'zod';
+
+const envSchema = z.object({
+  API_KEY: z.string().min(1),
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+});
+
+const env = envSchema.parse(process.env);
+export { env };
+```
+
+### .env File Security
+
+```bash
+# .gitignore - ALWAYS include
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# .env.example - Safe template (no real values)
+API_KEY=your_api_key_here
+DATABASE_URL=postgresql://user:pass@localhost:5432/db
+JWT_SECRET=generate_a_32_char_secret_here
+```
+
+### AWS Secrets Manager
+
+```typescript
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+
+const client = new SecretsManagerClient({ region: 'ap-northeast-1' });
+
+async function getSecret(secretName: string): Promise<Record<string, string>> {
+  const command = new GetSecretValueCommand({ SecretId: secretName });
+  const response = await client.send(command);
+
+  if (!response.SecretString) {
+    throw new Error('Secret not found');
+  }
+
+  return JSON.parse(response.SecretString);
+}
+
+// Usage
+const secrets = await getSecret('production/api-keys');
+const apiKey = secrets.STRIPE_API_KEY;
+```
+
+### HashiCorp Vault
+
+```typescript
+import Vault from 'node-vault';
+
+const vault = Vault({
+  apiVersion: 'v1',
+  endpoint: process.env.VAULT_ADDR,
+  token: process.env.VAULT_TOKEN,
+});
+
+async function getSecret(path: string): Promise<Record<string, string>> {
+  const result = await vault.read(`secret/data/${path}`);
+  return result.data.data;
+}
+
+// Usage
+const secrets = await getSecret('production/database');
+const dbPassword = secrets.password;
+```
+
+### Secret Rotation Pattern
+
+```typescript
+// Cache secrets with TTL for rotation
+class SecretCache {
+  private cache = new Map<string, { value: string; expiresAt: number }>();
+  private ttlMs = 5 * 60 * 1000; // 5 minutes
+
+  async get(key: string, fetcher: () => Promise<string>): Promise<string> {
+    const cached = this.cache.get(key);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.value;
+    }
+
+    const value = await fetcher();
+    this.cache.set(key, { value, expiresAt: Date.now() + this.ttlMs });
+    return value;
+  }
+}
+
+const secretCache = new SecretCache();
+const apiKey = await secretCache.get('API_KEY', () => getSecret('api-key'));
+```
+
+---
+
+## RATE LIMITING
+
+### Express Rate Limiting
+
+```typescript
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import { createClient } from 'redis';
+
+// Basic rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: { error: 'Too many requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
+
+// Stricter limiter for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 attempts per hour
+  skipSuccessfulRequests: true, // Don't count successful logins
+  message: { error: 'Too many login attempts, please try again later' },
+});
+
+app.use('/api/auth/login', authLimiter);
+
+// Redis store for distributed systems
+const redisClient = createClient({ url: process.env.REDIS_URL });
+await redisClient.connect();
+
+const distributedLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  }),
+});
+```
+
+### Next.js API Rate Limiting
+
+```typescript
+// lib/rate-limit.ts
+import { LRUCache } from 'lru-cache';
+
+type RateLimitOptions = {
+  interval: number;
+  uniqueTokenPerInterval: number;
+};
+
+export function rateLimit(options: RateLimitOptions) {
+  const tokenCache = new LRUCache<string, number[]>({
+    max: options.uniqueTokenPerInterval,
+    ttl: options.interval,
+  });
+
+  return {
+    check: (limit: number, token: string): Promise<void> =>
+      new Promise((resolve, reject) => {
+        const tokenCount = tokenCache.get(token) || [0];
+        const currentCount = tokenCount[0];
+
+        if (currentCount >= limit) {
+          reject(new Error('Rate limit exceeded'));
+          return;
+        }
+
+        tokenCount[0] = currentCount + 1;
+        tokenCache.set(token, tokenCount);
+        resolve();
+      }),
+  };
+}
+
+// API route usage
+import { rateLimit } from '@/lib/rate-limit';
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 500,
+});
+
+export async function POST(req: Request) {
+  const ip = req.headers.get('x-forwarded-for') || 'anonymous';
+
+  try {
+    await limiter.check(10, ip); // 10 requests per minute per IP
+  } catch {
+    return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
+  // Handle request...
+}
+```
+
+### Rate Limit Response Headers
+
+```typescript
+// Include rate limit info in responses
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    // These headers are set by express-rate-limit with standardHeaders: true
+    // RateLimit-Limit: 100
+    // RateLimit-Remaining: 99
+    // RateLimit-Reset: 1234567890
+  });
+  next();
+});
 ```
 
 ---
@@ -487,13 +1009,12 @@ questions:
 
 ## AGENT COLLABORATION
 
-### Radar Integration
+### Sentinel → Radar (Test Verification)
 
 After fixing security vulnerabilities, request test verification from Radar.
 
-**Handoff Template:**
 ```markdown
-### Radar Security Test Request
+## Sentinel → Radar Security Test Request
 
 **Security Fix**: [Description of what was fixed]
 
@@ -510,13 +1031,71 @@ After fixing security vulnerabilities, request test verification from Radar.
 **Coverage Check**:
 - Target: Security-critical code paths covered
 - Minimum: 80% on modified files
-
-Suggested command: `/Radar run security tests for [file]`
 ```
 
-### Canvas Integration
+### Sentinel → Probe (Dynamic Testing)
 
-Request visual diagrams from Canvas for security documentation.
+When static analysis needs runtime verification:
+
+```markdown
+## Sentinel → Probe Penetration Test Request
+
+**Vulnerability Found**: SQL injection in /api/users endpoint
+**Static Evidence**: String concatenation in query at src/api/users.ts:42
+
+**Request**:
+- Verify vulnerability is exploitable
+- Test with OWASP ZAP automated scan
+- Document attack vectors and payloads
+
+**After Fix**:
+- Re-test to confirm fix is effective
+- Check for bypass techniques
+- Verify no regression in other endpoints
+```
+
+### Sentinel → Scout (Root Cause Investigation)
+
+When vulnerability requires deeper investigation:
+
+```markdown
+## Sentinel → Scout Investigation Request
+
+**Vulnerability**: Auth bypass in admin panel
+**Symptom**: Admin routes accessible without authentication
+
+**Investigation Needed**:
+- How did this bypass get introduced?
+- Are there similar patterns elsewhere?
+- What middleware/guard should have prevented this?
+- Timeline of when this became vulnerable
+
+**Why Scout**: Need RCA before fixing to prevent recurrence
+```
+
+### Sentinel → Judge (Security Code Review)
+
+For security-critical code changes:
+
+```markdown
+## Sentinel → Judge Security Review Request
+
+**PR**: Add input validation to user registration
+**Security Focus Areas**:
+- Input validation completeness
+- Error message information leakage
+- Authentication bypass possibilities
+- Authorization check coverage
+
+**Specific Concerns**:
+- Is email validation sufficient?
+- Are error messages safe (no enumeration)?
+- Password policy enforcement
+```
+
+### Sentinel → Canvas (Visualization)
+
+Request visual diagrams for security documentation.
 
 **Threat Model Request:**
 ```
@@ -537,15 +1116,6 @@ Request visual diagrams from Canvas for security documentation.
 - Business logic layer
 - Data access layer
 - Encryption layer
-```
-
-**Attack Flow Request:**
-```
-/Canvas create attack flow diagram for [vulnerability type]:
-- Attack entry point
-- Vulnerable component
-- Impact on system
-- Mitigation controls
 ```
 
 ### Canvas Output Examples
@@ -634,12 +1204,13 @@ Mitigation Points:
 
 ---
 
-## SENTINEL'S PHILOSOPHY
+## SENTINEL'S PRINCIPLES
 
-- Security is everyone's responsibility
-- Defense in depth - multiple layers of protection
-- Fail securely - errors should not expose sensitive data
-- Trust nothing, verify everything
+1. **Defense in depth** - Multiple layers of protection, never rely on one control
+2. **Fail securely** - Errors must not expose sensitive data or system internals
+3. **Trust nothing** - Validate all input, verify all claims, authenticate all requests
+4. **Least privilege** - Grant minimum permissions needed, revoke when not needed
+5. **Fix critical first** - Prioritize ruthlessly; one critical fix > ten low fixes
 
 ---
 

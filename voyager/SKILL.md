@@ -47,7 +47,37 @@ Your mission is to design, implement, and stabilize E2E tests that give confiden
 
 ---
 
-## RADAR vs VOYAGER: Role Division
+## Agent Boundaries
+
+### Voyager vs Navigator vs Radar vs Judge
+
+| Responsibility | Voyager | Navigator | Radar | Judge |
+|----------------|---------|-----------|-------|-------|
+| E2E test design & implementation | ✓ Primary | | | |
+| Browser automation for testing | ✓ Primary | | | |
+| Browser automation for tasks | | ✓ Primary | | |
+| Data scraping / form filling | | ✓ Primary | | |
+| Unit / integration tests | | | ✓ Primary | |
+| Component tests (React Testing Library) | | | ✓ Primary | |
+| Flaky test diagnosis | ✓ E2E tests | | ✓ Unit tests | |
+| Code review & quality check | | | | ✓ Primary |
+| Visual regression testing | ✓ Primary | | | |
+| Accessibility testing (E2E) | ✓ Primary | | | |
+| Performance profiling in browser | | ✓ Primary | | |
+
+### When to Use Each Agent
+
+| Scenario | Agent | Reason |
+|----------|-------|--------|
+| "Test the complete checkout flow" | **Voyager** | Full user journey across pages |
+| "Scrape product prices from a website" | **Navigator** | Task execution, not testing |
+| "Add unit tests for calculateTotal" | **Radar** | Function-level testing |
+| "Review this PR for bugs" | **Judge** | Code quality assessment |
+| "Test login with various credentials" | **Voyager** | Auth flow is E2E concern |
+| "Fill out this form and submit" | **Navigator** | Browser task, not test |
+| "Check if button component renders" | **Radar** | Component testing |
+
+### RADAR vs VOYAGER: Test Level Division
 
 | Aspect | Radar | Voyager |
 |--------|-------|---------|
@@ -127,13 +157,13 @@ questions:
 
 ---
 
-## VOYAGER'S PHILOSOPHY
+## VOYAGER'S PRINCIPLES
 
-- E2E tests are expensive; invest wisely in critical paths only
-- A flaky E2E test destroys team trust faster than any other test
-- Test user behavior, not implementation details
-- Fast feedback > comprehensive coverage
-- Stable tests > many tests
+1. **Critical paths only** - E2E tests are expensive; invest wisely
+2. **Zero flakiness tolerance** - One flaky test destroys team trust
+3. **User behavior, not implementation** - Test what users do, not how code works
+4. **Fast feedback first** - Speed beats comprehensive coverage
+5. **Stability over quantity** - 10 stable tests > 100 flaky tests
 
 ---
 
@@ -227,6 +257,192 @@ e2e/
 │   └── test-helpers.ts     # テストヘルパー
 ├── auth.setup.ts           # 認証セットアップ
 └── global-setup.ts         # グローバルセットアップ
+```
+
+---
+
+## CYPRESS CONFIGURATION
+
+### When to Choose Cypress vs Playwright
+
+| Criteria | Cypress | Playwright |
+|----------|---------|------------|
+| **Best for** | Component testing, real-time debugging | Cross-browser, complex flows |
+| **Browser support** | Chrome, Firefox, Edge, Electron | All browsers + mobile |
+| **Parallel execution** | Paid (Cypress Cloud) | Free, built-in |
+| **Network stubbing** | Excellent (`cy.intercept`) | Good (`page.route`) |
+| **Learning curve** | Lower | Moderate |
+| **Iframe/multi-tab** | Limited | Full support |
+
+**Recommendation**: Use Playwright for new projects. Use Cypress if team already has expertise or needs component testing.
+
+### Project Setup
+
+```typescript
+// cypress.config.ts
+import { defineConfig } from 'cypress';
+
+export default defineConfig({
+  e2e: {
+    baseUrl: 'http://localhost:3000',
+    specPattern: 'cypress/e2e/**/*.cy.{js,ts}',
+    supportFile: 'cypress/support/e2e.ts',
+    viewportWidth: 1280,
+    viewportHeight: 720,
+    video: true,
+    screenshotOnRunFailure: true,
+    retries: {
+      runMode: 2,
+      openMode: 0,
+    },
+    env: {
+      apiUrl: 'http://localhost:3001',
+    },
+  },
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+    },
+    specPattern: 'src/**/*.cy.{js,ts,jsx,tsx}',
+  },
+});
+```
+
+### Directory Structure
+
+```
+cypress/
+├── e2e/
+│   ├── auth/
+│   │   ├── login.cy.ts
+│   │   └── signup.cy.ts
+│   └── checkout/
+│       └── purchase.cy.ts
+├── fixtures/
+│   ├── users.json
+│   └── products.json
+├── support/
+│   ├── commands.ts        # Custom commands
+│   ├── e2e.ts             # E2E support file
+│   └── component.ts       # Component support file
+└── pages/                 # Page Objects (optional)
+    ├── login.page.ts
+    └── checkout.page.ts
+```
+
+### Custom Commands
+
+```typescript
+// cypress/support/commands.ts
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email: string, password: string): Chainable<void>;
+      getByTestId(testId: string): Chainable<JQuery<HTMLElement>>;
+      apiLogin(email: string, password: string): Chainable<void>;
+    }
+  }
+}
+
+// Login via UI
+Cypress.Commands.add('login', (email: string, password: string) => {
+  cy.visit('/login');
+  cy.getByTestId('email-input').type(email);
+  cy.getByTestId('password-input').type(password);
+  cy.getByTestId('login-submit').click();
+  cy.url().should('include', '/dashboard');
+});
+
+// Login via API (faster)
+Cypress.Commands.add('apiLogin', (email: string, password: string) => {
+  cy.request('POST', '/api/auth/login', { email, password }).then((response) => {
+    window.localStorage.setItem('token', response.body.token);
+  });
+});
+
+// Get by data-testid
+Cypress.Commands.add('getByTestId', (testId: string) => {
+  return cy.get(`[data-testid="${testId}"]`);
+});
+
+export {};
+```
+
+### Network Stubbing
+
+```typescript
+// cypress/e2e/with-stubs.cy.ts
+describe('With API Stubs', () => {
+  beforeEach(() => {
+    // Stub API responses
+    cy.intercept('GET', '/api/products', { fixture: 'products.json' }).as('getProducts');
+    cy.intercept('POST', '/api/orders', { statusCode: 201, body: { id: 'order-123' } }).as('createOrder');
+  });
+
+  it('displays products from API', () => {
+    cy.visit('/products');
+    cy.wait('@getProducts');
+    cy.getByTestId('product-list').should('be.visible');
+  });
+
+  it('handles API error gracefully', () => {
+    cy.intercept('GET', '/api/products', { statusCode: 500, body: { error: 'Server error' } });
+    cy.visit('/products');
+    cy.getByTestId('error-message').should('contain', 'エラーが発生しました');
+  });
+});
+```
+
+### Session Management
+
+```typescript
+// cypress/support/e2e.ts
+beforeEach(() => {
+  // Preserve session across tests
+  cy.session('user-session', () => {
+    cy.apiLogin(Cypress.env('TEST_USER_EMAIL'), Cypress.env('TEST_USER_PASSWORD'));
+  });
+});
+```
+
+### CI Configuration (GitHub Actions)
+
+```yaml
+# .github/workflows/cypress.yml
+name: Cypress Tests
+
+on: [push, pull_request]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          wait-on: 'http://localhost:3000'
+        env:
+          CYPRESS_TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          CYPRESS_TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
 ```
 
 ---
@@ -1197,31 +1413,316 @@ test('modifies API response', async ({ page }) => {
 
 ---
 
-## AGENT COLLABORATION
+## ACCESSIBILITY TESTING
 
-### Voyager → Lens (Evidence Collection)
+### axe-core Integration (Playwright)
 
-```markdown
-## Voyager → Lens Evidence Request
+```typescript
+// e2e/utils/a11y-helpers.ts
+import { Page, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
-**Test Failure**: checkout.spec.ts > user can complete purchase
-**Error**: Timeout waiting for confirmation page
+export async function checkA11y(page: Page, options?: {
+  includedImpacts?: ('critical' | 'serious' | 'moderate' | 'minor')[];
+  disableRules?: string[];
+}) {
+  const axeBuilder = new AxeBuilder({ page });
 
-**Request**:
-- Capture failure screenshot
-- Record test video
-- Generate bug report with reproduction steps
+  if (options?.includedImpacts) {
+    axeBuilder.options({ resultTypes: ['violations'] });
+  }
 
-**Artifacts Needed**:
-- Final page state screenshot
-- Network request log
-- Console errors
+  if (options?.disableRules) {
+    axeBuilder.disableRules(options.disableRules);
+  }
+
+  const results = await axeBuilder.analyze();
+
+  // Filter by impact level
+  const violations = options?.includedImpacts
+    ? results.violations.filter(v => options.includedImpacts!.includes(v.impact as any))
+    : results.violations;
+
+  expect(violations, `Accessibility violations found:\n${formatViolations(violations)}`).toHaveLength(0);
+}
+
+function formatViolations(violations: any[]): string {
+  return violations
+    .map(v => `- ${v.id} (${v.impact}): ${v.description}\n  ${v.nodes.length} elements affected`)
+    .join('\n');
+}
 ```
+
+### A11y Test Example
+
+```typescript
+// e2e/tests/a11y/pages.spec.ts
+import { test, expect } from '@playwright/test';
+import { checkA11y } from '../../utils/a11y-helpers';
+
+test.describe('Accessibility', () => {
+  test('homepage has no critical a11y violations', async ({ page }) => {
+    await page.goto('/');
+    await checkA11y(page, { includedImpacts: ['critical', 'serious'] });
+  });
+
+  test('login form is accessible', async ({ page }) => {
+    await page.goto('/login');
+
+    // Check form elements have labels
+    await expect(page.getByLabel('メールアドレス')).toBeVisible();
+    await expect(page.getByLabel('パスワード')).toBeVisible();
+
+    // Check button is focusable and has accessible name
+    const submitButton = page.getByRole('button', { name: 'ログイン' });
+    await expect(submitButton).toBeFocused();
+
+    // Run axe check
+    await checkA11y(page);
+  });
+
+  test('navigation is keyboard accessible', async ({ page }) => {
+    await page.goto('/');
+
+    // Tab through navigation
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'ホーム' })).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: '製品' })).toBeFocused();
+
+    // Enter key activates link
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/.*products/);
+  });
+
+  test('modal traps focus correctly', async ({ page }) => {
+    await page.goto('/products');
+    await page.getByTestId('open-modal').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    // Focus should be inside modal
+    const focusedElement = page.locator(':focus');
+    await expect(focusedElement).toBeAttached();
+
+    // Tab should cycle within modal
+    const closeButton = modal.getByRole('button', { name: '閉じる' });
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    // Should eventually come back to close button
+    await expect(closeButton).toBeFocused();
+  });
+});
+```
+
+### Cypress axe-core Integration
+
+```typescript
+// cypress/support/commands.ts
+import 'cypress-axe';
+
+Cypress.Commands.add('checkA11y', (context?: string, options?: any) => {
+  cy.injectAxe();
+  cy.checkA11y(context, options, (violations) => {
+    violations.forEach((violation) => {
+      const nodes = violation.nodes.map(n => n.target.join(', ')).join('\n  ');
+      cy.log(`${violation.id} (${violation.impact}): ${violation.description}\n  ${nodes}`);
+    });
+  });
+});
+
+// cypress/e2e/a11y.cy.ts
+describe('Accessibility', () => {
+  beforeEach(() => {
+    cy.visit('/');
+    cy.injectAxe();
+  });
+
+  it('has no detectable a11y violations on load', () => {
+    cy.checkA11y(null, {
+      includedImpacts: ['critical', 'serious'],
+    });
+  });
+
+  it('login form passes a11y checks', () => {
+    cy.visit('/login');
+    cy.injectAxe();
+    cy.checkA11y('#login-form');
+  });
+});
+```
+
+### A11y Rules Configuration
+
+```typescript
+// playwright.config.ts - include axe rules
+export default defineConfig({
+  // ...
+  use: {
+    // ...
+  },
+  // Global a11y configuration (reference for tests)
+  metadata: {
+    a11y: {
+      // Skip rules for known issues (document why)
+      disableRules: [
+        // 'color-contrast', // Tracked in JIRA-123
+      ],
+      // Focus on critical issues first
+      includedImpacts: ['critical', 'serious'],
+    },
+  },
+});
+```
+
+---
+
+## TEST REPORTING
+
+### Playwright HTML Reporter
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  reporter: [
+    ['html', {
+      outputFolder: 'playwright-report',
+      open: 'never', // 'always', 'never', 'on-failure'
+    }],
+    ['json', { outputFile: 'test-results.json' }],
+    ['junit', { outputFile: 'test-results.xml' }], // For CI integration
+    process.env.CI ? ['github'] : ['list'],
+  ],
+});
+```
+
+### Allure Reporter Setup
+
+```bash
+npm install -D allure-playwright allure-commandline
+```
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  reporter: [
+    ['allure-playwright', {
+      outputFolder: 'allure-results',
+      detail: true,
+      suiteTitle: true,
+    }],
+  ],
+});
+```
+
+```typescript
+// e2e/tests/with-allure.spec.ts
+import { test, expect } from '@playwright/test';
+import { allure } from 'allure-playwright';
+
+test.describe('Checkout Flow', () => {
+  test('user can complete purchase', async ({ page }) => {
+    // Add metadata for Allure
+    await allure.epic('E-Commerce');
+    await allure.feature('Checkout');
+    await allure.story('Complete Purchase');
+    await allure.severity('critical');
+
+    // Add step annotations
+    await allure.step('Navigate to product', async () => {
+      await page.goto('/products/1');
+    });
+
+    await allure.step('Add to cart', async () => {
+      await page.getByTestId('add-to-cart').click();
+      await expect(page.getByTestId('cart-count')).toHaveText('1');
+    });
+
+    await allure.step('Complete checkout', async () => {
+      await page.goto('/checkout');
+      // ... checkout steps
+    });
+
+    // Attach screenshot
+    await allure.attachment('final-state', await page.screenshot(), 'image/png');
+  });
+});
+```
+
+```yaml
+# .github/workflows/e2e.yml - Allure report generation
+- name: Generate Allure Report
+  run: npx allure generate allure-results --clean -o allure-report
+
+- name: Upload Allure Report
+  uses: actions/upload-artifact@v4
+  with:
+    name: allure-report
+    path: allure-report
+```
+
+### Custom Reporter
+
+```typescript
+// e2e/reporters/slack-reporter.ts
+import type { FullConfig, FullResult, Reporter, Suite, TestCase, TestResult } from '@playwright/test/reporter';
+
+class SlackReporter implements Reporter {
+  private failures: { test: string; error: string }[] = [];
+
+  onTestEnd(test: TestCase, result: TestResult) {
+    if (result.status === 'failed') {
+      this.failures.push({
+        test: test.title,
+        error: result.error?.message || 'Unknown error',
+      });
+    }
+  }
+
+  async onEnd(result: FullResult) {
+    if (this.failures.length > 0 && process.env.SLACK_WEBHOOK_URL) {
+      await fetch(process.env.SLACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: `E2E Tests Failed: ${this.failures.length} failures`,
+          attachments: this.failures.map(f => ({
+            color: 'danger',
+            title: f.test,
+            text: f.error,
+          })),
+        }),
+      });
+    }
+  }
+}
+
+export default SlackReporter;
+```
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  reporter: [
+    ['html'],
+    ['./e2e/reporters/slack-reporter.ts'],
+  ],
+});
+```
+
+---
+
+## AGENT COLLABORATION
 
 ### Voyager → Radar (Unit Test Gap)
 
+When E2E tests reveal issues that should be unit tested:
+
 ```markdown
-## Voyager → Radar Coverage Gap
+## Voyager → Radar Handoff
 
 **E2E Finding**: Cart total calculation fails for items with quantity > 10
 **Root Cause**: Missing edge case in calculateTotal function
@@ -1230,24 +1731,35 @@ test('modifies API response', async ({ page }) => {
 - Add unit test for calculateTotal with large quantities
 - Verify boundary conditions (0, 1, 10, 100)
 - E2E test is too slow for this level of detail
+
+**Why Radar**: Function-level testing is Radar's domain
 ```
 
-### Voyager → Fixture (Test Data)
+### Voyager → Scout (Flaky Test Investigation)
+
+When E2E tests fail intermittently:
 
 ```markdown
-## Voyager → Fixture Data Request
+## Voyager → Scout Investigation Request
 
-**E2E Scenario**: Multi-product checkout with various discounts
+**Flaky Test**: checkout.spec.ts > user can complete purchase
+**Symptoms**: Fails ~20% of runs with timeout error
+**Environment**: CI only (passes locally)
 
-**Data Needed**:
-- 5 products with different categories
-- Discount codes (percentage, fixed amount, expired)
-- User with saved payment methods
+**Request**:
+- Investigate race condition between payment API and UI update
+- Identify timing-sensitive code paths
+- Recommend wait strategy improvements
 
-**Format**: API-ready JSON for test setup
+**Artifacts Provided**:
+- Failed test videos (3 runs)
+- Network timing logs
+- CI environment details
 ```
 
 ### Voyager → Gear (CI Integration)
+
+When setting up E2E infrastructure:
 
 ```markdown
 ## Voyager → Gear CI Request
@@ -1255,10 +1767,64 @@ test('modifies API response', async ({ page }) => {
 **Requirement**: E2E tests in CI pipeline
 
 **Needs**:
-- Playwright browser installation
+- Playwright browser installation (chromium, firefox, webkit)
 - Parallel execution (4 shards)
-- Artifact storage (reports, videos)
+- Artifact storage (reports, videos, traces)
 - Slack notification on failure
+- Test results to PR comments
+
+**Config Files**: playwright.config.ts ready
+```
+
+### Voyager → Judge (Test Code Review)
+
+Before merging large E2E test additions:
+
+```markdown
+## Voyager → Judge Review Request
+
+**PR**: Add checkout flow E2E tests
+**Files**: e2e/tests/checkout/*.spec.ts, e2e/pages/checkout.page.ts
+
+**Review Focus**:
+- Page Object design patterns
+- Wait strategy correctness
+- Test isolation (no shared state)
+- Selector stability (data-testid usage)
+```
+
+### Voyager → Navigator (Browser Task Handoff)
+
+When E2E tests need setup data from external sources:
+
+```markdown
+## Voyager → Navigator Task Request
+
+**E2E Preparation**: Need test accounts from admin portal
+
+**Task**:
+1. Login to admin portal (credentials in vault)
+2. Create 3 test users with different roles
+3. Export user IDs and API keys
+4. Save to e2e/fixtures/test-accounts.json
+
+**Why Navigator**: This is a one-time browser task, not a test
+```
+
+### Voyager → Palette (Accessibility Insights)
+
+When E2E tests find usability issues:
+
+```markdown
+## Voyager → Palette UX Issue
+
+**E2E Observation**: Modal close button requires 3 tabs to reach
+**a11y Test Result**: Focus trap not optimal
+
+**Request**:
+- Review modal focus management
+- Suggest keyboard navigation improvements
+- Ensure WCAG 2.1 AA compliance
 ```
 
 ---

@@ -34,6 +34,48 @@ Your mission is to perform ONE meaningful refactor or cleanup that makes the cod
 
 ---
 
+## Agent Boundaries
+
+### Zen vs Judge vs Sentinel vs Builder
+
+| Responsibility | Zen | Judge | Sentinel | Builder |
+|----------------|-----|-------|----------|---------|
+| Refactoring (preserve behavior) | ✓ Primary | | | |
+| Code review (style/readability) | ✓ Primary | | | |
+| Complexity reduction | ✓ Primary | | | |
+| Dead code removal | ✓ Primary | | | |
+| Naming improvements | ✓ Primary | | | |
+| Code review (correctness/bugs) | | ✓ Primary | | |
+| Code review (security) | | ✓ Detect | ✓ Deep | |
+| Security vulnerability fixes | | | ✓ Primary | |
+| Feature implementation | | | | ✓ Primary |
+| Bug fixes (change behavior) | | | | ✓ Primary |
+
+### When to Use Each Agent
+
+| Scenario | Agent | Reason |
+|----------|-------|--------|
+| "This function is too complex" | **Zen** | Simplify without changing behavior |
+| "Review this PR for bugs" | **Judge** | Bug detection is Judge's specialty |
+| "Clean up this code" | **Zen** | Refactoring specialist |
+| "Fix this null pointer bug" | **Builder** | Behavior change required |
+| "Add input validation for security" | **Sentinel** | Security implementation |
+| "Rename these variables" | **Zen** | Naming improvement |
+| "Is this SQL injection safe?" | **Sentinel** | Security analysis |
+
+### Zen vs Judge: Key Distinction
+
+| Aspect | Zen | Judge |
+|--------|-----|-------|
+| **Focus** | Quality improvement | Problem detection |
+| **Output** | Refactored code | Review findings |
+| **Modifies Code** | Yes (structure only) | No (findings only) |
+| **Behavior Change** | Never | N/A (doesn't modify) |
+
+**Zen improves how code is written; Judge finds what's wrong with it.**
+
+---
+
 ## Dual Roles
 
 | Mode | Trigger | Output |
@@ -70,14 +112,13 @@ Your mission is to perform ONE meaningful refactor or cleanup that makes the cod
 
 ---
 
-## ZEN'S PHILOSOPHY
+## ZEN'S PRINCIPLES
 
-- Code is read much more often than it is written
-- Complexity is the enemy of reliability
-- Names are the documentation of intent
-- Less is more (keep functions small)
-- Silence is golden (remove commented-out code and console.logs)
-- Measure twice, refactor once
+1. **Read over write** - Code is read 10x more than written; optimize for readers
+2. **Complexity kills** - Every branch, every nesting level is a bug waiting to happen
+3. **Names are docs** - Good names eliminate the need for comments
+4. **Small is beautiful** - Functions < 20 lines, files < 300 lines
+5. **Silence is golden** - Dead code, console.logs, and comments are noise; remove them
 
 ---
 
@@ -169,6 +210,276 @@ if (age >= LEGAL_ADULT_AGE) { ... }
 ```
 
 See `references/refactoring-recipes.md` for step-by-step guides and before/after examples.
+
+---
+
+## DEAD CODE DETECTION
+
+### Detection Methods
+
+| Type | Detection Method | Tool/Command |
+|------|------------------|--------------|
+| Unused variables | TypeScript/ESLint | `noUnusedLocals`, `no-unused-vars` |
+| Unused functions | TypeScript | `noUnusedLocals` + search for references |
+| Unused imports | ESLint | `no-unused-imports` plugin |
+| Unreachable code | TypeScript | `allowUnreachableCode: false` |
+| Unused exports | ts-prune | `npx ts-prune` |
+| Unused files | knip | `npx knip` |
+
+### Detection Commands
+
+```bash
+# TypeScript unused exports
+npx ts-prune
+
+# Comprehensive dead code detection
+npx knip
+
+# ESLint unused imports/vars
+npx eslint --rule 'no-unused-vars: error' src/
+
+# Find functions with no callers (manual)
+grep -r "function functionName" --include="*.ts" .
+```
+
+### Dead Code Categories
+
+| Category | Example | Safe to Remove? |
+|----------|---------|-----------------|
+| Unused local variable | `const unused = 1;` | ✅ Yes |
+| Unused import | `import { unused } from './lib';` | ✅ Yes |
+| Commented-out code | `// oldFunction();` | ✅ Yes |
+| Console.log in production | `console.log('debug');` | ✅ Yes |
+| Unused private method | `private helper() {}` | ✅ Yes |
+| Unused exported function | `export function unused() {}` | ⚠️ Check external usage |
+| Unused public API | `public unusedMethod() {}` | ⚠️ May be called dynamically |
+| Feature flag dead branch | `if (false) { ... }` | ⚠️ Confirm flag is permanent |
+
+### Safe Removal Checklist
+
+Before removing code that appears dead:
+
+- [ ] Search for string references (dynamic invocation)
+- [ ] Check for reflection/metaprogramming usage
+- [ ] Verify not used in tests only
+- [ ] Check for external package consumers (if library)
+- [ ] Confirm feature flags are truly retired
+- [ ] Run full test suite after removal
+
+### Dead Code Cleanup Pattern
+
+```typescript
+// Step 1: Identify unused code
+// Run: npx ts-prune | grep -v "used in module"
+
+// Step 2: Mark for removal (optional comment phase)
+/** @deprecated Unused - scheduled for removal */
+export function oldHelper() { ... }
+
+// Step 3: Remove and verify
+// Delete the code, run tests
+
+// Step 4: Clean up imports
+// Remove any import statements that reference deleted code
+```
+
+---
+
+## TYPESCRIPT/REACT PATTERNS
+
+### TypeScript Refactoring
+
+#### Simplify Complex Types
+
+```typescript
+// ❌ Before: Inline complex type
+function processUser(user: { id: string; name: string; email: string; role: 'admin' | 'user' }) { ... }
+
+// ✅ After: Extract type
+type UserRole = 'admin' | 'user';
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
+function processUser(user: User) { ... }
+```
+
+#### Replace String Unions with Enum (when appropriate)
+
+```typescript
+// ❌ Before: String literals scattered
+function setStatus(status: 'pending' | 'active' | 'completed') { ... }
+if (status === 'pending') { ... }
+
+// ✅ After: Centralized enum
+enum Status {
+  Pending = 'pending',
+  Active = 'active',
+  Completed = 'completed',
+}
+function setStatus(status: Status) { ... }
+if (status === Status.Pending) { ... }
+```
+
+#### Narrow Types
+
+```typescript
+// ❌ Before: Overly broad type
+function processData(data: any) { ... }
+
+// ✅ After: Specific type
+interface ProcessableData {
+  id: string;
+  values: number[];
+}
+function processData(data: ProcessableData) { ... }
+```
+
+### React Refactoring
+
+#### Extract Custom Hook
+
+```typescript
+// ❌ Before: Logic in component
+function UserProfile({ userId }: Props) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchUser(userId)
+      .then(setUser)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [userId]);
+
+  if (loading) return <Loading />;
+  if (error) return <Error error={error} />;
+  return <Profile user={user!} />;
+}
+
+// ✅ After: Extracted hook
+function useUser(userId: string) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchUser(userId)
+      .then(setUser)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [userId]);
+
+  return { user, loading, error };
+}
+
+function UserProfile({ userId }: Props) {
+  const { user, loading, error } = useUser(userId);
+  if (loading) return <Loading />;
+  if (error) return <Error error={error} />;
+  return <Profile user={user!} />;
+}
+```
+
+#### Split Large Components
+
+```typescript
+// ❌ Before: Monolithic component (200+ lines)
+function Dashboard() {
+  // ... 50 lines of hooks and state
+  return (
+    <div>
+      {/* 150 lines of JSX */}
+    </div>
+  );
+}
+
+// ✅ After: Composed from smaller components
+function Dashboard() {
+  return (
+    <DashboardLayout>
+      <DashboardHeader />
+      <DashboardMetrics />
+      <DashboardCharts />
+      <DashboardRecentActivity />
+    </DashboardLayout>
+  );
+}
+```
+
+#### Memoization for Performance
+
+```typescript
+// ❌ Before: Recreating objects on every render
+function List({ items, onSelect }: Props) {
+  return items.map(item => (
+    <ListItem
+      key={item.id}
+      item={item}
+      style={{ padding: 10, margin: 5 }}  // New object every render
+      onSelect={() => onSelect(item.id)}  // New function every render
+    />
+  ));
+}
+
+// ✅ After: Memoized values
+const itemStyle = { padding: 10, margin: 5 };  // Stable reference
+
+function List({ items, onSelect }: Props) {
+  const handleSelect = useCallback(
+    (id: string) => onSelect(id),
+    [onSelect]
+  );
+
+  return items.map(item => (
+    <ListItem
+      key={item.id}
+      item={item}
+      style={itemStyle}
+      onSelect={handleSelect}
+    />
+  ));
+}
+```
+
+#### Prop Drilling → Context
+
+```typescript
+// ❌ Before: Props passed through 4+ levels
+<App user={user}>
+  <Layout user={user}>
+    <Sidebar user={user}>
+      <UserMenu user={user} />
+    </Sidebar>
+  </Layout>
+</App>
+
+// ✅ After: Context for shared state
+const UserContext = createContext<User | null>(null);
+
+function App() {
+  const [user, setUser] = useState<User | null>(null);
+  return (
+    <UserContext.Provider value={user}>
+      <Layout>
+        <Sidebar>
+          <UserMenu />
+        </Sidebar>
+      </Layout>
+    </UserContext.Provider>
+  );
+}
+
+function UserMenu() {
+  const user = useContext(UserContext);
+  // ...
+}
+```
 
 ---
 
