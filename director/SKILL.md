@@ -554,6 +554,76 @@ test('before/after redesign demo', async ({ browser }) => {
 
 ---
 
+## AI NARRATION
+
+### Overview
+
+Director can automatically generate voice narration for demo videos using TTS (Text-to-Speech) APIs.
+Narration scripts are derived from scenario documents or custom scripts, then synthesized and merged with video.
+
+### Web Speech API (Browser Built-in TTS)
+
+Live narration during demo recording using browser's built-in TTS.
+**Free, no API key, works offline, real-time narration.**
+
+```typescript
+import { speakAndWait, createNarratedDemo } from '../helpers/web-speech-tts';
+
+test('quick narrated demo', async ({ page }) => {
+  const narrator = await createNarratedDemo(page, 'en-US');
+
+  await page.goto('/dashboard');
+  await narrator.speak('Welcome to the dashboard.');
+
+  await page.getByRole('button', { name: 'Create' }).click();
+  await narrator.speak('Click create to add a new item.');
+});
+```
+
+### Available Voices
+
+Voice availability depends on OS/browser:
+
+| Platform | Example Voices |
+|----------|---------------|
+| macOS | Samantha, Alex, Daniel, Karen |
+| Windows | Microsoft David, Zira, Mark |
+| Chrome | Google US English, Google UK English |
+| Linux | espeak voices (varies by distro) |
+
+### Voice Selection Helper
+
+```typescript
+import { selectVoice, getAvailableVoices } from '../helpers/web-speech-tts';
+
+// List available voices
+const voices = await getAvailableVoices(page);
+console.log(voices); // ['Samantha', 'Alex', 'Daniel', ...]
+
+// Select specific voice
+const narrator = await createNarratedDemo(page, 'en-US', 'Samantha');
+```
+
+### Script Formats
+
+**Manual Script with Timestamps**:
+```typescript
+const script: NarrationScript = [
+  { time: 0, text: "Welcome to our dashboard demo." },
+  { time: 3000, text: "First, let's navigate to the settings page." },
+  { time: 8000, text: "Here you can customize your preferences." },
+  { time: 15000, text: "Notice how quickly the changes are applied." },
+];
+```
+
+### Notes
+
+- Quality varies by OS/browser
+- No audio file export (narration is live during recording)
+- Best for quick demos and prototyping
+
+---
+
 ## SCENARIO DESIGN TEMPLATE
 
 See `references/prompt-template.md` for the full template.

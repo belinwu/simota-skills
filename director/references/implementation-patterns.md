@@ -2789,6 +2789,699 @@ test.describe('Demo: A/B Test Variants', () => {
 
 ---
 
+## AI Narration System
+
+Automatic voice narration generation for demo videos using TTS APIs.
+
+### Narration Script Generator
+
+```typescript
+// demos/helpers/narration-script.ts
+import { RecordedAction } from './scenario-recorder';
+
+interface NarrationSegment {
+  time: number;       // Start time in ms
+  duration?: number;  // Optional duration
+  text: string;       // Narration text
+  pause?: number;     // Pause after segment in ms
+}
+
+type NarrationStyle = 'tutorial' | 'marketing' | 'technical' | 'conversational';
+type NarrationPace = 'slow' | 'moderate' | 'fast';
+type NarrationPersonality = 'friendly' | 'professional' | 'enthusiastic' | 'neutral';
+
+interface ScriptGeneratorOptions {
+  style?: NarrationStyle;
+  pace?: NarrationPace;
+  personality?: NarrationPersonality;
+  includeIntro?: boolean;
+  includeOutro?: boolean;
+  productName?: string;
+}
+
+// Action type to narration templates
+const actionTemplates: Record<string, Record<NarrationStyle, string[]>> = {
+  navigate: {
+    tutorial: [
+      "Let's navigate to {value}.",
+      "Now we'll go to {value}.",
+      "Opening {value}.",
+    ],
+    marketing: [
+      "Here's our {value} page.",
+      "Welcome to {value}.",
+      "Check out {value}.",
+    ],
+    technical: [
+      "Navigating to {value}.",
+      "Loading {value}.",
+      "Accessing {value} endpoint.",
+    ],
+    conversational: [
+      "Let me show you {value}.",
+      "Here we are at {value}.",
+      "Now let's look at {value}.",
+    ],
+  },
+  click: {
+    tutorial: [
+      "Click on {selector}.",
+      "Now click the {selector} button.",
+      "Select {selector}.",
+    ],
+    marketing: [
+      "Simply click {selector}.",
+      "One click on {selector} and...",
+      "Just hit {selector}.",
+    ],
+    technical: [
+      "Clicking {selector}.",
+      "Triggering {selector} action.",
+      "Activating {selector}.",
+    ],
+    conversational: [
+      "Let's click {selector}.",
+      "I'll click on {selector} here.",
+      "Now I'm clicking {selector}.",
+    ],
+  },
+  fill: {
+    tutorial: [
+      "Enter {value} in the {selector} field.",
+      "Type {value} here.",
+      "Fill in {selector} with {value}.",
+    ],
+    marketing: [
+      "Just enter your {selector}.",
+      "Quick and easy - add your {selector}.",
+      "Simply fill in {selector}.",
+    ],
+    technical: [
+      "Inputting {value} into {selector}.",
+      "Populating {selector} field.",
+      "Setting {selector} to {value}.",
+    ],
+    conversational: [
+      "I'll type {value} here.",
+      "Let me enter {value} in this field.",
+      "Adding {value} to {selector}.",
+    ],
+  },
+  overlay: {
+    tutorial: [
+      "{value}",
+      "{value}",
+      "{value}",
+    ],
+    marketing: [
+      "{value}",
+      "{value}",
+      "{value}",
+    ],
+    technical: [
+      "{value}",
+      "{value}",
+      "{value}",
+    ],
+    conversational: [
+      "{value}",
+      "{value}",
+      "{value}",
+    ],
+  },
+};
+
+const paceMultipliers: Record<NarrationPace, number> = {
+  slow: 1.5,
+  moderate: 1.0,
+  fast: 0.7,
+};
+
+export function generateNarrationScript(
+  actions: RecordedAction[],
+  options: ScriptGeneratorOptions = {}
+): NarrationSegment[] {
+  const {
+    style = 'tutorial',
+    pace = 'moderate',
+    personality = 'friendly',
+    includeIntro = true,
+    includeOutro = true,
+    productName = 'the application',
+  } = options;
+
+  const segments: NarrationSegment[] = [];
+  const paceMultiplier = paceMultipliers[pace];
+
+  // Intro
+  if (includeIntro) {
+    const intros: Record<NarrationStyle, string> = {
+      tutorial: `Welcome to this tutorial. Today we'll walk through ${productName} step by step.`,
+      marketing: `Discover how ${productName} can transform your workflow.`,
+      technical: `This demonstration covers the key features of ${productName}.`,
+      conversational: `Hey there! Let me show you around ${productName}.`,
+    };
+    segments.push({
+      time: 0,
+      text: intros[style],
+      pause: Math.round(1000 * paceMultiplier),
+    });
+  }
+
+  // Process actions
+  actions.forEach((action, index) => {
+    const templates = actionTemplates[action.type]?.[style];
+    if (!templates) return;
+
+    // Use description if available, otherwise generate from template
+    let text: string;
+    if (action.description && action.type === 'overlay') {
+      text = action.description.replace('Show: ', '');
+    } else if (action.description) {
+      text = action.description;
+    } else {
+      const template = templates[index % templates.length];
+      text = template
+        .replace('{value}', action.value || '')
+        .replace('{selector}', formatSelector(action.selector || ''));
+    }
+
+    segments.push({
+      time: action.elapsed,
+      text,
+      pause: Math.round(500 * paceMultiplier),
+    });
+  });
+
+  // Outro
+  if (includeOutro) {
+    const lastAction = actions[actions.length - 1];
+    const outroTime = lastAction ? lastAction.elapsed + 2000 : 5000;
+
+    const outros: Record<NarrationStyle, string> = {
+      tutorial: "That's all for this tutorial. Thanks for watching!",
+      marketing: `Start using ${productName} today and see the difference.`,
+      technical: "This concludes the demonstration.",
+      conversational: "And that's it! Pretty simple, right?",
+    };
+    segments.push({
+      time: outroTime,
+      text: outros[style],
+    });
+  }
+
+  return segments;
+}
+
+function formatSelector(selector: string): string {
+  // Convert technical selectors to readable text
+  if (selector.startsWith('[data-testid="')) {
+    return selector.replace('[data-testid="', '').replace('"]', '').replace(/-/g, ' ');
+  }
+  if (selector.startsWith('#')) {
+    return selector.slice(1).replace(/-/g, ' ');
+  }
+  if (selector.startsWith('.')) {
+    return selector.slice(1).replace(/-/g, ' ');
+  }
+  return selector;
+}
+
+// Manual script builder
+export function createNarrationScript(
+  segments: Array<{ time: number; text: string; pause?: number }>
+): NarrationSegment[] {
+  return segments.map((s) => ({
+    time: s.time,
+    text: s.text,
+    pause: s.pause || 500,
+  }));
+}
+```
+
+### Web Speech API (Browser Built-in TTS)
+
+Free, no API key required. Uses browser's built-in speech synthesis.
+
+```typescript
+// demos/helpers/web-speech-tts.ts
+import { Page } from '@playwright/test';
+import { NarrationSegment } from './narration-script';
+import fs from 'fs/promises';
+import path from 'path';
+
+interface WebSpeechOptions {
+  voice?: string;        // Voice name (e.g., 'Google US English', 'Samantha')
+  lang?: string;         // Language code (e.g., 'en-US', 'ja-JP')
+  rate?: number;         // Speech rate 0.1-10 (default: 1)
+  pitch?: number;        // Pitch 0-2 (default: 1)
+  volume?: number;       // Volume 0-1 (default: 1)
+}
+
+interface WebSpeechNarrationOptions extends WebSpeechOptions {
+  script: NarrationSegment[];
+  outputPath: string;
+}
+
+// Get available voices in the browser
+export async function getAvailableVoices(page: Page): Promise<string[]> {
+  return await page.evaluate(() => {
+    return new Promise<string[]>((resolve) => {
+      const getVoices = () => {
+        const voices = speechSynthesis.getVoices();
+        resolve(voices.map((v) => `${v.name} (${v.lang})`));
+      };
+
+      if (speechSynthesis.getVoices().length > 0) {
+        getVoices();
+      } else {
+        speechSynthesis.onvoiceschanged = getVoices;
+      }
+    });
+  });
+}
+
+// Speak text and record audio using Web Speech API + MediaRecorder
+export async function speakAndRecord(
+  page: Page,
+  text: string,
+  options: WebSpeechOptions = {}
+): Promise<Buffer> {
+  const { voice, lang = 'en-US', rate = 1, pitch = 1, volume = 1 } = options;
+
+  const audioBase64 = await page.evaluate(
+    async ({ text, voice, lang, rate, pitch, volume }) => {
+      return new Promise<string>((resolve, reject) => {
+        // Create audio context for recording
+        const audioContext = new AudioContext();
+        const destination = audioContext.createMediaStreamDestination();
+        const mediaRecorder = new MediaRecorder(destination.stream, {
+          mimeType: 'audio/webm;codecs=opus',
+        });
+
+        const chunks: Blob[] = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const arrayBuffer = await blob.arrayBuffer();
+          const base64 = btoa(
+            new Uint8Array(arrayBuffer).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ''
+            )
+          );
+          resolve(base64);
+        };
+
+        // Setup speech synthesis
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = rate;
+        utterance.pitch = pitch;
+        utterance.volume = volume;
+
+        // Find specified voice
+        if (voice) {
+          const voices = speechSynthesis.getVoices();
+          const selectedVoice = voices.find((v) => v.name.includes(voice));
+          if (selectedVoice) utterance.voice = selectedVoice;
+        }
+
+        // Connect system audio to recorder (requires user gesture in some browsers)
+        // For Playwright, we use a workaround with oscillator
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 0; // Silent
+        oscillator.connect(gainNode);
+        gainNode.connect(destination);
+        oscillator.start();
+
+        utterance.onstart = () => {
+          mediaRecorder.start();
+        };
+
+        utterance.onend = () => {
+          oscillator.stop();
+          mediaRecorder.stop();
+        };
+
+        utterance.onerror = (e) => {
+          reject(new Error(`Speech synthesis error: ${e.error}`));
+        };
+
+        speechSynthesis.speak(utterance);
+      });
+    },
+    { text, voice, lang, rate, pitch, volume }
+  );
+
+  return Buffer.from(audioBase64, 'base64');
+}
+
+// Alternative: Use page audio capture with speech synthesis
+export async function generateWebSpeechNarration(
+  page: Page,
+  options: WebSpeechNarrationOptions
+): Promise<string> {
+  const { script, outputPath, voice, lang = 'en-US', rate = 1, pitch = 1 } = options;
+
+  // Ensure output directory exists
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+
+  // Generate narration in browser and capture
+  const audioData = await page.evaluate(
+    async ({ script, voice, lang, rate, pitch }) => {
+      // Wait for voices to load
+      await new Promise<void>((resolve) => {
+        if (speechSynthesis.getVoices().length > 0) {
+          resolve();
+        } else {
+          speechSynthesis.onvoiceschanged = () => resolve();
+        }
+      });
+
+      const voices = speechSynthesis.getVoices();
+      const selectedVoice = voice
+        ? voices.find((v) => v.name.includes(voice))
+        : voices.find((v) => v.lang.startsWith(lang.split('-')[0]));
+
+      // Generate all speech segments
+      const audioSegments: { time: number; duration: number; text: string }[] = [];
+
+      for (const segment of script) {
+        const utterance = new SpeechSynthesisUtterance(segment.text);
+        utterance.lang = lang;
+        utterance.rate = rate;
+        utterance.pitch = pitch;
+        if (selectedVoice) utterance.voice = selectedVoice;
+
+        // Estimate duration (rough calculation)
+        const wordCount = segment.text.split(/\s+/).length;
+        const baseDuration = (wordCount / 150) * 60 * 1000; // 150 WPM average
+        const adjustedDuration = baseDuration / rate;
+
+        audioSegments.push({
+          time: segment.time,
+          duration: adjustedDuration,
+          text: segment.text,
+        });
+      }
+
+      return audioSegments;
+    },
+    { script, voice, lang, rate, pitch }
+  );
+
+  // Return script timing info (actual audio needs different approach)
+  const timingPath = outputPath.replace(/\.[^.]+$/, '_timing.json');
+  await fs.writeFile(timingPath, JSON.stringify(audioData, null, 2));
+
+  return timingPath;
+}
+
+// Real-time narration during demo recording
+export async function speakDuringDemo(
+  page: Page,
+  text: string,
+  options: WebSpeechOptions = {}
+): Promise<void> {
+  const { voice, lang = 'en-US', rate = 1, pitch = 1, volume = 1 } = options;
+
+  await page.evaluate(
+    ({ text, voice, lang, rate, pitch, volume }) => {
+      return new Promise<void>((resolve, reject) => {
+        // Cancel any ongoing speech
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = rate;
+        utterance.pitch = pitch;
+        utterance.volume = volume;
+
+        // Find voice
+        const voices = speechSynthesis.getVoices();
+        if (voice) {
+          const selected = voices.find((v) => v.name.includes(voice));
+          if (selected) utterance.voice = selected;
+        } else {
+          // Default to a good quality voice
+          const preferred = voices.find(
+            (v) => v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Neural')
+          );
+          if (preferred) utterance.voice = preferred;
+        }
+
+        utterance.onend = () => resolve();
+        utterance.onerror = (e) => reject(new Error(e.error));
+
+        speechSynthesis.speak(utterance);
+      });
+    },
+    { text, voice, lang, rate, pitch, volume }
+  );
+}
+
+// Speak and wait for completion
+export async function speakAndWait(
+  page: Page,
+  text: string,
+  options: WebSpeechOptions = {}
+): Promise<number> {
+  const startTime = Date.now();
+  await speakDuringDemo(page, text, options);
+  return Date.now() - startTime;
+}
+```
+
+### Real-Time Narration Demo Example
+
+```typescript
+// demos/specs/demo-with-live-narration.spec.ts
+import { test } from '@playwright/test';
+import { speakAndWait, getAvailableVoices } from '../helpers/web-speech-tts';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: Live Narration with Web Speech API', () => {
+  test.beforeAll(async ({ browser }) => {
+    // List available voices (for debugging)
+    const page = await browser.newPage();
+    const voices = await getAvailableVoices(page);
+    console.log('Available voices:', voices.slice(0, 10));
+    await page.close();
+  });
+
+  test('dashboard demo with live narration', async ({ page }) => {
+    // Navigate to app
+    await page.goto('/dashboard');
+    await page.waitForLoadState('networkidle');
+
+    // Narrate and show overlay simultaneously
+    await Promise.all([
+      speakAndWait(page, 'Welcome to our dashboard. Let me show you around.', {
+        rate: 0.9,
+        voice: 'Google', // Will match 'Google US English' etc.
+      }),
+      showOverlay(page, 'Welcome to the Dashboard', 3000),
+    ]);
+
+    // Navigate to projects
+    await speakAndWait(page, "First, let's create a new project.", { rate: 0.9 });
+    await page.getByRole('button', { name: 'Create Project' }).click();
+    await page.waitForTimeout(500);
+
+    // Fill form with narration
+    await speakAndWait(page, 'Enter your project name here.', { rate: 0.9 });
+    await page.getByLabel('Project Name').fill('My Demo Project');
+    await page.waitForTimeout(300);
+
+    // Save
+    await speakAndWait(page, 'Click save to create the project.', { rate: 0.9 });
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // Success
+    await Promise.all([
+      speakAndWait(page, 'And there you have it! Your project is ready.', { rate: 0.9 }),
+      showOverlay(page, 'Project Created!', 2500),
+    ]);
+  });
+});
+```
+
+### Playwright Config for Audio Capture
+
+```typescript
+// playwright.config.narration.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './demos/specs',
+  timeout: 180000,
+  retries: 0,
+  workers: 1,
+
+  use: {
+    // Enable audio for Web Speech API
+    launchOptions: {
+      args: [
+        '--autoplay-policy=no-user-gesture-required',
+        '--enable-speech-dispatcher',
+      ],
+    },
+    // Video recording captures browser audio
+    video: {
+      mode: 'on',
+      size: { width: 1280, height: 720 },
+    },
+    viewport: { width: 1280, height: 720 },
+    // Permissions for audio
+    permissions: ['microphone'],
+    contextOptions: {
+      // Record audio with video (Chromium only)
+      recordVideo: {
+        dir: 'demos/output/',
+        size: { width: 1280, height: 720 },
+      },
+    },
+  },
+
+  projects: [
+    {
+      name: 'demo-narrated',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome', // Use installed Chrome for better TTS
+      },
+    },
+  ],
+});
+```
+
+### Voice Selection Helper
+
+```typescript
+// demos/helpers/voice-selector.ts
+import { Page } from '@playwright/test';
+
+interface VoiceInfo {
+  name: string;
+  lang: string;
+  localService: boolean;
+  default: boolean;
+}
+
+// Recommended voices by platform and language
+export const recommendedVoices = {
+  'en-US': {
+    mac: ['Samantha', 'Alex', 'Karen'],
+    windows: ['Microsoft David', 'Microsoft Zira'],
+    linux: ['english-us'],
+    chrome: ['Google US English'],
+  },
+  'en-GB': {
+    mac: ['Daniel', 'Kate'],
+    windows: ['Microsoft George', 'Microsoft Hazel'],
+    chrome: ['Google UK English Female', 'Google UK English Male'],
+  },
+  'ja-JP': {
+    mac: ['Kyoko', 'Otoya'],
+    windows: ['Microsoft Haruka', 'Microsoft Ichiro'],
+    chrome: ['Google 日本語'],
+  },
+  'zh-CN': {
+    mac: ['Tingting'],
+    windows: ['Microsoft Huihui'],
+    chrome: ['Google 普通话（中国大陆）'],
+  },
+};
+
+export async function findBestVoice(
+  page: Page,
+  lang: string = 'en-US'
+): Promise<string | undefined> {
+  const voices = await page.evaluate(() => {
+    return speechSynthesis.getVoices().map((v) => ({
+      name: v.name,
+      lang: v.lang,
+      localService: v.localService,
+      default: v.default,
+    }));
+  });
+
+  // Find voices matching the language
+  const langVoices = voices.filter((v) => v.lang.startsWith(lang.split('-')[0]));
+
+  // Prefer high-quality voices
+  const qualityIndicators = ['Premium', 'Neural', 'Enhanced', 'Google', 'Microsoft'];
+  const highQuality = langVoices.find((v) =>
+    qualityIndicators.some((q) => v.name.includes(q))
+  );
+
+  if (highQuality) return highQuality.name;
+
+  // Fallback to any matching voice
+  return langVoices[0]?.name;
+}
+
+// Demo with auto voice selection
+export async function createNarratedDemo(page: Page, lang: string = 'en-US') {
+  const voice = await findBestVoice(page, lang);
+  console.log(`Using voice: ${voice || 'default'}`);
+
+  return {
+    speak: async (text: string, options: { rate?: number; pitch?: number } = {}) => {
+      const { rate = 0.9, pitch = 1 } = options;
+      await page.evaluate(
+        ({ text, voice, lang, rate, pitch }) => {
+          return new Promise<void>((resolve) => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = rate;
+            utterance.pitch = pitch;
+
+            if (voice) {
+              const voices = speechSynthesis.getVoices();
+              const selected = voices.find((v) => v.name === voice);
+              if (selected) utterance.voice = selected;
+            }
+
+            utterance.onend = () => resolve();
+            speechSynthesis.speak(utterance);
+          });
+        },
+        { text, voice, lang, rate, pitch }
+      );
+    },
+  };
+}
+```
+
+### Usage: Simple Narrated Demo
+
+```typescript
+// demos/specs/demo-simple-narration.spec.ts
+import { test } from '@playwright/test';
+import { createNarratedDemo } from '../helpers/voice-selector';
+
+test('simple narrated demo', async ({ page }) => {
+  const narrator = await createNarratedDemo(page, 'en-US');
+
+  await page.goto('/');
+  await narrator.speak('Welcome to our application.');
+
+  await page.getByRole('link', { name: 'Features' }).click();
+  await narrator.speak('Here are our key features.');
+
+  await page.waitForTimeout(2000);
+  await narrator.speak('Thank you for watching!');
+});
+```
+
+---
+
 ### Device-Specific Presets
 
 Pre-configured settings for common demo scenarios.
