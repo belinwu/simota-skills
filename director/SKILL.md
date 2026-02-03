@@ -469,6 +469,91 @@ When demonstrating performance improvements optimized by Bolt:
 
 ---
 
+## BEFORE/AFTER COMPARISON MODE
+
+### Overview
+
+Record side-by-side comparison demos showing improvements, redesigns, or A/B variants.
+Two browser contexts run in parallel, capturing synchronized actions for compelling visual comparison.
+
+### Display Layouts
+
+**Split Screen** - Side-by-side comparison:
+```
+┌─────────────────┬─────────────────┐
+│     BEFORE      │      AFTER      │
+│                 │                 │
+│   (Legacy UI)   │  (New Design)   │
+│                 │                 │
+│    LCP: 3.2s    │    LCP: 1.1s    │
+└─────────────────┴─────────────────┘
+```
+
+**Picture-in-Picture** - Main view with comparison inset:
+```
+┌─────────────────────────────────┐
+│                         ┌─────┐│
+│      AFTER (Main)       │ BEF ││
+│                         │ORE  ││
+│                         └─────┘│
+└─────────────────────────────────┘
+```
+
+**Sequential with Transition** - Before → wipe → After:
+```
+┌─────────────────┐     ┌─────────────────┐
+│     BEFORE      │ ──► │      AFTER      │
+└─────────────────┘     └─────────────────┘
+```
+
+### Basic Usage
+
+```typescript
+import { createComparisonDemo } from '../helpers/comparison-mode';
+
+test('before/after redesign demo', async ({ browser }) => {
+  const comparison = await createComparisonDemo(browser, {
+    layout: 'split',
+    beforeUrl: '/dashboard?version=v1',
+    afterUrl: '/dashboard?version=v2',
+    labels: { before: 'Current', after: 'Redesign' },
+  });
+
+  // Actions are mirrored to both contexts
+  await comparison.both(async (page) => {
+    await page.click('[data-testid="menu"]');
+    await page.waitForTimeout(1000);
+  });
+
+  await comparison.showSummary(); // Display comparison metrics
+  await comparison.close();
+});
+```
+
+### Use Cases
+
+| Scenario | Description | Labels Example |
+|----------|-------------|----------------|
+| **Performance** | Speed optimization demo | "Before Optimization" / "After Optimization" |
+| **Redesign** | UI/UX improvements | "Current Design" / "New Design" |
+| **A/B Test** | Variant comparison | "Control" / "Variant B" |
+| **Migration** | Framework migration | "Legacy Stack" / "Modern Stack" |
+| **Accessibility** | a11y improvements | "Before" / "WCAG Compliant" |
+
+### Collaboration Patterns
+
+**Launch → Director (Release Demo)**:
+```markdown
+## LAUNCH_TO_DIRECTOR_HANDOFF
+**Release**: v2.0.0
+**Key Changes**: Dashboard redesign, 40% faster load
+**Demo Request**: Before/after split-screen comparison
+**Before Branch**: release/v1.9.0
+**After Branch**: release/v2.0.0
+```
+
+---
+
 ## SCENARIO DESIGN TEMPLATE
 
 See `references/prompt-template.md` for the full template.

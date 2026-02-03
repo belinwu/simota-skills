@@ -2091,6 +2091,704 @@ test.describe('Demo: API Optimization', () => {
 
 ---
 
+## Before/After Comparison Mode
+
+Side-by-side comparison recording for improvements, redesigns, and A/B demos.
+
+### Comparison Mode Helper
+
+```typescript
+// demos/helpers/comparison-mode.ts
+import { Browser, BrowserContext, Page } from '@playwright/test';
+import { capturePerformanceSnapshot } from './performance-overlay';
+
+type ComparisonLayout = 'split' | 'pip' | 'sequential';
+type PipPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+interface ComparisonOptions {
+  layout: ComparisonLayout;
+  beforeUrl: string;
+  afterUrl: string;
+  labels?: {
+    before?: string;
+    after?: string;
+  };
+  viewport?: { width: number; height: number };
+  showMetrics?: boolean;
+  pipPosition?: PipPosition;
+  pipScale?: number;
+}
+
+interface ComparisonContext {
+  before: {
+    context: BrowserContext;
+    page: Page;
+  };
+  after: {
+    context: BrowserContext;
+    page: Page;
+  };
+  both: (fn: (page: Page, label: 'before' | 'after') => Promise<void>) => Promise<void>;
+  beforeOnly: (fn: (page: Page) => Promise<void>) => Promise<void>;
+  afterOnly: (fn: (page: Page) => Promise<void>) => Promise<void>;
+  showSummary: () => Promise<void>;
+  captureComparison: () => Promise<{ before: Record<string, number | null>; after: Record<string, number | null> }>;
+  close: () => Promise<void>;
+}
+
+export async function createComparisonDemo(
+  browser: Browser,
+  options: ComparisonOptions
+): Promise<ComparisonContext> {
+  const {
+    layout,
+    beforeUrl,
+    afterUrl,
+    labels = { before: 'BEFORE', after: 'AFTER' },
+    viewport = { width: 1280, height: 720 },
+    showMetrics = true,
+    pipPosition = 'bottom-right',
+    pipScale = 0.3,
+  } = options;
+
+  // Calculate viewports based on layout
+  let beforeViewport = { ...viewport };
+  let afterViewport = { ...viewport };
+
+  if (layout === 'split') {
+    beforeViewport = { width: Math.floor(viewport.width / 2), height: viewport.height };
+    afterViewport = { width: Math.floor(viewport.width / 2), height: viewport.height };
+  }
+
+  // Create contexts
+  const beforeContext = await browser.newContext({
+    viewport: beforeViewport,
+    recordVideo: layout !== 'pip' ? {
+      dir: 'demos/output/comparison/',
+      size: beforeViewport,
+    } : undefined,
+  });
+
+  const afterContext = await browser.newContext({
+    viewport: afterViewport,
+    recordVideo: {
+      dir: 'demos/output/comparison/',
+      size: afterViewport,
+    },
+  });
+
+  const beforePage = await beforeContext.newPage();
+  const afterPage = await afterContext.newPage();
+
+  // Add labels overlay
+  const addLabel = async (page: Page, label: string, position: 'left' | 'right' | 'center') => {
+    await page.evaluate(
+      ({ label, position }) => {
+        const existing = document.getElementById('demo-comparison-label');
+        if (existing) existing.remove();
+
+        const labelEl = document.createElement('div');
+        labelEl.id = 'demo-comparison-label';
+        labelEl.style.cssText = `
+          position: fixed;
+          top: 12px;
+          ${position === 'left' ? 'left: 12px;' : position === 'right' ? 'right: 12px;' : 'left: 50%; transform: translateX(-50%);'}
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', monospace;
+          font-size: 14px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          z-index: 99999;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        `;
+        labelEl.textContent = label;
+        document.body.appendChild(labelEl);
+      },
+      { label, position }
+    );
+  };
+
+  // Navigate to initial URLs
+  await Promise.all([
+    beforePage.goto(beforeUrl),
+    afterPage.goto(afterUrl),
+  ]);
+
+  await Promise.all([
+    beforePage.waitForLoadState('networkidle'),
+    afterPage.waitForLoadState('networkidle'),
+  ]);
+
+  // Add labels
+  await addLabel(beforePage, labels.before || 'BEFORE', layout === 'split' ? 'center' : 'left');
+  await addLabel(afterPage, labels.after || 'AFTER', layout === 'split' ? 'center' : 'right');
+
+  // Add metrics overlay if enabled
+  if (showMetrics) {
+    const addMetricsOverlay = async (page: Page, position: 'left' | 'right') => {
+      await page.evaluate(
+        ({ position }) => {
+          const overlay = document.createElement('div');
+          overlay.id = 'demo-comparison-metrics';
+          overlay.style.cssText = `
+            position: fixed;
+            bottom: 12px;
+            ${position === 'left' ? 'left: 12px;' : 'right: 12px;'}
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', monospace;
+            font-size: 11px;
+            z-index: 99999;
+          `;
+          overlay.innerHTML = '<div id="demo-metrics-content">Loading...</div>';
+          document.body.appendChild(overlay);
+
+          // Update metrics periodically
+          const updateMetrics = () => {
+            const content = document.getElementById('demo-metrics-content');
+            if (!content) return;
+
+            const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+            const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+
+            const ttfb = navEntry ? Math.round(navEntry.responseStart - navEntry.requestStart) : 0;
+            const load = navEntry ? Math.round(navEntry.loadEventEnd - navEntry.startTime) : 0;
+            const requests = resources.length;
+            const transfer = resources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+            const transferStr = transfer < 1024 * 1024
+              ? `${(transfer / 1024).toFixed(0)}KB`
+              : `${(transfer / 1024 / 1024).toFixed(1)}MB`;
+
+            content.innerHTML = `
+              <div style="margin-bottom: 4px;">TTFB: ${ttfb}ms</div>
+              <div style="margin-bottom: 4px;">Load: ${load}ms</div>
+              <div style="margin-bottom: 4px;">Requests: ${requests}</div>
+              <div>Transfer: ${transferStr}</div>
+            `;
+          };
+
+          updateMetrics();
+          setInterval(updateMetrics, 1000);
+        },
+        { position }
+      );
+    };
+
+    await addMetricsOverlay(beforePage, 'left');
+    await addMetricsOverlay(afterPage, 'right');
+  }
+
+  return {
+    before: { context: beforeContext, page: beforePage },
+    after: { context: afterContext, page: afterPage },
+
+    async both(fn) {
+      await Promise.all([
+        fn(beforePage, 'before'),
+        fn(afterPage, 'after'),
+      ]);
+    },
+
+    async beforeOnly(fn) {
+      await fn(beforePage);
+    },
+
+    async afterOnly(fn) {
+      await fn(afterPage);
+    },
+
+    async showSummary() {
+      const beforeSnapshot = await capturePerformanceSnapshot(beforePage);
+      const afterSnapshot = await capturePerformanceSnapshot(afterPage);
+
+      // Show summary on the after page (main view)
+      await afterPage.evaluate(
+        ({ before, after, beforeLabel, afterLabel }) => {
+          const existing = document.getElementById('demo-summary-overlay');
+          if (existing) existing.remove();
+
+          const container = document.createElement('div');
+          container.id = 'demo-summary-overlay';
+          container.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            border-radius: 12px;
+            padding: 24px 32px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', monospace;
+            z-index: 99999;
+            min-width: 320px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+          `;
+
+          const title = document.createElement('div');
+          title.style.cssText = `
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+          `;
+          title.textContent = '📊 Comparison Summary';
+          container.appendChild(title);
+
+          const table = document.createElement('div');
+          table.style.cssText = 'display: flex; flex-direction: column; gap: 8px;';
+
+          // Header
+          const header = document.createElement('div');
+          header.style.cssText = `
+            display: grid;
+            grid-template-columns: 90px 80px 80px 70px;
+            gap: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+          `;
+          header.innerHTML = `<span>Metric</span><span>${beforeLabel}</span><span>${afterLabel}</span><span>Change</span>`;
+          table.appendChild(header);
+
+          const formatValue = (key: string, val: number | null): string => {
+            if (val === null) return '-';
+            if (key === 'transfer') {
+              return val < 1024 * 1024 ? `${(val / 1024).toFixed(0)}KB` : `${(val / 1024 / 1024).toFixed(1)}MB`;
+            }
+            if (['ttfb', 'load', 'domContentLoaded'].includes(key)) {
+              return val < 1000 ? `${Math.round(val)}ms` : `${(val / 1000).toFixed(1)}s`;
+            }
+            return String(Math.round(val));
+          };
+
+          const metrics = ['ttfb', 'load', 'requests', 'transfer'];
+          const labels: Record<string, string> = {
+            ttfb: 'TTFB',
+            load: 'Load Time',
+            requests: 'Requests',
+            transfer: 'Transfer',
+          };
+
+          metrics.forEach((key) => {
+            const beforeVal = before[key];
+            const afterVal = after[key];
+            if (beforeVal === null && afterVal === null) return;
+
+            const row = document.createElement('div');
+            row.style.cssText = `
+              display: grid;
+              grid-template-columns: 90px 80px 80px 70px;
+              gap: 8px;
+              font-size: 13px;
+              align-items: center;
+            `;
+
+            let changeText = '-';
+            let changeColor = '#ffffff';
+
+            if (beforeVal !== null && afterVal !== null && beforeVal > 0) {
+              const diff = ((beforeVal - afterVal) / beforeVal) * 100;
+              if (diff > 0) {
+                changeText = `↓${diff.toFixed(0)}%`;
+                changeColor = '#22c55e';
+              } else if (diff < 0) {
+                changeText = `↑${Math.abs(diff).toFixed(0)}%`;
+                changeColor = '#ef4444';
+              } else {
+                changeText = '→0%';
+              }
+            }
+
+            row.innerHTML = `
+              <span style="opacity: 0.8;">${labels[key] || key}</span>
+              <span style="opacity: 0.6;">${formatValue(key, beforeVal)}</span>
+              <span>${formatValue(key, afterVal)}</span>
+              <span style="color: ${changeColor}; font-weight: 600;">${changeText}</span>
+            `;
+            table.appendChild(row);
+          });
+
+          container.appendChild(table);
+          document.body.appendChild(container);
+        },
+        {
+          before: beforeSnapshot,
+          after: afterSnapshot,
+          beforeLabel: labels.before || 'BEFORE',
+          afterLabel: labels.after || 'AFTER',
+        }
+      );
+    },
+
+    async captureComparison() {
+      const [before, after] = await Promise.all([
+        capturePerformanceSnapshot(beforePage),
+        capturePerformanceSnapshot(afterPage),
+      ]);
+      return { before, after };
+    },
+
+    async close() {
+      await beforeContext.close();
+      await afterContext.close();
+    },
+  };
+}
+```
+
+### Split Screen Divider Overlay
+
+```typescript
+// demos/helpers/split-divider.ts
+import { Page } from '@playwright/test';
+
+interface DividerOptions {
+  color?: string;
+  width?: number;
+  showDragHandle?: boolean;
+}
+
+export async function addSplitDivider(
+  page: Page,
+  options: DividerOptions = {}
+): Promise<void> {
+  const { color = 'rgba(255, 255, 255, 0.3)', width = 2, showDragHandle = false } = options;
+
+  await page.evaluate(
+    ({ color, width, showHandle }) => {
+      const divider = document.createElement('div');
+      divider.id = 'demo-split-divider';
+      divider.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: ${width}px;
+        height: 100%;
+        background: ${color};
+        z-index: 99996;
+        pointer-events: none;
+      `;
+
+      if (showHandle) {
+        const handle = document.createElement('div');
+        handle.style.cssText = `
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 24px;
+          height: 48px;
+          background: rgba(255, 255, 255, 0.9);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        handle.innerHTML = `
+          <svg width="8" height="24" viewBox="0 0 8 24" fill="none">
+            <circle cx="2" cy="6" r="1.5" fill="#666"/>
+            <circle cx="6" cy="6" r="1.5" fill="#666"/>
+            <circle cx="2" cy="12" r="1.5" fill="#666"/>
+            <circle cx="6" cy="12" r="1.5" fill="#666"/>
+            <circle cx="2" cy="18" r="1.5" fill="#666"/>
+            <circle cx="6" cy="18" r="1.5" fill="#666"/>
+          </svg>
+        `;
+        divider.appendChild(handle);
+      }
+
+      document.body.appendChild(divider);
+    },
+    { color, width, showHandle: showDragHandle }
+  );
+}
+```
+
+### Sequential Transition Helper
+
+```typescript
+// demos/helpers/transition-effects.ts
+import { Page } from '@playwright/test';
+
+type TransitionType = 'wipe' | 'fade' | 'slide' | 'zoom';
+type Direction = 'left' | 'right' | 'up' | 'down';
+
+interface TransitionOptions {
+  type?: TransitionType;
+  direction?: Direction;
+  duration?: number;
+  showLabel?: boolean;
+  label?: string;
+}
+
+export async function showTransitionOverlay(
+  page: Page,
+  options: TransitionOptions = {}
+): Promise<void> {
+  const {
+    type = 'wipe',
+    direction = 'right',
+    duration = 1000,
+    showLabel = true,
+    label = 'AFTER',
+  } = options;
+
+  await page.evaluate(
+    ({ type, direction, duration, showLabel, label }) => {
+      const overlay = document.createElement('div');
+      overlay.id = 'demo-transition-overlay';
+
+      const baseStyle = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 99998;
+        pointer-events: none;
+      `;
+
+      if (type === 'wipe') {
+        overlay.style.cssText = `
+          ${baseStyle}
+          background: linear-gradient(
+            ${direction === 'right' ? '90deg' : direction === 'left' ? '270deg' : direction === 'down' ? '180deg' : '0deg'},
+            transparent 0%,
+            rgba(0, 0, 0, 0.8) 45%,
+            rgba(0, 0, 0, 0.8) 55%,
+            transparent 100%
+          );
+          animation: demoWipe ${duration}ms ease-in-out forwards;
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'demo-transition-style';
+        const startPos = direction === 'right' ? '-100%' : direction === 'left' ? '100%' : '0';
+        const endPos = direction === 'right' ? '100%' : direction === 'left' ? '-100%' : '0';
+        const startPosY = direction === 'down' ? '-100%' : direction === 'up' ? '100%' : '0';
+        const endPosY = direction === 'down' ? '100%' : direction === 'up' ? '-100%' : '0';
+
+        styleSheet.textContent = `
+          @keyframes demoWipe {
+            0% { transform: translate(${startPos}, ${startPosY}); }
+            100% { transform: translate(${endPos}, ${endPosY}); }
+          }
+        `;
+        document.head.appendChild(styleSheet);
+      } else if (type === 'fade') {
+        overlay.style.cssText = `
+          ${baseStyle}
+          background: black;
+          animation: demoFadeInOut ${duration}ms ease-in-out forwards;
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'demo-transition-style';
+        styleSheet.textContent = `
+          @keyframes demoFadeInOut {
+            0% { opacity: 0; }
+            40% { opacity: 1; }
+            60% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `;
+        document.head.appendChild(styleSheet);
+      }
+
+      if (showLabel) {
+        const labelEl = document.createElement('div');
+        labelEl.style.cssText = `
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 24px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 4px;
+        `;
+        labelEl.textContent = label;
+        overlay.appendChild(labelEl);
+      }
+
+      document.body.appendChild(overlay);
+
+      setTimeout(() => {
+        overlay.remove();
+        const style = document.getElementById('demo-transition-style');
+        if (style) style.remove();
+      }, duration);
+    },
+    { type, direction, duration, showLabel, label }
+  );
+
+  await page.waitForTimeout(duration);
+}
+```
+
+### Usage Examples
+
+#### Split Screen Comparison Demo
+
+```typescript
+// demos/specs/demo-split-comparison.spec.ts
+import { test } from '@playwright/test';
+import { createComparisonDemo } from '../helpers/comparison-mode';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: UI Redesign Comparison', () => {
+  test('split screen before/after', async ({ browser }) => {
+    const comparison = await createComparisonDemo(browser, {
+      layout: 'split',
+      beforeUrl: '/dashboard?theme=legacy',
+      afterUrl: '/dashboard?theme=modern',
+      labels: { before: 'Current Design', after: 'New Design' },
+      showMetrics: true,
+    });
+
+    // Wait for both pages to stabilize
+    await comparison.both(async (page) => {
+      await page.waitForTimeout(2000);
+    });
+
+    // Perform synchronized actions
+    await comparison.both(async (page) => {
+      await page.getByRole('button', { name: 'Menu' }).click();
+      await page.waitForTimeout(1500);
+    });
+
+    await comparison.both(async (page) => {
+      await page.getByRole('link', { name: 'Settings' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(2000);
+    });
+
+    // Show summary comparison
+    await comparison.showSummary();
+    await comparison.after.page.waitForTimeout(5000);
+
+    await comparison.close();
+  });
+});
+```
+
+#### Sequential Transition Demo
+
+```typescript
+// demos/specs/demo-sequential-comparison.spec.ts
+import { test } from '@playwright/test';
+import { showTransitionOverlay } from '../helpers/transition-effects';
+import { showOverlay } from '../helpers/overlay';
+import { enablePerformanceOverlay, disablePerformanceOverlay } from '../helpers/performance-overlay';
+
+test.describe('Demo: Performance Improvement', () => {
+  test('before then after with transition', async ({ page }) => {
+    // === Before ===
+    await showOverlay(page, 'Before: Original Implementation', 2000);
+
+    await enablePerformanceOverlay(page, {
+      metrics: ['lcp', 'requests', 'transfer'],
+      position: 'top-right',
+    });
+
+    await page.goto('/dashboard?version=v1');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
+
+    await disablePerformanceOverlay(page);
+
+    // === Transition ===
+    await showTransitionOverlay(page, {
+      type: 'wipe',
+      direction: 'right',
+      duration: 1200,
+      label: 'OPTIMIZED',
+    });
+
+    // === After ===
+    await showOverlay(page, 'After: Optimized Implementation', 2000);
+
+    await enablePerformanceOverlay(page, {
+      metrics: ['lcp', 'requests', 'transfer'],
+      position: 'top-right',
+    });
+
+    await page.goto('/dashboard?version=v2');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
+
+    await disablePerformanceOverlay(page);
+
+    await showOverlay(page, '60% faster load time!', 3000);
+  });
+});
+```
+
+#### A/B Test Variant Demo
+
+```typescript
+// demos/specs/demo-ab-test.spec.ts
+import { test } from '@playwright/test';
+import { createComparisonDemo } from '../helpers/comparison-mode';
+
+test.describe('Demo: A/B Test Variants', () => {
+  test('compare checkout flow variants', async ({ browser }) => {
+    const comparison = await createComparisonDemo(browser, {
+      layout: 'split',
+      beforeUrl: '/checkout?variant=control',
+      afterUrl: '/checkout?variant=streamlined',
+      labels: { before: 'Control', after: 'Variant B' },
+      showMetrics: false,
+    });
+
+    // Synchronized checkout flow
+    await comparison.both(async (page) => {
+      // Fill shipping
+      await page.getByLabel('Address').fill('123 Demo Street');
+      await page.waitForTimeout(500);
+
+      await page.getByLabel('City').fill('San Francisco');
+      await page.waitForTimeout(500);
+
+      await page.getByRole('button', { name: 'Continue' }).click();
+      await page.waitForTimeout(1500);
+    });
+
+    // Note: Variant B has fewer steps
+    await comparison.afterOnly(async (page) => {
+      // Already at payment in streamlined version
+      await page.waitForTimeout(500);
+    });
+
+    await comparison.beforeOnly(async (page) => {
+      // Control has extra review step
+      await page.getByRole('button', { name: 'Review Order' }).click();
+      await page.waitForTimeout(1000);
+      await page.getByRole('button', { name: 'Continue to Payment' }).click();
+      await page.waitForTimeout(500);
+    });
+
+    await comparison.showSummary();
+    await comparison.after.page.waitForTimeout(4000);
+
+    await comparison.close();
+  });
+});
+```
+
+---
+
 ### Device-Specific Presets
 
 Pre-configured settings for common demo scenarios.
