@@ -1444,6 +1444,653 @@ test('demo with recorded actions', async ({ page }) => {
 
 ---
 
+## Performance Visualization System
+
+Real-time performance metrics overlay for demo recordings.
+
+### Performance Overlay Helper
+
+```typescript
+// demos/helpers/performance-overlay.ts
+import { Page } from '@playwright/test';
+
+type MetricType = 'lcp' | 'cls' | 'inp' | 'fcp' | 'ttfb' | 'requests' | 'transfer' | 'dom' | 'heap';
+type Position = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+type Theme = 'dark' | 'light' | 'transparent';
+type DisplayMode = 'compact' | 'detailed';
+
+interface PerformanceOverlayOptions {
+  metrics?: MetricType[];
+  position?: Position;
+  theme?: Theme;
+  mode?: DisplayMode;
+  updateInterval?: number;
+  showThresholds?: boolean;
+}
+
+interface MetricThresholds {
+  good: number;
+  needsImprovement: number;
+}
+
+const THRESHOLDS: Record<string, MetricThresholds> = {
+  lcp: { good: 2500, needsImprovement: 4000 },
+  cls: { good: 0.1, needsImprovement: 0.25 },
+  inp: { good: 200, needsImprovement: 500 },
+  fcp: { good: 1800, needsImprovement: 3000 },
+  ttfb: { good: 800, needsImprovement: 1800 },
+};
+
+export async function enablePerformanceOverlay(
+  page: Page,
+  options: PerformanceOverlayOptions = {}
+): Promise<void> {
+  const {
+    metrics = ['lcp', 'cls', 'inp'],
+    position = 'top-right',
+    theme = 'dark',
+    mode = 'detailed',
+    updateInterval = 500,
+    showThresholds = true,
+  } = options;
+
+  await page.evaluate(
+    ({ metrics, position, theme, mode, updateInterval, showThresholds, thresholds }) => {
+      // Theme colors
+      const themes = {
+        dark: {
+          bg: 'rgba(0, 0, 0, 0.85)',
+          text: '#ffffff',
+          border: 'rgba(255, 255, 255, 0.1)',
+          good: '#22c55e',
+          warning: '#f59e0b',
+          poor: '#ef4444',
+        },
+        light: {
+          bg: 'rgba(255, 255, 255, 0.95)',
+          text: '#1f2937',
+          border: 'rgba(0, 0, 0, 0.1)',
+          good: '#16a34a',
+          warning: '#d97706',
+          poor: '#dc2626',
+        },
+        transparent: {
+          bg: 'rgba(0, 0, 0, 0.5)',
+          text: '#ffffff',
+          border: 'transparent',
+          good: '#4ade80',
+          warning: '#fbbf24',
+          poor: '#f87171',
+        },
+      };
+
+      const colors = themes[theme];
+
+      // Position styles
+      const positions = {
+        'top-left': 'top: 16px; left: 16px;',
+        'top-right': 'top: 16px; right: 16px;',
+        'bottom-left': 'bottom: 16px; left: 16px;',
+        'bottom-right': 'bottom: 16px; right: 16px;',
+      };
+
+      // Create container
+      const container = document.createElement('div');
+      container.id = 'demo-performance-overlay';
+      container.style.cssText = `
+        position: fixed;
+        ${positions[position]}
+        background: ${colors.bg};
+        color: ${colors.text};
+        border: 1px solid ${colors.border};
+        border-radius: 8px;
+        padding: ${mode === 'compact' ? '8px 12px' : '12px 16px'};
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Consolas, monospace;
+        font-size: 12px;
+        z-index: 99997;
+        min-width: ${mode === 'compact' ? '80px' : '160px'};
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(8px);
+      `;
+
+      // Header (detailed mode only)
+      if (mode === 'detailed') {
+        const header = document.createElement('div');
+        header.style.cssText = `
+          font-weight: 600;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+          opacity: 0.7;
+        `;
+        header.textContent = 'Performance';
+        container.appendChild(header);
+      }
+
+      // Metric rows container
+      const metricsContainer = document.createElement('div');
+      metricsContainer.id = 'demo-perf-metrics';
+      metricsContainer.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: ${mode === 'compact' ? '4px' : '6px'};
+      `;
+      container.appendChild(metricsContainer);
+
+      document.body.appendChild(container);
+
+      // Metric state
+      const metricValues: Record<string, number | null> = {};
+      metrics.forEach((m: string) => (metricValues[m] = null));
+
+      // Format metric value
+      const formatValue = (metric: string, value: number | null): string => {
+        if (value === null) return '...';
+        switch (metric) {
+          case 'lcp':
+          case 'fcp':
+          case 'ttfb':
+          case 'inp':
+            return value < 1000 ? `${Math.round(value)}ms` : `${(value / 1000).toFixed(1)}s`;
+          case 'cls':
+            return value.toFixed(3);
+          case 'requests':
+            return String(Math.round(value));
+          case 'transfer':
+            return value < 1024
+              ? `${Math.round(value)}B`
+              : value < 1024 * 1024
+              ? `${(value / 1024).toFixed(1)}KB`
+              : `${(value / 1024 / 1024).toFixed(1)}MB`;
+          case 'dom':
+            return String(Math.round(value));
+          case 'heap':
+            return `${(value / 1024 / 1024).toFixed(1)}MB`;
+          default:
+            return String(value);
+        }
+      };
+
+      // Get status color
+      const getStatusColor = (metric: string, value: number | null): string => {
+        if (value === null || !showThresholds) return colors.text;
+        const threshold = thresholds[metric];
+        if (!threshold) return colors.text;
+        if (value <= threshold.good) return colors.good;
+        if (value <= threshold.needsImprovement) return colors.warning;
+        return colors.poor;
+      };
+
+      // Get status icon
+      const getStatusIcon = (metric: string, value: number | null): string => {
+        if (value === null || !showThresholds) return '';
+        const threshold = thresholds[metric];
+        if (!threshold) return '';
+        if (value <= threshold.good) return ' ✓';
+        if (value <= threshold.needsImprovement) return ' ⚠';
+        return ' ✗';
+      };
+
+      // Metric labels
+      const labels: Record<string, string> = {
+        lcp: 'LCP',
+        cls: 'CLS',
+        inp: 'INP',
+        fcp: 'FCP',
+        ttfb: 'TTFB',
+        requests: 'Requests',
+        transfer: 'Transfer',
+        dom: 'DOM Nodes',
+        heap: 'JS Heap',
+      };
+
+      // Update display
+      const updateDisplay = () => {
+        const container = document.getElementById('demo-perf-metrics');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        metrics.forEach((metric: string) => {
+          const row = document.createElement('div');
+          row.style.cssText = `
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+          `;
+
+          const label = document.createElement('span');
+          label.style.cssText = 'opacity: 0.8;';
+          label.textContent = labels[metric] || metric.toUpperCase();
+
+          const value = document.createElement('span');
+          value.style.cssText = `
+            font-weight: 600;
+            color: ${getStatusColor(metric, metricValues[metric])};
+          `;
+          value.textContent = formatValue(metric, metricValues[metric]) + getStatusIcon(metric, metricValues[metric]);
+
+          row.appendChild(label);
+          row.appendChild(value);
+          container.appendChild(row);
+        });
+      };
+
+      // Collect Web Vitals
+      const collectWebVitals = () => {
+        // LCP
+        if (metrics.includes('lcp')) {
+          new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            const lastEntry = entries[entries.length - 1] as PerformanceEntry & { startTime: number };
+            if (lastEntry) {
+              metricValues['lcp'] = lastEntry.startTime;
+              updateDisplay();
+            }
+          }).observe({ type: 'largest-contentful-paint', buffered: true });
+        }
+
+        // CLS
+        if (metrics.includes('cls')) {
+          let clsValue = 0;
+          new PerformanceObserver((list) => {
+            for (const entry of list.getEntries() as (PerformanceEntry & { hadRecentInput: boolean; value: number })[]) {
+              if (!entry.hadRecentInput) {
+                clsValue += entry.value;
+              }
+            }
+            metricValues['cls'] = clsValue;
+            updateDisplay();
+          }).observe({ type: 'layout-shift', buffered: true });
+        }
+
+        // INP (approximation using event timing)
+        if (metrics.includes('inp')) {
+          let maxINP = 0;
+          new PerformanceObserver((list) => {
+            for (const entry of list.getEntries() as (PerformanceEntry & { duration: number })[]) {
+              if (entry.duration > maxINP) {
+                maxINP = entry.duration;
+                metricValues['inp'] = maxINP;
+                updateDisplay();
+              }
+            }
+          }).observe({ type: 'event', buffered: true });
+        }
+
+        // FCP
+        if (metrics.includes('fcp')) {
+          new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            const fcpEntry = entries.find((e) => e.name === 'first-contentful-paint');
+            if (fcpEntry) {
+              metricValues['fcp'] = fcpEntry.startTime;
+              updateDisplay();
+            }
+          }).observe({ type: 'paint', buffered: true });
+        }
+
+        // TTFB
+        if (metrics.includes('ttfb')) {
+          const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+          if (navEntry) {
+            metricValues['ttfb'] = navEntry.responseStart - navEntry.requestStart;
+            updateDisplay();
+          }
+        }
+      };
+
+      // Collect resource metrics
+      const collectResourceMetrics = () => {
+        if (metrics.includes('requests') || metrics.includes('transfer')) {
+          const updateResources = () => {
+            const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+            if (metrics.includes('requests')) {
+              metricValues['requests'] = resources.length;
+            }
+            if (metrics.includes('transfer')) {
+              metricValues['transfer'] = resources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+            }
+            updateDisplay();
+          };
+          updateResources();
+          setInterval(updateResources, updateInterval);
+        }
+
+        // DOM nodes
+        if (metrics.includes('dom')) {
+          const updateDOM = () => {
+            metricValues['dom'] = document.querySelectorAll('*').length;
+            updateDisplay();
+          };
+          updateDOM();
+          setInterval(updateDOM, updateInterval);
+        }
+
+        // JS Heap (Chrome only)
+        if (metrics.includes('heap') && (performance as any).memory) {
+          const updateHeap = () => {
+            metricValues['heap'] = (performance as any).memory.usedJSHeapSize;
+            updateDisplay();
+          };
+          updateHeap();
+          setInterval(updateHeap, updateInterval);
+        }
+      };
+
+      // Initialize
+      updateDisplay();
+      collectWebVitals();
+      collectResourceMetrics();
+    },
+    { metrics, position, theme, mode, updateInterval, showThresholds, thresholds: THRESHOLDS }
+  );
+}
+
+export async function disablePerformanceOverlay(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const overlay = document.getElementById('demo-performance-overlay');
+    if (overlay) overlay.remove();
+  });
+}
+
+export async function capturePerformanceSnapshot(page: Page): Promise<Record<string, number | null>> {
+  return await page.evaluate(() => {
+    const snapshot: Record<string, number | null> = {};
+
+    // Navigation timing
+    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if (navEntry) {
+      snapshot['ttfb'] = navEntry.responseStart - navEntry.requestStart;
+      snapshot['domContentLoaded'] = navEntry.domContentLoadedEventEnd - navEntry.startTime;
+      snapshot['load'] = navEntry.loadEventEnd - navEntry.startTime;
+    }
+
+    // Resources
+    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+    snapshot['requests'] = resources.length;
+    snapshot['transfer'] = resources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+
+    // DOM
+    snapshot['dom'] = document.querySelectorAll('*').length;
+
+    // Heap (Chrome only)
+    if ((performance as any).memory) {
+      snapshot['heap'] = (performance as any).memory.usedJSHeapSize;
+    }
+
+    return snapshot;
+  });
+}
+```
+
+### Performance Comparison Demo
+
+Record before/after performance comparison for optimization demos.
+
+```typescript
+// demos/helpers/performance-comparison.ts
+import { Page } from '@playwright/test';
+import { capturePerformanceSnapshot } from './performance-overlay';
+
+interface ComparisonResult {
+  before: Record<string, number | null>;
+  after: Record<string, number | null>;
+  improvements: Record<string, { value: number; percentage: number }>;
+}
+
+export async function showComparisonOverlay(
+  page: Page,
+  before: Record<string, number | null>,
+  after: Record<string, number | null>
+): Promise<void> {
+  await page.evaluate(
+    ({ before, after }) => {
+      const container = document.createElement('div');
+      container.id = 'demo-comparison-overlay';
+      container.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        border-radius: 12px;
+        padding: 24px 32px;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', Consolas, monospace;
+        z-index: 99999;
+        min-width: 300px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      `;
+
+      const title = document.createElement('div');
+      title.style.cssText = `
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        text-align: center;
+      `;
+      title.textContent = '⚡ Performance Improvement';
+      container.appendChild(title);
+
+      const table = document.createElement('div');
+      table.style.cssText = 'display: flex; flex-direction: column; gap: 8px;';
+
+      // Header row
+      const header = document.createElement('div');
+      header.style.cssText = `
+        display: grid;
+        grid-template-columns: 80px 70px 70px 70px;
+        gap: 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        opacity: 0.6;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+      `;
+      header.innerHTML = '<span>Metric</span><span>Before</span><span>After</span><span>Change</span>';
+      table.appendChild(header);
+
+      const formatValue = (key: string, val: number | null): string => {
+        if (val === null) return '-';
+        if (key === 'transfer') {
+          return val < 1024 * 1024 ? `${(val / 1024).toFixed(0)}KB` : `${(val / 1024 / 1024).toFixed(1)}MB`;
+        }
+        if (key === 'heap') return `${(val / 1024 / 1024).toFixed(1)}MB`;
+        if (key.includes('time') || key === 'ttfb' || key === 'lcp' || key === 'fcp') {
+          return val < 1000 ? `${Math.round(val)}ms` : `${(val / 1000).toFixed(1)}s`;
+        }
+        return String(Math.round(val));
+      };
+
+      const labels: Record<string, string> = {
+        lcp: 'LCP',
+        ttfb: 'TTFB',
+        transfer: 'Transfer',
+        requests: 'Requests',
+        dom: 'DOM',
+        heap: 'JS Heap',
+      };
+
+      Object.keys(before).forEach((key) => {
+        if (before[key] === null && after[key] === null) return;
+
+        const row = document.createElement('div');
+        row.style.cssText = `
+          display: grid;
+          grid-template-columns: 80px 70px 70px 70px;
+          gap: 8px;
+          font-size: 13px;
+          align-items: center;
+        `;
+
+        const beforeVal = before[key];
+        const afterVal = after[key];
+        let changeText = '-';
+        let changeColor = '#ffffff';
+
+        if (beforeVal !== null && afterVal !== null && beforeVal > 0) {
+          const diff = ((beforeVal - afterVal) / beforeVal) * 100;
+          if (diff > 0) {
+            changeText = `↓${diff.toFixed(0)}%`;
+            changeColor = '#22c55e';
+          } else if (diff < 0) {
+            changeText = `↑${Math.abs(diff).toFixed(0)}%`;
+            changeColor = '#ef4444';
+          } else {
+            changeText = '→0%';
+          }
+        }
+
+        row.innerHTML = `
+          <span style="opacity: 0.8;">${labels[key] || key}</span>
+          <span style="opacity: 0.6;">${formatValue(key, beforeVal)}</span>
+          <span>${formatValue(key, afterVal)}</span>
+          <span style="color: ${changeColor}; font-weight: 600;">${changeText}</span>
+        `;
+        table.appendChild(row);
+      });
+
+      container.appendChild(table);
+      document.body.appendChild(container);
+    },
+    { before, after }
+  );
+}
+
+export async function hideComparisonOverlay(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const overlay = document.getElementById('demo-comparison-overlay');
+    if (overlay) overlay.remove();
+  });
+}
+```
+
+### Usage Examples
+
+#### Basic Performance Demo
+
+```typescript
+// demos/specs/demo-performance.spec.ts
+import { test, expect } from '@playwright/test';
+import { enablePerformanceOverlay, disablePerformanceOverlay } from '../helpers/performance-overlay';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: Dashboard Performance', () => {
+  test('show page load performance metrics', async ({ page }) => {
+    // Enable overlay before navigation
+    await page.goto('about:blank');
+    await enablePerformanceOverlay(page, {
+      metrics: ['lcp', 'cls', 'inp', 'requests', 'transfer'],
+      position: 'top-right',
+      theme: 'dark',
+      mode: 'detailed',
+    });
+
+    await showOverlay(page, 'Loading dashboard...', 1500);
+
+    // Navigate and let metrics populate
+    await page.goto('/dashboard');
+    await page.waitForLoadState('networkidle');
+
+    await showOverlay(page, 'Page loaded with excellent performance!', 2500);
+
+    // Keep overlay visible for a moment
+    await page.waitForTimeout(3000);
+
+    await disablePerformanceOverlay(page);
+  });
+});
+```
+
+#### Before/After Comparison Demo
+
+```typescript
+// demos/specs/demo-optimization-comparison.spec.ts
+import { test } from '@playwright/test';
+import {
+  enablePerformanceOverlay,
+  capturePerformanceSnapshot,
+  disablePerformanceOverlay,
+} from '../helpers/performance-overlay';
+import { showComparisonOverlay, hideComparisonOverlay } from '../helpers/performance-comparison';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: Performance Optimization Results', () => {
+  test('compare before and after optimization', async ({ page }) => {
+    // === Part 1: Before (simulate slow version) ===
+    await showOverlay(page, 'Before: Original Implementation', 2000);
+
+    await enablePerformanceOverlay(page, {
+      metrics: ['lcp', 'ttfb', 'transfer', 'requests'],
+      position: 'top-right',
+    });
+
+    await page.goto('/dashboard?version=legacy');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+
+    const beforeSnapshot = await capturePerformanceSnapshot(page);
+    await disablePerformanceOverlay(page);
+
+    // === Part 2: After (optimized version) ===
+    await showOverlay(page, 'After: Optimized Implementation', 2000);
+
+    await enablePerformanceOverlay(page, {
+      metrics: ['lcp', 'ttfb', 'transfer', 'requests'],
+      position: 'top-right',
+    });
+
+    await page.goto('/dashboard?version=optimized');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+
+    const afterSnapshot = await capturePerformanceSnapshot(page);
+    await disablePerformanceOverlay(page);
+
+    // === Part 3: Show comparison ===
+    await showComparisonOverlay(page, beforeSnapshot, afterSnapshot);
+    await page.waitForTimeout(5000);
+
+    await hideComparisonOverlay(page);
+  });
+});
+```
+
+#### Network-Focused Demo
+
+```typescript
+// demos/specs/demo-api-optimization.spec.ts
+import { test } from '@playwright/test';
+import { enablePerformanceOverlay } from '../helpers/performance-overlay';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: API Optimization', () => {
+  test('show reduced network requests', async ({ page }) => {
+    await page.goto('about:blank');
+
+    // Focus on network metrics
+    await enablePerformanceOverlay(page, {
+      metrics: ['requests', 'transfer', 'ttfb'],
+      position: 'bottom-right',
+      theme: 'transparent',
+      mode: 'compact',
+    });
+
+    await showOverlay(page, 'Watch the network metrics', 2000);
+
+    await page.goto('/data-heavy-page');
+    await page.waitForLoadState('networkidle');
+
+    await showOverlay(page, 'Only 5 requests thanks to batching!', 3000);
+  });
+});
+```
+
+---
+
 ### Device-Specific Presets
 
 Pre-configured settings for common demo scenarios.

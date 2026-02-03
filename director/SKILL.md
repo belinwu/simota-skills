@@ -393,6 +393,82 @@ demos/
 
 ---
 
+## PERFORMANCE VISUALIZATION
+
+### Overview
+
+Director can overlay real-time performance metrics during demo recording,
+creating compelling "this feature is fast" demonstrations with measurable proof.
+
+### Available Metrics
+
+| Category | Metrics | Use Case |
+|----------|---------|----------|
+| **Core Web Vitals** | LCP, CLS, INP | Performance improvement demos |
+| **Network** | Request count, Transfer size, Duration | API optimization demos |
+| **Resources** | DOM nodes, JS Heap size | Bundle size reduction demos |
+| **Custom** | Performance marks/measures | Specific operation timing |
+
+### Basic Usage
+
+```typescript
+import { enablePerformanceOverlay } from '../helpers/performance-overlay';
+
+test('demo with performance metrics', async ({ page }) => {
+  await enablePerformanceOverlay(page, {
+    metrics: ['lcp', 'cls', 'inp'],
+    position: 'top-right',
+    theme: 'dark',
+  });
+
+  await page.goto('/dashboard');
+  // Metrics update in real-time as page loads
+});
+```
+
+### Display Modes
+
+**Compact Mode** - Small badge showing key metrics:
+```
+┌──────┐
+│LCP 1.2s ✓│
+└──────┘
+```
+
+**Detailed Mode** - Full panel with all metrics:
+```
+┌─────────────────┐
+│ Performance     │
+│ LCP    1.2s  ✓  │
+│ CLS    0.02  ✓  │
+│ INP    45ms  ✓  │
+│ Requests  12    │
+│ Transfer  340KB │
+└─────────────────┘
+```
+
+### Thresholds (Good/Needs Improvement/Poor)
+
+| Metric | Good | Needs Improvement | Poor |
+|--------|------|-------------------|------|
+| LCP | ≤2.5s | ≤4.0s | >4.0s |
+| CLS | ≤0.1 | ≤0.25 | >0.25 |
+| INP | ≤200ms | ≤500ms | >500ms |
+
+### Collaboration with Bolt
+
+When demonstrating performance improvements optimized by Bolt:
+
+```markdown
+## BOLT_TO_DIRECTOR_HANDOFF
+**Optimization**: Image lazy loading implementation
+**Before**: LCP 4.2s, Transfer 2.1MB
+**After**: LCP 1.8s, Transfer 890KB
+**Demo Request**: Record before/after comparison with metrics overlay
+```
+
+---
+
 ## SCENARIO DESIGN TEMPLATE
 
 See `references/prompt-template.md` for the full template.
