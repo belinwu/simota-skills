@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-45-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-47-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **45種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **47種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする42種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする47種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -63,8 +63,10 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 |------------|------|------|
 | **Guardian** | Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
 | **Harvest** | PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
+| **Launch** | リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
 
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
+**Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
 
 ### 品質保証
 
@@ -130,6 +132,9 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Schema** | DBスキーマ設計・マイグレーション作成・ER図設計 | マイグレーション/スキーマ定義 |
+| **Stream** | データパイプライン。ETL/ELT設計、Kafka/Airflow/dbt、バッチ/ストリーミング選定、データ品質管理 | パイプライン設計、DAG、dbtモデル |
+
+**Schema → Stream の連携**：Schema（データモデル）→ Stream（パイプライン設計）
 
 ### DevOps
 
@@ -398,6 +403,7 @@ skills/
 ├── harvest/SKILL.md    # PR情報収集・レポート生成
 ├── horizon/SKILL.md    # モダナイゼーション
 ├── judge/SKILL.md      # コードレビュー（codex review）
+├── launch/SKILL.md     # リリース管理
 ├── muse/SKILL.md       # デザイン
 ├── navigator/SKILL.md  # ブラウザ自動化
 ├── nexus/SKILL.md      # オーケストレーター
@@ -416,6 +422,7 @@ skills/
 ├── sherpa/SKILL.md     # タスク分解
 ├── showcase/SKILL.md   # Storybookストーリー管理
 ├── spark/SKILL.md      # 機能提案
+├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── triage/SKILL.md     # 障害対応
 ├── tuner/SKILL.md      # DBパフォーマンス最適化
@@ -429,7 +436,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全42エージェントの使用例を紹介します。
+> カテゴリ別に全47エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
