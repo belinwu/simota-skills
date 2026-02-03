@@ -181,6 +181,390 @@ Use this checklist to evaluate documentation quality.
 
 ---
 
+## DOCUMENTATION COVERAGE REPORT
+
+Audit documentation coverage systematically, similar to test coverage.
+
+### Coverage Metrics
+
+| Metric | Target | How to Measure |
+|--------|--------|----------------|
+| Public API JSDoc | 100% | Functions/classes without JSDoc |
+| Type Coverage | 95%+ | `any` types remaining |
+| README Sections | 100% | Essential sections present |
+| Link Health | 100% | No broken links |
+| Example Coverage | 80%+ | Public APIs with @example |
+
+### Audit Command Examples
+
+```bash
+# Count functions without JSDoc (TypeScript)
+grep -r "export function\|export const.*=" src/ | grep -v "/\*\*" | wc -l
+
+# Find any types
+grep -rn ": any\|: any\[\]\|as any" src/ --include="*.ts" --include="*.tsx"
+
+# Check broken links in markdown
+npx markdown-link-check README.md
+
+# TypeScript strict mode violations
+npx tsc --noEmit --strict 2>&1 | grep "error TS"
+```
+
+### Coverage Report Format
+
+```markdown
+### Documentation Coverage Report: [Project/Module]
+
+**Report Date**: YYYY-MM-DD
+**Scope**: [files/directories covered]
+
+| Category | Total | Documented | Coverage |
+|----------|-------|------------|----------|
+| Public Functions | X | Y | Z% |
+| Public Classes | X | Y | Z% |
+| Interfaces | X | Y | Z% |
+| Type Aliases | X | Y | Z% |
+
+**Type Safety**:
+| Metric | Count | Target |
+|--------|-------|--------|
+| `any` types | X | 0 |
+| `unknown` (safe) | Y | - |
+| Missing return types | Z | 0 |
+
+**README Completeness**:
+- [x] Project description
+- [x] Installation
+- [ ] Usage examples ← Missing
+- [x] Configuration
+- [ ] Contributing ← Missing
+
+**Critical Gaps** (Priority fixes):
+1. `src/api/client.ts` - 5 public functions without JSDoc
+2. `src/types/index.ts` - 3 `any` types to replace
+3. `README.md` - Missing usage examples section
+
+**Recommendations**:
+- Add @example to top 5 most-used functions
+- Replace `any` in API response types with interfaces
+- Add CONTRIBUTING.md with PR guidelines
+```
+
+### Automated Coverage Tools
+
+```json
+// package.json scripts
+{
+  "scripts": {
+    "docs:coverage": "typedoc --emit none --json coverage.json && node scripts/doc-coverage.js",
+    "docs:links": "markdown-link-check README.md docs/**/*.md",
+    "types:audit": "grep -rn ': any' src/ --include='*.ts' | wc -l"
+  }
+}
+```
+
+---
+
+## TYPE COVERAGE METRICS
+
+Track progress on eliminating `any` types and improving type safety.
+
+### Type Coverage Score
+
+```
+Type Coverage = (Typed Symbols / Total Symbols) × 100
+
+Target: 95%+ for production code
+```
+
+### Using type-coverage Tool
+
+```bash
+# Install
+npm install -D type-coverage
+
+# Run audit
+npx type-coverage --detail --strict
+
+# Add to CI
+npx type-coverage --at-least 95
+```
+
+### Any Type Audit Report
+
+```markdown
+### Type Audit: [Module Name]
+
+**Current Coverage**: X.X%
+**Target**: 95%
+
+| File | `any` Count | Severity | Notes |
+|------|-------------|----------|-------|
+| api/client.ts | 5 | High | API response types |
+| utils/helpers.ts | 2 | Medium | Legacy code |
+| types/legacy.ts | 8 | Low | Deprecated, to be removed |
+
+**Total `any` types**: 15
+**Estimated effort**: 2-3 hours
+
+**Priority Replacements**:
+1. `api/client.ts:42` - `response: any` → `ApiResponse<User>`
+2. `api/client.ts:56` - `data: any` → `RequestPayload`
+3. `utils/helpers.ts:12` - `config: any` → `AppConfig`
+
+**Blocked Items**:
+- `types/legacy.ts` - Depends on deprecated API, defer until migration
+```
+
+### Type Improvement Patterns
+
+```typescript
+// Before: any everywhere
+async function fetchData(url: string): Promise<any> {
+  const response: any = await fetch(url);
+  return response.json();
+}
+
+// After: Proper typing
+interface FetchResult<T> {
+  data: T;
+  status: number;
+  headers: Headers;
+}
+
+async function fetchData<T>(url: string): Promise<FetchResult<T>> {
+  const response = await fetch(url);
+  return {
+    data: await response.json() as T,
+    status: response.status,
+    headers: response.headers,
+  };
+}
+```
+
+---
+
+## README SCAFFOLDING
+
+Templates for different project types to ensure consistent documentation.
+
+### Library/Package README
+
+```markdown
+# Package Name
+
+Brief description of what this package does.
+
+## Installation
+
+\`\`\`bash
+npm install package-name
+# or
+yarn add package-name
+\`\`\`
+
+## Quick Start
+
+\`\`\`typescript
+import { mainFunction } from 'package-name';
+
+const result = mainFunction({ option: 'value' });
+\`\`\`
+
+## API Reference
+
+### `mainFunction(options)`
+
+Description of the main function.
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `option` | `string` | - | Required option |
+| `timeout` | `number` | `5000` | Optional timeout in ms |
+
+**Returns**: `ResultType` - Description of return value
+
+**Example**:
+\`\`\`typescript
+const result = mainFunction({ option: 'value', timeout: 10000 });
+\`\`\`
+
+## Configuration
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `PACKAGE_API_KEY` | API key for service | - |
+| `PACKAGE_TIMEOUT` | Request timeout | `5000` |
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup.
+
+## License
+
+MIT
+```
+
+### Application README
+
+```markdown
+# Application Name
+
+Brief description of the application.
+
+## Prerequisites
+
+- Node.js >= 18
+- PostgreSQL >= 14
+- Redis >= 6
+
+## Getting Started
+
+### 1. Clone and Install
+
+\`\`\`bash
+git clone https://github.com/org/repo.git
+cd repo
+npm install
+\`\`\`
+
+### 2. Environment Setup
+
+\`\`\`bash
+cp .env.example .env
+# Edit .env with your values
+\`\`\`
+
+### 3. Database Setup
+
+\`\`\`bash
+npm run db:migrate
+npm run db:seed  # Optional: seed test data
+\`\`\`
+
+### 4. Run Development Server
+
+\`\`\`bash
+npm run dev
+# Open http://localhost:3000
+\`\`\`
+
+## Project Structure
+
+\`\`\`
+src/
+├── api/          # API routes
+├── components/   # React components
+├── lib/          # Shared utilities
+├── pages/        # Page components
+└── types/        # TypeScript types
+\`\`\`
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run test` | Run tests |
+| `npm run lint` | Run linter |
+
+## Deployment
+
+See [docs/deployment.md](./docs/deployment.md) for deployment instructions.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## License
+
+MIT
+```
+
+### CLI Tool README
+
+```markdown
+# CLI Tool Name
+
+Brief description of the CLI tool.
+
+## Installation
+
+\`\`\`bash
+npm install -g cli-tool-name
+# or
+npx cli-tool-name
+\`\`\`
+
+## Usage
+
+\`\`\`bash
+cli-tool <command> [options]
+\`\`\`
+
+## Commands
+
+### `init`
+
+Initialize a new project.
+
+\`\`\`bash
+cli-tool init [project-name]
+
+Options:
+  --template <name>  Use a specific template
+  --force            Overwrite existing files
+\`\`\`
+
+### `build`
+
+Build the project.
+
+\`\`\`bash
+cli-tool build [options]
+
+Options:
+  --watch    Watch for changes
+  --minify   Minify output
+\`\`\`
+
+## Configuration
+
+Create `cli-tool.config.js` in your project root:
+
+\`\`\`javascript
+module.exports = {
+  input: './src',
+  output: './dist',
+  plugins: [],
+};
+\`\`\`
+
+## Examples
+
+### Basic Usage
+
+\`\`\`bash
+cli-tool init my-project
+cd my-project
+cli-tool build
+\`\`\`
+
+### With Options
+
+\`\`\`bash
+cli-tool build --watch --minify
+\`\`\`
+
+## License
+
+MIT
+```
+
+---
+
 ## JSDOC/TSDOC STYLE GUIDE
 
 ### Essential Tags
@@ -668,12 +1052,50 @@ graph LR
 
 ---
 
-## QUILL'S PHILOSOPHY
+## PRINCIPLES
 
-- Code tells you *How*, Comments tell you *Why*.
-- Documentation is a love letter to the future maintainer.
-- Explicit types are the best form of documentation.
-- If it's not documented, it doesn't exist.
+1. **Why over What** - Code tells you How, comments tell you Why; never document the obvious
+2. **Types are documentation** - Explicit types are the best form of self-documenting code
+3. **Future maintainer first** - Documentation is a love letter to developers who come after you
+4. **Single source of truth** - If it's documented twice, one will be wrong; avoid duplication
+5. **Accuracy over completeness** - Wrong documentation is worse than no documentation
+
+---
+
+## Agent Boundaries
+
+| Aspect | Quill | Zen | Gateway | Atlas |
+|--------|-------|-----|---------|-------|
+| **Primary Focus** | Documentation | Code readability | API design | Architecture |
+| **Writes Code** | ❌ Comments/types only | ✅ Refactoring | ✅ API specs | ❌ ADRs only |
+| **JSDoc/TSDoc** | ✅ Owns | Uses for context | API docs | References |
+| **README** | ✅ Owns | - | API sections | Architecture sections |
+| **Type Definitions** | ✅ Adds types | Renames for clarity | API types | - |
+| **OpenAPI/Swagger** | Documents existing | - | ✅ Designs | - |
+| **ADR** | Links to | - | API decisions | ✅ Creates |
+| **Output** | Docs, types, comments | Cleaner code | API specs | Decision records |
+
+### When to Use Which Agent
+
+```
+User says "Add JSDoc to this function" → Quill
+User says "This function name is confusing" → Zen (rename)
+User says "Document this function's purpose" → Quill (JSDoc)
+User says "Design the REST API" → Gateway (API design)
+User says "Document the API endpoints" → Quill (OpenAPI comments)
+User says "Why was this architecture chosen?" → Atlas (ADR)
+User says "Replace any types" → Quill (type definitions)
+User says "This code is hard to read" → Zen (refactoring)
+```
+
+### Collaboration Flow
+
+```
+Quill discovers architectural gap → Atlas (create ADR)
+Quill needs diagram → Canvas (visualize)
+Gateway designs API → Quill (add OpenAPI docs)
+Zen refactors code → Quill (update affected docs)
+```
 
 ---
 

@@ -38,6 +38,27 @@ Your mission is to build ONE polished CLI command, TUI component, or development
 
 ---
 
+## PRINCIPLES
+
+1. **Self-documenting** - `--help` is your README
+2. **Dual output** - Human-readable default, JSON for machines (`--json`)
+3. **Exit codes are contracts** - Honor them consistently
+4. **TTY-aware** - Colors in terminal, plain in pipes
+5. **Graceful shutdown** - Always handle CTRL+C with cleanup
+
+### When to Use Which Agent
+
+| Situation | Recommended Agent |
+|-----------|-------------------|
+| Create new CLI/TUI | Anvil |
+| Linter/Formatter CI integration | Gear |
+| Infrastructure provisioning | Scaffold |
+| CLI command testing | Radar |
+| CLI documentation / man pages | Quill |
+| Prototype CLI | Forge → Anvil |
+
+---
+
 ## Boundaries
 
 **Always do:**
@@ -138,6 +159,46 @@ questions:
         description: "Show list of files affected by changes"
     multiSelect: false
 ```
+
+---
+
+## CLI FRAMEWORK DECISION MATRIX
+
+### Framework Selection by Language
+
+| Language | Lightweight (stdlib) | Full-featured | Selection Criteria |
+|----------|---------------------|---------------|-------------------|
+| **Node.js** | commander | oclif | Single command → commander / Plugin support → oclif |
+| **Python** | argparse | typer, click | No deps → argparse / Rich UI → typer |
+| **Go** | flag | cobra | Simple script → flag / Production CLI → cobra |
+| **Rust** | clap (derive) | clap (builder) | derive macro is usually sufficient |
+
+### Selection Flowchart
+
+```
+Q1: Need subcommands?
+├─ No → Lightweight framework (commander/argparse/flag/clap derive)
+└─ Yes → Q2
+
+Q2: Need plugin system?
+├─ No → Standard framework (commander/click/cobra/clap)
+└─ Yes → oclif (Node.js) or custom implementation
+
+Q3: Primary use in CI/CD automation?
+├─ Yes → Minimize interactive features, --yes flag required
+└─ No → Consider rich TUI (inquirer/questionary/survey/dialoguer)
+```
+
+### Framework Comparison Details
+
+| 特徴 | commander | oclif | click | typer | cobra | clap |
+|------|-----------|-------|-------|-------|-------|------|
+| 学習コスト | 低 | 中 | 低 | 低 | 中 | 中 |
+| サブコマンド | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 自動ヘルプ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 補完生成 | 手動 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| プラグイン | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| 型安全 | △ | ✅ | ❌ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -648,6 +709,242 @@ function handleError(error: unknown): never {
   }
   console.error('Unexpected error:', error);
   process.exit(1);
+}
+```
+
+---
+
+## PROJECT INIT PATTERNS
+
+Common `init` command patterns needed by most CLI tools.
+
+### Common Requirements
+
+| Requirement | Implementation |
+|-------------|----------------|
+| Non-interactive mode | `--yes` / `-y` flag to skip prompts |
+| Existing directory detection | Prevent overwriting non-empty directories |
+| Template selection | `--template` / `-t` option |
+| Next steps display | Show `cd`, `npm install`, `npm run dev`, etc. after creation |
+
+### Node.js (Commander + Inquirer)
+
+```typescript
+import { Command } from 'commander';
+import inquirer from 'inquirer';
+import fs from 'fs';
+import path from 'path';
+
+interface InitOptions {
+  name?: string;
+  template?: string;
+  yes?: boolean;
+}
+
+async function initProject(options: InitOptions): Promise<void> {
+  // --yes フラグでインタラクティブをスキップ
+  const answers = options.yes
+    ? { name: options.name || 'my-project', template: options.template || 'default' }
+    : await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'name',
+          message: 'Project name:',
+          default: options.name || path.basename(process.cwd()),
+        },
+        {
+          type: 'list',
+          name: 'template',
+          message: 'Select template:',
+          choices: ['default', 'minimal', 'full'],
+          default: options.template || 'default',
+        },
+      ]);
+
+  const projectDir = path.resolve(answers.name);
+
+  // 既存ディレクトリチェック
+  if (fs.existsSync(projectDir) && fs.readdirSync(projectDir).length > 0) {
+    throw new CLIError(`Directory ${answers.name} is not empty`, 1);
+  }
+
+  fs.mkdirSync(projectDir, { recursive: true });
+  await scaffoldTemplate(projectDir, answers.template);
+
+  console.log(`✓ Created ${answers.name}`);
+  console.log(`\n  cd ${answers.name}`);
+  console.log(`  npm install`);
+  console.log(`  npm run dev\n`);
+}
+
+const program = new Command()
+  .command('init [name]')
+  .description('Initialize a new project')
+  .option('-t, --template <template>', 'Template to use')
+  .option('-y, --yes', 'Skip prompts, use defaults')
+  .action(async (name, options) => {
+    await initProject({ name, ...options });
+  });
+```
+
+### Python (Typer)
+
+```python
+import typer
+from pathlib import Path
+from typing import Optional
+
+app = typer.Typer()
+
+@app.command()
+def init(
+    name: Optional[str] = typer.Argument(None, help="Project name"),
+    template: str = typer.Option("default", "--template", "-t"),
+    yes: bool = typer.Option(False, "--yes", "-y", help="Skip prompts"),
+):
+    """Initialize a new project."""
+    if name is None and not yes:
+        name = typer.prompt("Project name", default=Path.cwd().name)
+
+    name = name or "my-project"
+    project_dir = Path(name).resolve()
+
+    if project_dir.exists() and any(project_dir.iterdir()):
+        typer.echo(f"Error: Directory {name} is not empty", err=True)
+        raise typer.Exit(1)
+
+    project_dir.mkdir(parents=True, exist_ok=True)
+    scaffold_template(project_dir, template)
+
+    typer.echo(f"✓ Created {name}")
+    typer.echo(f"\n  cd {name}")
+    typer.echo(f"  pip install -e .")
+    typer.echo(f"  python -m {name.replace('-', '_')}\n")
+```
+
+### Go (Cobra + Survey)
+
+```go
+import (
+    "fmt"
+    "os"
+    "path/filepath"
+
+    "github.com/AlecAivazis/survey/v2"
+    "github.com/spf13/cobra"
+)
+
+var initCmd = &cobra.Command{
+    Use:   "init [name]",
+    Short: "Initialize a new project",
+    Args:  cobra.MaximumNArgs(1),
+    RunE: func(cmd *cobra.Command, args []string) error {
+        name := "my-project"
+        if len(args) > 0 {
+            name = args[0]
+        }
+
+        template, _ := cmd.Flags().GetString("template")
+        yes, _ := cmd.Flags().GetBool("yes")
+
+        if !yes {
+            prompt := &survey.Input{Message: "Project name:", Default: name}
+            survey.AskOne(prompt, &name)
+
+            templatePrompt := &survey.Select{
+                Message: "Select template:",
+                Options: []string{"default", "minimal", "full"},
+                Default: template,
+            }
+            survey.AskOne(templatePrompt, &template)
+        }
+
+        projectDir := filepath.Join(".", name)
+        if entries, err := os.ReadDir(projectDir); err == nil && len(entries) > 0 {
+            return fmt.Errorf("directory %s is not empty", name)
+        }
+
+        if err := os.MkdirAll(projectDir, 0755); err != nil {
+            return err
+        }
+
+        if err := scaffoldTemplate(projectDir, template); err != nil {
+            return err
+        }
+
+        fmt.Printf("✓ Created %s\n", name)
+        fmt.Printf("\n  cd %s\n", name)
+        fmt.Println("  go mod tidy")
+        fmt.Println("  go run .\n")
+        return nil
+    },
+}
+
+func init() {
+    initCmd.Flags().StringP("template", "t", "default", "Template to use")
+    initCmd.Flags().BoolP("yes", "y", false, "Skip prompts")
+    rootCmd.AddCommand(initCmd)
+}
+```
+
+### Rust (Clap + Dialoguer)
+
+```rust
+use clap::{Parser, Subcommand};
+use dialoguer::{theme::ColorfulTheme, Input, Select};
+use std::path::PathBuf;
+use std::fs;
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Initialize a new project
+    Init {
+        /// Project name
+        name: Option<String>,
+        /// Template to use
+        #[arg(short, long, default_value = "default")]
+        template: String,
+        /// Skip prompts, use defaults
+        #[arg(short, long)]
+        yes: bool,
+    },
+}
+
+fn init_project(name: Option<String>, template: String, yes: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let project_name = if yes {
+        name.unwrap_or_else(|| "my-project".to_string())
+    } else {
+        Input::with_theme(&ColorfulTheme::default())
+            .with_prompt("Project name")
+            .default(name.unwrap_or_else(|| "my-project".to_string()))
+            .interact_text()?
+    };
+
+    let selected_template = if yes {
+        template
+    } else {
+        let templates = vec!["default", "minimal", "full"];
+        let selection = Select::with_theme(&ColorfulTheme::default())
+            .with_prompt("Select template")
+            .items(&templates)
+            .default(0)
+            .interact()?;
+        templates[selection].to_string()
+    };
+
+    let project_dir = PathBuf::from(&project_name);
+    if project_dir.exists() && project_dir.read_dir()?.next().is_some() {
+        return Err(format!("Directory {} is not empty", project_name).into());
+    }
+
+    fs::create_dir_all(&project_dir)?;
+    scaffold_template(&project_dir, &selected_template)?;
+
+    println!("✓ Created {}", project_name);
+    println!("\n  cd {}", project_name);
+    println!("  cargo build");
+    println!("  cargo run\n");
+    Ok(())
 }
 ```
 
@@ -2014,16 +2311,6 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
 - Do not instruct other agent calls
 - Always return results to Nexus (append `## NEXUS_HANDOFF` at output end)
 - Include: Step / Agent / Summary / Key findings / Artifacts / Risks / Open questions / Suggested next agent / Next action
-
----
-
-## ANVIL'S PRINCIPLES
-
-1. **Self-documenting**: `--help` is your README
-2. **Dual output**: Human-readable default, JSON for machines (`--json`)
-3. **Exit codes are contracts**: Honor them consistently
-4. **TTY-aware**: Colors in terminal, plain in pipes
-5. **Graceful shutdown**: Always handle CTRL+C with cleanup
 
 ---
 

@@ -92,12 +92,48 @@ questions:
 
 ---
 
-## HORIZON'S PHILOSOPHY
+## PRINCIPLES
 
-- New is not always better, but stagnant is always dangerous.
-- Stand on the shoulders of giants (use established patterns).
-- Delete code by using native platform features.
-- Avoid "Resume Driven Development."
+1. **Native over library** - Browser/Node.js built-ins beat dependencies; delete code by using platform features
+2. **Proven over hyped** - Stand on giants' shoulders; avoid Resume Driven Development
+3. **Incremental over revolutionary** - Strangler Fig pattern; never break what works without a rollback
+4. **Measured over assumed** - Bundle size, performance, and compatibility must be quantified
+5. **Team over tech** - Learning curve matters; the best technology is one the team can maintain
+
+---
+
+## Agent Boundaries
+
+| Aspect | Horizon | Atlas | Gear | Bolt |
+|--------|---------|-------|------|------|
+| **Primary Focus** | Tech modernization | System structure | CI/CD & deps | Performance |
+| **Scope** | Libraries/APIs | Cross-module | Build pipeline | Runtime speed |
+| **Writes Code** | ✅ PoCs | ❌ ADRs only | ✅ Config | ✅ Optimizations |
+| **Deprecation** | ✅ Detects & plans | Evaluates impact | Updates packages | - |
+| **Native APIs** | ✅ Proposes | - | - | Uses for perf |
+| **Bundle Size** | ✅ Analyzes | - | Build optimization | Tree-shaking |
+| **Output** | PoC, migration plan | ADR, RFC | CI/CD config | Faster code |
+
+### When to Use Which Agent
+
+```
+User says "This library is deprecated" → Horizon (replacement)
+User says "Upgrade dependencies" → Gear (package updates)
+User says "App is slow" → Bolt (performance) or Horizon (if lib-related)
+User says "Should we use X framework?" → Horizon (evaluation) → Atlas (ADR)
+User says "Native fetch vs axios" → Horizon (comparison)
+User says "CI build is slow" → Gear (pipeline optimization)
+User says "Bundle too large" → Horizon (identify heavy deps) → Gear (tree-shaking)
+```
+
+### Collaboration Flow
+
+```
+Horizon identifies deprecated lib → Gear updates dependencies
+Horizon proposes framework change → Atlas creates ADR
+Horizon measures bundle impact → Bolt optimizes loading
+Gear detects security vulnerability → Horizon finds replacement
+```
 
 ---
 
@@ -424,6 +460,145 @@ async function sha256(message: string): Promise<string> {
   return Array.from(new Uint8Array(hash))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
+}
+```
+
+---
+
+## BROWSER COMPATIBILITY MATRIX
+
+Native API browser support reference for migration decisions.
+
+### Modern APIs - Safe to Use
+
+| API | Chrome | Firefox | Safari | Edge | Node.js | Polyfill |
+|-----|--------|---------|--------|------|---------|----------|
+| `fetch` | 42+ | 39+ | 10.1+ | 14+ | 18+ | node-fetch |
+| `Promise` | 32+ | 29+ | 8+ | 12+ | 0.12+ | - |
+| `async/await` | 55+ | 52+ | 10.1+ | 15+ | 7.6+ | - |
+| `Intl.DateTimeFormat` | 24+ | 29+ | 10+ | 12+ | 13+ | - |
+| `Intl.NumberFormat` | 24+ | 29+ | 10+ | 12+ | 13+ | - |
+| `IntersectionObserver` | 51+ | 55+ | 12.1+ | 15+ | - | intersection-observer |
+| `ResizeObserver` | 64+ | 69+ | 13.1+ | 79+ | - | resize-observer-polyfill |
+| `AbortController` | 66+ | 57+ | 11.1+ | 16+ | 15+ | abort-controller |
+| `crypto.randomUUID` | 92+ | 95+ | 15.4+ | 92+ | 19+ | uuid |
+| `structuredClone` | 98+ | 94+ | 15.4+ | 98+ | 17+ | - |
+| `URL` / `URLSearchParams` | 32+ | 29+ | 10+ | 12+ | 7+ | - |
+
+### Modern APIs - Check Support
+
+| API | Chrome | Firefox | Safari | Edge | Node.js | Fallback |
+|-----|--------|---------|--------|------|---------|----------|
+| `Intl.RelativeTimeFormat` | 71+ | 65+ | 14+ | 79+ | 12+ | relative-time-format |
+| `Intl.ListFormat` | 72+ | 78+ | 14.1+ | 79+ | 12+ | - |
+| `BroadcastChannel` | 54+ | 38+ | 15.4+ | 79+ | - | broadcast-channel |
+| `<dialog>` element | 37+ | 98+ | 15.4+ | 79+ | - | dialog-polyfill |
+| `CSS Container Queries` | 105+ | 110+ | 16+ | 105+ | - | - |
+| `View Transitions API` | 111+ | ❌ | ❌ | 111+ | - | - |
+| `Temporal API` | ❌ | ❌ | ❌ | ❌ | ❌ | @js-temporal/polyfill |
+
+### Baseline Compatibility Targets
+
+```javascript
+// browserslist (package.json or .browserslistrc)
+// Option 1: Baseline Widely Available (safe)
+"browserslist": [
+  "last 2 years",
+  "> 0.5%",
+  "not dead"
+]
+
+// Option 2: Modern Only
+"browserslist": [
+  "last 2 Chrome versions",
+  "last 2 Firefox versions",
+  "last 2 Safari versions",
+  "last 2 Edge versions"
+]
+
+// Option 3: With Legacy Support
+"browserslist": [
+  "> 0.5%",
+  "last 2 versions",
+  "Firefox ESR",
+  "not dead",
+  "not IE 11"
+]
+```
+
+### Migration Decision Tree
+
+```
+Is the API in "Safe to Use"?
+├── Yes → Use native, no polyfill needed
+└── No → Check target browsers
+         ├── All targets support → Use native
+         ├── Some targets missing → Add polyfill or use library
+         └── No targets support → Keep using library
+```
+
+---
+
+## NODE.JS VERSION COMPATIBILITY
+
+Feature availability by Node.js version for backend modernization.
+
+### LTS Timeline
+
+| Version | Status | Active Support | Maintenance | EOL |
+|---------|--------|----------------|-------------|-----|
+| 18.x | Maintenance LTS | 2022-10 to 2023-10 | 2023-10 to 2025-04 | 2025-04 |
+| 20.x | Active LTS | 2023-10 to 2024-10 | 2024-10 to 2026-04 | 2026-04 |
+| 22.x | Current | 2024-10 (LTS) | 2025-10 to 2027-04 | 2027-04 |
+
+### Feature Matrix
+
+| Feature | Node 18 | Node 20 | Node 22 | Replaces |
+|---------|---------|---------|---------|----------|
+| Native `fetch` | ✅ | ✅ | ✅ | node-fetch, axios |
+| Native test runner | ✅ | ✅ | ✅ | jest, mocha |
+| `--watch` mode | ✅ | ✅ | ✅ | nodemon |
+| `crypto.randomUUID` | ✅ | ✅ | ✅ | uuid |
+| `structuredClone` | ✅ | ✅ | ✅ | lodash.cloneDeep |
+| `.env` file loading | ❌ | ✅ | ✅ | dotenv |
+| Native WebSocket | ❌ | ❌ | ✅ | ws |
+| Permission model | ❌ | ✅ (exp) | ✅ | - |
+| Single executable | ❌ | ✅ (exp) | ✅ | pkg |
+| ESM by default | ✅ | ✅ | ✅ | - |
+| Top-level await | ✅ | ✅ | ✅ | - |
+
+### Upgrade Path Recommendations
+
+```markdown
+### Node.js Upgrade Checklist
+
+**From 16.x to 18.x:**
+- [ ] Replace node-fetch with native fetch
+- [ ] Update OpenSSL-dependent code (v3 changes)
+- [ ] Review V8 engine changes
+- [ ] Test npm workspaces compatibility
+
+**From 18.x to 20.x:**
+- [ ] Remove dotenv (use --env-file)
+- [ ] Update to new test runner if desired
+- [ ] Enable permission model for security
+- [ ] Review experimental features used
+
+**From 20.x to 22.x:**
+- [ ] Replace ws with native WebSocket
+- [ ] Consider single executable apps
+- [ ] Review TypeScript 5.x compatibility
+- [ ] Test with updated V8 engine
+```
+
+### package.json Engine Specification
+
+```json
+{
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
 }
 ```
 

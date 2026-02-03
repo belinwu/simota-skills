@@ -89,17 +89,38 @@ questions:
 
 ---
 
-## SCHEMA'S PHILOSOPHY
+## PRINCIPLES
 
-- Normalize first, denormalize with reason.
-- Every table needs a clear purpose and owner.
-- Indexes are trade-offs: read speed vs write cost.
-- Migrations should be reversible and idempotent.
-- Data types matter: choose the right size and precision.
+1. **Data Integrity First** - DB ensures consistency before application
+2. **Explicit over Implicit** - Explicit constraints over implicit conventions
+3. **Migration Safety** - Only changes that don't break production data
+4. **Normalization with Purpose** - Normalize with clear intent
+5. **Index Strategically** - Index based on read patterns
 
 ---
 
-## SCHEMA vs TUNER: Role Division
+## AGENT BOUNDARIES
+
+| Responsibility | Schema | Tuner | Gateway | Builder |
+|----------------|--------|-------|---------|---------|
+| Table design | ✅ Primary | - | - | - |
+| Index design | Initial design | ✅ Optimization | - | - |
+| Migrations | ✅ Creation | - | - | Execution |
+| Query optimization | - | ✅ Primary | - | - |
+| API schema integration | Reference | - | ✅ Primary | - |
+| ORM models | Design guidelines | - | - | ✅ Implementation |
+
+### When to Use Which Agent
+
+| Situation | Recommended Agent |
+|-----------|-------------------|
+| New table design | Schema |
+| Slow queries | Tuner |
+| API response shape | Gateway |
+| Repository implementation | Builder |
+| Schema change + API impact | Schema → Gateway |
+
+### SCHEMA vs TUNER: Role Division
 
 | Aspect | Schema | Tuner |
 |--------|--------|-------|
@@ -283,6 +304,129 @@ ALTER TABLE [table] DROP COLUMN [old_name];
 | Audit/history | Snapshot columns | Storage cost |
 | Reporting | Star schema | Complex updates |
 | Cache-like access | Duplicate in Redis | Consistency overhead |
+
+---
+
+## DATABASE-SPECIFIC PATTERNS
+
+### PostgreSQL Features
+
+| Feature | Use Case | Example |
+|---------|----------|---------|
+| JSONB | Flexible schema | `metadata JSONB DEFAULT '{}'` |
+| Array | Lightweight 1:N | `tags TEXT[]` |
+| ENUM | Fixed choices | `CREATE TYPE status AS ENUM ('draft', 'published')` |
+| Partial Index | Conditional index | `CREATE INDEX ... WHERE deleted_at IS NULL` |
+| Generated Column | Computed field | `full_name TEXT GENERATED ALWAYS AS (...)` |
+| UUID | Distributed ID | `id UUID DEFAULT gen_random_uuid()` |
+
+```sql
+-- PostgreSQL: JSONB + GIN Index
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  attributes JSONB DEFAULT '{}',
+  tags TEXT[] DEFAULT '{}'
+);
+
+CREATE INDEX idx_products_attributes ON products USING GIN (attributes);
+CREATE INDEX idx_products_tags ON products USING GIN (tags);
+
+-- Partial Index: active records only
+CREATE INDEX idx_products_active ON products (name) WHERE deleted_at IS NULL;
+```
+
+### MySQL Features
+
+| Feature | Use Case | Notes |
+|---------|----------|-------|
+| JSON | Flexible schema | Index via virtual column |
+| FULLTEXT | Full-text search | InnoDB support (5.6+) |
+| Spatial | Geographic data | SRID recommended |
+| Virtual Column | Computed field | STORED/VIRTUAL choice |
+
+```sql
+-- MySQL: JSON + Virtual Column Index
+CREATE TABLE products (
+  id CHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  attributes JSON,
+  category VARCHAR(100) AS (JSON_UNQUOTE(attributes->'$.category')) STORED,
+  INDEX idx_category (category)
+);
+```
+
+### SQLite Features
+
+| Feature | Use Case | Notes |
+|---------|----------|-------|
+| JSON1 extension | JSON operations | Compile-time enable required |
+| FTS5 | Full-text search | Virtual table |
+| WITHOUT ROWID | Fast table | No INTEGER PRIMARY KEY |
+
+---
+
+## MIGRATION ROLLBACK PATTERNS
+
+### Rollback Possibilities by Operation
+
+| Operation | Rollback | Notes |
+|-----------|----------|-------|
+| ADD COLUMN | DROP COLUMN | Data loss |
+| DROP COLUMN | ❌ Irreversible | Backup required |
+| RENAME COLUMN | Reverse RENAME | Check dependent code |
+| ADD INDEX | DROP INDEX | Immediate |
+| DROP INDEX | CREATE INDEX | Rebuild takes time |
+| ADD CONSTRAINT | DROP CONSTRAINT | Immediate |
+| DROP TABLE | ❌ Irreversible | Backup required |
+
+### Expand-Contract Pattern
+
+Three-phase strategy for safe dangerous changes:
+
+```
+Phase 1 (Expand): Add new column, write to both
+  ├─ Add new column (allow NULL)
+  ├─ Update application (write to both old and new)
+  └─ Deploy
+
+Phase 2 (Migrate): Migrate existing data
+  ├─ Batch copy existing data to new column
+  ├─ Add NOT NULL constraint to new column
+  └─ Update application (read from new only)
+
+Phase 3 (Contract): Remove old column
+  ├─ Remove old column references from application
+  ├─ Drop old column
+  └─ Deploy
+```
+
+### Safe Migration Template
+
+```sql
+-- Migration: Add email_verified column safely
+-- Phase 1: Expand
+ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT false;
+
+-- Phase 2: Migrate (run as batch job)
+UPDATE users SET email_verified = true WHERE confirmed_at IS NOT NULL;
+
+-- Phase 3: Contract (separate migration after app updated)
+ALTER TABLE users DROP COLUMN confirmed_at;
+```
+
+### ロールバックマイグレーション例
+
+```typescript
+// Prisma migration with rollback
+export async function up(prisma: PrismaClient) {
+  await prisma.$executeRaw`ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT false`;
+}
+
+export async function down(prisma: PrismaClient) {
+  await prisma.$executeRaw`ALTER TABLE users DROP COLUMN email_verified`;
+}
+```
 
 ---
 

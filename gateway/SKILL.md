@@ -820,6 +820,114 @@ Use this decision tree to select the appropriate pagination strategy:
 
 ---
 
+## API DESIGN DECISION TREE
+
+### Protocol Selection
+
+| Requirement | REST | GraphQL | gRPC |
+|-------------|------|---------|------|
+| Public API | ✅ Recommended | ⚠️ Conditional | ❌ |
+| Microservices | ⚠️ | ❌ | ✅ Recommended |
+| Mobile apps | ✅ | ✅ Recommended | ⚠️ |
+| Real-time | WebSocket | Subscription | Streaming |
+| File transfer | ✅ | ❌ | ✅ |
+| Browser direct call | ✅ | ✅ | ❌ (grpc-web required) |
+
+### Selection Flowchart
+
+```
+Q1: Who is the client?
+├─ Browser/Mobile → Q2
+├─ Internal services → gRPC recommended
+└─ Third party → REST recommended
+
+Q2: Data fetching pattern?
+├─ Fixed fields → REST
+├─ Flexible field selection → GraphQL
+└─ Real-time updates → WebSocket/SSE
+```
+
+### GraphQL vs REST Decision Criteria
+
+| GraphQL is better | REST is better |
+|-------------------|----------------|
+| Fetch multiple resources in one request | Simple CRUD operations |
+| Mobile bandwidth is critical | Caching is important (CDN) |
+| Frontend-driven development | API contract via OpenAPI is important |
+| UI changes frequently | Stable API contract |
+
+---
+
+## RATE LIMITING PATTERNS
+
+### Algorithm Comparison
+
+| Algorithm | Burst Support | Complexity | Recommended Use |
+|-----------|---------------|------------|-----------------|
+| Token Bucket | ✅ | Medium | General APIs |
+| Leaky Bucket | ❌ | Low | Stable throughput |
+| Fixed Window | ⚠️ Boundary issue | Low | Simple cases |
+| Sliding Window | ✅ | High | Precise control |
+
+### Rate Limit Definition in OpenAPI
+
+```yaml
+components:
+  headers:
+    X-RateLimit-Limit:
+      description: リクエスト上限（時間窓あたり）
+      schema:
+        type: integer
+        example: 1000
+    X-RateLimit-Remaining:
+      description: 残りリクエスト数
+      schema:
+        type: integer
+        example: 999
+    X-RateLimit-Reset:
+      description: リセット時刻（Unix timestamp）
+      schema:
+        type: integer
+        example: 1640995200
+    Retry-After:
+      description: 429時の待機秒数
+      schema:
+        type: integer
+        example: 60
+
+  responses:
+    TooManyRequests:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "RATE_LIMIT_EXCEEDED"
+            message: "Too many requests. Please retry after 60 seconds."
+```
+
+### Rate Limiting Strategies
+
+| Strategy | Description | Use Case |
+|----------|-------------|----------|
+| Per User | Limit per user | Authenticated APIs |
+| Per IP | Limit per IP address | Public APIs |
+| Per API Key | Limit per API key | Third-party integrations |
+| Per Endpoint | Limit per endpoint | Heavy processing APIs |
+| Global | System-wide limit | System protection |
+
+---
+
 ## Boundaries
 
 ### Always do
@@ -1080,13 +1188,35 @@ Request visual diagrams from Canvas for API documentation.
 
 ---
 
-## GATEWAY'S PHILOSOPHY
+## PRINCIPLES
 
-- **Consistency over creativity** - APIs should be predictable
-- **Documentation is the product** - Undocumented APIs don't exist
-- **Breaking changes are expensive** - Design for evolution
-- **Errors are part of the contract** - Define them precisely
-- **Simplicity wins** - The best API is the one developers don't need to read docs for
+1. **Contract First** - Define API spec before implementation
+2. **Backwards Compatible** - Only changes that don't break existing clients
+3. **Self-Documenting** - Design APIs that serve as their own documentation
+4. **Fail Fast, Fail Clear** - Fail early with clear error messages
+5. **Secure by Default** - Auth is opt-out, not opt-in
+
+---
+
+## AGENT BOUNDARIES
+
+| Responsibility | Gateway | Schema | Builder | Quill |
+|----------------|---------|--------|---------|-------|
+| OpenAPI spec design | ✅ Primary | - | - | - |
+| Database schema | - | ✅ Primary | - | - |
+| API implementation | - | - | ✅ Primary | - |
+| API documentation | Spec generation | - | - | ✅ Descriptions |
+| Validation rules | ✅ Input validation | ✅ DB constraints | Implementation | - |
+| Error responses | ✅ Design | - | Implementation | - |
+
+### When to Use Which Agent
+
+| Situation | Recommended Agent |
+|-----------|-------------------|
+| New API design | Gateway → Builder |
+| Schema changes | Schema → Gateway (check API impact) |
+| API documentation | Gateway (spec) + Quill (descriptions) |
+| Add validation | Gateway (spec definition) → Builder (implementation) |
 
 ---
 
