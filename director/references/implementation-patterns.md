@@ -485,6 +485,860 @@ test('demo with cursor display', async ({ page }) => {
 
 ---
 
+## Visual Interaction Feedback System
+
+Visual feedback for user interactions during demo recording. These helpers enhance the viewer's understanding of what's happening on screen by providing clear visual cues for clicks, taps, swipes, and keyboard input.
+
+### Overview
+
+| Effect | Use Case | Default Duration |
+|--------|----------|------------------|
+| Click Ripple | Desktop click visualization | 600ms |
+| Tap Indicator | Mobile/tablet touch feedback | 500ms |
+| Swipe Trail | Swipe gesture visualization | 800ms |
+| Keystroke Overlay | Keyboard shortcut display | 1500ms |
+
+### Click Ripple Effect
+
+Material Design-inspired ripple effect for mouse clicks.
+
+```typescript
+// demos/helpers/interaction-feedback.ts
+import { Page } from '@playwright/test';
+
+interface ClickRippleOptions {
+  duration?: number;
+  color?: string;
+  maxRadius?: number;
+}
+
+export async function showClickRipple(
+  page: Page,
+  x: number,
+  y: number,
+  options: ClickRippleOptions = {}
+): Promise<void> {
+  const { duration = 600, color = 'rgba(59, 130, 246, 0.6)', maxRadius = 50 } = options;
+
+  await page.evaluate(
+    ({ x, y, dur, col, radius }) => {
+      const ripple = document.createElement('div');
+      ripple.id = 'demo-click-ripple';
+      ripple.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle, ${col} 0%, transparent 70%);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 99998;
+      `;
+
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'demo-ripple-style';
+      styleSheet.textContent = `
+        @keyframes demoRippleExpand {
+          0% {
+            width: 0;
+            height: 0;
+            opacity: 1;
+          }
+          100% {
+            width: ${radius * 2}px;
+            height: ${radius * 2}px;
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(styleSheet);
+
+      ripple.style.animation = `demoRippleExpand ${dur}ms ease-out forwards`;
+      document.body.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+        styleSheet.remove();
+      }, dur);
+    },
+    { x, y, dur: duration, col: color, radius: maxRadius }
+  );
+
+  await page.waitForTimeout(duration);
+}
+
+// Usage
+test('demo with click ripple', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  const button = page.getByRole('button', { name: 'Submit' });
+  const box = await button.boundingBox();
+  if (box) {
+    const centerX = box.x + box.width / 2;
+    const centerY = box.y + box.height / 2;
+
+    await showClickRipple(page, centerX, centerY);
+    await button.click();
+  }
+});
+```
+
+### Touch Tap Indicator
+
+Pulsing circular indicator for mobile touch interactions.
+
+```typescript
+// demos/helpers/interaction-feedback.ts
+
+interface TapIndicatorOptions {
+  duration?: number;
+  radius?: number;
+  color?: string;
+}
+
+export async function showTapIndicator(
+  page: Page,
+  x: number,
+  y: number,
+  options: TapIndicatorOptions = {}
+): Promise<void> {
+  const { duration = 500, radius = 30, color = 'rgba(59, 130, 246, 0.8)' } = options;
+
+  await page.evaluate(
+    ({ x, y, dur, rad, col }) => {
+      const tap = document.createElement('div');
+      tap.id = 'demo-tap-indicator';
+      tap.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${rad * 2}px;
+        height: ${rad * 2}px;
+        border: 3px solid ${col};
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        pointer-events: none;
+        z-index: 99998;
+        box-sizing: border-box;
+      `;
+
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'demo-tap-style';
+      styleSheet.textContent = `
+        @keyframes demoTapPulse {
+          0% {
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 1;
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.2);
+            opacity: 0.8;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1.0);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(styleSheet);
+
+      tap.style.animation = `demoTapPulse ${dur}ms ease-out forwards`;
+      document.body.appendChild(tap);
+
+      setTimeout(() => {
+        tap.remove();
+        styleSheet.remove();
+      }, dur);
+    },
+    { x, y, dur: duration, rad: radius, col: color }
+  );
+
+  await page.waitForTimeout(duration);
+}
+
+// Usage for mobile demos
+test('mobile tap demo', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 }); // iPhone 14 Pro
+
+  const menuButton = page.getByTestId('mobile-menu');
+  const box = await menuButton.boundingBox();
+  if (box) {
+    await showTapIndicator(page, box.x + box.width / 2, box.y + box.height / 2);
+    await menuButton.tap();
+  }
+});
+```
+
+### Swipe Trail Visualization
+
+SVG-based arrow line showing swipe direction.
+
+```typescript
+// demos/helpers/interaction-feedback.ts
+
+interface SwipeTrailOptions {
+  duration?: number;
+  color?: string;
+  strokeWidth?: number;
+  showArrow?: boolean;
+}
+
+export async function showSwipeTrail(
+  page: Page,
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  options: SwipeTrailOptions = {}
+): Promise<void> {
+  const {
+    duration = 800,
+    color = 'rgba(59, 130, 246, 0.8)',
+    strokeWidth = 4,
+    showArrow = true,
+  } = options;
+
+  await page.evaluate(
+    ({ sx, sy, ex, ey, dur, col, sw, arrow }) => {
+      // Calculate dimensions
+      const padding = 20;
+      const minX = Math.min(sx, ex) - padding;
+      const minY = Math.min(sy, ey) - padding;
+      const width = Math.abs(ex - sx) + padding * 2;
+      const height = Math.abs(ey - sy) + padding * 2;
+
+      // Adjust coordinates relative to SVG
+      const x1 = sx - minX;
+      const y1 = sy - minY;
+      const x2 = ex - minX;
+      const y2 = ey - minY;
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.id = 'demo-swipe-trail';
+      svg.setAttribute('width', String(width));
+      svg.setAttribute('height', String(height));
+      svg.style.cssText = `
+        position: fixed;
+        left: ${minX}px;
+        top: ${minY}px;
+        pointer-events: none;
+        z-index: 99998;
+        overflow: visible;
+      `;
+
+      // Arrow marker definition
+      if (arrow) {
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+        marker.setAttribute('id', 'demo-arrow');
+        marker.setAttribute('markerWidth', '10');
+        marker.setAttribute('markerHeight', '10');
+        marker.setAttribute('refX', '9');
+        marker.setAttribute('refY', '3');
+        marker.setAttribute('orient', 'auto');
+        marker.setAttribute('markerUnits', 'strokeWidth');
+
+        const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        arrowPath.setAttribute('d', 'M0,0 L0,6 L9,3 z');
+        arrowPath.setAttribute('fill', col);
+
+        marker.appendChild(arrowPath);
+        defs.appendChild(marker);
+        svg.appendChild(defs);
+      }
+
+      // Line element
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', String(x1));
+      line.setAttribute('y1', String(y1));
+      line.setAttribute('x2', String(x2));
+      line.setAttribute('y2', String(y2));
+      line.setAttribute('stroke', col);
+      line.setAttribute('stroke-width', String(sw));
+      line.setAttribute('stroke-linecap', 'round');
+      if (arrow) {
+        line.setAttribute('marker-end', 'url(#demo-arrow)');
+      }
+
+      svg.appendChild(line);
+
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'demo-swipe-style';
+      styleSheet.textContent = `
+        @keyframes demoSwipeFade {
+          0% { opacity: 1; }
+          70% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        #demo-swipe-trail {
+          animation: demoSwipeFade ${dur}ms ease-out forwards;
+        }
+      `;
+      document.head.appendChild(styleSheet);
+
+      document.body.appendChild(svg);
+
+      setTimeout(() => {
+        svg.remove();
+        styleSheet.remove();
+      }, dur);
+    },
+    { sx: startX, sy: startY, ex: endX, ey: endY, dur: duration, col: color, sw: strokeWidth, arrow: showArrow }
+  );
+
+  await page.waitForTimeout(duration);
+}
+
+// Usage
+test('swipe gesture demo', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/gallery');
+
+  // Show swipe trail then perform swipe
+  const startX = 300;
+  const startY = 400;
+  const endX = 90;
+  const endY = 400;
+
+  await showSwipeTrail(page, startX, startY, endX, endY);
+
+  // Perform actual swipe gesture
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(endX, endY, { steps: 10 });
+  await page.mouse.up();
+});
+```
+
+### Keystroke Overlay
+
+Badge-style display for keyboard shortcuts and key presses.
+
+```typescript
+// demos/helpers/interaction-feedback.ts
+
+interface KeystrokeOverlayOptions {
+  duration?: number;
+  position?: 'top' | 'bottom';
+  size?: 'small' | 'medium' | 'large';
+  theme?: 'dark' | 'light';
+}
+
+const keySizes = {
+  small: { fontSize: '12px', padding: '4px 8px', gap: '4px' },
+  medium: { fontSize: '16px', padding: '8px 12px', gap: '8px' },
+  large: { fontSize: '20px', padding: '12px 16px', gap: '10px' },
+};
+
+export async function showKeystrokeOverlay(
+  page: Page,
+  keys: string[],
+  options: KeystrokeOverlayOptions = {}
+): Promise<void> {
+  const { duration = 1500, position = 'bottom', size = 'medium', theme = 'dark' } = options;
+  const sizeStyle = keySizes[size];
+
+  const bgColor = theme === 'dark' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.95)';
+  const textColor = theme === 'dark' ? '#ffffff' : '#1f2937';
+  const borderColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)';
+
+  await page.evaluate(
+    ({ keys, dur, pos, sizeStyle, bgColor, textColor, borderColor }) => {
+      const container = document.createElement('div');
+      container.id = 'demo-keystroke-overlay';
+      container.style.cssText = `
+        position: fixed;
+        ${pos === 'top' ? 'top: 20px' : 'bottom: 20px'};
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: ${sizeStyle.gap};
+        z-index: 99998;
+        pointer-events: none;
+      `;
+
+      keys.forEach((key) => {
+        const badge = document.createElement('div');
+        badge.style.cssText = `
+          background: ${bgColor};
+          color: ${textColor};
+          border: 1px solid ${borderColor};
+          border-radius: 6px;
+          padding: ${sizeStyle.padding};
+          font-size: ${sizeStyle.fontSize};
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 2em;
+        `;
+        badge.textContent = key;
+        container.appendChild(badge);
+      });
+
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'demo-keystroke-style';
+      styleSheet.textContent = `
+        @keyframes demoKeystrokeFadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes demoKeystrokeFadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+        #demo-keystroke-overlay {
+          animation: demoKeystrokeFadeIn 0.2s ease-out;
+        }
+      `;
+      document.head.appendChild(styleSheet);
+
+      document.body.appendChild(container);
+
+      setTimeout(() => {
+        container.style.animation = 'demoKeystrokeFadeOut 0.3s ease-out forwards';
+        setTimeout(() => {
+          container.remove();
+          styleSheet.remove();
+        }, 300);
+      }, dur - 300);
+    },
+    { keys, dur: duration, pos: position, sizeStyle, bgColor, textColor, borderColor }
+  );
+
+  await page.waitForTimeout(duration);
+}
+
+// Usage
+test('keyboard shortcut demo', async ({ page }) => {
+  await page.goto('/editor');
+
+  // Show the shortcut being pressed
+  await showKeystrokeOverlay(page, ['⌘', 'Shift', 'S']);
+  await page.keyboard.press('Meta+Shift+s');
+
+  await page.waitForTimeout(500);
+
+  // Show Escape key
+  await showKeystrokeOverlay(page, ['Esc'], { size: 'small', position: 'top' });
+  await page.keyboard.press('Escape');
+});
+```
+
+### Unified Configuration System
+
+Enable automatic interaction feedback with a single configuration call.
+
+```typescript
+// demos/helpers/interaction-feedback.ts
+
+interface InteractionFeedbackConfig {
+  showCursor?: boolean;
+  showClickRipple?: boolean;
+  showTapIndicator?: boolean;
+  showSwipeTrail?: boolean;
+  showKeystrokeOverlay?: boolean;
+  colors?: {
+    cursor?: string;
+    ripple?: string;
+    tap?: string;
+    swipe?: string;
+  };
+  keystrokePosition?: 'top' | 'bottom';
+}
+
+export async function enableInteractionFeedback(
+  page: Page,
+  config: InteractionFeedbackConfig = {}
+): Promise<void> {
+  const {
+    showCursor = true,
+    showClickRipple = true,
+    showTapIndicator = false,
+    showSwipeTrail = false,
+    showKeystrokeOverlay = true,
+    colors = {},
+    keystrokePosition = 'bottom',
+  } = config;
+
+  const cursorColor = colors.cursor || 'rgba(59, 130, 246, 0.5)';
+  const rippleColor = colors.ripple || 'rgba(59, 130, 246, 0.6)';
+  const tapColor = colors.tap || 'rgba(59, 130, 246, 0.8)';
+  const swipeColor = colors.swipe || 'rgba(59, 130, 246, 0.8)';
+
+  await page.evaluate(
+    ({
+      showCursor,
+      showClickRipple,
+      showTapIndicator,
+      cursorColor,
+      rippleColor,
+      tapColor,
+      keystrokePosition,
+      showKeystrokeOverlay,
+    }) => {
+      // Inject styles
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'demo-interaction-styles';
+      styleSheet.textContent = `
+        @keyframes demoRippleExpand {
+          0% { width: 0; height: 0; opacity: 1; }
+          100% { width: 100px; height: 100px; opacity: 0; }
+        }
+        @keyframes demoTapPulse {
+          0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+          100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(styleSheet);
+
+      // Cursor
+      if (showCursor) {
+        const cursor = document.createElement('div');
+        cursor.id = 'demo-auto-cursor';
+        cursor.style.cssText = `
+          position: fixed;
+          width: 20px;
+          height: 20px;
+          background: ${cursorColor};
+          border: 2px solid ${cursorColor.replace('0.5', '1')};
+          border-radius: 50%;
+          z-index: 99999;
+          pointer-events: none;
+          transform: translate(-50%, -50%);
+          transition: transform 0.1s ease-out, background 0.1s ease-out;
+        `;
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+      }
+
+      // Click/tap handlers
+      const handleClick = (e: MouseEvent) => {
+        if (showClickRipple) {
+          const ripple = document.createElement('div');
+          ripple.className = 'demo-auto-ripple';
+          ripple.style.cssText = `
+            position: fixed;
+            left: ${e.clientX}px;
+            top: ${e.clientY}px;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, ${rippleColor} 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 99998;
+            animation: demoRippleExpand 600ms ease-out forwards;
+          `;
+          document.body.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        }
+      };
+
+      const handleTouch = (e: TouchEvent) => {
+        if (showTapIndicator && e.touches.length > 0) {
+          const touch = e.touches[0];
+          const tap = document.createElement('div');
+          tap.className = 'demo-auto-tap';
+          tap.style.cssText = `
+            position: fixed;
+            left: ${touch.clientX}px;
+            top: ${touch.clientY}px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid ${tapColor};
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            pointer-events: none;
+            z-index: 99998;
+            box-sizing: border-box;
+            animation: demoTapPulse 500ms ease-out forwards;
+          `;
+          document.body.appendChild(tap);
+          setTimeout(() => tap.remove(), 500);
+        }
+      };
+
+      document.addEventListener('click', handleClick);
+      document.addEventListener('touchstart', handleTouch);
+
+      // Keyboard handler
+      if (showKeystrokeOverlay) {
+        const activeKeys = new Set<string>();
+        let keystrokeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+        const formatKey = (key: string): string => {
+          const keyMap: Record<string, string> = {
+            Meta: '⌘',
+            Control: 'Ctrl',
+            Alt: '⌥',
+            Shift: '⇧',
+            Enter: '↵',
+            Escape: 'Esc',
+            ArrowUp: '↑',
+            ArrowDown: '↓',
+            ArrowLeft: '←',
+            ArrowRight: '→',
+            Backspace: '⌫',
+            Tab: '⇥',
+            ' ': 'Space',
+          };
+          return keyMap[key] || key.toUpperCase();
+        };
+
+        const showKeys = () => {
+          // Remove existing
+          const existing = document.getElementById('demo-auto-keystroke');
+          if (existing) existing.remove();
+
+          if (activeKeys.size === 0) return;
+
+          const container = document.createElement('div');
+          container.id = 'demo-auto-keystroke';
+          container.style.cssText = `
+            position: fixed;
+            ${keystrokePosition === 'top' ? 'top: 20px' : 'bottom: 20px'};
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 99998;
+            pointer-events: none;
+          `;
+
+          activeKeys.forEach((key) => {
+            const badge = document.createElement('div');
+            badge.style.cssText = `
+              background: rgba(0, 0, 0, 0.85);
+              color: white;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 6px;
+              padding: 8px 12px;
+              font-size: 16px;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+              font-weight: 600;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            `;
+            badge.textContent = formatKey(key);
+            container.appendChild(badge);
+          });
+
+          document.body.appendChild(container);
+        };
+
+        document.addEventListener('keydown', (e) => {
+          activeKeys.add(e.key);
+          showKeys();
+
+          if (keystrokeTimeout) clearTimeout(keystrokeTimeout);
+          keystrokeTimeout = setTimeout(() => {
+            activeKeys.clear();
+            const existing = document.getElementById('demo-auto-keystroke');
+            if (existing) existing.remove();
+          }, 1500);
+        });
+
+        document.addEventListener('keyup', (e) => {
+          // Keep showing for modifier combos
+          if (!e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+            if (keystrokeTimeout) clearTimeout(keystrokeTimeout);
+            keystrokeTimeout = setTimeout(() => {
+              activeKeys.clear();
+              const existing = document.getElementById('demo-auto-keystroke');
+              if (existing) existing.remove();
+            }, 1500);
+          }
+        });
+      }
+    },
+    {
+      showCursor,
+      showClickRipple,
+      showTapIndicator,
+      cursorColor,
+      rippleColor,
+      tapColor,
+      keystrokePosition,
+      showKeystrokeOverlay,
+    }
+  );
+}
+
+export async function disableInteractionFeedback(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    // Remove all feedback elements
+    const elements = [
+      'demo-auto-cursor',
+      'demo-auto-keystroke',
+      'demo-interaction-styles',
+    ];
+    elements.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+
+    // Remove ripples and taps
+    document.querySelectorAll('.demo-auto-ripple, .demo-auto-tap').forEach((el) => el.remove());
+  });
+}
+```
+
+### Device-Specific Presets
+
+Pre-configured settings for common demo scenarios.
+
+```typescript
+// demos/helpers/interaction-presets.ts
+import { Page } from '@playwright/test';
+import { enableInteractionFeedback, InteractionFeedbackConfig } from './interaction-feedback';
+
+export const InteractionPresets: Record<string, InteractionFeedbackConfig> = {
+  desktop: {
+    showCursor: true,
+    showClickRipple: true,
+    showTapIndicator: false,
+    showSwipeTrail: false,
+    showKeystrokeOverlay: true,
+    keystrokePosition: 'bottom',
+  },
+  mobile: {
+    showCursor: false,
+    showClickRipple: false,
+    showTapIndicator: true,
+    showSwipeTrail: true,
+    showKeystrokeOverlay: false,
+  },
+  tablet: {
+    showCursor: false,
+    showClickRipple: false,
+    showTapIndicator: true,
+    showSwipeTrail: true,
+    showKeystrokeOverlay: true,
+    keystrokePosition: 'top',
+  },
+};
+
+export async function enableDesktopFeedback(page: Page): Promise<void> {
+  await enableInteractionFeedback(page, InteractionPresets.desktop);
+}
+
+export async function enableMobileFeedback(page: Page): Promise<void> {
+  await enableInteractionFeedback(page, InteractionPresets.mobile);
+}
+
+export async function enableTabletFeedback(page: Page): Promise<void> {
+  await enableInteractionFeedback(page, InteractionPresets.tablet);
+}
+```
+
+### Usage Examples
+
+#### Desktop Demo Example
+
+```typescript
+// demos/specs/demo-desktop-workflow.spec.ts
+import { test, expect } from '@playwright/test';
+import { enableDesktopFeedback, disableInteractionFeedback } from '../helpers/interaction-presets';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: Desktop Workflow with Visual Feedback', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/dashboard');
+    await enableDesktopFeedback(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    await disableInteractionFeedback(page);
+  });
+
+  test('file management with keyboard shortcuts', async ({ page }) => {
+    await showOverlay(page, 'Let\'s create a new document', 2000);
+
+    // Keyboard shortcut - auto-displayed by feedback system
+    await page.keyboard.press('Meta+n');
+    await expect(page.getByRole('dialog', { name: 'New Document' })).toBeVisible();
+
+    // Click interaction - auto-ripple displayed
+    await page.getByRole('textbox', { name: 'Title' }).fill('My Document');
+    await page.getByRole('button', { name: 'Create' }).click();
+
+    await showOverlay(page, 'Document created!', 2000);
+
+    // Save with shortcut
+    await page.keyboard.press('Meta+s');
+    await expect(page.getByText('Saved')).toBeVisible();
+  });
+});
+```
+
+#### Mobile Demo Example
+
+```typescript
+// demos/specs/demo-mobile-gestures.spec.ts
+import { test, expect, devices } from '@playwright/test';
+import { enableMobileFeedback, disableInteractionFeedback } from '../helpers/interaction-presets';
+import { showSwipeTrail, showTapIndicator } from '../helpers/interaction-feedback';
+import { showOverlay } from '../helpers/overlay';
+
+test.describe('Demo: Mobile App with Touch Feedback', () => {
+  test.use({ ...devices['iPhone 14 Pro'] });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/mobile/gallery');
+    await enableMobileFeedback(page);
+  });
+
+  test.afterEach(async ({ page }) => {
+    await disableInteractionFeedback(page);
+  });
+
+  test('swipe through image gallery', async ({ page }) => {
+    await showOverlay(page, 'Swipe to browse images', 2000);
+
+    // Get viewport dimensions
+    const viewport = page.viewportSize();
+    if (!viewport) return;
+
+    const centerY = viewport.height / 2;
+    const startX = viewport.width * 0.8;
+    const endX = viewport.width * 0.2;
+
+    // Show swipe trail then perform gesture
+    await showSwipeTrail(page, startX, centerY, endX, centerY);
+
+    // Perform swipe
+    await page.mouse.move(startX, centerY);
+    await page.mouse.down();
+    await page.mouse.move(endX, centerY, { steps: 20 });
+    await page.mouse.up();
+
+    await page.waitForTimeout(500);
+
+    // Tap on image to view full screen
+    const image = page.getByTestId('gallery-image-2');
+    const box = await image.boundingBox();
+    if (box) {
+      await showTapIndicator(page, box.x + box.width / 2, box.y + box.height / 2);
+      await image.tap();
+    }
+
+    await expect(page.getByTestId('fullscreen-viewer')).toBeVisible();
+    await showOverlay(page, 'Full screen view', 1500);
+  });
+});
+```
+
+---
+
 ## Page Transition Wait Pattern
 
 ### Stable Transition Wait
