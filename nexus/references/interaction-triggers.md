@@ -17,6 +17,9 @@ Question templates for GUIDED/INTERACTIVE modes.
 | ON_GUARDRAIL_L4 | ON_DECISION | L4 guardrail triggered |
 | ON_VERIFICATION_FAILURE | ON_COMPLETION | Final verification failed |
 | ON_MULTI_AGENT_CHOICE | ON_DECISION | Multiple agents could handle task |
+| ON_PROACTIVE_START | BEFORE_START | /Nexus invoked without arguments |
+| ON_ROUTING_EXPLANATION | ON_CHAIN_DESIGN | After chain selection explanation |
+| ON_AMBIGUOUS_TASK | ON_CLASSIFICATION | Task classification is unclear |
 
 ---
 
@@ -69,6 +72,58 @@ questions:
         description: "Alternative approach"
       - label: "[Alternative Agent 2]"
         description: "Different methodology"
+    multiSelect: false
+```
+
+### ON_PROACTIVE_START
+
+```yaml
+questions:
+  - question: "プロアクティブ分析が完了しました。次のアクションを選択してください。"
+    header: "Next Action"
+    options:
+      - label: "推奨アクション #1 を実行（推奨）"
+        description: "[最優先の提案内容とエージェント]"
+      - label: "推奨アクション #2 を実行"
+        description: "[次の提案内容とエージェント]"
+      - label: "前回の作業を継続"
+        description: "Activity Log の最終作業を再開"
+      - label: "新しいタスクを指示"
+        description: "/Nexus [タスク] で新規タスクを開始"
+    multiSelect: false
+```
+
+### ON_ROUTING_EXPLANATION
+
+```yaml
+questions:
+  - question: "チェーン構成を確認しました。どのように進めますか？"
+    header: "Chain Confirm"
+    options:
+      - label: "この構成で実行（推奨）"
+        description: "[選定されたチェーン]"
+      - label: "代替案を見る"
+        description: "他のアプローチを検討"
+      - label: "チェーンをカスタマイズ"
+        description: "エージェントの追加/削除を指定"
+    multiSelect: false
+```
+
+### ON_AMBIGUOUS_TASK
+
+```yaml
+questions:
+  - question: "タスクの解釈に複数の可能性があります。どのアプローチで進めますか？"
+    header: "Approach"
+    options:
+      - label: "[アプローチA]（推奨）"
+        description: "[Chain A] - [概要]"
+      - label: "[アプローチB]"
+        description: "[Chain B] - [概要]"
+      - label: "[アプローチC]"
+        description: "[Chain C] - [概要]"
+      - label: "タスクを明確化する"
+        description: "より具体的な指示を提供"
     multiSelect: false
 ```
 

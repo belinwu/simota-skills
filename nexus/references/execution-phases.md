@@ -4,6 +4,59 @@ Detailed phase descriptions for AUTORUN modes.
 
 ---
 
+## Phase 0: PROACTIVE_ANALYSIS (Optional)
+
+`/Nexus` のみで呼び出された場合に自動発動。通常のタスク指示がある場合はスキップ。
+
+### 0-A: Project State Scan
+プロジェクトの現在状態を収集:
+
+```bash
+# Git status
+git status --porcelain
+
+# Recent commits
+git log --oneline -10
+
+# Activity Log (if exists)
+.agents/PROJECT.md → Activity Log section
+```
+
+### 0-B: Health Assessment
+4つの指標でプロジェクト健全性を評価:
+
+| 指標 | チェック内容 | 評価 |
+|------|-------------|------|
+| `test_health` | テスト実行、カバレッジ | 🟢/🟡/🔴 |
+| `security_health` | npm audit、依存関係 | 🟢/🟡/🔴 |
+| `code_health` | lint、型チェック | 🟢/🟡/🔴 |
+| `doc_health` | README更新日、JSDoc | 🟢/🟡/🔴 |
+
+### 0-C: Recommendation Generation
+優先度付きで推奨アクションを生成:
+
+| 優先度 | 条件 |
+|--------|------|
+| 🔴 高 | セキュリティ問題、テスト失敗、ビルドエラー |
+| 🟡 中 | lint警告、カバレッジ低下、ドキュメント不足 |
+| 🟢 低 | リファクタリング機会、最適化提案 |
+
+### Flow After Phase 0
+
+```
+Phase 0 Complete
+    ↓
+User Selection (ON_PROACTIVE_START)
+    ↓
+├─ 推奨アクション選択 → Phase 1: PLAN (AUTORUN_FULL)
+├─ 前回作業継続 → Phase 1: PLAN (AUTORUN_FULL)
+└─ 新規タスク指示 → 通常ルーティング → Phase 1
+```
+
+See `references/proactive-mode.md` for detailed specifications.
+
+---
+
 ## AUTORUN_FULL (7 Phases)
 
 ### Phase 1: PLAN
