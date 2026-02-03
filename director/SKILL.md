@@ -294,6 +294,54 @@ npx playwright test --project=demo-4k
 - Always match viewport and video.size dimensions
 - Consider longer slowMo values for higher resolutions
 
+### Mobile High-Resolution Recording
+
+Mobile devices have specific viewport constraints. Do NOT set video.size larger than the device viewport.
+
+**Correct approach:**
+```typescript
+// Mobile demo - video size matches device viewport
+{
+  name: 'demo-mobile-hd',
+  use: {
+    ...devices['iPhone 14 Pro'],
+    // iPhone 14 Pro: 390x844 logical pixels, 3x scale = 1170x2532 physical
+    // Keep video.size at logical viewport size
+    video: { mode: 'on', size: { width: 390, height: 844 } },
+  },
+}
+```
+
+**Common mistakes to avoid:**
+```typescript
+// ❌ WRONG: video.size larger than mobile viewport
+{
+  use: {
+    ...devices['iPhone 14 Pro'],  // viewport: 390x844
+    video: { mode: 'on', size: { width: 1920, height: 1080 } },  // Mismatch!
+  },
+}
+
+// ❌ WRONG: Overriding mobile viewport to desktop size
+{
+  use: {
+    ...devices['iPhone 14 Pro'],
+    viewport: { width: 1920, height: 1080 },  // No longer mobile!
+  },
+}
+```
+
+**Mobile resolution reference:**
+
+| Device | Viewport (logical) | Scale | Physical Pixels |
+|--------|-------------------|-------|-----------------|
+| iPhone SE | 375x667 | 2x | 750x1334 |
+| iPhone 14 Pro | 390x844 | 3x | 1170x2532 |
+| iPad | 768x1024 | 2x | 1536x2048 |
+| iPad Pro 12.9" | 1024x1366 | 2x | 2048x2732 |
+
+**For high-quality mobile demos**, use the device's logical viewport for video.size. Playwright captures at the correct resolution automatically based on deviceScaleFactor.
+
 ---
 
 ## SCENARIO DESIGN TEMPLATE
