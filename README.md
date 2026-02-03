@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-42-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-45-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **42種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **45種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -76,6 +76,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Probe** | セキュリティ動的テスト（DAST）・OWASP ZAP/Nuclei連携・ペネトレーションテスト | 脆弱性レポート |
 | **Judge** | codex reviewによるコードレビュー・PRレビュー自動化・コミット前チェック・AI幻覚検出 | レビューレポート |
 | **Zen** | リファクタリング・コード品質改善（動作は変えない） | コード改善 |
+| **Sweep** | 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
 
 ### 実装
 
@@ -84,6 +85,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Builder** | 本番実装。TDD・Event Sourcing・CQRS・パフォーマンス最適化を備えた型安全な実装職人。仕様の曖昧性検出、Forgeからの自動引き継ぎ対応 | プロダクションコード |
 | **Artisan** | フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
 | **Forge** | プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
+| **Arena** | 複数AIエンジン並列実装。aiwコマンドで複数アプローチを比較・評価・採用 | 比較実装・評価 |
 
 ### パフォーマンス
 
@@ -162,6 +164,12 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Triage** | 障害対応・影響範囲特定・復旧手順策定・ポストモーテム作成 | 運用レポート |
+
+### ブラウザ自動化
+
+| エージェント | 説明 | 出力 |
+|------------|------|------|
+| **Navigator** | Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
 
 ## ワークフロー
 
