@@ -1,7 +1,7 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-47-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-48-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
@@ -175,6 +175,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Navigator** | Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
+| **Director** | Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供 | デモ動画(.webm) |
 
 ## ワークフロー
 
@@ -392,6 +393,7 @@ skills/
 ├── builder/SKILL.md    # 本番実装
 ├── canvas/SKILL.md     # 可視化
 ├── compete/SKILL.md    # 競合調査
+├── director/SKILL.md   # デモ動画撮影
 ├── echo/SKILL.md       # ペルソナ検証
 ├── experiment/SKILL.md # A/Bテスト設計
 ├── flow/SKILL.md       # アニメーション
