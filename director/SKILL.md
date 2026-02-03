@@ -624,6 +624,64 @@ const script: NarrationScript = [
 
 ---
 
+## VISUAL EFFECTS
+
+### Progress Bar
+
+Display demo progress at the top or bottom of the screen.
+
+```typescript
+import { showProgressBar, updateProgress, hideProgressBar } from '../helpers/progress-bar';
+
+test('demo with progress', async ({ page }) => {
+  await showProgressBar(page, { position: 'top', steps: 5 });
+
+  await page.goto('/step1');
+  await updateProgress(page, 1, 'Product Selection');
+
+  await page.goto('/step2');
+  await updateProgress(page, 2, 'Cart Review');
+
+  // ... more steps ...
+
+  await hideProgressBar(page);
+});
+```
+
+**Display Modes:**
+- `steps`: Step-based progress (1/5, 2/5, ...)
+- `percentage`: Percentage-based (0-100%)
+- `timed`: Auto-progress based on duration
+
+### Spotlight Effect
+
+Highlight specific UI elements by darkening the surrounding area.
+
+```typescript
+import { spotlight, clearSpotlight } from '../helpers/spotlight';
+
+test('demo with spotlight', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // Spotlight the create button
+  await spotlight(page, '[data-testid="create-btn"]', {
+    label: 'Click here to create',
+    labelPosition: 'bottom',
+  });
+
+  await page.click('[data-testid="create-btn"]');
+  await clearSpotlight(page);
+});
+```
+
+**Options:**
+- `padding`: Space around element (default: 8px)
+- `opacity`: Background darkness (default: 0.7)
+- `label`: Optional tooltip text
+- `labelPosition`: top | bottom | left | right
+
+---
+
 ## SCENARIO DESIGN TEMPLATE
 
 See `references/prompt-template.md` for the full template.

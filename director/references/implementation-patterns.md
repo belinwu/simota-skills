@@ -3482,6 +3482,397 @@ test('simple narrated demo', async ({ page }) => {
 
 ---
 
+## Progress Bar Helper
+
+Display demo progress at the top or bottom of the screen with step-based or percentage-based modes.
+
+```typescript
+// demos/helpers/progress-bar.ts
+import { Page } from '@playwright/test';
+
+interface ProgressBarOptions {
+  position?: 'top' | 'bottom';
+  mode?: 'steps' | 'percentage' | 'timed';
+  steps?: number;
+  duration?: number;  // for timed mode (ms)
+  color?: string;
+  backgroundColor?: string;
+  height?: number;
+  showLabel?: boolean;
+}
+
+export async function showProgressBar(
+  page: Page,
+  options: ProgressBarOptions = {}
+): Promise<void> {
+  const {
+    position = 'top',
+    mode = 'steps',
+    steps = 5,
+    color = '#3b82f6',
+    backgroundColor = 'rgba(255, 255, 255, 0.2)',
+    height = 4,
+    showLabel = true,
+  } = options;
+
+  await page.evaluate(
+    ({ position, mode, steps, color, backgroundColor, height, showLabel }) => {
+      // Remove existing
+      document.getElementById('demo-progress-container')?.remove();
+
+      const container = document.createElement('div');
+      container.id = 'demo-progress-container';
+      container.style.cssText = `
+        position: fixed;
+        ${position}: 0;
+        left: 0;
+        right: 0;
+        z-index: 99999;
+        padding: 0;
+      `;
+
+      const bar = document.createElement('div');
+      bar.id = 'demo-progress-bar';
+      bar.style.cssText = `
+        width: 0%;
+        height: ${height}px;
+        background: ${color};
+        transition: width 0.3s ease;
+      `;
+
+      const track = document.createElement('div');
+      track.style.cssText = `
+        width: 100%;
+        height: ${height}px;
+        background: ${backgroundColor};
+      `;
+      track.appendChild(bar);
+      container.appendChild(track);
+
+      if (showLabel) {
+        const label = document.createElement('div');
+        label.id = 'demo-progress-label';
+        label.style.cssText = `
+          position: absolute;
+          ${position === 'top' ? 'top' : 'bottom'}: ${height + 8}px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 4px 12px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-family: system-ui, sans-serif;
+          white-space: nowrap;
+        `;
+        label.textContent = mode === 'steps' ? `Step 0/${steps}` : '0%';
+        container.appendChild(label);
+      }
+
+      // Store config
+      (window as any).__progressConfig = { mode, steps };
+
+      document.body.appendChild(container);
+    },
+    { position, mode, steps, color, backgroundColor, height, showLabel }
+  );
+}
+
+export async function updateProgress(
+  page: Page,
+  current: number,
+  message?: string
+): Promise<void> {
+  await page.evaluate(
+    ({ current, message }) => {
+      const bar = document.getElementById('demo-progress-bar');
+      const label = document.getElementById('demo-progress-label');
+      const config = (window as any).__progressConfig || { mode: 'steps', steps: 5 };
+
+      if (!bar) return;
+
+      let percentage: number;
+      let labelText: string;
+
+      if (config.mode === 'steps') {
+        percentage = (current / config.steps) * 100;
+        labelText = message ? `Step ${current}/${config.steps}: ${message}` : `Step ${current}/${config.steps}`;
+      } else {
+        percentage = current;
+        labelText = message ? `${current}%: ${message}` : `${current}%`;
+      }
+
+      bar.style.width = `${percentage}%`;
+      if (label) {
+        label.textContent = labelText;
+      }
+    },
+    { current, message }
+  );
+
+  // Brief pause for visual feedback
+  await page.waitForTimeout(100);
+}
+
+export async function hideProgressBar(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const container = document.getElementById('demo-progress-container');
+    if (container) {
+      container.style.transition = 'opacity 0.3s ease';
+      container.style.opacity = '0';
+      setTimeout(() => container.remove(), 300);
+    }
+    delete (window as any).__progressConfig;
+  });
+}
+```
+
+---
+
+## Spotlight Effect Helper
+
+Highlight specific UI elements by darkening the surrounding area with SVG mask technique.
+
+```typescript
+// demos/helpers/spotlight.ts
+import { Page } from '@playwright/test';
+
+interface SpotlightOptions {
+  padding?: number;
+  opacity?: number;
+  color?: string;
+  label?: string;
+  labelPosition?: 'top' | 'bottom' | 'left' | 'right';
+  borderRadius?: number;
+  animated?: boolean;
+}
+
+export async function spotlight(
+  page: Page,
+  selector: string,
+  options: SpotlightOptions = {}
+): Promise<void> {
+  const {
+    padding = 8,
+    opacity = 0.7,
+    color = 'rgba(0, 0, 0)',
+    label,
+    labelPosition = 'bottom',
+    borderRadius = 8,
+    animated = true,
+  } = options;
+
+  await page.evaluate(
+    ({ selector, padding, opacity, color, label, labelPosition, borderRadius, animated }) => {
+      // Remove existing spotlight
+      document.getElementById('demo-spotlight-overlay')?.remove();
+
+      const element = document.querySelector(selector);
+      if (!element) {
+        console.warn(`Spotlight: Element not found: ${selector}`);
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+
+      // Create overlay with hole
+      const overlay = document.createElement('div');
+      overlay.id = 'demo-spotlight-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99998;
+        pointer-events: none;
+        ${animated ? 'animation: demoSpotlightFadeIn 0.3s ease;' : ''}
+      `;
+
+      // SVG mask for the hole
+      const holeX = rect.left - padding;
+      const holeY = rect.top - padding;
+      const holeW = rect.width + padding * 2;
+      const holeH = rect.height + padding * 2;
+
+      overlay.innerHTML = `
+        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+          <defs>
+            <mask id="spotlight-mask">
+              <rect width="100%" height="100%" fill="white"/>
+              <rect x="${holeX}" y="${holeY}" width="${holeW}" height="${holeH}"
+                    rx="${borderRadius}" fill="black"/>
+            </mask>
+          </defs>
+          <rect width="100%" height="100%" fill="${color}" fill-opacity="${opacity}"
+                mask="url(#spotlight-mask)"/>
+        </svg>
+      `;
+
+      // Add pulse border around element
+      const highlight = document.createElement('div');
+      highlight.id = 'demo-spotlight-highlight';
+      highlight.style.cssText = `
+        position: fixed;
+        left: ${holeX}px;
+        top: ${holeY}px;
+        width: ${holeW}px;
+        height: ${holeH}px;
+        border: 2px solid rgba(59, 130, 246, 0.8);
+        border-radius: ${borderRadius}px;
+        z-index: 99999;
+        pointer-events: none;
+        animation: demoSpotlightPulse 2s ease-in-out infinite;
+      `;
+      overlay.appendChild(highlight);
+
+      // Add label if provided
+      if (label) {
+        const labelEl = document.createElement('div');
+        labelEl.id = 'demo-spotlight-label';
+
+        let labelX: number, labelY: number, transform: string;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        switch (labelPosition) {
+          case 'top':
+            labelX = centerX;
+            labelY = rect.top - padding - 12;
+            transform = 'translate(-50%, -100%)';
+            break;
+          case 'bottom':
+            labelX = centerX;
+            labelY = rect.bottom + padding + 12;
+            transform = 'translate(-50%, 0)';
+            break;
+          case 'left':
+            labelX = rect.left - padding - 12;
+            labelY = centerY;
+            transform = 'translate(-100%, -50%)';
+            break;
+          case 'right':
+            labelX = rect.right + padding + 12;
+            labelY = centerY;
+            transform = 'translate(0, -50%)';
+            break;
+        }
+
+        labelEl.style.cssText = `
+          position: fixed;
+          left: ${labelX}px;
+          top: ${labelY}px;
+          transform: ${transform};
+          background: rgba(59, 130, 246, 0.95);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 14px;
+          font-family: system-ui, sans-serif;
+          font-weight: 500;
+          z-index: 99999;
+          pointer-events: none;
+          white-space: nowrap;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        `;
+        labelEl.textContent = label;
+        overlay.appendChild(labelEl);
+      }
+
+      // Add keyframes
+      const style = document.createElement('style');
+      style.id = 'demo-spotlight-styles';
+      style.textContent = `
+        @keyframes demoSpotlightFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes demoSpotlightPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+          50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      document.body.appendChild(overlay);
+    },
+    { selector, padding, opacity, color, label, labelPosition, borderRadius, animated }
+  );
+}
+
+export async function clearSpotlight(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const overlay = document.getElementById('demo-spotlight-overlay');
+    if (overlay) {
+      overlay.style.transition = 'opacity 0.2s ease';
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.remove();
+        document.getElementById('demo-spotlight-styles')?.remove();
+      }, 200);
+    }
+  });
+}
+
+// Move spotlight to new element
+export async function moveSpotlight(
+  page: Page,
+  selector: string,
+  options: SpotlightOptions = {}
+): Promise<void> {
+  await clearSpotlight(page);
+  await page.waitForTimeout(100);
+  await spotlight(page, selector, { ...options, animated: true });
+}
+```
+
+---
+
+## Combined Usage: Progress Bar + Spotlight
+
+Example demonstrating both visual effects working together for a guided tour demo.
+
+```typescript
+// demos/specs/demo-onboarding.spec.ts
+import { test } from '@playwright/test';
+import { showProgressBar, updateProgress, hideProgressBar } from '../helpers/progress-bar';
+import { spotlight, clearSpotlight, moveSpotlight } from '../helpers/spotlight';
+
+test.describe('Demo: Onboarding Flow', () => {
+  test('guided tour with progress and spotlight', async ({ page }) => {
+    // Initialize progress bar
+    await showProgressBar(page, { position: 'top', steps: 4 });
+
+    await page.goto('/dashboard');
+    await updateProgress(page, 1, 'Welcome');
+
+    // Spotlight: Navigation menu
+    await spotlight(page, '[data-testid="nav-menu"]', {
+      label: 'Main navigation',
+      labelPosition: 'right',
+    });
+    await page.waitForTimeout(2000);
+
+    await updateProgress(page, 2, 'Navigation');
+    await moveSpotlight(page, '[data-testid="create-btn"]', {
+      label: 'Create new project',
+      labelPosition: 'bottom',
+    });
+    await page.waitForTimeout(2000);
+
+    await updateProgress(page, 3, 'Create Project');
+    await clearSpotlight(page);
+    await page.click('[data-testid="create-btn"]');
+
+    await updateProgress(page, 4, 'Complete!');
+    await page.waitForTimeout(1500);
+    await hideProgressBar(page);
+  });
+});
+```
+
+---
+
 ### Device-Specific Presets
 
 Pre-configured settings for common demo scenarios.
