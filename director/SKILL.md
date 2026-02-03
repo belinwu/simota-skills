@@ -139,17 +139,29 @@ questions:
 **ON_RECORDING_CONFIG:**
 ```yaml
 questions:
-  - question: "撮影設定を選択してください。"
-    header: "Config"
+  - question: "Select recording resolution."
+    header: "Resolution"
     options:
       - label: "Desktop 1280x720 (Recommended)"
-        description: "標準的なデスクトップ表示、最も汎用的"
-      - label: "Desktop 1920x1080"
-        description: "フルHD、詳細な操作が見やすい"
-      - label: "Mobile 375x667"
-        description: "iPhone SEサイズ、モバイルデモ向け"
-      - label: "Tablet 768x1024"
-        description: "iPadサイズ、タブレットデモ向け"
+        description: "Standard desktop, web embedding (~5MB/30s)"
+      - label: "Desktop 1920x1080 (Full HD)"
+        description: "Full HD, presentations & detailed views (~10MB/30s)"
+      - label: "Desktop 2560x1440 (2K/QHD)"
+        description: "High resolution, large screens & Retina (~18MB/30s)"
+      - label: "Desktop 3840x2160 (4K)"
+        description: "Maximum quality, production use (~35MB/30s)"
+    multiSelect: false
+  - question: "Select device type."
+    header: "Device"
+    options:
+      - label: "Desktop Chrome (Recommended)"
+        description: "Standard desktop browser"
+      - label: "Mobile iPhone 14 Pro"
+        description: "390x844, mobile app demos"
+      - label: "Mobile iPhone SE"
+        description: "375x667, compact mobile demos"
+      - label: "Tablet iPad"
+        description: "768x1024, tablet app demos"
     multiSelect: false
 ```
 
@@ -206,13 +218,37 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'demo-desktop',
+      name: 'demo-720p',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'demo-1080p',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1920, height: 1080 },
+        video: { mode: 'on', size: { width: 1920, height: 1080 } },
+      },
+    },
+    {
+      name: 'demo-1440p',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 2560, height: 1440 },
+        video: { mode: 'on', size: { width: 2560, height: 1440 } },
+      },
+    },
+    {
+      name: 'demo-4k',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 3840, height: 2160 },
+        video: { mode: 'on', size: { width: 3840, height: 2160 } },
+      },
     },
     {
       name: 'demo-mobile',
       use: {
-        ...devices['iPhone 12'],
+        ...devices['iPhone 14 Pro'],
         launchOptions: { slowMo: 600 },
       },
     },
@@ -228,6 +264,35 @@ export default defineConfig({
 | Form filling | 500-700 | Show each character being typed |
 | Page transitions | 700-1000 | Allow page to fully render |
 | Important moments | 1000-1500 | Pause for emphasis |
+
+### Resolution Guidelines
+
+| Resolution | Project Name | Use Case | File Size (30s) |
+|------------|--------------|----------|-----------------|
+| 1280x720 (720p) | `demo-720p` | Web embedding, standard demos | ~5MB |
+| 1920x1080 (1080p) | `demo-1080p` | Presentations, high quality | ~10MB |
+| 2560x1440 (2K) | `demo-1440p` | Large screens, Retina displays | ~18MB |
+| 3840x2160 (4K) | `demo-4k` | Production, maximum quality | ~35MB |
+
+**Running with specific resolution:**
+```bash
+# 720p (default)
+npx playwright test --project=demo-720p
+
+# Full HD
+npx playwright test --project=demo-1080p
+
+# 2K / QHD
+npx playwright test --project=demo-1440p
+
+# 4K (requires sufficient system resources)
+npx playwright test --project=demo-4k
+```
+
+**Notes:**
+- 4K recording requires significant system resources
+- Always match viewport and video.size dimensions
+- Consider longer slowMo values for higher resolutions
 
 ---
 
