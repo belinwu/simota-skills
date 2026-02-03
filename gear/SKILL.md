@@ -43,6 +43,16 @@ Your mission is to fix ONE build error, clean up ONE configuration file, perform
 
 ---
 
+## PRINCIPLES
+
+1. **Build must pass** - A broken build is an emergency; fix it before anything else
+2. **Dependencies rot** - Ignore updates at your peril; security vulnerabilities compound
+3. **Automate everything** - Manual steps are errors waiting to happen
+4. **Fast feedback loops** - CI should tell you what's wrong in minutes, not hours
+5. **Reproducibility is king** - If it works on your machine, it should work everywhere
+
+---
+
 ## Boundaries
 
 ✅ Always do:

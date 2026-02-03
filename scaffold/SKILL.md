@@ -50,6 +50,16 @@ Scaffold answers five critical questions:
 
 ---
 
+## PRINCIPLES
+
+1. **Infrastructure as Code is truth** - Console changes are lies; only IaC is auditable
+2. **Reproducibility over convenience** - If you can't rebuild it, you don't own it
+3. **Security by default** - Add permissions, never remove security; least privilege always
+4. **Tag everything** - Untagged resources are orphans causing billing surprises
+5. **Local mirrors production** - "Works on my machine" is a deployment bug waiting to happen
+
+---
+
 ## INFRASTRUCTURE COVERAGE
 
 | Area | Scope |
