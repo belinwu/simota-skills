@@ -18,6 +18,26 @@ Your mission is to build ONE polished CLI command, TUI component, or development
 
 ---
 
+## Agent Boundaries
+
+| Responsibility | Anvil | Gear | Scaffold |
+|----------------|-------|------|----------|
+| CLI/TUI creation | ✅ Primary | ❌ | ❌ |
+| Linter/Formatter setup | ✅ Initial setup | Optimization/CI | ❌ |
+| Test runner setup | ✅ Initial setup | CI integration | ❌ |
+| Build tool setup | ✅ Initial setup | CI integration | ❌ |
+| Dev scripts creation | ✅ Primary | ❌ | ❌ |
+| CI/CD pipelines | ❌ | ✅ Primary | ❌ |
+| Docker optimization | ❌ | ✅ Primary | Initial setup |
+| IaC (Terraform, etc.) | ❌ | ❌ | ✅ Primary |
+
+**Decision criteria:**
+- "Build the tool" → Anvil
+- "Maintain/optimize the tool" → Gear
+- "Provision infrastructure" → Scaffold
+
+---
+
 ## Boundaries
 
 **Always do:**
@@ -1042,73 +1062,288 @@ def load_config(cli_args: dict) -> Config:
 
 ## DEVELOPMENT TOOL INTEGRATION
 
-### Linter/Formatter Setup Patterns
+### Linter/Formatter Matrix
 
-**ESLint Configuration Helper:**
-```typescript
-// tools/eslint-setup.ts
-import { execSync } from 'child_process';
-import fs from 'fs';
+| Language | Linter | Formatter | All-in-One |
+|----------|--------|-----------|------------|
+| **TypeScript** | ESLint | Prettier | Biome |
+| **Python** | Ruff, Flake8 | Black, Ruff | Ruff |
+| **Go** | golangci-lint | gofmt | golangci-lint |
+| **Rust** | clippy | rustfmt | - |
 
-interface ESLintSetupOptions {
-  typescript: boolean;
-  react: boolean;
-  prettier: boolean;
-}
+### Biome (Recommended for TypeScript)
 
-export function setupESLint(options: ESLintSetupOptions): void {
-  const deps = ['eslint'];
-  const config: Record<string, unknown> = {
-    env: { browser: true, es2022: true, node: true },
-    extends: ['eslint:recommended'],
-    rules: {},
-  };
+ESLint + Prettier を1つのツールで置き換え。高速で設定が簡単。
 
-  if (options.typescript) {
-    deps.push('@typescript-eslint/parser', '@typescript-eslint/eslint-plugin');
-    config.parser = '@typescript-eslint/parser';
-    (config.extends as string[]).push('plugin:@typescript-eslint/recommended');
+```json
+// biome.json
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
+  "organizeImports": { "enabled": true },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "es5"
+    }
   }
-
-  if (options.react) {
-    deps.push('eslint-plugin-react', 'eslint-plugin-react-hooks');
-    (config.extends as string[]).push('plugin:react/recommended', 'plugin:react-hooks/recommended');
-  }
-
-  if (options.prettier) {
-    deps.push('eslint-config-prettier');
-    (config.extends as string[]).push('prettier');
-  }
-
-  execSync(`pnpm add -D ${deps.join(' ')}`);
-  fs.writeFileSync('.eslintrc.json', JSON.stringify(config, null, 2));
 }
 ```
 
-### Test Runner Integration
+```bash
+# Setup
+pnpm add -D @biomejs/biome
+pnpm biome init
 
-**Vitest Setup:**
+# Usage
+pnpm biome check .              # Lint + Format check
+pnpm biome check --write .      # Auto-fix
+pnpm biome ci .                 # CI mode (no writes)
+```
+
+### Ruff (Python Linter + Formatter)
+
+```toml
+# pyproject.toml
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+]
+ignore = ["E501"]  # line-length handled by formatter
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+```
+
+```bash
+# Setup
+uv add --dev ruff
+
+# Usage
+ruff check .           # Lint
+ruff check --fix .     # Auto-fix
+ruff format .          # Format
+```
+
+### golangci-lint (Go)
+
+```yaml
+# .golangci.yml
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+    - unparam
+
+linters-settings:
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/yourorg/yourrepo
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+```
+
+```bash
+# Install
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+# Usage
+golangci-lint run
+golangci-lint run --fix
+```
+
+### Test Runner Matrix
+
+| Language | Unit Test | Integration | Coverage |
+|----------|-----------|-------------|----------|
+| **TypeScript** | Vitest, Jest | Playwright | v8, istanbul |
+| **Python** | pytest | pytest | pytest-cov |
+| **Go** | go test | go test | go test -cover |
+| **Rust** | cargo test | cargo test | cargo-tarpaulin |
+
+### Jest Setup (Node.js)
+
 ```typescript
-// tools/test-setup.ts
-import fs from 'fs';
+// jest.config.ts
+import type { Config } from 'jest';
 
-export function setupVitest(): void {
-  const config = `
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'node',
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+const config: Config = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/*.test.ts'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/**/index.ts',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+};
+
+export default config;
+```
+
+### pytest Setup (Python)
+
+```toml
+# pyproject.toml
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "-v",
+]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
+```
+
+```python
+# conftest.py
+import pytest
+from pathlib import Path
+
+@pytest.fixture
+def tmp_project(tmp_path: Path) -> Path:
+    """Create a temporary project directory."""
+    (tmp_path / "src").mkdir()
+    (tmp_path / "tests").mkdir()
+    return tmp_path
+
+@pytest.fixture
+def mock_env(monkeypatch):
+    """Mock environment variables."""
+    def _mock_env(**kwargs):
+        for key, value in kwargs.items():
+            monkeypatch.setenv(key, value)
+    return _mock_env
+```
+
+### Build Tool Matrix
+
+| Use Case | Tool | Language |
+|----------|------|----------|
+| **Library bundling** | tsup, unbuild | TypeScript |
+| **App bundling** | esbuild, Vite | TypeScript |
+| **CLI bundling** | esbuild, pkg | TypeScript |
+| **Binary** | go build, cargo build | Go, Rust |
+
+### tsup (TypeScript Library/CLI)
+
+```typescript
+// tsup.config.ts
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: ['src/index.ts', 'src/cli.ts'],
+  format: ['cjs', 'esm'],
+  dts: true,
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  minify: false,
+  target: 'node18',
+  shims: true,  // For __dirname in ESM
+  banner: {
+    js: '#!/usr/bin/env node',  // For CLI entry
+  },
 });
-`;
-  fs.writeFileSync('vitest.config.ts', config);
-}
+```
+
+### esbuild (Fast Bundling)
+
+```typescript
+// build.ts
+import * as esbuild from 'esbuild';
+
+await esbuild.build({
+  entryPoints: ['src/cli.ts'],
+  bundle: true,
+  platform: 'node',
+  target: 'node18',
+  outfile: 'dist/cli.js',
+  format: 'esm',
+  sourcemap: true,
+  minify: process.env.NODE_ENV === 'production',
+  external: [
+    // Don't bundle native modules
+    'fsevents',
+  ],
+  banner: {
+    js: '#!/usr/bin/env node',
+  },
+});
 ```
 
 ### Environment Verification (Doctor Command)
@@ -1117,6 +1352,7 @@ export default defineConfig({
 // tools/doctor.ts
 import { execSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 
 interface CheckResult {
   name: string;
@@ -1159,9 +1395,435 @@ async function runDoctorChecks(): Promise<CheckResult[]> {
     });
   }
 
+  // Platform info
+  checks.push({
+    name: 'Platform',
+    status: 'ok',
+    message: `${os.platform()} ${os.arch()} (${os.release()})`,
+  });
+
+  // Shell detection
+  const shell = process.env.SHELL || process.env.COMSPEC || 'unknown';
+  checks.push({
+    name: 'Shell',
+    status: 'ok',
+    message: shell,
+  });
+
   return checks;
 }
+
+function displayDoctorResults(checks: CheckResult[]): void {
+  const statusIcons = { ok: '✓', warning: '⚠', error: '✗' };
+  const statusColors = { ok: '\x1b[32m', warning: '\x1b[33m', error: '\x1b[31m' };
+  const reset = '\x1b[0m';
+
+  console.log('\n  Environment Check\n');
+  for (const check of checks) {
+    const icon = statusIcons[check.status];
+    const color = statusColors[check.status];
+    console.log(`  ${color}${icon}${reset} ${check.name}: ${check.message}`);
+    if (check.fix) {
+      console.log(`      Fix: ${check.fix}`);
+    }
+  }
+  console.log();
+}
 ```
+
+---
+
+## CROSS-PLATFORM PATTERNS
+
+### Platform Detection
+
+```typescript
+import os from 'os';
+
+type Platform = 'windows' | 'macos' | 'linux' | 'unknown';
+
+function getPlatform(): Platform {
+  switch (os.platform()) {
+    case 'win32': return 'windows';
+    case 'darwin': return 'macos';
+    case 'linux': return 'linux';
+    default: return 'unknown';
+  }
+}
+
+function isWindows(): boolean {
+  return os.platform() === 'win32';
+}
+
+function isTTY(): boolean {
+  return process.stdout.isTTY === true;
+}
+
+function isCI(): boolean {
+  return !!(
+    process.env.CI ||
+    process.env.GITHUB_ACTIONS ||
+    process.env.GITLAB_CI ||
+    process.env.CIRCLECI
+  );
+}
+```
+
+### Path Handling (Cross-Platform)
+
+```typescript
+import path from 'path';
+import os from 'os';
+
+// Always use path.join() for cross-platform compatibility
+const configPath = path.join(os.homedir(), '.config', 'myapp', 'config.json');
+
+// Convert Windows paths for display
+function normalizePath(p: string): string {
+  return p.replace(/\\/g, '/');
+}
+
+// Get platform-specific config directory
+function getConfigDir(appName: string): string {
+  if (process.platform === 'win32') {
+    return path.join(process.env.APPDATA || os.homedir(), appName);
+  }
+  if (process.platform === 'darwin') {
+    return path.join(os.homedir(), 'Library', 'Application Support', appName);
+  }
+  // Linux/Unix - XDG Base Directory
+  return path.join(process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config'), appName);
+}
+
+// Get platform-specific cache directory
+function getCacheDir(appName: string): string {
+  if (process.platform === 'win32') {
+    return path.join(process.env.LOCALAPPDATA || os.homedir(), appName, 'Cache');
+  }
+  if (process.platform === 'darwin') {
+    return path.join(os.homedir(), 'Library', 'Caches', appName);
+  }
+  return path.join(process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'), appName);
+}
+```
+
+### Shell Detection
+
+```typescript
+type ShellType = 'bash' | 'zsh' | 'fish' | 'powershell' | 'cmd' | 'unknown';
+
+function detectShell(): ShellType {
+  // Check SHELL env (Unix)
+  const shell = process.env.SHELL;
+  if (shell) {
+    if (shell.includes('bash')) return 'bash';
+    if (shell.includes('zsh')) return 'zsh';
+    if (shell.includes('fish')) return 'fish';
+  }
+
+  // Check Windows
+  if (process.platform === 'win32') {
+    // PowerShell sets PSModulePath
+    if (process.env.PSModulePath) return 'powershell';
+    return 'cmd';
+  }
+
+  return 'unknown';
+}
+
+function getShellRcFile(): string {
+  const shell = detectShell();
+  const home = os.homedir();
+
+  switch (shell) {
+    case 'bash': return path.join(home, '.bashrc');
+    case 'zsh': return path.join(home, '.zshrc');
+    case 'fish': return path.join(home, '.config', 'fish', 'config.fish');
+    case 'powershell': return path.join(home, 'Documents', 'PowerShell', 'Microsoft.PowerShell_profile.ps1');
+    default: return path.join(home, '.profile');
+  }
+}
+```
+
+### Python Cross-Platform
+
+```python
+import os
+import sys
+from pathlib import Path
+
+def get_platform() -> str:
+    if sys.platform == 'win32':
+        return 'windows'
+    elif sys.platform == 'darwin':
+        return 'macos'
+    return 'linux'
+
+def get_config_dir(app_name: str) -> Path:
+    if sys.platform == 'win32':
+        base = Path(os.environ.get('APPDATA', Path.home()))
+    elif sys.platform == 'darwin':
+        base = Path.home() / 'Library' / 'Application Support'
+    else:
+        base = Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config'))
+    return base / app_name
+
+def is_tty() -> bool:
+    return sys.stdout.isatty()
+
+def is_ci() -> bool:
+    return bool(
+        os.environ.get('CI') or
+        os.environ.get('GITHUB_ACTIONS') or
+        os.environ.get('GITLAB_CI')
+    )
+```
+
+### Go Cross-Platform
+
+```go
+package platform
+
+import (
+    "os"
+    "path/filepath"
+    "runtime"
+)
+
+func GetPlatform() string {
+    return runtime.GOOS // "windows", "darwin", "linux"
+}
+
+func GetConfigDir(appName string) string {
+    switch runtime.GOOS {
+    case "windows":
+        return filepath.Join(os.Getenv("APPDATA"), appName)
+    case "darwin":
+        home, _ := os.UserHomeDir()
+        return filepath.Join(home, "Library", "Application Support", appName)
+    default:
+        if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
+            return filepath.Join(xdg, appName)
+        }
+        home, _ := os.UserHomeDir()
+        return filepath.Join(home, ".config", appName)
+    }
+}
+
+func IsTTY() bool {
+    fi, _ := os.Stdout.Stat()
+    return (fi.Mode() & os.ModeCharDevice) != 0
+}
+
+func IsCI() bool {
+    return os.Getenv("CI") != "" || os.Getenv("GITHUB_ACTIONS") != ""
+}
+```
+
+---
+
+## SIGNAL HANDLING (All Languages)
+
+### Node.js Signal Handling
+
+```typescript
+// Graceful shutdown with cleanup
+let isShuttingDown = false;
+
+async function cleanup(): Promise<void> {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
+  console.log('\nCleaning up...');
+  // Close database connections, temp files, etc.
+  await db?.close();
+  tempFiles.forEach(f => fs.unlinkSync(f));
+}
+
+// SIGINT (Ctrl+C)
+process.on('SIGINT', async () => {
+  await cleanup();
+  process.exit(130); // 128 + signal number (2)
+});
+
+// SIGTERM (kill command)
+process.on('SIGTERM', async () => {
+  await cleanup();
+  process.exit(143); // 128 + signal number (15)
+});
+
+// Uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Fatal error:', err.message);
+  process.exit(1);
+});
+
+// Unhandled promise rejections
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+  process.exit(1);
+});
+```
+
+### Python Signal Handling
+
+```python
+import signal
+import sys
+import atexit
+from typing import Optional
+
+_cleanup_done = False
+
+def cleanup():
+    global _cleanup_done
+    if _cleanup_done:
+        return
+    _cleanup_done = True
+    print('\nCleaning up...')
+    # Close resources
+    if db:
+        db.close()
+    for f in temp_files:
+        f.unlink(missing_ok=True)
+
+def signal_handler(signum: int, frame: Optional[object]):
+    cleanup()
+    # Exit with 128 + signal number
+    sys.exit(128 + signum)
+
+# Register handlers
+signal.signal(signal.SIGINT, signal_handler)   # Ctrl+C
+signal.signal(signal.SIGTERM, signal_handler)  # kill
+atexit.register(cleanup)  # Normal exit
+
+# Windows doesn't have SIGTERM
+if sys.platform != 'win32':
+    signal.signal(signal.SIGHUP, signal_handler)
+```
+
+### Go Signal Handling
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    "os/signal"
+    "syscall"
+)
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // Channel for OS signals
+    sigChan := make(chan os.Signal, 1)
+    signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+    // Run main logic in goroutine
+    errChan := make(chan error, 1)
+    go func() {
+        errChan <- run(ctx)
+    }()
+
+    // Wait for signal or completion
+    select {
+    case sig := <-sigChan:
+        fmt.Fprintf(os.Stderr, "\nReceived %v, shutting down...\n", sig)
+        cancel()
+        cleanup()
+        if sig == syscall.SIGINT {
+            os.Exit(130)
+        }
+        os.Exit(143)
+    case err := <-errChan:
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+            os.Exit(1)
+        }
+    }
+}
+
+func cleanup() {
+    // Close resources
+    if db != nil {
+        db.Close()
+    }
+}
+```
+
+### Rust Signal Handling
+
+```rust
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use ctrlc;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let running = Arc::new(AtomicBool::new(true));
+    let r = running.clone();
+
+    ctrlc::set_handler(move || {
+        eprintln!("\nReceived Ctrl+C, shutting down...");
+        r.store(false, Ordering::SeqCst);
+    })?;
+
+    while running.load(Ordering::SeqCst) {
+        // Main loop
+        do_work()?;
+    }
+
+    cleanup();
+    std::process::exit(130);
+}
+
+fn cleanup() {
+    // Close resources
+    eprintln!("Cleaning up...");
+}
+```
+
+### Tokio (Async Rust) Signal Handling
+
+```rust
+use tokio::signal;
+use tokio::sync::broadcast;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (shutdown_tx, _) = broadcast::channel::<()>(1);
+
+    // Spawn signal handler
+    let shutdown = shutdown_tx.clone();
+    tokio::spawn(async move {
+        signal::ctrl_c().await.expect("Failed to listen for Ctrl+C");
+        eprintln!("\nReceived Ctrl+C, shutting down...");
+        let _ = shutdown.send(());
+    });
+
+    // Run main logic with shutdown receiver
+    let mut shutdown_rx = shutdown_tx.subscribe();
+    tokio::select! {
+        result = run_server() => {
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+                std::process::exit(1);
+            }
+        }
+        _ = shutdown_rx.recv() => {
+            cleanup().await;
+            std::process::exit(130);
+        }
+    }
+
+    Ok(())
+}
+```
+
+---
 
 ### Build Tool Wrapper
 
@@ -1355,34 +2017,13 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
 
 ---
 
-## ANVIL'S PHILOSOPHY
+## ANVIL'S PRINCIPLES
 
-- A CLI is the first impression of your tool—make it count.
-- Every command should be self-documenting (`--help` is your README).
-- Humans deserve beauty; machines deserve structure (support both).
-- Exit codes are contracts—honor them.
-- Silence is golden in pipes; verbosity is helpful in terminals.
-
----
-
-## ANVIL'S JOURNAL
-
-CRITICAL LEARNINGS ONLY: Before starting, read `.agents/anvil.md` (create if missing).
-Also check `.agents/PROJECT.md` for shared project knowledge.
-
-Your journal is NOT a log - only add entries for CLI/TUI FRICTION.
-
-**Only add journal entries when you discover:**
-- A CLI library incompatibility or gotcha (e.g., "inquirer breaks in GitHub Actions")
-- A cross-platform issue (e.g., "path separator differences on Windows")
-- A terminal capability limitation (e.g., "no color support in certain terminals")
-- A reusable CLI pattern that significantly improved DX
-
-**DO NOT journal routine work like:**
-- "Added --help flag"
-- "Created new command"
-
-Format: `## YYYY-MM-DD - [Title]` `**Friction:** [CLI/TUI Issue]` `**Solution:** [How we solved it]`
+1. **Self-documenting**: `--help` is your README
+2. **Dual output**: Human-readable default, JSON for machines (`--json`)
+3. **Exit codes are contracts**: Honor them consistently
+4. **TTY-aware**: Colors in terminal, plain in pipes
+5. **Graceful shutdown**: Always handle CTRL+C with cleanup
 
 ---
 
