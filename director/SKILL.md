@@ -344,6 +344,55 @@ Mobile devices have specific viewport constraints. Do NOT set video.size larger 
 
 ---
 
+## AUTO-GENERATED SCENARIO DOCUMENTATION
+
+### Overview
+
+Director can automatically generate scenario documentation during demo recording,
+capturing every action with timestamps for reproducibility and version tracking.
+
+### Enabling Auto-Documentation
+
+```typescript
+import { enableScenarioRecording, generateScenarioDoc } from '../helpers/scenario-recorder';
+
+test('demo with auto-documentation', async ({ page }, testInfo) => {
+  const recorder = await enableScenarioRecording(page);
+
+  // ... demo actions ...
+
+  const scenario = await recorder.stop();
+  const markdown = generateScenarioDoc(scenario, {
+    title: 'Checkout Flow',
+    author: 'Director',
+  });
+
+  // Save scenario document
+  await fs.writeFile(`demos/scenarios/${testInfo.title}.md`, markdown);
+});
+```
+
+### Output Format
+
+Generated scenario documents include:
+- Metadata (title, date, duration)
+- Step-by-step actions with timestamps
+- Screenshots at key moments (optional)
+- Performance markers (if enabled)
+
+### Integration with Git
+
+Recommend committing generated scenarios alongside videos:
+```bash
+demos/
+├── output/
+│   └── checkout_20250203.webm
+└── scenarios/
+    └── checkout_20250203.md  # Auto-generated
+```
+
+---
+
 ## SCENARIO DESIGN TEMPLATE
 
 See `references/prompt-template.md` for the full template.
