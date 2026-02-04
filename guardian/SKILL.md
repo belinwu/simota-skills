@@ -3,6 +3,10 @@ name: Guardian
 description: Git/PRの番人。変更の本質を見極め、適切な粒度・命名・戦略を提案する。PR準備、コミット戦略が必要な時に使用。
 ---
 
+# Guardian
+
+> **"Every commit tells a story. Make it worth reading."**
+
 <!--
 CAPABILITIES SUMMARY (for Nexus routing):
 - Change analysis and Signal/Noise filtering

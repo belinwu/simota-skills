@@ -31,7 +31,9 @@ BIDIRECTIONAL PARTNERS:
           Zen (PR title analysis), Radar (coverage correlation), Sherpa (large PR splits)
 -->
 
-# Harvest - PR Information Collector & Report Generator
+# Harvest
+
+> **"Code writes history. I harvest its meaning."**
 
 PRの成果を可視化し、作業報告を効率化するエージェント。GitHub PRの情報を収集・分析し、週報・月報・リリースノートを自動生成します。
 

@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-48-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-51-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **47種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **51種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする47種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする51種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -43,96 +43,100 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Nexus** | チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを設計 | プロンプト、進行管理 |
-| **Sherpa** | タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
-| **Architect** | 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
+| **Nexus** | _"The right agent at the right time changes everything."_ - チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを設計 | プロンプト、進行管理 |
+| **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
+| **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
 
 ### 調査・企画（コードを書かない）
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Scout** | バグ調査・根本原因分析（RCA）。再現手順と修正箇所を特定 | 調査レポート |
-| **Spark** | 新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案 | 仕様書 |
-| **Compete** | 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
-| **Voice** | ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
-| **Researcher** | ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
+| **Scout** | _"Every bug has a story. I read the ending first."_ - バグ調査・根本原因分析（RCA）。再現手順と修正箇所を特定 | 調査レポート |
+| **Spark** | _"The best feature is the one users didn't know they needed."_ - 新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案 | 仕様書 |
+| **Compete** | _"Know your enemy. Know the market. Know yourself."_ - 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
+| **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
+| **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
+| **Cipher** | _"Don't listen to words. Listen to silence."_ - ユーザー意図の解読。曖昧な要求を正確な仕様に変換 | 要求仕様書 |
 
 ### Git/PR管理
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Guardian** | Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
-| **Harvest** | PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
-| **Launch** | リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
+| **Guardian** | _"Every commit tells a story. Make it worth reading."_ - Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
+| **Harvest** | _"Code writes history. I harvest its meaning."_ - PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
+| **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
+| **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
 
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
 **Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
+**Rewind → Scout の連携**：Rewind（リグレッション特定）→ Scout（詳細調査）
 
 ### 品質保証
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Radar** | ユニット/統合テスト追加・フレーキーテスト修正・カバレッジ向上 | テストコード |
-| **Voyager** | E2Eテスト専門。Playwright/Cypress設定、Page Object設計、視覚回帰、CI統合 | E2Eテストコード |
-| **Sentinel** | セキュリティ静的分析（SAST）・脆弱性パターン検出・入力検証追加 | セキュリティ修正 |
-| **Probe** | セキュリティ動的テスト（DAST）・OWASP ZAP/Nuclei連携・ペネトレーションテスト | 脆弱性レポート |
-| **Judge** | codex reviewによるコードレビュー・PRレビュー自動化・コミット前チェック・AI幻覚検出 | レビューレポート |
-| **Zen** | リファクタリング・コード品質改善（動作は変えない） | コード改善 |
-| **Sweep** | 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
+| **Radar** | _"Untested code is unfinished code."_ - ユニット/統合テスト追加・フレーキーテスト修正・カバレッジ向上 | テストコード |
+| **Voyager** | _"E2E tests are the user's advocate in CI/CD."_ - E2Eテスト専門。Playwright/Cypress設定、Page Object設計、視覚回帰、CI統合 | E2Eテストコード |
+| **Sentinel** | _"Security is not a feature. It's a responsibility."_ - セキュリティ静的分析（SAST）・脆弱性パターン検出・入力検証追加 | セキュリティ修正 |
+| **Probe** | _"A system is only as secure as its weakest endpoint."_ - セキュリティ動的テスト（DAST）・OWASP ZAP/Nuclei連携・ペネトレーションテスト | 脆弱性レポート |
+| **Judge** | _"Good code needs no defense. Bad code has no excuse."_ - codex reviewによるコードレビュー・PRレビュー自動化・コミット前チェック・AI幻覚検出 | レビューレポート |
+| **Zen** | _"Clean code is not written. It's rewritten."_ - リファクタリング・コード品質改善（動作は変えない） | コード改善 |
+| **Sweep** | _"Dead code is technical debt that earns no interest."_ - 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
+| **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E.品質基準の番人。リリース前評価、スコアカード、合否判定 | 品質評価レポート |
 
 ### 実装
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Builder** | 本番実装。TDD・Event Sourcing・CQRS・パフォーマンス最適化を備えた型安全な実装職人。仕様の曖昧性検出、Forgeからの自動引き継ぎ対応 | プロダクションコード |
-| **Artisan** | フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
-| **Forge** | プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
-| **Arena** | 複数AIエンジン並列実装。aiwコマンドで複数アプローチを比較・評価・採用 | 比較実装・評価 |
+| **Builder** | _"Types are contracts. Code is a promise."_ - 本番実装。TDD・Event Sourcing・CQRS・パフォーマンス最適化を備えた型安全な実装職人。仕様の曖昧性検出、Forgeからの自動引き継ぎ対応 | プロダクションコード |
+| **Artisan** | _"Prototypes promise. Production delivers."_ - フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
+| **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
+| **Arena** | _"One problem, many minds. Let the best solution emerge."_ - 複数AIエンジン並列実装。aiwコマンドで複数アプローチを比較・評価・採用 | 比較実装・評価 |
 
 ### パフォーマンス
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Bolt** | アプリケーションパフォーマンス改善。フロント（再レンダリング削減）とバック（N+1修正）両面 | 最適化コード |
-| **Tuner** | DBパフォーマンス最適化。EXPLAIN ANALYZE分析・インデックス推奨・スロークエリ改善 | クエリ最適化 |
+| **Bolt** | _"Speed is a feature. Slowness is a bug you haven't fixed yet."_ - アプリケーションパフォーマンス改善。フロント（再レンダリング削減）とバック（N+1修正）両面 | 最適化コード |
+| **Tuner** | _"A fast query is a happy user. A slow query is a lost customer."_ - DBパフォーマンス最適化。EXPLAIN ANALYZE分析・インデックス推奨・スロークエリ改善 | クエリ最適化 |
 
 ### UI/UX
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Vision** | クリエイティブディレクション。デザイン方向性決定・Design System構築・Muse/Palette/Flow/Forgeのオーケストレーション | デザイン戦略 |
-| **Palette** | ユーザビリティ改善・認知負荷軽減・a11y対応 | UX改善 |
-| **Muse** | デザイントークン適用・余白/角丸/シャドウ統一・ダークモード対応 | 視覚的改善 |
-| **Flow** | UIアニメーション・ホバー効果・ローディング状態・モーダル遷移 | アニメーション |
-| **Echo** | ペルソナ検証。ユーザーになりきりUIフローの混乱ポイントを報告 | UXレポート |
-| **Showcase** | Storybookストーリー作成・カタログ管理・Visual Regression連携。CSF 3.0形式 | Storybook Stories |
+| **Vision** | _"Design is not how it looks. Design is how it feels."_ - クリエイティブディレクション。デザイン方向性決定・Design System構築・Muse/Palette/Flow/Forgeのオーケストレーション | デザイン戦略 |
+| **Palette** | _"Usability is invisible when done right, painful when done wrong."_ - ユーザビリティ改善・認知負荷軽減・a11y対応 | UX改善 |
+| **Muse** | _"Tokens are the DNA of design. Mutate them with care."_ - デザイントークン適用・余白/角丸/シャドウ統一・ダークモード対応 | 視覚的改善 |
+| **Flow** | _"Motion creates emotion. Animation breathes life."_ - UIアニメーション・ホバー効果・ローディング状態・モーダル遷移 | アニメーション |
+| **Echo** | _"I don't test interfaces. I feel what users feel."_ - ペルソナ検証。ユーザーになりきりUIフローの混乱ポイントを報告 | UXレポート |
+| **Showcase** | _"Components without stories are components without context."_ - Storybookストーリー作成・カタログ管理・Visual Regression連携。CSF 3.0形式 | Storybook Stories |
 
 ### ドキュメント
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Quill** | JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
+| **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
 
 ### 可視化
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Canvas** | 設計可視化。コード・仕様・コンテキストをMermaid図またはASCIIアート（フローチャート、シーケンス図、状態遷移図、クラス図、ER図等）に変換 | Mermaid図 / ASCII Art |
+| **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - 設計可視化。コード・仕様・コンテキストをMermaid図またはASCIIアート（フローチャート、シーケンス図、状態遷移図、クラス図、ER図等）に変換 | Mermaid図 / ASCII Art |
 
 ### アーキテクチャ
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Atlas** | 依存関係分析・循環参照検出・ADR/RFC作成 | 設計文書 |
-| **Horizon** | モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
-| **Gateway** | API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
+| **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - 依存関係分析・循環参照検出・ADR/RFC作成 | 設計文書 |
+| **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
+| **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
 
 ### データ
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Schema** | DBスキーマ設計・マイグレーション作成・ER図設計 | マイグレーション/スキーマ定義 |
-| **Stream** | データパイプライン。ETL/ELT設計、Kafka/Airflow/dbt、バッチ/ストリーミング選定、データ品質管理 | パイプライン設計、DAG、dbtモデル |
+| **Schema** | _"A schema is a contract with the future."_ - DBスキーマ設計・マイグレーション作成・ER図設計 | マイグレーション/スキーマ定義 |
+| **Stream** | _"Data flows like water. My job is to build the pipes."_ - データパイプライン。ETL/ELT設計、Kafka/Airflow/dbt、バッチ/ストリーミング選定、データ品質管理 | パイプライン設計、DAG、dbtモデル |
 
 **Schema → Stream の連携**：Schema（データモデル）→ Stream（パイプライン設計）
 
@@ -140,42 +144,42 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Anvil** | Terminal UI構築・CLI開発支援・開発ツール統合（Linter/テストランナー/ビルド） | CLI/TUIコード |
-| **Gear** | 依存関係管理・CI/CD最適化・Docker設定・運用監視設定 | 設定ファイル |
-| **Scaffold** | クラウドインフラ（Terraform/CloudFormation/Pulumi）・ローカル開発環境（Docker Compose）・IaC設計 | インフラ設定 |
+| **Anvil** | _"The terminal is the first interface. Make it unforgettable."_ - Terminal UI構築・CLI開発支援・開発ツール統合（Linter/テストランナー/ビルド） | CLI/TUIコード |
+| **Gear** | _"The best CI/CD is the one nobody thinks about."_ - 依存関係管理・CI/CD最適化・Docker設定・運用監視設定 | 設定ファイル |
+| **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - クラウドインフラ（Terraform/CloudFormation/Pulumi）・ローカル開発環境（Docker Compose）・IaC設計 | インフラ設定 |
 
 ### 国際化
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Polyglot** | i18n対応。ハードコード文字列をt()関数に置換・Intl APIで日付/通貨フォーマット | i18n対応 |
+| **Polyglot** | _"Every language deserves respect. Every user deserves their mother tongue."_ - i18n対応。ハードコード文字列をt()関数に置換・Intl APIで日付/通貨フォーマット | i18n対応 |
 
 ### 成長
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Growth** | SEO（meta/OGP/JSON-LD）・SMO（SNSシェア表示）・CRO（CTA改善） | 成長施策 |
-| **Retain** | リテンション施策・再エンゲージメント・チャーン予防。ゲーミフィケーション、習慣形成デザイン | リテンション施策 |
+| **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO（meta/OGP/JSON-LD）・SMO（SNSシェア表示）・CRO（CTA改善） | 成長施策 |
+| **Retain** | _"Acquisition is expensive. Retention is profitable."_ - リテンション施策・再エンゲージメント・チャーン予防。ゲーミフィケーション、習慣形成デザイン | リテンション施策 |
 
 ### 分析
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Pulse** | KPI定義・トラッキングイベント設計・ダッシュボード仕様作成 | メトリクス設計 |
-| **Experiment** | A/Bテスト設計・仮説ドキュメント作成・サンプルサイズ計算・フィーチャーフラグ実装 | 実験レポート |
+| **Pulse** | _"What gets measured gets managed. What gets measured wrong gets destroyed."_ - KPI定義・トラッキングイベント設計・ダッシュボード仕様作成 | メトリクス設計 |
+| **Experiment** | _"Every hypothesis deserves a fair trial. Every decision deserves data."_ - A/Bテスト設計・仮説ドキュメント作成・サンプルサイズ計算・フィーチャーフラグ実装 | 実験レポート |
 
 ### 運用
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Triage** | 障害対応・影響範囲特定・復旧手順策定・ポストモーテム作成 | 運用レポート |
+| **Triage** | _"In chaos, clarity is the first act of healing."_ - 障害対応・影響範囲特定・復旧手順策定・ポストモーテム作成 | 運用レポート |
 
 ### ブラウザ自動化
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
-| **Navigator** | Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
-| **Director** | Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供 | デモ動画(.webm) |
+| **Navigator** | _"The browser is a stage. Every click is a scene."_ - Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
+| **Director** | _"A demo that moves hearts moves products."_ - Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供 | デモ動画(.webm) |
 
 ## ワークフロー
 
@@ -392,6 +396,7 @@ skills/
 ├── bolt/SKILL.md       # パフォーマンス
 ├── builder/SKILL.md    # 本番実装
 ├── canvas/SKILL.md     # 可視化
+├── cipher/SKILL.md     # 意図解読
 ├── compete/SKILL.md    # 競合調査
 ├── director/SKILL.md   # デモ動画撮影
 ├── echo/SKILL.md       # ペルソナ検証
@@ -417,6 +422,7 @@ skills/
 ├── radar/SKILL.md      # テスト
 ├── researcher/SKILL.md # ユーザーリサーチ
 ├── retain/SKILL.md     # リテンション
+├── rewind/SKILL.md     # Git履歴調査
 ├── scaffold/SKILL.md   # インフラ
 ├── schema/SKILL.md     # DBスキーマ設計
 ├── scout/SKILL.md      # バグ調査
@@ -431,6 +437,7 @@ skills/
 ├── vision/SKILL.md     # クリエイティブディレクション
 ├── voice/SKILL.md      # ユーザーフィードバック
 ├── voyager/SKILL.md    # E2Eテスト
+├── warden/SKILL.md     # V.A.I.R.E.品質ゲート
 └── zen/SKILL.md        # リファクタリング
 ```
 
@@ -438,7 +445,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全47エージェントの使用例を紹介します。
+> カテゴリ別に全51エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
