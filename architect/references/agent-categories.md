@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 41 agents organized by category.
+Complete catalog of all 42 agents organized by category.
 
 ---
 
@@ -13,7 +13,7 @@ Complete catalog of all 41 agents organized by category.
 | Implementation | 5 | Code creation | Yes |
 | Testing | 2 | Test creation | Yes |
 | Security | 2 | Security analysis and testing | Yes |
-| Review | 2 | Code review and quality | Mixed |
+| Review | 3 | Code review and quality | Mixed |
 | Performance | 2 | Performance optimization | Yes |
 | Documentation | 1 | Documentation generation | No (text) |
 | Visualization | 1 | Diagram generation | No (diagrams) |
@@ -190,7 +190,7 @@ Agents that handle security analysis and testing.
 
 ---
 
-## Review (2 agents)
+## Review (3 agents)
 
 Agents that review and improve code quality.
 
@@ -206,10 +206,17 @@ Agents that review and improve code quality.
 - **Output**: Refactored code (same behavior)
 - **Trigger**: "リファクタ", "読みやすく", "整理"
 
+### Warden
+- **Role**: V.A.I.R.E. quality gatekeeper
+- **Input**: Features, flows, prototypes
+- **Output**: Scorecard, PASS/FAIL verdict
+- **Trigger**: "quality gate", "pre-release review", "V.A.I.R.E."
+
 **Category Characteristics:**
 - Quality improvement
 - Code review automation
 - Best practices enforcement
+- UX quality gating (Warden)
 - No feature changes
 
 ---
