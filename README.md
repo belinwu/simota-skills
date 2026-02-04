@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-51-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-52-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **51種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **52種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする51種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする52種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -115,7 +115,12 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 | エージェント | 説明 | 出力 |
 |------------|------|------|
+| **Scribe** | _"A specification is a contract between vision and reality."_ - PRD/SRS/HLD/LLD・実装チェックリスト・テスト仕様書を作成するドキュメントライター | 仕様書・設計書 |
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
+
+**Scribe vs Quill の役割分担**:
+- **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
+- **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
 
 ### 可視化
 
@@ -320,6 +325,10 @@ questions:
 
 | タスク | 説明 | チェーン |
 |--------|------|----------|
+| DOCS/prd | PRD作成 | Scribe |
+| DOCS/srs | SRS作成 | Scribe |
+| DOCS/design | 設計書作成 | Scribe |
+| DOCS/spec-to-build | 仕様から実装 | Spark → Scribe → Sherpa → Builder |
 | DOCS/code | コードドキュメント | Quill |
 | DOCS/component | コンポーネント文書化 | Showcase → Quill |
 | DOCS/architecture | アーキテクチャ図 | Canvas |
@@ -425,6 +434,7 @@ skills/
 ├── rewind/SKILL.md     # Git履歴調査
 ├── scaffold/SKILL.md   # インフラ
 ├── schema/SKILL.md     # DBスキーマ設計
+├── scribe/SKILL.md     # プロジェクトドキュメント（PRD/SRS/設計書）
 ├── scout/SKILL.md      # バグ調査
 ├── sentinel/SKILL.md   # セキュリティ静的分析（SAST）
 ├── sherpa/SKILL.md     # タスク分解
@@ -833,6 +843,59 @@ TypeScript strict、適切なエラーハンドリング、アクセシビリテ
 ---
 
 #### ドキュメント
+
+##### PRD作成（Scribe）
+
+```
+/Scribe
+ユーザー認証機能のPRD（Product Requirements Document）を作成してください。
+ソーシャルログイン対応、二要素認証をスコープに含めます。
+```
+
+**出力**: 完全なPRD（概要、ユーザーストーリー、機能要件、非機能要件、受入条件、エッジケース）
+
+---
+
+##### SRS作成（Scribe）
+
+```
+/Scribe
+決済モジュールのSRS（Software Requirements Specification）を作成してください。
+Stripe連携、サブスクリプション対応が必要です。
+```
+
+**出力**: 完全なSRS（機能要件、データモデル、API仕様、非機能要件、トレーサビリティマトリクス）
+
+---
+
+##### 実装チェックリスト作成（Scribe）
+
+```
+/Scribe
+検索機能の実装チェックリストを作成してください。
+```
+
+**出力**: 実装前確認、実装フェーズ別タスク、品質保証チェック、デプロイ前確認
+
+---
+
+##### テスト仕様書作成（Scribe）
+
+```
+/Scribe
+注文フローのテスト仕様書を作成してください。
+正常系・異常系・境界値を網羅してください。
+```
+
+**出力**: テストケース一覧（ID、優先度、手順、期待結果）、テストデータ、トレーサビリティ
+
+---
+
+**Scribe vs Quill の役割分担**:
+- **Scribe**: プロジェクトドキュメント（仕様書、設計書、チェックリスト）
+- **Quill**: コードドキュメント（JSDoc、README、型定義）
+
+---
 
 ##### ドキュメント追加（Quill）
 
