@@ -1,12 +1,12 @@
 # Handoff Templates
 
-Scribeが他のエージェントと連携する際のハンドオフテンプレート集です。
+A collection of handoff templates for Scribe when collaborating with other agents.
 
 ---
 
 ## 1. Scribe → Builder Handoff
 
-PRD/SRS完成後、実装を依頼する際のテンプレート:
+Template for requesting implementation after completing PRD/SRS:
 
 ```markdown
 ## Implementation Handoff
@@ -57,7 +57,7 @@ PRD/SRS完成後、実装を依頼する際のテンプレート:
 
 ## 2. Scribe → Radar Handoff
 
-テスト仕様完成後、テスト実装を依頼する際のテンプレート:
+Template for requesting test implementation after completing test specification:
 
 ```markdown
 ## Test Implementation Handoff
@@ -108,7 +108,7 @@ PRD/SRS完成後、実装を依頼する際のテンプレート:
 
 ## 3. Scribe → Voyager Handoff
 
-E2Eテスト仕様を渡す際のテンプレート:
+Template for passing E2E test specifications:
 
 ```markdown
 ## E2E Test Handoff
@@ -162,7 +162,7 @@ E2Eテスト仕様を渡す際のテンプレート:
 
 ## 4. Scribe → Schema Handoff
 
-データモデル設計を依頼する際のテンプレート:
+Template for requesting data model design:
 
 ```markdown
 ## Schema Design Handoff
@@ -215,7 +215,7 @@ E2Eテスト仕様を渡す際のテンプレート:
 
 ## 5. Scribe → Gateway Handoff
 
-API設計を依頼する際のテンプレート:
+Template for requesting API design:
 
 ```markdown
 ## API Design Handoff
@@ -264,7 +264,7 @@ API設計を依頼する際のテンプレート:
 
 ## 6. Spark → Scribe Handoff
 
-機能提案を受けて詳細仕様を作成する際のテンプレート:
+Template for creating detailed specifications from feature proposals:
 
 ```markdown
 ## Specification Request from Spark
@@ -313,7 +313,7 @@ API設計を依頼する際のテンプレート:
 
 ## 7. Scribe → Sherpa Handoff
 
-実装チェックリストをワークフロー管理に渡す際のテンプレート:
+Template for passing implementation checklist to workflow management:
 
 ```markdown
 ## Workflow Handoff
@@ -362,18 +362,18 @@ API設計を依頼する際のテンプレート:
 
 ## Handoff Best Practices
 
-### 1. 完全性の確認
+### 1. Completeness Check
 ```markdown
 ## Handoff Completeness Checklist
 
-- [ ] 必要なドキュメントがすべてリンクされている
-- [ ] スコープが明確に定義されている
-- [ ] 成功条件が明記されている
-- [ ] 未解決の質問がリストアップされている
-- [ ] 期待する成果物が明記されている
+- [ ] All necessary documents are linked
+- [ ] Scope is clearly defined
+- [ ] Success criteria are documented
+- [ ] Unresolved questions are listed
+- [ ] Expected deliverables are specified
 ```
 
-### 2. コンテキストの提供
+### 2. Providing Context
 ```markdown
 ## Context Summary
 
@@ -393,7 +393,7 @@ API設計を依頼する際のテンプレート:
 - [Business]
 ```
 
-### 3. フィードバックループ
+### 3. Feedback Loop
 ```markdown
 ## Feedback Loop
 

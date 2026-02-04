@@ -661,18 +661,18 @@ ALTER TABLE users DROP COLUMN locked_until;
 ## Design Document Quality Checklist
 
 ### HLD
-- [ ] システムコンテキスト図がある
-- [ ] コンポーネント構成が明確
-- [ ] インテグレーションポイントが定義されている
-- [ ] セキュリティ設計が含まれている
-- [ ] スケーリング戦略がある
-- [ ] デプロイアーキテクチャが定義されている
+- [ ] System context diagram exists
+- [ ] Component structure is clear
+- [ ] Integration points are defined
+- [ ] Security design is included
+- [ ] Scaling strategy exists
+- [ ] Deployment architecture is defined
 
 ### LLD
-- [ ] クラス図/モジュール構成がある
-- [ ] インターフェース定義がある
-- [ ] メソッド仕様（アルゴリズム）がある
-- [ ] データベーススキーマがある
-- [ ] シーケンス図がある
-- [ ] エラーハンドリング戦略がある
-- [ ] 設定項目が列挙されている
+- [ ] Class diagram/module structure exists
+- [ ] Interface definitions exist
+- [ ] Method specifications (algorithms) exist
+- [ ] Database schema exists
+- [ ] Sequence diagrams exist
+- [ ] Error handling strategy exists
+- [ ] Configuration items are listed

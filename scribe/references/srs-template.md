@@ -353,11 +353,11 @@ Client          API           Service        Database
 
 ## SRS Quality Checklist
 
-- [ ] 全ての機能要件にIDがある（FR-XXX）
-- [ ] 入力/出力が明確に定義されている
-- [ ] エラー条件が網羅されている
-- [ ] ビジネスルールが文書化されている
-- [ ] 非機能要件に数値目標がある
-- [ ] データモデルが定義されている
-- [ ] API仕様が含まれている
-- [ ] トレーサビリティマトリクスがある
+- [ ] All functional requirements have IDs (FR-XXX)
+- [ ] Input/output is clearly defined
+- [ ] Error conditions are comprehensive
+- [ ] Business rules are documented
+- [ ] Non-functional requirements have numeric targets
+- [ ] Data model is defined
+- [ ] API specifications are included
+- [ ] Traceability matrix exists

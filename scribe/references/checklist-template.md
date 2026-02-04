@@ -21,25 +21,25 @@
 ## Pre-Implementation
 
 ### Requirements Verification
-- [ ] PRDの要件をすべて確認した
-- [ ] SRSの機能要件を理解した
-- [ ] 受入条件（Acceptance Criteria）を把握した
-- [ ] スコープ外の項目を確認した
-- [ ] 依存関係を確認した
+- [ ] Reviewed all PRD requirements
+- [ ] Understood SRS functional requirements
+- [ ] Understood acceptance criteria
+- [ ] Confirmed out-of-scope items
+- [ ] Confirmed dependencies
 
 ### Design Verification
-- [ ] HLDのアーキテクチャを理解した
-- [ ] LLDのクラス設計を確認した
-- [ ] APIインターフェースを確認した
-- [ ] データモデルを確認した
-- [ ] シーケンス図を確認した
+- [ ] Understood HLD architecture
+- [ ] Reviewed LLD class design
+- [ ] Reviewed API interfaces
+- [ ] Reviewed data model
+- [ ] Reviewed sequence diagrams
 
 ### Environment Setup
-- [ ] 開発環境がセットアップされている
-- [ ] 必要な依存関係がインストールされている
-- [ ] テスト環境にアクセスできる
-- [ ] 必要な認証情報を持っている
-- [ ] ブランチを作成した
+- [ ] Development environment is set up
+- [ ] Required dependencies are installed
+- [ ] Can access test environment
+- [ ] Have required credentials
+- [ ] Created branch
 
 ---
 
@@ -57,83 +57,83 @@
 - [ ] [Task 2.2]: [Description]
 
 ### Data Layer
-- [ ] データベースマイグレーションを作成した
-- [ ] モデル/エンティティを実装した
-- [ ] リポジトリ/DAOを実装した
-- [ ] インデックスを確認した
+- [ ] Created database migration
+- [ ] Implemented model/entity
+- [ ] Implemented repository/DAO
+- [ ] Verified indexes
 
 ### API Layer
-- [ ] エンドポイントを実装した
-- [ ] リクエストバリデーションを実装した
-- [ ] レスポンスフォーマットを実装した
-- [ ] エラーハンドリングを実装した
-- [ ] 認証/認可を実装した
+- [ ] Implemented endpoints
+- [ ] Implemented request validation
+- [ ] Implemented response format
+- [ ] Implemented error handling
+- [ ] Implemented authentication/authorization
 
 ### Business Logic
-- [ ] サービス層を実装した
-- [ ] ビジネスルールを実装した
-- [ ] エッジケースを処理した
-- [ ] トランザクション管理を実装した
+- [ ] Implemented service layer
+- [ ] Implemented business rules
+- [ ] Handled edge cases
+- [ ] Implemented transaction management
 
 ### UI Layer (if applicable)
-- [ ] コンポーネントを実装した
-- [ ] 状態管理を実装した
-- [ ] フォームバリデーションを実装した
-- [ ] エラー表示を実装した
-- [ ] ローディング状態を実装した
+- [ ] Implemented components
+- [ ] Implemented state management
+- [ ] Implemented form validation
+- [ ] Implemented error display
+- [ ] Implemented loading states
 
 ---
 
 ## Quality Assurance
 
 ### Code Quality
-- [ ] コードがLintを通過する
-- [ ] コードがフォーマッターを通過する
-- [ ] 型エラーがない（TypeScript/静的型付け言語の場合）
-- [ ] コードレビューコメントに対応した
+- [ ] Code passes lint checks
+- [ ] Code passes formatter
+- [ ] No type errors (for TypeScript/statically typed languages)
+- [ ] Addressed code review comments
 
 ### Testing
-- [ ] 単体テストを作成した
-- [ ] 統合テストを作成した
-- [ ] E2Eテストを作成した（必要な場合）
-- [ ] すべてのテストが通過する
-- [ ] カバレッジ目標を達成した
+- [ ] Created unit tests
+- [ ] Created integration tests
+- [ ] Created E2E tests (if required)
+- [ ] All tests pass
+- [ ] Met coverage target
 
 ### Security
-- [ ] 入力バリデーションを実装した
-- [ ] SQLインジェクション対策を確認した
-- [ ] XSS対策を確認した
-- [ ] CSRF対策を確認した
-- [ ] 認証/認可が正しく動作する
-- [ ] 機密情報がログに出力されていない
+- [ ] Implemented input validation
+- [ ] Verified SQL injection protection
+- [ ] Verified XSS protection
+- [ ] Verified CSRF protection
+- [ ] Authentication/authorization works correctly
+- [ ] Sensitive information not logged
 
 ### Performance
-- [ ] N+1クエリがない
-- [ ] 適切なインデックスが設定されている
-- [ ] キャッシュを適切に使用している
-- [ ] パフォーマンス目標を満たしている
+- [ ] No N+1 queries
+- [ ] Appropriate indexes configured
+- [ ] Cache used appropriately
+- [ ] Met performance targets
 
 ---
 
 ## Pre-Deployment
 
 ### Documentation
-- [ ] コードにコメントを追加した
-- [ ] APIドキュメントを更新した
-- [ ] READMEを更新した
-- [ ] 変更履歴を記録した
+- [ ] Added code comments
+- [ ] Updated API documentation
+- [ ] Updated README
+- [ ] Recorded change history
 
 ### Review & Approval
-- [ ] セルフレビューを完了した
-- [ ] コードレビューを受けた
-- [ ] レビューコメントに対応した
-- [ ] 承認を得た
+- [ ] Completed self-review
+- [ ] Received code review
+- [ ] Addressed review comments
+- [ ] Obtained approval
 
 ### Deployment Preparation
-- [ ] マイグレーションスクリプトを確認した
-- [ ] ロールバック手順を確認した
-- [ ] 環境変数/設定を確認した
-- [ ] デプロイ手順を確認した
+- [ ] Verified migration scripts
+- [ ] Verified rollback procedure
+- [ ] Verified environment variables/config
+- [ ] Verified deployment procedure
 
 ---
 
@@ -183,91 +183,91 @@
 ## Functional Review
 
 ### Requirements Compliance
-- [ ] 要件どおりに実装されている
-- [ ] 受入条件を満たしている
-- [ ] エッジケースが処理されている
-- [ ] エラーケースが適切に処理されている
+- [ ] Implemented according to requirements
+- [ ] Meets acceptance criteria
+- [ ] Edge cases are handled
+- [ ] Error cases are properly handled
 
 ### Business Logic
-- [ ] ビジネスルールが正しく実装されている
-- [ ] 計算ロジックが正確である
-- [ ] 状態遷移が正しい
-- [ ] データの整合性が保たれている
+- [ ] Business rules are correctly implemented
+- [ ] Calculation logic is accurate
+- [ ] State transitions are correct
+- [ ] Data integrity is maintained
 
 ---
 
 ## Code Quality Review
 
 ### Readability
-- [ ] コードが理解しやすい
-- [ ] 変数名/関数名が適切
-- [ ] コメントが適切に使用されている
-- [ ] 複雑なロジックに説明がある
+- [ ] Code is easy to understand
+- [ ] Variable/function names are appropriate
+- [ ] Comments are used appropriately
+- [ ] Complex logic has explanations
 
 ### Structure
-- [ ] 関数/メソッドが適切なサイズ
-- [ ] 単一責任の原則に従っている
-- [ ] 適切な抽象化レベル
-- [ ] 重複コードがない
+- [ ] Functions/methods are appropriate size
+- [ ] Follows single responsibility principle
+- [ ] Appropriate abstraction level
+- [ ] No duplicate code
 
 ### Consistency
-- [ ] プロジェクトの規約に従っている
-- [ ] 既存のパターンと一貫している
-- [ ] 命名規則に従っている
-- [ ] フォーマットが統一されている
+- [ ] Follows project conventions
+- [ ] Consistent with existing patterns
+- [ ] Follows naming conventions
+- [ ] Formatting is consistent
 
 ---
 
 ## Technical Review
 
 ### Architecture
-- [ ] アーキテクチャに適合している
-- [ ] 適切なレイヤーに実装されている
-- [ ] 依存関係の方向が正しい
-- [ ] モジュール間の結合度が適切
+- [ ] Conforms to architecture
+- [ ] Implemented in appropriate layer
+- [ ] Dependency direction is correct
+- [ ] Module coupling is appropriate
 
 ### Error Handling
-- [ ] 例外が適切に処理されている
-- [ ] エラーメッセージが適切
-- [ ] エラーがログに記録される
-- [ ] リカバリー処理がある（必要な場合）
+- [ ] Exceptions are properly handled
+- [ ] Error messages are appropriate
+- [ ] Errors are logged
+- [ ] Recovery handling exists (if needed)
 
 ### Performance
-- [ ] 明らかな性能問題がない
-- [ ] N+1クエリがない
-- [ ] 不要なループ/計算がない
-- [ ] メモリリークの可能性がない
+- [ ] No obvious performance issues
+- [ ] No N+1 queries
+- [ ] No unnecessary loops/calculations
+- [ ] No memory leak potential
 
 ### Security
-- [ ] 入力バリデーションがある
-- [ ] インジェクション攻撃対策がある
-- [ ] 認証/認可が正しい
-- [ ] 機密情報が露出していない
+- [ ] Input validation exists
+- [ ] Injection attack protection exists
+- [ ] Authentication/authorization is correct
+- [ ] Sensitive information is not exposed
 
 ---
 
 ## Testing Review
 
 ### Test Coverage
-- [ ] 単体テストが十分
-- [ ] エッジケースがテストされている
-- [ ] エラーケースがテストされている
-- [ ] 統合テストがある（必要な場合）
+- [ ] Unit tests are sufficient
+- [ ] Edge cases are tested
+- [ ] Error cases are tested
+- [ ] Integration tests exist (if needed)
 
 ### Test Quality
-- [ ] テストが独立している
-- [ ] テストが明確で理解しやすい
-- [ ] モックの使用が適切
-- [ ] アサーションが適切
+- [ ] Tests are independent
+- [ ] Tests are clear and understandable
+- [ ] Mocks are used appropriately
+- [ ] Assertions are appropriate
 
 ---
 
 ## Documentation Review
 
-- [ ] コードコメントが適切
-- [ ] APIドキュメントが更新されている
-- [ ] READMEが更新されている（必要な場合）
-- [ ] 変更内容がPR説明に記載されている
+- [ ] Code comments are appropriate
+- [ ] API documentation is updated
+- [ ] README is updated (if needed)
+- [ ] Changes are described in PR description
 
 ---
 
@@ -311,20 +311,20 @@ For smaller changes, use this minimal checklist:
 # Quick Implementation Checklist: [Feature]
 
 ## Before Coding
-- [ ] 要件を理解した
-- [ ] 影響範囲を確認した
-- [ ] ブランチを作成した
+- [ ] Understood requirements
+- [ ] Confirmed impact scope
+- [ ] Created branch
 
 ## Implementation
-- [ ] 機能を実装した
-- [ ] エラーハンドリングを追加した
-- [ ] テストを作成した
+- [ ] Implemented feature
+- [ ] Added error handling
+- [ ] Created tests
 
 ## Before PR
-- [ ] Lint/Formatが通る
-- [ ] テストが通る
-- [ ] セルフレビューした
-- [ ] PR説明を書いた
+- [ ] Lint/Format passes
+- [ ] Tests pass
+- [ ] Completed self-review
+- [ ] Wrote PR description
 
 ## Notes
 [Any notes]
@@ -335,19 +335,19 @@ For smaller changes, use this minimal checklist:
 ## Checklist Quality Guidelines
 
 ### Good Checklist Items
-- 具体的で検証可能
-- 1つのアクションに対応
-- 完了/未完了が明確
-- 担当者が判断できる
+- Specific and verifiable
+- Corresponds to one action
+- Clear completion/incompletion
+- Reviewer can make judgment
 
 ### Bad Checklist Items (Avoid)
-- ❌ 「コードがきれい」（主観的）
-- ❌ 「パフォーマンスが良い」（曖昧）
-- ❌ 「すべてのケースをテスト」（検証不能）
-- ❌ 「適切に実装」（不明確）
+- ❌ "Code is clean" (subjective)
+- ❌ "Performance is good" (vague)
+- ❌ "Test all cases" (unverifiable)
+- ❌ "Implement properly" (unclear)
 
 ### Better Alternatives
-- ✅ 「ESLintエラーが0件」
-- ✅ 「p95レイテンシが200ms以下」
-- ✅ 「正常系・異常系・境界値のテストがある」
-- ✅ 「SRS FR-001の仕様どおりに実装」
+- ✅ "ESLint errors are 0"
+- ✅ "p95 latency is under 200ms"
+- ✅ "Tests exist for happy path, error path, boundary values"
+- ✅ "Implemented according to SRS FR-001 specification"

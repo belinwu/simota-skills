@@ -300,11 +300,11 @@ As a [persona], I want to [action], so that [benefit].
 
 ## PRD Quality Checklist
 
-- [ ] 全ての要件にIDがある（REQ-XXX）
-- [ ] 全ての要件に受入条件がある
-- [ ] 優先度が明記されている
-- [ ] スコープ外が明確
-- [ ] 非機能要件が含まれている
-- [ ] エッジケースが考慮されている
-- [ ] 依存関係が特定されている
-- [ ] リスクが評価されている
+- [ ] All requirements have IDs (REQ-XXX)
+- [ ] All requirements have acceptance criteria
+- [ ] Priority is clearly specified
+- [ ] Out of scope is clearly defined
+- [ ] Non-functional requirements are included
+- [ ] Edge cases are considered
+- [ ] Dependencies are identified
+- [ ] Risks are evaluated

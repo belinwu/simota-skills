@@ -448,13 +448,13 @@ Feature: [Feature Name]
 
 ## Test Specification Quality Checklist
 
-- [ ] 全てのテストケースにIDがある（TC-XXX）
-- [ ] 全てのテストケースに優先度がある
-- [ ] 要件へのトレーサビリティがある
-- [ ] 事前条件が明確
-- [ ] テストステップが再現可能
-- [ ] 期待結果が検証可能
-- [ ] テストデータが準備されている
-- [ ] 否定テストケースが含まれている
-- [ ] 境界値テストが含まれている
-- [ ] 終了条件が定義されている
+- [ ] All test cases have IDs (TC-XXX)
+- [ ] All test cases have priority
+- [ ] Traceability to requirements exists
+- [ ] Preconditions are clear
+- [ ] Test steps are reproducible
+- [ ] Expected results are verifiable
+- [ ] Test data is prepared
+- [ ] Negative test cases are included
+- [ ] Boundary value tests are included
+- [ ] Exit criteria are defined
