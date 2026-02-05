@@ -1,25 +1,55 @@
 # Nexus Interaction Triggers Reference
 
-Question templates for GUIDED/INTERACTIVE modes.
+Question templates for GUIDED/INTERACTIVE modes with confidence-based filtering.
+
+---
+
+## Confidence-Based Trigger Filtering
+
+Triggers are filtered by confidence level before activation:
+
+| Confidence | Trigger Behavior |
+|------------|------------------|
+| >= 0.85 | Most triggers suppressed, auto-proceed |
+| 0.70-0.84 | Only critical triggers active |
+| 0.50-0.69 | Standard trigger behavior |
+| < 0.50 | All triggers active, more user interaction |
+
+```yaml
+trigger_confidence_override:
+  # These triggers ALWAYS fire regardless of confidence
+  always_fire:
+    - ON_GUARDRAIL_L4  # Security critical
+    - ON_VERIFICATION_FAILURE  # Final gate
+
+  # These triggers respect confidence thresholds
+  confidence_filtered:
+    - ON_CHAIN_DESIGN: suppress_if >= 0.85
+    - ON_MULTI_AGENT_CHOICE: suppress_if >= 0.80
+    - ON_PARALLEL_CONFLICT: suppress_if >= 0.75 AND auto_resolution_available
+    - ON_AMBIGUOUS_TASK: suppress_if >= 0.80
+    - ON_ROUTING_EXPLANATION: suppress_if >= 0.85
+```
 
 ---
 
 ## Trigger Summary
 
-| Trigger | Timing | When |
-|---------|--------|------|
-| ON_CHAIN_DESIGN | BEFORE_START | Confirm chain before execution |
-| ON_COMPLEX_OVERRIDE | ON_DECISION | AUTORUN but task is COMPLEX |
-| ON_AGENT_ESCALATION | ON_DECISION | Agent reported blocking question |
-| ON_CHAIN_ADJUSTMENT | ON_DECISION | Dynamic chain modification |
-| ON_PARALLEL_CONFLICT | ON_DECISION | Parallel branches have conflicts |
-| ON_GUARDRAIL_L3 | ON_DECISION | L3 guardrail triggered |
-| ON_GUARDRAIL_L4 | ON_DECISION | L4 guardrail triggered |
-| ON_VERIFICATION_FAILURE | ON_COMPLETION | Final verification failed |
-| ON_MULTI_AGENT_CHOICE | ON_DECISION | Multiple agents could handle task |
-| ON_PROACTIVE_START | BEFORE_START | /Nexus invoked without arguments |
-| ON_ROUTING_EXPLANATION | ON_CHAIN_DESIGN | After chain selection explanation |
-| ON_AMBIGUOUS_TASK | ON_CLASSIFICATION | Task classification is unclear |
+| Trigger | Timing | When | Confidence Filter |
+|---------|--------|------|-------------------|
+| ON_CHAIN_DESIGN | BEFORE_START | Confirm chain before execution | >= 0.85 suppressed |
+| ON_COMPLEX_OVERRIDE | ON_DECISION | AUTORUN but task is COMPLEX | >= 0.80 suppressed |
+| ON_AGENT_ESCALATION | ON_DECISION | Agent reported blocking question | Never suppressed |
+| ON_CHAIN_ADJUSTMENT | ON_DECISION | Dynamic chain modification | >= 0.80 suppressed |
+| ON_PARALLEL_CONFLICT | ON_DECISION | Parallel branches have conflicts | >= 0.75 + auto-resolve |
+| ON_GUARDRAIL_L3 | ON_DECISION | L3 guardrail triggered | >= 0.75 + recovery chain |
+| ON_GUARDRAIL_L4 | ON_DECISION | L4 guardrail triggered | **Never suppressed** |
+| ON_VERIFICATION_FAILURE | ON_COMPLETION | Final verification failed | **Never suppressed** |
+| ON_MULTI_AGENT_CHOICE | ON_DECISION | Multiple agents could handle task | >= 0.80 suppressed |
+| ON_PROACTIVE_START | BEFORE_START | /Nexus invoked without arguments | N/A |
+| ON_ROUTING_EXPLANATION | ON_CHAIN_DESIGN | After chain selection explanation | >= 0.85 suppressed |
+| ON_AMBIGUOUS_TASK | ON_CLASSIFICATION | Task classification is unclear | >= 0.80 suppressed |
+| ON_LOW_CONFIDENCE | ON_CLASSIFICATION | Confidence < 0.50 | N/A (meta-trigger) |
 
 ---
 
@@ -125,6 +155,71 @@ questions:
       - label: "タスクを明確化する"
         description: "より具体的な指示を提供"
     multiSelect: false
+```
+
+### ON_LOW_CONFIDENCE
+
+```yaml
+# Triggered when context confidence < 0.50
+# This delegates to Cipher for intent clarification
+questions:
+  - question: "タスクの意図を明確化するため、いくつか確認させてください。"
+    header: "Clarify"
+    options:
+      - label: "[Most likely interpretation]（推奨）"
+        description: "Based on context signals"
+      - label: "[Alternative interpretation 1]"
+        description: "If focus is different"
+      - label: "[Alternative interpretation 2]"
+        description: "If scope is different"
+      - label: "詳細を説明する"
+        description: "追加のコンテキストを提供"
+    multiSelect: false
+
+# After clarification, re-calculate confidence
+post_action:
+  - recalculate_confidence
+  - if confidence >= 0.70: proceed
+  - if confidence < 0.70: ask_followup (max 1 more)
+```
+
+### ON_GUARDRAIL_L3_RECOVERY
+
+```yaml
+# Triggered when L3 guardrail fires but auto-recovery is available
+# Only asks if confidence < 0.75
+questions:
+  - question: "テスト失敗を検出しました。自動リカバリーを実行しますか？"
+    header: "Recovery"
+    options:
+      - label: "自動リカバリーを実行（推奨）"
+        description: "[Recovery chain description]"
+      - label: "ロールバックして再検討"
+        description: "変更を取り消してSherpaで再分解"
+      - label: "手動で修正する"
+        description: "一時停止して手動対応"
+    multiSelect: false
+```
+
+---
+
+## Confidence-Based Question Reduction
+
+When confidence is high, questions are transformed:
+
+```yaml
+high_confidence_mode:
+  # Instead of asking, log the decision
+  log_format: |
+    _AUTO_DECISION:
+      trigger: [trigger_name]
+      suppressed: true
+      confidence: [score]
+      decision: [what was decided]
+      assumptions: [list]
+
+  # User can review decisions in final output
+  output_section: "Auto-Decisions Made"
 ```
 
 ---

@@ -222,6 +222,135 @@ See `references/routing-explanation.md` for detailed specifications.
 
 ---
 
+# CIPHER_GATE
+
+Cipher integration for automatic intent clarification when context confidence is low.
+
+## Trigger Conditions
+
+| Condition | Action |
+|-----------|--------|
+| context_confidence < 0.60 | Invoke Cipher |
+| multiple_valid_interpretations | Invoke Cipher |
+| missing_critical_context | Invoke Cipher |
+| context_confidence >= 0.60 | Skip Cipher, proceed |
+
+## Flow
+
+```
+User Request
+     │
+     ▼
+Context Scoring
+     │
+     ├─ confidence >= 0.60 → Proceed to Chain Selection
+     │
+     └─ confidence < 0.60 → CIPHER_GATE
+                                │
+                                ▼
+                           ┌─────────┐
+                           │ Cipher  │
+                           └────┬────┘
+                                │
+                    ┌───────────┴───────────┐
+                    ▼                       ▼
+              Clarified                 Needs Input
+              (no question)             (1 question)
+                    │                       │
+                    ▼                       ▼
+              confidence += 0.20       Present Q
+                    │                       │
+                    └───────────┬───────────┘
+                                ▼
+                        Chain Selection
+```
+
+## Cipher Output Integration
+
+When Cipher returns:
+- **SUCCESS**: Extract clarified intent, boost confidence +0.20, proceed
+- **NEEDS_INPUT**: Present Cipher's question to user (single question only)
+
+See `references/cipher-integration.md` for detailed integration protocol.
+
+---
+
+# CONTEXT_SCORING
+
+Analyze multiple context sources to calculate confidence levels for autonomous decision-making.
+
+## Sources and Weights
+
+| Source | Weight | What It Provides |
+|--------|--------|------------------|
+| `git_history` | 0.30 | Branch name, recent commits, uncommitted changes |
+| `project_md` | 0.25 | Activity log, shared knowledge from `.agents/PROJECT.md` |
+| `conversation` | 0.25 | User's explicit and implicit intent |
+| `codebase` | 0.20 | Existing patterns, file structure |
+
+## Confidence Levels
+
+| Level | Score | Action |
+|-------|-------|--------|
+| HIGH | >= 0.80 | Auto-proceed, log assumptions |
+| MEDIUM | 0.60-0.79 | Proceed with stated assumptions |
+| LOW | 0.40-0.59 | Single clarification question |
+| VERY_LOW | < 0.40 | Delegate to Cipher for intent decode |
+
+## Quick Calculation
+
+```
+Final Score = (git × 0.30) + (project × 0.25) + (conversation × 0.25) + (codebase × 0.20)
+```
+
+See `references/context-scoring.md` for detailed scoring rules and examples.
+
+---
+
+# AUTO_DECISION
+
+Confidence-based autonomous execution with minimal user interaction.
+
+## Decision Thresholds
+
+| Decision Type | Threshold | Auto-Proceed If |
+|---------------|-----------|-----------------|
+| Chain Selection | >= 0.85 | Single best-fit chain, clear context |
+| Approach Selection | >= 0.80 | Clear best approach, matches patterns |
+| Recovery Action | >= 0.75 | Clear recovery path, rollback available |
+| Agent Routing | >= 0.80 | Clear agent-task match |
+
+## Auto-Proceed Conditions
+
+```yaml
+AUTO_PROCEED_IF:
+  - confidence >= threshold
+  - no_l4_security_implications
+  - action_is_reversible
+```
+
+## Always Require User Confirmation
+
+- L4 security triggers (credentials, auth, permissions)
+- Data destructive actions (bulk deletion, schema breaks)
+- External system modifications (deployments, API calls)
+- Actions affecting 10+ files
+
+## Assumption Documentation
+
+When auto-proceeding, always output:
+```
+_AUTO_DECISION:
+  decision: [What was decided]
+  confidence: [Score]
+  assumptions: [List]
+  rollback: [How to undo if wrong]
+```
+
+See `references/auto-decision.md` for full decision flow and safety overrides.
+
+---
+
 # NEXUS HUB ARCHITECTURE
 
 Nexus operates as a central hub: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`

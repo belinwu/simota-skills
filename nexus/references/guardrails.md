@@ -34,10 +34,196 @@ Guardrails, context management, and state tracking for AUTORUN_FULL.
 |---------|-------|---------------|
 | test_failure<20% | L2 | Re-run failed tests, fix if obvious |
 | test_failure 20-50% | L2 | Inject Builder for targeted fixes |
-| test_failure>50% | L3 | Rollback to last checkpoint, re-decompose with Sherpa |
+| test_failure 50-80% | L3 | **Auto-Recovery Chain A** (see below) |
+| test_failure>80% | L3 | **Auto-Recovery Chain B** (see below) |
 | security_warning | L2 | Add Sentinel scan, block if critical |
 | breaking_change | L3 | Pause, verify with Atlas, require migration plan |
 | type_error | L2 | Return to Builder for type strengthening |
+
+---
+
+## L3 Auto-Recovery Chains
+
+### Chain A: Test Failure 50-80%
+
+```yaml
+L3_RECOVERY_CHAIN_A:
+  trigger: test_failure_50_to_80_percent
+  confidence_threshold: 0.75  # Auto-execute if >= 0.75
+
+  steps:
+    1_analyze:
+      agent: Scout
+      action: Analyze failing tests, identify root cause patterns
+      output: failure_analysis
+
+    2_targeted_fix:
+      agent: Builder
+      action: Fix identified issues based on failure_analysis
+      constraints:
+        - Focus on failing tests only
+        - Preserve passing test behavior
+      output: fixes_applied
+
+    3_verify:
+      agent: Radar
+      action: Run affected tests
+      output: test_results
+
+  success_criteria:
+    - test_pass_rate >= 90%
+    - no_new_failures
+
+  max_attempts: 2
+
+  on_failure:
+    action: escalate_to_chain_b
+    reason: "Chain A recovery failed after 2 attempts"
+```
+
+### Chain B: Test Failure >80% (Severe)
+
+```yaml
+L3_RECOVERY_CHAIN_B:
+  trigger: test_failure_over_80_percent OR chain_a_failed
+  confidence_threshold: 0.70  # Lower threshold, more conservative
+
+  steps:
+    1_rollback:
+      action: git_rollback_to_last_checkpoint
+      preserve: uncommitted_analysis_notes
+      output: clean_state
+
+    2_decompose:
+      agent: Sherpa
+      action: Break task into smaller, testable increments
+      constraints:
+        - Each increment must be independently testable
+        - Identify the problematic increment
+      output: task_breakdown
+
+    3_incremental_fix:
+      agent: Builder
+      action: Implement smallest increment first
+      verify_each: true
+      output: incremental_changes
+
+    4_verify:
+      agent: Radar
+      action: Run full test suite
+      output: test_results
+
+  success_criteria:
+    - test_pass_rate >= 95%
+    - original_goal_achieved
+
+  max_attempts: 1
+
+  on_failure:
+    action: escalate_to_user
+    message: "Auto-recovery exhausted. Manual intervention required."
+    provide:
+      - failure_analysis
+      - attempted_fixes
+      - rollback_command
+```
+
+### Chain C: Breaking Change Recovery
+
+```yaml
+L3_RECOVERY_CHAIN_C:
+  trigger: breaking_change_detected
+  confidence_threshold: 0.80
+
+  steps:
+    1_impact:
+      agent: Atlas
+      action: Analyze impact scope, identify affected consumers
+      output: impact_analysis
+
+    2_decision:
+      condition: impact_analysis.affected_consumers > 0
+      if_true:
+        action: generate_migration_plan
+        agent: Builder
+      if_false:
+        action: proceed_with_change
+
+    3_migrate_or_fix:
+      agent: Builder
+      action: |
+        IF migration_plan: implement migration
+        ELSE: adjust change to be non-breaking
+      output: resolution
+
+    4_verify:
+      agent: Radar
+      action: Run integration tests
+      output: verification
+
+  on_failure:
+    action: escalate_to_user
+    reason: "Breaking change requires user decision"
+```
+
+---
+
+## Recovery Confidence Calculation
+
+```yaml
+recovery_confidence:
+  base_score: 0.60
+
+  boosters:
+    - similar_recovery_succeeded_before: +0.15
+    - rollback_point_available: +0.10
+    - clear_failure_pattern: +0.10
+    - small_change_scope: +0.05
+
+  penalties:
+    - previous_recovery_failed: -0.20
+    - unclear_failure_cause: -0.15
+    - large_change_scope: -0.10
+    - no_rollback_available: -0.10
+```
+
+---
+
+## Recovery Decision Flow
+
+```
+L3 Guardrail Triggered
+         │
+         ▼
+┌─────────────────────┐
+│ Calculate Recovery  │
+│    Confidence       │
+└──────────┬──────────┘
+           │
+    ┌──────┴──────┐
+    ▼             ▼
+ >= 0.75       < 0.75
+    │             │
+    ▼             ▼
+ Auto-Execute   Ask User
+ Recovery      (if not AUTORUN_FULL)
+ Chain            │
+    │             ▼
+    │         User Decision
+    │             │
+    └──────┬──────┘
+           ▼
+    Execute Recovery
+           │
+    ┌──────┴──────┐
+    ▼             ▼
+ Success       Failed
+    │             │
+    ▼             ▼
+ Continue      Try Next
+               Chain OR
+               Escalate
+```
 
 ---
 

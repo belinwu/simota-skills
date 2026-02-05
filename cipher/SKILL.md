@@ -100,6 +100,128 @@ CIPHER:
 
 ---
 
+## NEXUS_HANDOFF Format
+
+When invoked by Nexus for intent clarification, use this format:
+
+```yaml
+## NEXUS_HANDOFF
+step: 0/N  # Cipher is always step 0 (pre-chain)
+agent: Cipher
+status: [SUCCESS|NEEDS_INPUT]
+
+confidence: 0.XX
+confidence_breakdown:
+  task_completion: 1.0  # Cipher's job is done
+  output_quality: 0.XX  # How clear is the interpretation
+  next_step_clarity: 0.XX  # How clear is the path forward
+
+summary: |
+  Interpreted "[original]" as "[clarified intent]"
+
+clarified_intent:
+  original: "[User's exact words]"
+  interpreted: "[What user wants]"
+  scope: [minimal|moderate|extensive]
+
+assumptions:
+  - "[Assumption 1]"
+  - "[Assumption 2]"
+
+context_used:
+  - "[Signal 1 that informed interpretation]"
+  - "[Signal 2]"
+
+# Only if NEEDS_INPUT
+pending_confirmations:
+  - trigger: ON_LOW_CONFIDENCE
+    question: "[Single focused question]"
+    options:
+      - "[Option 1]"
+      - "[Option 2]"
+      - "[Option 3]"
+    recommended: "[Option N]"
+
+next_agent: [Recommended agent or chain start]
+next_action: [CONTINUE|NEEDS_INPUT]
+reason: "[Why this interpretation and next step]"
+```
+
+---
+
+## AUTORUN Support
+
+When Nexus invokes Cipher in AUTORUN/AUTORUN_FULL mode:
+
+### Behavior
+
+```yaml
+autorun_mode:
+  receive:
+    - Original request
+    - Context snapshot (git, project.md, conversation)
+    - Confidence breakdown from Nexus
+
+  process:
+    1. Analyze all context sources
+    2. Apply Three Laws
+    3. Determine if single interpretation is clear
+
+  output:
+    if_clear:
+      - Return NEXUS_HANDOFF with SUCCESS
+      - confidence >= 0.80
+      - next_action: CONTINUE
+      - Nexus proceeds without asking user
+
+    if_unclear:
+      - Return NEXUS_HANDOFF with NEEDS_INPUT
+      - Include pending_confirmations
+      - Nexus presents question to user
+      - Single question only (Cipher's decision)
+```
+
+### Question Decision Framework
+
+```yaml
+ask_decision:
+  DO_NOT_ASK_IF:
+    - Single clear interpretation from context
+    - Safe default exists
+    - User tone suggests urgency/frustration
+    - Recent conversation provides answer
+
+  ASK_IF:
+    - Multiple valid interpretations with different outcomes
+    - No safe default
+    - High-risk decision (security, data, architecture)
+    - Context provides conflicting signals
+
+  question_format:
+    - One question only
+    - 3-4 specific options
+    - Include recommended option
+    - Avoid open-ended questions
+```
+
+### Learning Integration
+
+After each clarification:
+
+```yaml
+post_clarification:
+  if_user_corrected:
+    - Record in .agents/cipher.md
+    - Update vocabulary table
+    - Adjust future interpretations
+
+  if_interpretation_accepted:
+    - Reinforce pattern
+    - Record successful interpretation
+```
+
+---
+
 ## Examples
 
 ### When Context Speaks

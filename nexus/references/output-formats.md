@@ -87,7 +87,73 @@ Parallel (if any):
 
 ---
 
-## NEXUS_HANDOFF (Standard)
+## NEXUS_HANDOFF_V2 (Standard - Required)
+
+All agents MUST use V2 format with confidence scoring.
+
+```yaml
+## NEXUS_HANDOFF
+step: [X/Y]
+agent: [AgentName]
+status: [SUCCESS|PARTIAL|BLOCKED|FAILED]
+
+# REQUIRED: Confidence scoring for auto-routing
+confidence: 0.XX  # Overall score (0.0-1.0)
+confidence_breakdown:
+  task_completion: 0.XX   # How complete is the work
+  output_quality: 0.XX    # Quality of artifacts produced
+  next_step_clarity: 0.XX # How clear is the next step
+
+summary: |
+  [1-3 line summary of work completed]
+
+key_findings:
+  - [Finding 1]
+  - [Finding 2]
+
+artifacts:
+  - type: [file|command|link]
+    path: [path]
+    description: [what it is]
+
+risks:
+  - [Risk 1]
+  - [Risk 2]
+
+open_questions:
+  - blocking: [true|false]
+    question: [Question]
+
+pending_confirmations:  # Only if status == BLOCKED
+  - trigger: [INTERACTION_TRIGGER]
+    question: [Question]
+    options: [List]
+    recommended: [Option]
+
+user_confirmations:
+  - question: [Previous Q]
+    answer: [User's A]
+
+next_agent: [AgentName|DONE]
+next_action: [CONTINUE|MERGE|VERIFY|ESCALATE|ABORT]
+reason: [Why this next step]
+```
+
+### Auto-Routing Rules
+
+| Confidence | Status | Action |
+|------------|--------|--------|
+| >= 0.75 | SUCCESS | Auto-route to next_agent |
+| 0.50-0.74 | SUCCESS/PARTIAL | Route with logged assumptions |
+| < 0.50 | any | Pause for user input |
+| any | BLOCKED | Present pending_confirmations |
+| any | FAILED | Execute recovery chain or escalate |
+
+See `references/handoff-validation.md` for full validation rules.
+
+---
+
+## NEXUS_HANDOFF (Legacy - Deprecated)
 
 ```
 ## NEXUS_HANDOFF
@@ -112,6 +178,9 @@ Parallel (if any):
 - Suggested next agent: [AgentName] (reason)
 - Next action: CONTINUE
 ```
+
+**Note**: Legacy format will be auto-migrated to V2 with inferred confidence.
+See `handoff-validation.md` for migration rules.
 
 ---
 

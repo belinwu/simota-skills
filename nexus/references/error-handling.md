@@ -19,9 +19,12 @@ Error levels, recovery flow, and escalation procedures.
 - Performance degradation detected → Insert Bolt
 
 ### Level 3 - ROLLBACK (Significant Failures)
-- test_failure≥50% → Rollback to last checkpoint, re-decompose with Sherpa
-- Breaking change detected → Rollback, require migration plan
-- Merge conflict in parallel execution → Rollback branch, resolve sequentially
+- test_failure 50-80% → **Auto-Recovery Chain A** (Scout → Builder → Radar)
+- test_failure >80% → **Auto-Recovery Chain B** (Rollback → Sherpa → Builder → Radar)
+- Breaking change detected → **Auto-Recovery Chain C** (Atlas → Builder → Radar)
+- Merge conflict in parallel execution → Auto-resolve if adjacent, else Rollback branch
+
+See `guardrails.md` for detailed recovery chain specifications.
 
 ### Level 4 - ESCALATE (Human Required)
 - Blocking unknowns → Ask user (max 5 questions)
@@ -82,4 +85,112 @@ _ERROR_EVENT:
   Details: [Error details]
   Action: [Recovery action taken]
   Result: [SUCCESS|FAILED|ESCALATED|ABORTED]
+```
+
+---
+
+## Recovery Chain Integration
+
+### Automatic Chain Selection
+
+```yaml
+recovery_chain_selection:
+  test_failure:
+    0-20%: L1_retry
+    20-50%: L2_builder_inject
+    50-80%: L3_RECOVERY_CHAIN_A
+    80-100%: L3_RECOVERY_CHAIN_B
+
+  breaking_change:
+    detected: L3_RECOVERY_CHAIN_C
+
+  merge_conflict:
+    adjacent_only: auto_merge
+    semantic: ownership_priority
+    complex: user_escalation
+```
+
+### Chain Execution Flow
+
+```
+Error Detected
+      │
+      ▼
+┌──────────────┐
+│ Classify     │ → Match to recovery chain
+│ Error Type   │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Check        │ → recovery_confidence >= threshold?
+│ Confidence   │
+└──────┬───────┘
+       │
+  ┌────┴────┐
+  ▼         ▼
+AUTO      ASK
+  │         │
+  ▼         ▼
+Execute   User decides
+Chain     which chain
+  │         │
+  └────┬────┘
+       ▼
+┌──────────────┐
+│ Run Chain    │ → Step by step with checkpoints
+└──────┬───────┘
+       │
+  ┌────┴────┐
+  ▼         ▼
+SUCCESS   FAILED
+  │         │
+  ▼         ▼
+Continue  Next chain
+          OR escalate
+```
+
+### Recovery Event Format
+
+```yaml
+_RECOVERY_EVENT:
+  chain: [CHAIN_A|CHAIN_B|CHAIN_C]
+  trigger: [What triggered recovery]
+  confidence: 0.XX
+  auto_executed: [true|false]
+
+  steps:
+    - step: 1
+      agent: [Agent]
+      action: [What was done]
+      result: [SUCCESS|FAILED]
+
+  outcome: [RECOVERED|ESCALATED|ABORTED]
+  duration: [steps completed]
+  artifacts:
+    - [List of recovery artifacts]
+```
+
+### Recovery Metrics
+
+Track recovery performance:
+
+```yaml
+recovery_metrics:
+  chain_a:
+    attempts: N
+    success_rate: X%
+    avg_confidence: 0.XX
+
+  chain_b:
+    attempts: N
+    success_rate: X%
+    avg_confidence: 0.XX
+
+  chain_c:
+    attempts: N
+    success_rate: X%
+    avg_confidence: 0.XX
+
+  escalation_rate: X%  # Target: < 15%
 ```

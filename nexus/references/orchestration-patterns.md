@@ -20,18 +20,73 @@ Nexus → VERIFY → DELIVER
 
 ---
 
-## Pattern B: Parallel Branches
+## Pattern B: Parallel Branches (with Auto-Conflict Resolution)
 
 ```
 Nexus → NEXUS_ROUTING (Branch A) → [Agent1 → Agent2] → NEXUS_HANDOFF
       → NEXUS_ROUTING (Branch B) → [Agent3 → Agent4] → NEXUS_HANDOFF
                                         ↓
-Nexus → AGGREGATE (Merge branches) → NEXUS_ROUTING → MergeAgent
-                                        ↓
-Nexus → VERIFY → DELIVER
+                            ┌───────────────────────┐
+                            │ CONFLICT DETECTION    │
+                            │ - Identify overlaps   │
+                            │ - Classify conflicts  │
+                            └───────────┬───────────┘
+                                        │
+                        ┌───────────────┴───────────────┐
+                        ▼                               ▼
+                   No Conflicts                    Has Conflicts
+                        │                               │
+                        │                   ┌───────────┴───────────┐
+                        │                   ▼                       ▼
+                        │              Auto-Resolvable         Needs User
+                        │              (ADJACENT,              (SEMANTIC
+                        │               FORMATTING,             unclear,
+                        │               SEMANTIC clear)         STRUCTURAL)
+                        │                   │                       │
+                        │                   ▼                       ▼
+                        │              Auto-Resolve            ESCALATE
+                        │                   │                       │
+                        └───────────┬───────┘                       │
+                                    ▼                               │
+                            AGGREGATE                               │
+                                    │                               │
+                                    ▼                               │
+                              VERIFY (tests)                        │
+                                    │                               │
+                        ┌───────────┴───────────┐                   │
+                        ▼                       ▼                   │
+                      PASS                    FAIL                  │
+                        │                       │                   │
+                        ▼                       ▼                   │
+                    DELIVER              RECOVERY ←─────────────────┘
 ```
 
 **Use when**: Independent tasks can execute simultaneously (e.g., separate features)
+
+### Auto-Conflict Resolution Rules
+
+| Conflict Type | Auto-Resolve? | Method |
+|---------------|---------------|--------|
+| ADJACENT | ✅ Always | Accept both, merge in order |
+| FORMATTING | ✅ Always | Regenerate with formatter |
+| SEMANTIC (owner clear) | ✅ If ownership >= 0.70 | Ownership priority |
+| SEMANTIC (owner unclear) | ❌ | Escalate to user |
+| STRUCTURAL | ❌ Never | Always escalate |
+
+### Ownership Priority
+
+When two branches modify the same code semantically:
+
+```yaml
+ownership_score:
+  primary_agent_role: 0.40  # Domain specialist bonus
+  change_volume: 0.30       # More changes = more ownership
+  task_alignment: 0.30      # Is file central to task?
+
+  auto_resolve_if: ownership_score >= 0.70
+```
+
+See `references/conflict-resolution.md` for detailed resolution strategies.
 
 ---
 
