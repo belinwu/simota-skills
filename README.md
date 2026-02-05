@@ -59,10 +59,14 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
 | **Cipher** | _"Don't listen to words. Listen to silence."_ - ユーザー意図の解読。曖昧な要求を正確な仕様に変換 | 要求仕様書 |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - セッションリプレイ分析・ペルソナ別行動パターン抽出・UX問題の物語化。Researcher/Echoと連携 | 行動分析レポート |
+| **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案 | 準拠度レポート |
 
 **Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
 **Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
 **Researcher → Trace → Echo の連携**：Researcher（ペルソナ定義）→ Trace（実データ検証）→ Echo（シミュレーション確認）
+**Sentinel → Canon → Builder の連携**：Sentinel（脆弱性検出）→ Canon（OWASP準拠評価）→ Builder（修正実装）
+**Gateway → Canon → Gateway の連携**：Gateway（API設計）→ Canon（OpenAPI/RFC準拠確認）→ Gateway（修正）
+**Echo → Canon → Palette の連携**：Echo（UX問題）→ Canon（WCAG準拠評価）→ Palette（アクセシビリティ修正）
 
 ### Git/PR管理
 
