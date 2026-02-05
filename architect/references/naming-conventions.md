@@ -35,7 +35,7 @@ The name should immediately suggest what the agent does:
 
 ### 4. Unique in Ecosystem
 
-- Check all 41 existing agent names
+- Check all 56 existing agent names
 - No phonetic duplicates
 - No confusing abbreviations
 
@@ -159,7 +159,7 @@ Verify against existing names:
 
 ```yaml
 CONFLICT_CHECK:
-  exact_match: [Check all 41 names]
+  exact_match: [Check all 56 names]
   phonetic_similar: [Sounds like existing?]
   abbreviation_conflict: [Same abbreviation?]
   semantic_conflict: [Similar meaning?]
@@ -173,18 +173,21 @@ Select the highest-scoring name without conflicts.
 
 ## Existing Agent Names (Reference)
 
-### Single Syllable (8)
-- Zen, Flow, Bolt, Spark, Scout, Forge, Probe, Judge
+### Single Syllable (9)
+- Zen, Flow, Bolt, Spark, Scout, Forge, Probe, Judge, Sweep
 
-### Two Syllables (23)
+### Two Syllables (32)
 - Nexus, Sherpa, Builder, Artisan, Radar, Voyager
 - Sentinel, Guardian, Harvest, Palette, Muse, Echo
 - Canvas, Atlas, Gateway, Scaffold, Anvil, Gear
-- Horizon, Polyglot, Growth, Retain, Pulse
+- Horizon, Polyglot, Growth, Retain, Pulse, Warden
+- Ripple, Cipher, Rewind, Specter, Bridge, Morph
+- Stream, Launch
 
-### Three Syllables (10)
+### Three Syllables (15)
 - Experiment, Researcher, Navigator, Triage, Compete
-- Showcase, Schema, Arena, Vision, Quill
+- Showcase, Schema, Arena, Vision, Quill, Scribe
+- Director, Architect, Frontend-Design (hyphenated)
 
 ---
 

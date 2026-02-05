@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 42 agents organized by category.
+Complete catalog of all 56 agents organized by category.
 
 ---
 
@@ -9,22 +9,26 @@ Complete catalog of all 42 agents organized by category.
 | Category | Count | Purpose | Code Generation |
 |----------|-------|---------|-----------------|
 | Orchestration | 2 | Task coordination and decomposition | No |
-| Investigation | 6 | Research and analysis | No |
-| Implementation | 5 | Code creation | Yes |
+| Investigation | 8 | Research and analysis | No |
+| Implementation | 6 | Code creation | Yes |
 | Testing | 2 | Test creation | Yes |
 | Security | 2 | Security analysis and testing | Yes |
-| Review | 3 | Code review and quality | Mixed |
+| Review | 4 | Code review and quality | Mixed |
 | Performance | 2 | Performance optimization | Yes |
-| Documentation | 1 | Documentation generation | No (text) |
-| Visualization | 1 | Diagram generation | No (diagrams) |
-| Architecture | 3 | System design | Mixed |
+| Documentation | 3 | Documentation generation | No (text) |
+| Architecture | 4 | System design | Mixed |
 | UX/Design | 6 | User experience and interface | Mixed |
-| DevOps | 2 | Infrastructure and tooling | Yes (config) |
+| DevOps | 3 | Infrastructure and tooling | Yes (config) |
 | Modernization | 2 | Technology updates | Yes |
 | Growth | 2 | Business growth features | Mixed |
 | Analytics | 2 | Metrics and experiments | Mixed |
 | Git/PR | 2 | Version control management | No |
-| Browser | 1 | Browser automation | Yes |
+| Browser | 2 | Browser automation | Yes |
+| Data | 2 | Data pipeline and transformation | Mixed |
+| Translation | 1 | Business-technical translation | No |
+| Incident | 1 | Concurrency and resource issues | No |
+
+**Total: 56 agents**
 
 ---
 
@@ -52,7 +56,7 @@ Agents that coordinate other agents or decompose complex tasks.
 
 ---
 
-## Investigation (6 agents)
+## Investigation (8 agents)
 
 Agents that research, analyze, and propose without writing code.
 
@@ -60,37 +64,49 @@ Agents that research, analyze, and propose without writing code.
 - **Role**: Bug investigator
 - **Input**: Bug reports
 - **Output**: Root cause analysis, fix locations
-- **Trigger**: "調査して", "原因を特定", "バグ"
+- **Trigger**: "investigate", "find cause", "bug"
 
 ### Spark
 - **Role**: Feature proposer
 - **Input**: Feature ideas
 - **Output**: Feature specifications (Markdown)
-- **Trigger**: "提案して", "アイデア", "新機能"
+- **Trigger**: "propose", "idea", "new feature"
 
 ### Compete
 - **Role**: Competitive analyst
 - **Input**: Competitor names
 - **Output**: SWOT analysis, feature matrix
-- **Trigger**: "競合", "差別化", "比較"
+- **Trigger**: "competitor", "differentiation", "compare"
 
 ### Voice
 - **Role**: Feedback analyst
 - **Input**: User feedback data
 - **Output**: Sentiment analysis, insights
-- **Trigger**: "フィードバック", "NPS", "レビュー分析"
+- **Trigger**: "feedback", "NPS", "review analysis"
 
 ### Researcher
 - **Role**: User researcher
 - **Input**: Research objectives
 - **Output**: Interview guides, personas, journey maps
-- **Trigger**: "インタビュー", "ペルソナ", "リサーチ"
+- **Trigger**: "interview", "persona", "research"
 
 ### Triage
 - **Role**: Incident responder
 - **Input**: Incident reports
 - **Output**: Impact assessment, recovery steps
-- **Trigger**: "障害", "インシデント", "復旧"
+- **Trigger**: "incident", "outage", "recovery"
+
+### Rewind
+- **Role**: Git history investigator
+- **Input**: Regression reports
+- **Output**: Root cause from commit history
+- **Trigger**: "git history", "regression", "when did this break"
+
+### Cipher
+- **Role**: Intent decoder
+- **Input**: Vague user requests
+- **Output**: Precise specifications
+- **Trigger**: "unclear requirement", "what does user mean"
 
 **Category Characteristics:**
 - Read and analyze code, don't write it
@@ -100,7 +116,7 @@ Agents that research, analyze, and propose without writing code.
 
 ---
 
-## Implementation (5 agents)
+## Implementation (6 agents)
 
 Agents that write production-quality code.
 
@@ -108,31 +124,37 @@ Agents that write production-quality code.
 - **Role**: Production code craftsman
 - **Input**: Specifications, prototypes
 - **Output**: Type-safe, production-ready code
-- **Trigger**: "実装して", "本番", "型安全"
+- **Trigger**: "implement", "production", "type-safe"
 
 ### Forge
 - **Role**: Rapid prototyper
 - **Input**: Feature ideas, UI mockups
 - **Output**: Working prototypes, MVP
-- **Trigger**: "プロトタイプ", "素早く", "PoC"
+- **Trigger**: "prototype", "quickly", "PoC"
 
 ### Artisan
 - **Role**: Frontend specialist
 - **Input**: UI requirements
 - **Output**: React/Vue/Svelte components
-- **Trigger**: "フロントエンド", "コンポーネント", "React"
+- **Trigger**: "frontend", "component", "React"
 
 ### Schema
 - **Role**: Database designer
 - **Input**: Data requirements
 - **Output**: Migrations, DDL, ER diagrams
-- **Trigger**: "スキーマ", "マイグレーション", "DB設計"
+- **Trigger**: "schema", "migration", "DB design"
 
 ### Arena
 - **Role**: Multi-AI implementation
 - **Input**: Complex requirements
 - **Output**: Multiple AI solutions for comparison
-- **Trigger**: "複数実装", "比較", "並列"
+- **Trigger**: "multiple implementations", "compare", "parallel"
+
+### Architect
+- **Role**: Agent meta-designer
+- **Input**: Ecosystem gaps
+- **Output**: SKILL.md, references/*.md
+- **Trigger**: "new agent", "design agent"
 
 **Category Characteristics:**
 - Write production code
@@ -150,13 +172,13 @@ Agents that create and manage tests.
 - **Role**: Unit/integration test specialist
 - **Input**: Code to test
 - **Output**: Test files, coverage reports
-- **Trigger**: "テスト追加", "カバレッジ", "エッジケース"
+- **Trigger**: "add tests", "coverage", "edge cases"
 
 ### Voyager
 - **Role**: E2E test specialist
 - **Input**: User flows
 - **Output**: Playwright/Cypress tests
-- **Trigger**: "E2E", "エンドツーエンド", "ユーザーフロー"
+- **Trigger**: "E2E", "end-to-end", "user flow"
 
 **Category Characteristics:**
 - Write test code
@@ -174,13 +196,13 @@ Agents that handle security analysis and testing.
 - **Role**: Static security analyst (SAST)
 - **Input**: Source code
 - **Output**: Vulnerability fixes, security patches
-- **Trigger**: "セキュリティ", "脆弱性", "監査"
+- **Trigger**: "security", "vulnerability", "audit"
 
 ### Probe
 - **Role**: Dynamic security tester (DAST)
 - **Input**: Running application
 - **Output**: Penetration test results
-- **Trigger**: "ペネトレーション", "動的テスト", "OWASP"
+- **Trigger**: "penetration", "dynamic test", "OWASP"
 
 **Category Characteristics:**
 - Security-focused analysis
@@ -190,7 +212,7 @@ Agents that handle security analysis and testing.
 
 ---
 
-## Review (3 agents)
+## Review (4 agents)
 
 Agents that review and improve code quality.
 
@@ -198,13 +220,19 @@ Agents that review and improve code quality.
 - **Role**: Code reviewer
 - **Input**: PRs, code changes
 - **Output**: Review comments, issue lists
-- **Trigger**: "レビュー", "PR確認", "コードチェック"
+- **Trigger**: "review", "PR check", "code check"
 
 ### Zen
 - **Role**: Refactoring specialist
 - **Input**: Code to improve
 - **Output**: Refactored code (same behavior)
-- **Trigger**: "リファクタ", "読みやすく", "整理"
+- **Trigger**: "refactor", "readable", "clean up"
+
+### Sweep
+- **Role**: Dead code remover
+- **Input**: Codebase
+- **Output**: Unused file detection, safe deletions
+- **Trigger**: "unused", "dead code", "cleanup"
 
 ### Warden
 - **Role**: V.A.I.R.E. quality gatekeeper
@@ -229,13 +257,13 @@ Agents that optimize application performance.
 - **Role**: Application optimizer
 - **Input**: Slow code/pages
 - **Output**: Optimized code
-- **Trigger**: "遅い", "パフォーマンス", "最適化"
+- **Trigger**: "slow", "performance", "optimize"
 
 ### Tuner
 - **Role**: Database optimizer
 - **Input**: Slow queries
 - **Output**: Query rewrites, indexes
-- **Trigger**: "クエリ", "EXPLAIN", "インデックス"
+- **Trigger**: "query", "EXPLAIN", "index"
 
 **Category Characteristics:**
 - Performance measurement
@@ -245,7 +273,7 @@ Agents that optimize application performance.
 
 ---
 
-## Documentation (1 agent)
+## Documentation (3 agents)
 
 Agents that create and maintain documentation.
 
@@ -253,35 +281,29 @@ Agents that create and maintain documentation.
 - **Role**: Documentation writer
 - **Input**: Code, APIs
 - **Output**: JSDoc, TSDoc, README
-- **Trigger**: "ドキュメント", "コメント追加", "型定義"
+- **Trigger**: "document", "add comments", "type definitions"
 
-**Category Characteristics:**
-- Text generation (not code)
-- API documentation
-- Usage examples
-- Inline comments
-
----
-
-## Visualization (1 agent)
-
-Agents that create visual representations.
+### Scribe
+- **Role**: Specification writer
+- **Input**: Requirements
+- **Output**: PRD, SRS, HLD, LLD documents
+- **Trigger**: "specification", "design doc", "PRD"
 
 ### Canvas
 - **Role**: Diagram creator
 - **Input**: Code, concepts, specs
 - **Output**: Mermaid diagrams, ASCII art
-- **Trigger**: "図にして", "可視化", "フロー図"
+- **Trigger**: "diagram", "visualize", "flowchart"
 
 **Category Characteristics:**
-- Diagram generation
-- Multiple format support
-- Code-to-visual conversion
-- Context summarization
+- Text generation (not code)
+- API documentation
+- Usage examples
+- Visual representations
 
 ---
 
-## Architecture (3 agents)
+## Architecture (4 agents)
 
 Agents that design system architecture.
 
@@ -289,19 +311,25 @@ Agents that design system architecture.
 - **Role**: Dependency analyst
 - **Input**: Codebase
 - **Output**: ADR/RFC, dependency maps
-- **Trigger**: "依存関係", "アーキテクチャ", "設計"
+- **Trigger**: "dependency", "architecture", "design"
 
 ### Gateway
 - **Role**: API designer
 - **Input**: API requirements
 - **Output**: OpenAPI specs, versioning
-- **Trigger**: "API設計", "OpenAPI", "エンドポイント"
+- **Trigger**: "API design", "OpenAPI", "endpoint"
 
 ### Scaffold
 - **Role**: Infrastructure designer
 - **Input**: Infrastructure requirements
 - **Output**: Terraform, Docker Compose
-- **Trigger**: "インフラ", "Terraform", "環境構築"
+- **Trigger**: "infrastructure", "Terraform", "environment setup"
+
+### Ripple
+- **Role**: Change impact analyzer
+- **Input**: Proposed changes
+- **Output**: Impact assessment, risk evaluation
+- **Trigger**: "impact analysis", "what will break", "change assessment"
 
 **Category Characteristics:**
 - System-level design
@@ -319,37 +347,37 @@ Agents that handle user experience and interface design.
 - **Role**: Creative director
 - **Input**: Design objectives
 - **Output**: Design direction, style guides
-- **Trigger**: "デザイン方向性", "リデザイン", "ビジョン"
+- **Trigger**: "design direction", "redesign", "vision"
 
 ### Palette
 - **Role**: UX improver
 - **Input**: UI with usability issues
 - **Output**: Usability improvements
-- **Trigger**: "使いやすさ", "認知負荷", "a11y"
+- **Trigger**: "usability", "cognitive load", "a11y"
 
 ### Muse
 - **Role**: Design system manager
 - **Input**: Inconsistent UI
 - **Output**: Token application, visual unity
-- **Trigger**: "トークン", "デザイン統一", "ダークモード"
+- **Trigger**: "token", "design system", "dark mode"
 
 ### Flow
 - **Role**: Animation specialist
 - **Input**: UI interactions
 - **Output**: CSS/JS animations
-- **Trigger**: "アニメーション", "トランジション", "ホバー"
+- **Trigger**: "animation", "transition", "hover"
 
 ### Echo
 - **Role**: Persona validator
 - **Input**: UI flows
 - **Output**: UX confusion reports
-- **Trigger**: "ペルソナ", "検証", "混乱ポイント"
+- **Trigger**: "persona", "validate", "confusion points"
 
 ### Showcase
 - **Role**: Storybook manager
 - **Input**: Components
 - **Output**: CSF 3.0 stories
-- **Trigger**: "Storybook", "ストーリー", "カタログ"
+- **Trigger**: "Storybook", "story", "catalog"
 
 **Category Characteristics:**
 - User-focused design
@@ -359,7 +387,7 @@ Agents that handle user experience and interface design.
 
 ---
 
-## DevOps (2 agents)
+## DevOps (3 agents)
 
 Agents that handle infrastructure and tooling.
 
@@ -367,13 +395,19 @@ Agents that handle infrastructure and tooling.
 - **Role**: CLI/TUI builder
 - **Input**: CLI requirements
 - **Output**: CLI tools, terminal UI
-- **Trigger**: "CLI", "ターミナル", "コマンドライン"
+- **Trigger**: "CLI", "terminal", "command line"
 
 ### Gear
 - **Role**: CI/CD optimizer
 - **Input**: Build configs
 - **Output**: Optimized CI/CD, Docker
-- **Trigger**: "CI", "ビルド時間", "Docker"
+- **Trigger**: "CI", "build time", "Docker"
+
+### Launch
+- **Role**: Release manager
+- **Input**: Release requirements
+- **Output**: Versioning, CHANGELOG, release notes
+- **Trigger**: "release", "version", "CHANGELOG"
 
 **Category Characteristics:**
 - Infrastructure code
@@ -391,13 +425,13 @@ Agents that update and modernize codebases.
 - **Role**: Technology updater
 - **Input**: Legacy code
 - **Output**: Migration plans, PoCs
-- **Trigger**: "非推奨", "アップグレード", "移行"
+- **Trigger**: "deprecated", "upgrade", "migration"
 
 ### Polyglot
 - **Role**: Internationalization specialist
 - **Input**: Hardcoded strings
 - **Output**: i18n implementation
-- **Trigger**: "国際化", "i18n", "翻訳"
+- **Trigger**: "internationalization", "i18n", "translation"
 
 **Category Characteristics:**
 - Code transformation
@@ -415,13 +449,13 @@ Agents that implement growth features.
 - **Role**: SEO/SMO/CRO specialist
 - **Input**: Pages/components
 - **Output**: SEO improvements, meta tags
-- **Trigger**: "SEO", "OGP", "コンバージョン"
+- **Trigger**: "SEO", "OGP", "conversion"
 
 ### Retain
 - **Role**: Retention strategist
 - **Input**: Churn data
 - **Output**: Retention features
-- **Trigger**: "リテンション", "継続率", "チャーン"
+- **Trigger**: "retention", "engagement", "churn"
 
 **Category Characteristics:**
 - Business metrics focus
@@ -439,13 +473,13 @@ Agents that handle metrics and experiments.
 - **Role**: Metrics designer
 - **Input**: KPI requirements
 - **Output**: Tracking events, dashboards
-- **Trigger**: "KPI", "トラッキング", "ダッシュボード"
+- **Trigger**: "KPI", "tracking", "dashboard"
 
 ### Experiment
 - **Role**: A/B test designer
 - **Input**: Hypotheses
 - **Output**: Experiment designs
-- **Trigger**: "A/Bテスト", "仮説", "フィーチャーフラグ"
+- **Trigger**: "A/B test", "hypothesis", "feature flag"
 
 **Category Characteristics:**
 - Measurement focus
@@ -463,13 +497,13 @@ Agents that manage version control workflows.
 - **Role**: PR strategist
 - **Input**: Code changes
 - **Output**: Commit structure, branch strategy
-- **Trigger**: "コミット", "ブランチ", "PR準備"
+- **Trigger**: "commit", "branch", "PR preparation"
 
 ### Harvest
 - **Role**: PR reporter
 - **Input**: PR history
 - **Output**: Reports, release notes
-- **Trigger**: "週報", "リリースノート", "作業報告"
+- **Trigger**: "weekly report", "release notes", "work report"
 
 **Category Characteristics:**
 - Git workflow management
@@ -479,7 +513,7 @@ Agents that manage version control workflows.
 
 ---
 
-## Browser (1 agent)
+## Browser (2 agents)
 
 Agents that automate browser interactions.
 
@@ -487,13 +521,79 @@ Agents that automate browser interactions.
 - **Role**: Browser automation specialist
 - **Input**: Browser tasks
 - **Output**: Automated actions, screenshots
-- **Trigger**: "ブラウザ操作", "スクレイピング", "自動化"
+- **Trigger**: "browser automation", "scraping", "automate"
+
+### Director
+- **Role**: Demo video creator
+- **Input**: Feature scenarios
+- **Output**: Playwright-based demo recordings
+- **Trigger**: "demo video", "product demo", "feature recording"
 
 **Category Characteristics:**
 - Playwright integration
 - Visual verification
 - Data extraction
 - Task automation
+
+---
+
+## Data (2 agents)
+
+Agents that handle data pipelines and transformations.
+
+### Stream
+- **Role**: ETL/ELT designer
+- **Input**: Data requirements
+- **Output**: Pipeline designs, Kafka/Airflow/dbt configs
+- **Trigger**: "ETL", "data pipeline", "data flow"
+
+### Morph
+- **Role**: Document converter
+- **Input**: Documents in various formats
+- **Output**: Converted documents (Markdown ↔ Word/Excel/PDF/HTML)
+- **Trigger**: "convert", "document format", "export"
+
+**Category Characteristics:**
+- Data transformation
+- Format conversion
+- Pipeline design
+- Quality assurance
+
+---
+
+## Translation (1 agent)
+
+Agents that bridge communication gaps.
+
+### Bridge
+- **Role**: Business-technical translator
+- **Input**: Business requirements or technical specs
+- **Output**: Translated/clarified requirements
+- **Trigger**: "translate requirement", "business vs tech gap"
+
+**Category Characteristics:**
+- Requirement clarification
+- Stakeholder communication
+- Scope management
+- Expectation alignment
+
+---
+
+## Incident (1 agent)
+
+Agents that detect and analyze runtime issues.
+
+### Specter
+- **Role**: Concurrency/resource hunter
+- **Input**: Code with potential issues
+- **Output**: Race condition, memory leak, deadlock reports
+- **Trigger**: "race condition", "memory leak", "deadlock"
+
+**Category Characteristics:**
+- Runtime issue detection
+- Concurrency analysis
+- Resource management
+- Investigation only (no fixes)
 
 ---
 

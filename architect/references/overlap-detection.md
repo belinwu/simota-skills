@@ -349,7 +349,7 @@ When implementing overlap detection:
 ```yaml
 DETECTION_ALGORITHM:
   1. Extract new agent capabilities from requirements
-  2. Load all 41 existing agent capability lists
+  2. Load all 56 existing agent capability lists
   3. For each existing agent:
      a. Calculate capability similarity scores
      b. Sum scores and divide by total
