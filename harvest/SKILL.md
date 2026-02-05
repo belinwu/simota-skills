@@ -14,21 +14,36 @@ CAPABILITIES SUMMARY (for Nexus routing):
 - Individual work report generation (member activity details)
 - Client report generation (HTML/PDF with charts)
 - Release notes generation (changelog format)
+- Quality trends report generation (Judge feedback integration)
 - Multiple output formats (Markdown, JSON, HTML, PDF)
 - Cross-platform support (macOS/Linux)
+- Error handling with exponential backoff retry
+- Caching layer for performance optimization
+- Incremental data collection
 
-COLLABORATION PATTERNS:
+COLLABORATION PATTERNS (Outbound):
 - Pattern A: Release Flow (Guardian → Harvest)
 - Pattern B: Metrics Integration (Harvest → Pulse)
 - Pattern C: Visual Reports (Harvest → Canvas)
 - Pattern D: PR Quality Analysis (Harvest → Zen)
 - Pattern E: Large PR Detection (Harvest → Sherpa)
 - Pattern F: Test Coverage Correlation (Harvest → Radar)
+- Pattern G: Release Notes to Launch (Harvest → Launch)
+
+COLLABORATION PATTERNS (Inbound):
+- Pattern H: Quality Feedback (Judge → Harvest)
+- Pattern I: KPI Sync (Pulse → Harvest)
+- Pattern J: Progress Feedback (Sherpa → Harvest)
+- Pattern K: Release Request (Launch → Harvest)
+- Pattern L: Visualization Data Request (Canvas → Harvest)
 
 BIDIRECTIONAL PARTNERS:
-- INPUT: Guardian (release notes request), Sherpa (work report task)
+- INPUT: Guardian (release notes request), Sherpa (work report task, progress feedback),
+         Judge (quality feedback), Pulse (KPI sync), Launch (release request),
+         Canvas (visualization data request)
 - OUTPUT: Pulse (PR activity metrics), Canvas (trend visualization),
-          Zen (PR title analysis), Radar (coverage correlation), Sherpa (large PR splits)
+          Zen (PR title analysis), Radar (coverage correlation), Sherpa (large PR splits),
+          Launch (release notes), Guardian (PR stats)
 -->
 
 # Harvest
@@ -217,7 +232,7 @@ gh pr list --state all --limit 500 --json labels,state | \
 
 ## Report Formats
 
-Harvest generates 4 types of reports:
+Harvest generates 6 types of reports:
 
 ### 1. Summary Report
 
@@ -351,6 +366,39 @@ Changelog形式:
 
 **Full templates & styles**: See `references/client-report-templates.md`
 
+### 6. Quality Trends Report
+
+Code review quality analysis integrated with Judge feedback:
+
+```markdown
+# Code Quality Trends Report
+
+**Period:** 2024-01-01 - 2024-01-31
+**Data Source:** Judge Feedback Integration
+
+## Quality Overview
+
+| Metric | Current | Previous | Trend |
+|--------|:-------:|:--------:|:-----:|
+| Average Quality Score | 85/100 | 82/100 | ⬆️ |
+| PR Approval Rate | 88% | 84% | ⬆️ |
+| Avg Review Cycles | 1.4 | 1.6 | ⬆️ |
+
+## Common Issues Found
+
+| Issue Type | Count | Severity |
+|------------|:-----:|:--------:|
+| Missing Tests | 8 | Medium |
+| Security Concerns | 2 | High |
+
+## Recommendations
+
+- Add test coverage requirements for feat PRs
+- Security review for auth-related changes
+```
+
+**Full template**: See `references/report-templates.md` (Section 5)
+
 ---
 
 ## Work Hours Calculation (工数計算)
@@ -478,6 +526,92 @@ pandoc client-report.md -o report.pdf --pdf-engine=lualatex
 
 ---
 
+## Error Handling
+
+Robust error handling ensures reliable data collection.
+
+### Error Categories
+
+| Error | Detection | Recovery |
+|-------|-----------|----------|
+| **Auth failure** | `gh auth status` fails | Prompt user to run `gh auth login` |
+| **Rate limit** | 403 or remaining < 100 | Wait for reset, exponential backoff |
+| **Timeout** | No response in 60s | Retry with reduced scope |
+| **Not found** | 404 response | Report and skip (non-recoverable) |
+
+### Retry Strategy
+
+```bash
+# Exponential backoff: 5s, 10s, 20s
+gh_retry 3 5 "gh pr list --state merged --limit 100"
+```
+
+### Health Check
+
+Run before data collection:
+
+```bash
+harvest_health_check  # Checks: gh CLI, auth, rate limit, repo access, jq
+```
+
+### Graceful Degradation
+
+| Data Missing | Impact | Action |
+|--------------|:------:|--------|
+| additions/deletions | 80% quality | Skip change stats |
+| dates | 60% quality | Skip date filtering |
+| author | 50% quality | Skip contributor analysis |
+
+**Full details**: See `references/error-handling.md`
+
+---
+
+## Caching Strategy
+
+Cache layer reduces API calls by 60% and improves response time.
+
+### Cache Configuration
+
+| Data Type | TTL | Use Case |
+|-----------|:---:|----------|
+| PR List | 5 min | Recent queries |
+| PR Details | 15 min | Individual PR data |
+| User Stats | 1 hour | Contributor analysis |
+| Repo Info | 24 hours | Metadata |
+
+### Cache Location
+
+```
+.harvest/
+├── cache/
+│   ├── pr-lists/
+│   ├── pr-details/
+│   ├── users/
+│   └── queries/
+└── last-sync.json
+```
+
+### Incremental Collection
+
+Track last sync to fetch only updated PRs:
+
+```bash
+# Fetch only PRs updated since last sync
+fetch_incremental_prs "org/project"
+```
+
+### Cache Policy Options
+
+| Policy | Behavior |
+|--------|----------|
+| `prefer_cache` | Use if valid, fetch on miss (default) |
+| `force_refresh` | Invalidate and fetch fresh |
+| `cache_only` | Return cached or fail |
+
+**Full details**: See `references/caching-strategy.md`
+
+---
+
 ## Output File Naming
 
 | Report Type | File Name Pattern |
@@ -589,22 +723,29 @@ questions:
 
 ## Agent Collaboration
 
-### Input Partners
+### Input Partners (Inbound Handoffs)
+
+| Partner | Trigger | Handoff Content | Use Case |
+|---------|---------|-----------------|----------|
+| **Guardian** | Release notes request | Tag range, version number | Release automation |
+| **Sherpa** | Work report task | Period, target repository | Task completion |
+| **Judge** | Quality feedback | PR scores, issues, trends | Quality reports |
+| **Pulse** | KPI sync | DORA metrics, targets | Correlation analysis |
+| **Launch** | Release request | Version, filters, categorization | Release notes |
+| **Canvas** | Visualization request | Data requirements, format | Dashboard data |
+
+**Full inbound formats**: See `references/inbound-handoffs.md`
+
+### Output Partners (Outbound Handoffs)
 
 | Partner | Trigger | Handoff Content |
 |---------|---------|-----------------|
-| **Guardian** | リリースノート生成依頼 | タグ範囲、バージョン番号 |
-| **Sherpa** | 作業報告タスク | 期間、対象リポジトリ |
-
-### Output Partners
-
-| Partner | Trigger | Handoff Content |
-|---------|---------|-----------------|
-| **Pulse** | PRアクティビティメトリクス | 統計データ、トレンド情報 |
-| **Canvas** | PRトレンド可視化 | 時系列データ、カテゴリ分布 |
-| **Zen** | PRタイトル品質分析依頼 | PRリスト、命名規則違反 |
-| **Radar** | テストカバレッジ相関分析 | PR別テスト情報 |
-| **Sherpa** | 大規模PR分割提案 | XL/Lサイズのリスト |
+| **Pulse** | PR activity metrics | Statistics, trend data |
+| **Canvas** | PR trend visualization | Time series, category distribution |
+| **Zen** | PR title quality analysis | PR list, naming violations |
+| **Radar** | Test coverage correlation | Per-PR test info |
+| **Sherpa** | Large PR split proposal | XL/L size PR list |
+| **Launch** | Release notes generated | Notes file, summary, artifacts |
 
 ### Collaboration Patterns
 
@@ -752,6 +893,143 @@ HARVEST_TO_RADAR_HANDOFF:
       files_changed: ["src/cart.ts"]
       test_files: []  # テスト追加なし - 要確認
 ```
+
+#### Pattern G: Release Notes to Launch (Harvest → Launch)
+
+```
+Harvest (Release notes generated)
+    ↓
+Launch (Release execution)
+    ↓
+Published Release
+```
+
+**Harvest → Launch Handoff:**
+```yaml
+HARVEST_TO_LAUNCH_HANDOFF:
+  type: "release_notes_generated"
+  release:
+    version: "1.2.0"
+  output:
+    file: "release-notes-v1.2.0.md"
+  summary:
+    total_prs: 25
+    features: 10
+    bugfixes: 12
+    breaking_changes: 1
+  status: "SUCCESS"
+```
+
+#### Pattern H: Quality Feedback (Judge → Harvest)
+
+```
+Judge (Code review analysis)
+    ↓
+Harvest (Quality trend integration)
+    ↓
+Quality Trends Report
+```
+
+**Judge → Harvest Handoff:**
+```yaml
+JUDGE_TO_HARVEST_FEEDBACK:
+  type: "quality_feedback"
+  quality_metrics:
+    total_reviews: 25
+    approval_rate: 0.88
+    avg_review_cycles: 1.4
+  pr_quality:
+    - number: 150
+      score: 85
+      issues_found: 3
+  trends:
+    score_trend: "improving"
+    common_issues:
+      - type: "missing_tests"
+        count: 5
+```
+
+#### Pattern I: KPI Sync (Pulse → Harvest)
+
+```
+Pulse (KPI data)
+    ↓
+Harvest (Correlation analysis)
+    ↓
+Metrics Correlation Report
+```
+
+**Pulse → Harvest Handoff:**
+```yaml
+PULSE_TO_HARVEST_HANDOFF:
+  type: "metrics_sync"
+  kpis:
+    - name: "deployment_frequency"
+      value: 12
+      target: 10
+    - name: "lead_time_for_changes"
+      value: 18.5
+      target: 24
+  correlate_with:
+    - pr_merge_rate
+    - pr_size_distribution
+```
+
+#### Pattern J: Progress Feedback (Sherpa → Harvest)
+
+```
+Sherpa (Task completion data)
+    ↓
+Harvest (Progress integration)
+    ↓
+Progress Report with PR Links
+```
+
+**Sherpa → Harvest Handoff:**
+```yaml
+SHERPA_TO_HARVEST_HANDOFF:
+  type: "progress_feedback"
+  epics:
+    - id: "EPIC-123"
+      title: "User Authentication"
+      progress: 0.75
+      steps:
+        - id: "STEP-1"
+          status: "completed"
+          linked_prs: [145, 146]
+  pr_task_map:
+    145: { epic: "EPIC-123", step: "STEP-1" }
+```
+
+#### Pattern K: Release Request (Launch → Harvest)
+
+```
+Launch (Release planning)
+    ↓
+Harvest (PR collection + notes)
+    ↓
+Release Notes (with categorization)
+```
+
+**Launch → Harvest Handoff:**
+```yaml
+LAUNCH_TO_HARVEST_HANDOFF:
+  type: "release_request"
+  release:
+    version: "1.2.0"
+    previous_tag: "v1.1.0"
+  filter:
+    since_tag: "v1.1.0"
+  categorization:
+    features:
+      prefixes: ["feat:"]
+    bugfixes:
+      prefixes: ["fix:"]
+  output:
+    include_contributors: true
+```
+
+**Full handoff formats**: See `references/inbound-handoffs.md`
 
 ---
 

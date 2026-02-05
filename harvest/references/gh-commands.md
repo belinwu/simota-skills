@@ -471,17 +471,202 @@ gh pr list --state merged --limit 300 \
 
 ---
 
+## Retry Logic and Error Handling
+
+Robust patterns for reliable data collection. See also: `references/error-handling.md`
+
+### Exponential Backoff Retry
+
+```bash
+# Retry with exponential backoff
+gh_retry() {
+  local max_attempts=${1:-3}
+  local base_delay=${2:-5}
+  shift 2
+  local cmd="$@"
+
+  local attempt=1
+  while [ $attempt -le $max_attempts ]; do
+    local result
+    result=$(eval "$cmd" 2>&1)
+    local exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
+      echo "$result"
+      return 0
+    fi
+
+    # Check for non-recoverable errors
+    if echo "$result" | grep -qE "404|not found|does not exist"; then
+      echo "ERROR: Resource not found (non-recoverable)" >&2
+      return 1
+    fi
+
+    if [ $attempt -lt $max_attempts ]; then
+      local delay=$((base_delay * (2 ** (attempt - 1))))
+      echo "Attempt $attempt failed, retrying in ${delay}s..." >&2
+      sleep $delay
+    fi
+
+    ((attempt++))
+  done
+
+  echo "ERROR: All $max_attempts attempts failed" >&2
+  return 1
+}
+
+# Usage
+gh_retry 3 5 "gh pr list --state merged --limit 100 --json number,title"
+```
+
+### Rate-Limit Aware Execution
+
+```bash
+# Execute with rate limit awareness
+gh_with_rate_limit() {
+  local cmd="$@"
+
+  # Pre-check rate limit
+  local remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "5000")
+
+  if [ "$remaining" -lt 50 ]; then
+    local reset=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null)
+    local now=$(date +%s)
+    local wait=$((reset - now + 5))
+
+    if [ $wait -gt 0 ] && [ $wait -lt 3600 ]; then
+      echo "Rate limit low ($remaining), waiting ${wait}s for reset..." >&2
+      sleep $wait
+    fi
+  fi
+
+  # Execute command
+  local result
+  result=$(eval "$cmd" 2>&1)
+  local exit_code=$?
+
+  # Handle rate limit error in response
+  if echo "$result" | grep -q "rate limit"; then
+    echo "Hit rate limit, waiting 60s..." >&2
+    sleep 60
+    result=$(eval "$cmd" 2>&1)
+    exit_code=$?
+  fi
+
+  echo "$result"
+  return $exit_code
+}
+
+# Usage
+gh_with_rate_limit "gh pr list --state all --limit 200 --json number,title"
+```
+
+### Timeout Wrapper
+
+```bash
+# Execute with timeout (cross-platform)
+gh_with_timeout() {
+  local timeout_sec=${1:-60}
+  shift
+  local cmd="$@"
+
+  if command -v timeout &>/dev/null; then
+    # GNU timeout (Linux)
+    timeout "$timeout_sec" bash -c "$cmd"
+  elif command -v gtimeout &>/dev/null; then
+    # GNU timeout via Homebrew (macOS)
+    gtimeout "$timeout_sec" bash -c "$cmd"
+  else
+    # Perl fallback (macOS)
+    perl -e 'alarm shift @ARGV; exec @ARGV' "$timeout_sec" bash -c "$cmd"
+  fi
+
+  local exit_code=$?
+  if [ $exit_code -eq 124 ]; then
+    echo "ERROR: Command timed out after ${timeout_sec}s" >&2
+  fi
+  return $exit_code
+}
+
+# Usage: 30 second timeout
+gh_with_timeout 30 "gh pr list --state all --limit 500 --json number,title"
+```
+
+### Combined Robust Fetch
+
+```bash
+# Production-ready PR fetch with all safeguards
+fetch_prs_robust() {
+  local repo="${1:-}"
+  local state="${2:-all}"
+  local limit="${3:-100}"
+
+  local repo_flag=""
+  [ -n "$repo" ] && repo_flag="-R $repo"
+
+  # Build command
+  local cmd="gh pr list $repo_flag --state $state --limit $limit --json number,title,state,author,createdAt,mergedAt,additions,deletions"
+
+  # Execute with rate limit check and retry
+  gh_with_rate_limit "gh_retry 3 5 \"$cmd\""
+}
+
+# Usage
+fetch_prs_robust "org/project" "merged" 200
+```
+
+### Graceful Degradation
+
+```bash
+# Fetch with field fallback
+fetch_prs_with_fallback() {
+  local repo="${1:-}"
+  local state="${2:-all}"
+  local limit="${3:-100}"
+
+  local repo_flag=""
+  [ -n "$repo" ] && repo_flag="-R $repo"
+
+  # Try full fields first
+  local full_fields="number,title,state,author,createdAt,mergedAt,additions,deletions,labels,changedFiles"
+  local result
+  result=$(gh pr list $repo_flag --state "$state" --limit "$limit" --json "$full_fields" 2>&1)
+
+  if [ $? -eq 0 ]; then
+    echo "$result"
+    return 0
+  fi
+
+  echo "Full field fetch failed, trying minimal fields..." >&2
+
+  # Fallback to minimal fields
+  local min_fields="number,title,state,author"
+  result=$(gh pr list $repo_flag --state "$state" --limit "$limit" --json "$min_fields" 2>&1)
+
+  if [ $? -eq 0 ]; then
+    echo "WARNING: Retrieved partial data (missing: additions, deletions, dates)" >&2
+    echo "$result"
+    return 0
+  fi
+
+  echo "ERROR: Even minimal fetch failed" >&2
+  return 1
+}
+```
+
+---
+
 ## Troubleshooting
 
 ### Rate Limiting
 
 ```bash
-# API制限の確認
+# API rate limit check
 gh api rate_limit --jq '.resources.core'
 
-# 結果: {"limit":5000,"remaining":4823,"reset":1704067200}
+# Result: {"limit":5000,"remaining":4823,"reset":1704067200}
 
-# 制限に近い場合は待機
+# Wait if low
 check_rate_limit() {
   local remaining=$(gh api rate_limit --jq '.resources.core.remaining')
   if [ "$remaining" -lt 100 ]; then
