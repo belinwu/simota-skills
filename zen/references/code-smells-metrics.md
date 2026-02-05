@@ -140,3 +140,115 @@ Measures how difficult code is to understand (not just test).
 2. `validateInput`: Extract validateRequired, validateFormat, validateRange
 3. `processOrder`: Add guard clauses, reduce nesting
 ```
+
+---
+
+## COMPLEXITY MEASUREMENT TOOLS
+
+Automated tools for measuring complexity metrics per language.
+
+### TypeScript/JavaScript
+
+```bash
+# ESLint complexity rule (CC per function)
+npx eslint --rule 'complexity: ["error", 10]' src/
+
+# Plato - comprehensive complexity report (HTML output)
+npx plato -r -d report src/
+
+# cr (complexity-report) - JSON/text output
+npx complexity-report --format json src/**/*.ts
+
+# TypeScript compiler strict checks
+npx tsc --noUnusedLocals --noUnusedParameters --strict
+```
+
+### Python
+
+```bash
+# Radon - Cyclomatic Complexity (per function, grade A-F)
+radon cc src/ -a -nc
+
+# Radon - Maintainability Index (per file, 0-100)
+radon mi src/
+
+# Radon - Halstead metrics
+radon hal src/
+
+# Xenon - CI-friendly complexity checker (fails on threshold)
+xenon --max-absolute B --max-modules B --max-average A src/
+
+# Pylint complexity checks
+pylint --disable=all --enable=R0912,R0915,R0911 src/
+# R0912: too-many-branches, R0915: too-many-statements, R0911: too-many-return-statements
+
+# Wily - complexity trend tracking over git history
+wily build src/
+wily report src/module.py
+```
+
+### Go
+
+```bash
+# gocyclo - Cyclomatic Complexity
+gocyclo -over 10 ./...
+
+# gocognit - Cognitive Complexity
+gocognit -over 10 ./...
+
+# golangci-lint with complexity linters
+golangci-lint run --enable gocyclo,gocognit,cyclop
+
+# Go vet + staticcheck
+go vet ./... && staticcheck ./...
+```
+
+### Rust
+
+```bash
+# cargo-geiger - unsafe code metrics
+cargo geiger
+
+# clippy with complexity warnings
+cargo clippy -- -W clippy::cognitive_complexity
+
+# tokei - code statistics (lines, comments, blanks)
+tokei src/
+```
+
+### Java
+
+```bash
+# PMD complexity rules
+pmd check -d src/ -R category/java/design.xml/CyclomaticComplexity
+
+# SpotBugs
+spotbugs -textui -effort:max build/classes/
+
+# Checkstyle
+checkstyle -c /google_checks.xml src/
+```
+
+### Multi-Language (Generic)
+
+```bash
+# SonarQube Scanner (requires server)
+sonar-scanner -Dsonar.projectKey=myproject -Dsonar.sources=src/
+
+# Lizard - multi-language CC calculator
+lizard src/ --CCN 10 --length 60 --warnings_only
+
+# scc - fast code statistics
+scc --by-file --sort complexity src/
+```
+
+### Tool Selection Guide
+
+| Need | Best Tool | Languages |
+|------|-----------|-----------|
+| Quick CC check | `lizard` | All |
+| Detailed JS/TS report | `plato` | JS/TS |
+| Python complexity grades | `radon cc` | Python |
+| Go CI integration | `golangci-lint` | Go |
+| Trend over time | `wily` (Python), `plato` (JS) | Varies |
+| CI gate (fail on threshold) | `xenon` (Python), `eslint` (JS) | Varies |

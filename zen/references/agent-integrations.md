@@ -193,6 +193,8 @@ No Changes Needed:
 │  Judge → Quality observations (INFO findings)               │
 │  Atlas → Complexity hotspots, architectural issues          │
 │  Builder → Code needing cleanup after implementation        │
+│  Hone → PDCA quality cycle (DO-refactor phase)             │
+│  Guardian → PR noise separation, tech debt hotspots         │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
             ┌─────────────────┐
@@ -207,9 +209,64 @@ No Changes Needed:
 │  Canvas → Dependency/structure diagrams                     │
 │  Judge → Re-review after cleanup                            │
 │  Quill → Documentation updates for refactored code          │
+│  Hone → PDCA cycle results (DO → CHECK transition)         │
+│  Guardian → Cleanup completion, commit strategy             │
 │  Nexus → AUTORUN results                                    │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## HONE INTEGRATION
+
+Coordinate with Hone for iterative PDCA quality improvement cycles.
+
+### When Hone Invokes Zen
+
+- During DO phase of PDCA cycle, after Builder fixes bugs
+- When CHECK phase detects complexity or code smell issues
+- Diminishing returns not yet reached (improvement > threshold)
+
+### PDCA Cycle Position
+
+```
+PLAN (Hone)
+  ↓
+DO (Builder → Zen)    ← Zen handles refactoring within the cycle
+  ↓
+CHECK (Judge + Radar)
+  ↓
+ACT (Hone decides: another cycle or stop)
+```
+
+### Key Constraints
+
+- Time-boxed: Hone sets a time/iteration budget per cycle
+- Targeted: Only refactor what CHECK phase identified
+- Measurable: Report quantitative improvement for Hone to evaluate
+
+---
+
+## GUARDIAN INTEGRATION
+
+Coordinate with Guardian for PR quality and commit hygiene.
+
+### Pattern H: PR Noise Separation
+
+Guardian detects mixed concerns in a PR (feature + cleanup):
+1. Guardian identifies "noise" (style fixes, dead code, formatting)
+2. Sends GUARDIAN_TO_ZEN_HANDOFF for cleanup extraction
+3. Zen performs cleanup as a separate, isolated change
+4. Returns ZEN_TO_GUARDIAN_HANDOFF with commit suggestions
+5. Guardian organizes commits into clean PR structure
+
+### Pattern I: Tech Debt Hotspot Refactoring
+
+Guardian identifies tech debt during PR review:
+1. Guardian flags complexity hotspots in changed files
+2. Sends GUARDIAN_TO_ZEN_HANDOFF for targeted refactoring
+3. Zen refactors and sends to Radar for verification
+4. Clean result goes back to Guardian for PR strategy
 
 ---
 

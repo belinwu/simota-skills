@@ -186,6 +186,265 @@ const MAX_LOGIN_ATTEMPTS = 100;
 
 ---
 
+## Replace Conditional with Polymorphism
+
+**When**: Switch/if-else chains that dispatch based on type or status
+
+**Steps**:
+1. Identify the condition that selects behavior
+2. Create interface/base class for the common behavior
+3. Create subclass/implementation for each case
+4. Replace conditional with polymorphic dispatch
+5. Run tests
+
+**Before**:
+```typescript
+function calculateArea(shape: Shape): number {
+  switch (shape.type) {
+    case 'circle':
+      return Math.PI * shape.radius ** 2;
+    case 'rectangle':
+      return shape.width * shape.height;
+    case 'triangle':
+      return 0.5 * shape.base * shape.height;
+    default:
+      throw new Error(`Unknown shape: ${shape.type}`);
+  }
+}
+```
+
+**After**:
+```typescript
+interface Shape {
+  area(): number;
+}
+
+class Circle implements Shape {
+  constructor(private radius: number) {}
+  area(): number { return Math.PI * this.radius ** 2; }
+}
+
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+  area(): number { return this.width * this.height; }
+}
+
+class Triangle implements Shape {
+  constructor(private base: number, private height: number) {}
+  area(): number { return 0.5 * this.base * this.height; }
+}
+```
+
+---
+
+## Introduce Parameter Object
+
+**When**: 3+ parameters frequently travel together, or function signatures are growing
+
+**Steps**:
+1. Identify parameters that logically group together
+2. Create a class/interface for the group
+3. Replace parameter list with the new object
+4. Move related behavior into the object if applicable
+5. Run tests
+
+**Before**:
+```typescript
+function createEvent(
+  title: string,
+  startDate: Date,
+  endDate: Date,
+  location: string,
+  isRecurring: boolean,
+  recurrencePattern?: string
+) { ... }
+
+createEvent("Meeting", start, end, "Room A", true, "weekly");
+```
+
+**After**:
+```typescript
+interface EventConfig {
+  title: string;
+  dateRange: DateRange;
+  location: string;
+  recurrence?: RecurrenceConfig;
+}
+
+interface DateRange {
+  start: Date;
+  end: Date;
+}
+
+interface RecurrenceConfig {
+  pattern: string;
+}
+
+function createEvent(config: EventConfig) { ... }
+
+createEvent({
+  title: "Meeting",
+  dateRange: { start, end },
+  location: "Room A",
+  recurrence: { pattern: "weekly" },
+});
+```
+
+---
+
+## Decompose Conditional
+
+**When**: Complex boolean expressions that are hard to read at a glance
+
+**Steps**:
+1. Identify the complex conditional
+2. Extract each clause into a named function or variable
+3. Replace original expression with named parts
+4. Run tests
+
+**Before**:
+```typescript
+if (
+  user.subscription !== 'free' &&
+  user.lastLogin > thirtyDaysAgo &&
+  user.purchaseCount > 0 &&
+  !user.isDeactivated
+) {
+  sendPromoEmail(user);
+}
+```
+
+**After**:
+```typescript
+const isPaidUser = user.subscription !== 'free';
+const isRecentlyActive = user.lastLogin > thirtyDaysAgo;
+const hasPurchaseHistory = user.purchaseCount > 0;
+const isActiveAccount = !user.isDeactivated;
+
+const isEligibleForPromo = isPaidUser && isRecentlyActive && hasPurchaseHistory && isActiveAccount;
+
+if (isEligibleForPromo) {
+  sendPromoEmail(user);
+}
+```
+
+---
+
+## Replace Nested Conditional with Pipeline
+
+**When**: Data transformation with multiple filter/map/reduce steps tangled in loops
+
+**Steps**:
+1. Identify the collection being processed
+2. Convert loop body into chained operations (filter, map, reduce)
+3. Give each step a meaningful name if complex
+4. Run tests
+
+**Before**:
+```typescript
+function getActiveUserEmails(users: User[]): string[] {
+  const result: string[] = [];
+  for (const user of users) {
+    if (user.isActive) {
+      if (user.email) {
+        if (user.emailVerified) {
+          result.push(user.email.toLowerCase());
+        }
+      }
+    }
+  }
+  return result;
+}
+```
+
+**After**:
+```typescript
+function getActiveUserEmails(users: User[]): string[] {
+  return users
+    .filter(user => user.isActive)
+    .filter(user => user.email && user.emailVerified)
+    .map(user => user.email!.toLowerCase());
+}
+```
+
+---
+
+## Extract Interface
+
+**When**: Class has multiple responsibilities, or you need to improve testability
+
+**Steps**:
+1. Identify the subset of methods that represent a cohesive contract
+2. Create an interface with those method signatures
+3. Have the class implement the interface
+4. Update consumers to depend on the interface
+5. Run tests
+
+**Before**:
+```typescript
+class PaymentService {
+  async charge(amount: number, card: Card): Promise<Receipt> { ... }
+  async refund(receiptId: string): Promise<void> { ... }
+  getTransactionHistory(): Transaction[] { ... }
+}
+
+// Test requires a real PaymentService
+function processOrder(service: PaymentService, order: Order) { ... }
+```
+
+**After**:
+```typescript
+interface PaymentGateway {
+  charge(amount: number, card: Card): Promise<Receipt>;
+  refund(receiptId: string): Promise<void>;
+}
+
+class StripePaymentService implements PaymentGateway {
+  async charge(amount: number, card: Card): Promise<Receipt> { ... }
+  async refund(receiptId: string): Promise<void> { ... }
+  getTransactionHistory(): Transaction[] { ... }
+}
+
+// Now testable with mock
+function processOrder(gateway: PaymentGateway, order: Order) { ... }
+```
+
+---
+
+## Consolidate Duplicate Fragments
+
+**When**: Same code appears in both branches of a conditional
+
+**Steps**:
+1. Identify identical code in if/else branches
+2. Move common code before or after the conditional
+3. Simplify the conditional to contain only differences
+4. Run tests
+
+**Before**:
+```typescript
+if (isSpecialDeal) {
+  total = price * quantity * 0.95;
+  sendConfirmation(total);
+  logTransaction(total);
+} else {
+  total = price * quantity;
+  sendConfirmation(total);
+  logTransaction(total);
+}
+```
+
+**After**:
+```typescript
+total = isSpecialDeal
+  ? price * quantity * 0.95
+  : price * quantity;
+sendConfirmation(total);
+logTransaction(total);
+```
+
+---
+
 ## Before/After Report Template
 
 ```markdown

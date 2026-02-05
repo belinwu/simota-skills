@@ -215,6 +215,106 @@ Standardized handoff templates for agent collaboration.
 
 ---
 
+## HONE_TO_ZEN_HANDOFF
+
+```markdown
+## HONE_TO_ZEN_HANDOFF
+
+**PDCA Cycle**: [Cycle N]
+**Phase**: DO (Refactoring Step)
+**Origin**: Hone Quality Orchestrator
+
+**Quality Target**:
+| Metric | Current | Target | Gap |
+|--------|---------|--------|-----|
+| CC (max) | X | Y | -Z |
+| Cognitive (max) | X | Y | -Z |
+| Code Smells | X | 0 | -X |
+
+**Scope**:
+| File | Issue | Priority |
+|------|-------|----------|
+| `file.ts` | [Quality finding from CHECK phase] | High |
+
+**Constraints**:
+- Time budget: [X minutes]
+- Must pass CHECK phase validation after refactoring
+- Diminishing returns threshold: [X% improvement minimum]
+
+**Request**: Apply targeted refactoring to meet quality targets
+```
+
+---
+
+## GUARDIAN_TO_ZEN_HANDOFF
+
+```markdown
+## GUARDIAN_TO_ZEN_HANDOFF
+
+**PR/Branch**: [PR# or branch name]
+**Type**: [Noise Separation / Hotspot Refactoring]
+
+**Noise Identified**:
+| File | Noise Type | Action |
+|------|-----------|--------|
+| `file.ts` | Style inconsistency | Separate into cleanup commit |
+| `utils.ts` | Dead imports | Remove in pre-cleanup |
+
+**Context**:
+- [Why Guardian is requesting separation]
+- [PR strategy: cleanup-first or cleanup-after]
+
+**Request**: [Separate noise from feature changes / Refactor tech debt hotspot]
+```
+
+---
+
+## ZEN_TO_HONE_HANDOFF
+
+```markdown
+## ZEN_TO_HONE_HANDOFF
+
+**PDCA Cycle**: [Cycle N]
+**Phase**: DO → CHECK (Verification Request)
+
+**Refactoring Applied**:
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| CC (max) | X | Y | -Z% |
+| Cognitive (max) | X | Y | -Z% |
+| Code Smells | X | Y | -Z |
+
+**Changes**:
+- [Refactoring 1]
+- [Refactoring 2]
+
+**Request**: Verify improvements in CHECK phase, determine if another cycle is needed
+```
+
+---
+
+## ZEN_TO_GUARDIAN_HANDOFF
+
+```markdown
+## ZEN_TO_GUARDIAN_HANDOFF
+
+**Type**: [Cleanup Complete / Refactoring Complete]
+
+**Changes Made**:
+| File | Change | Commit Strategy |
+|------|--------|-----------------|
+| `file.ts` | Style cleanup | Separate commit |
+| `utils.ts` | Dead code removal | Separate commit |
+
+**Suggested Commit Messages**:
+- `refactor: clean up style inconsistencies in file.ts`
+- `refactor: remove dead imports from utils.ts`
+
+**Request**: Review commit strategy, proceed with PR preparation
+```
+
+---
+
 ## COLLABORATION PATTERNS
 
 ### Pattern A: Quality Improvement Flow
@@ -245,4 +345,19 @@ Atlas (hotspots) → ATLAS_TO_ZEN_HANDOFF → Zen → ZEN_TO_ATLAS_HANDOFF
 ### Pattern F: Documentation Update
 ```
 Zen (API changes) → ZEN_TO_QUILL_HANDOFF → Quill
+```
+
+### Pattern G: PDCA Quality Cycle
+```
+Hone (PLAN) → Judge (CHECK) → Builder (DO-fix) → Zen (DO-refactor) → Radar (CHECK-test) → Hone (ACT)
+```
+
+### Pattern H: PR Noise Separation
+```
+Guardian (noise detected) → GUARDIAN_TO_ZEN_HANDOFF → Zen (cleanup) → ZEN_TO_GUARDIAN_HANDOFF → Guardian (commit strategy)
+```
+
+### Pattern I: Tech Debt Hotspot Refactoring
+```
+Guardian (hotspot identified) → GUARDIAN_TO_ZEN_HANDOFF → Zen (refactor) → ZEN_TO_RADAR_HANDOFF → Radar (verify)
 ```
