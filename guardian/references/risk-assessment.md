@@ -238,7 +238,7 @@ test_coverage:
     action: "Flag for Radar test addition"
 ```
 
-### 6. Author Familiarity (10% weight)
+### 6. Author Familiarity (10% weight - reduced from original)
 
 ```yaml
 author_familiarity:
@@ -273,6 +273,178 @@ author_familiarity:
       amplifier: 1.3
       reason: "Bus factor risk"
 ```
+
+### 7. Ripple Impact (10% weight - NEW)
+
+**Integration with Ripple agent for cross-codebase impact analysis**
+
+```yaml
+ripple_impact:
+  description: |
+    Measures the potential downstream impact of changes
+    using Ripple agent's dependency and pattern analysis.
+
+  components:
+    dependency_depth:
+      weight: 40%
+      description: "How deep in the dependency tree are consumers"
+      scoring:
+        low: "Only direct dependents (1 level)"
+        medium: "2-3 levels of dependents"
+        high: "4+ levels or circular paths"
+
+    pattern_consistency:
+      weight: 30%
+      description: "Does change break existing patterns"
+      scoring:
+        consistent: "Follows established patterns"
+        minor_deviation: "Small variation from patterns"
+        breaking: "Introduces new/conflicting pattern"
+
+    consumer_count:
+      weight: 30%
+      description: "Number of files/modules affected"
+      scoring:
+        low: "< 5 consumers"
+        medium: "5-20 consumers"
+        high: "> 20 consumers"
+
+  score_calculation: |
+    ripple_score = (
+      dependency_depth_score * 0.4 +
+      pattern_consistency_score * 0.3 +
+      consumer_count_score * 0.3
+    )
+
+  integration_triggers:
+    auto_request_ripple:
+      - "Shared module modified"
+      - "API contract changed"
+      - "Core utility updated"
+      - "Cross-module dependencies added"
+
+  handoff_format:
+    request: GUARDIAN_TO_RIPPLE_HANDOFF
+    response: RIPPLE_TO_GUARDIAN_HANDOFF
+```
+
+### Ripple Integration Protocol
+
+```yaml
+ripple_integration:
+  when_to_request:
+    conditions:
+      - shared_module_changed: true
+      - dependency_impact > 3
+      - api_signature_changed: true
+      - pattern_deviation_detected: true
+
+  request_format:
+    type: GUARDIAN_TO_RIPPLE_HANDOFF
+    includes:
+      - Changed files list
+      - Change type (addition/modification/deletion)
+      - Suspected impact scope
+      - Specific questions
+
+  response_processing:
+    on_receive: RIPPLE_TO_GUARDIAN_HANDOFF
+    actions:
+      - Incorporate ripple_score into risk assessment
+      - Adjust quality score based on pattern compliance
+      - Add affected files to review scope
+      - Generate additional recommendations
+
+  risk_amplification:
+    high_ripple_impact:
+      threshold: "ripple_score > 70"
+      amplifier: 1.3
+      actions:
+        - "Recommend split by impact zone"
+        - "Suggest staged rollout"
+        - "Flag for additional review"
+
+    breaking_pattern:
+      threshold: "pattern_consistency == breaking"
+      amplifier: 1.5
+      actions:
+        - "Require pattern documentation"
+        - "Recommend ADR creation"
+        - "Alert architecture team"
+```
+
+### RIPPLE_TO_GUARDIAN_HANDOFF Processing
+
+```yaml
+ripple_response_handling:
+  response_structure:
+    impact_analysis:
+      direct_dependents: [file_list]
+      transitive_dependents: [file_list]
+      ripple_depth: number
+      affected_modules: [module_list]
+
+    pattern_analysis:
+      current_patterns: [pattern_list]
+      deviations: [deviation_list]
+      consistency_score: number
+      recommendations: [list]
+
+    risk_indicators:
+      breaking_changes: [list]
+      migration_needed: boolean
+      consumer_updates_required: [list]
+
+  integration_actions:
+    update_risk_score:
+      - Add ripple_score as 7th factor
+      - Recalculate overall risk
+      - Adjust category if threshold crossed
+
+    update_recommendations:
+      - Include Ripple's suggestions
+      - Add affected files to review focus
+      - Generate migration guidance if needed
+
+    update_handoffs:
+      - Include ripple impact in Judge handoff
+      - Add pattern notes to Zen handoff
+      - Include architecture notes for Atlas
+```
+
+### Quality Score Integration
+
+```yaml
+ripple_quality_impact:
+  pattern_compliance_bonus:
+    description: "Bonus for following patterns"
+    condition: "pattern_consistency == consistent"
+    bonus: "+5 focus score"
+
+  pattern_breaking_penalty:
+    description: "Penalty for breaking patterns"
+    condition: "pattern_consistency == breaking"
+    penalty: "-10 focus score, -5 risk score"
+
+  documentation_requirement:
+    condition: "breaking_pattern AND no_documentation"
+    penalty: "-10 documentation score"
+    action: "Require pattern documentation"
+```
+
+---
+
+## Updated Risk Factor Framework (with Ripple)
+
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| File Sensitivity | 25% | Impact of files being changed |
+| Change Complexity | 20% | Cyclomatic complexity delta |
+| Hotspot Overlap | 15% | Frequently changed files |
+| Dependency Impact | 10% | Direct/transitive dependents |
+| Test Coverage | 10% | Coverage of changed code |
+| Author Familiarity | 10% | Code ownership history |
+| **Ripple Impact** | **10%** | **Cross-codebase propagation** |
 
 ---
 

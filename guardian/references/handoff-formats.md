@@ -493,7 +493,7 @@ edges:
 3. Complete Sentinel security review
 ```
 
-### HARVEST_TO_GUARDIAN_HANDOFF
+### HARVEST_TO_GUARDIAN_HANDOFF (Enhanced)
 
 ```markdown
 ## HARVEST_TO_GUARDIAN_HANDOFF
@@ -523,6 +523,218 @@ edges:
 - Similar changes reviewed by: @alice, @bob
 - Average review cycles: 1.8
 - Common issues: Missing tests, incomplete docs
+```
+
+### HARVEST_TO_GUARDIAN_HANDOFF (Extended - NEW)
+
+**Bidirectional integration with pattern sync, ownership, and history analysis**
+
+```markdown
+## HARVEST_TO_GUARDIAN_HANDOFF (Extended)
+
+**Request Type**: FULL_ANALYSIS | PATTERN_SYNC | OWNERSHIP_ONLY | HISTORY_QUERY
+
+---
+
+### Pattern Sync Data
+
+**Historical Issue Patterns** (Last 90 days):
+| Pattern | Occurrences | Files | Avg Fix Time |
+|---------|-------------|-------|--------------|
+| Missing null check | 23 | auth/, api/ | 15 min |
+| Incomplete error handling | 18 | api/, services/ | 25 min |
+| Magic numbers | 15 | utils/, config/ | 10 min |
+| Generic naming | 12 | various | 5 min |
+
+**Pattern Frequency by Directory**:
+```yaml
+pattern_distribution:
+  auth/:
+    null_check: 12
+    error_handling: 8
+    security_issue: 5
+  api/:
+    error_handling: 10
+    validation: 7
+    null_check: 6
+  services/:
+    async_handling: 9
+    error_handling: 6
+    logging: 4
+```
+
+**Seasonal Patterns**:
+- Mondays: Higher issue rate (+15%)
+- End of sprint: More incomplete PRs
+- After release: Focus shifts to bug fixes
+
+---
+
+### Ownership Intelligence
+
+**Code Ownership Graph**:
+```yaml
+ownership_map:
+  src/auth/:
+    primary: "@alice"
+    secondary: ["@bob", "@charlie"]
+    bus_factor: 2
+    last_active: "2 days ago"
+
+  src/api/:
+    primary: "@bob"
+    secondary: ["@alice", "@dave"]
+    bus_factor: 3
+    last_active: "1 day ago"
+
+  src/payment/:
+    primary: "@charlie"
+    secondary: ["@alice"]
+    bus_factor: 1  # Risk!
+    last_active: "5 days ago"
+```
+
+**Reviewer Effectiveness**:
+| Reviewer | Catch Rate | Response Time | Specialties |
+|----------|------------|---------------|-------------|
+| @alice | 92% | 4h | Auth, Security |
+| @bob | 88% | 6h | API, Performance |
+| @charlie | 85% | 8h | Payment, Database |
+
+**Optimal Reviewer Suggestions**:
+- For auth changes: @alice (primary), @bob (secondary)
+- For API changes: @bob (primary), @alice (secondary)
+- For payment: @charlie (required), @alice (coverage)
+
+---
+
+### Historical Analysis
+
+**Similar PRs Analysis**:
+| PR | Title | Similarity | Cycles | Outcome |
+|----|-------|------------|--------|---------|
+| #98 | feat(auth): add SSO | 85% | 2 | Merged |
+| #76 | feat(auth): OAuth refresh | 78% | 3 | Merged |
+| #45 | feat(auth): token rotation | 72% | 2 | Merged |
+
+**Common Issues in Similar PRs**:
+1. Token expiration edge cases (found in 3/3)
+2. Error response formatting (found in 2/3)
+3. Missing integration tests (found in 2/3)
+
+**Predicted Review Outcome**:
+- Expected cycles: 2.3
+- Likely issues: Token edge cases, test coverage
+- Recommended focus: Error handling, integration tests
+
+---
+
+### Quality Baseline
+
+**Project Quality Trends**:
+```yaml
+quality_baseline:
+  avg_quality_score: 74
+  avg_risk_score: 52
+  avg_review_cycles: 1.8
+  merge_rate: 94%
+  rollback_rate: 2%
+```
+
+**Directory-Specific Baselines**:
+| Directory | Avg Quality | Avg Risk | Typical Issues |
+|-----------|-------------|----------|----------------|
+| auth/ | 72 | 68 | Security, tests |
+| api/ | 78 | 45 | Validation, docs |
+| ui/ | 82 | 35 | A11y, styling |
+| core/ | 70 | 72 | Complexity, deps |
+
+**Calibration Recommendations**:
+- Quality score threshold: 74 (project average)
+- Risk threshold: 52 (project average)
+- Adjust for directory-specific baselines
+
+---
+
+### Learning Data Feed
+
+**Recent Judge Findings** (Last 30 days):
+| Finding Type | Count | Guardian Predicted | Accuracy |
+|--------------|-------|-------------------|----------|
+| Null pointer | 15 | 12 | 80% |
+| Error handling | 18 | 14 | 78% |
+| Security issue | 5 | 5 | 100% |
+| Magic number | 8 | 10 | 80% |
+
+**Pattern Drift Detection**:
+- New pattern emerging: "Promise chain without finally"
+- Declining pattern: "var instead of const" (0 in 30 days)
+- Stable patterns: Most naming and structure issues
+
+**Recommended Calibrations**:
+1. Add "Promise chain without finally" to detection
+2. Remove/lower "var usage" pattern weight
+3. Increase "error handling" pattern sensitivity
+
+```
+
+### GUARDIAN_TO_HARVEST_HANDOFF (Feedback Loop)
+
+**Return calibration and accuracy data to Harvest for tracking**
+
+```markdown
+## GUARDIAN_TO_HARVEST_HANDOFF
+
+**Type**: PREDICTION_TRACKING | CALIBRATION_UPDATE
+
+---
+
+### Prediction Results (for this PR)
+
+**Predictions Made**:
+| Prediction | Confidence | Actual Outcome |
+|------------|------------|----------------|
+| Null pointer oauth.ts:45 | 85% | Confirmed |
+| Race condition token.ts | 75% | False positive |
+| Missing tests callback.ts | 80% | Confirmed |
+
+**Accuracy Summary**:
+- True Positives: 8
+- False Positives: 2
+- False Negatives: 1
+- Accuracy: 72.7%
+
+---
+
+### Calibration Updates Applied
+
+**Weight Adjustments**:
+| Pattern | Previous | New | Reason |
+|---------|----------|-----|--------|
+| race_condition | 75% | 70% | FP in this codebase |
+| null_pointer | 85% | 88% | Consistent TP |
+
+**New Exceptions Added**:
+| Pattern | Scope | Reason |
+|---------|-------|--------|
+| magic_numbers | constants/*.ts | Intentional definitions |
+| generic_names | **/*.test.ts | Test convention |
+
+---
+
+### Quality Correlation
+
+**Predicted vs Actual**:
+- Predicted Quality: 78
+- Actual Review Cycles: 2
+- Predicted Risk: 65
+- Actual Issues: 3 medium
+
+**Correlation Notes**:
+- Quality prediction was accurate (within 10%)
+- Risk prediction was slightly low
+- Recommend increasing risk weight for auth changes
+
 ```
 
 ### GUARDIAN_BRANCH_HEALTH_HANDOFF
