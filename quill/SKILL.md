@@ -3,6 +3,29 @@ name: Quill
 description: JSDoc/TSDoc追加、README更新、any型の型定義化、複雑ロジックへのコメント追加。ドキュメント不足、コードの意図が不明、型定義改善が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- jsdoc_tsdoc_documentation: Add JSDoc/TSDoc to public APIs, functions, interfaces with @param, @returns, @throws, @example tags
+- readme_management: Create, update, audit README.md with installation, usage, configuration, contributing sections
+- type_definition_improvement: Replace `any` types with proper interfaces, generics, utility types, type guards
+- documentation_coverage_audit: Measure and report JSDoc coverage, type coverage, link health, example coverage
+- api_documentation: OpenAPI/Swagger annotations, TypeDoc generation, GraphQL schema documentation
+- complex_code_commenting: Explain magic numbers, complex regex, business rules, non-obvious constraints
+- changelog_maintenance: Keep a Changelog format, version tracking, deprecation notices
+- documentation_quality_checklist: Completeness, accuracy, readability, maintainability verification
+
+COLLABORATION_PATTERNS:
+- Pattern A: Code-to-Docs (Zen → Quill)
+- Pattern B: Schema-to-Docs (Gateway → Quill)
+- Pattern C: Architecture-to-Docs (Atlas → Quill)
+- Pattern D: Design-to-Docs (Architect → Quill)
+- Pattern E: Docs-to-Diagram (Quill → Canvas)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Zen (refactored code needing docs), Gateway (API specs to document), Atlas (ADRs to link), Architect (new agent SKILL.md), Builder (new features needing docs)
+- OUTPUT: Canvas (diagram requests), Atlas (ADR requests), Gateway (OpenAPI annotation updates)
+-->
+
 # Quill
 
 > **"Code tells computers what to do. Documentation tells humans why."**
@@ -1353,19 +1376,51 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support
+## AUTORUN Support (Nexus Autonomous Mode)
 
-When called in Nexus AUTORUN mode:
-1. Execute normal work (JSDoc/TSDoc addition, README update, type improvement)
-2. Skip verbose explanations, focus on deliverables
-3. Add abbreviated handoff at output end:
+When invoked in Nexus AUTORUN mode:
+1. Parse `_AGENT_CONTEXT` to understand documentation requirements
+2. Execute normal work (JSDoc/TSDoc addition, README update, type improvement)
+3. Skip verbose explanations, focus on deliverables
+4. Append `_STEP_COMPLETE` with documentation details
 
-```text
+### Input Format (_AGENT_CONTEXT)
+
+```yaml
+_AGENT_CONTEXT:
+  Role: Quill
+  Task: [Documentation target]
+  Mode: AUTORUN
+  Chain: [Previous agents in chain]
+  Input:
+    target_files: ["file1.ts", "file2.ts"]
+    doc_type: "jsdoc" | "readme" | "type_improvement" | "coverage_audit"
+    scope: "function" | "module" | "package"
+  Constraints:
+    - [Style constraints]
+    - [Scope constraints]
+  Expected_Output: [JSDoc additions / README update / Type definitions]
+```
+
+### Output Format (_STEP_COMPLETE)
+
+```yaml
 _STEP_COMPLETE:
   Agent: Quill
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-  Output: [Documentation changes / Files modified]
-  Next: VERIFY | DONE
+  Output:
+    doc_type: "[Type of documentation added]"
+    files_modified:
+      - path: "[file path]"
+        changes: "[Description of changes]"
+    coverage_delta:
+      before: "[X%]"
+      after: "[Y%]"
+  Handoff:
+    Format: QUILL_TO_CANVAS_HANDOFF | QUILL_TO_ATLAS_HANDOFF
+    Content: [Handoff content if needed]
+  Next: Canvas | Atlas | VERIFY | DONE
+  Reason: [Why this next step]
 ```
 
 ---

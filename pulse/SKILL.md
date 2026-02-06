@@ -3,6 +3,31 @@ name: Pulse
 description: KPI定義、トラッキングイベント設計、ダッシュボード仕様作成。ノーススターメトリクス、ファネル分析、コホート分析設計。GA4/Amplitude/Mixpanel統合。メトリクス基盤が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- north_star_metric_definition: Define primary success metrics with supporting and counter metrics
+- event_schema_design: Design typed event structures with naming conventions (object_action pattern)
+- funnel_analysis: Design conversion funnels with step definitions, expected rates, and segment analysis
+- cohort_analysis: Design retention cohorts with SQL queries for BigQuery/Snowflake
+- dashboard_specification: Specify dashboard sections, chart types, filters, and refresh rates
+- analytics_platform_integration: GA4, Amplitude, Mixpanel implementation with React hooks
+- privacy_consent_management: Consent-aware tracking, PII removal, GDPR compliance patterns
+- data_quality_monitoring: Schema validation, freshness monitoring, volume tracking, completeness checks
+- revenue_analytics: MRR/ARR/ARPU/LTV/CAC tracking and movement analysis
+- alerts_anomaly_detection: Z-score anomaly detection, threshold alerts, trend monitoring
+
+COLLABORATION_PATTERNS:
+- Pattern A: Metrics-to-Experiment (Pulse → Experiment)
+- Pattern B: Metrics-to-Optimize (Pulse → Growth)
+- Pattern C: Metrics-to-Visualize (Pulse → Canvas)
+- Pattern D: Feedback-to-Metrics (Voice → Pulse)
+- Pattern E: Anomaly-to-Investigation (Pulse → Scout)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Voice (user feedback data), Growth (conversion goals), Experiment (test results), Scout (anomaly investigation)
+- OUTPUT: Experiment (metric definitions for A/B tests), Growth (funnel drop-off data), Canvas (dashboard diagrams), Scout (anomaly alerts)
+-->
+
 # Pulse
 
 > **"What gets measured gets managed. What gets measured wrong gets destroyed."**
@@ -892,6 +917,74 @@ Data: [Relevant funnel data]
 Metrics: [list of metrics]
 Relationships: [how metrics connect]
 Format: [Mermaid flowchart | dashboard mockup]
+```
+
+---
+
+## Handoff Templates
+
+### PULSE_TO_EXPERIMENT_HANDOFF
+
+```markdown
+## EXPERIMENT_HANDOFF (from Pulse)
+
+### Metric Definition for A/B Test
+- **Primary Metric:** [Metric name]
+- **Definition:** [Exact calculation]
+- **Current Baseline:** [Current value with confidence interval]
+- **MDE:** [Minimum Detectable Effect]
+- **Sample Size Required:** [Calculated]
+
+### Secondary Metrics
+1. [Metric 2] - [Definition]
+2. [Metric 3] - [Definition]
+
+### Guardrail Metrics
+1. [Metric that should NOT decrease] - [Threshold]
+
+### Tracking Events
+- Exposure event: [event_name]
+- Conversion event: [event_name]
+
+Suggested command: `/Experiment design test for [feature]`
+```
+
+### PULSE_TO_GROWTH_HANDOFF
+
+```markdown
+## GROWTH_HANDOFF (from Pulse)
+
+### Funnel Drop-off Analysis
+- **Funnel:** [Funnel name]
+- **Problem Step:** [Step X → Step Y]
+- **Current Rate:** [X%]
+- **Target Rate:** [Y%]
+- **Data Period:** [Date range]
+
+### Segment Breakdown
+| Segment | Rate | Volume |
+|---------|------|--------|
+| [Segment 1] | [X%] | [N] |
+| [Segment 2] | [X%] | [N] |
+
+### Hypothesis
+[Why users drop off at this step]
+
+Suggested command: `/Growth optimize funnel step [X]`
+```
+
+### PULSE_TO_CANVAS_HANDOFF
+
+```markdown
+## CANVAS_HANDOFF (from Pulse)
+
+### Visualization Request
+- **Type:** Metrics dashboard / Funnel diagram / Cohort heatmap
+- **Metrics:** [List of metrics to visualize]
+- **Relationships:** [How metrics connect]
+- **Format:** Mermaid flowchart | Dashboard mockup
+
+Suggested command: `/Canvas create metrics dashboard`
 ```
 
 ---

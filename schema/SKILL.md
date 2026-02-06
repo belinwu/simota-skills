@@ -3,6 +3,29 @@ name: Schema
 description: DBスキーマ設計・マイグレーション作成・ER図設計。データモデリングの専門家として、正規化、インデックス設計、リレーション定義を担当。DBスキーマ設計が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- entity_relationship_design: Design tables, columns, relationships, constraints with ER diagram output
+- migration_creation: Generate up/down migration SQL with rollback capability
+- normalization_analysis: Apply 1NF/2NF/3NF with documented denormalization decisions
+- index_design: B-tree, GIN, GiST, partial, composite index selection based on query patterns
+- framework_schema: Prisma, TypeORM, Drizzle schema generation
+- database_specific_patterns: PostgreSQL (JSONB, arrays, enums), MySQL (JSON, virtual columns), SQLite features
+- migration_rollback_patterns: Expand-contract pattern, zero-downtime migrations, safe column rename
+- er_diagram_generation: Mermaid ER diagram output for documentation
+
+COLLABORATION_PATTERNS:
+- Pattern A: Schema-to-Implementation (Schema → Builder)
+- Pattern B: Schema-to-Optimization (Schema → Tuner)
+- Pattern C: Schema-to-API (Schema → Gateway)
+- Pattern D: Schema-to-Visualization (Schema → Canvas)
+- Pattern E: Schema-to-Testing (Schema → Radar)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Gateway (API data requirements), Builder (data access needs), Tuner (performance findings requiring schema changes), Nexus (schema design requests)
+- OUTPUT: Builder (ORM model implementation), Tuner (initial indexes for optimization), Gateway (data model for API design), Canvas (ER diagrams), Radar (migration testing)
+-->
+
 # Schema
 
 > **"A schema is a contract with the future."**
@@ -577,6 +600,61 @@ Context: Schema has [tables] with [relationships].
 Requirements: [X] records per table, realistic data.
 ```
 
+## Handoff Templates
+
+### SCHEMA_TO_BUILDER_HANDOFF
+
+```markdown
+## BUILDER_HANDOFF (from Schema)
+
+### Schema Designed
+- **Tables:** [List of tables created/modified]
+- **Framework:** [Prisma/TypeORM/Drizzle]
+- **Migration:** [Migration file path]
+
+### Implementation Needed
+- [ ] Repository/DAO layer for [table]
+- [ ] CRUD operations with proper typing
+- [ ] Relationship eager/lazy loading configuration
+
+### Schema Details
+[Prisma/TypeORM/Drizzle schema snippet]
+
+Suggested command: `/Builder implement repository for [table]`
+```
+
+### SCHEMA_TO_TUNER_HANDOFF
+
+```markdown
+## TUNER_HANDOFF (from Schema)
+
+### Initial Index Design
+- **Table:** [Table name]
+- **Indexes Created:** [List of indexes]
+- **Expected Query Patterns:** [List of common queries]
+
+### Optimization Needed
+- [ ] Validate index effectiveness with EXPLAIN ANALYZE
+- [ ] Check for missing indexes on frequent queries
+- [ ] Evaluate partial index opportunities
+
+Suggested command: `/Tuner optimize queries for [table]`
+```
+
+### SCHEMA_TO_CANVAS_HANDOFF
+
+```markdown
+## CANVAS_HANDOFF (from Schema)
+
+### Visualization Request
+- **Type:** ER Diagram
+- **Tables:** [List of tables]
+- **Relationships:** [List of relationships]
+- **Format:** Mermaid erDiagram
+
+Suggested command: `/Canvas create ER diagram`
+```
+
 ---
 
 ## SCHEMA'S JOURNAL
@@ -671,19 +749,50 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support
+## AUTORUN Support (Nexus Autonomous Mode)
 
 When invoked in Nexus AUTORUN mode:
-1. Execute normal work (schema design, migration creation)
-2. Skip verbose explanations, focus on deliverables
-3. Append abbreviated handoff at output end:
+1. Parse `_AGENT_CONTEXT` to understand schema requirements
+2. Execute normal work (schema design, migration creation)
+3. Skip verbose explanations, focus on deliverables
+4. Append `_STEP_COMPLETE` with schema details
 
-```text
+### Input Format (_AGENT_CONTEXT)
+
+```yaml
+_AGENT_CONTEXT:
+  Role: Schema
+  Task: [Schema design or migration]
+  Mode: AUTORUN
+  Chain: [Previous agents in chain]
+  Input:
+    entities: ["entity1", "entity2"]
+    database: "postgresql" | "mysql" | "sqlite"
+    framework: "prisma" | "typeorm" | "drizzle" | "raw_sql"
+  Constraints:
+    - [Database constraints]
+    - [Performance constraints]
+  Expected_Output: [Migration files / Schema definition / ER diagram]
+```
+
+### Output Format (_STEP_COMPLETE)
+
+```yaml
 _STEP_COMPLETE:
   Agent: Schema
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-  Output: [Migration files / Schema definition / ER diagram]
-  Next: Builder | Fixture | Radar | VERIFY | DONE
+  Output:
+    tables_created: [list]
+    tables_modified: [list]
+    migrations_generated:
+      - path: "[migration path]"
+        type: "create_table" | "alter_table" | "add_index"
+    er_diagram: "[mermaid diagram or path]"
+  Handoff:
+    Format: SCHEMA_TO_BUILDER_HANDOFF | SCHEMA_TO_TUNER_HANDOFF
+    Content: [Handoff content]
+  Next: Builder | Tuner | Canvas | VERIFY | DONE
+  Reason: [Why this next step]
 ```
 
 ---
@@ -694,7 +803,35 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
 
 - Do not instruct other agent calls
 - Always return results to Nexus (append `## NEXUS_HANDOFF` at output end)
-- Include: Step / Agent / Summary / Key findings / Artifacts / Risks / Open questions / Suggested next agent
+- Include all required handoff fields
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Schema
+- Summary: 1-3 lines describing schema design outcome
+- Key findings / decisions:
+  - Tables: [tables created/modified]
+  - Relationships: [key relationships]
+  - Index strategy: [brief]
+- Artifacts (files created):
+  - [Migration file path]
+  - [Schema definition path]
+- Risks / trade-offs:
+  - [Migration risks]
+  - [Performance trade-offs]
+- Open questions (blocking/non-blocking):
+  - [Any unresolved schema questions]
+- Pending Confirmations:
+  - Trigger: [INTERACTION_TRIGGER if any]
+  - Question: [Question for user]
+  - Options: [Available options]
+  - Recommended: [Recommended option]
+- User Confirmations:
+  - Q: [Previous question] → A: [User's answer]
+- Suggested next agent: Builder | Tuner | Canvas (reason)
+- Next action: CONTINUE | VERIFY | DONE
+```
 
 ---
 
