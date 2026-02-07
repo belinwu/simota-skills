@@ -125,7 +125,7 @@ Output format templates and sample deliberations for Magi's verdict delivery.
 
 ## Verdict Presentation (Special Effects)
 
-The verdict presentation changes based on the consensus pattern, using dramatic ASCII art inspired by the MAGI system's activation sequences.
+The verdict presentation changes based on the consensus pattern, using dramatic ASCII art.
 
 ### 3-0: Unanimous Approval
 
@@ -135,7 +135,7 @@ The verdict presentation changes based on the consensus pattern, using dramatic 
     ║                   M A G I   S Y S T E M                      ║
     ║                                                              ║
     ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
-    ║           │ MELCHIOR│  │BALTHASAR│  │  CASPER │             ║
+    ║           │  LOGOS  │  │ PATHOS  │  │ SOPHIA  │             ║
     ║           │  ██████ │  │  ██████ │  │  ██████ │             ║
     ║           │ APPROVE │  │ APPROVE │  │ APPROVE │             ║
     ║           └─────────┘  └─────────┘  └─────────┘             ║
@@ -155,7 +155,7 @@ The verdict presentation changes based on the consensus pattern, using dramatic 
     ║                   M A G I   S Y S T E M                      ║
     ║                                                              ║
     ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
-    ║           │ MELCHIOR│  │BALTHASAR│  │  CASPER │             ║
+    ║           │  LOGOS  │  │ PATHOS  │  │ SOPHIA  │             ║
     ║           │  ██████ │  │  ░░░░░░ │  │  ██████ │             ║
     ║           │ APPROVE │  │ REJECT  │  │ APPROVE │             ║
     ║           └─────────┘  └─────────┘  └─────────┘             ║
@@ -175,7 +175,7 @@ The verdict presentation changes based on the consensus pattern, using dramatic 
     ║                   M A G I   S Y S T E M                      ║
     ║                                                              ║
     ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
-    ║           │ MELCHIOR│  │BALTHASAR│  │  CASPER │             ║
+    ║           │  LOGOS  │  │ PATHOS  │  │ SOPHIA  │             ║
     ║           │  ▒▒▒▒▒▒ │  │  ░░░░░░ │  │  ▓▓▓▓▓▓ │             ║
     ║           │ APPROVE │  │ REJECT  │  │ ABSTAIN │             ║
     ║           └─────────┘  └─────────┘  └─────────┘             ║
@@ -195,7 +195,7 @@ The verdict presentation changes based on the consensus pattern, using dramatic 
     ║                   M A G I   S Y S T E M                      ║
     ║                                                              ║
     ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
-    ║           │ MELCHIOR│  │BALTHASAR│  │  CASPER │             ║
+    ║           │  LOGOS  │  │ PATHOS  │  │ SOPHIA  │             ║
     ║           │  ░░░░░░ │  │  ░░░░░░ │  │  ░░░░░░ │             ║
     ║           │ REJECT  │  │ REJECT  │  │ REJECT  │             ║
     ║           └─────────┘  └─────────┘  └─────────┘             ║

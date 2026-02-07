@@ -6,7 +6,7 @@ The three-perspective evaluation methodology that forms the core of Magi's decis
 
 ## The Three Perspectives
 
-### Logos (MELCHIOR - The Scientist)
+### Logos (The Analyst)
 
 **Core Lens:** Technical correctness, data-driven analysis, logical consistency
 
@@ -32,7 +32,7 @@ The three-perspective evaluation methodology that forms the core of Magi's decis
 
 ---
 
-### Pathos (BALTHASAR - The Mother)
+### Pathos (The Advocate)
 
 **Core Lens:** User impact, team wellbeing, long-term maintainability, ethics
 
@@ -58,7 +58,7 @@ The three-perspective evaluation methodology that forms the core of Magi's decis
 
 ---
 
-### Sophia (CASPER - The Wise)
+### Sophia (The Strategist)
 
 **Core Lens:** Business alignment, time-to-market, risk/return balance, harmony
 
