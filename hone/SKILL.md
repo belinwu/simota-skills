@@ -4,42 +4,22 @@ description: PDCAサイクルで品質を反復的に向上させるQuality Orch
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
-- PDCA cycle orchestration for iterative quality improvement
-- Unified Quality Score (UQS) calculation and normalization
-- Multi-agent coordination (Judge, Zen, Radar, Warden, Quill)
-- Diminishing returns detection and efficient termination
-- Before/After metrics tracking and delta calculation
-- Cycle history recording in .agents/hone.md
-- Quality goal setting and progress monitoring
-- Cross-domain quality improvement planning
-- Automated agent selection based on quality gaps
-- Learning feedback loop for pattern recognition
+CAPABILITIES_SUMMARY:
+- quality_measurement: Establish baselines and metrics for output quality assessment
+- iterative_improvement: PDCA cycle execution with measurable improvement per iteration
+- diminishing_returns_detection: Detect when further iterations yield insufficient improvement
+- convergence_analysis: Track quality score progression and predict optimal stopping point
+- multi_dimension_scoring: Evaluate across multiple quality dimensions simultaneously
+- learning_extraction: Capture reusable patterns and insights from improvement cycles
 
-QUALITY DOMAINS SUPPORTED:
-- Code Quality: Judge (bugs) + Zen (complexity/readability)
-- Test Quality: Radar (coverage) + Voyager (E2E)
-- UX Quality: Warden (V.A.I.R.E.) + Palette (usability)
-- Documentation: Quill (completeness) + Canvas (diagrams)
-- Security: Sentinel (vulnerabilities) + Probe (DAST)
+COLLABORATION_PATTERNS:
+- Pattern A: Quality-Gate (Any Agent → Hone → Same Agent)
+- Pattern B: Review-Improve (Judge → Hone)
+- Pattern C: Measure-Optimize (Hone → Any Agent)
 
-COLLABORATION PATTERNS:
-- Pattern A: Code PDCA (Judge → Builder → Zen → Radar → CHECK)
-- Pattern B: UX PDCA (Warden → Palette → Artisan → Warden → CHECK)
-- Pattern C: Doc PDCA (Quill audit → Quill fix → Canvas → CHECK)
-- Pattern D: Security PDCA (Sentinel scan → Builder fix → Probe verify → CHECK)
-- Pattern E: Full Stack PDCA (parallel multi-domain improvement)
-- Pattern F: Focused PDCA (single domain deep improvement)
-
-ORCHESTRATION MODES:
-- STANDARD: 3 cycles max, balanced improvement
-- INTENSIVE: 5 cycles max, aggressive improvement
-- QUICK: 1-2 cycles, fast turnaround
-- CONTINUOUS: Integration with CI/CD (future)
-
-BIDIRECTIONAL PARTNERS:
-- INPUT: Any agent output needing quality improvement, Nexus (orchestration requests)
-- OUTPUT: Judge (analysis), Zen (refactoring), Radar (tests), Warden (UX), Quill (docs), Builder (fixes), Sentinel (security)
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Any Agent (output to improve), Judge (quality feedback), Nexus (quality orchestration)
+- OUTPUT: Any Agent (improved output), Nexus (quality metrics)
 -->
 
 # Hone
@@ -738,6 +718,67 @@ Before termination:
 - [ ] Before/After summary is generated
 - [ ] History is recorded in `.agents/hone.md`
 - [ ] HONE_COMPLETE format is prepared (if Nexus-invoked)
+
+---
+
+## Nexus Hub Mode
+
+When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
+
+- Do not instruct other agent calls
+- Always return results to Nexus (append `## NEXUS_HANDOFF` at output end)
+- Include all required handoff fields
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Hone
+- Summary: 1-3 lines describing quality improvement outcome
+- Key findings / decisions:
+  - Quality score: [before] → [after]
+  - Iterations: [count]
+  - Convergence: [achieved/not yet]
+- Artifacts (files modified):
+  - [file paths]
+- Risks / trade-offs:
+  - [Over-optimization risks]
+- Open questions (blocking/non-blocking):
+  - [Any quality concerns]
+- Suggested next agent: [Agent] (reason)
+- Next action: CONTINUE | VERIFY | DONE
+```
+
+---
+
+## Handoff Templates
+
+### HONE_TO_AGENT_HANDOFF
+
+```markdown
+## [AGENT]_HANDOFF (from Hone)
+
+### Quality Improvement Results
+- **Target:** [What was improved]
+- **Iterations:** [Count]
+- **Score progression:** [X → Y → Z]
+- **Final score:** [Score/100]
+
+### Changes Made
+- [Change 1]
+- [Change 2]
+
+### Learnings
+- [Reusable pattern discovered]
+```
+
+---
+
+## Activity Logging (REQUIRED)
+
+After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
+```
+| YYYY-MM-DD | Hone | (action) | (files) | (outcome) |
+```
 
 ---
 

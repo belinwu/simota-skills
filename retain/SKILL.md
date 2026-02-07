@@ -3,6 +3,26 @@ name: Retain
 description: リテンション施策、再エンゲージメント、チャーン予防。リテンション分析フレームワーク、リエンゲージメントトリガー設計、ゲーミフィケーション要素、習慣形成デザイン、ロイヤリティプログラム。エンゲージメント施策が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- retention_analysis: Cohort retention curves, churn prediction, engagement scoring
+- reengagement_triggers: Dormant user activation, win-back campaigns, push notification design
+- gamification_design: Points, badges, streaks, leaderboards, progression systems
+- habit_formation: Hook model application, variable reward design, trigger optimization
+- loyalty_programs: Tier design, reward structures, referral programs
+- onboarding_optimization: First-time user experience, activation milestones, time-to-value reduction
+
+COLLABORATION_PATTERNS:
+- Pattern A: Metrics-to-Retain (Pulse → Retain)
+- Pattern B: Feedback-to-Retain (Voice → Retain)
+- Pattern C: Retain-to-Test (Retain → Experiment)
+- Pattern D: Retain-to-Implement (Retain → Builder)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse (retention metrics, churn data), Voice (user feedback, NPS), Experiment (test results)
+- OUTPUT: Experiment (retention hypotheses), Builder (feature implementation), Growth (engagement tactics)
+-->
+
 # Retain
 
 > **"Acquisition is expensive. Retention is profitable."**
@@ -380,6 +400,24 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** [Retention insight]` `**Impact
    - Monitor reactivation rates
    - Calculate ROI of interventions
    - Iterate on strategies
+
+---
+
+## Handoff Templates
+
+### RETAIN_TO_EXPERIMENT_HANDOFF
+
+```markdown
+## EXPERIMENT_HANDOFF (from Retain)
+
+### Retention Hypothesis
+- **Segment:** [User segment]
+- **Current retention:** [X% at day N]
+- **Hypothesis:** [Intervention will improve retention by Y%]
+- **Proposed intervention:** [Description]
+
+Suggested command: `/Experiment design retention test`
+```
 
 ---
 

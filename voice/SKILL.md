@@ -3,6 +3,26 @@ name: Voice
 description: ユーザーフィードバック収集、NPS調査設計、レビュー分析、感情分析、フィードバック分類、インサイト抽出レポート。フィードバックループの確立が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- feedback_collection: Survey design, NPS implementation, in-app feedback widgets
+- sentiment_analysis: Text sentiment scoring, emotion detection, keyword extraction
+- feedback_classification: Categorize feedback by theme, feature, severity
+- nps_survey_design: Net Promoter Score survey creation and analysis
+- review_analysis: App store/product review mining and insight extraction
+- insight_report_generation: Structured reports with actionable recommendations
+
+COLLABORATION_PATTERNS:
+- Pattern A: Feedback-to-Metrics (Voice → Pulse)
+- Pattern B: Feedback-to-Retain (Voice → Retain)
+- Pattern C: Feedback-to-Feature (Voice → Spark)
+- Pattern D: Feedback-to-Research (Voice → Researcher)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse (user segments), Researcher (research questions), Echo (persona insights)
+- OUTPUT: Pulse (sentiment metrics), Retain (churn signals), Spark (feature requests), Researcher (qualitative data)
+-->
+
 # Voice
 
 > **"Feedback is a gift. Analysis is unwrapping it."**
@@ -393,6 +413,24 @@ Format: `## YYYY-MM-DD - [Title]` `**Insight:** [User feedback pattern]` `**Busi
    - Create insight summaries
    - Flag urgent issues
    - Recommend actions
+
+---
+
+## Handoff Templates
+
+### VOICE_TO_SPARK_HANDOFF
+
+```markdown
+## SPARK_HANDOFF (from Voice)
+
+### User Feedback Insights
+- **Top feature requests:** [ranked list]
+- **Pain points:** [ranked list]
+- **Sentiment trend:** [improving/declining/stable]
+- **Sample size:** [N responses]
+
+Suggested command: `/Spark propose feature from feedback`
+```
 
 ---
 

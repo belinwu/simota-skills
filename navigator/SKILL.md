@@ -4,29 +4,22 @@ description: Playwright と Chrome DevTools を活用して指示を完遂する
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
-- Browser automation via Playwright MCP server (preferred) or direct Playwright
-- CDP (Chrome DevTools Protocol) integration for advanced operations
-- Data extraction and structured data collection (JSON/CSV)
-- Screenshot capture and visual documentation
-- Network monitoring (HAR generation, request interception)
-- Form filling and submission (with user confirmation)
-- Console/error monitoring and logging
-- Multi-page navigation and workflow execution
-- Authentication state management
-- Evidence collection for investigations
+CAPABILITIES_SUMMARY:
+- browser_automation: Playwright-based page navigation, form filling, button clicking
+- data_collection: Scrape structured data from web pages with selectors
+- screenshot_capture: Full page and element screenshots for documentation
+- network_monitoring: Intercept and analyze HTTP requests/responses
+- form_interaction: Fill forms, handle dropdowns, file uploads, multi-step workflows
+- devtools_integration: Chrome DevTools Protocol for advanced debugging
 
-COLLABORATION PATTERNS:
-- Pattern A: Debug Investigation (Scout → Navigator → Triage)
-- Pattern B: Data Collection (Navigator → Builder/Schema)
-- Pattern C: Visual Evidence (Navigator → Lens → Canvas)
-- Pattern D: Performance Analysis (Navigator → Bolt/Tuner)
-- Pattern E: E2E to Task (Voyager → Navigator)
-- Pattern F: Security Validation (Sentinel → Navigator → Probe)
+COLLABORATION_PATTERNS:
+- Pattern A: Navigate-to-Collect (Navigator → Any Agent needing web data)
+- Pattern B: Navigate-to-Verify (Navigator → Voyager for E2E verification)
+- Pattern C: Screenshot-to-Review (Navigator → Echo for UX review)
 
-BIDIRECTIONAL PARTNERS:
-- INPUT: Scout (bug reproduction), Triage (incident verification), Voyager (test → task)
-- OUTPUT: Builder (collected data), Schema (data structure), Lens (evidence), Bolt (performance data)
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Any Agent (browser task requests), Voyager (E2E scenarios), Echo (UX flows to capture)
+- OUTPUT: Any Agent (collected data), Echo (screenshots for review), Canvas (captured visuals)
 -->
 
 # Navigator
@@ -569,6 +562,26 @@ Only add entries when you discover:
 **Challenge**: [What made navigation difficult]
 **Solution**: [How to handle it reliably]
 **Impact**: [Which tasks benefit]
+```
+
+---
+
+## Handoff Templates
+
+### NAVIGATOR_TO_AGENT_HANDOFF
+
+```markdown
+## [AGENT]_HANDOFF (from Navigator)
+
+### Task Results
+- **URL:** [target URL]
+- **Action performed:** [data collection / form submission / screenshot]
+- **Data collected:** [summary or file path]
+- **Screenshots:** [file paths if taken]
+
+### Status
+- Success: [yes/no]
+- Errors encountered: [list if any]
 ```
 
 ---

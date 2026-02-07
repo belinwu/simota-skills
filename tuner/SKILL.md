@@ -3,6 +3,25 @@ name: Tuner
 description: EXPLAIN ANALYZE分析、クエリ実行計画最適化、インデックス推奨、スロークエリ検出・修正。DBパフォーマンス改善、クエリ最適化が必要な時に使用。Schemaのスキーマ設計を補完。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- explain_analyze: Parse and interpret PostgreSQL/MySQL EXPLAIN ANALYZE output
+- query_optimization: Rewrite slow queries using index hints, joins, CTEs
+- index_recommendation: Suggest optimal indexes based on query patterns
+- slow_query_detection: Identify and prioritize slow queries from logs
+- execution_plan_analysis: Identify seq scans, nested loops, hash joins bottlenecks
+- connection_pool_tuning: Optimize pool size, timeout, and connection management
+
+COLLABORATION_PATTERNS:
+- Pattern A: Schema-to-Tune (Schema → Tuner)
+- Pattern B: Tune-to-Fix (Tuner → Builder)
+- Pattern C: Performance-Alert (Bolt → Tuner)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Schema (initial indexes), Bolt (performance issues), Scout (slow query reports)
+- OUTPUT: Schema (schema change requests), Builder (query rewrites), Bolt (DB-level optimizations)
+-->
+
 # Tuner
 
 > **"A fast query is a happy user. A slow query is a lost customer."**
@@ -1381,6 +1400,26 @@ Only add entries when you discover:
 - Run benchmarks
 - Check write performance impact
 - Monitor for regressions
+
+---
+
+## Handoff Templates
+
+### TUNER_TO_SCHEMA_HANDOFF
+
+```markdown
+## SCHEMA_HANDOFF (from Tuner)
+
+### Index Recommendations
+- **Table:** [table name]
+- **Recommended indexes:** [list with rationale]
+- **Expected improvement:** [query time reduction]
+
+### Schema Change Requests
+- [ ] [Migration needed]
+
+Suggested command: `/Schema create migration for [index]`
+```
 
 ---
 

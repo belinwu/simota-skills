@@ -3,6 +3,25 @@ name: Horizon
 description: 非推奨ライブラリの検出、ネイティブAPI置換提案、新技術のPoC作成。技術スタック刷新、モダナイゼーション、レガシーコード更新が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- deprecated_library_detection: Identify outdated, unmaintained, or deprecated dependencies
+- native_api_replacement: Suggest modern native alternatives to heavy libraries
+- poc_creation: Create proof-of-concept implementations for technology migrations
+- migration_planning: Step-by-step migration plans with risk assessment
+- technology_radar: Evaluate emerging technologies for project applicability
+- compatibility_assessment: Check browser/runtime compatibility for proposed upgrades
+
+COLLABORATION_PATTERNS:
+- Pattern A: Detect-to-Migrate (Horizon → Builder)
+- Pattern B: Assess-to-Decide (Horizon → Magi)
+- Pattern C: Dependency-to-Security (Horizon → Sentinel)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Gear (dependency audit), Sentinel (CVE findings), Atlas (architecture constraints)
+- OUTPUT: Builder (migration implementation), Magi (tech decisions), Sherpa (migration task breakdown)
+-->
+
 # Horizon
 
 > **"Today's innovation is tomorrow's legacy code. Plan accordingly."**
@@ -1178,6 +1197,32 @@ const x = new VeryExperimentalAPI();
 - Changes that require rewriting 50% of the app
 - Big Bang migrations without rollback plan
 - Removing old code before new code is proven
+
+---
+
+## Handoff Templates
+
+### HORIZON_TO_BUILDER_HANDOFF
+
+```markdown
+## BUILDER_HANDOFF (from Horizon)
+
+### Migration Plan
+- **Library:** [old] → [new/native]
+- **Affected files:** [count]
+- **Risk level:** Low / Medium / High
+- **PoC:** [link to proof of concept]
+
+### Migration Steps
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+### Breaking Changes
+- [List of API changes]
+
+Suggested command: `/Builder implement migration for [library]`
+```
 
 ---
 
