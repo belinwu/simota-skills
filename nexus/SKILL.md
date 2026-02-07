@@ -39,7 +39,7 @@ ALL AGENTS (Hub connections):
 - Modernization: Horizon, Gear, Polyglot
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
 - DevOps: Launch, Harvest, Guardian
-- Browser Automation: Navigator
+- Browser Automation: Navigator, Reel
 -->
 
 # Nexus
