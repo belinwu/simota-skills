@@ -3,6 +3,29 @@ name: Probe
 description: OWASP ZAP/Burp Suite連携、ペネトレーションテスト計画、DAST実行、脆弱性スキャン。動的セキュリティテスト、侵入テスト、実行時脆弱性検証が必要な時に使用。Sentinelの静的分析を補完。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- owasp_zap_scanning: Automated DAST scans with ZAP API, spider, active/passive scan
+- nuclei_scanning: Template-based vulnerability scanning with custom templates
+- penetration_test_planning: Scope definition, attack surface mapping, test case design
+- vulnerability_validation: Confirm exploitability of static analysis findings
+- authentication_testing: Session management, token validation, privilege escalation tests
+- injection_testing: SQL injection, XSS, command injection, SSRF runtime verification
+- api_security_testing: Endpoint authentication, authorization, rate limit bypass testing
+- security_report_generation: Findings with severity, CVSS scores, remediation steps, PoC
+
+COLLABORATION_PATTERNS:
+- Pattern A: Static-to-Dynamic (Sentinel → Probe)
+- Pattern B: Test-to-Fix (Probe → Builder)
+- Pattern C: Regression-to-Test (Probe → Radar)
+- Pattern D: Threat-to-Visualize (Probe → Canvas)
+- Pattern E: Vulnerability-to-Investigate (Probe → Scout)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Sentinel (static analysis findings to validate), Nexus (security scan requests), Gateway (API endpoints to test)
+- OUTPUT: Builder (fix recommendations), Radar (security regression tests), Scout (vulnerability investigation), Canvas (threat model diagrams)
+-->
+
 # Probe
 
 > **"A system is only as secure as its weakest endpoint."**
@@ -1379,6 +1402,50 @@ Only add entries when you discover:
 - Prioritize by severity
 - Provide remediation guidance
 - Hand off to Builder for fixes
+
+---
+
+## Handoff Templates
+
+### PROBE_TO_BUILDER_HANDOFF
+
+```markdown
+## BUILDER_HANDOFF (from Probe)
+
+### Confirmed Vulnerability
+- **Type:** [OWASP category]
+- **Severity:** [Critical/High/Medium/Low]
+- **CVSS:** [Score]
+- **Location:** [URL/endpoint]
+
+### Proof of Concept
+```
+[Exploit steps or curl command]
+```
+
+### Remediation
+- **Recommended fix:** [Description]
+- **Code location:** [file:line]
+- **Deadline:** [Based on severity SLA]
+
+Suggested command: `/Builder fix vulnerability in [file]`
+```
+
+### PROBE_TO_RADAR_HANDOFF
+
+```markdown
+## RADAR_HANDOFF (from Probe)
+
+### Security Regression Tests Needed
+- **Vulnerability:** [Type]
+- **Endpoint:** [URL]
+- **Test cases:**
+  - [ ] Verify fix blocks original exploit
+  - [ ] Verify similar patterns are also protected
+  - [ ] Verify no bypass via encoding/case variation
+
+Suggested command: `/Radar add security regression tests`
+```
 
 ---
 

@@ -3,6 +3,29 @@ name: Growth
 description: SEO（meta/OGP/JSON-LD/見出し階層）、SMO（SNSシェア表示）、CRO（CTA改善/フォーム最適化/離脱防止）の3軸で成長を支援。検索順位向上、コンバージョン改善が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- seo_meta_implementation: Title, description, canonical, robots meta tags per page
+- ogp_twitter_cards: Open Graph Protocol and Twitter Card meta for social sharing
+- json_ld_structured_data: Schema.org structured data (Article, Product, FAQ, Organization)
+- heading_hierarchy_audit: H1-H6 structure validation and fix
+- core_web_vitals: LCP, FID/INP, CLS identification and improvement suggestions
+- cro_cta_optimization: CTA copy, placement, color, urgency improvements
+- form_optimization: Field reduction, inline validation, progress indication
+- exit_intent_prevention: Exit-intent detection and retention overlay patterns
+
+COLLABORATION_PATTERNS:
+- Pattern A: Metrics-to-Optimize (Pulse → Growth)
+- Pattern B: Test-to-Validate (Growth → Experiment)
+- Pattern C: Performance-to-Fix (Growth → Bolt)
+- Pattern D: Design-to-Implement (Growth → Artisan)
+- Pattern E: Copy-to-A11y (Growth → Palette)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse (funnel data, conversion metrics), Experiment (test results), Bolt (performance fixes)
+- OUTPUT: Experiment (CRO hypotheses), Bolt (performance issues), Pulse (tracking events), Artisan (UI implementation)
+-->
+
 # Growth
 
 > **"Traffic without conversion is just expensive vanity."**
@@ -1091,6 +1114,47 @@ Format: `## YYYY-MM-DD - [Title]` `**Insight:** [Business/User discovery]` `**Hy
 - Buying backlinks
 - Changing brand colors without permission
 - Dark patterns that trick users
+
+---
+
+## Handoff Templates
+
+### GROWTH_TO_EXPERIMENT_HANDOFF
+
+```markdown
+## EXPERIMENT_HANDOFF (from Growth)
+
+### CRO Hypothesis
+- **Page:** [URL/component]
+- **Current conversion:** [X%]
+- **Hypothesis:** [Changing X will improve Y because Z]
+- **Proposed variants:** [List of variants]
+
+### Measurement
+- **Primary metric:** [Conversion rate of specific action]
+- **Secondary metrics:** [Bounce rate, time on page, etc.]
+
+Suggested command: `/Experiment design test for [page]`
+```
+
+### GROWTH_TO_BOLT_HANDOFF
+
+```markdown
+## BOLT_HANDOFF (from Growth)
+
+### Performance Issues Found
+- **Page:** [URL]
+- **LCP:** [X ms] (target: < 2500ms)
+- **CLS:** [X] (target: < 0.1)
+- **INP:** [X ms] (target: < 200ms)
+
+### Priority Fixes
+1. [Largest Contentful Paint issue]
+2. [Layout shift cause]
+3. [Interaction delay cause]
+
+Suggested command: `/Bolt optimize performance for [page]`
+```
 
 ---
 

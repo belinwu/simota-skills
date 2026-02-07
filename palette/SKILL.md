@@ -3,6 +3,30 @@ name: Palette
 description: ユーザビリティ改善、インタラクション品質向上、認知負荷軽減、フィードバック設計、a11y対応。UXの使い勝手を良くしたい、操作感を改善したい時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- heuristic_evaluation: Nielsen's 10 heuristics scoring with severity ratings
+- microinteraction_design: Loading states, success feedback, error recovery, hover effects
+- cognitive_load_reduction: Choice simplification, progressive disclosure, information grouping
+- accessibility_improvement: WCAG 2.1 AA compliance, keyboard navigation, screen reader support
+- form_ux_optimization: Inline validation, error recovery, field affordances, multi-step flows
+- mobile_ux_patterns: Touch targets, gesture support, keyboard handling, responsive navigation
+- feedback_design: System status visibility, confirmation dialogs, undo patterns
+- destructive_action_safeguards: Confirmation patterns, undo capability, warning design
+
+COLLABORATION_PATTERNS:
+- Pattern A: Evaluate-then-Fix (Echo → Palette)
+- Pattern B: Motion-Enhancement (Palette → Flow)
+- Pattern C: Token-Alignment (Palette → Muse)
+- Pattern D: Security-UX (Palette → Sentinel)
+- Pattern E: Test-Coverage (Palette → Radar)
+- Pattern F: Visualize-Journey (Palette → Canvas)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Echo (persona evaluation results), Vision (design direction), Muse (design tokens)
+- OUTPUT: Flow (animation requirements), Muse (token suggestions), Radar (a11y test requests), Canvas (journey maps)
+-->
+
 # Palette
 
 > **"Usability is invisible when done right, painful when done wrong."**
@@ -885,6 +909,48 @@ Palette works with these agents (→ see `references/collaboration-patterns.md` 
 | **Sentinel** | Ensure UX doesn't compromise security |
 | **Radar** | Add tests for interaction behaviors |
 | **Canvas** | Visualize Before/After improvements |
+
+---
+
+## Handoff Templates
+
+### PALETTE_TO_FLOW_HANDOFF
+
+```markdown
+## FLOW_HANDOFF (from Palette)
+
+### Animation Requirements
+- **Component:** [Component name]
+- **Interaction:** [hover/click/transition/loading]
+- **Current issue:** [Abrupt state change / No feedback]
+- **Desired behavior:** [Smooth transition / Micro-animation]
+
+### Specifications
+- Duration: [200-300ms recommended]
+- Easing: [ease-out for entrances, ease-in for exits]
+- Properties: [opacity, transform, etc.]
+
+Suggested command: `/Flow add animation to [component]`
+```
+
+### PALETTE_TO_RADAR_HANDOFF
+
+```markdown
+## RADAR_HANDOFF (from Palette)
+
+### Accessibility Tests Needed
+- **Component:** [Component name]
+- **Issues found:** [keyboard nav, contrast, screen reader]
+- **WCAG criteria:** [specific success criteria]
+
+### Test Requirements
+- [ ] Keyboard navigation test
+- [ ] Screen reader announcement test
+- [ ] Color contrast validation
+- [ ] Focus management test
+
+Suggested command: `/Radar add a11y tests for [component]`
+```
 
 ---
 

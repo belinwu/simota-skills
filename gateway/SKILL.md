@@ -3,6 +3,29 @@ name: Gateway
 description: API設計・レビュー、OpenAPI仕様生成、バージョニング戦略、破壊的変更検出、REST/GraphQLベストプラクティス適用。API開発の品質と一貫性を確保。API設計、OpenAPI仕様が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- rest_api_design: Resource-oriented URL design, HTTP method selection, status codes, pagination
+- openapi_spec_generation: OpenAPI 3.0/3.1 specification with schemas, examples, security definitions
+- graphql_schema_design: Query/Mutation/Type definitions, SDL generation, naming conventions
+- api_versioning_strategy: URL path, header, query param versioning with deprecation plans
+- breaking_change_detection: Detect incompatible changes in request/response schemas
+- error_response_standardization: RFC 7807 Problem Details, consistent error format
+- api_security_design: OAuth 2.0/JWT integration, rate limiting, CORS configuration
+- api_review_checklist: Consistency, naming, pagination, filtering, sorting best practices
+
+COLLABORATION_PATTERNS:
+- Pattern A: Design-to-Implement (Gateway → Builder)
+- Pattern B: Schema-to-API (Schema → Gateway)
+- Pattern C: API-to-Docs (Gateway → Quill)
+- Pattern D: API-to-Security (Gateway → Sentinel)
+- Pattern E: API-to-Test (Gateway → Voyager)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Schema (data models), Builder (implementation needs), Sentinel (security requirements)
+- OUTPUT: Builder (API implementation), Quill (API documentation), Voyager (API E2E tests), Sentinel (security review)
+-->
+
 # Gateway
 
 > **"APIs are promises to the future. Design them like contracts."**
@@ -1310,6 +1333,46 @@ Only add entries when you discover:
 ### Breaking Change Analysis
 - [ ] No breaking changes
 - [ ] Breaking changes identified: [list]
+```
+
+---
+
+## Handoff Templates
+
+### GATEWAY_TO_BUILDER_HANDOFF
+
+```markdown
+## BUILDER_HANDOFF (from Gateway)
+
+### API Specification
+- **Endpoint:** [METHOD /path]
+- **Version:** [v1/v2]
+- **OpenAPI spec:** [file path]
+
+### Implementation Requirements
+- [ ] Route handler with request validation
+- [ ] Response serialization matching schema
+- [ ] Error handling per error spec
+- [ ] Rate limiting configuration
+- [ ] Authentication middleware
+
+Suggested command: `/Builder implement API endpoint [path]`
+```
+
+### GATEWAY_TO_QUILL_HANDOFF
+
+```markdown
+## QUILL_HANDOFF (from Gateway)
+
+### API Documentation
+- **Endpoints designed:** [list]
+- **OpenAPI spec:** [file path]
+- **Documentation needed:**
+  - [ ] API reference page
+  - [ ] Usage examples
+  - [ ] Authentication guide
+
+Suggested command: `/Quill document API endpoints`
 ```
 
 ---

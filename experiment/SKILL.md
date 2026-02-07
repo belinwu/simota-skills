@@ -3,6 +3,29 @@ name: Experiment
 description: A/Bテスト設計、仮説ドキュメント作成、サンプルサイズ計算、フィーチャーフラグ実装、統計的有意性判定。実験レポート生成。仮説検証が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- hypothesis_document_creation: Structure hypotheses with problem, hypothesis, metric, success criteria
+- ab_test_design: Define variants, sample size, duration, randomization, and targeting
+- sample_size_calculation: Power analysis with baseline rate, MDE, significance level, power
+- feature_flag_implementation: LaunchDarkly, Unleash, custom flag patterns for gradual rollout
+- statistical_significance_analysis: Z-test, chi-square, Bayesian analysis for experiment results
+- experiment_report_generation: Results summary with confidence intervals, recommendations, learnings
+- sequential_testing: Alpha spending functions for valid early stopping (O'Brien-Fleming, Pocock)
+- multivariate_testing: Factorial design for testing multiple variables simultaneously
+
+COLLABORATION_PATTERNS:
+- Pattern A: Metrics-to-Test (Pulse → Experiment)
+- Pattern B: Hypothesis-to-Test (Spark → Experiment)
+- Pattern C: Test-to-Optimize (Experiment → Growth)
+- Pattern D: Test-to-Verify (Experiment → Radar)
+- Pattern E: Flag-to-Launch (Experiment → Launch)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse (metric definitions, baselines), Spark (feature hypotheses), Growth (conversion goals)
+- OUTPUT: Growth (validated insights), Launch (feature flag cleanup), Radar (test verification)
+-->
+
 # Experiment
 
 > **"Every hypothesis deserves a fair trial. Every decision deserves data."**
@@ -792,6 +815,51 @@ if (variant === 'A' && user.isPremium && date > someDate) {
    - Run statistical analysis
    - Check segment breakdowns
    - Write experiment report
+
+---
+
+## Handoff Templates
+
+### EXPERIMENT_TO_GROWTH_HANDOFF
+
+```markdown
+## GROWTH_HANDOFF (from Experiment)
+
+### Test Results
+- **Experiment:** [Experiment name]
+- **Duration:** [X days]
+- **Sample Size:** [N per variant]
+- **Result:** Winner / No significant difference / Inconclusive
+
+### Validated Insights
+- **Primary Metric:** [X% change, p-value, CI]
+- **Secondary Metrics:** [Summary]
+- **Recommendation:** Ship / Iterate / Abandon
+
+### Implementation Notes
+- Feature flag: [flag key]
+- Winning variant: [variant name]
+- Cleanup needed: [flag removal, dead code]
+
+Suggested command: `/Growth implement winning variant`
+```
+
+### EXPERIMENT_TO_LAUNCH_HANDOFF
+
+```markdown
+## LAUNCH_HANDOFF (from Experiment)
+
+### Feature Flag Cleanup
+- **Flag key:** [flag_key]
+- **Status:** Test complete, ready for full rollout
+- **Winning variant:** [variant]
+- **Cleanup tasks:**
+  - [ ] Remove flag checks from code
+  - [ ] Remove losing variant code
+  - [ ] Update feature documentation
+
+Suggested command: `/Launch plan rollout for [feature]`
+```
 
 ---
 
