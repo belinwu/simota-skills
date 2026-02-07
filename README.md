@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-57-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-63-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **57種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **63種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする57種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする63種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -46,6 +46,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Nexus** | _"The right agent at the right time changes everything."_ - チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを設計 | プロンプト、進行管理 |
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
+| **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
+| **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - PDCAサイクルで品質を反復的に向上させるQuality Orchestrator。測定→改善→検証→学習のサイクルを回し、収穫逓減検出で効率的に終了 | 品質改善サイクル |
 
 ### 調査・企画（コードを書かない）
 
@@ -60,6 +62,9 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Cipher** | _"Don't listen to words. Listen to silence."_ - ユーザー意図の解読。曖昧な要求を正確な仕様に変換 | 要求仕様書 |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - セッションリプレイ分析・ペルソナ別行動パターン抽出・UX問題の物語化。Researcher/Echoと連携 | 行動分析レポート |
 | **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案 | 準拠度レポート |
+| **Lens** | _"See the code, not just search it."_ - コードベース理解・調査スペシャリスト。「〇〇機能はあるか」「〇〇のフローはどうか」「このモジュールの責務は何か」をコード構造把握・機能探索・データフロー追跡で体系的に調査 | 調査レポート |
+| **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - 3視点（論理・共感・実利）による多角的意思決定。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定 | 意思決定レポート |
+| **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - ビジネス要件と技術実装の翻訳・調停。要件明確化、スコープクリープ検出、期待値ギャップ解消 | 要件翻訳レポート |
 
 **Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
 **Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
@@ -93,6 +98,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Zen** | _"Clean code is not written. It's rewritten."_ - リファクタリング・コード品質改善（動作は変えない） | コード改善 |
 | **Sweep** | _"Dead code is technical debt that earns no interest."_ - 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
 | **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E.品質基準の番人。リリース前評価、スコアカード、合否判定 | 品質評価レポート |
+| **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
 
 ### 実装
 
@@ -127,10 +133,12 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 |------------|------|------|
 | **Scribe** | _"A specification is a contract between vision and reality."_ - PRD/SRS/HLD/LLD・実装チェックリスト・テスト仕様書を作成するドキュメントライター | 仕様書・設計書 |
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
+| **Morph** | _"A document is timeless. Its format is temporary."_ - ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeの仕様書やHarvestのレポートを各種フォーマットに変換 | 変換済みドキュメント |
 
-**Scribe vs Quill の役割分担**:
+**Scribe vs Quill vs Morph の役割分担**:
 - **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
 - **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
+- **Morph**: フォーマット変換（Markdown→PDF/Word/HTML等）
 
 ### 可視化
 
@@ -145,6 +153,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - 依存関係分析・循環参照検出・ADR/RFC作成 | 設計文書 |
 | **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
+| **Grove** | _"A well-structured repository is a well-structured mind."_ - リポジトリ構造の設計・最適化・監査。ディレクトリ設計、docs/構成、テスト構成、アンチパターン検出 | 構造設計・監査レポート |
 
 ### データ
 
@@ -253,6 +262,17 @@ questions:
 
 ### タスクタイプ別チェーンテンプレート
 
+#### 調査・理解
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| INVESTIGATE/feature | 機能の有無・実装状況調査 | Lens |
+| INVESTIGATE/flow | データフロー・処理フロー追跡 | Lens → Canvas |
+| INVESTIGATE/onboarding | コードベース全体理解 | Lens → Scribe |
+| INVESTIGATE/pre-impl | 調査→実装 | Lens → Builder → Radar |
+
+> **Lens vs Scout**: Lens = コードベース理解・機能探索（「〇〇はあるか」「フローはどうか」）、Scout = バグ調査・根本原因分析（「なぜ壊れたか」）
+
 #### バグ修正
 
 | タスク | 説明 | チェーン |
@@ -333,6 +353,22 @@ questions:
 | GIT/pr-full | 実装→PR→レビュー | Builder → Guardian → Judge → Zen |
 | GIT/release | リリースノート生成 | Guardian |
 
+#### 意思決定
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| DECISION/arch | アーキテクチャ選定 | Magi → Builder/Zen |
+| DECISION/strategy | 戦略的判断 | Bridge → Magi → Spark |
+| DECISION/intent | 要求の意図解析 | Cipher → Forge/Builder |
+
+#### 分析
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| ANALYSIS/impact | 変更影響分析 | Ripple → Builder → Radar |
+| ANALYSIS/standards | 標準準拠確認 | Canon → Builder → Radar |
+| ANALYSIS/cleanup | コードクリーンアップ | Sweep → Zen → Radar |
+
 #### ドキュメント
 
 | タスク | 説明 | チェーン |
@@ -344,6 +380,8 @@ questions:
 | DOCS/code | コードドキュメント | Quill |
 | DOCS/component | コンポーネント文書化 | Showcase → Quill |
 | DOCS/architecture | アーキテクチャ図 | Canvas |
+| DOCS/convert | フォーマット変換 | Morph |
+| DOCS/report | PR報告書 | Harvest → Morph |
 
 #### インフラ・DevOps
 
@@ -353,15 +391,61 @@ questions:
 | INFRA/cloud | クラウド構築 | Scaffold → Gear |
 | INFRA/cli | CLI開発 | Anvil → Radar |
 
+#### デプロイ・リリース
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| DEPLOY/release | リリース実行 | Guardian → Launch |
+| DEPLOY/full | 完全パイプライン | Radar → Guardian → Launch → Harvest |
+
+#### モダナイゼーション
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| MODERNIZE/stack | 技術スタック刷新 | Lens → Horizon → Sherpa → Builder → Radar |
+| MODERNIZE/i18n | 国際化対応 | Polyglot → Artisan → Radar |
+| MODERNIZE/structure | リポジトリ構造改善 | Grove → Sherpa → Zen → Radar |
+
+#### 戦略・グロース
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| STRATEGY/seo | SEO改善 | Growth → Artisan → Radar |
+| STRATEGY/compete | 競合分析→実装 | Compete → Spark → Builder → Radar |
+| STRATEGY/feedback | フィードバック反映 | Voice → Spark → Builder → Radar |
+| STRATEGY/metrics | メトリクス基盤 | Pulse → Builder → Radar |
+| STRATEGY/retention | リテンション施策 | Retain → Spark → Builder → Radar |
+| STRATEGY/ab-test | A/Bテスト設計 | Experiment → Builder → Radar |
+| STRATEGY/data | データパイプライン | Stream → Schema → Builder → Radar |
+
+#### 並列実行（Rally統合）
+
+大規模タスクで並列実行が有効な場合、NexusはRallyにエスカレーションします。
+
+| タスク | 説明 | 並列チェーン |
+|--------|------|-------------|
+| FEATURE/L (並列) | 大規模フルスタック | Sherpa → Rally(Artisan + Builder + Radar) |
+| FEATURE/fullstack (並列) | フロントエンド＋バックエンド | Rally(Artisan, Builder, Radar) |
+| FEATURE/multi (並列) | 複数独立機能 | Sherpa → Rally(Builder×N, Radar) |
+| BUG/multiple (並列) | 複数独立バグ修正 | Rally(Builder×N) → Radar |
+| REFACTOR/arch (並列) | 複数モジュールリファクタ | Atlas → Sherpa → Rally(Zen×N) → Radar |
+| SECURITY/full (並列) | 静的＋動的並行スキャン | Rally(Sentinel, Probe) → Builder → Radar |
+| TEST/coverage (並列) | Unit＋E2E並行テスト | Rally(Radar, Voyager) |
+| MODERNIZE/stack (並列) | マルチエリア刷新 | Horizon → Sherpa → Rally(Builder×N) → Radar |
+| DOCS/full (並列) | コード文書＋図＋ストーリー | Rally(Quill, Canvas, Showcase) |
+
+> **Rallyエスカレーション基準**: 2つ以上の独立した実装ステップ、4ファイル以上で2ドメイン以上にまたがる場合、またはSherpaが`parallel_group`を検出した場合にRallyが起動されます。
+
+> **Nexus並列 vs Rally**: Nexus内蔵の`_PARALLEL_BRANCHES`は軽量な並列（各ブランチ50行未満）向け。本格的な実装作業にはRallyのマルチセッション並列が使用されます。
+
 #### その他
 
 | タスク | 説明 | チェーン |
 |--------|------|----------|
-| i18n | 国際化対応 | Polyglot → Radar |
-| GROWTH/seo | SEO改善 | Growth → Artisan → Radar |
-| ANALYTICS | 分析基盤構築 | Pulse → Builder → Radar |
-| A/B | A/Bテスト設計 | Experiment → Builder → Radar |
 | INCIDENT | 障害対応 | Triage → Scout → Builder |
+| TEST/quality | 品質反復改善 | Hone |
+| SECURITY/concurrency | 並行性バグ検出 | Specter → Builder → Radar |
+| INVESTIGATE/regression | リグレッション調査 | Rewind → Scout → Builder → Radar |
 
 ## 共有ナレッジ
 
@@ -415,6 +499,7 @@ skills/
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atlas/SKILL.md      # アーキテクチャ
 ├── bolt/SKILL.md       # パフォーマンス
+├── bridge/SKILL.md     # ビジネス⇔技術翻訳
 ├── builder/SKILL.md    # 本番実装
 ├── canvas/SKILL.md     # 可視化
 ├── cipher/SKILL.md     # 意図解読
@@ -426,12 +511,17 @@ skills/
 ├── forge/SKILL.md      # プロトタイプ
 ├── gateway/SKILL.md    # API設計
 ├── gear/SKILL.md       # DevOps
+├── grove/SKILL.md      # リポジトリ構造設計
 ├── growth/SKILL.md     # SEO/CRO
 ├── guardian/SKILL.md   # Git/PR管理
 ├── harvest/SKILL.md    # PR情報収集・レポート生成
+├── hone/SKILL.md       # PDCA品質向上
 ├── horizon/SKILL.md    # モダナイゼーション
 ├── judge/SKILL.md      # コードレビュー（codex review）
 ├── launch/SKILL.md     # リリース管理
+├── lens/SKILL.md       # コードベース理解・調査
+├── magi/SKILL.md       # 多角的意思決定
+├── morph/SKILL.md      # ドキュメントフォーマット変換
 ├── muse/SKILL.md       # デザイン
 ├── navigator/SKILL.md  # ブラウザ自動化
 ├── nexus/SKILL.md      # オーケストレーター
@@ -441,6 +531,7 @@ skills/
 ├── pulse/SKILL.md      # メトリクス設計
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
+├── rally/SKILL.md      # マルチセッション並列オーケストレーター
 ├── researcher/SKILL.md # ユーザーリサーチ
 ├── ripple/SKILL.md     # 変更前影響分析
 ├── retain/SKILL.md     # リテンション
@@ -453,6 +544,7 @@ skills/
 ├── sherpa/SKILL.md     # タスク分解
 ├── showcase/SKILL.md   # Storybookストーリー管理
 ├── spark/SKILL.md      # 機能提案
+├── specter/SKILL.md    # 並行性・非同期問題検出
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── trace/SKILL.md      # セッションリプレイ分析
@@ -469,7 +561,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全51エージェントの使用例を紹介します。
+> カテゴリ別に全63エージェントの使用例を紹介します。
 
 #### オーケストレーション
 

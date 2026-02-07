@@ -26,6 +26,10 @@ Complete chain templates and dynamic adjustment rules.
 | SECURITY | static | Sentinel → Builder → Radar → Sentinel |
 | SECURITY | dynamic | Sentinel → Probe → Builder → Radar → Probe |
 | SECURITY | full | Sentinel → Probe → Builder → Radar → Sentinel → Probe |
+| INVESTIGATE | feature | Lens |
+| INVESTIGATE | flow | Lens → Canvas |
+| INVESTIGATE | onboarding | Lens → Scribe |
+| INVESTIGATE | pre-impl | Lens → Builder → Radar |
 | DOCS | - | Quill |
 | INFRA | cloud | Scaffold → Gear → Radar |
 | INFRA | local | Scaffold → Radar |
@@ -46,6 +50,37 @@ Complete chain templates and dynamic adjustment rules.
 | BROWSER | bug-reproduction | Scout → Navigator → Triage |
 | BROWSER | evidence | Navigator → Lens → Canvas |
 | BROWSER | performance | Navigator → Bolt |
+| DECISION | architecture | Magi → Builder/Zen (based on verdict) |
+| DECISION | strategy | Bridge → Magi → Spark |
+| DECISION | intent | Cipher → Forge/Builder |
+| ANALYSIS | impact | Ripple → Builder → Radar |
+| ANALYSIS | standards | Canon → Builder → Radar |
+| ANALYSIS | cleanup | Sweep → Zen → Radar |
+| DEPLOY | release | Guardian → Launch |
+| DEPLOY | full | Radar → Guardian → Launch → Harvest |
+| MODERNIZE | stack | Lens → Horizon → Sherpa → Builder → Radar |
+| MODERNIZE | i18n | Polyglot → Artisan → Radar |
+| MODERNIZE | structure | Grove → Sherpa → Zen → Radar |
+| UX_DESIGN | flow | Flow → Artisan → Radar |
+| UX_DESIGN | creative | Vision → Muse → Forge → Artisan → Radar |
+| UX_DESIGN | audit | Warden → Palette → Artisan → Radar |
+| UX_DESIGN | storybook | Showcase → Quill |
+| UX_DESIGN | demo | Director → Voyager |
+| UX_DESIGN | session | Trace → Echo → Palette |
+| FEATURE | frontend | Forge → Artisan → Radar |
+| FEATURE | cli | Anvil → Radar |
+| TEST | quality | Hone (iterative PDCA) |
+| INVESTIGATE | regression | Rewind → Scout → Builder → Radar |
+| SECURITY | concurrency | Specter → Builder → Radar |
+| DOCS | convert | Morph |
+| DOCS | report | Harvest → Morph |
+| STRATEGY | seo | Growth → Artisan → Radar |
+| STRATEGY | compete | Compete → Spark → Builder → Radar |
+| STRATEGY | feedback | Voice → Spark → Builder → Radar |
+| STRATEGY | metrics | Pulse → Builder → Radar |
+| STRATEGY | retention | Retain → Spark → Builder → Radar |
+| STRATEGY | ab-test | Experiment → Builder → Radar |
+| STRATEGY | data-pipeline | Stream → Schema → Builder → Radar |
 
 ---
 
@@ -83,6 +118,24 @@ Builder then applies:
 - Complex distributed workflow → Builder activates Event Sourcing/Saga patterns
 - High read/write ratio disparity → Builder applies CQRS pattern
 
+### Rally Parallel Escalation Triggers
+
+- Chain has 2+ independent implementation steps → Escalate to Rally for parallel execution
+- Sherpa decomposition produces `parallel_group` → Delegate to Rally via SHERPA_TO_RALLY_HANDOFF
+- Feature scope spans 4+ files across 2+ domains (frontend/backend/DB) → Rally with Frontend/Backend Split
+- Chain includes both Artisan and Builder implementation → Rally with Frontend/Backend Split
+- 3+ independent bug fixes needed → Rally with Feature Parallel
+- Implementation + test + docs needed simultaneously → Rally with Code/Test/Docs Triple
+- Multi-module refactoring identified → Rally with Feature Parallel after Atlas/Sherpa
+
+### Rally Non-Escalation (Keep Sequential)
+
+- Investigation-only chains (Lens, Scout, Rewind) → No Rally
+- Single-agent chains (Quill, Morph, Hone single cycle) → No Rally
+- Changes under 10 lines total → No Rally
+- High-risk security changes → Prefer sequential with checkpoints
+- Each branch needs < 50 lines of code → Nexus _PARALLEL_BRANCHES sufficient
+
 ### Skip Triggers
 
 - Changes under 10 lines AND tests exist → May skip Radar
@@ -90,3 +143,55 @@ Builder then applies:
 - Config files only → Only relevant agent
 - Sentinel-only static issues → May skip Probe
 - Schema unchanged → May skip Tuner
+
+---
+
+## Rally Parallel Chain Variants
+
+When Rally is activated for parallel execution, standard chains transform into parallel variants.
+
+### FEATURE Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| FEATURE/L | Spark → Sherpa → Rally(Forge+Artisan, Builder, Radar) | Frontend/Backend Split |
+| FEATURE/M (multi-unit) | Sherpa → Rally(Builder×N, Radar) | Feature Parallel |
+| FEATURE/fullstack | Rally(Artisan, Builder, Radar) | Frontend/Backend Split |
+
+### BUG Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| BUG/multiple | Rally(Builder×N) → Radar | Feature Parallel |
+
+### REFACTOR Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| REFACTOR/arch (multi-module) | Atlas → Sherpa → Rally(Zen×N) → Radar | Feature Parallel |
+
+### TEST Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| TEST/coverage | Rally(Radar, Voyager) | Specialist Team |
+
+### SECURITY Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| SECURITY/full | Rally(Sentinel, Probe) → Builder → Radar | Specialist Team |
+
+### DOCS Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| DOCS/full | Rally(Quill, Canvas, Showcase) | Specialist Team |
+
+### MODERNIZE Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| MODERNIZE/stack | Lens → Horizon → Sherpa → Rally(Builder×N) → Radar | Feature Parallel |
+
+See `rally/references/integration-patterns.md` for detailed team composition and handoff formats.

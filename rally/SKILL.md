@@ -709,6 +709,22 @@ When Rally is invoked via NEXUS_ROUTING:
 → Returns results via NEXUS_HANDOFF after parallel execution
 ```
 
+### Nexus → Rally Escalation Criteria
+
+Nexus escalates to Rally when:
+- Chain has 2+ independent implementation steps
+- Feature scope spans 4+ files across 2+ domains
+- Sherpa decomposition produces `parallel_group`
+- Chain includes both Artisan (frontend) and Builder (backend)
+- Multiple independent bug fixes needed
+
+Nexus does NOT escalate when:
+- Investigation-only chains (Lens, Scout, Rewind)
+- Each parallel branch < 50 lines (use Nexus _PARALLEL_BRANCHES instead)
+- High-risk security changes (prefer sequential)
+
+> Details: `references/integration-patterns.md`
+
 ---
 
 ## Rally's JOURNAL

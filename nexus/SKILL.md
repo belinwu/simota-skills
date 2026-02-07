@@ -24,18 +24,21 @@ ORCHESTRATION PATTERNS:
 - Pattern F: Verification Gate (Chain → Verify → Continue/Rollback)
 
 ALL AGENTS (Hub connections):
-- Investigation: Scout, Triage
-- Security: Sentinel, Probe
+- Investigation: Scout, Triage, Lens, Rewind
+- Security: Sentinel, Probe, Specter
 - Review: Judge, Zen
-- Implementation: Builder, Forge, Schema, Arena
-- Testing: Radar, Voyager
+- Implementation: Builder, Forge, Schema, Arena, Artisan, Anvil
+- Testing: Radar, Voyager, Hone
 - Performance: Bolt, Tuner
-- Documentation: Quill, Canvas
-- Architecture: Atlas, Gateway, Scaffold
-- UX/Design: Palette, Muse, Flow, Echo, Researcher
-- Workflow: Sherpa, Lens
+- Documentation: Quill, Canvas, Scribe, Morph
+- Architecture: Atlas, Gateway, Scaffold, Grove
+- UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director
+- Workflow: Sherpa, Rally
+- Decision: Magi, Bridge, Cipher
+- Analysis: Ripple, Canon, Sweep
 - Modernization: Horizon, Gear, Polyglot
-- Strategy: Spark, Growth, Compete, Retain, Experiment, Voice
+- Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
+- DevOps: Launch, Harvest, Guardian
 - Browser Automation: Navigator
 -->
 
@@ -378,29 +381,57 @@ See `references/orchestration-patterns.md` for pattern diagrams and flow details
 |-----------|---------------|-----------|
 | BUG | Scout → Builder → Radar | +Sentinel (security), +Sherpa (complex) |
 | INCIDENT | Triage → Scout → Builder | +Radar, +Triage (postmortem) |
-| FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI) |
-| SECURITY | Sentinel → Builder → Radar | +Probe (dynamic testing) |
-| REFACTOR | Zen → Radar | +Atlas (architectural) |
+| FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend) |
+| INVESTIGATE | Lens | +Scout (bug-related), +Canvas (visualization), +Rewind (git history) |
+| DECISION | Magi | +Bridge (biz-tech), +Cipher (intent) |
+| SECURITY | Sentinel → Builder → Radar | +Probe (dynamic), +Specter (concurrency) |
+| REFACTOR | Zen → Radar | +Atlas (architectural), +Grove (structure) |
 | OPTIMIZE | Bolt/Tuner → Radar | +Schema (DB) |
+| ANALYSIS | Ripple → Builder → Radar | +Canon (standards), +Sweep (cleanup) |
 | API | Gateway → Builder → Radar | +Quill, +Schema |
-| DOCS | Quill | +Canvas |
-| INFRA | Scaffold → Gear → Radar | - |
+| DEPLOY | Guardian → Launch | +Harvest (reporting) |
+| MODERNIZE | Horizon → Builder → Radar | +Polyglot (i18n), +Grove (structure) |
+| DOCS | Quill | +Canvas, +Morph (convert), +Scribe (specs) |
+| STRATEGY | Spark → Builder → Radar | +Growth/Compete/Voice/Pulse/Retain/Experiment |
+| INFRA | Scaffold → Gear → Radar | +Anvil (CLI) |
+| PARALLEL | Rally | +Sherpa (decomposition), see Rally escalation criteria |
 
 ## Agent Categories
 
 | Category | Agents |
 |----------|--------|
-| Investigation | Scout, Triage |
-| Security | Sentinel, Probe |
-| Implementation | Builder, Forge, Schema, Arena |
-| Testing | Radar, Voyager |
+| Investigation | Scout, Triage, Lens, Rewind |
+| Security | Sentinel, Probe, Specter |
+| Implementation | Builder, Forge, Schema, Arena, Artisan, Anvil |
+| Testing | Radar, Voyager, Hone |
 | Review | Judge, Zen |
 | Performance | Bolt, Tuner |
-| Documentation | Quill, Canvas |
-| Architecture | Atlas, Gateway, Scaffold |
-| UX/Design | Palette, Muse, Flow, Echo, Researcher |
-| Workflow | Sherpa, Lens |
+| Documentation | Quill, Canvas, Scribe, Morph |
+| Architecture | Atlas, Gateway, Scaffold, Grove |
+| UX/Design | Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director |
+| Workflow | Sherpa, Rally |
+| Decision | Magi, Bridge, Cipher |
+| Analysis | Ripple, Canon, Sweep |
+| Modernization | Horizon, Gear, Polyglot |
+| Strategy | Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream |
+| DevOps | Launch, Harvest, Guardian |
 | Browser | Navigator |
+
+## Investigation Agent Selection
+
+| Scenario | Agent | Rationale |
+|----------|-------|-----------|
+| Codebase comprehension, feature discovery | **Lens** | Systematic 4-layer search for understanding |
+| Bug investigation, root cause analysis | **Scout** | RCA-focused, traces symptoms to causes |
+| Incident triage, severity assessment | **Triage** | First response, impact scoping, recovery |
+| Git history investigation, regression RCA | **Rewind** | Commit archaeology, bisect-based analysis |
+
+**Lens vs Scout decision guide:**
+- "Does X feature exist?" → Lens
+- "How does X flow work?" → Lens
+- "Why is X broken?" → Scout
+- "When did X regress?" → Rewind
+- "What's the severity of X outage?" → Triage
 
 ---
 
@@ -502,9 +533,15 @@ See `references/execution-phases.md` for detailed phase descriptions.
 |------|--------|---------|
 | BUG | Scout → Builder → Radar | +Sherpa, +Sentinel |
 | FEATURE | Builder → Radar | Spark → Sherpa → Forge → Builder → Radar |
-| SECURITY | Sentinel → Builder → Radar | +Probe (dynamic) |
+| INVESTIGATE | Lens | Lens → Canvas (visualization) |
+| DECISION | Magi | Bridge → Magi → Spark |
+| SECURITY | Sentinel → Builder → Radar | +Probe (dynamic), +Specter (concurrency) |
 | REFACTOR | Zen → Radar | +Atlas (architectural) |
 | OPTIMIZE | Bolt → Radar | +Tuner, +Schema (DB) |
+| ANALYSIS | Ripple → Builder → Radar | +Canon (standards), +Sweep (cleanup) |
+| DEPLOY | Guardian → Launch | +Harvest (reporting) |
+| MODERNIZE | Horizon → Builder → Radar | +Polyglot, +Grove |
+| STRATEGY | Spark → Builder → Radar | +Growth/Compete/Voice/Pulse |
 
 ## Dynamic Adjustment
 
@@ -514,11 +551,18 @@ See `references/execution-phases.md` for detailed phase descriptions.
 - UI changes → +Muse/Palette
 - DB slow queries → +Tuner
 - Type errors → →Builder (strengthen types)
+- Codebase understanding needed → +Lens (before implementation)
+- Concurrency/async issues → +Specter
+- 2+ independent impl steps or 4+ files across 2+ domains → +Rally (parallel execution)
+- Sherpa parallel_group detected → +Rally
+- Frontend + Backend implementation needed → +Rally (Frontend/Backend Split)
 
 **Skip agents when:**
 - <10 lines changed AND tests exist → skip Radar
 - Pure docs → skip Radar/Sentinel
 - Config only → relevant agent only
+- Investigation-only chains → skip Rally (Lens/Scout are single-session)
+- Each parallel branch < 50 lines → use Nexus _PARALLEL_BRANCHES instead of Rally
 
 See `references/agent-chains.md` for full chain templates and Forge→Builder integration.
 

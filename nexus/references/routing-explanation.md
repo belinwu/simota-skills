@@ -1,209 +1,290 @@
 # Nexus Routing Explanation Reference
 
-エージェントチェーン選定時に理由を説明し、曖昧な要求には複数候補を提示する。
+Explain the rationale behind agent chain selection and present multiple candidates for ambiguous requests.
 
 ---
 
-## ENHANCED_ROUTING 判断要素
+## ENHANCED_ROUTING Decision Factors
 
-### 追加判断要素
+### Additional Decision Factors
 
-| 要素 | 値 | 影響 |
-|------|-----|------|
-| `technical_domain` | frontend / backend / database / security / infra | 専門エージェント追加 |
-| `scope_indicators` | single_file / multi_file / architectural | Atlas追加検討 |
-| `uncertainty_level` | clear / partial / ambiguous | MULTI_CANDIDATE_MODE発動 |
+| Factor | Values | Impact |
+|--------|--------|--------|
+| `technical_domain` | frontend / backend / database / security / infra | Add domain-specialist agents |
+| `scope_indicators` | single_file / multi_file / architectural | Consider adding Atlas |
+| `uncertainty_level` | clear / partial / ambiguous | Trigger MULTI_CANDIDATE_MODE |
 
-### technical_domain の抽出ルール
+### technical_domain Extraction Rules
 
-| キーワード/パターン | domain |
+| Keywords / Patterns | domain |
 |---------------------|--------|
-| React, Vue, CSS, コンポーネント, UI | frontend |
-| API, サーバー, エンドポイント, 認証 | backend |
-| DB, SQL, スキーマ, マイグレーション | database |
-| 脆弱性, 認証, 暗号化, CORS | security |
-| Docker, Terraform, CI/CD, 環境 | infra |
+| React, Vue, CSS, component, UI | frontend |
+| API, server, endpoint, auth | backend |
+| DB, SQL, schema, migration | database |
+| vulnerability, auth, encryption, CORS | security |
+| Docker, Terraform, CI/CD, environment | infra |
+| codebase, feature, flow, module, structure | investigation |
 
-### scope_indicators の判定基準
+### scope_indicators Criteria
 
-| indicator | 条件 |
-|-----------|------|
-| `single_file` | 明確に1ファイルに言及 / 小規模な変更 |
-| `multi_file` | 複数ファイルに影響 / 機能追加 |
-| `architectural` | 設計変更 / モジュール分割 / 大規模リファクタ |
+| indicator | Condition |
+|-----------|-----------|
+| `single_file` | Explicitly references one file / small change |
+| `multi_file` | Affects multiple files / feature addition |
+| `architectural` | Design change / module splitting / large refactor |
 
-### uncertainty_level の判定基準
+### uncertainty_level Criteria
 
-| level | 条件 |
-|-------|------|
-| `clear` | 具体的なタスク指示 / 明確なゴール |
-| `partial` | 一部曖昧だが方向性は明確 |
-| `ambiguous` | 抽象的 / 複数解釈可能 / 「いい感じに」系 |
+| level | Condition |
+|-------|-----------|
+| `clear` | Specific task instruction / clear goal |
+| `partial` | Partially ambiguous but direction is clear |
+| `ambiguous` | Abstract / multiple interpretations / vague requests |
 
 ---
 
-## ROUTING_EXPLANATION 出力フォーマット
+## ROUTING_EXPLANATION Output Format
 
-エージェントチェーン選定時に以下を出力:
+Output the following when selecting an agent chain:
 
 ```markdown
-## ルーティング分析
+## Routing Analysis
 
-**タスク分類**: [BUG / FEATURE / REFACTOR / etc.]
-**技術ドメイン**: [frontend / backend / etc.]
-**スコープ**: [single_file / multi_file / architectural]
+**Task Classification**: [BUG / FEATURE / INVESTIGATE / REFACTOR / etc.]
+**Technical Domain**: [frontend / backend / investigation / etc.]
+**Scope**: [single_file / multi_file / architectural]
 
-### 選定チェーン
+### Selected Chain
 
 `[Agent1]` → `[Agent2]` → `[Agent3]`
 
-### 選定理由
+### Selection Rationale
 
-1. **主要エージェント選定**
-   - [Agent1]: [なぜこのエージェントが必要か]
-   - [Agent2]: [なぜこのエージェントが必要か]
-   - [Agent3]: [なぜこのエージェントが必要か]
+1. **Primary Agent Selection**
+   - [Agent1]: [Why this agent is needed]
+   - [Agent2]: [Why this agent is needed]
+   - [Agent3]: [Why this agent is needed]
 
-2. **追加考慮事項**
-   - [追加した/しなかったエージェントの理由]
+2. **Additional Considerations**
+   - [Reason for adding/not adding agents]
 
-### 代替案
+### Alternatives
 
-| オプション | チェーン | 不採用理由 |
-|-----------|---------|-----------|
-| A | [代替チェーン] | [なぜこちらを選ばなかったか] |
+| Option | Chain | Reason Not Selected |
+|--------|-------|---------------------|
+| A | [Alternative chain] | [Why this was not chosen] |
 ```
 
 ---
 
 ## MULTI_CANDIDATE_MODE
 
-`uncertainty_level: ambiguous` の場合に発動。
+Triggered when `uncertainty_level: ambiguous`.
 
-### 発動条件
+### Trigger Conditions
 
-- 「いい感じに」「なんとかして」「改善して」等の曖昧な指示
-- 複数のタスクタイプに該当しうる要求
-- スコープが不明確な要求
+- Vague instructions ("make it better", "fix it somehow", "improve this")
+- Requests that could match multiple task types
+- Requests with unclear scope
 
-### 出力フォーマット
+### Output Format
 
 ```markdown
-## 複数のアプローチが考えられます
+## Multiple Approaches Available
 
-お伝えいただいた内容は複数の解釈が可能です。どのアプローチで進めますか？
+Your request can be interpreted in several ways. Which approach should we take?
 
-| # | アプローチ | チェーン | 説明 | 推奨 |
-|---|-----------|---------|------|------|
-| 1 | [アプローチA] | [Chain A] | [このアプローチの概要] | ⭐ |
-| 2 | [アプローチB] | [Chain B] | [このアプローチの概要] | - |
-| 3 | [アプローチC] | [Chain C] | [このアプローチの概要] | - |
+| # | Approach | Chain | Description | Recommended |
+|---|----------|-------|-------------|-------------|
+| 1 | [Approach A] | [Chain A] | [Overview of this approach] | ⭐ |
+| 2 | [Approach B] | [Chain B] | [Overview of this approach] | - |
+| 3 | [Approach C] | [Chain C] | [Overview of this approach] | - |
 
-### 各アプローチの詳細
+### Approach Details
 
-**アプローチ 1: [名前]**
-- 想定作業: [具体的な作業内容]
-- 影響範囲: [変更されるファイル/機能]
-- リスク: [潜在的なリスク]
+**Approach 1: [Name]**
+- Expected work: [Specific tasks]
+- Impact scope: [Files/features affected]
+- Risk: [Potential risks]
 
-**アプローチ 2: [名前]**
-- 想定作業: [具体的な作業内容]
-- 影響範囲: [変更されるファイル/機能]
-- リスク: [潜在的なリスク]
+**Approach 2: [Name]**
+- Expected work: [Specific tasks]
+- Impact scope: [Files/features affected]
+- Risk: [Potential risks]
 
-番号を選択するか、より具体的なタスクを指示してください。
+Select a number or provide more specific instructions.
 ```
 
 ---
 
-## タスクタイプ別説明テンプレート
+## Task Type Explanation Templates
 
-### BUG タイプ
+### BUG Type
 
 ```markdown
-### 選定理由
+### Selection Rationale
 
-1. **Scout**: バグの根本原因を調査・特定
-2. **Builder**: 特定された原因に基づき修正を実装
-3. **Radar**: 修正が正しく動作し、リグレッションがないことを検証
+1. **Scout**: Investigate and identify root cause of the bug
+2. **Builder**: Implement fix based on identified cause
+3. **Radar**: Verify fix works correctly with no regressions
 
-**追加検討:**
-- セキュリティ関連コード → +Sentinel
-- 複雑な影響範囲 → +Sherpa（事前分解）
+**Additional considerations:**
+- Security-related code → +Sentinel
+- Complex impact scope → +Sherpa (pre-decomposition)
 ```
 
-### FEATURE タイプ
+### FEATURE Type
 
 ```markdown
-### 選定理由
+### Selection Rationale
 
-1. **Forge**: 新機能のプロトタイプを迅速に構築
-2. **Builder**: プロトタイプを本番品質に昇華
-3. **Radar**: 新機能のテストを追加
+1. **Forge**: Rapidly build prototype of new feature
+2. **Builder**: Elevate prototype to production quality
+3. **Radar**: Add tests for new feature
 
-**追加検討:**
-- UI変更あり → +Muse（デザイントークン）
-- 複雑な機能 → +Sherpa（事前分解）
-- API追加 → +Gateway（API設計）
+**Additional considerations:**
+- UI changes involved → +Muse (design tokens)
+- Complex feature → +Sherpa (pre-decomposition)
+- API addition → +Gateway (API design)
 ```
 
-### REFACTOR タイプ
+### INVESTIGATE Type
 
 ```markdown
-### 選定理由
+### Selection Rationale
 
-1. **Zen**: コード品質改善、リファクタリング実施
-2. **Radar**: 動作が変わっていないことを検証
+1. **Lens**: Systematic codebase investigation using 4-layer search architecture
 
-**追加検討:**
-- アーキテクチャ変更 → +Atlas
-- 大規模変更 → +Sherpa（段階的実行計画）
+**Additional considerations:**
+- Bug-related investigation → Scout (RCA-focused)
+- Git history investigation → Rewind (commit archaeology)
+- Incident impact scoping → Triage (first response)
+- Visualization of findings → +Canvas
+- Implementation after investigation → +Builder
 ```
 
-### SECURITY タイプ
+### REFACTOR Type
 
 ```markdown
-### 選定理由
+### Selection Rationale
 
-1. **Sentinel**: 脆弱性の検出と静的分析
-2. **Builder**: セキュリティ修正の実装
-3. **Radar**: 修正の検証
+1. **Zen**: Code quality improvement, refactoring execution
+2. **Radar**: Verify behavior remains unchanged
 
-**追加検討:**
-- 動的テスト必要 → +Probe
-- 認証/認可関連 → 重点レビュー
+**Additional considerations:**
+- Architecture change → +Atlas
+- Large-scale change → +Sherpa (phased execution plan)
+```
+
+### SECURITY Type
+
+```markdown
+### Selection Rationale
+
+1. **Sentinel**: Vulnerability detection and static analysis
+2. **Builder**: Implement security fixes
+3. **Radar**: Verify fixes
+
+**Additional considerations:**
+- Dynamic testing needed → +Probe
+- Auth/authz related → focused review
 ```
 
 ---
 
-## 曖昧な要求のパターンと対応
+## Ambiguous Request Patterns
 
-| 要求パターン | uncertainty_level | 対応 |
-|-------------|-------------------|------|
-| 「バグを直して」 | partial | 文脈から特定、Scout開始 |
-| 「パフォーマンスを改善して」 | partial | Bolt選択、領域を確認 |
-| 「いい感じにして」 | ambiguous | MULTI_CANDIDATE_MODE |
-| 「なんかおかしい」 | ambiguous | MULTI_CANDIDATE_MODE |
-| 「レビューして」 | partial | Judge/Zenを文脈で選択 |
-| 「テストして」 | clear | Radar/Voyagerを規模で選択 |
+| Request Pattern | uncertainty_level | Action |
+|----------------|-------------------|--------|
+| "Fix this bug" | partial | Identify from context, start with Scout |
+| "Improve performance" | partial | Select Bolt, confirm target area |
+| "Make it better" | ambiguous | MULTI_CANDIDATE_MODE |
+| "Something is wrong" | ambiguous | MULTI_CANDIDATE_MODE |
+| "Review this" | partial | Select Judge/Zen based on context |
+| "Test this" | clear | Select Radar/Voyager based on scope |
+| "Does X feature exist?" | clear | Lens (feature discovery) |
+| "How does X flow work?" | clear | Lens (flow tracing) |
+| "Understand this codebase" | clear | Lens (full onboarding) |
+| "Why is X broken?" | clear | Scout (RCA), not Lens |
+| "When did X regress?" | clear | Rewind (git history) |
 
 ---
 
-## フロー図
+## Rally Parallel Escalation
+
+### Additional Decision Factor
+
+| Factor | Values | Impact |
+|--------|--------|--------|
+| `parallelizability` | none / light / heavy | Determine Rally escalation |
+
+### Parallelizability Assessment
+
+| Level | Condition | Action |
+|-------|-----------|--------|
+| `none` | Single domain, sequential dependencies | Standard chain (no Rally) |
+| `light` | 2-3 small independent branches (< 50 lines each) | Nexus _PARALLEL_BRANCHES (internal) |
+| `heavy` | 2+ domains, 4+ files, real implementation work | Escalate to Rally |
+
+### Rally Routing Decision
 
 ```
-ユーザー要求
+Chain designed by Nexus
+    ↓
+Check for parallelizable steps
+    ├── No parallel steps → Execute sequentially
+    ├── Light parallel (< 50 lines/branch) → Nexus _PARALLEL_BRANCHES
+    └── Heavy parallel → Check further
+         ├── Sherpa produced parallel_group → Rally via SHERPA_TO_RALLY_HANDOFF
+         ├── Frontend + Backend split detected → Rally (Frontend/Backend Split)
+         ├── Multiple independent features → Rally (Feature Parallel)
+         └── Impl + Test + Docs simultaneous → Rally (Code/Test/Docs Triple)
+```
+
+### Rally Routing Explanation Template
+
+```markdown
+### Selection Rationale
+
+1. **Rally**: Parallel execution of independent implementation tasks
+   - Team pattern: [Frontend/Backend Split / Feature Parallel / Specialist Team]
+   - Teammates: [count] ([role descriptions])
+
+**Parallel justification:**
+- [Why sequential is insufficient]
+- [File ownership partitioning]
+- [Expected speedup]
+
+**Alternatives:**
+- Sequential (Nexus): Simpler but slower
+- Nexus _PARALLEL_BRANCHES: Insufficient for this scope
+```
+
+---
+
+## Flow Diagram
+
+```
+User Request
     ↓
 ┌─────────────────────────────┐
-│ 判断要素の抽出              │
+│ Extract Decision Factors    │
 │ - task_type                 │
 │ - technical_domain          │
 │ - scope_indicators          │
 │ - uncertainty_level         │
+│ - parallelizability         │
 └─────────────────────────────┘
     ↓
 uncertainty_level?
-    ├─ clear → 直接チェーン選定 → ROUTING_EXPLANATION出力
-    ├─ partial → チェーン選定 + 確認ポイント提示
-    └─ ambiguous → MULTI_CANDIDATE_MODE発動
+    ├─ clear → Direct chain selection
+    ├─ partial → Chain selection + confirmation points
+    └─ ambiguous → MULTI_CANDIDATE_MODE triggered
+         ↓
+parallelizability?
+    ├─ none → Sequential execution
+    ├─ light → Nexus _PARALLEL_BRANCHES
+    └─ heavy → Rally escalation
+         ↓
+ROUTING_EXPLANATION output
 ```
