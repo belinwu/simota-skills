@@ -1,0 +1,508 @@
+# Engine CLI Guide
+
+Direct CLI reference for external AI engines used by Arena. Arena calls `codex exec` and `gemini` directly — no abstraction layer.
+
+---
+
+## Overview
+
+Arena directly invokes external AI engine CLIs to generate implementation variants. Each engine runs in its own Git branch, producing isolated variants for comparison.
+
+### Key Principles
+
+- **No abstraction layer** — Arena calls `codex exec` and `gemini` directly via Bash
+- **Git branch isolation** — Each variant lives in its own `arena/variant-{engine}` branch
+- **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
+
+---
+
+## Engine Availability Check
+
+Before starting any Arena session, verify available engines:
+
+```bash
+# Check codex availability
+which codex && echo "codex: available" || echo "codex: not found"
+
+# Check gemini availability
+which gemini && echo "gemini: available" || echo "gemini: not found"
+```
+
+**Minimum requirement:** At least 2 engines must be available for Arena to operate. If only 1 engine is available, consider using Builder instead.
+
+---
+
+## Engine Command Reference
+
+### codex exec
+
+Execute implementation tasks via OpenAI Codex CLI.
+
+```bash
+# Basic execution (full-auto mode, no confirmation prompts)
+codex exec --full-auto "implement the following: {spec_prompt}"
+
+# With specific model
+codex exec --full-auto -m o4-mini "implement the following: {spec_prompt}"
+```
+
+**Key flags:**
+| Flag | Description |
+|------|-------------|
+| `--full-auto` | No confirmation prompts — required for Arena automation |
+| `-m <model>` | Model selection (default: o4-mini) |
+
+**Notes:**
+- `codex exec` operates on the current working directory
+- Changes are made directly to the filesystem (not sandboxed)
+- Always run on a dedicated branch to isolate changes
+
+### gemini CLI
+
+Execute implementation tasks via Google Gemini CLI.
+
+```bash
+# Basic execution (YOLO mode, no confirmation prompts)
+gemini -p "implement the following: {spec_prompt}" --yolo
+
+# Sandbox mode (for safer execution)
+gemini -p "implement the following: {spec_prompt}" --sandbox
+```
+
+**Key flags:**
+| Flag | Description |
+|------|-------------|
+| `-p "<prompt>"` | Non-interactive prompt mode |
+| `--yolo` | No confirmation prompts — required for Arena automation |
+| `--sandbox` | Run in sandboxed environment (safer but limited) |
+
+**Notes:**
+- `gemini` operates on the current working directory
+- `--yolo` allows file writes without confirmation
+- Always run on a dedicated branch to isolate changes
+
+### codex review (Automated Review)
+
+Use codex as an automated reviewer for variant quality assessment.
+
+```bash
+# Review uncommitted changes on current branch
+codex review --uncommitted
+
+# Review specific files
+codex review --uncommitted -- path/to/file1 path/to/file2
+```
+
+**Integration with evaluation:**
+- Feed `codex review` output into Code Quality and Safety scores
+- Use as supplementary evidence, not sole basis for scoring
+
+---
+
+## Git Branch-Based Variant Management
+
+Arena uses Git branches to isolate each engine's implementation, enabling clean comparison and easy adoption.
+
+### Branch Naming Convention
+
+```
+arena/variant-{engine}     # e.g., arena/variant-codex, arena/variant-gemini
+arena/variant-{engine}-{n} # For multi-approach: arena/variant-codex-1, arena/variant-codex-2
+```
+
+### Solo Mode Lifecycle (Sequential — Single Working Directory)
+
+Solo Mode runs engines **sequentially** in the same working directory. No parallel conflicts occur because only one engine runs at a time.
+
+#### 1. Prepare (Stash & Branch)
+
+```bash
+# Save any uncommitted work
+git stash push -m "arena: pre-session stash"
+
+# Record the base point
+BASE_BRANCH=$(git branch --show-current)
+BASE_COMMIT=$(git rev-parse HEAD)
+```
+
+#### 2. Create Variant Branches
+
+```bash
+# Create codex variant branch from base
+git checkout -b arena/variant-codex $BASE_COMMIT
+
+# Create gemini variant branch from base (after codex is done)
+git checkout -b arena/variant-gemini $BASE_COMMIT
+```
+
+#### 3. Execute Engine on Each Branch (Sequential)
+
+```bash
+# --- Codex variant ---
+git checkout arena/variant-codex
+codex exec --full-auto "{spec_prompt}"
+git add -A && git commit -m "arena: variant-codex implementation"
+
+# --- Gemini variant (runs AFTER codex is done) ---
+git checkout arena/variant-gemini
+gemini -p "{spec_prompt}" --yolo
+git add -A && git commit -m "arena: variant-gemini implementation"
+```
+
+#### 4. Compare Variants
+
+```bash
+# Diff between variants
+git diff arena/variant-codex..arena/variant-gemini
+
+# Diff each variant against base
+git diff $BASE_COMMIT..arena/variant-codex
+git diff $BASE_COMMIT..arena/variant-gemini
+
+# Read specific files for detailed review
+# Use Read tool on files of interest in each branch
+```
+
+#### 5. Adopt Winner
+
+```bash
+# Return to base branch
+git checkout $BASE_BRANCH
+
+# Merge the winning variant
+git merge arena/variant-codex -m "arena: adopt variant-codex"
+# or
+git merge arena/variant-gemini -m "arena: adopt variant-gemini"
+```
+
+#### 6. Cleanup
+
+```bash
+# Delete variant branches
+git branch -D arena/variant-codex
+git branch -D arena/variant-gemini
+
+# Restore stashed work if any
+git stash pop
+```
+
+---
+
+### Team Mode Lifecycle (Parallel — git worktree Isolation)
+
+Team Mode runs engines **in parallel**. To prevent conflicts, each variant gets its own **isolated working directory** via `git worktree`.
+
+#### Why git worktree is Required for Parallel Execution
+
+Without worktree isolation, parallel subagents sharing the same working directory will encounter:
+- **`.git/index.lock` contention** — Multiple `git add`/`git commit` operations fight for the lock file
+- **Filesystem write conflicts** — Two engines writing to the same files simultaneously corrupt output
+- **Cross-contamination** — `git add -A` picks up another engine's uncommitted changes
+- **Branch checkout races** — `git checkout` in a shared directory affects all processes
+
+`git worktree` creates a **separate directory** for each branch, with its own working tree but sharing the same `.git` repository. Each subagent operates in complete filesystem isolation.
+
+```
+project/                          # Main working directory (Arena leader stays here)
+├── .git/                         # Shared Git repository
+├── src/...                       # Base branch files
+└── ...
+
+/tmp/arena-{session}/variant-codex/   # Worktree for codex (subagent works here)
+├── src/...                           # Independent copy of files
+└── ...
+
+/tmp/arena-{session}/variant-gemini/  # Worktree for gemini (subagent works here)
+├── src/...                           # Independent copy of files
+└── ...
+```
+
+#### 1. Prepare (Arena Leader — BEFORE spawning subagents)
+
+```bash
+# Save any uncommitted work
+git stash push -m "arena: pre-session stash"
+
+# Record the base point
+BASE_BRANCH=$(git branch --show-current)
+BASE_COMMIT=$(git rev-parse HEAD)
+SESSION_ID="arena-$(date +%s)"
+
+# Create worktree base directory
+mkdir -p /tmp/$SESSION_ID
+```
+
+#### 2. Create Branches and Worktrees (Arena Leader)
+
+```bash
+# Create variant branches from base commit
+git branch arena/variant-codex $BASE_COMMIT
+git branch arena/variant-gemini $BASE_COMMIT
+
+# Create isolated worktrees for each variant
+git worktree add /tmp/$SESSION_ID/variant-codex arena/variant-codex
+git worktree add /tmp/$SESSION_ID/variant-gemini arena/variant-gemini
+```
+
+**IMPORTANT:** Arena leader creates ALL branches and worktrees BEFORE spawning any subagent. Subagents receive the worktree path and work within it — they do NOT create branches or worktrees themselves.
+
+#### 3. Spawn Subagents (Arena Leader)
+
+Each subagent receives its dedicated worktree path:
+- variant-codex gets `/tmp/$SESSION_ID/variant-codex`
+- variant-gemini gets `/tmp/$SESSION_ID/variant-gemini`
+
+Subagents `cd` into their worktree and execute the engine there. No branch checkout needed — the worktree is already on the correct branch.
+
+#### 4. Parallel Engine Execution (Subagents — fully isolated)
+
+```bash
+# --- variant-codex subagent (in /tmp/$SESSION_ID/variant-codex) ---
+cd /tmp/$SESSION_ID/variant-codex
+codex exec --full-auto "{spec_prompt}"
+git add -A && git commit -m "arena: variant-codex implementation"
+
+# --- variant-gemini subagent (in /tmp/$SESSION_ID/variant-gemini) ---
+# (runs SIMULTANEOUSLY — no conflicts)
+cd /tmp/$SESSION_ID/variant-gemini
+gemini -p "{spec_prompt}" --yolo
+git add -A && git commit -m "arena: variant-gemini implementation"
+```
+
+Each subagent's `git add -A` only sees files in its own worktree directory — no cross-contamination is possible.
+
+#### 5. Compare Variants (Arena Leader — after all subagents complete)
+
+```bash
+# Diff between variants (same as Solo Mode — branches work normally)
+git diff arena/variant-codex..arena/variant-gemini
+
+# Diff each variant against base
+git diff $BASE_COMMIT..arena/variant-codex
+git diff $BASE_COMMIT..arena/variant-gemini
+```
+
+#### 6. Adopt Winner (Arena Leader)
+
+```bash
+# Return to base branch (leader is already here)
+git checkout $BASE_BRANCH
+
+# Merge the winning variant
+git merge arena/variant-codex -m "arena: adopt variant-codex"
+```
+
+#### 7. Cleanup (Arena Leader — AFTER subagent shutdown)
+
+```bash
+# Remove worktrees FIRST (must be done before deleting branches)
+git worktree remove /tmp/$SESSION_ID/variant-codex
+git worktree remove /tmp/$SESSION_ID/variant-gemini
+
+# Clean up temp directory
+rm -rf /tmp/$SESSION_ID
+
+# Delete variant branches
+git branch -D arena/variant-codex
+git branch -D arena/variant-gemini
+
+# Restore stashed work if any
+git stash pop
+```
+
+**WARNING:** Always remove worktrees before deleting branches. `git branch -D` will fail if a worktree still references the branch.
+
+---
+
+## Engine Selection Heuristics
+
+| Engine | Strengths | Best For |
+|--------|-----------|----------|
+| **codex** | Fast iteration, code-focused, algorithmic strength | Refactoring, algorithmic tasks, pure code generation |
+| **gemini** | Creative approaches, broad context window, novel solutions | New architecture, exploratory tasks, design-heavy work |
+
+### Selection Decision Matrix
+
+| Task Characteristic | Recommended Engine |
+|--------------------|--------------------|
+| Algorithm / data structure | codex |
+| Refactoring / migration | codex |
+| New feature with clear spec | codex + gemini (compare) |
+| Creative / exploratory solution | gemini |
+| Broad codebase understanding needed | gemini |
+| Performance-critical optimization | codex |
+| Default (when unsure) | codex + gemini (compare both) |
+
+---
+
+## Prompt Construction Protocol
+
+Arena must construct precise, scoped prompts before passing them to any external engine. Vague prompts lead to uncontrolled changes.
+
+### Step 1: Scope Lock (REQUIRED before any engine invocation)
+
+Before running any engine, Arena MUST determine and lock the following:
+
+```yaml
+scope:
+  # Files the engine is ALLOWED to create or modify
+  allowed_files:
+    - "src/auth/login.ts"
+    - "src/auth/login.test.ts"
+    - "src/types/auth.ts"
+
+  # Files the engine MUST NOT touch (auto-include common sensitive files)
+  forbidden_files:
+    - "package.json"          # dependency changes need separate review
+    - "package-lock.json"
+    - "*.lock"
+    - ".env*"                 # secrets
+    - "tsconfig.json"         # build config
+    - "*.config.js"           # build/lint config
+    - "*.config.ts"
+    - ".github/**"            # CI/CD
+    - "docker*"               # infrastructure
+    - "Makefile"
+    - "README.md"             # documentation
+
+  # Additional project-specific exclusions
+  forbidden_patterns: []      # e.g., "migrations/**", "generated/**"
+```
+
+**How to determine `allowed_files`:**
+1. Read the spec and identify which modules/features are affected
+2. Use `Glob` and `Grep` to find existing files in those modules
+3. Include test files corresponding to each implementation file
+4. If new files are needed, specify their exact paths
+
+### Step 2: Build the Engine Prompt
+
+Use the structured prompt templates below. **Every field is required** — do not omit sections.
+
+### codex exec Prompt Template
+
+```
+Implement the following specification.
+
+## Specification
+{spec_content}
+
+## Allowed Files (ONLY modify or create these files)
+{allowed_files_list}
+
+## Forbidden (DO NOT modify these files or patterns)
+{forbidden_files_list}
+
+## Constraints
+- ONLY modify or create files listed in "Allowed Files" above
+- DO NOT modify any file not listed in "Allowed Files"
+- DO NOT add, remove, or modify dependencies (package.json, Gemfile, requirements.txt, etc.)
+- DO NOT modify build configuration, CI/CD, or infrastructure files
+- DO NOT modify unrelated code, even if you notice issues in it
+- Follow existing code patterns and conventions in the codebase
+- Ensure all existing tests continue to pass
+- Add tests for new functionality in the corresponding test files
+- Handle error cases appropriately
+- Use the same language, framework, and style as existing code
+
+## Success Criteria
+{acceptance_criteria}
+```
+
+### gemini Prompt Template
+
+```
+Implement the following specification.
+
+## Specification
+{spec_content}
+
+## Allowed Files (ONLY modify or create these files)
+{allowed_files_list}
+
+## Forbidden (DO NOT modify these files or patterns)
+{forbidden_files_list}
+
+## Constraints
+- ONLY modify or create files listed in "Allowed Files" above
+- DO NOT modify any file not listed in "Allowed Files"
+- DO NOT add, remove, or modify dependencies (package.json, Gemfile, requirements.txt, etc.)
+- DO NOT modify build configuration, CI/CD, or infrastructure files
+- DO NOT modify unrelated code, even if you notice issues in it
+- Follow existing code patterns and conventions in the codebase
+- Ensure all existing tests continue to pass
+- Add tests for new functionality in the corresponding test files
+- Handle error cases appropriately
+- Use the same language, framework, and style as existing code
+
+## Codebase Context
+- Tech stack: {tech_stack}
+- Key patterns: {patterns_summary}
+- Related files (read-only reference): {reference_files}
+
+## Success Criteria
+{acceptance_criteria}
+```
+
+### Step 3: Post-Execution Scope Validation
+
+After each engine run, Arena MUST verify scope compliance:
+
+```bash
+# Check which files were actually changed
+git diff --name-only
+
+# Verify no forbidden files were touched
+# If forbidden files were modified, revert them:
+git checkout -- {forbidden_file}
+```
+
+If an engine modified files outside the allowed scope:
+1. Revert unauthorized changes: `git checkout -- {file}`
+2. Keep only authorized changes
+3. Note the scope violation in the evaluation (deduct from Code Quality score)
+
+### Prompt Construction Notes
+
+- **codex** works best with focused, directive prompts — keep specs concise, list exact files
+- **gemini** benefits from broader context — include tech stack, patterns, and reference files
+- **Both** require explicit "DO NOT" constraints — engines will optimize broadly without them
+- **Acceptance criteria** prevent engines from doing "too much" or "too little"
+- **Allowed files list** is the single most important constraint for parallel safety
+
+---
+
+## Cost Tracking
+
+Arena tracks costs via provider dashboards. In-session tracking is approximate:
+
+### Estimation Approach
+
+| Engine | Cost Factor | Tracking Method |
+|--------|------------|-----------------|
+| codex | Per-token via OpenAI API | Check OpenAI dashboard or API usage page |
+| gemini | Per-token via Google AI | Check Google AI Studio usage |
+
+### In-Session Tracking
+
+Track cost qualitatively in the session summary:
+- Number of engine invocations per variant
+- Approximate prompt size (small / medium / large)
+- Refer users to provider dashboards for exact costs
+
+---
+
+## Troubleshooting
+
+| Issue | Resolution |
+|-------|------------|
+| `codex: command not found` | Install: `npm install -g @openai/codex` |
+| `gemini: command not found` | Install: `npm install -g @anthropic/gemini-cli` or check Google AI docs |
+| Engine hangs / no output | Check API key validity; try with smaller prompt |
+| Branch conflict on checkout | `git stash` first, or commit current changes |
+| Variant branch already exists | `git branch -D arena/variant-{engine}` then recreate |
+| Engine produces no changes | Review prompt specificity; ensure target files are mentioned |
+| `.git/index.lock` contention (Team Mode) | Use `git worktree` — each subagent needs its own worktree directory |
+| `git worktree add` fails | Ensure the branch already exists: `git branch arena/variant-{engine} $BASE_COMMIT` first |
+| `git branch -D` fails (branch in use) | Remove the worktree first: `git worktree remove /tmp/$SESSION_ID/variant-{engine}` |
+| Worktree directory not found | Verify `/tmp/$SESSION_ID` exists; Arena leader must create worktrees before spawning subagents |

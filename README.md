@@ -107,7 +107,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Builder** | _"Types are contracts. Code is a promise."_ - 本番実装。TDD・Event Sourcing・CQRS・パフォーマンス最適化を備えた型安全な実装職人。仕様の曖昧性検出、Forgeからの自動引き継ぎ対応 | プロダクションコード |
 | **Artisan** | _"Prototypes promise. Production delivers."_ - フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
-| **Arena** | _"One problem, many minds. Let the best solution emerge."_ - 複数AIエンジン並列実装。aiwコマンドで複数アプローチを比較・評価・採用 | 比較実装・評価 |
+| **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - codex exec / gemini CLI を直接操り並列実装・評価・採用。Solo Mode（逐次）と Team Mode（Agent Teams 並列）をサポート | 比較実装・評価 |
 
 ### パフォーマンス
 
@@ -513,7 +513,7 @@ skills/
 │   └── PROJECT.md      # プロジェクト知識テンプレート
 ├── architect/SKILL.md  # エージェント設計メタデザイナー
 ├── anvil/SKILL.md      # CLI/TUI構築
-├── arena/SKILL.md      # 複数AI並列実装
+├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atlas/SKILL.md      # アーキテクチャ
 ├── bolt/SKILL.md       # パフォーマンス

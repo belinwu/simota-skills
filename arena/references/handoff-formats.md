@@ -18,7 +18,8 @@ SHERPA_TO_ARENA_HANDOFF:
       description: "[Step description]"
       estimated_complexity: "[S/M/L]"
   Recommended_Variants: "[N]"
-  Recommended_Engine: "[engine or 'all']"
+  Recommended_Engine: "[codex / gemini / both]"
+  Recommended_Mode: "[Solo / Team]"
   Quality_Requirements:
     - "[Requirement 1]"
     - "[Requirement 2]"
@@ -44,6 +45,8 @@ SCOUT_TO_ARENA_HANDOFF:
       description: "[Approach B description]"
       risk: "[Low/Medium/High]"
   Recommended_Variants: "[N]"
+  Recommended_Engine: "[codex / gemini / both]"
+  Recommended_Mode: "[Solo / Team]"
 ```
 
 ### SPARK_TO_ARENA_HANDOFF
@@ -64,6 +67,8 @@ SPARK_TO_ARENA_HANDOFF:
       approach: "[Approach description]"
       complexity: "[S/M/L]"
   Recommended_Variants: "[N]"
+  Recommended_Engine: "[codex / gemini / both]"
+  Recommended_Mode: "[Solo / Team]"
 ```
 
 ---
@@ -77,8 +82,11 @@ Implementation selected and ready for PR preparation.
 ```yaml
 ARENA_TO_GUARDIAN_HANDOFF:
   Implementation:
-    run_id: "[aiw run ID]"
+    session_id: "[Arena session ID]"
+    mode: "[Solo / Team]"
     selected_variant: "[variant_id]"
+    selected_engine: "[codex / gemini]"
+    variant_branch: "arena/variant-[engine]"
     selection_rationale: "[Why this variant was chosen]"
   Files_Changed:
     - path: "[File path]"
@@ -87,8 +95,12 @@ ARENA_TO_GUARDIAN_HANDOFF:
   Comparison_Summary:
     total_variants: "[N]"
     engines_used:
-      - "[engine 1]"
+      - "[codex]"
+      - "[gemini]"
     evaluation_criteria: "[Criteria used]"
+  Team_Info:  # Only present in Team Mode
+    team_name: "[arena-{task_id}]"
+    teammate_count: "[N]"
   Test_Status: "[PASS/FAIL/PENDING]"
   Ready_For_Review: "[true/false]"
 ```
@@ -100,8 +112,11 @@ Implementation adopted, test coverage needed.
 ```yaml
 ARENA_TO_RADAR_HANDOFF:
   Implementation:
-    run_id: "[aiw run ID]"
+    session_id: "[Arena session ID]"
+    mode: "[Solo / Team]"
     selected_variant: "[variant_id]"
+    selected_engine: "[codex / gemini]"
+    variant_branch: "arena/variant-[engine]"
     files_changed:
       - "[File path 1]"
       - "[File path 2]"
@@ -113,6 +128,7 @@ ARENA_TO_RADAR_HANDOFF:
     - "[Edge case 2]"
   Variant_Comparison:
     - variant_id: "[ID]"
+      engine: "[codex / gemini]"
       approach_summary: "[Summary]"
       testability_notes: "[Notes for testing]"
 ```
@@ -124,8 +140,11 @@ Request code review of selected variant.
 ```yaml
 ARENA_TO_JUDGE_HANDOFF:
   Implementation:
-    run_id: "[aiw run ID]"
+    session_id: "[Arena session ID]"
+    mode: "[Solo / Team]"
     selected_variant: "[variant_id]"
+    selected_engine: "[codex / gemini]"
+    variant_branch: "arena/variant-[engine]"
     selection_rationale: "[Brief rationale]"
   Review_Focus:
     - "[Area needing particular attention]"
@@ -144,8 +163,11 @@ Request security review of selected variant.
 ```yaml
 ARENA_TO_SENTINEL_HANDOFF:
   Implementation:
-    run_id: "[aiw run ID]"
+    session_id: "[Arena session ID]"
+    mode: "[Solo / Team]"
     selected_variant: "[variant_id]"
+    selected_engine: "[codex / gemini]"
+    variant_branch: "arena/variant-[engine]"
   Security_Concerns:
     - "[Identified concern 1]"
     - "[Identified concern 2]"

@@ -9,10 +9,11 @@ Output formats for variant selection, specification validation, and Arena sessio
 Use this format when documenting why a variant was chosen.
 
 ```markdown
-### Variant Selection: [run_id]
+### Variant Selection: [session_id]
 
-**Selected:** Variant [X] (Engine: [engine])
-**Rejected:** Variant [Y] (Engine: [engine])
+**Mode:** [Solo / Team]
+**Selected:** Variant [X] (Engine: [engine], Branch: arena/variant-[engine])
+**Rejected:** Variant [Y] (Engine: [engine], Branch: arena/variant-[engine])
 
 **Rationale:**
 - Correctness: [Score] - [Comment]
@@ -34,10 +35,10 @@ Use this format when documenting why a variant was chosen.
 
 ## Specification Validation Report
 
-Use after `aiw spec critique` to document specification quality.
+Use when validating specification quality before running engines.
 
 ```markdown
-### Spec Validation: [spec_file]
+### Spec Validation: [spec_description]
 
 **Overall Quality:** [Good / Needs Revision / Insufficient]
 
@@ -65,16 +66,18 @@ Use at the end of an Arena session to summarize all activity.
 
 **Task:** [Task description]
 **Date:** [YYYY-MM-DD]
+**Mode:** [Solo / Team]
 
-**Runs Executed:**
-| Run ID | Engine(s) | Variants | Winner | Cost |
-|--------|-----------|----------|--------|------|
-| [ID] | [engines] | [N] | [variant] | [cost] |
+**Variants Executed:**
+| Session ID | Engine | Branch | Winner | Cost Est. |
+|------------|--------|--------|--------|-----------|
+| [ID] | [engine] | arena/variant-[engine] | [yes/no] | [estimate] |
 
-**Total Cost:** [Amount]
+**Total Cost Estimate:** [Approximate]
 
 **Final Implementation:**
-- Selected: [Variant ID from Run ID]
+- Selected: Variant [X] (Engine: [engine])
+- Adopted via: `git merge arena/variant-[engine]`
 - Files Changed: [count] files
 - Test Status: [PASS/FAIL]
 
@@ -91,11 +94,11 @@ Abbreviated format for Nexus autonomous mode. Omit verbose explanations.
 
 ```markdown
 ## Arena Result
-- Run: [run_id] | Engine: [engine] | Variants: [N]
+- Session: [session_id] | Mode: [Solo/Team] | Engine: [engine(s)] | Variants: [N]
 - Winner: Variant [X] (Score: [X.XX/5.00])
 - Rationale: [One sentence]
 - Files: [list]
-- Cost: [amount]
+- Cost: [estimate]
 - Status: [PASS/FAIL/PENDING]
 ```
 
@@ -106,10 +109,11 @@ Abbreviated format for Nexus autonomous mode. Omit verbose explanations.
 When the best solution combines elements from multiple variants.
 
 ```markdown
-### Hybrid Selection: [run_id]
+### Hybrid Selection: [session_id]
 
+**Mode:** [Solo / Team]
 **Base:** Variant [X] (Engine: [engine])
-**Merged From:** Variant [Y]
+**Merged From:** Variant [Y] (Engine: [engine])
 
 **What was taken from each:**
 | Element | Source | Reason |
@@ -136,13 +140,16 @@ When Arena cannot make a clear selection and needs user input.
 ```markdown
 ### Escalation: Variant Selection Required
 
-**Run:** [run_id]
+**Session:** [session_id]
+**Mode:** [Solo / Team]
 **Reason:** [Why automated selection is insufficient]
 
 **Candidates:**
 
 | Aspect | Variant A | Variant B |
 |--------|-----------|-----------|
+| Engine | [engine] | [engine] |
+| Branch | arena/variant-[engine] | arena/variant-[engine] |
 | Score | [X.XX] | [X.XX] |
 | Approach | [Brief] | [Brief] |
 | Strength | [Key advantage] | [Key advantage] |
