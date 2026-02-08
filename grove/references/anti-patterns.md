@@ -351,6 +351,267 @@ src/modules/core/services/auth/providers/oauth/google/handlers/callback/
 
 ---
 
+## Monorepo-Specific Anti-Patterns
+
+### AP-011: Circular Package Dependencies
+
+**Severity:** Critical
+**Detection:** Package A depends on Package B, and Package B depends on Package A (directly or transitively).
+
+```
+# BAD: Circular dependency between packages
+packages/
+├── auth/
+│   └── package.json        # depends on "user"
+└── user/
+    └── package.json        # depends on "auth"
+```
+
+**Impact:**
+- Build order becomes indeterminate (build errors, non-deterministic behavior)
+- Package boundaries collapse, defeating the purpose of a monorepo
+- Test independence is compromised
+
+**Fix:**
+```
+# GOOD: Break cycle with shared package
+packages/
+├── auth/                   # depends on "shared"
+├── user/                   # depends on "shared"
+└── shared/                 # common types/interfaces
+    └── src/
+        └── types.ts        # AuthUser, UserAuth interfaces
+```
+
+**Audit command:**
+```bash
+# Turborepo
+npx turbo run build --dry-run --graph  # Output dependency graph in DOT format
+# Nx
+npx nx graph                            # Visualize dependencies in browser
+# Go
+go mod graph | grep -E 'cycle'
+# Gradle
+./gradlew dependencies --configuration compileClasspath
+```
+
+---
+
+### AP-012: Package Boundary Violation
+
+**Severity:** High
+**Detection:** A package directly references another package's internal files (bypasses public API).
+
+```
+# BAD: Direct import of internal file
+// apps/web/src/page.tsx
+import { validateEmail } from '../../packages/auth/src/internal/validators';
+//                                                    ^^^^^^^^ internal path
+
+// BAD: Bypassing internal/ in Go
+// services/api/handler.go
+import "example.com/services/worker/internal/queue"  // Compiler will reject this
+```
+
+**Impact:**
+- Internal refactoring of a package affects external consumers
+- Implicit coupling increases, making independent deployment difficult
+- Versioning becomes meaningless
+
+**Fix:**
+```
+# GOOD: Access through public API
+// packages/auth/index.ts (barrel export)
+export { validateEmail } from './src/validators';  // Explicitly public API
+
+// apps/web/src/page.tsx
+import { validateEmail } from '@monorepo/auth';     // Reference by package name
+```
+
+**Enforcement:**
+```json
+// Nx: module boundary rules
+// .eslintrc.json
+{
+  "rules": {
+    "@nx/enforce-module-boundaries": ["error", {
+      "depConstraints": [
+        { "sourceTag": "scope:app", "onlyDependOnLibsWithTags": ["scope:shared"] }
+      ]
+    }]
+  }
+}
+```
+
+---
+
+### AP-013: Shared Config Drift
+
+**Severity:** Medium
+**Detection:** Config files are inconsistent across packages within the same monorepo.
+
+```
+# BAD: Inconsistent config per package
+packages/
+├── auth/
+│   ├── tsconfig.json       # target: ES2020, strict: true
+│   └── .eslintrc.js        # extends: recommended
+├── user/
+│   ├── tsconfig.json       # target: ES2022, strict: false  ← Mismatch!
+│   └── .eslintrc.json      # extends: standard             ← Mismatch!
+└── shared/
+    ├── tsconfig.json       # target: ESNext                 ← Yet another!
+    └── (no eslint config)                                   ← Missing!
+```
+
+**Impact:**
+- Different compile targets across packages lead to compatibility issues
+- Inconsistent lint rules result in uneven code quality
+- Unclear which config is "correct" when creating new packages
+
+**Fix:**
+```
+# GOOD: Shared base config + package-specific overrides
+packages/
+├── config/                 # Shared config package
+│   ├── tsconfig.base.json
+│   ├── eslint.base.js
+│   └── package.json
+├── auth/
+│   └── tsconfig.json       # { "extends": "@monorepo/config/tsconfig.base.json" }
+└── user/
+    └── tsconfig.json       # { "extends": "@monorepo/config/tsconfig.base.json" }
+```
+
+**Audit command:**
+```bash
+# Compare tsconfig targets across packages
+find . -name "tsconfig.json" -not -path "*/node_modules/*" \
+  -exec grep -l "target" {} \; | xargs grep "target"
+```
+
+---
+
+### AP-014: Root Pollution
+
+**Severity:** Medium
+**Detection:** Excessive logic, source code, or scripts placed at the monorepo root.
+
+```
+# BAD: Business logic at root
+/
+├── apps/
+├── packages/
+├── src/                    # ← src/ at root is unnecessary
+│   └── shared-utils.ts
+├── scripts/
+│   ├── deploy-auth.sh
+│   ├── deploy-user.sh
+│   ├── seed-all.sh
+│   ├── migrate-auth.sh
+│   ├── migrate-user.sh    # ← Package-specific scripts at root
+│   └── ... (20+ scripts)
+├── utils.ts                # ← Utility at root
+└── helpers.js              # ← Helper at root
+```
+
+**Impact:**
+- Root becomes a dumping ground between packages
+- Package independence is compromised
+- Build scope optimization becomes difficult
+
+**Fix:**
+```
+# GOOD: Root handles orchestration only
+/
+├── apps/
+├── packages/
+├── scripts/                # Monorepo-wide scripts only
+│   ├── setup.sh
+│   └── ci-check-all.sh
+├── turbo.json
+└── package.json            # Workspace definition only
+```
+
+---
+
+### AP-015: Orphan Package
+
+**Severity:** Low
+**Detection:** A package that is not depended on by any other package and is not a deployment target.
+
+```
+# BAD: Packages nobody uses
+packages/
+├── auth/                   # used by: apps/web, apps/api
+├── user/                   # used by: apps/web, apps/api
+├── legacy-utils/           # used by: (nobody) ← Orphan!
+└── experiment-v2/          # used by: (nobody) ← Orphan!
+```
+
+**Impact:**
+- Increased CI/CD build time
+- Dependency update cost (unmaintained vulnerabilities)
+- Confusion for new team members
+
+**Fix:**
+1. Check dependency graph and identify unused packages
+2. Delete or archive if truly unnecessary
+3. If experimental, make status explicit (`[EXPERIMENTAL]` tag in `README.md`)
+
+**Audit command:**
+```bash
+# Turborepo: Check for isolated nodes in dependency graph
+npx turbo run build --dry-run --graph 2>&1 | grep -v " -> "
+# Nx
+npx nx graph --affected  # Check packages outside affected scope
+```
+
+---
+
+### AP-016: Implicit Dependency
+
+**Severity:** High
+**Detection:** Dependencies used but not declared in package manifest (package.json, go.mod, etc.).
+
+```
+# BAD: Used without declaration in package.json
+// packages/auth/src/service.ts
+import { hash } from 'bcrypt';  // bcrypt not declared in auth/package.json
+                                 // Accidentally resolved from root node_modules
+
+// BAD: Excessive use of replace directives in Go
+// go.mod
+replace example.com/pkg => ../pkg  // Should be managed via workspace
+```
+
+**Impact:**
+- Build/test fails when package is built in isolation
+- Fragile dependency resolution relying on hoisting
+- Independent publishing of package is impossible
+
+**Fix:**
+```bash
+# Explicitly declare dependencies in each package
+cd packages/auth && pnpm add bcrypt
+
+# Detect via strict mode
+# .npmrc
+strict-peer-dependencies=true
+# pnpm: .npmrc
+shamefully-hoist=false           # Disable hoisting to detect issues
+```
+
+**Enforcement:**
+```bash
+# syncpack: Check dependency version consistency across packages
+npx syncpack list-mismatches
+# depcheck: Detect undeclared dependencies
+npx depcheck packages/auth
+```
+
+---
+
 ## Severity Guide
 
 | Severity | Description | Action |

@@ -353,13 +353,258 @@ libs/                       # Shared libraries (Nx convention)
 nx.json
 ```
 
-### Key Conventions
+### Lerna (Legacy)
+
+```
+packages/                   # All packages (Lerna convention)
+├── app/
+│   ├── src/
+│   └── package.json
+├── shared-ui/
+│   ├── src/
+│   └── package.json
+└── utils/
+    ├── src/
+    └── package.json
+
+lerna.json                  # Lerna configuration
+```
+
+> **Note:** Lerna はメンテナンスモードです。新規プロジェクトでは Turborepo または Nx への移行を推奨します。既存 Lerna プロジェクトの移行ガイドは `references/monorepo-health.md` を参照。
+
+### Key Conventions (JS/TS Monorepo)
 
 - `apps/` for deployables, `packages/` (or `libs/`) for shared
 - Each package has its own `package.json` and `tsconfig.json`
 - Shared configs in `packages/config/`
 - Root `docs/` for project-wide documentation
 - Per-app docs in `apps/{app}/docs/` if needed
+
+---
+
+## Python Monorepo
+
+### uv Workspace
+
+```
+packages/                   # Python packages
+├── core/
+│   ├── src/
+│   │   └── core/
+│   │       ├── __init__.py
+│   │       └── models.py
+│   ├── tests/
+│   └── pyproject.toml
+├── api/
+│   ├── src/
+│   │   └── api/
+│   │       ├── __init__.py
+│   │       └── app.py
+│   ├── tests/
+│   └── pyproject.toml
+└── cli/
+    ├── src/
+    │   └── cli/
+    │       └── __init__.py
+    ├── tests/
+    └── pyproject.toml
+
+docs/                       # Monorepo-level docs
+scripts/                    # Shared scripts
+infra/
+
+pyproject.toml              # Workspace root (uv workspace)
+uv.lock                    # Unified lock file
+```
+
+### Pants / Bazel Build System
+
+```
+src/
+├── python/
+│   ├── core/
+│   │   ├── BUILD               # Pants/Bazel build target
+│   │   ├── models.py
+│   │   └── tests/
+│   │       ├── BUILD
+│   │       └── test_models.py
+│   ├── api/
+│   │   ├── BUILD
+│   │   ├── app.py
+│   │   └── tests/
+│   └── cli/
+│       ├── BUILD
+│       └── main.py
+└── resources/
+    └── config/
+
+pants.toml                  # Pants configuration
+# OR
+WORKSPACE                   # Bazel workspace
+BUILD.bazel                 # Root build
+```
+
+### Key Conventions (Python Monorepo)
+
+- uv workspace: `pyproject.toml` の `[tool.uv.workspace]` でメンバー定義
+- Pants/Bazel: `BUILD` ファイルで依存関係を明示的に宣言
+- 各パッケージが独立した `pyproject.toml` を持つ
+- 共有 lock ファイル（`uv.lock`）でバージョン一貫性を保証
+- パッケージ間参照は `workspace:` プロトコルまたは path dependency
+
+---
+
+## Go Monorepo
+
+### Go Multi-Module Workspace
+
+```
+services/                   # Individual Go modules
+├── api/
+│   ├── cmd/
+│   │   └── server/
+│   │       └── main.go
+│   ├── internal/
+│   │   ├── handler/
+│   │   └── service/
+│   ├── go.mod              # Module: example.com/services/api
+│   └── go.sum
+├── worker/
+│   ├── cmd/
+│   │   └── worker/
+│   │       └── main.go
+│   ├── internal/
+│   ├── go.mod              # Module: example.com/services/worker
+│   └── go.sum
+└── gateway/
+    ├── cmd/
+    ├── internal/
+    ├── go.mod
+    └── go.sum
+
+pkg/                        # Shared packages (importable)
+├── auth/
+│   ├── auth.go
+│   └── auth_test.go
+├── database/
+│   └── client.go
+├── go.mod                  # Module: example.com/pkg
+└── go.sum
+
+tools/                      # Internal tools
+scripts/
+docs/
+
+go.work                    # Go workspace file (Go 1.18+)
+go.work.sum
+```
+
+### Key Conventions (Go Monorepo)
+
+- `go.work` でワークスペースメンバーを定義（Go 1.18+）
+- 各サービスが独立した `go.mod` を持つ
+- `pkg/` は共有ライブラリ（公開インポート可能）
+- `internal/` はモジュール外から参照不可（Go コンパイラが強制）
+- `services/*/cmd/` が各サービスのエントリポイント
+- CI では `go.work` を使わず各モジュール単位でビルド可能にする
+
+---
+
+## Java / Kotlin Monorepo
+
+### Gradle Multi-Module
+
+```
+app/                        # Application module
+├── src/
+│   ├── main/
+│   │   ├── java/           # or kotlin/
+│   │   │   └── com/example/app/
+│   │   └── resources/
+│   └── test/
+│       └── java/
+│           └── com/example/app/
+└── build.gradle.kts
+
+core/                       # Core business logic
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── com/example/core/
+│   └── test/
+└── build.gradle.kts
+
+infra/                      # Infrastructure module
+├── src/
+└── build.gradle.kts
+
+shared/                     # Shared utilities
+├── src/
+└── build.gradle.kts
+
+buildSrc/                   # Shared build logic
+├── src/
+│   └── main/
+│       └── kotlin/
+│           └── conventions.gradle.kts
+└── build.gradle.kts
+
+docs/
+scripts/
+
+build.gradle.kts            # Root build (plugins, allprojects)
+settings.gradle.kts         # Module includes
+gradle.properties
+```
+
+### Maven Multi-Module
+
+```
+app/
+├── src/
+│   ├── main/java/
+│   └── test/java/
+└── pom.xml                 # Child POM
+
+core/
+├── src/
+└── pom.xml
+
+shared/
+├── src/
+└── pom.xml
+
+docs/
+scripts/
+
+pom.xml                     # Parent POM (modules, dependencyManagement)
+```
+
+### Key Conventions (Java/Kotlin Monorepo)
+
+- Gradle: `settings.gradle.kts` の `include()` でモジュール定義
+- Maven: 親 `pom.xml` の `<modules>` でモジュール定義
+- `buildSrc/` (Gradle) でビルドロジックを共有
+- Convention plugins でビルド設定の一貫性を保証
+- モジュール間依存は `implementation(project(":core"))` で宣言
+- BOM (Bill of Materials) で依存バージョンを一元管理
+
+---
+
+## Monorepo Detection Rules
+
+| Indicator | Type | Tool |
+|-----------|------|------|
+| `turbo.json` + `pnpm-workspace.yaml` | JS/TS | Turborepo |
+| `nx.json` | JS/TS | Nx |
+| `lerna.json` | JS/TS | Lerna (Legacy) |
+| `go.work` | Go | Go Workspace |
+| `pyproject.toml` with `[tool.uv.workspace]` | Python | uv |
+| `pants.toml` | Python/Multi | Pants |
+| `WORKSPACE` or `WORKSPACE.bazel` | Multi | Bazel |
+| `settings.gradle.kts` with `include` | JVM | Gradle |
+| Parent `pom.xml` with `<modules>` | JVM | Maven |
+| `Cargo.toml` with `[workspace]` | Rust | Cargo |
 
 ---
 

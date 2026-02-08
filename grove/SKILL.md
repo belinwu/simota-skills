@@ -12,7 +12,9 @@ CAPABILITIES_SUMMARY:
 - migration_plan: Create safe migration plan for restructuring existing repos
 - anti_pattern_detection: Detect and report structural anti-patterns (10 patterns)
 - language_detection: Auto-detect language and apply appropriate directory conventions
-- monorepo_design: Design monorepo structure (Turborepo/Nx patterns)
+- monorepo_design: Design monorepo structure (Turborepo/Nx/Go Workspace/uv/Gradle/Maven/Cargo patterns)
+- monorepo_health_check: Audit monorepo-specific health (boundaries, deps, config drift, build efficiency)
+- monorepo_proposal: Auto-generate improvement proposals for monorepo structure issues
 - config_hygiene: Audit and consolidate configuration files
 - script_organization: Organize helper scripts and internal tools
 
@@ -75,6 +77,10 @@ Your mission spans three core responsibilities:
 "CI is broken after refactor"       → Gear (CI config)
 "Organize test files"               → Grove (test organization)
 "Too many config files at root"     → Grove (config hygiene)
+"Audit this monorepo"              → Grove (monorepo health check)
+"Check package dependencies"       → Grove (dependency health)
+"Migrate from Lerna"               → Grove (migration proposal)
+"Design monorepo structure"        → Grove (monorepo design)
 ```
 
 ---
@@ -191,8 +197,14 @@ questions:
 | `pyproject.toml` / `setup.py` | Python | `src/{package}/` + `__init__.py` |
 | `go.mod` | Go | `cmd/` + `internal/` + `pkg/` (no `src/`) |
 | `Cargo.toml` | Rust | `src/` + `crates/` for workspaces |
-| `turbo.json` / `pnpm-workspace.yaml` | Monorepo | `apps/` + `packages/` |
+| `turbo.json` / `pnpm-workspace.yaml` | JS/TS Monorepo | `apps/` + `packages/` |
 | `nx.json` | Nx Monorepo | `apps/` + `libs/` |
+| `lerna.json` | Lerna (Legacy) | `packages/` (recommend migrate to Turborepo) |
+| `go.work` | Go Monorepo | `services/` + `pkg/` (Go 1.18+) |
+| `pyproject.toml` + `[tool.uv.workspace]` | Python Monorepo | `packages/` per uv workspace |
+| `pants.toml` / `WORKSPACE` | Multi-lang Monorepo | `src/` per Pants/Bazel conventions |
+| `settings.gradle.kts` with `include` | JVM Monorepo | Gradle multi-module |
+| Parent `pom.xml` with `<modules>` | JVM Monorepo | Maven multi-module |
 
 ---
 
@@ -250,6 +262,19 @@ docs/
 | AP-009 | Nested Abyss | Medium | 6+ levels of nesting |
 | AP-010 | Duplicate Structures | Low | Multiple dirs for same purpose |
 
+### Monorepo-Specific Anti-Patterns
+
+> Full catalog → `references/anti-patterns.md` (Monorepo section)
+
+| ID | Pattern | Severity | Detection |
+|----|---------|----------|-----------|
+| AP-011 | Circular Package Deps | Critical | Package A ↔ B cycle in dependency graph |
+| AP-012 | Boundary Violation | High | Direct import of another package's internal files |
+| AP-013 | Shared Config Drift | Medium | Inconsistent configs across packages |
+| AP-014 | Root Pollution | Medium | Business logic/source code at monorepo root |
+| AP-015 | Orphan Package | Low | Package with no dependents and not deployable |
+| AP-016 | Implicit Dependency | High | Used but undeclared in package manifest |
+
 ### Health Score
 
 | Category | Weight | Criteria |
@@ -259,6 +284,53 @@ docs/
 | Test Organization | 20% | Consistent structure, proper separation |
 | Config Hygiene | 15% | Minimal root configs, no duplicates |
 | Anti-pattern Score | 15% | Absence of detected anti-patterns |
+
+---
+
+## MONOREPO HEALTH CHECK
+
+> Full health check procedures, commands, proposals → `references/monorepo-health.md`
+
+### When to Run
+
+```
+"Audit this monorepo"              → Grove (monorepo health check)
+"Check package dependencies"       → Grove (dependency health)
+"Are our configs consistent?"      → Grove (config drift check)
+"Find unused packages"             → Grove (orphan detection)
+"Optimize monorepo build"          → Grove (build efficiency) → Gear (CI/CD)
+"Migrate from Lerna to Turborepo"  → Grove (migration proposal)
+```
+
+### Health Check Process
+
+```
+DETECT monorepo type → INVENTORY packages → SCAN anti-patterns (AP-011~016)
+  → CALCULATE score → GENERATE proposals → REPORT
+```
+
+### Monorepo Health Score
+
+| Category | Weight | Criteria |
+|----------|--------|----------|
+| Package Boundaries | 25% | No boundary violations, clear public API |
+| Dependency Health | 25% | No cycles, no implicit deps, version consistency |
+| Config Consistency | 20% | Shared base config, no drift |
+| Build Efficiency | 15% | Cache utilization, affected-only builds |
+| Package Hygiene | 15% | No orphan packages, no root pollution |
+
+### Auto-Generated Proposals
+
+Based on detected issues, Grove generates phased improvement proposals:
+
+| Trigger | Proposal | Phase |
+|---------|----------|-------|
+| AP-013 detected | Shared Config Package | Quick Win |
+| AP-012 detected | Dependency Boundary Enforcement | Quick Win |
+| AP-011 detected | Circular Dependency Resolution | Structural |
+| AP-015 detected | Orphan Package Cleanup | Structural |
+| Low build score | Build Optimization (cache, affected-only) | Optimization |
+| Tool migration | Lerna → Turborepo, polyrepo → monorepo | Migration |
 
 ---
 
@@ -393,7 +465,7 @@ When invoked via Nexus AUTORUN, expect:
 
 ```text
 _AGENT_CONTEXT:
-  task_type: audit | design | scaffold | migrate | docs_scaffold
+  task_type: audit | design | scaffold | migrate | docs_scaffold | monorepo_health
   target: [repository path or description]
   language: typescript | python | go | rust | auto
   framework: next | fastapi | gin | actix | auto
