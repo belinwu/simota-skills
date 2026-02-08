@@ -14,6 +14,10 @@ CAPABILITIES_SUMMARY:
 - engine_optimization: Engine-specific strategies (codex for speed/algorithms, gemini for creativity/broad context)
 - hybrid_selection: Combine best elements from multiple variants when no single winner
 - quality_maximization: Competition-driven quality through parallel comparison
+- self_competition: Same engine generates multiple variants via approach hints, model variants, or prompt verbosity differences
+- multi_variant_matrix: Systematic engine × approach combination for N-variant generation
+- quick_mode: Lightweight 4-phase comparison for small-scope tasks (≤ 3 files, ≤ 50 lines)
+- auto_mode_selection: Automatic Quick/Solo/Team mode selection based on task characteristics
 
 COLLABORATION_PATTERNS:
 - Pattern A: Complex Implementation (Sherpa -> Arena -> Guardian)
@@ -138,13 +142,79 @@ Arena (Team Leader)
 
 See `references/team-mode-guide.md` for Team Mode details.
 
+**Quick Mode** is available as a lightweight option when eligibility criteria are met (≤ 3 files, ≤ 2 acceptance criteria, ≤ 50 lines). See "Quick Mode" section below.
+
+### Multi-Variant Matrix
+
+For systematic variant generation, define a matrix of engine × approach combinations. This enables both cross-engine and same-engine competition in a single session.
+
+**Matrix design example:**
+```yaml
+variant_matrix:
+  # 1 engine × 2 approaches = 2 variants (Self-Competition)
+  - engine: codex
+    approach: "iterative, imperative style"
+    branch: arena/variant-codex-imperative
+  - engine: codex
+    approach: "functional, declarative style"
+    branch: arena/variant-codex-declarative
+
+  # 2 engines × 2 approaches = 4 variants (Team Mode recommended)
+  - engine: codex
+    model: o4-mini
+    branch: arena/variant-codex-o4-mini
+  - engine: codex
+    model: o3
+    branch: arena/variant-codex-o3
+  - engine: gemini
+    approach: "standard"
+    branch: arena/variant-gemini-standard
+  - engine: gemini
+    sandbox: true
+    branch: arena/variant-gemini-sandbox
+```
+
+**Guidelines:**
+- 2 variants → Solo Mode sufficient
+- 3-4 variants → Team Mode recommended
+- 5+ variants → Require explicit cost confirmation (ON_COST_THRESHOLD)
+
+See `references/engine-cli-guide.md` → "Prompt Construction Protocol" for approach hint injection and `references/team-mode-guide.md` for multi-variant spawn patterns.
+
+### Quick Mode
+
+A lightweight comparison mode for small-scope tasks. Skips the full 7-phase workflow in favor of a streamlined 4-phase process.
+
+**Eligibility criteria (ALL must be true):**
+- Target files ≤ 3
+- Acceptance criteria ≤ 2
+- Estimated change ≤ 50 lines
+
+**Quick Mode workflow:**
+```
+SPEC → EXECUTE → QUICK_EVAL → ADOPT
+```
+
+- **SPEC:** Same as standard — validate specification
+- **EXECUTE:** Generate 2 variants (Solo Mode only)
+- **QUICK_EVAL:** Scope Check + Test Run only (skip `codex review`). Score Correctness and Simplicity only (equal weight)
+- **ADOPT:** Merge winner; verify tests pass
+
+**Quick Mode does NOT include:**
+- Full 5-criteria weighted scoring
+- `codex review` automated review
+- Detailed comparison report
+- Cost estimation display
+
+If Quick Mode evaluation is inconclusive (variants score equally), escalate to standard workflow with full REVIEW + EVALUATE.
+
 ---
 
 ## Boundaries
 
 ### Always Do
 - Check engine availability (`which codex`, `which gemini`) before starting
-- Ensure at least 2 engines are available for comparison
+- Ensure at least 1 engine is available (2+ preferred for cross-engine competition; 1 enables Self-Competition)
 - **Lock file scope before any engine invocation** — define allowed_files and forbidden_files explicitly
 - **Build the complete engine prompt** (spec + allowed files + forbidden files + constraints + acceptance criteria) before execution
 - Use Git branches (`arena/variant-{engine}`) to isolate each variant
@@ -175,6 +245,45 @@ See `references/team-mode-guide.md` for Team Mode details.
 
 ---
 
+## Engine Availability & Self-Competition
+
+Arena adapts its strategy based on available engines:
+
+| Engines Available | Strategy | Description |
+|-------------------|----------|-------------|
+| 2+ engines | **Cross-Engine Competition** (default) | Different engines compete on the same spec |
+| 1 engine | **Self-Competition** | Same engine generates multiple variants with different strategies |
+| 0 engines | **ABORT** | Notify user, suggest installing engines |
+
+### Self-Competition Strategies
+
+When only one engine is available, Arena generates diversity through three strategies:
+
+| Strategy | Description | Branch Naming | Example |
+|----------|-------------|---------------|---------|
+| **Approach Hint** | Different design philosophies for the same spec | `arena/variant-{engine}-{approach}` | `arena/variant-codex-iterative`, `arena/variant-codex-functional` |
+| **Model Variant** | Different models within the same engine | `arena/variant-{engine}-{model}` | `arena/variant-codex-o4-mini`, `arena/variant-codex-o3` |
+| **Prompt Verbosity** | Concise vs detailed prompt formulations | `arena/variant-{engine}-{style}` | `arena/variant-codex-concise`, `arena/variant-codex-detailed` |
+
+**Self-Competition Solo Mode example:**
+```bash
+BASE_COMMIT=$(git rev-parse HEAD)
+
+# Variant 1: iterative approach
+git checkout -b arena/variant-codex-iterative $BASE_COMMIT
+codex exec --full-auto "{spec_prompt} Prefer an iterative, step-by-step approach."
+git add -A && git commit -m "arena: variant-codex-iterative implementation"
+
+# Variant 2: functional approach
+git checkout -b arena/variant-codex-functional $BASE_COMMIT
+codex exec --full-auto "{spec_prompt} Prefer a functional, declarative approach."
+git add -A && git commit -m "arena: variant-codex-functional implementation"
+```
+
+See `references/engine-cli-guide.md` → "Self-Competition Mode" for full strategy templates and prompt construction.
+
+---
+
 ## INTERACTION_TRIGGERS
 
 Use `AskUserQuestion` tool to confirm with user at these decision points.
@@ -197,8 +306,10 @@ questions:
   - question: "Which execution mode should Arena use?"
     header: "Mode"
     options:
-      - label: "Solo Mode (Recommended)"
-        description: "Sequential execution, 2 variants, lower cost"
+      - label: "Quick Mode (Recommended for small tasks)"
+        description: "Streamlined 4-phase workflow, 2 variants, minimal overhead. Eligible when ≤ 3 files, ≤ 2 criteria, ≤ 50 lines"
+      - label: "Solo Mode"
+        description: "Sequential execution, 2 variants, standard 7-phase workflow"
       - label: "Team Mode"
         description: "Parallel execution via Agent Teams, 3+ variants, higher cost"
     multiSelect: false
@@ -252,17 +363,21 @@ questions:
 **ON_COST_THRESHOLD:**
 ```yaml
 questions:
-  - question: "Estimated cost exceeds threshold. How should we proceed?"
+  - question: "Cost estimate for this Arena session. How should we proceed?"
     header: "Cost"
     options:
-      - label: "Reduce variants (Recommended)"
-        description: "Use fewer variants to stay within budget"
+      - label: "Proceed as planned (Recommended)"
+        description: "{mode}, {variant_count} variants, {engines} — estimated {cost_level}"
+      - label: "Reduce to 2 variants"
+        description: "Minimize cost with standard 2-variant comparison"
+      - label: "Switch to Quick Mode"
+        description: "Lightweight comparison if task is eligible (≤ 3 files, ≤ 50 lines)"
       - label: "Single engine only"
-        description: "Use only one engine to reduce cost"
-      - label: "Proceed anyway"
-        description: "Accept higher cost for more comparison"
+        description: "Use only one engine to halve cost"
     multiSelect: false
 ```
+
+**Auto-trigger:** This prompt is shown automatically when variant_count ≥ 3 OR Team Mode is selected.
 
 ---
 
@@ -454,6 +569,34 @@ Format:
 **Recommendation:** [Suggested approach going forward]
 ```
 
+### Auto-Recording Triggers
+
+Arena SHOULD automatically create a journal entry when any of these conditions occur:
+
+| Trigger | Condition | What to Record |
+|---------|-----------|----------------|
+| **Score Gap** | Winning variant scores ≥ 1.0 points above runner-up | Why the gap was so large; engine/approach effectiveness |
+| **Total Disqualification** | All variants disqualified in REVIEW | Root cause analysis; spec quality; engine limitations |
+| **Hybrid Adoption** | Hybrid variant was created from multiple sources | Which elements were combined; integration challenges |
+| **Self-Competition Result** | Self-Competition mode was used | Strategy effectiveness; whether diversity was sufficient |
+| **Quick Mode Escalation** | Quick Mode evaluation was inconclusive, escalated to standard | Why Quick Mode was insufficient; task characteristics |
+| **Engine Surprise** | Typically weaker engine won decisively | What made this task different; update heuristics |
+
+### Initial Journal Template
+
+When creating `.agents/arena.md` for the first time:
+
+```markdown
+# Arena Journal
+
+## Session Index
+| Date | Task | Mode | Engines | Winner | Score Gap | Notes |
+|------|------|------|---------|--------|-----------|-------|
+
+## Learnings
+<!-- Add entries using the standard format when auto-recording triggers fire -->
+```
+
 ---
 
 ## Daily Process
@@ -532,7 +675,7 @@ _AGENT_CONTEXT:
       Summary: "[what they did]"
   Constraints:
     Engine: "[codex / gemini / both]"
-    Execution_Mode: "[Solo / Team]"
+    Execution_Mode: "[Solo / Team / Auto]"  # Auto = Arena selects mode based on task characteristics
     Variants: "[N]"
     Max_Cost: "[optional cost limit]"
   Expected_Output:
@@ -540,6 +683,11 @@ _AGENT_CONTEXT:
     - Selection rationale
     - Test verification
 ```
+
+**Auto Mode:** When `Execution_Mode` is `"Auto"`, Arena selects the optimal mode based on task characteristics:
+- Quick Mode: ≤ 3 files, ≤ 2 acceptance criteria, ≤ 50 lines estimated
+- Solo Mode: 2 variants sufficient, low complexity
+- Team Mode: 3+ variants needed, high complexity, or parallelism benefits outweigh cost
 
 ### Output Format (to Nexus)
 

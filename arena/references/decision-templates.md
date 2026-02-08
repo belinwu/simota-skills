@@ -133,6 +133,102 @@ When the best solution combines elements from multiple variants.
 
 ---
 
+## Hybrid Adoption Procedure
+
+Step-by-step procedure for combining elements from multiple variants into a single implementation.
+
+### When to Use Hybrid Adoption
+
+- No single variant is best across all criteria
+- Variant A excels in some files/modules, Variant B in others
+- Combining the best parts produces a clearly superior result
+- The combined elements do not have architectural conflicts
+
+### File-Level Selection Method
+
+The primary hybrid approach is **file-level cherry-picking** — selecting specific files from different variants.
+
+#### Step-by-Step Procedure
+
+```bash
+# 1. Start from the base variant (the one with the higher overall score)
+git checkout $BASE_BRANCH
+git merge arena/variant-codex -m "arena: hybrid base from variant-codex"
+
+# 2. Cherry-pick specific files from the other variant
+git checkout arena/variant-gemini -- src/module/file-to-take.ts
+git checkout arena/variant-gemini -- src/module/file-to-take.test.ts
+
+# 3. Stage the cherry-picked files
+git add src/module/file-to-take.ts src/module/file-to-take.test.ts
+
+# 4. Commit the hybrid result
+git commit -m "arena: hybrid adoption (base: codex, cherry-picked: gemini files)"
+```
+
+#### Alternative: Partial Function-Level Cherry-Pick
+
+When you need specific functions from another variant (not entire files):
+
+```bash
+# 1. Merge the base variant
+git checkout $BASE_BRANCH
+git merge arena/variant-codex -m "arena: hybrid base from variant-codex"
+
+# 2. Show the specific function from the other variant
+git show arena/variant-gemini:src/module/file.ts
+# Manually identify the function/section to adopt
+
+# 3. Use Edit tool to replace the specific function
+# (Arena leader performs the surgical edit using Read + Edit tools)
+
+# 4. Commit the hybrid result
+git add -A && git commit -m "arena: hybrid adoption (base: codex, function-level: gemini)"
+```
+
+### Post-Hybrid Verification (MANDATORY)
+
+After any hybrid adoption, Arena MUST re-run verification checks. The combination of elements from different variants may introduce integration issues.
+
+```bash
+# 1. Scope Check — verify no unexpected files were added
+git diff --name-only $BASE_COMMIT..HEAD
+
+# 2. Build Verification — the hybrid MUST build
+npm run build  # or project-specific build command
+
+# 3. Test Execution — the hybrid MUST pass all tests
+npm test  # or project-specific test command
+
+# 4. Integration Check — verify combined elements work together
+# Read the hybrid files and check for:
+# - Import/export consistency
+# - Type compatibility
+# - No duplicated functionality
+# - No conflicting patterns (e.g., sync vs async approaches)
+```
+
+**If post-hybrid verification fails:**
+1. Identify the incompatible element
+2. Revert to the base variant: `git reset --hard HEAD~1` (reverts the hybrid commit)
+3. Either: fix the incompatibility and re-attempt, OR adopt the base variant as-is
+4. Document the hybrid failure in the session report
+
+### Hybrid Decision Documentation
+
+Always document hybrid decisions using the existing "Hybrid Variant Documentation" template (see above), plus:
+
+```markdown
+**Post-Hybrid Verification:**
+- [ ] Build passes
+- [ ] All tests pass
+- [ ] No import/type conflicts
+- [ ] Combined elements integrate cleanly
+- [ ] No performance regression from mixed approaches
+```
+
+---
+
 ## Escalation Report
 
 When Arena cannot make a clear selection and needs user input.

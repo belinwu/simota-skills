@@ -71,6 +71,53 @@ SPARK_TO_ARENA_HANDOFF:
   Recommended_Mode: "[Solo / Team]"
 ```
 
+### NEXUS_TO_ARENA_HANDOFF
+
+Task routed from Nexus orchestrator with execution preferences.
+
+```yaml
+NEXUS_TO_ARENA_HANDOFF:
+  Task: "[Task name]"
+  Specification:
+    description: "[What to implement]"
+    acceptance_criteria:
+      - "[Criterion 1]"
+      - "[Criterion 2]"
+    error_handling: "[Error handling requirements, if any]"
+    performance_constraints: "[Performance requirements, if any]"
+    security_constraints: "[Security requirements, if any]"
+  Execution_Preferences:
+    Mode: "[Solo / Team / Auto]"  # Auto = Arena selects based on task characteristics
+    Engine: "[codex / gemini / both / any]"  # any = Arena selects based on availability
+    Variants: "[N or auto]"  # auto = Arena decides count
+    Max_Cost: "[small / medium / large / unlimited]"
+    Self_Competition_Allowed: true  # Whether same-engine variants are acceptable
+  Quality_Requirements:
+    min_score: "[Minimum acceptable weighted score, e.g., 3.0]"
+    weight_overrides:  # Optional — override default evaluation weights
+      safety: 30  # e.g., for security-critical tasks
+      performance: 30  # e.g., for performance-critical tasks
+    must_pass_review: true  # Require REVIEW gate before adoption
+  Chain_Context:
+    Previous_Agent: "[Agent name or null]"
+    Previous_Output_Summary: "[What the previous agent produced]"
+    Position: "[Step X of Y]"
+    Next_Expected: "[Next agent or DONE]"
+  Scope_Hints:  # Optional — pre-identified files from upstream agents
+    likely_files:
+      - "[File path 1]"
+      - "[File path 2]"
+    forbidden_files:
+      - "[File path]"
+```
+
+**Auto Mode behavior:** When `Mode` is `"Auto"`, Arena selects the mode:
+- **Quick Mode** if: ≤ 3 likely_files, ≤ 2 acceptance_criteria, task appears small-scope
+- **Solo Mode** if: 2 variants sufficient, moderate complexity
+- **Team Mode** if: 3+ variants needed, high complexity, or parallelism benefits outweigh cost
+
+**Engine selection with `"any"`:** When `Engine` is `"any"`, Arena checks availability (`which codex`, `which gemini`) and selects based on Engine Selection Heuristics. If only 1 engine is available, Self-Competition is used automatically.
+
 ---
 
 ## Output Handoffs (Sending)

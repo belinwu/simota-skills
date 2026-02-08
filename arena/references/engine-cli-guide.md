@@ -28,7 +28,102 @@ which codex && echo "codex: available" || echo "codex: not found"
 which gemini && echo "gemini: available" || echo "gemini: not found"
 ```
 
-**Minimum requirement:** At least 2 engines must be available for Arena to operate. If only 1 engine is available, consider using Builder instead.
+**Minimum requirement:** At least 1 engine must be available. With 2+ engines, Arena runs cross-engine competition (default). With 1 engine, Arena switches to Self-Competition mode. With 0 engines, Arena aborts with a user notification.
+
+---
+
+## Self-Competition Mode
+
+When only one engine is available, Arena generates variant diversity through different strategies applied to the same engine. This ensures Arena can still provide comparative quality even without multiple engines.
+
+### Strategy 1: Approach Hint Divergence
+
+Inject different design philosophy hints into the same specification prompt.
+
+```bash
+BASE_COMMIT=$(git rev-parse HEAD)
+
+# Variant 1: iterative approach
+git checkout -b arena/variant-codex-iterative $BASE_COMMIT
+codex exec --full-auto "Implement the following specification.
+{spec_content}
+## Approach Directive
+Prefer an ITERATIVE, step-by-step, imperative approach. Use loops, mutable state, and procedural decomposition.
+{constraints_and_criteria}"
+git add -A && git commit -m "arena: variant-codex-iterative implementation"
+
+# Variant 2: functional approach
+git checkout -b arena/variant-codex-functional $BASE_COMMIT
+codex exec --full-auto "Implement the following specification.
+{spec_content}
+## Approach Directive
+Prefer a FUNCTIONAL, declarative approach. Use immutable data, pure functions, and composition.
+{constraints_and_criteria}"
+git add -A && git commit -m "arena: variant-codex-functional implementation"
+```
+
+**Branch naming:** `arena/variant-{engine}-{approach}`
+- `arena/variant-codex-iterative`
+- `arena/variant-codex-functional`
+- `arena/variant-codex-oop`
+- `arena/variant-gemini-modular`
+
+### Strategy 2: Model Variant Divergence
+
+Use different models within the same engine CLI.
+
+```bash
+BASE_COMMIT=$(git rev-parse HEAD)
+
+# Variant 1: o4-mini (fast, concise)
+git checkout -b arena/variant-codex-o4-mini $BASE_COMMIT
+codex exec --full-auto -m o4-mini "{spec_prompt}"
+git add -A && git commit -m "arena: variant-codex-o4-mini implementation"
+
+# Variant 2: o3 (powerful, thorough)
+git checkout -b arena/variant-codex-o3 $BASE_COMMIT
+codex exec --full-auto -m o3 "{spec_prompt}"
+git add -A && git commit -m "arena: variant-codex-o3 implementation"
+```
+
+**Branch naming:** `arena/variant-{engine}-{model}`
+- `arena/variant-codex-o4-mini`
+- `arena/variant-codex-o3`
+
+**Note:** Model availability depends on API access. Check engine documentation for supported models.
+
+### Strategy 3: Prompt Verbosity Divergence
+
+Vary the level of detail in the specification prompt.
+
+```bash
+BASE_COMMIT=$(git rev-parse HEAD)
+
+# Variant 1: concise prompt (minimal guidance, more engine creativity)
+git checkout -b arena/variant-codex-concise $BASE_COMMIT
+codex exec --full-auto "Implement: {brief_spec}. Files: {allowed_files}. Tests must pass."
+git add -A && git commit -m "arena: variant-codex-concise implementation"
+
+# Variant 2: detailed prompt (comprehensive guidance, less ambiguity)
+git checkout -b arena/variant-codex-detailed $BASE_COMMIT
+codex exec --full-auto "{full_structured_prompt_with_all_sections}"
+git add -A && git commit -m "arena: variant-codex-detailed implementation"
+```
+
+**Branch naming:** `arena/variant-{engine}-{style}`
+- `arena/variant-codex-concise`
+- `arena/variant-codex-detailed`
+
+### Choosing a Self-Competition Strategy
+
+| Strategy | Best When | Diversity Level |
+|----------|-----------|-----------------|
+| **Approach Hint** | Multiple valid design patterns exist | High |
+| **Model Variant** | Engine supports multiple models with different strengths | Medium |
+| **Prompt Verbosity** | Uncertain how much guidance the engine needs | Medium |
+| **Combined** | Maximum diversity needed (e.g., different model + different approach) | Very High |
+
+**Default recommendation:** Start with Approach Hint divergence — it produces the most meaningfully different implementations.
 
 ---
 
@@ -444,6 +539,29 @@ Implement the following specification.
 {acceptance_criteria}
 ```
 
+### Step 2b: Inject Approach Hints (for Multi-Variant / Self-Competition)
+
+When generating multiple variants (whether cross-engine or same-engine), append an **Approach Directive** section to the base prompt. This section differentiates each variant's implementation strategy.
+
+**Approach Directive template (append after Constraints, before Success Criteria):**
+
+```
+## Approach Directive
+{approach_hint}
+```
+
+**Common approach hints:**
+
+| Approach | Hint Text |
+|----------|-----------|
+| Iterative | "Prefer an ITERATIVE, step-by-step, imperative approach. Use loops, mutable state, and procedural decomposition." |
+| Functional | "Prefer a FUNCTIONAL, declarative approach. Use immutable data, pure functions, and composition." |
+| OOP | "Prefer an OBJECT-ORIENTED approach. Use classes, encapsulation, and polymorphism." |
+| Minimal | "Prefer the SIMPLEST possible implementation. Minimize abstraction layers and code volume." |
+| Robust | "Prefer a DEFENSIVE implementation. Add comprehensive error handling, input validation, and edge case coverage." |
+
+**Important:** The approach hint is added AFTER the standard constraints. It guides style and design philosophy — it does NOT override scope lock or forbidden files rules.
+
 ### Step 3: Post-Execution Scope Validation
 
 After each engine run, Arena MUST verify scope compliance:
@@ -483,12 +601,106 @@ Arena tracks costs via provider dashboards. In-session tracking is approximate:
 | codex | Per-token via OpenAI API | Check OpenAI dashboard or API usage page |
 | gemini | Per-token via Google AI | Check Google AI Studio usage |
 
+### Pre-Execution Cost Estimate
+
+Before executing, Arena should display a cost summary to the user:
+
+```
+Arena Cost Estimate
+───────────────────
+Mode:       {Solo / Team / Quick}
+Variants:   {N}
+Engines:    {engine list}
+Est. Scale: {small / medium / large}
+            - small: 2 variants, short prompts, simple task
+            - medium: 2-3 variants, moderate prompts
+            - large: 4+ variants or Team Mode
+
+Confirmation required: {Yes (≥3 variants or Team Mode) / No}
+```
+
+**Auto-confirmation triggers:**
+- 3+ variants → show estimate and require confirmation
+- Team Mode → show estimate and require confirmation
+- Quick Mode or 2-variant Solo Mode → show estimate, no confirmation needed
+
 ### In-Session Tracking
 
 Track cost qualitatively in the session summary:
 - Number of engine invocations per variant
 - Approximate prompt size (small / medium / large)
 - Refer users to provider dashboards for exact costs
+
+---
+
+## Engine-Specific Prompt Strategies
+
+While both engines use the same structured prompt template, their strengths differ. Optimize prompts based on engine characteristics.
+
+### codex Optimization
+
+codex excels with focused, directive prompts:
+
+| Principle | Guidance |
+|-----------|----------|
+| **Be concise** | Keep specification tight — codex performs well with clear, short instructions |
+| **Lead with constraints** | Place "Allowed Files" and "Forbidden" sections early in the prompt |
+| **Specify file paths explicitly** | codex is most accurate when exact file paths are given |
+| **Prefer imperative language** | "Create function X that does Y" over "Consider implementing..." |
+| **Minimize background context** | Skip business rationale — focus on technical requirements |
+
+**codex prompt structure priority:**
+1. Constraints and scope (most important — place first)
+2. Specification (functional requirements)
+3. Success criteria
+4. Minimal context (only if needed)
+
+### gemini Optimization
+
+gemini benefits from richer context and exploratory prompts:
+
+| Principle | Guidance |
+|-----------|----------|
+| **Provide business context** | Explain WHY the feature exists — gemini uses context for better design decisions |
+| **Include related files** | List reference files (read-only) so gemini understands the broader architecture |
+| **Describe patterns** | Explain existing code patterns — gemini adapts well to established conventions |
+| **Encourage alternatives** | "Consider multiple approaches before implementing" can yield creative solutions |
+| **Use the Codebase Context section** | Fill in tech_stack, patterns_summary, and reference_files thoroughly |
+
+**gemini prompt structure priority:**
+1. Business context and rationale (why this change)
+2. Specification (functional requirements)
+3. Codebase context (tech stack, patterns, related files)
+4. Constraints and scope
+5. Success criteria
+
+### Cross-Engine Prompt Adjustment Example
+
+For the same specification, adapt the prompt:
+
+**codex version (compact, directive):**
+```
+Implement JWT authentication.
+## Allowed Files: src/auth/jwt.ts, src/auth/jwt.test.ts
+## Forbidden: package.json, tsconfig.json, .env*
+## Constraints: [standard constraints]
+## Spec: Create verifyToken(token: string): Promise<UserPayload>. Use jsonwebtoken library (already installed). Throw AuthError on invalid/expired tokens. Add unit tests.
+## Success Criteria: Tests pass. Function handles expired, malformed, and valid tokens.
+```
+
+**gemini version (contextual, exploratory):**
+```
+Implement JWT authentication for our Express API.
+## Codebase Context
+- Stack: Express + TypeScript + jsonwebtoken
+- Auth pattern: Middleware-based, see src/middleware/auth.ts for current session approach
+- Error handling: Custom AppError class in src/errors/
+## Spec: Create verifyToken(token: string): Promise<UserPayload>. Should integrate with existing error handling patterns. Consider both sync and async verification approaches.
+## Allowed Files: src/auth/jwt.ts, src/auth/jwt.test.ts
+## Forbidden: package.json, tsconfig.json, .env*
+## Constraints: [standard constraints]
+## Success Criteria: Tests pass. Function handles expired, malformed, and valid tokens.
+```
 
 ---
 

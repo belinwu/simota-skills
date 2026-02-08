@@ -82,6 +82,47 @@ Arena Leader
 └── reviewer       → (waits for completion) → codex review on both branches
 ```
 
+### Pattern 4: Same-Engine Multi-Variant (Self-Competition)
+
+Multiple subagents using the same engine with different approach hints for Self-Competition.
+
+```
+Arena Leader
+├── variant-codex-iterative  → codex exec "{spec} Prefer iterative approach"
+├── variant-codex-functional → codex exec "{spec} Prefer functional approach"
+└── variant-codex-minimal    → codex exec "{spec} Prefer minimal implementation"
+```
+
+**Worktree setup for same-engine variants:**
+
+```bash
+SESSION_ID="arena-$(date +%s)"
+BASE_COMMIT=$(git rev-parse HEAD)
+mkdir -p /tmp/$SESSION_ID
+
+# Create branches for each approach variant
+git branch arena/variant-codex-iterative $BASE_COMMIT
+git branch arena/variant-codex-functional $BASE_COMMIT
+git branch arena/variant-codex-minimal $BASE_COMMIT
+
+# Create isolated worktrees
+git worktree add /tmp/$SESSION_ID/variant-codex-iterative arena/variant-codex-iterative
+git worktree add /tmp/$SESSION_ID/variant-codex-functional arena/variant-codex-functional
+git worktree add /tmp/$SESSION_ID/variant-codex-minimal arena/variant-codex-minimal
+```
+
+### Pattern 5: Mixed Competition (Cross-Engine + Self-Competition)
+
+Combine cross-engine and same-engine variants for maximum diversity.
+
+```
+Arena Leader
+├── variant-codex-imperative → codex exec "{spec} Prefer imperative style"
+├── variant-codex-functional → codex exec "{spec} Prefer functional style"
+├── variant-gemini-standard  → gemini -p "{spec}" --yolo
+└── variant-gemini-sandbox   → gemini -p "{spec}" --sandbox
+```
+
 ---
 
 ## Lifecycle
@@ -407,6 +448,59 @@ Send a message with:
 {engine_prompt}
 ```
 
+### variant-{engine}-{approach} (Self-Competition)
+
+For same-engine variants with approach hints. Adapt the base engine template by adding the approach directive.
+
+```
+You are variant-{engine}-{approach} on the arena-{task_id} team.
+
+## Your Role
+You are a PROXY for the {engine} CLI tool. You do NOT implement code yourself.
+Your sole job is to invoke `{engine_command}` via the Bash tool in your assigned worktree directory.
+
+## ABSOLUTE PROHIBITIONS
+[Same as standard engine template — see variant-codex/variant-gemini templates above]
+
+## ALLOWED ACTIONS (exhaustive list)
+[Same as standard engine template]
+
+## Your Worktree
+Your assigned working directory is: {worktree_path}
+This directory is an isolated copy of the repository on branch `arena/variant-{engine}-{approach}`.
+The branch was already created by the team leader. Do NOT create or switch branches.
+All your commands MUST run inside this directory.
+
+## Execution Steps
+
+### 1. Move to your assigned worktree
+```bash
+cd {worktree_path}
+```
+Verify you are on the correct branch:
+```bash
+git branch --show-current
+# Expected output: arena/variant-{engine}-{approach}
+```
+
+### 2. Run {engine} with the EXACT prompt below (do not modify it)
+```bash
+{engine_invocation_command}
+```
+NOTE: The prompt includes an Approach Directive that differentiates this variant from others using the same engine. Do NOT remove or modify the Approach Directive.
+
+### 3-6. [Same as standard engine template — scope validation, commit, report, mark complete]
+
+## Allowed Files
+{allowed_files_list}
+
+## Forbidden Files
+{forbidden_files_list}
+
+## Engine Prompt (pass to {engine} exactly as-is — includes Approach Directive)
+{engine_prompt_with_approach_hint}
+```
+
 ---
 
 ## Monitoring & Error Handling
@@ -458,6 +552,125 @@ Task(
   # Include worktree_path="/tmp/$SESSION_ID/variant-codex"
 )
 ```
+
+---
+
+## Cleanup Guarantee Protocol
+
+Cleanup MUST succeed even if individual steps fail. Use `|| true` to ensure all cleanup steps are attempted, and `--force` flags where available.
+
+### Guaranteed Cleanup Sequence
+
+```bash
+# Step 1: Remove worktrees (force removal — tolerates dirty state)
+git worktree remove --force /tmp/$SESSION_ID/variant-codex 2>/dev/null || true
+git worktree remove --force /tmp/$SESSION_ID/variant-gemini 2>/dev/null || true
+# Repeat for all variant worktrees...
+
+# Step 2: Prune stale worktree references
+git worktree prune || true
+
+# Step 3: Remove temp directory
+rm -rf /tmp/$SESSION_ID || true
+
+# Step 4: Delete variant branches
+git branch -D arena/variant-codex 2>/dev/null || true
+git branch -D arena/variant-gemini 2>/dev/null || true
+# Repeat for all variant branches...
+
+# Step 5: Restore stashed work (only if stash was created)
+git stash pop 2>/dev/null || true
+```
+
+**Key principles:**
+- Every cleanup command uses `|| true` to prevent cascading failures
+- `git worktree remove --force` handles dirty worktrees (uncommitted changes)
+- `git worktree prune` cleans up references to manually-deleted worktree directories
+- `2>/dev/null` suppresses error output for already-cleaned resources
+- Worktrees MUST be removed before their branches are deleted
+
+### When to Run Cleanup
+
+| Scenario | Trigger |
+|----------|---------|
+| Normal completion | After ADOPT phase, before session ends |
+| Partial failure | If any subagent fails and session continues with remaining variants |
+| Total failure | All variants fail or are disqualified |
+| User cancellation | User requests to stop the Arena session |
+| Error in EVALUATE/ADOPT | Cleanup is mandatory regardless of where the error occurs |
+
+**IMPORTANT:** Even if the Arena session fails at any point, the Cleanup Guarantee Protocol MUST run. Arena leader should wrap the main workflow in a try-finally pattern (conceptually) to ensure cleanup always executes.
+
+---
+
+## Subagent Failure Scenarios
+
+Detailed detection and recovery procedures for each failure type.
+
+| # | Failure Scenario | Detection Method | Recovery Action | Max Retries |
+|---|-----------------|-----------------|-----------------|-------------|
+| 1 | **Engine CLI failure** (non-zero exit, error output) | Subagent reports error via SendMessage; task status remains in_progress | Reset branch to BASE_COMMIT, re-spawn subagent with same prompt | 1 |
+| 2 | **Subagent no response** (>5 min silence) | TaskList shows task in_progress for >5 min; no SendMessage received | Send status check → if still no response after 1 min, send shutdown_request → re-spawn | 1 |
+| 3 | **Git operation failure** (commit fails, merge conflict) | Subagent reports git error via SendMessage | Leader manually resolves: `git worktree remove --force` → recreate worktree → re-spawn | 1 |
+| 4 | **Worktree creation failure** (path exists, branch in use) | `git worktree add` returns non-zero exit | Clean stale references: `git worktree prune` → retry creation; if still fails, use different temp path | 2 |
+| 5 | **All variants fail** (every subagent reports failure or all disqualified) | All tasks completed with failure reports or all variants disqualified in REVIEW | Run Cleanup Guarantee Protocol → fall back to Solo Mode with refined prompts; if Solo also fails, ABORT and notify user | 0 (escalation) |
+
+### Failure Recovery Flowchart
+
+```
+Subagent reports error or timeout detected
+    │
+    ├── Single variant failure?
+    │   ├── Retries remaining? → Reset branch + Re-spawn
+    │   └── No retries left? → Mark variant as FAILED, continue with remaining variants
+    │
+    └── All variants failed?
+        ├── Attempt Solo Mode fallback with refined prompts
+        └── Solo also fails? → ABORT + notify user + run Cleanup Guarantee
+```
+
+### Partial Success Handling
+
+When some variants succeed and others fail:
+- **Minimum viable evaluation:** Arena can evaluate with as few as 1 successful variant
+- **Single variant scenario:** If only 1 variant succeeds, adopt it without comparative scoring (but still run REVIEW gate)
+- **Report failures:** Include failed variants in the session summary with failure reasons
+
+---
+
+## Timeout Settings
+
+Default timeout values for Team Mode operations. Adjust based on task complexity.
+
+| Operation | Default Timeout | Adjustment |
+|-----------|----------------|------------|
+| Engine CLI execution (per invocation) | 5 minutes | Increase to 10 min for large codebases or complex specs |
+| Subagent total completion | 10 minutes | Includes engine execution + scope validation + commit |
+| Full Arena session (Team Mode) | 30 minutes | Covers SPAWN through CLEANUP |
+| Status check response | 1 minute | Time to wait after sending status check before escalating |
+
+### Timeout Enforcement
+
+```bash
+# Arena leader monitors elapsed time per subagent
+# If subagent exceeds timeout:
+
+# 1. Send status check
+SendMessage(type="message", recipient="variant-codex", content="Status check: have you completed execution?")
+
+# 2. Wait 1 minute for response
+
+# 3. If no response, initiate recovery
+SendMessage(type="shutdown_request", recipient="variant-codex", content="Timeout exceeded, shutting down")
+
+# 4. Run Cleanup Guarantee for this variant's resources
+git worktree remove --force /tmp/$SESSION_ID/variant-codex 2>/dev/null || true
+git branch -D arena/variant-codex 2>/dev/null || true
+
+# 5. Re-spawn if retries available (see Subagent Failure Scenarios)
+```
+
+**Note:** Timeouts are soft limits enforced by the Arena leader through periodic TaskList checks. There is no hard process kill — the leader uses shutdown_request and then cleans up resources.
 
 ---
 

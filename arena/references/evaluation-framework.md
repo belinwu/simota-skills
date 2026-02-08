@@ -156,6 +156,69 @@ Review results directly feed into the 5-criteria scoring:
 
 ---
 
+## Automated Review Gate Logic
+
+The REVIEW phase follows a strict sequential gate with early termination. Variants that fail critical gates are immediately disqualified without running subsequent checks.
+
+### Disqualification Fast-Path
+
+```
+┌─────────────┐
+│ Scope Check  │──FAIL (unrevertable)──→ DISQUALIFY (skip all remaining checks)
+└──────┬───────┘
+       │ PASS / WARN (reverted)
+       ▼
+┌─────────────┐
+│ Build Check  │──FAIL──→ DISQUALIFY (skip all remaining checks)
+└──────┬───────┘
+       │ PASS
+       ▼
+┌─────────────┐
+│ Test Check   │──FAIL──→ Correctness penalty applied (continue to next check)
+└──────┬───────┘
+       │ PASS
+       ▼
+┌──────────────┐
+│ codex review  │──→ Informational only (continue — never disqualifies)
+└──────┬────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Acceptance Check  │──ALL UNMET──→ DISQUALIFY
+└──────┬────────────┘
+       │ SOME or ALL MET
+       ▼
+   PASS → Proceed to EVALUATE
+```
+
+### Gate Execution Rules
+
+| Gate | Pass Condition | Fail Action | Continues? |
+|------|---------------|-------------|------------|
+| **Scope Check** | Only allowed files modified, OR unauthorized files successfully reverted | Unrevertable scope violation (core logic in forbidden files) → DISQUALIFY | Only if PASS/WARN |
+| **Build Check** | Project builds successfully (`npm run build`, `go build`, etc.) | Build failure → DISQUALIFY immediately | Only if PASS |
+| **Test Check** | All existing tests pass | Test failures → apply Correctness penalty (−1 per critical failure, −0.5 per minor) | Always continues |
+| **codex review** | N/A (informational gate) | Findings feed into Code Quality and Safety scores | Always continues |
+| **Acceptance Check** | At least 1 acceptance criterion met | ALL criteria unmet → DISQUALIFY | Only if SOME/ALL MET |
+
+### Early Termination Benefits
+
+- **Saves time:** Build failures are caught before running expensive test suites or codex review
+- **Clear signal:** Disqualified variants are excluded from EVALUATE — no ambiguity about whether to include them
+- **Resource efficiency:** codex review (API cost) is only run on variants that pass Build Check
+
+### Edge Cases
+
+| Scenario | Handling |
+|----------|----------|
+| No build command configured | Skip Build Check (PASS with note) |
+| No test command configured | Skip Test Check (PASS with note) |
+| codex review unavailable | Skip codex review (no impact on scoring) |
+| Scope violation partially revertable | Revert what's possible → WARN, deduct from Code Quality, continue |
+| All variants disqualified | Abort EVALUATE → notify user → suggest spec refinement or re-run |
+
+---
+
 ## Evaluation Data Collection
 
 Arena collects evaluation data directly from Git and file reading — no external abstraction layer.
@@ -220,6 +283,100 @@ git checkout arena/variant-codex
 | Some test failures | Score 2-3 (depending on severity) |
 | Major test failures | Score 1-2 |
 | Tests cannot run | Score 1 (investigate) |
+
+---
+
+## Enhanced Comparison Tooling
+
+Beyond basic `git diff`, use these techniques for deeper variant comparison.
+
+### Statistical Comparison
+
+```bash
+# File-level change statistics per variant
+git diff --stat $BASE_COMMIT..arena/variant-codex
+git diff --stat $BASE_COMMIT..arena/variant-gemini
+
+# Compact summary (insertions/deletions only)
+git diff --shortstat $BASE_COMMIT..arena/variant-codex
+git diff --shortstat $BASE_COMMIT..arena/variant-gemini
+
+# Side-by-side file change comparison
+echo "=== Variant A (codex) ===" && git diff --stat $BASE_COMMIT..arena/variant-codex
+echo "=== Variant B (gemini) ===" && git diff --stat $BASE_COMMIT..arena/variant-gemini
+```
+
+### Function/Symbol-Level Diff Detection
+
+Identify what logical units changed (not just lines):
+
+```bash
+# Show function-level changes (for supported languages)
+git diff --diff-filter=M -p $BASE_COMMIT..arena/variant-codex | grep -E '^\+.*function |^\+.*class |^\+.*def |^\+.*const .* = '
+
+# Compare function signatures between variants
+git show arena/variant-codex:src/module.ts | grep -E 'export (function|class|const|interface)' > /tmp/codex-exports.txt
+git show arena/variant-gemini:src/module.ts | grep -E 'export (function|class|const|interface)' > /tmp/gemini-exports.txt
+diff /tmp/codex-exports.txt /tmp/gemini-exports.txt
+```
+
+### Parallel Test Result Comparison
+
+Run tests on both variants and compare results side-by-side:
+
+```bash
+# Collect test results for each variant
+git checkout arena/variant-codex
+npm test 2>&1 | tee /tmp/test-result-codex.txt
+TEST_EXIT_CODEX=$?
+
+git checkout arena/variant-gemini
+npm test 2>&1 | tee /tmp/test-result-gemini.txt
+TEST_EXIT_GEMINI=$?
+
+# Quick comparison
+echo "=== Test Results Comparison ==="
+echo "Codex: exit=$TEST_EXIT_CODEX"
+echo "Gemini: exit=$TEST_EXIT_GEMINI"
+diff /tmp/test-result-codex.txt /tmp/test-result-gemini.txt || true
+```
+
+### Complexity Metrics
+
+Approximate code complexity comparison:
+
+```bash
+# Line count comparison
+echo "=== Lines of Code ==="
+git diff --stat $BASE_COMMIT..arena/variant-codex | tail -1
+git diff --stat $BASE_COMMIT..arena/variant-gemini | tail -1
+
+# File count comparison
+echo "=== Files Changed ==="
+git diff --name-only $BASE_COMMIT..arena/variant-codex | wc -l
+git diff --name-only $BASE_COMMIT..arena/variant-gemini | wc -l
+
+# New vs modified files
+echo "=== New Files (codex) ===" && git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-codex
+echo "=== New Files (gemini) ===" && git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-gemini
+```
+
+### Comparison Summary Template
+
+After collecting comparison data, summarize:
+
+```markdown
+| Metric | Variant A ({engine}) | Variant B ({engine}) |
+|--------|---------------------|---------------------|
+| Files changed | {N} | {N} |
+| Lines added | {N} | {N} |
+| Lines removed | {N} | {N} |
+| New files | {N} | {N} |
+| Test result | PASS/FAIL | PASS/FAIL |
+| Tests passing | {N}/{total} | {N}/{total} |
+| Build result | PASS/FAIL | PASS/FAIL |
+| Exported symbols | {N} | {N} |
+```
 
 ---
 
@@ -320,3 +477,73 @@ When variants score within 0.2 points of each other:
 3. **Safety wins** - If security is relevant, prefer safer
 4. **Cost wins** - If all else equal, prefer cheaper engine
 5. **Escalate** - If truly indistinguishable, present both to user with trade-offs
+
+---
+
+## Learning Metrics
+
+Track session outcomes to improve future Arena decisions. Record metrics in the Arena journal (`.agents/arena.md`) after each session.
+
+### Session Metrics Schema
+
+```yaml
+session_metrics:
+  date: "YYYY-MM-DD"
+  task_type: "feature | bugfix | refactor | optimization | migration"
+  mode: "Quick | Solo | Team"
+  engines_used:
+    - engine: "codex"
+      model: "o4-mini"  # if specified
+    - engine: "gemini"
+  variant_count: 2
+  self_competition: false  # true if same engine used for multiple variants
+  self_competition_strategy: "approach_hint | model_variant | prompt_verbosity | null"
+  winner:
+    variant: "arena/variant-codex"
+    engine: "codex"
+    model: "o4-mini"
+    approach_hint: "iterative"  # if applicable
+  scores:
+    - variant: "arena/variant-codex"
+      total: 4.25
+      correctness: 5
+      code_quality: 4
+      performance: 4
+      safety: 4
+      simplicity: 3
+    - variant: "arena/variant-gemini"
+      total: 3.80
+      correctness: 4
+      code_quality: 4
+      performance: 3
+      safety: 4
+      simplicity: 4
+  score_gap: 0.45  # winner - runner-up
+  disqualified_variants: 0
+  hybrid_adopted: false
+  quick_mode_escalated: false  # true if Quick Mode was insufficient
+  estimated_cost: "small"  # small/medium/large
+```
+
+### Metrics Accumulation
+
+Over time, accumulated metrics inform:
+
+| Metric Pattern | Insight | Action |
+|----------------|---------|--------|
+| Engine X wins >70% for task_type Y | Engine X is dominant for this task type | Update Engine Selection Heuristics default |
+| Self-Competition score gaps consistently <0.5 | Same engine produces similar variants | Prefer cross-engine competition or combined strategies |
+| Model A consistently beats Model B | Model performance hierarchy for this codebase | Default to winning model |
+| Quick Mode escalation rate >30% | Eligibility criteria too permissive | Tighten Quick Mode criteria (e.g., ≤ 2 files instead of ≤ 3) |
+| Average Team Mode score gap > Solo Mode | Parallelism and diversity improve quality | Recommend Team Mode more aggressively |
+
+### Compact Journal Entry Format
+
+For quick metric logging after each session:
+
+```markdown
+## YYYY-MM-DD - [Task Summary]
+**Metrics:** {mode} | {engines} | {variant_count}v | Winner: {engine} ({score}) | Gap: {score_gap}
+**Discovery:** [What was learned]
+**Impact:** [How this changes future usage]
+```
