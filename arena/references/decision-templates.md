@@ -57,16 +57,17 @@ Use when validating specification quality before running engines.
 
 ---
 
-## Session Summary Format
+## Session Summary Format (COMPETE)
 
-Use at the end of an Arena session to summarize all activity.
+Use at the end of a COMPETE session to summarize all activity.
 
 ```markdown
-### Arena Session Summary
+### Arena Session Summary (COMPETE)
 
 **Task:** [Task description]
 **Date:** [YYYY-MM-DD]
-**Mode:** [Solo / Team]
+**Paradigm:** COMPETE
+**Mode:** [Solo / Team / Quick]
 
 **Variants Executed:**
 | Session ID | Engine | Branch | Winner | Cost Est. |
@@ -88,18 +89,74 @@ Use at the end of an Arena session to summarize all activity.
 
 ---
 
+## Session Summary Format (COLLABORATE)
+
+Use at the end of a COLLABORATE session.
+
+```markdown
+### Arena Session Summary (COLLABORATE)
+
+**Task:** [Task description]
+**Date:** [YYYY-MM-DD]
+**Paradigm:** COLLABORATE
+**Mode:** [Solo / Team]
+
+**Subtasks Executed:**
+| Subtask ID | Engine | Branch | Status | Files Changed |
+|------------|--------|--------|--------|---------------|
+| [subtask_id] | [engine] | arena/task-[subtask_id] | [PASS/FAIL] | [count] |
+
+**Integration Order:** [subtask_id_1] → [subtask_id_2] → ...
+**Merge Conflicts:** [None / Resolved (details)]
+
+**Total Cost Estimate:** [Approximate]
+
+**Integration Verification:**
+- Build: [PASS/FAIL]
+- Tests: [PASS/FAIL] ([N] tests)
+- codex review: [Summary]
+- Interface check: [PASS/FAIL]
+
+**Files Changed (total):** [count]
+
+**Engine Effectiveness:**
+- codex ([subtask_ids]): [Brief assessment]
+- gemini ([subtask_ids]): [Brief assessment]
+
+**Key Learnings:**
+- [Learning 1 - e.g., decomposition strategy insight]
+- [Learning 2 - e.g., integration observation]
+```
+
+---
+
 ## AUTORUN Compact Report
 
 Abbreviated format for Nexus autonomous mode. Omit verbose explanations.
 
+### COMPETE
+
 ```markdown
-## Arena Result
-- Session: [session_id] | Mode: [Solo/Team] | Engine: [engine(s)] | Variants: [N]
+## Arena COMPETE Result
+- Session: [session_id] | Mode: [Solo/Team/Quick] | Engine: [engine(s)] | Variants: [N]
 - Winner: Variant [X] (Score: [X.XX/5.00])
 - Rationale: [One sentence]
 - Files: [list]
 - Cost: [estimate]
 - Status: [PASS/FAIL/PENDING]
+```
+
+### COLLABORATE
+
+```markdown
+## Arena COLLABORATE Result
+- Session: [session_id] | Mode: [Solo/Team] | Subtasks: [N]
+- Engines: codex ([subtask_ids]), gemini ([subtask_ids])
+- Integration: [CLEAN / CONFLICTS_RESOLVED]
+- Files: [list]
+- Build: [PASS/FAIL] | Tests: [PASS/FAIL]
+- Cost: [estimate]
+- Status: [SUCCESS/PARTIAL/FAILED]
 ```
 
 ---

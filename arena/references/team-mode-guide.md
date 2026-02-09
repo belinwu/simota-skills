@@ -19,15 +19,19 @@ Arena (Team Leader)
 
 ---
 
-## Arena vs Rally: Competition vs Cooperation
+## Arena Paradigms and Rally: Competition vs Cooperation
 
-| Aspect | Arena Team Mode | Rally |
-|--------|----------------|-------|
-| **Purpose** | Competition — same spec, different engines/approaches | Cooperation — different tasks, all results integrated |
-| **Subagent tasks** | All do the SAME task differently | Each does a DIFFERENT task |
-| **Result handling** | Compare → select best → discard rest | Collect all → integrate all |
-| **Typical use** | "Which engine produces better auth code?" | "Build frontend + backend + tests in parallel" |
-| **Evaluation** | 5-criteria scoring, winner selection | Completeness check, integration validation |
+| Aspect | Arena COMPETE (Team Mode) | Arena COLLABORATE (Team Mode) | Rally |
+|--------|--------------------------|-------------------------------|-------|
+| **Purpose** | Competition — same spec, different engines | Cooperation — different subtasks, external engines | Cooperation — different tasks, Claude Code only |
+| **Subagent tasks** | All do the SAME task differently | Each does a DIFFERENT subtask | Each does a DIFFERENT task |
+| **External engines** | codex, gemini | codex, gemini | None (Claude Code only) |
+| **Result handling** | Compare → select best → discard rest | Merge ALL in dependency order | Collect all → integrate all |
+| **Branch naming** | `arena/variant-{engine}` | `arena/task-{subtask_id}` | N/A (Rally's own protocol) |
+| **Typical use** | "Which engine produces better auth code?" | "codex handles algorithm, gemini handles API" | "Build frontend + backend + tests in parallel" |
+| **Evaluation** | 5-criteria scoring, winner selection | Per-subtask review, integration verification | Completeness check, integration validation |
+
+**This guide covers COMPETE Team Mode.** For COLLABORATE Team Mode (parallel subtask execution with worktrees), see `collaborate-mode-guide.md` — the same worktree isolation mechanism is reused.
 
 ---
 

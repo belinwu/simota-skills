@@ -3,8 +3,11 @@
 Quality metrics, scoring methodology, and comparison report templates for variant evaluation.
 
 **Pipeline position:** This framework covers the REVIEW → EVALUATE stages of the Arena workflow:
-- Solo Mode: `SPEC → SCOPE LOCK → EXECUTE → **REVIEW → EVALUATE** → ADOPT → VERIFY`
-- Team Mode: `SPEC → DESIGN → SPAWN → COMPETE → **REVIEW → EVALUATE** → ADOPT → CLEANUP`
+- COMPETE Solo: `SPEC → SCOPE LOCK → EXECUTE → **REVIEW → EVALUATE** → ADOPT → VERIFY`
+- COMPETE Team: `SPEC → DESIGN → SPAWN → COMPETE → **REVIEW → EVALUATE** → ADOPT → CLEANUP`
+- COLLABORATE Solo/Team: `SPEC → DECOMPOSE → SCOPE LOCK → EXECUTE → **REVIEW** → INTEGRATE → VERIFY`
+
+**Note:** In COLLABORATE mode, REVIEW is per-subtask (same checklist) but there is no comparative EVALUATE phase. Instead, all passing subtasks proceed to INTEGRATE. See `collaborate-mode-guide.md` for COLLABORATE-specific review considerations (e.g., EXPECTED_FAIL for cross-subtask dependencies).
 
 ---
 
@@ -490,6 +493,7 @@ Track session outcomes to improve future Arena decisions. Record metrics in the 
 session_metrics:
   date: "YYYY-MM-DD"
   task_type: "feature | bugfix | refactor | optimization | migration"
+  paradigm: "COMPETE | COLLABORATE"
   mode: "Quick | Solo | Team"
   engines_used:
     - engine: "codex"

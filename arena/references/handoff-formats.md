@@ -111,12 +111,16 @@ NEXUS_TO_ARENA_HANDOFF:
       - "[File path]"
 ```
 
-**Auto Mode behavior:** When `Mode` is `"Auto"`, Arena selects the mode:
-- **Quick Mode** if: ≤ 3 likely_files, ≤ 2 acceptance_criteria, task appears small-scope
-- **Solo Mode** if: 2 variants sufficient, moderate complexity
-- **Team Mode** if: 3+ variants needed, high complexity, or parallelism benefits outweigh cost
+**Auto Paradigm behavior:** When `Mode` is `"Auto"`, Arena selects the paradigm:
+- **COMPETE** if: task is comparison-oriented, single cohesive spec, quality uncertainty
+- **COLLABORATE** if: task naturally decomposes into independent subtasks with different engine strengths
 
-**Engine selection with `"any"`:** When `Engine` is `"any"`, Arena checks availability (`which codex`, `which gemini`) and selects based on Engine Selection Heuristics. If only 1 engine is available, Self-Competition is used automatically.
+**Auto Mode behavior:** When `Mode` is `"Auto"`, Arena selects the execution mode:
+- **Quick Mode** if: ≤ 3 likely_files, ≤ 2 acceptance_criteria, task appears small-scope (COMPETE only)
+- **Solo Mode** if: 2 variants/subtasks sufficient, moderate complexity
+- **Team Mode** if: 3+ variants/subtasks needed, high complexity, or parallelism benefits outweigh cost
+
+**Engine selection with `"any"`:** When `Engine` is `"any"`, Arena checks availability (`which codex`, `which gemini`) and selects based on Engine Selection Heuristics. If only 1 engine is available, Self-Competition is used automatically (COMPETE) or same-engine decomposition (COLLABORATE).
 
 ---
 
@@ -124,22 +128,33 @@ NEXUS_TO_ARENA_HANDOFF:
 
 ### ARENA_TO_GUARDIAN_HANDOFF
 
-Implementation selected and ready for PR preparation.
+Implementation selected (COMPETE) or integrated (COLLABORATE) and ready for PR preparation.
 
 ```yaml
 ARENA_TO_GUARDIAN_HANDOFF:
   Implementation:
     session_id: "[Arena session ID]"
-    mode: "[Solo / Team]"
-    selected_variant: "[variant_id]"
-    selected_engine: "[codex / gemini]"
-    variant_branch: "arena/variant-[engine]"
-    selection_rationale: "[Why this variant was chosen]"
+    paradigm: "[COMPETE / COLLABORATE]"
+    mode: "[Solo / Team / Quick]"
+    # --- COMPETE fields ---
+    selected_variant: "[variant_id]"              # COMPETE only
+    selected_engine: "[codex / gemini]"            # COMPETE only
+    variant_branch: "arena/variant-[engine]"       # COMPETE only
+    selection_rationale: "[Why this variant was chosen]"  # COMPETE only
+    # --- COLLABORATE fields ---
+    subtasks_completed: "[N/M]"                    # COLLABORATE only
+    integration_status: "[CLEAN / CONFLICTS_RESOLVED]"  # COLLABORATE only
+    subtask_summary:                               # COLLABORATE only
+      - id: "[subtask_id]"
+        engine: "[codex / gemini]"
+        branch: "arena/task-[subtask_id]"
+        status: "[PASS / FAIL]"
+    integration_rationale: "[How subtasks were merged]"  # COLLABORATE only
   Files_Changed:
     - path: "[File path]"
       change_type: "[Added/Modified/Deleted]"
       summary: "[Change summary]"
-  Comparison_Summary:
+  Comparison_Summary:           # COMPETE only
     total_variants: "[N]"
     engines_used:
       - "[codex]"
@@ -154,16 +169,24 @@ ARENA_TO_GUARDIAN_HANDOFF:
 
 ### ARENA_TO_RADAR_HANDOFF
 
-Implementation adopted, test coverage needed.
+Implementation adopted (COMPETE) or integrated (COLLABORATE), test coverage needed.
 
 ```yaml
 ARENA_TO_RADAR_HANDOFF:
   Implementation:
     session_id: "[Arena session ID]"
-    mode: "[Solo / Team]"
-    selected_variant: "[variant_id]"
-    selected_engine: "[codex / gemini]"
-    variant_branch: "arena/variant-[engine]"
+    paradigm: "[COMPETE / COLLABORATE]"
+    mode: "[Solo / Team / Quick]"
+    # COMPETE
+    selected_variant: "[variant_id]"           # COMPETE only
+    selected_engine: "[codex / gemini]"        # COMPETE only
+    variant_branch: "arena/variant-[engine]"   # COMPETE only
+    # COLLABORATE
+    subtasks_completed: "[N/M]"                # COLLABORATE only
+    subtask_engines:                           # COLLABORATE only
+      - id: "[subtask_id]"
+        engine: "[codex / gemini]"
+        files: ["[file paths]"]
     files_changed:
       - "[File path 1]"
       - "[File path 2]"
@@ -173,7 +196,9 @@ ARENA_TO_RADAR_HANDOFF:
   Edge_Cases_Identified:
     - "[Edge case 1]"
     - "[Edge case 2]"
-  Variant_Comparison:
+  Integration_Test_Needs:                      # COLLABORATE only
+    - "[Cross-subtask interaction to verify]"
+  Variant_Comparison:                          # COMPETE only
     - variant_id: "[ID]"
       engine: "[codex / gemini]"
       approach_summary: "[Summary]"

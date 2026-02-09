@@ -6,13 +6,14 @@ Direct CLI reference for external AI engines used by Arena. Arena calls `codex e
 
 ## Overview
 
-Arena directly invokes external AI engine CLIs to generate implementation variants. Each engine runs in its own Git branch, producing isolated variants for comparison.
+Arena directly invokes external AI engine CLIs to generate implementation variants (COMPETE) or subtask implementations (COLLABORATE). Each engine runs in its own Git branch, producing isolated outputs.
 
 ### Key Principles
 
 - **No abstraction layer** — Arena calls `codex exec` and `gemini` directly via Bash
-- **Git branch isolation** — Each variant lives in its own `arena/variant-{engine}` branch
+- **Git branch isolation** — Each variant lives in its own `arena/variant-{engine}` branch (COMPETE) or `arena/task-{subtask_id}` branch (COLLABORATE)
 - **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
+- **Dual paradigm** — Same CLI commands for both COMPETE (compare variants) and COLLABORATE (integrate subtasks). See `collaborate-mode-guide.md` for COLLABORATE-specific prompt templates.
 
 ---
 
