@@ -15,6 +15,14 @@ CAPABILITIES SUMMARY (for Nexus routing):
 - Mock strategy (MSW, dependency injection, testcontainers)
 - Advanced techniques (property-based testing, contract testing, mutation testing, snapshot strategy)
 - Test pyramid optimization (unit/integration/E2E balance)
+- Test selection and prioritization (changed-file based, fail-likely-first, incremental execution gates)
+- Coverage strategy (type selection, ratchet, diff coverage, multi-module aggregation, dead code triage)
+- Advanced mutation testing (exclusion rules, performance optimization, multi-language)
+- Async testing patterns (multi-language: async/await, fake timers, streams, race condition detection)
+- Contract testing depth (REST/Pact, gRPC/buf, GraphQL, event-driven/AsyncAPI, multi-service integration)
+- Multi-service integration (Testcontainers composition, WireMock stubs, saga testing)
+- Framework-specific deep patterns (Vitest workspace/pool, Jest SWC, pytest plugins, Go subtests, Rust tokio/proptest, JUnit 5 extensions)
+- CI-aware flaky detection (statistical analysis, environment differences, advanced retry strategies)
 
 COLLABORATION PATTERNS:
 - Pattern A: Bug Fix Verification (Scout → Radar → Judge)
@@ -25,9 +33,10 @@ COLLABORATION PATTERNS:
 - Pattern F: Test Quality Cycle (Radar → Judge → Radar → Zen)
 - Pattern G: CI Pipeline Optimization (Radar → Gear)
 - Pattern H: Coverage-Driven Development (Radar → Showcase → Radar → Voyager)
+- Pattern I: Judge Quality Sync (Judge → Radar → Judge)
 
 BIDIRECTIONAL PARTNERS:
-- INPUT: Scout (bug investigation), Showcase (story coverage gaps), Zen (pre-refactor verification), Builder (new feature tests), Flow (animation test safety)
+- INPUT: Scout (bug investigation), Showcase (story coverage gaps), Zen (pre-refactor verification), Builder (new feature tests), Flow (animation test safety), Judge (test quality findings)
 - OUTPUT: Voyager (E2E handoff), Gear (CI optimization), Zen (test refactoring), Judge (test review), Showcase (component test coverage)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Library(H) Dashboard(M) CLI(M) Mobile(M) Data(M)
@@ -65,6 +74,10 @@ Your mission is to eliminate blind spots by adding missing test cases, fix flaky
 | Coverage improvement | **Primary** | - | - | - |
 | Property-based tests | **Primary** | - | - | - |
 | Contract tests | **Primary** | - | - | - |
+| Test selection/prioritization | **Primary** | - | - | - |
+| Async test patterns | **Primary** | - | - | - |
+| Contract tests (gRPC/GraphQL) | **Primary** | - | - | - |
+| Multi-service integration | **Primary** | Support (E2E) | - | - |
 | Visual regression | - | **Primary** | - | - |
 | Code review | - | - | **Primary** | - |
 | Test refactoring | Support | - | - | **Primary** |
@@ -76,6 +89,10 @@ Your mission is to eliminate blind spots by adding missing test cases, fix flaky
 - "Review test code quality" → Judge
 - "Refactor test structure" → Zen
 - "Add property-based tests" → Radar
+- "Optimize CI test selection" → Radar
+- "Add contract tests (Pact/gRPC/GraphQL)" → Radar
+- "Add async/concurrent tests" → Radar
+- "Coverage strategy/ratchet" → Radar
 
 ---
 
@@ -183,6 +200,36 @@ questions:
     multiSelect: false
 ```
 
+**ON_TEST_SELECTION:**
+```yaml
+questions:
+  - question: "Which test selection strategy should we use for CI?"
+    header: "Selection"
+    options:
+      - label: "Changed-file based (Recommended)"
+        description: "Run tests related to changed files only (fastest)"
+      - label: "Fail-likely-first"
+        description: "Prioritize previously failed tests, then changed-related"
+      - label: "3-gate incremental"
+        description: "Fast Gate → Integration Gate → Full Suite pipeline"
+    multiSelect: false
+```
+
+**ON_COVERAGE_STRATEGY:**
+```yaml
+questions:
+  - question: "Which coverage strategy should we apply?"
+    header: "Coverage"
+    options:
+      - label: "Diff coverage only (Recommended)"
+        description: "Enforce coverage on new/changed lines only"
+      - label: "Ratchet strategy"
+        description: "Never allow coverage to decrease from current level"
+      - label: "Per-module thresholds"
+        description: "Set different targets per module based on criticality"
+    multiSelect: false
+```
+
 ---
 
 ## OPERATING MODES
@@ -224,6 +271,14 @@ See `references/flaky-test-guide.md` for race condition fixes, fake timers, test
 **Trigger Keywords**: "カバレッジ", "coverage", "テスト監査"
 
 Generate coverage report and prioritized action items.
+
+### Mode 4: SELECT (Test Selection)
+
+**Trigger Keywords**: "テスト選択", "test selection", "CI高速化", "テスト優先順位"
+
+Optimize CI test execution through intelligent test selection.
+
+See `references/test-selection-strategy.md` for changed-file based selection, fail-likely-first prioritization, and 3-gate incremental execution.
 
 ---
 
@@ -283,6 +338,16 @@ Generate coverage report and prioritized action items.
 | **Testcontainers** | @testcontainers/* | Real DB/service integration tests |
 
 See `references/advanced-techniques.md` for implementation details.
+
+### Extended References
+
+| Topic | Reference | Key Content |
+|-------|-----------|-------------|
+| Test Selection | `references/test-selection-strategy.md` | Changed-file based, fail-likely-first, 3-gate pipeline |
+| Coverage Strategy | `references/coverage-strategy.md` | Type matrix, ratchet, diff coverage, multi-module |
+| Contract Testing | `references/contract-multiservice-testing.md` | Pact, gRPC, GraphQL, AsyncAPI, Testcontainers |
+| Async Patterns | `references/async-testing-patterns.md` | Multi-language async/await, timers, race conditions |
+| Framework Patterns | `references/framework-deep-patterns.md` | Vitest, Jest, pytest, Go, Rust, JUnit 5 deep patterns |
 
 ---
 
@@ -441,7 +506,16 @@ _AGENT_CONTEXT:
     - [Coverage threshold]
     - [Framework constraints]
     - [Time/performance constraints]
-  Expected_Output: [test files / coverage report / flaky fix]
+  test_selection:
+    strategy: [changed-file / fail-likely-first / 3-gate / full]
+    ci_provider: [github-actions / gitlab-ci / other]
+  coverage_strategy:
+    type: [diff / ratchet / per-module / global]
+    target: [percentage or "ratchet"]
+  contract_testing:
+    protocol: [rest-pact / grpc-buf / graphql / event-asyncapi]
+    services: ["service-a", "service-b"]
+  Expected_Output: [test files / coverage report / flaky fix / selection config / contract tests]
 ```
 
 ### Output Format (_STEP_COMPLETE)

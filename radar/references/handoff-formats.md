@@ -254,3 +254,56 @@ Radar (slow/flaky tests) → RADAR_TO_GEAR → Gear (CI optimization) → Radar 
 ```
 Radar (audit) → RADAR_TO_SHOWCASE → Showcase (stories) → SHOWCASE_TO_RADAR → Radar (tests) → RADAR_TO_VOYAGER → Voyager (E2E)
 ```
+
+### Pattern I: Judge Quality Sync
+```
+Judge (TQ review) → JUDGE_TO_RADAR → Radar (fix findings) → RADAR_TO_JUDGE → Judge (re-review)
+```
+
+---
+
+## Judge Integration
+
+### JUDGE_TO_RADAR_HANDOFF (Input)
+
+```markdown
+## JUDGE_TO_RADAR_HANDOFF
+
+**Review Result**: [TQ-xxx findings]
+**Files Reviewed**:
+| File | Findings | Severity |
+|------|----------|----------|
+| [path] | [TQ-xxx: description] | [HIGH/MEDIUM/LOW] |
+
+**Action Required**:
+| Finding | TQ Code | Action | Priority |
+|---------|---------|--------|----------|
+| [description] | [TQ-xxx] | [fix action] | [HIGH/MED/LOW] |
+
+**Request**: Address test quality findings from Judge review
+```
+
+### Edge Case Response Catalog
+
+Judge が「missing edge cases」(TQ-005) を指摘した場合の Radar アクション対応表:
+
+| Judge Finding | Radar Action | Example |
+|---------------|-------------|---------|
+| Missing null/undefined input | Add null guard test | `expect(() => fn(null)).toThrow()` |
+| Missing error path | Add error scenario test | `mockApi.mockRejectedValue(new Error())` |
+| Missing boundary value | Add boundary test | `expect(validate(0)).toBe(false)` / `expect(validate(1)).toBe(true)` |
+| Missing concurrent scenario | Add parallel test | `Promise.all([op1(), op2()])` race test |
+| Missing empty collection | Add empty input test | `expect(process([])).toEqual([])` |
+| Missing large input | Add stress test | `expect(process(Array(10000))).not.toThrow()` |
+
+### Over-Mocking Response Catalog
+
+Judge が「over-mocking」(TQ-003) を指摘した場合の Radar アクション対応表:
+
+| Judge Finding | Radar Action | Approach |
+|---------------|-------------|----------|
+| Internal function mocked | Use DI or test public API | Remove mock, test through public interface |
+| Too many mocks (>3) | Simplify or use integration test | Reduce mocks, consider Testcontainers |
+| Mock returns hardcoded data | Use factory/builder pattern | `createMockUser()` instead of inline object |
+| Mock verifies call count | Assert on behavior/output | Replace `toHaveBeenCalledTimes` with output assertion |
+| Implementation detail tested | Test behavior only | Focus on return values and side effects |

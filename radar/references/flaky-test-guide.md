@@ -229,3 +229,179 @@ Before writing a test, verify:
 - [ ] Explicit waits (`waitFor`, `findBy*`) instead of arbitrary delays
 - [ ] Test passes when run in isolation (`test.only`)
 - [ ] Test passes when run 10 times in a row
+
+---
+
+## Advanced Retry Strategy
+
+### CI Provider Configurations
+
+```yaml
+# GitHub Actions - nick-fields/retry
+- name: Run tests with retry
+  uses: nick-fields/retry@v3
+  with:
+    timeout_minutes: 10
+    max_attempts: 3
+    retry_on: error
+    retry_wait_seconds: 10
+    command: npx vitest run --reporter=junit --outputFile=test-results.xml
+    on_retry_command: echo "::warning::Flaky test detected on attempt ${{ steps.retry.outputs.attempt_number }}"
+```
+
+```yaml
+# GitLab CI
+test:
+  script: npx vitest run
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - script_failure
+```
+
+### Framework-Level Retry with Exponential Backoff
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    retry: process.env.CI ? 2 : 0,
+    // Per-test retry override
+    // test('flaky test', { retry: 3 }, async () => { ... })
+  },
+});
+```
+
+```python
+# pytest - pytest-rerunfailures
+# pip install pytest-rerunfailures
+# pytest --reruns 3 --reruns-delay 2
+
+# Or per-test
+@pytest.mark.flaky(reruns=3, reruns_delay=2)
+def test_external_api():
+    ...
+```
+
+```go
+// Go - custom retry helper
+func retryTest(t *testing.T, maxRetries int, testFn func(t *testing.T) error) {
+    t.Helper()
+    var err error
+    for i := 0; i < maxRetries; i++ {
+        err = testFn(t)
+        if err == nil {
+            return
+        }
+        time.Sleep(time.Duration(math.Pow(2, float64(i))) * time.Second)
+    }
+    t.Fatalf("test failed after %d retries: %v", maxRetries, err)
+}
+```
+
+---
+
+## Statistical Flaky Detection
+
+### Repeated Execution
+
+```bash
+# Vitest: repeat test N times
+npx vitest run --repeat=10
+
+# pytest: repeat with pytest-repeat
+pip install pytest-repeat
+pytest --count=10
+
+# Go: repeat test
+go test -count=10 ./...
+
+# Rust: repeat with nextest
+cargo nextest run --retries 0 -j 1 --run-ignored=all
+```
+
+### Flaky Metrics
+
+| Metric | Formula | Healthy | Warning | Critical |
+|--------|---------|---------|---------|----------|
+| **Flaky Rate** | Flaky tests / Total tests | < 1% | 1-5% | > 5% |
+| **MTBF** (Mean Time Between Failures) | Avg runs between failures | > 50 runs | 10-50 | < 10 |
+| **Flaky Clusters** | Co-occurring flaky tests | 0 clusters | 1-2 | > 2 |
+
+### Detection Script
+
+```bash
+#!/bin/bash
+# scripts/detect-flaky.sh - Run tests N times and report flaky ones
+RUNS=${1:-10}
+FAILURES=()
+
+for i in $(seq 1 $RUNS); do
+  echo "Run $i/$RUNS..."
+  npx vitest run --reporter=json --outputFile=".flaky-run-$i.json" 2>/dev/null
+  if [ $? -ne 0 ]; then
+    FAILED=$(jq -r '.testResults[].assertionResults[] | select(.status=="failed") | .fullName' ".flaky-run-$i.json")
+    FAILURES+=("$FAILED")
+  fi
+done
+
+echo "=== Flaky Test Report ==="
+echo "${FAILURES[@]}" | tr ' ' '\n' | sort | uniq -c | sort -rn
+```
+
+---
+
+## CI Environment Differences
+
+### Local vs CI Comparison
+
+| Factor | Local | CI (GitHub Actions) | Impact |
+|--------|-------|---------------------|--------|
+| **CPU** | Multi-core (8-16) | 2 vCPU (ubuntu-latest) | Parallel tests slower |
+| **Memory** | 16-64 GB | 7 GB | OOM for large suites |
+| **Disk I/O** | SSD (fast) | Network-attached | File-heavy tests slower |
+| **Network** | Low latency | Variable latency | External call flakiness |
+| **Timezone** | Local TZ | UTC | Date-dependent tests fail |
+| **Locale** | User locale | en_US.UTF-8 | Formatting differences |
+| **Parallelism** | Often sequential | Matrix / parallel jobs | State isolation issues |
+| **DNS** | Cached | Fresh lookup | Resolution timing |
+
+### Mitigation Strategies
+
+```typescript
+// Force UTC timezone in tests
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    env: {
+      TZ: 'UTC',
+    },
+  },
+});
+```
+
+```yaml
+# GitHub Actions: increase resources for heavy suites
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # Or use larger runner:
+    # runs-on: ubuntu-latest-16-cores
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      TZ: UTC
+      LC_ALL: en_US.UTF-8
+```
+
+```typescript
+// Adjust timeouts for CI environment
+const TIMEOUT_MULTIPLIER = process.env.CI ? 3 : 1;
+
+export default defineConfig({
+  test: {
+    testTimeout: 10000 * TIMEOUT_MULTIPLIER,
+    hookTimeout: 30000 * TIMEOUT_MULTIPLIER,
+  },
+});
+```

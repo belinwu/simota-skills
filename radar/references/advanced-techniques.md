@@ -205,6 +205,99 @@ npx stryker run
 - After achieving high line coverage but uncertain about quality
 - Before major refactoring (ensure tests are strong enough)
 
+### Exclusion Rules
+
+```json
+// stryker.config.json - Fine-tuned exclusions
+{
+  "mutator": {
+    "excludedMutations": [
+      "StringLiteral",       // Log messages, error strings
+      "ObjectLiteral"        // Config objects
+    ]
+  },
+  "mutate": [
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/**/*.config.ts",
+    "!src/**/generated/**",
+    "!src/**/types/**",
+    "!src/**/__mocks__/**"
+  ],
+  "ignorePatterns": [
+    "**/*.test.ts",
+    "**/node_modules/**"
+  ]
+}
+```
+
+### Performance Optimization
+
+```json
+{
+  "concurrency": 4,
+  "coverageAnalysis": "perTest",
+  "incremental": true,
+  "incrementalFile": ".stryker-tmp/incremental.json",
+  "timeoutMS": 10000,
+  "timeoutFactor": 1.5
+}
+```
+
+| Option | Effect | Recommendation |
+|--------|--------|----------------|
+| `concurrency` | Parallel mutant execution | CPU cores - 1 |
+| `coverageAnalysis: perTest` | Only run relevant tests per mutant | Always enable |
+| `incremental` | Skip unchanged mutants | Enable for iterative runs |
+| `timeoutMS` | Kill slow mutants | 10-30s depending on suite |
+
+### Result Interpretation Benchmarks
+
+| Mutation Score | Rating | Action |
+|---------------|--------|--------|
+| 90%+ | Excellent | Maintain; focus on new code |
+| 75-89% | Good | Target critical surviving mutants |
+| 60-74% | Acceptable | Systematic improvement needed |
+| < 60% | Poor | Significant test gaps; prioritize |
+
+### Mutation Strategy by Context
+
+| Context | Strategy | Scope |
+|---------|----------|-------|
+| Default (PR) | Changed Files Only | `--incremental` |
+| Critical Path | Targeted Modules | `--mutate src/core/**` |
+| Weekly Audit | Full Suite | All source files |
+| Pre-Release | Critical + Changed | Union of both scopes |
+
+### Python (mutmut)
+
+```bash
+# Install
+pip install mutmut
+
+# Run mutation testing
+mutmut run --paths-to-mutate=src/
+
+# View results
+mutmut results
+
+# Show specific surviving mutant
+mutmut show 42
+```
+
+### Go (go-mutesting)
+
+```bash
+# Install
+go install github.com/zimmski/go-mutesting/cmd/go-mutesting@latest
+
+# Run mutation testing
+go-mutesting ./...
+
+# With specific mutators
+go-mutesting --mutator=expression/remove ./pkg/auth/...
+```
+
 ---
 
 ## Snapshot Testing Strategy
