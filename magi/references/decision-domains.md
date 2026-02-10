@@ -243,3 +243,9 @@ Final Score = Priority_Score × (1 + Urgency_Multiplier)
 **Item B: Customer-requested feature** - Logos: 4, Pathos: 7, Sophia: 8 → Score: 6.3 × 1.8 = 11.4
 **Item C: Database migration** - Logos: 7, Pathos: 3, Sophia: 5 → Score: 5.0 × 1.7 = 8.5
 **Verdict:** Priority order: A → B → C (unanimous)
+
+---
+
+## Engine Mode Note
+
+> **In Engine Mode, each engine evaluates all dimensions (technical, human, strategic) as an integrated assessment.** The Perspective Focus Matrix above is exclusive to Simple Mode (Logos/Pathos/Sophia). When using Engine Mode, read each dimension's evaluation from the `rationale` and `key_evidence` fields in each engine's output.

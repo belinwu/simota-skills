@@ -75,6 +75,7 @@ ARENA_TO_MAGI_HANDOFF:
       strengths: ["Strength 1", "Strength 2"]
       weaknesses: ["Weakness 1", "Weakness 2"]
   Arena_Recommendation: "[Variant ID if any]"
+  Suggested_Deliberation_Mode: "simple | engine | auto"
   Cost_Report:
     total: "[Cost]"
     per_variant: "[Breakdown]"
@@ -172,6 +173,8 @@ MAGI_TO_BUILDER_HANDOFF:
     decision: "[Selected approach]"
     consensus: "[3-0 | 2-1 | user-decided]"
     confidence: [weighted score]
+    deliberation_mode: "[simple | engine]"
+    deliberators: "[Logos/Pathos/Sophia | Claude/Codex/Gemini]"
   Implementation_Guidance:
     approach: "[Detailed approach description]"
     key_requirements:
@@ -202,6 +205,8 @@ MAGI_TO_LAUNCH_HANDOFF:
     decision: "[GO | GO_WITH_CONDITIONS | HOLD | NO_GO]"
     consensus: "[3-0 | 2-1 | user-decided]"
     confidence: [weighted score]
+    deliberation_mode: "[simple | engine]"
+    deliberators: "[Logos/Pathos/Sophia | Claude/Codex/Gemini]"
   Conditions:
     - condition: "[Condition 1]"
       owner: "[Who must fulfill]"
@@ -236,6 +241,8 @@ MAGI_TO_ATLAS_HANDOFF:
     decision: "[Selected architecture option]"
     consensus: "[3-0 | 2-1 | user-decided]"
     confidence: [weighted score]
+    deliberation_mode: "[simple | engine]"
+    deliberators: "[Logos/Pathos/Sophia | Claude/Codex/Gemini]"
   ADR_Summary:
     title: "[Decision title]"
     status: "[Accepted | Conditional | Rejected]"
@@ -263,6 +270,8 @@ MAGI_TO_SHERPA_HANDOFF:
     decision: "Priority order established"
     consensus: "[3-0 | 2-1 | user-decided]"
     confidence: [weighted score]
+    deliberation_mode: "[simple | engine]"
+    deliberators: "[Logos/Pathos/Sophia | Claude/Codex/Gemini]"
   Priority_List:
     - rank: 1
       item: "[Highest priority item]"
@@ -297,10 +306,16 @@ MAGI_TO_NEXUS_HANDOFF:
     decision: "[The decision made]"
     consensus: "[3-0 | 2-1 | 1-1-1 | 0-3]"
     confidence: [weighted score]
-  Deliberation_Summary:
+    deliberation_mode: "[simple | engine]"
+    deliberators: "[Logos/Pathos/Sophia | Claude/Codex/Gemini]"
+  Deliberation_Summary:  # Simple Mode
     logos: "[Position + key rationale]"
     pathos: "[Position + key rationale]"
     sophia: "[Position + key rationale]"
+  Engine_Summary:  # Engine Mode (when deliberation_mode: engine)
+    claude: "[Position + key rationale]"
+    codex: "[Position + key rationale]"
+    gemini: "[Position + key rationale]"
   Action_Items:
     - action: "[Required action]"
       assigned_to: "[Agent or person]"

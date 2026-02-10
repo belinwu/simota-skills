@@ -335,3 +335,250 @@ For maintaining a record of all Magi decisions:
 |----|------|--------|---------|-----------|------------|----------|--------|
 | MAGI-001 | YYYY-MM-DD | [Type] | [Subject] | [3-0/2-1/etc] | [Score] | [Brief] | [Active/Superseded/Revoked] |
 ```
+
+---
+
+## Engine Mode Full Deliberation Report Template
+
+```markdown
+# MAGI Engine Mode Deliberation Report
+
+## Decision Request
+- **Type**: [Architecture / Trade-off / Go-No-Go / Strategy / Priority]
+- **Subject**: [Decision subject]
+- **Requestor**: [User / Agent name]
+- **Deliberation Mode**: Engine Mode
+- **Urgency**: [Low / Medium / High / Critical]
+- **Reversibility**: [Low / Medium / High]
+
+---
+
+## Context Summary
+[2-3 sentences describing the decision context, constraints, and what's at stake]
+
+---
+
+## Three Engines
+
+### Claude (Internal Analysis)
+**Position**: APPROVE / REJECT / ABSTAIN
+**Confidence**: [0-100]
+
+[2-4 sentences of integrated analysis]
+
+**Key Evidence:**
+- [Evidence point 1]
+- [Evidence point 2]
+
+**Risks:**
+- [Risk 1]
+
+---
+
+### Codex (External Analysis)
+**Position**: APPROVE / REJECT / ABSTAIN
+**Confidence**: [0-100]
+
+[2-4 sentences of independent analysis]
+
+**Key Evidence:**
+- [Evidence point 1]
+- [Evidence point 2]
+
+**Risks:**
+- [Risk 1]
+
+---
+
+### Gemini (External Analysis)
+**Position**: APPROVE / REJECT / ABSTAIN
+**Confidence**: [0-100]
+
+[2-4 sentences of independent analysis]
+
+**Key Evidence:**
+- [Evidence point 1]
+- [Evidence point 2]
+
+**Risks:**
+- [Risk 1]
+
+---
+
+## Engine Mode Vote Summary
+
+| Engine | Position | Confidence | Key Rationale |
+|--------|----------|------------|---------------|
+| Claude | [APPROVE/REJECT/ABSTAIN] | [0-100] | [One-line summary] |
+| Codex | [APPROVE/REJECT/ABSTAIN] | [0-100] | [One-line summary] |
+| Gemini | [APPROVE/REJECT/ABSTAIN] | [0-100] | [One-line summary] |
+
+**Consensus**: [3-0 / 2-1 / 1-1-1 / 0-3]
+**Weighted Confidence**: [Score]
+
+---
+
+## Verdict
+
+[ENGINE_MODE_VERDICT_DISPLAY]
+
+**Decision**: [The decision in one clear sentence]
+**Action**: [What to do next]
+
+---
+
+## Risk Register
+
+| # | Risk | Source | Severity | Mitigation | Monitor |
+|---|------|--------|----------|------------|---------|
+| 1 | [Risk] | [Engine] | [H/M/L] | [Mitigation] | [Indicator] |
+
+---
+
+## Decision Audit Trail
+- **Deliberation ID**: [MAGI-YYYY-MMDD-NNN]
+- **Date**: [YYYY-MM-DD]
+- **Mode**: Engine Mode
+- **Domain**: [Architecture / Trade-off / Go-No-Go / Strategy / Priority]
+- **Consensus Pattern**: [3-0 / 2-1 / 1-1-1 / 0-3]
+- **Engines Used**: [Claude, Codex, Gemini / Claude, Codex / Claude, Gemini]
+```
+
+---
+
+## Engine Mode Verdict Presentation
+
+### 3-0: All Engines Agree
+
+```
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║              M A G I   E N G I N E   M O D E                 ║
+    ║                                                              ║
+    ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
+    ║           │ CLAUDE  │  │  CODEX  │  │ GEMINI  │             ║
+    ║           │  ██████ │  │  ██████ │  │  ██████ │             ║
+    ║           │ APPROVE │  │ APPROVE │  │ APPROVE │             ║
+    ║           └─────────┘  └─────────┘  └─────────┘             ║
+    ║                                                              ║
+    ║        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             ║
+    ║        ░  ALL ENGINES AGREE — UNANIMOUS APPROVAL ░           ║
+    ║        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+```
+
+### 2-1: Engine Majority
+
+```
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║              M A G I   E N G I N E   M O D E                 ║
+    ║                                                              ║
+    ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
+    ║           │ CLAUDE  │  │  CODEX  │  │ GEMINI  │             ║
+    ║           │  ██████ │  │  ██████ │  │  ░░░░░░ │             ║
+    ║           │ APPROVE │  │ APPROVE │  │ REJECT  │             ║
+    ║           └─────────┘  └─────────┘  └─────────┘             ║
+    ║                                                              ║
+    ║        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓             ║
+    ║        ▓ ENGINE MAJORITY — 2:1 — DISSENT LOGGED ▓           ║
+    ║        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓             ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+```
+
+### 1-1-1: Engine Deadlock
+
+```
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║              M A G I   E N G I N E   M O D E                 ║
+    ║                                                              ║
+    ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
+    ║           │ CLAUDE  │  │  CODEX  │  │ GEMINI  │             ║
+    ║           │  ██████ │  │  ░░░░░░ │  │  ▒▒▒▒▒▒ │             ║
+    ║           │ APPROVE │  │ REJECT  │  │ ABSTAIN │             ║
+    ║           └─────────┘  └─────────┘  └─────────┘             ║
+    ║                                                              ║
+    ║        ░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓             ║
+    ║        ░ ENGINE DEADLOCK — HUMAN JUDGMENT REQUIRED▓          ║
+    ║        ▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░▓░             ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+```
+
+### 0-3: All Engines Reject
+
+```
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║              M A G I   E N G I N E   M O D E                 ║
+    ║                                                              ║
+    ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
+    ║           │ CLAUDE  │  │  CODEX  │  │ GEMINI  │             ║
+    ║           │  ░░░░░░ │  │  ░░░░░░ │  │  ░░░░░░ │             ║
+    ║           │ REJECT  │  │ REJECT  │  │ REJECT  │             ║
+    ║           └─────────┘  └─────────┘  └─────────┘             ║
+    ║                                                              ║
+    ║        ████████████████████████████████████████████           ║
+    ║        █ ALL ENGINES REJECT — PROPOSAL DENIED    █           ║
+    ║        ████████████████████████████████████████████           ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+```
+
+---
+
+## Engine Mode Compact Report Template (AUTORUN Mode)
+
+```markdown
+## MAGI Engine Mode Verdict: [Subject]
+
+| Engine | Vote | Conf | Rationale |
+|--------|------|------|-----------|
+| Claude | [A/R/AB] | [N] | [One line] |
+| Codex | [A/R/AB] | [N] | [One line] |
+| Gemini | [A/R/AB] | [N] | [One line] |
+
+**Consensus**: [Pattern] | **Confidence**: [Score] | **Decision**: [One sentence]
+
+[ENGINE_MODE_VERDICT_DISPLAY ASCII art]
+
+**Risks**: [Key risk] → [Mitigation]
+**Next**: [Recommended action/agent]
+```
+
+---
+
+## Engine Mode Sample Deliberation
+
+### Sample: Architecture Decision — REST vs GraphQL
+
+**Context:** SaaS platform API redesign. 50+ frontend consumers, mobile and web. Current REST API has over-fetching issues. Team of 8, 2 have GraphQL experience.
+
+**Claude (Confidence: 75):** APPROVE GraphQL. Over-fetching is a real performance issue for mobile clients. Schema-first development improves frontend-backend contracts. However, team experience gap is a risk — recommend incremental adoption starting with a single high-traffic endpoint.
+
+**Codex (Confidence: 72):** APPROVE GraphQL. Type safety and introspection reduce integration bugs. Dataloader pattern solves N+1. Tooling ecosystem (Apollo, Relay) is mature. Risk: complexity of authorization in resolvers requires careful design.
+
+**Gemini (Confidence: 68):** REJECT GraphQL. Migration cost for 50+ consumers is significant. REST with OpenAPI spec + response field filtering achieves 80% of the benefit at 20% of the cost. GraphQL adds operational complexity (caching, monitoring, rate limiting). Recommend REST optimization first.
+
+**Verdict:** 2-1 ENGINE MAJORITY — APPROVE GraphQL with incremental adoption (Gemini dissent recorded)
+
+```
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║              M A G I   E N G I N E   M O D E                 ║
+    ║                                                              ║
+    ║           ┌─────────┐  ┌─────────┐  ┌─────────┐             ║
+    ║           │ CLAUDE  │  │  CODEX  │  │ GEMINI  │             ║
+    ║           │  ██████ │  │  ██████ │  │  ░░░░░░ │             ║
+    ║           │ APPROVE │  │ APPROVE │  │ REJECT  │             ║
+    ║           └─────────┘  └─────────┘  └─────────┘             ║
+    ║                                                              ║
+    ║        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓             ║
+    ║        ▓ ENGINE MAJORITY — 2:1 — DISSENT LOGGED ▓           ║
+    ║        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓             ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+```

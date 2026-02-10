@@ -104,6 +104,34 @@ To ensure each perspective provides genuine, uninfluenced analysis:
 
 ---
 
+## Engine Independence Protocol
+
+When using Engine Mode, independence is achieved through **physical separation** rather than simulated isolation:
+
+### Physical Independence
+
+1. **Claude analyzes first** — completes integrated analysis before any external engine calls
+2. **External engines execute in parallel** — Codex and Gemini receive identical context, run independently
+3. **No cross-contamination** — Claude's analysis is stored before external outputs are collected
+4. **Identical context delivery** — All engines receive the same decision framing and context
+
+### Anti-Contamination Rules
+
+- Claude **must not** modify its analysis after seeing external engine outputs
+- External engine prompts **must not** include Claude's position or reasoning
+- If re-deliberation occurs, all engines re-evaluate independently
+
+### Advantages Over Simulated Independence
+
+| Aspect | Simple Mode (Simulated) | Engine Mode (Physical) |
+|--------|-------------------------|------------------------|
+| Independence guarantee | Best-effort isolation | True process separation |
+| Model diversity | Single model, multiple prompts | Multiple models |
+| Bias correlation | Correlated (same model) | Uncorrelated (different training) |
+| Failure mode | Single point of failure | Graceful degradation |
+
+---
+
 ## Confidence Scoring Guide
 
 Each perspective assigns a confidence score to its assessment:
@@ -122,6 +150,29 @@ Each perspective assigns a confidence score to its assessment:
 - **Below 40** triggers mandatory "Uncertainty Disclaimer" in output
 - **Average confidence below 50** across all perspectives triggers re-deliberation or escalation
 - **Large confidence gap** (>30 points between perspectives) should be explicitly discussed
+
+---
+
+## Engine Confidence Scoring
+
+Engine Mode uses the same 0-100 confidence scale, with additional considerations for cross-engine comparison.
+
+### Cross-Engine Confidence Distribution
+
+Different engines may have systematic confidence biases:
+
+| Engine | Typical Range | Notes |
+|--------|--------------|-------|
+| Claude | 60-85 | Tends toward moderate confidence with calibrated uncertainty |
+| Codex | 55-80 | May show lower confidence on non-code decisions |
+| Gemini | 50-85 | Wider range, may be more decisive on strategic questions |
+
+### Engine Confidence Rules
+
+- **95 cap rule**: Same as Simple Mode — no engine should claim confidence > 95 unless mathematically provable
+- **Cross-engine gap > 30**: Flag for review, may indicate different context interpretation
+- **All engines < 50**: Re-deliberate with more context or fall back to Simple Mode
+- **Single engine at 0**: Likely parse failure — check error log before including in vote
 
 ---
 

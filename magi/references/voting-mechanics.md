@@ -10,13 +10,16 @@ Each perspective casts a vote with:
 
 ```yaml
 Vote:
-  perspective: Logos | Pathos | Sophia
+  perspective: Logos | Pathos | Sophia    # Simple Mode
+  engine: Claude | Codex | Gemini        # Engine Mode (alternative key)
   position: APPROVE | REJECT | ABSTAIN
   confidence: 0-100
   rationale: "One-line summary of reasoning"
   conditions: ["Optional conditions for approval"]
   dissent_note: "If outvoted, key concern to record"
 ```
+
+**Mode-specific keys:** Simple Mode uses `perspective`, Engine Mode uses `engine`. Both share the same `position`, `confidence`, `rationale`, `conditions`, and `dissent_note` fields.
 
 ---
 
@@ -264,3 +267,89 @@ When deadlocked, always prefer the more reversible option:
 IF deadlocked AND option_A.reversible AND NOT option_B.reversible
 THEN recommend option_A with monitoring plan
 ```
+
+---
+
+## 2-Engine Voting
+
+When only one external engine is available (Claude + Codex or Claude + Gemini), the voting system adapts to 2-engine consensus patterns.
+
+### 2-Engine Consensus Patterns
+
+| Pattern | Votes | Action |
+|---------|-------|--------|
+| **2-0 (Unanimous)** | Both engines agree | Proceed with decision |
+| **1-1 (Split)** | Engines disagree | Escalate to user (always) |
+| **0-2 (Unanimous Rejection)** | Both engines reject | Block, present alternatives |
+
+### 2-0: Unanimous Agreement
+
+```
+╔═══════════════════════════════════════╗
+║       2-ENGINE UNANIMOUS              ║
+║                                       ║
+║  Claude   → APPROVE (confidence: 78)  ║
+║  Codex    → APPROVE (confidence: 82)  ║
+║                                       ║
+║  Weighted Confidence: 80.0            ║
+║  Action: EXECUTE                      ║
+╚═══════════════════════════════════════╝
+```
+
+**Rules:**
+- Proceed with decision
+- Weighted confidence = average of 2 engine confidences
+- Note reduced diversity in risk register
+
+### 1-1: Split Decision
+
+```
+╔═══════════════════════════════════════╗
+║       2-ENGINE SPLIT                  ║
+║                                       ║
+║  Claude   → APPROVE (confidence: 72)  ║
+║  Gemini   → REJECT  (confidence: 68)  ║
+║                                       ║
+║  No consensus. Escalate to user.      ║
+╚═══════════════════════════════════════╝
+```
+
+**Rules:**
+- **Always escalate** to user (no majority possible with 2 engines)
+- Present both positions with rationale
+- Use `AskUserQuestion` tool for resolution
+- If confidence gap > 30, highlight the higher-confidence position
+
+### 0-2: Unanimous Rejection
+
+```
+╔═══════════════════════════════════════╗
+║       2-ENGINE REJECTION              ║
+║                                       ║
+║  Claude   → REJECT (confidence: 85)   ║
+║  Codex    → REJECT (confidence: 79)   ║
+║                                       ║
+║  Weighted Confidence: 82.0            ║
+║  Action: BLOCK                        ║
+╚═══════════════════════════════════════╝
+```
+
+**Rules:**
+- Block proposed action
+- Same rules as 3-engine 0-3 rejection
+- Suggest alternative approaches
+
+### ABSTAIN in 2-Engine Mode
+
+- 1 vote + 1 ABSTAIN = Insufficient quorum (request more context or fall back to Simple Mode)
+- 2 ABSTAIN = Insufficient information (fall back to Simple Mode)
+
+### Weighted Confidence (2-Engine)
+
+```
+weighted = (engine_1_conf + engine_2_conf) / 2
+```
+
+Same override rules apply:
+- High-confidence minority: N/A (only 2 engines, split always escalates)
+- Low-confidence warning: if average < 50, append warning
