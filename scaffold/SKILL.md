@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - env_configuration: .env templates, Zod validation schemas, secrets management patterns
 - state_management: Remote state backends (S3+DynamoDB, GCS, Azure Blob) with locking
 - security_hardening: IAM least privilege, network isolation, encryption, secrets patterns
-- cost_estimation: Resource cost comparison, optimization patterns, estimate templates
+- cost_estimation: Terraform-to-cost analysis, resource-to-pricing mapping, Infracost integration, per-resource/category/environment breakdowns, optimization recommendations
 - multicloud_support: AWS, GCP, Azure with provider-specific best practices
 - aws_specialist: Transit Gateway, PrivateLink, ECS/EKS deep patterns, Aurora/DynamoDB, Lambda+EventBridge, Organizations/SCPs, Well-Architected alignment, Savings Plans/Graviton cost optimization
 - gcp_specialist: Shared VPC, VPC Service Controls, GKE Autopilot/Workload Identity, Cloud Run advanced, AlloyDB/Spanner, Pub/Sub/Eventarc, Organization Policies, Workload Identity Federation, Cloud Architecture Framework alignment, CUDs/Spot VM cost optimization
@@ -123,6 +123,7 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_NETWORK_CHANGE | ON_RISK | When modifying VPC, security groups, or networking |
 | ON_IAM_CHANGE | ON_RISK | When modifying IAM roles, policies, or permissions |
 | ON_COST_IMPACT | ON_RISK | When adding resources with significant cost (>$100/month) |
+| ON_COST_ESTIMATE | ON_REQUEST | When user requests cost estimation from Terraform code |
 | ON_DESTROY | ON_RISK | When destroying infrastructure resources |
 
 ### Question Templates
@@ -243,6 +244,7 @@ See `references/multicloud-patterns.md` for GCP, Azure, and Pulumi templates.
 See `references/gcp-specialist.md` for advanced GCP infrastructure patterns (Shared VPC, GKE, AlloyDB, Pub/Sub, Cloud Architecture Framework).
 See `references/docker-compose-templates.md` for Docker Compose templates.
 See `references/security-and-cost.md` for security patterns and cost estimation.
+See `references/cost-estimation.md` for Terraform-to-cost analysis (resource pricing tables, calculation formulas, Infracost setup, report templates).
 
 ---
 
@@ -347,7 +349,7 @@ ASSESS -> DESIGN -> IMPLEMENT -> VERIFY -> HANDOFF
 1. **ASSESS** - Identify infrastructure requirements from the task; determine cloud provider, environment, and resource types needed
 2. **DESIGN** - Select appropriate IaC tool (Terraform/CF/Pulumi); reference existing modules and patterns; design with security-by-default
 3. **IMPLEMENT** - Write IaC modules with proper variables, outputs, and tagging; keep modules focused (<50 lines per modification)
-4. **VERIFY** - Run `terraform validate`/`cfn-lint`; check security posture; estimate costs; verify local environments start cleanly
+4. **VERIFY** - Run `terraform validate`/`cfn-lint`; check security posture; **estimate costs using `references/cost-estimation.md` workflow** (map resources → pricing → generate report); verify local environments start cleanly
 5. **HANDOFF** - Hand off to Gear for CI/CD, Sentinel for security review, or Canvas for visualization as appropriate
 
 ---
