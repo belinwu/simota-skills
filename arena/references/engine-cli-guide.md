@@ -591,6 +591,50 @@ If an engine modified files outside the allowed scope:
 
 ---
 
+## Prompt Builder Checklist
+
+Use this checklist to verify every engine prompt before invocation. Missing fields are the #1 cause of scope violations and poor variant quality.
+
+### Required Fields
+
+| # | Field | Status | Notes |
+|---|-------|--------|-------|
+| 1 | **Specification** | ☐ | Functional requirements from spec |
+| 2 | **Allowed Files** | ☐ | Explicit list of files engine may create/modify |
+| 3 | **Forbidden Files** | ☐ | Files engine MUST NOT touch |
+| 4 | **Constraints** | ☐ | Standard constraint block (no dependency changes, follow conventions, etc.) |
+| 5 | **Success Criteria** | ☐ | Acceptance criteria from spec |
+
+### Optional Fields
+
+| # | Field | When Required | Status |
+|---|-------|---------------|--------|
+| 6 | **Approach Directive** | Multi-variant / Self-Competition | ☐ |
+| 7 | **Codebase Context** | gemini prompts | ☐ |
+| 8 | **Scope Boundary** | COLLABORATE subtasks | ☐ |
+
+### Pre-Flight Validation Rules
+
+| Rule | Check | Fail Action |
+|------|-------|-------------|
+| Allowed files list is non-empty | `allowed_files.length > 0` | BLOCK — prompt has no target |
+| Forbidden files includes defaults | `package.json`, `.env*`, `*.config.*` present | WARN — add defaults if missing |
+| Spec is non-trivial | Specification section > 20 characters | BLOCK — spec too vague |
+| Success criteria exist | At least 1 criterion listed | BLOCK — no way to verify output |
+| No overlap with other variants | `allowed_files` does not overlap other prompts (COLLABORATE) | BLOCK — scope collision |
+
+### Common Mistakes
+
+| Mistake | Consequence | Prevention |
+|---------|-------------|------------|
+| Omitting `Forbidden Files` | Engine modifies package.json, config, or unrelated code | Always include default forbidden list |
+| Vague specification | Engine guesses intent, produces unrelated code | Require specific functional requirements |
+| Missing `Allowed Files` | Engine creates files in unexpected locations | Always derive allowed files from spec + Glob/Grep |
+| Copy-pasting without updating | Wrong file paths or stale spec from previous session | Re-derive scope for each new session |
+| Forgetting Approach Directive | Self-Competition variants are too similar | Add distinct approach hints for each variant |
+
+---
+
 ## Cost Tracking
 
 Arena tracks costs via provider dashboards. In-session tracking is approximate:
@@ -710,7 +754,7 @@ Implement JWT authentication for our Express API.
 | Issue | Resolution |
 |-------|------------|
 | `codex: command not found` | Install: `npm install -g @openai/codex` |
-| `gemini: command not found` | Install: `npm install -g @anthropic/gemini-cli` or check Google AI docs |
+| `gemini: command not found` | Install: `npm install -g @google/gemini-cli` or check Google AI docs |
 | Engine hangs / no output | Check API key validity; try with smaller prompt |
 | Branch conflict on checkout | `git stash` first, or commit current changes |
 | Variant branch already exists | `git branch -D arena/variant-{engine}` then recreate |

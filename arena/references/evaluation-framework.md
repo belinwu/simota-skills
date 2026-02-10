@@ -156,6 +156,7 @@ Review results directly feed into the 5-criteria scoring:
 | Test execution | Correctness: all pass = +1, failures = -1 per severity |
 | codex review findings | Code Quality: quality findings, Safety: security findings |
 | Acceptance criteria | Correctness: directly determines base score |
+| Quantitative metrics | Simplicity: code volume, Code Quality: exported symbols (see "Quantitative Metrics Collection" section) |
 
 ---
 
@@ -383,6 +384,65 @@ After collecting comparison data, summarize:
 
 ---
 
+## Quantitative Metrics Collection
+
+Supplement subjective scoring with automated, measurable metrics. These provide objective data points for variant comparison.
+
+### Automated Metrics
+
+| Metric | Command | Unit | Higher = Better? |
+|--------|---------|------|-----------------|
+| Lines added | `git diff --shortstat $BASE_COMMIT..arena/variant-{engine}` | count | Depends on context |
+| Lines removed | `git diff --shortstat $BASE_COMMIT..arena/variant-{engine}` | count | Depends on context |
+| Files changed | `git diff --name-only $BASE_COMMIT..arena/variant-{engine} \| wc -l` | count | Lower is simpler |
+| New files created | `git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-{engine} \| wc -l` | count | Lower is simpler |
+| Test count (pass) | Project test runner output | count | Higher is better |
+| Test count (fail) | Project test runner output | count | 0 is required |
+| Build time | `time {build_command}` | seconds | Lower is better |
+| Exported symbols | `grep -E 'export (function\|class\|const\|interface)' {files}` | count | Fewer = simpler API |
+
+### Collection Template
+
+After running the review checklist, collect quantitative metrics for each variant:
+
+```yaml
+quantitative_metrics:
+  variant: "arena/variant-{engine}"
+  code_volume:
+    lines_added: 0
+    lines_removed: 0
+    files_changed: 0
+    new_files: 0
+    net_lines: 0  # added - removed
+  test_results:
+    total: 0
+    passed: 0
+    failed: 0
+    skipped: 0
+    coverage_delta: "+0%"  # If coverage tool available
+  build:
+    success: true
+    duration_seconds: 0
+  complexity:
+    exported_symbols: 0
+    max_function_length: 0  # Lines in longest new function
+```
+
+### Integration with Scoring
+
+Quantitative metrics inform but do not replace the 5-criteria scoring:
+
+| Metric | Scoring Impact |
+|--------|---------------|
+| Code volume (net lines) | Simplicity: fewer lines for same functionality = higher score |
+| Test pass rate | Correctness: 100% pass = baseline, failures penalize |
+| New test count | Correctness: more tests covering new behavior = bonus |
+| Build success | Correctness: build fail = disqualify |
+| Exported symbols | Code Quality: smaller API surface = higher score |
+| Coverage delta | Correctness: positive delta = bonus, negative = penalty |
+
+---
+
 ## Comparison Report Template
 
 ```markdown
@@ -550,4 +610,122 @@ For quick metric logging after each session:
 **Metrics:** {mode} | {engines} | {variant_count}v | Winner: {engine} ({score}) | Gap: {score_gap}
 **Discovery:** [What was learned]
 **Impact:** [How this changes future usage]
+```
+
+---
+
+## REFINE Phase Framework
+
+The REFINE phase is an optional iterative improvement cycle that can be inserted into the COMPETE workflow between EVALUATE and ADOPT. When the best variant is good but not great, REFINE attempts to improve it through targeted re-execution.
+
+### When to Trigger REFINE
+
+REFINE is triggered when ALL of the following conditions are met:
+
+| Condition | Threshold |
+|-----------|-----------|
+| Best variant passes REVIEW (not disqualified) | Required |
+| Best variant total score | 2.5 ≤ score < 4.0 |
+| At least one criterion scored ≤ 3 | Required |
+| Remaining time/budget allows re-execution | Required |
+| Task is not Quick Mode | Required |
+
+**Do NOT trigger REFINE when:**
+- Best variant scores ≥ 4.0 (already good enough)
+- Best variant scores < 2.5 (too poor — re-spec instead)
+- All variants were disqualified (re-spec, not refine)
+- Quick Mode (REFINE adds too much overhead for small tasks)
+
+### REFINE Workflow
+
+```
+EVALUATE → [score < 4.0?] → REFINE → RE-EVALUATE → [improved?] → ADOPT
+                                 ↑                        |
+                                 └── [iteration < max] ───┘
+```
+
+**Updated COMPETE workflow with REFINE:**
+```
+SPEC → SCOPE LOCK → EXECUTE → REVIEW → EVALUATE → [REFINE] → ADOPT → VERIFY
+```
+
+### Refinement Prompt Template
+
+The REFINE prompt builds on the original spec by adding specific improvement directives based on evaluation results:
+
+```
+Re-implement the following specification with targeted improvements.
+
+## Original Specification
+{original_spec_content}
+
+## Previous Attempt Analysis
+The previous implementation scored {total_score}/5.0. Specific weaknesses:
+{weakness_list}
+
+## Improvement Directives
+Focus on improving these specific areas:
+{improvement_directives}
+
+## What Worked Well (preserve these aspects)
+{strengths_to_preserve}
+
+## Allowed Files
+{allowed_files_list}
+
+## Forbidden Files
+{forbidden_files_list}
+
+## Constraints
+{standard_constraints}
+
+## Success Criteria
+{original_criteria + additional_refinement_criteria}
+```
+
+### Iteration Limits
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| Max iterations | 2 | Diminishing returns after 2 refinement attempts |
+| Min score improvement | 0.3 | Below this, further refinement is unlikely to help |
+| Timeout per iteration | Same as original execution | Prevent runaway cost |
+
+### Exit Conditions
+
+REFINE exits and proceeds to ADOPT when ANY of these conditions is true:
+
+| Condition | Action |
+|-----------|--------|
+| Score ≥ 4.0 | ADOPT refined variant |
+| Max iterations reached (2) | ADOPT best variant so far |
+| Score improvement < 0.3 between iterations | ADOPT current variant (diminishing returns) |
+| Refined variant scores worse than original | ADOPT original variant |
+| Build/test failure in refined variant | ADOPT original variant |
+
+### Score Comparison Template
+
+```yaml
+refine_result:
+  original:
+    variant: "arena/variant-{engine}"
+    score: {original_total}
+    breakdown:
+      correctness: {score}
+      code_quality: {score}
+      performance: {score}
+      safety: {score}
+      simplicity: {score}
+  refined_iteration_1:
+    variant: "arena/variant-{engine}-refined-1"
+    score: {refined_total}
+    breakdown:
+      correctness: {score}
+      code_quality: {score}
+      performance: {score}
+      safety: {score}
+      simplicity: {score}
+    improvement: {score_delta}
+  selected: "original | refined_iteration_1 | refined_iteration_2"
+  rationale: "[Why this version was selected]"
 ```

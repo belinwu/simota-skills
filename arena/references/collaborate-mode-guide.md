@@ -313,6 +313,60 @@ codex review --uncommitted
 
 ---
 
+## Quick Collaborate Mode
+
+Quick Collaborate is a lightweight variant of COLLABORATE for small-scope tasks. Arena executes both subtasks sequentially in Solo mode without spawning teammates, then integrates the results directly.
+
+### Eligibility Criteria
+
+| Criterion | Threshold |
+|-----------|-----------|
+| Total subtasks | Exactly 2 |
+| Total files affected | ≤ 4 files |
+| Estimated total change | ≤ 80 lines |
+| Subtask interdependency | Low (minimal shared interfaces) |
+| Engine availability | At least 1 engine available |
+
+All criteria must be met. If any criterion is exceeded, escalate to standard Solo or Team COLLABORATE.
+
+### Workflow Comparison
+
+| Step | Standard COLLABORATE (Solo) | Quick Collaborate |
+|------|----------------------------|-------------------|
+| Worktree setup | 1 worktree per subtask | 1 worktree per subtask (same) |
+| Subtask execution | Sequential `codex exec` / `gemini` | Sequential `codex exec` / `gemini` (same) |
+| Integration | Full merge + verification script | Simplified merge + inline verification |
+| Evaluation | Per-subtask + integrated scoring | Integrated scoring only (skip per-subtask) |
+| REFINE eligibility | Yes | No — escalate to standard if score < 3.0 |
+| Team spawning | No (Solo) | No |
+
+### Execution Example
+
+```
+Arena (Quick Collaborate)
+├── DECOMPOSE: Split task into 2 subtasks
+├── Worktree: git worktree add arena/task-1
+├── Bash: codex exec "subtask 1 prompt" (in arena/task-1)
+├── Worktree: git worktree add arena/task-2
+├── Bash: gemini -p "subtask 2 prompt" (in arena/task-2)
+├── Integrate: git merge arena/task-1 + arena/task-2 into working branch
+├── Verify: build + lint + type-check (inline, no separate script)
+└── EVALUATE → ADOPT (no per-subtask scoring)
+```
+
+### Escalation Conditions
+
+Quick Collaborate escalates to standard COLLABORATE when:
+
+| Condition | Action |
+|-----------|--------|
+| Integration merge conflicts | Escalate to Solo COLLABORATE (full verification) |
+| Integrated score < 3.0 | Escalate to Solo COLLABORATE with REFINE |
+| Build/lint/type-check failure | Retry once; if still failing, escalate |
+| Subtask produces > 40 lines | Continue but flag for post-session review |
+
+---
+
 ## Teammate Prompt Templates (COLLABORATE)
 
 ### task-{subtask_id} (codex)

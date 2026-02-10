@@ -165,7 +165,7 @@ Execution modes (Solo, Team, Quick) apply to **both** paradigms. The mode determ
 |------|---------|-------------|
 | **Solo** | Sequential variant comparison | Sequential subtask execution |
 | **Team** | Parallel variant generation | Parallel subtask execution |
-| **Quick** | Lightweight 2-variant comparison | N/A (COLLABORATE requires integration) |
+| **Quick** | Lightweight 2-variant comparison | Lightweight 2-subtask execution (Quick Collaborate) |
 
 ### Solo Mode
 
@@ -271,6 +271,35 @@ SPEC → EXECUTE → QUICK_EVAL → ADOPT
 
 If Quick Mode evaluation is inconclusive (variants score equally), escalate to standard workflow with full REVIEW + EVALUATE.
 
+### Quick Collaborate Mode
+
+A lightweight COLLABORATE variant for small-scope cooperative tasks. Skips detailed decomposition analysis and uses a streamlined integration workflow.
+
+**Eligibility criteria (ALL must be true):**
+- COLLABORATE paradigm selected
+- Total subtask count = 2
+- Total target files ≤ 4 (across both subtasks)
+- No complex dependencies between subtasks
+- Estimated change ≤ 80 lines total
+
+**Quick Collaborate workflow:**
+```
+SPEC → QUICK_DECOMPOSE → EXECUTE → QUICK_VERIFY → INTEGRATE
+```
+
+**Differences from standard COLLABORATE:**
+
+| Aspect | Standard COLLABORATE | Quick Collaborate |
+|--------|---------------------|-------------------|
+| Decomposition | Full analysis with rationale | Minimal split (2 subtasks, obvious boundaries) |
+| Review | Full 5-step per subtask | Scope check + test only |
+| Verification | Full build + test + codex review + interface check | Build + test only |
+| Report | Full integration report | One-line summary |
+
+If Quick Collaborate integration fails (merge conflicts or test failures), escalate to standard COLLABORATE workflow.
+
+See `references/collaborate-mode-guide.md` → "Quick Collaborate Mode" for detailed eligibility and workflow.
+
 ---
 
 ## Boundaries
@@ -365,6 +394,7 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_VARIANT_SELECTION | ON_DECISION | When selecting which variant to adopt |
 | ON_SPEC_CRITIQUE_ISSUES | ON_RISK | When specification has ambiguities |
 | ON_COST_THRESHOLD | ON_RISK | When estimated cost exceeds expected threshold |
+| ON_ALL_DISQUALIFIED | ON_FAILURE | When all variants are disqualified in REVIEW |
 
 ### Question Templates
 
@@ -460,13 +490,30 @@ questions:
 
 **Auto-trigger:** This prompt is shown automatically when variant_count ≥ 3 OR Team Mode is selected.
 
+**ON_ALL_DISQUALIFIED:**
+```yaml
+questions:
+  - question: "All variants were disqualified during REVIEW. How should Arena proceed?"
+    header: "Recovery"
+    options:
+      - label: "Refine spec and re-run (Recommended)"
+        description: "Analyze failure causes, improve the specification, and generate new variants"
+      - label: "Fall back to Builder"
+        description: "Hand off the task to Builder for direct implementation by Claude Code"
+      - label: "Abort"
+        description: "Stop the Arena session and return control to user"
+    multiSelect: false
+```
+
+**Auto-trigger:** This prompt is shown automatically when all variants fail the REVIEW quality gate.
+
 ---
 
 ## Core Workflow
 
 ### COMPETE Workflow (default)
 
-Arena follows a phased process: **SPEC → SCOPE LOCK → EXECUTE → REVIEW → EVALUATE → ADOPT → VERIFY**
+Arena follows a phased process: **SPEC → SCOPE LOCK → EXECUTE → REVIEW → EVALUATE → [REFINE] → ADOPT → VERIFY**
 
 See `references/engine-cli-guide.md` for detailed CLI reference, prompt construction protocol, and Git branch management.
 
@@ -532,11 +579,13 @@ git add -A && git commit -m "arena: variant-gemini implementation"
 git diff arena/variant-codex..arena/variant-gemini
 # Use review_results + Read files to score each variant
 
+# Phase 5b: REFINE (optional) - If best score 2.5–4.0, re-execute with targeted improvements (max 2 iterations)
+
 # Phase 6: ADOPT - Merge winner
 git checkout $BASE_BRANCH
 git merge arena/variant-codex -m "arena: adopt variant-codex"
 
-# Phase 6: VERIFY & CLEANUP
+# Phase 7: VERIFY & CLEANUP
 # Run tests, build, security scan
 git branch -D arena/variant-codex arena/variant-gemini
 git stash pop
@@ -584,6 +633,8 @@ TeamCreate(team_name="arena-{task_id}")
 
 # Phase 7: EVALUATE - Score variants (informed by review results)
 
+# Phase 7b: REFINE (optional) - If best score 2.5–4.0, re-execute with improvement directives (max 2 iterations)
+
 # Phase 8: ADOPT - Merge winner
 
 # Phase 9: CLEANUP
@@ -604,7 +655,7 @@ See `references/team-mode-guide.md` for full Team Mode lifecycle and teammate pr
 | Safety | 15% | Error handling, security |
 | Simplicity | 5% | Avoids over-engineering |
 
-See `references/evaluation-framework.md` for full scoring methodology, weight adjustments, and tie-breaking rules.
+See `references/evaluation-framework.md` for full scoring methodology, weight adjustments, tie-breaking rules, and the REFINE phase framework.
 
 ---
 
@@ -725,6 +776,7 @@ See `references/collaborate-mode-guide.md` for full COLLABORATE workflow details
   Scout  ----+--> [ Arena ] ────────────+----> Radar (tests)
   Spark  ----+    (COMPETE/COLLABORATE)  +----> Judge (review)
                                          +----> Sentinel (security)
+                                         +----> Builder (fallback)
 ```
 
 ### Collaboration Patterns
@@ -738,6 +790,24 @@ See `references/collaborate-mode-guide.md` for full COLLABORATE workflow details
 | E: Security-Critical | Arena -> Sentinel -> Arena | Security audit before final adoption |
 
 See `references/handoff-formats.md` for input/output handoff templates.
+
+### Builder Fallback Strategy
+
+When Arena cannot complete its task (all variants disqualified, engines unavailable, or repeated failures), it should fall back to Builder for direct implementation.
+
+| Trigger Condition | Action |
+|-------------------|--------|
+| All variants disqualified in REVIEW | Hand off to Builder with spec + failure analysis |
+| All engines unavailable (0 engines) | Hand off to Builder immediately |
+| 2 consecutive REFINE iterations with no improvement | Hand off to Builder with best attempt as reference |
+| Engine execution fails with unrecoverable error | Hand off to Builder with spec + error context |
+
+**Fallback procedure:**
+1. Document why Arena could not complete the task (failure analysis)
+2. Prepare `ARENA_TO_BUILDER_HANDOFF` (see `references/handoff-formats.md`)
+3. Include the original spec, allowed/forbidden files, and any partial results
+4. If any variant passed REVIEW but scored poorly, include it as reference material
+5. Notify the user that Arena is falling back to Builder
 
 ---
 
@@ -795,7 +865,7 @@ When creating `.agents/arena.md` for the first time:
 
 ### COMPETE Process
 ```
-SPEC -> SCOPE LOCK -> EXECUTE -> REVIEW -> EVALUATE -> ADOPT -> VERIFY
+SPEC -> SCOPE LOCK -> EXECUTE -> REVIEW -> EVALUATE -> [REFINE] -> ADOPT -> VERIFY
 ```
 
 1. **SPEC** - Validate or create specification; check for ambiguities before wasting engine runs
@@ -803,8 +873,9 @@ SPEC -> SCOPE LOCK -> EXECUTE -> REVIEW -> EVALUATE -> ADOPT -> VERIFY
 3. **EXECUTE** - Run engines via CLI on Git branches (Solo: sequential, Team: parallel); validate scope after each run
 4. **REVIEW** - **Mandatory quality gate** per variant: scope check, test execution, build verification, `codex review`, acceptance criteria verification (see `references/evaluation-framework.md` → "Post-Completion Review Checklist")
 5. **EVALUATE** - Score each variant against weighted criteria using review results as input
-6. **ADOPT** - Select winner with documented rationale; preserve useful ideas from rejected variants
-7. **VERIFY** - Confirm tests pass on merged result, build succeeds, no security regressions; clean up branches
+6. **REFINE** *(optional)* - If best variant scores 2.5–4.0 with weak criteria, re-execute with targeted improvement directives (max 2 iterations; see `references/evaluation-framework.md` → "REFINE Phase Framework")
+7. **ADOPT** - Select winner with documented rationale; preserve useful ideas from rejected variants
+8. **VERIFY** - Confirm tests pass on merged result, build succeeds, no security regressions; clean up branches
 
 ### COLLABORATE Process
 ```
@@ -831,6 +902,7 @@ SPEC -> DECOMPOSE -> SCOPE LOCK -> EXECUTE -> REVIEW -> INTEGRATE -> VERIFY
 - **Score before deciding** - Fill out the scoring matrix before forming an opinion to avoid bias (COMPETE)
 - **Non-overlapping scopes** - Clean file separation prevents integration headaches (COLLABORATE)
 - **codex review for quality signal** - Use automated review as supplementary evidence
+- **REFINE before re-running** - When best variant scores 2.5–4.0, refine it rather than generating entirely new variants (COMPETE)
 
 ## Avoids
 

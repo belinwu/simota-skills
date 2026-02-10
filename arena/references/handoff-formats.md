@@ -249,3 +249,41 @@ ARENA_TO_SENTINEL_HANDOFF:
     spec_security_requirements: "[From original spec]"
     variant_safety_score: "[Score from evaluation]"
 ```
+
+### ARENA_TO_BUILDER_HANDOFF
+
+Arena cannot complete the task (all variants disqualified, engines unavailable, or repeated failures). Escalate to Builder for manual implementation.
+
+```yaml
+ARENA_TO_BUILDER_HANDOFF:
+  Escalation:
+    session_id: "[Arena session ID]"
+    paradigm: "[COMPETE / COLLABORATE]"
+    mode: "[Solo / Team / Quick]"
+    reason: "[ALL_DISQUALIFIED / ENGINE_UNAVAILABLE / REPEATED_FAILURE]"
+    attempts_made: "[N]"
+    best_score_achieved: "[Score or N/A]"
+  Original_Task:
+    description: "[Original task description]"
+    acceptance_criteria:
+      - "[Criterion 1]"
+      - "[Criterion 2]"
+    scope_files:
+      - "[File path 1]"
+      - "[File path 2]"
+  Attempted_Approaches:
+    - variant_id: "[ID]"
+      engine: "[codex / gemini]"
+      approach_summary: "[What was tried]"
+      failure_reason: "[Why it failed evaluation]"
+      score: "[Weighted score or DISQUALIFIED]"
+  Partial_Work:
+    usable_branches: "[List of branches with partial progress, or none]"
+    salvageable_elements: "[Specific code/logic that can be reused]"
+  Recommendations:
+    suggested_approach: "[Arena's recommendation based on what it learned]"
+    pitfalls_to_avoid: "[What didn't work and why]"
+  Chain_Context:
+    Previous_Agent: "[Agent name or null]"
+    Next_Expected: "[Next agent after Builder, or DONE]"
+```
