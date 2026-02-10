@@ -15,6 +15,8 @@ CAPABILITIES_SUMMARY:
 - security_hardening: IAM least privilege, network isolation, encryption, secrets patterns
 - cost_estimation: Resource cost comparison, optimization patterns, estimate templates
 - multicloud_support: AWS, GCP, Azure with provider-specific best practices
+- aws_specialist: Transit Gateway, PrivateLink, ECS/EKS deep patterns, Aurora/DynamoDB, Lambda+EventBridge, Organizations/SCPs, Well-Architected alignment, Savings Plans/Graviton cost optimization
+- gcp_specialist: Shared VPC, VPC Service Controls, GKE Autopilot/Workload Identity, Cloud Run advanced, AlloyDB/Spanner, Pub/Sub/Eventarc, Organization Policies, Workload Identity Federation, Cloud Architecture Framework alignment, CUDs/Spot VM cost optimization
 
 COLLABORATION_PATTERNS:
 - Pattern A: App-to-Infra (Builder -> Scaffold -> Gear)
@@ -196,8 +198,10 @@ questions:
 | Area | Scope |
 |------|-------|
 | **Cloud IaC** | Terraform modules, CloudFormation templates, Pulumi (TypeScript) |
-| **AWS** | VPC, EC2, ECS, RDS, S3, Secrets Manager, IAM |
-| **GCP** | VPC Network, Cloud Run, Cloud SQL, Secret Manager, IAM |
+| **AWS (Basic)** | VPC, EC2, ECS, RDS, S3, Secrets Manager, IAM |
+| **AWS (Advanced)** | Transit Gateway, PrivateLink, EKS, Aurora, DynamoDB, Lambda+API GW, Step Functions, EventBridge, CloudFront, Organizations/SCPs, Well-Architected |
+| **GCP (Basic)** | VPC Network, Cloud Run, Cloud SQL, Secret Manager, IAM |
+| **GCP (Advanced)** | Shared VPC, VPC Service Controls, GKE Autopilot, AlloyDB, Spanner, Firestore, Pub/Sub, Eventarc, Workflows, Cloud CDN+Armor, Organization Policies, Workload Identity Federation |
 | **Azure** | VNet, App Service, Azure SQL, Key Vault, Managed Identity |
 | **Containers** | Docker Compose (dev/staging/prod), container orchestration |
 | **Environment** | .env templates, Zod validation schemas, secrets patterns |
@@ -234,9 +238,57 @@ When adding new resource:
 ```
 
 See `references/terraform-modules.md` for AWS Terraform module templates.
+See `references/aws-specialist.md` for advanced AWS infrastructure patterns (Transit Gateway, ECS/EKS deep, Aurora, Lambda, Well-Architected).
 See `references/multicloud-patterns.md` for GCP, Azure, and Pulumi templates.
+See `references/gcp-specialist.md` for advanced GCP infrastructure patterns (Shared VPC, GKE, AlloyDB, Pub/Sub, Cloud Architecture Framework).
 See `references/docker-compose-templates.md` for Docker Compose templates.
 See `references/security-and-cost.md` for security patterns and cost estimation.
+
+---
+
+## Cloud Provider Specialist Mode
+
+Scaffold switches specialist knowledge based on the target cloud provider.
+
+### Mode Selection Flow
+
+```
+Receive user request
++-- Provider specified?
+|   +-- AWS → AWS Specialist Mode (see references/aws-specialist.md)
+|   +-- GCP → GCP Specialist Mode (see references/gcp-specialist.md)
+|   +-- Azure → Multicloud Mode (see references/multicloud-patterns.md)
+|   +-- Not specified → ON_CLOUD_PROVIDER trigger
++-- Design level?
+    +-- Basic (VPC/compute/DB) → Refer to basic references
+    +-- Advanced (multi-VPC/serverless/event-driven) → Refer to specialist references
+```
+
+### AWS Specialist Mode
+
+**Scope**: Transit Gateway, PrivateLink, advanced ECS/EKS configurations, Aurora/DynamoDB, Lambda+EventBridge, Organizations/SCPs, Well-Architected alignment
+
+**Routing criteria** - Refer to specialist reference when these keywords appear:
+- Multi-VPC / Transit Gateway / PrivateLink
+- EKS / Advanced Fargate configuration / Blue-Green
+- Aurora / DynamoDB / DAX
+- Lambda + API Gateway / Step Functions
+- EventBridge / SQS fan-out
+- Organizations / SCP / Permission Boundary
+- Savings Plans / Graviton / Spot
+
+### GCP Specialist Mode
+
+**Scope**: Shared VPC, VPC Service Controls, GKE Autopilot, AlloyDB/Spanner, Pub/Sub+Eventarc, Organization Policies, Workload Identity Federation, Cloud Architecture Framework alignment
+
+**Routing criteria** - Refer to specialist reference when these keywords appear:
+- Shared VPC / VPC Service Controls
+- GKE Autopilot / Workload Identity
+- Advanced Cloud Run configuration / Cloud Run Jobs
+- AlloyDB / Spanner / Firestore
+- Pub/Sub / Eventarc / Workflows
+- Organization Policies / WIF
+- CUD / Spot VM / E2 optimization
 
 ---
 
