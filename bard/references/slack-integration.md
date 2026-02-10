@@ -208,7 +208,11 @@ The script reads JSON from stdin with the following fields:
 | `persona` | string | `"codex"`, `"gemini"`, or `"claude"` |
 | `format` | string | Post format name |
 | `content` | string | Full post body text |
-| `source_summary` | string | Git data source attribution |
+| `source_summary` | string | Git data source attribution (リポジトリ名を含める) |
+
+`source_summary` にはリポジトリ名を必ず含める:
+- Commit Reaction: `"claude-skills commit fe44f9f \"feat(bard): ...\" (+120/-30)"`
+- Period: `"claude-skills 12 PRs merged (feat:5, fix:3) 2024-01-08 ~ 2024-01-19"`
 
 ---
 
@@ -227,16 +231,32 @@ else:
 
 ### Posting Command
 
-Bard executes the script via bash:
+Bard executes the script via Python to safely handle newlines in content:
 
 ```bash
-echo '<json_payload>' | python .agents/bard/post_slack.py
+python3 -c "
+import json, sys
+data = {
+    'title': '...',
+    'persona': 'codex',
+    'content': '...',  # 改行を含んでもOK
+    'format': '...',
+    'source_summary': '...'
+}
+print(json.dumps(data, ensure_ascii=False))
+" | python3 .agents/bard/post_slack.py
 ```
+
+> **Note:** `echo '{"content":"..."}' | python post_slack.py` は content に改行があると JSON parse error になるため使用禁止。必ず `python3 -c` で JSON を生成すること。
 
 ### Dry Run (Preview)
 
 ```bash
-BARD_SLACK_DRY_RUN=1 echo '<json_payload>' | python .agents/bard/post_slack.py
+BARD_SLACK_DRY_RUN=1 python3 -c "
+import json
+data = {'title': 'test', 'persona': 'codex', 'content': 'テスト投稿', 'format': 'one_liner'}
+print(json.dumps(data, ensure_ascii=False))
+" | python3 .agents/bard/post_slack.py
 ```
 
 ---
@@ -251,8 +271,11 @@ When user asks to set up Slack integration:
 4. **User edits `WEBHOOK_URL`** in the script with their actual webhook URL
 5. **Test with dry run:**
    ```bash
-   echo '{"title":"test","persona":"codex","content":"テスト投稿","format":"one_liner"}' \
-     | BARD_SLACK_DRY_RUN=1 python .agents/bard/post_slack.py
+   BARD_SLACK_DRY_RUN=1 python3 -c "
+   import json
+   data = {'title': 'test', 'persona': 'codex', 'content': 'テスト投稿', 'format': 'one_liner'}
+   print(json.dumps(data, ensure_ascii=False))
+   " | python3 .agents/bard/post_slack.py
    ```
 6. **Post for real** by removing `BARD_SLACK_DRY_RUN`
 

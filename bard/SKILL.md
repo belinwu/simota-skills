@@ -232,19 +232,28 @@ Bard's workflow for transforming git data into persona-driven developer posts.
 
 Gather raw data from git history and partner agents.
 
-**Primary sources:**
-- `git log` - commit messages, authors, dates, stats
-- `gh pr list` / `gh pr view` - PR titles, descriptions, labels, reviewers
-- Harvest handoff data - pre-aggregated statistics
-
-**Read-only commands only.** See `references/git-extraction.md` for command patterns.
+**Default mode: 直前のコミット1件に対する反応（Commit Reaction）**
 
 ```bash
-# Example: Collect last sprint's merged PRs
+# 直前のコミットの詳細を取得
+git log -1 --format="%h|%an|%ad|%s%n%n%b" --date=short
+git log -1 --stat
+
+# リポジトリ名を取得
+basename $(git rev-parse --show-toplevel)
+```
+
+**Extended mode: 期間指定（sprint retro, release等）**
+
+```bash
+# 期間指定でのコミット収集
+git log --since="2 weeks ago" --no-merges --oneline | head -50
 gh pr list --state merged --search "merged:>2024-01-08" \
   --json number,title,author,labels,additions,deletions,mergedAt \
   --limit 100
 ```
+
+**Read-only commands only.** See `references/git-extraction.md` for command patterns.
 
 ### 2. Observe（観察）
 
@@ -329,21 +338,49 @@ Add finishing touches: title, persona label, source attribution.
 - **Format label**: Name of the post format used
 - **Source summary**: Brief note on the git data used (period, commit count, etc.)
 
-**Output format:**
+**Output format (Commit Reaction — default):**
 ```markdown
 ## [Title]
 
-_[Format] — [Persona] — [Period] — [Repository]_
+_[Format] — [Persona] — [Repository]_
 
 [Post body]
 
 ---
-_Source: [N] commits, [M] PRs merged ([start] ~ [end])_
+_Source: [repository] commit [hash] "[commit message]" (+[additions]/-[deletions])_
+```
+
+**Output format (Period — sprint retro, release等):**
+```markdown
+## [Title]
+
+_[Format] — [Persona] — [Repository] — [Period]_
+
+[Post body]
+
+---
+_Source: [repository] [N] commits, [M] PRs merged ([start] ~ [end])_
 ```
 
 ---
 
 ## Use Case Patterns
+
+### 0. Commit Reaction（コミット単位 — デフォルト）
+
+**Trigger:** `/bard`（引数なし）, "直前のコミットについてボヤいて"
+**Input:** 直前の1コミット（`git log -1`）
+**Persona affinity:** コミットの type により自動選択
+**Process:**
+1. `git log -1 --stat` で直前のコミット情報を取得
+2. `basename $(git rev-parse --show-toplevel)` でリポジトリ名を取得
+3. コミットの type・変更内容・行数から特性を把握
+4. ペルソナを選択（type に基づく重み付け + 前回と被らないようにローテーション）
+5. **内容の良し悪しに応じて反応**（良いコードには推薦・賞賛、問題があればグチ・皮肉）
+6. ペルソナの「好み・主張」が自然に出る投稿を生成
+
+**ポイント:** グチだけでなく、良いコードへの反応（推薦、賞賛、技術的好み）も重要。
+ペルソナの人間性が出るのはネガティブな時だけでなく、ポジティブな時も。
 
 ### 1. Sprint Retrospective Post（スプリント回顧）
 
@@ -648,22 +685,24 @@ Task:
   mode: dontAsk          # git/gh コマンド、python スクリプト実行を許可
   description: "Bard grumble + Slack post"
   prompt: |
-    あなたはBard（開発者ボヤキエージェント）として投稿を生成し、Slackに投稿してください。
+    あなたはBard（開発者ボヤキエージェント）として、直前のコミットについて投稿を生成し、Slackに投稿してください。
 
     ## 手順
     1. 以下のリファレンスを読む:
-       - bard/references/personas.md (ペルソナ定義 + Anti-AI Authenticity Rules)
-       - bard/references/examples.md (サンプル投稿)
+       - bard/references/personas.md (ペルソナ定義 + Anti-AI Authenticity Rules + 好み・主張)
+       - bard/references/examples.md (サンプル投稿 — 特に「0. Commit Reaction」セクション)
        - bard/references/post-formats.md (投稿フォーマット)
        - bard/references/theme-mapping.md (Gitイベント→ボヤキ変換)
        - .agents/bard.md (ジャーナル、あれば)
        - .agents/bard/rotation_log.md (ペルソナローテーション履歴)
        - .agents/PROJECT.md (プロジェクト情報、あれば)
 
-    2. Gitデータを収集:
-       - git log --oneline --since="2 weeks ago" | head -50
-       - git shortlog -sn --since="2 weeks ago"
-       - コミットメッセージからfeat/fix/refactor/test等を分類
+    2. 直前のコミットのデータを収集:
+       - git log -1 --format="%h|%an|%ad|%s%n%n%b" --date=short
+       - git log -1 --stat
+       - basename $(git rev-parse --show-toplevel)  ← リポジトリ名
+       - コミットメッセージのtypeを分類（feat/fix/refactor/test等）
+       - 変更ファイル・行数から内容の特性を把握
 
     3. .agents/bard/rotation_log.md を読み、前回のペルソナを確認する
        **（このステップは絶対にスキップしてはならない）**
@@ -676,10 +715,19 @@ Task:
        - **投稿文は必ず日本語** (Claudeペルソナの日英混合はOK)
        - Anti-AI Authenticity Rules を厳守
        - 綺麗にまとめない、オチをつけない、人間臭く
+       - **内容に応じてペルソナの好み・主張を自然に反映する**
+         （良いコードには素直に「これは正しい」「おすすめ」と言う。悪い点だけでなく良い点にも反応する）
+       - ペルソナの技術的信念・好みが自然に出る投稿にする
+       - Source行にリポジトリ名を含める
 
     6. .agents/bard/post_slack.py が存在するか確認
-       - 存在する場合: JSONをstdinで渡してSlackに投稿
-         echo '{"title":"...","persona":"...","content":"...","format":"...","source_summary":"..."}' | python .agents/bard/post_slack.py
+       - 存在する場合: python3 -c でJSON生成し、stdinで渡してSlackに投稿
+         python3 -c "
+         import json
+         data = {'title': '...', 'persona': '...', 'content': '...', 'format': '...', 'source_summary': '[repo] commit [hash] \"[msg]\" (+N/-M)'}
+         print(json.dumps(data, ensure_ascii=False))
+         " | python3 .agents/bard/post_slack.py
+         ※ echo での JSON パイプは content に改行があると parse error になるため使用禁止
        - 存在しない場合: 投稿内容をテキストで返す
 
     7. .agents/bard/rotation_log.md に今回の投稿を記録する
@@ -690,8 +738,8 @@ Task:
 
     ## 制約
     - ペルソナ: {persona指定 or "auto"}
-    - 対象期間: {期間指定 or "直近2週間"}
-    - リポジトリ: 現在のリポジトリ
+    - 対象: {直前のコミット（デフォルト）or 期間指定}
+    - リポジトリ: 現在のリポジトリ（名前をsource_summaryに含める）
 ```
 
 ### 権限設定

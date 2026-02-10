@@ -22,10 +22,11 @@ Bard が詩の素材を収集するための read-only git/gh コマンドパタ
 git log --since="2024-01-08" --until="2024-01-19" --no-merges \
   --pretty=format:"%h|%an|%ad|%s" --date=short
 
-# Conventional Commit のタイプ別カウント
+# Conventional Commit のタイプ別カウント (macOS/Linux 両対応)
 git log --since="2024-01-08" --until="2024-01-19" --no-merges \
   --pretty=format:"%s" | \
-  grep -oP '^(feat|fix|refactor|test|docs|style|perf|chore|ci|security)' | \
+  sed -E 's/^(feat|fix|refactor|test|docs|style|perf|chore|ci|security).*/\1/' | \
+  grep -E '^(feat|fix|refactor|test|docs|style|perf|chore|ci|security)$' | \
   sort | uniq -c | sort -rn
 ```
 
