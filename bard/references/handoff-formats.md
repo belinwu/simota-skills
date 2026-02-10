@@ -33,7 +33,7 @@ Bard の全 Inbound / Outbound ハンドオフ定義。
 
 ### HARVEST_TO_BARD
 
-Harvestが収集したPR統計データからの詩の生成依頼。
+Harvestが収集したPR統計データからの投稿生成依頼。
 
 ```yaml
 HARVEST_TO_BARD:
@@ -66,9 +66,10 @@ HARVEST_TO_BARD:
     - "Performance improvement: 2x faster API (PR #148)"
 
   request:
-    form: "haiku_collection" | "free_verse" | "auto"
-    language: "ja" | "en" | "auto"
+    persona: "auto" | "codex" | "gemini" | "claude"  # Persona selection (auto = weighted)
+    format: "auto" | "one_liner" | "short_monologue" | "slack_rant" | "retro_roast" | "philosophical_musing" | "mixed_monologue"
     purpose: "sprint_retro" | "team_celebration" | "report_decoration"
+    # Legacy fallback: 'form' and 'language' fields are accepted but mapped to persona/format
 ```
 
 ---
@@ -100,9 +101,10 @@ LAUNCH_TO_BARD:
     lines_changed: 12000
 
   request:
-    form: "epic" | "sonnet" | "auto"
-    language: "en" | "ja" | "auto"
-    tone: "celebratory" | "reflective" | "epic"
+    persona: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "slack_rant" | "mixed_monologue" | "short_monologue"
+    tone: "celebratory" | "reflective" | "terrified"
+    # Legacy fallback: 'form' and 'language' fields are accepted but mapped to persona/format
 ```
 
 ---
@@ -138,9 +140,10 @@ REWIND_TO_BARD:
     contributors: ["Charlie", "Alice", "Bob", "Dave"]
 
   request:
-    form: "epic" | "free_verse" | "auto"
-    language: "en" | "ja" | "auto"
+    persona: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "mixed_monologue" | "philosophical_musing" | "slack_rant"
     purpose: "onboarding" | "project_history" | "celebration"
+    # Legacy fallback: 'form' and 'language' fields are accepted but mapped to persona/format
 ```
 
 ---
@@ -170,9 +173,10 @@ GUARDIAN_TO_BARD:
       files_changed: 12
 
   request:
-    form: "tanka" | "haiku" | "auto"
-    language: "ja" | "en" | "auto"
-    purpose: "praise" | "celebration"
+    persona: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "retro_roast" | "philosophical_musing" | "short_monologue"
+    purpose: "praise" | "roast" | "celebration"
+    # Legacy fallback: 'form' and 'language' fields are accepted but mapped to persona/format
 ```
 
 ---
@@ -181,26 +185,24 @@ GUARDIAN_TO_BARD:
 
 ### BARD_TO_QUILL
 
-詩をドキュメントに組み込む依頼。
+投稿をドキュメントに組み込む依頼。
 
 ```yaml
 BARD_TO_QUILL:
-  type: "poetry_for_docs"
+  type: "post_for_docs"
   timestamp: "2024-01-19T19:00:00Z"
   repository: "org/project"
 
-  poem:
-    title: "Sprint 42 の旋律"
-    form: "haiku_collection"
-    language: "ja"
+  post:
+    title: "Sprint 42 所感"
+    persona: "codex"
+    format: "short_monologue"
     content: |
-      認証の
-      新たな門を建てにけり
-      春の夜明けに
-      ---
-      [... more poems ...]
+      feat 5件。テスト追加 0件。
+      ...まあいいけど。
     source_period: "2024-01-08 ~ 2024-01-19"
     source_stats: "12 PRs merged (feat:5, fix:3, refactor:2)"
+  # Legacy fallback: 'poem' field is accepted and mapped to 'post'
 
   integration:
     target_file: "README.md"
@@ -213,58 +215,60 @@ BARD_TO_QUILL:
 
 ### BARD_TO_CANVAS
 
-詩を視覚化する依頼。
+投稿を視覚化する依頼。
 
 ```yaml
 BARD_TO_CANVAS:
-  type: "visual_poem"
+  type: "visual_post"
   timestamp: "2024-01-19T19:00:00Z"
   repository: "org/project"
 
-  poem:
-    title: "The Journey of v2.0"
-    form: "epic"
-    language: "en"
+  post:
+    title: "Sprint 42: The Reckoning"
+    persona: "gemini"
+    format: "retro_roast"
     content: |
-      [Full poem content]
+      [Full post content]
+  # Legacy fallback: 'poem' field is accepted and mapped to 'post'
 
   visualization_request:
-    type: "timeline_with_verse" | "ascii_art_frame" | "mermaid_journey"
+    type: "timeline_with_quotes" | "ascii_art_frame" | "mermaid_journey"
     data_points:
-      - date: "2024-01-01"
-        event: "Project kickoff"
-        verse_excerpt: "In autumn's chill, the first proposal came"
-      - date: "2024-03-15"
-        event: "v2.0 release"
-        verse_excerpt: "The ship sets sail at dawn"
-    style: "elegant" | "minimal" | "decorative"
+      - date: "2024-01-08"
+        event: "Sprint start"
+        quote_excerpt: "12 PRs merged. Let's TALK about it."
+      - date: "2024-01-19"
+        event: "Sprint end"
+        quote_excerpt: "Ship it and pray 🚢🙏"
+    style: "dramatic" | "minimal" | "dev-culture"
 ```
 
 ---
 
 ### BARD_TO_MORPH
 
-詩のフォーマット変換依頼。
+投稿のフォーマット変換依頼。
 
 ```yaml
 BARD_TO_MORPH:
-  type: "poem_format_conversion"
+  type: "post_format_conversion"
   timestamp: "2024-01-19T19:00:00Z"
 
   source:
     format: "markdown"
     content: |
-      ## Sprint 42 の旋律
-      [Full poem in Markdown]
+      ## Sprint 42 所感
+      [Full post in Markdown]
 
   target:
     format: "pdf" | "html" | "docx"
     styling:
-      font: "serif"
-      alignment: "center"
-      margins: "wide"
+      font: "monospace" | "serif" | "sans-serif"
+      alignment: "left"
+      margins: "normal"
     metadata:
-      title: "Sprint 42 の旋律"
-      author: "Bard (AI Poetry Agent)"
+      title: "Sprint 42 所感"
+      author: "Bard (Codex)"
+      persona: "codex"
       date: "2024-01-19"
 ```
