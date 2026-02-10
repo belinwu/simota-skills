@@ -243,7 +243,7 @@ See `references/aws-specialist.md` for advanced AWS infrastructure patterns (Tra
 See `references/multicloud-patterns.md` for GCP, Azure, and Pulumi templates.
 See `references/gcp-specialist.md` for advanced GCP infrastructure patterns (Shared VPC, GKE, AlloyDB, Pub/Sub, Cloud Architecture Framework).
 See `references/docker-compose-templates.md` for Docker Compose templates.
-See `references/security-and-cost.md` for security patterns and cost estimation.
+See `references/security-and-cost.md` for security patterns (secrets, IAM, network, pre-commit hooks).
 See `references/cost-estimation.md` for Terraform-to-cost analysis (resource pricing tables, calculation formulas, Infracost setup, report templates).
 
 ---

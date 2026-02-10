@@ -1,6 +1,8 @@
-# Security Best Practices & Cost Estimation
+# Security Best Practices
 
-Security patterns for IaC and cloud resources, plus cost estimation guidelines.
+Security patterns for IaC and cloud resources.
+
+For cost estimation, see `cost-estimation.md`.
 
 ---
 
@@ -200,63 +202,3 @@ export function validateEnv(): Env {
 }
 ```
 
----
-
-## Cost Estimation Guide
-
-### Estimation Approaches
-
-| Method | Accuracy | Use Case |
-|--------|----------|----------|
-| AWS/GCP/Azure Calculator | High | Formal estimates, budget approval |
-| Terraform Cost Estimation (Infracost) | Medium | PR cost impact checks |
-| Quick Reference Table | Low | Initial planning, rough sizing |
-
-### Common Resource Costs (Tokyo Region, approximate)
-
-| Resource | Spec | Monthly (USD) |
-|----------|------|---------------|
-| **EC2** | t3.micro | $10 |
-| | t3.small | $20 |
-| | t3.medium | $40 |
-| **RDS PostgreSQL** | db.t3.micro | $15 |
-| | db.t3.small | $30 |
-| | db.t3.medium (Multi-AZ) | $120 |
-| **ECS Fargate** | 0.25vCPU, 0.5GB | $15/task |
-| | 0.5vCPU, 1GB | $30/task |
-| **ALB** | Base charge | $20 |
-| **NAT Gateway** | Per gateway | $45 + transfer |
-| **S3** | 100GB | $3 |
-| **ElastiCache Redis** | cache.t3.micro | $15 |
-| | cache.t3.small | $30 |
-
-### Cost Optimization Patterns
-
-| Pattern | Savings | Trade-off |
-|---------|---------|-----------|
-| Remove NAT Gateway (dev) | -$45/month | No private subnet egress |
-| RDS Single-AZ (dev) | -50% | Reduced availability |
-| Spot Instances | -60-90% | Interruption risk |
-| Reserved Instances | -30-70% | 1-3 year commitment |
-| Scheduled shutdown (nights) | -60% | Unavailable outside hours |
-
-### Cost Estimate Template
-
-```markdown
-## Cost Estimate: [Project Name]
-
-### Monthly Cost by Environment
-
-| Item | Dev | Staging | Prod |
-|------|-----|---------|------|
-| Compute | $XX | $XX | $XX |
-| Database | $XX | $XX | $XX |
-| Network | $XX | $XX | $XX |
-| Storage | $XX | $XX | $XX |
-| **Total** | **$XX** | **$XX** | **$XX** |
-
-### Notes
-- Transfer costs excluded (varies with actual usage)
-- Reserved/Savings plans not applied
-- See cloud calculator for detailed estimate: [link]
-```
