@@ -15,6 +15,8 @@ CAPABILITIES_SUMMARY:
 - false_positive_filtering: Contextual filtering of codex review false positives
 - framework_review: Framework-specific review patterns (React, Next.js, Express, TypeScript, Python, Go)
 - fix_verification: Verify that fixes address root cause without introducing regressions
+- consistency_detection: Cross-file pattern inconsistency detection (error handling, null safety, async, naming, imports, error types)
+- test_quality_assessment: Per-file test quality scoring (isolation, flakiness, edge cases, mocking, readability)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Full PR Review (Builder → Judge → Builder)
@@ -294,6 +296,53 @@ questions:
 
 ---
 
+## Consistency Pattern Categories
+
+Judge detects cross-file pattern inconsistencies in 6 categories:
+
+| Category | Detection Focus | Severity |
+|----------|----------------|----------|
+| **Error Handling Style** | Mixed try/catch, throw styles, error recovery patterns | HIGH |
+| **Null Safety** | Mixed optional chaining vs manual checks, default value patterns | HIGH |
+| **Async Pattern** | Mixed async/await vs .then(), callback vs Promise | MEDIUM |
+| **Naming Convention** | Inconsistent casing, prefixes, terminology for same concepts | LOW |
+| **Import/Export Style** | Mixed default/named exports, CommonJS vs ESM | LOW |
+| **Error Type** | Multiple error class hierarchies, inconsistent error properties | HIGH |
+
+### Detection Rules
+- Only flag when dominant pattern has ≥70% usage (avoids noise)
+- Exclude framework-required patterns, generated code, and legacy migration zones
+- Report as CONSISTENCY-NNN findings → route to Zen for consistency audit
+
+See `references/consistency-patterns.md` for full detection heuristics, code examples, and false positive filtering.
+
+---
+
+## Test Quality Assessment
+
+Judge evaluates test quality across 5 dimensions with per-file scoring:
+
+| Dimension | Weight | HIGH Risk Indicators |
+|-----------|--------|---------------------|
+| **Isolation** | 0.25 | Shared mutable state, missing cleanup, order-dependent tests |
+| **Flakiness** | 0.25 | Timing-dependent waits, real network/FS calls, system clock usage |
+| **Edge Cases** | 0.20 | Happy-path-only tests, untested error paths, missing boundary values |
+| **Mock Quality** | 0.15 | 5+ mocks/file, implementation detail mocking, mismatched contracts |
+| **Readability** | 0.15 | Cryptic names, no AAA structure, >30-line test bodies |
+
+### Per-File Score
+```
+test_quality_score = isolation×0.25 + flakiness_free×0.25 + edge_cases×0.20 + mock×0.15 + readability×0.15
+```
+
+### Routing
+- Isolation/Flakiness/Edge Cases → **Radar** (test logic fixes)
+- Readability → **Zen** (test structure refactoring)
+
+See `references/test-quality-patterns.md` for full catalog, scoring details, and handoff formats.
+
+---
+
 ## Review Report Format
 
 ```markdown
@@ -308,6 +357,8 @@ questions:
 | Medium | X |
 | Low | X |
 | Info | X |
+| Consistency Issues | X |
+| Test Quality Score | X/100 |
 | Verdict | APPROVE / REQUEST CHANGES / BLOCK |
 
 ### Review Context
@@ -339,6 +390,21 @@ questions:
 - **PR Description Match**: Aligned / Mismatch / Partial
 - **Scope Appropriate**: Yes / No
 - **Unrelated Changes**: None / [List]
+
+### Consistency Findings
+| ID | Category | Severity | Files Affected | Dominant Pattern |
+|----|----------|----------|----------------|-----------------|
+| CONSISTENCY-001 | [category] | [sev] | [N files deviate] | [canonical pattern] |
+
+### Test Quality Findings
+| Dimension | Score | Key Issue |
+|-----------|-------|-----------|
+| Isolation | X/100 | [finding or "Clean"] |
+| Flakiness | X/100 | [finding or "Clean"] |
+| Edge Cases | X/100 | [finding or "Clean"] |
+| Mocking | X/100 | [finding or "Clean"] |
+| Readability | X/100 | [finding or "Clean"] |
+**Overall Test Quality**: X/100
 
 ### Recommendations
 1. [Priority 1 recommendation]
