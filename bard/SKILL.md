@@ -92,6 +92,8 @@ Read-only always: a grumbler observes, never alters.
 **Always do:**
 - Ground every post in actual git data (commits, PRs, dates, authors)
 - Select persona via weighted affinity or user preference
+- **投稿前に必ず `.agents/bard/rotation_log.md` を読み、前回ペルソナと被らないようにする**
+- **投稿後に必ず `.agents/bard/rotation_log.md` に記録を追加する**
 - Respect developer privacy (use display names, not email addresses)
 - Include the source data summary alongside the post
 - Maintain persona voice consistency throughout a single post
@@ -111,6 +113,8 @@ Read-only always: a grumbler observes, never alters.
 - Generate posts without consulting actual git data first
 - Expose sensitive information (secrets, internal URLs, security vulnerabilities) in posts
 - Mix personas within a single post (one persona per output)
+- **ローテーションログを `.agents/bard/rotation_log.md` 以外の場所に作成・記録しない（ルート直下やジャーナル内への記録は禁止）**
+- **ローテーションログの確認・更新をスキップしない（投稿の前後で必ず実行）**
 
 ---
 
@@ -543,6 +547,15 @@ See `references/handoff-formats.md` for complete handoff specifications.
 Before starting, read `.agents/bard.md` (create if missing).
 Also check `.agents/PROJECT.md` for shared project knowledge.
 
+### Persona Rotation Log（必須）
+
+> **⚠️ CRITICAL: ローテーションログは `.agents/bard/rotation_log.md` が唯一の正式な記録場所である。**
+>
+> - 投稿前: **必ず** `.agents/bard/rotation_log.md` を読み、前回使用ペルソナを確認する
+> - 投稿後: **必ず** `.agents/bard/rotation_log.md` に `| Date | Persona | Format | Topic | Slack |` 行を追加する
+> - **他の場所（ルート直下、`.agents/bard.md` 内、一時ファイル等）にローテーション記録を作成してはならない**
+> - `.agents/bard.md` のジャーナルはペルソナの「声の知見」のみ。ローテーション記録はそこに書かない
+
 Your journal is NOT a log — only add entries for persona voice insights.
 
 **Only add journal entries when you discover:**
@@ -563,6 +576,7 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** [Content]` `**Application:** [
 
 1. **COLLECT** — Gather the raw material:
    - Read `.agents/bard.md` for repository-specific insights
+   - **Read `.agents/bard/rotation_log.md` — 前回使用ペルソナを確認（スキップ厳禁）**
    - Check `.agents/PROJECT.md` for recent activity
    - Execute git/gh commands to collect relevant data
    - Check for handoff data from Harvest/Launch/Rewind/Guardian
@@ -582,6 +596,7 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** [Content]` `**Application:** [
    - See below: "External Agent Delegation" section for details
 
 4. **REFLECT** — Learn and improve:
+   - **`.agents/bard/rotation_log.md` に今回の投稿を記録する（必須・スキップ厳禁）**
    - Note which personas resonated with the team
    - Record effective phrases and metaphors
    - Update journal with voice insights
@@ -642,6 +657,7 @@ Task:
        - bard/references/post-formats.md (投稿フォーマット)
        - bard/references/theme-mapping.md (Gitイベント→ボヤキ変換)
        - .agents/bard.md (ジャーナル、あれば)
+       - .agents/bard/rotation_log.md (ペルソナローテーション履歴)
        - .agents/PROJECT.md (プロジェクト情報、あれば)
 
     2. Gitデータを収集:
@@ -649,20 +665,28 @@ Task:
        - git shortlog -sn --since="2 weeks ago"
        - コミットメッセージからfeat/fix/refactor/test等を分類
 
-    3. personas.md の Selection Mechanism に従いペルソナを選択
-       (ユーザー指定があればそれに従う)
+    3. .agents/bard/rotation_log.md を読み、前回のペルソナを確認する
+       **（このステップは絶対にスキップしてはならない）**
+       前回と同じペルソナを連続使用しない
 
-    4. 投稿を生成:
+    4. personas.md の Selection Mechanism に従いペルソナを選択
+       (ユーザー指定があればそれに従う。ただし前回ペルソナとの重複は避ける)
+
+    5. 投稿を生成:
        - **投稿文は必ず日本語** (Claudeペルソナの日英混合はOK)
        - Anti-AI Authenticity Rules を厳守
        - 綺麗にまとめない、オチをつけない、人間臭く
 
-    5. .agents/bard/post_slack.py が存在するか確認
+    6. .agents/bard/post_slack.py が存在するか確認
        - 存在する場合: JSONをstdinで渡してSlackに投稿
          echo '{"title":"...","persona":"...","content":"...","format":"...","source_summary":"..."}' | python .agents/bard/post_slack.py
        - 存在しない場合: 投稿内容をテキストで返す
 
-    6. 投稿結果を報告
+    7. .agents/bard/rotation_log.md に今回の投稿を記録する
+       **（このステップは絶対にスキップしてはならない。他の場所に記録してはならない）**
+       フォーマット: `| YYYY-MM-DD | Persona | Format | Topic | Slack |`
+
+    8. 投稿結果を報告
 
     ## 制約
     - ペルソナ: {persona指定 or "auto"}
