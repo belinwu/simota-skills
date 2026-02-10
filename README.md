@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-64-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-65-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **64種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
+- **65種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする64種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする65種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -81,10 +81,14 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
 | **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
+| **Bard** | _"Code is silence. Poetry gives it voice."_ - 開発ログの詩的変換。Git履歴・PR・マイルストーンを俳句・自由詩・叙事詩に変換し、チーム文化を詠む | 詩・ナラティブ |
 
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
 **Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
 **Rewind → Scout の連携**：Rewind（リグレッション特定）→ Scout（詳細調査）
+**Harvest → Bard の連携**：Harvest（PR統計）→ Bard（スプリント回顧詩）
+**Launch → Bard の連携**：Launch（リリース実行）→ Bard（リリース祝詩）
+**Rewind → Bard の連携**：Rewind（コード考古学）→ Bard（プロジェクト起源の物語）
 
 ### 品質保証
 
@@ -516,6 +520,7 @@ skills/
 ├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atlas/SKILL.md      # アーキテクチャ
+├── bard/SKILL.md       # 開発ログの詩的変換
 ├── bolt/SKILL.md       # パフォーマンス
 ├── bridge/SKILL.md     # ビジネス⇔技術翻訳
 ├── builder/SKILL.md    # 本番実装
@@ -741,6 +746,34 @@ v1.1.0からv1.2.0までのPRからリリースノートを生成してくださ
 ```
 
 **出力**: 特定ユーザーのPR活動詳細、カテゴリ別内訳、週次推移、ハイライト
+
+---
+
+##### スプリント回顧詩（Bard）
+
+```
+/Bard
+今週のスプリントを俳句で詠んでください。
+```
+
+**出力**: スプリント期間のPR/コミットデータに基づく俳句コレクション（日本語）
+
+---
+
+##### リリース祝詩（Bard）
+
+```
+/Bard
+v2.0.0のリリースを祝う詩を書いてください。
+```
+
+**出力**: リリース内容に基づく叙事詩または自由詩
+
+---
+
+**Harvest vs Bard の役割分担**:
+- **Harvest**: 数字で語る（統計レポート、週報、リリースノート）
+- **Bard**: 詩で語る（俳句、叙事詩、ナラティブ）
 
 ---
 
