@@ -184,3 +184,165 @@ Standardized handoff templates for Vision's agent collaboration.
 - [ ] Task completion rates maintained or improved
 - [ ] Brand alignment confirmed
 ```
+
+---
+
+## Bridge ↔ Vision Handoffs
+
+### BRIDGE_TO_VISION_HANDOFF
+
+Business constraints and stakeholder expectations provided by Bridge to inform design direction.
+
+```yaml
+BRIDGE_TO_VISION_HANDOFF:
+  Context:
+    project: "[Project name]"
+    business_goals:
+      - "[Business goal 1]"
+      - "[Business goal 2]"
+    target_audience: "[Primary user segment]"
+  Constraints:
+    budget:
+      development_hours: "[Available hours or team size]"
+      external_tools: "[Budget for design tools/libraries]"
+    timeline:
+      deadline: "[Target date]"
+      milestones: ["[Milestone 1]", "[Milestone 2]"]
+    scope:
+      pages_in_scope: ["[Page 1]", "[Page 2]"]
+      out_of_scope: ["[Excluded area 1]"]
+    technical:
+      stack: "[Framework/tech stack]"
+      limitations: ["[Limitation 1]", "[Limitation 2]"]
+  Stakeholder_Expectations:
+    - stakeholder: "[Role/name]"
+      expectation: "[What they expect from the redesign]"
+      priority: "[high | medium | low]"
+  Brand_Requirements:
+    preserve: ["[Brand element to keep]"]
+    flexible: ["[Brand element open to evolution]"]
+  Requested_Output: "Design direction options with business impact assessment"
+```
+
+---
+
+### VISION_TO_BRIDGE_HANDOFF
+
+Design direction business impact assessment request from Vision to Bridge.
+
+```yaml
+VISION_TO_BRIDGE_HANDOFF:
+  Design_Direction:
+    name: "[Direction name]"
+    summary: "[1-2 sentence description]"
+    key_changes:
+      - "[Change 1]"
+      - "[Change 2]"
+    token_impact:
+      new_tokens: [count]
+      modified_tokens: [count]
+      deprecated_tokens: [count]
+  Implementation_Estimate:
+    agents_needed: ["Muse", "Palette", "Flow"]
+    complexity: "[low | medium | high]"
+    estimated_phases: [count]
+  Assessment_Requested:
+    - "Does this direction align with stated business goals?"
+    - "Is the implementation effort within budget/timeline?"
+    - "Will stakeholders accept this direction?"
+    - "Are there business risks not addressed?"
+  Alternatives_Considered:
+    - name: "[Alternative direction]"
+      reason_not_selected: "[Why this was deprioritized]"
+```
+
+---
+
+## Vision ↔ Warden Handoffs
+
+### VISION_TO_WARDEN_PRECHECK
+
+Design direction V.A.I.R.E. pre-check request from Vision to Warden.
+
+```yaml
+VISION_TO_WARDEN_PRECHECK:
+  Request_Type: design_direction_precheck
+  Design_Direction:
+    name: "[Direction name]"
+    mode: "[redesign | new_product | review | trend_application]"
+    summary: "[2-3 sentence description of the design direction]"
+    key_principles:
+      - "[Principle 1]"
+      - "[Principle 2]"
+    target_audience: "[Primary user segment]"
+  Token_Strategy:
+    color_system: "[Summary of color approach]"
+    typography: "[Summary of typography approach]"
+    spacing: "[Summary of spacing approach]"
+    dark_mode: "[yes | no | planned]"
+  Component_Priorities:
+    - component: "[Component 1]"
+      change_type: "[new | redesign | refine]"
+      impact: "[high | medium | low]"
+  Accessibility_Baseline:
+    wcag_level: "[AA | AAA]"
+    known_tradeoffs: ["[Tradeoff 1 if any]"]
+  Delegation_Plan:
+    - agent: "Muse"
+      task: "[Token implementation scope]"
+    - agent: "Palette"
+      task: "[UX improvement scope]"
+    - agent: "Flow"
+      task: "[Animation scope]"
+  Pre_Check_Scope: "full | value_agency_only | identity_resilience_only"
+```
+
+---
+
+### WARDEN_TO_VISION_FEEDBACK
+
+V.A.I.R.E. pre-check results from Warden to Vision.
+
+```yaml
+WARDEN_TO_VISION_FEEDBACK:
+  Result: "PASS | CONDITIONAL | FAIL"
+  Direction_Reviewed: "[Direction name]"
+  V_A_I_R_E_Assessment:
+    Value:
+      score: [0-3]
+      status: "pass | conditional | fail"
+      finding: "[Assessment of user value delivery]"
+      recommendation: "[Adjustment if needed]"
+    Agency:
+      score: [0-3]
+      status: "pass | conditional | fail"
+      finding: "[Assessment of user control preservation]"
+      recommendation: "[Adjustment if needed]"
+    Identity:
+      score: [0-3]
+      status: "pass | conditional | fail"
+      finding: "[Assessment of brand coherence]"
+      recommendation: "[Adjustment if needed]"
+    Resilience:
+      score: [0-3]
+      status: "pass | conditional | fail"
+      finding: "[Assessment of edge case handling]"
+      recommendation: "[Adjustment if needed]"
+    Echo:
+      score: [0-3]
+      status: "pass | conditional | fail"
+      finding: "[Assessment of persona alignment]"
+      recommendation: "[Adjustment if needed]"
+  Overall_Score: "[Sum of dimension scores, 0-15]"
+  Pass_Threshold: "All dimensions >= 2 (minimum 10/15)"
+  Critical_Issues:
+    - dimension: "[Dimension with score < 2]"
+      issue: "[Description of critical issue]"
+      required_action: "[What must change]"
+  Conditional_Items:
+    - dimension: "[Dimension with score = 2]"
+      concern: "[What could be improved]"
+      suggested_mitigation: "[How to address]"
+  Iteration_Count: "[1 | 2]"
+  Next_Action: "proceed | revise_and_resubmit | escalate_to_user"
+```

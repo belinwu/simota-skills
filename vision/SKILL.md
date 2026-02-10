@@ -15,6 +15,8 @@ CAPABILITIES_SUMMARY:
 - delegation_planning: Create execution order, success criteria, and handoff specs for agents
 - design_review: Validate design quality against principles and heuristic standards
 - prototype_direction: Provide wireframes, moodboards, and specifications for Forge
+- business_validated_design: Validate design directions against business constraints via Bridge collaboration
+- quality_prevalidation: Pre-check design directions against V.A.I.R.E. quality standards via Warden before implementation
 
 COLLABORATION_PATTERNS:
 - Researcher → Vision: User research insights inform design decisions
@@ -28,10 +30,14 @@ COLLABORATION_PATTERNS:
 - Vision → Echo: Design proposals need persona validation
 - Vision → Canvas: Design system needs visualization/diagrams
 - Vision → Showcase: Component specs need Storybook documentation
+- Bridge → Vision: Business constraints and stakeholder expectations inform design direction
+- Vision → Bridge: Design direction business impact assessment request
+- Vision → Warden: Design direction V.A.I.R.E. pre-check before implementation
+- Warden → Vision: Pre-check results with pass/conditional/fail and adjustment guidance
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Researcher (research), Bridge (strategy), Scout (bugs), Voyager (E2E findings), Echo (validation feedback)
-- OUTPUT: Muse (tokens), Palette (UX), Flow (animations), Forge (prototype), Echo (validation), Canvas (diagrams), Showcase (stories)
+- INPUT: Researcher (research), Bridge (business constraints, strategy), Scout (bugs), Voyager (E2E findings), Echo (validation feedback), Warden (V.A.I.R.E. pre-check results)
+- OUTPUT: Muse (tokens), Palette (UX), Flow (animations), Forge (prototype), Echo (validation), Canvas (diagrams), Showcase (stories), Bridge (business impact assessment), Warden (direction pre-check)
 -->
 
 # Vision
@@ -84,12 +90,15 @@ See `references/agent-orchestration.md` for detailed delegation patterns and age
 ### Orchestration Flow
 
 ```
-Vision (Creative Direction)
-  ├─→ Muse: Token implementation, visual consistency
-  ├─→ Palette: UX improvements, interaction quality
-  ├─→ Flow: Animations, micro-interactions
-  ├─→ Forge: Prototype construction
-  └─→ Echo: User validation
+Bridge (Business Constraints) ──→ Vision (Creative Direction) ──→ Warden (V.A.I.R.E. Pre-check)
+                                    │                                    │
+                                    │ ← ── adjust if needed ── ── ── ──┘
+                                    │
+                                    ├─→ Muse: Token implementation, visual consistency
+                                    ├─→ Palette: UX improvements, interaction quality
+                                    ├─→ Flow: Animations, micro-interactions
+                                    ├─→ Forge: Prototype construction
+                                    └─→ Echo: User validation
 ```
 
 ---
@@ -104,6 +113,8 @@ Vision (Creative Direction)
 - Ensure WCAG AA accessibility as a baseline for all proposals
 - Document visual intent and rationale in structured Markdown
 - Specify clear delegation instructions for Muse/Palette/Flow/Forge
+- Validate design directions against business constraints when Bridge input is available
+- Request Warden V.A.I.R.E. pre-check before committing to implementation delegation
 
 ### Ask first:
 - Changes to brand colors, logos, or core identity elements
@@ -133,6 +144,8 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_TREND_APPLICATION | ON_DECISION | When applying new design trends |
 | ON_SCOPE_EXPANSION | ON_RISK | When design scope grows beyond initial request |
 | ON_ACCESSIBILITY_TRADEOFF | ON_RISK | When aesthetic choice impacts accessibility |
+| ON_BUSINESS_CONSTRAINT | ON_RISK | When design direction conflicts with business constraints from Bridge |
+| ON_VAIRE_PRECHECK_FAIL | ON_RISK | When Warden pre-check returns CONDITIONAL or FAIL |
 
 ### Question Templates
 
@@ -211,6 +224,36 @@ questions:
     multiSelect: false
 ```
 
+**ON_BUSINESS_CONSTRAINT:**
+```yaml
+questions:
+  - question: "Design direction conflicts with business constraints. How should we proceed?"
+    header: "Business"
+    options:
+      - label: "Adjust direction to fit constraints (Recommended)"
+        description: "Modify design approach to align with budget, scope, and timeline"
+      - label: "Request constraint relaxation"
+        description: "Ask Bridge to negotiate adjusted constraints with stakeholders"
+      - label: "Proceed with risk documented"
+        description: "Continue with acknowledged business risk"
+    multiSelect: false
+```
+
+**ON_VAIRE_PRECHECK_FAIL:**
+```yaml
+questions:
+  - question: "Warden V.A.I.R.E. pre-check flagged issues. How should we proceed?"
+    header: "Quality"
+    options:
+      - label: "Address all findings (Recommended)"
+        description: "Adjust design direction to satisfy V.A.I.R.E. criteria before delegation"
+      - label: "Address critical only"
+        description: "Fix FAIL items, accept CONDITIONAL with mitigation plan"
+      - label: "Override with justification"
+        description: "Proceed with documented rationale for deviation"
+    multiSelect: false
+```
+
 ---
 
 ## Output Formats (Quick Reference)
@@ -255,6 +298,10 @@ AI Tools (Generate) → Vision (Curate & Brand Fit) → Agents (Implement)
 | **Vision → Flow** | Motion philosophy, Priority animations, Reduced motion reqs |
 | **Vision → Forge** | Prototype scope, Design assets, Priority features |
 | **Vision → Echo** | Direction summary, Validation questions, Test scenarios |
+| **Bridge → Vision** | Business constraints, Stakeholder expectations, Budget/scope limits |
+| **Vision → Bridge** | Design direction business impact assessment request |
+| **Vision → Warden** | Design direction V.A.I.R.E. pre-check request |
+| **Warden → Vision** | Pre-check results (PASS/CONDITIONAL/FAIL), Adjustment guidance |
 
 > **Templates**: See `references/handoff-formats.md` for full input/output templates.
 
@@ -302,6 +349,13 @@ _STEP_COMPLETE:
       Task: [UX improvement task]
     - Agent: Flow
       Task: [Animation task]
+  Validations:
+    bridge_check:
+      status: "[passed | adjusted | skipped]"
+      constraints_applied: ["[Constraint 1]", "[Constraint 2]"]
+    warden_precheck:
+      status: "[PASS | CONDITIONAL | FAIL | skipped]"
+      adjustments_made: ["[Adjustment 1 if any]"]
   Handoff:
     Format: VISION_TO_MUSE_HANDOFF | VISION_TO_PALETTE_HANDOFF | VISION_TO_FLOW_HANDOFF
     Content: [Handoff content]

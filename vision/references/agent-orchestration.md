@@ -108,3 +108,108 @@ When delegating to agents, always provide:
 | **Canvas** | Visualizes design systems | When architecture diagrams needed |
 | **Lens** | Captures visual evidence | Before/after design comparisons |
 | **Showcase** | Presents design proposals | When stakeholder communication needed |
+
+---
+
+## Pattern 7: Business-Validated Design (Vision ↔ Bridge)
+
+Ensures design directions are validated against business constraints before committing to implementation.
+
+### Flow
+
+```
+Bridge ──business constraints──→ Vision ──direction proposal──→ Bridge
+                                   │                              │
+                                   │ ← ── impact assessment ── ──┘
+                                   │
+                                   ├─→ Muse (tokens)
+                                   ├─→ Palette (UX)
+                                   └─→ Flow (animations)
+```
+
+### When to Use
+
+- Large-scale redesigns (3+ pages) where budget/scope are constrained
+- New product design where business model shapes UI decisions
+- When stakeholder expectations may conflict with design best practices
+
+### Process
+
+1. **Bridge provides constraints** — Budget, timeline, scope, stakeholder expectations, brand requirements
+2. **Vision defines directions** — Create 3+ options that respect business constraints
+3. **Vision requests impact assessment** — Send selected direction to Bridge for business impact review
+4. **Bridge evaluates** — Assess feasibility, cost, stakeholder alignment, risk
+5. **Vision adjusts if needed** — Modify direction based on Bridge feedback
+6. **Vision delegates** — Proceed with business-validated direction to implementation agents
+
+### Constraint Categories
+
+| Category | Examples | Impact on Design |
+|----------|---------|-----------------|
+| **Budget** | Limited dev resources, no external tools | Simpler implementation, fewer custom components |
+| **Timeline** | Launch in 2 weeks | Phased approach, MVP-first design |
+| **Scope** | Only 2 pages in scope | Focused design system, defer global changes |
+| **Stakeholder** | CEO prefers minimalism | Constrain visual direction accordingly |
+| **Technical** | Legacy stack, no CSS Grid support | Fallback-friendly design patterns |
+
+### Success Criteria
+
+- Design direction aligns with stated business goals
+- Implementation effort is within budget/timeline constraints
+- Stakeholder expectations are addressed or explicitly negotiated
+
+---
+
+## Pattern 8: Quality Pre-validated Design (Vision ↔ Warden)
+
+Ensures design directions meet V.A.I.R.E. quality standards before implementation begins, preventing costly rework.
+
+### Flow
+
+```
+Vision ──direction proposal──→ Warden (V.A.I.R.E. Pre-check)
+   │                              │
+   │ ← ── pre-check results ── ──┘
+   │
+   ├── PASS → Proceed to delegation
+   ├── CONDITIONAL → Address conditions, then proceed
+   └── FAIL → Revise direction, re-submit
+```
+
+### When to Use
+
+- Before delegating any design direction to implementation agents
+- Especially critical for: redesigns, new product launches, brand changes
+- Can be skipped for: minor trend applications, small component-level changes
+
+### V.A.I.R.E. Pre-check Dimensions
+
+| Dimension | What Warden Checks | Common Issues |
+|-----------|-------------------|---------------|
+| **Value** | Does direction deliver clear user value? | Over-designed, style over substance |
+| **Agency** | Does direction preserve user control? | Forced flows, hidden options |
+| **Identity** | Does direction maintain brand coherence? | Trend-chasing breaks brand |
+| **Resilience** | Does direction handle edge cases? | Only happy path designed |
+| **Echo** | Does direction feel right to target personas? | Disconnect with user expectations |
+
+### Pre-check Results
+
+| Result | Meaning | Vision Action |
+|--------|---------|---------------|
+| **PASS** | Direction meets all V.A.I.R.E. criteria | Proceed to delegation |
+| **CONDITIONAL** | Minor issues identified | Address conditions, document mitigations |
+| **FAIL** | Fundamental issues found | Revise direction, re-submit for pre-check |
+
+### Maximum Iterations
+
+- **Max 2 pre-check rounds** per design direction
+- If still FAIL after 2 rounds, escalate to user with Warden's concerns documented
+- Exception: FAIL on Agency or Resilience always requires resolution (no override)
+
+### Integration with Design Methodology
+
+Pre-check occurs between Phase 2 (ENVISION) and Phase 4 (DELEGATE):
+
+```
+Phase 1: UNDERSTAND → Phase 2: ENVISION → Warden Pre-check → Phase 3: SYSTEMATIZE → Phase 4: DELEGATE → Phase 5: VALIDATE
+```

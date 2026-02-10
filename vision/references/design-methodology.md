@@ -158,6 +158,30 @@ Define priority and dependencies:
 2. [Agent]: [Task] (prerequisite: step 1)
 3. ...
 
+### Quality Pre-check (Before Delegation)
+
+Before delegating design direction to implementation agents, request a V.A.I.R.E. pre-check from Warden.
+
+**Pre-check Request:**
+1. Prepare a summary of the selected design direction (key principles, token strategy, component priorities)
+2. Send to Warden via `VISION_TO_WARDEN_PRECHECK` handoff
+3. Await Warden's assessment on all 5 V.A.I.R.E. dimensions
+
+**Handling Results:**
+
+| Result | Action |
+|--------|--------|
+| PASS | Proceed to delegation (Phase 4) |
+| CONDITIONAL | Address flagged items, document mitigations, then proceed |
+| FAIL | Return to Phase 2 (ENVISION), revise direction, re-submit |
+
+**Skip Conditions:**
+- Minor component-level changes (scope < 1 page)
+- Token value adjustments within existing system
+- Trend applications marked as "low risk"
+
+> **Template**: See `references/handoff-formats.md` for `VISION_TO_WARDEN_PRECHECK` and `WARDEN_TO_VISION_FEEDBACK` templates.
+
 ### Phase 5: VALIDATE
 
 #### 5.1 Design Review
