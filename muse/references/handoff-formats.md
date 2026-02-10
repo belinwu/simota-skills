@@ -223,3 +223,164 @@ Figma → Muse (sync + transform) → MUSE_TO_SHOWCASE → Showcase (update stor
 ```
 Muse (system created) → MUSE_TO_CANVAS → Canvas (diagrams) → MUSE_TO_SHOWCASE → Showcase (catalog)
 ```
+
+---
+
+## Reverse Feedback Handoffs (Receiving)
+
+Downstream agents can report token issues back to Muse via these templates.
+
+### PALETTE_TO_MUSE_FEEDBACK
+
+When Palette discovers contrast or accessibility issues with Muse's tokens.
+
+```yaml
+PALETTE_TO_MUSE_FEEDBACK:
+  Feedback_Type: contrast_failure | color_accessibility | dark_mode_issue
+  Source_Agent: Palette
+  Priority: high | medium | low
+  Issue:
+    token_name: "--{token that failed}"
+    current_value: "{current token value}"
+    context: "[Where the issue was found]"
+    failure_detail:
+      test: "[WCAG AA contrast | color blindness sim | dark mode check]"
+      required: "[Required ratio or standard]"
+      actual: "[Measured result]"
+  Suggested_Fix:
+    new_value: "{suggested replacement value}"
+    rationale: "[Why this value passes]"
+  Affected_Components:
+    - "[Component 1]"
+    - "[Component 2]"
+```
+
+---
+
+### FLOW_TO_MUSE_FEEDBACK
+
+When Flow needs motion token adjustments for animation quality.
+
+```yaml
+FLOW_TO_MUSE_FEEDBACK:
+  Feedback_Type: duration_adjustment | easing_change | new_motion_token
+  Source_Agent: Flow
+  Priority: high | medium | low
+  Issue:
+    token_name: "--{motion token}"
+    current_value: "{current value}"
+    context: "[Animation or transition where issue occurs]"
+    problem: "[Too fast | too slow | wrong easing | missing token]"
+  Suggested_Fix:
+    new_value: "{suggested value}"
+    rationale: "[Why this improves the animation]"
+    performance_impact: "[fps improvement or CLS reduction if measurable]"
+  Affected_Animations:
+    - "[Animation 1]"
+    - "[Animation 2]"
+```
+
+---
+
+### SHOWCASE_TO_MUSE_FEEDBACK
+
+When Showcase discovers hardcoded values in component stories.
+
+```yaml
+SHOWCASE_TO_MUSE_FEEDBACK:
+  Feedback_Type: hardcoded_value | missing_token | stale_token
+  Source_Agent: Showcase
+  Priority: high | medium | low
+  Issue:
+    file: "[File path where hardcoded value found]"
+    line: [line number]
+    hardcoded_value: "{the raw value, e.g., #f0f2f5}"
+    context: "[Property where it's used, e.g., background-color]"
+  Suggested_Token:
+    existing_token: "--{existing token if one fits}"
+    new_token_needed: true | false
+    suggested_name: "--{suggested name if new token needed}"
+  Component:
+    name: "[Component name]"
+    story: "[Storybook story path]"
+```
+
+---
+
+### JUDGE_TO_MUSE_FEEDBACK
+
+When Judge finds token inconsistencies during code review.
+
+```yaml
+JUDGE_TO_MUSE_FEEDBACK:
+  Feedback_Type: token_inconsistency | naming_violation | duplicate_token | deprecated_usage
+  Source_Agent: Judge
+  Priority: high | medium | low
+  Issue:
+    files:
+      - file: "[File path]"
+        line: [line number]
+        description: "[What inconsistency was found]"
+    pattern: "[Recurring pattern if detected across multiple files]"
+  Suggested_Action:
+    action: "tokenize | rename | consolidate | deprecate"
+    detail: "[Specific fix recommendation]"
+  Scope:
+    files_affected: [count]
+    components_affected: [count]
+```
+
+---
+
+## Output Handoffs (Token Lifecycle)
+
+### MUSE_TO_RIPPLE_HANDOFF
+
+Request impact analysis before token deprecation or removal.
+
+```yaml
+MUSE_TO_RIPPLE_HANDOFF:
+  Request_Type: token_impact_analysis
+  Context:
+    action: "deprecate | remove | rename | modify"
+    tokens:
+      - token_name: "--{token}"
+        current_value: "{value}"
+        new_token: "--{replacement if any}"
+    migration_id: "MIGRATION-{YYYY}-{NNN}"
+  Scope:
+    search_patterns:
+      - "var(--{token})"
+      - "@apply {utility-class}"
+    directories:
+      - "src/"
+      - "styles/"
+  Expected_Output:
+    - "List of affected files and line numbers"
+    - "Component dependency tree"
+    - "Risk assessment (high/medium/low)"
+  Urgency: "[low | medium | high]"
+```
+
+---
+
+## Reverse Feedback Processing Workflow
+
+When Muse receives reverse feedback:
+
+```
+1. RECEIVE    → Parse feedback template, identify priority
+2. VALIDATE   → Confirm the reported issue is reproducible
+3. ASSESS     → Determine scope (single token vs systemic)
+4. ACT        → Fix token value, or propose lifecycle transition
+5. NOTIFY     → Inform source agent of resolution
+6. AUDIT      → Run token audit on affected area
+```
+
+### Priority Handling
+
+| Priority | Response Time | Action |
+|----------|--------------|--------|
+| **High** | Immediate | Fix in current session, notify source agent |
+| **Medium** | Next cycle | Add to scan backlog, fix in next SCAN phase |
+| **Low** | Scheduled | Document for next design system review |

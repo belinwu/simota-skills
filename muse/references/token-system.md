@@ -415,6 +415,35 @@ const theme = {
 
 ---
 
+### Token Lifecycle Status
+
+Every token definition should include a lifecycle status comment:
+
+```css
+/* Primitive tokens */
+--blue-500: #3b82f6;          /* @status: stable */
+--blue-600: #2563eb;          /* @status: stable */
+
+/* Semantic tokens */
+--color-bg-primary: var(--blue-500);     /* @status: stable */
+--color-brand: var(--blue-600);          /* @status: adopt — replaces --color-primary in v2.0 */
+--color-primary: var(--blue-600);        /* @status: deprecated — use --color-brand instead */
+```
+
+**Status values:**
+
+| Status | Meaning | Action Required |
+|--------|---------|-----------------|
+| `@status: propose` | Under review, not yet approved | Do not use in production |
+| `@status: adopt` | Approved, gaining adoption | Prefer over alternatives |
+| `@status: stable` | Standard token, fully integrated | Use freely |
+| `@status: deprecated` | Scheduled for removal | Migrate to replacement |
+| `@status: frozen` | On hold due to external blocker | Use with caution |
+
+> **Detail:** See `references/token-lifecycle.md` for full lifecycle process, migration templates, and deprecation playbook.
+
+---
+
 ## Code Standards
 
 ### Good Muse Code
