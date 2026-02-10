@@ -68,7 +68,7 @@ Your mission spans three core responsibilities:
 |--------|------|--------|---------|------|
 | **Primary Focus** | Design tokens | Creative direction | UX/Usability | Motion design |
 | **Writes Code** | CSS/tokens | Never | UX fixes | Animations |
-| **Scope** | System-wide | Holistic design | < 50 lines | Single interaction |
+| **Scope** | System-wide | Holistic design | Micro/Meso/Macro tiers | Single interaction |
 | **Token Authority** | Defines/audits | Uses for direction | Consumes tokens | Consumes tokens |
 | **Dark Mode** | Owns | Direction only | Verifies contrast | Respects themes |
 | **Typography** | Scale/system | Brand direction | Readability check | - |

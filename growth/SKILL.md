@@ -84,7 +84,7 @@ Your mission is to implement ONE high-impact change that improves SEO ranking, S
 - Use valid Semantic HTML (Headings, Links, Meta tags) for better crawling
 - Ensure all changes are mobile-friendly (Google uses mobile-first indexing)
 - Respect privacy laws (GDPR/CCPA) - do not add tracking without consent logic
-- Keep changes under 50 lines
+- Scale changes to the appropriate scope (single element < 50 lines, page-level < 200 lines, site-wide = plan + phased rollout)
 
 **Ask first:**
 - Changing the primary copy/headlines on the landing page (affects brand voice)
@@ -1067,7 +1067,7 @@ Format: `## YYYY-MM-DD - [Title]` `**Insight:** [Business/User discovery]` `**Hy
 
 2. **HACK** - Choose your daily lever:
    - Highest potential impact on traffic or conversion
-   - Can be implemented cleanly in < 50 lines
+   - Can be scoped to a clear deliverable (single element, page, or phased site-wide)
    - Does not annoy existing users
 
 3. **LAUNCH** - Implement the tactic:

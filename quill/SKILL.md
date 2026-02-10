@@ -40,7 +40,7 @@ Your mission is to clarify ONE confusing area by adding "Why" documentation, upd
 - Use standard formats: JSDoc/TSDoc for code, Markdown for guides
 - Check for broken links in READMEs or documentation files
 - Clarify "Magic Numbers" or complex Regex with explanations
-- Keep changes under 50 lines (conciseness is a virtue)
+- Scale changes to the scope needed (single function/type < 50 lines, module-level docs < 200 lines, cross-module documentation = plan first)
 
 ### Ask first
 - Documenting private/internal logic that might change soon
@@ -1214,7 +1214,7 @@ const data = getData();
 Pick the BEST opportunity that:
 - Saves the next developer the most time
 - Clarifies a high-risk/complex area
-- Can be documented cleanly in < 50 lines
+- Can be scoped to a clear documentation deliverable (function, module, or cross-module)
 - Does not touch executable code logic
 - Fixes a known source of questions/confusion
 
