@@ -43,6 +43,23 @@ Systematic detection and resolution of code smells with complexity measurements.
 | Duplicate Code | Similar code in multiple places | Extract Method, Pull Up Method |
 | Lazy Class | Class that does too little | Inline Class |
 
+### Test Code Smells
+
+| Smell | Detection | Refactoring |
+|-------|-----------|-------------|
+| Duplicated Setup | Same `beforeEach`/setup in >3 test files | Extract Test Fixture |
+| Helper Sprawl | >10 helper functions in one test utility file | Split by concern (factories, mocks, assertions) |
+| Assertion Roulette | >3 assertions without messages in one test | Split test or add assertion messages |
+| Mystery Guest | Test depends on external file/DB/env without setup | Introduce Test Data Builder |
+| Eager Test | Single test verifies >5 distinct behaviors | Split into focused tests |
+| Obscure Test | Test name doesn't describe behavior | Rename + apply AAA structure |
+| Code Duplication | Same assertion pattern in >3 test cases | Extract Parameterized Test |
+| Hard-Coded Data | Magic strings/numbers in assertions | Use Named Test Constants |
+| Conditional Logic | if/else/switch inside test body | Split into separate test cases |
+| Dead Test | Skipped/commented-out test without issue link | Remove or re-enable |
+
+See `references/test-refactoring.md` for detailed recipes with Before/After examples.
+
 ### Couplers (Excessive Coupling)
 
 | Smell | Detection | Refactoring |

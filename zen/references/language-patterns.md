@@ -433,6 +433,190 @@ enum OrderStatus {
 
 ---
 
+## Async/Concurrency Patterns
+
+### TypeScript/JavaScript
+
+#### Promise.all Parallelization
+
+```typescript
+// Before: Sequential independent operations
+async function loadDashboard(userId: string) {
+  const user = await fetchUser(userId);
+  const orders = await fetchOrders(userId);
+  const notifications = await fetchNotifications(userId);
+  return { user, orders, notifications };
+}
+
+// After: Parallel with Promise.all
+async function loadDashboard(userId: string) {
+  const [user, orders, notifications] = await Promise.all([
+    fetchUser(userId),
+    fetchOrders(userId),
+    fetchNotifications(userId),
+  ]);
+  return { user, orders, notifications };
+}
+```
+
+#### Promise Chain → async/await
+
+```typescript
+// Before: Nested .then() chain
+function processOrder(orderId: string): Promise<Receipt> {
+  return fetchOrder(orderId)
+    .then(order => validateOrder(order))
+    .then(validOrder => calculateTotal(validOrder))
+    .then(total => chargePayment(total))
+    .then(payment => generateReceipt(payment))
+    .catch(err => {
+      logger.error('Order processing failed', err);
+      throw new AppError('ORDER_FAILED', err.message);
+    });
+}
+
+// After: Flat async/await
+async function processOrder(orderId: string): Promise<Receipt> {
+  try {
+    const order = await fetchOrder(orderId);
+    const validOrder = await validateOrder(order);
+    const total = await calculateTotal(validOrder);
+    const payment = await chargePayment(total);
+    return await generateReceipt(payment);
+  } catch (err) {
+    logger.error('Order processing failed', err);
+    throw new AppError('ORDER_FAILED', err.message);
+  }
+}
+```
+
+#### Async Error Boundary
+
+```typescript
+// Before: Unhandled promise rejections
+app.get('/users/:id', (req, res) => {
+  fetchUser(req.params.id).then(user => res.json(user));
+  // Missing .catch() — unhandled rejection
+});
+
+// After: Async error boundary wrapper
+const asyncHandler = (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
+app.get('/users/:id', asyncHandler(async (req, res) => {
+  const user = await fetchUser(req.params.id);
+  res.json(user);
+}));
+```
+
+### Python
+
+#### asyncio.gather for Parallel Tasks
+
+```python
+# Before: Sequential async calls
+async def load_dashboard(user_id: str):
+    user = await fetch_user(user_id)
+    orders = await fetch_orders(user_id)
+    notifications = await fetch_notifications(user_id)
+    return {"user": user, "orders": orders, "notifications": notifications}
+
+# After: Parallel with asyncio.gather
+async def load_dashboard(user_id: str):
+    user, orders, notifications = await asyncio.gather(
+        fetch_user(user_id),
+        fetch_orders(user_id),
+        fetch_notifications(user_id),
+    )
+    return {"user": user, "orders": orders, "notifications": notifications}
+```
+
+#### threading → asyncio Migration
+
+```python
+# Before: Thread-based concurrency
+import threading
+
+def process_items(items):
+    results = []
+    lock = threading.Lock()
+
+    def worker(item):
+        result = expensive_operation(item)
+        with lock:
+            results.append(result)
+
+    threads = [threading.Thread(target=worker, args=(item,)) for item in items]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    return results
+
+# After: asyncio-based (for I/O-bound work)
+async def process_items(items):
+    tasks = [asyncio.create_task(async_expensive_operation(item)) for item in items]
+    return await asyncio.gather(*tasks)
+```
+
+### Java
+
+#### CompletableFuture Composition
+
+```java
+// Before: Blocking sequential calls
+public DashboardData loadDashboard(String userId) {
+    User user = userService.fetchUser(userId);           // blocks
+    List<Order> orders = orderService.fetchOrders(userId); // blocks
+    List<Notification> notifs = notifService.fetch(userId); // blocks
+    return new DashboardData(user, orders, notifs);
+}
+
+// After: Non-blocking with CompletableFuture
+public CompletableFuture<DashboardData> loadDashboard(String userId) {
+    CompletableFuture<User> userFuture = CompletableFuture.supplyAsync(
+        () -> userService.fetchUser(userId));
+    CompletableFuture<List<Order>> ordersFuture = CompletableFuture.supplyAsync(
+        () -> orderService.fetchOrders(userId));
+    CompletableFuture<List<Notification>> notifsFuture = CompletableFuture.supplyAsync(
+        () -> notifService.fetch(userId));
+
+    return CompletableFuture.allOf(userFuture, ordersFuture, notifsFuture)
+        .thenApply(v -> new DashboardData(
+            userFuture.join(),
+            ordersFuture.join(),
+            notifsFuture.join()));
+}
+```
+
+#### ExecutorService Simplification
+
+```java
+// Before: Manual thread pool management
+ExecutorService executor = Executors.newFixedThreadPool(10);
+List<Future<Result>> futures = new ArrayList<>();
+for (String item : items) {
+    futures.add(executor.submit(() -> process(item)));
+}
+List<Result> results = new ArrayList<>();
+for (Future<Result> future : futures) {
+    results.add(future.get());
+}
+executor.shutdown();
+
+// After: try-with-resources (Java 19+) or structured approach
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    List<Future<Result>> futures = items.stream()
+        .map(item -> executor.submit(() -> process(item)))
+        .toList();
+    List<Result> results = futures.stream()
+        .map(f -> { try { return f.get(); } catch (Exception e) { throw new RuntimeException(e); } })
+        .toList();
+}
+```
+
+---
+
 ## Cross-Language Principles
 
 These refactoring principles apply regardless of language:

@@ -315,6 +315,40 @@ Standardized handoff templates for agent collaboration.
 
 ---
 
+## ZEN_CONSISTENCY_AUDIT_HANDOFF
+
+```markdown
+## ZEN_CONSISTENCY_AUDIT_HANDOFF
+
+**Audit ID**: [Description or branch name]
+**Category**: [Error Handling / API Call / State Mgmt / Logging / Naming / Import-Export]
+**Scope Tier**: [Focused / Module / Project-wide]
+
+**Canonical Pattern**:
+| Aspect | Detail |
+|--------|--------|
+| Pattern | [Description of dominant pattern] |
+| Usage | [X/Y files, Z%] |
+| Justification | [Why this is canonical] |
+
+**Deviations Found**:
+| # | File:Line | Current Pattern | Canonical | Severity | Effort |
+|---|-----------|----------------|-----------|----------|--------|
+| 1 | `path/file.ts:42` | [variant] | [canonical] | HIGH | Low |
+| 2 | `path/other.ts:18` | [variant] | [canonical] | MEDIUM | Medium |
+
+**Migration Plan**:
+| Phase | Files | Change | Lines |
+|-------|-------|--------|-------|
+| 1 | [files] | [pattern change] | ~N |
+
+**Tools Used**: [ast-grep / eslint / ruff / manual scan]
+
+**Request**: [Review audit results / Execute migration phase 1]
+```
+
+---
+
 ## COLLABORATION PATTERNS
 
 ### Pattern A: Quality Improvement Flow

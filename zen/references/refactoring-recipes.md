@@ -445,6 +445,209 @@ logTransaction(total);
 
 ---
 
+## Recipe 11: Introduce Strategy Pattern
+
+**When**: Long if/else or switch chains dispatching behavior based on type or mode
+
+**Steps**:
+1. Identify the conditional that selects behavior
+2. Define a Strategy interface with the varying behavior
+3. Create concrete Strategy implementations for each branch
+4. Replace conditional with strategy lookup/injection
+5. Run tests
+
+**Before**:
+```typescript
+function calculateShipping(order: Order): number {
+  if (order.shippingMethod === 'standard') {
+    return order.weight * 0.5;
+  } else if (order.shippingMethod === 'express') {
+    return order.weight * 1.5 + 5.0;
+  } else if (order.shippingMethod === 'overnight') {
+    return order.weight * 3.0 + 15.0;
+  } else if (order.shippingMethod === 'international') {
+    const zoneFactor = getZoneFactor(order.destination);
+    return order.weight * 2.0 * zoneFactor + 20.0;
+  }
+  throw new Error(`Unknown method: ${order.shippingMethod}`);
+}
+```
+
+**After**:
+```typescript
+interface ShippingStrategy {
+  calculate(order: Order): number;
+}
+
+class StandardShipping implements ShippingStrategy {
+  calculate(order: Order): number {
+    return order.weight * 0.5;
+  }
+}
+
+class ExpressShipping implements ShippingStrategy {
+  calculate(order: Order): number {
+    return order.weight * 1.5 + 5.0;
+  }
+}
+
+class OvernightShipping implements ShippingStrategy {
+  calculate(order: Order): number {
+    return order.weight * 3.0 + 15.0;
+  }
+}
+
+class InternationalShipping implements ShippingStrategy {
+  calculate(order: Order): number {
+    const zoneFactor = getZoneFactor(order.destination);
+    return order.weight * 2.0 * zoneFactor + 20.0;
+  }
+}
+
+const SHIPPING_STRATEGIES: Record<string, ShippingStrategy> = {
+  standard: new StandardShipping(),
+  express: new ExpressShipping(),
+  overnight: new OvernightShipping(),
+  international: new InternationalShipping(),
+};
+
+function calculateShipping(order: Order): number {
+  const strategy = SHIPPING_STRATEGIES[order.shippingMethod];
+  if (!strategy) throw new Error(`Unknown method: ${order.shippingMethod}`);
+  return strategy.calculate(order);
+}
+```
+
+---
+
+## Recipe 12: Introduce Observer/Event
+
+**When**: Tight coupling via direct method calls across modules; one action triggers multiple side effects
+
+**Steps**:
+1. Identify the trigger action and its side effects
+2. Create an EventEmitter or pub/sub mechanism
+3. Replace direct calls with event emission
+4. Register side effects as event listeners
+5. Run tests
+
+**Before**:
+```typescript
+class OrderService {
+  constructor(
+    private emailService: EmailService,
+    private inventoryService: InventoryService,
+    private analyticsService: AnalyticsService,
+    private loyaltyService: LoyaltyService,
+  ) {}
+
+  async placeOrder(order: Order): Promise<void> {
+    await this.saveOrder(order);
+    // Tightly coupled side effects
+    await this.emailService.sendConfirmation(order);
+    await this.inventoryService.reserveItems(order.items);
+    await this.analyticsService.trackPurchase(order);
+    await this.loyaltyService.addPoints(order.customerId, order.total);
+  }
+}
+```
+
+**After**:
+```typescript
+class OrderService {
+  constructor(private eventBus: EventEmitter) {}
+
+  async placeOrder(order: Order): Promise<void> {
+    await this.saveOrder(order);
+    this.eventBus.emit('order.placed', order);
+  }
+}
+
+// Listeners registered separately (loose coupling)
+eventBus.on('order.placed', (order) => emailService.sendConfirmation(order));
+eventBus.on('order.placed', (order) => inventoryService.reserveItems(order.items));
+eventBus.on('order.placed', (order) => analyticsService.trackPurchase(order));
+eventBus.on('order.placed', (order) => loyaltyService.addPoints(order.customerId, order.total));
+```
+
+---
+
+## Recipe 13: Introduce Factory/Builder
+
+**When**: Complex object construction with many optional parameters, conditional initialization, or multi-step setup
+
+**Steps**:
+1. Identify complex constructor or creation logic
+2. Create a Builder class with fluent methods
+3. Move construction logic into the builder
+4. Replace direct construction with builder calls
+5. Run tests
+
+**Before**:
+```typescript
+// Complex construction scattered across callers
+const config = new ServerConfig();
+config.host = process.env.HOST || 'localhost';
+config.port = parseInt(process.env.PORT || '3000');
+config.ssl = process.env.NODE_ENV === 'production';
+if (config.ssl) {
+  config.sslCert = fs.readFileSync(process.env.SSL_CERT!);
+  config.sslKey = fs.readFileSync(process.env.SSL_KEY!);
+}
+config.cors = process.env.NODE_ENV === 'development';
+config.rateLimit = process.env.NODE_ENV === 'production' ? 100 : 0;
+config.logging = process.env.LOG_LEVEL || 'info';
+```
+
+**After**:
+```typescript
+class ServerConfigBuilder {
+  private config: Partial<ServerConfig> = {};
+
+  host(host: string): this { this.config.host = host; return this; }
+  port(port: number): this { this.config.port = port; return this; }
+  withSSL(cert: Buffer, key: Buffer): this {
+    this.config.ssl = true;
+    this.config.sslCert = cert;
+    this.config.sslKey = key;
+    return this;
+  }
+  withCORS(): this { this.config.cors = true; return this; }
+  rateLimit(limit: number): this { this.config.rateLimit = limit; return this; }
+  logLevel(level: string): this { this.config.logging = level; return this; }
+
+  build(): ServerConfig {
+    return new ServerConfig({
+      host: this.config.host ?? 'localhost',
+      port: this.config.port ?? 3000,
+      ...this.config,
+    });
+  }
+
+  static forProduction(): ServerConfigBuilder {
+    return new ServerConfigBuilder()
+      .withSSL(readCert(), readKey())
+      .rateLimit(100)
+      .logLevel('warn');
+  }
+
+  static forDevelopment(): ServerConfigBuilder {
+    return new ServerConfigBuilder()
+      .withCORS()
+      .rateLimit(0)
+      .logLevel('debug');
+  }
+}
+
+// Usage
+const config = ServerConfigBuilder.forProduction()
+  .host('api.example.com')
+  .port(443)
+  .build();
+```
+
+---
+
 ## Before/After Report Template
 
 ```markdown
