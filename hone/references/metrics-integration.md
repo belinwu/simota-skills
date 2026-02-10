@@ -176,20 +176,103 @@ Or with weights:
 quill_score = Σ (item_passed[i] × weight[i]) × 100
 ```
 
+### Consistency (Cross-File Pattern Uniformity)
+
+**Original output:** Violation counts by severity from Judge consistency detection
+
+| Severity | Impact Score |
+|----------|-------------|
+| HIGH | 15 points |
+| MEDIUM | 5 points |
+| LOW | 2 points |
+
+**Normalization formula:**
+
+```
+violation_impact = (HIGH × 15) + (MEDIUM × 5) + (LOW × 2)
+consistency_score = max(0, 100 - violation_impact)
+```
+
+**Examples:**
+
+| Violations | Calculation | Score |
+|-----------|-------------|-------|
+| 0 violations | 100 - 0 | 100 |
+| 2 HIGH | 100 - 30 | 70 |
+| 1 HIGH, 3 MEDIUM | 100 - (15 + 15) | 70 |
+| 5 MEDIUM, 10 LOW | 100 - (25 + 20) | 55 |
+
+**Cap:** Score cannot go below 0.
+
+**Note:** Only violations detected by Judge's consistency pattern analysis are counted. Framework-required variations and legacy migration zones are excluded.
+
+### Test Quality (Test Suite Reliability)
+
+**Original output:** Per-file test quality scores from Judge test quality assessment
+
+| Dimension | Weight in Composite |
+|-----------|---------------------|
+| Isolation | 0.25 |
+| Flakiness-free | 0.25 |
+| Edge cases | 0.20 |
+| Mock quality | 0.15 |
+| Readability | 0.15 |
+
+**Normalization formula:**
+
+```
+test_quality_score = (
+    isolation × 0.25 +
+    flakiness_free × 0.25 +
+    edge_cases × 0.20 +
+    mock_quality × 0.15 +
+    readability × 0.15
+) × 100
+```
+
+Each dimension is scored 0.0 to 1.0 by Judge, then weighted.
+
+**Examples:**
+
+| Isolation | Flaky-free | Edge | Mock | Read | Score |
+|-----------|-----------|------|------|------|-------|
+| 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 100 |
+| 0.8 | 0.6 | 0.7 | 0.5 | 0.8 | 69.5 |
+| 0.5 | 0.3 | 0.4 | 0.6 | 0.4 | 42.0 |
+
+**Minimum threshold:** test_quality_score ≥ 60 for CI release approval.
+
 ---
 
 ## Weight Configurations
 
-### Standard Weights (Default)
+### Standard Weights (7-Dimension Default)
 
 ```yaml
 weights:
-  judge: 0.30  # Code correctness is primary
-  radar: 0.25  # Test coverage is critical
-  zen: 0.20    # Maintainability matters
-  warden: 0.15 # UX quality (when applicable)
-  quill: 0.10  # Documentation baseline
+  judge:         0.25  # Code correctness (was 0.30)
+  consistency:   0.10  # Cross-file pattern uniformity (NEW)
+  test_quality:  0.10  # Test suite reliability (NEW)
+  zen:           0.15  # Maintainability (was 0.20)
+  radar:         0.20  # Test coverage (was 0.25)
+  warden:        0.12  # UX quality (was 0.15)
+  quill:         0.08  # Documentation (was 0.10)
 ```
+
+### Legacy Standard Weights (5-Dimension)
+
+For backward compatibility with existing session reports:
+
+```yaml
+legacy_standard:
+  judge: 0.30
+  zen: 0.20
+  radar: 0.25
+  warden: 0.15
+  quill: 0.10
+```
+
+**Migration note:** 5-dimension and 7-dimension UQS scores are not directly comparable. Always note the UQS version in session reports.
 
 ### Code-Focused Weights
 
@@ -197,9 +280,11 @@ Use when focusing on implementation quality.
 
 ```yaml
 weights:
-  judge: 0.40
-  zen: 0.35
-  radar: 0.25
+  judge: 0.35
+  consistency: 0.15
+  test_quality: 0.00
+  zen: 0.30
+  radar: 0.20
   warden: 0.00
   quill: 0.00
 ```
@@ -210,11 +295,13 @@ Use when focusing on test quality and coverage.
 
 ```yaml
 weights:
-  judge: 0.20  # Test code quality
+  judge: 0.15
+  consistency: 0.00
+  test_quality: 0.25  # Test reliability primary
   zen: 0.00
-  radar: 0.70  # Primary focus
+  radar: 0.50          # Coverage primary
   warden: 0.00
-  quill: 0.10  # Test documentation
+  quill: 0.10
 ```
 
 ### UX-Focused Weights
@@ -224,6 +311,8 @@ Use when focusing on user experience.
 ```yaml
 weights:
   judge: 0.00
+  consistency: 0.00
+  test_quality: 0.00
   zen: 0.00
   radar: 0.00
   warden: 0.70  # V.A.I.R.E. is primary
@@ -237,6 +326,8 @@ Use when focusing on documentation completeness.
 ```yaml
 weights:
   judge: 0.10
+  consistency: 0.00
+  test_quality: 0.00
   zen: 0.00
   radar: 0.00
   warden: 0.00
@@ -254,6 +345,8 @@ weights:
   radar: 0.15     # Security test coverage
   probe: 0.10     # DAST results
 ```
+
+See `references/quality-profiles.md` for domain-specific profiles (API-Heavy, UI-Heavy, Data-Pipeline, Library/SDK, etc.).
 
 ---
 

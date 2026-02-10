@@ -166,29 +166,33 @@ Diminishing returns are the signal, not the enemy.
 
 UQS normalizes different quality metrics to a common 0-100 scale.
 
-### Normalization Rules
+### Normalization Rules (7 Dimensions)
 
 | Agent | Original Scale | Normalization Formula | Weight |
 |-------|---------------|----------------------|--------|
-| Judge | CRIT/HIGH/MED/LOW count | `100 - (CRIT×25 + HIGH×15 + MED×5 + LOW×2)` | 0.30 |
-| Zen | Cyclomatic Complexity | `max(0, 100 - (avgCC - 10) × 10)` | 0.20 |
-| Radar | Coverage % | `coverage%` | 0.25 |
-| Warden | 0-3 per dimension | `avg(dimensions) / 3 × 100` | 0.15 |
-| Quill | Checklist pass rate | `pass_rate × 100` | 0.10 |
+| Judge | CRIT/HIGH/MED/LOW count | `100 - (CRIT×25 + HIGH×15 + MED×5 + LOW×2)` | 0.25 |
+| Consistency | HIGH/MED/LOW violations | `100 - (HIGH×15 + MED×5 + LOW×2)` | 0.10 |
+| Test Quality | 5-dimension composite | `isolation×0.25 + flaky×0.25 + edge×0.20 + mock×0.15 + read×0.15` | 0.10 |
+| Zen | Cyclomatic Complexity | `max(0, 100 - (avgCC - 10) × 5)` | 0.15 |
+| Radar | Coverage % | `coverage%` | 0.20 |
+| Warden | 0-3 per dimension | `avg(dimensions) / 3 × 100` | 0.12 |
+| Quill | Checklist pass rate | `pass_rate × 100` | 0.08 |
 
 ### UQS Calculation
 
 ```
 UQS = Σ (normalized_score_i × weight_i)
 
-Example:
-  Judge:  85 (1 HIGH, 2 MED)     × 0.30 = 25.5
-  Zen:    70 (avgCC = 13)        × 0.20 = 14.0
-  Radar:  65 (65% coverage)      × 0.25 = 16.25
-  Warden: 80 (avg 2.4/3)         × 0.15 = 12.0
-  Quill:  90 (90% complete)      × 0.10 = 9.0
+Example (7-dimension):
+  Judge:        85 (1 HIGH, 2 MED)              × 0.25 = 21.25
+  Consistency:  70 (2 HIGH violations)           × 0.10 = 7.00
+  Test Quality: 75 (good isolation, weak edges)  × 0.10 = 7.50
+  Zen:          70 (avgCC = 13)                  × 0.15 = 10.50
+  Radar:        65 (65% coverage)                × 0.20 = 13.00
+  Warden:       80 (avg 2.4/3)                   × 0.12 = 9.60
+  Quill:        90 (90% complete)                × 0.08 = 7.20
 
-  UQS = 76.75 (Acceptable)
+  UQS = 76.05 (Acceptable)
 ```
 
 ### UQS Interpretation
@@ -206,13 +210,18 @@ Example:
 When focusing on specific domains, adjust weights:
 
 **Code-focused UQS:**
-- Judge: 0.40, Zen: 0.35, Radar: 0.25, Warden: 0, Quill: 0
+- Judge: 0.35, Consistency: 0.15, Test Quality: 0, Zen: 0.30, Radar: 0.20, Warden: 0, Quill: 0
 
 **UX-focused UQS:**
-- Judge: 0, Zen: 0, Radar: 0, Warden: 0.70, Quill: 0.30
+- Judge: 0, Consistency: 0, Test Quality: 0, Zen: 0, Radar: 0, Warden: 0.70, Quill: 0.30
 
 **Test-focused UQS:**
-- Judge: 0.20, Zen: 0, Radar: 0.70, Warden: 0, Quill: 0.10
+- Judge: 0.15, Consistency: 0, Test Quality: 0.25, Zen: 0, Radar: 0.50, Warden: 0, Quill: 0.10
+
+**Consistency-focused UQS:**
+- Judge: 0.20, Consistency: 0.50, Test Quality: 0, Zen: 0.20, Radar: 0, Warden: 0, Quill: 0.10
+
+See `references/quality-profiles.md` for full domain-specific profiles (API-Heavy, UI-Heavy, Data-Pipeline, Library/SDK, Security-Critical).
 
 ---
 
@@ -429,6 +438,7 @@ Cycle 2: 79.2 ──+2.1───▶ 81.3 (Target: 80)
 | Trigger | Timing | When to Ask |
 |---------|--------|-------------|
 | ON_MODE_SELECTION | BEFORE_START | When quality requirements unclear |
+| ON_QUALITY_PROFILE | BEFORE_START | When project type affects weight distribution |
 | ON_DOMAIN_SCOPE | BEFORE_START | When multiple domains could apply |
 | ON_EXCEED_CYCLES | ON_DECISION | When max cycles reached but target not met |
 | ON_LOW_QUALITY_EXIT | ON_DECISION | When terminating with UQS < 60 |
@@ -451,6 +461,23 @@ questions:
     multiSelect: false
 ```
 
+**ON_QUALITY_PROFILE:**
+```yaml
+questions:
+  - question: "Which quality profile matches this project?"
+    header: "Profile"
+    options:
+      - label: "Full-Stack (Recommended)"
+        description: "Balanced 7-dimension quality assessment"
+      - label: "API-Heavy"
+        description: "Correctness, API consistency, test coverage"
+      - label: "UI-Heavy"
+        description: "UX quality, visual consistency, component docs"
+      - label: "Library/SDK"
+        description: "API consistency, documentation, public API coverage"
+    multiSelect: false
+```
+
 **ON_DOMAIN_SCOPE:**
 ```yaml
 questions:
@@ -458,11 +485,11 @@ questions:
     header: "Domains"
     options:
       - label: "All domains (Recommended)"
-        description: "Code, tests, docs, UX - comprehensive"
-      - label: "Code only"
-        description: "Focus on bugs and complexity"
-      - label: "Tests only"
-        description: "Focus on coverage and reliability"
+        description: "Code, tests, consistency, docs, UX - comprehensive"
+      - label: "Code + Consistency"
+        description: "Focus on bugs, complexity, and pattern uniformity"
+      - label: "Tests + Test Quality"
+        description: "Focus on coverage, reliability, and test structure"
       - label: "UX only"
         description: "Focus on V.A.I.R.E. compliance"
     multiSelect: true
@@ -784,9 +811,29 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
+## Quality Profiles
+
+Different project types weight quality dimensions differently. Use quality profiles to auto-configure UQS weights.
+
+| Profile | Primary Focus | Key Dimensions |
+|---------|--------------|----------------|
+| **Full-Stack** (default) | Balanced | All 7 dimensions |
+| **API-Heavy** | Correctness | Judge, Consistency, Radar |
+| **UI-Heavy** | UX quality | Warden, Quill, Radar |
+| **Data-Pipeline** | Reliability | Judge, Test Quality, Radar |
+| **Library/SDK** | Consistency | Consistency, Quill, Judge |
+| **Security-Critical** | Safety | Sentinel, Judge, Probe |
+
+Profiles can be auto-detected from file types or manually selected via `ON_QUALITY_PROFILE` trigger.
+
+See `references/quality-profiles.md` for full profile definitions, auto-detection logic, and custom profile configuration.
+
+---
+
 ## See Also
 
 - `references/pdca-patterns.md` - Detailed PDCA phase patterns
-- `references/metrics-integration.md` - UQS calculation details
+- `references/metrics-integration.md` - UQS calculation details (7-dimension)
 - `references/agent-coordination.md` - Agent selection and ordering
 - `references/cycle-management.md` - Termination logic and history
+- `references/quality-profiles.md` - Domain-specific quality profiles

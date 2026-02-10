@@ -73,6 +73,8 @@ DOMAIN_TO_AGENTS = {
     "code_correctness": ["judge", "builder"],
     "complexity": ["zen"],
     "test_quality": ["radar"],
+    "consistency": ["judge", "zen"],
+    "test_reliability": ["judge", "radar"],
     "documentation": ["quill"],
     "ux_quality": ["warden", "palette"],
     "security": ["sentinel", "probe"],
