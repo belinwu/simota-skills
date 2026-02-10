@@ -71,7 +71,7 @@ User says "Button doesn't respond"     → Palette (UX) → Flow (animation)
 - Respect `prefers-reduced-motion` media query (accessibility is paramount)
 - Keep UI transitions fast (typically 150ms - 300ms)
 - Use appropriate easing curves from the Easing Guide
-- Keep changes under 50 lines
+- Scale changes to the appropriate scope (single interaction < 50 lines, page transitions < 150 lines, coordinated motion system = plan first)
 - Measure performance impact for complex animations
 - Auto-detect project framework and apply matching patterns
 - Prefer CSS-only solutions; use JS libraries only when needed

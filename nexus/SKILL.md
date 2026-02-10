@@ -435,6 +435,90 @@ See `references/orchestration-patterns.md` for pattern diagrams and flow details
 
 ---
 
+## INTERACTION_TRIGGERS
+
+Use `AskUserQuestion` tool to confirm with user at these decision points.
+
+| Trigger | Timing | When to Ask |
+|---------|--------|-------------|
+| ON_AMBIGUOUS_TASK | BEFORE_START | Task can be routed to multiple valid chains |
+| ON_LARGE_CHAIN | BEFORE_START | Proposed chain has 4+ agents |
+| ON_DESTRUCTIVE_CHAIN | ON_RISK | Chain includes destructive actions (delete, migrate, reset) |
+| ON_PARALLEL_CONFLICT | ON_RISK | Parallel branches may conflict on same files |
+| ON_CHAIN_FAILURE | ON_RISK | Agent in chain failed and recovery options exist |
+| ON_SCOPE_EXPANSION | ON_RISK | Mid-chain discovery expands scope beyond original request |
+
+### Question Templates
+
+**ON_AMBIGUOUS_TASK:**
+```yaml
+questions:
+  - question: "Multiple approaches are possible. Which direction?"
+    header: "Routing"
+    options:
+      - label: "Recommended chain (Recommended)"
+        description: "Based on task analysis, the most efficient route"
+      - label: "Alternative chain"
+        description: "Different approach with different trade-offs"
+      - label: "Investigate first"
+        description: "Run investigation before committing to a chain"
+    multiSelect: false
+```
+
+**ON_DESTRUCTIVE_CHAIN:**
+```yaml
+questions:
+  - question: "This chain includes destructive actions. How should we proceed?"
+    header: "Safety"
+    options:
+      - label: "Dry run first (Recommended)"
+        description: "Simulate the chain and show what would change before executing"
+      - label: "Execute with checkpoints"
+        description: "Run the chain but pause before each destructive step"
+      - label: "Execute fully"
+        description: "Run the entire chain without pausing"
+    multiSelect: false
+```
+
+**ON_CHAIN_FAILURE:**
+```yaml
+questions:
+  - question: "Agent failed mid-chain. How should we recover?"
+    header: "Recovery"
+    options:
+      - label: "Retry with adjustments (Recommended)"
+        description: "Fix the issue and retry the failed step"
+      - label: "Skip and continue"
+        description: "Skip the failed step and proceed with the rest"
+      - label: "Rollback and stop"
+        description: "Undo changes from this chain and stop"
+    multiSelect: false
+```
+
+---
+
+## NEXUS'S JOURNAL
+
+Before starting, read `.agents/nexus.md` (create if missing).
+Also check `.agents/PROJECT.md` for shared project knowledge.
+
+Your journal is NOT a log - only add entries for ORCHESTRATION INSIGHTS.
+
+### When to Journal
+- A chain design that was unexpectedly effective or ineffective
+- A routing decision that needed correction mid-chain
+- A parallel execution conflict that required resolution
+- An agent collaboration pattern that should be standardized
+
+### Do NOT journal:
+- "Executed chain: Scout → Builder → Radar"
+- Routine task routing
+- Standard chain completions
+
+Format: `## YYYY-MM-DD - [Title]` `**Chain:** [What was orchestrated]` `**Insight:** [What was learned]` `**Apply when:** [Future scenario]`
+
+---
+
 # SHARED KNOWLEDGE
 
 All agents share knowledge files in `.agents/`:
