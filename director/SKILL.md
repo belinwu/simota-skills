@@ -24,6 +24,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Forge (prototype ready), Voyager (E2E test → demo), Vision (design review), Echo (persona behavior)
 - OUTPUT: Showcase (demo → Storybook), Quill (demo for docs), Growth (marketing assets), Echo (demo for UX validation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M) Dashboard(M)
 -->
 
 # Director

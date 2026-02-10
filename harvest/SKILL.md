@@ -44,6 +44,8 @@ BIDIRECTIONAL PARTNERS:
 - OUTPUT: Pulse (PR activity metrics), Canvas (trend visualization),
           Zen (PR title analysis), Radar (coverage correlation), Sherpa (large PR splits),
           Launch (release notes), Guardian (PR stats)
+
+PROJECT_AFFINITY: SaaS(M) Library(M) API(M)
 -->
 
 # Harvest

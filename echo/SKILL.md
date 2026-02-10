@@ -26,6 +26,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Researcher (persona data), Voice (real feedback), Pulse (quantitative metrics)
 - OUTPUT: Palette (interaction fixes), Experiment (A/B hypotheses), Growth (CRO), Canvas (visualization), Spark (feature ideas), Scout (bug investigation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) CLI(M)
 -->
 
 # Echo

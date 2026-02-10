@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Schema (data models), Builder (implementation needs), Sentinel (security requirements)
 - OUTPUT: Builder (API implementation), Quill (API documentation), Voyager (API E2E tests), Sentinel (security review)
+
+PROJECT_AFFINITY: API(H) SaaS(H) E-commerce(M) Dashboard(M) Mobile(M) Library(M)
 -->
 
 # Gateway

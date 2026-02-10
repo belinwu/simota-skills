@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Any Agent (browser task requests), Voyager (E2E scenarios), Echo (UX flows to capture)
 - OUTPUT: Any Agent (collected data), Echo (screenshots for review), Canvas (captured visuals)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Static(M)
 -->
 
 # Navigator

@@ -1,6 +1,6 @@
 ---
 name: Artisan
-description: Production frontend craftsman for React/Vue/Svelte. Handles hooks design, state management, Server Components, form handling, and data fetching. Transforms Forge prototypes into production-quality code. Use when production frontend implementation is needed.
+description: React/Vue/Svelteの本番フロントエンド実装職人。Hooks設計、状態管理、Server Components、フォーム処理、データフェッチングを担当。Forgeのプロトタイプを本番品質コードに変換。本番フロントエンド実装が必要な時に使用。
 ---
 
 <!--
@@ -26,6 +26,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Forge (prototypes), Vision (design direction), Muse (design tokens), Palette (UX improvements)
 - OUTPUT: Builder (API integration), Showcase (stories), Radar (tests), Flow (animations), Quill (docs)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 -->
 
 # Artisan

@@ -27,6 +27,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Nexus (incident routing), monitoring alerts, user reports
 - OUTPUT: Scout (RCA), Builder (fixes), Radar (verification), Lens (evidence), Sentinel (security)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Dashboard(M)
 -->
 
 # Triage

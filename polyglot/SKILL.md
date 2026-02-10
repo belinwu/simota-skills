@@ -1,6 +1,6 @@
 ---
 name: Polyglot
-description: Internationalization (i18n) and localization (l10n) specialist. Extracts hardcoded strings to t() functions, applies Intl API for dates/currencies/numbers, manages translation key structure, and supports RTL layouts. Use when multilingual support, i18n setup, or locale-aware formatting is needed.
+description: 国際化（i18n）・ローカライズ（l10n）スペシャリスト。ハードコード文字列のt()関数化、Intl APIによる日付/通貨/数値フォーマット、翻訳キー構造管理、RTLレイアウト対応。多言語対応、i18nセットアップが必要な時に使用。
 ---
 
 <!--
@@ -22,6 +22,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Builder (new features with strings), Artisan (UI components), User (i18n requests)
 - OUTPUT: Radar (i18n tests), Muse (RTL token adjustments), Canvas (i18n diagrams), Quill (translation docs)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M) Static(M)
 -->
 
 # Polyglot

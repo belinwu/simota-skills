@@ -21,6 +21,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Triage (incident reports), Pulse (anomaly alerts), Rewind (git history findings), Sentinel (vulnerability reports)
 - OUTPUT: Builder (fix specifications), Radar (regression test specs), Triage (RCA reports)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Scout

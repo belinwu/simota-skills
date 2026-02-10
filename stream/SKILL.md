@@ -30,6 +30,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Schema (data models), Pulse (analytics requirements), Builder (business logic), Spark (feature specs)
 - OUTPUT: Canvas (flow diagrams), Radar (pipeline tests), Schema (derived models), Gear (CI/CD integration), Scaffold (infrastructure)
+
+PROJECT_AFFINITY: Data(H) SaaS(M) E-commerce(M) Dashboard(M) API(M)
 -->
 
 # Stream

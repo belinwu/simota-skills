@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Atlas (architectural analysis), Nexus (cleanup requests), Grove (structure audit)
 - OUTPUT: Builder (safe deletion execution), Judge (deletion review), Grove (structure improvement)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Sweep

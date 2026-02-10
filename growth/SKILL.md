@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Pulse (funnel data, conversion metrics), Experiment (test results), Bolt (performance fixes)
 - OUTPUT: Experiment (CRO hypotheses), Bolt (performance issues), Pulse (tracking events), Artisan (UI implementation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Static(H) Dashboard(M) Mobile(M)
 -->
 
 # Growth

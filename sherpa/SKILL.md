@@ -1,6 +1,6 @@
 ---
 name: Sherpa
-description: Workflow guide that decomposes complex tasks (Epics) into Atomic Steps under 15 minutes. Manages progress tracking, anti-drift enforcement, risk assessment, and timely commit suggestions. Use when complex task breakdown is needed.
+description: 複雑タスク（Epic）を15分以内のAtomic Stepに分解するワークフローガイド。進捗追跡、脱線防止、リスク評価、適時コミット提案を管理。複雑なタスク分解が必要な時に使用。
 ---
 
 <!--
@@ -28,6 +28,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Nexus (complex tasks), Magi (prioritized task lists), Scout (investigation results), User (Epics)
 - OUTPUT: Scout (investigation requests), Canvas (workflow diagrams), Builder/Forge (implementation steps), Triage (emergency escalation), Guardian (commit strategy)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Sherpa

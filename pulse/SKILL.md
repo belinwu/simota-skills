@@ -26,6 +26,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Voice (user feedback data), Growth (conversion goals), Experiment (test results), Scout (anomaly investigation)
 - OUTPUT: Experiment (metric definitions for A/B tests), Growth (funnel drop-off data), Canvas (dashboard diagrams), Scout (anomaly alerts)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M) Data(M)
 -->
 
 # Pulse

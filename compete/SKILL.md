@@ -25,6 +25,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Voice (customer feedback), Pulse (metrics), Researcher (market data), Scout (tech investigation)
 - OUTPUT: Spark (feature proposals), Growth (positioning), Canvas (visualization), Roadmap (priorities)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M)
 -->
 
 # Compete

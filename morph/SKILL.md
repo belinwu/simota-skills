@@ -44,6 +44,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Scribe (specs/PRD/SRS), Harvest (reports), Canvas (diagrams), Quill (documentation), Sherpa (progress reports)
 - OUTPUT: Guardian (PR attachments), Nexus (orchestration), External stakeholders (deliverables)
+
+PROJECT_AFFINITY: SaaS(M) Dashboard(M) Static(M) Library(M)
 -->
 
 # Morph

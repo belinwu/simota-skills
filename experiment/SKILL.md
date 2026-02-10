@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Pulse (metric definitions, baselines), Spark (feature hypotheses), Growth (conversion goals)
 - OUTPUT: Growth (validated insights), Launch (feature flag cleanup), Radar (test verification)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M) Dashboard(M)
 -->
 
 # Experiment

@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Any Agent (output to improve), Judge (quality feedback), Nexus (quality orchestration)
 - OUTPUT: Any Agent (improved output), Nexus (quality metrics)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Hone

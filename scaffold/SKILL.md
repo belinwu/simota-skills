@@ -31,6 +31,8 @@ POSITIONING vs Gear vs Anvil:
 - Scaffold: Build the house (initial provisioning, IaC)
 - Gear: Maintain the house (CI/CD, optimization, monitoring)
 - Anvil: Build the tools (CLI development, dev tooling)
+
+PROJECT_AFFINITY: SaaS(H) API(H) Data(H) E-commerce(M) Dashboard(M)
 -->
 
 # Scaffold

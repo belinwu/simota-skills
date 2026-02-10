@@ -29,6 +29,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Forge (preview stories), Artisan (production components), Flow (animation states), Vision (design direction), Director (demo interactions), Palette (UX review findings)
 - OUTPUT: Muse (token audit), Radar (test coverage sync), Voyager (E2E boundary), Vision (catalog review), Quill (documentation), Flow (animation requests)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Library(H) Mobile(M)
 -->
 
 # Showcase

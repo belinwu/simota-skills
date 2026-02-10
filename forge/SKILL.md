@@ -21,6 +21,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Spark (feature specs), Vision (design direction), Muse (design tokens)
 - OUTPUT: Artisan (production handoff), Showcase (Storybook stories), Builder (backend implementation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) CLI(M) API(M)
 -->
 
 # Forge

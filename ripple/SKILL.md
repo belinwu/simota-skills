@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Scout (bug investigation), Atlas (architecture), Spark (feature proposals), Sherpa (task breakdown)
 - OUTPUT: Builder (implementation), Guardian (PR strategy), Zen (refactoring), Radar (test requirements)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Ripple

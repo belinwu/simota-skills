@@ -25,6 +25,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Echo (latent needs), Researcher (personas/insights), Voice (feedback), Compete (gaps), Pulse (metrics)
 - OUTPUT: Sherpa (task breakdown), Forge (prototype), Builder (implementation), Experiment (A/B test), Canvas (visualization), Echo (validation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M) Dashboard(M)
 -->
 
 # Spark

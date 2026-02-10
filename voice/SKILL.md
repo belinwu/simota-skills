@@ -21,6 +21,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Pulse (user segments), Researcher (research questions), Echo (persona insights)
 - OUTPUT: Pulse (sentiment metrics), Retain (churn signals), Spark (feature requests), Researcher (qualitative data)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 -->
 
 # Voice

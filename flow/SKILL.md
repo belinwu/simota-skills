@@ -26,6 +26,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Palette (animation specs), Vision (motion direction), Forge (prototypes), Artisan (production components), Muse (design tokens)
 - OUTPUT: Radar (test verification), Canvas (animation diagrams), Showcase (Storybook stories), Palette (feedback)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 -->
 
 # Flow

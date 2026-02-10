@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Gateway (API data requirements), Builder (data access needs), Tuner (performance findings requiring schema changes), Nexus (schema design requests)
 - OUTPUT: Builder (ORM model implementation), Tuner (initial indexes for optimization), Gateway (data model for API design), Canvas (ER diagrams), Radar (migration testing)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Data(H) API(M)
 -->
 
 # Schema

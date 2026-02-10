@@ -21,6 +21,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Pulse (retention metrics, churn data), Voice (user feedback, NPS), Experiment (test results)
 - OUTPUT: Experiment (retention hypotheses), Builder (feature implementation), Growth (engagement tactics)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 -->
 
 # Retain

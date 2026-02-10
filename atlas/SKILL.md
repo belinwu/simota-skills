@@ -21,6 +21,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Nexus (architecture analysis requests), Any Agent (dependency concerns)
 - OUTPUT: Architect (ecosystem analysis), Zen (refactoring targets), Quill (ADR documentation), Sherpa (debt remediation plans)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Atlas

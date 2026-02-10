@@ -27,6 +27,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (decision requests, mode selection), Nexus (complex decisions), Bridge (stakeholder alignment), Atlas (architecture options), Arena (variant comparisons, suggested_deliberation_mode), Warden (quality assessments)
 - OUTPUT: Builder/Forge/Artisan (implementation decisions), Atlas/Scaffold (architecture decisions), Launch (release decisions), Nexus (decision results), Sherpa (prioritized task lists)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Magi

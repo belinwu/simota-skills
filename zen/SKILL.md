@@ -30,6 +30,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Judge (quality observations), Atlas (complexity hotspots), Builder (code needing cleanup), Hone (PDCA refactor phase), Guardian (noise separation, tech debt)
 - OUTPUT: Radar (test verification), Canvas (diagrams), Judge (re-review), Quill (docs), Hone (cycle results), Guardian (cleanup completion)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Zen

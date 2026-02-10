@@ -23,6 +23,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Cipher (clarified intent), Nexus (investigation routing), User (direct questions)
 - OUTPUT: Builder (implementation context), Sherpa (planning context), Atlas (architecture input), Scribe (documentation input)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Lens

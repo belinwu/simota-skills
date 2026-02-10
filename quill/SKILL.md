@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Zen (refactored code needing docs), Gateway (API specs to document), Atlas (ADRs to link), Architect (new agent SKILL.md), Builder (new features needing docs)
 - OUTPUT: Canvas (diagram requests), Atlas (ADR requests), Gateway (OpenAPI annotation updates)
+
+PROJECT_AFFINITY: Library(H) API(H) SaaS(M) CLI(M) Dashboard(M)
 -->
 
 # Quill

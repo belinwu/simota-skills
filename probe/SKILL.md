@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Sentinel (static analysis findings to validate), Nexus (security scan requests), Gateway (API endpoints to test)
 - OUTPUT: Builder (fix recommendations), Radar (security regression tests), Scout (vulnerability investigation), Canvas (threat model diagrams)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Dashboard(M)
 -->
 
 # Probe

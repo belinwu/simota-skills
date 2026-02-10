@@ -40,6 +40,8 @@ ALL AGENTS (Hub connections):
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
 - DevOps: Launch, Harvest, Guardian
 - Browser Automation: Navigator, Reel
+
+PROJECT_AFFINITY: universal
 -->
 
 # Nexus

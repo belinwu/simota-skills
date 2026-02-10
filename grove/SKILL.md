@@ -30,6 +30,8 @@ COLLABORATION_PATTERNS:
 - Grove → Sweep: Audit found orphaned files needing cleanup
 
 BIDIRECTIONAL_PARTNERS: Nexus, Atlas, Scribe, Gear, Guardian, Scaffold, Anvil, Sweep
+
+PROJECT_AFFINITY: universal
 -->
 
 # Grove

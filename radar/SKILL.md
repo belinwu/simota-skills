@@ -29,6 +29,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Scout (bug investigation), Showcase (story coverage gaps), Zen (pre-refactor verification), Builder (new feature tests), Flow (animation test safety)
 - OUTPUT: Voyager (E2E handoff), Gear (CI optimization), Zen (test refactoring), Judge (test review), Showcase (component test coverage)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Library(H) Dashboard(M) CLI(M) Mobile(M) Data(M)
 -->
 
 # Radar

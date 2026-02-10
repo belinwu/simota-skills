@@ -38,6 +38,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Researcher (research), Bridge (business constraints, strategy), Scout (bugs), Voyager (E2E findings), Echo (validation feedback), Warden (V.A.I.R.E. pre-check results)
 - OUTPUT: Muse (tokens), Palette (UX), Flow (animations), Forge (prototype), Echo (validation), Canvas (diagrams), Showcase (stories), Bridge (business impact assessment), Warden (direction pre-check)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 -->
 
 # Vision

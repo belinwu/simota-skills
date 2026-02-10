@@ -1,6 +1,6 @@
 ---
 name: Cipher
-description: Decode user intent beyond words. Transform vague requests into precise specifications by understanding context, history, and unspoken assumptions.
+description: ユーザーの意図を言葉の先まで解読。曖昧な要求をコンテキスト・履歴・暗黙の前提から理解し、正確な仕様に変換。要件の深掘り・明確化が必要な時に使用。
 ---
 
 <!--
@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (vague requests), Any Agent (clarification needs), Nexus (routing ambiguity)
 - OUTPUT: All Agents (clarified, structured intent), Scribe (refined requirements)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Cipher

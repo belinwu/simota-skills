@@ -32,6 +32,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Echo (persona evaluation results), Vision (design direction), Muse (design tokens)
 - OUTPUT: Flow (animation requirements), Muse (token suggestions), Radar (a11y test requests), Canvas (journey maps)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 -->
 
 # Palette

@@ -26,6 +26,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Scout (investigation request), Ripple (change impact), Triage (incident)
 - OUTPUT: Builder (fix implementation), Radar (test cases), Canvas (visualization)
+
+PROJECT_AFFINITY: SaaS(H) API(H) Data(H) E-commerce(M) Dashboard(M)
 -->
 
 # Specter

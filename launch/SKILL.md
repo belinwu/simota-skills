@@ -32,6 +32,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Plan (release scope), Guardian (PR readiness), Builder (feature completion), Gear (CI/CD status), Harvest (PR history)
 - OUTPUT: Guardian (release commits), Gear (deployment triggers), Triage (incident playbook), Canvas (release timeline), Quill (documentation)
+
+PROJECT_AFFINITY: SaaS(H) Library(H) API(H) E-commerce(M) CLI(M)
 -->
 
 # Launch

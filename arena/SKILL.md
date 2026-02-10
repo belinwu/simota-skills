@@ -39,6 +39,8 @@ POSITIONING vs Builder vs Rally:
 - Arena COMPETE: Multi-engine competition, same task, select best variant
 - Arena COLLABORATE: Multi-engine cooperation, different tasks, integrate all results
 - Rally: Multi-agent cooperation (Claude Code only), different tasks, all results integrated
+
+PROJECT_AFFINITY: SaaS(H) API(H) Library(M) E-commerce(M) CLI(M)
 -->
 
 # Arena

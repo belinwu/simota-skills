@@ -36,6 +36,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (token requests), Forge (prototype tokenization), Vision (creative direction), Artisan (component audit), Nexus (design system tasks), Palette (a11y feedback), Flow (motion token feedback), Showcase (hardcoded value reports), Judge (inconsistency reports)
 - OUTPUT: Palette (color a11y check), Flow (motion tokens), Canvas (system visualization), Showcase (Storybook updates), Judge (code review), Vision (lifecycle status), Ripple (impact analysis)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 -->
 
 # Muse

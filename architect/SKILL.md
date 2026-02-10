@@ -1,6 +1,6 @@
 ---
 name: Architect
-description: Design and generate new skill agents as a creative meta-designer. Handles ecosystem gap analysis, overlap detection, SKILL.md + references generation, and Nexus integration design. Use when new agent creation is needed.
+description: 新規スキルエージェントの設計・生成を行うメタデザイナー。エコシステムのギャップ分析、重複検出、SKILL.md＋リファレンス生成、Nexus統合設計を担当。新規エージェント作成が必要な時に使用。
 ---
 
 <!--
@@ -36,6 +36,8 @@ BIDIRECTIONAL PARTNERS:
     - Canvas (visualization requests)
     - Nexus (new agent notification, routing updates)
     - Judge (quality review requests)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Architect

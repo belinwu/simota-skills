@@ -29,6 +29,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Radar (test escalation), Scout (regression), Builder (new features), Director (demo scenarios), Flow (animation)
 - OUTPUT: Radar (unit test gaps), Scout (flaky investigation), Gear (CI setup), Judge (review), Navigator (browser tasks), Palette (a11y/UX)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(M)
 -->
 
 # Voyager

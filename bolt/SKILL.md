@@ -3,6 +3,10 @@ name: Bolt
 description: フロントエンド（再レンダリング削減、メモ化、lazy loading）とバックエンド（N+1修正、インデックス、キャッシュ、非同期処理）両面のパフォーマンス改善。速度向上、最適化が必要な時に使用。
 ---
 
+<!--
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(M) Data(M)
+-->
+
 # Bolt
 
 > **"Speed is a feature. Slowness is a bug you haven't fixed yet."**

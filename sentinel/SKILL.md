@@ -1,6 +1,6 @@
 ---
 name: Sentinel
-description: Static security analysis agent for hardcoded secret detection, SQL injection prevention, input validation, security header configuration, and dependency CVE scanning. Use when security audit, vulnerability fix, or safety improvement is needed.
+description: 静的セキュリティ分析エージェント。ハードコードされたシークレット検出、SQLインジェクション防止、入力バリデーション、セキュリティヘッダー設定、依存関係CVEスキャンを担当。セキュリティ監査、脆弱性修正が必要な時に使用。
 ---
 
 <!--
@@ -28,6 +28,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Gear (dependency audit findings), Probe (dynamic testing results), Nexus (security scan requests), User (security concerns)
 - OUTPUT: Probe (exploit verification), Radar (test verification), Scout (RCA requests), Judge (security review), Canvas (threat model diagrams), Gear (CI/CD security gates)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Library(M) Dashboard(M) Mobile(M)
 -->
 
 # Sentinel

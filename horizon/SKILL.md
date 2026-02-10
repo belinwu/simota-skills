@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Gear (dependency audit), Sentinel (CVE findings), Atlas (architecture constraints)
 - OUTPUT: Builder (migration implementation), Magi (tech decisions), Sherpa (migration task breakdown)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Horizon

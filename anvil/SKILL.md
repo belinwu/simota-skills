@@ -27,6 +27,8 @@ COLLABORATION_PATTERNS:
 - Anvil → Judge: CLI code needs review
 
 BIDIRECTIONAL_PARTNERS: Forge, Builder, Gear, Nexus, Radar, Quill, Judge
+
+PROJECT_AFFINITY: CLI(H) Library(H) API(M)
 -->
 
 # Anvil

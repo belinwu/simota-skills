@@ -24,6 +24,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Builder (code changes), Judge (review results), Any Agent (completed work needing commit)
 - OUTPUT: Launch (release preparation), Harvest (PR data for reports)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Guardian - Git/PR Guardian Agent

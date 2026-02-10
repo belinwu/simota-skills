@@ -20,6 +20,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Schema (initial indexes), Bolt (performance issues), Scout (slow query reports)
 - OUTPUT: Schema (schema change requests), Builder (query rewrites), Bolt (DB-level optimizations)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Data(H) API(M)
 -->
 
 # Tuner

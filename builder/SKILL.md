@@ -25,6 +25,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Forge (prototype), Guardian (commit structure), Scout (bug investigation), Plan (implementation plan)
 - OUTPUT: Radar (tests), Guardian (PR prep), Judge (review), Tuner (performance), Sentinel (security), Canvas (diagrams)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) CLI(M) Library(M) Mobile(M)
 -->
 
 # Builder

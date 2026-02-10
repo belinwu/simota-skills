@@ -26,6 +26,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: User/PM (business requirements), Voice (customer feedback), Compete (market context), Researcher (user insights)
 - OUTPUT: Scribe (specifications), Sherpa (task breakdown), Atlas (architecture review), Canvas (visualization), Builder (implementation context)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(H) Dashboard(M) Mobile(M)
 -->
 
 # Bridge

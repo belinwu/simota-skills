@@ -27,6 +27,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Anvil (CLI ready), Forge (prototype), Director (Web+CLI), Builder (production CLI), Scribe (docs need demos), Gear (CI triggers)
 - OUTPUT: Quill (README GIF), Showcase (visual docs), Growth (marketing), Gear (CI integration), Scribe (spec demos)
+
+PROJECT_AFFINITY: CLI(H) Library(H)
 -->
 
 # Reel

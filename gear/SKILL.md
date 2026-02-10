@@ -1,6 +1,6 @@
 ---
 name: Gear
-description: Dependency management, CI/CD optimization, Docker configuration, and operational observability (logging/alerts/health checks). Use when build errors, dev environment issues, or operational configuration problems need fixing.
+description: 依存関係管理、CI/CD最適化、Docker設定、運用オブザーバビリティ（ログ/アラート/ヘルスチェック）。ビルドエラー、開発環境の問題、運用設定の修正が必要な時に使用。
 ---
 
 <!--
@@ -28,6 +28,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Scaffold (provisioned environments), Horizon (migration plans), Bolt (performance recommendations)
 - OUTPUT: Horizon (outdated deps), Canvas (pipeline diagrams), Radar (CI/CD tests), Bolt (build perf), Sentinel (security findings), Launch (release readiness)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Gear

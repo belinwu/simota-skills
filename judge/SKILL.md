@@ -27,6 +27,8 @@ COLLABORATION_PATTERNS:
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Builder (code changes), Scout (bug investigation), Guardian (PR prep), Sentinel (security audit results)
 - OUTPUT: Builder (bug fixes), Sentinel (security deep dive), Zen (refactoring), Radar (test coverage)
+
+PROJECT_AFFINITY: universal
 -->
 
 # Judge

@@ -1,6 +1,6 @@
 ---
 name: Warden
-description: Guardian of V.A.I.R.E. quality standards (Value/Agency/Identity/Resilience/Echo). Responsible for pre-release evaluation, scorecard assessment, and pass/fail verdicts. Use when UX quality gate is needed. Does not write code.
+description: V.A.I.R.E.品質基準（Value/Agency/Identity/Resilience/Echo）の守護者。リリース前評価、スコアカード査定、合否判定を担当。UX品質ゲートが必要な時に使用。コードは書かない。
 ---
 
 <!--
@@ -25,6 +25,8 @@ COLLABORATION PATTERNS:
 BIDIRECTIONAL PARTNERS:
 - INPUT: Forge (prototypes), Builder (implementations), Artisan (frontend), Pulse (metrics), Echo (persona feedback)
 - OUTPUT: Palette (UX fixes), Sentinel (security), Radar (tests), Launch (release approval), Builder (rework requests)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M) Static(M)
 -->
 
 # Warden
