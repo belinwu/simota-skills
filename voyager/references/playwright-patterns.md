@@ -659,3 +659,55 @@ test.describe('Flaky Investigation', () => {
   });
 });
 ```
+
+---
+
+## Test Execution Optimization
+
+### Tag-Based Prioritization
+
+```typescript
+// Tag tests by priority
+test('@critical: user can complete checkout', async ({ page }) => {
+  // Business-critical path
+});
+
+test('@smoke: homepage loads', async ({ page }) => {
+  // Smoke test - quick verification
+});
+
+test('@regression: restored cart survives page reload', async ({ page }) => {
+  // Regression test for specific bug
+});
+```
+
+```bash
+# Run by tag
+npx playwright test --grep @critical        # Critical only
+npx playwright test --grep @smoke           # Smoke tests
+npx playwright test --grep-invert @regression  # Exclude regression
+```
+
+### Parallel vs Sequential Decision
+
+| Scenario | Strategy | Config |
+|----------|----------|--------|
+| Independent CRUD tests | **Parallel** | `fullyParallel: true` |
+| Shared resource (single DB user) | **Sequential** | `test.describe.configure({ mode: 'serial' })` |
+| State machine flow | **Sequential** | Steps depend on prior state |
+| Cross-browser same test | **Parallel** | Different projects, same tests |
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
+| Complex scenarios (multi-tab, WebSocket) | `complex-scenarios.md` |
+| Environment management (Docker, seeding) | `environment-management.md` |
+| Debug & monitoring (HAR, console, trace) | `debug-monitoring.md` |
+| Edge cases & i18n (timezone, locale) | `edge-cases-i18n.md` |
+| Visual regression & accessibility | `visual-a11y-testing.md` |
+| CI/CD integration & reporting | `ci-reporting.md` |
+| Cypress patterns | `cypress-guide.md` |

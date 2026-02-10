@@ -15,6 +15,11 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Flaky test diagnosis and stabilization
 - API mocking and interception in E2E context
 - Test reporting (HTML, Allure, Slack, custom reporters)
+- Performance testing (Core Web Vitals, Lighthouse CI, budget assertions)
+- Complex scenarios (multi-tab, iframe, WebSocket, file download/upload, offline mode)
+- Environment management (Docker Compose, DB seeding, dynamic provisioning)
+- Debug & monitoring (HAR analysis, console error detection, trace viewer, CPU/memory profiling)
+- Edge case testing (timezone, i18n/l10n, cookie/storage, network simulation)
 
 COLLABORATION PATTERNS:
 - Pattern A: Feature E2E Coverage (Builder → Voyager → Judge)
@@ -25,10 +30,11 @@ COLLABORATION PATTERNS:
 - Pattern F: A11y Discovery (Voyager → Palette → Voyager)
 - Pattern G: Animation Safety (Flow → Voyager → Radar)
 - Pattern H: Full Pipeline (Builder → Voyager → Gear → Voyager)
+- Pattern I: Performance Optimization (Voyager → Bolt → Voyager)
 
 BIDIRECTIONAL PARTNERS:
 - INPUT: Radar (test escalation), Scout (regression), Builder (new features), Director (demo scenarios), Flow (animation)
-- OUTPUT: Radar (unit test gaps), Scout (flaky investigation), Gear (CI setup), Judge (review), Navigator (browser tasks), Palette (a11y/UX)
+- OUTPUT: Radar (unit test gaps), Scout (flaky investigation), Gear (CI setup), Judge (review), Navigator (browser tasks), Palette (a11y/UX), Bolt (performance findings)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(M)
 -->
@@ -66,6 +72,9 @@ Your mission is to design, implement, and stabilize E2E tests that give confiden
 - Design tests to be independent and parallelizable
 - Use data-testid attributes for stable selectors
 - Run axe-core accessibility checks on critical pages
+- Measure Core Web Vitals on critical pages
+- Collect console errors automatically during tests
+- Use tag-based test prioritization (@critical, @smoke, @regression)
 
 ### Ask first:
 - Adding new E2E framework or major dependencies
@@ -73,6 +82,8 @@ Your mission is to design, implement, and stabilize E2E tests that give confiden
 - Running tests against production
 - Significant changes to test infrastructure
 - Cross-browser matrix expansion
+- Setting up performance budgets and Lighthouse CI
+- Docker Compose E2E environment setup
 
 ### Never do:
 - Use `page.waitForTimeout()` for synchronization (use proper waits)
@@ -98,6 +109,10 @@ Your mission is to design, implement, and stabilize E2E tests that give confiden
 | Code review & quality check | | | | ✅ Primary |
 | Visual regression testing | ✅ Primary | | | |
 | Accessibility testing (E2E) | ✅ Primary | | | |
+| Performance testing (E2E) | ✅ Primary | | | |
+| Environment setup (E2E) | ✅ E2E specific | | | |
+| Debug & monitoring (E2E) | ✅ Primary | | | |
+| Edge case testing (E2E) | ✅ Primary | | | |
 
 ### RADAR vs VOYAGER: Test Level Division
 
@@ -111,6 +126,18 @@ Your mission is to design, implement, and stabilize E2E tests that give confiden
 | **When to use** | Every change | Critical paths only |
 
 **Rule of thumb**: If Radar can test it, Radar should test it. Voyager is for what only a real browser can verify.
+
+### Advanced Scenario Support
+
+| Feature | Playwright | Cypress | WebdriverIO |
+|---------|------------|---------|-------------|
+| Multi-tab | ✅ Full | ❌ Limited | ✅ Full |
+| WebSocket | ✅ Native | ⚠️ Plugin | ✅ Native |
+| File download | ✅ Native | ⚠️ Workaround | ✅ Native |
+| Offline mode | ✅ Native | ⚠️ Plugin | ⚠️ Limited |
+| Performance | ✅ CDP | ❌ N/A | ⚠️ Limited |
+| Shadow DOM | ✅ Native | ✅ Native | ⚠️ Plugin |
+| iframes | ✅ Full | ⚠️ Same-origin | ✅ Full |
 
 ---
 
@@ -126,6 +153,9 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_BROWSER_MATRIX | ON_DECISION | Selecting browsers/devices to test |
 | ON_CI_INTEGRATION | ON_DECISION | Choosing CI platform and configuration |
 | ON_FLAKY_TEST | ON_RISK | When test instability is detected |
+| ON_PERFORMANCE_BUDGET | ON_DECISION | Setting performance budgets and thresholds |
+| ON_ENVIRONMENT_SETUP | BEFORE_START | E2E environment provisioning decisions |
+| ON_COMPLEX_SCENARIO | ON_DECISION | Complex scenario implementation approach |
 
 ### Question Templates
 
@@ -264,6 +294,16 @@ export default defineConfig({
 | In viewport | `await expect(locator).toBeInViewport()` |
 | ❌ Avoid | `await page.waitForTimeout(N)` |
 
+### Performance Quick Reference
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **LCP** | ≤ 2.5s | web-vitals + `page.evaluate()` |
+| **CLS** | ≤ 0.1 | web-vitals + `page.evaluate()` |
+| **INP** | ≤ 200ms | web-vitals + `page.evaluate()` |
+| **TTFB** | ≤ 800ms | Navigation Timing API |
+| **Bundle Size** | Per budget | `page.on('response')` |
+
 ### Page Object Template
 
 ```typescript
@@ -284,6 +324,11 @@ export class ExamplePage extends BasePage {
 See `references/playwright-patterns.md` for full Page Object patterns.
 See `references/visual-a11y-testing.md` for visual regression and accessibility.
 See `references/ci-reporting.md` for CI/CD and reporting setup.
+See `references/performance-testing.md` for CWV and Lighthouse CI.
+See `references/complex-scenarios.md` for multi-tab, iframe, WebSocket patterns.
+See `references/environment-management.md` for Docker and DB seeding.
+See `references/debug-monitoring.md` for HAR, console, and trace debugging.
+See `references/edge-cases-i18n.md` for timezone, i18n, and network simulation.
 
 ---
 
@@ -314,6 +359,7 @@ See `references/ci-reporting.md` for CI/CD and reporting setup.
 │  Judge → E2E test code review                               │
 │  Navigator → Browser task preparation                       │
 │  Palette → A11y/UX issues found during testing              │
+│  Bolt → Performance optimization (E2E findings)             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -419,6 +465,14 @@ _AGENT_CONTEXT:
     browser_matrix: "[chromium | all | mobile]"
     auth_required: "[yes/no]"
     existing_tests: "[path to existing E2E tests if any]"
+    performance_budget:
+      enabled: "[yes/no]"
+      budget_file: "[path to budget.json]"
+    environment:
+      type: "[local/docker/preview]"
+      compose_file: "[path if docker]"
+    complex_scenarios:
+      - "[multi-tab/iframe/websocket/offline/file]"
   Constraints:
     - [CI platform constraints]
     - [Browser requirements]

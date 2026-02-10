@@ -320,3 +320,81 @@ test.afterEach(async ({ page }, testInfo) => {
 | **Close context to finalize** | Video file incomplete until context closes |
 | **Set retention policy** | CI artifacts: 7-30 days |
 | **Don't record stable tests** | Disable for well-established tests |
+
+---
+
+## Test Prioritization in CI
+
+### Critical-First Execution
+
+```yaml
+# .github/workflows/e2e-prioritized.yml
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Smoke tests (fast gate)
+        run: npx playwright test --grep @smoke
+        timeout-minutes: 5
+
+  critical:
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Critical path tests
+        run: npx playwright test --grep @critical
+        timeout-minutes: 15
+
+  full:
+    needs: critical
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Full regression suite
+        run: npx playwright test --shard=${{ matrix.shard }}/4
+        timeout-minutes: 30
+```
+
+---
+
+## Performance Budget CI Check
+
+### Lighthouse CI GitHub Actions
+
+```yaml
+# Add to existing e2e workflow
+- name: Lighthouse CI
+  run: npx lhci autorun
+  env:
+    LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+```
+
+### Budget Violation PR Blocking
+
+```json
+// lighthouserc.json - assertions block PR on violation
+{
+  "ci": {
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }]
+      }
+    }
+  }
+}
+```
+
+See `performance-testing.md` for detailed Lighthouse CI integration and performance budget configuration.

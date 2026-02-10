@@ -282,3 +282,45 @@ Flow (animation) → FLOW_TO_VOYAGER → Voyager (verify flows) → VOYAGER_TO_R
 ```
 Builder → Voyager (E2E) → VOYAGER_TO_GEAR → Gear (CI) → Voyager (verify pipeline)
 ```
+
+### Pattern I: Performance Optimization
+```
+Voyager (performance measurement) → VOYAGER_TO_BOLT → Bolt (code optimization) → Voyager (re-verify)
+```
+
+---
+
+## Performance Handoff
+
+### VOYAGER_TO_BOLT_HANDOFF
+
+```markdown
+## VOYAGER_TO_BOLT_HANDOFF
+
+**Performance Issue Detected**: [Description]
+
+**Metrics**:
+| Metric | Measured | Target | Status |
+|--------|----------|--------|--------|
+| LCP | [value] | ≤ 2.5s | [PASS/FAIL] |
+| CLS | [value] | ≤ 0.1 | [PASS/FAIL] |
+| INP | [value] | ≤ 200ms | [PASS/FAIL] |
+| TTFB | [value] | ≤ 800ms | [PASS/FAIL] |
+| Bundle Size | [value] | ≤ [budget] | [PASS/FAIL] |
+
+**Affected Pages**:
+| Page | Metric | Measured | Evidence |
+|------|--------|----------|----------|
+| [path] | [metric] | [value] | [trace/screenshot link] |
+
+**Boundary**:
+- Voyager: Measured and identified the issue (E2E context)
+- Bolt: Code-level optimization needed (bundle splitting, lazy loading, etc.)
+
+**Evidence Attached**:
+- Lighthouse report: [path]
+- Trace file: [path]
+- HAR file: [path if relevant]
+
+**Request**: Optimize code to meet performance budget targets
+```
