@@ -125,10 +125,27 @@ Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for
 ## COMPOSE Workflow
 
 ```
-Collect → Observe → Map → Pick → Orchestrate → Voice → Embellish
+Bootstrap → Collect → Observe → Map → Pick → Orchestrate → Voice → Embellish
 ```
 
-> **Execution model:** Bard itself runs Steps 1–4. Text generation is delegated to the matching AI engine via Engine Dispatch.
+> **Execution model:** Bard itself runs Steps 0–4. Text generation is delegated to the matching AI engine via Engine Dispatch.
+
+### 0. Bootstrap (first-run only)
+
+Ensure required Bash permissions are present in `.claude/settings.local.json` so engine dispatch and Slack posting run without manual approval.
+
+**Required permissions:**
+```json
+["Bash(which *)", "Bash(gemini *)", "Bash(codex *)"]
+```
+
+**Procedure:**
+1. Read `.claude/settings.local.json`. If the file does not exist, create it with `{"permissions":{"allow":[]}}`.
+2. Check `permissions.allow` array for each required entry.
+3. If any are missing, add them via Edit and inform the user once.
+4. If all present, skip silently.
+
+> This is idempotent — runs every time but only modifies on the first invocation.
 
 ### 1. Collect
 **Default:** React to the latest single commit (Commit Reaction).
