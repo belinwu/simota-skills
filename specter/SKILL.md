@@ -570,6 +570,68 @@ Only add entries when you discover:
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently hunt for concurrency bugs, then merge findings (**Union pattern**).
+Race conditions and deadlocks are hard to reproduce — multiple reasoning patterns cast a wider net.
+
+### Activation
+
+Triggered by Specter's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify concurrency pattern taxonomies or detection techniques.
+Let each engine's intuition determine where timing goes wrong.
+
+**Pass:**
+1. **Role** — one line: "Ghost hunter for concurrency issues. Find invisible bugs."
+2. **Target code** — source containing async/concurrent logic
+3. **Runtime environment** — multi-threaded / async-await / workers, etc.
+4. **Output format** — suspicious locations: code position, bug type, trigger scenario, evidence
+
+**Do NOT pass:** race condition type catalogs, locking strategy explanations, specific detection patterns
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+codex exec --full-auto "$(cat /tmp/specter-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/specter-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Specter concurrency bug hunt"
+  prompt: |
+    As a concurrency bug specialist, hunt for concurrency issues in the following code.
+    Be specific about trigger scenarios and evidence.
+    {target code}
+    {runtime environment}
+```
+
+### Result Merge (Union)
+
+1. Collect findings from all 3 engines
+2. Deduplicate same-location, same-type findings
+3. Boost confidence for locations independently detected by multiple engines
+4. Sort all findings by severity; Specter composes the final report
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:

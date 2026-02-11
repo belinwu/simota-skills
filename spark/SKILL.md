@@ -812,6 +812,68 @@ See `references/proposal-templates.md` for:
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently generate feature proposals for brainstorm-style comparison (**Compete pattern**).
+Different creative perspectives across engines surface ideas that a single engine would not produce.
+
+### Activation
+
+Triggered by Spark's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify proposal formats or evaluation criteria.
+Let each engine's creativity decide what should be built.
+
+**Pass:**
+1. **Role** — one line: "Product manager. Propose new features leveraging existing assets."
+2. **Existing features** — summary of current codebase and data models
+3. **User context** — who uses it, what problems they face
+4. **Output format** — feature name + one-paragraph overview + feasibility
+
+**Do NOT pass:** JTBD templates, proposal category taxonomies, specific feature idea examples
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+codex exec --full-auto "$(cat /tmp/spark-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/spark-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Spark feature brainstorm"
+  prompt: |
+    As a product manager, propose new features leveraging the existing assets below.
+    Include feasibility and expected impact for each.
+    {existing features}
+    {user context}
+```
+
+### Result Selection (Compete)
+
+1. Collect proposals from all 3 engines
+2. Spark creates a comparison table of all proposals
+3. Merge duplicate ideas; keep unique proposals
+4. Annotate each with source engine; present to user for selection
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:

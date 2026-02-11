@@ -665,6 +665,68 @@ Request visualizations from Canvas for dependency graphs.
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently analyze change impact, then merge risk assessments (**Union pattern**).
+Different perspectives across engines catch ripple risks that a single analysis would miss.
+
+### Activation
+
+Triggered by Ripple's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify impact analysis frameworks or risk taxonomies.
+Let each engine reason from its own experience about what might break.
+
+**Pass:**
+1. **Role** — one line: "Risk analyst. Read the ripple effects of changes."
+2. **Change description** — diff or summary of planned changes
+3. **Dependencies** — list of files/modules that could be affected
+4. **Output format** — affected locations: file, risk type, severity, evidence
+
+**Do NOT pass:** risk matrix templates, impact analysis checklists, detailed classification criteria
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+codex exec --full-auto "$(cat /tmp/ripple-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/ripple-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Ripple impact analysis"
+  prompt: |
+    As a risk analyst, analyze the impact of the following changes.
+    For each affected location, report risk type, severity, and evidence.
+    {change description}
+    {dependencies}
+```
+
+### Result Merge (Union)
+
+1. Collect analysis results from all 3 engines
+2. Consolidate findings on the same location (multiple engines = higher risk confidence)
+3. Sort all affected locations by severity
+4. Ripple composes the final cross-engine risk report
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:

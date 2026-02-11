@@ -471,6 +471,69 @@ Format: `## YYYY-MM-DD - [Title]` `**Pattern**: [What]` `**Usage**: [When]`
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently generate edge-case tests, then merge results (**Union pattern**).
+Different reasoning patterns across engines catch cases that a single engine would miss.
+
+### Activation
+
+Triggered by Radar's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify test patterns or edge-case categories.
+Let each engine decide on its own what might break.
+
+**Pass:**
+1. **Role** — one line: "Test designer. Find overlooked edge cases."
+2. **Target code** — source under test
+3. **Existing tests** — to avoid duplicates
+4. **Output format** — test code
+
+**Do NOT pass:** edge-case category lists, detailed testing methodology, specific boundary value examples
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+# Write prompt to /tmp/radar-prompt.md, then execute
+codex exec --full-auto "$(cat /tmp/radar-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/radar-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Radar edge case generation"
+  prompt: |
+    As a test designer, generate edge-case tests for the following code.
+    Do not duplicate existing tests.
+    {target code}
+    {existing tests}
+```
+
+### Result Merge (Union)
+
+1. Collect outputs from all 3 engines
+2. Deduplicate test cases (same input + same assertion = one test)
+3. Merge all unique tests into final output
+4. Annotate each test with source engine (`// via Codex`, etc.)
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:

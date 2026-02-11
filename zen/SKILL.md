@@ -687,6 +687,67 @@ Format: `## YYYY-MM-DD - [Title]` `**Smell:** [What was hard to read]` `**Clarit
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently generate refactoring proposals, then select the best (**Compete pattern**).
+Different code-style sensibilities across engines produce diverse improvement approaches.
+
+### Activation
+
+Triggered by Zen's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify refactoring techniques or naming conventions.
+Let each engine's aesthetic sense decide how the code should be written.
+
+**Pass:**
+1. **Role** — one line: "Code readability craftsman. Polish structure without changing behavior."
+2. **Target code** — source to refactor
+3. **Constraints** — "Do not change behavior", "Tests must keep passing"
+4. **Output format** — refactored code + reason for each change
+
+**Do NOT pass:** specific refactoring pattern names, detailed naming conventions, code smell taxonomies
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+codex exec --full-auto "$(cat /tmp/zen-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/zen-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Zen refactoring proposal"
+  prompt: |
+    As a code readability craftsman, refactor the following code.
+    Do not change behavior. Explain the reason for each change.
+    {target code}
+```
+
+### Result Selection (Compete)
+
+1. Collect refactoring proposals from all 3 engines
+2. Zen evaluates each proposal (readability, consistency, change volume balance)
+3. Select the best proposal, or combine the best parts from multiple proposals
+4. Present to user with selection rationale
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:

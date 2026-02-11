@@ -500,6 +500,68 @@ Suggested command: `/Builder fix bug in [file]`
 
 ---
 
+## Multi-Engine Mode
+
+Three AI engines independently form root-cause hypotheses, then merge findings (**Union pattern**).
+Different reasoning approaches across engines catch causes that a single perspective would miss.
+
+### Activation
+
+Triggered by Scout's own judgment or when instructed via Nexus with `multi-engine`.
+
+### Engine Dispatch
+
+| Engine | Command | Fallback |
+|--------|---------|----------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
+
+When an engine is unavailable (`which` fails), Claude subagent takes over.
+
+### Loose Prompt Design
+
+Pass only minimal context. Do not specify investigation procedures or hypothesis frameworks.
+Let each engine reason from its own experience about why things broke.
+
+**Pass:**
+1. **Role** — one line: "Bug investigation expert. Find the root cause."
+2. **Symptoms** — error messages, reproduction steps, conditions
+3. **Related code** — source of suspicious areas
+4. **Output format** — hypothesis list: candidate cause, evidence, verification method
+
+**Do NOT pass:** investigation frameworks, RCA templates, specific investigation procedures
+
+### Dispatch: Codex / Gemini (External CLI)
+
+```bash
+codex exec --full-auto "$(cat /tmp/scout-prompt.md)"   # Codex
+gemini -p "$(cat /tmp/scout-prompt.md)" --yolo          # Gemini
+```
+
+### Dispatch: Claude (Task tool)
+
+```yaml
+Task:
+  subagent_type: general-purpose
+  mode: dontAsk
+  description: "Scout root cause analysis"
+  prompt: |
+    As a bug investigation expert, deduce the root cause of the following symptoms.
+    Propose multiple hypotheses with evidence and verification methods for each.
+    {symptoms}
+    {related code}
+```
+
+### Result Merge (Union)
+
+1. Collect hypotheses from all 3 engines
+2. Consolidate hypotheses pointing to the same cause (multiple engines = higher confidence)
+3. Rank all hypotheses by confidence
+4. Annotate each with verification method; Scout composes the final report
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
