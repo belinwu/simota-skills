@@ -4,1515 +4,1516 @@
 [![Agents](https://img.shields.io/badge/Agents-65-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
+A skill collection that enables collaborative development with a team of specialized AI agents.
 
-## ✨ Features
+## Features
 
-- **65種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、インフラまで網羅
-- **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
-- **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
+- **65 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
+- **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
-## 🚀 Quick Start
+## Quick Start
 
-### インストール
+### Installation
 
 ```bash
-# Claude Code の場合
+# For Claude Code
 git clone https://github.com/simota/agent-skills.git ~/.claude/skills
 
-# その他のプラットフォーム
+# For other platforms
 git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 ```
 
-### 使用方法
+### Usage
 
 ```
-/Nexus ログイン機能を実装したい
-/Scout このバグの原因を調査して
-/Radar テストカバレッジを向上させて
-/Vision ダッシュボードをモダンにリデザインしたい
+/Nexus I want to implement a login feature
+/Scout Investigate the cause of this bug
+/Radar Improve test coverage
+/Vision I want to redesign the dashboard with a modern look
 ```
 
-## 📚 概要
+## Overview
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする65種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+This repository contains 65 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
-## エージェント一覧
+## Agent Catalog
 
-### オーケストレーション
+### Orchestration
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Nexus** | _"The right agent at the right time changes everything."_ - チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを設計 | プロンプト、進行管理 |
-| **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
-| **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
-| **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
-| **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - PDCAサイクルで品質を反復的に向上させるQuality Orchestrator。測定→改善→検証→学習のサイクルを回し、収穫逓減検出で効率的に終了 | 品質改善サイクル |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Nexus** | _"The right agent at the right time changes everything."_ - Team orchestrator. Decomposes requests and designs optimal agent chains | Prompts, progress management |
+| **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - Task decomposition guide. Breaks complex tasks into atomic steps completable within 15 minutes | Checklists |
+| **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - Meta-designer that creates new skill agents. Ecosystem gap analysis, duplication detection, SKILL.md generation | SKILL.md, references |
+| **Rally** | _"One task, many hands. Parallel by design."_ - Multi-session parallel orchestrator. Spawns and manages multiple Claude instances via Claude Code Agent Teams API for concurrent task execution | Team management, parallel execution |
+| **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - Quality Orchestrator that iteratively improves quality through PDCA cycles. Runs Measure > Improve > Verify > Learn cycles with diminishing returns detection for efficient termination | Quality improvement cycles |
 
-### 調査・企画（コードを書かない）
+### Investigation & Planning (Non-coding)
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Scout** | _"Every bug has a story. I read the ending first."_ - バグ調査・根本原因分析（RCA）。再現手順と修正箇所を特定 | 調査レポート |
-| **Ripple** | _"Every change sends ripples. Know where they land before you leap."_ - 変更前の影響分析。縦（依存関係・影響ファイル）と横（パターン一貫性・命名規則）の両面からリスク評価 | 影響分析レポート |
-| **Spark** | _"The best feature is the one users didn't know they needed."_ - 新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案 | 仕様書 |
-| **Compete** | _"Know your enemy. Know the market. Know yourself."_ - 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
-| **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
-| **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
-| **Cipher** | _"Don't listen to words. Listen to silence."_ - ユーザー意図の解読。曖昧な要求を正確な仕様に変換 | 要求仕様書 |
-| **Trace** | _"Every click tells a story. I read between the actions."_ - セッションリプレイ分析・ペルソナ別行動パターン抽出・UX問題の物語化。Researcher/Echoと連携 | 行動分析レポート |
-| **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案 | 準拠度レポート |
-| **Lens** | _"See the code, not just search it."_ - コードベース理解・調査スペシャリスト。「〇〇機能はあるか」「〇〇のフローはどうか」「このモジュールの責務は何か」をコード構造把握・機能探索・データフロー追跡で体系的に調査 | 調査レポート |
-| **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - 3視点（論理・共感・実利）による多角的意思決定。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定 | 意思決定レポート |
-| **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - ビジネス要件と技術実装の翻訳・調停。要件明確化、スコープクリープ検出、期待値ギャップ解消 | 要件翻訳レポート |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Scout** | _"Every bug has a story. I read the ending first."_ - Bug investigation and root cause analysis (RCA). Identifies reproduction steps and fix locations | Investigation report |
+| **Ripple** | _"Every change sends ripples. Know where they land before you leap."_ - Pre-change impact analysis. Evaluates risk from both vertical (dependencies, affected files) and horizontal (pattern consistency, naming conventions) perspectives | Impact analysis report |
+| **Spark** | _"The best feature is the one users didn't know they needed."_ - Feature proposals. Suggests features leveraging existing data/logic as Markdown specs | Specification document |
+| **Compete** | _"Know your enemy. Know the market. Know yourself."_ - Competitive research, differentiation, and positioning. SWOT analysis, feature matrices | Competitive analysis report |
+| **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - User feedback collection, NPS survey design, sentiment analysis, and insight extraction | Feedback report |
+| **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - User research design, interview guides, qualitative analysis, persona/journey map creation | Research report |
+| **Cipher** | _"Don't listen to words. Listen to silence."_ - Decodes user intent. Converts ambiguous requests into precise specifications | Requirements specification |
+| **Trace** | _"Every click tells a story. I read between the actions."_ - Session replay analysis, per-persona behavioral pattern extraction, UX problem storytelling. Works with Researcher/Echo | Behavioral analysis report |
+| **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - Investigates and analyzes using global/industry standards. Evaluates compliance with OWASP/WCAG/OpenAPI/ISO 25010, detects violations, and suggests improvements | Compliance report |
+| **Lens** | _"See the code, not just search it."_ - Codebase comprehension specialist. Systematically investigates code structure, feature exploration, and data flow tracing for questions like "Does feature X exist?", "How does flow Y work?", "What is this module's responsibility?" | Investigation report |
+| **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - Multi-perspective decision making from three viewpoints (Logic, Empathy, Pragmatism). Architecture selection, tradeoff analysis, Go/No-Go decisions | Decision report |
+| **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - Translates and mediates between business requirements and technical implementation. Requirements clarification, scope creep detection, expectation gap resolution | Requirements translation report |
 
-**Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
-**Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
-**Researcher → Trace → Echo の連携**：Researcher（ペルソナ定義）→ Trace（実データ検証）→ Echo（シミュレーション確認）
-**Sentinel → Canon → Builder の連携**：Sentinel（脆弱性検出）→ Canon（OWASP準拠評価）→ Builder（修正実装）
-**Gateway → Canon → Gateway の連携**：Gateway（API設計）→ Canon（OpenAPI/RFC準拠確認）→ Gateway（修正）
-**Echo → Canon → Palette の連携**：Echo（UX問題）→ Canon（WCAG準拠評価）→ Palette（アクセシビリティ修正）
+**Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
+**Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
+**Researcher > Trace > Echo chain**: Researcher (persona definition) > Trace (real-data validation) > Echo (simulation confirmation)
+**Sentinel > Canon > Builder chain**: Sentinel (vulnerability detection) > Canon (OWASP compliance evaluation) > Builder (fix implementation)
+**Gateway > Canon > Gateway chain**: Gateway (API design) > Canon (OpenAPI/RFC compliance check) > Gateway (corrections)
+**Echo > Canon > Palette chain**: Echo (UX issues) > Canon (WCAG compliance evaluation) > Palette (accessibility fixes)
 
-### Git/PR管理
+### Git/PR Management
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Guardian** | _"Every commit tells a story. Make it worth reading."_ - Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
-| **Harvest** | _"Code writes history. I harvest its meaning."_ - PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
-| **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
-| **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
-| **Bard** | _"Code is silence. Poetry gives it voice."_ - 開発ログの詩的変換。Git履歴・PR・マイルストーンを俳句・自由詩・叙事詩に変換し、チーム文化を詠む | 詩・ナラティブ |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Guardian** | _"Every commit tells a story. Make it worth reading."_ - Git/PR gatekeeper. Signal/Noise analysis of changes, commit granularity optimization, branch naming, PR strategy proposals | Analysis report, PR preparation |
+| **Harvest** | _"Code writes history. I harvest its meaning."_ - PR information collection and report generation. Fetches PR info via gh commands to auto-generate weekly/monthly reports and release notes | Work reports, release notes |
+| **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - Release management. Versioning strategy, CHANGELOG generation, release notes, rollback plans, feature flag design | Release plans, CHANGELOG |
+| **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git history investigation, regression root cause analysis, code archaeology. Travels back in time to uncover the truth | History investigation report |
+| **Bard** | _"Code is silence. Poetry gives it voice."_ - Developer grumble agent with three AI personas. Transforms git history, PRs, and milestones into authentic developer monologues, rants, and musings | Narratives, commentary |
 
-**Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
-**Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
-**Rewind → Scout の連携**：Rewind（リグレッション特定）→ Scout（詳細調査）
-**Harvest → Bard の連携**：Harvest（PR統計）→ Bard（スプリント回顧詩）
-**Launch → Bard の連携**：Launch（リリース実行）→ Bard（リリース祝詩）
-**Rewind → Bard の連携**：Rewind（コード考古学）→ Bard（プロジェクト起源の物語）
+**Guardian > Judge > Zen chain**: Guardian (PR preparation) > Judge (review) > Zen (fixes)
+**Guardian > Launch chain**: Guardian (change analysis) > Launch (release plan)
+**Rewind > Scout chain**: Rewind (regression identification) > Scout (detailed investigation)
+**Harvest > Bard chain**: Harvest (PR statistics) > Bard (sprint retrospective narrative)
+**Launch > Bard chain**: Launch (release execution) > Bard (release celebration)
+**Rewind > Bard chain**: Rewind (code archaeology) > Bard (project origin story)
 
-### 品質保証
+### Quality Assurance
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Radar** | _"Untested code is unfinished code."_ - ユニット/統合テスト追加・フレーキーテスト修正・カバレッジ向上 | テストコード |
-| **Voyager** | _"E2E tests are the user's advocate in CI/CD."_ - E2Eテスト専門。Playwright/Cypress設定、Page Object設計、視覚回帰、CI統合 | E2Eテストコード |
-| **Sentinel** | _"Security is not a feature. It's a responsibility."_ - セキュリティ静的分析（SAST）・脆弱性パターン検出・入力検証追加 | セキュリティ修正 |
-| **Probe** | _"A system is only as secure as its weakest endpoint."_ - セキュリティ動的テスト（DAST）・OWASP ZAP/Nuclei連携・ペネトレーションテスト | 脆弱性レポート |
-| **Judge** | _"Good code needs no defense. Bad code has no excuse."_ - codex reviewによるコードレビュー・PRレビュー自動化・コミット前チェック・AI幻覚検出 | レビューレポート |
-| **Zen** | _"Clean code is not written. It's rewritten."_ - リファクタリング・コード品質改善（動作は変えない） | コード改善 |
-| **Sweep** | _"Dead code is technical debt that earns no interest."_ - 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
-| **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E.品質基準の番人。リリース前評価、スコアカード、合否判定 | 品質評価レポート |
-| **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Radar** | _"Untested code is unfinished code."_ - Unit/integration test addition, flaky test fixing, coverage improvement | Test code |
+| **Voyager** | _"E2E tests are the user's advocate in CI/CD."_ - E2E test specialist. Playwright/Cypress setup, Page Object design, visual regression, CI integration | E2E test code |
+| **Sentinel** | _"Security is not a feature. It's a responsibility."_ - Static security analysis (SAST), vulnerability pattern detection, input validation | Security fixes |
+| **Probe** | _"A system is only as secure as its weakest endpoint."_ - Dynamic security testing (DAST), OWASP ZAP/Nuclei integration, penetration testing | Vulnerability report |
+| **Judge** | _"Good code needs no defense. Bad code has no excuse."_ - Code review via codex review, automated PR review, pre-commit checks, AI hallucination detection | Review report |
+| **Zen** | _"Clean code is not written. It's rewritten."_ - Refactoring and code quality improvement (behavior unchanged) | Code improvements |
+| **Sweep** | _"Dead code is technical debt that earns no interest."_ - Unused file detection, dead code identification, orphaned file discovery, safe deletion proposals | Cleanup proposals |
+| **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E. quality standards guardian. Pre-release evaluation, scorecards, pass/fail decisions | Quality evaluation report |
+| **Specter** | _"The bugs you can't see are the ones that haunt you."_ - Ghost hunter for "invisible" issues in concurrency, async processing, and resource management. Detects and analyzes Race Conditions, Memory Leaks, Resource Leaks, and Deadlocks | Detection report |
 
-### 実装
+### Implementation
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Builder** | _"Types are contracts. Code is a promise."_ - 本番実装。TDD・Event Sourcing・CQRS・パフォーマンス最適化を備えた型安全な実装職人。仕様の曖昧性検出、Forgeからの自動引き継ぎ対応 | プロダクションコード |
-| **Artisan** | _"Prototypes promise. Production delivers."_ - フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
-| **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
-| **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - codex exec / gemini CLI を直接操り並列実装・評価・採用。Solo Mode（逐次）と Team Mode（Agent Teams 並列）をサポート | 比較実装・評価 |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Builder** | _"Types are contracts. Code is a promise."_ - Production implementation. Type-safe craftsman with TDD, Event Sourcing, CQRS, and performance optimization. Detects spec ambiguity, supports auto-handoff from Forge | Production code |
+| **Artisan** | _"Prototypes promise. Production delivers."_ - Production frontend implementation craftsman. React/Vue/Svelte, Hooks design, state management, Server Components, form handling, data fetching | Frontend code |
+| **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - Prototyping. Prioritizes working software over perfection. Outputs types.ts, errors.ts, forge-insights.md for Builder handoff | MVP/PoC |
+| **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / gemini CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
 
-### パフォーマンス
+### Performance
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Bolt** | _"Speed is a feature. Slowness is a bug you haven't fixed yet."_ - アプリケーションパフォーマンス改善。フロント（再レンダリング削減）とバック（N+1修正）両面 | 最適化コード |
-| **Tuner** | _"A fast query is a happy user. A slow query is a lost customer."_ - DBパフォーマンス最適化。EXPLAIN ANALYZE分析・インデックス推奨・スロークエリ改善 | クエリ最適化 |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Bolt** | _"Speed is a feature. Slowness is a bug you haven't fixed yet."_ - Application performance improvement. Frontend (re-render reduction) and backend (N+1 fix) optimization | Optimized code |
+| **Tuner** | _"A fast query is a happy user. A slow query is a lost customer."_ - DB performance optimization. EXPLAIN ANALYZE analysis, index recommendations, slow query improvement | Query optimization |
 
 ### UI/UX
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Vision** | _"Design is not how it looks. Design is how it feels."_ - クリエイティブディレクション。デザイン方向性決定・Design System構築・Muse/Palette/Flow/Forgeのオーケストレーション | デザイン戦略 |
-| **Palette** | _"Usability is invisible when done right, painful when done wrong."_ - ユーザビリティ改善・認知負荷軽減・a11y対応 | UX改善 |
-| **Muse** | _"Tokens are the DNA of design. Mutate them with care."_ - デザイントークン適用・余白/角丸/シャドウ統一・ダークモード対応 | 視覚的改善 |
-| **Flow** | _"Motion creates emotion. Animation breathes life."_ - UIアニメーション・ホバー効果・ローディング状態・モーダル遷移 | アニメーション |
-| **Echo** | _"I don't test interfaces. I feel what users feel."_ - ペルソナ検証。ユーザーになりきりUIフローの混乱ポイントを報告 | UXレポート |
-| **Showcase** | _"Components without stories are components without context."_ - Storybookストーリー作成・カタログ管理・Visual Regression連携。CSF 3.0形式 | Storybook Stories |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Vision** | _"Design is not how it looks. Design is how it feels."_ - Creative direction. Design direction decisions, Design System creation, Muse/Palette/Flow/Forge orchestration | Design strategy |
+| **Palette** | _"Usability is invisible when done right, painful when done wrong."_ - Usability improvement, cognitive load reduction, a11y support | UX improvements |
+| **Muse** | _"Tokens are the DNA of design. Mutate them with care."_ - Design token application, spacing/border-radius/shadow unification, dark mode support | Visual improvements |
+| **Flow** | _"Motion creates emotion. Animation breathes life."_ - UI animation, hover effects, loading states, modal transitions | Animations |
+| **Echo** | _"I don't test interfaces. I feel what users feel."_ - Persona validation. Embodies users to report confusion points in UI flows | UX report |
+| **Showcase** | _"Components without stories are components without context."_ - Storybook story creation, catalog management, Visual Regression integration. CSF 3.0 format | Storybook Stories |
 
-### ドキュメント
+### Documentation
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Scribe** | _"A specification is a contract between vision and reality."_ - PRD/SRS/HLD/LLD・実装チェックリスト・テスト仕様書を作成するドキュメントライター | 仕様書・設計書 |
-| **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
-| **Morph** | _"A document is timeless. Its format is temporary."_ - ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeの仕様書やHarvestのレポートを各種フォーマットに変換 | 変換済みドキュメント |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Scribe** | _"A specification is a contract between vision and reality."_ - Document writer for PRD/SRS/HLD/LLD, implementation checklists, and test specifications | Specs, design docs |
+| **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc additions, README updates, typing `any` to proper type definitions | Documentation |
+| **Morph** | _"A document is timeless. Its format is temporary."_ - Document format conversion (Markdown <> Word/Excel/PDF/HTML). Converts Scribe specs and Harvest reports to various formats | Converted documents |
 
-**Scribe vs Quill vs Morph の役割分担**:
-- **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
-- **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
-- **Morph**: フォーマット変換（Markdown→PDF/Word/HTML等）
+**Scribe vs Quill vs Morph responsibilities**:
+- **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
+- **Quill**: Code documentation (JSDoc/TSDoc, README, type definitions)
+- **Morph**: Format conversion (Markdown > PDF/Word/HTML, etc.)
 
-### 可視化
+### Visualization
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - 設計可視化。コード・仕様・コンテキストをMermaid図またはASCIIアート（フローチャート、シーケンス図、状態遷移図、クラス図、ER図等）に変換 | Mermaid図 / ASCII Art |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
 
-### アーキテクチャ
+### Architecture
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - 依存関係分析・循環参照検出・ADR/RFC作成 | 設計文書 |
-| **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
-| **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
-| **Grove** | _"A well-structured repository is a well-structured mind."_ - リポジトリ構造の設計・最適化・監査。ディレクトリ設計、docs/構成、テスト構成、アンチパターン検出 | 構造設計・監査レポート |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - Dependency analysis, circular reference detection, ADR/RFC creation | Design documents |
+| **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - Modernization. Deprecated library detection, native API replacement, PoC creation | Migration plans |
+| **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API design, review, OpenAPI spec generation, versioning strategy, breaking change detection | API specifications |
+| **Grove** | _"A well-structured repository is a well-structured mind."_ - Repository structure design, optimization, and auditing. Directory design, docs/ organization, test structure, anti-pattern detection | Structure design, audit reports |
 
-### データ
+### Data
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Schema** | _"A schema is a contract with the future."_ - DBスキーマ設計・マイグレーション作成・ER図設計 | マイグレーション/スキーマ定義 |
-| **Stream** | _"Data flows like water. My job is to build the pipes."_ - データパイプライン。ETL/ELT設計、Kafka/Airflow/dbt、バッチ/ストリーミング選定、データ品質管理 | パイプライン設計、DAG、dbtモデル |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Schema** | _"A schema is a contract with the future."_ - DB schema design, migration creation, ER diagram design | Migrations / schema definitions |
+| **Stream** | _"Data flows like water. My job is to build the pipes."_ - Data pipelines. ETL/ELT design, Kafka/Airflow/dbt, batch/streaming selection, data quality management | Pipeline design, DAGs, dbt models |
 
-**Schema → Stream の連携**：Schema（データモデル）→ Stream（パイプライン設計）
+**Schema > Stream chain**: Schema (data model) > Stream (pipeline design)
 
 ### DevOps
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Anvil** | _"The terminal is the first interface. Make it unforgettable."_ - Terminal UI構築・CLI開発支援・開発ツール統合（Linter/テストランナー/ビルド） | CLI/TUIコード |
-| **Gear** | _"The best CI/CD is the one nobody thinks about."_ - 依存関係管理・CI/CD最適化・Docker設定・運用監視設定 | 設定ファイル |
-| **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - クラウドインフラ（Terraform/CloudFormation/Pulumi）・ローカル開発環境（Docker Compose）・IaC設計 | インフラ設定 |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Anvil** | _"The terminal is the first interface. Make it unforgettable."_ - Terminal UI construction, CLI development support, dev tool integration (Linter/test runner/build) | CLI/TUI code |
+| **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
+| **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 
-### 国際化
+### Internationalization
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Polyglot** | _"Every language deserves respect. Every user deserves their mother tongue."_ - i18n対応。ハードコード文字列をt()関数に置換・Intl APIで日付/通貨フォーマット | i18n対応 |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Polyglot** | _"Every language deserves respect. Every user deserves their mother tongue."_ - i18n support. Replaces hardcoded strings with t() functions, formats dates/currencies with Intl API | i18n implementation |
 
-### 成長
+### Growth
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO（meta/OGP/JSON-LD）・SMO（SNSシェア表示）・CRO（CTA改善） | 成長施策 |
-| **Retain** | _"Acquisition is expensive. Retention is profitable."_ - リテンション施策・再エンゲージメント・チャーン予防。ゲーミフィケーション、習慣形成デザイン | リテンション施策 |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO (meta/OGP/JSON-LD), SMO (social share display), CRO (CTA improvement) | Growth initiatives |
+| **Retain** | _"Acquisition is expensive. Retention is profitable."_ - Retention strategies, re-engagement, churn prevention. Gamification, habit-forming design | Retention initiatives |
 
-### 分析
+### Analytics
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Pulse** | _"What gets measured gets managed. What gets measured wrong gets destroyed."_ - KPI定義・トラッキングイベント設計・ダッシュボード仕様作成 | メトリクス設計 |
-| **Experiment** | _"Every hypothesis deserves a fair trial. Every decision deserves data."_ - A/Bテスト設計・仮説ドキュメント作成・サンプルサイズ計算・フィーチャーフラグ実装 | 実験レポート |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Pulse** | _"What gets measured gets managed. What gets measured wrong gets destroyed."_ - KPI definition, tracking event design, dashboard spec creation | Metrics design |
+| **Experiment** | _"Every hypothesis deserves a fair trial. Every decision deserves data."_ - A/B test design, hypothesis documentation, sample size calculation, feature flag implementation | Experiment reports |
 
-### 運用
+### Operations
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Triage** | _"In chaos, clarity is the first act of healing."_ - 障害対応・影響範囲特定・復旧手順策定・ポストモーテム作成 | 運用レポート |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Triage** | _"In chaos, clarity is the first act of healing."_ - Incident response, impact assessment, recovery procedures, postmortem creation | Operations reports |
 
-### ブラウザ自動化
+### Browser Automation
 
-| エージェント | 説明 | 出力 |
-|------------|------|------|
-| **Navigator** | _"The browser is a stage. Every click is a scene."_ - Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
-| **Director** | _"A demo that moves hearts moves products."_ - Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供 | デモ動画(.webm) |
-| **Reel** | _"The terminal is a stage. Every keystroke is a performance."_ - VHS/terminalizer/asciinemaを使用したターミナル録画・CLIデモ動画生成。宣言的な.tapeファイルでGIF/MP4/WebMを作成 | GIF/動画(.gif/.mp4) |
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Navigator** | _"The browser is a stage. Every click is a scene."_ - Browser automation via Playwright/Chrome DevTools. Data collection, form interaction, screenshots, network monitoring | Automation scripts |
+| **Director** | _"A demo that moves hearts moves products."_ - Automated feature demo video recording using Playwright E2E tests. Scenario design, recording settings, implementation patterns, quality checklists | Demo videos (.webm) |
+| **Reel** | _"The terminal is a stage. Every keystroke is a performance."_ - Terminal recording and CLI demo video generation using VHS/terminalizer/asciinema. Creates GIF/MP4/WebM from declarative .tape files | GIF/video (.gif/.mp4) |
 
-**Anvil → Reel → Quill の連携**：Anvil（CLI開発）→ Reel（デモ録画）→ Quill（README GIF埋め込み）
-**Director + Reel → Showcase の連携**：Director（Web録画）+ Reel（ターミナル録画）→ Showcase（ビジュアルドキュメント）
-**Director vs Reel の役割分担**:
-- **Director**: ブラウザ（Web UI）のデモ動画（Playwright、.webm出力）
-- **Reel**: ターミナル（CLI）のデモ録画（VHS、GIF/MP4出力）
+**Anvil > Reel > Quill chain**: Anvil (CLI development) > Reel (demo recording) > Quill (README GIF embedding)
+**Director + Reel > Showcase chain**: Director (web recording) + Reel (terminal recording) > Showcase (visual documentation)
+**Director vs Reel responsibilities**:
+- **Director**: Browser (Web UI) demo videos (Playwright, .webm output)
+- **Reel**: Terminal (CLI) demo recordings (VHS, GIF/MP4 output)
 
-## ワークフロー
+## Workflows
 
-### 基本的な使い方
+### Basic Usage
 
-1. `/AgentName` でエージェントを呼び出し
-2. エージェントがタスクを実行
-3. 必要に応じて他エージェントへの引き継ぎを提案
+1. Invoke an agent with `/AgentName`
+2. The agent executes the task
+3. Suggests handoff to other agents as needed
 
-### Nexusによるオーケストレーション
+### Orchestration with Nexus
 
-複雑なタスクには**Nexus**を使用します。Nexusは以下のモードで動作します：
+Use **Nexus** for complex tasks. Nexus operates in the following modes:
 
-| モード | トリガー | 動作 | 対話 |
-|--------|----------|------|------|
-| **Full Auto** | `## NEXUS_AUTORUN` + 単純タスク | 完全自動実行 | エラー時のみ |
-| **Guided** | `## NEXUS_GUIDED` またはデフォルト | 判断ポイントで確認 | 選択肢形式で対話 |
-| **Interactive** | `## NEXUS_INTERACTIVE` | 各ステップで確認 | 常に対話 |
-| **Continue** | `## NEXUS_HANDOFF` | 結果の引き継ぎ | 必要に応じて対話 |
+| Mode | Trigger | Behavior | Interaction |
+|------|---------|----------|-------------|
+| **Full Auto** | `## NEXUS_AUTORUN` + simple task | Fully automatic execution | Only on errors |
+| **Guided** | `## NEXUS_GUIDED` or default | Confirms at decision points | Option-based interaction |
+| **Interactive** | `## NEXUS_INTERACTIVE` | Confirms at each step | Always interactive |
+| **Continue** | `## NEXUS_HANDOFF` | Result handoff | Interaction as needed |
 
-### 対話型実行（Guided/Interactive）
+### Interactive Execution (Guided/Interactive)
 
-各エージェントは重要な判断ポイントでユーザーに確認を求めます（プラットフォームの対話機能を使用）：
+Each agent asks for user confirmation at important decision points (using the platform's interaction capabilities):
 
-- **開始時確認**: チェーン設計後、実行前に方針を確認
-- **判断ポイント確認**: セキュリティリスク、破壊的変更、複数アプローチなど
-- **質問は選択肢形式**: 2〜4つの選択肢から選択（「その他」も選択可能）
+- **Start confirmation**: Confirms approach after chain design, before execution
+- **Decision point confirmation**: Security risks, destructive changes, multiple approaches, etc.
+- **Questions as options**: Choose from 2-4 options ("Other" is always available)
 
 ```yaml
-# 選択肢形式の質問例
+# Example option-based question
 questions:
-  - question: "セキュリティ脆弱性の可能性があります。どう対応しますか？"
-    header: "セキュリティ"
+  - question: "A potential security vulnerability was found. How would you like to proceed?"
+    header: "Security"
     options:
-      - label: "Sentinelで監査（推奨）"
-        description: "セキュリティ専門エージェントに確認を依頼"
-      - label: "リスクを承知で続行"
-        description: "自己責任で調査を継続"
-      - label: "調査を中断"
-        description: "安全のため調査を停止"
+      - label: "Audit with Sentinel (Recommended)"
+        description: "Request review from the security specialist agent"
+      - label: "Continue with acknowledged risk"
+        description: "Proceed at your own risk"
+      - label: "Abort investigation"
+        description: "Stop for safety"
 ```
 
-### 複雑度による自動モード選択
+### Automatic Mode Selection by Complexity
 
-| 指標 | SIMPLE | COMPLEX |
-|------|--------|---------|
-| 推定ステップ数 | 1-2 | 3+ |
-| 影響ファイル数 | 1-3 | 4+ |
-| セキュリティ関連 | No | Yes |
-| 破壊的変更 | No | Yes |
+| Indicator | SIMPLE | COMPLEX |
+|-----------|--------|---------|
+| Estimated steps | 1-2 | 3+ |
+| Affected files | 1-3 | 4+ |
+| Security-related | No | Yes |
+| Destructive changes | No | Yes |
 
-- **SIMPLE + NEXUS_AUTORUN**: 完全自動実行
-- **COMPLEX**: Guided モードに自動切り替え（対話必須）
+- **SIMPLE + NEXUS_AUTORUN**: Fully automatic execution
+- **COMPLEX**: Automatically switches to Guided mode (interaction required)
 
-詳細は `_common/INTERACTION.md` を参照してください。
+See `_common/INTERACTION.md` for details.
 
-### タスクタイプ別チェーンテンプレート
+### Chain Templates by Task Type
 
-#### 調査・理解
+#### Investigation & Understanding
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| INVESTIGATE/feature | 機能の有無・実装状況調査 | Lens |
-| INVESTIGATE/flow | データフロー・処理フロー追跡 | Lens → Canvas |
-| INVESTIGATE/onboarding | コードベース全体理解 | Lens → Scribe |
-| INVESTIGATE/pre-impl | 調査→実装 | Lens → Builder → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| INVESTIGATE/feature | Feature existence/implementation investigation | Lens |
+| INVESTIGATE/flow | Data flow/processing flow tracing | Lens > Canvas |
+| INVESTIGATE/onboarding | Full codebase understanding | Lens > Scribe |
+| INVESTIGATE/pre-impl | Investigation then implementation | Lens > Builder > Radar |
 
-> **Lens vs Scout**: Lens = コードベース理解・機能探索（「〇〇はあるか」「フローはどうか」）、Scout = バグ調査・根本原因分析（「なぜ壊れたか」）
+> **Lens vs Scout**: Lens = codebase understanding and feature exploration ("Does X exist?", "How does Y flow?"), Scout = bug investigation and root cause analysis ("Why did it break?")
 
-#### バグ修正
+#### Bug Fixes
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| BUG/simple | 単純なバグ修正 | Scout → Builder → Radar |
-| BUG/complex | 複雑なバグ（RCA必要） | Scout → Sherpa → Builder → Radar → Sentinel |
-| BUG/frontend | フロントエンドのバグ | Scout → Artisan → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| BUG/simple | Simple bug fix | Scout > Builder > Radar |
+| BUG/complex | Complex bug (RCA required) | Scout > Sherpa > Builder > Radar > Sentinel |
+| BUG/frontend | Frontend bug | Scout > Artisan > Radar |
 
-#### 機能開発
+#### Feature Development
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| FEATURE/S | 小規模機能 | Builder → Radar |
-| FEATURE/M | 中規模機能 | Sherpa → Forge → Builder → Radar |
-| FEATURE/L | 大規模機能 | Spark → Sherpa → Forge → Builder → Radar → Quill |
-| FEATURE/frontend | フロントエンド機能 | Sherpa → Forge → Artisan → Radar |
-| FEATURE/fullstack | フルスタック機能 | Sherpa → Forge → Artisan → Builder → Radar |
-| FEATURE/api | API開発 | Gateway → Builder → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| FEATURE/S | Small feature | Builder > Radar |
+| FEATURE/M | Medium feature | Sherpa > Forge > Builder > Radar |
+| FEATURE/L | Large feature | Spark > Sherpa > Forge > Builder > Radar > Quill |
+| FEATURE/frontend | Frontend feature | Sherpa > Forge > Artisan > Radar |
+| FEATURE/fullstack | Full-stack feature | Sherpa > Forge > Artisan > Builder > Radar |
+| FEATURE/api | API development | Gateway > Builder > Radar |
 
 #### UI/UX
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| UI/new | 新規UI実装 | Vision → Forge → Showcase → Muse → Artisan → Radar |
-| UI/redesign | UIリデザイン | Vision → Muse → Palette → Flow → Artisan → Radar |
-| UI/component | コンポーネント作成 | Forge → Showcase → Muse → Artisan → Radar |
-| UI/animation | アニメーション追加 | Flow → Artisan → Radar |
-| UX/research | UXリサーチ | Researcher → Echo → Palette |
-| UX/improve | UX改善 | Echo → Palette → Artisan → Radar |
-| UX/session-analysis | セッション分析 | Trace → Echo → Palette |
-| UX/persona-validation | ペルソナ検証 | Researcher → Trace → Echo |
+| Task | Description | Chain |
+|------|-------------|-------|
+| UI/new | New UI implementation | Vision > Forge > Showcase > Muse > Artisan > Radar |
+| UI/redesign | UI redesign | Vision > Muse > Palette > Flow > Artisan > Radar |
+| UI/component | Component creation | Forge > Showcase > Muse > Artisan > Radar |
+| UI/animation | Animation addition | Flow > Artisan > Radar |
+| UX/research | UX research | Researcher > Echo > Palette |
+| UX/improve | UX improvement | Echo > Palette > Artisan > Radar |
+| UX/session-analysis | Session analysis | Trace > Echo > Palette |
+| UX/persona-validation | Persona validation | Researcher > Trace > Echo |
 
-#### リファクタリング
+#### Refactoring
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| REFACTOR/small | 小規模リファクタ | Zen → Radar |
-| REFACTOR/arch | アーキテクチャ改善 | Atlas → Sherpa → Zen → Radar |
-| REFACTOR/legacy | レガシー刷新 | Horizon → Sherpa → Zen → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| REFACTOR/small | Small refactor | Zen > Radar |
+| REFACTOR/arch | Architecture improvement | Atlas > Sherpa > Zen > Radar |
+| REFACTOR/legacy | Legacy modernization | Horizon > Sherpa > Zen > Radar |
 
-#### パフォーマンス
+#### Performance
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| PERF/frontend | フロントエンド最適化 | Bolt → Artisan → Radar |
-| PERF/backend | バックエンド最適化 | Bolt → Builder → Radar |
-| PERF/db | データベース最適化 | Tuner → Schema → Builder → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| PERF/frontend | Frontend optimization | Bolt > Artisan > Radar |
+| PERF/backend | Backend optimization | Bolt > Builder > Radar |
+| PERF/db | Database optimization | Tuner > Schema > Builder > Radar |
 
-#### セキュリティ
+#### Security
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| SECURITY/audit | 静的解析 | Sentinel → Builder → Radar |
-| SECURITY/pentest | 動的テスト | Probe → Builder → Radar → Probe |
-| SECURITY/full | 完全監査 | Sentinel → Probe → Builder → Radar → Sentinel |
+| Task | Description | Chain |
+|------|-------------|-------|
+| SECURITY/audit | Static analysis | Sentinel > Builder > Radar |
+| SECURITY/pentest | Dynamic testing | Probe > Builder > Radar > Probe |
+| SECURITY/full | Full audit | Sentinel > Probe > Builder > Radar > Sentinel |
 
-#### テスト
+#### Testing
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| TEST/unit | ユニットテスト追加 | Radar |
-| TEST/e2e | E2Eテスト追加 | Voyager |
-| TEST/coverage | カバレッジ向上 | Radar → Voyager |
+| Task | Description | Chain |
+|------|-------------|-------|
+| TEST/unit | Unit test addition | Radar |
+| TEST/e2e | E2E test addition | Voyager |
+| TEST/coverage | Coverage improvement | Radar > Voyager |
 
-#### レビュー
+#### Review
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| REVIEW/pr | PRレビュー | Judge → Zen/Builder/Sentinel |
-| REVIEW/security | セキュリティレビュー | Judge → Sentinel |
+| Task | Description | Chain |
+|------|-------------|-------|
+| REVIEW/pr | PR review | Judge > Zen/Builder/Sentinel |
+| REVIEW/security | Security review | Judge > Sentinel |
 
 #### Git/PR
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| GIT/pr-prep | PR準備 | Guardian → Judge |
-| GIT/commit-split | コミット分割 | Guardian |
-| GIT/pr-full | 実装→PR→レビュー | Builder → Guardian → Judge → Zen |
-| GIT/release | リリースノート生成 | Guardian |
+| Task | Description | Chain |
+|------|-------------|-------|
+| GIT/pr-prep | PR preparation | Guardian > Judge |
+| GIT/commit-split | Commit splitting | Guardian |
+| GIT/pr-full | Implement > PR > Review | Builder > Guardian > Judge > Zen |
+| GIT/release | Release notes generation | Guardian |
 
-#### 意思決定
+#### Decision Making
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| DECISION/arch | アーキテクチャ選定 | Magi → Builder/Zen |
-| DECISION/strategy | 戦略的判断 | Bridge → Magi → Spark |
-| DECISION/intent | 要求の意図解析 | Cipher → Forge/Builder |
+| Task | Description | Chain |
+|------|-------------|-------|
+| DECISION/arch | Architecture selection | Magi > Builder/Zen |
+| DECISION/strategy | Strategic decisions | Bridge > Magi > Spark |
+| DECISION/intent | Intent analysis | Cipher > Forge/Builder |
 
-#### 分析
+#### Analysis
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| ANALYSIS/impact | 変更影響分析 | Ripple → Builder → Radar |
-| ANALYSIS/standards | 標準準拠確認 | Canon → Builder → Radar |
-| ANALYSIS/cleanup | コードクリーンアップ | Sweep → Zen → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| ANALYSIS/impact | Change impact analysis | Ripple > Builder > Radar |
+| ANALYSIS/standards | Standards compliance check | Canon > Builder > Radar |
+| ANALYSIS/cleanup | Code cleanup | Sweep > Zen > Radar |
 
-#### ドキュメント
+#### Documentation
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| DOCS/prd | PRD作成 | Scribe |
-| DOCS/srs | SRS作成 | Scribe |
-| DOCS/design | 設計書作成 | Scribe |
-| DOCS/spec-to-build | 仕様から実装 | Spark → Scribe → Sherpa → Builder |
-| DOCS/code | コードドキュメント | Quill |
-| DOCS/component | コンポーネント文書化 | Showcase → Quill |
-| DOCS/architecture | アーキテクチャ図 | Canvas |
-| DOCS/convert | フォーマット変換 | Morph |
-| DOCS/report | PR報告書 | Harvest → Morph |
+| Task | Description | Chain |
+|------|-------------|-------|
+| DOCS/prd | PRD creation | Scribe |
+| DOCS/srs | SRS creation | Scribe |
+| DOCS/design | Design document creation | Scribe |
+| DOCS/spec-to-build | Spec to implementation | Spark > Scribe > Sherpa > Builder |
+| DOCS/code | Code documentation | Quill |
+| DOCS/component | Component documentation | Showcase > Quill |
+| DOCS/architecture | Architecture diagrams | Canvas |
+| DOCS/convert | Format conversion | Morph |
+| DOCS/report | PR report | Harvest > Morph |
 
-#### デモ・録画
+#### Demo & Recording
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| DEMO/cli | CLIデモGIF作成 | Anvil → Reel → Quill |
-| DEMO/prototype | プロトタイプデモ | Forge → Reel → Growth |
-| DEMO/web-terminal | Web＋ターミナル複合デモ | Director + Reel → Showcase |
-| DEMO/docs | ドキュメント用デモ | Scribe → Reel → Quill |
-| DEMO/ci-update | CI連携デモ自動更新 | Gear → Reel → Gear |
-| DEMO/showcase | プロダクションCLIデモ | Builder → Reel → Growth |
+| Task | Description | Chain |
+|------|-------------|-------|
+| DEMO/cli | CLI demo GIF creation | Anvil > Reel > Quill |
+| DEMO/prototype | Prototype demo | Forge > Reel > Growth |
+| DEMO/web-terminal | Web + terminal combo demo | Director + Reel > Showcase |
+| DEMO/docs | Documentation demo | Scribe > Reel > Quill |
+| DEMO/ci-update | CI-integrated demo auto-update | Gear > Reel > Gear |
+| DEMO/showcase | Production CLI demo | Builder > Reel > Growth |
 
-#### インフラ・DevOps
+#### Infrastructure & DevOps
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| INFRA/ci | CI/CD構築 | Gear → Radar |
-| INFRA/cloud | クラウド構築 | Scaffold → Gear |
-| INFRA/cli | CLI開発 | Anvil → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| INFRA/ci | CI/CD setup | Gear > Radar |
+| INFRA/cloud | Cloud setup | Scaffold > Gear |
+| INFRA/cli | CLI development | Anvil > Radar |
 
-#### デプロイ・リリース
+#### Deploy & Release
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| DEPLOY/release | リリース実行 | Guardian → Launch |
-| DEPLOY/full | 完全パイプライン | Radar → Guardian → Launch → Harvest |
+| Task | Description | Chain |
+|------|-------------|-------|
+| DEPLOY/release | Release execution | Guardian > Launch |
+| DEPLOY/full | Full pipeline | Radar > Guardian > Launch > Harvest |
 
-#### モダナイゼーション
+#### Modernization
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| MODERNIZE/stack | 技術スタック刷新 | Lens → Horizon → Sherpa → Builder → Radar |
-| MODERNIZE/i18n | 国際化対応 | Polyglot → Artisan → Radar |
-| MODERNIZE/structure | リポジトリ構造改善 | Grove → Sherpa → Zen → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| MODERNIZE/stack | Tech stack refresh | Lens > Horizon > Sherpa > Builder > Radar |
+| MODERNIZE/i18n | Internationalization | Polyglot > Artisan > Radar |
+| MODERNIZE/structure | Repository structure improvement | Grove > Sherpa > Zen > Radar |
 
-#### 戦略・グロース
+#### Strategy & Growth
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| STRATEGY/seo | SEO改善 | Growth → Artisan → Radar |
-| STRATEGY/compete | 競合分析→実装 | Compete → Spark → Builder → Radar |
-| STRATEGY/feedback | フィードバック反映 | Voice → Spark → Builder → Radar |
-| STRATEGY/metrics | メトリクス基盤 | Pulse → Builder → Radar |
-| STRATEGY/retention | リテンション施策 | Retain → Spark → Builder → Radar |
-| STRATEGY/ab-test | A/Bテスト設計 | Experiment → Builder → Radar |
-| STRATEGY/data | データパイプライン | Stream → Schema → Builder → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| STRATEGY/seo | SEO improvement | Growth > Artisan > Radar |
+| STRATEGY/compete | Competitive analysis to implementation | Compete > Spark > Builder > Radar |
+| STRATEGY/feedback | Feedback integration | Voice > Spark > Builder > Radar |
+| STRATEGY/metrics | Metrics infrastructure | Pulse > Builder > Radar |
+| STRATEGY/retention | Retention initiatives | Retain > Spark > Builder > Radar |
+| STRATEGY/ab-test | A/B test design | Experiment > Builder > Radar |
+| STRATEGY/data | Data pipeline | Stream > Schema > Builder > Radar |
 
-#### 並列実行（Rally統合）
+#### Parallel Execution (Rally Integration)
 
-大規模タスクで並列実行が有効な場合、NexusはRallyにエスカレーションします。
+For large-scale tasks where parallel execution is beneficial, Nexus escalates to Rally.
 
-| タスク | 説明 | 並列チェーン |
-|--------|------|-------------|
-| FEATURE/L (並列) | 大規模フルスタック | Sherpa → Rally(Artisan + Builder + Radar) |
-| FEATURE/fullstack (並列) | フロントエンド＋バックエンド | Rally(Artisan, Builder, Radar) |
-| FEATURE/multi (並列) | 複数独立機能 | Sherpa → Rally(Builder×N, Radar) |
-| BUG/multiple (並列) | 複数独立バグ修正 | Rally(Builder×N) → Radar |
-| REFACTOR/arch (並列) | 複数モジュールリファクタ | Atlas → Sherpa → Rally(Zen×N) → Radar |
-| SECURITY/full (並列) | 静的＋動的並行スキャン | Rally(Sentinel, Probe) → Builder → Radar |
-| TEST/coverage (並列) | Unit＋E2E並行テスト | Rally(Radar, Voyager) |
-| MODERNIZE/stack (並列) | マルチエリア刷新 | Horizon → Sherpa → Rally(Builder×N) → Radar |
-| DOCS/full (並列) | コード文書＋図＋ストーリー | Rally(Quill, Canvas, Showcase) |
+| Task | Description | Parallel Chain |
+|------|-------------|---------------|
+| FEATURE/L (parallel) | Large-scale full-stack | Sherpa > Rally(Artisan + Builder + Radar) |
+| FEATURE/fullstack (parallel) | Frontend + Backend | Rally(Artisan, Builder, Radar) |
+| FEATURE/multi (parallel) | Multiple independent features | Sherpa > Rally(Builder x N, Radar) |
+| BUG/multiple (parallel) | Multiple independent bug fixes | Rally(Builder x N) > Radar |
+| REFACTOR/arch (parallel) | Multi-module refactoring | Atlas > Sherpa > Rally(Zen x N) > Radar |
+| SECURITY/full (parallel) | Static + dynamic parallel scan | Rally(Sentinel, Probe) > Builder > Radar |
+| TEST/coverage (parallel) | Unit + E2E parallel testing | Rally(Radar, Voyager) |
+| MODERNIZE/stack (parallel) | Multi-area modernization | Horizon > Sherpa > Rally(Builder x N) > Radar |
+| DOCS/full (parallel) | Code docs + diagrams + stories | Rally(Quill, Canvas, Showcase) |
 
-> **Rallyエスカレーション基準**: 2つ以上の独立した実装ステップ、4ファイル以上で2ドメイン以上にまたがる場合、またはSherpaが`parallel_group`を検出した場合にRallyが起動されます。
+> **Rally Escalation Criteria**: Rally is triggered when there are 2+ independent implementation steps, changes span 4+ files across 2+ domains, or Sherpa detects a `parallel_group`.
 
-> **Nexus並列 vs Rally**: Nexus内蔵の`_PARALLEL_BRANCHES`は軽量な並列（各ブランチ50行未満）向け。本格的な実装作業にはRallyのマルチセッション並列が使用されます。
+> **Nexus parallel vs Rally**: Nexus's built-in `_PARALLEL_BRANCHES` is for lightweight parallelism (each branch < 50 lines). Rally's multi-session parallelism is used for substantial implementation work.
 
-#### その他
+#### Other
 
-| タスク | 説明 | チェーン |
-|--------|------|----------|
-| INCIDENT | 障害対応 | Triage → Scout → Builder |
-| TEST/quality | 品質反復改善 | Hone |
-| SECURITY/concurrency | 並行性バグ検出 | Specter → Builder → Radar |
-| INVESTIGATE/regression | リグレッション調査 | Rewind → Scout → Builder → Radar |
+| Task | Description | Chain |
+|------|-------------|-------|
+| INCIDENT | Incident response | Triage > Scout > Builder |
+| TEST/quality | Iterative quality improvement | Hone |
+| SECURITY/concurrency | Concurrency bug detection | Specter > Builder > Radar |
+| INVESTIGATE/regression | Regression investigation | Rewind > Scout > Builder > Radar |
 
-## 共有ナレッジ
+## Shared Knowledge
 
-エージェント間の知識共有には `.agents/` ディレクトリを使用します：
+Agents share knowledge through the `.agents/` directory:
 
-| ファイル | 目的 | 更新タイミング |
-|---------|------|---------------|
-| `PROJECT.md` | 共有知識 + アクティビティログ | **全エージェントが作業完了後に必須** |
-| `{agent}.md` | エージェント固有の学習 | ドメイン固有の発見時 |
+| File | Purpose | When to Update |
+|------|---------|---------------|
+| `PROJECT.md` | Shared knowledge + activity log | **Required for all agents after completing work** |
+| `{agent}.md` | Agent-specific learnings | When domain-specific discoveries are made |
 
-### PROJECT.md の構成
+### PROJECT.md Structure
 
-- **Architecture Decisions** - アーキテクチャ選択の記録
-- **Domain Glossary** - 用語の統一
-- **API & External Services** - 外部サービスの制約
-- **Known Gotchas** - 既知の落とし穴
-- **Security Considerations** - セキュリティ制約
-- **Performance Budgets** - パフォーマンス予算
-- **Activity Log** - エージェントの作業履歴
+- **Architecture Decisions** - Record of architecture choices
+- **Domain Glossary** - Unified terminology
+- **API & External Services** - External service constraints
+- **Known Gotchas** - Known pitfalls
+- **Security Considerations** - Security constraints
+- **Performance Budgets** - Performance targets
+- **Activity Log** - Agent work history
 
-## エージェントの原則
+## Agent Principles
 
-各エージェントは以下の原則に従います：
+All agents follow these principles:
 
-### 共通ルール
+### Common Rules
 
-- **変更は50行以内** - 小さく安全な変更を心がける
-- **既存パターンの尊重** - プロジェクトの規約に従う
-- **テスト実行** - 変更前後でテストを実行
-- **ジャーナルは重要な学習のみ** - ルーチンワークは記録しない
+- **Changes under 50 lines** - Aim for small, safe changes
+- **Respect existing patterns** - Follow project conventions
+- **Run tests** - Run tests before and after changes
+- **Journal only significant learnings** - Don't record routine work
 
-### 境界の種類
+### Boundary Types
 
-| マーカー | 意味 |
-|---------|------|
-| ✅ Always do | 常に実行すべきこと |
-| ⚠️ Ask first | 確認が必要なこと |
-| 🚫 Never do | 絶対にしないこと |
+| Marker | Meaning |
+|--------|---------|
+| Always do | Must always be done |
+| Ask first | Requires confirmation |
+| Never do | Must never be done |
 
-## ディレクトリ構成
+## Directory Structure
 
 ```
 skills/
 ├── _common/
-│   └── INTERACTION.md  # 対話ルール共通定義
+│   └── INTERACTION.md  # Shared interaction rules
 ├── _templates/
-│   └── PROJECT.md      # プロジェクト知識テンプレート
-├── architect/SKILL.md  # エージェント設計メタデザイナー
-├── anvil/SKILL.md      # CLI/TUI構築
-├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
-├── artisan/SKILL.md    # フロントエンド実装
-├── atlas/SKILL.md      # アーキテクチャ
-├── bard/SKILL.md       # 開発ログの詩的変換
-├── bolt/SKILL.md       # パフォーマンス
-├── bridge/SKILL.md     # ビジネス⇔技術翻訳
-├── builder/SKILL.md    # 本番実装
-├── canvas/SKILL.md     # 可視化
-├── cipher/SKILL.md     # 意図解読
-├── compete/SKILL.md    # 競合調査
-├── director/SKILL.md   # デモ動画撮影
-├── echo/SKILL.md       # ペルソナ検証
-├── experiment/SKILL.md # A/Bテスト設計
-├── flow/SKILL.md       # アニメーション
-├── forge/SKILL.md      # プロトタイプ
-├── gateway/SKILL.md    # API設計
+│   └── PROJECT.md      # Project knowledge template
+├── architect/SKILL.md  # Agent design meta-designer
+├── anvil/SKILL.md      # CLI/TUI construction
+├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
+├── artisan/SKILL.md    # Frontend implementation
+├── atlas/SKILL.md      # Architecture
+├── bard/SKILL.md       # Developer grumble agent
+├── bolt/SKILL.md       # Performance
+├── bridge/SKILL.md     # Business <> Tech translation
+├── builder/SKILL.md    # Production implementation
+├── canvas/SKILL.md     # Visualization
+├── cipher/SKILL.md     # Intent decoding
+├── compete/SKILL.md    # Competitive research
+├── director/SKILL.md   # Demo video recording
+├── echo/SKILL.md       # Persona validation
+├── experiment/SKILL.md # A/B test design
+├── flow/SKILL.md       # Animation
+├── forge/SKILL.md      # Prototyping
+├── gateway/SKILL.md    # API design
 ├── gear/SKILL.md       # DevOps
-├── grove/SKILL.md      # リポジトリ構造設計
+├── grove/SKILL.md      # Repository structure design
 ├── growth/SKILL.md     # SEO/CRO
-├── guardian/SKILL.md   # Git/PR管理
-├── harvest/SKILL.md    # PR情報収集・レポート生成
-├── hone/SKILL.md       # PDCA品質向上
-├── horizon/SKILL.md    # モダナイゼーション
-├── judge/SKILL.md      # コードレビュー（codex review）
-├── launch/SKILL.md     # リリース管理
-├── lens/SKILL.md       # コードベース理解・調査
-├── magi/SKILL.md       # 多角的意思決定
-├── morph/SKILL.md      # ドキュメントフォーマット変換
-├── muse/SKILL.md       # デザイン
-├── navigator/SKILL.md  # ブラウザ自動化
-├── nexus/SKILL.md      # オーケストレーター
+├── guardian/SKILL.md   # Git/PR management
+├── harvest/SKILL.md    # PR info collection & report generation
+├── hone/SKILL.md       # PDCA quality improvement
+├── horizon/SKILL.md    # Modernization
+├── judge/SKILL.md      # Code review (codex review)
+├── launch/SKILL.md     # Release management
+├── lens/SKILL.md       # Codebase comprehension & investigation
+├── magi/SKILL.md       # Multi-perspective decision making
+├── morph/SKILL.md      # Document format conversion
+├── muse/SKILL.md       # Design
+├── navigator/SKILL.md  # Browser automation
+├── nexus/SKILL.md      # Orchestrator
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
-├── probe/SKILL.md      # セキュリティ動的テスト（DAST）
-├── pulse/SKILL.md      # メトリクス設計
-├── quill/SKILL.md      # ドキュメント
-├── radar/SKILL.md      # テスト
-├── rally/SKILL.md      # マルチセッション並列オーケストレーター
-├── reel/SKILL.md       # ターミナル録画・CLIデモ動画生成
-├── researcher/SKILL.md # ユーザーリサーチ
-├── ripple/SKILL.md     # 変更前影響分析
-├── retain/SKILL.md     # リテンション
-├── rewind/SKILL.md     # Git履歴調査
-├── scaffold/SKILL.md   # インフラ
-├── schema/SKILL.md     # DBスキーマ設計
-├── scribe/SKILL.md     # プロジェクトドキュメント（PRD/SRS/設計書）
-├── scout/SKILL.md      # バグ調査
-├── sentinel/SKILL.md   # セキュリティ静的分析（SAST）
-├── sherpa/SKILL.md     # タスク分解
-├── showcase/SKILL.md   # Storybookストーリー管理
-├── spark/SKILL.md      # 機能提案
-├── specter/SKILL.md    # 並行性・非同期問題検出
-├── stream/SKILL.md     # データパイプライン
-├── sweep/SKILL.md      # 不要コード検出
-├── trace/SKILL.md      # セッションリプレイ分析
-├── triage/SKILL.md     # 障害対応
-├── tuner/SKILL.md      # DBパフォーマンス最適化
-├── vision/SKILL.md     # クリエイティブディレクション
-├── voice/SKILL.md      # ユーザーフィードバック
-├── voyager/SKILL.md    # E2Eテスト
-├── warden/SKILL.md     # V.A.I.R.E.品質ゲート
-└── zen/SKILL.md        # リファクタリング
+├── probe/SKILL.md      # Dynamic security testing (DAST)
+├── pulse/SKILL.md      # Metrics design
+├── quill/SKILL.md      # Documentation
+├── radar/SKILL.md      # Testing
+├── rally/SKILL.md      # Multi-session parallel orchestrator
+├── reel/SKILL.md       # Terminal recording & CLI demo video generation
+├── researcher/SKILL.md # User research
+├── ripple/SKILL.md     # Pre-change impact analysis
+├── retain/SKILL.md     # Retention
+├── rewind/SKILL.md     # Git history investigation
+├── scaffold/SKILL.md   # Infrastructure
+├── schema/SKILL.md     # DB schema design
+├── scribe/SKILL.md     # Project documentation (PRD/SRS/design docs)
+├── scout/SKILL.md      # Bug investigation
+├── sentinel/SKILL.md   # Static security analysis (SAST)
+├── sherpa/SKILL.md     # Task decomposition
+├── showcase/SKILL.md   # Storybook story management
+├── spark/SKILL.md      # Feature proposals
+├── specter/SKILL.md    # Concurrency & async issue detection
+├── stream/SKILL.md     # Data pipelines
+├── sweep/SKILL.md      # Dead code detection
+├── trace/SKILL.md      # Session replay analysis
+├── triage/SKILL.md     # Incident response
+├── tuner/SKILL.md      # DB performance optimization
+├── vision/SKILL.md     # Creative direction
+├── voice/SKILL.md      # User feedback
+├── voyager/SKILL.md    # E2E testing
+├── warden/SKILL.md     # V.A.I.R.E. quality gate
+└── zen/SKILL.md        # Refactoring
 ```
 
-## 使用例
+## Usage Examples
 
-### 単一エージェントの使用
+### Single Agent Usage
 
-> カテゴリ別に全63エージェントの使用例を紹介します。
+> Category-by-category examples for all 65 agents.
 
-#### オーケストレーション
+#### Orchestration
 
-##### チェーン設計（Nexus）
+##### Chain Design (Nexus)
 
 ```
 /Nexus
-ログイン機能を実装したいのですが、どのような手順で進めればよいですか？
+I want to implement a login feature. What steps should I follow?
 ```
 
-**出力**: タスク分類（FEATURE/M）、推奨チェーン（Sherpa → Forge → Builder → Radar）、最初のステップのプロンプト
+**Output**: Task classification (FEATURE/M), recommended chain (Sherpa > Forge > Builder > Radar), prompt for the first step
 
 ---
 
-##### タスク分解（Sherpa）
+##### Task Decomposition (Sherpa)
 
 ```
 /Sherpa
-決済機能の実装タスクが複雑で整理できません。分解してください。
+The payment feature implementation task is too complex to organize. Please break it down.
 ```
 
-**出力**: 15分以内で完了できるAtomic Stepのリスト、進捗チェックリスト、最初に着手すべきタスクの具体的指示
+**Output**: List of atomic steps completable within 15 minutes, progress checklist, specific instructions for the first task to start
 
 ---
 
-##### エージェント設計（Architect）
+##### Agent Design (Architect)
 
 ```
 /Architect
-入力バリデーション専門のエージェントを設計してください。
-Zod/Yupによるスキーマ検証、エラーメッセージ生成を担当させたいです。
+Design an agent specialized in input validation.
+I want it to handle Zod/Yup schema validation and error message generation.
 ```
 
-**出力**: SKILL.md（完全な仕様書）、references/*.md（3-7個のドメイン固有知識ファイル）、Nexus統合設計
+**Output**: SKILL.md (complete specification), references/*.md (3-7 domain-specific knowledge files), Nexus integration design
 
 ---
 
-#### 調査・企画
+#### Investigation & Planning
 
-##### バグ調査（Scout）
+##### Bug Investigation (Scout)
 
 ```
 /Scout
-ユーザーからログインできないという報告がありました。原因を調査してください。
+Users are reporting they can't log in. Please investigate the cause.
 ```
 
-**出力**: 再現手順、根本原因、修正対象ファイル、推奨修正アプローチを含む調査レポート
+**Output**: Investigation report including reproduction steps, root cause, files to fix, and recommended fix approach
 
 ---
 
-##### 機能提案（Spark）
+##### Feature Proposal (Spark)
 
 ```
 /Spark
-このアプリケーションの利便性を向上させる機能を提案してください。
+Suggest features to improve this application's usability.
 ```
 
-**出力**: 既存データ/ロジックを活用した機能提案の仕様書（Markdown）
+**Output**: Feature proposal specification (Markdown) leveraging existing data/logic
 
 ---
 
-##### セッションリプレイ分析（Trace）
+##### Session Replay Analysis (Trace)
 
 ```
 /Trace
-チェックアウトフローでの離脱率が高いです。実際のセッションデータを分析してください。
+The checkout flow has a high abandonment rate. Please analyze actual session data.
 ```
 
-**出力**: フラストレーションシグナル検出、ペルソナ別行動パターン、UX問題レポート
+**Output**: Frustration signal detection, per-persona behavioral patterns, UX problem report
 
 ---
 
-##### ペルソナ検証（Trace）
+##### Persona Validation (Trace)
 
 ```
 /Trace
-Researcherが定義した「モバイルファースト・ミレニアル」ペルソナを実データで検証してください。
+Validate the "Mobile-First Millennial" persona defined by Researcher against real data.
 ```
 
-**出力**: ペルソナ定義の妥当性検証、サブセグメント発見、Researcher へのハンドオフ
+**Output**: Persona definition validity check, sub-segment discovery, handoff to Researcher
 
-**Trace vs Echo vs Researcher の役割分担**:
-- **Researcher**: ペルソナを作成する（インタビュー・調査から）
-- **Trace**: ペルソナを実データで検証する（セッションログから）
-- **Echo**: ペルソナになりきってUIを検証する（シミュレーション）
+**Trace vs Echo vs Researcher responsibilities**:
+- **Researcher**: Creates personas (from interviews and research)
+- **Trace**: Validates personas with real data (from session logs)
+- **Echo**: Embodies personas to validate UI (simulation)
 
 ---
 
-#### Git/PR管理
+#### Git/PR Management
 
-##### PR準備（Guardian）
+##### PR Preparation (Guardian)
 
 ```
 /Guardian
-このブランチの変更をPRにする前に、コミット構造とPR戦略を提案してください。
+Before creating a PR from this branch, suggest a commit structure and PR strategy.
 ```
 
-**出力**: 変更のSignal/Noise分析、コミット分割計画、ブランチ命名提案、PR説明文ドラフト
+**Output**: Signal/Noise analysis of changes, commit split plan, branch naming suggestions, PR description draft
 
 ---
 
-##### コミット分割（Guardian）
+##### Commit Splitting (Guardian)
 
 ```
 /Guardian
-47ファイルの変更があります。適切なコミット粒度に分割してください。
+I have changes across 47 files. Split them into appropriately granular commits.
 ```
 
-**出力**: 論理的な単位ごとのコミット分割計画、git addコマンド例
+**Output**: Commit split plan by logical unit, example git add commands
 
 ---
 
-##### ブランチ命名（Guardian）
+##### Branch Naming (Guardian)
 
 ```
 /Guardian
-「ユーザー認証にOAuth2を追加する」タスクのブランチ名を提案してください。
+Suggest a branch name for the task "Add OAuth2 to user authentication".
 ```
 
-**出力**: 規約に準拠したブランチ名候補（feat/oauth2-integration等）
+**Output**: Convention-compliant branch name candidates (e.g., feat/oauth2-integration)
 
 ---
 
-**Guardian vs Judge vs Zen の役割分担**:
-- **Guardian**: PR準備（変更分析、コミット構造、ブランチ命名）
-- **Judge**: PRレビュー（バグ検出、問題指摘）
-- **Zen**: コード修正（リファクタリング、品質改善）
+**Guardian vs Judge vs Zen responsibilities**:
+- **Guardian**: PR preparation (change analysis, commit structure, branch naming)
+- **Judge**: PR review (bug detection, issue identification)
+- **Zen**: Code fixes (refactoring, quality improvement)
 
 ---
 
-##### 週次作業報告（Harvest）
+##### Weekly Work Report (Harvest)
 
 ```
 /Harvest
-今週のPR活動をサマリーレポートにまとめてください。
+Summarize this week's PR activity into a report.
 ```
 
-**出力**: 今週のPR統計、カテゴリ分布、貢献者ランキング、ハイライトを含むMarkdownレポート
+**Output**: Markdown report with PR statistics, category distribution, contributor rankings, and highlights
 
 ---
 
-##### リリースノート生成（Harvest）
+##### Release Notes Generation (Harvest)
 
 ```
 /Harvest
-v1.1.0からv1.2.0までのPRからリリースノートを生成してください。
+Generate release notes from PRs between v1.1.0 and v1.2.0.
 ```
 
-**出力**: Features/Bug Fixes/Improvements/Breaking Changesに分類されたChangelog形式のリリースノート
+**Output**: Changelog-format release notes categorized into Features/Bug Fixes/Improvements/Breaking Changes
 
 ---
 
-##### 個人作業報告（Harvest）
+##### Individual Work Report (Harvest)
 
 ```
 /Harvest
-@usernameの今月の作業報告書を作成してください。
+Create a monthly work report for @username.
 ```
 
-**出力**: 特定ユーザーのPR活動詳細、カテゴリ別内訳、週次推移、ハイライト
+**Output**: Detailed PR activity for the specific user, category breakdown, weekly trends, highlights
 
 ---
 
-##### スプリント回顧詩（Bard）
+##### Sprint Retrospective (Bard)
 
 ```
 /Bard
-今週のスプリントを俳句で詠んでください。
+Tell me about this week's sprint with some developer commentary.
 ```
 
-**出力**: スプリント期間のPR/コミットデータに基づく俳句コレクション（日本語）
+**Output**: Developer-style commentary on the sprint based on PR/commit data
 
 ---
 
-##### リリース祝詩（Bard）
+##### Release Celebration (Bard)
 
 ```
 /Bard
-v2.0.0のリリースを祝う詩を書いてください。
+Celebrate the v2.0.0 release with some developer musings.
 ```
 
-**出力**: リリース内容に基づく叙事詩または自由詩
+**Output**: Authentic developer narrative based on release contents
 
 ---
 
-**Harvest vs Bard の役割分担**:
-- **Harvest**: 数字で語る（統計レポート、週報、リリースノート）
-- **Bard**: 詩で語る（俳句、叙事詩、ナラティブ）
+**Harvest vs Bard responsibilities**:
+- **Harvest**: Tells the story in numbers (statistical reports, weekly summaries, release notes)
+- **Bard**: Tells the story in words (developer monologues, rants, musings)
 
 ---
 
-#### 品質保証
+#### Quality Assurance
 
-##### テスト追加（Radar）
+##### Test Addition (Radar)
 
 ```
 /Radar
-この部分のテストカバレッジを確認し、不足しているテストを追加してください。
+Check test coverage for this area and add missing tests.
 ```
 
-**出力**: 不足しているエッジケーステスト、境界値テスト、エラーケーステストの追加
+**Output**: Added edge case tests, boundary value tests, and error case tests
 
 ---
 
-##### E2Eテスト作成（Voyager）
+##### E2E Test Creation (Voyager)
 
 ```
 /Voyager
-ログインから購入完了までのフローのE2Eテストを作成してください。
+Create E2E tests for the flow from login to purchase completion.
 ```
 
-**出力**: Playwright/CypressでのE2Eテストコード（Page Object Model設計、認証状態管理、CI統合設定含む）
+**Output**: Playwright/Cypress E2E test code (with Page Object Model design, auth state management, CI integration config)
 
 ---
 
-##### セキュリティ監査（Sentinel）
+##### Security Audit (Sentinel)
 
 ```
 /Sentinel
-このAPIのセキュリティを監査してください。
+Audit the security of this API.
 ```
 
-**出力**: 脆弱性の検出（SQLインジェクション、XSS等）と修正コード
+**Output**: Vulnerability detection (SQL injection, XSS, etc.) and fix code
 
 ---
 
-##### PRレビュー（Judge）
+##### PR Review (Judge)
 
 ```
 /Judge
-このPRをレビューしてください。バグやセキュリティ問題がないか確認をお願いします。
+Review this PR. Check for bugs and security issues.
 ```
 
-**出力**: codex reviewによる自動レビュー、重大度別の問題リスト、修正担当エージェントの提案
+**Output**: Automated review via codex review, severity-ranked issue list, suggested fix agents
 
 ---
 
-##### コミット前チェック（Judge）
+##### Pre-commit Check (Judge)
 
 ```
 /Judge
-コミット前に変更内容をレビューしてください。
+Review the changes before committing.
 ```
 
-**出力**: 未コミット変更のレビュー、バグ・セキュリティ問題の検出、コミット可否の判定
+**Output**: Review of uncommitted changes, bug/security issue detection, commit go/no-go decision
 
 ---
 
-##### リファクタリング（Zen）
+##### Refactoring (Zen)
 
 ```
 /Zen
-このファイルの可読性が低いのでリファクタリングしてください。
+This file has poor readability. Please refactor it.
 ```
 
-**出力**: 責務ごとに分割された読みやすいコード（動作は変えない）
+**Output**: Readable code split by responsibility (behavior unchanged)
 
-**Note**: レビュー系エージェントの役割分担
-- **Judge**: codex reviewでPRレビュー・バグ検出・AI幻覚検出（コード修正しない）
-- **Zen**: コード品質の**改善**（リファクタリング、可読性向上）
+**Note**: Review agent responsibilities:
+- **Judge**: PR review via codex review, bug detection, AI hallucination detection (no code modifications)
+- **Zen**: Code quality **improvement** (refactoring, readability enhancement)
 
 ---
 
-#### 実装
+#### Implementation
 
-##### 本番実装（Builder）
+##### Production Implementation (Builder)
 
 ```
 /Builder
-プロトタイプは動作しますが、本番環境に適した品質に仕上げてください。
+The prototype works, but please bring it up to production quality.
 ```
 
-**出力**: 型安全化、エラーハンドリング、バリデーション追加されたプロダクションコード
+**Output**: Production code with type safety, error handling, and validation added
 
-**Builder の強化機能**:
-- **Clarify Phase**: 仕様の曖昧性を検出し、質問または複数案を提示
-- **Design Phase**: TDD（テストファーストで設計）
-- **Build Phase**: Event Sourcing / CQRS / Saga パターン対応
-- **Validate Phase**: N+1検出、キャッシュ戦略、パフォーマンス最適化
-- **Forge連携**: types.ts → Value Object、errors.ts → DomainError、forge-insights.md → ビジネスルール
+**Builder capabilities**:
+- **Clarify Phase**: Detects spec ambiguity, presents questions or multiple proposals
+- **Design Phase**: TDD (test-first design)
+- **Build Phase**: Event Sourcing / CQRS / Saga pattern support
+- **Validate Phase**: N+1 detection, caching strategy, performance optimization
+- **Forge handoff**: types.ts > Value Object, errors.ts > DomainError, forge-insights.md > Business Rules
 
 ---
 
-##### プロトタイプ作成（Forge）
+##### Prototyping (Forge)
 
 ```
 /Forge
-以下の画面のプロトタイプを作成してください。動作確認できる状態で構いません。
+Create a prototype of this screen. A working state is fine for now.
 ```
 
-**出力**: モックデータで動作する素早く作ったUIコンポーネント
+**Output**: Quickly built UI component that works with mock data
 
 ---
 
-##### フロントエンド実装（Artisan）
+##### Frontend Implementation (Artisan)
 
 ```
 /Artisan
-Forgeで作成したユーザープロフィールのプロトタイプを本番品質に仕上げてください。
-TypeScript strict、適切なエラーハンドリング、アクセシビリティを確保してください。
+Bring the user profile prototype created by Forge to production quality.
+Ensure TypeScript strict mode, proper error handling, and accessibility.
 ```
 
-**出力**: 型安全で本番品質のReact/Vue/Svelteコンポーネント、カスタムHooks、状態管理の統合
+**Output**: Type-safe, production-quality React/Vue/Svelte components, custom Hooks, state management integration
 
-**Artisan の主な対応領域**:
-- **Hooks設計**: カスタムHooksの作成、useEffect/useMemoの適切な使用
-- **状態管理**: Zustand/Jotai/Redux Toolkitの選択と実装
-- **Server Components**: React 19/Next.js App Routerでのサーバー/クライアント分離
-- **フォーム処理**: React Hook Form + Zodによるバリデーション
-- **データフェッチング**: TanStack Query/SWRによるキャッシュ戦略
+**Artisan's key areas**:
+- **Hooks design**: Custom Hook creation, proper useEffect/useMemo usage
+- **State management**: Zustand/Jotai/Redux Toolkit selection and implementation
+- **Server Components**: Server/client separation in React 19/Next.js App Router
+- **Form handling**: React Hook Form + Zod validation
+- **Data fetching**: Caching strategy with TanStack Query/SWR
 
 ---
 
-#### パフォーマンス
+#### Performance
 
-##### パフォーマンス改善（Bolt）
+##### Performance Improvement (Bolt)
 
 ```
 /Bolt
-このページの表示速度が遅いので改善してください。
+This page loads slowly. Please improve it.
 ```
 
-**出力**: ボトルネックの特定と最適化（メモ化、遅延読み込み、クエリ改善など）
+**Output**: Bottleneck identification and optimization (memoization, lazy loading, query improvement, etc.)
 
-**Bolt の対応範囲**:
-- **フロントエンド**: 再レンダリング削減、React.memo/useMemo、lazy loading、バンドルサイズ
-- **バックエンド**: N+1検出、DataLoader導入、コネクションプール、非同期処理
+**Bolt's scope**:
+- **Frontend**: Re-render reduction, React.memo/useMemo, lazy loading, bundle size
+- **Backend**: N+1 detection, DataLoader introduction, connection pooling, async processing
 
 ---
 
-##### DBパフォーマンス最適化（Tuner）
+##### DB Performance Optimization (Tuner)
 
 ```
 /Tuner
-商品一覧ページのクエリが遅いです。EXPLAIN ANALYZEで分析して最適化してください。
+The product listing page query is slow. Analyze with EXPLAIN ANALYZE and optimize.
 ```
 
-**出力**: 実行計画分析、インデックス推奨、クエリリライト
+**Output**: Execution plan analysis, index recommendations, query rewrite
 
-**Bolt vs Tuner の役割分担**:
-- **Bolt**: アプリケーション層（クエリの発行方法、キャッシュ）
-- **Tuner**: データベース層（クエリの実行方法、インデックス）
+**Bolt vs Tuner responsibilities**:
+- **Bolt**: Application layer (how queries are issued, caching)
+- **Tuner**: Database layer (how queries execute, indexes)
 
 ---
 
 #### UI/UX
 
-##### クリエイティブディレクション（Vision）
+##### Creative Direction (Vision)
 
 ```
 /Vision
-ダッシュボード画面をモダンにリデザインしたいです。
-現在の見た目が古くなってきたので、2024年のトレンドを取り入れてください。
+I want to redesign the dashboard with a modern look.
+The current design feels dated, so incorporate current design trends.
 ```
 
-**出力**: 3つのデザイン方向性提案、選択された方向性のStyle Guide、Muse/Palette/Flow/Forgeへの委譲計画
+**Output**: Three design direction proposals, style guide for the selected direction, delegation plan to Muse/Palette/Flow/Forge
 
 ---
 
-##### デザインレビュー（Vision）
+##### Design Review (Vision)
 
 ```
 /Vision
-現在のUIデザインをレビューして、改善点を特定してください。
+Review the current UI design and identify areas for improvement.
 ```
 
-**出力**: ヒューリスティック評価結果、改善優先度リスト、各改善の担当エージェント指定
+**Output**: Heuristic evaluation results, prioritized improvement list, assigned agent for each improvement
 
 ---
 
-##### UX改善（Palette）
+##### UX Improvement (Palette)
 
 ```
 /Palette
-このフォームの使い勝手が悪いというフィードバックがありました。改善してください。
+We received feedback that this form has poor usability. Please improve it.
 ```
 
-**出力**: フィードバック改善、認知負荷軽減、エラー表示の改善
+**Output**: Feedback improvements, cognitive load reduction, error display improvements
 
 ---
 
-##### デザイン統一（Muse）
+##### Design Unification (Muse)
 
 ```
 /Muse
-デザインの一貫性がないので統一してください。
+The design lacks consistency. Please unify it.
 ```
 
-**出力**: デザイントークンへの統一、余白・角丸・シャドウの調整
+**Output**: Unification to design tokens, spacing/border-radius/shadow adjustments
 
 ---
 
-##### UIアニメーション（Flow）
+##### UI Animation (Flow)
 
 ```
 /Flow
-この画面にアニメーションを追加して、インタラクションを改善してください。
+Add animations to this screen to improve interactions.
 ```
 
-**出力**: 適切なトランジション、ホバー効果、ローディングアニメーションの追加
+**Output**: Appropriate transitions, hover effects, loading animations added
 
 ---
 
-##### ペルソナ検証（Echo）
+##### Persona Validation (Echo)
 
 ```
 /Echo
-高齢者ペルソナの視点でこのUIの使いやすさを検証してください。
+Validate this UI's usability from an elderly user persona's perspective.
 ```
 
-**出力**: 指定ペルソナ視点での混乱ポイント、改善提案のUXレポート
+**Output**: UX report with confusion points and improvement proposals from the specified persona's perspective
 
 ---
 
-##### Storybookストーリー作成（Showcase）
+##### Storybook Story Creation (Showcase)
 
 ```
 /Showcase
-新しく作成したButtonコンポーネントのStorybookストーリーを作成してください。
+Create Storybook stories for the newly created Button component.
 ```
 
-**出力**: CSF 3.0形式のStoryファイル（全バリアント、インタラクションテスト、autodocs）
+**Output**: CSF 3.0 Story file (all variants, interaction tests, autodocs)
 
-**Showcase の主な機能**:
-- **CREATE**: 新規コンポーネントのストーリー作成
-- **MAINTAIN**: 既存ストーリーの更新・CSF3移行
-- **AUDIT**: ストーリーカバレッジと品質の監査
+**Showcase capabilities**:
+- **CREATE**: New component story creation
+- **MAINTAIN**: Existing story updates, CSF3 migration
+- **AUDIT**: Story coverage and quality auditing
 
 ---
 
-##### Storybookカバレッジ監査（Showcase）
+##### Storybook Coverage Audit (Showcase)
 
 ```
 /Showcase
-現在のStorybookカバレッジを監査してください。不足しているストーリーを特定してください。
+Audit current Storybook coverage. Identify missing stories.
 ```
 
-**出力**: カバレッジレポート、品質スコア、改善アクションリスト
+**Output**: Coverage report, quality scores, improvement action list
 
 ---
 
-#### ドキュメント
+#### Documentation
 
-##### PRD作成（Scribe）
+##### PRD Creation (Scribe)
 
 ```
 /Scribe
-ユーザー認証機能のPRD（Product Requirements Document）を作成してください。
-ソーシャルログイン対応、二要素認証をスコープに含めます。
+Create a PRD (Product Requirements Document) for the user authentication feature.
+Include social login and two-factor authentication in scope.
 ```
 
-**出力**: 完全なPRD（概要、ユーザーストーリー、機能要件、非機能要件、受入条件、エッジケース）
+**Output**: Complete PRD (overview, user stories, functional requirements, non-functional requirements, acceptance criteria, edge cases)
 
 ---
 
-##### SRS作成（Scribe）
+##### SRS Creation (Scribe)
 
 ```
 /Scribe
-決済モジュールのSRS（Software Requirements Specification）を作成してください。
-Stripe連携、サブスクリプション対応が必要です。
+Create an SRS (Software Requirements Specification) for the payment module.
+Stripe integration and subscription support are required.
 ```
 
-**出力**: 完全なSRS（機能要件、データモデル、API仕様、非機能要件、トレーサビリティマトリクス）
+**Output**: Complete SRS (functional requirements, data model, API specs, non-functional requirements, traceability matrix)
 
 ---
 
-##### 実装チェックリスト作成（Scribe）
+##### Implementation Checklist Creation (Scribe)
 
 ```
 /Scribe
-検索機能の実装チェックリストを作成してください。
+Create an implementation checklist for the search feature.
 ```
 
-**出力**: 実装前確認、実装フェーズ別タスク、品質保証チェック、デプロイ前確認
+**Output**: Pre-implementation checks, phase-by-phase tasks, quality assurance checks, pre-deployment verification
 
 ---
 
-##### テスト仕様書作成（Scribe）
+##### Test Specification Creation (Scribe)
 
 ```
 /Scribe
-注文フローのテスト仕様書を作成してください。
-正常系・異常系・境界値を網羅してください。
+Create a test specification for the order flow.
+Cover normal cases, error cases, and boundary values comprehensively.
 ```
 
-**出力**: テストケース一覧（ID、優先度、手順、期待結果）、テストデータ、トレーサビリティ
+**Output**: Test case list (ID, priority, steps, expected results), test data, traceability
 
 ---
 
-**Scribe vs Quill の役割分担**:
-- **Scribe**: プロジェクトドキュメント（仕様書、設計書、チェックリスト）
-- **Quill**: コードドキュメント（JSDoc、README、型定義）
+**Scribe vs Quill responsibilities**:
+- **Scribe**: Project documentation (specifications, design docs, checklists)
+- **Quill**: Code documentation (JSDoc, README, type definitions)
 
 ---
 
-##### ドキュメント追加（Quill）
+##### Documentation Addition (Quill)
 
 ```
 /Quill
-この関数にドキュメントを追加してください。処理内容がわかりにくいという指摘がありました。
+Add documentation to this function. There's feedback that the logic is hard to understand.
 ```
 
-**出力**: JSDoc/TSDoc、使用例、パラメータ説明の追加
+**Output**: JSDoc/TSDoc, usage examples, parameter descriptions added
 
 ---
 
-#### 可視化
+#### Visualization
 
-##### 設計図の作成（Canvas）
+##### Diagram Creation (Canvas)
 
 ```
 /Canvas
-この認証フローを図にして可視化してください。
+Visualize this authentication flow as a diagram.
 ```
 
-**出力**: Mermaid形式のシーケンス図、フローチャート、状態遷移図など
+**Output**: Mermaid-format sequence diagrams, flowcharts, state machine diagrams, etc.
 
 ---
 
-##### コードから図を逆生成（Canvas）
+##### Reverse-engineer Diagrams from Code (Canvas)
 
 ```
 /Canvas
-src/services/payment/ の処理フローを可視化して
+Visualize the processing flow in src/services/payment/
 ```
 
-**出力**: コードを分析して生成されたフローチャートまたはシーケンス図
+**Output**: Flowchart or sequence diagram generated by analyzing the code
 
 ---
 
-##### 会話コンテキストの整理（Canvas）
+##### Conversation Context Organization (Canvas)
 
 ```
 /Canvas
-これまでの会話内容をマインドマップにまとめてください。
+Organize our conversation so far into a mind map.
 ```
 
-**出力**: 会話内容を整理したマインドマップ
+**Output**: Mind map organizing the conversation content
 
 ---
 
-##### ASCIIアートで図を作成（Canvas）
+##### ASCII Art Diagrams (Canvas)
 
 ```
 /Canvas
-このAPIの処理フローをASCIIアートで作成してください。
+Create an ASCII art diagram of this API's processing flow.
 ```
 
-**出力**: ターミナルやコメント内でも表示可能なASCII形式のフローチャート
+**Output**: ASCII-format flowchart displayable in terminals and code comments
 
 ---
 
-#### アーキテクチャ
+#### Architecture
 
-##### アーキテクチャ分析（Atlas）
+##### Architecture Analysis (Atlas)
 
 ```
 /Atlas
-コードの依存関係を分析し、変更時の影響範囲を明確にしてください。
+Analyze code dependencies and clarify the impact scope of changes.
 ```
 
-**出力**: 依存関係マップ、問題箇所の特定、改善のためのADR/RFC
+**Output**: Dependency map, problem area identification, ADR/RFC for improvements
 
 ---
 
-##### モダナイゼーション（Horizon）
+##### Modernization (Horizon)
 
 ```
 /Horizon
-使用しているライブラリのバージョンを確認し、非推奨や脆弱性のあるものを特定してください。
+Check library versions in use and identify deprecated or vulnerable ones.
 ```
 
-**出力**: 非推奨ライブラリの検出、代替案の提案、移行PoC
+**Output**: Deprecated library detection, alternative proposals, migration PoC
 
 ---
 
-##### API設計（Gateway）
+##### API Design (Gateway)
 
 ```
 /Gateway
-ユーザー管理APIのエンドポイントを設計してください。REST APIのベストプラクティスに従ってください。
+Design user management API endpoints. Follow REST API best practices.
 ```
 
-**出力**: OpenAPI仕様書、エンドポイント設計、バージョニング戦略
+**Output**: OpenAPI specification, endpoint design, versioning strategy
 
 ---
 
-##### API破壊的変更検出（Gateway）
+##### API Breaking Change Detection (Gateway)
 
 ```
 /Gateway
-このPRの変更がAPIの後方互換性を壊さないか確認してください。
+Check if this PR's changes break API backward compatibility.
 ```
 
-**出力**: 破壊的変更のリスト、影響を受けるクライアント、移行ガイド
+**Output**: List of breaking changes, affected clients, migration guide
 
 ---
 
-#### データ
+#### Data
 
-##### DBスキーマ設計（Schema）
+##### DB Schema Design (Schema)
 
 ```
 /Schema
-注文管理システムのDBスキーマを設計してください。注文、注文明細、顧客、商品の関係を考慮してください。
+Design a DB schema for the order management system.
+Consider relationships between orders, line items, customers, and products.
 ```
 
-**出力**: ER図（Mermaid形式）、DDL、マイグレーションファイル、インデックス設計
+**Output**: ER diagram (Mermaid format), DDL, migration files, index design
 
-**Schema vs Tuner の役割分担**:
-- **Schema**: 論理設計（テーブル構造、リレーション、正規化）
-- **Tuner**: 物理最適化（インデックス調整、クエリ改善）
+**Schema vs Tuner responsibilities**:
+- **Schema**: Logical design (table structure, relations, normalization)
+- **Tuner**: Physical optimization (index tuning, query improvement)
 
 ---
 
-##### マイグレーション作成（Schema）
+##### Migration Creation (Schema)
 
 ```
 /Schema
-usersテーブルにプロフィール画像URLを追加するマイグレーションを作成してください。
+Create a migration to add a profile image URL to the users table.
 ```
 
-**出力**: Up/Down両方のマイグレーション、ロールバック手順
+**Output**: Both Up/Down migrations, rollback procedures
 
 ---
 
 #### DevOps
 
-##### CLI/TUI構築（Anvil）
+##### CLI/TUI Construction (Anvil)
 
 ```
 /Anvil
-コマンドラインツールを作成してください。ヘルプ表示やプログレスバーなども含めてください。
+Create a command-line tool. Include help display, progress bars, etc.
 ```
 
-**出力**: 引数パース、ヘルプ生成、プログレスバー、カラー出力などを備えたCLI
+**Output**: CLI with argument parsing, help generation, progress bars, colored output
 
 ---
 
-##### CI/CD改善（Gear）
+##### CI/CD Improvement (Gear)
 
 ```
 /Gear
-CIの実行時間を短縮してください。現状では時間がかかりすぎています。
+CI execution time is too long. Please reduce it.
 ```
 
-**出力**: キャッシュ最適化、並列化、不要ステップ削除などの改善
+**Output**: Cache optimization, parallelization, removal of unnecessary steps
 
 ---
 
-##### インフラ構築（Scaffold）
+##### Infrastructure Setup (Scaffold)
 
 ```
 /Scaffold
-AWS上にステージング環境を構築するためのTerraform設定を作成してください。
+Create Terraform configuration for building a staging environment on AWS.
 ```
 
-**出力**: Terraform/CloudFormation/Pulumiの設定ファイル、環境変数テンプレート
+**Output**: Terraform/CloudFormation/Pulumi configuration files, environment variable templates
 
 ---
 
-##### ローカル開発環境構築（Scaffold）
+##### Local Development Environment Setup (Scaffold)
 
 ```
 /Scaffold
-新規開発者がすぐに開発を始められるようにDocker Compose環境を整備してください。
+Set up a Docker Compose environment so new developers can start immediately.
 ```
 
-**出力**: docker-compose.yml、.env.example、セットアップスクリプト
+**Output**: docker-compose.yml, .env.example, setup scripts
 
 ---
 
-#### 国際化
+#### Internationalization
 
-##### 国際化対応（Polyglot）
+##### i18n Implementation (Polyglot)
 
 ```
 /Polyglot
-海外展開に向けて、アプリケーションの国際化対応を行ってください。
+Internationalize the application for global expansion.
 ```
 
-**出力**: ハードコード文字列のi18n化、日付/通貨フォーマットの国際化対応
+**Output**: Hardcoded strings converted to i18n, date/currency format internationalization
 
 ---
 
-#### 成長
+#### Growth
 
-##### SEO改善（Growth）
+##### SEO Improvement (Growth)
 
 ```
 /Growth
-SNSでシェアした際のプレビュー表示を改善してください。
+Improve the preview display when sharing on social media.
 ```
 
-**出力**: OGPタグ、メタ情報、構造化データの追加
+**Output**: OGP tags, meta information, structured data added
 
 ---
 
-##### リテンション施策（Retain）
+##### Retention Initiatives (Retain)
 
 ```
 /Retain
-ユーザーの継続利用率が低下しています。リテンション改善施策を提案してください。
+User retention rates are declining. Suggest retention improvement strategies.
 ```
 
-**出力**: リテンション分析フレームワーク、再エンゲージメントトリガー設計、ゲーミフィケーション提案
+**Output**: Retention analysis framework, re-engagement trigger design, gamification proposals
 
 ---
 
-#### 分析
+#### Analytics
 
-##### メトリクス設計（Pulse）
+##### Metrics Design (Pulse)
 
 ```
 /Pulse
-このサービスのKPIを定義し、トラッキングイベントを設計してください。
+Define KPIs for this service and design tracking events.
 ```
 
-**出力**: KPI定義、イベント設計、ダッシュボード仕様
+**Output**: KPI definitions, event design, dashboard specifications
 
 ---
 
-##### A/Bテスト設計（Experiment）
+##### A/B Test Design (Experiment)
 
 ```
 /Experiment
-CTAボタンの色変更による効果を検証するA/Bテストを設計してください。
+Design an A/B test to verify the effect of changing the CTA button color.
 ```
 
-**出力**: 仮説ドキュメント、サンプルサイズ計算、フィーチャーフラグ実装ガイド
+**Output**: Hypothesis document, sample size calculation, feature flag implementation guide
 
 ---
 
-#### 運用
+#### Operations
 
-##### 障害対応（Triage）
+##### Incident Response (Triage)
 
 ```
 /Triage
-本番環境でAPIレスポンスが遅延しています。初動対応をお願いします。
+API responses are slow in production. Please handle initial response.
 ```
 
-**出力**: 影響範囲特定、復旧手順、エスカレーション判断
+**Output**: Impact assessment, recovery procedures, escalation decisions
 
 ---
 
-##### ポストモーテム作成（Triage）
+##### Postmortem Creation (Triage)
 
 ```
 /Triage
-先日の障害についてポストモーテムを作成してください。
+Create a postmortem for the recent incident.
 ```
 
-**出力**: 障害タイムライン、根本原因、再発防止策
+**Output**: Incident timeline, root cause, prevention measures
 
 ---
 
-#### 調査・企画（追加）
+#### Investigation & Planning (Additional)
 
-##### 競合調査（Compete）
+##### Competitive Research (Compete)
 
 ```
 /Compete
-競合サービスAとBを分析し、差別化ポイントを特定してください。
+Analyze competitors A and B and identify differentiation points.
 ```
 
-**出力**: 競合機能マトリクス、SWOT分析、ポジショニングマップ
+**Output**: Competitive feature matrix, SWOT analysis, positioning map
 
 ---
 
-##### ユーザーリサーチ設計（Researcher）
+##### User Research Design (Researcher)
 
 ```
 /Researcher
-新機能の検証のためにユーザーインタビューを設計してください。
+Design user interviews to validate the new feature.
 ```
 
-**出力**: インタビューガイド、質問リスト、ペルソナ/ジャーニーマップ
+**Output**: Interview guide, question list, persona/journey map
 
 ---
 
-##### フィードバック分析（Voice）
+##### Feedback Analysis (Voice)
 
 ```
 /Voice
-最近のアプリストアレビューを分析してインサイトを抽出してください。
+Analyze recent app store reviews and extract insights.
 ```
 
-**出力**: 感情分析、フィードバック分類、改善優先度リスト
+**Output**: Sentiment analysis, feedback classification, improvement priority list
 
 ---
 
-#### セキュリティ（追加）
+#### Security (Additional)
 
-##### 動的セキュリティテスト（Probe）
+##### Dynamic Security Testing (Probe)
 
 ```
 /Probe
-認証APIに対してペネトレーションテストを実施してください。
+Conduct penetration testing on the authentication API.
 ```
 
-**出力**: OWASP ZAP/Nucleiによるスキャン結果、脆弱性レポート、修正優先度
+**Output**: OWASP ZAP/Nuclei scan results, vulnerability report, fix priority
 
-**Sentinel vs Probe の役割分担**:
-- **Sentinel**: 静的解析（SAST）- コードを読んで脆弱性を検出
-- **Probe**: 動的テスト（DAST）- 実行中のアプリを攻撃して脆弱性を検出
+**Sentinel vs Probe responsibilities**:
+- **Sentinel**: Static analysis (SAST) - reads code to detect vulnerabilities
+- **Probe**: Dynamic testing (DAST) - attacks running application to detect vulnerabilities
 
 ---
 
-#### ターミナル録画
+#### Terminal Recording
 
-##### CLIデモGIF作成（Reel）
+##### CLI Demo GIF Creation (Reel)
 
 ```
 /Reel
-このCLIツールのインストールから基本的な使い方までをGIFで録画してください。
-READMEに埋め込みます。
+Record a GIF showing installation through basic usage of this CLI tool.
+I'll embed it in the README.
 ```
 
-**出力**: VHS .tapeファイル、最適化済みGIF（5MB以下）、Markdown埋め込みコード
+**Output**: VHS .tape file, optimized GIF (under 5MB), Markdown embed code
 
 ---
 
-##### ターミナルセッション録画（Reel）
+##### Terminal Session Recording (Reel)
 
 ```
 /Reel
-インタラクティブなセットアップウィザードの動作をデモ動画にしてください。
-ユーザーが選択肢を選ぶ様子を含めてください。
+Create a demo video of the interactive setup wizard in action.
+Include the user selecting options.
 ```
 
-**出力**: terminalizer録画、YAML編集済み、GIF出力
+**Output**: terminalizer recording, edited YAML, GIF output
 
 ---
 
-**Director vs Reel の役割分担**:
-- **Director**: ブラウザ（Web UI）のデモ動画（Playwright、.webm出力）
-- **Reel**: ターミナル（CLI）のデモ録画（VHS/terminalizer/asciinema、GIF/MP4出力）
+**Director vs Reel responsibilities**:
+- **Director**: Browser (Web UI) demo videos (Playwright, .webm output)
+- **Reel**: Terminal (CLI) demo recordings (VHS/terminalizer/asciinema, GIF/MP4 output)
 
 ---
 
-### 複数エージェント連携（Nexus）
+### Multi-Agent Collaboration (Nexus)
 
-#### 新機能開発（自動実行）
+#### New Feature Development (Auto-execution)
 
 ```
 /Nexus
-ユーザープロフィール編集機能を追加したい
-- 名前、メール、アバター画像を編集できる
-- バリデーションあり
-- 保存成功時にトースト表示
+I want to add a user profile editing feature
+- Edit name, email, and avatar image
+- With validation
+- Show toast on successful save
 
 ## NEXUS_AUTORUN
 ```
 
-**実行チェーン**: Spark（仕様策定）→ Sherpa（タスク分解）→ Forge（プロトタイプ）→ Builder（本番実装）→ Radar（テスト）→ Quill（ドキュメント）
+**Execution chain**: Spark (spec) > Sherpa (task decomposition) > Forge (prototype) > Builder (production implementation) > Radar (tests) > Quill (documentation)
 
 ---
 
-#### バグ修正（複雑なケース）
+#### Bug Fix (Complex Case)
 
 ```
 /Nexus
-本番環境でのみ発生する決済エラーを調査・修正してください。
-ローカルでは再現しません。
+Investigate and fix a payment error that only occurs in production.
+It doesn't reproduce locally.
 
 ## NEXUS_AUTORUN
 ```
 
-**実行チェーン**: Scout（調査）→ Sherpa（タスク分解）→ Builder（修正）→ Radar（回帰テスト）→ Sentinel（セキュリティ確認）
+**Execution chain**: Scout (investigation) > Sherpa (task decomposition) > Builder (fix) > Radar (regression tests) > Sentinel (security verification)
 
 ---
 
-#### 大規模リファクタリング
+#### Large-scale Refactoring
 
 ```
 /Nexus
-認証モジュールがスパゲッティコードになっています。
-Clean Architectureに沿ってリファクタリングしたいです。
+The authentication module has become spaghetti code.
+I want to refactor it to follow Clean Architecture.
 ```
 
-**実行チェーン**: Atlas（アーキテクチャ設計）→ Sherpa（段階的計画）→ Zen（リファクタリング）→ Radar（テスト）
+**Execution chain**: Atlas (architecture design) > Sherpa (phased plan) > Zen (refactoring) > Radar (tests)
 
 ---
 
-#### UI機能の追加
+#### UI Feature Addition
 
 ```
 /Nexus
-商品詳細ページにレビュー投稿機能を追加してください。
-星評価とコメントを入力できるようにしたいです。
+Add a review submission feature to the product detail page.
+I want users to be able to input star ratings and comments.
 ```
 
-**実行チェーン**: Spark（仕様）→ Forge（UI プロトタイプ）→ Muse（デザイン調整）→ Builder（実装）→ Radar（テスト）
+**Execution chain**: Spark (spec) > Forge (UI prototype) > Muse (design adjustment) > Builder (implementation) > Radar (tests)
 
 ---
 
-### ステップバイステップ実行（手動制御）
+### Step-by-Step Execution (Manual Control)
 
-#### 段階的な機能開発
+#### Gradual Feature Development
 
 ```
 /Nexus
-検索機能を追加したいです。
+I want to add a search feature.
 ```
 
-#### AUTORUNモード（自動実行・推奨）
+#### AUTORUN Mode (Automatic Execution - Recommended)
 
 ```
 ## NEXUS_AUTORUN_FULL
-検索機能を追加したいです。
+I want to add a search feature.
 ```
 
-Nexusが自動でチェーンを実行：
+Nexus automatically executes the chain:
 
 ```
-## Nexus Execution: 検索機能の追加
-- Chain: **Spark** → **Sherpa** → **Builder** → **Radar**
+## Nexus Execution: Add search feature
+- Chain: **Spark** > **Sherpa** > **Builder** > **Radar**
 - Mode: AUTORUN_FULL
 
 ### Executing Step 1/4: Spark
 _AGENT_CONTEXT:
   Role: Spark
-  Task: 検索機能の仕様書を作成
+  Task: Create search feature specification
 
-[Sparkとして仕様書を作成...]
+[Creating specification as Spark...]
 
 _STEP_COMPLETE:
   Agent: Spark
@@ -1520,88 +1521,88 @@ _STEP_COMPLETE:
   Next: Sherpa
 
 ### Executing Step 2/4: Sherpa
-[自動で次のステップへ...]
+[Automatically proceeding to next step...]
 ```
 
-**コピペ不要** - 最終成果物まで自動実行されます。
+**No copy-paste needed** - automatically executes to the final deliverable.
 
-#### GUIDEDモード（手動引き継ぎ）
+#### GUIDED Mode (Manual Handoff)
 
-手動で各エージェントを呼び出す場合：
+When invoking each agent manually:
 
 ```
 ## NEXUS_GUIDED
-検索機能を追加したいです。
+I want to add a search feature.
 ```
 
-Nexusがチェーンを設計し、次のステップを提示：
+Nexus designs the chain and presents the next step:
 
 ```
-## Nexus Plan: 検索機能の追加
-- Chain: **Spark** → **Sherpa** → **Builder** → **Radar**
+## Nexus Plan: Add search feature
+- Chain: **Spark** > **Sherpa** > **Builder** > **Radar**
 - Current step: 1/4
 
 ### Next Step: Spark
 Invoke **Spark** with the following context:
-[コンテキスト情報]
+[Context information]
 ```
 
 ---
 
-### タスク分解の活用（Sherpa）
+### Task Decomposition in Practice (Sherpa)
 
-#### 大きなタスクを小さく分割
+#### Breaking Large Tasks into Small Steps
 
 ```
 /Sherpa
-ECサイトのチェックアウトフローを実装したいです。
+I want to implement an e-commerce checkout flow.
 ```
 
-**出力**:
+**Output**:
 
 ```
-## 🏔️ Sherpa's Guide
-**Current Objective:** チェックアウトフロー実装
+## Sherpa's Guide
+**Current Objective:** Checkout flow implementation
 **Progress:** 0/8 steps completed
 
-### 👉 NOW: カート内容の型定義を作成
-CartItem, CartSummary インターフェースを定義してください。
-*(Builder を呼び出しますか？)*
+### NOW: Create type definitions for cart contents
+Define CartItem and CartSummary interfaces.
+*(Shall I invoke Builder?)*
 
-### 📋 Upcoming Path:
-- [ ] カートAPI エンドポイント作成
-- [ ] 配送先入力フォーム
-- [ ] 支払い方法選択UI
-- [ ] 注文確認画面
-- [ ] 注文完了処理
-- [ ] エラーハンドリング
-- [ ] テスト追加
+### Upcoming Path:
+- [ ] Create cart API endpoint
+- [ ] Shipping address input form
+- [ ] Payment method selection UI
+- [ ] Order confirmation screen
+- [ ] Order completion processing
+- [ ] Error handling
+- [ ] Add tests
 
-**Status:** 🟢 On Track
+**Status:** On Track
 ```
 
-## カスタマイズ
+## Customization
 
-### 新しいエージェントの追加
+### Adding New Agents
 
-1. `skills/[AgentName]/SKILL.md` を作成
-2. frontmatter に `name` と `description` を定義
-3. 境界（Always do / Ask first / Never do）を明記
-4. AUTORUN SupportとNexus Hub Modeのセクションを追加
+1. Create `skills/[AgentName]/SKILL.md`
+2. Define `name` and `description` in frontmatter
+3. Specify boundaries (Always do / Ask first / Never do)
+4. Add AUTORUN Support and Nexus Hub Mode sections
 
-### エージェントの修正
+### Modifying Agents
 
-各 `SKILL.md` を直接編集します。フォーマット：
+Edit each `SKILL.md` directly. Format:
 
 ```markdown
 ---
 name: AgentName
-description: 日本語での説明
+description: Agent description
 ---
 
-[エージェントの詳細な指示]
+[Detailed agent instructions]
 ```
 
-## ライセンス
+## License
 
 MIT
