@@ -257,12 +257,30 @@ See `references/examples.md` for complete post examples.
 
 git data 収集 → rotation_log.md 確認 → ペルソナ選択。詳細は COMPOSE Workflow Step 1〜4 参照。
 
+### プロンプト設計思想: Loose Prompt
+
+エンジンに渡すプロンプトは**最小限**にする。口癖・決め台詞・具体的パターンは渡さない。
+エンジン自身の語彙と判断に委ねることで、各AIモデル固有の「声」がペルソナの個性になる。
+
+**渡すもの:**
+1. **人物像**（2〜3行。性格・立場・価値観だけ。口癖は渡さない）
+2. **Anti-AI の核心**（「人間の雑なSlack投稿を再現しろ。綺麗にまとめるな」の1行）
+3. **例文1つ**（トーン参考用。模倣ではなく空気感の共有）
+4. **git data**（コミット情報をそのまま）
+5. **出力フォーマット**（Embellish テンプレート）
+
+**渡さないもの:**
+- 口癖リスト、決め台詞、具体的なリアクションパターン
+- 「こう言え」「この言い回しを使え」系の指示
+- 詳細なペルソナルール（references/personas.md の内容そのもの）
+
+> **理由:** 詳細を渡すとエンジンが「組み立て」をするだけになり、語彙が貧弱になる。
+> 人物像だけ渡せば、エンジンが自分の言葉で考える。
+
 ### ディスパッチ: Codex / Gemini（外部 CLI）
 
-Bard本体が **Persona Quick-Ref・Anti-AI Rules（核心5行）・例文2つ（`references/examples.md`）・git data・出力フォーマット（Embellish 参照）** をプロンプトに埋め込む。エンジンにファイル読み込みはさせない。
-
 ```bash
-# プロンプトを /tmp/bard-prompt.md に Write し、エンジン実行
+# プロンプトを /tmp/bard-prompt.md に Bash で書き出し、エンジン実行
 codex exec --full-auto "$(cat /tmp/bard-prompt.md)"   # Codex
 gemini -p "$(cat /tmp/bard-prompt.md)" --yolo          # Gemini
 ```
@@ -272,7 +290,7 @@ gemini -p "$(cat /tmp/bard-prompt.md)" --yolo          # Gemini
 
 ### ディスパッチ: Claude（Task tool）
 
-Claude subagent はファイルを自分で読めるため、全文埋め込み不要。
+Claude subagent はファイルを自分で読めるため、人物像 + git data + 例文パスだけ渡す。
 
 ```yaml
 Task:
@@ -280,14 +298,13 @@ Task:
   mode: dontAsk
   description: "Bard {persona} post"
   prompt: |
-    Bard の {persona} ペルソナとしてコミットリアクションを生成せよ。
-    1. bard/references/personas.md, bard/references/examples.md を読む
-    2. 以下の git data に対し {persona} の声で投稿を生成
-    3. Anti-AI Authenticity Rules 厳守、タメ口、リポジトリ名含める
-    4. 出力フォーマットは SKILL.md Embellish セクション準拠
-    git data:
+    あなたは {人物像 2〜3行} というキャラクターで、開発チームの Slack にボヤきを投稿する。
+    bard/references/examples.md の {persona} の例を1つ読んでトーンを掴め。
+    綺麗にまとめるな。人間の雑な Slack 投稿を再現しろ。タメ口。
+    以下の git data に対して投稿を生成:
     {git log & stat の出力}
     リポジトリ: {repo_name}
+    出力フォーマット: {Embellish テンプレート}
 ```
 
 ### 結果処理（Bard本体）
