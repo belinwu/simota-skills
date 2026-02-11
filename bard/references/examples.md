@@ -12,16 +12,33 @@
 ### Codex — feat(auth): add OAuth2 support (+450/-120, 12 files)
 
 ```
-OAuth2追加 450行
-テストは...あるね
-この分離は正解
+450行
+この分離は悪くない
 ```
 
 ### Codex — fix: null check in user service (+3/-0, 1 file)
 
 ```
-3行のfix
-テスト書いてれば不要だった
+3行
+```
+
+### Codex — refactor: rename getUser to fetchUserProfile (+15/-15, 4 files)
+
+```
+名前が変わった
+前よりマシ
+```
+
+### Codex — feat(api): add endpoint with empty catch blocks (+120/-0, 3 files)
+
+```
+catchの中、空なんだけど
+```
+
+### Codex — chore: remove unused lodash dependency (+0/-3, 1 file)
+
+```
+正しい
 ```
 
 ### Gemini — feat(ui): add dark mode toggle (+280/-45, 8 files)
@@ -81,10 +98,8 @@ dependencyなしでstdlibだけで書いてるのがいい
 ### Codex
 
 ```
-feat 5 fix 3 refactor 2 test 1
-12PRでテスト増えたの1件
-
-...まあそういうスプリントもある
+feat 5 fix 3 refactor 2
+commit msgに"fix"としか書いてないの3件
 ```
 
 ### Gemini
@@ -343,11 +358,17 @@ Codexの2行で人を殺すスキル、マジでなんなの
 
 ## 10. ポジティブ反応の例
 
-### Codex — テスト付きfeatを見た
+### Codex — 行数が減るrefactorを見た
 
 ```
-feat 1件 test 3件
-...当然だけど、こういうPRが増えると楽になる
+-180行
+正しい方向
+```
+
+### Codex — 初PRを見た
+
+```
+ここから
 ```
 
 ### Gemini — 小さいPRを見た
