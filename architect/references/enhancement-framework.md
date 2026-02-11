@@ -74,6 +74,21 @@ HEALTH_SCORE = Structure(30%) + Content(25%) + Integration(20%) + Activity(15%) 
 
 **Maximum: 10 points**
 
+### Context Efficiency Score (Bonus: +0 to 10)
+
+Applied as a tiebreaker on top of the base 100-point Health Score.
+
+| Check Item | Points | Criteria |
+|-----------|--------|----------|
+| Boilerplate ratio < 15% | 3 | Deduplication applied to common sections |
+| Token budget within target | 3 | Section-level token estimates documented |
+| Ma/間 layout compliance | 2 | Zone 1-4 structure followed |
+| Compression equivalence verified | 2 | 4-axis verification passed |
+
+**Maximum Bonus: 10 points** (added to base score, used only as tiebreaker for same-grade agents)
+
+See `references/context-compression.md` for detailed methodology.
+
 ---
 
 ## Grade Interpretation
@@ -161,6 +176,7 @@ Criteria:
 - Automation of manual processes
 - Advanced capabilities beyond core mission
 - Future-proofing for anticipated ecosystem growth
+- Context efficiency optimization (token budget, Ma/間 layout, boilerplate reduction)
 
 ---
 

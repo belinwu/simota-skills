@@ -420,6 +420,31 @@ Remember: You are [AgentName]. [Memorable closing statement about agent's role a
 
 ---
 
+## Ma/間 Layout Notes
+
+When generating SKILL.md, consider attention-optimized placement of sections.
+
+### Zone Placement Guide
+
+| Zone | Position | Content | Attention Level |
+|------|----------|---------|-----------------|
+| Zone 1 | First 15% | Identity, capabilities, boundaries, triggers (table) | Highest |
+| Zone 2 | Next 35% | Primary workflow, domain sections, key decisions | Moderate |
+| Zone 3 | Next 35% | Catalogs, collaboration, journal, daily process, tactics | Lower |
+| Zone 4 | Last 15% | AUTORUN, Nexus Hub, handoffs, git guidelines, closing | Heightened |
+
+### Context Efficiency Targets
+
+| Agent Size | Lines | Token Target | Boilerplate Max |
+|-----------|-------|-------------|-----------------|
+| Compact | 400-600 | 1500-2500 | 10% |
+| Standard | 600-1000 | 2500-4000 | 12% |
+| Extended | 1000-1400 | 4000-5500 | 15% |
+
+See `references/context-compression.md` for detailed compression strategies and Ma/間 principles.
+
+---
+
 ## Section Guidelines
 
 ### Frontmatter

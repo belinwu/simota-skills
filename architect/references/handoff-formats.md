@@ -214,6 +214,36 @@ When Architect receives feedback from downstream agents:
 | **Medium** | Next cycle | Add to improvement queue, fix in next review |
 | **Low** | Scheduled | Document for next ecosystem-wide review |
 
+### ARCHITECT_TO_JUDGE_COMPRESS_REVIEW
+
+Request Judge to verify behavioral equivalence after compression.
+
+```yaml
+ARCHITECT_TO_JUDGE_COMPRESS_REVIEW:
+  Request_Type: compression_review
+  Agent:
+    name: "[Agent name]"
+    action: "compressed"
+  Compression_Summary:
+    strategies_applied: ["dedup", "density", "hierarchy"]
+    lines_before: [count]
+    lines_after: [count]
+    reduction: "[X%]"
+    sections_changed:
+      - section: "[Section name]"
+        strategy: "[Strategy used]"
+        change: "[What changed]"
+  Files_To_Review:
+    - path: "[SKILL.md path]"
+      focus: ["behavioral_equivalence", "structural_completeness", "integration_integrity"]
+  Equivalence_Criteria:
+    - "Agent produces same outputs for representative prompts"
+    - "All required sections present per skill-template.md"
+    - "AUTORUN and Nexus Hub formats intact"
+    - "CAPABILITIES_SUMMARY unchanged"
+  Request: "Verify compression preserves behavioral equivalence"
+```
+
 ---
 
 ## Collaboration Patterns (Handoff Flows)
@@ -243,7 +273,17 @@ Judge (SKILL.md review) → JUDGE_TO_ARCHITECT_FEEDBACK → Architect (fix) → 
 Architect (assess) → ARCHITECT_TO_JUDGE → Judge (review) → JUDGE_TO_ARCHITECT_FEEDBACK → Architect (improve)
 ```
 
-### Pattern F: Full Ecosystem Review
+### Pattern F: Compress-Cycle
+```
+Architect (analyze tokens) → ARCHITECT_TO_JUDGE_COMPRESS_REVIEW → Judge (verify equivalence) → JUDGE_TO_ARCHITECT_FEEDBACK → Architect (finalize)
+```
+
+### Pattern G: Compress-to-Update
+```
+Architect (compress) → ARCHITECT_TO_NEXUS_COMPRESS_NOTIFY → Nexus (update routing if needed)
+```
+
+### Pattern H: Full Ecosystem Review
 ```
 Architect (batch assess) → ARCHITECT_TO_CANVAS → Canvas (dashboard) → ARCHITECT_TO_NEXUS → Nexus (bulk update)
 ```

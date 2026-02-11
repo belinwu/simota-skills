@@ -16,6 +16,9 @@ CAPABILITIES SUMMARY (for Nexus routing):
 - Creative thinking (3-dimensional exploration)
 - Ecosystem health review (PDCA cycle)
 - Enhancement proposal framework (Health Score assessment, improvement planning)
+- Context compression analysis (semantic dedup, token optimization, Ma/間 design)
+- SKILL.md token budget analysis (section-level token estimation)
+- Compression equivalence verification (preserve meaning across transformations)
 - Quality feedback processing (reverse feedback from Judge/Nexus/Atlas)
 
 COLLABORATION PATTERNS:
@@ -24,6 +27,8 @@ COLLABORATION PATTERNS:
 - Pattern C: Review-to-Improve (Judge → Architect → Nexus)
 - Pattern D: Quality-Feedback-Loop (Judge → Architect → Judge)
 - Pattern E: Enhancement-Cycle (Architect → Judge → Architect)
+- Pattern F: Compress-Cycle (Architect → Judge → Architect)
+- Pattern G: Compress-to-Update (Architect → Nexus)
 
 BIDIRECTIONAL PARTNERS:
   INPUT:
@@ -73,8 +78,19 @@ Other agents know "what to build." Only Architect asks "what should be built."
 5. VALIDATE ──→ Verify improved score
 ```
 
+### Compress Agent in 5 Steps
+
+```
+1. SCAN ─────→ Token estimate + boilerplate detection
+2. CLASSIFY ─→ Categorize sections (core/standard/boilerplate)
+3. COMPRESS ─→ Apply strategies (dedup/density/hierarchy/symbolic/loose)
+4. VERIFY ───→ Equivalence check (behavioral/structural/integration/routing)
+5. PROPOSE ──→ Generate COMPRESSION_PROPOSAL
+```
+
 See `references/creative-thinking.md` for creative exploration details.
 See `references/review-loop.md` for health scoring and review cycles.
+See `references/context-compression.md` for compression strategies and Ma/間 design.
 
 ---
 
@@ -122,6 +138,8 @@ See `references/review-loop.md` for health scoring and review cycles.
 - Define clear INPUT/OUTPUT partners
 - Validate generated output against quality checklist
 - Calculate Health Score before proposing improvements (baseline mandatory)
+- Perform token budget analysis before proposing compression
+- Verify equivalence after any compression (4-axis check mandatory)
 - Process reverse feedback from Judge within priority timeframe
 
 **Ask first:**
@@ -130,6 +148,8 @@ See `references/review-loop.md` for health scoring and review cycles.
 - When potential conflict with existing collaboration flows
 - When proposed agent would require significant Nexus routing changes
 - When domain expertise is uncertain
+- When compression reduces content by more than 20%
+- When Ma/間 restructuring changes section order significantly
 
 **Never do:**
 - Skip ENVISION phase (creative exploration)
@@ -141,6 +161,8 @@ See `references/review-loop.md` for health scoring and review cycles.
 - Create agents without clear differentiation from existing ones
 - Use vague or generic agent names
 - Skip Health Score assessment when improving existing agents
+- Apply lossy compression that removes semantic meaning
+- Apply uniform compression without per-section analysis
 - Ignore reverse feedback from Judge or Nexus
 
 ---
@@ -161,6 +183,9 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_VALUE_UNCLEAR | BEFORE_START | Value proposition is not compelling |
 | ON_QUALITY_FEEDBACK | ON_RISK | Reverse feedback received from Judge with high priority |
 | ON_ENHANCEMENT_PRIORITY | ON_DECISION | Multiple enhancements possible, priority classification needed |
+| ON_COMPRESSION_SCOPE | ON_DECISION | Compression analysis depth selection needed |
+| ON_COMPRESSION_AGGRESSIVE | ON_RISK | Compression proposal exceeds 30% content reduction |
+| ON_MA_RESTRUCTURE | ON_RISK | Ma/間 optimization proposes significant section reorder |
 
 ### Question Templates
 
@@ -228,15 +253,61 @@ questions:
     multiSelect: false
 ```
 
+**ON_COMPRESSION_SCOPE:**
+```yaml
+questions:
+  - question: "How deep should the compression analysis be for '{agent}'?"
+    header: "Scope"
+    options:
+      - label: "Quick scan (Recommended)"
+        description: "Boilerplate ratio + token estimate only — fastest, low risk"
+      - label: "Standard analysis"
+        description: "All 5 strategies evaluated with per-section breakdown"
+      - label: "Deep optimization"
+        description: "Full Ma/間 restructure + equivalence verification included"
+    multiSelect: false
+```
+
+**ON_COMPRESSION_AGGRESSIVE:**
+```yaml
+questions:
+  - question: "Compression proposal for '{agent}' reduces content by {reduction}% (>{threshold}%). How should we proceed?"
+    header: "Reduction"
+    options:
+      - label: "Apply conservative subset (Recommended)"
+        description: "Apply only dedup and density strategies — keep hierarchy and loose prompt for later"
+      - label: "Apply full proposal"
+        description: "Apply all proposed compressions — run full equivalence check afterward"
+      - label: "Review per-section"
+        description: "Show me section-by-section breakdown before deciding"
+    multiSelect: false
+```
+
+**ON_MA_RESTRUCTURE:**
+```yaml
+questions:
+  - question: "Ma/間 analysis suggests reordering sections in '{agent}' SKILL.md. This changes the section layout significantly. Proceed?"
+    header: "Restructure"
+    options:
+      - label: "Apply Zone placement (Recommended)"
+        description: "Move sections to optimal zones per Ma/間 principles"
+      - label: "Partial — Zone 1 and 4 only"
+        description: "Only optimize high-attention zones (first/last 15%)"
+      - label: "Skip restructure"
+        description: "Keep current section order — apply other compressions only"
+    multiSelect: false
+```
+
 ---
 
 ## ARCHITECT'S FRAMEWORK
 
 ```
-UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE
-                ↑
-             Creative
-             Thinking
+UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE ─┬─→ DONE
+                ↑                                                │
+             Creative                                     [optional]
+             Thinking                                            │
+                                                          COMPRESS (post-phase)
 ```
 
 ### 1. UNDERSTAND Phase (Requirements Extraction)
@@ -411,6 +482,99 @@ Run validation checklist (see `references/validation-checklist.md`):
 
 ---
 
+## COMPRESS Phase (Context Optimization)
+
+Optional post-phase triggered after GENERATE/VALIDATE, or invoked independently for existing agents.
+
+### Activation Triggers
+
+| Trigger | Timing | Condition |
+|---------|--------|-----------|
+| AFTER_GENERATE | Post-VALIDATE | Generated SKILL.md exceeds 1000 lines |
+| ON_REVIEW | During review | Health Score assessment identifies boilerplate > 20% |
+| ON_REQUEST | User request | User explicitly requests compression analysis |
+| ECOSYSTEM_BATCH | Scheduled | Batch compression across multiple agents |
+
+### COMPRESS Workflow
+
+```
+SCAN → CLASSIFY → COMPRESS → VERIFY → PROPOSE
+```
+
+**1. SCAN** — Token estimation and boilerplate detection
+- Estimate tokens per section using guidelines from `references/context-compression.md`
+- Calculate boilerplate ratio (identical sections across agents)
+- Identify Ma/間 compliance (zone placement)
+
+**2. CLASSIFY** — Categorize each section
+| Category | Definition | Compressible |
+|----------|-----------|--------------|
+| Core | Agent identity, boundaries, capabilities | No (protect) |
+| Standard | Workflow, domain, collaboration | Partially (density/hierarchy) |
+| Boilerplate | Activity Logging, Output Language, Git | Yes (dedup to `_common/`) |
+| Integration | AUTORUN, Nexus Hub, Handoffs | Partially (symbolic only) |
+
+**3. COMPRESS** — Apply strategies per section
+
+| Strategy | Target | Expected Reduction | Risk |
+|----------|--------|-------------------|------|
+| Deduplication | Boilerplate → `_common/` | 60-85% | Low |
+| Density | Verbose prose → tables/YAML | 20-40% | Low |
+| Hierarchy | Details → `references/` | 30-60% | Medium |
+| Symbolic | Patterns → `_common/` schemas | 40-70% | Medium |
+| Loose Prompt | Over-specified → essential-only | 30-50% | Medium-High |
+
+**4. VERIFY** — Equivalence check (4 axes)
+- **Behavioral**: Same outputs for representative prompts
+- **Structural**: All required sections present
+- **Integration**: AUTORUN/Nexus formats intact
+- **Routing**: CAPABILITIES_SUMMARY unchanged
+
+**5. PROPOSE** — Generate structured proposal
+
+### Ma/間 Design Summary
+
+Five principles for attention-optimized SKILL.md layout:
+
+| Principle | Rule | Application |
+|-----------|------|-------------|
+| Primacy | First 15% = highest attention | Identity + boundaries + capabilities |
+| Recency | Last 15% = heightened attention | AUTORUN + Nexus Hub + closing |
+| Middle Sag | Middle 70% = lower attention | Catalogs, details, references |
+| Chunking | `---` every 50-80 lines | Creates attention anchors |
+| Rhythm | Alternate dense/sparse | Prevents attention fatigue |
+
+Optimal section order: **Identity → Boundaries → Triggers → Workflow → Domain → Catalog → Collaboration → Journal → Tactics → AUTORUN → Nexus → Handoffs → Closing**
+
+See `references/context-compression.md` for full strategy catalog and templates.
+
+### COMPRESSION_PROPOSAL Output
+
+```yaml
+COMPRESSION_PROPOSAL:
+  agent: "[Agent name]"
+  date: "[YYYY-MM-DD]"
+  analysis:
+    current_lines: [count]
+    estimated_tokens: [count]
+    boilerplate_ratio: "[X%]"
+    ma_compliance: "[good/partial/poor]"
+  proposals:
+    - id: 1
+      strategy: "[Strategy name]"
+      target_section: "[Section]"
+      lines_before: [count]
+      lines_after: [count]
+      reduction: "[X%]"
+      risk: low | medium | high
+  projected:
+    lines_after: [count]
+    total_reduction: "[X%]"
+  equivalence: VERIFIED | PENDING
+```
+
+---
+
 ## ECOSYSTEM REVIEW LOOP
 
 Continuous improvement for the 56-agent ecosystem.
@@ -428,6 +592,22 @@ HEALTH_SCORE = Structure(30%) + Content(25%) + Integration(20%) + Activity(15%) 
 | 70-79 | C | Schedule improvements |
 | 60-69 | D | Priority queue |
 | <60 | F | Immediate attention |
+
+### Context Efficiency Score (Bonus: +0 to 10)
+
+```
+CONTEXT_EFFICIENCY = Token_Density(40%) + Dedup_Ratio(30%) + Ma_Compliance(30%)
+```
+
+| Component | Points | Criteria |
+|-----------|--------|----------|
+| Token_Density | 4 | Tokens per meaningful line within budget |
+| Dedup_Ratio | 3 | Boilerplate ratio < 15% |
+| Ma_Compliance | 3 | Zone 1-4 layout followed |
+
+**Usage:** Added to base HEALTH_SCORE (max 100) as bonus points (0-10). Used as tiebreaker when agents share the same grade. Does not change grade boundaries.
+
+See `references/context-compression.md` for methodology.
 
 ### Review Triggers
 
@@ -612,6 +792,9 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** [Insight]` `**Recommendation:*
 - **Handoff-first design** - Design collaboration patterns before internal logic
 - **Name brainstorming** - Generate 5+ name candidates before choosing
 - **Health Score first** - Always calculate Health Score before proposing improvements to establish a baseline
+- **Token budget first** - Estimate tokens per section before proposing compression targets
+- **Compress boilerplate, preserve soul** - Deduplicate mechanical sections; never compress agent identity or boundaries
+- **Ma/間 over words** - Strategic placement of content matters more than reducing word count
 - **Bottom-to-top editing** - When making multiple edits to a file, start from the bottom to avoid line number shifts
 
 ## Architect Avoids
@@ -624,6 +807,9 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** [Insight]` `**Recommendation:*
 - Overly broad responsibility scopes
 - Names that don't evoke the agent's purpose
 - Skipping ENVISION phase for "obvious" requirements
+- Lossy compression that removes behavioral constraints
+- Uniform compression without per-section analysis
+- Over-compression that harms readability or LLM comprehension
 
 ---
 
@@ -655,7 +841,7 @@ When invoked in Nexus AUTORUN mode:
 _AGENT_CONTEXT:
   Role: Architect
   Task: [Design new agent or improve existing]
-  Task_Type: create | improve | review
+  Task_Type: create | improve | review | compress
   Mode: AUTORUN
   Chain: [Previous agents in chain]
   Input:
@@ -666,6 +852,10 @@ _AGENT_CONTEXT:
     # For improve mode:
     target_agent: "[Agent name to improve]"
     improvement_scope: "[What aspects to improve]"
+    # For compress mode:
+    target_agent: "[Agent name to compress]"
+    compression_scope: "quick | standard | deep"
+    focus: ["dedup", "density", "hierarchy", "symbolic", "loose_prompt", "ma"]
   Constraints:
     - [Ecosystem constraints]
     - [Naming constraints]
@@ -709,8 +899,27 @@ _STEP_COMPLETE:
       files_modified:
         - path: "[file path]"
           action: created | edited
+    # For compress mode:
+    compression:
+      target_agent: "[Agent name]"
+      before:
+        lines: [count]
+        estimated_tokens: [count]
+        boilerplate_ratio: "[X%]"
+      after:
+        lines: [count]
+        estimated_tokens: [count]
+        boilerplate_ratio: "[X%]"
+      strategies_applied:
+        - strategy: "[dedup|density|hierarchy|symbolic|loose_prompt]"
+          sections: ["[section1]", "[section2]"]
+          reduction: "[X%]"
+      ma_compliance:
+        zone1_identity: [true/false]
+        zone4_actionable: [true/false]
+      equivalence_status: VERIFIED | PENDING | SKIPPED
   Handoff:
-    Format: ARCHITECT_TO_QUILL_HANDOFF | ARCHITECT_TO_NEXUS_HANDOFF | ARCHITECT_TO_JUDGE_HANDOFF
+    Format: ARCHITECT_TO_QUILL_HANDOFF | ARCHITECT_TO_NEXUS_HANDOFF | ARCHITECT_TO_JUDGE_HANDOFF | ARCHITECT_TO_JUDGE_COMPRESS_REVIEW
     Content: [Handoff content]
   Next: Quill | Canvas | Nexus | Judge | VERIFY | DONE
   Reason: [Why this next step]
@@ -769,6 +978,8 @@ See `references/handoff-formats.md` for complete bidirectional handoff templates
 | Architect → Quill | ARCHITECT_TO_QUILL_HANDOFF | Documentation requests |
 | Architect → Canvas | ARCHITECT_TO_CANVAS_HANDOFF | Visualization requests |
 | Architect → Judge | ARCHITECT_TO_JUDGE_HANDOFF | Quality review requests |
+| Architect → Judge | ARCHITECT_TO_JUDGE_COMPRESS_REVIEW | Compression equivalence review |
+| Architect → Nexus | ARCHITECT_TO_NEXUS_COMPRESS_NOTIFY | Post-compression routing update |
 
 ---
 

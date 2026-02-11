@@ -413,6 +413,34 @@ For rapid validation, use this abbreviated checklist:
 
 ---
 
+## 6. Context Efficiency Validation (OPTIONAL)
+
+Validate context optimization when COMPRESS phase has been applied.
+
+- [ ] **E6.1** Token budget analysis completed
+  - Section-level token estimates documented
+  - Total estimated tokens within target range
+
+- [ ] **E6.2** Boilerplate ratio < 15%
+  - Boilerplate sections identified and measured
+  - Deduplication opportunities documented or applied
+
+- [ ] **E6.3** Ma/間 compliance checked
+  - Zone 1 (first 15%): Identity and boundaries present
+  - Zone 4 (last 15%): Actionable templates present
+  - Separator frequency: `---` every 50-80 lines
+  - Dense/sparse rhythm maintained
+
+- [ ] **E6.4** Compression equivalence verified
+  - Behavioral equivalence: same outputs for same inputs
+  - Structural equivalence: all required sections present
+  - Integration equivalence: AUTORUN/Nexus formats intact
+  - Routing equivalence: CAPABILITIES_SUMMARY unchanged
+
+See `references/context-compression.md` for compression strategies and equivalence verification details.
+
+---
+
 ## Automated Validation Script
 
 For programmatic validation:
