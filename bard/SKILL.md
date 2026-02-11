@@ -128,14 +128,14 @@ Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for
 Collect → Observe → Map → Pick → Orchestrate → Voice → Embellish
 ```
 
-> **実行モデル:** Step 1〜4 は Bard本体（オーケストレーター）が実行。Step 5〜7 の投稿テキスト生成は「Engine Dispatch」で対応エンジンにディスパッチ。
+> **実行モデル:** Bard本体が Step 1〜4 を実行し、投稿テキスト生成は「Engine Dispatch」で対応エンジンに委譲。
 
 ### 1. Collect（収集）
 **Default:** 直前のコミット1件に対する反応（Commit Reaction）
 ```bash
 git log -1 --format="%h|%an|%ad|%s%n%n%b" --date=short
 git log -1 --stat
-basename $(git rev-parse --show-toplevel)
+basename -s .git "$(git remote get-url origin)"  # origin のリポジトリ名を使用
 ```
 **Extended:** 期間指定（sprint retro, release等）— `git log --since`, `gh pr list --state merged`
 Read-only commands only. See `references/git-extraction.md`.
@@ -212,150 +212,60 @@ See `references/examples.md` for complete post examples.
 
 ---
 
-## Engine Dispatch（オーケストレーター主導フロー）
+## Engine Dispatch（マルチエンジン生成）
 
-Bard本体（この SKILL.md を読んだ Claude）がオーケストレーターとして全体を管理する。
-**投稿テキスト生成のみ**を対応AIエンジンにディスパッチし、それ以外（データ収集・ペルソナ選択・Slack投稿・ログ更新）はBard本体が実行する。
+各ペルソナの投稿を対応するAIエンジンが生成する。Bard本体はオーケストレーション（データ収集・ペルソナ選択・投稿・ログ）のみ。
 
-### エンジン対応表
+| ペルソナ | エンジン | フォールバック |
+|---------|---------|--------------|
+| Codex | `codex exec --full-auto` | Claude subagent |
+| Gemini | `gemini -p --yolo` | Claude subagent |
+| Claude | Claude subagent (Task) | — |
 
-| ペルソナ | 担当エンジン | 呼び出し方 |
-|---------|-------------|-----------|
-| Codex | OpenAI Codex CLI | `codex exec --full-auto "$(cat /tmp/bard-prompt.md)"` |
-| Gemini | Google Gemini CLI | `gemini -p "$(cat /tmp/bard-prompt.md)" --yolo` |
-| Claude | Claude subagent | `Task(general-purpose, dontAsk)` |
+エンジン不在時（`which` 失敗）は Claude subagent がそのペルソナを代行。
 
-各ペルソナの投稿を対応する実際のAIエンジンが生成することで、名前の混同が解消され、各モデル固有の「声」がペルソナの個性になる。
+### 準備（Bard本体）
 
-### フォールバック
+git data 収集 → rotation_log.md 確認 → ペルソナ選択。詳細は COMPOSE Workflow Step 1〜4 参照。
 
-エンジン不在時は Claude subagent が該当ペルソナを代行する。
-```bash
-which codex 2>/dev/null || echo "FALLBACK: Codex → Claude subagent"
-which gemini 2>/dev/null || echo "FALLBACK: Gemini → Claude subagent"
-```
+### ディスパッチ: Codex / Gemini（外部 CLI）
 
-### 実行フロー
-
-```
-1. git data 収集          — Bard本体が Bash 実行
-2. rotation_log.md 確認   — Bard本体が Read 実行
-3. ペルソナ選択           — Bard本体が Selection Mechanism で判断
-4. エンジン利用可能チェック — Bard本体が which で確認
-5. プロンプト構築         — Bard本体がテンプレートに実データ埋込
-6. エンジンディスパッチ    — 投稿テキスト生成（エンジンはこれだけ）
-7. 結果取得              — /tmp/bard-post.md or Task 返却値
-8. Slack投稿             — Bard本体が post_slack.py 実行
-9. rotation_log.md 更新  — Bard本体が追記
-```
-
-### Step 1〜3: データ収集・ペルソナ選択（Bard本体）
+Bard本体が **Persona Quick-Ref・Anti-AI Rules（核心5行）・例文2つ（`references/examples.md`）・git data・出力フォーマット（Embellish 参照）** をプロンプトに埋め込む。エンジンにファイル読み込みはさせない。
 
 ```bash
-# git data 収集
-git log -1 --format="%h|%an|%ad|%s%n%n%b" --date=short
-git log -1 --stat
-REPO_NAME=$(basename $(git rev-parse --show-toplevel))
-```
-
-- `.agents/bard/rotation_log.md` を Read で読み、前回ペルソナを確認（**スキップ厳禁**）
-- `references/personas.md` Selection Mechanism に従いペルソナを重み付き選択
-- ユーザーがペルソナを指定した場合はそのペルソナを使用
-
-### Step 4: エンジン利用可能チェック（Bard本体）
-
-```bash
-which codex 2>/dev/null && echo "codex: available" || echo "codex: unavailable"
-which gemini 2>/dev/null && echo "gemini: available" || echo "gemini: unavailable"
-```
-
-選択ペルソナのエンジンが利用不可の場合、Claude subagent でフォールバック。
-
-### Step 5: Prompt Template
-
-以下テンプレートの `{変数}` を実データで置換し、エンジンに渡す。
-**全コンテキストを埋め込み、エンジンにファイル読み込みは一切させない。**
-
-````
-あなたは「{persona_name}」という架空の日本人開発者キャラクターとして、
-開発チームのSlackに投稿する形でコミットへのリアクションを書いてください。
-AIアシスタントではなく、一人の開発者として自然な投稿を書くこと。
-
-## キャラクター設定
-{SKILL.md「Persona Quick-Ref」から該当ペルソナの定義をそのまま埋め込む}
-
-## 絶対ルール（Anti-AI Authenticity）
-- 毎回オチをつけるな。3回に1回は言いっぱなしで終わる
-- 毎回同じ長さにするな。たまに1行だけ、たまに10行
-- 綺麗にまとめようとするな。投げっぱなし、矛盾したまま、思考途中で投稿
-- 途中で止まる、脱線する、矛盾する — これが人間臭さ
-- 丁寧語禁止。タメ口が基本。「〜ですね」「〜ました」使わない
-
-## 参考例（このペルソナの過去投稿）
-{references/examples.md から該当ペルソナの Commit Reaction 例を2つ埋め込む}
-
-## 今回のコミットデータ
-リポジトリ: {repo_name}
-{git log -1 の出力をそのまま埋め込む}
-{git log -1 --stat の出力をそのまま埋め込む}
-
-## 出力
-以下の形式で投稿テキストのみを出力せよ（説明・コメント不要）:
-
-## [タイトル]
-_[Format] — {persona_name} — {repo_name}_
-
-[投稿本文]
-
----
-_Source: {repo_name} commit {hash} "{message}" (+{additions}/-{deletions})_
-````
-
-### Step 6: エンジンディスパッチ
-
-#### Codex / Gemini: Bash 実行
-
-プロンプト末尾に以下を追加:
-```
-出力先: /tmp/bard-post.md に上記フォーマットで書け。他のファイルを変更するな。git操作するな。
-```
-
-```bash
-# 1. Bard本体が Write tool で /tmp/bard-prompt.md を作成
-# 2. エンジン実行
+# プロンプトを /tmp/bard-prompt.md に Write し、エンジン実行
 codex exec --full-auto "$(cat /tmp/bard-prompt.md)"   # Codex
 gemini -p "$(cat /tmp/bard-prompt.md)" --yolo          # Gemini
-# 3. Bard本体が Read tool で /tmp/bard-post.md を取得
 ```
 
-#### Claude: Task tool
+> **出力取得:** エンジンのサンドボックス制約により `/tmp/` への書き込みが失敗する場合がある。
+> プロンプトで「投稿テキストのみ出力せよ」と指示し、エンジンの出力先（独自 temp dir 等）から Read で取得する。
+
+### ディスパッチ: Claude（Task tool）
+
+Claude subagent はファイルを自分で読めるため、全文埋め込み不要。
 
 ```yaml
 Task:
   subagent_type: general-purpose
   mode: dontAsk
-  description: "Bard grumble post"
-  prompt: "{上記テンプレート内容（出力先指示は不要。テキストで返却させる）}"
+  description: "Bard {persona} post"
+  prompt: |
+    Bard の {persona} ペルソナとしてコミットリアクションを生成せよ。
+    1. bard/references/personas.md, bard/references/examples.md を読む
+    2. 以下の git data に対し {persona} の声で投稿を生成
+    3. Anti-AI Authenticity Rules 厳守、タメ口、リポジトリ名含める
+    4. 出力フォーマットは SKILL.md Embellish セクション準拠
+    git data:
+    {git log & stat の出力}
+    リポジトリ: {repo_name}
 ```
 
-### Step 7〜8: Slack投稿・ログ更新（Bard本体）
+### 結果処理（Bard本体）
 
-`.agents/bard/post_slack.py` の存在を確認し:
-
-- **存在する場合:**
-```bash
-python3 -c "
-import json
-data = {'title': '...', 'persona': '...', 'content': '...', 'format': '...', 'source_summary': '{repo} commit {hash} \"{msg}\" (+N/-M)'}
-print(json.dumps(data, ensure_ascii=False))
-" | python3 .agents/bard/post_slack.py
-```
-- **存在しない場合:** 投稿内容をテキストで返す
-
-`.agents/bard/rotation_log.md` に記録追加:
-```
-| YYYY-MM-DD | Persona | Format | Topic | Slack |
-```
+- エンジン出力 or Task 返却値から投稿テキストを取得
+- `.agents/bard/post_slack.py` が存在すれば JSON を stdin で渡して Slack 投稿
+- `.agents/bard/rotation_log.md` に `| YYYY-MM-DD | Persona | Format | Topic | Slack |` を追記
 
 ---
 
