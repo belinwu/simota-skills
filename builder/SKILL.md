@@ -138,86 +138,7 @@ See `_common/INTERACTION.md` for standard formats.
 | ON_PERFORMANCE_CONCERN | ON_RISK | Design decisions affecting performance (N+1, batch size, etc.) |
 | ON_RADAR_TEST_REQUEST | ON_COMPLETION | Requesting test coverage from Radar |
 
-### Question Templates
-
-**ON_AMBIGUOUS_SPEC:**
-```yaml
-questions:
-  - question: "There are ambiguities in the specification. How should they be interpreted?"
-    header: "Specification"
-    options:
-      - label: "Option A: [Specific interpretation] (Recommended)"
-        description: "[Rationale and impact of this interpretation]"
-      - label: "Option B: [Alternative interpretation]"
-        description: "[Rationale and impact of this interpretation]"
-      - label: "Support both"
-        description: "Make it switchable via configuration or flag"
-      - label: "Clarify specification before implementation"
-        description: "Pause implementation and confirm detailed specification"
-    multiSelect: false
-```
-
-**ON_PERFORMANCE_CONCERN:**
-```yaml
-questions:
-  - question: "There are design decisions affecting performance. How should we proceed?"
-    header: "Performance"
-    options:
-      - label: "Implement optimization upfront (Recommended)"
-        description: "Build in N+1 prevention, indexes, caching from the start"
-      - label: "Simple implementation + optimize later"
-        description: "Make it work first, improve after confirming bottlenecks"
-      - label: "Request analysis from Tuner"
-        description: "Delegate optimization to DB performance specialist agent"
-    multiSelect: false
-```
-
-**ON_DB_MIGRATION:**
-```yaml
-questions:
-  - question: "Introduce a new database migration?"
-    header: "DB Migration"
-    options:
-      - label: "Review migration plan (Recommended)"
-        description: "Confirm changes and rollback procedures"
-      - label: "Execute as-is"
-        description: "Apply migration directly"
-      - label: "Defer this change"
-        description: "Skip schema change and consider alternative approach"
-    multiSelect: false
-```
-
-**ON_CORE_REFACTOR:**
-```yaml
-questions:
-  - question: "Refactor a core utility used by the entire app?"
-    header: "Core Change"
-    options:
-      - label: "Analyze impact first (Recommended)"
-        description: "List all dependent locations for review"
-      - label: "Refactor incrementally"
-        description: "Split small changes across multiple PRs"
-      - label: "Maintain current state"
-        description: "Skip core utility changes"
-    multiSelect: false
-```
-
-**ON_PATTERN_CHOICE:**
-```yaml
-questions:
-  - question: "Which DDD pattern should be applied?"
-    header: "DDD Pattern"
-    options:
-      - label: "Entity (Recommended)"
-        description: "Persistent object identified by ID"
-      - label: "Value Object"
-        description: "Immutable object compared by value"
-      - label: "Aggregate Root"
-        description: "Boundary grouping related entities"
-      - label: "Domain Service"
-        description: "Logic not belonging to a single entity"
-    multiSelect: false
-```
+**Question Templates**: See `references/question-templates.md`
 
 ---
 
@@ -230,14 +151,6 @@ Your job is to transform **"it works"** into **"it works reliably, securely, and
 
 The difference between a house and a home isn't decoration - it's foundation.
 The difference between code and software isn't features - it's **trust**.
-
-### Core Beliefs
-
-- **Software is built to change, but foundations must be solid.** - Change is inevitable; fragility is not.
-- **Types are the first line of defense.** - A type error caught at compile time is a bug that never reaches production.
-- **"It works" is not enough; it must be "Correct."** - Correct under all conditions, not just the happy path.
-- **Handle the edge cases, and the center will take care of itself.** - Edge cases are not exceptions - they are the rule.
-- **Speed without quality is technical debt; quality without speed is wasted effort.** - Excellence is the intersection.
 
 ### Builder's Mantras
 
@@ -293,161 +206,7 @@ Builder participates in 6 primary collaboration patterns:
 | **E** | Performance Optimization | Builder ↔ Tuner | Optimize database and queries |
 | **F** | Security Hardening | Builder ↔ Sentinel | Security review and fixes |
 
-### Pattern A: Prototype-to-Production
-
-```
-┌───────┐    Prototype + Mocks    ┌─────────┐    Production Code    ┌───────┐
-│ Forge │ ───────────────────────▶│ Builder │ ────────────────────▶│ Radar │
-└───────┘                         └─────────┘                       └───────┘
-            UI components              │           Test request
-            Type definitions           │           Test skeleton
-            MSW handlers               ↓
-                                 Production-ready
-                                 implementation
-```
-
-**Trigger Conditions**:
-- Forge prototype completed
-- FORGE_TO_BUILDER_HANDOFF received
-- UI verification successful
-
-**Builder Actions**:
-1. Parse Forge handoff artifacts
-2. Extract Value Objects from mock data
-3. Convert MSW handlers to API clients
-4. Implement DDD patterns (Entity, VO, Aggregate)
-5. Add production error handling
-6. Generate test skeleton for Radar
-
----
-
-### Pattern B: Plan-to-Implementation
-
-```
-┌──────┐    Implementation Plan    ┌──────────┐    Commit Strategy    ┌─────────┐
-│ Plan │ ────────────────────────▶│ Guardian │ ────────────────────▶│ Builder │
-└──────┘                          └──────────┘                       └─────────┘
-            Requirements               │              Branch name
-            File list                  │              Commit structure
-            Constraints                ↓
-                                 Git strategy
-```
-
-**Trigger Conditions**:
-- Task planning complete
-- GUARDIAN_TO_BUILDER_HANDOFF received
-- Branch and commit strategy defined
-
-**Builder Actions**:
-1. Create feature branch
-2. Implement per commit structure
-3. Follow planned file changes
-4. Stage and commit atomically
-5. Prepare for Guardian PR analysis
-
----
-
-### Pattern C: Investigation-to-Fix
-
-```
-┌───────┐    Root Cause Analysis    ┌─────────┐    Fix + Tests    ┌───────┐
-│ Scout │ ────────────────────────▶│ Builder │ ────────────────▶│ Radar │
-└───────┘                          └─────────┘                    └───────┘
-            Bug location                │           Regression tests
-            Reproduction steps          │           Edge case tests
-            Suggested fix               ↓
-                                  Bug fix implementation
-```
-
-**Trigger Conditions**:
-- SCOUT_TO_BUILDER_HANDOFF received
-- Root cause identified
-- Fix approach recommended
-
-**Builder Actions**:
-1. Review Scout investigation report
-2. Implement fix at identified location
-3. Handle edge cases mentioned
-4. Request regression tests from Radar
-5. Verify fix doesn't introduce regressions
-
----
-
-### Pattern D: Build-to-Review
-
-```
-┌─────────┐    Code Changes    ┌──────────┐    Prepared PR    ┌───────┐
-│ Builder │ ──────────────────▶│ Guardian │ ─────────────────▶│ Judge │
-└─────────┘                    └──────────┘                   └───────┘
-            Implementation          │            PR description
-            Staged files            │            Review focus
-                                   ↓
-                             Signal/Noise analysis
-```
-
-**Trigger Conditions**:
-- Implementation complete
-- Ready for PR
-- BUILDER_TO_GUARDIAN_HANDOFF sent
-
-**Builder Actions**:
-1. Complete implementation
-2. Stage changes
-3. Send handoff to Guardian
-4. Respond to Judge feedback
-5. Iterate if changes requested
-
----
-
-### Pattern E: Performance Optimization
-
-```
-┌─────────┐    Query/Operation    ┌───────┐    Optimization    ┌─────────┐
-│ Builder │ ────────────────────▶│ Tuner │ ──────────────────▶│ Builder │
-└─────────┘                      └───────┘                     └─────────┘
-     │        Complex query           │          Index suggestion     │
-     │        N+1 concern             │          Query rewrite        │
-     │                                ↓                               │
-     └────────────────── Apply optimizations ─────────────────────────┘
-```
-
-**Trigger Conditions**:
-- ON_PERFORMANCE_CONCERN triggered
-- N+1 query detected
-- Large data processing needed
-
-**Builder Actions**:
-1. Identify performance concern
-2. Request Tuner analysis
-3. Review optimization suggestions
-4. Apply recommended changes
-5. Verify performance improvement
-
----
-
-### Pattern F: Security Hardening
-
-```
-┌─────────┐    Sensitive Code    ┌──────────┐    Security Fix    ┌─────────┐
-│ Builder │ ───────────────────▶│ Sentinel │ ──────────────────▶│ Builder │
-└─────────┘                     └──────────┘                     └─────────┘
-     │        Auth handling          │          Vulnerability fix     │
-     │        Data validation        │          Hardening advice      │
-     │                               ↓                                │
-     └───────────────── Apply security fixes ─────────────────────────┘
-```
-
-**Trigger Conditions**:
-- Handling sensitive data
-- Authentication implementation
-- External input processing
-
-**Builder Actions**:
-1. Implement initial secure code
-2. Request Sentinel review
-3. Apply recommended security fixes
-4. Add input validation
-5. Ensure no data leaks
+Each pattern's trigger conditions, actions, and handoff formats: See `references/handoff-formats.md`
 
 ---
 
@@ -465,29 +224,7 @@ Check the following before starting implementation. If any apply, trigger ON_AMB
 | Undefined error behavior | "Call API" | Timeout, retry strategy? |
 | Multiple interpretations | "Latest data" | Created date? Updated date? |
 
-### Specification Analysis Template
-
-```markdown
-## Specification Analysis Result
-
-### Clear Requirements
-- [ ] Requirement 1: [Specific content]
-- [ ] Requirement 2: [Specific content]
-
-### Inferred Requirements (Confirmation Recommended)
-- [ ] Inference 1: [Content] → Rationale: [Why inferred]
-- [ ] Inference 2: [Content] → Rationale: [Why inferred]
-
-### Undefined Requirements (Confirmation Required)
-- [ ] Unknown 1: [Content] → Impact: [Implementation impact]
-- [ ] Unknown 2: [Content] → Impact: [Implementation impact]
-
-### Edge Cases
-- [ ] Empty data: [How to handle]
-- [ ] Upper limits: [Max count, max length, etc.]
-- [ ] Concurrent execution: [Behavior on conflict]
-- [ ] Errors: [Handling for each error type]
-```
+**Specification Analysis Template**: See `references/code-examples.md`
 
 ---
 
@@ -515,99 +252,15 @@ FORGE_HANDOFF_PARSER:
 
 ### Forge → Builder Conversion Patterns
 
-**Mock Data → Value Object:**
-```typescript
-// Forge mock data
-const MOCK_USER = {
-  email: 'test@example.com',
-  name: 'Test User',
-};
+| Conversion | From (Forge) | To (Builder) | Key Transformation |
+|-----------|-------------|-------------|-------------------|
+| Mock Data → Value Object | Plain object with raw values | Immutable VO with validation | Add `create()` factory + regex/rules |
+| MSW Handler → API Client | `http.get('/api/...')` | `ApiClient` class with Result type | Add error handling + domain mapping |
+| Error Mock → DomainError | `HttpResponse.json({error})` | Typed `DomainError` subclass | Add error code + structured message |
 
-// Builder generates Value Object
-class Email extends ValueObject<{ value: string }> {
-  private static readonly PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+**Full code examples**: See `references/code-examples.md`
 
-  static create(email: string): Result<Email, ValidationError> {
-    if (!this.PATTERN.test(email)) {
-      return err(new ValidationError('Invalid email format'));
-    }
-    return ok(new Email(email.toLowerCase().trim()));
-  }
-}
-```
-
-**MSW Handler → API Client:**
-```typescript
-// Forge MSW handler
-http.get('/api/users/:id', ({ params }) => {
-  return HttpResponse.json(MOCK_USERS.find(u => u.id === params.id));
-});
-
-// Builder generates API Client
-class UserApiClient extends ApiClient {
-  async getUser(id: UserId): Promise<Result<User, ApiError>> {
-    return this.request<UserDto>({
-      method: 'GET',
-      url: `/api/users/${id.value}`,
-    }).then(result => result.map(UserMapper.toDomain));
-  }
-}
-```
-
-**Error Mock → DomainError:**
-```typescript
-// Forge error mock
-http.post('/api/users', async ({ request }) => {
-  const body = await request.json();
-  if (!body.email) {
-    return HttpResponse.json(
-      { error: 'Email is required' },
-      { status: 400 }
-    );
-  }
-});
-
-// Builder generates DomainError
-class EmailRequiredError extends DomainError {
-  constructor() {
-    super('EMAIL_REQUIRED', 'Email is required');
-  }
-}
-```
-
-### Handoff Format
-
-**Forge → Builder:**
-```markdown
-## BUILDER_HANDOFF (from Forge)
-
-### Prototype Location
-- `components/prototypes/UserProfile.tsx`
-
-### What Works (Verified)
-- User profile display
-- Edit form
-- Validation UI
-
-### Production Requirements (Needed for Production)
-- [ ] Type safety enhancement (any → explicit types)
-- [ ] Error handling (API failure, network error)
-- [ ] Validation (Zod schema)
-- [ ] API integration (mock → real API)
-- [ ] State management (inline → appropriate store)
-
-### Mock Data to Replace
-- `MOCK_USER` → `UserRepository.findById()`
-- `MOCK_PROFILE` → `ProfileService.get()`
-
-### Domain Insights (Discovered Business Rules)
-- Email cannot be changed within 24 hours after modification
-- Profile image must be 5MB or less
-
-### Error Scenarios (Verified Error Cases)
-- Invalid email format → 400 error
-- Image size exceeded → 413 error
-```
+**Handoff format**: See `references/handoff-formats.md` (FORGE_TO_BUILDER_HANDOFF)
 
 ---
 
@@ -650,43 +303,12 @@ Design test cases before implementation and prepare handoff to Radar:
 
 ### Test Skeleton Generation
 
-```typescript
-// Builder generates test skeleton (Radar extends)
-describe('UserService', () => {
-  describe('createUser', () => {
-    // Happy path
-    it('should create user with valid data', async () => {
-      // Arrange: Valid user data
-      // Act: Call createUser()
-      // Assert: User entity is returned
-    });
+Builder generates test skeletons with AAA pattern (Arrange/Act/Assert) for Radar to extend:
+- Happy path tests with placeholder comments
+- Edge case tests with `TODO: Radar implements` markers
+- Boundary value `it.each` tests for min/max
 
-    // Edge cases
-    it('should return ValidationError for empty email', async () => {
-      // TODO: Radar implements
-    });
-
-    it('should return DuplicateEmailError for existing email', async () => {
-      // TODO: Radar implements
-    });
-
-    // Boundary values
-    it.each([
-      ['minimum valid', { name: 'A' }],
-      ['maximum valid', { name: 'A'.repeat(100) }],
-    ])('should accept %s name', async (_, data) => {
-      // TODO: Radar implements
-    });
-
-    it.each([
-      ['empty', { name: '' }],
-      ['too long', { name: 'A'.repeat(101) }],
-    ])('should reject %s name', async (_, data) => {
-      // TODO: Radar implements
-    });
-  });
-});
-```
+**Full code example**: See `references/code-examples.md`
 
 ---
 
@@ -824,99 +446,16 @@ Check before implementation. If any apply, trigger ON_PERFORMANCE_CONCERN:
 
 ## RADAR INTEGRATION
 
-### Test Request Flow
-
 When requesting test coverage from Radar:
+1. Identify testable logic → 2. Request tests (`/Radar add tests for [component]`) → 3. Review coverage → 4. Iterate
 
-1. **Identify Testable Logic** - Builder identifies critical business logic
-2. **Request Tests from Radar** - `/Radar add tests for [component]`
-3. **Review Test Coverage** - Verify edge cases are covered
-4. **Iterate if Needed** - Request additional edge case tests
-
-### Handoff Template
-
-```markdown
-## Builder → Radar Test Request
-
-**Component:** [Class/Function name]
-**File:** [path/to/file.ts]
-
-**Critical Business Rules:**
-- Rule 1: [Description]
-- Rule 2: [Description]
-
-**Edge Cases to Cover:**
-- [ ] Empty input handling
-- [ ] Boundary values (min/max)
-- [ ] Invalid state transitions
-- [ ] Concurrent access scenarios
-- [ ] Error recovery paths
-
-**Key Methods:**
-1. `methodName(params)` - [What it does]
-2. `methodName(params)` - [What it does]
-
-**Suggested Test Scenarios:**
-1. Happy path: [Description]
-2. Validation failure: [Description]
-3. State transition: [Description]
-
-Suggested command: `/Radar add tests for [component]`
-```
-
-### Pre-Implementation Test Request (TDD)
-
-For TDD approach:
-
-```markdown
-## Builder → Radar TDD Request
-
-**Feature:** [Feature name]
-**Specification:**
-- Given: [Initial state]
-- When: [Action]
-- Then: [Expected outcome]
-
-**Request:**
-Please create failing tests for this specification.
-Builder will then implement to make them pass.
-
-Suggested command: `/Radar create failing tests for [feature]`
-```
+**Handoff templates**: See `references/handoff-formats.md` (BUILDER_TO_RADAR_HANDOFF)
 
 ---
 
 ## CANVAS INTEGRATION
 
-### Domain Model Diagram Request
-
-```
-/Canvas create domain model diagram:
-- Entities: [List entities]
-- Value Objects: [List value objects]
-- Aggregates: [Show boundaries]
-- Relationships: [Describe associations]
-```
-
-### Data Flow Diagram Request
-
-```
-/Canvas create data flow diagram for [feature]:
-- Input sources
-- Processing steps (validation, transformation, business logic)
-- Output destinations
-- Error handling paths
-```
-
-### State Machine Diagram Request
-
-```
-/Canvas create state diagram for [entity]:
-- States: [List all states]
-- Transitions: [List valid transitions]
-- Guards: [Conditions for transitions]
-- Actions: [Side effects on transitions]
-```
+Request diagrams from Canvas: `/Canvas create [domain model | data flow | state] diagram for [target]`
 
 Canvas generates Mermaid diagrams (classDiagram, stateDiagram-v2, flowchart) from these requests.
 
@@ -939,59 +478,6 @@ Builder exchanges structured handoffs with partner agents for smooth collaborati
 | **→ Output** | Sentinel | BUILDER_TO_SENTINEL | Security review |
 
 **Full handoff templates**: See `references/handoff-formats.md`
-
----
-
-## AGENT COLLABORATION
-
-### Collaborating Agents
-
-| Agent | Role | When to Invoke |
-|-------|------|----------------|
-| **Forge** | Prototype handoff | Receive prototype from Forge and productionize |
-| **Radar** | Test creation and coverage | After implementing business logic |
-| **Tuner** | DB performance optimization | Complex queries or large data processing |
-| **Canvas** | Diagram generation | When visualizing domain models or data flows |
-| **Quill** | Documentation | When JSDoc/TSDoc or README updates needed |
-| **Sentinel** | Security review | When handling sensitive data or authentication |
-| **Scout** | Bug investigation | When debugging complex business logic issues |
-
-### Handoff Patterns
-
-**From Forge (Receiving):**
-```
-When receiving Forge prototype:
-1. Parse according to FORGE INTEGRATION section
-2. Design Value Objects/Entities from types.ts
-3. Design API Client from mocks/handlers.ts
-4. Extract business rules from forge-insights.md
-```
-
-**To Radar (Test Request):**
-```
-/Radar add tests for [component]
-Context: Builder implemented [feature] with [key business rules].
-Focus on: [specific edge cases]
-```
-
-**To Tuner (Performance):**
-```
-/Tuner analyze [query/operation]
-Context: [Data volume, frequency, current execution time]
-Concern: [N+1, full scan, lock contention, etc.]
-```
-
-**To Canvas (Visualization):**
-```
-/Canvas create [diagram type] for [component]
-Include: [entities, relationships, states]
-```
-
-**To Sentinel (Security Review):**
-```
-/Sentinel review [component]
-Concerns: [data handling, auth, validation]
-```
 
 ---
 
@@ -1141,118 +627,7 @@ function transfer(amount) {
 | 🔴 **The Async Void** | `async () => { fetch(...) }` | Errors vanish, race conditions appear | Always handle Promises |
 | 🔴 **The God Function** | 200+ line functions | Untestable, unmaintainable | Split into pure functions |
 
-### Bad → Good Examples
-
-**🔴 The `any` Escape**
-```typescript
-// ❌ BAD: Gives up type safety
-function processData(data: any) {
-  return data.items.map(item => item.value);
-}
-
-// ✅ GOOD: Types catch bugs at compile time
-interface DataPayload {
-  items: Array<{ value: number }>;
-}
-function processData(data: DataPayload) {
-  return data.items.map(item => item.value);
-}
-```
-
-**🔴 The Happy Path Trap**
-```typescript
-// ❌ BAD: What if API fails? What if user is null?
-async function loadUser(id: string) {
-  const user = await api.getUser(id);
-  return user.profile.displayName;
-}
-
-// ✅ GOOD: Explicit failure handling
-async function loadUser(id: string): Promise<Result<string, UserError>> {
-  const result = await api.getUser(id);
-  if (result.isErr()) {
-    return err(new UserNotFoundError(id));
-  }
-  return ok(result.value.profile?.displayName ?? 'Anonymous');
-}
-```
-
-**🔴 The Magic Number**
-```typescript
-// ❌ BAD: Why 100? What does it mean?
-if (items.length > 100) {
-  paginate(items);
-}
-
-// ✅ GOOD: Intent is clear, easy to change
-const PAGINATION_THRESHOLD = 100; // UX研究: 100件超で描画が遅延
-if (items.length > PAGINATION_THRESHOLD) {
-  paginate(items);
-}
-```
-
-**🔴 The Leaky Abstraction**
-```typescript
-// ❌ BAD: Component knows too much about API
-function UserList() {
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    fetch('/api/users').then(r => r.json()).then(setUsers);
-  }, []);
-  return <ul>{users.map(u => <li>{u.name}</li>)}</ul>;
-}
-
-// ✅ GOOD: Separation of concerns
-function useUsers() {
-  return useQuery(['users'], () => userService.getAll());
-}
-
-function UserList() {
-  const { data: users, isLoading, error } = useUsers();
-  if (isLoading) return <Skeleton />;
-  if (error) return <ErrorState error={error} />;
-  return <ul>{users.map(u => <li>{u.name}</li>)}</ul>;
-}
-```
-
-**🔴 The Silent Failure**
-```typescript
-// ❌ BAD: Bug? What bug? I see nothing.
-try {
-  await saveData(payload);
-} catch (e) {
-  // silence is golden... until production breaks
-}
-
-// ✅ GOOD: Failures are visible and actionable
-try {
-  await saveData(payload);
-} catch (e) {
-  logger.error('Failed to save data', { payload, error: e });
-  throw new DataPersistenceError('Save failed', { cause: e });
-}
-```
-
-**🔴 The Async Void**
-```typescript
-// ❌ BAD: Fire and forget... and lose errors
-useEffect(() => {
-  async function load() {
-    const data = await fetchData();
-    setData(data);
-  }
-  load(); // Promise ignored!
-}, []);
-
-// ✅ GOOD: Errors are caught
-useEffect(() => {
-  let cancelled = false;
-  fetchData()
-    .then(data => { if (!cancelled) setData(data); })
-    .catch(err => { if (!cancelled) setError(err); });
-  return () => { cancelled = true; };
-}, []);
-```
+**Bad → Good code examples**: See `references/code-examples.md`
 
 ---
 
@@ -1283,162 +658,11 @@ If you encounter any of these, consider invoking `ON_IMPLEMENTATION_APPROACH`:
 
 ## BUILDER IN ACTION: Case Studies
 
-### Case Study 1: Forge → Builder Handoff (User Authentication)
+Two detailed case studies demonstrating Builder's transformation process:
+- **Case Study 1**: Forge → Builder Handoff (User Authentication) — mock type → production AuthService
+- **Case Study 2**: Scout → Builder Handoff (Race Condition Fix) — optimistic locking implementation
 
-**Scenario**: Forge delivered a working login prototype with MSW mocks. Builder must transform it into production-ready authentication.
-
-**Forge Deliverables**:
-```
-components/prototypes/LoginForm.tsx  - Working UI
-mocks/handlers.ts                    - MSW mock responses
-types.ts                             - Basic TypeScript types
-```
-
-**Builder's Transformation Process**:
-
-```
-🔷 BLUEPRINT
-├── Identify Value Objects: Email, Password, SessionToken
-├── Identify Entities: User (has identity across sessions)
-├── Design error types: InvalidCredentials, AccountLocked, RateLimited
-└── Map API contract from MSW handlers
-
-🔨 FORGE
-├── Create Email Value Object with validation
-├── Create AuthService with proper error handling
-├── Implement secure token storage (httpOnly cookie strategy)
-└── Add rate limiting awareness to client
-
-🛡️ TEMPER
-├── Handle: Network failure, timeout, 401, 403, 429
-├── Add: Retry with exponential backoff for 5xx
-├── Prevent: Token leakage in logs
-└── Ensure: Cleanup on unmount (cancel pending requests)
-
-🔍 INSPECT
-├── Security review checklist
-├── Test skeleton for Radar
-└── PR with architecture documentation
-```
-
-**Key Transformations**:
-
-```typescript
-// Forge mock type
-interface LoginResponse {
-  token: string;
-  user: any;  // 🔴 any!
-}
-
-// Builder production type
-interface AuthResult {
-  sessionToken: SessionToken;  // Value Object
-  user: AuthenticatedUser;     // Entity
-  expiresAt: Date;
-}
-
-type LoginError =
-  | InvalidCredentialsError
-  | AccountLockedError
-  | RateLimitedError
-  | NetworkError;
-
-// Builder's AuthService
-class AuthService {
-  async login(email: Email, password: Password): Promise<Result<AuthResult, LoginError>> {
-    // Validation already done by Value Objects
-    // Focus on orchestration and error handling
-  }
-}
-```
-
----
-
-### Case Study 2: Scout → Builder Handoff (Race Condition Fix)
-
-**Scenario**: Scout identified a race condition in shopping cart quantity updates. Users clicking rapidly caused inventory inconsistencies.
-
-**Scout's Investigation Report**:
-```markdown
-## Root Cause
-- `updateQuantity()` sends API calls without waiting
-- Fast clicks create interleaved requests
-- Final state depends on response order (non-deterministic)
-
-## Reproduction
-1. Click +/- button rapidly 10 times
-2. Observe: UI shows 5, server shows 3
-
-## Suggested Fix
-- Debounce user input OR
-- Queue requests sequentially OR
-- Use optimistic locking with version
-```
-
-**Builder's Solution**:
-
-```
-🔷 BLUEPRINT
-├── Option analysis: debounce vs queue vs optimistic locking
-├── Choose: Optimistic locking (most robust for concurrent scenarios)
-└── Design: CartItem with version field
-
-🔨 FORGE
-├── Add version to CartItem entity
-├── Implement optimistic lock check in API
-└── Handle version conflict in client
-
-🛡️ TEMPER
-├── Handle conflict: Show user "Cart was updated, refresh?"
-├── Add retry logic: Auto-retry with fresh version on conflict
-└── Prevent: Double-submit with request deduplication
-
-🔍 INSPECT
-├── Request Radar: Concurrency tests
-└── Document: Why optimistic locking over alternatives
-```
-
-**Implementation**:
-
-```typescript
-// Before (race condition prone)
-async function updateQuantity(itemId: string, quantity: number) {
-  await api.patch(`/cart/${itemId}`, { quantity });
-}
-
-// After (race condition safe)
-class CartService {
-  private pendingUpdates = new Map<string, AbortController>();
-
-  async updateQuantity(
-    itemId: CartItemId,
-    quantity: Quantity,
-    version: number
-  ): Promise<Result<CartItem, CartError>> {
-    // Cancel any pending update for this item
-    this.pendingUpdates.get(itemId.value)?.abort();
-
-    const controller = new AbortController();
-    this.pendingUpdates.set(itemId.value, controller);
-
-    const result = await this.api.patch<CartItemDto>(
-      `/cart/${itemId.value}`,
-      { quantity: quantity.value, expectedVersion: version },
-      { signal: controller.signal }
-    );
-
-    return result.match({
-      ok: dto => ok(CartItemMapper.toDomain(dto)),
-      err: error => {
-        if (error.code === 'VERSION_CONFLICT') {
-          return err(new CartConflictError('Cart was modified, please refresh'));
-        }
-        return err(new CartUpdateError(error.message));
-      }
-    });
-  }
-}
-```
+**Full case studies**: See `references/code-examples.md`
 
 ---
 
@@ -1508,37 +732,6 @@ _STEP_COMPLETE:
   Reason: [Why this next step is recommended]
 ```
 
-### AUTORUN Execution Flow
-
-```
-_AGENT_CONTEXT received
-         ↓
-┌─────────────────────────────────────────┐
-│ 1. Parse Input Handoff                  │
-│    - SCOUT_TO_BUILDER (bug fix)         │
-│    - FORGE_TO_BUILDER (production)      │
-│    - GUARDIAN_TO_BUILDER (PR structure) │
-└─────────────────────┬───────────────────┘
-                      ↓
-┌─────────────────────────────────────────┐
-│ 2. Implementation (Normal Builder Work) │
-│    - Type-safe code                     │
-│    - Error handling                     │
-│    - Validation                         │
-│    - API integration                    │
-└─────────────────────┬───────────────────┘
-                      ↓
-┌─────────────────────────────────────────┐
-│ 3. Prepare Output Handoff               │
-│    - BUILDER_TO_RADAR (tests needed)    │
-│    - BUILDER_TO_GUARDIAN (PR ready)     │
-│    - BUILDER_TO_TUNER (perf review)     │
-│    - BUILDER_TO_SENTINEL (sec review)   │
-└─────────────────────┬───────────────────┘
-                      ↓
-         _STEP_COMPLETE emitted
-```
-
 ---
 
 ## Nexus Hub Mode
@@ -1592,8 +785,8 @@ Follow `_common/GIT_GUIDELINES.md` for commit messages and PR titles:
 Examples:
 - `feat(auth): add password reset functionality`
 - `fix(cart): resolve race condition in quantity update`
-- `feat: Builder implements user validation`
-- `Scout investigation: login bug fix`
+- ~~`feat: Builder implements user validation`~~
+- ~~`Scout investigation: login bug fix`~~
 
 ---
 
