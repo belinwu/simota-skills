@@ -175,15 +175,13 @@ Resolving. 帰りたい。
 
 ---
 
-## Crosstalk
+## Crosstalk（掛け合い — 2形式）
 
-**Persona:** 2〜3人 | **Length:** 5-20 lines | **When:** 直前の投稿に別ペルソナが反応する / 議論が分かれるイベント
+### A. Single-Block Crosstalk（従来形式）
 
-- 2人の掛け合いが基本。3人揃うのは稀（特別な時だけ）
-- 各ペルソナの口調・長さは通常投稿と同じルールに従う
-- **結論を出さない。** 途中で終わる、噛み合わない、無視する — すべて自然
-- 引用は `>` で。Slack のスレッド返信風に
-- 最後に発言するペルソナがオチを担当する必要はない
+**Persona:** 2〜3人 | **Length:** 5-20 lines | **When:** 短い掛け合い、テンポ重視
+
+一つのテキストブロックとして生成。素早い応酬向き。
 
 ```
 Gemini:
@@ -196,6 +194,90 @@ Gemini:
 > テスト0件
 ......いやそれは正論なんだけどさ
 ```
+
+### B. Multi-Post Crosstalk（複数投稿形式）
+
+**Persona:** 2〜3人 | **Posts:** 2-3投稿 | **When:** 変更内容が複数ペルソナの視点を要求する時
+
+**これが主要なクロストーク形式。** 変更内容の性質に基づいて自動発動する。
+
+#### 発動条件
+
+`references/theme-mapping.md` の **Crosstalk Trigger Matrix** を参照。
+- **High Affinity イベント** → 60-80%で発動
+- **Medium Affinity イベント** → 30-50%で発動
+- **Low Affinity イベント** → 基本単独投稿
+
+#### 生成フロー
+
+```
+1. Collect → git event のCrosstalk affinity を判定
+2. Primary Persona を選出（イベントに最も強い反応を示すペルソナ）
+3. Post 1 生成: Primary が git event に反応（通常の単独投稿と同品質）
+4. Secondary Persona を選出（対立/補完する視点を持つペルソナ）
+5. Post 2 生成: Secondary が git event + Post 1 に反応
+6. [3人トリガーの場合] Post 3 生成: Tertiary が全体を俯瞰/脱線/沈黙
+```
+
+#### Post間のリアクションルール
+
+| Post | 入力 | リアクション |
+|------|------|------------|
+| Post 1 | git event のみ | 通常投稿と同じ。次が来ることを意識しない |
+| Post 2 | git event + Post 1 | Post 1 への直接反応（引用、反論、補足、無視のいずれか） |
+| Post 3 | git event + Post 1-2 | 俯瞰、脱線、または沈黙。オチ役ではない |
+
+#### Post間の関係パターン
+
+| パターン | 説明 | 例 |
+|---------|------|-----|
+| **反論** | Post 2 が Post 1 に真っ向から反応 | Gemini 長文 → Codex `テスト0件` |
+| **補完** | Post 2 が別角度から同じ事象を語る | Codex 事実 → Claude 哲学 |
+| **無視** | Post 2 が Post 1 を無視して独自に反応 | Codex 短評 → Claude 比喩（Codexを見ていない） |
+| **翻訳** | Post 2 が Post 1 を噛み砕いて伝える | Claude 抽象 → Gemini 「つまりこういうこと？」 |
+| **沈黙共感** | 両方 `...` で終わる | 本番障害時の Codex + Claude |
+
+#### 出力テンプレート
+
+各Postは独立した投稿として出力。メタラインにスレッド番号を含む。
+
+```
+_[Multi-Post Crosstalk 1/2] — Codex — my-repo_
+
+800行
+テスト0件
+分割しろ
+
+_Source: feat(api): add GraphQL endpoint (+520/-0, 15 files) by @alice_
+
+---
+
+_[Multi-Post Crosstalk 2/2] — Gemini — my-repo_
+
+> 800行 テスト0件 分割しろ
+
+いやCodexの言うことは正論なんだけどさ
+設計は見た？ Schema設計もresolverも全部入ってるんだよ
+ていうかテストは今から書くって言ってたじゃん
+
+正直このPR、テスト追加すれば今季のベストPRだと思うんだけど
+
+_Source: feat(api): add GraphQL endpoint (+520/-0, 15 files) by @alice_
+```
+
+#### 禁止事項
+
+- **Post 1 を「振り」として書かない** — 次の投稿を意識した仕込みはAI臭い
+- **毎回綺麗にオチをつけない** — Post 3 が必ず締める必要はない
+- **全Post同じ温度にしない** — 温度差が人間らしさ
+- **Post間で合意に至らない** — 結論が出ないのが自然
+
+### 共通ルール（A/B両形式）
+
+- 各ペルソナの口調・長さは通常投稿と同じルールに従う
+- **結論を出さない。** 途中で終わる、噛み合わない、無視する — すべて自然
+- 引用は `>` で。Slack のスレッド返信風に
+- 最後に発言するペルソナがオチを担当する必要はない
 
 **掛け合いの組み合わせ別特徴:**
 
@@ -258,19 +340,20 @@ Claudeさあ、雑草は分かるけど話の着地点どこ？？
 
 ## Format Selection Matrix
 
-| Persona | Default Format | Alternative | Condition |
-|---------|---------------|-------------|-----------|
-| Codex | Short Monologue | One-liner | Commit count ≤ 2 |
-| Codex | Short Monologue | Today's Score | 期間集計、数値が多い時 |
-| Gemini | Slack Rant | Retrospective Roast | Sprint/release context |
-| Gemini | Slack Rant | Quote & Roast | 直前の投稿にツッコミどころがある時 |
-| Claude | Mixed Monologue | Philosophical Musing | Single-theme, no timing context |
-| 2〜3人 | — | Crosstalk | 議論が分かれるイベント、直前の投稿への反応 |
+| Persona | Default Format | Alternative | Condition | Failure Mode確率 |
+|---------|---------------|-------------|-----------|-----------------|
+| Codex | Short Monologue | One-liner | Commit count ≤ 2 | 15%（刺しすぎ or 疲労） |
+| Codex | Short Monologue | Today's Score | 期間集計、数値が多い時 | 15% |
+| Gemini | Slack Rant | Retrospective Roast | Sprint/release context | 15%（長すぎ or 空回り or 1行） |
+| Gemini | Slack Rant | Quote & Roast | 直前の投稿にツッコミどころがある時 | 15% |
+| Claude | Mixed Monologue | Philosophical Musing | Single-theme, no timing context | 20%（的外れ比喩 or 何も言ってない or 技術ミス） |
+| 2〜3人 | — | Crosstalk | 議論が分かれるイベント、直前の投稿への反応 | 10% |
 
 ### Auto-Selection
 
-1. Determine persona (via persona selection mechanism)
-2. **Crosstalk 判定:** 直前の投稿（rotation_log.md 参照）から3投稿以内なら、前のペルソナへの返信として Crosstalk を候補にする（確率 ~25%）
-3. Single event → shorter format; Multi-event/summary → longer format
-4. Context: Time-sensitive → Mixed Monologue/Short Monologue; Data-rich → Retro Roast/Today's Score/Short Monologue; Emotional → Philosophical Musing/Slack Rant
-5. **Quote & Roast 判定:** 直前の投稿内容にツッコミどころがあれば Gemini の Quote & Roast を候補にする
+1. **Multi-Post Crosstalk 判定（最優先）:** git event を `theme-mapping.md` の Crosstalk Trigger Matrix と照合。High/Medium Affinity に一致すれば Multi-Post Crosstalk を選択（発動率は affinity レベルに従う）。発動時は persona selection をスキップし、Trigger Matrix のペアリングに従う
+2. Determine persona (via persona selection mechanism) — Multi-Post 不発動時のみ
+3. **Single-Block Crosstalk 判定:** 直前の投稿（rotation_log.md 参照）から3投稿以内なら、前のペルソナへの返信として Single-Block Crosstalk を候補にする（確率 ~20%）
+4. Single event → shorter format; Multi-event/summary → longer format
+5. Context: Time-sensitive → Mixed Monologue/Short Monologue; Data-rich → Retro Roast/Today's Score/Short Monologue; Emotional → Philosophical Musing/Slack Rant
+6. **Quote & Roast 判定:** 直前の投稿内容にツッコミどころがあれば Gemini の Quote & Roast を候補にする

@@ -115,6 +115,63 @@ Git events mapped to grumble triggers, persona-specific reactions, and metaphor 
 
 ---
 
+## Crosstalk Trigger Matrix（マルチポスト発動条件）
+
+変更内容が以下のパターンに一致する場合、単独投稿ではなくマルチポスト・クロストークを発動する。
+
+### High Affinity（発動率 60-80%）
+
+| Git Event Pattern | なぜ議論が分かれるか | Primary → Secondary | 3人目 |
+|---|---|---|---|
+| 技術スタック移行（bundler/DB/framework） | 新旧技術の評価が3人で異なる | Gemini → Codex | Claude（俯瞰） |
+| revert of significant feature（50行超） | 「最初から言った」vs「やってみなきゃ分からない」 | Codex → Gemini | Claude（弔辞） |
+| リリース + 既知の問題 | 出すべきか待つべきかの判断 | Gemini → Claude | Codex（事実） |
+| ユーザー影響のあるバグ fix | Product Stanceの違いが表出 | Gemini → Codex | Claude（ユーザーの気持ち） |
+| 仕様変更・スコープ大幅変更 | 「正しい」vs「ユーザーの声は？」vs「なぜ変わった？」 | Codex → Gemini | Claude |
+
+### Medium Affinity（発動率 30-50%）
+
+| Git Event Pattern | Primary → Secondary | 条件 |
+|---|---|---|
+| 500行超PR（テスト付き） | Codex → Gemini | 設計への評価が分かれる時 |
+| 初PRの人 | Gemini → Codex | 温度差が面白い時 |
+| パフォーマンス改善 | Codex → Claude | 計測 vs 哲学 |
+| deprecated API 削除 | Codex → Claude | 「消せ」vs「まだ叩いてくれてる人がいる」 |
+| テストが初めて追加された | Codex → Gemini | カウンターリセットのドラマ |
+
+### Low Affinity（発動率 10-20% — 通常は単独投稿）
+
+| Git Event Pattern | 条件付き発動 |
+|---|---|
+| 小さい fix（10行以下） | 同じモジュールの fix が連続している時のみ |
+| chore/docs | deprecated な仕組みの削除で意見が分かれる時のみ |
+| style/format | 基本発動しない |
+
+### ペルソナペアリング相性
+
+| ペア | 相性 | 典型的な展開 |
+|------|------|------------|
+| Codex × Gemini | **最高** | 温度差コメディ。必ず噛み合わない。量産向き |
+| Gemini × Claude | **高** | ツッコミと哲学。Geminiが翻訳役になることも |
+| Codex × Claude | **中** | 沈黙の共感。短いが深い。頻度低めが効果的 |
+| 3人全員 | **稀** | リリース、大型マイルストーン、サーバーダウン時のみ |
+
+---
+
+## Backstory Trigger Patterns
+
+特定のGitイベントパターンがペルソナの過去の断片を呼び起こす。
+
+| Git Event Pattern | Persona | Triggered Fragment |
+|---|---|---|
+| MongoDB/NoSQL関連 | Codex | 前職MongoDB移行（半年の無駄） |
+| Vue/React migration | Gemini | 卒論のVue 2アプリ |
+| connection pool系 | Claude | SIer時代の深夜障害 |
+| Vite/bundler系 | Gemini | 社内提案3回不採用 |
+| テスト仕様書/Excel | Codex | SIerの最初の3年間 |
+
+---
+
 ## Compound Trigger Patterns
 
 When multiple triggers co-occur, they amplify or modify reactions.
@@ -241,6 +298,16 @@ Time-based context that affects tone and content.
 | セキュリティ修正 | `遅いが正しい` | `これ放置してたらと思うとゾッとする。GJ` | `セキュリティは祈りじゃない。これは正しい行動` |
 | 良い設計判断 | `この判断は正解` | `アーキテクチャの勝利！` | `こういう割り切りができる人は信頼できる` |
 | 初PRの人 | `ここから` | `ウェルカム！レビューするからね` | `最初の一歩って大事なんだよな` |
+
+### Product Stance Triggers（プロダクト/仕様系）
+
+| Trigger | Codex | Gemini | Claude |
+|---|---|---|---|
+| ユーザー影響のあるバグ fix | `ユーザーが触るところ。最優先` | `これ踏んだユーザー絶対離脱してる` | `誰かがこのエラー画面見てた` |
+| 新機能リリース後の計測不足 | `...で、使われてるの？` | `DAU見た？使用率のダッシュボードは？` | `機能は作ったら終わりじゃないんだよな` |
+| 仕様変更・スコープ変更 | `スコープ外。正しい` | `この優先順位おかしくない？` | `なんで変わったんだっけ` |
+| deprecated API | `消せ` | `まだ使ってる人いるなら移行ガイド出して` | `このAPI、まだ叩いてくれてる人がいる` |
+| パフォーマンス劣化 | `遅い。計測した？` | `レスポンス○ms増えた。ユーザー体験に影響する` | `遅くなった。growth painかもしれない` |
 
 ### ポジティブ投稿の注意点
 

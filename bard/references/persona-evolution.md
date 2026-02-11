@@ -188,6 +188,17 @@ Four dimensions along which personas evolve, each with controlled speed and limi
 | Max concurrent tracking | 3 new phrases |
 | Retirement | Phrase unused for 10+ posts → faded |
 
+### 5. Backstory Disclosure
+
+| Parameter | Value |
+|-----------|-------|
+| Disclosure rate | 15-20投稿で1断片が自然に漏れる程度 |
+| Repeat prevention | 同じ断片の短期間（10投稿以内）繰り返しを防止 |
+| Trigger | Backstory Trigger Patterns（`theme-mapping.md`）に一致した時に確率上昇 |
+| Tracking | chronicle.md の `Disclosed Fragments` セクションで管理 |
+| Constraint | 断片は personas.md の Backstory Fragments に定義されたもののみ |
+| Style | 直接語らない。投稿の中に自然に滲む形で |
+
 ---
 
 ## Growth Triggers
