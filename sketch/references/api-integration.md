@@ -2,6 +2,20 @@
 
 Gemini API 画像生成の統合パターン詳細リファレンス。
 
+> **動作確認環境**: google-genai SDK v1.38.0 + Google AI API（API キー認証）
+> **確認済みモデル**: `gemini-2.5-flash-image`
+
+---
+
+## SDK Compatibility Note
+
+| SDK Version | Config | Notes |
+|-------------|--------|-------|
+| **v1.38+** | `GenerateContentConfig(response_modalities=["IMAGE"])` | シンプルな config のみ。アスペクト比等はプロンプトで指示 |
+| **v1.50+** | `GenerateContentConfig(image_generation_config=ImageGenerationConfig(...))` | aspect_ratio, person_generation 等を API パラメータで指定可能 |
+
+本ドキュメントは **v1.38+ 互換**（シンプルな config）で記述。
+
 ---
 
 ## Authentication & Setup
@@ -43,20 +57,12 @@ GEMINI_API_KEY=your-api-key-here
 
 ## Model Specifications
 
-| Model | ID | Resolution | Speed | Cost | Best For |
-|-------|-----|-----------|-------|------|----------|
-| **Flash** | `gemini-2.5-flash-image` | 1K-2K | Fast | Low | Default — Web, SNS, prototyping, iteration |
-| **Pro** | `gemini-3-pro-image-preview` | 1K-4K | Slower | High | Print, commercial, premium quality |
+| Model | ID | Speed | Cost | Best For |
+|-------|-----|-------|------|----------|
+| **Flash** | `gemini-2.5-flash-image` | Fast | Low | Default — Web, SNS, prototyping, iteration |
 
-### Model Selection Decision Tree
-
-```
-Is 4K resolution needed? → Yes → Pro
-Is highest quality critical? → Yes → Pro
-Is speed/cost important? → Yes → Flash
-Is this iterative/exploratory? → Yes → Flash
-Default → Flash
-```
+> **Note**: `imagen-3.0-*` モデルは Vertex AI 専用（Google AI API では 404）。
+> Google AI API（API キー認証）では `gemini-2.5-flash-image` を使用すること。
 
 ---
 
@@ -73,15 +79,12 @@ client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 response = client.models.generate_content(
     model="gemini-2.5-flash-image",
-    contents="A modern minimalist workspace with a laptop and coffee, soft natural lighting",
+    contents=(
+        "A modern minimalist workspace with a laptop and coffee, "
+        "soft natural lighting, widescreen 16:9 composition"
+    ),
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-            aspect_ratio="16:9",
-            person_generation="DONT_ALLOW",
-        ),
     ),
 )
 
@@ -101,11 +104,6 @@ response = client.models.generate_content(
     contents="Generate an image of a sunset over mountains. Describe the scene briefly.",
     config=types.GenerateContentConfig(
         response_modalities=["TEXT", "IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-            aspect_ratio="16:9",
-        ),
     ),
 )
 
@@ -121,7 +119,6 @@ for part in response.candidates[0].content.parts:
 
 ```python
 from pathlib import Path
-import base64
 
 # Load reference image
 ref_image_path = Path("input_image.png")
@@ -135,10 +132,6 @@ response = client.models.generate_content(
     ],
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-        ),
     ),
 )
 ```
@@ -153,9 +146,6 @@ chat = client.chats.create(
     model="gemini-2.5-flash-image",
     config=types.GenerateContentConfig(
         response_modalities=["TEXT", "IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            output_image_format="png",
-        ),
     ),
 )
 
@@ -190,10 +180,6 @@ response = client.models.generate_content(
     ],
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-        ),
     ),
 )
 ```
@@ -209,30 +195,28 @@ response = client.models.generate_content(
 | `["IMAGE"]` | Image only output | Clean image generation, no text needed |
 | `["TEXT", "IMAGE"]` | Text + Image output | When description/explanation is desired |
 
-### image_generation_config
+### Prompt-Based Controls
 
-| Parameter | Type | Options | Default | Notes |
-|-----------|------|---------|---------|-------|
-| `number_of_images` | int | 1-4 | 1 | Flash: 1-4, Pro: 1-4 |
-| `output_image_format` | str | `"png"`, `"jpeg"` | `"png"` | PNG for lossless, JPEG for smaller size |
-| `aspect_ratio` | str | See below | `"1:1"` | Must match use case |
-| `person_generation` | str | `"DONT_ALLOW"`, `"ALLOW_ADULT"` | `"DONT_ALLOW"` | Safety setting |
-| `image_compression_quality` | int | 0-100 | 75 | JPEG only |
+SDK v1.38 では `ImageGenerationConfig` が存在しないため、以下の制御はプロンプトで行う：
 
-### Aspect Ratio Guide
+| Control | Prompt Instruction | Example |
+|---------|-------------------|---------|
+| **Aspect Ratio** | 構図指示をプロンプトに含める | `"widescreen 16:9 composition"` |
+| **Style** | スタイルキーワードを追加 | `"photorealistic, DSLR quality"` |
+| **Quality** | 品質キーワードを追加 | `"8K detail, professional photography"` |
+| **No People** | 人物除外をプロンプトに明記 | `"no people, empty scene"` |
+| **Orientation** | 向きを指示 | `"vertical portrait orientation"` |
 
-| Ratio | Pixels (1K) | Use Case |
-|-------|-------------|----------|
-| `1:1` | 1024×1024 | Social media, icons, avatars |
-| `3:2` | 1024×683 | Photography standard, landscape |
-| `2:3` | 683×1024 | Portrait, mobile screenshots |
-| `4:3` | 1024×768 | Presentations, documents |
-| `3:4` | 768×1024 | Tablets, book covers |
-| `16:9` | 1024×576 | Web heroes, video thumbnails |
-| `9:16` | 576×1024 | Stories, mobile vertical |
-| `21:9` | 1024×439 | Ultra-wide banners |
-| `4:5` | 1024×1280 | Instagram portrait |
-| `5:4` | 1024×819 | Large prints |
+### Aspect Ratio Guide (Prompt-Based)
+
+| Ratio | Prompt Instruction | Use Case |
+|-------|-------------------|----------|
+| 1:1 | `"square format, 1:1 aspect ratio"` | Social media, icons, avatars |
+| 3:2 | `"landscape 3:2 photography format"` | Photography standard |
+| 2:3 | `"portrait 2:3 vertical format"` | Portrait, mobile |
+| 16:9 | `"widescreen 16:9 composition"` | Web heroes, video thumbnails |
+| 9:16 | `"vertical 9:16 portrait orientation"` | Stories, mobile vertical |
+| 21:9 | `"ultra-wide 21:9 panoramic"` | Ultra-wide banners |
 
 ### Reference Image Limits
 
@@ -278,18 +262,12 @@ def save_generated_images(response, output_dir="./generated", prefix="image"):
 ### Metadata Generation
 
 ```python
-def save_metadata(saved_files, prompt, config, output_dir="./generated"):
+def save_metadata(saved_files, prompt, output_dir="./generated"):
     """Save generation metadata alongside images."""
     metadata = {
         "generated_at": datetime.now().isoformat(),
         "prompt": prompt,
-        "model": config.get("model", "gemini-2.5-flash-image"),
-        "parameters": {
-            "aspect_ratio": config.get("aspect_ratio", "1:1"),
-            "person_generation": config.get("person_generation", "DONT_ALLOW"),
-            "number_of_images": config.get("number_of_images", 1),
-            "format": config.get("output_image_format", "png"),
-        },
+        "model": "gemini-2.5-flash-image",
         "files": saved_files,
         "synthid": True,  # All Gemini images have SynthID watermark
     }
@@ -307,24 +285,20 @@ def save_metadata(saved_files, prompt, config, output_dir="./generated"):
 ### Comprehensive Error Handler
 
 ```python
+import time
+
 from google.api_core import exceptions as api_exceptions
 
 
-def generate_image_safe(client, prompt, config, max_retries=3):
+def generate_image_safe(client, prompt, model="gemini-2.5-flash-image", max_retries=3):
     """Generate image with comprehensive error handling."""
     for attempt in range(max_retries):
         try:
             response = client.models.generate_content(
-                model=config.get("model", "gemini-2.5-flash-image"),
+                model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_modalities=["IMAGE"],
-                    image_generation_config=types.ImageGenerationConfig(
-                        number_of_images=config.get("number_of_images", 1),
-                        output_image_format=config.get("format", "png"),
-                        aspect_ratio=config.get("aspect_ratio", "1:1"),
-                        person_generation=config.get("person_generation", "DONT_ALLOW"),
-                    ),
                 ),
             )
 
@@ -339,7 +313,6 @@ def generate_image_safe(client, prompt, config, max_retries=3):
         except api_exceptions.ResourceExhausted:
             wait_time = 2 ** attempt * 10  # Exponential backoff
             print(f"Rate limit exceeded. Waiting {wait_time}s... (attempt {attempt + 1}/{max_retries})")
-            import time
             time.sleep(wait_time)
 
         except api_exceptions.InvalidArgument as e:
@@ -352,10 +325,15 @@ def generate_image_safe(client, prompt, config, max_retries=3):
             print("Verify GEMINI_API_KEY environment variable.")
             return None
 
+        except api_exceptions.NotFound:
+            print("Model not found. Verify the model ID is correct for your API type.")
+            print("Google AI API (API key): use 'gemini-2.5-flash-image'")
+            print("Vertex AI (service account): imagen models may be available")
+            return None
+
         except api_exceptions.ServiceUnavailable:
             wait_time = 2 ** attempt * 5
             print(f"Service temporarily unavailable. Retrying in {wait_time}s...")
-            import time
             time.sleep(wait_time)
 
         except Exception as e:
@@ -373,9 +351,18 @@ def generate_image_safe(client, prompt, config, max_retries=3):
 | `ResourceExhausted` | Rate limit / quota exceeded | Exponential backoff, check quota |
 | `InvalidArgument` | Bad prompt or parameters | Fix prompt/params, check API docs |
 | `PermissionDenied` | Invalid API key | Verify `GEMINI_API_KEY` env var |
+| `NotFound` | Model doesn't exist for API type | Use `gemini-2.5-flash-image` for Google AI API |
 | `ServiceUnavailable` | Server-side issue | Retry with backoff |
 | Empty response | Content policy violation | Adjust prompt, remove sensitive content |
 | `DeadlineExceeded` | Request timeout | Retry, consider simpler prompt |
+
+### Common Pitfalls
+
+| Pitfall | Symptom | Fix |
+|---------|---------|-----|
+| `ImageGenerationConfig` not found | `AttributeError` | SDK <v1.50 — use simple config without `image_generation_config` |
+| `imagen-3.0-*` model 404 | `NotFound` | Vertex AI only — use `gemini-2.5-flash-image` for Google AI API |
+| Wrong Gemini model name | `NotFound` | Use `-image` suffix: `gemini-2.5-flash-image` |
 
 ---
 
@@ -383,19 +370,17 @@ def generate_image_safe(client, prompt, config, max_retries=3):
 
 ### Rate Limit Guidelines
 
-| Model | RPM (est.) | TPM (est.) | Notes |
-|-------|-----------|-----------|-------|
-| Flash | 15-60 | Varies | Higher limits for paid plans |
-| Pro | 2-10 | Varies | Lower limits, higher quality |
+| Model | RPM (est.) | Notes |
+|-------|-----------|-------|
+| Flash | 15-60 | Higher limits for paid plans |
 
 ### Cost Optimization Strategies
 
-1. **Use Flash by default**: 5-10x cheaper than Pro
+1. **Use Flash by default**: Most cost-effective for most use cases
 2. **Start with 1 image**: Generate single image first, iterate
-3. **Use 1K resolution**: Upscale only when needed
-4. **Batch wisely**: Generate variants only after confirming direction
-5. **Cache prompts**: Reuse successful prompts with minor tweaks
-6. **Preview before bulk**: Always preview 1-3 images before batch
+3. **Batch wisely**: Generate variants only after confirming direction
+4. **Cache prompts**: Reuse successful prompts with minor tweaks
+5. **Preview before bulk**: Always preview 1-3 images before batch
 
 ### Batch Generation Pattern
 
@@ -403,19 +388,18 @@ def generate_image_safe(client, prompt, config, max_retries=3):
 import time
 
 
-def batch_generate(client, prompts, config, delay_seconds=2):
+def batch_generate(client, prompts, model="gemini-2.5-flash-image",
+                   output_dir="./generated", delay_seconds=2):
     """Generate multiple images with rate limit awareness."""
     results = []
 
     for i, prompt in enumerate(prompts):
         print(f"Generating {i + 1}/{len(prompts)}: {prompt[:50]}...")
-        response = generate_image_safe(client, prompt, config)
+        response = generate_image_safe(client, prompt, model)
 
         if response:
             files, _ = save_generated_images(
-                response,
-                output_dir=config.get("output_dir", "./generated"),
-                prefix=f"batch_{i:03d}",
+                response, output_dir=output_dir, prefix=f"batch_{i:03d}",
             )
             results.extend(files)
         else:
@@ -450,7 +434,7 @@ def batch_generate(client, prompts, config, delay_seconds=2):
 ```
 This image was generated using Google Gemini API.
 It contains an invisible SynthID watermark for AI-generated content identification.
-Model: [model name]
+Model: gemini-2.5-flash-image
 Generated: [timestamp]
 ```
 
@@ -458,7 +442,7 @@ Generated: [timestamp]
 
 ## Complete Script Template
 
-実行可能な完全なスクリプトテンプレート：
+実行可能な完全なスクリプトテンプレート（SDK v1.38+ 互換）：
 
 ```python
 #!/usr/bin/env python3
@@ -508,12 +492,6 @@ def main():
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_modalities=["IMAGE"],
-                image_generation_config=types.ImageGenerationConfig(
-                    number_of_images=1,
-                    output_image_format="png",
-                    aspect_ratio="1:1",
-                    person_generation="DONT_ALLOW",
-                ),
             ),
         )
     except Exception as e:
@@ -542,8 +520,6 @@ def main():
         "generated_at": datetime.now().isoformat(),
         "prompt": prompt,
         "model": model,
-        "aspect_ratio": "1:1",
-        "person_generation": "DONT_ALLOW",
         "files": saved,
         "synthid": True,
     }

@@ -2,6 +2,8 @@
 
 Sketch エージェントの使用例とワークフローパターン。
 
+> **動作確認環境**: google-genai SDK v1.38.0 + Google AI API（`gemini-2.5-flash-image`）
+
 ---
 
 ## Basic Examples
@@ -39,21 +41,15 @@ prompt = (
     "soft gradient background in blue and purple tones, "
     "clean minimalist design, glass morphism effect, "
     "professional technology aesthetic, hero image composition, "
-    "cinematic lighting, 8K quality"
+    "cinematic lighting, 8K quality, widescreen 16:9 format"
 )
 
-print(f"Generating hero image...")
+print("Generating hero image...")
 response = client.models.generate_content(
     model="gemini-2.5-flash-image",
     contents=prompt,
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-            aspect_ratio="16:9",
-            person_generation="DONT_ALLOW",
-        ),
     ),
 )
 
@@ -68,7 +64,6 @@ for i, part in enumerate(response.candidates[0].content.parts):
 metadata = {
     "prompt": prompt,
     "model": "gemini-2.5-flash-image",
-    "aspect_ratio": "16:9",
     "use_case": "Landing page hero image",
     "synthid": True,
     "generated_at": datetime.now().isoformat(),
@@ -103,13 +98,14 @@ client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Erro
 output_dir = Path("./generated/tokyo")
 output_dir.mkdir(parents=True, exist_ok=True)
 
+# Note: aspect ratio specified in prompt for SDK v1.38 compatibility
 prompt = (
     "Tokyo cityscape at twilight, watercolor painting style, "
     "soft edges, translucent color layers, paper texture visible, "
     "bleeding colors between sky and buildings, "
     "neon lights reflecting in rain puddles, organic brush strokes, "
     "traditional Japanese watercolor technique, wabi-sabi aesthetic, "
-    "vertical composition optimized for mobile"
+    "vertical 9:16 portrait orientation optimized for mobile"
 )
 
 response = client.models.generate_content(
@@ -117,12 +113,6 @@ response = client.models.generate_content(
     contents=prompt,
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-            aspect_ratio="9:16",
-            person_generation="DONT_ALLOW",
-        ),
     ),
 )
 
@@ -177,11 +167,6 @@ chat = client.chats.create(
     model="gemini-2.5-flash-image",
     config=types.GenerateContentConfig(
         response_modalities=["TEXT", "IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            output_image_format="png",
-            aspect_ratio="4:3",
-            person_generation="DONT_ALLOW",
-        ),
     ),
 )
 
@@ -189,7 +174,8 @@ chat = client.chats.create(
 print("=== Turn 1: Initial cafe scene ===")
 r1 = chat.send_message(
     "Generate a cozy Japanese-style cafe interior with wooden furniture, "
-    "warm lighting, plants on shelves, morning sunlight through windows"
+    "warm lighting, plants on shelves, morning sunlight through windows, "
+    "4:3 landscape format, no people"
 )
 save_response(r1, "01_initial")
 
@@ -242,14 +228,14 @@ output_dir = Path("./generated/icons")
 output_dir.mkdir(parents=True, exist_ok=True)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-# Define variations
+# Define variations (aspect ratio embedded in prompt for SDK v1.38 compat)
 variations = [
     {
         "name": "gradient",
         "prompt": (
             "App icon, modern gradient design, smooth blue-to-purple transition, "
             "abstract geometric shape, rounded square format, clean minimal, "
-            "iOS app icon style, glossy finish"
+            "iOS app icon style, glossy finish, square 1:1 format"
         ),
     },
     {
@@ -257,7 +243,7 @@ variations = [
         "prompt": (
             "App icon, flat design, bold single color, simple geometric symbol, "
             "no shadows, no gradients, material design inspired, "
-            "clean silhouette on solid background"
+            "clean silhouette on solid background, square 1:1 format"
         ),
     },
     {
@@ -265,7 +251,7 @@ variations = [
         "prompt": (
             "App icon, 3D rendered, soft clay material, pastel colors, "
             "rounded friendly shape, subtle shadow, playful aesthetic, "
-            "modern 3D icon trend"
+            "modern 3D icon trend, square 1:1 format"
         ),
     },
     {
@@ -273,7 +259,7 @@ variations = [
         "prompt": (
             "App icon, glassmorphism style, frosted glass effect, "
             "translucent layers, subtle border glow, depth effect, "
-            "modern UI trend, light background"
+            "modern UI trend, light background, square 1:1 format"
         ),
     },
     {
@@ -281,19 +267,13 @@ variations = [
         "prompt": (
             "App icon, neon glow effect, dark background, "
             "vibrant electric blue outline, futuristic tech aesthetic, "
-            "clean geometric shape, cyberpunk minimal"
+            "clean geometric shape, cyberpunk minimal, square 1:1 format"
         ),
     },
 ]
 
 config = types.GenerateContentConfig(
     response_modalities=["IMAGE"],
-    image_generation_config=types.ImageGenerationConfig(
-        number_of_images=1,
-        output_image_format="png",
-        aspect_ratio="1:1",
-        person_generation="DONT_ALLOW",
-    ),
 )
 
 results = []
@@ -316,7 +296,7 @@ for i, var in enumerate(variations):
                 print(f"  Saved: {filepath}")
 
     except api_exceptions.ResourceExhausted:
-        print(f"  Rate limited. Waiting 30s...")
+        print("  Rate limited. Waiting 30s...")
         time.sleep(30)
     except Exception as e:
         print(f"  Error: {e}")
@@ -390,10 +370,6 @@ response = client.models.generate_content(
     ],
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-        image_generation_config=types.ImageGenerationConfig(
-            number_of_images=1,
-            output_image_format="png",
-        ),
     ),
 )
 
@@ -468,8 +444,9 @@ SKETCH_TO_MUSE:
 """CLI tool for image generation.
 
 Usage:
-    python generate_cli.py --prompt "Your prompt" --ratio 16:9 --style photo
-    python generate_cli.py --prompt "Your prompt" --model pro --resolution 4k
+    python generate_cli.py --prompt "Your prompt"
+    python generate_cli.py --prompt "Your prompt" --ratio 16:9
+    python generate_cli.py --prompt "Your prompt" --output ./my_images
 """
 
 import argparse
@@ -486,12 +463,8 @@ from google.genai import types
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate images with Gemini API")
     parser.add_argument("--prompt", required=True, help="Image generation prompt")
-    parser.add_argument("--model", choices=["flash", "pro"], default="flash")
-    parser.add_argument("--ratio", default="1:1", help="Aspect ratio (e.g., 16:9)")
-    parser.add_argument("--count", type=int, default=1, help="Number of images (1-4)")
-    parser.add_argument("--format", choices=["png", "jpeg"], default="png")
+    parser.add_argument("--ratio", default=None, help="Aspect ratio hint (e.g., 16:9) — appended to prompt")
     parser.add_argument("--output", default="./generated", help="Output directory")
-    parser.add_argument("--allow-persons", action="store_true", help="Allow person generation")
     return parser.parse_args()
 
 
@@ -503,32 +476,30 @@ def main():
         print("Error: GEMINI_API_KEY not set")
         sys.exit(1)
 
-    model_map = {
-        "flash": "gemini-2.5-flash-image",
-        "pro": "gemini-3-pro-image-preview",
-    }
-
     client = genai.Client(api_key=api_key)
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Model: {model_map[args.model]}")
-    print(f"Prompt: {args.prompt}")
-    print(f"Ratio: {args.ratio} | Count: {args.count} | Format: {args.format}")
+    # Append aspect ratio hint to prompt if specified
+    prompt = args.prompt
+    if args.ratio:
+        prompt = f"{prompt}, {args.ratio} aspect ratio format"
 
-    response = client.models.generate_content(
-        model=model_map[args.model],
-        contents=args.prompt,
-        config=types.GenerateContentConfig(
-            response_modalities=["IMAGE"],
-            image_generation_config=types.ImageGenerationConfig(
-                number_of_images=args.count,
-                output_image_format=args.format,
-                aspect_ratio=args.ratio,
-                person_generation="ALLOW_ADULT" if args.allow_persons else "DONT_ALLOW",
+    model = "gemini-2.5-flash-image"
+    print(f"Model: {model}")
+    print(f"Prompt: {prompt}")
+
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE"],
             ),
-        ),
-    )
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     saved = []
@@ -536,18 +507,15 @@ def main():
     if response.candidates:
         for i, part in enumerate(response.candidates[0].content.parts):
             if part.inline_data:
-                ext = args.format
-                filepath = output_dir / f"{timestamp}_{i:02d}.{ext}"
+                filepath = output_dir / f"{timestamp}_{i:02d}.png"
                 filepath.write_bytes(part.inline_data.data)
                 saved.append(str(filepath))
                 print(f"Saved: {filepath}")
 
     if saved:
         meta = {
-            "prompt": args.prompt,
-            "model": model_map[args.model],
-            "ratio": args.ratio,
-            "count": len(saved),
+            "prompt": prompt,
+            "model": model,
             "files": saved,
             "synthid": True,
             "generated_at": datetime.now().isoformat(),
@@ -573,7 +541,7 @@ Usage:
     from image_generator import ImageGenerator
 
     gen = ImageGenerator()  # Uses GEMINI_API_KEY env var
-    files = gen.generate("A sunset over mountains", ratio="16:9")
+    files = gen.generate("A sunset over mountains")
     files = gen.edit("input.png", "Change background to beach")
     files = gen.batch(["prompt1", "prompt2", "prompt3"])
 """
@@ -592,39 +560,29 @@ from google.api_core import exceptions as api_exceptions
 class ImageGenerator:
     """Wrapper for Gemini API image generation."""
 
-    MODELS = {
-        "flash": "gemini-2.5-flash-image",
-        "pro": "gemini-3-pro-image-preview",
-    }
-
-    def __init__(self, api_key=None, output_dir="./generated", model="flash"):
+    def __init__(self, api_key=None, output_dir="./generated",
+                 model="gemini-2.5-flash-image"):
         key = api_key or os.environ.get("GEMINI_API_KEY")
         if not key:
             raise ValueError("GEMINI_API_KEY not set")
         self.client = genai.Client(api_key=key)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.model = self.MODELS.get(model, model)
+        self.model = model
+        self._config = types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+        )
 
-    def generate(self, prompt, ratio="1:1", count=1, fmt="png",
-                 allow_persons=False, max_retries=3):
+    def generate(self, prompt, max_retries=3):
         """Generate images from text prompt."""
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
                     model=self.model,
                     contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_modalities=["IMAGE"],
-                        image_generation_config=types.ImageGenerationConfig(
-                            number_of_images=count,
-                            output_image_format=fmt,
-                            aspect_ratio=ratio,
-                            person_generation="ALLOW_ADULT" if allow_persons else "DONT_ALLOW",
-                        ),
-                    ),
+                    config=self._config,
                 )
-                return self._save(response, prompt, ratio)
+                return self._save(response, prompt)
 
             except api_exceptions.ResourceExhausted:
                 wait = 2 ** attempt * 10
@@ -635,7 +593,7 @@ class ImageGenerator:
                 return []
         return []
 
-    def edit(self, image_path, instruction, fmt="png"):
+    def edit(self, image_path, instruction):
         """Edit an existing image."""
         source = Path(image_path).read_bytes()
         response = self.client.models.generate_content(
@@ -644,28 +602,22 @@ class ImageGenerator:
                 types.Part.from_bytes(data=source, mime_type="image/png"),
                 instruction,
             ],
-            config=types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
-                image_generation_config=types.ImageGenerationConfig(
-                    number_of_images=1,
-                    output_image_format=fmt,
-                ),
-            ),
+            config=self._config,
         )
-        return self._save(response, instruction, "edited")
+        return self._save(response, instruction)
 
-    def batch(self, prompts, ratio="1:1", delay=3, **kwargs):
+    def batch(self, prompts, delay=3, **kwargs):
         """Generate multiple images with rate limiting."""
         all_files = []
         for i, prompt in enumerate(prompts):
             print(f"[{i + 1}/{len(prompts)}] {prompt[:60]}...")
-            files = self.generate(prompt, ratio=ratio, **kwargs)
+            files = self.generate(prompt, **kwargs)
             all_files.extend(files)
             if i < len(prompts) - 1:
                 time.sleep(delay)
         return all_files
 
-    def _save(self, response, prompt, label):
+    def _save(self, response, prompt):
         """Save response images and metadata."""
         if not response.candidates:
             return []

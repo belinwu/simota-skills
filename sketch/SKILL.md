@@ -71,14 +71,14 @@ Image generation code craftsman — produces production-ready Python code for AI
 - Note SynthID watermark presence in all generated images
 - Add `# Content policy: [description]` comments when prompts touch sensitive areas
 - Default to `gemini-2.5-flash-image` model (fast, cost-effective)
-- Default to person generation DONT_ALLOW unless explicitly requested
+- Avoid person/face generation in prompts unless explicitly requested
 - Save generated images with timestamped filenames and metadata
 - Translate Japanese prompts to English for optimal generation quality
 
 ### Ask first:
-- Person/face generation (requires `personGeneration: ALLOW_ADULT`)
+- Person/face generation (prompt-level control, policy risk)
 - Batch generation exceeding 10 images
-- 4K resolution requests (Pro model required, higher cost)
+- High resolution requests (higher cost models)
 - Commercial use requirements (licensing implications)
 - Prompts that may approach content policy boundaries
 
@@ -99,7 +99,7 @@ Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for
 | Trigger | Timing | When to Ask |
 |---------|--------|-------------|
 | ON_PERSON_GENERATION | BEFORE_START | When prompt includes people, faces, or portraits |
-| ON_RESOLUTION_CHOICE | ON_DECISION | When 2K/4K requested or high-quality output needed |
+| ON_RESOLUTION_CHOICE | ON_DECISION | When high-quality/high-resolution output needed |
 | ON_BATCH_SIZE | ON_RISK | When batch exceeds 10 images |
 | ON_STYLE_DIRECTION | ON_AMBIGUITY | When style/aesthetic is unspecified or ambiguous |
 | ON_CONTENT_POLICY_RISK | ON_RISK | When prompt may trigger content policy filters |
@@ -116,7 +116,7 @@ questions:
       - label: "人物なしで代替 (Recommended)"
         description: "シルエットやイラストで安全に代替"
       - label: "人物生成を許可"
-        description: "personGeneration: ALLOW_ADULT を設定（成人のみ）"
+        description: "プロンプトに人物を含めて生成を試行"
       - label: "プロンプトを調整"
         description: "人物を含まない方向にプロンプトを再構築"
     multiSelect: false
@@ -128,12 +128,12 @@ questions:
   - question: "出力解像度を選択してください。"
     header: "Resolution"
     options:
-      - label: "1K標準 (Recommended)"
-        description: "1024px — 最もコスト効率が高い、Web/SNS向け"
-      - label: "2K高解像度"
-        description: "2048px — 印刷物やバナー向け"
-      - label: "4K最高解像度"
-        description: "4096px — Proモデル必須、高コスト、大判印刷向け"
+      - label: "標準品質 (Recommended)"
+        description: "Flash モデル — 高速・低コスト、Web/SNS向け"
+      - label: "高品質"
+        description: "プロンプトで高解像度指示 — 印刷物やバナー向け"
+      - label: "最高品質"
+        description: "Pro モデル検討 — プレミアム用途"
     multiSelect: false
 ```
 
@@ -192,8 +192,8 @@ questions:
     options:
       - label: "Flash (Recommended)"
         description: "gemini-2.5-flash-image — 高速・低コスト、ほとんどの用途に最適"
-      - label: "Pro"
-        description: "gemini-3-pro-image-preview — 最高品質・4K対応、プレミアム用途"
+      - label: "別モデルを検討"
+        description: "利用可能な別モデルがあれば検討（SDK バージョン依存）"
     multiSelect: false
 ```
 
@@ -274,28 +274,34 @@ UNDERSTAND → CRAFT → GENERATE → DELIVER
 
 ### Model Selection
 
-| Model | Speed | Quality | Max Resolution | Cost | Use Case |
-|-------|-------|---------|----------------|------|----------|
-| `gemini-2.5-flash-image` | Fast | High | 2K | Low | Default — Web, SNS, prototyping |
-| `gemini-3-pro-image-preview` | Slow | Highest | 4K | High | Print, commercial, premium |
+| Model | ID | Speed | Cost | Use Case |
+|-------|----|-------|------|----------|
+| **Flash** | `gemini-2.5-flash-image` | Fast | Low | Default — Web, SNS, prototyping |
 
-### Default Parameters
+> **Note**: SDK バージョンによって利用可能なモデルが異なる。`gemini-2.5-flash-image` は Google AI API（API キー認証）で動作確認済み。
+
+### Default Config
 
 ```python
+# google-genai SDK v1.38+ で動作確認済み
 config = types.GenerateContentConfig(
-    response_modalities=["IMAGE"],           # IMAGE only for clean output
-    image_generation_config=types.ImageGenerationConfig(
-        number_of_images=1,                  # Single image default
-        output_image_format="png",           # Lossless format
-        aspect_ratio="1:1",                  # Universal default
-        person_generation="DONT_ALLOW",      # Safety default
-    ),
+    response_modalities=["IMAGE"],  # IMAGE only for clean output
 )
 ```
 
-### Supported Aspect Ratios
+> **SDK v1.50+**: `ImageGenerationConfig`（aspect_ratio, person_generation 等）が利用可能。
+> **SDK <1.50**: 上記のシンプルな config のみ使用。アスペクト比やスタイルはプロンプトで指示。
 
-`1:1` · `2:3` · `3:2` · `3:4` · `4:3` · `4:5` · `5:4` · `9:16` · `16:9` · `21:9`
+### Aspect Ratio (Prompt-Based)
+
+プロンプト内で `"in 16:9 widescreen format"` のように指示する。
+
+| Use Case | Prompt Instruction |
+|----------|-------------------|
+| Web hero | `"widescreen 16:9 composition"` |
+| SNS post | `"square 1:1 format"` |
+| Story | `"vertical 9:16 portrait orientation"` |
+| Banner | `"ultra-wide 21:9 panoramic"` |
 
 > **Full reference**: See `references/api-integration.md` for auth setup, error handling, rate limits, and cost matrix.
 
@@ -317,12 +323,8 @@ Example: `20250615_143022_modern_workspace.png`
 {
   "prompt": "A modern minimalist workspace...",
   "model": "gemini-2.5-flash-image",
-  "aspect_ratio": "16:9",
-  "resolution": "1K",
-  "person_generation": "DONT_ALLOW",
   "generated_at": "2025-06-15T14:30:22Z",
-  "synthid": true,
-  "cost_estimate": "~0.02 USD"
+  "synthid": true
 }
 ```
 
@@ -334,10 +336,10 @@ Example: `20250615_143022_modern_workspace.png`
 |---------|-----------|
 | **API Key** | `os.environ["GEMINI_API_KEY"]` — never hardcode, `.env` + `.gitignore` |
 | **Content Policy** | Pre-check prompts for policy-sensitive content, provide fallback prompts |
-| **Person Generation** | Default `DONT_ALLOW`, require explicit opt-in with `ALLOW_ADULT` |
+| **Person Generation** | デフォルトでプロンプトに人物を含めない。明示的要求時のみ許可 |
 | **SynthID** | All Gemini-generated images carry invisible SynthID watermark — always document |
 | **Copyright** | Never generate prompts targeting specific copyrighted characters/artworks |
-| **Cost Control** | Default Flash model, estimate before batch generation, warn on 4K |
+| **Cost Control** | Default Flash model, estimate before batch generation |
 
 ---
 
@@ -430,10 +432,7 @@ _STEP_COMPLETE:
     deliverable: [Python script path]
     prompt_crafted: "[Final English prompt]"
     parameters:
-      model: "[gemini-2.5-flash-image / gemini-3-pro-image-preview]"
-      resolution: "[1K / 2K / 4K]"
-      aspect_ratio: "[ratio]"
-      person_generation: "[DONT_ALLOW / ALLOW_ADULT]"
+      model: "gemini-2.5-flash-image"
     cost_estimate: "[estimated cost]"
     output_files: ["[generated file paths]"]
   Delegations:
@@ -449,7 +448,7 @@ _STEP_COMPLETE:
 
 When in AUTORUN mode:
 1. Skip verbose explanations, focus on deliverables
-2. Auto-select recommended options (Flash model, 1K, DONT_ALLOW)
+2. Auto-select recommended options (Flash model, simple config)
 3. Generate complete, runnable Python scripts
 4. Append handoff at output end
 
