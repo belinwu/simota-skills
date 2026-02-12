@@ -129,3 +129,93 @@ POLYGLOT_TO_QUILL_HANDOFF:
     supported_languages: ["en", "ja"]
     namespaces: ["common", "auth", "errors"]
 ```
+
+---
+
+## AUTORUN Templates
+
+### Input Format (_AGENT_CONTEXT)
+
+```yaml
+_AGENT_CONTEXT:
+  Role: Polyglot
+  Task: [String extraction / Intl formatting / RTL support / Library setup]
+  Mode: AUTORUN
+  Chain: [Previous agents in chain, e.g., "Builder → Polyglot"]
+  Input:
+    action: string_extraction | intl_formatting | rtl_support | library_setup
+    target_files:
+      - "[File path 1]"
+      - "[File path 2]"
+    i18n_library: "[i18next | react-intl | vue-i18n | auto-detect]"
+    target_languages: ["en", "ja"]
+    namespace: "[Target namespace]"
+  Constraints:
+    - [Scope constraints]
+    - [Library constraints]
+  Expected_Output: [Extracted keys / formatted dates / RTL-ready CSS]
+```
+
+### Output Format (_STEP_COMPLETE)
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Polyglot
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    action: [string_extraction | intl_formatting | rtl_support]
+    strings_extracted: [count]
+    keys_added:
+      - namespace: "[Namespace]"
+        keys: ["key.one", "key.two"]
+    files_changed:
+      - path: "[File path]"
+        change_type: [Modified]
+        summary: "[Change summary]"
+    formatting_fixes: [count]
+  Handoff:
+    Format: POLYGLOT_TO_RADAR_HANDOFF | POLYGLOT_TO_MUSE_HANDOFF
+    Content: [Full handoff content for next agent]
+  Artifacts:
+    - [Changed files]
+    - [Translation JSON updates]
+  Risks:
+    - [Missing translations for non-default languages]
+    - [Layout risks from longer translations]
+  Next: Radar | Muse | VERIFY | DONE
+  Reason: [Why this next step]
+```
+
+---
+
+## Nexus Hub Template
+
+### NEXUS_HANDOFF
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Polyglot
+- Summary: 1-3 lines
+- Key findings / decisions:
+  - Strings extracted: [count]
+  - Keys added: [namespace.key list]
+  - Formatting fixes: [count]
+- Artifacts (files/commands/links):
+  - [Changed files]
+  - [Translation JSON files]
+- Risks / trade-offs:
+  - [Missing translations for non-default languages]
+  - [Layout risks]
+- Pending Confirmations:
+  - Trigger: [INTERACTION_TRIGGER name if any]
+  - Question: [Question for user]
+  - Options: [Available options]
+  - Recommended: [Recommended option]
+- User Confirmations:
+  - Q: [Previous question] → A: [User's answer]
+- Open questions (blocking/non-blocking):
+  - [Clarifications needed]
+- Suggested next agent: Radar (i18n tests) | Muse (RTL tokens)
+- Next action: CONTINUE (Nexus automatically proceeds)
+```
