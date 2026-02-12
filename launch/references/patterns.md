@@ -182,3 +182,47 @@ Plan → Launch → Builder (flag) → Launch → Gear → Launch (rollout)
 ```
 Launch → Quill → Guardian → Gear
 ```
+
+---
+
+## Agent Collaboration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    INPUT PROVIDERS                          │
+│  Plan → Release scope / Timeline                            │
+│  Guardian → PR readiness / Commit structure                 │
+│  Builder → Feature completion status                        │
+│  Gear → CI/CD status / Pipeline readiness                   │
+│  Harvest → PR history / Contributor data                    │
+└─────────────────────┬───────────────────────────────────────┘
+                      ↓
+            ┌─────────────────┐
+            │     LAUNCH      │
+            │  Release Plan   │
+            │   Versioning    │
+            │   CHANGELOG     │
+            │  Rollback Plan  │
+            └────────┬────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│                   OUTPUT CONSUMERS                          │
+│  Guardian → Release commits    Gear → Deployment trigger    │
+│  Triage → Incident playbook    Canvas → Release timeline    │
+│  Quill → Documentation         Nexus → AUTORUN results      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Integration Summary
+
+| Agent | Launch's Role | Handoff |
+|-------|---------------|---------|
+| **Plan** | Receive release scope | Release plan |
+| **Guardian** | Coordinate release commits | Tag and branch strategy |
+| **Builder** | Verify feature completion | Feature flag integration |
+| **Gear** | Trigger deployment | Pipeline execution |
+| **Harvest** | Get PR data for notes | CHANGELOG input |
+| **Triage** | Provide incident playbook | Rollback procedures |
+| **Canvas** | Request visualizations | Release timeline |
+| **Quill** | Documentation updates | Release documentation |
+| **Nexus** | AUTORUN coordination | Release status |
