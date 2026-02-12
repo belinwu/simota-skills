@@ -35,3 +35,35 @@ const corsOptions = {
 - [ ] Sanitize string inputs
 - [ ] Limit request body size
 - [ ] Validate path and query parameters
+
+---
+
+## Security Review Checklist
+
+### Authentication
+- [ ] Endpoints require authentication (unless public)
+- [ ] Token validation documented
+- [ ] Token expiration handled
+
+### Authorization
+- [ ] Resource ownership verified
+- [ ] Role-based access defined
+- [ ] Cross-tenant access prevented
+
+### Input Validation
+- [ ] All inputs validated
+- [ ] Size limits defined
+- [ ] Type coercion avoided
+- [ ] SQL/NoSQL injection prevented
+- [ ] Path traversal prevented
+
+### Output Security
+- [ ] Sensitive data excluded from responses
+- [ ] Error messages don't leak internals
+- [ ] CORS configured correctly
+- [ ] Security headers present
+
+### Rate Limiting
+- [ ] Limits defined per endpoint
+- [ ] Limits documented
+- [ ] 429 response includes Retry-After
