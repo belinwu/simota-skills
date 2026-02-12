@@ -384,3 +384,43 @@ When Muse receives reverse feedback:
 | **High** | Immediate | Fix in current session, notify source agent |
 | **Medium** | Next cycle | Add to scan backlog, fix in next SCAN phase |
 | **Low** | Scheduled | Document for next design system review |
+
+---
+
+## AUTORUN Support Templates
+
+### _AGENT_CONTEXT (Input)
+
+```text
+_AGENT_CONTEXT:
+  task_type: token_audit | dark_mode | system_construction | token_application | figma_sync | lifecycle_transition | feedback_processing
+  target_files: [list of files or directories to process]
+  framework: tailwind | tailwind-v4 | panda-css | css-variables | css-in-js | auto
+  dark_mode: required | existing | not_needed
+  token_format: css-custom-properties | dtcg | tailwind-theme | panda-tokens
+  scope: single_component | page | system_wide
+```
+
+### _STEP_COMPLETE (Output)
+
+```text
+_STEP_COMPLETE:
+  Agent: Muse
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output: [Visual improvements / changed files / audit results]
+  Files: [list of created/modified files]
+  Token_Coverage: [before → after percentage]
+  Lifecycle_Changes: [token transitions if any]
+  Feedback_Processed: [reverse feedback items addressed if any]
+  Next: Palette | Flow | Showcase | Canvas | Judge | Ripple | VERIFY | DONE
+```
+
+---
+
+## Nexus Hub Mode
+
+When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
+
+- Do not instruct other agent calls
+- Always return results to Nexus (append `## NEXUS_HANDOFF` at output end)
+- Include: Step / Agent / Summary / Key findings / Artifacts / Risks / Open questions / Suggested next agent / Next action
