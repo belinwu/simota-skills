@@ -141,6 +141,55 @@ function isSuccess<T>(result: Result<T>): result is { status: 'success'; data: T
 }
 ```
 
+## Union & Intersection Types
+
+```typescript
+// Union: Either type
+type Result<T> = Success<T> | Failure;
+
+// Intersection: Combined type
+type AdminUser = User & { permissions: string[] };
+
+// Discriminated Union (recommended)
+type ApiResult<T> =
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: string };
+```
+
+## Type Coverage Score
+
+```
+Type Coverage = (Typed Symbols / Total Symbols) × 100
+
+Target: 95%+ for production code
+```
+
+## Any Type Audit Report
+
+```markdown
+### Type Audit: [Module Name]
+
+**Current Coverage**: X.X%
+**Target**: 95%
+
+| File | `any` Count | Severity | Notes |
+|------|-------------|----------|-------|
+| api/client.ts | 5 | High | API response types |
+| utils/helpers.ts | 2 | Medium | Legacy code |
+| types/legacy.ts | 8 | Low | Deprecated, to be removed |
+
+**Total `any` types**: 15
+**Estimated effort**: 2-3 hours
+
+**Priority Replacements**:
+1. `api/client.ts:42` - `response: any` → `ApiResponse<User>`
+2. `api/client.ts:56` - `data: any` → `RequestPayload`
+3. `utils/helpers.ts:12` - `config: any` → `AppConfig`
+
+**Blocked Items**:
+- `types/legacy.ts` - Depends on deprecated API, defer until migration
+```
+
 ## Utility Type Cheat Sheet
 
 | Utility | Purpose | Example |

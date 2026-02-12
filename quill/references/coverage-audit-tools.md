@@ -1,5 +1,15 @@
 # Coverage Audit Tools
 
+## Coverage Metrics Targets
+
+| Metric | Target | How to Measure |
+|--------|--------|----------------|
+| Public API JSDoc | 100% | Functions/classes without JSDoc |
+| Type Coverage | 95%+ | `any` types remaining |
+| README Sections | 100% | Essential sections present |
+| Link Health | 100% | No broken links |
+| Example Coverage | 80%+ | Public APIs with @example |
+
 ## Documentation Coverage Script
 
 ```typescript

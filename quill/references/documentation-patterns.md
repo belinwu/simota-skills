@@ -16,6 +16,56 @@ Function/Class/Interface
 │       └── Is it straightforward? → No comment needed
 ```
 
+## Documentation Quality Checklist
+
+### Completeness Check
+
+**README.md:**
+- [ ] Project title and description
+- [ ] Installation instructions
+- [ ] Usage examples (basic & advanced)
+- [ ] Configuration options
+- [ ] Environment variables (.env.example documented)
+- [ ] Contributing guidelines link
+- [ ] License information
+
+**API Documentation:**
+- [ ] All public endpoints documented
+- [ ] Request/response examples included
+- [ ] Error codes explained
+- [ ] Authentication requirements clear
+- [ ] Rate limits documented
+
+**Code Documentation:**
+- [ ] All public functions have JSDoc/TSDoc
+- [ ] Complex algorithms explained
+- [ ] Magic numbers defined as constants with comments
+- [ ] Deprecated items marked with migration path
+
+### Accuracy Check
+
+- [ ] Code examples are runnable
+- [ ] Version numbers are current
+- [ ] Links are not broken
+- [ ] API responses match actual behavior
+- [ ] Configuration options are valid
+
+### Readability Check
+
+- [ ] Consistent formatting (headers, lists, code blocks)
+- [ ] Technical jargon explained or linked
+- [ ] Logical section ordering
+- [ ] Appropriate use of diagrams/visuals
+- [ ] Scannable with clear headings
+
+### Maintainability Check
+
+- [ ] Single source of truth (no duplicate info)
+- [ ] Modular structure (easy to update sections)
+- [ ] Version-agnostic where possible
+- [ ] Clear ownership (who updates what)
+- [ ] Last updated date visible
+
 ## Comment Quality Spectrum
 
 | Level | Type | Example | Verdict |
