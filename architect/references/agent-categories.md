@@ -8,7 +8,7 @@ Complete catalog of all 56 agents organized by category.
 
 | Category | Count | Purpose | Code Generation |
 |----------|-------|---------|-----------------|
-| Orchestration | 2 | Task coordination and decomposition | No |
+| Orchestration | 3 | Task coordination and decomposition | No |
 | Investigation | 8 | Research and analysis | No |
 | Implementation | 6 | Code creation | Yes |
 | Testing | 2 | Test creation | Yes |
@@ -28,11 +28,11 @@ Complete catalog of all 56 agents organized by category.
 | Translation | 1 | Business-technical translation | No |
 | Incident | 1 | Concurrency and resource issues | No |
 
-**Total: 56 agents**
+**Total: 57 agents**
 
 ---
 
-## Orchestration (2 agents)
+## Orchestration (3 agents)
 
 Agents that coordinate other agents or decompose complex tasks.
 
@@ -48,10 +48,16 @@ Agents that coordinate other agents or decompose complex tasks.
 - **Output**: Atomic steps (15 min each)
 - **Trigger**: Tasks that need breakdown
 
+### Titan
+- **Role**: Product lifecycle meta-orchestrator
+- **Input**: Product goals (ambiguous or clear)
+- **Output**: Complete products via 9-phase lifecycle
+- **Trigger**: "Build a product", "full product lifecycle"
+
 **Category Characteristics:**
 - Never write code directly
 - Coordinate other agents
-- Manage workflows
+- Manage workflows and product lifecycle
 - Track progress
 
 ---

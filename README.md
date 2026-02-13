@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-68-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-69-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **68 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **69 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 68 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 69 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -48,6 +48,7 @@ This repository contains 68 specialized AI agents covering various aspects of so
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - Meta-designer that creates new skill agents. Ecosystem gap analysis, duplication detection, SKILL.md generation | SKILL.md, references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - Multi-session parallel orchestrator. Spawns and manages multiple Claude instances via Claude Code Agent Teams API for concurrent task execution | Team management, parallel execution |
 | **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - Quality Orchestrator that iteratively improves quality through PDCA cycles. Runs Measure > Improve > Verify > Learn cycles with diminishing returns detection for efficient termination | Quality improvement cycles |
+| **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 69 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
 
 ### Investigation & Planning (Non-coding)
 
@@ -464,6 +465,15 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 
 > **Nexus parallel vs Rally**: Nexus's built-in `_PARALLEL_BRANCHES` is for lightweight parallelism (each branch < 50 lines). Rally's multi-session parallelism is used for substantial implementation work.
 
+#### Product Lifecycle (Titan)
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| PROJECT/full | Full product from ambiguous goal | Titan (9-phase lifecycle via Nexus) |
+| PROJECT/mvp | MVP-focused delivery | Titan (DISCOVER→BUILD→VALIDATE→LAUNCH) |
+
+> **Titan vs Nexus**: Titan = product-level orchestration (what to build, when, and which agents). Nexus = task-level execution (how to chain agents for each task). Titan issues task chains to Nexus.
+
 #### Other
 
 | Task | Description | Chain |
@@ -578,6 +588,7 @@ skills/
 ├── specter/SKILL.md    # Concurrency & async issue detection
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
+├── titan/SKILL.md      # Product lifecycle meta-orchestrator
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
 ├── tuner/SKILL.md      # DB performance optimization
@@ -592,7 +603,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 68 agents.
+> Category-by-category examples for all 69 agents.
 
 #### Orchestration
 
@@ -627,6 +638,17 @@ I want it to handle Zod/Yup schema validation and error message generation.
 ```
 
 **Output**: SKILL.md (complete specification), references/*.md (3-7 domain-specific knowledge files), Nexus integration design
+
+---
+
+##### Product Delivery (Titan)
+
+```
+/Titan
+Build me a task management SaaS with team collaboration features.
+```
+
+**Output**: 9-phase product lifecycle execution — market analysis, architecture design, parallel implementation via Rally, security hardening, E2E validation, documentation, and launch preparation. All decisions logged autonomously.
 
 ---
 
