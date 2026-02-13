@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-65-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-68-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **65 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **68 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 65 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 68 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -138,17 +138,20 @@ This repository contains 65 specialized AI agents covering various aspects of so
 | **Scribe** | _"A specification is a contract between vision and reality."_ - Document writer for PRD/SRS/HLD/LLD, implementation checklists, and test specifications | Specs, design docs |
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc additions, README updates, typing `any` to proper type definitions | Documentation |
 | **Morph** | _"A document is timeless. Its format is temporary."_ - Document format conversion (Markdown <> Word/Excel/PDF/HTML). Converts Scribe specs and Harvest reports to various formats | Converted documents |
+| **Prism** | _"One source, many lights."_ - NotebookLM steering prompt design consultant. Advises on source preparation and optimal output format selection (Audio/Video/Slide/Infographic/Mind Map) | Steering prompts |
 
-**Scribe vs Quill vs Morph responsibilities**:
+**Scribe vs Quill vs Morph vs Prism responsibilities**:
 - **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
 - **Quill**: Code documentation (JSDoc/TSDoc, README, type definitions)
 - **Morph**: Format conversion (Markdown > PDF/Word/HTML, etc.)
+- **Prism**: NotebookLM content optimization (steering prompts for Audio/Video/Slide)
 
 ### Visualization
 
 | Agent | Description | Output |
 |-------|-------------|--------|
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
+| **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
 
 ### Architecture
 
@@ -175,6 +178,7 @@ This repository contains 65 specialized AI agents covering various aspects of so
 | **Anvil** | _"The terminal is the first interface. Make it unforgettable."_ - Terminal UI construction, CLI development support, dev tool integration (Linter/test runner/build) | CLI/TUI code |
 | **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
+| **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
 
 ### Internationalization
 
@@ -538,6 +542,7 @@ skills/
 ├── growth/SKILL.md     # SEO/CRO
 ├── guardian/SKILL.md   # Git/PR management
 ├── harvest/SKILL.md    # PR info collection & report generation
+├── hearth/SKILL.md     # Personal dev environment config
 ├── hone/SKILL.md       # PDCA quality improvement
 ├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
@@ -550,6 +555,7 @@ skills/
 ├── nexus/SKILL.md      # Orchestrator
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
+├── prism/SKILL.md      # NotebookLM steering prompt design
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
 ├── pulse/SKILL.md      # Metrics design
 ├── quill/SKILL.md      # Documentation
@@ -567,6 +573,7 @@ skills/
 ├── sentinel/SKILL.md   # Static security analysis (SAST)
 ├── sherpa/SKILL.md     # Task decomposition
 ├── showcase/SKILL.md   # Storybook story management
+├── sketch/SKILL.md     # AI image generation (Gemini API)
 ├── spark/SKILL.md      # Feature proposals
 ├── specter/SKILL.md    # Concurrency & async issue detection
 ├── stream/SKILL.md     # Data pipelines
@@ -585,7 +592,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 65 agents.
+> Category-by-category examples for all 68 agents.
 
 #### Orchestration
 
@@ -1139,6 +1146,36 @@ Create an ASCII art diagram of this API's processing flow.
 
 ---
 
+##### AI Image Generation Code (Sketch)
+
+```
+/Sketch
+Generate Python code to create product thumbnail images using Gemini API.
+Include batch generation for multiple products.
+```
+
+**Output**: Production-ready Python code with Gemini API integration, prompt optimization, batch processing, cost estimation
+
+---
+
+**Canvas vs Sketch responsibilities**:
+- **Canvas**: Diagrams and charts (Mermaid, ASCII art, draw.io)
+- **Sketch**: AI image generation code (Python code for Gemini API)
+
+---
+
+##### NotebookLM Prompt Design (Prism)
+
+```
+/Prism
+I want to create an engaging podcast-style audio overview of our API documentation using NotebookLM.
+Help me design the optimal steering prompt.
+```
+
+**Output**: Optimized steering prompt, source preparation advice, output format recommendations
+
+---
+
 #### Architecture
 
 ##### Architecture Analysis (Atlas)
@@ -1246,6 +1283,33 @@ Create Terraform configuration for building a staging environment on AWS.
 ```
 
 **Output**: Terraform/CloudFormation/Pulumi configuration files, environment variable templates
+
+---
+
+##### Personal Dev Environment Setup (Hearth)
+
+```
+/Hearth
+Optimize my zsh configuration. It's slow to start up and I want better completions.
+```
+
+**Output**: Optimized .zshrc with startup profiling, lazy-loading plugins, and completion configuration
+
+---
+
+##### Dotfile Management (Hearth)
+
+```
+/Hearth
+Set up my neovim configuration with LSP support and lazy.nvim plugin management.
+```
+
+**Output**: init.lua structure, lazy.nvim setup, LSP configuration, keybindings
+
+**Hearth vs Gear vs Scaffold responsibilities**:
+- **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
+- **Gear**: Project-level DevOps (CI/CD, Docker, monitoring)
+- **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 
 ---
 
