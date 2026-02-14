@@ -28,8 +28,9 @@ Complete catalog of all 56 agents organized by category.
 | Translation | 1 | Business-technical translation | No |
 | Incident | 1 | Concurrency and resource issues | No |
 | Communication | 1 | Messaging integration & real-time communication | Mixed |
+| Meta / Tooling | 1 | Project-specific skill generation | No (text) |
 
-**Total: 58 agents**
+**Total: 59 agents**
 
 ---
 
@@ -619,6 +620,24 @@ Agents that design and implement messaging integrations and real-time communicat
 - Real-time communication design
 - Bot development patterns
 - Event-driven architecture
+
+---
+
+## Meta / Tooling (1 agent)
+
+Agents that generate project-specific tooling and skills.
+
+### Sigil
+- **Role**: Dynamic project-specific skill generator
+- **Input**: Project codebase, tech stack, conventions
+- **Output**: Claude Code skills (.claude/skills/*.md)
+- **Trigger**: "Generate skills for this project", "Create skill for", "Analyze project and suggest skills"
+
+**Category Characteristics:**
+- Analyzes project context before generating
+- Generates Micro (10-80 lines) and Full (100-400 lines) skills
+- Does not modify ecosystem agents
+- Complements Architect (ecosystem) with project-specific skills
 
 ---
 

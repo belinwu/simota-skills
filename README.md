@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-70-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-71-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **70 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **71 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 70 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 71 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -49,6 +49,7 @@ This repository contains 70 specialized AI agents covering various aspects of so
 | **Rally** | _"One task, many hands. Parallel by design."_ - Multi-session parallel orchestrator. Spawns and manages multiple Claude instances via Claude Code Agent Teams API for concurrent task execution | Team management, parallel execution |
 | **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - Quality Orchestrator that iteratively improves quality through PDCA cycles. Runs Measure > Improve > Verify > Learn cycles with diminishing returns detection for efficient termination | Quality improvement cycles |
 | **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 69 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
+| **Sigil** | _"Every project has patterns waiting to become power."_ - Dynamic skill generator. Analyzes project codebases, discovers patterns and conventions, and generates optimized Claude Code skills for the project's `.claude/skills/` directory | Project-specific skills |
 
 ### Investigation & Planning (Non-coding)
 
@@ -601,6 +602,7 @@ skills/
 ├── scout/SKILL.md      # Bug investigation
 ├── sentinel/SKILL.md   # Static security analysis (SAST)
 ├── sherpa/SKILL.md     # Task decomposition
+├── sigil/SKILL.md      # Dynamic project-specific skill generation
 ├── showcase/SKILL.md   # Storybook story management
 ├── sketch/SKILL.md     # AI image generation (Gemini API)
 ├── spark/SKILL.md      # Feature proposals
@@ -622,7 +624,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 70 agents.
+> Category-by-category examples for all 71 agents.
 
 #### Orchestration
 
@@ -668,6 +670,34 @@ Build me a task management SaaS with team collaboration features.
 ```
 
 **Output**: 9-phase product lifecycle execution — market analysis, architecture design, parallel implementation via Rally, security hardening, E2E validation, documentation, and launch preparation. All decisions logged autonomously.
+
+---
+
+##### Project Skill Generation (Sigil)
+
+```
+/Sigil
+Analyze this project and generate useful skills for the team.
+```
+
+**Output**: Tech stack analysis, skill opportunity discovery, Micro/Full skills generated to `.claude/skills/` (e.g., new-page, new-api-route, deploy-flow)
+
+---
+
+##### Targeted Skill Creation (Sigil)
+
+```
+/Sigil
+Generate a skill for creating new API routes in this Express project.
+```
+
+**Output**: Project-specific `new-route.md` skill with templates matching the project's existing patterns and conventions
+
+---
+
+**Architect vs Sigil responsibilities**:
+- **Architect**: Designs universal ecosystem agents (400-1400 lines, SKILL.md)
+- **Sigil**: Generates project-specific skills from live context (10-400 lines, .claude/skills/)
 
 ---
 
