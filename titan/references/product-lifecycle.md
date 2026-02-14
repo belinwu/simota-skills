@@ -27,7 +27,7 @@ NEXUS_AUTORUN_FULL — Chain: Cipher → Bridge → Researcher → Compete → V
 Acceptance: Product Definition with target users, value proposition, key features, constraints
 ```
 
-**Artifacts**: `docs/product-definition.md`, personas, competitive analysis · Agent details → `references/agent-deployment-matrix.md`
+**Artifacts**: `docs/product-definition.md`, personas, competitive analysis · Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -48,7 +48,7 @@ NEXUS_AUTORUN_FULL — Chain: Spark → Scribe → Pulse → Magi → Canon
 Acceptance: Complete roadmap with prioritized features, KPI definitions, SUCCESS_CRITERIA finalized
 ```
 
-**Artifacts**: `docs/roadmap.md`, `docs/specs/`, KPI definitions, success criteria · Agent details → `references/agent-deployment-matrix.md`
+**Artifacts**: `docs/roadmap.md`, `docs/specs/`, KPI definitions, success criteria · Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -70,7 +70,7 @@ NEXUS_AUTORUN_FULL — Chain: Magi → Atlas → Gateway → Schema → Grove �
 Acceptance: ADR, API specs, DB schema, repo structure, infrastructure plan
 ```
 
-**Artifacts**: `docs/adr/`, `docs/api-spec.yaml`, DB schema, architecture diagrams · Agent details → `references/agent-deployment-matrix.md`
+**Artifacts**: `docs/adr/`, `docs/api-spec.yaml`, DB schema, architecture diagrams · Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -93,7 +93,7 @@ NEXUS_AUTORUN_FULL — Chain: Sherpa → Forge → Builder → Radar (per featur
 Rally: Team{ Feature A: Sherpa→Forge→Builder→Radar | Feature B: Sherpa→Artisan→Radar | ... }
 ```
 
-**Artifacts**: Source code, test files, `docs/build-notes.md` · Agent details → `references/agent-deployment-matrix.md`
+**Artifacts**: Source code, test files, `docs/build-notes.md` · Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -113,7 +113,7 @@ Rally: Team{ Feature A: Sherpa→Forge→Builder→Radar | Feature B: Sherpa→A
 NEXUS_AUTORUN_FULL — Chain: Rally{Sentinel+Probe+Specter} → Judge → Zen → Rally{Bolt+Tuner} → Hone → Canon → Warden
 ```
 
-Agent details → `references/agent-deployment-matrix.md`
+Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -129,7 +129,7 @@ Agent details → `references/agent-deployment-matrix.md`
 5. **Quality Gate** (Warden): Validation assessment
 6. **Browser Automation** (Navigator): Automated browser checks
 
-Agent details → `references/agent-deployment-matrix.md`
+Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -147,7 +147,7 @@ Agent details → `references/agent-deployment-matrix.md`
 7. **CI/CD Setup** (Gear): Pipeline configuration
 8. **Content Optimization** (Prism): NotebookLM prompts if applicable
 
-Agent details → `references/agent-deployment-matrix.md`
+Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -163,7 +163,7 @@ Agent details → `references/agent-deployment-matrix.md`
 5. **Data Pipeline** (Stream): Analytics data flow
 6. **Experimentation** (Experiment): Growth experiments
 
-Agent details → `references/agent-deployment-matrix.md`
+Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 
@@ -183,7 +183,7 @@ Agent details → `references/agent-deployment-matrix.md`
 
 **Continuous Loop**: Feedback → updated personas · Metrics → refined criteria · Tech debt → arch improvements · Market changes → competitive re-analysis.
 
-Agent details → `references/agent-deployment-matrix.md`
+Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
 ---
 

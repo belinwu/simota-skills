@@ -122,3 +122,9 @@ Stall Detected → L1.1 Retry → L1.2 Swap → L1.3 Decompose
   → L5.1 Ask user ONE question → Response → Restart cascade
 Each step: Success? → Continue. Fail? → Next level.
 ```
+
+---
+
+## Guardrail Integration
+
+Guardrail events (`_common/GUARDRAIL.md` L1-L4) map to Anti-Stall levels: L2 recovery failure → Anti-Stall L1, L3 pause → Anti-Stall L1-L2, L4 abort → immediate halt + rollback. Guardrail auto-recoveries do NOT consume Anti-Stall budget; only failures escalated to Titan do. → `references/guardrail-integration.md`

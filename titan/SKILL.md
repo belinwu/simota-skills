@@ -14,6 +14,12 @@ CAPABILITIES_SUMMARY:
 - Scope adaptation (S/M/L/XL project sizing)
 - Momentum System with Forward Progress Guarantee
 - TITAN_STATE persistence for cross-session continuity
+- Nexus result validation (FULL/PARTIAL/BLOCKED/FAILED handling)
+- Rally file ownership and integration chain coordination
+- Magi structured consultation protocol (MAGI_REQUEST/VERDICT)
+- Guardrail↔Anti-Stall integration (L1-L4 mapping)
+- Exit criteria auto-validation (Lens→Radar→Warden chain)
+- Phase readiness scoring and adaptive sequencing
 
 ORCHESTRATION_PATTERNS:
 - Pattern A: Sequential Phase Execution (Phase1→Phase2→...→Phase9)
@@ -115,7 +121,25 @@ DISCOVER → DEFINE → ARCHITECT → BUILD → HARDEN → VALIDATE → LAUNCH �
 | **L** (large product) | All 9 phases | SaaS new build |
 | **XL** (enterprise) | All 9 phases + multi-iteration per phase | Large-scale platform |
 
-Auto-detection: file_count, dependency_count, team_mentions, domain_complexity → scope classification.
+**Scope Detection Algorithm:**
+```
+scope_score = files(1-4) + deps(0-3) + team(0-3) + domains(0-3)
+  files: 1-5→1, 6-15→2, 16-30→3, 31+→4
+  deps: <5→0, 5-15→1, 16-30→2, 31+→3
+  team: 1→0, 2→1, 3-5→2, 6+→3
+  domains: 1→0, 2→1, 3→2, 4+→3
+Result: 0-3=S, 4-6=M, 7-10=L, 11+=XL
+Fallback: confidence <0.60 → default M, log assumption
+```
+
+**Adaptive Phase Sequencing:**
+
+| Project Type | Sequence |
+|---|---|
+| Existing enhancement | Skip DISCOVER → DEFINE → BUILD → HARDEN → VALIDATE → LAUNCH |
+| Bug fix at scale | DISCOVER(Triage/Scout) → HARDEN priority |
+| Greenfield | Full 9-phase |
+| Modernization | DISCOVER(Lens/Rewind) → ARCHITECT(pivot) → BUILD(incremental) |
 
 ### Phase Summary
 
@@ -137,11 +161,20 @@ Phase details → `references/product-lifecycle.md` · Agent deployment → `ref
 
 ```
 Titan: "Execute Phase N"
+  ├─ 0. Phase Readiness Check (score ≥0.80→start, 0.60-0.79→assumptions, <0.60→prepare)
+  │     → references/phase-context-scoring.md
   ├─ 1. Generate Epic list from references/product-lifecycle.md
   ├─ 2. Analyze Epic dependencies
   ├─ 3. Independent → Rally (parallel) · Sequential → Nexus AUTORUN_FULL
+  │     Rally requires: (1) File ownership declaration (no exclusive_write overlap)
+  │     (2) Integration plan (merge strategy + test chain)
+  │     (3) Shared deps resolved first (types, config)
+  │     Results → integration chain (Atlas→Radar→Judge) before phase exit
+  │     → references/rally-coordination.md
   ├─ 4. Update TITAN_STATE on each Epic completion
-  ├─ 5. Verify phase exit criteria (from product-lifecycle.md)
+  ├─ 5. Verify phase exit criteria (auto-validation chain: Lens→Radar→Warden)
+  │     ≥80%→proceed, 60-79%→scope reduce+proceed, <60%→Anti-Stall
+  │     → references/exit-criteria-validation.md
   ├─ 6. Phase transition: git commit → update TITAN_STATE → log summary
   └─ 7. **Immediately issue next phase chain** (NEVER pause between phases)
 ```
@@ -159,6 +192,17 @@ Acceptance: [Measurable criteria — files created, tests passing, metrics met]
 ```
 
 Phase-specific chain templates → `references/product-lifecycle.md` (must read before first issuance). On Epic completion, **immediately** issue the next chain. **Never pause between Epics or phases** unless PHASED_REVIEW mode is active or an Interaction Trigger fires.
+
+### Nexus Result Protocol
+
+On Epic completion, Nexus returns `## NEXUS_COMPLETE_[STATUS]`. Titan MUST:
+
+1. **Validate**: Check required artifacts exist (phase-specific checklist)
+2. **Map to State**: Update TITAN_STATE (COMPLETE/PARTIAL/BLOCKED/FAILED)
+3. **Handle Errors**: PARTIAL→L1 Retry, BLOCKED→L2 Skip+return, FAILED→L1 Agent swap
+4. **Proceed**: COMPLETE → next Epic immediately; others → recovery cascade
+
+Details → `references/nexus-integration.md`
 
 ---
 
@@ -251,6 +295,12 @@ Titan operates ABOVE the hub — issues chains to `## NEXUS_AUTORUN_FULL` and re
 | `references/momentum-system.md` | Velocity tracking, Rally auto-launch, Forward Progress Guarantee |
 | `references/output-formats.md` | TITAN_COMPLETE, TITAN_PHASE_COMPLETE, TITAN_STATE templates |
 | `references/interaction-triggers.md` | YAML templates for all 4 interaction triggers |
+| `references/nexus-integration.md` | Nexus result validation protocol, artifact checklists, status→Anti-Stall mapping |
+| `references/rally-coordination.md` | Rally file ownership, merge protocol, integration chain |
+| `references/magi-protocol.md` | MAGI_REQUEST/VERDICT formats, consensus actions, Decision Log integration |
+| `references/guardrail-integration.md` | Guardrail↔Anti-Stall mapping, budget interaction, L4 rollback |
+| `references/exit-criteria-validation.md` | Phase exit checklists, scoring, pass/conditional/fail rules |
+| `references/phase-context-scoring.md` | Phase readiness scoring, READY/CONDITIONAL/PREPARE/NOT_READY thresholds |
 
 ---
 

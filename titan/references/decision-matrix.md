@@ -88,6 +88,8 @@ Budget does NOT reset between phases. Only user approval (via ON_CRITICAL_RISK_B
 3. **Evaluate consensus**: All agree → strong confidence · Split → document minority view
 4. **Record**: Full rationale including minority perspective in Decision Log
 
+Formal MAGI_REQUEST/MAGI_VERDICT formats, consensus-based actions, and Decision Log integration → `references/magi-protocol.md`
+
 ### Magi Request Format
 ```
 Decision needed: [What to decide]
