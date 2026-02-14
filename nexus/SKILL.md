@@ -41,6 +41,7 @@ ALL AGENTS (Hub connections):
 - DevOps: Launch, Harvest, Guardian
 - Browser Automation: Navigator, Reel
 - Meta-Orchestration: Titan
+- Communication: Relay
 
 PROJECT_AFFINITY: universal
 -->
@@ -118,6 +119,10 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | INFRA | Scaffold → Gear → Radar | +Anvil (CLI) |
 | PARALLEL | Rally | +Sherpa (decomposition), see Rally escalation |
 | PROJECT | Titan | Full product lifecycle — Titan orchestrates 9 phases, issues chains to Nexus |
+| MESSAGING | Relay → Builder → Radar | +Sentinel (security), +Scaffold (infra) |
+| BOT | Relay → Builder → Radar | +Sentinel (security) |
+| REALTIME | Relay → Scaffold → Builder | +Radar (tests) |
+| WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
 
 **Investigation selection**: Codebase comprehension→**Lens** · Bug/RCA→**Scout** · Incident triage→**Triage** · Git history/regression→**Rewind**. "Does X exist?"/"How does X work?"→Lens · "Why is X broken?"→Scout · "When did X regress?"→Rewind · "What's the severity?"→Triage
 

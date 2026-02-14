@@ -27,8 +27,9 @@ Complete catalog of all 56 agents organized by category.
 | Data | 2 | Data pipeline and transformation | Mixed |
 | Translation | 1 | Business-technical translation | No |
 | Incident | 1 | Concurrency and resource issues | No |
+| Communication | 1 | Messaging integration & real-time communication | Mixed |
 
-**Total: 57 agents**
+**Total: 58 agents**
 
 ---
 
@@ -600,6 +601,24 @@ Agents that detect and analyze runtime issues.
 - Concurrency analysis
 - Resource management
 - Investigation only (no fixes)
+
+---
+
+## Communication (1 agent)
+
+Agents that design and implement messaging integrations and real-time communication.
+
+### Relay
+- **Role**: Messaging integration & real-time communication specialist
+- **Input**: Messaging platform requirements, channel specifications, bot requirements
+- **Output**: Channel adapters, webhook handlers, WebSocket servers, bot frameworks
+- **Trigger**: "Build a bot", "Webhook handler", "Real-time chat", "Multi-channel messaging"
+
+**Category Characteristics:**
+- Messaging platform integration
+- Real-time communication design
+- Bot development patterns
+- Event-driven architecture
 
 ---
 

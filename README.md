@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-69-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-70-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **69 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **70 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 69 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 70 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -162,6 +162,15 @@ This repository contains 69 specialized AI agents covering various aspects of so
 | **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - Modernization. Deprecated library detection, native API replacement, PoC creation | Migration plans |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API design, review, OpenAPI spec generation, versioning strategy, breaking change detection | API specifications |
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - Repository structure design, optimization, and auditing. Directory design, docs/ organization, test structure, anti-pattern detection | Structure design, audit reports |
+
+### Communication
+
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Relay** | _"Every message finds its way. Every channel speaks the same language."_ - Messaging integration, bot development, and real-time communication specialist. Channel adapters, webhook handlers, WebSocket servers, event-driven architecture | Channel adapters, message handlers, bot framework |
+
+**Relay > Builder > Radar chain**: Relay (messaging design) > Builder (implementation) > Radar (tests)
+**Gateway > Relay chain**: Gateway (webhook API spec) > Relay (handler design)
 
 ### Data
 
@@ -483,6 +492,15 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 | SECURITY/concurrency | Concurrency bug detection | Specter > Builder > Radar |
 | INVESTIGATE/regression | Regression investigation | Rewind > Scout > Builder > Radar |
 
+#### Messaging & Real-time
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| MESSAGING/bot | Bot development | Relay > Builder > Radar |
+| MESSAGING/webhook | Webhook handler | Gateway > Relay > Builder > Radar |
+| MESSAGING/realtime | Real-time communication | Relay > Scaffold > Builder > Radar |
+| MESSAGING/multi-channel | Multi-channel integration | Relay > Builder > Radar |
+
 ## Shared Knowledge
 
 Agents share knowledge through the `.agents/` directory:
@@ -572,6 +590,7 @@ skills/
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator
 ├── reel/SKILL.md       # Terminal recording & CLI demo video generation
+├── relay/SKILL.md      # Messaging integration & real-time communication
 ├── researcher/SKILL.md # User research
 ├── ripple/SKILL.md     # Pre-change impact analysis
 ├── retain/SKILL.md     # Retention
@@ -603,7 +622,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 69 agents.
+> Category-by-category examples for all 70 agents.
 
 #### Orchestration
 
@@ -1343,6 +1362,39 @@ Set up a Docker Compose environment so new developers can start immediately.
 ```
 
 **Output**: docker-compose.yml, .env.example, setup scripts
+
+---
+
+#### Communication
+
+##### Slack Bot Development (Relay)
+
+```
+/Relay
+Build a Slack bot that responds to /remind commands and sends scheduled reminders.
+Support thread replies and slash commands.
+```
+
+**Output**: Channel adapter design, command parser specification, webhook handler middleware chain, event routing matrix
+
+---
+
+##### Multi-Channel Notification (Relay)
+
+```
+/Relay
+Design a notification system that sends alerts to both Slack and Discord.
+Each platform should display messages in its native format.
+```
+
+**Output**: Unified message schema, platform-specific adapters, fan-out routing design
+
+---
+
+**Relay vs Gateway vs Stream responsibilities**:
+- **Relay**: Messaging platform integration (channel adapters, webhooks, WebSocket, bots)
+- **Gateway**: REST/GraphQL API design (OpenAPI specs, versioning, endpoints)
+- **Stream**: Data pipelines (ETL/ELT, Kafka, Airflow, batch processing)
 
 ---
 
