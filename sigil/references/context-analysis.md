@@ -125,13 +125,27 @@ Tech stack detection patterns, directory structure analysis, and convention infe
 
 Before generating new skills, check:
 
-1. **Project `.claude/skills/`** — Already installed skills (avoid duplication)
-2. **Project `CLAUDE.md`** — Established conventions that might overlap with skills
-3. **Ecosystem agents** — Ensure generated skills don't duplicate agent functionality
+1. **Project `.claude/skills/`** — Already installed skills
+2. **Project `.agents/skills/`** — Already installed skills (mirror directory)
+3. **Project `CLAUDE.md`** — Established conventions that might overlap with skills
+4. **Ecosystem agents** — Ensure generated skills don't duplicate agent functionality
+
+**Cross-directory deduplication:** A skill existing in either `.claude/skills/` or `.agents/skills/` counts as "existing". Do not generate a skill that already exists in either directory.
+
+### Directory Sync Check
+
+Both directories must be kept in sync (identical contents). During SCAN, detect sync drift:
+
+1. List skills in `.claude/skills/` and `.agents/skills/`
+2. Identify skills that exist in only one directory (orphans)
+3. For each orphan, copy to the missing directory to restore sync
+4. Report any sync repairs performed
+
+This ensures both directories always contain the same set of skills regardless of how they were originally created.
 
 ### Duplication Detection
 
 A skill is a duplicate if:
-- Same name as existing skill
-- > 70% functional overlap with existing skill
+- Same name as existing skill (in either directory)
+- > 70% functional overlap with existing skill (in either directory)
 - Covers same workflow as an existing ecosystem agent's core function

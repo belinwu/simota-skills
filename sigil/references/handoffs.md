@@ -32,8 +32,9 @@ Standardized handoff formats for Sigil agent collaboration.
 
 ### Sigil Actions Required
 - [ ] Generate skills based on discovered patterns
-- [ ] Validate against existing skills
-- [ ] Install to project .claude/skills/
+- [ ] Validate against existing skills (both .claude/skills/ and .agents/skills/)
+- [ ] Sync-write to project .claude/skills/ and .agents/skills/
+- [ ] Repair any sync drift (orphan skills in only one directory)
 ```
 
 ### ARCHITECT_TO_SIGIL_HANDOFF
@@ -71,14 +72,15 @@ Standardized handoff formats for Sigil agent collaboration.
 - **Summary**: Generated skill structure for directory optimization
 
 ### Generated Skills
-| Skill | Type | Path | Lines |
-|-------|------|------|-------|
-| [name] | Micro/Full | .claude/skills/[name].md | [N] |
+| Skill | Type | Primary Path | Mirror Path | Lines |
+|-------|------|-------------|-------------|-------|
+| [name] | Micro/Full | .claude/skills/[name].md | .agents/skills/[name].md | [N] |
 
 ### Directory Structure
-- **Skills directory**: [.claude/skills/ layout]
-- **References**: [Any references/ subdirectories created]
-- **Total files**: [N files generated]
+- **Primary skills directory**: [.claude/skills/ layout]
+- **Mirror skills directory**: [.agents/skills/ layout]
+- **References**: [Any references/ subdirectories created in both dirs]
+- **Total files**: [N files generated (×2 for dual-write)]
 
 ### Grove Actions Required
 - [ ] Review skill directory organization
@@ -99,12 +101,13 @@ Standardized handoff formats for Sigil agent collaboration.
 | [name] | Micro/Full | [description] |
 
 ### Installation Status
-- **Installed to**: [project path]/.claude/skills/
-- **Files created**: [N]
+- **Synced to**: [project path]/.claude/skills/ and .agents/skills/
+- **Files created**: [N] (synced to both directories)
+- **Sync status**: IN_SYNC / DRIFT_REPAIRED / PARTIAL_FAIL
 - **Validation**: PASS/FAIL
 
 ### Artifacts
-- [List of generated files]
+- [List of skill files (synced in both .claude/skills/ and .agents/skills/)]
 
 ### Risks
 - [Any risks or limitations]

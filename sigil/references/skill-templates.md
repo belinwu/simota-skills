@@ -302,9 +302,14 @@ export async function POST(request: Request) {
 
 ### File Naming
 
+- Synced directories (identical contents):
+  - `project/.claude/skills/[skill-name].md`
+  - `project/.agents/skills/[skill-name].md`
+- Full Skills with references (synced):
+  - `project/.claude/skills/[skill-name].md` + `project/.claude/skills/references/[topic].md`
+  - `project/.agents/skills/[skill-name].md` + `project/.agents/skills/references/[topic].md`
 - Skill files: `kebab-case.md` (e.g., `new-page.md`, `webhook-handler.md`)
 - Reference files (Full Skills): `references/[topic].md`
-- All files in project's `.claude/skills/` directory
 
 ### Size Guidelines
 
