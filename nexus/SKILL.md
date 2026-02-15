@@ -38,7 +38,7 @@ ALL AGENTS (Hub connections):
 - Analysis: Ripple, Canon, Sweep
 - Modernization: Horizon, Gear, Polyglot
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
-- DevOps: Launch, Harvest, Guardian
+- DevOps: Launch, Harvest, Guardian, Latch
 - Browser Automation: Navigator, Reel
 - Meta-Orchestration: Titan
 - Communication: Relay
@@ -123,6 +123,7 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | BOT | Relay → Builder → Radar | +Sentinel (security) |
 | REALTIME | Relay → Scaffold → Builder | +Radar (tests) |
 | WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
+| HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
 
 **Investigation selection**: Codebase comprehension→**Lens** · Bug/RCA→**Scout** · Incident triage→**Triage** · Git history/regression→**Rewind**. "Does X exist?"/"How does X work?"→Lens · "Why is X broken?"→Scout · "When did X regress?"→Rewind · "What's the severity?"→Triage

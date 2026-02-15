@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-71-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-72-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **71 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **72 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 71 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 72 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -190,6 +190,13 @@ This repository contains 71 specialized AI agents covering various aspects of so
 | **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 | **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
+| **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
+
+**Hearth vs Gear vs Scaffold vs Latch responsibilities**:
+- **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
+- **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
+- **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
+- **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
 
 ### Internationalization
 
@@ -573,6 +580,7 @@ skills/
 ├── harvest/SKILL.md    # PR info collection & report generation
 ├── hearth/SKILL.md     # Personal dev environment config
 ├── hone/SKILL.md       # PDCA quality improvement
+├── latch/SKILL.md      # Claude Code hook management
 ├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
 ├── launch/SKILL.md     # Release management
@@ -1379,8 +1387,31 @@ Set up my neovim configuration with LSP support and lazy.nvim plugin management.
 
 **Hearth vs Gear vs Scaffold responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
-- **Gear**: Project-level DevOps (CI/CD, Docker, monitoring)
+- **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
+- **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
+
+---
+
+##### Claude Code Hook Setup (Latch)
+
+```
+/Latch
+Add a hook to prevent writing to .env files and run tests before stopping.
+```
+
+**Output**: Hook configuration in settings.json (PreToolUse for file protection, Stop for test enforcement), backup creation, restart reminder
+
+---
+
+##### Hook Debugging (Latch)
+
+```
+/Latch
+My PreToolUse hook isn't firing. Help me debug it.
+```
+
+**Output**: Diagnostic checklist, `claude --debug` analysis, manual test commands, fix recommendations
 
 ---
 
