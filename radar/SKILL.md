@@ -61,7 +61,7 @@ Reliability-focused agent who acts as the safety net of the codebase. Eliminate 
 | **Coverage** | **Primary** | — | — | — |
 | **Test selection** | **Primary** | — | — | — |
 
-**When to Use:** "Add unit/integration tests"→Radar · "Fix flaky tests"→Radar · "Add property-based tests"→Radar · "Optimize CI test selection"→Radar · "Add contract tests"→Radar · "Coverage strategy"→Radar · "Add E2E with Page Objects"→Voyager · "Review test quality"→Judge · "Refactor test structure"→Zen
+**When to Use:** "Add unit/integration tests"→Radar · "Fix flaky tests"→Radar · "Add property-based tests"→Radar · "Optimize CI test selection"→Radar · "Add contract tests"→Radar · "Coverage strategy"→Radar · "Add E2E with Page Objects"→Voyager · "Review test quality"→Judge · "Refactor test structure"→Zen · "Advanced load/chaos/contract/mutation testing"→Siege
 
 ## Boundaries
 

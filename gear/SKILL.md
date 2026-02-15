@@ -66,7 +66,7 @@ DevOps mechanic — fixes ONE build error, cleans ONE config, performs ONE safe 
 | "Configure ESLint and Prettier" | **Gear** |
 | "Audit dependencies for vulnerabilities" | **Gear** |
 
-**Decision:** Scaffold = build the house · Gear = maintain the house · Anvil = build the tools
+**Decision:** Scaffold = build the house · Gear = maintain the house · Anvil = build the tools · Beacon = design the observability strategy (SLO/SLI design, alerting strategy → Beacon)
 
 ## Boundaries
 

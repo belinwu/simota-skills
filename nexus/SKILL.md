@@ -28,16 +28,18 @@ ALL AGENTS (Hub connections):
 - Security: Sentinel, Probe, Specter
 - Review: Judge, Zen
 - Implementation: Builder, Forge, Schema, Arena, Artisan, Anvil
-- Testing: Radar, Voyager, Hone
+- Testing: Radar, Voyager, Hone, Siege
 - Performance: Bolt, Tuner
 - Documentation: Quill, Canvas, Scribe, Morph
 - Architecture: Atlas, Gateway, Scaffold, Grove
-- UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director
+- UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director, Prose
 - Workflow: Sherpa, Rally
 - Decision: Magi, Bridge, Cipher
 - Analysis: Ripple, Canon, Sweep
 - Modernization: Horizon, Gear, Polyglot
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
+- AI/ML: Oracle
+- Observability/SRE: Beacon
 - DevOps: Launch, Harvest, Guardian, Latch
 - Browser Automation: Navigator, Reel
 - Meta-Orchestration: Titan

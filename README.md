@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-72-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-76-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **72 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, infrastructure, and more
+- **76 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 72 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 76 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -105,6 +105,7 @@ This repository contains 72 specialized AI agents covering various aspects of so
 | **Sweep** | _"Dead code is technical debt that earns no interest."_ - Unused file detection, dead code identification, orphaned file discovery, safe deletion proposals | Cleanup proposals |
 | **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E. quality standards guardian. Pre-release evaluation, scorecards, pass/fail decisions | Quality evaluation report |
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - Ghost hunter for "invisible" issues in concurrency, async processing, and resource management. Detects and analyzes Race Conditions, Memory Leaks, Resource Leaks, and Deadlocks | Detection report |
+| **Siege** | _"Break it before users do. Fix it before they notice."_ - Advanced testing specialist. Load testing (k6/Locust/Artillery), contract testing (Pact CDC), chaos engineering, mutation testing, resilience pattern verification | Test results, resilience reports |
 
 ### Implementation
 
@@ -115,12 +116,31 @@ This repository contains 72 specialized AI agents covering various aspects of so
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - Prototyping. Prioritizes working software over perfection. Outputs types.ts, errors.ts, forge-insights.md for Builder handoff | MVP/PoC |
 | **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / gemini CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
 
+### AI/ML
+
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Oracle** | _"AI is only as good as its architecture. Design it, measure it, trust nothing."_ - AI/ML design and evaluation specialist. Prompt engineering, RAG architecture, LLM application patterns, safety guardrails, evaluation frameworks, MLOps, cost optimization | Design specs, evaluation reports |
+
+**Oracle > Builder > Radar chain**: Oracle (AI/ML design) > Builder (implementation) > Radar (tests)
+**Oracle > Stream > Builder chain**: Oracle (RAG design) > Stream (data pipeline) > Builder (implementation)
+**Oracle > Sentinel > Oracle chain**: Oracle (safety design) > Sentinel (security review) > Oracle (refinement)
+
 ### Performance
 
 | Agent | Description | Output |
 |-------|-------------|--------|
 | **Bolt** | _"Speed is a feature. Slowness is a bug you haven't fixed yet."_ - Application performance improvement. Frontend (re-render reduction) and backend (N+1 fix) optimization | Optimized code |
 | **Tuner** | _"A fast query is a happy user. A slow query is a lost customer."_ - DB performance optimization. EXPLAIN ANALYZE analysis, index recommendations, slow query improvement | Query optimization |
+
+### Observability/SRE
+
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Beacon** | _"You can't fix what you can't see. You can't see what you don't measure."_ - Observability and reliability engineering specialist. SLO/SLI design, distributed tracing, alerting strategy, dashboard design, capacity planning, toil automation | SLO definitions, observability specs |
+
+**Beacon > Gear > Builder chain**: Beacon (observability design) > Gear (monitoring implementation) > Builder (instrumentation)
+**Triage > Beacon > Gear chain**: Triage (incident postmortem) > Beacon (monitoring improvements) > Gear (implementation)
 
 ### UI/UX
 
@@ -132,6 +152,7 @@ This repository contains 72 specialized AI agents covering various aspects of so
 | **Flow** | _"Motion creates emotion. Animation breathes life."_ - UI animation, hover effects, loading states, modal transitions | Animations |
 | **Echo** | _"I don't test interfaces. I feel what users feel."_ - Persona validation. Embodies users to report confusion points in UI flows | UX report |
 | **Showcase** | _"Components without stories are components without context."_ - Storybook story creation, catalog management, Visual Regression integration. CSF 3.0 format | Storybook Stories |
+| **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - User-facing text specialist. Microcopy, error messages, voice & tone framework, onboarding copy, accessibility text | Copy guidelines, content specs |
 
 ### Documentation
 
@@ -354,6 +375,22 @@ See `_common/INTERACTION.md` for details.
 | PERF/backend | Backend optimization | Bolt > Builder > Radar |
 | PERF/db | Database optimization | Tuner > Schema > Builder > Radar |
 
+#### AI/ML
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| AI/rag | RAG pipeline design | Oracle > Stream > Builder > Radar |
+| AI/llm-app | LLM application design | Oracle > Builder > Radar |
+| AI/safety | AI safety review | Oracle > Sentinel > Oracle |
+| AI/prompt-ops | Prompt engineering & evaluation | Oracle > Radar |
+
+#### Observability/SRE
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| SRE/slo | SLO definition & monitoring | Beacon > Gear > Builder |
+| SRE/observability | Full observability setup | Beacon > Gear > Builder > Radar |
+
 #### Security
 
 | Task | Description | Chain |
@@ -369,6 +406,10 @@ See `_common/INTERACTION.md` for details.
 | TEST/unit | Unit test addition | Radar |
 | TEST/e2e | E2E test addition | Voyager |
 | TEST/coverage | Coverage improvement | Radar > Voyager |
+| TEST/load | Load testing | Siege > Bolt |
+| TEST/chaos | Chaos engineering | Siege > Triage > Builder |
+| TEST/contract | Contract testing | Gateway > Siege > Radar |
+| TEST/mutation | Mutation testing | Siege > Radar |
 
 #### Review
 
@@ -561,6 +602,7 @@ skills/
 ├── artisan/SKILL.md    # Frontend implementation
 ├── atlas/SKILL.md      # Architecture
 ├── bard/SKILL.md       # Developer grumble agent
+├── beacon/SKILL.md     # Observability/SRE
 ├── bolt/SKILL.md       # Performance
 ├── bridge/SKILL.md     # Business <> Tech translation
 ├── builder/SKILL.md    # Production implementation
@@ -590,9 +632,11 @@ skills/
 ├── muse/SKILL.md       # Design
 ├── navigator/SKILL.md  # Browser automation
 ├── nexus/SKILL.md      # Orchestrator
+├── oracle/SKILL.md     # AI/ML design & evaluation
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
 ├── prism/SKILL.md      # NotebookLM steering prompt design
+├── prose/SKILL.md      # UX writing & content strategy
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
 ├── pulse/SKILL.md      # Metrics design
 ├── quill/SKILL.md      # Documentation
@@ -606,6 +650,7 @@ skills/
 ├── rewind/SKILL.md     # Git history investigation
 ├── scaffold/SKILL.md   # Infrastructure
 ├── schema/SKILL.md     # DB schema design
+├── siege/SKILL.md      # Advanced testing (load/contract/chaos/mutation)
 ├── scribe/SKILL.md     # Project documentation (PRD/SRS/design docs)
 ├── scout/SKILL.md      # Bug investigation
 ├── sentinel/SKILL.md   # Static security analysis (SAST)
