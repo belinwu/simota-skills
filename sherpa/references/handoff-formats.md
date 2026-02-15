@@ -117,6 +117,41 @@ SHERPA_TO_GUARDIAN_HANDOFF:
     - "Suggest PR strategy if multi-commit"
 ```
 
+### SHERPA_TO_RALLY_HANDOFF
+
+Parallel execution request for independent task groups.
+
+```yaml
+SHERPA_TO_RALLY_HANDOFF:
+  Context:
+    epic: "[Epic name]"
+    scope: "[S / M / L / XL]"
+    phase: "[Current phase]"
+  Parallel_Groups:
+    - group: "[Group name]"
+      chain: "[Agent1 → Agent2 → Agent3]"
+      task: "[Task description]"
+      files:
+        exclusive_write: "[file/dir list]"
+        shared_read: "[file/dir list]"
+      acceptance: "[Criteria]"
+    - group: "[Group name]"
+      chain: "[Agent4 → Agent5]"
+      task: "[Task description]"
+      files:
+        exclusive_write: "[file/dir list]"
+        shared_read: "[file/dir list]"
+      acceptance: "[Criteria]"
+  Integration:
+    shared_deps: "[types, config — resolved before groups start]"
+    merge_strategy: "[sequential-merge | branch-merge]"
+    integration_chain: "Atlas → Radar → Judge"
+  After_Rally:
+    - "Verify integration chain passes"
+    - "Update progress tracking"
+    - "Return to Sherpa for next epic step"
+```
+
 ---
 
 ## Input Handoffs (Receiving)

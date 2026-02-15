@@ -124,6 +124,8 @@ Measures resolution of cross-phase and external dependencies.
 
 **Note**: DISCOVER typically starts with lower prior_artifacts score; this is expected.
 
+**Iteration Bonus**: When EVOLVE_TO_DISCOVER_HANDOFF exists from a prior iteration, add +0.25 to the `prior_artifacts` score (capped at 1.0). This reflects that returning iterations have richer context than greenfield starts.
+
 ### BUILD (Critical Phase)
 
 | Component | Source | Minimum for START |

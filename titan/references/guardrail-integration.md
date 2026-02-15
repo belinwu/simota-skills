@@ -13,7 +13,39 @@ Two safety systems operate during Titan's lifecycle:
 | **Guardrail** (`_common/GUARDRAIL.md`) | Per-chain execution | L1-L4 | Prevent code/security failures |
 | **Anti-Stall** (Titan) | Per-phase/project | L1-L5 | Prevent delivery stalling |
 
-These systems are complementary: Guardrails catch execution-level issues (tests failing, security vulnerabilities), while Anti-Stall catches delivery-level issues (no progress, blocked epics).
+These systems are complementary, operating as a three-layer defense model:
+
+### Three-Layer Defense Model
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ Layer 3: Anti-Stall Engine (L1-L5) — Delivery Recovery          │
+│ Owner: Titan                                                     │
+│ Scope: Per-phase / per-project                                   │
+│ Triggers: Zero progress, blocked epics, repeated failures        │
+│ Actions: Retry, agent swap, scope reduction, user escalation     │
+├──────────────────────────────────────────────────────────────────┤
+│ Layer 2: Nexus Error Handling (L1-L5) — Chain Recovery           │
+│ Owner: Nexus                                                     │
+│ Scope: Per-chain execution                                       │
+│ Triggers: Agent failure, chain errors, test failures             │
+│ Actions: Auto-retry, inject agent, rollback, escalate to Titan   │
+│ Reports: recovery_attempted field in NEXUS_COMPLETE              │
+├──────────────────────────────────────────────────────────────────┤
+│ Layer 1: Guardrail System (L1-L4) — Execution Quality Guard     │
+│ Owner: _common/GUARDRAIL.md (enforced by Nexus)                  │
+│ Scope: Per-task execution                                        │
+│ Triggers: Lint warnings, test failures, security issues          │
+│ Actions: Log, auto-verify, auto-recover, abort                   │
+└──────────────────────────────────────────────────────────────────┘
+
+Escalation flow: Layer 1 → Layer 2 → Layer 3
+- Guardrail recovery success → no escalation (budget-free)
+- Guardrail recovery failure → Nexus Error Handling (recovery_attempted tracking)
+- Nexus recovery failure → Anti-Stall Engine (conditionalized entry per recovery_attempted)
+```
+
+**Key principle**: Each layer handles recovery at its scope. Higher layers only activate when lower layers exhaust their recovery options. The `recovery_attempted` field (see `nexus-integration.md`) prevents duplicate retries across layers.
 
 ---
 

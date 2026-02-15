@@ -29,6 +29,22 @@ Acceptance: Product Definition with target users, value proposition, key feature
 
 **Artifacts**: `docs/product-definition.md`, personas, competitive analysis · Agent details → `references/agent-deployment-matrix.md` · Exit validation → `references/exit-criteria-validation.md`
 
+### SCOPE_RECHECK Epic (Conditional)
+
+Triggered when scope detection confidence is 0.40-0.59. Inserted into DISCOVER phase to refine scope before proceeding.
+
+```
+NEXUS_AUTORUN_FULL — Chain: Lens → Cipher → Bridge
+Task: Re-evaluate project scope with DISCOVER artifacts
+Context: Initial scope confidence was [X]. Re-assess with product definition, personas, and codebase analysis now available.
+Acceptance: Updated scope (S/M/L/XL) with confidence ≥0.60, documented rationale
+```
+
+**Trigger rules:**
+- `confidence 0.50-0.59`: Schedule SCOPE_RECHECK as final DISCOVER Epic (after main chain)
+- `confidence 0.40-0.49`: Schedule SCOPE_RECHECK as first DISCOVER Epic (before main chain)
+- `confidence <0.40`: Fire ON_AMBIGUOUS_GOAL trigger instead (user input required)
+
 ---
 
 ## Phase 2: DEFINE
@@ -196,4 +212,35 @@ DISCOVER → DEFINE → ARCHITECT → BUILD → HARDEN → VALIDATE → LAUNCH �
                                      (Harden + early Validate)        DISCOVER (next cycle)
 ```
 
-Harden and Validate can partially overlap: E2E test writing can begin while performance optimization is in progress, as long as security audit is complete.
+---
+
+## Phase Overlap Rules
+
+For L/XL projects, adjacent phases can partially overlap to improve efficiency. Overlap is governed by strict rules to prevent quality degradation.
+
+### Permitted Overlaps
+
+| Current Phase | Overlap Phase | Condition | Allowed Overlap Work |
+|--------------|--------------|-----------|---------------------|
+| BUILD (>70% complete) | HARDEN | Core features implemented, tests green | Security scanning (Sentinel/Probe) |
+| HARDEN (security done) | VALIDATE | Security audit passed, no critical issues | E2E test writing (Voyager) |
+| VALIDATE | LAUNCH | E2E tests passing, UX approved | Documentation (Quill), CI/CD setup (Gear) |
+| GROW | EVOLVE | Growth features deployed, analytics active | Feedback collection (Voice) |
+
+### Prohibited Overlaps
+
+| Overlap | Reason |
+|---------|--------|
+| DISCOVER ↔ BUILD | Building without validated requirements risks total rework |
+| DISCOVER ↔ ARCHITECT | Architecture before requirements are stable is wasteful |
+| DEFINE ↔ BUILD | Specs must be finalized before implementation |
+| BUILD ↔ LAUNCH | Deploying incomplete product is dangerous |
+| HARDEN ↔ LAUNCH | Security/quality must pass before release |
+
+### Overlap Governance
+
+1. **Current phase exit criteria take priority** — overlap work MUST NOT delay current phase completion
+2. **Rally file ownership applies** — overlap work uses standard file ownership declarations (no write conflicts)
+3. **Overlap work is tentative** — if current phase exit criteria fail, overlap work may be discarded
+4. **S/M scope: no overlap** — sequential execution only (overhead of overlap coordination exceeds benefit)
+5. **State tracking** — TITAN_STATE records overlap status: `overlap: [PHASE_A]+[PHASE_B_subset]`

@@ -15,6 +15,22 @@ When an Epic chain completes, Nexus returns `## NEXUS_COMPLETE_[STATUS]` with on
 | **BLOCKED** | Chain halted on external dependency | Validate partial → Anti-Stall L2 |
 | **FAILED** | Chain failed, no usable output | Anti-Stall L1 Agent swap |
 
+### `recovery_attempted` Field
+
+Nexus includes a `recovery_attempted` field in `NEXUS_COMPLETE_[STATUS]` to indicate whether internal recovery was already executed before reporting to Titan. This prevents duplicate retry efforts and wasted Anti-Stall budget.
+
+```markdown
+## NEXUS_COMPLETE_[STATUS]
+recovery_attempted: true | false
+recovery_actions: [list of recovery actions taken by Nexus, if any]
+recovery_result: [outcome of Nexus-level recovery]
+```
+
+| `recovery_attempted` | Meaning |
+|---------------------|---------|
+| `false` | Nexus reported status without attempting recovery (e.g., external block) |
+| `true` | Nexus already attempted L1-L3 internal recovery before reporting |
+
 ---
 
 ## Result Validation Flow
@@ -127,11 +143,18 @@ NEXUS_COMPLETE_[STATUS] received
 
 ## Status → Anti-Stall Mapping
 
-| Nexus Status | Anti-Stall Entry | Rationale |
-|-------------|-----------------|-----------|
-| PARTIAL | **L1** (1.1 Retry) | Most items succeeded; retry missing with context |
-| BLOCKED | **L2** (2.2 Skip+return) | External block; skip and return later |
-| FAILED | **L1** (1.2 Agent swap) | Agent-level failure; try alternative first |
+### Conditionalized Anti-Stall Entry (recovery_attempted aware)
+
+| Nexus Status | `recovery_attempted` | Anti-Stall Entry | Rationale |
+|-------------|---------------------|-----------------|-----------|
+| PARTIAL | `false` | **L1** (1.1 Retry) | Nexus didn't retry; Titan retries with context |
+| PARTIAL | `true` | **L1** (1.3 Decompose) | Retry already failed; skip to decomposition |
+| BLOCKED | `false` | **L2** (2.2 Skip+return) | External block; skip and return later |
+| BLOCKED | `true` | **L2** (2.1 Alt approach) | Nexus already attempted workaround; escalate |
+| FAILED | `false` | **L1** (1.2 Agent swap) | Agent-level failure; try alternative first |
+| FAILED | `true` | **L2** (2.1 Alt approach) | Agent swap already attempted by Nexus; escalate |
+
+**Rule**: When `recovery_attempted: true`, Titan skips the recovery level that Nexus already exhausted and enters Anti-Stall at the next effective level. This prevents duplicate retries and conserves Anti-Stall budget.
 
 ### Escalation from Nexus Failures
 

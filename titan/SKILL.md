@@ -18,7 +18,7 @@ CAPABILITIES_SUMMARY:
 - Rally file ownership and integration chain coordination
 - Magi structured consultation protocol (MAGI_REQUEST/VERDICT)
 - Guardrail↔Anti-Stall integration (L1-L4 mapping)
-- Exit criteria auto-validation (Lens→Radar→Warden chain)
+- Exit criteria auto-validation (phase-specific validation chains)
 - Phase readiness scoring and adaptive sequencing
 
 ORCHESTRATION_PATTERNS:
@@ -129,7 +129,10 @@ scope_score = files(1-4) + deps(0-3) + team(0-3) + domains(0-3)
   team: 1→0, 2→1, 3-5→2, 6+→3
   domains: 1→0, 2→1, 3→2, 4+→3
 Result: 0-3=S, 4-6=M, 7-10=L, 11+=XL
-Fallback: confidence <0.60 → default M, log assumption
+Fallback (graduated):
+  0.50-0.59 → default M + SCOPE_RECHECK at end of DISCOVER
+  0.40-0.49 → default M + SCOPE_RECHECK Epic in DISCOVER (immediate)
+  <0.40     → ON_AMBIGUOUS_GOAL (ask user — scope fundamentally unclear)
 ```
 
 **Adaptive Phase Sequencing:**
@@ -143,19 +146,7 @@ Fallback: confidence <0.60 → default M, log assumption
 
 ### Phase Summary
 
-| Phase | Purpose | Key Agents | Entry→Exit |
-|-------|---------|-----------|------------|
-| DISCOVER | Market/user research | Cipher, Bridge, Researcher, Compete, Voice | Goal → Product Definition |
-| DEFINE | Roadmap, specs, KPIs | Spark, Scribe, Pulse, Magi, Canon | Product Def → Roadmap + Specs + SUCCESS_CRITERIA |
-| ARCHITECT | Technical design | Atlas, Grove, Gateway, Schema, Scaffold, Magi | Specs → ADR + API specs + DB schema |
-| BUILD | Implementation | Rally, Sherpa, Forge, Builder, Artisan, Anvil | Architecture → Working product |
-| HARDEN | Security, quality, perf | Rally{Sentinel+Probe+Specter}, Judge, Zen, Bolt, Tuner | Working product → Hardened product |
-| VALIDATE | E2E testing, UX | Rally{Voyager+Radar}, Echo, Trace, Experiment | Hardened → Validated product |
-| LAUNCH | Release, docs, deploy | Quill, Canvas, Guardian, Launch, Showcase, Gear | Validated → Released product |
-| GROW | SEO, growth, retention | Growth, Retain, Polyglot, Pulse, Stream | Released → Growing product |
-| EVOLVE | Feedback, modernization | Voice, Ripple, Sweep, Horizon, Gear, Rewind | Feedback → Next iteration input → DISCOVER |
-
-Phase details → `references/product-lifecycle.md` · Agent deployment → `references/agent-deployment-matrix.md`
+DISCOVER(market/users) → DEFINE(roadmap/specs/KPIs) → ARCHITECT(ADR/API/schema) → BUILD(implementation) → HARDEN(security/quality/perf) → VALIDATE(E2E/UX) → LAUNCH(docs/deploy) → GROW(SEO/retention) → EVOLVE(feedback→DISCOVER). Each phase deploys specialized agents via Nexus AUTORUN_FULL. → `references/product-lifecycle.md` · `references/agent-deployment-matrix.md`
 
 ## Phase Execution Pattern
 
@@ -163,6 +154,8 @@ Phase details → `references/product-lifecycle.md` · Agent deployment → `ref
 Titan: "Execute Phase N"
   ├─ 0. Phase Readiness Check (score ≥0.80→start, 0.60-0.79→assumptions, <0.60→prepare)
   │     → references/phase-context-scoring.md
+  │     L/XL: Check Phase Overlap Rules → permitted overlap → start next-phase subset
+  │     → references/product-lifecycle.md (Phase Overlap Rules)
   ├─ 1. Generate Epic list from references/product-lifecycle.md
   ├─ 2. Analyze Epic dependencies
   ├─ 3. Independent → Rally (parallel) · Sequential → Nexus AUTORUN_FULL
@@ -172,9 +165,9 @@ Titan: "Execute Phase N"
   │     Results → integration chain (Atlas→Radar→Judge) before phase exit
   │     → references/rally-coordination.md
   ├─ 4. Update TITAN_STATE on each Epic completion
-  ├─ 5. Verify phase exit criteria (auto-validation chain: Lens→Radar→Warden)
+  ├─ 5. Verify phase exit criteria (phase-specific validation chain)
+  │     Chain per phase → references/exit-criteria-validation.md
   │     ≥80%→proceed, 60-79%→scope reduce+proceed, <60%→Anti-Stall
-  │     → references/exit-criteria-validation.md
   ├─ 6. Phase transition: git commit → update TITAN_STATE → log summary
   └─ 7. **Immediately issue next phase chain** (NEVER pause between phases)
 ```
@@ -208,27 +201,11 @@ Details → `references/nexus-integration.md`
 
 ## Anti-Stall Engine
 
-**13-level recovery cascade — exhaust ALL before asking the user:**
-
-| Level | Strategies | Budget/Phase | Budget/Project |
-|-------|-----------|-------------|----------------|
-| L1 Tactical | Retry with context · Agent swap · Decompose further | 5 | 10 |
-| L2 Operational | Alt approach · Skip+return · Scope reduction | 3 | 5 |
-| L3 Strategic | Phase reorder · Scope cut · Arch pivot · Tech swap | 1 | 3 |
-| L4 Degradation | Partial delivery · Stub impl · Docs-only | ∞ | ∞ |
-| L5 User | Single focused question | — | 1 |
-
-Stall detection: 2 consecutive zero-progress cycles (no file changes, tests, decisions, or docs) → auto-activate. → `references/anti-stall-engine.md`
+13-level recovery cascade: L1 Tactical(retry/swap/decompose, 5/phase) → L2 Operational(alt approach/skip/scope reduce, 3/phase) → L3 Strategic(reorder/pivot/tech swap, 1/phase) → L4 Degradation(partial/stub/docs-only, ∞) → L5 User(1 question, 1/project). Stall detection: 2 consecutive zero-progress cycles → auto-activate. Exhaust ALL L1-L4 before L5. → `references/anti-stall-engine.md`
 
 ## Decision Matrix
 
-| | Reversible | Semi-reversible | Irreversible |
-|---|---|---|---|
-| **Low impact** | Decide immediately | Decide immediately | Decide + log |
-| **Medium impact** | Decide + log | Decide + consult Magi | Decide + Magi + risk log |
-| **High impact** | Decide + consult Magi | Decide + Magi + risk log | **Check Risk Budget** |
-
-**Risk scoring:** `risk = scope(1-3) × reversibility(1-3) + external_dep(0-2) + security(0-3)`. Cumulative tracking: 0-50 normal · 51-75 verbose logging · 76-99 mandatory Magi · 100+ **PAUSE for user review (ON_CRITICAL_RISK_BUDGET)**. → `references/decision-matrix.md`
+Impact×Reversibility → action escalation: Low/Reversible→decide immediately, High/Irreversible→check Risk Budget. Magi consultation for Medium+Semi-reversible and above. Risk scoring: `scope(1-3) × reversibility(1-3) + external_dep(0-2) + security(0-3)`. Cumulative: 0-50 normal → 51-75 verbose → 76-99 Magi mandatory → 100+ PAUSE (ON_CRITICAL_RISK_BUDGET). → `references/decision-matrix.md`
 
 ## Interaction Triggers
 
@@ -245,17 +222,15 @@ YAML templates → `references/interaction-triggers.md`
 
 ## Momentum System
 
-**Forward Progress Guarantee:** Every cycle MUST produce ≥1 artifact (file change · test · decision · document). Zero-progress → Anti-Stall auto-activation.
-
-**Velocity tracking:** Epic completion rate (<50% → scope reduction) · Cycle time (2x+ → decompose) · Stall count (3+ → Anti-Stall) · Risk accumulation (rapid increase → Magi).
-**Parallel rules:** Independent Epics → Rally · Dependent → Nexus sequential · Cross-phase deps → explicit roadmap ordering.
-**Quick wins first:** Impact/Effort ratio → Unblocking potential → Risk reduction → User visibility. → `references/momentum-system.md`
+**Forward Progress Guarantee:** Every cycle MUST produce ≥1 meaningful artifact (weighted score ≥0.3). Zero-progress → Anti-Stall. Velocity: Epic rate(<50%→scope reduce) · Cycle time(2x+→decompose) · Stall(3+→Anti-Stall). Parallel: Independent→Rally, Dependent→Nexus sequential. Quick wins first: Impact/Effort→Unblocking→Risk→Visibility. → `references/momentum-system.md`
 
 ---
 
 ## TITAN_STATE Management
 
-State persisted to `.agents/titan-state.md`. **Rules:** Read at session start · Update after every phase transition and significant decision · Never delete, only append/update · On resume: validate consistency before proceeding. Template → `references/output-formats.md`
+State persisted to `.agents/titan-state.md`. **Rules:** Read at session start · Never delete, only append/update · On resume: validate consistency before proceeding. Template → `references/output-formats.md`
+
+**Mandatory Update Triggers** — persist on: Epic completion · Phase transition · Decision recorded(Medium+) · Anti-Stall activation/resolution · Rally start/completion · Magi verdict · Scope change · Session boundary(proactive save)
 
 ## Agent Collaboration
 

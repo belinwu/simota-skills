@@ -147,6 +147,22 @@ All Rally teams complete
 | VALIDATE | Test parallel | E2E, UX, Experiment |
 | LAUNCH | Output parallel | Docs, Demo, CI/CD |
 
+### Scope-Adaptive Rally Profiles
+
+Maximum recommended team count by scope and phase:
+
+| Phase | S | M | L | XL | Scaling Rationale |
+|-------|---|---|---|----|--------------------|
+| BUILD | 1 (no Rally) | 2-3 | 3-5 | 4-8 | Feature count scales with scope |
+| HARDEN | 1 (no Rally) | 2-3 | 3 | 3-4 | Security+Perf+Quality (fixed concerns) |
+| VALIDATE | 1 (no Rally) | 2 | 2-3 | 3-4 | Test types scale moderately |
+| LAUNCH | 1 (no Rally) | 2-3 | 3-4 | 4-6 | More outputs for larger products |
+
+**S scope**: Always sequential (Rally overhead exceeds benefit for small projects).
+**M scope**: Rally for BUILD and LAUNCH phases when 2+ independent features exist.
+**L scope**: Rally for all applicable phases; standard profiles.
+**XL scope**: Maximum parallelism with dedicated integration coordination; consider multi-wave Rally (split into 2 rounds if >6 teams).
+
 ### BUILD Phase Example
 
 ```markdown
@@ -181,3 +197,40 @@ Integration:
 | Shared deps incomplete | Abort Rally → resolve deps → restart |
 
 Rally failures feed into Anti-Stall at L1 (team retry) or L2 (sequential fallback).
+
+---
+
+## Hone Integration After Rally
+
+When Rally teams complete, Titan evaluates whether quality improvement cycles are needed before proceeding.
+
+### Quality Score → Hone Mode Decision
+
+| Rally Integration Score | Hone Mode | Cycles | Description |
+|------------------------|-----------|--------|-------------|
+| ≥80 (PASS) | Skip Hone | 0 | Quality sufficient, proceed directly |
+| 70-79 (MARGINAL) | QUICK | 1-2 | Polish pass, minor improvements |
+| 60-69 (CONDITIONAL) | STANDARD | 2-4 | Targeted improvement on weak domains |
+| <60 (FAIL) | DEEP | 4-6 | Comprehensive quality improvement |
+
+### Integration Flow
+
+```
+Rally teams complete
+  → Integration chain (Atlas → Radar → Judge)
+  → Quality score calculated
+  → Score ≥80: Next Epic immediately
+  → Score 70-79: Hone QUICK → Next Epic
+  → Score 60-69: Hone STANDARD → Re-validate → Next Epic
+  → Score <60: Hone DEEP → Re-validate → Anti-Stall if still failing
+```
+
+### Nexus Chain for Hone Integration
+
+```markdown
+## NEXUS_AUTORUN_FULL
+Task: Quality improvement on Rally output
+Chain: Hone
+Context: Rally integration score [X], mode [QUICK/STANDARD/DEEP], target files [list]
+Acceptance: Quality score ≥[target], no regressions in test suite
+```

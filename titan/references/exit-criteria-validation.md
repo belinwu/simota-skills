@@ -18,26 +18,28 @@ Phase work complete
 
 ---
 
-## Validation Chain
+## Validation Chains (Phase-Specific)
 
-The standard validation chain for exit criteria:
+Each phase uses a tailored validation chain optimized for its artifact types. The universal `Lens→Radar→Warden` chain is replaced with phase-appropriate agents.
 
-```
-Lens (artifact verification) → Radar (test verification) → Warden (quality assessment)
-```
-
-| Step | Agent | Purpose | Output |
-|------|-------|---------|--------|
-| 1 | Lens | Verify required artifacts exist and are non-empty | Artifact checklist score |
-| 2 | Radar | Run test suite, verify coverage thresholds | Test pass rate + coverage |
-| 3 | Warden | Overall quality assessment against phase standards | Quality score + verdict |
+| Phase | Validation Chain | Rationale |
+|-------|-----------------|-----------|
+| DISCOVER | Lens → Researcher → Compete → Warden | Validate research quality, persona completeness, competitive coverage |
+| DEFINE | Lens → Canon → Magi → Warden | Validate specs against standards, decision quality |
+| ARCHITECT | Lens → Atlas → Schema → Warden | Validate architecture integrity, dependency analysis, schema quality |
+| BUILD | Lens → Radar → Warden | Validate code artifacts, test coverage, build health (default chain) |
+| HARDEN | Sentinel → Radar → Warden | Validate security audit, test suite, quality gate |
+| VALIDATE | Voyager → Echo → Warden | Validate E2E tests, UX persona review |
+| LAUNCH | Lens → Quill → Gear → Warden | Validate docs, CI/CD pipeline, deployment readiness |
+| GROW | Growth → Pulse → Warden | Validate SEO/CRO, analytics setup |
+| EVOLVE | Voice → Sweep → Warden | Validate feedback collection, tech debt assessment |
 
 ### Chain Issuance
 
 ```markdown
 ## NEXUS_AUTORUN_FULL
-Task: Validate Phase [N] exit criteria
-Chain: Lens → Radar → Warden
+Task: Validate Phase [PHASE_NAME] exit criteria
+Chain: [Phase-specific chain from table above]
 Context: Phase [N] complete, verify exit criteria before transition
 Acceptance: Validation report with per-criterion pass/fail and overall score
 ```

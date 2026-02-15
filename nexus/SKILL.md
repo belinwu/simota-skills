@@ -152,7 +152,7 @@ Question templates → `references/interaction-triggers.md`
 
 ## Output & Handoff
 
-**AUTORUN**: `NEXUS_COMPLETE` — Changes, Verification, Risks/Follow-ups. **AUTORUN_FULL**: `NEXUS_COMPLETE_FULL` — + Execution Summary, Guardrail Events, Context Summary, Rollback.
+**AUTORUN**: `NEXUS_COMPLETE` — Changes, Verification, Risks/Follow-ups. **AUTORUN_FULL**: `NEXUS_COMPLETE_FULL` — + Execution Summary, Guardrail Events, Context Summary, Rollback. **Recovery reporting**: All `NEXUS_COMPLETE_[STATUS]` outputs MUST include `recovery_attempted: true|false` and, if true, `recovery_actions: [list]` + `recovery_result: [outcome]`. This enables Titan to skip redundant Anti-Stall retries.
 **GUIDED/INTERACTIVE**: Output prompts via `## NEXUS_ROUTING`. AUTORUN: execute internally with `_AGENT_CONTEXT` → `_STEP_COMPLETE` (auto-proceed).
 **NEXUS_HANDOFF (Required)**: All agents include: Step/Agent/Summary · Findings/Artifacts/Risks · Open questions/Pending · Next agent/action。→ `references/output-formats.md`
 

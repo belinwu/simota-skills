@@ -91,3 +91,34 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub:
 ### Learnings
 - [Reusable pattern discovered]
 ```
+
+## RALLY_TO_HONE_HANDOFF
+
+When Rally teams complete parallel work, results may need quality improvement cycles.
+
+```yaml
+RALLY_TO_HONE_HANDOFF:
+  Context:
+    phase: "[Current phase]"
+    rally_teams: "[Number of teams completed]"
+    integration_status: "[PASS / PARTIAL / FAIL]"
+  Quality_Assessment:
+    overall_score: "[Initial quality score]"
+    domains:
+      - domain: "[code_correctness / complexity / coverage / security]"
+        score: "[Current score]"
+        priority: "[P0 / P1 / P2]"
+  Mode_Selection:
+    # Based on quality score:
+    # score >= 80 → QUICK (1-2 cycles, polish only)
+    # score 60-79 → STANDARD (2-4 cycles, targeted improvement)
+    # score < 60  → DEEP (4-6 cycles, comprehensive improvement)
+    mode: "[QUICK / STANDARD / DEEP]"
+    target_uqs: "[Target quality score]"
+    max_cycles: "[Maximum PDCA cycles]"
+  Files:
+    - "[file paths from Rally output]"
+  Constraints:
+    - "[No breaking changes]"
+    - "[Maintain test coverage]"
+```

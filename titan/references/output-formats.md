@@ -122,6 +122,7 @@ Persisted state format (written to `.agents/titan-state.md`).
 - **Next Action**: [Specific next step]
 - **Decision Log**: [Path to decision log file]
 - **Last Updated**: [YYYY-MM-DD HH:MM]
+- **Update Trigger**: [epic_complete | phase_transition | decision_recorded | antistall_activated | antistall_resolved | rally_start | rally_complete | magi_verdict | scope_change | session_boundary]
 
 ### Phase Status
 | Phase | Status | Entry Date | Exit Date | Epics |
@@ -163,4 +164,45 @@ _AGENT_CONTEXT:
   Phase: [Current phase]
   Task: [Phase objective]
   State: [TITAN_STATE summary]
+```
+
+---
+
+## EVOLVE_TO_DISCOVER_HANDOFF
+
+Structured handoff from EVOLVE phase back to DISCOVER for the next iteration cycle.
+
+```markdown
+## EVOLVE_TO_DISCOVER_HANDOFF
+
+### Iteration Summary
+- **Iteration**: [N] → [N+1]
+- **Duration**: [Start date → End date]
+- **Overall Assessment**: [Summary of iteration outcomes]
+
+### Updated Personas
+| Persona | Changes | Evidence |
+|---------|---------|----------|
+| [Persona name] | [What changed about this persona] | [Feedback/data source] |
+
+### Refined SUCCESS_CRITERIA
+| Original Criteria | Actual Result | Revised Criteria | Rationale |
+|------------------|---------------|-----------------|-----------|
+| [Original target] | [What was achieved] | [Updated target for next iteration] | [Why adjusted] |
+
+### Tech Debt Priorities
+| Item | Severity | Effort | Priority |
+|------|----------|--------|----------|
+| [Tech debt item] | [High/Medium/Low] | [S/M/L] | [P0/P1/P2] |
+
+### Feature Backlog
+| Feature | Source | Priority | Estimated Scope Impact |
+|---------|--------|----------|----------------------|
+| [Feature from feedback] | [Voice/Pulse/Growth] | [P0/P1/P2] | [S/M/L adjustment] |
+
+### Iteration Learnings
+- **What worked**: [Effective patterns, agents, approaches]
+- **What didn't**: [Ineffective approaches, stalls, issues]
+- **Process improvements**: [Recommendations for next cycle]
+- **Agent performance**: [Notable agent effectiveness observations]
 ```
