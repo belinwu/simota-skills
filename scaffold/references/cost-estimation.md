@@ -543,3 +543,233 @@ Flag these resources when encountered — they often dominate the bill:
 | VPC Endpoints (Interface) | Flag if > 3 endpoints |
 | Cloud Armor Advanced | Flag WAF rules per-request cost |
 | Spanner / AlloyDB | Always flag (>$500/month baseline) |
+
+---
+
+## FinOps: Cost Management via Terraform
+
+### Budget Alerts (AWS)
+
+```hcl
+# modules/cost-management/aws-budget.tf
+resource "aws_budgets_budget" "monthly" {
+  name         = "${var.project_name}-${var.environment}-monthly"
+  budget_type  = "COST"
+  limit_amount = var.monthly_budget_usd
+  limit_unit   = "USD"
+  time_unit    = "MONTHLY"
+
+  cost_filter {
+    name   = "TagKeyValue"
+    values = ["user:Project$${var.project_name}"]
+  }
+
+  notification {
+    comparison_operator       = "GREATER_THAN"
+    threshold                 = 80
+    threshold_type            = "PERCENTAGE"
+    notification_type         = "FORECASTED"
+    subscriber_email_addresses = var.budget_alert_emails
+  }
+
+  notification {
+    comparison_operator       = "GREATER_THAN"
+    threshold                 = 100
+    threshold_type            = "PERCENTAGE"
+    notification_type         = "ACTUAL"
+    subscriber_email_addresses = var.budget_alert_emails
+  }
+}
+
+resource "aws_ce_anomaly_monitor" "service" {
+  name              = "${var.project_name}-anomaly-monitor"
+  monitor_type      = "DIMENSIONAL"
+  monitor_dimension = "SERVICE"
+}
+
+resource "aws_ce_anomaly_subscription" "alert" {
+  name      = "${var.project_name}-anomaly-alert"
+  frequency = "DAILY"
+
+  monitor_arn_list = [aws_ce_anomaly_monitor.service.arn]
+
+  subscriber {
+    type    = "EMAIL"
+    address = var.budget_alert_emails[0]
+  }
+
+  threshold_expression {
+    dimension {
+      key           = "ANOMALY_TOTAL_IMPACT_ABSOLUTE"
+      values        = ["100"]
+      match_options = ["GREATER_THAN_OR_EQUAL"]
+    }
+  }
+}
+```
+
+### Budget Alerts (GCP)
+
+```hcl
+# modules/cost-management/gcp-budget.tf
+resource "google_billing_budget" "monthly" {
+  billing_account = var.billing_account_id
+  display_name    = "${var.project_name}-${var.environment}-monthly"
+
+  budget_filter {
+    projects               = ["projects/${var.gcp_project_id}"]
+    credit_types_treatment = "EXCLUDE_ALL_CREDITS"
+  }
+
+  amount {
+    specified_amount {
+      currency_code = "USD"
+      units         = var.monthly_budget_usd
+    }
+  }
+
+  threshold_rules {
+    threshold_percent = 0.5
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  threshold_rules {
+    threshold_percent = 0.8
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  threshold_rules {
+    threshold_percent = 1.0
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  threshold_rules {
+    threshold_percent = 0.9
+    spend_basis       = "FORECASTED_SPEND"
+  }
+
+  all_updates_rule {
+    monitoring_notification_channels = var.notification_channels
+    disable_default_iam_recipients   = false
+  }
+}
+```
+
+### Cost Allocation Tagging Strategy
+
+All Terraform resources must include cost allocation tags:
+
+```hcl
+locals {
+  cost_tags = {
+    Project     = var.project_name
+    Environment = var.environment
+    Team        = var.team_name
+    CostCenter  = var.cost_center
+    ManagedBy   = "terraform"
+  }
+}
+
+# Apply to all resources via default_tags (AWS provider)
+provider "aws" {
+  region = var.region
+
+  default_tags {
+    tags = local.cost_tags
+  }
+}
+
+# Apply to all resources via default_labels (GCP provider)
+provider "google" {
+  project = var.gcp_project_id
+  region  = var.region
+
+  default_labels = {
+    project     = var.project_name
+    environment = var.environment
+    team        = var.team_name
+    cost-center = var.cost_center
+    managed-by  = "terraform"
+  }
+}
+```
+
+### Tag Enforcement via OPA Policy
+
+```rego
+# policy/cost-tags.rego
+package terraform
+
+required_cost_tags := {"Project", "Environment", "Team", "CostCenter", "ManagedBy"}
+
+deny[msg] {
+  resource := input.resource_changes[_]
+  resource.change.actions[_] == "create"
+
+  tags := object.get(resource.change.after, "tags", {})
+  missing := required_cost_tags - {key | tags[key]}
+  count(missing) > 0
+
+  msg := sprintf(
+    "%s '%s' missing cost allocation tags: %v",
+    [resource.type, resource.address, missing]
+  )
+}
+```
+
+### Savings Plans / Reserved Instances / CUDs
+
+| Strategy | AWS | GCP | Savings | Commitment |
+|----------|-----|-----|---------|------------|
+| **Compute Savings Plan** | 1yr/3yr, all/partial/no upfront | — | 30-60% | Compute spend |
+| **EC2 Instance SP** | Specific family+region | — | 40-72% | Instance type |
+| **Reserved Instances** | Standard/Convertible | — | 40-72% | Instance type |
+| **Committed Use Discounts** | — | 1yr/3yr | 28-55% | vCPU + memory |
+| **Spot/Preemptible** | Spot Instances | Spot VMs | 60-90% | Interruptible |
+| **Graviton/Tau** | ARM (t4g, m7g, c7g) | Tau T2A | 20% | Architecture |
+
+#### Terraform Right-Sizing Pattern
+
+```hcl
+variable "use_spot" {
+  description = "Use Spot/Preemptible instances for non-critical workloads"
+  type        = bool
+  default     = false
+}
+
+# AWS Spot
+resource "aws_instance" "worker" {
+  instance_type          = var.instance_type
+  instance_market_options {
+    market_type = var.use_spot ? "spot" : null
+    spot_options {
+      max_price = var.use_spot ? var.spot_max_price : null
+    }
+  }
+}
+
+# GCP Spot VM
+resource "google_compute_instance" "worker" {
+  machine_type = var.machine_type
+  scheduling {
+    preemptible                 = var.use_spot
+    automatic_restart           = var.use_spot ? false : true
+    provisioning_model          = var.use_spot ? "SPOT" : "STANDARD"
+    instance_termination_action = var.use_spot ? "STOP" : null
+  }
+}
+```
+
+### Cost Optimization Checklist
+
+| Check | Action | Potential Savings |
+|-------|--------|-------------------|
+| NAT Gateway in dev/staging | Remove or use VPC endpoints | $45-90/gateway |
+| Multi-AZ RDS in dev | Switch to single-AZ | 50% of DB cost |
+| Unused EIPs | Release unattached | $4/month each |
+| Over-provisioned instances | Right-size based on CloudWatch/Monitoring | 20-50% |
+| S3 lifecycle policies | Move to IA/Glacier after 30/90 days | 40-80% storage |
+| Always-on Cloud Run min_instances | Scale-to-zero in dev/staging | 60-90% |
+| GP2 → GP3 EBS volumes | Migrate to GP3 (cheaper baseline) | 20% |
+| On-demand → Savings Plan | Commit for 1yr steady workloads | 30-40% |
+| ARM/Graviton instances | Switch t3 → t4g, m6i → m7g | 20% |
