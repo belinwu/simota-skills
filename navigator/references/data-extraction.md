@@ -375,3 +375,12 @@ function logError(error: Error, context: ErrorContext) {
   );
 }
 ```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `execution-templates.md` | Execution phase templates, wait strategies, error handling |
+| `playwright-cdp.md` | MCP server operations, CDP methods, connection patterns |

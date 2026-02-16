@@ -131,3 +131,12 @@ async function recordTask(task: () => Promise<void>, name: string) {
 - 0:15 - Form filling
 - 0:45 - Submit and confirmation
 ```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `execution-templates.md` | Execution phase templates, wait strategies, error handling |
+| `playwright-cdp.md` | MCP server operations, CDP methods, connection patterns |

@@ -133,3 +133,28 @@ questions:
         description: "ブロックを回避できないため、タスクを中止します"
     multiSelect: false
 ```
+
+## ON_REVERSE_FEEDBACK
+
+```yaml
+questions:
+  - question: "下流エージェントからブラウザ操作結果に関する問題が報告されました。どのように対応しますか？"
+    header: "Feedback"
+    options:
+      - label: "即時修正 (Recommended)"
+        description: "報告された問題を現在のセッションで対処します"
+      - label: "次サイクルで対応"
+        description: "改善キューに追加し、次のセッションで修正します"
+      - label: "理由を付けて却下"
+        description: "フィードバックが適用外である理由を説明します"
+    multiSelect: false
+```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `execution-templates.md` | Execution phase templates, wait strategies, error handling |
+| `handoff-formats.md` | All handoff templates and collaboration patterns A-H |

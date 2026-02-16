@@ -172,3 +172,13 @@ async function getPerformanceMetrics(client: CDPSession) {
   };
 }
 ```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `execution-templates.md` | Execution phase templates, wait strategies, error handling |
+| `data-extraction.md` | Data extraction patterns, form operations, authentication |
+| `video-recording.md` | Recording configuration, best practices, file management |

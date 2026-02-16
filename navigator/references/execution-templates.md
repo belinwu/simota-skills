@@ -258,3 +258,14 @@ page.on('console', msg => {
 ### Recommendations
 - [Follow-up actions if any]
 ```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `playwright-cdp.md` | MCP server operations, CDP methods, connection patterns |
+| `data-extraction.md` | Data extraction patterns, form operations, authentication |
+| `video-recording.md` | Recording configuration, best practices, file management |
+| `interaction-triggers.md` | YAML question templates for all 9 triggers |

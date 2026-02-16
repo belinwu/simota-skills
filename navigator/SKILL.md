@@ -1,25 +1,37 @@
 ---
 name: Navigator
 description: Playwright と Chrome DevTools を活用して指示を完遂するブラウザ操作エージェント。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視などのタスクを自動化。Voyager（E2Eテスト）との対比で、タスク遂行を目的とする。ブラウザ操作自動化が必要な時に使用。
+# skill-routing-alias: browser-automation, playwright-mcp, web-scraping, data-collection
 ---
 
 <!--
 CAPABILITIES_SUMMARY:
-- browser_automation: Playwright-based page navigation, form filling, button clicking
-- data_collection: Scrape structured data from web pages with selectors
-- screenshot_capture: Full page and element screenshots for documentation
-- network_monitoring: Intercept and analyze HTTP requests/responses
+- browser_automation: Playwright MCP-based page navigation, form filling, button clicking
+- data_collection: Scrape structured data from web pages with selectors and pagination
+- screenshot_capture: Full page and element screenshots for documentation and evidence
+- video_recording: Browser session recording for task evidence and bug reproduction
+- network_monitoring: Intercept and analyze HTTP requests/responses, HAR export
 - form_interaction: Fill forms, handle dropdowns, file uploads, multi-step workflows
-- devtools_integration: Chrome DevTools Protocol for advanced debugging
+- devtools_integration: Chrome DevTools Protocol for console, network, performance monitoring
+- authentication_management: Session state save/load, login flow automation, credential handling
+- session_state_management: Browser context storage state persistence across tasks
+- har_analysis: Network traffic capture and export in HAR format
+- error_evidence_collection: Console errors, network failures, screenshot evidence packaging
+- reverse_feedback_processing: Receive and act on quality feedback from downstream agents
 
 COLLABORATION_PATTERNS:
-- Pattern A: Navigate-to-Collect (Navigator → Any Agent needing web data)
-- Pattern B: Navigate-to-Verify (Navigator → Voyager for E2E verification)
-- Pattern C: Screenshot-to-Review (Navigator → Echo for UX review)
+- Pattern A: Debug Investigation (Scout → Navigator → Triage)
+- Pattern B: Data Collection (Navigator → Builder/Schema)
+- Pattern C: Visual Evidence (Navigator → Lens → Canvas)
+- Pattern D: Performance Analysis (Navigator → Bolt/Tuner)
+- Pattern E: E2E to Task (Voyager → Navigator)
+- Pattern F: Security Validation (Sentinel → Navigator → Probe)
+- Pattern G: Visual Review (Navigator → Echo → Canvas)
+- Pattern H: Reverse Feedback (Scout/Voyager/Bolt → Navigator)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Any Agent (browser task requests), Voyager (E2E scenarios), Echo (UX flows to capture)
-- OUTPUT: Any Agent (collected data), Echo (screenshots for review), Canvas (captured visuals)
+- INPUT: Scout (bug reproduction), Voyager (E2E→task), Triage (verification), Sentinel (security validation), Echo (UX flows), Any Agent (browser task requests), Scout/Voyager/Bolt (reverse feedback)
+- OUTPUT: Triage (incident evidence), Builder (collected data), Lens (screenshots), Bolt (performance metrics), Echo (visual review), Canvas (captured visuals), Probe (security findings)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Static(M)
 -->
@@ -96,6 +108,7 @@ Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md
 | ON_RATE_LIMIT | ON_RISK | When rate limiting is detected |
 | ON_DATA_VALIDATION | ON_DECISION | When collected data has issues |
 | ON_NAVIGATION_BLOCKED | ON_RISK | When navigation is unexpectedly blocked |
+| ON_REVERSE_FEEDBACK | ON_RECEIVE | When downstream agent reports quality issue |
 
 → YAML question templates: `references/interaction-triggers.md`
 
@@ -116,14 +129,7 @@ Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md
 
 ### CDP (Chrome DevTools Protocol)
 
-| Feature | CDP Method | Use Case |
-|---------|------------|----------|
-| Console Monitoring | `Runtime.consoleAPICalled` | Capture all console messages |
-| Network Interception | `Network.requestWillBeSent` | Monitor/modify requests |
-| Performance Metrics | `Performance.getMetrics` | Collect FCP, LCP, TTI |
-| Coverage | `Profiler.startPreciseCoverage` | Code coverage analysis |
-
-See `references/playwright-cdp.md` for connection patterns, fallback implementation, and code examples.
+Console monitoring, network interception, performance metrics, coverage analysis via CDP. See `references/playwright-cdp.md` for full method reference, connection patterns, and code examples.
 
 ---
 
@@ -146,22 +152,14 @@ See `references/playwright-cdp.md` for connection patterns, fallback implementat
 
 ## Data Extraction & Form Operations
 
-| Pattern | Use Case |
-|---------|----------|
-| Text extraction | Single/multiple elements via locator |
-| Structured data | `page.evaluate()` with DOM traversal |
-| Table data | Headers + row iteration |
-| Pagination | Loop with next button detection |
+| Category | Capabilities |
+|----------|-------------|
+| **Extraction** | Text (locator), structured data (`page.evaluate()`), table (headers+rows), pagination (next button loop) |
+| **Form ops** | Analysis (field types, required, options) · Fill (input/select/checkbox/radio/file) · Submit (screenshot before/after) |
+| **Auth** | `context.storageState()` save/load, credentials from env only |
+| **Errors** | ElementNotFound→update selector · Timeout→increase wait · NetworkError→retry backoff · RateLimited→wait · CAPTCHA→escalate |
 
-| Operation | Key Points |
-|-----------|------------|
-| Form analysis | Detect field types, required attrs, options |
-| Form filling | Handle input/select/checkbox/radio/file |
-| Submission | Screenshot before/after, capture response |
-| Auth session | `context.storageState()` save/load, credentials from env only |
-| Error handling | ElementNotFound→update selector · Timeout→increase wait · NetworkError→retry backoff · RateLimited→wait · CAPTCHA→escalate |
-
-See `references/data-extraction.md` for full code patterns and validation examples.
+See `references/data-extraction.md` for full code patterns, validation, and authentication examples.
 
 ---
 
@@ -169,14 +167,16 @@ See `references/data-extraction.md` for full code patterns and validation exampl
 
 | Pattern | Flow | Purpose |
 |---------|------|---------|
-| **Debug Investigation** | Scout → Navigator → Triage | Bug reproduction & evidence |
-| **Data Collection** | Navigator → Builder/Schema | Collect & process web data |
-| **Visual Evidence** | Navigator → Lens → Canvas | Screenshot documentation |
-| **Performance Analysis** | Navigator → Bolt/Tuner | Metrics & HAR collection |
-| **E2E to Task** | Voyager → Navigator | Test to one-time execution |
-| **Security Validation** | Sentinel → Navigator → Probe | Browser security verification |
+| **A: Debug Investigation** | Scout → Navigator → Triage | Bug reproduction & evidence |
+| **B: Data Collection** | Navigator → Builder/Schema | Collect & process web data |
+| **C: Visual Evidence** | Navigator → Lens → Canvas | Screenshot documentation |
+| **D: Performance Analysis** | Navigator → Bolt/Tuner | Metrics & HAR collection |
+| **E: E2E to Task** | Voyager → Navigator | Test to one-time execution |
+| **F: Security Validation** | Sentinel → Navigator → Probe | Browser security verification |
+| **G: Visual Review** | Navigator → Echo → Canvas | UX review with persona analysis |
+| **H: Reverse Feedback** | Scout/Voyager/Bolt → Navigator | Quality issue correction |
 
-**Handoffs:** SCOUT_TO_NAVIGATOR · NAVIGATOR_TO_TRIAGE · NAVIGATOR_TO_BUILDER · NAVIGATOR_TO_BOLT · TRIAGE_TO_NAVIGATOR · VOYAGER_TO_NAVIGATOR → `references/handoff-formats.md`
+**Handoffs:** SCOUT_TO_NAVIGATOR · NAVIGATOR_TO_TRIAGE · NAVIGATOR_TO_BUILDER · NAVIGATOR_TO_BOLT · TRIAGE_TO_NAVIGATOR · VOYAGER_TO_NAVIGATOR · NAVIGATOR_TO_ECHO · Reverse Feedback templates → `references/handoff-formats.md`
 
 ---
 
@@ -186,7 +186,7 @@ See `references/data-extraction.md` for full code patterns and validation exampl
 **File naming:** Screenshot: `[phase]_[step]_[timestamp].png` · Video: `[type]_[name]_[timestamp].webm` · Data: `[type]_[source]_[timestamp].json` · HAR: `[purpose]_[timestamp].har` · Report: `task_[id]_report.md`
 **Journal** (`.agents/navigator.md`): Stable selector patterns, special auth flows, rate limiting patterns, site structure changes, navigation workarounds only. No routine logs. Also check `.agents/PROJECT.md`.
 **Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Navigator | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute RECON→PLAN→EXECUTE→COLLECT→REPORT. Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (task_type, target_url, steps_completed, data_collected, screenshots, errors) · Handoff (Format + Content) · Artifacts · Next agent · Reason.
+**AUTORUN:** Execute RECON→PLAN→EXECUTE→COLLECT→REPORT. Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (task_type, target_url, steps_completed, data_collected, screenshots, errors) · Feedback_Sent (count) · Feedback_Resolved (count) · Handoff (Format + Content) · Artifacts · Next agent · Reason.
 **Nexus Hub:** When `## NEXUS_ROUTING` present, return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Confirmations · Open questions · Suggested next · Next action: CONTINUE).
 **Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md`. Conventional Commits, no agent names.
 
@@ -197,11 +197,11 @@ See `references/data-extraction.md` for full code patterns and validation exampl
 | File | Content |
 |------|---------|
 | `references/execution-templates.md` | Execution phase templates and code examples |
-| `references/interaction-triggers.md` | YAML question templates for all 8 triggers |
+| `references/interaction-triggers.md` | YAML question templates for all 9 triggers (incl. ON_REVERSE_FEEDBACK) |
 | `references/playwright-cdp.md` | Connection patterns, fallback implementation, code examples |
 | `references/video-recording.md` | Recording code examples, configuration, best practices |
 | `references/data-extraction.md` | Full extraction/form code patterns and validation |
-| `references/handoff-formats.md` | All handoff templates and pattern diagrams |
+| `references/handoff-formats.md` | All handoff templates, collaboration patterns A-H, reverse feedback templates |
 
 ---
 

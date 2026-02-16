@@ -401,3 +401,119 @@ When capturing screenshots for Echo visual review:
    │   └── 03_success.png
    └── manifest.json  # Screenshot metadata
    ```
+
+---
+
+## REVERSE FEEDBACK TEMPLATES
+
+### SCOUT_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+```markdown
+## SCOUT_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+REVERSE_FEEDBACK:
+  Source_Agent: "Scout"
+  Target_Agent: "Navigator"
+  Feedback_Type: quality_issue | incorrect_output
+  Priority: high | medium | low
+  Context:
+    original_task: "[Bug reproduction request sent to Navigator]"
+    discovery: "[Issue found during Scout's RCA with Navigator's evidence]"
+  Issue:
+    description: "[e.g., Screenshots captured wrong state, console logs incomplete]"
+    evidence:
+      - file: "[Evidence file path]"
+        detail: "[What's wrong]"
+    impact: "[e.g., Cannot verify bug reproduction, misleading evidence]"
+  Suggested_Action:
+    action: "[e.g., Re-capture screenshots at correct state, enable verbose console logging]"
+    urgency: immediate | next_cycle
+  Resolution_Expected:
+    format: "Updated evidence files in .navigator/"
+    notify_on_completion: true
+```
+
+### VOYAGER_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+```markdown
+## VOYAGER_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+REVERSE_FEEDBACK:
+  Source_Agent: "Voyager"
+  Target_Agent: "Navigator"
+  Feedback_Type: quality_issue | incomplete_deliverable
+  Priority: high | medium | low
+  Context:
+    original_task: "[E2E→Task conversion via VOYAGER_TO_NAVIGATOR_HANDOFF]"
+    discovery: "[Issue found during Voyager's test execution after Navigator's task run]"
+  Issue:
+    description: "[e.g., Task flow missed critical steps, data collected incomplete]"
+    evidence:
+      - file: "[File path]"
+        detail: "[What's wrong]"
+    impact: "[e.g., E2E test cannot validate flow, missing verification data]"
+  Suggested_Action:
+    action: "[e.g., Re-execute flow with all steps, collect missing data fields]"
+    urgency: immediate | next_cycle
+  Resolution_Expected:
+    format: "Updated task report and data in .navigator/"
+    notify_on_completion: true
+```
+
+### BOLT_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+```markdown
+## BOLT_REVERSE_FEEDBACK_TO_NAVIGATOR
+
+REVERSE_FEEDBACK:
+  Source_Agent: "Bolt"
+  Target_Agent: "Navigator"
+  Feedback_Type: quality_issue | incomplete_deliverable
+  Priority: high | medium | low
+  Context:
+    original_task: "[Performance data collection via NAVIGATOR_TO_BOLT_HANDOFF]"
+    discovery: "[Issue found during Bolt's performance analysis]"
+  Issue:
+    description: "[e.g., HAR file corrupted, metrics collected under wrong conditions]"
+    evidence:
+      - file: "[HAR/metrics file path]"
+        detail: "[What's wrong]"
+    impact: "[e.g., Cannot produce accurate performance recommendations]"
+  Suggested_Action:
+    action: "[e.g., Re-collect HAR with network idle, measure under consistent conditions]"
+    urgency: immediate | next_cycle
+  Resolution_Expected:
+    format: "Updated HAR and metrics in .navigator/har/"
+    notify_on_completion: true
+```
+
+---
+
+## Collaboration Pattern H: Reverse Feedback
+
+```
+Downstream agent (Scout/Voyager/Bolt) detects quality issue
+    ↓
+Downstream → REVERSE_FEEDBACK template → Navigator
+    ↓
+Navigator receives feedback (ON_REVERSE_FEEDBACK trigger)
+    ↓
+Navigator validates and assesses issue:
+  - Reproducible? → Fix immediately or queue
+  - Not applicable? → Reject with reason
+    ↓
+Navigator re-executes affected steps
+    ↓
+Navigator → Updated deliverable → Downstream agent
+    ↓
+Navigator logs: Feedback_Sent / Feedback_Resolved in _STEP_COMPLETE
+```
+
+---
+
+## Cross-Reference Links
+
+| Reference | Content |
+|-----------|---------|
+| `interaction-triggers.md` | YAML question templates for all 9 triggers (incl. ON_REVERSE_FEEDBACK) |
+| `execution-templates.md` | Execution phase templates, wait strategies, error handling |
