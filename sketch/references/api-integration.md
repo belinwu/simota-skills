@@ -370,9 +370,21 @@ def generate_image_safe(client, prompt, model="gemini-2.5-flash-image", max_retr
 
 ### Rate Limit Guidelines
 
-| Model | RPM (est.) | Notes |
-|-------|-----------|-------|
-| Flash | 15-60 | Higher limits for paid plans |
+| Model | Tier | RPM (est.) | RPD (est.) | Notes |
+|-------|------|-----------|-----------|-------|
+| Flash | Free | ~15 | ~1,500 | プロトタイピング向け |
+| Flash | Paid | ~60 | Higher | 本番利用向け |
+
+> **Note**: レート制限は変動する可能性あり。最新値は [Google AI Studio](https://aistudio.google.com/) で確認。
+
+### Cost Estimates (Flash)
+
+| Tier | Cost/Image (est.) | Notes |
+|------|-------------------|-------|
+| **Free** | $0 | 日次・分次のリクエスト制限あり |
+| **Paid** | ~$0.02–0.04 | 入力トークン + 出力画像で課金 |
+
+> **重要**: 上記コストは概算値。Gemini API の料金体系は変更される可能性があるため、本番利用前に必ず最新料金を確認すること。
 
 ### Cost Optimization Strategies
 

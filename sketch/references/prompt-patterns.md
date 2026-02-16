@@ -277,3 +277,103 @@ Before finalizing any prompt:
 - [ ] English language used for optimal generation quality
 - [ ] Technical quality keywords included
 - [ ] Prompt length is 50-200 words (optimal range for Gemini)
+
+---
+
+## Negative Prompt Patterns
+
+よくある失敗パターンとその回避策。SKILL.md の要約版に対する詳細リファレンス。
+
+### Style Conflicts（矛盾するスタイル）
+
+| Bad Prompt | Problem | Fix |
+|-----------|---------|-----|
+| "photorealistic watercolor painting" | フォトリアルと水彩は矛盾 | スタイルを1つに統一: "watercolor painting, soft edges" |
+| "minimalist detailed ornamental" | ミニマルと装飾的は矛盾 | 方向性を選択: "minimalist, clean, simple" |
+| "bright dark moody cheerful" | 明暗・雰囲気が矛盾 | トーンを統一: "moody, dark, dramatic lighting" |
+
+### Prompt Length Issues（長さの問題）
+
+| Problem | Symptom | Guideline |
+|---------|---------|-----------|
+| < 20語 | 曖昧で汎用的な結果 | 最低50語を目指す |
+| 50–200語 ★ | 最適な品質と制御 | このレンジを維持 |
+| > 200語 | 主題がぼやける、品質低下 | 重要度順に削減、Technical 層を厳選 |
+| > 500語 | API がキーワードを無視し始める | 大幅に削減が必要 |
+
+### Ineffective Patterns（効果のないパターン）
+
+| Pattern | Why It Fails | Better Approach |
+|---------|-------------|-----------------|
+| "NOT a photo of..." | ネガティブ指示は効きにくい | ポジティブに: "illustration of..." |
+| "Don't include people" | 否定形は無視されがち | "empty scene, no figures, landscape only" |
+| "ultra mega super high quality" | 修飾語の重複は効果なし | "8K detail, sharp focus" で十分 |
+| "like the Mona Lisa" | 著作権リスク + 曖昧 | 具体的特徴を記述: "portrait, soft sfumato, warm tones" |
+| "beautiful amazing stunning" | 主観的すぎて効果なし | 具体的技術指示に置換 |
+
+### Quality Keyword Best Practices
+
+**効果的な品質キーワード（3–5個を厳選）:**
+
+```
+# Good — 具体的で互いに補完
+"8K detail, sharp focus, professional color grading, studio lighting"
+
+# Bad — 冗長で効果が相殺
+"ultra high quality, best quality, masterpiece, extremely detailed, very high resolution, incredibly sharp, amazingly beautiful, award-winning"
+```
+
+---
+
+## SDK v1.50+ ImageGenerationConfig
+
+SDK v1.50 以降で利用可能な `ImageGenerationConfig` パラメータの活用パターン。
+
+### Basic Usage
+
+```python
+from google.genai import types
+
+config = types.GenerateContentConfig(
+    response_modalities=["IMAGE"],
+    image_generation_config=types.ImageGenerationConfig(
+        aspect_ratio="16:9",
+        person_generation="DONT_ALLOW",
+    ),
+)
+
+response = client.models.generate_content(
+    model="gemini-2.5-flash-image",
+    contents="A modern workspace with natural lighting",
+    config=config,
+)
+```
+
+### Available Parameters
+
+| Parameter | Type | Values | Default |
+|-----------|------|--------|---------|
+| `aspect_ratio` | string | `"1:1"`, `"3:2"`, `"2:3"`, `"16:9"`, `"9:16"`, `"21:9"` | Model default |
+| `person_generation` | string | `"DONT_ALLOW"`, `"ALLOW_ADULT"` | `"DONT_ALLOW"` |
+
+### v1.38 vs v1.50+ Comparison
+
+```python
+# SDK v1.38+ — アスペクト比はプロンプトで指示
+config_v138 = types.GenerateContentConfig(
+    response_modalities=["IMAGE"],
+)
+prompt_v138 = "A landscape photo, widescreen 16:9 composition, no people"
+
+# SDK v1.50+ — パラメータで制御（より確実）
+config_v150 = types.GenerateContentConfig(
+    response_modalities=["IMAGE"],
+    image_generation_config=types.ImageGenerationConfig(
+        aspect_ratio="16:9",
+        person_generation="DONT_ALLOW",
+    ),
+)
+prompt_v150 = "A landscape photo"  # アスペクト比・人物制御はパラメータ側で
+```
+
+> **推奨**: SDK v1.50+ が利用可能な場合は `ImageGenerationConfig` でアスペクト比・人物生成を制御し、プロンプトは Subject + Style に集中させる。
