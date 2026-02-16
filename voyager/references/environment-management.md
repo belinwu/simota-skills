@@ -464,3 +464,117 @@ test('processes payment with Stripe test card', async ({ page }) => {
   await expect(page.getByTestId('payment-success')).toBeVisible({ timeout: 10000 });
 });
 ```
+
+---
+
+## Local-Only E2E Workflow (No Docker/CI)
+
+For quick setup without Docker Compose or CI infrastructure:
+
+### Minimal Setup
+
+```bash
+# 1. Install Playwright
+npm init playwright@latest
+
+# 2. Install browsers
+npx playwright install chromium
+
+# 3. Create minimal config
+# playwright.config.ts is created by init
+```
+
+### Local Dev Server Configuration
+
+```typescript
+// playwright.config.ts (minimal local setup)
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  retries: 0,
+  workers: undefined, // Use all CPUs
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: true,  // Don't restart if already running
+    timeout: 30000,
+  },
+});
+```
+
+### SQLite for Local Testing
+
+```typescript
+// e2e/global-setup.ts (SQLite - no external DB needed)
+import Database from 'better-sqlite3';
+
+async function globalSetup() {
+  const db = new Database('test.db');
+
+  // Reset schema
+  db.exec(`DROP TABLE IF EXISTS users`);
+  db.exec(`CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    email TEXT UNIQUE,
+    name TEXT,
+    password_hash TEXT
+  )`);
+
+  // Seed test data
+  const insert = db.prepare('INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)');
+  insert.run('admin@test.com', 'Admin', 'hashed_password');
+  insert.run('user@test.com', 'User', 'hashed_password');
+
+  db.close();
+}
+
+export default globalSetup;
+```
+
+### Run Commands
+
+```bash
+# Run all tests
+npx playwright test
+
+# Run with UI mode (visual debugging)
+npx playwright test --ui
+
+# Run specific test file
+npx playwright test e2e/tests/auth/login.spec.ts
+
+# Run headed (see browser)
+npx playwright test --headed
+
+# Debug single test
+npx playwright test --debug -g "login"
+```
+
+### Local vs Docker vs CI Decision
+
+| Factor | Local Only | Docker Compose | Full CI |
+|--------|-----------|----------------|---------|
+| **Setup time** | 1 min | 5-10 min | 30+ min |
+| **DB needed** | SQLite / dev DB | PostgreSQL container | PostgreSQL |
+| **External services** | Mock with MSW | Real in containers | Real or mocked |
+| **Reliability** | Developer-dependent | Consistent | Consistent |
+| **Use when** | Prototyping, learning | Team development | Production pipeline |
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright configuration | `playwright-patterns.md` |
+| CI/CD integration | `ci-reporting.md` |
+| Cloud testing services | `cloud-testing.md` |
+| Debug & monitoring | `debug-monitoring.md` |
+| Edge cases & i18n | `edge-cases-i18n.md` |
+| Performance testing | `performance-testing.md` |

@@ -203,3 +203,263 @@ export default defineConfig({
 | **AA** | Text resizable to 200% | Viewport zoom test |
 | **AA** | Focus visible | CSS `:focus-visible` check |
 | **AA** | Error identification | Form validation test |
+
+---
+
+## Color Vision Simulation
+
+### Emulate Color Deficiencies
+
+```typescript
+test.describe('Color vision accessibility', () => {
+  const colorSchemes = [
+    { name: 'protanopia', emulation: 'achromatopsia' },
+    { name: 'deuteranopia', emulation: 'deuteranopia' },
+    { name: 'tritanopia', emulation: 'tritanopia' },
+  ];
+
+  for (const { name, emulation } of colorSchemes) {
+    test(`UI is usable with ${name}`, async ({ page }) => {
+      const client = await page.context().newCDPSession(page);
+      await client.send('Emulation.setEmulatedVisionDeficiency', {
+        type: emulation,
+      });
+
+      await page.goto('/dashboard');
+
+      // Verify critical elements are distinguishable
+      // (not relying solely on color)
+      await expect(page.getByTestId('status-icon')).toBeVisible();
+      await expect(page.getByTestId('status-label')).toBeVisible();
+
+      await expect(page).toHaveScreenshot(`dashboard-${name}.png`);
+    });
+  }
+});
+```
+
+### Forced Colors Mode (High Contrast)
+
+```typescript
+test('works in forced-colors mode', async ({ browser }) => {
+  const context = await browser.newContext({
+    forcedColors: 'active',
+  });
+  const page = await context.newPage();
+
+  await page.goto('/');
+
+  // Elements should be visible in high contrast
+  await expect(page.getByRole('navigation')).toBeVisible();
+  await expect(page.getByRole('main')).toBeVisible();
+
+  // Screenshot for visual verification
+  await expect(page).toHaveScreenshot('homepage-forced-colors.png');
+
+  await context.close();
+});
+
+test('prefers-color-scheme: dark', async ({ browser }) => {
+  const context = await browser.newContext({
+    colorScheme: 'dark',
+  });
+  const page = await context.newPage();
+
+  await page.goto('/');
+
+  // Verify dark theme applied
+  const bgColor = await page.evaluate(() =>
+    getComputedStyle(document.body).backgroundColor
+  );
+  // Dark backgrounds typically have low RGB values
+  expect(bgColor).not.toBe('rgb(255, 255, 255)');
+
+  await expect(page).toHaveScreenshot('homepage-dark.png');
+  await context.close();
+});
+```
+
+---
+
+## Aria Snapshots for Accessibility
+
+> See also `playwright-patterns.md` → "Playwright 1.50+ Features" for code examples.
+
+```typescript
+test('navigation landmark structure', async ({ page }) => {
+  await page.goto('/');
+
+  // Verify accessible navigation structure
+  await expect(page.getByRole('navigation')).toMatchAriaSnapshot(`
+    - navigation:
+      - link "Home"
+      - link "Products"
+      - link "About"
+  `);
+});
+
+test('form accessibility', async ({ page }) => {
+  await page.goto('/contact');
+
+  // Verify form labels and structure
+  await expect(page.getByRole('form')).toMatchAriaSnapshot(`
+    - form:
+      - textbox "Name"
+      - textbox "Email"
+      - textbox "Message"
+      - button "Send"
+  `);
+});
+
+test('dialog accessibility', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('open-settings').click();
+
+  await expect(page.getByRole('dialog')).toMatchAriaSnapshot(`
+    - dialog "Settings":
+      - heading "Settings" [level=2]
+      - checkbox "Dark mode"
+      - checkbox "Notifications"
+      - button "Save"
+      - button "Cancel"
+  `);
+});
+```
+
+---
+
+## Visual Testing SaaS Integration
+
+### Percy (BrowserStack)
+
+```typescript
+// Install: npm install -D @percy/playwright @percy/cli
+import { test } from '@playwright/test';
+import percySnapshot from '@percy/playwright';
+
+test('homepage visual test', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  // Percy handles cross-browser screenshots
+  await percySnapshot(page, 'Homepage');
+});
+
+test('responsive visual test', async ({ page }) => {
+  await page.goto('/products');
+
+  // Percy widths for responsive testing
+  await percySnapshot(page, 'Products Page', {
+    widths: [375, 768, 1280],
+  });
+});
+```
+
+```yaml
+# .github/workflows/visual.yml (Percy CI)
+- name: Percy Visual Test
+  run: npx percy exec -- npx playwright test --grep @visual
+  env:
+    PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+```
+
+### Chromatic (Storybook)
+
+```typescript
+// For component-level visual testing with Storybook
+// Install: npm install -D chromatic
+
+// package.json
+{
+  "scripts": {
+    "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
+  }
+}
+```
+
+```yaml
+# .github/workflows/chromatic.yml
+- name: Chromatic Visual Review
+  uses: chromaui/action@latest
+  with:
+    projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    buildScriptName: build-storybook
+```
+
+> **Voyager + Showcase boundary**: Voyager owns E2E visual regression (full-page). Showcase + Chromatic owns component-level visual testing.
+
+---
+
+## Responsive Visual Regression Matrix
+
+### Multi-Viewport Testing
+
+```typescript
+const VIEWPORTS = [
+  { name: 'mobile', width: 375, height: 667 },
+  { name: 'tablet', width: 768, height: 1024 },
+  { name: 'desktop', width: 1280, height: 720 },
+  { name: 'wide', width: 1920, height: 1080 },
+];
+
+for (const vp of VIEWPORTS) {
+  test.describe(`Visual: ${vp.name} (${vp.width}x${vp.height})`, () => {
+    test.use({ viewport: { width: vp.width, height: vp.height } });
+
+    test('homepage', async ({ page }) => {
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+      await expect(page).toHaveScreenshot(`homepage-${vp.name}.png`, {
+        fullPage: true,
+      });
+    });
+
+    test('navigation menu', async ({ page }) => {
+      await page.goto('/');
+      if (vp.width < 768) {
+        // Mobile: open hamburger menu
+        await page.getByTestId('mobile-menu-toggle').click();
+      }
+      await expect(page.getByRole('navigation')).toHaveScreenshot(
+        `nav-${vp.name}.png`
+      );
+    });
+  });
+}
+```
+
+### Responsive Breakpoint Assertions
+
+```typescript
+test('layout switches at breakpoints', async ({ page }) => {
+  await page.goto('/products');
+
+  // Desktop: grid layout
+  await page.setViewportSize({ width: 1280, height: 720 });
+  const desktopGrid = page.getByTestId('product-grid');
+  await expect(desktopGrid).toHaveCSS('display', 'grid');
+  await expect(desktopGrid).toHaveCSS('grid-template-columns', /repeat/);
+
+  // Tablet: 2-column
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await expect(desktopGrid).toHaveCSS('grid-template-columns', /repeat\(2/);
+
+  // Mobile: single column
+  await page.setViewportSize({ width: 375, height: 667 });
+  await expect(desktopGrid).toHaveCSS('grid-template-columns', /^(?!.*repeat)/);
+});
+```
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (assertions, POM) | `playwright-patterns.md` |
+| Aria Snapshots (PW 1.50+) | `playwright-patterns.md` → Playwright 1.50+ |
+| Percy/Chromatic (component level) | `showcase` agent (Storybook stories) |
+| Cloud testing (cross-browser visual) | `cloud-testing.md` |
+| Mobile responsive testing | `mobile-native-testing.md` |
+| Edge cases & i18n (RTL, locale) | `edge-cases-i18n.md` |
+| Performance testing | `performance-testing.md` |

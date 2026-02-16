@@ -494,3 +494,17 @@ test.describe('External service tests', () => {
   });
 });
 ```
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (POM, auth) | `playwright-patterns.md` |
+| CI/CD integration & reporting | `ci-reporting.md` |
+| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
+| Complex scenarios (multi-tab, WebSocket) | `complex-scenarios.md` |
+| Environment management (Docker, seeding) | `environment-management.md` |
+| Cloud testing services | `cloud-testing.md` |
+| Edge cases & i18n | `edge-cases-i18n.md` |

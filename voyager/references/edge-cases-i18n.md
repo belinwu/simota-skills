@@ -399,3 +399,17 @@ test('queues actions while offline and syncs on reconnect', async ({ page, conte
   await expect(page.getByTestId('sync-complete')).toBeVisible({ timeout: 10000 });
 });
 ```
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (POM, waits) | `playwright-patterns.md` |
+| Visual regression (responsive, a11y) | `visual-a11y-testing.md` |
+| Complex scenarios (offline, WebSocket) | `complex-scenarios.md` |
+| Environment management | `environment-management.md` |
+| Debug & monitoring | `debug-monitoring.md` |
+| CI/CD integration | `ci-reporting.md` |
+| Cloud testing (cross-browser) | `cloud-testing.md` |

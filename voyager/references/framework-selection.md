@@ -58,61 +58,114 @@ See `playwright-patterns.md` → "Playwright 1.49+ Modern Features" for code exa
 
 ## Quick Reference
 
-### Playwright Config Essentials
+> For detailed code examples, see the dedicated reference files:
+
+| Topic | Reference |
+|-------|-----------|
+| Playwright config, Page Object, waits | `playwright-patterns.md` |
+| Performance targets (CWV) | `performance-testing.md` |
+| CI sharding configuration | `ci-reporting.md` |
+
+---
+
+## TestCafe Basic Patterns
+
+> **Note**: TestCafe adoption has declined. Consider Playwright as the default choice for new projects.
+
+### Basic Test
 
 ```typescript
-export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 4 : undefined,
-  use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'on-first-retry',
-  },
+import { Selector } from 'testcafe';
+
+fixture('Login')
+  .page('http://localhost:3000/login');
+
+test('successful login', async (t) => {
+  await t
+    .typeText(Selector('[data-testid="email-input"]'), 'user@example.com')
+    .typeText(Selector('[data-testid="password-input"]'), 'Test1234!')
+    .click(Selector('[data-testid="login-submit"]'))
+    .expect(Selector('[data-testid="dashboard"]').exists)
+    .ok();
+});
+
+test('shows error for invalid credentials', async (t) => {
+  await t
+    .typeText(Selector('[data-testid="email-input"]'), 'wrong@example.com')
+    .typeText(Selector('[data-testid="password-input"]'), 'wrong')
+    .click(Selector('[data-testid="login-submit"]'))
+    .expect(Selector('[data-testid="login-error"]').visible)
+    .ok();
 });
 ```
 
-### Wait Strategy
+### TestCafe Configuration
 
-| Need | Method |
-|------|--------|
-| Element visible | `await expect(locator).toBeVisible()` |
-| Text content | `await expect(locator).toContainText('...')` |
-| URL change | `await page.waitForURL('**/path')` |
-| Network idle | `await page.waitForLoadState('networkidle')` |
-| API response | `await page.waitForResponse(resp => ...)` |
-| Element enabled | `await expect(locator).toBeEnabled()` |
-| In viewport | `await expect(locator).toBeInViewport()` |
-| ❌ Avoid | `await page.waitForTimeout(N)` |
-
-### Performance Targets
-
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **LCP** | ≤ 2.5s | web-vitals + `page.evaluate()` |
-| **CLS** | ≤ 0.1 | web-vitals + `page.evaluate()` |
-| **INP** | ≤ 200ms | web-vitals + `page.evaluate()` |
-| **TTFB** | ≤ 800ms | Navigation Timing API |
-| **Bundle Size** | Per budget | `page.on('response')` |
-
-### Page Object Template
-
-```typescript
-export class ExamplePage extends BasePage {
-  readonly element: Locator;
-
-  constructor(page: Page) {
-    super(page);
-    this.element = this.getByTestId('element-id');
+```json
+// .testcaferc.json
+{
+  "src": "e2e/tests/**/*.testcafe.ts",
+  "browsers": ["chrome:headless"],
+  "concurrency": 3,
+  "reporter": [
+    { "name": "spec" },
+    { "name": "json", "output": "test-results.json" }
+  ],
+  "screenshots": {
+    "path": "screenshots/",
+    "takeOnFails": true
+  },
+  "quarantineMode": {
+    "successThreshold": 1,
+    "attemptLimit": 3
   }
-
-  async goto() { await super.goto('/path'); }
-  async doAction() { await this.element.click(); }
-  async expectResult() { await expect(this.element).toBeVisible(); }
 }
 ```
 
-See `playwright-patterns.md` for full Page Object patterns.
+### TestCafe API Mocking
+
+```typescript
+import { RequestMock } from 'testcafe';
+
+const mock = RequestMock()
+  .onRequestTo('https://api.example.com/users')
+  .respond({ users: [{ id: 1, name: 'Test User' }] }, 200, {
+    'content-type': 'application/json',
+  });
+
+fixture('Dashboard')
+  .page('http://localhost:3000/dashboard')
+  .requestHooks(mock);
+
+test('displays mocked users', async (t) => {
+  await t
+    .expect(Selector('[data-testid="user-list"]').childElementCount)
+    .eql(1);
+});
+```
+
+---
+
+## Version Requirements
+
+| Tool | Minimum Version | Recommended | Notes |
+|------|----------------|-------------|-------|
+| **Playwright** | 1.49+ | 1.50+ | Clock API, Aria Snapshots |
+| **Cypress** | 13+ | 13.x | Component testing stable |
+| **WebdriverIO** | 9+ | 9.x | New APIs, Appium 2.0 |
+| **TestCafe** | 3.5+ | 3.6+ | Declining ecosystem |
+| **Node.js** | 18+ | 20 LTS | Required by all frameworks |
+| **TypeScript** | 5.0+ | 5.3+ | Recommended for type safety |
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (POM, auth, waits) | `playwright-patterns.md` |
+| Cypress guide | `cypress-guide.md` |
+| Mobile native testing (Appium) | `mobile-native-testing.md` |
+| Cloud testing (BrowserStack, Sauce Labs) | `cloud-testing.md` |
+| CI/CD integration | `ci-reporting.md` |
+| Performance testing | `performance-testing.md` |

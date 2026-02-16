@@ -488,3 +488,18 @@ test('no excessive API calls on page load', async ({ page }) => {
 When Voyager detects performance issues, hand off to Bolt for code-level optimization:
 - See `handoff-formats.md` → `VOYAGER_TO_BOLT_HANDOFF`
 - Include: metric name, measured value, target, affected page, evidence (traces/screenshots)
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (config, API testing) | `playwright-patterns.md` |
+| CI/CD integration (Lighthouse CI) | `ci-reporting.md` |
+| Cloud testing (performance on real devices) | `cloud-testing.md` |
+| Debug & monitoring (profiling, coverage) | `debug-monitoring.md` |
+| Environment management | `environment-management.md` |
+| Complex scenarios (offline, ServiceWorker) | `complex-scenarios.md` |
+| Handoff formats (Voyager → Bolt) | `handoff-formats.md` |
+| Load testing (Siege agent) | Siege agent |

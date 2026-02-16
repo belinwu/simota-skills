@@ -324,3 +324,139 @@ Voyager (performance measurement) → VOYAGER_TO_BOLT → Bolt (code optimizatio
 
 **Request**: Optimize code to meet performance budget targets
 ```
+
+---
+
+## Reverse Feedback Handoffs (→ Voyager)
+
+### RADAR_REVERSE_FEEDBACK_TO_VOYAGER
+
+```markdown
+## RADAR_REVERSE_FEEDBACK_TO_VOYAGER
+
+**Source**: Radar (unit/integration testing)
+**Issue Type**: E2E test pattern quality issue
+
+**Problem Detected**:
+- Description: [What pattern/quality issue was found]
+- Affected tests: [test files or patterns]
+- Impact: [How this affects unit testing or coverage]
+
+**Specific Feedback**:
+| Test/Pattern | Issue | Suggested Fix |
+|-------------|-------|---------------|
+| [test or pattern] | [problem] | [recommendation] |
+
+**Priority**: [P0/P1/P2/P3]
+**Request**: Review and fix E2E test patterns based on downstream findings
+```
+
+### JUDGE_REVERSE_FEEDBACK_TO_VOYAGER
+
+```markdown
+## JUDGE_REVERSE_FEEDBACK_TO_VOYAGER
+
+**Source**: Judge (code review)
+**Issue Type**: E2E test code quality issue
+
+**Problem Detected**:
+- Description: [Code quality issue found in E2E tests]
+- Affected files: [paths]
+- Severity: [critical/serious/moderate/minor]
+
+**Specific Feedback**:
+| File | Line(s) | Issue | Recommendation |
+|------|---------|-------|----------------|
+| [path] | [lines] | [problem] | [fix suggestion] |
+
+**Priority**: [P0/P1/P2/P3]
+**Request**: Improve E2E test code quality based on review findings
+```
+
+### GEAR_REVERSE_FEEDBACK_TO_VOYAGER
+
+```markdown
+## GEAR_REVERSE_FEEDBACK_TO_VOYAGER
+
+**Source**: Gear (CI/CD)
+**Issue Type**: CI compatibility issue with E2E tests
+
+**Problem Detected**:
+- Description: [CI pipeline issue caused by E2E tests]
+- Environment: [CI platform, runner specs]
+- Impact: [Build failures, timeouts, resource issues]
+
+**Specific Feedback**:
+| Test/Config | CI Issue | Suggested Fix |
+|------------|----------|---------------|
+| [test or config] | [problem] | [recommendation] |
+
+**Priority**: [P0/P1/P2/P3]
+**Request**: Fix E2E test CI compatibility issues
+```
+
+---
+
+## Siege Handoffs
+
+### VOYAGER_TO_SIEGE_HANDOFF
+
+```markdown
+## VOYAGER_TO_SIEGE_HANDOFF
+
+**Performance Bottleneck Detected**: [Description]
+
+**E2E Evidence**:
+| Page | Metric | Value | Target | Issue |
+|------|--------|-------|--------|-------|
+| [path] | [metric] | [measured] | [target] | [description] |
+
+**Suspected Scalability Issue**:
+- Endpoint: [API endpoint under pressure]
+- Pattern: [N+1, slow query, missing cache, etc.]
+- Concurrent users estimated: [number]
+
+**Boundary**:
+- Voyager: Single-user E2E measurement (completed)
+- Siege: Multi-user load test needed (requested)
+
+**Request**: Run load test to verify scalability of detected bottleneck
+```
+
+### SIEGE_TO_VOYAGER_HANDOFF
+
+```markdown
+## SIEGE_TO_VOYAGER_HANDOFF
+
+**Load Test Results**: [Description]
+
+**Findings**:
+| Endpoint | Avg Response | P95 | P99 | Error Rate | Threshold |
+|----------|-------------|-----|-----|------------|-----------|
+| [path] | [ms] | [ms] | [ms] | [%] | [PASS/FAIL] |
+
+**Regression Test Needed**:
+- Scenario: [User flow affected by load findings]
+- Assertions: [Performance thresholds to add to E2E]
+- Monitoring: [What to watch in E2E going forward]
+
+**Boundary**:
+- Siege: Load test completed, thresholds identified
+- Voyager: E2E regression test with performance assertions needed
+
+**Request**: Add E2E performance regression tests based on load test findings
+```
+
+---
+
+## Additional Collaboration Patterns
+
+### Pattern J: Reverse Feedback
+```
+Radar/Judge/Gear (quality issue detected) → REVERSE_FEEDBACK_TO_VOYAGER → Voyager (fix patterns) → Re-verify
+```
+
+### Pattern K: Load Test Boundary
+```
+Voyager (perf bottleneck) → VOYAGER_TO_SIEGE → Siege (load test) → SIEGE_TO_VOYAGER → Voyager (E2E regression)
+```

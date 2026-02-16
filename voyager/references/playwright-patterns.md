@@ -366,14 +366,11 @@ export const TestData = {
 
 ### Sharding Configuration
 
-```typescript
-// playwright.config.ts
-export default defineConfig({
-  fullyParallel: true,
-  workers: process.env.CI ? 4 : undefined,
-  // Run with: npx playwright test --shard=1/4
-});
+```bash
+# Run sharded: npx playwright test --shard=1/4
 ```
+
+> See `ci-reporting.md` → "Sharded CI" for full GitHub Actions sharding workflow.
 
 ### Test Isolation
 
@@ -627,14 +624,7 @@ test('modifies API response', async ({ page }) => {
 
 ### Retry Configuration
 
-```typescript
-export default defineConfig({
-  retries: process.env.CI ? 2 : 0,
-  use: {
-    trace: 'on-first-retry',
-  },
-});
-```
+> See `debug-monitoring.md` → "Smart Retry Strategies" for retry configuration, conditional retry, and per-test overrides.
 
 ### Flaky Test Investigation
 
@@ -699,6 +689,118 @@ npx playwright test --grep-invert @regression  # Exclude regression
 
 ---
 
+## Playwright 1.50+ Features
+
+### Aria Snapshots (Stable)
+
+```typescript
+// Verify accessible structure of components
+test('navigation has correct aria structure', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.getByRole('navigation')).toMatchAriaSnapshot(`
+    - navigation:
+      - link "Home"
+      - link "Products"
+      - link "About"
+      - link "Contact"
+  `);
+});
+
+test('form has accessible labels', async ({ page }) => {
+  await page.goto('/signup');
+
+  await expect(page.getByRole('form')).toMatchAriaSnapshot(`
+    - form:
+      - textbox "Email"
+      - textbox "Password"
+      - button "Sign Up"
+  `);
+});
+```
+
+### toPass (Polling-Based Assertions)
+
+```typescript
+// Retry assertion until it passes (polling)
+test('data syncs eventually', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // Poll until condition is met (default 5s timeout)
+  await expect(async () => {
+    const count = await page.getByTestId('item-count').textContent();
+    expect(Number(count)).toBeGreaterThan(0);
+  }).toPass({ timeout: 10000, intervals: [500, 1000, 2000] });
+});
+
+test('external service responds', async ({ request }) => {
+  await expect(async () => {
+    const response = await request.get('/api/external-status');
+    expect(response.ok()).toBeTruthy();
+  }).toPass({ timeout: 30000 });
+});
+```
+
+### Box Model Assertions
+
+```typescript
+test('sidebar has correct dimensions', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  const sidebar = page.getByTestId('sidebar');
+  await expect(sidebar).toHaveCSS('width', '280px');
+
+  const box = await sidebar.boundingBox();
+  expect(box!.width).toBe(280);
+  expect(box!.height).toBeGreaterThan(500);
+});
+
+test('modal is centered on screen', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('open-modal').click();
+
+  const modal = page.getByRole('dialog');
+  const box = await modal.boundingBox();
+  const viewport = page.viewportSize()!;
+
+  const centerX = box!.x + box!.width / 2;
+  expect(Math.abs(centerX - viewport.width / 2)).toBeLessThan(10);
+});
+```
+
+### Route.fetch Improvements
+
+```typescript
+test('modifies response headers', async ({ page }) => {
+  await page.route('**/api/**', async (route) => {
+    const response = await route.fetch();
+    const headers = response.headers();
+
+    await route.fulfill({
+      response,
+      headers: { ...headers, 'x-test-mode': 'true' },
+    });
+  });
+
+  await page.goto('/dashboard');
+});
+
+test('conditional response modification', async ({ page }) => {
+  await page.route('**/api/feature-flags', async (route) => {
+    const response = await route.fetch();
+    const json = await response.json();
+
+    json.flags = { ...json.flags, newCheckout: true, darkMode: true };
+    await route.fulfill({ json });
+  });
+
+  await page.goto('/');
+  await expect(page.getByTestId('new-checkout-btn')).toBeVisible();
+});
+```
+
+---
+
 ## Cross-Reference Links
 
 | Topic | Reference File |
@@ -710,4 +812,7 @@ npx playwright test --grep-invert @regression  # Exclude regression
 | Edge cases & i18n (timezone, locale) | `edge-cases-i18n.md` |
 | Visual regression & accessibility | `visual-a11y-testing.md` |
 | CI/CD integration & reporting | `ci-reporting.md` |
+| Cloud testing (BrowserStack, Sauce Labs) | `cloud-testing.md` |
+| Mobile native testing (Appium) | `mobile-native-testing.md` |
 | Cypress patterns | `cypress-guide.md` |
+| Framework comparison & selection | `framework-selection.md` |

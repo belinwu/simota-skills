@@ -443,55 +443,18 @@ test('interacts with Shadow DOM elements', async ({ page }) => {
 
 ## Cloud Testing Services
 
-### BrowserStack Integration
+> Moved to dedicated file. See `cloud-testing.md` for BrowserStack, Sauce Labs, LambdaTest integration, CI workflows, cost optimization, and security.
 
-```typescript
-// playwright.config.ts (BrowserStack)
-export default defineConfig({
-  projects: [
-    {
-      name: 'browserstack-chrome',
-      use: {
-        connectOptions: {
-          wsEndpoint: `wss://cdp.browserstack.com/playwright?caps=${encodeURIComponent(
-            JSON.stringify({
-              browser: 'chrome',
-              browser_version: 'latest',
-              os: 'Windows',
-              os_version: '11',
-              'browserstack.username': process.env.BROWSERSTACK_USERNAME,
-              'browserstack.accessKey': process.env.BROWSERSTACK_ACCESS_KEY,
-            })
-          )}`,
-        },
-      },
-    },
-  ],
-});
-```
+---
 
-### Sauce Labs Integration
+## Cross-Reference Links
 
-```typescript
-// playwright.config.ts (Sauce Labs)
-export default defineConfig({
-  projects: [
-    {
-      name: 'saucelabs',
-      use: {
-        connectOptions: {
-          wsEndpoint: `wss://ondemand.saucelabs.com/playwright?caps=${encodeURIComponent(
-            JSON.stringify({
-              browserName: 'chromium',
-              'sauce:options': {
-                username: process.env.SAUCE_USERNAME,
-                accessKey: process.env.SAUCE_ACCESS_KEY,
-              },
-            })
-          )}`,
-        },
-      },
-    },
-  ],
-});
-```
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (POM, auth) | `playwright-patterns.md` |
+| Cloud testing services | `cloud-testing.md` |
+| Mobile native testing | `mobile-native-testing.md` |
+| Edge cases & i18n | `edge-cases-i18n.md` |
+| Environment management | `environment-management.md` |
+| Debug & monitoring | `debug-monitoring.md` |
+| Visual regression & accessibility | `visual-a11y-testing.md` |

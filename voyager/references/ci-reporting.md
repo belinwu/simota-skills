@@ -398,3 +398,17 @@ jobs:
 ```
 
 See `performance-testing.md` for detailed Lighthouse CI integration and performance budget configuration.
+
+---
+
+## Cross-Reference Links
+
+| Topic | Reference File |
+|-------|---------------|
+| Playwright patterns (config, auth) | `playwright-patterns.md` |
+| Debug & monitoring (trace, console) | `debug-monitoring.md` |
+| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
+| Cloud testing (BrowserStack CI) | `cloud-testing.md` |
+| Mobile native CI | `mobile-native-testing.md` |
+| Environment management | `environment-management.md` |
+| Framework selection | `framework-selection.md` |

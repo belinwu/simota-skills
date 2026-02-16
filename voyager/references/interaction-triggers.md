@@ -158,3 +158,24 @@ questions:
         description: "File handling with download path configuration"
     multiSelect: true
 ```
+
+---
+
+## ON_REVERSE_FEEDBACK
+
+```yaml
+ON_REVERSE_FEEDBACK:
+  timing: ON_RECEIVE
+  template:
+    questions:
+      - question: "Downstream agent reported an issue with E2E test output. How should we handle it?"
+        header: "Feedback"
+        options:
+          - label: "Fix immediately (Recommended)"
+            description: "Address the reported issue in the current session"
+          - label: "Schedule for next cycle"
+            description: "Add to improvement queue for next session"
+          - label: "Reject with reason"
+            description: "Provide explanation why feedback is not applicable"
+        multiSelect: false
+```
