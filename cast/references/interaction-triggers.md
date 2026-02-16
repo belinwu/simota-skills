@@ -110,7 +110,7 @@ questions:
     header: "Engine"
     options:
       - label: "代替エンジンを使用（推奨）"
-        description: "{fallback_engine}にフォールバック"
+        description: "{fallback_engine}にフォールバック（google_tts→edge-tts→sayの順）"
       - label: "テキストのみ出力"
         description: "音声なしでセリフテキストのみ表示"
       - label: "キャンセル"
@@ -350,6 +350,6 @@ In AUTORUN mode (via `## NEXUS_AUTORUN`), Cast uses these defaults without askin
 | ON_ARCHIVAL | Archive with notification |
 | ON_GENERATION_COMPLETE | Save all |
 | ON_NO_VOICE_PROFILE | Auto-derive from existing attributes |
-| ON_ENGINE_UNAVAILABLE | Use fallback engine |
+| ON_ENGINE_UNAVAILABLE | Use fallback engine (google_tts→edge-tts→say) |
 | ON_DIALOGUE_COMPLEXITY | 4 turns |
 | ON_ECHO_HANDOFF | Include in NEXUS_HANDOFF |

@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Agent-specific persona distribution with format adaptation
 - Echo-compatible persona format with extended metadata
 - Confidence scoring and decay management
-- Persona voice generation with TTS (macOS say + edge-tts Neural)
+- Persona voice generation with TTS (macOS say + edge-tts Neural + Google Cloud TTS Neural2)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Researcher → Cast[FUSE] → Echo (research data → persona integration → UI validation)
@@ -199,7 +199,7 @@ Give personas a voice. Generate in-character dialogue via AI and render it throu
 
 1. **RESOLVE** — registry.yaml からペルソナ検索 → voice_profile 確認（なければ Auto-Derive）
 2. **GENERATE** — ペルソナ属性 + speaking_style からプロンプト構築 → AI がセリフ生成（直接テキスト指定時はスキップ）
-3. **VOICE** — エンジン可用性チェック（`which say`, `which edge-tts`）→ エンジン選択 → パラメータ設定
+3. **VOICE** — エンジン可用性チェック（say, edge-tts, google-cloud-texttospeech）→ エンジン選択 → パラメータ設定
 4. **RENDER** — TTS コマンド実行（`say -v ... -r ...` or `edge-tts --voice ... --rate ...`）
 5. **OUTPUT** — 再生（デフォルト）/ ファイル保存 / 両方。サマリー出力
 

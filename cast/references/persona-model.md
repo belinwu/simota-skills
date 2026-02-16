@@ -83,8 +83,15 @@ voice_profile:
     pitch: "+0Hz"                  # "-50Hz" to "+50Hz"
     volume: "+0%"                  # "-50%" to "+50%"
 
+  # Google Cloud TTS 設定 (Neural2/WaveNet — 明示指定時のみ使用、autoには含まない)
+  google_tts:
+    voice: "ja-JP-Neural2-B"      # Google Cloud TTS voice name
+    speaking_rate: 1.0             # 0.25-4.0 (default: 1.0)
+    pitch: 0.0                     # -20.0 to +20.0 semitones (default: 0)
+    volume_gain_db: 0.0            # -96.0 to +16.0 dB (default: 0)
+
   language: ja                     # ja | en | auto
-  engine_preference: auto          # auto | say | edge-tts
+  engine_preference: auto          # auto | say | edge-tts | google_tts
 ---
 ```
 
@@ -103,12 +110,17 @@ voice_profile:
 | `edge_tts.rate` | string | `"+0%"` | 速度調整 (-50% to +100%) |
 | `edge_tts.pitch` | string | `"+0Hz"` | ピッチ調整 (-50Hz to +50Hz) |
 | `edge_tts.volume` | string | `"+0%"` | ボリューム調整 (-50% to +50%) |
+| `google_tts.voice` | string | auto-derived | Google Cloud TTS ボイス名 |
+| `google_tts.speaking_rate` | float | `1.0` | 発話速度 (0.25–4.0) |
+| `google_tts.pitch` | float | `0.0` | ピッチ（半音単位、-20.0 to +20.0） |
+| `google_tts.volume_gain_db` | float | `0.0` | 音量ゲイン (dB、-96.0 to +16.0) |
 | `language` | enum | `ja` | 発話言語 (ja / en / auto) |
-| `engine_preference` | enum | `auto` | TTS エンジン選択 (auto / say / edge-tts) |
+| `engine_preference` | enum | `auto` | TTS エンジン選択 (auto / say / edge-tts / google_tts) |
 
 #### Design Notes
 
-- `speaking_style` はテキスト生成制御、`say`/`edge_tts` は音声合成パラメータ — 関心事を分離
+- `speaking_style` はテキスト生成制御、`say`/`edge_tts`/`google_tts` は音声合成パラメータ — 関心事を分離
+- `google_tts` は課金保護のため `engine_preference: auto` に含まない（明示指定時のみ使用）
 - `voice_profile` がなくても SPEAK モードは動作する（Auto-Derivation で既存属性から推定）
 - 永続化は EVOLVE モードの既存メカニズムで対応（新メカニズム不要）
 - → Auto-Derivation ルール詳細: `speak-engine.md`
