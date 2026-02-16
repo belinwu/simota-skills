@@ -20,6 +20,8 @@ SPEAK モードは、Cast が管理するペルソナに「声」を与える。
 └─────────────────────────────────────────────────────────────┘
 ```
 
+**Canonical source for `voice_profile` schema:** `persona-model.md` (SPEAK Extension Fields section)
+
 ---
 
 ## TTS Engine Architecture

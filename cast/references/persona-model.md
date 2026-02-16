@@ -240,12 +240,7 @@ confidence = min(1.0, Σ source_contributions)
 
 ### Confidence Decay Rules
 
-| Condition | Decay Rate | Action |
-|-----------|-----------|--------|
-| 30–59 days without update | -0.05/week | Warning in audit |
-| 60–89 days without update | -0.10/week | Flagged for review |
-| 90+ days without update | Frozen at current | Archival recommended |
-| Any new data integration | Recalculated | Full recalculation from sources |
+→ Decay algorithm details: `evolution-engine.md`
 
 ### Attribute-Level Confidence
 
@@ -360,7 +355,7 @@ Development organization personas with workflow context.
 
 ---
 
-## Example Persona (Cast-Generated)
+## Example Persona (Cast-Generated, Abbreviated)
 
 ```markdown
 ---
@@ -389,85 +384,55 @@ cast_managed: true
 | Role | Online shopper (first purchase) |
 | Tech Level | Low-Medium [inferred] |
 | Device | Mobile (70%) [Trace data], Desktop (30%) |
-| Usage Context | Commuting, lunch break browsing |
-| Usage Frequency | First-time only → Weekly if converted |
 
 ## Quote
-
 > "買い物したいだけなのに、なんでこんなに入力が多いの？"
 
 ## Goals
-
 1. Purchase desired item quickly and safely
 2. Feel confident the purchase is secure
 3. Get a good deal compared to alternatives
 
 ## Frustrations
-
 1. Complex registration requiring too many fields
 2. Unclear shipping costs until checkout
 3. No guest checkout option
 
 ## Key Behaviors
-
 - Compares prices across 2-3 sites before purchasing
 - Abandons cart if registration is required before viewing total
-- Seeks trust signals (reviews, secure badges) before entering payment
 
 ## Emotion Triggers
-
 | State | Trigger |
 |-------|---------|
 | Delighted (+3) | Found item cheaper than expected with free shipping |
-| Satisfied (+2) | Guest checkout completed in under 2 minutes |
-| Confused (-1) | Unclear return policy wording |
 | Frustrated (-2) | Required to create account before viewing cart total |
 | Abandoned (-3) | Hidden fees revealed at final checkout step |
 
 ## Context Scenarios
-
 ### Scenario 1: Commute Shopping
+Physical: Crowded train, one hand free · Temporal: 15min window · Social: Semi-public · Cognitive: Distracted · Technical: Mobile, unstable connection
 
-```
-Physical: Standing on crowded train, one hand free
-Temporal: 15-minute window between stations
-Social: Semi-public, screen visible to nearby passengers
-Cognitive: Distracted, interrupted by announcements
-Technical: Mobile, potentially unstable connection
-```
-
-## JTBD (Jobs-to-be-Done)
-
-### Functional Job
-Purchase a specific item and have it delivered reliably
-
-### Emotional Job
-Feel confident and not cheated during the purchase process
-
-### Social Job
-Be seen as a smart shopper who finds good deals
+## JTBD
+- Functional: Purchase item and have it delivered reliably
+- Emotional: Feel confident and not cheated
+- Social: Be seen as a smart shopper
 
 ## Echo Testing Focus
-
 - [ ] Product search → cart → checkout (guest flow)
-- [ ] Price comparison visibility
 - [ ] Mobile checkout form usability
 
 ## Source Analysis
-
 | Source | Extracted Information |
 |--------|----------------------|
 | README.md | "perfect for first-time shoppers", mobile-first design |
-| src/checkout/guest-checkout.tsx | Guest checkout exists but requires email |
-| Trace session data (2026-02-08) | 70% mobile sessions, avg 3.2 page views before cart |
-| Voice NPS feedback (2026-02-14) | "shipping cost surprise" mentioned in 23% of detractors |
+| Trace session data (2026-02-08) | 70% mobile sessions, avg 3.2 page views |
+| Voice NPS feedback (2026-02-14) | "shipping cost surprise" in 23% of detractors |
 
 ## Evolution Log
-
 | Version | Date | Source | Changes | Confidence Delta |
 |---------|------|--------|---------|-----------------|
 | 1.0 | 2026-02-01 | README, src/checkout | Initial creation | 0.65 |
-| 1.1 | 2026-02-08 | Trace session data | Device split updated, session patterns | +0.10 |
 | 1.2 | 2026-02-15 | Voice NPS feedback | Shipping frustration added | +0.07 |
 ```
 

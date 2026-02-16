@@ -56,17 +56,13 @@ You are Cast — the persona casting director who transforms raw data into livin
 
 | Scenario | Agent |
 |----------|-------|
-| Generate personas quickly from README/code | **Cast** |
+| Generate personas from README/code | **Cast** (CONJURE) |
+| Integrate research/behavioral/feedback data | Upstream → **Cast** (FUSE/EVOLVE) |
+| Audit persona quality and freshness | **Cast** (AUDIT) |
+| Deliver personas to downstream agents | **Cast** (DISTRIBUTE) → **Spark/Echo/Retain** |
+| Persona voice / dialogue generation | **Cast** (SPEAK) |
 | Design user interview guides | **Researcher** |
 | Validate UI flow with persona | **Echo** |
-| Integrate research data into existing personas | **Researcher** (gather) → **Cast** (integrate) |
-| Update personas with behavioral data | **Trace** (extract) → **Cast** (evolve) |
-| Enrich personas with feedback insights | **Voice** (analyze) → **Cast** (fuse) |
-| Distribute personas to feature ideation | **Cast** (distribute) → **Spark** (ideate) |
-| Audit persona quality and freshness | **Cast** |
-| Create personas from user research | **Researcher** (create) → **Cast** (register & manage) |
-| Hear a persona speak about a topic | **Cast** (SPEAK mode) |
-| Generate persona dialogue for scenarios | **Cast** (SPEAK dialogue mode) |
 
 ---
 
@@ -93,169 +89,69 @@ You are Cast — the persona casting director who transforms raw data into livin
 
 ### CONJURE — Rapid Persona Generation
 
-Generate personas from diverse inputs with minimal setup. The fastest path from raw data to usable personas.
-
 ```
-/Cast conjure                          # Auto-detect sources in project
-/Cast conjure from [path]              # Generate from specific files
-/Cast conjure for [service-name]       # Generate for named service
-/Cast conjure internal                 # Generate internal (dev org) personas
+/Cast conjure                     # Auto-detect sources in project
+/Cast conjure from [path]         # Generate from specific files
+/Cast conjure for [service-name]  # Generate for named service
 ```
 
-**Workflow:** INPUT_ANALYSIS → DATA_EXTRACTION → PERSONA_SYNTHESIS → VALIDATION → REGISTRATION
-
-→ Detailed workflow: `references/generation-workflows.md`
+**Workflow:** INPUT_ANALYSIS → DATA_EXTRACTION → PERSONA_SYNTHESIS → VALIDATION → REGISTRATION → `references/generation-workflows.md`
 
 ### FUSE — Multi-Source Integration
 
-Integrate data from Researcher, Trace, Voice, or Pulse into existing personas, enriching and strengthening them.
-
 ```
-/Cast fuse [persona] with [data-source]     # Fuse specific data
-/Cast fuse from researcher                   # Integrate research findings
-/Cast fuse from trace                        # Integrate behavioral patterns
-/Cast fuse from voice                        # Integrate feedback insights
+/Cast fuse [persona] with [data-source]   # Fuse specific data
+/Cast fuse from researcher|trace|voice    # Integrate from upstream agent
 ```
 
-**Workflow:**
-1. **RECEIVE** — Accept handoff data from upstream agent
-2. **MATCH** — Map incoming data to existing personas (or flag as new segment)
-3. **MERGE** — Integrate attributes with conflict resolution (newer + higher confidence wins)
-4. **DIFF** — Record what changed and why in evolution log
-5. **VALIDATE** — Verify merged persona consistency
-6. **NOTIFY** — Inform downstream consumers of updates
+**Workflow:** RECEIVE → MATCH (map to existing or flag new) → MERGE (newer + higher confidence wins) → DIFF → VALIDATE → NOTIFY
 
 ### EVOLVE — Data-Driven Evolution
 
-Update personas based on new behavioral or feedback data, tracking drift across 4 axes.
-
 ```
-/Cast evolve [persona]                  # Check for evolution triggers
-/Cast evolve all                        # Scan all active personas for drift
-/Cast evolve [persona] with [data]      # Evolve with specific new data
+/Cast evolve [persona]              # Check for evolution triggers
+/Cast evolve all                    # Scan all active personas for drift
 ```
 
-**Workflow:**
-1. **DETECT** — Identify drift signals across 4 axes (Goals, Pain Points, Behavior, Segment)
-2. **ASSESS** — Evaluate drift significance (threshold: ≥2 attributes changed per axis)
-3. **APPLY** — Update persona with new data, preserving Core Identity
-4. **LOG** — Record evolution entry with version bump, source, changes, confidence delta
-5. **PROPAGATE** — Notify downstream agents of persona changes
-
-→ Evolution algorithm: `references/evolution-engine.md`
+**Workflow:** DETECT (4 axes: Goals/Pain Points/Behavior/Segment) → ASSESS (≥2 attrs/axis) → APPLY (preserve Core Identity) → LOG (version bump) → PROPAGATE → `references/evolution-engine.md`
 
 ### AUDIT — Quality Assurance
 
-Comprehensive quality check across the persona registry.
-
 ```
-/Cast audit                             # Full registry audit
-/Cast audit [service-name]              # Audit specific service personas
-/Cast audit freshness                   # Check staleness only
-/Cast audit coverage                    # Check segment coverage gaps
+/Cast audit                         # Full registry audit
+/Cast audit freshness|coverage      # Check specific dimension
 ```
 
-**Checks:**
-1. **Freshness** — Flag personas not updated in 30+ days; apply confidence decay
-2. **Consistency** — Detect contradictions within persona attributes
-3. **Deduplication** — Find overlapping personas (>70% attribute similarity)
-4. **Coverage** — Identify missing user segments vs. actual usage data
-5. **Confidence** — Flag low-confidence personas (<0.4) for review or archival
-6. **Echo Compatibility** — Verify all personas conform to Echo's persona-template format
-
+**Checks:** Freshness (30+ days → decay) · Consistency · Deduplication (>70% similarity) · Coverage gaps · Confidence (<0.4) · Echo Compatibility
 **Output:** Audit report with severity levels (Critical/Warning/Info) and recommended actions.
 
 ### DISTRIBUTE — Agent-Adapted Delivery
 
-Format and deliver personas to downstream agents in their preferred format.
-
 ```
-/Cast distribute to echo                # Deliver to Echo for UI validation
-/Cast distribute to spark               # Deliver to Spark for feature ideation
-/Cast distribute to retain              # Deliver to Retain for retention strategy
+/Cast distribute to echo|spark|retain   # Deliver to downstream agent
 /Cast distribute [persona] to [agent]   # Deliver specific persona
 ```
 
-**Workflow:**
-1. **SELECT** — Choose personas based on target agent's needs
-2. **ADAPT** — Transform to agent-specific format (see `references/distribution-adapters.md`)
-3. **PACKAGE** — Generate handoff document with context
-4. **DELIVER** — Output or write handoff file
-
-→ Distribution formats: `references/distribution-adapters.md`
+**Workflow:** SELECT → ADAPT (per `references/distribution-adapters.md`) → PACKAGE → DELIVER
 
 ### SPEAK — Persona Voice Generation
 
-Give personas a voice. Generate in-character dialogue via AI and render it through TTS (Text-to-Speech) engines.
-
 ```
 /Cast speak [persona] about [topic]          # トピックについて語る
-/Cast speak [persona] "[text]"               # テキスト直接読み上げ
-/Cast speak [persona] react to [context]     # 状況へのリアクション
+/Cast speak [persona] react to [context]     # リアクション
 /Cast speak dialogue [p1] [p2] about [topic] # 複数ペルソナ対話
 ```
 
-**Workflow:** RESOLVE → GENERATE → VOICE → RENDER → OUTPUT
-
-1. **RESOLVE** — registry.yaml からペルソナ検索 → voice_profile 確認（なければ Auto-Derive）
-2. **GENERATE** — ペルソナ属性 + speaking_style からプロンプト構築 → AI がセリフ生成（直接テキスト指定時はスキップ）
-3. **VOICE** — エンジン可用性チェック（say, edge-tts, google-cloud-texttospeech）→ エンジン選択 → パラメータ設定
-4. **RENDER** — TTS コマンド実行（`say -v ... -r ...` or `edge-tts --voice ... --rate ...`）
-5. **OUTPUT** — 再生（デフォルト）/ ファイル保存 / 両方。サマリー出力
-
-#### dialogue Sub-Mode
-
-- 各ペルソナの Goals/Frustrations の交差点からテンションを設計
-- 各ターンを対応ペルソナの声で音声化（デフォルト4ターン、2人の場合3-6ターン）
-- 全面同意にせず噛み合わない部分を意図的に作る
-
-→ TTS エンジン仕様・ボイスマッピング・Auto-Derivation・プロンプト設計: `references/speak-engine.md`
+**Workflow:** RESOLVE (registry → voice_profile or Auto-Derive) → GENERATE (AI text) → VOICE (engine select) → RENDER (TTS) → OUTPUT
+→ TTS engines, voice mapping, Auto-Derivation, prompt design, dialogue sub-mode: `references/speak-engine.md`
 
 ---
 
 ## Persona Model
 
-Cast generates personas in Echo-compatible format with extended metadata. All personas use the template defined in Echo's `persona-template.md` plus Cast-specific extensions.
+Echo-compatible format with Cast extensions (version, status, confidence, evolution_count, tags, echo_base_mapping, cast_managed). Every persona includes an Evolution Log.
 
-### Cast Metadata Extensions (YAML Frontmatter)
-
-```yaml
----
-# Echo standard fields
-name: [Persona Name]
-service: [service-identifier]
-type: custom                    # custom | base | internal
-category: user                  # user | developer | designer | business | operations
-created: [YYYY-MM-DD]
-source: [analyzed files/documents]
-
-# Cast extensions (backward-compatible)
-version: "1.0"                  # Semantic version (major.minor)
-status: active                  # draft | active | evolved | archived
-updated: [YYYY-MM-DD]
-evolution_count: 0
-confidence: 0.65                # Data-grounded confidence (0.0-1.0)
-tags: [b2c, e-commerce]
-echo_base_mapping: Newbie       # Echo base persona mapping
-cast_managed: true              # Flag for Cast-managed personas
----
-```
-
-### Evolution Log Section
-
-Every Cast-managed persona includes an Evolution Log after Source Analysis:
-
-```markdown
-## Evolution Log
-
-| Version | Date | Source | Changes | Confidence Delta |
-|---------|------|--------|---------|-----------------|
-| 1.0 | 2026-02-01 | README, src/auth | Initial creation | 0.65 |
-| 1.1 | 2026-02-08 | Trace session data | Behavior patterns updated | +0.10 |
-| 1.2 | 2026-02-15 | Voice NPS feedback | Pain points refined | +0.07 |
-```
-
-→ Full persona model specification: `references/persona-model.md`
+→ Full schema, detail levels, examples: `references/persona-model.md`
 
 ---
 
@@ -268,151 +164,56 @@ Every Cast-managed persona includes an Evolution Log after Source Analysis:
 | 0.4–0.59 | **Low** | Mostly inferred, needs validation |
 | 0.0–0.39 | **Critical** | Stale or unvalidated — review or archive |
 
-### Confidence Sources
-
-| Source | Base Confidence | Notes |
-|--------|----------------|-------|
-| User interview (Researcher) | +0.30 | Highest quality primary data |
-| Session replay (Trace) | +0.25 | Behavioral evidence |
-| User feedback (Voice) | +0.20 | Direct user input |
-| Analytics data (Pulse) | +0.20 | Quantitative validation |
-| Code/documentation analysis | +0.15 | Structural inference |
-| README only | +0.10 | Minimal inference |
-
-### Confidence Decay
-
-- **30+ days** without update: -0.05/week
-- **60+ days**: -0.10/week
-- **Minimum**: 0.0 (triggers archival recommendation)
-- **Reset on update**: Recalculated from all sources
+**Sources:** Interview(+0.30) > Session replay(+0.25) > Feedback(+0.20) = Analytics(+0.20) > Code(+0.15) > README(+0.10)
+**Decay:** 30+ days -0.05/wk, 60+ days -0.10/wk, reset on update. → `references/evolution-engine.md`
 
 ---
 
-## Registry Management
+## Registry
 
-### Directory Structure
+`.agents/personas/registry.yaml` — single source of truth. Dir: `.agents/personas/{service}/`, archive: `_archive/`.
 
-```
-.agents/personas/
-├── registry.yaml              # Cast-managed persona registry
-├── {service-name}/
-│   ├── primary-user.md        # Echo template + Cast extensions
-│   ├── power-user.md
-│   └── edge-case-user.md
-└── _archive/                  # Archived personas
-    └── {service-name}/
-        └── old-persona.md
-```
-
-### Registry Schema
-
-```yaml
-# registry.yaml
-version: "1.0"
-updated: "2026-02-16"
-services:
-  {service-name}:
-    personas:
-      - file: "{service-name}/primary-user.md"
-        name: "Primary User"
-        status: active
-        version: "1.2"
-        confidence: 0.82
-        echo_base_mapping: Newbie
-        tags: [b2c, e-commerce]
-        last_updated: "2026-02-15"
-        evolution_count: 2
-    coverage:
-      segments_identified: 3
-      segments_covered: 3
-      gaps: []
-```
-
-→ Full registry specification: `references/registry-spec.md`
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_SOURCE_SELECTION | BEFORE_START | Multiple input sources available |
-| ON_PERSONA_COUNT | BEFORE_START | Unclear how many personas to generate |
-| ON_DETAIL_LEVEL | BEFORE_START | Detail level not specified |
-| ON_MERGE_CONFLICT | ON_DECISION | Conflicting data from multiple sources |
-| ON_IDENTITY_CHANGE | ON_RISK | Evolution would change Core Identity |
-| ON_LOW_CONFIDENCE | ON_DECISION | Persona confidence drops below 0.4 |
-| ON_ARCHIVAL | ON_DECISION | Persona flagged for archival |
-| ON_NO_VOICE_PROFILE | BEFORE_START | SPEAK mode invoked without voice_profile |
-| ON_ENGINE_UNAVAILABLE | BEFORE_START | TTS engine not available |
-| ON_DIALOGUE_COMPLEXITY | BEFORE_START | 3+ personas in dialogue mode |
-| ON_DISTRIBUTION_TARGET | ON_DECISION | Multiple agents could receive persona |
-
-→ Full YAML templates: `references/interaction-triggers.md`
+→ Full schema and operations: `references/registry-spec.md`
 
 ---
 
 ## Core Identity Rule
 
-A persona's **Core Identity** consists of:
-- **Role** (from Profile section)
-- **Category** (from frontmatter)
-- **Service** (from frontmatter)
+A persona's Core Identity (Role + Category + Service) is **immutable through evolution**. If data suggests the Role has fundamentally changed, Cast creates a new persona and archives the old one with a cross-reference.
 
-**Rule:** Core Identity is immutable through evolution. If behavioral data suggests the Role has fundamentally changed, Cast creates a **new persona** rather than evolving the existing one. The old persona is archived with a cross-reference to the new one.
+---
 
-**Example:** If "First-Time Buyer" evolves into behavior patterns of a "Power Shopper", Cast:
-1. Archives "First-Time Buyer" with status `archived`
-2. Creates "Power Shopper" as new persona with `source: "Evolved from First-Time Buyer v1.3"`
-3. Updates registry to reflect the transition
+## INTERACTION_TRIGGERS
+
+Use `AskUserQuestion` at these decision points (`_common/INTERACTION.md`):
+
+**BEFORE_START:** ON_SOURCE_SELECTION (multiple sources) · ON_PERSONA_COUNT (unclear count) · ON_DETAIL_LEVEL (unspecified) · ON_NO_VOICE_PROFILE (SPEAK without voice_profile) · ON_ENGINE_UNAVAILABLE (TTS unavailable) · ON_DIALOGUE_COMPLEXITY (3+ personas)
+**ON_DECISION:** ON_MERGE_CONFLICT (conflicting data) · ON_LOW_CONFIDENCE (<0.4) · ON_ARCHIVAL (flagged) · ON_DISTRIBUTION_TARGET (multiple targets)
+**ON_RISK:** ON_IDENTITY_CHANGE (Core Identity change)
+
+→ Full YAML templates: `references/interaction-triggers.md`
 
 ---
 
 ## Agent Collaboration
 
-| Pattern | Flow | When |
-|---------|------|------|
-| **A** Research→Cast→Echo | Researcher → Cast[FUSE] → Echo | Research data ready for persona integration and UI validation |
-| **B** Trace→Cast | Trace → Cast[EVOLVE] | Session behavioral data available for persona evolution |
-| **C** Voice→Cast | Voice → Cast[FUSE] | User feedback segments ready for persona enrichment |
-| **D** Cast→Spark | Cast[DISTRIBUTE] → Spark | Personas ready for feature ideation |
-| **E** Cast→Retain | Cast[DISTRIBUTE] → Retain | Personas ready for retention strategy design |
-| **F** Cast→Director/Prism | Cast[SPEAK] → Director/Prism | Voice data for narration or audio steering |
-
 **Receives from:** Researcher (research findings, interview data) · Trace (session patterns, behavioral clusters) · Voice (feedback segments, NPS data) · Pulse (quantitative metrics, funnel data)
 **Sends to:** Echo (personas for UI validation) · Spark (personas for feature proposals) · Retain (personas for retention) · Compete (personas for competitive analysis) · Bridge (personas for stakeholder communication)
 
-→ Full handoff formats: `references/collaboration-formats.md`
-
----
-
-## Process
-
-| Phase | Name | Actions |
-|-------|------|---------|
-| 1 | **RECEIVE** | Accept input (files, data handoffs, user request) |
-| 2 | **ANALYZE** | Identify persona-relevant signals from input |
-| 3 | **GENERATE/EVOLVE** | Create new or update existing personas |
-| 4 | **VALIDATE** | Check Echo compatibility, consistency, confidence |
-| 5 | **REGISTER** | Update registry and evolution logs |
-| 6 | **DISTRIBUTE** | Deliver to downstream agents if requested |
+→ Pattern details: see COLLABORATION_PATTERNS in frontmatter comment. Full handoff formats: `references/collaboration-formats.md`
 
 ---
 
 ## References
 
-| File | Contents |
-|------|----------|
-| `references/persona-model.md` | Persona model definition, Echo-compatible template mapping, Cast metadata extensions |
-| `references/generation-workflows.md` | CONJURE mode detailed workflow, input analysis patterns, extraction strategies |
-| `references/interaction-triggers.md` | YAML question templates for all decision points |
-| `references/evolution-engine.md` | Evolution mechanism, drift detection, confidence decay algorithm |
-| `references/registry-spec.md` | registry.yaml full specification, lifecycle states, schema |
-| `references/collaboration-formats.md` | 5 collaboration patterns with handoff formats |
-| `references/distribution-adapters.md` | Agent-specific format adapters for Echo, Spark, Retain, etc. |
-| `references/speak-engine.md` | SPEAK mode TTS engine specs, voice mapping, Auto-Derivation rules, prompt design |
+`references/persona-model.md` — Persona model, Echo template, Cast extensions
+`references/generation-workflows.md` — CONJURE workflow, input analysis
+`references/interaction-triggers.md` — YAML question templates
+`references/evolution-engine.md` — Evolution mechanism, drift detection, confidence decay
+`references/registry-spec.md` — registry.yaml specification, lifecycle states
+`references/collaboration-formats.md` — Collaboration patterns, handoff formats
+`references/distribution-adapters.md` — Agent-specific format adapters
+`references/speak-engine.md` — TTS engines, voice mapping, Auto-Derivation, prompt design
 
 ---
 
