@@ -126,6 +126,84 @@ Standardized handoff templates for agent collaboration.
 **Request**: Generate shell integration for CLI tool
 ```
 
+### HEARTH_TO_LATCH_HANDOFF
+
+```markdown
+## HEARTH_TO_LATCH_HANDOFF
+
+**Environment Configured**: [What was set up — e.g., "zsh + neovim + ghostty on macOS"]
+**Shell Environment**:
+| Tool | Version | Config Path |
+|------|---------|-------------|
+| [tool] | [version] | [path] |
+
+**Claude Code Hook Opportunities**:
+- [Hook 1 — e.g., "Pre-commit lint check for dotfile changes"]
+- [Hook 2 — e.g., "PostToolUse validation for config file edits"]
+- [Hook 3 — e.g., "Auto-format on save for shell scripts"]
+
+**Shell Integration Context**:
+- Plugin manager: [sheldon/zinit/none]
+- Completion framework: [zsh-completions/built-in]
+- XDG paths: [configured directories]
+
+**Request**: Set up Claude Code hooks to automate workflow based on configured environment
+```
+
+### LATCH_TO_HEARTH_HANDOFF
+
+```markdown
+## LATCH_TO_HEARTH_HANDOFF
+
+**Hook Context**: [Description of hooks that revealed env config needs]
+**Findings**:
+- [Finding 1 — e.g., "Shell startup slow, impacting hook performance"]
+- [Finding 2 — e.g., "Missing tool detected by PreToolUse hook"]
+
+**Environment Setup Needed**:
+- Tool: [tool to configure]
+- Reason: [why — from hook context]
+- Priority: [High/Medium/Low]
+
+**Request**: Adjust environment configuration based on hook observations
+```
+
+### HEARTH_TO_SIGIL_HANDOFF
+
+```markdown
+## HEARTH_TO_SIGIL_HANDOFF
+
+**Environment Patterns Detected**: [Description]
+**Tech Stack**:
+| Category | Tool | Version |
+|----------|------|---------|
+| [category] | [tool] | [version] |
+
+**Skill Generation Opportunities**:
+- [Skill 1 — e.g., "Project-specific neovim config for Rust workspace"]
+- [Skill 2 — e.g., "Docker dev container with matching dotfiles"]
+
+**Request**: Generate project-specific skills based on detected environment patterns
+```
+
+### SIGIL_TO_HEARTH_HANDOFF
+
+```markdown
+## SIGIL_TO_HEARTH_HANDOFF
+
+**Project Skill Context**: [Skill name and description]
+**Environment Adjustments Needed**:
+- [Adjustment 1 — e.g., "Add project-specific LSP to neovim config"]
+- [Adjustment 2 — e.g., "Configure shell aliases for project scripts"]
+
+**Project Requirements**:
+- Language: [primary language]
+- Build tool: [tool]
+- Specific tools: [project-specific CLIs]
+
+**Request**: Adjust personal environment to support project-specific skill requirements
+```
+
 ---
 
 ## Collaboration Patterns
@@ -153,6 +231,21 @@ Scaffold → Hearth (personal) → HEARTH_TO_GEAR → Gear (project) → Sentine
 ### Pattern E: Tool-Config Coordination
 ```
 Hearth (personal git config) → HEARTH_TO_GEAR → Gear (git hooks, CI config)
+```
+
+### Pattern F: Environment-to-Hooks Integration
+```
+Hearth (env setup) → HEARTH_TO_LATCH → Latch (Claude Code hooks for workflow automation)
+```
+
+### Pattern G: Environment-to-Skill Generation
+```
+Hearth (env patterns) → HEARTH_TO_SIGIL → Sigil (project-specific skills from env context)
+```
+
+### Pattern H: Skill-to-Environment Feedback
+```
+Sigil (project skill context) → SIGIL_TO_HEARTH → Hearth (env adjustments for project)
 ```
 
 ---

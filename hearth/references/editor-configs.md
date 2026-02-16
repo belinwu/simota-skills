@@ -369,3 +369,185 @@ colorscheme catppuccin_mocha
 | File finder | Built-in | telescope | telescope + extensions |
 | Startup time | <50ms | <100ms | <200ms |
 | Use case | Quick edits | Daily driver | IDE replacement |
+
+---
+
+## Neovim 0.10+ Features
+
+### Native Snippets (`vim.snippet`)
+
+```lua
+-- Built-in snippet expansion (no plugin required for basic use)
+vim.snippet.expand("function ${1:name}(${2:params})\n\t${0}\nend")
+
+-- Jump between snippet placeholders
+vim.keymap.set({ "i", "s" }, "<Tab>", function()
+  if vim.snippet.active({ direction = 1 }) then
+    return "<cmd>lua vim.snippet.jump(1)<cr>"
+  end
+  return "<Tab>"
+end, { expr = true })
+
+vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+  if vim.snippet.active({ direction = -1 }) then
+    return "<cmd>lua vim.snippet.jump(-1)<cr>"
+  end
+  return "<S-Tab>"
+end, { expr = true })
+```
+
+### OSC 52 Clipboard
+
+```lua
+-- Native clipboard over SSH/tmux via OSC 52 (no xclip/pbcopy needed)
+-- Enabled by default in 0.10+ when $SSH_TTY is set
+-- Works with ghostty, kitty, wezterm, alacritty, tmux 3.3+
+vim.opt.clipboard = "unnamedplus"
+-- No additional configuration needed for remote sessions
+```
+
+### Built-in Comment Toggling (`gc`)
+
+```lua
+-- Native in Neovim 0.10+ (no vim-commentary or Comment.nvim needed)
+-- gc{motion}  — toggle comment
+-- gcc         — toggle comment on current line
+-- gc          — toggle comment in visual mode
+-- Respects commentstring from treesitter/filetype
+```
+
+### Default Colorscheme Improvements
+
+Neovim 0.10+ ships with an improved default colorscheme and `vim.hl` namespace for highlight management. Treesitter highlighting is enabled by default for supported filetypes.
+
+---
+
+## blink.cmp (Alternative to nvim-cmp)
+
+### Comparison with nvim-cmp
+
+| Aspect | nvim-cmp | blink.cmp |
+|--------|----------|-----------|
+| Architecture | Lua-based, multi-source | Rust core, async-first |
+| Performance | Good (can lag with many sources) | Faster (Rust fuzzy matching) |
+| Configuration | Verbose, many plugins | Simpler, fewer dependencies |
+| Source ecosystem | Large (30+ source plugins) | Growing (compatible adapter) |
+| Maturity | Stable, widely adopted | Newer, rapidly evolving |
+| Snippet support | Via cmp-luasnip/cmp-vsnip | Built-in vim.snippet |
+| Ghost text | Via plugin | Built-in |
+
+### Basic blink.cmp Configuration
+
+```lua
+-- lua/plugins/completion.lua
+return {
+  "saghen/blink.cmp",
+  version = "*",
+  event = "InsertEnter",
+  dependencies = {
+    "rafamadriz/friendly-snippets",
+  },
+  opts = {
+    keymap = {
+      preset = "default",
+      ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<C-e>"] = { "cancel", "fallback" },
+      ["<CR>"] = { "accept", "fallback" },
+      ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
+      ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
+    },
+    appearance = {
+      nerd_font_variant = "mono",
+    },
+    sources = {
+      default = { "lsp", "path", "snippets", "buffer" },
+    },
+    signature = { enabled = true },
+  },
+}
+```
+
+### When to Choose blink.cmp
+
+- Prefer **blink.cmp** for new setups (simpler config, better performance)
+- Prefer **nvim-cmp** if you need specific source plugins not yet ported
+- Both work well with mason.nvim and LSP
+
+---
+
+## Zed Editor Configuration
+
+### Overview
+
+Zed is a GPU-accelerated editor written in Rust. Hearth provides minimal support — Neovim remains the recommended editor for power users.
+
+### Configuration (`~/.config/zed/settings.json`)
+
+```jsonc
+{
+  // Theme
+  "theme": {
+    "mode": "dark",
+    "dark": "Catppuccin Mocha",
+    "light": "Catppuccin Latte"
+  },
+
+  // Font
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_size": 14,
+  "ui_font_size": 14,
+
+  // Editor behavior
+  "tab_size": 2,
+  "hard_tabs": false,
+  "format_on_save": "on",
+  "autosave": { "after_delay": { "milliseconds": 1000 } },
+
+  // Vim mode (optional)
+  "vim_mode": true,
+  "relative_line_numbers": true,
+
+  // Terminal
+  "terminal": {
+    "font_family": "JetBrains Mono",
+    "font_size": 14
+  },
+
+  // Telemetry
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  }
+}
+```
+
+### Zed Keymap (`~/.config/zed/keymap.json`)
+
+```jsonc
+[
+  {
+    "context": "Editor && VimNormal",
+    "bindings": {
+      "space f f": "file_finder::Toggle",
+      "space f g": "search::SelectAllMatches",
+      "space e": "workspace::ToggleLeftDock"
+    }
+  }
+]
+```
+
+### LSP in Zed
+
+Zed has built-in LSP support — no mason.nvim equivalent needed. Language servers are auto-installed on first use. Custom LSP configuration:
+
+```jsonc
+{
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "check": { "command": "clippy" }
+      }
+    }
+  }
+}
+```

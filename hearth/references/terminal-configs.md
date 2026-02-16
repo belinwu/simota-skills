@@ -294,3 +294,66 @@ fc-cache -fv
 | Platform | macOS/Linux | All | All | All |
 | Resource usage | Low | Low | Medium | Medium |
 | Customizability | Medium | Low | High | Very High |
+
+---
+
+## Ghostty 1.0+ Advanced Features
+
+### Native Split Panes
+
+Ghostty's built-in splits can replace tmux for simple workflows:
+
+```
+# Split management (no tmux required)
+keybind = super+d=new_split:right
+keybind = super+shift+d=new_split:down
+keybind = super+alt+left=goto_split:left
+keybind = super+alt+right=goto_split:right
+keybind = super+shift+enter=toggle_split_zoom
+
+# Equalize split sizes
+keybind = super+shift+e=equalize_splits
+```
+
+**When to still use tmux:** Session persistence (SSH/remote), complex layouts, scripted pane management, shared sessions.
+
+### Theme Discovery
+
+```bash
+# List all built-in themes
+ghostty +list-themes
+
+# Preview a theme (applies temporarily)
+ghostty +list-themes --preview
+
+# Popular themes: catppuccin-mocha, tokyonight, rose-pine, gruvbox-dark
+```
+
+### Shell Integration
+
+```
+# Enable shell integration features (auto-detected for zsh/bash/fish)
+shell-integration = detect
+
+# Features controlled by shell-integration-features:
+# - cursor: Change cursor shape based on vi mode
+# - sudo: Preserve shell integration through sudo
+# - title: Set window title from shell
+shell-integration-features = no-cursor,sudo,title
+```
+
+### terminfo Handling
+
+```bash
+# Ghostty sets TERM=xterm-ghostty by default
+# If remote host lacks xterm-ghostty terminfo:
+#   Option 1: Install terminfo on remote
+infocmp -x xterm-ghostty | ssh remote 'tic -x -'
+
+#   Option 2: Override TERM for SSH sessions
+# In ~/.ssh/config or shell alias:
+alias ssh='TERM=xterm-256color ssh'
+
+# Verify terminfo
+infocmp xterm-ghostty  # Should show capabilities
+```
