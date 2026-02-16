@@ -63,3 +63,51 @@ ORBIT_TO_GUARDIAN_HANDOFF:
     - "stage candidate-only"
     - "no baseline path commit"
 ```
+
+## SCOUT_TO_ORBIT_HANDOFF
+
+```yaml
+SCOUT_TO_ORBIT_HANDOFF:
+  source_agent: Scout
+  incident_type: "loop_anomaly|state_corruption|silent_failure"
+  findings:
+    root_cause: "<RCA summary>"
+    affected_artifacts:
+      - "<file:line>"
+    evidence:
+      - "<log excerpt or diff reference>"
+  orbit_action_requested:
+    - "contract_audit"
+    - "state_recovery"
+    - "failure_classification"
+  constraints:
+    - "do not discard Scout's evidence chain"
+    - "preserve investigation context in progress.md"
+  expected_output:
+    - "failure taxonomy classification"
+    - "contract repair plan or safe next action"
+    - "handoff to Builder/Guardian if implementation needed"
+```
+
+## ORBIT_TO_RADAR_HANDOFF
+
+```yaml
+ORBIT_TO_RADAR_HANDOFF:
+  concern: "DONE verification gap closure"
+  done_file: "<path>"
+  acceptance_criteria:
+    - "<criterion 1>"
+    - "<criterion 2>"
+  missing_evidence:
+    - verification: "<verify_cmd that was not run or failed>"
+      expected: "<expected outcome>"
+    - verification: "<another missing check>"
+      expected: "<expected outcome>"
+  constraints:
+    - "run all missing verifications before confirming DONE"
+    - "report pass/fail per criterion — do not aggregate"
+    - "if any criterion fails, recommend CONTINUE (not DONE)"
+  expected_output:
+    - "per-criterion verification results"
+    - "DONE confirmation or CONTINUE recommendation with evidence"
+```
