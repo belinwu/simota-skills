@@ -146,6 +146,7 @@ Goal Input → Contract Design → Script Generation → Validation → Output
 | Parameter | Default | Customize When |
 |-----------|---------|----------------|
 | `EXEC_CMD` | `codex exec` | 別のエグゼキューター使用時（`claude`, `gemini`, custom） |
+| `EXEC_TIMEOUT` | `600` | EXEC_CMD のタイムアウト秒数。ハングしたプロセスの自動終了 |
 | `MAX_ITERATIONS` | `20` | ゴール複雑度に応じて増減 |
 | `RETRY_LIMIT` | `3` | 不安定な環境やフレーキーなツール |
 | `AUTOCOMMIT` | `true` | ユーザーが手動コミットを希望 |
@@ -439,6 +440,7 @@ Example:
 | File | Content | Use When |
 |------|---------|----------|
 | `references/script-templates.md` | ランナー/ブートストラップ/検証/復旧スクリプトテンプレート | スクリプト生成時（メイン参照） |
+| `references/script-flow.md` | スクリプト処理フローの Mermaid 可視化 | フロー理解・デバッグ時 |
 | `references/handoffs.md` | 6方向のハンドオフ YAML テンプレート | エージェント間受け渡し時 |
 | `references/examples.md` | 5 failure class の診断例 | パターンマッチングの参考に |
 | `references/interaction-triggers.md` | 5つの質問テンプレート YAML | ユーザー確認が必要な時 |
