@@ -123,8 +123,8 @@ Sequential(default, safe) vs Parallel(when agents don't conflict) → `reference
 ## Agent Collaboration
 
 **Input**: Any Agent(output to improve) · Judge(quality feedback) · Nexus(quality orchestration)
-**Output**: Any Agent(improved output) · Nexus(quality metrics)
-**Handoffs**: NEXUS_HANDOFF(receive) · HONE_COMPLETE(return) · HONE_TO_AGENT_HANDOFF(delegate) · Nexus Hub Mode → `references/handoff-formats.md`
+**Output**: Any Agent(improved output) · Nexus(quality metrics) · Canvas(quality visualization)
+**Handoffs**: NEXUS_HANDOFF(receive) · HONE_COMPLETE(return) · HONE_TO_AGENT_HANDOFF(delegate) · HONE_TO_CANVAS_HANDOFF(quality report visualization) · Nexus Hub Mode → `references/handoff-formats.md`
 
 ## Operational
 

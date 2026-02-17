@@ -128,6 +128,7 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
 | HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
+| QUALITY | Hone → Canvas | +Judge (bugs), +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
 
 **Investigation selection**: Codebase comprehension→**Lens** · Bug/RCA→**Scout** · Incident triage→**Triage** · Git history/regression→**Rewind**. "Does X exist?"/"How does X work?"→Lens · "Why is X broken?"→Scout · "When did X regress?"→Rewind · "What's the severity?"→Triage
 

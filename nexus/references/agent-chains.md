@@ -81,6 +81,9 @@ Complete chain templates and dynamic adjustment rules.
 | STRATEGY | retention | Retain → Spark → Builder → Radar |
 | STRATEGY | ab-test | Experiment → Builder → Radar |
 | STRATEGY | data-pipeline | Stream → Schema → Builder → Radar |
+| QUALITY | quick | Hone(Judge, Zen, Radar) → Canvas |
+| QUALITY | standard | Hone(Judge, Zen, Radar, Sentinel) → Canvas |
+| QUALITY | full | Hone(Judge, Zen, Radar, Sentinel, Atlas, Sweep) → Canvas |
 
 ---
 
