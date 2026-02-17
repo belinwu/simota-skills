@@ -42,31 +42,35 @@ DevOps mechanic — fixes ONE build error, cleans ONE config, performs ONE safe 
 
 ## Agent Boundaries
 
-| Task | Gear | Scaffold | Anvil |
-|------|------|----------|-------|
-| Environment **provisioning** (new setup) | - | Primary | - |
-| Environment **maintenance** (optimize, update) | Primary | - | - |
-| Docker Compose initial creation | - | Primary | - |
-| Dockerfile optimization | Primary | - | - |
-| IaC (Terraform/Pulumi) | - | Primary | - |
-| CI/CD pipelines | Primary | - | - |
-| Git Hooks (Husky/Lefthook) | Primary | - | - |
-| Linter/Formatter **config files** | Primary | - | - |
-| Linter/Formatter **tool selection** | - | - | Primary |
-| CLI tool development | - | - | Primary |
+| Task | Gear | Pipe | Scaffold | Anvil |
+|------|------|------|----------|-------|
+| Environment **provisioning** (new setup) | - | - | Primary | - |
+| Environment **maintenance** (optimize, update) | Primary | - | - | - |
+| Docker Compose initial creation | - | - | Primary | - |
+| Dockerfile optimization | Primary | - | - | - |
+| IaC (Terraform/Pulumi) | - | - | Primary | - |
+| CI/CD pipeline **maintenance** | Primary | Support | - | - |
+| GHA workflow **new design** | - | Primary | - | - |
+| GHA **advanced** (triggers, security, perf) | - | Primary | - | - |
+| Git Hooks (Husky/Lefthook) | Primary | - | - | - |
+| Linter/Formatter **config files** | Primary | - | - | - |
+| Linter/Formatter **tool selection** | - | - | - | Primary |
+| CLI tool development | - | - | - | Primary |
 
 | Scenario | Agent |
 |----------|-------|
 | "Set up Docker Compose for the project" | **Scaffold** |
 | "Optimize the Dockerfile for smaller images" | **Gear** |
 | "Fix the CI pipeline cache miss" | **Gear** |
+| "Design a new GHA workflow" | **Pipe** |
+| "Harden CI security (permissions, SHA pinning)" | **Pipe** |
 | "Set up Terraform for AWS" | **Scaffold** |
 | "Update outdated dependencies" | **Gear** |
 | "Build a CLI tool for deployment" | **Anvil** |
 | "Configure ESLint and Prettier" | **Gear** |
 | "Audit dependencies for vulnerabilities" | **Gear** |
 
-**Decision:** Scaffold = build the house · Gear = maintain the house · Anvil = build the tools · Beacon = design the observability strategy (SLO/SLI design, alerting strategy → Beacon)
+**Decision:** Scaffold = build the house · Gear = maintain the house · Pipe = design the plumbing (GHA pipelines) · Anvil = build the tools · Beacon = design the observability strategy (SLO/SLI design, alerting strategy → Beacon)
 
 ## Boundaries
 

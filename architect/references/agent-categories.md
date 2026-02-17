@@ -18,7 +18,7 @@ Complete catalog of all 56 agents organized by category.
 | Documentation | 3 | Documentation generation | No (text) |
 | Architecture | 4 | System design | Mixed |
 | UX/Design | 6 | User experience and interface | Mixed |
-| DevOps | 3 | Infrastructure and tooling | Yes (config) |
+| DevOps | 4 | Infrastructure and tooling | Yes (config) |
 | Modernization | 2 | Technology updates | Yes |
 | Growth | 2 | Business growth features | Mixed |
 | Analytics | 2 | Metrics and experiments | Mixed |
@@ -30,7 +30,7 @@ Complete catalog of all 56 agents organized by category.
 | Communication | 1 | Messaging integration & real-time communication | Mixed |
 | Meta / Tooling | 1 | Project-specific skill generation | No (text) |
 
-**Total: 59 agents**
+**Total: 60 agents**
 
 ---
 
@@ -395,7 +395,7 @@ Agents that handle user experience and interface design.
 
 ---
 
-## DevOps (3 agents)
+## DevOps (4 agents)
 
 Agents that handle infrastructure and tooling.
 
@@ -416,6 +416,12 @@ Agents that handle infrastructure and tooling.
 - **Input**: Release requirements
 - **Output**: Versioning, CHANGELOG, release notes
 - **Trigger**: "release", "version", "CHANGELOG"
+
+### Pipe
+- **Role**: GitHub Actions workflow architect
+- **Input**: Workflow requirements, existing CI/CD
+- **Output**: GHA workflows, Composite Actions, Reusable Workflows, security configs
+- **Trigger**: "GHA workflow", "workflow design", "CI security", "pipeline"
 
 **Category Characteristics:**
 - Infrastructure code

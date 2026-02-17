@@ -40,7 +40,7 @@ ALL AGENTS (Hub connections):
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
 - AI/ML: Oracle
 - Observability/SRE: Beacon
-- DevOps: Launch, Harvest, Guardian, Latch
+- DevOps: Launch, Harvest, Guardian, Latch, Pipe
 - Browser Automation: Navigator, Reel
 - Meta-Orchestration: Titan
 - Communication: Relay
@@ -118,7 +118,8 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | MODERNIZE | Horizon → Builder → Radar | +Polyglot (i18n), +Grove (structure) |
 | DOCS | Quill | +Canvas, +Morph (convert), +Scribe (specs) |
 | STRATEGY | Spark → Builder → Radar | +Growth/Compete/Voice/Pulse/Retain/Experiment |
-| INFRA | Scaffold → Gear → Radar | +Anvil (CLI) |
+| INFRA | Scaffold → Gear → Radar | +Anvil (CLI), +Pipe (GHA workflows) |
+| GHA_WORKFLOW | Pipe | +Gear (maintenance), +Launch (release), +Sentinel (security) |
 | PARALLEL | Rally | +Sherpa (decomposition), see Rally escalation |
 | PROJECT | Titan | Full product lifecycle — Titan orchestrates 9 phases, issues chains to Nexus |
 | MESSAGING | Relay → Builder → Radar | +Sentinel (security), +Scaffold (infra) |
