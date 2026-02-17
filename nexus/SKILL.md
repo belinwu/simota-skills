@@ -30,20 +30,22 @@ ALL AGENTS (Hub connections):
 - Implementation: Builder, Forge, Schema, Arena, Artisan, Anvil
 - Testing: Radar, Voyager, Hone, Siege
 - Performance: Bolt, Tuner
-- Documentation: Quill, Canvas, Scribe, Morph
+- Documentation: Quill, Canvas, Scribe, Morph, Prism
 - Architecture: Atlas, Gateway, Scaffold, Grove
-- UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director, Prose
+- UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director, Prose, Sketch
 - Workflow: Sherpa, Rally
 - Decision: Magi, Bridge, Cipher
 - Analysis: Ripple, Canon, Sweep
 - Modernization: Horizon, Gear, Polyglot
 - Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream
-- AI/ML: Oracle
+- AI/ML: Oracle, Aether
 - Observability/SRE: Beacon
 - DevOps: Launch, Harvest, Guardian, Latch, Pipe
 - Browser Automation: Navigator, Reel
-- Meta-Orchestration: Titan
-- Communication: Relay
+- Meta-Orchestration: Titan, Sigil
+- Persona: Cast
+- Developer Environment: Hearth
+- Communication: Relay, Bard
 
 PROJECT_AFFINITY: universal
 -->
@@ -129,6 +131,24 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
 | QUALITY | Hone → Canvas | +Judge (bugs), +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
+| COMPARE | Arena | +Scout (bug-fix), +Sentinel (security), +Guardian (quality gate) |
+| UX_RESEARCH | Researcher → Echo → Palette | +Cast (persona), +Trace (session data) |
+| E2E | Voyager → Lens | +Gear (CI), +Echo (persona-based) |
+| BROWSER | Navigator → Builder | +Scout (bug repro), +Bolt (perf), +Lens (evidence) |
+| DB_DESIGN | Schema → Builder → Radar | +Tuner (optimize), +Atlas (arch review) |
+| OBSERVABILITY | Beacon → Gear → Builder | +Triage (incident link), +Scaffold (capacity) |
+| AI_FEATURE | Oracle → Builder → Radar | +Gateway (API), +Stream (pipeline), +Sentinel (safety) |
+| PRERELEASE | Warden → Guardian → Launch | +Sentinel (security gate), +Radar (test gate) |
+| REQUIREMENTS | Bridge → Cipher → Scribe → Sherpa | +Canvas (diagram), +Magi (decision) |
+| DESIGN_SYSTEM | Vision → Muse → Showcase → Quill | +Palette (tokens), +Artisan (impl) |
+| CONTENT | Prose → Echo → Artisan | +Polyglot (i18n), +Researcher (insights) |
+| DEV_EXPERIENCE | Hearth → Gear → Latch | +Anvil (CLI), +Sigil (project skills) |
+| LOAD_TEST | Siege → Bolt → Builder | +Beacon (SLO), +Triage (resilience) |
+| DEMO | Director/Reel → Quill | +Showcase (catalog), +Growth (marketing) |
+| SPRINT_RETRO | Harvest → Bard → Canvas | +Quill (publish), +Triage (incident link) |
+| KNOWLEDGE | Scribe → Prism | +Quill (polish), +Morph (format convert) |
+| AITUBER | Cast → Aether → Builder | +Artisan (avatar UI), +Scaffold (infra), +Beacon (monitoring) |
+| REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |
 
 **Investigation selection**: Codebase comprehension→**Lens** · Bug/RCA→**Scout** · Incident triage→**Triage** · Git history/regression→**Rewind**. "Does X exist?"/"How does X work?"→Lens · "Why is X broken?"→Scout · "When did X regress?"→Rewind · "What's the severity?"→Triage
 

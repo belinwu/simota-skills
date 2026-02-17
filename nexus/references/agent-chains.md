@@ -84,6 +84,48 @@ Complete chain templates and dynamic adjustment rules.
 | QUALITY | quick | Hone(Judge, Zen, Radar) → Canvas |
 | QUALITY | standard | Hone(Judge, Zen, Radar, Sentinel) → Canvas |
 | QUALITY | full | Hone(Judge, Zen, Radar, Sentinel, Atlas, Sweep) → Canvas |
+| OBSERVABILITY | alert-only | Beacon → Gear |
+| OBSERVABILITY | slo-design | Beacon → Gear → Builder → Radar |
+| OBSERVABILITY | post-incident | Triage → Beacon → Gear → Builder → Radar |
+| AI_FEATURE | eval-only | Oracle → Radar |
+| AI_FEATURE | rag | Oracle → Gateway → Builder → Radar |
+| AI_FEATURE | llm-pipeline | Oracle → Stream → Builder → Radar → Sentinel |
+| PRERELEASE | quick | Warden → Guardian |
+| PRERELEASE | standard | Warden → Guardian → Launch |
+| PRERELEASE | full | Sentinel → Warden → Radar → Guardian → Launch → Harvest |
+| REQUIREMENTS | quick | Bridge → Scribe |
+| REQUIREMENTS | standard | Bridge → Cipher → Scribe → Sherpa |
+| REQUIREMENTS | complex | Bridge → Cipher → Magi → Scribe → Sherpa → Canvas |
+| DESIGN_SYSTEM | tokens | Vision → Muse → Artisan → Radar |
+| DESIGN_SYSTEM | catalog | Vision → Muse → Showcase → Quill |
+| DESIGN_SYSTEM | full | Vision → Muse → Showcase → Artisan → Quill → Radar |
+| CONTENT | microcopy | Prose → Echo → Artisan |
+| CONTENT | onboarding | Prose → Echo → Artisan → Radar |
+| CONTENT | i18n | Prose → Polyglot → Artisan → Radar |
+| UX_RESEARCH | persona-driven | Cast → Researcher → Echo → Palette |
+| UX_RESEARCH | session-replay | Trace → Researcher → Echo → Palette |
+| DEV_EXPERIENCE | dotfiles | Hearth → Gear |
+| DEV_EXPERIENCE | full-env | Hearth → Gear → Latch → Anvil |
+| DEV_EXPERIENCE | audit | Hearth → Sentinel → Gear |
+| LOAD_TEST | quick | Siege → Bolt |
+| LOAD_TEST | standard | Siege → Bolt → Builder → Radar |
+| LOAD_TEST | chaos | Siege → Bolt → Triage → Builder → Beacon |
+| DEMO | cli-demo | Reel → Quill |
+| DEMO | ui-demo | Director → Voyager → Showcase |
+| DEMO | full | Director → Reel → Showcase → Quill |
+| SPRINT_RETRO | quick | Harvest → Bard |
+| SPRINT_RETRO | standard | Harvest → Bard → Canvas |
+| SPRINT_RETRO | full | Harvest → Bard → Canvas → Quill |
+| KNOWLEDGE | quick | Scribe → Prism |
+| KNOWLEDGE | full | Scribe → Quill → Prism → Morph |
+| KNOWLEDGE | research | Researcher → Scribe → Prism |
+| AITUBER | prototype | Cast → Aether → Builder |
+| AITUBER | full | Cast → Aether → Builder → Artisan → Scaffold |
+| AITUBER | production | Cast → Aether → Builder → Artisan → Scaffold → Beacon → Radar |
+| REVIEW | quick-scan | Judge |
+| REVIEW | standard | Judge → Builder → Radar |
+| REVIEW | deep-dive | Judge → Zen → Builder → Radar → Sentinel |
+| DB_DESIGN | with-streaming | Schema → Stream → Builder → Radar |
 
 ---
 
