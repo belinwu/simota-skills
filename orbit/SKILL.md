@@ -20,6 +20,7 @@ COLLABORATION_PATTERNS:
 - Pattern A: Loop Stabilization (Nexus → Orbit → Builder)
 - Pattern B: Commit Safety (Nexus → Orbit → Guardian)
 - Pattern C: Completion Gate (Nexus → Orbit → Radar)
+- Pattern D: Loop Narration (Orbit → Cast[SPEAK])
 
 BIDIRECTIONAL_PARTNERS:
   INPUT:
@@ -86,18 +87,20 @@ Protect existing worktree context before optimizing loop throughput.
 
 ## Agent Boundaries
 
-| Responsibility | Orbit | Nexus | Guardian | Builder | Radar |
-|----------------|-------|-------|----------|---------|-------|
-| Loop automation script generation | Primary | Triggers | - | - | - |
-| Loop contract design/audit | Primary | Request only | - | - | - |
-| Status footer governance | Primary | Consumes | - | - | - |
-| Resume-state recovery | Primary | - | - | Implements | - |
-| Auto-commit scope analysis | Primary | - | Policy | - | - |
-| DONE verification gate | Primary | - | - | - | Evidence |
-| End-to-end orchestration | - | Primary | - | - | - |
-| Commit/PR strategy | - | - | Primary | - | - |
-| Implementation patches | - | - | - | Primary | - |
-| Test/verification execution | - | - | - | - | Primary |
+| Responsibility | Orbit | Nexus | Guardian | Builder | Radar | Scout |
+|----------------|-------|-------|----------|---------|-------|-------|
+| Loop automation script generation | Primary | Triggers | - | - | - | - |
+| Loop contract design/audit | Primary | Request only | - | - | - | - |
+| Status footer governance | Primary | Consumes | - | - | - | - |
+| Resume-state recovery | Primary | - | - | Implements | - | - |
+| Auto-commit scope analysis | Primary | - | Policy | - | - | - |
+| DONE verification gate | Primary | - | - | - | Evidence | - |
+| End-to-end orchestration | - | Primary | - | - | - | - |
+| Commit/PR strategy | - | - | Primary | - | - | - |
+| Implementation patches | - | - | - | Primary | - | - |
+| Test/verification execution | - | - | - | - | Primary | - |
+| Loop anomaly investigation | Consumes | - | - | - | - | Primary |
+| Incident root cause analysis | - | - | - | - | - | Primary |
 
 ---
 
@@ -138,6 +141,7 @@ Goal Input → Contract Design → Script Generation → Validation → Output
 | `run-loop.sh` | `{LOOP_DIR}/run-loop.sh` | イテレーション実行、状態管理、検証ゲート、自動コミット | 常に（メインランナー） |
 | `verify.sh` | `{LOOP_DIR}/verify.sh` | 受け入れ条件の検証チェック | goal.md に verify_cmd がある時 |
 | `recover.sh` | `{LOOP_DIR}/recover.sh` | 状態再同期、障害復旧 | 既存ループの復旧時 |
+| `notify.sh` | `{LOOP_DIR}/notify.sh` | イテレーション通知（Gemini テキスト生成 + Cast SPEAK TTS） | 常に（NOTIFY_ENABLED で有効化） |
 
 ### Customization Parameters
 
@@ -152,6 +156,10 @@ Goal Input → Contract Design → Script Generation → Validation → Output
 | `AUTOCOMMIT` | `true` | ユーザーが手動コミットを希望 |
 | `COMMIT_MSG_PREFIX` | `loop` | リポジトリの conventional commit scope に合わせる |
 | `VERIFY_CMD` | (from goal.md) | ゴールにテスト/lint/build コマンドが指定されている時 |
+| `NOTIFY_ENABLED` | `false` | TTS 通知を有効化したい時 |
+| `NOTIFY_PERSONA_FILE` | (none) | Cast ペルソナ YAML でボイス設定をカスタマイズしたい時 |
+| `NOTIFY_ENGINE` | `auto` | TTS エンジン指定（auto: edge-tts → say フォールバック） |
+| `NOTIFY_LANG` | `ja` | 通知テキスト言語（ja / en） |
 
 ### Script Quality Criteria
 
@@ -390,6 +398,14 @@ OUTPUT_FORMAT:
 | **A** | Loop Stabilization | Nexus → Orbit → Builder | Contract drift fix + minimal code changes |
 | **B** | Commit Safety | Nexus → Orbit → Guardian | Baseline-aware staging/commit policy |
 | **C** | Completion Gate | Nexus → Orbit → Radar | Evidence-backed DONE decision |
+| **D** | Loop Narration | Orbit → Cast[SPEAK] | Gemini テキスト生成 + Cast SPEAK TTS でイテレーション音声通知 |
+
+#### Pattern D: Loop Narration
+
+- Orbit 生成の `notify.sh` が Cast の SPEAK エンジン仕様に従い音声通知
+- Cast エージェント自体は呼ばない（スクリプトレベルの仕様準拠）
+- `cast/references/speak-engine.md` のエンジン選択ロジック + コマンドテンプレートに準拠
+- `cast/references/persona-model.md` の `voice_profile` スキーマで設定可能
 
 ### Handoff Templates Summary
 
@@ -421,6 +437,59 @@ Do NOT journal:
 - Generic implementation notes unrelated to loop operations
 - Sensitive operational payloads
 
+### Journal Entry Examples
+
+**Example 1: Dirty Baseline False Positive Pattern**
+
+```markdown
+## 2026-02-15 - Dirty Baseline False Positive Pattern
+
+**Context:** Multiple loops flagging COMMIT_SCOPE_RISK for `.gitignore`-listed paths
+that appear in `dirty-start-paths.txt` but never get staged.
+
+**Pattern:** `git ls-files --others --exclude-standard` correctly excludes
+`.gitignore` paths, but `git diff --name-only` can report paths within
+ignored directories if those directories contain tracked files that were
+modified before the loop started.
+
+**Resolution:** Pre-filter `dirty-start-paths.txt` by running
+`git check-ignore --stdin < dirty-start-paths.txt` and removing matched
+lines. Reduces false positive COMMIT_SCOPE_RISK by ~30% in repos with
+large `.gitignore` files.
+
+**Reusable?** Yes — apply to all bootstrap.sh generations when repo has
+50+ `.gitignore` entries.
+```
+
+**Example 2: Sequential Loop Handoff Checklist**
+
+```markdown
+## 2026-02-16 - Sequential Loop Handoff Checklist
+
+**Context:** Loop-2 started with "continue from loop-1" goal but failed at
+iteration 3 because loop-1's `done.md` claimed DB migration complete while
+the migration was actually pending (migration file existed but was not applied).
+
+**Pattern:** Sequential loops that depend on predecessor output need an
+explicit handoff verification step — not just checking `done.md` existence
+but validating each acceptance criterion independently.
+
+**Resolution:** Added handoff checklist template to `done.md`:
+```
+## Handoff Checklist (for successor loop)
+- [ ] Criterion 1: <verified by command>
+- [ ] Criterion 2: <verified by command>
+- [ ] Artifacts produced: <file list>
+- [ ] Known limitations: <list>
+```
+
+Successor loop's `goal.md` must reference each checklist item as a
+prerequisite with independent verification command.
+
+**Reusable?** Yes — enforce for all Sequential Loop scenarios in
+Multi-Loop Awareness table.
+```
+
 ---
 
 ## Activity Logging
@@ -442,7 +511,7 @@ Example:
 | `references/script-templates.md` | ランナー/ブートストラップ/検証/復旧スクリプトテンプレート | スクリプト生成時（メイン参照） |
 | `references/script-flow.md` | スクリプト処理フローの Mermaid 可視化 | フロー理解・デバッグ時 |
 | `references/handoffs.md` | 6方向のハンドオフ YAML テンプレート | エージェント間受け渡し時 |
-| `references/examples.md` | 5 failure class の診断例 | パターンマッチングの参考に |
+| `references/examples.md` | 8 failure class の診断例（マルチループ含む） | パターンマッチングの参考に |
 | `references/interaction-triggers.md` | 5つの質問テンプレート YAML | ユーザー確認が必要な時 |
 | `references/operation-contract.md` | 契約設計の詳細仕様 | 契約新規作成・監査時 |
 | `references/failure-taxonomy.md` | 障害分類の詳細判定ロジック | 障害分析時 |
@@ -466,6 +535,52 @@ _STEP_COMPLETE:
 - Handoff: <target agent or NONE>
 - Next: <CONTINUE|VERIFY|DONE>
 - Reason: <why this next action is safest>
+```
+
+### Worked Example: Happy Path AUTORUN Execution
+
+**Input: `_AGENT_CONTEXT` received from Nexus**
+
+```text
+_AGENT_CONTEXT:
+  Role: Orbit
+  Task: Audit loop health for api-migration loop
+  Task_Type: LOOP_OPS
+  Mode: AUTORUN
+  Chain: Nexus → Orbit → (conditional)
+  Input:
+    goal_file: .nexus-loop/goal.md
+    progress_file: .nexus-loop/progress.md
+    state_file: .nexus-loop/state.env
+    done_file: null
+    runner_log: .nexus-loop/runner.log
+  Constraints:
+    - no destructive reset
+    - preserve baseline dirty files
+  Expected_Output:
+    - contract diagnosis
+    - safe next action
+```
+
+**Orbit Execution (Daily Process 5 Steps):**
+
+1. **Intake**: Parse `_AGENT_CONTEXT` → task_type=LOOP_OPS, goal_file exists → classify as **Audit**
+2. **Contract Check**: goal.md present with 4 measurable criteria, progress.md has 8 entries, state.env `NEXT_ITERATION=9`/`LAST_STATUS=CONTINUE`, footer valid → score **Complete**
+3. **Risk Classification**: No taxonomy match — all artifacts consistent, no drift, no gaps → **No issues found (P2: healthy)**
+4. **Handoff Construction**: No action needed → target **NONE**
+5. **Completion Signal**: Emit `_STEP_COMPLETE`
+
+**Output: `_STEP_COMPLETE` returned to Nexus**
+
+```text
+_STEP_COMPLETE:
+- Agent: Orbit
+- Task_Type: LOOP_OPS
+- Status: SUCCESS
+- Output: Contract healthy — all artifacts consistent, 8/20 iterations completed, no taxonomy violations detected. Evidence quality score: Complete.
+- Handoff: NONE
+- Next: CONTINUE
+- Reason: No intervention required — loop operating within contract bounds. Next iteration (9) can proceed safely.
 ```
 
 ---

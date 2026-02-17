@@ -82,10 +82,21 @@ graph TB
             subgraph STATE_WRITE["State Update"]
                 S1["NEXT_ITERATION++"] --> S2["state.env 原子書き込み<br/>NEXT_ITERATION / LAST_STATUS / LAST_UPDATED_AT"]
             end
+
+            S2 --> N1
+
+            subgraph NOTIFY["Iteration Notification (|| true)"]
+                N1{NOTIFY_ENABLED?} -->|true| N2{notify.sh<br/>存在?}
+                N1 -->|false| N5[スキップ]
+                N2 -->|Yes| N3["テキスト生成<br/>(Gemini / フォールバック)"]
+                N2 -->|No| N5
+                N3 --> N4["TTS 再生<br/>(edge-tts → say → テキストのみ)"]
+                N4 --> N5
+            end
         end
 
-        S2 -->|CONTINUE| L0
-        S2 -->|DONE| FOOTER
+        N5 -->|CONTINUE| L0
+        N5 -->|DONE| FOOTER
         BREAK --> FOOTER
 
         subgraph FOOTER["Status Footer"]
@@ -100,6 +111,7 @@ graph TB
     style VERIFY fill:#2a1a2a,stroke:#c084fc
     style COMMIT fill:#1a2a2a,stroke:#22d3ee
     style DONE_CHECK fill:#2a1a1a,stroke:#f87171
+    style NOTIFY fill:#1a2a2a,stroke:#a78bfa
     style FOOTER fill:#0a2a1a,stroke:#34d399
 ```
 
@@ -148,15 +160,20 @@ bootstrap.sh ──生成──→ goal.md
                        progress.md
                        state.env
                        verify.sh (optional)
+                       notify.sh
 
 run-loop.sh  ──読込──→ state.env (resume point)
              ──参照──→ goal.md (exec cmd に渡す)
              ──更新──→ progress.md (障害記録)
              ──呼出──→ verify.sh (検証ゲート)
+             ──呼出──→ notify.sh (通知フック、NOTIFY_ENABLED 時)
              ──検査──→ done.md (DONE 判定)
              ──書込──→ state.env (原子的更新)
              ──出力──→ runner.log (全ログ)
              ──出力──→ NEXUS_LOOP_STATUS footer
+
+notify.sh    ──出力──→ runner.log (テキスト記録)
+             ──出力──→ notify-audio/*.mp3 (音声ファイル)
 
 recover.sh   ──読込──→ progress.md (証跡ソース)
              ──書込──→ state.env (再構築)
