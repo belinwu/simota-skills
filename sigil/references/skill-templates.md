@@ -302,14 +302,15 @@ export async function POST(request: Request) {
 
 ### File Naming
 
-- Synced directories (identical contents):
-  - `project/.claude/skills/[skill-name].md`
-  - `project/.agents/skills/[skill-name].md`
+- **Directory-based structure** (required for Claude Code skill recognition):
+  - `project/.claude/skills/[skill-name]/SKILL.md`
+  - `project/.agents/skills/[skill-name]/SKILL.md`
 - Full Skills with references (synced):
-  - `project/.claude/skills/[skill-name].md` + `project/.claude/skills/references/[topic].md`
-  - `project/.agents/skills/[skill-name].md` + `project/.agents/skills/references/[topic].md`
-- Skill files: `kebab-case.md` (e.g., `new-page.md`, `webhook-handler.md`)
-- Reference files (Full Skills): `references/[topic].md`
+  - `project/.claude/skills/[skill-name]/SKILL.md` + `project/.claude/skills/[skill-name]/references/[topic].md`
+  - `project/.agents/skills/[skill-name]/SKILL.md` + `project/.agents/skills/[skill-name]/references/[topic].md`
+- Skill directory names: `kebab-case` (e.g., `new-page/`, `webhook-handler/`)
+- Skill file: always `SKILL.md` inside the skill directory
+- Reference files (Full Skills): `references/[topic].md` inside the skill directory
 
 ### Size Guidelines
 

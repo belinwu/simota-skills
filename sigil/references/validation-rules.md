@@ -178,7 +178,7 @@ Quality scoring rubric, validation checklist, common failure patterns, and repor
 - [Skill name]: [Issue description] → [Recommended fix]
 
 ### Sync Status
-- `.claude/skills/`: [count] files
-- `.agents/skills/`: [count] files
+- `.claude/skills/*/SKILL.md`: [count] skills
+- `.agents/skills/*/SKILL.md`: [count] skills
 - Sync: IN_SYNC | DRIFT_REPAIRED | PARTIAL_FAIL
 ```

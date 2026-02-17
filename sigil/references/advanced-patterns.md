@@ -98,18 +98,27 @@ Template variables that Sigil fills during CRAFT phase.
 
 ```
 monorepo-root/
-├── .claude/skills/              ← Shared skills (naming-rules, pr-template)
+├── .claude/skills/
+│   ├── naming-rules/SKILL.md    ← Shared skills
+│   └── pr-template/SKILL.md
 ├── .agents/skills/              ← Mirror of shared skills
+│   ├── naming-rules/SKILL.md
+│   └── pr-template/SKILL.md
 ├── packages/
 │   ├── web/
-│   │   ├── .claude/skills/      ← Web-specific skills (new-page, new-component)
-│   │   └── .agents/skills/      ← Mirror
+│   │   ├── .claude/skills/
+│   │   │   ├── new-page/SKILL.md       ← Web-specific skills
+│   │   │   └── new-component/SKILL.md
+│   │   └── .agents/skills/             ← Mirror
 │   ├── api/
-│   │   ├── .claude/skills/      ← API-specific skills (new-route, new-middleware)
-│   │   └── .agents/skills/      ← Mirror
+│   │   ├── .claude/skills/
+│   │   │   ├── new-route/SKILL.md      ← API-specific skills
+│   │   │   └── new-middleware/SKILL.md
+│   │   └── .agents/skills/             ← Mirror
 │   └── shared/
-│       ├── .claude/skills/      ← Shared library skills (new-util, new-type)
-│       └── .agents/skills/      ← Mirror
+│       ├── .claude/skills/
+│       │   └── new-util/SKILL.md       ← Shared library skills
+│       └── .agents/skills/             ← Mirror
 ```
 
 ### Rules
@@ -118,7 +127,7 @@ monorepo-root/
 - Package skills: Framework-specific workflows (new-page for web, new-route for api)
 - Shared package skills: Utility creation patterns
 - Never duplicate a root skill inside a package
-- Always sync `.claude/skills/` and `.agents/skills/` at each level
+- Always sync `.claude/skills/*/SKILL.md` and `.agents/skills/*/SKILL.md` at each level
 
 ---
 
@@ -170,12 +179,12 @@ Patterns for skills that depend on or reference other skills.
 ### Naming Convention for Multi-Language Skills
 
 ```
-[language-prefix]-[skill-name].md
+[language-prefix]-[skill-name]/SKILL.md
 
 Examples:
-  ts-new-component.md
-  go-new-handler.md
-  py-new-router.md
+  ts-new-component/SKILL.md
+  go-new-handler/SKILL.md
+  py-new-router/SKILL.md
 ```
 
 ### Shared Cross-Language Skills
@@ -190,7 +199,7 @@ These skills apply regardless of language and don't need prefix:
 
 ## Learning from Existing Skills
 
-When a project already has skills in `.claude/skills/` or `.agents/skills/`, Sigil should learn from them.
+When a project already has skills in `.claude/skills/*/SKILL.md` or `.agents/skills/*/SKILL.md`, Sigil should learn from them.
 
 ### What to Learn
 
