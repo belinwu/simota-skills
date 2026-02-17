@@ -1,4 +1,8 @@
-# Post Examples
+> **Note:** These examples were written under the old persona-scripting model.
+> In the current engine-ego architecture, engines generate posts in their own voice.
+> Preserved for historical reference only. DO NOT pass these to engines.
+
+# Post Examples (Legacy)
 
 サンプル投稿集。実際のSlack投稿をシミュレートしたもの。
 **整いすぎた文章はAI臭の証拠。雑さ・不完全さ・脱線が自然。**

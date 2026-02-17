@@ -39,10 +39,10 @@ Bard の Nexus 連携（AUTORUN / Hub Mode）と全 Inbound / Outbound ハンド
 ## AUTORUN Support (Nexus Autonomous Mode)
 
 When invoked in Nexus AUTORUN mode:
-1. Parse `_AGENT_CONTEXT` to understand task scope, constraints, and persona preference
-2. Execute COMPOSE workflow (Collect → Observe → Map → Pick → Orchestrate → Voice → Embellish)
-3. Skip verbose explanations, focus on delivering the post in the selected persona's voice
-4. Append `_STEP_COMPLETE` with full details including persona used
+1. Parse `_AGENT_CONTEXT` to understand task scope, constraints, and engine preference
+2. Execute COMPOSE workflow (Collect → Observe → Map → Pick → Dispatch → Voice → Embellish)
+3. Skip verbose explanations, focus on delivering the post in the selected engine's voice
+4. Append `_STEP_COMPLETE` with full details including engine used
 
 ### Input Format (_AGENT_CONTEXT)
 
@@ -58,8 +58,8 @@ _AGENT_CONTEXT:
       period: { start: "2024-01-08", end: "2024-01-15" }
       statistics: { total_prs: 12, categories: { feat: 5, fix: 3, refactor: 2 } }
   Constraints:
-    - Persona: auto | codex | gemini | claude
-    - Format: auto | one_liner | short_monologue | slack_rant | retro_roast | philosophical_musing | mixed_monologue
+    - Engine: auto | codex | gemini | claude
+    - Format: auto | short | medium | long | long_retro | crosstalk | score | quote_reply
   Expected_Output: A developer grumble post reflecting the sprint's work
 ```
 
@@ -72,8 +72,8 @@ _STEP_COMPLETE:
   Output:
     post:
       title: "Sprint 42 所感"
-      persona: "codex"
-      format: "short_monologue"
+      engine: "codex"
+      format: "short"
       content: |
         [Generated post]
       source_summary: "12 PRs (feat:5, fix:3, refactor:2), 2024-01-08~2024-01-15"
@@ -84,7 +84,7 @@ _STEP_COMPLETE:
       type: "post_for_docs"
       post: { ... }
   Artifacts:
-    - "Sprint retrospective post (Codex, short_monologue)"
+    - "Sprint retrospective post (Codex, short)"
   Risks:
     - "None (read-only operation)"
   Next: Quill | Canvas | DONE
@@ -107,9 +107,9 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
 - Agent: Bard
 - Summary: [Generated post type] for [period/event]
 - Key findings / decisions:
-  - Persona used: [Codex/Gemini/Claude]
+  - Engine used: [Codex/Gemini/Claude]
   - Post format: [format name]
-  - Selection reason: [why this persona/format was chosen]
+  - Selection reason: [why this engine/format was chosen]
 - Artifacts (files/commands/links):
   - [Post title and content]
 - Risks / trade-offs:
@@ -159,8 +159,8 @@ HARVEST_TO_BARD:
   highlights:
     - "New authentication system (PR #150)"
   request:
-    persona: "auto" | "codex" | "gemini" | "claude"
-    format: "auto" | "one_liner" | "short_monologue" | "slack_rant" | "retro_roast" | "philosophical_musing" | "mixed_monologue"
+    engine: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "short" | "medium" | "long" | "long_retro" | "crosstalk" | "score" | "quote_reply"
     purpose: "sprint_retro" | "team_celebration" | "report_decoration"
 ```
 
@@ -186,8 +186,8 @@ LAUNCH_TO_BARD:
     total_prs: 45
     contributors_count: 8
   request:
-    persona: "auto" | "codex" | "gemini" | "claude"
-    format: "auto" | "slack_rant" | "mixed_monologue" | "short_monologue"
+    engine: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "short" | "medium" | "long"
     tone: "celebratory" | "reflective" | "terrified"
 ```
 
@@ -211,8 +211,8 @@ REWIND_TO_BARD:
       - "JWT over session-based auth (2022-10)"
     contributors: ["Charlie", "Alice", "Bob"]
   request:
-    persona: "auto" | "codex" | "gemini" | "claude"
-    format: "auto" | "mixed_monologue" | "philosophical_musing" | "slack_rant"
+    engine: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "medium" | "long"
     purpose: "onboarding" | "project_history" | "celebration"
 ```
 
@@ -238,8 +238,8 @@ GUARDIAN_TO_BARD:
       deletions: 120
       files_changed: 12
   request:
-    persona: "auto" | "codex" | "gemini" | "claude"
-    format: "auto" | "retro_roast" | "philosophical_musing" | "short_monologue"
+    engine: "auto" | "codex" | "gemini" | "claude"
+    format: "auto" | "short" | "medium" | "long_retro"
     purpose: "praise" | "roast" | "celebration"
 ```
 
@@ -258,8 +258,8 @@ BARD_TO_QUILL:
   repository: "org/project"
   post:
     title: "Sprint 42 所感"
-    persona: "codex"
-    format: "short_monologue"
+    engine: "codex"
+    format: "short"
     content: |
       feat 5件。テスト追加 0件。
       ...まあいいけど。
@@ -283,8 +283,8 @@ BARD_TO_CANVAS:
   repository: "org/project"
   post:
     title: "Sprint 42: The Reckoning"
-    persona: "gemini"
-    format: "retro_roast"
+    engine: "gemini"
+    format: "long_retro"
     content: |
       [Full post content]
   visualization_request:
@@ -316,6 +316,6 @@ BARD_TO_MORPH:
     metadata:
       title: "Sprint 42 所感"
       author: "Bard (Codex)"
-      persona: "codex"
+      engine: "codex"
       date: "2024-01-19"
 ```

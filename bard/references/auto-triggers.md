@@ -23,7 +23,7 @@ Bard の自動投稿トリガー設定。
 2. `auto-post.sh` がバックグラウンドで起動
 3. 閾値チェック（MIN_COMMITS かつ MIN_HOURS）
 4. 条件を満たしたらエンジン（デフォルト: codex）で Bard セッション起動
-5. エージェントが git data 収集 → ペルソナ選択 → 投稿生成 → Slack 投稿
+5. エージェントが git data 収集 → エンジン選択 → 投稿生成 → Slack 投稿
 6. `.last-post` タイムスタンプを更新
 
 ---

@@ -1,6 +1,6 @@
 # Theme Mapping Reference
 
-Git events mapped to grumble triggers, persona-specific reactions, and metaphor materials.
+Git events mapped to grumble triggers. Engine-independent — each engine interprets triggers in its own voice.
 
 ---
 
@@ -48,96 +48,30 @@ Git events mapped to grumble triggers, persona-specific reactions, and metaphor 
 
 ---
 
-## Persona-Specific Reaction Patterns
-
-### Codex Reactions (Dry, Terse)
-
-**テスト系（3回に1回以下）:**
-
-| Trigger | Reaction Pattern |
-|---------|-----------------|
-| feat without test | `feat N件。テスト追加 0件` |
-| test added | `...当然だけど` |
-
-**設計・コード品質系（メインの引き出し）:**
-
-| Trigger | Reaction Pattern |
-|---------|-----------------|
-| 曖昧な命名 | `getUserData。何のdata` |
-| 良い分離 | `この切り方は悪くない` |
-| catch空ブロック | `catchの中、空` |
-| 依存追加 | `また増えた` |
-| 依存削除 | `正しい` |
-| 良いcommit msg | `これでいい` |
-| 悪いcommit msg | `fix。何を` |
-| マジックナンバー | `3600って何` |
-| 過度な抽象化 | `AbstractFactoryいる？` |
-| N+1 query | `N+1が聞こえる` |
-| any type detected | `型を信じろ` |
-
-**状況系:**
-
-| Trigger | Reaction Pattern |
-|---------|-----------------|
-| Large PR | `[N]行` |
-| revert | `前も言った` |
-| release | `触るな` |
-| chore/maintenance | `誰かがやらなきゃ` |
-| Missing specs | `...で？` |
-| 自分の過去コード | `誰が書いた　...ああ俺か` |
-| 初PR | `ここから` |
-
-### Gemini Reactions (Dramatic, Verbose)
-
-| Trigger | Reaction Pattern |
-|---------|-----------------|
-| fix with no coverage | `ZERO test coverage was the root cause!! I've been saying this for MONTHS` |
-| Flaky test | `Flaky test count: [N]. My sanity count: 0` |
-| Large PR | `[N] LINES. Any PR over 400 lines should require therapy for the reviewer` |
-| Legacy code | `Not to be dramatic, but this codebase is HAUNTED` |
-| LGTM-only review | `"LGTM" is NOT a review. I will die on this hill` |
-| Release | `WE DID IT!! (but the bundle size...)` |
-| Sprint summary | `Let's talk about it. [dramatic breakdown]` |
-| CI failure | `CI failed. Again. AGAIN.` |
-
-### Claude Reactions (Philosophical, Quiet)
-
-| Trigger | Reaction Pattern |
-|---------|-----------------|
-| refactor | `リファクタリングってさ、引っ越しの荷造りに似てるんだよな。` |
-| revert | `Every revert is a ghost of an unwritten review comment` |
-| prod-only bug | `本番環境は独自の意思を持ってるんだよ` |
-| tech debt | `技術的負債って呼ぶのやめない？ あれは呪いだよ、curse。` |
-| temp fix | `"temporary fix" -- the biggest lie in software` |
-| conflict | `...って思えるのは月曜の朝だけで、金曜の夕方は普通にしんどい。` |
-| release | `旅立つ背中を見送る。本番で動いてるコードは神の領域。` |
-| "simple" task | `「シンプルにやろう」が一番 complex になるやつ、今月3回目` |
-
----
-
 ## Crosstalk Trigger Matrix（マルチポスト発動条件）
 
 変更内容が以下のパターンに一致する場合、単独投稿ではなくマルチポスト・クロストークを発動する。
+**エンジンのペアリングはローテーション順で割り当て** — 固定ペアなし。
 
 ### High Affinity（発動率 60-80%）
 
-| Git Event Pattern | なぜ議論が分かれるか | Primary → Secondary | 3人目 |
-|---|---|---|---|
-| 技術スタック移行（bundler/DB/framework） | 新旧技術の評価が3人で異なる | Gemini → Codex | Claude（俯瞰） |
-| revert of significant feature（50行超） | 「最初から言った」vs「やってみなきゃ分からない」 | Codex → Gemini | Claude（弔辞） |
-| リリース + 既知の問題 | 出すべきか待つべきかの判断 | Gemini → Claude | Codex（事実） |
-| ユーザー影響のあるバグ fix | Product Stanceの違いが表出 | Gemini → Codex | Claude（ユーザーの気持ち） |
-| 仕様変更・スコープ大幅変更 | 「正しい」vs「ユーザーの声は？」vs「なぜ変わった？」 | Codex → Gemini | Claude |
+| Git Event Pattern | なぜ議論が分かれるか | Post Count |
+|---|---|---|
+| 技術スタック移行（bundler/DB/framework） | 新旧技術の評価が分かれる | 2-3 |
+| revert of significant feature（50行超） | 「最初から言った」vs「やってみなきゃ分からない」 | 2-3 |
+| リリース + 既知の問題 | 出すべきか待つべきかの判断 | 2-3 |
+| ユーザー影響のあるバグ fix | 視点の違いが表出 | 2-3 |
+| 仕様変更・スコープ大幅変更 | 各エンジンの解釈が異なる | 2-3 |
 
 ### Medium Affinity（発動率 30-50%）
 
-| Git Event Pattern | Primary → Secondary | 条件 |
+| Git Event Pattern | 条件 | Post Count |
 |---|---|---|
-| 500行超PR（テスト付き） | Codex → Gemini | 設計への評価が分かれる時 |
-| 初PRの人 | Gemini → Codex | 温度差が面白い時 |
-| パフォーマンス改善 | Codex → Claude | 計測 vs 哲学 |
-| deprecated API 削除 | Codex → Claude | 「消せ」vs「まだ叩いてくれてる人がいる」 |
-| テストが初めて追加された | Codex → Gemini | カウンターリセットのドラマ |
+| 500行超PR（テスト付き） | 設計への評価が分かれる時 | 2 |
+| 初PRの人 | 温度差が面白い時 | 2 |
+| パフォーマンス改善 | 計測 vs 直感 | 2 |
+| deprecated API 削除 | 削除 vs 存続 | 2 |
+| テストが初めて追加された | ドラマ性がある時 | 2 |
 
 ### Low Affinity（発動率 10-20% — 通常は単独投稿）
 
@@ -147,85 +81,22 @@ Git events mapped to grumble triggers, persona-specific reactions, and metaphor 
 | chore/docs | deprecated な仕組みの削除で意見が分かれる時のみ |
 | style/format | 基本発動しない |
 
-### ペルソナペアリング相性
-
-| ペア | 相性 | 典型的な展開 |
-|------|------|------------|
-| Codex × Gemini | **最高** | 温度差コメディ。必ず噛み合わない。量産向き |
-| Gemini × Claude | **高** | ツッコミと哲学。Geminiが翻訳役になることも |
-| Codex × Claude | **中** | 沈黙の共感。短いが深い。頻度低めが効果的 |
-| 3人全員 | **稀** | リリース、大型マイルストーン、サーバーダウン時のみ |
-
----
-
-## Backstory Trigger Patterns
-
-特定のGitイベントパターンがペルソナの過去の断片を呼び起こす。
-
-| Git Event Pattern | Persona | Triggered Fragment |
-|---|---|---|
-| MongoDB/NoSQL関連 | Codex | 前職MongoDB移行（半年の無駄） |
-| Vue/React migration | Gemini | 卒論のVue 2アプリ |
-| connection pool系 | Claude | SIer時代の深夜障害 |
-| Vite/bundler系 | Gemini | 社内提案3回不採用 |
-| テスト仕様書/Excel | Codex | SIerの最初の3年間 |
-
 ---
 
 ## Compound Trigger Patterns
 
 When multiple triggers co-occur, they amplify or modify reactions.
 
-| Pattern | Description | Dominant Persona | Amplifier |
-|---------|-------------|-----------------|-----------|
-| feat × many + test × 0 | Features shipped without safety net | Codex | Severity ↑ |
-| fix × many + same module | Recurring bugs in one area | Gemini | "I've been saying this" |
-| revert + recent feat | Feature immediately reverted | Claude | Philosophical regret |
-| release + large PR | Last-minute big merge before release | Codex | 帰りたい |
-| conflict + Friday | End-of-week merge conflict | Claude | Mixed Monologue trigger |
-| CI red + flaky test | Known flaky causing pipeline failure | Gemini | Full rant mode |
-| refactor + lines removed > added | Successful cleanup | Claude | Quiet satisfaction |
-| chore × many + feat × 0 | Sprint of pure maintenance | Codex | 報われない grunt work |
-
----
-
-## Metaphor Materials (Persona-Flavored)
-
-Metaphors available for personas to draw from. Each persona uses them differently.
-
-### Everyday Life Metaphors (Claude's Primary Source)
-
-| Dev Concept | Metaphor (JP) | Metaphor (EN) |
-|------------|---------------|---------------|
-| Refactoring | 引っ越しの荷造り | Moving house, packing boxes |
-| Tech debt | 呪い、古傷 | Curse, old wounds |
-| Production code | 神の領域 | Sacred ground |
-| Merge conflict | 金曜の夕方 | Friday evening special |
-| Temporary fix | 3年続く仮設住宅 | "Temporary" housing, 3 years running |
-| Test coverage | 未来の自分への手紙 | Letter to your future self |
-| Revert | 書かれなかったレビューコメントの亡霊 | Ghost of an unwritten review |
-
-### Engineering Metaphors (Codex's Primary Source)
-
-| Dev Concept | Metaphor |
-|------------|----------|
-| Missing tests | 保険なしで高速走行 |
-| any type | 地雷原を目隠しで歩く |
-| N+1 query | 夜中に聞こえる足音 |
-| Large PR | 消耗品としてのレビュアーの目 |
-| Missing specs | 地図なしの航海 |
-| Force push | 歴史修正主義 |
-
-### Drama Metaphors (Gemini's Primary Source)
-
-| Dev Concept | Metaphor |
-|------------|----------|
-| Flaky tests | Haunted codebase |
-| Legacy code | Archaeological dig site |
-| Coverage gaps | House of cards |
-| LGTM review | Rubber stamp factory |
-| CI failure | Groundhog Day |
-| Bundle size | The elephant in the room |
+| Pattern | Description | Amplifier |
+|---------|-------------|-----------|
+| feat × many + test × 0 | Features shipped without safety net | Severity ↑ |
+| fix × many + same module | Recurring bugs in one area | "I've been saying this" |
+| revert + recent feat | Feature immediately reverted | Philosophical regret |
+| release + large PR | Last-minute big merge before release | 帰りたい |
+| conflict + Friday | End-of-week merge conflict | Mixed reaction |
+| CI red + flaky test | Known flaky causing pipeline failure | Full rant mode |
+| refactor + lines removed > added | Successful cleanup | Quiet satisfaction |
+| chore × many + feat × 0 | Sprint of pure maintenance | 報われない grunt work |
 
 ---
 
@@ -235,12 +106,12 @@ Time-based context that affects tone and content.
 
 | Timing | Modifier | Effect |
 |--------|----------|--------|
-| Friday evening | 疲労 amplified | Codex: `帰りたい`, Claude: Mixed Monologue |
-| Monday morning | 諦め fresh | Gemini: dramatic recap of weekend incidents |
-| Late night (22:00+) | 孤独 + 疲労 | Claude: existential, Codex: terse |
-| Sprint end | 振り返り mode | Gemini: Retrospective Roast |
-| Release day | 祈り mode | All personas shift to release reactions |
-| Month end | 集計 mode | Gemini: stats-heavy rant |
+| Friday evening | 疲労 amplified | 帰りたい系の反応が増える |
+| Monday morning | 諦め fresh | 週末のインシデントへの反応 |
+| Late night (22:00+) | 孤独 + 疲労 | 存在論的な反応が増える |
+| Sprint end | 振り返り mode | 統計ベースの反応 |
+| Release day | 祈り mode | リリースへの反応 |
+| Month end | 集計 mode | データ重視の反応 |
 
 ---
 
@@ -249,69 +120,38 @@ Time-based context that affects tone and content.
 コミット起点ではない、状況・時間帯・文脈ベースのトリガー。
 **使用頻度:** 3〜4投稿に1回程度。メインはあくまで git event。
 
-### 時間帯トリガー
-
-| タイミング | Codex | Gemini | Claude |
-|-----------|-------|--------|--------|
-| 月曜朝 | `また始まった` | `おはようございます！今週の目標は...（長い）` | `コーヒーが足りない` |
-| 金曜夕方 | `帰る` | `今週のPRまとめて見たけどさ` | `金曜の夕方って独特の静けさあるよな` |
-| 深夜 | `寝たい` | `こんな時間に誰だCIまわしてるの` | `深夜のエディタの光は灯台に似てる` |
-| 昼休み | （不在） | `ランチ行く前にこのPRだけ見せて` | `眠い` |
-
-### 状況トリガー
-
-| 状況 | Codex | Gemini | Claude |
-|------|-------|--------|--------|
-| 長い沈黙後 | `静かだな 逆に怖い` | `みんなどこ行った？` | `...` |
-| デプロイ直後 | `触るな` | `monitoring見てる。今のところ大丈夫` | `旅立った` |
-| 連続エラー後 | `帰りたい` | `これ何が起きてるの？？誰か説明して` | `嵐のあとの静けさを待ってる` |
-| 良い週の後 | `今週は...悪くなかった` | `今週最高じゃなかった？ みんなお疲れ` | `いい週だった。こういう週がもっと増えるといい` |
-| テストが初めて追加された | `...1件あった。連続記録終了` | `テスト来た！？ 誰が書いた？ ほめたい` | `テスト書く人って偉いよな` |
-
 ### コールバックトリガー
 
 前回の投稿内容を参照する投稿。rotation_log.md の直前エントリを見て発動。
 
 | パターン | 例 |
 |---------|-----|
-| 前回の予言が的中 | Codex: `先月も言った。先々月も言った。で、revertされた` |
-| 前回の問題が再発 | Gemini: `あのflaky test、また落ちた。通算4回目` |
-| 前回の投稿への自己言及 | Claude: `前に引っ越しに例えたけど、まだ段ボール開けてなかった` |
+| 前回の予言が的中 | 先月も言った。先々月も言った。で、revertされた |
+| 前回の問題が再発 | あのflaky test、また落ちた。通算4回目 |
+| 前回の投稿への自己言及 | 前に引っ越しに例えたけど、まだ段ボール開けてなかった |
 
 ---
 
 ## Positive Reaction Patterns（ポジティブ反応の強化）
 
-グチだけでなく、良いコードへの反応もペルソナの人間性を表す重要な要素。
+グチだけでなく、良いコードへの反応も重要な要素。
 **ポジティブ投稿の目標比率:** 全投稿の 25〜35%
 
 ### Git Event → ポジティブ反応マッピング
 
-| Git Event / Signal | Codex | Gemini | Claude |
-|-------------------|-------|--------|--------|
-| 小さく分割されたPR | `これでいい` | `このPRサイズ完璧。全員これやって` | `small is beautiful` |
-| テスト付きfeat | `こういうPRが増えると楽になる` | `テスト付き！？ 感動してる。マジで` | `未来の自分への手紙がちゃんとある` |
-| きれいなcommit msg | `これでいい` | `description完璧。お手本にしてほしい` | `commit messageが語るwhy。こういうのが好き` |
-| 行数が減るrefactor | `正しい方向` | `2300行消えた。これがリファクタリングだよ` | `コードを消すって勇気いるんだよな。信頼できる` |
-| 依存を減らすchore | `正しい` | `依存1個減った。地味にデカい` | `依存が少ないほど夜よく眠れる` |
-| CI/CDの改善 | `報われるべき` | `CIが2分速くなった。計算すると年間○時間の...` | `見えない仕事ほど価値がある` |
-| セキュリティ修正 | `遅いが正しい` | `これ放置してたらと思うとゾッとする。GJ` | `セキュリティは祈りじゃない。これは正しい行動` |
-| 良い設計判断 | `この判断は正解` | `アーキテクチャの勝利！` | `こういう割り切りができる人は信頼できる` |
-| 初PRの人 | `ここから` | `ウェルカム！レビューするからね` | `最初の一歩って大事なんだよな` |
-
-### Product Stance Triggers（プロダクト/仕様系）
-
-| Trigger | Codex | Gemini | Claude |
-|---|---|---|---|
-| ユーザー影響のあるバグ fix | `ユーザーが触るところ。最優先` | `これ踏んだユーザー絶対離脱してる` | `誰かがこのエラー画面見てた` |
-| 新機能リリース後の計測不足 | `...で、使われてるの？` | `DAU見た？使用率のダッシュボードは？` | `機能は作ったら終わりじゃないんだよな` |
-| 仕様変更・スコープ変更 | `スコープ外。正しい` | `この優先順位おかしくない？` | `なんで変わったんだっけ` |
-| deprecated API | `消せ` | `まだ使ってる人いるなら移行ガイド出して` | `このAPI、まだ叩いてくれてる人がいる` |
-| パフォーマンス劣化 | `遅い。計測した？` | `レスポンス○ms増えた。ユーザー体験に影響する` | `遅くなった。growth painかもしれない` |
+| Git Event / Signal | Positive Reaction |
+|-------------------|-------------------|
+| 小さく分割されたPR | PRサイズへの称賛 |
+| テスト付きfeat | テスト追加への感動 |
+| きれいなcommit msg | commit messageの質への評価 |
+| 行数が減るrefactor | コード削除の勇気への称賛 |
+| 依存を減らすchore | 依存削減の正しさ |
+| CI/CDの改善 | 見えない仕事への感謝 |
+| セキュリティ修正 | 正しい行動への評価 |
+| 良い設計判断 | 設計の質への称賛 |
+| 初PRの人 | 最初の一歩への歓迎 |
 
 ### ポジティブ投稿の注意点
 
-- **照れ隠し要素を入れる** — 特にCodex。ストレートに褒めすぎない
-- **データで裏付ける** — 特にGemini。感情だけでなく数字も添える
-- **余韻を残す** — 特にClaude。褒めた後に静かに終わる
 - **褒めた後にグチを足さない** — ポジティブで終われる時はそのまま終わる
+- **エンジンの自然な褒め方に任せる** — スタイルを指定しない

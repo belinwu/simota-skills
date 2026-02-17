@@ -15,7 +15,7 @@ This is activated when the script `.agents/bard/post_slack.py` exists in the pro
 ```
 
 **Flow:**
-1. Bard generates a post (persona + format + content)
+1. Bard generates a post (engine + format + content)
 2. Bard checks if `.agents/bard/post_slack.py` exists
 3. If yes → execute the script with the post content as JSON via stdin
 4. If no → output to chat only (default behavior)
@@ -32,7 +32,7 @@ generate this script at `.agents/bard/post_slack.py`:
 """Bard Slack Poster — Posts developer grumble to Slack via Incoming Webhook.
 
 Usage:
-    echo '{"title": "...", "persona": "...", "content": "..."}' | python post_slack.py
+    echo '{"title": "...", "engine": "...", "content": "..."}' | python post_slack.py
 
 Environment:
     BARD_SLACK_CHANNEL      — Override channel (optional)
@@ -48,13 +48,13 @@ import urllib.error
 
 WEBHOOK_URL = ""  # ← User writes their Slack Incoming Webhook URL here
 
-PERSONA_ICONS = {
+ENGINE_ICONS = {
     "codex": ":keyboard:",
     "gemini": ":star2:",
     "claude": ":thought_balloon:",
 }
 
-PERSONA_NAMES = {
+ENGINE_NAMES = {
     "codex": "Codex",
     "gemini": "Gemini",
     "claude": "Claude",
@@ -63,14 +63,14 @@ PERSONA_NAMES = {
 
 def build_payload(data: dict) -> dict:
     """Build Slack message payload from Bard post data."""
-    persona = data.get("persona", "codex")
+    engine = data.get("engine") or data.get("persona", "codex")
     title = data.get("title", "Bard Post")
     content = data.get("content", "")
     source = data.get("source_summary", "")
     fmt = data.get("format", "")
 
-    icon = PERSONA_ICONS.get(persona, ":speech_balloon:")
-    username = PERSONA_NAMES.get(persona, "Bard")
+    icon = ENGINE_ICONS.get(engine, ":speech_balloon:")
+    username = ENGINE_NAMES.get(engine, "Bard")
 
     blocks = [
         {
@@ -84,7 +84,7 @@ def build_payload(data: dict) -> dict:
     ]
 
     context_elements = []
-    if persona:
+    if engine:
         context_elements.append(
             {"type": "mrkdwn", "text": f"{icon} *{username}*"}
         )
@@ -195,8 +195,8 @@ The script reads JSON from stdin with the following fields:
 ```json
 {
   "title": "Sprint 42 所感",
-  "persona": "codex",
-  "format": "short_monologue",
+  "engine": "codex",
+  "format": "short",
   "content": "feat 5件。テスト追加 0件。\n...まあいいけど。",
   "source_summary": "Source: 12 PRs merged (feat:5, fix:3, refactor:2), 2024-01-08 ~ 2024-01-19"
 }
@@ -205,7 +205,7 @@ The script reads JSON from stdin with the following fields:
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | string | Post title |
-| `persona` | string | `"codex"`, `"gemini"`, or `"claude"` |
+| `engine` | string | `"codex"`, `"gemini"`, or `"claude"` |
 | `format` | string | Post format name |
 | `content` | string | Full post body text |
 | `source_summary` | string | Git data source attribution (リポジトリ名を含める) |
@@ -238,7 +238,7 @@ python3 -c "
 import json, sys
 data = {
     'title': '...',
-    'persona': 'codex',
+    'engine': 'codex',
     'content': '...',  # 改行を含んでもOK
     'format': '...',
     'source_summary': '...'
@@ -254,7 +254,7 @@ print(json.dumps(data, ensure_ascii=False))
 ```bash
 BARD_SLACK_DRY_RUN=1 python3 -c "
 import json
-data = {'title': 'test', 'persona': 'codex', 'content': 'テスト投稿', 'format': 'one_liner'}
+data = {'title': 'test', 'engine': 'codex', 'content': 'テスト投稿', 'format': 'short'}
 print(json.dumps(data, ensure_ascii=False))
 " | python3 .agents/bard/post_slack.py
 ```
@@ -273,7 +273,7 @@ When user asks to set up Slack integration:
    ```bash
    BARD_SLACK_DRY_RUN=1 python3 -c "
    import json
-   data = {'title': 'test', 'persona': 'codex', 'content': 'テスト投稿', 'format': 'one_liner'}
+   data = {'title': 'test', 'engine': 'codex', 'content': 'テスト投稿', 'format': 'short'}
    print(json.dumps(data, ensure_ascii=False))
    " | python3 .agents/bard/post_slack.py
    ```
