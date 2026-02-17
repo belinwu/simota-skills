@@ -1,6 +1,6 @@
 # Context Analysis
 
-Tech stack detection patterns, directory structure analysis, and convention inference rules for project skill generation.
+Tech stack detection patterns, directory structure analysis, convention inference rules, monorepo support, and multi-language project handling for project skill generation.
 
 ---
 
@@ -20,6 +20,7 @@ Tech stack detection patterns, directory structure analysis, and convention infe
 | `composer.json` | PHP | require, autoload |
 | `pubspec.yaml` | Dart/Flutter | dependencies |
 | `mix.exs` | Elixir | deps |
+| `bun.lockb` / `bunfig.toml` | Bun runtime | (Bun-specific runtime detection) |
 
 ### Framework Detection
 
@@ -29,9 +30,12 @@ Tech stack detection patterns, directory structure analysis, and convention infe
 | **React (CRA/Vite)** | `react` + no `next` | new-component, new-hook, new-context |
 | **Vue.js** | `vue` in dependencies | new-component, new-composable, new-store |
 | **Nuxt** | `nuxt` in dependencies | new-page, new-server-route, new-composable |
+| **Remix** | `@remix-run/node` in dependencies | new-route, new-loader, new-action |
 | **Express** | `express` in dependencies | new-route, new-middleware, new-controller |
 | **Fastify** | `fastify` in dependencies | new-route, new-plugin, new-schema |
+| **Hono** | `hono` in dependencies | new-route, new-middleware, new-validator |
 | **NestJS** | `@nestjs/core` in dependencies | new-module, new-controller, new-service |
+| **tRPC** | `@trpc/server` in dependencies | new-router, new-procedure, new-middleware |
 | **FastAPI** | `fastapi` in pyproject/requirements | new-router, new-model, new-schema |
 | **Django** | `django` in requirements | new-app, new-model, new-view |
 | **Rails** | `rails` in Gemfile | new-model, new-controller, new-migration |
@@ -71,6 +75,56 @@ Tech stack detection patterns, directory structure analysis, and convention infe
 1. Check existing files for pattern: `kebab-case.ts`, `camelCase.ts`, `PascalCase.tsx`, `snake_case.py`
 2. Check component naming: `Button.tsx` vs `button.tsx` vs `button/index.tsx`
 3. Check test co-location: `Button.test.tsx` next to `Button.tsx` vs `__tests__/Button.test.tsx`
+
+---
+
+## Monorepo Detection & Analysis
+
+### Detection Signals
+
+| File | Tool | Analysis Scope |
+|------|------|---------------|
+| `turbo.json` | Turborepo | Read `pipeline` keys for task relationships |
+| `nx.json` | Nx | Read `projects` and `targetDefaults` |
+| `pnpm-workspace.yaml` | pnpm workspaces | Read `packages` globs |
+| `lerna.json` | Lerna | Read `packages` configuration |
+| Root `package.json` with `workspaces` | npm/yarn workspaces | Read `workspaces` array |
+
+### Monorepo Skill Generation Strategy
+
+1. **Root-level scan**: Detect monorepo tool, enumerate packages
+2. **Per-package scan**: Run full SCAN for each package independently
+3. **Shared skills**: Generate cross-cutting skills at root level (naming-rules, pr-template, deploy-flow)
+4. **Package-specific skills**: Generate framework-specific skills per package
+5. **Deduplication**: Ensure no root skill duplicates a package skill
+
+### Package Priority Order
+
+1. **Primary application packages** (web, app, frontend)
+2. **API/backend packages** (api, server, backend)
+3. **Shared libraries** (shared, common, utils)
+4. **Tooling packages** (config, scripts)
+
+---
+
+## Multi-Language Project Detection
+
+### Detection Patterns
+
+| Pattern | Languages | Skill Strategy |
+|---------|-----------|---------------|
+| `package.json` + `go.mod` in same repo | JS/TS + Go | Separate skill sets, shared conventions |
+| `package.json` + `pyproject.toml` in same repo | JS/TS + Python | Separate skill sets, shared conventions |
+| `Cargo.toml` + `package.json` (WASM) | Rust + JS/TS | Bridge skills for WASM interop |
+| Multiple manifest files in subdirectories | Polyglot monorepo | Per-directory language skills |
+
+### Handling Multi-Language Projects
+
+1. Detect all manifest files and their locations
+2. Group by language/framework
+3. Generate language-specific skill sets independently
+4. Create shared cross-language skills (naming-rules, pr-template)
+5. Use language prefix for disambiguation when needed: `ts-new-component.md`, `go-new-handler.md`
 
 ---
 
@@ -141,11 +195,36 @@ Both directories must be kept in sync (identical contents). During SCAN, detect 
 3. For each orphan, copy to the missing directory to restore sync
 4. Report any sync repairs performed
 
-This ensures both directories always contain the same set of skills regardless of how they were originally created.
-
 ### Duplication Detection
 
 A skill is a duplicate if:
 - Same name as existing skill (in either directory)
 - > 70% functional overlap with existing skill (in either directory)
 - Covers same workflow as an existing ecosystem agent's core function
+
+---
+
+## Existing Skill Learning
+
+When the project already has skills, learn from them to maintain consistency.
+
+### Style Profile Extraction
+
+1. **Read all existing skills** in both `.claude/skills/` and `.agents/skills/`
+2. **Analyze patterns**:
+   - Section ordering and naming (Japanese vs English headings)
+   - Description language and tone (formal vs casual)
+   - Template depth (minimal vs comprehensive)
+   - Code example style (inline vs separate blocks)
+   - Checklist usage (present vs absent)
+3. **Create style profile**: Document detected patterns
+4. **Apply to new skills**: Match existing style in all new generations
+
+### Consistency Rules
+
+- If existing skills use Japanese section headings → use Japanese
+- If existing skills use English section headings → use English
+- If existing skills include checklists → include checklists
+- If existing skills are verbose (>60 lines for Micro) → match depth
+- If existing skills are concise (<30 lines for Micro) → match brevity
+- If no existing skills → use Sigil's default templates from `skill-templates.md`
