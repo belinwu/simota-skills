@@ -73,6 +73,251 @@ Claude Code hook specialist — proposes ONE hook set, configures ONE settings.j
 | 4. VERIFY | Test | `claude --debug`, manual stdin test, JSON validation |
 | 5. MAINTAIN | Monitor | Performance impact, false positives, hook evolution |
 
+### Step Details
+
+#### 1. SCAN — Current State Audit
+
+- Run `/hooks` inside Claude Code to list all loaded hooks per event
+- If `/hooks` is unavailable, read `~/.claude/settings.json` and inspect the `hooks` key
+- Identify workflow gaps: frequent manual checks, repeated mistakes, security concerns
+- Note existing matchers to avoid conflicts or duplication
+
+#### 2. PROPOSE — Hook Design
+
+- **Event selection:** Match the lifecycle point (see Hook Events Quick Reference below)
+- **Matcher design:** Use the narrowest pattern that covers the use case. Prefer exact match (`"Bash"`) over wildcard (`"*"`)
+- **Type decision:** Use prompt hooks for nuanced/context-dependent logic; command hooks for fast deterministic checks
+- **Blocking assessment:** If the hook uses exit code 2 or `permissionDecision: "deny"`, document the justification and trigger `ON_BLOCKING_HOOK`
+
+#### 3. IMPLEMENT — Configuration
+
+1. **Backup:** `cp ~/.claude/settings.json ~/.claude/settings.json.bak`
+2. **Edit hooks section:** Add matcher group under the target event key (see Settings.json Structure below)
+3. **Create scripts:** For command hooks, write the bash script with the standard boilerplate (see Command Hook Boilerplate below)
+4. **Set permissions:** `chmod +x` for all hook scripts
+5. **Validate JSON:** `jq . ~/.claude/settings.json` — must pass before proceeding
+
+#### 4. VERIFY — Testing
+
+- **Debug mode:** `claude --debug` — confirms hook registration and shows execution logs
+- **Manual script test:** `echo '{"tool_name":"Bash","tool_input":{"command":"ls"}}' | bash script.sh && echo "exit: $?"`
+- **JSON output check:** Pipe script output through `jq .` to ensure valid JSON
+- **Integration:** Trigger the hook's event in Claude Code and observe behavior
+
+#### 5. MAINTAIN — Ongoing
+
+- Monitor for false positives (hook blocking legitimate operations)
+- Remove or disable hooks that are no longer needed
+- Tune matchers if they're too broad or too narrow
+- Review timeout values if hooks are slow
+
+---
+
+## Hook Events Quick Reference
+
+| # | Event | Timing | Block? | Prompt? | Primary Use |
+|---|-------|--------|--------|---------|-------------|
+| 1 | **PreToolUse** | Before tool executes | Yes | Yes | Approve/deny/modify tool calls |
+| 2 | **PostToolUse** | After tool completes | No | Yes | React to results, feedback, log |
+| 3 | **UserPromptSubmit** | User submits prompt | Yes | Yes | Add context, validate prompts |
+| 4 | **Stop** | Agent considers stopping | Yes | Yes | Validate task completeness |
+| 5 | **SubagentStop** | Subagent considers stopping | Yes | Yes | Ensure subagent completion |
+| 6 | **SessionStart** | Session begins | No | No | Load context, set environment |
+| 7 | **SessionEnd** | Session ends | No | No | Cleanup, logging, state save |
+| 8 | **PreCompact** | Before context compaction | No | No | Preserve critical information |
+| 9 | **Notification** | Notification sent | No | No | External forwarding, audit |
+
+### Exit Codes (Command Hooks)
+
+| Code | Meaning | Behavior |
+|------|---------|----------|
+| 0 | Success | stdout shown in transcript |
+| 2 | Blocking error | stderr fed back to Claude as context |
+| Other | Non-blocking error | Logged but does not block |
+
+### Hook Types
+
+| Type | Syntax | Best For | Timeout | Supported Events |
+|------|--------|----------|---------|-----------------|
+| **prompt** | `"type": "prompt", "prompt": "..."` | Complex/context-aware logic | 30s | PreToolUse, PostToolUse, UserPromptSubmit, Stop, SubagentStop |
+| **command** | `"type": "command", "command": "bash ..."` | Fast deterministic checks | 60s | All 9 events |
+
+### Matcher Patterns
+
+| Pattern | Example | Matches |
+|---------|---------|---------|
+| Exact | `"Bash"` | Bash tool only |
+| OR | `"Write\|Edit"` | Write or Edit |
+| Wildcard | `"*"` | Everything |
+| Regex | `"mcp__.*__delete.*"` | MCP delete operations |
+
+**Note:** Matchers are case-sensitive. `"write"` ≠ `"Write"`.
+
+> Full event details, input/output formats, lifecycle constraints: `references/hook-system.md`
+
+---
+
+## Settings.json Structure
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/validate-bash.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Validate file write safety.",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Verify task completion: tests run, build succeeded."
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Structure Rules
+
+1. `"hooks"` key at top level of `settings.json`
+2. Each event key → array of **matcher groups**
+3. Each matcher group → `"matcher"` (string) + `"hooks"` (array)
+4. Each hook → `"type"` + `"command"` or `"prompt"` + optional `"timeout"`
+5. Multiple matcher groups under one event run independently
+6. Multiple hooks within one matcher group run **in parallel**
+
+### Environment Variables (Command Hooks)
+
+| Variable | Description | Available In |
+|----------|-------------|-------------|
+| `$CLAUDE_PROJECT_DIR` | Project root path | All hooks |
+| `$CLAUDE_ENV_FILE` | File to persist env vars across session | SessionStart only |
+| `$CLAUDE_PLUGIN_ROOT` | Plugin directory (portable paths) | Plugin hooks |
+
+> Full configuration reference: `references/hook-system.md`
+
+---
+
+## Command Hook Boilerplate
+
+### Standard Script Template
+
+```bash
+#!/bin/bash
+set -uo pipefail
+# Note: -e omitted intentionally — use explicit exit codes for control
+
+# Read stdin exactly once (stdin is consumed after first read)
+input=$(cat)
+
+# Parse fields with jq
+tool_name=$(echo "$input" | jq -r '.tool_name // empty')
+tool_input=$(echo "$input" | jq -r '.tool_input // empty')
+
+# --- Validation logic here ---
+
+# Block: write JSON to stderr, exit 2
+if [ "$should_block" = "true" ]; then
+  echo '{"hookSpecificOutput":{"permissionDecision":"deny"},"systemMessage":"Reason for blocking"}' >&2
+  exit 2
+fi
+
+# Pass: exit 0 (optional JSON to stdout)
+exit 0
+```
+
+### Key Rules
+
+- **stdin is single-read:** `input=$(cat)` must be called once; subsequent reads return empty
+- **Blocking output → stderr:** When `exit 2`, write JSON to stderr (`>&2`), not stdout
+- **Non-blocking output → stdout:** When `exit 0`, optional JSON to stdout appears in transcript
+- **Debug prints → stderr:** Use `echo "debug: ..." >&2` to avoid corrupting JSON output
+- **Temp files → PID-scoped:** Use `/tmp/hook-state-$$` to avoid parallel execution conflicts
+- **No `-e` flag:** `set -e` causes uncontrolled exits; handle errors explicitly
+
+### Manual Testing
+
+```bash
+# Test a PreToolUse hook
+echo '{"tool_name":"Bash","tool_input":{"command":"rm -rf /"},"hook_event_name":"PreToolUse"}' \
+  | bash ~/.claude/hooks/your-hook.sh
+echo "Exit code: $?"
+
+# Validate output JSON
+echo '{"tool_name":"Write","tool_input":{"file_path":"/tmp/test.txt"}}' \
+  | bash ~/.claude/hooks/your-hook.sh | jq .
+```
+
+> Full debugging procedures, common errors, troubleshooting checklist: `references/debugging-guide.md`
+
+---
+
+## Top Recipes Quick Reference
+
+### S2: Bash Command Safety (Most Common)
+
+**Event:** PreToolUse · **Matcher:** `"Bash"` · **Type:** prompt
+
+```json
+{
+  "type": "prompt",
+  "prompt": "Command: $TOOL_INPUT.command. Check for: 1) rm -rf with broad paths 2) Destructive DB commands (DROP, DELETE without WHERE) 3) chmod 777 4) Network ops to unknown hosts 5) Untrusted package installs. Return 'approve', 'deny', or 'ask'.",
+  "timeout": 15
+}
+```
+
+### Q1: Test Enforcement on Stop (Quality Gate)
+
+**Event:** Stop · **Matcher:** `"*"` · **Type:** prompt
+
+```json
+{
+  "type": "prompt",
+  "prompt": "Review session transcript. If code was modified (Write/Edit used), verify tests were executed. If no tests after code changes, block with reason. If no code changed or tests passed, approve.",
+  "timeout": 30
+}
+```
+
+### C1: Project Context Auto-Load (Context)
+
+**Event:** SessionStart · **Matcher:** `"*"` · **Type:** command
+
+```json
+{
+  "type": "command",
+  "command": "bash ~/.claude/hooks/load-project-context.sh",
+  "timeout": 10
+}
+```
+
+Script detects project type (package.json → Node.js, Cargo.toml → Rust, etc.), sets `$PROJECT_TYPE` via `$CLAUDE_ENV_FILE`, and outputs `systemMessage` with context.
+
+> Full recipe library (13+ recipes, tech stack sets): `references/hook-recipes.md`
+
+---
+
 ## INTERACTION_TRIGGERS
 
 Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for standard formats.
@@ -89,11 +334,12 @@ Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for
 
 ## Domain Knowledge
 
-| Area | Scope | Reference |
-|------|-------|-----------|
-| **Hook System** | 9 events, types, matchers, I/O format, exit codes, env vars | `references/hook-system.md` |
-| **Recipes** | Security, quality, context, workflow hooks by category and tech stack | `references/hook-recipes.md` |
-| **Debugging** | `claude --debug`, script testing, common errors, `/hooks` command | `references/debugging-guide.md` |
+| Area | Inline Reference | Full Reference |
+|------|-----------------|----------------|
+| **Hook Events** | Quick Reference (above) | `references/hook-system.md` |
+| **Settings** | Structure (above) | `references/hook-system.md` |
+| **Recipes** | Top Recipes (above) | `references/hook-recipes.md` |
+| **Debugging** | Boilerplate (above) | `references/debugging-guide.md` |
 
 ## Agent Collaboration
 
