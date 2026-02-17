@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-76-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-80-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **76 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **80 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 76 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 80 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -50,6 +50,7 @@ This repository contains 76 specialized AI agents covering various aspects of so
 | **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - Quality Orchestrator that iteratively improves quality through PDCA cycles. Runs Measure > Improve > Verify > Learn cycles with diminishing returns detection for efficient termination | Quality improvement cycles |
 | **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 69 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - Dynamic skill generator. Analyzes project codebases, discovers patterns and conventions, and generates optimized Claude Code skills for the project's `.claude/skills/` directory | Project-specific skills |
+| **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop completion specialist. Generates completion scripts, operation contracts, and audits for autonomous loop execution | Runner scripts, contracts |
 
 ### Investigation & Planning (Non-coding)
 
@@ -67,6 +68,7 @@ This repository contains 76 specialized AI agents covering various aspects of so
 | **Lens** | _"See the code, not just search it."_ - Codebase comprehension specialist. Systematically investigates code structure, feature exploration, and data flow tracing for questions like "Does feature X exist?", "How does flow Y work?", "What is this module's responsibility?" | Investigation report |
 | **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - Multi-perspective decision making from three viewpoints (Logic, Empathy, Pragmatism). Architecture selection, tradeoff analysis, Go/No-Go decisions | Decision report |
 | **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - Translates and mediates between business requirements and technical implementation. Requirements clarification, scope creep detection, expectation gap resolution | Requirements translation report |
+| **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - Persona casting agent. Rapid generation, registry management, lifecycle tracking, and cross-agent distribution of personas from diverse inputs | Persona registry |
 
 **Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
 **Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
@@ -74,6 +76,8 @@ This repository contains 76 specialized AI agents covering various aspects of so
 **Sentinel > Canon > Builder chain**: Sentinel (vulnerability detection) > Canon (OWASP compliance evaluation) > Builder (fix implementation)
 **Gateway > Canon > Gateway chain**: Gateway (API design) > Canon (OpenAPI/RFC compliance check) > Gateway (corrections)
 **Echo > Canon > Palette chain**: Echo (UX issues) > Canon (WCAG compliance evaluation) > Palette (accessibility fixes)
+**Researcher > Cast > Echo chain**: Researcher (research data) > Cast (persona integration) > Echo (UI validation)
+**Trace > Cast chain**: Trace (behavioral data) > Cast (persona evolution)
 
 ### Git/PR Management
 
@@ -83,13 +87,13 @@ This repository contains 76 specialized AI agents covering various aspects of so
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR information collection and report generation. Fetches PR info via gh commands to auto-generate weekly/monthly reports and release notes | Work reports, release notes |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - Release management. Versioning strategy, CHANGELOG generation, release notes, rollback plans, feature flag design | Release plans, CHANGELOG |
 | **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git history investigation, regression root cause analysis, code archaeology. Travels back in time to uncover the truth | History investigation report |
-| **Bard** | _"Code is silence. Poetry gives it voice."_ - Developer grumble agent with three AI personas. Transforms git history, PRs, and milestones into authentic developer monologues, rants, and musings | Narratives, commentary |
+| **Bard** | _"Every commit carries a feeling no one says out loud. Bard says it."_ - Developer grumble agent with three AI engines (Codex/Gemini/Claude). Transforms git history, PRs, and milestones into authentic developer monologues, rants, and musings | Narratives, commentary |
 
 **Guardian > Judge > Zen chain**: Guardian (PR preparation) > Judge (review) > Zen (fixes)
 **Guardian > Launch chain**: Guardian (change analysis) > Launch (release plan)
 **Rewind > Scout chain**: Rewind (regression identification) > Scout (detailed investigation)
-**Harvest > Bard chain**: Harvest (PR statistics) > Bard (sprint retrospective narrative)
-**Launch > Bard chain**: Launch (release execution) > Bard (release celebration)
+**Harvest > Bard chain**: Harvest (PR statistics) > Bard (sprint retrospective commentary)
+**Launch > Bard chain**: Launch (release execution) > Bard (release commentary)
 **Rewind > Bard chain**: Rewind (code archaeology) > Bard (project origin story)
 
 ### Quality Assurance
@@ -212,12 +216,14 @@ This repository contains 76 specialized AI agents covering various aspects of so
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 | **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
+| **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
 
-**Hearth vs Gear vs Scaffold vs Latch responsibilities**:
+**Hearth vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
+- **Pipe**: GitHub Actions workflows (advanced GHA design, reusable workflows, security)
 
 ### Internationalization
 
@@ -258,6 +264,15 @@ This repository contains 76 specialized AI agents covering various aspects of so
 **Director vs Reel responsibilities**:
 - **Director**: Browser (Web UI) demo videos (Playwright, .webm output)
 - **Reel**: Terminal (CLI) demo recordings (VHS, GIF/MP4 output)
+
+### AITuber/Streaming
+
+| Agent | Description | Output |
+|-------|-------------|--------|
+| **Aether** | _"The stage is live. The avatar breathes. The audience connects."_ - AITuber (AI VTuber) full-stack orchestrator. Designs and builds real-time streaming pipelines (Chat>LLM>TTS>Avatar>OBS), live chat integration, TTS voice synthesis, Live2D/VRM avatar control, lip sync, and OBS WebSocket automation | Pipeline design, streaming config |
+
+**Cast > Aether > Builder chain**: Cast (persona) > Aether (AITuber pipeline design) > Builder (implementation)
+**Aether > Scaffold > Gear chain**: Aether (streaming infra) > Scaffold (provisioning) > Gear (CI/CD)
 
 ## Workflows
 
@@ -550,6 +565,14 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 | MESSAGING/realtime | Real-time communication | Relay > Scaffold > Builder > Radar |
 | MESSAGING/multi-channel | Multi-channel integration | Relay > Builder > Radar |
 
+#### AITuber/Streaming
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| AITUBER/setup | AITuber pipeline setup | Cast > Aether > Builder > Radar |
+| AITUBER/avatar | Avatar & lip sync setup | Aether > Builder |
+| AITUBER/streaming | Streaming automation | Aether > Gear > Builder |
+
 ## Shared Knowledge
 
 Agents share knowledge through the `.agents/` directory:
@@ -596,6 +619,7 @@ skills/
 │   └── INTERACTION.md  # Shared interaction rules
 ├── _templates/
 │   └── PROJECT.md      # Project knowledge template
+├── aether/SKILL.md    # AITuber/streaming orchestrator
 ├── architect/SKILL.md  # Agent design meta-designer
 ├── anvil/SKILL.md      # CLI/TUI construction
 ├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
@@ -607,6 +631,7 @@ skills/
 ├── bridge/SKILL.md     # Business <> Tech translation
 ├── builder/SKILL.md    # Production implementation
 ├── canvas/SKILL.md     # Visualization
+├── cast/SKILL.md       # Persona casting & registry management
 ├── cipher/SKILL.md     # Intent decoding
 ├── compete/SKILL.md    # Competitive research
 ├── director/SKILL.md   # Demo video recording
@@ -632,11 +657,13 @@ skills/
 ├── muse/SKILL.md       # Design
 ├── navigator/SKILL.md  # Browser automation
 ├── nexus/SKILL.md      # Orchestrator
+├── orbit/SKILL.md      # Nexus-autoloop completion specialist
 ├── oracle/SKILL.md     # AI/ML design & evaluation
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
 ├── prism/SKILL.md      # NotebookLM steering prompt design
 ├── prose/SKILL.md      # UX writing & content strategy
+├── pipe/SKILL.md       # GitHub Actions workflow design
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
 ├── pulse/SKILL.md      # Metrics design
 ├── quill/SKILL.md      # Documentation
@@ -677,7 +704,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 71 agents.
+> Category-by-category examples for all 80 agents.
 
 #### Orchestration
 
@@ -754,6 +781,18 @@ Generate a skill for creating new API routes in this Express project.
 
 ---
 
+##### Autoloop Completion Scripts (Orbit)
+
+```
+/Orbit
+Generate completion scripts for the Nexus autoloop that deploys and validates a staging environment.
+Ensure the loop halts on test failures.
+```
+
+**Output**: Runner script with halt conditions, operation contract (SLA/budget/guardrails), audit checklist
+
+---
+
 #### Investigation & Planning
 
 ##### Bug Investigation (Scout)
@@ -802,6 +841,18 @@ Validate the "Mobile-First Millennial" persona defined by Researcher against rea
 - **Researcher**: Creates personas (from interviews and research)
 - **Trace**: Validates personas with real data (from session logs)
 - **Echo**: Embodies personas to validate UI (simulation)
+
+---
+
+##### Persona Casting (Cast)
+
+```
+/Cast
+Generate 5 user personas for our e-commerce platform from these analytics data and support tickets.
+Register them in the persona registry for use by Echo and Researcher.
+```
+
+**Output**: Persona cards (demographics, goals, frustrations, tech proficiency), registry entries in unified format, downstream agent sync configuration
 
 ---
 
@@ -1435,6 +1486,29 @@ Set up my neovim configuration with LSP support and lazy.nvim plugin management.
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
+- **Pipe**: GitHub Actions workflow design (triggers, security, performance, PR automation)
+
+---
+
+##### GitHub Actions Workflow Design (Pipe)
+
+```
+/Pipe
+Design a CI/CD workflow for this monorepo. We need path-based triggers, parallel jobs for each package, and SHA-pinned actions.
+```
+
+**Output**: GitHub Actions workflow YAML with path filters, job dependency graph, security-hardened permissions, cache strategy
+
+---
+
+##### CI Security Hardening (Pipe)
+
+```
+/Pipe
+Audit our GitHub Actions workflows for security issues. Check permissions, action pinning, and secret handling.
+```
+
+**Output**: Security audit report, remediation plan with SHA-pinned actions, minimal permissions configuration, OIDC recommendations
 
 ---
 
@@ -1670,6 +1744,30 @@ Include the user selecting options.
 **Director vs Reel responsibilities**:
 - **Director**: Browser (Web UI) demo videos (Playwright, .webm output)
 - **Reel**: Terminal (CLI) demo recordings (VHS/terminalizer/asciinema, GIF/MP4 output)
+
+---
+
+#### AITuber/Streaming
+
+##### AITuber Pipeline Setup (Aether)
+
+```
+/Aether
+Design an AITuber system: YouTube Live chat → LLM response → VOICEVOX TTS → Live2D avatar with lip sync → OBS streaming.
+```
+
+**Output**: Pipeline architecture, component configuration (Chat poller, LLM adapter, TTS settings, avatar control, OBS WebSocket), deployment guide
+
+---
+
+##### Streaming Automation (Aether)
+
+```
+/Aether
+Set up OBS WebSocket automation for scene switching, BGM control, and chat overlay during AI VTuber streams.
+```
+
+**Output**: OBS WebSocket configuration, scene switching logic, event-driven automation scripts
 
 ---
 

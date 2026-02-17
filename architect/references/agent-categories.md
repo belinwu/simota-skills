@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 56 agents organized by category.
+Complete catalog of all 61 agents organized by category.
 
 ---
 
@@ -18,7 +18,7 @@ Complete catalog of all 56 agents organized by category.
 | Documentation | 3 | Documentation generation | No (text) |
 | Architecture | 4 | System design | Mixed |
 | UX/Design | 6 | User experience and interface | Mixed |
-| DevOps | 4 | Infrastructure and tooling | Yes (config) |
+| DevOps | 5 | Infrastructure and tooling | Yes (config) |
 | Modernization | 2 | Technology updates | Yes |
 | Growth | 2 | Business growth features | Mixed |
 | Analytics | 2 | Metrics and experiments | Mixed |
@@ -30,7 +30,7 @@ Complete catalog of all 56 agents organized by category.
 | Communication | 1 | Messaging integration & real-time communication | Mixed |
 | Meta / Tooling | 1 | Project-specific skill generation | No (text) |
 
-**Total: 60 agents**
+**Total: 61 agents**
 
 ---
 
@@ -422,6 +422,12 @@ Agents that handle infrastructure and tooling.
 - **Input**: Workflow requirements, existing CI/CD
 - **Output**: GHA workflows, Composite Actions, Reusable Workflows, security configs
 - **Trigger**: "GHA workflow", "workflow design", "CI security", "pipeline"
+
+### Orbit
+- **Role**: Loop automation script generator and operations specialist
+- **Input**: Loop goals, contract artifacts, state files
+- **Output**: Runner/bootstrap/verify/recover scripts, contract diagnoses, failure classifications
+- **Trigger**: "loop automation", "nexus-autoloop", "loop ops", "runner generation"
 
 **Category Characteristics:**
 - Infrastructure code
