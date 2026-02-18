@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+#### New Agents
+- **Helm** - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント（SWOT/PESTLE/Porter分析、シナリオプランニング）
+- **Pipe** - GHAワークフロー専門エージェント（トリガー戦略、セキュリティ強化、PR自動化、Reusable Workflow設計）
+- **Aether** - AITuber（AI VTuber）システムの企画から実装・運用までを一貫支援するフルスタック・オーケストレーター
+- **Oracle** - AI/ML設計・評価専門エージェント（プロンプトエンジニアリング、RAG設計、LLMアプリパターン）
+- **Beacon** - 可観測性・信頼性エンジニアリング専門エージェント（SLO/SLI設計、分散トレーシング）
+- **Siege** - 負荷テスト・カオスエンジニアリング・レジリエンス検証専門エージェント
+- **Prose** - ユーザー向けテキスト専門エージェント（マイクロコピー、エラーメッセージ、ボイス＆トーン設計）
+- **Latch** - Claude Codeフック管理エージェント（PreToolUse/PostToolUse等のイベントシステム）
+- **Relay** - メッセージング統合・Bot開発・リアルタイム通信の設計＋実装エージェント
+
+### Enhanced
+- **Nexus** - 19種類のルーティングコマンドと42種類のチェーンテンプレートを追加（フルエコシステムカバレッジ）
+- **Orbit** - Gemini TTSによるイテレーション通知（Pattern D）とスクリプト生成機能を追加
+- **Sigil** - `.agents/skills/` サポート追加でポータブルなスキル配置が可能に
+- **Bard** - エンジン・エゴアーキテクチャに刷新（Codex/Gemini/Claude各エンジンが固有の声で語る）
+- **Cast** - SPEAKモード追加、Google Cloud TTSを第三のエンジンとして統合
+- **Titan** - 統合プロトコル・自律検証・実行ブートストラップを追加し信頼性向上
+- **Scaffold** - Terraformオペレーション、コンプライアンス、FinOps参照ドキュメントを追加
+- **Hearth** - SKILL.mdと参照ドキュメントを拡充
+- **Voyager, Navigator, Sketch** - 各SKILL.mdを包括的に改善（グレードA相当）
+
+### Changed
+- 全エージェントのSKILL.mdを最適化（コンテキスト削減、28〜81%圧縮）
+- エコシステムへのPipe/Relay/Aether/Oracle/Beacon/Siege/Prose統合（Nexus, Architect, Gearのルーティング更新）
+
 ## [1.0.0] - 2025-01-15
 
 ### Added

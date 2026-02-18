@@ -137,6 +137,7 @@ These agents provide value regardless of project type. Nexus should always consi
 | Navigator | H | H | H | — | — | — | — | M | — |
 | Triage | H | H | M | — | — | H | — | — | — |
 | Arena | H | M | — | M | M | H | — | — | — |
+| Helm | H | M | — | — | — | — | M | — | — |
 
 ---
 
