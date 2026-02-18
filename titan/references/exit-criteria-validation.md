@@ -172,12 +172,60 @@ When score <0.60:
 
 ---
 
+## Scope-Adaptive Validation
+
+**CRITICAL: Skipped phases have NO exit validation.** Only phases that are actually executed require validation.
+
+### Phases Executed by Scope
+
+| Scope | Validated Phases | Skipped Phases (NO validation) |
+|-------|-----------------|-------------------------------|
+| **S** | BUILD, VALIDATE | DISCOVER (inline), DEFINE, ARCHITECT, HARDEN, LAUNCH, GROW, EVOLVE |
+| **M** | BUILD, HARDEN, VALIDATE | DISCOVER (inline), DEFINE, ARCHITECT, LAUNCH, GROW, EVOLVE |
+| **L** | DISCOVER, DEFINE, ARCHITECT, BUILD, HARDEN, VALIDATE, LAUNCH | GROW, EVOLVE |
+| **XL** | All 9 phases | None |
+
+### Scope-Specific Validation Chains
+
+| Phase | S scope | M scope | L scope | XL scope |
+|-------|---------|---------|---------|----------|
+| BUILD | Radar (tests pass) | Radar (tests + coverage) | Lens → Radar → Warden | Lens → Radar → Warden |
+| HARDEN | SKIP | Sentinel → Radar | Sentinel → Radar → Warden | Full chain |
+| VALIDATE | Radar (final check) | Radar (comprehensive) | Voyager → Echo → Warden | Full chain |
+
+### S/M Scope Exit Criteria (Simplified)
+
+**S scope BUILD exit** — Only 2 criteria:
+
+| Criterion | Weight | Pass |
+|-----------|--------|------|
+| Tests passing | 0.60 | 100% pass |
+| Build succeeds | 0.40 | Clean build |
+
+**M scope BUILD exit** — 3 criteria:
+
+| Criterion | Weight | Pass |
+|-----------|--------|------|
+| Tests passing | 0.40 | 100% pass |
+| Build succeeds | 0.30 | Clean build |
+| Coverage adequate | 0.30 | ≥60% |
+
+**M scope HARDEN exit** — 2 criteria:
+
+| Criterion | Weight | Pass |
+|-----------|--------|------|
+| No critical security issues | 0.60 | Sentinel: zero critical |
+| Test coverage improved | 0.40 | ≥70% |
+
+---
+
 ## Validation Overrides
 
 In specific scenarios, validation thresholds can be relaxed:
 
 | Scenario | Override | Justification |
 |----------|---------|---------------|
-| S scope (small project) | Reduce required artifacts | Small tools don't need all docs |
+| S scope | Only BUILD + VALIDATE validated; simplified criteria | Small tools don't need full validation |
+| M scope | Only BUILD + HARDEN + VALIDATE validated; reduced criteria | Medium features need security but not full ceremony |
 | L4 Degradation active | Accept partial pass (≥0.40) | Graceful degradation mode |
 | PHASED_REVIEW mode | User approves despite score | Explicit user override |
