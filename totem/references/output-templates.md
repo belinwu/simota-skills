@@ -1,0 +1,315 @@
+# Output Templates Reference — Totem
+
+DNA Profile / Deviation Report / Onboarding Guide / Cultural Fingerprint テンプレート。
+
+---
+
+## Template 1: DNA Profile (Full)
+
+```markdown
+## Totem: DNA Profile — [Project Name]
+
+**Generated**: YYYY-MM-DD
+**Sample Size**: N files analyzed
+**Overall Confidence**: HIGH | MEDIUM | LOW
+
+---
+
+### Cultural Fingerprint
+
+[1-paragraph prose description of the project's cultural DNA. This should read
+like a personality description — capturing the "soul" of how this codebase
+thinks about code quality, style, and conventions. Written in the project's
+primary language.]
+
+---
+
+### Dimension Scores
+
+| Dim | Score | Confidence | Dominant Pattern | Evidence | Outliers |
+|-----|-------|------------|-----------------|----------|----------|
+| N: Naming | X/3 | HIGH | [e.g., camelCase, verb-noun functions] | [e.g., 87% adherence across 150 identifiers] | [e.g., legacy/ uses snake_case] |
+| A: Abstraction | X/3 | HIGH | [e.g., extract at 3x repetition, composition over inheritance] | [e.g., avg function length 12 LOC, 0 abstract classes] | [e.g., utils/ over-abstracted] |
+| E: Error Handling | X/3 | MEDIUM | [e.g., custom Error classes + type guards] | [e.g., 23 custom error types, consistent wrapping] | [e.g., scripts/ uses console.error] |
+| C: Comments | X/3 | HIGH | [e.g., why-only, JSDoc on public API] | [e.g., 8% comment density, 95% JSDoc coverage] | [e.g., legacy/ has what-comments] |
+| T: Testing | X/3 | HIGH | [e.g., describe-it, AAA structure, minimal mocking] | [e.g., 45 test files, 85% coverage] | [e.g., e2e/ uses different structure] |
+| R: Architecture | X/3 | HIGH | [e.g., feature-based, unidirectional dependencies] | [e.g., 5 feature modules, 0 circular deps] | [e.g., shared/ has unclear boundaries] |
+| G: Git | X/3 | MEDIUM | [e.g., conventional commits, squash merge] | [e.g., 78% conventional in last 100 commits] | [e.g., hotfix commits skip format] |
+| D: Dependencies | X/3 | HIGH | [e.g., minimal, exact pinning, Renovate weekly] | [e.g., 23 direct deps, all pinned] | [e.g., devDependencies use caret] |
+
+---
+
+### Sample Size
+
+| Category | Count |
+|----------|-------|
+| Total files analyzed | N |
+| Source files | N |
+| Test files | N |
+| Config files | N |
+| Git commits analyzed | N |
+| Contributors in sample | N |
+
+---
+
+### Module Subcultures
+
+| Module | Deviation from Norm | Legitimate? | Notes |
+|--------|-------------------|-------------|-------|
+| [e.g., test/] | [e.g., N: describe/it naming, T: GWT structure] | Yes | テストフレームワークの規約に準拠 |
+| [e.g., scripts/] | [e.g., E: simplified error handling, C: minimal comments] | Yes | 一回限りのスクリプト |
+| [e.g., legacy/] | [e.g., N: snake_case, A: deep inheritance] | Partial | マイグレーション推奨 |
+
+---
+
+### Config-Enforced Rules
+
+| Source | Rule | Dimension | Impact |
+|--------|------|-----------|--------|
+| [e.g., .eslintrc] | [e.g., camelcase: error] | N | 自動適用 |
+| [e.g., tsconfig] | [e.g., strict: true] | E | 型安全性を強制 |
+| [e.g., commitlint] | [e.g., conventional commits] | G | CI で強制 |
+
+---
+
+### Recommendations
+
+1. [Actionable item for improving cultural consistency]
+2. [Actionable item for documenting existing conventions]
+3. [Actionable item for addressing identified erosion]
+```
+
+---
+
+## Template 2: Deviation Report
+
+```markdown
+## Totem: Deviation Report — [Context]
+
+**Generated**: YYYY-MM-DD
+**Scope**: [e.g., PR #123 / commit abc1234 / module src/new-feature/]
+**Baseline**: DNA Profile dated YYYY-MM-DD
+
+---
+
+### Summary
+
+| Severity | Count |
+|----------|-------|
+| HIGH | N |
+| MEDIUM | N |
+| LOW | N |
+| INFO | N |
+
+---
+
+### HIGH Severity Deviations
+
+#### DEV-0001: [Brief description]
+
+| Field | Value |
+|-------|-------|
+| **Dimensions** | [e.g., N, E] |
+| **File** | [file_path:line_range] |
+| **Expected** | [e.g., camelCase function name with verb prefix] |
+| **Actual** | [e.g., snake_case function name without verb] |
+| **Impact** | [e.g., Public API inconsistency] |
+| **Intentionality** | ACCIDENTAL / UNCERTAIN / INTENTIONAL |
+
+**Context**: [Brief explanation of why this is HIGH severity]
+**Recommendation**: [What to change]
+
+---
+
+### MEDIUM Severity Deviations
+
+#### DEV-0002: [Brief description]
+
+| Field | Value |
+|-------|-------|
+| **Dimension** | [e.g., C] |
+| **File** | [file_path:line_range] |
+| **Expected** | [e.g., why-only comments] |
+| **Actual** | [e.g., what-comments describing obvious code] |
+| **Impact** | [e.g., Internal code, no API impact] |
+
+**Recommendation**: [What to change]
+
+---
+
+### LOW / INFO Deviations
+
+| ID | Dim | File | Description | Severity |
+|----|-----|------|------------|----------|
+| DEV-0003 | [G] | [path] | [brief] | LOW |
+| DEV-0004 | [N] | [path] | [brief] | INFO |
+
+---
+
+### False Positives Excluded
+
+| File | Reason | Rule Applied |
+|------|--------|-------------|
+| [e.g., generated/api.ts] | Generated code | Rule 1 |
+| [e.g., test/helper.ts] | Test subculture | Rule 3 |
+```
+
+---
+
+## Template 3: Onboarding Guide
+
+```markdown
+## Welcome to [Project Name] — Cultural Guide
+
+Generated by Totem from DNA Profile (YYYY-MM-DD)
+
+---
+
+### In This Project, We...
+
+- [e.g., Use camelCase for variables and functions, PascalCase for types]
+- [e.g., Write "why" comments only — if the code needs a "what" comment, rename instead]
+- [e.g., Handle errors with custom Error classes, never swallow errors silently]
+- [e.g., Name tests as "should [verb] when [condition]"]
+- [e.g., Write conventional commits: feat(scope): description]
+- [e.g., Prefer composition over inheritance — no abstract classes]
+- [e.g., Pin all dependencies to exact versions]
+
+---
+
+### Naming Conventions
+
+**Variables & Functions**
+- Case: [e.g., camelCase]
+- Functions: [e.g., verb + noun pattern: getUserById, isValidEmail, handleSubmit]
+- Booleans: [e.g., is/has/can prefix: isActive, hasPermission, canEdit]
+- Constants: [e.g., SCREAMING_SNAKE_CASE: MAX_RETRY_COUNT]
+
+**Files**
+- Source files: [e.g., kebab-case.ts]
+- Test files: [e.g., kebab-case.test.ts]
+- Components: [e.g., PascalCase.tsx]
+
+**Examples (Good)**
+```[language]
+[2-3 lines of correctly-named code from the project]
+```
+
+**Examples (Avoid)**
+```[language]
+[2-3 lines showing what NOT to do]
+```
+
+---
+
+### How We Handle Errors
+
+**Pattern**: [e.g., Custom Error classes with typed error codes]
+
+```[language]
+[3-5 lines showing the project's error handling pattern]
+```
+
+**Rules**:
+- [e.g., Always wrap external errors with context]
+- [e.g., Use AppError for business logic, SystemError for infrastructure]
+- [e.g., Log at error level only for unrecoverable errors]
+
+---
+
+### Testing Philosophy
+
+**Framework**: [e.g., Vitest with describe/it blocks]
+**Structure**: [e.g., AAA (Arrange-Act-Assert)]
+**Coverage Target**: [e.g., 80% line coverage]
+
+```[language]
+[5-8 lines showing a typical test in this project]
+```
+
+**Mocking**: [e.g., Minimal — prefer real implementations, mock only external services]
+**Fixtures**: [e.g., Factory functions in test/factories/]
+
+---
+
+### Git Workflow
+
+**Commit Messages**: [e.g., Conventional commits]
+```
+feat(auth): add OAuth2 login flow
+fix(api): handle null response from payment service
+docs(readme): update deployment instructions
+```
+
+**Branch Naming**: [e.g., feature/short-description, fix/issue-number-description]
+**Merge Strategy**: [e.g., Squash merge to main]
+
+---
+
+### What Makes This Project Unique
+
+[Cultural Fingerprint — 2-3 paragraphs describing the "soul" of the project.
+What values does this codebase embody? What tradeoffs does the team prefer?
+What should a newcomer understand about the philosophy behind the code?]
+```
+
+---
+
+## Template 4: Cultural Fingerprint (Compact)
+
+他のエージェントのコンテキストに埋め込む用の簡潔形式。
+
+```markdown
+### Cultural Context — [Project Name] (by Totem)
+
+**DNA Scores**: N:[X] A:[X] E:[X] C:[X] T:[X] R:[X] G:[X] D:[X]
+
+**Summary**: [1-2 sentences capturing the essential character of the codebase.
+e.g., "This is a disciplined TypeScript project that values self-documenting
+code (naming score 3/3) with minimal dependencies. Error handling is thorough
+with custom error types. Tests serve as specification (testing score 3/3).
+Conventional commits are enforced via CI."]
+
+**Key Conventions**:
+- Naming: [e.g., camelCase, verb-noun functions]
+- Errors: [e.g., custom Error classes, always wrap with context]
+- Testing: [e.g., describe-it, AAA, minimal mocking]
+- Git: [e.g., conventional commits, squash merge]
+
+**Watch For**: [e.g., legacy/ module uses different conventions — see Module Subcultures]
+```
+
+---
+
+## Template 5: Judge Context Brief
+
+Judge エージェントのレビューコンテキストに埋め込む用。
+
+```markdown
+### Totem Cultural Brief for Judge
+
+**Project**: [Project Name]
+**Profile Date**: YYYY-MM-DD
+**Confidence**: HIGH | MEDIUM | LOW
+
+**Enforced Conventions** (block on violation):
+| Dimension | Convention | Enforcement |
+|-----------|-----------|-------------|
+| N | [e.g., camelCase] | ESLint rule (auto) |
+| E | [e.g., Custom Error classes] | Team agreement |
+| G | [e.g., Conventional commits] | commitlint (auto) |
+| T | [e.g., describe-it, AAA] | Team agreement |
+
+**Soft Conventions** (warn on violation):
+| Dimension | Convention | Adherence |
+|-----------|-----------|-----------|
+| C | [e.g., why-only comments] | 85% |
+| A | [e.g., extract at 3x repetition] | 70% |
+
+**Known Subcultures** (do not flag):
+- test/: [different naming patterns expected]
+- scripts/: [simplified error handling expected]
+
+**Active Drift Warnings**:
+- [e.g., Error handling score declining: 2.5 → 2.0 over 3 months]
+```

@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-81-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **81種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **86種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする81種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする86種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -111,6 +111,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E.品質基準の番人。リリース前評価、スコアカード、合否判定 | 品質評価レポート |
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
+| **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
+| **Totem** | _"Every project has a soul. Linters guard the grammar. Totem guards the voice."_ - プロジェクト固有のDNA（8次元）プロファイリング・文化的逸脱検出・オンボーディングガイド生成 | DNAプロファイル、逸脱レポート |
 
 ### 実装
 
@@ -459,6 +461,17 @@ questions:
 | ANALYSIS/standards | 標準準拠確認 | Canon → Builder → Radar |
 | ANALYSIS/cleanup | コードクリーンアップ | Sweep → Zen → Radar |
 
+#### 引き算・文化
+
+| タスク | 説明 | チェーン |
+|--------|------|----------|
+| SUBTRACT/feature-gate | 機能提案の引き算ゲート | Spark → Void → Magi |
+| SUBTRACT/scope-check | スコープ検証 | Sherpa → Void → Sherpa |
+| SUBTRACT/arch-simplify | アーキテクチャ過剰設計検出 | Atlas → Void → Zen |
+| CULTURE/profile | プロジェクトDNAプロファイリング | Lens → Totem → Scribe |
+| CULTURE/review | 文化コンテキスト付きレビュー | Totem → Judge |
+| CULTURE/onboard | 文化プロファイルからオンボーディング | Lens → Totem → Scribe |
+
 #### ドキュメント
 
 | タスク | 説明 | チェーン |
@@ -691,10 +704,12 @@ skills/
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括
+├── totem/SKILL.md      # プロジェクトDNAプロファイリング・文化的逸脱検出
 ├── trace/SKILL.md      # セッションリプレイ分析
 ├── triage/SKILL.md     # 障害対応
 ├── tuner/SKILL.md      # DBパフォーマンス最適化
 ├── vision/SKILL.md     # クリエイティブディレクション
+├── void/SKILL.md       # YAGNI検証・複雑性削減
 ├── voice/SKILL.md      # ユーザーフィードバック
 ├── voyager/SKILL.md    # E2Eテスト
 ├── warden/SKILL.md     # V.A.I.R.E.品質ゲート
@@ -705,7 +720,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全80エージェントの使用例を紹介します。
+> カテゴリ別に全83エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
@@ -1029,6 +1044,28 @@ v2.0.0のリリースを開発者の独り言として語ってください。
 **Note**: レビュー系エージェントの役割分担
 - **Judge**: codex reviewでPRレビュー・バグ検出・AI幻覚検出（コード修正しない）
 - **Zen**: コード品質の**改善**（リファクタリング、可読性向上）
+
+---
+
+##### YAGNI検証（Void）
+
+```
+/Void
+このヘルパーユーティリティは本当に必要ですか？6ヶ月前に追加されましたが、使われているか不明です。
+```
+
+**出力**: Cost-of-Keeping Score、影響範囲分析、REMOVE/SIMPLIFY/DEFER/KEEP推奨を含むSubtraction Proposal
+
+---
+
+##### プロジェクトDNAプロファイリング（Totem）
+
+```
+/Totem
+このプロジェクトの文化的規約をプロファイリングしてください。新メンバーのオンボーディング前に暗黙のルールを把握したいです。
+```
+
+**出力**: DNAプロファイル（8次元スコア）、Cultural Fingerprint、プロジェクト固有の規約を含むオンボーディングガイド
 
 ---
 

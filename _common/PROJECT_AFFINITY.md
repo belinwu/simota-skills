@@ -60,6 +60,8 @@ These agents provide value regardless of project type. Nexus should always consi
 | Grove | Repo structure | Every project needs good structure |
 | Canvas | Visualization | Diagrams for any architecture |
 | Architect | Agent design | Meta-level, project-agnostic |
+| Void | YAGNI enforcement | Challenges feature existence everywhere |
+| Totem | Culture profiling | Every project has implicit conventions |
 
 ### Frontend / UX Agents
 

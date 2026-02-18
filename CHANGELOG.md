@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Prose** - ユーザー向けテキスト専門エージェント（マイクロコピー、エラーメッセージ、ボイス＆トーン設計）
 - **Latch** - Claude Codeフック管理エージェント（PreToolUse/PostToolUse等のイベントシステム）
 - **Relay** - メッセージング統合・Bot開発・リアルタイム通信の設計＋実装エージェント
+- **Void** - 引き算設計エージェント。YAGNI検証、スコープカット、複雑性削減提案
+- **Totem** - プロジェクトDNAプロファイラー。8次元の文化分析、逸脱検出、オンボーディングガイド
 
 ### Enhanced
 - **Nexus** - 19種類のルーティングコマンドと42種類のチェーンテンプレートを追加（フルエコシステムカバレッジ）

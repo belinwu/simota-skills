@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-80-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **80 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **86 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 81 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 86 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -111,6 +111,8 @@ This repository contains 81 specialized AI agents covering various aspects of so
 | **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E. quality standards guardian. Pre-release evaluation, scorecards, pass/fail decisions | Quality evaluation report |
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - Ghost hunter for "invisible" issues in concurrency, async processing, and resource management. Detects and analyzes Race Conditions, Memory Leaks, Resource Leaks, and Deadlocks | Detection report |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - Advanced testing specialist. Load testing (k6/Locust/Artillery), contract testing (Pact CDC), chaos engineering, mutation testing, resilience pattern verification | Test results, resilience reports |
+| **Void** | _"The best code is the code that was never written."_ - YAGNI enforcement, scope cutting, complexity reduction proposals. Challenges existence of every feature/abstraction with 5 questions and Cost-of-Keeping Score | Subtraction proposals |
+| **Totem** | _"Every project has a soul. Linters guard the grammar. Totem guards the voice."_ - Project DNA profiling across 8 cultural dimensions, deviation detection, onboarding guide generation | DNA profiles, deviation reports |
 
 ### Implementation
 
@@ -459,6 +461,17 @@ See `_common/INTERACTION.md` for details.
 | ANALYSIS/standards | Standards compliance check | Canon > Builder > Radar |
 | ANALYSIS/cleanup | Code cleanup | Sweep > Zen > Radar |
 
+#### Subtraction & Culture
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| SUBTRACT/feature-gate | Feature proposal subtraction gate | Spark > Void > Magi |
+| SUBTRACT/scope-check | Scope validation | Sherpa > Void > Sherpa |
+| SUBTRACT/arch-simplify | Architecture over-engineering detection | Atlas > Void > Zen |
+| CULTURE/profile | Project DNA profiling | Lens > Totem > Scribe |
+| CULTURE/review | Culture-aware code review | Totem > Judge |
+| CULTURE/onboard | Onboarding guide from culture profile | Lens > Totem > Scribe |
+
 #### Documentation
 
 | Task | Description | Chain |
@@ -691,10 +704,12 @@ skills/
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
+├── totem/SKILL.md      # Project DNA profiling & cultural deviation detection
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
 ├── tuner/SKILL.md      # DB performance optimization
 ├── vision/SKILL.md     # Creative direction
+├── void/SKILL.md       # YAGNI enforcement & complexity reduction
 ├── voice/SKILL.md      # User feedback
 ├── voyager/SKILL.md    # E2E testing
 ├── warden/SKILL.md     # V.A.I.R.E. quality gate
@@ -705,7 +720,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 81 agents.
+> Category-by-category examples for all 84 agents.
 
 #### Orchestration
 
@@ -1029,6 +1044,28 @@ This file has poor readability. Please refactor it.
 **Note**: Review agent responsibilities:
 - **Judge**: PR review via codex review, bug detection, AI hallucination detection (no code modifications)
 - **Zen**: Code quality **improvement** (refactoring, readability enhancement)
+
+---
+
+##### YAGNI Verification (Void)
+
+```
+/Void
+Is this helper utility really needed? It was added 6 months ago but I'm not sure anyone uses it.
+```
+
+**Output**: Subtraction Proposal with Cost-of-Keeping Score, blast radius analysis, and REMOVE/SIMPLIFY/DEFER/KEEP recommendation
+
+---
+
+##### Project DNA Profiling (Totem)
+
+```
+/Totem
+Profile this project's cultural conventions. I want to understand the unwritten rules before onboarding new team members.
+```
+
+**Output**: DNA Profile (8 dimension scores), Cultural Fingerprint, onboarding guide with project-specific conventions
 
 ---
 
