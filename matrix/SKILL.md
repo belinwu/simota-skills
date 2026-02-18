@@ -14,15 +14,6 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Result back-mapping: execution results → matrix coverage visualization
 - Flexible input: natural language / YAML / JSON / table
 
-COLLABORATION PATTERNS:
-- Pattern A: Test-Matrix   (Matrix → Voyager / Siege / Radar)
-- Pattern B: Deploy-Matrix (Matrix → Scaffold / Gear)
-- Pattern C: UX-Matrix     (Matrix → Echo / Cast / Researcher)
-- Pattern D: Risk-Matrix   (Matrix → Triage / Sentinel / Scout)
-- Pattern E: Exp-Matrix    (Matrix → Experiment / Pulse)
-- Pattern F: Compat-Matrix (Matrix → Horizon / Builder)
-- Pattern G: Visualize     (Matrix → Canvas)
-
 BIDIRECTIONAL PARTNERS:
 - INPUT: User (axis definitions), Nexus (routing), Voyager/Siege/Echo/Experiment (request matrix plan)
 - OUTPUT: Voyager (test plan), Siege (load plan), Echo (UX plan), Experiment (experiment plan),
@@ -87,6 +78,7 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(H) Library(M)
 - 最適化手法の選択が結果を大きく左右する場合（ON_METHOD_CHOICE）
 - ドメインが不明で適切なテンプレートが選べない場合（ON_DOMAIN_UNCLEAR）
 - 実行コスト（時間・費用）の上限が重要な場合（ON_COST_LIMIT）
+- 実行結果の一部が未記録でカバレッジ計算ができない場合（ON_RESULT_INCOMPLETE）
 
 ### Never
 - 実行コード・テストコード・設定ファイルを書く（実行は後続エージェントへ）
@@ -94,6 +86,20 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(H) Library(M)
 - ドメインを問わず一律の手法を適用する（Pairwiseが常に最善ではない）
 - 軸の意味を確認せずに最適化を始める
 - カバレッジ率を省略する
+
+---
+
+## Strategic Framework: Matrix を使うべきか？
+
+| 問い | Yes → | No → |
+|-----|-------|------|
+| ① 軸が3つ以上あるか？ | 次へ | 全組み合わせで十分 |
+| ② すべての組み合わせが必要か？ | Full出力 | 次へ |
+| ③ コストまたは時間に上限があるか？ | Matrix必須 | 次へ |
+| ④ 後続エージェントへ渡す計画が必要か？ | Matrix必須 | 次へ |
+| ⑤ ドメイン（テスト/デプロイ/リスク等）が明確か？ | domain指定 | ON_DOMAIN_UNCLEAR |
+
+**即戦力テンプレートが必要な場合**: `references/quickstart.md` を参照。
 
 ---
 
@@ -108,61 +114,16 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(H) Library(M)
 
 ---
 
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_AXIS_OVERFLOW | BEFORE_START | 軸が6以上で優先軸が不明。絞り込みが必要 |
-| ON_CONSTRAINT_UNKNOWN | BEFORE_START | 除外すべき組み合わせ（invalid pairs）がありそうな場合 |
-| ON_METHOD_CHOICE | ON_DECISION | Pairwise vs 直交表 vs カスタムで結果が大きく異なる場合 |
-| ON_DOMAIN_UNCLEAR | BEFORE_START | テスト/デプロイ/UX/リスクなどドメインが特定できない |
-| ON_COST_LIMIT | ON_DECISION | 実行可能な最大組み合わせ数の上限が必要な場合 |
-| ON_RESULT_INCOMPLETE | ON_COMPLETION | 実行結果の一部が未記録でカバレッジ計算ができない場合 |
-
-→ YAML templates: `references/handoffs.md`
-
----
-
 ## INPUT FORMATS
 
-Matrix は3種類の入力を受け付ける。詳細: `references/input-schema.md`
+詳細: `references/input-schema.md`
 
-### 自然言語（最も簡便）
-```
-「Chrome/Firefox/Safari × Windows/macOS × ログイン済み/未ログイン でテストしたい」
-「本番/ステージング × us-east/ap-northeast × v1.2/v1.3 にデプロイしたい」
-```
-
-### YAML（推奨・明示的）
-```yaml
-matrix:
-  domain: test
-  axes:
-    - name: browser
-      values: [Chrome, Firefox, Safari]
-    - name: os
-      values: [Windows, macOS, Linux]
-    - name: auth
-      values: [logged_in, anonymous]
-  constraints:
-    - exclude: {browser: Safari, os: Windows}
-  optimization: pairwise
-  priority_axis: browser
-```
-
-### JSON（プログラム連携向け）
-```json
-{
-  "matrix": {
-    "domain": "risk",
-    "axes": [
-      {"name": "threat", "values": ["XSS", "SQLi", "CSRF"]},
-      {"name": "surface", "values": ["API", "Web", "Mobile"]},
-      {"name": "severity", "values": ["High", "Medium", "Low"]}
-    ]
-  }
-}
-```
+| フォーマット | 特徴 | 用途 |
+|------------|------|------|
+| 自然言語 | 「A × B × C でテストしたい」形式 | 素早い指示 |
+| YAML | 軸・制約・優先度を明示 | 推奨・再利用可能 |
+| JSON | プログラム連携向け | API・自動化 |
+| テーブル | Markdown表から直接解析 | 既存ドキュメント活用 |
 
 ---
 
@@ -184,51 +145,20 @@ matrix:
 
 ## OPTIMIZATION METHODS
 
-3手法を状況に応じて選択。詳細: `references/optimization-algorithms.md`
+詳細・削減率表: `references/combination-methods.md` / `references/optimization-algorithms.md`
 
-| 手法 | 削減率 | 適用条件 | 保証 |
-|------|-------|---------|------|
-| **Pairwise (All-pairs)** | 60-90% | 軸が3以上、制約が少ない | 全ての2軸ペアを網羅 |
-| **直交配列 (OA)** | 70-85% | 軸数が固定、値数が均一 | バランスの取れたカバレッジ |
-| **カスタム制約付き** | 可変 | invalid pairが多い、コスト上限あり | 制約を満たす最小セット |
-
-### 削減効果の例
-
-| 軸の構成 | 全組み合わせ | Pairwise後 | 削減率 |
-|---------|-----------|-----------|-------|
-| 3軸 × 3値 | 27 | 9 | 67% |
-| 4軸 × 3値 | 81 | 9-12 | 85-89% |
-| 5軸 × 4値 | 1,024 | 16-20 | 98% |
-| 6軸 × 3値 | 729 | 12-18 | 98% |
+| 手法 | 適用条件 | 削減率 |
+|------|---------|-------|
+| **Pairwise** | 軸3以上・制約少 | 60-90% |
+| **直交配列 (OA)** | 軸数固定・値数均一 | 70-85% |
+| **カスタム制約付き** | invalid pair多・コスト上限あり | 可変 |
 
 ---
 
 ## OUTPUT FORMAT
 
-### カバレッジサマリー
-```
-## Matrix Plan: [Domain] — [Name]
-
-### 組み合わせ空間
-- 軸: 3（browser × os × auth）
-- 全組み合わせ: 18
-- 最適化後: 6（削減率 67%）
-- 手法: Pairwise
-
-### 実行セット（優先度順）
-
-| # | browser | os      | auth       | Priority | 理由 |
-|---|---------|---------|------------|----------|------|
-| 1 | Chrome  | Windows | logged_in  | HIGH     | 最大ユーザー構成 |
-| 2 | Firefox | macOS   | anonymous  | HIGH     | ペア未カバー |
-...
-
-### カバレッジ保証
-- 2軸ペアカバレッジ: 100% (18/18ペア)
-- 3軸トリプルカバレッジ: 33% (必要なら+9件で100%)
-```
-
-詳細テンプレート: `references/output-templates.md`
+完全テンプレート: `references/output-templates.md`（Template 1: カバレッジサマリー / Template 2: 詳細実行計画）
+即席テンプレート: `references/quickstart.md`（テスト/デプロイ/リスク 3種）
 
 ---
 
@@ -250,12 +180,13 @@ matrix:
 
 | File | Content |
 |------|---------|
-| `references/combination-methods.md` | Pairwise/直交表/CITの詳細手順・計算例 |
+| `references/quickstart.md` | 即席テンプレート3種（テスト/デプロイ/リスク） |
+| `references/combination-methods.md` | Pairwise/直交表/CITの詳細手順・計算例・削減率表 |
 | `references/input-schema.md` | YAML/JSON/自然言語の入力フォーマット仕様 |
 | `references/output-templates.md` | 実行計画・カバレッジレポートの完全テンプレート |
 | `references/domain-patterns.md` | 7ドメイン別の軸定義・制約例・典型ユースケース |
-| `references/optimization-algorithms.md` | アルゴリズム詳細・削減率計算・制約処理 |
-| `references/handoffs.md` | エージェント間ハンドオフYAMLテンプレート |
+| `references/optimization-algorithms.md` | アルゴリズム詳細・削減率計算・手法選択フロー |
+| `references/handoffs.md` | エージェント間ハンドオフYAMLテンプレート（ON_*トリガー別） |
 
 ---
 
