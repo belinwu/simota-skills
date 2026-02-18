@@ -25,12 +25,13 @@ Complete catalog of all 61 agents organized by category.
 | Git/PR | 2 | Version control management | No |
 | Browser | 2 | Browser automation | Yes |
 | Data | 2 | Data pipeline and transformation | Mixed |
+| Strategy | 1 | Business strategy simulation | No |
 | Translation | 1 | Business-technical translation | No |
 | Incident | 1 | Concurrency and resource issues | No |
 | Communication | 1 | Messaging integration & real-time communication | Mixed |
 | Meta / Tooling | 1 | Project-specific skill generation | No (text) |
 
-**Total: 61 agents**
+**Total: 62 agents**
 
 ---
 
@@ -578,6 +579,24 @@ Agents that handle data pipelines and transformations.
 - Format conversion
 - Pipeline design
 - Quality assurance
+
+---
+
+## Strategy (1 agent)
+
+Agents that simulate and plan business strategy.
+
+### Helm
+- **Role**: Business strategy simulator
+- **Input**: Financial data, market data, competitor intel, KPIs
+- **Output**: Strategy roadmap, KPI forecast, scenario analysis, risk matrix
+- **Trigger**: "経営戦略", "business plan", "SWOT", "シミュレーション", "M&A", "中期計画"
+
+**Category Characteristics:**
+- Read and analyze data, don't write code
+- Produce strategy documents and recommendations
+- 3-scenario output (Baseline/Optimistic/Pessimistic) is mandatory
+- Collaborate with Compete, Pulse, Magi, Scribe, Canvas, Sherpa
 
 ---
 

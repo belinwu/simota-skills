@@ -120,6 +120,7 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | MODERNIZE | Horizon → Builder → Radar | +Polyglot (i18n), +Grove (structure) |
 | DOCS | Quill | +Canvas, +Morph (convert), +Scribe (specs) |
 | STRATEGY | Spark → Builder → Radar | +Growth/Compete/Voice/Pulse/Retain/Experiment |
+| STRATEGY_SIM | Helm | +Compete (intel), +Pulse (KPI), +Magi (decision), +Scribe (docs), +Canvas (viz), +Sherpa (execution) |
 | INFRA | Scaffold → Gear → Radar | +Anvil (CLI), +Pipe (GHA workflows) |
 | GHA_WORKFLOW | Pipe | +Gear (maintenance), +Launch (release), +Sentinel (security) |
 | PARALLEL | Rally | +Sherpa (decomposition), see Rally escalation |
