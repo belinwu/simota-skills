@@ -82,3 +82,63 @@ questions:
         description: "ファイルリストを提示し、ユーザーにベースライン/成果物の分類を求める"
     multiSelect: false
 ```
+
+---
+
+## ON_GOAL_CONTRACT_WEAK — Detection Logic
+
+Quality check criteria Orbit evaluates automatically before firing the `ON_GOAL_CONTRACT_WEAK` trigger.
+
+### Check Items Table
+
+| Check Item | How to Evaluate | Failing Example |
+|------------|---------|---------|
+| AC count | Count `- [ ]` lines | 2 or fewer (3+ required to pass) |
+| AC measurability | Detect with non-measurable patterns (regex) | Vague completion expressions (e.g., "improve", "clean up") |
+| Verification command | Presence of `## Verification Command` section | Section does not exist |
+| Out of scope definition | Presence of `## Out of Scope` section | Section does not exist |
+
+### Non-Measurable Patterns (Regex)
+
+Any AC matching one or more of the following is classified as "non-measurable":
+
+```
+/(改善|向上|強化|整理|最適化|見直し|充実|洗練|検討|対応)する$/
+/(better|improve|enhance|refactor|clean up|optimize|revisit)\s*$/i
+/^- \[ \] (?!.*(確認|テスト|実行|出力|生成|削除|追加|修正|コマンド|コード|ファイル))/
+```
+
+### Good / Bad Examples
+
+**Good (pass)**
+
+```markdown
+- [ ] `npm test` が全件 PASS すること
+- [ ] `eslint src/` がエラー 0 件で終了すること
+- [ ] `curl http://localhost:3000/health` が 200 を返すこと
+```
+
+**Bad (fail)**
+
+```markdown
+- [ ] コードを改善する
+- [ ] テストを充実させる
+- [ ] パフォーマンスを向上させる
+```
+
+### Orbit Auto-Judgment Flow (Pseudocode)
+
+```
+1. Read goal.md
+2. Extract `- [ ]` lines → build AC list
+3. AC count < 3 → set CONTRACT_WEAK flag
+4. Apply non-measurable patterns to each AC
+   - 1+ match → set CONTRACT_WEAK flag
+5. Check for `## Verification Command` section
+   - Missing → set CONTRACT_WEAK flag
+6. Check for `## Out of Scope` section
+   - Missing → set CONTRACT_WEAK flag (warning level)
+7. If CONTRACT_WEAK flag is set:
+   - Fire ON_GOAL_CONTRACT_WEAK trigger
+   - Use AskUserQuestion to confirm reinforcement approach
+```

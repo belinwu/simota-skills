@@ -4,25 +4,25 @@
 
 ```mermaid
 graph TB
-    subgraph BOOTSTRAP["bootstrap.sh — 初期化"]
-        B1[mkdir LOOP_DIR] --> B2[goal.md 生成]
-        B2 --> B3[progress.md 生成<br/>Iteration 0 — Bootstrap]
-        B3 --> B4[state.env 生成<br/>NEXT_ITERATION=1<br/>LAST_STATUS=READY]
-        B4 --> B5{VERIFY_CMD<br/>指定あり?}
-        B5 -->|Yes| B6[verify.sh 生成]
-        B5 -->|No| B7[スキップ]
+    subgraph BOOTSTRAP["bootstrap.sh — Initialize"]
+        B1[mkdir LOOP_DIR] --> B2[create goal.md]
+        B2 --> B3[create progress.md<br/>Iteration 0 — Bootstrap]
+        B3 --> B4[create state.env<br/>NEXT_ITERATION=1<br/>LAST_STATUS=READY]
+        B4 --> B5{VERIFY_CMD<br/>specified?}
+        B5 -->|Yes| B6[generate verify.sh]
+        B5 -->|No| B7[skip]
         B6 --> B8([Bootstrap Complete])
         B7 --> B8
     end
 
     B8 --> R0
 
-    subgraph RUNNER["run-loop.sh — メインループ"]
-        R0[State 読み込み<br/>state.env or defaults] --> R1
+    subgraph RUNNER["run-loop.sh — Main Loop"]
+        R0[Load state<br/>state.env or defaults] --> R1
 
         subgraph DIRTY["Dirty Baseline Snapshot"]
             R1{AUTOCOMMIT<br/>== true?} -->|Yes| R2["git diff --name-only<br/>→ dirty-start-paths.txt"]
-            R1 -->|No| R3[スキップ]
+            R1 -->|No| R3[skip]
         end
 
         R2 --> LOOP
@@ -32,17 +32,17 @@ graph TB
             L0["=== Iteration N ==="] --> EXEC
 
             subgraph EXEC["Bounded Retry Execution"]
-                E1["EXEC_CMD 実行<br/>(codex exec / claude / gemini)"] --> E2{成功?}
+                E1["Run EXEC_CMD<br/>(codex exec / claude / gemini)"] --> E2{success?}
                 E2 -->|Yes| E3([exec_success = true])
                 E2 -->|No| E4{retry_count<br/>< RETRY_LIMIT?}
                 E4 -->|Yes| E5["sleep(BACKOFF^retry)"] --> E1
-                E4 -->|No| E6["BLOCKED<br/>progress.md に TOOL_FAILURE 記録"] --> BREAK([break — ループ離脱])
+                E4 -->|No| E6["BLOCKED<br/>record TOOL_FAILURE in progress.md"] --> BREAK([break — exit loop])
             end
 
             E3 --> VERIFY
 
             subgraph VERIFY["Verification Gate"]
-                V1{verify.sh<br/>存在?} -->|Yes| V2[bash verify.sh]
+                V1{verify.sh<br/>exists?} -->|Yes| V2[bash verify.sh]
                 V1 -->|No| V3["VERIFY_RESULT = SKIP"]
                 V2 --> V4{exit code}
                 V4 -->|0| V5["VERIFY_RESULT = PASS"]
@@ -54,14 +54,14 @@ graph TB
             V3 --> COMMIT
 
             subgraph COMMIT["Scoped Auto-Commit"]
-                C1{AUTOCOMMIT?} -->|No| C5[スキップ]
-                C1 -->|Yes| C2{dirty baseline<br/>存在?}
-                C2 -->|Yes| C3["comm -23 で baseline 除外<br/>ループ成果物のみ git add"]
+                C1{AUTOCOMMIT?} -->|No| C5[skip]
+                C1 -->|Yes| C2{dirty baseline<br/>exists?}
+                C2 -->|Yes| C3["exclude baseline via comm -23<br/>git add loop artifacts only"]
                 C2 -->|No| C4[git add -A]
                 C3 --> C6{staged<br/>changes?}
                 C4 --> C6
                 C6 -->|Yes| C7["git commit -m<br/>loop(iter-N): auto-commit<br/>[verify=RESULT]"]
-                C6 -->|No| C8[コミットなし]
+                C6 -->|No| C8[no commit]
             end
 
             C5 --> DONE_CHECK
@@ -69,10 +69,10 @@ graph TB
             C8 --> DONE_CHECK
 
             subgraph DONE_CHECK["DONE Detection"]
-                D1{done.md<br/>存在?} -->|No| D2["STATUS = CONTINUE"]
+                D1{done.md<br/>exists?} -->|No| D2["STATUS = CONTINUE"]
                 D1 -->|Yes| D3{VERIFY_RESULT<br/>== PASS or SKIP?}
                 D3 -->|Yes| D4["STATUS = DONE"]
-                D3 -->|No| D5["STATUS = CONTINUE<br/>(done.md あるが検証失敗)"]
+                D3 -->|No| D5["STATUS = CONTINUE<br/>(done.md exists but verify failed)"]
             end
 
             D2 --> STATE_WRITE
@@ -80,17 +80,17 @@ graph TB
             D5 --> STATE_WRITE
 
             subgraph STATE_WRITE["State Update"]
-                S1["NEXT_ITERATION++"] --> S2["state.env 原子書き込み<br/>NEXT_ITERATION / LAST_STATUS / LAST_UPDATED_AT"]
+                S1["NEXT_ITERATION++"] --> S2["atomic write to state.env<br/>NEXT_ITERATION / LAST_STATUS / LAST_UPDATED_AT"]
             end
 
             S2 --> N1
 
             subgraph NOTIFY["Iteration Notification (|| true)"]
-                N1{NOTIFY_ENABLED?} -->|true| N2{notify.sh<br/>存在?}
-                N1 -->|false| N5[スキップ]
-                N2 -->|Yes| N3["テキスト生成<br/>(Gemini / フォールバック)"]
+                N1{NOTIFY_ENABLED?} -->|true| N2{notify.sh<br/>exists?}
+                N1 -->|false| N5[skip]
+                N2 -->|Yes| N3["Generate text<br/>(Gemini / fallback)"]
                 N2 -->|No| N5
-                N3 --> N4["TTS 再生<br/>(edge-tts → say → テキストのみ)"]
+                N3 --> N4["Play TTS<br/>(edge-tts → say → text only)"]
                 N4 --> N5
             end
         end
@@ -119,16 +119,16 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph RECOVER["recover.sh — 状態復旧"]
-        RC1["progress.md から<br/>最終 Iteration 番号を抽出"] --> RC2["末尾20行から<br/>STATUS を判定"]
-        RC2 --> RC3{キーワード検出}
+    subgraph RECOVER["recover.sh — State Recovery"]
+        RC1["Extract latest<br/>iteration from progress.md"] --> RC2["Determine STATUS<br/>from last 20 lines"]
+        RC2 --> RC3{keyword match}
         RC3 -->|DONE| RC4["RECOVERED = DONE"]
         RC3 -->|BLOCKED/FAIL| RC5["RECOVERED = BLOCKED"]
-        RC3 -->|それ以外| RC6["RECOVERED = CONTINUE"]
-        RC4 --> RC7["state.env 再構築<br/>NEXT = latest_iter + 1<br/>RECOVERED_FROM = progress_evidence"]
+        RC3 -->|other| RC6["RECOVERED = CONTINUE"]
+        RC4 --> RC7["Rebuild state.env<br/>NEXT = latest_iter + 1<br/>RECOVERED_FROM = progress_evidence"]
         RC5 --> RC7
         RC6 --> RC7
-        RC7 --> RC8["progress.md に<br/>Recovery ノート追記"]
+        RC7 --> RC8["Append recovery note<br/>to progress.md"]
     end
 
     style RECOVER fill:#2a2a1a,stroke:#fbbf24
@@ -138,16 +138,16 @@ graph LR
 
 ```mermaid
 graph TD
-    subgraph VER["verify.sh — 受け入れ条件チェック"]
+    subgraph VER["verify.sh — Acceptance Check"]
         VC1["PASS=0, FAIL=0"] --> VC2
-        VC2["run_check 'チェック名' コマンド"] --> VC3{exit code}
+        VC2["run_check 'check name' command"] --> VC3{exit code}
         VC3 -->|0| VC4["[PASS] +1"]
         VC3 -->|≠0| VC5["[FAIL] +1"]
-        VC4 --> VC6["... 全チェック繰り返し ..."]
+        VC4 --> VC6["... repeat for all checks ..."]
         VC5 --> VC6
         VC6 --> VC7{"FAIL > 0?"}
-        VC7 -->|Yes| VC8["exit 1<br/>(検証失敗 → DONE 阻止)"]
-        VC7 -->|No| VC9["exit 0<br/>(検証成功 → DONE 許可)"]
+        VC7 -->|Yes| VC8["exit 1<br/>(verify fail → block DONE)"]
+        VC7 -->|No| VC9["exit 0<br/>(verify pass → allow DONE)"]
     end
 
     style VER fill:#2a1a2a,stroke:#c084fc
@@ -156,37 +156,37 @@ graph TD
 ## Inter-Script Relationships
 
 ```
-bootstrap.sh ──生成──→ goal.md
-                       progress.md
-                       state.env
-                       verify.sh (optional)
-                       notify.sh
+bootstrap.sh ──generates──→ goal.md
+                             progress.md
+                             state.env
+                             verify.sh (optional)
+                             notify.sh
 
-run-loop.sh  ──読込──→ state.env (resume point)
-             ──参照──→ goal.md (exec cmd に渡す)
-             ──更新──→ progress.md (障害記録)
-             ──呼出──→ verify.sh (検証ゲート)
-             ──呼出──→ notify.sh (通知フック、NOTIFY_ENABLED 時)
-             ──検査──→ done.md (DONE 判定)
-             ──書込──→ state.env (原子的更新)
-             ──出力──→ runner.log (全ログ)
-             ──出力──→ NEXUS_LOOP_STATUS footer
+run-loop.sh  ──reads──────→ state.env (resume point)
+             ──reads──────→ goal.md (pass to exec cmd)
+             ──updates────→ progress.md (failure log)
+             ──calls──────→ verify.sh (verification gate)
+             ──calls──────→ notify.sh (notification hook, when NOTIFY_ENABLED)
+             ──checks─────→ done.md (DONE detection)
+             ──writes─────→ state.env (atomic update)
+             ──outputs────→ runner.log (all logs)
+             ──outputs────→ NEXUS_LOOP_STATUS footer
 
-notify.sh    ──出力──→ runner.log (テキスト記録)
-             ──出力──→ notify-audio/*.mp3 (音声ファイル)
+notify.sh    ──outputs────→ runner.log (text record)
+             ──outputs────→ notify-audio/*.mp3 (audio files)
 
-recover.sh   ──読込──→ progress.md (証跡ソース)
-             ──書込──→ state.env (再構築)
-             ──追記──→ progress.md (復旧ノート)
+recover.sh   ──reads──────→ progress.md (evidence source)
+             ──writes─────→ state.env (rebuild)
+             ──appends────→ progress.md (recovery note)
 ```
 
 ## Key Design Points
 
-- **DONE 二重ゲート**: `done.md` の存在だけでは不十分。`verify.sh` が PASS または SKIP であることも必要
-- **Bounded Retry + Timeout**: 無限リトライを防止。`RETRY_LIMIT` 回で CONTINUE (TOOL_FAILURE) に遷移。`EXEC_TIMEOUT` でハングしたプロセスも自動終了
-- **Dirty Baseline Isolation**: ループ開始前の未コミット変更（修正済・ステージ済・未追跡の全3種）を `dirty-start-paths.txt` に記録し、auto-commit から除外
-- **Atomic State Write**: `state.env` を毎イテレーション末に上書き。中断しても resume 可能
-- **Graceful Shutdown**: SIGINT/SIGTERM をトラップし、state.env を安全に書き込んでから終了
-- **State Validation**: `source state.env` 前にフォーマットを検証。破損した state.env による任意コマンド実行を防止
-- **Contract-Valid Statuses Only**: `NEXUS_LOOP_STATUS` は `READY` / `CONTINUE` / `DONE` のみ。TOOL_FAILURE は `CONTINUE` + progress.md 記録で表現
-- **Recovery from Evidence**: `recover.sh` は `progress.md` を唯一の真実として `state.env` を再構築（POSIX 互換 grep 使用）
+- **DONE Dual Gate**: `done.md` existence alone is insufficient. `verify.sh` must also PASS or SKIP
+- **Bounded Retry + Timeout**: Prevents infinite retries. Transitions to CONTINUE (TOOL_FAILURE) after `RETRY_LIMIT`. `EXEC_TIMEOUT` auto-terminates hung processes
+- **Dirty Baseline Isolation**: Records all uncommitted changes present before loop start (modified, staged, untracked) into `dirty-start-paths.txt` and excludes them from auto-commit
+- **Atomic State Write**: Overwrites `state.env` at the end of every iteration. Resumable even after interruption
+- **Graceful Shutdown**: Traps SIGINT/SIGTERM and safely writes state.env before exiting
+- **State Validation**: Validates format before `source state.env`. Prevents arbitrary command execution from corrupted state.env
+- **Contract-Valid Statuses Only**: `NEXUS_LOOP_STATUS` is limited to `READY` / `CONTINUE` / `DONE`. TOOL_FAILURE is represented as `CONTINUE` + progress.md record
+- **Recovery from Evidence**: `recover.sh` rebuilds `state.env` using `progress.md` as the sole source of truth (POSIX-compatible grep)

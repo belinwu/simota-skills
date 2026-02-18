@@ -169,6 +169,44 @@ ORBIT_TO_RADAR_HANDOFF:
     - "DONE confirmation or CONTINUE recommendation with evidence"
 ```
 
+## ORBIT_TO_SCOUT_HANDOFF
+
+```yaml
+ORBIT_TO_SCOUT_HANDOFF:
+  target_agent: Scout
+  task_type: LOOP_INVESTIGATION
+  trigger_reason: "loop_anomaly_unresolved|persistent_tool_failure|unexplained_state_corruption"
+  context:
+    loop_dir: "<path>"
+    failure_class: "CONTRACT_MISSING|STATE_DRIFT|VERIFY_GAP|COMMIT_SCOPE_RISK|TOOL_FAILURE"
+    severity: "P0|P1|P2"
+    orbit_analysis_summary: "<Orbit's initial analysis summary (1-3 lines)>"
+  investigation_request:
+    type: "root_cause_analysis|artifact_forensics|runner_log_audit"
+    questions:
+      - "<specific question to investigate 1>"
+      - "<specific question to investigate 2>"
+    artifacts_to_examine:
+      - "<file:line>"
+    evidence_chain:
+      - "<evidence already confirmed by Orbit>"
+  constraints:
+    - "preserve all original artifacts — no modification"
+    - "return findings as SCOUT_TO_ORBIT_HANDOFF with evidence chain intact"
+  expected_output:
+    - "root cause classification"
+    - "reproduction steps or trigger conditions"
+    - "recommended contract repair or recovery action"
+```
+
+### ORBIT_TO_SCOUT_HANDOFF Trigger Conditions
+
+| Trigger | Condition | Question for Scout |
+|---------|-----------|-------------------|
+| TOOL_FAILURE 3× consecutive | retry exhausted + environment check inconclusive | Identify failure pattern from `runner.log` |
+| STATE_DRIFT recurrence | drift reappears after `recover.sh` | Forensics on what is overwriting state.env |
+| VERIFY_GAP persistent | verify.sh fails every iteration, cause unknown | Investigate environment dependency of verify command |
+
 ---
 
 ## Handoff Transformation Lifecycle Examples
