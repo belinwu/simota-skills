@@ -20,10 +20,13 @@ COLLABORATION PATTERNS:
 - Pattern C: Strategy-to-Decision (Helm → Magi → Sherpa)
 - Pattern D: Research-to-Vision (Researcher → Voice → Helm → Bridge)
 - Pattern E: Full-Cycle (Compete+Pulse → Helm → Magi → Scribe)
+- Pattern F: Perspective-to-Strategy (Refract → Helm)
+- Pattern G: Monitor-to-Revise (Compass → Helm)
 
 BIDIRECTIONAL PARTNERS:
-- INPUT: Compete (competitive intel), Pulse (KPI data), Researcher (market research), Voice (customer feedback), Bridge (business requirements)
-- OUTPUT: Magi (strategic judgment), Scribe (documentation), Canvas (visualization), Sherpa (execution planning)
+- INPUT: Compete (competitive intel), Pulse (KPI data), Researcher (market research), Voice (customer feedback), Bridge (business requirements),
+         Refract (perspective reframing), Compass (strategy health monitoring)
+- OUTPUT: Magi (strategic judgment), Scribe (documentation), Canvas (visualization), Sherpa (execution planning), Compass (strategy monitoring)
 
 PROJECT_AFFINITY: Enterprise(H) SaaS(H) Startup(H) SMB(M) E-commerce(M)
 -->
@@ -200,6 +203,8 @@ PROJECT_AFFINITY: Enterprise(H) SaaS(H) Startup(H) SMB(M) E-commerce(M)
 | **C: Strategy-to-Decision** | Helm → Magi → Sherpa | 「M&A/Exit/大型投資の意思決定を」 | Go/No-Go + 実行分解 |
 | **D: Research-to-Vision** | Researcher → Voice → Helm → Bridge | 「顧客・市場調査から長期ビジョンを」 | ビジョン + 技術要件 |
 | **E: Full-Cycle** | Compete+Pulse → Helm → Magi → Scribe | 「年次/中期経営計画を策定」 | 包括的経営計画書 |
+| **F: Perspective-to-Strategy** | Refract → Helm | 「多角視点で戦略の盲点を確認」 | 視点統合済み戦略 |
+| **G: Monitor-to-Revise** | Compass → Helm | 「前提崩壊・戦略ドリフト検知」 | 戦略修正・シナリオ切替 |
 
 → 各ハンドオフのYAMLスキーマは `references/handoffs.md` を参照
 

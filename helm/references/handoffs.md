@@ -106,6 +106,76 @@ simulation_request:
   output_format: "BOARD_PRESENTATION | DETAILED_ROADMAP | QUICK_SUMMARY"
 ```
 
+### REFRACT_TO_HELM
+
+```yaml
+payload:
+  perspective_map:
+    theme: "string"
+    current_strategic_frame:
+      summary: "string"
+      time_horizon: "SHORT | MID | LONG"
+      key_assumptions:
+        - "string"
+    strategic_insights:
+      new_opportunities:
+        - { perspective: "string", insight: "string", urgency: "HIGH | MEDIUM | LOW" }
+      hidden_risks:
+        - { perspective: "string", risk: "string", severity: "HIGH | MEDIUM | LOW" }
+      assumptions_to_challenge:
+        - { assumption: "string", evidence: "string" }
+    cross_domain_analogies:
+      - { domain: "string", analogy: "string", applicable_insight: "string" }
+    time_axis_insights:
+      short_term_blindspot: "string"
+      long_term_opportunity: "string"
+  instructions_for_helm:
+    - "上記インサイトをSWOT/シナリオプランニングに組み込んでください"
+    - "特にhidden_risksは戦略リスクとして評価してください"
+    - "assumptions_to_challengeはシナリオ前提仮定の見直しに活用してください"
+simulation_request:
+  priority_horizon: "SHORT | MID | LONG | ALL"
+  incorporate_perspectives: true
+  focus_areas: ["string"]
+```
+
+### COMPASS_TO_HELM
+
+```yaml
+payload:
+  monitoring_report:
+    overall_status: "GREEN | YELLOW | RED | BLACK"
+    drift_score: "X.X"
+    period: "YYYY-MM-DD"
+  revision_triggers:
+    - trigger_type: "ASSUMPTION_BREACH | MILESTONE_DELAY | KPI_MISS | MULTI_BREACH"
+      severity: "YELLOW | RED | BLACK"
+      details:
+        - { item: "string", expected: "string", actual: "string", gap: "X%" }
+  assumptions_status:
+    total: X
+    valid: X
+    watch: X
+    breach: X
+    breached_assumptions:
+      - { id: "A-XXX", text: "string", metric: "string", threshold: "string", actual: "string" }
+  milestone_status:
+    total: X
+    on_track: X
+    at_risk: X
+    delayed: X
+    delayed_milestones:
+      - { name: "string", due: "YYYY-MM-DD", progress: "X%", delay_days: X }
+  recommendation:
+    action: "MINOR_ADJUSTMENT | STRATEGY_REVISION | SCENARIO_SWITCH | FULL_REPLANNING"
+    rationale: "string"
+    affected_phases: ["Phase X"]
+  instructions_for_helm:
+    - "revision_triggersに基づき、該当フェーズの戦略を見直してください"
+    - "breached_assumptionsはシナリオ前提の再設定が必要です"
+    - "recommendation.actionに応じた粒度で戦略修正を実施してください"
+```
+
 ---
 
 ## Helm からの出力ハンドオフ (Helm →)
