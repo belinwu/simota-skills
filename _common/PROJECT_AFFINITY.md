@@ -62,6 +62,7 @@ These agents provide value regardless of project type. Nexus should always consi
 | Architect | Agent design | Meta-level, project-agnostic |
 | Void | YAGNI enforcement | Challenges feature existence everywhere |
 | Totem | Culture profiling | Every project has implicit conventions |
+| Darwin | Ecosystem evolution | Monitors and evolves the agent ecosystem |
 
 ### Frontend / UX Agents
 

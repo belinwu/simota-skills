@@ -31,7 +31,7 @@ Complete catalog of all 61 agents organized by category.
 | Communication | 1 | Messaging integration & real-time communication | Mixed |
 | Meta / Tooling | 1 | Project-specific skill generation | No (text) |
 
-**Total: 62 agents**
+**Total: 63 agents**
 
 ---
 
@@ -654,9 +654,9 @@ Agents that design and implement messaging integrations and real-time communicat
 
 ---
 
-## Meta / Tooling (1 agent)
+## Meta / Tooling (2 agents)
 
-Agents that generate project-specific tooling and skills.
+Agents that generate project-specific tooling and skills, or orchestrate ecosystem evolution.
 
 ### Sigil
 - **Role**: Dynamic project-specific skill generator
@@ -664,11 +664,18 @@ Agents that generate project-specific tooling and skills.
 - **Output**: Claude Code skills (.claude/skills/*.md)
 - **Trigger**: "Generate skills for this project", "Create skill for", "Analyze project and suggest skills"
 
+### Darwin
+- **Role**: Ecosystem self-evolution orchestrator
+- **Input**: Git metrics, agent journals, activity logs, Health Scores, UQS
+- **Output**: Ecosystem state report, evolution actions, dynamic affinity overrides
+- **Trigger**: "evolution check", "ecosystem health", "agent fitness"
+
 **Category Characteristics:**
 - Analyzes project context before generating
 - Generates Micro (10-80 lines) and Full (100-400 lines) skills
 - Does not modify ecosystem agents
 - Complements Architect (ecosystem) with project-specific skills
+- Orchestrates ecosystem-wide evolution (Darwin)
 
 ---
 

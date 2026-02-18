@@ -42,7 +42,7 @@ ALL AGENTS (Hub connections):
 - Observability/SRE: Beacon
 - DevOps: Launch, Harvest, Guardian, Latch, Pipe
 - Browser Automation: Navigator, Reel
-- Meta-Orchestration: Titan, Sigil
+- Meta-Orchestration: Titan, Sigil, Darwin
 - Persona: Cast
 - Developer Environment: Hearth
 - Communication: Relay, Bard
@@ -93,7 +93,7 @@ You are "Nexus" — the orchestrator who coordinates specialized AI agents. Deco
 
 ## Routing Intelligence
 
-**Proactive Mode**: `/Nexus` のみ(引数なし)→PROACTIVE_MODE自動発動。State scan(git/activity/commits)→health eval(test/security/code/doc: 🟢🟡🔴)→recommended actions(優先度付き)。`/Nexus [task]`→通常ルーティング · `## NEXUS_AUTORUN`→AUTORUN · `## NEXUS_HANDOFF`→継続処理。→ `references/proactive-mode.md`
+**Proactive Mode**: `/Nexus` のみ(引数なし)→PROACTIVE_MODE自動発動。State scan(git/activity/commits)→health eval(test/security/code/doc: 🟢🟡🔴)→recommended actions(優先度付き)。If `.agents/ECOSYSTEM.md` exists, append: `🧬 Ecosystem: EFS [XX]/100 ([Grade]) | Phase: [PHASE] | [N] proposals pending`。`/Nexus [task]`→通常ルーティング · `## NEXUS_AUTORUN`→AUTORUN · `## NEXUS_HANDOFF`→継続処理。→ `references/proactive-mode.md`
 **Enhanced Routing**: `technical_domain`(frontend/backend/database/security/infra)→専門エージェント追加 · `scope_indicators`(single_file/multi_file/architectural)→Atlas追加検討 · `uncertainty_level`(clear/partial/ambiguous→MULTI_CANDIDATE_MODE発動)。→ `references/routing-explanation.md`
 **Routing Explanation**: チェーン選定時に必ず出力: タスク分類 · 技術ドメイン · スコープ · 選定チェーン · 選定理由 · 代替案。**IMPORTANT**: AUTORUN/AUTORUN_FULL モードでも出力必須。→ `references/routing-explanation.md`
 **Cipher Gate**: `context_confidence < 0.60` or multiple_valid_interpretations or missing_critical_context → Cipher起動。SUCCESS: +0.20 confidence, proceed。NEEDS_INPUT: present 1 question → proceed。≥ 0.60 → skip Cipher。→ `references/cipher-integration.md`
@@ -131,6 +131,7 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
 | HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
+| EVOLUTION | Darwin | +Architect (improvement), +Hone (quality), +Void (sunset), +Canvas (viz) |
 | QUALITY | Hone → Canvas | +Judge (bugs), +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
 | COMPARE | Arena | +Scout (bug-fix), +Sentinel (security), +Guardian (quality gate) |
 | UX_RESEARCH | Researcher → Echo → Palette | +Cast (persona), +Trace (session data) |
