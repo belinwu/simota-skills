@@ -35,18 +35,204 @@ LOOP_DIR="${LOOP_DIR:-.nexus-loop}"
 MAX_ITERATIONS="${MAX_ITERATIONS:-20}"
 RETRY_LIMIT="${RETRY_LIMIT:-3}"
 RETRY_BACKOFF_BASE="${RETRY_BACKOFF_BASE:-2}"
-EXEC_CMD="${EXEC_CMD:-codex exec}"
+EXEC_CMD="${EXEC_CMD:-codex}"
 EXEC_TIMEOUT="${EXEC_TIMEOUT:-600}"
 AUTOCOMMIT="${AUTOCOMMIT:-true}"
 COMMIT_MSG_PREFIX="${COMMIT_MSG_PREFIX:-loop}"
-# ...
+NOTIFY_ENABLED="${NOTIFY_ENABLED:-false}"
+
+#--- Portable timeout (macOS + Linux) ---
+portable_timeout() {
+  local secs="$1"; shift
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "${secs}" "$@"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "${secs}" "$@"
+  else
+    perl -e '
+      use POSIX ":sys_wait_h";
+      my $timeout = shift @ARGV;
+      my $pid = fork // die "fork: $!";
+      if ($pid == 0) { exec @ARGV; die "exec: $!" }
+      local $SIG{ALRM} = sub { kill "TERM", $pid; waitpid($pid, 0); exit 124 };
+      alarm $timeout;
+      waitpid($pid, 0);
+      alarm 0;
+      exit($? >> 8);
+    ' "${secs}" "$@"
+  fi
+}
+
+#--- Graceful shutdown (SIGINT/SIGTERM) ---
+SHUTDOWN=0
+cleanup() {
+  echo "[SIGNAL] Caught signal — writing state and exiting"
+  SHUTDOWN=1
+  local tmp
+  tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+  cat > "${tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=CONTINUE
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+STATE_EOF
+  mv "${tmp}" "${LOOP_DIR}/state.env"
+  exit 130
+}
+trap cleanup SIGINT SIGTERM
+
+#--- Load state.env with validation ---
+ITER=1
+STATUS="READY"
+if [[ -f "${LOOP_DIR}/state.env" ]]; then
+  if grep -qvE '^[A-Z_]+=[A-Za-z0-9_:./ -]*$' "${LOOP_DIR}/state.env"; then
+    echo "[WARN] state.env contains invalid lines — using defaults"
+  else
+    # shellcheck disable=SC1091
+    source "${LOOP_DIR}/state.env"
+    ITER="${NEXT_ITERATION:-1}"
+    STATUS="${LAST_STATUS:-READY}"
+  fi
+fi
+
+#--- Dirty baseline snapshot ---
+if [[ "${AUTOCOMMIT}" == "true" ]]; then
+  {
+    git diff --name-only 2>/dev/null || true
+    git diff --cached --name-only 2>/dev/null || true
+    git ls-files --others --exclude-standard 2>/dev/null || true
+  } | sort -u > "${LOOP_DIR}/dirty-start-paths.txt"
+fi
+
+#--- Main loop ---
+VERIFY_RESULT="N/A"
+COMMIT_HASH="no-commit"
+
+while [[ "${STATUS}" != "DONE" ]] && [[ "${ITER}" -le "${MAX_ITERATIONS}" ]]; do
+  [[ "${SHUTDOWN}" -eq 1 ]] && break
+
+  ITER_START=$(date +%s)
+  VERIFY_RESULT="N/A"
+  COMMIT_HASH="no-commit"
+  echo ""
+  echo "=== Iteration ${ITER}/${MAX_ITERATIONS} ==="
+
+  #--- Bounded retry execution ---
+  EXEC_SUCCESS=false
+  RETRY_COUNT=0
+  while [[ "${RETRY_COUNT}" -lt "${RETRY_LIMIT}" ]]; do
+    if portable_timeout "${EXEC_TIMEOUT}" ${EXEC_CMD} 2>&1 | tee -a "${LOOP_DIR}/runner.log"; then
+      EXEC_SUCCESS=true
+      break
+    fi
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    if [[ "${RETRY_COUNT}" -lt "${RETRY_LIMIT}" ]]; then
+      BACKOFF=$((RETRY_BACKOFF_BASE ** RETRY_COUNT))
+      echo "[RETRY] Attempt ${RETRY_COUNT}/${RETRY_LIMIT} failed — waiting ${BACKOFF}s"
+      sleep "${BACKOFF}"
+    fi
+  done
+
+  if [[ "${EXEC_SUCCESS}" != "true" ]]; then
+    echo "[BLOCKED] EXEC_CMD failed after ${RETRY_LIMIT} retries (TOOL_FAILURE)" | tee -a "${LOOP_DIR}/runner.log"
+    {
+      echo ""
+      echo "## Iteration ${ITER} — BLOCKED"
+      echo "- TOOL_FAILURE: ${EXEC_CMD} failed after ${RETRY_LIMIT} retries"
+      echo "- Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    } >> "${LOOP_DIR}/progress.md"
+    STATUS="BLOCKED"
+    # Atomic state write before break (keep same iteration for retry)
+    state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+    cat > "${state_tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=BLOCKED
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+STATE_EOF
+    mv "${state_tmp}" "${LOOP_DIR}/state.env"
+    break
+  fi
+
+  #--- Verification gate ---
+  VERIFY_RESULT="SKIP"
+  if [[ -f "${LOOP_DIR}/verify.sh" ]]; then
+    if bash "${LOOP_DIR}/verify.sh"; then
+      VERIFY_RESULT="PASS"
+    else
+      VERIFY_RESULT="FAIL"
+    fi
+  fi
+
+  #--- Scoped auto-commit ---
+  if [[ "${AUTOCOMMIT}" == "true" ]]; then
+    if [[ -f "${LOOP_DIR}/dirty-start-paths.txt" ]] && [[ -s "${LOOP_DIR}/dirty-start-paths.txt" ]]; then
+      # Exclude dirty baseline — stage only loop artifacts
+      {
+        git diff --name-only 2>/dev/null || true
+        git diff --cached --name-only 2>/dev/null || true
+        git ls-files --others --exclude-standard 2>/dev/null || true
+      } | sort -u > "${LOOP_DIR}/current-changes.txt"
+      CANDIDATES=$(comm -23 "${LOOP_DIR}/current-changes.txt" "${LOOP_DIR}/dirty-start-paths.txt")
+      if [[ -n "${CANDIDATES}" ]]; then
+        echo "${CANDIDATES}" | xargs git add --
+      fi
+      rm -f "${LOOP_DIR}/current-changes.txt"
+    else
+      git add -A
+    fi
+    if ! git diff --cached --quiet 2>/dev/null; then
+      git commit -m "${COMMIT_MSG_PREFIX}(iter-${ITER}): auto-commit [verify=${VERIFY_RESULT}]"
+      COMMIT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    fi
+  fi
+
+  #--- DONE detection (dual gate: done.md + verify) ---
+  if [[ -f "${LOOP_DIR}/done.md" ]]; then
+    if [[ "${VERIFY_RESULT}" == "PASS" || "${VERIFY_RESULT}" == "SKIP" ]]; then
+      STATUS="DONE"
+    else
+      STATUS="CONTINUE"
+      echo "[INFO] done.md exists but verification failed — continuing"
+    fi
+  else
+    STATUS="CONTINUE"
+  fi
+
+  #--- Atomic state write ---
+  NEXT_ITER=$((ITER + 1))
+  state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+  cat > "${state_tmp}" <<STATE_EOF
+NEXT_ITERATION=${NEXT_ITER}
+LAST_STATUS=${STATUS}
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+STATE_EOF
+  mv "${state_tmp}" "${LOOP_DIR}/state.env"
+
+  #--- Iteration notification (|| true — never fatal) ---
+  ITER_END=$(date +%s)
+  ITER_DURATION=$((ITER_END - ITER_START))
+  if [[ "${NOTIFY_ENABLED}" == "true" ]] && [[ -f "${LOOP_DIR}/notify.sh" ]]; then
+    bash "${LOOP_DIR}/notify.sh" "${ITER}" "${STATUS}" "${VERIFY_RESULT}" "${ITER_DURATION}" "${LOOP_DIR}" "${COMMIT_HASH}" || true
+  fi
+
+  echo "[ITER ${ITER}] status=${STATUS} verify=${VERIFY_RESULT} commit=${COMMIT_HASH} duration=${ITER_DURATION}s"
+  ITER=${NEXT_ITER}
+done
+
+#--- Status footer ---
+FINAL_STATUS="${STATUS}"
+if [[ "${FINAL_STATUS}" != "DONE" ]]; then
+  FINAL_STATUS="CONTINUE"
+fi
+echo ""
+echo "NEXUS_LOOP_STATUS: ${FINAL_STATUS}"
+echo "NEXUS_LOOP_SUMMARY: Iteration ${ITER}/${MAX_ITERATIONS}, status=${STATUS}, verify=${VERIFY_RESULT}"
 ```
 
 ## Bootstrap Script Template (`bootstrap.sh`)
 
 Initializes loop directory and artifacts from a goal description.
 
-```bash
+````bash
 #!/bin/bash
 # nexus-autoloop bootstrap — generated by Orbit
 set -euo pipefail
@@ -62,7 +248,16 @@ if [[ ! -f "${LOOP_DIR}/goal.md" ]]; then
 ## Objective
 {{OBJECTIVE}}
 
-# ...
+## Why
+{{WHY}}
+
+## Acceptance Criteria
+{{ACCEPTANCE_CRITERIA}}
+
+## Out of Scope
+{{OUT_OF_SCOPE}}
+
+## Verification Command
 ```
 {{VERIFY_CMD}}
 ```
@@ -72,7 +267,7 @@ fi
 
 #--- progress.md ---
 if [[ ! -f "${LOOP_DIR}/progress.md" ]]; then
-  cat > "${LOOP_DIR}/progress.md" <<'PROGRESS'
+  cat > "${LOOP_DIR}/progress.md" <<PROGRESS
 # Progress
 
 ## Iteration 0 — Bootstrap
@@ -81,8 +276,75 @@ if [[ ! -f "${LOOP_DIR}/progress.md" ]]; then
 - Status: READY
 PROGRESS
   echo "[OK] Created ${LOOP_DIR}/progress.md"
-...
-```
+fi
+
+#--- state.env ---
+cat > "${LOOP_DIR}/state.env" <<EOF
+NEXT_ITERATION=1
+LAST_STATUS=READY
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+EOF
+echo "[OK] Created ${LOOP_DIR}/state.env"
+
+#--- verify.sh (conditional: only when VERIFY_CMD is specified) ---
+VERIFY_CMD="{{VERIFY_CMD}}"
+if [[ -n "${VERIFY_CMD}" ]]; then
+  cat > "${LOOP_DIR}/verify.sh" <<'VERIFY'
+#!/bin/bash
+set -euo pipefail
+
+PASS=0
+FAIL=0
+
+run_check() {
+  local name="$1"
+  shift
+  if "$@" > /dev/null 2>&1; then
+    echo "[PASS] ${name}"
+    PASS=$((PASS + 1))
+  else
+    echo "[FAIL] ${name}"
+    FAIL=$((FAIL + 1))
+  fi
+}
+
+#--- Acceptance criteria checks ---
+{{VERIFY_CHECKS}}
+
+#--- Summary ---
+echo ""
+TOTAL=$((PASS + FAIL))
+echo "=== Verification: ${PASS}/${TOTAL} passed, ${FAIL} failed ==="
+if [[ "${FAIL}" -gt 0 ]]; then
+  exit 1
+else
+  exit 0
+fi
+VERIFY
+  chmod +x "${LOOP_DIR}/verify.sh"
+  echo "[OK] Created ${LOOP_DIR}/verify.sh"
+fi
+
+#--- run-loop.sh (main runner — always generated) ---
+cat > "${LOOP_DIR}/run-loop.sh" <<'RUN_LOOP'
+{{RUN_LOOP_CONTENT}}
+RUN_LOOP
+chmod +x "${LOOP_DIR}/run-loop.sh"
+echo "[OK] Created ${LOOP_DIR}/run-loop.sh"
+
+#--- notify.sh (iteration notification — always generated) ---
+cat > "${LOOP_DIR}/notify.sh" <<'NOTIFY_SH'
+{{NOTIFY_CONTENT}}
+NOTIFY_SH
+chmod +x "${LOOP_DIR}/notify.sh"
+echo "[OK] Created ${LOOP_DIR}/notify.sh"
+
+echo ""
+echo "=== Bootstrap Complete ==="
+echo "Loop directory: ${LOOP_DIR}"
+echo "Artifacts: goal.md, progress.md, state.env, run-loop.sh, notify.sh${VERIFY_CMD:+, verify.sh}"
+echo "Next: run 'bash ${LOOP_DIR}/run-loop.sh' to start execution"
+````
 
 ## Recovery Script Template (`recover.sh`)
 
@@ -97,14 +359,52 @@ LOOP_DIR="${1:-.nexus-loop}"
 
 echo "=== Orbit Recovery ==="
 
-#--- Parse latest iteration from progress.md (POSIX-compatible) ---
-LATEST_ITER=$(grep -o 'Iteration [0-9]\+' "${LOOP_DIR}/progress.md" | grep -o '[0-9]\+' | tail -1)
+#--- Parse latest iteration from progress.md (POSIX Extended Regex — macOS compatible) ---
+LATEST_ITER=$(grep -oE 'Iteration [0-9]+' "${LOOP_DIR}/progress.md" | grep -oE '[0-9]+' | tail -1)
 if [[ -z "${LATEST_ITER}" ]]; then
   echo "[WARN] No iteration found in progress.md — resetting to 1"
   LATEST_ITER=0
 fi
 
-# ...
+#--- Determine STATUS from last 20 lines of progress.md ---
+TAIL_CONTENT=$(tail -20 "${LOOP_DIR}/progress.md")
+if echo "${TAIL_CONTENT}" | grep -qiE '(DONE|completed|finished)'; then
+  RECOVERED_STATUS="DONE"
+elif echo "${TAIL_CONTENT}" | grep -qiE '(BLOCKED|FAIL|TOOL_FAILURE)'; then
+  RECOVERED_STATUS="BLOCKED"
+else
+  RECOVERED_STATUS="CONTINUE"
+fi
+
+NEXT_ITER=$((LATEST_ITER + 1))
+echo "[INFO] Latest iteration: ${LATEST_ITER}"
+echo "[INFO] Recovered status: ${RECOVERED_STATUS}"
+echo "[INFO] Next iteration will be: ${NEXT_ITER}"
+
+#--- Rebuild state.env (atomic write) ---
+state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+cat > "${state_tmp}" <<EOF
+NEXT_ITERATION=${NEXT_ITER}
+LAST_STATUS=${RECOVERED_STATUS}
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+RECOVERED_FROM=progress_evidence
+EOF
+mv "${state_tmp}" "${LOOP_DIR}/state.env"
+echo "[OK] Rebuilt ${LOOP_DIR}/state.env"
+
+#--- Append recovery note to progress.md ---
+{
+  echo ""
+  echo "## Recovery — $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  echo "- Recovered from progress.md evidence"
+  echo "- Latest iteration found: ${LATEST_ITER}"
+  echo "- Recovered status: ${RECOVERED_STATUS}"
+  echo "- state.env rebuilt with NEXT_ITERATION=${NEXT_ITER}"
+} >> "${LOOP_DIR}/progress.md"
+echo "[OK] Appended recovery note to ${LOOP_DIR}/progress.md"
+
+echo ""
+echo "=== Recovery Complete ==="
 ```
 
 ## Verification Script Template (`verify.sh`)
@@ -127,7 +427,27 @@ run_check() {
     PASS=$((PASS + 1))
   else
     echo "[FAIL] ${name}"
-# ...
+    FAIL=$((FAIL + 1))
+  fi
+}
+
+#--- Acceptance criteria checks ---
+# Customize: add run_check calls matching goal.md acceptance criteria
+# Example:
+#   run_check "Build succeeds" npm run build
+#   run_check "Tests pass" npm test
+#   run_check "Lint clean" npm run lint
+{{VERIFY_CHECKS}}
+
+#--- Summary ---
+echo ""
+TOTAL=$((PASS + FAIL))
+echo "=== Verification: ${PASS}/${TOTAL} passed, ${FAIL} failed ==="
+if [[ "${FAIL}" -gt 0 ]]; then
+  exit 1
+else
+  exit 0
+fi
 ```
 
 ## Notification Script Template (`notify.sh`)
@@ -152,7 +472,69 @@ NOTIFY_ENGINE="${NOTIFY_ENGINE:-auto}"
 NOTIFY_LANG="${NOTIFY_LANG:-ja}"
 NOTIFY_PERSONA_FILE="${NOTIFY_PERSONA_FILE:-}"
 
-# ...
+#--- Generate notification text (Gemini → fallback) ---
+NOTIFY_TEXT=""
+if command -v gemini >/dev/null 2>&1 && [[ "${COMMIT_HASH}" != "no-commit" ]]; then
+  DIFF_SUMMARY=$(git show --stat "${COMMIT_HASH}" 2>/dev/null | head -20)
+  if [[ "${NOTIFY_LANG}" == "ja" ]]; then
+    PROMPT="以下のコミット差分を1〜2文の自然な日本語で要約してください。技術用語はそのまま使ってOKです:\n${DIFF_SUMMARY}"
+  else
+    PROMPT="Summarize this commit diff in 1-2 natural sentences:\n${DIFF_SUMMARY}"
+  fi
+  NOTIFY_TEXT=$(echo -e "${PROMPT}" | gemini 2>/dev/null || true)
+fi
+
+# Fallback text when Gemini is unavailable or fails
+if [[ -z "${NOTIFY_TEXT}" ]]; then
+  if [[ "${NOTIFY_LANG}" == "ja" ]]; then
+    NOTIFY_TEXT="イテレーション${ITER}完了。ステータス: ${STATUS}、検証: ${VERIFY_RESULT}、所要時間: ${ITER_DURATION}秒"
+  else
+    NOTIFY_TEXT="Iteration ${ITER} complete. Status: ${STATUS}, Verify: ${VERIFY_RESULT}, Duration: ${ITER_DURATION}s"
+  fi
+fi
+
+#--- Persona override (Cast integration) ---
+PERSONA_VOICE=""
+if [[ -n "${NOTIFY_PERSONA_FILE}" ]] && [[ -f "${NOTIFY_PERSONA_FILE}" ]]; then
+  PERSONA_VOICE=$(grep -oE 'voice:\s*.*' "${NOTIFY_PERSONA_FILE}" | head -1 | sed 's/voice:[[:space:]]*//')
+fi
+
+#--- TTS playback (3-tier fallback: edge-tts → say → text-only) ---
+TTS_PLAYED=false
+
+# Tier 1: edge-tts (cross-platform, high quality)
+if [[ "${NOTIFY_ENGINE}" == "auto" || "${NOTIFY_ENGINE}" == "edge-tts" ]]; then
+  if command -v edge-tts >/dev/null 2>&1; then
+    VOICE="${PERSONA_VOICE:-ja-JP-NanamiNeural}"
+    AUDIO_DIR="${LOOP_DIR}/notify-audio"
+    mkdir -p "${AUDIO_DIR}"
+    AUDIO_FILE="${AUDIO_DIR}/iter-${ITER}.mp3"
+    if edge-tts --voice "${VOICE}" --text "${NOTIFY_TEXT}" --write-media "${AUDIO_FILE}" 2>/dev/null; then
+      if command -v afplay >/dev/null 2>&1; then
+        afplay "${AUDIO_FILE}" 2>/dev/null &
+      elif command -v mpv >/dev/null 2>&1; then
+        mpv --no-video "${AUDIO_FILE}" 2>/dev/null &
+      fi
+      TTS_PLAYED=true
+    fi
+  fi
+fi
+
+# Tier 2: macOS say (built-in, no install required)
+if [[ "${TTS_PLAYED}" != "true" ]] && [[ "${NOTIFY_ENGINE}" == "auto" || "${NOTIFY_ENGINE}" == "say" ]]; then
+  if command -v say >/dev/null 2>&1; then
+    say "${NOTIFY_TEXT}" 2>/dev/null &
+    TTS_PLAYED=true
+  fi
+fi
+
+# Tier 3: text-only (always succeeds)
+if [[ "${TTS_PLAYED}" != "true" ]]; then
+  echo "[NOTIFY] ${NOTIFY_TEXT}"
+fi
+
+#--- Log record ---
+echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] iter=${ITER} status=${STATUS} verify=${VERIFY_RESULT} text=${NOTIFY_TEXT}" >> "${LOOP_DIR}/runner.log"
 ```
 
 ## Generation Parameters
@@ -165,7 +547,7 @@ When generating scripts, Orbit customizes these parameters based on the goal:
 | `RETRY_LIMIT` | 3 | Unstable environment or flaky tools |
 | `RETRY_BACKOFF_BASE` | 2 | Network-dependent operations need longer backoff |
 | `EXEC_TIMEOUT` | 600 | Seconds before killing a hung EXEC_CMD process |
-| `EXEC_CMD` | `codex exec` | Different executor (claude, gemini, custom) |
+| `EXEC_CMD` | `codex` | Different executor (claude, gemini, custom) |
 | `AUTOCOMMIT` | true | User wants manual commit control |
 | `COMMIT_MSG_PREFIX` | `loop` | Match repo's conventional commit scope |
 | `VERIFY_CMD` | (from goal.md) | Goal specifies test/lint/build commands |

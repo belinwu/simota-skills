@@ -132,7 +132,7 @@ Adjust based on project context during script generation:
 
 | Parameter | Default | Customize When |
 |-----------|---------|----------------|
-| `EXEC_CMD` | `codex exec` | Using a different executor (`claude`, `gemini`, custom) |
+| `EXEC_CMD` | `codex` | Using a different executor (`claude`, `gemini`, custom) |
 | `EXEC_TIMEOUT` | `600` | Timeout in seconds for EXEC_CMD; auto-terminates hung processes |
 | `MAX_ITERATIONS` | `20` | Adjust up or down based on goal complexity |
 | `RETRY_LIMIT` | `3` | Unstable environments or flaky tools |
@@ -154,6 +154,7 @@ All generated scripts must satisfy:
 - Record every iteration in `progress.md` and `runner.log`
 - DONE detection requires dual gate: `done.md` existence + verification pass
 - Write state atomically to `state.env` (resumable after interruption)
+- Use `portable_timeout` function for `EXEC_TIMEOUT` enforcement (macOS has no `timeout` command; fall back to `gtimeout` or `perl`)
 
 > Full script templates: `references/script-templates.md`
 

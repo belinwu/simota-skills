@@ -183,7 +183,7 @@ recover.sh   ──reads──────→ progress.md (evidence source)
 ## Key Design Points
 
 - **DONE Dual Gate**: `done.md` existence alone is insufficient. `verify.sh` must also PASS or SKIP
-- **Bounded Retry + Timeout**: Prevents infinite retries. Transitions to CONTINUE (TOOL_FAILURE) after `RETRY_LIMIT`. `EXEC_TIMEOUT` auto-terminates hung processes
+- **Bounded Retry + Timeout**: Prevents infinite retries. Transitions to CONTINUE (TOOL_FAILURE) after `RETRY_LIMIT`. `EXEC_TIMEOUT` auto-terminates hung processes via `portable_timeout` (uses `timeout` on Linux, `gtimeout` or `perl` fallback on macOS)
 - **Dirty Baseline Isolation**: Records all uncommitted changes present before loop start (modified, staged, untracked) into `dirty-start-paths.txt` and excludes them from auto-commit
 - **Atomic State Write**: Overwrites `state.env` at the end of every iteration. Resumable even after interruption
 - **Graceful Shutdown**: Traps SIGINT/SIGTERM and safely writes state.env before exiting
