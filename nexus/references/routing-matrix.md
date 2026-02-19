@@ -51,4 +51,5 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | KNOWLEDGE | Scribe → Prism | +Quill (polish), +Morph (format convert) |
 | AITUBER | Cast → Aether → Builder | +Artisan (avatar UI), +Scaffold (infra), +Beacon (monitoring) |
 | REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |
+| YAGNI | Void → Sweep/Zen | +Magi (approval), +Pulse (usage data) |
 | LOOP_OPS | Orbit | +Builder (script changes), +Guardian (commit policy), +Radar (verification closure) |

@@ -35,12 +35,12 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ## Template 1: Full Audit Report
 
-プロジェクト全体 or モジュール単位の包括的監査。
+プロジェクト全体 or モジュール/プロセス単位の包括的監査。
 
 ```markdown
 # Void: Subtraction Audit Report
 
-**Audit Scope:** [プロジェクト名 / モジュール名]
+**Audit Scope:** [プロジェクト名 / モジュール名 / プロセス名]
 **Date:** YYYY-MM-DD
 **Targets Evaluated:** X
 
@@ -55,7 +55,7 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 | SIMPLIFY推奨 | X |
 | DEFER | X |
 | KEEP-WITH-WARNING | X |
-| 推定メンテナンス削減 | X% |
+| 推定メンテナンス/運用コスト削減 | X% |
 | 推定認知負荷削減 | X% |
 
 ---
@@ -66,7 +66,8 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 | Item | Value |
 |------|-------|
-| Category | Feature / Abstraction / Scope / Dependency / Configuration |
+| Domain | Code / Feature / Process / Document / Design / Dependency / Configuration / Specification |
+| Category | Feature / Abstraction / Scope / Dependency / Configuration / Process / Document / Design_Spec |
 | CoK Score | X.X / 10 |
 | Removal Risk | X.X / 10 |
 | Confidence | X% |
@@ -79,7 +80,7 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 4. **Why built?** [回答]
 5. **Keeping cost?** [回答]
 
-**Blast Radius:** [files: X, tests: X, APIs: X, users: X]
+**Blast Radius:** [artifacts affected: X, verification affected: X, users: X]
 **Subtraction Pattern:** [適用パターン名]
 **Routing:** → [次のエージェント]
 
@@ -87,11 +88,11 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ## Batch Subtraction Plan
 
-| Priority | Target | Recommendation | CoK | Risk | Pattern | Agent |
-|----------|--------|---------------|-----|------|---------|-------|
-| 1 | [名前] | REMOVE | X.X | X.X | [パターン] | Sweep |
-| 2 | [名前] | SIMPLIFY | X.X | X.X | [パターン] | Zen |
-| ... | | | | | | |
+| Priority | Target | Domain | Recommendation | CoK | Risk | Pattern | Agent |
+|----------|--------|--------|---------------|-----|------|---------|-------|
+| 1 | [名前] | Feature | REMOVE | X.X | X.X | Sunset | Sweep |
+| 2 | [名前] | Code | SIMPLIFY | X.X | X.X | Collapse | Zen |
+| ... | | | | | | | |
 
 ---
 
@@ -104,12 +105,14 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ---
 
-## Template 2: Single Feature Evaluation
+## Template 2: Single Target Evaluation
 
-単一機能のYAGNI検証。
+単一対象のYAGNI検証（任意ドメイン対応）。
 
 ```markdown
-# Void: Feature Evaluation — [機能名]
+# Void: Target Evaluation — [対象名]
+
+**Domain:** [Code / Feature / Process / Document / Design / Dependency / Configuration / Specification]
 
 ## 5 Existence Questions
 
@@ -136,10 +139,10 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
-| Maintenance | X/10 | [根拠] |
-| Testing | X/10 | [根拠] |
+| Upkeep | X/10 | [根拠] |
+| Verification | X/10 | [根拠] |
 | Cognitive Load | X/10 | [根拠] |
-| Coupling | X/10 | [根拠] |
+| Entanglement | X/10 | [根拠] |
 | Replaceability | X/10 | [根拠] |
 | **Weighted Total** | **X.X/10** | |
 
@@ -155,10 +158,10 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ## Template 3: Scope Cut Proposal
 
-機能スコープの縮小提案。
+機能/プロセス/ドキュメントのスコープ縮小提案。
 
 ```markdown
-# Void: Scope Cut Proposal — [機能名]
+# Void: Scope Cut Proposal — [対象名]
 
 ## Current Scope
 [現在の対応範囲の説明]
@@ -177,9 +180,9 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ## Impact
 - **Coverage retained:** X%
-- **Maintenance reduction:** X%
-- **Files affected:** X
-- **Tests affected:** X
+- **Maintenance/operation reduction:** X%
+- **Artifacts affected:** X
+- **Verification affected:** X
 ```
 
 ---
@@ -190,6 +193,8 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ```markdown
 # Void: Quick YAGNI Check — [対象名]
+
+**Domain:** [Code / Feature / Process / Document / Design / Dependency / Configuration / Specification]
 
 | Question | Answer | Signal |
 |----------|--------|--------|
@@ -217,11 +222,12 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 
 ## Priority Queue
 
-| # | Target | Category | CoK | Risk | Conf% | Rec | Pattern | Agent |
-|---|--------|----------|-----|------|-------|-----|---------|-------|
-| 1 | [名前] | Feature | X.X | X.X | X% | REMOVE | Sunset | Sweep |
-| 2 | [名前] | Abstraction | X.X | X.X | X% | SIMPLIFY | Collapse | Zen |
-| ... | | | | | | | | |
+| # | Target | Domain | Category | CoK | Risk | Conf% | Rec | Pattern | Agent |
+|---|--------|--------|----------|-----|------|-------|-----|---------|-------|
+| 1 | [名前] | Feature | Feature | X.X | X.X | X% | REMOVE | Sunset | Sweep |
+| 2 | [名前] | Code | Abstraction | X.X | X.X | X% | SIMPLIFY | Collapse | Zen |
+| 3 | [名前] | Process | Process | X.X | X.X | X% | REMOVE | Pruning | Magi |
+| ... | | | | | | | | | |
 
 ## Execution Order
 1. [最初に実行すべき項目と理由]
@@ -229,10 +235,10 @@ Low(0-3)        OPPORTUNISTIC  SKIP           SKIP
 3. ...
 
 ## Aggregate Impact
-- Total files affected: X
-- Total tests affected: X
-- Estimated maintenance reduction: X%
-- Estimated build time reduction: X%
+- Total artifacts affected: X
+- Total verification affected: X
+- Estimated maintenance/operation reduction: X%
+- Estimated cognitive load reduction: X%
 
 ## Route to Magi
 [バッチ承認が必要な場合のMagiへの要約]

@@ -142,6 +142,20 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Void vs Zen vs Sweep (Necessity / Quality / Cleanup)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "これ必要？" "YAGNI" "over-engineering" | **Void** | 存在正当性の判断（コード以外も対象） |
+| "リファクタ" "コード改善" "読みやすく" | **Zen** | コード品質向上 |
+| "デッドコード" "未使用ファイル" | **Sweep** | 未使用コード/ファイルの物理検出 |
+| "このプロセス必要？" "会議多すぎ" | **Void** | プロセスの正当性判断 |
+| "このドキュメント古い" | **Void** (評価) → Sweep (削除) | ドキュメント正当性→削除実行 |
+
+**Rule of thumb**: "必要か？" → Void. "きれいか？" → Zen. "使われているか？" → Sweep.
+
+---
+
 ## Low Priority — Rarely Confused
 
 ### Judge vs Zen

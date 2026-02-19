@@ -1,6 +1,6 @@
 # Cost Analysis Reference — Void
 
-Cost-of-Keeping Score計算方法、5次元評価基準、Removal Risk Score。
+Cost-of-Keeping Score計算方法、5次元評価基準（ドメイン非依存）、Removal Risk Score。
 
 ---
 
@@ -12,10 +12,10 @@ Cost-of-Keeping Score計算方法、5次元評価基準、Removal Risk Score。
 CoK Score = Σ (Dimension_i Score × Weight_i)
 
 Dimensions:
-  1. Maintenance     (Weight: 0.25)
-  2. Testing         (Weight: 0.20)
+  1. Upkeep          (Weight: 0.25)
+  2. Verification    (Weight: 0.20)
   3. Cognitive Load  (Weight: 0.25)
-  4. Coupling        (Weight: 0.15)
+  4. Entanglement    (Weight: 0.15)
   5. Replaceability  (Weight: 0.15)
 ```
 
@@ -23,61 +23,77 @@ Dimensions:
 
 ## 5 Dimensions — Scoring Rubric
 
-### 1. Maintenance (25%)
+### 1. Upkeep (25%)
 
-メンテナンスの頻度・難易度・コスト。
+維持・更新の頻度・難易度・コスト。
 
 | Score | Label | Criteria |
 |-------|-------|----------|
-| 0-2 | **Stable** | 過去12ヶ月でバグ修正0-1件。変更不要で安定 |
-| 3-4 | **Low** | 年に2-3回の軽微なメンテナンス。依存更新程度 |
-| 5-6 | **Moderate** | 月1回程度のメンテナンス。定期的な修正が必要 |
-| 7-8 | **High** | 週次でのメンテナンス。頻繁なバグ修正 |
+| 0-2 | **Stable** | 過去12ヶ月で修正/更新0-1件。変更不要で安定 |
+| 3-4 | **Low** | 年に2-3回の軽微なメンテナンス |
+| 5-6 | **Moderate** | 月1回程度のメンテナンス。定期的な修正/更新が必要 |
+| 7-8 | **High** | 週次でのメンテナンス。頻繁な修正 |
 | 9-10 | **Critical** | 常時メンテナンスが必要。壊れやすく修正困難 |
 
-**Evidence sources:** Git log frequency, bug tracker tickets, on-call incidents
+**Evidence by domain:**
+- **Code:** Git log frequency, bug tracker tickets, on-call incidents
+- **Process:** 手順書の更新頻度、例外対応の発生率
+- **Document:** 内容の陳腐化速度、レビュー/更新周期
+- **Dependency:** セキュリティパッチ頻度、breaking changes の頻度
 
-### 2. Testing (20%)
+### 2. Verification (20%)
 
-テストの複雑さ・実行コスト・信頼性。
+正しく機能していることを検証するコスト。
 
 | Score | Label | Criteria |
 |-------|-------|----------|
-| 0-2 | **Simple** | テストが簡潔で高速。セットアップ不要 |
-| 3-4 | **Moderate** | テスト存在し安定。多少のセットアップ必要 |
-| 5-6 | **Complex** | テストセットアップが複雑。外部依存あり |
-| 7-8 | **Fragile** | フレーキーテストあり。CI時間に大きく影響 |
-| 9-10 | **Untestable** | テスト困難 or テストなし。手動検証に依存 |
+| 0-2 | **Simple** | 検証が簡潔で高速。セットアップ不要 |
+| 3-4 | **Moderate** | 検証手段が存在し安定。多少の準備が必要 |
+| 5-6 | **Complex** | 検証のセットアップが複雑。外部依存あり |
+| 7-8 | **Fragile** | 検証が不安定。結果にばらつき |
+| 9-10 | **Unverifiable** | 検証困難 or 検証手段なし。手動確認に依存 |
 
-**Evidence sources:** Test suite runtime, flaky test reports, test setup complexity
+**Evidence by domain:**
+- **Code:** Test suite runtime, flaky test reports, test setup complexity
+- **Process:** 品質チェックの手間、準拠確認のコスト
+- **Document:** 正確性検証の難しさ、クロスリファレンスの手間
+- **Configuration:** 設定変更の影響テストの複雑さ
 
 ### 3. Cognitive Load (25%)
 
-理解・修正に必要な認知的コスト。
+理解・修正・運用に必要な認知的コスト。
 
 | Score | Label | Criteria |
 |-------|-------|----------|
-| 0-2 | **Self-evident** | コードが自明。新メンバーでも即理解 |
-| 3-4 | **Clear** | 多少のドメイン知識が必要だが読めば分かる |
-| 5-6 | **Contextual** | 関連コードの理解が必要。暗黙の前提あり |
+| 0-2 | **Self-evident** | 自明。新メンバーでも即理解 |
+| 3-4 | **Clear** | 多少のドメイン知識が必要だが理解可能 |
+| 5-6 | **Contextual** | 関連コンテキストの理解が必要。暗黙の前提あり |
 | 7-8 | **Complex** | 深い文脈知識が必要。「分かる人にしか分からない」 |
-| 9-10 | **Opaque** | 元の作者でも理解困難。トライバルナレッジ依存 |
+| 9-10 | **Opaque** | 元の作成者でも理解困難。トライバルナレッジ依存 |
 
-**Evidence sources:** Code review time, onboarding feedback, "WTF per minute" count
+**Evidence by domain:**
+- **Code:** Code review time, onboarding feedback, "WTF per minute"
+- **Process:** ルール/例外の覚えにくさ、新人が独力で実行できるまでの時間
+- **Document:** 情報過多、矛盾、発見しにくさ、用語の不統一
+- **Design:** ユーザーの迷い、サポート問い合わせ頻度
 
-### 4. Coupling (15%)
+### 4. Entanglement (15%)
 
-他コンポーネントとの結合度。
+他の要素との結合度・依存関係の複雑さ。
 
 | Score | Label | Criteria |
 |-------|-------|----------|
 | 0-2 | **Isolated** | 完全に独立。変更が他に波及しない |
 | 3-4 | **Loosely coupled** | 明確なインターフェース経由の依存のみ |
-| 5-6 | **Moderately coupled** | 複数モジュールと相互依存 |
-| 7-8 | **Tightly coupled** | 変更が広範囲に波及。Shotgun Surgery パターン |
+| 5-6 | **Moderately coupled** | 複数要素と相互依存 |
+| 7-8 | **Tightly coupled** | 変更が広範囲に波及 |
 | 9-10 | **Entangled** | 分離困難。変更すると予測不能な副作用 |
 
-**Evidence sources:** Import/dependency graph, change coupling analysis, blast radius tests
+**Evidence by domain:**
+- **Code:** Import/dependency graph, change coupling analysis, blast radius tests
+- **Process:** 他プロセスとの依存、ボトルネック発生頻度
+- **Document:** 他文書との参照関係、更新連鎖の長さ
+- **Configuration:** 設定間の暗黙の依存関係
 
 ### 5. Replaceability (15%)
 
@@ -85,13 +101,17 @@ Dimensions:
 
 | Score | Label | Criteria |
 |-------|-------|----------|
-| 0-2 | **Trivially replaceable** | 標準ライブラリや1行で代替可能 |
+| 0-2 | **Trivially replaceable** | 標準的な方法で即代替可能 |
 | 3-4 | **Easily replaceable** | 既存の代替手段があり、移行コスト低い |
 | 5-6 | **Replaceable with effort** | 代替手段はあるが、移行に数日〜1週間 |
-| 7-8 | **Difficult to replace** | カスタム実装が必要。移行に数週間 |
+| 7-8 | **Difficult to replace** | カスタム対応が必要。移行に数週間 |
 | 9-10 | **Irreplaceable** | 代替手段なし。再構築に数ヶ月 |
 
-**Evidence sources:** Alternative library search, migration effort estimate
+**Evidence by domain:**
+- **Code:** Alternative library search, migration effort estimate
+- **Process:** 代替ワークフローの存在、自動化の可能性
+- **Document:** 代替情報源の有無、口頭伝承への依存度
+- **Dependency:** 代替ライブラリ/サービスの成熟度
 
 ---
 
@@ -152,21 +172,22 @@ Low(0-3)      KEEP        KEEP        KEEP
 ```yaml
 cost_of_keeping:
   target: "<対象名>"
+  domain: "<DOMAIN>"
   dimensions:
-    maintenance:     { score: X, evidence: "string", weight: 0.25 }
-    testing:         { score: X, evidence: "string", weight: 0.20 }
+    upkeep:          { score: X, evidence: "string", weight: 0.25 }
+    verification:    { score: X, evidence: "string", weight: 0.20 }
     cognitive_load:  { score: X, evidence: "string", weight: 0.25 }
-    coupling:        { score: X, evidence: "string", weight: 0.15 }
+    entanglement:    { score: X, evidence: "string", weight: 0.15 }
     replaceability:  { score: X, evidence: "string", weight: 0.15 }
   total_score: "X.X"
   label: "LOW | MODERATE | ELEVATED | HIGH | CRITICAL"
 
 removal_risk:
   dimensions:
-    user_impact:     { score: X, evidence: "string", weight: 0.30 }
-    data_integrity:  { score: X, evidence: "string", weight: 0.25 }
+    user_impact:      { score: X, evidence: "string", weight: 0.30 }
+    data_integrity:   { score: X, evidence: "string", weight: 0.25 }
     system_stability: { score: X, evidence: "string", weight: 0.25 }
-    reversibility:   { score: X, evidence: "string", weight: 0.20 }
+    reversibility:    { score: X, evidence: "string", weight: 0.20 }
   total_score: "X.X"
 
 decision_matrix_result: "REMOVE | SIMPLIFY | DEFER | KEEP-WITH-WARNING | KEEP"
