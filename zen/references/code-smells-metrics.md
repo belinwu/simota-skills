@@ -42,6 +42,7 @@ Systematic detection and resolution of code smells with complexity measurements.
 | Comments | Comments explaining bad code | Rename, Extract Method (self-documenting) |
 | Duplicate Code | Similar code in multiple places | Extract Method, Pull Up Method |
 | Lazy Class | Class that does too little | Inline Class |
+| Defensive Excess | Unnecessary fallbacks / over-defensive code | → `references/defensive-excess.md` |
 
 ### Test Code Smells
 

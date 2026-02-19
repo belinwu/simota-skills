@@ -80,6 +80,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 5 types: Unused variables/imports(linter, safe) · Commented-out code(visual, safe) · Console.log in prod(linter, safe) · Unused exports(ts-prune/vulture/deadcode, check external) · Feature flag dead branches(manual, confirm retired)
 → Full guide, tools, safety: `references/dead-code-detection.md`
 
+## Defensive Excess
+
+6 patterns: Silent catch(catch+ignore/log-only→remove or rethrow) · Redundant nullish guard(type-guaranteed non-null→remove `??`/`?.`) · Fallback masking bugs(`|| default` hiding real errors→fail fast) · Pokemon exception(catch-all→catch specific) · Unreachable fallback(default branch that never executes→remove) · Redundant default params(always provided by callers→remove default)
+→ Full catalog, detection, fix strategies: `references/defensive-excess.md`
+
 ## Consistency Audit
 
 Cross-file pattern unification (Error Handling · API Call · State Management · Logging · Naming · Import/Export). Process: **Scan** → **Classify** → **Identify**(≥70%=canonical) → **Deviate** → **Plan**(within scope tier) → `references/consistency-audit.md`
@@ -124,6 +129,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/code-smells-metrics.md` | Smell catalog, formulas, commands |
 | `references/consistency-audit.md` | Audit framework, recipes, tools |
 | `references/dead-code-detection.md` | Detection guide, safety, language-specific |
+| `references/defensive-excess.md` | Defensive excess patterns, detection, fixes |
 | `references/language-patterns.md` | Python, Go, Rust, Java |
 | `references/refactoring-recipes.md` | 13 recipes with before/after |
 | `references/review-report-templates.md` | Review checklist, output, report, standards |
