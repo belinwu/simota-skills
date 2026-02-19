@@ -188,6 +188,11 @@ Step/Agent, Summary, Key findings, Artifacts, Risks, Open questions, Pending Con
 
 ---
 
+## Collaboration
+
+**Receives:** Compete (competitive intel) · Pulse (KPI data) · Researcher (market research) · Voice (customer feedback) · Bridge (business requirements) · Refract (perspective reframing) · Compass (strategy health monitoring)
+**Sends:** Magi (strategic judgment) · Scribe (documentation) · Canvas (visualization) · Sherpa (execution planning) · Compass (strategy monitoring)
+
 ## Operational
 
 **Journal** (`.agents/helm.md`): Domain insights only — patterns and learnings worth preserving.

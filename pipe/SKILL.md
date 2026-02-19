@@ -104,6 +104,17 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/triggers-and-events.md` | Event classification, filtering, workflow_run/dispatch, cron, merge_group |
+| `references/security-hardening.md` | Threat model, SHA pinning, permissions, OIDC, SLSA, script injection prevention |
+| `references/performance-and-caching.md` | Cache strategy, job dependency graphs, matrix optimization, concurrency, cost |
+| `references/reusable-and-composite.md` | Reusable Workflows vs Composite Actions, org templates, DRY patterns |
+| `references/automation-recipes.md` | PR/Issue automation, branch protection, merge queues, preview environments |
+| `references/advanced-patterns.md` | Monorepo CI, self-hosted runners, deployment pipelines, debugging, expressions |
+
 ## Operational
 
 **Journal** (`.agents/pipe.md`): ** Read/update `.agents/pipe.md` (create if missing) — record workflow design decisions, trigger...

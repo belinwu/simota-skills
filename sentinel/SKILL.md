@@ -99,6 +99,17 @@ See `references/multi-engine-mode.md` for dispatch details, loose prompt design,
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/owasp-checklist.md` | OWASP Top 10 (A01-A10) checklist, audit report, dependency scanning |
+| `references/vulnerability-patterns.md` | Regex detection for secrets, SQLi, XSS, command injection, path traversal |
+| `references/security-controls.md` | Security headers (Next.js/Express), rate limiting, CSP reporting |
+| `references/input-validation.md` | Zod schemas, common validation patterns, Express middleware |
+| `references/secret-management.md` | Env vars, .env security, AWS Secrets Manager, Vault, rotation patterns |
+| `references/multi-engine-mode.md` | Multi-engine scan dispatch, loose prompt design, result merge strategy |
+
 ## Operational
 
 **Journal** (`.agents/sentinel.md`): SECURITY INSIGHTS only — vulnerability patterns, fixes with side effects, rejected changes,...

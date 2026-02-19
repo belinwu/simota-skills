@@ -315,6 +315,15 @@ Script detects project type (package.json → Node.js, Cargo.toml → Rust, etc.
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/hook-system.md` | Full event details, input/output formats, settings.json structure, lifecycle constraints |
+| `references/hook-recipes.md` | 13+ hook recipes: security, quality gates, context loading, tech stack sets |
+| `references/debugging-guide.md` | Debug procedures, common errors, troubleshooting checklist |
+| `references/nexus-integration.md` | AUTORUN support, Nexus Hub Mode, handoff formats |
+
 ## Operational
 
 **Journal** (`.agents/latch.md`): ** Read/update `.agents/latch.md` (create if missing) — only record hook configuration insights...

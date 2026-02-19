@@ -102,6 +102,25 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/playwright-patterns.md` | Page Object, fixtures, auth, network mock, trace patterns |
+| `references/cypress-guide.md` | Commands, intercept, component testing, plugins |
+| `references/framework-selection.md` | Framework comparison, decision guide, advanced scenarios, quick reference |
+| `references/visual-a11y-testing.md` | Screenshot comparison, responsive testing, axe-core, WCAG compliance |
+| `references/ci-reporting.md` | GitHub Actions, sharding, HTML/Allure/Slack reporters |
+| `references/performance-testing.md` | Core Web Vitals, Lighthouse CI, budget assertions |
+| `references/complex-scenarios.md` | Multi-tab, iframe, WebSocket, file download/upload, offline mode |
+| `references/environment-management.md` | Docker Compose, DB seeding, dynamic provisioning |
+| `references/debug-monitoring.md` | HAR analysis, console error detection, trace viewer, CPU/memory profiling |
+| `references/edge-cases-i18n.md` | Timezone, i18n/l10n, cookie/storage, network simulation |
+| `references/cloud-testing.md` | BrowserStack, Sauce Labs, LambdaTest, CI integration |
+| `references/mobile-native-testing.md` | Appium, real device testing, mobile-specific patterns |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/voyager.md`): Uniquely stable selectors, timing issues affecting multiple tests, reusable test data setups,...

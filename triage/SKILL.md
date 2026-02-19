@@ -148,6 +148,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## Collaboration
+
+**Receives:** Nexus (incident routing) · Monitoring alerts · User reports
+**Sends:** Scout (root cause analysis) · Builder (fix implementation) · Radar (verification) · Lens (evidence collection) · Sentinel (security incidents) · Gear (rollback/infra)
+
 ## Operational
 
 **Journal** (`.agents/triage.md`): Domain insights only — patterns and learnings worth preserving.

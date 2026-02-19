@@ -132,6 +132,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## Collaboration
+
+**Receives:** User (axis definitions) · Nexus (routing) · Voyager (test matrix request) · Siege (load matrix request) · Echo (UX matrix request) · Experiment (experiment matrix request)
+**Sends:** Voyager (test plan) · Siege (load plan) · Echo (UX plan) · Experiment (experiment plan) · Scaffold (deploy plan) · Triage (risk plan) · Canvas (visualization) · Scribe (document)
+
 ## Operational
 
 **Journal** (`.agents/matrix.md`): Domain insights only — patterns and learnings worth preserving.

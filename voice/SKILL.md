@@ -72,6 +72,18 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/nps-survey.md` | NPS score ranges (0-10), Detractor/Passive/Promoter follow-ups, benchmarks |
+| `references/csat-ces-surveys.md` | CSAT 5-point satisfaction scale, CES 7-point effort scale, touchpoint design |
+| `references/exit-survey.md` | Churn reason taxonomy, trigger points, save offers |
+| `references/multi-channel-synthesis.md` | Unified taxonomy (category/sentiment/urgency/segment/journey), priority scoring |
+| `references/feedback-widget-analysis.md` | Feedback types (bug/feature/improvement/praise), sentiment classification |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/voice.md`): Recurring pain themes, segment-specific issues, feedback-retention correlations, surprising...

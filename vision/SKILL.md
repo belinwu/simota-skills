@@ -95,6 +95,17 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/output-formats.md` | Design Direction Doc, Style Guide, Improvement Report, Trend Application Report templates |
+| `references/design-trends.md` | Current trend risk levels (Low/Medium/High), AI tool pipeline, evaluation checklists |
+| `references/design-methodology.md` | Full process steps per operating mode (REDESIGN/NEW_PRODUCT/REVIEW/TREND_APPLICATION) |
+| `references/agent-orchestration.md` | Delegation patterns, agent boundaries, orchestration flow for Muse/Palette/Flow/Forge |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/vision.md`): CRITICAL DESIGN DECISIONS only — direction decisions affecting future work, brand-specific reusable...

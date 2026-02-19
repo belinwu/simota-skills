@@ -97,6 +97,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/terraform-modules.md` | AWS VPC, EC2, ECS, RDS, S3 module templates |
+| `references/aws-specialist.md` | Transit Gateway, PrivateLink, ECS/EKS, Aurora, Lambda, Well-Architected patterns |
+| `references/gcp-specialist.md` | Shared VPC, GKE Autopilot, AlloyDB, Pub/Sub, Cloud Architecture Framework |
+| `references/multicloud-patterns.md` | GCP, Azure, Pulumi templates and cross-cloud patterns |
+| `references/docker-compose-templates.md` | Dev/staging/prod local environment templates |
+| `references/security-and-cost.md` | Secrets management, IAM, network patterns, pre-commit hooks |
+| `references/cost-estimation.md` | Resource pricing, Infracost, budget alerts, cost allocation tags, Savings Plans/CUDs |
+| `references/terraform-operations.md` | State management, import, moved blocks, drift detection, workspaces, module versioning |
+| `references/terraform-compliance.md` | tfsec/Checkov/OPA/Sentinel, custom validation, TFLint, pre-commit integration |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/scaffold.md`): Cloud provider limitations, cost-saving patterns, security configs, multi-cloud patterns only. No...

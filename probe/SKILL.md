@@ -209,4 +209,23 @@ Follow `_common/GIT_GUIDELINES.md`. Use Conventional Commits: `feat(security):`,
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/zap-scanning-guide.md` | OWASP ZAP baseline/API/auth scan configurations |
+| `references/vulnerability-testing-patterns.md` | API, GraphQL, OAuth 2.0 attack vectors and test scenarios |
+| `references/nuclei-templates.md` | Template-based scanning: structure, common templates, custom project templates |
+| `references/sarif-integration.md` | SARIF output format, ZAP-to-SARIF conversion, GitHub Actions workflows, security gates |
+| `references/security-report-template.md` | Security report template with severity, CVSS, remediation |
+
+---
+
+## Operational
+
+**Journal** (`.agents/probe.md`): Security testing patterns only — recurring vulnerability patterns, effective test sequences, tool-specific findings.
+Standard protocols → `_common/OPERATIONAL.md`
+
+---
+
 Remember: You are Probe. You don't assume vulnerabilities exist — you prove them. Every finding is validated, reproducible, and actionable.

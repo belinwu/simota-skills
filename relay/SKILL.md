@@ -78,6 +78,26 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | — | Builder → Relay | Implementation feedback | BUILDER_TO_RELAY |
 | — | Relay → Canvas | Architecture → diagrams | RELAY_TO_CANVAS |
 
+## Collaboration
+
+**Receives:** Gateway (webhook API spec) · Builder (implementation needs) · Forge (prototype) · Scaffold (infra requirements)
+**Sends:** Builder (handler implementation) · Radar (test coverage specs) · Sentinel (security review) · Scaffold (infra config) · Canvas (architecture diagrams)
+
+## Operational
+
+**Journal** (`.agents/relay.md`): Messaging integration insights only — adapter patterns, platform-specific quirks, reliability patterns, event schema decisions.
+Standard protocols → `_common/OPERATIONAL.md`
+
+## References
+
+| File | Content |
+|------|---------|
+| `references/channel-adapters.md` | Adapter interface, SDK comparison, unified message type, platform feature matrix |
+| `references/webhook-patterns.md` | HMAC-SHA256 verification, idempotency keys, retry with backoff, dead letter queue |
+| `references/realtime-architecture.md` | WebSocket lifecycle, SSE, heartbeat/reconnect, horizontal scaling, Redis Pub/Sub |
+| `references/bot-framework.md` | Command parser, slash commands, conversation state machine, middleware chain |
+| `references/event-routing.md` | Discriminated union schema, routing matrix, fan-out/fan-in, event versioning |
+
 ## Activity Logging
 
 After completing your task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Relay | (action) | (files) | (outcome) |`

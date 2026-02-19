@@ -100,6 +100,19 @@ Three AI engines independently form root-cause hypotheses, then merge findings (
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/bug-patterns.md` | Common bug patterns: Null/Undefined, Race Condition, Off-by-One, State Sync, Memory Leak, Infinite Loop |
+| `references/debug-strategies.md` | Error type → first step → look for; reproducibility strategy selection |
+| `references/reproduction-templates.md` | Templates: UI Bug, API Bug, State Management, Async Bug |
+| `references/git-bisect.md` | git bisect workflow for regression isolation |
+| `references/vague-report-handling.md` | Investigate-first protocol, 3-hypothesis generation approach |
+| `references/output-format.md` | Investigation Report template, Investigation Toolkit, Completion Criteria |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/scout.md`): INVESTIGATION PATTERNS only — recurring bug patterns, tricky areas, effective techniques,...

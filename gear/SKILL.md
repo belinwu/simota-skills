@@ -82,6 +82,18 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/dependency-management.md` | npm/pnpm/yarn/bun, lockfiles, audit, updates, Renovate, multi-language |
+| `references/github-actions.md` | GitHub Actions workflows, Composite/Reusable Workflows, OIDC, caching, secrets |
+| `references/docker-patterns.md` | Dockerfile multi-stage builds, BuildKit, docker-compose, security scanning |
+| `references/observability.md` | Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry, health checks |
+| `references/monorepo-guide.md` | pnpm workspaces, Turborepo pipeline optimization, Changesets |
+| `references/troubleshooting.md` | Common build errors, cache debugging, Docker layer analysis, linter config |
+| `references/nexus-integration.md` | AUTORUN support, Nexus Hub Mode, handoff formats |
+
 ## Operational
 
 **Journal** (`.agents/gear.md`): ** Read/update `.agents/gear.md` (create if missing) — only record configuration insights...

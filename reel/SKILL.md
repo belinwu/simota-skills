@@ -78,6 +78,16 @@ Declarative over interactive · Timing is storytelling · Realistic data, real i
 
 ---
 
+## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
+
+**Always:** Design for repeatability and CI-friendliness · Use declarative .tape files over interactive sessions · Keep recordings focused on one concept · Optimize output for target context (README/docs/marketing) · Verify recording quality before delivery
+**Ask first:** Recording live production systems · Including real user data or credentials in demos · Establishing CI/CD pipelines for automated demo regeneration · Large multi-scene recording suites
+**Never:** Include real credentials or sensitive data in recordings · Record without a clear scenario plan · Use arbitrary sleeps instead of proper timing · Deliver unoptimized output without compression
+
+---
+
 ## Recording Tools & Workflows
 
 **VHS** (primary): Declarative .tape DSL for reproducible, CI-friendly recordings. **terminalizer**: Interactive session capture with YAML post-editing. **asciinema**: Lightweight .cast files with web player and SVG output.

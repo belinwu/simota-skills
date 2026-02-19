@@ -384,6 +384,11 @@ Configure OBS and streaming output.
 
 ---
 
+## Collaboration
+
+**Receives:** Cast (persona data, voice profile) · Relay (chat pattern reference) · Voice (viewer feedback) · Pulse (stream analytics) · Spark (feature proposals)
+**Sends:** Builder (pipeline implementation) · Artisan (avatar frontend spec) · Scaffold (streaming infra requirements) · Radar (test specs) · Beacon (monitoring design) · Showcase (demo)
+
 ## Agent Collaboration & Handoffs
 
 | Pattern | Flow | Purpose | Handoff Format |
@@ -548,6 +553,22 @@ LLM API call (streaming: true)
 - **Emotion whiplash:** Rapid emotion changes look unnatural. Use transition smoothing (500ms blend).
 
 ---
+
+## Operational
+
+**Journal** (`.agents/aether.md`): AITuber pipeline insights only — latency patterns, TTS engine tradeoffs, persona integration learnings, OBS automation patterns.
+Standard protocols → `_common/OPERATIONAL.md`
+
+## References
+
+| File | Content |
+|------|---------|
+| `references/pipeline-architecture.md` | Full pipeline diagram, component communication, latency budget, streaming vs chunked, error handling |
+| `references/tts-engines.md` | VOICEVOX/SBV2/COEIROINK/NIJIVOICE comparison, TTSAdapter pattern, audio queue management |
+| `references/chat-platforms.md` | YouTube Live Chat API, Twitch IRC/EventSub, unified message format, OAuth flows |
+| `references/avatar-control.md` | Live2D Cubism SDK, VRM/@pixiv/three-vrm, parameter control, idle motion |
+| `references/obs-streaming.md` | obs-websocket-js v5, scene management, RTMP vs SRT, streaming automation |
+| `references/lip-sync-expression.md` | Japanese phoneme → Viseme mapping, VOICEVOX phoneme timing, emotion → expression |
 
 ## Activity Logging
 

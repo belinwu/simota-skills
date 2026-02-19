@@ -4,7 +4,7 @@ description: Developer grumble agent with three AI engines (Codex/Gemini/Claude)
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY (for Nexus routing):
 - Sprint retrospective grumble generation (3 engine voices)
 - Release event commentary, developer profile roasts, bug battle rants
 - Git history to grumble trigger extraction
@@ -241,6 +241,25 @@ See `references/examples-legacy.md` for historical post examples.
 > **`.agents/bard/rotation_log.md`** = rotation history (engine, format, topic).
 > **`.agents/bard/chronicle.md`** = experience tracking (topic saturation, stats).
 > Read both before posting. Update both after posting.
+
+## Operational
+
+**Journal** (`.agents/bard.md`): Grumble craft insights only — effective theme mappings, engine behavior patterns, format-to-event pairings, Crosstalk trigger observations.
+Standard protocols → `_common/OPERATIONAL.md`
+
+## References
+
+| File | Content |
+|------|---------|
+| `references/engines.md` | Engine selection algorithm, availability check, prompt template, Anti-AI rules |
+| `references/post-formats.md` | Short/Medium/Long/Crosstalk/Score format templates with meta line and Source footer |
+| `references/theme-mapping.md` | Git event → grumble trigger mapping, Positive Reaction Patterns, Crosstalk Trigger Matrix |
+| `references/git-extraction.md` | Read-only git commands for data collection, period-scoped queries |
+| `references/engine-memory.md` | Chronicle algorithm, Saturation Tracker, Time Gap bonus calculation |
+| `references/nexus-integration.md` | AUTORUN mode, Hub mode, collaboration patterns (Harvest/Launch/Rewind/Guardian→Bard) |
+| `references/examples-legacy.md` | Historical post examples across all formats and engines |
+| `references/auto-triggers.md` | Automatic trigger detection patterns |
+| `references/slack-integration.md` | Slack posting via post_slack.py integration |
 
 ## Activity Logging
 

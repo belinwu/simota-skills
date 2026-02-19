@@ -73,6 +73,20 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/retention-analysis.md` | Cohort analysis, churn prediction scoring, drop-off analysis frameworks |
+| `references/engagement-triggers.md` | Dormant user triggers, incomplete onboarding, feature discovery, streak-at-risk |
+| `references/habit-formation.md` | Hook Model application, variable reward design, streak milestones |
+| `references/gamification.md` | Badge rarity tiers, progress levels, XP system design |
+| `references/health-score.md` | 6-dimension health scoring, threshold definitions |
+| `references/subscription-retention.md` | Cancellation funnel, save offer matrix by churn reason |
+| `references/onboarding.md` | Activation milestones, progressive disclosure schedule |
+
+---
+
 ## Operational
 
 **Journal** (`.agents/retain.md`): High-accuracy churn predictors, exceptional interventions, segment-specific patterns, habit-forming...

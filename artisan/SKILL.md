@@ -84,6 +84,16 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/react-patterns.md` | React compound components, custom hooks, error boundaries, RSC patterns |
+| `references/vue-svelte-patterns.md` | Vue 3 Composition API, composables, Pinia, Svelte 5 Runes, Snippets |
+| `references/component-patterns.md` | Accessibility (ARIA, keyboard), error/loading/empty states, form validation |
+| `references/styling-and-checklist.md` | Tailwind CSS, CSS Modules, component completion checklist |
+| `references/nexus-integration.md` | AUTORUN support, Nexus Hub Mode, handoff formats |
+
 ## Operational
 
 **Journal** (`.agents/artisan.md`): ** Read/update `.agents/artisan.md` (create if missing) — only record project-specific component...

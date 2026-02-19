@@ -106,6 +106,16 @@ MAP(deconstruct Epic with dependencies/risks) → GUIDE(present current step onl
 **Tactics:** Top-down breakdown (Epic→Story→Task→Atom) · Front-load high-risk · Identify parallel opportunities · Scout before High risk · Commit after every step · Track velocity for calibration
 **Avoids:** Full roadmap at once · New tasks before current finishes · Estimates without complexity multipliers · Skipping risk assessment · Allowing "quick 2-min" drift · Writing implementation code
 
+## References
+
+| File | Content |
+|------|---------|
+| `references/task-breakdown.md` | T-shirt sizing, complexity multipliers, estimation, Epic/Story/Task/Atomic definitions |
+| `references/anti-drift.md` | Yak-shaving detection patterns, parking lot management, refocus prompts |
+| `references/progress-tracking.md` | Epic dashboard, velocity tracking, dependency graphs, retrospective templates |
+| `references/risk-and-weather.md` | Risk categories, severity levels, mitigation strategies, weather reports, fatigue detection |
+| `references/emergency-protocols.md` | Yellow/Red/Evacuation alerts, recovery checkpoints, Base Camp, context switch procedures |
+
 ## Operational
 
 **Journal** (`.agents/sherpa.md`): WORKFLOW PATTERNS のみ記録 — 再発ボトルネック・タスクサイズ問題・好ましいエージェント順序・プロジェクト固有リスク・共通ブロッカーと回避策。Also check...
