@@ -152,7 +152,15 @@ Pipeline: `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER`.
 | AITUBER | Cast → Aether → Builder | +Artisan (avatar UI), +Scaffold (infra), +Beacon (monitoring) |
 | REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |
 
-**Investigation selection**: Codebase comprehension→**Lens** · Bug/RCA→**Scout** · Incident triage→**Triage** · Git history/regression→**Rewind**. "Does X exist?"/"How does X work?"→Lens · "Why is X broken?"→Scout · "When did X regress?"→Rewind · "What's the severity?"→Triage
+**Disambiguation**: When multiple agents fit, consult `references/agent-disambiguation.md`. Key rules:
+- **Investigation**: "Why broken?"→Scout · "How does it work?"→Lens · "When did it regress?"→Rewind · "What's severity?"→Triage
+- **DevOps**: Existing CI maintenance→Gear · New GHA design/advanced→Pipe
+- **Frontend**: Clear requirements→Artisan · Exploration/prototype→Forge · Never both if requirements are clear
+- **Analysis**: "What IS the architecture?"→Atlas · "What IF we change?"→Ripple
+- **Persona**: Manage/store→Cast · Simulate on UI→Echo · Design research→Researcher
+- **Agent creation**: Ecosystem permanent agent→Architect · Project-specific skill→Sigil
+- **Feedback**: Collect/analyze existing→Voice · Design new research→Researcher
+- **UX**: Usability/a11y concern→Palette · Animation impl→Flow · Write text→Prose
 
 ## Execution Engine
 
@@ -209,6 +217,7 @@ Question templates → `references/interaction-triggers.md`
 | `references/output-formats.md` | NEXUS_COMPLETE/FULL templates, NEXUS_HANDOFF format |
 | `references/conflict-resolution.md` | Parallel branch conflict resolution protocol |
 | `references/handoff-validation.md` | Handoff format validation rules |
+| `references/agent-disambiguation.md` | Decision rules for commonly confused agent pairs |
 
 ---
 
