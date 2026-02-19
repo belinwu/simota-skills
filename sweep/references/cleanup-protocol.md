@@ -131,6 +131,46 @@ Total: 90/100 (Very High confidence)
 
 ---
 
+## Maintenance Baseline Recording
+
+After each cleanup cycle, record baseline in `.agents/sweep.md`:
+
+```yaml
+SCAN_BASELINE:
+  date: "YYYY-MM-DD"
+  scan_type: "full"
+  tool: "knip"
+  total_files_scanned: 342
+  candidates_found: 15
+  deleted_this_cycle: 8
+  space_reclaimed_kb: 45
+  false_positives: 2
+```
+
+Update baseline after every cleanup. Use for trend tracking → `maintenance-workflow.md`
+
+---
+
+## GROVE_TO_SWEEP_HANDOFF Reception
+
+When receiving `GROVE_TO_SWEEP_HANDOFF` from Grove:
+
+1. **Parse** handoff YAML (candidates list with structural evidence)
+2. **Validate** each candidate:
+   - File still exists
+   - Run through Primary Detection Tool (knip/vulture/staticcheck)
+   - Calculate Confidence Score
+3. **Categorize**:
+   - ≥70 confidence → Accept into cleanup queue
+   - 50-69 → Flag for manual verification
+   - <50 → Return to Grove with "still referenced" note
+4. **Tag** accepted items with `source: grove-handoff` for traceability
+5. **Report** processing results back to Grove
+
+See `maintenance-workflow.md` for full handoff processing flow.
+
+---
+
 ## Dependency Report Format
 
 ```markdown

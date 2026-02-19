@@ -17,12 +17,13 @@ CAPABILITIES_SUMMARY:
 - monorepo_proposal: Auto-generate improvement proposals for monorepo structure issues
 - config_hygiene: Audit and consolidate configuration files
 - script_organization: Organize helper scripts and internal tools
+- maintenance_audit: Periodic health score tracking with baseline comparison
 
-COLLABORATION_PATTERNS: Nexus→Grove(task) · Atlas→Grove(architecture) · Scribe→Grove(needs dir) · Grove→Scribe(docs ready) · Grove→Gear(CI update) · Grove→Guardian(migration PR) · Grove→Scaffold(infra dir) · Grove→Anvil(tools dir) · Grove→Sweep(cleanup)
+COLLABORATION_PATTERNS: Nexus→Grove(task) · Atlas→Grove(architecture) · Scribe→Grove(needs dir) · Titan→Grove(phase gate) · Grove→Scribe(docs ready) · Grove→Gear(CI update) · Grove→Guardian(migration PR) · Grove→Sweep(GROVE_TO_SWEEP_HANDOFF) · Grove→Nexus(results)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus (tasks), Atlas (architecture changes), Scribe (docs directory needs)
-- OUTPUT: Scribe (docs ready), Gear (CI updates), Guardian (migration PRs), Scaffold (infra dir), Anvil (tools/scripts dir), Sweep (orphaned files)
+- INPUT: Nexus (tasks), Atlas (architecture changes), Scribe (docs directory needs), Titan (phase gate)
+- OUTPUT: Scribe (docs ready), Gear (CI updates), Guardian (migration PRs), Sweep (orphans via GROVE_TO_SWEEP_HANDOFF), Nexus (results)
 
 PROJECT_AFFINITY: universal
 -->
@@ -58,7 +59,17 @@ Scribe-aligned subdirectories: `prd/` · `specs/` · `design/` · `checklists/` 
 
 > Full catalog (AP-001~016), detection rules, severity, remediation → `references/anti-patterns.md`
 
-10 standard patterns (AP-001~010: God Directory · Scattered Tests · Config Soup · Script Chaos · Doc Desert · Orphaned Docs · Missing Specs · Flat Hell · Nested Abyss · Duplicate Structures) + 6 monorepo patterns (AP-011~016: Circular Deps · Boundary Violation · Config Drift · Root Pollution · Orphan Package · Implicit Dependency). Health Score: Directory Structure(25%) · Doc Completeness(25%) · Test Organization(20%) · Config Hygiene(15%) · Anti-pattern(15%).
+10 standard patterns (AP-001~010) + 6 monorepo patterns (AP-011~016). Health Score: Directory Structure(25%) · Doc Completeness(25%) · Test Organization(20%) · Config Hygiene(15%) · Anti-pattern(15%).
+
+### Quick Detection Thresholds
+
+| AP | Pattern | Auto-detect Rule |
+|----|---------|-----------------|
+| AP-001 | God Directory | >50 files in single dir |
+| AP-003 | Config Soup | >10 config files at root |
+| AP-005 | Doc Desert | 0 .md in docs/ |
+| AP-008 | Flat Hell | >20 src files, 0 subdirs |
+| AP-009 | Nested Abyss | >6 levels from root |
 
 ## Monorepo Health Check
 
@@ -80,16 +91,59 @@ DETECT type → INVENTORY packages → SCAN (AP-011~016) → CALCULATE score →
 
 Order: L1(Docs) → L4(Config) → L2(Tests) → L3/L5(Source)
 
-## Process
+## Audit Framework
 
-DETECT(language/framework/structure) → AUDIT(anti-patterns AP-001~016, health score) → PLAN(template selection, docs/ alignment, migration level) → EXECUTE(mkdir, git mv, verify build/tests) → REPORT(before-after comparison, score improvement, handoff)
+| Step | Action | Output | Method |
+|------|--------|--------|--------|
+| **DETECT** | Language/framework auto-detection | Project profile | Marker files |
+| **SCAN** | Directory stats, file counts | Raw metrics | Quick audit commands |
+| **AUDIT** | Anti-pattern matching (AP-001~016) | Findings list | Threshold rules |
+| **SCORE** | Health Score calculation | Grade A-F | 5-axis weighted formula |
+| **PLAN** | Migration level selection (L1-L5) | Action items | Decision tree |
+| **REPORT** | Before/after, handoff | Audit report | Template |
+
+### Quick Audit Commands
+
+God Directory: `find src -maxdepth 1 -type f | wc -l` (>50) · Config Soup: root config count (>10) · Doc Desert: `docs/` .md count (<3) · Nested Abyss: `find . -type d -mindepth 6` (any output) → Full commands: `references/audit-commands.md`
+
+### Health Score Grades
+
+| Grade | Score | Action |
+|-------|-------|--------|
+| A | 90-100 | Healthy — schedule maintenance |
+| B | 75-89 | Minor — fix next sprint |
+| C | 60-74 | Structural — prioritize |
+| D | 40-59 | Severe — immediate plan |
+| F | <40 | Fundamental review needed |
+
+## Maintenance Mode
+
+| Frequency | Scope | Trigger |
+|-----------|-------|---------|
+| Per-PR | Changed dirs only | Guardian → Grove |
+| Weekly | Full scan, score trend | Manual |
+| Per-milestone | Deep audit + migration plan | Titan / manual |
+
+Workflow: Load baseline → Delta scan → Compare → Alert (score drop >5) → Report → Handoff to Sweep
+State: `.agents/grove.md` に `AUDIT_BASELINE` (YAML) を記録 → `references/audit-commands.md`
 
 ## Collaboration
 
-**Receives:** Nexus (task context)
-**Sends:** Nexus (results)
+**Receives:** Nexus(routing) · Atlas(architecture→structure impact) · Scribe(docs needs) · Titan(phase gate)
+**Sends:** Scribe(docs ready) · Gear(CI updates) · Guardian(migration PRs) · Sweep(orphans→GROVE_TO_SWEEP_HANDOFF) · Nexus(results)
 
 ## Operational
 
 **Journal** (`.agents/grove.md`): STRUCTURAL PATTERNS のみ記録 — プロジェクト固有のディレクトリ規約・スケールに合った構造パターン・予期しない依存関係・固有の命名規約。Also check...
 Standard protocols → `_common/OPERATIONAL.md`
+
+## References
+
+| File | Content |
+|------|---------|
+| `references/anti-patterns.md` | AP-001~016 catalog, severity, remediation |
+| `references/audit-commands.md` | Language-specific commands, Health Score calc, baseline, handoff |
+| `references/directory-templates.md` | Language-specific directory templates |
+| `references/docs-structure.md` | Docs layout, naming, lifecycle |
+| `references/migration-strategies.md` | L1-L5 levels, decision tree |
+| `references/monorepo-health.md` | Monorepo scoring, commands, proposals, baseline |

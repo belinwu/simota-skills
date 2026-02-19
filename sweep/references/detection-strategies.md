@@ -1,6 +1,6 @@
 # Sweep Detection Strategy Reference
 
-Comprehensive detection matrix and quantitative thresholds.
+Comprehensive detection matrix, quantitative thresholds, and confidence-gated flowchart.
 
 ---
 
@@ -8,10 +8,10 @@ Comprehensive detection matrix and quantitative thresholds.
 
 | File Type | Detection Method | Risk Level | Tools |
 |-----------|------------------|------------|-------|
-| Source Code | Import analysis | High | ts-prune, depcheck |
+| Source Code | Import analysis | High | knip, ts-prune, vulture, staticcheck |
 | Assets | Reference search | Medium | grep, custom scripts |
 | Config | Tool verification | Medium | Manual + scripts |
-| Dependencies | Import scan | Low | depcheck, npm-check |
+| Dependencies | Import scan | Low | knip, depcheck, npm-check |
 | Build Output | .gitignore check | Low | git status |
 | Duplicates | Hash comparison | Medium | fdupes, custom |
 
@@ -71,27 +71,39 @@ Use these thresholds as guidelines for prioritizing cleanup candidates.
 
 ---
 
-## Detection Flowchart
+## Confidence-Gated Detection Flowchart
+
+Confidence Score is calculated inline in SKILL.md. This flowchart integrates confidence gates into the detection process.
 
 ```
 File Discovered
     │
+    ├─ Is it in exclusion list? (.sweepignore, never-delete)
+    │   └─ Yes → SKIP
+    │
     ├─ Is it in .gitignore?
-    │   ├─ Yes, but committed → Candidate (build artifact)
+    │   ├─ Yes, but committed → Candidate (build artifact) → Score
     │   └─ No → Continue analysis
     │
     ├─ Is it imported/referenced?
-    │   ├─ No references found → Candidate (orphan)
-    │   ├─ Only self-reference → Candidate (dead code)
+    │   ├─ No references found → Candidate (orphan) → Score
+    │   ├─ Only self-reference → Candidate (dead code) → Score
     │   └─ Has references → Keep, verify references are live
     │
     ├─ Is it a config file?
-    │   ├─ Tool not in use → Candidate (config remnant)
+    │   ├─ Tool not in use → Candidate (config remnant) → Score
     │   └─ Tool active → Keep
     │
-    └─ Is it a duplicate?
-        ├─ Identical content exists → Candidate (duplicate)
-        └─ Unique content → Keep
+    ├─ Is it a duplicate?
+    │   ├─ Identical content exists → Candidate (duplicate) → Score
+    │   └─ Unique content → Keep
+    │
+    └─ CONFIDENCE GATE (applied to all candidates)
+        ├─ ≥90 → Batch delete proposal
+        ├─ 70-89 → Individual review proposal
+        ├─ 50-69 → Manual review queue
+        ├─ 30-49 → Keep (low confidence)
+        └─ <30 → Never delete
 ```
 
 ---

@@ -463,6 +463,66 @@ COMPARISON:
 
 ---
 
+## Baseline Comparison
+
+Track monorepo health over time by comparing against previous baselines.
+
+### Baseline Format
+
+Record in `.agents/grove.md`:
+
+```yaml
+MONOREPO_BASELINE:
+  date: "YYYY-MM-DD"
+  type: "turborepo"
+  score: 78
+  grade: B
+  axes:
+    package_boundaries: 22
+    dependency_health: 20
+    config_consistency: 16
+    build_efficiency: 10
+    package_hygiene: 10
+  packages: 12
+  findings:
+    - AP-011: 0
+    - AP-012: 1
+    - AP-013: 2
+    - AP-014: 0
+    - AP-015: 1
+    - AP-016: 0
+```
+
+### Delta Report
+
+```
+Monorepo Health Delta
+=====================
+Previous: 78 (B) @ 2025-01-15
+Current:  85 (B) @ 2025-02-15
+Change:   +7 (improved)
+
+Axis Changes:
+  package_boundaries: 22 → 25 (+3) — AP-012 resolved
+  config_consistency: 16 → 18 (+2) — shared config package created
+  (others unchanged)
+
+Resolved: AP-012 (Boundary Violation), AP-013 x1 (Config Drift)
+New:      (none)
+Alert:    (none — no score drop >5)
+```
+
+### Alert Rules
+
+| Condition | Action |
+|-----------|--------|
+| Score drop >5 | Immediate investigation |
+| New Critical AP | Alert + create improvement plan |
+| Score plateau (3+ checks) | Review if deeper audit needed |
+| Grade change (e.g. B→C) | Escalate to Titan for milestone review |
+
+---
+
 ## Health Check Report Template
 
 ```markdown
