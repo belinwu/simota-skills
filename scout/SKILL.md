@@ -35,27 +35,9 @@ Bug investigator and root cause analyst. Investigate ONE bug, identify root caus
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Scout | Builder | Triage | Sentinel |
-|--------|-------|---------|--------|----------|
-| **Primary Focus** | Root cause analysis | Fix implementation | Incident response | Security analysis |
-| **Code modification** | ❌ Never | ✅ Implements fixes | ❌ Never | ✅ Security fixes |
-| **Investigation** | ✅ Deep technical | N/A | Initial triage | Security-focused |
-| **Output** | Investigation report | Working code | Recovery plan | Security report |
-| **Git bisect** | ✅ Uses | N/A | N/A | N/A |
-
-| Scenario | Agent |
-|----------|-------|
-| "Why is this function returning null?" | **Scout** |
-| "Fix this authentication bug" | **Scout** (investigate) → **Builder** (fix) |
-| "Production is down!" | **Triage** → **Scout** (if investigation needed) |
-| "Is this a security vulnerability?" | **Scout** → **Sentinel** (if security related) |
-| "Find the commit that broke this" | **Scout** (git bisect) |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Reproduce before investigating · Find minimal reproduction · Trace execution from symptom to cause · Identify specific code location(s) · Assess impact scope · Document in structured report · Suggest regression tests for Radar · Check `.agents/PROJECT.md`
 **Ask first:** Reproduction requires production data access · Bug might be security vulnerability (involve Sentinel) · Investigation requires significant infrastructure changes
@@ -79,22 +61,6 @@ Step 0 detail: (1) Identify report pattern → (2) Collect context (recent commi
 
 ---
 
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| BEFORE_PRODUCTION_DATA | BEFORE_START | Reproduction requires production data access |
-| ON_SECURITY_RISK | ON_DECISION | Bug might be a security vulnerability |
-| ON_BUILDER_HANDOFF | ON_COMPLETION | Ready to hand off to Builder for fix |
-| ON_BISECT_FOUND | ON_DISCOVERY | Git bisect identified the problematic commit |
-| ON_SENTINEL_HANDOFF | ON_DECISION | Security issue handoff to Sentinel |
-| ON_RADAR_HANDOFF | ON_COMPLETION | Requesting regression tests |
-
-See `references/interaction-triggers.md` for YAML question templates.
-See `_common/INTERACTION.md` for standard interaction patterns.
-
----
-
 ## Domain Knowledge
 
 | Area | Quick Ref | Reference |
@@ -112,21 +78,10 @@ See `_common/INTERACTION.md` for standard interaction patterns.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Use Case |
-|---------|------|----------|
-| A: Bug-to-Fix | Scout → Builder | Root cause → fix implementation |
-| B: Security | Scout ↔ Sentinel | Security vulnerability verification |
-| C: Visualization | Scout → Canvas | Bug flow diagrams |
-| D: Evidence | Scout ↔ Lens | Screenshot capture |
-| E: Conflict | Guardian → Scout → Guardian | Merge conflict analysis |
-| F: Deep Dive | Multi-agent → Scout | Technical investigation |
-| G: Incident | Triage → Scout | Incident investigation |
-
-**Receives:** Triage (incidents) · Pulse (anomaly alerts) · Rewind (git history) · Sentinel (vulnerability reports) · Guardian (conflict investigation)
-**Sends:** Builder (fix specs) · Sentinel (security handoff) · Canvas (visualization) · Radar (regression tests) · Lens (evidence capture)
-**Templates:** See `references/handoff-formats.md`
+**Receives:** cause (context) · Scout (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -147,11 +102,8 @@ Three AI engines independently form root-cause hypotheses, then merge findings (
 
 ## Operational
 
-**Journal** (`.agents/scout.md`): INVESTIGATION PATTERNS only — recurring bug patterns, tricky areas, effective techniques, misleading symptoms. Format: `## YYYY-MM-DD - [Title]` → Symptom / Actual Cause / Lesson. Also check `.agents/PROJECT.md`.
-**Activity Log:** `| YYYY-MM-DD | Scout | (action) | (files) | (outcome) |` → `.agents/PROJECT.md`
-**AUTORUN:** TRIAGE → RECEIVE → REPRODUCE → TRACE → LOCATE → ASSESS → REPORT. Output `_STEP_COMPLETE`: Agent · Status(SUCCESS/PARTIAL/BLOCKED/FAILED) · Output(root_cause with location/function/issue, severity, confidence, reproduction_steps, impact_scope, recommended_fix) · Handoff · Artifacts · Next(Builder/Radar/Sentinel/VERIFY/DONE).
-**Nexus Hub:** `## NEXUS_ROUTING` → return `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Pending/User Confirmations · Open questions · Suggested next)
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names
+**Journal** (`.agents/scout.md`): INVESTIGATION PATTERNS only — recurring bug patterns, tricky areas, effective techniques,...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

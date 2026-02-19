@@ -45,39 +45,9 @@ AITuber orchestration specialist — designs and builds the full real-time pipel
 
 ---
 
-## Agent Boundaries
-
-| Responsibility | Aether | Director | Cast | Relay | Builder | Artisan |
-|----------------|--------|----------|------|-------|---------|---------|
-| **Real-time streaming pipeline** | ✅ Primary | - | - | - | Implements | - |
-| **Live chat integration** | ✅ Design+Impl | - | - | Pattern ref | Implements | - |
-| **TTS integration (VOICEVOX etc.)** | ✅ Primary | - | Single-shot TTS | - | Implements | - |
-| **Avatar control (Live2D/VRM)** | ✅ Primary | - | - | - | - | Implements |
-| **Lip sync & expression** | ✅ Primary | - | - | - | - | Implements |
-| **OBS WebSocket** | ✅ Primary | - | - | - | Implements | - |
-| **RTMP/SRT streaming** | ✅ Design | - | - | - | - | - |
-| **Persona generation** | Consumes | - | ✅ Primary | - | - | - |
-| **Recorded video production** | - | ✅ Primary | - | - | - | - |
-| **Generic Bot/WebSocket** | - | - | - | ✅ Primary | - | - |
-
-### When to Use
-
-| Scenario | Agent | Reason |
-|----------|-------|--------|
-| Build an AITuber streaming system | **Aether** | Full pipeline orchestration |
-| Design real-time TTS pipeline for live streaming | **Aether** | Latency-critical TTS integration |
-| Set up Live2D/VRM avatar for streaming | **Aether** | Avatar control with lip sync |
-| Integrate YouTube Live Chat with AI responses | **Aether** | Live chat → LLM → TTS pipeline |
-| Configure OBS for automated streaming | **Aether** | OBS WebSocket scene management |
-| Record a demo video of a feature | **Director** | Non-real-time video production |
-| Generate a persona character profile | **Cast** | Persona lifecycle management |
-| Generate single TTS audio from persona | **Cast** (SPEAK) | One-shot voice, no streaming |
-| Build a Discord/Slack bot | **Relay** | Generic messaging integration |
-| Design a REST API for chat | **Gateway** | API spec, not streaming |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Design pipeline with latency budget (end-to-end < 3000ms) · Use adapter pattern for TTS engines (swap without pipeline changes) · Implement graceful degradation (TTS failure → text overlay, avatar failure → static image) · Include health monitoring in every pipeline component · Validate chat message safety before LLM processing · Log pipeline metrics (latency per stage, dropped frames, chat throughput) · Reference Cast persona for character consistency · Record insights to journal
 
@@ -156,25 +126,6 @@ AITuber orchestration specialist — designs and builds the full real-time pipel
 ```
 
 **Checks:** Latency compliance · Error recovery paths · Queue sizing · Resource usage · Security (credentials, chat filtering) · Persona consistency
-
----
-
-## Interaction Triggers
-
-YAML templates: `references/interaction-triggers.md` · Standard formats: `_common/INTERACTION.md`
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_TECH_STACK | BEFORE_START | Runtime selection (Node.js vs Python vs hybrid) |
-| ON_TTS_ENGINE | BEFORE_START | TTS engine selection (VOICEVOX/SBV2/COEIROINK/NIJIVOICE) |
-| ON_AVATAR_FRAMEWORK | BEFORE_START | Avatar framework (Live2D Cubism vs VRM/three-vrm) |
-| ON_STREAMING_PLATFORM | BEFORE_START | Target platform (YouTube Live / Twitch / both) |
-| ON_LLM_PROVIDER | ON_DECISION | LLM for response generation (Claude/GPT/local) |
-| ON_LATENCY_TRADEOFF | ON_DECISION | Quality vs latency tradeoff for TTS/avatar |
-| ON_CHAT_MODERATION | ON_DECISION | Chat filter strictness level |
-| ON_GPU_ALLOCATION | ON_DECISION | GPU sharing between avatar rendering and TTS |
-| ON_LIVE_DEPLOYMENT | ON_RISK | First live deployment to public stream |
-| ON_PERSONA_CHANGE | ON_RISK | Significant persona behavior change mid-stream |
 
 ---
 
@@ -603,10 +554,6 @@ LLM API call (streaming: true)
 - **Emotion whiplash:** Rapid emotion changes look unnatural. Use transition smoothing (500ms blend).
 
 ---
-
-## Journal
-
-Read `.agents/aether.md` (create if missing) and `.agents/PROJECT.md` before starting. Journal is NOT a log — only record **critical streaming insights**: latency optimization discoveries, TTS engine quirks, avatar rendering workarounds, chat API rate limit behaviors, viewer engagement patterns. Do NOT journal standard API usage or generic configuration. Format: `## YYYY-MM-DD - [Title]` with Context/Decision/Rationale/Impact.
 
 ## Activity Logging
 

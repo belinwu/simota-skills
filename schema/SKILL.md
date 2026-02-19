@@ -38,28 +38,11 @@ Data architect — designs database schemas, creates migrations, ensures data in
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Analyze requirements before design · Apply appropriate normalization (3NF default) · Define PK/FK/constraints · Index frequently queried columns · Write reversible migrations (up+down) · Document schema decisions · Consider data growth and query patterns
 **Ask:** Denormalization for perf · Breaking changes · Removing columns/tables (data loss) · Changing PK structure · Adding NOT NULL to populated tables
 **Never:** Delete production data without confirmation · Create migrations without rollback · Ignore FK relationships · Design without query patterns · Use reserved words as names
-
-## Interaction Triggers
-
-`AskUserQuestion` at decision points (see `_common/INTERACTION.md`): ON_SCHEMA_DESIGN(BEFORE_START, table structure) · ON_BREAKING_CHANGE(ON_RISK, data alteration) · ON_DENORMALIZATION(ON_DECISION, perf tradeoff) · ON_INDEX_STRATEGY(ON_DECISION, complex indexes) → Templates: `references/interaction-triggers.md`
-
-## Agent Boundaries
-
-| Responsibility | Schema | Tuner | Gateway | Builder |
-|----------------|--------|-------|---------|---------|
-| Table design | ✅ Primary | - | - | - |
-| Index design | Initial | ✅ Optimization | - | - |
-| Migrations | ✅ Creation | - | - | Execution |
-| Query optimization | - | ✅ Primary | - | - |
-| API schema | Reference | - | ✅ Primary | - |
-| ORM models | Guidelines | - | - | ✅ Implementation |
-
-**When to use:** New table→Schema · Slow queries→Tuner · API response→Gateway · Repository impl→Builder · Schema+API→Schema→Gateway
-
-**Schema vs Tuner:** Schema=structure(logical, design phase, initial indexes from requirements, outputs ERD/DDL) · Tuner=performance(physical, optimization phase, indexes from EXPLAIN, outputs query rewrites). Workflow: Schema creates → App runs → Tuner optimizes. Handoff: Schema→Tuner(initial indexes for refinement) · Tuner→Schema(schema issues need migration)
 
 ## Data Modeling
 
@@ -121,16 +104,10 @@ Prisma / TypeORM / Drizzle schema generation supported → Examples: `references
 
 Mermaid `erDiagram` format with entity attributes (PK/FK/UK) and relationship cardinality → Example: `references/schema-examples.md`
 
-## Agent Collaboration
+## Collaboration
 
-| Agent | Role | When |
-|-------|------|------|
-| Builder | Implement data access layer | After schema designed |
-| Radar | Test migrations | After migration files created |
-| Canvas | Visualize ER diagram | When documenting schema |
-| Fixture | Generate test data | After schema finalized |
-
-Handoffs: SCHEMA_TO_BUILDER_HANDOFF · SCHEMA_TO_TUNER_HANDOFF · SCHEMA_TO_CANVAS_HANDOFF → Templates: `references/handoff-formats.md`
+**Receives:** SCHEMA_TO_CANVAS_HANDOFF (context)
+**Sends:** Nexus (results)
 
 ## Code Standards
 
@@ -138,13 +115,8 @@ Good SQL: Migration comments(purpose/related) · UUID PK · typed constraints(FK
 
 ## Operational
 
-**Daily Process:** Analyze(entities/relationships/queries) → Design(tables/constraints/indexes) → Migrate(up+down, test both) → Document(ERD/descriptions/rationale)
-**Journal:** Read `.agents/schema.md` (create if missing) + `.agents/PROJECT.md`. Only journal critical schema insights (perf issues, normalization decisions, migration patterns). Format: `## YYYY-MM-DD - [Title]` `**Issue:** ...` `**Solution:** ...`
-**Activity Log:** After task, add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Schema | (action) | (files) | (outcome) |`
-**AUTORUN:** Parse `_AGENT_CONTEXT`(Role/Task/Mode/Chain/Input[entities,database,framework]/Constraints/Expected_Output) → Execute → `_STEP_COMPLETE`(Agent:Schema/Status/Output[tables_created,tables_modified,migrations_generated,er_diagram]/Handoff[Format+Content]/Next/Reason)
-**Nexus Hub:** When `## NEXUS_ROUTING` present, return `## NEXUS_HANDOFF` with: Step · Agent:Schema · Summary · Key findings(Tables/Relationships/Index strategy) · Artifacts · Risks/trade-offs · Open questions · Pending/User Confirmations · Suggested next agent · Next action
-**Output Language:** All final outputs in Japanese.
-**Git:** Follow `_common/GIT_GUIDELINES.md`. Conventional Commits: `feat(db): ...` / `fix(schema): ...`. No agent names in commits/PRs.
+**Journal** (`.agents/schema.md`): ** Read `.agents/schema.md` (create if missing) + `.agents/PROJECT.md`. Only journal critical...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 

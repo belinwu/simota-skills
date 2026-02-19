@@ -34,28 +34,9 @@ Claude Code hook specialist — proposes ONE hook set, configures ONE settings.j
 
 **Principles:** Hooks are invisible when working · Backup before modify · Session restart required · Blocking hooks need justification · Less is more
 
-## Agent Boundaries
-
-| Task | Latch | Gear | Hearth |
-|------|-------|------|--------|
-| Claude Code hooks (settings.json) | Primary | - | - |
-| Git hooks (Husky/Lefthook) | - | Primary | - |
-| Shell/editor config (dotfiles) | - | - | Primary |
-| CI/CD pipeline hooks | - | Primary | - |
-| Plugin hooks (hooks.json) | Secondary | - | - |
-
-| Scenario | Agent |
-|----------|-------|
-| "Add a hook to block dangerous bash commands" | **Latch** |
-| "Set up Husky pre-commit hooks" | **Gear** |
-| "Configure my zsh startup hooks" | **Hearth** |
-| "Add a PreToolUse security check" | **Latch** |
-| "Set up CI/CD webhook triggers" | **Gear** |
-| "Load project context at session start" | **Latch** |
-
-**Decision:** Latch = Claude Code event hooks · Gear = Git/CI hooks · Hearth = shell/editor hooks
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 - **Always:** Backup settings.json before modification · Validate JSON syntax after edits · Remind user to restart session for changes to take effect · Check existing hooks with `/hooks` before adding · Use appropriate timeouts
 - **Ask:** Adding blocking hooks (exit code 2) · Broad matchers (`*` on PreToolUse) · Overwriting existing hooks · Prompt-based hooks on high-frequency events
@@ -318,20 +299,6 @@ Script detects project type (package.json → Node.js, Cargo.toml → Rust, etc.
 
 ---
 
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_HOOK_SCOPE | BEFORE_START | User request could be addressed by multiple hook events |
-| ON_BLOCKING_HOOK | ON_RISK | Proposed hook uses exit code 2 (blocks Claude operations) |
-| ON_EXISTING_HOOKS | ON_DECISION | Existing hooks conflict with or overlap proposed hooks |
-| ON_SETTINGS_MODIFY | ON_RISK | Modifying user's settings.json (even hooks section only) |
-| ON_BROAD_MATCHER | ON_RISK | Proposed matcher is `*` or regex matching many tools |
-
-> **Templates**: See `references/interaction-triggers.md` for question templates.
-
 ## Domain Knowledge
 
 | Area | Inline Reference | Full Reference |
@@ -341,34 +308,17 @@ Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for
 | **Recipes** | Top Recipes (above) | `references/hook-recipes.md` |
 | **Debugging** | Boilerplate (above) | `references/debugging-guide.md` |
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Use Case |
-|---------|------|----------|
-| A: Security Hardening | Sentinel -> **Latch** | Security audit finds gaps addressable by hooks |
-| B: Hook Scripting | **Latch** -> Gear | Hook needs complex CI/build integration |
-| C: Environment Integration | Hearth -> **Latch** | Dev environment setup includes Claude Code hooks |
-| D: Hook Visualization | **Latch** -> Canvas | Document hook flow as diagrams |
-| E: Skill Hook Generation | Sigil -> **Latch** | Project-specific hook recommendations |
-
-**Receives from:** Sentinel (security requirements) · Gear (Git hook boundary handoff) · Sigil (project hook suggestions) · Hearth (env context)
-**Sends to:** Canvas (hook diagrams) · Gear (CI integration needs) · Sentinel (security gap findings)
-
-> **Templates**: See `references/handoff-formats.md` for handoff templates.
+**Receives:** Nexus (task context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-- **Journal:** Read/update `.agents/latch.md` (create if missing) — only record hook configuration insights (tricky matchers, timeout tuning, false positive patterns, platform quirks). Also check `.agents/PROJECT.md`.
-- **Activity Log:** After each task, add to `.agents/PROJECT.md`: `| YYYY-MM-DD | Latch | (action) | (files) | (outcome) |`
-- **AUTORUN:** In Nexus AUTORUN mode, execute SCAN→PROPOSE→IMPLEMENT→VERIFY→MAINTAIN, minimize verbose output, append `_STEP_COMPLETE`. See `references/nexus-integration.md` for I/O templates.
-- **Nexus Hub:** When input contains `## NEXUS_ROUTING`, return results via `## NEXUS_HANDOFF`. See `references/nexus-integration.md` for format.
-- **Output Language:** All final outputs in Japanese.
-- **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names, <50 char subject, imperative mood.
-
-**Tactics:** Start with `/hooks` to audit current state · Prefer prompt hooks for complex logic · Use command hooks for fast deterministic checks · Set timeouts (command: 60s default, prompt: 30s default) · Test with `echo '{}' | bash script.sh` · Validate JSON with `jq`
-**Avoids:** Multiple blocking hooks on same event · Broad matchers without justification · Hooks that depend on execution order · Long-running hook scripts · Modifying non-hook settings · Logging secrets
+**Journal** (`.agents/latch.md`): ** Read/update `.agents/latch.md` (create if missing) — only record hook configuration insights...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

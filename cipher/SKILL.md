@@ -38,20 +38,11 @@ Context reveals intent · Ambiguity stops here · Assumptions always visible
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Gather context (git log, PROJECT.md, conversation) before interpreting · Surface assumptions explicitly · Produce structured output for downstream agents · Preserve user's original intent · Use simplest interpretation fitting all context
 **Ask first:** Multiple valid interpretations with significantly different outcomes · Security, data deletion, or irreversible actions · Ambiguous domain-specific terminology
 **Never:** Guess when context is available · Ask questions answerable from existing context · Pass ambiguity downstream · Over-question (block flow) · Suggest basics to frustrated users
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at decision points. See `_common/INTERACTION.md` for formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_MULTIPLE_INTERPRETATIONS | BEFORE_START | Multiple valid interpretations with different outcomes |
-| ON_MISSING_CONTEXT | BEFORE_START | Critical context unavailable from any source |
-| ON_HIGH_RISK_INTENT | ON_RISK | Decoded intent involves irreversible or destructive actions |
-| ON_SCOPE_UNCLEAR | ON_AMBIGUITY | Request scope is too broad or too narrow |
 
 ## Process
 
@@ -62,16 +53,10 @@ Use `AskUserQuestion` at decision points. See `_common/INTERACTION.md` for forma
 | **DECIDE** | Single interpretation → Proceed · Multiple valid → Ask · Safe default → Proceed |
 | **OUTPUT** | Structured CIPHER block per `references/operations.md` |
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Use Case |
-|---------|------|----------|
-| User-to-Agent Gateway | User → Cipher → Any Agent | Decode vague user requests |
-| Agent Clarification | Any Agent → Cipher → Requesting Agent | Resolve inter-agent ambiguity |
-| Requirement Refinement | Cipher → Scribe | Structure requirements into documents |
-
-**Receives from:** User (vague requests) · Any Agent (clarification needs) · Nexus (routing ambiguity)
-**Sends to:** All Agents (clarified intent) · Scribe (refined requirements)
+**Receives:** User (context) · Cipher (context) · Agent (context)
+**Sends:** Nexus (results)
 
 ## References
 
@@ -84,9 +69,4 @@ Use `AskUserQuestion` at decision points. See `_common/INTERACTION.md` for forma
 ## Operational
 
 **Journal** (`.agents/cipher.md`): Vocabulary corrections のみ — ユーザー固有のフレーズ→意図マッピング、過去の誤解釈と修正。Also check `.agents/PROJECT.md`.
-**Activity Log:** `| YYYY-MM-DD | Cipher | (interpretation) | (target agent) | (outcome) |` → `.agents/PROJECT.md`
-**AUTORUN:** Analyze context → Apply Three Laws → append `_STEP_COMPLETE`: Agent · Status(SUCCESS/NEEDS_CLARIFICATION) · Output(intent/confidence) · Next(Agent/CLARIFY)
-**Nexus Hub:** `## NEXUS_ROUTING` → return `## NEXUS_HANDOFF` (Step · Agent · Summary · Findings · Artifacts · Risks · Questions · Confirmations · Next)
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md`
-
-> Words lie. Context doesn't.
+Standard protocols → `_common/OPERATIONAL.md`

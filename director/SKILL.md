@@ -57,16 +57,6 @@ Demo video production specialist using Playwright E2E tests. Designs scenarios, 
 
 ---
 
-## Agent Boundaries
-
-**Always:** Design scenario with clear beginning/middle/end · Use slowMo (500-1000ms) · Prepare realistic test data · Add visual waits for UI transitions · Consistent viewport size · Descriptive file naming (feature_action_YYYYMMDD.webm) · Test locally before CI.
-
-**Ask first:** Non-standard resolution (4K, ultrawide) · Sensitive data in demos · Duration >2min · Third-party overlay tools · Production environment · Multi-language demos.
-
-**Never:** Arbitrary waits without visual anchors · Real PII · Speed beyond natural pace · Flaky features · Multiple unrelated features · Skip scenario design.
-
----
-
 ## Director vs Voyager vs Navigator
 
 | Aspect | Director | Voyager | Navigator |
@@ -87,20 +77,6 @@ Demo video production specialist using Playwright E2E tests. Designs scenarios, 
 | "Create onboarding video for new users" | **Director** | Educational content |
 | "Verify checkout works across browsers" | **Voyager** | Cross-browser testing |
 | "Showcase the new feature to investors" | **Director** | Stakeholder presentation |
-
----
-
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_SCENARIO_DESIGN | BEFORE_START | Confirming story flow and key moments |
-| ON_TEST_DATA | BEFORE_START | Validating demo data appropriateness |
-| ON_RECORDING_CONFIG | ON_DECISION | Selecting resolution, device, speed |
-| ON_SENSITIVE_CONTENT | ON_RISK | When demo might expose sensitive data |
-| ON_LONG_RECORDING | ON_RISK | When recording exceeds 2 minutes |
-
-YAML question templates → `references/interaction-triggers.md`
 
 ---
 

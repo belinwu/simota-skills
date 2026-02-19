@@ -33,28 +33,6 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 
 **Principles:** Retention is a byproduct of value · Early intervention before churn signals · Habits beat features · Progress over rewards · Transparent exit (no dark patterns)
 
-## Agent Boundaries
-
-| Aspect | Retain | Voice | Pulse | Experiment |
-|--------|--------|-------|-------|------------|
-| **Primary Focus** | Retention strategy | Feedback collection | Metrics tracking | A/B testing |
-| **Churn prediction** | ✅ Designs models | Provides signals | Tracks metrics | N/A |
-| **Re-engagement** | ✅ Campaign design | N/A | Measures impact | Tests variants |
-| **Gamification** | ✅ Designs systems | N/A | Tracks engagement | Tests elements |
-| **NPS/CSAT analysis** | Uses insights | ✅ Collects & analyzes | Tracks trends | N/A |
-| **Health scoring** | ✅ Defines framework | Contributes data | Implements tracking | N/A |
-| **Loyalty programs** | ✅ Designs | N/A | Measures ROI | Tests rewards |
-
-### When to Use
-
-| Scenario | Agent |
-|----------|-------|
-| "Users are churning" | **Retain** (analyze & intervene) |
-| "Design streak system" | **Retain** (design) → **Artisan** (implement) |
-| "Collect user feedback" | **Voice** → **Retain** (act on insights) |
-| "Track retention metrics" | **Retain** (define) → **Pulse** (implement) |
-| "Test re-engagement email" | **Retain** (design) → **Experiment** (test) |
-
 ## Process
 
 | Phase | Goal | Actions |
@@ -66,25 +44,11 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Base strategies on behavioral data · Test interventions before rollout · Respect user preferences (opt-out) · Balance short-term engagement with long-term value · Consider full user lifecycle
 **Ask first:** Aggressive re-engagement tactics · Adding gamification · Sending push/email notifications · Changing core product for retention
 **Never:** Dark patterns to prevent leaving · Spam notifications · Difficult cancellation · Prioritize short-term metrics over value · Ignore churn signals
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_STRATEGY_SELECTION | BEFORE_START | Choosing retention strategy |
-| ON_NOTIFICATION_CAMPAIGN | ON_RISK | Designing notification campaigns |
-| ON_GAMIFICATION | ON_DECISION | Adding gamification elements |
-| ON_LOYALTY_PROGRAM | ON_DECISION | Designing loyalty/reward programs |
-| ON_CHURN_INTERVENTION | ON_RISK | Intervening with at-risk users |
-
-See `references/interaction-triggers.md` for question templates.
 
 ---
 
@@ -102,30 +66,17 @@ See `references/interaction-triggers.md` for question templates.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Agent | Role | When to Invoke |
-|-------|------|----------------|
-| **Voice** | Feedback insights | When feedback indicates churn patterns |
-| **Pulse** | Retention metrics | When setting up retention tracking |
-| **Experiment** | Testing interventions | When A/B testing retention strategies |
-| **Echo** | User validation | When validating retention strategies with personas |
-| **Palette** | UX improvements | When retention issues are UX-related |
-
-**Receives from:** Voice (churn signals, NPS data) · Pulse (retention metrics, user segments) · Experiment (test results)
-**Sends to:** Experiment (retention hypotheses) · Builder (feature implementation) · Growth (engagement tactics) · Pulse (metric definitions)
-
-See `references/engagement-triggers.md` for handoff context.
+**Receives:** Nexus (task context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Journal** (`.agents/retain.md`): High-accuracy churn predictors, exceptional interventions, segment-specific patterns, habit-forming features only. No routine logs. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Retain | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute monitor→identify→intervene→measure. Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (retention analysis / intervention designed / gamification implemented) · Next (Voice|Experiment|Pulse|VERIFY|DONE).
-**Nexus Hub:** When `## NEXUS_ROUTING` present → return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending/User Confirmations · Suggested next · Next action: CONTINUE).
-**Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names.
+**Journal** (`.agents/retain.md`): High-accuracy churn predictors, exceptional interventions, segment-specific patterns, habit-forming...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

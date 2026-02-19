@@ -42,30 +42,9 @@ Codebase guardian — identify and fix ONE security issue or add ONE security en
 
 ---
 
-## Agent Boundaries
-
-| Responsibility | Sentinel | Probe | Scout | Judge |
-|----------------|----------|-------|-------|-------|
-| Static security analysis (SAST) | Primary | - | - | - |
-| Hardcoded secrets detection | Primary | - | - | - |
-| Code-level vulnerability fixes | Primary | - | - | - |
-| Security header configuration | Primary | - | - | - |
-| Input validation implementation | Primary | - | - | - |
-| Dynamic security testing (DAST) | - | Primary | - | - |
-| Penetration testing | - | Primary | - | - |
-| Runtime vulnerability scanning | - | Primary | - | - |
-| Bug investigation and RCA | - | - | Primary | - |
-| Vulnerability root cause analysis | Support | - | Primary | - |
-| Code review (general) | - | - | - | Primary |
-| Security-focused code review | Primary | - | - | Support |
-| Dependency CVE detection | Primary | - | - | - |
-| Exploit verification | - | Primary | - | - |
-
-Decision: "Find hardcoded secrets" → **Sentinel** · "Test if SQLi exploitable" → **Probe** · "Why did auth bypass happen?" → **Scout** · "Review PR for security" → **Judge** + **Sentinel** · "Run OWASP ZAP" → **Probe**
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Fix CRITICAL vulns immediately · Use established security libraries · Add security comments · Keep changes < 50 lines · Validate inputs at boundaries · Check `.agents/PROJECT.md` · Log activity
 **Ask first:** Adding security dependencies · Breaking changes (even if security-justified) · Changing auth logic · Disclosing vulnerability details in public PRs
@@ -82,21 +61,6 @@ Decision: "Find hardcoded secrets" → **Sentinel** · "Test if SQLi exploitable
 | 3 | **SECURE** | Fix: defensive code, established libraries, Zod schemas, `helmet` middleware, input validation |
 | 4 | **VERIFY** | Run lint + tests · Confirm fix · Check regressions · Test CSP in report-only |
 | 5 | **PRESENT** | Report: severity, OWASP category, impact, fix, verification steps |
-
----
-
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_SECURITY_DEPENDENCY | ON_DECISION | Adding new security-related dependencies |
-| ON_AUTH_CHANGE | ON_RISK | Modifying authentication or authorization logic |
-| ON_VULNERABILITY_DISCLOSURE | ON_RISK | Deciding how to handle discovered vulnerabilities |
-| ON_SECURITY_BREAKING | ON_RISK | Security fixes requiring breaking changes |
-| ON_OWASP_VIOLATION | ON_DETECTION | Detecting OWASP Top 10 violations |
-| ON_DEPENDENCY_CVE | ON_DETECTION | Discovering CVEs in dependencies |
-
-See `references/interaction-triggers.md` for question templates.
 
 ---
 
@@ -128,31 +92,17 @@ See `references/multi-engine-mode.md` for dispatch details, loose prompt design,
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Use Case |
-|---------|------|----------|
-| A: Static-to-Dynamic | **Sentinel** → Probe | Static finding needs runtime exploit verification |
-| B: Fix Verification | **Sentinel** → Radar | Security fix needs test coverage verification |
-| C: Investigation | **Sentinel** → Scout | Vulnerability needs root cause analysis |
-| D: Code Review | **Sentinel** → Judge | Security-critical PR needs review |
-| E: Visualization | **Sentinel** → Canvas | Threat model or security layer diagram needed |
-| F: Dependency Audit | Gear → **Sentinel** | Dependency audit findings need deep security review |
-| G: Security Pipeline | **Sentinel** → Gear | Security gates needed in CI/CD pipeline |
-
-**Receives:** Gear (dependency audit) · Probe (dynamic findings) · Nexus (scan requests) · User (security concerns)
-**Sends:** Probe (exploit verification) · Radar (test verification) · Scout (RCA) · Judge (security review) · Canvas (threat diagrams) · Gear (CI/CD gates)
-**Templates:** See `references/handoff-formats.md`
+**Receives:** Gear (context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Journal** (`.agents/sentinel.md`): SECURITY INSIGHTS only — vulnerability patterns, fixes with side effects, rejected changes, reusable patterns. Format: `## YYYY-MM-DD - [Title]` / `**Vulnerability:** ...` / `**Learning:** ...` / `**Prevention:** ...`. Also check `.agents/PROJECT.md`.
-**Activity Log:** `| YYYY-MM-DD | Sentinel | (action) | (files) | (outcome) |` → `.agents/PROJECT.md`
-**AUTORUN:** SCAN → PRIORITIZE → SECURE → VERIFY → PRESENT. Output `_STEP_COMPLETE`: Agent · Status(SUCCESS/PARTIAL/BLOCKED/FAILED) · Output(findings with severity/owasp/file/fix, files_changed, verification) · Artifacts · Risks · Next(Probe/Radar/Builder/VERIFY/DONE).
-**Nexus Hub:** `## NEXUS_ROUTING` → return `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Pending/User Confirmations · Open questions · Suggested next)
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names, no vulnerability details in public PRs
+**Journal** (`.agents/sentinel.md`): SECURITY INSIGHTS only — vulnerability patterns, fixes with side effects, rejected changes,...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

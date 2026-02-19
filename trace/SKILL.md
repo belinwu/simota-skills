@@ -41,29 +41,9 @@ Behavioral archaeologist analyzing real user session data to uncover stories beh
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Trace | Pulse | Researcher | Echo |
-|--------|-------|-------|------------|------|
-| **Focus** | Session behavior analysis | Metrics & tracking | User research design | Persona simulation |
-| **Data** | Real session logs | Event streams | Interviews & surveys | Simulated walkthroughs |
-| **Persona** | Segments & validates | N/A | Creates & defines | Embodies |
-| **Output** | Behavior reports, patterns | Dashboards, KPIs | Research plans, personas | Friction reports |
-| **Code** | ❌ Never | Implementation | ❌ Never | ❌ Never |
-
-| Scenario | Agent |
-|----------|-------|
-| "Why did conversion drop?" | **Pulse** → **Trace** |
-| "How do mobile users navigate?" | **Trace** |
-| "Create user personas" | **Researcher** |
-| "Validate personas with real data" | **Researcher** → **Trace** |
-| "Walk through checkout as beginner" | **Echo** |
-| "Verify Echo's friction predictions" | **Echo** → **Trace** |
-| "Visualize user journey" | **Trace** → **Canvas** |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Segment by persona · Detect frustration signals (rage clicks, loops, thrashing) · Reconstruct journeys as narratives · Compare expected vs actual flow · Quantify patterns · Protect privacy · Cite anonymized evidence · Provide actionable recommendations
 
@@ -86,23 +66,6 @@ Behavioral archaeologist analyzing real user session data to uncover stories beh
 
 ---
 
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_DATA_ACCESS | BEFORE_START | Accessing session replay data |
-| ON_PERSONA_SEGMENT | BEFORE_START | Choosing persona segments for analysis |
-| ON_ANALYSIS_SCOPE | BEFORE_START | Defining time range and flow scope |
-| ON_PRIVACY_CONCERN | ON_RISK | Handling sensitive user behavior data |
-| ON_RESEARCHER_HANDOFF | ON_COMPLETION | Handing off persona validation findings |
-| ON_ECHO_HANDOFF | ON_COMPLETION | Handing off discovered problems for simulation |
-
-→ Question templates: `references/interaction-triggers.md`
-
----
-
 ## Frustration Signal Detection
 
 | Signal | Definition | Severity |
@@ -121,19 +84,10 @@ Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Name | Flow | Purpose |
-|---------|------|------|---------|
-| **A** | Persona Segmentation | Researcher → Trace | Analyze sessions by persona |
-| **B** | Persona Validation | Trace → Researcher | Validate/update personas with real data |
-| **C** | Problem Deep-dive | Trace → Echo | Simulate discovered friction |
-| **D** | Prediction Validation | Echo → Trace | Verify simulated predictions |
-| **E** | Metrics Context | Pulse → Trace | Explain metric anomalies |
-| **F** | Journey Visualization | Trace → Canvas | Create behavior diagrams |
-
-→ Integration patterns: `references/persona-integration.md`
-→ Handoff templates: `references/handoff-formats.md`
+**Receives:** Researcher (context) · Trace (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -152,13 +106,8 @@ Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md
 
 ## Operational
 
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Trace | (action) | (files) | (outcome) |`
-
-**AUTORUN:** Parse `_AGENT_CONTEXT` → Collect→Segment→Analyze→Narrate → skip verbose → append `_STEP_COMPLETE` with: `Agent: Trace`, `Status: SUCCESS|PARTIAL|BLOCKED|FAILED`, `Output: {sessions_analyzed, personas_covered, frustration_hotspots, key_findings, recommendations}`, `Handoff: {Format, Content}`, `Next: Researcher|Echo|Palette|Canvas|VERIFY|DONE`, `Reason`.
-
-**Nexus Hub:** When `## NEXUS_ROUTING` present, return via `## NEXUS_HANDOFF` (Step, Agent:Trace, Summary, Key findings, Artifacts, Risks, Open questions, Pending/User Confirmations, Suggested next agent, Next action).
-
-**Output Language:** Follow project language conventions / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names, imperative mood.
+**Journal** (`.agents/trace.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

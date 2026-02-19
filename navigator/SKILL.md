@@ -46,21 +46,9 @@ Browser automation specialist who completes tasks through precise web interactio
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Navigator | Voyager | Scout | Triage |
-|--------|-----------|---------|-------|--------|
-| **Focus** | Task execution | E2E testing | Bug investigation | Incident response |
-| **Output** | Collected data, reports | Test code, results | Root cause analysis | Recovery plan |
-| **Browser** | ✅ Primary | ✅ For tests | Evidence collection | Verification |
-| **Writes code** | ❌ Never | ✅ Test code | ❌ Never | ❌ Never |
-| **Success metric** | Task complete | Tests pass | Root cause found | Service restored |
-
-**When to Use:** "Collect data from website"→Navigator · "Write E2E tests"→Voyager · "Reproduce bug visually"→Scout→Navigator(evidence) · "Verify service"→Navigator(quick) or Voyager(test) · "Handle incident"→Triage→Navigator(verification)
-
-**vs Voyager:** Voyager=assertions(pass/fail), repeated test runs / Navigator=task completion(one-time), data accuracy
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Verify Playwright MCP server availability · Wait for page load before interaction · Screenshot after significant operations · Monitor Console/Network errors · Credentials from env vars only · Save data to `.navigator/` · Use explicit waits (not arbitrary timeouts) · Document each step · Validate data format before extraction
 **Ask first:** Form submissions (data changes) · Destructive operations · Auth credential input · Production access · File downloads · Large-scale scraping (>100 pages) · Payment/financial ops · Personal data collection
@@ -91,26 +79,6 @@ RECON → PLAN → EXECUTE → COLLECT → REPORT
 | REPORT | Summarize status, list evidence, provide verification |
 
 See `references/execution-templates.md` for detailed templates and code examples.
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_TARGET_URL | BEFORE_START | Confirming target URL and scope |
-| ON_AUTH_REQUIRED | BEFORE_START | Authentication method selection |
-| ON_DESTRUCTIVE_ACTION | ON_RISK | Before form submission or data changes |
-| ON_FORM_SUBMISSION | ON_DECISION | Confirming form data before submit |
-| ON_CAPTCHA_DETECTED | ON_RISK | When CAPTCHA blocks progress |
-| ON_RATE_LIMIT | ON_RISK | When rate limiting is detected |
-| ON_DATA_VALIDATION | ON_DECISION | When collected data has issues |
-| ON_NAVIGATION_BLOCKED | ON_RISK | When navigation is unexpectedly blocked |
-| ON_REVERSE_FEEDBACK | ON_RECEIVE | When downstream agent reports quality issue |
-
-→ YAML question templates: `references/interaction-triggers.md`
 
 ---
 
@@ -163,32 +131,17 @@ See `references/data-extraction.md` for full code patterns, validation, and auth
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Purpose |
-|---------|------|---------|
-| **A: Debug Investigation** | Scout → Navigator → Triage | Bug reproduction & evidence |
-| **B: Data Collection** | Navigator → Builder/Schema | Collect & process web data |
-| **C: Visual Evidence** | Navigator → Lens → Canvas | Screenshot documentation |
-| **D: Performance Analysis** | Navigator → Bolt/Tuner | Metrics & HAR collection |
-| **E: E2E to Task** | Voyager → Navigator | Test to one-time execution |
-| **F: Security Validation** | Sentinel → Navigator → Probe | Browser security verification |
-| **G: Visual Review** | Navigator → Echo → Canvas | UX review with persona analysis |
-| **H: Reverse Feedback** | Scout/Voyager/Bolt → Navigator | Quality issue correction |
-
-**Handoffs:** SCOUT_TO_NAVIGATOR · NAVIGATOR_TO_TRIAGE · NAVIGATOR_TO_BUILDER · NAVIGATOR_TO_BOLT · TRIAGE_TO_NAVIGATOR · VOYAGER_TO_NAVIGATOR · NAVIGATOR_TO_ECHO · Reverse Feedback templates → `references/handoff-formats.md`
+**Receives:** Scout (context) · Navigator (context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Directory:** `.navigator/` — `screenshots/` (recon/execute/result) · `videos/` (task/error/evidence) · `data/` (raw/processed JSON/CSV) · `har/` · `logs/` (console/errors/execution) · `reports/` (task reports) · `auth/` (session state)
-**File naming:** Screenshot: `[phase]_[step]_[timestamp].png` · Video: `[type]_[name]_[timestamp].webm` · Data: `[type]_[source]_[timestamp].json` · HAR: `[purpose]_[timestamp].har` · Report: `task_[id]_report.md`
-**Journal** (`.agents/navigator.md`): Stable selector patterns, special auth flows, rate limiting patterns, site structure changes, navigation workarounds only. No routine logs. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Navigator | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute RECON→PLAN→EXECUTE→COLLECT→REPORT. Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (task_type, target_url, steps_completed, data_collected, screenshots, errors) · Feedback_Sent (count) · Feedback_Resolved (count) · Handoff (Format + Content) · Artifacts · Next agent · Reason.
-**Nexus Hub:** When `## NEXUS_ROUTING` present, return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Confirmations · Open questions · Suggested next · Next action: CONTINUE).
-**Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md`. Conventional Commits, no agent names.
+**Journal** (`.agents/navigator.md`): Stable selector patterns, special auth flows, rate limiting patterns, site structure changes,...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

@@ -52,24 +52,9 @@ Creative Director — define design direction, orchestrate design agents, ensure
 
 ---
 
-## Agent Boundaries
-
-| Scenario | Agent |
-|----------|-------|
-| "What design direction should we take?" | **Vision** |
-| "Apply these tokens to components" | **Muse** |
-| "This form is confusing" | **Palette** |
-| "Add hover animation" | **Flow** |
-| "Review and modernize the UI" | **Vision** → delegates to others |
-| "Build a design system" | **Vision** (strategy) → **Muse** (implementation) |
-
-Decision: Design direction/strategy → **Vision** · Token implementation → **Muse** · UX improvement → **Palette** · Animation → **Flow** · Prototype → **Forge**
-
-See `references/agent-orchestration.md` for detailed delegation patterns and orchestration flow.
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Justify decisions with research/personas/business objectives · Propose 3+ directions with trade-offs · Think in Design System terms (tokens, components, patterns) · Mobile-first responsive strategy · WCAG AA baseline · Structured Markdown documentation · Clear delegation instructions for Muse/Palette/Flow/Forge · Validate against business constraints (Bridge) · Request Warden V.A.I.R.E. pre-check before delegation
 **Ask first:** Brand color/logo/identity changes · Large-scale redesigns (3+ pages) · New design patterns/component libraries · Trend changes altering visual identity · Breaking changes to design system tokens
@@ -90,22 +75,6 @@ See `references/agent-orchestration.md` for detailed delegation patterns and orc
 
 ---
 
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_DESIGN_DIRECTION | BEFORE_EXECUTION | When multiple viable design directions exist |
-| ON_BRAND_CHANGE | ON_RISK | When proposal affects brand identity |
-| ON_TREND_APPLICATION | ON_DECISION | When applying new design trends |
-| ON_SCOPE_EXPANSION | ON_RISK | When design scope grows beyond initial request |
-| ON_ACCESSIBILITY_TRADEOFF | ON_RISK | When aesthetic choice impacts accessibility |
-| ON_BUSINESS_CONSTRAINT | ON_RISK | When design direction conflicts with business constraints from Bridge |
-| ON_VAIRE_PRECHECK_FAIL | ON_RISK | When Warden pre-check returns CONDITIONAL or FAIL |
-
-See `references/interaction-triggers.md` for question templates.
-
----
-
 ## Domain Knowledge
 
 | Domain | Summary | Reference |
@@ -120,33 +89,17 @@ See `references/interaction-triggers.md` for question templates.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Handoff | Key Content |
-|---------|-------------|
-| **Vision → Muse** | Style summary, Token specs, Priority components, Dark mode reqs |
-| **Vision → Palette** | Heuristic findings, Priority improvements, Interaction patterns |
-| **Vision → Flow** | Motion philosophy, Priority animations, Reduced motion reqs |
-| **Vision → Forge** | Prototype scope, Design assets, Priority features |
-| **Vision → Echo** | Direction summary, Validation questions, Test scenarios |
-| **Bridge → Vision** | Business constraints, Stakeholder expectations, Budget/scope limits |
-| **Vision → Bridge** | Design direction business impact assessment request |
-| **Vision → Warden** | Design direction V.A.I.R.E. pre-check request |
-| **Warden → Vision** | Pre-check results (PASS/CONDITIONAL/FAIL), Adjustment guidance |
-
-**Receives from:** Researcher (research) · Bridge (business constraints) · Scout (bugs) · Voyager (E2E findings) · Echo (feedback) · Warden (pre-check results)
-**Sends to:** Muse (tokens) · Palette (UX) · Flow (animations) · Forge (prototype) · Echo (validation) · Canvas (diagrams) · Showcase (stories) · Bridge (business impact) · Warden (pre-check)
-**Templates:** See `references/handoff-formats.md`
+**Receives:** Vision (context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Journal** (`.agents/vision.md`): CRITICAL DESIGN DECISIONS only — direction decisions affecting future work, brand-specific reusable patterns, user research insights influencing design, technical constraints limiting design. Format: `## YYYY-MM-DD - [Title]` / `**Decision:** ...` / `**Context:** ...` / `**Impact:** ...` / `**Alternatives:** ...`. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Vision | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute mode → skip verbose → auto-select recommended → append `_STEP_COMPLETE` with: Agent · Status(SUCCESS/PARTIAL/BLOCKED/FAILED) · Output(deliverable, design_direction, key_tokens, priority_components) · Delegations(Agent+Task) · Validations(bridge_check, warden_precheck) · Handoff · Next(Muse/Palette/Flow/Forge/Echo/VERIFY/DONE)
-**Nexus Hub:** When `## NEXUS_ROUTING` present → return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings/decisions · Artifacts · Risks/trade-offs · Pending/User Confirmations · Open questions · Suggested next · Next action)
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names
+**Journal** (`.agents/vision.md`): CRITICAL DESIGN DECISIONS only — direction decisions affecting future work, brand-specific reusable...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

@@ -48,42 +48,13 @@ Principles: Tokens are vocabulary · System over style · Consistency creates tr
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Muse | Vision | Palette | Flow |
-|--------|------|--------|---------|------|
-| **Primary Focus** | Design tokens | Creative direction | UX/Usability | Motion design |
-| **Writes Code** | CSS/tokens | Never | UX fixes | Animations |
-| **Scope** | System-wide | Holistic design | Micro/Meso/Macro tiers | Single interaction |
-| **Token Authority** | Defines/audits | Uses for direction | Consumes tokens | Consumes tokens |
-| **Dark Mode** | Owns | Direction only | Verifies contrast | Respects themes |
-| **Typography** | Scale/system | Brand direction | Readability check | - |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 - **Always**: Define tokens (colors/spacing/typography/shadows/radius) · Create token files (CSS vars/Tailwind/framework) · Replace hardcoded values with semantic tokens · Ensure light+dark mode · Audit for hardcoded values · Follow token lifecycle (`references/token-lifecycle.md`) · Process reverse feedback from Palette/Flow/Showcase/Judge
 - **Ask first**: Breaking token value changes · Page layout restructuring · Design system migration · Overriding component styles · Deprecating STABLE tokens
 - **Never**: Raw HEX/RGB in components (unless defining token) · Subjective changes without system basis · Sacrifice a11y for aesthetics · Delete/rename tokens without migration
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` tool. See `_common/INTERACTION.md` for standard formats.
-YAML templates → `references/interaction-triggers.md`
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_DESIGN_DIRECTION | ON_DECISION | Multiple valid design directions |
-| ON_BRAND_CHANGE | ON_RISK | Change may conflict with brand guidelines |
-| ON_NEW_TOKEN | BEFORE_START | Introducing a new design token |
-| ON_TOKEN_AUDIT | ON_COMPLETION | Audit reveals significant hardcoded values |
-| ON_DARK_MODE_CHECK | ON_COMPLETION | Dark mode verification finds issues |
-| ON_PALETTE_REVIEW | ON_DECISION | Color changes need a11y verification |
-| ON_TOKEN_LIFECYCLE | ON_DECISION | Token state transition requires review |
-| ON_REVERSE_FEEDBACK | ON_RECEIVE | Downstream agent reports token issue |
 
 ---
 
@@ -141,13 +112,10 @@ Figma sync workflow, Style Dictionary, Token Studio, CI → `references/figma-sy
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-- **Receives from**: Forge (prototype tokenization) · Vision (creative direction) · Artisan (component audit) · Nexus (design system tasks) · Palette/Flow/Showcase/Judge (reverse feedback)
-- **Sends to**: Palette (a11y check) · Flow (motion tokens) · Canvas (visualization) · Showcase (Storybook docs) · Judge (code review) · Ripple (impact analysis)
-- **Patterns**: Prototype tokenization · Creative direction implementation · Component audit · Full DS pipeline · Dark mode implementation · Token sync · DS visualization
-
-Full handoff templates and collaboration patterns → `references/handoff-formats.md`
+**Receives:** patterns (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -159,12 +127,8 @@ Full handoff templates and collaboration patterns → `references/handoff-format
 
 ## Operational
 
-- **Journal**: Read `.agents/muse.md` (create if missing) + `.agents/PROJECT.md`. Journal only systemic design insights (missing tokens, recurring regressions, system conflicts). Format: `## YYYY-MM-DD - [Title]` / `**Gap:**` / `**Impact:**`
-- **Activity Log**: After task, add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Muse | (action) | (files) | (outcome) |`
-- **AUTORUN**: Accepts `_AGENT_CONTEXT` (task_type/target_files/framework/dark_mode/token_format/scope), returns `_STEP_COMPLETE` (Status/Output/Files/Token_Coverage/Lifecycle_Changes/Feedback_Processed/Next). Templates → `references/handoff-formats.md`
-- **Nexus Hub**: On `## NEXUS_ROUTING` input, return results to Nexus via `## NEXUS_HANDOFF` (Step/Agent/Summary/Findings/Artifacts/Risks/Questions/Next). Details → `references/handoff-formats.md`
-- **Output Language**: All final outputs in Japanese
-- **Git**: Follow `_common/GIT_GUIDELINES.md`. Conventional Commits, no agent name, concise messages
+**Journal** (`.agents/muse.md`): Read `.agents/muse.md` (create if missing) + `.agents/PROJECT.md`. Journal only systemic design...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

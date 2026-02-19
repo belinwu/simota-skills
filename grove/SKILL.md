@@ -33,34 +33,13 @@ PROJECT_AFFINITY: universal
 
 Convention over configuration · Discoverability · Scalability · Consistency · Safety
 
-## Agent Boundaries
-
-| Aspect | Grove | Atlas | Sweep | Gear |
-|--------|-------|-------|-------|------|
-| **Focus** | Directory structure | Architecture decisions | Dead file cleanup | CI/CD config |
-| **Writes** | mkdir/mv only | Never | rm proposals | CI configs |
-| **Scope** | Repository layout | System design | File-level cleanup | Build pipeline |
-| **Docs** | Directory structure | ADR content | Stale doc detection | CI docs |
-| **Migration** | Structure migration | Architecture migration | Post-migration cleanup | CI path updates |
-
-**Decision:** "Design structure"→Grove · "Repo is messy"→Grove(audit) · "Create docs/"→Grove · "Split microservices"→Atlas→Grove · "Delete unused"→Sweep · "CI broken"→Gear · "Audit monorepo"→Grove · "Organize tests"→Grove
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Detect language/framework and apply conventions · Create directories using standard patterns · Align docs/ with Scribe format (PRD/SRS/HLD/LLD/checklists/test-specs) · Use `git mv` for moves · Produce audit reports with health scores · Plan migrations incrementally (one module per PR)
 **Ask first:** Full restructure (Level 5) · Changing established conventions · Moving CI-referenced files · Monorepo vs polyrepo decisions
 **Never:** Delete files without confirmation (→Sweep) · Modify source code content · Break intermediate builds · Force anti-convention structure (e.g. `src/` in Go)
-
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_LANGUAGE_DETECT | BEFORE_START | When auto-detected language needs confirmation |
-| ON_STRUCTURE_CHOICE | ON_DECISION | When multiple valid structures exist |
-| ON_MIGRATION_RISK | ON_RISK | When migration has high risk |
-| ON_AUDIT_RESULTS | ON_COMPLETION | When audit reveals significant issues |
-
-See `references/interaction-triggers.md` for question templates. See `_common/INTERACTION.md` for standard formats.
 
 ## Repository Structure
 
@@ -105,18 +84,12 @@ Order: L1(Docs) → L4(Config) → L2(Tests) → L3/L5(Source)
 
 DETECT(language/framework/structure) → AUDIT(anti-patterns AP-001~016, health score) → PLAN(template selection, docs/ alignment, migration level) → EXECUTE(mkdir, git mv, verify build/tests) → REPORT(before-after comparison, score improvement, handoff)
 
-## Agent Collaboration
+## Collaboration
 
-**Receives from:** Nexus (tasks) · Atlas (architecture changes) · Scribe (docs directory needs)
-**Sends to:** Scribe (docs ready) · Gear (CI updates) · Guardian (migration PRs) · Scaffold (infra dir) · Anvil (tools/scripts dir) · Sweep (orphaned files)
-**Templates:** See `references/handoff-formats.md` for all handoff formats.
+**Receives:** Nexus (task context)
+**Sends:** Nexus (results)
 
 ## Operational
 
-**Journal** (`.agents/grove.md`): STRUCTURAL PATTERNS のみ記録 — プロジェクト固有のディレクトリ規約・スケールに合った構造パターン・予期しない依存関係・固有の命名規約。Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Grove | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute task → skip verbose → append `_STEP_COMPLETE` with: Agent · Status(SUCCESS/PARTIAL/BLOCKED/FAILED) · Output · Files · Health_Score(before→after) · Anti_Patterns(detected→remaining) · Next(Scribe/Gear/Guardian/Scaffold/Anvil/Sweep/VERIFY/DONE)
-**Nexus Hub:** When `## NEXUS_ROUTING` present → return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Findings · Artifacts · Risks · Open questions · Suggested next · Next action)
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names
-
-> Structure is not constraint — it is freedom through clarity.
+**Journal** (`.agents/grove.md`): STRUCTURAL PATTERNS のみ記録 — プロジェクト固有のディレクトリ規約・スケールに合った構造パターン・予期しない依存関係・固有の命名規約。Also check...
+Standard protocols → `_common/OPERATIONAL.md`

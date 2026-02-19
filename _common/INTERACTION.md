@@ -209,6 +209,58 @@ Escalation when interaction cannot resolve issues.
 
 ---
 
+## AGENT_TRIGGER_REGISTRY (Common Trigger Patterns)
+
+Agents define their interaction triggers by name. Below are common trigger patterns reused across agents. Each agent's SKILL.md lists only trigger names and timing; the YAML templates live here or in `references/interaction-triggers.md`.
+
+### Completion / Handoff Triggers
+
+| Trigger Name | Timing | Description |
+|-------------|--------|-------------|
+| ON_BUILDER_HANDOFF | ON_COMPLETION | Ready to hand off implementation to Builder |
+| ON_SENTINEL_HANDOFF | ON_DECISION | Security issue detected, routing to Sentinel |
+| ON_RADAR_HANDOFF | ON_COMPLETION | Requesting test creation/verification from Radar |
+| ON_AGENT_HANDOFF | ON_COMPLETION | Generic handoff to a downstream agent |
+
+### Decision Triggers
+
+| Trigger Name | Timing | Description |
+|-------------|--------|-------------|
+| ON_PERF_TRADEOFF | ON_DECISION | Optimization requires tradeoff with readability/maintainability |
+| ON_CACHE_STRATEGY | ON_DECISION | Choosing cache implementation strategy |
+| ON_BUNDLE_STRATEGY | ON_DECISION | Choosing code splitting or lazy loading approach |
+| ON_MIGRATION_STRATEGY | ON_DECISION | Choosing migration approach for schema/data changes |
+| ON_MULTIPLE_INTERPRETATIONS | BEFORE_START | Multiple valid interpretations of user intent |
+
+### Risk Triggers
+
+| Trigger Name | Timing | Description |
+|-------------|--------|-------------|
+| ON_BREAKING_OPTIMIZATION | ON_RISK | Optimization may change behavior or require API changes |
+| ON_DESTRUCTIVE_ACTION | ON_RISK | Chain includes destructive actions (delete, migrate, reset) |
+| ON_SCOPE_EXPANSION | ON_RISK | Mid-task discovery expands scope beyond original request |
+| ON_HIGH_RISK_INTENT | ON_RISK | Decoded intent involves irreversible or destructive actions |
+
+### Context Triggers
+
+| Trigger Name | Timing | Description |
+|-------------|--------|-------------|
+| ON_MISSING_CONTEXT | BEFORE_START | Critical context unavailable from any source |
+| ON_SCOPE_UNCLEAR | ON_AMBIGUITY | Request scope is too broad or too narrow |
+| ON_AMBIGUOUS_TASK | BEFORE_START | Task can be routed to multiple valid chains |
+
+### Discovery Triggers
+
+| Trigger Name | Timing | Description |
+|-------------|--------|-------------|
+| ON_BISECT_FOUND | ON_DISCOVERY | Git bisect identified the problematic commit |
+| ON_VULNERABILITY_FOUND | ON_DISCOVERY | Security vulnerability discovered during work |
+| ON_PATTERN_DETECTED | ON_DISCOVERY | Recurring pattern detected across codebase |
+
+Agents with custom triggers should define YAML templates in their own `references/interaction-triggers.md`.
+
+---
+
 ## OUTPUT_LANGUAGE
 
 All question text, options, and descriptions must be output in **Japanese**.

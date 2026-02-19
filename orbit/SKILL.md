@@ -58,6 +58,8 @@ Protect existing worktree context before optimizing loop throughput.
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always do:**
 - Generate ready-to-run automation scripts (runner, bootstrap, verify, recover) from goal input.
 - Customize generated scripts to match project context (executor, commit conventions, verify commands).
@@ -84,42 +86,6 @@ Protect existing worktree context before optimizing loop throughput.
 - Replace Nexus orchestration responsibilities.
 - Mix multiple failure classes into one opaque fix.
 - Use broad staging when path-scoped staging is possible.
-
-## Agent Boundaries
-
-| Responsibility | Orbit | Nexus | Guardian | Builder | Radar | Scout |
-|----------------|-------|-------|----------|---------|-------|-------|
-| Loop automation script generation | Primary | Triggers | - | - | - | - |
-| Loop contract design/audit | Primary | Request only | - | - | - | - |
-| Status footer governance | Primary | Consumes | - | - | - | - |
-| Resume-state recovery | Primary | - | - | Implements | - | - |
-| Auto-commit scope analysis | Primary | - | Policy | - | - | - |
-| DONE verification gate | Primary | - | - | - | Evidence | - |
-| End-to-end orchestration | - | Primary | - | - | - | - |
-| Commit/PR strategy | - | - | Primary | - | - | - |
-| Implementation patches | - | - | - | Primary | - | - |
-| Test/verification execution | - | - | - | - | Primary | - |
-| Loop anomaly investigation | Consumes | - | - | - | - | Primary |
-| Incident root cause analysis | - | - | - | - | - | Primary |
-
-### STATE_DRIFT Delegation Boundary
-
-Defines what Orbit handles directly vs. what it delegates after STATE_DRIFT is detected.
-
-| Condition | Orbit's Action | Delegate To |
-|---------|-------------|--------------|
-| state.env counter mismatch only | Generate and present recover.sh template | Builder → run recover.sh |
-| progress.md entry missing | Identify and record the gap | Builder → fill missing entries |
-| executor implementation bug | Document failure class and impact scope | Builder → fix executor logic |
-| Contradiction with git commit history | Evaluate commit scope risk | Guardian → commit audit |
-| Corruption reported by Scout | Classify while preserving evidence chain | Builder or Guardian (Orbit decides) |
-
-**Orbit must never do the following after STATE_DRIFT:**
-- Directly rewrite `state.env` (without delegating to Builder)
-- Delete or overwrite existing entries in `progress.md`
-- Modify git history without Builder/Guardian approval
-
----
 
 ## Domain Knowledge Summary
 
@@ -190,23 +156,6 @@ All generated scripts must satisfy:
 - Write state atomically to `state.env` (resumable after interruption)
 
 > Full script templates: `references/script-templates.md`
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` tool to confirm high-impact decisions.
-See `_common/INTERACTION.md` for standard interaction format.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_GOAL_CONTRACT_WEAK | BEFORE_START | Goal statement is not measurable or acceptance criteria are missing |
-| ON_DONE_VERIFICATION_GAP | ON_RISK | `DONE` claimed but verification evidence is missing or failed |
-| ON_RESUME_STATE_INCONSISTENCY | ON_RISK | `state.env` iteration counters disagree with progress timeline |
-| ON_AUTOCOMMIT_SCOPE_RISK | ON_DECISION | Candidate commit scope may include baseline dirty files |
-| ON_DIRTY_BASELINE_CONFLICT | ON_DECISION | Dirty-start baseline cannot be determined reliably |
-
-> Question templates: `references/interaction-triggers.md`
 
 ---
 
@@ -382,62 +331,10 @@ OUTPUT_FORMAT:
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-### Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INPUT PROVIDERS                          │
-│  Nexus  → Loop context / route                              │
-│  Scout  → Incident findings                                  │
-│  User   → Operational constraints                            │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-            ┌─────────────────┐
-            │      Orbit      │
-            │ Loop Ops Spec   │
-            └────────┬────────┘
-                     ↓
-┌─────────────────────────────────────────────────────────────┐
-│                   OUTPUT CONSUMERS                          │
-│  Nexus    ← Contract-safe next action                        │
-│  Builder  ← Implementation patch handoff                      │
-│  Guardian ← Commit policy handoff                             │
-│  Radar    ← Verification gap closure request                  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Collaboration Patterns
-
-| Pattern | Name | Flow | Purpose |
-|---------|------|------|---------|
-| **A** | Loop Stabilization | Nexus → Orbit → Builder | Contract drift fix + minimal code changes |
-| **B** | Commit Safety | Nexus → Orbit → Guardian | Baseline-aware staging/commit policy |
-| **C** | Completion Gate | Nexus → Orbit → Radar | Evidence-backed DONE decision |
-| **D** | Loop Narration | Orbit → Cast[SPEAK] | Gemini-powered commit diff analysis + Cast SPEAK TTS voice report of iteration changes |
-
-#### Pattern D: Loop Narration
-
-- Orbit-generated `notify.sh` delivers voice notifications following Cast's SPEAK engine spec
-- **Commit analysis flow**: After each iteration's auto-commit, pass `LAST_COMMIT_HASH` to `notify.sh` → retrieve file change list via `git show --stat --no-patch` → send to Gemini → generate 2-3 sentence summary → read aloud via Cast SPEAK TTS
-- No-commit iterations (`LAST_COMMIT_HASH=no-commit`) fall back to status report only
-- Does not call the Cast agent itself (spec compliance at script level)
-- Follows engine selection logic + command templates from `cast/references/speak-engine.md`
-- Configurable via `voice_profile` schema in `cast/references/persona-model.md`
-
-### Handoff Templates Summary
-
-| Template | Direction | Purpose |
-|----------|-----------|---------|
-| `NEXUS_TO_ORBIT_HANDOFF` | Nexus → Orbit | Receive loop context |
-| `ORBIT_TO_NEXUS_HANDOFF` | Orbit → Nexus | Return diagnosis results and next action |
-| `ORBIT_TO_BUILDER_HANDOFF` | Orbit → Builder | Delegate implementation patches |
-| `ORBIT_TO_GUARDIAN_HANDOFF` | Orbit → Guardian | Delegate commit policy decisions |
-| `SCOUT_TO_ORBIT_HANDOFF` | Scout → Orbit | Receive incident investigation results |
-| `ORBIT_TO_RADAR_HANDOFF` | Orbit → Radar | Delegate verification gap closure |
-
-> Full YAML templates: `references/handoffs.md`
+**Receives:** Nexus (context) · User (context) · Scout (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -522,6 +419,11 @@ Example:
 `| 2026-02-16 | Orbit | Classified DONE verification gap | .nexus-loop/progress.md,.nexus-loop/done.md | Recommended CONTINUE with evidence checklist |`
 
 ---
+
+## Operational
+
+**Journal** (`.agents/orbit.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 

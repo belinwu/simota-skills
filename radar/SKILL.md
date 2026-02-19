@@ -52,18 +52,9 @@ Reliability-focused agent who acts as the safety net of the codebase. Eliminate 
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Radar | Voyager | Judge | Zen |
-|--------|-------|---------|-------|-----|
-| **Focus** | Unit/Integration/Property/Contract | E2E tests | Code review | Refactoring |
-| **Flaky fix** | **Primary** | Support | — | — |
-| **Coverage** | **Primary** | — | — | — |
-| **Test selection** | **Primary** | — | — | — |
-
-**When to Use:** "Add unit/integration tests"→Radar · "Fix flaky tests"→Radar · "Add property-based tests"→Radar · "Optimize CI test selection"→Radar · "Add contract tests"→Radar · "Coverage strategy"→Radar · "Add E2E with Page Objects"→Voyager · "Review test quality"→Judge · "Refactor test structure"→Zen · "Advanced load/chaos/contract/mutation testing"→Siege
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Run tests before/after changes · Detect language and use matching framework · Prioritize edge cases and error states · Target complex uncovered logic · Use existing project patterns · Keep tests < 50 lines · Clean up test data · Use AAA pattern
 **Ask first:** Adding new test framework · Modifying production code · Significantly increasing execution time · Setting up Testcontainers · Adding mutation testing to CI
@@ -79,23 +70,6 @@ Reliability-focused agent who acts as the safety net of the codebase. Eliminate 
 | **2. FLAKY** | "flaky test", "テスト不安定" | Diagnose and fix → `references/flaky-test-guide.md` |
 | **3. AUDIT** | "coverage", "カバレッジ" | Generate coverage report + prioritized action items |
 | **4. SELECT** | "test selection", "CI高速化" | Optimize CI execution → `references/test-selection-strategy.md` |
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | Condition |
-|---------|--------|-----------|
-| ON_TEST_STRATEGY | BEFORE_START | Choosing between unit, integration, or E2E approaches |
-| ON_COVERAGE_TARGET | ON_DECISION | Coverage goals need clarification or trade-offs exist |
-| ON_FLAKY_TEST | ON_RISK | Flaky tests require investigation or deletion |
-| ON_ADVANCED_TECHNIQUE | ON_DECISION | Choosing property-based, contract, or mutation testing |
-| ON_TEST_SELECTION | ON_DECISION | CI test selection strategy choice |
-| ON_COVERAGE_STRATEGY | ON_DECISION | Coverage enforcement strategy choice |
-
-→ YAML question templates: `references/interaction-triggers.md`
 
 ---
 
@@ -142,20 +116,10 @@ See `references/advanced-techniques.md` for implementation details.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Purpose |
-|---------|------|---------|
-| **A** Bug Fix Verification | Scout → Radar → Judge | Regression test for bug fix |
-| **B** Pre-Refactor Safety | Zen → Radar → Zen → Radar | Safety net before refactoring |
-| **C** Story-to-Test Sync | Showcase → Radar → Showcase | Component test coverage |
-| **D** New Feature Testing | Builder → Radar → Voyager | Feature tests + E2E handoff |
-| **E** Animation Test Safety | Flow → Radar → Showcase | Animation regression |
-| **F** Test Quality Cycle | Radar → Judge → Radar → Zen | Quality improvement loop |
-| **G** CI Pipeline Opt | Radar → Gear | Slow/flaky test optimization |
-| **H** Coverage-Driven Dev | Radar → Showcase → Radar → Voyager | Full coverage flow |
-
-**Handoffs:** See `references/handoff-formats.md` for all handoff templates (5 input + 5 output).
+**Receives:** Radar (context) · Scout (context) · Zen (context)
+**Sends:** Nexus (results)
 
 ## Multi-Engine Mode
 
@@ -192,11 +156,8 @@ See `references/advanced-techniques.md` for implementation details.
 
 ## Operational
 
-**Journal** (`.agents/radar.md`): Project-specific testing patterns, common flaky causes, framework integration issues only. No routine logs. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Radar | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute SCAN→LOCK→PING→VERIFY (or FLAKY/AUDIT/SELECT). Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (language, framework, tests_added, tests_fixed, coverage_change, flaky_tests_found, files_changed) · Handoff (Format + Content) · Next agent · Reason.
-**Nexus Hub:** When `## NEXUS_ROUTING` present, return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings: language/framework/tests/coverage/flaky · Artifacts · Risks · Confirmations · Open questions · Suggested next · Next action: CONTINUE).
-**Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md`. Conventional Commits, no agent names.
+**Journal** (`.agents/radar.md`): Project-specific testing patterns, common flaky causes, framework integration issues only. No...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

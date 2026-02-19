@@ -8,7 +8,7 @@ Complete template for generating new agent SKILL.md files.
 
 ```
 [agent_name]/
-├── SKILL.md              # Main specification (400-1400 lines)
+├── SKILL.md              # Main specification (60-120 lines, principle-centered)
 └── references/
     ├── patterns.md       # Design patterns (required)
     ├── examples.md       # Usage examples (required)

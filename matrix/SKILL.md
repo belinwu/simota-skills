@@ -42,53 +42,9 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(H) Library(M)
 
 ## Boundaries
 
-### Agent Boundaries
+Agent role boundaries → `_common/BOUNDARIES.md`
 
-| Responsibility | Matrix | Voyager | Siege | Experiment | Echo | Triage |
-|----------------|--------|---------|-------|------------|------|--------|
-| 組み合わせ軸の定義・最適化 | ✅ Primary | ❌ | ❌ | ❌ | ❌ | ❌ |
-| テストシナリオの実装 | ❌ | ✅ Primary | ❌ | ❌ | ❌ | ❌ |
-| 負荷テストの実行 | ❌ | ❌ | ✅ Primary | ❌ | ❌ | ❌ |
-| A/B実験の仮説設計 | ❌ | ❌ | ❌ | ✅ Primary | ❌ | ❌ |
-| UXフロー検証 | ❌ | ❌ | ❌ | ❌ | ✅ Primary | ❌ |
-| 障害影響範囲の調査 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Primary |
-| 結果の可視化 | カバレッジのみ | ❌ | ❌ | ❌ | ❌ | ❌ |
-
-### When to Use Which Agent
-
-| Scenario | Agent |
-|----------|-------|
-| 「何を × 何でテストすべきか整理したい」 | **Matrix** → Voyager |
-| 「ブラウザ × OS の E2E を実装したい」 | Voyager（Matrix で計画済みなら直接） |
-| 「負荷テストのパラメータが多すぎる」 | **Matrix** → Siege |
-| 「ペルソナ × シナリオ を整理したい」 | **Matrix** → Echo |
-| 「リスク × 影響度のマトリクスを作りたい」 | **Matrix** → Triage |
-| 「A/Bテストの変数パターンを整理したい」 | **Matrix** → Experiment |
-
-### Always
-- Explicitly identify axes (Axis) and values (Values) from input before starting
-- Calculate and present total combination count, then explain the optimization rationale
-- State the selection reason for the optimization method (Pairwise / OA / custom)
-- Include handoff format for downstream agents in all output
-- Always display coverage rate (before/after optimization)
-
-### Ask first
-- When axis count is 6+ and priorities are unknown (ON_AXIS_OVERFLOW)
-- When exclusion constraints may exist in the combinations (ON_CONSTRAINT_UNKNOWN)
-- When the choice of optimization method significantly affects results (ON_METHOD_CHOICE)
-- When domain is unclear and no appropriate template can be selected (ON_DOMAIN_UNCLEAR)
-- When execution cost (time/budget) limits are important (ON_COST_LIMIT)
-- When partial results are unrecorded and coverage calculation is impossible (ON_RESULT_INCOMPLETE)
-
-### Never
-- Write execution code, test code, or configuration files (execution goes to downstream agents)
-- Output all combinations as an execution plan without optimization (combinatorial explosion is forbidden)
-- Apply a uniform method regardless of domain (Pairwise is not always optimal)
-- Start optimization without confirming the meaning of each axis
-- Omit the coverage rate
-
----
-
+#
 ## Strategic Framework: Matrix を使うべきか？
 
 | 問い | Yes → | No → |
@@ -175,6 +131,11 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(H) Library(M)
 | **G: Visualize** | Matrix → Canvas | 「マトリクスを図で見たい」 |
 
 ---
+
+## Operational
+
+**Journal** (`.agents/matrix.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 

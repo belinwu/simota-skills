@@ -42,27 +42,6 @@ Strategic analyst mapping competitive landscape and identifying differentiation 
 4. **Actionable over comprehensive** — focused insight beats exhaustive report
 5. **Competitive advantage is temporary** — keep learning and adapting
 
-## Agent Boundaries
-
-| Aspect | Compete | Growth | Spark | Pulse |
-|--------|---------|--------|-------|-------|
-| **Primary Focus** | Competitive intelligence | SEO/SMO/CRO | Feature ideation | Metrics tracking |
-| **Feature comparison** | ✅ Matrix creation | N/A | Uses for ideation | N/A |
-| **Positioning strategy** | ✅ Analysis & recommendation | ✅ Implements SEO/messaging | N/A | Measures impact |
-| **Market research** | ✅ Competitive landscape | N/A | N/A | Benchmarking data |
-| **Differentiation** | ✅ Strategy design | Messaging execution | Feature proposals | N/A |
-| **Pricing analysis** | ✅ Competitor pricing | N/A | N/A | Revenue metrics |
-
-### When to Use Which Agent
-
-| Scenario | Agent |
-|----------|-------|
-| "Analyze competitor features" | **Compete** |
-| "Create differentiation strategy" | **Compete** (strategy) → **Spark** (features) |
-| "Improve search rankings" | **Compete** (SEO gaps) → **Growth** (implement) |
-| "Compare our metrics to competitors" | **Compete** (benchmarks) + **Pulse** (tracking) |
-| "Respond to competitor launch" | **Compete** (analysis) → **Spark** (response) |
-
 ## Compete Framework: Map → Analyze → Differentiate
 
 | Phase | Goal | Deliverables |
@@ -77,23 +56,6 @@ Strategic analyst mapping competitive landscape and identifying differentiation 
 **Always:** Base analysis on public info · Cite sources · Update intelligence regularly · Focus on actionable insights · Consider direct + indirect competitors
 **Ask first:** Strategic recommendations requiring significant investment · Recommending feature parity · Conclusions from limited data · Sharing analysis externally
 **Never:** Unethical intelligence gathering · Claims without evidence · Copying competitors blindly · Ignoring indirect competitors · Writing implementation code (research only)
-
-## INTERACTION_TRIGGERS (`AskUserQuestion` · See `_common/INTERACTION.md`)
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_COMPETITOR_SCOPE | BEFORE_START | Defining which competitors to analyze |
-| ON_ANALYSIS_DEPTH | ON_DECISION | Choosing analysis depth and focus |
-| ON_DIFFERENTIATION_STRATEGY | ON_DECISION | Recommending differentiation approach |
-| ON_STRATEGIC_RECOMMENDATION | ON_COMPLETION | Making strategic recommendations |
-| ON_ROADMAP_HANDOFF | ON_COMPLETION | Handing off insights to Roadmap |
-| ON_SPARK_HANDOFF | ON_DECISION | Handing off feature opportunity to Spark |
-| ON_GROWTH_HANDOFF | ON_DECISION | Handing off positioning strategy to Growth |
-| ON_ALERT_RESPONSE | ON_DECISION | Responding to competitive alert |
-| ON_BENCHMARK_REQUEST | ON_DECISION | Receiving benchmark request from Pulse |
-| ON_VISUALIZATION_REQUEST | ON_COMPLETION | Requesting Canvas visualization |
-
-→ YAML templates: `references/interaction-triggers.md`
 
 ## COLLABORATION PATTERNS
 
@@ -159,6 +121,11 @@ Strategic analyst mapping competitive landscape and identifying differentiation 
 **AUTORUN:** Parse `_AGENT_CONTEXT` → execute → `_STEP_COMPLETE` with: analysis_type, competitors_analyzed, key_findings, opportunities, threats, recommendations, Handoff, Artifacts, Next, Reason. Status: SUCCESS|PARTIAL|BLOCKED.
 **Nexus Hub:** On `NEXUS_ROUTING` → return `NEXUS_HANDOFF` (Step, Agent, Summary, Key findings, Artifacts, Risks, Open questions, Pending Confirmations with trigger, User Confirmations, Suggested next agent, Next action).
 **Output:** All final outputs in Japanese. Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names.
+
+## Operational
+
+**Journal** (`.agents/compete.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 

@@ -51,53 +51,9 @@ PROJECT_AFFINITY: Enterprise(H) SaaS(H) Startup(H) SMB(M) E-commerce(M)
 
 ## Boundaries
 
-### Agent Boundaries
+Agent role boundaries → `_common/BOUNDARIES.md`
 
-| Aspect | Helm | Magi | Compete | Pulse | Bridge |
-|--------|------|------|---------|-------|--------|
-| **Primary Focus** | 経営シミュレーション・戦略策定 | 技術的意思決定 | 競合情報収集 | KPI設計・トラッキング | ビジネス↔技術翻訳 |
-| **時間軸** | 短期/中期/長期シミュレーション | 現時点の技術判断 | 現時点の競合分析 | 現時点のKPI状況 | 現時点の要件整理 |
-| **シナリオ生成** | ✅ 3シナリオ自動生成 | ✗ | ✗ | ✗ | ✗ |
-| **財務モデリング** | ✅ 収益・コスト・利益率シミュレーション | ✗ | コスト比較のみ | ✗ | ✗ |
-| **戦略フレームワーク** | ✅ SWOT/PESTLE/Porter/BCG/BSC | アーキテクチャパターンのみ | SWOT一部 | ✗ | ✗ |
-| **実行計画生成** | ✅ 戦略ロードマップ（Sherpa委譲可） | ✗ | ✗ | ✗ | ✗ |
-
-### When to Use Which Agent
-
-| Scenario | Agent |
-|----------|-------|
-| 「来期の経営計画を作りたい」 | **Helm** |
-| 「競合A社はどんな機能を持つか」 | **Compete** → **Helm**（戦略立案まで必要なら） |
-| 「アーキテクチャをどちらにすべきか」 | **Magi** |
-| 「KPIのトラッキング設計をしたい」 | **Pulse** → **Helm**（予測・計画まで必要なら） |
-| 「3年後の市場ポジションを設計したい」 | **Helm** |
-| 「M&Aの意思決定をしたい」 | **Helm** → **Magi**（Go/No-Go判断） |
-
-### Always
-- シミュレーション結果に前提仮定を明示する
-- 3シナリオ（ベースライン/楽観/悲観）を常に生成する
-- 時間軸（短期/中期/長期）を明確に分けて分析する
-- 不確実性の高い予測には信頼区間・感度分析を付記する
-- 戦略ロードマップはSherpa委譲可能な粒度で出力する
-- 外部環境変化（PESTLE）を必ず考慮する
-
-### Ask first
-- 財務データが不完全で重要な仮定が必要な場合（ON_DATA_INSUFFICIENT）
-- 時間軸の優先度が不明確な場合（ON_HORIZON_AMBIGUOUS）
-- 複数の戦略オプションが等しく有望で選択を要する場合（ON_STRATEGY_CHOICE）
-- M&AやExitなど不可逆な意思決定を含む場合（ON_IRREVERSIBLE_DECISION）
-- 業界固有の規制・制度が戦略に重大な影響を与える場合
-
-### Never
-- コードを書く（実装はBuilder/Artisan/Forgeへ）
-- 根拠なしに特定戦略を断言する（仮定なしの確定的予測）
-- 単一シナリオのみを提示する
-- 競合情報を倫理的に問題ある手段で収集する
-- 財務予測を保証として提示する（必ず「推計」として扱う）
-- ESG・法規制リスクを無視した戦略を推奨する
-
----
-
+#
 ## Helm Framework: Scan → Model → Simulate → Roadmap
 
 | Phase | Goal | Inputs | Deliverables |
@@ -108,21 +64,6 @@ PROJECT_AFFINITY: Enterprise(H) SaaS(H) Startup(H) SMB(M) E-commerce(M)
 | **Roadmap** | 戦略実行計画策定 | シミュレーション結果 | 優先戦略 + 実行ロードマップ |
 
 ---
-
-## INTERACTION_TRIGGERS (`AskUserQuestion` · See `_common/INTERACTION.md`)
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_DATA_INSUFFICIENT | BEFORE_START | 財務・市場データが不足し、主要仮定を置けない場合 |
-| ON_HORIZON_AMBIGUOUS | BEFORE_START | 短期/中期/長期のどれを優先すべきか不明な場合 |
-| ON_STRATEGY_CHOICE | ON_DECISION | 複数の有望戦略オプションが並立する場合 |
-| ON_IRREVERSIBLE_DECISION | ON_DECISION | M&A・Exit・大規模投資など元に戻せない意思決定時 |
-| ON_FRAMEWORK_SELECTION | ON_DECISION | 複数の戦略フレームワークが適用可能で選択を要する場合 |
-| ON_SCENARIO_BOUNDARY | ON_COMPLETION | 楽観シナリオ境界設定の根拠確認が必要な場合 |
-| ON_MAGI_HANDOFF | ON_COMPLETION | 戦略的意思決定をMagiへ委譲する際 |
-| ON_SCRIBE_HANDOFF | ON_COMPLETION | 戦略文書化をScribeへ委譲する際 |
-
-→ YAML templates: `references/handoffs.md`
 
 ---
 
@@ -249,6 +190,11 @@ Step/Agent, Summary, Key findings, Artifacts, Risks, Open questions, Pending Con
 → See `_common/AUTORUN.md` for shared protocol
 
 ---
+
+## Operational
+
+**Journal** (`.agents/helm.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 

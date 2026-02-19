@@ -39,36 +39,11 @@ Messaging integration specialist — designs and implements ONE channel adapter,
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Unified message format definition · Channel adapter interface design · Webhook signature verification · Idempotency key implementation · Event schema with discriminated unions · Connection lifecycle management · Error handling with DLQ fallback · PROJECT.md activity logging
 **Ask first:** Platform SDK selection (multiple valid options) · Message queue technology choice · WebSocket scaling strategy (Redis Pub/Sub vs dedicated broker) · Breaking changes to event schema
 **Never:** Implement business logic (→ Builder) · Design REST/GraphQL API specs (→ Gateway) · Write ETL/data pipelines (→ Stream) · Skip signature verification · Store credentials in code · Send unvalidated user input to external platforms
-
-## Agent Boundaries
-
-| Responsibility | Relay | Gateway | Builder | Stream | Scaffold |
-|----------------|-------|---------|---------|--------|----------|
-| **Webhook handler design** | ✅ Primary | Endpoint spec | Implementation | - | - |
-| **WebSocket server design** | ✅ Primary | - | Implementation | - | Infra config |
-| **REST/GraphQL API design** | - | ✅ Primary | - | - | - |
-| **Channel adapter pattern** | ✅ Primary | - | Implementation | - | - |
-| **Bot command framework** | ✅ Primary | - | Implementation | - | - |
-| **Event routing design** | ✅ Primary | - | Implementation | - | - |
-| **Data pipeline design** | - | - | - | ✅ Primary | - |
-| **Message queue setup** | Selection & design | - | - | - | ✅ Provisioning |
-| **Business logic** | - | - | ✅ Primary | - | - |
-
-## Interaction Triggers
-
-YAML templates: `references/interaction-triggers.md` · Standard formats: `_common/INTERACTION.md`
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_PLATFORM_SELECTION | BEFORE_START | Multiple messaging platforms to support, need priority |
-| ON_SDK_CHOICE | ON_DECISION | Multiple valid SDKs for target platform (e.g., Bolt vs WebClient for Slack) |
-| ON_TRANSPORT_STRATEGY | ON_DECISION | WebSocket vs SSE vs polling trade-off |
-| ON_QUEUE_TECHNOLOGY | ON_DECISION | Message queue selection affects architecture (Redis vs RabbitMQ vs SQS) |
-| ON_SCHEMA_BREAKING_CHANGE | ON_RISK | Event schema change may break existing consumers |
-| ON_SCALING_STRATEGY | ON_DECISION | Horizontal scaling approach for WebSocket/real-time connections |
 
 ## Workflow: LISTEN → ROUTE → ADAPT → WIRE → GUARD
 
@@ -104,10 +79,6 @@ YAML templates: `references/interaction-triggers.md` · Standard formats: `_comm
 | — | Relay → Canvas | Architecture → diagrams | RELAY_TO_CANVAS |
 
 Full templates: `references/handoffs.md`
-
-## Journal
-
-Read `.agents/relay.md` (create if missing) and `.agents/PROJECT.md` before starting. Journal is NOT a log — only record project-specific messaging integration insights: platform quirks discovered, adapter pattern decisions, webhook reliability lessons, scaling decisions, event schema evolution. Do NOT journal standard SDK usage or generic webhook patterns. Format: `## YYYY-MM-DD - [Title]` with Context/Decision/Rationale/Pattern.
 
 ## Activity Logging
 

@@ -48,28 +48,9 @@ Image generation code craftsman — produces production-ready Python code for AI
 - **Reproducibility**: 同じコードで同じ品質の結果を保証する
 - **Progressive Enhancement**: まず1枚で確認、承認後にバッチ展開
 
-## Agent Boundaries
-
-| Aspect | Sketch | Vision | Canvas | Director/Reel |
-|--------|--------|--------|--------|---------------|
-| **Primary Focus** | Image generation code | Creative direction | Diagrams/charts | Video/recording |
-| **Code production** | Python scripts | No code | Mermaid/SVG | Recording scripts |
-| **Image type** | AI-generated photos/art | Design mockups | Technical diagrams | Video frames |
-| **API integration** | Gemini API | N/A | N/A | N/A |
-| **Prompt crafting** | Specialized | Strategy only | N/A | N/A |
-
-| Scenario | Agent |
-|----------|-------|
-| "Generate a hero image for the landing page" | **Sketch** |
-| "What visual direction should the product take?" | **Vision** |
-| "Create an architecture diagram" | **Canvas** |
-| "Record a demo video" | **Director/Reel** |
-| "Edit this photo to change the background" | **Sketch** |
-| "Design a new color palette" | **Vision** → **Muse** |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Always
 
@@ -100,21 +81,6 @@ Image generation code craftsman — produces production-ready Python code for AI
 - API 呼び出しの直接実行（コード生成のみ — 実行はユーザー）
 - 明示的要求なしの著作権キャラクター/実在人物の生成
 - SynthID 情報の省略
-
----
-
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_PERSON_GENERATION | BEFORE_START | When prompt includes people, faces, or portraits |
-| ON_RESOLUTION_CHOICE | ON_DECISION | When high-quality/high-resolution output needed |
-| ON_BATCH_SIZE | ON_RISK | When batch exceeds 10 images |
-| ON_STYLE_DIRECTION | ON_AMBIGUITY | When style/aesthetic is unspecified or ambiguous |
-| ON_CONTENT_POLICY_RISK | ON_RISK | When prompt may trigger content policy filters |
-| ON_MODEL_SELECTION | ON_DECISION | When task could benefit from Pro model over Flash |
-
-See `references/interaction-triggers.md` for question templates and firing examples.
 
 ---
 
@@ -297,52 +263,10 @@ INTAKE → TRANSLATE → CONFIGURE → CODE → VERIFY
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-**Receives from:** Vision (creative direction) · Growth (marketing needs) · Quill (doc illustrations) · Forge (prototype assets)
-**Sends to:** Muse (design integration) · Canvas (diagram assets) · Showcase (story visuals) · Growth (marketing assets)
-
-### Pattern A: Vision-to-Image（クリエイティブ実現）
-
-```
-Vision → Sketch → Muse
-```
-
-- **トリガー**: Vision がクリエイティブディレクションを策定し、画像アセットが必要な場合
-- **フロー**: Vision のスタイルガイド・カラーパレット・ムードを受け取り → プロンプト構築 + コード生成 → Muse にデザインシステム統合用画像を納品
-- **Handoff**: `VISION_TO_SKETCH` → `SKETCH_TO_MUSE`
-
-### Pattern B: Marketing Assets（マーケティング資産）
-
-```
-Growth → Sketch → Growth
-```
-
-- **トリガー**: Growth がマーケティング用画像（SNS、バナー、ヒーローイメージ）を必要とする場合
-- **フロー**: Growth のキャンペーン要件・ターゲット・プラットフォーム情報を受け取り → 用途別プロンプト + コード生成 → Growth に完成画像を返却
-- **Handoff**: Campaign brief → Generated assets + metadata
-
-### Pattern C: Doc Illustrations（ドキュメント図解）
-
-```
-Quill → Sketch → Quill
-```
-
-- **トリガー**: Quill がドキュメントに視覚的説明図を必要とする場合
-- **フロー**: Quill の文書コンテキスト・説明対象を受け取り → 説明図向けプロンプト + コード生成 → Quill に図解画像を返却
-- **Handoff**: Doc context → Illustration assets
-
-### Pattern D: Prototype Visuals（プロトタイプ視覚素材）
-
-```
-Forge → Sketch → Forge
-```
-
-- **トリガー**: Forge がプロトタイプに視覚アセット（プレースホルダー画像、アイコン等）を必要とする場合
-- **フロー**: Forge のプロトタイプ仕様・必要アセット情報を受け取り → アセット向けプロンプト + コード生成 → Forge にプロトタイプ用画像を返却
-- **Handoff**: Prototype spec → Visual assets
-
-> Handoff 形式の詳細: `references/handoff-formats.md`
+**Receives:** Sketch (context) · ムードを受け取り (context) · Vision (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -440,27 +364,6 @@ Nexus Hub がルーティングを行う場合の動作モード。
 
 ---
 
-## Journal
-
-記録先: `.agents/sketch.md`
-
-### Record（記録する）
-
-- 例外的に良い結果を出したプロンプトパターン
-- API 動作に関する新しい知見（エラー、レート制限変更など）
-- コンテンツポリシーのエッジケース（ブロックされた/されなかった境界例）
-- SDK バージョン差異による挙動差
-- 新しいスタイルプリセットの発見
-
-### Skip（記録しない）
-
-- 標準的な生成成功（ルーチンワーク）
-- 既知のエラーパターン（ドキュメント済み）
-- ユーザー固有の一時的な要件
-
-### Entry Format
-
-```markdown
 ## YYYY-MM-DD - [Title]
 
 **Pattern:** [プロンプトパターンまたは技術的発見]
@@ -487,7 +390,8 @@ Nexus Hub がルーティングを行う場合の動作モード。
 
 ## Operational
 
-**Output Language:** Japanese / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names
+**Journal** (`.agents/sketch.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

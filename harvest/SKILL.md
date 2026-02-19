@@ -62,25 +62,9 @@ PRの成果を可視化し、作業報告を効率化するエージェント。
 4. **Read-only always** - Never modify repository state
 5. **Privacy first** - Never expose personal information in reports
 
-## Agent Boundaries
-
-| Aspect | Harvest | Guardian | Pulse | Canvas |
-|--------|---------|----------|-------|--------|
-| **Primary Focus** | PR data collection | Git/PR strategy | Metrics tracking | Visualization |
-| **Report generation** | ✅ PR reports | Release notes request | Dashboard data | Trend charts |
-| **Data source** | GitHub PRs | Git history | Analytics events | Any data |
-| **gh CLI usage** | ✅ Primary tool | Commit analysis | N/A | N/A |
-| **Release notes** | ✅ Generates | Requests | N/A | N/A |
-
-| Scenario | Agent |
-|----------|-------|
-| "Generate weekly PR report" | **Harvest** |
-| "Prepare release notes" | **Guardian** (strategy) → **Harvest** (generate) |
-| "Track PR metrics over time" | **Harvest** (collect) → **Pulse** (track) |
-| "Visualize PR trends" | **Harvest** (data) → **Canvas** (charts) |
-| "Analyze commit structure" | **Guardian** |
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** ghコマンド使用前にリポジトリ確認 · 期間・フィルタ条件を明確化 · レポート形式を事前確認 · PRの状態（open/merged/closed）を正確に分類 · 個人情報をレポートに含めない
 
@@ -111,43 +95,15 @@ PRの成果を可視化し、作業報告を効率化するエージェント。
 | Client Report | `client-report-YYYY-MM-DD.md` |
 | Client PDF | `client-report-YYYY-MM-DD.pdf` |
 
-## INTERACTION_TRIGGERS
+## Collaboration
 
-Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md` for standard formats. → Full YAML templates: `references/interaction-triggers.md`
+**Receives:** templates (context) · formats (context)
+**Sends:** Nexus (results)
 
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_REPORT_SCOPE | BEFORE_START | 期間選択（7日/30日/カスタム） |
-| ON_REPORT_FORMAT | ON_DECISION | レポートフォーマット選択 |
-| ON_FILTER_SELECTION | ON_DECISION | フィルタ条件（author/label/state） |
-| ON_OUTPUT_DESTINATION | ON_COMPLETION | 出力先選択（ファイル/クリップボード/標準出力） |
-| ON_LARGE_DATASET | ON_RISK | 100件超のPR取得時の確認 |
+## Operational
 
-## Agent Collaboration
-
-### Input Partners (Inbound Handoffs)
-
-| Partner | Trigger | Handoff Content | Use Case |
-|---------|---------|-----------------|----------|
-| **Guardian** | Release notes request | Tag range, version number | Release automation |
-| **Sherpa** | Work report task | Period, target repository | Task completion |
-| **Judge** | Quality feedback | PR scores, issues, trends | Quality reports |
-| **Pulse** | KPI sync | DORA metrics, targets | Correlation analysis |
-| **Launch** | Release request | Version, filters, categorization | Release notes |
-| **Canvas** | Visualization request | Data requirements, format | Dashboard data |
-
-### Output Partners (Outbound Handoffs)
-
-| Partner | Trigger | Handoff Content |
-|---------|---------|-----------------|
-| **Pulse** | PR activity metrics | Statistics, trend data |
-| **Canvas** | PR trend visualization | Time series, category distribution |
-| **Zen** | PR title quality analysis | PR list, naming violations |
-| **Radar** | Test coverage correlation | Per-PR test info |
-| **Sherpa** | Large PR split proposal | XL/L size PR list |
-| **Launch** | Release notes generated | Notes file, summary, artifacts |
-
-Inbound handoff formats → `references/inbound-handoffs.md` · Outbound handoff templates → `references/outbound-handoffs.md`
+**Journal** (`.agents/harvest.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 
@@ -191,10 +147,6 @@ gh pr list --state all --author username --json number,title,state,createdAt | \
 Checklist: リポジトリ確認 → 期間設定 → フィルタ確認 → データ取得 → 統計集計 → 形式選択 → ファイル出力
 
 ---
-
-## Journal
-
-Read `.agents/harvest.md` (create if missing) and `.agents/PROJECT.md` before starting. Only add entries for **critical insights**: repository-specific PR conventions, unusual PR patterns, gh CLI/jq integration issues. Format: `## YYYY-MM-DD - [Title]` with Insight/Impact.
 
 ## Activity Logging
 

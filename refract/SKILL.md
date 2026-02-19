@@ -44,6 +44,8 @@ PROJECT_AFFINITY: universal
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 ### Always
 - Identify the current dominant frame and implicit assumptions before reframing any input
 - Apply at least one transformation from each of the 3 axes (Field / Standpoint / Lens)
@@ -65,19 +67,6 @@ PROJECT_AFFINITY: universal
 - Justify ethically or legally problematic actions under the guise of reframing
 - Substitute translation or summarization for genuine perspective rotation (label-only is forbidden)
 - Propose execution plans or solutions
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `references/interaction-triggers.md` for YAML templates.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_ROTATION_OVERFLOW | BEFORE_START | Input contains 5+ independent problems |
-| ON_SCOPE_SELECTION | BEFORE_START | Full 3-axis vs. specific-axis scope preference is unclear |
-| ON_SENSITIVE_STANDPOINT | ON_DECISION | Inferring confidential positions of real individuals/organizations is required |
-| ON_HIGH_STAKES_REFRAME | ON_RISK | Context involves high-risk decisions directly |
 
 ---
 
@@ -199,19 +188,8 @@ Use `AskUserQuestion` at these decision points. See `references/interaction-trig
 
 ## Operational
 
-**Journal:** `.agents/refract.md` に知見を記録（有効だった変換パターン、ドメイン別の典型盲点、意外だった視座のシフト）。`.agents/PROJECT.md` も確認。
-
-**Activity:** タスク完了後、`.agents/PROJECT.md` のActivity Logに行を追加。
-
-**Output:** 全最終出力を日本語で。`_common/GIT_GUIDELINES.md` に従う。
-
-**AUTORUN `_STEP_COMPLETE` fields:**
-Agent, Status(SUCCESS|PARTIAL|BLOCKED), Output(theme, dominant_frame, axes_applied, rotation_count, key_insights, blind_spots_revealed, handoff_target), Handoff(type, payload), Artifacts, Next, Reason
-
-**Nexus Hub Mode (`NEXUS_ROUTING` → `NEXUS_HANDOFF`):**
-Step/Agent, Summary, Dominant frame identified, Axes applied, Rotations performed, Key insights, Blind spots revealed, Suggested next agent, Next action
-
-→ See `_common/AUTORUN.md` for shared protocol
+**Journal** (`.agents/refract.md`): ** `.agents/refract.md` に知見を記録（有効だった変換パターン、ドメイン別の典型盲点、意外だった視座のシフト）。`.agents/PROJECT.md` も確認。
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

@@ -48,29 +48,9 @@ Data pipeline architect: design ONE robust, scalable pipeline — batch or real-
 4. **Fail fast, recover gracefully** - Detect issues early, enable easy backfills
 5. **Lineage is documentation** - If you can't trace it, you can't trust it
 
-## Agent Boundaries
-
-| Aspect | Stream | Schema | Builder | Gateway |
-|--------|--------|--------|---------|---------|
-| **Primary Focus** | Data pipelines | Data models | Business logic | API design |
-| **ETL/ELT design** | ✅ Primary | - | - | - |
-| **DB schema** | Consumes | ✅ Primary | - | - |
-| **Data quality** | ✅ Pipeline level | ✅ Schema level | - | - |
-| **Kafka/Streaming** | ✅ Primary | - | Consumes | - |
-| **Airflow/DAGs** | ✅ Primary | - | - | - |
-| **dbt models** | ✅ Primary | Collaborates | - | - |
-
-| Scenario | Agent |
-|----------|-------|
-| "Design an ETL pipeline" | **Stream** |
-| "Create database schema" | **Schema** |
-| "Set up Kafka topics" | **Stream** |
-| "Create dbt models" | **Stream** |
-| "Visualize data flow" | **Stream** → Canvas |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Volume/velocity分析 · Idempotency設計 · Source/Transform/Sinkの各段階で品質チェック · Data lineage文書化 · Schema evolution考慮 · Backfill/replay設計 · Monitoring/alertingフック
 **Ask first:** Batch vs streaming選定（明確でない場合） · 1TB/day超 · <1min latency · PII/機密データ · Cross-region転送
@@ -90,6 +70,11 @@ Data pipeline architect: design ONE robust, scalable pipeline — batch or real-
 | Backfill Strategy | Historical data processing | Backfill playbook |
 
 ---
+
+## Operational
+
+**Journal** (`.agents/stream.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 
@@ -120,30 +105,10 @@ Data pipeline architect: design ONE robust, scalable pipeline — batch or real-
 
 ---
 
-## Interaction Triggers
+## Collaboration
 
-Use `AskUserQuestion` tool at these decision points. See `_common/INTERACTION.md` for formats. YAML templates → `references/interaction-triggers.md`.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_ARCHITECTURE_DECISION | BEFORE_START | Choosing batch vs streaming vs hybrid |
-| ON_TOOL_SELECTION | ON_DECISION | Choosing orchestration tool (Airflow/Dagster/Prefect/dbt Cloud) |
-| ON_QUALITY_STRATEGY | ON_DECISION | Choosing quality check strictness |
-| ON_BACKFILL_SCOPE | ON_DECISION | Choosing backfill range |
-
-## Agent Collaboration
-
-| Agent | Stream's Role | Handoff |
-|-------|---------------|---------|
-| **Schema** | Consume table definitions | Derived model specs |
-| **Pulse** | Receive analytics requirements | Metrics pipeline |
-| **Builder** | Business logic integration | API data connectors |
-| **Canvas** | Request flow diagrams | Pipeline visualization |
-| **Radar** | Request pipeline tests | Test specifications |
-| **Gear** | CI/CD integration | Deployment config |
-| **Scaffold** | Infrastructure needs | Resource requirements |
-
-Handoff templates → `references/handoffs.md` · Collaboration patterns → `references/patterns.md`
+**Receives:** patterns (context) · templates (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -157,10 +122,6 @@ Quality Priority: 1.Uniqueness 2.Not-null 3.Freshness 4.Volume 5.Business rules
 ```
 
 ---
-
-## Journal
-
-Read `.agents/stream.md` (create if missing) and `.agents/PROJECT.md` before starting. Only journal project-specific pipeline decisions: architecture choices, data volume thresholds, quality strategies, CDC patterns selected. Do NOT journal standard ETL/dbt practices. Format: `## YYYY-MM-DD - [Title]` with Context/Decision/Rationale/Pattern.
 
 ## Activity Logging
 

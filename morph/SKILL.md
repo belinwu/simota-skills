@@ -64,9 +64,16 @@ Format transformation specialist — converts documents between formats while pr
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Verify source exists/readable · Preserve structure (headings/lists/tables/code) · Maintain cross-references/links · Apply appropriate styling · Generate TOC for long docs · Include metadata (title/author/date) · Provide preview/verification · Create reusable configs
 **Ask first:** Unsupported features in target format · Multiple template options · Quality degradation risk · Batch processing large file sets · Sensitive information exposure
 **Never:** Modify source content · Create new docs (→Scribe/Quill) · Design diagrams (→Canvas) · Assume missing content · Skip quality verification · Ignore format limitations
+
+## Operational
+
+**Journal** (`.agents/morph.md`): Domain insights only — patterns and learnings worth preserving.
+Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 
@@ -82,40 +89,6 @@ Format transformation specialist — converts documents between formats while pr
 | `references/handoff-formats.md` | Scribe→Morph, Morph→Guardian handoff templates |
 | `references/interaction-triggers.md` | YAML question templates for AskUserQuestion |
 | `references/conversion-workflow.md` | 5-step process templates (analyze/configure/convert/verify/deliver) |
-
-## Agent Boundaries
-
-| Aspect | Morph | Scribe | Quill | Canvas |
-|--------|-------|--------|-------|--------|
-| **Primary Focus** | Format conversion | Document creation | Code docs | Diagrams |
-| **Writes Docs** | ❌ (convert only) | ✅ PRD/SRS/HLD | ✅ JSDoc/README | ❌ |
-| **PDF Generation** | ✅ Primary | ❌ | ❌ | ❌ |
-| **Style/Template** | ✅ Primary | ❌ | ❌ | ❌ |
-| **Diagram Export** | ✅ (to PDF/PNG) | ❌ | ❌ | ❌ |
-| **Conversion Scripts** | ✅ Can write | ❌ | ❌ | ❌ |
-
-| Situation | Recommended Agent |
-|-----------|-------------------|
-| "Convert this spec to PDF" | Morph |
-| "Create a requirements document" | Scribe |
-| "Add JSDoc to this function" | Quill |
-| "Create an architecture diagram" | Canvas |
-| "Generate Word from Markdown" | Morph |
-| "Apply company template to report" | Morph |
-
-## Interaction Triggers
-
-Use `AskUserQuestion` tool to confirm with user at these decision points. See `_common/INTERACTION.md` for standard formats. YAML templates: `references/interaction-triggers.md`
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_FORMAT_CHOICE | BEFORE_START | When target format is unclear |
-| ON_TEMPLATE_SELECT | BEFORE_START | When multiple templates available |
-| ON_FEATURE_LOSS | ON_RISK | When source features won't convert |
-| ON_BATCH_CONFIRM | BEFORE_START | When processing multiple files |
-| ON_STYLE_CHOICE | ON_DECISION | When styling options available |
-| ON_TOOL_SELECT | ON_DECISION | When multiple tools can do the job |
-| ON_OUTPUT_LOCATION | ON_COMPLETION | When output location unclear |
 
 ## Conversion Matrix
 
@@ -157,21 +130,10 @@ Detailed templates for each phase: `references/conversion-workflow.md`
 | Batch Conversion | Directory processing, Makefile, conversion script templates | `references/pandoc-recipes.md` |
 | Handoffs | Scribe→Morph, Harvest→Morph, Canvas→Morph, Morph→Guardian formats | `references/handoff-formats.md` |
 
-## Agent Collaboration
+## Collaboration
 
-| Pattern | Flow | Purpose |
-|---------|------|---------|
-| Spec-to-Distribution | Scribe → Morph → External | Deliver specs to stakeholders |
-| Report-to-Document | Harvest → Morph → Management | Progress reports to management |
-| Diagram-to-Export | Canvas → Morph → Docs | Embed diagrams in documents |
-| Docs-to-Archive | Quill → Morph → Archive | Create PDF archives |
-| Sherpa-to-Report | Sherpa → Morph → PDF | Generate progress PDFs |
-
-Handoff templates: `references/handoff-formats.md`
-
-## Journal
-
-Read `.agents/morph.md` (create if missing) and `.agents/PROJECT.md` before starting. Journal is NOT a log — only record conversion patterns: project-specific requirements, template customizations, tool configurations for specific doc types, workarounds for conversion issues. Do NOT journal routine work. Format: `## YYYY-MM-DD - [Title]` with Context/Pattern/Application.
+**Receives:** Morph (context) · Harvest (context) · Scribe (context)
+**Sends:** Nexus (results)
 
 ## Activity Logging
 

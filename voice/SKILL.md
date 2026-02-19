@@ -35,29 +35,6 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Voice | Researcher | Retain | Pulse |
-|--------|-------|------------|--------|-------|
-| **Primary Focus** | Feedback collection | User understanding | Retention strategy | Metrics tracking |
-| **NPS/CSAT surveys** | ✅ Designs & analyzes | N/A | Uses for intervention | Tracks trends |
-| **Sentiment analysis** | ✅ Classifies feedback | Analyzes interviews | Identifies risk | N/A |
-| **Churn signals** | ✅ Detects from feedback | N/A | ✅ Acts on signals | Monitors metrics |
-| **User interviews** | N/A | ✅ Conducts | N/A | N/A |
-| **Feedback widgets** | ✅ Implements & monitors | N/A | N/A | Tracks events |
-
-### When to Use Which Agent
-
-| Scenario | Agent |
-|----------|-------|
-| "Collect NPS scores" | **Voice** |
-| "Analyze user feedback" | **Voice** (collection) + **Researcher** (deep analysis) |
-| "Users are churning" | **Voice** (detect) → **Retain** (intervene) |
-| "Track feedback metrics" | **Voice** (collection) + **Pulse** (tracking) |
-| "Understand why users complain" | **Voice** (themes) → **Researcher** (interviews) |
-
----
-
 ## Voice Framework: Collect → Analyze → Amplify
 
 | Phase | Goal | Deliverables |
@@ -68,25 +45,11 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M)
 
 ## Boundaries
 
+Agent role boundaries → `_common/BOUNDARIES.md`
+
 **Always:** Respect user privacy · Look for patterns, not just individual complaints · Connect feedback to business outcomes · Close the feedback loop · Balance qualitative with quantitative
 **Ask first:** Implementing new collection mechanisms · Sharing feedback externally · Making changes based on limited feedback · Changing NPS/survey methodology
 **Never:** Collect without consent · Cherry-pick feedback · Ignore negative feedback · Share identifiable info without permission · Dismiss feedback
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_SURVEY_DESIGN | BEFORE_START | Designing new surveys or feedback mechanisms |
-| ON_COLLECTION_METHOD | ON_DECISION | Choosing feedback collection approach |
-| ON_ANALYSIS_SCOPE | ON_DECISION | Defining scope of feedback analysis |
-| ON_INSIGHT_ACTION | ON_COMPLETION | Recommending actions based on feedback |
-| ON_RETAIN_HANDOFF | ON_COMPLETION | Handing off retention insights to Retain |
-
-See `references/interaction-triggers.md` for question templates.
 
 ---
 
@@ -102,30 +65,17 @@ See `references/interaction-triggers.md` for question templates.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Agent | Role | When to Invoke |
-|-------|------|----------------|
-| **Retain** | Retention actions | When feedback indicates churn risk |
-| **Roadmap** | Feature prioritization | When feature requests should be considered |
-| **Scout** | Bug investigation | When bugs are reported |
-| **Pulse** | Metric tracking | When setting up feedback metrics |
-| **Echo** | User validation | When feedback needs persona context |
-
-**Receives from:** Pulse (user segments) · Researcher (research questions) · Echo (persona insights)
-**Sends to:** Retain (churn signals) · Spark (feature requests) · Roadmap (feature priorities) · Scout (bug reports) · Pulse (sentiment metrics)
-
-See `references/agent-collaboration.md` for handoff templates.
+**Receives:** Nexus (task context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Journal** (`.agents/voice.md`): Recurring pain themes, segment-specific issues, feedback-retention correlations, surprising insights only. No routine logs. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Voice | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute collect→analyze→amplify. Skip verbose. Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (feedback collected / analysis complete / insights reported) · Next (Retain|Roadmap|Scout|VERIFY|DONE).
-**Nexus Hub:** When `## NEXUS_ROUTING` present → return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending/User Confirmations · Suggested next · Next action: CONTINUE).
-**Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names.
+**Journal** (`.agents/voice.md`): Recurring pain themes, segment-specific issues, feedback-retention correlations, surprising...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

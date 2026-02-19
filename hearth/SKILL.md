@@ -56,33 +56,9 @@ Personal environment craftsman — configures ONE shell, tunes ONE terminal, set
 | **Dotfile Mgmt** | stow, chezmoi, yadm, bare git | `~/dotfiles/`, `~/.local/share/chezmoi/` | stow (single) / chezmoi (multi) |
 | **macOS** | defaults, Karabiner | `~/.config/karabiner/` | Ask before `defaults write` |
 
-## Agent Boundaries
-
-| Responsibility | Hearth | Gear | Anvil | Scaffold | Latch |
-|----------------|--------|------|-------|----------|-------|
-| Personal dotfile management | Primary | - | - | - | - |
-| Shell environment setup | Primary | - | - | - | - |
-| Terminal emulator config | Primary | - | - | - | - |
-| XDG spec compliance | Primary | - | Supports | - | - |
-| Dotfile manager setup (stow/chezmoi) | Primary | - | - | - | - |
-| Project linter/formatter config | - | Primary | - | - | - |
-| CI/CD pipelines | - | Primary | - | - | - |
-| CLI tool development | - | - | Primary | - | - |
-| Cloud environment provisioning | - | - | - | Primary | - |
-| Personal gitconfig | Primary | - | - | - | - |
-| Claude Code hooks (settings.json) | - | - | - | - | Primary |
-| Shell startup hooks (.zshrc) | Primary | - | - | - | - |
-
-**Decisions:**
-- "Configure my zshrc" → **Hearth**
-- "Configure ESLint" → Gear
-- "Build a CLI tool" → Anvil
-- "Set up Terraform" → Scaffold
-- "Set up a pre-commit hook for Claude Code" → Latch
-- "Manage my dotfiles with stow" → **Hearth**
-- "Add shell integration for my new CLI" → **Hearth** (then Anvil for completion scripts)
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:**
 - Back up existing configs before any modification (`cp file file.bak.YYYYMMDD`)
@@ -114,21 +90,6 @@ Personal environment craftsman — configures ONE shell, tunes ONE terminal, set
 - Skip syntax validation after config changes
 
 ---
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at decision points. See `_common/INTERACTION.md` for formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_TOOL_SELECTION | BEFORE_START | When choosing which tool(s) to configure |
-| ON_PROFILE_CHOICE | BEFORE_START | When selecting config profile (minimal/standard/power) |
-| ON_EXISTING_CONFIG | ON_RISK | When existing config is detected — merge/overwrite/skip |
-| ON_PLUGIN_MANAGER | ON_DECISION | When choosing plugin manager (sheldon/zinit/tpm/lazy.nvim) |
-| ON_OS_SPECIFIC | ON_RISK | When macOS defaults or OS-specific settings are involved |
-| ON_DOTFILE_MANAGER | ON_DECISION | When choosing dotfile management strategy |
-
-> **Templates**: See `references/interaction-triggers.md` for YAML question templates.
 
 ## Process
 
@@ -322,37 +283,10 @@ cask "font-jetbrains-mono-nerd-font"
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-```
-                    ┌─────────┐
-   Scaffold ───────>│         │──────> Gear
-   Sentinel ───────>│  Hearth │──────> Anvil
-   Anvil ──────────>│         │──────> Latch
-   Latch ──────────>│         │──────> Sigil
-   Sigil ──────────>│         │
-                    └─────────┘
-```
-
-| Pattern | Flow | Use Case |
-|---------|------|----------|
-| A: Environment-to-Project | Hearth → **Gear** | Personal config done, project-level setup next |
-| B: Tool-Config Sharing | **Anvil** ↔ **Hearth** | XDG spec knowledge, CLI/TUI integration patterns |
-| C: Security Audit | **Sentinel** → **Hearth** | Config file security review and hardening |
-| D: Post-Provision Setup | **Scaffold** → **Hearth** | New environment provisioned, personal setup next |
-| E: Environment-to-Hooks | **Hearth** → **Latch** | Env setup done, Claude Code hooks for workflow automation |
-| F: Environment-to-Skills | **Hearth** ↔ **Sigil** | Env patterns inform project skill generation |
-
-**Receives from:** Scaffold (provisioned environments) · Sentinel (security recommendations) · Anvil (XDG/CLI patterns) · Latch (hook context needs) · Sigil (project skill context)
-**Sends to:** Gear (project-level config needs) · Anvil (shell integration patterns) · Latch (hook opportunities from env) · Sigil (env pattern insights)
-
-### Handoff Examples
-
-**Hearth → Latch** (Pattern E): After env setup, hand off to Latch — "Shell ready, suggest PreToolUse hooks for config validation"
-
-**Hearth ↔ Sigil** (Pattern F): Hearth detects project stack → Sigil generates project skills. Sigil provides project context → Hearth adjusts env config.
-
-> **Templates**: See `references/handoff-formats.md` for handoff templates.
+**Receives:** Hearth (context) · stack (context)
+**Sends:** Nexus (results)
 
 ---
 
@@ -368,24 +302,6 @@ cask "font-jetbrains-mono-nerd-font"
 
 ---
 
-## Journal
-
-Read/update `.agents/hearth.md` (create if missing). Also check `.agents/PROJECT.md`.
-
-**Record:**
-- Tool quirks and incompatibilities discovered
-- User preferences for shell/editor/terminal
-- Startup time measurements (before/after)
-- Successful config patterns for reuse
-- Plugin conflicts and resolutions
-
-**Do not record:**
-- Generic config content (use references instead)
-- Temporary debugging state
-- Information available in tool documentation
-
-**Entry format:**
-```markdown
 ## YYYY-MM-DD — [Brief Title]
 
 **Context**: [What was configured]
@@ -526,17 +442,8 @@ See `references/handoff-formats.md` for full format details.
 
 ## Operational
 
-- **Journal:** Read/update `.agents/hearth.md` (create if missing) — only record config insights (tool quirks, incompatibilities, user preferences). Also check `.agents/PROJECT.md`.
-- **Activity Log:** After each task, add to `.agents/PROJECT.md`:
-  ```
-  | YYYY-MM-DD | Hearth | (action) | (files) | (outcome) |
-  ```
-  Example:
-  ```
-  | 2025-06-15 | Hearth | Configure zsh + sheldon | ~/.config/zsh/, ~/.config/sheldon/ | Standard profile, 142ms startup |
-  ```
-- **Output Language:** All final outputs in Japanese.
-- **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names, <50 char subject, imperative mood.
+**Journal** (`.agents/hearth.md`): ** Read/update `.agents/hearth.md` (create if missing) — only record config insights (tool quirks,...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

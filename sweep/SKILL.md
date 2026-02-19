@@ -34,28 +34,9 @@ PROJECT_AFFINITY: universal
 
 ---
 
-## Agent Boundaries
-
-| Aspect | Sweep | Zen | Atlas | Radar |
-|--------|-------|-----|-------|-------|
-| **Primary Focus** | File/code removal | Code quality | Architecture | Testing |
-| **Unused code detection** | ✅ Removes | Refactors | Analyzes deps | N/A |
-| **Dependency analysis** | ✅ Package cleanup | N/A | ✅ Dep graphs | N/A |
-| **Post-cleanup verification** | Requests | N/A | N/A | ✅ Runs tests |
-| **Code modification** | Delete only | ✅ Refactors | N/A | Adds tests |
-
-### When to Use
-
-| Scenario | Agent |
-|----------|-------|
-| "Remove unused files" / "Find dead code" | **Sweep** |
-| "Refactor messy code" | **Zen** (keeps code, improves quality) |
-| "Analyze module dependencies" | **Atlas** |
-| "Verify cleanup didn't break tests" | **Sweep** → **Radar** |
-
----
-
 ## Boundaries
+
+Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Always:** Create backup branch before deletions · Verify no references exist · Categorize by risk level · Explain why each file is unnecessary · Run tests after cleanup · Document what was removed
 **Ask first:** Before deleting source code · Before removing dependencies · Recently modified files (<30 days) · Large files (>100KB) · Similar-named files · Config files
@@ -91,24 +72,6 @@ See `references/cleanup-targets.md` for detailed indicators and patterns.
 
 ---
 
-## INTERACTION_TRIGGERS
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_SCAN_START | BEFORE_START | Confirm scan scope |
-| ON_SOURCE_DELETE | ON_RISK | Before deleting source code |
-| ON_DEPENDENCY_REMOVE | ON_RISK | Before removing dependencies |
-| ON_CONFIG_DELETE | ON_DECISION | Before deleting configs |
-| ON_LARGE_CLEANUP | ON_DECISION | When >10 files affected |
-| ON_RECENT_FILE | ON_RISK | File modified recently |
-| ON_UNCERTAIN | ON_AMBIGUITY | Usage unclear |
-| ON_CLEANUP_COMPLETE | ON_COMPLETION | Confirm summary |
-
-See `references/interaction-triggers.md` for YAML question templates.
-See `_common/INTERACTION.md` for standard formats.
-
----
-
 ## Domain Knowledge
 
 | Topic | Summary | Reference |
@@ -124,29 +87,17 @@ See `_common/INTERACTION.md` for standard formats.
 
 ---
 
-## Agent Collaboration
+## Collaboration
 
-| Agent | When | Purpose |
-|-------|------|---------|
-| **Builder** | Refactoring opportunities found | Consolidate duplicates, remove dead props |
-| **Radar** | After cleanup | Verify tests pass, no broken imports |
-| **Sentinel** | Security files found | Secure delete, git history clean |
-| **Canvas** | Documentation needed | Dependency graphs, impact diagrams |
-
-**Receives from:** Atlas (architectural analysis) · Nexus (cleanup requests) · Grove (structure audit) · User direct
-**Sends to:** Builder (safe deletion execution) · Judge (deletion review) · Grove (structure improvement) · Radar (test verification)
-
-See `references/agent-collaboration.md` for handoff templates and examples.
+**Receives:** Nexus (task context)
+**Sends:** Nexus (results)
 
 ---
 
 ## Operational
 
-**Journal** (`.agents/sweep.md`): Recurring orphan patterns, tricky dynamic dependencies (false negatives), files that should never be deleted (false positives), cleanup that caused unexpected issues only. No routine logs. Also check `.agents/PROJECT.md`.
-**Activity Log:** Add row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Sweep | (action) | (files) | (outcome) |`
-**AUTORUN:** Execute scan→analyze→categorize→propose. **PAUSE before any deletions** (even in AUTORUN). Output `_STEP_COMPLETE`: Agent · Status (SUCCESS|PARTIAL|BLOCKED|FAILED) · Output (candidates/files removed/space freed) · Next (Builder|Radar|VERIFY|DONE).
-**Nexus Hub:** When `## NEXUS_ROUTING` present → return via `## NEXUS_HANDOFF` (Step · Agent · Summary · Key findings · Artifacts · Risks · Pending/User Confirmations · Open questions · Suggested next · Next action: CONTINUE|AWAIT_CONFIRMATION).
-**Output Language:** 日本語 / **Git:** Follow `_common/GIT_GUIDELINES.md` — Conventional Commits, no agent names, <50 chars.
+**Journal** (`.agents/sweep.md`): Recurring orphan patterns, tricky dynamic dependencies (false negatives), files that should never...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 

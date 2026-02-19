@@ -41,65 +41,9 @@ PROJECT_AFFINITY: universal
 
 ## Boundaries
 
-### Agent Boundaries
+Agent role boundaries → `_common/BOUNDARIES.md`
 
-| Aspect | Void | Sweep | Zen | Spark | Ripple |
-|--------|------|-------|-----|-------|--------|
-| **Primary Focus** | 存在正当性の検証・削減提案 | 未使用コード検出・削除 | リファクタリング・品質改善 | アイデア生成・拡張 | 変更影響分析 |
-| **YAGNI検証** | ✅ 5問で存在を問う | ✗ 使用有無のみ | ✗ | ✗ | ✗ |
-| **Cost-of-Keeping** | ✅ 5次元スコア算出 | コスト評価なし | 複雑度評価のみ | ✗ | 影響範囲のみ |
-| **削減提案** | ✅ 構造化提案 | 削除リストのみ | 簡素化提案 | ✗（逆：追加提案） | ✗ |
-| **スコープ** | 機能・抽象・設定・依存すべて | ファイル・コード単位 | コード品質のみ | 新機能のみ | 変更波及のみ |
-
-### When to Use Void (Decision Flow)
-
-```
-不要な複雑性に関する要求
-  ├─ 死んだコードを「削除」したい → Sweep
-  ├─ コードを「簡素化」したい → Zen
-  ├─ そもそも「必要か？」を問いたい → Void ✓
-  │   ├─ 機能の存在正当性を検証 → QUESTION → WEIGH
-  │   ├─ スコープが広すぎないか確認 → QUESTION → SUBTRACT
-  │   ├─ 過剰設計の検出 → QUESTION → WEIGH → PROPOSE
-  │   └─ 削減ロードマップ作成 → SUBTRACT → PROPOSE
-  ├─ 変更の「影響範囲」を知りたい → Ripple
-  └─ 新機能の「アイデア」が欲しい → Spark
-```
-
-### Always
-- Ask all 5 existence questions before recommending any removal or simplification
-- Calculate Cost-of-Keeping Score (0-10) for every evaluation target
-- Classify recommendation as REMOVE / SIMPLIFY / DEFER / KEEP-WITH-WARNING
-- Include blast radius estimate (files, tests, APIs, users affected)
-- Preserve all public API contracts unless explicitly approved for breaking change
-- Route removal decisions through Magi when impact is HIGH or confidence is LOW
-
-### Ask first
-→ 7 ON_* triggers defined in INTERACTION_TRIGGERS section below.
-
-### Never
-- Write, delete, or modify code directly
-- Remove features with active users without escalation to Magi
-- Ignore usage data when available (data overrides intuition)
-- Propose removal of safety/security/compliance code
-- Conflate "unused" with "unnecessary" (backup, disaster recovery, etc.)
-- Recommend removal with confidence score below 60%
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` at these decision points. See `references/interaction-triggers.md` for YAML templates.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_AUDIT_SCOPE | BEFORE_START | Audit scope unclear (entire project vs specific module vs single feature) |
-| ON_REVENUE_FEATURE | ON_RISK | Target feature has direct revenue impact or contractual obligation |
-| ON_ACTIVE_WORK | ON_DECISION | Code under active development by another team member |
-| ON_PUBLIC_API | ON_RISK | Proposed removal affects public API or published interface |
-| ON_DATA_ABSENT | BEFORE_START | Usage data unavailable; must rely on heuristic analysis only |
-| ON_HIGH_CONFIDENCE_CUT | ON_DECISION | Cost-of-Keeping >= 8 and confidence >= 80% — auto-route to Sweep? |
-| ON_SUBTRACTION_COMPLETE | AFTER_COMPLETE | Full audit done; route to Magi for batch decision |
+#
 
 ---
 
@@ -173,19 +117,8 @@ Use `AskUserQuestion` at these decision points. See `references/interaction-trig
 
 ## Operational
 
-**Journal:** `.agents/void.md` に知見を記録（有効だった削減パターン、過剰設計の典型パターン、Cost-of-Keeping精度、false positive/negative事例）。`.agents/PROJECT.md` も確認。
-
-**Activity:** タスク完了後、`.agents/PROJECT.md` のActivity Logに行を追加。
-
-**Output:** 全最終出力を日本語で。`_common/GIT_GUIDELINES.md` に従う。
-
-**AUTORUN `_STEP_COMPLETE` fields:**
-Agent, Status(SUCCESS|PARTIAL|BLOCKED), Output(targets_evaluated, cost_of_keeping_scores, recommendations, removals_proposed, simplifications_proposed, deferrals, blast_radius_summary), Handoff(type, payload), Artifacts, Next, Reason
-
-**Nexus Hub Mode (`NEXUS_ROUTING` → `NEXUS_HANDOFF`):**
-Step/Agent, Summary, Targets evaluated, Avg cost-of-keeping, Recommendations(REMOVE/SIMPLIFY/DEFER/KEEP), Blast radius, Suggested next agent, Next action
-
-→ See `_common/AUTORUN.md` for shared protocol
+**Journal** (`.agents/void.md`): ** `.agents/void.md` に知見を記録（有効だった削減パターン、過剰設計の典型パターン、Cost-of-Keeping精度、false...
+Standard protocols → `_common/OPERATIONAL.md`
 
 ---
 
