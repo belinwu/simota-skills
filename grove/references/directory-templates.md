@@ -47,24 +47,7 @@ src/
 ├── shared/                 # Shared utilities
 │   ├── utils/
 │   ├── types/
-│   └── constants/
-├── config/                 # App configuration
-│   ├── database.ts
-│   └── env.ts
-└── index.ts                # Entry point
-
-tests/
-├── unit/
-│   └── features/
-│       ├── auth/
-│       └── user/
-├── integration/
-│   └── api/
-├── e2e/
-│   └── flows/
-└── fixtures/
-    ├── users.json
-    └── helpers.ts
+...
 ```
 
 ### Key Conventions
@@ -92,10 +75,7 @@ src/
 ├── lib/                    # Utility functions
 ├── services/               # API client / external services
 ├── stores/                 # State management (Zustand, Jotai)
-├── styles/                 # Global styles, design tokens
-│   ├── tokens.css
-│   └── globals.css
-└── types/                  # Shared type definitions
+...
 ```
 
 ---
@@ -120,26 +100,7 @@ src/
     │       ├── __init__.py
     │       ├── service.py
     │       ├── models.py
-    │       └── schemas.py
-    ├── shared/
-    │   ├── __init__.py
-    │   ├── utils.py
-    │   ├── exceptions.py
-    │   └── constants.py
-    └── config/
-        ├── __init__.py
-        └── settings.py
-
-tests/
-├── conftest.py
-├── unit/
-│   └── features/
-│       ├── test_auth.py
-│       └── test_user.py
-├── integration/
-│   └── test_api.py
-└── fixtures/
-    └── data.py
+...
 ```
 
 ### Key Conventions
@@ -167,22 +128,7 @@ src/{package}/
 └── services/
 
 # Django
-src/{project}/
-├── {project}/              # Project settings
-│   ├── settings/
-│   │   ├── base.py
-│   │   ├── dev.py
-│   │   └── prod.py
-│   ├── urls.py
-│   └── wsgi.py
-├── apps/
-│   ├── auth/
-│   │   ├── models.py
-│   │   ├── views.py
-│   │   ├── serializers.py
-│   │   └── tests/
-│   └── user/
-└── manage.py
+...
 ```
 
 ---
@@ -207,22 +153,7 @@ internal/                   # Private packages (not importable)
 ├── user/
 │   ├── handler.go
 │   ├── service.go
-│   └── user_test.go
-└── shared/
-    ├── middleware/
-    ├── config/
-    └── errors/
-
-pkg/                        # Public packages (importable)
-├── httputil/
-└── validation/
-
-tests/                      # Integration / E2E tests
-├── integration/
-└── e2e/
-
-api/                        # API definitions (OpenAPI, protobuf)
-└── openapi.yaml
+...
 ```
 
 ### Key Conventions
@@ -255,14 +186,7 @@ src/
 ├── shared/
 │   ├── mod.rs
 │   ├── config.rs
-│   └── errors.rs
-└── tests/                  # Integration tests (cargo convention)
-    ├── auth_test.rs
-    └── common/
-        └── mod.rs
-
-benches/                    # Benchmarks
-└── bench_main.rs
+...
 ```
 
 ### Workspace (Multi-crate)
@@ -313,22 +237,7 @@ apps/                       # Deployable applications
 packages/                   # Shared packages
 ├── ui/                     # Shared UI components
 │   ├── src/
-│   └── package.json
-├── config/                 # Shared configurations
-│   ├── eslint/
-│   ├── typescript/
-│   └── package.json
-├── types/                  # Shared type definitions
-│   └── package.json
-└── utils/                  # Shared utilities
-    └── package.json
-
-docs/                       # Monorepo-level docs
-scripts/                    # Monorepo-level scripts
-infra/                      # Shared infrastructure
-
-turbo.json                  # Pipeline configuration
-pnpm-workspace.yaml         # Workspace definition
+...
 ```
 
 ### Nx Workspace
@@ -349,28 +258,8 @@ libs/                       # Shared libraries (Nx convention)
 └── data-access/
     ├── api-client/
     └── database/
-
-nx.json
+...
 ```
-
-### Lerna (Legacy)
-
-```
-packages/                   # All packages (Lerna convention)
-├── app/
-│   ├── src/
-│   └── package.json
-├── shared-ui/
-│   ├── src/
-│   └── package.json
-└── utils/
-    ├── src/
-    └── package.json
-
-lerna.json                  # Lerna configuration
-```
-
-> **Note:** Lerna はメンテナンスモードです。新規プロジェクトでは Turborepo または Nx への移行を推奨します。既存 Lerna プロジェクトの移行ガイドは `references/monorepo-health.md` を参照。
 
 ### Key Conventions (JS/TS Monorepo)
 
@@ -402,19 +291,7 @@ packages/                   # Python packages
 │   │       └── app.py
 │   ├── tests/
 │   └── pyproject.toml
-└── cli/
-    ├── src/
-    │   └── cli/
-    │       └── __init__.py
-    ├── tests/
-    └── pyproject.toml
-
-docs/                       # Monorepo-level docs
-scripts/                    # Shared scripts
-infra/
-
-pyproject.toml              # Workspace root (uv workspace)
-uv.lock                    # Unified lock file
+...
 ```
 
 ### Pants / Bazel Build System
@@ -435,13 +312,7 @@ src/
 │   └── cli/
 │       ├── BUILD
 │       └── main.py
-└── resources/
-    └── config/
-
-pants.toml                  # Pants configuration
-# OR
-WORKSPACE                   # Bazel workspace
-BUILD.bazel                 # Root build
+...
 ```
 
 ### Key Conventions (Python Monorepo)
@@ -474,29 +345,7 @@ services/                   # Individual Go modules
 │   │   └── worker/
 │   │       └── main.go
 │   ├── internal/
-│   ├── go.mod              # Module: example.com/services/worker
-│   └── go.sum
-└── gateway/
-    ├── cmd/
-    ├── internal/
-    ├── go.mod
-    └── go.sum
-
-pkg/                        # Shared packages (importable)
-├── auth/
-│   ├── auth.go
-│   └── auth_test.go
-├── database/
-│   └── client.go
-├── go.mod                  # Module: example.com/pkg
-└── go.sum
-
-tools/                      # Internal tools
-scripts/
-docs/
-
-go.work                    # Go workspace file (Go 1.18+)
-go.work.sum
+...
 ```
 
 ### Key Conventions (Go Monorepo)
@@ -530,31 +379,7 @@ core/                       # Core business logic
 ├── src/
 │   ├── main/
 │   │   └── java/
-│   │       └── com/example/core/
-│   └── test/
-└── build.gradle.kts
-
-infra/                      # Infrastructure module
-├── src/
-└── build.gradle.kts
-
-shared/                     # Shared utilities
-├── src/
-└── build.gradle.kts
-
-buildSrc/                   # Shared build logic
-├── src/
-│   └── main/
-│       └── kotlin/
-│           └── conventions.gradle.kts
-└── build.gradle.kts
-
-docs/
-scripts/
-
-build.gradle.kts            # Root build (plugins, allprojects)
-settings.gradle.kts         # Module includes
-gradle.properties
+...
 ```
 
 ### Maven Multi-Module
@@ -575,9 +400,7 @@ shared/
 └── pom.xml
 
 docs/
-scripts/
-
-pom.xml                     # Parent POM (modules, dependencyManagement)
+...
 ```
 
 ### Key Conventions (Java/Kotlin Monorepo)

@@ -89,8 +89,7 @@ Comprehensive a11y patterns for Palette (WCAG 2.1 Level AA).
 @media (forced-colors: active) {
   :focus-visible {
     outline: 3px solid CanvasText;
-  }
-}
+/* ... */
 ```
 
 **Focus Trap for Modals:**
@@ -111,48 +110,7 @@ function Modal({ isOpen, onClose, children }) {
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       (focusableElements?.[0] as HTMLElement)?.focus();
-    } else {
-      // Restore focus
-      previousActiveElement.current?.focus();
-    }
-  }, [isOpen]);
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-      return;
-    }
-
-    if (e.key !== 'Tab') return;
-
-    const focusableElements = modalRef.current?.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (!focusableElements?.length) return;
-
-    const first = focusableElements[0] as HTMLElement;
-    const last = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
-
-  return (
-    <div
-      ref={modalRef}
-      role="dialog"
-      aria-modal="true"
-      onKeyDown={handleKeyDown}
-    >
-      {children}
-    </div>
-  );
-}
+// ...
 ```
 
 ### Keyboard Shortcuts
@@ -187,38 +145,7 @@ function TabList({ tabs, activeTab, onTabChange }) {
         newIndex = (index - 1 + tabs.length) % tabs.length;
         break;
       case 'Home':
-        newIndex = 0;
-        break;
-      case 'End':
-        newIndex = tabs.length - 1;
-        break;
-      default:
-        return;
-    }
-
-    e.preventDefault();
-    onTabChange(tabs[newIndex].id);
-    document.getElementById(`tab-${tabs[newIndex].id}`)?.focus();
-  };
-
-  return (
-    <div role="tablist">
-      {tabs.map((tab, index) => (
-        <button
-          key={tab.id}
-          id={`tab-${tab.id}`}
-          role="tab"
-          aria-selected={tab.id === activeTab}
-          tabIndex={tab.id === activeTab ? 0 : -1}
-          onKeyDown={(e) => handleKeyDown(e, index)}
-          onClick={() => onTabChange(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  );
-}
+// ...
 ```
 
 ---
@@ -245,16 +172,7 @@ function StatusAnnouncer() {
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      className="sr-only"
-    >
-      {message}
-    </div>
-  );
-}
-
-// Usage in component
-announce('Item added to cart');  // polite
-announce('Error: Payment failed', 'assertive');  // assertive
+// ...
 ```
 
 **Live Region Politeness:**
@@ -285,10 +203,7 @@ announce('Error: Payment failed', 'assertive');  // assertive
 
 // Pattern 4: aria-describedby (additional description)
 <input
-  aria-label="Password"
-  aria-describedby="password-requirements"
-/>
-<p id="password-requirements">At least 8 characters</p>
+// ...
 ```
 
 ### Common ARIA Patterns
@@ -331,13 +246,7 @@ announce('Error: Payment failed', 'assertive');  // assertive
 <TooltipProvider>
   <Tooltip>
     <TooltipTrigger asChild>
-      <button aria-label="Settings">
-        <GearIcon aria-hidden="true" />
-      </button>
-    </TooltipTrigger>
-    <TooltipContent>Settings</TooltipContent>
-  </Tooltip>
-</TooltipProvider>
+// ...
 ```
 
 ---
@@ -373,8 +282,7 @@ announce('Error: Payment failed', 'assertive');  // assertive
   --bg-error: #fef2f2;
 
   /* Focus ring: 3:1+ against adjacent colors */
-  --focus-ring: #2563eb;
-}
+/* ... */
 ```
 
 ### Color Independence
@@ -397,9 +305,7 @@ announce('Error: Payment failed', 'assertive');  // assertive
 </span>
 
 // GOOD: Color + text pattern
-<span className="text-red-600">
-  Error: {message}
-</span>
+// ...
 ```
 
 **Form field states:**
@@ -443,10 +349,7 @@ announce('Error: Payment failed', 'assertive');  // assertive
 @media (prefers-reduced-motion: reduce) {
   .animated,
   .transition {
-    animation: none;
-    transition: none;
-  }
-}
+/* ... */
 ```
 
 **React Implementation:**
@@ -467,21 +370,7 @@ function usePrefersReducedMotion() {
 
   return prefersReduced;
 }
-
-// Usage
-function AnimatedComponent() {
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-    >
-      Content
-    </motion.div>
-  );
-}
+// ...
 ```
 
 ### Essential vs Decorative Motion
@@ -515,16 +404,7 @@ function AnimatedComponent() {
         </button>
       </h3>
       <div
-        id={`accordion-panel-${item.id}`}
-        role="region"
-        aria-labelledby={`accordion-button-${item.id}`}
-        hidden={!openItems.includes(item.id)}
-      >
-        {item.content}
-      </div>
-    </div>
-  ))}
-</div>
+// ...
 ```
 
 ### Dropdown Menu
@@ -545,21 +425,7 @@ function AnimatedComponent() {
   {isOpen && (
     <ul
       id="menu"
-      role="menu"
-      aria-labelledby="menu-button"
-    >
-      {options.map((option, index) => (
-        <li
-          key={option.id}
-          role="menuitem"
-          tabIndex={-1}
-        >
-          {option.label}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+// ...
 ```
 
 ### Alert/Notification
@@ -580,13 +446,7 @@ function AnimatedComponent() {
     <p className="font-medium">{title}</p>
     <p className="text-sm">{message}</p>
   </div>
-  <button
-    aria-label="Dismiss alert"
-    onClick={onDismiss}
-  >
-    <XIcon />
-  </button>
-</div>
+// ...
 ```
 
 ### Skip Link
@@ -607,7 +467,7 @@ function AnimatedComponent() {
 // ...later in the page
 <main id="main-content" tabIndex={-1}>
   {/* Main content */}
-</main>
+// ...
 ```
 
 ---

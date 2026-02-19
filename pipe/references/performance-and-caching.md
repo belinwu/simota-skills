@@ -45,8 +45,7 @@ Job dependency optimization, caching strategies, matrix testing, artifact manage
     path: |
       ~/.pnpm-store
       node_modules/.cache
-    key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-    restore-keys: pnpm-${{ runner.os }}-
+# ...
 ```
 
 #### Node.js (npm)
@@ -137,14 +136,7 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        shard: [1, 2, 3]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache/restore@v4  # Restore only, no save
-        with:
-          path: node_modules
-          key: deps-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - run: pnpm test --shard=${{ matrix.shard }}/3
+# ...
 ```
 
 ---
@@ -169,9 +161,7 @@ jobs:
     steps: [...]
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps: [...]
+# ...
 ```
 
 **Execution:** `lint` and `test` run in parallel → `build` waits for both → `deploy` waits for `build`.
@@ -218,16 +208,7 @@ jobs:
 
   test:
     needs: check
-    if: needs.check.outputs.has-changes == 'true'
-    runs-on: ubuntu-latest
-    steps: [...]
-
-  skip-notice:
-    needs: check
-    if: needs.check.outputs.has-changes != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "No source changes, skipping tests"
+# ...
 ```
 
 ### Run Despite Upstream Failure
@@ -304,8 +285,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     runs-on: ubuntu-latest
-    steps:
-      - run: echo "Building ${{ matrix.project }} from ${{ matrix.path }}"
+# ...
 ```
 
 ### Limits
@@ -530,7 +510,7 @@ jobs:
         with:
           pattern: coverage-*
           merge-multiple: true
-      - run: pnpm coverage:merge
+# ...
 ```
 
 ---

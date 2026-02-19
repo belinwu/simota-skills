@@ -37,9 +37,7 @@ if ! check_auth; then
   _STEP_COMPLETE:
     Agent: Harvest
     Status: BLOCKED
-    Output: Authentication required
-    Next: USER_ACTION
-fi
+# ...
 ```
 
 ### Rate Limit Detection
@@ -60,10 +58,7 @@ check_rate_limit() {
     echo "WARNING: Rate limit low ($remaining remaining, resets at $reset_time)"
     return 2
   fi
-
-  echo "OK: Rate limit sufficient ($remaining remaining)"
-  return 0
-}
+# ...
 ```
 
 ### Timeout Detection
@@ -84,12 +79,7 @@ execute_with_timeout() {
   fi
 
   local exit_code=$?
-  if [ $exit_code -eq 124 ]; then
-    echo "ERROR: Command timed out after ${timeout_sec}s"
-    return 124
-  fi
-  return $exit_code
-}
+# ...
 ```
 
 ---
@@ -114,32 +104,7 @@ retry_with_backoff() {
       return 0
     fi
 
-    local exit_code=$?
-
-    # 復旧不可能なエラーは即座に終了
-    if [ $exit_code -eq 1 ] && [[ "$cmd" == *"gh"* ]]; then
-      local error_msg=$(eval "$cmd" 2>&1)
-      if echo "$error_msg" | grep -q "404\|not found"; then
-        echo "ERROR: Resource not found (non-recoverable)"
-        return $exit_code
-      fi
-    fi
-
-    if [ $attempt -lt $max_attempts ]; then
-      local delay=$((base_delay * (2 ** (attempt - 1))))
-      echo "Retrying in ${delay}s..."
-      sleep $delay
-    fi
-
-    ((attempt++))
-  done
-
-  echo "ERROR: All $max_attempts attempts failed"
-  return 1
-}
-
-# 使用例
-retry_with_backoff 3 5 "gh pr list --state merged --limit 100 --json number,title"
+# ...
 ```
 
 ### 2. Rate Limit Wait and Retry
@@ -160,34 +125,7 @@ wait_for_rate_limit() {
     return 1
   fi
   return 0
-}
-
-# レート制限対応付きAPI呼び出し
-gh_api_with_rate_limit() {
-  local cmd="$@"
-
-  # 事前チェック
-  local remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null)
-  if [ "$remaining" -lt 10 ]; then
-    wait_for_rate_limit || return 1
-  fi
-
-  # 実行
-  local result
-  result=$(eval "$cmd" 2>&1)
-  local exit_code=$?
-
-  # レート制限エラーの場合はリトライ
-  if echo "$result" | grep -q "rate limit"; then
-    echo "Hit rate limit, waiting for reset..."
-    wait_for_rate_limit
-    result=$(eval "$cmd" 2>&1)
-    exit_code=$?
-  fi
-
-  echo "$result"
-  return $exit_code
-}
+# ...
 ```
 
 ### 3. Partial Data Recovery
@@ -208,18 +146,7 @@ fetch_prs_with_fallback() {
     # 最小フィールドでリトライ
     local minimal_fields="number,title,state,author"
     result=$(gh pr list --state all --limit "$limit" --json "$minimal_fields" 2>&1)
-
-    if [ $? -ne 0 ]; then
-      echo "ERROR: Even minimal fetch failed"
-      return 1
-    fi
-
-    echo "WARNING: Retrieved partial data (missing: additions, deletions, dates)"
-  fi
-
-  echo "$result"
-  return 0
-}
+# ...
 ```
 
 ---
@@ -244,35 +171,7 @@ _STEP_COMPLETE:
 _STEP_COMPLETE:
   Agent: Harvest
   Status: PARTIAL
-  Output: Rate limit reached, collected 50/100 PRs
-  Error:
-    Code: RATE_LIMITED
-    Message: "API rate limit exceeded"
-    Recovery: "Auto-retry after reset"
-    ResetTime: "2024-01-15T10:30:00Z"
-  Next: RETRY_LATER
-
-# タイムアウト
-_STEP_COMPLETE:
-  Agent: Harvest
-  Status: FAILED
-  Output: Data collection timed out
-  Error:
-    Code: TIMEOUT
-    Message: "Request timed out after 60s"
-    Recovery: "Try with smaller limit or date range"
-  Next: Harvest (with reduced scope)
-
-# リポジトリ未発見
-_STEP_COMPLETE:
-  Agent: Harvest
-  Status: FAILED
-  Output: Repository not found
-  Error:
-    Code: NOT_FOUND
-    Message: "Repository 'owner/repo' not found or no access"
-    Recovery: "Verify repository name and permissions"
-  Next: USER_ACTION
+# ...
 ```
 
 ### For NEXUS_HANDOFF
@@ -293,12 +192,7 @@ _STEP_COMPLETE:
   - Code: RATE_LIMITED
   - Remaining: 0
   - Reset: 2024-01-15T10:30:00Z
-- Recovery options:
-  - Wait 15 minutes and retry
-  - Proceed with partial data
-  - Reduce scope (fewer PRs or smaller date range)
-- Suggested next agent: Harvest (retry after 10:30)
-- Next action: RETRY_LATER
+# ...
 ```
 
 ---
@@ -323,47 +217,7 @@ harvest_health_check() {
   fi
 
   # 2. 認証確認
-  if ! gh auth status &>/dev/null; then
-    echo "❌ Not authenticated"
-    ((errors++))
-  else
-    echo "✅ Authenticated"
-  fi
-
-  # 3. レート制限確認
-  local remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null)
-  if [ -z "$remaining" ]; then
-    echo "⚠️ Could not check rate limit"
-  elif [ "$remaining" -lt 100 ]; then
-    echo "⚠️ Rate limit low ($remaining remaining)"
-  else
-    echo "✅ Rate limit OK ($remaining remaining)"
-  fi
-
-  # 4. リポジトリアクセス確認
-  if ! gh repo view --json nameWithOwner &>/dev/null; then
-    echo "⚠️ Not in a git repository or no remote"
-  else
-    local repo=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
-    echo "✅ Repository: $repo"
-  fi
-
-  # 5. jq インストール確認
-  if ! command -v jq &>/dev/null; then
-    echo "⚠️ jq not installed (some features limited)"
-  else
-    echo "✅ jq installed ($(jq --version))"
-  fi
-
-  echo "=== Health Check Complete ==="
-
-  if [ $errors -gt 0 ]; then
-    echo "RESULT: $errors critical errors found"
-    return 1
-  fi
-
-  return 0
-}
+# ...
 ```
 
 ---
@@ -413,7 +267,7 @@ determine_degradation_level() {
   else
     echo "FAILED"
   fi
-}
+# ...
 ```
 
 ---

@@ -125,9 +125,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/index-strategies.md` | Index types, composite rules, partial indexes, anti-patterns, monitoring |
 | `references/migration-patterns.md` | Safe migration decision tree, expand-contract, zero-downtime, framework commands |
 | `references/normalization-guide.md` | Normal forms, denormalization patterns, audit checklist |
-| `references/interaction-triggers.md` | ON_SCHEMA_DESIGN + ON_BREAKING_CHANGE YAML templates |
 | `references/schema-examples.md` | Entity template, migration SQL, DB examples, framework schemas, ER diagram, code standards |
-| `references/handoff-formats.md` | SCHEMA_TO_BUILDER/TUNER/CANVAS handoff templates, input patterns |
 
 ---
 

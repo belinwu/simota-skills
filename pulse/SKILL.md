@@ -103,8 +103,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/alerts-anomaly-detection.md` | Z-score anomaly, alert rules, Slack template |
 | `references/data-quality.md` | Schema validation, freshness, quality SQL |
 | `references/revenue-analytics.md` | SaaS metrics, MRR movement, churn analysis |
-| `references/handoffs.md` | Agent collaboration table, 3 handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for 3 triggers |
 | `references/code-standards.md` | Good/bad Pulse code examples |
 
 ---

@@ -18,18 +18,7 @@ Complete catalog of all 61 agents organized by category.
 | Documentation | 3 | Documentation generation | No (text) |
 | Architecture | 4 | System design | Mixed |
 | UX/Design | 6 | User experience and interface | Mixed |
-| DevOps | 5 | Infrastructure and tooling | Yes (config) |
-| Modernization | 2 | Technology updates | Yes |
-| Growth | 2 | Business growth features | Mixed |
-| Analytics | 2 | Metrics and experiments | Mixed |
-| Git/PR | 2 | Version control management | No |
-| Browser | 2 | Browser automation | Yes |
-| Data | 2 | Data pipeline and transformation | Mixed |
-| Strategy | 1 | Business strategy simulation | No |
-| Translation | 1 | Business-technical translation | No |
-| Incident | 1 | Concurrency and resource issues | No |
-| Communication | 1 | Messaging integration & real-time communication | Mixed |
-| Meta / Tooling | 1 | Project-specific skill generation | No (text) |
+| ... | (12 more rows) |
 
 **Total: 63 agents**
 
@@ -699,8 +688,7 @@ Does it coordinate other agents?
     │       │       │       ├── Does it review code?
     │       │       │       │   ├── Yes → Review
     │       │       │       │   └── No → (continue below)
-    │       │       │       └── ...
-    └── ...
+...
 ```
 
 Complete decision tree available in validation checklist.

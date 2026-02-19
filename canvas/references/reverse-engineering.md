@@ -145,8 +145,7 @@ flowchart LR
             A1["POST /login"] --> Login[Login]
             A2["POST /logout"] --> Logout[Logout]
             A3["POST /refresh"] --> Refresh[Refresh Token]
-        end
-    end
+// ...
 ```
 
 ---
@@ -243,15 +242,7 @@ erDiagram
         string title
         string authorId FK
     }
-    PROFILE {
-        string id PK
-        string userId FK
-        string bio
-    }
-    TAG {
-        string id PK
-        string name UK
-    }
+// ...
 ```
 
 ---
@@ -348,17 +339,7 @@ classDiagram
         +next-intl
     }
     class Prisma {
-        +@prisma/client
-    }
-    class DevTools {
-        +TypeScript
-        +Jest
-        +ESLint
-    }
-    App --> React
-    App --> Next.js
-    App --> Prisma
-    App ..> DevTools : dev
+// ...
 ```
 
 ---
@@ -401,16 +382,7 @@ sequenceDiagram
     A-->>F: Access + Refresh tokens
     F->>F: Store in cookies
     F-->>U: Redirect to dashboard
-
-    Note over U,R: Subsequent requests
-    F->>A: Request with token
-    A->>A: Verify token
-    alt Token expired
-        A->>R: Check refresh token
-        R-->>A: Valid
-        A-->>F: New access token
-    end
-    A-->>F: Response
+// ...
 ```
 
 ---

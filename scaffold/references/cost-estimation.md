@@ -22,7 +22,7 @@ Read Terraform files
     +-- Per-resource breakdown
     +-- Per-category subtotals
     +-- Environment comparison
-    +-- Optimization recommendations
+...
 ```
 
 ---
@@ -91,8 +91,7 @@ jobs:
       - run: infracost breakdown --path=environments/prod --format=json --out-file=/tmp/infracost.json
       - uses: infracost/actions/comment@v1
         with:
-          path: /tmp/infracost.json
-          behavior: update
+# ...
 ```
 
 ---
@@ -127,21 +126,7 @@ resource "aws_rds_cluster" "main" {
 resource "aws_ecs_service" "app" {
   desired_count = 2               # → Tasks x 2
   # Check task_definition for cpu/memory → Fargate pricing
-}
-
-resource "google_cloud_run_v2_service" "main" {
-  template {
-    containers {
-      resources {
-        limits = { cpu = "1", memory = "512Mi" }  # → Cloud Run pricing
-      }
-    }
-    scaling {
-      min_instance_count = 1       # → Always-on cost
-      max_instance_count = 10      # → Peak cost estimate
-    }
-  }
-}
+...
 ```
 
 ---
@@ -377,12 +362,7 @@ resource "google_sql_database_instance" "main" {
 
 resource "google_cloud_run_v2_service" "main" {
   template {
-    scaling {
-      min_instance_count = var.environment == "prod" ? 2 : 0
-      # Always-on instances = fixed cost; 0 = pay-per-use only
-    }
-  }
-}
+// ...
 ```
 
 ### ECS Fargate Cost Formula
@@ -456,52 +436,7 @@ When estimating costs from Terraform code, produce output in this format:
 | 2 | ...      | ...               | ...  | ...   | ...           |
 | | | | | **Subtotal** | **$XXX** |
 
-### Category Summary
-
-| Category | Monthly (USD) | % of Total |
-|----------|---------------|------------|
-| Compute  | $XX           | XX%        |
-| Database | $XX           | XX%        |
-| Network  | $XX           | XX%        |
-| Storage  | $XX           | XX%        |
-| Security/Mgmt | $XX      | XX%        |
-| **Total** | **$XXX**     | **100%**   |
-
-### Environment Comparison (if applicable)
-
-| Category | Dev | Staging | Prod |
-|----------|-----|---------|------|
-| Compute  | $XX | $XX     | $XX  |
-| Database | $XX | $XX     | $XX  |
-| Network  | $XX | $XX     | $XX  |
-| Storage  | $XX | $XX     | $XX  |
-| **Total** | **$XX** | **$XX** | **$XX** |
-
-### Cost Drivers (top 3)
-
-1. **[Resource]** - $XX/month (XX% of total) — [why it's expensive]
-2. **[Resource]** - $XX/month (XX% of total) — [context]
-3. **[Resource]** - $XX/month (XX% of total) — [context]
-
-### Optimization Opportunities
-
-| Opportunity | Current Cost | Optimized | Savings | Trade-off |
-|-------------|-------------|-----------|---------|-----------|
-| [action]    | $XX         | $XX       | $XX     | [impact]  |
-
-### Assumptions
-
-- Traffic/usage estimates: [describe]
-- Data transfer: [estimate or excluded]
-- Prices based on: [on-demand / savings plan applied]
-- Prices as of: [date, approximate]
-
-### Excluded from Estimate
-
-- Data transfer costs (varies by actual usage)
-- DNS query costs (typically negligible)
-- CloudWatch/Cloud Monitoring detailed metrics
-- Support plan costs
+...
 ```
 
 ---
@@ -566,46 +501,7 @@ resource "aws_budgets_budget" "monthly" {
 
   notification {
     comparison_operator       = "GREATER_THAN"
-    threshold                 = 80
-    threshold_type            = "PERCENTAGE"
-    notification_type         = "FORECASTED"
-    subscriber_email_addresses = var.budget_alert_emails
-  }
-
-  notification {
-    comparison_operator       = "GREATER_THAN"
-    threshold                 = 100
-    threshold_type            = "PERCENTAGE"
-    notification_type         = "ACTUAL"
-    subscriber_email_addresses = var.budget_alert_emails
-  }
-}
-
-resource "aws_ce_anomaly_monitor" "service" {
-  name              = "${var.project_name}-anomaly-monitor"
-  monitor_type      = "DIMENSIONAL"
-  monitor_dimension = "SERVICE"
-}
-
-resource "aws_ce_anomaly_subscription" "alert" {
-  name      = "${var.project_name}-anomaly-alert"
-  frequency = "DAILY"
-
-  monitor_arn_list = [aws_ce_anomaly_monitor.service.arn]
-
-  subscriber {
-    type    = "EMAIL"
-    address = var.budget_alert_emails[0]
-  }
-
-  threshold_expression {
-    dimension {
-      key           = "ANOMALY_TOTAL_IMPACT_ABSOLUTE"
-      values        = ["100"]
-      match_options = ["GREATER_THAN_OR_EQUAL"]
-    }
-  }
-}
+// ...
 ```
 
 ### Budget Alerts (GCP)
@@ -626,33 +522,7 @@ resource "google_billing_budget" "monthly" {
       currency_code = "USD"
       units         = var.monthly_budget_usd
     }
-  }
-
-  threshold_rules {
-    threshold_percent = 0.5
-    spend_basis       = "CURRENT_SPEND"
-  }
-
-  threshold_rules {
-    threshold_percent = 0.8
-    spend_basis       = "CURRENT_SPEND"
-  }
-
-  threshold_rules {
-    threshold_percent = 1.0
-    spend_basis       = "CURRENT_SPEND"
-  }
-
-  threshold_rules {
-    threshold_percent = 0.9
-    spend_basis       = "FORECASTED_SPEND"
-  }
-
-  all_updates_rule {
-    monitoring_notification_channels = var.notification_channels
-    disable_default_iam_recipients   = false
-  }
-}
+// ...
 ```
 
 ### Cost Allocation Tagging Strategy
@@ -675,23 +545,7 @@ provider "aws" {
   region = var.region
 
   default_tags {
-    tags = local.cost_tags
-  }
-}
-
-# Apply to all resources via default_labels (GCP provider)
-provider "google" {
-  project = var.gcp_project_id
-  region  = var.region
-
-  default_labels = {
-    project     = var.project_name
-    environment = var.environment
-    team        = var.team_name
-    cost-center = var.cost_center
-    managed-by  = "terraform"
-  }
-}
+// ...
 ```
 
 ### Tag Enforcement via OPA Policy
@@ -712,9 +566,7 @@ deny[msg] {
 
   msg := sprintf(
     "%s '%s' missing cost allocation tags: %v",
-    [resource.type, resource.address, missing]
-  )
-}
+// ...
 ```
 
 ### Savings Plans / Reserved Instances / CUDs
@@ -746,18 +598,7 @@ resource "aws_instance" "worker" {
       max_price = var.use_spot ? var.spot_max_price : null
     }
   }
-}
-
-# GCP Spot VM
-resource "google_compute_instance" "worker" {
-  machine_type = var.machine_type
-  scheduling {
-    preemptible                 = var.use_spot
-    automatic_restart           = var.use_spot ? false : true
-    provisioning_model          = var.use_spot ? "SPOT" : "STANDARD"
-    instance_termination_action = var.use_spot ? "STOP" : null
-  }
-}
+// ...
 ```
 
 ### Cost Optimization Checklist

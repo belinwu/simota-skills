@@ -74,28 +74,7 @@ describe('UserService', () => {
   afterEach(async () => {
     await db.cleanup();
   });
-
-  // ... tests
-});
-
-// order.test.ts (same setup duplicated)
-describe('OrderService', () => {
-  let db: Database;
-  let orderService: OrderService;
-
-  beforeEach(async () => {
-    db = await createTestDatabase();
-    await db.migrate();
-    await db.seed('users');
-    orderService = new OrderService(db);
-  });
-
-  afterEach(async () => {
-    await db.cleanup();
-  });
-
-  // ... tests
-});
+// ...
 ```
 
 **After:**
@@ -115,31 +94,7 @@ export function useDatabaseFixture() {
   });
 
   return { getDb: () => db };
-}
-
-// user.test.ts
-describe('UserService', () => {
-  const { getDb } = useDatabaseFixture();
-  let userService: UserService;
-
-  beforeEach(() => {
-    userService = new UserService(getDb());
-  });
-
-  // ... tests
-});
-
-// order.test.ts
-describe('OrderService', () => {
-  const { getDb } = useDatabaseFixture();
-  let orderService: OrderService;
-
-  beforeEach(() => {
-    orderService = new OrderService(getDb());
-  });
-
-  // ... tests
-});
+// ...
 ```
 
 ### Recipe 2: Extract Test Helper
@@ -179,8 +134,7 @@ export function assertUserEquals(actual: User, expected: User): void { ... }
 export function assertOrderValid(order: Order): void { ... }
 
 // test-helpers/server.ts
-export function setupTestServer(): TestServer { ... }
-export function cleanupTestServer(server: TestServer): void { ... }
+// ...
 ```
 
 ### Recipe 3: Reduce Assertion Roulette
@@ -218,15 +172,7 @@ describe('user creation', () => {
   test('defaults role to user', () => {
     expect(user.role).toBe('user');
   });
-
-  test('sets creation timestamp', () => {
-    expect(user.createdAt).toBeInstanceOf(Date);
-  });
-
-  test('activates by default', () => {
-    expect(user.isActive).toBe(true);
-  });
-});
+// ...
 ```
 
 **Alternative (when splitting is excessive):** Add assertion messages:
@@ -276,23 +222,7 @@ test('order total sums item prices with quantity', () => {
 
 // test-helpers/builders.ts
 function buildOrder(overrides: Partial<Order> = {}): Order {
-  return {
-    id: 'test-order-1',
-    items: [],
-    status: 'pending',
-    createdAt: new Date('2024-01-01'),
-    ...overrides,
-  };
-}
-
-function buildOrderItem(overrides: Partial<OrderItem> = {}): OrderItem {
-  return {
-    productId: 'test-product-1',
-    price: 10.00,
-    quantity: 1,
-    ...overrides,
-  };
-}
+// ...
 ```
 
 ### Recipe 5: Extract Parameterized Test
@@ -364,12 +294,7 @@ func TestValidateEmail(t *testing.T) {
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
             got := ValidateEmail(tt.email)
-            if got != tt.expected {
-                t.Errorf("ValidateEmail(%q) = %v, want %v", tt.email, got, tt.expected)
-            }
-        })
-    }
-}
+// ...
 ```
 
 ### Recipe 6: Improve Test Readability (AAA Structure)
@@ -407,20 +332,7 @@ describe('Service.get', () => {
       name: 'Alice',
       status: 'active',
     });
-  });
-
-  test('returns null when user not found', async () => {
-    // Arrange
-    const service = new Service(mockDb);
-    mockDb.find.mockResolvedValue(null);
-
-    // Act
-    const result = await service.get(999);
-
-    // Assert
-    expect(result).toBeNull();
-  });
-});
+// ...
 ```
 
 **AAA Guidelines:**
@@ -536,15 +448,5 @@ describe('Service.get', () => {
 ### Smells Resolved
 - [x] [Smell]: [What was fixed] → [Recipe applied]
 
-### Changes Applied
-1. [Recipe]: [Target] → [Result]
-
-### Test Verification
-- Pre-refactor: All [X] tests pass
-- Post-refactor: All [X] tests pass
-- No tests removed (only restructured)
-- Coverage unchanged: X%
-
-### Remaining Opportunities
-- [ ] [Next test smell to address]
+...
 ```

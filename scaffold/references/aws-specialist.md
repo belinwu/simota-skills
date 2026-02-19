@@ -26,18 +26,7 @@ resource "aws_ec2_transit_gateway" "main" {
 
 resource "aws_ec2_transit_gateway_route_table" "shared" {
   transit_gateway_id = aws_ec2_transit_gateway.main.id
-  tags = merge(var.common_tags, { Name = "${var.project_name}-shared-rt" })
-}
-
-resource "aws_ec2_transit_gateway_vpc_attachment" "spoke" {
-  for_each = var.spoke_vpcs
-
-  subnet_ids         = each.value.subnet_ids
-  transit_gateway_id = aws_ec2_transit_gateway.main.id
-  vpc_id             = each.value.vpc_id
-
-  tags = merge(var.common_tags, { Name = "${var.project_name}-${each.key}" })
-}
+// ...
 ```
 
 **Decision Criteria**: VPC Peering vs Transit Gateway
@@ -70,10 +59,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   service_name        = "com.amazonaws.${var.region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = var.private_subnet_ids
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-  tags = var.common_tags
-}
+// ...
 ```
 
 ---
@@ -100,124 +86,7 @@ resource "aws_ecs_cluster" "main" {
       logging = "OVERRIDE"
       log_configuration {
         cloud_watch_log_group_name = aws_cloudwatch_log_group.ecs_exec.name
-      }
-    }
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_ecs_cluster_capacity_providers" "main" {
-  cluster_name       = aws_ecs_cluster.main.name
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
-
-  default_capacity_provider_strategy {
-    capacity_provider = var.environment == "prod" ? "FARGATE" : "FARGATE_SPOT"
-    weight            = 1
-    base              = var.environment == "prod" ? 1 : 0
-  }
-}
-
-resource "aws_ecs_task_definition" "app" {
-  family                   = "${var.project_name}-${var.environment}"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.cpu
-  memory                   = var.memory
-  execution_role_arn       = aws_iam_role.ecs_execution.arn
-  task_role_arn            = aws_iam_role.ecs_task.arn
-
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = var.use_graviton ? "ARM64" : "X86_64"
-  }
-
-  container_definitions = jsonencode([{
-    name  = "app"
-    image = var.container_image
-    portMappings = [{ containerPort = var.app_port, protocol = "tcp" }]
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.app.name
-        "awslogs-region"        = var.region
-        "awslogs-stream-prefix" = "app"
-      }
-    }
-    secrets = [for s in var.secrets : {
-      name      = s.name
-      valueFrom = s.value_from
-    }]
-    environment = [for e in var.environment_variables : {
-      name  = e.name
-      value = e.value
-    }]
-    healthCheck = {
-      command     = ["CMD-SHELL", "curl -f http://localhost:${var.app_port}/health || exit 1"]
-      interval    = 30
-      timeout     = 5
-      retries     = 3
-      startPeriod = 60
-    }
-  }])
-
-  tags = var.common_tags
-}
-
-resource "aws_ecs_service" "app" {
-  name            = "${var.project_name}-${var.environment}"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = var.desired_count
-
-  deployment_circuit_breaker {
-    enable   = true
-    rollback = true
-  }
-
-  deployment_maximum_percent         = 200
-  deployment_minimum_healthy_percent = 100
-
-  network_configuration {
-    subnets          = var.private_subnet_ids
-    security_groups  = [aws_security_group.app.id]
-    assign_public_ip = false
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.app.arn
-    container_name   = "app"
-    container_port   = var.app_port
-  }
-
-  tags = var.common_tags
-}
-
-# Auto Scaling
-resource "aws_appautoscaling_target" "ecs" {
-  max_capacity       = var.max_count
-  min_capacity       = var.min_count
-  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.app.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-}
-
-resource "aws_appautoscaling_policy" "cpu" {
-  name               = "${var.project_name}-${var.environment}-cpu"
-  policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.ecs.resource_id
-  scalable_dimension = aws_appautoscaling_target.ecs.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.ecs.service_namespace
-
-  target_tracking_scaling_policy_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageCPUUtilization"
-    }
-    target_value       = 70.0
-    scale_in_cooldown  = 300
-    scale_out_cooldown = 60
-  }
-}
+// ...
 ```
 
 ### Lambda
@@ -238,32 +107,7 @@ resource "aws_lambda_function" "api" {
   source_code_hash = filebase64sha256(var.deployment_package)
 
   vpc_config {
-    subnet_ids         = var.private_subnet_ids
-    security_group_ids = [aws_security_group.lambda.id]
-  }
-
-  environment {
-    variables = var.environment_variables
-  }
-
-  tracing_config {
-    mode = "Active"
-  }
-
-  tags = var.common_tags
-}
-
-# SQS Event Source Mapping
-resource "aws_lambda_event_source_mapping" "sqs" {
-  for_each = var.sqs_event_sources
-
-  event_source_arn                   = each.value.arn
-  function_name                      = aws_lambda_function.api.arn
-  batch_size                         = each.value.batch_size
-  maximum_batching_window_in_seconds = each.value.batching_window
-
-  function_response_types = ["ReportBatchItemFailures"]
-}
+// ...
 ```
 
 ### Compute Service Selection Matrix
@@ -299,38 +143,7 @@ resource "aws_rds_cluster" "main" {
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.aurora.id]
 
-  backup_retention_period      = var.environment == "prod" ? 35 : 7
-  preferred_backup_window      = "03:00-04:00"
-  skip_final_snapshot          = var.environment != "prod"
-  deletion_protection          = var.environment == "prod"
-  storage_encrypted            = true
-  copy_tags_to_snapshot        = true
-
-  enabled_cloudwatch_logs_exports = ["postgresql"]
-
-  serverlessv2_scaling_configuration {
-    min_capacity = var.min_acu
-    max_capacity = var.max_acu
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_rds_cluster_instance" "main" {
-  count = var.instance_count
-
-  identifier         = "${var.project_name}-${var.environment}-${count.index + 1}"
-  cluster_identifier = aws_rds_cluster.main.id
-  instance_class     = "db.serverless"
-  engine             = aws_rds_cluster.main.engine
-  engine_version     = aws_rds_cluster.main.engine_version
-
-  monitoring_interval          = 60
-  monitoring_role_arn          = aws_iam_role.rds_monitoring.arn
-  performance_insights_enabled = true
-
-  tags = var.common_tags
-}
+// ...
 ```
 
 ### DynamoDB
@@ -375,34 +188,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
 
     transition {
       days          = 90
-      storage_class = "GLACIER"
-    }
-
-    noncurrent_version_expiration {
-      noncurrent_days = 30
-    }
-  }
-}
-
-# Restrict access to VPC Endpoint only
-resource "aws_s3_bucket_policy" "vpc_only" {
-  count  = var.restrict_to_vpc_endpoint ? 1 : 0
-  bucket = aws_s3_bucket.main.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Sid       = "RestrictToVPCEndpoint"
-      Effect    = "Deny"
-      Principal = "*"
-      Action    = "s3:*"
-      Resource  = [aws_s3_bucket.main.arn, "${aws_s3_bucket.main.arn}/*"]
-      Condition = {
-        StringNotEquals = { "aws:sourceVpce" = var.vpc_endpoint_id }
-      }
-    }]
-  })
-}
+// ...
 ```
 
 ### CloudFront
@@ -425,39 +211,7 @@ resource "aws_cloudfront_distribution" "main" {
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "s3-origin"
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-    cache_policy_id        = aws_cloudfront_cache_policy.static.id
-  }
-
-  # SPA support: 404 -> index.html
-  custom_error_response {
-    error_code         = 404
-    response_code      = 200
-    response_page_path = "/index.html"
-  }
-
-  viewer_certificate {
-    acm_certificate_arn      = var.acm_certificate_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
-  }
-
-  restrictions {
-    geo_restriction { restriction_type = "none" }
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_cloudfront_origin_access_control" "s3" {
-  name                              = "${var.project_name}-${var.environment}-s3-oac"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
+// ...
 ```
 
 ---
@@ -489,13 +243,7 @@ resource "aws_sqs_queue" "main" {
   tags = var.common_tags
 }
 
-resource "aws_sqs_queue" "dlq" {
-  name                      = var.fifo ? "${var.queue_name}-dlq.fifo" : "${var.queue_name}-dlq"
-  fifo_queue                = var.fifo
-  message_retention_seconds = 1209600  # 14 days
-  sqs_managed_sse_enabled   = true
-  tags = var.common_tags
-}
+// ...
 ```
 
 ### EventBridge
@@ -568,17 +316,7 @@ resource "aws_iam_policy" "permission_boundary" {
       {
         Sid      = "DenyIAMWithoutBoundary"
         Effect   = "Deny"
-        Action   = ["iam:CreateRole", "iam:PutRolePermissionsBoundary", "iam:DeleteRolePermissionsBoundary"]
-        Resource = "*"
-        Condition = {
-          StringNotEquals = {
-            "iam:PermissionsBoundary" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.project_name}-permission-boundary"
-          }
-        }
-      }
-    ]
-  })
-}
+// ...
 ```
 
 ### Cross-Account Access

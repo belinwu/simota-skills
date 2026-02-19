@@ -183,15 +183,7 @@ ENVISION_PHASE:
       questions: BREADTH_QUESTIONS
       output: "Similar patterns and differentiation points"
 
-    3_depth_exploration:
-      name: "Essential Exploration"
-      questions: DEPTH_QUESTIONS
-      output: "Fundamental value proposition"
-
-    4_insight_synthesis:
-      name: "Insight Synthesis"
-      method: INSIGHT_SYNTHESIS
-      output: "Core insights and design principles"
+# ...
 ```
 
 ### ENVISION Session Template
@@ -212,20 +204,7 @@ ENVISION_PHASE:
 - **External solution comparison**:
 
 ### 3. DEPTH (Essence)
-- **True purpose**:
-- **Root cause**:
-- **True needs**:
-- **Failure scenarios**:
-
-### 4. INSIGHT
-- **Core insight**:
-- **Unique value**:
-- **Design principles**:
-
-### Conclusion
-[ ] Proceed with new agent design
-[ ] Propose extending existing agent
-[ ] Cancel design (reason: )
+...
 ```
 
 ---
@@ -280,12 +259,7 @@ VALUE_FIRST_CHECKLIST:
 ### Primary Beneficiary
 **Who:** [Persona]
 **Pain:** [Biggest pain]
-**Frequency:** [Problem occurrence frequency]
-
-### Success Metric
-**Metric:** [Indicator]
-**Measurement:** [Measurement method]
-**Target:** [Target value]
+...
 ```
 
 ---
@@ -310,34 +284,7 @@ FULL_CREATIVE_SESSION:
       duration: "30%"
       activities:
         - "Height Questions"
-        - "Breadth Questions"
-        - "Depth Questions"
-        - "Insight Synthesis"
-      output: "ENVISION Session Results"
-
-    3_value_definition:
-      duration: "15%"
-      activities:
-        - "World Comparison"
-        - "Primary Beneficiary"
-        - "Success Metric"
-      output: "Value Statement"
-
-    4_design:
-      duration: "30%"
-      activities:
-        - "Overlap Check"
-        - "Boundaries Design"
-        - "Collaboration Pattern"
-      output: "Agent Design Spec"
-
-    5_validation:
-      duration: "15%"
-      activities:
-        - "Value Validation"
-        - "Design Review"
-        - "Final Decision"
-      output: "Go/No-Go Decision"
+# ...
 ```
 
 ### Quick Creative Session (Improvement/Small Design)
@@ -358,15 +305,7 @@ QUICK_CREATIVE_SESSION:
     2_value_check:
       duration: "20%"
       activities:
-        - "World Comparison (simplified)"
-      output: "Value Confirmation"
-
-    3_design:
-      duration: "40%"
-      activities:
-        - "Quick Overlap Check"
-        - "Design Outline"
-      output: "Design Brief"
+# ...
 ```
 
 ---

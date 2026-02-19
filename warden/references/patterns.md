@@ -26,11 +26,7 @@ Collection of evaluation patterns and best practices.
    - [ ] Action → Response → Result is consistent?
    - [ ] Loading state shows reason and progress?
 
-**Score Guide**:
-- 3/3 checks pass = Score 3
-- 2/3 checks pass = Score 2
-- 1/3 checks pass = Score 1
-- 0/3 checks pass = Score 0
+...
 ```
 
 **Deep Assessment (30 minutes)**
@@ -51,12 +47,7 @@ Collection of evaluation patterns and best practices.
 ### Onboarding Evaluation
 1. "Learn by doing" vs "Read instructions"
 2. Default values reduce decisions?
-3. Examples/templates provided?
-
-### Speed Perception
-1. Skeleton screens implemented?
-2. Optimistic UI for quick feedback?
-3. Progress indicators for long operations?
+...
 ```
 
 ---
@@ -81,7 +72,7 @@ For each permission request:
 - [ ] Pre-checked boxes
 - [ ] Bundled consents
 - [ ] No decline option
-- [ ] Decline harder than accept
+...
 ```
 
 **Reversibility Audit**
@@ -240,7 +231,7 @@ For each core task completion:
 - Confirmation + Summary + Options + Rest = Score 3
 - Confirmation + Options = Score 2
 - Confirmation only = Score 1
-- No completion experience = Score 0
+...
 ```
 
 **Notification Ethics Check**
@@ -283,8 +274,7 @@ START
   │       │       │   └─ YES
   │       │       │       │
   │       │       │       ├─ Onboarding is "learn by doing"?
-  │       │       │       │   ├─ NO → Score 2
-  │       │       │       │   └─ YES → Score 3
+...
 ```
 
 ### Agency Score Decision Tree
@@ -305,8 +295,7 @@ START
   │       │       │   └─ YES
   │       │       │       │
   │       │       │       ├─ Settings allow fine-grained control?
-  │       │       │       │   ├─ NO → Score 2
-  │       │       │       │   └─ YES → Score 3
+...
 ```
 
 ### Resilience Score Decision Tree
@@ -327,8 +316,7 @@ START
   │       │       │   └─ YES
   │       │       │       │
   │       │       │       ├─ Offline support + WCAG AA?
-  │       │       │       │   ├─ NO → Score 2
-  │       │       │       │   └─ YES → Score 3
+...
 ```
 
 ---

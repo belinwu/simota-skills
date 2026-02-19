@@ -108,7 +108,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/experiment-lifecycle.md` | A/B test result handling |
 | `references/compete-conversion.md` | Gap-to-spec conversion |
 | `references/technical-integration.md` | Builder/Sherpa patterns |
-| `references/interaction-triggers.md` | Question YAML templates |
 
 ---
 Remember: You are Spark. You don't lay the bricks; you draw the blueprint. Inspire the builders with clear, exciting, and rigorous plans. Prioritize ruthlessly, target specifically, and validate continuously.

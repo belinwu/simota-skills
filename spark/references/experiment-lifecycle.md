@@ -35,12 +35,7 @@ A/Bテスト結果に基づく提案イテレーションのガイド。
 - Statistical significance not reached
 - Sample size may be insufficient
 - Test duration may be too short
-- Decision: EXTEND (more time/traffic) or ITERATE (refined test)
-
-## GUARDRAIL_VIOLATED
-- Primary metric improved BUT
-- Critical guardrail metric significantly worsened
-- Decision: KILL (cannot ship at unacceptable cost)
+...
 ```
 
 ---
@@ -67,20 +62,7 @@ A/Bテスト結果に基づく提案イテレーションのガイド。
 | [Guardrail] | [Val] | [Val] | [±X%] | [p] | [Regressed?] |
 
 **Statistical Confidence**: [90% / 95% / 99%]
-**Verdict**: VALIDATED / INVALIDATED / INCONCLUSIVE / GUARDRAIL_VIOLATED
-
-**Unexpected Findings**:
-- [Any surprising results or segment differences]
-
-**Segment Analysis** (if available):
-| Segment | Effect | Notes |
-|---------|--------|-------|
-| [Segment A] | [+X%] | [More effective] |
-| [Segment B] | [-X%] | [Less effective] |
-
-**Recommendation from Experiment**:
-- [Ship / Extend / Iterate / Kill]
-- [Rationale]
+...
 ```
 
 ### Spark Iteration Response
@@ -101,29 +83,7 @@ A/Bテスト結果に基づく提案イテレーションのガイド。
 [ ] [Specific action based on decision]
 [ ] [Specific action based on decision]
 
-**If SHIP**:
-- Hand off to: Sherpa for implementation breakdown
-- Priority: [P1/P2/P3]
-- Implementation notes: [Any modifications based on learnings]
-
-**If ITERATE**:
-- New hypothesis: H-[XXX]-v2
-- Changes: [What's different]
-- Hand off to: Experiment for new test
-
-**If PIVOT**:
-- New hypothesis: H-[YYY]
-- Rationale: [Why pivoting, what learned]
-- Hand off to: Experiment OR keep for refinement
-
-**If KILL**:
-- Learnings to archive: [Key insights]
-- Impact on roadmap: [Any related proposals affected]
-
-**If EXTEND**:
-- Additional duration needed: [X days/weeks]
-- Traffic allocation: [Same/Increase]
-- Reason: [Why insufficient data]
+...
 ```
 
 ---
@@ -150,23 +110,7 @@ A/Bテスト結果に基づく提案イテレーションのガイド。
 - [ ] Implementation issues
 - [ ] Seasonal/external factors
 
-**Diagnostic Questions**:
-1. Is the trend consistent with hypothesis direction?
-   - If yes but not significant: Consider extending
-   - If no clear trend: Consider killing or pivoting
-
-2. What sample size would be needed for significance?
-   - Recalculate with observed effect size
-   - Is that achievable in reasonable time?
-
-3. Are there segment-level insights?
-   - Some segments may show significant effects
-   - Could inform targeted rollout or refined hypothesis
-
-4. Were there implementation issues?
-   - Tracking problems
-   - Rollout issues
-   - User experience bugs
+...
 ```
 
 ### Inconclusive Decision Tree
@@ -187,16 +131,7 @@ Inconclusive Result
         │   │                    └── Strategic importance high → ITERATE (amplify effect)
         │   │
         │   └── No clear trend →
-        │              │
-        │              ├── Segment shows effect → ITERATE (target segment)
-        │              │
-        │              └── No segment effect → PIVOT or KILL
-        │
-        └── Implementation issues found?
-                │
-                ├── Yes → FIX and RETEST
-                │
-                └── No → Proceed with above analysis
+...
 ```
 
 ---
@@ -233,28 +168,7 @@ Inconclusive Result
 
 **Learnings from Test**:
 - What worked: [Positive findings]
-- What didn't work: [Negative findings]
-- Unexpected insight: [Surprise learning]
-
-**Pivoted Statement**:
-- We now believe: [New assumption]
-- For: [New target - may be same]
-- Will achieve: [New outcome - may be same]
-- Measured by: [New metric - may be same]
-
-**What Changed**:
-| Aspect | Before | After | Why |
-|--------|--------|-------|-----|
-| [Changed element] | [Old] | [New] | [Rationale] |
-
-**Risk Assessment**:
-- Confidence level: [High/Medium/Low]
-- Based on: [Evidence for pivot]
-
-**Next Steps**:
-- [ ] Design new test with Experiment
-- [ ] Update proposal document
-- [ ] Communicate pivot rationale to stakeholders
+...
 ```
 
 ---
@@ -288,16 +202,7 @@ Inconclusive Result
 - Observed variance: [Higher/Lower/Same]
 
 **Recalculated Requirements**:
-- New MDE (based on observed): [W%]
-- New sample size needed: [N']
-- Additional sample needed: [N' - current N]
-- Estimated time to achieve: [X days at Y traffic]
-
-**Decision**:
-- [ ] Extend test for [X more days]
-- [ ] Increase traffic allocation to [Y%]
-- [ ] Accept larger MDE and conclude
-- [ ] Redesign test (effect too small to detect)
+...
 ```
 
 ### Quick Reference: Sample Size Formula
@@ -347,39 +252,7 @@ Where:
 - Threshold: [Acceptable regression limit]
 
 **Impact Assessment**:
-- Business impact of regression: [Description]
-- User impact of regression: [Description]
-- Reversibility: [Easy/Medium/Hard to reverse]
-
-**Tradeoff Analysis**:
-| Factor | Primary Gain | Guardrail Loss | Net |
-|--------|--------------|----------------|-----|
-| [Factor 1] | [Impact] | [Impact] | [+/-] |
-| [Factor 2] | [Impact] | [Impact] | [+/-] |
-
-**Possible Actions**:
-
-1. **KILL** (Default for critical guardrails)
-   - Archive learnings
-   - Explore alternative approaches
-
-2. **MITIGATE** (If tradeoff acceptable)
-   - Implement with guardrail fix
-   - Additional work needed: [Description]
-   - Risk: [Remaining risk]
-
-3. **TARGETED ROLLOUT** (If segment-specific)
-   - Roll out only to segments where guardrail not violated
-   - Segments to include: [List]
-   - Segments to exclude: [List]
-
-**Decision**: [KILL / MITIGATE / TARGETED ROLLOUT]
-**Rationale**: [Explanation]
-
-**If MITIGATE - Mitigation Plan**:
-- [ ] [Specific action to address guardrail regression]
-- [ ] Retest after mitigation
-- [ ] Monitor guardrail closely post-launch
+...
 ```
 
 ---
@@ -406,20 +279,7 @@ Where:
 - Result: INVALIDATED
 - Learning: [Key insight]
 
-### H-001-pivot (Pivot)
-- Pivot type: Mechanism
-- Statement: [Pivoted hypothesis]
-- Test dates: [Start - End]
-- Result: VALIDATED
-- Shipped: [Date]
-
-### Summary
-- Total iterations: 3
-- Time to validation: [X weeks]
-- Key learnings:
-  1. [Learning 1]
-  2. [Learning 2]
-- Recommendation for similar hypotheses: [Guidance]
+...
 ```
 
 ### Iteration Velocity Metrics
@@ -462,8 +322,5 @@ Where:
 - Key learnings: [List]
 - Related hypotheses affected: [List]
 
-**If PIVOT → New Hypothesis**:
-- New hypothesis: H-[YYY]
-- Return to: IGNITE phase
-- Carry forward: [Learnings to apply]
+...
 ```

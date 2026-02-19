@@ -18,45 +18,7 @@
 ## Compliance Status
 
 | Standard | Target Level | Achieved | Status |
-|----------|--------------|----------|--------|
-| OWASP ASVS | L2 | L1 | ⚠️ Partial |
-| WCAG 2.1 | AA | A | ⚠️ Partial |
-| OpenAPI 3.1 | Full | Full | ✅ Compliant |
-
-## Risk Summary
-
-| Severity | Count | Status |
-|----------|-------|--------|
-| Critical | X | Immediate action required |
-| High | X | Address within 1 week |
-| Medium | X | Address within 1 month |
-| Low | X | Backlog |
-
-## Top Findings
-
-1. **[CRITICAL] [Finding Title]**
-   - Standard: [Citation]
-   - Impact: [Brief impact description]
-   - Recommendation: [Brief recommendation]
-
-2. **[HIGH] [Finding Title]**
-   - Standard: [Citation]
-   - Impact: [Brief impact description]
-   - Recommendation: [Brief recommendation]
-
-## Recommended Next Steps
-
-1. [Immediate priority action]
-2. [Short-term improvement]
-3. [Long-term roadmap item]
-
-## Approval
-
-| Role | Name | Date | Signature |
-|------|------|------|-----------|
-| Assessor | | | |
-| Reviewer | | | |
-| Approver | | | |
+...
 ```
 
 ---
@@ -79,34 +41,7 @@ This report documents the compliance assessment of [Target] against [Standards].
 **Out of Scope:**
 - [Excluded items with justification]
 
-### 1.3 Methodology
-- Static code analysis
-- Configuration review
-- Documentation review
-- [Other methods used]
-
-### 1.4 Standards Reference
-
-| Standard | Version | Level |
-|----------|---------|-------|
-| [Standard 1] | [Version] | [Level/Tier] |
-
----
-
-## 2. Summary of Findings
-
-### 2.1 Compliance Score
-
-| Category | Requirements | Compliant | Partial | Non-Compliant | N/A |
-|----------|--------------|-----------|---------|---------------|-----|
-| [Category 1] | X | X | X | X | X |
-| [Category 2] | X | X | X | X | X |
-| **Total** | X | X | X | X | X |
-
-**Overall Compliance: XX%**
-
-### 2.2 Findings by Severity
-
+...
 ```
 Critical: █████ X
 High:     ████████ X
@@ -128,11 +63,7 @@ Low:      ████████████████████ X
 | Citation | [Section/Clause number] |
 | Severity | Critical / High / Medium / Low |
 | Status | ❌ Non-compliant / ⚠️ Partial / ✅ Compliant |
-
-**Description:**
-[Detailed description of the finding]
-
-**Evidence:**
+...
 ```
 File: src/path/to/file.ts:42
 Code: [Relevant code snippet]
@@ -163,57 +94,7 @@ Code: [Relevant code snippet]
 ## 4. Exemptions and Exceptions
 
 ### 4.1 Documented Exemptions
-
-| Requirement | Exemption Reason | Approved By | Expiry |
-|-------------|------------------|-------------|--------|
-| [Requirement] | [Reason] | [Name] | [Date] |
-
-### 4.2 Not Applicable Items
-
-| Requirement | Reason N/A |
-|-------------|------------|
-| [Requirement] | [Why it doesn't apply] |
-
----
-
-## 5. Remediation Plan
-
-### 5.1 Priority Matrix
-
-| Priority | Finding IDs | Timeline | Owner |
-|----------|-------------|----------|-------|
-| Immediate | CANON-001, CANON-005 | Within 48 hours | [Team] |
-| High | CANON-002, CANON-003 | Within 1 week | [Team] |
-| Medium | CANON-004, CANON-006 | Within 1 month | [Team] |
-| Low | CANON-007, CANON-008 | Backlog | [Team] |
-
-### 5.2 Resource Requirements
-
-| Activity | Effort | Skills Required |
-|----------|--------|-----------------|
-| [Activity 1] | X hours | [Skills] |
-| [Activity 2] | X hours | [Skills] |
-
----
-
-## 6. Appendices
-
-### Appendix A: Assessment Checklist
-[Full checklist used during assessment]
-
-### Appendix B: Tool Output
-[Raw output from automated tools]
-
-### Appendix C: Evidence Archive
-[References to stored evidence]
-
----
-
-## 7. Document Control
-
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | YYYY-MM-DD | Canon | Initial assessment |
+...
 ```
 
 ---
@@ -236,17 +117,7 @@ Code: [Relevant code snippet]
 | **Status** | ❌ Non-compliant / ⚠️ Partial / ✅ Compliant |
 | **Category** | Security / Accessibility / API / Quality |
 
-### Finding Details
-
-**Issue Description:**
-[Clear description of what was found]
-
-**Evidence Location:**
-- File: `src/path/file.ts:42-50`
-- Component: `ComponentName`
-- Configuration: `config/settings.json`
-
-**Evidence Code:**
+...
 ```typescript
 // Non-compliant code example
 ```
@@ -265,13 +136,7 @@ Code: [Relevant code snippet]
 **Likelihood:** High / Medium / Low
 
 **Risk Level:** Critical / High / Medium / Low
-
-### Remediation
-
-**Recommendation:**
-[Specific steps to fix]
-
-**Compliant Implementation:**
+...
 ```typescript
 // Example of compliant code
 ```
@@ -290,7 +155,7 @@ Code: [Relevant code snippet]
 1. [Verification step 1]
 2. [Verification step 2]
 
-**Automated Test:**
+...
 ```bash
 # Command to verify compliance
 ```
@@ -322,31 +187,7 @@ Code: [Relevant code snippet]
 
 ### Category: [Category Name]
 
-| ID | Requirement | Status | Finding | Owner | Due |
-|----|-------------|--------|---------|-------|-----|
-| REQ-001 | [Requirement] | ✅ | - | - | - |
-| REQ-002 | [Requirement] | ⚠️ | CANON-001 | [Name] | YYYY-MM-DD |
-| REQ-003 | [Requirement] | ❌ | CANON-002 | [Name] | YYYY-MM-DD |
-
-## Open Findings
-
-| Finding | Severity | Requirement | Status | Owner | Due |
-|---------|----------|-------------|--------|-------|-----|
-| CANON-001 | High | REQ-002 | In Progress | [Name] | YYYY-MM-DD |
-| CANON-002 | Critical | REQ-003 | Open | [Name] | YYYY-MM-DD |
-
-## Progress History
-
-| Date | Compliance % | Notes |
-|------|--------------|-------|
-| YYYY-MM-DD | 50% | Initial assessment |
-| YYYY-MM-DD | 65% | CANON-003, CANON-004 resolved |
-| YYYY-MM-DD | 76% | CANON-005 resolved |
-
-## Next Actions
-
-1. [ ] [Action 1] - Due: YYYY-MM-DD - Owner: [Name]
-2. [ ] [Action 2] - Due: YYYY-MM-DD - Owner: [Name]
+...
 ```
 
 ---
@@ -369,36 +210,7 @@ Code: [Relevant code snippet]
 
 | # | Requirement | Status | Notes |
 |---|-------------|--------|-------|
-| 1.1 | [Requirement description] | ✅ / ⚠️ / ❌ / ➖ | |
-| 1.2 | [Requirement description] | ✅ / ⚠️ / ❌ / ➖ | |
-
-### [Category 2]
-
-| # | Requirement | Status | Notes |
-|---|-------------|--------|-------|
-| 2.1 | [Requirement description] | ✅ / ⚠️ / ❌ / ➖ | |
-| 2.2 | [Requirement description] | ✅ / ⚠️ / ❌ / ➖ | |
-
-## Summary
-
-| Metric | Value |
-|--------|-------|
-| Total Requirements | X |
-| Compliant (✅) | X |
-| Partial (⚠️) | X |
-| Non-Compliant (❌) | X |
-| Not Applicable (➖) | X |
-| **Compliance Rate** | XX% |
-
-## Critical Issues (Immediate Action Required)
-
-1. [Issue 1] - REQ X.X
-2. [Issue 2] - REQ X.X
-
-## Next Steps
-
-1. [Next step 1]
-2. [Next step 2]
+...
 ```
 
 ---
@@ -423,8 +235,7 @@ Code: [Relevant code snippet]
 ### Current State
 
 **Location:** `path/to/file.ts:42`
-
-**Current Code:**
+...
 ```typescript
 // Non-compliant implementation
 ```
@@ -478,28 +289,7 @@ After implementation:
 1. **Compliance Summary**
    - Overall compliance status
    - Key findings summary
-   - Remediation progress
-
-2. **Evidence Collection**
-   - Screenshots/logs of passing tests
-   - Configuration snapshots
-   - Code review records
-
-3. **Process Documentation**
-   - Assessment methodology used
-   - Tools and techniques
-   - Review and approval process
-
-### Format Requirements
-
-- Output format: [Markdown / Word / PDF]
-- Style guide: [Reference]
-- Template: [Template to use]
-
-### Deadline
-
-- Draft due: YYYY-MM-DD
-- Final due: YYYY-MM-DD
+...
 ```
 
 ---
@@ -522,17 +312,5 @@ After implementation:
   - Finding details: [summary]
 - Risks / trade-offs:
   - [Non-compliance risks identified]
-  - [Cost of remediation vs risk acceptance]
-- Pending Confirmations:
-  - Trigger: ON_COMPLIANCE_LEVEL
-  - Question: Target compliance level not specified
-  - Options: Level A (minimum) | Level AA (standard) | Level AAA (enhanced)
-  - Recommended: Level AA
-- User Confirmations:
-  - Q: Which standard to prioritize? → A: [User's answer]
-- Open questions (blocking/non-blocking):
-  - [Blocking] Industry-specific regulations applicable?
-  - [Non-blocking] Preferred remediation timeline?
-- Suggested next agent: Builder (for code fixes) / Sentinel (for security) / Palette (for a11y)
-- Next action: CONTINUE (awaiting user confirmation on compliance level)
+...
 ```

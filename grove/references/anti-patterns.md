@@ -112,8 +112,7 @@ src/auth/
 ├── webpack.config.js
 ├── postcss.config.js
 ├── tailwind.config.js
-├── next.config.js
-├── ... (15+ more)
+...
 ```
 
 **Impact:**
@@ -640,19 +639,5 @@ npx depcheck packages/auth
 | AP-003 | Config Soup | Medium | root (14 configs) | 🟡 |
 
 ### Structure Score Breakdown
-
-| Category | Score | Max | Notes |
-|----------|-------|-----|-------|
-| Directory Structure | 15 | 25 | God Directory detected |
-| Doc Completeness | 0 | 25 | No docs/ directory |
-| Test Organization | 18 | 20 | Consistent structure |
-| Config Hygiene | 8 | 15 | Too many root configs |
-| Anti-pattern Score | 5 | 15 | 2 high severity issues |
-| **Total** | **46** | **100** | |
-
-### Recommendations (Priority Order)
-
-1. **[High]** Create docs/ directory with standard structure
-2. **[High]** Split src/ into feature modules
-3. **[Medium]** Consolidate config files
+...
 ```

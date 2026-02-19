@@ -22,16 +22,7 @@ PRIMITIVE TOKENS (raw values):
 ├── Shadows: none, sm, md, lg, xl
 └── Breakpoints: sm, md, lg, xl, 2xl
 
-SEMANTIC TOKENS (context-aware aliases):
-├── Colors
-│   ├── Background: bg-primary, bg-secondary, bg-accent, bg-error
-│   ├── Text: text-primary, text-secondary, text-muted, text-inverse
-│   ├── Border: border-default, border-strong, border-focus
-│   └── Interactive: interactive-default, interactive-hover, interactive-active
-├── Spacing (contextual)
-│   ├── Component: padding-button, padding-card, padding-input
-│   └── Layout: gap-stack, gap-inline, margin-section
-└── Component-specific: button-radius, card-shadow, input-border
+...
 ```
 
 ---
@@ -117,28 +108,7 @@ tokens/
 
   /* Line Heights */
   --leading-none: 1;
-  --leading-tight: 1.25;
-  --leading-snug: 1.375;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
-  --leading-loose: 2;
-
-  /* Font Weights */
-  --font-thin: 100;
-  --font-light: 300;
-  --font-normal: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  --font-bold: 700;
-  --font-extrabold: 800;
-
-  /* Letter Spacing */
-  --tracking-tighter: -0.05em;
-  --tracking-tight: -0.025em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.025em;
-  --tracking-wider: 0.05em;
-}
+/* ... */
 ```
 
 ### Typography Usage Guide
@@ -193,8 +163,7 @@ Desktop (>= 1024px):
   --space-12: 3rem;       /* 48px */
   --space-16: 4rem;       /* 64px */
   --space-20: 5rem;       /* 80px */
-  --space-24: 6rem;       /* 96px */
-}
+/* ... */
 ```
 
 ### Spacing Usage Guide
@@ -269,9 +238,7 @@ HARDCODED_TYPOGRAPHY:
 - `component.tsx:18` - `padding: 13px` → `var(--space-3)`
 
 **Warnings** (should fix when touching file):
-- `card.tsx:25` - `font-size: 15px` → `var(--text-sm)` or `var(--text-base)`
-
-**Coverage Target**: 95%+ tokenization
+...
 ```
 
 ---
@@ -298,27 +265,8 @@ The emerging standard for token interchange between design and code tools.
       }
     }
   },
-  "spacing": {
-    "4": {
-      "$value": "1rem",
-      "$type": "dimension",
-      "$description": "Standard component padding"
-    }
-  }
-}
+// ...
 ```
-
-### Key Differences from Legacy Format
-
-| Aspect | Legacy | DTCG Standard |
-|--------|--------|---------------|
-| Value key | `"value"` | `"$value"` |
-| Type key | `"type"` | `"$type"` |
-| Reference | `"{colors.blue.500}"` | `"{color.blue.500}"` |
-| File extension | `.json` | `.tokens.json` |
-| Group nesting | Flat or nested | Always nested with `$` properties |
-
----
 
 ## Modern Token Integration
 
@@ -340,7 +288,7 @@ The emerging standard for token interchange between design and code tools.
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
-}
+/* ... */
 ```
 
 ### Panda CSS Token Integration
@@ -361,25 +309,7 @@ export default defineConfig({
       },
       spacing: {
         4: { value: '1rem' },
-        6: { value: '1.5rem' },
-      },
-    },
-    semanticTokens: {
-      colors: {
-        bg: {
-          primary: {
-            value: { base: '{colors.neutral.50}', _dark: '{colors.neutral.900}' },
-          },
-        },
-        text: {
-          primary: {
-            value: { base: '{colors.neutral.900}', _dark: '{colors.neutral.50}' },
-          },
-        },
-      },
-    },
-  },
-});
+// ...
 ```
 
 ### Open Props (CSS Custom Properties Library)
@@ -464,9 +394,7 @@ Every token definition should include a lifecycle status comment:
 
 // Dark mode support
 .card {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
+// ...
 ```
 
 ### Bad Muse Code

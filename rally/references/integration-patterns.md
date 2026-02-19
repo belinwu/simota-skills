@@ -128,28 +128,7 @@ team_design:
       context_injection:
         - "Apply Artisan patterns: hooks design, state management, Server Components"
         - "Reference: Forge prototype output (if available)"
-        - "Follow existing component patterns in the codebase"
-    - name: "backend-impl"
-      role: "Builder"
-      subagent_type: "general-purpose"
-      model: "sonnet"
-      exclusive_write:
-        - src/api/**
-        - src/services/**
-        - src/models/**
-        - src/middleware/**
-      context_injection:
-        - "Apply Builder patterns: type-safe implementation, domain modeling"
-        - "Reference: Gateway API design output (if available)"
-        - "Follow existing service patterns in the codebase"
-  shared_read:
-    - src/types/**
-    - src/config/**
-    - package.json
-  dependency_order:
-    - "Type definitions first (no blockedBy)"
-    - "Frontend/Backend start after types complete"
-    - "Tests after implementation"
+# ...
 ```
 
 ### Radar + Voyager (Test Parallelization)
@@ -172,17 +151,7 @@ team_design:
         - "Reference implementation files in shared_read"
     - name: "e2e-tester"
       role: "Voyager"
-      subagent_type: "general-purpose"
-      model: "sonnet"
-      exclusive_write:
-        - tests/e2e/**
-        - tests/fixtures/**
-      context_injection:
-        - "Focus on user journey coverage and critical paths"
-        - "Use Playwright/Cypress Page Object patterns"
-  shared_read:
-    - src/**
-    - tests/helpers/**
+# ...
 ```
 
 ### Sentinel + Probe (Security Parallelization)
@@ -205,15 +174,7 @@ team_design:
     - name: "dynamic-scanner"
       role: "Probe"
       subagent_type: "general-purpose"
-      model: "sonnet"
-      exclusive_write:
-        - reports/security-dynamic/**
-      context_injection:
-        - "Run dynamic testing: OWASP ZAP/Burp Suite patterns"
-        - "Output findings in structured format for Builder handoff"
-  shared_read:
-    - src/**
-    - tests/**
+# ...
 ```
 
 ### Builder × N (Feature Parallel)
@@ -236,12 +197,7 @@ team_design:
       subagent_type: "general-purpose"
       model: "sonnet"
       exclusive_write:
-        - src/features/feature-b/**
-        - tests/features/feature-b/**
-  shared_read:
-    - src/shared/**
-    - src/types/**
-    - src/config/**
+# ...
 ```
 
 ### Hone + Rally (Quality PDCA with Parallel Fixes)
@@ -284,12 +240,7 @@ Nexus invokes Rally via _AGENT_CONTEXT:
       - Max team size: 4
       - File ownership from Sherpa's decomposition
     Expected_Output: Unified implementation result
-    ↓
-Rally executes 7-phase lifecycle (ASSESS→CLEANUP)
-    ↓
-Rally returns _STEP_COMPLETE to Nexus
-    ↓
-Nexus continues chain: → Radar (verification)
+...
 ```
 
 ### Nexus Hub Mode → Rally Flow
@@ -312,7 +263,7 @@ Rally executes, returns:
   - Artifacts: [files changed by each teammate]
   - Suggested next agent: Radar (verify combined output)
     ↓
-Nexus routes to next agent (Radar)
+...
 ```
 
 ### Nexus PARALLEL.md ↔ Rally Distinction
@@ -356,21 +307,7 @@ Nexus (or Sherpa directly) delegates to Rally via:
   ## SHERPA_TO_RALLY_HANDOFF
   - Epic: Auth Feature
   - Parallel Groups:
-    - Group A: [Implement login API]
-      - Files: src/api/auth/**, src/services/auth/**
-    - Group B: [Implement login UI]
-      - Files: src/components/auth/**, src/pages/login/**
-  - Dependencies:
-    - Step 1 (types) must complete before Groups A and B
-    - Step 3 (tests) must wait for Groups A and B
-  - Constraints:
-    - Follow existing patterns in codebase
-    ↓
-Rally converts to team design:
-  - Type definitions task → first task (no blockedBy)
-  - Group A → backend-impl teammate (blockedBy: types)
-  - Group B → frontend-impl teammate (blockedBy: types)
-  - Test task → test-writer teammate (blockedBy: Group A, Group B)
+...
 ```
 
 ### Rally Result → Sherpa Progress Update

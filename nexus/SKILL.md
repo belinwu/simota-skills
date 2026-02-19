@@ -133,7 +133,6 @@ Full 47-type matrix → `references/routing-matrix.md` · Disambiguation → `re
 | `references/execution-phases.md` | AUTORUN_FULL/AUTORUN phase descriptions |
 | `references/guardrails.md` | Context hierarchy, state formats, recovery details |
 | `references/error-handling.md` | Recovery flow, event format, escalation protocol |
-| `references/interaction-triggers.md` | YAML question templates for 6 triggers |
 | `references/output-formats.md` | NEXUS_COMPLETE/FULL templates, NEXUS_HANDOFF format |
 | `references/cipher-integration.md` | Cipher Gate protocol, confidence boost flow |
 | `references/conflict-resolution.md` | Parallel branch conflict resolution protocol |

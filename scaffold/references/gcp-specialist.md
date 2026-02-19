@@ -26,16 +26,7 @@ resource "google_compute_shared_vpc_service_project" "service" {
   depends_on = [google_compute_shared_vpc_host_project.host]
 }
 
-# Grant Service Projects subnet access
-resource "google_compute_subnetwork_iam_member" "service_access" {
-  for_each = toset(var.service_project_ids)
-
-  project    = var.host_project_id
-  region     = var.region
-  subnetwork = google_compute_subnetwork.shared.name
-  role       = "roles/compute.networkUser"
-  member     = "serviceAccount:${each.value}@cloudservices.gserviceaccount.com"
-}
+// ...
 ```
 
 **Decision Criteria**: Shared VPC vs Separate VPCs
@@ -63,22 +54,7 @@ resource "google_access_context_manager_service_perimeter" "main" {
     ]
 
     ingress_policies {
-      ingress_from {
-        identity_type = "ANY_IDENTITY"
-        sources {
-          access_level = var.trusted_access_level
-        }
-      }
-      ingress_to {
-        resources = ["*"]
-        operations {
-          service_name = "storage.googleapis.com"
-          method_selectors { method = "google.storage.objects.get" }
-        }
-      }
-    }
-  }
-}
+// ...
 ```
 
 ### Private Google Access & Private Service Connect
@@ -99,8 +75,7 @@ resource "google_compute_global_address" "psc" {
   purpose      = "PRIVATE_SERVICE_CONNECT"
   address_type = "INTERNAL"
   network      = google_compute_network.main.id
-  address      = "10.0.100.1"
-}
+// ...
 ```
 
 ---
@@ -127,57 +102,7 @@ resource "google_container_cluster" "main" {
     for_each = var.use_autopilot ? [] : [1]
     content {
       name = "default"
-      node_config {
-        machine_type    = var.node_machine_type
-        service_account = google_service_account.gke_node.email
-        oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-
-        workload_metadata_config {
-          mode = "GKE_METADATA"  # Enable Workload Identity
-        }
-      }
-      autoscaling {
-        min_node_count = var.min_node_count
-        max_node_count = var.max_node_count
-      }
-    }
-  }
-
-  network    = var.network_id
-  subnetwork = var.subnetwork_id
-
-  ip_allocation_policy {
-    cluster_secondary_range_name  = "gke-pods"
-    services_secondary_range_name = "gke-services"
-  }
-
-  private_cluster_config {
-    enable_private_nodes    = true
-    enable_private_endpoint = false
-    master_ipv4_cidr_block  = var.master_cidr
-  }
-
-  workload_identity_config {
-    workload_pool = "${var.project_id}.svc.id.goog"
-  }
-
-  release_channel {
-    channel = var.environment == "prod" ? "STABLE" : "REGULAR"
-  }
-
-  resource_labels = {
-    project     = var.project_name
-    environment = var.environment
-    managed-by  = "terraform"
-  }
-}
-
-# Workload Identity SA binding
-resource "google_service_account_iam_member" "workload_identity" {
-  service_account_id = google_service_account.app.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.k8s_namespace}/${var.k8s_service_account}]"
-}
+// ...
 ```
 
 **Standard vs Autopilot**:
@@ -207,45 +132,7 @@ resource "google_cloud_run_v2_service" "main" {
         limits   = { cpu = var.cpu_limit, memory = var.memory_limit }
         cpu_idle = var.environment != "prod"  # dev/staging: stop CPU when idle
       }
-
-      dynamic "env" {
-        for_each = var.environment_variables
-        content { name = env.key; value = env.value }
-      }
-
-      dynamic "env" {
-        for_each = var.secret_variables
-        content {
-          name = env.key
-          value_source {
-            secret_key_ref {
-              secret  = env.value.secret_id
-              version = env.value.version
-            }
-          }
-        }
-      }
-    }
-
-    scaling {
-      min_instance_count = var.environment == "prod" ? var.min_instances : 0
-      max_instance_count = var.max_instances
-    }
-
-    vpc_access {
-      connector = var.vpc_connector_id
-      egress    = "PRIVATE_RANGES_ONLY"
-    }
-
-    max_instance_request_concurrency = var.concurrency
-  }
-
-  labels = {
-    project     = var.project_name
-    environment = var.environment
-    managed-by  = "terraform"
-  }
-}
+// ...
 ```
 
 ---
@@ -270,67 +157,7 @@ resource "google_sql_database_instance" "main" {
     disk_type         = "PD_SSD"
 
     ip_configuration {
-      ipv4_enabled    = false
-      private_network = var.network_id
-      require_ssl     = true
-      enable_private_path_for_google_cloud_services = true
-    }
-
-    backup_configuration {
-      enabled                        = true
-      point_in_time_recovery_enabled = var.environment == "prod"
-      start_time                     = "18:00" # JST 03:00
-      transaction_log_retention_days = var.environment == "prod" ? 7 : 3
-      backup_retention_settings {
-        retained_backups = var.environment == "prod" ? 30 : 7
-        retention_unit   = "COUNT"
-      }
-    }
-
-    maintenance_window {
-      day          = 7 # Sunday
-      hour         = 18 # JST 03:00
-      update_track = "stable"
-    }
-
-    insights_config {
-      query_insights_enabled  = true
-      query_plans_per_minute  = 5
-      query_string_length     = 1024
-      record_application_tags = true
-      record_client_address   = false
-    }
-
-    user_labels = {
-      project     = var.project_name
-      environment = var.environment
-      managed-by  = "terraform"
-    }
-  }
-}
-
-# Read Replica
-resource "google_sql_database_instance" "read_replica" {
-  count                = var.enable_read_replica ? 1 : 0
-  name                 = "${var.project_name}-${var.environment}-replica"
-  master_instance_name = google_sql_database_instance.main.name
-  database_version     = var.database_version
-  region               = var.region
-  project              = var.project_id
-
-  replica_configuration { failover_target = false }
-
-  settings {
-    tier            = var.tier
-    disk_autoresize = true
-    disk_type       = "PD_SSD"
-    ip_configuration {
-      ipv4_enabled    = false
-      private_network = var.network_id
-      require_ssl     = true
-    }
-  }
-}
+// ...
 ```
 
 ### AlloyDB vs Cloud SQL vs Spanner
@@ -366,18 +193,7 @@ resource "google_storage_bucket" "main" {
     action { type = "SetStorageClass"; storage_class = "NEARLINE" }
   }
 
-  lifecycle_rule {
-    condition { age = 365 }
-    action { type = "SetStorageClass"; storage_class = "COLDLINE" }
-  }
-
-  lifecycle_rule {
-    condition { num_newer_versions = 3; with_state = "ARCHIVED" }
-    action { type = "Delete" }
-  }
-
-  labels = { project = var.project_name, environment = var.environment, managed-by = "terraform" }
-}
+// ...
 ```
 
 **Storage Class Selection Criteria**:
@@ -404,30 +220,7 @@ resource "google_compute_security_policy" "main" {
   rule {
     action   = "deny(403)"
     priority = "1000"
-    match { expr { expression = "evaluatePreconfiguredExpr('sqli-v33-stable')" } }
-    description = "Block SQL injection"
-  }
-
-  rule {
-    action   = "deny(403)"
-    priority = "1001"
-    match { expr { expression = "evaluatePreconfiguredExpr('xss-v33-stable')" } }
-    description = "Block XSS"
-  }
-
-  # Rate limiting
-  rule {
-    action   = "throttle"
-    priority = "2000"
-    match { versioned_expr = "SRC_IPS_V1"; config { src_ip_ranges = ["*"] } }
-    rate_limit_options {
-      conform_action = "allow"
-      exceed_action  = "deny(429)"
-      rate_limit_threshold { count = 100; interval_sec = 60 }
-    }
-    description = "Rate limit: 100 req/min per IP"
-  }
-}
+// ...
 ```
 
 ---
@@ -452,25 +245,7 @@ resource "google_pubsub_topic" "dead_letter" {
 
 resource "google_pubsub_subscription" "main" {
   for_each = var.subscriptions
-
-  name    = each.key
-  topic   = google_pubsub_topic.main.id
-  project = var.project_id
-
-  ack_deadline_seconds       = each.value.ack_deadline
-  message_retention_duration = each.value.retention_duration
-  enable_message_ordering    = each.value.enable_ordering
-
-  dead_letter_policy {
-    dead_letter_topic     = google_pubsub_topic.dead_letter.id
-    max_delivery_attempts = each.value.max_delivery_attempts
-  }
-
-  retry_policy {
-    minimum_backoff = "10s"
-    maximum_backoff = "600s"
-  }
-}
+// ...
 ```
 
 ### Cloud Tasks vs Pub/Sub
@@ -502,14 +277,7 @@ main:
           - condition: ${validation_result.body.valid == true}
             next: process_payment
           - condition: ${validation_result.body.valid == false}
-            raise: ${validation_result.body.error}
-    - process_payment:
-        call: http.post
-        args:
-          url: ${PAYMENT_URL}
-          body:
-            order_id: ${input.order_id}
-            amount: ${input.amount}
+# ...
 ```
 
 ---
@@ -534,15 +302,7 @@ resource "google_org_policy_policy" "restrict_regions" {
 resource "google_org_policy_policy" "uniform_bucket_access" {
   name   = "organizations/${var.org_id}/policies/storage.uniformBucketLevelAccess"
   parent = "organizations/${var.org_id}"
-  spec { rules { enforce = "TRUE" } }
-}
-
-# Restrict external IP addresses
-resource "google_org_policy_policy" "disable_external_ip" {
-  name   = "organizations/${var.org_id}/policies/compute.vmExternalIpAccess"
-  parent = "organizations/${var.org_id}"
-  spec { rules { deny_all = "TRUE" } }
-}
+// ...
 ```
 
 ### Workload Identity Federation (GitHub Actions)
@@ -565,25 +325,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
   attribute_mapping = {
     "google.subject"       = "assertion.sub"
     "attribute.actor"      = "assertion.actor"
-    "attribute.repository" = "assertion.repository"
-  }
-
-  attribute_condition = "assertion.repository == '${var.github_org}/${var.github_repo}'"
-
-  oidc { issuer_uri = "https://token.actions.githubusercontent.com" }
-}
-
-resource "google_service_account" "github_actions" {
-  account_id   = var.service_account_id
-  display_name = "GitHub Actions SA for ${var.github_org}/${var.github_repo}"
-  project      = var.project_id
-}
-
-resource "google_service_account_iam_member" "workload_identity" {
-  service_account_id = google_service_account.github_actions.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_number}/locations/global/workloadIdentityPools/github-actions/attribute.repository/${var.github_org}/${var.github_repo}"
-}
+// ...
 ```
 
 GitHub Actions side:
@@ -621,33 +363,7 @@ resource "google_monitoring_alert_policy" "cloudrun_error_rate" {
       duration        = "300s"
       aggregations {
         alignment_period     = "60s"
-        per_series_aligner   = "ALIGN_RATE"
-        cross_series_reducer = "REDUCE_SUM"
-      }
-    }
-  }
-
-  notification_channels = [google_monitoring_notification_channel.email.name]
-}
-
-# Log Sink: Forward audit logs to BigQuery
-resource "google_logging_project_sink" "audit_to_bigquery" {
-  name        = "${var.project_name}-${var.environment}-audit-sink"
-  project     = var.project_id
-  destination = "bigquery.googleapis.com/projects/${var.project_id}/datasets/${google_bigquery_dataset.audit_logs.dataset_id}"
-  filter      = "logName:\"cloudaudit.googleapis.com\" OR logName:\"activity\""
-  unique_writer_identity = true
-  bigquery_options { use_partitioned_tables = true }
-}
-
-# Log Exclusion Filter (cost reduction)
-resource "google_logging_project_exclusion" "debug_logs" {
-  count       = var.environment == "prod" ? 1 : 0
-  name        = "exclude-debug-logs"
-  project     = var.project_id
-  description = "Exclude debug-level logs in production"
-  filter      = "severity = DEBUG"
-}
+// ...
 ```
 
 ---

@@ -381,7 +381,7 @@ Enter
 Sleep 1
 Type "ls -la"
 Enter
-Sleep 2
+// ...
 ```
 
 ### Pattern 2: Action Scene — Main Demonstration
@@ -440,41 +440,7 @@ Set BorderRadius 8
 # Requirements
 Require git
 Require node
-
-# Environment
-Env PS1 "\w $ "
-
-# ==================
-# Scene 1: Setup
-# ==================
-Hide
-Type "cd ~/projects/my-app"
-Enter
-Sleep 1
-Show
-
-Type "# Project directory"
-Sleep 500ms
-Enter
-Type "ls src/"
-Enter
-Sleep 2
-
-# ==================
-# Scene 2: Action
-# ==================
-Type "npm run build"
-Enter
-Wait+Screen "compiled successfully"
-Sleep 2
-
-# ==================
-# Scene 3: Result
-# ==================
-Type "npm test"
-Enter
-Wait+Screen "passed"
-Sleep 4
+// ...
 ```
 
 ### Transition Patterns Between Scenes

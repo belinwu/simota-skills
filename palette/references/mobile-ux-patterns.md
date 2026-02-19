@@ -136,8 +136,7 @@ const [pressing, setPressing] = useState(false);
     pressing && "scale-95 opacity-80"
   )}
 >
-  {content}
-</div>
+// ...
 ```
 
 **Long Press Guidelines:**
@@ -203,15 +202,7 @@ const [pressing, setPressing] = useState(false);
         block: 'center'
       });
     }, 300); // Wait for keyboard animation
-  }}
-/>
-
-// Pattern 3: Fixed submit button above keyboard
-<div className="fixed bottom-0 inset-x-0 pb-safe">
-  <button className="w-full p-4 bg-primary text-white">
-    Submit
-  </button>
-</div>
+// ...
 ```
 
 ### Form Field Focus Management
@@ -254,8 +245,7 @@ const [pressing, setPressing] = useState(false);
 │        NATURAL              │
 │     (bottom half)           │
 │    ← primary actions        │
-│                             │
-└─────────────────────────────┘
+...
 ```
 
 **Placement Guidelines:**
@@ -405,11 +395,7 @@ const [pressing, setPressing] = useState(false);
         >
           <tab.icon className="h-6 w-6" />
           <span className="text-xs mt-1">{tab.label}</span>
-        </Link>
-      </li>
-    ))}
-  </ul>
-</nav>
+// ...
 ```
 
 **Tab Bar Guidelines:**
@@ -441,7 +427,7 @@ const [pressing, setPressing] = useState(false);
   <DrawerContent className="w-[280px]">
     {/* Navigation items */}
   </DrawerContent>
-</Drawer>
+// ...
 ```
 
 ---

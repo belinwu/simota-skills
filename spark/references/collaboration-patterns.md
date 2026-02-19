@@ -26,11 +26,7 @@ All handoff formats for agent collaboration.
 
 **Confusion Points**:
 - [UI element or flow that caused confusion]
-- [Workaround user attempted]
-
-**Recommended Focus**: [Most impactful need to address first]
-
-**Validation Request**: After proposal, return to Echo for persona validation
+...
 ```
 
 ### Spark → Echo Validation Request
@@ -78,14 +74,7 @@ All handoff formats for agent collaboration.
 
 **Persona Updates**:
 - [New persona created / Existing persona refined]
-- [Key characteristics or goals updated]
-
-**Journey Pain Points**:
-| Stage | Pain Point | Severity | Opportunity |
-|-------|------------|----------|-------------|
-| [Stage] | [Pain] | [H/M/L] | [Feature idea] |
-
-**Research Recommendation**: [Suggested feature direction]
+...
 ```
 
 ---
@@ -114,13 +103,7 @@ All handoff formats for agent collaboration.
 **Pain Point Clusters**:
 1. **Cluster**: [Theme name]
    - **Feedback Count**: [N]
-   - **Common Phrases**: [Keywords]
-   - **User Segment**: [Who is affected]
-
-**Churn Risk Signals**:
-- [Feedback indicating potential churn]
-
-**Recommended Priority**: [Most urgent feedback to address]
+...
 ```
 
 ---
@@ -149,15 +132,7 @@ All handoff formats for agent collaboration.
 **Differentiation Opportunities**:
 1. **Opportunity**: [Feature/approach]
    - **Why We Can Win**: [Our unique capability]
-   - **Market Demand**: [Evidence of demand]
-   - **Competitive Moat**: [Defensibility]
-
-**Positioning Recommendation**:
-- **Current Position**: [Where we are]
-- **Target Position**: [Where we should be]
-- **Gap to Close**: [What's needed]
-
-**Urgency**: [Time-sensitive competitive threat?]
+...
 ```
 
 ---
@@ -186,17 +161,7 @@ All handoff formats for agent collaboration.
 
 **Test Design Request**:
 - **Recommended method**: [A/B test / Feature flag / Prototype]
-- **Sample size needed**: [Estimate or ask Experiment]
-- **Duration**: [Suggested test period]
-- **Segments**: [User segments to include/exclude]
-
-**Minimum Viable Test**:
-- [Simplest version to test the hypothesis]
-
-**Decision Criteria**:
-- **Ship if**: [Metric reaches X]
-- **Iterate if**: [Metric between Y and X]
-- **Kill if**: [Metric below Y]
+...
 ```
 
 ### Experiment → Spark Result Format
@@ -217,12 +182,7 @@ All handoff formats for agent collaboration.
 **Statistical Confidence**: [Confidence level]
 
 **Verdict**: VALIDATED / INVALIDATED / INCONCLUSIVE
-
-**Unexpected Findings**:
-- [Any surprising results or side effects]
-
-**Recommendation**:
-- [Ship / Iterate / Kill / Extend test]
+...
 ```
 
 ---
@@ -251,16 +211,7 @@ All handoff formats for agent collaboration.
 
 **Technical Context** (from Scout):
 - **Relevant files**: [file:line references]
-- **Data availability**: [Available / Partial / Missing]
-- **Dependencies**: [List]
-
-**Success Criteria**:
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
-
-**Deadline/Sprint**: [Target completion]
-
-**Request**: Break down into atomic implementation steps (15 min each)
+...
 ```
 
 ### Spark → Forge Handoff Format
@@ -281,12 +232,7 @@ As a [persona], I want to [action] so that [benefit].
 **Prototype Fidelity**: [Low / Medium / High]
 
 **Validation Goal**:
-- [What we want to learn from the prototype]
-
-**NOT in Scope**:
-- [What to explicitly exclude]
-
-**Handoff to**: Builder (after prototype validation)
+...
 ```
 
 ---
@@ -318,21 +264,7 @@ As a [persona], I want to [action] so that [benefit].
 1. Does [model/table] contain [required field/data]?
 2. Is there existing logic for [specific functionality]?
 3. What dependencies would be affected by this change?
-4. Are there performance concerns with [data access pattern]?
-
-**Context for Scout**:
-- User story: [Brief user story]
-- Expected data volume: [Estimate]
-- Performance requirements: [If any]
-
-**Expected Output**:
-- List of relevant files/functions with line numbers
-- Data availability assessment (Available / Partial / Missing)
-- Technical feasibility rating (High / Medium / Low)
-- Potential blockers or concerns
-
-Suggested command:
-`/Scout investigate [specific area] for [feature purpose]`
+...
 ```
 
 ### Integrating Scout Findings
@@ -353,8 +285,7 @@ Suggested command:
 2. [Finding 2 with file:line reference]
 
 **Impact on Proposal**:
-- [How findings affect the feature specification]
-- [Adjustments needed based on technical reality]
+...
 ```
 
 ---
@@ -379,10 +310,7 @@ gantt
         Feature C    :2024-03, 2024-05
         Feature D    :2024-05, 2024-07
     section Experiments
-        Hypothesis E :2024-02, 2024-03
-\`\`\`
-
-To generate: `/Canvas create roadmap from this feature list`
+...
 ```
 
 ### User Journey Map
@@ -403,9 +331,7 @@ journey
         Return usage: 5: User
         Form habit: 4: User
     section Advocacy
-        Share feature: 3: User
-        Recommend product: 4: User
-\`\`\`
+...
 ```
 
 ### Feature Dependency Graph
@@ -426,21 +352,7 @@ graph TD
         SVC[Notification Service]
     end
     subgraph Dependencies
-        NF --> DB1
-        NF --> DB2
-        NF --> API1
-        NF --> API2
-        NF -.-> SVC
-    end
-
-    style NF fill:#e1f5fe
-    style DB1 fill:#fff3e0
-    style DB2 fill:#fff3e0
-\`\`\`
-
-Legend:
-- Solid arrow: Required dependency
-- Dashed arrow: Optional enhancement
+...
 ```
 
 ### Priority Visualization
@@ -461,15 +373,7 @@ HIGH IMPACT
      │                  └─────────┘
 HIGH─┼──────────────────────────────LOW
 EFFORT                           EFFORT
-     │  ┌─────────┐     ┌─────────┐
-     │  │Feature D│     │Feature B│
-     │  │(Time    │     │(Fill-In)│
-     │  │ Sink)   │     │Score:30 │
-     │  │ Skip    │     └─────────┘
-     │  └─────────┘
-     │
-LOW IMPACT
-\`\`\`
+...
 ```
 
 ---
@@ -525,18 +429,7 @@ LOW IMPACT
 | Metric | Current | 30-day Trend | Anomaly? |
 |--------|---------|--------------|----------|
 | [Metric 1] | [Value] | [↑/↓/→] [%] | [Yes/No] |
-| [Metric 2] | [Value] | [↑/↓/→] [%] | [Yes/No] |
-
-**Segment Insights**:
-- [Segment A]: [Key finding with metric]
-- [Segment B]: [Key finding with metric]
-
-**Hypothesis from Data**:
-- Drop-off at [Stage]: Likely caused by [hypothesis]
-- [Metric] decline: Possibly due to [hypothesis]
-
-**Recommended Focus**: [Highest-impact opportunity based on data]
-**Success Criteria Baseline**: [Current metric values to improve]
+...
 ```
 
 ### Spark Response: Metrics-to-Proposal Conversion
@@ -557,13 +450,7 @@ LOW IMPACT
 **Acceptance Criteria** (from Pulse baseline):
 - [ ] [Metric] improves from [X] to [Y]
 - [ ] No regression in [Guardrail metric]
-
-**Validation Plan**:
-- A/B test with [Sample size from Pulse]
-- Duration: [Based on traffic data]
-- MDE: [Minimum detectable effect]
-
-**Handoff**: Experiment (for validation) OR Sherpa (for implementation)
+...
 ```
 
 ### Metrics → Feature Mapping Patterns
@@ -610,25 +497,7 @@ LOW IMPACT
 
 **Authentication/Authorization**:
 - [ ] New auth flows: [Describe if any]
-- [ ] Permission changes: [Describe if any]
-- [ ] Session handling: [Describe if any]
-
-**Input Surfaces**:
-- [ ] New user inputs: [List input types]
-- [ ] File uploads: [Yes/No - formats]
-- [ ] External data ingestion: [Describe sources]
-
-**External Integrations**:
-- [ ] Third-party APIs: [List with data exchanged]
-- [ ] Webhooks: [Inbound/Outbound]
-- [ ] OAuth/SSO: [Describe]
-
-**Risk Assessment Request**:
-1. What security controls are needed?
-2. Are there compliance implications (GDPR, CCPA, etc.)?
-3. What threat vectors should be considered?
-
-**Expected Output**: Security requirements to add to proposal
+...
 ```
 
 ### Sentinel → Spark Security Requirements
@@ -649,24 +518,7 @@ LOW IMPACT
    - Implementation: [How to implement]
    - Priority: [Must have / Should have]
 
-**Compliance Considerations**:
-- [Regulation]: [Specific requirements]
-
-**Threat Vectors Identified**:
-| Threat | Likelihood | Impact | Mitigation |
-|--------|------------|--------|------------|
-| [Threat 1] | [H/M/L] | [H/M/L] | [Required control] |
-
-**Security Acceptance Criteria**:
-- [ ] [Specific security test or validation]
-- [ ] [Specific security test or validation]
-
-**Approval Status**: [Approved with requirements / Needs revision / Blocked]
-
-**Next Steps**:
-- If Approved: Add security requirements to proposal, proceed to implementation
-- If Needs Revision: Iterate proposal to address concerns
-- If Blocked: Escalate to security team
+...
 ```
 
 ### Security Feature Checklist
@@ -689,20 +541,7 @@ Use this checklist when proposing features with security implications:
 - [ ] Rate limiting considered
 
 **Data Protection**:
-- [ ] Encryption at rest requirements
-- [ ] Encryption in transit (HTTPS)
-- [ ] PII handling documented
-- [ ] Data retention policy defined
-
-**Audit & Logging**:
-- [ ] Security events logged
-- [ ] Audit trail requirements
-- [ ] No sensitive data in logs
-
-**Error Handling**:
-- [ ] No sensitive data in errors
-- [ ] Graceful failure modes
-- [ ] Error logging (secure)
+...
 ```
 
 ---
@@ -739,23 +578,7 @@ Use this checklist when proposing features with security implications:
 - [ ] New shareable content: [Yes/No - type]
 - [ ] OG image requirements: [Describe]
 - [ ] Share text recommendations: [Describe]
-
-**Conversion Impact**:
-- [ ] Funnel position: [Where in journey]
-- [ ] CTA changes: [Describe]
-- [ ] Form changes: [Describe]
-
-**Current Metrics** (from Pulse if available):
-- Page views: [Current]
-- Conversion rate: [Current]
-- Social shares: [Current]
-
-**Validation Questions**:
-1. What SEO optimizations are needed?
-2. How should social previews look?
-3. What CRO opportunities exist?
-
-**Expected Output**: Growth requirements to add to proposal
+...
 ```
 
 ### Growth → Spark Optimization Requirements
@@ -776,31 +599,7 @@ Use this checklist when proposing features with security implications:
 | Canonical URL | Must | [Pattern] |
 
 **OGP/Social Requirements**:
-| Platform | Image Spec | Title Limit | Description Limit |
-|----------|------------|-------------|-------------------|
-| Facebook | 1200x630 | 60 chars | 155 chars |
-| Twitter | 1200x628 | 70 chars | 200 chars |
-
-**CRO Recommendations**:
-1. **CTA Optimization**: [Specific recommendation]
-2. **Trust Signals**: [What to add/where]
-3. **Form Optimization**: [Reduce friction how]
-
-**A/B Test Suggestions**:
-- Hypothesis: [CRO hypothesis]
-- Variants: [A vs B description]
-- Primary metric: [Conversion metric]
-
-**Growth Acceptance Criteria**:
-- [ ] Meta tags implemented per spec
-- [ ] OG images generated correctly
-- [ ] CTA follows best practices
-- [ ] Mobile-first design verified
-
-**Expected Impact**:
-- SEO: [Traffic increase estimate]
-- Social: [Share rate improvement]
-- Conversion: [CVR improvement estimate]
+...
 ```
 
 ### Feature Type → Growth Focus Matrix

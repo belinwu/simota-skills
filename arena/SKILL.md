@@ -91,7 +91,6 @@ See `references/collaborate-mode-guide.md`.
 | `references/evaluation-framework.md` | Scoring criteria, REFINE framework, Quick Mode |
 | `references/collaborate-mode-guide.md` | COLLABORATE decomposition, templates, Quick Collaborate |
 | `references/decision-templates.md` | AUTORUN YAML templates (_AGENT_CONTEXT, _STEP_COMPLETE) |
-| `references/handoff-formats.md` | Agent handoff templates (input/output) |
 | `references/question-templates.md` | INTERACTION_TRIGGERS question templates |
 
 ## Operational

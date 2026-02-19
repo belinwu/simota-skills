@@ -50,22 +50,7 @@ function ActionButton({
   };
 
   return (
-    <button
-      disabled={status === "loading"}
-      aria-busy={status === "loading"}
-      className={cn(
-        "px-4 py-2 rounded text-sm font-medium transition-colors",
-        status === "success" && "bg-green-500 text-white",
-        status === "error" && "bg-red-500 text-white",
-        status === "idle" && "bg-blue-600 text-white hover:bg-blue-700"
-      )}
-    >
-      {status === "loading" && <Spinner className="inline mr-2 h-4 w-4" aria-hidden />}
-      {status === "success" && <CheckIcon className="inline mr-2 h-4 w-4" aria-hidden />}
-      {labels[status]}
-    </button>
-  );
-}
+// ...
 ```
 
 ### Destructive Action Labels
@@ -122,32 +107,7 @@ const fieldErrors = {
   },
   username: {
     required: "Username is required",
-    taken: "This username is taken. Try another.",
-    invalid: "Only letters, numbers, and underscores allowed",
-    tooShort: "Username must be at least 3 characters",
-  },
-};
-
-// Usage in a form field
-<div className="space-y-1">
-  <label htmlFor="email" className="text-sm font-medium">Email</label>
-  <input
-    id="email"
-    type="email"
-    aria-invalid={!!error}
-    aria-describedby={error ? "email-error" : "email-hint"}
-    className={cn("w-full px-3 py-2 border rounded", error && "border-red-500")}
-  />
-  {error ? (
-    <p id="email-error" role="alert" className="text-sm text-red-600">
-      {fieldErrors.email[error]}
-    </p>
-  ) : (
-    <p id="email-hint" className="text-sm text-gray-500">
-      We'll use this for sign-in and notifications.
-    </p>
-  )}
-</div>
+// ...
 ```
 
 ### Page-Level Error Messages
@@ -168,32 +128,7 @@ function PageError({
         <AlertCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" aria-hidden />
         <div>
           <h3 className="text-sm font-medium text-red-800">{title}</h3>
-          <p className="text-sm text-red-700 mt-1">{description}</p>
-          {actions && (
-            <div className="flex gap-3 mt-3">
-              {actions.map((action) => (
-                <button
-                  key={action.label}
-                  onClick={action.onClick}
-                  className="text-sm text-red-700 font-medium hover:underline"
-                >
-                  {action.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Usage
-<PageError
-  title="Failed to save changes"
-  description="Some fields have errors. Fix them below and try again."
-  actions={[{ label: "Jump to first error", onClick: scrollToFirstError }]}
-/>
+// ...
 ```
 
 ### Error Message Anti-Patterns
@@ -228,26 +163,7 @@ function WelcomeEmptyState({
       <h2 className="text-lg font-semibold text-gray-900 mb-2">
         {title}
       </h2>
-      <p className="text-sm text-gray-500 max-w-sm mb-6">
-        {description}
-      </p>
-      <button
-        onClick={onAction}
-        className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-      >
-        {actionLabel}
-      </button>
-    </div>
-  );
-}
-
-// Usage
-<WelcomeEmptyState
-  title="Welcome to Projects"
-  description="Projects help you organize tasks and collaborate with your team. Create your first one to get started."
-  actionLabel="Create your first project"
-  onAction={() => setShowCreateDialog(true)}
-/>
+// ...
 ```
 
 ### Empty State Copy Patterns
@@ -278,23 +194,7 @@ function NoResults({
       <SearchIcon className="h-10 w-10 text-gray-300 mx-auto mb-4" aria-hidden />
       <h3 className="text-base font-medium text-gray-900 mb-1">
         {type === "search"
-          ? `No results for "${query}"`
-          : "No items match your filters"}
-      </h3>
-      <p className="text-sm text-gray-500 mb-4">
-        {type === "search"
-          ? "Try different keywords or check for typos."
-          : "Adjust or clear your filters to see more items."}
-      </p>
-      <button
-        onClick={onClear}
-        className="text-sm text-blue-600 hover:underline"
-      >
-        {type === "search" ? "Clear search" : "Clear all filters"}
-      </button>
-    </div>
-  );
-}
+// ...
 ```
 
 ---
@@ -326,12 +226,7 @@ function NoResults({
       <AlertDialogAction
         onClick={handleDelete}
         className="bg-red-600 hover:bg-red-700 text-white"
-      >
-        Delete project
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+// ...
 ```
 
 ### Non-Destructive Confirmation
@@ -352,9 +247,7 @@ function NoResults({
       <AlertDialogAction onClick={handlePublish}>
         Publish post
       </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+// ...
 ```
 
 ### Unsaved Changes
@@ -375,15 +268,7 @@ function NoResults({
       <button
         onClick={handleDiscard}
         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-      >
-        Discard changes
-      </button>
-      <AlertDialogAction onClick={handleSave}>
-        Save changes
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+// ...
 ```
 
 ### Confirmation Dialog Copy Patterns
@@ -427,16 +312,7 @@ function SuccessToast({
       <CheckCircleIcon className="h-5 w-5 text-green-400 flex-shrink-0" aria-hidden />
       <span className="text-sm">{message}</span>
       {undoAction && (
-        <button
-          onClick={undoAction}
-          className="text-sm font-medium text-blue-300 hover:text-blue-200 ml-auto"
-        >
-          Undo
-        </button>
-      )}
-    </div>
-  );
-}
+// ...
 ```
 
 ### Progress Updates
@@ -457,25 +333,7 @@ function ProgressToast({
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm">{label}</span>
         <span className="text-xs text-gray-400">
-          {current} of {total}
-        </span>
-      </div>
-      <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-blue-500 rounded-full transition-all duration-300"
-          style={{ width: `${(current / total) * 100}%` }}
-          role="progressbar"
-          aria-valuenow={current}
-          aria-valuemin={0}
-          aria-valuemax={total}
-        />
-      </div>
-    </div>
-  );
-}
-
-// Usage
-<ProgressToast current={3} total={5} label="Uploading files..." />
+// ...
 ```
 
 ---
@@ -514,7 +372,7 @@ Place below the field. Use for format hints, constraints, or context.
   <p id="username-hint" className="text-xs text-gray-500">
     3-20 characters. Letters, numbers, and underscores only.
   </p>
-</div>
+// ...
 ```
 
 ### Character Count
@@ -535,19 +393,7 @@ function CharacterCount({
   return (
     <p
       className={cn(
-        "text-xs text-right",
-        isOverLimit && "text-red-600 font-medium",
-        isNearLimit && !isOverLimit && "text-yellow-600",
-        !isNearLimit && "text-gray-400"
-      )}
-      aria-live="polite"
-    >
-      {remaining >= 0
-        ? `${remaining} characters remaining`
-        : `${Math.abs(remaining)} characters over limit`}
-    </p>
-  );
-}
+// ...
 ```
 
 ### Password Requirements
@@ -568,25 +414,7 @@ function PasswordRequirements({
 
   return (
     <ul className="space-y-1 mt-2" aria-label="Password requirements">
-      {rules.map((rule) => (
-        <li
-          key={rule.label}
-          className={cn(
-            "flex items-center gap-2 text-xs",
-            rule.met ? "text-green-600" : "text-gray-500"
-          )}
-        >
-          {rule.met ? (
-            <CheckIcon className="h-3 w-3" aria-hidden />
-          ) : (
-            <CircleIcon className="h-3 w-3" aria-hidden />
-          )}
-          {rule.label}
-        </li>
-      ))}
-    </ul>
-  );
-}
+// ...
 ```
 
 ---
@@ -739,8 +567,7 @@ function RelativeTime({ date }: { date: Date }) {
     <time dateTime={date.toISOString()} title={full} className="text-sm text-gray-500">
       {relative}
     </time>
-  );
-}
+// ...
 ```
 
 ---

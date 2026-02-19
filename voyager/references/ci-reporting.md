@@ -24,45 +24,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Build application
-        run: npm run build
-
-      - name: Run E2E tests
-        run: npx playwright test
-        env:
-          BASE_URL: http://localhost:3000
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-
-      - name: Upload test videos
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: test-videos
-          path: test-results/
-          retention-days: 7
+# ...
 ```
 
 ### Sharded CI (4 Parallel Jobs)
@@ -83,35 +45,7 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup & Install
-        # ... same as basic workflow
-
-      - name: Run E2E tests (shard ${{ matrix.shard }}/4)
-        run: npx playwright test --shard=${{ matrix.shard }}/4
-
-      - name: Upload shard report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report-${{ matrix.shard }}
-          path: playwright-report/
-
-  merge-reports:
-    needs: e2e
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all reports
-        uses: actions/download-artifact@v4
-        with:
-          pattern: playwright-report-*
-          merge-multiple: true
-          path: all-reports
-
-      - name: Merge reports
-        run: npx playwright merge-reports --reporter=html all-reports
+# ...
 ```
 
 ---
@@ -170,12 +104,7 @@ test('user can complete purchase', async ({ page }) => {
   });
 
   await allure.step('Add to cart', async () => {
-    await page.getByTestId('add-to-cart').click();
-    await expect(page.getByTestId('cart-count')).toHaveText('1');
-  });
-
-  await allure.attachment('final-state', await page.screenshot(), 'image/png');
-});
+// ...
 ```
 
 ```yaml
@@ -208,25 +137,7 @@ class SlackReporter implements Reporter {
     }
   }
 
-  async onEnd(result: FullResult) {
-    if (this.failures.length > 0 && process.env.SLACK_WEBHOOK_URL) {
-      await fetch(process.env.SLACK_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: `E2E Tests Failed: ${this.failures.length} failures`,
-          attachments: this.failures.map(f => ({
-            color: 'danger',
-            title: f.test,
-            text: f.error,
-          })),
-        }),
-      });
-    }
-  }
-}
-
-export default SlackReporter;
+// ...
 ```
 
 ```typescript
@@ -343,27 +254,7 @@ jobs:
   critical:
     needs: smoke
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - name: Critical path tests
-        run: npx playwright test --grep @critical
-        timeout-minutes: 15
-
-  full:
-    needs: critical
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        shard: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - name: Full regression suite
-        run: npx playwright test --shard=${{ matrix.shard }}/4
-        timeout-minutes: 30
+# ...
 ```
 
 ---

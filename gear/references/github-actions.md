@@ -24,69 +24,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: test-results
-          path: coverage/
-          retention-days: 7
-
-  build:
-    runs-on: ubuntu-latest
-    needs: [lint, test]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: dist/
-          retention-days: 7
+# ...
 ```
 
 ---
@@ -109,22 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [18, 20, 22]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test
+# ...
 ```
 
 ---
@@ -147,36 +70,7 @@ on:
         type: choice
         options:
           - staging
-          - production
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'staging' }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-
-      # Vercel deployment example
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: ${{ github.event.inputs.environment == 'production' && '--prod' || '' }}
+# ...
 ```
 
 ---
@@ -199,28 +93,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+# ...
 ```
 
 ---
@@ -243,20 +116,7 @@ updates:
         dependency-type: "development"
         patterns:
           - "*"
-      production-dependencies:
-        dependency-type: "production"
-        patterns:
-          - "*"
-    commit-message:
-      prefix: "chore(deps)"
-
-  # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "chore(ci)"
+# ...
 ```
 
 ---
@@ -279,18 +139,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node-version }}
-        cache: 'pnpm'
-
-    - if: inputs.install-deps == 'true'
-      run: pnpm install --frozen-lockfile
-      shell: bash
+# ...
 ```
 
 Usage in workflows:
@@ -320,23 +169,7 @@ on:
     secrets:
       NPM_TOKEN:
         required: false
-
-jobs:
-  lint-test-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-node-pnpm
-        with:
-          node-version: ${{ inputs.node-version }}
-      - run: pnpm lint && pnpm test && pnpm build
-
-# Usage in other workflows:
-# jobs:
-#   ci:
-#     uses: ./.github/workflows/ci-reusable.yml
-#     with:
-#       node-version: '20'
+# ...
 ```
 
 ---
@@ -359,7 +192,7 @@ steps:
   - uses: google-github-actions/auth@v2
     with:
       workload_identity_provider: 'projects/123/locations/global/workloadIdentityPools/github/providers/github'
-      service_account: 'github-actions@project.iam.gserviceaccount.com'
+# ...
 ```
 
 ---
@@ -399,15 +232,5 @@ steps:
     {
       "matchPackagePatterns": ["eslint", "prettier", "typescript"],
       "groupName": "linting"
-    },
-    {
-      "matchPackagePatterns": ["@types/*"],
-      "groupName": "type definitions"
-    }
-  ],
-  "vulnerabilityAlerts": {
-    "enabled": true,
-    "labels": ["security"]
-  }
-}
+// ...
 ```

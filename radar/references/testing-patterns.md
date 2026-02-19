@@ -66,9 +66,7 @@ test('submits form with valid data', async () => {
 
   expect(onSubmit).toHaveBeenCalledWith({
     email: 'test@example.com',
-    password: 'password123',
-  });
-});
+// ...
 ```
 
 ### Query Priority
@@ -121,13 +119,7 @@ function AllProviders({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 }
-
-export function renderWithProviders(
-  ui: React.ReactElement,
-  options?: RenderOptions
-) {
-  return render(ui, { wrapper: AllProviders, ...options });
-}
+// ...
 ```
 
 ---
@@ -152,7 +144,7 @@ const server = setupServer(
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+// ...
 ```
 
 ### Error Scenarios
@@ -173,12 +165,7 @@ test('handles network error', async () => {
   server.use(
     http.get('/api/users', () => {
       return HttpResponse.error();
-    })
-  );
-
-  render(<UserList />);
-  expect(await screen.findByText('Network error')).toBeInTheDocument();
-});
+// ...
 ```
 
 ---
@@ -203,20 +190,7 @@ export function createUser(overrides: Partial<User> = {}): User {
   return {
     id: faker.string.uuid(),
     email: faker.internet.email(),
-    name: faker.person.fullName(),
-    role: 'user',
-    createdAt: new Date(),
-    ...overrides,
-  };
-}
-
-// Usage
-test('admin can delete users', async () => {
-  const admin = createUser({ role: 'admin' });
-  const target = createUser();
-  await deleteUser(admin, target.id);
-  expect(await getUser(target.id)).toBeNull();
-});
+// ...
 ```
 
 ### Fixture Pattern
@@ -237,12 +211,7 @@ export const fixtures = {
     status: 'pending' as const,
   },
   completedOrder: {
-    id: 'order-3',
-    items: [{ productId: 'prod-1', quantity: 2, price: 100 }],
-    total: 200,
-    status: 'completed' as const,
-  },
-};
+// ...
 ```
 
 ### Database Seeding (Integration Tests)
@@ -263,9 +232,7 @@ export async function seedTestDatabase() {
   return { users };
 }
 
-beforeEach(async () => {
-  await seedTestDatabase();
-});
+// ...
 ```
 
 ---
@@ -308,8 +275,7 @@ describe('UserRepository', () => {
     await repo.create({ email: 'test@example.com', name: 'Test' });
     const user = await repo.findByEmail('test@example.com');
     expect(user?.name).toBe('Test');
-  });
-});
+// ...
 ```
 
 ---
@@ -334,11 +300,7 @@ class CheckoutPage {
 }
 
 test('user can complete checkout', async ({ page }) => {
-  const checkout = new CheckoutPage(page);
-  await checkout.fillShippingAddress(testAddress);
-  await checkout.submitOrder();
-  await expect(page.locator('.confirmation')).toBeVisible();
-});
+// ...
 ```
 
 ---
@@ -363,16 +325,7 @@ export default defineConfig({
         branches: 75,
         statements: 80,
       },
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: [
-        'src/**/*.test.{ts,tsx}',
-        'src/**/*.stories.{ts,tsx}',
-        'src/**/index.ts',
-        'src/**/*.d.ts',
-      ],
-    },
-  },
-});
+// ...
 ```
 
 ### Jest
@@ -393,8 +346,7 @@ module.exports = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.test.{ts,tsx}',
     '!src/**/*.stories.{ts,tsx}',
-  ],
-};
+// ...
 ```
 
 ### Coverage Commands

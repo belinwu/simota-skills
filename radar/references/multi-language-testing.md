@@ -36,8 +36,7 @@ class TestCalculator:
         assert self.calc.add(-1, -1) == -2
 
     def test_divide_by_zero_raises_error(self):
-        with pytest.raises(ZeroDivisionError):
-            self.calc.divide(10, 0)
+# ...
 ```
 
 ### Parametrize (Edge Cases)
@@ -72,10 +71,7 @@ def sample_user(db_session):
     db_session.add(user)
     db_session.commit()
     return user
-
-def test_get_user_by_email(db_session, sample_user):
-    result = get_user_by_email(db_session, "test@example.com")
-    assert result.name == "Test User"
+# ...
 ```
 
 ### Async Tests
@@ -137,9 +133,7 @@ markers = [
 source = ["src"]
 omit = ["tests/*", "*/migrations/*"]
 
-[tool.coverage.report]
-fail_under = 80
-show_missing = true
+# ...
 ```
 
 ---
@@ -164,26 +158,7 @@ func TestAdd(t *testing.T) {
 // Table-driven tests (Go idiom)
 func TestAdd_TableDriven(t *testing.T) {
     tests := []struct {
-        name     string
-        a, b     int
-        expected int
-    }{
-        {"positive numbers", 2, 3, 5},
-        {"negative numbers", -1, -1, -2},
-        {"zero", 0, 0, 0},
-        {"mixed", -1, 1, 0},
-    }
-
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            result := Add(tt.a, tt.b)
-            if result != tt.expected {
-                t.Errorf("Add(%d, %d) = %d; want %d",
-                    tt.a, tt.b, result, tt.expected)
-            }
-        })
-    }
-}
+// ...
 ```
 
 ### With testify
@@ -204,10 +179,7 @@ func TestCalculator(t *testing.T) {
 
 // require stops test on failure (useful for setup)
 func TestUserService(t *testing.T) {
-    user, err := service.Create(input)
-    require.NoError(t, err) // Stop here if error
-    assert.Equal(t, "Test", user.Name)
-}
+// ...
 ```
 
 ### Test Suite
@@ -228,15 +200,7 @@ func (s *UserServiceSuite) TearDownTest() {
     s.db.Close()
 }
 
-func (s *UserServiceSuite) TestCreateUser() {
-    user, err := s.service.Create("test@example.com")
-    s.NoError(err)
-    s.Equal("test@example.com", user.Email)
-}
-
-func TestUserServiceSuite(t *testing.T) {
-    suite.Run(t, new(UserServiceSuite))
-}
+// ...
 ```
 
 ### HTTP Handler Test
@@ -314,16 +278,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add_negative() {
-        assert_eq!(add(-1, -1), -2);
-    }
-
-    #[test]
-    #[should_panic(expected = "divide by zero")]
-    fn test_divide_by_zero() {
-        divide(10, 0);
-    }
-}
+// ...
 ```
 
 ### Integration Tests
@@ -401,15 +356,7 @@ class CalculatorTest {
     @DisplayName("adds positive numbers correctly")
     void testAddPositive() {
         assertEquals(5, calc.add(2, 3));
-    }
-
-    @Test
-    @DisplayName("throws on divide by zero")
-    void testDivideByZero() {
-        assertThrows(ArithmeticException.class,
-            () -> calc.divide(10, 0));
-    }
-}
+// ...
 ```
 
 ### Parameterized Tests
@@ -430,14 +377,7 @@ void testIsBlank(String input, boolean expected) {
 void testEdgeCases(int input, int expected) {
     assertEquals(expected, process(input));
 }
-
-static Stream<Arguments> provideEdgeCases() {
-    return Stream.of(
-        Arguments.of(0, 0),
-        Arguments.of(Integer.MAX_VALUE, -1),
-        Arguments.of(-1, 0)
-    );
-}
+// ...
 ```
 
 ### Mocking (Mockito)
@@ -458,9 +398,7 @@ class UserServiceTest {
         assertThrows(UserNotFoundException.class,
             () -> service.getUser("999"));
 
-        verify(repository).findById("999");
-    }
-}
+// ...
 ```
 
 ### Coverage (JaCoCo)
@@ -481,11 +419,5 @@ class UserServiceTest {
                                 <counter>LINE</counter>
                                 <minimum>0.80</minimum>
                             </limit>
-                        </limits>
-                    </rule>
-                </rules>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
+<!-- ... -->
 ```

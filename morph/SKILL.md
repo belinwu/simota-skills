@@ -86,8 +86,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/accessibility-guide.md` | PDF/UA, WCAG 2.1, accessible PDF commands, verification tools |
 | `references/advanced-features.md` | PDF/A archival, digital signatures, watermarks, PDF operations, print production |
 | `references/template-library.md` | PDF/Word/HTML templates (corporate/technical/print/collaborative) |
-| `references/handoff-formats.md` | Scribe→Morph, Morph→Guardian handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for AskUserQuestion |
 | `references/conversion-workflow.md` | 5-step process templates (analyze/configure/convert/verify/deliver) |
 
 ## Conversion Matrix
@@ -128,7 +126,6 @@ Detailed templates for each phase: `references/conversion-workflow.md`
 | Professional Output | PDF/A archival, digital signatures, watermarks, merge/split, encryption | `references/advanced-features.md` |
 | Templates | Corporate/Technical/Print PDF, Standard/Collaborative Word, Standalone/Web HTML | `references/template-library.md` |
 | Batch Conversion | Directory processing, Makefile, conversion script templates | `references/pandoc-recipes.md` |
-| Handoffs | Scribe→Morph, Harvest→Morph, Canvas→Morph, Morph→Guardian formats | `references/handoff-formats.md` |
 
 ## Collaboration
 

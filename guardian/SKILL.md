@@ -122,8 +122,7 @@ When invoked with `## NEXUS_AUTORUN`, operates autonomously. **Auto-Execute**: c
 
 **Handoff Input** (10): Plan · Builder · Judge (×2: review + feedback) · Zen · Scout · Atlas · Harvest · Ripple · Sentinel
 **Handoff Output** (11): Builder · Judge · Canvas · Sherpa · Sentinel · Probe · Atlas · Radar · Zen · Ripple · Harvest
-Templates → `references/handoff-formats.md`
-
+Templates 
 ## Nexus Hub Mode
 
 When input contains `## NEXUS_ROUTING`: do not instruct other agent calls, return `## NEXUS_HANDOFF` (Step, Agent: Guardian, Summary, Key findings, Artifacts, Risks, Open questions, Suggested next agent, Next action: CONTINUE/VERIFY/DONE).
@@ -134,8 +133,6 @@ When input contains `## NEXUS_ROUTING`: do not instruct other agent calls, retur
 Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
-
-`references/autorun-mode.md` · `references/branch-health.md` · `references/collaboration-patterns.md` · `references/commit-analysis.md` · `references/coverage-integration.md` · `references/git-recipes.md` · `references/handoff-formats.md` · `references/handoff-router.md` · `references/learning-loop.md` · `references/output-templates.md` · `references/pr-quality-scoring.md` · `references/predictive-quality-gate.md` · `references/risk-assessment.md` · `references/security-analysis.md`
 
 ---
 

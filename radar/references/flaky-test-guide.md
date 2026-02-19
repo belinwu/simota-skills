@@ -37,10 +37,7 @@ test('shows success message', async () => {
 });
 
 // ✅ BETTER: Use findBy (built-in waitFor)
-test('shows success message', async () => {
-  await submitForm();
-  expect(await screen.findByText('Success')).toBeInTheDocument();
-});
+// ...
 ```
 
 ---
@@ -63,9 +60,7 @@ test('debounced search', async () => {
   await vi.advanceTimersByTimeAsync(500);
 
   expect(mockSearch).toHaveBeenCalledWith('test');
-
-  vi.useRealTimers();
-});
+// ...
 ```
 
 ---
@@ -88,10 +83,7 @@ describe('UserService', () => {
     vi.clearAllMocks();
   });
 
-  test('creates user', async () => {
-    // Each test starts with clean state
-  });
-});
+// ...
 ```
 
 ---
@@ -114,10 +106,7 @@ test('formats date in UTC', () => {
   vi.setSystemTime(new Date('2024-01-15T12:00:00Z'));
 
   const result = formatDate(new Date(), { timeZone: 'UTC' });
-  expect(result).toBe('2024-01-15');
-
-  vi.useRealTimers();
-});
+// ...
 ```
 
 ---
@@ -140,19 +129,7 @@ afterAll(() => server.close());
 
 test('fetches users', async () => {
   const users = await fetchUsers();
-  expect(users).toHaveLength(1);
-});
-
-// Override for specific test
-test('handles timeout', async () => {
-  server.use(
-    http.get('/api/users', async () => {
-      await new Promise((r) => setTimeout(r, 10000));
-      return HttpResponse.json([]);
-    })
-  );
-  // Test timeout handling...
-});
+// ...
 ```
 
 ---
@@ -347,7 +324,7 @@ for i in $(seq 1 $RUNS); do
 done
 
 echo "=== Flaky Test Report ==="
-echo "${FAILURES[@]}" | tr ' ' '\n' | sort | uniq -c | sort -rn
+# ...
 ```
 
 ---

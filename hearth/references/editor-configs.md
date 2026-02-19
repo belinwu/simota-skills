@@ -24,8 +24,7 @@ Reference for neovim and vim configuration best practices.
         ├── editor.lua        # Editor enhancements (mini.pairs, surround)
         ├── lsp.lua           # LSP configuration
         ├── telescope.lua     # Fuzzy finder
-        ├── treesitter.lua    # Syntax highlighting
-        └── ui.lua            # UI elements (statusline, bufferline)
+...
 ```
 
 ### init.lua Entry Point
@@ -63,34 +62,7 @@ opt.smartindent = true
 
 -- Search
 opt.ignorecase = true
-opt.smartcase = true
-opt.hlsearch = false
-opt.incsearch = true
-
--- UI
-opt.termguicolors = true
-opt.signcolumn = "yes"
-opt.cursorline = true
-opt.scrolloff = 8
-opt.sidescrolloff = 8
-opt.wrap = false
-
--- Files
-opt.swapfile = false
-opt.backup = false
-opt.undofile = true
-opt.undodir = vim.fn.stdpath("state") .. "/undo"
-
--- Split behavior
-opt.splitright = true
-opt.splitbelow = true
-
--- Misc
-opt.updatetime = 250
-opt.timeoutlen = 300
-opt.clipboard = "unnamedplus"
-opt.mouse = "a"
-opt.completeopt = "menu,menuone,noselect"
+// ...
 ```
 
 ### lazy.nvim Bootstrap
@@ -111,17 +83,7 @@ require("lazy").setup("plugins", {
   defaults = { lazy = true },
   install = { colorscheme = { "catppuccin" } },
   checker = { enabled = true, notify = false },
-  change_detection = { notify = false },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        "gzip", "matchit", "matchparen",
-        "netrwPlugin", "tarPlugin", "tohtml",
-        "tutor", "zipPlugin",
-      },
-    },
-  },
-})
+// ...
 ```
 
 ### Key Mapping Design
@@ -142,22 +104,7 @@ map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 -- Buffer navigation
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-
--- Move lines
-map("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-map("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move up" })
-
--- Better indenting
-map("v", "<", "<gv")
-map("v", ">", ">gv")
-
--- Diagnostics
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-
--- Search and replace (current word)
-map("n", "<leader>sr", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace" })
+// ...
 ```
 
 ### LSP Configuration
@@ -178,43 +125,7 @@ return {
         virtual_text = { spacing = 4, prefix = "●" },
         signs = true,
         underline = true,
-        update_in_insert = false,
-        severity_sort = true,
-      })
-
-      -- LSP keymaps (on attach)
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(event)
-          local map = function(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-          end
-          map("gd", vim.lsp.buf.definition, "Go to definition")
-          map("gr", vim.lsp.buf.references, "Go to references")
-          map("gI", vim.lsp.buf.implementation, "Go to implementation")
-          map("K", vim.lsp.buf.hover, "Hover documentation")
-          map("<leader>ca", vim.lsp.buf.code_action, "Code action")
-          map("<leader>cr", vim.lsp.buf.rename, "Rename symbol")
-        end,
-      })
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
-    cmd = "Mason",
-    opts = {},
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = {
-      ensure_installed = {
-        "lua_ls",
-        "ts_ls",
-        "rust_analyzer",
-      },
-      automatic_installation = true,
-    },
-  },
-}
+// ...
 ```
 
 ### Essential Plugin Specs
@@ -235,37 +146,7 @@ return {
     },
     highlight = { enable = true },
     indent = { enable = true },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "<C-space>",
-        node_incremental = "<C-space>",
-        scope_incremental = false,
-        node_decremental = "<bs>",
-      },
-    },
-  },
-}
-
--- lua/plugins/telescope.lua
-return {
-  "nvim-telescope/telescope.nvim",
-  cmd = "Telescope",
-  keys = {
-    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-    { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
-  },
-  dependencies = { "nvim-lua/plenary.nvim" },
-  opts = {
-    defaults = {
-      prompt_prefix = "   ",
-      selection_caret = " ",
-    },
-  },
-}
+// ...
 ```
 
 ---
@@ -290,28 +171,7 @@ set termguicolors
 
 " Indentation
 set tabstop=2 shiftwidth=2 expandtab
-set smartindent autoindent
-
-" Search
-set ignorecase smartcase
-set incsearch nohlsearch
-
-" Files
-set noswapfile nobackup
-set undofile undodir=~/.vim/undo
-
-" Splits
-set splitright splitbelow
-
-" Misc
-set updatetime=250
-set clipboard=unnamedplus
-set mouse=a
-set wildmenu
-set laststatus=2
-
-" Leader key
-let mapleader = " "
+// ...
 ```
 
 ### vim-plug Setup
@@ -332,8 +192,7 @@ Plug 'tpope/vim-commentary'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
-
-colorscheme catppuccin_mocha
+// ...
 ```
 
 ---
@@ -392,8 +251,7 @@ vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
   if vim.snippet.active({ direction = -1 }) then
     return "<cmd>lua vim.snippet.jump(-1)<cr>"
   end
-  return "<S-Tab>"
-end, { expr = true })
+// ...
 ```
 
 ### OSC 52 Clipboard
@@ -454,17 +312,7 @@ return {
       ["<C-e>"] = { "cancel", "fallback" },
       ["<CR>"] = { "accept", "fallback" },
       ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
-      ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
-    },
-    appearance = {
-      nerd_font_variant = "mono",
-    },
-    sources = {
-      default = { "lsp", "path", "snippets", "buffer" },
-    },
-    signature = { enabled = true },
-  },
-}
+// ...
 ```
 
 ### When to Choose blink.cmp
@@ -499,26 +347,7 @@ Zed is a GPU-accelerated editor written in Rust. Hearth provides minimal support
 
   // Editor behavior
   "tab_size": 2,
-  "hard_tabs": false,
-  "format_on_save": "on",
-  "autosave": { "after_delay": { "milliseconds": 1000 } },
-
-  // Vim mode (optional)
-  "vim_mode": true,
-  "relative_line_numbers": true,
-
-  // Terminal
-  "terminal": {
-    "font_family": "JetBrains Mono",
-    "font_size": 14
-  },
-
-  // Telemetry
-  "telemetry": {
-    "diagnostics": false,
-    "metrics": false
-  }
-}
+// ...
 ```
 
 ### Zed Keymap (`~/.config/zed/keymap.json`)

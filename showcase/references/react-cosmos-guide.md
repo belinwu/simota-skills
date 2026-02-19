@@ -55,9 +55,7 @@ npm install --save-dev react-cosmos react-cosmos-plugin-vite
     "containerQuerySelector": "#root"
   },
   "ui": {
-    "playgroundUrl": "http://localhost:5050"
-  }
-}
+// ...
 ```
 
 ### Vite Plugin Configuration
@@ -116,9 +114,7 @@ export default {
   withIcon: (
     <Button>
       <Icon name="arrow" /> With Icon
-    </Button>
-  ),
-};
+// ...
 ```
 
 ### Single Default Fixture
@@ -149,12 +145,7 @@ export default () => {
 
   return (
     <Card variant={variant}>
-      {showImage && <Card.Image src="/placeholder.jpg" alt="Placeholder" />}
-      <Card.Title>{title}</Card.Title>
-      <Card.Description>{description}</Card.Description>
-    </Card>
-  );
-};
+// ...
 ```
 
 ### Fixture with useValue (Controlled State)
@@ -175,9 +166,7 @@ export default {
       />
     );
   },
-
-  uncontrolled: <Counter defaultValue={5} />,
-};
+// ...
 ```
 
 ### Fixture with useFixtureState (Complex State)
@@ -198,13 +187,7 @@ export default () => {
   return (
     <TodoList
       items={todos}
-      onToggle={(id) =>
-        setTodos(todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)))
-      }
-      onDelete={(id) => setTodos(todos.filter((t) => t.id !== id))}
-    />
-  );
-};
+// ...
 ```
 
 ---
@@ -229,7 +212,7 @@ export default ({ children }: { children: React.ReactNode }) => (
       {children}
     </ThemeProvider>
   </QueryClientProvider>
-);
+// ...
 ```
 
 ### Scoped Decorator (per-directory)
@@ -262,18 +245,7 @@ export default {
     const [size] = useFixtureSelect('size', {
       options: ['sm', 'md', 'lg'],
       defaultValue: 'md',
-    });
-
-    return (
-      <WithModalProvider>
-        <Modal isOpen={isOpen} size={size}>
-          <h2>Modal Title</h2>
-          <p>Modal content here</p>
-        </Modal>
-      </WithModalProvider>
-    );
-  },
-};
+// ...
 ```
 
 ---
@@ -298,25 +270,7 @@ const mockUser = {
 export default {
   default: () => {
     const [loading] = useFixtureInput('loading', false);
-
-    // Override fetch for this fixture
-    globalThis.fetch = async (url: string) => {
-      if (loading) return new Promise(() => {}); // Never resolves
-      return new Response(JSON.stringify(mockUser), {
-        headers: { 'Content-Type': 'application/json' },
-      });
-    };
-
-    return <UserProfile userId={1} />;
-  },
-
-  error: () => {
-    globalThis.fetch = async () => {
-      throw new Error('Network error');
-    };
-    return <UserProfile userId={1} />;
-  },
-};
+// ...
 ```
 
 ### MSW Integration
@@ -358,12 +312,7 @@ export default {
   withRealData: () => {
     const Chart = lazy(() => import('./HeavyChart'));
     return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Chart data={realDataset} />
-      </Suspense>
-    );
-  },
-};
+// ...
 ```
 
 ---
@@ -396,12 +345,7 @@ export default defineConfig({
 });
 
 // cosmos-tests/visual.spec.ts
-import { test, expect } from '@playwright/test';
-
-test('Button fixtures visual test', async ({ page }) => {
-  await page.goto('/?fixtureId=Button/primary');
-  await expect(page.locator('#root')).toHaveScreenshot('button-primary.png');
-});
+// ...
 ```
 
 ---
@@ -463,13 +407,7 @@ export const Secondary: StoryObj = {
   args: { variant: 'secondary' },
 };
 
-// AFTER: Button.fixture.tsx (Cosmos)
-import { Button } from './Button';
-
-export default {
-  primary: <Button variant="primary">Click me</Button>,
-  secondary: <Button variant="secondary">Click me</Button>,
-};
+// ...
 ```
 
 ### Migration: Cosmos → Storybook
@@ -490,18 +428,7 @@ export default () => {
 // AFTER: Button.stories.tsx (Storybook CSF 3.0)
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
-
-const meta = {
-  component: Button,
-  argTypes: {
-    variant: { control: 'select', options: ['primary', 'secondary'] },
-  },
-} satisfies Meta<typeof Button>;
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Primary: Story = { args: { variant: 'primary', children: 'Click me' } };
-export const Secondary: Story = { args: { variant: 'secondary', children: 'Click me' } };
+// ...
 ```
 
 ---
@@ -526,13 +453,7 @@ export const Secondary: Story = { args: { variant: 'secondary', children: 'Click
   },
   "ui": {
     "playgroundUrl": "http://localhost:5050"
-  },
-  "fixtureFileSuffix": "fixture",
-  "globalDecorators": true,
-  "exposeImports": true,
-  "port": 5050,
-  "hostname": "localhost"
-}
+// ...
 ```
 
 ### TypeScript Setup

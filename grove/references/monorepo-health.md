@@ -50,11 +50,7 @@ done
 # 4. Detect version mismatches
 npx syncpack list-mismatches
 
-# 5. Detect unused packages
-npx turbo run build --dry-run 2>&1 | grep "No tasks"
-
-# 6. Build cache hit rate
-npx turbo run build --summarize
+# ...
 ```
 
 ### JS/TS (Nx)
@@ -131,9 +127,7 @@ go vet ./...
 
 # 4. Unused dependencies
 for mod in services/*/; do
-  cd "$mod" && go mod tidy -diff
-  cd -
-done
+# ...
 ```
 
 ### Java/Kotlin (Gradle)
@@ -208,26 +202,7 @@ DETECTION_RULES:
     workspace_file: "go.work"
   - file: "pyproject.toml"
     match: "[tool.uv.workspace]"
-    type: "uv"
-    workspace_file: "pyproject.toml"
-  - file: "pants.toml"
-    type: "pants"
-    workspace_file: "pants.toml"
-  - file: "WORKSPACE"
-    type: "bazel"
-    workspace_file: "WORKSPACE"
-  - file: "settings.gradle.kts"
-    match: "include("
-    type: "gradle"
-    workspace_file: "settings.gradle.kts"
-  - file: "pom.xml"
-    match: "<modules>"
-    type: "maven"
-    workspace_file: "pom.xml"
-  - file: "Cargo.toml"
-    match: "[workspace]"
-    type: "cargo"
-    workspace_file: "Cargo.toml"
+# ...
 ```
 
 ### Step 2: Package Inventory
@@ -269,21 +244,7 @@ MONOREPO_SCAN_CHECKLIST:
     check: "Shared Config Drift"
     method: "Compare config files across packages (target, strict, rules)"
     severity: "Medium"
-
-  - id: "AP-014"
-    check: "Root Pollution"
-    method: "src/ or *.ts/py/go files exist at monorepo root"
-    severity: "Medium"
-
-  - id: "AP-015"
-    check: "Orphan Package"
-    method: "Nodes with in-degree=0 and not deployable in dependency graph"
-    severity: "Low"
-
-  - id: "AP-016"
-    check: "Implicit Dependency"
-    method: "Imported but undeclared in package.json/go.mod"
-    severity: "High"
+# ...
 ```
 
 ### Step 4: Score Calculation
@@ -304,22 +265,7 @@ Package_Boundaries (25pt):
 
 Dependency_Health (25pt):
   - AP-011 detected: -15pt per cycle
-  - AP-016 detected: -8pt per implicit dep
-  - Version mismatch: -3pt per mismatch
-
-Config_Consistency (20pt):
-  - AP-013 detected: -5pt per drift
-  - No shared base config: -10pt
-
-Build_Efficiency (15pt):
-  - Cache not configured: -8pt
-  - Full build for all packages (no affected-only builds): -5pt
-  - Parallel build not configured: -3pt
-
-Package_Hygiene (15pt):
-  - AP-014 detected: -5pt
-  - AP-015 detected: -3pt per orphan
-  - Missing README.md: -2pt per package
+...
 ```
 
 ---
@@ -346,21 +292,7 @@ Grove auto-generates improvement proposals based on health check results.
 
 ### Recommended Actions
 
-#### Phase 1: Quick Wins ({effort})
-- [ ] {action 1}
-- [ ] {action 2}
-
-#### Phase 2: Structural Improvements ({effort})
-- [ ] {action 3}
-- [ ] {action 4}
-
-#### Phase 3: Optimization ({effort})
-- [ ] {action 5}
-
-### Expected Impact
-- Score: {before} → {after}
-- Build time: {before} → {after}
-- Developer experience: {improvement}
+...
 ```
 
 ### Common Proposals by Issue
@@ -420,9 +352,7 @@ Resolution patterns:
     Before: order → inventory → order (cycle)
     After:  order → event-bus ← inventory (indirect communication via events)
 
-  Pattern C: Dependency Inversion
-    Before: api → database → api (cycle)
-    After:  api → repository-interface ← database (invert via DI)
+...
 ```
 
 #### PROPOSAL: Orphan Package Cleanup
@@ -484,18 +414,7 @@ MIGRATION_ASSESSMENT:
     multi_language: "Pants or Bazel"
 
   migration_steps:
-    1: "Create new monorepo repository"
-    2: "Copy each repository to packages/ (or apps/)"
-    3: "Create workspace configuration file"
-    4: "Change internal dependencies to workspace protocol"
-    5: "Create shared config package"
-    6: "Integrate CI pipelines"
-    7: "Archive old repositories"
-
-  risks:
-    - Git history consolidation is complex (git subtree/filter-repo)
-    - CI/CD pipeline redesign required
-    - Permission management changes (control via CODEOWNERS)
+# ...
 ```
 
 ### Monorepo Tool Migration
@@ -518,10 +437,7 @@ MIGRATION_STEPS:
     detail: "Also remove related devDependencies (lerna)"
   5:
     action: "Update CI configuration"
-    detail: "Leverage turbo --filter, --cache"
-
-  effort: "2-4 hours"
-  risk: "Low (build pipeline changes only)"
+# ...
 ```
 
 #### Nx → Turborepo (or vice versa)
@@ -542,10 +458,7 @@ COMPARISON:
       - pnpm/npm/yarn native
       - Remote cache (Vercel)
       - Low learning curve
-    best_for: "Small-medium teams, simple pipelines"
-
-  migration_effort: "High (1-2 weeks)"
-  recommendation: "Do not recommend tool migration unless there is a clear reason"
+# ...
 ```
 
 ---
@@ -568,18 +481,7 @@ COMPARISON:
 |----------|-------|-----|--------|
 | Package Boundaries | {n} | 25 | {summary} |
 | Dependency Health | {n} | 25 | {summary} |
-| Config Consistency | {n} | 20 | {summary} |
-| Build Efficiency | {n} | 15 | {summary} |
-| Package Hygiene | {n} | 15 | {summary} |
-
-### Anti-Patterns Detected
-
-| ID | Pattern | Severity | Location | Impact |
-|----|---------|----------|----------|--------|
-| AP-{XXX} | {name} | {sev} | {location} | {impact} |
-
-### Package Dependency Graph
-
+...
 ```mermaid
 graph LR
   app-web --> ui

@@ -115,8 +115,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/vaire-framework.md` | V.A.I.R.E. detailed framework + Non-Negotiables |
 | `references/patterns.md` | Per-dimension checklists, score criteria, anti-patterns |
 | `references/examples.md` | Evaluation report examples + scorecard template |
-| `references/interaction-triggers.md` | Question templates for all 7 triggers |
-| `references/handoffs.md` | Full handoff templates (Launch/Palette/Builder) |
 | `references/ux-agent-matrix.md` | UX agent responsibility matrix |
 
 ---

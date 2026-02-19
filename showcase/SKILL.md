@@ -77,8 +77,6 @@ See `references/visual-regression.md` for setup, test runner config, and CI work
 | `references/react-cosmos-guide.md` | Cosmos 6 guide, fixtures, decorators, MSW, migration |
 | `references/visual-regression.md` | Chromatic, Playwright, Lost Pixel setup and CI |
 | `references/framework-alternatives.md` | Histoire, Ladle, tool comparison |
-| `references/handoff-formats.md` | All handoff templates (6 input + 6 output) |
-| `references/interaction-triggers.md` | Question templates for decision points |
 
 ## Operational
 

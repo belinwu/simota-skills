@@ -22,8 +22,7 @@ class Email extends ValueObject<{ value: string }> {
       return err(new ValidationError('Invalid email format'));
     }
     return ok(new Email(email.toLowerCase().trim()));
-  }
-}
+// ...
 ```
 
 ### MSW Handler → API Client
@@ -63,8 +62,7 @@ http.post('/api/users', async ({ request }) => {
 class EmailRequiredError extends DomainError {
   constructor() {
     super('EMAIL_REQUIRED', 'Email is required');
-  }
-}
+// ...
 ```
 
 ---
@@ -87,10 +85,7 @@ class EmailRequiredError extends DomainError {
 - [ ] Unknown 2: [Content] → Impact: [Implementation impact]
 
 ### Edge Cases
-- [ ] Empty data: [How to handle]
-- [ ] Upper limits: [Max count, max length, etc.]
-- [ ] Concurrent execution: [Behavior on conflict]
-- [ ] Errors: [Handling for each error type]
+...
 ```
 
 ---
@@ -113,26 +108,7 @@ describe('UserService', () => {
       // TODO: Radar implements
     });
 
-    it('should return DuplicateEmailError for existing email', async () => {
-      // TODO: Radar implements
-    });
-
-    // Boundary values
-    it.each([
-      ['minimum valid', { name: 'A' }],
-      ['maximum valid', { name: 'A'.repeat(100) }],
-    ])('should accept %s name', async (_, data) => {
-      // TODO: Radar implements
-    });
-
-    it.each([
-      ['empty', { name: '' }],
-      ['too long', { name: 'A'.repeat(101) }],
-    ])('should reject %s name', async (_, data) => {
-      // TODO: Radar implements
-    });
-  });
-});
+// ...
 ```
 
 ---
@@ -208,11 +184,7 @@ function useUsers() {
 }
 
 function UserList() {
-  const { data: users, isLoading, error } = useUsers();
-  if (isLoading) return <Skeleton />;
-  if (error) return <ErrorState error={error} />;
-  return <ul>{users.map(u => <li>{u.name}</li>)}</ul>;
-}
+// ...
 ```
 
 ### The Silent Failure
@@ -252,8 +224,7 @@ useEffect(() => {
   fetchData()
     .then(data => { if (!cancelled) setData(data); })
     .catch(err => { if (!cancelled) setError(err); });
-  return () => { cancelled = true; };
-}, []);
+// ...
 ```
 
 ---
@@ -287,13 +258,7 @@ types.ts                             - Basic TypeScript types
 🛡️ TEMPER
 ├── Handle: Network failure, timeout, 401, 403, 429
 ├── Add: Retry with exponential backoff for 5xx
-├── Prevent: Token leakage in logs
-└── Ensure: Cleanup on unmount (cancel pending requests)
-
-🔍 INSPECT
-├── Security review checklist
-├── Test skeleton for Radar
-└── PR with architecture documentation
+...
 ```
 
 **Key Transformations**:
@@ -314,17 +279,7 @@ interface AuthResult {
 
 type LoginError =
   | InvalidCredentialsError
-  | AccountLockedError
-  | RateLimitedError
-  | NetworkError;
-
-// Builder's AuthService
-class AuthService {
-  async login(email: Email, password: Password): Promise<Result<AuthResult, LoginError>> {
-    // Validation already done by Value Objects
-    // Focus on orchestration and error handling
-  }
-}
+// ...
 ```
 
 ---
@@ -368,9 +323,7 @@ class AuthService {
 ├── Add retry logic: Auto-retry with fresh version on conflict
 └── Prevent: Double-submit with request deduplication
 
-🔍 INSPECT
-├── Request Radar: Concurrency tests
-└── Document: Why optimistic locking over alternatives
+...
 ```
 
 **Implementation**:
@@ -391,26 +344,5 @@ class CartService {
     version: number
   ): Promise<Result<CartItem, CartError>> {
     // Cancel any pending update for this item
-    this.pendingUpdates.get(itemId.value)?.abort();
-
-    const controller = new AbortController();
-    this.pendingUpdates.set(itemId.value, controller);
-
-    const result = await this.api.patch<CartItemDto>(
-      `/cart/${itemId.value}`,
-      { quantity: quantity.value, expectedVersion: version },
-      { signal: controller.signal }
-    );
-
-    return result.match({
-      ok: dto => ok(CartItemMapper.toDomain(dto)),
-      err: error => {
-        if (error.code === 'VERSION_CONFLICT') {
-          return err(new CartConflictError('Cart was modified, please refresh'));
-        }
-        return err(new CartUpdateError(error.message));
-      }
-    });
-  }
-}
+// ...
 ```

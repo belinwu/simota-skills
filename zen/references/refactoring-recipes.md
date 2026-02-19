@@ -35,7 +35,7 @@ function printOwing() {
   // print details
   console.log(`name: ${name}`);
   console.log(`amount: ${outstanding}`);
-}
+// ...
 ```
 
 **After**:
@@ -55,11 +55,7 @@ function printBanner() {
 function calculateOutstanding() {
   return orders.reduce((sum, o) => sum + o.amount, 0);
 }
-
-function printDetails(outstanding) {
-  console.log(`name: ${name}`);
-  console.log(`amount: ${outstanding}`);
-}
+// ...
 ```
 
 ---
@@ -92,8 +88,7 @@ function getPayAmount() {
       }
     }
   }
-  return result;
-}
+// ...
 ```
 
 **After**:
@@ -230,9 +225,7 @@ class Rectangle implements Shape {
 }
 
 class Triangle implements Shape {
-  constructor(private base: number, private height: number) {}
-  area(): number { return 0.5 * this.base * this.height; }
-}
+// ...
 ```
 
 ---
@@ -279,15 +272,7 @@ interface DateRange {
 interface RecurrenceConfig {
   pattern: string;
 }
-
-function createEvent(config: EventConfig) { ... }
-
-createEvent({
-  title: "Meeting",
-  dateRange: { start, end },
-  location: "Room A",
-  recurrence: { pattern: "weekly" },
-});
+// ...
 ```
 
 ---
@@ -490,32 +475,7 @@ class ExpressShipping implements ShippingStrategy {
     return order.weight * 1.5 + 5.0;
   }
 }
-
-class OvernightShipping implements ShippingStrategy {
-  calculate(order: Order): number {
-    return order.weight * 3.0 + 15.0;
-  }
-}
-
-class InternationalShipping implements ShippingStrategy {
-  calculate(order: Order): number {
-    const zoneFactor = getZoneFactor(order.destination);
-    return order.weight * 2.0 * zoneFactor + 20.0;
-  }
-}
-
-const SHIPPING_STRATEGIES: Record<string, ShippingStrategy> = {
-  standard: new StandardShipping(),
-  express: new ExpressShipping(),
-  overnight: new OvernightShipping(),
-  international: new InternationalShipping(),
-};
-
-function calculateShipping(order: Order): number {
-  const strategy = SHIPPING_STRATEGIES[order.shippingMethod];
-  if (!strategy) throw new Error(`Unknown method: ${order.shippingMethod}`);
-  return strategy.calculate(order);
-}
+// ...
 ```
 
 ---
@@ -548,8 +508,7 @@ class OrderService {
     await this.inventoryService.reserveItems(order.items);
     await this.analyticsService.trackPurchase(order);
     await this.loyaltyService.addPoints(order.customerId, order.total);
-  }
-}
+// ...
 ```
 
 **After**:
@@ -616,34 +575,7 @@ class ServerConfigBuilder {
   rateLimit(limit: number): this { this.config.rateLimit = limit; return this; }
   logLevel(level: string): this { this.config.logging = level; return this; }
 
-  build(): ServerConfig {
-    return new ServerConfig({
-      host: this.config.host ?? 'localhost',
-      port: this.config.port ?? 3000,
-      ...this.config,
-    });
-  }
-
-  static forProduction(): ServerConfigBuilder {
-    return new ServerConfigBuilder()
-      .withSSL(readCert(), readKey())
-      .rateLimit(100)
-      .logLevel('warn');
-  }
-
-  static forDevelopment(): ServerConfigBuilder {
-    return new ServerConfigBuilder()
-      .withCORS()
-      .rateLimit(0)
-      .logLevel('debug');
-  }
-}
-
-// Usage
-const config = ServerConfigBuilder.forProduction()
-  .host('api.example.com')
-  .port(443)
-  .build();
+// ...
 ```
 
 ---
@@ -666,60 +598,5 @@ const config = ServerConfigBuilder.forProduction()
 ### Code Smells Resolved
 - ✅ Long Method → Extracted 4 focused functions
 - ✅ Deep Nesting → Introduced guard clauses
-- ✅ Magic Numbers → Created named constants
-- ✅ Duplicate Code → Extracted shared helper
-
-### Before
-\`\`\`javascript
-function processData(data) {  // CC: 18, Cognitive: 24
-  if (data) {                 // Nesting +1
-    if (data.items) {         // Nesting +2
-      for (const item of data.items) {  // Nesting +3
-        if (item.active) {    // Nesting +4
-          if (item.value > 100) {  // Nesting +5
-            // ... 30 lines of processing
-          }
-        }
-      }
-    }
-  }
-}
-\`\`\`
-
-### After
-\`\`\`javascript
-function processData(data) {  // CC: 3, Cognitive: 4
-  if (!data?.items) return;
-
-  const activeItems = filterActiveItems(data.items);
-  const highValueItems = filterHighValue(activeItems);
-  highValueItems.forEach(processItem);
-}
-
-function filterActiveItems(items) {
-  return items.filter(item => item.active);
-}
-
-function filterHighValue(items) {
-  return items.filter(item => item.value > HIGH_VALUE_THRESHOLD);
-}
-
-function processItem(item) {
-  // ... focused processing logic
-}
-\`\`\`
-
-### Changes Applied
-1. ✅ Guard clause for early return
-2. ✅ Extracted filterActiveItems (single responsibility)
-3. ✅ Extracted filterHighValue (single responsibility)
-4. ✅ Extracted processItem (single responsibility)
-5. ✅ Introduced HIGH_VALUE_THRESHOLD constant
-6. ✅ Used optional chaining for null safety
-
-### Verification
-- [x] All 24 tests pass
-- [x] No behavior change (same inputs → same outputs)
-- [x] Linting passes
-- [x] Coverage maintained at 82%
+...
 ```

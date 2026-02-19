@@ -44,18 +44,7 @@ PERSONA_DEFINITION:
 
     # Technical markers (for filtering)
     technical_markers:
-      device: "any"
-      session_duration: ">10 min"
-      pages_per_session: ">5"
-
-    # Expected behavior
-    expected_journey:
-      - Search/Browse
-      - Product view (multiple)
-      - Review reading
-      - Cart (may abandon)
-      - Return visit
-      - Purchase
+# ...
 ```
 
 ### Trace Processing
@@ -93,15 +82,7 @@ SEGMENT_ANALYSIS:
       - marker: "reads_reviews"
         expected: "Scrolls to review section"
         actual_rate: 67%
-        match: partial
-        note: "33% skip reviews entirely"
-
-  frustration_by_persona:
-    overall_score: 12.3
-    hotspots:
-      - location: "Product comparison"
-        score: 18.7
-        signal: "Rage clicks on compare button"
+# ...
 ```
 
 ---
@@ -128,36 +109,7 @@ PERSONA_VALIDATION_REPORT:
         status: "VALIDATED"
 
       - marker: "compares_prices"
-        expected: "Visits competitor sites"
-        actual_match: 34%
-        status: "NEEDS_REVIEW"
-        finding: "Most comparison happens within site"
-
-      - marker: "reads_reviews"
-        expected: "Scrolls to review section"
-        actual_match: 67%
-        status: "PARTIAL"
-        finding: "Video reviews more popular than text"
-
-  discovered_sub_segments:
-    - name: "Quick Decider (subset)"
-      percentage: 28%
-      distinguishing_behavior: "Decides within 2 product views"
-      suggestion: "Consider separate persona"
-
-    - name: "Review Dependent"
-      percentage: 45%
-      distinguishing_behavior: "Won't add to cart without reviews"
-      suggestion: "Add as variant"
-
-  recommendations:
-    - priority: high
-      action: "Update 'compares_prices' marker definition"
-      reason: "Behavior changed - internal comparison dominant"
-
-    - priority: medium
-      action: "Consider splitting persona"
-      reason: "Significant behavioral variance detected"
+# ...
 ```
 
 ### Handoff to Researcher
@@ -178,22 +130,7 @@ PERSONA_VALIDATION_REPORT:
 | Compares prices | Competitor visits | 34% | ⚠️ Needs review |
 | Reads reviews | Scrolls to reviews | 67% | 🔶 Partial |
 
-### Key Finding
-
-The "competitor site visits" marker does not match actual behavior.
-Users primarily use **internal comparison features** (78%).
-
-### Discovered Sub-segments
-
-1. **Quick Decider (28%)**: Decides within 2 product views
-2. **Review Dependent (45%)**: Won't purchase without reviews
-
-### Recommended Actions
-
-1. 🔴 Update "price comparison" marker definition
-2. 🟡 Consider persona split
-
-Suggested command: `/Researcher update persona CCS-001 based on Trace findings`
+...
 ```
 
 ---
@@ -220,28 +157,7 @@ PROBLEM_DISCOVERY:
     signals:
       rage_clicks:
         rate: 18%
-        detail: "Average 4.2 clicks before success"
-      back_loops:
-        rate: 34%
-        detail: "Return to cart, re-add items"
-      abandonment:
-        rate: 28%
-        detail: "Exit after 2+ submit attempts"
-
-  affected_personas:
-    - persona: "Mobile-first Millennial"
-      impact: "HIGH (45% affected)"
-    - persona: "Cautious Comparison Shopper"
-      impact: "MEDIUM (23% affected)"
-    - persona: "Senior User"
-      impact: "LOW (12% affected)"
-
-  hypothesis:
-    primary: "Submit button state unclear after click"
-    supporting_evidence:
-      - "67% of rage clicks occur within 2s of first click"
-      - "Mobile users 3x more affected than desktop"
-      - "No loading indicator visible on mobile"
+# ...
 ```
 
 ### Handoff to Echo
@@ -262,25 +178,7 @@ PROBLEM_DISCOVERY:
 | Back loops | 34% | Return to cart, re-add items |
 | Abandonment | 28% | Exit after 2+ submit attempts |
 
-### Most Affected Personas
-
-1. **Mobile-first Millennial** - 45% affected (HIGH)
-2. **Cautious Comparison Shopper** - 23% affected (MEDIUM)
-
-### Simulation Request
-
-**Persona:** Mobile-first Millennial
-**Flow:** Payment submission
-**Focus:** Button state feedback after tap
-**Hypothesis:** Users can't tell if the button responded
-
-### Questions for Echo
-
-1. Is the tap feedback sufficient?
-2. Is it clear that processing is happening?
-3. Do you feel the urge to tap again?
-
-Suggested command: `/Echo simulate payment flow as Mobile-first Millennial, focus on submit button feedback`
+...
 ```
 
 ---
@@ -307,12 +205,7 @@ ECHO_PREDICTION:
         - zoom_gestures
         - long_form_completion_time
 
-    - location: "Save button"
-      issue: "Low color contrast"
-      confidence: 0.72
-      expected_signals:
-        - dead_clicks_nearby
-        - help_seeking
+# ...
 ```
 
 ### Validation Process
@@ -333,17 +226,7 @@ TRACE_VALIDATION:
       status: "CONFIRMED"
       confidence_delta: +0.10  # Higher than predicted
       evidence:
-        zoom_gestures: 78% (vs 12% average)
-        form_completion_time: 3.2x average
-        additional_finding: "42% increase text size in browser"
-
-    - prediction: "Low color contrast"
-      status: "PARTIAL"
-      confidence_delta: -0.15  # Lower than predicted
-      evidence:
-        dead_clicks_nearby: 8% (expected 15%+)
-        help_seeking: 3%
-        note: "Button works but hesitation observed"
+# ...
 ```
 
 ### Validation Report
@@ -364,22 +247,7 @@ TRACE_VALIDATION:
 | Low color contrast | 0.72 → 0.57 | 🔶 PARTIAL | 8% dead clicks |
 
 ### Confirmed: Font Size Issue
-
-Echo's prediction was confirmed by real data.
-- Zoom gestures: 78% (vs 12% average)
-- Form completion time: 3.2x average
-- Additional finding: 42% increase text size in browser
-
-### Partial: Contrast Issue
-
-Impact is lower than predicted, but problem exists.
-- Dead clicks: 8% (expected 15%+)
-- Observation: Hesitation observed before clicking
-
-### Recommendation
-
-1. Font size issue is **P0** - immediate attention recommended
-2. Contrast issue is **P2** - continue monitoring
+...
 ```
 
 ---
@@ -414,11 +282,5 @@ CUSTOM_SEGMENT:
     # Behavioral (quantitative)
     session_duration: "[operator] [value]"
     pages_per_session: "[operator] [value]"
-    visit_frequency: "[operator] [value]"
-
-  behavioral_markers:
-    # Actions to look for
-    - marker_name: "[description]"
-      detection_rule: "[how to identify]"
-      weight: [1-5]  # Importance for classification
+# ...
 ```

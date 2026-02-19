@@ -66,8 +66,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/investigation-patterns.md` | 5 investigation patterns: Feature Discovery, Flow Tracing, Structure Mapping, Data Flow, Convention Discovery |
 | `references/search-strategies.md` | 4-layer search architecture, keyword dictionaries, framework-specific queries |
 | `references/output-formats.md` | Quick Answer, Investigation Report, Onboarding Report templates |
-| `references/collaboration-handoffs.md` | Architecture diagram, Builder/Scribe/Canvas handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for ON_SCOPE_AMBIGUOUS, ON_MULTIPLE_MATCHES |
 
 ---
 

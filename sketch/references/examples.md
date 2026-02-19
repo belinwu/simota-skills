@@ -30,48 +30,7 @@ from google.genai import types
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
     print("Error: GEMINI_API_KEY not set")
-    sys.exit(1)
-
-client = genai.Client(api_key=api_key)
-output_dir = Path("./generated/hero")
-output_dir.mkdir(parents=True, exist_ok=True)
-
-prompt = (
-    "A modern SaaS dashboard interface floating in abstract 3D space, "
-    "soft gradient background in blue and purple tones, "
-    "clean minimalist design, glass morphism effect, "
-    "professional technology aesthetic, hero image composition, "
-    "cinematic lighting, 8K quality, widescreen 16:9 format"
-)
-
-print("Generating hero image...")
-response = client.models.generate_content(
-    model="gemini-2.5-flash-image",
-    contents=prompt,
-    config=types.GenerateContentConfig(
-        response_modalities=["IMAGE"],
-    ),
-)
-
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-for i, part in enumerate(response.candidates[0].content.parts):
-    if part.inline_data:
-        filepath = output_dir / f"{timestamp}_hero.png"
-        filepath.write_bytes(part.inline_data.data)
-        print(f"Saved: {filepath}")
-
-# Metadata
-metadata = {
-    "prompt": prompt,
-    "model": "gemini-2.5-flash-image",
-    "use_case": "Landing page hero image",
-    "synthid": True,
-    "generated_at": datetime.now().isoformat(),
-}
-(output_dir / f"{timestamp}_metadata.json").write_text(
-    json.dumps(metadata, indent=2, ensure_ascii=False)
-)
-print("Done!")
+# ...
 ```
 
 ---
@@ -98,30 +57,7 @@ client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Erro
 output_dir = Path("./generated/tokyo")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Note: aspect ratio specified in prompt for SDK v1.38 compatibility
-prompt = (
-    "Tokyo cityscape at twilight, watercolor painting style, "
-    "soft edges, translucent color layers, paper texture visible, "
-    "bleeding colors between sky and buildings, "
-    "neon lights reflecting in rain puddles, organic brush strokes, "
-    "traditional Japanese watercolor technique, wabi-sabi aesthetic, "
-    "vertical 9:16 portrait orientation optimized for mobile"
-)
-
-response = client.models.generate_content(
-    model="gemini-2.5-flash-image",
-    contents=prompt,
-    config=types.GenerateContentConfig(
-        response_modalities=["IMAGE"],
-    ),
-)
-
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-for part in response.candidates[0].content.parts:
-    if part.inline_data:
-        filepath = output_dir / f"{timestamp}_tokyo_watercolor.png"
-        filepath.write_bytes(part.inline_data.data)
-        print(f"Saved: {filepath}")
+# ...
 ```
 
 ---
@@ -150,52 +86,7 @@ client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Erro
 output_dir = Path("./generated/cafe_iterations")
 output_dir.mkdir(parents=True, exist_ok=True)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-
-def save_response(response, label):
-    for part in response.candidates[0].content.parts:
-        if part.inline_data:
-            filepath = output_dir / f"{timestamp}_{label}.png"
-            filepath.write_bytes(part.inline_data.data)
-            print(f"Saved: {filepath}")
-        elif part.text:
-            print(f"AI: {part.text}")
-
-
-# Create chat session for iterative editing
-chat = client.chats.create(
-    model="gemini-2.5-flash-image",
-    config=types.GenerateContentConfig(
-        response_modalities=["TEXT", "IMAGE"],
-    ),
-)
-
-# --- Turn 1: Initial generation ---
-print("=== Turn 1: Initial cafe scene ===")
-r1 = chat.send_message(
-    "Generate a cozy Japanese-style cafe interior with wooden furniture, "
-    "warm lighting, plants on shelves, morning sunlight through windows, "
-    "4:3 landscape format, no people"
-)
-save_response(r1, "01_initial")
-
-# --- Turn 2: Add details ---
-print("\n=== Turn 2: Adding details ===")
-r2 = chat.send_message(
-    "Add a latte art coffee cup on the nearest table, "
-    "and a small bookshelf in the background"
-)
-save_response(r2, "02_details_added")
-
-# --- Turn 3: Adjust mood ---
-print("\n=== Turn 3: Adjusting mood ===")
-r3 = chat.send_message(
-    "Change the lighting to late afternoon golden hour, "
-    "make the atmosphere warmer and more nostalgic"
-)
-save_response(r3, "03_mood_adjusted")
-
-print(f"\nAll iterations saved to: {output_dir}")
+# ...
 ```
 
 ---
@@ -224,98 +115,7 @@ from google.genai import types
 from google.api_core import exceptions as api_exceptions
 
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Error: GEMINI_API_KEY not set"))
-output_dir = Path("./generated/icons")
-output_dir.mkdir(parents=True, exist_ok=True)
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-# Define variations (aspect ratio embedded in prompt for SDK v1.38 compat)
-variations = [
-    {
-        "name": "gradient",
-        "prompt": (
-            "App icon, modern gradient design, smooth blue-to-purple transition, "
-            "abstract geometric shape, rounded square format, clean minimal, "
-            "iOS app icon style, glossy finish, square 1:1 format"
-        ),
-    },
-    {
-        "name": "flat",
-        "prompt": (
-            "App icon, flat design, bold single color, simple geometric symbol, "
-            "no shadows, no gradients, material design inspired, "
-            "clean silhouette on solid background, square 1:1 format"
-        ),
-    },
-    {
-        "name": "3d",
-        "prompt": (
-            "App icon, 3D rendered, soft clay material, pastel colors, "
-            "rounded friendly shape, subtle shadow, playful aesthetic, "
-            "modern 3D icon trend, square 1:1 format"
-        ),
-    },
-    {
-        "name": "glass",
-        "prompt": (
-            "App icon, glassmorphism style, frosted glass effect, "
-            "translucent layers, subtle border glow, depth effect, "
-            "modern UI trend, light background, square 1:1 format"
-        ),
-    },
-    {
-        "name": "neon",
-        "prompt": (
-            "App icon, neon glow effect, dark background, "
-            "vibrant electric blue outline, futuristic tech aesthetic, "
-            "clean geometric shape, cyberpunk minimal, square 1:1 format"
-        ),
-    },
-]
-
-config = types.GenerateContentConfig(
-    response_modalities=["IMAGE"],
-)
-
-results = []
-for i, var in enumerate(variations):
-    print(f"[{i + 1}/{len(variations)}] Generating: {var['name']}...")
-
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-image",
-            contents=var["prompt"],
-            config=config,
-        )
-
-        for part in response.candidates[0].content.parts:
-            if part.inline_data:
-                filename = f"{timestamp}_icon_{var['name']}.png"
-                filepath = output_dir / filename
-                filepath.write_bytes(part.inline_data.data)
-                results.append({"name": var["name"], "file": str(filepath), "prompt": var["prompt"]})
-                print(f"  Saved: {filepath}")
-
-    except api_exceptions.ResourceExhausted:
-        print("  Rate limited. Waiting 30s...")
-        time.sleep(30)
-    except Exception as e:
-        print(f"  Error: {e}")
-
-    if i < len(variations) - 1:
-        time.sleep(3)  # Rate limit buffer
-
-# Summary
-summary = {
-    "generated_at": datetime.now().isoformat(),
-    "total": len(results),
-    "variations": results,
-    "synthid": True,
-}
-(output_dir / f"{timestamp}_batch_summary.json").write_text(
-    json.dumps(summary, indent=2, ensure_ascii=False)
-)
-print(f"\nBatch complete: {len(results)}/{len(variations)} icons generated")
-print(f"Output directory: {output_dir}")
+# ...
 ```
 
 ---
@@ -344,45 +144,7 @@ client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Erro
 output_dir = Path("./generated/edited")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Load source image
-source_path = Path("./input/product_photo.png")  # ← 編集する画像のパス
-if not source_path.exists():
-    print(f"Error: Source image not found: {source_path}")
-    sys.exit(1)
-
-source_data = source_path.read_bytes()
-
-# Edit instruction
-edit_prompt = (
-    "Replace the background with a clean, modern office environment. "
-    "Keep the foreground product exactly as is. "
-    "Match the lighting direction and color temperature."
-)
-
-print(f"Editing: {source_path}")
-print(f"Edit: {edit_prompt}")
-
-response = client.models.generate_content(
-    model="gemini-2.5-flash-image",
-    contents=[
-        types.Part.from_bytes(data=source_data, mime_type="image/png"),
-        edit_prompt,
-    ],
-    config=types.GenerateContentConfig(
-        response_modalities=["IMAGE"],
-    ),
-)
-
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-if response.candidates and response.candidates[0].content.parts:
-    for part in response.candidates[0].content.parts:
-        if part.inline_data:
-            filepath = output_dir / f"{timestamp}_bg_replaced.png"
-            filepath.write_bytes(part.inline_data.data)
-            print(f"Saved: {filepath}")
-else:
-    print("Error: No image generated. The edit request may have been blocked.")
+# ...
 ```
 
 ---
@@ -455,81 +217,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-
-from google import genai
-from google.genai import types
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Generate images with Gemini API")
-    parser.add_argument("--prompt", required=True, help="Image generation prompt")
-    parser.add_argument("--ratio", default=None, help="Aspect ratio hint (e.g., 16:9) — appended to prompt")
-    parser.add_argument("--output", default="./generated", help="Output directory")
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
-
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("Error: GEMINI_API_KEY not set")
-        sys.exit(1)
-
-    client = genai.Client(api_key=api_key)
-    output_dir = Path(args.output)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # Append aspect ratio hint to prompt if specified
-    prompt = args.prompt
-    if args.ratio:
-        prompt = f"{prompt}, {args.ratio} aspect ratio format"
-
-    model = "gemini-2.5-flash-image"
-    print(f"Model: {model}")
-    print(f"Prompt: {prompt}")
-
-    try:
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
-            ),
-        )
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    saved = []
-
-    if response.candidates:
-        for i, part in enumerate(response.candidates[0].content.parts):
-            if part.inline_data:
-                filepath = output_dir / f"{timestamp}_{i:02d}.png"
-                filepath.write_bytes(part.inline_data.data)
-                saved.append(str(filepath))
-                print(f"Saved: {filepath}")
-
-    if saved:
-        meta = {
-            "prompt": prompt,
-            "model": model,
-            "files": saved,
-            "synthid": True,
-            "generated_at": datetime.now().isoformat(),
-        }
-        meta_path = output_dir / f"{timestamp}_meta.json"
-        meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False))
-        print(f"Metadata: {meta_path}")
-    else:
-        print("No images generated. Check prompt and content policy.")
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+# ...
 ```
 
 ### Pattern B: API Wrapper Class
@@ -550,97 +238,5 @@ import json
 import os
 import time
 from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-from google.api_core import exceptions as api_exceptions
-
-
-class ImageGenerator:
-    """Wrapper for Gemini API image generation."""
-
-    def __init__(self, api_key=None, output_dir="./generated",
-                 model="gemini-2.5-flash-image"):
-        key = api_key or os.environ.get("GEMINI_API_KEY")
-        if not key:
-            raise ValueError("GEMINI_API_KEY not set")
-        self.client = genai.Client(api_key=key)
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.model = model
-        self._config = types.GenerateContentConfig(
-            response_modalities=["IMAGE"],
-        )
-
-    def generate(self, prompt, max_retries=3):
-        """Generate images from text prompt."""
-        for attempt in range(max_retries):
-            try:
-                response = self.client.models.generate_content(
-                    model=self.model,
-                    contents=prompt,
-                    config=self._config,
-                )
-                return self._save(response, prompt)
-
-            except api_exceptions.ResourceExhausted:
-                wait = 2 ** attempt * 10
-                print(f"Rate limited. Waiting {wait}s...")
-                time.sleep(wait)
-            except Exception as e:
-                print(f"Error: {e}")
-                return []
-        return []
-
-    def edit(self, image_path, instruction):
-        """Edit an existing image."""
-        source = Path(image_path).read_bytes()
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=[
-                types.Part.from_bytes(data=source, mime_type="image/png"),
-                instruction,
-            ],
-            config=self._config,
-        )
-        return self._save(response, instruction)
-
-    def batch(self, prompts, delay=3, **kwargs):
-        """Generate multiple images with rate limiting."""
-        all_files = []
-        for i, prompt in enumerate(prompts):
-            print(f"[{i + 1}/{len(prompts)}] {prompt[:60]}...")
-            files = self.generate(prompt, **kwargs)
-            all_files.extend(files)
-            if i < len(prompts) - 1:
-                time.sleep(delay)
-        return all_files
-
-    def _save(self, response, prompt):
-        """Save response images and metadata."""
-        if not response.candidates:
-            return []
-
-        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        saved = []
-
-        for i, part in enumerate(response.candidates[0].content.parts):
-            if part.inline_data:
-                ext = "png" if "png" in part.inline_data.mime_type else "jpg"
-                path = self.output_dir / f"{ts}_{i}.{ext}"
-                path.write_bytes(part.inline_data.data)
-                saved.append(str(path))
-
-        if saved:
-            meta = {
-                "prompt": prompt, "model": self.model,
-                "files": saved, "synthid": True,
-                "generated_at": datetime.now().isoformat(),
-            }
-            (self.output_dir / f"{ts}_meta.json").write_text(
-                json.dumps(meta, indent=2, ensure_ascii=False)
-            )
-
-        return saved
+# ...
 ```

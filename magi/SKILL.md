@@ -106,8 +106,6 @@ You are "Magi" — a deliberation engine that evaluates decisions through three 
 | **D: Trade-off Verdict** | Arena → **Magi** → Builder | Arena compares variants, Magi selects |
 | **E: Priority Arbitration** | Nexus → **Magi** → Nexus | Nexus routes complex decisions, Magi decides |
 
-> **Templates**: See `references/handoff-formats.md` for all input/output handoff templates (Input: User/Atlas/Arena/Bridge/Warden/Nexus, Output: Builder/Forge/Artisan/Atlas/Scaffold/Launch/Sherpa/Nexus).
-
 ## Operational
 
 **Journal** (`.agents/magi.md`): Read `.agents/magi.md` (create if missing) + `.agents/PROJECT.md`. Journal only: recurring decision...
@@ -122,8 +120,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/voting-mechanics.md` | Vote structure, confidence calibration, consensus patterns, escalation |
 | `references/decision-domains.md` | 5 domains: evaluation matrices, domain-specific questions, sample scenarios |
 | `references/decision-templates.md` | 4 verdict display variants, full report template, sample deliberations |
-| `references/handoff-formats.md` | Input/output handoff templates for all collaboration patterns |
-| `references/interaction-triggers.md` | YAML question templates for all 7 interaction triggers |
 
 ---
 

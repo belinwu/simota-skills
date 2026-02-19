@@ -57,7 +57,7 @@ custom_config:
      ▼
 ┌─────────┐
 │  DONE   │
-└─────────┘
+...
 ```
 
 ### State Transitions
@@ -93,10 +93,7 @@ def should_terminate(state):
 
     # Priority 4: User stop
     if state.user_requested_stop:
-        return (True, "USER_STOP")
-
-    # Continue
-    return (False, None)
+# ...
 ```
 
 ### Termination Reasons
@@ -130,12 +127,7 @@ def handle_max_cycles(state):
         if response == "One more cycle":
             state.max_cycles += 1
             return continue_cycle(state)
-        elif response == "Switch to INTENSIVE":
-            state.mode = INTENSIVE
-            state.max_cycles = 5
-            return continue_cycle(state)
-
-    return terminate(state, "MAX_CYCLES")
+# ...
 ```
 
 **ON_DIMINISHING_OVERRIDE:**
@@ -157,9 +149,7 @@ def handle_diminishing_override(state):
     elif response == "Continue one":
         state.diminishing_count = 0  # Reset
         return continue_cycle(state)
-    else:
-        state.ignore_diminishing = True
-        return continue_cycle(state)
+# ...
 ```
 
 ---
@@ -184,7 +174,7 @@ class DiminishingDetector:
         return self.consecutive_count >= self.consecutive_required
 
     def reset(self):
-        self.consecutive_count = 0
+# ...
 ```
 
 ### Visualization
@@ -295,48 +285,7 @@ End: 81.2 (Good) ✓
 - Judge: Found 2 HIGH, 3 MEDIUM issues
 - Builder: Fixed 2 HIGH issues
 - Radar: Added 8 tests, coverage +15%
-- Zen: Reduced avgCC from 15 to 12
-
-**Learnings:**
-- High complexity correlated with low coverage in auth module
-- Builder fix for null check enabled cleaner Zen refactoring
-
-#### Cycle 2 (10:38 - 10:45)
-| Metric | Before | After | Delta |
-|--------|--------|-------|-------|
-| UQS | 76.5 | 81.2 | +4.7 |
-| Judge | 85 | 92 | +7 |
-| Radar | 70 | 78 | +8 |
-| Zen | 72 | 80 | +8 |
-
-**Actions:**
-- Judge: Found 1 MEDIUM issue
-- Builder: Fixed MEDIUM issue
-- Radar: Added 4 edge case tests
-- Zen: Extracted utility functions
-
-**Learnings:**
-- Edge case tests caught potential regression
-- Function extraction improved testability
-
-### Termination
-| Field | Value |
-|-------|-------|
-| Reason | GOAL_ACHIEVED |
-| Final UQS | 81.2 |
-| Target UQS | 80 |
-| Total Cycles | 2 |
-| Total Delta | +16.2 |
-
-### Session Learnings
-1. Pattern: Judge → Builder → Zen → Radar most effective
-2. Insight: Address complexity before adding tests
-3. Recommendation: Start with QUICK mode for small modules
-
----
-
-## Session: 2024-01-14T14:00:00Z
-[Previous session...]
+...
 ```
 
 ---
@@ -361,11 +310,7 @@ End: 81.2 (Good) ✓
 | Agent | Status | Time |
 |-------|--------|------|
 | Judge | ✓ Done | 2:15 |
-| Builder | ● Running | 1:30... |
-| Zen | ○ Pending | - |
-| Radar | ○ Pending | - |
-
-### Quality Trend
+...
 ```
 UQS: 65 ──(+?)──▶ ?
          │
@@ -393,11 +338,7 @@ def estimate_remaining_cycles(state):
     if state.uqs >= state.target_uqs:
         return 0
 
-    avg_delta = mean(state.deltas) if state.deltas else 10
-    gap = state.target_uqs - state.uqs
-    estimated = ceil(gap / avg_delta)
-
-    return min(estimated, state.max_cycles - state.cycle)
+# ...
 ```
 
 ---
@@ -433,8 +374,7 @@ PATTERN_DB = {
 
 def apply_learnings(state):
     for pattern, data in PATTERN_DB.items():
-        if data.confidence > 0.7:
-            apply_pattern(state, pattern)
+# ...
 ```
 
 ### Learning Output Format
@@ -484,8 +424,7 @@ def save_checkpoint(checkpoint):
 
 def load_checkpoint(checkpoint_id):
     path = f".agents/hone_checkpoints/{checkpoint_id}.json"
-    data = read_json(path)
-    return Checkpoint.from_dict(data)
+# ...
 ```
 
 ### Checkpoint Cleanup
@@ -562,14 +501,7 @@ def handle_error(error, state):
   },
   "per_domain": {
     "code_correctness": {"before": 70, "after": 92, "delta": 22},
-    "complexity": {"before": 60, "after": 80, "delta": 20},
-    "test_coverage": {"before": 55, "after": 78, "delta": 23}
-  },
-  "termination": {
-    "reason": "GOAL_ACHIEVED",
-    "at_cycle": 2
-  }
-}
+// ...
 ```
 
 ### CI Integration Format

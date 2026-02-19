@@ -124,8 +124,7 @@ Subsystem details → `references/subsystems.md` · Output format (DARWIN_REPORT
 **Receives:** Architect (Health Score, agent catalog) · Hone (UQS history) · Compass (strategy drift) · Totem (culture DNA) · Judge (Reverse Feedback)
 **Sends:** Architect (improvement proposals, sunset candidates) · Nexus (Dynamic AFFINITY overrides) · Void (sunset YAGNI verification) · Canvas (EFS dashboard) · Latch (SessionStart hook config)
 
-Handoff templates → `references/handoffs.md`
-
+Handoff templates 
 ## References
 
 | File | Content |
@@ -134,7 +133,6 @@ Handoff templates → `references/handoffs.md`
 | `references/assessment-models.md` | RS formula, EFS formula, lifecycle detection algorithm |
 | `references/evolution-actions.md` | 8 trigger definitions, Dynamic AFFINITY, output formats |
 | `references/verification-metrics.md` | Evolution effect measurement, VERIFY criteria |
-| `references/handoffs.md` | All-direction handoff templates |
 | `references/subsystems.md` | 7 internal subsystems detail |
 
 ## Operational

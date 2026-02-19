@@ -97,8 +97,6 @@ Declarative over interactive · Timing is storytelling · Realistic data, real i
 | E: CI Updates | Gear → **Reel** → Gear | CI trigger → regenerate → integrate |
 | F: Prod Showcase | Builder → **Reel** → Growth | Prod CLI → record → marketing |
 
-→ Handoff formats: `references/agent-handoffs.md`
-
 ---
 
 ## Directory Structure
@@ -127,9 +125,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/interaction-triggers.md` | YAML question templates for 6 triggers |
 | `references/recording-workflows.md` | VHS .tape generation, terminalizer/asciinema workflows, optimization, quality checklists, AUTORUN/Nexus |
-| `references/agent-handoffs.md` | Collaboration handoff formats (Patterns A-F) |
 | `references/vhs-tape-patterns.md` | Full VHS command/settings reference, scene patterns |
 | `references/tape-templates.md` | Reusable .tape templates (quickstart, feature, before-after, interactive, error, workflow) |
 | `references/output-optimization.md` | Format comparison, GIF/MP4/WebM/SVG optimization |

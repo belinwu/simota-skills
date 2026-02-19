@@ -128,7 +128,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 ## AGENT COLLABORATION & HANDOFFS
 
 **Response Team:** Scout (RCA) · Builder (fixes/hotfixes) · Radar (verification) · Lens (evidence) · Sentinel (security) · Gear (rollback/infra)
-**Handoffs:** TRIAGE_TO_{SCOUT,BUILDER,RADAR,LENS,SENTINEL,GEAR} · {SCOUT,BUILDER,RADAR}_TO_TRIAGE — See `references/handoff-formats.md`
 **Bidirectional:** Input ← Nexus (routing), Monitoring (alerts), Scout/Builder/Radar (results) · Output → Scout/Builder/Radar/Lens/Sentinel/Gear/Nexus
 
 ---
@@ -159,7 +158,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | File | Content |
 |------|---------|
 | `references/collaboration-flows.md` | Detailed collaboration flow diagrams |
-| `references/handoff-formats.md` | Full handoff templates for all directions |
 | `references/postmortem-templates.md` | Postmortem & PIR templates |
 | `references/response-workflow.md` | Phase templates & containment options |
 | `references/runbooks-communication.md` | Communication templates, severity checklist, runbooks |

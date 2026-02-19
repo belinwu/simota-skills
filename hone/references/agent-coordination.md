@@ -55,15 +55,7 @@ def analyze_request(request, context):
     if mentions(request, ["UX", "user", "interface", "UI"]):
         domains.append("ux_quality")
     if mentions(request, ["security", "vulnerability"]):
-        domains.append("security")
-
-    # File analysis → domains
-    if has_ui_files(context.files):
-        domains.append("ux_quality")
-    if has_test_files(context.files):
-        domains.append("test_quality")
-
-    return domains or ["all"]  # Default to all
+# ...
 ```
 
 ### Step 2: Agent Mapping
@@ -84,8 +76,7 @@ DOMAIN_TO_AGENTS = {
 def select_agents(domains):
     agents = []
     for domain in domains:
-        agents.extend(DOMAIN_TO_AGENTS.get(domain, []))
-    return deduplicate(agents)
+# ...
 ```
 
 ### Step 3: Priority Ordering
@@ -222,18 +213,7 @@ context:
 findings:
   - id: J-001
     severity: HIGH
-    location:
-      file: src/auth/login.ts
-      line: 42
-      column: 12
-    issue: "Potential null pointer dereference"
-    suggestion: "Add null check before accessing user.email"
-    code_snippet: |
-      const email = user.email.toLowerCase();
-expected_output:
-  - Fixed code for J-001
-  - Explanation of fix
-  - Any new risks introduced
+# ...
 ```
 
 ### Handoff Response Format
@@ -254,11 +234,7 @@ actions_taken:
     risks: []
 blockers: []
 recommendations:
-  - "Add unit test for null user case"
-metrics:
-  time_taken: "4m 32s"
-  files_modified: 1
-  lines_changed: 3
+# ...
 ```
 
 ---
@@ -331,8 +307,7 @@ def handle_timeout(agent):
         "status": "TIMEOUT",
         "agent": agent,
         "action": "SKIP",
-        "note": f"{agent} skipped due to timeout"
-    }
+# ...
 ```
 
 ### Agent Error
@@ -508,5 +483,5 @@ def execute_rollback(checkpoint):
         "status": "ROLLED_BACK",
         "to_cycle": checkpoint.cycle,
         "reason": rollback_reason
-    }
+# ...
 ```

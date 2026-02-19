@@ -40,13 +40,7 @@ print(user["name"])  # No IDE support, typo-prone
 # After: Typed dataclass
 @dataclass
 class User:
-    name: str
-    email: str
-    role: str = "user"
-    created_at: datetime = field(default_factory=datetime.now)
-
-user = User(name="Alice", email="alice@example.com")
-print(user.name)  # IDE autocomplete, type-checked
+# ...
 ```
 
 ### Simplify Comprehension
@@ -80,10 +74,7 @@ class OrderRequest(BaseModel):
     amount: Annotated[float, Field(gt=0)]
     currency: str = "USD"
     items: list[OrderItem]
-
-def create_order(data: OrderRequest):
-    # Validation already done by Pydantic
-    ...
+# ...
 ```
 
 ### Context Manager for Resource Cleanup
@@ -123,17 +114,7 @@ def handle_command(cmd):
 
 # After: Dict dispatch
 COMMAND_HANDLERS = {
-    "start": start_service,
-    "stop": stop_service,
-    "restart": restart_service,
-    "status": get_status,
-}
-
-def handle_command(cmd):
-    handler = COMMAND_HANDLERS.get(cmd)
-    if handler is None:
-        raise ValueError(f"Unknown command: {cmd}")
-    return handler()
+# ...
 ```
 
 ### Replace Class with NamedTuple for Data
@@ -177,14 +158,7 @@ func (s *OrderService) Process(order Order) error {
 type OrderRepository interface {
     Save(order Order) error
 }
-
-type OrderService struct {
-    repo OrderRepository  // depends on interface
-}
-
-func (s *OrderService) Process(order Order) error {
-    return s.repo.Save(order)  // testable with mock
-}
+// ...
 ```
 
 ### Replace Error String Check with Sentinel/Custom Error
@@ -221,8 +195,7 @@ func processOrder(id string) error {
     if err != nil {
         return fmt.Errorf("processOrder(%s): fetch failed: %w", id, err)
     }
-    return nil
-}
+// ...
 ```
 
 ### Table-Driven Configuration
@@ -243,18 +216,7 @@ func getTimeout(env string) time.Duration {
 }
 
 // After: Table-driven
-var envTimeouts = map[string]time.Duration{
-    "dev":     30 * time.Second,
-    "staging": 10 * time.Second,
-    "prod":    5 * time.Second,
-}
-
-func getTimeout(env string) time.Duration {
-    if t, ok := envTimeouts[env]; ok {
-        return t
-    }
-    return 10 * time.Second
-}
+// ...
 ```
 
 ### Reduce Goroutine Leak with errgroup
@@ -275,20 +237,7 @@ func fetchAll(urls []string) ([]Result, error) {
     g, ctx := errgroup.WithContext(context.Background())
     results := make([]Result, len(urls))
     for i, url := range urls {
-        g.Go(func() error {
-            r, err := fetch(ctx, url)
-            if err != nil {
-                return err
-            }
-            results[i] = r
-            return nil
-        })
-    }
-    if err := g.Wait(); err != nil {
-        return nil, err
-    }
-    return results, nil
-}
+// ...
 ```
 
 ---
@@ -330,12 +279,7 @@ fn perimeter(shape: &Shape) -> f64 {
 trait Geometry {
     fn area(&self) -> f64;
     fn perimeter(&self) -> f64;
-}
-
-impl Geometry for Circle {
-    fn area(&self) -> f64 { std::f64::consts::PI * self.radius * self.radius }
-    fn perimeter(&self) -> f64 { 2.0 * std::f64::consts::PI * self.radius }
-}
+// ...
 ```
 
 ### Use Iterator Chains Instead of Loops
@@ -455,8 +399,7 @@ async function loadDashboard(userId: string) {
     fetchOrders(userId),
     fetchNotifications(userId),
   ]);
-  return { user, orders, notifications };
-}
+// ...
 ```
 
 #### Promise Chain → async/await
@@ -477,17 +420,7 @@ function processOrder(orderId: string): Promise<Receipt> {
 
 // After: Flat async/await
 async function processOrder(orderId: string): Promise<Receipt> {
-  try {
-    const order = await fetchOrder(orderId);
-    const validOrder = await validateOrder(order);
-    const total = await calculateTotal(validOrder);
-    const payment = await chargePayment(total);
-    return await generateReceipt(payment);
-  } catch (err) {
-    logger.error('Order processing failed', err);
-    throw new AppError('ORDER_FAILED', err.message);
-  }
-}
+// ...
 ```
 
 #### Async Error Boundary
@@ -549,14 +482,7 @@ def process_items(items):
     threads = [threading.Thread(target=worker, args=(item,)) for item in items]
     for t in threads:
         t.start()
-    for t in threads:
-        t.join()
-    return results
-
-# After: asyncio-based (for I/O-bound work)
-async def process_items(items):
-    tasks = [asyncio.create_task(async_expensive_operation(item)) for item in items]
-    return await asyncio.gather(*tasks)
+# ...
 ```
 
 ### Java
@@ -579,14 +505,7 @@ public CompletableFuture<DashboardData> loadDashboard(String userId) {
     CompletableFuture<List<Order>> ordersFuture = CompletableFuture.supplyAsync(
         () -> orderService.fetchOrders(userId));
     CompletableFuture<List<Notification>> notifsFuture = CompletableFuture.supplyAsync(
-        () -> notifService.fetch(userId));
-
-    return CompletableFuture.allOf(userFuture, ordersFuture, notifsFuture)
-        .thenApply(v -> new DashboardData(
-            userFuture.join(),
-            ordersFuture.join(),
-            notifsFuture.join()));
-}
+// ...
 ```
 
 #### ExecutorService Simplification
@@ -607,12 +526,7 @@ executor.shutdown();
 // After: try-with-resources (Java 19+) or structured approach
 try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
     List<Future<Result>> futures = items.stream()
-        .map(item -> executor.submit(() -> process(item)))
-        .toList();
-    List<Result> results = futures.stream()
-        .map(f -> { try { return f.get(); } catch (Exception e) { throw new RuntimeException(e); } })
-        .toList();
-}
+// ...
 ```
 
 ---

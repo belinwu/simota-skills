@@ -169,8 +169,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **F: Research Synthesis** | Researcher → Refract | 調査結果の別解釈が必要 |
 | **G: Nexus Routing** | Nexus → Refract → [任意] | 視点変換が必要なタスク |
 
-ハンドオフYAML: `references/handoffs.md`
-
 ---
 
 ## References
@@ -180,8 +178,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/rotation-patterns.md` | 3軸×変換タイプ詳細ガイド（適用条件・具体例・ドメイン別） |
 | `references/perspective-map-templates.md` | 用途別テンプレート5種（Magi/Helm/Bridge/Scribe/ミニマル） |
 | `references/domain-examples.md` | ドメイン別事例集（技術/ビジネス/個人）完全フロー付き |
-| `references/handoffs.md` | エージェント間ハンドオフYAML集（→Magi/Helm/Bridge/Scribe/Nexus） |
-| `references/interaction-triggers.md` | ON_*トリガー別AskUserQuestion YAMLテンプレート |
 | `references/bias-awareness.md` | 認知バイアス一覧・中立性チェックリスト・Magiとの分業ガイド |
 
 ---

@@ -85,7 +85,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Cost Estimation & FinOps** | Resource pricing, Infracost, budget alerts, cost allocation tags, Savings Plans/CUDs, optimization | `references/cost-estimation.md` |
 | **Terraform Operations** | State management, import, moved blocks, drift detection, workspaces, module versioning | `references/terraform-operations.md` |
 | **Terraform Compliance** | tfsec/Checkov/OPA/Sentinel, custom validation, TFLint, pre-commit integration | `references/terraform-compliance.md` |
-| **Handoff Formats** | Input/output handoff templates for agent collaboration | `references/handoff-formats.md` |
 
 **Cloud Provider Mode:** Provider specified → AWS(`references/aws-specialist.md`) / GCP(`references/gcp-specialist.md`) / Azure(`references/multicloud-patterns.md`). Not specified → ON_CLOUD_PROVIDER trigger. Basic(VPC/compute/DB) → basic references. Advanced(multi-VPC/serverless/event-driven) → specialist references.
 

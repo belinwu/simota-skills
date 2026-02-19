@@ -150,7 +150,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | File | Content |
 |------|---------|
 | `references/patterns.md` | Full detection pattern library (regex, Bad/Good examples, confidence levels) |
-| `references/handoffs.md` | All handoff templates (4 outgoing + 3 incoming) & quality checklists |
 | `references/examples.md` | Usage examples, report samples, AUTORUN output format |
 
 ---

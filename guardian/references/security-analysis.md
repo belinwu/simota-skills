@@ -35,24 +35,7 @@ critical_criteria:
 
   code_patterns:
     - jwt_handling: "jwt.sign|jwt.verify|jsonwebtoken"
-    - crypto_operations: "crypto\.|bcrypt|argon2|scrypt"
-    - auth_logic: "authenticate|authorize|login|logout|session"
-    - permission_checks: "hasPermission|canAccess|isAuthorized"
-    - key_management: "privateKey|secretKey|apiKey|API_KEY"
-
-  change_types:
-    - Token generation or validation logic modified
-    - Password hashing algorithm changed
-    - Session management altered
-    - Permission check removed or weakened
-    - Crypto implementation modified
-    - Secret handling changed
-
-  auto_triggers:
-    - ANY file in critical directory changed
-    - ANY critical code pattern modified
-    - Dangerous pattern detected (eval, exec, raw SQL)
-    - Secret exposure risk identified
+# ...
 ```
 
 ### SENSITIVE Classification
@@ -75,17 +58,7 @@ sensitive_criteria:
     - api_endpoints: "@Get|@Post|router\.|app\.get|app\.post"
     - data_validation: "validate|sanitize|escape"
     - session_ops: "session\.|cookie\.|localStorage"
-
-  change_types:
-    - User data access patterns changed
-    - API endpoint authorization modified
-    - Input validation logic altered
-    - Session/cookie handling updated
-
-  combined_triggers:
-    - SENSITIVE file + auth-related import
-    - SENSITIVE file + database write operation
-    - API endpoint + missing validation
+# ...
 ```
 
 ### ADJACENT Classification
@@ -108,8 +81,7 @@ adjacent_criteria:
 
   monitoring:
     - Flag in PR description
-    - Recommend reviewer attention
-    - Include in security checklist
+# ...
 ```
 
 ### NEUTRAL Classification
@@ -151,29 +123,7 @@ neutral_criteria:
                  │NO
                  ↓
 ┌─────────────────────────────────────┐
-│   Scan for Dangerous Code Patterns   │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Dangerous     │──YES──→ CRITICAL Classification
-         │ Pattern?      │         → AUTO Sentinel Handoff (BLOCKING)
-         └───────┬───────┘
-                 │NO
-                 ↓
-         ┌───────────────┐
-         │ Sensitive     │──YES──→ SENSITIVE Classification
-         │ Pattern?      │         → Sentinel Handoff (RECOMMENDED)
-         └───────┬───────┘
-                 │NO
-                 ↓
-         ┌───────────────┐
-         │ Adjacent      │──YES──→ ADJACENT Classification
-         │ Pattern?      │         → Flag in PR (MONITOR)
-         └───────┬───────┘
-                 │NO
-                 ↓
-                 NEUTRAL Classification
-                 → Standard Review
+...
 ```
 
 ---
@@ -198,18 +148,7 @@ auto_handoff_triggers:
     conditions:
       - classification: SENSITIVE
       - auth_files_involved: true
-    action:
-      type: GUARDIAN_TO_SENTINEL_HANDOFF
-      blocking: false
-      flag_in_pr: true
-
-  conditional:
-    conditions:
-      - classification: SENSITIVE
-      - no_auth_involvement: true
-    action:
-      type: FLAG_FOR_REVIEW
-      suggest_sentinel: true
+# ...
 ```
 
 ### Response Handling Protocol
@@ -230,22 +169,7 @@ sentinel_response_handling:
     require: "Fix and re-review"
 
   on_issues_medium:
-    action: "Warn but allow proceed"
-    update_status: PARTIAL
-    flag_issues: true
-    require: "Acknowledge before merge"
-
-  on_issues_low:
-    action: "Advisory only"
-    update_status: SUCCESS
-    include_in_pr: true
-    recommend: "Address in follow-up"
-
-  on_timeout:
-    action: "Escalate to human"
-    update_status: BLOCKED
-    alert: SECURITY_TEAM
-    fallback: "Manual review required"
+# ...
 ```
 
 ---
@@ -287,9 +211,7 @@ probe_triggers:
 - [ ] Authorization boundary
 - [ ] Input injection
 - [ ] Session fixation
-- [ ] CSRF protection
-
-**Request**: Execute DAST scan before merge approval
+...
 ```
 
 ## Security-Related File Patterns
@@ -310,23 +232,7 @@ security_file_patterns:
       - "**/session*.{ts,js,py,go,java}"
       - "**/*.key"
       - "**/*.pem"
-      - ".env*"
-      - "**/secrets.*"
-
-  sensitive:
-    directories:
-      - api/
-      - middleware/
-      - handlers/
-    patterns:
-      - "**/user*.{ts,js,py,go,java}"
-      - "**/profile*.{ts,js,py,go,java}"
-      - "**/payment*.{ts,js,py,go,java}"
-
-  adjacent:
-    - config/
-    - settings/
-    - database/
+# ...
 ```
 
 ## Dangerous Code Patterns
@@ -347,16 +253,7 @@ dangerous_patterns:
     - eval(
     - exec(
     - innerHTML
-    - dangerouslySetInnerHTML
-    - raw(
-    - unsafeHTML
-    - "sql`" # Raw SQL
-
-  crypto_concerns:
-    - md5
-    - sha1
-    - DES
-    - "rand()" # Non-crypto random
+# ...
 ```
 
 ## Security Analysis Report Template
@@ -386,8 +283,7 @@ NEUTRAL:    ██████░░░░ 15 files
 
 ### Recommendation
 1. **Handoff to Sentinel** for static security analysis
-2. **Handoff to Probe** for DAST if API changes detected
-3. Block merge until security review complete
+...
 ```
 
 ## AI-Generated Code Detection
@@ -410,7 +306,7 @@ ai_code_indicators:
   project_mismatch:
     - Different naming conventions than existing code
     - Unfamiliar utility patterns
-    - Imports not matching project structure
+# ...
 ```
 
 ### AI Code Categories

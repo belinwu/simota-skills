@@ -75,24 +75,7 @@ voice_profile:
   say:
     voice: "Kyoko"                 # macOS say ボイス名
     rate: 180                      # WPM (90-300, default: 180)
-
-  # edge-tts エンジン設定 (Neural TTS)
-  edge_tts:
-    voice: "ja-JP-NanamiNeural"    # edge-tts ボイス名
-    rate: "+0%"                    # "-50%" to "+100%"
-    pitch: "+0Hz"                  # "-50Hz" to "+50Hz"
-    volume: "+0%"                  # "-50%" to "+50%"
-
-  # Google Cloud TTS 設定 (Neural2/WaveNet — 明示指定時のみ使用、autoには含まない)
-  google_tts:
-    voice: "ja-JP-Neural2-B"      # Google Cloud TTS voice name
-    speaking_rate: 1.0             # 0.25-4.0 (default: 1.0)
-    pitch: 0.0                     # -20.0 to +20.0 semitones (default: 0)
-    volume_gain_db: 0.0            # -96.0 to +16.0 dB (default: 0)
-
-  language: ja                     # ja | en | auto
-  engine_preference: auto          # auto | say | edge-tts | google_tts
----
+# ...
 ```
 
 #### voice_profile Field Definitions
@@ -319,7 +302,7 @@ All available sections populated. For complex B2B/B2C services.
 ## JTBD
 ## Echo Testing Focus
 ## Source Analysis
-## Evolution Log
+...
 ```
 
 ### Internal
@@ -373,67 +356,7 @@ confidence: 0.82
 tags: [b2c, e-commerce, mobile-first]
 echo_base_mapping: Newbie
 cast_managed: true
----
-
-# First-Time Buyer
-
-## Profile
-
-| Attribute | Value |
-|-----------|-------|
-| Role | Online shopper (first purchase) |
-| Tech Level | Low-Medium [inferred] |
-| Device | Mobile (70%) [Trace data], Desktop (30%) |
-
-## Quote
-> "買い物したいだけなのに、なんでこんなに入力が多いの？"
-
-## Goals
-1. Purchase desired item quickly and safely
-2. Feel confident the purchase is secure
-3. Get a good deal compared to alternatives
-
-## Frustrations
-1. Complex registration requiring too many fields
-2. Unclear shipping costs until checkout
-3. No guest checkout option
-
-## Key Behaviors
-- Compares prices across 2-3 sites before purchasing
-- Abandons cart if registration is required before viewing total
-
-## Emotion Triggers
-| State | Trigger |
-|-------|---------|
-| Delighted (+3) | Found item cheaper than expected with free shipping |
-| Frustrated (-2) | Required to create account before viewing cart total |
-| Abandoned (-3) | Hidden fees revealed at final checkout step |
-
-## Context Scenarios
-### Scenario 1: Commute Shopping
-Physical: Crowded train, one hand free · Temporal: 15min window · Social: Semi-public · Cognitive: Distracted · Technical: Mobile, unstable connection
-
-## JTBD
-- Functional: Purchase item and have it delivered reliably
-- Emotional: Feel confident and not cheated
-- Social: Be seen as a smart shopper
-
-## Echo Testing Focus
-- [ ] Product search → cart → checkout (guest flow)
-- [ ] Mobile checkout form usability
-
-## Source Analysis
-| Source | Extracted Information |
-|--------|----------------------|
-| README.md | "perfect for first-time shoppers", mobile-first design |
-| Trace session data (2026-02-08) | 70% mobile sessions, avg 3.2 page views |
-| Voice NPS feedback (2026-02-14) | "shipping cost surprise" in 23% of detractors |
-
-## Evolution Log
-| Version | Date | Source | Changes | Confidence Delta |
-|---------|------|--------|---------|-----------------|
-| 1.0 | 2026-02-01 | README, src/checkout | Initial creation | 0.65 |
-| 1.2 | 2026-02-15 | Voice NPS feedback | Shipping frustration added | +0.07 |
+...
 ```
 
 ---

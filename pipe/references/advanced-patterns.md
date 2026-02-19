@@ -30,28 +30,7 @@ jobs:
           filters: |
             api:
               - 'packages/api/**'
-              - 'packages/shared/**'
-            web:
-              - 'packages/web/**'
-              - 'packages/shared/**'
-            shared:
-              - 'packages/shared/**'
-
-  test-api:
-    needs: detect
-    if: needs.detect.outputs.api == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm --filter api test
-
-  test-web:
-    needs: detect
-    if: needs.detect.outputs.web == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm --filter web test
+# ...
 ```
 
 ### TurboRepo Integration
@@ -72,8 +51,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Only build/test packages that changed since last commit
-      - run: pnpm turbo run build test --filter='[HEAD^1]'
+# ...
 ```
 
 ### Required Checks + Path Filters Problem
@@ -98,23 +76,7 @@ jobs:
 
   test-api:
     needs: detect
-    if: needs.detect.outputs.api == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm --filter api test
-
-  # This job always runs and is the required check
-  ci-gate:
-    needs: [detect, test-api]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check results
-        run: |
-          if [ "${{ needs.test-api.result }}" = "failure" ]; then
-            exit 1
-          fi
-          echo "All required checks passed or were skipped"
+# ...
 ```
 
 ```yaml
@@ -149,21 +111,7 @@ spec:
         - linux
         - x64
 ---
-apiVersion: actions.summerwind.dev/v1alpha1
-kind: HorizontalRunnerAutoscaler
-metadata:
-  name: example-autoscaler
-spec:
-  scaleTargetRef:
-    name: example-runner
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-    - type: PercentageRunnersBusy
-      scaleUpThreshold: '0.75'
-      scaleDownThreshold: '0.25'
-      scaleUpFactor: '2'
-      scaleDownFactor: '0.5'
+# ...
 ```
 
 ### Ephemeral Runners
@@ -244,15 +192,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ghcr.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+# ...
 ```
 
 ### Matrix OS Builds
@@ -273,10 +213,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm run build -- --target ${{ matrix.target }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: binary-${{ matrix.target }}
-          path: dist/
+# ...
 ```
 
 ---
@@ -301,25 +238,7 @@ jobs:
     needs: build
     environment:
       name: staging
-      url: https://staging.myapp.com
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: build
-      - run: ./deploy.sh staging
-
-  deploy-production:
-    needs: deploy-staging
-    environment:
-      name: production
-      url: https://myapp.com
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: build
-      - run: ./deploy.sh production
+# ...
 ```
 
 ### Blue-Green Deploy Pattern
@@ -340,17 +259,7 @@ jobs:
         run: |
           for i in {1..10}; do
             STATUS=$(curl -s -o /dev/null -w '%{http_code}' "https://${INACTIVE}.myapp.com/health")
-            [ "$STATUS" = "200" ] && exit 0
-            sleep 5
-          done
-          exit 1
-
-      - name: Switch traffic
-        run: ./switch-traffic.sh "$INACTIVE"
-
-      - name: Rollback on failure
-        if: failure()
-        run: ./switch-traffic.sh "$ACTIVE"
+# ...
 ```
 
 ### Rollback Workflow
@@ -371,14 +280,7 @@ on:
         required: true
 
 jobs:
-  rollback:
-    environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Rollback
-        run: |
-          echo "Rolling back ${{ inputs.environment }} to ${{ inputs.version }}"
-          ./deploy.sh ${{ inputs.environment }} ${{ inputs.version }}
+# ...
 ```
 
 ---
@@ -403,32 +305,7 @@ jobs:
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      DATABASE_URL: postgresql://test:test@localhost:5432/testdb
-      REDIS_URL: redis://localhost:6379
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm db:migrate
-      - run: pnpm test:integration
+# ...
 ```
 
 ### Container Job vs Runner Job
@@ -498,18 +375,7 @@ act -j test
 
 # Run with specific workflow
 act -W .github/workflows/ci.yml
-
-# Run with inputs
-act workflow_dispatch --input environment=staging
-
-# List available workflows
-act -l
-
-# Dry run (show what would happen)
-act -n
-
-# Use specific runner image
-act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+# ...
 ```
 
 ### Common `act` Limitations
@@ -582,16 +448,7 @@ if: github.actor == 'dependabot[bot]'
 # Combine conditions
 if: |
   github.ref == 'refs/heads/main' &&
-  github.event_name == 'push'
-
-# Check label
-if: contains(github.event.pull_request.labels.*.name, 'deploy')
-
-# Check previous job result
-if: always() && needs.test.result == 'success'
-
-# Skip for draft PRs
-if: "!github.event.pull_request.draft"
+# ...
 ```
 
 ### GITHUB_OUTPUT
@@ -612,8 +469,7 @@ if: "!github.event.pull_request.draft"
       echo 'EOF'
     } >> "$GITHUB_OUTPUT"
 
-# Use output
-- run: echo "Version: ${{ steps.my-step.outputs.version }}"
+# ...
 ```
 
 ### GITHUB_ENV

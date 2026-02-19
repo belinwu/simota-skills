@@ -134,13 +134,11 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/interaction-triggers.md` | AskUserQuestion YAML templates (ambiguity, scope change, conflict, feasibility, trade-off) |
 | `references/framework-templates.md` | Clarify/Align/Guard/Document phase templates, decision narrative, meeting facilitation |
 | `references/intent-patterns.md` | Intent translation patterns: Availability, Performance, Security, Scalability, Maintainability, Cost |
 | `references/decision-narratives.md` | Decision narrative examples and structures |
 | `references/system-explanations.md` | System architecture explanation framework (role translation, design rationale) |
 | `references/anti-patterns.md` | Communication anti-patterns and better approaches |
-| `references/handoffs.md` | All incoming/outgoing handoff templates (Scribe, Sherpa, Atlas) + Nexus format |
 | `references/patterns.md` | Collaboration patterns and workflows |
 | `references/glossary.md` | Technical-to-business translation table and shared terminology |
 | `references/examples.md` | Complete requirement clarification and scope management examples |

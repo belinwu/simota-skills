@@ -40,49 +40,7 @@ services:
       - SMTP_HOST=mailhog
       - SMTP_PORT=1025
       - NODE_ENV=test
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 15s
-
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: testdb
-    ports:
-      - "5433:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test -d testdb"]
-      interval: 3s
-      timeout: 3s
-      retries: 5
-    tmpfs:
-      - /var/lib/postgresql/data  # RAM disk for speed
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6380:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 3s
-      timeout: 3s
-      retries: 5
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - "8025:8025"  # Web UI
-      - "1025:1025"  # SMTP
+# ...
 ```
 
 ### Startup Wait Script
@@ -103,14 +61,7 @@ until curl -sf http://localhost:3000/api/health > /dev/null 2>&1; do
   RETRY_COUNT=$((RETRY_COUNT + 1))
   if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
     echo "ERROR: App failed to start after $MAX_RETRIES attempts"
-    docker compose -f docker-compose.e2e.yml logs app
-    exit 1
-  fi
-  echo "  Waiting for app... ($RETRY_COUNT/$MAX_RETRIES)"
-  sleep 2
-done
-
-echo "E2E environment ready!"
+# ...
 ```
 
 ---
@@ -135,23 +86,7 @@ async function globalSetup(config: FullConfig) {
   execSync('npx prisma db seed', {
     env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
     stdio: 'pipe',
-  });
-
-  // Authenticate and save storage state
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-
-  await page.goto(config.projects[0].use.baseURL + '/login');
-  await page.getByTestId('email-input').fill('admin@test.com');
-  await page.getByTestId('password-input').fill('Test1234!');
-  await page.getByTestId('login-submit').click();
-  await page.waitForURL('**/dashboard');
-
-  await page.context().storageState({ path: '.auth/admin.json' });
-  await browser.close();
-}
-
-export default globalSetup;
+// ...
 ```
 
 ### Drizzle Seed
@@ -172,17 +107,7 @@ export async function seedTestData(connectionString: string) {
   // Seed users
   const [admin] = await db.insert(users).values([
     { email: 'admin@test.com', name: 'Admin', role: 'admin', passwordHash: '...' },
-    { email: 'user@test.com', name: 'User', role: 'user', passwordHash: '...' },
-  ]).returning();
-
-  // Seed products
-  await db.insert(products).values([
-    { name: 'Test Product A', price: 1000, stock: 50 },
-    { name: 'Test Product B', price: 2500, stock: 10 },
-  ]);
-
-  return { admin };
-}
+// ...
 ```
 
 ### Transaction Rollback Strategy
@@ -203,13 +128,7 @@ export const test = base.extend<{ dbCleanup: void }>({
 
     await use();
 
-    // Rollback after test
-    await client.query('ROLLBACK TO SAVEPOINT test_start');
-    await client.query('COMMIT');
-    client.release();
-    await pool.end();
-  }, { auto: true }],
-});
+// ...
 ```
 
 ### Data Isolation Strategy
@@ -253,20 +172,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - run: npm ci
-      - run: npx playwright install --with-deps
-
-      - name: Run E2E tests against preview
-        run: npx playwright test
-        env:
-          BASE_URL: ${{ github.event.deployment_status.target_url }}
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: e2e-preview-report
-          path: playwright-report/
+# ...
 ```
 
 ### Dynamic BASE_URL
@@ -311,12 +217,7 @@ TEST_ADMIN_EMAIL=admin@test.com
 TEST_ADMIN_PASSWORD=Admin1234!
 
 # External services (test mode)
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-
-# Mail
-SMTP_HOST=localhost
-SMTP_PORT=1025
+# ...
 ```
 
 ### CI Secrets Mapping
@@ -363,26 +264,7 @@ export class MailHelper {
     );
     const data = await response.json();
     return data.items[0];
-  }
-
-  async extractOTP(to: string): Promise<string> {
-    const email = await this.getLatestEmail(to);
-    const body = email.Content.Body;
-    const otpMatch = body.match(/\b(\d{6})\b/);
-    return otpMatch?.[1] ?? '';
-  }
-
-  async extractLink(to: string, pattern: RegExp): Promise<string> {
-    const email = await this.getLatestEmail(to);
-    const body = email.Content.Body;
-    const match = body.match(pattern);
-    return match?.[1] ?? '';
-  }
-
-  async clearMailbox() {
-    await this.request.delete(`${this.mailhogUrl}/api/v1/messages`);
-  }
-}
+// ...
 ```
 
 ### OTP / Magic Link E2E Test
@@ -403,15 +285,7 @@ test('completes OTP verification', async ({ page, request }) => {
   await page.waitForTimeout(1000); // Acceptable: waiting for external service
 
   // Extract OTP from email
-  const otp = await mail.extractOTP(email);
-  expect(otp).toHaveLength(6);
-
-  // Enter OTP
-  await page.getByTestId('otp-input').fill(otp);
-  await page.getByTestId('verify-otp').click();
-
-  await page.waitForURL('**/welcome');
-});
+// ...
 ```
 
 ---
@@ -436,14 +310,7 @@ export function startMockServer(port = 9090) {
       });
     }),
     http.get('https://maps.googleapis.com/maps/api/*', () => {
-      return HttpResponse.json({
-        results: [{ formatted_address: 'Tokyo, Japan' }],
-      });
-    }),
-  ];
-
-  return createServer(...handlers).listen(port);
-}
+// ...
 ```
 
 ### Stripe Test Mode
@@ -502,10 +369,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,  // Don't restart if already running
-    timeout: 30000,
-  },
-});
+// ...
 ```
 
 ### SQLite for Local Testing
@@ -526,15 +390,7 @@ async function globalSetup() {
     password_hash TEXT
   )`);
 
-  // Seed test data
-  const insert = db.prepare('INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)');
-  insert.run('admin@test.com', 'Admin', 'hashed_password');
-  insert.run('user@test.com', 'User', 'hashed_password');
-
-  db.close();
-}
-
-export default globalSetup;
+// ...
 ```
 
 ### Run Commands

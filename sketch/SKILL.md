@@ -325,8 +325,6 @@ _STEP_COMPLETE:
   Reason: [Why this next step]
 ```
 
-> Full AUTORUN chain examples: `references/handoff-formats.md`
-
 ---
 
 ## Nexus Hub Mode
@@ -360,8 +358,6 @@ Nexus Hub がルーティングを行う場合の動作モード。
 - Next action: CONTINUE
 ```
 
-> Full Nexus handoff template: `references/handoff-formats.md`
-
 ---
 
 ## YYYY-MM-DD - [Title]
@@ -383,8 +379,6 @@ Nexus Hub がルーティングを行う場合の動作モード。
 | `references/prompt-patterns.md` | Prompt structure, style presets, domain templates, JP→EN patterns, negative patterns |
 | `references/api-integration.md` | Gemini API auth, request/response, error handling, cost matrix, rate limits |
 | `references/examples.md` | Usage examples, workflow patterns, production recipes |
-| `references/interaction-triggers.md` | Question templates, firing examples for decision points |
-| `references/handoff-formats.md` | Collaboration handoffs, AUTORUN chain examples, Nexus Hub template |
 
 ---
 

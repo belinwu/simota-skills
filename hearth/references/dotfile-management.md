@@ -28,19 +28,7 @@ GNU Stow is a symlink farm manager that creates symlinks from a central director
 ├── ghostty/
 │   └── .config/
 │       └── ghostty/
-│           └── config            # → ~/.config/ghostty/config
-├── tmux/
-│   └── .config/
-│       └── tmux/
-│           └── tmux.conf         # → ~/.config/tmux/tmux.conf
-├── git/
-│   ├── .gitconfig                # → ~/.gitconfig
-│   └── .gitignore_global         # → ~/.gitignore_global
-├── starship/
-│   └── .config/
-│       └── starship.toml         # → ~/.config/starship.toml
-└── homebrew/
-    └── Brewfile                  # → ~/Brewfile (or custom path)
+...
 ```
 
 **Key Rule:** The directory structure inside each package mirrors `$HOME` exactly.
@@ -63,8 +51,7 @@ stow -d ~/dotfiles -t ~ -R zsh
 # Dry run (preview what would happen)
 stow -d ~/dotfiles -t ~ -n -v zsh
 
-# Adopt existing files into stow (moves file into package, creates symlink)
-stow -d ~/dotfiles -t ~ --adopt zsh
+# ...
 ```
 
 ### .stow-local-ignore
@@ -124,12 +111,7 @@ chezmoi diff
 # Apply changes to $HOME
 chezmoi apply
 
-# Pull and apply from remote
-chezmoi update
-
-# Push to remote (with git)
-chezmoi cd
-git add -A && git commit -m "update dotfiles" && git push
+# ...
 ```
 
 ### Go Template Syntax
@@ -150,15 +132,7 @@ eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 {{ end -}}
 
-{{ if eq .chezmoi.hostname "work-laptop" -}}
-# Work-specific proxy settings
-export HTTP_PROXY="http://proxy.work.com:8080"
-{{ end -}}
-
-{{ if .personal -}}
-# Personal machine extras
-alias code="cursor"
-{{ end -}}
+...
 ```
 
 ### chezmoi Config (`.chezmoi.toml.tmpl`)
@@ -307,22 +281,7 @@ brew "sheldon"
 brew "mise"
 brew "ripgrep"
 brew "fd"
-brew "bat"
-brew "eza"
-brew "zoxide"
-brew "fzf"
-brew "jq"
-brew "gh"
-brew "delta"
-
-# GUI applications (casks)
-cask "ghostty"
-cask "1password"
-cask "raycast"
-cask "font-jetbrains-mono-nerd-font"
-
-# Mac App Store apps (requires `mas` CLI)
-mas "Xcode", id: 497799835
+# ...
 ```
 
 ### Commands
@@ -343,9 +302,7 @@ brew bundle check
 # Clean up (remove unlisted packages)
 brew bundle cleanup          # Dry run
 brew bundle cleanup --force  # Actually remove
-
-# List what's missing
-brew bundle list --all
+# ...
 ```
 
 ### Tips

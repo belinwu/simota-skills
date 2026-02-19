@@ -167,26 +167,7 @@ Arena leader creates **isolated working directories** via `git worktree` BEFORE 
 # 3. Create team
 TeamCreate(team_name="arena-{task_id}")
 
-# 4. Create tasks
-TaskCreate(subject="Implement spec via codex exec", ...)
-TaskCreate(subject="Implement spec via gemini", ...)
-
-# 5. Spawn subagents — each receives its worktree path
-Task(
-  subagent_type="general-purpose",
-  team_name="arena-{task_id}",
-  name="variant-codex",
-  prompt="...see Teammate Prompt Template below..."
-  # Include: worktree_path="/tmp/$SESSION_ID/variant-codex"
-)
-
-Task(
-  subagent_type="general-purpose",
-  team_name="arena-{task_id}",
-  name="variant-gemini",
-  prompt="...see Teammate Prompt Template below..."
-  # Include: worktree_path="/tmp/$SESSION_ID/variant-gemini"
-)
+# ...
 ```
 
 **CRITICAL:** The Arena leader MUST create all branches and worktrees BEFORE spawning subagents. Subagents receive the worktree path and operate within it — they do NOT create branches, checkout, or switch directories outside their assigned worktree.
@@ -270,8 +251,7 @@ TeamDelete()
 # 4. Clean up branches
 # git branch -D arena/variant-codex arena/variant-gemini
 
-# 5. Restore stashed work
-# git stash pop
+# ...
 ```
 
 ---
@@ -298,26 +278,7 @@ Your sole job is to invoke `codex exec` via the Bash tool in your assigned workt
 - NEVER modify config files (tsconfig, eslint, webpack, docker, CI/CD, etc.)
 - NEVER create or checkout branches — your worktree is already on the correct branch
 - NEVER operate outside your assigned worktree directory
-- If codex exec fails or produces errors, REPORT the error to the team leader — do NOT attempt to fix it yourself
-
-## ALLOWED ACTIONS (exhaustive list)
-- Bash: `cd {worktree_path}` (move to your assigned worktree — do this FIRST)
-- Bash: `codex exec --full-auto "..."` (one invocation, within your worktree)
-- Bash: `git add`, `git commit`, `git diff` (within your worktree)
-- Bash: `git diff --name-only` (scope validation)
-- Bash: `git checkout -- {file}` (revert unauthorized file changes)
-- TaskUpdate: mark task as completed
-- SendMessage: report results to team leader
-
-## Your Worktree
-Your assigned working directory is: {worktree_path}
-This directory is an isolated copy of the repository on branch `arena/variant-codex`.
-The branch was already created by the team leader. Do NOT create or switch branches.
-All your commands MUST run inside this directory.
-
-## Execution Steps
-
-### 1. Move to your assigned worktree
+...
 ```bash
 cd {worktree_path}
 ```
@@ -361,9 +322,7 @@ Send a message with:
 
 ## Forbidden Files (revert if engine touches these)
 {forbidden_files_list}
-
-## Engine Prompt (pass to codex exec exactly as-is)
-{engine_prompt}
+...
 ```
 
 ### variant-gemini
@@ -384,26 +343,7 @@ Your sole job is to invoke `gemini` via the Bash tool in your assigned worktree 
 - NEVER modify config files (tsconfig, eslint, webpack, docker, CI/CD, etc.)
 - NEVER create or checkout branches — your worktree is already on the correct branch
 - NEVER operate outside your assigned worktree directory
-- If gemini fails or produces errors, REPORT the error to the team leader — do NOT attempt to fix it yourself
-
-## ALLOWED ACTIONS (exhaustive list)
-- Bash: `cd {worktree_path}` (move to your assigned worktree — do this FIRST)
-- Bash: `gemini -p "..." --yolo` (one invocation, within your worktree)
-- Bash: `git add`, `git commit`, `git diff` (within your worktree)
-- Bash: `git diff --name-only` (scope validation)
-- Bash: `git checkout -- {file}` (revert unauthorized file changes)
-- TaskUpdate: mark task as completed
-- SendMessage: report results to team leader
-
-## Your Worktree
-Your assigned working directory is: {worktree_path}
-This directory is an isolated copy of the repository on branch `arena/variant-gemini`.
-The branch was already created by the team leader. Do NOT create or switch branches.
-All your commands MUST run inside this directory.
-
-## Execution Steps
-
-### 1. Move to your assigned worktree
+...
 ```bash
 cd {worktree_path}
 ```
@@ -447,9 +387,7 @@ Send a message with:
 
 ## Forbidden Files (revert if engine touches these)
 {forbidden_files_list}
-
-## Engine Prompt (pass to gemini exactly as-is)
-{engine_prompt}
+...
 ```
 
 ### variant-{engine}-{approach} (Self-Competition)
@@ -472,12 +410,7 @@ Your sole job is to invoke `{engine_command}` via the Bash tool in your assigned
 ## Your Worktree
 Your assigned working directory is: {worktree_path}
 This directory is an isolated copy of the repository on branch `arena/variant-{engine}-{approach}`.
-The branch was already created by the team leader. Do NOT create or switch branches.
-All your commands MUST run inside this directory.
-
-## Execution Steps
-
-### 1. Move to your assigned worktree
+...
 ```bash
 cd {worktree_path}
 ```
@@ -550,11 +483,7 @@ SendMessage(type="shutdown_request", recipient="variant-codex", ...)
 TaskCreate(subject="Re-implement spec via codex exec (retry)", ...)
 Task(
   subagent_type="general-purpose",
-  team_name="arena-{task_id}",
-  name="variant-codex-retry",
-  prompt="..."
-  # Include worktree_path="/tmp/$SESSION_ID/variant-codex"
-)
+# ...
 ```
 
 ---
@@ -581,9 +510,7 @@ rm -rf /tmp/$SESSION_ID || true
 git branch -D arena/variant-codex 2>/dev/null || true
 git branch -D arena/variant-gemini 2>/dev/null || true
 # Repeat for all variant branches...
-
-# Step 5: Restore stashed work (only if stash was created)
-git stash pop 2>/dev/null || true
+# ...
 ```
 
 **Key principles:**
@@ -671,7 +598,7 @@ SendMessage(type="shutdown_request", recipient="variant-codex", content="Timeout
 git worktree remove --force /tmp/$SESSION_ID/variant-codex 2>/dev/null || true
 git branch -D arena/variant-codex 2>/dev/null || true
 
-# 5. Re-spawn if retries available (see Subagent Failure Scenarios)
+# ...
 ```
 
 **Note:** Timeouts are soft limits enforced by the Arena leader through periodic TaskList checks. There is no hard process kill — the leader uses shutdown_request and then cleans up resources.
@@ -696,65 +623,5 @@ git branch -D arena/variant-codex 2>/dev/null || true
 
 # === SETUP TEAM ===
 TeamCreate(team_name="arena-auth-refactor")
-
-TaskCreate(subject="Implement auth refactor via codex")
-TaskCreate(subject="Implement auth refactor via gemini")
-
-# === SPAWN (parallel — each subagent gets its isolated worktree path) ===
-Task(
-  subagent_type="general-purpose",
-  team_name="arena-auth-refactor",
-  name="variant-codex",
-  prompt="""
-  You are variant-codex on the arena-auth-refactor team.
-
-  ## Your Worktree
-  Your assigned working directory is: /tmp/$SESSION_ID/variant-codex
-  [... full teammate prompt with spec, worktree_path, allowed_files, forbidden_files, engine_prompt ...]
-  """
-)
-
-Task(
-  subagent_type="general-purpose",
-  team_name="arena-auth-refactor",
-  name="variant-gemini",
-  prompt="""
-  You are variant-gemini on the arena-auth-refactor team.
-
-  ## Your Worktree
-  Your assigned working directory is: /tmp/$SESSION_ID/variant-gemini
-  [... full teammate prompt with spec, worktree_path, allowed_files, forbidden_files, engine_prompt ...]
-  """
-)
-
-# === WAIT & MONITOR ===
-# TaskList() periodically to check completion
-# Both subagents run in PARALLEL with full filesystem isolation
-
-# === EVALUATE (Arena leader — after all subagents complete) ===
-# git diff arena/variant-codex..arena/variant-gemini
-# Read files from each branch for detailed review
-# Score using 5-criteria evaluation
-
-# === ADOPT ===
-# git checkout $BASE_BRANCH
-# git merge arena/variant-codex -m "arena: adopt variant-codex"
-
-# === CLEANUP (order matters!) ===
-# 1. Shutdown subagents
-# SendMessage(type="shutdown_request", ...) for each subagent
-
-# 2. Delete team
-# TeamDelete()
-
-# 3. Remove worktrees BEFORE deleting branches
-# git worktree remove /tmp/$SESSION_ID/variant-codex
-# git worktree remove /tmp/$SESSION_ID/variant-gemini
-# rm -rf /tmp/$SESSION_ID
-
-# 4. Delete branches
-# git branch -D arena/variant-codex arena/variant-gemini
-
-# 5. Restore stash
-# git stash pop
+# ...
 ```

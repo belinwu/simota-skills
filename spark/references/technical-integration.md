@@ -36,70 +36,7 @@ Builder/Sherpaとの密接な連携パターンガイド。
 As a [persona], I want to [action] so that [benefit].
 
 ### Domain Model Requirements
-
-**Entities Involved**:
-| Entity | Role | Changes Needed |
-|--------|------|----------------|
-| [Entity A] | [Role in feature] | [New / Modified / Read-only] |
-| [Entity B] | [Role in feature] | [New / Modified / Read-only] |
-
-**Value Objects Needed**:
-| Value Object | Purpose | Validation Rules |
-|--------------|---------|------------------|
-| [VO A] | [Purpose] | [Rules] |
-
-**Business Rules**:
-1. [Rule 1]: [Description]
-2. [Rule 2]: [Description]
-
-### API Requirements
-
-**Endpoints**:
-| Method | Path | Purpose | Request/Response |
-|--------|------|---------|-----------------|
-| [GET/POST/...] | [/api/...] | [Purpose] | [Brief schema] |
-
-**Error Cases**:
-| Error | Code | When |
-|-------|------|------|
-| [Error type] | [400/404/...] | [Condition] |
-
-### Validation Requirements
-
-**Input Validation**:
-| Field | Type | Constraints |
-|-------|------|-------------|
-| [Field A] | [Type] | [Required, min/max, pattern] |
-| [Field B] | [Type] | [Required, min/max, pattern] |
-
-### Acceptance Criteria
-
-- [ ] [Specific testable criterion]
-- [ ] [Specific testable criterion]
-- [ ] Error handling for [case]
-- [ ] Validation for [input]
-
-### Technical Notes
-
-**Existing Patterns to Follow**:
-- [Pattern in file:line]
-- [Pattern in file:line]
-
-**Dependencies**:
-- [Library or service needed]
-
-**Performance Considerations**:
-- [If any, e.g., caching, pagination]
-
-### Handoff Expectations
-
-**From Builder**:
-- [ ] Production-ready implementation
-- [ ] Type-safe code (no any)
-- [ ] Error handling complete
-- [ ] Test skeleton for Radar
-
-**Timeline**: [Simple: hours / Medium: 1-2 days]
+...
 ```
 
 ---
@@ -174,8 +111,7 @@ When specifying requirements, indicate the expected DDD pattern:
 
 **Equality**:
 - Compare by: [All properties / Specific subset]
-
-**Factory Method**:
+...
 ```typescript
 // Expected signature
 static create(raw: RawInput): Result<[VOName], ValidationError>
@@ -204,19 +140,7 @@ static create(raw: RawInput): Result<[VOName], ValidationError>
 - [Cross-entity business rule]
 
 **Transaction Boundary**:
-- All changes within aggregate: [Single transaction]
-- Cross-aggregate coordination: [Eventual consistency / Saga]
-
-**External References**:
-| External Aggregate | Reference Type |
-|-------------------|----------------|
-| [Aggregate B] | [ID only, no navigation] |
-
-**Commands**:
-| Command | Affected Entities | Validation |
-|---------|-------------------|------------|
-| [Create...] | [Root + Children] | [Rules] |
-| [Update...] | [Specific entities] | [Rules] |
+...
 ```
 
 ---
@@ -279,18 +203,7 @@ jitter: 0.1
 
 ### Error Handling
 
-**Expected Error Responses**:
-| Error Code | Meaning | Our Handling |
-|------------|---------|--------------|
-| [400] | [Invalid request] | [Log, return user-friendly error] |
-| [401] | [Unauthorized] | [Refresh token / Alert ops] |
-| [403] | [Forbidden] | [Log, check permissions] |
-| [404] | [Not found] | [Return not found to user] |
-| [429] | [Rate limited] | [Queue and retry] |
-| [500] | [Server error] | [Retry with backoff] |
-| [503] | [Service unavailable] | [Retry, fallback if available] |
-
-**Circuit Breaker**:
+...
 ```yaml
 failure_threshold: 5
 reset_timeout: 60s
@@ -311,26 +224,7 @@ half_open_requests: 3
 ### Fallback Strategy
 
 | Scenario | Fallback |
-|----------|----------|
-| API down | [Cache / Default value / Queue for later / Fail] |
-| Partial response | [Accept partial / Fail / Retry] |
-| Invalid data | [Skip record / Fail batch / Log and continue] |
-
-### Monitoring Requirements
-
-**Metrics to Track**:
-- Request count (success/failure)
-- Latency percentiles (p50, p95, p99)
-- Error rate by type
-- Rate limit utilization
-
-**Alerts**:
-| Condition | Severity | Action |
-|-----------|----------|--------|
-| Error rate > 5% | Warning | Notify team |
-| Error rate > 20% | Critical | Page on-call |
-| Latency p99 > 5s | Warning | Investigate |
-| Rate limit > 80% | Warning | Plan capacity |
+...
 ```
 
 ---
@@ -367,70 +261,7 @@ Sherpaからのフィードバックを受けて提案を調整するフォー�
 ### Feasibility Concerns
 
 | Concern | Affected Steps | Severity | Suggestion |
-|---------|----------------|----------|------------|
-| [Technical concern] | [Step N, M] | [High/Med/Low] | [Alternative approach] |
-| [Technical concern] | [Step N] | [High/Med/Low] | [Scope reduction] |
-
-### Scope Analysis
-
-**Proposed Scope**:
-- Total requirements: [N]
-- Estimated complexity: [High/Medium/Low]
-
-**Recommended Scope** (for manageable implementation):
-
-**MVP (Must Have)**:
-- [ ] [Requirement 1]
-- [ ] [Requirement 2]
-
-**Phase 2 (Should Have)**:
-- [ ] [Requirement 3]
-- [ ] [Requirement 4]
-
-**Future (Could Have)**:
-- [ ] [Requirement 5]
-
-### Dependency Blockers
-
-| Dependency | Type | Status | Impact |
-|------------|------|--------|--------|
-| [Dependency A] | [External API / Team / Approval] | [Available / Pending / Blocked] | [Blocks steps N-M] |
-
-**Workaround Options**:
-1. [Mock/Stub approach]
-2. [Alternative dependency]
-3. [Defer to Phase 2]
-
-### Risk Assessment from Breakdown
-
-| Step | Risk | Mitigation Needed |
-|------|------|-------------------|
-| [Step N] | [Specific risk] | [Suggestion] |
-| [Step M] | [Specific risk] | [Suggestion] |
-
-**Overall Implementation Risk**: [High / Medium / Low]
-
-### Recommendation
-
-**Option A**: Proceed with reduced scope
-- Remove: [Requirements X, Y]
-- Keep: [Requirements A, B, C]
-- Estimated time: [Revised estimate]
-
-**Option B**: Request investigation first
-- Unknown areas: [List]
-- Scout investigation needed: [Specific questions]
-
-**Option C**: Revisit approach
-- Current approach issue: [Description]
-- Alternative approach: [Suggestion]
-
-### Requested Spark Action
-
-- [ ] Revise proposal with reduced scope
-- [ ] Confirm MVP vs Phase 2 split
-- [ ] Provide alternative approach for [concern]
-- [ ] Clarify requirement [X]
+...
 ```
 
 ### Spark Response to Feedback
@@ -451,38 +282,7 @@ Sherpaからのフィードバックを受けて提案を調整するフォー�
 
 ### Revised Scope
 
-**MVP (This Proposal)**:
-- [ ] [Revised requirement 1]
-- [ ] [Revised requirement 2]
-
-**Deferred to Phase 2**:
-- [ ] [Moved requirement]
-- [ ] [Moved requirement]
-
-### Technical Approach Adjustment
-
-**Original Approach**: [Brief description]
-**Revised Approach**: [Brief description]
-**Why Changed**: [Sherpa's concern addressed]
-
-### Updated Acceptance Criteria
-
-- [ ] [Revised criterion]
-- [ ] [Revised criterion]
-
-### Risk Mitigations Added
-
-| Risk from Sherpa | Mitigation in Proposal |
-|------------------|------------------------|
-| [Risk 1] | [How addressed] |
-| [Risk 2] | [How addressed] |
-
-### Ready for Re-breakdown
-
-**Sherpa Action Requested**:
-- Re-attempt breakdown with revised scope
-- Confirm [X hours] estimate is now achievable
-- Validate risk level is acceptable
+...
 ```
 
 ---
@@ -519,41 +319,7 @@ Sherpaからのフィードバックを受けて提案を調整するフォー�
 | Risk | [High/Med/Low] | [High/Med/Low] | [Reduced/Same] |
 
 ### Adjustment Options
-
-**Option 1: Remove Feature Aspect**
-- Remove: [Aspect X]
-- Keep: [Core functionality]
-- Trade-off: [What users lose]
-- Recommendation: [When to choose this]
-
-**Option 2: Simplify Implementation**
-- Change: [Complex approach] → [Simpler approach]
-- Trade-off: [Performance / Flexibility / UX]
-- Recommendation: [When to choose this]
-
-**Option 3: Phase Split**
-- Phase 1: [MVP subset]
-- Phase 2: [Remaining]
-- Trade-off: [Delayed full value]
-- Recommendation: [When to choose this]
-
-### Selected Adjustment
-
-**Choice**: [Option N]
-**Rationale**: [Why this option]
-
-### Updated Proposal Summary
-
-**What's In**:
-- [Requirement 1]
-- [Requirement 2]
-
-**What's Out** (deferred or removed):
-- [Requirement 3] → [Deferred to Phase 2 / Removed]
-
-**User Communication** (if user-facing change):
-- [How to explain reduced scope to users]
-- [Future roadmap message]
+...
 ```
 
 ---
@@ -578,28 +344,7 @@ Spark Proposal Created
         │      │                      ↓              │
         │      │                   Builder           │
         │      │                      │              │
-        │      │                      ↓              │
-        │      │                   Implementation    │
-        │      │                                     │
-        │      └── Concerns ──→ SHERPA_TO_SPARK     │
-        │                           │               │
-        │                           ↓               │
-        │                     Spark Iteration       │
-        │                           │               │
-        │                           ↓               │
-        │                     Revised Proposal      │
-        │                           │               │
-        │                           └───────────────┘
-        │
-        └── Simple? ────────────────────────────────┐
-                                                     │
-               SPARK_TO_BUILDER_HANDOFF (Direct)    │
-                      │                              │
-                      ↓                              │
-                   Builder                           │
-                      │                              │
-                      ↓                              │
-                   Implementation                    │
+...
 ```
 
 ### Handoff Checklists

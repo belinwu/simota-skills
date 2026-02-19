@@ -24,18 +24,7 @@ test.describe('Timezone-sensitive features', () => {
   });
 
   test('shows correct local time in New York', async ({ browser }) => {
-    const context = await browser.newContext({
-      timezoneId: 'America/New_York',
-    });
-    const page = await context.newPage();
-
-    await page.goto('/dashboard');
-    const displayedTime = await page.getByTestId('local-time').textContent();
-    expect(displayedTime).toMatch(/EST|EDT|GMT-[45]/);
-
-    await context.close();
-  });
-});
+// ...
 ```
 
 ### Clock API + Timezone
@@ -56,8 +45,7 @@ test('scheduled event displays correctly across timezones', async ({ browser }) 
     expect(eventTime).toBeTruthy();
 
     await context.close();
-  }
-});
+// ...
 ```
 
 ### Timezone Matrix Test
@@ -92,10 +80,7 @@ test.describe('Multi-language support', () => {
       await page.goto('/');
       await expect(page.getByTestId('welcome-heading')).toContainText(expectedText);
 
-      await context.close();
-    });
-  }
-});
+// ...
 ```
 
 ### RTL Layout Verification
@@ -116,10 +101,7 @@ test('Arabic layout is RTL', async ({ browser }) => {
   const box = await nav.boundingBox();
   const viewport = page.viewportSize()!;
   // Nav should be on the right side for RTL
-  expect(box!.x + box!.width).toBeGreaterThan(viewport.width / 2);
-
-  await context.close();
-});
+// ...
 ```
 
 ### Translation Key Missing Detection
@@ -140,19 +122,7 @@ test('no missing translation keys on critical pages', async ({ page }) => {
       missingKeys.push(text);
     }
   });
-
-  const pages = ['/', '/dashboard', '/settings', '/profile'];
-
-  for (const path of pages) {
-    await page.goto(path);
-    await page.waitForLoadState('networkidle');
-  }
-
-  expect(
-    missingKeys,
-    `Missing translation keys:\n${missingKeys.join('\n')}`
-  ).toHaveLength(0);
-});
+// ...
 ```
 
 ### Number / Date / Currency Formatting
@@ -173,9 +143,7 @@ test('formats currency correctly per locale', async ({ browser }) => {
     const price = await page.getByTestId('product-price').textContent();
     expect(price?.trim()).toContain(expected);
 
-    await context.close();
-  }
-});
+// ...
 ```
 
 ---
@@ -200,10 +168,7 @@ test('cookie consent banner appears and persists', async ({ page }) => {
   await expect(page.getByTestId('cookie-banner')).toBeHidden();
 
   // Verify consent cookie exists
-  const cookies = await page.context().cookies();
-  const consentCookie = cookies.find(c => c.name === 'cookie_consent');
-  expect(consentCookie?.value).toBe('accepted');
-});
+// ...
 ```
 
 ### localStorage / sessionStorage
@@ -224,26 +189,7 @@ test('saves user preferences to localStorage', async ({ page }) => {
   // Reload and verify persistence
   await page.reload();
   await expect(page.getByTestId('theme-dark')).toBeChecked();
-});
-
-test('clears session data on logout', async ({ page }) => {
-  await page.goto('/dashboard');
-
-  // Verify session data exists
-  const hasSession = await page.evaluate(() =>
-    sessionStorage.getItem('session-data') !== null
-  );
-  expect(hasSession).toBe(true);
-
-  // Logout
-  await page.getByTestId('logout-btn').click();
-
-  // Session data should be cleared
-  const sessionAfter = await page.evaluate(() =>
-    sessionStorage.getItem('session-data')
-  );
-  expect(sessionAfter).toBeNull();
-});
+// ...
 ```
 
 ### Third-Party Cookie Blocking
@@ -264,15 +210,7 @@ test('app works without third-party cookies', async ({ browser }) => {
       route.abort();
     } else {
       route.continue();
-    }
-  });
-
-  await page.goto('/');
-  // Core functionality should still work
-  await expect(page.getByTestId('main-content')).toBeVisible();
-
-  await context.close();
-});
+// ...
 ```
 
 ---
@@ -297,7 +235,7 @@ test('shows loading state on slow connection', async ({ page }) => {
 
   // Content eventually loads
   await expect(page.getByTestId('dashboard-content')).toBeVisible({ timeout: 10000 });
-});
+// ...
 ```
 
 ### Network Speed Profiles
@@ -318,20 +256,7 @@ export const NETWORK_PROFILES = {
     latency: 150,
   },
   'regular-4g': {
-    offline: false,
-    downloadThroughput: (4 * 1024 * 1024) / 8,  // 4 Mbps
-    uploadThroughput: (3 * 1024 * 1024) / 8,
-    latency: 20,
-  },
-} as const;
-
-export async function setNetworkProfile(
-  page: any,
-  profile: keyof typeof NETWORK_PROFILES,
-) {
-  const client = await page.context().newCDPSession(page);
-  await client.send('Network.emulateNetworkConditions', NETWORK_PROFILES[profile]);
-}
+// ...
 ```
 
 ### Timeout Testing
@@ -352,26 +277,7 @@ test('handles API timeout gracefully', async ({ page }) => {
 });
 
 test('retries failed requests', async ({ page }) => {
-  let requestCount = 0;
-
-  await page.route('**/api/data', (route) => {
-    requestCount++;
-    if (requestCount < 3) {
-      route.fulfill({ status: 503 });
-    } else {
-      route.fulfill({
-        status: 200,
-        body: JSON.stringify({ data: 'success' }),
-      });
-    }
-  });
-
-  await page.goto('/data-view');
-
-  // Should eventually show data after retries
-  await expect(page.getByTestId('data-content')).toBeVisible({ timeout: 15000 });
-  expect(requestCount).toBeGreaterThanOrEqual(3);
-});
+// ...
 ```
 
 ### Complete Offline Scenario
@@ -392,12 +298,7 @@ test('queues actions while offline and syncs on reconnect', async ({ page, conte
   await expect(page.getByText('Offline task')).toBeVisible();
   await expect(page.getByTestId('sync-pending')).toBeVisible();
 
-  // Go back online
-  await context.setOffline(false);
-
-  // Should sync automatically
-  await expect(page.getByTestId('sync-complete')).toBeVisible({ timeout: 10000 });
-});
+// ...
 ```
 
 ---

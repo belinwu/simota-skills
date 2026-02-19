@@ -89,8 +89,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **F: Market-to-Validate** | Compete → Compass | 競合動向が前提に影響 |
 | **G: Report-to-Document** | Compass → Scribe / Canvas | 健全性レポートの文書化・可視化 |
 
-→ 各ハンドオフのYAMLスキーマは `references/handoffs.md` を参照
-
 ---
 
 ## References
@@ -101,7 +99,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/okr-cascading.md` | OKR分解アルゴリズム、Alignment Score計算、OKR Tree構造 |
 | `references/health-report-templates.md` | 出力テンプレート5種（Health Report / Quarterly Review / Drift Alert / OKR Status / Executive Summary） |
 | `references/tracking-patterns.md` | マイルストーン進捗計算、Drift Score、トレンド分析 |
-| `references/handoffs.md` | エージェント間ハンドオフYAML（Helm↔Compass, Pulse→Compass, Compete→Compass, Compass→Magi/Sherpa/Scribe/Canvas, Nexus） |
 
 ---
 

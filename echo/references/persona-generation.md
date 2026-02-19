@@ -22,10 +22,7 @@ Workflow for automatically generating service-specific personas from code/docume
 │  Generate personas following template                        │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
-┌─────────────────────────────────────────────────────────────┐
-│                    SAVE                                      │
-│  Save to .agents/personas/{service}/                         │
-└─────────────────────────────────────────────────────────────┘
+...
 ```
 
 ---
@@ -175,27 +172,7 @@ Patterns for extracting extended attributes (Demographics, Psychographics, etc.)
 - "innovative", "cutting-edge" → early adopter
 
 ### Digital Behavior Signals
-- Session timeout settings → session duration
-- Auto-save intervals → interruption frequency
-- Sync/offline features → multi-device behavior
-- Analytics events → usage time
-
-### Literacy & Experience Signals
-- Onboarding flow complexity → domain knowledge
-- Help/tooltip density → digital literacy
-- Keyboard shortcut docs → operation style
-- Video tutorials vs text docs → learning style
-
-### Social Context Signals (B2B)
-- Team/organization features → organization size
-- Admin/member roles → role level
-- Approval workflows → decision authority
-- Sharing/collaboration features → stakeholder relationships
-
-### Life Stage Signals
-- Pricing page messaging → economic state
-- Trial/freemium model → service relationship phase
-- Time-to-value messaging → resource constraints
+...
 ```
 
 #### Pattern E: Internal Persona Analysis
@@ -218,32 +195,7 @@ Extraction patterns for development organization personas.
 - docker-compose.yml → local development environment
 - Makefile targets → development commands
 
-### Workflow Signals
-- CI/CD configurations → deployment flow
-- PR templates → review process
-- Issue templates → reporting flow
-- CONTRIBUTING.md → development flow
-
-### Operations Signals
-- Runbook documents → operations procedures
-- Alert configurations → monitoring targets
-- Dashboard configs → metrics
-- On-call schedules → operations structure
-
-### Onboarding Signals
-- Onboarding docs → new member information
-- Getting started guides → initial setup
-- Architecture docs → system understanding
-- ADR/RFC documents → design background
-
-### Job Type Detection Patterns
-- Frontend: React/Vue/components → Frontend Developer
-- Backend: API/DB/services → Backend Developer
-- Infra: Docker/K8s/Terraform → Infra Engineer
-- Test: E2E/unit/coverage → QA Engineer
-- Design: Figma/Storybook → UI Designer
-- Analytics: GA/Mixpanel/metrics → UX Researcher
-- CMS/Admin: admin panels → Ops Manager/Content Editor
+...
 ```
 
 ---
@@ -304,97 +256,7 @@ extracted:
 
   pain_points:
     - pain: "Complex registration process"
-      evidence: "src/auth/register.tsx: 15 required fields"
-
-  context:
-    - scenario: "Mobile shopping during commute"
-      evidence: "tests/e2e/mobile-checkout.spec.ts"
-
-  # Extended Attributes
-  demographics:
-    - attribute: "age_group"
-      value: "30s-40s"
-      evidence: "marketing/landing.md: 'working professionals'"
-    - attribute: "occupation"
-      value: "Employee/Manager"
-      evidence: "pricing: team/enterprise tiers available"
-
-  psychographics:
-    - attribute: "time_vs_cost"
-      value: "Time-saver"
-      evidence: "README: 'save hours of manual work'"
-    - attribute: "decision_style"
-      value: "Thorough researcher"
-      evidence: "extensive comparison docs, feature matrix"
-
-  digital_behavior:
-    - attribute: "session_duration"
-      value: "5-10 min"
-      evidence: "session timeout: 15min in auth config"
-    - attribute: "interruption"
-      value: "High"
-      evidence: "auto-save every 30 seconds"
-
-  literacy:
-    - attribute: "domain_knowledge"
-      value: "Intermediate"
-      evidence: "assumes basic terminology without explanation"
-    - attribute: "learning_style"
-      value: "Hands-on"
-      evidence: "interactive tutorials, sandbox environment"
-
-  social_context:
-    - attribute: "org_size"
-      value: "Medium"
-      evidence: "team features, but no SSO/SCIM"
-    - attribute: "decision_authority"
-      value: "Manager approval required"
-      evidence: "approval workflow feature exists"
-
-  life_stage:
-    - attribute: "service_phase"
-      value: "Consideration"
-      evidence: "prominent trial CTA, comparison pages"
-    - attribute: "resource_constraint"
-      value: "Limited time"
-      evidence: "'5-minute setup' messaging"
-
-  # Internal Persona Attributes
-  internal_profile:
-    - attribute: "job_type"
-      value: "Frontend Developer"
-      evidence: "CODEOWNERS: @frontend-team owns src/components/"
-    - attribute: "team"
-      value: "Frontend Team"
-      evidence: "CODEOWNERS: @frontend-team"
-    - attribute: "experience"
-      value: "1-3 years"
-      evidence: "detailed onboarding docs suggest junior-mid level expected"
-    - attribute: "responsibility"
-      value: "UI component development"
-      evidence: "src/components/ ownership"
-
-  dev_environment:
-    - attribute: "primary_tools"
-      value: "VSCode, ESLint, Prettier"
-      evidence: ".vscode/extensions.json recommendations"
-    - attribute: "os"
-      value: "macOS/Linux"
-      evidence: "shell scripts use bash, no .bat files"
-    - attribute: "work_style"
-      value: "Remote"
-      evidence: "docker-compose for full local env"
-
-  workflow_context:
-    - attribute: "daily_tasks"
-      value: "Code review, PR creation"
-      evidence: "PR template with detailed checklist"
-    - attribute: "collaboration"
-      value: "API coordination with Backend Team"
-      evidence: "CONTRIBUTING.md mentions cross-team reviews"
-    - attribute: "pain_points"
-      value: "Complex environment setup"
-      evidence: "docs/troubleshooting.md has 10+ setup issues"
+# ...
 ```
 
 ### Default Values & Inference Rules
@@ -417,98 +279,7 @@ defaults:
   psychographics:
     time_vs_cost:
       saas: "Time-saver"
-      consumer: "Cost-conscious"
-    decision_style:
-      b2b_enterprise: "Thorough researcher"
-      b2c: "Intuitive"
-
-  digital_behavior:
-    session_duration:
-      task_app: "5-10 min"
-      content_app: "15-30 min"
-    interruption:
-      mobile_first: "High"
-      desktop_first: "Low"
-
-  literacy:
-    domain_knowledge:
-      technical_product: "Intermediate"
-      consumer_product: "Beginner"
-    web_literacy:
-      modern_stack: "Medium-High"
-      legacy_target: "Low-Medium"
-
-  social_context:
-    org_size:
-      enterprise_pricing: "Large"
-      team_pricing: "Medium"
-      individual_pricing: "Individual/Small"
-    decision_authority:
-      b2b: "Manager approval required"
-      b2c: "Self"
-
-  life_stage:
-    service_phase:
-      new_product: "Awareness"
-      established: "Consideration/Active use"
-    disposable_time:
-      professional_tool: "Limited"
-      hobby_app: "Normal"
-
-inference_rules:
-  - if: "pricing has enterprise tier"
-    then: "org_size: Large, decision_authority: Formal approval required"
-  - if: "mobile-first or PWA"
-    then: "interruption: High, session_duration: 1-2 min"
-  - if: "extensive API docs"
-    then: "tech_level: High, domain_knowledge: Expert"
-  - if: "video tutorials prominent"
-    then: "learning_style: Watching"
-  - if: "sandbox/playground exists"
-    then: "learning_style: Hands-on"
-  - if: "SSO/SCIM support"
-    then: "org_size: Large, role_level: Manager+"
-
-# Internal Persona Defaults
-internal_defaults:
-  job_type:
-    frontend_heavy: "Frontend Developer"
-    backend_heavy: "Backend Developer"
-    infra_heavy: "Infra Engineer"
-    mixed: "Full Stack Developer"
-
-  experience:
-    simple_onboarding: "3-5 years"       # Concise docs for experienced
-    detailed_onboarding: "1-3 years"     # Detailed procedures
-    minimal_onboarding: "5+ years"       # Self-sufficient assumed
-
-  work_style:
-    docker_compose_exists: "Remote/Hybrid"
-    cloud_dev_env: "Remote"
-    local_only: "Office"
-
-  tools:
-    vscode_config_exists: "VSCode"
-    idea_config_exists: "IntelliJ IDEA"
-    no_ide_config: "Editor agnostic"
-
-internal_inference_rules:
-  - if: "CODEOWNERS has @frontend-team"
-    then: "generate Frontend Developer persona"
-  - if: "CODEOWNERS has @backend-team or @api-team"
-    then: "generate Backend Developer persona"
-  - if: "CODEOWNERS has @infra-team or @platform-team"
-    then: "generate Infra Engineer persona"
-  - if: "CODEOWNERS has @qa-team or @test-team"
-    then: "generate QA Engineer persona"
-  - if: "docs/runbook* exists"
-    then: "generate Ops Manager persona"
-  - if: "admin/ or cms/ directory exists"
-    then: "generate Content Editor or CS Representative persona"
-  - if: "docs/onboarding* exists"
-    then: "generate New Engineer persona"
-  - if: "Storybook or Figma references exist"
-    then: "generate UI Designer persona"
+# ...
 ```
 
 ---
@@ -563,15 +334,7 @@ Extended attributes (if available):
 - Literacy & Experience: [extracted or inferred]
 - Social Context: [extracted or inferred]
 - Life Stage: [extracted or inferred]
-
-Generate a persona following `persona-template.md`:
-1. Fill all required fields
-2. Map to Echo base persona
-3. Define 5 emotion triggers
-4. List 3 testing focus areas
-5. Include source analysis
-6. Add extended attributes with appropriate detail level
-7. Mark inferred values with [inferred]
+...
 ```
 
 ### Generation Prompt Structure (Internal Persona)
@@ -592,13 +355,7 @@ Workflow context (from CI/CD, docs):
 
 Generate an internal persona following `persona-template.md`:
 1. Set `type: internal` and appropriate `category`
-2. Fill Internal Profile section
-3. Fill Workflow Context section
-4. Map to Internal Base Persona
-5. Define 5 emotion triggers (DX focused)
-6. List 3 testing focus areas (internal tools, docs, workflows)
-7. Include source analysis
-8. Mark inferred values with [inferred]
+...
 ```
 
 ### Attribute Detail Level Selection

@@ -159,8 +159,6 @@ Integrate with Cast ecosystem to establish AITuber character identity.
 
 **Output:** AITuber persona spec (extends Cast persona with streaming attributes)
 
-→ Cast persona model: `references/handoffs.md` (CAST_TO_AETHER format)
-
 #### AITuber Persona Extension Format
 
 Cast persona に以下の AITuber 固有属性を追加:
@@ -370,8 +368,6 @@ Configure OBS and streaming output.
 | **Avatar Control** | Live2D Cubism SDK, VRM/@pixiv/three-vrm, parameter control, idle motion | `references/avatar-control.md` |
 | **OBS & Streaming** | obs-websocket-js v5, scene management, RTMP vs SRT, streaming automation | `references/obs-streaming.md` |
 | **Lip Sync & Expression** | Japanese phoneme → Viseme mapping, VOICEVOX phoneme timing, emotion → expression | `references/lip-sync-expression.md` |
-| **Interaction Triggers** | YAML question templates for AskUserQuestion | `references/interaction-triggers.md` |
-| **Agent Handoffs** | Collaboration templates (Cast↔Aether, Aether→Builder, Aether→Artisan) | `references/handoffs.md` |
 
 ### Domain Summary
 
@@ -400,8 +396,6 @@ Configure OBS and streaming output.
 | **F** | **Aether** → Radar → Sentinel | Test spec → test execution → security review | AETHER_TO_RADAR |
 | **G** | **Aether** → Beacon → Pulse | Monitoring design → metrics → analytics | AETHER_TO_BEACON |
 | **H** | Voice → **Aether** → Cast[EVOLVE] | Viewer feedback → improvement → persona update | VOICE_TO_AETHER / AETHER_TO_CAST_EVOLVE |
-
-Full templates: `references/handoffs.md`
 
 ### Key Collaboration Flows
 

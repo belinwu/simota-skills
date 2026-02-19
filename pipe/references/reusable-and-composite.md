@@ -60,50 +60,7 @@ on:
     secrets:
       NPM_TOKEN:
         required: false
-    outputs:
-      test-result:
-        description: "Test result status"
-        value: ${{ jobs.test.outputs.result }}
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-
-  test:
-    runs-on: ubuntu-latest
-    outputs:
-      result: ${{ steps.test.outputs.result }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - id: test
-        run: |
-          pnpm test
-          echo "result=success" >> "$GITHUB_OUTPUT"
-
-  build:
-    needs: [lint, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+# ...
 ```
 
 ### Calling a Reusable Workflow
@@ -124,13 +81,7 @@ jobs:
       node-version: '20'
       run-e2e: false
     secrets: inherit  # Pass all secrets
-
-  notify:
-    needs: ci
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "CI failed! Test result: ${{ needs.ci.outputs.test-result }}"
+# ...
 ```
 
 ### Secret Handling
@@ -192,15 +143,7 @@ jobs:
     steps:
       - id: v
         run: echo "version=1.2.3" >> "$GITHUB_OUTPUT"
-
-# Caller accesses output
-jobs:
-  ci:
-    uses: ./.github/workflows/detect.yml
-  deploy:
-    needs: ci
-    steps:
-      - run: echo "Deploying version ${{ needs.ci.outputs.version }}"
+# ...
 ```
 
 ---
@@ -225,26 +168,7 @@ inputs:
     required: false
 
 outputs:
-  cache-hit:
-    description: 'Whether cache was hit'
-    value: ${{ steps.cache.outputs.cache-hit }}
-
-runs:
-  using: 'composite'
-  steps:
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-
-    - uses: actions/setup-node@v4
-      id: cache
-      with:
-        node-version: ${{ inputs.node-version }}
-        cache: 'pnpm'
-
-    - if: inputs.install-deps == 'true'
-      shell: bash
-      run: pnpm install --frozen-lockfile
+# ...
 ```
 
 ### Usage
@@ -289,23 +213,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - shell: bash
-      run: pnpm build
-
-    - if: inputs.skip-tests != 'true'
-      shell: bash
-      run: |
-        if [ "${{ inputs.coverage }}" = "true" ]; then
-          pnpm test --coverage
-        else
-          pnpm test
-        fi
-
-    - if: inputs.coverage == 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage
-        path: coverage/
+# ...
 ```
 
 ---

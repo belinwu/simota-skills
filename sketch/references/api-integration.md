@@ -86,14 +86,7 @@ response = client.models.generate_content(
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
     ),
-)
-
-# Save generated image
-for i, part in enumerate(response.candidates[0].content.parts):
-    if part.inline_data:
-        with open(f"output_{i}.png", "wb") as f:
-            f.write(part.inline_data.data)
-        print(f"Image saved: output_{i}.png")
+# ...
 ```
 
 ### Pattern 2: Text-to-Image with Text Response
@@ -133,7 +126,7 @@ response = client.models.generate_content(
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
     ),
-)
+# ...
 ```
 
 ### Pattern 4: Multi-Turn Editing (Iterative)
@@ -154,12 +147,7 @@ response1 = chat.send_message("Generate a cozy reading nook with warm lighting")
 # Save image from response1...
 
 # Turn 2: Edit the generated image
-response2 = chat.send_message("Add a cat sleeping on the chair")
-# Save updated image from response2...
-
-# Turn 3: Further refinement
-response3 = chat.send_message("Change the lighting to golden hour sunset tones")
-# Save final image from response3...
+# ...
 ```
 
 ### Pattern 5: Style Transfer (Multiple References)
@@ -180,8 +168,7 @@ response = client.models.generate_content(
     ],
     config=types.GenerateContentConfig(
         response_modalities=["IMAGE"],
-    ),
-)
+# ...
 ```
 
 ---
@@ -235,7 +222,6 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-
 def save_generated_images(response, output_dir="./generated", prefix="image"):
     """Extract and save images from Gemini API response."""
     output_path = Path(output_dir)
@@ -246,17 +232,7 @@ def save_generated_images(response, output_dir="./generated", prefix="image"):
     text_responses = []
 
     for i, part in enumerate(response.candidates[0].content.parts):
-        if part.inline_data:
-            ext = "png" if "png" in part.inline_data.mime_type else "jpg"
-            filename = f"{timestamp}_{prefix}_{i}.{ext}"
-            filepath = output_path / filename
-            filepath.write_bytes(part.inline_data.data)
-            saved_files.append(str(filepath))
-            print(f"Saved: {filepath}")
-        elif part.text:
-            text_responses.append(part.text)
-
-    return saved_files, text_responses
+# ...
 ```
 
 ### Metadata Generation
@@ -289,7 +265,6 @@ import time
 
 from google.api_core import exceptions as api_exceptions
 
-
 def generate_image_safe(client, prompt, model="gemini-2.5-flash-image", max_retries=3):
     """Generate image with comprehensive error handling."""
     for attempt in range(max_retries):
@@ -300,48 +275,7 @@ def generate_image_safe(client, prompt, model="gemini-2.5-flash-image", max_retr
                 config=types.GenerateContentConfig(
                     response_modalities=["IMAGE"],
                 ),
-            )
-
-            # Check for empty response (content policy block)
-            if not response.candidates or not response.candidates[0].content.parts:
-                print("Warning: Empty response — prompt may have been blocked by content policy.")
-                print("Try adjusting the prompt to comply with content guidelines.")
-                return None
-
-            return response
-
-        except api_exceptions.ResourceExhausted:
-            wait_time = 2 ** attempt * 10  # Exponential backoff
-            print(f"Rate limit exceeded. Waiting {wait_time}s... (attempt {attempt + 1}/{max_retries})")
-            time.sleep(wait_time)
-
-        except api_exceptions.InvalidArgument as e:
-            print(f"Invalid request: {e}")
-            print("Check prompt content and parameter values.")
-            return None
-
-        except api_exceptions.PermissionDenied:
-            print("API key invalid or insufficient permissions.")
-            print("Verify GEMINI_API_KEY environment variable.")
-            return None
-
-        except api_exceptions.NotFound:
-            print("Model not found. Verify the model ID is correct for your API type.")
-            print("Google AI API (API key): use 'gemini-2.5-flash-image'")
-            print("Vertex AI (service account): imagen models may be available")
-            return None
-
-        except api_exceptions.ServiceUnavailable:
-            wait_time = 2 ** attempt * 5
-            print(f"Service temporarily unavailable. Retrying in {wait_time}s...")
-            time.sleep(wait_time)
-
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            return None
-
-    print(f"Failed after {max_retries} attempts.")
-    return None
+# ...
 ```
 
 ### Error Type Reference
@@ -399,7 +333,6 @@ def generate_image_safe(client, prompt, model="gemini-2.5-flash-image", max_retr
 ```python
 import time
 
-
 def batch_generate(client, prompts, model="gemini-2.5-flash-image",
                    output_dir="./generated", delay_seconds=2):
     """Generate multiple images with rate limit awareness."""
@@ -412,17 +345,7 @@ def batch_generate(client, prompts, model="gemini-2.5-flash-image",
         if response:
             files, _ = save_generated_images(
                 response, output_dir=output_dir, prefix=f"batch_{i:03d}",
-            )
-            results.extend(files)
-        else:
-            print(f"  Skipped: generation failed for prompt {i + 1}")
-
-        # Rate limit buffer
-        if i < len(prompts) - 1:
-            time.sleep(delay_seconds)
-
-    print(f"\nBatch complete: {len(results)} images generated")
-    return results
+# ...
 ```
 
 ---
@@ -472,75 +395,5 @@ import json
 import os
 import sys
 from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-
-
-def main():
-    # Verify API key
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("Error: GEMINI_API_KEY environment variable not set.")
-        print("Set it with: export GEMINI_API_KEY='your-api-key'")
-        sys.exit(1)
-
-    client = genai.Client(api_key=api_key)
-
-    # Configuration
-    prompt = "YOUR PROMPT HERE"
-    model = "gemini-2.5-flash-image"
-    output_dir = Path("./generated")
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # Generate
-    print(f"Generating image with {model}...")
-    print(f"Prompt: {prompt}")
-
-    try:
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
-            ),
-        )
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-
-    # Check response
-    if not response.candidates or not response.candidates[0].content.parts:
-        print("Error: No image generated. Prompt may violate content policy.")
-        sys.exit(1)
-
-    # Save
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    saved = []
-
-    for i, part in enumerate(response.candidates[0].content.parts):
-        if part.inline_data:
-            filename = f"{timestamp}_generated_{i}.png"
-            filepath = output_dir / filename
-            filepath.write_bytes(part.inline_data.data)
-            saved.append(str(filepath))
-            print(f"Saved: {filepath}")
-
-    # Metadata
-    metadata = {
-        "generated_at": datetime.now().isoformat(),
-        "prompt": prompt,
-        "model": model,
-        "files": saved,
-        "synthid": True,
-    }
-    meta_path = output_dir / f"{timestamp}_metadata.json"
-    meta_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False))
-    print(f"Metadata: {meta_path}")
-    print("Done!")
-
-
-if __name__ == "__main__":
-    main()
+# ...
 ```

@@ -91,8 +91,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/agent-categories.md` | 56 agents by 19 categories with detailed definitions |
 | `references/naming-conventions.md` | Agent naming guidelines (short, memorable, thematic, unique) |
 | `references/nexus-integration.md` | AUTORUN _AGENT_CONTEXT/_STEP_COMPLETE templates, Nexus Hub NEXUS_HANDOFF format |
-| `references/handoff-formats.md` | 9 bidirectional handoff templates (Nexus/Atlas/Judge ↔ Architect ↔ Quill/Canvas/Nexus/Judge) |
-| `references/interaction-triggers.md` | 7 YAML question templates (overlap, value, feedback, priority, compression, Ma/間) |
 
 ---
 

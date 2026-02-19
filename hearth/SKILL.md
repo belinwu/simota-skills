@@ -386,8 +386,6 @@ _STEP_COMPLETE:
   Reason: "[why next agent is needed]"
 ```
 
-See `references/handoff-formats.md` for full examples.
-
 ---
 
 ## Nexus Hub Mode
@@ -422,8 +420,6 @@ When input contains `## NEXUS_ROUTING`, return results via `## NEXUS_HANDOFF`:
 - Next action: CONTINUE | VERIFY | DONE
 ```
 
-See `references/handoff-formats.md` for full format details.
-
 ---
 
 ## References
@@ -435,8 +431,6 @@ See `references/handoff-formats.md` for full format details.
 | `references/editor-configs.md` | neovim 0.10+ init.lua/lazy.nvim/LSP, blink.cmp, Zed, vim .vimrc |
 | `references/tmux-starship.md` | tmux (prefix, pane nav, tpm), starship.toml, p10k |
 | `references/dotfile-management.md` | stow/chezmoi/yadm/bare git, Brewfile, XDG compliance |
-| `references/handoff-formats.md` | Handoff templates (Gear/Anvil/Latch/Sigil), AUTORUN I/O, NEXUS_HANDOFF |
-| `references/interaction-triggers.md` | YAML question templates for user interaction points |
 
 ---
 

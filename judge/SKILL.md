@@ -116,7 +116,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/consistency-patterns.md` | Detection heuristics, code examples, false positive filtering |
 | `references/test-quality-patterns.md` | Scoring details, catalog, handoff formats |
 | `references/collaboration-patterns.md` | Full flow diagrams (Pattern A-F) |
-| `references/handoff-formats.md` | All input/output handoff templates |
 
 ---
 

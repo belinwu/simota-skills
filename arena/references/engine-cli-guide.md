@@ -57,10 +57,7 @@ git add -A && git commit -m "arena: variant-codex-iterative implementation"
 git checkout -b arena/variant-codex-functional $BASE_COMMIT
 codex exec --full-auto "Implement the following specification.
 {spec_content}
-## Approach Directive
-Prefer a FUNCTIONAL, declarative approach. Use immutable data, pure functions, and composition.
-{constraints_and_criteria}"
-git add -A && git commit -m "arena: variant-codex-functional implementation"
+# ...
 ```
 
 **Branch naming:** `arena/variant-{engine}-{approach}`
@@ -455,14 +452,7 @@ scope:
     - ".env*"                 # secrets
     - "tsconfig.json"         # build config
     - "*.config.js"           # build/lint config
-    - "*.config.ts"
-    - ".github/**"            # CI/CD
-    - "docker*"               # infrastructure
-    - "Makefile"
-    - "README.md"             # documentation
-
-  # Additional project-specific exclusions
-  forbidden_patterns: []      # e.g., "migrations/**", "generated/**"
+# ...
 ```
 
 **How to determine `allowed_files`:**
@@ -493,16 +483,7 @@ Implement the following specification.
 - ONLY modify or create files listed in "Allowed Files" above
 - DO NOT modify any file not listed in "Allowed Files"
 - DO NOT add, remove, or modify dependencies (package.json, Gemfile, requirements.txt, etc.)
-- DO NOT modify build configuration, CI/CD, or infrastructure files
-- DO NOT modify unrelated code, even if you notice issues in it
-- Follow existing code patterns and conventions in the codebase
-- Ensure all existing tests continue to pass
-- Add tests for new functionality in the corresponding test files
-- Handle error cases appropriately
-- Use the same language, framework, and style as existing code
-
-## Success Criteria
-{acceptance_criteria}
+...
 ```
 
 ### gemini Prompt Template
@@ -523,21 +504,7 @@ Implement the following specification.
 - ONLY modify or create files listed in "Allowed Files" above
 - DO NOT modify any file not listed in "Allowed Files"
 - DO NOT add, remove, or modify dependencies (package.json, Gemfile, requirements.txt, etc.)
-- DO NOT modify build configuration, CI/CD, or infrastructure files
-- DO NOT modify unrelated code, even if you notice issues in it
-- Follow existing code patterns and conventions in the codebase
-- Ensure all existing tests continue to pass
-- Add tests for new functionality in the corresponding test files
-- Handle error cases appropriately
-- Use the same language, framework, and style as existing code
-
-## Codebase Context
-- Tech stack: {tech_stack}
-- Key patterns: {patterns_summary}
-- Related files (read-only reference): {reference_files}
-
-## Success Criteria
-{acceptance_criteria}
+...
 ```
 
 ### Step 2b: Inject Approach Hints (for Multi-Variant / Self-Competition)

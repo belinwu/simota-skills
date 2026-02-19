@@ -84,9 +84,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/streaming-kafka.md` | Topic/Consumer group design, Event schema (JSON Schema), Stream processing patterns |
 | `references/dbt-modeling.md` | Model layer structure, Staging/Intermediate templates, dbt tests |
 | `references/data-reliability.md` | Quality check layers, Great Expectations, CDC/Debezium, Idempotency (Redis/UPSERT/Kafka), Backfill playbook |
-| `references/interaction-triggers.md` | 4 YAML question templates (Architecture/Tool/Quality/Backfill) |
 | `references/examples.md` | Implementation examples and code samples |
-| `references/handoffs.md` | Agent handoff format templates (Schema↔Stream, Stream→Canvas) |
 | `references/patterns.md` | Common pipeline patterns and best practices |
 
 ## Domain Knowledge Summary

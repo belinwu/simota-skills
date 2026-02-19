@@ -83,7 +83,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Design Trends** | Current trend risk levels (Low/Medium/High), AI tool pipeline, evaluation checklists | `references/design-trends.md` |
 | **Design Methodology** | Full process steps per operating mode | `references/design-methodology.md` |
 | **Orchestration** | Delegation patterns, agent boundaries, orchestration flow | `references/agent-orchestration.md` |
-| **Handoff Formats** | Full input/output templates for all handoff patterns | `references/handoff-formats.md` |
 
 **Trend Risk Quick Ref:** Low (dark mode, micro-animations, AI-native, variable fonts, adaptive UI) · Medium (bento grid, glassmorphism 2.0, spatial, sustainable) · High (neo-brutalism, kinetic typography, extreme minimalism, heavy 3D)
 

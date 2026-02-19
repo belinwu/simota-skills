@@ -60,88 +60,7 @@ Every technical decision narrative follows this arc:
 - [Stakeholder 1]: [How they are affected]
 - [Stakeholder 2]: [How they are affected]
 
-**Risk if left unaddressed:**
-- [Risk 1]: [Probability and impact]
-- [Risk 2]: [Probability and impact]
-
----
-
-## Decision
-### Solution
-[Decision phrase, e.g., "So we decided to..."]
-
-**What we decided:**
-[Concrete decision - avoid technical jargon]
-
-**Why we chose this solution:**
-1. [Reason 1 - business perspective]
-2. [Reason 2 - business perspective]
-3. [Reason 3 - business perspective]
-
-**Alternatives considered:**
-| Option | Overview | Why not chosen |
-|--------|----------|----------------|
-| [Option A] | [Description] | [Reason] |
-| [Option B] | [Description] | [Reason] |
-
----
-
-## Expected Outcome (After)
-### Value to be realized
-[Outcome phrase, e.g., "This enables..."]
-
-**Quantitative benefits:**
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| [Metric 1] | [Current value] | [Target value] | [%] |
-| [Metric 2] | [Current value] | [Target value] | [%] |
-
-**Qualitative benefits:**
-- [Benefit 1]: [Description]
-- [Benefit 2]: [Description]
-
-**Timeline for benefits:**
-- Short-term (0-3 months): [Benefits]
-- Mid-term (3-6 months): [Benefits]
-- Long-term (6+ months): [Benefits]
-
----
-
-## Risks and Mitigations
-### Anticipated risks
-[Risk phrase, e.g., "However, there is X risk, which we address by..."]
-
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| [Risk 1] | High/Med/Low | High/Med/Low | [Mitigation] |
-| [Risk 2] | High/Med/Low | High/Med/Low | [Mitigation] |
-
-**Worst-case scenario and response:**
-- Scenario: [Worst case]
-- Response: [Rollback / alternative plan]
-
----
-
-## Execution Plan
-### Roadmap
-| Phase | Duration | Content | Deliverable |
-|-------|----------|---------|-------------|
-| Phase 1 | [Duration] | [Content] | [Deliverable] |
-| Phase 2 | [Duration] | [Content] | [Deliverable] |
-
-### Required resources
-- [Resource 1]: [Details and justification]
-- [Resource 2]: [Details and justification]
-
----
-
-## Request for Decision
-### Items requiring approval
-- [ ] [Approval item 1]
-- [ ] [Approval item 2]
-
-### Next steps
-[What happens after approval]
+...
 ```
 
 ---
@@ -168,10 +87,7 @@ For smaller decisions or busy stakeholders.
 [3 points or fewer explaining rationale]
 
 ### Risk and mitigation
-[Primary risk and its mitigation]
-
-### Required action
-[What you need from the approver]
+...
 ```
 
 ---
@@ -196,13 +112,7 @@ When the problem needs emphasis.
 [Projection for 3 months, 6 months, 1 year]
 
 ### Proposed solution
-[Brief solution description]
-
-### Expected improvement
-[Before/After comparison]
-
-### Request
-[Specific action needed]
+...
 ```
 
 ---
@@ -227,15 +137,7 @@ When the solution is innovative or exciting.
 [Similar success cases if available]
 
 ### Application to our company
-[Customization points]
-
-### Return on investment
-| Investment | Return |
-|------------|--------|
-| [Cost] | [Benefit] |
-
-### Recommended approach
-[Phased approach]
+...
 ```
 
 ---
@@ -260,18 +162,7 @@ When risk mitigation is the primary driver.
 [Worst-case scenario]
 
 ### Proposed countermeasure
-[Countermeasure description]
-
-### Effect of countermeasure
-| Risk | Before | After |
-|------|--------|-------|
-| [Risk] | [State] | [State] |
-
-### Cost of inaction vs cost of action
-[Comparison table]
-
-### Recommendation and urgency
-[Recommendation and timeline]
+...
 ```
 
 ---
@@ -374,39 +265,7 @@ When risk mitigation is the primary driver.
 - Customers: Lost opportunities due to service outages
 - Development team: Wait time for environment preparation
 - Operations team: Late-night and weekend emergency response
-
----
-
-## Decision
-### Solution
-"We decided to migrate to cloud services in phases."
-
-**Why we chose this solution:**
-1. Auto-recovery during failures significantly reduces downtime
-2. Pay-per-use model optimizes costs
-3. New environments can be provisioned in minutes
-
----
-
-## Expected Outcome (After)
-### Value to be realized
-"This enables improved service stability and cost reduction."
-
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| Unplanned downtime | 12 hours/year | <1 hour/year | 90% reduction |
-| Infrastructure cost | ¥3M/month | ¥2M/month | 33% reduction |
-| Environment setup time | 2 weeks | 30 minutes | 99% reduction |
-
----
-
-## Risks and Mitigations
-"However, there is service interruption risk during migration, addressed by phased migration."
-
-| Risk | Mitigation |
-|------|------------|
-| Migration failures | Parallel operation period with instant rollback capability |
-| Cost overrun | Monthly cost monitoring with alerts |
+...
 ```
 
 ---
@@ -429,25 +288,7 @@ When risk mitigation is the primary driver.
 - Data breach damages: Estimated hundreds of millions of yen
 - Brand damage: Customer churn
 
----
-
-## Decision
-### Solution
-"We decided to implement multi-factor authentication (MFA)."
-
-**Why we chose this solution:**
-1. Prevents 99.9% of unauthorized access (industry data)
-2. Proactive regulatory compliance
-3. Provides customer peace of mind
-
----
-
-## Risks and Mitigations
-"However, customer login steps increase by one, addressed as follows:"
-
-- Prepare clear guidance screens
-- Phased rollout (optional first, then mandatory)
-- Enhanced support structure
+...
 ```
 
 ---

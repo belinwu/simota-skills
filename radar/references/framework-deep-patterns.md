@@ -24,21 +24,7 @@ export default [
     test: {
       name: 'integration',
       include: ['tests/integration/**/*.test.ts'],
-      environment: 'node',
-      testTimeout: 30000,
-      hookTimeout: 30000,
-    },
-  },
-  {
-    extends: './vitest.config.ts',
-    test: {
-      name: 'components',
-      include: ['src/**/*.spec.tsx'],
-      environment: 'jsdom',
-      setupFiles: ['./tests/setup-dom.ts'],
-    },
-  },
-];
+// ...
 ```
 
 ```bash
@@ -68,12 +54,7 @@ export default defineConfig({
         useAtomics: true, // Better synchronization
       },
       forks: {
-        minForks: 1,
-        maxForks: 4,
-      },
-    },
-  },
-});
+// ...
 ```
 
 | Pool | Isolation | Speed | Memory | Use Case |
@@ -100,7 +81,7 @@ export default {
   test(val: unknown) {
     return val instanceof Date;
   },
-};
+// ...
 ```
 
 ### Browser Mode
@@ -137,11 +118,7 @@ export default defineConfig({
       dir: 'node_modules/.vitest',
     },
 
-    // Reporter optimization
-    reporters: process.env.CI ? ['junit'] : ['default'],
-    outputFile: process.env.CI ? 'test-results.xml' : undefined,
-  },
-});
+// ...
 ```
 
 ---
@@ -166,8 +143,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 
   // Module directories for resolution
-  moduleDirectories: ['node_modules', 'src'],
-};
+// ...
 ```
 
 ### SWC / esbuild Transformer
@@ -188,18 +164,7 @@ module.exports = {
         },
       },
     }],
-  },
-};
-
-// Alternative: esbuild
-module.exports = {
-  transform: {
-    '^.+\\.tsx?$': ['esbuild-jest', {
-      sourcemap: true,
-      loaders: { '.spec.ts': 'ts' },
-    }],
-  },
-};
+// ...
 ```
 
 | Transformer | Speed | TypeScript | JSX | Decorators |
@@ -287,7 +252,7 @@ def reset_db(db):
     """Reset DB state before each test."""
     db.execute("BEGIN")
     yield
-    db.execute("ROLLBACK")
+# ...
 ```
 
 ### Factory Fixtures (pytest-factoryboy)
@@ -308,16 +273,7 @@ class UserFactory(factory.Factory):
 class AdminFactory(UserFactory):
     role = 'admin'
 
-register(UserFactory)
-register(AdminFactory)
-
-# tests/test_permissions.py
-def test_admin_access(admin):  # auto-injected by factory name
-    assert admin.role == 'admin'
-    assert admin.can_access('/admin')
-
-def test_user_denied(user):  # auto-injected
-    assert not user.can_access('/admin')
+# ...
 ```
 
 ### Marker Strategy
@@ -338,7 +294,7 @@ def test_full_migration():
 
 @pytest.mark.integration
 def test_database_query():
-    ...
+# ...
 ```
 
 ```bash
@@ -389,21 +345,7 @@ func assertUserValid(t *testing.T, user *User) {
 // t.Cleanup(): register cleanup that runs after test completes
 func setupTestDB(t *testing.T) *sql.DB {
     t.Helper()
-
-    db, err := sql.Open("postgres", testDSN)
-    require.NoError(t, err)
-
-    t.Cleanup(func() {
-        db.Close()
-    })
-
-    return db
-}
-
-func TestUserCRUD(t *testing.T) {
-    db := setupTestDB(t) // Cleanup auto-runs after test
-    // ... use db
-}
+// ...
 ```
 
 ### Subtests + Parallel
@@ -424,10 +366,7 @@ func TestAPI(t *testing.T) {
         t.Parallel()
         body := strings.NewReader(`{"name":"John"}`)
         resp, err := http.Post(server.URL+"/users", "application/json", body)
-        require.NoError(t, err)
-        assert.Equal(t, 201, resp.StatusCode)
-    })
-}
+// ...
 ```
 
 ### testify Best Practices
@@ -448,35 +387,7 @@ func TestUserService(t *testing.T) {
     require.NotNil(t, user)      // Stop if nil (would panic below)
 
     assert.Equal(t, "John", user.Name)     // Continue if wrong
-    assert.NotEmpty(t, user.Email)          // Continue if empty
-    assert.WithinDuration(t, time.Now(), user.UpdatedAt, time.Minute)
-}
-
-// Suite for complex test setup
-type UserSuite struct {
-    suite.Suite
-    db   *sql.DB
-    repo *UserRepository
-}
-
-func (s *UserSuite) SetupSuite() {
-    s.db = setupTestDB(s.T())
-    s.repo = NewUserRepository(s.db)
-}
-
-func (s *UserSuite) TearDownSuite() {
-    s.db.Close()
-}
-
-func (s *UserSuite) TestCreateUser() {
-    user, err := s.repo.Create(User{Name: "Test"})
-    s.Require().NoError(err)
-    s.Assert().NotEmpty(user.ID)
-}
-
-func TestUserSuite(t *testing.T) {
-    suite.Run(t, new(UserSuite))
-}
+// ...
 ```
 
 ### Table-Driven Test Pattern
@@ -497,16 +408,7 @@ func TestValidateEmail(t *testing.T) {
 
     for name, tt := range tests {
         t.Run(name, func(t *testing.T) {
-            t.Parallel()
-            err := ValidateEmail(tt.input)
-            if tt.wantErr {
-                assert.Error(t, err)
-            } else {
-                assert.NoError(t, err)
-            }
-        })
-    }
-}
+// ...
 ```
 
 ---
@@ -531,16 +433,7 @@ async fn test_concurrent() {
         fetch_data("b"),
     );
     assert!(a.is_ok() && b.is_ok());
-}
-
-// Current-thread with start_paused for time control
-#[tokio::test(start_paused = true)]
-async fn test_timer() {
-    let start = tokio::time::Instant::now();
-    tokio::time::sleep(Duration::from_secs(100)).await;
-    // Instant in paused mode, no real wait
-    assert!(start.elapsed() >= Duration::from_secs(100));
-}
+// ...
 ```
 
 ### rstest Parametrized
@@ -561,17 +454,7 @@ fn test_char_count(#[case] input: &str, #[case] expected: usize) {
 fn test_with_fixture(#[fixture] db: TestDb) {
     let users = db.query("SELECT * FROM users");
     assert!(!users.is_empty());
-}
-
-// Matrix: all combinations
-#[rstest]
-fn test_matrix(
-    #[values("GET", "POST", "PUT")] method: &str,
-    #[values("/users", "/posts")] path: &str,
-) {
-    let response = make_request(method, path);
-    assert!(response.status().is_success() || response.status().as_u16() == 405);
-}
+// ...
 ```
 
 ### proptest vs quickcheck
@@ -592,22 +475,7 @@ proptest! {
     fn test_sort_idempotent(mut v in prop::collection::vec(any::<i32>(), 0..100)) {
         v.sort();
         let sorted = v.clone();
-        v.sort();
-        prop_assert_eq!(v, sorted);
-    }
-}
-
-// quickcheck: simpler API
-use quickcheck::quickcheck;
-
-quickcheck! {
-    fn prop_reverse_reverse(xs: Vec<i32>) -> bool {
-        let mut reversed = xs.clone();
-        reversed.reverse();
-        reversed.reverse();
-        reversed == xs
-    }
-}
+// ...
 ```
 
 | Feature | proptest | quickcheck |
@@ -640,28 +508,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("returns user by ID")
-        void returnsUserById() {
-            var found = userService.findById(user.getId());
-            assertThat(found).isPresent().hasValueSatisfying(u ->
-                assertThat(u.getName()).isEqualTo("John")
-            );
-        }
-
-        @Nested
-        @DisplayName("and user is admin")
-        class AndUserIsAdmin {
-            @BeforeEach
-            void setUp() {
-                userService.setRole(user.getId(), Role.ADMIN);
-            }
-
-            @Test
-            void canAccessAdminPanel() {
-                assertTrue(userService.canAccess(user.getId(), "/admin"));
-            }
-        }
-    }
-}
+// ...
 ```
 
 ### Extension Model
@@ -682,12 +529,7 @@ public class DatabaseCleanupExtension implements BeforeEachCallback, AfterEachCa
 
 // Usage
 @ExtendWith(DatabaseCleanupExtension.class)
-class UserRepositoryTest {
-    @Test
-    void createsUser() {
-        // Auto-wrapped in transaction, auto-rolled back
-    }
-}
+// ...
 ```
 
 ### Testcontainers Integration
@@ -708,11 +550,7 @@ class PostgresIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    @Test
-    void testDatabaseQuery() {
-        // Uses real PostgreSQL container
-    }
-}
+// ...
 ```
 
 ---

@@ -24,14 +24,7 @@ it('rejects for invalid user', async () => {
 // ✅ Standard async/await
 it('processes queue item', async () => {
   const result = await processQueueItem({ id: 1, data: 'test' });
-  expect(result.status).toBe('processed');
-});
-
-// ❌ Anti-pattern: forgetting await
-it('broken test - no await', () => {
-  // This test always passes because the promise is never awaited
-  expect(fetchUser('invalid')).rejects.toThrow(); // Missing await!
-});
+// ...
 ```
 
 ### Vitest waitFor
@@ -70,35 +63,7 @@ it('retries with exponential backoff', async () => {
     .mockRejectedValueOnce(new Error('timeout'))
     .mockRejectedValueOnce(new Error('timeout'))
     .mockResolvedValueOnce({ data: 'success' });
-
-  const resultPromise = fetchWithRetry('/api/data', { maxRetries: 3 });
-
-  // First retry: 1000ms delay
-  await vi.advanceTimersByTimeAsync(1000);
-  // Second retry: 2000ms delay
-  await vi.advanceTimersByTimeAsync(2000);
-
-  const result = await resultPromise;
-  expect(result.data).toBe('success');
-  expect(mockFetch).toHaveBeenCalledTimes(3);
-});
-
-it('debounces search input', async () => {
-  const onSearch = vi.fn();
-  const debouncedSearch = debounce(onSearch, 300);
-
-  debouncedSearch('h');
-  debouncedSearch('he');
-  debouncedSearch('hel');
-
-  // Not called yet
-  expect(onSearch).not.toHaveBeenCalled();
-
-  // Advance past debounce delay
-  await vi.advanceTimersByTimeAsync(300);
-  expect(onSearch).toHaveBeenCalledOnce();
-  expect(onSearch).toHaveBeenCalledWith('hel');
-});
+// ...
 ```
 
 ### Stream / Observable Testing
@@ -119,16 +84,7 @@ it('processes stream chunks', async () => {
   expect(chunks).toHaveLength(3);
   expect(chunks.join('')).toContain('complete');
 });
-
-// RxJS Observable testing
-import { firstValueFrom, take, toArray } from 'rxjs';
-
-it('emits expected values', async () => {
-  const values = await firstValueFrom(
-    dataService.getUpdates().pipe(take(3), toArray())
-  );
-  expect(values).toEqual([1, 2, 3]);
-});
+// ...
 ```
 
 ### Promise.allSettled Testing
@@ -186,27 +142,7 @@ async def test_concurrent_requests():
     results = await asyncio.gather(
         fetch_data("/api/users"),
         fetch_data("/api/posts"),
-        fetch_data("/api/comments"),
-    )
-    assert all(r.status == 200 for r in results)
-
-@pytest.mark.asyncio
-async def test_timeout_handling():
-    """Test that slow operations timeout correctly."""
-    with pytest.raises(asyncio.TimeoutError):
-        await asyncio.wait_for(
-            slow_operation(),
-            timeout=1.0,
-        )
-
-@pytest.mark.asyncio
-async def test_task_group():
-    """Test TaskGroup for structured concurrency (Python 3.11+)."""
-    results = []
-    async with asyncio.TaskGroup() as tg:
-        for i in range(5):
-            tg.create_task(process_item(i, results))
-    assert len(results) == 5
+# ...
 ```
 
 ### aiohttp / httpx AsyncClient
@@ -227,14 +163,7 @@ async def test_api_endpoint(client):
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == 123
-
-@pytest.mark.asyncio
-async def test_streaming_response(client):
-    chunks = []
-    async with client.stream("GET", "/api/stream") as response:
-        async for chunk in response.aiter_text():
-            chunks.append(chunk)
-    assert len(chunks) > 0
+# ...
 ```
 
 ---
@@ -259,19 +188,7 @@ func TestUserService(t *testing.T) {
     }
 
     for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            t.Parallel() // Each subtest runs in parallel
-
-            result, err := userService.GetByID(context.Background(), tt.userID)
-            if tt.wantErr {
-                require.Error(t, err)
-                return
-            }
-            require.NoError(t, err)
-            assert.NotEmpty(t, result.Name)
-        })
-    }
-}
+// ...
 ```
 
 ### Channel-Based Synchronization
@@ -292,21 +209,7 @@ func TestEventProcessor(t *testing.T) {
 
     // Send events
     processor.Send(Event{Type: "user.created", Data: "123"})
-    processor.Send(Event{Type: "user.updated", Data: "123"})
-
-    // Collect results with timeout
-    var received []Event
-    for i := 0; i < 2; i++ {
-        select {
-        case e := <-results:
-            received = append(received, e)
-        case <-ctx.Done():
-            t.Fatal("timed out waiting for events")
-        }
-    }
-
-    assert.Len(t, received, 2)
-}
+// ...
 ```
 
 ### context.WithTimeout
@@ -327,15 +230,7 @@ func TestContextCancellation(t *testing.T) {
     errCh := make(chan error, 1)
     go func() {
         errCh <- longRunningTask(ctx)
-    }()
-
-    // Cancel after 100ms
-    time.Sleep(100 * time.Millisecond)
-    cancel()
-
-    err := <-errCh
-    assert.ErrorIs(t, err, context.Canceled)
-}
+// ...
 ```
 
 ### Race Detection
@@ -364,10 +259,7 @@ func TestConcurrentMapAccess(t *testing.T) {
             defer wg.Done()
             cache.Get(fmt.Sprintf("key-%d", id))
         }(i)
-    }
-    wg.Wait()
-    // If race detector doesn't fire, test passes
-}
+// ...
 ```
 
 ---
@@ -392,19 +284,7 @@ async fn test_concurrent_processing() {
     // Spawn multiple tasks
     for i in 0..10 {
         let tx = tx.clone();
-        tokio::spawn(async move {
-            let result = process_item(i).await;
-            tx.send(result).await.unwrap();
-        });
-    }
-    drop(tx);
-
-    let mut results = Vec::new();
-    while let Some(result) = rx.recv().await {
-        results.push(result);
-    }
-    assert_eq!(results.len(), 10);
-}
+// ...
 ```
 
 ### Timeout Testing
@@ -425,18 +305,7 @@ async fn test_with_tokio_time() {
     tokio::time::pause(); // Freeze time
 
     let start = tokio::time::Instant::now();
-    let handle = tokio::spawn(async {
-        tokio::time::sleep(Duration::from_secs(60)).await;
-        "done"
-    });
-
-    // Advance time instantly
-    tokio::time::advance(Duration::from_secs(60)).await;
-
-    let result = handle.await.unwrap();
-    assert_eq!(result, "done");
-    // Real elapsed time is negligible
-}
+// ...
 ```
 
 ### Channel Testing
@@ -577,11 +446,7 @@ func TestSafe(t *testing.T) {
 
     select {
     case result := <-done:
-        assert.Equal(t, "done", result)
-    case <-time.After(time.Second):
-        t.Fatal("timed out")
-    }
-}
+// ...
 ```
 
 ---

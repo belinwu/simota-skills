@@ -26,19 +26,7 @@ Set Padding 20
 Set TypingSpeed 60ms
 
 # --- Recording ---
-
-# Install the package
-Type "npm install -g mycli"
-Enter
-Sleep 3
-
-# Run the first command
-Type "mycli hello --name world"
-Enter
-Sleep 2
-
-# Let the viewer read the output
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -73,26 +61,7 @@ Set Padding 16
 Set TypingSpeed 50ms
 
 # --- Recording ---
-
-# Show the help text for context
-Type "mycli convert --help"
-Enter
-Sleep 3
-
-# Demonstrate the feature with realistic flags
-Type "mycli convert input.csv --format json --pretty --output result.json"
-Enter
-Sleep 3
-
-# Verify the output
-Type "cat result.json | head -20"
-Enter
-Sleep 3
-
-# Show success summary
-Type "mycli convert --stats"
-Enter
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -127,58 +96,7 @@ Set Padding 16
 Set TypingSpeed 50ms
 
 # --- Silent setup: prepare the "before" environment ---
-Hide
-
-# Create sample files or set up initial state
-Type "mkdir -p /tmp/demo && cd /tmp/demo"
-Enter
-Sleep 1
-Type "echo 'legacy config' > config.old.yml"
-Enter
-Sleep 0.5
-
-Show
-
-# --- BEFORE phase ---
-Type "# Before: legacy config format (slow, verbose)"
-Enter
-Sleep 1
-
-Type "cat config.old.yml"
-Enter
-Sleep 2
-
-Type "time mycli build --config config.old.yml"
-Enter
-Sleep 4
-
-# --- Transition ---
-Type ""
-Enter
-Type "# After: new optimized config"
-Enter
-Sleep 1
-
-# --- Silent setup: prepare the "after" environment ---
-Hide
-
-Type "echo 'optimized: true' > config.new.yml"
-Enter
-Sleep 0.5
-
-Show
-
-# --- AFTER phase ---
-Type "cat config.new.yml"
-Enter
-Sleep 2
-
-Type "time mycli build --config config.new.yml"
-Enter
-Sleep 4
-
-# Let the viewer compare results
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -213,52 +131,7 @@ Set Padding 16
 Set TypingSpeed 70ms
 
 # --- Recording ---
-
-# Launch the interactive wizard
-Type "mycli init"
-Enter
-Sleep 2
-
-# Respond to "Project name?" prompt
-Type "my-awesome-project"
-Sleep 1
-Enter
-Sleep 2
-
-# Respond to "Select framework:" menu (arrow keys to navigate)
-# Use Down to move through menu items
-Down
-Sleep 0.5
-Down
-Sleep 0.5
-Enter
-Sleep 2
-
-# Respond to "Use TypeScript?" (y/n prompt)
-Type "y"
-Enter
-Sleep 2
-
-# Respond to "Select package manager:" menu
-Down
-Sleep 0.5
-Enter
-Sleep 2
-
-# Respond to "Confirm?" final prompt
-Type "y"
-Enter
-Sleep 3
-
-# Show the generated output
-Type "ls -la my-awesome-project/"
-Enter
-Sleep 2
-
-# Show success message
-Type "cat my-awesome-project/package.json | head -10"
-Enter
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -313,54 +186,7 @@ Set Padding 16
 Set TypingSpeed 50ms
 
 # --- Recording ---
-
-# Scenario 1: Invalid input
-Type "# Scenario 1: Invalid input"
-Enter
-Sleep 1
-
-Type "mycli process --format xml --input data.csv"
-Enter
-Sleep 2
-# Expected output: Error: unsupported format "xml". Supported: json, yaml, toml
-
-# Scenario 2: Missing file
-Type ""
-Enter
-Type "# Scenario 2: Missing file"
-Enter
-Sleep 1
-
-Type "mycli process --format json --input missing.csv"
-Enter
-Sleep 2
-# Expected output: Error: file "missing.csv" not found. Check the path and try again.
-
-# Scenario 3: Show helpful suggestions
-Type ""
-Enter
-Type "# Scenario 3: Did-you-mean suggestion"
-Enter
-Sleep 1
-
-Type "mycli proccess data.csv"
-Enter
-Sleep 2
-# Expected output: Error: unknown command "proccess". Did you mean "process"?
-
-# Scenario 4: Successful recovery
-Type ""
-Enter
-Type "# Scenario 4: Correct usage"
-Enter
-Sleep 1
-
-Type "mycli process --format json --input data.csv"
-Enter
-Sleep 3
-# Expected output: Success! Processed 150 records → output.json
-
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -402,88 +228,7 @@ Set Padding 16
 Set TypingSpeed 50ms
 
 # --- Silent setup: prepare a clean workspace ---
-Hide
-
-Type "cd /tmp && rm -rf workflow-demo && mkdir workflow-demo && cd workflow-demo"
-Enter
-Sleep 1
-
-Show
-
-# --- Step 1: Initialize the project ---
-Type "# Step 1: Initialize project"
-Enter
-Sleep 1
-
-Type "mycli init --template starter"
-Enter
-Sleep 3
-
-# --- Step 2: Configure ---
-Type ""
-Enter
-Type "# Step 2: Add configuration"
-Enter
-Sleep 1
-
-Type "mycli config set api-key $API_KEY"
-Enter
-Sleep 1
-
-Type "mycli config set region us-east-1"
-Enter
-Sleep 2
-
-# --- Step 3: Add resources ---
-Type ""
-Enter
-Type "# Step 3: Add resources"
-Enter
-Sleep 1
-
-Type "mycli add database --engine postgres --name maindb"
-Enter
-Sleep 2
-
-Type "mycli add cache --engine redis --name sessions"
-Enter
-Sleep 2
-
-# --- Step 4: Validate ---
-Type ""
-Enter
-Type "# Step 4: Validate configuration"
-Enter
-Sleep 1
-
-Type "mycli validate"
-Enter
-Sleep 3
-
-# --- Step 5: Deploy ---
-Type ""
-Enter
-Type "# Step 5: Deploy"
-Enter
-Sleep 1
-
-Type "mycli deploy --env staging"
-Enter
-Sleep 5
-
-# --- Step 6: Verify ---
-Type ""
-Enter
-Type "# Step 6: Verify deployment"
-Enter
-Sleep 1
-
-Type "mycli status --env staging"
-Enter
-Sleep 3
-
-# Final pause for the viewer
-Sleep 3
+// ...
 ```
 
 ### Customization Notes
@@ -576,8 +321,5 @@ Set Width 120
 Set Height 32
 Set FontSize 13
 
-# Presentation (slides, talks)
-Set Width 100
-Set Height 24
-Set FontSize 20
+// ...
 ```

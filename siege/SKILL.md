@@ -96,8 +96,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/chaos-engineering-guide.md` | Steady-state hypothesis, fault injection, game days |
 | `references/mutation-testing-guide.md` | Stryker/mutmut/cargo-mutants, survival analysis |
 | `references/resilience-patterns.md` | Circuit breaker, bulkhead, retry, timeout verification |
-| `references/handoff-formats.md` | Input/output handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for all triggers |
 
 ---
 

@@ -40,19 +40,7 @@ test.describe('Visual Regression', () => {
   });
 
   test('login form matches snapshot', async ({ page }) => {
-    await page.goto('/login');
-
-    // Element screenshot
-    const form = page.getByTestId('login-form');
-    await expect(form).toHaveScreenshot('login-form.png');
-  });
-
-  test('responsive: mobile view', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
-    await expect(page).toHaveScreenshot('homepage-mobile.png');
-  });
-});
+// ...
 ```
 
 ### Snapshot Update Commands
@@ -98,19 +86,7 @@ export async function checkA11y(page: Page, options?: {
   }
 
   const results = await axeBuilder.analyze();
-
-  const violations = options?.includedImpacts
-    ? results.violations.filter(v => options.includedImpacts!.includes(v.impact as any))
-    : results.violations;
-
-  expect(violations, `Accessibility violations found:\n${formatViolations(violations)}`).toHaveLength(0);
-}
-
-function formatViolations(violations: any[]): string {
-  return violations
-    .map(v => `- ${v.id} (${v.impact}): ${v.description}\n  ${v.nodes.length} elements affected`)
-    .join('\n');
-}
+// ...
 ```
 
 ### A11y Test Examples
@@ -131,12 +107,7 @@ test.describe('Accessibility', () => {
 
     // Check form elements have labels
     await expect(page.getByLabel('メールアドレス')).toBeVisible();
-    await expect(page.getByLabel('パスワード')).toBeVisible();
-
-    // Run axe check
-    await checkA11y(page);
-  });
-});
+// ...
 ```
 
 ### Keyboard Navigation Testing
@@ -157,21 +128,7 @@ test('navigation is keyboard accessible', async ({ page }) => {
   await expect(page).toHaveURL(/.*products/);
 });
 
-test('modal traps focus correctly', async ({ page }) => {
-  await page.goto('/products');
-  await page.getByTestId('open-modal').click();
-
-  const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible();
-
-  // Focus should be inside modal
-  const focusedElement = page.locator(':focus');
-  await expect(focusedElement).toBeAttached();
-
-  // Escape closes modal
-  await page.keyboard.press('Escape');
-  await expect(modal).toBeHidden();
-});
+// ...
 ```
 
 ### A11y Rules Configuration
@@ -226,16 +183,7 @@ test.describe('Color vision accessibility', () => {
       });
 
       await page.goto('/dashboard');
-
-      // Verify critical elements are distinguishable
-      // (not relying solely on color)
-      await expect(page.getByTestId('status-icon')).toBeVisible();
-      await expect(page.getByTestId('status-label')).toBeVisible();
-
-      await expect(page).toHaveScreenshot(`dashboard-${name}.png`);
-    });
-  }
-});
+// ...
 ```
 
 ### Forced Colors Mode (High Contrast)
@@ -256,27 +204,7 @@ test('works in forced-colors mode', async ({ browser }) => {
   // Screenshot for visual verification
   await expect(page).toHaveScreenshot('homepage-forced-colors.png');
 
-  await context.close();
-});
-
-test('prefers-color-scheme: dark', async ({ browser }) => {
-  const context = await browser.newContext({
-    colorScheme: 'dark',
-  });
-  const page = await context.newPage();
-
-  await page.goto('/');
-
-  // Verify dark theme applied
-  const bgColor = await page.evaluate(() =>
-    getComputedStyle(document.body).backgroundColor
-  );
-  // Dark backgrounds typically have low RGB values
-  expect(bgColor).not.toBe('rgb(255, 255, 255)');
-
-  await expect(page).toHaveScreenshot('homepage-dark.png');
-  await context.close();
-});
+// ...
 ```
 
 ---
@@ -301,29 +229,7 @@ test('navigation landmark structure', async ({ page }) => {
 test('form accessibility', async ({ page }) => {
   await page.goto('/contact');
 
-  // Verify form labels and structure
-  await expect(page.getByRole('form')).toMatchAriaSnapshot(`
-    - form:
-      - textbox "Name"
-      - textbox "Email"
-      - textbox "Message"
-      - button "Send"
-  `);
-});
-
-test('dialog accessibility', async ({ page }) => {
-  await page.goto('/');
-  await page.getByTestId('open-settings').click();
-
-  await expect(page.getByRole('dialog')).toMatchAriaSnapshot(`
-    - dialog "Settings":
-      - heading "Settings" [level=2]
-      - checkbox "Dark mode"
-      - checkbox "Notifications"
-      - button "Save"
-      - button "Cancel"
-  `);
-});
+// ...
 ```
 
 ---
@@ -348,11 +254,7 @@ test('homepage visual test', async ({ page }) => {
 test('responsive visual test', async ({ page }) => {
   await page.goto('/products');
 
-  // Percy widths for responsive testing
-  await percySnapshot(page, 'Products Page', {
-    widths: [375, 768, 1280],
-  });
-});
+// ...
 ```
 
 ```yaml
@@ -410,22 +312,7 @@ for (const vp of VIEWPORTS) {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
       await expect(page).toHaveScreenshot(`homepage-${vp.name}.png`, {
-        fullPage: true,
-      });
-    });
-
-    test('navigation menu', async ({ page }) => {
-      await page.goto('/');
-      if (vp.width < 768) {
-        // Mobile: open hamburger menu
-        await page.getByTestId('mobile-menu-toggle').click();
-      }
-      await expect(page.getByRole('navigation')).toHaveScreenshot(
-        `nav-${vp.name}.png`
-      );
-    });
-  });
-}
+// ...
 ```
 
 ### Responsive Breakpoint Assertions
@@ -446,8 +333,7 @@ test('layout switches at breakpoints', async ({ page }) => {
 
   // Mobile: single column
   await page.setViewportSize({ width: 375, height: 667 });
-  await expect(desktopGrid).toHaveCSS('grid-template-columns', /^(?!.*repeat)/);
-});
+// ...
 ```
 
 ---

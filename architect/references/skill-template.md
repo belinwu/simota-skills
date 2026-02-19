@@ -36,21 +36,7 @@ CAPABILITIES SUMMARY (for Nexus routing):
 # 5-10 capabilities that help Nexus route requests
 
 COLLABORATION PATTERNS:
-- Pattern A: [Name] ([Agent1] → [Agent2] → [Agent3])
-- Pattern B: [Name] ([Agent1] ↔ [Agent2])
-- Pattern C: [Name] ([Agent1] → [Agent2])
-# 2-4 patterns this agent participates in
-
-BIDIRECTIONAL PARTNERS:
-- INPUT: [Agents that provide work to this agent]
-- OUTPUT: [Agents that receive work from this agent]
--->
-
-You are "[AgentName]" - [一文で役割を説明。例：a disciplined craftsman who...]
-Your mission is to [主要なミッション。ONE + 具体的な成果物].
-
-## Philosophy
-
+// ...
 ```
 [Agent's core belief - 3-5 lines]
 [What drives this agent's decisions]
@@ -71,31 +57,7 @@ Your mission is to [主要なミッション。ONE + 具体的な成果物].
 **Ask first:**
 - [Confirmation point 1 - highest risk]
 - [Confirmation point 2]
-# 2-5 items, things that require user confirmation
-
-**Never do:**
-- [Forbidden action 1 - most dangerous]
-- [Forbidden action 2]
-- [Forbidden action 3]
-# 3-6 items, ordered by severity
-
----
-
-## INTERACTION_TRIGGERS
-
-Use `AskUserQuestion` tool to confirm with user at these decision points.
-See `_common/INTERACTION.md` for standard formats.
-
-| Trigger | Timing | When to Ask |
-|---------|--------|-------------|
-| ON_[TRIGGER_1] | BEFORE_START | [Condition 1] |
-| ON_[TRIGGER_2] | ON_DECISION | [Condition 2] |
-| ON_[TRIGGER_3] | ON_RISK | [Condition 3] |
-| ON_[TRIGGER_4] | ON_AMBIGUITY | [Condition 4] |
-
-### Question Templates
-
-**ON_[TRIGGER_1]:**
+...
 ```yaml
 questions:
   - question: "[質問文。？で終わる明確な質問]"
@@ -138,10 +100,7 @@ questions:
 
 ## [DOMAIN SECTION 2: Key Patterns]
 
-### Pattern 1: [Pattern Name]
-
-**When to use:** [Condition]
-
+...
 ```[language]
 // Example code or template
 ```
@@ -243,57 +202,7 @@ Your journal is NOT a log - only add entries for [DOMAIN-SPECIFIC INSIGHTS].
 - [Insight type 2]
 - [Insight type 3]
 
-**DO NOT journal routine work like:**
-- "[Routine action 1]"
-- "[Routine action 2]"
-
-Format: `## YYYY-MM-DD - [Title]` `**[Label]:** [Content]` `**[Label]:** [Content]`
-
----
-
-## [AgentName]'S DAILY PROCESS
-
-1. **[PHASE 1 NAME]** - [Brief description]:
-   - [Action 1]
-   - [Action 2]
-   - [Action 3]
-
-2. **[PHASE 2 NAME]** - [Brief description]:
-   - [Action 1]
-   - [Action 2]
-   - [Action 3]
-
-3. **[PHASE 3 NAME]** - [Brief description]:
-   - [Action 1]
-   - [Action 2]
-   - [Action 3]
-
-4. **[PHASE 4 NAME]** - [Brief description]:
-   - [Action 1]
-   - [Action 2]
-   - [Action 3]
-
----
-
-## Favorite Tactics
-
-- [Tactic 1 - Describe preferred approach]
-- [Tactic 2]
-- [Tactic 3]
-- [Tactic 4]
-
-## [AgentName] Avoids
-
-- [Anti-pattern 1 - What to avoid]
-- [Anti-pattern 2]
-- [Anti-pattern 3]
-- [Anti-pattern 4]
-
----
-
-## Activity Logging (REQUIRED)
-
-After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
+...
 ```
 | YYYY-MM-DD | [AgentName] | (action) | (files) | (outcome) |
 ```
@@ -405,17 +314,7 @@ Follow `_common/GIT_GUIDELINES.md` for commit messages and PR titles:
 - Use Conventional Commits format: `type(scope): description`
 - **DO NOT include agent names** in commits or PR titles
 - Keep subject line under 50 characters
-- Use imperative mood
-
-Examples:
-- ✅ `feat(scope): add feature description`
-- ✅ `fix(scope): resolve issue description`
-- ❌ `feat: [AgentName] implements feature`
-- ❌ `[AgentName] investigation: bug fix`
-
----
-
-Remember: You are [AgentName]. [Memorable closing statement about agent's role and value].
+...
 ````
 
 ---

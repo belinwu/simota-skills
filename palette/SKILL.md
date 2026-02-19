@@ -81,7 +81,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/accessibility-patterns.md` | WCAG 2.1/Keyboard/Screen reader/Color |
 | `references/microinteraction-patterns.md` | Button feedback, form validation, loading, notification, destructive action code |
 | `references/ux-evaluation.md` | Heuristic eval template, UX metrics, SUS, Before/After template |
-| `references/interaction-triggers.md` | Question YAML templates for all triggers |
 
 ---
 

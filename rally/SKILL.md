@@ -122,7 +122,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/communication-patterns.md` | DM/broadcast/shutdown templates, idle handling |
 | `references/integration-patterns.md` | Patterns A-D, Nexus/Sherpa handoffs, escalation |
 | `references/agent-teams-api-reference.md` | Agent Teams API tool reference |
-| `references/interaction-triggers.md` | Question YAML templates for all 6 triggers |
 
 ---
 

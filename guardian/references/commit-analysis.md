@@ -44,19 +44,7 @@ type_analysis:
     revert: "Revert previous commit"
 
   scoring:
-    correct_type: 15
-    approximate_type: 10
-    missing_type: 0
-    wrong_type: -5
-
-  detection:
-    patterns:
-      feat: ["add", "implement", "introduce", "new"]
-      fix: ["fix", "resolve", "correct", "patch"]
-      docs: ["document", "readme", "comment"]
-      refactor: ["refactor", "restructure", "reorganize"]
-      test: ["test", "spec", "coverage"]
-      chore: ["update", "upgrade", "bump", "deps"]
+# ...
 ```
 
 #### 2. Scope
@@ -77,10 +65,7 @@ scope_analysis:
     wrong_scope: 0
 
   validation:
-    check_against:
-      - Directory names in changes
-      - Module names in project
-      - Common component names
+# ...
 ```
 
 #### 3. Subject Line
@@ -101,30 +86,7 @@ subject_analysis:
     acceptable_subject: 8
     poor_subject: 4
     bad_subject: 0
-
-  quality_indicators:
-    excellent:
-      - Imperative mood ("add", "fix", "update")
-      - Specific action described
-      - Concise but complete
-      - No filler words
-
-    poor:
-      - Past tense ("added", "fixed")
-      - Vague ("update code", "fix stuff")
-      - Too long (>72 chars)
-      - Ends with period
-      - Starts with capital
-
-  vague_subject_patterns:
-    - "fix bug"
-    - "update code"
-    - "changes"
-    - "improvements"
-    - "misc"
-    - "stuff"
-    - "wip"
-    - "temp"
+# ...
 ```
 
 #### 4. Body
@@ -145,21 +107,7 @@ body_analysis:
     - Breaking changes
     - Non-obvious decisions
     - Performance trade-offs
-
-  quality_indicators:
-    excellent:
-      - Explains motivation
-      - Describes approach chosen
-      - Notes alternatives considered
-      - Mentions trade-offs
-
-    poor:
-      - Repeats the subject
-      - Describes obvious changes
-      - Too terse for complexity
-      - Missing for complex change
-
-  wrap_rule: 72_characters
+# ...
 ```
 
 #### 5. Footer
@@ -180,13 +128,7 @@ footer_analysis:
       score: 2
 
     co_authors:
-      pattern: "Co-authored-by: Name <email>"
-      score: 1
-
-  scoring:
-    has_reference_when_needed: 5
-    has_breaking_change_note: 5
-    missing_reference: 0
+# ...
 ```
 
 ---
@@ -211,14 +153,7 @@ atomicity_analysis:
   detection:
     atomic_indicators:
       - Single file type changed (e.g., all .ts)
-      - Related files only
-      - Single concern addressed
-
-    non_atomic_indicators:
-      - Mixed feature and fix
-      - Unrelated files changed
-      - Multiple concerns in one commit
-      - "While I was here" changes
+# ...
 ```
 
 ### Commit Sequence Quality
@@ -239,18 +174,7 @@ sequence_analysis:
     detection:
       - Subject contains "WIP", "wip", "work in progress"
       - Subject contains "temp", "tmp"
-      - Empty or single-word subject
-      - "fixup" or "squash" markers
-
-    recommendation: "Squash before merge"
-
-  fixup_detection:
-    patterns:
-      - "fix typo"
-      - "oops"
-      - "forgot to add"
-      - "missing file"
-    recommendation: "Squash into relevant commit"
+# ...
 ```
 
 ---
@@ -275,17 +199,7 @@ rewrites:
     before: "feat: add the ability for users to reset their passwords..."
     after: "feat(auth): add password reset functionality"
     improvement: "Condensed to under 72 characters"
-
-  missing_context:
-    before: "fix null check"
-    after: |
-      fix(api): handle null response from payment provider
-
-      The payment provider occasionally returns null on timeout.
-      Added defensive check and retry logic.
-
-      Fixes #456
-    improvement: "Added body explaining context and issue reference"
+# ...
 ```
 
 ### Common Patterns and Fixes
@@ -306,19 +220,7 @@ pattern_fixes:
       before: "fix login timeout issue."
       after: "fix login timeout issue"
 
-  redundant_words:
-    issue: "Subject contains filler"
-    fix: "Remove 'this commit', 'changes', etc."
-    example:
-      before: "this commit adds user login"
-      after: "add user login"
-
-  scope_mismatch:
-    issue: "Scope doesn't match changes"
-    fix: "Use scope from main changed directory"
-    example:
-      before: "feat(api): update login component"
-      after: "feat(auth): update login component"
+# ...
 ```
 
 ---
@@ -343,18 +245,7 @@ rebase_guidance:
     drop: "Remove commit entirely"
 
   script_template: |
-    # Rebase plan for {branch}
-    # {total_commits} commits → {target_commits} commits
-
-    pick {hash1} feat(auth): add OAuth2 provider
-    squash {hash2} WIP oauth
-    squash {hash3} fix typo
-    reword {hash4} fix stuff  # → fix(auth): resolve token refresh
-    pick {hash5} test(auth): add OAuth tests
-
-    # Expected result:
-    # 1. feat(auth): add OAuth2 provider
-    # 2. test(auth): add OAuth tests
+# ...
 ```
 
 ### Squash Recommendations
@@ -396,13 +287,7 @@ squash_patterns:
 | Subject | {subject_score} | 15 | {subject_note} |
 | Body | {body_score} | 5 | {body_note} |
 | Footer | {footer_score} | 5 | {footer_note} |
-| Atomicity | {atom_score} | 30 | {atom_note} |
-| Consistency | {cons_score} | 20 | {cons_note} |
-
-### Issues
-{issues_list}
-
-### Suggested Rewrite
+...
 ```
 {suggested_message}
 ```
@@ -459,20 +344,7 @@ autorun_commit_analysis:
   output_format:
     _STEP_COMPLETE:
       Agent: Guardian
-      Status: SUCCESS
-      Output:
-        commit_analysis:
-          count: 5
-          avg_score: 72
-          wip_count: 1
-          rebase_needed: true
-          rebase_plan: |
-            pick a1b2c3 feat(auth): add OAuth2
-            squash d4e5f6 WIP
-            reword g7h8i9 fix stuff
-          improvements:
-            - "Squash WIP commit"
-            - "Reword 'fix stuff' to specific message"
+# ...
 ```
 
 ---
@@ -497,19 +369,5 @@ convention_learning:
       other: 10%
 
     scope_patterns:
-      - auth (18%)
-      - api (15%)
-      - ui (12%)
-      - core (10%)
-
-    message_style:
-      format: "conventional"
-      case: "lowercase"
-      max_length: 65  # Project average
-      body_frequency: 40%
-
-  apply:
-    - Validate against detected conventions
-    - Suggest project-aligned improvements
-    - Flag deviations from team norms
+# ...
 ```

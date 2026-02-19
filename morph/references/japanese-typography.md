@@ -173,37 +173,7 @@ pandoc input.md -o output.pdf \
 \setstretch{1.7}
 
 % Paragraph settings
-\setlength{\parindent}{1em}
-\setlength{\parskip}{0pt}
-
-% Kinsoku settings (automatic with luatexja)
-% Additional customization if needed:
-% \ltjsetparameter{jacharrange={-2}}
-
-$if(title)$
-\title{$title$}
-$endif$
-$if(author)$
-\author{$author$}
-$endif$
-$if(date)$
-\date{$date$}
-$endif$
-
-\begin{document}
-
-$if(title)$
-\maketitle
-$endif$
-
-$if(toc)$
-\tableofcontents
-\clearpage
-$endif$
-
-$body$
-
-\end{document}
+// ...
 ```
 
 ### Corporate Japanese Template
@@ -224,60 +194,7 @@ $body$
   bottom=25mm,
   left=25mm,
   right=25mm
-}
-
-% Japanese fonts
-\setmainjfont{Hiragino Mincho Pro}
-\setsansjfont{Hiragino Kaku Gothic Pro}
-
-% Header/Footer
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\small $company$}
-\fancyhead[R]{\small $title$}
-\fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-
-% Line spacing
-\setstretch{1.7}
-
-% Heading styles
-\usepackage{titlesec}
-\titleformat{\section}
-  {\normalfont\Large\sffamily\bfseries}
-  {\thesection}{1em}{}
-\titleformat{\subsection}
-  {\normalfont\large\sffamily\bfseries}
-  {\thesubsection}{1em}{}
-
-% Title page
-\title{
-  $if(logo)$
-  \includegraphics[width=3cm]{$logo$}\\[1cm]
-  $endif$
-  {\Huge\sffamily $title$}\\[0.5cm]
-  $if(subtitle)$
-  {\Large $subtitle$}
-  $endif$
-}
-\author{$author$}
-\date{$date$}
-
-\begin{document}
-
-\maketitle
-\thispagestyle{empty}
-\clearpage
-
-$if(toc)$
-\tableofcontents
-\clearpage
-$endif$
-
-$body$
-
-\end{document}
+// ...
 ```
 
 ---
@@ -352,10 +269,7 @@ pandoc input.md -o output.pdf --lua-filter=yakumono-filter.lua
 /* Ruby annotation styling */
 ruby {
   ruby-position: over;
-}
-rt {
-  font-size: 0.5em;
-}
+/* ... */
 ```
 
 ### HTML Vertical Example
@@ -476,48 +390,7 @@ body {
   text-align: justify;
   text-justify: inter-ideograph;
 }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Hiragino Kaku Gothic Pro", "Yu Gothic", sans-serif;
-  page-break-after: avoid;
-  line-height: 1.3;
-}
-
-h1 { font-size: 18pt; margin-top: 0; }
-h2 { font-size: 14pt; margin-top: 1.5em; }
-h3 { font-size: 12pt; margin-top: 1.2em; }
-
-p {
-  margin: 0;
-  text-indent: 1em;
-}
-
-p + p {
-  margin-top: 0;
-}
-
-/* Prevent orphaned headings */
-h2, h3, h4 {
-  page-break-after: avoid;
-}
-
-/* Keep tables together */
-table {
-  page-break-inside: avoid;
-}
-
-/* Code blocks */
-pre, code {
-  font-family: "Source Han Code JP", "Osaka-Mono", monospace;
-  font-size: 9pt;
-}
-
-/* Print-specific */
-@media print {
-  a[href]:after {
-    content: none;
-  }
-}
+/* ... */
 ```
 
 ---

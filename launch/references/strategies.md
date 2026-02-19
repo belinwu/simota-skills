@@ -72,35 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Modified behavior description (#124)
 
-### Deprecated
-- Feature marked for removal (#125)
-
-### Removed
-- Deleted feature description (#126)
-
-### Fixed
-- Bug fix description (#127)
-
-### Security
-- Security fix description (#128)
-
-## [1.2.0] - 2024-01-15
-
-### Added
-- User authentication via OAuth2 (#100)
-- Export functionality for reports (#101)
-
-### Fixed
-- Login timeout issue under high load (#102)
-
-## [1.1.0] - 2024-01-01
-
-### Added
-- Initial release features
-
-[Unreleased]: https://github.com/user/repo/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/user/repo/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/user/repo/releases/tag/v1.1.0
+...
 ```
 
 ### CHANGELOG Entry Guidelines
@@ -153,34 +125,7 @@ changelog_mapping:
 You can now sign in using your Google or GitHub account. This provides:
 - Faster login experience
 - No need to remember another password
-- Enhanced security with 2FA support
-
-### Report Export
-Export your reports in multiple formats:
-- PDF for sharing and printing
-- CSV for data analysis in spreadsheets
-
-## Bug Fixes
-
-- Fixed an issue where login would timeout during peak hours
-- Resolved dashboard loading delays on slow connections
-
-## Breaking Changes
-
-None in this release.
-
-## Upgrade Instructions
-
-1. No action required for most users
-2. If using API v1, migrate to v2 before March 2024
-
-## Known Issues
-
-- Dark mode has minor styling issues on Safari (fix planned for v1.2.1)
-
----
-
-For full technical details, see the [CHANGELOG](./CHANGELOG.md).
+...
 ```
 
 ### Release Notes vs CHANGELOG
@@ -215,12 +160,7 @@ For full technical details, see the [CHANGELOG](./CHANGELOG.md).
 Initiate rollback if ANY of these occur:
 1. Error rate > 5% for 5 minutes
 2. P95 latency > 2x baseline
-3. Critical functionality broken
-4. Security vulnerability discovered
-
-## Rollback Procedure
-
-### Option A: Feature Flag Disable (Fastest)
+...
 ```bash
 # Disable feature flag
 curl -X POST https://api.flags.io/flags/oauth-v2/disable
@@ -265,7 +205,7 @@ pnpm prisma migrate status
 - [ ] Health check passing
 - [ ] Error rate normalized
 - [ ] User flows functional
-- [ ] Monitoring green
+...
 ```
 
 ### Rollback Strategy Matrix
@@ -309,26 +249,7 @@ rollout_plan:
     percentage: 5%
     targets: ["beta-users"]
     duration: "3 days"
-    success_criteria:
-      - error_rate: < 2%
-      - user_feedback: positive
-
-  stage_3:
-    name: "Gradual Rollout"
-    percentage: 25%
-    targets: ["all-users"]
-    duration: "2 days"
-    success_criteria:
-      - error_rate: < 2%
-      - p95_latency: < baseline * 1.2
-
-  stage_4:
-    name: "Full Rollout"
-    percentage: 100%
-    targets: ["all-users"]
-    duration: "stable"
-    success_criteria:
-      - error_rate: < 2%
+# ...
 ```
 
 ### Feature Flag Lifecycle
@@ -360,7 +281,7 @@ rollout_plan:
   },
   "fallback": false,
   "cleanup_ticket": "JIRA-456"
-}
+// ...
 ```
 
 ---
@@ -385,50 +306,7 @@ rollout_plan:
 - [ ] No critical/high security issues
 - [ ] Performance benchmarks met
 
-### Documentation
-- [ ] CHANGELOG updated
-- [ ] Release notes drafted
-- [ ] API documentation updated
-- [ ] Migration guide (if needed)
-
-### Infrastructure
-- [ ] Staging deployment successful
-- [ ] Load testing completed
-- [ ] Rollback plan documented
-- [ ] Database migration tested
-
-## Release Day (T-0)
-
-### Pre-Deployment
-- [ ] Go/No-go meeting completed
-- [ ] Stakeholders notified
-- [ ] On-call team available
-- [ ] Monitoring dashboards ready
-
-### Deployment
-- [ ] Database migration executed
-- [ ] Application deployed
-- [ ] Health checks passing
-- [ ] Smoke tests passing
-
-### Verification
-- [ ] Critical paths tested manually
-- [ ] Error rates normal
-- [ ] Performance within SLA
-- [ ] No alerts triggered
-
-## Post-Release (T+1 day)
-
-### Monitoring
-- [ ] 24-hour stability confirmed
-- [ ] User feedback reviewed
-- [ ] Metrics dashboard reviewed
-
-### Cleanup
-- [ ] Release notes published
-- [ ] Stakeholders notified of success
-- [ ] Release branch tagged
-- [ ] Retrospective scheduled
+...
 ```
 
 ### Go/No-Go Decision Matrix
@@ -466,22 +344,7 @@ Production Issue Detected
 └────────┬────────┘
          │
          ▼
-┌─────────────────┐
-│ Expedited review│
-│ (2 approvers)   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Deploy to prod  │
-│ (skip staging)  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Cherry-pick to  │
-│ main branch     │
-└─────────────────┘
+...
 ```
 
 ### Hotfix Branch Naming

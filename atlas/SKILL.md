@@ -68,8 +68,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/architecture-health-metrics.md` | Coupling/complexity metrics, health score card, CI integration |
 | `references/canvas-integration.md` | CANVAS_REQUEST templates (4 diagram types) + Mermaid examples |
 | `references/zen-integration.md` | ZEN_HANDOFF templates (God Class split, separation, coupling) |
-| `references/interaction-triggers.md` | YAML question templates for 4 triggers |
-| `references/collaboration-handoffs.md` | Zen/Canvas/Horizon handoff templates + collaboration flow |
 | `references/daily-process-checklists.md` | SURVEY/PLAN/VERIFY/PRESENT detailed checklists |
 
 ---

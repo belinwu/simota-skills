@@ -259,21 +259,6 @@ weights:
   quill:         0.08  # Documentation (was 0.10)
 ```
 
-### Legacy Standard Weights (5-Dimension)
-
-For backward compatibility with existing session reports:
-
-```yaml
-legacy_standard:
-  judge: 0.30
-  zen: 0.20
-  radar: 0.25
-  warden: 0.15
-  quill: 0.10
-```
-
-**Migration note:** 5-dimension and 7-dimension UQS scores are not directly comparable. Always note the UQS version in session reports.
-
 ### Code-Focused Weights
 
 Use when focusing on implementation quality.
@@ -493,7 +478,7 @@ pnpm test --coverage --json > coverage.json
 # Calculate composite
 radar_score = (75.5 × 0.4) + (68.2 × 0.4) + (82.1 × 0.2)
             = 30.2 + 27.3 + 16.4
-            = 73.9
+# ...
 ```
 
 ### Complexity Integration

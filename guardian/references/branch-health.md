@@ -32,28 +32,7 @@ sync_status:
       warning: 4-7
       critical: 8-14
       severe: 15+
-
-  calculation: |
-    behind_main = count_commits_behind(branch, target)
-    last_sync = days_since_last_rebase_or_merge(branch, target)
-
-    if behind_main <= 5 and last_sync <= 3:
-      sync_score = 100
-    elif behind_main <= 15 and last_sync <= 7:
-      sync_score = 75
-    elif behind_main <= 30 and last_sync <= 14:
-      sync_score = 50
-    else:
-      sync_score = 25
-
-  recommendations:
-    warning: "Rebase soon to avoid conflicts"
-    critical: "Rebase now - high conflict risk"
-    severe: "Major rebase needed - consider splitting"
-
-  commands:
-    check: "git rev-list HEAD..origin/main --count"
-    fix: "git fetch origin main && git rebase origin/main"
+# ...
 ```
 
 ### 2. Branch Age (20% weight)
@@ -74,33 +53,7 @@ branch_age:
       status: "healthy"
 
     maturing:
-      days: 8-14
-      score: 65
-      status: "warning"
-
-    stale:
-      days: 15-30
-      score: 40
-      status: "critical"
-
-    abandoned:
-      days: 31+
-      score: 15
-      status: "severe"
-
-  activity_adjustment:
-    recent_commits:
-      condition: "Commit in last 24 hours"
-      adjustment: "+10 to score"
-
-    no_recent_activity:
-      condition: "No commit in 3+ days"
-      adjustment: "-10 to score"
-
-  recommendations:
-    maturing: "Complete or split soon"
-    stale: "Needs attention - merge or split"
-    abandoned: "Consider closing or rebasing fresh"
+# ...
 ```
 
 ### 3. Conflict Potential (20% weight)
@@ -121,42 +74,7 @@ conflict_potential:
       check: "Line ranges overlap"
       method: |
         for file in overlapping_files:
-          branch_hunks = get_changed_hunks(branch, file)
-          target_hunks = get_changed_hunks(target, file)
-          if hunks_overlap(branch_hunks, target_hunks):
-            conflict_likely = true
-
-  scoring:
-    none:
-      condition: "No overlapping files"
-      score: 100
-
-    unlikely:
-      condition: "Overlapping files but different hunks"
-      score: 80
-
-    possible:
-      condition: "Adjacent hunks"
-      score: 60
-
-    likely:
-      condition: "Overlapping hunks detected"
-      score: 30
-
-    certain:
-      condition: "Git reports merge conflict"
-      score: 0
-
-  conflict_files_report:
-    format: |
-      | File | Branch Lines | Target Lines | Risk |
-      |------|--------------|--------------|------|
-      {conflict_file_rows}
-
-  recommendations:
-    possible: "Monitor {files} for conflicts"
-    likely: "Coordinate with owner of {files}"
-    certain: "Resolve conflicts before continuing"
+# ...
 ```
 
 ### 4. CI Status (15% weight)
@@ -177,39 +95,7 @@ ci_status:
     flaky:
       condition: "Intermittent failures"
       score: 50
-
-    failing:
-      condition: "Consistent failures"
-      score: 20
-
-    no_ci:
-      condition: "No CI configured or run"
-      score: 40  # Unknown risk
-
-  flaky_detection:
-    method: "Same commit, different results"
-    threshold: "2+ different outcomes"
-    action: "Investigate test stability"
-
-  failure_analysis:
-    categories:
-      test_failure:
-        severity: "high"
-        action: "Fix tests"
-      lint_failure:
-        severity: "medium"
-        action: "Fix style issues"
-      build_failure:
-        severity: "high"
-        action: "Fix build"
-      security_scan:
-        severity: "critical"
-        action: "Address vulnerabilities"
-
-  recommendations:
-    failing: "Fix CI before review"
-    flaky: "Investigate test stability"
-    no_ci: "Ensure CI runs on branch"
+# ...
 ```
 
 ### 5. Size Creep (10% weight)
@@ -230,43 +116,7 @@ size_creep:
     growth_rate: "(current - initial) / initial"
 
   thresholds:
-    stable:
-      growth: "< 10%"
-      score: 100
-
-    minor_growth:
-      growth: "10-25%"
-      score: 85
-
-    moderate_growth:
-      growth: "25-50%"
-      score: 65
-
-    significant_growth:
-      growth: "50-100%"
-      score: 40
-
-    explosive_growth:
-      growth: "> 100%"
-      score: 20
-
-  tracking:
-    per_commit:
-      - Commit hash
-      - Files added/modified
-      - Lines added/removed
-      - Cumulative size
-
-  visualization: |
-    Commit 1: ████ 12 files, 234 lines
-    Commit 2: █████ 15 files, 312 lines
-    Commit 3: ████████ 22 files, 456 lines
-    Commit 4: ████████████ 35 files, 678 lines  ← 3x growth
-
-  recommendations:
-    moderate_growth: "Consider splitting if more growth expected"
-    significant_growth: "Split into focused PRs"
-    explosive_growth: "Must split - PR too large"
+# ...
 ```
 
 ### 6. Review Status (10% weight)
@@ -287,46 +137,7 @@ review_status:
         - "Review started"
         - "Some comments addressed"
       score: 85
-
-    awaiting_review:
-      indicators:
-        - "Review requested"
-        - "No review activity yet"
-      score: 70
-
-    stale_review:
-      indicators:
-        - "No review activity in 3+ days"
-        - "Open conversations"
-      score: 40
-
-    blocked:
-      indicators:
-        - "Changes requested"
-        - "Not addressed"
-      score: 25
-
-    abandoned:
-      indicators:
-        - "No activity in 7+ days"
-        - "Author unresponsive"
-      score: 10
-
-  metrics:
-    time_to_first_review:
-      target: "< 24 hours"
-
-    review_cycles:
-      healthy: "1-2 cycles"
-      concerning: "4+ cycles"
-
-    open_conversations:
-      concerning: "> 5 unresolved"
-
-  recommendations:
-    stale_review: "Follow up with reviewers"
-    blocked: "Address change requests"
-    abandoned: "Close or reassign"
+# ...
 ```
 
 ---
@@ -349,13 +160,7 @@ aggregate_calculation:
     warning: [50, 74]
     critical: [25, 49]
     severe: [0, 24]
-
-  actions_by_grade:
-    excellent: "Ready to merge"
-    healthy: "Normal development"
-    warning: "Needs attention soon"
-    critical: "Requires immediate action"
-    severe: "Consider closing/rebasing"
+# ...
 ```
 
 ---
@@ -378,11 +183,7 @@ aggregate_calculation:
 | Sync with {target} | {sync_status} | {behind} behind | {sync_score} |
 | Branch age | {age_status} | {age} days | {age_score} |
 | Conflict risk | {conflict_status} | {conflict_files} files | {conflict_score} |
-| CI status | {ci_status} | {ci_result} | {ci_score} |
-| Size creep | {size_status} | {growth}% growth | {size_score} |
-| Review status | {review_status} | {review_state} | {review_score} |
-
-### Branch Timeline
+...
 ```
 {target} ───●────●────●────●────●────●────●────●────●─── HEAD
             │
@@ -429,27 +230,7 @@ automated_monitoring:
     conflict_emergence:
       condition: "conflict_potential increased"
       action: "Alert author"
-
-    ci_degradation:
-      condition: "CI was passing, now failing"
-      action: "Notify author"
-
-    size_explosion:
-      condition: "growth > 50% in last day"
-      action: "Suggest split"
-
-  notifications:
-    slack:
-      channel: "#branch-health"
-      format: |
-        :warning: Branch Health Alert
-        Branch: {branch}
-        Issue: {issue}
-        Recommendation: {recommendation}
-
-    email:
-      subject: "[Branch Health] {branch} needs attention"
-      body: "{detailed_report}"
+# ...
 ```
 
 ### Health Trends
@@ -470,12 +251,7 @@ health_trends:
 
     conflict_frequency:
       target: "< 10% of PRs"
-
-  dashboards:
-    branch_health_overview:
-      - Active branches by health
-      - Branches needing attention
-      - Historical trends
+# ...
 ```
 
 ---
@@ -498,26 +274,7 @@ autorun_branch_health:
   output_format:
     _STEP_COMPLETE:
       Agent: Guardian
-      Status: SUCCESS | PARTIAL
-      Output:
-        branch_health:
-          score: 68
-          grade: warning
-          indicators:
-            sync: 75
-            age: 60
-            conflict: 80
-            ci: 100
-            size: 50
-            review: 70
-          issues:
-            - "15 commits behind main"
-            - "Branch age: 10 days"
-            - "Size increased 45%"
-          actions:
-            - "Rebase onto main"
-            - "Consider splitting"
-      Next: Guardian  # Self for rebase guidance
+# ...
 ```
 
 ---
@@ -542,22 +299,7 @@ rebase_guidance:
 
     # Fetch latest
     git fetch origin main
-
-    # Interactive rebase
-    git rebase -i origin/main
-
-    # After resolving conflicts
-    git rebase --continue
-
-    # Verify
-    npm test
-
-    # Push
-    git push --force-with-lease
-
-  conflict_resolution:
-    per_file_guidance: true
-    scout_handoff_if_complex: true
+# ...
 ```
 
 ### Split Workflow
@@ -578,20 +320,7 @@ split_guidance:
     by_layer:
       when: "Changes span layers"
       approach: "API first, then UI"
-
-    by_feature:
-      when: "Multiple features mixed"
-      approach: "One PR per feature"
-
-  execution: |
-    # Create branches for each split
-    git checkout -b split-1-{feature}
-    # Cherry-pick or reset to include only relevant commits
-    git checkout {original} -- path/to/files
-
-  sherpa_handoff:
-    condition: "MEGA PR or complex split"
-    format: GUARDIAN_TO_SHERPA_HANDOFF
+# ...
 ```
 
 ---
@@ -614,22 +343,5 @@ branch_lifecycle:
       health_focus: "Review status"
 
     ready:
-      expected_duration: "< 1 day"
-      health_focus: "Final checks"
-
-    merged:
-      cleanup: "Delete branch"
-
-  warnings:
-    extended_development:
-      trigger: "development > 7 days"
-      action: "Check for blockers, suggest split"
-
-    stalled_review:
-      trigger: "review > 3 days without activity"
-      action: "Follow up with reviewers"
-
-    merge_delay:
-      trigger: "ready > 2 days without merge"
-      action: "Check for blocking issues"
+# ...
 ```

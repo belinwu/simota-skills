@@ -124,8 +124,7 @@ for pkg in $CHANGED_PKGS; do
   DEPS=$(go list -f '{{ join .Deps "\n" }}' "./..." 2>/dev/null | grep "$pkg" | sort -u)
   ALL_PKGS="$ALL_PKGS $DEPS ./$pkg/..."
 done
-
-echo "$ALL_PKGS" | tr ' ' '\n' | sort -u | tr '\n' ' '
+# ...
 ```
 
 ### Rust
@@ -191,44 +190,7 @@ const tiers: TestTier[] = [
     name: 'P0: Last-Failed',
     command: 'npx vitest --reporter=verbose run --bail 5 2>/dev/null || true',
     timeout: 2,
-    required: false,
-  },
-  {
-    name: 'P1: Direct Changes',
-    command: 'npx vitest --changed HEAD~1 --reporter=verbose',
-    timeout: 3,
-    required: true,
-  },
-  {
-    name: 'P2: Dependent Tests',
-    command: `npx vitest --related ${getChangedFiles().join(' ')}`,
-    timeout: 5,
-    required: true,
-  },
-  {
-    name: 'P3: Same Module',
-    command: `npx vitest ${getChangedDirectories().join(' ')}`,
-    timeout: 5,
-    required: false,
-  },
-  {
-    name: 'P4: Full Suite',
-    command: 'npx vitest run',
-    timeout: 15,
-    required: false,  // Only on main branch
-  },
-];
-
-function getChangedFiles(): string[] {
-  return execSync('git diff --name-only HEAD~1 -- "*.ts" "*.tsx"')
-    .toString().trim().split('\n').filter(Boolean);
-}
-
-function getChangedDirectories(): string[] {
-  const files = getChangedFiles();
-  const dirs = [...new Set(files.map(f => f.replace(/\/[^/]+$/, '')))];
-  return dirs;
-}
+// ...
 ```
 
 ### CI Priority Matrix
@@ -249,54 +211,7 @@ jobs:
       - id: changes
         run: |
           FILES=$(git diff --name-only origin/main -- '*.ts' '*.tsx' | tr '\n' ' ')
-          echo "files=$FILES" >> $GITHUB_OUTPUT
-
-      - id: scope
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "full=true" >> $GITHUB_OUTPUT
-          else
-            echo "full=false" >> $GITHUB_OUTPUT
-          fi
-
-  p0-last-failed:
-    needs: determine-scope
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - name: Restore failure cache
-        uses: actions/cache@v4
-        with:
-          path: .vitest-failures
-          key: test-failures-${{ github.ref }}
-      - run: npx vitest run --reporter=verbose --bail 3
-        timeout-minutes: 2
-
-  p1-direct:
-    needs: determine-scope
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: npm ci
-      - run: npx vitest --changed HEAD~1
-        timeout-minutes: 3
-
-  p4-full:
-    needs: [p0-last-failed, p1-direct]
-    if: needs.determine-scope.outputs.run-full == 'true'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        shard: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npx vitest run --shard=${{ matrix.shard }}/4
-        timeout-minutes: 15
+# ...
 ```
 
 ---
@@ -335,37 +250,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npx vitest run --changed HEAD~1 --bail 1
-
-  # Gate 2: Integration (runs after fast gate, blocks PR)
-  integration-gate:
-    needs: fast-gate
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: npm ci
-      - run: npx vitest run --project=integration
-      - run: npx vitest run --related $(git diff --name-only origin/main -- '*.ts' '*.tsx' | tr '\n' ' ')
-
-  # Gate 3: Full (main branch only, non-blocking for PRs)
-  full-suite:
-    if: github.ref == 'refs/heads/main'
-    needs: integration-gate
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npx vitest run --shard=${{ matrix.shard }}/4
+# ...
 ```
 
 ---
@@ -450,7 +335,7 @@ npx turbo run test --filter=...[origin/main] --dry-run
       "cache": false
     }
   }
-}
+// ...
 ```
 
 ### pnpm Workspace
@@ -518,31 +403,7 @@ PR opened / Push event
   │Select│   │Skip tests│
   │scope │   │(docs only)│
   └──┬───┘   └──────────┘
-     │
-     ▼
-  ┌────────────────────┐
-  │ Config files changed│
-  │ (CI, tsconfig, etc)│
-  └────────┬───────────┘
-     ┌─────┴─────┐
-     │           │
-  Yes ▼        No ▼
-  ┌──────┐   ┌─────────────┐
-  │ Full │   │ Related only │
-  │ suite│   │ (--changed)  │
-  └──────┘   └──────┬──────┘
-                     │
-                     ▼
-              ┌────────────┐
-              │ main branch?│
-              └──────┬─────┘
-                ┌────┴────┐
-                │        │
-             Yes ▼     No ▼
-           ┌──────┐  ┌──────────┐
-           │ Full │  │ PR scope │
-           │+shard│  │ (P0-P3)  │
-           └──────┘  └──────────┘
+...
 ```
 
 ### Skip Conditions

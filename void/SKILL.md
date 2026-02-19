@@ -98,8 +98,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **F: Compete Trim** | Compete → Void → Magi | 「競合にない機能は本当に必要か？」 |
 | **G: Nexus Routing** | Nexus → Void → [各] | 「複雑性削減が必要なタスク」 |
 
-→ 各ハンドオフのYAMLスキーマは `references/handoffs.md` を参照
-
 ---
 
 ## References
@@ -110,8 +108,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/cost-analysis.md` | Cost-of-Keeping Score計算方法、5次元評価基準、Removal Risk Score |
 | `references/subtraction-patterns.md` | 6削減パターン定義・適用条件・Before/After事例 |
 | `references/proposal-templates.md` | Subtraction Proposalテンプレート、severity×confidenceマトリクス |
-| `references/handoffs.md` | エージェント間ハンドオフYAML（Spark/Sherpa/Atlas/Pulse/Compete→Void、Void→Magi/Sherpa/Zen/Sweep/Scribe、Nexus） |
-| `references/interaction-triggers.md` | ON_*トリガー別AskUserQuestion YAMLテンプレート |
 
 ---
 

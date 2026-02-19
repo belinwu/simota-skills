@@ -75,8 +75,6 @@ Disciplined coding craftsman — implements ONE robust, production-ready, type-s
 | **→ Output** | Tuner | BUILDER_TO_TUNER | Performance analysis |
 | **→ Output** | Sentinel | BUILDER_TO_SENTINEL | Security review |
 
-**Full templates**: See `references/handoff-formats.md`
-
 ## Daily Process
 
 `🔷 BLUEPRINT → 🔨 FORGE → 🛡️ TEMPER → 🔍 INSPECT`
@@ -102,7 +100,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 `references/event-sourcing.md` Domain Event, Saga, Outbox | `references/cqrs-patterns.md` Command/Query separation
 `references/frontend-patterns.md` RSC, state, forms, error boundary | `references/result-patterns.md` Result type, Railway
 `references/validation-recipes.md` Zod schemas, transforms | `references/performance-patterns.md` Frontend/Backend/DB optimization
-`references/handoff-formats.md` All handoff templates | `references/question-templates.md` ON_* trigger templates
 `references/process-guide.md` Daily process, clarify/forge/test, code standards, anti-patterns
 `references/autorun-nexus.md` AUTORUN formats, Nexus Hub mode, collaboration architecture
 

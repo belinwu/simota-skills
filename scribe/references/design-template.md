@@ -18,37 +18,7 @@
 | Related SRS | SRS-[name] |
 
 ## Change History
-
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | YYYY-MM-DD | [Name] | Initial draft |
-
----
-
-## 1. Overview
-
-### 1.1 Purpose
-This document describes the high-level design for [feature name].
-
-### 1.2 Scope
-- [What this design covers]
-- [What this design does not cover]
-
-### 1.3 Goals
-- [Design goal 1]
-- [Design goal 2]
-
-### 1.4 References
-- PRD: [link]
-- SRS: [link]
-- ADR: [link]
-
----
-
-## 2. Architecture Overview
-
-### 2.1 System Context Diagram
-
+...
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     External Users                          │
@@ -98,28 +68,7 @@ This document describes the high-level design for [feature name].
 ---
 
 ## 3. Component Design
-
-### 3.1 [Component Name]
-
-#### 3.1.1 Responsibilities
-- [Responsibility 1]
-- [Responsibility 2]
-
-#### 3.1.2 Interfaces
-
-**Provided Interfaces:**
-| Interface | Description | Protocol |
-|-----------|-------------|----------|
-| [Interface 1] | [Description] | REST |
-| [Interface 2] | [Description] | gRPC |
-
-**Required Interfaces:**
-| Interface | Provider | Protocol |
-|-----------|----------|----------|
-| [Interface 1] | [Component] | REST |
-
-#### 3.1.3 Component Diagram
-
+...
 ```
 ┌─────────────────────────────────────────────┐
 │              [Component Name]               │
@@ -191,45 +140,7 @@ This document describes the high-level design for [feature name].
 ### 5.1 External Integrations
 
 | System | Type | Purpose | Error Handling |
-|--------|------|---------|----------------|
-| Auth0 | OAuth | Social login | Retry 3x, fallback |
-| SendGrid | API | Emails | Queue, retry |
-| Stripe | API | Payments | Idempotency keys |
-
-### 5.2 Integration Patterns
-
-**Pattern: Circuit Breaker**
-- Used for: External API calls
-- Config: 5 failures → open, 30s timeout
-
-**Pattern: Retry with Backoff**
-- Used for: Transient failures
-- Config: 3 retries, exponential backoff
-
----
-
-## 6. Security Design
-
-### 6.1 Authentication
-- Method: JWT with RS256
-- Token lifetime: 24 hours
-- Refresh token: 7 days
-
-### 6.2 Authorization
-- Model: RBAC
-- Roles: admin, user, guest
-
-### 6.3 Data Protection
-- At rest: AES-256
-- In transit: TLS 1.3
-- PII: Encrypted columns
-
----
-
-## 7. Deployment Architecture
-
-### 7.1 Infrastructure
-
+...
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         AWS                                 │
@@ -267,45 +178,7 @@ This document describes the high-level design for [feature name].
 ### 8.1 Performance
 | Aspect | Target | Approach |
 |--------|--------|----------|
-| API latency | < 200ms | Caching, connection pooling |
-| Throughput | 1000 req/s | Horizontal scaling |
-
-### 8.2 Reliability
-| Aspect | Target | Approach |
-|--------|--------|----------|
-| Availability | 99.9% | Multi-AZ, health checks |
-| Recovery | < 5 min | Automated failover |
-
-### 8.3 Observability
-- Logging: Structured JSON → CloudWatch
-- Metrics: Prometheus → Grafana
-- Tracing: OpenTelemetry → Jaeger
-
----
-
-## 9. Risks & Mitigations
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| [Risk 1] | High | Medium | [Mitigation] |
-| [Risk 2] | Medium | Low | [Mitigation] |
-
----
-
-## 10. Decision Log
-
-| ID | Decision | Rationale | Date |
-|----|----------|-----------|------|
-| D-001 | Use PostgreSQL | Team expertise, ACID needs | YYYY-MM-DD |
-| D-002 | JWT for auth | Stateless, scalable | YYYY-MM-DD |
-
----
-
-## 11. Open Questions
-
-| ID | Question | Owner | Status |
-|----|----------|-------|--------|
-| Q-001 | [Question] | [Name] | Open |
+...
 ```
 
 ---
@@ -328,11 +201,7 @@ This document describes the high-level design for [feature name].
 ---
 
 ## 1. Module Design
-
-### 1.1 [Module Name]
-
-#### Class Diagram
-
+...
 ```
 ┌─────────────────────────────────────────┐
 │            AuthController               │
@@ -556,8 +425,7 @@ Client          Middleware        Cache          Service
 | AUTH_004 | 401 | Token expired | Re-authenticate |
 | AUTH_005 | 401 | Token invalid | Re-authenticate |
 
-### 4.2 Error Handling Strategy
-
+...
 ```typescript
 // Custom error classes
 class AuthenticationError extends Error {
@@ -605,39 +473,7 @@ try {
 | MAX_LOGIN_ATTEMPTS | Before lockout | 5 | No |
 | LOCKOUT_DURATION | Lock duration (min) | 30 | No |
 
-### 5.2 Feature Flags
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| AUTH_SOCIAL_LOGIN | Enable social login | false |
-| AUTH_MFA | Enable MFA | false |
-
----
-
-## 6. Testing Strategy
-
-### 6.1 Unit Tests
-
-| Class | Method | Test Cases |
-|-------|--------|------------|
-| AuthService | authenticate | valid creds, invalid creds, locked account |
-| AuthService | validateToken | valid token, expired token, invalid token |
-| TokenService | generate | creates valid JWT |
-| TokenService | verify | validates correctly |
-
-### 6.2 Integration Tests
-
-| Scenario | Components | Assertions |
-|----------|------------|------------|
-| Login flow | API → Service → DB → Cache | Token returned, session stored |
-| Lockout flow | API → Service → DB | Account locked after 5 attempts |
-
----
-
-## 7. Migration Plan
-
-### 7.1 Database Migrations
-
+...
 ```sql
 -- Migration: 001_create_users
 CREATE TABLE users (...);

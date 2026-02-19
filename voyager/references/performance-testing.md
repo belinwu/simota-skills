@@ -40,12 +40,7 @@ Measurement, assertion, and regression detection for web performance metrics wit
     "cssBundle": { "target": 100, "unit": "KB" },
     "imageTotal": { "target": 500, "unit": "KB" }
   },
-  "pages": {
-    "/": { "LCP": 2000, "CLS": 0.05 },
-    "/dashboard": { "LCP": 3000, "CLS": 0.1 },
-    "/checkout": { "LCP": 2500, "CLS": 0.05 }
-  }
-}
+// ...
 ```
 
 ### Playwright Config Extension
@@ -87,35 +82,7 @@ type PerformanceFixtures = {
   measureCWV: (page: Page) => Promise<PerformanceMetrics>;
 };
 
-export const test = base.extend<PerformanceFixtures>({
-  measureCWV: async ({}, use) => {
-    await use(async (page: Page) => {
-      // Inject web-vitals library
-      await page.addScriptTag({
-        url: 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js',
-      });
-
-      // Collect metrics
-      const metrics = await page.evaluate(() => {
-        return new Promise<PerformanceMetrics>((resolve) => {
-          const result: Partial<PerformanceMetrics> = {};
-          const { onLCP, onCLS, onINP, onTTFB, onFCP } = (window as any).webVitals;
-
-          onLCP((m: any) => { result.LCP = m.value; });
-          onCLS((m: any) => { result.CLS = m.value; });
-          onINP((m: any) => { result.INP = m.value; });
-          onTTFB((m: any) => { result.TTFB = m.value; });
-          onFCP((m: any) => { result.FCP = m.value; });
-
-          // Wait for metrics to stabilize
-          setTimeout(() => resolve(result as PerformanceMetrics), 3000);
-        });
-      });
-
-      return metrics;
-    });
-  },
-});
+// ...
 ```
 
 ### Using the Performance Fixture
@@ -136,26 +103,7 @@ test.describe('Homepage Performance', () => {
     // Assert against budget
     expect(metrics.LCP).toBeLessThanOrEqual(budget.metrics.LCP.target);
     expect(metrics.CLS).toBeLessThanOrEqual(budget.metrics.CLS.target);
-    expect(metrics.TTFB).toBeLessThanOrEqual(budget.metrics.TTFB.target);
-    expect(metrics.FCP).toBeLessThanOrEqual(budget.metrics.FCP.target);
-  });
-
-  test('LCP element loads quickly', async ({ page }) => {
-    await page.goto('/');
-
-    const lcpTiming = await page.evaluate(() => {
-      return new Promise<number>((resolve) => {
-        new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
-          resolve(lastEntry.startTime);
-        }).observe({ type: 'largest-contentful-paint', buffered: true });
-      });
-    });
-
-    expect(lcpTiming).toBeLessThan(2500);
-  });
-});
+// ...
 ```
 
 ### Navigation Timing API
@@ -176,25 +124,7 @@ export async function getNavigationTiming(page: Page) {
       DNS: timing.domainLookupEnd - timing.domainLookupStart,
       TLS: timing.connectEnd - timing.secureConnectionStart,
       TransferSize: timing.transferSize,
-    };
-  });
-}
-
-export async function getResourceSummary(page: Page) {
-  return page.evaluate(() => {
-    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-    const summary: Record<string, { count: number; totalSize: number }> = {};
-
-    for (const r of resources) {
-      const type = r.initiatorType;
-      if (!summary[type]) summary[type] = { count: 0, totalSize: 0 };
-      summary[type].count++;
-      summary[type].totalSize += r.transferSize;
-    }
-
-    return summary;
-  });
-}
+// ...
 ```
 
 ---
@@ -223,20 +153,7 @@ npm install -D @lhci/cli
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.9 }],
-        "categories:accessibility": ["warn", { "minScore": 0.95 }],
-        "categories:best-practices": ["warn", { "minScore": 0.9 }],
-        "first-contentful-paint": ["error", { "maxNumericValue": 1800 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "total-blocking-time": ["warn", { "maxNumericValue": 300 }]
-      }
-    },
-    "upload": {
-      "target": "temporary-public-storage"
-    }
-  }
-}
+// ...
 ```
 
 ### GitHub Actions Integration
@@ -257,19 +174,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
-
-      - name: Run Lighthouse CI
-        run: npx lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-
-      - name: Upload Lighthouse Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lighthouse-report
-          path: .lighthouseci/
-          retention-days: 14
+# ...
 ```
 
 ### Playwright + Lighthouse Combined
@@ -290,15 +195,7 @@ test('Lighthouse score meets threshold', async ({ page }) => {
   execSync(`npx lhci collect --url="${url}" --numberOfRuns=1`, {
     stdio: 'pipe',
   });
-
-  // Parse results
-  const results = JSON.parse(
-    fs.readFileSync('.lighthouseci/lhr-*.json', 'utf-8')
-  );
-
-  expect(results.categories.performance.score).toBeGreaterThanOrEqual(0.9);
-  expect(results.categories.accessibility.score).toBeGreaterThanOrEqual(0.95);
-});
+// ...
 ```
 
 ---
@@ -323,40 +220,7 @@ interface PerfBaseline {
     FCP: number;
     timestamp: string;
   };
-}
-
-export function loadBaseline(): PerfBaseline {
-  if (!fs.existsSync(BASELINE_PATH)) return {};
-  return JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf-8'));
-}
-
-export function saveBaseline(data: PerfBaseline) {
-  fs.writeFileSync(BASELINE_PATH, JSON.stringify(data, null, 2));
-}
-
-export function checkRegression(
-  page: string,
-  metric: string,
-  current: number,
-  baseline: PerfBaseline,
-): { passed: boolean; message: string } {
-  const base = baseline[page]?.[metric as keyof PerfBaseline[string]];
-  if (!base || typeof base !== 'number') {
-    return { passed: true, message: `No baseline for ${page}.${metric}` };
-  }
-
-  const threshold = base * (1 + THRESHOLD_PERCENT / 100);
-  const passed = metric === 'CLS'
-    ? current <= threshold
-    : current <= threshold;
-
-  return {
-    passed,
-    message: passed
-      ? `${metric}: ${current}ms (baseline: ${base}ms, threshold: ${threshold}ms)`
-      : `REGRESSION: ${metric}: ${current}ms exceeds threshold ${threshold}ms (baseline: ${base}ms)`,
-  };
-}
+// ...
 ```
 
 ### CI Regression Workflow
@@ -377,20 +241,7 @@ for (const pagePath of PAGES) {
 
     const timing = await getNavigationTiming(page);
 
-    const checks = [
-      checkRegression(pagePath, 'TTFB', timing.TTFB, baseline),
-      checkRegression(pagePath, 'FCP', timing.FCP, baseline),
-      checkRegression(pagePath, 'Load', timing.Load, baseline),
-    ];
-
-    for (const check of checks) {
-      if (!check.passed) {
-        console.warn(check.message);
-      }
-      expect(check.passed, check.message).toBe(true);
-    }
-  });
-}
+// ...
 ```
 
 ---
@@ -415,28 +266,7 @@ test('page resources within budget', async ({ page }) => {
 
     responses.push({ url, size, type });
   });
-
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-
-  // Categorize resources
-  const jsSize = responses
-    .filter(r => r.type.includes('javascript'))
-    .reduce((sum, r) => sum + r.size, 0);
-  const cssSize = responses
-    .filter(r => r.type.includes('css'))
-    .reduce((sum, r) => sum + r.size, 0);
-  const imageSize = responses
-    .filter(r => r.type.includes('image'))
-    .reduce((sum, r) => sum + r.size, 0);
-  const totalSize = responses.reduce((sum, r) => sum + r.size, 0);
-
-  // Assert against budget (KB)
-  expect(jsSize / 1024).toBeLessThanOrEqual(budget.resources.jsBundle.target);
-  expect(cssSize / 1024).toBeLessThanOrEqual(budget.resources.cssBundle.target);
-  expect(imageSize / 1024).toBeLessThanOrEqual(budget.resources.imageTotal.target);
-  expect(totalSize / 1024).toBeLessThanOrEqual(budget.resources.totalPageWeight.target);
-});
+// ...
 ```
 
 ### Request Count Monitoring
@@ -457,14 +287,7 @@ test('no excessive API calls on page load', async ({ page }) => {
   // Detect N+1 API call patterns
   const urlCounts = apiCalls.reduce<Record<string, number>>((acc, url) => {
     const path = new URL(url).pathname;
-    acc[path] = (acc[path] || 0) + 1;
-    return acc;
-  }, {});
-
-  for (const [path, count] of Object.entries(urlCounts)) {
-    expect(count, `Excessive calls to ${path}: ${count}`).toBeLessThanOrEqual(3);
-  }
-});
+// ...
 ```
 
 ---

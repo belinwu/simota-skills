@@ -34,10 +34,7 @@ Incidental:   █░░░░░░░░░ 10% (30 files)
 - 28 files - Import reordering (auto-formatter)
 - `package-lock.json` - 2,847 lines (dependency update)
 
-### Recommendation
-1. Separate formatting changes into dedicated commit
-2. Focus review on 12 essential files
-3. Consider splitting OAuth and rate limiting into separate PRs
+...
 ```
 
 ---
@@ -82,19 +79,7 @@ quality_scoring:
     60: related_concerns
     40: loosely_related
     20: multiple_unrelated
-    0: everything_mixed
-
-  commit_score:
-    message_quality: 0-50
-    atomicity: 0-30
-    conventional_format: 0-20
-
-  test_score:
-    100: all_changes_tested
-    80: core_logic_tested
-    50: partial_coverage
-    25: minimal_tests
-    0: no_tests
+# ...
 ```
 
 ---
@@ -117,13 +102,7 @@ quality_scoring:
 | `m3n4o5` | update deps | 40 | No type, vague |
 
 ### Average Score: 50/100 (Needs Work)
-
-### Recommendations
-1. Squash WIP commit into related feature commit
-2. Rewrite "fix stuff" → "fix(auth): resolve token refresh race condition"
-3. Rewrite "update deps" → "chore(deps): upgrade oauth2-client to v2.0"
-
-### Suggested Rebase Plan
+...
 ```bash
 git rebase -i HEAD~5
 # pick a1b2c3 feat(auth): add OAuth2 provider
@@ -152,10 +131,7 @@ commit_message_analysis:
     - No body for complex changes
 
   error_patterns:
-    - WIP commits
-    - Empty messages
-    - Debug/temporary commits
-    - Profanity or unprofessional language
+# ...
 ```
 
 ---
@@ -192,8 +168,7 @@ Author Familiarity: ██████░░░░ 60/100  (Some ownership)
 4. **Prepare rollback** - Feature flag for instant disable
 
 ### Regression Risk
-- **High** (3 recent bugs in `payment/` directory)
-- Recommended: Add regression tests for #456, #472, #489
+...
 ```
 
 ---
@@ -239,10 +214,7 @@ src/core/engine.ts    ███████████████████ 
 2. **Decompose** `src/payment/calc.ts`
    - 71% churn rate is unsustainable
    - Handoff to Atlas for architecture review
-
-3. **Document** `src/core/engine.ts`
-   - Single author risk
-   - Create technical documentation
+...
 ```
 
 ---
@@ -323,9 +295,7 @@ ownership_scoring:
 | Branch age | Warning | 8 days | Complete or split |
 | Conflict risk | Healthy | Low | - |
 | CI status | Healthy | Passing | - |
-| Size creep | Warning | Growing | Consider splitting |
-
-### Sync Analysis
+...
 ```
 main ─────●────●────●────●────●────●────●────●────●────●────●────● HEAD
           │
@@ -348,9 +318,7 @@ main ─────●────●────●────●────
 
 3. **Update timeline** - 8 days old, merge soon or split
 
-### Conflict Prediction
-No conflicts expected with current main.
-Watch: `src/api/middleware.ts` - Active changes in main
+...
 ```
 
 ---
@@ -373,37 +341,7 @@ Watch: `src/api/middleware.ts` - Active changes in main
 ### Security (Required for this PR)
 - [ ] Sentinel security review complete
 - [ ] No hardcoded credentials
-- [ ] OAuth scopes properly restricted
-- [ ] Token storage is secure
-
-### API Changes (Required for this PR)
-- [ ] Backwards compatible with v1
-- [ ] OpenAPI spec updated
-- [ ] API documentation updated
-- [ ] Migration guide for clients
-
-### Testing
-- [x] Unit tests passing
-- [x] Integration tests passing
-- [ ] OAuth flow manually tested
-- [ ] Token refresh edge cases tested
-
-### Documentation
-- [x] Code comments for complex logic
-- [ ] README authentication section updated
-- [ ] CHANGELOG entry added
-
-### Deployment
-- [ ] Feature flag configured
-- [ ] Rollback plan documented
-- [ ] Monitoring alerts configured
-- [ ] Staged rollout planned
-
-### Blockers
-1. **Security review pending** - @sentinel-bot reviewing
-2. **API docs not updated** - Need OpenAPI changes
-
-### Ready to Merge: NO (2 blockers)
+...
 ```
 
 ---
@@ -426,11 +364,7 @@ Watch: `src/api/middleware.ts` - Active changes in main
 |-------|-------|-------------|
 | auth | 23% | Authentication |
 | api | 19% | API endpoints |
-| ui | 15% | User interface |
-| core | 12% | Core logic |
-| deps | 8% | Dependencies |
-
-**Detected Template:**
+...
 ```
 <type>(<scope>): <subject>
 
@@ -453,20 +387,7 @@ Closes #<issue>
 **Team's Typical PR:**
 - Median: 8 files, 180 lines
 - 75th percentile: 15 files, 400 lines
-- 90th percentile: 25 files, 700 lines
-
-**Calibrated Thresholds for This Project:**
-| Size | Files | Lines | (vs Default) |
-|------|-------|-------|--------------|
-| S | 1-10 | <200 | (Same) |
-| M | 11-18 | 200-450 | (Adjusted) |
-| L | 19-30 | 450-800 | (Adjusted) |
-| XL | 30+ | 800+ | (Adjusted) |
-
-### Merge Strategy
-
-**Team Preference:** Squash Merge (78% of PRs)
-**Exceptions:** Merge commit for releases (12%)
+...
 ```
 
 ### Pattern Learning Configuration
@@ -539,7 +460,7 @@ git commit -m "test(auth): add OAuth2 integration tests"
 PR 1 → PR 2 → (PR 3 ∥ PR 4)
 
 ### Parallelization:
-- PR 3 and PR 4 can be reviewed in parallel after PR 2 merges
+...
 ```
 
 ---
@@ -595,23 +516,7 @@ Closes #456
 ## Changes
 
 ### Features
-- `src/auth/oauth.ts` - OAuth2 provider integration
-- `src/auth/providers/` - Google, GitHub provider configs
-
-### Fixes
-- `src/api/middleware.ts` - Token refresh edge case handling
-
-### Supporting
-- `tests/auth/oauth.test.ts` - OAuth2 flow tests
-- `types/auth.d.ts` - Type definitions update
-
-## Breaking changes
-- Auth API now requires `scope` parameter
-- Migration: Add `scope: "read"` to existing auth requests
-
-## Notes
-- Related to #123
-- Requires OAuth credentials in environment variables
+...
 ```
 
 ### PR Description Template
@@ -672,11 +577,7 @@ Closes #456
   - Migration: Add `scope: "read"` to auth requests
 
 ### Dependencies
-- Upgraded React to v18.2.0
-- Added `oauth2-client` package
-
-### Contributors
-@developer1, @developer2, @developer3
+...
 ```
 
 ---
@@ -699,13 +600,7 @@ Closes #456
 
 ### Week 2
 
-| PR | Title | Files | Lines | Risk | Dependencies |
-|----|-------|-------|-------|------|--------------|
-| 3 | feat(auth): OAuth2 providers | 62 | ~2,100 | HIGH | PR 2 |
-| 4 | refactor(api): migrate to new auth | 75 | ~2,500 | MEDIUM | PR 3 |
-| 5 | test(auth): comprehensive coverage | 27 | ~740 | LOW | PR 4 |
-
-### Merge Timeline
+...
 ```
 Week 1 Day 1-2: PR 1 (Foundation)
 Week 1 Day 3-5: PR 2 (Core feature)
@@ -738,9 +633,7 @@ chunked_analysis:
 
   phase_3_detailed:
     - Essential vs noise per chunk
-    - Security-sensitive changes
-    - AI-generated code detection
-    - Final commit structure
+# ...
 ```
 
 ---
@@ -763,5 +656,5 @@ ai_code_indicators:
   project_mismatch:
     - Different naming conventions than existing code
     - Unfamiliar utility patterns
-    - Imports not matching project structure
+# ...
 ```

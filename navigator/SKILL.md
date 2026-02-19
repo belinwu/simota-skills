@@ -150,11 +150,9 @@ Standard protocols → `_common/OPERATIONAL.md`
 | File | Content |
 |------|---------|
 | `references/execution-templates.md` | Execution phase templates and code examples |
-| `references/interaction-triggers.md` | YAML question templates for all 9 triggers (incl. ON_REVERSE_FEEDBACK) |
 | `references/playwright-cdp.md` | Connection patterns, fallback implementation, code examples |
 | `references/video-recording.md` | Recording code examples, configuration, best practices |
 | `references/data-extraction.md` | Full extraction/form code patterns and validation |
-| `references/handoff-formats.md` | All handoff templates, collaboration patterns A-H, reverse feedback templates |
 
 ---
 

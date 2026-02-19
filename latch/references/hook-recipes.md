@@ -92,7 +92,7 @@ if echo "$content" | grep -qiE '(api[_-]?key|password|secret|token|private[_-]?k
   exit 2
 fi
 
-exit 0
+# ...
 ```
 
 ### S4: MCP Delete Operation Guard
@@ -182,17 +182,7 @@ case "$file_path" in
     npx eslint "$file_path" --fix 2>&1 || true
     ;;
   *.py)
-    python -m ruff check "$file_path" --fix 2>&1 || true
-    ;;
-  *.go)
-    gofmt -w "$file_path" 2>&1 || true
-    ;;
-  *.rs)
-    rustfmt "$file_path" 2>&1 || true
-    ;;
-esac
-
-exit 0
+# ...
 ```
 
 ### Q3: Type Check Enforcement
@@ -298,29 +288,7 @@ if [ -f "package.json" ]; then
     context="$context Uses pnpm."
     echo "export PKG_MANAGER=pnpm" >> "$CLAUDE_ENV_FILE"
   elif [ -f "bun.lockb" ]; then
-    context="$context Uses bun."
-    echo "export PKG_MANAGER=bun" >> "$CLAUDE_ENV_FILE"
-  elif [ -f "yarn.lock" ]; then
-    context="$context Uses yarn."
-    echo "export PKG_MANAGER=yarn" >> "$CLAUDE_ENV_FILE"
-  fi
-elif [ -f "Cargo.toml" ]; then
-  context="Rust project."
-  echo "export PROJECT_TYPE=rust" >> "$CLAUDE_ENV_FILE"
-elif [ -f "go.mod" ]; then
-  context="Go project."
-  echo "export PROJECT_TYPE=go" >> "$CLAUDE_ENV_FILE"
-elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
-  context="Python project."
-  echo "export PROJECT_TYPE=python" >> "$CLAUDE_ENV_FILE"
-fi
-
-# Output context as system message
-if [ -n "$context" ]; then
-  echo "{\"systemMessage\":\"Project context: $context\"}"
-fi
-
-exit 0
+# ...
 ```
 
 ### C2: PreCompact Critical Info Preservation
@@ -430,10 +398,7 @@ command=$(echo "$input" | jq -r '.tool_input.command // empty')
 # Block all rm commands in strict mode
 if echo "$command" | grep -qE '\brm\b'; then
   echo '{"hookSpecificOutput":{"permissionDecision":"deny"},"systemMessage":"Strict mode: rm commands blocked. Remove .enable-strict-validation to disable."}' >&2
-  exit 2
-fi
-
-exit 0
+# ...
 ```
 
 **Usage:**
@@ -466,17 +431,7 @@ Log session start and end for tracking.
   ],
   "SessionEnd": [
     {
-      "matcher": "*",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash -c 'echo \"$(date -Iseconds) | session_end | $CLAUDE_PROJECT_DIR\" >> ~/.claude/logs/sessions.log'",
-          "timeout": 5
-        }
-      ]
-    }
-  ]
-}
+// ...
 ```
 
 ---
@@ -501,8 +456,7 @@ Log session start and end for tracking.
     "Stop": [
       {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If code was changed, verify: 1) Tests run 2) TypeScript compiles 3) No console.log left in production code. Approve or block.", "timeout": 30}]}
     ]
-  }
-}
+// ...
 ```
 
 ### Go
@@ -523,7 +477,7 @@ Log session start and end for tracking.
       {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Go code was changed, verify: 1) go build succeeds 2) go test passes 3) go vet clean. Approve or block.", "timeout": 30}]}
     ]
   }
-}
+// ...
 ```
 
 ### Rust
@@ -544,7 +498,7 @@ Log session start and end for tracking.
       {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Rust code was changed, verify: 1) cargo check passes 2) cargo test passes 3) No clippy warnings. Approve or block.", "timeout": 60}]}
     ]
   }
-}
+// ...
 ```
 
 ### Python
@@ -565,8 +519,7 @@ Log session start and end for tracking.
     "Stop": [
       {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Python code was changed, verify: 1) pytest passes 2) ruff/mypy clean 3) No breakpoint() left. Approve or block.", "timeout": 30}]}
     ]
-  }
-}
+// ...
 ```
 
 ---
@@ -591,11 +544,7 @@ Recipes are composable. To combine multiple recipes, merge the event arrays:
       { "matcher": "*", "hooks": [{"type": "prompt", "prompt": "..."}] }
     ],
     "SessionStart": [
-      { "comment": "C1: Context loading" },
-      { "matcher": "*", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/load-project-context.sh", "timeout": 10}] }
-    ]
-  }
-}
+// ...
 ```
 
 **Tip:** Start with 1-2 recipes and add gradually. Too many hooks can slow down the workflow.

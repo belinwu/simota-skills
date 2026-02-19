@@ -88,37 +88,7 @@ pandoc input.md -o output.pdf \
 % Hyperref for links and metadata
 \usepackage{hyperref}
 \hypersetup{
-  pdftitle={$title$},
-  pdfauthor={$author$},
-  pdflang={ja},
-  pdfsubject={$subject$},
-  pdfkeywords={$keywords$},
-  bookmarksnumbered=true,
-  bookmarksopen=true,
-  pdfstartview=FitH,
-  colorlinks=true,
-  linkcolor=blue,
-  citecolor=blue,
-  urlcolor=blue
-}
-
-% Accessibility improvements
-\usepackage{accsupp}
-
-\begin{document}
-
-% Title with proper structure
-\title{$title$}
-\author{$author$}
-\date{$date$}
-\maketitle
-
-% Table of contents
-\tableofcontents
-
-$body$
-
-\end{document}
+// ...
 ```
 
 ### Tag Structure
@@ -247,14 +217,7 @@ def contrast_ratio(fg, bg):
     darker = min(l1, l2)
     return (lighter + 0.05) / (darker + 0.05)
 
-# Example: Black text on white background
-fg = (0, 0, 0)      # Black
-bg = (255, 255, 255) # White
-ratio = contrast_ratio(fg, bg)
-print(f"Contrast ratio: {ratio:.2f}:1")
-print(f"WCAG AA: {'Pass' if ratio >= 4.5 else 'Fail'}")
-print(f"WCAG AAA: {'Pass' if ratio >= 7 else 'Fail'}")
-EOF
+# ...
 ```
 
 ### Recommended Color Combinations
@@ -412,34 +375,7 @@ else
 fi
 
 # 2. Check language
-LANG=$(pdfinfo "$PDF_FILE" 2>/dev/null | grep "Lang:" | awk '{print $2}')
-if [ -n "$LANG" ]; then
-    echo "✓ Language set: $LANG"
-else
-    echo "✗ Language not set"
-fi
-
-# 3. Check title
-TITLE=$(pdfinfo "$PDF_FILE" 2>/dev/null | grep "Title:" | cut -d: -f2-)
-if [ -n "$TITLE" ]; then
-    echo "✓ Title set: $TITLE"
-else
-    echo "✗ Title not set"
-fi
-
-# 4. Check for embedded fonts
-FONTS=$(pdffonts "$PDF_FILE" 2>/dev/null | wc -l)
-if [ "$FONTS" -gt 2 ]; then
-    echo "✓ Fonts embedded"
-else
-    echo "? Check font embedding manually"
-fi
-
-echo "=== Manual checks required ==="
-echo "- Alt text for images"
-echo "- Reading order"
-echo "- Color contrast"
-echo "- Table structure"
+# ...
 ```
 
 ---
@@ -556,12 +492,7 @@ pandoc input.md -o output.pdf \
   -V classoption=tagged \
   --metadata lang=ja \
   --metadata title="Document Title" \
-  --metadata author="Author" \
-  --metadata subject="Subject" \
-  -V fontsize=12pt \
-  -V geometry="margin=25mm" \
-  --toc \
-  --number-sections
+# ...
 ```
 
 ### Accessible HTML Generation

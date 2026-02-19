@@ -24,64 +24,7 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'demos/report' }],
   ],
-
-  // === Common Settings ===
-  use: {
-    // Browser launch options
-    launchOptions: {
-      slowMo: 500,         // 500ms: Human-followable pace
-    },
-
-    // Video recording
-    video: {
-      mode: 'on',          // Always record
-      size: { width: 1280, height: 720 },
-    },
-
-    // Viewport
-    viewport: { width: 1280, height: 720 },
-
-    // Trace not needed for demos
-    trace: 'off',
-    screenshot: 'off',
-
-    // Base URL
-    baseURL: process.env.DEMO_BASE_URL || 'http://localhost:3000',
-  },
-
-  // === Projects ===
-  projects: [
-    {
-      name: 'demo-desktop',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'demo-desktop-hd',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1920, height: 1080 },
-        video: { mode: 'on', size: { width: 1920, height: 1080 } },
-      },
-    },
-    {
-      name: 'demo-mobile',
-      use: {
-        ...devices['iPhone 12'],
-        launchOptions: { slowMo: 600 },  // Slightly slower for mobile
-      },
-    },
-    {
-      name: 'demo-tablet',
-      use: {
-        ...devices['iPad Pro 11'],
-        launchOptions: { slowMo: 550 },
-      },
-    },
-  ],
-
-  // === Output Directory ===
-  outputDir: 'demos/output',
-});
+// ...
 ```
 
 ---
@@ -106,9 +49,7 @@ export default defineConfig({
     video: {
       mode: 'on',
       size: { width: 1280, height: 720 },
-    },
-  },
-}
+// ...
 ```
 
 ### Mobile Settings
@@ -129,16 +70,7 @@ export default defineConfig({
 }
 
 {
-  name: 'demo-mobile-android',
-  use: {
-    ...devices['Pixel 5'],
-    launchOptions: { slowMo: 600 },
-    video: {
-      mode: 'on',
-      size: { width: 393, height: 851 },
-    },
-  },
-}
+// ...
 ```
 
 ### Tablet Settings
@@ -255,10 +187,7 @@ test.afterEach(async ({ page }, testInfo) => {
     // Attach to test results
     await testInfo.attach('demo-video', {
       path: newPath,
-      contentType: 'video/webm',
-    });
-  }
-});
+// ...
 ```
 
 ### Naming Convention
@@ -319,39 +248,7 @@ jobs:
   record:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Start application
-        run: npm run dev &
-        env:
-          NODE_ENV: demo
-
-      - name: Wait for app
-        run: npx wait-on http://localhost:3000
-
-      - name: Record demos
-        run: npx playwright test --config=playwright.config.demo.ts
-        env:
-          DEMO_BASE_URL: http://localhost:3000
-
-      - name: Upload demo videos
-        uses: actions/upload-artifact@v4
-        with:
-          name: demo-videos
-          path: demos/output/**/*.webm
-          retention-days: 30
+# ...
 ```
 
 ---

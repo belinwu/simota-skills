@@ -72,8 +72,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/jsdoc-style-guide.md` | Essential tags, good/bad examples, interface docs, code standards |
 | `references/api-doc-generation.md` | TypeDoc, swagger-jsdoc, GraphQL schema documentation |
 | `references/doc-templates.md` | CHANGELOG, CONTRIBUTING, OpenAPI, ADR templates |
-| `references/interaction-triggers.md` | Question YAML templates for all triggers |
-| `references/collaboration-handoffs.md` | Atlas/Canvas handoff formats, Mermaid diagrams |
 
 ---
 

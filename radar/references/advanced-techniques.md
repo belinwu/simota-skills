@@ -26,30 +26,7 @@ test('sorting twice gives same result as sorting once', () => {
 
 // Property: encode then decode is identity
 test('JSON roundtrip preserves data', () => {
-  fc.assert(
-    fc.property(
-      fc.record({
-        name: fc.string(),
-        age: fc.nat(150),
-        email: fc.emailAddress(),
-      }),
-      (user) => {
-        const encoded = JSON.stringify(user);
-        const decoded = JSON.parse(encoded);
-        expect(decoded).toEqual(user);
-      }
-    )
-  );
-});
-
-// Property: reverse of reverse is identity
-test('double reverse returns original array', () => {
-  fc.assert(
-    fc.property(fc.array(fc.anything()), (arr) => {
-      expect([...arr].reverse().reverse()).toEqual(arr);
-    })
-  );
-});
+// ...
 ```
 
 ### Python (Hypothesis)
@@ -119,14 +96,7 @@ test('get user by id', async () => {
     .uponReceiving('a request for user 1')
     .withRequest('GET', '/api/users/1')
     .willRespondWith(200, {
-      body: { id: '1', name: 'Test User', email: 'test@example.com' },
-    })
-    .executeTest(async (mockServer) => {
-      const client = new UserClient(mockServer.url);
-      const user = await client.getUser('1');
-      expect(user.name).toBe('Test User');
-    });
-});
+// ...
 ```
 
 ### Provider Side
@@ -147,7 +117,7 @@ test('verifies pact with consumer', async () => {
   });
 
   await verifier.verifyProvider();
-});
+// ...
 ```
 
 ### When to Use Contract Testing
@@ -223,12 +193,7 @@ npx stryker run
     "!src/**/generated/**",
     "!src/**/types/**",
     "!src/**/__mocks__/**"
-  ],
-  "ignorePatterns": [
-    "**/*.test.ts",
-    "**/node_modules/**"
-  ]
-}
+// ...
 ```
 
 ### Performance Optimization
@@ -330,8 +295,7 @@ test('returns user shape', async () => {
       "id": "1",
       "name": "Test User",
     }
-  `);
-});
+// ...
 ```
 
 ### File Snapshots (Use Sparingly)
@@ -372,22 +336,7 @@ describe('UserRepository (Postgres)', () => {
     await runMigrations(db);
   }, 60000); // Longer timeout for container startup
 
-  afterAll(async () => {
-    await db.end();
-    await container.stop();
-  });
-
-  beforeEach(async () => {
-    await db.query('DELETE FROM users');
-  });
-
-  test('inserts and retrieves user', async () => {
-    const repo = new UserRepository(db);
-    await repo.create({ email: 'test@example.com', name: 'Test' });
-    const user = await repo.findByEmail('test@example.com');
-    expect(user?.name).toBe('Test');
-  });
-});
+// ...
 ```
 
 ### Go
@@ -408,14 +357,7 @@ func TestWithPostgres(t *testing.T) {
     )
     require.NoError(t, err)
     defer container.Terminate(ctx)
-
-    connStr, _ := container.ConnectionString(ctx, "sslmode=disable")
-    db, _ := sql.Open("postgres", connStr)
-
-    // Run tests against real Postgres
-    repo := NewUserRepository(db)
-    // ...
-}
+// ...
 ```
 
 ### Python

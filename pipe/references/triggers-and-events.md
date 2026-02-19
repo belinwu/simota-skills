@@ -67,13 +67,7 @@ on:
       - 'dependabot/**'
       - 'renovate/**'
 
-# Tag filters
-on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'  # Semantic version tags
-    tags-ignore:
-      - 'v*-rc*'  # Ignore release candidates
+# ...
 ```
 
 **Rule:** `branches` and `branches-ignore` cannot be used together for the same event. Same for `tags`/`tags-ignore`. Use negation patterns (`!`) within `branches` instead.
@@ -157,25 +151,7 @@ on:
 
       dry_run:
         description: 'Perform dry run without actual deployment'
-        required: false
-        type: boolean
-        default: true
-
-      version:
-        description: 'Version to deploy (e.g., v1.2.3)'
-        required: false
-        type: string
-
-      log_level:
-        description: 'Logging verbosity level (1-5)'
-        required: false
-        type: number
-        default: 3
-
-      target_env:
-        description: 'Target environment'
-        required: true
-        type: environment
+# ...
 ```
 
 ### Input Types Reference
@@ -214,8 +190,7 @@ jobs:
 
       - name: Dry Run
         if: inputs.dry_run == true
-        run: |
-          echo "[DRY RUN] Would deploy ${{ inputs.version }} to ${{ inputs.environment }}"
+# ...
 ```
 
 ---
@@ -314,13 +289,7 @@ jobs:
 # integration-tests.yml
 on:
   workflow_run:
-    workflows: ["Deploy Staging"]
-    types: [completed]
-
-jobs:
-  test:
-    if: github.event.workflow_run.conclusion == 'success'
-    # ...
+# ...
 ```
 
 ### Accessing Triggering Workflow Artifacts
@@ -463,11 +432,7 @@ jobs:
       # DANGEROUS: checkout PR code — only after label approval
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: pr-code
-
-      # Never run untrusted code directly
-      # Only read/analyze files from pr-code/
+# ...
 ```
 
 ### Dangerous Anti-Pattern
@@ -556,8 +521,7 @@ What triggers your workflow?
 │   └── schedule (cron, UTC, default branch only)
 ├── Release?
 │   └── release (types: [published])
-└── Reusable?
-    └── workflow_call (with inputs/secrets)
+...
 ```
 
 ---

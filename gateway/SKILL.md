@@ -65,8 +65,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/api-review-checklist.md` | Design review, spec validation, security review |
 | `references/error-pagination-ratelimit.md` | Error format/catalog, offset/cursor pagination, rate limit algorithms |
 | `references/api-decision-tree.md` | REST vs GraphQL vs gRPC selection flowchart |
-| `references/interaction-triggers.md` | 6 YAML question templates for user confirmation |
-| `references/collaboration-handoffs.md` | Builder/Quill/Spark/Canvas handoff templates |
 | `references/output-format-template.md` | Standard API design output template |
 
 ## Collaboration

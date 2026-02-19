@@ -305,23 +305,7 @@ cat > /tmp/watermark.tex << EOF
 \geometry{margin=0pt}
 \begin{document}
 \thispagestyle{empty}
-\begin{tikzpicture}[remember picture, overlay]
-  \node[rotate=45, scale=4, opacity=0.2, text=gray]
-    at (current page.center) {${TEXT}};
-\end{tikzpicture}
-\end{document}
-EOF
-
-# Compile watermark
-pdflatex -output-directory=/tmp /tmp/watermark.tex > /dev/null 2>&1
-
-# Apply watermark
-pdftk "$INPUT" stamp /tmp/watermark.pdf output "$OUTPUT"
-
-# Cleanup
-rm -f /tmp/watermark.tex /tmp/watermark.pdf /tmp/watermark.aux /tmp/watermark.log
-
-echo "Watermarked: $OUTPUT"
+# ...
 ```
 
 Usage:
@@ -402,12 +386,7 @@ if [ -z "$FILES" ]; then
     echo "No PDF files found"
     exit 1
 fi
-
-# Merge
-pdftk $FILES cat output "$OUTPUT"
-
-echo "Created: $OUTPUT"
-echo "Merged $(echo "$FILES" | wc -l) files"
+# ...
 ```
 
 ---
@@ -497,23 +476,7 @@ while IFS= read -r line; do
         echo "BookmarkBegin"
         echo "BookmarkTitle: $TITLE"
         echo "BookmarkLevel: 1"
-        echo "BookmarkPageNumber: $PAGE"
-    elif [[ "$line" =~ ^##[[:space:]] ]]; then
-        TITLE="${line#\#\# }"
-        echo "BookmarkBegin"
-        echo "BookmarkTitle: $TITLE"
-        echo "BookmarkLevel: 2"
-        echo "BookmarkPageNumber: $PAGE"
-    elif [[ "$line" =~ ^###[[:space:]] ]]; then
-        TITLE="${line#\#\#\# }"
-        echo "BookmarkBegin"
-        echo "BookmarkTitle: $TITLE"
-        echo "BookmarkLevel: 3"
-        echo "BookmarkPageNumber: $PAGE"
-    fi
-done < "$INPUT" > "$OUTPUT"
-
-echo "Generated: $OUTPUT"
+# ...
 ```
 
 ---
@@ -642,12 +605,7 @@ InfoBegin
 InfoKey: Keywords
 InfoValue: keyword1, keyword2
 InfoBegin
-InfoKey: Creator
-InfoValue: Morph Agent
-EOF
-
-# Apply metadata
-pdftk input.pdf update_info metadata.txt output output-with-metadata.pdf
+# ...
 ```
 
 **Using exiftool:**
@@ -682,15 +640,7 @@ gs -dBATCH -dNOPAUSE -sDEVICE=pdfwrite \
 
 # Print quality
 gs -dBATCH -dNOPAUSE -sDEVICE=pdfwrite \
-   -dPDFSETTINGS=/printer \
-   -sOutputFile=compressed.pdf \
-   input.pdf
-
-# Prepress quality (highest)
-gs -dBATCH -dNOPAUSE -sDEVICE=pdfwrite \
-   -dPDFSETTINGS=/prepress \
-   -sOutputFile=compressed.pdf \
-   input.pdf
+# ...
 ```
 
 **Quality comparison:**
@@ -727,98 +677,7 @@ SIGN=""
 WATERMARK=""
 ENCRYPT=""
 
-# Parse options
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --pdfa)
-            PDFA="$2"
-            shift 2
-            ;;
-        --sign)
-            SIGN="$2"
-            shift 2
-            ;;
-        --watermark)
-            WATERMARK="$2"
-            shift 2
-            ;;
-        --encrypt)
-            ENCRYPT="$2"
-            shift 2
-            ;;
-        *)
-            shift
-            ;;
-    esac
-done
-
-TEMP_DIR=$(mktemp -d)
-CURRENT="$INPUT"
-
-echo "=== Advanced PDF Conversion ==="
-echo "Input: $INPUT"
-echo "Output: $OUTPUT"
-
-# Step 1: Convert to PDF if needed
-EXT="${INPUT##*.}"
-if [ "$EXT" = "md" ]; then
-    echo "Converting Markdown to PDF..."
-    pandoc "$INPUT" -o "$TEMP_DIR/step1.pdf" --pdf-engine=xelatex --toc
-    CURRENT="$TEMP_DIR/step1.pdf"
-fi
-
-# Step 2: Add watermark
-if [ -n "$WATERMARK" ]; then
-    echo "Adding watermark: $WATERMARK"
-    # Create watermark PDF
-    cat > "$TEMP_DIR/watermark.tex" << EOF
-\documentclass[a4paper]{article}
-\usepackage{tikz}
-\usepackage{geometry}
-\geometry{margin=0pt}
-\begin{document}
-\thispagestyle{empty}
-\begin{tikzpicture}[remember picture, overlay]
-  \node[rotate=45, scale=4, opacity=0.2, text=gray]
-    at (current page.center) {${WATERMARK}};
-\end{tikzpicture}
-\end{document}
-EOF
-    pdflatex -output-directory="$TEMP_DIR" "$TEMP_DIR/watermark.tex" > /dev/null 2>&1
-    pdftk "$CURRENT" stamp "$TEMP_DIR/watermark.pdf" output "$TEMP_DIR/step2.pdf"
-    CURRENT="$TEMP_DIR/step2.pdf"
-fi
-
-# Step 3: Convert to PDF/A
-if [ -n "$PDFA" ]; then
-    echo "Converting to PDF/A-${PDFA}..."
-    gs -dPDFA="$PDFA" -dBATCH -dNOPAUSE -dNOOUTERSAVE \
-       -sColorConversionStrategy=UseDeviceIndependentColor \
-       -sDEVICE=pdfwrite \
-       -dPDFACompatibilityPolicy=1 \
-       -sOutputFile="$TEMP_DIR/step3.pdf" \
-       "$CURRENT" > /dev/null 2>&1
-    CURRENT="$TEMP_DIR/step3.pdf"
-fi
-
-# Step 4: Encrypt
-if [ -n "$ENCRYPT" ]; then
-    echo "Encrypting with password..."
-    pdftk "$CURRENT" output "$TEMP_DIR/step4.pdf" owner_pw "$ENCRYPT"
-    CURRENT="$TEMP_DIR/step4.pdf"
-fi
-
-# Final output
-cp "$CURRENT" "$OUTPUT"
-
-# Cleanup
-rm -rf "$TEMP_DIR"
-
-echo "=== Complete ==="
-echo "Output: $OUTPUT"
-
-# Verify
-pdfinfo "$OUTPUT" | head -10
+# ...
 ```
 
 Usage:

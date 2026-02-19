@@ -73,23 +73,7 @@ export default defineConfig({
         functions: 75,
         statements: 80,
       },
-
-      // Per-file thresholds
-      perFile: true,
-
-      // Exclude from coverage
-      exclude: [
-        'node_modules/',
-        'test/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/types/**',
-        '**/__mocks__/**',
-        '**/generated/**',
-      ],
-    },
-  },
-});
+// ...
 ```
 
 ### Jest Coverage Configuration
@@ -110,23 +94,7 @@ module.exports = {
     },
     // Per-path thresholds
     './src/core/': {
-      branches: 90,
-      functions: 90,
-      lines: 90,
-    },
-    './src/utils/': {
-      branches: 85,
-      functions: 85,
-    },
-  },
-
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/index.ts',
-    '!src/**/*.stories.{ts,tsx}',
-  ],
-};
+// ...
 ```
 
 ### pytest-cov Configuration
@@ -147,13 +115,7 @@ omit = [
 
 [tool.coverage.report]
 fail_under = 80
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
-    "@overload",
-]
+// ...
 ```
 
 ### Go Coverage
@@ -188,15 +150,7 @@ go tool cover -html=coverage.out -o coverage.html
             <minimum>0.80</minimum>
           </limit>
           <limit>
-            <counter>BRANCH</counter>
-            <value>COVEREDRATIO</value>
-            <minimum>0.80</minimum>
-          </limit>
-        </limits>
-      </rule>
-    </rules>
-  </configuration>
-</plugin>
+<!-- ... -->
 ```
 
 ---
@@ -241,17 +195,6 @@ Current coverage = 75%
 | api | 75% | 75% | 80% |
 | utils | 92% | 92% | 90% |
 | legacy | 45% | 45% | 60% |
-
-### Legacy Code Strategy
-
-```
-Phase 1 (Month 1-2): Set ratchet at current level, enforce on new code
-Phase 2 (Month 3-4): Raise target by 5% for actively modified modules
-Phase 3 (Month 5+):  Raise target by 5% for all modules with > 50%
-Never:               Force 100% on legacy code (diminishing returns)
-```
-
----
 
 ## Dead Code vs Untested Code
 
@@ -299,18 +242,7 @@ Low coverage file detected
   │ for tests│  │ deprecate    │
   └────┬─────┘  └──────────────┘
        │
-       ▼
-  ┌──────────────────┐
-  │ Risk assessment:  │
-  │ Critical path?    │
-  └────────┬─────────┘
-     ┌─────┴──────┐
-     │           │
-  Yes ▼        No ▼
-  ┌────────┐  ┌──────────┐
-  │ Test   │  │ Accept   │
-  │ ASAP   │  │ or defer │
-  └────────┘  └──────────┘
+...
 ```
 
 ---
@@ -345,13 +277,7 @@ coverage:
 
 flags:
   core:
-    paths:
-      - packages/core/src/
-    carryforward: true
-  api:
-    paths:
-      - packages/api/src/
-    carryforward: true
+# ...
 ```
 
 ```yaml

@@ -85,32 +85,7 @@ decomposition:
         - "package.json"
         - "tsconfig.json"
         - ".env*"
-      rationale: "codex excels at focused algorithmic work"
-      dependencies: []  # No dependencies — can run first or in parallel
-
-    - id: "api-integration"
-      description: "Implement API endpoint and middleware for X"
-      engine: gemini
-      branch: "arena/task-api-integration"
-      allowed_files:
-        - "src/api/endpoint.ts"
-        - "src/api/endpoint.test.ts"
-        - "src/middleware/validation.ts"
-      forbidden_files:
-        - "package.json"
-        - "tsconfig.json"
-        - ".env*"
-      rationale: "gemini handles broader context and integration patterns well"
-      dependencies: ["core-logic"]  # Depends on core types/interfaces
-
-  shared_read:  # Files all engines can READ but NOT modify
-    - "src/types/**"
-    - "src/config/**"
-    - "src/utils/**"
-
-  integration_order:  # Merge sequence (respects dependencies)
-    - "core-logic"         # Merge first (no dependencies)
-    - "api-integration"    # Merge second (depends on core)
+# ...
 ```
 
 #### Decomposition Rules
@@ -184,7 +159,7 @@ git checkout -b arena/task-api-integration $BASE_COMMIT
 gemini -p "{subtask_2_prompt}" --yolo
 git diff --name-only                      # Validate scope
 git checkout -- {any_forbidden_files}     # Revert unauthorized changes
-git add -A && git commit -m "arena: task-api-integration implementation"
+# ...
 ```
 
 #### Team Mode (Parallel)
@@ -239,17 +214,7 @@ review_result:
       status: PASS | FAIL | PARTIAL
       passed: 5
       failed: 0
-      skipped: 2  # Integration tests skipped (depend on other subtask)
-    codex_review:
-      findings_count: 1
-      critical_findings: []
-      quality_findings: ["Minor: could use more descriptive variable name"]
-    acceptance_criteria:
-      - criterion: "Core algorithm handles edge cases"
-        met: true
-        evidence: "Tests cover empty input, single item, large dataset"
-  overall_verdict: PASS | FAIL | WARN
-  integration_readiness: true  # Ready to merge
+# ...
 ```
 
 ### Phase 6: INTEGRATE — Merge All Results
@@ -387,27 +352,7 @@ Other subtasks are being handled by other engines in parallel.
 - NEVER use Edit, Write, or NotebookEdit tools
 - NEVER attempt to fix, improve, or adjust engine output
 - NEVER modify files outside your allowed list
-- NEVER create or checkout branches — your worktree is already on the correct branch
-- NEVER operate outside your assigned worktree directory
-- If codex exec fails, REPORT the error — do NOT fix it yourself
-
-## ALLOWED ACTIONS (exhaustive list)
-- Bash: `cd {worktree_path}` (move to your worktree — do this FIRST)
-- Bash: `codex exec --full-auto "..."` (one invocation, within your worktree)
-- Bash: `git add`, `git commit`, `git diff` (within your worktree)
-- Bash: `git diff --name-only` (scope validation)
-- Bash: `git checkout -- {file}` (revert unauthorized changes)
-- TaskUpdate: mark task as completed
-- SendMessage: report results to team leader
-
-## Your Worktree
-Your assigned working directory is: {worktree_path}
-This directory is on branch `arena/task-{subtask_id}`.
-Do NOT create or switch branches.
-
-## Execution Steps
-
-### 1. Move to your worktree
+...
 ```bash
 cd {worktree_path}
 git branch --show-current
@@ -477,21 +422,7 @@ After COLLABORATE completes, produce this report:
 **Integration Order:** core-logic → api-integration
 **Merge Conflicts:** None (clean merge)
 
-**Integration Verification:**
-- Build: PASS
-- Tests: PASS (all 15 tests pass)
-- codex review: No critical findings
-- Interface check: All imports/exports verified
-
-**Total Files Changed:** [N]
-**Cost Estimate:** [small/medium/large]
-
-**Engine Effectiveness:**
-- codex (core-logic): [Brief assessment]
-- gemini (api-integration): [Brief assessment]
-
-**Lessons Learned:**
-- [Any insights about decomposition, engine assignment, or integration]
+...
 ```
 
 ---
@@ -569,26 +500,7 @@ decomposition:
       rationale: "codex excels at focused algorithmic/security work"
       dependencies: []
 
-    - id: "auth-api"
-      description: "Implement login/logout endpoints and auth middleware"
-      engine: gemini
-      branch: "arena/task-auth-api"
-      allowed_files:
-        - "src/api/auth.ts"
-        - "src/api/auth.test.ts"
-        - "src/middleware/auth.ts"
-        - "src/middleware/auth.test.ts"
-      rationale: "gemini handles API design and middleware integration well"
-      dependencies: ["auth-core"]
-
-  shared_read:
-    - "src/types/**"
-    - "src/config/**"
-    - "src/errors/**"
-
-  integration_order:
-    - "auth-core"
-    - "auth-api"
+# ...
 ```
 
 **Solo Mode execution:**
@@ -609,61 +521,7 @@ Create JWT token generation, verification, and refresh functions.
 Use jsonwebtoken library (already installed).
 ## Scope Boundary (COLLABORATE mode)
 This is ONE subtask. API endpoints and middleware are handled separately.
-Define auth types in src/auth/types.ts for other subtasks to import.
-## Allowed Files: src/auth/jwt.ts, src/auth/jwt.test.ts, src/auth/types.ts
-## Forbidden: package.json, tsconfig.json, .env*, src/api/**, src/middleware/**
-## Constraints: [standard constraints]
-## Success Criteria: All functions handle expired, malformed, and valid tokens. Tests pass."
-git diff --name-only  # Validate scope
-git add -A && git commit -m "arena: task-auth-core implementation"
-
-# --- Review auth-core ---
-# Run tests, codex review, check acceptance criteria
-# Record review_result
-
-# --- Subtask 2: auth-api (gemini) ---
-git checkout -b arena/task-auth-api $BASE_COMMIT
-gemini -p "Implement auth API endpoints and middleware.
-## Specification
-Create login/logout REST endpoints and auth middleware.
-- POST /api/auth/login — accepts email/password, returns JWT token
-- POST /api/auth/logout — invalidates session
-- authMiddleware — Express middleware that verifies JWT from Authorization header
-Import JWT functions from src/auth/jwt.ts (implemented by another subtask).
-Import auth types from src/auth/types.ts.
-## Scope Boundary (COLLABORATE mode)
-This is ONE subtask. JWT token logic is handled by another engine.
-You may import from src/auth/jwt.ts and src/auth/types.ts but MUST NOT modify them.
-## Codebase Context
-- Stack: Express + TypeScript
-- Error handling: Custom AppError class in src/errors/
-- Existing middleware pattern: see src/middleware/ for examples
-## Allowed Files: src/api/auth.ts, src/api/auth.test.ts, src/middleware/auth.ts, src/middleware/auth.test.ts
-## Forbidden: package.json, tsconfig.json, .env*, src/auth/**
-## Constraints: [standard constraints]
-## Success Criteria: Login returns valid JWT. Middleware rejects invalid tokens. Tests pass." --yolo
-git diff --name-only  # Validate scope
-git add -A && git commit -m "arena: task-auth-api implementation"
-
-# --- Review auth-api ---
-# Build may EXPECTED_FAIL (imports from auth-core not on this branch)
-# Run subtask-specific tests
-# Record review_result
-
-# --- INTEGRATE ---
-git checkout $BASE_BRANCH
-git merge arena/task-auth-core -m "arena: integrate task-auth-core"
-git merge arena/task-auth-api -m "arena: integrate task-auth-api"
-
-# --- VERIFY ---
-npm run build   # Full build with all subtasks merged
-npm test        # All tests including integration
-codex review --uncommitted
-# Check import/export compatibility between auth-core and auth-api
-
-# --- CLEANUP ---
-git branch -D arena/task-auth-core arena/task-auth-api
-git stash pop
+# ...
 ```
 
 ---
@@ -697,9 +555,7 @@ rm -rf /tmp/$SESSION_ID || true
 # 4. Delete branches
 git branch -D arena/task-core-logic 2>/dev/null || true
 git branch -D arena/task-api-integration 2>/dev/null || true
-
-# 5. Restore stash
-git stash pop 2>/dev/null || true
+# ...
 ```
 
 ---

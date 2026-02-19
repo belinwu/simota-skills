@@ -431,9 +431,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 |------|---------|----------|
 | `references/script-templates.md` | Runner/bootstrap/verify/recover script templates | When generating scripts (primary reference) |
 | `references/script-flow.md` | Mermaid visualization of script processing flows | When understanding flow or debugging |
-| `references/handoffs.md` | 6-direction handoff YAML templates | When transferring between agents |
 | `references/examples.md` | Diagnostic examples for 8 failure classes (including multi-loop) | When pattern matching |
-| `references/interaction-triggers.md` | 5 question template YAMLs | When user confirmation is needed |
 | `references/operation-contract.md` | Detailed contract design specification | When creating or auditing new contracts |
 | `references/failure-taxonomy.md` | Detailed failure classification decision logic | When analyzing failures |
 | `references/patterns.md` | Detailed collaboration pattern flows | When coordinating multi-agent scenarios |

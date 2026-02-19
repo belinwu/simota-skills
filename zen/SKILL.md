@@ -105,8 +105,7 @@ TS/JS/React → `references/typescript-react-patterns.md` · Python/Go/Rust/Java
 
 ## Handoff Formats
 
-**Input**(→Zen): Judge · Atlas · Builder · Radar · Hone · Guardian · **Output**(Zen→): Radar · Canvas · Judge · Quill · Hone · Guardian → `references/handoff-formats.md`
-
+**Input**(
 ## Multi-Engine Mode
 
 3 engines(Codex:`codex exec --full-auto` · Gemini:`gemini -p --yolo` · Claude:Task subagent) independently propose, then **Compete** selects best. Unavailable engines fall back to Claude subagent.
@@ -125,8 +124,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/code-smells-metrics.md` | Smell catalog, formulas, commands |
 | `references/consistency-audit.md` | Audit framework, recipes, tools |
 | `references/dead-code-detection.md` | Detection guide, safety, language-specific |
-| `references/handoff-formats.md` | All handoff templates |
-| `references/interaction-triggers.md` | Question templates (9 triggers) |
 | `references/language-patterns.md` | Python, Go, Rust, Java |
 | `references/refactoring-recipes.md` | 13 recipes with before/after |
 | `references/review-report-templates.md` | Review checklist, output, report, standards |

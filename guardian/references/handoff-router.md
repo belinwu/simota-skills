@@ -28,16 +28,7 @@ routing_priority:
     description: "Noise cleanup can run parallel"
     target: Zen
     blocking: false
-
-  4_architecture:
-    description: "Architecture impact when cross-module"
-    target: Atlas
-    blocking: false
-
-  5_investigation:
-    description: "Investigation when context unclear"
-    target: Scout
-    blocking: true
+# ...
 ```
 
 ---
@@ -64,21 +55,7 @@ noise_to_zen:
     threshold: 1 HIGH trigger OR 2 MEDIUM triggers
     auto_handoff: true
 
-  handoff_action:
-    type: GUARDIAN_TO_ZEN_HANDOFF
-    mode: CLEANUP
-    blocking: false  # Can continue analysis in parallel
-    return_expected: true
-
-  success_criteria:
-    - Noise separated into dedicated commits
-    - Formatting standardized
-    - Essential changes isolated
-
-  output:
-    status: PARTIAL
-    next: ZEN
-    notes: "Noise cleanup requested, continuing essential analysis"
+# ...
 ```
 
 ### 2. Security to Sentinel Router
@@ -101,32 +78,7 @@ security_to_sentinel:
       confidence: CRITICAL
       blocking: true
 
-  evaluation:
-    any_trigger_fires: true
-    auto_handoff: true
-    user_notification: true
-
-  handoff_action:
-    type: GUARDIAN_TO_SENTINEL_HANDOFF
-    mode: SECURITY_AUDIT
-    blocking: true  # Must wait for clearance
-    return_expected: true
-
-  escalation_levels:
-    critical:
-      wait_for_completion: true
-      max_wait: "24h"
-      fallback: "BLOCKED"
-
-    sensitive:
-      wait_for_completion: false
-      proceed_with_warning: true
-      flag_in_pr: true
-
-  output:
-    status: PARTIAL
-    next: WAIT_FOR_SENTINEL
-    notes: "Security review required before merge approval"
+# ...
 ```
 
 ### 3. Coverage to Radar Router
@@ -149,22 +101,7 @@ coverage_to_radar:
     threshold: 1 HIGH trigger OR 1 CRITICAL trigger
     auto_handoff: true
 
-  handoff_action:
-    type: GUARDIAN_TO_RADAR_HANDOFF
-    mode: COVERAGE_IMPROVEMENT
-    blocking: false  # Recommendations can be advisory
-    return_expected: true
-
-  coverage_goals:
-    critical_files: 90%
-    high_risk_files: 80%
-    hotspot_files: 70%
-    standard_files: 60%
-
-  output:
-    status: SUCCESS  # Can proceed with warnings
-    next: RADAR | Judge  # Parallel or sequential
-    notes: "Coverage improvement recommended"
+# ...
 ```
 
 ### 4. Architecture to Atlas Router
@@ -187,16 +124,7 @@ architecture_to_atlas:
     threshold: 1 trigger
     auto_handoff: true
 
-  handoff_action:
-    type: GUARDIAN_TO_ATLAS_HANDOFF
-    mode: IMPACT_ANALYSIS
-    blocking: false
-    return_expected: true
-
-  output:
-    status: SUCCESS
-    next: Atlas
-    notes: "Architecture impact analysis requested"
+# ...
 ```
 
 ### 5. Investigation to Scout Router
@@ -219,17 +147,7 @@ investigation_to_scout:
   evaluation:
     semantic_conflict: blocking
     other: advisory
-
-  handoff_action:
-    type: GUARDIAN_TO_SCOUT_HANDOFF
-    mode: INVESTIGATION
-    blocking: varies
-    return_expected: true
-
-  output:
-    status: BLOCKED | PARTIAL
-    next: Scout
-    notes: "Investigation required for resolution"
+# ...
 ```
 
 ---
@@ -256,8 +174,7 @@ parallel_routing:
     scenario: "Security issue + Noise + Coverage gap"
     execution:
       1: sentinel (blocking)
-      2_parallel: [zen, radar]
-      3: judge (after zen completes)
+# ...
 ```
 
 ### Routing Decision Matrix
@@ -292,37 +209,7 @@ parallel_routing:
                  │NO
                  ↓
 ┌─────────────────────────────────────┐
-│       Evaluate Noise Ratio           │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Noise > 30%?  │──YES──→ [Route to Zen]
-         └───────┬───────┘              (PARALLEL)
-                 │NO
-                 ↓
-┌─────────────────────────────────────┐
-│      Evaluate Coverage Gaps          │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Gap > 40% +   │──YES──→ [Route to Radar]
-         │ High Risk?    │              (PARALLEL)
-         └───────┬───────┘
-                 │NO
-                 ↓
-┌─────────────────────────────────────┐
-│    Evaluate Architecture Impact      │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Cross-module  │──YES──→ [Route to Atlas]
-         │ > 3 modules?  │              (PARALLEL)
-         └───────┬───────┘
-                 │NO
-                 ↓
-┌─────────────────────────────────────┐
-│        Continue Normal Flow          │
-└─────────────────────────────────────┘
+...
 ```
 
 ---
@@ -347,7 +234,7 @@ sentinel_response:
   on_timeout:
     action: "Escalate to human"
     status: BLOCKED
-    alert: true
+# ...
 ```
 
 ### Zen Response Handler
@@ -400,10 +287,7 @@ autorun_routing:
     - Conflicting recommendations
     - Timeout situations
 
-  status_mapping:
-    all_routes_complete: SUCCESS
-    blocking_route_pending: PARTIAL
-    route_failed: BLOCKED
+# ...
 ```
 
 ---
@@ -428,8 +312,7 @@ routing_metrics:
 
   improvements:
     - Adjust thresholds based on outcomes
-    - Learn from manual overrides
-    - Refine trigger conditions
+# ...
 ```
 
 ### Route Analytics Template
@@ -450,13 +333,5 @@ routing_metrics:
 | Scout | 8 | 75% | 90% |
 
 ### Manual Override Analysis
-- Total manual overrides: 12 (8%)
-- Reason breakdown:
-  - False positive: 5
-  - Threshold adjustment needed: 4
-  - Edge case: 3
-
-### Recommendations
-- Increase noise threshold to 35%
-- Add exception for generated files
+...
 ```

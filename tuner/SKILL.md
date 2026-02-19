@@ -79,7 +79,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/n1-detection-cache-orm.md` | N+1 log detection, cache-aside pattern (Redis/TS), ORM eager loading |
 | `references/db-specific-query-visualization.md` | PG/MySQL/SQLite config tuning, Canvas Mermaid query plan visualization |
 | `references/connection-pool-guide.md` | Pool size formula, PG settings, monitoring queries |
-| `references/handoffs.md` | Schema→Tuner, Tuner→Schema, Tuner→Bolt handoff templates |
 | `references/performance-report-template.md` | Before/after performance report format |
 
 ---

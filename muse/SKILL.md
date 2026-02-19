@@ -121,7 +121,7 @@ Figma sync workflow, Style Dictionary, Token Studio, CI → `references/figma-sy
 
 ## References
 
-`references/`: token-system.md (definitions, scales, naming, audit) · token-lifecycle.md (propose→adopt→stable→deprecate→remove) · dark-mode.md (checklist, implementation, adaptation) · design-system-construction.md (layers, file structure, phases, metrics) · figma-sync.md (Figma↔code sync, Style Dictionary, Token Studio, CI) · handoff-formats.md (agent handoffs, collaboration patterns, AUTORUN, Nexus Hub) · interaction-triggers.md (YAML question templates)
+`references/`: token-system.md (definitions, scales, naming, audit) · token-lifecycle.md (propose→adopt→stable→deprecate→remove) · dark-mode.md (checklist, implementation, adaptation) · design-system-construction.md (layers, file structure, phases, metrics) · figma-sync.md (Figma↔code sync, Style Dictionary, Token Studio, CI)
 
 ---
 

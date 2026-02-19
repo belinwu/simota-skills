@@ -290,7 +290,7 @@ journey
       [Action 4]: [score]: User
 \`\`\`
 
-To generate diagram: `/Canvas visualize this journey`
+...
 ```
 
 ### Example Journey
@@ -351,37 +351,7 @@ journey
 
 ### Scan Pattern Simulation
 
-**Path taken**: [Eye flow - A → B → C]
-**Missed elements**: [Important elements missed]
-**Confusion points**: [Where I got confused]
-
-### Screenshot-by-Screenshot Analysis
-
-#### Screenshot 1: [State Name]
-| Element | Score | Persona Reaction |
-|---------|-------|------------------|
-| ... | ... | ... |
-
-**Quote**: "[Persona quote]"
-
-### Visual Friction Points
-
-| Priority | Screenshot | Element | Friction Type | Score |
-|----------|------------|---------|---------------|-------|
-| 1 | 02_form.png | Submit Button | Too Small | -2 |
-| 2 | 01_landing.png | Navigation | Hidden Menu | -1 |
-
-### Canvas Integration: Visual Journey Data
-
-\`\`\`mermaid
-journey
-    title [Flow] - Visual Review
-    section [Phase]
-      [Screenshot 1]: [score]: User
-      [Screenshot 2]: [score]: User
-\`\`\`
-
-→ `/Canvas visualize visual-journey`
+...
 ```
 
 ---

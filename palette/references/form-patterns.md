@@ -31,31 +31,7 @@ const validate = (value: string) => {
   <label htmlFor="email" className="block text-sm font-medium">
     Email
   </label>
-  <input
-    id="email"
-    type="email"
-    value={email}
-    onChange={(e) => {
-      setEmail(e.target.value);
-      if (touched) setError(validate(e.target.value));
-    }}
-    onBlur={() => {
-      setTouched(true);
-      setError(validate(email));
-    }}
-    aria-invalid={!!error}
-    aria-describedby={error ? 'email-error' : undefined}
-    className={cn(
-      "w-full px-3 py-2 border rounded",
-      error && "border-red-500 focus:ring-red-500"
-    )}
-  />
-  {error && (
-    <p id="email-error" role="alert" className="text-sm text-red-600">
-      {error}
-    </p>
-  )}
-</div>
+// ...
 ```
 
 ### On-blur Validation Pattern
@@ -96,17 +72,7 @@ const checkAvailability = useDebouncedCallback(async (value: string) => {
   <input
     value={username}
     onChange={(e) => {
-      setUsername(e.target.value);
-      checkAvailability(e.target.value);
-    }}
-    className="pr-10"
-  />
-  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-    {status === 'checking' && <Spinner className="h-4 w-4" />}
-    {status === 'available' && <CheckIcon className="h-4 w-4 text-green-500" />}
-    {status === 'taken' && <XIcon className="h-4 w-4 text-red-500" />}
-  </div>
-</div>
+// ...
 ```
 
 ---
@@ -133,8 +99,7 @@ const checkAvailability = useDebouncedCallback(async (value: string) => {
       <AlertCircleIcon className="h-4 w-4 flex-shrink-0" />
       <span>{error}</span>
     </div>
-  )}
-</div>
+// ...
 ```
 
 ### Error Message Content Guidelines
@@ -164,10 +129,7 @@ const checkAvailability = useDebouncedCallback(async (value: string) => {
         <a href={`#${error.fieldId}`} className="underline">
           {error.message}
         </a>
-      </li>
-    ))}
-  </ul>
-</div>
+// ...
 ```
 
 ### Error Recovery Pattern
@@ -188,11 +150,7 @@ const checkAvailability = useDebouncedCallback(async (value: string) => {
     <button
       onClick={handleSaveOffline}
       className="px-3 py-1 border border-red-600 text-red-600 rounded"
-    >
-      Save offline
-    </button>
-  </div>
-</div>
+// ...
 ```
 
 ---
@@ -217,28 +175,7 @@ const checkAvailability = useDebouncedCallback(async (value: string) => {
           <span
             className={cn(
               "h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium",
-              index < currentStep && "bg-green-500 text-white",
-              index === currentStep && "bg-blue-500 text-white",
-              index > currentStep && "bg-gray-200 text-gray-500"
-            )}
-            aria-current={index === currentStep ? "step" : undefined}
-          >
-            {index < currentStep ? <CheckIcon /> : index + 1}
-          </span>
-          <span className="text-sm hidden sm:inline">{step.label}</span>
-        </div>
-        {index < steps.length - 1 && (
-          <div
-            className={cn(
-              "flex-1 h-0.5 mx-4",
-              index < currentStep ? "bg-green-500" : "bg-gray-200"
-            )}
-          />
-        )}
-      </li>
-    ))}
-  </ol>
-</nav>
+// ...
 ```
 
 ### Step Navigation
@@ -259,25 +196,7 @@ const handleNext = async () => {
 
 <div className="flex justify-between mt-8">
   <button
-    onClick={() => setCurrentStep(prev => prev - 1)}
-    disabled={currentStep === 0}
-    className="flex items-center gap-1"
-  >
-    <ArrowLeftIcon className="h-4 w-4" />
-    Back
-  </button>
-
-  {currentStep < steps.length - 1 ? (
-    <button onClick={handleNext} className="btn-primary">
-      Next
-      <ArrowRightIcon className="h-4 w-4" />
-    </button>
-  ) : (
-    <button onClick={handleSubmit} className="btn-primary">
-      Submit
-    </button>
-  )}
-</div>
+// ...
 ```
 
 ### Step Data Persistence
@@ -298,7 +217,7 @@ useEffect(() => {
     setFormData(draft);
     // Optionally show "Resume your progress?" dialog
   }
-}, []);
+// ...
 ```
 
 ---
@@ -323,18 +242,7 @@ useEffect(() => {
       {filteredOptions.map(option => (
         <Combobox.Option
           key={option.id}
-          value={option}
-          className={({ active }) => cn(
-            "px-4 py-2 cursor-pointer",
-            active && "bg-blue-50"
-          )}
-        >
-          {option.name}
-        </Combobox.Option>
-      ))}
-    </Combobox.Options>
-  </div>
-</Combobox>
+// ...
 ```
 
 ### Input Masking
@@ -386,14 +294,7 @@ const remaining = maxLength - value.length;
     id="char-count"
     className={cn(
       "text-sm text-right",
-      remaining < 20 && "text-orange-500",
-      remaining < 0 && "text-red-500"
-    )}
-    aria-live="polite"
-  >
-    {remaining} characters remaining
-  </div>
-</div>
+// ...
 ```
 
 ---
@@ -418,13 +319,7 @@ const remaining = maxLength - value.length;
         </button>
       </TooltipTrigger>
       <TooltipContent>
-        <p className="max-w-xs">
-          Your API key can be found in Settings → Integrations
-        </p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-</label>
+// ...
 ```
 
 ### Inline Help Text
@@ -445,8 +340,7 @@ const remaining = maxLength - value.length;
     <p id="password-error" role="alert" className="text-sm text-red-600">
       {error}
     </p>
-  )}
-</div>
+// ...
 ```
 
 ### Contextual Guidance
@@ -467,15 +361,7 @@ const [focused, setFocused] = useState(false);
         animate={{ opacity: 1, height: 'auto' }}
         exit={{ opacity: 0, height: 0 }}
         className="text-sm text-gray-500"
-      >
-        <ul className="list-disc list-inside">
-          <li>Use your full legal name</li>
-          <li>As it appears on your ID</li>
-        </ul>
-      </motion.div>
-    )}
-  </AnimatePresence>
-</div>
+// ...
 ```
 
 ---
@@ -518,11 +404,7 @@ useEffect(() => {
 <label className="flex items-center gap-2">
   <input
     type="checkbox"
-    checked={sameAsBilling}
-    onChange={(e) => setSameAsBilling(e.target.checked)}
-  />
-  <span>Same as billing address</span>
-</label>
+// ...
 ```
 
 ---
@@ -547,12 +429,7 @@ useEffect(() => {
   {isSubmitting ? (
     <span className="flex items-center justify-center gap-2">
       <Spinner className="h-4 w-4" />
-      Submitting...
-    </span>
-  ) : (
-    'Submit'
-  )}
-</button>
+// ...
 ```
 
 ### Success State
@@ -573,9 +450,7 @@ useEffect(() => {
     </button>
     <Link href="/dashboard" className="btn-primary">
       Go to Dashboard
-    </Link>
-  </div>
-</div>
+// ...
 ```
 
 ### Unsaved Changes Warning
@@ -596,20 +471,7 @@ useEffect(() => {
   return () => window.removeEventListener('beforeunload', handleBeforeUnload);
 }, [isDirty]);
 
-// With router navigation blocking
-const router = useRouter();
-
-useEffect(() => {
-  const handleRouteChange = (url: string) => {
-    if (isDirty && !confirm('You have unsaved changes. Leave anyway?')) {
-      router.events.emit('routeChangeError');
-      throw 'Navigation cancelled';
-    }
-  };
-
-  router.events.on('routeChangeStart', handleRouteChange);
-  return () => router.events.off('routeChangeStart', handleRouteChange);
-}, [isDirty, router]);
+// ...
 ```
 
 ---

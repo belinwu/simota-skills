@@ -147,7 +147,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/output-templates.md` | 実行計画・カバレッジレポートの完全テンプレート |
 | `references/domain-patterns.md` | 7ドメイン別の軸定義・制約例・典型ユースケース |
 | `references/optimization-algorithms.md` | アルゴリズム詳細・削減率計算・手法選択フロー |
-| `references/handoffs.md` | エージェント間ハンドオフYAMLテンプレート（ON_*トリガー別） |
 
 ---
 

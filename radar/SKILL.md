@@ -149,8 +149,6 @@ See `references/advanced-techniques.md` for implementation details.
 | `references/contract-multiservice-testing.md` | Pact, gRPC, GraphQL, AsyncAPI |
 | `references/async-testing-patterns.md` | Multi-language async/await patterns |
 | `references/framework-deep-patterns.md` | Vitest, Jest, pytest, Go, Rust, JUnit 5 |
-| `references/handoff-formats.md` | All handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for all triggers |
 
 ---
 

@@ -79,19 +79,7 @@ TRIGGER_DETECTION:
     threshold: 5
     window: "7 days"
     scope: "all changed agents + dependencies"
-
-  ON_QUALITY_ALERT:
-    condition: "health_score < 60"
-    action: "immediate_review"
-    escalation: "add to P0 queue"
-
-  ON_USER_FEEDBACK:
-    source: "issues, PRs, direct feedback"
-    action: "targeted_investigation"
-
-  ON_STALE_AGENT:
-    threshold: "90 days since last modification"
-    action: "relevance_review"
+# ...
 ```
 
 ---
@@ -187,34 +175,7 @@ HEALTH_SCORE_CALCULATION:
 
   content:  # Max 25
     mission_statement: 0  # 0-5
-    boundary_clarity: 0  # 0-5
-    yaml_completeness: 0  # 0-5
-    philosophy_uniqueness: 0  # 0-5
-    process_actionability: 0  # 0-5
-    subtotal: 0
-
-  integration:  # Max 20
-    input_partners: 0  # 0-5
-    output_partners: 0  # 0-5
-    collaboration_patterns: 0  # 0-5
-    overlap_score: 0  # 0-5
-    subtotal: 0
-
-  activity:  # Max 15
-    recent_usage: 0  # 0-5
-    issue_free: 0  # 0-5
-    feedback: 0  # 0-5
-    subtotal: 0
-
-  freshness:  # Max 10
-    update_recency: 0  # 0-4
-    pattern_currency: 0  # 0-3
-    ecosystem_alignment: 0  # 0-3
-    subtotal: 0
-
-  total: 0  # Max 100
-  grade: "[A/B/C/D/F]"
-  action: "[No action/Minor improvements/Schedule improvements/Priority queue/Immediate attention]"
+# ...
 ```
 
 ---
@@ -256,23 +217,7 @@ QUEUE_MANAGEMENT:
       - "Missing required sections"
       - "New agent validation failed"
     response_time: "< 1 week"
-    escalation: "Next planning cycle"
-
-  p2_medium:
-    criteria:
-      - "Health score 60-70"
-      - "Overlap > 30% detected"
-      - "Stale agent (90+ days)"
-    response_time: "< 2 weeks"
-    escalation: "Batch with similar issues"
-
-  p3_low:
-    criteria:
-      - "Health score 70-80"
-      - "Enhancement opportunity"
-      - "Optional improvements"
-    response_time: "< 1 month"
-    escalation: "Background processing"
+# ...
 ```
 
 ---
@@ -297,35 +242,7 @@ QUEUE_MANAGEMENT:
 | Agent | Structure | Content | Integration | Activity | Freshness | Total | Grade |
 |-------|-----------|---------|-------------|----------|-----------|-------|-------|
 | [Agent1] | /30 | /25 | /20 | /15 | /10 | /100 | |
-| [Agent2] | /30 | /25 | /20 | /15 | /10 | /100 | |
-
-### Findings
-
-**P0 Issues (Critical):**
-- [ ] None
-- [ ] [Issue description]
-
-**P1 Issues (High):**
-- [ ] None
-- [ ] [Issue description]
-
-**P2 Issues (Medium):**
-- [ ] None
-- [ ] [Issue description]
-
-**P3 Issues (Low):**
-- [ ] None
-- [ ] [Issue description]
-
-### Action Items
-
-| Priority | Agent | Issue | Action | Owner | Due |
-|----------|-------|-------|--------|-------|-----|
-| P_ | | | | | |
-
-### Next Review
-**Date:** [YYYY-MM-DD]
-**Category:** [Next category]
+...
 ```
 
 ### Single Agent Review
@@ -346,56 +263,7 @@ QUEUE_MANAGEMENT:
 - Frontmatter: [X/6]
 - CAPABILITIES_SUMMARY: [X/6]
 - Boundaries: [X/6]
-- INTERACTION_TRIGGERS: [X/4]
-- AUTORUN Support: [X/4]
-- Nexus Hub Mode: [X/4]
-
-**Content (25%):** [X/25]
-- Mission statement: [X/5]
-- Boundary clarity: [X/5]
-- YAML completeness: [X/5]
-- Philosophy uniqueness: [X/5]
-- Process actionability: [X/5]
-
-**Integration (20%):** [X/20]
-- INPUT partners: [X/5]
-- OUTPUT partners: [X/5]
-- Collaboration patterns: [X/5]
-- Overlap score: [X/5]
-
-**Activity (15%):** [X/15]
-- Recent usage: [X/5]
-- Issue-free: [X/5]
-- Feedback: [X/5]
-
-**Freshness (10%):** [X/10]
-- Update recency: [X/4]
-- Pattern currency: [X/3]
-- Ecosystem alignment: [X/3]
-
-### Total Score: [X/100] - Grade: [A/B/C/D/F]
-
-### Issues Found
-
-| Category | Issue | Severity | Recommendation |
-|----------|-------|----------|----------------|
-| | | | |
-
-### Improvement Plan
-
-**Immediate (P0/P1):**
-1. [Action item]
-
-**Short-term (P2):**
-1. [Action item]
-
-**Long-term (P3):**
-1. [Action item]
-
-### Sign-off
-- [ ] Review completed
-- [ ] Issues added to queue
-- [ ] Agent owner notified (if applicable)
+...
 ```
 
 ---
@@ -420,18 +288,7 @@ CONSISTENCY_CHECK:
       reference: "references/nexus-integration.md"
 
     overlap:
-      check: "No excessive overlap between agents"
-      threshold: "30%"
-
-  metrics:
-    total_agents: 56
-    average_score: "[calculated]"
-    grade_distribution:
-      A: "[count]"
-      B: "[count]"
-      C: "[count]"
-      D: "[count]"
-      F: "[count]"
+# ...
 ```
 
 ### Ecosystem Health Dashboard
@@ -452,29 +309,7 @@ CONSISTENCY_CHECK:
 | C (70-79) | | |
 | D (60-69) | | |
 | F (<60) | | |
-
-### Category Health
-| Category | Agent Count | Avg Score | Lowest |
-|----------|-------------|-----------|--------|
-| Orchestration | 2 | | |
-| Investigation | 6 | | |
-| Implementation | 6 | | |
-| ... | | | |
-
-### Top Concerns
-1. [Agent with lowest score]
-2. [Agent with most issues]
-3. [Agent with most overlap]
-
-### Trends
-- **Improving:** [List]
-- **Declining:** [List]
-- **Stable:** [List]
-
-### Recommendations
-1. [Top priority action]
-2. [Second priority action]
-3. [Third priority action]
+...
 ```
 
 ---

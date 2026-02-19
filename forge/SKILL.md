@@ -93,7 +93,6 @@ See `references/story-scaffolding.md` for templates, output structure, handoff f
 | `references/builder-integration.md` | Builder handoff templates and checklist |
 | `references/muse-integration.md` | Muse handoff and style migration guide |
 | `references/story-scaffolding.md` | Story templates, Showcase handoff, tag conventions |
-| `references/interaction-triggers.md` | Question templates for decision points |
 
 ## Operational
 

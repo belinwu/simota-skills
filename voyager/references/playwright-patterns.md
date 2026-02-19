@@ -22,50 +22,7 @@ export default defineConfig({
     process.env.CI ? ['github'] : ['list'],
   ],
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'on-first-retry',
-  },
-  projects: [
-    // Setup project for authentication
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
-
-    // Desktop browsers
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup'],
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup'],
-    },
-
-    // Mobile browsers
-    {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
-      dependencies: ['setup'],
-    },
-    {
-      name: 'mobile-safari',
-      use: { ...devices['iPhone 12'] },
-      dependencies: ['setup'],
-    },
-  ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
-});
+// ...
 ```
 
 ### Directory Structure
@@ -86,12 +43,7 @@ e2e/
 │   │   └── signup.spec.ts
 │   ├── checkout/
 │   │   └── purchase.spec.ts
-│   └── smoke.spec.ts       # Smoke tests
-├── utils/
-│   ├── api-helpers.ts      # API helpers
-│   └── test-helpers.ts     # Test helpers
-├── auth.setup.ts           # Auth setup
-└── global-setup.ts         # Global setup
+...
 ```
 
 ---
@@ -116,21 +68,7 @@ export abstract class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  async expectToBeVisible(locator: Locator) {
-    await expect(locator).toBeVisible();
-  }
-
-  async takeScreenshot(name: string) {
-    await this.page.screenshot({ path: `.evidence/${name}.png`, fullPage: true });
-  }
-
-  getByTestId(testId: string): Locator {
-    return this.page.getByTestId(testId);
-  }
-}
+// ...
 ```
 
 ### Page Implementation
@@ -151,28 +89,7 @@ export class LoginPage extends BasePage {
     this.emailInput = this.getByTestId('email-input');
     this.passwordInput = this.getByTestId('password-input');
     this.submitButton = this.getByTestId('login-submit');
-    this.errorMessage = this.getByTestId('login-error');
-  }
-
-  async goto() {
-    await super.goto('/login');
-  }
-
-  async login(email: string, password: string) {
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
-    await this.submitButton.click();
-  }
-
-  async loginAndWaitForRedirect(email: string, password: string) {
-    await this.login(email, password);
-    await this.page.waitForURL('**/dashboard');
-  }
-
-  async expectErrorMessage(message: string) {
-    await expect(this.errorMessage).toContainText(message);
-  }
-}
+// ...
 ```
 
 ### Component Page Object
@@ -193,13 +110,7 @@ export class HeaderComponent {
     this.logoutButton = page.getByTestId('logout-button');
     this.notificationBell = page.getByTestId('notification-bell');
   }
-
-  async logout() {
-    await this.userMenu.click();
-    await this.logoutButton.click();
-    await this.page.waitForURL('**/login');
-  }
-}
+// ...
 ```
 
 ---
@@ -244,17 +155,7 @@ export const test = base.extend<TestFixtures>({
     });
     const page = await context.newPage();
     await use(page);
-    await context.close();
-  },
-  userPage: async ({ browser }, use) => {
-    const context = await browser.newContext({
-      storageState: '.auth/user.json',
-    });
-    const page = await context.newPage();
-    await use(page);
-    await context.close();
-  },
-});
+// ...
 ```
 
 ---
@@ -325,11 +226,7 @@ export class ApiHelpers {
     const response = await this.request.post('/api/products', { data });
     return response.json();
   }
-
-  async resetDatabase() {
-    await this.request.post('/api/test/reset');
-  }
-}
+// ...
 ```
 
 ### Test Data Factory
@@ -350,14 +247,7 @@ export const TestData = {
       password: '123',
     },
   },
-  product: {
-    create: () => ({
-      name: faker.commerce.productName(),
-      price: faker.number.int({ min: 100, max: 10000 }),
-      description: faker.commerce.productDescription(),
-    }),
-  },
-};
+// ...
 ```
 
 ---
@@ -413,19 +303,7 @@ test('shows countdown timer', async ({ page }) => {
   // Jump to midnight
   await page.clock.setFixedTime(new Date('2025-01-01T00:00:00'));
   await expect(page.getByTestId('celebration')).toBeVisible();
-});
-
-// Pause and resume time for animation testing
-test('animation pauses correctly', async ({ page }) => {
-  await page.clock.install();
-  await page.goto('/animated-dashboard');
-
-  await page.clock.pauseAt(new Date('2024-06-15T12:00:00'));
-  // Verify animation frame at this exact time
-
-  await page.clock.resume();
-  // Animation continues
-});
+// ...
 ```
 
 ### expect.configure (Soft Assertions)
@@ -446,7 +324,7 @@ test('dashboard shows all widgets', async ({ page }) => {
   // Custom timeout per assertion group
   const slowExpect = expect.configure({ timeout: 10000 });
   await slowExpect(page.getByTestId('analytics-loaded')).toBeVisible();
-});
+// ...
 ```
 
 ### Viewport Assertions (toBeInViewport)
@@ -487,18 +365,7 @@ test('API: create user then verify in UI', async ({ page, request }) => {
   await page.goto('/admin/users');
   await expect(page.getByText('E2E User')).toBeVisible();
 
-  // Cleanup via API
-  await request.delete(`/api/users/${user.id}`);
-});
-
-// Pure API tests (no browser needed)
-test.describe('API Tests', () => {
-  test('GET /api/health returns 200', async ({ request }) => {
-    const response = await request.get('/api/health');
-    expect(response.status()).toBe(200);
-    expect(await response.json()).toEqual({ status: 'ok' });
-  });
-});
+// ...
 ```
 
 ### Component Testing (Experimental)
@@ -519,19 +386,7 @@ export default defineConfig({
 import { test, expect } from '@playwright/experimental-ct-react';
 import { Button } from './Button';
 
-test('renders with label', async ({ mount }) => {
-  const component = await mount(<Button label="Click me" />);
-  await expect(component).toContainText('Click me');
-});
-
-test('fires onClick', async ({ mount }) => {
-  let clicked = false;
-  const component = await mount(
-    <Button label="Click" onClick={() => { clicked = true; }} />
-  );
-  await component.click();
-  expect(clicked).toBe(true);
-});
+// ...
 ```
 
 ---
@@ -644,10 +499,7 @@ test.describe('Flaky Investigation', () => {
       marker.textContent = `Attempt ${attempt}`;
       document.body.appendChild(marker);
     }, testInfo.retry + 1);
-
-    // ... test code
-  });
-});
+// ...
 ```
 
 ---
@@ -709,14 +561,7 @@ test('navigation has correct aria structure', async ({ page }) => {
 
 test('form has accessible labels', async ({ page }) => {
   await page.goto('/signup');
-
-  await expect(page.getByRole('form')).toMatchAriaSnapshot(`
-    - form:
-      - textbox "Email"
-      - textbox "Password"
-      - button "Sign Up"
-  `);
-});
+// ...
 ```
 
 ### toPass (Polling-Based Assertions)
@@ -737,8 +582,7 @@ test('external service responds', async ({ request }) => {
   await expect(async () => {
     const response = await request.get('/api/external-status');
     expect(response.ok()).toBeTruthy();
-  }).toPass({ timeout: 30000 });
-});
+// ...
 ```
 
 ### Box Model Assertions
@@ -759,13 +603,7 @@ test('modal is centered on screen', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('open-modal').click();
 
-  const modal = page.getByRole('dialog');
-  const box = await modal.boundingBox();
-  const viewport = page.viewportSize()!;
-
-  const centerX = box!.x + box!.width / 2;
-  expect(Math.abs(centerX - viewport.width / 2)).toBeLessThan(10);
-});
+// ...
 ```
 
 ### Route.fetch Improvements
@@ -786,17 +624,7 @@ test('modifies response headers', async ({ page }) => {
 });
 
 test('conditional response modification', async ({ page }) => {
-  await page.route('**/api/feature-flags', async (route) => {
-    const response = await route.fetch();
-    const json = await response.json();
-
-    json.flags = { ...json.flags, newCheckout: true, darkMode: true };
-    await route.fulfill({ json });
-  });
-
-  await page.goto('/');
-  await expect(page.getByTestId('new-checkout-btn')).toBeVisible();
-});
+// ...
 ```
 
 ---

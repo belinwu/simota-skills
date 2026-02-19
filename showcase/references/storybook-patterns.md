@@ -24,84 +24,7 @@ const meta = {
       },
     },
   },
-  tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary'],
-      description: 'Visual variant of the component',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Whether the component is disabled',
-    },
-  },
-  args: {
-    // Default args shared across all stories
-  },
-} satisfies Meta<typeof ComponentName>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-// === Base Stories ===
-
-export const Default: Story = {
-  args: {
-    variant: 'primary',
-  },
-};
-
-export const AllVariants: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-      <ComponentName variant="primary">Primary</ComponentName>
-      <ComponentName variant="secondary">Secondary</ComponentName>
-    </div>
-  ),
-};
-
-// === State Stories ===
-
-export const Disabled: Story = {
-  args: { disabled: true },
-};
-
-export const Loading: Story = {
-  args: { isLoading: true },
-};
-
-export const Error: Story = {
-  args: { hasError: true, errorMessage: 'Something went wrong' },
-};
-
-// === Interaction Stories ===
-
-export const WithInteraction: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const element = canvas.getByRole('button');
-    await expect(element).toBeInTheDocument();
-    await userEvent.click(element);
-    await expect(element).toHaveFocus();
-  },
-};
-
-// === Accessibility Stories ===
-
-export const AccessibilityTest: Story = {
-  args: { 'aria-label': 'Accessible component' },
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          { id: 'color-contrast', enabled: true },
-          { id: 'label', enabled: true },
-        ],
-      },
-    },
-  },
-};
+// ...
 ```
 
 ### Form Component Story
@@ -122,34 +45,7 @@ const meta = {
 } satisfies Meta<typeof Input>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: { placeholder: 'Enter text...' },
-};
-
-export const WithLabel: Story = {
-  args: { label: 'Email', placeholder: 'you@example.com', type: 'email' },
-};
-
-export const WithValidation: Story = {
-  args: { label: 'Required field', required: true },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole('textbox');
-    await userEvent.click(input);
-    await userEvent.tab();
-    await expect(input).toHaveAttribute('aria-invalid', 'true');
-  },
-};
-
-export const Disabled: Story = {
-  args: { disabled: true, value: 'Cannot edit' },
-};
-
-export const WithError: Story = {
-  args: { label: 'Email', value: 'invalid-email', error: 'Please enter a valid email address' },
-};
+// ...
 ```
 
 ---
@@ -174,15 +70,7 @@ export default defineConfig({
     setupFiles: ['.storybook/vitest.setup.ts'],
   },
 });
-
-// .storybook/vitest.setup.ts
-import { beforeAll } from 'vitest';
-import { setProjectAnnotations } from '@storybook/react';
-import * as projectAnnotations from './preview';
-
-beforeAll(() => {
-  setProjectAnnotations(projectAnnotations);
-});
+// ...
 ```
 
 ### React Server Components (RSC) Stories
@@ -203,25 +91,7 @@ const meta = {
 } satisfies Meta<typeof ServerComponent>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: { id: '1' },
-};
-
-// Mock async data fetching
-export const WithMockedData: Story = {
-  args: { id: '1' },
-  parameters: {
-    msw: {
-      handlers: [
-        http.get('/api/data/1', () => {
-          return HttpResponse.json({ title: 'Mocked Data' });
-        }),
-      ],
-    },
-  },
-};
+// ...
 ```
 
 ### @storybook/test (Unified Testing)
@@ -242,23 +112,7 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-export const SubmitFlow: Story = {
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByLabelText('Name'), 'John Doe');
-    await userEvent.type(canvas.getByLabelText('Email'), 'john@example.com');
-    await userEvent.click(canvas.getByRole('button', { name: 'Submit' }));
-
-    await waitFor(() => {
-      expect(args.onSubmit).toHaveBeenCalledWith({
-        name: 'John Doe',
-        email: 'john@example.com',
-      });
-    });
-  },
-};
+// ...
 ```
 
 ### Portable Stories (Test Reuse)
@@ -279,22 +133,7 @@ export const Primary: Story = {
   args: { variant: 'primary', children: 'Click me' },
 };
 
-// Button.test.tsx - Reuse stories in unit tests
-import { composeStories } from '@storybook/react';
-import { render, screen } from '@testing-library/react';
-import * as stories from './Button.stories';
-
-const { Primary } = composeStories(stories);
-
-test('renders primary button', () => {
-  render(<Primary />);
-  expect(screen.getByRole('button')).toHaveTextContent('Click me');
-});
-
-test('interaction test from story', async () => {
-  const { container } = render(<Primary />);
-  await Primary.play?.({ canvasElement: container });
-});
+// ...
 ```
 
 ### beforeEach / afterEach Lifecycle
@@ -315,17 +154,7 @@ const meta = {
 } satisfies Meta<typeof Modal>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const OpenModal: Story = {
-  beforeEach: async () => {
-    localStorage.setItem('modalSeen', 'false');
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button'));
-  },
-};
+// ...
 ```
 
 ### Tags for Organization & Filtering
@@ -365,40 +194,7 @@ const meta = {
     },
   },
   decorators: [
-    (Story, context) => (
-      <div data-theme={context.globals.theme || 'light'}>
-        <Story />
-      </div>
-    ),
-  ],
-} satisfies Meta<typeof Button>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const LightMode: Story = {
-  args: { children: 'Light Button' },
-  parameters: { backgrounds: { default: 'light' } },
-};
-
-export const DarkMode: Story = {
-  args: { children: 'Dark Button' },
-  parameters: { backgrounds: { default: 'dark' } },
-  globals: { theme: 'dark' },
-};
-
-export const ThemeComparison: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '2rem' }}>
-      <div data-theme="light" style={{ padding: '1rem', background: '#fff' }}>
-        <Button>Light</Button>
-      </div>
-      <div data-theme="dark" style={{ padding: '1rem', background: '#1a1a1a' }}>
-        <Button>Dark</Button>
-      </div>
-    </div>
-  ),
-};
+// ...
 ```
 
 ---
@@ -423,34 +219,7 @@ A button component used as the trigger for user actions.
 \`\`\`tsx
 import { Button } from '@/components/Button';
 
-<Button variant="primary">Click me</Button>
-\`\`\`
-
-## Interactive Demo
-
-<Primary />
-
-<Controls />
-
-## All Variants
-
-<Stories />
-
-## Design Guidelines
-
-### When to use
-- Form submission
-- Dialog actions
-- Primary navigation
-
-### When NOT to use
-- Text links (use `<a>` instead)
-- Icon-only actions (use IconButton)
-
-## Accessibility
-- `aria-label`: Required for icon-only buttons
-- Keyboard: Activate with Enter/Space
-- Focus: Clear focus ring is displayed
+// ...
 ```
 
 ### MDX with Custom Blocks
@@ -471,14 +240,7 @@ import * as Stories from './Component.stories';
 ## Code Example
 
 <Source of={Stories.Default} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| variant | `'primary' \| 'secondary'` | `'primary'` | Visual variant |
-| size | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
-| disabled | `boolean` | `false` | Disabled state |
+// ...
 ```
 
 ---
@@ -503,14 +265,7 @@ export default {
 
 // Button.stories.tsx
 export const Primary: Story = {
-  args: { variant: 'primary' },
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://www.figma.com/file/xxx?node-id=123:456',
-    },
-  },
-};
+// ...
 ```
 
 ### Design Tokens from Figma
@@ -531,13 +286,7 @@ import { tokens } from '../src/tokens';
 export default {
   parameters: {
     backgrounds: {
-      values: [
-        { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: tokens.colors.neutral[900] },
-      ],
-    },
-  },
-};
+// ...
 ```
 
 ---
@@ -560,27 +309,7 @@ export default {
 ### Story Quality Scores
 
 | Component | Variants | A11y | Interactions | Docs | Grade |
-|-----------|----------|------|--------------|------|-------|
-| Button | 5/5 | Pass | 3 tests | Yes | A |
-| Input | 3/5 | Warn | 1 test | Yes | B |
-| Modal | 2/4 | Fail | 0 tests | No | D |
-
-### Quality Criteria
-
-| Grade | Criteria |
-|-------|----------|
-| A | All variants, a11y pass, 3+ interactions, docs complete |
-| B | Most variants, a11y pass/warn, 1+ interactions, docs present |
-| C | Some variants, a11y warn, no interactions, partial docs |
-| D | Minimal variants, a11y fail, no interactions, no docs |
-| F | Story exists but broken or outdated |
-
-### Priority Actions
-
-1. **[Critical]** `Modal` - Add a11y testing (keyboard trap, focus management)
-2. **[High]** `Input` - Add interaction tests for validation flow
-3. **[Medium]** `Card` - Add hover/focus state stories
-4. **[Low]** `Badge` - Add size variant stories
+...
 ```
 
 ---
@@ -617,30 +346,7 @@ Forge (Preview Story)              Showcase (Full Story)
 ### Interaction Tests
 - [ ] Add play function for primary interaction
 - [ ] Add keyboard navigation test
-- [ ] Add form validation test (if applicable)
-- [ ] Use proper waitFor patterns (no arbitrary delays)
-
-### Accessibility
-- [ ] Configure a11y addon rules
-- [ ] Add aria-label test story
-- [ ] Verify color contrast
-- [ ] Test keyboard focus visibility
-
-### Documentation
-- [ ] Create MDX documentation
-- [ ] Add usage examples
-- [ ] Document props with argTypes
-- [ ] Add design guidelines section
-
-### Visual Testing
-- [ ] Add `visual-test` tag
-- [ ] Exclude animated stories from visual tests
-- [ ] Create baseline snapshots
-
-### Tags Update
-- [ ] Remove `prototype` tag
-- [ ] Add `autodocs` tag
-- [ ] Add `component` / `visual-test` tags
+...
 ```
 
 ### Enhancement Template
@@ -661,26 +367,5 @@ export const Preview: Story = {
 const meta = {
   component: ComponentName,
   title: 'Components/ComponentName',
-  tags: ['autodocs', 'visual-test'],
-  parameters: {
-    layout: 'centered',
-    docs: { description: { component: 'Full component description' } },
-  },
-  argTypes: {
-    variant: { control: 'select', options: ['primary', 'secondary'] },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
-  },
-} satisfies Meta<typeof ComponentName>;
-
-export const Default: Story = { args: { variant: 'primary', size: 'md' } };
-export const AllVariants: Story = { /* ... */ };
-export const AllSizes: Story = { /* ... */ };
-export const Disabled: Story = { /* ... */ };
-export const Loading: Story = { /* ... */ };
-export const WithInteraction: Story = {
-  play: async ({ canvasElement }) => { /* ... */ },
-};
-export const AccessibilityTest: Story = {
-  parameters: { a11y: { config: { rules: [/* ... */] } } },
-};
+// ...
 ```

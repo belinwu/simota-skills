@@ -85,8 +85,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 **Receives:** Pulse (metrics/baselines) · Spark (hypotheses) · Growth (conversion goals)
 **Sends:** Growth (validated insights) · Launch (flag cleanup) · Radar (test verification) · Forge (variant prototypes)
 
-→ Handoff templates: `references/handoffs.md`
-
 ## Operational
 
 **Journal** (`.agents/experiment.md`): Domain insights only — patterns and learnings worth preserving.
@@ -99,10 +97,8 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/feature-flag-patterns.md` | Flag types, LaunchDarkly, custom implementation, React integration |
 | `references/statistical-methods.md` | Test selection, Z-test implementation, result interpretation |
 | `references/sample-size-calculator.md` | Power analysis, calculateSampleSize, quick reference tables |
-| `references/interaction-triggers.md` | Question YAML templates for all 6 triggers |
 | `references/experiment-templates.md` | Hypothesis document + Experiment report templates |
 | `references/common-pitfalls.md` | Peeking, multiple comparisons, selection bias (with code) |
-| `references/handoffs.md` | Pulse/Forge/Growth handoff + Growth/Launch handoff templates |
 | `references/code-standards.md` | Good/bad experiment code examples + key rules |
 
 ---

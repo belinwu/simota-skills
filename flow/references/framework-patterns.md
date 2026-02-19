@@ -40,12 +40,7 @@ Animation implementations across popular frontend frameworks.
   Press
 </button>
 
-<!-- Group hover -->
-<div class="group">
-  <div class="transition-opacity duration-200 opacity-0 group-hover:opacity-100">
-    Tooltip
-  </div>
-</div>
+<!-- ... -->
 ```
 
 ### Custom Keyframes in Tailwind
@@ -66,18 +61,7 @@ module.exports = {
         },
         'shake': {
           '0%, 100%': { transform: 'translateX(0)' },
-          '20%, 60%': { transform: 'translateX(-4px)' },
-          '40%, 80%': { transform: 'translateX(4px)' },
-        },
-      },
-      animation: {
-        'slide-up': 'slide-up 0.3s ease-out',
-        'fade-in': 'fade-in 0.2s ease-out',
-        'shake': 'shake 0.4s ease-in-out',
-      },
-    },
-  },
-};
+// ...
 ```
 
 ```html
@@ -149,11 +133,7 @@ function onEnter(el, done) {
     [
       { opacity: 0, transform: 'scale(0.95)' },
       { opacity: 1, transform: 'scale(1)' }
-    ],
-    { duration: 200, easing: 'cubic-bezier(0, 0, 0.2, 1)' }
-  ).onfinish = done;
-}
-</script>
+// ...
 ```
 
 ### Nuxt Page Transitions
@@ -193,22 +173,7 @@ function onEnter(el, done) {
 {#if visible}
   <div transition:fly={{ y: 16, duration: 300, easing: quintOut }}>
     Slides up
-  </div>
-{/if}
-
-<!-- Scale -->
-{#if visible}
-  <div transition:scale={{ start: 0.95, duration: 200 }}>
-    Scales in
-  </div>
-{/if}
-
-<!-- Separate in/out -->
-{#if visible}
-  <div in:fly={{ y: 20 }} out:fade={{ duration: 150 }}>
-    Different enter/exit
-  </div>
-{/if}
+// ...
 ```
 
 ### Animate Directive (List Reorder)
@@ -244,8 +209,7 @@ function onEnter(el, done) {
 </script>
 
 {#if visible}
-  <p transition:typewriter={{ speed: 2 }}>Hello world</p>
-{/if}
+// ...
 ```
 
 ### SvelteKit Page Transitions
@@ -382,14 +346,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         key={pathname}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.2, ease: [0, 0, 0.2, 1] }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+// ...
 ```
 
 ---

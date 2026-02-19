@@ -127,23 +127,7 @@ abstract: |
   This is the abstract of the document.
   It can span multiple lines.
 keywords:
-  - keyword1
-  - keyword2
-toc: true
-toc-depth: 3
-numbersections: true
-papersize: a4
-documentclass: report
-fontsize: 11pt
-geometry: margin=25mm
-mainfont: "Hiragino Mincho ProN"
-sansfont: "Hiragino Kaku Gothic ProN"
-monofont: "JetBrains Mono"
-CJKmainfont: "Hiragino Mincho ProN"
-linkcolor: blue
-urlcolor: blue
-toccolor: black
----
+# ...
 ```
 
 ### メタデータファイル使用
@@ -205,35 +189,7 @@ pandoc input.md -o output.pdf \
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\includegraphics[height=1cm]{logo.png}}
-\fancyhead[R]{$title$}
-\fancyfoot[C]{\thepage}
-
-$if(geometry)$
-\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
-
-\begin{document}
-
-\begin{titlepage}
-\centering
-\vspace*{5cm}
-{\Huge\bfseries $title$ \par}
-\vspace{1cm}
-{\Large $subtitle$ \par}
-\vspace{2cm}
-{\large $author$ \par}
-\vspace{1cm}
-{\large $date$ \par}
-\end{titlepage}
-
-$if(toc)$
-\tableofcontents
-\newpage
-$endif$
-
-$body$
-
-\end{document}
+// ...
 ```
 
 ---
@@ -292,41 +248,7 @@ pandoc --list-highlight-styles
       font-family: sans-serif;
       line-height: 1.6;
     }
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      overflow-x: auto;
-    }
-    code {
-      font-family: monospace;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-  </style>
-</head>
-<body>
-$if(title)$
-<h1>$title$</h1>
-$endif$
-$if(toc)$
-<nav>
-$toc$
-</nav>
-$endif$
-$body$
-</body>
-</html>
+<!-- ... -->
 ```
 
 ```bash
@@ -385,13 +307,7 @@ for file in "$INPUT_DIR"/*.md; do
     echo "Converting: $filename"
 
     pandoc "$file" -o "$OUTPUT_DIR/$filename.$FORMAT" \
-      --pdf-engine=xelatex \
-      --toc \
-      -V CJKmainfont="Hiragino Mincho ProN"
-  fi
-done
-
-echo "Done. Output in: $OUTPUT_DIR"
+# ...
 ```
 
 ### Makefile
@@ -412,19 +328,7 @@ pdf: $(PDFS)
 
 docx: $(DOCX)
 
-html: $(HTML)
-
-%.pdf: %.md
-	pandoc $< -o $@ $(PANDOC_OPTS)
-
-%.docx: %.md
-	pandoc $< -o $@ --toc
-
-%.html: %.md
-	pandoc $< -o $@ -s --toc
-
-clean:
-	rm -f $(PDFS) $(DOCX) $(HTML)
+// ...
 ```
 
 ---

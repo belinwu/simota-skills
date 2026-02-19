@@ -79,8 +79,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - **Impact Only** (vertical): Dependency/scope focus → `references/impact-report-template.md`
 - **Consistency Only** (horizontal): Pattern compliance → `references/consistency-report-template.md`
 
-→ Handoff templates & Canvas diagrams: `references/handoff-formats.md`
-
 ## Collaboration
 
 **Receives:** Nexus (task context)
@@ -114,9 +112,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/ripple-analysis-template.md` | Combined analysis report template |
 | `references/impact-report-template.md` | Vertical impact report template |
 | `references/consistency-report-template.md` | Horizontal consistency report template |
-| `references/interaction-triggers.md` | 5 trigger question templates (YAML) |
 | `references/analysis-techniques.md` | Commands, categories, quality standards |
-| `references/handoff-formats.md` | Agent handoff templates + Canvas diagrams |
 
 ---
 

@@ -20,13 +20,7 @@ paths:
     get:
       summary: Get resources
       responses:
-        '200':
-          description: Success
-
-components:
-  schemas: {}
-  securitySchemes: {}
-  responses: {}
+# ...
 ```
 
 ### OpenAPI Compliance Checklist
@@ -85,23 +79,7 @@ multipleOf: 5
 
 # Array constraints
 type: array
-minItems: 1
-maxItems: 10
-uniqueItems: true
-items:
-  type: string
-
-# Object constraints
-type: object
-required:
-  - id
-  - name
-additionalProperties: false
-properties:
-  id:
-    type: string
-  name:
-    type: string
+# ...
 ```
 
 ### Response Standards
@@ -145,21 +123,7 @@ components:
         message:
           type: string
           description: Human-readable message
-          example: The request contains invalid data
-        details:
-          type: array
-          items:
-            type: object
-            properties:
-              field:
-                type: string
-              code:
-                type: string
-              message:
-                type: string
-        requestId:
-          type: string
-          description: Request identifier for support
+# ...
 ```
 
 ---
@@ -425,8 +389,7 @@ type User {
   id: ID!
   name: String!
   email: String!
-  createdAt: DateTime!
-}
+// ...
 ```
 
 ### Naming Conventions
@@ -458,8 +421,7 @@ type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
   startCursor: String
-  endCursor: String
-}
+// ...
 ```
 
 ### Error Handling
@@ -480,8 +442,7 @@ enum ErrorCode {
   VALIDATION_ERROR
   NOT_FOUND
   UNAUTHORIZED
-  CONFLICT
-}
+// ...
 ```
 
 ### Compliance Checklist

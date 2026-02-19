@@ -170,7 +170,6 @@ A persona's Core Identity (Role + Category + Service) is **immutable through evo
 
 `references/persona-model.md` — Persona model, Echo template, Cast extensions
 `references/generation-workflows.md` — CONJURE workflow, input analysis
-`references/interaction-triggers.md` — YAML question templates
 `references/evolution-engine.md` — Evolution mechanism, drift detection, confidence decay
 `references/registry-spec.md` — registry.yaml specification, lifecycle states
 `references/collaboration-formats.md` — Collaboration patterns, handoff formats

@@ -76,20 +76,7 @@ gh pr list --state merged --json number,title,reviews,reviewDecision,reviewReque
 | `createdAt` | datetime | 作成日時 |
 | `updatedAt` | datetime | 更新日時 |
 | `closedAt` | datetime | クローズ日時 |
-| `mergedAt` | datetime | マージ日時 |
-| `mergedBy` | object | マージした人 |
-| `additions` | int | 追加行数 |
-| `deletions` | int | 削除行数 |
-| `changedFiles` | int | 変更ファイル数 |
-| `url` | string | PR URL |
-| `headRefName` | string | ブランチ名 |
-| `baseRefName` | string | マージ先ブランチ |
-| `isDraft` | bool | ドラフトかどうか |
-| `reviews` | array | レビュー一覧 |
-| `reviewDecision` | string | レビュー判定 |
-| `reviewRequests` | array | レビューリクエスト |
-| `milestone` | object | マイルストーン |
-| `comments` | array | コメント一覧 |
+| ... | (14 more rows) |
 
 ---
 
@@ -353,32 +340,7 @@ fetch_all_prs() {
           pageInfo { hasNextPage endCursor }
           nodes {
             number title
-            author { login }
-            createdAt mergedAt
-            additions deletions changedFiles
-          }
-        }
-      }
-    }'
-
-    local owner=$(echo "$repo" | cut -d'/' -f1)
-    local name=$(echo "$repo" | cut -d'/' -f2)
-
-    local result=$(gh api graphql -f query="$query" \
-      -f owner="$owner" -f repo="$name" -f cursor="$cursor")
-
-    local prs=$(echo "$result" | jq '.data.repository.pullRequests.nodes')
-    all_prs=$(echo "$all_prs $prs" | jq -s 'add')
-
-    has_next=$(echo "$result" | jq -r '.data.repository.pullRequests.pageInfo.hasNextPage')
-    cursor=$(echo "$result" | jq -r '.data.repository.pullRequests.pageInfo.endCursor')
-  done
-
-  echo "$all_prs"
-}
-
-# 使用例
-fetch_all_prs "owner/repo" > all-prs.json
+# ...
 ```
 
 ### Simple Loop Method
@@ -493,30 +455,7 @@ gh_retry() {
 
     if [ $exit_code -eq 0 ]; then
       echo "$result"
-      return 0
-    fi
-
-    # Check for non-recoverable errors
-    if echo "$result" | grep -qE "404|not found|does not exist"; then
-      echo "ERROR: Resource not found (non-recoverable)" >&2
-      return 1
-    fi
-
-    if [ $attempt -lt $max_attempts ]; then
-      local delay=$((base_delay * (2 ** (attempt - 1))))
-      echo "Attempt $attempt failed, retrying in ${delay}s..." >&2
-      sleep $delay
-    fi
-
-    ((attempt++))
-  done
-
-  echo "ERROR: All $max_attempts attempts failed" >&2
-  return 1
-}
-
-# Usage
-gh_retry 3 5 "gh pr list --state merged --limit 100 --json number,title"
+# ...
 ```
 
 ### Rate-Limit Aware Execution
@@ -537,28 +476,7 @@ gh_with_rate_limit() {
     if [ $wait -gt 0 ] && [ $wait -lt 3600 ]; then
       echo "Rate limit low ($remaining), waiting ${wait}s for reset..." >&2
       sleep $wait
-    fi
-  fi
-
-  # Execute command
-  local result
-  result=$(eval "$cmd" 2>&1)
-  local exit_code=$?
-
-  # Handle rate limit error in response
-  if echo "$result" | grep -q "rate limit"; then
-    echo "Hit rate limit, waiting 60s..." >&2
-    sleep 60
-    result=$(eval "$cmd" 2>&1)
-    exit_code=$?
-  fi
-
-  echo "$result"
-  return $exit_code
-}
-
-# Usage
-gh_with_rate_limit "gh pr list --state all --limit 200 --json number,title"
+# ...
 ```
 
 ### Timeout Wrapper
@@ -579,17 +497,7 @@ gh_with_timeout() {
   else
     # Perl fallback (macOS)
     perl -e 'alarm shift @ARGV; exec @ARGV' "$timeout_sec" bash -c "$cmd"
-  fi
-
-  local exit_code=$?
-  if [ $exit_code -eq 124 ]; then
-    echo "ERROR: Command timed out after ${timeout_sec}s" >&2
-  fi
-  return $exit_code
-}
-
-# Usage: 30 second timeout
-gh_with_timeout 30 "gh pr list --state all --limit 500 --json number,title"
+# ...
 ```
 
 ### Combined Robust Fetch
@@ -610,9 +518,7 @@ fetch_prs_robust() {
   # Execute with rate limit check and retry
   gh_with_rate_limit "gh_retry 3 5 \"$cmd\""
 }
-
-# Usage
-fetch_prs_robust "org/project" "merged" 200
+# ...
 ```
 
 ### Graceful Degradation
@@ -633,25 +539,7 @@ fetch_prs_with_fallback() {
   result=$(gh pr list $repo_flag --state "$state" --limit "$limit" --json "$full_fields" 2>&1)
 
   if [ $? -eq 0 ]; then
-    echo "$result"
-    return 0
-  fi
-
-  echo "Full field fetch failed, trying minimal fields..." >&2
-
-  # Fallback to minimal fields
-  local min_fields="number,title,state,author"
-  result=$(gh pr list $repo_flag --state "$state" --limit "$limit" --json "$min_fields" 2>&1)
-
-  if [ $? -eq 0 ]; then
-    echo "WARNING: Retrieved partial data (missing: additions, deletions, dates)" >&2
-    echo "$result"
-    return 0
-  fi
-
-  echo "ERROR: Even minimal fetch failed" >&2
-  return 1
-}
+# ...
 ```
 
 ---

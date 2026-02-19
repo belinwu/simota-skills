@@ -137,10 +137,7 @@ class S3BucketNaming(BaseResourceCheck):
     def scan_resource_conf(self, conf):
         bucket = conf.get("bucket", [""])[0]
         if bucket and bucket.startswith(("dev-", "staging-", "prod-")):
-            return CheckResult.PASSED
-        return CheckResult.FAILED
-
-check = S3BucketNaming()
+# ...
 ```
 
 ```bash
@@ -205,9 +202,7 @@ deny[msg] {
 
   msg := sprintf(
     "%s '%s' is missing required tags: %v",
-    [resource.type, resource.address, missing]
-  )
-}
+// ...
 ```
 
 ### Cost Guard Policy
@@ -228,25 +223,7 @@ deny[msg] {
   resource.type == "aws_instance"
   resource.change.actions[_] == "create"
 
-  instance_type := resource.change.after.instance_type
-  expensive_instance_types[instance_type]
-
-  msg := sprintf(
-    "Instance '%s' uses expensive type '%s'. Requires approval.",
-    [resource.address, instance_type]
-  )
-}
-
-warn[msg] {
-  resource := input.resource_changes[_]
-  resource.type == "aws_nat_gateway"
-  resource.change.actions[_] == "create"
-
-  msg := sprintf(
-    "NAT Gateway '%s' costs ~$45/month. Consider VPC endpoints instead.",
-    [resource.address]
-  )
-}
+// ...
 ```
 
 ### Security Policy
@@ -267,20 +244,7 @@ deny[msg] {
   resource.change.after.from_port != 80
 
   msg := sprintf(
-    "Security group rule '%s' allows unrestricted ingress on port %d",
-    [resource.address, resource.change.after.from_port]
-  )
-}
-
-deny[msg] {
-  resource := input.resource_changes[_]
-  resource.type == "aws_s3_bucket"
-  resource.change.actions[_] == "create"
-
-  not resource.change.after.server_side_encryption_configuration
-
-  msg := sprintf("S3 bucket '%s' must have encryption enabled", [resource.address])
-}
+// ...
 ```
 
 ### Usage
@@ -365,14 +329,7 @@ variable "instance_type" {
     error_message = "Only t3.* and t4g.* instance types are allowed in this project."
   }
 }
-
-variable "cidr_block" {
-  type = string
-  validation {
-    condition     = can(cidrhost(var.cidr_block, 0))
-    error_message = "Must be a valid CIDR block."
-  }
-}
+// ...
 ```
 
 ### Lifecycle Preconditions/Postconditions (Terraform 1.2+)
@@ -393,7 +350,7 @@ resource "aws_instance" "app" {
       error_message = "Instance must have a public IP assigned."
     }
   }
-}
+// ...
 ```
 
 ---
@@ -416,14 +373,7 @@ repos:
   - repo: https://github.com/aquasecurity/trivy
     rev: v0.55.0
     hooks:
-      - id: trivy-config
-        args: ['--severity', 'HIGH,CRITICAL']
-
-  - repo: https://github.com/bridgecrewio/checkov
-    rev: 3.2.0
-    hooks:
-      - id: checkov
-        args: ['--framework', 'terraform', '--quiet']
+# ...
 ```
 
 ---
@@ -456,20 +406,7 @@ plugin "google" {
   enabled = true
   version = "0.28.0"
   source  = "github.com/terraform-linters/tflint-ruleset-google"
-}
-
-rule "terraform_naming_convention" {
-  enabled = true
-  format  = "snake_case"
-}
-
-rule "terraform_documented_variables" {
-  enabled = true
-}
-
-rule "terraform_documented_outputs" {
-  enabled = true
-}
+// ...
 ```
 
 ### Key Rules

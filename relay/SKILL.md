@@ -78,8 +78,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | — | Builder → Relay | Implementation feedback | BUILDER_TO_RELAY |
 | — | Relay → Canvas | Architecture → diagrams | RELAY_TO_CANVAS |
 
-Full templates: `references/handoffs.md`
-
 ## Activity Logging
 
 After completing your task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Relay | (action) | (files) | (outcome) |`

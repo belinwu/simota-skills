@@ -20,12 +20,7 @@ All handoff formats for agent collaboration with Palette.
                      ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                   OUTPUT CONSUMERS                          │
-│  Flow → アニメーション実装                                  │
-│  Echo → 改善検証                                           │
-│  Radar → テスト追加                                        │
-│  Canvas → Before/After可視化                               │
-│  Sentinel → セキュリティレビュー                            │
-└─────────────────────────────────────────────────────────────┘
+...
 ```
 
 ---
@@ -54,7 +49,7 @@ All handoff formats for agent collaboration with Palette.
 
 **Suggested Focus**: [改善の方向性]
 
-→ `/Palette improve [target]`
+...
 ```
 
 ### Palette → Echo Validation Request
@@ -101,21 +96,7 @@ All handoff formats for agent collaboration with Palette.
 | loading | success | 300ms | spring |
 
 **Visual Requirements**:
-- Transform: [scale, translate, rotate specifications]
-- Opacity: [fade values]
-- Color: [color transitions]
-- Other: [shadow, blur, etc.]
-
-**Accessibility Requirements**:
-- [ ] Respects prefers-reduced-motion
-- [ ] Duration < 5s for non-essential animations
-- [ ] No flashing > 3 times per second
-
-**Context**:
-- UX Goal: [Why this animation improves UX]
-- Related Heuristic: #X [Heuristic name]
-
-→ `/Flow implement [interaction] animation`
+...
 ```
 
 ### Flow → Palette Completion Report
@@ -158,7 +139,7 @@ All handoff formats for agent collaboration with Palette.
 **Accessibility Concern**: [If applicable]
 **Usage Context**: [Where these tokens will be used]
 
-→ `/Muse define tokens for [pattern]`
+...
 ```
 
 ### Muse → Palette Token Definition
@@ -179,8 +160,7 @@ All handoff formats for agent collaboration with Palette.
 - [Dark mode considerations]
 
 **Files Updated**: [token files modified]
-
-→ Palette applies tokens to interaction patterns
+...
 ```
 
 ---
@@ -209,14 +189,7 @@ All handoff formats for agent collaboration with Palette.
 - [e.g., "Showing more detailed error messages"]
 
 **Files Affected**: [file:line references]
-
-**Review Request**:
-- [ ] No sensitive data exposure in error messages
-- [ ] No XSS vulnerability in dynamic content
-- [ ] Proper input sanitization maintained
-- [ ] Authentication state properly handled
-
-→ `/Sentinel review UX change`
+...
 ```
 
 ### Sentinel → Palette Security Feedback
@@ -237,8 +210,7 @@ All handoff formats for agent collaboration with Palette.
 
 **Approved Patterns**:
 - [What is safe to implement]
-
-→ Palette applies security feedback
+...
 ```
 
 ---
@@ -267,17 +239,7 @@ All handoff formats for agent collaboration with Palette.
 2. **Behavior**: [...]
 
 **Edge Cases**:
-- [e.g., "Double-click prevention"]
-- [e.g., "Keyboard activation"]
-- [e.g., "Error state recovery"]
-
-**Test Types Needed**:
-- [ ] Unit test for component state
-- [ ] Integration test for user flow
-- [ ] Accessibility test (axe-core)
-- [ ] Visual regression test
-
-→ `/Radar add tests for [component]`
+...
 ```
 
 ### Radar → Palette Test Completion
@@ -298,7 +260,7 @@ All handoff formats for agent collaboration with Palette.
 - `pnpm test:a11y [component]`
 
 **Recommendations**:
-- [Additional tests suggested]
+...
 ```
 
 ---
@@ -327,18 +289,7 @@ All handoff formats for agent collaboration with Palette.
 | User Friction | [description] | [resolution] |
 
 **Heuristic Score Data**:
-| # | Heuristic | Before | After | Delta |
-|---|-----------|--------|-------|-------|
-| 1 | Visibility of Status | 2/5 | 4/5 | +2 |
-| 5 | Error Prevention | 1/5 | 4/5 | +3 |
-
-**Requested Output**:
-- [ ] Radar chart comparing heuristic scores
-- [ ] Before/After side-by-side
-- [ ] Interaction state diagram
-- [ ] Journey map with friction points
-
-→ `/Canvas visualize UX improvement`
+...
 ```
 
 ### Canvas Output Formats
@@ -416,12 +367,7 @@ radar
 7. Palette → Flow (if animation needed)
      ↓
 8. Palette → Radar (add tests)
-     ↓
-9. Palette → Echo (validation request)
-     ↓
-10. Echo validates (score: +3)
-     ↓
-11. Palette → Canvas (document improvement)
+...
 ```
 
 ### Scenario 2: Design System Alignment

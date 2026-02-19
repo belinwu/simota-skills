@@ -72,8 +72,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/json-ld-templates.md` | JSON-LD templates (Product/Article/FAQ/Breadcrumb/Org/Local/SoftwareApp) |
 | `references/core-web-vitals.md` | Core Web Vitals optimization (LCP/INP/CLS strategies + code) |
 | `references/cro-patterns.md` | CRO patterns (CTA/forms/exit-intent/social proof) |
-| `references/collaboration-handoffs.md` | Bolt/Canvas integration + handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for decision triggers |
 | `references/code-standards.md` | Good/bad code examples |
 
 ---

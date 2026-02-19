@@ -95,8 +95,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/voice-tone-framework.md` | Voice attributes, tone spectrum, word choice |
 | `references/onboarding-copy-patterns.md` | Progressive disclosure, first-run experience |
 | `references/accessibility-text-guide.md` | Alt text, ARIA labels, screen reader text |
-| `references/handoff-formats.md` | Input/output handoff templates |
-| `references/interaction-triggers.md` | YAML question templates for all triggers |
 
 ---
 

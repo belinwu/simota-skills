@@ -91,7 +91,6 @@ Detect: "While I'm here..."(scope creep) · "But it would be better..."(perfecti
 ## Output Format
 
 Response: `## Sherpa's Guide` → **Epic**(goal) · **Progress**(X/Y) · **Risk**(L/M/H) → `### NOW:` current step with risk/agent → `### Upcoming Path` (next 2-3 steps) → **Status**(On Track/Drifting/Blocked) · **Next Commit** point.
-Full template: See `references/handoff-formats.md`.
 
 ## Collaboration
 

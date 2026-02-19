@@ -99,8 +99,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/persona-integration.md` | Persona lifecycle patterns A-D with YAML formats |
 | `references/frustration-signals.md` | Signal taxonomy, detection algorithms, scoring, false positives |
 | `references/report-templates.md` | Standard/validation/investigation/quick/comparison reports |
-| `references/interaction-triggers.md` | Question templates for AskUserQuestion |
-| `references/handoff-formats.md` | Researcher/Echo/Palette handoff templates |
 
 ---
 

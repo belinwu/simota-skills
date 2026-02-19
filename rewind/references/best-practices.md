@@ -38,7 +38,7 @@ git log --oneline -S "errorMessage" --since="1 month ago"
 # 3. Bisect within narrowed range
 git bisect start
 git bisect bad HEAD
-git bisect good v2.0.0
+# ...
 ```
 
 ### 3. Verify Before Automate
@@ -83,9 +83,7 @@ Record discoveries during the investigation.
 - Completed in 6 steps
 - Identified def5678
 
-### 10:45 - Analysis
-- base64 fallback removal is the cause
-- Affects users with old token format
+...
 ```
 
 ---
@@ -188,7 +186,7 @@ git show abc1234
 git log --name-only abc1234^..abc1234
 
 # Step 5: Understand context from surrounding commits
-git log --oneline abc1234~5..abc1234+5
+# ...
 ```
 
 ### Understand the "Why"
@@ -211,12 +209,7 @@ INFORMATION_SOURCES:
 
   4. Related documentation:
      - ADRs (Architecture Decision Records)
-     - Design documents
-     - Internal Wiki
-
-  5. Original authors:
-     - Last resort
-     - Only when code doesn't explain itself
+# ...
 ```
 
 ### Time-box Your Investigation
@@ -239,9 +232,7 @@ TIME_BOXING:
 
   when_to_stop:
     - Question has been answered
-    - No more information sources
-    - Time limit reached
-    - Determined need to ask someone directly
+# ...
 ```
 
 ---
@@ -268,11 +259,7 @@ Report discoveries in a structured format.
 ### Details
 - Evidence for findings
 - Related commits
-- Code excerpts
-
-### Recommendations
-- Next actions
-- Handoff to responsible parties
+...
 ```
 
 ### Visual Timeline
@@ -312,12 +299,7 @@ CONFIDENCE_LEVELS:
       - Change content is related
       - Full verification not done
 
-  low:
-    description: "Possible but uncertain"
-    criteria:
-      - Only indirect evidence
-      - Multiple candidates exist
-      - Further investigation needed
+# ...
 ```
 
 ---

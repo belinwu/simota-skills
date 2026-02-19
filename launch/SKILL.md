@@ -112,9 +112,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | File | Contents |
 |------|----------|
 | `references/strategies.md` | 8 domain strategies + git commands + quick reference |
-| `references/interaction-triggers.md` | 5 YAML trigger templates for AskUserQuestion |
 | `references/patterns.md` | 6 collaboration patterns (A–F), orchestration flows, architecture diagram |
-| `references/handoffs.md` | Input/output handoff YAML formats |
 | `references/examples.md` | Worked examples of release workflows |
 
 ## Git Guidelines

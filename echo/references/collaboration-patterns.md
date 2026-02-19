@@ -20,12 +20,7 @@ Detailed collaboration patterns and handoff formats for Echo agent.
 ┌─────────────────────────────────────────────────────────────┐
 │                   OUTPUT CONSUMERS                          │
 │  Palette → インタラクション改善                             │
-│  Experiment → A/Bテスト仮説                                 │
-│  Growth → CRO施策                                           │
-│  Canvas → フロー可視化                                      │
-│  Spark → 新機能提案                                         │
-│  Scout → 根本原因分析                                       │
-└─────────────────────────────────────────────────────────────┘
+...
 ```
 
 ## Pattern A: Validation Loop (Echo ↔ Palette)
@@ -96,10 +91,7 @@ Echo（勝者バリアントをペルソナ検証）
 - Variant B: [提案2（オプション）]
 
 **Metrics to Track**:
-- Primary: [主要指標]
-- Guardrail: [悪化させたくない指標]
-
-→ `/Experiment design A/B test`
+...
 ```
 
 ## Pattern C: Prediction Validation Loop (Echo ↔ Voice)
@@ -131,8 +123,7 @@ Echo（シミュレーション精度向上）
 **False Negatives**: [Echoが見逃した実際の問題]
 
 **Calibration Actions**:
-- [学習した内容]
-- [ペルソナ調整が必要な場合]
+...
 ```
 
 ## Pattern D: Visualization (Echo → Canvas)
@@ -162,9 +153,7 @@ Canvas（Journey Map / Friction Heatmap生成）
 **Highlight Points**:
 - Peak: Step [N]
 - End: Step [N]
-- Critical Friction: Step [N]
-
-→ `/Canvas visualize journey`
+...
 ```
 
 ## Pattern E: Root Cause Analysis (Echo → Scout)
@@ -223,7 +212,7 @@ Echo（提案をペルソナ視点で検証）
 
 **Opportunity Size**: [影響を受けるペルソナ数/頻度]
 
-→ `/Spark propose feature`
+...
 ```
 
 ## Pattern G: Persona Generation (Echo ↔ Researcher)
@@ -386,19 +375,7 @@ Stakeholder sharing
 | Attribute | Value |
 |-----------|-------|
 | Viewport | 390x844 (iPhone 14 Pro) |
-| Browser | Chrome Mobile |
-| Connection | 4G (simulated) |
-
-**Flow Information**:
-- URL: [Target URL]
-- Journey: [Flow description]
-- Actions Performed: [Actions before each screenshot]
-
-**Recommended Personas**:
-- Primary: [Most relevant persona]
-- Secondary: [Additional personas]
-
-**Request**: Perform Visual Persona Review on captured screenshots
+...
 ```
 
 ### Handoff Format (Echo → Canvas)
@@ -419,27 +396,7 @@ Stakeholder sharing
 | 01_landing.png | Initial | +1 | None | Hero clear |
 | 02_form.png | Form | −2 | Touch Target | CTA too small |
 
-**Screenshot References**:
-- Path: `.navigator/screenshots/[id]/`
-- Files: [list of files]
-
-**Highlight Points**:
-- Peak (Best): Screenshot [N], Score [S]
-- Valley (Worst): Screenshot [N], Score [S]
-- End: Screenshot [N], Score [S]
-
-**Mermaid Journey Data**:
-\`\`\`mermaid
-journey
-    title [Flow] - [Persona] Visual Review
-    section Landing
-      View homepage: 4: User
-    section Signup
-      Open form: 3: User
-      Submit: 1: User
-\`\`\`
-
-→ `/Canvas visualize visual-journey`
+...
 ```
 
 ### Use Cases

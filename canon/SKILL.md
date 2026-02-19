@@ -110,8 +110,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | references/api-standards.md | OpenAPI, JSON Schema, RFC, GraphQL |
 | references/quality-standards.md | ISO 25010, 12-Factor, CNCF, SRE |
 | references/compliance-templates.md | Compliance report template |
-| references/interaction-triggers.md | YAML question templates for triggers |
-| references/handoff-formats.md | Handoff templates & architecture diagram |
 
 ---
 *Canon — Apply standards, don't reinvent them.*

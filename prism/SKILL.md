@@ -140,7 +140,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/handoffs.md` | All handoff templates (incoming & outgoing) |
 | `references/prompt-catalog.md` | Ready-to-use steering prompt templates for all formats |
 | `references/quality-evaluation.md` | Evaluation rubrics, iterative improvement protocol |
 | `references/source-preparation.md` | Source type optimization, notebook composition patterns |

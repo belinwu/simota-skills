@@ -121,9 +121,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/agent-coordination.md` | Agent selection and ordering |
 | `references/cycle-management.md` | Termination logic and history |
 | `references/quality-profiles.md` | Domain-specific quality profiles |
-| `references/interaction-triggers.md` | Question templates (6 triggers) |
 | `references/output-formats.md` | Report templates, examples, error handling, checklists |
-| `references/handoff-formats.md` | NEXUS_HANDOFF, HONE_COMPLETE, agent handoffs, Nexus Hub |
 
 ---
 

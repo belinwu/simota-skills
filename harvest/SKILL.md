@@ -116,9 +116,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/pdf-export-guide.md` | md-to-pdf / Pandoc export guide and styles |
 | `references/error-handling.md` | Error categories, retry strategy, health check, graceful degradation |
 | `references/caching-strategy.md` | Cache TTL, directory structure, incremental collection, policies |
-| `references/inbound-handoffs.md` | Inbound collaboration patterns H-L (Judge/Pulse/Sherpa/Launch/Canvas) |
 | `references/outbound-handoffs.md` | Outbound collaboration patterns A-G (Guardian/Pulse/Canvas/Zen/Sherpa/Radar/Launch) |
-| `references/interaction-triggers.md` | YAML question templates for 5 triggers |
 
 ## Domain Knowledge Summary
 

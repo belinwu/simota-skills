@@ -22,15 +22,7 @@ Detailed workflow for CONJURE mode — rapid persona generation from diverse inp
 │  Synthesize extracted data into persona structure             │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
-┌─────────────────────────────────────────────────────────────┐
-│                 4. VALIDATION                                 │
-│  Echo compatibility, confidence scoring, consistency          │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-┌─────────────────────────────────────────────────────────────┐
-│                 5. REGISTRATION                               │
-│  Save files, update registry, set initial lifecycle          │
-└─────────────────────────────────────────────────────────────┘
+...
 ```
 
 ---
@@ -98,14 +90,7 @@ For each source, assess quality before extraction:
 
 ### Tech Level
 - "no coding required" → Low
-- "API integration" → Medium-High
-- "advanced configuration", "SDK" → High
-- CLI-only interface → High
-
-### Goals & Pain Points
-- "benefit:", "solve:", "help you..."
-- "FAQ", "common issues", "troubleshooting"
-- Feature highlights (→ goals), limitations (→ frustrations)
+...
 ```
 
 #### B. Code Structure Analysis
@@ -126,14 +111,7 @@ For each source, assess quality before extraction:
 - Loading states → patience requirements
 
 ### Feature Flags
-- Feature toggles → user segments
-- A/B test configs → user variations
-- Premium/free feature splits → tier personas
-
-### Authentication
-- Social login options → tech level indicators
-- MFA requirements → security sensitivity
-- Guest checkout → convenience expectations
+...
 ```
 
 #### C. Test Scenario Analysis
@@ -171,16 +149,7 @@ For each source, assess quality before extraction:
 - Device/time distributions → context
 
 ### From Voice
-- NPS segments → satisfaction levels
-- Feedback themes → pain points / delights
-- Feature requests → unmet goals
-- Churn reasons → abandonment triggers
-
-### From Pulse
-- Funnel metrics → conversion barriers
-- Cohort data → user segments
-- Engagement metrics → usage patterns
-- Retention curves → lifecycle stages
+...
 ```
 
 ### Extraction Output Format
@@ -201,36 +170,7 @@ extracted:
       confidence: 0.15
 
   goals:
-    - goal: "Purchase products quickly"
-      type: functional
-      evidence: "docs/quick-start.md: 'complete purchase in 3 steps'"
-
-  pain_points:
-    - pain: "Complex registration process"
-      evidence: "src/auth/register.tsx: 15 required fields"
-
-  behaviors:
-    - behavior: "Compares prices before purchasing"
-      evidence: "analytics config: 'compare_prices' event tracked"
-
-  context:
-    - scenario: "Mobile shopping during commute"
-      evidence: "tests/e2e/mobile-checkout.spec.ts"
-
-  emotion_triggers:
-    - trigger: "Hidden fees at checkout"
-      valence: -3
-      evidence: "FAQ: 'why is my total different from cart?'"
-
-  extended_attributes:
-    demographics:
-      - attribute: "age_group"
-        value: "20s-30s"
-        evidence: "marketing copy: 'young professionals'"
-    psychographics:
-      - attribute: "time_vs_cost"
-        value: "Time-saver"
-        evidence: "tagline: 'save hours of manual work'"
+# ...
 ```
 
 ---

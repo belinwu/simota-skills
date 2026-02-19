@@ -34,16 +34,7 @@ judge_feedback_sources:
       action: "Reinforce current patterns"
     changes_requested:
       meaning: "Issues missed by prediction"
-      action: "Analyze gaps, update patterns"
-    blocked:
-      meaning: "Critical issues missed"
-      action: "Review prediction thresholds"
-
-  issue_categorization:
-    bugs: "Logic errors, null pointers, race conditions"
-    security: "Vulnerabilities, injection risks"
-    quality: "Naming, structure, complexity"
-    tests: "Missing coverage, weak assertions"
+# ...
 ```
 
 ### Zen Feedback Processing
@@ -86,26 +77,7 @@ zen_feedback_sources:
 | Large function oauth.ts | HIGH | Confirmed | TRUE_POSITIVE |
 
 ### Prediction Accuracy for This PR
-- True Positives: 2
-- False Positives: 1
-- False Negatives: 1
-- Accuracy: 50%
-
-### New Issues Found by Judge (Missed by Guardian)
-| File | Line | Issue | Severity | Pattern to Add |
-|------|------|-------|----------|----------------|
-| callback.ts | 72 | XSS via innerHTML | HIGH | dangerous_dom_manipulation |
-| handler.ts | 45 | Unhandled rejection | MEDIUM | async_error_handling |
-
-### Project-Specific Observations
-- Team prefers explicit null checks over optional chaining
-- Magic numbers in constants.ts are acceptable
-- Complex conditions in validators are allowed
-
-### Calibration Suggestions
-- Increase innerHTML detection sensitivity
-- Add async error handling pattern
-- Decrease false positive rate for race conditions
+...
 ```
 
 ### Response Processing
@@ -126,13 +98,7 @@ feedback_processing:
 
     false_positive:
       - Decrease pattern confidence by 10%
-      - Review triggering conditions
-      - Add exception if project-specific
-
-    false_negative:
-      - Add new pattern if repeated
-      - Increase detection sensitivity
-      - Lower threshold for similar patterns
+# ...
 ```
 
 ---
@@ -157,9 +123,7 @@ pattern_calibration:
     storage: ".agents/guardian.md"
     format: "YAML metadata block"
     includes:
-      - Pattern exceptions
-      - Custom thresholds
-      - Team preferences
+# ...
 ```
 
 ### Quality Score Calibration
@@ -180,16 +144,7 @@ quality_calibration:
     poor_prediction:
       predicted: "A (85-94)"
       actual_cycles: "> 2"
-      correlation: "Overestimated"
-
-  adjustment:
-    overestimated:
-      action: "Lower scores by observed gap"
-      example: "If predicted A but took 3 cycles, reduce future similar by 10%"
-
-    underestimated:
-      action: "Raise scores by observed gap"
-      example: "If predicted B but merged in 1 cycle, increase future similar by 5%"
+# ...
 ```
 
 ---
@@ -314,19 +269,7 @@ pattern_weights:
 └─────────────────┬───────────────────┘
                   ↓
 ┌─────────────────────────────────────┐
-│    Process Feedback                  │
-│    - Update pattern weights          │
-│    - Add new patterns if needed      │
-│    - Store exceptions                │
-└─────────────────┬───────────────────┘
-                  ↓
-┌─────────────────────────────────────┐
-│    Save to .agents/guardian.md       │
-└─────────────────┬───────────────────┘
-                  ↓
-┌─────────────────────────────────────┐
-│    Apply to Future PRs               │
-└─────────────────────────────────────┘
+...
 ```
 
 ---
@@ -351,16 +294,7 @@ learning_metrics:
     target: "< 15%"
     current: "Track from feedback"
     impact: "Catches more issues pre-review"
-
-  quality_score_correlation:
-    target: "> 0.80"
-    current: "Track from outcomes"
-    impact: "More accurate quality assessment"
-
-  review_cycle_reduction:
-    target: "1 cycle average"
-    baseline: "Historical average"
-    improvement: "Track delta"
+# ...
 ```
 
 ### Improvement Actions
@@ -426,10 +360,7 @@ harvest_integration:
       - Common fixes applied
       - Reviewer preferences
 
-  application:
-    - Seed initial predictions
-    - Validate against history
-    - Detect pattern drift
+# ...
 ```
 
 ### Cross-PR Learning
@@ -450,7 +381,5 @@ cross_pr_learning:
       - Final outcome
 
   calibration_input:
-    - Use historical outcomes
-    - Weight recent more heavily
-    - Adjust for context differences
+# ...
 ```

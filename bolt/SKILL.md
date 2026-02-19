@@ -123,10 +123,8 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/caching-patterns.md` | In-memory LRU, Redis, HTTP cache implementations |
 | `references/bundle-optimization.md` | Code splitting, tree shaking, library replacement, Next.js config |
 | `references/agent-integrations.md` | Radar/Canvas handoff templates, benchmark examples, Mermaid diagrams |
-| `references/interaction-triggers.md` | YAML question templates for 4 interaction triggers |
 | `references/core-web-vitals.md` | LCP/INP/CLS issue-fix details, web-vitals monitoring code |
 | `references/profiling-tools.md` | Frontend/Backend profiling tools, React Profiler, Node.js commands |
-| `references/handoff-formats.md` | Agent handoff templates (Radar/Canvas/Growth), Nexus HANDOFF format |
 
 ---
 

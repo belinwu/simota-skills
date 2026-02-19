@@ -22,15 +22,7 @@ Caching strategies to improve performance and reduce API load during PR data col
 │  │  PR Cache  │     │ User Cache │     │Query Cache │
 │  │  TTL: 5min │     │ TTL: 1hr   │     │ TTL: 15min │
 │  └────────────┘     └────────────┘     └────────────┘
-│         │                   │                   │   │
-│         └───────────────────┼───────────────────┘   │
-│                             ▼                       │
-│                    ┌──────────────┐                 │
-│                    │ File-based   │                 │
-│                    │ Storage      │                 │
-│                    │ .harvest/    │                 │
-│                    └──────────────┘                 │
-└─────────────────────────────────────────────────────┘
+...
 ```
 
 ---
@@ -125,10 +117,7 @@ generate_query_cache_key() {
   "stats": {
     "total_entries": 15,
     "total_size_bytes": 234567,
-    "hit_rate": 0.72,
-    "last_cleanup": "2024-01-15T09:00:00Z"
-  }
-}
+// ...
 ```
 
 ---
@@ -153,13 +142,7 @@ cache_write() {
   local expires_at=$(date -u -d "+${ttl_seconds} seconds" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || \
                      date -u -v+${ttl_seconds}S +%Y-%m-%dT%H:%M:%SZ)
 
-  # Write with metadata wrapper
-  jq -n --arg data "$data" --arg expires "$expires_at" \
-    '{meta: {expires_at: $expires, cached_at: now | strftime("%Y-%m-%dT%H:%M:%SZ")}, data: ($data | fromjson)}' \
-    > "$file_path"
-
-  echo "$file_path"
-}
+# ...
 ```
 
 ### Read from Cache
@@ -180,16 +163,7 @@ cache_read() {
   # Check expiration
   local expires_at=$(jq -r '.meta.expires_at' "$file_path" 2>/dev/null)
   local now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-  if [[ "$now" > "$expires_at" ]]; then
-    rm -f "$file_path"  # Clean up expired
-    return 1  # Cache expired
-  fi
-
-  # Return cached data
-  jq '.data' "$file_path"
-  return 0
-}
+# ...
 ```
 
 ### Cache-Aware Fetch
@@ -210,24 +184,7 @@ fetch_prs_cached() {
     echo "CACHE_HIT: $cache_key" >&2
     echo "$cached_data"
     return 0
-  fi
-
-  echo "CACHE_MISS: $cache_key, fetching from API..." >&2
-
-  # Fetch from API
-  local api_data
-  api_data=$(gh pr list -R "$repo" --state "$state" --limit "$limit" \
-    --json number,title,state,author,createdAt,mergedAt,additions,deletions)
-
-  if [ $? -ne 0 ]; then
-    return 1
-  fi
-
-  # Write to cache (5 min TTL for PR lists)
-  cache_write "pr-lists" "$cache_key" "$api_data" 300
-
-  echo "$api_data"
-}
+# ...
 ```
 
 ---
@@ -303,16 +260,7 @@ invalidate_repo_cache() {
   local repo_key="${repo//\//_}"
 
   cache_invalidate "${repo_key}*.json"
-}
-
-# Force refresh (invalidate + fetch)
-force_refresh_prs() {
-  local repo="$1"
-  local state="$2"
-
-  invalidate_repo_cache "$repo"
-  fetch_prs_cached "$repo" "$state"
-}
+# ...
 ```
 
 ---
@@ -358,18 +306,7 @@ fetch_incremental_prs() {
   new_prs=$(gh pr list -R "$repo" --state all --limit 500 \
     --json number,title,state,author,createdAt,updatedAt,mergedAt,additions,deletions | \
     jq --arg since "$last_sync" '[.[] | select(.updatedAt >= $since)]')
-
-  local count=$(echo "$new_prs" | jq 'length')
-  echo "Found $count updated PRs" >&2
-
-  # Update sync time
-  local now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-  jq --arg repo "$repo" --arg now "$now" \
-    '.[$repo].all_prs.last_sync = $now' "$sync_file" > "${sync_file}.tmp" && \
-    mv "${sync_file}.tmp" "$sync_file"
-
-  echo "$new_prs"
-}
+# ...
 ```
 
 ---
@@ -402,23 +339,7 @@ cache_cleanup() {
   # Check total size
   local total_size=$(du -sm "$cache_dir" 2>/dev/null | cut -f1)
 
-  if [ "$total_size" -gt "$max_size_mb" ]; then
-    echo "Cache size ($total_size MB) exceeds limit ($max_size_mb MB)"
-
-    # Remove oldest files until under limit
-    while [ "$total_size" -gt "$max_size_mb" ]; do
-      local oldest=$(find "$cache_dir" -type f -name "*.json" -printf '%T+ %p\n' | sort | head -1 | cut -d' ' -f2-)
-      if [ -n "$oldest" ]; then
-        rm -f "$oldest"
-        total_size=$(du -sm "$cache_dir" 2>/dev/null | cut -f1)
-      else
-        break
-      fi
-    done
-
-    echo "Cache size reduced to $total_size MB"
-  fi
-}
+# ...
 ```
 
 ---
@@ -443,30 +364,7 @@ track_cache_metrics() {
   local event="$1"  # "hit" or "miss"
 
   if [ "$event" = "hit" ]; then
-    jq '.hits += 1 | .total_requests += 1' "$metrics_file" > "${metrics_file}.tmp"
-  else
-    jq '.misses += 1 | .total_requests += 1' "$metrics_file" > "${metrics_file}.tmp"
-  fi
-
-  mv "${metrics_file}.tmp" "$metrics_file"
-}
-
-# Get cache statistics
-get_cache_stats() {
-  local cache_dir="${HARVEST_CACHE_DIR:-.harvest/cache}"
-  local metrics_file="$cache_dir/meta/metrics.json"
-
-  if [ -f "$metrics_file" ]; then
-    jq '{
-      hits: .hits,
-      misses: .misses,
-      hit_rate: (if .total_requests > 0 then (.hits / .total_requests * 100 | floor) else 0 end),
-      total_requests: .total_requests
-    }' "$metrics_file"
-  else
-    echo '{"hits": 0, "misses": 0, "hit_rate": 0, "total_requests": 0}'
-  fi
-}
+# ...
 ```
 
 ---

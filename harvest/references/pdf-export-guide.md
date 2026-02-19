@@ -55,107 +55,7 @@ body {
 }
 
 h1 {
-  font-size: 24pt;
-  color: #1e40af;
-  border-bottom: 3px solid #3b82f6;
-  padding-bottom: 10px;
-  margin-top: 0;
-}
-
-h2 {
-  font-size: 14pt;
-  color: #1e40af;
-  border-left: 4px solid #3b82f6;
-  padding-left: 12px;
-  margin-top: 24px;
-}
-
-h3 {
-  font-size: 12pt;
-  color: #334155;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: 9pt;
-}
-
-th {
-  background: #f1f5f9;
-  color: #334155;
-  font-weight: 600;
-  padding: 10px 12px;
-  border: 1px solid #e2e8f0;
-  text-align: left;
-}
-
-td {
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-}
-
-tr:nth-child(even) {
-  background: #f8fafc;
-}
-
-/* メトリクスカード */
-td[align="center"] h3 {
-  font-size: 28pt;
-  color: #2563eb;
-  margin: 0;
-}
-
-td[align="center"] sub {
-  font-size: 9pt;
-  color: #64748b;
-}
-
-/* コードブロック（Mermaid用） */
-pre {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  overflow-x: auto;
-}
-
-code {
-  font-family: "SF Mono", "Monaco", "Menlo", monospace;
-  font-size: 9pt;
-}
-
-/* ステータスバッジ */
-td:last-child {
-  text-align: center;
-}
-
-/* 罫線ボックス */
-pre:has(code:not([class])) {
-  font-family: "SF Mono", monospace;
-  white-space: pre;
-  background: white;
-  border: none;
-}
-
-/* ページブレーク */
-h2 {
-  page-break-after: avoid;
-}
-
-table {
-  page-break-inside: avoid;
-}
-
-/* フッター */
-@page {
-  @bottom-center {
-    content: counter(page) " / " counter(pages);
-    font-size: 9pt;
-    color: #64748b;
-  }
-}
+/* ... */
 ```
 
 ### md-to-pdf 設定ファイル
@@ -178,15 +78,7 @@ module.exports = {
     displayHeaderFooter: true,
     headerTemplate: '<div></div>',
     footerTemplate: `
-      <div style="font-size: 9pt; color: #64748b; width: 100%; text-align: center; padding: 10px;">
-        <span class="pageNumber"></span> / <span class="totalPages"></span>
-      </div>
-    `
-  },
-  launch_options: {
-    args: ['--no-sandbox']
-  }
-};
+// ...
 ```
 
 ---
@@ -295,31 +187,7 @@ def convert_to_pdf(md_file, pdf_file):
         md_content,
         extensions=['tables', 'fenced_code', 'toc']
     )
-
-    full_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <style>
-            @page {{ size: A4; margin: 20mm; }}
-            body {{ font-family: "Hiragino Kaku Gothic ProN", sans-serif; }}
-            h1 {{ color: #1e40af; border-bottom: 3px solid #3b82f6; }}
-            h2 {{ color: #1e40af; border-left: 4px solid #3b82f6; padding-left: 12px; }}
-            table {{ width: 100%; border-collapse: collapse; }}
-            th, td {{ border: 1px solid #e2e8f0; padding: 8px; }}
-            th {{ background: #f1f5f9; }}
-        </style>
-    </head>
-    <body>{html_content}</body>
-    </html>
-    """
-
-    HTML(string=full_html).write_pdf(pdf_file)
-    print(f"Generated: {pdf_file}")
-
-if __name__ == "__main__":
-    convert_to_pdf(sys.argv[1], sys.argv[2])
+# ...
 ```
 
 ### 使用方法
@@ -399,22 +267,7 @@ echo "Converting: $INPUT_FILE -> $OUTPUT_FILE"
 if command -v mmdc &> /dev/null; then
     echo "Pre-rendering Mermaid diagrams..."
     # Mermaidブロックを抽出してSVGに変換
-fi
-
-# md-to-pdfで変換
-if command -v md-to-pdf &> /dev/null; then
-    md-to-pdf "$INPUT_FILE" --stylesheet "$STYLE_FILE"
-elif command -v pandoc &> /dev/null; then
-    pandoc "$INPUT_FILE" -o "$OUTPUT_FILE" \
-        --pdf-engine=lualatex \
-        -V documentclass=ltjarticle \
-        -V geometry:margin=20mm
-else
-    echo "Error: md-to-pdf or pandoc required"
-    exit 1
-fi
-
-echo "Done: $OUTPUT_FILE"
+# ...
 ```
 
 ### 使用方法

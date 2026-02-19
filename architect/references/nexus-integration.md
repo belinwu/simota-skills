@@ -33,12 +33,7 @@ AUTORUN_REQUIREMENTS:
     - Handle errors gracefully
 
   output:
-    - Emit _STEP_COMPLETE
-    - Include Status (SUCCESS/PARTIAL/BLOCKED/FAILED)
-    - Provide Handoff content
-    - List Artifacts
-    - Note Risks
-    - Suggest Next agent
+# ...
 ```
 
 ### 2. Hub Mode Support
@@ -83,8 +78,7 @@ HANDOFF_REQUIREMENTS:
 
   format:
     - Markdown structure
-    - YAML for structured data
-    - Clear section headers
+# ...
 ```
 
 ---
@@ -224,17 +218,7 @@ NEXUS_HANDOFF_FIELDS:
   - [Risk 1]
   - [Trade-off 1]
 - Open questions (blocking/non-blocking):
-  - [Blocking: Question 1]
-  - [Non-blocking: Question 2]
-- Pending Confirmations:
-  - Trigger: [INTERACTION_TRIGGER name]
-  - Question: [Question for user]
-  - Options: [Option 1, Option 2, Option 3]
-  - Recommended: [Recommended option]
-- User Confirmations:
-  - Q: [Previous question] → A: [User's answer]
-- Suggested next agent: [AgentName] (reason: [why])
-- Next action: CONTINUE | VERIFY | DONE
+// ...
 ```
 
 ---
@@ -296,9 +280,7 @@ _STEP_COMPLETE:
   Artifacts:
     - "[Artifact 1]"
   Risks:
-    - "[Risk 1]"
-  Next: "[NextAgent] | VERIFY | DONE"
-  Reason: "[Why this next step]"
+# ...
 ```
 
 ### Status Definitions
@@ -332,7 +314,7 @@ NEXUS (Classify + Chain Select)
      ↓
 NEXUS (Aggregate + Verify)
      ↓
-DELIVER
+...
 ```
 
 ### Chain Position Considerations
@@ -366,11 +348,7 @@ GUARDRAIL_LEVELS:
     trigger: "test_failure > 50%, breaking_change"
     action: "Pause, auto-recover"
     agent_response: "Set status BLOCKED, explain issue"
-
-  L4:
-    trigger: "critical_security"
-    action: "Abort, rollback"
-    agent_response: "Set status FAILED, emergency stop"
+# ...
 ```
 
 ---

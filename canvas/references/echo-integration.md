@@ -53,12 +53,7 @@ Echo agent integration details. Journey Map, Emotion Score visualization, Cross-
 | 4 | Submit | -3 | Error Handling |
 | 5 | Confirmation | +1 | Recovery |
 
-**Highlight Points**:
-- Peak: Step 2 (+2)
-- Valley: Step 4 (-3)
-- End: Step 5 (+1)
-
-→ `/Canvas visualize journey`
+...
 ```
 
 ### Cross-Persona Data
@@ -79,8 +74,7 @@ Echo agent integration details. Journey Map, Emotion Score visualization, Cross-
 **Analysis**:
 - Universal Issues: Step 3
 - Segment Issues: Step 2 (affects Newbie, Mobile, Senior)
-
-→ `/Canvas visualize cross-persona`
+...
 ```
 
 ### Internal Persona Data
@@ -101,18 +95,7 @@ Echo agent integration details. Journey Map, Emotion Score visualization, Cross-
 | Primary Tools | VS Code, Chrome DevTools |
 
 **Workflow Context**:
-| Task | Frequency | Systems |
-|------|-----------|---------|
-| Code review | Daily | GitHub |
-| Component development | Daily | Storybook |
-| Bug triage | Weekly | Jira |
-
-**Pain Points**:
-1. Inconsistent component APIs
-2. Missing documentation
-3. Slow build times
-
-→ `/Canvas visualize internal-persona`
+...
 ```
 
 ### Team Structure Data
@@ -133,12 +116,7 @@ Echo agent integration details. Journey Map, Emotion Score visualization, Cross-
 
 **Collaboration Matrix**:
 | From → To | Frequency | Content |
-|-----------|-----------|---------|
-| FE → BE | Daily | API contracts |
-| FE → QA | Weekly | Test coordination |
-| PdM → All | Weekly | Sprint planning |
-
-→ `/Canvas visualize team-structure`
+...
 ```
 
 ---
@@ -259,12 +237,7 @@ Step 2 (Enter Address)
   Senior   ░░░░░░░░░░ -3  ← Segment Issue
 
 Step 3 (Payment)
-  Newbie   ░░░░░░░░░░ -3  ← Universal Issue
-  Power    ██░░░░░░░░ -2
-  Mobile   ░░░░░░░░░░ -3
-  Senior   ░░░░░░░░░░ -3
-
-Legend: ██ Positive  ░░ Negative
+...
 ```
 
 ### Mermaid XY Chart
@@ -301,10 +274,7 @@ flowchart TB
         end
         subgraph Pain["Pain Points"]
             P1["Inconsistent APIs"]
-            P2["Missing docs"]
-            P3["Slow builds"]
-        end
-    end
+// ...
 ```
 
 ### Internal Persona Profile (ASCII)
@@ -325,9 +295,7 @@ flowchart TB
 │  • Improve developer experience │  • Missing documentation │
 │  • Reduce technical debt        │  • Slow build times      │
 ├────────────────────────────────────────────────────────────┤
-│  QUOTE                                                      │
-│  "I just want clear APIs and docs so I can ship faster"    │
-└────────────────────────────────────────────────────────────┘
+...
 ```
 
 ---
@@ -352,11 +320,7 @@ flowchart TB
         end
     end
 
-    PM --> Engineering
-    PM --> Design
-    UI -.->|handoff| FE1
-    BE1 -.->|API| FE1
-    FE1 -.->|review| QA
+// ...
 ```
 
 ### Team Collaboration Matrix
@@ -377,9 +341,7 @@ flowchart LR
     PM -->|Weekly: Requirements| BE
     DS -->|Bi-weekly: Designs| FE
 
-    classDef daily fill:#d5e8d4,stroke:#82b366
-    classDef weekly fill:#fff2cc,stroke:#d6b656
-    classDef biweekly fill:#dae8fc,stroke:#6c8ebf
+// ...
 ```
 
 ### Team Structure (ASCII)
@@ -400,11 +362,7 @@ Platform Team
 └── Design (1)
     └── UI/UX design, design system
 
-Collaboration Frequency:
-  FE ↔ BE: Daily (API contracts)
-  FE ↔ QA: Weekly (test coordination)
-  PdM → All: Weekly (sprint planning)
-  Design → FE: Bi-weekly (design handoff)
+...
 ```
 
 ---
@@ -429,17 +387,7 @@ flowchart LR
     subgraph EOD["End of Day"]
         E1[PR Creation]
         E2[Status Update]
-    end
-
-    M1 --> M2 --> C1 --> C2 --> C3 --> E1 --> E2
-
-    classDef meeting fill:#dae8fc,stroke:#6c8ebf
-    classDef dev fill:#d5e8d4,stroke:#82b366
-    classDef admin fill:#fff2cc,stroke:#d6b656
-
-    class M1 meeting
-    class M2,C1,C2,C3 dev
-    class E1,E2 admin
+// ...
 ```
 
 ### Task Distribution
@@ -695,21 +643,7 @@ questions:
 
 ### Key Findings
 
-| Metric | Value | Assessment |
-|--------|-------|------------|
-| Peak (Lowest) | Step 4: -3 | Action required |
-| End | Step 5: +1 | Good |
-| Pattern | Recovery (\_/─) | Recovery trend |
-
-### Recommended Actions
-
-1. Resolve friction at Step 4 (Priority: High)
-2. Reduce cognitive load at Steps 2-3
-
-### Sources
-
-- Echo walkthrough: 2026-01-31
-- Persona: first-time-buyer.md
+...
 ```
 
 ### Internal Persona Report
@@ -730,21 +664,7 @@ questions:
 ### Key Insights
 
 | Aspect | Finding | Severity |
-|--------|---------|----------|
-| Documentation | Missing component docs | High |
-| Tooling | Slow build times | Medium |
-| Collaboration | API contract misalignment | Medium |
-
-### DX Improvement Recommendations
-
-1. Add component documentation with Storybook
-2. Implement incremental builds
-3. Establish API contract review process
-
-### Sources
-
-- Echo Internal Persona analysis: 2026-01-31
-- Persona: frontend-developer.md
+...
 ```
 
 ### Team Structure Report
@@ -765,21 +685,7 @@ questions:
 ### Collaboration Analysis
 
 | Interaction | Frequency | Quality Score |
-|-------------|-----------|---------------|
-| FE ↔ BE | Daily | +2 (Good) |
-| FE ↔ Design | Bi-weekly | -1 (Needs improvement) |
-| All ← PdM | Weekly | +1 (Satisfactory) |
-
-### Recommendations
-
-1. Increase Design ↔ FE sync frequency
-2. Add async API contract reviews
-3. Implement cross-team office hours
-
-### Sources
-
-- Echo Team Analysis: 2026-01-31
-- Team config: .github/CODEOWNERS
+...
 ```
 
 ---
@@ -825,28 +731,7 @@ Visualize the results of Echo's review of Navigator screenshots.
 | 01_landing.png | Initial | +1 | None | Hero clear |
 | 02_form.png | Form | −2 | Touch Target | CTA too small |
 | 03_error.png | Error | −3 | Readability | Error text unclear |
-
-**Screenshot References**:
-- Path: `.navigator/screenshots/[id]/`
-- Files: [list of files]
-
-**Highlight Points**:
-- Peak (Best): Screenshot [N], Score [S]
-- Valley (Worst): Screenshot [N], Score [S]
-- End: Screenshot [N], Score [S]
-
-**Mermaid Journey Data**:
-\`\`\`mermaid
-journey
-    title [Flow] - [Persona] Visual Review
-    section Landing
-      View homepage: 4: User
-    section Signup
-      Open form: 3: User
-      Submit: 1: User
-\`\`\`
-
-→ `/Canvas visualize visual-journey`
+...
 ```
 
 ### Visual Journey Map Template
@@ -869,8 +754,7 @@ journey
 
     %% Screenshot References
     %% Step 1-2: 01_landing.png
-    %% Step 3-6: 02_form.png
-    %% Step 7: 03_error.png
+// ...
 ```
 
 ### Visual Friction Heatmap
@@ -893,15 +777,7 @@ Overlay friction points on screenshots:
 │  │    │   (hint text too small)                    │   │   │
 │  │    │                                            │   │   │
 │  │    │         [Sign Up] ← 🔴                     │   │   │
-│  │    │         (touch target too small)           │   │   │
-│  │    │                                            │   │   │
-│  │    └────────────────────────────────────────────┘   │   │
-│  │                                                      │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  Friction Legend:                                           │
-│  🔴 Critical (−3)  🟡 Moderate (−2)  🟢 Minor (−1)         │
-└─────────────────────────────────────────────────────────────┘
+...
 ```
 
 ### Visual Friction Heatmap (Mermaid)
@@ -922,7 +798,7 @@ flowchart TD
         Submit[Submit Button -3]:::critical
     end
 
-    Header --> Email --> Password --> Hint --> Submit
+// ...
 ```
 
 ### Before/After Comparison
@@ -945,12 +821,7 @@ flowchart LR
         A3[Comfortable touch target]
     end
 
-    Before --> |Palette fix| After
-
-    classDef before fill:#f8cecc,stroke:#b85450
-    classDef after fill:#d5e8d4,stroke:#82b366
-    class B1,B2,B3 before
-    class A1,A2,A3 after
+// ...
 ```
 
 ### Screenshot Reference Card
@@ -971,13 +842,7 @@ flowchart TB
             S3["CTA: -2"]
             S4["Trust: -1"]
         end
-
-        subgraph Summary["Summary"]
-            SUM["Average: -0.5 (Grade C)"]
-        end
-    end
-
-    Meta --> Scores --> Summary
+// ...
 ```
 
 ### Question Templates
@@ -1036,48 +901,7 @@ questions:
 journey
     title Signup Flow - Mobile User
     section Landing
-      View homepage: 4: User
-      Find CTA: 3: User
-    section Signup
-      Open form: 3: User
-      Fill fields: 2: User
-      Submit: 1: User
-    section Result
-      See error: 1: User
-\`\`\`
-
-### Screenshot Reference Table
-
-| Step | Screenshot | State | Score | Friction |
-|------|------------|-------|-------|----------|
-| 1-2 | 01_landing.png | Landing | +3.5 avg | None |
-| 3-5 | 02_form.png | Form | +2.0 avg | Touch Target (-2) |
-| 6 | 03_error.png | Error | -3.0 | Readability (-3) |
-
-### Friction Heatmap
-
-[ASCII/Mermaid visualization of friction points]
-
-### Key Findings
-
-| Metric | Value | Assessment |
-|--------|-------|------------|
-| Overall Score | -0.8 | Needs Improvement |
-| Peak (Worst) | Step 6: -3.0 | Critical |
-| End Experience | Step 6: -3.0 | Poor |
-| Grade | D | Action Required |
-
-### Recommended Actions
-
-1. **Critical**: Fix error message readability (Step 6)
-2. **High**: Increase submit button touch target (Step 5)
-3. **Medium**: Improve password hint visibility (Step 4)
-
-### Sources
-
-- Navigator screenshots: `.navigator/screenshots/NAV-2026-0201-001/`
-- Echo Visual Review: 2026-02-01
-- Persona: Mobile User (Commuter)
+...
 ```
 
 ### File Linking

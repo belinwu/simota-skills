@@ -29,14 +29,7 @@ A systematic collection of animation patterns with recommended timing and easing
 /* Scale In */
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-/* Reveal */
-@keyframes reveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
+/* ... */
 ```
 
 ---
@@ -66,8 +59,7 @@ A systematic collection of animation patterns with recommended timing and easing
 /* Scale Out */
 @keyframes scaleOut {
   from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
-}
+/* ... */
 ```
 
 ---
@@ -98,18 +90,7 @@ A systematic collection of animation patterns with recommended timing and easing
 }
 
 /* Shake */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
-}
-.error { animation: shake 400ms ease-in-out; }
-
-/* Pulse */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
+/* ... */
 ```
 
 ---
@@ -164,7 +145,7 @@ const observer = new IntersectionObserver(
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: skeleton 1.5s ease-in-out infinite;
-}
+/* ... */
 ```
 
 ---
@@ -276,8 +257,7 @@ function useLongPress(callback: () => void, ms = 400) {
 // Visual: scale ring animation during hold
 <motion.div
   animate={isHolding ? { scale: [1, 1.1] } : { scale: 1 }}
-  transition={{ duration: 0.4, ease: "easeIn" }}
-/>
+// ...
 ```
 
 ### Pull to Refresh
@@ -335,23 +315,7 @@ Patterns for SPA/MPA page-level navigation animations.
 .page-exit-back {
   animation: slideOutRight 200ms ease-in;
 }
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideOutLeft {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-30px); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideOutRight {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(30px); }
-}
+/* ... */
 ```
 
 ### Shared Element Transition (List → Detail)
@@ -372,10 +336,7 @@ Patterns for SPA/MPA page-level navigation animations.
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.2 }}
-  >
-    {children}
-  </motion.div>
-</AnimatePresence>
+// ...
 ```
 
 ### Skeleton → Content Transition

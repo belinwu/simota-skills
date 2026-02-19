@@ -138,12 +138,7 @@ jobs:
       id-token: write   # OIDC
       deployments: write # Deployment status
     # ...
-
-  comment:
-    permissions:
-      contents: read
-      pull-requests: write  # Post PR comments
-    # ...
+# ...
 ```
 
 ### Permissions Reference by Use Case
@@ -217,9 +212,7 @@ steps:
       "StringLike": {
         "token.actions.githubusercontent.com:sub": "repo:org/repo:ref:refs/heads/main"
       }
-    }
-  }]
-}
+// ...
 ```
 
 ### GCP
@@ -417,14 +410,7 @@ jobs:
   scorecard:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ossf/scorecard-action@v2
-        with:
-          results_file: results.sarif
-          results_format: sarif
-      - uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
+# ...
 ```
 
 ### Gitleaks (Secret Detection)
@@ -453,8 +439,7 @@ jobs:
     output: 'trivy-results.sarif'
 
 - uses: github/codeql-action/upload-sarif@v3
-  with:
-    sarif_file: 'trivy-results.sarif'
+# ...
 ```
 
 ---

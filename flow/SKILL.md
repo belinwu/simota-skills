@@ -145,7 +145,6 @@ Progressive enhancement via `@supports`. Auto-detect framework; CSS only → `re
 | `references/animation-catalog.md` | Full catalog, code examples, gestures, page transitions |
 | `references/easing-guide.md` | Easing reference, spring presets, CSS `linear()` |
 | `references/framework-patterns.md` | Tailwind/React/Vue/Svelte/Next.js/Astro patterns |
-| `references/handoff-formats.md` | Handoff templates, collaboration details |
 | `references/modern-css-animations.md` | Modern CSS API reference, implementation patterns |
 | `references/motion-tokens.md` | Token system, composites, Tailwind mapping, Muse coordination |
 

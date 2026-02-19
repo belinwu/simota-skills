@@ -92,8 +92,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Edge Cases & i18n** | Timezone, i18n/l10n, cookie/storage, network sim | `references/edge-cases-i18n.md` |
 | **Cloud Testing** | BrowserStack, Sauce Labs, LambdaTest, CI integration | `references/cloud-testing.md` |
 | **Mobile Native** | Appium, device testing, mobile-specific patterns | `references/mobile-native-testing.md` |
-| **Interaction Triggers** | Question templates for decision points | `references/interaction-triggers.md` |
-| **Handoff Formats** | All standardized handoff templates | `references/handoff-formats.md` |
 
 ---
 

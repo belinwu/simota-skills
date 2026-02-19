@@ -298,19 +298,7 @@ This rhythm prevents attention fatigue and aids information retention.
 ├─────────────────────────────────────┤
 │  ZONE 3: REFERENCE (next 35%)      │  ← Lower attention
 │  - Catalogs and listings            │
-│  - Collaboration details            │
-│  - Journal guidelines               │
-│  - Daily process details            │
-│  - Tactics/Avoids                   │
-├─────────────────────────────────────┤
-│  ZONE 4: ACTION (last 15%)         │  ← Heightened attention
-│  - AUTORUN Support                  │
-│  - Nexus Hub Mode                   │
-│  - Handoff Templates                │
-│  - Output Language                  │
-│  - Git Guidelines                   │
-│  - Closing statement                │
-└─────────────────────────────────────┘
+...
 ```
 
 ### Anti-patterns
@@ -357,15 +345,7 @@ EQUIVALENCE_REPORT:
       issues: ["[issue if any]"]
     structural:
       status: PASS | FAIL
-      missing_sections: ["[section if any]"]
-    integration:
-      status: PASS | FAIL
-      format_errors: ["[error if any]"]
-    routing:
-      status: PASS | FAIL
-      capability_gaps: ["[gap if any]"]
-  overall: EQUIVALENT | NOT_EQUIVALENT
-  notes: "[Any observations]"
+# ...
 ```
 
 ---
@@ -415,23 +395,7 @@ COMPRESSION_PROPOSAL:
       density_rhythm: "[good/poor]"
   proposals:
     - id: 1
-      strategy: dedup | density | hierarchy | symbolic | loose_prompt
-      target_section: "[Section name]"
-      lines_before: [count]
-      lines_after: [count]
-      reduction: "[X%]"
-      risk: low | medium | high
-      description: "[What changes]"
-  projected:
-    lines_after: [count]
-    tokens_after: [count]
-    total_reduction: "[X%]"
-  equivalence_plan:
-    test_prompts:
-      - "[Prompt 1 to verify behavioral equivalence]"
-      - "[Prompt 2]"
-      - "[Prompt 3]"
-    structural_checks: ["[Check 1]", "[Check 2]"]
+# ...
 ```
 
 ---

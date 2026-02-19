@@ -59,36 +59,7 @@ error_handling:
     detection: "Branch name already exists"
     action: "Generate alternative with suffix (-v2, -alt)"
     recovery: "Propose alternatives to user"
-
-  analysis_timeout:
-    detection: "Analysis exceeds 30s per 100 files"
-    action: "Switch to chunked analysis mode"
-    recovery: "Progressive results, continue in background"
-
-  noise_ratio_extreme:
-    detection: "Noise ratio > 80%"
-    action: "Handoff to Zen for bulk cleanup"
-    recovery: "Wait for cleanup, re-analyze clean diff"
-
-  quality_score_critical:
-    detection: "Quality score < 35"
-    action: "Pause for user decision"
-    recovery: "Wait for split/restructure decision"
-
-  risk_score_critical:
-    detection: "Risk score > 85"
-    action: "Require Sentinel review"
-    recovery: "Wait for security clearance"
-
-  hotspot_overload:
-    detection: "More than 5 Problem Child hotspots modified"
-    action: "Recommend Zen refactoring first"
-    recovery: "Continue after cleanup or user override"
-
-  branch_health_severe:
-    detection: "Health score < 25"
-    action: "Recommend rebase/split"
-    recovery: "Continue after remediation"
+# ...
 ```
 
 ## Recovery Strategies
@@ -129,134 +100,7 @@ guardian_analysis:
     score: 68
     grade: B
     components:
-      size: 65
-      focus: 70
-      commits: 80
-      tests: 60
-      docs: 75
-      risk: 55
-
-  # New: Risk Assessment
-  risk:
-    score: 72
-    category: HIGH
-    factors:
-      sensitivity: 80
-      complexity: 65
-      hotspot_overlap: 75
-      dependency_impact: 60
-      test_coverage: 70
-      author_familiarity: 55
-    high_risk_files:
-      - path: src/auth/jwt.ts
-        score: 92
-        reason: "Auth + hotspot"
-    mitigations:
-      - "Sentinel security review"
-      - "Add token refresh tests"
-
-  # New: Branch Health
-  branch_health:
-    score: 65
-    grade: warning
-    indicators:
-      sync: 75  # 12 behind
-      age: 60   # 8 days
-      conflict_risk: 100
-      ci_status: 100
-      size_creep: 50
-
-  # New: Commit Analysis
-  commit_analysis:
-    count: 5
-    avg_score: 72
-    wip_count: 1
-    rebase_needed: true
-    issues:
-      - commit: d4e5f6
-        score: 25
-        issue: "Vague message"
-
-  # New: Hotspots
-  hotspots:
-    modified_count: 3
-    problem_children: 2
-    files:
-      - path: src/api/users.ts
-        type: problem_child
-        churn: 68%
-        bugs: 8
-
-  # New: Reviewer Recommendations
-  reviewers:
-    primary:
-      id: "@alice"
-      ownership: 45%
-      score: 92
-    secondary:
-      id: "@bob"
-      ownership: 32%
-      score: 85
-
-  change_breakdown:
-    essential: 12 files (25%)
-    supporting: 8 files (17%)
-    noise: 27 files (58%)
-
-  noise_details:
-    - type: formatting
-      files: 25
-      recommendation: separate_commit
-    - type: lock_file
-      files: 2
-      recommendation: exclude_from_review
-
-  recommendations:
-    - action: SPLIT_PR
-      confidence: HIGH
-      reason: "47 files exceeds reviewability threshold"
-      suggested_splits: 3
-
-    - action: SEPARATE_NOISE
-      confidence: HIGH
-      reason: "58% noise ratio detected"
-
-    - action: SECURITY_REVIEW
-      confidence: HIGH
-      reason: "Risk score 72, auth files modified"
-
-    - action: REBASE
-      confidence: MEDIUM
-      reason: "12 commits behind main"
-
-  suggested:
-    branch_name: "feat/oauth2-provider"
-    merge_strategy: "squash"
-    pr_title: "feat(auth): add OAuth2 provider integration"
-
-  # New: Pre-Merge Checklist
-  pre_merge_checklist:
-    required:
-      - item: "CI passing"
-        status: true
-      - item: "No conflicts"
-        status: true
-      - item: "Approvals obtained"
-        status: false
-    conditional:
-      - item: "Security review"
-        status: false
-        reason: "Auth changes detected"
-      - item: "Test coverage"
-        status: false
-        reason: "High-risk files need tests"
-
-  next_steps:
-    - "Review suggested PR splits"
-    - "Separate formatting changes"
-    - "Request Sentinel security review"
-    - "Rebase onto main"
-    - "Generate PR description"
+# ...
 ```
 
 ## _STEP_COMPLETE Format
@@ -277,64 +121,7 @@ _STEP_COMPLETE:
         files: ["oauth.test.ts"]
     pr_strategy:
       size: M
-      merge: squash
-      split_needed: false
-    analysis:
-      essential: 8
-      supporting: 4
-      noise: 2
-
-    # New: Quality Assessment
-    quality:
-      score: 78
-      grade: "B+"
-      improvements:
-        - "Add edge case tests (+5)"
-        - "Update API docs (+3)"
-
-    # New: Risk Assessment
-    risk:
-      score: 65
-      category: MEDIUM
-      mitigations_needed:
-        - "Integration testing"
-        - "Monitor after deploy"
-
-    # New: Branch Health
-    branch_health:
-      score: 85
-      issues: []
-
-    # New: Commit Quality
-    commit_quality:
-      avg_score: 85
-      rebase_needed: false
-
-    # New: Hotspots
-    hotspots:
-      count: 1
-      action_needed: false
-
-    # New: Reviewers
-    reviewers:
-      recommended: ["@alice", "@bob"]
-      coverage: 87%
-
-    # New: Checklist
-    pre_merge:
-      blockers: 0
-      warnings: 2
-      items:
-        - "CI passing: true"
-        - "Security review: not required"
-
-  Handoff:
-    Format: GUARDIAN_TO_BUILDER_HANDOFF | GUARDIAN_TO_JUDGE_HANDOFF
-    Content: [Full handoff content]
-
-  Next: Builder | Judge | Canvas | Sherpa | Sentinel | Radar | Zen | DONE
-
-  Notes: [Any important observations or warnings]
+# ...
 ```
 
 ## Status Definitions
@@ -363,11 +150,7 @@ partial_conditions:
     - Large PR chunked analysis ongoing
     - Some files inaccessible
     - Git history incomplete
-
-  recovery_in_progress:
-    - Zen cleanup requested, awaiting completion
-    - Scout investigation requested
-    - Retry after timeout in progress
+# ...
 ```
 
 ---
@@ -394,95 +177,7 @@ decision_matrix:
     dangerous_pattern:
       action: PAUSE_FOR_CONFIRMATION
       blocking: true
-      auto_proceed: false
-
-  quality:
-    quality_score_excellent: # >= 85
-      action: PROCEED_TO_JUDGE
-      blocking: false
-      auto_proceed: true
-    quality_score_good: # 65-84
-      action: PROCEED_WITH_SUGGESTIONS
-      blocking: false
-      auto_proceed: true
-    quality_score_poor: # 35-64
-      action: RECOMMEND_IMPROVEMENTS
-      blocking: false
-      auto_proceed: true
-    quality_score_failing: # < 35
-      action: PAUSE_FOR_RESTRUCTURE
-      blocking: true
-      auto_proceed: false
-
-  risk:
-    risk_critical: # >= 85
-      action: REQUIRE_REVIEW
-      blocking: true
-      auto_proceed: false
-    risk_high: # 65-84
-      action: FLAG_FOR_ATTENTION
-      blocking: false
-      auto_proceed: true
-    risk_medium_low: # < 65
-      action: NORMAL_FLOW
-      blocking: false
-      auto_proceed: true
-
-  coverage:
-    critical_gap:
-      action: HANDOFF_RADAR
-      blocking: true
-      auto_proceed: false
-    high_gap:
-      action: HANDOFF_RADAR
-      blocking: false
-      auto_proceed: true
-    acceptable:
-      action: NORMAL_FLOW
-      blocking: false
-      auto_proceed: true
-
-  noise:
-    extreme_noise: # > 80%
-      action: HANDOFF_ZEN_BLOCKING
-      blocking: true
-      auto_proceed: false
-    high_noise: # 30-80%
-      action: HANDOFF_ZEN
-      blocking: false
-      auto_proceed: true
-    acceptable_noise: # < 30%
-      action: SEPARATE_COMMIT
-      blocking: false
-      auto_proceed: true
-
-  architecture:
-    circular_dependency:
-      action: HANDOFF_ATLAS_BLOCKING
-      blocking: true
-      auto_proceed: false
-    cross_module:
-      action: HANDOFF_ATLAS
-      blocking: false
-      auto_proceed: true
-    single_module:
-      action: NORMAL_FLOW
-      blocking: false
-      auto_proceed: true
-
-  conflicts:
-    semantic_conflict:
-      action: HANDOFF_SCOUT
-      blocking: true
-      auto_proceed: false
-    adjacent_conflict:
-      action: AUTO_RESOLVE
-      blocking: false
-      auto_proceed: true
-    no_conflict:
-      action: NORMAL_FLOW
-      blocking: false
-      auto_proceed: true
+# ...
 ```
 
 ### Decision Priority Order
@@ -540,15 +235,7 @@ partial_execution:
     completed_work:
       - Analysis results
       - Partial recommendations
-      - Non-blocking handoffs initiated
-    pending_work:
-      - Blocking handoffs awaited
-      - Decisions needed
-      - Recoveries in progress
-    resume_conditions:
-      - What must happen to continue
-      - Expected response format
-      - Timeout behavior
+# ...
 ```
 
 ### Partial Execution Scenarios
@@ -569,39 +256,7 @@ partial_scenarios:
     output_status: PARTIAL
 
   scenario_2_zen_cleanup:
-    trigger: "High noise ratio (30-80%)"
-    completed:
-      - Essential change analysis
-      - Risk assessment
-      - Quality score (provisional)
-    pending:
-      - Zen cleanup completion
-    blocking: false
-    resume_on: "ZEN_TO_GUARDIAN_HANDOFF"
-    output_status: PARTIAL (can proceed in parallel)
-
-  scenario_3_coverage_critical:
-    trigger: "Critical coverage gap in auth code"
-    completed:
-      - Full analysis
-      - Recommendations
-    pending:
-      - Radar test addition
-      - Coverage re-evaluation
-    blocking: true
-    resume_on: "Coverage target met"
-    output_status: PARTIAL
-
-  scenario_4_user_decision:
-    trigger: "PR split needed but strategy unclear"
-    completed:
-      - Analysis of all options
-      - Split recommendations
-    pending:
-      - User selection of split strategy
-    blocking: true
-    resume_on: "User response"
-    output_status: PARTIAL
+# ...
 ```
 
 ### Partial _STEP_COMPLETE Format
@@ -622,48 +277,7 @@ _STEP_COMPLETE:
       - order: 1
         message: "feat(auth): add OAuth2"
         files: [list]
-    pr_strategy:
-      size: L
-      split_recommended: true
-    quality:
-      score: 72 # provisional
-      grade: B
-    risk:
-      score: 78
-      category: HIGH
-
-  Pending:
-    - type: HANDOFF
-      target: Sentinel
-      reason: "Security review required"
-      blocking: true
-      timeout: "24h"
-    - type: HANDOFF
-      target: Zen
-      reason: "Noise cleanup"
-      blocking: false
-
-  Partial_Results:
-    available:
-      - commit_plan
-      - branch_name
-      - pr_description_draft
-      - risk_assessment
-    unavailable:
-      - merge_strategy # Awaiting security
-      - final_quality_score # Awaiting cleanup
-
-  Resume:
-    condition: "Sentinel approval received"
-    alternative: "User override after 24h"
-    timeout_action: BLOCKED
-
-  Next: WAIT_FOR_SENTINEL | CONTINUE_PARALLEL
-
-  Notes: |
-    Security review is blocking for merge approval.
-    Zen cleanup running in parallel will improve quality score.
-    Partial results can be used for early feedback.
+# ...
 ```
 
 ---
@@ -688,57 +302,7 @@ recovery_matrix:
       recovery:
         1: "Continue without cleanup"
         2: "Flag noise in PR description"
-      fallback: SUCCESS_WITH_WARNINGS
-
-    radar:
-      timeout: "1h"
-      recovery:
-        1: "Document coverage gaps"
-        2: "Proceed with coverage warnings"
-      fallback: PARTIAL
-
-    atlas:
-      timeout: "30m"
-      recovery:
-        1: "Proceed without architecture analysis"
-        2: "Flag for manual review"
-      fallback: SUCCESS_WITH_WARNINGS
-
-  analysis_failure:
-    git_error:
-      recovery:
-        1: "Retry with fresh clone"
-        2: "Reduce analysis scope"
-        3: "Request manual intervention"
-      max_retries: 3
-
-    memory_limit:
-      recovery:
-        1: "Switch to chunked analysis"
-        2: "Analyze critical files only"
-        3: "Provide partial results"
-      fallback: PARTIAL
-
-    network_error:
-      recovery:
-        1: "Retry with exponential backoff"
-        2: "Use cached data if available"
-        3: "Proceed with local analysis only"
-      max_retries: 5
-
-  conflict_scenarios:
-    semantic_conflict:
-      recovery:
-        1: "Request Scout investigation"
-        2: "Provide conflict context"
-        3: "Request manual resolution"
-      fallback: BLOCKED
-
-    lock_file_conflict:
-      recovery:
-        1: "Auto-regenerate lock file"
-        2: "Notify about dependency changes"
-      fallback: AUTO_RESOLVE
+# ...
 ```
 
 ### Recovery Execution Flow
@@ -759,18 +323,7 @@ recovery_matrix:
                  │                      │
                  │NO                    │NO
                  ↓                      ↓
-         ┌───────────────┐        ┌───────────────┐
-         │ Alternative   │──YES──→│ Execute Alt   │
-         │ Exists?       │        │ Strategy      │
-         └───────┬───────┘        └───────┬───────┘
-                 │                        │
-                 │NO                      ↓
-                 ↓                   Success? ──YES──→ Continue
-         ┌───────────────┐              │
-         │ Apply Fallback│              │NO
-         │ (BLOCKED/     │←─────────────┘
-         │  PARTIAL)     │
-         └───────────────┘
+...
 ```
 
 ## PARTIAL _STEP_COMPLETE Example
@@ -791,20 +344,7 @@ _STEP_COMPLETE:
       sentinel_required: true
 
   Pending:
-    - Agent: Sentinel
-      Request: Security audit
-      Blocking: true
-    - Agent: Judge
-      Request: AI code and dependency verification
-      Blocking: false
-
-  Partial_Results:
-    commit_plan: [...]  # Available
-    pr_description: [...] # Available
-    merge_strategy: null  # Awaiting security review
-
-  Resume_Condition: "Sentinel security audit complete"
-  Next: WAIT_FOR_SENTINEL
+# ...
 ```
 
 ## Chain Integration Examples

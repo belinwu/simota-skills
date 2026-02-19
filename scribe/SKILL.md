@@ -115,8 +115,7 @@ OUTPUT: Sherpa(Tasks) Builder(Impl) Radar(Tests) Voyager(E2E) Judge(Review) Quil
 | **C** | Test-First | Scribe → Radar/Voyager | Test spec to test implementation |
 | **D** | Review-Ready | Scribe → Judge | Define review criteria |
 
-Handoff templates → `references/handoffs.md`
-
+Handoff templates 
 ---
 
 ## Writing Guidelines

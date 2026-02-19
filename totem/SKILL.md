@@ -90,8 +90,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **F: Convention Skill** | Totem → Sigil | 「発掘した規約をスキル定義に変換」 |
 | **G: Convention Guard** | Totem → Guardian | 「git規約をGuardianに連携」 |
 
-→ 各ハンドオフのYAMLスキーマは `references/handoffs.md` を参照
-
 ---
 
 ## References
@@ -102,7 +100,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/discovery-methods.md` | サンプリング戦略、ファイルタイプ別分析、設定ファイルからの規約抽出、信頼度算出 |
 | `references/deviation-patterns.md` | 逸脱の重要度分類、false positive回避ルール、文化ドリフト検出、意図的逸脱判別 |
 | `references/output-templates.md` | DNA Profile/Deviation Report/Onboarding Guide/Cultural Fingerprint テンプレート |
-| `references/handoffs.md` | エージェント間ハンドオフYAML + ON_*トリガーAskUserQuestion YAML |
 
 ---
 

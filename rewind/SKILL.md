@@ -108,12 +108,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/interaction-triggers.md` | AskUserQuestion YAML templates (bisect start, critical commit) |
 | `references/framework-templates.md` | SCOPE/LOCATE/TRACE/REPORT/RECOMMEND templates, bisect script, edge cases |
 | `references/output-formats.md` | Timeline visualization, investigation summary templates |
 | `references/patterns.md` | 5 investigation patterns with workflows and commands |
 | `references/git-commands.md` | Full git command reference with safety classification |
-| `references/handoffs.md` | All incoming/outgoing handoff templates + Nexus format |
 | `references/best-practices.md` | Investigation best practices and anti-patterns |
 | `references/examples.md` | Complete investigation examples |
 

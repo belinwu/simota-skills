@@ -65,8 +65,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/dependency-health-scan.md` | Scan commands, Health Check Script, Matrix, Checklist |
 | `references/bundle-size-analysis.md` | Analysis tools, Budget, Optimization Strategies, Vite config |
 | `references/migration-patterns.md` | Strangler Fig, Branch by Abstraction, Parallel Run + Checklist + Risk Matrix |
-| `references/collaboration-handoffs.md` | Gear/Canvas/Builder handoff templates, diagram examples |
-| `references/interaction-triggers.md` | YAML question templates for user confirmation |
 | `references/code-standards.md` | Good/Bad code examples, PoC commenting patterns |
 
 ## Domain Knowledge Summary

@@ -24,7 +24,7 @@ test('opens product in new tab', async ({ context, page }) => {
   // Interact with both tabs
   await page.bringToFront();
   await expect(page.getByTestId('products-list')).toBeVisible();
-});
+// ...
 ```
 
 ### Multi-Window Interaction
@@ -45,14 +45,7 @@ test('admin and user see real-time updates', async ({ browser }) => {
   // Admin publishes content
   await adminPage.goto('/admin/posts');
   await adminPage.getByTestId('publish-btn').click();
-
-  // User sees the update
-  await userPage.goto('/feed');
-  await expect(userPage.getByTestId('new-post')).toBeVisible();
-
-  await adminContext.close();
-  await userContext.close();
-});
+// ...
 ```
 
 ### OAuth Callback Flow
@@ -73,11 +66,7 @@ test('OAuth login redirects and returns', async ({ page, context }) => {
   await popup.getByLabel('Password').fill('password123');
   await popup.getByRole('button', { name: 'Sign in' }).click();
 
-  // Popup closes, main page redirects
-  await popup.waitForEvent('close');
-  await page.waitForURL('**/dashboard');
-  await expect(page.getByTestId('user-menu')).toBeVisible();
-});
+// ...
 ```
 
 ---
@@ -135,7 +124,7 @@ test('completes payment with Stripe', async ({ page }) => {
   await page.getByTestId('pay-button').click();
   await page.waitForURL('**/confirmation');
   await expect(page.getByTestId('payment-success')).toBeVisible();
-});
+// ...
 ```
 
 ---
@@ -160,12 +149,7 @@ test('downloads PDF report', async ({ page }) => {
   // Save and verify content
   const path = await download.path();
   expect(path).toBeTruthy();
-
-  // Verify file size (basic check)
-  const fs = await import('fs');
-  const stats = fs.statSync(path!);
-  expect(stats.size).toBeGreaterThan(1024); // At least 1KB
-});
+// ...
 ```
 
 ### PDF Generation Verification
@@ -186,9 +170,7 @@ test('generated PDF has correct content', async ({ page }) => {
   const buffer = fs.readFileSync(path!);
   const data = await pdfParse(buffer);
 
-  expect(data.text).toContain('Invoice #123');
-  expect(data.numpages).toBeGreaterThanOrEqual(1);
-});
+// ...
 ```
 
 ### File Upload
@@ -209,13 +191,7 @@ test('uploads profile image', async ({ page }) => {
 
 test('rejects oversized file', async ({ page }) => {
   await page.goto('/settings/profile');
-
-  // Upload large file
-  const fileInput = page.getByTestId('avatar-upload');
-  await fileInput.setInputFiles('e2e/fixtures/large-image-10mb.png');
-
-  await expect(page.getByTestId('file-size-error')).toBeVisible();
-});
+// ...
 ```
 
 ### Drag and Drop Upload
@@ -236,13 +212,7 @@ test('uploads file via drag and drop', async ({ page }) => {
   });
 
   // Alternative: use setInputFiles on hidden input
-  const input = page.locator('input[type="file"]');
-  await input.setInputFiles({
-    name: 'test.txt',
-    mimeType: 'text/plain',
-    buffer,
-  });
-});
+// ...
 ```
 
 ---
@@ -267,13 +237,7 @@ test('receives real-time chat messages', async ({ page }) => {
   await page.goto('/chat');
 
   // Send a message
-  await page.getByTestId('message-input').fill('Hello!');
-  await page.getByTestId('send-btn').click();
-
-  // Verify WebSocket received the echo
-  await expect.poll(() => wsMessages.length).toBeGreaterThan(0);
-  expect(wsMessages.some(m => m.includes('Hello!'))).toBe(true);
-});
+// ...
 ```
 
 ### WebSocket Connection / Disconnection
@@ -316,11 +280,7 @@ test('shows offline page when network is down', async ({ page, context }) => {
 
   // Non-cached page shows offline message
   await page.goto('/uncached-page');
-  await expect(page.getByTestId('offline-message')).toBeVisible();
-
-  // Restore network
-  await context.setOffline(false);
-});
+// ...
 ```
 
 ### ServiceWorker Verification
@@ -341,12 +301,7 @@ test('ServiceWorker caches critical resources', async ({ page, context }) => {
   const cachedUrls = await page.evaluate(async () => {
     const cache = await caches.open('app-cache-v1');
     const keys = await cache.keys();
-    return keys.map(r => new URL(r.url).pathname);
-  });
-
-  expect(cachedUrls).toContain('/');
-  expect(cachedUrls).toContain('/offline.html');
-});
+// ...
 ```
 
 ---
@@ -369,9 +324,7 @@ test('shows nearby stores based on location', async ({ context }) => {
 
   // Change to Osaka
   await context.setGeolocation({ latitude: 34.6937, longitude: 135.5023 });
-  await page.getByTestId('refresh-location').click();
-  await expect(page.getByText('Osaka')).toBeVisible();
-});
+// ...
 ```
 
 ---
@@ -436,7 +389,7 @@ test('interacts with Shadow DOM elements', async ({ page }) => {
   });
 
   expect(value).toBe('expected-value');
-});
+// ...
 ```
 
 ---

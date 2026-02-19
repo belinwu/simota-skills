@@ -79,7 +79,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/tool-integration.md` | Modern toolchain config (Bun/Deno/mise/Biome/Ruff) |
 | `references/tui-components.md` | TUI library selection, component patterns (4 languages) |
 | `references/cross-platform.md` | Platform-specific config, XDG dirs, shell detection |
-| `references/handoff-formats.md` | Agent handoff templates and collaboration patterns |
 
 ## Operational
 

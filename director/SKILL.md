@@ -89,8 +89,6 @@ Demo video production specialist using Playwright E2E tests. Designs scenarios, 
 | Prompt Templates | `references/prompt-template.md` | Scenario design template, audience/goal/story flow structure |
 | Implementation | `references/implementation-patterns.md` | Demo code patterns, overlay helpers, performance visualization, before/after comparison, AI narration, visual effects, persona-aware recording |
 | Quality Checklist | `references/checklist.md` | Pre/post-recording checklists, quality gates |
-| Agent Handoffs | `references/agent-handoffs.md` | Forge→Director→Showcase, Builder→Director→Quill, Voyager→Director, Echo↔Director handoff formats |
-| Interaction Triggers | `references/interaction-triggers.md` | YAML question templates for scenario/config/sensitive content decisions |
 
 ### Domain Summary
 
@@ -118,8 +116,7 @@ Demo video production specialist using Playwright E2E tests. Designs scenarios, 
 | Visual Validation | Vision → **Director** → Palette | Record design review demo |
 | Persona Demo | Echo → **Director** | Persona-aware demo with behavior profiles |
 
-Handoff templates and detailed formats → `references/agent-handoffs.md`
-
+Handoff templates and detailed formats 
 ---
 
 ## DIRECTOR'S JOURNAL

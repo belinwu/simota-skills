@@ -342,39 +342,7 @@ Every generated SKILL.md must pass this validation checklist before being consid
 | ... | | |
 
 ### Content Quality: [PASS/FAIL]
-| Check | Status | Notes |
-|-------|--------|-------|
-| C2.1 | ✅/❌ | |
-| ... | | |
-
-### Overlap Check: [PASS/FAIL]
-| Check | Status | Notes |
-|-------|--------|-------|
-| O3.1 | ✅/❌ | |
-| ... | | |
-
-### Nexus Compatibility: [PASS/FAIL]
-| Check | Status | Notes |
-|-------|--------|-------|
-| N4.1 | ✅/❌ | |
-| ... | | |
-
-### Style & Conventions: [PASS/FAIL]
-| Check | Status | Notes |
-|-------|--------|-------|
-| Y5.1 | ✅/❌ | |
-| ... | | |
-
-### Failed Items (Blocking)
-1. [Item ID]: [Issue] - [How to fix]
-
-### Failed Items (Non-blocking)
-1. [Item ID]: [Issue] - [How to fix]
-
-### Recommendation
-[ ] **APPROVED** - Ready for use
-[ ] **NEEDS REVISION** - Fix blocking issues
-[ ] **REJECTED** - Fundamental problems
+...
 ```
 
 ---
@@ -399,16 +367,7 @@ For rapid validation, use this abbreviated checklist:
 - [ ] Clear mission statement
 - [ ] Unambiguous boundaries
 - [ ] Valid YAML templates
-- [ ] Complete handoff formats
-- [ ] Unique philosophy
-
-**Integration (must have all):**
-- [ ] Overlap < 50%
-- [ ] _AGENT_CONTEXT format
-- [ ] _STEP_COMPLETE format
-- [ ] NEXUS_HANDOFF format
-
-**Result:** [ ] PASS [ ] FAIL
+...
 ```
 
 ---
@@ -461,32 +420,5 @@ VALIDATION_RULES:
         - "AUTORUN Support"
         - "Nexus Hub Mode"
         - "Output Language"
-        - "Git Commit"
-
-    boundaries:
-      always_min: 4
-      always_max: 8
-      ask_min: 2
-      ask_max: 5
-      never_min: 3
-      never_max: 6
-
-  content:
-    line_count:
-      min: 400
-      max: 1400
-
-    triggers:
-      min: 3
-      yaml_required: true
-
-  overlap:
-    max_allowed: 50
-    confirm_threshold: 30
-
-  nexus:
-    required_formats:
-      - _AGENT_CONTEXT
-      - _STEP_COMPLETE
-      - NEXUS_HANDOFF
+# ...
 ```

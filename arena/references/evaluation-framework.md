@@ -81,9 +81,7 @@ npm test  # or project-specific test command
 
 # 4. codex review
 codex review --uncommitted
-
-# 5. Acceptance criteria — Read files, verify spec requirements
-# Record all results before moving to gemini variant
+# ...
 ```
 
 ### Team Mode Review
@@ -118,19 +116,7 @@ review_result:
       status: PASS | FAIL | SKIP
       passed: 0
       failed: 0
-      skipped: 0
-      failure_summary: ""  # Key failures if any
-    codex_review:
-      findings_count: 0
-      critical_findings: []  # Security, correctness issues
-      quality_findings: []   # Style, maintainability issues
-    acceptance_criteria:
-      - criterion: "[From spec]"
-        met: true | false
-        evidence: "[How verified]"
-  overall_verdict: PASS | FAIL | WARN
-  disqualified: false
-  disqualification_reason: ""  # If disqualified
+# ...
 ```
 
 ### Disqualification Rules
@@ -182,17 +168,7 @@ The REVIEW phase follows a strict sequential gate with early termination. Varian
 └──────┬───────┘
        │ PASS
        ▼
-┌──────────────┐
-│ codex review  │──→ Informational only (continue — never disqualifies)
-└──────┬────────┘
-       │
-       ▼
-┌──────────────────┐
-│ Acceptance Check  │──ALL UNMET──→ DISQUALIFY
-└──────┬────────────┘
-       │ SOME or ALL MET
-       ▼
-   PASS → Proceed to EVALUATE
+...
 ```
 
 ### Gate Execution Rules
@@ -421,11 +397,7 @@ quantitative_metrics:
     skipped: 0
     coverage_delta: "+0%"  # If coverage tool available
   build:
-    success: true
-    duration_seconds: 0
-  complexity:
-    exported_symbols: 0
-    max_function_length: 0  # Lines in longest new function
+# ...
 ```
 
 ### Integration with Scoring
@@ -461,40 +433,7 @@ Quantitative metrics inform but do not replace the 5-criteria scoring:
 #### Variant A (Engine: [engine], Branch: arena/variant-[engine])
 - Approach: [Brief description of implementation strategy]
 - Strengths: [Key advantages]
-- Weaknesses: [Key disadvantages]
-- Test Result: [PASS/FAIL/PARTIAL]
-- codex review: [Summary of findings, if run]
-- Score: [X.XX/5.00]
-
-#### Variant B (Engine: [engine], Branch: arena/variant-[engine])
-- Approach: [Brief description of implementation strategy]
-- Strengths: [Key advantages]
-- Weaknesses: [Key disadvantages]
-- Test Result: [PASS/FAIL/PARTIAL]
-- codex review: [Summary of findings, if run]
-- Score: [X.XX/5.00]
-
-### Head-to-Head Comparison
-
-| Aspect | Variant A | Variant B | Winner |
-|--------|-----------|-----------|--------|
-| Correctness | [score] | [score] | [A/B/Tie] |
-| Code Quality | [score] | [score] | [A/B/Tie] |
-| Performance | [score] | [score] | [A/B/Tie] |
-| Safety | [score] | [score] | [A/B/Tie] |
-| Simplicity | [score] | [score] | [A/B/Tie] |
-| **Weighted Total** | **[total]** | **[total]** | **[Winner]** |
-
-### Selection Decision
-- **Selected:** Variant [X]
-- **Rationale:** [Why this variant won - focus on decisive factors]
-- **Trade-offs Accepted:** [What was sacrificed and why it's acceptable]
-- **Dissenting Strengths:** [What the losing variant did better - preserve for future reference]
-
-### Cost Estimate
-- Engine invocations: [N per variant]
-- Approximate prompt size: [small/medium/large]
-- Provider dashboards: [OpenAI / Google AI Studio for exact costs]
+...
 ```
 
 ---
@@ -565,28 +504,7 @@ session_metrics:
   winner:
     variant: "arena/variant-codex"
     engine: "codex"
-    model: "o4-mini"
-    approach_hint: "iterative"  # if applicable
-  scores:
-    - variant: "arena/variant-codex"
-      total: 4.25
-      correctness: 5
-      code_quality: 4
-      performance: 4
-      safety: 4
-      simplicity: 3
-    - variant: "arena/variant-gemini"
-      total: 3.80
-      correctness: 4
-      code_quality: 4
-      performance: 3
-      safety: 4
-      simplicity: 4
-  score_gap: 0.45  # winner - runner-up
-  disqualified_variants: 0
-  hybrid_adopted: false
-  quick_mode_escalated: false  # true if Quick Mode was insufficient
-  estimated_cost: "small"  # small/medium/large
+# ...
 ```
 
 ### Metrics Accumulation
@@ -669,18 +587,7 @@ Focus on improving these specific areas:
 
 ## What Worked Well (preserve these aspects)
 {strengths_to_preserve}
-
-## Allowed Files
-{allowed_files_list}
-
-## Forbidden Files
-{forbidden_files_list}
-
-## Constraints
-{standard_constraints}
-
-## Success Criteria
-{original_criteria + additional_refinement_criteria}
+...
 ```
 
 ### Iteration Limits
@@ -721,11 +628,5 @@ refine_result:
     score: {refined_total}
     breakdown:
       correctness: {score}
-      code_quality: {score}
-      performance: {score}
-      safety: {score}
-      simplicity: {score}
-    improvement: {score_delta}
-  selected: "original | refined_iteration_1 | refined_iteration_2"
-  rationale: "[Why this version was selected]"
+# ...
 ```

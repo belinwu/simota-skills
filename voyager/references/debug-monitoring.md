@@ -24,12 +24,7 @@ export const test = base.extend<{ harContext: BrowserContext }>({
         urlFilter: /\/(api|graphql)\//,
       },
     });
-
-    await use(context);
-
-    await context.close(); // HAR saved on close
-  },
-});
+// ...
 ```
 
 ### Replaying from HAR
@@ -66,37 +61,7 @@ export const test = base.extend<{ networkLogs: NetworkLog[] }>({
   networkLogs: async ({ page }, use, testInfo) => {
     const logs: NetworkLog[] = [];
 
-    page.on('request', (request) => {
-      (request as any).__startTime = Date.now();
-    });
-
-    page.on('response', async (response) => {
-      const request = response.request();
-      logs.push({
-        url: request.url(),
-        method: request.method(),
-        status: response.status(),
-        duration: Date.now() - ((request as any).__startTime || Date.now()),
-        size: parseInt(response.headers()['content-length'] || '0', 10),
-      });
-    });
-
-    await use(logs);
-
-    // Attach network log on failure
-    if (testInfo.status !== 'passed') {
-      const failedRequests = logs.filter(l => l.status >= 400);
-      await testInfo.attach('failed-requests', {
-        body: JSON.stringify(failedRequests, null, 2),
-        contentType: 'application/json',
-      });
-      await testInfo.attach('all-requests', {
-        body: JSON.stringify(logs, null, 2),
-        contentType: 'application/json',
-      });
-    }
-  },
-});
+// ...
 ```
 
 ---
@@ -121,35 +86,7 @@ export const test = base.extend<ConsoleFixture>({
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg);
-      }
-    });
-
-    page.on('pageerror', (error) => {
-      errors.push({
-        type: () => 'error',
-        text: () => error.message,
-      } as any);
-    });
-
-    await use(errors);
-
-    // Attach errors on failure
-    if (errors.length > 0) {
-      await testInfo.attach('console-errors', {
-        body: errors.map(e => `[${e.type()}] ${e.text()}`).join('\n'),
-        contentType: 'text/plain',
-      });
-    }
-  },
-
-  consoleWarnings: async ({ page }, use) => {
-    const warnings: ConsoleMessage[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'warning') warnings.push(msg);
-    });
-    await use(warnings);
-  },
-});
+// ...
 ```
 
 ### Auto-Fail on Console Errors
@@ -170,26 +107,7 @@ export const test = base.extend<{ strictConsole: void }>({
     ];
 
     page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        const text = msg.text();
-        const isAllowed = allowlist.some(pattern => text.includes(pattern));
-        if (!isAllowed) errors.push(text);
-      }
-    });
-
-    page.on('pageerror', (error) => {
-      errors.push(`Page Error: ${error.message}`);
-    });
-
-    await use();
-
-    // Fail test if unexpected console errors
-    expect(
-      errors,
-      `Unexpected console errors:\n${errors.join('\n')}`
-    ).toHaveLength(0);
-  }, { auto: true }],
-});
+// ...
 ```
 
 ---
@@ -230,17 +148,7 @@ test('checkout flow with annotations', async ({ page }, testInfo) => {
     await page.goto('/cart');
     await expect(page.getByTestId('cart-items')).toBeVisible();
   });
-
-  await test.step('Enter shipping info', async () => {
-    await page.getByLabel('Address').fill('123 Test St');
-    await page.getByTestId('continue-shipping').click();
-  });
-
-  await test.step('Complete payment', async () => {
-    await page.getByTestId('pay-button').click();
-    await page.waitForURL('**/confirmation');
-  });
-});
+// ...
 ```
 
 ### Trace on Every Failure
@@ -261,14 +169,7 @@ export const test = base.extend({
     // Save trace on failure
     if (testInfo.status !== 'passed' && process.env.TRACE_ALL) {
       const tracePath = testInfo.outputPath('trace.zip');
-      await context.tracing.stop({ path: tracePath });
-      await testInfo.attach('trace', {
-        path: tracePath,
-        contentType: 'application/zip',
-      });
-    }
-  },
-});
+// ...
 ```
 
 ---
@@ -293,24 +194,7 @@ test('no memory leaks on repeated navigation', async ({ page }) => {
     jsHeapSize: (performance as any).memory?.usedJSHeapSize,
   }));
 
-  // Navigate back and forth multiple times
-  for (let i = 0; i < 10; i++) {
-    await page.goto('/settings');
-    await page.waitForLoadState('networkidle');
-    await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
-  }
-
-  const finalMetrics = await page.evaluate(() => ({
-    jsHeapSize: (performance as any).memory?.usedJSHeapSize,
-  }));
-
-  // Heap should not grow more than 50%
-  if (initialMetrics.jsHeapSize && finalMetrics.jsHeapSize) {
-    const growth = finalMetrics.jsHeapSize / initialMetrics.jsHeapSize;
-    expect(growth).toBeLessThan(1.5);
-  }
-});
+// ...
 ```
 
 ### JS Coverage Analysis
@@ -331,19 +215,7 @@ test('JavaScript coverage meets minimum', async ({ page }) => {
   let totalBytes = 0;
   let usedBytes = 0;
 
-  for (const entry of coverage) {
-    totalBytes += entry.text.length;
-    for (const range of entry.ranges) {
-      usedBytes += range.end - range.start;
-    }
-  }
-
-  const usagePercent = (usedBytes / totalBytes) * 100;
-  console.log(`JS code usage: ${usagePercent.toFixed(1)}%`);
-
-  // At least 30% of loaded JS should be used
-  expect(usagePercent).toBeGreaterThan(30);
-});
+// ...
 ```
 
 ---
@@ -368,23 +240,7 @@ class SlowTestReporter implements Reporter {
   }
 
   onEnd(result: FullResult) {
-    const sorted = this.results.sort((a, b) => b.duration - a.duration);
-    const slow = sorted.slice(0, 10);
-
-    console.log('\n=== Top 10 Slowest Tests ===');
-    for (const t of slow) {
-      console.log(`  ${(t.duration / 1000).toFixed(1)}s - ${t.title}`);
-    }
-
-    // Warn on very slow tests (> 30s)
-    const verySlow = sorted.filter(t => t.duration > 30000);
-    if (verySlow.length > 0) {
-      console.warn(`\n⚠ ${verySlow.length} tests exceed 30s threshold`);
-    }
-  }
-}
-
-export default SlowTestReporter;
+// ...
 ```
 
 ### Flaky Rate Tracking
@@ -405,27 +261,7 @@ class FlakyTracker implements Reporter {
         retries: result.retry,
       });
     }
-  }
-
-  onEnd() {
-    if (this.flakyTests.length > 0) {
-      console.warn(`\n⚠ ${this.flakyTests.length} flaky tests detected:`);
-      for (const t of this.flakyTests) {
-        console.warn(`  [${t.retries} retries] ${t.title}`);
-      }
-
-      // Save for trend analysis
-      const logPath = '.flaky-log.jsonl';
-      const entry = {
-        timestamp: new Date().toISOString(),
-        tests: this.flakyTests,
-      };
-      fs.appendFileSync(logPath, JSON.stringify(entry) + '\n');
-    }
-  }
-}
-
-export default FlakyTracker;
+// ...
 ```
 
 ---
@@ -464,15 +300,7 @@ export async function retryWithBackoff<T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
-    } catch (error) {
-      if (attempt === maxRetries) throw error;
-      const delay = baseDelay * Math.pow(2, attempt);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-
-  throw new Error('Unreachable');
-}
+// ...
 ```
 
 ### Per-Test Retry Override

@@ -135,8 +135,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
-## COLLABORATION PATTERNS (→ `references/handoffs.md`)
-
+## COLLABORATION PATTERNS (
 | Pattern | Flow | Trigger | Output |
 |---------|------|---------|--------|
 | **A: Intelligence-to-Strategy** | Compete → Helm → Scribe | 「競合分析を踏まえた経営戦略を」 | 差別化戦略 + 文書化 |
@@ -146,8 +145,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **E: Full-Cycle** | Compete+Pulse → Helm → Magi → Scribe | 「年次/中期経営計画を策定」 | 包括的経営計画書 |
 | **F: Perspective-to-Strategy** | Refract → Helm | 「多角視点で戦略の盲点を確認」 | 視点統合済み戦略 |
 | **G: Monitor-to-Revise** | Compass → Helm | 「前提崩壊・戦略ドリフト検知」 | 戦略修正・シナリオ切替 |
-
-→ 各ハンドオフのYAMLスキーマは `references/handoffs.md` を参照
 
 ---
 
@@ -204,7 +201,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/simulation-patterns.md` | 短期/中期/長期シミュレーションの詳細パターン・計算式 |
 | `references/data-inputs.md` | 入力データ種別・フォーマット仕様・不足時の対処法 |
 | `references/output-templates.md` | 戦略ロードマップ・KPI予測表・リスクマトリクスの完全テンプレート |
-| `references/handoffs.md` | エージェント間ハンドオフテンプレート（YAML形式） |
 
 ---
 

@@ -271,8 +271,6 @@ Every generated skill is scored on a 12-point rubric (0-3 per dimension):
 | Sigil → Judge | SIGIL_TO_JUDGE_HANDOFF | Quality review request for generated skills |
 | Sigil → Hone | SIGIL_TO_HONE_HANDOFF | Improvement results for verification |
 
-→ Full templates: `references/handoffs.md`
-
 ---
 
 ## Tactics & Avoids
@@ -310,7 +308,6 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/validation-rules.md` | Quality scoring rubric, validation checklist, common failure patterns |
 | `references/evolution-patterns.md` | Skill lifecycle states, evolution triggers, update strategies, migration patterns |
 | `references/advanced-patterns.md` | Conditional skills, parameterized templates, monorepo patterns, skill composition |
-| `references/handoffs.md` | 9 bidirectional handoff templates (Lens/Architect/Judge/Hone/Canon ↔ Sigil ↔ Grove/Nexus/Judge/Hone) |
 
 ---
 

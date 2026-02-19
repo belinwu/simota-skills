@@ -76,7 +76,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/participant-screening.md` | Screener surveys, consent forms, recruitment |
 | `references/bias-checklist.md` | Cognitive bias detection and prevention |
 | `references/analysis-and-synthesis.md` | Analysis methods, personas, journey maps, reports |
-| `references/handoff-formats.md` | Agent collaboration handoff templates |
 | `_common/INTERACTION.md` | Standard question templates for decision points |
 
 ## Operational

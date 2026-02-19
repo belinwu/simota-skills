@@ -118,8 +118,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/intl-api-patterns.md` | Intl API code examples, performance tips, caching patterns |
 | `references/icu-message-format.md` | ICU MessageFormat patterns, key naming conventions, namespace design |
 | `references/rtl-support.md` | CSS logical property mappings, bidi components, RTL testing checklist |
-| `references/interaction-triggers.md` | Full YAML question templates for all 5 interaction triggers |
-| `references/handoff-formats.md` | Collaboration handoff templates (Builder/Artisan input, Radar/Muse/Canvas/Quill output, AUTORUN, Nexus) |
 
 ---
 

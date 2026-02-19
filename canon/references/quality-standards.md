@@ -71,23 +71,7 @@
 | Usability | 15% | | |
 | Reliability | 15% | | |
 | Security | 15% | | |
-| Maintainability | 10% | | |
-| Portability | 5% | | |
-| **Total** | 100% | | |
-
-### Key Findings
-
-#### Strengths
-- [Finding 1]
-- [Finding 2]
-
-#### Areas for Improvement
-- [Finding 1]
-- [Finding 2]
-
-### Recommendations
-1. [Recommendation 1]
-2. [Recommendation 2]
+...
 ```
 
 ---
@@ -173,12 +157,7 @@ function validatePassword(password: string): boolean {
 }
 
 function validatePasswordAndInitSession(password: string): boolean {
-  const valid = validate(password);
-  if (valid) {
-    Session.initialize();
-  }
-  return valid;
-}
+// ...
 ```
 
 ### Comments Standards
@@ -218,7 +197,7 @@ constructor() {}
 
 // BAD: Journal comment
 // 2024-01-15: Added by John
-// 2024-02-01: Modified by Jane
+// ...
 ```
 
 ### Error Handling
@@ -266,7 +245,7 @@ function findUser(id: string): User {
 // GOOD: Use Option type
 function findUser(id: string): Option<User> {
   return Option.fromNullable(users.get(id));
-}
+// ...
 ```
 
 ---
@@ -293,15 +272,7 @@ class UserService {
     private validator: UserValidator,
     private notifier: UserNotifier,
     private repository: UserRepository
-  ) {}
-
-  async createUser(data: UserData): Promise<User> {
-    this.validator.validate(data);
-    const user = await this.repository.save(data);
-    await this.notifier.sendWelcomeEmail(user);
-    return user;
-  }
-}
+// ...
 ```
 
 ### O - Open/Closed Principle
@@ -324,19 +295,7 @@ class PaymentProcessor {
 
 // GOOD: Open for extension
 interface PaymentHandler {
-  canHandle(payment: Payment): boolean;
-  process(payment: Payment): Promise<void>;
-}
-
-class PaymentProcessor {
-  constructor(private handlers: PaymentHandler[]) {}
-
-  process(payment: Payment) {
-    const handler = this.handlers.find(h => h.canHandle(payment));
-    if (!handler) throw new UnsupportedPaymentError();
-    return handler.process(payment);
-  }
-}
+// ...
 ```
 
 ### L - Liskov Substitution Principle
@@ -359,19 +318,7 @@ class Square extends Rectangle {
 }
 
 // GOOD: Separate types
-interface Shape {
-  area(): number;
-}
-
-class Rectangle implements Shape {
-  constructor(private width: number, private height: number) {}
-  area() { return this.width * this.height; }
-}
-
-class Square implements Shape {
-  constructor(private side: number) {}
-  area() { return this.side * this.side; }
-}
+// ...
 ```
 
 ### I - Interface Segregation Principle
@@ -394,26 +341,7 @@ class Robot implements Worker {
 
 // GOOD: Segregated interfaces
 interface Workable {
-  work(): void;
-}
-
-interface Feedable {
-  eat(): void;
-}
-
-interface Sleepable {
-  sleep(): void;
-}
-
-class Human implements Workable, Feedable, Sleepable {
-  work() {...}
-  eat() {...}
-  sleep() {...}
-}
-
-class Robot implements Workable {
-  work() {...}
-}
+// ...
 ```
 
 ### D - Dependency Inversion Principle
@@ -436,17 +364,7 @@ interface OrderRepository {
 }
 
 class OrderService {
-  constructor(private repository: OrderRepository) {}
-
-  save(order: Order) {
-    return this.repository.save(order);
-  }
-}
-
-// Implementations
-class MySQLOrderRepository implements OrderRepository {...}
-class PostgresOrderRepository implements OrderRepository {...}
-class InMemoryOrderRepository implements OrderRepository {...} // For testing
+// ...
 ```
 
 ---
