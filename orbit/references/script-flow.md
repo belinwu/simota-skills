@@ -15,7 +15,18 @@ graph TB
         B7 --> B8
     end
 
-    B8 --> R0
+    B8 --> PF0
+
+    subgraph PREFLIGHT["Pre-flight Checks"]
+        PF0{SKIP_PREFLIGHT?} -->|true| PF3([Checks skipped])
+        PF0 -->|false| PF1["Disk space ≥ 100MB?<br/>Stale lock? (PID liveness)<br/>Git repo healthy?"]
+        PF1 --> PF2{All pass?}
+        PF2 -->|Yes| PF2a["Acquire .run-loop.lock<br/>Rotate runner.log"]
+        PF2a --> PF3([Pre-flight OK])
+        PF2 -->|No| PF_FAIL["[ABORT] exit 1"]
+    end
+
+    PF3 --> R0
 
     subgraph RUNNER["run-loop.sh — Main Loop"]
         R0[Load state<br/>state.env or defaults] --> R1
@@ -25,11 +36,31 @@ graph TB
             R1 -->|No| R3[skip]
         end
 
-        R2 --> LOOP
-        R3 --> LOOP
+        R2 --> AT
+        R3 --> AT
+
+        subgraph ADAPTIVE["Adaptive Timeout"]
+            AT{ADAPTIVE_TIMEOUT<br/>== true?} -->|Yes| AT1["median(last 5) × 2<br/>bounded by EXEC_TIMEOUT..EXEC_TIMEOUT×3"]
+            AT -->|No| AT2["EFFECTIVE_TIMEOUT = EXEC_TIMEOUT"]
+            AT1 --> AT3([EFFECTIVE_TIMEOUT set])
+            AT2 --> AT3
+        end
+
+        AT3 --> LOOP
 
         subgraph LOOP["while STATUS != DONE && iter <= MAX"]
-            L0["=== Iteration N ==="] --> EXEC
+            L0["=== Iteration N ==="] --> HEALTH
+
+            subgraph HEALTH["Iteration Health Check"]
+                H1["Disk space ≥ 50MB?"] --> H2{pass?}
+                H2 -->|No| H3["BLOCKED<br/>write state + checksum"] --> BREAK
+                H2 -->|Yes| H4{AUTOCOMMIT<br/>+ git rebase?}
+                H4 -->|rebase active| H3
+                H4 -->|OK| H5["rotate_log()"]
+            end
+
+            L0 --> H1
+            H5 --> E1
 
             subgraph EXEC["Bounded Retry Execution"]
                 E1["Run EXEC_CMD<br/>(codex exec / claude / gemini)"] --> E2{success?}
@@ -81,9 +112,10 @@ graph TB
 
             subgraph STATE_WRITE["State Update"]
                 S1["NEXT_ITERATION++"] --> S2["atomic write to state.env<br/>NEXT_ITERATION / LAST_STATUS / LAST_UPDATED_AT"]
+                S2 --> S3["write state.env.sha256<br/>(shasum -a 256)"]
             end
 
-            S2 --> N1
+            S3 --> N1
 
             subgraph NOTIFY["Iteration Notification (|| true)"]
                 N1{NOTIFY_ENABLED?} -->|true| N2{notify.sh<br/>exists?}
@@ -113,6 +145,9 @@ graph TB
     style DONE_CHECK fill:#2a1a1a,stroke:#f87171
     style NOTIFY fill:#1a2a2a,stroke:#a78bfa
     style FOOTER fill:#0a2a1a,stroke:#34d399
+    style PREFLIGHT fill:#2a1a2a,stroke:#f472b6
+    style HEALTH fill:#2a2a1a,stroke:#facc15
+    style ADAPTIVE fill:#1a2a2a,stroke:#67e8f9
 ```
 
 ## Recovery Flow (recover.sh)
@@ -169,6 +204,10 @@ run-loop.sh  ──reads──────→ state.env (resume point)
              ──calls──────→ notify.sh (notification hook, when NOTIFY_ENABLED)
              ──checks─────→ done.md (DONE detection)
              ──writes─────→ state.env (atomic update)
+             ──writes─────→ .run-loop.lock (process lock)
+             ──writes─────→ state.env.sha256 (integrity check)
+             ──writes─────→ .iter-timings.log (adaptive timeout)
+             ──rotates────→ runner.log → runner.log.prev
              ──outputs────→ runner.log (all logs)
              ──outputs────→ NEXUS_LOOP_STATUS footer
 
@@ -190,3 +229,8 @@ recover.sh   ──reads──────→ progress.md (evidence source)
 - **State Validation**: Validates format before `source state.env`. Prevents arbitrary command execution from corrupted state.env
 - **Contract-Valid Statuses Only**: `NEXUS_LOOP_STATUS` is limited to `READY` / `CONTINUE` / `DONE`. TOOL_FAILURE is represented as `CONTINUE` + progress.md record
 - **Recovery from Evidence**: `recover.sh` rebuilds `state.env` using `progress.md` as the sole source of truth (POSIX-compatible grep)
+- **Pre-flight Gate**: Checks disk space (>=100MB), lock status (PID liveness), and git health before loop starts. Configurable via `SKIP_PREFLIGHT`
+- **Health Check per Iteration**: Re-validates disk space (>=50MB) and git status at the top of each iteration. Transitions to BLOCKED on failure
+- **Log Rotation**: `runner.log` is rotated to `.prev` when exceeding `MAX_LOG_SIZE` (default 5MB)
+- **State Checksum**: SHA-256 checksum written alongside `state.env` after every update. Validated on load -- mismatch triggers `recover.sh`
+- **Adaptive Timeout**: When enabled, `EFFECTIVE_TIMEOUT` = median(last 5 execution times) x 2, bounded by `[EXEC_TIMEOUT, EXEC_TIMEOUT x 3]`

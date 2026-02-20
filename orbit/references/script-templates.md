@@ -40,6 +40,9 @@ EXEC_TIMEOUT="${EXEC_TIMEOUT:-600}"
 AUTOCOMMIT="${AUTOCOMMIT:-true}"
 COMMIT_MSG_PREFIX="${COMMIT_MSG_PREFIX:-loop}"
 NOTIFY_ENABLED="${NOTIFY_ENABLED:-false}"
+MAX_LOG_SIZE="${MAX_LOG_SIZE:-5242880}"
+ADAPTIVE_TIMEOUT="${ADAPTIVE_TIMEOUT:-false}"
+SKIP_PREFLIGHT="${SKIP_PREFLIGHT:-false}"
 
 #--- Portable timeout (macOS + Linux) ---
 portable_timeout() {
@@ -63,6 +66,72 @@ portable_timeout() {
   fi
 }
 
+#--- Pre-flight checks (skip with SKIP_PREFLIGHT=true) ---
+preflight_check() {
+  if [[ "${SKIP_PREFLIGHT}" == "true" ]]; then
+    echo "[PREFLIGHT] Skipped (SKIP_PREFLIGHT=true)"
+    return 0
+  fi
+
+  # Disk space check (abort if < 100MB free)
+  local avail_kb
+  avail_kb=$(df -k "${LOOP_DIR}" | awk 'NR==2{print $4}')
+  if [[ "${avail_kb}" -lt 102400 ]]; then
+    echo "[PREFLIGHT:FAIL] Disk space critically low: ${avail_kb}KB available (< 100MB)"
+    return 1
+  fi
+
+  # Stale lock detection
+  if [[ -f "${LOOP_DIR}/.run-loop.lock" ]]; then
+    local lock_pid
+    lock_pid=$(cat "${LOOP_DIR}/.run-loop.lock")
+    if kill -0 "${lock_pid}" 2>/dev/null; then
+      echo "[PREFLIGHT:FAIL] Active lock — PID ${lock_pid} is running"
+      return 1
+    else
+      echo "[PREFLIGHT:WARN] Stale lock — PID ${lock_pid} dead, removing"
+      rm -f "${LOOP_DIR}/.run-loop.lock"
+    fi
+  fi
+
+  # Git repository health (AUTOCOMMIT only)
+  if [[ "${AUTOCOMMIT}" == "true" ]]; then
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      echo "[PREFLIGHT:FAIL] Not inside a git repository (AUTOCOMMIT=true requires git)"
+      return 1
+    fi
+    if [[ -d .git/rebase-merge ]] || [[ -d .git/rebase-apply ]]; then
+      echo "[PREFLIGHT:FAIL] Git rebase in progress — resolve before running loop"
+      return 1
+    fi
+  fi
+
+  echo "[PREFLIGHT] All checks passed"
+  return 0
+}
+
+# Run pre-flight and abort on failure
+if ! preflight_check; then
+  echo "[ABORT] Pre-flight check failed — fix issues and retry"
+  exit 1
+fi
+
+# Acquire lock
+echo $$ > "${LOOP_DIR}/.run-loop.lock"
+
+#--- Log rotation ---
+rotate_log() {
+  if [[ -f "${LOOP_DIR}/runner.log" ]]; then
+    local log_size
+    log_size=$(wc -c < "${LOOP_DIR}/runner.log" 2>/dev/null || echo 0)
+    if [[ "${log_size}" -gt "${MAX_LOG_SIZE}" ]]; then
+      mv "${LOOP_DIR}/runner.log" "${LOOP_DIR}/runner.log.prev"
+      echo "[LOG] Rotated runner.log (${log_size} bytes > MAX_LOG_SIZE=${MAX_LOG_SIZE})"
+    fi
+  fi
+}
+rotate_log
+
 #--- Graceful shutdown (SIGINT/SIGTERM) ---
 SHUTDOWN=0
 cleanup() {
@@ -76,6 +145,7 @@ LAST_STATUS=CONTINUE
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 STATE_EOF
   mv "${tmp}" "${LOOP_DIR}/state.env"
+  rm -f "${LOOP_DIR}/.run-loop.lock"
   exit 130
 }
 trap cleanup SIGINT SIGTERM
@@ -94,6 +164,24 @@ if [[ -f "${LOOP_DIR}/state.env" ]]; then
   fi
 fi
 
+# State checksum validation
+if [[ -f "${LOOP_DIR}/state.env.sha256" ]]; then
+  EXPECTED_SHA=$(cat "${LOOP_DIR}/state.env.sha256")
+  ACTUAL_SHA=$(shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}')
+  if [[ "${EXPECTED_SHA}" != "${ACTUAL_SHA}" ]]; then
+    echo "[WARN] state.env checksum mismatch — possible corruption"
+    echo "[RECOVERY] Running recover.sh to rebuild state"
+    if [[ -f "${LOOP_DIR}/recover.sh" ]]; then
+      bash "${LOOP_DIR}/recover.sh"
+      source "${LOOP_DIR}/state.env"
+      ITER="${NEXT_ITERATION:-1}"
+      STATUS="${LAST_STATUS:-READY}"
+    else
+      echo "[WARN] No recover.sh available — proceeding with current state"
+    fi
+  fi
+fi
+
 #--- Dirty baseline snapshot ---
 if [[ "${AUTOCOMMIT}" == "true" ]]; then
   {
@@ -101,6 +189,28 @@ if [[ "${AUTOCOMMIT}" == "true" ]]; then
     git diff --cached --name-only 2>/dev/null || true
     git ls-files --others --exclude-standard 2>/dev/null || true
   } | sort -u > "${LOOP_DIR}/dirty-start-paths.txt"
+fi
+
+#--- Adaptive timeout ---
+EFFECTIVE_TIMEOUT="${EXEC_TIMEOUT}"
+TIMING_LOG="${LOOP_DIR}/.iter-timings.log"
+if [[ "${ADAPTIVE_TIMEOUT}" == "true" ]] && [[ -f "${TIMING_LOG}" ]]; then
+  # Calculate median of last 5 timings x 2, bounded by [EXEC_TIMEOUT, EXEC_TIMEOUT*3]
+  TIMINGS=$(tail -5 "${TIMING_LOG}" | sort -n)
+  COUNT=$(echo "${TIMINGS}" | wc -l | tr -d ' ')
+  if [[ "${COUNT}" -ge 3 ]]; then
+    MEDIAN=$(echo "${TIMINGS}" | sed -n "$(( (COUNT + 1) / 2 ))p")
+    ADAPTIVE_VAL=$((MEDIAN * 2))
+    MAX_TIMEOUT=$((EXEC_TIMEOUT * 3))
+    if [[ "${ADAPTIVE_VAL}" -lt "${EXEC_TIMEOUT}" ]]; then
+      EFFECTIVE_TIMEOUT="${EXEC_TIMEOUT}"
+    elif [[ "${ADAPTIVE_VAL}" -gt "${MAX_TIMEOUT}" ]]; then
+      EFFECTIVE_TIMEOUT="${MAX_TIMEOUT}"
+    else
+      EFFECTIVE_TIMEOUT="${ADAPTIVE_VAL}"
+    fi
+    echo "[ADAPTIVE] Timeout adjusted to ${EFFECTIVE_TIMEOUT}s (median=${MEDIAN}s x 2, bounds=[${EXEC_TIMEOUT},${MAX_TIMEOUT}])"
+  fi
 fi
 
 #--- Main loop ---
@@ -116,11 +226,43 @@ while [[ "${STATUS}" != "DONE" ]] && [[ "${ITER}" -le "${MAX_ITERATIONS}" ]]; do
   echo ""
   echo "=== Iteration ${ITER}/${MAX_ITERATIONS} ==="
 
+  #--- Iteration health check ---
+  HEALTH_AVAIL=$(df -k "${LOOP_DIR}" | awk 'NR==2{print $4}')
+  if [[ "${HEALTH_AVAIL}" -lt 51200 ]]; then
+    echo "[HEALTH:BLOCKED] Disk space low: ${HEALTH_AVAIL}KB (< 50MB)" | tee -a "${LOOP_DIR}/runner.log"
+    STATUS="BLOCKED"
+    state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+    cat > "${state_tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=BLOCKED
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+STATE_EOF
+    mv "${state_tmp}" "${LOOP_DIR}/state.env"
+    shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
+    break
+  fi
+  if [[ "${AUTOCOMMIT}" == "true" ]]; then
+    if [[ -d .git/rebase-merge ]] || [[ -d .git/rebase-apply ]]; then
+      echo "[HEALTH:BLOCKED] Git rebase in progress" | tee -a "${LOOP_DIR}/runner.log"
+      STATUS="BLOCKED"
+      state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+      cat > "${state_tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=BLOCKED
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+STATE_EOF
+      mv "${state_tmp}" "${LOOP_DIR}/state.env"
+      shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
+      break
+    fi
+  fi
+  rotate_log
+
   #--- Bounded retry execution ---
   EXEC_SUCCESS=false
   RETRY_COUNT=0
   while [[ "${RETRY_COUNT}" -lt "${RETRY_LIMIT}" ]]; do
-    if portable_timeout "${EXEC_TIMEOUT}" ${EXEC_CMD} 2>&1 | tee -a "${LOOP_DIR}/runner.log"; then
+    if portable_timeout "${EFFECTIVE_TIMEOUT}" ${EXEC_CMD} 2>&1 | tee -a "${LOOP_DIR}/runner.log"; then
       EXEC_SUCCESS=true
       break
     fi
@@ -149,6 +291,7 @@ LAST_STATUS=BLOCKED
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 STATE_EOF
     mv "${state_tmp}" "${LOOP_DIR}/state.env"
+    shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
     break
   fi
 
@@ -206,10 +349,12 @@ LAST_STATUS=${STATUS}
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 STATE_EOF
   mv "${state_tmp}" "${LOOP_DIR}/state.env"
+  shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
 
   #--- Iteration notification (|| true — never fatal) ---
   ITER_END=$(date +%s)
   ITER_DURATION=$((ITER_END - ITER_START))
+  echo "${ITER_DURATION}" >> "${LOOP_DIR}/.iter-timings.log"
   if [[ "${NOTIFY_ENABLED}" == "true" ]] && [[ -f "${LOOP_DIR}/notify.sh" ]]; then
     bash "${LOOP_DIR}/notify.sh" "${ITER}" "${STATUS}" "${VERIFY_RESULT}" "${ITER_DURATION}" "${LOOP_DIR}" "${COMMIT_HASH}" || true
   fi
@@ -217,6 +362,9 @@ STATE_EOF
   echo "[ITER ${ITER}] status=${STATUS} verify=${VERIFY_RESULT} commit=${COMMIT_HASH} duration=${ITER_DURATION}s"
   ITER=${NEXT_ITER}
 done
+
+#--- Release lock ---
+rm -f "${LOOP_DIR}/.run-loop.lock"
 
 #--- Status footer ---
 FINAL_STATUS="${STATUS}"
@@ -551,3 +699,6 @@ When generating scripts, Orbit customizes these parameters based on the goal:
 | `AUTOCOMMIT` | true | User wants manual commit control |
 | `COMMIT_MSG_PREFIX` | `loop` | Match repo's conventional commit scope |
 | `VERIFY_CMD` | (from goal.md) | Goal specifies test/lint/build commands |
+| `MAX_LOG_SIZE` | 5242880 | Log rotation threshold in bytes (5MB default) |
+| `ADAPTIVE_TIMEOUT` | false | Enable adaptive timeout based on recent execution times |
+| `SKIP_PREFLIGHT` | false | Bypass pre-flight checks (testing/debug only) |

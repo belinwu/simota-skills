@@ -120,3 +120,25 @@ Edge cases and handling for `dirty-start-paths.txt`.
 | Same file modified by parallel loops | Commit conflict proceeds undetected without CROSS_LOOP_CONFLICT | Pre-detect using Pattern 5 algorithm. Delegate arbitration to Guardian |
 | gitignore-listed tracked files | `git check-ignore` does not ignore tracked files | `git ls-files --others --exclude-standard` only covers untracked. Tracked+ignored appear in `git diff` and are included in baseline. Create an explicit exclusion list |
 | symlink / submodule | `git diff --name-only` reports symlink targets | Record the symlink path itself in baseline. Recommended: exclude submodules with `--ignore-submodules=all` |
+
+## 9. Pre-flight Health Gate
+
+Use before every loop execution to ensure system readiness.
+
+**Pre-flight checks (before main loop):**
+1. Disk space ≥ 100MB free (`df -k`)
+2. No active `.run-loop.lock` (PID liveness via `kill -0`)
+3. Stale lock auto-removal (dead PID detected)
+4. Git repository health: no rebase in progress (AUTOCOMMIT only)
+5. Log rotation: `runner.log` > `MAX_LOG_SIZE` → rename to `.prev`
+6. State integrity: `state.env.sha256` checksum validation
+
+**Iteration health checks (top of every iteration):**
+1. Disk space ≥ 50MB free → BLOCKED if below
+2. Git rebase status → BLOCKED if active (AUTOCOMMIT only)
+3. Log rotation check
+
+**Lock lifecycle:**
+- Acquired: after pre-flight passes (`echo $$ > .run-loop.lock`)
+- Released: at loop exit and in `cleanup()` signal handler
+- Stale detection: read PID from lock, `kill -0` test, remove if dead

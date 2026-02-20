@@ -87,6 +87,20 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Mix multiple failure classes into one opaque fix.
 - Use broad staging when path-scoped staging is possible.
 
+### Pre-flight Contract
+
+Mandatory checks before loop execution starts. Enforced by `preflight_check()` in run-loop.sh.
+
+| Check | Threshold | On Failure | Bypass |
+|-------|-----------|------------|--------|
+| Disk space | ≥ 100MB free | `[PREFLIGHT:FAIL]` → abort | `SKIP_PREFLIGHT=true` |
+| Process lock | `.run-loop.lock` PID liveness | Active PID → abort; Dead PID → auto-remove | — |
+| Git health | No rebase in progress (AUTOCOMMIT only) | `[PREFLIGHT:FAIL]` → abort | `AUTOCOMMIT=false` |
+| Log size | `runner.log` ≤ `MAX_LOG_SIZE` | Rotate to `runner.log.prev` | — |
+| State integrity | `state.env.sha256` matches | Mismatch → auto-run `recover.sh` | — |
+
+Iteration health checks (disk ≥ 50MB, git status) re-run at the top of every iteration.
+
 ## Domain Knowledge Summary
 
 | Concept | Definition | Key Artifacts |
@@ -143,6 +157,10 @@ Adjust based on project context during script generation:
 | `NOTIFY_PERSONA_FILE` | (none) | When customizing voice settings via Cast persona YAML |
 | `NOTIFY_ENGINE` | `auto` | Specify TTS engine (auto: edge-tts → say fallback) |
 | `NOTIFY_LANG` | `ja` | Notification text language (ja / en) |
+| `MAX_LOG_SIZE` | `5242880` | Log rotation threshold in bytes (rotate when exceeded) |
+| `ADAPTIVE_TIMEOUT` | `false` | Enabling adaptive timeout based on execution history |
+| `SKIP_PREFLIGHT` | `false` | Bypassing pre-flight checks (testing/debug only) |
+| `LOOP_TIER` | (auto) | Overriding automatic complexity tier selection |
 
 ### Script Quality Criteria
 
@@ -155,6 +173,28 @@ All generated scripts must satisfy:
 - DONE detection requires dual gate: `done.md` existence + verification pass
 - Write state atomically to `state.env` (resumable after interruption)
 - Use `portable_timeout` function for `EXEC_TIMEOUT` enforcement (macOS has no `timeout` command; fall back to `gtimeout` or `perl`)
+- Run pre-flight checks before main loop (disk, lock, git health)
+- Re-validate system health at each iteration start (disk ≥ 50MB, git status)
+- Rotate `runner.log` when exceeding `MAX_LOG_SIZE`
+- Write SHA-256 checksum after every `state.env` update; validate on load
+- Acquire/release `.run-loop.lock` for process-level exclusion
+
+### Loop Complexity Tiers
+
+Automatically select runner configuration based on goal complexity.
+
+| Tier | AC Count | MAX_ITERATIONS | EXEC_TIMEOUT | RETRY_LIMIT | Auto Features |
+|------|----------|----------------|-------------|-------------|---------------|
+| Light | 1-3 | 10 | 300 | 2 | Basic runner only |
+| Standard | 3-6 | 20 | 600 | 3 | Full script set (default) |
+| Heavy | 6-10 | 30 | 900 | 4 | + adaptive timeout + health checks |
+| Marathon | 10+ | 50 | 1200 | 5 | + log rotation + all defense patterns |
+
+**Tier Selection Rules:**
+1. Count ACs in `goal.md` → base tier
+2. Multi-Loop scenario → upgrade one tier
+3. TOOL_FAILURE history in `runner.log` → upgrade one tier
+4. `LOOP_TIER` environment variable → manual override (Light/Standard/Heavy/Marathon)
 
 > Full script templates: `references/script-templates.md`
 
@@ -238,6 +278,8 @@ SEVERITY:
       - weak_summary
     response: "Proceed with improvements"
 ```
+
+> Detailed recovery procedures per failure class: `references/failure-taxonomy.md`
 
 ---
 
@@ -432,10 +474,12 @@ Standard protocols → `_common/OPERATIONAL.md`
 |------|---------|----------|
 | `references/script-templates.md` | Runner/bootstrap/verify/recover script templates | When generating scripts (primary reference) |
 | `references/script-flow.md` | Mermaid visualization of script processing flows | When understanding flow or debugging |
-| `references/examples.md` | Diagnostic examples for 8 failure classes (including multi-loop) | When pattern matching |
+| `references/examples.md` | Diagnostic examples for 9 scenarios (failure classes, multi-loop, pre-flight) | When pattern matching |
 | `references/operation-contract.md` | Detailed contract design specification | When creating or auditing new contracts |
 | `references/failure-taxonomy.md` | Detailed failure classification decision logic | When analyzing failures |
 | `references/patterns.md` | Detailed collaboration pattern flows | When coordinating multi-agent scenarios |
+| `references/anti-patterns.md` | 10 common anti-patterns with prevention checklist | When reviewing loop configuration or post-mortem |
+| `references/vague-goal-handling.md` | Vague goal transformation framework | When goal quality is Weak or Vague |
 
 ---
 

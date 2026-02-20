@@ -149,3 +149,22 @@ Expected Orbit output:
   - Step 4: If inner-b retries exhausted, escalate to P0 at meta-loop level and pause
   - Step 5: Do NOT attempt inner-c until inner-b reaches DONE
 - `handoff_target: Builder` (if inner-b failure is implementation-related) or `NONE` (if retry resolves)
+
+## Example I: Pre-flight Failure (PREFLIGHT:FAIL)
+
+Input:
+- Loop directory: `.nexus-loop/`
+- Disk space: 45MB free (below 100MB threshold)
+- `.run-loop.lock` exists with PID 12345 (process dead)
+- `state.env` exists with valid checksum
+
+Expected Orbit output (run-loop.sh behavior):
+- `[PREFLIGHT:WARN] Stale lock — PID 12345 dead, removing`
+- `[PREFLIGHT:FAIL] Disk space critically low: 46080KB available (< 100MB)`
+- `[ABORT] Pre-flight check failed — fix issues and retry`
+- Exit code: 1 (no iteration started)
+
+Recovery steps:
+- Step 1: Free disk space (clear build artifacts, logs, caches)
+- Step 2: Re-run `bash .nexus-loop/run-loop.sh`
+- Step 3: Pre-flight will auto-clear the stale lock and proceed if disk is sufficient
