@@ -473,6 +473,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | File | Content | Use When |
 |------|---------|----------|
 | `references/script-templates.md` | Runner/bootstrap/verify/recover script templates | When generating scripts (primary reference) |
+| `references/executor-engines.md` | Executor CLI reference (codex, gemini, claude) | When configuring EXEC_CMD or switching executors |
 | `references/script-flow.md` | Mermaid visualization of script processing flows | When understanding flow or debugging |
 | `references/examples.md` | Diagnostic examples for 9 scenarios (failure classes, multi-loop, pre-flight) | When pattern matching |
 | `references/operation-contract.md` | Detailed contract design specification | When creating or auditing new contracts |

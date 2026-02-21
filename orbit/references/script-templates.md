@@ -35,6 +35,7 @@ LOOP_DIR="${LOOP_DIR:-.nexus-loop}"
 MAX_ITERATIONS="${MAX_ITERATIONS:-20}"
 RETRY_LIMIT="${RETRY_LIMIT:-3}"
 RETRY_BACKOFF_BASE="${RETRY_BACKOFF_BASE:-2}"
+# Executor command — see references/executor-engines.md for engine-specific configuration
 EXEC_CMD="${EXEC_CMD:-codex}"
 EXEC_TIMEOUT="${EXEC_TIMEOUT:-600}"
 AUTOCOMMIT="${AUTOCOMMIT:-true}"
@@ -695,7 +696,7 @@ When generating scripts, Orbit customizes these parameters based on the goal:
 | `RETRY_LIMIT` | 3 | Unstable environment or flaky tools |
 | `RETRY_BACKOFF_BASE` | 2 | Network-dependent operations need longer backoff |
 | `EXEC_TIMEOUT` | 600 | Seconds before killing a hung EXEC_CMD process |
-| `EXEC_CMD` | `codex` | Different executor (claude, gemini, custom) |
+| `EXEC_CMD` | `codex` | Different executor — see `references/executor-engines.md` |
 | `AUTOCOMMIT` | true | User wants manual commit control |
 | `COMMIT_MSG_PREFIX` | `loop` | Match repo's conventional commit scope |
 | `VERIFY_CMD` | (from goal.md) | Goal specifies test/lint/build commands |
