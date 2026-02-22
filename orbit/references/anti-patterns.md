@@ -92,6 +92,15 @@ Declaring DONE when verification has failed.
 
 **Why:** DONE is an auditable claim, not a mood. The dual gate (done.md + verify) exists precisely to prevent premature completion.
 
+## AP-11: Manual Branch Switch During Loop
+
+Switching branches manually while run-loop.sh is active with BRANCH_ISOLATION.
+
+❌ **Bad:** `git checkout main` during loop — auto-commits land on wrong branch
+✅ **Good:** Stop the loop first (SIGINT), then switch. Or wait for DONE.
+
+**Why:** Branch isolation requires run-loop.sh to stay on the iteration branch. Auto-commits on the wrong branch cannot be squash-merged correctly.
+
 ---
 
 ## Prevention Checklist
@@ -108,6 +117,7 @@ Run before launching any loop:
 - [ ] **AP-8**: `state.env` and `progress.md` are consistent
 - [ ] **AP-9**: `dirty-start-paths.txt` exists when `AUTOCOMMIT=true`
 - [ ] **AP-10**: DONE gate requires both `done.md` AND verify PASS/SKIP
+- [ ] **AP-11**: No manual `git checkout` during active loop with `BRANCH_ISOLATION=true`
 
 ## Quick Reference
 
@@ -123,3 +133,4 @@ Run before launching any loop:
 | AP-8: Partial Recovery | STATE_DRIFT | state.env/progress.md mismatch |
 | AP-9: Global Stage | Commit scope leak | `git add -A` with dirty baseline |
 | AP-10: Premature DONE | False completion | DONE with VERIFY_RESULT=FAIL |
+| AP-11: Manual Branch Switch | Squash failure, misplaced commits | `git checkout` during active BRANCH_ISOLATION loop |

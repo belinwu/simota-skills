@@ -96,6 +96,7 @@ Mandatory checks before loop execution starts. Enforced by `preflight_check()` i
 | Disk space | ≥ 100MB free | `[PREFLIGHT:FAIL]` → abort | `SKIP_PREFLIGHT=true` |
 | Process lock | `.run-loop.lock` PID liveness | Active PID → abort; Dead PID → auto-remove | — |
 | Git health | No rebase in progress (AUTOCOMMIT only) | `[PREFLIGHT:FAIL]` → abort | `AUTOCOMMIT=false` |
+| Branch state | No detached HEAD (BRANCH_ISOLATION only) | `[PREFLIGHT:FAIL]` → abort | `BRANCH_ISOLATION=false` |
 | Log size | `runner.log` ≤ `MAX_LOG_SIZE` | Rotate to `runner.log.prev` | — |
 | State integrity | `state.env.sha256` matches | Mismatch → auto-run `recover.sh` | — |
 
@@ -111,6 +112,7 @@ Iteration health checks (disk ≥ 50MB, git status) re-run at the top of every i
 | Evidence Rule | Minimum verification evidence required for DONE judgment | Acceptance checklist, `verify_cmd` output, rollback note |
 | Resume-State | State information required to resume after loop interruption | `state.env` (`NEXT_ITERATION`, `LAST_STATUS`) |
 | Failure Taxonomy | Five-class taxonomy of loop anomalies | CONTRACT_MISSING / STATE_DRIFT / VERIFY_GAP / COMMIT_SCOPE_RISK / TOOL_FAILURE |
+| Branch Isolation | Strategy to isolate WIP auto-commits on a dedicated iteration branch and squash to summary branch on completion | `ORIGIN_BRANCH`, `ITER_BRANCH` in `state.env` |
 
 ---
 
@@ -160,6 +162,9 @@ Adjust based on project context during script generation:
 | `MAX_LOG_SIZE` | `5242880` | Log rotation threshold in bytes (rotate when exceeded) |
 | `ADAPTIVE_TIMEOUT` | `false` | Enabling adaptive timeout based on execution history |
 | `SKIP_PREFLIGHT` | `false` | Bypassing pre-flight checks (testing/debug only) |
+| `BRANCH_ISOLATION` | `true` | Disable when branch management is handled externally |
+| `SQUASH_ON_DONE` | `true` | Keep iteration commits unsquashed for debugging |
+| `SQUASH_MSG_ENGINE` | `auto` | Specify LLM engine for squash commit message (auto/gemini/claude/codex) |
 | `LOOP_TIER` | (auto) | Overriding automatic complexity tier selection |
 
 ### Script Quality Criteria
@@ -178,6 +183,7 @@ All generated scripts must satisfy:
 - Rotate `runner.log` when exceeding `MAX_LOG_SIZE`
 - Write SHA-256 checksum after every `state.env` update; validate on load
 - Acquire/release `.run-loop.lock` for process-level exclusion
+- Isolate auto-commits on `loop/iter-{name}` branch; squash to `loop/summary-{name}` on DONE (when `BRANCH_ISOLATION=true`)
 
 ### Loop Complexity Tiers
 

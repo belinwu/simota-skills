@@ -39,6 +39,8 @@ Rules:
 - `NEXT_ITERATION`
 - `LAST_STATUS`
 - `LAST_UPDATED_AT`
+- `ORIGIN_BRANCH` (branch before loop started; when BRANCH_ISOLATION enabled)
+- `ITER_BRANCH` (iteration branch name; when BRANCH_ISOLATION enabled)
 - session resume flags
 
 Recovery priority:

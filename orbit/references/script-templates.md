@@ -44,6 +44,9 @@ NOTIFY_ENABLED="${NOTIFY_ENABLED:-false}"
 MAX_LOG_SIZE="${MAX_LOG_SIZE:-5242880}"
 ADAPTIVE_TIMEOUT="${ADAPTIVE_TIMEOUT:-false}"
 SKIP_PREFLIGHT="${SKIP_PREFLIGHT:-false}"
+BRANCH_ISOLATION="${BRANCH_ISOLATION:-true}"
+SQUASH_ON_DONE="${SQUASH_ON_DONE:-true}"
+SQUASH_MSG_ENGINE="${SQUASH_MSG_ENGINE:-auto}"
 
 #--- Portable timeout (macOS + Linux) ---
 portable_timeout() {
@@ -144,6 +147,8 @@ cleanup() {
 NEXT_ITERATION=${ITER}
 LAST_STATUS=CONTINUE
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
   mv "${tmp}" "${LOOP_DIR}/state.env"
   rm -f "${LOOP_DIR}/.run-loop.lock"
@@ -179,6 +184,38 @@ if [[ -f "${LOOP_DIR}/state.env.sha256" ]]; then
       STATUS="${LAST_STATUS:-READY}"
     else
       echo "[WARN] No recover.sh available — proceeding with current state"
+    fi
+  fi
+fi
+
+#--- Branch isolation (pre-loop) ---
+if [[ "${BRANCH_ISOLATION}" == "true" ]] && [[ "${AUTOCOMMIT}" == "true" ]]; then
+  LOOP_NAME=$(basename "${LOOP_DIR}" | sed 's/^\.//')
+  ITER_BRANCH="loop/iter-${LOOP_NAME}"
+  SUMMARY_BRANCH="loop/summary-${LOOP_NAME}"
+
+  # Determine origin branch (resume: from state.env, first run: current HEAD)
+  if [[ -z "${ORIGIN_BRANCH:-}" ]]; then
+    ORIGIN_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
+  fi
+
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  if [[ "${CURRENT_BRANCH}" != "${ITER_BRANCH}" ]]; then
+    # Stash dirty worktree before branch switch
+    STASHED_FOR_BRANCH=false
+    if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
+      git stash push -m "orbit-branch-isolation-pre-switch"
+      STASHED_FOR_BRANCH=true
+    fi
+
+    if git rev-parse --verify "${ITER_BRANCH}" >/dev/null 2>&1; then
+      git checkout "${ITER_BRANCH}"       # Resume: existing branch
+    else
+      git checkout -b "${ITER_BRANCH}"    # First run: create from ORIGIN_BRANCH
+    fi
+
+    if [[ "${STASHED_FOR_BRANCH}" == "true" ]]; then
+      git stash pop || echo "[BRANCH:WARN] Stash pop conflict — manual resolution needed"
     fi
   fi
 fi
@@ -237,6 +274,8 @@ while [[ "${STATUS}" != "DONE" ]] && [[ "${ITER}" -le "${MAX_ITERATIONS}" ]]; do
 NEXT_ITERATION=${ITER}
 LAST_STATUS=BLOCKED
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
     mv "${state_tmp}" "${LOOP_DIR}/state.env"
     shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
@@ -251,6 +290,8 @@ STATE_EOF
 NEXT_ITERATION=${ITER}
 LAST_STATUS=BLOCKED
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
       mv "${state_tmp}" "${LOOP_DIR}/state.env"
       shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
@@ -290,6 +331,8 @@ STATE_EOF
 NEXT_ITERATION=${ITER}
 LAST_STATUS=BLOCKED
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
     mv "${state_tmp}" "${LOOP_DIR}/state.env"
     shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
@@ -348,6 +391,8 @@ STATE_EOF
 NEXT_ITERATION=${NEXT_ITER}
 LAST_STATUS=${STATUS}
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
   mv "${state_tmp}" "${LOOP_DIR}/state.env"
   shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
@@ -363,6 +408,95 @@ STATE_EOF
   echo "[ITER ${ITER}] status=${STATUS} verify=${VERIFY_RESULT} commit=${COMMIT_HASH} duration=${ITER_DURATION}s"
   ITER=${NEXT_ITER}
 done
+
+#--- Branch isolation (post-loop squash) ---
+if [[ "${BRANCH_ISOLATION}" == "true" ]] && [[ "${AUTOCOMMIT}" == "true" ]] \
+   && [[ -n "${ORIGIN_BRANCH:-}" ]] && [[ "${STATUS}" == "DONE" ]] \
+   && [[ "${SQUASH_ON_DONE}" == "true" ]]; then
+
+  ITER_COMMIT_COUNT=$(git rev-list --count "${ORIGIN_BRANCH}..${ITER_BRANCH}" 2>/dev/null || echo "0")
+  echo "[BRANCH] Loop DONE — squashing ${ITER_COMMIT_COUNT} iteration commits"
+
+  git checkout "${ORIGIN_BRANCH}"
+
+  # Recreate summary branch from current ORIGIN_BRANCH HEAD
+  git rev-parse --verify "${SUMMARY_BRANCH}" >/dev/null 2>&1 && git branch -D "${SUMMARY_BRANCH}"
+  git checkout -b "${SUMMARY_BRANCH}"
+
+  # Squash merge with conflict handling
+  if git merge --squash "${ITER_BRANCH}" 2>/dev/null; then
+
+    #--- LLM-generated commit message (notify.sh pattern) ---
+    LOOP_NAME=$(basename "${LOOP_DIR}" | sed 's/^\.//')
+    DIFF_STAT=$(git diff --cached --stat 2>/dev/null | tail -20)
+    GOAL_CONTENT=$(head -30 "${LOOP_DIR}/goal.md" 2>/dev/null || echo "")
+    DONE_CONTENT=$(head -20 "${LOOP_DIR}/done.md" 2>/dev/null || echo "")
+
+    SQUASH_PROMPT="以下の情報を元に、conventional commit形式（type(scope): description）のコミットメッセージを生成してください。
+typeはfeat/fix/refactor/test/docs/chore/perfから適切なものを選択。scopeは「${LOOP_NAME}」。
+本文（body）は変更内容を簡潔に説明。日本語OK。
+
+## Goal
+${GOAL_CONTENT}
+
+## Done
+${DONE_CONTENT}
+
+## Diff Summary (${ITER_COMMIT_COUNT} commits squashed)
+${DIFF_STAT}
+
+## Iterations: $((ITER - 1)), Verify: ${VERIFY_RESULT}
+
+コミットメッセージのみを出力してください（他の説明不要）:"
+
+    SQUASH_MSG=""
+
+    # Engine fallback: gemini → claude → codex → heuristic
+    if [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "gemini" ]]; then
+      if command -v gemini >/dev/null 2>&1; then
+        SQUASH_MSG=$(echo "${SQUASH_PROMPT}" | gemini 2>/dev/null || true)
+      fi
+    fi
+    if [[ -z "${SQUASH_MSG}" ]] && [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "claude" ]]; then
+      if command -v claude >/dev/null 2>&1; then
+        SQUASH_MSG=$(claude -p "${SQUASH_PROMPT}" --max-turns 1 2>/dev/null || true)
+      fi
+    fi
+    if [[ -z "${SQUASH_MSG}" ]] && [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "codex" ]]; then
+      if command -v codex >/dev/null 2>&1; then
+        SQUASH_MSG=$(codex exec --full-auto "${SQUASH_PROMPT}" 2>/dev/null || true)
+      fi
+    fi
+
+    # Heuristic fallback when no LLM available
+    if [[ -z "${SQUASH_MSG}" ]]; then
+      GOAL_OBJECTIVE=$(sed -n '/^## Objective/,/^##/{/^##/d;/^$/d;p;}' "${LOOP_DIR}/goal.md" 2>/dev/null | head -1)
+      SQUASH_MSG="feat(${LOOP_NAME}): ${GOAL_OBJECTIVE:-loop completion}
+
+Squashed from ${ITER_COMMIT_COUNT} iteration commits.
+Iterations: $((ITER - 1)), Verify: ${VERIFY_RESULT}"
+      echo "[BRANCH] LLM unavailable — using heuristic commit message"
+    fi
+
+    git commit -m "${SQUASH_MSG}"
+
+    # Delete iteration branch
+    git branch -D "${ITER_BRANCH}" 2>/dev/null || true
+    echo "[BRANCH] Squash complete on ${SUMMARY_BRANCH}"
+
+    # Granularity hint for large loops
+    if [[ "${ITER_COMMIT_COUNT}" -gt 10 ]]; then
+      echo "[BRANCH:HINT] ${ITER_COMMIT_COUNT} commits squashed. For finer granularity:"
+      echo "  git reset --soft ${ORIGIN_BRANCH} && create topic-based commits"
+    fi
+  else
+    echo "[BRANCH:CONFLICT] Squash failed — ORIGIN_BRANCH may have diverged"
+    echo "[BRANCH:CONFLICT] Resolve: git checkout ${SUMMARY_BRANCH} && fix conflicts && git commit"
+    echo "[BRANCH:CONFLICT] Or abort: git merge --abort && git checkout ${ITER_BRANCH}"
+  fi
+elif [[ "${BRANCH_ISOLATION}" == "true" ]] && [[ "${STATUS}" != "DONE" ]] && [[ -n "${ITER_BRANCH:-}" ]]; then
+  echo "[BRANCH] STATUS=${STATUS} — staying on ${ITER_BRANCH} for resume"
+fi
 
 #--- Release lock ---
 rm -f "${LOOP_DIR}/.run-loop.lock"
@@ -432,6 +566,8 @@ cat > "${LOOP_DIR}/state.env" <<EOF
 NEXT_ITERATION=1
 LAST_STATUS=READY
 LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=
+ITER_BRANCH=
 EOF
 echo "[OK] Created ${LOOP_DIR}/state.env"
 
@@ -703,3 +839,6 @@ When generating scripts, Orbit customizes these parameters based on the goal:
 | `MAX_LOG_SIZE` | 5242880 | Log rotation threshold in bytes (5MB default) |
 | `ADAPTIVE_TIMEOUT` | false | Enable adaptive timeout based on recent execution times |
 | `SKIP_PREFLIGHT` | false | Bypass pre-flight checks (testing/debug only) |
+| `BRANCH_ISOLATION` | true | Isolate auto-commits on iteration branch |
+| `SQUASH_ON_DONE` | true | Squash iteration commits to summary branch on DONE |
+| `SQUASH_MSG_ENGINE` | auto | LLM engine for squash commit message (auto/gemini/claude/codex) |

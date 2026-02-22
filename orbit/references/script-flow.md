@@ -26,7 +26,26 @@ graph TB
         PF2 -->|No| PF_FAIL["[ABORT] exit 1"]
     end
 
-    PF3 --> R0
+    PF3 --> BS0
+
+    subgraph BRANCH_SETUP["Branch Isolation Setup (BRANCH_ISOLATION=true)"]
+        BS0{BRANCH_ISOLATION<br/>== true?} -->|No| BS_SKIP([Skip])
+        BS0 -->|Yes| BS1["Record ORIGIN_BRANCH<br/>(from state.env or HEAD)"]
+        BS1 --> BS2{worktree<br/>dirty?}
+        BS2 -->|Yes| BS3["git stash push"]
+        BS2 -->|No| BS4{iter branch<br/>exists?}
+        BS3 --> BS4
+        BS4 -->|Yes| BS5["git checkout<br/>loop/iter-{name}"]
+        BS4 -->|No| BS6["git checkout -b<br/>loop/iter-{name}"]
+        BS5 --> BS7{stashed?}
+        BS6 --> BS7
+        BS7 -->|Yes| BS8["git stash pop"]
+        BS7 -->|No| BS_DONE([Branch ready])
+        BS8 --> BS_DONE
+    end
+
+    BS_SKIP --> R0
+    BS_DONE --> R0
 
     subgraph RUNNER["run-loop.sh — Main Loop"]
         R0[Load state<br/>state.env or defaults] --> R1
@@ -128,8 +147,25 @@ graph TB
         end
 
         N5 -->|CONTINUE| L0
-        N5 -->|DONE| FOOTER
-        BREAK --> FOOTER
+        N5 -->|DONE| BQ0
+        BREAK --> BQ0
+
+        subgraph BRANCH_SQUASH["Branch Isolation Squash (on DONE)"]
+            BQ0{STATUS==DONE<br/>&&BRANCH_ISOLATION<br/>&&SQUASH_ON_DONE?} -->|No| BQ_SKIP([Skip])
+            BQ0 -->|Yes| BQ1["git checkout<br/>ORIGIN_BRANCH"]
+            BQ1 --> BQ2["git checkout -b<br/>loop/summary-{name}"]
+            BQ2 --> BQ3["git merge --squash<br/>loop/iter-{name}"]
+            BQ3 --> BQ4{conflict?}
+            BQ4 -->|No| BQ5["LLM commit message<br/>(gemini→claude→codex→heuristic)"]
+            BQ5 --> BQ6["git commit"]
+            BQ6 --> BQ7["git branch -D<br/>loop/iter-{name}"]
+            BQ4 -->|Yes| BQ8["[BRANCH:CONFLICT]<br/>manual resolution needed"]
+            BQ7 --> BQ_DONE([Squash complete])
+            BQ8 --> BQ_DONE
+        end
+
+        BQ_SKIP --> FOOTER
+        BQ_DONE --> FOOTER
 
         subgraph FOOTER["Status Footer"]
             F1["NEXUS_LOOP_STATUS: {STATUS}"]
@@ -214,6 +250,11 @@ run-loop.sh  ──reads──────→ state.env (resume point)
 notify.sh    ──outputs────→ runner.log (text record)
              ──outputs────→ notify-audio/*.mp3 (audio files)
 
+run-loop.sh  ──creates────→ loop/iter-{name} branch (BRANCH_ISOLATION)
+             ──creates────→ loop/summary-{name} branch (on DONE)
+             ──squashes───→ iteration commits → summary commit
+             ──deletes────→ loop/iter-{name} (after squash)
+
 recover.sh   ──reads──────→ progress.md (evidence source)
              ──writes─────→ state.env (rebuild)
              ──appends────→ progress.md (recovery note)
@@ -234,3 +275,4 @@ recover.sh   ──reads──────→ progress.md (evidence source)
 - **Log Rotation**: `runner.log` is rotated to `.prev` when exceeding `MAX_LOG_SIZE` (default 5MB)
 - **State Checksum**: SHA-256 checksum written alongside `state.env` after every update. Validated on load -- mismatch triggers `recover.sh`
 - **Adaptive Timeout**: When enabled, `EFFECTIVE_TIMEOUT` = median(last 5 execution times) x 2, bounded by `[EXEC_TIMEOUT, EXEC_TIMEOUT x 3]`
+- **Branch Isolation**: auto-commits go to `loop/iter-{name}`. On DONE, squash-merged to `loop/summary-{name}`. Non-DONE stays on iter branch for resume

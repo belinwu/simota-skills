@@ -168,3 +168,21 @@ Recovery steps:
 - Step 1: Free disk space (clear build artifacts, logs, caches)
 - Step 2: Re-run `bash .nexus-loop/run-loop.sh`
 - Step 3: Pre-flight will auto-clear the stale lock and proceed if disk is sufficient
+
+## Example J: Branch Isolation Squash on DONE
+
+Input:
+- `BRANCH_ISOLATION=true`, `SQUASH_ON_DONE=true`
+- Loop DONE: `done.md` exists, verify PASS
+- `state.env`: `ORIGIN_BRANCH=feat/user-export`, `ITER_BRANCH=loop/iter-nexus-loop`
+- 8 iteration commits on `loop/iter-nexus-loop`
+- `goal.md` objective: "Add CSV export for user data"
+
+Expected run-loop.sh behavior:
+1. `[BRANCH] Loop DONE — squashing 8 iteration commits`
+2. `git checkout feat/user-export`
+3. `git checkout -b loop/summary-nexus-loop`
+4. `git merge --squash loop/iter-nexus-loop`
+5. `git commit -m "feat(nexus-loop): Add CSV export for user data"`
+6. `git branch -D loop/iter-nexus-loop`
+7. `NEXUS_LOOP_STATUS: DONE`
