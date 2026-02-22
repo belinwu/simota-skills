@@ -20,21 +20,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Relay** - メッセージング統合・Bot開発・リアルタイム通信の設計＋実装エージェント
 - **Void** - 引き算設計エージェント。YAGNI検証、スコープカット、複雑性削減提案
 - **Totem** - プロジェクトDNAプロファイラー。8次元の文化分析、逸脱検出、オンボーディングガイド
+- **Matrix** - ユニバーサル組み合わせ分析エージェント。多次元軸の組み合わせ爆発を制御し、最小カバレッジセット選定・優先順位付けを担当
+- **Compass** - 戦略実行モニタリング・前提条件監視・OKRカスケード。Helmのロードマップを受け取りKPI乖離を追跡
+- **Refract** - 3軸（視野・視座・視点）リフレーミングエージェント。問題やアイデアを回転させ新たな洞察を生成
+- **Darwin** - エコシステム自己進化オーケストレーター。プロジェクトライフサイクル検出、エージェント関連性評価、横断的知識統合
 
 ### Enhanced
-- **Nexus** - 19種類のルーティングコマンドと42種類のチェーンテンプレートを追加（フルエコシステムカバレッジ）
-- **Orbit** - Gemini TTSによるイテレーション通知（Pattern D）とスクリプト生成機能を追加
+- **Nexus** - 19種類のルーティングコマンドと42種類のチェーンテンプレートを追加。エージェント重複ペアの曖昧性解消ガイドも追加
+- **Orbit** - Gemini TTSによるイテレーション通知（Pattern D）、スクリプト生成機能、ブランチ分離戦略、ループランナー防御パターン・リカバリ拡張、Executor Engine CLI参照、全スクリプトテンプレート拡張、macOS互換性修正
+- **Guardian** - Squash最適化エンジン追加（スコアリング、グルーピング、メッセージ合成）
 - **Sigil** - `.agents/skills/` サポート追加でポータブルなスキル配置が可能に
 - **Bard** - エンジン・エゴアーキテクチャに刷新（Codex/Gemini/Claude各エンジンが固有の声で語る）
 - **Cast** - SPEAKモード追加、Google Cloud TTSを第三のエンジンとして統合
-- **Titan** - 統合プロトコル・自律検証・実行ブートストラップを追加し信頼性向上
+- **Titan** - build-firstアプローチ強制。スコープ適応型チェーン、統合プロトコル・自律検証・実行ブートストラップを追加
 - **Scaffold** - Terraformオペレーション、コンプライアンス、FinOps参照ドキュメントを追加
 - **Hearth** - SKILL.mdと参照ドキュメントを拡充
+- **Zen** - 防御的過剰検出パターンを追加
+- **Grove/Sweep** - メンテナンスモード、インラインしきい値、クロススキルハンドオフパイプラインを追加
+- **Void** - コード以外の全ドメイン（機能・プロセス・ドキュメント・設計・仕様・依存・設定）への引き算フレームワーク汎化
 - **Voyager, Navigator, Sketch** - 各SKILL.mdを包括的に改善（グレードA相当）
 
 ### Changed
-- 全エージェントのSKILL.mdを最適化（コンテキスト削減、28〜81%圧縮）
+- 全エージェントのSKILL.mdを原則中心設計で最適化（コンテキスト削減、28〜91%圧縮）
+- 38 SKILL.mdファイルのテンプレート一貫性を強制
 - エコシステムへのPipe/Relay/Aether/Oracle/Beacon/Siege/Prose統合（Nexus, Architect, Gearのルーティング更新）
+- Titanをbuild-firstエンジンとしてリビルド、参照整理
 
 ## [1.0.0] - 2025-01-15
 
@@ -88,19 +98,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 | Category | Count | Agents |
 |----------|-------|--------|
-| Orchestration | 2 | Nexus, Sherpa |
-| Research & Planning | 5 | Scout, Spark, Compete, Voice, Researcher |
-| Quality Assurance | 6 | Radar, Voyager, Sentinel, Probe, Judge, Zen |
-| Implementation | 3 | Builder, Artisan, Forge |
+| Orchestration | 9 | Nexus, Sherpa, Architect, Rally, Hone, Titan, Sigil, Orbit, Darwin |
+| Research & Planning | 16 | Scout, Ripple, Spark, Compete, Voice, Researcher, Cipher, Trace, Canon, Lens, Magi, Bridge, Cast, Helm, Compass, Refract |
+| Git/PR Management | 5 | Guardian, Harvest, Launch, Rewind, Bard |
+| Quality Assurance | 12 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void, Totem |
+| Implementation | 4 | Builder, Artisan, Forge, Arena |
+| AI/ML | 1 | Oracle |
 | Performance | 2 | Bolt, Tuner |
-| UI/UX | 6 | Vision, Palette, Muse, Flow, Echo, Showcase |
-| Documentation | 1 | Quill |
-| Visualization | 1 | Canvas |
-| Architecture | 3 | Atlas, Horizon, Gateway |
-| Data | 1 | Schema |
-| DevOps | 3 | Anvil, Gear, Scaffold |
+| Observability/SRE | 1 | Beacon |
+| UI/UX | 7 | Vision, Palette, Muse, Flow, Echo, Showcase, Prose |
+| Documentation | 4 | Scribe, Quill, Morph, Prism |
+| Visualization | 2 | Canvas, Sketch |
+| Architecture | 4 | Atlas, Horizon, Gateway, Grove |
+| Communication | 1 | Relay |
+| Data | 2 | Schema, Stream |
+| DevOps | 6 | Anvil, Gear, Scaffold, Hearth, Latch, Pipe |
 | i18n | 1 | Polyglot |
 | Growth | 2 | Growth, Retain |
-| Analytics | 2 | Pulse, Experiment |
+| Analytics | 3 | Pulse, Experiment, Matrix |
 | Operations | 1 | Triage |
-| **Total** | **40** | |
+| Browser Automation | 3 | Navigator, Director, Reel |
+| AITuber/Streaming | 1 | Aether |
+| **Total** | **87** | |
