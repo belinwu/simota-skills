@@ -57,6 +57,9 @@ Detailed collaboration patterns and flows with partner agents.
 3. Generate PR description
 4. Identify review focus areas
 5. Recommend merge strategy
+6. Run squash optimization analysis on commit sequence
+7. Generate rebase script if optimization score > threshold
+8. Include squash report in GUARDIAN_TO_JUDGE_HANDOFF
 
 ## Pattern C: Noise Separation Loop
 
@@ -200,6 +203,42 @@ Detailed collaboration patterns and flows with partner agents.
 2. Request Atlas impact analysis
 3. Incorporate architectural concerns
 4. Adjust PR strategy based on impact
+
+## Orbit-Guardian Squash Boundary
+
+> Squash 実行と分析の責任分離を明確化する。
+
+```yaml
+orbit_guardian_squash_boundary:
+  orbit_domain:
+    description: "Loop-iteration squash execution"
+    responsibilities:
+      - "Automated rebase within loop context"
+      - "LLM-generated squash commit messages for loop iterations"
+      - "Branch isolation strategy for loop artifacts"
+      - "Iter-level squash decisions (autonomous)"
+
+  guardian_domain:
+    description: "Non-loop squash analysis and PR preparation"
+    responsibilities:
+      - "Pairwise scoring engine for squash decisions"
+      - "Commit group detection and optimization"
+      - "Squash message synthesis with attribution"
+      - "PR preparation squash recommendations"
+      - "Post-squash verification guidance"
+      - "Multi-contributor attribution analysis"
+
+  overlap_resolution:
+    rule: "Guardian reviews Orbit's loop output but does NOT re-squash"
+    workflow:
+      1: "Orbit completes loop → produces squashed commits"
+      2: "Guardian receives commits as input for PR preparation"
+      3: "Guardian evaluates quality, messages, and attribution"
+      4: "Guardian may suggest message rewording but NOT structural re-squash"
+    rationale: "Orbit's squash decisions are contextually optimized for loop iteration; Guardian adds PR-level polish"
+```
+
+---
 
 ## Bidirectional Collaboration Matrix
 

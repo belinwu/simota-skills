@@ -442,6 +442,80 @@ git commit -m "test(auth): add OAuth2 integration tests"
 
 ---
 
+## Section 11: Squash Optimization Report
+
+```markdown
+## Squash Optimization Report
+
+**Branch:** `{branch}` → `{target}`
+**Original Commits:** {original_count}
+**Optimized Commits:** {optimized_count}
+
+### Before / After
+```
+Before: ████████████████████ {original_count} commits
+After:  ████████░░░░░░░░░░░░ {optimized_count} commits  ({reduction_pct}% reduction)
+```
+
+### Squash Groups
+
+| Group | Action | Commits | Files | Result Message |
+|-------|--------|---------|-------|----------------|
+| 1 | squash | `{hash1}`, `{hash2}` | 5 | `feat(auth): add OAuth2 provider` |
+| 2 | fixup | `{hash3}` → `{hash1}` | 2 | _(absorbed into Group 1)_ |
+| 3 | pick | `{hash4}` | 3 | `test(auth): add OAuth2 tests` |
+| 4 | pick | `{hash5}` | 1 | `chore(deps): update lock file` |
+
+### Decision Rationale
+
+| Group | Score | Key Factors |
+|-------|-------|-------------|
+| 1 | +42 | temporal_proximity(+12), subject_relationship(+25), file_overlap(+15), same_author(+15), atomicity(-10), test_coupling(-15) |
+| 2 | +55 | fixup! prefix(force), file_overlap(+20), same_author(+15), temporal(+15) |
+| 3 | -18 | different_concern(-25), no_overlap(-5), standalone_test(-5), same_author(+15) |
+
+### Synthesized Commit Messages
+
+**Group 1:**
+```
+feat(auth): add OAuth2 provider integration
+
+Implement OAuth2 flow with support for Google and GitHub providers.
+Token refresh handles concurrent requests via mutex lock.
+
+Closes #123
+Co-authored-by: Alice <alice@example.com>
+```
+
+**Group 3:** _(keep original)_
+```
+test(auth): add OAuth2 integration tests
+```
+
+### Rebase Script (Ready to Paste)
+
+```bash
+# Run: git rebase -i $(git merge-base HEAD main)
+# Then replace the todo list with:
+pick {hash1} feat(auth): add OAuth2 provider integration
+fixup {hash3} fix typo in oauth config
+squash {hash2} add token refresh mechanism
+pick {hash4} test(auth): add OAuth2 integration tests
+pick {hash5} chore(deps): update lock file
+```
+
+### Post-Squash Verification Checklist
+
+- [ ] Commit count matches plan: {optimized_count}
+- [ ] `git diff backup/{branch}-pre-squash..HEAD` is empty
+- [ ] All authors attributed (Co-authored-by present)
+- [ ] All issue references preserved
+- [ ] `git rebase --exec 'npm run build' $(git merge-base HEAD main)` passes
+- [ ] CI pipeline passes on rebased branch
+```
+
+---
+
 ## Section 12: PR Split Strategy
 
 ```markdown

@@ -28,6 +28,10 @@ _AGENT_CONTEXT:
 - **Reviewer recommendations**
 - **Branch health check**
 - **Pre-merge checklist generation**
+- **Squash group detection and scoring**
+- **Noise commit identification**
+- **Squash optimization report generation**
+- **Rebase script generation**
 
 ## Pause for Confirmation
 
@@ -40,6 +44,10 @@ _AGENT_CONTEXT:
 - **Risk score > 85 (CRITICAL)**
 - **High-risk file changes without security review**
 - **Hotspot refactoring recommendations**
+- **Squash plans involving 10+ commits**
+- **Multi-author squash (attribution concern)**
+- **Squash score in neutral zone (-14 to +14)**
+- **History rewrite on shared/pushed branches**
 
 ## Guardian-Specific Guardrails
 
@@ -95,12 +103,33 @@ guardian_analysis:
     size_rating: L
     reviewability: 4/10
 
-  # New: Quality Metrics
+  # Quality Metrics
   quality:
     score: 68
     grade: B
     components:
 # ...
+
+  # Squash Optimization
+  squash_optimization:
+    original_commits: 12
+    optimized_commits: 5
+    reduction_pct: 58
+    groups:
+      - id: 1
+        action: squash
+        commits: ["abc1234", "def5678", "ghi9012"]
+        result_message: "feat(auth): add OAuth2 provider integration"
+        score: 42
+      - id: 2
+        action: pick
+        commits: ["jkl3456"]
+        result_message: null  # keep original
+        score: -18
+    noise_commits: 4
+    noise_strategy: "fixup"  # minimal / moderate / heavy
+    attribution_verified: true
+    rebase_script_available: true
 ```
 
 ## _STEP_COMPLETE Format
@@ -121,6 +150,18 @@ _STEP_COMPLETE:
         files: ["oauth.test.ts"]
     pr_strategy:
       size: M
+    squash_plan:
+      original_count: 8
+      optimized_count: 3
+      rebase_script: |
+        pick abc1234 feat(auth): add OAuth2 provider
+        fixup def5678 WIP oauth
+        fixup ghi9012 fix typo
+        pick jkl3456 test(auth): add OAuth2 tests
+        pick mno7890 chore(deps): update lock file
+      verification_commands:
+        - "git diff backup/feat-oauth2-pre-squash..HEAD"
+        - "git rebase --exec 'npm run build' $(git merge-base HEAD main)"
 # ...
 ```
 

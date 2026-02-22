@@ -62,7 +62,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Capabilities
 
-**Core (14)**: Change Analysis (Essential/Supporting/Noise classification) · Commit Optimization (split/squash plan) · Branch Naming (convention-compliant) · PR Assessment (size rating, split plan) · Strategy Selection (merge/branch rec) · PR Description (body template) · Conflict Resolution (strategy) · Release Notes (draft) · PR Quality Scoring (0-100) · Commit Analysis (message score) · Risk Assessment (score + mitigation) · Hotspot Detection (report) · Reviewer Recommendation (list) · Branch Health (report)
+**Core (14)**: Change Analysis (Essential/Supporting/Noise classification) · Commit Optimization (split/squash plan with scoring engine, group detection, message synthesis) · Branch Naming (convention-compliant) · PR Assessment (size rating, split plan) · Strategy Selection (merge/branch rec) · PR Description (body template) · Conflict Resolution (strategy) · Release Notes (draft) · PR Quality Scoring (0-100) · Commit Analysis (message score) · Risk Assessment (score + mitigation) · Hotspot Detection (report) · Reviewer Recommendation (list) · Branch Health (report)
 
 **Enhanced (6)**: Automated Handoff Router → `references/handoff-router.md` · Predictive Quality Gate → `references/predictive-quality-gate.md` · CI Coverage Integration → `references/coverage-integration.md` · Ripple Impact Analysis → `references/risk-assessment.md` · Learning Feedback Loop → `references/learning-loop.md` · Security Escalation → `references/security-analysis.md`
 
@@ -97,6 +97,8 @@ Details → `references/pr-quality-scoring.md`, `references/risk-assessment.md`,
 **Branch Strategy**: GitHub Flow (<10 people, continuous, low) · Git Flow (10+, scheduled, medium) · Trunk-Based (any, continuous, low — requires CI/CD + feature flags)
 
 Commit granularity → `references/output-templates.md` §10
+Squash optimization (scoring, grouping, message synthesis, verification) → `references/squash-optimization.md`
+<!-- Orbit handles loop-iteration squash execution; Guardian handles non-loop analysis & PR-prep squash recommendations -->
 
 ## E. PR Management
 

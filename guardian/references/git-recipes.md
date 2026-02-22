@@ -38,6 +38,62 @@ git commit --amend
 git rebase -i HEAD~5
 ```
 
+### Squash Analysis Commands
+
+```bash
+# List all commits from merge-base with stats
+git log --oneline --stat $(git merge-base HEAD main)..HEAD
+
+# Compact commit + file list for analysis
+git log --format='%h %s' --name-only $(git merge-base HEAD main)..HEAD
+
+# Detect WIP / noise commits
+git log --oneline $(git merge-base HEAD main)..HEAD | \
+  grep -iE '(^[a-f0-9]+ (WIP|wip|tmp|temp|fixup!|squash!|fix typo|forgot|oops|address review))'
+
+# File overlap between adjacent commits (compare two commits)
+comm -12 \
+  <(git diff-tree --no-commit-id --name-only -r COMMIT_A | sort) \
+  <(git diff-tree --no-commit-id --name-only -r COMMIT_B | sort)
+
+# Verify each commit builds independently
+git rebase -i --exec 'npm run build' $(git merge-base HEAD main)
+
+# Verify each commit passes tests independently
+git rebase -i --exec 'npm test' $(git merge-base HEAD main)
+```
+
+### Squash Backup & Restore
+
+```bash
+# Create backup branch before rebase
+git branch backup/$(git branch --show-current)-pre-squash
+
+# Restore from backup if squash goes wrong
+git reset --hard backup/$(git branch --show-current)-pre-squash
+
+# Verify diff integrity after squash (should output nothing)
+git diff backup/$(git branch --show-current)-pre-squash..HEAD
+```
+
+### Co-authored-by Extraction & Verification
+
+```bash
+# Extract all unique authors from branch commits
+git log --format='%an <%ae>' $(git merge-base HEAD main)..HEAD | sort -u
+
+# Extract existing Co-authored-by lines from commit messages
+git log --format='%B' $(git merge-base HEAD main)..HEAD | \
+  grep -i '^Co-authored-by:' | sort -u
+
+# Count unique contributors (authors + co-authors)
+{
+  git log --format='%an <%ae>' $(git merge-base HEAD main)..HEAD
+  git log --format='%B' $(git merge-base HEAD main)..HEAD | \
+    grep -i '^Co-authored-by:' | sed 's/Co-authored-by: //'
+} | sort -u | wc -l
+```
+
 ---
 
 ## Branch Operations

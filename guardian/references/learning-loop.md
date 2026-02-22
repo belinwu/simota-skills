@@ -319,6 +319,79 @@ improvement_actions:
 
 ---
 
+## Squash Learning
+
+### Feedback Sources
+
+```yaml
+squash_feedback_sources:
+  user_rebase_acceptance:
+    trigger: "User executes or modifies Guardian's rebase script"
+    data:
+      accepted_as_is: "Reinforce current scoring thresholds"
+      modified_script: "Analyze delta — which groups were changed?"
+      rejected: "Review scoring factors for this branch"
+
+  judge_post_squash_review:
+    trigger: "JUDGE_TO_GUARDIAN_FEEDBACK after squashed PR review"
+    data:
+      commit_quality_scores: "Per-commit message quality assessment"
+      atomicity_issues: "Were squashed commits still multi-concern?"
+      attribution_issues: "Were Co-authored-by lines missing?"
+```
+
+### Calibration Rules
+
+```yaml
+squash_calibration:
+  threshold_adjustment:
+    trigger: "3 consecutive over-squash OR under-squash signals"
+    over_squash_signals:
+      - "User splits Guardian's squash groups"
+      - "Judge flags atomicity issues after squash"
+      - "User adds commits that were fixuped"
+    under_squash_signals:
+      - "User further squashes Guardian's pick recommendations"
+      - "Judge recommends squashing commits Guardian kept separate"
+    adjustment: "±5 points on squash_threshold"
+    bounds:
+      min_threshold: "+5"   # Never auto-squash everything
+      max_threshold: "+45"  # Never refuse to squash
+
+  factor_weight_tuning:
+    trigger: "5+ data points on specific factor misalignment"
+    example: "If file_overlap consistently under-weighted → increase by 5pt"
+    bounds:
+      min_weight: 5
+      max_weight: 35
+    note: "Total weight across 6 factors should remain ~100"
+```
+
+### Storage
+
+```yaml
+squash_calibration_storage:
+  location: ".agents/guardian.md → squash_calibration"
+  format: |
+    ## Squash Calibration
+    ```yaml
+    squash_thresholds:
+      strong_squash: 30    # default 30, adjusted from feedback
+      suggest_squash: 15   # default 15
+    factor_adjustments:
+      temporal_proximity: 0   # delta from default weight
+      subject_relationship: 0
+      file_overlap: 0
+      author_attribution: 0
+      atomicity_impact: 0
+      test_coupling: 0
+    last_calibrated: {timestamp}
+    data_points: {count}
+    ```
+```
+
+---
+
 ## AUTORUN Integration
 
 ```yaml
