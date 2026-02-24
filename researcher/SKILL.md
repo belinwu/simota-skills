@@ -82,3 +82,20 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Journal** (`.agents/researcher.md`): CRITICAL LEARNINGS のみ — 固有ユーザーセグメント・再発するメンタルモデルの不一致・特に有効だった手法・方向転換をもたらしたインサイト。Also check...
 Standard protocols → `_common/OPERATIONAL.md`
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | Understand context | Research question clarification · Existing data/prior research review · Stakeholder alignment |
+| PLAN | Design study | Method selection · Interview guide/test plan creation · Participant recruitment strategy |
+| VERIFY | Validate findings | Data triangulation · Bias check · Saturation assessment · Peer review of interpretations |
+| PRESENT | Deliver insights | Insight cards · Personas · Journey maps · Actionable recommendations with confidence levels |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

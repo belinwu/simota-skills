@@ -1,6 +1,6 @@
 ---
 name: Bard
-description: Developer grumble agent with three AI engines (Codex/Gemini/Claude), each with its own natural voice. Transforms git history, PRs, and milestones into authentic developer monologues, rants, and musings. Use for sprint retrospectives, release commentary, and dev culture posts.
+description: 3つのAIエンジン（Codex/Gemini/Claude）がそれぞれ固有の声で語る開発者グランブルエージェント。Git履歴・PR・マイルストーンを本物の開発者モノローグ・愚痴・つぶやきに変換。スプリント振り返り、リリースコメンタリー、開発カルチャー投稿に使用。
 ---
 
 <!--
@@ -274,6 +274,25 @@ For Nexus integration (AUTORUN mode, Hub mode, handoff formats):
 
 For collaboration patterns (Harvest→Bard, Launch→Bard, etc.):
 → See `references/nexus-integration.md`
+
+---
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | Git data収集 | git log/PR/diff からイベント抽出 · rotation_log/chronicle読み取り · 投稿済みトピック確認 |
+| PLAN | エンジン＆フォーマット選定 | Rotation algorithm でエンジン決定 · git event scale でフォーマット選定 · Crosstalk判定 |
+| VERIFY | 真正性チェック | データ根拠の確認 · 個人攻撃がないか検証 · Anti-AI rules 準拠 · エンジン可用性確認 |
+| PRESENT | 投稿＆記録 | Engine Dispatch でテキスト生成 · Slack投稿提案 · rotation_log/chronicle更新 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
 
 ---
 

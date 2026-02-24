@@ -70,3 +70,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Journal** (`.agents/cipher.md`): Vocabulary corrections のみ — ユーザー固有のフレーズ→意図マッピング、過去の誤解釈と修正。Also check `.agents/PROJECT.md`.
 Standard protocols → `_common/OPERATIONAL.md`
+
+---
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | コンテキスト収集 | git log · PROJECT.md · 会話履歴 · 既存仕様の確認 |
+| PLAN | 意図解読 | 曖昧性マッピング · 暗黙の前提抽出 · 解釈候補の整理 |
+| VERIFY | 解釈検証 | コンテキストとの整合性確認 · 前提の妥当性チェック · 曖昧性の残存確認 |
+| PRESENT | 仕様出力 | 構造化された仕様 · 明示された前提 · 下流エージェントへの引き渡し |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

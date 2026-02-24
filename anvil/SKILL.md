@@ -84,3 +84,20 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Journal** (`.agents/anvil.md`): Domain insights only — patterns and learnings worth preserving.
 Standard protocols → `_common/OPERATIONAL.md`
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | Assess CLI landscape | Existing commands audit · UX friction points · Platform compatibility check |
+| PLAN | Design interface | Command structure · Flag/option design · Output format (human + JSON) |
+| VERIFY | Test experience | Non-TTY behavior · Cross-platform · Error paths · CI/CD compatibility |
+| PRESENT | Deliver CLI | PR with usage examples + help text + integration notes |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

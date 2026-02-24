@@ -56,6 +56,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **E** Performance Optimization | Builder ↔ Tuner | Optimize database and queries |
 | **F** Security Hardening | Builder ↔ Sentinel | Security review and fixes |
 
+**Receives:** Forge (prototype) · Guardian (commit structure) · Scout (bug investigation) · Tuner (optimization plan) · Sentinel (security fixes)
+**Sends:** Radar (test requests) · Guardian (PR prep) · Judge (review) · Tuner (performance analysis) · Sentinel (security review) · Canvas (diagrams)
+
 ## Pattern Catalog
 
 | Domain | Key Patterns | Reference |
@@ -85,12 +88,13 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Daily Process
 
-`🔷 BLUEPRINT → 🔨 FORGE → 🛡️ TEMPER → 🔍 INSPECT`
-
-- **BLUEPRINT**: Define interfaces/types, I/O, failure states, DDD pattern selection, dependency mapping
-- **FORGE**: Implement business rules, data validation (guard clauses), API/DB connections, state management
-- **TEMPER**: Error handling, loading states, memory leak prevention, edge case verification, retry logic
-- **INSPECT**: PR with clear description (architecture, safeguards, types), self-review
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 要件調査・依存分析 | Interface/Type定義、I/O特定、障害モード列挙、DDD パターン選定 |
+| PLAN | 設計・実装計画 | 依存マッピング、パターン選択、テスト戦略決定、リスク評価 |
+| BUILD | 実装 | ビジネスルール実装、バリデーション(guard clauses)、API/DB接続、状態管理 |
+| VERIFY | 品質検証 | エラーハンドリング、エッジケース検証、メモリリーク防止、リトライロジック |
+| PRESENT | 成果物提示 | PR作成（アーキテクチャ・safeguards・型情報）、セルフレビュー |
 
 **Detail + collaboration points**: See `references/process-guide.md` | **Tools:** TypeScript (Strict) · Zod/Yup · TanStack Query · Custom Hooks · XState
 
@@ -103,13 +107,37 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 
-`references/code-examples.md` Forge→Builder conversion, case studies, good/bad code
-`references/api-integration.md` REST/GraphQL/WebSocket patterns | `references/ddd-patterns.md` Entity, VO, Aggregate, Repository
-`references/event-sourcing.md` Domain Event, Saga, Outbox | `references/cqrs-patterns.md` Command/Query separation
-`references/frontend-patterns.md` RSC, state, forms, error boundary | `references/result-patterns.md` Result type, Railway
-`references/validation-recipes.md` Zod schemas, transforms | `references/performance-patterns.md` Frontend/Backend/DB optimization
-`references/process-guide.md` Daily process, clarify/forge/test, code standards, anti-patterns
-`references/autorun-nexus.md` AUTORUN formats, Nexus Hub mode, collaboration architecture
+| File | Contents |
+|------|----------|
+| `references/code-examples.md` | Forge→Builder conversion, case studies, good/bad code |
+| `references/api-integration.md` | REST/GraphQL/WebSocket patterns |
+| `references/ddd-patterns.md` | Entity, VO, Aggregate, Repository |
+| `references/event-sourcing.md` | Domain Event, Saga, Outbox |
+| `references/cqrs-patterns.md` | Command/Query separation |
+| `references/frontend-patterns.md` | RSC, state, forms, error boundary |
+| `references/result-patterns.md` | Result type, Railway |
+| `references/validation-recipes.md` | Zod schemas, transforms |
+| `references/performance-patterns.md` | Frontend/Backend/DB optimization |
+| `references/process-guide.md` | Daily process, code standards, anti-patterns |
+| `references/autorun-nexus.md` | AUTORUN formats, Nexus Hub mode, collaboration architecture |
+
+---
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+
+## Output Language
+
+All final outputs in Japanese.
+
+## Git Guidelines
+
+Follow `_common/GIT_GUIDELINES.md`. No agent names in commits/PRs.
 
 ---
 

@@ -82,3 +82,30 @@ See `references/visual-regression.md` for setup, test runner config, and CI work
 
 **Journal** (`.agents/showcase.md`): Project-specific story patterns · Common props/states · Storybook/Cosmos integration issues ·...
 Standard protocols → `_common/OPERATIONAL.md`
+
+---
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | Catalog current state | Component inventory · Existing story/fixture coverage · Tool detection (Storybook/Cosmos/Histoire) |
+| PLAN | Coverage strategy | Missing variants/states mapping · Priority scoring · Story structure design |
+| VERIFY | Quality assurance | Visual regression baseline · a11y addon validation · Play function interaction tests |
+| PRESENT | Deliverable catalog | Story files + coverage report + migration notes + next actions |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+
+## Output Language
+
+All final outputs in Japanese.
+
+## Git Guidelines
+
+Follow `_common/GIT_GUIDELINES.md`. No agent names in commits/PRs.
