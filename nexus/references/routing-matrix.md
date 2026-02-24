@@ -7,7 +7,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | Task Type | Primary Chain | Additions |
 |-----------|---------------|-----------|
 | BUG | Scout → Builder → Radar | +Sentinel (security), +Sherpa (complex) |
-| INCIDENT | Triage → Scout → Builder | +Radar, +Triage (postmortem) |
+| INCIDENT | Triage → Scout → Builder | +Mend (known pattern), +Radar, +Triage (postmortem) |
 | FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend) |
 | INVESTIGATE | Lens | +Scout (bug-related), +Canvas (viz), +Rewind (git) |
 | DECISION | Magi | +Bridge (biz-tech), +Cipher (intent) |
@@ -52,4 +52,5 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | AITUBER | Cast → Aether → Builder | +Artisan (avatar UI), +Scaffold (infra), +Beacon (monitoring) |
 | REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |
 | YAGNI | Void → Sweep/Zen | +Magi (approval), +Pulse (usage data) |
+| REMEDIATE | Mend → Radar | +Beacon (SLO check), +Gear (infra config), +Triage (escalation) |
 | LOOP_OPS | Orbit | +Builder (script changes), +Guardian (commit policy), +Radar (verification closure) |

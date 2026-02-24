@@ -38,7 +38,8 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 **Key distinctions:**
 - Broken behavior → Scout. Understanding behavior → Lens. Git history → Rewind
 - Current architecture → Atlas. Change impact → Ripple
-- Incident severity → Triage. Bug root cause → Scout
+- Incident diagnosis → Triage. Known-pattern auto-fix → Mend. Unknown fix → Builder
+- Bug root cause → Scout. Incident severity → Triage
 
 ## Security
 
@@ -183,10 +184,12 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Harvest** | PR reporting | Weekly/monthly reports from git data | Never |
 | **Latch** | Claude Code hooks | PreToolUse/PostToolUse event system | Yes |
 | **Hearth** | Dev environment setup | dotfiles, shell, editor config | Yes |
+| **Mend** | Known-pattern auto-remediation | Runtime fix, runbook execution, staged verification | Yes |
 
 **Key distinctions:**
 - Existing CI maintenance → Gear. New GHA design → Pipe
 - PR strategy → Guardian. Release execution → Launch. PR reports → Harvest
+- Operational config → Gear. Runtime remediation → Mend
 
 ## Communication & Content
 

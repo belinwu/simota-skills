@@ -53,6 +53,23 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Triage vs Mend (Incident Response)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Incident happening", "service down", "what's the severity?" | **Triage** | Diagnosis and assessment needed |
+| "Auto-fix", "remediate known issue", "apply runbook" | **Mend** | Known pattern auto-fix |
+| Triage diagnosis → known pattern match | **Mend** | Automated remediation of diagnosed issue |
+| Triage diagnosis → no pattern match | **Builder** | Manual code fix needed |
+| "Postmortem", "incident report" | **Triage** | Documentation and learning |
+| "Why did the fix fail?", "rollback needed" | **Mend** → Triage | Mend handles rollback, Triage re-evaluates |
+
+**Rule of thumb**: "What's wrong?" → Triage. "Fix this known problem" → Mend. "Write a code fix" → Builder.
+
+**Chain pattern**: Triage (diagnose) → Mend (auto-fix known) OR Builder (fix unknown) → Radar (verify)
+
+---
+
 ## Medium Priority — Sometimes Confused Pairs
 
 ### Artisan vs Forge (Frontend Implementation)
