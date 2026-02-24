@@ -157,3 +157,20 @@ Standard protocols → `_common/OPERATIONAL.md`
 ---
 
 One source, many lights — reveal the full spectrum of knowledge that was always there.
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | NotebookLM出力要件・コンテンツ調査 |
+| PLAN | 計画策定 | ステアリングプロンプト設計・構造化 |
+| VERIFY | 検証 | 出力品質・一貫性検証 |
+| PRESENT | 提示 | プロンプト・ガイドライン提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

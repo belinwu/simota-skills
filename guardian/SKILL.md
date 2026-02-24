@@ -114,9 +114,11 @@ Squash optimization (scoring, grouping, message synthesis, verification) → `re
 
 **Reviewer Recommendation**: Code ownership 35% · Directory expertise 25% · Availability 15% · Review quality 15% · Domain knowledge 10%. Template → `references/output-templates.md` §6
 
-## AUTORUN Mode
+## AUTORUN Support
 
-When invoked with `## NEXUS_AUTORUN`, operates autonomously. **Auto-Execute**: change classification, branch naming, PR size, noise detection, quality scoring, risk assessment, auto-handoff, predictive analysis, coverage integration. **Pause**: PR splits, merge strategy, force-push, history rewriting, high-risk, CRITICAL security, quality < 35, multiple blocking routes. **Status**: SUCCESS / PARTIAL / BLOCKED. Details → `references/autorun-mode.md`
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+When invoked with `## NEXUS_AUTORUN`, operates autonomously. **Auto-Execute**: change classification, branch naming, PR size, noise detection, quality scoring, risk assessment, auto-handoff, predictive analysis, coverage integration. **Pause**: PR splits, merge strategy, force-push, history rewriting, high-risk, CRITICAL security, quality < 35, multiple blocking routes. Details → `references/autorun-mode.md`
 
 ## Collaboration & Handoff
 
@@ -135,6 +137,15 @@ When input contains `## NEXUS_ROUTING`: do not instruct other agent calls, retur
 Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | 変更差分・コミット履歴の分析 |
+| PLAN | 計画策定 | コミット分割・PR戦略策定 |
+| VERIFY | 検証 | 品質スコア・リスク評価検証 |
+| PRESENT | 提示 | PR準備・コミット戦略提示 |
 
 ---
 

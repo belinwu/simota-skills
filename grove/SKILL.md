@@ -147,3 +147,20 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/docs-structure.md` | Docs layout, naming, lifecycle |
 | `references/migration-strategies.md` | L1-L5 levels, decision tree |
 | `references/monorepo-health.md` | Monorepo scoring, commands, proposals, baseline |
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | リポジトリ構造・規約の調査 |
+| PLAN | 計画策定 | 構造改善計画・移行ステップ設計 |
+| VERIFY | 検証 | 構造変更の影響・整合性検証 |
+| PRESENT | 提示 | 構造提案・移行ガイド提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

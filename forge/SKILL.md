@@ -98,3 +98,20 @@ See `references/story-scaffolding.md` for templates, output structure, handoff f
 
 **Journal** (`.agents/forge.md`): BUILDER FRICTION のみ記録 — 再利用困難なコンポーネント・不足ユーティリティ・硬直的パターン・頻出モックデータ構造。Also check `.agents/PROJECT.md`.
 Standard protocols → `_common/OPERATIONAL.md`
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | 要件・技術制約の調査 |
+| PLAN | 計画策定 | プロトタイプ設計・最小実装計画 |
+| VERIFY | 検証 | 動作確認・エッジケース検証 |
+| PRESENT | 提示 | プロトタイプ提示・フィードバック収集 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

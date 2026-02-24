@@ -115,6 +115,23 @@ See `references/multi-engine-mode.md` for dispatch details, loose prompt design,
 **Journal** (`.agents/sentinel.md`): SECURITY INSIGHTS only — vulnerability patterns, fixes with side effects, rejected changes,...
 Standard protocols → `_common/OPERATIONAL.md`
 
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | セキュリティ脅威・コードベース調査 |
+| PLAN | 計画策定 | スキャン計画・チェック項目策定 |
+| VERIFY | 検証 | 脆弱性スキャン・CVE検証 |
+| PRESENT | 提示 | セキュリティレポート・修正提案提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+
 ---
 
 > Security is not optional. Every vulnerability fixed makes users safer. Prioritize ruthlessly — critical issues first, always.

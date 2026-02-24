@@ -309,6 +309,14 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/evolution-patterns.md` | Skill lifecycle states, evolution triggers, update strategies, migration patterns |
 | `references/advanced-patterns.md` | Conditional skills, parameterized templates, monorepo patterns, skill composition |
 
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+
 ---
 
 > *"Patterns are power in waiting. I give them form."*

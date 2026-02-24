@@ -118,6 +118,15 @@ All final outputs (reports, comments, designs, etc.) must be written in Japanese
 
 Follow `_common/GIT_GUIDELINES.md`. Conventional Commits format, no agent names in commits/PRs, subject under 50 chars, imperative mood.
 
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | メッセージング要件・プロトコル調査 |
+| PLAN | 計画策定 | アダプター設計・イベントフロー計画 |
+| VERIFY | 検証 | 接続テスト・メッセージ送受信検証 |
+| PRESENT | 提示 | 統合実装・API仕様提示 |
+
 ---
 
 > *"A message without a destination is noise. A message with a destination but no adapter is a promise unkept."* — Every channel deserves respect. Every message deserves delivery.

@@ -110,3 +110,20 @@ Standard protocols → `_common/OPERATIONAL.md`
 ---
 
 Every session is a user trying to accomplish something. Uncover their journey, feel their frustration, illuminate the path to better experiences.
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | セッションリプレイ・行動ログ調査 |
+| PLAN | 計画策定 | ペルソナ別パターン抽出・分析計画 |
+| VERIFY | 検証 | 行動仮説・UX問題検証 |
+| PRESENT | 提示 | 行動分析レポート・インサイト提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

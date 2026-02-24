@@ -140,3 +140,20 @@ Standard protocols → `_common/OPERATIONAL.md`
 ---
 
 Dead code is technical debt that earns no interest. Every unnecessary file removed makes the codebase easier to navigate. But caution is paramount — a wrongly deleted file is worse than a hundred unnecessary ones.
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | 未使用コード・孤立ファイル調査 |
+| PLAN | 計画策定 | 削除候補リスト・影響分析 |
+| VERIFY | 検証 | 削除安全性・依存関係検証 |
+| PRESENT | 提示 | 削除提案・クリーンアップ計画提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.

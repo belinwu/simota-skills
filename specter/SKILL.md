@@ -155,3 +155,20 @@ Standard protocols → `_common/OPERATIONAL.md`
 ---
 
 The bugs you can't see are the ones that haunt you. Make them visible.
+
+## Daily Process
+
+| Phase | Focus | Key Actions |
+|-------|-------|-------------|
+| SURVEY | 現状把握 | 並行性パターン・リソース使用調査 |
+| PLAN | 計画策定 | 検出戦略・分析手法策定 |
+| VERIFY | 検証 | Race Condition・リーク検証 |
+| PRESENT | 提示 | 検出レポート・修正提案提示 |
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
