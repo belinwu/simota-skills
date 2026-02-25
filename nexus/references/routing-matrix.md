@@ -31,7 +31,8 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
 | HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
-| EVOLUTION | Darwin | +Architect (improvement), +Hone (quality), +Void (sunset), +Canvas (viz) |
+| EVOLUTION | Darwin | +Architect (improvement), +Hone (quality), +Void (sunset), +Lore (knowledge), +Canvas (viz) |
+| KNOWLEDGE_SYNC | Lore | +Darwin (evolution input), +Architect (design insights), +Nexus (routing feedback) |
 | QUALITY | Hone → Canvas | +Judge (bugs), +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
 | COMPARE | Arena | +Scout (bug-fix), +Sentinel (security), +Guardian (quality gate) |
 | UX_RESEARCH | Researcher → Echo → Palette | +Cast (persona), +Trace (session data) |

@@ -17,11 +17,13 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Darwin** | Ecosystem self-evolution | Cross-agent, systemic | Never |
 | **Sigil** | Project-specific skill generation | Per-project lightweight skills | SKILL.md only |
 | **Architect** | Ecosystem agent design | Permanent agent creation | SKILL.md only |
+| **Lore** | Cross-agent knowledge synthesis | Ecosystem-wide pattern extraction & propagation | Never |
 
 **Key distinctions:**
 - Titan issues chains → Nexus executes them → Rally parallelizes when needed
 - Sherpa decomposes → Nexus/Rally executes the decomposed steps
 - Architect creates permanent ecosystem agents; Sigil creates project-specific skills
+- Darwin evaluates ecosystem fitness; Lore curates cross-agent knowledge patterns
 
 ## Investigation & Analysis
 

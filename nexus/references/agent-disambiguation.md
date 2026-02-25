@@ -38,6 +38,23 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Lore vs Darwin (Ecosystem Meta)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "What patterns have agents learned?", "cross-agent insights" | **Lore** | Knowledge synthesis and extraction |
+| "Is the ecosystem healthy?", "which agents are underused?" | **Darwin** | Ecosystem fitness evaluation |
+| "Best practices from past incidents" | **Lore** | Pattern catalog from postmortems |
+| "Should we deprecate this agent?", "evolution proposal" | **Darwin** | Lifecycle and evolution decisions |
+| "Are there contradicting learnings across agents?" | **Lore** | Contradiction detection |
+| "Agent relevance scoring", "ecosystem fitness score" | **Darwin** | Quantitative fitness metrics |
+
+**Rule of thumb**: "What have we learned?" → Lore. "How fit is the ecosystem?" → Darwin. Lore feeds knowledge TO Darwin for evolution decisions.
+
+**Chain pattern**: Lore (synthesize) → Darwin (evaluate) → Architect (improve/create)
+
+---
+
 ### Sigil vs Architect (Skill/Agent Creation)
 
 | Signal | Route to | Rationale |
