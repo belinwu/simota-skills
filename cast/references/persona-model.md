@@ -71,6 +71,14 @@ voice_profile:
     emotional_tone: anxious        # anxious | cheerful | neutral | frustrated | enthusiastic | reserved
     linguistic_markers: []         # ペルソナ固有の口癖 (例: ["〜したいだけなのに", "なんで〜なの？"])
 
+  # VOICEVOX エンジン設定（プライマリ）
+  voicevox:
+    speaker_id: 2                  # キャラクター+スタイル ID
+    speed: 1.0                     # speedScale (0.5-2.0)
+    pitch: 0.0                     # pitchScale (-0.15-0.15)
+    intonation: 1.0                # intonationScale (0.0-2.0)
+    volume: 1.0                    # volumeScale (0.0-2.0)
+
   # macOS say エンジン設定
   say:
     voice: "Kyoko"                 # macOS say ボイス名
@@ -87,6 +95,11 @@ voice_profile:
 | `speaking_style.sentence_length` | enum | auto-derived | 文の長さ傾向 |
 | `speaking_style.emotional_tone` | enum | auto-derived | 感情的なトーン |
 | `speaking_style.linguistic_markers` | string[] | `[]` | 口癖・語尾パターン |
+| `voicevox.speaker_id` | integer | `2` | VOICEVOX キャラクター+スタイル ID |
+| `voicevox.speed` | float | `1.0` | speedScale (0.5–2.0) |
+| `voicevox.pitch` | float | `0.0` | pitchScale (-0.15–0.15) |
+| `voicevox.intonation` | float | `1.0` | intonationScale (0.0–2.0) |
+| `voicevox.volume` | float | `1.0` | volumeScale (0.0–2.0) |
 | `say.voice` | string | auto-derived | macOS `say` ボイス名 |
 | `say.rate` | integer | `180` | Words Per Minute (90–300) |
 | `edge_tts.voice` | string | auto-derived | edge-tts Neural ボイス名 |
@@ -98,11 +111,13 @@ voice_profile:
 | `google_tts.pitch` | float | `0.0` | ピッチ（半音単位、-20.0 to +20.0） |
 | `google_tts.volume_gain_db` | float | `0.0` | 音量ゲイン (dB、-96.0 to +16.0) |
 | `language` | enum | `ja` | 発話言語 (ja / en / auto) |
-| `engine_preference` | enum | `auto` | TTS エンジン選択 (auto / say / edge-tts / google_tts) |
+| `engine_preference` | enum | `auto` | TTS エンジン選択 (auto / voicevox / say / edge-tts / google_tts) |
 
 #### Design Notes
 
-- `speaking_style` はテキスト生成制御、`say`/`edge_tts`/`google_tts` は音声合成パラメータ — 関心事を分離
+- `speaking_style` はテキスト生成制御、`voicevox`/`say`/`edge_tts`/`google_tts` は音声合成パラメータ — 関心事を分離
+- **VOICEVOX がプライマリ TTS エンジン** — `engine_preference: auto` 時に最優先で選択（localhost:50021 接続確認）
+- 英語ペルソナの場合は `engine_preference: auto` でも edge-tts がデフォルト（VOICEVOX は日本語に最適化）
 - `google_tts` は課金保護のため `engine_preference: auto` に含まない（明示指定時のみ使用）
 - `voice_profile` がなくても SPEAK モードは動作する（Auto-Derivation で既存属性から推定）
 - 永続化は EVOLVE モードの既存メカニズムで対応（新メカニズム不要）

@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Agent-specific persona distribution with format adaptation
 - Echo-compatible persona format with extended metadata
 - Confidence scoring and decay management
-- Persona voice generation with TTS (macOS say + edge-tts Neural + Google Cloud TTS Neural2)
+- Persona voice generation with TTS (VOICEVOX primary + macOS say / edge-tts / Google Cloud TTS fallback)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Researcher → Cast[FUSE] → Echo (research data → persona integration → UI validation)
@@ -118,7 +118,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 /Cast speak dialogue [p1] [p2] about [topic] # 複数ペルソナ対話
 ```
 
-**Workflow:** RESOLVE (registry → voice_profile or Auto-Derive) → GENERATE (AI text) → VOICE (engine select) → RENDER (TTS) → OUTPUT
+**Workflow:** RESOLVE (registry → voice_profile or Auto-Derive) → GENERATE (AI text) → VOICE (VOICEVOX preferred; engine select) → RENDER (TTS) → OUTPUT
 → TTS engines, voice mapping, Auto-Derivation, prompt design, dialogue sub-mode: `references/speak-engine.md`
 
 ---
