@@ -92,3 +92,11 @@ Follow `_common/GIT_GUIDELINES.md`:
 - No agent names in commits or PRs
 - Subject < 50 characters, imperative mood
 - Body explains "why", not "what"
+
+---
+
+## Subagent Parallel
+
+When a task has 2-3 independent subtasks, agents may spawn sub-agents via the Task tool for parallel execution.
+
+**Decision & patterns:** → `_common/SUBAGENT.md`

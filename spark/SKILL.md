@@ -93,15 +93,11 @@ IGNITE(inputs) → SYNTHESIZE(draft+JTBD+RICE) → VALIDATE(Echo/Sentinel/Growth
 → Flowchart, exit criteria, parallel matrix, feedback loops: `references/experiment-lifecycle.md`
 
 ## Multi-Engine Mode
-Three AI engines independently generate proposals for brainstorm comparison (Compete pattern).
 
-| Engine | Command | Fallback |
-|--------|---------|----------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Task (subagent) | — |
+Three AI engines independently generate proposals for brainstorm comparison — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE
 
-**Loose prompt**: Pass only Role + Existing features + User context + Output format. Do NOT pass JTBD templates or taxonomies. Collect → compare → merge duplicates → annotate source → user selection.
+**Loose Prompt context:** Role + Existing features + User context + Output format. Do NOT pass JTBD templates or taxonomies.
+**Pattern:** Compete | **Merge:** Collect → compare → merge duplicates → annotate source → user selection.
 
 ## Operational
 

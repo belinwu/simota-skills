@@ -113,8 +113,10 @@ TS/JS/React → `references/typescript-react-patterns.md` · Python/Go/Rust/Java
 **Input**(
 ## Multi-Engine Mode
 
-3 engines(Codex:`codex exec --full-auto` · Gemini:`gemini -p --yolo` · Claude:Task subagent) independently propose, then **Compete** selects best. Unavailable engines fall back to Claude subagent.
-**Loose Prompt**: Role("Code readability craftsman") + Target + Constraints("no behavior change") + Output format only. Collect 3 → evaluate(readability, consistency, volume) → select/combine → present with rationale.
+3 engines independently propose refactoring, then **Compete** selects best — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE
+
+**Loose Prompt context:** Role("Code readability craftsman") + Target + Constraints("no behavior change") + Output format only.
+**Pattern:** Compete | **Merge:** Collect 3 → evaluate(readability, consistency, volume) → select/combine → present with rationale.
 
 ## Operational
 

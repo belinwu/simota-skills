@@ -80,15 +80,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Multi-Engine Mode
 
-Three AI engines independently scan, then merge findings (Union). Different knowledge bases catch what single scan misses.
+Three AI engines independently scan, then merge findings (Union) — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE. Different knowledge bases catch what single scan misses.
 
-| Engine | Command | Fallback |
-|--------|---------|----------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Claude subagent (Task) | — |
-
-See `references/multi-engine-mode.md` for dispatch details, loose prompt design, and result merge.
+**Pattern:** Union | **Details:** `references/multi-engine-mode.md` for Sentinel-specific dispatch, loose prompt, and result merge.
 
 ---
 

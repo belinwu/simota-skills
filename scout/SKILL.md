@@ -87,16 +87,10 @@ Step 0 detail: (1) Identify report pattern → (2) Collect context (recent commi
 
 ## Multi-Engine Mode
 
-Three AI engines independently form root-cause hypotheses, then merge findings (**Union pattern**).
+Three AI engines independently form root-cause hypotheses — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE
 
-| Engine | Command | Fallback |
-|--------|---------|----------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Claude subagent (Task) | — |
-
-**Loose Prompt:** Pass only Role, Symptoms, Related code, Output format (hypothesis list). Do NOT pass investigation frameworks.
-**Result Merge:** Collect hypotheses → consolidate same-cause (multiple engines = higher confidence) → rank → annotate verification → compose final report.
+**Loose Prompt context:** Role + Symptoms + Related code + Output format (hypothesis list). Do NOT pass investigation frameworks.
+**Pattern:** Union | **Merge:** Collect hypotheses → consolidate same-cause (multi-engine = higher confidence) → rank → annotate verification → compose final report.
 
 ---
 

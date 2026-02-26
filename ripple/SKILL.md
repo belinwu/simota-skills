@@ -86,15 +86,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Multi-Engine Mode
 
-Three AI engines independently analyze change impact, then merge (**Union pattern**). Triggered by Ripple's judgment or Nexus `multi-engine` instruction.
+Three AI engines independently analyze change impact — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE. Triggered by Ripple's judgment or Nexus `multi-engine` instruction.
 
-| Engine | Command | Fallback |
-|--------|---------|----------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Claude subagent (Task) | — |
-
-**Loose prompt:** Pass only role (1 line) + change description + dependencies + output format. Do NOT pass risk templates or classification criteria. When engine unavailable (`which` fails), Claude subagent takes over. **Merge:** Collect all results → consolidate same-location findings (multiple engines = higher confidence) → sort by severity → compose final cross-engine report.
+**Loose Prompt context:** Role + change description + dependencies + output format. Do NOT pass risk templates or classification criteria.
+**Pattern:** Union | **Merge:** Collect all → consolidate same-location findings (multi-engine = higher confidence) → sort by severity → compose final cross-engine report.
 
 ## Quality Standards
 

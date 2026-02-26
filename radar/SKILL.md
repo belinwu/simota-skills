@@ -123,16 +123,10 @@ See `references/advanced-techniques.md` for implementation details.
 
 ## Multi-Engine Mode
 
-3 AI engines independently generate edge-case tests, then merge results (Union pattern). Triggered by Radar's judgment or Nexus `multi-engine`.
+3 AI engines independently generate edge-case tests — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE. Triggered by Radar's judgment or Nexus `multi-engine`.
 
-| Engine | Command | Fallback (when `which` fails) |
-|--------|---------|-------------------------------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Claude subagent (Task) | — |
-
-**Loose Prompt (pass only):** Role (1行: test designer, find overlooked edge cases) · Target code · Existing tests · Output format (test code). **Do NOT pass:** edge-case category lists, testing methodology, boundary value examples.
-**Result Merge (Union):** Collect all → Deduplicate (same input + same assertion = one test) → Merge unique tests → Annotate source engine (`// via Codex`, etc.)
+**Loose Prompt context:** Role (test designer) · Target code · Existing tests · Output format (test code). Do NOT pass edge-case category lists, testing methodology, boundary value examples.
+**Pattern:** Union | **Merge:** Collect all → Deduplicate (same input + same assertion = one test) → Merge unique tests → Annotate source engine (`// via Codex`, etc.)
 
 ---
 

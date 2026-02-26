@@ -118,7 +118,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Multi-Engine Mode
 
-Three AI engines each play a different persona (**Persona pattern**). Codex(Senior Engineer) · Gemini(Beginner) · Claude(Accessibility). Persona assignments flexible; unavailable engines fall back to Claude subagent. Pass only persona profile + target flow + output format — no checklists. Results consolidated by location with cross-persona priority ranking. → `references/process-workflows.md`
+Three AI engines each play a different persona (**Persona pattern**) — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE
+
+**Persona mapping:** Codex(Senior Engineer) · Gemini(Beginner) · Claude(Accessibility) — assignments flexible.
+**Loose Prompt context:** Persona profile + target flow + output format only — no checklists.
+**Pattern:** Union | **Merge:** Consolidate by location → cross-persona priority ranking. → `references/process-workflows.md`
 
 ## Daily Process
 

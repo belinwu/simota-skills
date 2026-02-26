@@ -125,16 +125,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Multi-Engine Mode
 
-3 AI engines independently hunt concurrency bugs, then merge findings (Union pattern). Triggered by Specter's judgment or Nexus `multi-engine`.
+3 AI engines independently hunt concurrency bugs — engine dispatch & loose prompt rules → `_common/SUBAGENT.md` § MULTI_ENGINE. Triggered by Specter's judgment or Nexus `multi-engine`.
 
-| Engine | Command | Fallback (when `which` fails) |
-|--------|---------|-------------------------------|
-| Codex | `codex exec --full-auto` | Claude subagent |
-| Gemini | `gemini -p --yolo` | Claude subagent |
-| Claude | Claude subagent (Task) | — |
-
-**Loose Prompt (pass only):** Role (1行: ghost hunter) · Target code · Runtime environment · Output format (位置, type, trigger, evidence). **Do NOT pass:** pattern catalogs, detection techniques.
-**Result Merge (Union):** Collect all → Deduplicate same-location/type → Boost confidence for multi-engine hits → Sort by severity, compose final report
+**Loose Prompt context:** Role (ghost hunter) · Target code · Runtime environment · Output format (位置, type, trigger, evidence). Do NOT pass pattern catalogs, detection techniques.
+**Pattern:** Union | **Merge:** Collect all → Deduplicate same-location/type → Boost confidence for multi-engine hits → Sort by severity → compose final report.
 
 ---
 

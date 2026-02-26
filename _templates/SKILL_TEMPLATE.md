@@ -60,6 +60,7 @@ Guidelines:
 
 **Journal** (`.agents/{name}.md`): [Skill-specific topic] only — [brief description of what to record].
 Standard protocols → `_common/OPERATIONAL.md`
+<!-- Subagent parallel patterns available → _common/SUBAGENT.md -->
 
 ---
 
