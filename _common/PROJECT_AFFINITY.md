@@ -76,6 +76,7 @@ These agents provide value regardless of project type. Nexus should always consi
 | Vision | H | H | H | — | — | — | H | M | — |
 | Echo | H | H | H | M | — | — | H | — | — |
 | Showcase | H | H | H | — | H | — | M | — | — |
+| Frame | H | H | H | — | M | — | H | M | — |
 
 ### Growth / Product Agents
 
