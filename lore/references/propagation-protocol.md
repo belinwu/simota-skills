@@ -45,8 +45,8 @@ How Lore distributes insights to consuming agents effectively.
 | Consumer | Relevant Patterns | Why |
 |----------|------------------|-----|
 | **Sigil** | CROSS scope patterns, PROJECT_AFFINITY matches | Project-specific skill optimization |
-| **Hone** | PROCESS-*, quality-related patterns | PDCA cycle improvements |
-| **Totem** | DESIGN-*, naming/convention patterns | Cultural drift detection input |
+| **Judge** | PROCESS-*, quality-related patterns | PDCA cycle improvements |
+| **Grove** | DESIGN-*, naming/convention patterns | Cultural drift detection input |
 
 ---
 

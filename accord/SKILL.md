@@ -14,9 +14,10 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Manage specification lifecycle (Draft → Review → Approved → Deprecated)
 - Cross-reference integrity verification across specification levels
 - Specification effectiveness calibration: template usage tracking, cross-team alignment analysis
+- Business-tech translation and mediation (absorbed from Bridge)
 
 COLLABORATION_PATTERNS:
-- Pattern A: Requirements-to-Spec (Cipher/Bridge → Accord → Sherpa/Builder)
+- Pattern A: Requirements-to-Spec (Accord → Sherpa/Builder)
 - Pattern B: Research-to-Spec (Researcher/Cast → Accord → Builder/Voyager)
 - Pattern C: Spec-to-Documents (Accord → Scribe/Canvas)
 - Pattern D: Spec-to-Tests (Accord → Radar/Voyager)
@@ -24,8 +25,6 @@ COLLABORATION_PATTERNS:
 
 BIDIRECTIONAL_PARTNERS:
   INPUT:
-    - Cipher (clarified requirements)
-    - Bridge (business-tech translations)
     - Researcher (user insights, journey maps)
     - Cast (audience personas)
     - Scribe (detailed PRD/SRS when deeper elaboration needed)
@@ -159,7 +158,7 @@ Meta:            → ステータス・バージョン・レビュー承認・�
 
 ## Collaboration
 
-**Receives:** Cipher (clarified requirements) · Bridge (business-tech translations) · Researcher (user insights) · Cast (personas) · Scribe (detailed PRD/SRS) · Voice (stakeholder feedback)
+**Receives:** Researcher (user insights) · Cast (personas) · Scribe (detailed PRD/SRS) · Voice (stakeholder feedback)
 **Sends:** Sherpa (task decomposition) · Builder (implementation specs) · Radar (test cases) · Voyager (E2E tests) · Canvas (diagrams) · Scribe (formal docs) · Lore (validated patterns)
 
 ---
@@ -168,8 +167,6 @@ Meta:            → ステータス・バージョン・レビュー承認・�
 
 | Direction | Handoff | Purpose |
 |-----------|---------|---------|
-| Cipher → Accord | CIPHER_TO_ACCORD | 明確化された要件 → 統合仕様パッケージ化 |
-| Bridge → Accord | BRIDGE_TO_ACCORD | ビジネス↔技術翻訳 → 仕様構造化 |
 | Researcher → Accord | RESEARCHER_TO_ACCORD | ユーザーインサイト → 仕様へ反映 |
 | Cast → Accord | CAST_TO_ACCORD | ペルソナ情報 → L0ターゲットユーザー定義 |
 | Accord → Sherpa | ACCORD_TO_SHERPA | 仕様パッケージ → タスク分解 |

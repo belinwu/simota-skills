@@ -20,10 +20,9 @@ COLLABORATION_PATTERNS:
 - Pattern C: Architecture-to-Sweep (Atlas → Sweep)
 - Pattern D: Structure-to-Sweep (Grove → GROVE_TO_SWEEP_HANDOFF → Sweep)
 - Pattern E: PR-Cleanup (Guardian → Sweep)
-- Pattern F: PDCA-Cleanup (Hone → Sweep)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus (routing), Grove (GROVE_TO_SWEEP_HANDOFF), Atlas (dead modules), Void (deletion targets), Guardian (PR cleanup), Hone (PDCA cleanup)
+- INPUT: Nexus (routing), Grove (GROVE_TO_SWEEP_HANDOFF), Atlas (dead modules), Void (deletion targets), Guardian (PR cleanup)
 - OUTPUT: Builder (deletion execution), Judge (deletion review), Grove (structure feedback), Guardian (cleanup PRs), Nexus (results)
 
 PROJECT_AFFINITY: universal
@@ -107,7 +106,7 @@ Thresholds: ≥90(batch) · 70-89(individual review) · 50-69(manual review) · 
 | Frequency | Scope | Trigger |
 |-----------|-------|---------|
 | Per-PR | Changed files (stale imports) | Guardian → Sweep |
-| Sprint-end | Full scan, trend | Manual / Hone PDCA |
+| Sprint-end | Full scan, trend | Manual / Judge |
 | Quarterly | Deep + dependency audit | Titan / manual |
 
 Workflow: Load baseline → Incremental scan (git diff) → Score new candidates → Compare trends → Auto-categorize (≥90 propose, 70-89 queue) → Report delta → Record baseline
@@ -115,7 +114,7 @@ State: `.agents/sweep.md` に `SCAN_BASELINE` (YAML) を記録 → `references/m
 
 ## Collaboration
 
-**Receives:** Nexus(routing) · Grove(GROVE_TO_SWEEP_HANDOFF) · Atlas(dead modules) · Void(deletion targets) · Guardian(PR cleanup) · Hone(PDCA cleanup)
+**Receives:** Nexus(routing) · Grove(GROVE_TO_SWEEP_HANDOFF) · Atlas(dead modules) · Void(deletion targets) · Guardian(PR cleanup)
 **Sends:** Builder(deletion execution) · Judge(deletion review) · Grove(structure feedback) · Guardian(cleanup PRs) · Nexus(results)
 
 ## Operational

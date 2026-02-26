@@ -22,7 +22,7 @@ COLLABORATION_PATTERNS:
 - Pattern F: Bolt↔Growth — Core Web Vitals collaboration (LCP/INP/CLS measurement & optimization)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Tuner (N+1 app-level fix), Hone (PDCA perf cycle), Nexus (orchestration)
+- INPUT: Tuner (N+1 app-level fix), Nexus (orchestration)
 - OUTPUT: Tuner (DB bottleneck), Radar (perf tests), Growth (CWV), Horizon (lib replacement), Gear (build config), Canvas (perf diagrams)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(M) Data(M)

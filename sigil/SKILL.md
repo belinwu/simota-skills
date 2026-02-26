@@ -25,9 +25,9 @@ COLLABORATION_PATTERNS:
 - Pattern C: Ecosystem (Architect → Sigil) - Ecosystem patterns → project-specific adaptation
 - Pattern D: Structure (Sigil → Grove) - Skill structure → directory optimization
 - Pattern E: Quality Loop (Sigil → Judge → Sigil) - Quality review for generated skills
-- Pattern F: Iteration (Hone → Sigil → Hone) - Iterative skill quality improvement
+- Pattern F: Iteration (Judge → Sigil → Judge) - Iterative skill quality improvement
 - Pattern G: Standards (Canon → Sigil) - Standards compliance → skill adaptation
-- Pattern H: Culture (Totem → Sigil) - Project DNA → skill tone/style alignment
+- Pattern H: Culture (Grove → Sigil) - Project DNA → skill tone/style alignment
 - Pattern I: Knowledge (Sigil → Lore) - Reusable skill patterns propagation
 
 BIDIRECTIONAL_PARTNERS:
@@ -36,9 +36,9 @@ BIDIRECTIONAL_PARTNERS:
     - Lens (codebase analysis results)
     - Architect (ecosystem agent patterns)
     - Judge (skill quality feedback)
-    - Hone (iterative improvement requests)
+    - Judge (iterative improvement requests)
     - Canon (standards compliance requirements)
-    - Totem (project cultural DNA profile)
+    - Grove (project cultural DNA profile)
   OUTPUT:
     - Generated skills (project .claude/skills/ and .agents/skills/)
     - Grove (directory structure recommendations)
@@ -141,7 +141,7 @@ Response: `## Sigil's Report` → **Project**(name, stack) · **Skills Generated
 
 ## Collaboration
 
-**Receives:** Lens (codebase analysis) · Architect (ecosystem patterns) · Judge (quality feedback) · Hone (improvement requests) · Canon (standards compliance) · Totem (project DNA)
+**Receives:** Lens (codebase analysis) · Architect (ecosystem patterns) · Judge (quality feedback, improvement requests) · Canon (standards compliance) · Grove (project DNA)
 **Sends:** Grove (directory recommendations) · Nexus (new skill notification) · Judge (quality review requests) · Lore (reusable patterns)
 
 ---
@@ -154,8 +154,8 @@ Response: `## Sigil's Report` → **Project**(name, stack) · **Skills Generated
 | Architect → Sigil | ARCHITECT_TO_SIGIL_HANDOFF | Ecosystem patterns for project adaptation |
 | Judge → Sigil | JUDGE_TO_SIGIL_HANDOFF | Quality review feedback |
 | Canon → Sigil | CANON_TO_SIGIL_HANDOFF | Standards compliance requirements |
-| Hone → Sigil | HONE_TO_SIGIL_HANDOFF | Iterative improvement request |
-| Totem → Sigil | TOTEM_TO_SIGIL_HANDOFF | Project cultural DNA profile |
+| Judge → Sigil | JUDGE_TO_SIGIL_HANDOFF | Iterative improvement request |
+| Grove → Sigil | GROVE_TO_SIGIL_HANDOFF | Project cultural DNA profile |
 | Sigil → Grove | SIGIL_TO_GROVE_HANDOFF | Generated skill structure for directory optimization |
 | Sigil → Nexus | SIGIL_TO_NEXUS_HANDOFF | New skills generated notification |
 | Sigil → Judge | SIGIL_TO_JUDGE_HANDOFF | Quality review request |

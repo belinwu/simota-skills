@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-84-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **86 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **84 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 86 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 84 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -47,7 +47,6 @@ This repository contains 86 specialized AI agents covering various aspects of so
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - Task decomposition guide. Breaks complex tasks into atomic steps completable within 15 minutes | Checklists |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - Meta-designer that creates new skill agents. Ecosystem gap analysis, duplication detection, SKILL.md generation | SKILL.md, references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - Multi-session parallel orchestrator. Spawns and manages multiple Claude instances via Claude Code Agent Teams API for concurrent task execution | Team management, parallel execution |
-| **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - Quality Orchestrator that iteratively improves quality through PDCA cycles. Runs Measure > Improve > Verify > Learn cycles with diminishing returns detection for efficient termination | Quality improvement cycles |
 | **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 69 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - Dynamic skill generator. Analyzes project codebases, discovers patterns and conventions, and generates optimized Claude Code skills for the project's `.claude/skills/` directory | Project-specific skills |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop completion specialist. Generates completion scripts, operation contracts, and audits for autonomous loop execution | Runner scripts, contracts |
@@ -62,12 +61,10 @@ This repository contains 86 specialized AI agents covering various aspects of so
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - Competitive research, differentiation, and positioning. SWOT analysis, feature matrices | Competitive analysis report |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - User feedback collection, NPS survey design, sentiment analysis, and insight extraction | Feedback report |
 | **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - User research design, interview guides, qualitative analysis, persona/journey map creation | Research report |
-| **Cipher** | _"Don't listen to words. Listen to silence."_ - Decodes user intent. Converts ambiguous requests into precise specifications | Requirements specification |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - Session replay analysis, per-persona behavioral pattern extraction, UX problem storytelling. Works with Researcher/Echo | Behavioral analysis report |
 | **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - Investigates and analyzes using global/industry standards. Evaluates compliance with OWASP/WCAG/OpenAPI/ISO 25010, detects violations, and suggests improvements | Compliance report |
 | **Lens** | _"See the code, not just search it."_ - Codebase comprehension specialist. Systematically investigates code structure, feature exploration, and data flow tracing for questions like "Does feature X exist?", "How does flow Y work?", "What is this module's responsibility?" | Investigation report |
 | **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - Multi-perspective decision making from three viewpoints (Logic, Empathy, Pragmatism). Architecture selection, tradeoff analysis, Go/No-Go decisions | Decision report |
-| **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - Translates and mediates between business requirements and technical implementation. Requirements clarification, scope creep detection, expectation gap resolution | Requirements translation report |
 | **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - Persona casting agent. Rapid generation, registry management, lifecycle tracking, and cross-agent distribution of personas from diverse inputs | Persona registry |
 | **Helm** | _"A ship without a destination has no favorable wind. A ship without a helm has no direction at all."_ - Business strategy simulation agent. Integrates financial/market/competitive data for short/mid/long-term simulations. SWOT/PESTLE/Porter analysis, scenario planning, KPI forecasting, strategy roadmap generation. No code written | Strategy simulation report |
 
@@ -88,14 +85,10 @@ This repository contains 86 specialized AI agents covering various aspects of so
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR information collection and report generation. Fetches PR info via gh commands to auto-generate weekly/monthly reports and release notes | Work reports, release notes |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - Release management. Versioning strategy, CHANGELOG generation, release notes, rollback plans, feature flag design | Release plans, CHANGELOG |
 | **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git history investigation, regression root cause analysis, code archaeology. Travels back in time to uncover the truth | History investigation report |
-| **Bard** | _"Every commit carries a feeling no one says out loud. Bard says it."_ - Developer grumble agent with three AI engines (Codex/Gemini/Claude). Transforms git history, PRs, and milestones into authentic developer monologues, rants, and musings | Narratives, commentary |
 
 **Guardian > Judge > Zen chain**: Guardian (PR preparation) > Judge (review) > Zen (fixes)
 **Guardian > Launch chain**: Guardian (change analysis) > Launch (release plan)
 **Rewind > Scout chain**: Rewind (regression identification) > Scout (detailed investigation)
-**Harvest > Bard chain**: Harvest (PR statistics) > Bard (sprint retrospective commentary)
-**Launch > Bard chain**: Launch (release execution) > Bard (release commentary)
-**Rewind > Bard chain**: Rewind (code archaeology) > Bard (project origin story)
 
 ### Quality Assurance
 
@@ -112,7 +105,6 @@ This repository contains 86 specialized AI agents covering various aspects of so
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - Ghost hunter for "invisible" issues in concurrency, async processing, and resource management. Detects and analyzes Race Conditions, Memory Leaks, Resource Leaks, and Deadlocks | Detection report |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - Advanced testing specialist. Load testing (k6/Locust/Artillery), contract testing (Pact CDC), chaos engineering, mutation testing, resilience pattern verification | Test results, resilience reports |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI enforcement, scope cutting, complexity reduction proposals. Challenges existence of every feature/abstraction with 5 questions and Cost-of-Keeping Score | Subtraction proposals |
-| **Totem** | _"Every project has a soul. Linters guard the grammar. Totem guards the voice."_ - Project DNA profiling across 8 cultural dimensions, deviation detection, onboarding guide generation | DNA profiles, deviation reports |
 
 ### Implementation
 
@@ -450,8 +442,7 @@ See `_common/INTERACTION.md` for details.
 | Task | Description | Chain |
 |------|-------------|-------|
 | DECISION/arch | Architecture selection | Magi > Builder/Zen |
-| DECISION/strategy | Strategic decisions | Bridge > Magi > Spark |
-| DECISION/intent | Intent analysis | Cipher > Forge/Builder |
+| DECISION/strategy | Strategic decisions | Magi > Spark |
 
 #### Analysis
 
@@ -468,9 +459,6 @@ See `_common/INTERACTION.md` for details.
 | SUBTRACT/feature-gate | Feature proposal subtraction gate | Spark > Void > Magi |
 | SUBTRACT/scope-check | Scope validation | Sherpa > Void > Sherpa |
 | SUBTRACT/arch-simplify | Architecture over-engineering detection | Atlas > Void > Zen |
-| CULTURE/profile | Project DNA profiling | Lens > Totem > Scribe |
-| CULTURE/review | Culture-aware code review | Totem > Judge |
-| CULTURE/onboard | Onboarding guide from culture profile | Lens > Totem > Scribe |
 
 #### Documentation
 
@@ -566,7 +554,7 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 | Task | Description | Chain |
 |------|-------------|-------|
 | INCIDENT | Incident response | Triage > Scout > Builder |
-| TEST/quality | Iterative quality improvement | Hone |
+| TEST/quality | Iterative quality improvement | Judge > Zen > Radar |
 | SECURITY/concurrency | Concurrency bug detection | Specter > Builder > Radar |
 | INVESTIGATE/regression | Regression investigation | Rewind > Scout > Builder > Radar |
 
@@ -639,14 +627,11 @@ skills/
 ├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
 ├── artisan/SKILL.md    # Frontend implementation
 ├── atlas/SKILL.md      # Architecture
-├── bard/SKILL.md       # Developer grumble agent
 ├── beacon/SKILL.md     # Observability/SRE
 ├── bolt/SKILL.md       # Performance
-├── bridge/SKILL.md     # Business <> Tech translation
 ├── builder/SKILL.md    # Production implementation
 ├── canvas/SKILL.md     # Visualization
 ├── cast/SKILL.md       # Persona casting & registry management
-├── cipher/SKILL.md     # Intent decoding
 ├── compete/SKILL.md    # Competitive research
 ├── director/SKILL.md   # Demo video recording
 ├── echo/SKILL.md       # Persona validation
@@ -660,7 +645,6 @@ skills/
 ├── guardian/SKILL.md   # Git/PR management
 ├── harvest/SKILL.md    # PR info collection & report generation
 ├── hearth/SKILL.md     # Personal dev environment config
-├── hone/SKILL.md       # PDCA quality improvement
 ├── latch/SKILL.md      # Claude Code hook management
 ├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
@@ -704,7 +688,6 @@ skills/
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
-├── totem/SKILL.md      # Project DNA profiling & cultural deviation detection
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
 ├── tuner/SKILL.md      # DB performance optimization
@@ -947,32 +930,6 @@ Create a monthly work report for @username.
 
 ---
 
-##### Sprint Retrospective (Bard)
-
-```
-/Bard
-Tell me about this week's sprint with some developer commentary.
-```
-
-**Output**: Developer-style commentary on the sprint based on PR/commit data
-
----
-
-##### Release Celebration (Bard)
-
-```
-/Bard
-Celebrate the v2.0.0 release with some developer musings.
-```
-
-**Output**: Authentic developer narrative based on release contents
-
----
-
-**Harvest vs Bard responsibilities**:
-- **Harvest**: Tells the story in numbers (statistical reports, weekly summaries, release notes)
-- **Bard**: Tells the story in words (developer monologues, rants, musings)
-
 ---
 
 #### Quality Assurance
@@ -1055,17 +1012,6 @@ Is this helper utility really needed? It was added 6 months ago but I'm not sure
 ```
 
 **Output**: Subtraction Proposal with Cost-of-Keeping Score, blast radius analysis, and REMOVE/SIMPLIFY/DEFER/KEEP recommendation
-
----
-
-##### Project DNA Profiling (Totem)
-
-```
-/Totem
-Profile this project's cultural conventions. I want to understand the unwritten rules before onboarding new team members.
-```
-
-**Output**: DNA Profile (8 dimension scores), Cultural Fingerprint, onboarding guide with project-specific conventions
 
 ---
 

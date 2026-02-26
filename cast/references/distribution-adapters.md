@@ -211,15 +211,15 @@ Echo receives the persona file as-is (no transformation needed — Cast generate
 
 ---
 
-## Bridge Adapter
+## Accord Adapter
 
-**Purpose:** Deliver personas for business-technical communication and stakeholder alignment.
+**Purpose:** Deliver personas for cross-team unified specification and stakeholder alignment.
 
 **Focus:** Business context, simplified profile, key metrics.
 
 ### Transformation
 
-| Source Section | Bridge Needs | Transformation |
+| Source Section | Accord Needs | Transformation |
 |---------------|------------|---------------|
 | Profile | Executive summary | Simplified role description |
 | Goals | Business objectives | Map to business KPIs |
@@ -297,8 +297,8 @@ ELIF target_agent == "retain":
   use Retain Adapter (lifecycle-focused)
 ELIF target_agent == "compete":
   use Compete Adapter (comparison-focused)
-ELIF target_agent == "bridge":
-  use Bridge Adapter (business-language)
+ELIF target_agent == "accord":
+  use Accord Adapter (business-language)
 ELSE:
   use Generic Adapter (minimal summary)
 ```

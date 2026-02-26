@@ -30,7 +30,7 @@ BIDIRECTIONAL_PARTNERS:
     - Voice (feedback data)
     - Trace (behavioral patterns)
     - Vision (design direction)
-    - Bridge (business context)
+    - Accord (business context)
   OUTPUT:
     - Echo (personas for UI validation)
     - Spark (user needs for ideation)
@@ -105,7 +105,7 @@ Response: `## ユーザーリサーチレポート` → **リサーチ目的**(r
 
 ## Collaboration
 
-**Receives:** Voice (customer feedback data) · Trace (behavioral patterns) · Vision (design direction) · Bridge (business context)
+**Receives:** Voice (customer feedback data) · Trace (behavioral patterns) · Vision (design direction) · Accord (business context)
 **Sends:** Echo (personas for UI validation) · Spark (user needs for ideation) · Voice (survey design) · Canvas (journey map visualization) · Lore (validated research patterns)
 
 ---

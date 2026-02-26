@@ -27,9 +27,9 @@
 | Generated Code | — | — | Exclude | テスト不要 |
 | Config / Constants | — | — | Exclude | ロジック無し |
 
-### Hone Integration
+### Judge Integration
 
-Hone の UQS (Universal Quality Score) では以下の複合式でカバレッジスコアを算出:
+Judge の UQS (Universal Quality Score) では以下の複合式でカバレッジスコアを算出:
 
 ```
 radar_score = (line × 0.4) + (branch × 0.4) + (function × 0.2)

@@ -10,10 +10,10 @@ Rally's learning subsystem for improving parallel execution outcomes through cro
 |-----------|-------|-------|
 | Parallel execution learning | Rally (HARMONIZE) | Team composition effectiveness, sizing optimization, subagent_type/model selection tuning |
 | Cross-agent knowledge synthesis | Lore | Pattern aggregation across all agents |
-| Quality PDCA | Hone | Output quality measurement and improvement cycles |
+| Quality PDCA | Judge | Output quality measurement and improvement cycles |
 | Known-pattern auto-remediation | Mend | Automated fixes for recognized failure patterns |
 
-HARMONIZE learns *within* Rally's parallel-orchestration domain — which team compositions excel at which task types, when larger teams outperform smaller ones, and what subagent_type/model combinations yield optimal results. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Hone for PDCA integration.
+HARMONIZE learns *within* Rally's parallel-orchestration domain — which team compositions excel at which task types, when larger teams outperform smaller ones, and what subagent_type/model combinations yield optimal results. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Judge for PDCA integration.
 
 ---
 
@@ -30,7 +30,7 @@ COLLECT → EVALUATE → EXTRACT → ADAPT → SAFEGUARD → RECORD
 | EXTRACT | Pattern identification | Identify team composition × task-type success rate patterns, optimal team size conditions, subagent_type effectiveness |
 | ADAPT | Adaptation proposal | Update team size defaults, improve subagent_type/model selection heuristics, adjust file ownership patterns |
 | SAFEGUARD | Change verification | Verify consistency with existing file-ownership-protocol, create rollback snapshot |
-| RECORD | Learning persistence | Write journal entry, share patterns with Lore, share quality data with Hone |
+| RECORD | Learning persistence | Write journal entry, share patterns with Lore, share quality data with Judge |
 
 ### Phase Details
 
@@ -107,7 +107,7 @@ Before applying any adaptation:
 Record learning outcomes:
 1. Write feedback record to `.agents/rally.md`
 2. Share extracted patterns to Lore via `RALLY_TO_LORE_HANDOFF`
-3. Share quality metrics to Hone via quality data channel
+3. Share quality metrics to Judge via quality data channel
 4. Update Team Design Matrix if sufficient data accumulated
 
 ---
@@ -119,7 +119,7 @@ Record learning outcomes:
 | RY-01 | Team execution complete (every time) | Lightweight | COLLECT + EVALUATE only |
 | RY-02 | Same team pattern fails/conflicts 3+ times | Full cycle | All 6 HARMONIZE phases |
 | RY-03 | User manually overrides team size or composition | Full cycle | All 6 HARMONIZE phases |
-| RY-04 | Quality feedback arrives from Judge or Hone | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
+| RY-04 | Quality feedback arrives from Judge | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
 | RY-05 | Lore sends parallel execution pattern notification | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
 | RY-06 | 30+ days since last full HARMONIZE cycle | Full cycle | All 6 HARMONIZE phases |
 
@@ -266,8 +266,8 @@ Code+Test+Docs   |    —    |   —    |    —     |     —     |  —   |
 |---------|-----------|----------------|
 | Lore | Rally → Lore | Team composition patterns, TES trends, conflict taxonomies |
 | Lore | Lore → Rally | Cross-agent parallel patterns, validated best practices |
-| Hone | Rally → Hone | Parallel execution quality data (TES scores, completion rates) |
-| Hone/Judge | Hone/Judge → Rally | Quality feedback, output quality assessment (RY-04) |
+| Judge | Rally → Judge | Parallel execution quality data (TES scores, completion rates) |
+| Judge | Judge → Rally | Quality feedback, output quality assessment (RY-04) |
 | Nexus | Rally → Nexus | Team execution reports, parallel performance data |
 | Guardian | Rally → Guardian | Merged output for PR preparation |
 | Radar | Rally → Radar | Integrated results for test verification |

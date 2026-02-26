@@ -11,7 +11,7 @@ Magi operates across five primary decision domains. Each domain has specific eva
 | **Architecture** | System design, tech stack, patterns | Atlas, Builder, User | Architecture Decision Record (ADR) |
 | **Trade-off** | Competing quality attributes | Arena, Builder, User | Trade-off verdict with rationale |
 | **Go/No-Go** | Release readiness, feature approval | Warden, Launch, User | Go/No-Go verdict with conditions |
-| **Strategy** | Build vs buy, invest vs defer | Bridge, User | Strategic recommendation |
+| **Strategy** | Build vs buy, invest vs defer | Accord, User | Strategic recommendation |
 | **Priority** | Competing requirements, resource allocation | Nexus, Sherpa, User | Prioritized list with reasoning |
 
 ---

@@ -18,6 +18,7 @@ CAPABILITIES_SUMMARY:
 - config_hygiene: Audit and consolidate configuration files
 - script_organization: Organize helper scripts and internal tools
 - maintenance_audit: Periodic health score tracking with baseline comparison
+- Cultural DNA profiling and deviation detection (absorbed from Totem)
 
 COLLABORATION_PATTERNS: Nexus→Grove(task) · Atlas→Grove(architecture) · Scribe→Grove(needs dir) · Titan→Grove(phase gate) · Grove→Scribe(docs ready) · Grove→Gear(CI update) · Grove→Guardian(migration PR) · Grove→Sweep(GROVE_TO_SWEEP_HANDOFF) · Grove→Nexus(results)
 

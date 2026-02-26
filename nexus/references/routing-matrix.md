@@ -10,7 +10,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | INCIDENT | Triage → Scout → Builder | +Mend (known pattern), +Radar, +Triage (postmortem) |
 | FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend) |
 | INVESTIGATE | Lens | +Scout (bug-related), +Canvas (viz), +Rewind (git) |
-| DECISION | Magi | +Bridge (biz-tech), +Cipher (intent) |
+| DECISION | Magi | +Accord (biz-tech) |
 | SECURITY | Sentinel → Builder → Radar | +Probe (dynamic), +Specter (concurrency) |
 | REFACTOR | Zen → Radar | +Atlas (architectural), +Grove (structure) |
 | OPTIMIZE | Bolt/Tuner → Radar | +Schema (DB) |
@@ -31,9 +31,9 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | WEBHOOK | Gateway → Relay → Builder | +Radar (tests), +Sentinel (security) |
 | HOOKS | Latch | +Gear (Git hooks), +Sentinel (security) |
 | SKILL_GEN | Sigil | +Lens (codebase analysis), +Grove (structure) |
-| EVOLUTION | Darwin | +Architect (improvement), +Hone (quality), +Void (sunset), +Lore (knowledge), +Canvas (viz) |
+| EVOLUTION | Darwin | +Architect (improvement), +Void (sunset), +Lore (knowledge), +Canvas (viz) |
 | KNOWLEDGE_SYNC | Lore | +Darwin (evolution input), +Architect (design insights), +Nexus (routing feedback) |
-| QUALITY | Hone → Canvas | +Judge (bugs), +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
+| QUALITY | Judge → Canvas | +Zen (smells), +Radar (coverage), +Sentinel (security), +Atlas (arch), +Sweep (dead code) |
 | COMPARE | Arena | +Scout (bug-fix), +Sentinel (security), +Guardian (quality gate) |
 | UX_RESEARCH | Researcher → Echo → Palette | +Cast (persona), +Trace (session data) |
 | E2E | Voyager → Lens | +Gear (CI), +Echo (persona-based) |
@@ -42,13 +42,13 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | OBSERVABILITY | Beacon → Gear → Builder | +Triage (incident link), +Scaffold (capacity) |
 | AI_FEATURE | Oracle → Builder → Radar | +Gateway (API), +Stream (pipeline), +Sentinel (safety) |
 | PRERELEASE | Warden → Guardian → Launch | +Sentinel (security gate), +Radar (test gate) |
-| REQUIREMENTS | Bridge → Cipher → Scribe → Sherpa | +Canvas (diagram), +Magi (decision) |
+| REQUIREMENTS | Accord → Scribe → Sherpa | +Canvas (diagram), +Magi (decision) |
 | DESIGN_SYSTEM | Vision → Muse → Showcase → Quill | +Palette (tokens), +Artisan (impl) |
 | CONTENT | Prose → Echo → Artisan | +Polyglot (i18n), +Researcher (insights) |
 | DEV_EXPERIENCE | Hearth → Gear → Latch | +Anvil (CLI), +Sigil (project skills) |
 | LOAD_TEST | Siege → Bolt → Builder | +Beacon (SLO), +Triage (resilience) |
 | DEMO | Director/Reel → Quill | +Showcase (catalog), +Growth (marketing) |
-| SPRINT_RETRO | Harvest → Bard → Canvas | +Quill (publish), +Triage (incident link) |
+| SPRINT_RETRO | Harvest → Canvas | +Quill (publish), +Triage (incident link) |
 | KNOWLEDGE | Scribe → Prism | +Quill (polish), +Morph (format convert) |
 | AITUBER | Cast → Aether → Builder | +Artisan (avatar UI), +Scaffold (infra), +Beacon (monitoring) |
 | REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |

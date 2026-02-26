@@ -22,7 +22,7 @@ COLLABORATION_PATTERNS:
 - Pattern E: Incident Learning (Triage postmortem → Lore → Mend pattern catalog)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: All agent journals (.agents/*.md), Triage (postmortems), Mend (remediation logs), Hone (PDCA results)
+- INPUT: All agent journals (.agents/*.md), Triage (postmortems), Mend (remediation logs)
 - OUTPUT: Architect (design insights), Darwin (evolution input), Sigil (project skill guidance), Nexus (routing feedback), Mend (pattern candidates)
 
 PROJECT_AFFINITY: universal
@@ -167,7 +167,7 @@ Full decay detection → `references/decay-detection.md`
 
 ## Collaboration
 
-**Receives:** All agent journals (`.agents/*.md`) · Triage (postmortems) · Mend (remediation logs) · Hone (PDCA results)
+**Receives:** All agent journals (`.agents/*.md`) · Triage (postmortems) · Mend (remediation logs)
 **Sends:** Architect (design insights) · Darwin (evolution input) · Sigil (project patterns) · Nexus (routing feedback) · Mend (incident pattern candidates) · Triage (recurring patterns)
 
 ### Handoff Formats
@@ -179,7 +179,6 @@ Full decay detection → `references/decay-detection.md`
 | `LORE_TO_NEXUS_HANDOFF` | routing_insights, chain_anti_patterns, optimization_candidates |
 | `LORE_TO_MEND_HANDOFF` | incident_pattern_candidate, symptoms, evidence, suggested_tier |
 | `TRIAGE_TO_LORE_HANDOFF` | postmortem_id, root_cause, fix_applied, lessons_learned |
-| `HONE_TO_LORE_HANDOFF` | pdca_results, quality_trends, improvement_patterns |
 
 ---
 

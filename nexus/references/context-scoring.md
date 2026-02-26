@@ -119,7 +119,7 @@ context_to_decision:
 
   very_low_confidence:
     action: STRUCTURED_CLARIFICATION
-    delegate_to: Cipher  # Intent specialist
+    method: intent_clarification  # See references/intent-clarification.md
 ```
 
 ---
@@ -261,29 +261,30 @@ _CONTEXT_SNAPSHOT:
 
 ---
 
-## Relationship with Cipher
+## Low-Confidence Intent Clarification
 
-When confidence is LOW or VERY_LOW, Nexus delegates to Cipher:
+When confidence is LOW or VERY_LOW, Nexus uses its internal intent clarification capability. See `references/intent-clarification.md` for the full methodology.
 
 ```
 Nexus (low confidence)
     │
     ▼
-┌────────────────┐
-│     Cipher     │  ← Intent decoding specialist
-│ - Analyze gaps │
-│ - Resolve amb. │
-│ - Single Q     │
-└───────┬────────┘
-        │
-        ▼
+┌──────────────────────────┐
+│  Nexus Internal Process  │
+│  (Intent Clarification)  │
+│  - Analyze context gaps  │
+│  - Resolve ambiguity     │
+│  - Single Q if needed    │
+└───────────┬──────────────┘
+            │
+            ▼
     Clarified Intent
-        │
-        ▼
+            │
+            ▼
     Nexus (re-score)
 ```
 
-Cipher's output feeds back into Context Scoring:
+Intent clarification feeds back into Context Scoring:
 - Clarified intent → +0.20 to conversation score
 - Resolved assumptions → removes penalties
 - User correction → recorded for future scoring

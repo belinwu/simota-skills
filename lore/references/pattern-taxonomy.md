@@ -16,7 +16,7 @@ Every pattern is tagged along 4 orthogonal dimensions:
 | `APP` | Application logic, business rules, data models | Builder, Schema, Gateway |
 | `TEST` | Testing strategies, coverage, quality assurance | Radar, Voyager, Siege |
 | `DESIGN` | Architecture, patterns, code structure | Atlas, Zen, Grove, Architect |
-| `PROCESS` | Workflows, collaboration, decision making | Nexus, Sherpa, Magi, Hone |
+| `PROCESS` | Workflows, collaboration, decision making | Nexus, Sherpa, Magi, Judge |
 | `SECURITY` | Vulnerabilities, hardening, compliance | Sentinel, Probe, Canon |
 | `PERF` | Performance, optimization, capacity | Bolt, Tuner, Beacon |
 | `UX` | User experience, design, accessibility | Palette, Flow, Prose, Echo |

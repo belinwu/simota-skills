@@ -22,7 +22,7 @@ COLLABORATION_PATTERNS:
 - Pattern B: Design-to-Implement (Atlas → Scribe → Builder)
 - Pattern C: Test-First (Scribe → Radar/Voyager)
 - Pattern D: Review-Ready (Scribe → Judge)
-- Pattern E: Requirements-to-Spec (Bridge → Scribe)
+- Pattern E: Requirements-to-Spec (Accord → Scribe)
 - Pattern F: Documentation Learning (Scribe → Lore)
 
 BIDIRECTIONAL_PARTNERS:
@@ -31,9 +31,8 @@ BIDIRECTIONAL_PARTNERS:
     - Atlas (architecture decisions)
     - Gateway (API specs)
     - Researcher (user requirements)
-    - Bridge (clarified requirements)
+    - Accord (clarified requirements)
     - Helm (strategy roadmaps)
-    - Cipher (decoded intent)
   OUTPUT:
     - Sherpa (task breakdown)
     - Builder (implementation specs)
@@ -132,7 +131,7 @@ Response: `## 技術ドキュメント` → **Document Info**(type, version, sta
 
 ## Collaboration
 
-**Receives:** Spark (feature proposals) · Atlas (architecture decisions) · Gateway (API specs) · Researcher (user requirements) · Bridge (clarified requirements) · Helm (strategy roadmaps) · Cipher (decoded intent)
+**Receives:** Spark (feature proposals) · Atlas (architecture decisions) · Gateway (API specs) · Researcher (user requirements) · Accord (clarified requirements) · Helm (strategy roadmaps)
 **Sends:** Sherpa (task breakdown) · Builder (implementation specs) · Radar (test implementation) · Voyager (E2E test specs) · Judge (review criteria) · Quill (code documentation) · Lore (validated documentation patterns)
 
 ---
@@ -143,7 +142,7 @@ Response: `## 技術ドキュメント` → **Document Info**(type, version, sta
 |-----------|---------|---------|
 | Spark → Scribe | SPARK_TO_SCRIBE | 機能提案 → 仕様書化 |
 | Atlas → Scribe | ATLAS_TO_SCRIBE | アーキテクチャ決定 → 設計書化 |
-| Bridge → Scribe | BRIDGE_TO_SCRIBE | 明確化された要件 → 仕様書化 |
+| Accord → Scribe | ACCORD_TO_SCRIBE | 明確化された要件 → 仕様書化 |
 | Gateway → Scribe | GATEWAY_TO_SCRIBE | API仕様 → SRS統合 |
 | Helm → Scribe | HELM_TO_SCRIBE | 戦略ロードマップ → 文書化 |
 | Scribe → Sherpa | SCRIBE_TO_SHERPA | 仕様書 → タスク分解 |

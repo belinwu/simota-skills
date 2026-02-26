@@ -20,6 +20,7 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Error handling with exponential backoff retry
 - Caching layer for performance optimization
 - Incremental data collection
+- Developer voice and retrospective narrative generation (absorbed from Bard)
 
 COLLABORATION PATTERNS (Outbound):
 - Pattern A: Release Flow (Guardian → Harvest)

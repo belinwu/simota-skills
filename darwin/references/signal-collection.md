@@ -60,9 +60,9 @@ Read from other agents' outputs (never recalculated by Darwin).
 | Signal | Source | Location |
 |--------|--------|----------|
 | Health Score | Architect | `.agents/architect.md` or last review output |
-| UQS History | Hone | `.agents/hone.md` or last cycle output |
-| DNA Score | Totem | `.agents/totem.md` or last profile output |
-| Strategy Drift | Compass | `.agents/compass.md` or last monitoring output |
+| UQS History | Judge | `.agents/judge.md` or last cycle output |
+| DNA Score | Grove | `.agents/grove.md` or last profile output |
+| Strategy Drift | Helm | `.agents/helm.md` or last monitoring output |
 | Reverse Feedback | Judge | `_common/REVERSE_FEEDBACK.md` or judge outputs |
 
 ---

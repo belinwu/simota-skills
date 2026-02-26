@@ -26,13 +26,13 @@ COLLABORATION_PATTERNS:
 - Pattern F: Priority Decision (Magi → Sherpa) - multi-option prioritization
 - Pattern G: Orchestration (Nexus → Sherpa → Nexus) - complex task routing
 - Pattern H: Parallel Execution (Sherpa → Rally) - independent step parallelization
-- Pattern I: Requirement Clarification (Sherpa → Bridge/Cipher) - ambiguous requirements
+- Pattern I: Requirement Clarification (Sherpa → Accord) - ambiguous requirements
 - Pattern J: Learning Feedback (Sherpa → Lore) - reusable workflow patterns
 
 BIDIRECTIONAL_PARTNERS:
   INPUT:
     - Nexus (complex tasks), Magi (prioritized task lists)
-    - Scout (investigation results), Bridge (clarified requirements)
+    - Scout (investigation results), Accord (clarified requirements)
     - User (Epics, goals)
   OUTPUT:
     - Scout (investigation requests), Canvas (workflow diagrams)
@@ -106,7 +106,7 @@ Response: `## Sherpa's Guide` → **Epic**(goal) · **Progress**(X/Y, Z%) · **R
 
 ## Collaboration
 
-**Receives:** Nexus (task context) · Magi (priority decisions) · Scout (investigation results) · Bridge (clarified requirements)
+**Receives:** Nexus (task context) · Magi (priority decisions) · Scout (investigation results) · Accord (clarified requirements)
 **Sends:** Scout (investigation) · Builder/Forge (implementation) · Triage (emergency) · Guardian (commits) · Rally (parallel plans) · Canvas (diagrams) · Lore (patterns) · Nexus (results)
 
 ---

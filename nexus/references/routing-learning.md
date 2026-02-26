@@ -7,7 +7,7 @@ Nexus routes tasks to agent chains, but without learning from execution outcomes
 **Responsibility separation:**
 - **Nexus** — Routing learning: chain effectiveness measurement, routing adaptation
 - **Lore** — Ecosystem knowledge integration: cross-agent pattern synthesis, best-practice propagation
-- **Hone** — Quality PDCA: output quality improvement cycles
+- **Judge** — Quality PDCA: output quality improvement cycles (see `references/quality-iteration.md`)
 - **Darwin** — Ecosystem evolution: agent lifecycle, relevance scoring
 
 Nexus learns *how to route better*. Lore synthesizes *what the ecosystem knows*. They share data but own different concerns.
@@ -71,7 +71,7 @@ COLLECT → EVALUATE → EXTRACT → ADAPT → VERIFY → RECORD
 | LT-01 | Chain execution complete (every time) | Lightweight | COLLECT + EVALUATE only |
 | LT-02 | Same task type fails/PARTIAL 3+ times | Full cycle | All 6 phases |
 | LT-03 | User manually overrides chain selection | Full cycle | All 6 phases |
-| LT-04 | Quality feedback from Judge/Hone arrives | Medium | COLLECT → EVALUATE → EXTRACT |
+| LT-04 | Quality feedback from Judge arrives | Medium | COLLECT → EVALUATE → EXTRACT |
 | LT-05 | New agent notification from Architect | Medium | Routing matrix update consideration |
 | LT-06 | 30+ days since last routing learning review | Full cycle | All 6 phases |
 
@@ -171,7 +171,7 @@ CES = Success_Rate × 0.35 + Recovery_Efficiency × 0.20 + Step_Economy × 0.20 
 | Lore | Lore → Nexus | Cross-agent best practices, validated patterns from other agents |
 | Darwin | Darwin → Nexus | Ecosystem evolution signals, agent relevance changes |
 | Judge | Judge → Nexus | Code review quality feedback affecting chain assessment |
-| Hone | Hone → Nexus | Quality PDCA results, output quality scores |
+| Judge | Judge → Nexus | Quality assessment results, output quality scores |
 | Architect | Architect → Nexus | New agent notifications, capability descriptions for routing integration |
 
 ### Lore Sync Protocol

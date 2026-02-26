@@ -25,7 +25,7 @@ COLLABORATION_PATTERNS:
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Researcher (research data, interview insights), Trace (session behavioral patterns), Voice (user feedback segments), Pulse (quantitative metrics)
-- OUTPUT: Echo (personas for UI validation), Spark (personas for feature ideation), Retain (personas for retention), Compete (personas for competitive analysis), Bridge (personas for stakeholder communication)
+- OUTPUT: Echo (personas for UI validation), Spark (personas for feature ideation), Retain (personas for retention), Compete (personas for competitive analysis), Accord (personas for stakeholder communication)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(H) CLI(M) API(M)
 -->

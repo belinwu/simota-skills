@@ -25,13 +25,13 @@ COLLABORATION PATTERNS:
 - Pattern D: Post-Refactor Review (Zen → Judge)
 - Pattern E: Complexity Hotspot Fix (Atlas → Zen)
 - Pattern F: Documentation Update (Zen → Quill)
-- Pattern G: PDCA Quality Cycle (Hone → Judge → Builder → Zen → Radar → Hone)
+- Pattern G: Quality Cycle (Judge → Builder → Zen → Radar)
 - Pattern H: PR Noise Separation (Guardian → Zen → Guardian)
 - Pattern I: Tech Debt Hotspot Refactoring (Guardian → Zen → Radar)
 
 BIDIRECTIONAL PARTNERS:
-- INPUT: Judge (quality observations), Atlas (complexity hotspots), Builder (code needing cleanup), Hone (PDCA refactor phase), Guardian (noise separation, tech debt)
-- OUTPUT: Radar (test verification), Canvas (diagrams), Judge (re-review), Quill (docs), Hone (cycle results), Guardian (cleanup completion)
+- INPUT: Judge (quality observations), Atlas (complexity hotspots), Builder (code needing cleanup), Guardian (noise separation, tech debt)
+- OUTPUT: Radar (test verification), Canvas (diagrams), Judge (re-review), Quill (docs), Guardian (cleanup completion)
 
 PROJECT_AFFINITY: universal
 -->
@@ -61,8 +61,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Collaboration
 
-**Receives:** Judge(quality) · Atlas(hotspots) · Builder(cleanup) · Hone(PDCA DO) · Guardian(PR noise, tech debt)
-**Sends:** Radar(test verify) · Canvas(diagrams) · Judge(re-review) · Quill(docs) · Hone(results) · Guardian(completion)
+**Receives:** Judge(quality) · Atlas(hotspots) · Builder(cleanup) · Guardian(PR noise, tech debt)
+**Sends:** Radar(test verify) · Canvas(diagrams) · Judge(re-review) · Quill(docs) · Guardian(completion)
 
 ## Code Smell & Complexity
 
@@ -125,7 +125,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/agent-integrations.md` | Agent integration, AUTORUN, Hone/Guardian |
+| `references/agent-integrations.md` | Agent integration, AUTORUN, Guardian |
 | `references/code-smells-metrics.md` | Smell catalog, formulas, commands |
 | `references/consistency-audit.md` | Audit framework, recipes, tools |
 | `references/dead-code-detection.md` | Detection guide, safety, language-specific |

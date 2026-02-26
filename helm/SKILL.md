@@ -14,16 +14,15 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Risk & opportunity matrix: probability × impact mapping with mitigation proposals
 - Strategy roadmap output: Markdown execution plan, Canvas-ready visualization
 - Strategic prediction calibration: framework effectiveness tracking, prediction accuracy validation
+- Strategy execution monitoring and OKR cascading (absorbed from Compass)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Intelligence-to-Strategy (Compete → Helm → Scribe)
 - Pattern B: Metrics-to-Forecast (Pulse → Helm → Canvas)
 - Pattern C: Strategy-to-Decision (Helm → Magi → Sherpa)
-- Pattern D: Research-to-Vision (Researcher → Voice → Helm → Bridge)
+- Pattern D: Research-to-Vision (Researcher → Voice → Helm → Accord)
 - Pattern E: Full-Cycle (Compete+Pulse → Helm → Magi → Scribe)
-- Pattern F: Perspective-to-Strategy (Refract → Helm)
-- Pattern G: Monitor-to-Revise (Compass → Helm)
-- Pattern H: Strategy Learning (Helm → Lore)
+- Pattern F: Strategy Learning (Helm → Lore)
 
 BIDIRECTIONAL_PARTNERS:
   INPUT:
@@ -31,15 +30,12 @@ BIDIRECTIONAL_PARTNERS:
     - Pulse (KPI data)
     - Researcher (market research)
     - Voice (customer feedback)
-    - Bridge (business requirements)
-    - Refract (perspective reframing)
-    - Compass (strategy health monitoring)
+    - Accord (business requirements)
   OUTPUT:
     - Magi (strategic judgment)
     - Scribe (documentation)
     - Canvas (visualization)
     - Sherpa (execution planning)
-    - Compass (strategy monitoring)
     - Lore (validated strategic patterns)
 
 PROJECT_AFFINITY: Enterprise(H) SaaS(H) Startup(H) SMB(M) E-commerce(M)
@@ -85,7 +81,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 `TRACK → VALIDATE → CALIBRATE → PROPAGATE` → Full details: `references/strategic-calibration.md`
 
-Track simulation outputs and predictions. Validate prediction accuracy against actual outcomes. Calibrate framework selection weights and scenario generation parameters from results. Propagate validated strategic patterns to Lore/Compass. Emit EVOLUTION_SIGNAL for reusable strategic insights.
+Track simulation outputs and predictions. Validate prediction accuracy against actual outcomes. Calibrate framework selection weights and scenario generation parameters from results. Propagate validated strategic patterns to Lore. Emit EVOLUTION_SIGNAL for reusable strategic insights.
 
 ### Scenario Planning
 
@@ -126,8 +122,8 @@ Response: `## 経営シミュレーションレポート` → **Executive Summar
 
 ## Collaboration
 
-**Receives:** Compete (competitive intel) · Pulse (KPI data) · Researcher (market research) · Voice (customer feedback) · Bridge (business requirements) · Refract (perspective reframing) · Compass (strategy health monitoring)
-**Sends:** Magi (strategic judgment) · Scribe (documentation) · Canvas (visualization) · Sherpa (execution planning) · Compass (strategy monitoring) · Lore (validated strategic patterns)
+**Receives:** Compete (competitive intel) · Pulse (KPI data) · Researcher (market research) · Voice (customer feedback) · Accord (business requirements)
+**Sends:** Magi (strategic judgment) · Scribe (documentation) · Canvas (visualization) · Sherpa (execution planning) · Lore (validated strategic patterns)
 
 ---
 
@@ -137,13 +133,10 @@ Response: `## 経営シミュレーションレポート` → **Executive Summar
 |-----------|---------|---------|
 | Compete → Helm | COMPETE_TO_HELM | 競合インテリジェンス → 戦略分析 |
 | Pulse → Helm | PULSE_TO_HELM | KPIデータ → 予測・シミュレーション |
-| Compass → Helm | COMPASS_TO_HELM | 戦略ドリフト検知 → 戦略修正 |
-| Refract → Helm | REFRACT_TO_HELM | 多角視点 → 戦略統合 |
 | Helm → Magi | HELM_TO_MAGI | シミュレーション結果 → Go/No-Go判定 |
 | Helm → Scribe | HELM_TO_SCRIBE | 戦略ロードマップ → 文書化 |
 | Helm → Canvas | HELM_TO_CANVAS | 戦略データ → 可視化 |
 | Helm → Sherpa | HELM_TO_SHERPA | 実行ロードマップ → タスク分解 |
-| Helm → Compass | HELM_TO_COMPASS | 戦略・前提仮定 → モニタリング |
 | Helm → Lore | HELM_TO_LORE | 検証済み戦略パターン → ナレッジベース |
 
 ## References

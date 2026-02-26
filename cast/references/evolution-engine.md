@@ -6,7 +6,7 @@ Evolution mechanism specification for data-driven persona updates.
 
 ## Overview
 
-The evolution engine detects persona drift from new data, applies controlled updates, and maintains a full audit trail. Inspired by Bard's chronicle system but adapted for structured persona data.
+The evolution engine detects persona drift from new data, applies controlled updates, and maintains a full audit trail. Inspired by Harvest's chronicle system but adapted for structured persona data.
 
 ```
 ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐

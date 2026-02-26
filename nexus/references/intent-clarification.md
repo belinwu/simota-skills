@@ -30,7 +30,7 @@ Methodology for decoding ambiguous user intent before agent routing. Previously 
 | "Fix this" / "直して" | Bug fix, specific target | Check git diff/status for context |
 | "Improve" / "改善" | Enhancement, broad scope | Narrow scope via recent activity |
 | "Something is wrong" | Vague bug report | Investigate before interpreting |
-| "Make it better" | Quality improvement | Check recent Judge/Hone feedback |
+| "Make it better" | Quality improvement | Check recent Judge feedback |
 | Frustrated tone | User wants action, not questions | Use safest default, proceed |
 | Technical terms used | User knows domain | Match precision level |
 | Vague keywords | Scope ambiguity | Check .agents/PROJECT.md context |
@@ -48,7 +48,7 @@ Methodology for decoding ambiguous user intent before agent routing. Previously 
 
 ## CIPHER_GATE Integration
 
-See `cipher-integration.md` for the full Nexus↔Cipher integration protocol (now applies as an internal Nexus capability):
+The following rules apply as an internal Nexus capability (previously the Cipher integration protocol):
 
 - Trigger: context_confidence < 0.60, multiple valid interpretations, or missing critical context
 - Auto-clarification: Nexus attempts to resolve using gathered context

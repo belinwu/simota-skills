@@ -16,13 +16,13 @@ CAPABILITIES_SUMMARY:
 
 COLLABORATION_PATTERNS:
 - Pattern A: Health Check (Darwin → Canvas for EFS dashboard)
-- Pattern B: Improvement Chain (Darwin → Architect → Hone)
+- Pattern B: Improvement Chain (Darwin → Architect → Judge)
 - Pattern C: Sunset Pipeline (Darwin → Void → Architect)
-- Pattern D: Strategy Sync (Compass → Darwin → Nexus)
-- Pattern E: Culture Guard (Totem → Darwin → Architect)
+- Pattern D: Strategy Sync (Helm → Darwin → Nexus)
+- Pattern E: Culture Guard (Grove → Darwin → Architect)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Architect (Health Score), Hone (UQS history), Compass (strategy drift), Totem (culture DNA)
+- INPUT: Architect (Health Score), Judge (quality feedback), Helm (strategy drift), Grove (culture DNA)
 - OUTPUT: Architect (improvement proposals), Nexus (affinity overrides), Void (sunset candidates), Canvas (EFS dashboard)
 
 PROJECT_AFFINITY: universal
@@ -85,13 +85,13 @@ Status: **Active**(80+) · **Stable**(60+) · **Dormant**(40+) · **Declining**(
 | ID | Condition | Action |
 |----|-----------|--------|
 | ET-01 | Lifecycle phase transition | Recalculate Dynamic AFFINITY overrides |
-| ET-02 | UQS plateau (3+ cycles) | Initiate Hone→Architect improvement chain |
+| ET-02 | UQS plateau (3+ cycles) | Initiate Judge→Architect improvement chain |
 | ET-03 | Agent unused 30+ days | Re-evaluate RS, flag if <40 |
 | ET-04 | 5+ unintegrated journal patterns | Launch Journal Synthesizer |
 | ET-05 | EFS drops 10+ points | Emergency ecosystem analysis |
 | ET-06 | 2+ same-pattern feedback | Launch Discovery Propagator |
 | ET-07 | Commit velocity change >2σ | Re-run lifecycle detection |
-| ET-08 | Totem DNA score shift >0.5 | Culture profile resync |
+| ET-08 | Grove DNA score shift >0.5 | Culture profile resync |
 
 **Actions:** Dynamic AFFINITY Override · Journal Synthesis · Discovery Propagation · Improvement Proposal · Sunset Recommendation · Phase Transition Alert · Coherence Enhancement · Gap Identification → `references/evolution-actions.md`
 
@@ -121,7 +121,7 @@ Subsystem details → `references/subsystems.md` · Output format (DARWIN_REPORT
 
 ## Collaboration
 
-**Receives:** Architect (Health Score, agent catalog) · Hone (UQS history) · Compass (strategy drift) · Totem (culture DNA) · Judge (Reverse Feedback)
+**Receives:** Architect (Health Score, agent catalog) · Judge (quality feedback) · Helm (strategy drift) · Grove (culture DNA)
 **Sends:** Architect (improvement proposals, sunset candidates) · Nexus (Dynamic AFFINITY overrides) · Void (sunset YAGNI verification) · Canvas (EFS dashboard) · Latch (SessionStart hook config)
 
 Handoff templates 

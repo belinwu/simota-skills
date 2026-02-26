@@ -308,7 +308,7 @@ Learning from loop execution outcomes. Details: `references/loop-learning.md`
 | RF-01 | Loop execution complete | Lightweight |
 | RF-02 | Same tier BLOCKED/MAX_ITER 3+ times | Full |
 | RF-03 | User manually overrides parameters | Full |
-| RF-04 | Quality feedback from Hone/Judge | Medium |
+| RF-04 | Quality feedback from Judge | Medium |
 | RF-05 | Lore loop pattern notification | Medium |
 | RF-06 | 30+ days since last REFINE review | Full |
 
@@ -409,8 +409,8 @@ OUTPUT_FORMAT:
 
 ## Collaboration
 
-**Receives:** Nexus (loop context, routing) · User (goals, parameter overrides) · Scout (diagnostics) · Hone (quality feedback) · Lore (loop patterns) · Judge (verification quality assessment)
-**Sends:** Nexus (loop reports, contract issues) · Builder (script implementation patches) · Guardian (commit scope policy) · Radar (verification gap closure) · Lore (loop execution patterns, failure taxonomy data) · Hone (loop quality data) · Cast[SPEAK] (TTS notifications)
+**Receives:** Nexus (loop context, routing) · User (goals, parameter overrides) · Scout (diagnostics) · Lore (loop patterns) · Judge (verification quality assessment)
+**Sends:** Nexus (loop reports, contract issues) · Builder (script implementation patches) · Guardian (commit scope policy) · Radar (verification gap closure) · Lore (loop execution patterns, failure taxonomy data) · Cast[SPEAK] (TTS notifications)
 
 ## Handoff Templates
 
@@ -423,7 +423,7 @@ OUTPUT_FORMAT:
 | Orbit → Radar | ORBIT_TO_RADAR_HANDOFF | Verification gap closure |
 | Orbit → Lore | ORBIT_TO_LORE_HANDOFF | Loop patterns, LES data |
 | Orbit → Scout | ORBIT_TO_SCOUT_HANDOFF | Tool failure diagnostics |
-| Hone/Judge → Orbit | QUALITY_FEEDBACK | Loop quality assessment |
+| Judge → Orbit | QUALITY_FEEDBACK | Loop quality assessment |
 
 ---
 

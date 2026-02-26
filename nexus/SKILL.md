@@ -15,10 +15,12 @@ CAPABILITIES_SUMMARY:
 - Dynamic chain adjustment based on execution results
 - Rollback and checkpoint management
 - Routing decision learning from execution outcomes (Chain Effectiveness Score)
-- Quality feedback processing from Judge/Hone/Lore
+- Quality feedback processing from Judge/Lore
 - Chain effectiveness trend tracking and adaptation
 - New agent auto-integration (Architect notification → routing matrix update)
 - Proactive project health analysis and recommendation
+- Intent clarification methodology (absorbed from Cipher)
+- PDCA quality iteration and UQS scoring (absorbed from Hone)
 
 ORCHESTRATION_PATTERNS:
 - Pattern A: Sequential Chain (Agent1 → Agent2 → Agent3)
@@ -52,7 +54,7 @@ ALL AGENTS (Hub connections):
 - Meta-Orchestration: Titan, Sigil, Darwin, Lore
 - Persona: Cast
 - Developer Environment: Hearth
-- Communication: Relay, Bard
+- Communication: Relay
 - Loop Operations: Orbit
 
 PROJECT_AFFINITY: universal
@@ -105,7 +107,7 @@ Agent boundaries → `_common/BOUNDARIES.md` · Disambiguation → `references/a
 | LT-01 | Chain execution complete | Lightweight |
 | LT-02 | Same task type fails 3+ times | Full |
 | LT-03 | User manually overrides chain | Full |
-| LT-04 | Quality feedback from Judge/Hone | Medium |
+| LT-04 | Quality feedback from Judge | Medium |
 | LT-05 | New agent notification from Architect | Medium |
 | LT-06 | 30+ days since last routing review | Full |
 
@@ -131,7 +133,7 @@ Agent boundaries → `_common/BOUNDARIES.md` · Disambiguation → `references/a
 
 **Proactive Mode**: `/Nexus` (no args) → scan state (git/activity/commits) → health eval (test/security/code/doc: 🟢🟡🔴) → recommended actions. If `.agents/ECOSYSTEM.md` exists: `🧬 Ecosystem: EFS [XX]/100 ([Grade])`. → `references/proactive-mode.md`
 
-**Context Confidence**: Enough context? → Proceed. Unclear? → Check git + PROJECT.md. Still low? → Cipher. Always explain routing: task type · domain · scope · chosen chain · rationale · alternatives. → `references/routing-explanation.md` · `references/context-scoring.md`
+**Context Confidence**: Enough context? → Proceed. Unclear? → Check git + PROJECT.md. Still low? → Ask user. Always explain routing: task type · domain · scope · chosen chain · rationale · alternatives. → `references/routing-explanation.md` · `references/context-scoring.md`
 
 **Auto Decision**: Confident? → auto-decide. Risky or irreversible? → confirm. Always confirm: L4 security · destructive actions · external system mods · 10+ files. → `references/auto-decision.md`
 
@@ -182,7 +184,7 @@ Response: `## Nexus 実行レポート` → **Task**(type, complexity) · **Chai
 
 ## Collaboration
 
-**Receives:** All agents (task requests via hub) · Titan (phase Epic chains) · Judge/Hone (quality feedback) · Architect (new agent notifications) · Lore (cross-agent patterns) · Darwin (ecosystem evolution signals)
+**Receives:** All agents (task requests via hub) · Titan (phase Epic chains) · Judge (quality feedback) · Architect (new agent notifications) · Lore (cross-agent patterns) · Darwin (ecosystem evolution signals)
 **Sends:** All agents (routed tasks) · Titan (NEXUS_COMPLETE results) · Lore (routing patterns, chain effectiveness data)
 
 ---
@@ -197,7 +199,7 @@ Response: `## Nexus 実行レポート` → **Task**(type, complexity) · **Chai
 | Nexus → User | NEXUS_COMPLETE | Final delivery |
 | Architect → Nexus | ARCHITECT_TO_NEXUS_HANDOFF | New agent notification, routing updates |
 | Nexus → Lore | NEXUS_TO_LORE_HANDOFF | Routing patterns and chain effectiveness data |
-| Judge/Hone → Nexus | QUALITY_FEEDBACK | Chain quality assessment |
+| Judge → Nexus | QUALITY_FEEDBACK | Chain quality assessment |
 | Nexus → Nexus | ROUTING_ADAPTATION_LOG | Self-routing-improvement results |
 
 ## References
@@ -216,7 +218,6 @@ Response: `## Nexus 実行レポート` → **Task**(type, complexity) · **Chai
 | `references/guardrails.md` | Context hierarchy, state formats, recovery details |
 | `references/error-handling.md` | Recovery flow, event format, escalation protocol |
 | `references/output-formats.md` | NEXUS_COMPLETE/FULL templates, NEXUS_HANDOFF format |
-| `references/cipher-integration.md` | Cipher Gate protocol, confidence boost flow |
 | `references/intent-clarification.md` | Intent decoding methodology (absorbed from Cipher) |
 | `references/quality-iteration.md` | PDCA quality iteration & UQS scoring (absorbed from Hone) |
 | `references/conflict-resolution.md` | Parallel branch conflict resolution protocol |

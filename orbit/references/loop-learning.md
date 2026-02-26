@@ -10,10 +10,10 @@ Orbit's learning subsystem for improving loop execution through outcome analysis
 |-----------|-------|-------|
 | Loop execution learning | Orbit (REFINE) | Contract design effectiveness, parameter optimization, failure pattern tracking |
 | Cross-agent knowledge synthesis | Lore | Pattern aggregation across all agents |
-| Quality PDCA | Hone | Output quality measurement and improvement cycles |
+| Quality PDCA | Judge | Output quality measurement and improvement cycles |
 | Known-pattern auto-remediation | Mend | Automated fixes for recognized failure patterns |
 
-REFINE learns *within* Orbit's loop-ops domain — which contract designs succeed, which parameters are optimal per tier, and which failure patterns recur. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Hone for PDCA integration.
+REFINE learns *within* Orbit's loop-ops domain — which contract designs succeed, which parameters are optimal per tier, and which failure patterns recur. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Judge for PDCA integration.
 
 ---
 
@@ -30,7 +30,7 @@ OBSERVE → MEASURE → ANALYZE → IMPROVE → SAFEGUARD → JOURNAL
 | ANALYZE | Pattern identification | Identify success/failure patterns, root cause analysis, tier/parameter fitness evaluation |
 | IMPROVE | Adaptation proposal | Propose contract template improvements, default parameter adjustments, failure taxonomy refinements |
 | SAFEGUARD | Change verification | Verify consistency with existing Patterns (1-9) and Anti-patterns (AP-1~11), create rollback snapshot |
-| JOURNAL | Learning record | Record findings in journal, share patterns to Lore, share quality data to Hone |
+| JOURNAL | Learning record | Record findings in journal, share patterns to Lore, share quality data to Judge |
 
 ### Phase Details
 
@@ -100,7 +100,7 @@ Before applying any adaptation:
 Record learning outcomes:
 1. Write feedback record to `.agents/orbit.md`
 2. Share extracted patterns to Lore via `ORBIT_TO_LORE_HANDOFF`
-3. Share quality metrics to Hone via quality data channel
+3. Share quality metrics to Judge via quality data channel
 4. Update local parameter baseline if adaptation was applied
 
 ---
@@ -112,7 +112,7 @@ Record learning outcomes:
 | RF-01 | Loop execution complete (every time) | Lightweight | OBSERVE + MEASURE only |
 | RF-02 | Same tier hits BLOCKED or MAX_ITER 3+ times | Full cycle | All 6 REFINE phases |
 | RF-03 | User manually overrides parameters | Full cycle | All 6 REFINE phases (parameter fitness signal) |
-| RF-04 | Quality feedback arrives from Hone or Judge | Medium | OBSERVE + MEASURE + ANALYZE + JOURNAL |
+| RF-04 | Quality feedback arrives from Judge | Medium | OBSERVE + MEASURE + ANALYZE + JOURNAL |
 | RF-05 | Lore sends loop-related pattern notification | Medium | OBSERVE + MEASURE + ANALYZE + JOURNAL |
 | RF-06 | 30+ days since last full REFINE cycle | Full cycle | All 6 REFINE phases (staleness prevention) |
 
@@ -215,8 +215,8 @@ LES = Completion_Rate × 0.30
 |---------|-----------|----------------|
 | Lore | Orbit → Lore | Loop execution patterns, failure taxonomy data, LES trends |
 | Lore | Lore → Orbit | Cross-agent loop patterns, validated best practices |
-| Hone | Orbit → Hone | Loop quality data (LES scores, completion rates) |
-| Hone/Judge | Hone/Judge → Orbit | Quality feedback, verification assessment (RF-04) |
+| Judge | Orbit → Judge | Loop quality data (LES scores, completion rates) |
+| Judge | Judge → Orbit | Quality feedback, verification assessment (RF-04) |
 | Nexus | Orbit → Nexus | Loop performance reports, tier effectiveness data |
 | Builder | Orbit → Builder | Script template improvement patches |
 | Guardian | Orbit → Guardian | Commit scope policy refinements from loop analysis |

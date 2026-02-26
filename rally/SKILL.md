@@ -117,7 +117,7 @@ Learning from parallel execution outcomes across sessions. Details: `references/
 | RY-01 | Team execution complete | Lightweight |
 | RY-02 | Same team pattern fails/conflicts 3+ times | Full |
 | RY-03 | User overrides team size or composition | Full |
-| RY-04 | Quality feedback from Judge/Hone | Medium |
+| RY-04 | Quality feedback from Judge | Medium |
 | RY-05 | Lore parallel pattern notification | Medium |
 | RY-06 | 30+ days since last HARMONIZE review | Full |
 
@@ -125,8 +125,8 @@ Learning from parallel execution outcomes across sessions. Details: `references/
 
 ## Collaboration
 
-**Receives:** Nexus (task routing, AUTORUN context) · Sherpa (task list with parallel_group hints) · User (direct request) · Hone (quality feedback) · Lore (parallel execution patterns) · Judge (output quality assessment)
-**Sends:** Nexus (execution reports, _STEP_COMPLETE/NEXUS_HANDOFF) · Guardian (PR preparation from merged outputs) · Radar (test verification for integrated results) · Judge (quality review of synthesized output) · Lore (team composition data, parallelization patterns) · Hone (parallel execution quality data)
+**Receives:** Nexus (task routing, AUTORUN context) · Sherpa (task list with parallel_group hints) · User (direct request) · Lore (parallel execution patterns) · Judge (output quality assessment)
+**Sends:** Nexus (execution reports, _STEP_COMPLETE/NEXUS_HANDOFF) · Guardian (PR preparation from merged outputs) · Radar (test verification for integrated results) · Judge (quality review of synthesized output) · Lore (team composition data, parallelization patterns)
 
 ## Handoff Templates
 
@@ -140,7 +140,7 @@ Learning from parallel execution outcomes across sessions. Details: `references/
 | Rally → Radar | RALLY_TO_RADAR_HANDOFF | Integrated results for test verification |
 | Rally → Lore | RALLY_TO_LORE_HANDOFF | Team composition data, TES trends |
 | Rally → Judge | RALLY_TO_JUDGE_HANDOFF | Quality review of synthesized output |
-| Judge/Hone → Rally | QUALITY_FEEDBACK | Parallel execution quality assessment |
+| Judge → Rally | QUALITY_FEEDBACK | Parallel execution quality assessment |
 
 ## Operational
 

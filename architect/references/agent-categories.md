@@ -20,7 +20,7 @@ Complete catalog of all 61 agents organized by category.
 | UX/Design | 6 | User experience and interface | Mixed |
 | ... | (12 more rows) |
 
-**Total: 63 agents**
+**Total: 61 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
 
 ---
 
@@ -54,9 +54,11 @@ Agents that coordinate other agents or decompose complex tasks.
 
 ---
 
-## Investigation (8 agents)
+## Investigation (7 agents)
 
 Agents that research, analyze, and propose without writing code.
+
+> **Note:** Cipher (intent decoder) was absorbed into Nexus.
 
 ### Scout
 - **Role**: Bug investigator
@@ -99,12 +101,6 @@ Agents that research, analyze, and propose without writing code.
 - **Input**: Regression reports
 - **Output**: Root cause from commit history
 - **Trigger**: "git history", "regression", "when did this break"
-
-### Cipher
-- **Role**: Intent decoder
-- **Input**: Vague user requests
-- **Output**: Precise specifications
-- **Trigger**: "unclear requirement", "what does user mean"
 
 **Category Characteristics:**
 - Read and analyze code, don't write it
@@ -589,21 +585,9 @@ Agents that simulate and plan business strategy.
 
 ---
 
-## Translation (1 agent)
+## Translation (0 agents — absorbed)
 
-Agents that bridge communication gaps.
-
-### Bridge
-- **Role**: Business-technical translator
-- **Input**: Business requirements or technical specs
-- **Output**: Translated/clarified requirements
-- **Trigger**: "translate requirement", "business vs tech gap"
-
-**Category Characteristics:**
-- Requirement clarification
-- Stakeholder communication
-- Scope management
-- Expectation alignment
+> **Note:** Bridge (business-technical translator) was absorbed into Accord. Use Accord for cross-functional specification needs including business-technical translation.
 
 ---
 

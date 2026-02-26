@@ -35,7 +35,7 @@ Check parallelizability
 ### When NOT to Escalate to Rally
 
 - Investigation-only chains (Lens, Scout, Rewind)
-- Single-agent chains (Quill, Morph, Hone)
+- Single-agent chains (Quill, Morph, Judge)
 - Sequential-only chains where each step depends on the previous
 - Changes under 10 lines total
 - High-risk security changes (prefer sequential with checkpoints)
@@ -96,7 +96,7 @@ All complete → Rally synthesizes → Returns to Nexus
 | Base Chain | Rally Variant | Team Pattern | When to Use |
 |------------|---------------|--------------|-------------|
 | TEST/coverage | Rally(Radar, Voyager) | Specialist Team | Unit + E2E tests in parallel |
-| TEST/quality | Hone → Rally(Builder×N) | Pipeline | Parallel fix implementation after PDCA |
+| TEST/quality | Judge → Rally(Builder×N) | Pipeline | Parallel fix implementation after PDCA |
 
 ### DOCS Parallel Variants
 
@@ -200,12 +200,12 @@ team_design:
 # ...
 ```
 
-### Hone + Rally (Quality PDCA with Parallel Fixes)
+### Judge + Rally (Quality PDCA with Parallel Fixes)
 
-Hone identifies quality issues via PDCA cycle, then Rally parallelizes the fixes.
+Judge identifies quality issues via PDCA cycle, then Rally parallelizes the fixes.
 
 ```
-Hone (PDCA Cycle)
+Judge (PDCA Cycle)
     ↓ Identifies N independent quality issues
 Rally receives issue list
     ↓
@@ -213,7 +213,7 @@ Rally spawns Builder × N (one per independent fix area)
     ↓
 All fixes complete → Rally synthesizes
     ↓
-Hone (next PDCA iteration) - verify improvements
+Judge (next PDCA iteration) - verify improvements
 ```
 
 ---

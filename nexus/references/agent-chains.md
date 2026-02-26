@@ -51,8 +51,8 @@ Complete chain templates and dynamic adjustment rules.
 | BROWSER | evidence | Navigator → Lens → Canvas |
 | BROWSER | performance | Navigator → Bolt |
 | DECISION | architecture | Magi → Builder/Zen (based on verdict) |
-| DECISION | strategy | Bridge → Magi → Spark |
-| DECISION | intent | Cipher → Forge/Builder |
+| DECISION | strategy | Accord → Magi → Spark |
+| DECISION | intent | Forge/Builder |
 | ANALYSIS | impact | Ripple → Builder → Radar |
 | ANALYSIS | standards | Canon → Builder → Radar |
 | ANALYSIS | cleanup | Sweep → Zen → Radar |
@@ -69,7 +69,7 @@ Complete chain templates and dynamic adjustment rules.
 | UX_DESIGN | session | Trace → Echo → Palette |
 | FEATURE | frontend | Forge → Artisan → Radar |
 | FEATURE | cli | Anvil → Radar |
-| TEST | quality | Hone (iterative PDCA) |
+| TEST | quality | Judge → Zen → Radar (iterative PDCA via Nexus) |
 | INVESTIGATE | regression | Rewind → Scout → Builder → Radar |
 | SECURITY | concurrency | Specter → Builder → Radar |
 | DOCS | convert | Morph |
@@ -81,9 +81,9 @@ Complete chain templates and dynamic adjustment rules.
 | STRATEGY | retention | Retain → Spark → Builder → Radar |
 | STRATEGY | ab-test | Experiment → Builder → Radar |
 | STRATEGY | data-pipeline | Stream → Schema → Builder → Radar |
-| QUALITY | quick | Hone(Judge, Zen, Radar) → Canvas |
-| QUALITY | standard | Hone(Judge, Zen, Radar, Sentinel) → Canvas |
-| QUALITY | full | Hone(Judge, Zen, Radar, Sentinel, Atlas, Sweep) → Canvas |
+| QUALITY | quick | Judge → Zen → Radar → Canvas |
+| QUALITY | standard | Judge → Zen → Radar → Sentinel → Canvas |
+| QUALITY | full | Judge → Zen → Radar → Sentinel → Atlas → Sweep → Canvas |
 | OBSERVABILITY | alert-only | Beacon → Gear |
 | OBSERVABILITY | slo-design | Beacon → Gear → Builder → Radar |
 | OBSERVABILITY | post-incident | Triage → Beacon → Gear → Builder → Radar |
@@ -93,9 +93,9 @@ Complete chain templates and dynamic adjustment rules.
 | PRERELEASE | quick | Warden → Guardian |
 | PRERELEASE | standard | Warden → Guardian → Launch |
 | PRERELEASE | full | Sentinel → Warden → Radar → Guardian → Launch → Harvest |
-| REQUIREMENTS | quick | Bridge → Scribe |
-| REQUIREMENTS | standard | Bridge → Cipher → Scribe → Sherpa |
-| REQUIREMENTS | complex | Bridge → Cipher → Magi → Scribe → Sherpa → Canvas |
+| REQUIREMENTS | quick | Accord → Scribe |
+| REQUIREMENTS | standard | Accord → Scribe → Sherpa |
+| REQUIREMENTS | complex | Accord → Magi → Scribe → Sherpa → Canvas |
 | DESIGN_SYSTEM | tokens | Vision → Muse → Artisan → Radar |
 | DESIGN_SYSTEM | catalog | Vision → Muse → Showcase → Quill |
 | DESIGN_SYSTEM | full | Vision → Muse → Showcase → Artisan → Quill → Radar |
@@ -113,9 +113,9 @@ Complete chain templates and dynamic adjustment rules.
 | DEMO | cli-demo | Reel → Quill |
 | DEMO | ui-demo | Director → Voyager → Showcase |
 | DEMO | full | Director → Reel → Showcase → Quill |
-| SPRINT_RETRO | quick | Harvest → Bard |
-| SPRINT_RETRO | standard | Harvest → Bard → Canvas |
-| SPRINT_RETRO | full | Harvest → Bard → Canvas → Quill |
+| SPRINT_RETRO | quick | Harvest |
+| SPRINT_RETRO | standard | Harvest → Canvas |
+| SPRINT_RETRO | full | Harvest → Canvas → Quill |
 | KNOWLEDGE | quick | Scribe → Prism |
 | KNOWLEDGE | full | Scribe → Quill → Prism → Morph |
 | KNOWLEDGE | research | Researcher → Scribe → Prism |
@@ -176,7 +176,7 @@ Builder then applies:
 ### Rally Non-Escalation (Keep Sequential)
 
 - Investigation-only chains (Lens, Scout, Rewind) → No Rally
-- Single-agent chains (Quill, Morph, Hone single cycle) → No Rally
+- Single-agent chains (Quill, Morph) → No Rally
 - Changes under 10 lines total → No Rally
 - High-risk security changes → Prefer sequential with checkpoints
 - Each branch needs < 50 lines of code → Nexus _PARALLEL_BRANCHES sufficient

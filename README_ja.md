@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-84-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **86種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **84種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする86種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする84種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -47,7 +47,6 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
-| **Hone** | _"A blade sharpened once cuts well. A blade honed repeatedly cuts perfectly."_ - PDCAサイクルで品質を反復的に向上させるQuality Orchestrator。測定→改善→検証→学習のサイクルを回し、収穫逓減検出で効率的に終了 | 品質改善サイクル |
 | **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全69エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - 動的スキル生成エージェント。プロジェクトのコードベースを分析し、パターン・規約を発見し、最適化されたClaude Codeスキルをプロジェクトの`.claude/skills/`に生成 | プロジェクト固有スキル |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
@@ -62,12 +61,10 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
 | **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
-| **Cipher** | _"Don't listen to words. Listen to silence."_ - ユーザー意図の解読。曖昧な要求を正確な仕様に変換 | 要求仕様書 |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - セッションリプレイ分析・ペルソナ別行動パターン抽出・UX問題の物語化。Researcher/Echoと連携 | 行動分析レポート |
 | **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案 | 準拠度レポート |
 | **Lens** | _"See the code, not just search it."_ - コードベース理解・調査スペシャリスト。「〇〇機能はあるか」「〇〇のフローはどうか」「このモジュールの責務は何か」をコード構造把握・機能探索・データフロー追跡で体系的に調査 | 調査レポート |
 | **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - 3視点（論理・共感・実利）による多角的意思決定。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定 | 意思決定レポート |
-| **Bridge** | _"The gap between 'what they want' and 'what we build' is where projects die."_ - ビジネス要件と技術実装の翻訳・調停。要件明確化、スコープクリープ検出、期待値ギャップ解消 | 要件翻訳レポート |
 | **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - ペルソナキャスティングエージェント。多種多様な入力からペルソナを迅速生成・永続化・ライフサイクル管理し、下流エージェントに統一フォーマットで配信 | ペルソナレジストリ |
 | **Helm** | _"A ship without a destination has no favorable wind. A ship without a helm has no direction at all."_ - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント。SWOT/PESTLE/Porter分析、シナリオプランニング、KPI予測、戦略ロードマップ生成。コードは書かない | 戦略シミュレーションレポート |
 
@@ -88,14 +85,9 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
 | **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
-| **Bard** | _"Every commit carries a feeling no one says out loud. Bard says it."_ - 三種のAIエンジン（Codex/Gemini/Claude）を持つ開発者つぶやきエージェント。Git履歴、PR、マイルストーンを本物の開発者モノローグ、愚痴、独り言に変換 | ナラティブ、コメンタリー |
-
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
 **Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
 **Rewind → Scout の連携**：Rewind（リグレッション特定）→ Scout（詳細調査）
-**Harvest → Bard の連携**：Harvest（PR統計）→ Bard（スプリント回顧コメンタリー）
-**Launch → Bard の連携**：Launch（リリース実行）→ Bard（リリースコメンタリー）
-**Rewind → Bard の連携**：Rewind（コード考古学）→ Bard（プロジェクト起源ストーリー）
 
 ### 品質保証
 
@@ -112,7 +104,6 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
-| **Totem** | _"Every project has a soul. Linters guard the grammar. Totem guards the voice."_ - プロジェクト固有のDNA（8次元）プロファイリング・文化的逸脱検出・オンボーディングガイド生成 | DNAプロファイル、逸脱レポート |
 
 ### 実装
 
@@ -450,8 +441,7 @@ questions:
 | タスク | 説明 | チェーン |
 |--------|------|----------|
 | DECISION/arch | アーキテクチャ選定 | Magi → Builder/Zen |
-| DECISION/strategy | 戦略的判断 | Bridge → Magi → Spark |
-| DECISION/intent | 要求の意図解析 | Cipher → Forge/Builder |
+| DECISION/strategy | 戦略的判断 | Magi → Spark |
 
 #### 分析
 
@@ -468,9 +458,6 @@ questions:
 | SUBTRACT/feature-gate | 機能提案の引き算ゲート | Spark → Void → Magi |
 | SUBTRACT/scope-check | スコープ検証 | Sherpa → Void → Sherpa |
 | SUBTRACT/arch-simplify | アーキテクチャ過剰設計検出 | Atlas → Void → Zen |
-| CULTURE/profile | プロジェクトDNAプロファイリング | Lens → Totem → Scribe |
-| CULTURE/review | 文化コンテキスト付きレビュー | Totem → Judge |
-| CULTURE/onboard | 文化プロファイルからオンボーディング | Lens → Totem → Scribe |
 
 #### ドキュメント
 
@@ -566,7 +553,7 @@ questions:
 | タスク | 説明 | チェーン |
 |--------|------|----------|
 | INCIDENT | 障害対応 | Triage → Scout → Builder |
-| TEST/quality | 品質反復改善 | Hone |
+| TEST/quality | 品質反復改善 | Judge → Zen → Radar |
 | SECURITY/concurrency | 並行性バグ検出 | Specter → Builder → Radar |
 | INVESTIGATE/regression | リグレッション調査 | Rewind → Scout → Builder → Radar |
 
@@ -639,14 +626,11 @@ skills/
 ├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atlas/SKILL.md      # アーキテクチャ
-├── bard/SKILL.md       # 開発者つぶやきエージェント
 ├── beacon/SKILL.md     # 可観測性/SRE
 ├── bolt/SKILL.md       # パフォーマンス
-├── bridge/SKILL.md     # ビジネス⇔技術翻訳
 ├── builder/SKILL.md    # 本番実装
 ├── canvas/SKILL.md     # 可視化
 ├── cast/SKILL.md       # ペルソナキャスティング＆レジストリ管理
-├── cipher/SKILL.md     # 意図解読
 ├── compete/SKILL.md    # 競合調査
 ├── director/SKILL.md   # デモ動画撮影
 ├── echo/SKILL.md       # ペルソナ検証
@@ -660,7 +644,6 @@ skills/
 ├── guardian/SKILL.md   # Git/PR管理
 ├── harvest/SKILL.md    # PR情報収集・レポート生成
 ├── hearth/SKILL.md     # 個人開発環境設定
-├── hone/SKILL.md       # PDCA品質向上
 ├── latch/SKILL.md      # Claude Codeフック管理
 ├── horizon/SKILL.md    # モダナイゼーション
 ├── judge/SKILL.md      # コードレビュー（codex review）
@@ -704,7 +687,6 @@ skills/
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括
-├── totem/SKILL.md      # プロジェクトDNAプロファイリング・文化的逸脱検出
 ├── trace/SKILL.md      # セッションリプレイ分析
 ├── triage/SKILL.md     # 障害対応
 ├── tuner/SKILL.md      # DBパフォーマンス最適化
@@ -720,7 +702,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全83エージェントの使用例を紹介します。
+> カテゴリ別に全84エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
@@ -947,34 +929,6 @@ v1.1.0からv1.2.0までのPRからリリースノートを生成してくださ
 
 ---
 
-##### スプリント回顧コメンタリー（Bard）
-
-```
-/Bard
-今週のスプリントを開発者目線でぼやいてください。
-```
-
-**出力**: スプリント期間のPR/コミットデータに基づく開発者コメンタリー
-
----
-
-##### リリースコメンタリー（Bard）
-
-```
-/Bard
-v2.0.0のリリースを開発者の独り言として語ってください。
-```
-
-**出力**: リリース内容に基づく開発者ナラティブ
-
----
-
-**Harvest vs Bard の役割分担**:
-- **Harvest**: 数字で語る（統計レポート、週報、リリースノート）
-- **Bard**: 言葉で語る（開発者モノローグ、愚痴、独り言）
-
----
-
 #### 品質保証
 
 ##### テスト追加（Radar）
@@ -1055,17 +1009,6 @@ v2.0.0のリリースを開発者の独り言として語ってください。
 ```
 
 **出力**: Cost-of-Keeping Score、影響範囲分析、REMOVE/SIMPLIFY/DEFER/KEEP推奨を含むSubtraction Proposal
-
----
-
-##### プロジェクトDNAプロファイリング（Totem）
-
-```
-/Totem
-このプロジェクトの文化的規約をプロファイリングしてください。新メンバーのオンボーディング前に暗黙のルールを把握したいです。
-```
-
-**出力**: DNAプロファイル（8次元スコア）、Cultural Fingerprint、プロジェクト固有の規約を含むオンボーディングガイド
 
 ---
 

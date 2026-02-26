@@ -200,7 +200,7 @@ Tracking:        Record in evolution log (date, lines changed, budget remaining)
 |---------|-----------|-----------|---------|
 | Darwin | Darwin → Architect | ECOSYSTEM_EVOLUTION_SIGNAL triggers ST-04/ST-06 | Ecosystem changes prompt self-check |
 | Darwin | Architect → Darwin | EVOLUTION_SIGNAL in PERSIST phase | Notify ecosystem of self-improvement |
-| Hone | Hone → Architect | Quality PDCA feedback | Input for DIAGNOSE phase |
+| Judge | Judge → Architect | Quality PDCA feedback | Input for DIAGNOSE phase |
 | Lore | Lore → Architect | LORE_TO_ARCHITECT_HANDOFF triggers ST-07 | Cross-agent knowledge absorption |
 | Judge | Judge → Architect | JUDGE_TO_ARCHITECT_FEEDBACK triggers ST-03 | Quality feedback on generated agents |
 | Nexus | Architect → Nexus | ARCHITECT_TO_NEXUS_HANDOFF after self-evolution | Routing updates if capabilities changed |

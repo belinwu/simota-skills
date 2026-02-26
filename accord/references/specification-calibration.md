@@ -196,7 +196,7 @@ type: PATTERN
 source: Accord
 date: YYYY-MM-DD
 summary: [specification insight]
-affects: [Accord, Scribe, Bridge, Lore]
+affects: [Accord, Scribe, Lore]
 priority: MEDIUM
 reusable: true
 -->
@@ -254,5 +254,4 @@ UNIFYが単一タスクを超えて価値のあるパターンを発見した場
 1. **Journalに記録** — `reusable: true` タグ付き
 2. **EVOLUTION_SIGNALを発行** — Loreが収集
 3. **Scribeにフィード** — 仕様パターンが個別文書品質を改善する場合
-4. **Bridgeに通知** — クロスチーム言語パターンが翻訳品質を改善する場合
-5. **テンプレートデフォルトを更新** — 新しい構造パターンがより効果的と証明された場合
+4. **テンプレートデフォルトを更新** — 新しい構造パターンがより効果的と証明された場合

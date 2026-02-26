@@ -6,43 +6,6 @@ Accordの全ハンドオフ方向のYAMLテンプレート。
 
 ## Inbound Handoffs（Accord が受け取る）
 
-### CIPHER_TO_ACCORD
-
-```yaml
-CIPHER_TO_ACCORD:
-  source: Cipher
-  target: Accord
-  payload:
-    clarified_requirements:
-      summary: "[明確化された要件の概要]"
-      requirements: ["[REQ-1]", "[REQ-2]"]
-      ambiguities_resolved: ["[解消された曖昧さ]"]
-      assumptions: ["[前提条件]"]
-    context:
-      project_type: "[新規/改善/バグ修正]"
-      stakeholders: ["[ステークホルダー]"]
-    expected_output: "統合仕様パッケージ（L0-L3）"
-```
-
-### BRIDGE_TO_ACCORD
-
-```yaml
-BRIDGE_TO_ACCORD:
-  source: Bridge
-  target: Accord
-  payload:
-    translations:
-      business_terms: { "[ビジネス用語]": "[技術的意味]" }
-      technical_terms: { "[技術用語]": "[ビジネス的意味]" }
-    gap_analysis:
-      misalignments: ["[認識齟齬]"]
-      resolved: ["[解消済み]"]
-    context:
-      business_priority: "[高/中/低]"
-      technical_feasibility: "[高/中/低]"
-    expected_output: "用語統一済み統合仕様パッケージ"
-```
-
 ### RESEARCHER_TO_ACCORD
 
 ```yaml

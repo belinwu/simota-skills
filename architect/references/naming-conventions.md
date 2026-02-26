@@ -181,8 +181,8 @@ Select the highest-scoring name without conflicts.
 - Sentinel, Guardian, Harvest, Palette, Muse, Echo
 - Canvas, Atlas, Gateway, Scaffold, Anvil, Gear
 - Horizon, Polyglot, Growth, Retain, Pulse, Warden
-- Ripple, Cipher, Rewind, Specter, Bridge, Morph
-- Stream, Launch
+- Ripple, Rewind, Specter, Morph, Accord, Helm
+- Stream, Launch, Grove
 
 ### Three Syllables (15)
 - Experiment, Researcher, Navigator, Triage, Compete

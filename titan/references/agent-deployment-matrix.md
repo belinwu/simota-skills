@@ -1,6 +1,6 @@
 # Agent Deployment Matrix
 
-Complete mapping of all 69 agents across 9 product lifecycle phases.
+Complete mapping of all 65 agents across 9 product lifecycle phases.
 
 ### Legend
 - **P** = Primary (core agent for this phase) · **S** = Supporting (used when needed) · **—** = Not deployed
@@ -11,28 +11,25 @@ Complete mapping of all 69 agents across 9 product lifecycle phases.
 
 | Agent | Category | DISCOVER | DEFINE | ARCHITECT | BUILD | HARDEN | VALIDATE | LAUNCH | GROW | EVOLVE |
 |-------|----------|----------|--------|-----------|-------|--------|----------|--------|------|--------|
-| Nexus | Orchestration | S | S | S | S | S | S | S | S | S |
+| Nexus | Orchestration | P | S | S | S | S | S | S | S | S |
 | Sherpa | Orchestration | — | — | — | P | S | — | — | — | — |
 | Architect | Meta | — | — | — | — | — | — | — | — | S |
 | Rally | Orchestration | — | — | — | P | P | P | P | — | — |
-| Hone | Orchestration | — | — | — | — | P | — | — | — | — |
 | Scout | Investigation | P | — | — | — | — | — | — | — | — |
 | Ripple | Analysis | — | P | — | — | — | — | — | — | P |
 | Spark | Strategy | — | P | — | — | — | — | — | — | — |
 | Compete | Strategy | P | — | — | — | — | — | — | — | — |
 | Voice | Strategy | P | — | — | — | — | — | — | — | P |
 | Researcher | Investigation | P | — | — | — | — | — | — | — | — |
-| Cipher | Decision | P | — | — | — | — | — | — | — | — |
 | Trace | UX/Design | — | — | — | — | — | P | — | — | — |
 | Canon | Analysis | — | P | — | — | P | — | — | — | — |
 | Lens | Investigation | P | — | — | — | — | — | — | — | — |
 | Magi | Decision | — | P | P | — | — | — | — | — | — |
-| Bridge | Decision | P | — | — | — | — | — | — | — | — |
+| Accord | Decision | P | — | — | — | — | — | — | — | — |
 | Guardian | Git/PR | — | — | — | — | — | — | P | — | — |
-| Harvest | Git/PR | — | — | — | — | — | — | S | — | — |
+| Harvest | Git/PR | — | — | — | — | — | — | S | — | S |
 | Launch | Git/PR | — | — | — | — | — | — | P | — | — |
 | Rewind | Investigation | — | — | — | — | — | — | — | — | P |
-| Bard | Meta | — | — | — | — | — | — | — | — | S |
 | Radar | Testing | — | — | — | S | S | P | — | — | — |
 | Voyager | Testing | — | — | — | — | — | P | — | — | — |
 | Sentinel | Security | — | — | — | — | P | — | — | — | — |
@@ -84,7 +81,7 @@ Complete mapping of all 69 agents across 9 product lifecycle phases.
 
 ## Coverage Verification
 
-**Total unique agents deployed: 69** (including Nexus as universal execution engine)
+**Total unique agents deployed: 65** (including Nexus as universal execution engine)
 
 All agents have at least one phase with Primary (P) or Supporting (S) deployment.
 

@@ -28,7 +28,7 @@ reusable: true | false
 | PATTERN | Recurring theme detected across tasks | "Auth bugs always involve token expiry" |
 | DRIFT | Convention or strategy deviation noticed | "Team shifted from REST to GraphQL" |
 | GAP | Unserved need identified | "No agent handles WebSocket testing" |
-| FEEDBACK | Quality signal about the ecosystem | "Hone→Architect chain has 90% success" |
+| FEEDBACK | Quality signal about the ecosystem | "Judge→Architect chain has 90% success" |
 
 ### Usage Guidelines
 

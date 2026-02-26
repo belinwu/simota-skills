@@ -99,7 +99,7 @@ Where:
 - 40: UQS declining, negative feedback increasing
 - 20: Poor quality indicators across the board
 
-**Data sources:** Hone UQS history, Reverse Feedback entries, Architect Health Score.
+**Data sources:** Judge UQS history, Reverse Feedback entries, Architect Health Score.
 
 #### Adaptability (15%)
 
@@ -183,9 +183,9 @@ Where:
 
 | Phase | Dominant Agents (affinity = 1.0) | Supporting (0.6) | Neutral (0.3) |
 |-------|----------------------------------|-------------------|----------------|
-| GENESIS | Cipher, Forge, Spark, Architect | Builder, Radar, Scout | All others |
+| GENESIS | Nexus, Forge, Spark, Architect | Builder, Radar, Scout | All others |
 | ACTIVE_BUILD | Builder, Forge, Radar, Artisan | Schema, Gateway, Scout | All others |
-| STABILIZATION | Hone, Judge, Sentinel, Zen | Radar, Sweep, Atlas | All others |
+| STABILIZATION | Judge, Sentinel, Zen, Nexus | Radar, Sweep, Atlas | All others |
 | PRODUCTION | Guardian, Beacon, Triage, Gear | Sentinel, Launch, Latch | All others |
 | MAINTENANCE | Horizon, Sweep, Rewind | Builder, Radar, Scout | All others |
 | SCALING | Bolt, Tuner, Scaffold | Beacon, Gear, Stream | All others |

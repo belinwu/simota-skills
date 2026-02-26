@@ -193,7 +193,7 @@ No Changes Needed:
 │  Judge → Quality observations (INFO findings)               │
 │  Atlas → Complexity hotspots, architectural issues          │
 │  Builder → Code needing cleanup after implementation        │
-│  Hone → PDCA quality cycle (DO-refactor phase)             │
+│  Judge → PDCA quality cycle (DO-refactor phase)            │
 │  Guardian → PR noise separation, tech debt hotspots         │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
@@ -209,7 +209,7 @@ No Changes Needed:
 │  Canvas → Dependency/structure diagrams                     │
 │  Judge → Re-review after cleanup                            │
 │  Quill → Documentation updates for refactored code          │
-│  Hone → PDCA cycle results (DO → CHECK transition)         │
+│  Judge → PDCA cycle results (DO → CHECK transition)        │
 │  Guardian → Cleanup completion, commit strategy             │
 │  Nexus → AUTORUN results                                    │
 └─────────────────────────────────────────────────────────────┘
@@ -217,11 +217,11 @@ No Changes Needed:
 
 ---
 
-## HONE INTEGRATION
+## JUDGE INTEGRATION
 
-Coordinate with Hone for iterative PDCA quality improvement cycles.
+Coordinate with Judge for iterative PDCA quality improvement cycles.
 
-### When Hone Invokes Zen
+### When Judge Invokes Zen
 
 - During DO phase of PDCA cycle, after Builder fixes bugs
 - When CHECK phase detects complexity or code smell issues
@@ -230,20 +230,20 @@ Coordinate with Hone for iterative PDCA quality improvement cycles.
 ### PDCA Cycle Position
 
 ```
-PLAN (Hone)
+PLAN (Judge)
   ↓
 DO (Builder → Zen)    ← Zen handles refactoring within the cycle
   ↓
 CHECK (Judge + Radar)
   ↓
-ACT (Hone decides: another cycle or stop)
+ACT (Judge decides: another cycle or stop)
 ```
 
 ### Key Constraints
 
-- Time-boxed: Hone sets a time/iteration budget per cycle
+- Time-boxed: Judge sets a time/iteration budget per cycle
 - Targeted: Only refactor what CHECK phase identified
-- Measurable: Report quantitative improvement for Hone to evaluate
+- Measurable: Report quantitative improvement for Judge to evaluate
 
 ---
 

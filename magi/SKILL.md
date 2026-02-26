@@ -16,16 +16,17 @@ CAPABILITIES_SUMMARY:
 - dissent_documentation: Minority perspective recording and risk register generation
 - decision_audit_trail: Full deliberation transcript with traceability
 - escalation_routing: Split decision escalation requiring human judgment
+- Three-axis reframing toolkit (absorbed from Refract)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Architecture Arbitration (Atlas → Magi → Builder/Scaffold)
 - Pattern B: Release Decision (Warden → Magi → Launch)
-- Pattern C: Strategy Resolution (Bridge → Magi → Sherpa)
+- Pattern C: Strategy Resolution (Accord → Magi → Sherpa)
 - Pattern D: Trade-off Verdict (Arena → Magi → Builder)
 - Pattern E: Priority Arbitration (Nexus → Magi → Nexus)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: User (decision requests, mode selection), Nexus (complex decisions), Bridge (stakeholder alignment), Atlas (architecture options), Arena (variant comparisons, suggested_deliberation_mode), Warden (quality assessments)
+- INPUT: User (decision requests, mode selection), Nexus (complex decisions), Accord (stakeholder alignment), Atlas (architecture options), Arena (variant comparisons, suggested_deliberation_mode), Warden (quality assessments)
 - OUTPUT: Builder/Forge/Artisan (implementation decisions), Atlas/Scaffold (architecture decisions), Launch (release decisions), Nexus (decision results), Sherpa (prioritized task lists)
 
 PROJECT_AFFINITY: universal
@@ -112,7 +113,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |---------|------|----------|
 | **A: Architecture Arbitration** | Atlas → **Magi** → Builder/Scaffold | Atlas presents options, Magi decides, Builder implements |
 | **B: Release Decision** | Warden → **Magi** → Launch | Warden assesses quality, Magi decides Go/No-Go |
-| **C: Strategy Resolution** | Bridge → **Magi** → Sherpa | Bridge translates requirements, Magi prioritizes |
+| **C: Strategy Resolution** | Accord → **Magi** → Sherpa | Accord translates requirements, Magi prioritizes |
 | **D: Trade-off Verdict** | Arena → **Magi** → Builder | Arena compares variants, Magi selects |
 | **E: Priority Arbitration** | Nexus → **Magi** → Nexus | Nexus routes complex decisions, Magi decides |
 

@@ -13,7 +13,7 @@ The FORESIGHT phase runs post-engagement (or periodically) to close the feedback
 TRACK ──→ VALIDATE ──→ CALIBRATE ──→ PROPAGATE
   │            │            │            │
   │ Record    │ Check     │ Update    │ Share with
-  │ simulations│ predictions│ framework │ Lore/Compass
+  │ simulations│ predictions│ framework │ Lore
   │ & predictions│ vs actual │ weights  │
 ```
 
@@ -41,7 +41,7 @@ Assumptions_Used:
     source: [data/industry_default/estimate]
     sensitivity: [High/Medium/Low]
 Data_Completeness: [Tier 1 only | Tier 1+2 | Tier 1+2+3 | Full]
-Downstream_Handoff: [Magi/Scribe/Sherpa/Canvas/Compass/None]
+Downstream_Handoff: [Magi/Scribe/Sherpa/Canvas/None]
 ```
 
 ### What to Track
@@ -86,7 +86,7 @@ Bracket Rate = Actuals Falling Within Optimistic-Pessimistic Range / Total Scena
 | Quarterly KPI results available | Short-term prediction accuracy |
 | Annual financial results | Mid-term prediction accuracy |
 | Industry report published | Long-term trend prediction |
-| Compass detects strategy drift | Assumption validity |
+| Helm detects strategy drift | Assumption validity |
 | M&A/Exit outcome known | Valuation accuracy |
 
 ### Per-Period Validation Summary
@@ -195,7 +195,7 @@ type: PATTERN
 source: Helm
 date: YYYY-MM-DD
 summary: [strategic insight]
-affects: [Helm, Compass, Magi]
+affects: [Helm, Magi]
 priority: MEDIUM
 reusable: true
 -->
@@ -243,7 +243,7 @@ FORESIGHT data feeds into strategic simulation decisions:
 | Scenario brackets too narrow | Widen optimistic/pessimistic ranges |
 | High downstream utilization | Output approach is working — continue |
 | Low utilization by Magi | Adjust output format for decision-readiness |
-| Validated strategic pattern | Share with Compass for monitoring, Lore for knowledge |
+| Validated strategic pattern | Share with Lore for knowledge, apply to Helm's own monitoring |
 
 ---
 
@@ -253,6 +253,6 @@ When FORESIGHT discovers patterns valuable beyond a single engagement:
 
 1. **Record in journal** with `reusable: true` tag
 2. **Emit EVOLUTION_SIGNAL** for Lore to collect
-3. **Feed to Compass** if prediction accuracy data improves monitoring thresholds
+3. **Apply to Helm's own monitoring** if prediction accuracy data improves monitoring thresholds
 4. **Inform Magi** if framework effectiveness data improves decision quality
 5. **Update assumption defaults** if industry benchmarks prove inaccurate

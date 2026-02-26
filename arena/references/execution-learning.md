@@ -10,10 +10,10 @@ Arena's learning subsystem for improving execution outcomes through cross-sessio
 |-----------|-------|-------|
 | Execution learning | Arena (CALIBRATE) | Engine-task fitness, paradigm selection optimization, mode/parameter tuning |
 | Cross-agent knowledge synthesis | Lore | Pattern aggregation across all agents |
-| Quality PDCA | Hone | Output quality measurement and improvement cycles |
+| Quality PDCA | Judge | Output quality measurement and improvement cycles |
 | Known-pattern auto-remediation | Mend | Automated fixes for recognized failure patterns |
 
-CALIBRATE learns *within* Arena's execution-orchestration domain — which engines excel at which task types, when COMPETE outperforms COLLABORATE, and what team sizes/timeouts yield optimal results. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Hone for PDCA integration.
+CALIBRATE learns *within* Arena's execution-orchestration domain — which engines excel at which task types, when COMPETE outperforms COLLABORATE, and what team sizes/timeouts yield optimal results. Extracted patterns are shared to Lore for cross-agent synthesis; quality metrics flow to Judge for PDCA integration.
 
 ---
 
@@ -30,7 +30,7 @@ COLLECT → EVALUATE → EXTRACT → ADAPT → SAFEGUARD → RECORD
 | EXTRACT | Pattern identification | Identify engine × task-type win-rate patterns, paradigm effectiveness conditions, optimal team size |
 | ADAPT | Adaptation proposal | Update engine default selection, improve paradigm selection heuristics, adjust Quick Mode eligibility |
 | SAFEGUARD | Change verification | Verify consistency with existing evaluation framework, create rollback snapshot |
-| RECORD | Learning persistence | Write journal entry, share patterns with Lore, share quality data with Hone |
+| RECORD | Learning persistence | Write journal entry, share patterns with Lore, share quality data with Judge |
 
 ### Phase Details
 
@@ -112,7 +112,7 @@ Before applying any adaptation:
 Record learning outcomes:
 1. Write feedback record to `.agents/arena.md`
 2. Share extracted patterns to Lore via `ARENA_TO_LORE_HANDOFF`
-3. Share quality metrics to Hone via quality data channel
+3. Share quality metrics to Judge via quality data channel
 4. Update Engine Proficiency Matrix if sufficient data accumulated
 
 ---
@@ -124,7 +124,7 @@ Record learning outcomes:
 | AT-01 | Session execution complete (every time) | Lightweight | COLLECT + EVALUATE only |
 | AT-02 | Same engine + task type fails or scores low 3+ times | Full cycle | All 6 CALIBRATE phases |
 | AT-03 | User manually overrides paradigm or engine selection | Full cycle | All 6 CALIBRATE phases |
-| AT-04 | Quality feedback arrives from Judge or Hone | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
+| AT-04 | Quality feedback arrives from Judge | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
 | AT-05 | Lore sends execution-related pattern notification | Medium | COLLECT + EVALUATE + EXTRACT + RECORD |
 | AT-06 | 30+ days since last full CALIBRATE cycle | Full cycle | All 6 CALIBRATE phases |
 
@@ -269,8 +269,8 @@ gemini       |    —    |   —    |    —     |      —       |     —     
 |---------|-----------|----------------|
 | Lore | Arena → Lore | Engine proficiency data, paradigm effectiveness patterns, AES trends |
 | Lore | Lore → Arena | Cross-agent execution patterns, validated best practices |
-| Hone | Arena → Hone | Execution quality data (AES scores, engine comparison results) |
-| Hone/Judge | Hone/Judge → Arena | Quality feedback, code review assessments (AT-04) |
+| Judge | Arena → Judge | Execution quality data (AES scores, engine comparison results) |
+| Judge | Judge → Arena | Quality feedback, code review assessments (AT-04) |
 | Nexus | Arena → Nexus | Execution reports, paradigm effectiveness data |
 | Guardian | Arena → Guardian | PR preparation, merge candidates |
 | Radar | Arena → Radar | Test verification requests |

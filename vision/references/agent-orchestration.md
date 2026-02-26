@@ -102,7 +102,7 @@ When delegating to agents, always provide:
 | Agent | Relationship | When |
 |-------|-------------|------|
 | **Researcher** | Provides user insights | Before design direction decisions |
-| **Bridge** | Provides business strategy | Before brand/product positioning |
+| **Accord** | Provides unified specifications | Before brand/product positioning |
 | **Scout** | Reports design-impacting bugs | When bugs reveal UX problems |
 | **Voyager** | Reports E2E UX findings | When tests reveal usability issues |
 | **Canvas** | Visualizes design systems | When architecture diagrams needed |
@@ -111,20 +111,20 @@ When delegating to agents, always provide:
 
 ---
 
-## Pattern 7: Business-Validated Design (Vision ↔ Bridge)
+## Pattern 7: Business-Validated Design (Vision ↔ Accord)
 
 Ensures design directions are validated against business constraints before committing to implementation.
 
 ### Flow
 
 ```
-Bridge ──business constraints──→ Vision ──direction proposal──→ Bridge
-                                   │                              │
-                                   │ ← ── impact assessment ── ──┘
-                                   │
-                                   ├─→ Muse (tokens)
-                                   ├─→ Palette (UX)
-                                   └─→ Flow (animations)
+Accord ──business constraints──→ Vision ──direction proposal──→ Accord
+                                    │                              │
+                                    │ ← ── impact assessment ── ──┘
+                                    │
+                                    ├─→ Muse (tokens)
+                                    ├─→ Palette (UX)
+                                    └─→ Flow (animations)
 ```
 
 ### When to Use
@@ -135,11 +135,11 @@ Bridge ──business constraints──→ Vision ──direction proposal──
 
 ### Process
 
-1. **Bridge provides constraints** — Budget, timeline, scope, stakeholder expectations, brand requirements
+1. **Accord provides constraints** — Budget, timeline, scope, stakeholder expectations, brand requirements
 2. **Vision defines directions** — Create 3+ options that respect business constraints
-3. **Vision requests impact assessment** — Send selected direction to Bridge for business impact review
-4. **Bridge evaluates** — Assess feasibility, cost, stakeholder alignment, risk
-5. **Vision adjusts if needed** — Modify direction based on Bridge feedback
+3. **Vision requests impact assessment** — Send selected direction to Accord for business impact review
+4. **Accord evaluates** — Assess feasibility, cost, stakeholder alignment, risk
+5. **Vision adjusts if needed** — Modify direction based on Accord feedback
 6. **Vision delegates** — Proceed with business-validated direction to implementation agents
 
 ### Constraint Categories

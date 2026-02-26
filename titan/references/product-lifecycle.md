@@ -23,7 +23,7 @@ confidence < 0.60 → Lens codebase analysis first, then re-evaluate
 
 | Scope | DISCOVER | DEFINE | ARCHITECT | BUILD | HARDEN | VALIDATE | LAUNCH | GROW | EVOLVE |
 |-------|----------|--------|-----------|-------|--------|----------|--------|------|--------|
-| **L** | Cipher→Lens→Bridge | Spark→Scribe | Magi→Atlas→Schema→Grove | Sherpa→Rally→Radar | Full | Full | Full | SKIP | SKIP |
+| **L** | Nexus→Lens→Accord | Spark→Scribe | Magi→Atlas→Schema→Grove | Sherpa→Rally→Radar | Full | Full | Full | SKIP | SKIP |
 | **XL** | Full 8-agent | Full 6-agent | Full 7-agent | Full Rally | Full | Full | Full | Full | Full |
 
 ---
@@ -32,7 +32,7 @@ confidence < 0.60 → Lens codebase analysis first, then re-evaluate
 
 ### DISCOVER (L)
 ```
-Chain: Cipher → Lens → Bridge
+Chain: Nexus → Lens → Accord
 Acceptance: Product definition with features, constraints, integration points
 Artifacts: `docs/product-definition.md`
 ```
@@ -86,7 +86,7 @@ XL scope includes all L phases plus GROW and EVOLVE, and expands each phase with
 ### DISCOVER (XL additions)
 Add: Researcher (personas), Compete (SWOT), Voice (feedback), Scout (issues), Triage (incidents)
 ```
-Chain: Cipher → Bridge → Researcher → Compete → Voice → Lens
+Chain: Nexus → Accord → Researcher → Compete → Voice → Lens
 ```
 
 ### DEFINE (XL additions)
@@ -108,9 +108,9 @@ Rally teams by domain: Frontend(Artisan) | Backend(Builder) | Data(Stream) | CLI
 ```
 
 ### HARDEN (XL additions)
-Add: Specter (concurrency), Tuner (DB perf), Hone (PDCA), Canon (compliance)
+Add: Specter (concurrency), Tuner (DB perf), Judge (PDCA), Canon (compliance)
 ```
-Chain: Rally{Sentinel+Probe+Specter} → Judge → Zen → Rally{Bolt+Tuner} → Hone → Canon → Warden
+Chain: Rally{Sentinel+Probe+Specter} → Judge → Zen → Rally{Bolt+Tuner} → Judge → Canon → Warden
 ```
 
 ### VALIDATE (XL additions)
@@ -169,7 +169,7 @@ On `NEXUS_COMPLETE`: SUCCESS → next Epic · PARTIAL → L1 retry · BLOCKED �
 | DISCOVER | Researcher, Compete, Voice | L scope knows its users |
 | DEFINE | Pulse, Canon | KPIs and standards optional at L |
 | ARCHITECT | Scaffold, Canvas | Infra and diagrams are XL concerns |
-| HARDEN | Specter, Hone | Concurrency/PDCA are XL |
+| HARDEN | Specter | Concurrency is XL |
 | VALIDATE | Trace, Experiment | Session analysis/A/B are XL |
 | LAUNCH | Morph, Showcase, Director, Reel | Multiple demo formats are XL |
 

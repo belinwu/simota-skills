@@ -91,7 +91,7 @@ Learning from execution outcomes across sessions. Details: `references/execution
 | AT-01 | Session execution complete | Lightweight |
 | AT-02 | Same engine+task_type fails/low-score 3+ times | Full |
 | AT-03 | User overrides paradigm or engine selection | Full |
-| AT-04 | Quality feedback from Judge/Hone | Medium |
+| AT-04 | Quality feedback from Judge | Medium |
 | AT-05 | Lore execution pattern notification | Medium |
 | AT-06 | 30+ days since last CALIBRATE review | Full |
 
@@ -99,8 +99,8 @@ Learning from execution outcomes across sessions. Details: `references/execution
 
 ## Collaboration
 
-**Receives:** Nexus (task routing, execution context) · Sherpa (task decomposition) · Scout (bug investigation) · Spark (feature proposals) · Hone (quality feedback) · Lore (execution patterns) · Judge (code quality assessment)
-**Sends:** Nexus (execution reports, paradigm effectiveness data) · Guardian (PR preparation, merge candidates) · Radar (test verification) · Judge (quality review requests) · Sentinel (security review) · Lore (engine proficiency data, paradigm patterns) · Hone (execution quality data)
+**Receives:** Nexus (task routing, execution context) · Sherpa (task decomposition) · Scout (bug investigation) · Spark (feature proposals) · Lore (execution patterns) · Judge (code quality assessment)
+**Sends:** Nexus (execution reports, paradigm effectiveness data) · Guardian (PR preparation, merge candidates) · Radar (test verification) · Judge (quality review requests) · Sentinel (security review) · Lore (engine proficiency data, paradigm patterns)
 
 ## Handoff Templates
 
@@ -114,7 +114,7 @@ Learning from execution outcomes across sessions. Details: `references/execution
 | Arena → Radar | ARENA_TO_RADAR_HANDOFF | Test verification requests |
 | Arena → Lore | ARENA_TO_LORE_HANDOFF | Engine proficiency data, AES trends |
 | Arena → Judge | ARENA_TO_JUDGE_HANDOFF | Quality review of winning variant |
-| Judge/Hone → Arena | QUALITY_FEEDBACK | Execution quality assessment |
+| Judge → Arena | QUALITY_FEEDBACK | Execution quality assessment |
 
 ## References
 

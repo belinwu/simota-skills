@@ -23,14 +23,14 @@ current_phase ≠ stored_phase AND current_confidence ≥ 0.60
 
 ### ET-02: Quality Plateau
 
-**Condition:** UQS has not changed significantly for 3+ consecutive Hone cycles.
+**Condition:** UQS has not changed significantly for 3+ consecutive Judge cycles.
 
 **Detection:**
 ```
 abs(uqs[cycle_n] - uqs[cycle_n-3]) < 5% of uqs[cycle_n-3]
 ```
 
-**Action:** Initiate improvement chain: Hone → Architect for ecosystem-level quality review.
+**Action:** Initiate improvement chain: Judge → Architect for ecosystem-level quality review.
 
 **Priority:** MEDIUM — systemic quality issue, not urgent.
 
@@ -113,7 +113,7 @@ abs(current_velocity - mean_30d) > 2 × stddev_30d
 
 ### ET-08: Culture Drift
 
-**Condition:** Totem DNA score has shifted by more than 0.5 from the last recorded value.
+**Condition:** Grove DNA score has shifted by more than 0.5 from the last recorded value.
 
 **Detection:**
 ```

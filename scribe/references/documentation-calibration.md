@@ -13,7 +13,7 @@ The INSCRIBE phase runs post-document (or periodically) to close the feedback lo
 RECORD ──→ EVALUATE ──→ CALIBRATE ──→ PROPAGATE
   │            │            │            │
   │ Log       │ Measure    │ Update    │ Share with
-  │ documents │ adoption   │ template  │ Lore/Bridge
+  │ documents │ adoption   │ template  │ Lore/Accord
   │ & usage   │ & accuracy │ weights   │
 ```
 
@@ -193,7 +193,7 @@ type: PATTERN
 source: Scribe
 date: YYYY-MM-DD
 summary: [documentation insight]
-affects: [Scribe, Bridge, Sherpa]
+affects: [Scribe, Accord, Sherpa]
 priority: MEDIUM
 reusable: true
 -->
@@ -240,7 +240,7 @@ INSCRIBE data feeds into documentation decisions:
 | Template consistently underperforming | Revise template, try alternative format |
 | High requirement accuracy | Specification approach is working — continue |
 | Low downstream utilization | Adjust handoff format, improve detail level |
-| Validated documentation pattern | Share with Lore, update Bridge translation quality |
+| Validated documentation pattern | Share with Lore, update Accord specification quality |
 
 ---
 
@@ -250,6 +250,6 @@ When INSCRIBE discovers patterns valuable beyond a single document:
 
 1. **Record in journal** with `reusable: true` tag
 2. **Emit EVOLUTION_SIGNAL** for Lore to collect
-3. **Feed to Bridge** if requirement clarity patterns improve mediation quality
+3. **Feed to Accord** if requirement clarity patterns improve specification quality
 4. **Inform Sherpa** if checklist patterns improve task decomposition
 5. **Update writing guidelines** if new precision patterns are identified
