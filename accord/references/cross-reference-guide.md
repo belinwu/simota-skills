@@ -38,6 +38,15 @@
 | REQ-003 | US-002 | — | DATA-002 | DESIGN-003 | FLOW-002 | AC-004, AC-005 | Draft |
 ```
 
+### Statusフィールド定義
+
+| Status | 意味 |
+|--------|------|
+| Draft | 初稿作成中、レビュー未実施 |
+| Review | レビュー中、フィードバック待ち |
+| Approved | 全チーム承認済み、実装可能 |
+| Deprecated | 廃止・置き換え済み |
+
 ### Matrix Completeness Rules
 
 | Level | Required Links | Optional |
