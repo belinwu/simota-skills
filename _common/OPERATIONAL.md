@@ -100,3 +100,12 @@ Follow `_common/GIT_GUIDELINES.md`:
 When a task has 2-3 independent subtasks, agents may spawn sub-agents via the Task tool for parallel execution.
 
 **Decision & patterns:** → `_common/SUBAGENT.md`
+
+---
+
+## Self-Evolution
+
+All agents load prior context before starting work (Tier 1). Agents with learning loops run post-task calibration (Tier 2).
+
+**Protocol:** → `_common/SELF_EVOLUTION.md`
+**Outward signals:** → `_common/EVOLUTION.md`

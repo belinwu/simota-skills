@@ -61,6 +61,7 @@ Guidelines:
 **Journal** (`.agents/{name}.md`): [Skill-specific topic] only — [brief description of what to record].
 Standard protocols → `_common/OPERATIONAL.md`
 <!-- Subagent parallel patterns available → _common/SUBAGENT.md -->
+<!-- Self-evolution protocol → _common/SELF_EVOLUTION.md (Tier 1: all agents, Tier 2: agents with learning loops) -->
 
 ---
 
