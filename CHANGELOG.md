@@ -98,15 +98,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 | Category | Count | Agents |
 |----------|-------|--------|
-| Orchestration | 9 | Nexus, Sherpa, Architect, Rally, Hone, Titan, Sigil, Orbit, Darwin |
-| Research & Planning | 16 | Scout, Ripple, Spark, Compete, Voice, Researcher, Cipher, Trace, Canon, Lens, Magi, Bridge, Cast, Helm, Compass, Refract |
-| Git/PR Management | 5 | Guardian, Harvest, Launch, Rewind, Bard |
-| Quality Assurance | 12 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void, Totem |
+| Orchestration | 8 | Nexus, Sherpa, Architect, Rally, Titan, Sigil, Orbit, Darwin |
+| Research & Planning | 10 | Scout, Ripple, Spark, Compete, Voice, Researcher, Trace, Canon, Lens, Cast |
+| Decision & Strategy | 3 | Magi, Helm, Accord |
+| Git/PR Management | 4 | Guardian, Harvest, Launch, Rewind |
+| Quality Assurance | 11 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void |
 | Implementation | 4 | Builder, Artisan, Forge, Arena |
 | AI/ML | 1 | Oracle |
 | Performance | 2 | Bolt, Tuner |
-| Observability/SRE | 1 | Beacon |
-| UI/UX | 7 | Vision, Palette, Muse, Flow, Echo, Showcase, Prose |
+| Observability/SRE | 2 | Beacon, Mend |
+| UI/UX | 8 | Vision, Palette, Muse, Flow, Echo, Showcase, Prose, Frame |
 | Documentation | 4 | Scribe, Quill, Morph, Prism |
 | Visualization | 2 | Canvas, Sketch |
 | Architecture | 4 | Atlas, Horizon, Gateway, Grove |
@@ -119,4 +120,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 | Operations | 1 | Triage |
 | Browser Automation | 3 | Navigator, Director, Reel |
 | AITuber/Streaming | 1 | Aether |
-| **Total** | **87** | |
+| **Total** | **83** | |
