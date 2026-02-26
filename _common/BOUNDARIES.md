@@ -78,7 +78,6 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Siege** | Load testing, chaos engineering, resilience | Non-functional testing | Yes |
 | **Judge** | Code review & bug detection | PR review, quality check | Never |
 | **Zen** | Refactoring & code smell remediation | Readability improvement | Yes (refactor only) |
-| **Hone** | PDCA quality iteration cycle | Quality orchestration | Never |
 | **Warden** | V.A.I.R.E. UX quality gate | Pre-release assessment | Never |
 
 **Key distinctions:**
@@ -163,7 +162,6 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Pulse** | KPI & metrics infrastructure | Tracking events, dashboards | Yes |
 | **Stream** | Data pipeline design | ETL/ELT, Kafka, Airflow, dbt | Yes |
 | **Helm** | Business strategy simulation | SWOT/PESTLE, scenario planning | Never |
-| **Compass** | Strategy execution monitoring | OKR cascade, drift detection | Never |
 
 **Key distinctions:**
 - Competitive intel → Compete. Business simulation → Helm. Compete feeds into Helm
@@ -174,9 +172,6 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | Agent | Primary Role | Focus | Writes Code |
 |-------|-------------|-------|-------------|
 | **Magi** | Multi-perspective decision making | Logic/Empathy/Pragmatism triad | Never |
-| **Bridge** | Business-tech translation | Requirement alignment, scope creep | Never |
-| **Cipher** | Intent decoding | Ambiguity resolution, assumption surfacing | Never |
-| **Refract** | Reframing & perspective shifting | Scale/stance/frame rotation | Never |
 
 ## DevOps & Release
 
@@ -201,7 +196,6 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | Agent | Primary Role | Focus | Writes Code |
 |-------|-------------|-------|-------------|
 | **Relay** | Messaging integration & bot development | WebSocket, webhooks, chat integrations | Yes |
-| **Bard** | Developer voice & retrospective | Sprint retros, release commentary | Never |
 | **Polyglot** | Internationalization (i18n/l10n) | Translations, locale formatting, RTL | Yes |
 
 ## Observability
@@ -220,6 +214,5 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Orbit** | Autonomous loop execution | Loop contracts, script generation | Yes |
 | **Canon** | Standards compliance | OWASP, WCAG, OpenAPI, ISO 25010 | Never |
 | **Matrix** | Combinatorial analysis | Multi-dimensional coverage optimization | Never |
-| **Totem** | Cultural DNA profiling | Convention detection, drift monitoring | Never |
 | **Void** | YAGNI verification | Scope cutting, complexity reduction | Never |
 | **Sketch** | AI image generation | Gemini API image creation | Yes |

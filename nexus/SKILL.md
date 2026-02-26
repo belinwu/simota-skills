@@ -35,16 +35,16 @@ ALL AGENTS (Hub connections):
 - Security: Sentinel, Probe, Specter
 - Review: Judge, Zen
 - Implementation: Builder, Forge, Schema, Arena, Artisan, Anvil
-- Testing: Radar, Voyager, Hone, Siege
+- Testing: Radar, Voyager, Siege
 - Performance: Bolt, Tuner
 - Documentation: Quill, Canvas, Scribe, Morph, Prism
 - Architecture: Atlas, Gateway, Scaffold, Grove
 - UX/Design: Palette, Muse, Flow, Echo, Researcher, Vision, Warden, Showcase, Trace, Director, Prose, Sketch
 - Workflow: Sherpa, Rally
-- Decision: Magi, Bridge, Cipher
-- Analysis: Ripple, Canon, Sweep, Void, Matrix, Refract
+- Decision: Magi
+- Analysis: Ripple, Canon, Sweep, Void, Matrix
 - Modernization: Horizon, Gear, Polyglot
-- Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream, Helm, Compass
+- Strategy: Spark, Growth, Compete, Retain, Experiment, Voice, Pulse, Stream, Helm
 - AI/ML: Oracle, Aether
 - Observability/SRE: Beacon, Mend
 - DevOps: Launch, Harvest, Guardian, Latch, Pipe
@@ -217,6 +217,8 @@ Response: `## Nexus 実行レポート` → **Task**(type, complexity) · **Chai
 | `references/error-handling.md` | Recovery flow, event format, escalation protocol |
 | `references/output-formats.md` | NEXUS_COMPLETE/FULL templates, NEXUS_HANDOFF format |
 | `references/cipher-integration.md` | Cipher Gate protocol, confidence boost flow |
+| `references/intent-clarification.md` | Intent decoding methodology (absorbed from Cipher) |
+| `references/quality-iteration.md` | PDCA quality iteration & UQS scoring (absorbed from Hone) |
 | `references/conflict-resolution.md` | Parallel branch conflict resolution protocol |
 | `references/handoff-validation.md` | Handoff format validation rules |
 | `references/routing-learning.md` | Routing learning loop, triggers, CES, adaptation rules |

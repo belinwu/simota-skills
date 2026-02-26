@@ -155,6 +155,7 @@ Response: `## 経営シミュレーションレポート` → **Executive Summar
 | `references/data-inputs.md` | 入力データ種別・フォーマット仕様・不足時の対処法 |
 | `references/output-templates.md` | 戦略ロードマップ・KPI予測表・リスクマトリクスの完全テンプレート |
 | `references/strategic-calibration.md` | 戦略予測精度追跡、FORESIGHT ワークフロー |
+| `references/strategy-monitoring.md` | 戦略実行モニタリング・OKRカスケード (absorbed from Compass) |
 
 ---
 

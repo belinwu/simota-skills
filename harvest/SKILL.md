@@ -117,6 +117,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/error-handling.md` | Error categories, retry strategy, health check, graceful degradation |
 | `references/caching-strategy.md` | Cache TTL, directory structure, incremental collection, policies |
 | `references/outbound-handoffs.md` | Outbound collaboration patterns A-G (Guardian/Pulse/Canvas/Zen/Sherpa/Radar/Launch) |
+| `references/retrospective-voice.md` | 開発者ボイスの振り返り生成 (absorbed from Bard) |
 
 ## Domain Knowledge Summary
 

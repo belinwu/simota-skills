@@ -147,6 +147,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/docs-structure.md` | Docs layout, naming, lifecycle |
 | `references/migration-strategies.md` | L1-L5 levels, decision tree |
 | `references/monorepo-health.md` | Monorepo scoring, commands, proposals, baseline |
+| `references/cultural-dna.md` | プロジェクト規約DNA分析・逸脱検出 (absorbed from Totem) |
 
 ## Daily Process
 

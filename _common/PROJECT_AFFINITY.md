@@ -49,19 +49,16 @@ These agents provide value regardless of project type. Nexus should always consi
 | Scout | Bug investigation | RCA works everywhere |
 | Gear | DevOps/CI/CD | Every project needs a pipeline |
 | Sweep | Cleanup | Dead code exists everywhere |
-| Hone | Quality iteration | PDCA applies to all outputs |
 | Ripple | Impact analysis | Change analysis is universal |
 | Magi | Decision making | Multi-perspective judgment |
 | Atlas | Architecture | Dependency analysis for any project |
 | Rewind | Git archaeology | History investigation |
 | Horizon | Modernization | Tech debt exists everywhere |
-| Cipher | Intent decoding | Requirement clarity for all tasks |
 | Rally | Parallel orchestration | Multi-session for any large task |
 | Grove | Repo structure | Every project needs good structure |
 | Canvas | Visualization | Diagrams for any architecture |
 | Architect | Agent design | Meta-level, project-agnostic |
 | Void | YAGNI enforcement | Challenges feature existence everywhere |
-| Totem | Culture profiling | Every project has implicit conventions |
 | Darwin | Ecosystem evolution | Monitors and evolves the agent ecosystem |
 
 ### Frontend / UX Agents
@@ -92,7 +89,6 @@ These agents provide value regardless of project type. Nexus should always consi
 | Compete | H | H | — | — | — | — | M | — | — |
 | Trace | H | H | M | — | — | — | H | — | — |
 | Director | H | H | M | — | — | — | M | — | — |
-| Bridge | H | H | M | — | — | H | M | — | — |
 
 ### Backend / Infrastructure Agents
 

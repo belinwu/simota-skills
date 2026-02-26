@@ -130,6 +130,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/voting-mechanics.md` | Vote structure, confidence calibration, consensus patterns, escalation |
 | `references/decision-domains.md` | 5 domains: evaluation matrices, domain-specific questions, sample scenarios |
 | `references/decision-templates.md` | 4 verdict display variants, full report template, sample deliberations |
+| `references/reframing-toolkit.md` | 3軸リフレーミング手法 (absorbed from Refract) |
 
 ## Daily Process
 
