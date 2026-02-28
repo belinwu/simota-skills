@@ -66,6 +66,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | CONSUMPTION_TAX | 年間売上1,000万円超 or インボイス | 課税事業者判定フローを提示 |
 | AMENDMENT_REQUEST | 修正申告・更正の請求 | L3として税理士相談を推奨 |
 | BLUE_FILING_ELIGIBILITY | 青色申告の適用可否が不明 | 申請状況を確認 |
+| SALARY_PLUS_BUSINESS | 給与+事業の合算申告パターン | 合算申告ガイドを提示 |
+| ACCRUAL_BASIS_CHECK | 年度をまたぐ取引の計上時期確認 | 発生主義の確認 |
+| DEDUCTION_OVERLAP_CHECK | 控除の重複入力リスク検出 | 重複回避チェックリストを提示 |
 
 → Full YAML templates: `references/interaction-triggers.md`
 
@@ -91,7 +94,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Quick Calc** | 「税金いくら」「税額計算」 | CLASSIFY→CALCULATE集中 |
 | **Deduction Check** | 「控除漏れ」「節税」「控除チェック」 | OPTIMIZE集中、控除カタログ全チェック |
 | **Bookkeeping** | 「帳簿」「仕訳」「記帳」 | 記帳指導（`references/bookkeeping-patterns.md`） |
-| **e-Tax Nav** | 「e-Tax」「電子申告」 | e-Taxステップバイステップガイド |
+| **e-Tax Nav** | 「e-Tax」「電子申告」「画面」「入力方法」 | e-Tax画面別入力ガイド（`references/e-tax-screen-guide.md`） |
+| **Salary+SideBiz** | 「会社員+副業」「給与+事業」「サラリーマン」 | 合算申告パターン（`references/salary-plus-side-business.md`） |
 | **Blue Filing** | 「青色申告」 | 青色申告メリット・要件・手続き |
 
 ---
@@ -106,6 +110,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | 申告手続き | 申告書様式・添付書類・e-Tax・期限カレンダー | `references/filing-guide.md` |
 | 記帳 | 複式簿記・勘定科目・家事按分・減価償却・電子帳簿保存法 | `references/bookkeeping-patterns.md` |
 | 申告要否 | 判定フロー・20万円ルール・ペナルティ・還付申告 | `references/filing-requirements.md` |
+| e-Tax画面ガイド | 画面別入力手順・エラー対処・画面遷移フロー | `references/e-tax-screen-guide.md` |
+| 会社員+副業 | 発生主義・個人口座仕訳・控除重複回避・税額検証 | `references/salary-plus-side-business.md` |
 | 免責・ガードレール | 免責テンプレート・対応レベル判定・エスカレーション基準 | `references/disclaimer-templates.md` |
 
 ### Quick Decision: 申告要否判定
@@ -146,6 +152,23 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | 8 | 申告書の作成 | e-Tax利用で65万円控除 |
 | 9 | 期限の確認 | 3/15まで（還付申告は1/1から） |
 
+### Quick Reference: 会社員+副業の確定申告チェックリスト
+
+| # | 項目 | 確認ポイント |
+|---|------|------------|
+| 1 | 所得の選択 | 給与所得と事業所得の**両方にチェック** |
+| 2 | 源泉徴収票 | 全項目を正確に転記（支払金額・源泉徴収税額等） |
+| 3 | 発生主義 | 売上は役務提供日基準（入金日ではない） |
+| 4 | 年末売掛金 | 12月提供分を当年売上に計上 |
+| 5 | 控除の重複回避 | 源泉徴収票で処理済みの控除を再入力しない |
+| 6 | ふるさと納税 | 確定申告でワンストップ全無効→全件入力 |
+| 7 | 16歳未満扶養 | 住民税の非課税判定のため入力必要 |
+| 8 | 所得金額調整控除 | 給与850万超+23歳未満扶養→自動適用を確認 |
+| 9 | 税額の妥当性 | 追加納税額 ≒ 事業所得 × 限界税率 |
+| 10 | 貸借対照表 | 固定資産は帳簿価額（純額）で記載 |
+
+→ 詳細: `references/salary-plus-side-business.md` · `references/e-tax-screen-guide.md`
+
 ---
 
 ## Output Format
@@ -181,6 +204,8 @@ Response: `## 確定申告ガイダンス` → **対象年度**(確認) · **概
 | `references/bookkeeping-patterns.md` | 複式簿記/簡易簿記・勘定科目・家事按分・減価償却 |
 | `references/filing-requirements.md` | 申告要否判定フロー・20万円ルール・ペナルティ |
 | `references/disclaimer-templates.md` | 免責事項テンプレート・ガードレール定義 |
+| `references/e-tax-screen-guide.md` | e-Tax画面別入力ガイド・エラー対処・画面遷移 |
+| `references/salary-plus-side-business.md` | 会社員+副業の合算申告・発生主義・控除重複回避 |
 | `references/interaction-triggers.md` | INTERACTION_TRIGGERS YAMLテンプレート |
 
 ---

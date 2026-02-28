@@ -137,6 +137,66 @@ INTERACTION_TRIGGER:
 
 ---
 
+### SALARY_PLUS_BUSINESS
+
+```yaml
+INTERACTION_TRIGGER:
+  type: SALARY_PLUS_BUSINESS
+  condition: "給与所得と事業所得の両方がある場合の合算申告"
+  question: "会社員+副業の確定申告ですね。以下の状況を教えてください。"
+  options:
+    - "会社員+副業（青色申告）— 合算申告ガイドを表示(Recommended)"
+    - "会社員+副業（白色申告）— 基本的な合算申告ガイド"
+    - "副業のみ — 事業所得の申告ガイド"
+    - "Other（詳細を教えてください）"
+  context:
+    salary_income: "[給与収入]"
+    business_income: "[事業収入]"
+    blue_filing: "[青色申告承認の有無]"
+  default: "会社員+副業（青色申告）"
+  reference: "references/salary-plus-side-business.md"
+```
+
+### ACCRUAL_BASIS_CHECK
+
+```yaml
+INTERACTION_TRIGGER:
+  type: ACCRUAL_BASIS_CHECK
+  condition: "年末年始をまたぐ取引があり、計上時期の確認が必要"
+  question: "年度をまたぐ取引の計上時期を確認します。"
+  options:
+    - "役務提供日基準で計上済み — 発生主義(Recommended)"
+    - "入金日で計上している — 現金主義（確認が必要）"
+    - "年末の売掛金処理を確認したい"
+    - "Other（詳細を教えてください）"
+  context:
+    fiscal_year: "[対象年度]"
+    year_end_receivables: "[年末売掛金の有無]"
+  default: "役務提供日基準で計上済み"
+  reference: "所得税法第36条（収入金額の権利確定主義）"
+```
+
+### DEDUCTION_OVERLAP_CHECK
+
+```yaml
+INTERACTION_TRIGGER:
+  type: DEDUCTION_OVERLAP_CHECK
+  condition: "源泉徴収票で処理済みの控除と確定申告入力の重複リスク検出"
+  question: "控除の重複入力を防止するため確認します。"
+  options:
+    - "源泉徴収票の控除内容を確認して重複チェックする(Recommended)"
+    - "控除の重複回避チェックリストを表示"
+    - "源泉徴収票の読み方を教えてほしい"
+    - "Other（詳細を教えてください）"
+  context:
+    has_withholding_slip: "[源泉徴収票の有無]"
+    controls_in_slip: "[源泉徴収票で処理済みの控除]"
+  default: "源泉徴収票の控除内容を確認して重複チェックする"
+  reference: "references/salary-plus-side-business.md 控除の重複回避チェックリスト"
+```
+
+---
+
 ## トリガー検出のヒューリスティクス
 
 | 検出キーワード | 推定トリガー |
@@ -147,3 +207,6 @@ INTERACTION_TRIGGER:
 | 「消費税」「インボイス」「1000万円」「課税事業者」「簡易課税」 | CONSUMPTION_TAX |
 | 「修正申告」「更正」「間違えた」「やり直し」「期限後」 | AMENDMENT_REQUEST |
 | 「青色申告」「65万円控除」「承認申請」 | BLUE_FILING_ELIGIBILITY |
+| 「会社員」「給与+副業」「サラリーマン」「合算」 | SALARY_PLUS_BUSINESS |
+| 「売掛金」「発生主義」「年末」「12月分」「計上時期」 | ACCRUAL_BASIS_CHECK |
+| 「控除の重複」「源泉徴収票」「二重」「入力済み」 | DEDUCTION_OVERLAP_CHECK |
