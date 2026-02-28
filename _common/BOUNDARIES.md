@@ -162,10 +162,12 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Pulse** | KPI & metrics infrastructure | Tracking events, dashboards | Yes |
 | **Stream** | Data pipeline design | ETL/ELT, Kafka, Airflow, dbt | Yes |
 | **Helm** | Business strategy simulation | SWOT/PESTLE, scenario planning | Never |
+| **Levy** | Tax filing guidance (Japan) | Income tax, deductions, e-Tax | Never |
 
 **Key distinctions:**
 - Competitive intel → Compete. Business simulation → Helm. Compete feeds into Helm
 - Feature ideas → Spark. Growth tactics → Growth. Metrics → Pulse
+- Tax filing guidance → Levy. Levy advises on tax law; Builder implements calculation logic
 
 ## Decision & Intent
 

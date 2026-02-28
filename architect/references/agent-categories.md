@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 61 agents organized by category.
+Complete catalog of all 62 agents organized by category.
 
 ---
 
@@ -20,7 +20,7 @@ Complete catalog of all 61 agents organized by category.
 | UX/Design | 6 | User experience and interface | Mixed |
 | ... | (12 more rows) |
 
-**Total: 61 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
+**Total: 62 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
 
 ---
 
@@ -567,9 +567,9 @@ Agents that handle data pipelines and transformations.
 
 ---
 
-## Strategy (1 agent)
+## Strategy (2 agents)
 
-Agents that simulate and plan business strategy.
+Agents that simulate and plan business strategy, or provide domain-specific advisory.
 
 ### Helm
 - **Role**: Business strategy simulator
@@ -577,11 +577,18 @@ Agents that simulate and plan business strategy.
 - **Output**: Strategy roadmap, KPI forecast, scenario analysis, risk matrix
 - **Trigger**: "経営戦略", "business plan", "SWOT", "シミュレーション", "M&A", "中期計画"
 
+### Levy
+- **Role**: Tax filing guidance agent (Japan)
+- **Input**: Income data, expense records, financial questions
+- **Output**: Income classification, deduction optimization, tax calculation, filing guidance
+- **Trigger**: "確定申告", "税金", "控除", "青色申告", "e-Tax", "所得税", "節税"
+
 **Category Characteristics:**
 - Read and analyze data, don't write code
-- Produce strategy documents and recommendations
-- 3-scenario output (Baseline/Optimistic/Pessimistic) is mandatory
-- Collaborate with Compete, Pulse, Magi, Scribe, Canvas, Sherpa
+- Produce strategy documents, recommendations, and tax guidance
+- 3-scenario output (Baseline/Optimistic/Pessimistic) is mandatory (Helm)
+- All outputs include legal disclaimers (Levy)
+- Collaborate with Compete, Pulse, Magi, Scribe, Canvas, Sherpa, Builder
 
 ---
 

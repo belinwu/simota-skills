@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 #### New Agents
+- **Levy** - 日本の確定申告（所得税）をガイドするドメイン知識エージェント。所得分類・控除最適化・税額計算・e-Tax手順をフリーランス/副業サラリーマン向けに解説
 - **Helm** - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント（SWOT/PESTLE/Porter分析、シナリオプランニング）
 - **Pipe** - GHAワークフロー専門エージェント（トリガー戦略、セキュリティ強化、PR自動化、Reusable Workflow設計）
 - **Aether** - AITuber（AI VTuber）システムの企画から実装・運用までを一貫支援するフルスタック・オーケストレーター
@@ -39,6 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Grove/Sweep** - メンテナンスモード、インラインしきい値、クロススキルハンドオフパイプラインを追加
 - **Void** - コード以外の全ドメイン（機能・プロセス・ドキュメント・設計・仕様・依存・設定）への引き算フレームワーク汎化
 - **Voyager, Navigator, Sketch** - 各SKILL.mdを包括的に改善（グレードA相当）
+- **Levy** - Interaction Triggers追加（6トリガー+YAMLテンプレート）、Principles番号付きリスト化、Quick Decision判定テーブル2種追加（申告要否・事業所得vs雑所得）
 
 ### Changed
 - 全エージェントのSKILL.mdを原則中心設計で最適化（コンテキスト削減、28〜91%圧縮）
@@ -100,7 +102,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 |----------|-------|--------|
 | Orchestration | 8 | Nexus, Sherpa, Architect, Rally, Titan, Sigil, Orbit, Darwin |
 | Research & Planning | 10 | Scout, Ripple, Spark, Compete, Voice, Researcher, Trace, Canon, Lens, Cast |
-| Decision & Strategy | 3 | Magi, Helm, Accord |
+| Decision & Strategy | 4 | Magi, Helm, Levy, Accord |
 | Git/PR Management | 4 | Guardian, Harvest, Launch, Rewind |
 | Quality Assurance | 11 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void |
 | Implementation | 4 | Builder, Artisan, Forge, Arena |
@@ -120,4 +122,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 | Operations | 1 | Triage |
 | Browser Automation | 3 | Navigator, Director, Reel |
 | AITuber/Streaming | 1 | Aether |
-| **Total** | **83** | |
+| **Total** | **84** | |
