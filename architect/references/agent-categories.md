@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 62 agents organized by category.
+Complete catalog of all 63 agents organized by category.
 
 ---
 
@@ -20,7 +20,7 @@ Complete catalog of all 62 agents organized by category.
 | UX/Design | 6 | User experience and interface | Mixed |
 | ... | (12 more rows) |
 
-**Total: 62 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
+**Total: 63 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
 
 ---
 
@@ -634,9 +634,9 @@ Agents that design and implement messaging integrations and real-time communicat
 
 ---
 
-## Meta / Tooling (2 agents)
+## Meta / Tooling (3 agents)
 
-Agents that generate project-specific tooling and skills, or orchestrate ecosystem evolution.
+Agents that generate project-specific tooling and skills, orchestrate ecosystem evolution, or provide meta-visualization.
 
 ### Sigil
 - **Role**: Dynamic project-specific skill generator
@@ -650,12 +650,19 @@ Agents that generate project-specific tooling and skills, or orchestrate ecosyst
 - **Output**: Ecosystem state report, evolution actions, dynamic affinity overrides
 - **Trigger**: "evolution check", "ecosystem health", "agent fitness"
 
+### Realm
+- **Role**: Ecosystem RPG meta-visualization agent
+- **Input**: EFS/RS scores, activity logs, chain results, agent journals
+- **Output**: Character sheets, quest boards, badges, organization maps, chronicles
+- **Trigger**: "kingdom status", "agent character", "quest board", "realm dashboard"
+
 **Category Characteristics:**
 - Analyzes project context before generating
 - Generates Micro (10-80 lines) and Full (100-400 lines) skills
 - Does not modify ecosystem agents
 - Complements Architect (ecosystem) with project-specific skills
 - Orchestrates ecosystem-wide evolution (Darwin)
+- Gamifies ecosystem state for intuitive visualization (Realm)
 
 ---
 
