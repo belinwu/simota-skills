@@ -57,7 +57,7 @@ A new chapter/era begins when any of these triggers fire:
 ### Voice
 - **Third person omniscient** narrator perspective
 - **Past tense** for completed events, **present tense** for ongoing situations
-- **Formal but warm** — like a kingdom's official historian
+- **Formal but warm** — like a company's official historian
 - Weave data into narrative naturally (avoid raw number dumps)
 
 ### Tone Examples

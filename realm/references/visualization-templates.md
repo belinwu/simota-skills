@@ -4,15 +4,15 @@ ASCII and Mermaid templates for all Realm visualizations.
 
 ---
 
-## 1. Kingdom Dashboard (`/Realm`)
+## 1. Company Dashboard (`/Realm`)
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  🏰 THE REALM — Kingdom Dashboard                            ║
+║  🏰 THE REALM — Company Dashboard                            ║
 ║  Last updated: YYYY-MM-DD HH:MM                              ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  KINGDOM STATUS                                               ║
+║  COMPANY STATUS                                               ║
 ║  ─────────────────────────────────────────                    ║
 ║  EFS: [██████████████░░] 87/100 (A)  Phase: ACTIVE_BUILD     ║
 ║  Agents: 63 total · 48 active · 12 stable · 3 dormant        ║
@@ -48,7 +48,7 @@ ASCII and Mermaid templates for all Realm visualizations.
 ║  🔍 Intel     💚 84  │  ✨ Enchant   💛 76  │  🌟 Panth   💚 90 ║
 ║  🏛 Council   💛 73  │  ⚙ Workshop  💛 72  │  🌍 Outland 💛 62 ║
 ║                                                               ║
-║  ECOSYSTEM BADGES: [Kingdom Founded] [Great Expansion]        ║
+║  ECOSYSTEM BADGES: [Company Founded] [Great Expansion]        ║
 ║                    [Mighty Empire] [United Realm]              ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
@@ -259,7 +259,7 @@ graph TB
 ║  📜 CHAPTER XII: The Age of Expansion              ║
 ║     (2026-02 ~ present)                            ║
 ║  ──────────────────────────────────────            ║
-║  The kingdom expanded to 63 agents as Realm        ║
+║  The company expanded to 63 agents as Realm        ║
 ║  joined the Pantheon. EFS rose from B(78) to       ║
 ║  A(87), marking the realm's entry into a golden    ║
 ║  age. The Frontline saw unprecedented activity      ║

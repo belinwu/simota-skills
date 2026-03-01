@@ -651,10 +651,10 @@ Agents that generate project-specific tooling and skills, orchestrate ecosystem 
 - **Trigger**: "evolution check", "ecosystem health", "agent fitness"
 
 ### Realm
-- **Role**: Ecosystem RPG meta-visualization agent
-- **Input**: EFS/RS scores, activity logs, chain results, agent journals
-- **Output**: Character sheets, quest boards, badges, organization maps, chronicles
-- **Trigger**: "kingdom status", "agent character", "quest board", "realm dashboard"
+- **Role**: Gamified ecosystem meta-visualization agent with 2D office simulation
+- **Input**: EFS/RS scores, activity logs, chain results, agent journals, git commits
+- **Output**: Phaser 3 game simulation, interactive HTML map, character sheets, quest boards, badges, chronicles, real-time XP growth
+- **Trigger**: "kingdom status", "agent character", "quest board", "realm dashboard", "realm game", "realm live"
 
 **Category Characteristics:**
 - Analyzes project context before generating

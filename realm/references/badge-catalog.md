@@ -92,22 +92,22 @@ Complete badge definitions for individual agents and ecosystem-wide achievements
 
 ## Ecosystem Badges
 
-Earned collectively by the entire ecosystem. Displayed on the kingdom dashboard.
+Earned collectively by the entire ecosystem. Displayed on the company dashboard.
 
 | Badge | Name | Rarity | Condition | Icon |
 |---|---|---|---|---|
-| `eco_genesis` | Kingdom Founded | Common | Ecosystem has 10+ active agents | 🏰 |
+| `eco_genesis` | Company Founded | Common | Ecosystem has 10+ active agents | 🏰 |
 | `eco_expansion` | Great Expansion | Uncommon | Ecosystem reaches 30+ agents | 🌍 |
 | `eco_empire` | Mighty Empire | Rare | Ecosystem reaches 60+ agents | 👑 |
-| `eco_efs_a` | Prosperous Kingdom | Uncommon | EFS reaches A grade (85+) | 🌾 |
+| `eco_efs_a` | Thriving Company | Uncommon | EFS reaches A grade (85+) | 🌾 |
 | `eco_efs_s` | Golden Age | Epic | EFS reaches S grade (95+) | ✨ |
 | `eco_quest_100` | Century of Quests | Uncommon | 100 total quests completed | 📜 |
 | `eco_quest_1000` | Thousand Tales | Epic | 1000 total quests completed | 📚 |
 | `eco_all_active` | Full Roster | Rare | All agents have RS > 60 simultaneously | 💪 |
-| `eco_no_sunset` | Eternal Kingdom | Rare | No agent sunset in 6 months | 🌅 |
+| `eco_no_sunset` | Enduring Company | Rare | No agent sunset in 6 months | 🌅 |
 | `eco_collaboration` | United Realm | Uncommon | Every category has participated in at least 1 chain | 🤝 |
 | `eco_legendary_3` | Hall of Legends | Epic | 3+ agents reach Rank SS | 🏛️ |
-| `eco_recovery` | Phoenix Kingdom | Rare | EFS recovers from D to B+ within 30 days | 🔥 |
+| `eco_recovery` | Phoenix Company | Rare | EFS recovers from D to B+ within 30 days | 🔥 |
 | `eco_diversity` | Rainbow Coalition | Uncommon | 15+ categories have active agents | 🌈 |
 
 ---

@@ -84,7 +84,7 @@ SVG lines drawn between department centers representing collaboration relationsh
 
 | Variable | Description | Example |
 |---|---|---|
-| `{{KINGDOM_ICON}}` | Kingdom emoji icon | `🏰` |
+| `{{COMPANY_ICON}}` | Company emoji icon | `🏰` |
 | `{{EFS_SCORE}}` | Ecosystem Fitness Score | `87` |
 | `{{EFS_GRADE}}` | EFS letter grade | `A` |
 | `{{EFS_PERCENT}}` | EFS as percentage for bar fill | `87` |
@@ -148,7 +148,7 @@ The `{{REALM_DATA_JSON}}` variable contains the full data object for JS interact
 
 ```json
 {
-  "kingdom": {
+  "company": {
     "name": "The Realm",
     "efs": 87,
     "efsGrade": "A",

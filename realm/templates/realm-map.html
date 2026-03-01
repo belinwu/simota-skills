@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Realm — Kingdom HQ</title>
+  <title>The Realm — Company HQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -1275,10 +1275,10 @@
        ============================================ -->
   <header class="status-bar">
     <div class="status-bar__brand">
-      <span class="status-bar__logo">{{KINGDOM_ICON}}</span>
+      <span class="status-bar__logo">{{COMPANY_ICON}}</span>
       <div>
         <div class="status-bar__title">THE REALM</div>
-        <div class="status-bar__subtitle">Kingdom HQ — Simulation Map</div>
+        <div class="status-bar__subtitle">Company HQ — Simulation Map</div>
       </div>
     </div>
     <div class="status-bar__stats">
@@ -1316,7 +1316,7 @@
 
     <!-- Map Area -->
     <div class="map-area" id="mapArea">
-      <div class="map-area__label">Kingdom Map</div>
+      <div class="map-area__label">Company Map</div>
 
       <!-- Legend -->
       <div class="map-legend">
@@ -2302,7 +2302,7 @@
         Object.assign(REALM_DATA, data);
       }
 
-      const k = data.kingdom;
+      const k = data.company;
       if (k) {
         const chips = document.querySelectorAll('.stat-chip__value');
         if (chips[0]) chips[0].textContent = k.efs + ' (' + k.efsGrade + ')';

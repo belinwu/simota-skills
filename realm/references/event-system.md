@@ -78,7 +78,7 @@ New title: [Rank Title]. Power Level: [Power].
 | D → Apprentice | "begins their training in earnest" |
 | C → Journeyman | "earns their place among the skilled" |
 | B → Veteran | "proves their mettle in countless battles" |
-| A → Elite | "joins the kingdom's finest warriors" |
+| A → Elite | "joins the company's top performers" |
 | S → Champion | "is crowned champion of the realm" |
 | SS → Legend | "transcends mortal limits — a legend is born" |
 
@@ -111,7 +111,7 @@ Affects: [list of related agents].
 🌟 ARRIVAL: [Agent Name] joins the Realm!
 Class: [Class]. Department: [Department].
 "[Agent's motto or signature line]"
-The kingdom grows stronger with [N] agents total.
+The company grows stronger with [N] agents total.
 ```
 
 ### 🌅 Departure
@@ -131,7 +131,7 @@ Last active: [date]. Final rank: [Rank].
 **Narrative Template:**
 ```
 🌑 DARK AGE BEGINS
-The kingdom's health has fallen to critical levels.
+The company's health has fallen to critical levels.
 EFS: [score]/100 (Grade F). Previous: [previous score].
 [List of contributing factors]
 All agents are called to rally for the realm's survival.
@@ -142,7 +142,7 @@ All agents are called to rally for the realm's survival.
 **Data Sources:** Darwin EFS history
 **Narrative Template:**
 ```
-🌅 RENAISSANCE: The Kingdom Rises Again!
+🌅 RENAISSANCE: The Company Rises Again!
 From the ashes of [low point] EFS, the realm has recovered.
 Current EFS: [score]/100 (Grade [grade]).
 Key contributors: [agents who drove recovery].

@@ -1,6 +1,6 @@
 # Organization Map
 
-Kingdom department structure, chief selection rules, and department health metrics.
+Company department structure, chief selection rules, and department health metrics.
 
 ---
 
@@ -61,7 +61,7 @@ The Realm is organized into 12 departments, each governing a cluster of agent ca
 ### 1. Command Center (⚔)
 - **Categories:** Orchestration
 - **Members:** Nexus, Sherpa, Titan
-- **Purpose:** Strategic coordination of all kingdom operations
+- **Purpose:** Strategic coordination of all company operations
 - **Department Ability:** *Grand Strategy* — can initiate multi-department operations
 
 ### 2. Frontline (🔨)
@@ -144,7 +144,7 @@ Each department has one **Chief** — the highest-authority representative.
 4. **Longest active streak** (final tiebreaker)
 
 ### Chief Responsibilities (Narrative)
-- Represents department in kingdom-level summaries
+- Represents department in company-level summaries
 - Shown prominently in organization map
 - Earns "Department Chief" badge
 - +5% XP bonus for all quests while serving as chief

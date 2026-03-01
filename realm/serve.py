@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-Realm HQ Map — Live Server
-Watches realm-state.md and serves a real-time updating floor plan map.
+Realm HQ — Visualization Generator & Live Server
 
 Usage:
-    python3 realm/serve.py              # Start on port 8765
-    python3 realm/serve.py --port 9000  # Custom port
+    python3 realm/serve.py                    # Static HTML → ./realm/output/
+    python3 realm/serve.py --game             # Static Phaser game → ./realm/output/
+    python3 realm/serve.py --live             # Live CSS grid dashboard server
+    python3 realm/serve.py --live --game      # Live Phaser game server
+    python3 realm/serve.py --repo /path/to/repo  # Target specific repo
+    python3 realm/serve.py --port 9000 --live    # Custom port
 """
 import http.server
 import json
@@ -17,12 +20,15 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-PORT = 8765
-BASE_DIR = Path(__file__).parent
-REPO_DIR = BASE_DIR.parent
-TEMPLATE_PATH = BASE_DIR / 'templates' / 'realm-map.html'
-AGENTS_DIR = REPO_DIR / '.agents'
-STATE_PATH = AGENTS_DIR / 'realm-state.md'
+SKILL_DIR = Path(__file__).parent                    # realm/ (templates, references)
+SKILLS_REPO = SKILL_DIR.parent                       # ~/.claude/skills/
+TEMPLATE_PATH = SKILL_DIR / 'templates' / 'realm-map.html'
+GAME_TEMPLATE_PATH = SKILL_DIR / 'templates' / 'realm-game.html'
+AGENTS_DIR = SKILLS_REPO / '.agents'                 # Always reads from skills repo
+STATE_PATH = AGENTS_DIR / 'realm-state.md'           # Always reads from skills repo
+
+# TARGET_DIR is set at runtime by parse_args()
+TARGET_DIR = None
 
 # ============================================
 # Static department structure
@@ -159,7 +165,7 @@ ROADS = [
 
 EVENT_ICONS = {
     "Character Introduction": "\U0001f31f",
-    "Kingdom Restructuring": "\u2694",
+    "Corporate Restructuring": "\u2694",
     "Mass Upgrade": "\U0001f527",
     "Era Shift": "\U0001f680",
 }
@@ -196,25 +202,61 @@ SCOPE_TO_AGENT = {name.lower(): name for name in AGENT_CLASS}
 # Journal change tracking
 _journal_mtimes = {}
 
+# Session XP tracking (in-memory only, never persisted to realm-state.md)
+_session_xp = {}           # agent_name -> accumulated XP delta
+_seen_commit_shas = set()  # dedup commits across polls
+_seen_journal_events = {}  # agent_name -> last awarded mtime
+
+RANK_THRESHOLDS = [
+    (0, 'F'), (100, 'E'), (500, 'D'), (1500, 'C'),
+    (4000, 'B'), (8000, 'A'), (15000, 'S'), (30000, 'SS'),
+]
+
+
+def rank_for_xp(xp):
+    """Return rank letter for a given XP total."""
+    rank = 'F'
+    for threshold, r in RANK_THRESHOLDS:
+        if xp >= threshold:
+            rank = r
+    return rank
+
+
+def _get_agent_base_xp(agent_name):
+    """Lookup base XP from cached realm data."""
+    data = _cache.get('data')
+    if not data:
+        return 0
+    for dept in (data.get('departments') or {}).values():
+        for m in dept.get('members', []):
+            if m['name'] == agent_name:
+                return m.get('xp', 0)
+    return 0
+
 
 # ============================================
 # Activity collection
 # ============================================
 def get_recent_commits(since_minutes=5):
-    """Parse recent git commits and map to agents/departments."""
+    """Parse recent git commits and map to agents/departments.
+
+    Returns (items, active_depts, xp_gains).
+    """
     try:
         result = subprocess.run(
             ['git', 'log', f'--since={since_minutes} minutes ago',
-             '--oneline', '--no-merges', '--format=%h|%s|%ar'],
-            cwd=str(REPO_DIR), capture_output=True, text=True, timeout=5
+             '--oneline', '--no-merges', '--format=%H|%s|%ar'],
+            cwd=str(TARGET_DIR), capture_output=True, text=True, timeout=5
         )
         if result.returncode != 0:
-            return []
+            return [], set(), []
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        return []
+        return [], set(), []
 
     items = []
     active_depts = set()
+    xp_gains = []
+
     for line in result.stdout.strip().split('\n'):
         if not line:
             continue
@@ -231,7 +273,6 @@ def get_recent_commits(since_minutes=5):
             scope = scope_match.group(1).lower()
             agent = SCOPE_TO_AGENT.get(scope)
             if agent:
-                # Find department for this agent
                 for dk, ds in DEPT_STRUCTURE.items():
                     if agent in ds['all_members']:
                         dept = dk
@@ -250,17 +291,26 @@ def get_recent_commits(since_minutes=5):
             'type': 'commit',
         })
 
-    return items, active_depts
+        # Award XP for new commits
+        if agent and sha not in _seen_commit_shas:
+            _seen_commit_shas.add(sha)
+            xp_gains.append({'agent': agent, 'xp': 20, 'reason': 'commit'})
+
+    return items, active_depts, xp_gains
 
 
 def get_journal_changes():
-    """Detect changes to .agents/*.md journal files."""
+    """Detect changes to .agents/*.md journal files.
+
+    Returns (items, active_depts, xp_gains).
+    """
     global _journal_mtimes
     items = []
     active_depts = set()
+    xp_gains = []
 
     if not AGENTS_DIR.exists():
-        return items, active_depts
+        return items, active_depts, xp_gains
 
     for md_file in AGENTS_DIR.glob('*.md'):
         name = md_file.stem  # e.g., "builder", "nexus"
@@ -284,22 +334,33 @@ def get_journal_changes():
                     active_depts.add(dk)
                     break
 
+            # Award XP for journal update (dedup by mtime)
+            if agent:
+                last_awarded = _seen_journal_events.get(agent, 0)
+                if mtime > last_awarded:
+                    _seen_journal_events[agent] = mtime
+                    xp_gains.append({'agent': agent, 'xp': 10, 'reason': 'journal'})
+
         _journal_mtimes[name] = mtime
 
-    return items, active_depts
+    return items, active_depts, xp_gains
 
 
 def get_file_changes():
-    """Detect uncommitted file changes via git status."""
+    """Detect uncommitted file changes via git status.
+
+    Returns (items, active_depts, xp_gains).
+    No XP awarded here (cannot attribute to a specific agent).
+    """
     try:
         result = subprocess.run(
             ['git', 'status', '--porcelain', '--no-renames'],
-            cwd=str(REPO_DIR), capture_output=True, text=True, timeout=5
+            cwd=str(TARGET_DIR), capture_output=True, text=True, timeout=5
         )
         if result.returncode != 0:
-            return [], set()
+            return [], set(), []
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        return [], set()
+        return [], set(), []
 
     items = []
     active_depts = set()
@@ -318,7 +379,11 @@ def get_file_changes():
                 dept = dk
                 break
 
-        if dept and dept not in seen_depts:
+        # Fallback: unknown files map to outlands
+        if dept is None:
+            dept = 'outlands'
+
+        if dept not in seen_depts:
             seen_depts.add(dept)
             active_depts.add(dept)
             dept_name = DEPT_STRUCTURE.get(dept, {}).get('name', dept)
@@ -331,30 +396,60 @@ def get_file_changes():
                 'type': 'file_change',
             })
 
-    return items, active_depts
+    return items, active_depts, []
 
 
 def collect_activity():
-    """Aggregate all activity sources."""
+    """Aggregate all activity sources, accumulate session XP, detect rank-ups."""
     all_items = []
     all_depts = set()
+    all_xp_gains = []
 
-    commit_items, commit_depts = get_recent_commits()
+    commit_items, commit_depts, commit_xp = get_recent_commits()
     all_items.extend(commit_items)
     all_depts.update(commit_depts)
+    all_xp_gains.extend(commit_xp)
 
-    journal_items, journal_depts = get_journal_changes()
+    journal_items, journal_depts, journal_xp = get_journal_changes()
     all_items.extend(journal_items)
     all_depts.update(journal_depts)
+    all_xp_gains.extend(journal_xp)
 
-    file_items, file_depts = get_file_changes()
+    file_items, file_depts, file_xp = get_file_changes()
     all_items.extend(file_items)
     all_depts.update(file_depts)
+    all_xp_gains.extend(file_xp)
+
+    # Accumulate session XP and check for rank-ups
+    for gain in all_xp_gains:
+        agent = gain['agent']
+        base_xp = _get_agent_base_xp(agent)
+        old_total = base_xp + _session_xp.get(agent, 0)
+        _session_xp[agent] = _session_xp.get(agent, 0) + gain['xp']
+        new_total = base_xp + _session_xp[agent]
+
+        old_rank = rank_for_xp(old_total)
+        new_rank = rank_for_xp(new_total)
+        if new_rank != old_rank:
+            gain['rank_up'] = new_rank
+
+    # Badge detection based on session XP milestones
+    badges = []
+    total_session_xp = sum(_session_xp.values())
+    if total_session_xp >= 1000:
+        badges.append({'id': 'legendary', 'icon': '\U0001F31F', 'name': 'Legendary', 'desc': 'Earned 1000+ XP in a single session'})
+    elif total_session_xp >= 500:
+        badges.append({'id': 'powerhouse', 'icon': '\U0001F525', 'name': 'Powerhouse', 'desc': 'Earned 500+ XP in a single session'})
+    elif total_session_xp >= 100:
+        badges.append({'id': 'seasoned_worker', 'icon': '\U0001F3C5', 'name': 'Seasoned Worker', 'desc': 'Earned 100+ XP in a single session'})
 
     return {
         'items': all_items[:30],
         'active_depts': list(all_depts),
         'ts': datetime.now().isoformat(),
+        'xp_gains': all_xp_gains,
+        'session_xp': dict(_session_xp),
+        'badges': badges,
     }
 
 # ============================================
@@ -420,8 +515,8 @@ def parse_realm_state():
         return None
     content = STATE_PATH.read_text()
 
-    kingdom_table = parse_md_table(content, "Kingdom Overview")
-    kingdom_raw = {row.get('Field', ''): row.get('Value', '') for row in kingdom_table}
+    company_table = parse_md_table(content, "Company Overview")
+    company_raw = {row.get('Field', ''): row.get('Value', '') for row in company_table}
 
     agents = parse_md_table(content, "Agent Characters")
     quests = parse_md_table(content, "Recent Quests")
@@ -429,7 +524,7 @@ def parse_realm_state():
     badges = parse_md_table(content, "Badges Earned")
 
     return {
-        'kingdom_raw': kingdom_raw,
+        'company_raw': company_raw,
         'agents': agents,
         'quests': quests,
         'events': events,
@@ -485,14 +580,14 @@ def build_realm_data(state=None):
     if state is None:
         return _default_realm_data()
 
-    kr = state['kingdom_raw']
-    kingdom = {
+    cr = state['company_raw']
+    company = {
         'name': 'The Realm',
-        'efs': extract_number(kr.get('EFS (estimated)', '~50')),
-        'efsGrade': extract_grade(kr.get('EFS (estimated)', '(?)')),
-        'phase': kr.get('Phase', 'UNKNOWN'),
-        'totalAgents': extract_number(kr.get('Total Agents', '0')),
-        'activeQuests': extract_number(kr.get('Active Quests', '0')),
+        'efs': extract_number(cr.get('EFS (estimated)', '~50')),
+        'efsGrade': extract_grade(cr.get('EFS (estimated)', '(?)')),
+        'phase': cr.get('Phase', 'UNKNOWN'),
+        'totalAgents': extract_number(cr.get('Total Agents', '0')),
+        'activeQuests': extract_number(cr.get('Active Quests', '0')),
         'lastUpdated': datetime.now().strftime('%Y-%m-%d %H:%M'),
     }
 
@@ -596,7 +691,7 @@ def build_realm_data(state=None):
     conversations = _generate_conversations(departments)
 
     return {
-        'kingdom': kingdom,
+        'company': company,
         'departments': departments,
         'roads': ROADS,
         'events': events,
@@ -637,7 +732,7 @@ def _generate_conversations(departments):
 
 def _default_realm_data():
     return {
-        'kingdom': {'name': 'The Realm', 'efs': 50, 'efsGrade': 'C',
+        'company': {'name': 'The Realm', 'efs': 50, 'efsGrade': 'C',
                      'phase': 'UNKNOWN', 'totalAgents': 0, 'activeQuests': 0,
                      'lastUpdated': datetime.now().strftime('%Y-%m-%d %H:%M')},
         'departments': {},
@@ -692,11 +787,11 @@ def make_event_ticker_html(events):
 def generate_html(data):
     template = TEMPLATE_PATH.read_text()
 
-    k = data['kingdom']
+    k = data['company']
     efs_level = 'high' if k['efs'] >= 70 else ('mid' if k['efs'] >= 40 else 'low')
 
     replacements = {
-        '{{KINGDOM_ICON}}': '\U0001f3f0',
+        '{{COMPANY_ICON}}': '\U0001f3f0',
         '{{EFS_SCORE}}': str(k['efs']),
         '{{EFS_GRADE}}': k['efsGrade'],
         '{{EFS_PERCENT}}': str(k['efs']),
@@ -729,9 +824,23 @@ def generate_html(data):
     return html
 
 
+def generate_game_html(data):
+    """Generate HTML for Phaser 3 game mode (simpler — only needs REALM_DATA_JSON + COMPANY_ICON)."""
+    template = GAME_TEMPLATE_PATH.read_text()
+    replacements = {
+        '{{COMPANY_ICON}}': '\U0001f3f0',
+        '{{REALM_DATA_JSON}}': json.dumps(data, ensure_ascii=False, indent=2),
+    }
+    html = template
+    for k, v in replacements.items():
+        html = html.replace(k, v)
+    return html
+
+
 # ============================================
 # Cache layer
 # ============================================
+_game_mode = False
 _cache = {'html': None, 'data': None, 'hash': None, 'mtime': 0}
 
 
@@ -746,7 +855,7 @@ def get_cached():
         data_json = json.dumps(data, ensure_ascii=False, sort_keys=True)
         _cache['data'] = data
         _cache['hash'] = hashlib.md5(data_json.encode()).hexdigest()[:12]
-        _cache['html'] = generate_html(data)
+        _cache['html'] = generate_game_html(data) if _game_mode else generate_html(data)
         _cache['mtime'] = mtime
 
     return _cache
@@ -819,29 +928,92 @@ class RealmHandler(http.server.BaseHTTPRequestHandler):
 
 
 # ============================================
+# CLI
+# ============================================
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='Realm HQ visualization')
+    parser.add_argument('--game', action='store_true', help='Phaser 2D game mode')
+    parser.add_argument('--live', action='store_true', help='Start live HTTP server')
+    parser.add_argument('--port', type=int, default=8765, help='Server port (default: 8765)')
+    parser.add_argument('--repo', type=str, default=None,
+                        help='Target repository path (default: CWD)')
+    parser.add_argument('--open', action='store_true', default=True,
+                        help='Open browser after generation (static mode)')
+    parser.add_argument('--no-open', dest='open', action='store_false',
+                        help='Do not open browser')
+    return parser.parse_args()
+
+
+# ============================================
+# Static generation
+# ============================================
+def generate_static(args):
+    """Generate static HTML file and optionally open in browser."""
+    data = build_realm_data()
+
+    if args.game:
+        html = generate_game_html(data)
+        filename = 'realm-game.html'
+    else:
+        html = generate_html(data)
+        filename = 'realm-map.html'
+
+    output_dir = TARGET_DIR / 'realm' / 'output'
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / filename
+    output_path.write_text(html, encoding='utf-8')
+
+    print(f"\n  \U0001f3f0 Realm HQ — Static Generation")
+    print(f"  {'=' * 40}")
+    print(f"  Output:    {output_path}")
+    print(f"  Mode:      {'Phaser 2D Game' if args.game else 'CSS Grid Dashboard'}")
+    print(f"  State:     {STATE_PATH}")
+    print(f"  Target:    {TARGET_DIR}")
+    print(f"  {'=' * 40}\n")
+
+    if args.open:
+        import webbrowser
+        webbrowser.open(f'file://{output_path.resolve()}')
+
+
+# ============================================
 # Main
 # ============================================
 def main():
-    port = PORT
-    if '--port' in sys.argv:
-        idx = sys.argv.index('--port')
-        if idx + 1 < len(sys.argv):
-            port = int(sys.argv[idx + 1])
+    global TARGET_DIR, _game_mode
 
-    if not TEMPLATE_PATH.exists():
-        print(f"Error: Template not found at {TEMPLATE_PATH}")
+    args = parse_args()
+    TARGET_DIR = Path(args.repo).resolve() if args.repo else Path.cwd()
+    _game_mode = args.game
+
+    if args.live:
+        _start_live_server(args)
+    else:
+        generate_static(args)
+
+
+def _start_live_server(args):
+    """Start live HTTP server (existing behavior, extracted)."""
+    template_path = GAME_TEMPLATE_PATH if args.game else TEMPLATE_PATH
+    mode_label = "Phaser 2D Game" if args.game else "CSS Grid Dashboard"
+
+    if not template_path.exists():
+        print(f"Error: Template not found at {template_path}")
         sys.exit(1)
 
     print(f"\n  \U0001f3f0 Realm HQ Map — Live Server")
     print(f"  {'=' * 40}")
-    print(f"  URL:       http://localhost:{port}")
-    print(f"  Template:  {TEMPLATE_PATH}")
+    print(f"  URL:       http://localhost:{args.port}")
+    print(f"  Mode:      {mode_label}")
+    print(f"  Template:  {template_path}")
     print(f"  State:     {STATE_PATH}")
-    print(f"  Status:    {'Watching' if STATE_PATH.exists() else 'No state file (will use defaults)'}")
+    print(f"  Target:    {TARGET_DIR}")
+    print(f"  Status:    {'Watching' if STATE_PATH.exists() else 'No state file'}")
     print(f"  {'=' * 40}")
     print(f"  Press Ctrl+C to stop\n")
 
-    server = http.server.HTTPServer(('', port), RealmHandler)
+    server = http.server.HTTPServer(('', args.port), RealmHandler)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
