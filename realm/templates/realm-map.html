@@ -3,66 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Realm — Company HQ Map</title>
+  <title>The Realm — Kingdom HQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================
-       CSS Custom Properties
+       CSS Custom Properties — Dark Game Theme
        ============================================ */
     :root {
-      --bg-body: #f0f2f5;
-      --bg-card: #ffffff;
-      --bg-panel: #fafbfc;
-      --bg-header: #1e293b;
-      --bg-ticker: #0f172a;
-      --border-main: #e2e8f0;
-      --border-hover: #3b82f6;
-      --border-selected: #2563eb;
-      --accent: #3b82f6;
-      --accent-light: #dbeafe;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --text-on-dark: #f1f5f9;
-      --text-on-dark-dim: #94a3b8;
-      --health-green: #22c55e;
-      --health-yellow: #eab308;
-      --health-orange: #f97316;
-      --health-red: #ef4444;
-      --rank-ss: #ec4899;
-      --rank-s: #a855f7;
-      --rank-a: #3b82f6;
-      --rank-b: #22c55e;
-      --rank-c: #eab308;
-      --rank-d: #a8a29e;
-      --rank-e: #78716c;
-      --rank-f: #57534e;
-      --class-commander: #ef4444;
-      --class-ranger: #22c55e;
-      --class-artisan: #f97316;
-      --class-guardian: #06b6d4;
-      --class-paladin: #eab308;
-      --class-sage: #a855f7;
-      --class-alchemist: #14b8a6;
-      --class-scribe: #8b5cf6;
-      --class-architect: #6366f1;
-      --class-enchanter: #ec4899;
-      --class-engineer: #84cc16;
-      --class-merchant: #f59e0b;
-      --class-oracle: #06b6d4;
-      --class-herald: #f97316;
-      --class-demiurge: #c026d3;
-      --class-strategist: #4f46e5;
-      --class-diplomat: #10b981;
-      --class-pioneer: #f43f5e;
-      --class-navigator: #34d399;
-      --class-transmuter: #facc15;
-      --class-watcher: #6b7280;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
-      --radius: 12px;
+      --bg-body: #0f1419;
+      --bg-card: #1a2332;
+      --bg-panel: #151d2b;
+      --bg-header: #0d1117;
+      --bg-ticker: #080c10;
+      --border-main: #30363d;
+      --border-hover: #58a6ff;
+      --border-selected: #79c0ff;
+      --accent: #58a6ff;
+      --accent-light: rgba(88,166,255,0.12);
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #484f58;
+      --text-on-dark: #e6edf3;
+      --text-on-dark-dim: #6e7681;
+      --health-green: #3fb950;
+      --health-yellow: #d29922;
+      --health-orange: #db6d28;
+      --health-red: #f85149;
+      --rank-ss: #ff6eb4;
+      --rank-s: #bc8cff;
+      --rank-a: #58a6ff;
+      --rank-b: #3fb950;
+      --rank-c: #d29922;
+      --rank-d: #8b949e;
+      --rank-e: #6e7681;
+      --rank-f: #484f58;
+      --class-commander: #f85149;
+      --class-ranger: #3fb950;
+      --class-artisan: #db6d28;
+      --class-guardian: #39d2c0;
+      --class-paladin: #d29922;
+      --class-sage: #bc8cff;
+      --class-alchemist: #2ea88a;
+      --class-scribe: #a371f7;
+      --class-architect: #6e40c9;
+      --class-enchanter: #ff6eb4;
+      --class-engineer: #7ee787;
+      --class-merchant: #d29922;
+      --class-oracle: #39d2c0;
+      --class-herald: #db6d28;
+      --class-demiurge: #d2a8ff;
+      --class-strategist: #6e40c9;
+      --class-diplomat: #3fb950;
+      --class-pioneer: #ff7b72;
+      --class-navigator: #56d364;
+      --class-transmuter: #e3b341;
+      --class-watcher: #8b949e;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.6);
+      --glow-blue: 0 0 12px rgba(88,166,255,0.3);
+      --radius: 8px;
     }
 
     /* ============================================
@@ -76,6 +77,10 @@
       color: var(--text-primary);
       min-height: 100vh;
       overflow-x: hidden;
+      /* Neon grid pattern */
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(88,166,255,0.03) 39px, rgba(88,166,255,0.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(88,166,255,0.03) 39px, rgba(88,166,255,0.03) 40px);
     }
 
     .pixel-font {
@@ -83,11 +88,12 @@
     }
 
     /* ============================================
-       Company Status Bar (Top)
+       Game HUD Status Bar (Top)
        ============================================ */
     .status-bar {
       background: var(--bg-header);
-      padding: 12px 24px;
+      border-bottom: 2px solid rgba(88,166,255,0.2);
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -95,7 +101,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
     }
 
     .status-bar__brand {
@@ -106,13 +112,15 @@
 
     .status-bar__logo {
       font-size: 24px;
+      filter: drop-shadow(0 0 6px rgba(255,200,50,0.5));
     }
 
     .status-bar__title {
       font-family: 'Press Start 2P', monospace;
-      font-size: 12px;
-      color: #f1f5f9;
-      letter-spacing: 0.05em;
+      font-size: 11px;
+      color: #e3b341;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 8px rgba(227,179,65,0.4);
     }
 
     .status-bar__subtitle {
@@ -123,7 +131,7 @@
 
     .status-bar__stats {
       display: flex;
-      gap: 20px;
+      gap: 12px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -132,42 +140,54 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 6px 12px;
+      background: rgba(88,166,255,0.06);
+      border: 1px solid rgba(88,166,255,0.15);
+      border-radius: 6px;
+      padding: 5px 10px;
     }
 
     .stat-chip__label {
-      color: var(--text-on-dark-dim);
-      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .stat-chip__value {
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      color: #f1f5f9;
+      font-size: 9px;
+      color: var(--accent);
     }
 
     .stat-chip__bar {
       width: 60px;
-      height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 3px;
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 2px;
       overflow: hidden;
     }
 
     .stat-chip__bar-fill {
       height: 100%;
-      border-radius: 3px;
+      border-radius: 1px;
       transition: width 0.5s ease;
+      image-rendering: pixelated;
     }
 
-    .stat-chip__bar-fill--high { background: var(--health-green); }
-    .stat-chip__bar-fill--mid { background: var(--health-yellow); }
-    .stat-chip__bar-fill--low { background: var(--health-red); }
+    .stat-chip__bar-fill--high {
+      background: linear-gradient(90deg, #3fb950, #7ee787);
+      box-shadow: 0 0 4px rgba(63,185,80,0.4);
+    }
+    .stat-chip__bar-fill--mid {
+      background: linear-gradient(90deg, #d29922, #e3b341);
+      box-shadow: 0 0 4px rgba(210,153,34,0.4);
+    }
+    .stat-chip__bar-fill--low {
+      background: linear-gradient(90deg, #f85149, #ff7b72);
+      box-shadow: 0 0 4px rgba(248,81,73,0.4);
+    }
 
     .status-bar__timestamp {
       color: var(--text-on-dark-dim);
@@ -180,28 +200,25 @@
        ============================================ */
     .main-layout {
       display: flex;
-      height: calc(100vh - 56px - 40px);
+      height: calc(100vh - 52px - 36px);
     }
 
     /* ============================================
-       Floor Plan Area
+       Map Area
        ============================================ */
     .map-area {
       flex: 1;
-      padding: 24px;
+      padding: 20px;
       overflow: auto;
       position: relative;
-      background:
-        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px),
-        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px),
-        var(--bg-body);
     }
 
     .map-area__label {
       position: absolute;
       top: 8px;
       left: 24px;
-      font-size: 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -214,7 +231,7 @@
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       grid-template-rows: repeat(4, 1fr);
-      gap: 16px;
+      gap: 12px;
       max-width: 1200px;
       margin: 0 auto;
       min-height: 560px;
@@ -223,7 +240,7 @@
     }
 
     /* ============================================
-       SVG Connection Lines
+       SVG Connection Lines — Pixel-style paths
        ============================================ */
     .roads-overlay {
       position: absolute;
@@ -233,80 +250,96 @@
     }
 
     .road-line {
-      stroke: #cbd5e1;
-      stroke-width: 1.5;
-      stroke-dasharray: 6 4;
-      opacity: 0.5;
+      stroke: rgba(88,166,255,0.15);
+      stroke-width: 2;
+      stroke-dasharray: 4 4;
+      opacity: 0.6;
     }
 
     .road-line--allied {
-      stroke: var(--accent);
-      stroke-width: 2;
+      stroke: rgba(88,166,255,0.3);
+      stroke-width: 2.5;
       stroke-dasharray: none;
-      opacity: 0.3;
+      opacity: 0.5;
     }
 
     /* ============================================
-       Department Card (Office Room)
+       Building Card — Sim Game Facility Style
        ============================================ */
     .building {
       background: var(--bg-card);
       border: 1.5px solid var(--border-main);
       border-radius: var(--radius);
-      padding: 14px;
+      padding: 12px;
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .building::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(88,166,255,0.015) 7px, rgba(88,166,255,0.015) 8px),
+        repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(88,166,255,0.015) 7px, rgba(88,166,255,0.015) 8px);
+      pointer-events: none;
+      border-radius: var(--radius);
     }
 
     .building:hover {
       border-color: var(--border-hover);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
+      box-shadow: var(--glow-blue), var(--shadow-md);
+      transform: translateY(-2px) scale(1.01);
     }
 
     .building:hover .building__icon {
-      transform: scale(1.1);
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 4px rgba(88,166,255,0.4));
     }
 
     .building--selected {
       border-color: var(--border-selected);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15), var(--shadow-md);
+      box-shadow: 0 0 0 2px rgba(121,192,255,0.2), var(--glow-blue), var(--shadow-md);
     }
 
     .building__floor-tag {
       position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 9px;
+      top: 6px;
+      right: 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
       color: var(--text-muted);
-      font-weight: 500;
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
     }
 
     .building__header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .building__icon-wrap {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       flex-shrink: 0;
       transition: transform 0.2s ease;
     }
 
     .building__icon {
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
     .building__info {
@@ -315,10 +348,10 @@
     }
 
     .building__name {
-      font-weight: 700;
-      font-size: 13px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
       color: var(--text-primary);
-      line-height: 1.3;
+      line-height: 1.5;
     }
 
     .building__type {
@@ -328,7 +361,7 @@
     }
 
     .building__chief {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
@@ -338,13 +371,14 @@
     .building__chief-rank {
       font-family: 'Press Start 2P', monospace;
       font-size: 7px;
-      padding: 2px 5px;
-      border-radius: 4px;
-      background: rgba(0,0,0,0.04);
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.15);
     }
 
     /* ============================================
-       Performance Gauge (Health)
+       HP Bar — Game-style Health Gauge
        ============================================ */
     .health-gauge {
       margin-top: auto;
@@ -352,24 +386,35 @@
 
     .health-gauge__bar {
       width: 100%;
-      height: 5px;
-      background: #f1f5f9;
-      border-radius: 3px;
+      height: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
       overflow: hidden;
     }
 
     .health-gauge__fill {
       height: 100%;
-      border-radius: 3px;
+      border-radius: 1px;
       transition: width 0.8s ease;
+      image-rendering: pixelated;
     }
 
-    .health-gauge__fill--thriving { background: var(--health-green); }
-    .health-gauge__fill--stable { background: var(--health-yellow); }
-    .health-gauge__fill--strained { background: var(--health-orange); }
-
+    .health-gauge__fill--thriving {
+      background: linear-gradient(90deg, #238636, #3fb950, #7ee787);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), 0 0 4px rgba(63,185,80,0.3);
+    }
+    .health-gauge__fill--stable {
+      background: linear-gradient(90deg, #9e6a03, #d29922, #e3b341);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), 0 0 4px rgba(210,153,34,0.3);
+    }
+    .health-gauge__fill--strained {
+      background: linear-gradient(90deg, #bd561d, #db6d28);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2);
+    }
     .health-gauge__fill--critical {
-      background: var(--health-red);
+      background: linear-gradient(90deg, #da3633, #f85149);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), 0 0 6px rgba(248,81,73,0.4);
       animation: healthPulse 1.5s ease-in-out infinite;
     }
 
@@ -382,7 +427,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 9px;
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
     .health-gauge__status {
@@ -391,59 +436,146 @@
 
     .health-gauge__score {
       font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
+      font-size: 7px;
       color: var(--text-secondary);
     }
 
     /* ============================================
-       Agent Dots (Employees)
+       Agent Avatars (Replacing Dots)
        ============================================ */
     .building__agents {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      min-height: 16px;
+      gap: 3px;
+      min-height: 32px;
+      padding: 4px 0;
     }
 
-    .agent-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(255,255,255,0.8);
+    .agent-avatar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 36px;
+      padding: 2px;
+      border-radius: 4px;
+      border: 1.5px solid transparent;
       cursor: pointer;
       transition: all 0.15s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      position: relative;
+      background: rgba(0,0,0,0.2);
     }
 
-    .agent-dot:hover {
-      scale: 1.5;
+    .agent-avatar:hover {
       z-index: 10;
-      box-shadow: 0 0 8px 2px rgba(59,130,246,0.35), 0 2px 6px rgba(0,0,0,0.25);
-      animation-play-state: paused;
+      transform: scale(1.2) translateY(-2px);
+      background: rgba(88,166,255,0.1);
     }
 
-    .agent-dot--chief {
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(0,0,0,0.15);
+    .avatar-icon {
+      font-size: 16px;
+      line-height: 1;
+      display: block;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
     }
 
-    .agent-dot--ss { width: 18px; height: 18px; }
-    .agent-dot--s { width: 16px; height: 16px; }
-    .agent-dot--a { width: 14px; height: 14px; }
-    .agent-dot--b { width: 12px; height: 12px; }
-    .agent-dot--c { width: 10px; height: 10px; }
-    .agent-dot--d, .agent-dot--e, .agent-dot--f { width: 8px; height: 8px; }
+    .avatar-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 4px;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.2;
+      margin-top: 1px;
+      max-width: 34px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chief-crown {
+      position: absolute;
+      top: -6px;
+      right: -4px;
+      font-size: 10px;
+      filter: drop-shadow(0 0 3px rgba(255,200,50,0.6));
+      z-index: 2;
+    }
+
+    /* Rank-based frame styles */
+    .rank-ss {
+      border-color: transparent;
+      background: linear-gradient(135deg, rgba(255,200,50,0.15), rgba(255,110,180,0.15)) !important;
+      box-shadow: 0 0 8px rgba(255,200,50,0.3), inset 0 0 8px rgba(255,200,50,0.1);
+      animation: rankSSPulse 2s ease-in-out infinite;
+    }
+    .rank-ss::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 4px;
+      border: 1.5px solid transparent;
+      background: linear-gradient(135deg, #ffc832, #ff6eb4, #ffc832) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    @keyframes rankSSPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,200,50,0.3), inset 0 0 8px rgba(255,200,50,0.1); }
+      50% { box-shadow: 0 0 14px rgba(255,200,50,0.5), inset 0 0 12px rgba(255,200,50,0.15); }
+    }
+
+    .rank-s {
+      border-color: transparent;
+      background: linear-gradient(135deg, rgba(188,140,255,0.1), rgba(200,200,220,0.1)) !important;
+      box-shadow: 0 0 6px rgba(188,140,255,0.25);
+    }
+    .rank-s::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 4px;
+      border: 1.5px solid transparent;
+      background: linear-gradient(135deg, #c0c0c0, #bc8cff, #c0c0c0) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .rank-a {
+      border-color: #cd7f32;
+      box-shadow: 0 0 4px rgba(205,127,50,0.2);
+    }
+
+    .rank-b {
+      border-color: var(--accent);
+    }
+
+    .rank-c {
+      border-color: var(--health-green);
+    }
+
+    .rank-d {
+      border-color: var(--text-muted);
+    }
+
+    .rank-e {
+      border-color: rgba(110,118,129,0.4);
+    }
+
+    .rank-f {
+      border-style: dashed;
+      border-color: rgba(72,79,88,0.5);
+      opacity: 0.65;
+    }
 
     /* ============================================
-       Tooltip
+       Tooltip — Dark game style
        ============================================ */
     .tooltip {
       position: fixed;
-      background: var(--bg-card);
+      background: var(--bg-header);
       border: 1px solid var(--border-main);
-      border-radius: 8px;
+      border-radius: 6px;
       padding: 10px 14px;
       font-size: 12px;
       color: var(--text-primary);
@@ -452,42 +584,42 @@
       opacity: 0;
       transition: opacity 0.15s ease;
       max-width: 240px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-lg), 0 0 12px rgba(0,0,0,0.4);
     }
 
     .tooltip--visible { opacity: 1; }
 
     .tooltip__name {
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--text-primary);
-      margin-bottom: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--accent);
+      margin-bottom: 6px;
     }
 
     .tooltip__detail {
       color: var(--text-secondary);
       font-size: 11px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     /* ============================================
-       Detail Panel (Right Sidebar)
+       Detail Panel — RPG Character Sheet
        ============================================ */
     .detail-panel {
       width: 0;
-      background: var(--bg-card);
-      border-left: 1px solid var(--border-main);
+      background: var(--bg-panel);
+      border-left: 2px solid rgba(88,166,255,0.15);
       overflow: hidden;
       transition: width 0.3s ease;
       flex-shrink: 0;
     }
 
     .detail-panel--open {
-      width: 360px;
+      width: 380px;
     }
 
     .detail-panel__inner {
-      width: 360px;
+      width: 380px;
       padding: 20px;
       height: 100%;
       overflow-y: auto;
@@ -497,12 +629,12 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      background: var(--bg-body);
-      border: 1px solid var(--border-main);
-      color: var(--text-secondary);
+      background: rgba(248,81,73,0.1);
+      border: 1px solid rgba(248,81,73,0.2);
+      color: #f85149;
       width: 28px;
       height: 28px;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
       display: flex;
@@ -512,9 +644,8 @@
     }
 
     .detail-panel__close:hover {
-      background: #fee2e2;
-      border-color: #fca5a5;
-      color: #ef4444;
+      background: rgba(248,81,73,0.2);
+      border-color: #f85149;
     }
 
     .panel-header {
@@ -528,26 +659,27 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 20px;
+      font-size: 24px;
       margin-bottom: 10px;
+      border: 1px solid var(--border-main);
     }
 
     .panel-header__name {
-      font-weight: 700;
-      font-size: 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
       color: var(--text-primary);
-      line-height: 1.4;
+      line-height: 1.6;
     }
 
     .panel-header__subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-secondary);
       margin-top: 4px;
     }
 
-    /* Stats Section */
+    /* Stats Section — RPG-style */
     .char-sheet {
       margin-bottom: 20px;
     }
@@ -559,13 +691,14 @@
       margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      text-shadow: 0 0 6px rgba(88,166,255,0.3);
     }
 
     .stat-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .stat-row__label {
@@ -578,29 +711,31 @@
 
     .stat-row__bar {
       flex: 1;
-      height: 8px;
-      background: #f1f5f9;
-      border-radius: 4px;
+      height: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 2px;
       overflow: hidden;
     }
 
     .stat-row__fill {
       height: 100%;
-      border-radius: 4px;
-      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      border-radius: 1px;
+      background: linear-gradient(90deg, var(--accent), #79c0ff);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15);
       transition: width 0.5s ease;
     }
 
     .stat-row__value {
       font-family: 'Press Start 2P', monospace;
       font-size: 8px;
-      color: var(--text-secondary);
+      color: var(--accent);
       width: 24px;
       text-align: right;
       flex-shrink: 0;
     }
 
-    /* Member List */
+    /* Member List — RPG roster */
     .member-list {
       list-style: none;
     }
@@ -609,23 +744,22 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 6px;
-      border-bottom: 1px solid #f1f5f9;
+      padding: 6px;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 4px;
       transition: background 0.15s;
     }
 
     .member-list__item:hover {
-      background: #f8fafc;
+      background: rgba(88,166,255,0.06);
     }
 
-    .member-list__dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
+    .member-list__icon {
+      font-size: 16px;
       flex-shrink: 0;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      width: 20px;
+      text-align: center;
     }
 
     .member-list__name {
@@ -647,9 +781,9 @@
 
     /* Department Ability */
     .dept-ability {
-      background: var(--accent-light);
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
+      background: rgba(88,166,255,0.06);
+      border: 1px solid rgba(88,166,255,0.15);
+      border-radius: 6px;
       padding: 12px;
       margin-top: 12px;
     }
@@ -657,8 +791,9 @@
     .dept-ability__name {
       font-family: 'Press Start 2P', monospace;
       font-size: 8px;
-      color: var(--accent);
+      color: #e3b341;
       margin-bottom: 4px;
+      text-shadow: 0 0 4px rgba(227,179,65,0.3);
     }
 
     .dept-ability__desc {
@@ -673,7 +808,7 @@
       align-items: center;
       gap: 8px;
       padding: 8px 0;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
     }
 
     .quest-item__rarity {
@@ -683,11 +818,11 @@
       flex-shrink: 0;
     }
 
-    .quest-item__rarity--common { background: #a8a29e; }
-    .quest-item__rarity--uncommon { background: #22c55e; }
-    .quest-item__rarity--rare { background: #3b82f6; }
-    .quest-item__rarity--epic { background: #a855f7; }
-    .quest-item__rarity--legendary { background: #f97316; }
+    .quest-item__rarity--common { background: var(--text-muted); }
+    .quest-item__rarity--uncommon { background: var(--health-green); box-shadow: 0 0 4px rgba(63,185,80,0.3); }
+    .quest-item__rarity--rare { background: var(--accent); box-shadow: 0 0 4px rgba(88,166,255,0.3); }
+    .quest-item__rarity--epic { background: #bc8cff; box-shadow: 0 0 4px rgba(188,140,255,0.3); }
+    .quest-item__rarity--legendary { background: #db6d28; box-shadow: 0 0 6px rgba(219,109,40,0.4); }
 
     .quest-item__name {
       font-size: 11px;
@@ -702,15 +837,15 @@
     }
 
     /* ============================================
-       Event Ticker (Bottom)
+       Event Ticker (Bottom) — Game News Bar
        ============================================ */
     .event-ticker {
       background: var(--bg-ticker);
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(88,166,255,0.1);
       padding: 0 24px;
       overflow: hidden;
       position: relative;
-      height: 40px;
+      height: 36px;
     }
 
     .event-ticker__track {
@@ -733,27 +868,22 @@
     }
 
     .event-ticker__item {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-on-dark-dim);
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .event-ticker__item-icon { font-size: 14px; }
-
-    .event-ticker__item-text { color: var(--text-on-dark); }
-
-    .event-ticker__item-date {
-      color: var(--text-on-dark-dim);
-      font-size: 10px;
-    }
+    .event-ticker__item-icon { font-size: 13px; }
+    .event-ticker__item-text { color: var(--text-secondary); }
+    .event-ticker__item-date { color: var(--text-muted); font-size: 10px; }
 
     /* ============================================
        Rank Colors
        ============================================ */
-    .rank--ss { color: var(--rank-ss); }
-    .rank--s { color: var(--rank-s); }
+    .rank--ss { color: var(--rank-ss); text-shadow: 0 0 6px rgba(255,110,180,0.4); }
+    .rank--s { color: var(--rank-s); text-shadow: 0 0 4px rgba(188,140,255,0.3); }
     .rank--a { color: var(--rank-a); }
     .rank--b { color: var(--rank-b); }
     .rank--c { color: var(--rank-c); }
@@ -762,20 +892,20 @@
     .rank--f { color: var(--rank-f); }
 
     /* ============================================
-       Department Icon Background Colors
+       Department Icon Background Colors — Dark
        ============================================ */
-    .dept-bg--command { background: #fef2f2; }
-    .dept-bg--frontline { background: #fff7ed; }
-    .dept-bg--intel { background: #f0fdf4; }
-    .dept-bg--defense { background: #ecfeff; }
-    .dept-bg--academy { background: #faf5ff; }
-    .dept-bg--council { background: #eef2ff; }
-    .dept-bg--enchant { background: #fdf2f8; }
-    .dept-bg--workshop { background: #f0fdf4; }
-    .dept-bg--observatory { background: #ecfeff; }
-    .dept-bg--herald { background: #fffbeb; }
-    .dept-bg--pantheon { background: #fdf4ff; }
-    .dept-bg--outlands { background: #f0f9ff; }
+    .dept-bg--command { background: rgba(248,81,73,0.12); border: 1px solid rgba(248,81,73,0.2); }
+    .dept-bg--frontline { background: rgba(219,109,40,0.12); border: 1px solid rgba(219,109,40,0.2); }
+    .dept-bg--intel { background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.2); }
+    .dept-bg--defense { background: rgba(57,210,192,0.12); border: 1px solid rgba(57,210,192,0.2); }
+    .dept-bg--academy { background: rgba(188,140,255,0.12); border: 1px solid rgba(188,140,255,0.2); }
+    .dept-bg--council { background: rgba(110,64,201,0.12); border: 1px solid rgba(110,64,201,0.2); }
+    .dept-bg--enchant { background: rgba(255,110,180,0.12); border: 1px solid rgba(255,110,180,0.2); }
+    .dept-bg--workshop { background: rgba(126,231,135,0.12); border: 1px solid rgba(126,231,135,0.2); }
+    .dept-bg--observatory { background: rgba(57,210,192,0.12); border: 1px solid rgba(57,210,192,0.2); }
+    .dept-bg--herald { background: rgba(227,179,65,0.12); border: 1px solid rgba(227,179,65,0.2); }
+    .dept-bg--pantheon { background: rgba(210,168,255,0.12); border: 1px solid rgba(210,168,255,0.2); }
+    .dept-bg--outlands { background: rgba(88,166,255,0.12); border: 1px solid rgba(88,166,255,0.2); }
 
     /* ============================================
        Responsive
@@ -790,67 +920,61 @@
 
     @media (max-width: 768px) {
       .map-grid { grid-template-columns: repeat(2, 1fr); }
-      .detail-panel--open { width: 100%; position: fixed; top: 56px; right: 0; bottom: 40px; z-index: 50; }
-      .status-bar { flex-wrap: wrap; padding: 10px 16px; }
-      .status-bar__stats { gap: 8px; }
+      .detail-panel--open { width: 100%; position: fixed; top: 52px; right: 0; bottom: 36px; z-index: 50; }
+      .status-bar { flex-wrap: wrap; padding: 8px 12px; }
+      .status-bar__stats { gap: 6px; }
     }
 
     /* ============================================
-       Scrollbar
+       Scrollbar — Dark
        ============================================ */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-body); }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::-webkit-scrollbar-thumb { background: var(--border-main); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
     /* ============================================
-       Agent Wandering Animations
+       Avatar Idle Bounce Animations
        ============================================ */
-    @keyframes agentIdle1 {
-      0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(2px, -2px); }
-      40% { transform: translate(-1px, 3px); }
-      60% { transform: translate(3px, 1px); }
-      80% { transform: translate(-2px, -1px); }
+    @keyframes idleBounce1 {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
     }
 
-    @keyframes agentIdle2 {
-      0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-3px, 1px); }
-      40% { transform: translate(1px, -3px); }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(3px, -1px); }
+    @keyframes idleBounce2 {
+      0%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-1.5px); }
+      70% { transform: translateY(0.5px); }
     }
 
-    @keyframes agentIdle3 {
-      0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(1px, 2px); }
-      50% { transform: translate(-3px, -1px); }
-      75% { transform: translate(2px, -2px); }
+    @keyframes idleBounce3 {
+      0%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-2.5px); }
+      60% { transform: translateY(0.5px); }
     }
 
     @keyframes agentWorking {
-      0%, 100% { box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-      50% { box-shadow: 0 0 8px 3px rgba(59,130,246,0.35); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+      50% { box-shadow: 0 0 8px 3px rgba(88,166,255,0.3); }
     }
 
-    .agent-dot--wander {
+    .agent-avatar--bounce {
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
     }
 
-    .agent-dot--working {
+    .agent-avatar--working {
       animation: agentWorking 2s ease-in-out infinite !important;
     }
 
     /* ============================================
-       Speech Bubbles
+       Speech Bubbles — Pixel-style
        ============================================ */
     .speech-bubble {
       position: fixed;
-      background: var(--bg-card);
+      background: var(--bg-header);
       border: 1px solid var(--border-main);
-      border-radius: 10px 10px 10px 2px;
+      border-radius: 6px 6px 6px 1px;
       padding: 5px 10px;
       font-size: 11px;
       color: var(--text-primary);
@@ -858,7 +982,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-md), 0 0 8px rgba(0,0,0,0.3);
       z-index: 150;
       pointer-events: none;
       opacity: 0;
@@ -870,8 +994,8 @@
     }
 
     .speech-bubble__name {
-      font-weight: 700;
-      font-size: 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
       color: var(--accent);
       margin-right: 3px;
     }
@@ -887,12 +1011,12 @@
     }
 
     /* ============================================
-       Traveling Agent Dots (Inter-Department)
+       Traveling Agent Dots
        ============================================ */
     .travel-dot {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       pointer-events: none;
       z-index: 2;
@@ -900,8 +1024,8 @@
     }
 
     @keyframes travelPulse {
-      0%, 100% { opacity: 0.7; box-shadow: 0 0 4px 1px rgba(59,130,246,0.3); }
-      50% { opacity: 1; box-shadow: 0 0 8px 2px rgba(59,130,246,0.5); }
+      0%, 100% { opacity: 0.6; box-shadow: 0 0 4px 1px rgba(88,166,255,0.2); }
+      50% { opacity: 1; box-shadow: 0 0 8px 2px rgba(88,166,255,0.4); }
     }
 
     /* ============================================
@@ -909,25 +1033,164 @@
        ============================================ */
     @keyframes buildingBreath {
       0%, 100% { box-shadow: var(--shadow-sm); }
-      50% { box-shadow: 0 2px 8px -1px rgba(0,0,0,0.08), 0 1px 3px -1px rgba(0,0,0,0.06); }
+      50% { box-shadow: 0 0 12px rgba(88,166,255,0.1), var(--shadow-sm); }
     }
 
     .building--alive {
       animation: buildingBreath 4s ease-in-out infinite;
+    }
+
+    /* ============================================
+       Live Mode
+       ============================================ */
+    .live-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(63,185,80,0.12);
+      border: 1px solid rgba(63,185,80,0.25);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: #3fb950;
+      letter-spacing: 0.05em;
+    }
+
+    .live-badge--active { display: flex; }
+
+    .live-badge__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3fb950;
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(63,185,80,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(63,185,80,0); }
+    }
+
+    /* Activity indicator on department cards */
+    .building__activity {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      display: none;
+      align-items: center;
+      gap: 3px;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      color: var(--accent);
+    }
+
+    .building__activity--active { display: flex; }
+
+    .building__activity-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+
+    /* Activity log panel (live mode) — Dark theme */
+    .activity-log {
+      position: fixed;
+      bottom: 36px;
+      right: 16px;
+      width: 320px;
+      max-height: 280px;
+      background: var(--bg-header);
+      border: 1px solid var(--border-main);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      z-index: 90;
+      display: none;
+      flex-direction: column;
+    }
+
+    .activity-log--active { display: flex; }
+
+    .activity-log__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-main);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .activity-log__count {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--accent);
+    }
+
+    .activity-log__body {
+      overflow-y: auto;
+      padding: 4px 0;
+      flex: 1;
+    }
+
+    .activity-log__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 12px;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(48,54,61,0.4);
+      animation: fadeSlideIn 0.3s ease-out;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .activity-log__item-icon { font-size: 13px; flex-shrink: 0; }
+
+    .activity-log__item-text {
+      color: var(--text-secondary);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .activity-log__item-text strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .activity-log__item-time {
+      font-size: 9px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
 
   <!-- ============================================
-       Company Status Bar
+       Game HUD Status Bar
        ============================================ -->
   <header class="status-bar">
     <div class="status-bar__brand">
       <span class="status-bar__logo">{{KINGDOM_ICON}}</span>
       <div>
         <div class="status-bar__title">THE REALM</div>
-        <div class="status-bar__subtitle">Company HQ — Floor Map</div>
+        <div class="status-bar__subtitle">Kingdom HQ — Simulation Map</div>
       </div>
     </div>
     <div class="status-bar__stats">
@@ -943,13 +1206,17 @@
         <span class="stat-chip__value">{{PHASE}}</span>
       </div>
       <div class="stat-chip">
-        <span class="stat-chip__label">Staff</span>
+        <span class="stat-chip__label">Units</span>
         <span class="stat-chip__value">{{AGENT_TOTAL}}</span>
       </div>
       <div class="stat-chip">
-        <span class="stat-chip__label">Projects</span>
+        <span class="stat-chip__label">Quests</span>
         <span class="stat-chip__value">{{QUEST_ACTIVE}} active</span>
       </div>
+    </div>
+    <div class="live-badge" id="liveBadge">
+      <span class="live-badge__dot"></span>
+      LIVE
     </div>
     <div class="status-bar__timestamp">{{LAST_UPDATED}}</div>
   </header>
@@ -959,9 +1226,9 @@
        ============================================ -->
   <div class="main-layout">
 
-    <!-- Floor Plan Area -->
+    <!-- Map Area -->
     <div class="map-area" id="mapArea">
-      <div class="map-area__label">HQ Floor Plan</div>
+      <div class="map-area__label">Kingdom Map</div>
 
       <!-- SVG Connection Lines -->
       <svg class="roads-overlay" id="roadsOverlay"></svg>
@@ -1223,7 +1490,7 @@
 
         <!-- R3C5: Outlands — Innovation Hub -->
         <div class="building" data-dept="outlands" style="grid-column: 5; grid-row: 3;" onclick="selectBuilding(this)">
-          <span class="building__floor-tag">R&D</span>
+          <span class="building__floor-tag">R&amp;D</span>
           <div class="building__header">
             <div class="building__icon-wrap dept-bg--outlands">
               <span class="building__icon">{{DEPT_OUTLANDS_ICON}}</span>
@@ -1324,6 +1591,15 @@
     </div>
   </footer>
 
+  <!-- Activity Log (live mode) -->
+  <div class="activity-log" id="activityLog">
+    <div class="activity-log__header">
+      Activity Feed
+      <span class="activity-log__count" id="activityCount">0</span>
+    </div>
+    <div class="activity-log__body" id="activityBody"></div>
+  </div>
+
   <!-- Tooltip -->
   <div class="tooltip" id="tooltip">
     <div class="tooltip__name" id="tooltipName"></div>
@@ -1334,31 +1610,22 @@
        Realm Data (JSON embedded by Realm agent)
        ============================================ -->
   <script>
-    // Realm agent replaces this with actual data
     const REALM_DATA = {{REALM_DATA_JSON}};
-    /*
-      Expected REALM_DATA:
-      {
-        kingdom: { name, efs, efsGrade, phase, totalAgents, activeQuests, lastUpdated },
-        departments: {
-          command: {
-            name, icon, type, chief, chiefRank, health, healthStatus, healthLabel, healthIcon,
-            ability: { name, description },
-            members: [{ name, class, rank, xp, isChief, classColor, stats: { str, dex, int, wis, cha, con } }]
-          }, ...
-        },
-        roads: [{ from, to, type }],
-        events: [{ icon, text, date }],
-        quests: [{ name, rarity, progress, party }],
-        conversations: [
-          { agent: "Nexus", message: "Chain #42 complete", dept: "command" },
-          { agent: "Builder", message: "Deploying v2.1", dept: "frontline" }
-        ]
-      }
-    */
   </script>
 
   <script>
+    // ============================================
+    // CLASS_ICONS mapping (mirrors serve.py)
+    // ============================================
+    const CLASS_ICONS = {
+      Commander:'⚔️', Ranger:'🏹', Artisan:'🔨', Guardian:'🛡️',
+      Paladin:'⚡', Sage:'📖', Alchemist:'⚗️', Scribe:'✒️',
+      Architect:'📐', Pioneer:'🚀', Enchanter:'✨', Engineer:'⚙️',
+      Merchant:'💰', Oracle:'🔮', Herald:'📯', Demiurge:'🌀',
+      Strategist:'♟️', Diplomat:'🤝', Navigator:'🧭', Transmuter:'💎',
+      Watcher:'👁️',
+    };
+
     // ============================================
     // State
     // ============================================
@@ -1386,7 +1653,7 @@
     }
 
     // ============================================
-    // Detail Panel
+    // Detail Panel — RPG Character Sheet
     // ============================================
     function openPanel(deptKey) {
       const panel = document.getElementById('detailPanel');
@@ -1412,16 +1679,16 @@
 
     function renderDeptPanel(dept, deptKey) {
       const membersHTML = (dept.members || []).map(m => {
-        const dotColor = m.classColor || '#94a3b8';
+        const icon = m.classIcon || CLASS_ICONS[m['class']] || '👤';
         const rankClass = 'rank--' + (m.rank || 'f').toLowerCase();
-        const chiefBadge = m.isChief ? ' <span style="color:var(--accent);font-size:10px;">[Lead]</span>' : '';
+        const chiefBadge = m.isChief ? ' <span style="color:#e3b341;font-size:10px;">👑 Lead</span>' : '';
         return `
           <li class="member-list__item"
               onmouseenter="showAgentTooltip(event, ${JSON.stringify(m).replace(/"/g, '&quot;')})"
               onmouseleave="hideTooltip()">
-            <span class="member-list__dot" style="background:${dotColor};"></span>
+            <span class="member-list__icon">${icon}</span>
             <span class="member-list__name">${m.name}${chiefBadge}</span>
-            <span class="member-list__class">${m.class || ''}</span>
+            <span class="member-list__class">${m['class'] || ''}</span>
             <span class="member-list__rank ${rankClass}">${m.rank || '?'}</span>
           </li>`;
       }).join('');
@@ -1431,7 +1698,7 @@
 
       const abilityHTML = dept.ability ? `
         <div class="dept-ability">
-          <div class="dept-ability__name">${dept.ability.name}</div>
+          <div class="dept-ability__name">⚡ ${dept.ability.name}</div>
           <div class="dept-ability__desc">${dept.ability.description}</div>
         </div>` : '';
 
@@ -1449,34 +1716,45 @@
       return `
         <div class="panel-header">
           <button class="detail-panel__close" onclick="closePanel()">&times;</button>
-          <div class="panel-header__badge dept-bg--${deptKey}" style="border-radius:12px;">${dept.icon || ''}</div>
+          <div class="panel-header__badge dept-bg--${deptKey}">${dept.icon || ''}</div>
           <div class="panel-header__name">${dept.name || deptKey}</div>
-          <div class="panel-header__subtitle">${dept.type || ''} &middot; Performance: ${dept.health || '?'}/100</div>
+          <div class="panel-header__subtitle">${dept.type || ''} &middot; HP: ${dept.health || '?'}/100</div>
         </div>
         ${statsHTML}
         <div class="char-sheet">
-          <div class="char-sheet__title">Team (${(dept.members || []).length})</div>
+          <div class="char-sheet__title">Party (${(dept.members || []).length})</div>
           <ul class="member-list">${membersHTML}</ul>
         </div>
         ${abilityHTML}
-        ${questsHTML ? `<div class="char-sheet" style="margin-top:16px;"><div class="char-sheet__title">Active Projects</div>${questsHTML}</div>` : ''}
+        ${questsHTML ? `<div class="char-sheet" style="margin-top:16px;"><div class="char-sheet__title">Active Quests</div>${questsHTML}</div>` : ''}
       `;
     }
 
     function renderChiefStats(chief) {
       if (!chief || !chief.stats) return '';
+      const icon = chief.classIcon || CLASS_ICONS[chief['class']] || '👤';
       const stats = ['STR', 'DEX', 'INT', 'WIS', 'CHA', 'CON'];
+      const statColors = {
+        STR: '#f85149', DEX: '#3fb950', INT: '#58a6ff',
+        WIS: '#bc8cff', CHA: '#ff6eb4', CON: '#d29922'
+      };
       const rows = stats.map(s => {
         const val = chief.stats[s.toLowerCase()] || 0;
+        const color = statColors[s] || 'var(--accent)';
         return `
           <div class="stat-row">
             <span class="stat-row__label">${s}</span>
-            <div class="stat-row__bar"><div class="stat-row__fill" style="width:${val}%;"></div></div>
-            <span class="stat-row__value">${val}</span>
+            <div class="stat-row__bar"><div class="stat-row__fill" style="width:${val}%;background:linear-gradient(90deg,${color},${color}88);"></div></div>
+            <span class="stat-row__value" style="color:${color}">${val}</span>
           </div>`;
       }).join('');
 
-      return `<div class="char-sheet"><div class="char-sheet__title">${chief.name} — Stats</div>${rows}</div>`;
+      const rankClass = 'rank--' + (chief.rank || 'f').toLowerCase();
+      return `<div class="char-sheet">
+        <div class="char-sheet__title">${icon} ${chief.name} <span class="${rankClass}" style="font-size:8px;">[${chief.rank}]</span> — ${chief['class']}</div>
+        ${rows}
+        <div style="font-size:10px;color:var(--text-muted);margin-top:8px;">XP: <span style="color:var(--accent);font-family:'Press Start 2P',monospace;font-size:8px;">${(chief.xp || 0).toLocaleString()}</span></div>
+      </div>`;
     }
 
     function renderFallbackPanel(deptKey) {
@@ -1505,14 +1783,16 @@
       const dept = REALM_DATA.departments[deptKey];
       if (!dept) return;
       tooltipName.textContent = dept.name;
-      tooltipDetail.innerHTML = `Lead: ${dept.chief} [${dept.chiefRank}]<br>Performance: ${dept.healthIcon} ${dept.health} (${dept.healthLabel})<br>Team: ${(dept.members||[]).length} members`;
+      tooltipDetail.innerHTML = `Lead: ${dept.chief} [${dept.chiefRank}]<br>HP: ${dept.healthIcon} ${dept.health} (${dept.healthLabel})<br>Party: ${(dept.members||[]).length} members`;
       positionTooltip(event);
       tooltip.classList.add('tooltip--visible');
     }
 
     function showAgentTooltip(event, agent) {
-      tooltipName.textContent = agent.name;
-      tooltipDetail.innerHTML = `Class: ${agent.class||'?'}<br>Rank: ${agent.rank||'?'}<br>XP: ${(agent.xp||0).toLocaleString()}`;
+      const icon = agent.classIcon || CLASS_ICONS[agent['class']] || '👤';
+      tooltipName.textContent = icon + ' ' + agent.name;
+      tooltipDetail.innerHTML = `Class: ${agent['class']||'?'}<br>Rank: ${agent.rank||'?'}<br>XP: ${(agent.xp||0).toLocaleString()}`;
+      if (agent.isChief) tooltipDetail.innerHTML += '<br><span style="color:#e3b341;">👑 Department Lead</span>';
       positionTooltip(event);
       tooltip.classList.add('tooltip--visible');
     }
@@ -1595,23 +1875,23 @@
     }
 
     // ============================================
-    // Agent Life — Wandering Animation
+    // Agent Life — Idle Bounce Animation
     // ============================================
-    const WANDER_ANIMS = ['agentIdle1', 'agentIdle2', 'agentIdle3'];
+    const BOUNCE_ANIMS = ['idleBounce1', 'idleBounce2', 'idleBounce3'];
 
     function initAgentLife() {
-      const dots = document.querySelectorAll('.agent-dot');
-      dots.forEach(dot => {
-        const anim = WANDER_ANIMS[Math.floor(Math.random() * WANDER_ANIMS.length)];
-        const duration = 4 + Math.random() * 6;
-        const delay = Math.random() * 4;
-        dot.style.animationName = anim;
-        dot.style.animationDuration = duration + 's';
-        dot.style.animationDelay = delay + 's';
-        dot.classList.add('agent-dot--wander');
+      const avatars = document.querySelectorAll('.agent-avatar');
+      avatars.forEach((av, i) => {
+        const anim = BOUNCE_ANIMS[Math.floor(Math.random() * BOUNCE_ANIMS.length)];
+        const duration = 2 + Math.random() * 3;
+        const delay = (i * 0.15) + Math.random() * 1.5;
+        av.style.animationName = anim;
+        av.style.animationDuration = duration + 's';
+        av.style.animationDelay = delay + 's';
+        av.classList.add('agent-avatar--bounce');
 
-        if (Math.random() < 0.2) {
-          dot.classList.add('agent-dot--working');
+        if (Math.random() < 0.15) {
+          av.classList.add('agent-avatar--working');
         }
       });
 
@@ -1663,16 +1943,16 @@
         if (!buildings.length) return;
 
         const candidates = Array.from(buildings).filter(
-          b => b.querySelectorAll('.agent-dot').length > 0
+          b => b.querySelectorAll('.agent-avatar').length > 0
         );
         if (!candidates.length) return;
 
         const building = candidates[Math.floor(Math.random() * candidates.length)];
-        const dots = building.querySelectorAll('.agent-dot');
-        const dot = dots[Math.floor(Math.random() * dots.length)];
+        const avatars = building.querySelectorAll('.agent-avatar');
+        const av = avatars[Math.floor(Math.random() * avatars.length)];
 
         // Extract agent name from title attribute
-        const title = dot.getAttribute('title') || '';
+        const title = av.getAttribute('title') || '';
         const agentName = title.split(' ')[0] || '?';
 
         // Pick message source
@@ -1696,15 +1976,14 @@
         bubble.className = 'speech-bubble';
         bubble.innerHTML = `<span class="speech-bubble__name">${agentName}:</span> ${msg.icon} ${msg.text}`;
 
-        // Position above the agent dot (fixed positioning)
-        const dotRect = dot.getBoundingClientRect();
-        let left = dotRect.left + dotRect.width / 2;
-        let top = dotRect.top - 34;
+        // Position above the agent avatar
+        const avRect = av.getBoundingClientRect();
+        let left = avRect.left + avRect.width / 2;
+        let top = avRect.top - 34;
 
-        // Keep bubble on screen
         if (left + 180 > window.innerWidth) left = window.innerWidth - 190;
         if (left < 10) left = 10;
-        if (top < 10) top = dotRect.bottom + 6;
+        if (top < 10) top = avRect.bottom + 6;
 
         bubble.style.left = left + 'px';
         bubble.style.top = top + 'px';
@@ -1712,7 +1991,6 @@
         document.body.appendChild(bubble);
         activeBubbles++;
 
-        // Fade out and remove
         const lifespan = 2500 + Math.random() * 2500;
         setTimeout(() => {
           bubble.classList.add('speech-bubble--out');
@@ -1731,7 +2009,6 @@
         }, delay);
       }
 
-      // Initial burst of 1-2 bubbles, then steady stream
       setTimeout(() => {
         showRandomBubble();
         setTimeout(showRandomBubble, 800);
@@ -1776,29 +2053,19 @@
         const x2 = toRect.left - mapRect.left + scrollX + toRect.width / 2;
         const y2 = toRect.top - mapRect.top + scrollY + toRect.height / 2;
 
-        // Pick color from source department agents
-        const sourceDots = fromEl.querySelectorAll('.agent-dot');
-        let color = 'var(--accent)';
-        if (sourceDots.length > 0) {
-          const rdot = sourceDots[Math.floor(Math.random() * sourceDots.length)];
-          color = rdot.style.background || getComputedStyle(rdot).backgroundColor || color;
-        }
-
         const dot = document.createElement('div');
         dot.className = 'travel-dot';
-        dot.style.background = color;
+        dot.style.background = 'var(--accent)';
         dot.style.left = x1 + 'px';
         dot.style.top = y1 + 'px';
         mapArea.appendChild(dot);
 
-        // Animate along road line with easing
         const duration = 2000 + Math.random() * 2000;
         const startTime = performance.now();
 
         function animate(now) {
           const elapsed = now - startTime;
           const t = Math.min(elapsed / duration, 1);
-          // Ease in-out quadratic
           const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
           dot.style.left = (x1 + (x2 - x1) * ease) + 'px';
@@ -1824,7 +2091,6 @@
         }, delay);
       }
 
-      // Start after a brief delay
       setTimeout(() => {
         spawnTraveler();
         scheduleNext();
@@ -1840,8 +2106,203 @@
       initAgentLife();
       startSpeechBubbles();
       startTravelingAgents();
+      initLiveMode();
     });
     window.addEventListener('resize', drawRoads);
+
+    // ============================================
+    // Live Mode — Real-time updates
+    // ============================================
+    let _liveHash = '';
+    let _liveActive = false;
+    let _activityItems = [];
+    const MAX_ACTIVITY = 30;
+
+    function initLiveMode() {
+      if (window.location.protocol !== 'http:' && window.location.protocol !== 'https:') return;
+
+      _liveActive = true;
+      document.getElementById('liveBadge').classList.add('live-badge--active');
+      document.getElementById('activityLog').classList.add('activity-log--active');
+
+      pollHash();
+      pollActivity();
+    }
+
+    function pollHash() {
+      if (!_liveActive) return;
+      fetch('/api/hash')
+        .then(r => r.json())
+        .then(d => {
+          if (_liveHash && d.hash !== _liveHash) {
+            fetchAndRefresh();
+          }
+          _liveHash = d.hash;
+        })
+        .catch(() => {})
+        .finally(() => setTimeout(pollHash, 3000));
+    }
+
+    function fetchAndRefresh() {
+      fetch('/api/data')
+        .then(r => r.json())
+        .then(data => refreshUI(data))
+        .catch(() => {});
+    }
+
+    function pollActivity() {
+      if (!_liveActive) return;
+      fetch('/api/activity')
+        .then(r => r.json())
+        .then(data => {
+          if (data.items && data.items.length) {
+            renderActivity(data.items);
+            highlightActiveDepts(data.active_depts || []);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setTimeout(pollActivity, 5000));
+    }
+
+    // ============================================
+    // DOM Refresh (smooth update without reload)
+    // ============================================
+    function refreshUI(data) {
+      if (typeof REALM_DATA !== 'undefined') {
+        Object.assign(REALM_DATA, data);
+      }
+
+      const k = data.kingdom;
+      if (k) {
+        const chips = document.querySelectorAll('.stat-chip__value');
+        if (chips[0]) chips[0].textContent = k.efs + ' (' + k.efsGrade + ')';
+        if (chips[1]) chips[1].textContent = k.phase;
+        if (chips[2]) chips[2].textContent = k.totalAgents;
+        if (chips[3]) chips[3].textContent = k.activeQuests + ' active';
+
+        const ts = document.querySelector('.status-bar__timestamp');
+        if (ts) ts.textContent = k.lastUpdated;
+
+        const efsFill = document.querySelector('.stat-chip__bar-fill');
+        if (efsFill) efsFill.style.width = k.efs + '%';
+      }
+
+      if (data.departments) {
+        for (const [key, dept] of Object.entries(data.departments)) {
+          const el = document.querySelector('[data-dept="' + key + '"]');
+          if (!el) continue;
+
+          const fill = el.querySelector('.health-gauge__fill');
+          if (fill) {
+            fill.className = 'health-gauge__fill health-gauge__fill--' + dept.healthStatus;
+            fill.style.width = dept.health + '%';
+          }
+
+          const statusEl = el.querySelector('.health-gauge__status');
+          if (statusEl) statusEl.textContent = dept.healthIcon + ' ' + dept.healthLabel;
+
+          const scoreEl = el.querySelector('.health-gauge__score');
+          if (scoreEl) scoreEl.textContent = dept.health;
+
+          const chiefEl = el.querySelector('.building__chief');
+          if (chiefEl) {
+            chiefEl.innerHTML = 'Lead: ' + dept.chief +
+              ' <span class="building__chief-rank rank--' + dept.chiefRank.toLowerCase() + '">' +
+              dept.chiefRank + '</span>';
+          }
+
+          const agentsEl = el.querySelector('.building__agents');
+          if (agentsEl && dept.members) {
+            agentsEl.innerHTML = dept.members.map(m => makeAgentAvatarHTML(m)).join('');
+          }
+        }
+
+        initAgentLife();
+      }
+
+      if (data.events && data.events.length) {
+        const track = document.getElementById('eventTrack');
+        if (track) {
+          const itemsHtml = data.events.map(ev =>
+            '<div class="event-ticker__item">' +
+            '<span class="event-ticker__item-icon">' + ev.icon + '</span>' +
+            '<span class="event-ticker__item-text">' + ev.text + '</span>' +
+            '<span class="event-ticker__item-date">' + ev.date + '</span>' +
+            '</div>'
+          ).join('');
+          track.innerHTML = itemsHtml + itemsHtml;
+        }
+      }
+
+      drawRoads();
+
+      if (selectedBuilding && data.departments && data.departments[selectedBuilding]) {
+        openPanel(selectedBuilding);
+      }
+    }
+
+    function makeAgentAvatarHTML(m) {
+      const rlc = (m.rank || 'f').toLowerCase();
+      const icon = m.classIcon || CLASS_ICONS[m['class']] || '👤';
+      const title = m.name + ' [' + m.rank + '] ' + m['class'];
+      const j = JSON.stringify({name:m.name,'class':m['class'],rank:m.rank,xp:m.xp||0,classIcon:icon,isChief:!!m.isChief});
+      const je = j.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const crownHtml = m.isChief ? '<span class="chief-crown">👑</span>' : '';
+      return '<div class="agent-avatar rank-' + rlc + '" ' +
+             'title="' + title.replace(/"/g,'&quot;') + '" ' +
+             'onmouseenter="showAgentTooltip(event, ' + je + ')" ' +
+             'onmouseleave="hideTooltip()">' +
+             '<span class="avatar-icon">' + icon + '</span>' +
+             '<span class="avatar-name">' + m.name + '</span>' +
+             crownHtml +
+             '</div>';
+    }
+
+    // ============================================
+    // Activity Feed rendering
+    // ============================================
+    function renderActivity(items) {
+      const body = document.getElementById('activityBody');
+      const countEl = document.getElementById('activityCount');
+      if (!body) return;
+
+      items.forEach(item => {
+        if (_activityItems.some(a => a.text === item.text && a.time === item.time)) return;
+        _activityItems.unshift(item);
+      });
+
+      _activityItems = _activityItems.slice(0, MAX_ACTIVITY);
+
+      body.innerHTML = _activityItems.map(item =>
+        '<div class="activity-log__item">' +
+        '<span class="activity-log__item-icon">' + (item.icon || '📌') + '</span>' +
+        '<span class="activity-log__item-text">' + item.text + '</span>' +
+        '<span class="activity-log__item-time">' + (item.time || '') + '</span>' +
+        '</div>'
+      ).join('');
+
+      if (countEl) countEl.textContent = _activityItems.length;
+    }
+
+    function highlightActiveDepts(deptKeys) {
+      document.querySelectorAll('.building__activity').forEach(el => {
+        el.classList.remove('building__activity--active');
+      });
+
+      deptKeys.forEach(key => {
+        const building = document.querySelector('[data-dept="' + key + '"]');
+        if (!building) return;
+
+        let indicator = building.querySelector('.building__activity');
+        if (!indicator) {
+          indicator = document.createElement('div');
+          indicator.className = 'building__activity';
+          indicator.innerHTML = '<span class="building__activity-dot"></span> ACTIVE';
+          building.appendChild(indicator);
+        }
+        indicator.classList.add('building__activity--active');
+      });
+    }
   </script>
 
 </body>

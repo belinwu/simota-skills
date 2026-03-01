@@ -74,6 +74,13 @@ For HTML map generation:
 4. Embed `{{REALM_DATA_JSON}}` with full department/agent/quest data
 5. Output completed HTML file for browser viewing
 
+For live mode (`--live`):
+1. Run `python3 realm/serve.py` (port 8765 default)
+2. Server watches `realm-state.md`, git log, `.agents/*.md` journals, and `git status`
+3. Browser auto-polls `/api/hash` (3s) for data changes and `/api/activity` (5s) for activity feed
+4. DOM updates without page reload (preserves animations)
+5. Activity feed shows: commits, journal updates, file changes — attributed to departments
+
 Templates → `references/visualization-templates.md`
 Layout spec → `references/map-layout.md`
 
@@ -161,6 +168,7 @@ Full catalog → `references/badge-catalog.md`
 | `/Realm` | Kingdom dashboard + recent events |
 | `/Realm map` | Organization map (departments, levels, status) — ASCII |
 | `/Realm map --html` | Interactive HTML floor plan map (opens in browser) |
+| `/Realm map --live` | Live-updating HQ map server (watches git, journals, file changes) |
 | `/Realm quest` | Quest board (active / completed / failed) |
 | `/Realm agent [name]` | Character sheet for specific agent |
 | `/Realm ranks` | Rankings (top agents by XP, stats, badges) |
@@ -191,6 +199,7 @@ Full catalog → `references/badge-catalog.md`
 | `references/chronicle-format.md` | Chronicle generation rules, style guide, story arcs |
 | `references/data-collection.md` | Data source specs, collection flow, state management schema |
 | `templates/realm-map.html` | Self-contained HTML Company HQ floor plan map template |
+| `serve.py` | Live server for real-time HQ map (git/journal/file change watching) |
 
 ## Operational
 
