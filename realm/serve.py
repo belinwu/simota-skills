@@ -664,12 +664,14 @@ def make_agent_avatar_html(m):
     j = json.dumps(tooltip, ensure_ascii=False)
     je = j.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
     chief_html = '<span class="chief-crown">👑</span>' if m.get('isChief') else ''
+    rank_badge = f'<span class="avatar-rank rank--{rank_lc}">{m["rank"]}</span>'
     return (f'<div class="agent-avatar rank-{rank_lc}" '
             f'title="{_h.escape(title)}" '
             f'onmouseenter="showAgentTooltip(event, {je})" '
             f'onmouseleave="hideTooltip()">'
             f'<span class="avatar-icon">{icon}</span>'
             f'<span class="avatar-name">{_h.escape(m["name"])}</span>'
+            f'{rank_badge}'
             f'{chief_html}'
             f'</div>')
 
