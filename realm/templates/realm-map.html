@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Realm — Company HQ Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       CSS Custom Properties
+       ============================================ */
+    :root {
+      --bg-body: #f0f2f5;
+      --bg-card: #ffffff;
+      --bg-panel: #fafbfc;
+      --bg-header: #1e293b;
+      --bg-ticker: #0f172a;
+      --border-main: #e2e8f0;
+      --border-hover: #3b82f6;
+      --border-selected: #2563eb;
+      --accent: #3b82f6;
+      --accent-light: #dbeafe;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --text-on-dark: #f1f5f9;
+      --text-on-dark-dim: #94a3b8;
+      --health-green: #22c55e;
+      --health-yellow: #eab308;
+      --health-orange: #f97316;
+      --health-red: #ef4444;
+      --rank-ss: #ec4899;
+      --rank-s: #a855f7;
+      --rank-a: #3b82f6;
+      --rank-b: #22c55e;
+      --rank-c: #eab308;
+      --rank-d: #a8a29e;
+      --rank-e: #78716c;
+      --rank-f: #57534e;
+      --class-commander: #ef4444;
+      --class-ranger: #22c55e;
+      --class-artisan: #f97316;
+      --class-guardian: #06b6d4;
+      --class-paladin: #eab308;
+      --class-sage: #a855f7;
+      --class-alchemist: #14b8a6;
+      --class-scribe: #8b5cf6;
+      --class-architect: #6366f1;
+      --class-enchanter: #ec4899;
+      --class-engineer: #84cc16;
+      --class-merchant: #f59e0b;
+      --class-oracle: #06b6d4;
+      --class-herald: #f97316;
+      --class-demiurge: #c026d3;
+      --class-strategist: #4f46e5;
+      --class-diplomat: #10b981;
+      --class-pioneer: #f43f5e;
+      --class-navigator: #34d399;
+      --class-transmuter: #facc15;
+      --class-watcher: #6b7280;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+      --radius: 12px;
+    }
+
+    /* ============================================
+       Reset & Base
+       ============================================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .pixel-font {
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    /* ============================================
+       Company Status Bar (Top)
+       ============================================ */
+    .status-bar {
+      background: var(--bg-header);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .status-bar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-bar__logo {
+      font-size: 24px;
+    }
+
+    .status-bar__title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: #f1f5f9;
+      letter-spacing: 0.05em;
+    }
+
+    .status-bar__subtitle {
+      font-size: 10px;
+      color: var(--text-on-dark-dim);
+      margin-top: 2px;
+    }
+
+    .status-bar__stats {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .stat-chip__label {
+      color: var(--text-on-dark-dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-chip__value {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: #f1f5f9;
+    }
+
+    .stat-chip__bar {
+      width: 60px;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .stat-chip__bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .stat-chip__bar-fill--high { background: var(--health-green); }
+    .stat-chip__bar-fill--mid { background: var(--health-yellow); }
+    .stat-chip__bar-fill--low { background: var(--health-red); }
+
+    .status-bar__timestamp {
+      color: var(--text-on-dark-dim);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       Main Layout
+       ============================================ */
+    .main-layout {
+      display: flex;
+      height: calc(100vh - 56px - 40px);
+    }
+
+    /* ============================================
+       Floor Plan Area
+       ============================================ */
+    .map-area {
+      flex: 1;
+      padding: 24px;
+      overflow: auto;
+      position: relative;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px),
+        var(--bg-body);
+    }
+
+    .map-area__label {
+      position: absolute;
+      top: 8px;
+      left: 24px;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ============================================
+       Floor Plan Grid (4 rows x 6 cols)
+       ============================================ */
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 560px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       SVG Connection Lines
+       ============================================ */
+    .roads-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .road-line {
+      stroke: #cbd5e1;
+      stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      opacity: 0.5;
+    }
+
+    .road-line--allied {
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-dasharray: none;
+      opacity: 0.3;
+    }
+
+    /* ============================================
+       Department Card (Office Room)
+       ============================================ */
+    .building {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-main);
+      border-radius: var(--radius);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .building:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .building:hover .building__icon {
+      transform: scale(1.1);
+    }
+
+    .building--selected {
+      border-color: var(--border-selected);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15), var(--shadow-md);
+    }
+
+    .building__floor-tag {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .building__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .building__icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .building__icon {
+      transition: transform 0.2s ease;
+    }
+
+    .building__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .building__name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .building__type {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .building__chief {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .building__chief-rank {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* ============================================
+       Performance Gauge (Health)
+       ============================================ */
+    .health-gauge {
+      margin-top: auto;
+    }
+
+    .health-gauge__bar {
+      width: 100%;
+      height: 5px;
+      background: #f1f5f9;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .health-gauge__fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s ease;
+    }
+
+    .health-gauge__fill--thriving { background: var(--health-green); }
+    .health-gauge__fill--stable { background: var(--health-yellow); }
+    .health-gauge__fill--strained { background: var(--health-orange); }
+
+    .health-gauge__fill--critical {
+      background: var(--health-red);
+      animation: healthPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes healthPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .health-gauge__label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      margin-top: 3px;
+    }
+
+    .health-gauge__status {
+      color: var(--text-muted);
+    }
+
+    .health-gauge__score {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       Agent Dots (Employees)
+       ============================================ */
+    .building__agents {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 16px;
+    }
+
+    .agent-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.8);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .agent-dot:hover {
+      scale: 1.5;
+      z-index: 10;
+      box-shadow: 0 0 8px 2px rgba(59,130,246,0.35), 0 2px 6px rgba(0,0,0,0.25);
+      animation-play-state: paused;
+    }
+
+    .agent-dot--chief {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .agent-dot--ss { width: 18px; height: 18px; }
+    .agent-dot--s { width: 16px; height: 16px; }
+    .agent-dot--a { width: 14px; height: 14px; }
+    .agent-dot--b { width: 12px; height: 12px; }
+    .agent-dot--c { width: 10px; height: 10px; }
+    .agent-dot--d, .agent-dot--e, .agent-dot--f { width: 8px; height: 8px; }
+
+    /* ============================================
+       Tooltip
+       ============================================ */
+    .tooltip {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--text-primary);
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      max-width: 240px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tooltip--visible { opacity: 1; }
+
+    .tooltip__name {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .tooltip__detail {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       Detail Panel (Right Sidebar)
+       ============================================ */
+    .detail-panel {
+      width: 0;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border-main);
+      overflow: hidden;
+      transition: width 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .detail-panel--open {
+      width: 360px;
+    }
+
+    .detail-panel__inner {
+      width: 360px;
+      padding: 20px;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .detail-panel__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--bg-body);
+      border: 1px solid var(--border-main);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .detail-panel__close:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #ef4444;
+    }
+
+    .panel-header {
+      position: relative;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-main);
+      margin-bottom: 16px;
+    }
+
+    .panel-header__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .panel-header__name {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .panel-header__subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Stats Section */
+    .char-sheet {
+      margin-bottom: 20px;
+    }
+
+    .char-sheet__title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-row__label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: var(--text-muted);
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .stat-row__bar {
+      flex: 1;
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat-row__fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      transition: width 0.5s ease;
+    }
+
+    .stat-row__value {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--text-secondary);
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Member List */
+    .member-list {
+      list-style: none;
+    }
+
+    .member-list__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 6px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .member-list__item:hover {
+      background: #f8fafc;
+    }
+
+    .member-list__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .member-list__name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .member-list__rank {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+    }
+
+    .member-list__class {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Department Ability */
+    .dept-ability {
+      background: var(--accent-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .dept-ability__name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .dept-ability__desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Quest list in panel */
+    .quest-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .quest-item__rarity {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .quest-item__rarity--common { background: #a8a29e; }
+    .quest-item__rarity--uncommon { background: #22c55e; }
+    .quest-item__rarity--rare { background: #3b82f6; }
+    .quest-item__rarity--epic { background: #a855f7; }
+    .quest-item__rarity--legendary { background: #f97316; }
+
+    .quest-item__name {
+      font-size: 11px;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .quest-item__progress {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+
+    /* ============================================
+       Event Ticker (Bottom)
+       ============================================ */
+    .event-ticker {
+      background: var(--bg-ticker);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 0 24px;
+      overflow: hidden;
+      position: relative;
+      height: 40px;
+    }
+
+    .event-ticker__track {
+      display: flex;
+      gap: 48px;
+      animation: tickerScroll 45s linear infinite;
+      white-space: nowrap;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .event-ticker__track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translateY(-50%) translateX(0); }
+      100% { transform: translateY(-50%) translateX(-50%); }
+    }
+
+    .event-ticker__item {
+      font-size: 12px;
+      color: var(--text-on-dark-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .event-ticker__item-icon { font-size: 14px; }
+
+    .event-ticker__item-text { color: var(--text-on-dark); }
+
+    .event-ticker__item-date {
+      color: var(--text-on-dark-dim);
+      font-size: 10px;
+    }
+
+    /* ============================================
+       Rank Colors
+       ============================================ */
+    .rank--ss { color: var(--rank-ss); }
+    .rank--s { color: var(--rank-s); }
+    .rank--a { color: var(--rank-a); }
+    .rank--b { color: var(--rank-b); }
+    .rank--c { color: var(--rank-c); }
+    .rank--d { color: var(--rank-d); }
+    .rank--e { color: var(--rank-e); }
+    .rank--f { color: var(--rank-f); }
+
+    /* ============================================
+       Department Icon Background Colors
+       ============================================ */
+    .dept-bg--command { background: #fef2f2; }
+    .dept-bg--frontline { background: #fff7ed; }
+    .dept-bg--intel { background: #f0fdf4; }
+    .dept-bg--defense { background: #ecfeff; }
+    .dept-bg--academy { background: #faf5ff; }
+    .dept-bg--council { background: #eef2ff; }
+    .dept-bg--enchant { background: #fdf2f8; }
+    .dept-bg--workshop { background: #f0fdf4; }
+    .dept-bg--observatory { background: #ecfeff; }
+    .dept-bg--herald { background: #fffbeb; }
+    .dept-bg--pantheon { background: #fdf4ff; }
+    .dept-bg--outlands { background: #f0f9ff; }
+
+    /* ============================================
+       Responsive
+       ============================================ */
+    @media (max-width: 1200px) {
+      .map-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto;
+      }
+      .building { grid-column: auto !important; grid-row: auto !important; }
+    }
+
+    @media (max-width: 768px) {
+      .map-grid { grid-template-columns: repeat(2, 1fr); }
+      .detail-panel--open { width: 100%; position: fixed; top: 56px; right: 0; bottom: 40px; z-index: 50; }
+      .status-bar { flex-wrap: wrap; padding: 10px 16px; }
+      .status-bar__stats { gap: 8px; }
+    }
+
+    /* ============================================
+       Scrollbar
+       ============================================ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-body); }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* ============================================
+       Agent Wandering Animations
+       ============================================ */
+    @keyframes agentIdle1 {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(2px, -2px); }
+      40% { transform: translate(-1px, 3px); }
+      60% { transform: translate(3px, 1px); }
+      80% { transform: translate(-2px, -1px); }
+    }
+
+    @keyframes agentIdle2 {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 1px); }
+      40% { transform: translate(1px, -3px); }
+      60% { transform: translate(-2px, 2px); }
+      80% { transform: translate(3px, -1px); }
+    }
+
+    @keyframes agentIdle3 {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(1px, 2px); }
+      50% { transform: translate(-3px, -1px); }
+      75% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes agentWorking {
+      0%, 100% { box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+      50% { box-shadow: 0 0 8px 3px rgba(59,130,246,0.35); }
+    }
+
+    .agent-dot--wander {
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .agent-dot--working {
+      animation: agentWorking 2s ease-in-out infinite !important;
+    }
+
+    /* ============================================
+       Speech Bubbles
+       ============================================ */
+    .speech-bubble {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 10px 10px 10px 2px;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: var(--text-primary);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      box-shadow: var(--shadow-md);
+      z-index: 150;
+      pointer-events: none;
+      opacity: 0;
+      animation: bubbleIn 0.25s ease-out forwards;
+    }
+
+    .speech-bubble--out {
+      animation: bubbleOut 0.3s ease-in forwards !important;
+    }
+
+    .speech-bubble__name {
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--accent);
+      margin-right: 3px;
+    }
+
+    @keyframes bubbleIn {
+      0% { opacity: 0; transform: scale(0.5) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes bubbleOut {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.5) translateY(4px); }
+    }
+
+    /* ============================================
+       Traveling Agent Dots (Inter-Department)
+       ============================================ */
+    .travel-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 2;
+      animation: travelPulse 0.6s ease-in-out infinite;
+    }
+
+    @keyframes travelPulse {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 4px 1px rgba(59,130,246,0.3); }
+      50% { opacity: 1; box-shadow: 0 0 8px 2px rgba(59,130,246,0.5); }
+    }
+
+    /* ============================================
+       Ambient Building Breathing
+       ============================================ */
+    @keyframes buildingBreath {
+      0%, 100% { box-shadow: var(--shadow-sm); }
+      50% { box-shadow: 0 2px 8px -1px rgba(0,0,0,0.08), 0 1px 3px -1px rgba(0,0,0,0.06); }
+    }
+
+    .building--alive {
+      animation: buildingBreath 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       Company Status Bar
+       ============================================ -->
+  <header class="status-bar">
+    <div class="status-bar__brand">
+      <span class="status-bar__logo">{{KINGDOM_ICON}}</span>
+      <div>
+        <div class="status-bar__title">THE REALM</div>
+        <div class="status-bar__subtitle">Company HQ — Floor Map</div>
+      </div>
+    </div>
+    <div class="status-bar__stats">
+      <div class="stat-chip">
+        <span class="stat-chip__label">EFS</span>
+        <div class="stat-chip__bar">
+          <div class="stat-chip__bar-fill stat-chip__bar-fill--{{EFS_LEVEL}}" style="width: {{EFS_PERCENT}}%;"></div>
+        </div>
+        <span class="stat-chip__value">{{EFS_SCORE}} ({{EFS_GRADE}})</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip__label">Phase</span>
+        <span class="stat-chip__value">{{PHASE}}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip__label">Staff</span>
+        <span class="stat-chip__value">{{AGENT_TOTAL}}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip__label">Projects</span>
+        <span class="stat-chip__value">{{QUEST_ACTIVE}} active</span>
+      </div>
+    </div>
+    <div class="status-bar__timestamp">{{LAST_UPDATED}}</div>
+  </header>
+
+  <!-- ============================================
+       Main Layout
+       ============================================ -->
+  <div class="main-layout">
+
+    <!-- Floor Plan Area -->
+    <div class="map-area" id="mapArea">
+      <div class="map-area__label">HQ Floor Plan</div>
+
+      <!-- SVG Connection Lines -->
+      <svg class="roads-overlay" id="roadsOverlay"></svg>
+
+      <!-- Department Grid: 4 rows x 6 columns -->
+      <div class="map-grid" id="mapGrid">
+
+        <!-- R1C1: Command Center — Executive Suite -->
+        <div class="building" data-dept="command" style="grid-column: 1; grid-row: 1;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Exec</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--command">
+              <span class="building__icon">{{DEPT_COMMAND_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Command Center</div>
+              <div class="building__type">Executive Suite</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_COMMAND_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_COMMAND_CHIEF_RANK_LC}}">{{DEPT_COMMAND_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_COMMAND_HEALTH_STATUS}}" style="width: {{DEPT_COMMAND_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_COMMAND_HEALTH_ICON}} {{DEPT_COMMAND_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_COMMAND_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_COMMAND_AGENTS}}</div>
+        </div>
+
+        <!-- R1C3: Council — Strategy Office -->
+        <div class="building" data-dept="council" style="grid-column: 3; grid-row: 1;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Strategy</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--council">
+              <span class="building__icon">{{DEPT_COUNCIL_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Council</div>
+              <div class="building__type">Strategy Office</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_COUNCIL_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_COUNCIL_CHIEF_RANK_LC}}">{{DEPT_COUNCIL_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_COUNCIL_HEALTH_STATUS}}" style="width: {{DEPT_COUNCIL_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_COUNCIL_HEALTH_ICON}} {{DEPT_COUNCIL_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_COUNCIL_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_COUNCIL_AGENTS}}</div>
+        </div>
+
+        <!-- R1C5: Herald's Tower — Communications -->
+        <div class="building" data-dept="herald" style="grid-column: 5; grid-row: 1;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Comms</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--herald">
+              <span class="building__icon">{{DEPT_HERALD_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Herald's Tower</div>
+              <div class="building__type">Communications</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_HERALD_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_HERALD_CHIEF_RANK_LC}}">{{DEPT_HERALD_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_HERALD_HEALTH_STATUS}}" style="width: {{DEPT_HERALD_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_HERALD_HEALTH_ICON}} {{DEPT_HERALD_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_HERALD_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_HERALD_AGENTS}}</div>
+        </div>
+
+        <!-- R1C6: Observatory — Analytics Lab -->
+        <div class="building" data-dept="observatory" style="grid-column: 6; grid-row: 1;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Analytics</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--observatory">
+              <span class="building__icon">{{DEPT_OBSERVATORY_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Observatory</div>
+              <div class="building__type">Analytics Lab</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_OBSERVATORY_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_OBSERVATORY_CHIEF_RANK_LC}}">{{DEPT_OBSERVATORY_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_OBSERVATORY_HEALTH_STATUS}}" style="width: {{DEPT_OBSERVATORY_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_OBSERVATORY_HEALTH_ICON}} {{DEPT_OBSERVATORY_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_OBSERVATORY_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_OBSERVATORY_AGENTS}}</div>
+        </div>
+
+        <!-- R2C2: Frontline — Development Floor -->
+        <div class="building" data-dept="frontline" style="grid-column: 2; grid-row: 2;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Dev</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--frontline">
+              <span class="building__icon">{{DEPT_FRONTLINE_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Frontline</div>
+              <div class="building__type">Development Floor</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_FRONTLINE_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_FRONTLINE_CHIEF_RANK_LC}}">{{DEPT_FRONTLINE_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_FRONTLINE_HEALTH_STATUS}}" style="width: {{DEPT_FRONTLINE_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_FRONTLINE_HEALTH_ICON}} {{DEPT_FRONTLINE_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_FRONTLINE_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_FRONTLINE_AGENTS}}</div>
+        </div>
+
+        <!-- R2C4: Academy — Training Center -->
+        <div class="building" data-dept="academy" style="grid-column: 4; grid-row: 2;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Training</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--academy">
+              <span class="building__icon">{{DEPT_ACADEMY_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Academy</div>
+              <div class="building__type">Training Center</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_ACADEMY_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_ACADEMY_CHIEF_RANK_LC}}">{{DEPT_ACADEMY_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_ACADEMY_HEALTH_STATUS}}" style="width: {{DEPT_ACADEMY_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_ACADEMY_HEALTH_ICON}} {{DEPT_ACADEMY_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_ACADEMY_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_ACADEMY_AGENTS}}</div>
+        </div>
+
+        <!-- R2C6: Defense — Security Center -->
+        <div class="building" data-dept="defense" style="grid-column: 6; grid-row: 2;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Security</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--defense">
+              <span class="building__icon">{{DEPT_DEFENSE_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Defense</div>
+              <div class="building__type">Security Center</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_DEFENSE_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_DEFENSE_CHIEF_RANK_LC}}">{{DEPT_DEFENSE_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_DEFENSE_HEALTH_STATUS}}" style="width: {{DEPT_DEFENSE_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_DEFENSE_HEALTH_ICON}} {{DEPT_DEFENSE_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_DEFENSE_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_DEFENSE_AGENTS}}</div>
+        </div>
+
+        <!-- R3C1: Workshop — Infrastructure Lab -->
+        <div class="building" data-dept="workshop" style="grid-column: 1; grid-row: 3;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Infra</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--workshop">
+              <span class="building__icon">{{DEPT_WORKSHOP_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Workshop</div>
+              <div class="building__type">Infrastructure Lab</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_WORKSHOP_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_WORKSHOP_CHIEF_RANK_LC}}">{{DEPT_WORKSHOP_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_WORKSHOP_HEALTH_STATUS}}" style="width: {{DEPT_WORKSHOP_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_WORKSHOP_HEALTH_ICON}} {{DEPT_WORKSHOP_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_WORKSHOP_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_WORKSHOP_AGENTS}}</div>
+        </div>
+
+        <!-- R3C3: Enchantment Hall — Design Studio -->
+        <div class="building" data-dept="enchant" style="grid-column: 3; grid-row: 3;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Design</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--enchant">
+              <span class="building__icon">{{DEPT_ENCHANT_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Enchant Hall</div>
+              <div class="building__type">Design Studio</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_ENCHANT_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_ENCHANT_CHIEF_RANK_LC}}">{{DEPT_ENCHANT_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_ENCHANT_HEALTH_STATUS}}" style="width: {{DEPT_ENCHANT_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_ENCHANT_HEALTH_ICON}} {{DEPT_ENCHANT_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_ENCHANT_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_ENCHANT_AGENTS}}</div>
+        </div>
+
+        <!-- R3C5: Outlands — Innovation Hub -->
+        <div class="building" data-dept="outlands" style="grid-column: 5; grid-row: 3;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">R&D</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--outlands">
+              <span class="building__icon">{{DEPT_OUTLANDS_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Outlands</div>
+              <div class="building__type">Innovation Hub</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_OUTLANDS_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_OUTLANDS_CHIEF_RANK_LC}}">{{DEPT_OUTLANDS_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_OUTLANDS_HEALTH_STATUS}}" style="width: {{DEPT_OUTLANDS_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_OUTLANDS_HEALTH_ICON}} {{DEPT_OUTLANDS_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_OUTLANDS_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_OUTLANDS_AGENTS}}</div>
+        </div>
+
+        <!-- R4C1: Pantheon — CTO Office -->
+        <div class="building" data-dept="pantheon" style="grid-column: 1; grid-row: 4;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Meta</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--pantheon">
+              <span class="building__icon">{{DEPT_PANTHEON_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Pantheon</div>
+              <div class="building__type">CTO Office</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_PANTHEON_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_PANTHEON_CHIEF_RANK_LC}}">{{DEPT_PANTHEON_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_PANTHEON_HEALTH_STATUS}}" style="width: {{DEPT_PANTHEON_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_PANTHEON_HEALTH_ICON}} {{DEPT_PANTHEON_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_PANTHEON_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_PANTHEON_AGENTS}}</div>
+        </div>
+
+        <!-- R4C3: Intelligence Corps — Research Lab -->
+        <div class="building" data-dept="intel" style="grid-column: 3; grid-row: 4;" onclick="selectBuilding(this)">
+          <span class="building__floor-tag">Research</span>
+          <div class="building__header">
+            <div class="building__icon-wrap dept-bg--intel">
+              <span class="building__icon">{{DEPT_INTEL_ICON}}</span>
+            </div>
+            <div class="building__info">
+              <div class="building__name">Intel Corps</div>
+              <div class="building__type">Research Lab</div>
+            </div>
+          </div>
+          <div class="building__chief">
+            Lead: {{DEPT_INTEL_CHIEF}}
+            <span class="building__chief-rank rank--{{DEPT_INTEL_CHIEF_RANK_LC}}">{{DEPT_INTEL_CHIEF_RANK}}</span>
+          </div>
+          <div class="health-gauge">
+            <div class="health-gauge__bar">
+              <div class="health-gauge__fill health-gauge__fill--{{DEPT_INTEL_HEALTH_STATUS}}" style="width: {{DEPT_INTEL_HEALTH}}%;"></div>
+            </div>
+            <div class="health-gauge__label">
+              <span class="health-gauge__status">{{DEPT_INTEL_HEALTH_ICON}} {{DEPT_INTEL_HEALTH_LABEL}}</span>
+              <span class="health-gauge__score">{{DEPT_INTEL_HEALTH}}</span>
+            </div>
+          </div>
+          <div class="building__agents">{{DEPT_INTEL_AGENTS}}</div>
+        </div>
+
+      </div><!-- /map-grid -->
+    </div><!-- /map-area -->
+
+    <!-- Detail Panel -->
+    <aside class="detail-panel" id="detailPanel">
+      <div class="detail-panel__inner" id="detailContent"></div>
+    </aside>
+
+  </div><!-- /main-layout -->
+
+  <!-- ============================================
+       Event Ticker
+       ============================================ -->
+  <footer class="event-ticker">
+    <div class="event-ticker__track" id="eventTrack">
+      {{EVENT_TICKER_ITEMS}}
+    </div>
+  </footer>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip">
+    <div class="tooltip__name" id="tooltipName"></div>
+    <div class="tooltip__detail" id="tooltipDetail"></div>
+  </div>
+
+  <!-- ============================================
+       Realm Data (JSON embedded by Realm agent)
+       ============================================ -->
+  <script>
+    // Realm agent replaces this with actual data
+    const REALM_DATA = {{REALM_DATA_JSON}};
+    /*
+      Expected REALM_DATA:
+      {
+        kingdom: { name, efs, efsGrade, phase, totalAgents, activeQuests, lastUpdated },
+        departments: {
+          command: {
+            name, icon, type, chief, chiefRank, health, healthStatus, healthLabel, healthIcon,
+            ability: { name, description },
+            members: [{ name, class, rank, xp, isChief, classColor, stats: { str, dex, int, wis, cha, con } }]
+          }, ...
+        },
+        roads: [{ from, to, type }],
+        events: [{ icon, text, date }],
+        quests: [{ name, rarity, progress, party }],
+        conversations: [
+          { agent: "Nexus", message: "Chain #42 complete", dept: "command" },
+          { agent: "Builder", message: "Deploying v2.1", dept: "frontline" }
+        ]
+      }
+    */
+  </script>
+
+  <script>
+    // ============================================
+    // State
+    // ============================================
+    let selectedBuilding = null;
+    const tooltip = document.getElementById('tooltip');
+    const tooltipName = document.getElementById('tooltipName');
+    const tooltipDetail = document.getElementById('tooltipDetail');
+
+    // ============================================
+    // Building Selection
+    // ============================================
+    function selectBuilding(el) {
+      document.querySelectorAll('.building--selected').forEach(b => b.classList.remove('building--selected'));
+
+      const deptKey = el.dataset.dept;
+      if (selectedBuilding === deptKey) {
+        selectedBuilding = null;
+        closePanel();
+        return;
+      }
+
+      selectedBuilding = deptKey;
+      el.classList.add('building--selected');
+      openPanel(deptKey);
+    }
+
+    // ============================================
+    // Detail Panel
+    // ============================================
+    function openPanel(deptKey) {
+      const panel = document.getElementById('detailPanel');
+      const content = document.getElementById('detailContent');
+
+      if (typeof REALM_DATA === 'undefined' || !REALM_DATA.departments) {
+        content.innerHTML = renderFallbackPanel(deptKey);
+      } else {
+        const dept = REALM_DATA.departments[deptKey];
+        content.innerHTML = dept ? renderDeptPanel(dept, deptKey) : '<p style="color:var(--text-muted);">No data.</p>';
+      }
+
+      panel.classList.add('detail-panel--open');
+      drawRoads();
+    }
+
+    function closePanel() {
+      document.getElementById('detailPanel').classList.remove('detail-panel--open');
+      selectedBuilding = null;
+      document.querySelectorAll('.building--selected').forEach(b => b.classList.remove('building--selected'));
+      setTimeout(drawRoads, 350);
+    }
+
+    function renderDeptPanel(dept, deptKey) {
+      const membersHTML = (dept.members || []).map(m => {
+        const dotColor = m.classColor || '#94a3b8';
+        const rankClass = 'rank--' + (m.rank || 'f').toLowerCase();
+        const chiefBadge = m.isChief ? ' <span style="color:var(--accent);font-size:10px;">[Lead]</span>' : '';
+        return `
+          <li class="member-list__item"
+              onmouseenter="showAgentTooltip(event, ${JSON.stringify(m).replace(/"/g, '&quot;')})"
+              onmouseleave="hideTooltip()">
+            <span class="member-list__dot" style="background:${dotColor};"></span>
+            <span class="member-list__name">${m.name}${chiefBadge}</span>
+            <span class="member-list__class">${m.class || ''}</span>
+            <span class="member-list__rank ${rankClass}">${m.rank || '?'}</span>
+          </li>`;
+      }).join('');
+
+      const chief = dept.members ? (dept.members.find(m => m.isChief) || dept.members[0]) : null;
+      const statsHTML = chief && chief.stats ? renderChiefStats(chief) : '';
+
+      const abilityHTML = dept.ability ? `
+        <div class="dept-ability">
+          <div class="dept-ability__name">${dept.ability.name}</div>
+          <div class="dept-ability__desc">${dept.ability.description}</div>
+        </div>` : '';
+
+      const questsHTML = (typeof REALM_DATA !== 'undefined' && REALM_DATA.quests)
+        ? REALM_DATA.quests
+            .filter(q => q.party && q.party.some(p => (dept.members || []).some(m => m.name === p)))
+            .map(q => `
+              <div class="quest-item">
+                <span class="quest-item__rarity quest-item__rarity--${q.rarity}"></span>
+                <span class="quest-item__name">${q.name}</span>
+                <span class="quest-item__progress">${q.progress}%</span>
+              </div>`).join('')
+        : '';
+
+      return `
+        <div class="panel-header">
+          <button class="detail-panel__close" onclick="closePanel()">&times;</button>
+          <div class="panel-header__badge dept-bg--${deptKey}" style="border-radius:12px;">${dept.icon || ''}</div>
+          <div class="panel-header__name">${dept.name || deptKey}</div>
+          <div class="panel-header__subtitle">${dept.type || ''} &middot; Performance: ${dept.health || '?'}/100</div>
+        </div>
+        ${statsHTML}
+        <div class="char-sheet">
+          <div class="char-sheet__title">Team (${(dept.members || []).length})</div>
+          <ul class="member-list">${membersHTML}</ul>
+        </div>
+        ${abilityHTML}
+        ${questsHTML ? `<div class="char-sheet" style="margin-top:16px;"><div class="char-sheet__title">Active Projects</div>${questsHTML}</div>` : ''}
+      `;
+    }
+
+    function renderChiefStats(chief) {
+      if (!chief || !chief.stats) return '';
+      const stats = ['STR', 'DEX', 'INT', 'WIS', 'CHA', 'CON'];
+      const rows = stats.map(s => {
+        const val = chief.stats[s.toLowerCase()] || 0;
+        return `
+          <div class="stat-row">
+            <span class="stat-row__label">${s}</span>
+            <div class="stat-row__bar"><div class="stat-row__fill" style="width:${val}%;"></div></div>
+            <span class="stat-row__value">${val}</span>
+          </div>`;
+      }).join('');
+
+      return `<div class="char-sheet"><div class="char-sheet__title">${chief.name} — Stats</div>${rows}</div>`;
+    }
+
+    function renderFallbackPanel(deptKey) {
+      const names = {
+        command:'Command Center', frontline:'Frontline', intel:'Intelligence Corps',
+        defense:'Defense', academy:'Academy', council:'Council',
+        enchant:'Enchantment Hall', workshop:'Workshop', observatory:'Observatory',
+        herald:"Herald's Tower", pantheon:'Pantheon', outlands:'Outlands'
+      };
+      return `
+        <div class="panel-header">
+          <button class="detail-panel__close" onclick="closePanel()">&times;</button>
+          <div class="panel-header__name">${names[deptKey] || deptKey}</div>
+          <div class="panel-header__subtitle">Data not yet loaded</div>
+        </div>
+        <p style="color:var(--text-muted);font-size:12px;margin-top:16px;">
+          Run <code style="color:var(--accent);">/Realm map --html</code> to populate with live data.
+        </p>`;
+    }
+
+    // ============================================
+    // Tooltips
+    // ============================================
+    function showBuildingTooltip(event, deptKey) {
+      if (typeof REALM_DATA === 'undefined' || !REALM_DATA.departments) return;
+      const dept = REALM_DATA.departments[deptKey];
+      if (!dept) return;
+      tooltipName.textContent = dept.name;
+      tooltipDetail.innerHTML = `Lead: ${dept.chief} [${dept.chiefRank}]<br>Performance: ${dept.healthIcon} ${dept.health} (${dept.healthLabel})<br>Team: ${(dept.members||[]).length} members`;
+      positionTooltip(event);
+      tooltip.classList.add('tooltip--visible');
+    }
+
+    function showAgentTooltip(event, agent) {
+      tooltipName.textContent = agent.name;
+      tooltipDetail.innerHTML = `Class: ${agent.class||'?'}<br>Rank: ${agent.rank||'?'}<br>XP: ${(agent.xp||0).toLocaleString()}`;
+      positionTooltip(event);
+      tooltip.classList.add('tooltip--visible');
+    }
+
+    function hideTooltip() { tooltip.classList.remove('tooltip--visible'); }
+
+    function positionTooltip(event) {
+      const x = event.clientX + 12;
+      const y = event.clientY + 12;
+      tooltip.style.left = (x + 250 > window.innerWidth ? x - 260 : x) + 'px';
+      tooltip.style.top = (y + 100 > window.innerHeight ? y - 110 : y) + 'px';
+    }
+
+    document.querySelectorAll('.building').forEach(el => {
+      el.addEventListener('mouseenter', e => showBuildingTooltip(e, el.dataset.dept));
+      el.addEventListener('mousemove', e => positionTooltip(e));
+      el.addEventListener('mouseleave', hideTooltip);
+    });
+
+    // ============================================
+    // SVG Connection Lines
+    // ============================================
+    function drawRoads() {
+      const svg = document.getElementById('roadsOverlay');
+      const mapArea = document.getElementById('mapArea');
+      if (!svg || !mapArea) return;
+
+      const mapRect = mapArea.getBoundingClientRect();
+      svg.setAttribute('width', mapArea.scrollWidth);
+      svg.setAttribute('height', mapArea.scrollHeight);
+      svg.innerHTML = '';
+
+      const roads = (typeof REALM_DATA !== 'undefined' && REALM_DATA.roads) ? REALM_DATA.roads : [
+        { from:'command', to:'frontline', type:'allied' },
+        { from:'command', to:'intel', type:'allied' },
+        { from:'intel', to:'defense', type:'allied' },
+        { from:'academy', to:'frontline', type:'cooperative' },
+        { from:'council', to:'command', type:'advisory' },
+        { from:'enchant', to:'frontline', type:'cooperative' },
+        { from:'workshop', to:'frontline', type:'support' },
+        { from:'pantheon', to:'command', type:'oversight' },
+        { from:'workshop', to:'defense', type:'support' },
+        { from:'observatory', to:'intel', type:'cooperative' },
+        { from:'herald', to:'command', type:'cooperative' },
+        { from:'outlands', to:'intel', type:'cooperative' },
+      ];
+
+      roads.forEach(road => {
+        const fromEl = document.querySelector(`[data-dept="${road.from}"]`);
+        const toEl = document.querySelector(`[data-dept="${road.to}"]`);
+        if (!fromEl || !toEl) return;
+
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = toEl.getBoundingClientRect();
+        const scrollX = mapArea.scrollLeft;
+        const scrollY = mapArea.scrollTop;
+
+        const x1 = fromRect.left - mapRect.left + scrollX + fromRect.width / 2;
+        const y1 = fromRect.top - mapRect.top + scrollY + fromRect.height / 2;
+        const x2 = toRect.left - mapRect.left + scrollX + toRect.width / 2;
+        const y2 = toRect.top - mapRect.top + scrollY + toRect.height / 2;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('class', road.type === 'allied' ? 'road-line road-line--allied' : 'road-line');
+        svg.appendChild(line);
+      });
+    }
+
+    // ============================================
+    // Ticker
+    // ============================================
+    function initTicker() {
+      const track = document.getElementById('eventTrack');
+      if (!track) return;
+      track.innerHTML += track.innerHTML;
+    }
+
+    // ============================================
+    // Agent Life — Wandering Animation
+    // ============================================
+    const WANDER_ANIMS = ['agentIdle1', 'agentIdle2', 'agentIdle3'];
+
+    function initAgentLife() {
+      const dots = document.querySelectorAll('.agent-dot');
+      dots.forEach(dot => {
+        const anim = WANDER_ANIMS[Math.floor(Math.random() * WANDER_ANIMS.length)];
+        const duration = 4 + Math.random() * 6;
+        const delay = Math.random() * 4;
+        dot.style.animationName = anim;
+        dot.style.animationDuration = duration + 's';
+        dot.style.animationDelay = delay + 's';
+        dot.classList.add('agent-dot--wander');
+
+        if (Math.random() < 0.2) {
+          dot.classList.add('agent-dot--working');
+        }
+      });
+
+      // Ambient building breathing for thriving departments
+      document.querySelectorAll('.building').forEach(b => {
+        const fill = b.querySelector('.health-gauge__fill--thriving');
+        if (fill) b.classList.add('building--alive');
+      });
+    }
+
+    // ============================================
+    // Speech Bubble System
+    // ============================================
+    const OFFICE_CHATTER = [
+      { icon: '💬', text: 'PR approved!' },
+      { icon: '🔧', text: 'Fixing bug...' },
+      { icon: '✅', text: 'Tests pass!' },
+      { icon: '🚀', text: 'Deploying now' },
+      { icon: '👀', text: 'Reviewing code' },
+      { icon: '☕', text: 'Coffee break' },
+      { icon: '📝', text: 'Writing docs' },
+      { icon: '🤔', text: 'Investigating...' },
+      { icon: '💡', text: 'Found it!' },
+      { icon: '🎯', text: 'On track' },
+      { icon: '📊', text: 'Analyzing data' },
+      { icon: '🔍', text: 'Deep diving...' },
+      { icon: '🛠️', text: 'Refactoring' },
+      { icon: '✨', text: 'Ship it!' },
+      { icon: '📋', text: 'Sprint planning' },
+      { icon: '🔄', text: 'Syncing...' },
+      { icon: '👋', text: 'Stand-up time' },
+      { icon: '🏗️', text: 'Building...' },
+      { icon: '🧪', text: 'Running tests' },
+      { icon: '📦', text: 'Packaging release' },
+      { icon: '🎉', text: 'Feature complete!' },
+      { icon: '🐛', text: 'Bug squashed' },
+      { icon: '🔒', text: 'Security check' },
+      { icon: '📈', text: 'Metrics look good' },
+    ];
+
+    let activeBubbles = 0;
+    const MAX_BUBBLES = 3;
+
+    function startSpeechBubbles() {
+      function showRandomBubble() {
+        if (activeBubbles >= MAX_BUBBLES) return;
+
+        const buildings = document.querySelectorAll('.building');
+        if (!buildings.length) return;
+
+        const candidates = Array.from(buildings).filter(
+          b => b.querySelectorAll('.agent-dot').length > 0
+        );
+        if (!candidates.length) return;
+
+        const building = candidates[Math.floor(Math.random() * candidates.length)];
+        const dots = building.querySelectorAll('.agent-dot');
+        const dot = dots[Math.floor(Math.random() * dots.length)];
+
+        // Extract agent name from title attribute
+        const title = dot.getAttribute('title') || '';
+        const agentName = title.split(' ')[0] || '?';
+
+        // Pick message source
+        let msg;
+        if (typeof REALM_DATA !== 'undefined' && REALM_DATA.conversations &&
+            REALM_DATA.conversations.length && Math.random() > 0.4) {
+          const conv = REALM_DATA.conversations[
+            Math.floor(Math.random() * REALM_DATA.conversations.length)
+          ];
+          msg = { icon: '', text: conv.message || conv };
+        } else if (typeof REALM_DATA !== 'undefined' && REALM_DATA.events &&
+                   REALM_DATA.events.length && Math.random() > 0.6) {
+          const ev = REALM_DATA.events[Math.floor(Math.random() * REALM_DATA.events.length)];
+          msg = { icon: ev.icon, text: ev.text.length > 28 ? ev.text.substring(0, 28) + '...' : ev.text };
+        } else {
+          msg = OFFICE_CHATTER[Math.floor(Math.random() * OFFICE_CHATTER.length)];
+        }
+
+        // Create bubble element
+        const bubble = document.createElement('div');
+        bubble.className = 'speech-bubble';
+        bubble.innerHTML = `<span class="speech-bubble__name">${agentName}:</span> ${msg.icon} ${msg.text}`;
+
+        // Position above the agent dot (fixed positioning)
+        const dotRect = dot.getBoundingClientRect();
+        let left = dotRect.left + dotRect.width / 2;
+        let top = dotRect.top - 34;
+
+        // Keep bubble on screen
+        if (left + 180 > window.innerWidth) left = window.innerWidth - 190;
+        if (left < 10) left = 10;
+        if (top < 10) top = dotRect.bottom + 6;
+
+        bubble.style.left = left + 'px';
+        bubble.style.top = top + 'px';
+
+        document.body.appendChild(bubble);
+        activeBubbles++;
+
+        // Fade out and remove
+        const lifespan = 2500 + Math.random() * 2500;
+        setTimeout(() => {
+          bubble.classList.add('speech-bubble--out');
+          setTimeout(() => {
+            bubble.remove();
+            activeBubbles--;
+          }, 300);
+        }, lifespan);
+      }
+
+      function scheduleNext() {
+        const delay = 2000 + Math.random() * 4000;
+        setTimeout(() => {
+          showRandomBubble();
+          scheduleNext();
+        }, delay);
+      }
+
+      // Initial burst of 1-2 bubbles, then steady stream
+      setTimeout(() => {
+        showRandomBubble();
+        setTimeout(showRandomBubble, 800);
+        scheduleNext();
+      }, 1500);
+    }
+
+    // ============================================
+    // Traveling Agent Dots (Inter-Department)
+    // ============================================
+    function startTravelingAgents() {
+      const mapArea = document.getElementById('mapArea');
+      if (!mapArea) return;
+
+      function spawnTraveler() {
+        const roads = (typeof REALM_DATA !== 'undefined' && REALM_DATA.roads)
+          ? REALM_DATA.roads
+          : [
+              { from: 'command', to: 'frontline', type: 'allied' },
+              { from: 'command', to: 'intel', type: 'allied' },
+              { from: 'intel', to: 'defense', type: 'allied' },
+              { from: 'academy', to: 'frontline', type: 'cooperative' },
+              { from: 'enchant', to: 'frontline', type: 'cooperative' },
+              { from: 'workshop', to: 'frontline', type: 'support' },
+            ];
+
+        if (!roads.length) return;
+        const road = roads[Math.floor(Math.random() * roads.length)];
+
+        const fromEl = document.querySelector(`[data-dept="${road.from}"]`);
+        const toEl = document.querySelector(`[data-dept="${road.to}"]`);
+        if (!fromEl || !toEl) return;
+
+        const mapRect = mapArea.getBoundingClientRect();
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = toEl.getBoundingClientRect();
+        const scrollX = mapArea.scrollLeft;
+        const scrollY = mapArea.scrollTop;
+
+        const x1 = fromRect.left - mapRect.left + scrollX + fromRect.width / 2;
+        const y1 = fromRect.top - mapRect.top + scrollY + fromRect.height / 2;
+        const x2 = toRect.left - mapRect.left + scrollX + toRect.width / 2;
+        const y2 = toRect.top - mapRect.top + scrollY + toRect.height / 2;
+
+        // Pick color from source department agents
+        const sourceDots = fromEl.querySelectorAll('.agent-dot');
+        let color = 'var(--accent)';
+        if (sourceDots.length > 0) {
+          const rdot = sourceDots[Math.floor(Math.random() * sourceDots.length)];
+          color = rdot.style.background || getComputedStyle(rdot).backgroundColor || color;
+        }
+
+        const dot = document.createElement('div');
+        dot.className = 'travel-dot';
+        dot.style.background = color;
+        dot.style.left = x1 + 'px';
+        dot.style.top = y1 + 'px';
+        mapArea.appendChild(dot);
+
+        // Animate along road line with easing
+        const duration = 2000 + Math.random() * 2000;
+        const startTime = performance.now();
+
+        function animate(now) {
+          const elapsed = now - startTime;
+          const t = Math.min(elapsed / duration, 1);
+          // Ease in-out quadratic
+          const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+          dot.style.left = (x1 + (x2 - x1) * ease) + 'px';
+          dot.style.top = (y1 + (y2 - y1) * ease) + 'px';
+
+          if (t < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            dot.style.opacity = '0';
+            dot.style.transition = 'opacity 0.3s';
+            setTimeout(() => dot.remove(), 300);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      function scheduleNext() {
+        const delay = 3000 + Math.random() * 5000;
+        setTimeout(() => {
+          spawnTraveler();
+          scheduleNext();
+        }, delay);
+      }
+
+      // Start after a brief delay
+      setTimeout(() => {
+        spawnTraveler();
+        scheduleNext();
+      }, 2500);
+    }
+
+    // ============================================
+    // Init
+    // ============================================
+    window.addEventListener('load', () => {
+      drawRoads();
+      initTicker();
+      initAgentLife();
+      startSpeechBubbles();
+      startTravelingAgents();
+    });
+    window.addEventListener('resize', drawRoads);
+  </script>
+
+</body>
+</html>
