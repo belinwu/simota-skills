@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-85-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **85 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **86 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 85 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 86 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -50,6 +50,8 @@ This repository contains 85 specialized AI agents covering various aspects of so
 | **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 69 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - Dynamic skill generator. Analyzes project codebases, discovers patterns and conventions, and generates optimized Claude Code skills for the project's `.claude/skills/` directory | Project-specific skills |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop completion specialist. Generates completion scripts, operation contracts, and audits for autonomous loop execution | Runner scripts, contracts |
+| **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - Ecosystem self-evolution orchestrator. Detects project lifecycle phase, evaluates agent relevance, integrates cross-cutting knowledge, and evolves the entire ecosystem | Ecosystem Fitness Score, evolution proposals |
+| **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - Memory curator for cross-ecosystem knowledge integration. Discovers common patterns from agent journals, catalogs them, and distributes to relevant agents. Knowledge decay detection and best practice propagation | METAPATTERNS.md, knowledge insights |
 
 ### Investigation & Planning (Non-coding)
 
@@ -68,6 +70,8 @@ This repository contains 85 specialized AI agents covering various aspects of so
 | **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - Persona casting agent. Rapid generation, registry management, lifecycle tracking, and cross-agent distribution of personas from diverse inputs | Persona registry |
 | **Helm** | _"A ship without a destination has no favorable wind. A ship without a helm has no direction at all."_ - Business strategy simulation agent. Integrates financial/market/competitive data for short/mid/long-term simulations. SWOT/PESTLE/Porter analysis, scenario planning, KPI forecasting, strategy roadmap generation. No code written | Strategy simulation report |
 | **Levy** | _"納税は義務。でも、正しく知れば、賢く果たせる。"_ - Japan tax filing guidance agent. Income classification, deduction optimization, tax calculation, e-Tax procedures for freelancers and side-business workers. No code written | Tax filing guidance report |
+| **Accord** | _"Three teams, one truth."_ - Cross-team specification architect. Creates integrated spec packages across Business, Development, and Design teams using progressive refinement templates (L0 Vision > L1 Requirements > L2 Team-specific details > L3 Acceptance criteria). No code written | Integrated spec package, traceability matrix |
+| **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - Universal multi-dimensional analysis agent. Controls combinatorial explosion from arbitrary axis×value inputs. Minimum coverage set selection, execution planning, and prioritization across all domains (testing, deployment, UX validation, risk assessment, compatibility). No code written | Matrix analysis, coverage optimization plan |
 
 **Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
 **Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
@@ -153,6 +157,7 @@ This repository contains 85 specialized AI agents covering various aspects of so
 | **Echo** | _"I don't test interfaces. I feel what users feel."_ - Persona validation. Embodies users to report confusion points in UI flows | UX report |
 | **Showcase** | _"Components without stories are components without context."_ - Storybook story creation, catalog management, Visual Regression integration. CSF 3.0 format | Storybook Stories |
 | **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - User-facing text specialist. Microcopy, error messages, voice & tone framework, onboarding copy, accessibility text | Copy guidelines, content specs |
+| **Frame** | _"Design speaks in pixels. I translate it to code."_ - Figma MCP Server bridge agent. Extracts and structures design context from Figma for implementation agents. Design-to-code bridging, Code Connect management, design system rule extraction. No code written | Structured design context, design system rules |
 
 ### Documentation
 
@@ -175,6 +180,7 @@ This repository contains 85 specialized AI agents covering various aspects of so
 |-------|-------------|--------|
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
+| **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
 
 ### Architecture
 
@@ -246,6 +252,9 @@ This repository contains 85 specialized AI agents covering various aspects of so
 | Agent | Description | Output |
 |-------|-------------|--------|
 | **Triage** | _"In chaos, clarity is the first act of healing."_ - Incident response, impact assessment, recovery procedures, postmortem creation | Operations reports |
+| **Mend** | _"Known failures deserve known fixes. Speed of recovery defines reliability."_ - Auto-repair agent for known failure patterns. Receives Triage diagnostics and Beacon alerts, executes runbooks based on safety tier classification, performs staged verification, and manages rollback | Repair results, verification reports |
+
+**Triage > Mend > Beacon chain**: Triage (diagnosis) > Mend (auto-repair) > Beacon (monitoring recovery)
 
 ### Browser Automation
 
@@ -634,11 +643,13 @@ skills/
 ├── canvas/SKILL.md     # Visualization
 ├── cast/SKILL.md       # Persona casting & registry management
 ├── compete/SKILL.md    # Competitive research
+├── darwin/SKILL.md     # Ecosystem self-evolution orchestrator
 ├── director/SKILL.md   # Demo video recording
 ├── echo/SKILL.md       # Persona validation
 ├── experiment/SKILL.md # A/B test design
 ├── flow/SKILL.md       # Animation
 ├── forge/SKILL.md      # Prototyping
+├── frame/SKILL.md      # Figma design-to-code bridge
 ├── gateway/SKILL.md    # API design
 ├── gear/SKILL.md       # DevOps
 ├── grove/SKILL.md      # Repository structure design
@@ -651,7 +662,10 @@ skills/
 ├── judge/SKILL.md      # Code review (codex review)
 ├── launch/SKILL.md     # Release management
 ├── lens/SKILL.md       # Codebase comprehension & investigation
+├── lore/SKILL.md       # Cross-ecosystem knowledge curator
 ├── magi/SKILL.md       # Multi-perspective decision making
+├── matrix/SKILL.md     # Universal multi-dimensional analysis
+├── mend/SKILL.md       # Known failure auto-repair
 ├── morph/SKILL.md      # Document format conversion
 ├── muse/SKILL.md       # Design
 ├── navigator/SKILL.md  # Browser automation
@@ -668,6 +682,7 @@ skills/
 ├── quill/SKILL.md      # Documentation
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator
+├── realm/SKILL.md      # Gamification meta-visualization
 ├── reel/SKILL.md       # Terminal recording & CLI demo video generation
 ├── relay/SKILL.md      # Messaging integration & real-time communication
 ├── researcher/SKILL.md # User research
@@ -678,6 +693,7 @@ skills/
 ├── schema/SKILL.md     # DB schema design
 ├── siege/SKILL.md      # Advanced testing (load/contract/chaos/mutation)
 ├── scribe/SKILL.md     # Project documentation (PRD/SRS/design docs)
+├── accord/SKILL.md     # Cross-team integrated spec packages
 ├── scout/SKILL.md      # Bug investigation
 ├── sentinel/SKILL.md   # Static security analysis (SAST)
 ├── sherpa/SKILL.md     # Task decomposition
@@ -704,7 +720,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 85 agents.
+> Category-by-category examples for all 86 agents.
 
 #### Orchestration
 

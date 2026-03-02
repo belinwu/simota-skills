@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-84-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **84種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **86種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする84種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする86種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -50,6 +50,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全69エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - 動的スキル生成エージェント。プロジェクトのコードベースを分析し、パターン・規約を発見し、最適化されたClaude Codeスキルをプロジェクトの`.claude/skills/`に生成 | プロジェクト固有スキル |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
+| **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - エコシステム自己進化オーケストレーター。プロジェクトライフサイクルを検出し、エージェントの関連性を評価し、横断的知識を統合してエコシステム全体を進化させる | エコシステムフィットネススコア、進化提案 |
+| **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - エコシステム横断の知識統合・パターン抽出・伝播を担うメモリキュレーター。エージェントjournalから共通パターンを発見し、カタログ化して関連エージェントへ配信。知識の腐敗検出・ベストプラクティス伝播により制度的記憶を維持 | METAPATTERNS.md、知識インサイト |
 
 ### 調査・企画（コードを書かない）
 
@@ -67,6 +69,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - 3視点（論理・共感・実利）による多角的意思決定。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定 | 意思決定レポート |
 | **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - ペルソナキャスティングエージェント。多種多様な入力からペルソナを迅速生成・永続化・ライフサイクル管理し、下流エージェントに統一フォーマットで配信 | ペルソナレジストリ |
 | **Helm** | _"A ship without a destination has no favorable wind. A ship without a helm has no direction at all."_ - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント。SWOT/PESTLE/Porter分析、シナリオプランニング、KPI予測、戦略ロードマップ生成。コードは書かない | 戦略シミュレーションレポート |
+| **Accord** | _"Three teams, one truth."_ - 3チーム横断（ビジネス・開発・デザイン）の統合仕様パッケージを作成する仕様アーキテクト。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない | 統合仕様パッケージ、トレーサビリティマトリクス |
+| **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - 任意の多次元軸×値を入力とし、組み合わせ爆発を制御するユニバーサル分析エージェント。最小カバレッジセット選定・実行計画・優先順位付け。テスト・デプロイ・UX検証・リスク評価・互換性など全ドメイン対応。コードは書かない | マトリクス分析、カバレッジ最適化計画 |
 
 **Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
 **Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
@@ -151,6 +155,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Echo** | _"I don't test interfaces. I feel what users feel."_ - ペルソナ検証。ユーザーになりきりUIフローの混乱ポイントを報告 | UXレポート |
 | **Showcase** | _"Components without stories are components without context."_ - Storybookストーリー作成・カタログ管理・Visual Regression連携。CSF 3.0形式 | Storybook Stories |
 | **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - ユーザー向けテキストの専門エージェント。マイクロコピー、エラーメッセージ、ボイス＆トーンフレームワーク、オンボーディングコピー、アクセシビリティテキスト | コピーガイドライン、コンテンツ仕様 |
+| **Frame** | _"Design speaks in pixels. I translate it to code."_ - Figma MCP Serverを活用してデザインコンテキストを抽出・構造化し、実装エージェントに渡すブリッジエージェント。デザインからコードへの橋渡し、Code Connect管理、デザインシステムルール抽出。コードは書かない | 構造化デザインコンテキスト、デザインシステムルール |
 
 ### ドキュメント
 
@@ -173,6 +178,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 |------------|------|------|
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - 設計可視化。コード・仕様・コンテキストをMermaid図またはASCIIアート（フローチャート、シーケンス図、状態遷移図、クラス図、ER図等）に変換 | Mermaid図 / ASCII Art |
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI画像生成コード職人。Gemini APIを使用した画像生成用Pythonコードの作成。プロンプトエンジニアリング、バッチ生成、コスト見積もり | Pythonコード |
+| **Realm** | _"Every company tells a story — let the agents write theirs."_ - エージェントエコシステムをゲーミフィケーションで可視化するメタ可視化エージェント。Phaser 3による2Dオフィスシミュレーション、リアルタイムXP成長・ランクアップエフェクト、インタラクティブHTMLマップ、キャラクターシート、クエストボード、バッジシステム | RPGスタイルダッシュボード、ゲーム可視化 |
 
 ### アーキテクチャ
 
@@ -244,6 +250,9 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Triage** | _"In chaos, clarity is the first act of healing."_ - 障害対応・影響範囲特定・復旧手順策定・ポストモーテム作成 | 運用レポート |
+| **Mend** | _"Known failures deserve known fixes. Speed of recovery defines reliability."_ - 既知障害パターンの自動修復エージェント。Triageの診断結果やBeaconのアラートを受け、安全ティア分類に基づくrunbook実行・段階的検証・ロールバックまで一貫して担当 | 修復結果、検証レポート |
+
+**Triage → Mend → Beacon の連携**：Triage（診断）→ Mend（自動修復）→ Beacon（復旧監視）
 
 ### ブラウザ自動化
 
@@ -632,11 +641,13 @@ skills/
 ├── canvas/SKILL.md     # 可視化
 ├── cast/SKILL.md       # ペルソナキャスティング＆レジストリ管理
 ├── compete/SKILL.md    # 競合調査
+├── darwin/SKILL.md     # エコシステム自己進化オーケストレーター
 ├── director/SKILL.md   # デモ動画撮影
 ├── echo/SKILL.md       # ペルソナ検証
 ├── experiment/SKILL.md # A/Bテスト設計
 ├── flow/SKILL.md       # アニメーション
 ├── forge/SKILL.md      # プロトタイプ
+├── frame/SKILL.md      # Figmaデザイン・コード変換ブリッジ
 ├── gateway/SKILL.md    # API設計
 ├── gear/SKILL.md       # DevOps
 ├── grove/SKILL.md      # リポジトリ構造設計
@@ -649,7 +660,10 @@ skills/
 ├── judge/SKILL.md      # コードレビュー（codex review）
 ├── launch/SKILL.md     # リリース管理
 ├── lens/SKILL.md       # コードベース理解・調査
+├── lore/SKILL.md       # エコシステム横断知識キュレーター
 ├── magi/SKILL.md       # 多角的意思決定
+├── matrix/SKILL.md     # ユニバーサル多次元分析
+├── mend/SKILL.md       # 既知障害パターン自動修復
 ├── morph/SKILL.md      # ドキュメントフォーマット変換
 ├── muse/SKILL.md       # デザイン
 ├── navigator/SKILL.md  # ブラウザ自動化
@@ -666,6 +680,7 @@ skills/
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
 ├── rally/SKILL.md      # マルチセッション並列オーケストレーター
+├── realm/SKILL.md      # ゲーミフィケーション・メタ可視化
 ├── reel/SKILL.md       # ターミナル録画・CLIデモ動画生成
 ├── relay/SKILL.md      # メッセージング統合・リアルタイム通信
 ├── researcher/SKILL.md # ユーザーリサーチ
@@ -675,6 +690,7 @@ skills/
 ├── scaffold/SKILL.md   # インフラ
 ├── schema/SKILL.md     # DBスキーマ設計
 ├── scribe/SKILL.md     # プロジェクトドキュメント（PRD/SRS/設計書）
+├── accord/SKILL.md     # 3チーム横断統合仕様パッケージ
 ├── scout/SKILL.md      # バグ調査
 ├── sentinel/SKILL.md   # セキュリティ静的分析（SAST）
 ├── sherpa/SKILL.md     # タスク分解
@@ -702,7 +718,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全84エージェントの使用例を紹介します。
+> カテゴリ別に全86エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
