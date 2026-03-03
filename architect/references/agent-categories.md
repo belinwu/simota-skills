@@ -1,6 +1,6 @@
 # Agent Categories
 
-Complete catalog of all 63 agents organized by category.
+Complete catalog of all 64 agents organized by category.
 
 ---
 
@@ -234,11 +234,18 @@ Agents that review and improve code quality.
 - **Output**: Scorecard, PASS/FAIL verdict
 - **Trigger**: "quality gate", "pre-release review", "V.A.I.R.E."
 
+### Attest
+- **Role**: Specification compliance verifier
+- **Input**: Specifications + implementation code
+- **Output**: Compliance report, BDD scenarios, traceability matrix
+- **Trigger**: "verify against spec", "acceptance criteria", "spec compliance", "BDD scenarios"
+
 **Category Characteristics:**
 - Quality improvement
 - Code review automation
 - Best practices enforcement
 - UX quality gating (Warden)
+- Specification compliance verification (Attest)
 - No feature changes
 
 ---

@@ -192,6 +192,47 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ## Low Priority — Rarely Confused
 
+### Attest vs Judge
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Does this match the spec?", "verify against requirements" | **Attest** | Specification compliance verification |
+| "Review this PR", "find bugs", "code quality check" | **Judge** | Code quality and bug detection |
+| "BDD scenarios from spec", "acceptance criteria" | **Attest** | Spec-driven scenario generation |
+| "Check for security vulnerabilities", "logic errors" | **Judge** | Code-level issue detection |
+| Specification document provided as input | **Attest** | Requires spec as source of truth |
+| No specification, just code diff | **Judge** | Code review doesn't need spec |
+
+**Rule**: "Does code match spec?" → Attest. "Is code well-written?" → Judge. Attest requires spec input; Judge works on code alone.
+
+### Attest vs Radar
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Generate BDD scenarios from spec" | **Attest** | Scenario generation from spec |
+| "Write tests for this function" | **Radar** | Test implementation |
+| "Spec traceability matrix" | **Attest** | Spec ↔ code ↔ test mapping |
+| "Increase coverage to 80%" | **Radar** | Coverage improvement |
+| "Are all acceptance criteria implemented?" | **Attest** | Spec compliance check |
+| "Add edge case tests" | **Radar** | Test code writing |
+
+**Rule**: "Are requirements met?" → Attest. "Are tests written?" → Radar. Attest generates BDD scenarios; Radar implements them as test code.
+
+**Chain pattern**: Attest (generate BDD) → Radar (implement tests) → Voyager (E2E from acceptance scenarios)
+
+### Attest vs Warden
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Verify implementation against spec" | **Attest** | Spec compliance |
+| "Pre-release quality review" | **Warden** | UX quality gate |
+| "Acceptance criteria check" | **Attest** | Criterion-by-criterion verification |
+| "V.A.I.R.E. assessment" | **Warden** | UX framework evaluation |
+| "Traceability matrix" | **Attest** | Spec ↔ implementation mapping |
+| "Pass/fail for release" | **Warden** (after Attest) | Release decision |
+
+**Rule**: "Does code match spec?" → Attest. "Is UX quality sufficient?" → Warden. Use both for complete release gates: Attest (spec compliance) → Warden (UX quality) → Launch.
+
 ### Judge vs Zen
 
 **Rule**: "Find problems" → Judge. "Fix code smells" → Zen. Judge discovers, Zen fixes.

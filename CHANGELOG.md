@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 #### New Agents
+- **Attest** - 仕様適合検証エージェント。仕様書から受入基準を抽出し、BDDシナリオを生成し、実装が仕様通りか敵対的に検証。CERTIFIED/CONDITIONAL/REJECTED判定を発行。5つのリファレンス（criteria-extraction, verification-methods, bdd-generation, compliance-report, adversarial-probing）を含む
 - **Levy** - 日本の確定申告（所得税）をガイドするドメイン知識エージェント。所得分類・控除最適化・税額計算・e-Tax手順をフリーランス/副業サラリーマン向けに解説
 - **Helm** - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント（SWOT/PESTLE/Porter分析、シナリオプランニング）
 - **Pipe** - GHAワークフロー専門エージェント（トリガー戦略、セキュリティ強化、PR自動化、Reusable Workflow設計）
@@ -104,7 +105,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 | Research & Planning | 10 | Scout, Ripple, Spark, Compete, Voice, Researcher, Trace, Canon, Lens, Cast |
 | Decision & Strategy | 4 | Magi, Helm, Levy, Accord |
 | Git/PR Management | 4 | Guardian, Harvest, Launch, Rewind |
-| Quality Assurance | 11 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void |
+| Quality Assurance | 12 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void, Attest |
 | Implementation | 4 | Builder, Artisan, Forge, Arena |
 | AI/ML | 1 | Oracle |
 | Performance | 2 | Bolt, Tuner |
@@ -122,4 +123,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 | Operations | 1 | Triage |
 | Browser Automation | 3 | Navigator, Director, Reel |
 | AITuber/Streaming | 1 | Aether |
-| **Total** | **84** | |
+| **Total** | **85** | |

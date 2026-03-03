@@ -37,7 +37,7 @@ ALL AGENTS (Hub connections):
 - Security: Sentinel, Probe, Specter
 - Review: Judge, Zen
 - Implementation: Builder, Forge, Schema, Arena, Artisan, Anvil
-- Testing: Radar, Voyager, Siege
+- Testing: Radar, Voyager, Siege, Attest
 - Performance: Bolt, Tuner
 - Documentation: Quill, Canvas, Scribe, Morph, Prism
 - Architecture: Atlas, Gateway, Scaffold, Grove

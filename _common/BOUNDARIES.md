@@ -79,10 +79,12 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Judge** | Code review & bug detection | PR review, quality check | Never |
 | **Zen** | Refactoring & code smell remediation | Readability improvement | Yes (refactor only) |
 | **Warden** | V.A.I.R.E. UX quality gate | Pre-release assessment | Never |
+| **Attest** | Specification compliance verification | Spec-to-code gap analysis | Never |
 
 **Key distinctions:**
 - Find problems → Judge. Fix code smells → Zen
 - Unit tests → Radar. E2E tests → Voyager. Load tests → Siege
+- Code quality → Judge. UX quality → Warden. Spec compliance → Attest
 
 ## Performance
 
@@ -220,3 +222,4 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Matrix** | Combinatorial analysis | Multi-dimensional coverage optimization | Never |
 | **Void** | YAGNI verification | Scope cutting, complexity reduction | Never |
 | **Sketch** | AI image generation | Gemini API image creation | Yes |
+| **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes | Yes |

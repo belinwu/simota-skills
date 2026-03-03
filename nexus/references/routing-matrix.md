@@ -54,4 +54,5 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | REVIEW | Judge → Builder | +Zen (refactor), +Sentinel (security) |
 | YAGNI | Void → Sweep/Zen | +Magi (approval), +Pulse (usage data) |
 | REMEDIATE | Mend → Radar | +Beacon (SLO check), +Gear (infra config), +Triage (escalation) |
+| SPEC_VERIFY | Attest | +Scribe (spec gaps), +Radar (BDD→tests), +Builder (violation fixes), +Warden (release gate) |
 | LOOP_OPS | Orbit | +Builder (script changes), +Guardian (commit policy), +Radar (verification closure) |

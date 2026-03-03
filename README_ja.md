@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-87-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-88-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **87種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **88種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする87種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする88種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -105,6 +105,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Zen** | _"Clean code is not written. It's rewritten."_ - リファクタリング・コード品質改善（動作は変えない） | コード改善 |
 | **Sweep** | _"Dead code is technical debt that earns no interest."_ - 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案 | クリーンアップ提案 |
 | **Warden** | _"Quality is not negotiable. Ship nothing unworthy."_ - V.A.I.R.E.品質基準の番人。リリース前評価、スコアカード、合否判定 | 品質評価レポート |
+| **Attest** | _"Specs are truth. Code is evidence. Attest finds the gaps."_ - 仕様適合検証エージェント。仕様書から受入基準を抽出し、BDDシナリオを生成し、実装が仕様通りか敵対的に検証。CERTIFIED/CONDITIONAL/REJECTED判定を発行 | 適合レポート、BDDシナリオ |
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
