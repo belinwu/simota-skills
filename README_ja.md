@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-87-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **86種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **87種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする86種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする87種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -156,6 +156,11 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Showcase** | _"Components without stories are components without context."_ - Storybookストーリー作成・カタログ管理・Visual Regression連携。CSF 3.0形式 | Storybook Stories |
 | **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - ユーザー向けテキストの専門エージェント。マイクロコピー、エラーメッセージ、ボイス＆トーンフレームワーク、オンボーディングコピー、アクセシビリティテキスト | コピーガイドライン、コンテンツ仕様 |
 | **Frame** | _"Design speaks in pixels. I translate it to code."_ - Figma MCP Serverを活用してデザインコンテキストを抽出・構造化し、実装エージェントに渡すブリッジエージェント。デザインからコードへの橋渡し、Code Connect管理、デザインシステムルール抽出。コードは書かない | 構造化デザインコンテキスト、デザインシステムルール |
+| **Loom** | _"Design intent deserves preparation. Every thread of context I weave makes creation more precise."_ - Figma Make最適化エージェント。コードベースを分析してGuidelines.mdを生成し、プロンプト戦略を設計し、Make出力をデザインシステム規約と照合検証。コードは書かない | Guidelines.md、プロンプトシーケンス、検証レポート |
+
+**Frame vs Loom の役割分担**:
+- **Frame**: Figma → Code 方向（Figma MCP経由でデザインコンテキストを抽出）
+- **Loom**: Code → Figma Make 方向（コードベース分析からFigma Makeへの最適入力を準備）
 
 ### ドキュメント
 
@@ -376,6 +381,7 @@ questions:
 | UX/improve | UX改善 | Echo → Palette → Artisan → Radar |
 | UX/session-analysis | セッション分析 | Trace → Echo → Palette |
 | UX/persona-validation | ペルソナ検証 | Researcher → Trace → Echo |
+| UI/figma-make | Figma Make Guidelines | Loom → Artisan |
 
 #### リファクタリング
 
@@ -648,6 +654,7 @@ skills/
 ├── flow/SKILL.md       # アニメーション
 ├── forge/SKILL.md      # プロトタイプ
 ├── frame/SKILL.md      # Figmaデザイン・コード変換ブリッジ
+├── loom/SKILL.md       # Figma Make最適化エージェント
 ├── gateway/SKILL.md    # API設計
 ├── gear/SKILL.md       # DevOps
 ├── grove/SKILL.md      # リポジトリ構造設計
@@ -718,7 +725,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全86エージェントの使用例を紹介します。
+> カテゴリ別に全87エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
@@ -1203,6 +1210,21 @@ TypeScript strict、適切なエラーハンドリング、アクセシビリテ
 ```
 
 **出力**: カバレッジレポート、品質スコア、改善アクションリスト
+
+---
+
+##### Figma Make最適化（Loom）
+
+```
+/Loom
+このプロジェクトのコードベースを分析して、Figma Make用のGuidelines.mdを生成してください。
+```
+
+**出力**: コードベースのデザインシステム分析、Figma Make最適化 Guidelines.md、プロンプト戦略
+
+**Frame vs Loom の使い分け**:
+- **Frame**: Figmaのデザインからコード実装へ（Figma → Code）
+- **Loom**: コードベースからFigma Make入力の最適化へ（Code → Figma Make）
 
 ---
 

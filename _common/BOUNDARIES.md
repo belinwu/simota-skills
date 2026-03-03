@@ -131,11 +131,13 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Director** | Demo video production | Playwright-based recordings | Yes |
 | **Reel** | Terminal recording | CLI demo GIF/video | Yes |
 | **Frame** | Figma MCP design context extraction | Figma→code bridge, Code Connect | Never |
+| **Loom** | Figma Make optimization | Guidelines.md generation, prompt strategy, output validation | Never |
 
 **Key distinctions:**
 - Design direction → Vision. Tokens → Muse. Usability → Palette. Animation → Flow
 - Write text → Prose. Test as persona → Echo. Research → Researcher
 - Figma data extraction → Frame. Token definition → Muse. Frame extracts, Muse defines
+- Figma Make optimization → Loom. Figma extraction → Frame. Token management → Muse
 - Code Connect mapping → Frame + Showcase. Frame manages Figma side, Showcase manages code side
 
 ## User Research & Personas

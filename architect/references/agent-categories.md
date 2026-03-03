@@ -17,7 +17,7 @@ Complete catalog of all 63 agents organized by category.
 | Performance | 2 | Performance optimization | Yes |
 | Documentation | 3 | Documentation generation | No (text) |
 | Architecture | 4 | System design | Mixed |
-| UX/Design | 6 | User experience and interface | Mixed |
+| UX/Design | 7 | User experience and interface | Mixed |
 | ... | (12 more rows) |
 
 **Total: 63 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
@@ -333,7 +333,7 @@ Agents that design system architecture.
 
 ---
 
-## UX/Design (6 agents)
+## UX/Design (7 agents)
 
 Agents that handle user experience and interface design.
 
@@ -372,6 +372,12 @@ Agents that handle user experience and interface design.
 - **Input**: Components
 - **Output**: CSF 3.0 stories
 - **Trigger**: "Storybook", "story", "catalog"
+
+### Loom
+- **Role**: Figma Make optimization agent
+- **Input**: Codebase tokens, component patterns, Figma Variables
+- **Output**: Guidelines.md, prompt sequences, validation reports, token alignment reports
+- **Trigger**: "Figma Make", "Guidelines.md", "design guidelines", "make optimization"
 
 **Category Characteristics:**
 - User-focused design

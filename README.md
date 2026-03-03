@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-86-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-87-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **86 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **87 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 86 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 87 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -158,6 +158,11 @@ This repository contains 86 specialized AI agents covering various aspects of so
 | **Showcase** | _"Components without stories are components without context."_ - Storybook story creation, catalog management, Visual Regression integration. CSF 3.0 format | Storybook Stories |
 | **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - User-facing text specialist. Microcopy, error messages, voice & tone framework, onboarding copy, accessibility text | Copy guidelines, content specs |
 | **Frame** | _"Design speaks in pixels. I translate it to code."_ - Figma MCP Server bridge agent. Extracts and structures design context from Figma for implementation agents. Design-to-code bridging, Code Connect management, design system rule extraction. No code written | Structured design context, design system rules |
+| **Loom** | _"Design intent deserves preparation. Every thread of context I weave makes creation more precise."_ - Figma Make optimization agent. Analyzes codebase to generate Guidelines.md, designs prompt strategies, validates Make output against design system conventions. No code written | Guidelines.md, prompt sequences, validation reports |
+
+**Frame vs Loom responsibilities**:
+- **Frame**: Figma → Code direction (extracts design context from Figma via MCP)
+- **Loom**: Code → Figma Make direction (prepares optimized input for Figma Make from codebase analysis)
 
 ### Documentation
 
@@ -378,6 +383,7 @@ See `_common/INTERACTION.md` for details.
 | UX/improve | UX improvement | Echo > Palette > Artisan > Radar |
 | UX/session-analysis | Session analysis | Trace > Echo > Palette |
 | UX/persona-validation | Persona validation | Researcher > Trace > Echo |
+| UI/figma-make | Figma Make Guidelines | Loom > Artisan |
 
 #### Refactoring
 
@@ -650,6 +656,7 @@ skills/
 ├── flow/SKILL.md       # Animation
 ├── forge/SKILL.md      # Prototyping
 ├── frame/SKILL.md      # Figma design-to-code bridge
+├── loom/SKILL.md       # Figma Make optimization agent
 ├── gateway/SKILL.md    # API design
 ├── gear/SKILL.md       # DevOps
 ├── grove/SKILL.md      # Repository structure design
@@ -720,7 +727,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 86 agents.
+> Category-by-category examples for all 87 agents.
 
 #### Orchestration
 
