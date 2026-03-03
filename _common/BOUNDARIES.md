@@ -222,4 +222,4 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Matrix** | Combinatorial analysis | Multi-dimensional coverage optimization | Never |
 | **Void** | YAGNI verification | Scope cutting, complexity reduction | Never |
 | **Sketch** | AI image generation | Gemini API image creation | Yes |
-| **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes | Yes |
+| **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes + Gemini CLI delegation | Yes |
