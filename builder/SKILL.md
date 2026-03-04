@@ -119,6 +119,12 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/validation-recipes.md` | Zod schemas, transforms |
 | `references/performance-patterns.md` | Frontend/Backend/DB optimization |
 | `references/process-guide.md` | Daily process, code standards, anti-patterns |
+| `references/question-templates.md` | YAML templates for user decision points |
+| `references/golang-patterns.md` | Go 1.22-1.24 新機能, エラーハンドリング, 並行処理, プロジェクト構造, DI, テスト, slog |
+| `references/python-patterns.md` | Python 3.12+ 型ヒント, async/await, uv/pyproject.toml, pytest, Pydantic |
+| `references/typescript-advanced.md` | satisfies, branded types, as const, TS 5.8, strict 設定, コンパイルパフォーマンス |
+| `references/architecture-patterns.md` | Clean/Hexagonal Architecture, SOLID 2025, CUPID, API 設計選定, DI 原則 |
+| `references/cross-language-testing.md` | Testing Trophy, 言語別テスト比較, モック戦略, プロパティベーステスト |
 | `references/autorun-nexus.md` | AUTORUN formats, Nexus Hub mode, collaboration architecture |
 
 ---
