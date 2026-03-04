@@ -146,6 +146,10 @@ Response: `## 競合分析レポート` → **対象**(competitor names, market)
 | `references/playbooks.md` | Competitive Response, Battle Card, Win/Loss Analysis, Alert System |
 | `references/intelligence-gathering.md` | Public/External/Community/Financial + Price/Review/TechStack/SEO |
 | `references/intelligence-calibration.md` | Intelligence accuracy tracking, source reliability, prediction validation, SHARPEN workflow |
+| `references/ci-anti-patterns-biases.md` | CI 7大アンチパターン、認知バイアス6種、分析前中後チェックリスト |
+| `references/ai-powered-ci-platforms.md` | CI 成熟度モデル、AI×CI 融合、Crayon/Klue/Kompyte 比較、CI サイクル、リアルタイム監視 |
+| `references/modern-win-loss-analysis.md` | Clozd 4本柱、Five Whys/Laddering、データドリブン Win/Loss、AI+人間ハイブリッド |
+| `references/competitive-moats-category-design.md` | AI 時代の6モート、Blue Ocean ERRC、カテゴリーデザイン、PLG 競争、価格インテリジェンス、DX 競合分析 |
 
 ---
 
