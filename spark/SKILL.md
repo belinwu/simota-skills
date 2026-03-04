@@ -114,6 +114,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/experiment-lifecycle.md` | A/B test result handling |
 | `references/compete-conversion.md` | Gap-to-spec conversion |
 | `references/technical-integration.md` | Builder/Sherpa patterns |
+| `references/modern-product-discovery.md` | OST, Continuous Discovery, Shape Up, ODI, AI活用ディスカバリー, Spec-Driven Development |
+| `references/feature-ideation-anti-patterns.md` | Feature Factory, HiPPO, Build Trap, Sunk Cost, Shiny Object Syndrome と対策 |
+| `references/lean-validation-techniques.md` | Fake Door Test, Wizard of Oz, Concierge MVP, 軽量PRD, Amazon 6-Pager, RFC+ADR |
+| `references/outcome-roadmapping-alignment.md` | NOW/NEXT/LATER, OKR統合, DACI, プロダクトトリオ, North Star, Ship to Validate |
 
 ## Daily Process
 
