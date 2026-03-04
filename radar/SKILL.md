@@ -143,6 +143,10 @@ See `references/advanced-techniques.md` for implementation details.
 | `references/contract-multiservice-testing.md` | Pact, gRPC, GraphQL, AsyncAPI |
 | `references/async-testing-patterns.md` | Multi-language async/await patterns |
 | `references/framework-deep-patterns.md` | Vitest, Jest, pytest, Go, Rust, JUnit 5 |
+| `references/testing-anti-patterns.md` | 13大アンチパターン、テストピラミッド違反、品質メトリクス、Mutation Testing、テストコードの匂い |
+| `references/ai-assisted-testing.md` | AI テスト生成、自己修復テスト、AI 生成コードテスト戦略、フレーキー AI 検出 |
+| `references/shift-left-right-testing.md` | Shift-Left/Right 戦略、可観測性駆動テスト、カオステスト、QAOps、Synthetic Monitoring |
+| `references/modern-testing-dx.md` | Vitest 4.x/Jest 30 比較、DX メトリクス、テスト文化成熟度、CI 最適化パターン |
 
 ---
 
