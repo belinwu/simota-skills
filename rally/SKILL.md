@@ -158,6 +158,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/integration-patterns.md` | Patterns A-D, Nexus/Sherpa handoffs, escalation |
 | `references/agent-teams-api-reference.md` | Agent Teams API tool reference |
 | `references/parallel-learning.md` | HARMONIZE workflow, TES scoring, learning triggers (RY-01~06), Team Design Matrix, adaptation rules, safety guardrails | When analyzing team outcomes or adapting composition defaults |
+| `references/orchestration-patterns.md` | Azure 5パターン分類, Supervisor vs Swarm, 8調整パターン, 意思決定ツリー, TDAG/COLA学術フレームワーク |
+| `references/anti-patterns-failure-modes.md` | MAST失敗分類(14種), 過剰並列化メトリクス, 設計/通信/Claude Code固有アンチパターン, 3ロール分離 |
+| `references/resilience-cost-optimization.md` | 3層レジリエンス(Retry/Circuit Breaker/Bulkhead), Saga, モデルティアリング, コスト管理, Work Stealing |
+| `references/framework-landscape.md` | LangGraph/CrewAI/AutoGen/ADK/OpenAI SDK比較, Rally位置づけ, HITL, コンテキストエンジニアリング |
 
 ## Daily Process
 
