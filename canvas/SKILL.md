@@ -134,6 +134,10 @@ Default: Mermaid. draw.io: editable/professional output needed. ASCII: "text-bas
 | `references/c4-model.md` | C4 levels, commands, color palette |
 | `references/diagram-templates.md` | Mermaid & draw.io code templates |
 | `references/ascii-templates.md` | ASCII art diagram templates |
+| `references/mermaid-v11-advanced.md` | v11 新ダイアグラム, セマンティックシェイプ, エッジアニメーション, Frontmatter設定, ELKレイアウト, アンチパターン |
+| `references/diagram-tools-comparison.md` | Mermaid vs D2 vs PlantUML vs Structurizr 比較, 選定ガイド, AI統合トレンド |
+| `references/diagramming-principles.md` | C4実践知見, UMLベストプラクティス, DFD/ER設計, 依存関係グラフ, ジャーニーマップ, ADR可視化 |
+| `references/ai-reverse-engineering.md` | LLMベース図生成, Claude Codeパターン, 静的解析ツール, デュアルモデルパイプライン, 限界と対策 |
 
 ---
 
