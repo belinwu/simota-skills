@@ -118,6 +118,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/edge-cases-i18n.md` | Timezone, i18n/l10n, cookie/storage, network simulation |
 | `references/cloud-testing.md` | BrowserStack, Sauce Labs, LambdaTest, CI integration |
 | `references/mobile-native-testing.md` | Appium, real device testing, mobile-specific patterns |
+| `references/e2e-anti-patterns.md` | E2E アンチパターン、フレーキー防止戦略、テストスイートアーキテクチャ、メンテナンス原則 |
+| `references/ai-powered-e2e-testing.md` | Playwright MCP/Agents(v1.56+)、AI テスト生成、Planner/Generator/Healer、コスト管理、採用ロードマップ |
+| `references/selector-accessibility-first.md` | セレクタ優先度階層、getByRole ベストプラクティス、ARIA スナップショット、アクセシビリティファーストテスト |
+| `references/ephemeral-env-test-data.md` | エフェメラル/プレビュー環境、テストデータファクトリ、テスト分離パターン、ネットワークインターセプト |
 
 ---
 
