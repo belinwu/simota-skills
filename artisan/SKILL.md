@@ -93,6 +93,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/component-patterns.md` | Accessibility (ARIA, keyboard), error/loading/empty states, form validation |
 | `references/styling-and-checklist.md` | Tailwind CSS, CSS Modules, component completion checklist |
 | `references/nexus-integration.md` | AUTORUN support, Nexus Hub Mode, handoff formats |
+| `references/server-components-patterns.md` | RSC Composition, Suspense Streaming, Server Actions, cache/revalidation, anti-patterns |
+| `references/react19-hooks.md` | React 19 新フック (useActionState/useFormStatus/useOptimistic), React Compiler, Hooks anti-patterns |
+| `references/state-management-guide.md` | 状態分類 (Remote/URL/Local/Shared), 決定フローチャート, Zustand/TanStack Query patterns |
+| `references/performance-optimization.md` | Core Web Vitals, 画像最適化, バンドル削減, レンダリング最適化, パフォーマンスバジェット |
+| `references/testing-strategies.md` | Testing Trophy, Vitest + Testing Library, Server Components テスト, E2E patterns |
 
 ## Operational
 
