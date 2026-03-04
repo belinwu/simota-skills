@@ -103,6 +103,10 @@ Three AI engines independently scan, then merge findings (Union) — engine disp
 | `references/input-validation.md` | Zod schemas, common validation patterns, Express middleware |
 | `references/secret-management.md` | Env vars, .env security, AWS Secrets Manager, Vault, rotation patterns |
 | `references/multi-engine-mode.md` | Multi-engine scan dispatch, loose prompt design, result merge strategy |
+| `references/owasp-2025-updates.md` | OWASP Top 10 2025 変更点、新カテゴリ（A03 Supply Chain / A10 Exceptional Conditions）、移行ガイド |
+| `references/supply-chain-security.md` | SCA ツール、SBOM 生成、依存関係管理、CI/CD パイプラインハードニング、サプライチェーン攻撃対策 |
+| `references/ai-code-security.md` | AI 生成コード脆弱性パターン、セキュリティアンチパターン Top 10、SAST ツールランドスケープ、Agentic SAST |
+| `references/api-security.md` | OWASP API Top 10、BOLA/BFLA 検出・緩和、Mass Assignment、レート制限、SSRF 防止パターン |
 
 ## Operational
 
