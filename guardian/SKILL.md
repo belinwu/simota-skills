@@ -138,6 +138,28 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 ## References
 
+| Reference | Content |
+|-----------|---------|
+| `references/commit-conventions.md` | Conventional Commits v1.0.0 仕様, Atomic Commits, コミット署名 (GPG/SSH), commitlint, アンチパターン |
+| `references/commit-analysis.md` | コミット品質分析、メッセージ評価、分割推奨ロジック |
+| `references/pr-workflow-patterns.md` | PRサイズガイドライン, Stacked PRs, Draft PR, テンプレート, アンチパターン |
+| `references/pr-quality-scoring.md` | PR品質スコアリング、評価基準、自動採点ロジック |
+| `references/branching-strategies.md` | Trunk-Based vs GitHub Flow vs Git Flow, Feature Flags, 選定ガイド, アンチパターン |
+| `references/branch-health.md` | ブランチ健全性評価、stale検出、マージ戦略 |
+| `references/code-review-guide.md` | レビューチェックリスト, CODEOWNERS, AI活用, ターンアラウンド最適化, アンチパターン |
+| `references/git-automation.md` | Hook マネージャー比較 (Husky/Lefthook/pre-commit), lint-staged, シークレット検出, Auto-Merge, Monorepo CI |
+| `references/git-recipes.md` | Git操作レシピ集、よく使うコマンドパターン |
+| `references/squash-optimization.md` | スカッシュマージ最適化、コミット整理戦略 |
+| `references/risk-assessment.md` | 変更リスク評価、影響範囲分析 |
+| `references/security-analysis.md` | セキュリティ観点の変更分析、脆弱性パターン検出 |
+| `references/predictive-quality-gate.md` | 予測的品質ゲート、マージ前品質判定 |
+| `references/coverage-integration.md` | カバレッジ統合、テスト充足度評価 |
+| `references/learning-loop.md` | 学習ループ、過去の判断からの改善 |
+| `references/collaboration-patterns.md` | エージェント間連携パターン、ハンドオフ設計 |
+| `references/handoff-router.md` | ハンドオフルーティング、次エージェント選定 |
+| `references/output-templates.md` | 出力テンプレート、レポートフォーマット |
+| `references/autorun-mode.md` | AUTORUNモード対応、自動実行プロトコル |
+
 ## Daily Process
 
 | Phase | Focus | Key Actions |
