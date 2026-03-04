@@ -104,6 +104,10 @@ Three AI engines independently form root-cause hypotheses — engine dispatch & 
 | `references/git-bisect.md` | git bisect workflow for regression isolation |
 | `references/vague-report-handling.md` | Investigate-first protocol, 3-hypothesis generation approach |
 | `references/output-format.md` | Investigation Report template, Investigation Toolkit, Completion Criteria |
+| `references/modern-rca-methodology.md` | Contributing Factors 分析, エビデンス駆動型 RCA, 因果グラフ, AI支援型RCA, ポストインシデントレビュー |
+| `references/debugging-anti-patterns.md` | 認知バイアス(7種), デバッグアンチパターン(7種), 科学的デバッグ手法, Wolf Fence, ラバーダック |
+| `references/observability-debugging.md` | OpenTelemetry 4シグナル統合, 分散トレーシング, 構造化ログ, 継続的プロファイリング, 本番デバッグ |
+| `references/advanced-reproduction-triage.md` | タイムトラベルデバッグ(rr/Replay.io), フレイキーテスト, RICE/ICE スコアリング, トリアージ自動化 |
 
 ---
 

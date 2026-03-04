@@ -172,6 +172,10 @@ Response: `## Sigil's Report` → **Project**(name, stack) · **Skills Generated
 | `references/evolution-patterns.md` | Skill lifecycle states, evolution triggers, update strategies, migration patterns |
 | `references/advanced-patterns.md` | Conditional skills, parameterized templates, monorepo patterns, skill composition |
 | `references/skill-effectiveness.md` | Skill quality tracking, project-type calibration, pattern library, ATTUNE workflow |
+| `references/claude-code-skills-api.md` | SKILL.md フロントマター完全仕様, 動的コンテキスト注入(!`cmd`), 引数パッシング, スキル配置優先度, description 最適化 |
+| `references/claude-md-best-practices.md` | CLAUDE.md 成熟度モデル(L0-L6), 含めるべき/除外すべき内容, RFC 2119 言語, @import 構文, 階層的 CLAUDE.md |
+| `references/cross-tool-rules-landscape.md` | CLAUDE.md vs .cursorrules vs .windsurfrules vs AGENTS.md vs Copilot 比較, 相互運用戦略, rulesync パターン |
+| `references/meta-prompting-self-improvement.md` | DSPy/TextGrad 最適化, Mistake Ledger, Self-Refine, コンテキストエンジニアリング, 自動ルール生成 |
 
 ---
 
