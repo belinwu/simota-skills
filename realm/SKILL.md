@@ -216,6 +216,11 @@ Full catalog → `references/badge-catalog.md`
 | `references/event-system.md` | Event classification, trigger conditions, narrative templates |
 | `references/chronicle-format.md` | Chronicle generation rules, style guide, story arcs |
 | `references/data-collection.md` | Data source specs, collection flow, state management schema |
+| `references/phaser-optimization.md` | Phaser 3 performance optimization (object pooling, tilemap, animation state machine, v3.87) |
+| `references/realtime-architecture.md` | SSE vs WebSocket comparison, delta update protocol, layered architecture, scaling patterns |
+| `references/gamification-enhancement.md` | Octalysis 8 Core Drives mapping, multi-layer leaderboard, season system, streak mechanics |
+| `references/celebration-effects.md` | canvas-confetti integration, Phaser particle effects, CSS animations, event-based celebrations |
+| `references/isometric-office-design.md` | Isometric vs top-down comparison, coordinate transforms, office simulation patterns, pixel art guide |
 | `templates/realm-map.html` | Self-contained HTML Company HQ floor plan map template |
 | `templates/realm-game.html` | Phaser 3 2D game simulation with walking agents and interactive departments |
 | `serve.py` | Visualization generator (static HTML) & live server. Supports `--game`, `--live`, `--repo` flags. Multi-repo capable. |
