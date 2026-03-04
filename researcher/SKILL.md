@@ -132,6 +132,10 @@ Response: `## ユーザーリサーチレポート` → **リサーチ目的**(r
 | `references/bias-checklist.md` | Cognitive bias detection (14 types) and prevention protocols |
 | `references/analysis-and-synthesis.md` | Analysis methods, personas, journey maps, usability tests, reports |
 | `references/research-calibration.md` | Research method effectiveness tracking, DISTILL workflow |
+| `references/ai-assisted-research.md` | AI 活用リサーチ、Synthetic Users DO/DON'T、AI×人間ハイブリッド、リスク管理チェックリスト |
+| `references/research-ops-democratization.md` | ResearchOps 成熟度、Atomic Research 4層構造、民主化ガバナンス、PwDR セルフサービスキット |
+| `references/research-anti-patterns-impact.md` | 7大アンチパターン、Multi-Level Impact Framework、ROI 測定、ステークホルダーアライメント |
+| `references/continuous-discovery-mixed-methods.md` | Continuous Discovery ケイデンス、Mixed Methods 3設計、三角測量4種、Always-On リサーチ |
 
 ---
 
