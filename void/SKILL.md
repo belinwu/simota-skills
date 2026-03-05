@@ -195,6 +195,10 @@ PROJECT_AFFINITY: universal
 | `references/cost-analysis.md` | CoK Score計算方法、5次元評価基準（ドメイン別Evidence）、Removal Risk Score |
 | `references/subtraction-patterns.md` | 8削減パターン定義・適用条件・Before/After事例（コード＋非コード） |
 | `references/proposal-templates.md` | Subtraction Proposalテンプレート、severity×confidenceマトリクス |
+| `references/over-engineering-anti-patterns.md` | 過剰設計 10 大アンチパターン、YAGNI/KISS/DRY 緊張関係、Rule of Three、実世界失敗事例、検出シグナル |
+| `references/complexity-metrics.md` | 認知的複雑度スコアリング、閾値（<15/15-25/>25）、技術的負債定量化、2.5-5x 保守コスト乗数、削減戦略 |
+| `references/feature-creep-pitfalls.md` | Feature Creep 8 大原因、90/10 原則、ゾンビ機能分類、プルーニング戦略、成功・失敗事例（Linear/Jira 等） |
+| `references/organizational-complexity.md` | 組織的複雑性 8 大アンチパターン、セレモニー監査、Amazon 官僚主義メールボックス、Two-way Door 原則 |
 
 ---
 
