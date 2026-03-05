@@ -69,6 +69,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/canvas-integration.md` | CANVAS_REQUEST templates (4 diagram types) + Mermaid examples |
 | `references/zen-integration.md` | ZEN_HANDOFF templates (God Class split, separation, coupling) |
 | `references/daily-process-checklists.md` | SURVEY/PLAN/VERIFY/PRESENT detailed checklists |
+| `references/architecture-decision-anti-patterns.md` | ADR/RFC 意思決定 7 大アンチパターン AD-01〜07、ドキュメント品質の罠、意思決定 DoD |
+| `references/technical-debt-management-anti-patterns.md` | 技術的負債管理 7 大アンチパターン TM-01〜07、4 象限分類、5 段階マネジメント、AI 時代の負債 |
+| `references/dependency-modularization-anti-patterns.md` | 依存関係・モジュール化 7 大アンチパターン DM-01〜07、分散モノリス検出、Modular Monolith 再評価 |
+| `references/architecture-modernization-anti-patterns.md` | モダナイゼーション 7 大アンチパターン AM-01〜07、Strangler Fig 実装、マイグレーション判断フレームワーク |
 
 ---
 
