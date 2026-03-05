@@ -152,6 +152,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/output-templates.md` | 実行計画・カバレッジレポートの完全テンプレート |
 | `references/domain-patterns.md` | 7ドメイン別の軸定義・制約例・典型ユースケース |
 | `references/optimization-algorithms.md` | アルゴリズム詳細・削減率計算・手法選択フロー |
+| `references/combinatorial-anti-patterns.md` | 組み合わせテスト 12 大アンチパターン、パラメータモデリング・制約設計・カバレッジの落とし穴 |
+| `references/fault-interaction-statistics.md` | NIST 実証データ、欠陥相互作用率、t-way 強度選択ガイド、混合強度テスト |
+| `references/prioritization-pitfalls.md` | リスクマトリクス 8 大落とし穴、優先度スコアリングの問題、ドメイン別バイアス |
+| `references/coverage-measurement.md` | カバレッジ計測手法、妥当性基準、実行後分析、継続的改善プロセス |
 
 ---
 
