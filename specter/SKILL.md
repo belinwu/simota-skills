@@ -145,6 +145,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 |------|---------|
 | `references/patterns.md` | Full detection pattern library (regex, Bad/Good examples, confidence levels) |
 | `references/examples.md` | Usage examples, report samples, AUTORUN output format |
+| `references/concurrency-anti-patterns.md` | Promise 5大アンチパターン、Race Condition 防止戦略マトリクス、Deadlock 予防（Coffman 4条件）、並行性安全パターン |
+| `references/memory-leak-diagnosis.md` | メモリリーク診断ワークフロー（5ステップ）、Node.js/Chrome DevTools ツールガイド、WeakRef/FinalizationRegistry、本番監視メトリクス |
+| `references/resource-management.md` | リソースリーク 5 カテゴリ、言語別管理パターン（JS/Python/Go）、接続プール設計、コードレビューチェックリスト |
+| `references/static-analysis-tools.md` | ESLint 非同期ルール 14 選、静的解析ツール比較、ランタイム検出、テスト戦略（Stress/Soak/Chaos） |
 
 ---
 
