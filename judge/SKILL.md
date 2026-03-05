@@ -116,6 +116,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/consistency-patterns.md` | Detection heuristics, code examples, false positive filtering |
 | `references/test-quality-patterns.md` | Scoring details, catalog, handoff formats |
 | `references/collaboration-patterns.md` | Full flow diagrams (Pattern A-F) |
+| `references/review-anti-patterns.md` | レビュープロセスアンチパターン（AWS 6種）、行動的アンチパターン（8種）、認知バイアス対策 |
+| `references/ai-review-patterns.md` | 2026年 AI レビュー5大パターン、ツールランドスケープ、Specialist-Agent アーキテクチャ |
+| `references/review-effectiveness.md` | レビュー有効性メトリクス/KPI、認知負荷の崖、最適 PR サイズ（200-400 LOC）、レビュアー疲労研究 |
+| `references/code-smell-detection.md` | 構造的コードスメル Top 10（God Class/Spaghetti/Primitive Obsession 等）、検出しきい値、route 先 |
 
 ---
 
