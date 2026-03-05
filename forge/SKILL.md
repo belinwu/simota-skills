@@ -93,6 +93,10 @@ See `references/story-scaffolding.md` for templates, output structure, handoff f
 | `references/builder-integration.md` | Builder handoff templates and checklist |
 | `references/muse-integration.md` | Muse handoff and style migration guide |
 | `references/story-scaffolding.md` | Story templates, Showcase handoff, tag conventions |
+| `references/prototyping-anti-patterns.md` | プロトタイピング 10 大アンチパターン（FP-01〜10）、Lava Flow 防止、Time-box 管理、80% ルール、寿命管理 |
+| `references/prototype-to-production.md` | Throwaway vs Evolutionary 判定、ハンドオフ 7 大落とし穴（HO-01〜07）、段階的品質レベル（L0-L3）、技術的負債管理 |
+| `references/rapid-iteration-methodology.md` | 高速イテレーションサイクル、Time-box テンプレート、速度最適化 10 テクニック、Vertical Slice、フィードバックループ |
+| `references/ai-assisted-prototyping.md` | AI ツールマップ、Vibe Coding 適用範囲、プロンプト戦略、AI 生成コード品質管理、ツール選定ガイド |
 
 ## Operational
 
