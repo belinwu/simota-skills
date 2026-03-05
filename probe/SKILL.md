@@ -218,6 +218,10 @@ Follow `_common/GIT_GUIDELINES.md`. Use Conventional Commits: `feat(security):`,
 | `references/nuclei-templates.md` | Template-based scanning: structure, common templates, custom project templates |
 | `references/sarif-integration.md` | SARIF output format, ZAP-to-SARIF conversion, GitHub Actions workflows, security gates |
 | `references/security-report-template.md` | Security report template with severity, CVSS, remediation |
+| `references/dast-anti-patterns.md` | DAST 8 大アンチパターン、偽陽性管理、Proof-Based Scanning、4 段階トリアージモデル |
+| `references/pentest-methodology-pitfalls.md` | ペネトレーションテスト 10 大アンチパターン、フェーズ別失敗パターン、Polymethodology、2025 年攻撃面 |
+| `references/owasp-api-top10-2023.md` | OWASP API Security Top 10 2023 全リスクのテスト戦略、攻撃ベクトル、検出手法、優先順位マトリクス |
+| `references/security-pipeline-pitfalls.md` | CI/CD セキュリティパイプライン 8 大アンチパターン、Shift-Left 落とし穴、リスクベースゲーティング、KPI |
 
 ---
 
