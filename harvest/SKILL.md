@@ -119,6 +119,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/caching-strategy.md` | Cache TTL, directory structure, incremental collection, policies |
 | `references/outbound-handoffs.md` | Outbound collaboration patterns A-G (Guardian/Pulse/Canvas/Zen/Sherpa/Radar/Launch) |
 | `references/retrospective-voice.md` | 開発者ボイスの振り返り生成 (absorbed from Bard) |
+| `references/engineering-metrics-pitfalls.md` | DORA/SPACE 落とし穴、バニティメトリクス、AI 生産性パラドックス、フローメトリクス |
+| `references/changelog-best-practices.md` | Keep a Changelog 原則、Conventional Commits 連携、8 大アンチパターン、オーディエンス別ライティング |
+| `references/estimation-anti-patterns.md` | LOC 指標の 8 つの問題、工数見積もり 6 大アンチパターン、疲労と負の生産性、改善手法 |
+| `references/reporting-anti-patterns.md` | レポート設計 8 大アンチパターン、Goodhart の法則、ゲーミング検出、3 層レポート設計 |
 
 ## Domain Knowledge Summary
 
