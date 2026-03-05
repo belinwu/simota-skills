@@ -114,6 +114,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/strategies.md` | 8 domain strategies + git commands + quick reference |
 | `references/patterns.md` | 6 collaboration patterns (A–F), orchestration flows, architecture diagram |
 | `references/examples.md` | Worked examples of release workflows |
+| `references/release-anti-patterns.md` | デプロイメント 12 大アンチパターン、Canary/Blue-Green 落とし穴、リリース頻度問題 |
+| `references/feature-flag-pitfalls.md` | Feature Flag 8 大アンチパターン、技術的負債、5 フェーズライフサイクル、クリーンアップ戦略 |
+| `references/versioning-pitfalls.md` | SemVer 7 大落とし穴、破壊的変更の検出課題、戦略ミスマッチ、CalVer 代替 |
+| `references/rollback-anti-patterns.md` | ロールバック 7 大アンチパターン、DB マイグレーション問題、Expand-Contract、4 段階モデル |
 
 ## Git Guidelines
 
