@@ -125,6 +125,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/agent-integrations.md` | Radar/Canvas handoff templates, benchmark examples, Mermaid diagrams |
 | `references/core-web-vitals.md` | LCP/INP/CLS issue-fix details, web-vitals monitoring code |
 | `references/profiling-tools.md` | Frontend/Backend profiling tools, React Profiler, Node.js commands |
+| `references/optimization-anti-patterns.md` | 最適化 10 大アンチパターン（PO-01〜10）、最適化の正しい順序、計測の 3 層モデル、判定フローチャート |
+| `references/backend-anti-patterns.md` | Node.js 8 大アンチパターン（BP-01〜08）、イベントループブロック検出、メモリリークパターン、非同期処理アンチパターン |
+| `references/frontend-anti-patterns.md` | React 10 大アンチパターン（FP-01〜10）、React Compiler 影響分析、レンダリング最適化の優先順序、画像・サードパーティ管理 |
+| `references/performance-regression-prevention.md` | パフォーマンスバジェット設計、CI/CD 3 層アプローチ、回帰検出方法論、本番モニタリング戦略 |
 
 ## AUTORUN Support
 
