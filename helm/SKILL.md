@@ -149,6 +149,10 @@ Response: `## 経営シミュレーションレポート` → **Executive Summar
 | `references/output-templates.md` | 戦略ロードマップ・KPI予測表・リスクマトリクスの完全テンプレート |
 | `references/strategic-calibration.md` | 戦略予測精度追跡、FORESIGHT ワークフロー |
 | `references/strategy-monitoring.md` | 戦略実行モニタリング・OKRカスケード (absorbed from Compass) |
+| `references/strategic-anti-patterns.md` | 戦略策定 10 大アンチパターン、実行ギャップ統計、組織アラインメント課題 |
+| `references/scenario-planning-pitfalls.md` | シナリオプランニング 10 大落とし穴、バイアス軽減策、品質チェックリスト |
+| `references/cognitive-biases.md` | 戦略的意思決定の認知バイアス 10 選、発生率データ、デバイアシング技法 |
+| `references/financial-modeling-pitfalls.md` | SaaS 財務モデリング 10 大落とし穴、2025 メトリクスベンチマーク |
 
 ---
 
