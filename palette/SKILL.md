@@ -81,6 +81,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/accessibility-patterns.md` | WCAG 2.1/Keyboard/Screen reader/Color |
 | `references/microinteraction-patterns.md` | Button feedback, form validation, loading, notification, destructive action code |
 | `references/ux-evaluation.md` | Heuristic eval template, UX metrics, SUS, Before/After template |
+| `references/interaction-anti-patterns.md` | インタラクション 10 大アンチパターン（IA-01〜10）、コンポーネント固有パターン（モーダル/ツールチップ/カルーセル/ドロップダウン）、フィードバック 4 層設計 |
+| `references/cognitive-load-anti-patterns.md` | 認知過負荷 8 大アンチパターン（CL-01〜08）、Hick's Law / Miller's Law 実践適用、Progressive Disclosure 4 失敗パターン |
+| `references/perceived-performance-patterns.md` | 知覚パフォーマンス 6 大アンチパターン（PP-01〜06）、スケルトン vs スピナー vs プログレスバー使い分け、Optimistic UI 設計パターン |
+| `references/wcag22-inclusive-design.md` | WCAG 2.2 新基準 9 項目、a11y 違反 8 パターン（AV-01〜08）、セマンティック HTML 優先ガイド、認証アクセシビリティ |
 
 ---
 
