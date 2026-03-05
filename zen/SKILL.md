@@ -137,6 +137,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/review-report-templates.md` | Review checklist, output, report, standards |
 | `references/test-refactoring.md` | Test smell catalog, recipes |
 | `references/typescript-react-patterns.md` | TypeScript, JS, React |
+| `references/refactoring-anti-patterns.md` | リファクタリングアンチパターン 10 種（Big Bang/Perfectionism/Golden Hammer 等）、認知バイアス、チェックリスト |
+| `references/ai-assisted-refactoring.md` | AI リファクタリングツール 2025-2026、Hallucination Watchlist、6 フェーズワークフロー、リスク軽減策 |
+| `references/cognitive-complexity-research.md` | 認知的複雑度 vs 循環的複雑度、CCTR テスト対応メトリクス、8 大原因、改善手法、ツール設定 |
+| `references/tech-debt-prioritization.md` | 技術的負債 5 分類、ホットスポット分析、Code Health、Strangler Fig/Branch by Abstraction、ROI 測定 |
 
 ## Daily Process
 
