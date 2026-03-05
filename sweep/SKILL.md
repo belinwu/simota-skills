@@ -135,6 +135,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/maintenance-workflow.md` | Periodic scan, diff detection, Grove handoff, trends |
 | `references/sample-commands.md` | Dependency/file analysis commands |
 | `references/troubleshooting.md` | Tool-specific issues, build breaks, perf |
+| `references/dead-code-impact-prevention.md` | ビジネスインパクト（Knight Capital $440M）、コスト指標、予防戦略（CI/CD/レビュー）、メトリクス |
+| `references/large-scale-cleanup.md` | Meta SCARF（1億行削除）、DCE-LLM（F1>94%）、モノレポ対応、エンタープライズワークフロー |
+| `references/dependency-cleanup.md` | knip 詳細設定、depcheck 制限事項、言語別依存監査、セキュリティ考慮、CI 統合パターン |
+| `references/cleanup-anti-patterns.md` | 削除 10 大アンチパターン（Big Bang/Blind Trust/Age-Based 等）、Zombie Code 対策、チェックリスト |
 
 ---
 
