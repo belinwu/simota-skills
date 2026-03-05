@@ -149,6 +149,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/migration-strategies.md` | L1-L5 levels, decision tree |
 | `references/monorepo-health.md` | Monorepo scoring, commands, proposals, baseline |
 | `references/cultural-dna.md` | プロジェクト規約DNA分析・逸脱検出 (absorbed from Totem) |
+| `references/monorepo-strategy-anti-patterns.md` | モノレポ戦略 7 大アンチパターン MS-01〜07、判断フレームワーク、ガバナンススケーリング、オーナーシップパターン |
+| `references/codebase-organization-anti-patterns.md` | コードベース構造 7 大アンチパターン CO-01〜07、Feature-Based vs Type-Based、Feature-Sliced Design、スケーラビリティ |
+| `references/documentation-architecture-anti-patterns.md` | ドキュメントアーキテクチャ 7 大アンチパターン DA-01〜07、Docs-as-Code、ドキュメント腐敗検出、対象者別設計 |
+| `references/project-scaffolding-anti-patterns.md` | スキャフォールディング 7 大アンチパターン PS-01〜07、段階的構造戦略、設定ファイル管理、AI 時代の考慮事項 |
 
 ## Daily Process
 
