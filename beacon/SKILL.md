@@ -100,6 +100,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/capacity-planning.md` | Load modeling, autoscaling, prediction |
 | `references/toil-automation.md` | Toil identification, automation scoring |
 | `references/reliability-review.md` | PRR checklists, FMEA, game days |
+| `references/observability-anti-patterns.md` | 可観測性 6 大アンチパターン（OA-01〜06）、カーディナリティ管理、アラート疲れ対策、ダッシュボード階層設計 |
+| `references/opentelemetry-best-practices.md` | OTel 計装戦略（OT-01〜05）、Semantic Conventions、Collector デプロイパターン、サンプリング戦略、テレメトリ相関 |
+| `references/slo-error-budget-anti-patterns.md` | SLO 設計 8 大アンチパターン（SA-01〜08）、エラーバジェット計算・ポリシー、バーンレートアラート、SLO ガバナンス |
+| `references/incident-learning-postmortem.md` | ブレイムレス 5 原則（BL-01〜05）、認知バイアス対策、ポストモーテムテンプレート、アンチパターン（PA-01〜07）、学習メトリクス |
 
 ---
 
