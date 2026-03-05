@@ -99,6 +99,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/naming-conventions.md` | Agent naming guidelines (short, memorable, thematic, unique) |
 | `references/nexus-integration.md` | AUTORUN _AGENT_CONTEXT/_STEP_COMPLETE templates, Nexus Hub NEXUS_HANDOFF format |
 | `references/self-evolution.md` | Self-evolution subsystem: EVOLVE workflow, triggers (ST-01~08), safety framework (Level A-D), runaway prevention |
+| `references/multi-agent-system-anti-patterns.md` | マルチエージェント設計 7 大アンチパターン MA-01〜07、協調パターン選択、協調税、スケーリングの罠 |
+| `references/agent-specification-anti-patterns.md` | エージェント仕様設計 8 大アンチパターン AS-01〜08、システムプロンプト設計、ACI ツール設計、役割定義の罠 |
+| `references/ecosystem-architecture-anti-patterns.md` | エコシステムアーキテクチャ 7 大アンチパターン EA-01〜07、モジュラー設計原則、ガバナンスドリフト 5 パターン |
+| `references/agent-evaluation-guardrails.md` | エージェント評価 6 大アンチパターン AE-01〜06、2 層評価アーキテクチャ、IVO 原則、プロダクション対応チェックリスト |
 
 ---
 
