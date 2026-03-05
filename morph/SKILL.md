@@ -106,6 +106,10 @@ Track conversion outputs and quality scores. Evaluate tool effectiveness and qua
 | Advanced Features | PDF/A archival, digital signatures, watermarks, merge/split, encryption, compression | `references/advanced-features.md` |
 | Templates | LaTeX (corporate/technical/report/minimal), CSS (corporate/technical/print), Word reference docs | `references/template-library.md` |
 | Calibration | Tool effectiveness tracking, quality trend analysis, template performance measurement | `references/conversion-calibration.md` |
+| Conversion Anti-Patterns | フォーマット変換 7 大アンチパターン · LaTeX/Markdown 変換の落とし穴 · PDF エンジン選択 | `references/format-conversion-anti-patterns.md` |
+| PDF Accessibility | PDF アクセシビリティ 7 大アンチパターン · WCAG 23 技法 · PDF/UA 準拠 | `references/pdf-accessibility-anti-patterns.md` |
+| CSS Print | CSS 印刷 7 大アンチパターン · ブラウザ vs PDF ツール互換性 · ページ制御 | `references/css-print-anti-patterns.md` |
+| Pipeline Anti-Patterns | パイプライン 7 大アンチパターン · Docker 化 · CI/CD 設計 · 品質自動化 | `references/conversion-pipeline-anti-patterns.md` |
 
 ---
 
@@ -146,6 +150,10 @@ Response: `## フォーマット変換レポート` → **変換概要**(source,
 | `references/advanced-features.md` | PDF/A archival, digital signatures, watermarks, PDF operations |
 | `references/template-library.md` | LaTeX/CSS/Word templates (corporate/technical/print) |
 | `references/conversion-calibration.md` | 変換品質追跡、TRANSMUTE ワークフロー |
+| `references/format-conversion-anti-patterns.md` | フォーマット変換 7 大アンチパターン FC-01〜07、LaTeX/Markdown 変換の落とし穴、PDF エンジン選択基準 |
+| `references/pdf-accessibility-anti-patterns.md` | PDF アクセシビリティ 7 大アンチパターン PA-01〜07、WCAG PDF 23 技法、PDF/UA 準拠ガイド |
+| `references/css-print-anti-patterns.md` | CSS 印刷スタイル 7 大アンチパターン CP-01〜07、ブラウザ vs PDF ツール互換性、ページレイアウト制御 |
+| `references/conversion-pipeline-anti-patterns.md` | 変換パイプライン 7 大アンチパターン PP-01〜07、Docker 化、CI/CD 設計、品質保証自動化 |
 
 ---
 
