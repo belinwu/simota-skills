@@ -223,6 +223,10 @@ Response: `## Nexus 実行レポート` → **Task**(type, complexity) · **Chai
 | `references/conflict-resolution.md` | Parallel branch conflict resolution protocol |
 | `references/handoff-validation.md` | Handoff format validation rules |
 | `references/routing-learning.md` | Routing learning loop, triggers, CES, adaptation rules |
+| `references/orchestration-anti-patterns.md` | オーケストレーション設計 7 大アンチパターン OA-01〜07、パターン選択フレームワーク、コスト最適化戦略 |
+| `references/task-routing-anti-patterns.md` | タスク分解・ルーティング 7 大アンチパターン TR-01〜07、粒度設計、Discriminated Union パターン |
+| `references/production-reliability-anti-patterns.md` | 本番環境 7 大障害パターン PR-01〜07、信頼性の数学、サーキットブレーカー、コスト管理 |
+| `references/agent-communication-anti-patterns.md` | エージェント間通信 7 大アンチパターン AC-01〜07、構造化通信プロトコル、ハンドオフ設計、状態管理 |
 
 ---
 

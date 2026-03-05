@@ -122,6 +122,10 @@ Track document outputs and downstream usage. Evaluate specification accuracy and
 | Test Specifications | Test cases (positive/negative/boundary) · BDD Gherkin format · Test data · Traceability | `references/test-spec-template.md` |
 | Writing Guidelines | Good/Bad comparisons · REQ-XXX ID system · Given-When-Then · MECE · Precision guidelines | `references/writing-guidelines.md` |
 | Calibration | Template effectiveness · Specification adoption · Requirement completeness · Document quality | `references/documentation-calibration.md` |
+| Requirements Anti-Patterns | PRD/SRS 7 大アンチパターン · 仕様品質基盤 · AI 時代の要件定義 | `references/requirements-writing-anti-patterns.md` |
+| Design Doc Anti-Patterns | HLD 7 大アンチパターン · LLD 6 大アンチパターン · 設計品質指標 | `references/design-document-anti-patterns.md` |
+| Test Doc Anti-Patterns | テストドキュメント 7 大アンチパターン · PDWT メトリクス · テストピラミッド | `references/test-documentation-anti-patterns.md` |
+| AI Documentation | AI ドキュメント 7 大アンチパターン · Spec-Driven Development · コンテキスト管理 | `references/ai-documentation-anti-patterns.md` |
 
 ---
 
@@ -163,6 +167,10 @@ Response: `## 技術ドキュメント` → **Document Info**(type, version, sta
 | `references/test-spec-template.md` | Test specification and test case template |
 | `references/writing-guidelines.md` | Good/Bad comparisons, precision guidelines, audience writing guide |
 | `references/documentation-calibration.md` | ドキュメント品質追跡、INSCRIBE ワークフロー |
+| `references/requirements-writing-anti-patterns.md` | PRD/SRS 要件記述 7 大アンチパターン RW-01〜07、仕様品質基盤、AI 時代の仕様書アンチパターン |
+| `references/design-document-anti-patterns.md` | HLD 7 大アンチパターン HD-01〜07、LLD 6 大アンチパターン LD-01〜06、設計書構造設計 |
+| `references/test-documentation-anti-patterns.md` | テストドキュメント 7 大アンチパターン TD-01〜07、PDWT メトリクス、テストピラミッド |
+| `references/ai-documentation-anti-patterns.md` | AI ドキュメント作成 7 大アンチパターン AD-01〜07、Spec-Driven Development、コンテキスト管理 |
 
 ---
 
