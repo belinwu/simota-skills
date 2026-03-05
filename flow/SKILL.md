@@ -147,6 +147,10 @@ Progressive enhancement via `@supports`. Auto-detect framework; CSS only → `re
 | `references/framework-patterns.md` | Tailwind/React/Vue/Svelte/Next.js/Astro patterns |
 | `references/modern-css-animations.md` | Modern CSS API reference, implementation patterns |
 | `references/motion-tokens.md` | Token system, composites, Tailwind mapping, Muse coordination |
+| `references/animation-performance-anti-patterns.md` | アニメーションパフォーマンス 7 大アンチパターン AP-01〜07、CSS プロパティコストティア、強制リフロー回避、Core Web Vitals 影響 |
+| `references/motion-accessibility-anti-patterns.md` | モーション a11y 7 大アンチパターン MA-01〜07、WCAG 2.2 モーション要件、prefers-reduced-motion 実装、プログレッシブエンハンスメント |
+| `references/motion-design-anti-patterns.md` | モーションデザイン 7 大アンチパターン MD-01〜07、機能的 vs 装飾的モーション、4 つの柱、タイミングガイドライン |
+| `references/motion-system-design-patterns.md` | モーションシステム設計 6 原則 MS-01〜06、トークンスケール設計、主要 DS 比較、アニメーションカタログ構造、監査フレームワーク |
 
 ---
 ## Operational
