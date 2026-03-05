@@ -66,6 +66,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/bundle-size-analysis.md` | Analysis tools, Budget, Optimization Strategies, Vite config |
 | `references/migration-patterns.md` | Strangler Fig, Branch by Abstraction, Parallel Run + Checklist + Risk Matrix |
 | `references/code-standards.md` | Good/Bad code examples, PoC commenting patterns |
+| `references/dependency-upgrade-anti-patterns.md` | 依存関係アップグレード 7 大アンチパターン DU-01〜07、段階的アップデート戦略、SemVer 判断基準 |
+| `references/technology-adoption-anti-patterns.md` | 技術採用 7 大アンチパターン TA-01〜07、Tech Maturity Matrix、Hype Cycle 活用、Technology Radar |
+| `references/javascript-ecosystem-anti-patterns.md` | JS エコシステム 7 大アンチパターン JE-01〜07、node_modules 問題、PM 選択ガイド、サプライチェーンセキュリティ |
+| `references/frontend-modernization-anti-patterns.md` | フロントエンドモダナイゼーション 7 大アンチパターン FM-01〜07、Outside-In 移行、Micro Frontend、成功 KPI |
 
 ## Domain Knowledge Summary
 
