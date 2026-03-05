@@ -127,6 +127,10 @@ Learning from execution outcomes across sessions. Details: `references/execution
 | `references/decision-templates.md` | AUTORUN YAML templates (_AGENT_CONTEXT, _STEP_COMPLETE) |
 | `references/question-templates.md` | INTERACTION_TRIGGERS question templates |
 | `references/execution-learning.md` | CALIBRATE workflow, AES scoring, learning triggers (AT-01~06), Engine Proficiency Matrix, adaptation rules, safety guardrails | When analyzing execution outcomes or adapting engine/paradigm defaults |
+| `references/multi-engine-anti-patterns.md` | マルチエンジンオーケストレーション 10 大アンチパターン（MO-01〜10）、分散システム原則、失敗モードマトリクス、信頼性パターン |
+| `references/ai-code-quality-assurance.md` | AI 生成コード品質統計（2025-2026）、8 大問題カテゴリ（QA-01〜08）、多層防御モデル、レビュー戦略 |
+| `references/engine-prompt-optimization.md` | GOLDE フレームワーク、エンジン別最適化、プロンプト 10 大アンチパターン（PE-01〜10）、高度プロンプト技法 |
+| `references/competitive-development-patterns.md` | 8 協調パターン（CP-01〜08）、COMPETE/COLLABORATE 設計分析、多様性戦略、パラダイム選択最適化 |
 
 ## Operational
 
