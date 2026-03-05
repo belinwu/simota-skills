@@ -281,6 +281,10 @@ Each probe generates: **Probe ID** · **Category** · **Description** · **Spec 
 | `references/bdd-generation.md` | Given/When/Then generation rules, scenario templates, coverage targets |
 | `references/compliance-report.md` | Report template, verdict rules, traceability matrix format |
 | `references/adversarial-probing.md` | 6-category adversarial probe catalog with example probes |
+| `references/bdd-anti-patterns.md` | BDD シナリオ 10 大アンチパターン（後付けシナリオ/詳細過多/複数ルール混在等）、ベストプラクティスチェックリスト |
+| `references/specification-quality.md` | 要件スメル 12 分類、曖昧表現カタログ、受入基準品質パターン、仕様品質メトリクス |
+| `references/traceability-advanced.md` | 双方向トレーサビリティ（BDTM）、4 種ギャップ分析、自動マッピング手法、規制対応 |
+| `references/verification-frameworks.md` | V&V フレームワーク、TDIA 4 検証手法、リスクベース検証、AI 活用（LLM-AQuA-DiVeR）、早期検出の経済効果 |
 
 ---
 
