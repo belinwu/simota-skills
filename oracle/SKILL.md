@@ -100,6 +100,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/evaluation-frameworks.md` | LLM-as-judge, regression testing, benchmarks |
 | `references/mlops-patterns.md` | Deployment, monitoring, feature stores |
 | `references/cost-optimization.md` | Token economics, model selection, prompt compression |
+| `references/rag-anti-patterns.md` | RAG 10 大アンチパターン（RP-01〜10）、カスケード失敗モデル、Hybrid Search 戦略、3 層評価モデル |
+| `references/llm-production-anti-patterns.md` | LLM 本番 8 大課題（LP-01〜08）、設計アンチパターン（LA-01〜08）、OWASP Top 10 for LLM、推論限界補償 |
+| `references/llm-evaluation-observability.md` | LLM-as-Judge 8 大アンチパターン（EV-01〜08）、オブザーバビリティ 7 つの柱、監視ダッシュボード設計、CI/CD 統合評価 |
+| `references/agentic-ai-patterns.md` | エージェントアーキテクチャ 5 パターン（AP-01〜05）、信頼性 5 大原則、失敗モード対策、マルチエージェント設計原則 |
 
 ---
 
