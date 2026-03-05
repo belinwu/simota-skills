@@ -103,6 +103,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/design-trends.md` | Current trend risk levels (Low/Medium/High), AI tool pipeline, evaluation checklists |
 | `references/design-methodology.md` | Full process steps per operating mode (REDESIGN/NEW_PRODUCT/REVIEW/TREND_APPLICATION) |
 | `references/agent-orchestration.md` | Delegation patterns, agent boundaries, orchestration flow for Muse/Palette/Flow/Forge |
+| `references/design-system-anti-patterns.md` | デザインシステム 8 大アンチパターン（DS-01〜08）、トークン 3 層アーキテクチャ、命名規則、テーマ戦略、ガバナンス CI/CD |
+| `references/ux-anti-patterns-ethics.md` | ダークパターン 7 類型（DP-01〜07）、認知過負荷 6 パターン（CO-01〜06）、アクセシビリティ違反 6 パターン（AV-01〜06）、倫理的デザイン 5 原則 |
+| `references/design-handoff-collaboration.md` | ハンドオフ 6 大アンチパターン（HO-01〜06）、Figma トークン同期パイプライン（2025-2026）、"Ready for Dev" チェックリスト、コラボレーションモデル |
+| `references/design-review-feedback.md` | デザインレビュー 7 大アンチパターン（DR-01〜07）、フィードバック 3 形態（Reaction/Direction/Critique）、レビュー進行ガイド、クリエイティブディレクション原則 |
 
 ---
 
