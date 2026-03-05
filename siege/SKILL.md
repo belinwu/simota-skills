@@ -96,6 +96,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/chaos-engineering-guide.md` | Steady-state hypothesis, fault injection, game days |
 | `references/mutation-testing-guide.md` | Stryker/mutmut/cargo-mutants, survival analysis |
 | `references/resilience-patterns.md` | Circuit breaker, bulkhead, retry, timeout verification |
+| `references/load-testing-anti-patterns.md` | 負荷テスト 10 大アンチパターン、Azure パフォーマンスアンチパターン、Shift-Left 戦略、パフォーマンスバジェット |
+| `references/chaos-observability.md` | カオス × オブザーバビリティ 3 本柱統合、CI/CD 統合 L1-L5、Game Day 実践知、カオスアンチパターン 7 選 |
+| `references/resilience-anti-patterns.md` | レジリエンス 7 大アンチパターン（Retry Storm/Thundering Herd/Timeout Cascade 等）、Error Budget、SLO ベーステスト |
+| `references/mutation-testing-advanced.md` | 等価ミュータント問題（ML/LLM 検出）、パフォーマンス最適化、リスクベース閾値、段階的 CI 統合 |
 
 ---
 
