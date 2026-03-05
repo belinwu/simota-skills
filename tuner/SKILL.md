@@ -80,6 +80,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/db-specific-query-visualization.md` | PG/MySQL/SQLite config tuning, Canvas Mermaid query plan visualization |
 | `references/connection-pool-guide.md` | Pool size formula, PG settings, monitoring queries |
 | `references/performance-report-template.md` | Before/after performance report format |
+| `references/query-index-anti-patterns.md` | クエリ 6 大アンチパターン（QA-01〜06）、インデックス 6 大アンチパターン（IA-01〜06）、検出 SQL、最適化判定フローチャート |
+| `references/orm-performance-pitfalls.md` | ORM 8 大パフォーマンス落とし穴（OP-01〜08）、ORM 選定マトリクス（Drizzle/Prisma/TypeORM/Sequelize）、Raw SQL 切り替え基準 |
+| `references/postgresql-17-performance.md` | PG 17 クエリ最適化改善（Streaming I/O、B-tree IN 句、相関サブクエリ→JOIN）、Vacuum 改善、バルクロード高速化、推奨設定 |
+| `references/db-monitoring-observability.md` | DB モニタリング 5 つの柱、pg_stat_statements vs pg_stat_monitor、アラート閾値設計、プロアクティブ監視パターン、ダッシュボード設計 |
 
 ---
 
