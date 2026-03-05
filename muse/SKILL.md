@@ -121,7 +121,7 @@ Figma sync workflow, Style Dictionary, Token Studio, CI → `references/figma-sy
 
 ## References
 
-`references/`: token-system.md (definitions, scales, naming, audit) · token-lifecycle.md (propose→adopt→stable→deprecate→remove) · dark-mode.md (checklist, implementation, adaptation) · design-system-construction.md (layers, file structure, phases, metrics) · figma-sync.md (Figma↔code sync, Style Dictionary, Token Studio, CI)
+`references/`: token-system.md (definitions, scales, naming, audit) · token-lifecycle.md (propose→adopt→stable→deprecate→remove) · dark-mode.md (checklist, implementation, adaptation) · design-system-construction.md (layers, file structure, phases, metrics) · figma-sync.md (Figma↔code sync, Style Dictionary, Token Studio, CI) · token-anti-patterns.md (トークン設計 8 大アンチパターン DT-01〜08、命名・階層・管理の落とし穴) · design-system-governance-anti-patterns.md (採用失敗 6 パターン DS-01〜06、ガバナンスドリフト 5 パターン、スケーリング品質ゲート) · color-dark-mode-anti-patterns.md (ダークモード 7 大アンチパターン DM-01〜07、ハレーション問題、カラーコントラスト推奨値) · css-token-architecture-anti-patterns.md (CSS トークン実装 7 大アンチパターン CT-01〜07、Cascade Layers、テーマ切替パターン)
 
 ---
 
