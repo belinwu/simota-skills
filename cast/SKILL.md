@@ -175,6 +175,10 @@ A persona's Core Identity (Role + Category + Service) is **immutable through evo
 `references/collaboration-formats.md` — Collaboration patterns, handoff formats
 `references/distribution-adapters.md` — Agent-specific format adapters
 `references/speak-engine.md` — TTS engines, voice mapping, Auto-Derivation, prompt design
+`references/persona-anti-patterns.md` — ペルソナ 10 大アンチパターン、Persona Fatigue 対策、Anti-Persona 概念、NN/G 失敗 5 因子
+`references/persona-validation.md` — データ駆動型バリデーション、ML クラスタリング検証、三角測量法、Synthetic Persona 活用
+`references/ai-persona-risks.md` — AI/LLM ペルソナ生成の 20 課題、バイアス実測データ、ハイブリッドアプローチ、倫理フレームワーク
+`references/persona-governance.md` — ライフサイクルガバナンス 5 フェーズ、廃止基準、組織導入ロードマップ、Living Document 設計
 
 ---
 
