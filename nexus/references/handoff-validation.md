@@ -1,5 +1,19 @@
 # Nexus Handoff Validation Reference
 
+**Purpose:** Validation requirements for structured handoffs.
+**Read when:** A handoff needs integrity checks, confidence checks, or required-field validation.
+
+## Contents
+- Overview
+- NEXUS_HANDOFF_V2 Required Fields
+- Confidence Breakdown Components
+- Validation Rules
+- Validation Failure Handling
+- NEXUS_HANDOFF_V2 Template
+- Backward Compatibility
+- Validation Event Format
+- Integration with Auto-Decision
+
 Validation rules and confidence requirements for agent handoffs.
 
 ---

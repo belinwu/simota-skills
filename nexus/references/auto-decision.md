@@ -1,5 +1,22 @@
 # Nexus Auto-Decision Reference
 
+**Purpose:** Confidence thresholds for acting without user confirmation.
+**Read when:** You need to decide whether Nexus should act autonomously or ask.
+
+## Contents
+- Overview
+- Decision Thresholds
+- Auto-Proceed Conditions
+- Decision Types
+- Decision Flow
+- Reversibility Assessment
+- Assumption Documentation
+- Confidence Degradation
+- Safety Overrides
+- Mode-Specific Behavior
+- Metrics and Learning
+- Integration with Other Systems
+
 Confidence-based autonomous decision-making for reduced user interaction.
 
 ---

@@ -1,173 +1,184 @@
 # Agent Communication Anti-Patterns
 
-> エージェント間通信の失敗パターン、非構造化メッセージング、ハンドオフ崩壊、状態管理の罠、インターフェース設計ミス
+**Purpose:** Communication failure patterns and schema-first handoff guidance.
+**Read when:** Handoffs, message structure, ownership, or state integrity look weak.
 
-## 1. エージェント間通信 7 大アンチパターン
+## Contents
+- 1. The Seven Core Communication Anti-Patterns
+- 2. Structured Communication Protocol Design
+- 3. Handoff Design Best Practices
+- 4. State Management Patterns
+- 5. Eighteen Fine-Grained Failure Modes
+- 6. Nexus Integration
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **AC-01** | **非構造化メッセージング** | 自然言語やフリーフォーム JSON でのエージェント間通信 | フィールド名変更、型不一致、フォーマットのドリフト | 型付きスキーマを基盤的コントラクトとして実装 |
-| **AC-02** | **暗黙の状態仮定** | エージェント間で文書化されていない状態・順序の仮定 | あるエージェントが他のエージェントが開いたイシューをクローズ | 明示的な状態追跡 + 各ハンドオフでの状態検証 |
-| **AC-03** | **メッセージ型の欠如** | request/inform/commit/reject の区別なし | エージェントが複数解釈を探索、曖昧な応答 | JSON-RPC 2.0 等の構造化プロトコル + メッセージ型の強制 |
-| **AC-04** | **コンテキストブロート** | 会話履歴全体を次のエージェントに渡す | トークンコスト爆発、注意力の分散、処理速度低下 | 構造化ハンドオフ（必要情報のみ伝搬） |
-| **AC-05** | **インターフェースドリフト** | 型付きスキーマやアクション制約が慣習のまま未強制 | エージェントが境界を越えて徐々にドリフト | MCP 等でツール境界の入出力スキーマを強制検証 |
-| **AC-06** | **リソース所有権の不在** | DB テーブル・API・ファイルの所有権が未定義 | 複数エージェントが同一リソースを競合更新 | 各リソースに単一所有者を割り当て + アクセス制御 |
-| **AC-07** | **ハンドオフ時の情報損失** | ハンドオフ毎に情報が段階的に劣化 | 3 エージェント後に元の意図の 60% のみ残存 | ハンドオフ完全性チェック + 構造化テンプレート |
+> Common communication failures between agents: unstructured messaging, handoff collapse, hidden state assumptions, and drifting interfaces.
 
----
+## 1. The Seven Core Communication Anti-Patterns
 
-## 2. 構造化通信プロトコルの設計
-
-```
-エージェント通信の 3 層アーキテクチャ:
-
-  Layer 1: メッセージスキーマ
-    → 全メッセージに型付きスキーマを適用
-    → スキーマ違反はシステム障害として扱う
-    → リトライ → 修復 → エスカレーション
-
-  Layer 2: メッセージ型の強制
-    → request: 処理を依頼
-    → inform: 情報を共有
-    → commit: 結果を確定
-    → reject: 処理を拒否 + 理由
-    → 各メッセージ型に必須フィールドを定義
-
-  Layer 3: アクション制約（Discriminated Union）
-    → エージェントが取り得るアクションを限定
-    → 定義外アクションの実行をブロック
-    → アクション選択の根拠をログに記録
-
-  ❌ アンチパターン: 自然言語メッセージの直接渡し
-    → 解釈のばらつき、型安全性ゼロ
-
-  ✅ 推奨: スキーマ強制 + 型付きメッセージ + アクション制約
-```
+| # | Anti-Pattern | Problem | Symptoms | Mitigation |
+|---|-------------|---------|----------|------------|
+| **AC-01** | **Unstructured Messaging** | Agents communicate with natural language or free-form JSON | Field drift, type mismatch, format inconsistency | Enforce typed schemas as foundational contracts |
+| **AC-02** | **Implicit State Assumptions** | Agents rely on undocumented assumptions about state or execution order | One agent closes work opened by another with no explicit ownership | Track state explicitly and validate it at each handoff |
+| **AC-03** | **Missing Message Types** | No distinction between `request`, `inform`, `commit`, and `reject` | Agents explore multiple interpretations and respond ambiguously | Use a structured protocol such as JSON-RPC 2.0 with enforced message types |
+| **AC-04** | **Context Bloat** | Full conversation history is forwarded to the next agent | Exploding token cost, diffused attention, slower execution | Use structured handoffs carrying only required information |
+| **AC-05** | **Interface Drift** | Schemas and action constraints exist only as convention | Agents gradually cross boundaries and drift over time | Enforce input and output schemas at tool boundaries via MCP or equivalent |
+| **AC-06** | **No Resource Ownership** | Ownership of DB tables, APIs, or files is undefined | Multiple agents race on the same resource | Assign a single owner per resource plus access control |
+| **AC-07** | **Handoff Information Loss** | Important context degrades at each transfer | After three agents, only ~60% of original intent remains | Add handoff integrity checks and structured templates |
 
 ---
 
-## 3. ハンドオフ設計のベストプラクティス
+## 2. Structured Communication Protocol Design
 
 ```
-効果的なハンドオフの 5 要素:
+Three-layer architecture for agent communication:
 
-  1. タスクコンテキスト:
-     → 元のユーザー要求（原文保持）
-     → 完了済みステップの要約
-     → 現在のタスク状態
+  Layer 1: Message schema
+    → Apply typed schemas to every message
+    → Treat schema violations as system failures
+    → Handle with retry → repair → escalation
 
-  2. 判断根拠:
-     → なぜこのエージェントにハンドオフするか
-     → 前のエージェントの判断理由
-     → 代替選択肢と却下理由
+  Layer 2: Message-type enforcement
+    → request: ask for work
+    → inform : share information
+    → commit : finalize a result
+    → reject : refuse work with a reason
+    → Define required fields per message type
 
-  3. 成功基準:
-     → 次のエージェントの期待出力
-     → 品質基準・制約条件
-     → タイムアウト・リトライポリシー
+  Layer 3: Action constraints (Discriminated Union)
+    → Restrict the allowed actions for each agent
+    → Block execution of undefined actions
+    → Log the rationale for the selected action
 
-  4. 状態情報:
-     → 変更されたリソースのリスト
-     → 中間生成物への参照
-     → エラー履歴（ある場合）
+  ❌ Anti-pattern: passing raw natural-language messages directly
+    → High interpretation variance and zero type safety
 
-  5. 信頼度情報:
-     → タスク完了度の自己評価
-     → 出力品質の自己評価
-     → 次ステップの明確度
-
-  検証ルール:
-    → 必須フィールドの欠落 → ハンドオフ拒否
-    → 信頼度が閾値以下 → エスカレーション
-    → 成功基準未定義 → 補完を要求
+  ✅ Recommended: schema enforcement + typed messages + action constraints
 ```
 
 ---
 
-## 4. 状態管理のパターン
+## 3. Handoff Design Best Practices
 
 ```
-エージェントシステムの状態管理:
+Five elements of an effective handoff:
 
-  状態永続化（リカバリの基盤）:
-    → 中間状態を永続化しないエージェントはロールバック不能
-    → 永続化された状態 + 冪等操作 = 最小被害のリカバリパス
+  1. Task context:
+     → Original user request (preserve the original wording)
+     → Summary of completed steps
+     → Current task state
 
-  所有権モデル:
-    → 各リソース（DB テーブル、API、ファイル）に単一所有者
-    → 所有権マッピングの明示的定義
-    → 所有者以外からのアクセスは読み取り専用
+  2. Decision rationale:
+     → Why this agent is the next handoff target
+     → Why the previous agent made its decision
+     → Alternatives considered and rejected
 
-  分散状態の整合性:
-    → 各エージェントがグローバル状態の一部のみ可視
-    → 状態の不整合検出メカニズム
-    → Conflict Resolution プロトコル
+  3. Success criteria:
+     → Expected output of the next agent
+     → Quality bars and constraints
+     → Timeout and retry policy
 
-  ❌ アンチパターン: 暗黙の共有状態
-    → 複数エージェントが同一ファイルを同時更新
-    → 競合検出なしで上書き
+  4. State information:
+     → List of changed resources
+     → References to intermediate artifacts
+     → Error history, if any
 
-  ❌ アンチパターン: ステートレスチェーン
-    → 中間結果を保存せず次のエージェントに依存
-    → 障害時に最初からやり直し
+  5. Confidence information:
+     → Self-assessed task completion level
+     → Self-assessed output quality
+     → Clarity of the next step
 
-  ✅ 推奨: チェックポイント + 冪等操作 + 所有権モデル
-```
-
----
-
-## 5. 18 の微細な障害モード（研究分類）
-
-```
-4 カテゴリ × 微細な障害モード:
-
-  Category 1: 仕様の曖昧性と不整合
-    → 役割定義の曖昧さ
-    → 成功基準の未定義
-    → 制約条件の暗黙化
-    → 矛盾する指示の共存
-
-  Category 2: 組織的崩壊
-    → 階層の不明確さ
-    → 権限の重複
-    → エスカレーションパスの未定義
-    → 責任のたらい回し
-
-  Category 3: エージェント間通信問題
-    → メッセージフォーマットの不一致
-    → コンテキストの脱落
-    → 誤解に基づく行動
-    → 暗黙の期待値のずれ
-
-  Category 4: 協調の失敗
-    → デッドロック（相互待ち）
-    → 競合条件（同時更新）
-    → カスケード障害（連鎖的失敗）
-    → 合意不到達（終了条件未達）
-
-  対策の優先度:
-    仕様 + 協調 = 全障害の 79% → 最優先で対処
+  Validation rules:
+    → Missing required field → reject the handoff
+    → Confidence below threshold → escalate
+    → Undefined success criteria → request completion before continuing
 ```
 
 ---
 
-## 6. Nexus との連携
+## 4. State Management Patterns
 
 ```
-Nexus での活用:
-  1. handoff-validation.md と連携した AC-01/AC-07（非構造化・情報損失）防止
-  2. conflict-resolution.md と連携した AC-06（リソース競合）解決
-  3. output-formats.md と連携した AC-03/AC-05（型欠如・ドリフト）防止
-  4. execution-phases.md の各フェーズでコンテキスト完全性チェック
+Managing state in an agent system:
 
-品質ゲート:
-  - 自然言語ハンドオフ → スキーマ化必須（AC-01 防止）
-  - 状態仮定の文書化なし → 明示的状態追跡（AC-02 防止）
-  - メッセージ型未定義 → 構造化プロトコル適用（AC-03 防止）
-  - 会話履歴全体の転送 → 構造化ハンドオフに変換（AC-04 防止）
-  - スキーマ未強制 → MCP 等での検証導入（AC-05 防止）
-  - リソース所有権未定義 → 所有権マッピング必須（AC-06 防止）
-  - ハンドオフ検証なし → 完全性チェック導入（AC-07 防止）
+  State persistence (foundation for recovery):
+    → Without persisted intermediate state, rollback is impossible
+    → Persisted state + idempotent operations = minimal-damage recovery
+
+  Ownership model:
+    → Assign one owner for each resource (DB table, API, file)
+    → Define the ownership map explicitly
+    → Non-owners default to read-only access
+
+  Distributed-state consistency:
+    → Each agent sees only part of the global state
+    → Add a mechanism to detect inconsistency
+    → Use a conflict-resolution protocol
+
+  ❌ Anti-pattern: implicit shared state
+    → Multiple agents update the same file concurrently
+    → Overwrites occur without conflict detection
+
+  ❌ Anti-pattern: stateless chains
+    → No intermediate state is saved; the next agent becomes the only memory
+    → Failures force a restart from the beginning
+
+  ✅ Recommended: checkpoints + idempotent operations + ownership model
+```
+
+---
+
+## 5. Eighteen Fine-Grained Failure Modes
+
+```
+Four categories of fine-grained failure modes:
+
+  Category 1: Specification ambiguity and inconsistency
+    → Ambiguous role definitions
+    → Undefined success criteria
+    → Implicit constraints
+    → Contradictory instructions
+
+  Category 2: Organizational collapse
+    → Unclear hierarchy
+    → Overlapping authority
+    → Undefined escalation paths
+    → Responsibility ping-pong
+
+  Category 3: Inter-agent communication failures
+    → Message-format mismatch
+    → Context drop
+    → Action based on misunderstanding
+    → Misaligned expectations
+
+  Category 4: Coordination failures
+    → Deadlock (mutual waiting)
+    → Race condition (simultaneous updates)
+    → Cascading failure
+    → No consensus / termination not reached
+
+  Priority:
+    Specification + coordination drive ~79% of failures → fix first
+```
+
+---
+
+## 6. Nexus Integration
+
+```
+How Nexus uses this reference:
+  1. Use handoff-validation.md to prevent AC-01 and AC-07
+  2. Use conflict-resolution.md to resolve AC-06 resource conflicts
+  3. Use output-formats.md to prevent AC-03 and AC-05 drift
+  4. Run context integrity checks throughout execution phases
+
+Quality gates:
+  - Natural-language handoff only → require schema (prevents AC-01)
+  - Hidden state assumptions → require explicit state tracking (prevents AC-02)
+  - Missing message type → require structured protocol (prevents AC-03)
+  - Full conversation transfer → convert to structured handoff (prevents AC-04)
+  - Schema not enforced → add boundary validation (prevents AC-05)
+  - Undefined ownership → require ownership mapping (prevents AC-06)
+  - No handoff validation → add integrity checks (prevents AC-07)
 ```
 
 **Source:** [GitHub Blog: Multi-Agent Workflows](https://github.blog/ai-and-ml/generative-ai/multi-agent-workflows-often-fail-heres-how-to-engineer-ones-that-dont/) · [Augment Code: Why Multi-Agent LLM Systems Fail](https://www.augmentcode.com/guides/why-multi-agent-llm-systems-fail-and-how-to-fix-them) · [OpenReview: Why Do Multiagent Systems Fail?](https://openreview.net/forum?id=wM521FqPvI) · [Codebridge: Multi-Agent Systems & AI Orchestration Guide](https://www.codebridge.tech/articles/mastering-multi-agent-orchestration-coordination-is-the-new-scale-frontier)

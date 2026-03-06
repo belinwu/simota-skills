@@ -1,5 +1,17 @@
 # Nexus Orchestration Patterns Reference
 
+**Purpose:** Reference patterns for sequential, parallel, and gated execution.
+**Read when:** You need to choose or explain an orchestration pattern.
+
+## Contents
+- Pattern A: Sequential Chain
+- Pattern B: Parallel Branches (with Auto-Conflict Resolution)
+- Pattern C: Conditional Routing
+- Pattern D: Recovery Loop
+- Pattern E: Escalation Path
+- Pattern F: Verification Gate
+- Hub Communication Protocol
+
 Detailed patterns for agent chain execution.
 
 ---

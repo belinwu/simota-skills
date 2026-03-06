@@ -1,5 +1,20 @@
 # Nexus Guardrail System Reference
 
+**Purpose:** Guardrail levels, checkpoints, and state-management rules.
+**Read when:** You need to choose or validate guardrail behavior for a task.
+
+## Contents
+- Guardrail Levels
+- Guardrail Configuration by Task Type
+- Auto-Recovery Actions
+- L3 Auto-Recovery Chains
+- Recovery Confidence Calculation
+- Recovery Decision Flow
+- Guardrail Event Format
+- Context Hierarchy
+- State Record Format
+- Parallel Branch Context
+
 Guardrails, context management, and state tracking for AUTORUN_FULL.
 
 ---

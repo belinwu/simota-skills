@@ -1,5 +1,8 @@
 # Intent Clarification (absorbed from Cipher)
 
+**Purpose:** Interpretation method for ambiguous user requests.
+**Read when:** The request is vague and routing depends on resolving intent first.
+
 Methodology for decoding ambiguous user intent before agent routing. Previously a standalone agent (Cipher), now integrated as a Nexus capability.
 
 ---
@@ -27,8 +30,8 @@ Methodology for decoding ambiguous user intent before agent routing. Previously 
 
 | Signal | Interpretation | Action |
 |--------|---------------|--------|
-| "Fix this" / "直して" | Bug fix, specific target | Check git diff/status for context |
-| "Improve" / "改善" | Enhancement, broad scope | Narrow scope via recent activity |
+| "Fix this" / "Please fix it" | Bug fix, specific target | Check git diff/status for context |
+| "Improve" / "Enhance it" | Enhancement, broad scope | Narrow scope via recent activity |
 | "Something is wrong" | Vague bug report | Investigate before interpreting |
 | "Make it better" | Quality improvement | Check recent Judge feedback |
 | Frustrated tone | User wants action, not questions | Use safest default, proceed |

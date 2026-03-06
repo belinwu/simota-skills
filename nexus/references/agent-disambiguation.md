@@ -1,5 +1,14 @@
 # Agent Disambiguation Guide
 
+**Purpose:** Decision rules for choosing between overlapping agents.
+**Read when:** Two or more agents plausibly fit the request.
+
+## Contents
+- High Priority — Frequently Confused Pairs
+- Medium Priority — Sometimes Confused Pairs
+- Low Priority — Rarely Confused
+- Small Project Optimization
+
 When multiple agents appear to fit a task, use these decision rules for correct routing.
 
 ---
@@ -180,13 +189,13 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 | Signal | Route to | Rationale |
 |--------|----------|-----------|
-| "これ必要？" "YAGNI" "over-engineering" | **Void** | 存在正当性の判断（コード以外も対象） |
-| "リファクタ" "コード改善" "読みやすく" | **Zen** | コード品質向上 |
-| "デッドコード" "未使用ファイル" | **Sweep** | 未使用コード/ファイルの物理検出 |
-| "このプロセス必要？" "会議多すぎ" | **Void** | プロセスの正当性判断 |
-| "このドキュメント古い" | **Void** (評価) → Sweep (削除) | ドキュメント正当性→削除実行 |
+| "Do we need this?" "YAGNI" "over-engineering" | **Void** | Evaluates whether the thing should exist at all, including non-code assets |
+| "Refactor" "improve the code" "make it more readable" | **Zen** | Improves code quality |
+| "Dead code" "unused files" | **Sweep** | Physically detects unused code/files |
+| "Do we need this process?" "too many meetings" | **Void** | Evaluates whether the process is justified |
+| "This document is outdated" | **Void** (evaluate) → Sweep (remove) | Validate the document's necessity, then remove it if warranted |
 
-**Rule of thumb**: "必要か？" → Void. "きれいか？" → Zen. "使われているか？" → Sweep.
+**Rule of thumb**: "Is it necessary?" → Void. "Is it clean?" → Zen. "Is it being used?" → Sweep.
 
 ---
 

@@ -1,5 +1,14 @@
 # Nexus Agent Chain Templates Reference
 
+**Purpose:** Canonical chain templates and dynamic add/skip rules.
+**Read when:** You need the detailed chain pattern for a task type or need to adjust a chain safely.
+
+## Contents
+- Chain Templates by Task Type
+- Forge → Builder Integration
+- Dynamic Chain Adjustment Rules
+- Rally Parallel Chain Variants
+
 Complete chain templates and dynamic adjustment rules.
 
 ---

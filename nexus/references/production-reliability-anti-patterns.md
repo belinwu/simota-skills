@@ -1,173 +1,185 @@
 # Production Reliability Anti-Patterns
 
-> 本番環境の障害モード、信頼性パラドックス、コスト爆発、レイテンシカスケード、可観測性の盲点、セキュリティ境界
+**Purpose:** Failure modes and safeguards for production-grade multi-agent systems.
+**Read when:** The chain is production-facing, high-volume, cost-sensitive, or reliability-critical.
 
-## 1. 本番環境 7 大障害パターン
+## Contents
+- 1. The Seven Core Production Failure Patterns
+- 2. Reliability Math
+- 3. Failure Classification and Response Matrix
+- 4. Circuit Breaker Pattern
+- 5. Cost Management Strategy
+- 6. Observability Design
+- 7. Nexus Integration
 
-| # | 障害パターン | 問題 | 数量的影響 | 対策 |
-|---|------------|------|-----------|------|
-| **PR-01** | **信頼性パラドックス** | エージェント追加で信頼性が指数的に低下 | 5 エージェントで成功率 77%（95%^5）、日 2,300 件失敗 | サーキットブレーカー + 単一エージェントバックアップパス |
-| **PR-02** | **トークンコスト爆発** | デモ→本番でコストが 100-300 倍に増大 | デモ $6/100req → 本番 $18,000/月 | キャッシュ + モデル階層化 + トークン上限 |
-| **PR-03** | **レイテンシカスケード** | 直列処理で遅延が複合的に蓄積 | 3 エージェント直列 = 12 秒応答 | 並列実行 + 非同期処理 + タイムアウト |
-| **PR-04** | **可観測性ブラックボックス** | エージェント境界で推論過程が不可視 | デバッグ時間 3-5 倍、スプリントの 40% が障害調査 | 完全会話ログ + トレーシング + 追跡 ID |
-| **PR-05** | **境界間プロンプトインジェクション** | 複数ハンドオフが攻撃面を増大 | 5 エージェント = 20 の攻撃ベクトル | 各境界でインジェクション検出 + サンドボックス |
-| **PR-06** | **仕様の曖昧性** | 散文的仕様が全障害の 41.77% の根本原因 | 本番障害率 41-86.7% | JSON スキーマ化 + 機械検証可能な制約 |
-| **PR-07** | **検証ギャップ** | エージェント出力の独立検証なし | ハルシネーションがチェーン全体に伝播 | 独立 Judge エージェント + 参照ベース検証（40% 削減） |
+> Common production failure modes in multi-agent systems: reliability collapse, token-cost blowups, latency cascades, observability blind spots, boundary security, and verification gaps.
 
----
+## 1. The Seven Core Production Failure Patterns
 
-## 2. 信頼性の数学
-
-```
-エージェントチェーンの成功率:
-
-  単一エージェント成功率 = p
-  n エージェントチェーン成功率 = p^n
-
-  具体例（p = 0.95）:
-    1 エージェント: 95.0%
-    2 エージェント: 90.3%
-    3 エージェント: 85.7%
-    5 エージェント: 77.4%
-    10 エージェント: 59.9%
-
-  日次 10,000 リクエストの場合:
-    1 エージェント: 500 失敗/日
-    3 エージェント: 1,430 失敗/日
-    5 エージェント: 2,260 失敗/日
-
-  対策の優先度:
-    1. エージェント数の最小化（最も効果的）
-    2. 個別エージェントの成功率向上（p を上げる）
-    3. リトライ + フォールバック（障害の軽減）
-    4. サーキットブレーカー（障害の伝播防止）
-```
+| # | Failure Pattern | Problem | Quantified Impact | Mitigation |
+|---|-----------------|---------|-------------------|------------|
+| **PR-01** | **Reliability Paradox** | Adding agents reduces end-to-end reliability exponentially | 5 agents at 95% each yield ~77% chain success; about 2,300 daily failures at scale | Circuit breakers plus a single-agent backup path |
+| **PR-02** | **Token-Cost Explosion** | Demo economics fail in production traffic | Demo `$6/100 req` can become `$18,000/month` in production | Caching, model tiering, and per-agent token caps |
+| **PR-03** | **Latency Cascade** | Serial chains accumulate delay multiplicatively | 3 serial agents can turn into ~12 second responses | Parallelism, async execution, and timeouts |
+| **PR-04** | **Observability Black Box** | Reasoning disappears across agent boundaries | Debugging takes 3-5x longer; major sprint time shifts to incident analysis | Full logs, tracing, and request IDs |
+| **PR-05** | **Cross-Boundary Prompt Injection** | Multiple handoffs multiply attack surface | 5 agents can create ~20 attack vectors | Injection detection and sandboxing at every boundary |
+| **PR-06** | **Specification Ambiguity** | Narrative specs become a root cause of failure | Spec problems can drive 41-86.7% of incidents depending on dataset | JSON schemas and machine-checkable constraints |
+| **PR-07** | **Verification Gap** | Agent outputs are not independently checked | Hallucinations propagate through the entire chain | Independent Judge verification and reference-based checks |
 
 ---
 
-## 3. 障害分類と対応マトリクス
+## 2. Reliability Math
 
 ```
-障害の根本原因分布（研究データ）:
+Chain success rate:
 
-  仕様の問題    : 41.77% → スキーマ化 + 機械検証
-  協調の問題    : 36.94% → 構造化プロトコル + リソース所有権
-  検証の問題    : 21.30% → 独立 Judge + 閾値設定
-  インフラの問題  : ~16%  → 可観測性 + サーキットブレーカー
+  Single-agent success rate = p
+  n-agent chain success rate = p^n
 
-障害レベルと対応:
-  L1（一過性）: 自動リトライ（指数バックオフ、最大 3 回）
-  L2（調整可能）: パラメータ自動調整 + 代替エージェントへ再ルーティング
-  L3（回復可能）: 状態ロールバック + リカバリチェーン実行
-  L4（エスカレーション）: 人間の介入を要求
-  L5（中止）: 安全な停止 + 部分結果の保存
+  Example (p = 0.95):
+    1 agent : 95.0%
+    2 agents: 90.3%
+    3 agents: 85.7%
+    5 agents: 77.4%
+    10 agents: 59.9%
 
-  ❌ アンチパターン: L3 以上を自動リトライで処理
-  ❌ アンチパターン: 障害レベル分類なしの一律リトライ
-  ✅ 推奨: 障害分類 → 適切なレベルの対応を選択
+  At 10,000 requests per day:
+    1 agent :   500 failures/day
+    3 agents: 1,430 failures/day
+    5 agents: 2,260 failures/day
+
+  Priority order:
+    1. Minimize agent count
+    2. Raise per-agent success rate (increase p)
+    3. Add retries and fallback paths
+    4. Add circuit breakers to stop failure propagation
 ```
 
 ---
 
-## 4. サーキットブレーカーパターン
+## 3. Failure Classification and Response Matrix
 
 ```
-エージェント隔離の設計:
+Observed root-cause distribution:
 
-  トリガー条件:
-    → 3 回連続の外部サービス障害
-    → 成功率がしきい値以下に低下
-    → レスポンス時間がタイムアウト超過
+  Specification issues : 41.77% → schema + machine validation
+  Coordination issues  : 36.94% → structured protocol + ownership
+  Verification issues  : 21.30% → independent Judge + thresholds
+  Infrastructure issues: ~16%   → observability + circuit breakers
 
-  隔離時の動作:
-    1. 障害エージェントをワークフローから除外
-    2. 代替エージェントまたは劣化モードへルーティング
-    3. 単一エージェント処理へのグレースフルデグレード
-    4. 完全停止ではなく機能縮退で継続
+Failure levels and response:
+  L1 (transient)     : auto-retry with exponential backoff, max 3
+  L2 (adjustable)    : auto-tune parameters and reroute to an alternative agent
+  L3 (recoverable)   : rollback state and run a recovery chain
+  L4 (escalation)    : require human intervention
+  L5 (abort)         : safe stop and preserve partial results
 
-  回復プロセス:
-    → Half-open 状態でテストリクエスト送信
-    → 成功率回復を確認後に完全復帰
-    → 回復失敗時は隔離を維持
-
-  ❌ アンチパターン: 障害エージェントの無制限リトライ
-    → API クォータを分単位で消費
-  ✅ 推奨: 早期検出 + 隔離 + グレースフルデグレード
+  ❌ Anti-pattern: treating L3+ with blind retry
+  ❌ Anti-pattern: one retry policy for every failure class
+  ✅ Recommended: classify the failure, then choose the matching response level
 ```
 
 ---
 
-## 5. コスト管理戦略
+## 4. Circuit Breaker Pattern
 
 ```
-トークンコスト最適化:
+Designing agent isolation:
 
-  デモ vs 本番のコスト乖離:
-    デモ:  100 req × $0.06 = $6
-    本番:  10,000 req × $0.06 = $600/日 = $18,000/月
-    3 エージェント: $54,000/月（×3 の乗数効果）
+  Trigger conditions:
+    → 3 consecutive upstream service failures
+    → Success rate falls below threshold
+    → Response time exceeds timeout budget
 
-  最適化手法:
-    1. アグレッシブキャッシュ（繰り返しクエリ）
-    2. モデル階層化（ルーティング=軽量、推論=高性能）
-    3. エージェントあたりのトークン上限設定
-    4. バッチ処理（逐次コールの統合）
-    5. リアルタイムコスト監視 + 閾値アラート
-    6. 冗長な処理の排除（重複するエージェント応答）
+  Isolation behavior:
+    1. Remove the failing agent from the active workflow
+    2. Route to an alternative agent or degraded mode
+    3. Gracefully degrade to a single-agent path when needed
+    4. Prefer reduced capability over total outage
 
-  コンテキストブロート防止:
-    ❌ 会話履歴全体を各エージェントに渡す
-    ✅ 構造化ハンドオフ（必要情報のみ伝搬）
-```
+  Recovery flow:
+    → Send test requests in half-open state
+    → Restore only after recovery is verified
+    → Keep isolation if validation fails
 
----
-
-## 6. 可観測性の設計
-
-```
-エージェントシステムの可観測性 3 本柱:
-
-  1. 完全な会話ログ:
-     → 最終回答だけでなく中間推論も記録
-     → エージェント間のメッセージ全文保存
-     → トークン消費量の記録
-
-  2. 分散トレーシング:
-     → 一意の追跡 ID でリクエストを全チェーン追跡
-     → 各エージェントの処理時間・成功/失敗の記録
-     → ビジュアルダッシュボードで即時確認
-
-  3. 推論の可視化:
-     → エージェントがなぜその判断をしたか記録
-     → ツール選択の根拠
-     → ルーティング決定の理由
-
-  監視メトリクス:
-    → トークン消費量（エージェント別、チェーン別）
-    → レスポンスレイテンシ（P50, P95, P99）
-    → エラー分類（障害タイプ別）
-    → 成功率（エージェント別、チェーン別）
+  ❌ Anti-pattern: unlimited retries against a failing agent
+    → Can exhaust API quota in minutes
+  ✅ Recommended: early detection + isolation + graceful degradation
 ```
 
 ---
 
-## 7. Nexus との連携
+## 5. Cost Management Strategy
 
 ```
-Nexus での活用:
-  1. EXECUTE フェーズで PR-01（信頼性パラドックス）を考慮したチェーン最小化
-  2. error-handling.md と連携した障害レベル分類（PR-06/PR-07）
-  3. guardrails.md と連携したサーキットブレーカー実装（PR-01/PR-05）
-  4. routing-learning.md の CES に本番障害データを統合
+Token cost optimization:
 
-品質ゲート:
-  - 5+ エージェントチェーン → 信頼性計算を実施（PR-01 防止）
-  - コスト見積もりなし → 本番デプロイ前にコスト試算（PR-02 防止）
-  - 直列 3+ エージェント → 並列化検討（PR-03 防止）
-  - 追跡 ID 未設定 → 可観測性必須（PR-04 防止）
-  - 境界バリデーションなし → 各ハンドオフで検証（PR-05 防止）
-  - 散文的仕様 → スキーマ化必須（PR-06 防止）
-  - Judge なし → 重要出力の独立検証必須（PR-07 防止）
+  Demo vs production:
+    Demo : 100 req × $0.06 = $6
+    Prod : 10,000 req × $0.06 = $600/day = $18,000/month
+    3-agent chain: ~$54,000/month via multiplier effect
+
+  Optimization tactics:
+    1. Aggressive caching for repeated queries
+    2. Model tiering (lightweight routing, stronger reasoning)
+    3. Per-agent token ceilings
+    4. Batching instead of repeated serial calls
+    5. Real-time cost monitoring and threshold alerts
+    6. Eliminate redundant processing and duplicate responses
+
+  Preventing context bloat:
+    ❌ Pass full conversation history to every agent
+    ✅ Use structured handoffs with only required information
+```
+
+---
+
+## 6. Observability Design
+
+```
+Three pillars of observability for agent systems:
+
+  1. Complete conversation logs:
+     → Record intermediate reasoning, not only final answers
+     → Preserve full inter-agent messages
+     → Track token usage
+
+  2. Distributed tracing:
+     → Follow each request across the full chain with a unique trace ID
+     → Record timing and success/failure per agent
+     → Surface the chain in a visual dashboard
+
+  3. Reasoning visibility:
+     → Record why the agent made a decision
+     → Capture tool-selection rationale
+     → Capture routing rationale
+
+  Monitoring metrics:
+    → Token consumption by agent and by chain
+    → Response latency (P50, P95, P99)
+    → Error classification by incident type
+    → Success rate by agent and by chain
+```
+
+---
+
+## 7. Nexus Integration
+
+```
+How Nexus uses this reference:
+  1. Minimize chains during EXECUTE with PR-01 in mind
+  2. Coordinate failure-level handling with error-handling.md (PR-06, PR-07)
+  3. Coordinate circuit-breaker behavior with guardrails.md (PR-01, PR-05)
+  4. Feed production incident data into CES in routing-learning.md
+
+Quality gates:
+  - 5+ agent chain → calculate reliability first (prevents PR-01)
+  - No cost estimate → estimate before production rollout (prevents PR-02)
+  - 3+ serial agents → review for parallelism (prevents PR-03)
+  - Missing trace ID → observability is mandatory (prevents PR-04)
+  - No boundary validation → validate every handoff (prevents PR-05)
+  - Narrative-only spec → require schema (prevents PR-06)
+  - No independent Judge → require validation for critical outputs (prevents PR-07)
 ```
 
 **Source:** [TechAhead: Multi-Agent Reality Check: 7 Failure Modes](https://www.techaheadcorp.com/blog/ways-multi-agent-ai-fails-in-production/) · [Augment Code: Why Multi-Agent LLM Systems Fail](https://www.augmentcode.com/guides/why-multi-agent-llm-systems-fail-and-how-to-fix-them) · [GitHub Blog: Multi-Agent Workflows](https://github.blog/ai-and-ml/generative-ai/multi-agent-workflows-often-fail-heres-how-to-engineer-ones-that-dont/) · [Agents Arcade: Error Handling in Agentic Systems](https://agentsarcade.com/blog/error-handling-agentic-systems-retries-rollbacks-graceful-failure)

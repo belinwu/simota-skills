@@ -1,5 +1,8 @@
 # Quality Iteration (absorbed from Hone)
 
+**Purpose:** PDCA loop for iterative quality improvement after initial delivery.
+**Read when:** Judge feedback or user requests require iterative polishing.
+
 PDCA-based quality improvement methodology. Previously a standalone agent (Hone), now integrated as a Nexus orchestration pattern.
 
 ---

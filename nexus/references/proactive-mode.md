@@ -1,206 +1,217 @@
 # Nexus Proactive Mode Reference
 
-`/Nexus` のみで呼び出された場合（引数なし）に自動発動するモード。
+**Purpose:** Project-scan flow and recommendation logic for `/Nexus` with no task.
+**Read when:** Nexus is invoked without arguments and needs to recommend next actions.
+
+## Contents
+- Trigger Conditions
+- Analysis Phases
+- Output Format
+- User Interaction
+- Relationship to AUTORUN
+- Lightweight Execution Guidelines
+
+Mode that auto-activates when `/Nexus` is invoked by itself with no arguments.
 
 ---
 
-## トリガー条件
+## Trigger Conditions
 
-| 条件 | 発動 |
-|------|------|
-| `/Nexus` のみ（引数なし） | ✅ PROACTIVE_MODE |
-| `/Nexus [タスク]` | ❌ 通常ルーティング |
-| `## NEXUS_AUTORUN` | ❌ 通常AUTORUN |
-| `## NEXUS_HANDOFF` | ❌ 継続処理 |
+| Condition | Activation |
+|-----------|------------|
+| `/Nexus` only (no arguments) | ✅ PROACTIVE_MODE |
+| `/Nexus [task]` | ❌ Standard routing |
+| `## NEXUS_AUTORUN` | ❌ Standard AUTORUN |
+| `## NEXUS_HANDOFF` | ❌ Continuation flow |
 
 ---
 
-## 分析フェーズ
+## Analysis Phases
 
-### Phase 0-A: プロジェクト状態スキャン
+### Phase 0-A: Project State Scan
 
-**1. Git Status チェック**
+**1. Git Status Check**
 ```bash
 git status --porcelain
 ```
-- 未コミット変更の有無
-- ステージング状態
-- 未追跡ファイル
+- Whether uncommitted changes exist
+- Staging status
+- Untracked files
 
-**2. Activity Log 確認**
+**2. Activity Log Review**
 ```
-.agents/PROJECT.md → Activity Log セクション
+.agents/PROJECT.md → Activity Log section
 ```
-- 最終アクティビティ日時
-- 最終エージェント
-- 最終作業内容
+- Most recent activity timestamp
+- Most recent agent
+- Most recent work summary
 
-**3. コミット傾向分析**
+**3. Commit Pattern Analysis**
 ```bash
 git log --oneline -10
 ```
-- 直近の作業パターン
-- 頻出ファイル/ディレクトリ
-- コミットの種類（feat/fix/refactor等）
+- Recent work patterns
+- Frequently touched files/directories
+- Commit types (`feat`/`fix`/`refactor`, etc.)
 
 ---
 
-### Phase 0-B: 健全性評価
+### Phase 0-B: Health Assessment
 
-4つの指標でプロジェクト健全性を評価:
+Assess project health across four indicators:
 
-| 指標 | 評価方法 | 状態 |
-|------|----------|------|
-| `test_health` | テスト実行結果、カバレッジ | 🟢/🟡/🔴 |
-| `security_health` | 脆弱性スキャン、依存関係 | 🟢/🟡/🔴 |
-| `code_health` | lint警告、型エラー | 🟢/🟡/🔴 |
-| `doc_health` | README更新、JSDoc率 | 🟢/🟡/🔴 |
+| Indicator | Evaluation Method | Status |
+|-----------|-------------------|--------|
+| `test_health` | Test results, coverage | 🟢/🟡/🔴 |
+| `security_health` | Vulnerability scans, dependencies | 🟢/🟡/🔴 |
+| `code_health` | Lint warnings, type errors | 🟢/🟡/🔴 |
+| `doc_health` | README freshness, JSDoc coverage | 🟢/🟡/🔴 |
 
-**評価基準:**
-- 🟢 良好: 問題なし
-- 🟡 注意: 軽微な問題あり
-- 🔴 要対応: 即時対応が必要
+**Assessment Criteria:**
+- 🟢 Healthy: No issues detected
+- 🟡 Warning: Minor issues present
+- 🔴 Action Required: Immediate attention needed
 
 ---
 
-### Phase 0-C: 推奨アクション生成
+### Phase 0-C: Recommendation Generation
 
-**優先度決定ロジック:**
+**Priority Decision Logic:**
 
-| 優先度 | 条件 |
-|--------|------|
-| 🔴 高 | セキュリティ問題、テスト失敗、ビルドエラー |
-| 🟡 中 | lint警告、カバレッジ低下、ドキュメント不足 |
-| 🟢 低 | リファクタリング機会、最適化提案 |
+| Priority | Conditions |
+|----------|------------|
+| 🔴 High | Security issues, test failures, build errors |
+| 🟡 Medium | Lint warnings, coverage regression, missing documentation |
+| 🟢 Low | Refactoring opportunities, optimization suggestions |
 
-**カテゴリ別提案テンプレート:**
+**Category-Specific Suggestion Templates:**
 
 ```yaml
-# テスト関連
-- condition: "テストが失敗している"
+# Testing
+- condition: "Tests are failing"
   priority: 🔴
-  suggestion: "失敗テストの修正"
+  suggestion: "Fix failing tests"
   agent: Radar
-  reason: "CI/CDが通らない状態を解消"
+  reason: "Restore a passing CI/CD state"
 
-- condition: "カバレッジが80%未満"
+- condition: "Coverage is below 80%"
   priority: 🟡
-  suggestion: "テストカバレッジ向上"
+  suggestion: "Improve test coverage"
   agent: Radar
-  reason: "リグレッション防止のため"
+  reason: "Reduce regression risk"
 
-# セキュリティ関連
-- condition: "npm audit に脆弱性"
+# Security
+- condition: "npm audit reports vulnerabilities"
   priority: 🔴
-  suggestion: "脆弱性のある依存関係の更新"
+  suggestion: "Update vulnerable dependencies"
   agent: Sentinel
-  reason: "セキュリティリスクの排除"
+  reason: "Remove security exposure"
 
-# コード品質
-- condition: "lint警告が10件以上"
+# Code Quality
+- condition: "There are more than 10 lint warnings"
   priority: 🟡
-  suggestion: "lint警告の解消"
+  suggestion: "Resolve lint warnings"
   agent: Zen
-  reason: "コード品質の維持"
+  reason: "Maintain code quality"
 
-- condition: "未使用コードが検出された"
+- condition: "Unused code is detected"
   priority: 🟢
-  suggestion: "デッドコードの削除"
+  suggestion: "Remove dead code"
   agent: Sweep
-  reason: "メンテナンス性向上"
+  reason: "Improve maintainability"
 
-# ドキュメント
-- condition: "READMEが30日以上更新なし"
+# Documentation
+- condition: "README has not been updated for more than 30 days"
   priority: 🟢
-  suggestion: "READMEの更新"
+  suggestion: "Refresh the README"
   agent: Quill
-  reason: "ドキュメントの鮮度維持"
+  reason: "Keep documentation current"
 
-# 継続作業
-- condition: "未コミット変更がある"
+# Work Continuation
+- condition: "There are uncommitted changes"
   priority: 🟡
-  suggestion: "前回の作業を継続"
-  agent: "(前回のエージェント)"
-  reason: "中断された作業の完了"
+  suggestion: "Continue the previous task"
+  agent: "(previous agent)"
+  reason: "Finish interrupted work"
 ```
 
 ---
 
-## 出力フォーマット
+## Output Format
 
 ```markdown
-## Nexus プロアクティブ分析
+## Nexus Proactive Analysis
 
-### プロジェクト状態
+### Project Status
 
-| 項目 | 状態 |
-|------|------|
-| 最終アクティビティ | [YYYY-MM-DD] - [Agent] - [内容] |
-| 未コミット変更 | [なし / X files modified] |
-| 健全性 | test: 🟢 / security: 🟢 / code: 🟡 / doc: 🟢 |
+| Item | Status |
+|------|--------|
+| Latest Activity | [YYYY-MM-DD] - [Agent] - [summary] |
+| Uncommitted Changes | [none / X files modified] |
+| Health | test: 🟢 / security: 🟢 / code: 🟡 / doc: 🟢 |
 
-### 推奨アクション
+### Recommended Actions
 
-| # | 優先度 | 提案 | エージェント | 理由 |
-|---|--------|------|--------------|------|
-| 1 | 🔴 高 | [提案内容] | [Agent] | [理由] |
-| 2 | 🟡 中 | [提案内容] | [Agent] | [理由] |
-| 3 | 🟢 低 | [提案内容] | [Agent] | [理由] |
+| # | Priority | Suggestion | Agent | Reason |
+|---|----------|------------|-------|--------|
+| 1 | 🔴 High | [suggestion] | [Agent] | [reason] |
+| 2 | 🟡 Medium | [suggestion] | [Agent] | [reason] |
+| 3 | 🟢 Low | [suggestion] | [Agent] | [reason] |
 
-### 次のステップ
+### Next Step
 
-推奨アクションを実行する場合は番号を選択してください。
-新しいタスクを指示する場合は `/Nexus [タスク]` と入力してください。
+Select a number to run a recommended action.
+To start a new task, enter `/Nexus [task]`.
 ```
 
 ---
 
-## ユーザーインタラクション
+## User Interaction
 
-プロアクティブ分析後のオプション:
+Options after proactive analysis:
 
 ```yaml
 ON_PROACTIVE_START:
   timing: BEFORE_START
-  when: "/Nexus が引数なしで呼び出された場合"
+  when: "/Nexus is invoked with no arguments"
   options:
-    - label: "推奨アクション #1 を実行（推奨）"
-      description: "[最優先の提案内容]"
-    - label: "推奨アクション #2 を実行"
-      description: "[次の提案内容]"
-    - label: "前回の作業を継続"
-      description: "Activity Log の最終作業を再開"
-    - label: "新しいタスクを指示"
-      description: "/Nexus [タスク] で新規タスクを開始"
+    - label: "Run recommended action #1 (Recommended)"
+      description: "[highest-priority suggestion]"
+    - label: "Run recommended action #2"
+      description: "[next suggestion]"
+    - label: "Continue previous work"
+      description: "Resume the latest task from the Activity Log"
+    - label: "Start a new task"
+      description: "Begin a new task with `/Nexus [task]`"
 ```
 
 ---
 
-## AUTORUN との関係
+## Relationship to AUTORUN
 
-プロアクティブモードは AUTORUN の**前段階**として位置づけ:
+Proactive mode is positioned as the **pre-stage** to AUTORUN:
 
 ```
-/Nexus (引数なし)
+/Nexus (no arguments)
     ↓
 Phase 0: PROACTIVE_ANALYSIS
     ↓
-ユーザー選択
+User Selection
     ↓
-├─ 推奨アクション選択 → AUTORUN_FULL 開始
-├─ 前回作業継続 → AUTORUN_FULL 開始
-└─ 新規タスク指示 → 通常ルーティング
+├─ Recommended action selected → Start AUTORUN_FULL
+├─ Continue previous work → Start AUTORUN_FULL
+└─ New task specified → Standard routing
 ```
 
-既存の AUTORUN モードとの後方互換性は完全に維持される。
+Full backward compatibility with existing AUTORUN mode is preserved.
 
 ---
 
-## 軽量実行のガイドライン
+## Lightweight Execution Guidelines
 
-プロアクティブ分析が重くならないよう、以下を遵守:
+To keep proactive analysis lightweight, follow these rules:
 
-1. **段階的実行**: 必要な情報のみを順次取得
-2. **キャッシュ活用**: 同一セッション内は再分析しない
-3. **タイムアウト**: 各チェックは5秒以内に完了
-4. **スキップ条件**: `.agents/PROJECT.md` がなければ簡易分析のみ
+1. **Incremental execution**: Fetch only the information that is currently needed
+2. **Use caching**: Do not re-run the same analysis within one session
+3. **Timeouts**: Keep each check under 5 seconds
+4. **Skip condition**: If `.agents/PROJECT.md` is missing, run only the lightweight analysis

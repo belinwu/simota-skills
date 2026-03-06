@@ -1,5 +1,19 @@
 # Nexus Conflict Resolution Reference
 
+**Purpose:** Rules for detecting and resolving parallel-branch conflicts.
+**Read when:** Parallel work touched overlapping files, logic, or ownership boundaries.
+
+## Contents
+- Overview
+- Conflict Classification
+- Auto-Resolution Strategies
+- Ownership Scoring
+- Resolution Flow
+- Conflict Event Format
+- Integration with Orchestration
+- Confidence Thresholds
+- Learning Loop
+
 Automatic conflict resolution for parallel branch execution.
 
 ---

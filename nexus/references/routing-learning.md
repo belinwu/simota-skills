@@ -1,5 +1,18 @@
 # Routing Learning Loop
 
+**Purpose:** Routing adaptation workflow driven by execution evidence.
+**Read when:** You are evaluating CES or changing routing based on observed outcomes.
+
+## Contents
+- Overview
+- LEARN Workflow
+- Learning Triggers
+- Chain Effectiveness Score (CES)
+- Routing Adaptation Rules
+- Safety Guardrails
+- Integration Points
+- Templates
+
 ## Overview
 
 Nexus routes tasks to agent chains, but without learning from execution outcomes, the same suboptimal routing decisions repeat. This subsystem closes that gap: **collect execution results → evaluate chain effectiveness → extract patterns → adapt routing → verify changes → record learnings**.

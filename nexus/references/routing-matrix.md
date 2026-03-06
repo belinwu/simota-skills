@@ -1,5 +1,8 @@
 # Full Routing Matrix
 
+**Purpose:** Canonical full task-type to chain mapping.
+**Read when:** The quick-start matrix is insufficient and you need the full mapping.
+
 Complete task type → agent chain mapping. The SKILL.md contains the top 5 most common patterns; this file contains the full matrix.
 
 ---

@@ -1,5 +1,21 @@
 # Nexus Context Scoring Reference
 
+**Purpose:** Confidence-scoring model for task understanding and routing.
+**Read when:** You need weighted context analysis before deciding or asking.
+
+## Contents
+- Overview
+- Scoring Sources
+- Source Analysis Details
+- Confidence Thresholds
+- Integration with Auto-Decision
+- Scoring Calculation
+- Context Snapshot Format
+- Boosting and Penalties
+- Usage in Execution Phases
+- Low-Confidence Intent Clarification
+- Learning Loop
+
 Context analysis and confidence scoring for autonomous decision-making.
 
 ---

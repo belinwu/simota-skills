@@ -1,5 +1,17 @@
 # Nexus Routing Explanation Reference
 
+**Purpose:** How to explain routing choices and alternatives clearly.
+**Read when:** You need to justify the chosen chain or present multiple candidates.
+
+## Contents
+- ENHANCED_ROUTING Decision Factors
+- ROUTING_EXPLANATION Output Format
+- MULTI_CANDIDATE_MODE
+- Task Type Explanation Templates
+- Ambiguous Request Patterns
+- Rally Parallel Escalation
+- Flow Diagram
+
 Explain the rationale behind agent chain selection and present multiple candidates for ambiguous requests.
 
 ---

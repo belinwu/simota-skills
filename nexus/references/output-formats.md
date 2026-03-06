@@ -1,5 +1,16 @@
 # Nexus Output Formats Reference
 
+**Purpose:** Canonical final output and handoff templates.
+**Read when:** You need exact `NEXUS_COMPLETE`, handoff, or report formatting.
+
+## Contents
+- NEXUS_COMPLETE (AUTORUN)
+- NEXUS_COMPLETE_FULL (AUTORUN_FULL)
+- NEXUS_HANDOFF_V2 (Standard - Required)
+- NEXUS_HANDOFF (Legacy - Deprecated)
+- NEXUS_HANDOFF (Extended - AUTORUN_FULL)
+- _STEP_COMPLETE Format
+
 Final output formats and handoff protocols.
 
 ---

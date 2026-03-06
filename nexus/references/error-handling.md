@@ -1,5 +1,14 @@
 # Nexus Error Handling Reference
 
+**Purpose:** Failure levels, recovery actions, and escalation flow.
+**Read when:** A step failed and you need retry, rollback, recovery, escalation, or abort rules.
+
+## Contents
+- Error Levels
+- Recovery Flow
+- Error Event Format
+- Recovery Chain Integration
+
 Error levels, recovery flow, and escalation procedures.
 
 ---
