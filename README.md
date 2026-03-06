@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-88-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-89-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **88 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **89 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 88 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 89 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -187,6 +187,10 @@ This repository contains 88 specialized AI agents covering various aspects of so
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
 | **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
+| **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Gemini CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
+
+**Vision > Dot > Forge chain**: Vision (art direction) > Dot (pixel art code) > Forge (prototype integration)
+**Dot > Realm chain**: Dot (Phaser 3 textures) > Realm (ecosystem visualization)
 
 ### Architecture
 
@@ -652,6 +656,7 @@ skills/
 ├── compete/SKILL.md    # Competitive research
 ├── darwin/SKILL.md     # Ecosystem self-evolution orchestrator
 ├── director/SKILL.md   # Demo video recording
+├── dot/SKILL.md        # Pixel art generation (SVG/Canvas/Phaser 3)
 ├── echo/SKILL.md       # Persona validation
 ├── experiment/SKILL.md # A/B test design
 ├── flow/SKILL.md       # Animation
@@ -728,7 +733,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 87 agents.
+> Category-by-category examples for all 89 agents.
 
 #### Orchestration
 
@@ -1342,9 +1347,22 @@ Include batch generation for multiple products.
 
 ---
 
-**Canvas vs Sketch responsibilities**:
+##### Pixel Art Generation (Dot)
+
+```
+/Dot
+Create a 16x16 player character sprite with 4-frame walk animation.
+Use a 16-color palette and output as SVG with spritesheet metadata.
+```
+
+**Output**: SVG sprite code, spritesheet layout, animation metadata JSON, palette definition
+
+---
+
+**Canvas vs Sketch vs Dot responsibilities**:
 - **Canvas**: Diagrams and charts (Mermaid, ASCII art, draw.io)
 - **Sketch**: AI image generation code (Python code for Gemini API)
+- **Dot**: Pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS sprites)
 
 ---
 
