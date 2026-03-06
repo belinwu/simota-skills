@@ -1,183 +1,88 @@
-# Canvas ASCII Art Templates Reference
+# ASCII Diagram Templates
 
-Text-based diagram templates for terminal and code comments.
+Purpose: Read this when the diagram must work in terminals, comments, diffs, or plain-text-only environments.
 
-## ASCII Character Set
+## Contents
 
-```
-Box corners:    ┌ ┐ └ ┘  or  + + + +
-Box edges:      ─ │        or  - |
-Arrows:         → ← ↑ ↓ ▶ ◀ ▲ ▼  or  > < ^ v
-Connectors:     ├ ┤ ┬ ┴ ┼
-Dotted lines:   ┄ ┆ ╌ ╎   or  . :
-Emphasis:       ═ ║ ╔ ╗ ╚ ╝
-```
+- When to use ASCII
+- Canonical templates
+- Styling rules
 
----
+## When To Use ASCII
 
-## ASCII Flowchart Template
+- Terminal or chat output only
+- Code comment or README snippet
+- Accessibility fallback
+- The user explicitly asks for plain text
 
-```
-┌─────────┐
-│  Start  │
-└────┬────┘
-     │
-     ▼
-┌─────────┐     Yes    ┌─────────┐
-│ Cond?   │───────────>│Process A│
-└────┬────┘            └────┬────┘
-     │ No                   │
-     ▼                      │
-┌─────────┐                 │
-│Process B│                 │
-└────┬────┘                 │
-     │                      │
-     └──────────┬───────────┘
-                │
-                ▼
-          ┌─────────┐
-          │   End   │
-          └─────────┘
+## Flowchart
+
+```text
++---------+      +----------+      +---------+
+| Start   | ---> | Validate | ---> | Success |
++---------+      +----------+      +---------+
+                      |
+                      v
+                 +---------+
+                 | Failure |
+                 +---------+
 ```
 
----
+## Sequence
 
-## ASCII Sequence Template
-
-```
-  User          Frontend         API           Database
-    │               │              │               │
-    │   click       │              │               │
-    │──────────────>│              │               │
-    │               │   request    │               │
-    │               │─────────────>│               │
-    │               │              │    query      │
-    │               │              │──────────────>│
-    │               │              │               │
-    │               │              │    result     │
-    │               │              │<──────────────│
-    │               │   response   │               │
-    │               │<─────────────│               │
-    │    render     │              │               │
-    │<──────────────│              │               │
-    │               │              │               │
+```text
+User        API        DB
+ |           |         |
+ | Request   |         |
+ |---------> |         |
+ |           | Query   |
+ |           |-------> |
+ |           | Result  |
+ |           |<------- |
+ | Response  |         |
+ |<--------- |         |
 ```
 
----
+## State
 
-## ASCII State Diagram Template
-
-```
-                    ┌─────────────────────────────────┐
-                    │                                 │
-                    ▼                                 │
-              ┌──────────┐                            │
-     ┌───────>│   Idle   │<───────┐                  │
-     │        └────┬─────┘        │                  │
-     │             │ fetch        │ reset            │
-     │             ▼              │                  │
-     │        ┌──────────┐        │                  │
-     │        │ Loading  │────────┼──────────────────┘
-     │        └────┬─────┘        │         error
-     │             │              │
-     │ resolve     │    reject    │
-     │             ▼              │
-     │        ┌──────────┐   ┌────┴─────┐
-     └────────│ Success  │   │  Error   │
-              └──────────┘   └──────────┘
+```text
+[idle] --> [loading] --> [success]
+   ^            |
+   |            v
+   +-------- [error]
 ```
 
----
+## Tree / Hierarchy
 
-## ASCII Tree Template
-
-```
-project/
-├── src/
-│   ├── components/
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   └── Modal.tsx
-│   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   └── useApi.ts
-│   ├── services/
-│   │   └── api.ts
-│   └── index.ts
-├── tests/
-│   └── components/
-│       └── Button.test.tsx
-├── package.json
-└── README.md
+```text
+App
+|- Layout
+|  |- Header
+|  `- Main
+`- Providers
+   |- AuthProvider
+   `- ThemeProvider
 ```
 
----
+## Box / Context
 
-## ASCII Table Template
-
-```
-┌──────────────┬────────────┬─────────────┬──────────────┐
-│    Column    │    Type    │   Default   │  Description │
-├──────────────┼────────────┼─────────────┼──────────────┤
-│ id           │ UUID       │ auto        │ Primary key  │
-│ name         │ VARCHAR    │ ''          │ User name    │
-│ email        │ VARCHAR    │ NULL        │ Email addr   │
-│ created_at   │ TIMESTAMP  │ now()       │ Creation     │
-└──────────────┴────────────┴─────────────┴──────────────┘
-```
-
----
-
-## ASCII Architecture Template
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │   Browser   │  │  Mobile App │  │     CLI     │         │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘         │
-└─────────┼────────────────┼────────────────┼─────────────────┘
-          │                │                │
-          └────────────────┼────────────────┘
-                           │ HTTPS
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                        API Gateway                          │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │               Load Balancer / Auth                   │   │
-│  └─────────────────────────┬───────────────────────────┘   │
-└────────────────────────────┼────────────────────────────────┘
-                             │
-          ┌──────────────────┼──────────────────┐
-          │                  │                  │
-          ▼                  ▼                  ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  User Svc    │    │  Order Svc   │    │ Product Svc  │
-└──────┬───────┘    └──────┬───────┘    └──────┬───────┘
-       │                   │                   │
-       ▼                   ▼                   ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│   User DB    │    │   Order DB   │    │  Product DB  │
-└──────────────┘    └──────────────┘    └──────────────┘
+```text
++----------------------+
+| External Actor       |
++----------+-----------+
+           |
+           v
++----------+-----------+
+| System Boundary      |
+| - API                |
+| - Worker             |
+| - Database           |
++----------------------+
 ```
 
----
+## Styling Rules
 
-## ASCII Simple Box Template
-
-```
-+-------------+       +-------------+       +-------------+
-|   Input     |------>|   Process   |------>|   Output    |
-+-------------+       +-------------+       +-------------+
-```
-
----
-
-## ASCII Best Practices
-
-- Create assuming monospace font (display in code blocks)
-- Use consistent box styles: +--+ or ┌──┐
-- Use arrows: --> or ──> or │ ▼
-- Keep width under 80 characters (terminal compatibility)
-- Consider splitting if too complex (simplicity is key)
-- Japanese characters: full-width = 2 half-width characters
+- Use one box style consistently.
+- Keep arrow direction stable inside one diagram.
+- Prefer short labels.
+- Use indentation or whitespace to encode grouping.
