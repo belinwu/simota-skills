@@ -1,201 +1,194 @@
 # Evaluation Criteria Reference — Void
 
-5つの存在検証問の詳細（ドメイン別調査項目）、対象分類（8カテゴリ）、YAGNIガイド。
+Purpose: Use this file to investigate existence, blast radius, staleness, and YAGNI status before scoring a target.
 
----
+Contents:
+- The 5 Existence Questions with investigation prompts
+- Blast-radius labels and staleness thresholds
+- Target categories and default subtraction patterns
+- The YAGNI decision path and evaluation summary template
 
-## 5 Existence Questions — 詳細ガイド
+## 5 Existence Questions
 
 ### Q1: Who uses it?
 
-**目的:** 実際のユーザーと仮想のユーザーを区別する。
+Goal: separate real users from hypothetical users.
 
 ```yaml
 question: "Who uses it?"
 investigation_by_domain:
   Code:
-    - "この関数を呼び出しているのは誰か？Import graph 確認"
-    - "このAPIを実際に消費している外部クライアントはあるか？"
+    - "Who imports or calls this?"
+    - "Are there real external clients for this API?"
   Feature:
-    - "DAU は？使用ログ確認"
-    - "最後にこの機能を使ったユーザーはいつ、何人か？"
+    - "What is the DAU or usage frequency?"
+    - "When did someone last use it, and how many users did that include?"
   Process:
-    - "このフローを通る人/案件は月何件？"
-    - "このステップを実際に確認している人は？"
+    - "How many people or work items pass through this step each month?"
+    - "Who actually verifies or approves it?"
   Document:
-    - "最後に閲覧/更新したのは誰？いつ？"
-    - "このドキュメントを参照して判断した事例は？"
+    - "Who last viewed or updated it?"
+    - "Can you point to a decision that relied on it?"
   Design:
-    - "このUIパスを通るユーザーは何%？"
-    - "この画面の滞在時間・離脱率は？"
+    - "What share of users traverse this path?"
+    - "What are dwell time and abandonment rate?"
 
 scoring:
-  high_confidence_keep: "日次アクティブユーザーが存在し、使用ログで確認可能"
-  medium_confidence: "間接的に使用されているが、直接の利用者は不明"
-  high_confidence_remove: "使用者を特定できない。「いつか誰かが使うかも」レベル"
+  high_confidence_keep: "Observed active users backed by logs or direct evidence"
+  medium_confidence: "Indirect usage exists, but the direct user is unclear"
+  high_confidence_remove: "No identifiable user; only speculative future value"
 
 red_flags:
-  - "「将来的に必要になるかもしれない」"
-  - "「他のチームが使っているはず」（確認なし）"
-  - "「念のため残しておこう」"
+  - "Someone might need it one day"
+  - "Another team probably uses it"
+  - "Let's keep it just in case"
 ```
 
 ### Q2: What breaks if removed?
 
-**目的:** 実際の依存関係と想定上の依存関係を区別する。
+Goal: separate real dependency from assumed dependency.
 
 ```yaml
 question: "What breaks if removed?"
 investigation_by_domain:
   Code:
-    - "コンパイル/ビルドが失敗するか？"
-    - "テストが失敗するか？（テスト自体が不要な可能性も検討）"
-    - "ランタイムエラーが発生するか？"
+    - "Does build or compile fail?"
+    - "Do tests fail, and are those tests themselves still justified?"
+    - "Does a runtime path error?"
   Feature:
-    - "ユーザーフローが断絶するか？"
-    - "データの整合性が壊れるか？"
-    - "代替手段で同じ目的を達成できるか？"
+    - "Does a user journey break?"
+    - "Does data consistency break?"
+    - "Is there an alternative path?"
   Process:
-    - "コンプライアンス違反になるか？"
-    - "品質低下が起きるか？"
-    - "法的・規制上の問題が生じるか？"
+    - "Does compliance break?"
+    - "Does quality materially degrade?"
+    - "Is there legal or regulatory impact?"
   Document:
-    - "オンボーディングが困難になるか？"
-    - "判断根拠が喪失するか？"
-    - "監査対応に影響するか？"
+    - "Does onboarding become materially harder?"
+    - "Do decision records disappear?"
+    - "Does audit readiness break?"
   Design:
-    - "ユーザージャーニーが断絶するか？"
-    - "コンバージョンファネルに影響するか？"
+    - "Does a key journey break?"
+    - "Does the conversion funnel suffer?"
 
 blast_radius_levels:
-  NONE: "何も壊れない — 即座にREMOVE候補"
-  LOCAL: "同一モジュール/チーム内のみ影響 — REMOVE/SIMPLIFY候補"
-  CROSS_MODULE: "他モジュール/チームに波及 — 慎重なSIMPLIFY/DEFER"
-  PUBLIC_API: "外部クライアント/ステークホルダーに影響 — Magi escalation必須"
-  DATA: "データ整合性に影響 — 最高注意、DEFER推奨"
+  NONE: "Nothing breaks -> immediate REMOVE candidate"
+  LOCAL: "Only local module or team impact -> REMOVE or SIMPLIFY candidate"
+  CROSS_MODULE: "Cross-team or cross-module impact -> cautious SIMPLIFY or DEFER"
+  PUBLIC_API: "External client or stakeholder impact -> Magi escalation required"
+  DATA: "Data-integrity impact -> highest caution, usually DEFER"
 ```
 
 ### Q3: When was it last meaningfully changed?
 
-**目的:** アクティブなメンテナンスと放置を区別する。
+Goal: distinguish healthy stability from abandonment.
 
 ```yaml
 question: "When was it last meaningfully changed?"
 investigation:
-  - "最後の実質的な変更（バグ修正/機能追加/内容更新）はいつか？"
-  - "自動更新やフォーマット変更は除外する"
-  - "関連するissue/PR/チケットは最近あったか？"
+  - "When was the last meaningful bug fix, feature change, or content update?"
+  - "Ignore formatting-only or automated churn."
+  - "Check related issues, PRs, or tickets."
 
 staleness_thresholds:
-  fresh: "3ヶ月以内に実質的変更あり"
-  aging: "3-12ヶ月変更なし — 注意"
-  stale: "12-24ヶ月変更なし — SIMPLIFY/REMOVE候補"
-  fossilized: "24ヶ月以上変更なし — 強いREMOVE候補"
+  fresh: "Meaningful change within 3 months"
+  aging: "No meaningful change for 3-12 months"
+  stale: "No meaningful change for 12-24 months -> SIMPLIFY or REMOVE candidate"
+  fossilized: "No meaningful change for more than 24 months -> strong REMOVE candidate"
 
 exceptions:
-  - "安定しているから変更不要な場合（例: 数学ライブラリ、確定した規約）"
-  - "規制/コンプライアンス要件で変更できない場合"
-  - "災害復旧/緊急時コード（普段は使わないが、必要な時に必須）"
+  - "Stable by design, so change is rare"
+  - "Regulatory or compliance requirements block change"
+  - "Disaster-recovery or emergency-only logic"
 ```
 
 ### Q4: Why was it built?
 
-**目的:** 構築時の意図と現在の現実を比較する。
+Goal: compare original intent with current reality.
 
 ```yaml
 question: "Why was it built?"
 investigation:
-  - "元のissue/PR/企画書の説明は何か？"
-  - "当時の要件は今も有効か？"
-  - "解決しようとした問題は今も存在するか？"
-  - "別の方法で同じ問題が既に解決されていないか？"
+  - "What did the original issue, PR, or spec say?"
+  - "Is the original requirement still valid?"
+  - "Does the original problem still exist?"
+  - "Was the same problem solved elsewhere?"
 
 obsolescence_signals:
-  - "元の要件が撤回された"
-  - "別のアプローチで同じ問題が解決済み"
-  - "ビジネスモデルの変更で不要になった"
-  - "技術スタック/組織構造の変更で不要になった"
-  - "実験的に作られ、実験は終了した"
-  - "担当者が退職し、背景を知る人がいない"
+  - "The original requirement was withdrawn"
+  - "A different approach already solved the same problem"
+  - "Business, technical, or org context changed"
+  - "It was experimental and the experiment is over"
+  - "No one can explain the original reason anymore"
 ```
 
 ### Q5: What does keeping it cost?
 
-**目的:** 隠れた維持コストを可視化する。
+Goal: expose hidden maintenance cost.
 
 ```yaml
 question: "What does keeping it cost?"
 investigation_by_domain:
   Code:
-    - "テスト時間にどれくらい影響しているか？"
-    - "ビルド時間への影響は？"
-    - "新メンバーがこの部分を理解するのにどれくらいかかるか？"
-    - "このコードに起因するバグの頻度は？"
+    - "How much does it add to test time or build time?"
+    - "How long does it take a new engineer to understand?"
+    - "How often does it contribute to bugs?"
   Process:
-    - "人件費×時間：このステップに費やす工数は？"
-    - "待ち時間：承認待ちによる意思決定遅延は？"
-    - "例外対応：ルールに合わないケースの処理コストは？"
+    - "How much person-time does this step consume?"
+    - "How much wait time does it impose?"
+    - "How expensive are exceptions?"
   Document:
-    - "更新コスト：内容を最新に保つ労力は？"
-    - "誤情報リスク：古い情報による誤判断の可能性は？"
-    - "検索ノイズ：情報を探す際の混乱・時間浪費は？"
+    - "How costly is it to keep accurate?"
+    - "What is the risk of wrong decisions from stale content?"
+    - "How much search noise does it add?"
   Design:
-    - "実装コスト：この画面/要素のメンテナンス工数は？"
-    - "認知負荷：ユーザーの混乱を生んでいないか？"
+    - "What maintenance or support cost does it create?"
+    - "Does it add user confusion?"
   Dependency:
-    - "セキュリティ：脆弱性対応の頻度は？"
-    - "互換性：バージョンアップ時の破壊的変更リスクは？"
+    - "How often does it create security or compatibility work?"
 
 hidden_costs:
-  - "認知負荷: 理解・学習・記憶にかかるコスト"
-  - "機会費用: この維持に使う時間で他に何ができるか"
-  - "伝播コスト: 依存先の変更に追随するコスト"
-  - "オンボーディング: 新メンバーへの説明コスト"
-  - "信頼性リスク: 古い/不正確な情報による誤判断"
+  - "Cognitive load"
+  - "Opportunity cost"
+  - "Propagation cost"
+  - "Onboarding cost"
+  - "Reliability risk from stale or unclear knowledge"
 ```
 
----
+## Target Categories
 
-## Target Categories — 対象分類
-
-| Category | Definition | Examples | Typical Pattern |
-|----------|-----------|----------|----------------|
-| **Feature** | ユーザーが直接操作する機能 | ダッシュボード、エクスポート機能、通知設定 | Feature Sunset |
-| **Abstraction** | コード内の設計パターン・抽象化 | ベースクラス、ジェネリックハンドラ、プラグインシステム | Abstraction Collapse |
-| **Scope** | 機能の範囲・バリエーション | 対応フォーマット数、設定オプション数 | Scope Cut |
-| **Dependency** | 外部ライブラリ・サービス | npm packages、外部API、SaaSツール | Dependency Elimination |
-| **Configuration** | 設定可能なパラメータ | 環境変数、Feature Flag、管理画面の設定項目 | Configuration Reduction |
-| **Process** | ワークフロー・手順・承認フロー | コードレビュー手順、承認ステップ、定例会議 | Process Pruning |
-| **Document** | 文書・仕様・ガイド | 設計書、Wiki、チェックリスト、ガイドライン | Document Retirement |
-| **Design/Specification** | UI要素・画面・要件・受入基準 | 管理画面、ユーザーストーリー、画面遷移 | Scope Cut / Feature Sunset |
-
----
+| Category | Definition | Examples | Default pattern |
+|----------|------------|----------|-----------------|
+| `Feature` | User-facing behavior | Dashboard, export, notifications | `Feature Sunset` |
+| `Abstraction` | Design layers in code | Base classes, handlers, plugin systems | `Abstraction Collapse` |
+| `Scope` | Variants and supported breadth | Output formats, configuration options | `Scope Cut` |
+| `Dependency` | External package or service | npm package, API, SaaS | `Dependency Elimination` |
+| `Configuration` | User or system options | env vars, flags, admin settings | `Configuration Reduction` |
+| `Process` | Workflow or approval flow | code review flow, approvals, meetings | `Process Pruning` |
+| `Document` | Specs, guides, checklists | design doc, wiki, playbook | `Document Retirement` |
+| `Design/Specification` | UI structure or stated requirements | screens, stories, acceptance criteria | `Scope Cut` or `Feature Sunset` |
 
 ## YAGNI Decision Guide
 
+```text
+1. Is it used now?
+   -> Yes: continue to Q2-Q5
+   -> No: immediate REMOVE candidate unless compliance, regulation, or emergency exception applies
+
+2. Is there a concrete plan to need it within 6 months?
+   -> Yes: KEEP-WITH-WARNING
+   -> No or speculative: REMOVE candidate
+
+3. Is re-creating it later expensive?
+   -> High: DEFER and schedule periodic review
+   -> Low: REMOVE and recreate only if the need becomes real
 ```
-対象を評価する際のYAGNI判定フロー:
-
-1. 現在使われているか？
-   ├─ YES → Q2-Q5へ進む
-   └─ NO  → 即座にREMOVE候補（例外確認: 災害復旧/コンプライアンス/規制）
-
-2. 今後6ヶ月以内に必要になる具体的な計画があるか？
-   ├─ YES（具体的なチケット/ロードマップ） → KEEP-WITH-WARNING
-   └─ NO or 「いつか必要かも」 → REMOVE候補
-
-3. 同じものを後から作り直すコストは高いか？
-   ├─ HIGH（データベーススキーマ変更、組織再編等） → DEFER + 定期レビュー
-   └─ LOW（通常の実装、手順書作成） → REMOVE（必要になったら再作成）
-```
-
----
 
 ## Evaluation Summary Template
 
 ```yaml
 target_evaluation:
-  target_name: "<対象名>"
+  target_name: "<Target Name>"
   domain: "CODE | FEATURE | PROCESS | DOCUMENT | DESIGN | DEPENDENCY | CONFIGURATION | SPECIFICATION"
   category: "FEATURE | ABSTRACTION | SCOPE | DEPENDENCY | CONFIGURATION | PROCESS | DOCUMENT | DESIGN_SPEC"
   questions:
@@ -205,5 +198,5 @@ target_evaluation:
     q4_why_built: { answer: "string", still_valid: true }
     q5_keeping_cost: { answer: "string", cost_level: "NEGLIGIBLE | LOW | MEDIUM | HIGH | CRITICAL" }
   yagni_verdict: "CURRENTLY_USED | PLANNED_USE | SPECULATIVE | DEAD"
-  next_phase: "→ WEIGH (Cost-of-Keeping Score算出)"
+  next_phase: "-> WEIGH"
 ```

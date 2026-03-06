@@ -1,181 +1,116 @@
 # Complexity Metrics & Technical Debt Measurement
 
-> 認知的複雑度、循環的複雑度、技術的負債の定量化、複雑性閾値、削減戦略
+Purpose: Use this file when complexity or technical debt should feed directly into Void scoring.
 
-## 1. 認知的複雑度（Cognitive Complexity）
+Contents:
+- Cognitive-complexity scoring rules and thresholds
+- Technical-debt metrics and cost multipliers
+- Tooling and review gates
+- Reduction strategies and how to map results into Void
 
-### スコアリングルール
+## Cognitive Complexity
 
-```
-基本ルール:
-  +1: 制御フロー分岐（if, else if, else, switch case）
-  +1: ループ（for, while, do-while, foreach）
-  +1: 論理演算子の切り替え（&& → || など）
-  +1: goto, break to label, continue to label
-  +1: 再帰呼び出し
+### Scoring Rules
 
-入れ子ペナルティ:
-  +1: 入れ子レベルごとに追加（最も影響が大きい要素）
-  例: if の中の if → +1（分岐）+ 1（入れ子）= +2
+```text
+Base additions:
+  +1 for control-flow branches
+  +1 for loops
+  +1 when logical operators switch type
+  +1 for labeled jump flow
+  +1 for recursion
 
-例外（カウントしない）:
-  - 単純な null チェック（early return）
-  - switch の default ケース
-  - try-catch（ただしネストはカウント）
-```
+Nesting penalty:
+  +1 for each additional nesting level
 
-### 複雑度閾値
-
-| 認知的複雑度 | 評価 | アクション | Void CoK への影響 |
-|------------|------|----------|-----------------|
-| **< 15** | 良好（保守可能） | 維持 | Cognitive Load: 0-3 |
-| **15-25** | 要注意（リファクタリング推奨） | 次スプリントで対応 | Cognitive Load: 4-6 |
-| **> 25** | 危険（即時対応） | 優先的に分割 | Cognitive Load: 7-10 |
-
-### 認知的複雑度 vs 循環的複雑度
-
-| 特性 | 認知的複雑度 | 循環的複雑度 |
-|------|-----------|-------------|
-| **計測対象** | 人間の理解しやすさ | テストパス数 |
-| **入れ子考慮** | あり（ペナルティ増加） | なし |
-| **switch 文** | 定数加算 | case ごとに +1 |
-| **ショートカット** | null/early return を除外 | すべてカウント |
-| **用途** | コード可読性評価 | テストカバレッジ計画 |
-| **ツール** | SonarQube, CodeClimate | ESLint, radon, gocyclo |
-
----
-
-## 2. 複雑なコードの維持コスト
-
-### 2024 年研究データ
-
-```
-主要な発見:
-  - 認知的複雑度が高いコードの保守には 2.5〜5 倍の工数が必要
-  - 複雑度 > 25 のメソッドはバグ密度が 3 倍
-  - 開発者は 1 日の 58% をコード理解に費やす（コーディングは 42%）
-  - 複雑なコードのレビュー時間は単純なコードの 4 倍
-
-コスト計算式（概算）:
-  年間保守コスト = 基準コスト × (1 + cognitive_complexity / 15)
-
-  例: 基準コスト 100 万円/年 のモジュール
-    複雑度 10 → 100 × 1.67 = 167 万円/年
-    複雑度 25 → 100 × 2.67 = 267 万円/年
-    複雑度 50 → 100 × 4.33 = 433 万円/年
+Do not count:
+  - simple null checks with early return
+  - switch default
+  - try/catch itself, though nested logic still counts
 ```
 
----
+### Thresholds
 
-## 3. 技術的負債の定量化
+| Cognitive complexity | Assessment | Action | Void mapping |
+|----------------------|------------|--------|--------------|
+| `<15` | maintainable | keep monitoring | `Cognitive Load: 0-3` |
+| `15-25` | warning zone | simplify soon | `Cognitive Load: 4-6` |
+| `>25` | dangerous | prioritize simplification | `Cognitive Load: 7-10` |
 
-### 技術的負債の 4 象限
+### Cognitive vs Cyclomatic Complexity
 
-```
-               意図的          非意図的
-          ┌──────────────┬──────────────┐
-  慎重    │ "今はこれで十分 │ "後でこれが問題に │
-          │  リスクを理解"  │  なると気づかなかった" │
-          ├──────────────┼──────────────┤
-  無謀    │ "設計する時間が │ "レイヤーって何？" │
-          │  ない"          │                    │
-          └──────────────┴──────────────┘
+| Dimension | Cognitive complexity | Cyclomatic complexity |
+|-----------|----------------------|------------------------|
+| Measures | Human understandability | Number of execution paths |
+| Nesting penalty | Yes | No |
+| Switch handling | Constant treatment | Per case |
+| Best use | Readability and maintainability | Test-path planning |
 
-Void が注目すべき象限:
-  - 意図的・慎重: CoK が増大した時点で返済判断
-  - 非意図的・慎重: 定期監査で検出
-  - 無謀（両方）: 即時 REMOVE/SIMPLIFY 提案
-```
+## Maintenance Cost Signals
 
-### SQALE 技術的負債指標
+Research-backed signals worth preserving:
+- Complex code can cost `2.5-5x` more to maintain.
+- Methods above `25` complexity can show roughly `3x` bug density.
+- Teams may spend `60%+` of dev time understanding code before changing it.
 
-| 指標 | 定義 | 目標値 |
-|------|------|-------|
-| **技術的負債比率** | 修正コスト / 再開発コスト | < 5% |
-| **負債増加速度** | 新規負債 / Sprint | 減少トレンド |
-| **SQALE Rating** | A(< 5%), B(6-10%), C(11-20%), D(21-50%), E(> 50%) | A-B |
+## Technical Debt Metrics
 
----
+| Metric | Target |
+|--------|--------|
+| Technical debt ratio | `<5%` |
+| Debt growth per sprint | Downward trend |
+| SQALE rating | `A-B` |
 
-## 4. 複雑性の計測ツール
+SQALE reference bands:
+- `A`: `<5%`
+- `B`: `6-10%`
+- `C`: `11-20%`
+- `D`: `21-50%`
+- `E`: `>50%`
 
-### 主要ツール比較
+## Tooling
 
-| ツール | 言語 | 指標 | CI/CD 統合 |
-|-------|------|------|-----------|
-| **SonarQube** | 多言語 | 認知的複雑度, 技術的負債, コードスメル | GitHub Actions, GitLab CI |
-| **CodeClimate** | 多言語 | 認知的複雑度, テスト可能性 | GitHub PR コメント |
-| **ESLint (complexity)** | JS/TS | 循環的複雑度 | 任意の CI |
-| **radon** | Python | 循環的複雑度, Halstead, 保守性指数 | 任意の CI |
-| **gocyclo** | Go | 循環的複雑度 | 任意の CI |
+| Tool | Strength |
+|------|----------|
+| SonarQube | Cognitive complexity, debt, code smells |
+| CodeClimate | Cognitive complexity and testability |
+| ESLint `complexity` | JS/TS cyclomatic complexity |
+| `radon` | Python complexity and maintainability |
+| `gocyclo` | Go cyclomatic complexity |
 
-### 複雑度監視の推奨設定
+## Review Gates
 
-```
-PR ゲート:
-  - 新規メソッド: 認知的複雑度 < 15 必須
-  - 既存メソッド: 複雑度を増加させる変更にはコメント必須
-  - モジュール全体: 平均複雑度 < 10 を維持
+- New methods should stay below cognitive complexity `15`.
+- Existing methods that increase complexity need explicit justification.
+- Module average complexity should stay below `10`.
+- Technical debt ratio above `10%` should trigger a debt-repayment plan.
 
-週次レポート:
-  - Top 10 最複雑メソッド（認知的複雑度順）
-  - 複雑度増加トレンド（週次比較）
-  - 技術的負債比率の推移
-```
+## Reduction Strategies
 
----
+| Pattern | Typical effect |
+|---------|----------------|
+| Early return | Removes deep nesting |
+| Method extraction | Shrinks local branch density |
+| Table-driven logic | Replaces long conditional chains |
+| Polymorphism | Replaces oversized dispatch conditionals when justified |
+| State pattern | Removes state x action conditional nesting when justified |
 
-## 5. 複雑性削減戦略
+Priority:
+1. Remove deep nesting first.
+2. Split oversized methods next.
+3. Simplify compound conditions.
+4. Use structural redesign only when simpler moves are exhausted.
 
-### 認知的複雑度の削減パターン
+## Void Use
 
-| パターン | Before | After | 削減効果 |
-|---------|--------|-------|---------|
-| **Early Return** | 深いネスト if-else | ガード節で早期 return | 入れ子 -2〜5 |
-| **メソッド抽出** | 長いメソッド内のブロック | 名前付きメソッドに分離 | 分岐 -3〜10 |
-| **ポリモーフィズム** | 巨大 switch/if-else チェーン | 型による振り分け | 分岐 -5〜20 |
-| **テーブル駆動** | 条件分岐の羅列 | データ構造によるルックアップ | 分岐 -3〜15 |
-| **状態パターン** | 状態×操作の if 文 | 状態クラスに委譲 | 入れ子 -3〜10 |
+- During `WEIGH`, map cognitive complexity directly into the `Cognitive Load` dimension.
+- Use debt ratio as a supporting signal, not a replacement for the 5-question investigation.
+- During `SUBTRACT`, recommend simplification only when the abstraction cost is lower than the expected payoff.
 
-### 削減の優先順位
+Quality gates:
+- complexity `>25` -> immediate `SIMPLIFY` candidate
+- technical debt ratio `>10%` -> propose a repayment plan
+- rising module-average complexity -> warn
+- `60%+` of dev time spent on code comprehension -> process simplification candidate
 
-```
-1. 入れ子の解消（最大効果）
-   - Early Return パターンの適用
-   - ネストレベル 3 以上を優先的に対処
-
-2. メソッド分割（中効果）
-   - 1 メソッド 1 責務を徹底
-   - 名前が抽象度を上げ、理解を助ける
-
-3. 条件分岐の簡素化（中効果）
-   - 複合条件を名前付き変数/メソッドに
-   - テーブル駆動への置き換え
-
-4. 構造的変更（大効果・高コスト）
-   - モジュール分割
-   - パターン適用（要慎重：OE-03 リスク）
-```
-
----
-
-## 6. Void との連携
-
-```
-Void での活用:
-  1. WEIGH フェーズで認知的複雑度を Cognitive Load 次元に直接マッピング
-     - 複雑度 < 15 → Cognitive Load: 0-3
-     - 複雑度 15-25 → Cognitive Load: 4-6
-     - 複雑度 > 25 → Cognitive Load: 7-10
-  2. 技術的負債比率を CoK Score の補助指標として活用
-  3. SUBTRACT フェーズで複雑性削減パターンを推奨
-  4. 2.5-5x の保守コスト乗数を PROPOSE の根拠データに使用
-
-品質ゲート:
-  - 認知的複雑度 > 25 → 即時 SIMPLIFY 提案
-  - 技術的負債比率 > 10% → 返済計画の策定を推奨
-  - モジュール平均複雑度が増加トレンド → 警告
-  - 開発時間の 60%+ がコード理解 → プロセス改善提案
-```
-
-**Source:** [getdx.com: Cognitive Complexity in Software](https://getdx.com/education/cognitive-complexity/) · [SonarSource: Cognitive Complexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) · [Martin Fowler: Technical Debt Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) · [SQALE: Software Quality Assessment](http://www.sqale.org/)
+Sources: [SonarSource: Cognitive Complexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) · [Martin Fowler: Technical Debt Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) · [SQALE](http://www.sqale.org/)

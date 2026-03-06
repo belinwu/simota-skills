@@ -1,207 +1,138 @@
 # Feature Creep Pitfalls & Scope Management
 
-> 機能肥大化の原因、検出シグナル、90/10 原則、ゾンビ機能、プルーニング戦略、成功・失敗事例
+Purpose: Use this file when Void is evaluating feature growth, zombie functionality, or oversized product scope.
 
-## 1. Feature Creep の 8 大原因
+Contents:
+- Core causes and detection signals for feature creep
+- `90/10` principle and zombie-feature thresholds
+- Strategic growth vs creep rules
+- Pruning lifecycle, removal flow, and feature-addition gates
 
-| # | 原因 | メカニズム | Void の問い |
-|---|------|----------|-----------|
-| **FC-01** | **フィードバックトラップ** | ユーザー要望をすべて実装 → 一貫性のない機能集合 | この要望は何人のユーザーが言っているか？ |
-| **FC-02** | **競合追従** | 競合の機能を模倣 → 差別化の喪失・焦点のぼやけ | 競合と同じ土俵で戦う必要があるか？ |
-| **FC-03** | **プロダクトビジョン不在** | 判断基準がない → 全要望が「良さそう」に見える | この機能はコアバリューと整合しているか？ |
-| **FC-04** | **利用データ不在** | 実際の使用率を知らない → 全機能を同等に扱う | この機能の利用率を計測しているか？ |
-| **FC-05** | **FOMO（見逃し恐怖）** | トレンド技術を入れたい → 本質と無関係な機能追加 | このトレンドは我々のユーザーに価値があるか？ |
-| **FC-06** | **ステークホルダー圧力** | 経営層・営業の「この機能が必要」→ データなき追加 | その要望のビジネスインパクトを定量化できるか？ |
-| **FC-07** | **サンクコスト誤謬** | 「ここまで作ったから」→ 不要な機能の維持・拡張 | ゼロから始めるなら、この機能を作るか？ |
-| **FC-08** | **機能＝価値の錯覚** | 機能数 = 製品価値と誤認 → 量の追求 | 機能追加でユーザー満足度は本当に上がったか？ |
+## 8 Common Causes
 
----
+| ID | Cause | Mechanism | Void question |
+|----|-------|-----------|---------------|
+| `FC-01` | Feedback trap | Every request ships, creating an incoherent set of features | How many users asked for it? |
+| `FC-02` | Competitor chasing | Feature mimicry erodes focus | Must we fight on that exact surface? |
+| `FC-03` | No product vision | Everything sounds valuable | Does it strengthen the core value proposition? |
+| `FC-04` | No usage data | All features are treated as equally important | Is usage actually measured? |
+| `FC-05` | FOMO | Trend-driven additions ignore user value | Does this trend matter to our users? |
+| `FC-06` | Stakeholder pressure | Authority outruns evidence | Can the impact be quantified? |
+| `FC-07` | Sunk-cost fallacy | Prior work is used to justify more work | If starting fresh, would we still build this? |
+| `FC-08` | Feature-count illusion | Quantity is mistaken for product value | Did this improve satisfaction or adoption? |
 
-## 2. Feature Creep の検出シグナル
+## Detection Signals
 
-### プロダクト指標
+### Product Signals
 
-| シグナル | 閾値 | 意味 |
-|---------|------|------|
-| **オンボーディング完了時間** | > 30 分 | 機能が多すぎて理解不能 |
-| **サブメニューのネスト深度** | > 2 階層 | 情報アーキテクチャの崩壊 |
-| **「使い方がわからない」サポート** | 上位 3 問題に含む | 機能の発見性が低い |
-| **「高度な設定」に隠された機能** | 増加トレンド | 使われない機能の隔離 |
-| **リリースサイクルの長期化** | 前期比 > 1.5x | 機能間の依存による遅延 |
+| Signal | Threshold | Meaning |
+|--------|-----------|---------|
+| Onboarding completion time | `>30 min` | Product is too broad to grasp quickly |
+| Submenu depth | `>2` levels | Information architecture is collapsing |
+| "I don't know how to use this" support issue | appears in top 3 problems | Discoverability is poor |
+| Release-cycle lengthening | `>1.5x` quarter over quarter | Feature coupling is slowing delivery |
 
-### 開発指標
+### Delivery Signals
 
-| シグナル | 閾値 | 意味 |
-|---------|------|------|
-| **新機能の開発速度低下** | 前期比 < 0.7x | 既存機能との結合が足枷 |
-| **バグ率の増加** | 前期比 > 1.3x | 機能間の予期しない相互作用 |
-| **テスト実行時間の増加** | 前期比 > 2x | テストマトリクスの爆発 |
-| **デプロイのロールバック率** | > 10% | 変更の影響範囲が予測不能 |
+| Signal | Threshold | Meaning |
+|--------|-----------|---------|
+| New-feature speed drop | `<0.7x` quarter over quarter | Existing scope is dragging velocity |
+| Bug-rate increase | `>1.3x` quarter over quarter | Feature interactions are causing instability |
+| Test runtime increase | `>2x` quarter over quarter | Test matrix is exploding |
+| Rollback rate | `>10%` | Change impact is no longer predictable |
 
----
+## 90/10 Principle and Zombie Features
 
-## 3. 90/10 原則とゾンビ機能
+Rules:
+- Often `90%` of users use only `10%` of features.
+- The low-usage majority of features can consume a disproportionate share of maintenance cost.
+- Regulatory and security features are exceptions and should not be removed on usage alone.
 
-### 90/10 原則
+### Feature Classification
 
-```
-現実:
-  - 90% のユーザーは全機能の 10% しか使わない
-  - 残り 90% の機能は少数のユーザーにしか使われていない
-  - しかしその 90% の機能が保守コストの大部分を占める
+| Class | Usage | Default action |
+|-------|-------|----------------|
+| `Dead` | `<1%` | immediate `REMOVE` candidate |
+| `Zombie` | `1-5%` | consider `REMOVE` or `SIMPLIFY` |
+| `Niche` | `5-15%` | keep, but do not expand |
+| `Active` | `15-50%` | normal maintenance |
+| `Core` | `>50%` | improve before expanding elsewhere |
 
-Void の適用:
-  - 利用率 < 5% の機能 = "ゾンビ機能" として特定
-  - ゾンビ機能の CoK Score を算出し、除去候補に
-  - 例外: 規制要件・セキュリティ機能は利用率に関わらず維持
-```
+## Strategic Expansion vs Feature Creep
 
-### ゾンビ機能の分類
+### Strategic expansion
 
-| 分類 | 利用率 | アクション |
-|------|-------|----------|
-| **Dead** | < 1% | 即時 REMOVE 候補 |
-| **Zombie** | 1-5% | REMOVE or SIMPLIFY 検討 |
-| **Niche** | 5-15% | 維持するが拡張しない |
-| **Active** | 15-50% | 通常メンテナンス |
-| **Core** | > 50% | 優先的に改善 |
+- Deepens the core value proposition.
+- Solves a major pain point for existing users.
+- Is backed by usage evidence.
+- Preserves product coherence.
 
----
+### Feature creep
 
-## 4. 戦略的拡張 vs Feature Creep
+- Expands sideways away from the core.
+- Solves "nice to have" requests without evidence.
+- Copies competitors without clear strategy.
+- Adds confusion and cross-feature dependency.
 
-### 判定基準
+## Pruning Lifecycle
 
-```
-戦略的拡張（Good）:
-  ✓ コアバリューの深化（既存の強みを強化）
-  ✓ 既存ユーザーの主要ペインポイントを解決
-  ✓ 利用データに基づく意思決定
-  ✓ 追加後も製品の一貫性が維持される
-  ✓ 「一つの機能を除外しても残りは成立する」
-
-Feature Creep（Bad）:
-  ✗ コアと無関係な横展開
-  ✗ 「あったら便利」レベルの追加
-  ✗ 競合模倣による差別化喪失
-  ✗ ユーザーの混乱を招く複雑性増加
-  ✗ 「この機能がないと全体が壊れる」依存関係の増殖
+```text
+INTRODUCE -> MONITOR -> EVALUATE -> PRUNE or GROW
 ```
 
-### 成功事例と失敗事例
+Recommended controls:
+- define the success metric before release
+- define the exit criterion before release
+- review usage and maintenance cost at least quarterly
+- prefer staged retirement with flags or migration paths
 
-| プロダクト | 戦略 | 結果 |
-|-----------|------|------|
-| **Linear** | 意図的なスコープ制限、コアワークフローに集中 | 高速成長、ユーザー満足度高 |
-| **Superhuman** | 機能数を抑え、1 つ 1 つの品質を極限まで磨く | プレミアム価格でもロイヤリティ維持 |
-| **Stripe** | コアの決済機能を深化（横展開ではなく深掘り） | 開発者体験で圧倒的差別化 |
-| **Jira** | 全ユースケースに対応 → 機能が肥大化 | 「重すぎる」不満、Linear 等の競合出現 |
-| **Evernote** | あらゆる用途に拡張 → フォーカス喪失 | ユーザー離れ、Notion 等に市場を奪われる |
+## Removal Decision Flow
 
----
-
-## 5. プルーニング（機能剪定）戦略
-
-### 機能ライフサイクル管理
-
-```
-INTRODUCE → MONITOR → EVALUATE → PRUNE/GROW
-
-INTRODUCE:
-  - 仮説を明文化（この機能は X の指標を Y% 改善する）
-  - 成功基準の事前定義（利用率 > 10%, NPS > 0 等）
-  - 撤退基準の事前定義（3 ヶ月後に基準未達なら廃止）
-
-MONITOR:
-  - 利用率の継続追跡
-  - ユーザーフィードバックの収集
-  - 保守コストの記録
-
-EVALUATE（四半期ごと）:
-  - 利用率 vs 保守コスト のマトリクス
-  - 仮説の検証結果
-  - コア整合性の再評価
-
-PRUNE（該当する場合）:
-  - 段階的廃止（通知 → 非推奨 → 移行期間 → 削除）
-  - Feature Flag による即時無効化（データは保持）
-  - 影響ユーザーへの代替手段の提供
+```text
+Usage <5%?
+  -> No: keep as Active/Core
+  -> Yes
+     -> Regulatory or security requirement?
+        -> Yes: keep
+        -> No
+           -> Alternative exists?
+              -> No: re-evaluate impact
+              -> Yes
+                 -> CoK >4?
+                    -> No: DEFER
+                    -> Yes: propose REMOVE with a phased plan
 ```
 
-### 機能廃止の意思決定フレームワーク
+## Feature-Addition Gate
 
-```
-廃止候補:
-  │
-  ├─ 利用率 < 5%？
-  │   No → 維持（Active/Core）
-  │   Yes ↓
-  │
-  ├─ 規制/セキュリティ要件か？
-  │   Yes → 維持（利用率に関わらず）
-  │   No ↓
-  │
-  ├─ 代替手段が存在するか？
-  │   No → 影響を再評価
-  │   Yes ↓
-  │
-  ├─ 保守コスト（CoK）> 4？
-  │   No → 低コストで維持（DEFER）
-  │   Yes ↓
-  │
-  └─ REMOVE 提案（段階的廃止プラン付き）
-```
+Every new feature request should answer:
+1. What problem does it solve?
+2. How many users are affected?
+3. How does it align with the core value proposition?
+4. What is the success metric?
+5. What is the removal or re-review criterion?
+6. What is the ongoing maintenance cost?
 
----
+If the gate is incomplete, default to `DEFER` or `REJECT`.
 
-## 6. スコープ管理のベストプラクティス
+### One In, One Out
 
-### 機能追加ゲート
+Rule: when scope is already broad, adding one feature should force a conversation about removing one.
 
-```
-全機能追加リクエストに必須:
-  1. 問題定義: 何を解決するか？（解決策ではなく問題を）
-  2. 影響範囲: 何人のユーザーに影響するか？
-  3. コア整合: プロダクトのコアバリューとどう関係するか？
-  4. 成功指標: どうなれば成功か？（定量的に）
-  5. 撤退基準: いつ廃止を検討するか？
-  6. 保守コスト: 追加後の継続的なコストは？
+Exceptions:
+- very early product stage
+- regulatory or mandatory features
 
-ゲート未通過 → DEFER or REJECT
-```
+## Void Use
 
-### 「1 追加 1 削除」ルール
+- Use low-usage features (`<5%`) as strong `REMOVE` candidates.
+- Use feature-creep signal count to decide whether to trigger `Batch Audit`.
+- Use the pruning lifecycle when a hard delete is unsafe.
 
-```
-原則: 新機能を 1 つ追加するなら、既存機能を 1 つ廃止する
+Quality gates:
+- usage `<5%` -> zombie-feature review
+- onboarding `>30 min` -> recommend scope reduction
+- missing gate answers -> block feature expansion
+- 3 or more feature-creep signals -> recommend `Batch Audit`
 
-目的:
-  - 機能総数の自然な制限
-  - 追加時に「何が最も価値が低いか」を強制的に考える
-  - 保守コストの総量を一定に保つ
-
-例外:
-  - プロダクトの初期段階（MVP → PMF の間）
-  - 規制要件による必須機能
-```
-
----
-
-## 7. Void との連携
-
-```
-Void での活用:
-  1. QUESTION フェーズで FC-01〜08 の原因パターンをチェック
-  2. WEIGH フェーズでゾンビ機能分類を利用率データと組み合わせ
-  3. SUBTRACT フェーズで Feature Sunset パターンに段階的廃止プランを適用
-  4. PROPOSE フェーズで 90/10 原則を根拠データとして活用
-
-品質ゲート:
-  - 利用率 < 5% の機能 → ゾンビ機能として REMOVE 検討を提案
-  - 機能追加リクエストにゲート項目が欠如 → 追記を要求
-  - オンボーディング時間 > 30 分 → 機能削減を推奨
-  - 「1 追加 1 削除」ルール未適用 → 適用を推奨
-  - Feature Creep シグナル 3 つ以上検出 → Batch Audit を提案
-```
-
-**Source:** [userjot.com: Feature Creep: A Comprehensive Analysis](https://userjot.com/blog/feature-creep-what-it-is-examples-how-to-manage-it) · [ProductPlan: Feature Creep](https://www.productplan.com/glossary/feature-creep/) · [Intercom: Managing Feature Requests](https://www.intercom.com/blog/managing-feature-requests/) · [Basecamp: Shape Up — Appetite](https://basecamp.com/shapeup/1.1-chapter-02)
+Sources: [ProductPlan: Feature Creep](https://www.productplan.com/glossary/feature-creep/) · [Intercom: Managing Feature Requests](https://www.intercom.com/blog/managing-feature-requests/) · [Basecamp Shape Up](https://basecamp.com/shapeup/1.1-chapter-02)

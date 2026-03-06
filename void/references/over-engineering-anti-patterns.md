@@ -1,181 +1,78 @@
 # Over-Engineering Anti-Patterns
 
-> 過剰設計の症状、根本原因、YAGNI/KISS/DRY の緊張関係、実世界の失敗事例、予防戦略
+Purpose: Use this file when a target feels more elaborate than the problem it solves.
 
-## 1. 過剰設計 10 大アンチパターン
+Contents:
+- Ten common over-engineering patterns
+- YAGNI / KISS / DRY tension and Rule of Three
+- Root causes, detection signals, and prevention rules
 
-| # | アンチパターン | 症状 | Void の問い |
-|---|-------------|------|-----------|
-| **OE-01** | **早すぎる抽象化** | 1 箇所しか使わないのに interface/abstract class を作成 → 読みにくく変更しにくい | この抽象化は 2 箇所以上で使われているか？ |
-| **OE-02** | **未来予測設計** | 「将来必要になるかも」で拡張ポイント追加 → 永遠に使われない柔軟性 | その拡張ポイントの具体的な利用予定はあるか？ |
-| **OE-03** | **設計パターン信仰** | Factory/Strategy/Observer を不要な場面で適用 → 間接参照の迷宮 | if 文 1 つで済む場面にパターンを使っていないか？ |
-| **OE-04** | **フレームワーク自作** | 既存ライブラリで十分なのに独自実装 → 保守負担の増大 | 同等機能の既存ソリューションは検討したか？ |
-| **OE-05** | **過剰な設定可能性** | あらゆる値を設定ファイルに外出し → 設定地獄・テスト爆発 | この設定項目は実際に変更されるか？ |
-| **OE-06** | **早すぎる最適化** | ボトルネック不明のまま最適化 → 可読性低下・成果なし | パフォーマンス問題を計測データで確認したか？ |
-| **OE-07** | **過剰な型安全性** | ジェネリクスの多重入れ子・条件型の迷宮 → 理解不能な型定義 | 型がコードの理解を助けているか妨げているか？ |
-| **OE-08** | **マイクロサービス乱用** | 小規模チームで不要に分割 → 運用複雑性が開発速度を圧殺 | モノリスで十分なスケールではないか？ |
-| **OE-09** | **DRY 強迫観念** | 表面的類似を共通化 → 偶然の一致を結合、変更が波及 | この共通化は本当に「同じ理由」で変わるか？ |
-| **OE-10** | **防御的プログラミング過剰** | 内部メソッドに null チェック・バリデーション → ノイズ増大 | システム境界でない箇所に防御が必要か？ |
+## 10 Common Anti-Patterns
 
----
+| ID | Anti-pattern | Symptom | Void question |
+|----|--------------|---------|---------------|
+| `OE-01` | Premature abstraction | Interface or abstract class used in one place | Is this abstraction used in 2+ real places? |
+| `OE-02` | Future-proofing by speculation | Extension points that never get used | Is there a concrete near-term plan? |
+| `OE-03` | Pattern worship | Factory / Strategy / Observer where an `if` would do | Is the pattern smaller than the problem? |
+| `OE-04` | Homegrown framework | Custom infrastructure where a mature library exists | Why is the standard option insufficient? |
+| `OE-05` | Over-configurability | Endless options and flags | Does this option actually change in practice? |
+| `OE-06` | Premature optimization | Complexity added before measuring a bottleneck | Do we have performance evidence? |
+| `OE-07` | Type-system maze | Deeply nested generics or conditional types | Are types improving comprehension? |
+| `OE-08` | Microservice overuse | Tiny services with huge operational cost | Would a modular monolith be enough? |
+| `OE-09` | DRY obsession | Coincidental similarity becomes forced coupling | Do these things change for the same reason? |
+| `OE-10` | Excessive defensive programming | Internal paths full of redundant checks | Is this actually a system boundary? |
 
-## 2. YAGNI / KISS / DRY の緊張関係
+## YAGNI / KISS / DRY Tension
 
-### 三原則の衝突パターン
+Rules:
+- Prefer `YAGNI` over speculative generality.
+- Prefer `KISS` when DRY adds indirection without durable payoff.
+- Use `DRY` only when duplication changes for the same reason.
 
-```
-YAGNI vs DRY:
-  DRY 適用で共通化 → 「将来の変更」に備えた抽象化が発生 → YAGNI 違反
-  解決: "Rule of Three" — 3 回目の重複で初めて共通化を検討
+### Rule of Three
 
-KISS vs DRY:
-  DRY 適用で共通関数を作成 → パラメータ増殖・条件分岐 → KISS 違反
-  解決: 共通化後のコードが共通化前より読みにくければ、重複を許容
-
-YAGNI vs KISS:
-  YAGNI で最小実装 → 後から拡張時に大規模リライト → KISS 的に非効率
-  解決: 拡張の「確実性」で判断（確実なら設計、不確実なら YAGNI）
-```
-
-### Rule of Three（3 回ルール）
-
-```
-1 回目: 直接書く（共通化しない）
-2 回目: 重複に気づくが、まだ書く
-3 回目: 共通化を検討する
-
-理由:
-  - 2 回の重複は偶然の一致かもしれない
-  - 3 回目で「共通パターン」であることが確認できる
-  - 早すぎる共通化は、不適切な抽象化の温床
+```text
+1st time: write the straightforward implementation
+2nd time: tolerate duplication while watching the pattern
+3rd time: extract or abstract if the change reason is truly shared
 ```
 
----
+## Root Causes
 
-## 3. 過剰設計の根本原因
+1. Fear of future rework
+2. Status from architectural sophistication
+3. Cargo-culted best practices
+4. Lack of usage or performance evidence
+5. Confusing flexibility with value
 
-### 5 大原因
+## Detection Signals
 
-| # | 原因 | メカニズム | 対策 |
-|---|------|----------|------|
-| **1** | **曖昧な要件** | 要件不明 → 全可能性に備える → 肥大化 | 要件を明確化してからコーディング |
-| **2** | **開発者のエゴ** | 技術力の誇示 → 不必要な複雑性 | コードレビューでシンプルさを評価基準に |
-| **3** | **複雑性＝洗練の文化** | 「簡単すぎるコード」を低品質と誤認 | 「読めるコード」を称賛する文化の醸成 |
-| **4** | **恐怖駆動開発** | 将来の変更を恐れて拡張性を過剰に追加 | リファクタリングへの信頼（後からでも直せる） |
-| **5** | **知識バイアス** | 新しく学んだパターン/ツールを適用したい衝動 | 「金槌を持つと全てが釘に見える」の自覚 |
+| Signal | Threshold | Meaning |
+|--------|-----------|---------|
+| Single-use abstraction | `1` implementation | `OE-01` likely |
+| Unchanged config options | `>50%` never changed | `OE-05` likely |
+| Design discussion vs implementation time | `>50%` of total effort is design debate | over-design likely |
+| Generics depth | `3+` nested levels | `OE-07` likely |
 
----
+## Prevention Rules
 
-## 4. 実世界の失敗事例
+- Ask for evidence before adding flexibility.
+- Prefer concrete code until the third real repetition.
+- Keep configuration only when the default is not enough for a meaningful share of use cases.
+- Reject optimization work without measured bottlenecks.
+- Review "future use" comments as subtraction candidates.
 
-### Netscape Navigator 6（致命的リライト）
+## Void Use
 
-```
-何が起きたか:
-  - Netscape 4.x のコードベースが「汚すぎる」と判断
-  - 完全リライトを決定（新エンジン Gecko をゼロから開発）
-  - 開発に 3 年を要し、その間にブラウザ市場シェアを喪失
-  - Internet Explorer に決定的な差をつけられた
+Use this reference to:
+- flag `OE-01` to `OE-10` during `QUESTION`
+- map overhead into the `Cognitive Load` dimension during `WEIGH`
+- prefer `Pattern Simplification` or `Abstraction Collapse` during `SUBTRACT`
 
-教訓:
-  - 「完璧なアーキテクチャ」への欲求がプロダクトを殺す
-  - 漸進的改善 > フルリライト
-  - Void の問い: 「リライトのコストは維持のコストを本当に上回るか？」
-```
+Quality gates:
+- single-use abstraction -> warn on `OE-01`
+- `"TODO: future use"` -> flag `OE-02`
+- `3+` generic nesting levels -> consider simplification
+- `50%+` unchanged config options -> consider hardcoding defaults
 
-### Healthcare.gov（過剰複雑性の崩壊）
-
-```
-何が起きたか:
-  - 55 の異なるコントラクター、多数のシステム統合
-  - 過剰な抽象化層と中間件の積み重ね
-  - ローンチ日にシステム崩壊、数百万のユーザーがアクセス不能
-
-教訓:
-  - 統合層の過剰設計は全体の脆弱性を増大させる
-  - シンプルな接続 > 「エレガント」な抽象化
-  - Void の問い: 「この中間層は本当に必要か？」
-```
-
----
-
-## 5. 過剰設計の検出シグナル
-
-### コード指標
-
-| シグナル | 閾値 | Void アクション |
-|---------|------|---------------|
-| 抽象化の利用箇所が 1 つのみ | 1 implementor | OE-01 チェック |
-| メソッドのパラメータ数 | > 5 | OE-05 チェック |
-| 継承の深さ | > 3 levels | OE-03 チェック |
-| ジェネリクスの入れ子 | > 2 levels | OE-07 チェック |
-| 設定項目のうち変更されないもの | > 50% | OE-05 チェック |
-| 「TODO: future use」コメント | 存在する | OE-02 チェック |
-
-### プロセス指標
-
-| シグナル | 閾値 | Void アクション |
-|---------|------|---------------|
-| 設計議論が実装時間を超過 | > 50% | 過剰設計の疑い |
-| 「念のため」という理由の追加 | 頻出 | YAGNI 強制チェック |
-| リリースの遅延理由が「設計の完成度」 | 頻出 | 完璧主義の検出 |
-
----
-
-## 6. 予防戦略
-
-### YAGNI 判定フロー（強化版）
-
-```
-提案された機能/抽象化/設計:
-  │
-  ├─ 今日のユースケースで使うか？
-  │   No → YAGNI: 作らない
-  │   Yes ↓
-  │
-  ├─ 最もシンプルな実装で十分か？
-  │   Yes → シンプル版を採用
-  │   No ↓
-  │
-  ├─ 複雑版は計測データに基づくか？
-  │   No → YAGNI: シンプル版を採用
-  │   Yes ↓
-  │
-  └─ 複雑版を採用（ただしスコープを最小限に）
-```
-
-### チームプラクティス
-
-```
-1. 「削ぎ落としレビュー」の導入
-   - PRレビューで「これは削除できるか？」を必ず問う
-   - 追加行数 > 100 の PR には引き算の視点を必須化
-
-2. 複雑性予算の設定
-   - Sprint ごとに許容する複雑性増加量を定義
-   - 超過時は既存の複雑性を削減してから追加
-
-3. "最小限で出荷" のマインドセット
-   - MVP ではなく "MLP"（Minimum Lovable Product）
-   - 機能追加より既存機能の洗練を優先
-```
-
----
-
-## 7. Void との連携
-
-```
-Void での活用:
-  1. QUESTION フェーズで OE-01〜10 のシグナルをチェック
-  2. WEIGH フェーズで Cognitive Load 次元に過剰設計コストを反映
-  3. SUBTRACT フェーズで Pattern Simplification / Abstraction Collapse を適用
-  4. PROPOSE フェーズで Rule of Three / YAGNI 判定結果を根拠に
-
-品質ゲート:
-  - 抽象化が 1 箇所のみ利用 → OE-01 警告
-  - "TODO: future use" コメント → OE-02 検出・除去提案
-  - ジェネリクス 3 重以上 → OE-07 簡素化提案
-  - 設定項目の 50%+ が未変更 → OE-05 ハードコード化提案
-```
-
-**Source:** [dev.to: The Hidden Costs of Over-Engineering](https://dev.to/teamhubspot/the-hidden-costs-of-over-engineering-why-simpler-code-is-better-code-50gm) · [Martin Fowler: YAGNI](https://martinfowler.com/bliki/Yagni.html) · [Joel Spolsky: Things You Should Never Do](https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/) · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction)
+Sources: [Martin Fowler: YAGNI](https://martinfowler.com/bliki/Yagni.html) · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) · [Joel Spolsky: Things You Should Never Do](https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/)
