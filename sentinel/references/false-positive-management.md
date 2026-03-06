@@ -1,43 +1,44 @@
 # False Positive Management
 
-> FP 率目標、信頼度スコアリング、差分スキャン、LLM フィルタリング、SARIF 出力
+Purpose: Reduce noise without hiding true positives. Use this reference for confidence scoring, delta scanning, framework-aware suppression, and SARIF output.
 
-## 1. FP Rate Targets & Impact
+## Contents
 
-### FP 率が開発チームに与える影響
+- FP rate targets
+- framework-aware suppression
+- delta scanning
+- confidence scoring
+- LLM-assisted filtering
+- SARIF output
 
-静的解析ツールの生アラートの約 53% は偽陽性（False Positive）であり、対策なしでは開発者のアラート疲れを引き起こす。
+## FP Rate Targets
 
-| FP 率 | 評価 | 開発者の信頼度 | Finding 解決率 |
-|--------|------|---------------|----------------|
-| > 40% | 有害 — "more harm than good" | 極低: アラート全体を無視 | < 20% |
-| 20-40% | 要改善 | 低: 重要な finding も見落とし | 30-50% |
-| 10-20% | 目標水準 | 中〜高: 大半を確認 | 60-80% |
-| < 10% | 優秀 | 高: ほぼ全件を確認・対応 | > 85% |
+Raw static-analysis alerts often contain about `53%` false positives. Without filtering, teams stop trusting the tool.
 
-### 核心的問題
+| FP rate | Assessment | Developer trust | Resolution rate |
+|---------|------------|-----------------|-----------------|
+| `> 40%` | Harmful | Very low | `< 20%` |
+| `20-40%` | Needs work | Low | `30-50%` |
+| `10-20%` | Target range | Medium to high | `60-80%` |
+| `< 10%` | Excellent | High | `> 85%` |
 
+Alert-fatigue loop:
+
+```text
+Too many FPs -> alerts ignored -> real issues missed
+-> security incidents -> trust in the scanner collapses
 ```
-Alert fatigue の悪循環:
-  FP 多発 → 開発者がアラートを無視 → 真の脆弱性も見逃し
-  → セキュリティインシデント発生 → ツールへの信頼崩壊
-  → SAST 導入が「形骸化」する
-```
 
----
+## Framework-Aware Suppression
 
-## 2. Framework-Specific Custom Rules
+Built-in rules create noise when they cannot see project-specific protections such as:
 
-### 組み込みルールが FP を生む理由
+- custom auth middleware like `requireAuth()` or `checkPermission()`
+- application sanitizers
+- framework-provided CSRF protection
+- API gateway throttling
 
-標準的な SAST ルールはプロジェクト固有のセキュリティ機構を認識しない:
-
-- カスタム認可ミドルウェア（`requireAuth()`, `checkPermission()` 等）
-- アプリケーション固有のサニタイザー関数
-- フレームワークの自動 CSRF 保護
-- API ゲートウェイでのスロットリング
-
-### プロジェクト固有の抑制ルール
+Custom suppression example:
 
 ```yaml
 rules:
@@ -50,115 +51,74 @@ rules:
     severity: WARNING
 ```
 
-### Organization-Specific "Memories"
+Project memory examples:
 
-プロジェクト内部のセキュリティポリシーを「記憶」として保存し、スキャン時に参照する:
-
-```
-Memories 例:
-  - sanitizer_functions: [sanitizeHtml, escapeSQL, purifyInput]
-  - auth_middleware: [requireAuth, requireRole, requireApiKey]
-  - csrf_protection: "Next.js 組み込みの CSRF 保護を使用"
-  - rate_limiting: "API Gateway レイヤーで実施済み"
+```text
+sanitizer_functions: [sanitizeHtml, escapeSQL, purifyInput]
+auth_middleware: [requireAuth, requireRole, requireApiKey]
+csrf_protection: "Next.js built-in CSRF protection"
+rate_limiting: "Handled at API Gateway"
 ```
 
-これにより、既知の安全パターンを認識し、無意味なアラートを抑制できる。
+## Delta And Diff-Based Scanning
 
----
+Use changed code first. This removes legacy noise while keeping periodic full coverage.
 
-## 3. Delta/Diff-Based Scanning
+| Mode | Scope | Use when |
+|------|-------|----------|
+| PR-level | Changed files only | Fast review and merge gates |
+| Periodic | Full repository | Weekly or explicit full audits |
+| Baseline | Existing findings suppressed | New scanner rollout on legacy code |
 
-### コンセプト
+Sentinel process integration:
 
-新規・変更コードのみをスキャンし、レガシーコードの既知 FP を排除する。
-
-```
-Strategy:
-  PR-level: git diff でchanged filesのみスキャン → ノイズ激減
-  Periodic: 週次フルスキャンで包括的カバレッジ
-  Baseline: 既存findings をsuppressed としてマーク → 新規のみ報告
-```
-
-### メリット
-
-- PR レビュー時のノイズを大幅削減し、Sentinel を PR レベルチェックに実用化
-- 反復的開発における開発者体験の向上
-- 新規導入された脆弱性のみにフォーカス可能
-
-### Sentinel Process との統合
-
-差分スキャンは Process テーブルの **PRIORITIZE** と **SECURE** の間に **FILTER** フェーズとして機能する:
-
-```
-SCAN → PRIORITIZE → [FILTER: delta/diff] → SECURE → VERIFY → PRESENT
+```text
+SCAN -> PRIORITIZE -> FILTER -> SECURE -> VERIFY -> PRESENT
 ```
 
----
-
-## 4. Confidence Scoring Model
-
-### スコアリング要素
+## Confidence Scoring Model
 
 | Factor | Weight | Example |
 |--------|--------|---------|
-| Multi-engine consensus | +30% | 3/3 engines flagged |
-| Known vulnerability pattern match | +20% | Exact regex match for AWS key |
-| Data flow reachability | +25% | User input reaches sink |
-| Framework context mismatch | -20% | Framework auto-sanitizes |
-| Test/mock code location | -30% | File in `__tests__/` |
+| Multi-engine consensus | `+30%` | `3/3` engines flagged the same issue |
+| Known pattern match | `+20%` | Exact AWS key regex match |
+| Data-flow reachability | `+25%` | User input reaches a sink |
+| Framework mismatch | `-20%` | The framework auto-sanitizes or auto-protects |
+| Test or mock location | `-30%` | File is under `__tests__/` or fixtures |
 
-### Multi-Engine Consensus Boost
-
-複数エンジンが同一 finding を検出した場合、信頼度を大幅に引き上げる。Sentinel の Multi-Engine Mode（`references/multi-engine-mode.md`）と直接連携し、Union マージ時にスコアを計算する。
-
-### Confidence Tiers
+Confidence tiers:
 
 | Tier | Range | Action |
 |------|-------|--------|
-| **HIGH** | ≥ 80% | 即時報告 — PRESENT フェーズに含める |
-| **MEDIUM** | 50-79% | レビュー用に報告 — 確認を推奨 |
-| **LOW** | < 50% | デフォルト抑制 — オプションで表示可能 |
+| `HIGH` | `>= 80%` | Include immediately in `PRESENT` |
+| `MEDIUM` | `50-79%` | Report with a verification note |
+| `LOW` | `< 50%` | Suppress by default unless exhaustive output is requested |
 
----
+## LLM-Based FP Filtering
 
-## 5. LLM-Based FP Filtering
+LLMs help where rules are weak:
 
-### ルールベースでは判定できない領域
+- cross-function data-flow reasoning
+- upstream validation recognition
+- exploit-feasibility assessment
+- framework security guarantee recognition
 
-LLM は以下を評価でき、従来のルールエンジンでは不可能な文脈的判断を行う:
-
-- **Cross-function data flow analysis**: 関数をまたぐデータフローの追跡
-- **Upstream input validation**: 上流コードでの入力検証の有無
-- **Exploit feasibility**: 攻撃条件が実際に成立するかの評価
-- **Framework security guarantees**: フレームワーク固有のセキュリティ保証の理解
-
-### 精度比較
+Accuracy comparison:
 
 | Approach | Accuracy |
 |----------|----------|
-| Rules only (SAST) | 35.7% |
-| LLM only | 65.5% |
-| **LLM + SAST (Hybrid)** | **89.5%** |
+| Rules only (SAST) | `35.7%` |
+| LLM only | `65.5%` |
+| `LLM + SAST (Hybrid)` | `89.5%` |
 
-ハイブリッドアプローチにより、精度が大幅に向上する。
+Trade-off rule:
 
-### トレードオフ
+- Prioritize true-positive recall over aggressive suppression.
+- Use confidence scoring to reduce noise instead of hiding uncertain findings completely.
 
-TP（True Positive）検出率を最大化すると FP 誤分類が増加し、逆に FP 抑制を強化すると TP の見逃しリスクが高まる。運用では TP 検出率を優先しつつ、Confidence Scoring で FP をフィルタリングするバランスが重要。
+## SARIF Output
 
-### Sentinel Multi-Engine Mode との統合
-
-LLM エンジンが SAST finding のフィルタ/バリデータとして機能する。Multi-Engine Mode の各エンジン出力に対し、LLM が文脈的妥当性を評価し、Confidence Score を付与する。
-
----
-
-## 6. SARIF Output Format
-
-### SARIF とは
-
-SARIF（Static Analysis Results Interchange Format）は、静的解析結果の標準化フォーマット。ツール間の互換性を確保し、統一的な結果管理を実現する。
-
-### Sentinel SARIF 出力例
+Use SARIF when CI, GitHub Code Scanning, or IDE tooling needs machine-readable results.
 
 ```json
 {
@@ -185,12 +145,8 @@ SARIF（Static Analysis Results Interchange Format）は、静的解析結果の
 }
 ```
 
-### 統合先
+Typical integrations:
 
-- **GitHub Code Scanning**: SARIF アップロードで Security タブに自動表示
-- **VS Code SARIF Viewer**: IDE 内でインライン表示
-- **CI/CD パイプライン**: 品質ゲートとして SARIF 結果を評価
-
----
-
-**Source:** [InfoWorld: How Pairing SAST with AI Dramatically Reduces False Positives](https://www.infoworld.com/article/4093079/how-pairing-sast-with-ai-dramatically-reduces-false-positives-in-code-security.html) · [Datadog: Using LLMs to Filter Out False Positives](https://www.datadoghq.com/blog/using-llms-to-filter-out-false-positives/) · [Semgrep: Why SAST Tools Need to Be Customizable](https://semgrep.dev/blog/2024/why-sast-tools-need-to-be-customizable-to-be-useful/) · [Check Point: Avoiding False Positive The Silent SAST Killer](https://blog.checkpoint.com/security/avoiding-false-positive-the-silent-sast-killer/)
+- GitHub Code Scanning
+- VS Code SARIF Viewer
+- CI/CD policy gates
