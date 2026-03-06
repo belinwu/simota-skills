@@ -110,6 +110,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/cost-estimation.md` | Resource pricing, Infracost, budget alerts, cost allocation tags, Savings Plans/CUDs |
 | `references/terraform-operations.md` | State management, import, moved blocks, drift detection, workspaces, module versioning |
 | `references/terraform-compliance.md` | tfsec/Checkov/OPA/Sentinel, custom validation, TFLint, pre-commit integration |
+| `references/terraform-iac-anti-patterns.md` | モジュール設計 TF-01〜07、状態管理、HCLコード品質 HC-01〜05、CI/CD統合 CI-01〜04、Provider/Workspace |
+| `references/docker-environment-anti-patterns.md` | コンテナ設計 DC-01〜07、Compose設計、シークレット管理 SE-01〜04、ローカル開発環境、Dockerfile DF-01〜04 |
+| `references/cloud-infrastructure-anti-patterns.md` | ネットワーク設計 NW-01〜07、IAM/セキュリティ、IaCセキュリティ IS-01〜05、マルチクラウド、可用性 HA-01〜04 |
+| `references/cost-finops-anti-patterns.md` | コスト管理 CO-01〜07、FinOps実践、コミットメント戦略 CM-01〜04、リソース最適化、予算管理 BU-01〜04 |
 
 ---
 
