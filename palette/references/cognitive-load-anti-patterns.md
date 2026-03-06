@@ -1,160 +1,54 @@
-# Cognitive Load & Information Design Anti-Patterns
+# Cognitive Load Anti-Patterns
 
-> 認知過負荷、情報設計の落とし穴、Progressive Disclosure の失敗パターン、Hick's Law 適用
+Purpose: Reduce avoidable user effort by controlling choice count, information density, recall burden, disclosure depth, and navigation complexity.
 
-## 1. 認知負荷 3 タイプ
+## Contents
 
-```
-認知負荷理論（John Sweller）:
+- Load types
+- CL anti-patterns
+- Hick and Miller application
+- Progressive disclosure failures
+- Quality checklist
 
-  Intrinsic Load（内在的負荷）
-    - コンテンツ自体の複雑さ（税計算、医療情報）
-    - 削減: タスク分解、段階的学習、文脈に応じた情報量調整
+## Load Types
 
-  Extraneous Load（外在的負荷）← 設計で制御可能
-    - 不適切な UI 設計による無駄な負荷
-    - 削減: 一貫した UI パターン、明確な視覚階層、ノイズ除去
+- Intrinsic load: complexity of the domain itself
+- Extraneous load: avoidable UI burden introduced by the design
+- Germane load: useful effort that helps the user understand and progress
 
-  Germane Load（関連的負荷）← 活用すべき
-    - 学習と理解のための有意義な処理
-    - 活用: メンタルモデルの構築支援、パターン認識の促進
-```
+Palette should reduce extraneous load first.
 
----
+## CL Anti-Patterns
 
-## 2. 認知過負荷 8 大アンチパターン
+| ID | Anti-pattern | Signal | Fix |
+|----|--------------|--------|-----|
+| `CL-01` | Too many choices | too many options on one screen | keep primary choices around `5-7` where possible |
+| `CL-02` | Information density overload | scanning feels impossible | improve whitespace and hierarchy |
+| `CL-03` | Inconsistent UI patterns | each screen behaves differently | standardize with the design system |
+| `CL-04` | Recall-heavy design | user must remember data between steps | prefer recognition over recall |
+| `CL-05` | Ambiguous microcopy | user knows something failed but not why | use `What + Why + How` |
+| `CL-06` | Everything shown at once | first-use screen is overwhelming | apply progressive disclosure |
+| `CL-07` | Too-deep hierarchy | core task takes `4+` clicks | flatten or add shortcuts |
+| `CL-08` | Visual noise | decoration steals attention | keep ornament meaningful and sparse |
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **CL-01** | **選択肢過多** | 一画面に多すぎる選択肢 | 決断麻痺、離脱率上昇 | Hick's Law: 選択肢 5-7 個以下、段階的開示 |
-| **CL-02** | **情報密度過多** | テキスト/データの過密表示 | 重要情報の埋没、スキャン不能 | ホワイトスペース活用、情報の優先度設計 |
-| **CL-03** | **非一貫 UI パターン** | 画面ごとに異なるインタラクション | 再学習コスト、操作ミス | デザインシステムでパターン統一 |
-| **CL-04** | **記憶依存の設計** | 情報を覚えて次画面で使用 | 短期記憶超過、入力ミス | 認識 > 想起（Recognition over Recall） |
-| **CL-05** | **曖昧なマイクロコピー** | 「エラーが発生しました」のみ | 回復手順不明、不安増大 | What/Why/How の 3 点構造 |
-| **CL-06** | **全機能一括表示** | 初回から全機能を提示 | 新規ユーザーの圧倒、学習曲線急勾配 | Progressive Disclosure（段階的開示） |
-| **CL-07** | **深すぎる階層** | 目標到達に 4+ クリック必要 | ナビゲーション放棄、目的忘却 | 3 クリックルール、ショートカット提供 |
-| **CL-08** | **視覚的ノイズ** | 装飾過剰、注意を奪う要素が多数 | 本質情報への集中不能 | コンテンツファースト、装飾は意味がある時のみ |
+## Hick And Miller Application
 
----
+- top-level navigation: aim for `5-7` items
+- dropdown with `20+` items: add search
+- page with `3+` peer CTAs: clarify one primary action
+- multi-step form with `7+` steps: reconsider grouping or flow structure
+- chunk long numeric content into smaller groups
 
-## 3. Hick's Law と Miller's Law の実践適用
+## Progressive Disclosure Failures
 
-```
-Hick's Law（選択肢と決断時間）:
-  RT = a + b × log₂(n + 1)
-  - n = 選択肢の数
-  - 選択肢が 2 倍 → 決断時間は約 1 段階増加
+- important features hidden too deeply
+- no middle layer between basic and advanced
+- no “show all” path for expert users
+- expanded content loses context or current position
 
-  適用パターン:
-    ✅ ナビゲーション: トップレベル 5-7 項目
-    ✅ フォーム: ラジオボタン 5 個以下、超過時は検索可能ドロップダウン
-    ✅ CTA: ページあたり 1 つの主要 CTA
-    ✅ 設定: 推奨デフォルト提示、カスタマイズはアドバンスドに
+## Quality Checklist
 
-  アンチパターン:
-    ❌ 20+ 項目のドロップダウン（検索なし）
-    ❌ 同等の重要度で並ぶ 5+ CTA ボタン
-    ❌ フィルターパネルに 10+ カテゴリ同時表示
-
-Miller's Law（短期記憶の限界）:
-  7 ± 2 チャンク（情報の塊）
-
-  適用パターン:
-    ✅ 電話番号: 090-1234-5678（3 チャンク）
-    ✅ カード番号: 4242 4242 4242 4242（4 チャンク）
-    ✅ パンくずリスト: 3 階層超で折りたたみ
-    ✅ タブ: 5-7 個以下
-
-  アンチパターン:
-    ❌ 10+ 桁の数字をチャンク分割なしで表示
-    ❌ 8+ タブを一列に配置
-    ❌ マルチステップフォームのステップ数 7+
-```
-
----
-
-## 4. Progressive Disclosure のパターンと失敗
-
-```
-成功パターン:
-
-  Level 1: 必須情報（常時表示）
-    - プライマリアクション、主要コンテンツ
-    - 例: 検索バー、メインナビゲーション
-
-  Level 2: 関連情報（要求時表示）
-    - セカンダリ操作、フィルター、詳細設定
-    - 例: 「詳細フィルター」展開、アコーディオン
-
-  Level 3: 専門情報（能動的探索時）
-    - パワーユーザー向け、API ドキュメント、開発者設定
-    - 例: 「上級者向け設定」、デバッグ情報
-
-失敗パターン:
-
-  PD-01: 過度な隠蔽
-    問題: 重要機能が深い階層に埋没
-    兆候: 「○○機能はどこ？」の問い合わせ多発
-    対策: 使用頻度分析 → 高頻度機能は Level 1 へ
-
-  PD-02: 段階の欠如
-    問題: Level 1（基本）と Level 3（専門）の間に何もない
-    兆候: 初心者は圧倒、中級者は物足りない
-    対策: ユーザー成熟度に応じた 3 段階設計
-
-  PD-03: 脱出口なし
-    問題: 段階的開示を解除して全表示するオプションがない
-    兆候: パワーユーザーの不満、「制限的」との評価
-    対策: 「すべて表示」トグル or ショートカット
-
-  PD-04: コンテキスト喪失
-    問題: 展開/折りたたみでユーザーの現在位置が不明に
-    兆候: スクロール迷子、操作対象の見失い
-    対策: スティッキーヘッダー、パンくず、状態保持
-```
-
----
-
-## 5. 情報設計の品質チェックリスト
-
-```
-視覚階層チェック:
-  □ ページの主目的が 3 秒以内に識別可能
-  □ 視線の流れ（F パターン/Z パターン）に沿った配置
-  □ 重要度に応じたサイズ・色・位置の差異化
-  □ 1 画面に 1 主要アクション（CTA の明確化）
-
-認知負荷チェック:
-  □ トップレベルナビゲーション 7 項目以下
-  □ フォームは 1 画面 5-7 フィールド以下
-  □ 長い数値はチャンク分割で表示
-  □ エラーメッセージは What/Why/How の 3 点構造
-  □ 前画面の情報を記憶する必要がない（サマリー表示）
-
-Progressive Disclosure チェック:
-  □ 初回訪問で表示される情報量は適切か
-  □ 「もっと見る」等の開示手段が明確か
-  □ パワーユーザー向けの「すべて表示」が存在するか
-  □ 展開/折りたたみ後に現在位置が維持されるか
-```
-
----
-
-## 6. Palette との連携
-
-```
-Palette での活用:
-  1. OBSERVE フェーズで CL-01〜08 のスクリーニング
-  2. MESO レンズで情報密度・視覚階層の評価
-  3. MACRO レンズで Progressive Disclosure の段階設計
-  4. ヒューリスティック #6（Recognition over Recall）の定量評価
-
-品質ゲート:
-  - ドロップダウン 7+ 項目 → 検索フィルター追加を要求（CL-01 防止）
-  - 同一画面に 3+ CTA → 優先度の明確化を要求（CL-01 防止）
-  - マルチステップフォーム 7+ ステップ → ステップ統合を提案（CL-07 防止）
-  - エラーメッセージが What のみ → Why/How の追加を要求（CL-05 防止）
-  - 初回表示の情報量が多い → Progressive Disclosure の導入を提案（CL-06 防止）
-```
-
-**Source:** [Red Lio Designs: Cognitive Load UX 2025](https://redliodesigns.com/blog/cognitive-load-ux-2025-simpler-interfaces) · [Number Analytics: Cognitive Load UI/UX Best Practices](https://www.numberanalytics.com/blog/cognitive-load-ui-ux-best-practices) · [Aufait UX: Cognitive Load Theory in UI Design](https://www.aufaitux.com/blog/cognitive-load-theory-ui-design/) · [Mailchimp: Ease Cognitive Overload](https://mailchimp.com/resources/cognitive-overload/) · [UX Magazine: Balancing Cognitive Load and Discoverability](https://uxmag.com/articles/balancing-cognitive-load-and-discoverability)
+- the page purpose is clear in seconds
+- one primary action stands out
+- the user does not need to memorize prior-step data
+- advanced controls are available without overwhelming first-time users

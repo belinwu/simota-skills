@@ -1,174 +1,58 @@
-# Perceived Performance & Feedback Design
+# Perceived Performance Patterns
 
-> 知覚パフォーマンス最適化、スケルトンスクリーン設計、Optimistic UI、フィードバックループの設計原則
+Purpose: Improve perceived speed and confidence by choosing the right loading pattern, optimistic strategy, and feedback timing.
 
-## 1. 知覚パフォーマンス 6 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | ユーザーへの影響 | 対策 |
-|---|-------------|------|---------------|------|
-| **PP-01** | **全面スピナー** | コンテンツ領域全体をスピナーで覆う | 進捗不明、離脱率上昇（3 秒超で 53% が離脱） | スケルトンスクリーンでレイアウト維持 |
-| **PP-02** | **レイアウトシフト** | コンテンツ読み込み時に要素が急に移動 | 誤クリック、視覚的混乱、CLS スコア悪化 | プレースホルダーで寸法を事前確保 |
-| **PP-03** | **小要素のスケルトン化** | ボタン/ラベル/アイコンにスケルトン適用 | インタラクティブに見える要素を操作しようとして失敗 | 小要素は非表示 or disabled、コンテナ単位でスケルトン |
-| **PP-04** | **静的プレースホルダー** | アニメーションなしのグレーブロック表示 | 1 秒超で「壊れている」と誤認 | パルスまたはウェーブアニメーション必須 |
-| **PP-05** | **過剰な楽観的更新** | 失敗リスクの高い操作に Optimistic UI 適用 | ロールバック時の混乱、データ整合性への不信 | 失敗率 < 1% の操作のみに限定 |
-| **PP-06** | **フィードバック欠如** | 操作後の UI 変化がゼロ | 「操作が届いたか」の不確実性、重複操作 | 100ms 以内のフィードバック提供 |
+- PP anti-patterns
+- Skeleton vs spinner vs progress bar
+- Optimistic UI rules
+- Feedback timing
 
----
+## PP Anti-Patterns
 
-## 2. スケルトンスクリーン設計ガイド
+| ID | Anti-pattern | Signal | Fix |
+|----|--------------|--------|-----|
+| `PP-01` | Full-page spinner | loading blocks the whole content area | use skeletons for known layouts |
+| `PP-02` | Layout shift on load | content jumps after data arrives | reserve layout dimensions in advance |
+| `PP-03` | Skeleton on tiny interactive elements | fake buttons or labels invite failed taps | hide or disable small elements instead |
+| `PP-04` | Static placeholder | placeholder feels broken after `1s+` | add pulse or wave animation |
+| `PP-05` | Over-aggressive optimistic UI | high-risk action rolls back awkwardly | use optimistic UI only when failure rate is `<1%` and recovery is natural |
+| `PP-06` | No immediate feedback | click produces no visible response within `100ms` | add instant state change or acknowledgment |
 
-```
-使用すべき場面:
-  ✅ カードグリッド/リスト/テーブルの初回読み込み
-  ✅ ダッシュボードのメトリクスカード
-  ✅ プロフィール/詳細ページ
-  ✅ フィード/タイムライン
-  ✅ 構造が予測可能なコンテンツ
+## Skeleton vs Spinner vs Progress Bar
 
-使用すべきでない場面:
-  ❌ ボタン/フォームフィールド/ラベル（小要素）
-  ❌ モーダルの中身（代わりにスピナー）
-  ❌ フォーム送信の結果（代わりに状態遷移）
-  ❌ 構造が不明なコンテンツ
-  ❌ 1 秒未満で完了する読み込み（チラつきの原因）
+| Pattern | Best for |
+|---------|----------|
+| Skeleton | structured content loads |
+| Spinner | short action-level waits |
+| Progress bar | long or measurable work |
+| Optimistic UI | low-risk, reversible state change |
 
-設計原則:
-  1. レイアウト一致: スケルトンは最終コンテンツの構造を正確に模倣
-  2. 段階的置換: コンテンツが利用可能になった部分から順次表示
-  3. アニメーション: パルス（推奨）or ウェーブ効果で進行中を示す
-  4. アクセシビリティ: aria-busy="true" + aria-label="Loading"
-  5. 最小表示時間: 300ms 未満の読み込みにはスケルトン不要
-```
+Rules:
 
-### スケルトン vs スピナー vs プログレスバー 使い分け
+- avoid skeletons for loads shorter than about `300ms`
+- do not use optimistic UI for billing, destructive actions, or high-integrity updates
 
-| 手法 | 最適な場面 | 知覚速度 | 実装コスト |
-|------|----------|---------|----------|
-| **スケルトンスクリーン** | 構造化コンテンツの初回読み込み | 20-30% 高速に知覚 | 中 |
-| **スピナー** | ボタン操作、フォーム送信、短い処理 | 基準 | 低 |
-| **プログレスバー** | ファイルアップロード、長時間処理 | 終了時間が予測可能 | 低 |
-| **Optimistic UI** | トグル、いいね、ブックマーク | 40% 高速に知覚 | 高 |
+## Optimistic UI Rules
 
----
+Use when:
 
-## 3. Optimistic UI 設計パターン
+- failure rate is very low
+- rollback is understandable
+- no user data integrity risk exists
 
-```
-適用基準:
-  ✅ 失敗率 < 1% の操作（いいね、ブックマーク、既読マーク）
-  ✅ 操作結果が即座にローカルで反映可能
-  ✅ ロールバックが自然に表現できる
-  ✅ ユーザーへのデータ損失リスクがない
+Avoid for:
 
-  ❌ 決済/課金処理（失敗時の影響大）
-  ❌ データ作成/削除（サーバー確認必須）
-  ❌ 複数ユーザーへの影響がある操作
-  ❌ ファイルアップロード（進捗表示必要）
+- payment and billing
+- destructive create/delete flows
+- multi-user integrity-sensitive actions
 
-エラー処理戦略:
+## Feedback Timing
 
-  Strategy 1: 即時ロールバック
-    UI を元の状態に戻し、エラー Toast 表示
-    用途: 単純なトグル操作
-
-  Strategy 2: リトライキュー
-    失敗したリクエストをキューに入れ、バックグラウンドでリトライ
-    用途: ネットワーク一時障害時
-
-  Strategy 3: 遅延ロールバック
-    数回のリトライ後にのみロールバック
-    用途: Twitter のいいねパターン（即座には元に戻さない）
-
-プリエンプティブ読み込み:
-  - mouseover/touchstart で次のアクションを先読み
-  - <link rel="prefetch"> で遷移先を事前取得
-  - hover 300ms で API リクエスト開始
-```
-
----
-
-## 4. フィードバックタイミング設計
-
-```
-知覚心理学に基づくガイドライン:
-
-  即時フィードバック（0-100ms）:
-    - ホバー状態変化
-    - ボタンプレス/リリース
-    - フォーカスリング表示
-    - タップフィードバック
-    → 実装: CSS transition, active 疑似クラス
-
-  短期フィードバック（100ms-1s）:
-    - インラインバリデーション結果
-    - トグル切り替え確認
-    - スナックバー/Toast 表示
-    → 実装: 状態管理 + アニメーション
-
-  中期フィードバック（1-10s）:
-    - ローディングスピナー/スケルトン
-    - プログレスインジケータ
-    - キャンセルボタン提供
-    → 実装: スケルトン + 進捗表示
-
-  長期フィードバック（10s+）:
-    - バックグラウンド処理通知
-    - メール/プッシュ通知での完了報告
-    - ステータスページへのリンク
-    → 実装: 非同期ジョブ + 通知システム
-
-UI 応答速度の黄金比率:
-  - 100ms: 「即座」の閾値（これ以下は遅延を感じない）
-  - 1s: 「流暢」の閾値（思考の流れが中断しない）
-  - 10s: 「注意維持」の限界（これ以上は離脱リスク）
-```
-
----
-
-## 5. プログレス表現のベストプラクティス
-
-```
-確定的プログレス（進捗が計算可能）:
-  ✅ プログレスバー + パーセンテージ
-  ✅ ステップインジケータ（3/5 完了）
-  ✅ 推定残り時間の表示
-  ❌ 「もうすぐ完了」のみ（具体性なし）
-
-不確定プログレス（完了時間が不明）:
-  ✅ スピナー + コンテキスト説明（「データを処理中...」）
-  ✅ スケルトンスクリーン（コンテンツ構造を示唆）
-  ✅ パルスアニメーション（進行中の証拠）
-  ❌ 静的な「Loading...」テキストのみ
-
-フェイクプログレス:
-  注意: ユーザーの信頼を損なうリスクあり
-  許容: 初期 80% は高速、残り 20% で減速（体感速度向上）
-  禁止: 100% 到達後にさらに待機させる
-
-プログレス表示の禁止事項:
-  ❌ 0% から始まるプログレスバー（即座に進行開始すべき）
-  ❌ 99% で長時間停止（信頼性喪失）
-  ❌ 戻るプログレスバー（ユーザーの予想を裏切る）
-  ❌ 複数の異なるローディング表示の混在
-```
-
----
-
-## 6. Palette との連携
-
-```
-Palette での活用:
-  1. OBSERVE フェーズで PP-01〜06 のスクリーニング
-  2. MICRO レンズでフィードバックタイミングの検証
-  3. MESO レンズでスケルトン/スピナーの適切な使い分け確認
-  4. IMPLEMENT フェーズで Optimistic UI の適用基準チェック
-
-品質ゲート:
-  - 1 秒超の読み込みでスピナーのみ → スケルトンへの変更提案（PP-01 防止）
-  - コンテンツ読み込みでレイアウトシフト → 寸法事前確保を要求（PP-02 防止）
-  - 決済操作に Optimistic UI → サーバー確認後の状態更新に変更（PP-05 防止）
-  - ボタンクリック後 100ms 以上無反応 → 即時フィードバック追加（PP-06 防止）
-  - 300ms 未満の読み込みにスケルトン → チラつき防止のため除去
-```
-
-**Source:** [LogRocket: Skeleton Loading Screen Design](https://blog.logrocket.com/ux-design/skeleton-loading-screen-design/) · [UI Deploy: Skeleton Screens vs Spinners](https://ui-deploy.com/blog/skeleton-screens-vs-spinners-optimizing-perceived-performance) · [Simon Hearne: Optimistic UI Patterns](https://simonhearne.com/2021/optimistic-ui-patterns/) · [Clay: Skeleton Screens UX](https://clay.global/blog/skeleton-screen) · [OpenReplay: How Optimistic Updates Make Apps Feel Faster](https://blog.openreplay.com/optimistic-updates-make-apps-faster/)
+| Delay | Guidance |
+|-------|----------|
+| `0-100ms` | instant acknowledgment |
+| `100ms-1s` | short feedback state |
+| `1s-10s` | loading/progress plus cancel when possible |
+| `10s+` | background job plus completion notification |
