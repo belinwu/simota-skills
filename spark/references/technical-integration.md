@@ -1,187 +1,126 @@
 # Spark Technical Integration Patterns Reference
 
-Builder/Sherpaとの密接な連携パターンガイド。
+Purpose: define how Spark hands proposals to Sherpa or Builder and how technical constraints should appear in the proposal.
 
----
+## Contents
+- Direct Builder handoff
+- DDD guidance
+- API integration requirements
+- Sherpa feedback loop
+- Scope adjustment rules
+- Handoff checklists
 
-## SPARK_TO_BUILDER_HANDOFF (Sherpa bypass版)
+## Direct Builder Handoff
 
-シンプルな機能で直接Builderに渡す場合のフォーマット。
+### `## SPARK_TO_BUILDER_HANDOFF`
 
-### When to Use Direct Builder Handoff
+Use direct Builder handoff when:
+- the feature is simple and independent
+- the risk is low and the requirements are clear
+- an existing implementation pattern already exists
+- the estimate is hours-level
 
-| Condition | Sherpa経由 | Builder直接 |
-|-----------|------------|-------------|
-| 複雑度 | 複数ステップ、依存関係あり | 単一機能、独立 |
-| リスク | 高リスク、不確実性あり | 低リスク、明確な要件 |
-| 既存パターン | 新パターン | 既存パターンの拡張 |
-| 見積もり | 1日以上 | 数時間以内 |
-| チーム調整 | 必要 | 不要 |
+Prefer Sherpa when:
+- the work is multi-step
+- dependencies or uncertainty are material
+- the estimate is `1 day or more`
 
-### Direct Builder Handoff Format
+### Direct handoff packet
 
-```markdown
-## SPARK_TO_BUILDER_HANDOFF
+Required fields:
+- `Feature`
+- `Proposal Doc`
+- `Bypass Sherpa`
+- `Technical Specification`
+  - `Core Requirement`
+  - `User Story`
+  - `Domain Model Requirements`
 
-**Feature**: [Feature name]
-**Proposal Doc**: [Link to proposal file]
-**Bypass Sherpa**: Yes (Reason: [Simple feature / Pattern exists / Low risk])
+Checklist before direct Builder handoff:
+- feature is simple (`< 4 hours estimate`)
+- existing patterns can be followed
+- no external dependency is unresolved
+- risk is low
+- technical requirements are explicit
 
-### Technical Specification
+## DDD Guidance
 
-**Core Requirement**:
-[One-sentence description of what to build]
+### `## DDD Pattern Recommendation`
 
-**User Story**:
-As a [persona], I want to [action] so that [benefit].
+Choose the lightest appropriate pattern:
 
-### Domain Model Requirements
-...
-```
+| Scenario | Pattern | Rationale |
+| --- | --- | --- |
+| uniquely identified concept | `Entity` | identity persists across state changes |
+| value-only concept | `Value Object` | immutable and comparable by value |
+| consistency boundary | `Aggregate Root` | transaction boundary and invariants |
+| business logic outside a single entity | `Domain Service` | spans multiple aggregates |
+| external interaction | `Infrastructure Service` | API, DB, messaging, or I/O concerns |
 
----
-
-## DDD Pattern Requirements
-
-提案に含めるべきDDDパターン要件の指定方法。
-
-### Pattern Selection Guide
-
-```markdown
-## DDD Pattern Recommendation
-
-When specifying requirements, indicate the expected DDD pattern:
-
-| Scenario | Recommended Pattern | Rationale |
-|----------|---------------------|-----------|
-| 一意のIDで識別される概念 | Entity | 状態変化しても同一性を維持 |
-| IDなし、値で比較される概念 | Value Object | イミュータブル、交換可能 |
-| 複数エンティティの整合性境界 | Aggregate Root | トランザクション境界を定義 |
-| エンティティに属さないビジネスロジック | Domain Service | 複数集約を跨ぐ操作 |
-| 外部システムとのインタラクション | Infrastructure Service | API、DB、メッセージング |
-```
-
-### Entity Requirements Template
+### Entity template
 
 ```markdown
 ### Entity: [EntityName]
-
-**Identity**:
-- ID Type: [UUID / Sequential / Natural key]
-- ID Generation: [Client / Server / External system]
-
-**Properties**:
-| Property | Type | Mutable? | Business Rule |
-|----------|------|----------|---------------|
-| [prop1] | [type] | [Yes/No] | [Rule if any] |
-| [prop2] | [type] | [Yes/No] | [Rule if any] |
-
-**State Transitions** (if applicable):
-```
-[Initial] → [State A] → [State B] → [Final]
-     ↑          │
-     └──────────┘ (rollback conditions)
+- Identity
+- Properties
+- State Transitions
+- Invariants
+- Methods Expected
 ```
 
-**Invariants**:
-- [Business rule that must always be true]
-- [Business rule that must always be true]
-
-**Methods Expected**:
-| Method | Purpose | Side Effects |
-|--------|---------|--------------|
-| [method()] | [What it does] | [State change / Event] |
-```
-
-### Value Object Requirements Template
+### Value Object template
 
 ```markdown
 ### Value Object: [VOName]
+- Purpose
+- Properties
+- Creation Validation
+- Equality
+- Use Cases
+```
 
-**Purpose**: [Why this is a Value Object, not just a primitive]
+Keep the expected signature when relevant:
 
-**Properties**:
-| Property | Type | Validation |
-|----------|------|------------|
-| [prop1] | [type] | [Pattern / Range / Enum] |
-
-**Creation Validation**:
-- [Validation rule 1]
-- [Validation rule 2]
-
-**Equality**:
-- Compare by: [All properties / Specific subset]
-...
 ```typescript
-// Expected signature
 static create(raw: RawInput): Result<[VOName], ValidationError>
 ```
 
-**Use Cases**:
-- Used in: [Entity A], [Entity B]
-- Represents: [Business concept]
-```
-
-### Aggregate Root Requirements Template
+### Aggregate Root template
 
 ```markdown
 ### Aggregate Root: [AggregateName]
-
-**Root Entity**: [Entity name]
-
-**Child Entities**:
-| Entity | Relationship | Cascade |
-|--------|--------------|---------|
-| [Child A] | [1:N / 1:1] | [Create/Update/Delete rules] |
-| [Child B] | [1:N / 1:1] | [Create/Update/Delete rules] |
-
-**Aggregate Invariants**:
-- [Cross-entity business rule]
-- [Cross-entity business rule]
-
-**Transaction Boundary**:
-...
+- Root Entity
+- Child Entities
+- Aggregate Invariants
+- Transaction Boundary
 ```
 
----
-
-## API統合提案時の技術要件
-
-外部API連携を含む機能提案での要件定義。
-
-### API Integration Requirements Template
-
-```markdown
 ## API Integration Requirements
 
-**External API**: [API Name / Service]
-**Purpose**: [Why we need this integration]
+### `## API Integration Requirements`
 
-### Connection Requirements
+Required fields:
+- `External API`
+- `Purpose`
+- `Connection Requirements`
+- `Retry Strategy`
+- `Rate Limiting`
+- `Error Handling`
+- `Data Validation`
+- `Fallback Strategy`
 
-**Authentication**:
-- Type: [API Key / OAuth2 / Basic / JWT]
-- Credential storage: [Environment variable / Secrets manager]
-- Rotation: [Frequency if applicable]
+Keep these default retry rules unless the target API requires something stricter:
 
-**Base Configuration**:
-```yaml
-base_url: [https://api.example.com/v1]
-timeout: [30s]
-rate_limit: [100 requests/minute]
-```
+| Error type | Retry? | Strategy | Max attempts |
+| --- | --- | --- | --- |
+| `5xx` | Yes | exponential backoff | `3` |
+| `429` | Yes | honor `Retry-After` | `3` |
+| `4xx` | No | fail immediately | `1` |
+| timeout | Yes | exponential backoff | `3` |
+| connection refused | Yes | linear backoff | `2` |
 
-### Retry Strategy
+Backoff defaults:
 
-| Error Type | Retry? | Strategy | Max Attempts |
-|------------|--------|----------|--------------|
-| 5xx (Server) | Yes | Exponential backoff | 3 |
-| 429 (Rate limit) | Yes | Wait for Retry-After | 3 |
-| 4xx (Client) | No | Fail immediately | 1 |
-| Network timeout | Yes | Exponential backoff | 3 |
-| Connection refused | Yes | Linear backoff | 2 |
-
-**Backoff Configuration**:
 ```yaml
 initial_delay: 1s
 max_delay: 30s
@@ -189,183 +128,79 @@ multiplier: 2
 jitter: 0.1
 ```
 
-### Rate Limiting
+Circuit-breaker defaults:
 
-**External API Limits**:
-- Requests per second: [N]
-- Requests per minute: [N]
-- Requests per day: [N]
-
-**Our Implementation**:
-- Rate limiter type: [Token bucket / Sliding window]
-- Queue behavior: [Wait / Reject]
-- Burst capacity: [N]
-
-### Error Handling
-
-...
 ```yaml
 failure_threshold: 5
 reset_timeout: 60s
 half_open_requests: 3
 ```
 
-### Data Validation
+## Sherpa Feedback Loop
 
-**Request Validation**:
-- Validate before sending: [Yes/No]
-- Schema: [Zod schema name or link]
+### `## SHERPA_TO_SPARK_FEEDBACK`
 
-**Response Validation**:
-- Validate on receive: [Yes/No]
-- Handle unknown fields: [Ignore / Fail]
-- Type coercion: [Allowed for dates, numbers]
+Use when breakdown exposes feasibility, scope, dependency, risk, or resource concerns.
 
-### Fallback Strategy
+Required fields:
+- `Feature`
+- `Proposal Doc`
+- `Feedback Type`
+- `Breakdown Attempt Summary`
+  - `Total Steps Identified`
+  - `Estimated Total Time`
+  - `High Risk Steps` (`0-1 acceptable`)
+- `Feasibility Concerns`
 
-| Scenario | Fallback |
-...
-```
+### `## SPARK_ITERATION_ON_SHERPA_FEEDBACK`
 
----
+Required fields:
+- `Original Proposal`
+- `Sherpa Feedback`
+- `Iteration`
+- `Accepted Adjustments`
+- `Revised Scope`
 
-## SHERPA_TO_SPARK_FEEDBACK
+## Scope Adjustment
 
-Sherpaからのフィードバックを受けて提案を調整するフォーマット。
+### `## SCOPE_ADJUSTMENT`
 
-### Feedback Trigger Conditions
+Required fields:
+- `Original Feature`
+- `Adjustment Reason`
+- `Impact Analysis`
+- `Adjustment Options`
 
-| Feedback Type | Trigger | Spark Action |
-|---------------|---------|--------------|
-| Feasibility Concern | 技術的に困難 | スコープ調整または代替案 |
-| Scope Too Large | 分解後も15分超えるステップ多数 | MVPに絞り込み |
-| Dependency Issue | 外部依存がブロッカー | フェーズ分けまたは代替案 |
-| Risk Escalation | 高リスクステップが多い | リスク軽減策を追加 |
-| Resource Concern | 想定以上の工数 | 優先度再評価 |
+Preferred adjustments:
 
-### Sherpa → Spark Feedback Format
-
-```markdown
-## SHERPA_TO_SPARK_FEEDBACK
-
-**Feature**: [Feature name from Spark proposal]
-**Proposal Doc**: [Link]
-**Feedback Type**: [Feasibility / Scope / Dependency / Risk / Resource]
-
-### Breakdown Attempt Summary
-
-**Total Steps Identified**: [N]
-**Estimated Total Time**: [X hours]
-**High Risk Steps**: [N] (threshold: 0-1 acceptable)
-
-### Feasibility Concerns
-
-| Concern | Affected Steps | Severity | Suggestion |
-...
-```
-
-### Spark Response to Feedback
-
-```markdown
-## SPARK_ITERATION_ON_SHERPA_FEEDBACK
-
-**Original Proposal**: [Link]
-**Sherpa Feedback**: [Link or summary]
-**Iteration**: v2
-
-### Accepted Adjustments
-
-| Sherpa Suggestion | Spark Decision | Rationale |
-|-------------------|----------------|-----------|
-| [Suggestion 1] | [Accept/Reject/Modify] | [Why] |
-| [Suggestion 2] | [Accept/Reject/Modify] | [Why] |
-
-### Revised Scope
-
-...
-```
-
----
-
-## Feasibility Concerns → Scope Adjustment
-
-実現可能性の懸念に基づくスコープ調整パターン。
-
-### Adjustment Decision Matrix
-
-| Concern Type | Impact | Preferred Adjustment |
-|--------------|--------|---------------------|
-| 技術的に不可能 | Critical | 機能削除 or 代替アプローチ |
-| 工数が予算超過 | High | Phase分割 or MVP縮小 |
-| 外部依存がブロック | High | Mock化 or 非同期対応 |
-| 品質リスク | Medium | 追加テスト要件 or 段階リリース |
-| パフォーマンス懸念 | Medium | 最適化要件追加 or 制限追加 |
-
-### Scope Adjustment Template
-
-```markdown
-## SCOPE_ADJUSTMENT
-
-**Original Feature**: [Feature name]
-**Adjustment Reason**: [Feasibility concern from Sherpa]
-
-### Impact Analysis
-
-**Original Scope Impact**:
-| Metric | Original | Adjusted | Change |
-|--------|----------|----------|--------|
-| User value | [High/Med/Low] | [High/Med/Low] | [+/-/=] |
-| Effort | [X hours] | [Y hours] | [-Z%] |
-| Risk | [High/Med/Low] | [High/Med/Low] | [Reduced/Same] |
-
-### Adjustment Options
-...
-```
-
----
+| Concern type | Impact | Preferred adjustment |
+| --- | --- | --- |
+| technically impossible | Critical | remove the feature or replace the approach |
+| effort exceeds budget | High | phase split or MVP reduction |
+| external dependency blocks progress | High | mock, async follow-up, or phased release |
+| quality risk | Medium | add tests or staged release |
+| performance concern | Medium | add limits or optimization requirements |
 
 ## Integration Workflow
 
-### Full Flow: Spark → Sherpa → Builder
+Flow:
+- Spark drafts the proposal
+- send to `Sherpa` if complexity or uncertainty is material
+- send directly to `Builder` only for simple, low-risk work
+- if Sherpa pushes back, iterate the proposal before build
 
-```
-Spark Proposal Created
-        │
-        ├── Complex? ───────────────────────────────┐
-        │      │                                     │
-        │      ↓                                     │
-        │   SPARK_TO_SHERPA_HANDOFF                  │
-        │      │                                     │
-        │      ↓                                     │
-        │   Sherpa Breakdown                         │
-        │      │                                     │
-        │      ├── OK ────────→ SHERPA_TO_BUILDER   │
-        │      │                      │              │
-        │      │                      ↓              │
-        │      │                   Builder           │
-        │      │                      │              │
-...
-```
+## Handoff Checklists
 
-### Handoff Checklists
+Before Sherpa handoff:
+- user story is clear
+- acceptance criteria are testable
+- DDD hints are suggested, not over-specified
+- API requirements are listed when relevant
+- priority is explicit
 
-**Before Sherpa Handoff**:
-- [ ] User story is complete and clear
-- [ ] Acceptance criteria are testable
-- [ ] DDD patterns are suggested (not mandated)
-- [ ] API requirements are specified if applicable
-- [ ] Priority is clear
-
-**Before Builder Direct Handoff**:
-- [ ] Feature is simple (< 4 hours estimate)
-- [ ] Existing patterns can be followed
-- [ ] No external dependencies pending
-- [ ] Low risk
-- [ ] All technical requirements specified
-
-**After Sherpa Feedback**:
-- [ ] Review all concerns
-- [ ] Decide on adjustment approach
-- [ ] Update proposal document
-- [ ] Communicate scope changes to stakeholders
-- [ ] Re-submit for breakdown
+After Sherpa feedback:
+- review every concern
+- choose the adjustment path
+- update the proposal document
+- communicate scope changes
+- resubmit if needed

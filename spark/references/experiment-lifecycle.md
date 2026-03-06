@@ -1,326 +1,180 @@
 # Spark Experiment Lifecycle Reference
 
-A/Bテスト結果に基づく提案イテレーションのガイド。
+Purpose: decide what Spark should do after an experiment, including ship, pivot, extend, or kill decisions.
 
----
+## Contents
+- Verdict matrix
+- Iteration packets
+- Inconclusive flow
+- Pivot patterns
+- Sample-size recalculation
+- Guardrail violations
+- Iteration metrics
 
-## Result → Decision Matrix
+## Result To Decision Matrix
 
-テスト結果に基づく意思決定フレームワーク。
+| Verdict | Primary metric | Guardrail | Decision | Next action |
+| --- | --- | --- | --- | --- |
+| `VALIDATED` | significant positive | no regression | `SHIP` | proceed to implementation |
+| `INVALIDATED` | significant negative or no effect | n/a | `KILL` or `PIVOT` | archive or restate the hypothesis |
+| `INCONCLUSIVE` | not significant | n/a | `EXTEND` or `ITERATE` | gather more data or redesign |
+| `GUARDRAIL_VIOLATED` | positive | significant negative | `KILL` | do not ship without a new approach |
 
-### Decision Matrix
+Detailed verdict rules:
+- `VALIDATED`
+  - primary metric improved with `p < 0.05`
+  - effect size meets the MDE
+  - no guardrail metric regressed materially
+- `INVALIDATED`
+  - primary metric regressed, or
+  - no meaningful change after adequate sample and duration
+- `INCONCLUSIVE`
+  - significance was not reached
+  - sample, duration, or variance likely blocked interpretation
+- `GUARDRAIL_VIOLATED`
+  - the main metric improved, but a guardrail regression makes release unsafe
 
-| Verdict | Primary Metric | Guardrail | Decision | Next Action |
-|---------|----------------|-----------|----------|-------------|
-| **VALIDATED** | Significant positive | No regression | **Ship** | Proceed to implementation |
-| **INVALIDATED** | Significant negative OR No effect | - | **Kill or Pivot** | Archive or pivot hypothesis |
-| **INCONCLUSIVE** | Not significant | - | **Extend or Iterate** | More data or modified test |
-| **GUARDRAIL_VIOLATED** | Positive | Significant negative | **Kill** | Cannot ship, analyze tradeoffs |
+## Iteration Packets
 
-### Detailed Verdict Definitions
+### `## EXPERIMENT_TO_SPARK_ITERATION`
 
-```markdown
-## VALIDATED
-- Primary metric shows statistically significant improvement (p < 0.05)
-- Effect size meets or exceeds MDE (Minimum Detectable Effect)
-- No guardrail metrics significantly regressed
-- Decision: SHIP
+Required fields:
+- `Hypothesis ID`
+- `Test Name`
+- `Duration`
+- `Sample Size`
+- `Results Summary`
+- `Statistical Confidence` (`90% / 95% / 99%`)
+- `Experiment Verdict`
 
-## INVALIDATED
-- Primary metric shows significant negative effect, OR
-- Primary metric shows no meaningful change after adequate sample
-- Decision: KILL (archive learnings) or PIVOT (new hypothesis)
+### `## SPARK_ITERATION_RESPONSE`
 
-## INCONCLUSIVE
-- Statistical significance not reached
-- Sample size may be insufficient
-- Test duration may be too short
-...
-```
+Required fields:
+- `Hypothesis ID`
+- `Original Proposal`
+- `Experiment Verdict`
+- `Decision` (`SHIP / ITERATE / PIVOT / KILL / EXTEND`)
+- `Rationale`
+- `Next Steps`
 
----
+## Inconclusive Handling
 
-## EXPERIMENT_RESULT_TO_SPARK_ITERATION
+### `## Inconclusive Result Analysis`
 
-実験結果を受けてSparkが次のアクションを決定するためのフォーマット。
+Check:
+- actual vs required sample size
+- actual vs planned duration
+- traffic allocation
+- effect size vs expected MDE
+- variance and implementation quality
+- seasonal or external noise
 
-### Experiment → Spark Result Handoff
+Decision rules:
+- if the trend matches the hypothesis and more data is achievable in `2 weeks`, `EXTEND`
+- if the trend matches but the sample requirement is unrealistic, either `KILL` for tiny effects or `ITERATE` for strategically important ideas
+- if there is no clear trend, inspect instrumentation and redesign before retesting
 
-```markdown
-## EXPERIMENT_TO_SPARK_ITERATION
+## Pivot Patterns
 
-**Hypothesis ID**: H-[XXX]
-**Test Name**: [Test name]
-**Duration**: [Start] → [End]
-**Sample Size**: Control: [N], Treatment: [N]
+| Pivot type | Use when | Example |
+| --- | --- | --- |
+| `Scope Pivot` | the idea is too broad or too narrow | all users -> power users only |
+| `Mechanism Pivot` | the problem is right but the solution is wrong | modal -> inline notification |
+| `Metric Pivot` | the success metric was weak | clicks -> time on page |
+| `Timing Pivot` | the touchpoint is wrong | homepage -> post-signup |
+| `Channel Pivot` | the delivery surface is wrong | in-app -> email |
 
-**Results Summary**:
-| Metric | Control | Treatment | Δ | P-value | Significant? |
-|--------|---------|-----------|---|---------|--------------|
-| [Primary] | [Val] | [Val] | [±X%] | [p] | [Yes/No] |
-| [Secondary] | [Val] | [Val] | [±X%] | [p] | [Yes/No] |
-| [Guardrail] | [Val] | [Val] | [±X%] | [p] | [Regressed?] |
+### `## HYPOTHESIS_PIVOT`
 
-**Statistical Confidence**: [90% / 95% / 99%]
-...
-```
-
-### Spark Iteration Response
-
-```markdown
-## SPARK_ITERATION_RESPONSE
-
-**Hypothesis ID**: H-[XXX]
-**Original Proposal**: [Link to original proposal]
-**Experiment Verdict**: [VALIDATED/INVALIDATED/INCONCLUSIVE/GUARDRAIL_VIOLATED]
-
-**Decision**: [SHIP / ITERATE / PIVOT / KILL / EXTEND]
-
-**Rationale**:
-[Explanation based on results]
-
-**Next Steps**:
-[ ] [Specific action based on decision]
-[ ] [Specific action based on decision]
-
-...
-```
-
----
-
-## Inconclusive結果の対応フロー
-
-統計的有意性に達しなかった場合の対応ガイド。
-
-### Inconclusive Analysis Checklist
-
-```markdown
-## Inconclusive Result Analysis
-
-**Test Details**:
-- Actual sample size: [N] vs Required: [N]
-- Actual duration: [X days] vs Planned: [Y days]
-- Traffic allocation: [X%]
-
-**Possible Causes**:
-- [ ] Insufficient sample size
-- [ ] Test duration too short
-- [ ] Effect size smaller than expected
-- [ ] High variance in data
-- [ ] Implementation issues
-- [ ] Seasonal/external factors
-
-...
-```
-
-### Inconclusive Decision Tree
-
-```
-Inconclusive Result
-        │
-        ├── Trend matches hypothesis?
-        │   │
-        │   ├── Yes → Calculate required sample size
-        │   │          │
-        │   │          ├── Achievable in 2 weeks? → EXTEND
-        │   │          │
-        │   │          └── Not achievable? → Evaluate:
-        │   │                    │
-        │   │                    ├── Effect too small to matter → KILL
-        │   │                    │
-        │   │                    └── Strategic importance high → ITERATE (amplify effect)
-        │   │
-        │   └── No clear trend →
-...
-```
-
----
-
-## Hypothesis Pivot Patterns
-
-仮説を軌道修正するパターン。
-
-### Pivot Type Matrix
-
-| Pivot Type | When to Use | Example |
-|------------|-------------|---------|
-| **Scope Pivot** | Feature too broad/narrow | "All users" → "Power users only" |
-| **Mechanism Pivot** | Right problem, wrong solution | Modal → Inline notification |
-| **Metric Pivot** | Wrong success measure | Clicks → Time on page |
-| **Timing Pivot** | Wrong moment in journey | Homepage → Post-signup |
-| **Channel Pivot** | Wrong touchpoint | In-app → Email |
-
-### Pivot Documentation Template
-
-```markdown
-## HYPOTHESIS_PIVOT
-
-**Original Hypothesis**: H-[XXX]
-**New Hypothesis**: H-[XXX]-pivot or H-[YYY]
-
-**Pivot Type**: [Scope/Mechanism/Metric/Timing/Channel]
-
-**Original Statement**:
-- We believed: [Original assumption]
-- For: [Original target]
-- Would achieve: [Original outcome]
-- Measured by: [Original metric]
-
-**Learnings from Test**:
-- What worked: [Positive findings]
-...
-```
-
----
+Required fields:
+- `Original Hypothesis`
+- `New Hypothesis`
+- `Pivot Type`
+- `Original Statement`
+- `Learnings from Test`
+- `What Changes Next`
 
 ## Sample Size Recalculation
 
-テスト延長・再設計時のサンプルサイズ再計算ガイド。
+Recalculate when:
+- observed effect is smaller than expected
+- variance is higher than planned
+- confidence requirements changed
+- prior results were inconclusive
 
-### When to Recalculate
+### `## Sample Size Recalculation`
 
-- Observed effect smaller than expected MDE
-- Variance higher than anticipated
-- Confidence level requirements changed
-- Test showed inconclusive results
+Required fields:
+- `Original Assumptions`
+- `Observed Reality`
+- `Recalculated Requirements`
 
-### Recalculation Inputs
-
-```markdown
-## Sample Size Recalculation
-
-**Original Assumptions**:
-- Baseline conversion: [X%]
-- Expected MDE: [Y%]
-- Confidence level: [90%/95%/99%]
-- Power: [80%/90%]
-- Original sample needed: [N]
-
-**Observed Reality**:
-- Actual baseline: [X%] (vs expected [Y%])
-- Observed effect: [Z%] (vs expected MDE [Y%])
-- Observed variance: [Higher/Lower/Same]
-
-**Recalculated Requirements**:
-...
-```
-
-### Quick Reference: Sample Size Formula
+Quick reference:
 
 ```
 n = (Zα/2 + Zβ)² × 2 × p × (1-p) / δ²
+```
 
 Where:
-- n = sample size per group
-- Zα/2 = Z-score for confidence (1.96 for 95%)
-- Zβ = Z-score for power (0.84 for 80%)
-- p = baseline conversion rate
-- δ = minimum detectable effect (absolute)
-```
+- `Zα/2 = 1.96` for `95%` confidence
+- `Zβ = 0.84` for `80%` power
 
----
+## Guardrail Violations
 
-## Guardrail Metric Violations対応
+| Guardrail type | Severity | Typical action |
+| --- | --- | --- |
+| Revenue | Critical | always kill |
+| User experience (`NPS`, `CSAT`) | High | kill unless a strategic exception is justified |
+| Performance (latency, errors) | High | kill or fix before ship |
+| Engagement (secondary) | Medium | evaluate tradeoff |
+| Operational (cost, support) | Medium | evaluate tradeoff |
 
-ガードレールメトリクス違反時の対応ガイド。
+### `## GUARDRAIL_VIOLATION_ANALYSIS`
 
-### Guardrail Violation Severity
-
-| Guardrail Type | Violation Severity | Typical Action |
-|----------------|-------------------|----------------|
-| Revenue | Critical | Always kill |
-| User Experience (NPS, CSAT) | High | Kill unless strategic |
-| Performance (latency, errors) | High | Kill or fix before ship |
-| Engagement (secondary) | Medium | Evaluate tradeoff |
-| Operational (cost, support tickets) | Medium | Evaluate tradeoff |
-
-### Violation Analysis Template
-
-```markdown
-## GUARDRAIL_VIOLATION_ANALYSIS
-
-**Hypothesis**: H-[XXX]
-**Violated Guardrail**: [Metric name]
-**Primary Metric Result**: [+X% improvement, p=Y]
-
-**Violation Details**:
-- Guardrail metric: [Name]
-- Control value: [X]
-- Treatment value: [Y]
-- Change: [±Z%]
-- P-value: [p]
-- Threshold: [Acceptable regression limit]
-
-**Impact Assessment**:
-...
-```
-
----
+Required fields:
+- `Hypothesis`
+- `Violated Guardrail`
+- `Primary Metric Result`
+- `Violation Details`
+  - control
+  - treatment
+  - change
+  - p-value
+  - threshold
+- `Impact Assessment`
 
 ## Iteration Tracking
 
-複数イテレーションを追跡するテンプレート。
+### `## Hypothesis Evolution: [Feature Area]`
 
-### Hypothesis Evolution Log
+Track:
+- original hypothesis
+- changed version such as `H-001-v2`
+- result per cycle
+- learning per cycle
 
-```markdown
-## Hypothesis Evolution: [Feature Area]
-
-### H-001 (Original)
-- Statement: [Original hypothesis]
-- Test dates: [Start - End]
-- Result: INCONCLUSIVE
-- Learning: [Key insight]
-
-### H-001-v2 (Iteration)
-- Changes: [What changed from v1]
-- Statement: [Updated hypothesis]
-- Test dates: [Start - End]
-- Result: INVALIDATED
-- Learning: [Key insight]
-
-...
-```
-
-### Iteration Velocity Metrics
+Velocity targets:
 
 | Metric | Definition | Target |
-|--------|------------|--------|
-| Iterations to validation | Number of test cycles | < 3 |
-| Time to decision | Days from first test to final decision | < 30 days |
-| Learning quality | Actionable insights per iteration | > 2 |
-| Pivot success rate | % of pivots that lead to validation | > 30% |
+| --- | --- | --- |
+| Iterations to validation | test cycles to a clear outcome | `< 3` |
+| Time to decision | first test to final decision | `< 30 days` |
+| Learning quality | actionable insights per iteration | `> 2` |
+| Pivot success rate | pivots that later validate | `> 30%` |
 
----
+## Integration Rules
 
-## Integration with Other Patterns
+| Result | Related pattern | Integration |
+| --- | --- | --- |
+| `VALIDATED` | implementation handoff | proceed to `SPARK_TO_SHERPA_HANDOFF` |
+| `INVALIDATED` | competitive review | check whether competitors solved the problem better |
+| `INCONCLUSIVE` | persona validation | request qualitative input from `Echo` |
+| `GUARDRAIL_VIOLATED` | security review | inspect whether `Sentinel` concerns are driving the failure |
 
-### Experiment Lifecycle × Other Patterns
+### `## POST_EXPERIMENT_HANDOFF`
 
-| Result | Related Pattern | Integration |
-|--------|-----------------|-------------|
-| VALIDATED | Pattern F: Implementation Handoff | Proceed to Sherpa |
-| INVALIDATED | Pattern D: Competitive | Check if competitors have solution |
-| INCONCLUSIVE | Pattern A: Echo Validation | Get qualitative user feedback |
-| GUARDRAIL_VIOLATED | Pattern H: Security Review | Check if security concern caused it |
-
-### Post-Experiment Handoff
-
-```markdown
-## POST_EXPERIMENT_HANDOFF
-
-**Hypothesis**: H-[XXX]
-**Final Verdict**: [SHIP / KILL / PIVOT]
-
-**If SHIP → Pattern F Handoff**:
-- Use SPARK_TO_SHERPA_HANDOFF format
-- Include: Test results as evidence
-- Priority: [Based on effect size]
-
-**If KILL → Documentation**:
-- Archive in: `.agents/spark-experiments.md`
-- Key learnings: [List]
-- Related hypotheses affected: [List]
-
-...
-```
+Required fields:
+- `Hypothesis`
+- `Final Verdict` (`SHIP / KILL / PIVOT`)
+- implementation path if shipping
+- archival path and learnings if killing

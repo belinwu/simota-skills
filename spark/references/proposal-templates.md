@@ -1,150 +1,98 @@
 # Spark Proposal Templates Reference
 
-Templates and examples for feature proposals.
+Purpose: define the canonical feature proposal structure and the interaction templates Spark may use to clarify scope or validation choices.
 
-## Enhanced Spark Proposal Template
+## Contents
+- Full proposal template
+- Minimal proposal template
+- Decision policy example
+- Interaction question templates
+
+## Canonical Proposal Template
+
+Use this structure for the default Spark deliverable:
 
 ```markdown
-# Feature: User Activity Dashboard
+# Feature: [Feature Name]
 
 ## Input Sources
-<!-- Check which sources informed this proposal -->
-- [x] Scout (Technical investigation)
-- [x] Echo (Latent needs from persona walkthrough)
-- [ ] Researcher (User research insights)
-- [ ] Voice (Aggregated user feedback)
-- [ ] Compete (Competitive gap analysis)
-- [ ] Pulse (Funnel/metric data)
+- [ ] Scout
+- [ ] Echo
+- [ ] Researcher
+- [ ] Voice
+- [ ] Compete
+- [ ] Pulse
 
 ## JTBD Foundation
-
-**Job Statement**: When I notice unfamiliar activity on my account,
-I want to verify my login history, so I can confirm my account is secure.
-
-**Functional Job**: Review past access events quickly and completely
-**Emotional Job**: Feel confident and in control of account security
-**Social Job**: Appear security-conscious to team/organization
-
-**Force Balance**:
-| Force | Current State | Design Response |
-|-------|---------------|-----------------|
-| Push | No visibility = anxiety | Surface activity proactively |
-| Pull | Imagined peace of mind | Clear, scannable history |
-| Anxiety | "What if I see something bad?" | Clear next steps for issues |
-| Inertia | "Current login works fine" | Zero-friction access |
+- Job Statement
+- Functional Job
+- Emotional Job
+- Social Job
+- Force Balance
 
 ## Proposal Details
-
-**Persona**: Power User (daily active, efficiency-focused)
-
-**Priority**: Quick Win (Impact: 5, Effort: 2)
-
-**RICE Score**: (500 × 2 × 80%) / 0.5 = 1600
-
-**User Story**: As a user, I want to see my past login history
-so that I can feel secure and track my activity.
-
-**Hypothesis**: We believe that showing login history will
-increase user trust and reduce support tickets about
-"suspicious activity" by 30%.
-
-**Feasibility**: High. We already store `last_login` and
-`ip_address` in the `User` table.
-
-**Requirements**:
-- [ ] Create API endpoint `/api/activity/history`
-- [ ] UI Component `ActivityTable`
-- [ ] Read-only view, no write operations
-- [ ] Paginated results (20 per page)
-
-**Acceptance Criteria**:
-- [ ] User can see last 50 login events
-- [ ] Each event shows: date, time, IP, device
-- [ ] Page loads in < 2 seconds
+- Persona
+- Priority
+- RICE Score
+- User Story
+- Hypothesis
+- Feasibility
+- Requirements
+- Acceptance Criteria
 
 ## Validation Plan
-
-**Pre-Implementation**:
-- [ ] Echo validation with target persona
-- [ ] Scout technical feasibility confirmed
-
-**Post-Implementation**:
-- [ ] A/B test with Experiment (2 weeks)
-- [ ] Success metric: Support ticket reduction ≥30%
-- [ ] Secondary metric: Feature adoption ≥40%
-
-**Decision Criteria**:
-- Ship if: Ticket reduction ≥30%
-- Iterate if: Ticket reduction 15-30%
-- Kill if: Ticket reduction <15%
+- Pre-Implementation
+- Post-Implementation
+- Decision Criteria
 
 ## Next Steps
-
-**Handoff to**: Sherpa (task breakdown) → Forge (prototype) → Builder
+- Recommended handoff
 ```
-
----
 
 ## Minimal Proposal Template
 
-For simpler proposals, a minimal format is acceptable:
+Use this only when the idea is straightforward:
 
 ```markdown
-# Feature: User Activity Dashboard
+# Feature: [Feature Name]
 
-**Persona**: Power User (daily active, efficiency-focused)
-
-**Priority**: Quick Win (Impact: 5, Effort: 2)
-
-**RICE Score**: (500 × 2 × 80%) / 0.5 = 1600
-
-**User Story**: As a user, I want to see my past login history
-so that I can feel secure and track my activity.
-
-**Hypothesis**: We believe that showing login history will
-increase user trust and reduce support tickets about
-"suspicious activity" by 30%.
-
-**Feasibility**: High. We already store `last_login` and
-`ip_address` in the `User` table.
+**Persona**: [Primary persona]
+**Priority**: [Impact-Effort quadrant]
+**RICE Score**: [Calculation]
+**User Story**: As a [persona], I want to [action] so that [benefit].
+**Hypothesis**: [Measurable statement]
+**Feasibility**: [Existing data, logic, or assumptions]
 
 **Requirements**:
-- [ ] Create API endpoint `/api/activity/history`
-- [ ] UI Component `ActivityTable`
-- [ ] Read-only view, no write operations
-- [ ] Paginated results (20 per page)
+- [Requirement]
 
 **Acceptance Criteria**:
-- [ ] User can see last 50 login events
-- [ ] Each event shows: date, time, IP, device
-- [ ] Page loads in < 2 seconds
+- [Criterion]
 ```
 
----
+## Example Decision Policy
 
-## Bad Proposal Example
+Keep this style when a proposal includes a go/no-go policy:
+- validation with `Experiment` for `2 weeks`
+- success metric threshold such as `>= 30%`
+- secondary adoption threshold such as `>= 40%`
+- iterate band such as `15-30%`
+- kill threshold such as `< 15%`
 
-Avoid proposals like this:
+Use project-appropriate numbers, but keep the logic explicit.
 
-```markdown
-# Idea: Add Blockchain
+## Bad Proposal Check
 
-Let's put everything on the blockchain to make it secure.
-(Why? How? What data? No persona, no hypothesis, no metrics.)
-```
-
-**Issues**:
-- No target persona
-- No testable hypothesis
-- No feasibility assessment
-- No acceptance criteria
-- Vague scope without specifics
-
----
+Reject proposals that:
+- have no persona
+- have no hypothesis
+- have no feasibility note
+- have no acceptance criteria
+- chase novelty without a product rationale
 
 ## Interaction Trigger Question Templates
 
-### BEFORE_FEATURE_SCOPE
+### `BEFORE_FEATURE_SCOPE`
 
 ```yaml
 questions:
@@ -160,7 +108,7 @@ questions:
     multiSelect: false
 ```
 
-### ON_PRIORITY_ASSESSMENT
+### `ON_PRIORITY_ASSESSMENT`
 
 ```yaml
 questions:
@@ -178,7 +126,7 @@ questions:
     multiSelect: false
 ```
 
-### ON_PERSONA_SELECTION
+### `ON_PERSONA_SELECTION`
 
 ```yaml
 questions:
@@ -196,7 +144,7 @@ questions:
     multiSelect: false
 ```
 
-### ON_SCOUT_INVESTIGATION
+### `ON_SCOUT_INVESTIGATION`
 
 ```yaml
 questions:
@@ -206,13 +154,13 @@ questions:
       - label: "Request Scout investigation (Recommended)"
         description: "Have Scout analyze codebase for feasibility"
       - label: "Assume feasibility"
-        description: "Proceed with proposal, note assumptions"
+        description: "Proceed with proposal and note assumptions"
       - label: "Scope down"
-        description: "Reduce feature scope to known-feasible parts"
+        description: "Reduce the feature to known-feasible parts"
     multiSelect: false
 ```
 
-### ON_EXPERIMENT_REQUEST
+### `ON_EXPERIMENT_REQUEST`
 
 ```yaml
 questions:
@@ -220,17 +168,17 @@ questions:
     header: "Validation"
     options:
       - label: "A/B test with Experiment (Recommended)"
-        description: "Statistical validation with control group"
+        description: "Statistical validation with a control group"
       - label: "Prototype with Forge first"
-        description: "Quick prototype before A/B test"
+        description: "Prototype before a formal test"
       - label: "Validate with Echo personas"
-        description: "Persona walkthrough instead of A/B test"
+        description: "Use persona walkthroughs instead of an experiment"
       - label: "Skip validation, proceed to implementation"
-        description: "High confidence, validation not needed"
+        description: "Use only when confidence is already high"
     multiSelect: false
 ```
 
-### ON_EXPERIMENT_RESULT
+### `ON_EXPERIMENT_RESULT`
 
 ```yaml
 questions:
@@ -238,17 +186,17 @@ questions:
     header: "Result Action"
     options:
       - label: "Proceed based on verdict (Recommended)"
-        description: "Ship if validated, iterate if inconclusive, kill if invalidated"
+        description: "Ship, iterate, or kill based on the result"
       - label: "Request deeper analysis"
-        description: "Need more data or segment breakdown"
+        description: "Inspect segments or methodology more deeply"
       - label: "Iterate and re-test"
-        description: "Modify hypothesis and run new test"
+        description: "Adjust the hypothesis and run another test"
       - label: "Override verdict with justification"
-        description: "Proceed despite results (document reasoning)"
+        description: "Proceed only with documented reasoning"
     multiSelect: false
 ```
 
-### ON_VALIDATION_LOOP
+### `ON_VALIDATION_LOOP`
 
 ```yaml
 questions:
@@ -256,12 +204,12 @@ questions:
     header: "Next Step"
     options:
       - label: "Hand off to Sherpa for breakdown (Recommended)"
-        description: "Proposal approved, ready for implementation planning"
+        description: "Ready for implementation planning"
       - label: "Request Experiment validation"
-        description: "Need A/B test before implementation"
+        description: "Need quantitative evidence before build"
       - label: "Iterate on proposal"
-        description: "Echo found issues, revise proposal"
+        description: "Revise the draft before handoff"
       - label: "Hand off to Forge for prototype"
-        description: "Need prototype before full implementation"
+        description: "Prototype before committing to build"
     multiSelect: false
 ```
