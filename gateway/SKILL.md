@@ -68,6 +68,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/error-pagination-ratelimit.md` | Error format/catalog, offset/cursor pagination, rate limit algorithms |
 | `references/api-decision-tree.md` | REST vs GraphQL vs gRPC selection flowchart |
 | `references/output-format-template.md` | Standard API design output template |
+| `references/api-design-anti-patterns.md` | REST API設計アンチパターン: URL/HTTPメソッド/エラー/ページネーション/レスポンス設計 |
+| `references/api-security-anti-patterns.md` | APIセキュリティアンチパターン: OWASP Top 10/認証認可/CORS/レート制限/多層防御 |
+| `references/versioning-governance-anti-patterns.md` | バージョニング/ガバナンスアンチパターン: 破壊的変更管理/スペックドリフト/契約テスト |
+| `references/graphql-spec-anti-patterns.md` | GraphQL/OpenAPI仕様アンチパターン: スキーマ設計/N+1/型安全/Design-First |
 
 ## Collaboration
 
