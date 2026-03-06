@@ -1,12 +1,15 @@
 # Handoff Formats
 
-Accordの全ハンドオフ方向のYAMLテンプレート。
+Purpose: Use this file when Accord must consume or emit a structured handoff payload.
 
----
+## Contents
 
-## Inbound Handoffs（Accord が受け取る）
+- Inbound handoffs
+- Outbound handoffs
 
-### RESEARCHER_TO_ACCORD
+## Inbound Handoffs
+
+### `RESEARCHER_TO_ACCORD`
 
 ```yaml
 RESEARCHER_TO_ACCORD:
@@ -14,17 +17,17 @@ RESEARCHER_TO_ACCORD:
   target: Accord
   payload:
     insights:
-      user_needs: ["[ユーザーニーズ]"]
-      pain_points: ["[ペインポイント]"]
-      journey_highlights: ["[ジャーニーの重要ポイント]"]
-    personas: ["[ペルソナ名: 概要]"]
+      user_needs: ["[need]"]
+      pain_points: ["[pain point]"]
+      journey_highlights: ["[journey highlight]"]
+    personas: ["[persona: summary]"]
     evidence:
-      research_method: "[インタビュー/サーベイ/観察]"
+      research_method: "[interview/survey/observation]"
       sample_size: "[N]"
-    expected_output: "ペルソナ・インサイト反映済み仕様パッケージ"
+    expected_output: "Specification package with personas and insights reflected"
 ```
 
-### CAST_TO_ACCORD
+### `CAST_TO_ACCORD`
 
 ```yaml
 CAST_TO_ACCORD:
@@ -32,17 +35,17 @@ CAST_TO_ACCORD:
   target: Accord
   payload:
     personas:
-      - name: "[ペルソナ名]"
-        role: "[役割]"
-        goals: ["[目標]"]
-        frustrations: ["[不満]"]
-        tech_literacy: "[高/中/低]"
+      - name: "[persona]"
+        role: "[role]"
+        goals: ["[goal]"]
+        frustrations: ["[frustration]"]
+        tech_literacy: "[high/medium/low]"
     context:
-      persona_source: "[生成/既存レジストリ]"
-    expected_output: "L0ターゲットユーザー定義への反映"
+      persona_source: "[generated/registry]"
+    expected_output: "Persona-informed L0 target user definition"
 ```
 
-### VOICE_TO_ACCORD
+### `VOICE_TO_ACCORD`
 
 ```yaml
 VOICE_TO_ACCORD:
@@ -51,17 +54,15 @@ VOICE_TO_ACCORD:
   payload:
     feedback:
       nps_score: "[0-10]"
-      themes: ["[フィードバックテーマ]"]
-      quotes: ["[代表的なユーザー声]"]
+      themes: ["[theme]"]
+      quotes: ["[quote]"]
     sentiment: "[Positive/Neutral/Negative]"
-    expected_output: "フィードバック反映済み仕様パッケージ"
+    expected_output: "Specification package updated with stakeholder or user feedback"
 ```
 
----
+## Outbound Handoffs
 
-## Outbound Handoffs（Accord が送る）
-
-### ACCORD_TO_SHERPA
+### `ACCORD_TO_SHERPA`
 
 ```yaml
 ACCORD_TO_SHERPA:
@@ -76,15 +77,15 @@ ACCORD_TO_SHERPA:
         should: ["REQ-002"]
         could: ["REQ-005"]
     deliverables:
-      l0_vision: "[ビジョン概要]"
-      requirements: ["REQ-XXX: 概要"]
+      l0_vision: "[vision summary]"
+      requirements: ["REQ-XXX: summary"]
     context:
       teams: ["Biz", "Dev", "Design"]
-      timeline: "[マイルストーン]"
-    expected_output: "Atomic Steps（15分以内の単位）への分解"
+      timeline: "[milestone]"
+    expected_output: "Atomic steps suitable for execution planning"
 ```
 
-### ACCORD_TO_BUILDER
+### `ACCORD_TO_BUILDER`
 
 ```yaml
 ACCORD_TO_BUILDER:
@@ -92,21 +93,23 @@ ACCORD_TO_BUILDER:
   target: Builder
   payload:
     l2_dev:
-      architecture: "[アーキテクチャ概要]"
-      apis: ["API-001: 概要"]
-      data_models: ["DATA-001: 概要"]
-      tradeoffs: ["[選択: 理由]"]
-      dependencies: ["[依存先: バージョン]"]
+      architecture: "[summary]"
+      apis: ["API-001: summary"]
+      data_models: ["DATA-001: summary"]
+      tradeoffs: ["[choice: reason]"]
+      dependencies: ["[dependency: version]"]
     requirements:
-      must: ["REQ-XXX: 実装対象"]
+      must: ["REQ-XXX: build target"]
     acceptance_criteria:
       bdd_scenarios: ["AC-XXX: Given-When-Then"]
     context:
-      non_functional: { performance: "[基準]", security: "[基準]" }
-    expected_output: "L2-Dev に基づく実装"
+      non_functional:
+        performance: "[target]"
+        security: "[target]"
+    expected_output: "Implementation based on L2-Dev"
 ```
 
-### ACCORD_TO_RADAR
+### `ACCORD_TO_RADAR`
 
 ```yaml
 ACCORD_TO_RADAR:
@@ -116,20 +119,20 @@ ACCORD_TO_RADAR:
     bdd_scenarios:
       - id: "AC-XXX"
         linked_req: "REQ-XXX"
-        given: "[前提条件]"
-        when: "[操作]"
-        then: "[期待結果]"
+        given: "[precondition]"
+        when: "[action]"
+        then: "[expected result]"
     edge_cases:
-      - case: "[ケース名]"
-        input: "[入力]"
-        expected: "[期待動作]"
+      - case: "[case]"
+        input: "[input]"
+        expected: "[expected behavior]"
     coverage_target:
       must_reqs: ["REQ-XXX"]
       scope: "[Full/Standard/Lite]"
-    expected_output: "BDDシナリオに基づくテストケース"
+    expected_output: "Test cases derived from BDD scenarios"
 ```
 
-### ACCORD_TO_VOYAGER
+### `ACCORD_TO_VOYAGER`
 
 ```yaml
 ACCORD_TO_VOYAGER:
@@ -139,16 +142,16 @@ ACCORD_TO_VOYAGER:
     acceptance_criteria:
       scenarios: ["AC-XXX: Given-When-Then"]
     user_flows:
-      - flow: "[フロー名]"
-        steps: ["[ステップ1]", "[ステップ2]"]
-        branches: ["[分岐条件 → 代替パス]"]
+      - flow: "[flow]"
+        steps: ["[step1]", "[step2]"]
+        branches: ["[condition -> alternate path]"]
     context:
-      target_env: "[ブラウザ/デバイス]"
+      target_env: "[browser/device]"
       a11y_level: "[WCAG AA/AAA]"
-    expected_output: "E2Eテストシナリオ"
+    expected_output: "E2E scenarios"
 ```
 
-### ACCORD_TO_CANVAS
+### `ACCORD_TO_CANVAS`
 
 ```yaml
 ACCORD_TO_CANVAS:
@@ -158,14 +161,14 @@ ACCORD_TO_CANVAS:
     diagram_requests:
       - type: "[flowchart/sequence/er/state]"
         source: "[L2-Dev/L2-Design/L1]"
-        content: "[図解対象の内容]"
+        content: "[what to render]"
     context:
       format: "[Mermaid/ASCII/draw.io]"
       audience: "[Biz/Dev/Design/All]"
-    expected_output: "仕様パッケージに埋め込む図解"
+    expected_output: "Diagrams that can be embedded into the package"
 ```
 
-### ACCORD_TO_SCRIBE
+### `ACCORD_TO_SCRIBE`
 
 ```yaml
 ACCORD_TO_SCRIBE:
@@ -177,14 +180,14 @@ ACCORD_TO_SCRIBE:
       sections_completed: ["L0", "L1", "L2-Dev", "L3"]
     formal_doc_request:
       type: "[PRD/SRS/HLD/LLD]"
-      audience: "[経営層/開発チーム/外部クライアント]"
+      audience: "[executive/engineering/client]"
       format: "[Markdown/Word/PDF]"
     context:
-      traceability: "[完全/部分的]"
-    expected_output: "正式文書（PRD/SRS等）"
+      traceability: "[complete/partial]"
+    expected_output: "Formalized documentation"
 ```
 
-### ACCORD_TO_LORE
+### `ACCORD_TO_LORE`
 
 ```yaml
 ACCORD_TO_LORE:
@@ -193,13 +196,13 @@ ACCORD_TO_LORE:
   payload:
     pattern:
       type: "SPECIFICATION_PATTERN"
-      context: "[適用コンテキスト]"
+      context: "[context]"
       scope: "[Full/Standard/Lite]"
       effectiveness:
         alignment_score: "[High/Medium/Low]"
-        revisions: "[修正回数]"
-        downstream_adoption: "[採用率]"
-      insight: "[発見したパターン]"
+        revisions: "[count]"
+        downstream_adoption: "[adoption rate]"
+      insight: "[validated pattern]"
       reusable: true
-    expected_output: "ナレッジベースへの登録"
+    expected_output: "Knowledge-base entry"
 ```

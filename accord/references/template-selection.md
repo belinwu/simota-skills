@@ -1,128 +1,62 @@
 # Template Scope Selection Guide
 
-プロジェクトの複雑度に応じて、最適なテンプレートスコープを選択する。
+Purpose: Use this file when choosing `Full`, `Standard`, or `Lite`, or when the scope must be escalated safely.
 
----
+## Contents
 
-## Three Scopes
+- Scope table
+- Decision rules
+- Complexity indicators
+- Escalation rules
 
-| Scope | 要件数 | L0 | L1 | L2 | L3 | 推定作業量 |
-|-------|-------|:--:|:--:|:--:|:--:|----------|
-| **Full** | 12+ REQs | Full | Full | 3セクション全て | Full BDD + Matrix | 2-4時間 |
-| **Standard** | 4-11 REQs | Full | Full | 必要なL2のみ | BDD scenarios | 1-2時間 |
-| **Lite** | 1-3 REQs | Compact | Compact | インライン | Key scenarios only | 30分以内 |
+## Scope Table
 
----
+| Scope | Requirement count | `L0` | `L1` | `L2` | `L3` | Typical effort |
+|---|---:|---|---|---|---|---|
+| `Full` | `12+` | Full | Full | all three sections | full BDD + full traceability | `2-4 hours` |
+| `Standard` | `4-11` | Full | Full | only involved sections | major BDD scenarios | `1-2 hours` |
+| `Lite` | `1-3` | Compact | Compact | inline notes only | key scenarios only | `<= 30 minutes` |
 
-## Scope Decision Tree
+## Default Decision Rules
 
-```
-プロジェクトの性質は？
-├── 新規プロダクト/大規模機能 → Full
-├── 中規模機能追加/改善 → Standard
-└── 小規模修正/バグ修正 → Lite
-
-チーム構成は？
-├── 3チーム全て関与 → Full or Standard
-├── 2チーム関与 → Standard（関与するL2のみ）
-└── 1チーム → Lite
-
-ステークホルダー数は？
-├── 5人以上 → Full（合意形成に詳細が必要）
-├── 3-4人 → Standard
-└── 1-2人 → Lite
-```
-
----
-
-## Full Scope（フルパッケージ）
-
-**使うとき:**
-- 新規プロダクトまたは大規模な機能追加
-- ビジネス・開発・デザイン3チーム全てが深く関与
-- 外部ステークホルダー（経営層、クライアント）への説明が必要
-- 規制・コンプライアンス要件がある
-
-**含むセクション:** L0 + L1 + L2-Biz + L2-Dev + L2-Design + L3 + Meta（全セクション）
-
-**品質基準:**
-- 全REQにBDDシナリオが対応
-- トレーサビリティマトリクス完全
-- 全チームのレビュー・承認必須
-
----
-
-## Standard Scope（標準パッケージ）
-
-**使うとき:**
-- 既存プロダクトへの中規模機能追加
-- 2-3チームが関与（全チームとは限らない）
-- 技術的な複雑さが中程度
-
-**含むセクション:** L0 + L1 + 関与するL2のみ + L3（主要シナリオ）
-
-**省略可能:**
-- 関与しないチームのL2セクション
-- 市場コンテキスト（既存プロダクトの場合）
-- 完全なトレーサビリティマトリクス（主要REQのみ）
-
----
-
-## Lite Scope（軽量パッケージ）
-
-**使うとき:**
-- 小規模な機能改善やバグ修正
-- 1-2チームのみ関与
-- 迅速な合意が必要
-
-**フォーマット:**
-
-```markdown
-# [機能名] — Lite Spec
-
-## 概要（L0 compact）
-**問題:** [1文]
-**解決策:** [1文]
-**KPI:** [1指標]
-
-## 要件（L1 compact）
-- REQ-001: [要件] (Must)
-- REQ-002: [要件] (Should)
-
-## 詳細（L2 inline）
-[技術的な補足やデザイン補足をインラインで記述]
-
-## 受入基準（L3 key scenarios）
-**Given** [前提] **When** [操作] **Then** [期待結果]
-**Given** [異常前提] **When** [操作] **Then** [エラー処理]
-```
-
----
+1. New product or major feature -> `Full`
+2. Medium feature addition or improvement -> `Standard`
+3. Small improvement or bug fix -> `Lite`
+4. `3` teams deeply involved -> bias toward `Full` or `Standard`
+5. `1-2` teams only -> bias toward `Lite` or `Standard`
+6. `5+` stakeholders -> bias toward `Full`
 
 ## Complexity Indicators
 
-スコープ選択を助ける複雑度指標:
+| Indicator | Low -> `Lite` | Medium -> `Standard` | High -> `Full` |
+|---|---|---|---|
+| affected screens | `1-2` | `3-5` | `6+` |
+| API changes | `0-1` | `2-4` | `5+` |
+| database change | none | table change | new table |
+| external integration | none | existing API use | new integration |
+| user-flow impact | minor edit | new flow | flow redesign |
+| stakeholders | `1-2` | `3-4` | `5+` |
+| estimated duration | `1-3 days` | `1-3 weeks` | `1 month+` |
 
-| 指標 | Low (→ Lite) | Medium (→ Standard) | High (→ Full) |
-|------|-------------|---------------------|---------------|
-| 影響する画面数 | 1-2 | 3-5 | 6+ |
-| API変更数 | 0-1 | 2-4 | 5+ |
-| DB変更 | なし | テーブル変更 | 新規テーブル |
-| 外部連携 | なし | 既存API利用 | 新規API連携 |
-| ユーザーフロー変更 | 微修正 | フロー追加 | フロー再設計 |
-| ステークホルダー数 | 1-2 | 3-4 | 5+ |
-| 推定開発期間 | 1-3日 | 1-3週 | 1ヶ月+ |
+## Selection Heuristic
 
-**判定ルール:** High が2つ以上 → Full / Medium が2つ以上 → Standard / それ以外 → Lite
+- `2+` High indicators -> `Full`
+- else `2+` Medium indicators -> `Standard`
+- otherwise -> `Lite`
 
----
+Use `SCOPE_UNCLEAR` when the indicators are mixed and no safe default is obvious.
 
-## Scope Escalation
+## Escalation Rules
 
-Liteで始めて途中で複雑さが判明した場合:
-1. 新たに判明した複雑度指標を評価
-2. 必要なL2セクションを追加（Standard化）
-3. 全L2が必要な場合はFull化
-4. 既存の記述は再利用（書き直し不要）
+- Escalation is always allowed.
+- Demotion is avoided once details exist.
+- Escalate from `Lite` to `Standard` when new `L2` sections become necessary.
+- Escalate from `Standard` to `Full` when all `L2` sections or full traceability become necessary.
 
-**重要:** 上位スコープへの昇格は常に可能。降格は原則しない（情報の削除は危険）。
+## Scope-Specific Traceability
+
+| Scope | Minimum traceability |
+|---|---|
+| `Full` | complete matrix with all required links |
+| `Standard` | `REQ -> AC` plus the involved cross-team links |
+| `Lite` | `REQ -> AC` only |

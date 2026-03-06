@@ -1,78 +1,67 @@
-# Business-Tech Translation (absorbed from Bridge)
+# Business-Tech Translation
 
-Methodology for translating between business requirements and technical implementation. Previously a standalone agent (Bridge), now integrated as an Accord capability.
+Purpose: Use this file when business language must be turned into implementable requirements without losing intent.
 
----
+## Contents
 
-## When to Apply
+- Translation loop
+- Intent mapping
+- Scope-creep detection
+- Glossary cues
+- Communication anti-patterns
 
-Use this methodology when creating Accord specification packages that involve:
-- Business stakeholders with non-technical language
-- Technical teams needing business context
-- Scope creep risks between requirement phases
-- Expectation gaps between teams
+## Translation Loop
 
----
+`CLARIFY -> ALIGN -> GUARD -> DOCUMENT`
 
-## Framework: CLARIFY → ALIGN → GUARD → DOCUMENT
+| Phase | Goal | Typical action |
+|---|---|---|
+| `CLARIFY` | convert vague business intent into explicit requirements | turn vague language into measurable `L1` items |
+| `ALIGN` | remove expectation gaps | compare business and technical interpretations |
+| `GUARD` | prevent scope creep | flag new asks, impact, and trade-offs |
+| `DOCUMENT` | preserve decisions | record assumptions, rationale, and decisions |
 
-| Phase | Purpose | Key Actions |
-|-------|---------|-------------|
-| **CLARIFY** | 要件の翻訳・明確化 | Business language → technical spec, hidden assumptions surfacing |
-| **ALIGN** | 認識の整合 | Gap analysis between stakeholder expectations, trade-off explanation |
-| **GUARD** | スコープ管理 | Scope creep detection, change impact assessment |
-| **DOCUMENT** | 意思決定記録 | Decision log, trade-off rationale, assumption tracking |
+## Intent Mapping
 
----
+| Business says | Translate as | Accord action |
+|---|---|---|
+| "make it fast" | performance requirement | define measurable SLA or KPI |
+| "simple to use" | usability requirement | define usability criteria in `L2-Design` |
+| "secure" | security requirement | define scope and threat expectations in `L1/L2-Dev` |
+| "scalable" | load or growth requirement | define load targets |
+| "like [competitor]" | feature parity request | map the exact capability, not the brand |
+| "ASAP" | urgency, not scope | propose a cut or phased delivery |
+| "can you just..." | likely scope expansion | flag as change impact |
+| "it should be obvious" | implicit requirement | make it explicit in `L1` |
 
-## Intent Translation Patterns
+## Scope-Creep Signals
 
-| Business Says | Technical Meaning | Accord Action |
-|--------------|------------------|---------------|
-| "Make it fast" | Performance requirement | Define measurable SLA in L1 |
-| "Simple to use" | UX requirement | Define usability criteria in L2-Design |
-| "Secure" | Security requirement | Define threat model scope in L2-Dev |
-| "Scalable" | Architecture requirement | Define load targets in L2-Dev |
-| "Like [competitor]" | Feature parity | Map specific features in L1 |
-| "ASAP" | Priority signal | Scope cut proposal, not deadline |
-| "Can you just..." | Scope expansion | Flag as potential scope creep |
-| "It should be obvious" | Implicit requirement | Make explicit in L1 requirements |
+| Signal | Risk | Response |
+|---|---|---|
+| "while we're at it..." | high | defer or split |
+| "can we also add..." | medium | estimate impact and trade-off |
+| "it would be nice if..." | low | track as future enhancement |
+| growing acceptance criteria | high | compare with original `L1` scope |
+| new stakeholder late in the process | medium | re-align `L0` and scope |
 
----
+## Glossary Cues
 
-## Scope Creep Detection
+| Business term | Technical translation |
+|---|---|
+| downtime | service unavailability or SLA target |
+| response | API or UI latency target |
+| security | auth, authorization, encryption, auditability |
+| scalability | load capacity and scaling model |
+| usability | task completion, accessibility, cognitive load |
+| performance | measurable latency or throughput targets |
+| quality | defect rate, testability, reliability |
 
-| Signal | Risk Level | Response |
-|--------|-----------|----------|
-| "While we're at it..." | HIGH | Flag, defer to next iteration |
-| "Can we also add..." | MEDIUM | Assess impact, propose trade-off |
-| "It would be nice if..." | LOW | Note as future enhancement |
-| Expanding acceptance criteria | HIGH | Compare against original L1 scope |
-| New stakeholder enters late | MEDIUM | Re-align expectations, update L0 |
+## Communication Anti-Patterns
 
----
-
-## Business-Tech Glossary (Common Terms)
-
-| Business Term | Technical Translation |
-|--------------|---------------------|
-| ダウンタイム | Service unavailability (SLA target) |
-| レスポンス | API response time (p50/p95/p99) |
-| セキュリティ | AuthN/AuthZ, encryption, audit logging |
-| スケーラビリティ | Horizontal/vertical scaling, load capacity |
-| 使いやすさ | WCAG compliance, cognitive load, task completion rate |
-| パフォーマンス | Core Web Vitals, TTFB, query latency |
-| コスト | Infrastructure + development + maintenance TCO |
-| 品質 | Test coverage, defect rate, MTTR |
-
----
-
-## Anti-Patterns in Cross-Team Communication
-
-| Anti-Pattern | Problem | Prevention |
-|-------------|---------|-----------|
-| Jargon dumping | Technical terms alienate business | Use glossary translations |
-| Silent assumptions | Each team assumes different things | Explicit assumption list in L1 |
-| Scope ambiguity | "Phase 1" means different things | Define explicit deliverables |
-| Missing "why" | Teams don't understand rationale | Include business context in L2 |
-| One-way communication | Specs thrown over the wall | Cross-reference in L2 views |
+| Anti-pattern | Failure mode | Prevention |
+|---|---|---|
+| jargon dumping | business readers disengage | translate through glossary |
+| silent assumptions | each team imagines something different | list assumptions explicitly |
+| scope ambiguity | "phase 1" means different things | define deliverables and out-of-scope work |
+| missing why | teams cannot prioritize correctly | keep `L0` and `L2-Biz` clear |
+| one-way specs | teams read but do not align | use `L3` plus cross-references |

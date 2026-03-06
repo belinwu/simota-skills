@@ -1,365 +1,226 @@
 # Unified Specification Template
 
-3チーム横断の統合仕様パッケージテンプレート。段階的詳細化（L0→L1→L2→L3）で全チームの共通認識を形成する。
+Purpose: Use this file when writing the canonical cross-functional package with `L0`, `L1`, `L2`, `L3`, and `Meta`.
 
----
+## Contents
 
-## Template Structure Overview
+- Structure overview
+- Audience reading paths
+- Canonical template
+- Quality gates
+- Glossary pattern
 
+## Structure Overview
+
+```text
+L0: Vision
+L1: Requirements
+L2-Biz: Business Context
+L2-Dev: Technical Design
+L2-Design: Design Specification
+L3: Acceptance Criteria
+Meta: Management
 ```
-L0: Vision          ← 全員が最初に読む（1ページ）
-L1: Requirements    ← ビジネス×開発×デザイン共通の要件
-L2-Biz:  Business   ← ビジネスチーム向け詳細
-L2-Dev:  Technical   ← 開発チーム向け詳細
-L2-Design: Design    ← デザインチーム向け詳細
-L3: Acceptance       ← 全員が合意する受入基準
-Meta: Management     ← ステータス・バージョン・承認
-```
 
-**読み方ガイド:**
-- **ビジネスチーム**: L0 → L1 → L2-Biz → L3
-- **開発チーム**: L0 → L1 → L2-Dev → L3
-- **デザインチーム**: L0 → L1 → L2-Design → L3
-- **全員での合意会議**: L0 → L3（受入基準の確認）
+## Audience Reading Paths
 
----
+- Business: `L0 -> L1 -> L2-Biz -> L3`
+- Development: `L0 -> L1 -> L2-Dev -> L3`
+- Design: `L0 -> L1 -> L2-Design -> L3`
+- Alignment review: `L0 -> L3`
 
-## L0: Vision（全員向け — 1ページ厳守）
-
-全ステークホルダーが2分で理解できるプロジェクトの全体像。
+## Canonical Template
 
 ```markdown
-# [プロジェクト/機能名]
+# [Project / Feature Name]
 
-## 問題（Why）
-[解決する問題を1-3文で記述。現状の痛みを具体的に。]
+## L0: Vision
 
-## ターゲットユーザー（Who）
-| ペルソナ | 役割 | 主な課題 |
-|---------|------|---------|
-| [名前] | [役割] | [課題] |
+### Problem (Why)
+[Describe the current pain in 1-3 sentences.]
 
-## 成功指標（KPI）
-| 指標 | 現状値 | 目標値 | 測定方法 |
-|------|-------|-------|---------|
-| [KPI名] | [現在] | [目標] | [方法] |
+### Target Users (Who)
+| Persona | Role | Main pain |
+|---|---|---|
+| [Name] | [Role] | [Pain] |
 
-## スコープ
-**In（含む）:**
-- [機能/範囲1]
-- [機能/範囲2]
+### Success Metrics (KPI)
+| Metric | Current | Target | Measurement |
+|---|---:|---:|---|
+| [KPI] | [Current] | [Target] | [Method] |
 
-**Out（含まない）:**
-- [除外1]
-- [除外2]
+### Scope
+**In**
+- [Item]
 
-## タイムライン
-| マイルストーン | 目標日 |
-|-------------|-------|
-| 仕様合意 | YYYY-MM-DD |
-| 開発完了 | YYYY-MM-DD |
-| リリース | YYYY-MM-DD |
-```
+**Out**
+- [Item]
 
-### L0 品質チェック
-- [ ] 問題が具体的な痛みとして記述されているか
-- [ ] ペルソナが実在感のある人物像か
-- [ ] KPIが測定可能か
-- [ ] スコープのOut（やらないこと）が明確か
-- [ ] 1ページに収まっているか
+### Timeline
+| Milestone | Target date |
+|---|---|
+| Spec aligned | YYYY-MM-DD |
+| Build complete | YYYY-MM-DD |
+| Release | YYYY-MM-DD |
 
----
+## L1: Requirements
 
-## L1: Requirements（3チーム共通）
+### User Stories
 
-全チームが合意する要件定義。チーム固有の詳細はL2に委譲。
-
-```markdown
-## ユーザーストーリー
-
-### US-001: [ストーリータイトル]
-**As a** [ペルソナ], **I want to** [行動], **so that** [価値].
+#### US-001: [Story title]
+**As a** [persona], **I want to** [action], **so that** [value].
 **Priority:** Must / Should / Could / Won't
 **Linked REQs:** REQ-001, REQ-002
 
-### US-002: [ストーリータイトル]
-...
+### Functional Requirements
 
-## 機能要件
-
-### REQ-001: [要件タイトル]
-- **説明:** [要件の詳細]
-- **入力:** [入力データ/操作]
-- **出力:** [期待される結果]
-- **制約:** [制約条件]
+#### REQ-001: [Requirement title]
+- **Description:** [detail]
+- **Input:** [input]
+- **Output:** [expected result]
+- **Constraints:** [constraints]
 - **Priority:** Must / Should / Could / Won't
 - **Linked:** US-001, DESIGN-001, AC-001
 
-### REQ-002: [要件タイトル]
-...
+### Non-Functional Requirements
 
-## 非機能要件
+| Category | Requirement | Target |
+|---|---|---|
+| Performance | [Requirement] | [Number] |
+| Security | [Requirement] | [Standard] |
+| Accessibility | [Requirement] | [WCAG level] |
+| Compatibility | [Requirement] | [Browser/device] |
 
-| カテゴリ | 要件 | 基準 |
-|---------|------|------|
-| パフォーマンス | [要件] | [具体的な数値] |
-| セキュリティ | [要件] | [具体的な基準] |
-| アクセシビリティ | [要件] | [WCAG レベル] |
-| 対応環境 | [要件] | [ブラウザ/デバイス] |
+### MoSCoW Priority Matrix
+| Priority | Requirements | Reason |
+|---|---|---|
+| Must | REQ-001 | [Reason] |
+| Should | REQ-002 | [Reason] |
+| Could | REQ-003 | [Reason] |
+| Won't | REQ-004 | [Reason] |
 
-## 優先度マトリクス
+## L2-Biz: Business Context
 
-| Priority | 要件 | 理由 |
-|----------|------|------|
-| **Must** | REQ-001, REQ-003 | [MVP必須] |
-| **Should** | REQ-002 | [ユーザー体験向上] |
-| **Could** | REQ-005 | [将来的に有用] |
-| **Won't** | REQ-007 | [スコープ外] |
+- Market opportunity
+- Competitive context
+- Business impact
+- Risks and dependencies
+- Stakeholders
+- Go-to-market
+
+## L2-Dev: Technical Design
+
+- Architecture overview
+- API design
+- Data model
+- Constraints and trade-offs
+- Dependencies
+- Migration plan when relevant
+
+## L2-Design: Design Specification
+
+Accord defines flow, interaction, and accessibility requirements only.
+Visual artifacts belong to Vision or Palette.
+
+- User flows
+- Interaction patterns
+- Component usage
+- Accessibility requirements
+- Responsive behavior
+
+## L3: Acceptance Criteria
+
+### BDD Scenarios
+
+#### AC-001: [Scenario title] — Linked: REQ-001
+**Given** [precondition]
+**When** [action or event]
+**Then** [expected result]
+
+#### AC-002: [Scenario title] — Linked: REQ-001
+**Given** [precondition]
+**And** [additional precondition]
+**When** [action or event]
+**Then** [expected result]
+**And** [additional expected result]
+
+#### AC-003: [Edge case] — Linked: REQ-002
+**Given** [abnormal precondition]
+**When** [abnormal action]
+**Then** [error handling]
+
+### Edge Case List
+| Case | Input | Expected behavior | Linked REQ |
+|---|---|---|---|
+| [Case] | [Input] | [Behavior] | REQ-XXX |
+
+### Traceability Matrix
+| REQ | User Story | Design | BDD Scenario | Test |
+|---|---|---|---|---|
+| REQ-001 | US-001 | DESIGN-001 | AC-001, AC-002 | - |
+
+## Meta: Management
+
+### Document Metadata
+| Field | Value |
+|---|---|
+| Status | Draft / Review / Approved / Deprecated |
+| Version | v0.1 |
+| Created | YYYY-MM-DD |
+| Last updated | YYYY-MM-DD |
+| Author | [Name] |
+
+### Version History
+| Version | Date | Change | Author |
+|---|---|---|---|
+| v0.1 | YYYY-MM-DD | Initial draft | [Name] |
+
+### Review And Approval
+| Team | Reviewer | Status | Date |
+|---|---|---|---|
+| Business | [Name] | Pending / Approved / Rejected | - |
+| Development | [Name] | Pending / Approved / Rejected | - |
+| Design | [Name] | Pending / Approved / Rejected | - |
+
+### Open Questions
+| ID | Question | Owner | Status |
+|---|---|---|---|
+| Q1 | [Question] | [Owner] | Open / Resolved |
 ```
 
-### L1 品質チェック
-- [ ] 全ユーザーストーリーに価値（so that）が書かれているか
-- [ ] 全REQが一意のIDを持つか
-- [ ] 全REQにPriorityが設定されているか
-- [ ] 非機能要件に具体的な数値基準があるか
-- [ ] MoSCoW優先度が設定されているか
+## Quality Gates
 
----
+### `L0`
 
-## L2-Biz: Business Context（ビジネスチーム向け）
+- problem is concrete
+- personas feel real
+- KPI is measurable
+- `Out` is explicit
+- one-page limit is respected
 
-ビジネスチームが意思決定に使う情報。技術詳細は含まない。
+### `L1`
+
+- every story includes value
+- every `REQ` has a unique ID
+- every `REQ` has priority
+- non-functional requirements use measurable targets
+- MoSCoW is explicit
+
+### `L3`
+
+- every `REQ` has at least one linked `AC`
+- happy path and edge cases both exist
+- `Given/When/Then` uses concrete, testable outcomes
+- traceability matrix is not empty
+- all three teams can understand the scenarios
+
+## Glossary Pattern
+
+Use a glossary when one concept is named differently by each team.
 
 ```markdown
-## 市場コンテキスト
-- **市場機会:** [市場サイズ/成長性]
-- **競合状況:** [競合の動向]
-- **差別化要素:** [自社の優位性]
-
-## ビジネスインパクト
-| 項目 | 詳細 |
-|------|------|
-| 収益インパクト | [期待される収益変化] |
-| コストインパクト | [開発/運用コスト] |
-| ROI見込み | [投資回収期間] |
-
-## リスクと依存関係
-| リスク | 影響度 | 発生確率 | 対策 |
-|--------|-------|---------|------|
-| [リスク1] | 高/中/低 | 高/中/低 | [対策] |
-
-## ステークホルダー
-| 名前/役割 | 関心事 | 承認権限 |
-|-----------|-------|---------|
-| [名前] | [関心事] | Yes/No |
-
-## Go-to-Market
-- **ローンチ戦略:** [段階的/一斉/β]
-- **コミュニケーション計画:** [告知方法]
-- **成功判定タイミング:** [判定日と基準]
+## Glossary
+| Term | Business meaning | Development meaning | Design meaning |
+|---|---|---|---|
+| [Term] | [Definition] | [Definition] | [Definition] |
 ```
-
----
-
-## L2-Dev: Technical Design（開発チーム向け）
-
-開発チームが実装に使う技術仕様。ビジネス文脈はL0/L1を参照。
-
-```markdown
-## アーキテクチャ概要
-[システム構成図 — Mermaid or ASCII]
-
-## API設計
-### [API名]
-- **Method:** GET/POST/PUT/DELETE
-- **Path:** /api/v1/[resource]
-- **Request:**
-  ```json
-  { "field": "type" }
-  ```
-- **Response:**
-  ```json
-  { "field": "type" }
-  ```
-- **Error Cases:** 400/401/404/500
-- **Linked:** REQ-001
-
-## データモデル
-| テーブル/エンティティ | フィールド | 型 | 制約 |
-|---------------------|----------|---|------|
-| [Entity] | [field] | [type] | [constraint] |
-
-## 技術的制約とトレードオフ
-| 選択肢 | メリット | デメリット | 決定 |
-|--------|---------|----------|------|
-| [Option A] | [pros] | [cons] | ← 採用 |
-| [Option B] | [pros] | [cons] | |
-
-## 依存関係
-| 依存先 | バージョン | 用途 | リスク |
-|--------|----------|------|-------|
-| [lib/service] | [ver] | [purpose] | [risk] |
-
-## マイグレーション/移行計画
-[既存システムからの移行手順（該当する場合）]
-```
-
----
-
-## L2-Design: Design Specification（デザインチーム向け）
-
-デザインチームがUI/UX設計に使う仕様。技術制約はL2-Devを参照。
-
-> **Accordの責務範囲:** フロー定義・インタラクション要件・a11y要件の記述のみ。
-> ワイヤーフレーム・モックアップ・視覚的成果物の作成はVision/Paletteに委譲する。
-
-```markdown
-## ユーザーフロー
-[主要フローの図解 — Mermaid or Figma link]
-
-### フロー1: [フロー名]
-1. [ステップ1] → 2. [ステップ2] → 3. [ステップ3]
-**分岐:** [条件] → [代替パス]
-**エラー:** [エラー条件] → [エラーハンドリング]
-
-## デザイン成果物（参照リンク — 作成はVision/Paletteが担当）
-| 画面 | Figma Link | 状態 | 担当 |
-|------|-----------|------|------|
-| [画面名] | [URL] | Draft/Review/Final | Vision/Palette |
-
-## インタラクションパターン
-| 操作 | フィードバック | アニメーション |
-|------|-------------|-------------|
-| [クリック/タップ] | [視覚的応答] | [遷移/効果] |
-
-## コンポーネント使用
-| コンポーネント | 用途 | バリアント | Design Token |
-|-------------|------|----------|-------------|
-| [Button] | [CTA] | [Primary/Large] | [color.primary] |
-
-## アクセシビリティ要件
-| 項目 | 基準 | 対応 |
-|------|------|------|
-| コントラスト比 | WCAG AA (4.5:1) | [対応状況] |
-| キーボード操作 | 全機能操作可能 | [対応状況] |
-| スクリーンリーダー | ARIA対応 | [対応状況] |
-
-## レスポンシブ対応
-| ブレークポイント | レイアウト変更 |
-|----------------|-------------|
-| Mobile (< 768px) | [変更内容] |
-| Tablet (768-1024px) | [変更内容] |
-| Desktop (> 1024px) | [変更内容] |
-```
-
----
-
-## L3: Acceptance Criteria（全員合意）
-
-全チームが「完成」に合意するための受入基準。BDD形式を標準とする。
-
-```markdown
-## BDD シナリオ
-
-### AC-001: [シナリオタイトル] — Linked: REQ-001
-**Given** [前提条件]
-**When** [操作/イベント]
-**Then** [期待結果]
-
-### AC-002: [シナリオタイトル] — Linked: REQ-001
-**Given** [前提条件]
-**And** [追加前提]
-**When** [操作/イベント]
-**Then** [期待結果]
-**And** [追加期待]
-
-### AC-003: [エッジケース] — Linked: REQ-002
-**Given** [異常系の前提]
-**When** [異常な操作]
-**Then** [エラーハンドリング]
-
-## エッジケース一覧
-| ケース | 入力 | 期待動作 | 対応REQ |
-|--------|------|---------|--------|
-| [ケース名] | [異常入力] | [期待動作] | REQ-XXX |
-
-## トレーサビリティマトリクス
-| REQ | User Story | Design | BDD Scenario | テスト |
-|-----|-----------|--------|-------------|-------|
-| REQ-001 | US-001 | DESIGN-001 | AC-001, AC-002 | — |
-| REQ-002 | US-002 | DESIGN-002 | AC-003 | — |
-```
-
-### L3 品質チェック
-- [ ] 全REQに対応するBDDシナリオがあるか
-- [ ] 正常系と異常系の両方がカバーされているか
-- [ ] Given/When/Thenが具体的な値を含んでいるか
-- [ ] トレーサビリティマトリクスに空欄がないか
-- [ ] 3チーム全員がGiven-When-Thenを理解できるか
-
----
-
-## Meta: Management（管理情報）
-
-```markdown
-## ドキュメントメタ情報
-
-| 項目 | 値 |
-|------|---|
-| ステータス | Draft / Review / Approved / Deprecated |
-| バージョン | v0.1 |
-| 作成日 | YYYY-MM-DD |
-| 最終更新 | YYYY-MM-DD |
-| 作成者 | [名前] |
-
-## バージョン履歴
-| バージョン | 日付 | 変更内容 | 変更者 |
-|----------|------|---------|-------|
-| v0.1 | YYYY-MM-DD | 初稿作成 | [名前] |
-
-## レビュー・承認
-| チーム | レビュアー | ステータス | 日付 |
-|--------|----------|----------|------|
-| ビジネス | [名前] | Pending/Approved/Rejected | — |
-| 開発 | [名前] | Pending/Approved/Rejected | — |
-| デザイン | [名前] | Pending/Approved/Rejected | — |
-
-## オープンな質問
-| # | 質問 | 担当 | ステータス |
-|---|------|------|----------|
-| Q1 | [未解決の質問] | [担当者] | Open/Resolved |
-```
-
----
-
-## Section Writing Guidelines
-
-### チーム別の言語ガイドライン
-
-| セクション | ビジネスチーム向け | 開発チーム向け | デザインチーム向け |
-|----------|-----------------|-------------|---------------|
-| L0 | 事業価値・ROI中心 | 技術的課題の文脈 | ユーザー課題中心 |
-| L1 | ビジネスルール記述 | 入出力仕様記述 | ユーザー行動記述 |
-| L2 | 市場・財務データ | API・データモデル | フロー・モックアップ |
-| L3 | ビジネスシナリオで記述 | テスト可能な条件で記述 | ユーザー操作で記述 |
-
-### 共通用語集の運用
-
-仕様パッケージ内で使う用語は統一する。チームごとに異なる呼び方がある場合は用語集を作成:
-
-```markdown
-## 用語集
-| 用語 | ビジネスでの意味 | 開発での意味 | デザインでの意味 |
-|------|----------------|------------|---------------|
-| [用語] | [定義] | [定義] | [定義] |
-```
-
----
-
-## Quick Start
-
-1. L0を2分で書く（問題・ユーザー・KPI・スコープ）
-2. L1でユーザーストーリーとREQを定義
-3. L2は各チームが並行して記述可能
-4. L3のBDDシナリオで3チーム合意を取る
-5. Metaでステータスとレビュー状況を管理
