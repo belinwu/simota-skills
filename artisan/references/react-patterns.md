@@ -1,6 +1,6 @@
-# React Patterns
+# React Patterns & Server Components
 
-Production-quality React patterns for components, hooks, error boundaries, React 19 hooks, and form handling.
+Production-quality React patterns: components, hooks, error boundaries, React 19 hooks, React Compiler, RSC, Server Actions, and form handling.
 
 ---
 
@@ -39,12 +39,6 @@ const CardFooter: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 Card.Header = CardHeader;
 Card.Body = CardBody;
 Card.Footer = CardFooter;
-
-// Usage
-<Card>
-  <Card.Header>Title</Card.Header>
-  <Card.Body>Content</Card.Body>
-</Card>
 ```
 
 ---
@@ -52,31 +46,19 @@ Card.Footer = CardFooter;
 ## 2. Custom Hooks
 
 ```tsx
-// Encapsulate complex logic in custom hooks
 function useAsync<T>(asyncFn: () => Promise<T>, deps: unknown[] = []) {
   const [state, setState] = useState<{
     data: T | null;
     error: Error | null;
     isLoading: boolean;
-  }>({
-    data: null,
-    error: null,
-    isLoading: true,
-  });
+  }>({ data: null, error: null, isLoading: true });
 
   useEffect(() => {
     let cancelled = false;
-
     setState(prev => ({ ...prev, isLoading: true }));
-
     asyncFn()
-      .then(data => {
-        if (!cancelled) setState({ data, error: null, isLoading: false });
-      })
-      .catch(error => {
-        if (!cancelled) setState({ data: null, error, isLoading: false });
-      });
-
+      .then(data => { if (!cancelled) setState({ data, error: null, isLoading: false }); })
+      .catch(error => { if (!cancelled) setState({ data: null, error, isLoading: false }); });
     return () => { cancelled = true; };
   }, deps);
 
@@ -89,86 +71,26 @@ function useAsync<T>(asyncFn: () => Promise<T>, deps: unknown[] = []) {
 ## 3. Error Boundaries
 
 ```tsx
-interface ErrorBoundaryProps {
-  fallback: React.ReactNode;
-  children: React.ReactNode;
-}
-
 class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
+  { fallback: React.ReactNode; children: React.ReactNode },
   { hasError: boolean }
 > {
   state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
+  static getDerivedStateFromError() { return { hasError: true }; }
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
   }
-
   render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
+    return this.state.hasError ? this.props.fallback : this.props.children;
   }
 }
 ```
 
 ---
 
-## 4. Form Handling (React Hook Form + Zod)
-
-```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-const schema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-});
-
-type FormData = z.infer<typeof schema>;
-
-function LoginForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
-  const onSubmit = async (data: FormData) => {
-    await login(data);
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('email')} aria-invalid={!!errors.email} />
-      {errors.email && <span role="alert">{errors.email.message}</span>}
-
-      <input type="password" {...register('password')} />
-      {errors.password && <span role="alert">{errors.password.message}</span>}
-
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Logging in...' : 'Log in'}
-      </button>
-    </form>
-  );
-}
-```
-
----
-
-## 5. React 19 新フック
+## 4. React 19 Hooks
 
 ### useActionState
-
-フォームアクションの結果と pending 状態を管理。`useReducer` の Server Actions 版。
 
 ```tsx
 import { useActionState } from 'react';
@@ -181,7 +103,7 @@ function ContactForm() {
       if (!res.ok) return { error: 'Failed to submit' };
       return { success: true, message: `Thanks ${name}!` };
     },
-    {} // initial state
+    {}
   );
 
   return (
@@ -196,8 +118,6 @@ function ContactForm() {
 ```
 
 ### useFormStatus
-
-フォームの送信状態を子コンポーネントから読み取る。**`<form>` の子孫でのみ動作。**
 
 ```tsx
 import { useFormStatus } from 'react-dom';
@@ -214,8 +134,6 @@ function SubmitButton() {
 
 ### useOptimistic
 
-非同期完了前にUIを即座に更新。失敗時は自動ロールバック。
-
 ```tsx
 import { useOptimistic } from 'react';
 
@@ -231,9 +149,7 @@ function TodoList({ todos, addTodoAction }) {
       await addTodoAction(formData);
     }}>
       {optimisticTodos.map(todo => (
-        <li key={todo.id} style={{ opacity: todo.pending ? 0.5 : 1 }}>
-          {todo.text}
-        </li>
+        <li key={todo.id} style={{ opacity: todo.pending ? 0.5 : 1 }}>{todo.text}</li>
       ))}
       <input name="text" />
       <button type="submit">Add</button>
@@ -244,145 +160,213 @@ function TodoList({ todos, addTodoAction }) {
 
 ### use()
 
-Promise や Context をレンダリング中に読み取る新フック。条件分岐内でも呼び出し可能（従来のフックルールの例外）。
+Promise or Context in render. Can be called conditionally (exception to Rules of Hooks).
 
 ```tsx
 import { use, Suspense } from 'react';
 
-// Promise を読み取る
 function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
-  const user = use(userPromise); // Suspense boundary が必要
+  const user = use(userPromise);
   return <h1>{user.name}</h1>;
 }
 
-// Context を読み取る（条件付きも可）
 function ThemeText({ showTheme }: { showTheme: boolean }) {
   if (showTheme) {
-    const theme = use(ThemeContext); // 条件分岐内で OK
+    const theme = use(ThemeContext); // OK inside conditional
     return <p>Current theme: {theme}</p>;
   }
   return <p>Theme hidden</p>;
 }
-
-// Usage
-<Suspense fallback={<Loading />}>
-  <UserProfile userPromise={fetchUser(id)} />
-</Suspense>
 ```
 
 ---
 
-## 6. React Compiler
+## 5. React 19 Breaking Changes
 
-React 19 の Compiler は自動メモ化を行い、安定版として推奨。
+| Change | Migration |
+|--------|-----------|
+| `forwardRef` deprecated | Use `ref` as a regular prop: `function Input({ ref, ...props })` |
+| `Context.Provider` deprecated | Use `<MyContext>` directly as the provider |
+| `ref` callbacks get cleanup | Return a cleanup function from ref callbacks |
+| Document metadata hoisting | `<title>`, `<meta>`, `<link>` in components hoist to `<head>` automatically |
 
-| 従来 | React Compiler (安定版) |
-|------|-------------------|
-| 手動 `useMemo` / `useCallback` | **自動メモ化** — 原則不要 |
-| `React.memo` ラッパー | Compiler が判断 |
-| 依存配列の管理 | Compiler が追跡 |
+### React 19.2 (October 2025)
 
-**ガイドライン:** 新規コードでは `useMemo`/`useCallback` は不要。既存コードの手動メモ化はそのまま残しても害はない。
-
----
-
-## 7. フォームハンドリング選択ガイド
-
-| 基準 | React Hook Form | React 19 ネイティブ | Conform | TanStack Form |
-|------|:---:|:---:|:---:|:---:|
-| 大規模・複雑フォーム | ✅ | — | — | ✅ |
-| Server Actions ファースト | △ (ワークアラウンド) | ✅ | ✅ | — |
-| JS無効でも動作 | — | ✅ | ✅ | — |
-| 動的フィールド配列 | ✅ | 手動 | ○ | ✅ |
-| ネストされたフォーム構造 | ○ | 手動 | ○ | ✅ |
-| UIライブラリ統合 | ✅ | — | — | ✅ |
-| バンドルサイズ | +8.6KB | 0KB | 軽量 | +12KB |
-
-**推奨:** 複雑フォーム → RHF + Zod / シンプル + Server Actions → React 19 ネイティブ / Remix/Next.js PE重視 → Conform / 動的・ネストフォーム → TanStack Form
+| Feature | Purpose |
+|---------|---------|
+| `<Activity>` | Offscreen rendering — hide/show without unmounting (replaces old `<Offscreen>`) |
+| `<ViewTransition>` | Built-in View Transitions API integration for route/state transitions |
+| `useEffectEvent` | Stable reference for event handlers used inside effects without adding to deps |
 
 ---
 
-## 8. Hooks アンチパターン
+## 6. React Compiler (v1.0 Stable — October 2025)
 
-### AP-1: 派生状態を useEffect で同期
+Auto-memoization for components and hooks. No manual `useMemo`/`useCallback`/`React.memo` needed.
+
+| Before | With React Compiler |
+|--------|-------------------|
+| Manual `useMemo` / `useCallback` | **Auto-memoized** — not needed |
+| `React.memo` wrapper | Compiler decides |
+| Dependency array management | Compiler tracks |
+
+**Rules:**
+- New code: skip `useMemo`/`useCallback` entirely
+- Existing manual memoization: safe to keep (no harm)
+- Requires Rules of React compliance (pure render, no side effects during render)
+- Opt-out directive: `"use no memo"` at file/function level
+- Next.js 16: `reactCompiler: true` in `next.config.ts`
+
+---
+
+## 7. Server Components (RSC)
+
+### Composition: Push `'use client'` to Leaves
 
 ```tsx
-// Bad: 不要な state + useEffect
-const [items, setItems] = useState([]);
-const [filteredItems, setFilteredItems] = useState([]);
-useEffect(() => {
-  setFilteredItems(items.filter(i => i.active));
-}, [items]);
+// Bad: top-level 'use client' — all children become Client Components
+'use client';
+export function Layout() {
+  const [isOpen, setIsOpen] = useState(false);
+  return <ServerHeavyComponent />; // loses server execution
+}
 
-// Good: レンダリング中に直接計算
-const [items, setItems] = useState([]);
-const filteredItems = items.filter(i => i.active);
+// Good: Composition pattern — pass Server Component as children
+'use client';
+export function InteractiveShell({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return <div>{children}</div>;
+}
+
+// page.tsx (Server Component)
+export default function Page() {
+  return (
+    <InteractiveShell>
+      <ServerHeavyComponent /> {/* runs on server */}
+    </InteractiveShell>
+  );
+}
 ```
 
-### AP-2: useEffect でデータフェッチ（クリーンアップなし）
+### When to Use Client Components
+
+| Condition | Server | Client |
+|-----------|:---:|:---:|
+| DB/API direct access | ✅ | — |
+| Display-only (props) | ✅ | — |
+| `onClick`/`onChange` handlers | — | ✅ |
+| `useState`/`useEffect` | — | ✅ |
+| Browser APIs (localStorage) | — | ✅ |
+
+### Suspense Streaming
 
 ```tsx
-// Bad: メモリリーク、レースコンディション
-useEffect(() => {
-  fetch(`/api/user/${id}`).then(r => r.json()).then(setUser);
-}, [id]);
+// Bad: top-level await blocks entire shell
+export default async function Home() {
+  const analytics = await getAnalytics(); // slow
+  return <div><Header /><AnalyticsWidget data={analytics} /></div>;
+}
 
-// Good: TanStack Query に委譲
-const { data: user } = useQuery({
-  queryKey: ['user', id],
-  queryFn: () => fetchUser(id),
+// Good: Suspense sends shell immediately, streams slow parts
+export default function Home() {
+  return (
+    <div>
+      <Header />
+      <Suspense fallback={<AnalyticsSkeleton />}>
+        <AnalyticsWidget />
+      </Suspense>
+    </div>
+  );
+}
+
+async function AnalyticsWidget() {
+  const data = await getAnalytics(); // blocks only within Suspense
+  return <Dashboard data={data} />;
+}
+```
+
+---
+
+## 8. Server Actions
+
+```tsx
+// app/actions.ts
+'use server';
+import { z } from 'zod';
+import { revalidatePath } from 'next/cache';
+
+const TodoSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
 });
+
+export async function createTodo(prevState: any, formData: FormData) {
+  const result = TodoSchema.safeParse({ title: formData.get('title') });
+  if (!result.success) return { errors: result.error.flatten().fieldErrors };
+  await db.todo.create({ data: result.data });
+  revalidatePath('/todos');
+  return { success: true };
+}
 ```
 
-### AP-3: 条件付きフック呼び出し
+### Server Actions vs Route Handlers
+
+| Use case | Server Actions | Route Handlers |
+|----------|:---:|:---:|
+| Form mutations | ✅ | — |
+| UI data changes | ✅ | — |
+| Public API / Webhooks | — | ✅ |
+| Large file uploads | — | ✅ |
+| External service calls | — | ✅ |
+
+### Cache & Revalidation
 
 ```tsx
-// Bad: フックの順序が変わる
-if (isLoggedIn) {
-  const [user, setUser] = useState(null); // Rules of Hooks 違反
-}
-
-// Good: 常に呼び出し、条件分岐はレンダリングで
-const [user, setUser] = useState(null);
-if (!isLoggedIn) return <LoginPrompt />;
-```
-
-### AP-4: 不要な useCallback/useMemo
-
-```tsx
-// Bad: 小さな関数を全て useCallback（React Compiler 以前でも過剰）
-const handleClick = useCallback(() => {
-  console.log('clicked');
-}, []);
-
-// Good: パフォーマンス問題が計測されてから最適化
-const handleClick = () => console.log('clicked');
-```
-
-### AP-5: `use` プレフィックスの誤用
-
-```tsx
-// Bad: フックを使わない関数に use プレフィックス
-function useFormatDate(date: Date) { // 内部にフックなし
-  return date.toLocaleDateString();
-}
-
-// Good: 通常の関数として定義
-function formatDate(date: Date) {
-  return date.toLocaleDateString();
-}
+const data = await fetch(url, { cache: 'force-cache' });         // static (build-time)
+const data = await fetch(url, { cache: 'no-store' });            // dynamic (per-request)
+const data = await fetch(url, { next: { revalidate: 3600 } });   // time-based (ISR)
+const data = await fetch(url, { next: { tags: ['products'] } }); // tag-based
+// After mutation:
+revalidateTag('products');
 ```
 
 ---
 
-## アンチパターン早見表
+## 9. Form Handling Selection Guide
 
-| # | パターン | 問題 | 代替 |
-|---|---------|------|------|
-| 1 | 派生状態を `useEffect` で同期 | 不要な再レンダリング | 直接計算 |
-| 2 | `useEffect` で生の `fetch` | リーク、レースコンディション | TanStack Query |
-| 3 | 条件付きフック呼び出し | Rules of Hooks 違反 | 常に呼び出し + 早期 return |
-| 4 | 過剰な `useMemo`/`useCallback` | 複雑性増加、利点なし | React Compiler / 計測後に判断 |
-| 5 | フックなし関数に `use` プレフィックス | 誤解を招く命名 | 通常の関数名 |
+| Criteria | React Hook Form | React 19 Native | Conform | TanStack Form |
+|----------|:---:|:---:|:---:|:---:|
+| Large/complex forms | ✅ | — | — | ✅ |
+| Server Actions first | △ | ✅ | ✅ | — |
+| Works without JS | — | ✅ | ✅ | — |
+| Dynamic field arrays | ✅ | manual | ○ | ✅ |
+| UI library integration | ✅ | — | — | ✅ |
+| Bundle size | +8.6KB | 0KB | light | +12KB |
 
-**Source:** [React 19 Official Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19 New Hooks](https://manuelsanchezdev.com/blog/react-19-new-hooks-useoptimistic-useformstatus-useactionstate/) · [React Anti-Patterns](https://www.perssondennis.com/articles/react-anti-patterns-and-best-practices-dos-and-donts) · [React Hook Form vs React 19](https://blog.logrocket.com/react-hook-form-vs-react-19/)
+**Recommendations:** Complex forms → RHF + Zod / Simple + Server Actions → React 19 native / Remix/Next.js PE → Conform / Dynamic/nested → TanStack Form
+
+---
+
+## 10. Anti-Patterns
+
+### Hooks
+
+| # | Pattern | Problem | Fix |
+|---|---------|---------|-----|
+| 1 | Derived state via `useEffect` | Unnecessary re-renders | Compute directly in render |
+| 2 | Raw `fetch` in `useEffect` | Memory leak, race conditions | TanStack Query |
+| 3 | Conditional hook calls | Rules of Hooks violation | Always call + early return |
+| 4 | Excessive `useMemo`/`useCallback` | Complexity without benefit | React Compiler / measure first |
+| 5 | `use` prefix on non-hook functions | Misleading naming | Use regular function name |
+
+### RSC
+
+| # | Pattern | Problem | Fix |
+|---|---------|---------|-----|
+| 1 | Top-level `'use client'` | All children become Client Components | Push to leaves + Composition |
+| 2 | Page-level `await` | Blocks entire shell | Suspense isolation |
+| 3 | Serial data fetching | Server-side waterfall | `Promise.all` for parallel |
+| 4 | Passing large objects across boundary | HTML payload bloat | Pass only needed fields |
+| 5 | Missing `revalidate` after mutation | Stale UI | `revalidatePath`/`revalidateTag` |
+| 6 | `await` in layouts | Delays entire app | Layouts sync, data in pages |
+
+**Source:** [React 19 Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19.2 Blog](https://react.dev/blog/2025/10/07/react-19-2) · [React Compiler v1.0](https://react.dev/blog/2025/10/07/react-compiler-rc) · [RSC Mental Models 2025](https://dev.to/eva_clari_289d85ecc68da48/the-complete-guide-to-react-server-components-mental-models-for-2025-390d) · [Next.js 16](https://nextjs.org/blog/next-16) · [React Hook Form vs React 19](https://blog.logrocket.com/react-hook-form-vs-react-19/)

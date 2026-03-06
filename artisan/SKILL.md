@@ -62,7 +62,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Framework | Patterns | State | Reference |
 |-----------|---------|-------|-----------|
-| **React** | Compound components, hooks, error boundaries, React 19 hooks, RSC | Zustand, Context | `references/react-patterns.md` |
+| **React** | Compound components, hooks, error boundaries, React 19 hooks, RSC, Server Actions | Zustand, Context | `references/react-patterns.md` |
 | **Vue 3** | Composition API, composables | Pinia | `references/vue-svelte-patterns.md` |
 | **Svelte 5** | Runes, Snippets | Stores | `references/vue-svelte-patterns.md` |
 
@@ -74,9 +74,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Error states and recovery | `references/component-quality.md` |
 | Loading states and skeletons | `references/component-quality.md` |
 | Form validation | `references/component-quality.md` |
-| Styling (Tailwind, CSS Modules) | `references/component-quality.md` |
+| Styling (Tailwind v4, CSS Modules) | `references/component-quality.md` |
 | Component completion checklist | `references/component-quality.md` |
-| Server Components & App Router | `references/server-components.md` |
 | State management decision guide | `references/state-management.md` |
 | Performance & testing strategies | `references/performance-testing.md` |
 
@@ -91,13 +90,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | File | Content |
 |------|---------|
-| `references/react-patterns.md` | Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React Compiler, form handling selection, hooks anti-patterns |
-| `references/server-components.md` | RSC Composition, Suspense Streaming, Server Actions, cache/revalidation, anti-patterns |
-| `references/state-management.md` | 状態分類 (Remote/URL/Local/Shared), 決定フローチャート, Zustand/TanStack Query patterns |
-| `references/component-quality.md` | A11y (ARIA, keyboard, focus, WCAG 2.2), error/loading states, form validation, styling strategies, component checklist |
-| `references/performance-testing.md` | Core Web Vitals (INP), image/bundle/rendering optimization, Testing Trophy, Vitest + Testing Library, E2E patterns |
-| `references/vue-svelte-patterns.md` | Vue 3 Composition API, composables, Pinia, v-memo/markRaw, Svelte 5 Runes, Snippets |
-| `references/autorun-nexus.md` | AUTORUN support, Nexus Hub Mode, handoff formats |
+| `references/react-patterns.md` | React 19 hooks, React Compiler v1.0, RSC composition, Suspense streaming, Server Actions, cache/revalidation, form handling, hooks/RSC anti-patterns |
+| `references/state-management.md` | State classification (Remote/URL/Local/Shared), TanStack Query v5, Zustand, nuqs v2, RSC hydration patterns |
+| `references/component-quality.md` | A11y (ARIA, keyboard, focus, WCAG 2.2 new criteria), error/loading states, form validation, Tailwind v4 styling, component checklist |
+| `references/performance-testing.md` | Core Web Vitals (INP), optimization, Vitest v2 Browser Mode, Storybook 8.5+, RSC testing strategies, Playwright E2E |
+| `references/vue-svelte-patterns.md` | Vue 3.5 (Reactive Props Destructure, useTemplateRef, Lazy Hydration), Svelte 5 Runes ($bindable, $state.raw, Snippets), Pinia |
 
 ## Operational
 

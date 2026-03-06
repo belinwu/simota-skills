@@ -1,72 +1,63 @@
 # State Management Decision Guide
 
-> 状態分類、ツール選定フレームワーク、アンチパターン
-
-## 1. 状態の4分類
-
-| 種類 | 説明 | 推奨ツール |
-|------|------|-----------|
-| **Remote State** | API/DBデータ。フェッチ・キャッシュ・同期が必要 | TanStack Query / SWR |
-| **URL State** | URL パラメータに反映されるUI状態 | nuqs / searchParams |
-| **Local State** | コンポーネント内に閉じた状態 | `useState` / `useReducer` |
-| **Shared State** | 複数の離れたコンポーネント間で共有 | Context (少) → Zustand (多) |
+State classification, tool selection framework, RSC-era patterns, and anti-patterns.
 
 ---
 
-## 2. 決定フローチャート
+## 1. State Classification
+
+| Type | Description | Recommended Tool |
+|------|-------------|-----------------|
+| **Remote State** | API/DB data; needs fetch, cache, sync | TanStack Query v5 / SWR |
+| **URL State** | UI state reflected in URL params | nuqs v2 / searchParams |
+| **Local State** | Scoped to a single component | `useState` / `useReducer` |
+| **Shared State** | Shared across distant components | Context (few) → Zustand (many) |
+
+---
+
+## 2. Decision Flowchart
 
 ```
-状態が必要？
-├── サーバーデータ？ → TanStack Query / SWR
-├── URL に反映すべき？ → nuqs / useSearchParams
-├── 単一コンポーネント内？ → useState / useReducer
-└── 複数コンポーネントで共有？
-    ├── 2-3レベルの親子？ → Props Drilling (OK)
-    ├── 1-2個の関心事？ → React Context
-    └── 3個以上 or 高頻度更新？ → Zustand
+Need state?
+├── Server data? → TanStack Query / SWR
+├── Should reflect in URL? → nuqs / useSearchParams
+├── Single component? → useState / useReducer
+└── Shared across components?
+    ├── 2-3 levels of parent-child? → Props drilling (OK)
+    ├── 1-2 concerns? → React Context
+    └── 3+ concerns or high-frequency updates? → Zustand
 ```
 
 ---
 
-## 3. ライブラリ選択
+## 3. Library Selection
 
-| ライブラリ | 適切な場面 | 不適切な場面 |
-|-----------|-----------|------------|
-| **Zustand** | 共有クライアント状態のデフォルト選択。軽量、セレクティブ再レンダリング | サーバーデータ管理 |
-| **TanStack Query** | サーバー状態管理の標準。キャッシュ・重複排除・無効化を自動処理 | 純粋なクライアント状態 |
-| **Jotai** | 細粒度リアクティビティ、多数の派生/計算状態 | 単純なグローバル状態 |
-| **Redux Toolkit** | 大規模エンタープライズ、厳格なアーキテクチャ、DevTools必須 | 小中規模アプリ |
-| **XState** | 複雑なステートマシン (Figma級) | 単純な on/off 状態 |
-| **React Context** | テーマ・ロケール等の低頻度更新 | 高頻度更新する状態 |
+| Library | Good fit | Poor fit |
+|---------|----------|----------|
+| **Zustand** | Default for shared client state. Lightweight, selective re-renders | Server data management |
+| **TanStack Query v5** | Standard for server state. Auto cache/dedup/invalidation | Pure client state |
+| **Jotai** | Fine-grained reactivity, many derived/computed values | Simple global state |
+| **Redux Toolkit** | Large enterprise, strict architecture, DevTools required | Small-to-mid apps |
+| **XState** | Complex state machines (Figma-level) | Simple on/off state |
+| **React Context** | Theme, locale, low-frequency updates | High-frequency state |
 
 ---
 
-## 4. Zustand ベストプラクティス
+## 4. TanStack Query v5
+
+### Migration from v4
+
+| v4 | v5 | Notes |
+|----|-----|-------|
+| `onSuccess`/`onError`/`onSettled` in `useQuery` | **Removed** | Use `useEffect` or handle in `queryFn` |
+| `cacheTime` | `gcTime` | Renamed for clarity |
+| `isLoading` (first load only) | `isPending` | `isLoading` = `isPending && isFetching` |
+| `useQuery({ queryKey, queryFn })` | Same | Object syntax only (no positional args) |
+
+### Patterns
 
 ```tsx
-import { create } from 'zustand';
-
-// ストアは関心事ごとに分割
-const useUIStore = create<UIState>()((set) => ({
-  isSidebarOpen: false,
-  theme: 'light' as const,
-  toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
-  setTheme: (theme) => set({ theme }),
-}));
-
-// セレクタで必要な値のみ購読（不要な再レンダリング防止）
-function Sidebar() {
-  const isOpen = useUIStore((s) => s.isSidebarOpen);
-  // theme が変わっても再レンダリングされない
-}
-```
-
----
-
-## 5. TanStack Query パターン
-
-```tsx
-// カスタムフックでクエリをカプセル化
+// Custom hook encapsulating query
 function useProducts(category?: string) {
   return useQuery({
     queryKey: ['products', { category }],
@@ -75,7 +66,16 @@ function useProducts(category?: string) {
   });
 }
 
-// Optimistic Update 付きミューテーション
+// Suspense-first query
+function ProductList({ category }: { category: string }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ['products', category],
+    queryFn: () => fetchProducts(category),
+  });
+  return <ul>{data.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
+}
+
+// Optimistic update mutation
 function useUpdateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -96,19 +96,88 @@ function useUpdateProduct() {
     },
   });
 }
+
+// RSC hydration support
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+
+// Server Component (page.tsx)
+export default async function Page() {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ProductList />
+    </HydrationBoundary>
+  );
+}
 ```
 
 ---
 
-## 6. アンチパターン
+## 5. Zustand Patterns
 
-| # | アンチパターン | 問題 | 修正 |
-|---|------------|------|------|
-| 1 | サーバーデータを Zustand/Redux で管理 | キャッシュ・同期・重複排除を手動実装 | TanStack Query に委譲 |
-| 2 | モノリシック Context | 無関係な値の更新で全コンシューマが再レンダリング | 関心事ごとに Context を分離 |
-| 3 | Providers Hell (5+ネスト) | 可読性低下、デバッグ困難 | Zustand で統合 or compose utility |
-| 4 | ローカル状態の過剰グローバル化 | モーダル開閉等をグローバルストアで管理 | コンポーネント内 `useState` で十分 |
-| 5 | `useState` + `useEffect` でURL同期 | 同期バグの温床 | nuqs / useSearchParams |
-| 6 | RSC時代にクライアントで全データ管理 | サーバー側処理の利点を無視 | 読み取りはRSC、インタラクティブ部分のみクライアントストア |
+```tsx
+import { create } from 'zustand';
 
-**Source:** [React State Management 2025](https://www.developerway.com/posts/react-state-management-2025) · [State Management Trends](https://makersden.io/blog/react-state-management-in-2025) · [React State: Redux vs Zustand vs Jotai](https://inhaq.com/blog/react-state-management-2026-redux-vs-zustand-vs-jotai.html)
+// Split stores by concern
+const useUIStore = create<UIState>()((set) => ({
+  isSidebarOpen: false,
+  theme: 'light' as const,
+  toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
+  setTheme: (theme) => set({ theme }),
+}));
+
+// Subscribe only to needed values (prevents unnecessary re-renders)
+function Sidebar() {
+  const isOpen = useUIStore((s) => s.isSidebarOpen);
+  // Does not re-render when theme changes
+}
+```
+
+---
+
+## 6. URL State with nuqs v2
+
+```tsx
+import { useQueryState, parseAsInteger } from 'nuqs';
+
+// Client component
+function ProductFilter() {
+  const [category, setCategory] = useQueryState('category');
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+  // URL synced automatically: ?category=shoes&page=2
+}
+
+// Server-side parsing (Next.js App Router)
+import { createSearchParamsCache, parseAsString } from 'nuqs/server';
+
+const searchParamsCache = createSearchParamsCache({
+  category: parseAsString.withDefault('all'),
+  page: parseAsInteger.withDefault(1),
+});
+
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const { category, page } = await searchParamsCache.parse(searchParams);
+  const products = await fetchProducts({ category, page });
+  return <ProductList products={products} />;
+}
+```
+
+---
+
+## 7. Anti-Patterns
+
+| # | Anti-pattern | Problem | Fix |
+|---|-------------|---------|-----|
+| 1 | Server data in Zustand/Redux | Manual cache/sync/dedup reimplementation | Delegate to TanStack Query |
+| 2 | Monolithic Context | Unrelated updates re-render all consumers | Split Context by concern |
+| 3 | Providers Hell (5+ nested) | Poor readability, hard to debug | Consolidate with Zustand or compose utility |
+| 4 | Over-globalizing local state | Modal open/close in global store | Component-level `useState` |
+| 5 | `useState` + `useEffect` for URL sync | Sync bugs | nuqs / useSearchParams |
+| 6 | Client-only data in RSC era | Ignores server-side benefits | Read in RSC, client stores for interactive parts only |
+| 7 | `onSuccess` callbacks in v5 queries | Removed API — silent failures | Move logic to `queryFn` or use `useEffect` on `data` |
+
+**Source:** [TanStack Query v5 Migration](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5) · [nuqs v2 Docs](https://nuqs.47ng.com/) · [React State Management 2025](https://www.developerway.com/posts/react-state-management-2025) · [Zustand Best Practices](https://zustand.docs.pmnd.rs/)
