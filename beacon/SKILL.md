@@ -63,10 +63,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Area | Scope | Reference |
 |------|-------|-----------|
-| **SLO/SLI Design** | SLO/SLI definitions, error budgets, burn rates | `references/slo-sli-design.md` |
-| **Distributed Tracing** | OpenTelemetry, span naming, sampling | `references/distributed-tracing.md` |
-| **Alerting Strategy** | Alert hierarchy, runbooks, escalation | `references/alerting-strategy.md` |
-| **Dashboard Design** | RED/USE methods, dashboard-as-code | `references/dashboard-design.md` |
+| **SLO/SLI Design** | SLO/SLI definitions, error budgets, burn rates, anti-patterns, governance | `references/slo-sli-design.md` |
+| **OTel & Tracing** | Instrumentation, semantic conventions, collector, sampling, GenAI, cost | `references/opentelemetry-best-practices.md` |
+| **Alerting Strategy** | Alert hierarchy, runbooks, escalation, alert quality KPIs | `references/alerting-strategy.md` |
+| **Dashboard Design** | RED/USE methods, dashboard-as-code, sprawl prevention | `references/dashboard-design.md` |
 | **Capacity Planning** | Load modeling, autoscaling, prediction | `references/capacity-planning.md` |
 | **Toil Automation** | Toil identification, automation scoring | `references/toil-automation.md` |
 | **Reliability Review** | PRR checklists, FMEA, game days | `references/reliability-review.md` |
@@ -93,17 +93,14 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | File | Content |
 |------|---------|
-| `references/slo-sli-design.md` | SLO/SLI definitions, error budgets, burn rates |
-| `references/distributed-tracing.md` | OpenTelemetry, span naming, sampling |
-| `references/alerting-strategy.md` | Alert hierarchy, runbooks, escalation |
-| `references/dashboard-design.md` | RED/USE methods, dashboard-as-code |
+| `references/slo-sli-design.md` | SLO/SLI definitions, error budgets, burn rates, 8 anti-patterns (SA-01-08), error budget policies, SLO governance & maturity model |
+| `references/opentelemetry-best-practices.md` | OTel instrumentation (OT-01-05), semantic conventions, collector pipeline, sampling, distributed tracing, telemetry correlation, cardinality management, cost optimization, GenAI observability |
+| `references/alerting-strategy.md` | Alert hierarchy, runbooks, escalation, alert quality KPIs, signal-to-noise ratio |
+| `references/dashboard-design.md` | RED/USE methods, dashboard-as-code, dashboard sprawl prevention |
 | `references/capacity-planning.md` | Load modeling, autoscaling, prediction |
 | `references/toil-automation.md` | Toil identification, automation scoring |
 | `references/reliability-review.md` | PRR checklists, FMEA, game days |
-| `references/observability-anti-patterns.md` | 可観測性 6 大アンチパターン（OA-01〜06）、カーディナリティ管理、アラート疲れ対策、ダッシュボード階層設計 |
-| `references/opentelemetry-best-practices.md` | OTel 計装戦略（OT-01〜05）、Semantic Conventions、Collector デプロイパターン、サンプリング戦略、テレメトリ相関 |
-| `references/slo-error-budget-anti-patterns.md` | SLO 設計 8 大アンチパターン（SA-01〜08）、エラーバジェット計算・ポリシー、バーンレートアラート、SLO ガバナンス |
-| `references/incident-learning-postmortem.md` | ブレイムレス 5 原則（BL-01〜05）、認知バイアス対策、ポストモーテムテンプレート、アンチパターン（PA-01〜07）、学習メトリクス |
+| `references/incident-learning-postmortem.md` | Blameless 5 principles (BL-01-05), cognitive bias countermeasures, postmortem template, anti-patterns (PA-01-07), learning metrics |
 
 ---
 

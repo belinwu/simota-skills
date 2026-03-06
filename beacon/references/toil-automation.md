@@ -1,6 +1,6 @@
 # Toil Automation Reference
 
-トイル特定フレームワーク、自動化スコアリング、自己修復設計のリファレンス。
+Toil identification framework, automation scoring, and self-healing design reference.
 
 ---
 

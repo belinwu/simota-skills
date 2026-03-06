@@ -1,6 +1,6 @@
 # Reliability Review Reference
 
-本番リリース前チェックリスト、FMEA、ゲームデイ計画のリファレンス。
+Production readiness checklists, FMEA, and game day planning reference.
 
 ---
 

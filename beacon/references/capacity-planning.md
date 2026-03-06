@@ -1,6 +1,6 @@
 # Capacity Planning Reference
 
-負荷モデリング、オートスケーリング戦略、リソース予測のリファレンス。
+Load modeling, auto-scaling strategies, and resource forecasting reference.
 
 ---
 

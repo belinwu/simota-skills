@@ -1,6 +1,6 @@
 # Dashboard Design Reference
 
-RED/USEメソッド、Grafanaダッシュボード-as-code のリファレンス。
+RED/USE methods and Grafana dashboard-as-code reference.
 
 ---
 
@@ -133,3 +133,23 @@ resource "grafana_dashboard" "service_overview" {
 | **Comparison** | Bar chart | Per-endpoint breakdown |
 | **Status** | Status map | Service dependency health |
 | **Threshold** | Time series + threshold | SLO target line |
+
+---
+
+## Dashboard Sprawl Prevention
+
+```
+Anti-patterns:
+  x  L2-level detail in on-call dashboards (too much noise)
+  x  Each team creating custom-format dashboards (no single source of truth)
+  x  20+ panels per dashboard (cognitive overload)
+  x  Graphs without context (unclear what "normal" looks like)
+
+Countermeasures:
+  - Enforce L0/L1/L2 hierarchy for all new dashboards
+  - Use shared templates (Jsonnet/Terraform) for consistency
+  - Require level designation (L0/L1/L2) at creation time
+  - Max 8-12 panels per dashboard
+  - Include "what is normal" annotations on every graph
+  - Quarterly dashboard audit: remove unused, consolidate duplicates
+```

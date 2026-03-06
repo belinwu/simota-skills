@@ -1,6 +1,6 @@
 # Alerting Strategy Reference
 
-アラート階層設計、ランブック、エスカレーションポリシーのリファレンス。
+Alert hierarchy design, runbooks, and escalation policy reference.
 
 ---
 
@@ -62,6 +62,26 @@ BEST: Symptom alert pages, cause alert adds context:
 | **Flapping** | Alert fires and resolves rapidly | Add hysteresis / for-duration |
 | **Cascade** | One failure triggers 20 alerts | Use alert grouping/inhibition |
 | **Stale alerts** | Alert for decommissioned service | Quarterly alert review |
+
+### Alert Quality KPIs
+
+```
+Signal-to-Noise Ratio:
+  actionable_alerts / total_alerts
+  Target: > 30% (industry benchmark)
+
+SLO-based alerting impact:
+  - Reduces alert volume by ~85% vs threshold-based
+  - Only 3% of typical threshold alerts need immediate action
+
+Alert hygiene checklist (quarterly):
+  [ ] Identify alerts with zero actions in past 30 days -> delete/adjust
+  [ ] Migrate threshold alerts to SLO burn rate alerts
+  [ ] Eliminate duplicate alerts for same symptom
+  [ ] Separate after-hours alerts that can wait for business hours
+  [ ] Measure "wolf-boy rate" (false positive rate, target: < 5%)
+  [ ] Dynamic baselines for metrics with known patterns (e.g. daily CPU cycles)
+```
 
 ---
 

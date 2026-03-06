@@ -1,134 +1,134 @@
 # Incident Learning & Postmortem
 
-> ブレイムレスポストモーテム文化、インシデント学習パターン、テンプレート、組織メトリクス
+> Blameless postmortem culture, incident learning patterns, templates, organizational metrics
 
-## 1. ブレイムレスポストモーテム 5 原則
+## 1. Blameless Postmortem: 5 Principles
 
-| # | 原則 | 説明 | 実践 |
-|---|------|------|------|
-| **BL-01** | **善意の推定** | 全関係者は最善の情報に基づき正しい判断をしたと仮定 | 個人ではなくシステムの欠陥に焦点 |
-| **BL-02** | **What/How 質問** | 「何が起きたか」「どう起きたか」で分析 | 「なぜそうしたか」（Why）を避ける→弁明を強要 |
-| **BL-03** | **前方構築タイムライン** | インシデント発生前から時系列を構築 | 後知恵バイアス防止（結果から逆算しない） |
-| **BL-04** | **システム思考** | 個人のミスではなくシステムの相互作用を分析 | ツール、プロセス、コミュニケーション、組織構造を検証 |
-| **BL-05** | **責任 ≠ 罰** | 修正の所有者は割り当てるが、過失は問わない | 「blame（非難）を排除し、ownership（所有）を確立」 |
-
----
-
-## 2. 認知バイアスへの対策
-
-| バイアス | 説明 | 対策 |
-|---------|------|------|
-| **基本的帰属誤り** | 行動を状況ではなく性格に帰属 | 状況要因に焦点を当てた分析 |
-| **確証バイアス** | 既存の信念を支持する情報のみ注目 | Devil's Advocate 任命、外部チームの参加 |
-| **後知恵バイアス** | 事後に「予測可能だった」と認識 | 前方構築タイムライン（BL-03）|
-| **否定性バイアス** | 否定的イベントに過大な注目 | うまくいった対応も明示的に記録 |
+| # | Principle | Description | Practice |
+|---|-----------|-------------|----------|
+| **BL-01** | **Assume good faith** | All participants acted on the best information available and made the best decision they could | Focus on system flaws, not individuals |
+| **BL-02** | **Ask What/How, not Why** | Analyze "what happened" and "how it happened" | Avoid "why did you do that?" — it forces defensiveness |
+| **BL-03** | **Forward-built timeline** | Construct timeline from before the incident forward | Prevents hindsight bias (don't reason backward from outcome) |
+| **BL-04** | **Systems thinking** | Analyze system interactions, not individual mistakes | Examine tools, processes, communication, organizational structure |
+| **BL-05** | **Accountability ≠ Punishment** | Assign ownership for fixes, but do not assign fault | "Eliminate blame, establish ownership" |
 
 ---
 
-## 3. ポストモーテムテンプレート
+## 2. Cognitive Bias Countermeasures
+
+| Bias | Description | Countermeasure |
+|------|-------------|----------------|
+| **Fundamental attribution error** | Attributing actions to character rather than circumstances | Focus analysis on situational factors |
+| **Confirmation bias** | Attending only to information that supports existing beliefs | Appoint Devil's Advocate, include external team members |
+| **Hindsight bias** | Perceiving events as "predictable" after the fact | Forward-built timeline (BL-03) |
+| **Negativity bias** | Disproportionate focus on negative events | Explicitly document what went well |
+
+---
+
+## 3. Postmortem Template
 
 ```
-必須セクション:
-  1. インシデントメタデータ
-     - 日時、期間、重要度、参加者、公開日
+Required sections:
+  1. Incident Metadata
+     - Date/time, duration, severity, participants, publication date
 
-  2. エグゼクティブサマリー
-     - 影響（定量的: QPS低下率、レイテンシ増加、影響ユーザー数、収益影響）
-     - 根本原因（1-2 文）
-     - トリガー（直接的な引き金）
+  2. Executive Summary
+     - Impact (quantitative: QPS drop rate, latency increase, affected users, revenue impact)
+     - Root cause (1-2 sentences)
+     - Trigger (direct cause)
 
-  3. 詳細タイムライン
-     - 分単位の時系列（検知→対応→復旧）
-     - 各アクションの意思決定コンテキスト
+  3. Detailed Timeline
+     - Minute-by-minute chronology (detection → response → recovery)
+     - Decision-making context for each action
 
-  4. 根本原因分析
-     - システムの欠陥に焦点（人的エラーではなく）
-     - 5 Whys またはフィッシュボーン図
-     - 寄与要因の列挙
+  4. Root Cause Analysis
+     - Focus on system defects (not human error)
+     - 5 Whys or fishbone diagram
+     - List of contributing factors
 
-  5. 教訓
-     - うまくいったこと（必ず記載）
-     - うまくいかなかったこと
-     - 幸運だったこと
+  5. Lessons Learned
+     - What went well (mandatory)
+     - What went poorly
+     - Where we got lucky
 
-  6. アクションアイテム
-     - 各項目に単一オーナー（複数オーナー禁止）
-     - 優先度（P0/P1/P2）
-     - 追跡チケットリンク
-     - 種類: Prevention / Mitigation / Detection / Repair
-     - 測定可能な成功基準
+  6. Action Items
+     - Single owner per item (multiple owners prohibited)
+     - Priority (P0/P1/P2)
+     - Tracking ticket link
+     - Type: Prevention / Mitigation / Detection / Repair
+     - Measurable success criteria
 
-  7. 用語集（ドメイン外の読者向け）
+  7. Glossary (for readers outside the domain)
 
-  8. 付録（グラフ、ログ抜粋、支援データ）
-```
-
----
-
-## 4. ポストモーテム アンチパターン
-
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **PA-01** | **非難的言語** | 心理的安全性の破壊→報告回避 | レビュアーが公開前に言語チェック |
-| **PA-02** | **曖昧なアクションアイテム** | 「改善する」「もっと注意する」→実行不能 | SMART 基準（具体的・測定可能・期限付き）|
-| **PA-03** | **複数オーナー** | 責任の分散→誰もやらない | 各アイテムに単一 POC（Point of Contact）|
-| **PA-04** | **公開遅延** | 情報の鮮度低下、学習機会の逸失 | 7 日以内の公開を必須化 |
-| **PA-05** | **行動的修正のみ** | 「次はもっと注意する」→再発 | システム的修正を優先（自動化、ガードレール）|
-| **PA-06** | **閉じたポストモーテム** | チーム内のみ共有→組織学習なし | 全社デフォルト公開、読書会実施 |
-| **PA-07** | **AI 未クローズ** | アクションアイテム放置 | クローズ率の追跡、FixIt Week 実施 |
-
----
-
-## 5. インシデント学習メトリクス
-
-```
-ポストモーテム品質指標:
-  - 公開までの時間（目標: < 7 日）
-  - アクションアイテムの具体性スコア
-  - Prevention vs Mitigation アクションの比率
-  - 読者範囲（チーム内 / 組織横断）
-  - データの完全性（定量的影響、タイムライン詳細度）
-
-組織健全性メトリクス:
-  - アクションアイテムクローズ率（目標: > 80%）
-  - クローズまでの平均時間
-  - 類似インシデントの再発率
-  - MTTD（Mean Time to Detect）トレンド
-  - MTTR（Mean Time to Resolve）トレンド
-
-文化指標:
-  - ポストモーテムレビューへの自発的参加率
-  - 言語の非難度（レビュー時チェック）
-  - リーダーシップのブレイムレス行動一貫性
-  - オンコールチームの離職率
-  - 心理的安全性サーベイスコア
-
-知識共有施策:
-  - 週次/月次アウテージレポート配信
-  - ポストモーテム読書会（クロスチーム）
-  - "Wheel of Misfortune"（過去インシデントの訓練演習）
-  - "Greatest Hits" 年次まとめ
-  - インシデントレスポンダーによるプレゼンテーション
+  8. Appendix (graphs, log excerpts, supporting data)
 ```
 
 ---
 
-## 6. Beacon との連携
+## 4. Postmortem Anti-Patterns
+
+| # | Anti-Pattern | Problem | Countermeasure |
+|---|-------------|---------|----------------|
+| **PA-01** | **Blaming language** | Destroys psychological safety → reporting avoidance | Reviewer checks language before publication |
+| **PA-02** | **Vague action items** | "Improve it" / "Be more careful" → unactionable | SMART criteria (specific, measurable, time-bound) |
+| **PA-03** | **Multiple owners** | Diffusion of responsibility → nobody acts | Single POC (Point of Contact) per item |
+| **PA-04** | **Delayed publication** | Information freshness degrades, learning opportunity lost | Mandate publication within 7 days |
+| **PA-05** | **Behavioral fixes only** | "Be more careful next time" → recurrence | Prioritize systemic fixes (automation, guardrails) |
+| **PA-06** | **Closed postmortems** | Shared only within team → no organizational learning | Default to company-wide publication, hold reading sessions |
+| **PA-07** | **Unclosed action items** | Action items abandoned | Track closure rate, hold FixIt Weeks |
+
+---
+
+## 5. Incident Learning Metrics
 
 ```
-Beacon での活用:
-  1. インシデント後の監視改善提案（検出時間短縮）
-  2. SLO 違反分析との統合（バジェット消費の原因追跡）
-  3. アラート有効性の検証（検知されたか、適時だったか）
-  4. ダッシュボード改善提案（インシデント時に不足した可視性）
+Postmortem quality indicators:
+  - Time to publication (target: < 7 days)
+  - Action item specificity score
+  - Prevention vs Mitigation action ratio
+  - Reader reach (team-only / cross-organization)
+  - Data completeness (quantitative impact, timeline detail)
 
-品質ゲート:
-  - ポストモーテムに定量的影響が含まれているか
-  - アクションアイテムに単一オーナーが割り当てられているか
-  - システム的修正が行動的修正より優先されているか
-  - 監視改善項目が含まれているか（Beacon 連携ポイント）
-  - 7 日以内に公開されているか
-  - クローズ率が 80% を超えているか（四半期チェック）
+Organizational health metrics:
+  - Action item closure rate (target: > 80%)
+  - Average time to closure
+  - Similar incident recurrence rate
+  - MTTD (Mean Time to Detect) trend
+  - MTTR (Mean Time to Resolve) trend
+
+Culture indicators:
+  - Voluntary participation rate in postmortem reviews
+  - Language blamelessness (checked during review)
+  - Leadership consistency in blameless behavior
+  - On-call team attrition rate
+  - Psychological safety survey score
+
+Knowledge sharing practices:
+  - Weekly/monthly outage report distribution
+  - Postmortem reading sessions (cross-team)
+  - "Wheel of Misfortune" (past incident training exercises)
+  - "Greatest Hits" annual compilation
+  - Presentations by incident responders
+```
+
+---
+
+## 6. Beacon Integration
+
+```
+Usage in Beacon:
+  1. Post-incident monitoring improvement proposals (reduce detection time)
+  2. Integration with SLO violation analysis (track budget consumption causes)
+  3. Alert effectiveness validation (was it detected? was it timely?)
+  4. Dashboard improvement proposals (visibility gaps during incidents)
+
+Quality gates:
+  - Postmortem includes quantitative impact data
+  - Each action item has a single owner assigned
+  - Systemic fixes are prioritized over behavioral fixes
+  - Monitoring improvement items are included (Beacon integration point)
+  - Published within 7 days
+  - Closure rate exceeds 80% (quarterly check)
 ```
 
 **Source:** [Google SRE: Postmortem Culture](https://sre.google/workbook/postmortem-culture/) · [PagerDuty: The Blameless Postmortem](https://postmortems.pagerduty.com/culture/blameless/) · [Atlassian: Blameless Postmortem](https://www.atlassian.com/incident-management/postmortem/blameless) · [Rootly: 2025 SRE Incident Management Best Practices](https://rootly.com/sre/2025-sre-incident-management-best-practices-checklist)

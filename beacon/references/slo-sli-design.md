@@ -1,6 +1,6 @@
-# SLO/SLI Design Reference
+# SLO/SLI Design, Error Budgets & Governance
 
-SLO/SLI定義テンプレート、エラーバジェット計算、バーンレートのリファレンス。
+> SLI types, SLO templates, error budget calculation, burn rate alerts, anti-patterns, policies, maturity model
 
 ---
 
@@ -36,7 +36,7 @@ sli:
 
 ---
 
-## SLO (Service Level Objective) Templates
+## SLO Templates
 
 ### Tiered SLO Framework
 
@@ -77,46 +77,35 @@ slo:
 
 ## Error Budget Calculation
 
-### Formulas
-
 ```
 Error Budget = 1 - SLO Target
 
 Example (99.9% SLO over 30 days):
   Budget = 1 - 0.999 = 0.001 = 0.1%
-  Time budget = 30 days × 24h × 60m × 0.001 = 43.2 minutes
-  Request budget = 1,000,000 requests × 0.001 = 1,000 failed requests allowed
+  Time budget = 30 days x 24h x 60m x 0.001 = 43.2 minutes
+  Request budget = 1,000,000 requests x 0.001 = 1,000 failed requests allowed
+
+Burn Rate:
+  burn_rate = actual_error_rate / allowed_error_rate
+  burn_rate 1.0 = budget exhausted in exactly the SLO window
+  burn_rate 14.4 = budget exhausted in ~2 days (Critical)
 
 Remaining budget:
   consumed = actual_bad_events / total_events
   remaining = error_budget - consumed
-  remaining_pct = remaining / error_budget × 100
+  remaining_pct = remaining / error_budget x 100
 ```
-
-### Error Budget Policy
-
-| Budget Remaining | Actions |
-|-----------------|---------|
-| > 50% | Normal development velocity |
-| 25-50% | Increased review for risky changes |
-| 10-25% | Only reliability improvements and critical fixes |
-| < 10% | Freeze deployments, focus on reliability |
-| 0% (exhausted) | Full freeze until budget regenerates |
 
 ---
 
-## Burn Rate Alerts
-
-### Multi-Window Burn Rate
+## Burn Rate Alerts (Multi-Window)
 
 | Alert | Burn Rate | Long Window | Short Window | Budget Consumed |
 |-------|-----------|-------------|--------------|-----------------|
-| **Page (critical)** | 14.4× | 1h | 5min | 2% in 1h |
-| **Page (urgent)** | 6× | 6h | 30min | 5% in 6h |
-| **Ticket (warning)** | 3× | 1d | 2h | 10% in 1d |
-| **Ticket (low)** | 1× | 3d | 6h | 10% in 3d |
-
-### Burn Rate Alert Implementation
+| **Page (critical)** | 14.4x | 1h | 5min | 2% in 1h |
+| **Page (urgent)** | 6x | 6h | 30min | 5% in 6h |
+| **Ticket (warning)** | 3x | 1d | 2h | 10% in 1d |
+| **Ticket (low)** | 1x | 3d | 6h | 10% in 3d |
 
 ```yaml
 # Prometheus alerting rules
@@ -152,6 +141,69 @@ groups:
 
 ---
 
+## Error Budget Policy
+
+```
+Green (budget remaining > 50%):
+  - Normal feature development
+  - Risky deployments allowed
+  - Encourage experimentation
+
+Yellow (budget remaining 25-50%):
+  - Team analysis meeting
+  - Low-risk deploys only
+  - Pause high-risk changes
+  - Prioritize reliability tasks
+
+Red (budget remaining < 25%):
+  - Freeze feature development
+  - All resources on reliability
+  - Release freeze (except emergency patches)
+  - Maintain until budget recovers
+
+Policy governance:
+  - Designate freeze authority explicitly
+  - VP/Director escalation path
+  - If policy feels punitive -> SLO is too tight
+  - If degradation occurs before freeze -> SLO is too loose
+```
+
+---
+
+## SLO Anti-Patterns
+
+| # | Anti-Pattern | Problem | Mitigation |
+|---|-------------|---------|------------|
+| **SA-01** | **100% target** | No deploys, patches, or scaling possible | Set realistic targets (<=99.9%) |
+| **SA-02** | **Historical performance as SLO** | Heroic effort becomes baseline | Derive from user experience requirements |
+| **SA-03** | **Availability-only focus** | Misses latency, freshness issues | Multi-dimensional SLIs (availability + latency + correctness) |
+| **SA-04** | **Month-end budget check** | Too late to react to rapid consumption | Burn rate alerts for real-time monitoring |
+| **SA-05** | **Ignoring external dependencies** | Uncontrollable SLO violations | Dependency chain analysis, factor in dependency SLAs |
+| **SA-06** | **Ignoring traffic patterns** | Budget burns fast during peaks | Consider time-based / seasonal SLOs |
+| **SA-07** | **No organizational alignment** | Priority mismatch with PM/leadership | SLO = business metric, shared across organization |
+| **SA-08** | **SLO without policy** | Violations trigger no action ("toothless SLO") | Explicit error budget policy with enforcement |
+
+### Metrics Sprawl Prevention
+
+Unchecked metric creation increases noise, buries signal, and inflates costs. Countermeasures:
+- **Metric owner system**: every metric has a designated owner
+- **Quarterly audit**: review unused metrics, remove those with no SLO linkage
+- **Purpose-driven collection**: SLO -> SLI -> required metrics (backtrack)
+
+---
+
+## SLO Maturity Model
+
+| Level | State | Characteristics |
+|-------|-------|----------------|
+| 1 | SLIs defined, no SLO | Metrics exist but no targets |
+| 2 | SLOs set, manual monitoring | Targets set, checked manually |
+| 3 | Burn rate alerts, budget policy | Real-time monitoring, automated response |
+| 4 | SLO-driven development | Budget consumption drives priority decisions |
+| 5 | Auto-adaptive SLOs | Targets adapt to traffic patterns and seasonality |
+
+---
+
 ## SLO Review Cadence
 
 | Activity | Frequency | Participants |
@@ -171,4 +223,7 @@ groups:
 - [ ] Are any SLOs consistently over-met (wasting budget)?
 - [ ] New services that need SLOs?
 - [ ] Retired services whose SLOs should be removed?
+- [ ] Unused metrics identified and removed?
 ```
+
+**Source:** [Google SRE: Implementing SLOs](https://sre.google/workbook/implementing-slos/) · [Google SRE: Error Budget Policy](https://sre.google/workbook/error-budget-policy/) · [Netdata: Error Budget Policies](https://www.netdata.cloud/academy/designing-error-budget-policies/) · [Nobl9: Complete Guide to Error Budgets](https://www.nobl9.com/resources/a-complete-guide-to-error-budgets-setting-up-slos-slis-and-slas-to-maintain-reliability)
