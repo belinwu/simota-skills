@@ -24,6 +24,29 @@
 | **Build System Attack** | CI/CD パイプラインへの注入 | SolarWinds (2020) |
 | **Malicious Update** | 正規パッケージの悪意あるアップデート | ua-parser-js (2021) |
 
+### AI 推奨依存関係のリスク（2025）
+
+```
+統計:
+  - AI が推奨する依存関係の 44-49% に既知 CVE が存在
+  - 安全な AI 推奨パッケージは 5 個中 1 個のみ（20%）
+  - セキュリティツール装備の AI エージェント → 安全率 57%（3倍改善）
+
+Slopsquatting:
+  - AI が存在しないパッケージ名を推奨 → 攻撃者がその名前で悪意パッケージを登録
+  - 推奨パッケージの 5-21% が実在しない
+  - 対策: パッケージ名の公式レジストリ照合を必須化
+
+MCP サーバーのサプライチェーンリスク:
+  - MCP (Model Context Protocol) サーバーが新たな依存関係層を形成
+  - 未検証の MCP サーバーによるコード実行リスク
+  - 対策: MCP サーバーのソース検証 + 権限最小化
+
+AI 生成コードの扱い:
+  - AI 生成コードは「未信頼のサードパーティ入力」として扱う
+  - 自動テスト + セキュリティスキャンを必須化
+```
+
 ---
 
 ## 2. Software Composition Analysis (SCA)
@@ -82,6 +105,29 @@ SBOM = ソフトウェアの「成分表」
 |------------|---------|------|
 | **SPDX** | Linux Foundation | ISO 5962 標準、ライセンス重視 |
 | **CycloneDX** | OWASP | セキュリティ重視、VEX 対応 |
+
+### CISA 2025 SBOM 最低要素
+
+```
+CISA 2025 ガイドライン（2021 NTIA SBOM ガイド更新版）:
+
+必須フィールド:
+  - Supplier Name（供給元名）
+  - Component Name（コンポーネント名）
+  - Version（バージョン）
+  - Unique Identifiers（一意識別子: CPE, PURL, SWID）
+  - Dependency Relationship（依存関係）
+  - Author（作成者）
+  - Timestamp（タイムスタンプ）
+
+受容フォーマット: SPDX, CycloneDX, SWID
+新規要件: SaaS・AI 使用ケースへの対応
+
+Sentinel チェック:
+  □ SBOM に全必須フィールドが含まれているか
+  □ 推移的依存関係が含まれているか
+  □ AI 関連コンポーネントが特定されているか
+```
 
 ### 生成ツール
 
@@ -190,4 +236,45 @@ Sentinel スキャン項目（サプライチェーン）:
   □ ライセンスコンプライアンスチェック
 ```
 
-**Source:** [Sonatype: Future-Proofing Software Supply Chain with SCA](https://www.sonatype.com/blog/future-proofing-your-software-supply-chain-with-sca-best-practices) · [Cycode: Top 21 Enterprise SCA Tools 2026](https://cycode.com/blog/top-enterprise-sca-tools/) · [Mend: What Is SCA 2025](https://www.mend.io/blog/software-composition-analysis/) · [Aikido: Top 10 SCA Tools 2026](https://www.aikido.dev/blog/top-10-software-composition-analysis-sca-tools-in-2025) · [Anchore: SCA Overview](https://anchore.com/software-supply-chain-security/software-composition-analysis/)
+---
+
+## 6. Dependency Vulnerability Scanning
+
+### スキャンコマンド
+
+```bash
+# npm audit
+npm audit --json > audit-report.json
+
+# yarn audit
+yarn audit --json > audit-report.json
+
+# Snyk
+npx snyk test --json > snyk-report.json
+
+# Trivy (filesystem scan)
+trivy fs . --severity HIGH,CRITICAL --format json > trivy-report.json
+```
+
+### 解決コマンド
+
+```bash
+npm update package-name
+npm audit fix
+npm audit fix --force  # 破壊的変更を含む場合
+```
+
+### CI/CD 統合
+
+```yaml
+# GitHub Actions: security gate
+- name: Security Audit
+  run: |
+    npm audit --audit-level=high
+    if [ $? -ne 0 ]; then
+      echo "High severity vulnerabilities found"
+      exit 1
+    fi
+```
+
+**Source:** [Sonatype: Future-Proofing Software Supply Chain with SCA](https://www.sonatype.com/blog/future-proofing-your-software-supply-chain-with-sca-best-practices) · [Cycode: Top 21 Enterprise SCA Tools 2026](https://cycode.com/blog/top-enterprise-sca-tools/) · [Mend: What Is SCA 2025](https://www.mend.io/blog/software-composition-analysis/) · [Aikido: Top 10 SCA Tools 2026](https://www.aikido.dev/blog/top-10-software-composition-analysis-sca-tools-in-2025) · [Anchore: SCA Overview](https://anchore.com/software-supply-chain-security/software-composition-analysis/) · [Endor Labs: State of Dependency Management 2025](https://www.endorlabs.com/lp/state-of-dependency-management-2025) · [CISA: 2025 Minimum Elements for SBOM](https://www.cisa.gov/resources-tools/resources/2025-minimum-elements-software-bill-materials-sbom)

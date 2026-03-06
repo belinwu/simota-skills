@@ -178,4 +178,56 @@ MCP 統合:
   5. リポジトリ横断の集中管理と可視化
 ```
 
-**Source:** [Veracode: AI-Generated Code Security Risks](https://www.veracode.com/blog/ai-generated-code-security-risks/) · [CSA: Security Risks in AI-Generated Code](https://cloudsecurityalliance.org/blog/2025/07/09/understanding-security-risks-in-ai-generated-code) · [Arcanum-Sec: sec-context Anti-Patterns](https://github.com/Arcanum-Sec/sec-context) · [DryRun Security: Top AI SAST Tools 2026](https://www.dryrun.security/blog/top-ai-sast-tools-2026) · [InfoQ: LinkedIn CodeQL + Semgrep](https://www.infoq.com/news/2026/02/linkedin-redesigns-sast-pipeline/) · [The Hacker News: IDE Security Flaws](https://thehackernews.com/2025/12/researchers-uncover-30-flaws-in-ai.html)
+---
+
+## 7. Hybrid LLM-SAST Architecture
+
+### Why Hybrid?
+
+```
+ルールベース SAST 単体: 35.7% accuracy（FP が多すぎる）
+LLM 単体: 65.5% accuracy（ルール網羅性に欠ける）
+Hybrid (LLM + SAST): 89.5% accuracy（補完的カバレッジ）
+```
+
+### Neuro-Symbolic Approach (IRIS)
+
+```
+IRIS アーキテクチャ:
+  1. SAST エンジン（CodeQL/Semgrep）でリポジトリ全体をスキャン
+  2. 各 finding に対してコンテキスト情報を収集（データフロー、呼び出し元）
+  3. LLM がコンテキストを評価し、真陽性/偽陽性を判定
+  4. 結果: CodeQL 単体比 103.7% 多くの脆弱性を発見（55件）
+
+Key Insight:
+  - SAST は既知パターンを高速に検出（漏れなく）
+  - LLM はコンテキスト推論で FP を除去し、論理的欠陥を発見
+  - 組み合わせが単体を大幅に上回る
+```
+
+### CodeQL + Copilot Auto-Fix
+
+```
+GitHub の統合パイプライン:
+  1. CodeQL がPRで脆弱性を検出
+  2. Copilot が自動修正コードを生成
+  3. 多段検証: fuzzy matching → parser checks → semantic validation → dependency verification
+  4. 90%+ の脆弱性タイプに対応、2/3 以上がそのままマージ可能
+
+Sentinel への応用:
+  - Multi-Engine Mode の結果に対して LLM で修正案を自動生成
+  - PRESENT フェーズで修正コード案を含めて報告
+```
+
+### Sentinel 統合ポイント
+
+```
+現在の Multi-Engine Mode + Hybrid 拡張:
+  Phase 1: SCAN → 3エンジン独立スキャン（既存）
+  Phase 2: FILTER → LLM で FP フィルタリング（新規）
+  Phase 3: PRIORITIZE → Confidence スコアリング（新規）
+  Phase 4: SECURE → LLM ベース自動修正提案（新規）
+  Phase 5: VERIFY → 修正の安全性検証（既存）
+```
+
+**Source:** [Veracode: AI-Generated Code Security Risks](https://www.veracode.com/blog/ai-generated-code-security-risks/) · [CSA: Security Risks in AI-Generated Code](https://cloudsecurityalliance.org/blog/2025/07/09/understanding-security-risks-in-ai-generated-code) · [Arcanum-Sec: sec-context Anti-Patterns](https://github.com/Arcanum-Sec/sec-context) · [DryRun Security: Top AI SAST Tools 2026](https://www.dryrun.security/blog/top-ai-sast-tools-2026) · [InfoQ: LinkedIn CodeQL + Semgrep](https://www.infoq.com/news/2026/02/linkedin-redesigns-sast-pipeline/) · [The Hacker News: IDE Security Flaws](https://thehackernews.com/2025/12/researchers-uncover-30-flaws-in-ai.html) · [GitHub Blog: How AI Enhances SAST](https://github.blog/ai-and-ml/llms/how-ai-enhances-static-application-security-testing-sast/) · [IRIS: LLM-Assisted Static Analysis](https://arxiv.org/abs/2405.17238) · [InfoWorld: Pairing SAST with AI Reduces False Positives](https://www.infoworld.com/article/4093079/how-pairing-sast-with-ai-dramatically-reduces-false-positives-in-code-security.html)

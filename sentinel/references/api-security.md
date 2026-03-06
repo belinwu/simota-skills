@@ -156,28 +156,8 @@ app.put('/api/users/:id', async (req, res) => {
 
 ### レート制限
 
-```typescript
-import rateLimit from 'express-rate-limit';
-
-// グローバルレート制限
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15分
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many requests' },
-});
-
-// 認証エンドポイント用（より厳格）
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  skipSuccessfulRequests: true,
-});
-
-app.use('/api/', globalLimiter);
-app.use('/api/auth/', authLimiter);
-```
+> Rate limiting の実装パターンは `defensive-controls.md` § Rate Limiting を参照。
+> Express rate-limit、Next.js API limiting、Redis 分散制限の詳細コード例を収録。
 
 ### レスポンスフィルタリング
 
@@ -250,6 +230,55 @@ Priority 3 (Medium):
   - API レスポンスの過剰なフィールド
   - 非推奨エンドポイントの存在
   - エラーレスポンスのスタックトレース漏洩
+```
+
+---
+
+## 6. GraphQL Security
+
+### 主要リスクと対策
+
+```
+GraphQL 固有のセキュリティ課題:
+
+□ Query Depth Limiting（深いネスト攻撃の防止）
+□ Query Complexity Analysis（計算コスト制限）
+□ Introspection 制御（本番での無効化）
+□ Persisted Queries（任意クエリの禁止）
+□ Field-Level Authorization（フィールド単位の認可）
+□ Batching Attack 防止（バッチリクエスト制限）
+```
+
+```typescript
+// Query depth limiting (graphql-depth-limit)
+import depthLimit from 'graphql-depth-limit';
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  validationRules: [depthLimit(5)],  // 最大深度 5
+});
+
+// Disable introspection in production
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: process.env.NODE_ENV !== 'production',
+});
+```
+
+### OAuth 2.1 パターン
+
+```
+OAuth 2.1 主要変更点:
+  - Authorization Code + PKCE が必須（Implicit Grant 廃止）
+  - Refresh Token Rotation の必須化
+  - mTLS クライアント認証の推奨
+
+Sentinel チェック:
+  □ PKCE (code_verifier/code_challenge) の実装確認
+  □ Implicit Grant (response_type=token) の使用検出
+  □ Refresh Token の適切なローテーション
 ```
 
 **Source:** [Wiz: OWASP API Security Top 10](https://www.wiz.io/academy/api-security/owasp-api-security) · [OWASP: API Security Project](https://owasp.org/www-project-api-security/) · [Axway: OWASP API Security 2026](https://blog.axway.com/learning-center/digital-security/risk-management/owasps-api-security) · [42Crunch: OWASP API Top 10](https://42crunch.com/owasp-api-security-top-10/) · [CyCognito: OWASP API Top 10 2023](https://www.cycognito.com/learn/api-security/owasp-api-security/)
