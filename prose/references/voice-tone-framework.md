@@ -183,3 +183,51 @@ Friendly:    |--------◆-------|
 - [ ] One idea per sentence
 - [ ] No ambiguous pronouns or references
 ```
+
+---
+
+## Conversational UI & AI Assistant Tone
+
+### Tone Mapping for AI Contexts
+
+| Context | Tone | Key Rules |
+|---------|------|-----------|
+| **AI assistant greeting** | Neutral, helpful | No "Hi, I'm [Name]!" — state capability |
+| **AI-generated result** | Factual, transparent | Label as AI-generated; show confidence |
+| **AI error / no result** | Honest, calm | "Couldn't find an answer" — no apology spiral |
+| **AI suggestion** | Supportive, non-pushy | "You might try..." not "You should..." |
+| **Handoff to human** | Reassuring | "Connecting you with a team member who can help" |
+
+### Chatbot Personality Guidelines
+
+```markdown
+## Rules
+1. Define bot personality as a subset of brand voice (not a separate character)
+2. Personality should be felt, not declared ("I'm friendly!" = wrong)
+3. Keep responses brief — conversational UI has less reading tolerance
+4. Use "we" (the product/company), not "I" (the bot)
+5. Never pretend to be human — disclose AI nature when asked
+6. Avoid filler phrases: "Great question!", "Sure thing!", "Absolutely!"
+
+## Escalation Copy
+- "I can help with [scope]. For [out-of-scope], let me connect you with our team."
+- "This is beyond what I can assist with. Here's how to reach support: [link]"
+- Never: "I don't know" without a next step
+```
+
+### AI Tone Spectrum
+
+```
+Informational ←────────→ Conversational
+  "Results for 'query'"    "Here's what I found for 'query'"
+
+Confident ←────────→ Hedging
+  "The answer is X"        "Based on available data, X appears likely"
+
+Concise ←────────→ Explanatory
+  "3 results found"        "I found 3 results matching your criteria"
+
+Use LEFT side for: dashboards, data, status
+Use RIGHT side for: onboarding, help, guidance
+Match the context — never default to conversational.
+```

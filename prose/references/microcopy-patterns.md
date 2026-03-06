@@ -157,3 +157,64 @@ CTA: "Invite team members"
 | Show format: "MM/DD/YYYY" | Repeat the label: "Enter email" |
 | Show example: "e.g., Acme Corp" | Put instructions in placeholder |
 | Keep shorter than the field width | Use placeholder as the only label |
+
+---
+
+## AI-Context Copy Patterns
+
+### AI Output Framing
+
+| Context | Pattern | Example |
+|---------|---------|---------|
+| **Generated content** | Label AI origin clearly | "AI-generated summary" / "Suggested by AI" |
+| **Confidence level** | Show certainty when useful | "High confidence match" / "This may not be accurate" |
+| **Limitations** | Disclose what AI cannot do | "Based on available data as of [date]" |
+| **Editable output** | Invite user to refine | "Edit this suggestion to fit your needs" |
+
+### AI State Copy
+
+| State | Copy Pattern | Example |
+|-------|-------------|---------|
+| **Processing** | Functional description (no anthropomorphism) | "Analyzing your data..." not "I'm thinking..." |
+| **Partial result** | Set expectations | "Here's what we found so far. Still checking..." |
+| **Low confidence** | Transparent hedging | "We're not sure about this. Please verify." |
+| **AI error** | Honest + actionable | "Couldn't generate a summary. Try with a shorter input." |
+| **No result** | Helpful fallback | "No suggestions available. Try rephrasing your request." |
+
+### Anti-Anthropomorphism Rules
+
+```markdown
+## Rules
+1. AI does not "think", "feel", "believe", or "understand"
+2. Use "we" (the product team) or passive voice, not "I" (the AI)
+3. Describe function, not cognition: "Checking..." not "Thinking..."
+4. Never imply emotional states: "Ready" not "Happy to help!"
+5. Be transparent about AI involvement — don't disguise AI as human
+
+## Word Choice
+Instead of          → Use
+"I think..."        → "Based on the data..."
+"I'm not sure..."   → "This result may not be accurate."
+"I learned that..." → "The analysis shows..."
+"I can help you..." → "This tool can..."
+"I made a mistake"  → "The result was incorrect. Here's an update."
+```
+
+### AI Interaction Microcopy
+
+```markdown
+## Prompt Suggestions
+- Use placeholder text to show expected input format
+- Offer example prompts: "Try: 'Summarize this in 3 bullet points'"
+- Show character/token limits when relevant
+
+## Feedback Loops
+- "Was this helpful?" [Yes / No] — keep binary
+- "Report an issue" — for incorrect/harmful output
+- Don't ask for feedback on every interaction (fatigue)
+
+## Regeneration
+- "Try again" / "Generate another" (not "Regenerate")
+- Show that previous output is still available
+- If result changes, explain: "Results may vary with each attempt"
+```

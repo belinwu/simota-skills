@@ -1,6 +1,8 @@
 # Accessibility Text Guide
 
-Alt text規則、ARIAラベルパターン、スクリーンリーダー用テキストのリファレンス。
+Alt text rules, ARIA label patterns, screen reader text. Aligned with WCAG 2.2 (ISO/IEC 40500:2025).
+
+> **Compliance context**: WCAG 2.2 is the current W3C standard (Oct 2023). The European Accessibility Act (EAA) has been enforceable since June 28, 2025, making Level AA compliance a legal requirement in the EU. ADA litigation in the U.S. continues to reference WCAG 2.2.
 
 ---
 
@@ -168,6 +170,19 @@ h1: "Account Settings"
 
 ---
 
+## WCAG 2.2 New Criteria (Text-Relevant)
+
+| Criterion | Level | Text Impact |
+|-----------|-------|-------------|
+| **2.4.11 Focus Appearance** | AA | Ensure focused elements have visible labels and sufficient contrast |
+| **2.5.7 Dragging Movements** | AA | Provide text instructions for non-drag alternatives |
+| **2.5.8 Target Size (Minimum)** | AA | Tap/click targets must be at least 24x24 CSS px; label text must fit |
+| **3.2.6 Consistent Help** | A | Help mechanisms (contact, FAQ links) must appear in consistent locations |
+| **3.3.7 Redundant Entry** | A | Don't ask users to re-enter information; pre-fill and label clearly |
+| **3.3.8 Accessible Authentication** | AA | Avoid cognitive function tests; provide clear text alternatives for CAPTCHA |
+
+---
+
 ## Accessibility Text Checklist
 
 ```markdown
@@ -181,4 +196,7 @@ h1: "Account Settings"
 - [ ] Tables have captions and scope attributes
 - [ ] Color is not the sole indicator of meaning
 - [ ] Focus order matches visual order
+- [ ] WCAG 2.2: Help mechanisms are consistently placed and labeled
+- [ ] WCAG 2.2: Authentication steps have clear text instructions
+- [ ] WCAG 2.2: Pre-filled fields are labeled to explain auto-populated data
 ```
