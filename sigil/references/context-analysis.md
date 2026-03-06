@@ -1,230 +1,195 @@
 # Context Analysis
 
-Tech stack detection patterns, directory structure analysis, convention inference rules, monorepo support, and multi-language project handling for project skill generation.
+Purpose: load this during `SCAN` to detect the project's real stack, conventions, rule files, existing skills, and evolution signals before generating anything.
 
----
+## Contents
+
+1. Tech stack detection
+2. Structure and naming
+3. Monorepo and polyglot handling
+4. Rules and config precedence
+5. Existing skill audit
+6. Style-profile extraction
 
 ## Tech Stack Detection
 
 ### Manifest File Mapping
 
-| File | Stack | Key Fields |
-|------|-------|------------|
-| `package.json` | Node.js/JavaScript/TypeScript | dependencies, devDependencies, scripts |
-| `tsconfig.json` | TypeScript | compilerOptions.strict, paths, baseUrl |
-| `go.mod` | Go | module, require |
+| File | Stack | Inspect for |
+|------|-------|-------------|
+| `package.json` | Node.js / JavaScript / TypeScript | dependencies, devDependencies, scripts, workspaces |
+| `tsconfig.json` | TypeScript | strictness, `paths`, `baseUrl` |
+| `go.mod` | Go | module path, dependencies |
 | `Cargo.toml` | Rust | dependencies, features |
-| `pyproject.toml` / `setup.py` / `requirements.txt` | Python | dependencies, tool.poetry |
-| `Gemfile` | Ruby | gem entries |
-| `pom.xml` / `build.gradle` | Java/Kotlin | dependencies, plugins |
-| `composer.json` | PHP | require, autoload |
-| `pubspec.yaml` | Dart/Flutter | dependencies |
+| `pyproject.toml` / `setup.py` / `requirements.txt` | Python | framework and tool dependencies |
+| `Gemfile` | Ruby | gems and Rails presence |
+| `pom.xml` / `build.gradle` | Java / Kotlin | starters, plugins |
+| `composer.json` | PHP | framework and autoloading |
+| `pubspec.yaml` | Dart / Flutter | packages and SDK |
 | `mix.exs` | Elixir | deps |
-| `bun.lockb` / `bunfig.toml` | Bun runtime | (Bun-specific runtime detection) |
+| `bun.lockb` / `bunfig.toml` | Bun | Bun runtime usage |
 
 ### Framework Detection
 
-| Framework | Detection Signal | Priority Skills |
-|-----------|-----------------|-----------------|
-| **Next.js** | `next` in dependencies + `next.config.*` | new-page, new-api-route, new-component |
-| **React (CRA/Vite)** | `react` + no `next` | new-component, new-hook, new-context |
-| **Vue.js** | `vue` in dependencies | new-component, new-composable, new-store |
-| **Nuxt** | `nuxt` in dependencies | new-page, new-server-route, new-composable |
-| **Remix** | `@remix-run/node` in dependencies | new-route, new-loader, new-action |
-| **Express** | `express` in dependencies | new-route, new-middleware, new-controller |
-| **Fastify** | `fastify` in dependencies | new-route, new-plugin, new-schema |
-| **Hono** | `hono` in dependencies | new-route, new-middleware, new-validator |
-| **NestJS** | `@nestjs/core` in dependencies | new-module, new-controller, new-service |
-| **tRPC** | `@trpc/server` in dependencies | new-router, new-procedure, new-middleware |
-| **FastAPI** | `fastapi` in pyproject/requirements | new-router, new-model, new-schema |
-| **Django** | `django` in requirements | new-app, new-model, new-view |
-| **Rails** | `rails` in Gemfile | new-model, new-controller, new-migration |
-| **Go (stdlib)** | `go.mod` present, no major framework | new-handler, new-middleware, new-model |
-| **Gin** | `github.com/gin-gonic/gin` | new-handler, new-middleware |
-| **Actix** | `actix-web` in Cargo.toml | new-handler, new-service |
-| **Spring Boot** | `spring-boot-starter` in pom/gradle | new-controller, new-service, new-repository |
-| **Laravel** | `laravel/framework` in composer | new-controller, new-model, new-migration |
-| **Flutter** | `flutter` in pubspec.yaml | new-screen, new-widget, new-bloc |
-| **SvelteKit** | `@sveltejs/kit` in dependencies | new-route, new-component, new-server |
+| Framework | Detection signal | Likely priority skills |
+|-----------|------------------|------------------------|
+| Next.js | `next` dependency + `next.config.*` | `new-page`, `new-api-route`, `new-component` |
+| React (Vite / CRA) | `react` without `next` | `new-component`, `new-hook`, `new-context` |
+| Vue.js | `vue` dependency | `new-component`, `new-composable`, `new-store` |
+| Nuxt | `nuxt` dependency | `new-page`, `new-server-route`, `new-composable` |
+| Remix | `@remix-run/node` dependency | `new-route`, `new-loader`, `new-action` |
+| Express | `express` dependency | `new-route`, `new-middleware`, `new-controller` |
+| Fastify | `fastify` dependency | `new-route`, `new-plugin`, `new-schema` |
+| Hono | `hono` dependency | `new-route`, `new-middleware`, `new-validator` |
+| NestJS | `@nestjs/core` dependency | `new-module`, `new-controller`, `new-service` |
+| tRPC | `@trpc/server` dependency | `new-router`, `new-procedure`, `new-middleware` |
+| FastAPI | `fastapi` in Python manifests | `new-router`, `new-model`, `new-schema` |
+| Django | `django` in Python manifests | `new-app`, `new-model`, `new-view` |
+| Rails | `rails` in `Gemfile` | `new-model`, `new-controller`, `new-migration` |
+| Go stdlib / Chi / Echo | `go.mod` without larger framework or with router deps | `new-handler`, `new-middleware`, `new-model` |
+| Gin | `github.com/gin-gonic/gin` | `new-handler`, `new-middleware` |
+| Actix / Axum | Rust web framework in `Cargo.toml` | `new-handler`, `new-service` |
+| Spring Boot | `spring-boot-starter*` | `new-controller`, `new-service`, `new-repository` |
+| Laravel | `laravel/framework` | `new-controller`, `new-model`, `new-migration` |
+| Flutter | `flutter` SDK | `new-screen`, `new-widget`, `new-bloc` |
+| SvelteKit | `@sveltejs/kit` | `new-route`, `new-component`, `new-server` |
 
----
+## Structure and Naming
 
-## Directory Structure Analysis
+### Directory Signals
 
-### Common Patterns
+| Pattern | Meaning | Skill impact |
+|---------|---------|--------------|
+| `src/app/` | App Router or route-first structure | Route-oriented templates |
+| `src/pages/` | Pages Router or Nuxt-style routing | File-based route templates |
+| `src/components/` | Shared components | Component creation skills |
+| `src/hooks/` / `src/composables/` | Reusable logic layer | Hook/composable skills |
+| `src/lib/` / `src/utils/` | Utility helpers | Utility templates |
+| `src/services/` | Service layer present | Service and integration skills |
+| `src/stores/` / `src/store/` | Centralized state | State-management skills |
+| `__tests__/` / `*.test.*` / `*.spec.*` | Test layout | Test placement and naming |
+| `e2e/` / `cypress/` / `playwright/` | E2E test framework | End-to-end testing conventions |
+| `prisma/` / `drizzle/` / `migrations/` | Database stack | Schema and migration skills |
+| `cmd/` / `internal/` | Go package layout | CLI and internal package patterns |
 
-| Pattern | Convention | Implication |
-|---------|-----------|-------------|
-| `src/app/` | Next.js App Router | Route-based file organization |
-| `src/pages/` | Next.js Pages Router / Nuxt | File-based routing |
-| `src/components/` | Component library | Shared component directory |
-| `src/hooks/` or `src/composables/` | Custom hooks/composables | Reusable logic pattern |
-| `src/lib/` or `src/utils/` | Utility functions | Shared utility directory |
-| `src/services/` | Service layer | API/business logic separation |
-| `src/stores/` or `src/store/` | State management | Centralized state |
-| `__tests__/` or `*.test.*` or `*.spec.*` | Testing convention | Co-located vs separated tests |
-| `e2e/` or `cypress/` or `playwright/` | E2E tests | E2E test framework |
-| `prisma/` | Prisma ORM | Database schema location |
-| `drizzle/` | Drizzle ORM | Database schema location |
-| `migrations/` | DB migrations | Migration file location |
-| `cmd/` | Go CLI entry points | Multi-binary project |
-| `internal/` | Go internal packages | Private package convention |
+### Naming Detection
 
-### File Naming Convention Detection
+Check at least `3+` existing files of the same kind before templating:
 
-1. Check existing files for pattern: `kebab-case.ts`, `camelCase.ts`, `PascalCase.tsx`, `snake_case.py`
-2. Check component naming: `Button.tsx` vs `button.tsx` vs `button/index.tsx`
-3. Check test co-location: `Button.test.tsx` next to `Button.tsx` vs `__tests__/Button.test.tsx`
+1. File names: `kebab-case`, `camelCase`, `PascalCase`, `snake_case`
+2. Component names: `Button.tsx` vs `button/index.tsx`
+3. Test layout: colocated vs separate `__tests__/`
+4. Import style: relative imports, aliases, barrel exports
 
----
+## Monorepo and Polyglot Handling
 
-## Monorepo Detection & Analysis
+### Monorepo Detection
 
-### Detection Signals
+| File | Tool | Scope signal |
+|------|------|--------------|
+| `turbo.json` | Turborepo | pipeline and package graph |
+| `nx.json` | Nx | projects and target defaults |
+| `pnpm-workspace.yaml` | pnpm workspaces | workspace globs |
+| `lerna.json` | Lerna | managed packages |
+| root `package.json` with `workspaces` | npm/yarn workspaces | workspace entries |
 
-| File | Tool | Analysis Scope |
-|------|------|---------------|
-| `turbo.json` | Turborepo | Read `pipeline` keys for task relationships |
-| `nx.json` | Nx | Read `projects` and `targetDefaults` |
-| `pnpm-workspace.yaml` | pnpm workspaces | Read `packages` globs |
-| `lerna.json` | Lerna | Read `packages` configuration |
-| Root `package.json` with `workspaces` | npm/yarn workspaces | Read `workspaces` array |
+### Monorepo Strategy
 
-### Monorepo Skill Generation Strategy
-
-1. **Root-level scan**: Detect monorepo tool, enumerate packages
-2. **Per-package scan**: Run full SCAN for each package independently
-3. **Shared skills**: Generate cross-cutting skills at root level (naming-rules, pr-template, deploy-flow)
-4. **Package-specific skills**: Generate framework-specific skills per package
-5. **Deduplication**: Ensure no root skill duplicates a package skill
+1. Scan the root to detect the monorepo tool and package graph.
+2. Run full `SCAN` per package.
+3. Generate shared root skills for cross-cutting concerns only.
+4. Generate package-specific skills for framework-specific workflows.
+5. Never duplicate a root skill inside a package.
 
 ### Package Priority Order
 
-1. **Primary application packages** (web, app, frontend)
-2. **API/backend packages** (api, server, backend)
-3. **Shared libraries** (shared, common, utils)
-4. **Tooling packages** (config, scripts)
+1. Primary application packages
+2. API / backend packages
+3. Shared libraries
+4. Tooling packages
 
----
+### Polyglot Detection
 
-## Multi-Language Project Detection
+| Pattern | Strategy |
+|---------|----------|
+| `package.json` + `go.mod` | Separate JS/TS and Go skill sets; share conventions |
+| `package.json` + `pyproject.toml` | Separate JS/TS and Python skill sets; share conventions |
+| `Cargo.toml` + `package.json` | Add bridge skills only for interop boundaries |
+| Multiple manifests in subdirectories | Scope skills per directory or package |
 
-### Detection Patterns
+For ambiguous names, prefix the skill directory with the language: `ts-new-component`, `go-new-handler`, `py-new-router`.
 
-| Pattern | Languages | Skill Strategy |
-|---------|-----------|---------------|
-| `package.json` + `go.mod` in same repo | JS/TS + Go | Separate skill sets, shared conventions |
-| `package.json` + `pyproject.toml` in same repo | JS/TS + Python | Separate skill sets, shared conventions |
-| `Cargo.toml` + `package.json` (WASM) | Rust + JS/TS | Bridge skills for WASM interop |
-| Multiple manifest files in subdirectories | Polyglot monorepo | Per-directory language skills |
+## Rules and Config Precedence
 
-### Handling Multi-Language Projects
+### Convention Priority
 
-1. Detect all manifest files and their locations
-2. Group by language/framework
-3. Generate language-specific skill sets independently
-4. Create shared cross-language skills (naming-rules, pr-template)
-5. Use language prefix for disambiguation when needed: `ts-new-component.md`, `go-new-handler.md`
+1. Explicit config and rule files
+2. Existing code patterns
+3. Framework defaults
+4. Community standards
 
----
+### Rule Files to Inspect
 
-## Convention Inference Rules
+- `CLAUDE.md`
+- `.cursorrules`
+- `.windsurfrules`
+- `AGENTS.md`
+- `.github/copilot-instructions.md`
 
-### Priority Order for Convention Detection
+### Config Files to Inspect
 
-1. **Explicit config** — .eslintrc, .prettierrc, CLAUDE.md rules
-2. **Existing code patterns** — Majority pattern wins (sample 10+ files)
-3. **Framework defaults** — Use framework's recommended conventions
-4. **Community standards** — Fall back to ecosystem norms
-
-### Key Conventions to Detect
-
-| Convention | How to Detect | Skill Impact |
-|-----------|--------------|-------------|
-| **Component structure** | Read 3+ existing components | Template generation |
-| **Import style** | Alias paths vs relative, barrel exports | Import statements in templates |
-| **State management** | Store files, context usage | State patterns in skills |
-| **API layer** | fetch/axios/tRPC usage | Data fetching patterns |
-| **Testing framework** | jest/vitest/pytest/go test | Test template generation |
-| **CSS approach** | Tailwind/CSS Modules/styled-components | Styling in templates |
-| **Error handling** | Try-catch patterns, Result types, error boundaries | Error patterns in skills |
-| **Logging** | Logger library, console usage | Logging patterns |
-
----
-
-## Config File Analysis
-
-### Build & Tooling
-
-| File | Insights |
-|------|----------|
-| `Makefile` / `Taskfile.yml` | Available commands, workflow automation opportunities |
-| `docker-compose.yml` | Service architecture, local dev setup |
-| `.github/workflows/*.yml` | CI/CD pipeline, deployment patterns |
-| `.husky/` / `.lefthook.yml` | Git hooks, pre-commit checks |
-| `turbo.json` / `nx.json` | Monorepo configuration |
-
-### Code Quality
-
-| File | Insights |
-|------|----------|
-| `.eslintrc*` / `eslint.config.*` | Linting rules, code style enforcement |
-| `.prettierrc*` | Formatting preferences |
-| `tsconfig.json` | TypeScript strictness, module resolution |
-| `.editorconfig` | Editor settings (indent, line endings) |
-
----
+| File group | What to infer |
+|------------|---------------|
+| `.eslintrc*`, `eslint.config.*`, `.prettierrc*`, `.editorconfig` | naming, formatting, import expectations |
+| `tsconfig.json` | aliases, module resolution, strictness |
+| `Makefile`, `Taskfile.yml` | recurring commands worth skilling |
+| `docker-compose.yml` | service topology and local dev flow |
+| `.github/workflows/*.yml` | CI/CD and deployment workflows |
+| `.husky/`, `.lefthook.yml` | git-hook expectations |
 
 ## Existing Skills Audit
 
-Before generating new skills, check:
+Before generating or updating skills, inspect:
 
-1. **Project `.claude/skills/`** — Already installed skills
-2. **Project `.agents/skills/`** — Already installed skills (mirror directory)
-3. **Project `CLAUDE.md`** — Established conventions that might overlap with skills
-4. **Ecosystem agents** — Ensure generated skills don't duplicate agent functionality
+1. Project `.claude/skills/`
+2. Project `.agents/skills/`
+3. Project `CLAUDE.md`
+4. Ecosystem agents, to avoid overlapping core functions
 
-**Cross-directory deduplication:** A skill existing in either `.claude/skills/` or `.agents/skills/` counts as "existing". Do not generate a skill that already exists in either directory.
+### Deduplication Rules
+
+A skill already exists if any of these are true:
+
+- Same name exists in either project skill directory
+- Functional overlap is greater than `70%`
+- It duplicates an ecosystem agent's core function
 
 ### Directory Sync Check
 
-Both directories must be kept in sync (identical contents). During SCAN, detect sync drift:
+Both directories must stay identical.
 
 1. List skills in `.claude/skills/` and `.agents/skills/`
-2. Identify skills that exist in only one directory (orphans)
-3. For each orphan, copy to the missing directory to restore sync
-4. Report any sync repairs performed
+2. Find orphans that exist in only one directory
+3. Copy the orphan to the missing directory before new generation
+4. Report every sync repair
 
-### Duplication Detection
+## Style-Profile Extraction
 
-A skill is a duplicate if:
-- Same name as existing skill (in either directory)
-- > 70% functional overlap with existing skill (in either directory)
-- Covers same workflow as an existing ecosystem agent's core function
+When the project already contains skills, learn their style before authoring new ones.
 
----
+### What to Sample
 
-## Existing Skill Learning
+- Section ordering and naming
+- Description tone
+- Heading language
+- Template depth
+- Example style
+- Checklist usage
 
-When the project already has skills, learn from them to maintain consistency.
+### Extraction Rules
 
-### Style Profile Extraction
-
-1. **Read all existing skills** in both `.claude/skills/` and `.agents/skills/`
-2. **Analyze patterns**:
-   - Section ordering and naming (Japanese vs English headings)
-   - Description language and tone (formal vs casual)
-   - Template depth (minimal vs comprehensive)
-   - Code example style (inline vs separate blocks)
-   - Checklist usage (present vs absent)
-3. **Create style profile**: Document detected patterns
-4. **Apply to new skills**: Match existing style in all new generations
-
-### Consistency Rules
-
-- If existing skills use Japanese section headings → use Japanese
-- If existing skills use English section headings → use English
-- If existing skills include checklists → include checklists
-- If existing skills are verbose (>60 lines for Micro) → match depth
-- If existing skills are concise (<30 lines for Micro) → match brevity
-- If no existing skills → use Sigil's default templates from `skill-templates.md`
+1. Read all existing skills in both directories.
+2. Use majority patterns when at least `10+` comparable files exist.
+3. Match language, structure, and depth unless the existing pattern is clearly low quality.
+4. If existing skills are low quality, note the drift and do not propagate the defect.
+5. If no existing skills exist, use Sigil defaults from `skill-templates.md`.

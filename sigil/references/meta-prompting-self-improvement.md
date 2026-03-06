@@ -1,222 +1,122 @@
 # Meta-Prompting & Self-Improvement Patterns
 
-> DSPy 最適化、TextGrad、Recursive Meta-Prompting、自己修正エージェント、Mistake Ledger、コンテキストエンジニアリング
+Purpose: load this when improving Sigil itself, not during ordinary skill generation. It captures optional self-improvement techniques for ATTUNE, validation, and future evolution.
 
-## 1. プロンプト自動最適化フレームワーク
+## Contents
 
-### DSPy（Declarative Self-improving Language Programs）
+1. Prompt optimization
+2. Self-correction patterns
+3. Context engineering
+4. Automatic rule generation
+5. Feedback loop design
+6. Incremental roadmap
 
-Stanford 発のプロンプト最適化フレームワーク。手動プロンプトエンジニアリングを**自動最適化**に置き換える。
+## Prompt Optimization
 
-| 要素 | 説明 |
-|------|------|
-| Signatures | 入出力の型定義（`question -> answer`） |
-| Modules | プロンプトパターン（ChainOfThought, ReAct 等） |
-| Optimizers | 自動プロンプト改善（BootstrapFewShot, MIPRO 等） |
-| Metrics | 評価関数（正解率、品質スコア等） |
+### DSPy-Style Optimization
 
-**成果**: 手動プロンプト 46.2% → DSPy 最適化 64.0%（+38% 改善）
+Use a closed loop:
 
-**Sigil への適用可能性:**
-- スキルの `description` を DSPy 的に自動最適化
-- 生成されたスキルの効果を測定 → フィードバックループで改善
-- ATTUNE フェーズでのスキル品質最適化に統合
-
-### TextGrad（勾配ベースのテキスト最適化）
-
-Nature 2025 掲載。テキストフィードバックを「勾配」として扱い、プロンプトを反復改善。
-
-```
-初期プロンプト → 実行 → 結果評価 → テキスト勾配（改善指示）→ プロンプト更新 → ...
+```text
+prompt -> run -> evaluate -> refine prompt -> run again
 ```
 
-**コア概念**: 数値勾配の代わりに自然言語フィードバックでプロンプトを最適化。
+Potential Sigil uses:
+- improve `description` routing quality
+- compare template variants
+- refine discovery heuristics from outcomes
 
----
+### TextGrad-Style Optimization
 
-## 2. メタプロンプティングパターン
+Treat review feedback as a natural-language gradient:
 
-### Recursive Meta-Prompting
-
-プロンプト自体を LLM に生成・改善させるパターン:
-
-```
-Level 0: タスク実行プロンプト
-Level 1: タスク実行プロンプトを生成するプロンプト（メタプロンプト）
-Level 2: メタプロンプトを改善するプロンプト
+```text
+initial prompt -> output -> critique -> updated prompt
 ```
 
-**実用的な適用**: Level 1 まで（Level 2 以上は収益逓減）。
+Use this only when repeated critique clearly improves results.
 
-### Skeleton-of-Thought (SoT)
+## Self-Correction Patterns
 
-回答の骨格を先に生成し、各セクションを並列に展開:
+### Mistake Ledger
 
-```
-Step 1: 回答のアウトライン生成
-Step 2: 各セクションを並列に詳細化
-Step 3: 統合
-```
-
-**Sigil での活用**: スキル生成時に骨格（構造）→ 詳細（各セクション）の2段階生成。
-
----
-
-## 3. 自己修正エージェントパターン
-
-### Mistake Ledger パターン
-
-過去の失敗を構造化して記録し、将来の生成品質を改善:
+Track recurring failures in a structured log:
 
 ```markdown
 ## Mistake Ledger
 
-| 日付 | 失敗パターン | 原因 | 修正策 | 再発防止ルール |
-|------|------------|------|-------|-------------|
-| 2025-01 | テストなしスキル生成 | 検証フェーズ省略 | VERIFY 必須化 | F1: テスト不在 |
-| 2025-02 | 既存スキル重複 | SCAN 不十分 | dedup チェック強化 | F3: 重複 |
+| Date | Failure Pattern | Cause | Fix | Prevention Rule |
+|------|-----------------|-------|-----|-----------------|
+| YYYY-MM | missing tests | VERIFY skipped | add test check | F-test-required |
 ```
 
-**効果**: 同じ失敗の再発率を大幅に低減（繰り返しパターンの排除）。
+Use it to avoid repeating the same generation defects.
 
-**Sigil での実装:**
-- `skill-effectiveness.md` の ATTUNE フェーズに統合
-- 生成失敗パターンを journal に蓄積
-- 次回生成時に失敗パターンを回避
+### Reflection Loop
 
-### Reflection パターン
-
-生成後に自己レビューを実行:
-
-```
-Generate → Self-Review → Identify Issues → Regenerate
+```text
+Generate -> Self-Review -> Identify Issues -> Regenerate
 ```
 
-**3つのバリエーション:**
+Options:
 
-| バリエーション | 説明 | コスト |
-|-------------|------|-------|
-| Self-Refine | 同一モデルが生成→レビュー→修正 | 低 |
-| Cross-Model | 異なるモデルがレビュー | 中 |
-| Multi-Agent | 専用レビューエージェント | 高 |
+| Variant | Cost | Use |
+|---------|------|-----|
+| Self-Refine | low | default internal review |
+| Cross-Model | medium | only when another reviewer is available |
+| Multi-Agent | high | use for high-stakes quality loops |
 
-**Sigil での適用**: VERIFY フェーズで Self-Refine を実行（12点ルーブリック適用）。
+### Constitutional Guardrails
 
-### Constitutional AI 的アプローチ
+Keep a compact rule set for self-review:
 
-ルールセット（"憲法"）に基づいて出力を自己修正:
+1. Skills MUST mirror project conventions.
+2. Skills MUST NOT introduce security risk.
+3. Skills SHOULD stay easy to load and selective to read.
 
-```
-Principle 1: スキルは MUST プロジェクトの規約に従う
-Principle 2: スキルは MUST NOT セキュリティリスクを導入する
-Principle 3: スキルは SHOULD 10分以内で理解できる
-```
+## Context Engineering
 
----
+### Spec-First Pattern
 
-## 4. コンテキストエンジニアリング
-
-### Repomix（コードベースコンテキスト化）
-
-リポジトリ全体を単一のコンテキストファイルに変換:
-
-```bash
-repomix --output context.txt
-# → プロジェクト構造 + コード内容を単一ファイルに
+```text
+spec -> local rules -> generation -> review -> feedback
 ```
 
-**Sigil への示唆:**
-- SCAN フェーズでの効率的なプロジェクト理解
-- コンテキストサイズの見積もりと最適化
-- 大規模プロジェクトでの選択的コンテキスト注入
+Use this when the skill itself is complex or safety-sensitive.
 
-### Addy Osmani の Spec-First ワークフロー
+### Context Budget
 
-```
-1. Spec 作成（仕様書を先に書く）
-2. CLAUDE.md に規約を定義
-3. AI に仕様 + 規約を注入
-4. 生成 → レビュー → フィードバック
-```
+| Context window | Suggested allocation |
+|----------------|----------------------|
+| `~200K` tokens | rules `5-10K`, code `150-180K`, output `10-40K` |
+| `~1M` tokens | rules `10-20K`, code `800-900K`, output `80-100K` |
 
-**Sigil への適用**: スキル生成前に「スキル仕様」を明確化するフェーズを追加。
+If a generated skill requires too much inline context, split or externalize detail into `references/`.
 
-### コンテキスト予算管理
+## Automatic Rule Generation
 
-| コンテキストウィンドウ | 推奨配分 |
-|---------------------|---------|
-| ~200K tokens | ルール: 5-10K, コード: 150-180K, 出力: 10-40K |
-| ~1M tokens | ルール: 10-20K, コード: 800-900K, 出力: 80-100K |
+Useful source flows:
 
-**スキル生成への影響**: 生成するスキルが参照するコンテキスト量を最適化。大きすぎるスキルは分割。
+1. existing code -> convention extraction -> skill or `CLAUDE.md`
+2. CI failures -> recurring failure pattern -> preventive skill
+3. PR review comments -> repeated feedback -> new project rule
 
----
+## Feedback Loop Design
 
-## 5. 自動ルール生成パターン
+Three levels:
 
-### パターン1: コードから規約を抽出
+1. structural quality -> automatic validation
+2. semantic quality -> self-review or external review
+3. practical quality -> ATTUNE over time
 
-```
-既存コード → パターン分析 → ルール候補抽出 → 人間レビュー → CLAUDE.md 更新
-```
+Map these back to Sigil:
+- structural quality -> `validation-rules.md`
+- semantic quality -> recraft / review loop
+- practical quality -> `skill-effectiveness.md`
 
-**Sigil での実装**: SCAN → DISCOVER フェーズで暗黙の規約を検出し、スキル化。
+## Incremental Roadmap
 
-### パターン2: 失敗から規約を生成
-
-```
-CI 失敗ログ → 失敗パターン分類 → 予防ルール生成 → スキル化
-```
-
-### パターン3: レビューコメントから規約を抽出
-
-```
-PR レビューコメント → 頻出指摘パターン → ルール化 → スキル/CLAUDE.md
-```
-
----
-
-## 6. 品質フィードバックループ
-
-### 3段階フィードバック
-
-```
-Level 1: 構造的品質（フォーマット、必須フィールド）→ 自動検証
-Level 2: 意味的品質（正確性、網羅性）→ Self-Refine
-Level 3: 実用的品質（実際の使用効果）→ ATTUNE で長期追跡
-```
-
-### Sigil の既存フレームワークとの統合
-
-| 既存フレームワーク | メタプロンプティング強化 |
-|-----------------|---------------------|
-| ATTUNE（OBSERVE→MEASURE→ADAPT→PERSIST） | + Mistake Ledger による失敗パターン回避 |
-| 12点品質ルーブリック | + Self-Refine による自動改善 |
-| skill-effectiveness 追跡 | + DSPy 的な定量最適化 |
-| evolution-patterns | + 自動ルール生成パターン |
-
----
-
-## 7. 実装ロードマップ（Sigil 向け）
-
-### Phase 1: Mistake Ledger 導入（低コスト・高効果）
-
-- 生成失敗パターンを journal に構造化記録
-- CRAFT フェーズで過去の失敗を参照
-
-### Phase 2: Self-Refine 統合（中コスト）
-
-- VERIFY フェーズで自己レビューループを追加
-- 12点ルーブリックを自動適用
-
-### Phase 3: Description 最適化（中コスト）
-
-- スキルの `description` 活性化率を追跡
-- 低活性化スキルの description を自動改善提案
-
-### Phase 4: コンテキスト最適化（高コスト）
-
-- スキルのコンテキスト予算を計測・最適化
-- 大規模スキルの自動分割提案
-
-**Source:** [DSPy Documentation](https://dspy.ai/) · [TextGrad (Nature 2025)](https://www.nature.com/articles/s41586-025-08661-4) · [Repomix](https://github.com/yamadashy/repomix) · [Addy Osmani - AI Coding Workflow](https://addyosmani.com/blog/ai-coding-workflow/) · [Anthropic - Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) · [Mistake Ledger Pattern (Community)](https://simonwillison.net/2025/mistake-ledger/)
+1. Add Mistake Ledger to the journal.
+2. Run Self-Refine inside `VERIFY` for weak drafts.
+3. Track weak `description` activation and propose rewrites.
+4. Measure context cost and recommend skill splitting when needed.

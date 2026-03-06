@@ -1,226 +1,141 @@
 # Advanced Patterns
 
-Conditional skills, parameterized templates, monorepo patterns, skill composition, multi-language support, and learning from existing skills.
+Purpose: load this during `CRAFT` when one skill must cover variants, monorepo scopes, parameterized templates, or explicit composition with other skills.
 
----
+## Contents
 
-## Conditional Skills
+1. Conditional branches
+2. Parameterized templates
+3. Monorepo scoping
+4. Skill composition
+5. Multi-language naming
 
-Skills that adapt their output based on project context.
+## Conditional Branches
 
-### Pattern: Branch by Framework Version
+Use conditional branches when the project has multiple valid implementations and guessing would change behavior.
+
+### Framework-Version Branching
 
 ```markdown
-## テンプレート
+## Templates
 
 ### Next.js App Router (next >= 13.4)
-
 \```tsx
-// App Router pattern with Server Components
-export default async function Page() { ... }
+export default async function Page() { /* Server Component pattern */ }
 \```
 
 ### Next.js Pages Router (next < 13.4)
-
 \```tsx
-// Pages Router pattern with getServerSideProps
-export const getServerSideProps = async () => { ... }
+export const getServerSideProps = async () => ({ props: {} })
 \```
 ```
 
-### Pattern: Branch by CSS Approach
+### Styling Branching
 
 ```markdown
-## スタイリング
-
-> **検出ロジック**: tailwind.config → Tailwind, *.module.css → CSS Modules, styled-components in deps → Styled Components
+## Styling
 
 ### Tailwind CSS
 \```tsx
-<div className="flex items-center gap-4">
+<div className="flex items-center gap-4" />
 \```
 
 ### CSS Modules
 \```tsx
 import styles from './Component.module.css'
-<div className={styles.container}>
+<div className={styles.container} />
 \```
 ```
 
-### Implementation Rule
-
-- Always detect the condition during SCAN phase
-- Include ALL applicable branches (don't assume one approach)
-- Mark the detected branch with `(このプロジェクトで使用)` annotation
-
----
+Rules:
+- Detect the branch during `SCAN`.
+- Include every applicable branch; do not collapse them into one guessed path.
+- Mark the detected default branch as `(used in this project)`.
 
 ## Parameterized Templates
-
-Template variables that Sigil fills during CRAFT phase.
 
 ### Standard Variables
 
 | Variable | Source | Example |
 |----------|--------|---------|
-| `[ProjectName]` | Manifest name field | `my-app` |
-| `[Framework]` | Framework detection | `Next.js` |
-| `[FrameworkVersion]` | Manifest dependencies | `14.1.0` |
-| `[ComponentDir]` | Directory analysis | `src/components` |
-| `[TestDir]` | Test location detection | `__tests__` |
-| `[TestFramework]` | DevDependency detection | `vitest` |
-| `[CSSApproach]` | Config/dependency detection | `tailwind` |
-| `[PackageManager]` | Lock file detection | `pnpm` |
-| `[ImportAlias]` | tsconfig.json paths | `@/` |
+| `[ProjectName]` | manifest | `my-app` |
+| `[Framework]` | framework detection | `Next.js` |
+| `[FrameworkVersion]` | manifest dependencies | `14.1.0` |
+| `[ComponentDir]` | directory scan | `src/components` |
+| `[TestDir]` | test layout | `__tests__` |
+| `[TestFramework]` | dependencies | `vitest` |
+| `[CSSApproach]` | config or deps | `tailwind` |
+| `[PackageManager]` | lock file | `pnpm` |
+| `[ImportAlias]` | `tsconfig.json` | `@/` |
 
 ### Substitution Rules
 
-1. Variables in `[Brackets]` → replace with detected values
-2. If value unknown → use framework default with `<!-- TODO: verify -->` comment
-3. If multiple values possible → use conditional branch pattern instead
-4. Never leave raw `[Variable]` placeholders in installed skills
+1. Replace every variable before installation.
+2. If the value is unknown, use the framework default and add `<!-- TODO: verify -->`.
+3. If there are multiple valid values, branch explicitly.
+4. Never leave raw placeholders in installed skills.
 
----
-
-## Monorepo Patterns
+## Monorepo Scoping
 
 ### Detection
 
-| File | Monorepo Tool | Scope Strategy |
-|------|--------------|----------------|
-| `turbo.json` | Turborepo | Per-package skills + shared root skills |
-| `nx.json` | Nx | Per-project skills + library skills |
-| `pnpm-workspace.yaml` | pnpm workspaces | Per-package skills |
-| `lerna.json` | Lerna | Per-package skills |
-| `packages/*/package.json` | Generic | Per-package skills |
-
-### Skill Scoping Strategy
-
-```
-monorepo-root/
-├── .claude/skills/
-│   ├── naming-rules/SKILL.md    ← Shared skills
-│   └── pr-template/SKILL.md
-├── .agents/skills/              ← Mirror of shared skills
-│   ├── naming-rules/SKILL.md
-│   └── pr-template/SKILL.md
-├── packages/
-│   ├── web/
-│   │   ├── .claude/skills/
-│   │   │   ├── new-page/SKILL.md       ← Web-specific skills
-│   │   │   └── new-component/SKILL.md
-│   │   └── .agents/skills/             ← Mirror
-│   ├── api/
-│   │   ├── .claude/skills/
-│   │   │   ├── new-route/SKILL.md      ← API-specific skills
-│   │   │   └── new-middleware/SKILL.md
-│   │   └── .agents/skills/             ← Mirror
-│   └── shared/
-│       ├── .claude/skills/
-│       │   └── new-util/SKILL.md       ← Shared library skills
-│       └── .agents/skills/             ← Mirror
-```
+| Signal | Scope strategy |
+|--------|----------------|
+| `turbo.json` | root shared skills + per-package skills |
+| `nx.json` | per-project skills + library skills |
+| `pnpm-workspace.yaml` | per-package skills |
+| `lerna.json` | per-package skills |
+| `packages/*/package.json` | generic package-based scoping |
 
 ### Rules
 
-- Root skills: Cross-cutting concerns (conventions, PR templates, deploy)
-- Package skills: Framework-specific workflows (new-page for web, new-route for api)
-- Shared package skills: Utility creation patterns
-- Never duplicate a root skill inside a package
-- Always sync `.claude/skills/*/SKILL.md` and `.agents/skills/*/SKILL.md` at each level
-
----
+- Root skills cover cross-cutting concerns only.
+- Package skills cover framework-specific workflows.
+- Never duplicate a root skill inside a package.
+- Keep `.claude/skills/` and `.agents/skills/` synchronized at every level.
 
 ## Skill Composition
 
-Patterns for skills that depend on or reference other skills.
+Use composition when one skill depends on another but should remain separate.
 
-### Pattern: Prerequisite Chain
-
-```markdown
-## 前提条件
-- `naming-rules` スキルの規約に準拠すること
-- `env-setup` スキルで環境変数が設定済みであること
-```
-
-### Pattern: Workflow Orchestration
+### Prerequisite Chain
 
 ```markdown
-## 完全なフィーチャー作成フロー
-
-1. `new-model` → データモデル作成
-2. `new-service` → ビジネスロジック作成
-3. `new-controller` → APIエンドポイント作成
-4. `new-test` → テスト作成
-
-各スキルを順番に実行すること。
+## Prerequisites
+- Follow `naming-rules`
+- Run `env-setup` first
 ```
 
-### Rules
+### Workflow Orchestration
 
-- Reference other skills by `name` (kebab-case)
-- Never embed another skill's content — reference only
-- If dependency creates circular reference → merge the skills
-- Composition chains should be max 4-5 skills deep
+```markdown
+## End-to-End Flow
 
----
-
-## Multi-Language Projects
-
-### Detection
-
-| Signal | Languages | Skill Strategy |
-|--------|-----------|---------------|
-| `package.json` + `go.mod` | JS/TS + Go | Separate skill sets per language |
-| `package.json` + `pyproject.toml` | JS/TS + Python | Separate skill sets per language |
-| `Cargo.toml` + `package.json` | Rust + JS/TS (WASM) | Bridge skills for interop |
-| Multiple `go.mod` | Go monorepo | Per-module skills |
-
-### Naming Convention for Multi-Language Skills
-
+1. `new-model`
+2. `new-service`
+3. `new-controller`
+4. `new-test`
 ```
-[language-prefix]-[skill-name]/SKILL.md
+
+Rules:
+- Reference other skills by `name`.
+- Never copy another skill's full content into a new one.
+- If dependencies become circular, merge the skills instead.
+- Keep composition chains to `4-5` skills maximum.
+
+## Multi-Language Naming
+
+Use language prefixes only when the project contains multiple active stacks and the unprefixed name would be ambiguous.
 
 Examples:
-  ts-new-component/SKILL.md
-  go-new-handler/SKILL.md
-  py-new-router/SKILL.md
-```
+- `ts-new-component`
+- `go-new-handler`
+- `py-new-router`
 
-### Shared Cross-Language Skills
+Shared cross-language skills stay unprefixed:
+- `naming-rules`
+- `pr-template`
+- `deploy-flow`
+- `env-setup`
 
-These skills apply regardless of language and don't need prefix:
-- `naming-rules.md` (consolidated across languages)
-- `pr-template.md`
-- `deploy-flow.md`
-- `env-setup.md`
-
----
-
-## Learning from Existing Skills
-
-When a project already has skills in `.claude/skills/*/SKILL.md` or `.agents/skills/*/SKILL.md`, Sigil should learn from them.
-
-### What to Learn
-
-| Aspect | Detection Method | Application |
-|--------|-----------------|-------------|
-| **Tone** | Formal vs casual language in descriptions | Match in new skills |
-| **Structure** | Section order and naming | Follow same pattern |
-| **Depth** | Lines per section, detail level | Match granularity |
-| **Language** | Japanese vs English descriptions | Match language choice |
-| **Template style** | Inline vs separate code blocks | Follow same approach |
-
-### Learning Workflow
-
-1. Read all existing skills in both directories
-2. Identify common patterns (section structure, naming, depth)
-3. Create a "style profile" for the project's skill set
-4. Apply style profile to all newly generated skills
-5. Flag significant deviations for user review
-
-### Rules
-
-- New skills should feel like they belong to the same author
-- If existing skills have quality issues, don't propagate them — note for evolution
-- If no existing skills, use Sigil's default templates from `skill-templates.md`
+For style-profile extraction and language mirroring, use `context-analysis.md`.

@@ -1,151 +1,132 @@
 # Evolution Patterns
 
-Skill lifecycle management, evolution triggers, update strategies, and migration patterns.
+Purpose: load this when installed skills drift from the repository and Sigil must decide whether to update, replace, split, merge, or archive them.
 
----
+## Contents
+
+1. Lifecycle states
+2. Triggers
+3. Update strategies
+4. Migration workflows
+5. Report template
 
 ## Skill Lifecycle States
 
-```
-ACTIVE → STALE → DEPRECATED → ARCHIVED
-  ↑        │         │
-  └── UPDATE ←┘         │
-  ↑                     │
-  └──── REPLACE ←───────┘
+```text
+ACTIVE -> STALE -> DEPRECATED -> ARCHIVED
+  ^         |          |
+  |         +-> UPDATE |
+  +-------------REPLACE+
 ```
 
-| State | Definition | Detection | Action |
-|-------|-----------|-----------|--------|
-| **ACTIVE** | Skill matches current project context | Quality score ≥ 9/12 on re-evaluation | None — skill is healthy |
-| **STALE** | Skill partially mismatches current context | Quality score 6-8/12 on re-evaluation | Trigger evolution workflow |
-| **DEPRECATED** | Skill significantly outdated or superseded | Quality score < 6/12 or replaced by successor | Mark deprecated, create successor |
-| **ARCHIVED** | Skill no longer applicable to project | Framework/library removed from project | Remove from active directories |
-
----
+| State | Detection | Action |
+|-------|-----------|--------|
+| `ACTIVE` | Re-evaluation `>= 9/12` | Keep as-is |
+| `STALE` | Re-evaluation `6-8/12` | Trigger evolution workflow |
+| `DEPRECATED` | Re-evaluation `< 6/12` or superseded by successor | Mark deprecated and create successor |
+| `ARCHIVED` | Framework or library removed from the project | Remove from active directories after confirmation when removal is required |
 
 ## Evolution Triggers
 
-### Automatic Detection (during SCAN)
+### Automatic Detection During `SCAN`
 
-| Trigger | Detection Method | Example |
-|---------|-----------------|---------|
-| **Dependency version change** | Compare manifest versions with skill assumptions | React 18 → 19 (Server Components) |
-| **Framework migration** | Detect framework change in manifest | Pages Router → App Router |
-| **New convention adoption** | Config file changes (.eslintrc, tsconfig) | Strict mode enabled |
-| **Directory restructure** | Directory layout differs from skill paths | src/ → app/ migration |
-| **Testing framework change** | Test runner change in devDependencies | Jest → Vitest |
+| Trigger | Detection method | Example |
+|---------|------------------|---------|
+| Dependency version change | Manifest diff | React `18 -> 19` |
+| Framework migration | Framework removed and another added | Pages Router -> App Router |
+| Convention change | Rule/config diff | strict mode enabled |
+| Directory restructure | Expected path no longer exists | `src/` -> `app/` |
+| Testing framework change | Test dependencies changed | Jest -> Vitest |
 
-### User-Initiated
+### User-Initiated Signals
 
 | Trigger | Signal |
 |---------|--------|
-| **Explicit request** | User asks to update/refresh skills |
-| **Bug report** | User reports skill generates incorrect code |
-| **Feature request** | User wants skill to cover new patterns |
-
----
+| Explicit refresh request | User asks to update skills |
+| Bug report | Generated skill is now incorrect |
+| Feature request | Existing skill no longer covers needed patterns |
 
 ## Update Strategies
 
-### Strategy 1: In-Place Update (Default)
+### Strategy 1: In-Place Update
 
-**When**: Minor changes, convention updates, small additions.
+Use for minor convention changes or small feature additions.
 
-1. Read existing skill content
-2. Identify sections needing update
-3. Modify only affected sections
-4. Preserve all unaffected content and structure
-5. Re-validate with quality scoring
-
-**Example**: Updating import paths after tsconfig alias change.
+1. Read the existing skill.
+2. Edit only affected sections.
+3. Preserve unaffected structure and references.
+4. Re-score with the quality rubric.
 
 ### Strategy 2: Replace
 
-**When**: Major framework migration, fundamental approach change.
+Use for major framework or architectural changes.
 
-1. Archive old skill (rename with `.deprecated.md` suffix)
-2. Generate entirely new skill from current context
-3. Preserve original skill name for continuity
-4. Log replacement in `.agents/PROJECT.md`
-
-**Example**: Rewriting Next.js skill from Pages Router to App Router.
+1. Generate a new skill from current context.
+2. Preserve the skill name when continuity matters.
+3. Mark the old skill deprecated.
+4. Archive the old skill only after user confirmation if active files must be removed or replaced.
 
 ### Strategy 3: Split
 
-**When**: Skill has grown too complex, covers multiple concerns.
+Use when one skill has grown too broad.
 
-1. Identify distinct responsibilities in current skill
-2. Generate 2-3 focused Micro Skills from one Full Skill
-3. Archive original skill
-4. Update any references to original skill
-
-**Example**: Splitting `api-pattern` into `new-api-route` + `auth-middleware` + `error-handling`.
+1. Identify distinct responsibilities.
+2. Create `2-3` focused successor skills.
+3. Archive the broad skill after confirmation if removal is required.
+4. Update references that pointed to the original skill.
 
 ### Strategy 4: Merge
 
-**When**: Multiple small skills overlap significantly.
+Use when several skills overlap heavily.
 
-1. Identify skills with >50% functional overlap
-2. Combine into single comprehensive skill
-3. Archive merged skills
-4. Promote to Full Skill if complexity warrants
+1. Confirm overlap is greater than `50%`.
+2. Merge into one clearer skill.
+3. Archive redundant predecessors after confirmation if active copies must be removed.
+4. Promote to Full if the merged workflow becomes complex.
 
-**Example**: Merging `new-get-route` + `new-post-route` into `new-api-route`.
-
----
-
-## Migration Patterns
+## Migration Workflows
 
 ### Framework Version Upgrade
 
-```
-1. Detect version change in manifest
-2. Identify breaking changes (check changelog/migration guide patterns)
-3. Map old patterns → new patterns
-4. Update templates in affected skills
-5. Update convention references
-6. Re-validate all affected skills
-```
+1. Detect the version change.
+2. Identify breaking changes.
+3. Map old patterns to new patterns.
+4. Update affected templates and conventions.
+5. Re-validate all affected skills.
 
 ### Framework Switch
 
-```
-1. Detect framework removal + addition in manifest
-2. Mark all old-framework skills as DEPRECATED
-3. Run full DISCOVER phase for new framework
-4. Generate new skill set from catalog
-5. Archive deprecated skills after user confirmation
-```
+1. Detect framework removal and replacement.
+2. Mark old-framework skills as `DEPRECATED`.
+3. Run a fresh `DISCOVER` for the new framework.
+4. Generate the new skill set.
+5. Archive deprecated skills only after user confirmation.
 
 ### Convention Evolution
 
-```
-1. Detect config file changes (eslint, prettier, tsconfig)
-2. Extract new convention rules
-3. Update convention-type skills (naming-rules, etc.)
-4. Update template sections in workflow-type skills
-5. Re-validate convention compliance
-```
+1. Detect rule or config changes.
+2. Extract the new conventions.
+3. Update convention-type skills first.
+4. Update template sections in workflow skills.
+5. Re-validate convention compliance.
 
----
-
-## Evolution Workflow Template
+## Evolution Report Template
 
 ```markdown
 ## Skill Evolution Report
 
 ### Trigger
 - **Type**: [dependency_change | framework_migration | convention_update | user_request]
-- **Detail**: [specific change detected]
-- **Affected skills**: [list of skill names]
+- **Detail**: [specific change]
+- **Affected skills**: [list]
 
 ### Analysis
 | Skill | Current State | Strategy | Impact |
-|-------|--------------|----------|--------|
+|-------|---------------|----------|--------|
 | [name] | STALE/DEPRECATED | In-place/Replace/Split/Merge | [description] |
 
 ### Changes Applied
-- [Skill name]: [description of changes]
+- [Skill name]: [change summary]
 
 ### Quality Re-Evaluation
 | Skill | Before | After | Delta |
