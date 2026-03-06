@@ -1,177 +1,132 @@
 # Chaos Engineering Guide
 
-定常状態仮説、障害注入シナリオ、ゲームデイ計画のリファレンス。
+Purpose: Use this file for steady-state hypotheses, fault-injection scope, tool selection, and Game Day execution in `CHAOS` mode.
 
----
+## Contents
 
-## Chaos Engineering Principles
+- Chaos principles
+- Steady-state hypothesis template
+- Failure-injection scenarios
+- Tool selection
+- Game Day checklist and maturity model
 
-| Principle | Description |
-|-----------|-------------|
-| **Build a hypothesis around steady state** | Define normal behavior first |
-| **Vary real-world events** | Inject realistic failures |
-| **Run experiments in production** | Staging != production |
-| **Automate experiments** | Continuous chaos, not one-off |
-| **Minimize blast radius** | Start small, expand gradually |
+## Chaos Principles
 
----
+| Principle | Operational meaning |
+| --- | --- |
+| Steady state first | define normal behavior before injecting failure |
+| Realistic faults | vary conditions that match real incidents |
+| Minimal blast radius | start with canary scope or single-service failure |
+| Automation after safety | automate only after manual safety checks are proven |
+| Recovery matters | every experiment must include stop and restore conditions |
 
-## Steady-State Hypothesis
-
-### Defining Steady State
-
-```markdown
 ## Steady-State Hypothesis Template
 
-### System Under Test
-[Service/component being tested]
+```markdown
+## Steady-State Hypothesis
 
-### Normal Behavior (Steady State)
+### System Under Test
+[Service/component]
+
+### Normal Behavior
 - Error rate: < [X]%
 - Latency p99: < [X]ms
 - Throughput: > [X] requests/sec
 - Success rate: > [X]%
 
 ### Experiment
-**Action**: [What failure to inject]
-**Expected**: [System should maintain steady state OR degrade gracefully]
-**Not Expected**: [What should NOT happen — cascading failures, data loss]
+- Action: [fault to inject]
+- Expected: [maintain steady state or degrade gracefully]
+- Not expected: [cascading failure, data loss, stuck recovery]
 
 ### Abort Conditions
 - Error rate exceeds [X]%
 - Latency exceeds [X]ms
-- Any data corruption detected
-- Manual kill switch triggered
+- Data corruption appears
+- Kill switch is triggered
 ```
 
-### Metrics to Monitor During Chaos
+## Metrics to Observe
 
 | Layer | Metrics |
-|-------|---------|
-| **User-facing** | Error rate, latency, success rate |
-| **Application** | Exception rate, queue depth, thread count |
-| **Infrastructure** | CPU, memory, disk, network |
-| **Dependencies** | Response time, error rate per dependency |
-
----
+| --- | --- |
+| User-facing | error rate, latency, success rate |
+| Application | exceptions, queue depth, worker/thread count |
+| Infrastructure | CPU, memory, disk, network |
+| Dependencies | latency and error rate per dependency |
 
 ## Failure Injection Scenarios
 
-### Infrastructure Failures
-
-| Scenario | Tool | Command/Config |
-|----------|------|---------------|
-| **Kill pod** | kubectl | `kubectl delete pod <name> -n <ns>` |
-| **CPU stress** | stress-ng | `stress-ng --cpu 4 --timeout 60s` |
-| **Memory pressure** | stress-ng | `stress-ng --vm 2 --vm-bytes 80% --timeout 60s` |
-| **Network latency** | tc | `tc qdisc add dev eth0 root netem delay 200ms 50ms` |
-| **Packet loss** | tc | `tc qdisc add dev eth0 root netem loss 10%` |
-| **DNS failure** | iptables | `iptables -A OUTPUT -p udp --dport 53 -j DROP` |
-| **Disk full** | fallocate | `fallocate -l 10G /tmp/fill-disk` |
-
-### Application Failures
-
-| Scenario | Description | Tests |
-|----------|-------------|-------|
-| **Dependency timeout** | Slow downstream service | Timeout handling, circuit breaker |
-| **Dependency error** | 500 from downstream | Error handling, fallback |
-| **Connection pool exhaustion** | Max DB connections | Pool sizing, queuing |
-| **Thread pool saturation** | All workers busy | Backpressure, rejection |
-| **Cache failure** | Redis unavailable | Cache-aside, degraded mode |
-| **Message queue lag** | Consumer can't keep up | Backpressure, dead letter |
-
----
+| Scenario | Tool | Example |
+| --- | --- | --- |
+| Kill pod | `kubectl` | `kubectl delete pod <name> -n <ns>` |
+| CPU stress | `stress-ng` | `stress-ng --cpu 4 --timeout 60s` |
+| Memory pressure | `stress-ng` | `stress-ng --vm 2 --vm-bytes 80% --timeout 60s` |
+| Network latency | `tc` | `tc qdisc add dev eth0 root netem delay 200ms 50ms` |
+| Packet loss | `tc` | `tc qdisc add dev eth0 root netem loss 10%` |
+| DNS failure | `iptables` | `iptables -A OUTPUT -p udp --dport 53 -j DROP` |
+| Disk full | `fallocate` | `fallocate -l 10G /tmp/fill-disk` |
+| Dependency timeout | service stub or proxy | validate timeout, retry, and circuit behavior |
+| Pool exhaustion | workload + limits | validate backpressure and rejection |
 
 ## Chaos Tools
 
-| Tool | Scope | Complexity | Production Ready |
-|------|-------|-----------|-----------------|
-| **Chaos Monkey** | Kill instances | Low | Yes |
-| **Litmus Chaos** | Kubernetes | Medium | Yes |
-| **Gremlin** | Full platform | Low (SaaS) | Yes |
-| **Chaos Mesh** | Kubernetes | Medium | Yes |
-| **Toxiproxy** | Network (dev/test) | Low | No (test only) |
-| **tc/netem** | Network (Linux) | Medium | Yes (careful) |
+| Tool | Scope | Complexity | Recommended use |
+| --- | --- | --- | --- |
+| Chaos Monkey | instance kill | low | simple production-safe failure drills |
+| Litmus Chaos | Kubernetes | medium | cluster-native experiments |
+| Gremlin | platform-wide | low | managed enterprise chaos |
+| Chaos Mesh | Kubernetes | medium | open-source K8s chaos |
+| Toxiproxy | network in dev/test | low | local or CI dependency faulting |
+| `tc` / `netem` | Linux network | medium | controlled latency/loss injection |
 
-### Litmus Chaos Example
-
-```yaml
-apiVersion: litmuschaos.io/v1alpha1
-kind: ChaosEngine
-metadata:
-  name: pod-kill-experiment
-spec:
-  appinfo:
-    appns: production
-    applabel: app=payment-service
-  chaosServiceAccount: litmus-admin
-  experiments:
-    - name: pod-delete
-      spec:
-        components:
-          env:
-            - name: TOTAL_CHAOS_DURATION
-              value: '30'
-            - name: CHAOS_INTERVAL
-              value: '10'
-            - name: FORCE
-              value: 'false'
-```
-
-### Toxiproxy for Development
+### Toxiproxy Example
 
 ```python
-# Add latency to Redis dependency
 toxiproxy.create_proxy("redis", "localhost:26379", "redis:6379")
 toxiproxy.proxy("redis").add_toxic("latency", {
     "type": "latency",
     "attributes": {"latency": 1000, "jitter": 500}
 })
-
-# Simulate connection reset
 toxiproxy.proxy("redis").add_toxic("reset", {
     "type": "reset_peer",
     "attributes": {"timeout": 0}
 })
 ```
 
----
-
 ## Game Day Checklist
 
 ```markdown
-## Pre-Game (1 week before)
+## Pre-Game (about 1 week before)
 - [ ] Hypothesis documented and reviewed
-- [ ] Monitoring dashboards prepared
+- [ ] Dashboards prepared
 - [ ] Abort criteria defined
-- [ ] Blast radius limited (canary segment)
-- [ ] All participants briefed
-- [ ] Communication plan ready (stakeholders notified)
+- [ ] Blast radius limited
+- [ ] Participants briefed
+- [ ] Stakeholders notified
 - [ ] Rollback/kill switch tested
 
 ## During Game
 - [ ] Baseline metrics captured (15 min steady state)
 - [ ] Injection started at [time]
-- [ ] Monitoring active by all participants
-- [ ] Timeline being documented
-- [ ] Abort criteria continuously checked
+- [ ] Monitoring active
+- [ ] Timeline recorded
+- [ ] Abort criteria checked continuously
 
 ## Post-Game
-- [ ] Injection stopped, system recovered
-- [ ] Results documented against hypothesis
-- [ ] Gaps identified (detection, response, recovery)
+- [ ] Injection stopped and system recovered
+- [ ] Results compared with hypothesis
+- [ ] Gaps identified
 - [ ] Action items created with owners
-- [ ] Findings shared with broader team
+- [ ] Findings shared
 ```
-
----
 
 ## Maturity Model
 
 | Level | Practice | Example |
-|-------|----------|---------|
-| **1 — Ad hoc** | Manual experiments in staging | Kill a pod, see what happens |
-| **2 — Planned** | Scheduled game days | Monthly chaos game day |
-| **3 — Automated** | Chaos in CI/CD pipeline | Automated resilience tests |
-| **4 — Continuous** | Production chaos (controlled) | Continuous random pod kills |
-| **5 — Advanced** | Multi-failure, cascading scenarios | Zone failure + traffic spike |
+| --- | --- | --- |
+| `1` | Ad hoc | manual experiments in staging |
+| `2` | Planned | scheduled Game Days |
+| `3` | Automated | chaos inside CI/CD |
+| `4` | Continuous | controlled production chaos |
+| `5` | Advanced | multi-failure and cascading scenarios |

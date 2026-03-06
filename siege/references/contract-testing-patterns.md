@@ -1,62 +1,54 @@
 # Contract Testing Patterns
 
-Pact CDC、AsyncAPIイベント契約、CI統合のリファレンス。
+Purpose: Use this file for consumer-driven contracts, event contracts, CI gates, and breaking-change evaluation in `CONTRACT` mode.
 
----
+## Contents
+
+- Contract testing types
+- Pact CDC patterns
+- AsyncAPI and event contracts
+- CI integration
+- Breaking-change rules
 
 ## Contract Testing Overview
 
-| Type | Direction | Tool | Use Case |
-|------|-----------|------|----------|
-| **Consumer-Driven (CDC)** | Consumer → Provider | Pact | HTTP APIs |
-| **Provider-Driven** | Provider → Consumer | OpenAPI + validation | Public APIs |
-| **Bi-directional** | Both ways | Pact + OpenAPI | Hybrid |
-| **Event Contract** | Publisher → Subscriber | Pact / AsyncAPI | Messaging |
+| Type | Direction | Tool | Best fit |
+| --- | --- | --- | --- |
+| Consumer-driven | Consumer -> Provider | Pact | internal HTTP APIs |
+| Provider-driven | Provider -> Consumer | OpenAPI + validation | public APIs |
+| Bi-directional | both | Pact + schema validation | mixed ownership models |
+| Event contract | Publisher -> Subscriber | Pact / AsyncAPI | messaging and event streams |
 
----
+## Pact CDC
 
-## Pact Consumer-Driven Contracts
-
-### Consumer Test (JavaScript)
+### Consumer Test
 
 ```javascript
 const { PactV3, MatchersV3 } = require('@pact-foundation/pact');
-const { like, eachLike, string } = MatchersV3;
+const { like, string } = MatchersV3;
 
 const provider = new PactV3({
   consumer: 'OrderService',
   provider: 'ProductService',
 });
 
-describe('Product API', () => {
-  it('returns product details', async () => {
-    await provider
-      .given('product 123 exists')
-      .uponReceiving('a request for product 123')
-      .withRequest({
-        method: 'GET',
-        path: '/api/products/123',
-        headers: { Accept: 'application/json' },
-      })
-      .willRespondWith({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: {
-          id: string('123'),
-          name: string('Widget'),
-          price: like(9.99),
-          inStock: like(true),
-        },
-      })
-      .executeTest(async (mockServer) => {
-        const product = await fetchProduct(mockServer.url, '123');
-        expect(product.name).toBe('Widget');
-      });
-  });
+it('returns product details', async () => {
+  await provider
+    .given('product 123 exists')
+    .uponReceiving('a request for product 123')
+    .withRequest({ method: 'GET', path: '/api/products/123' })
+    .willRespondWith({
+      status: 200,
+      body: { id: string('123'), name: string('Widget'), price: like(9.99) },
+    })
+    .executeTest(async (mockServer) => {
+      const product = await fetchProduct(mockServer.url, '123');
+      expect(product.name).toBe('Widget');
+    });
 });
 ```
 
-### Provider Verification (Python)
+### Provider Verification
 
 ```python
 from pact import Verifier
@@ -77,11 +69,7 @@ def test_provider():
     assert output == 0
 ```
 
----
-
-## AsyncAPI Event Contracts
-
-### Event Contract Definition
+## AsyncAPI Event Contract
 
 ```yaml
 asyncapi: '2.6.0'
@@ -98,29 +86,6 @@ channels:
         payload:
           type: object
           required: [orderId, customerId, totalAmount, createdAt]
-          properties:
-            orderId:
-              type: string
-              format: uuid
-            customerId:
-              type: string
-            totalAmount:
-              type: number
-              minimum: 0
-            items:
-              type: array
-              items:
-                type: object
-                required: [productId, quantity]
-                properties:
-                  productId:
-                    type: string
-                  quantity:
-                    type: integer
-                    minimum: 1
-            createdAt:
-              type: string
-              format: date-time
 ```
 
 ### Message Pact Test
@@ -128,45 +93,34 @@ channels:
 ```javascript
 const { MessageConsumerPact } = require('@pact-foundation/pact');
 
-describe('Order Created Event', () => {
-  const messagePact = new MessageConsumerPact({
+it('processes order created event', () => {
+  return new MessageConsumerPact({
     consumer: 'InventoryService',
     provider: 'OrderService',
-  });
-
-  it('processes order created event', () => {
-    return messagePact
-      .expectsToReceive('an order created event')
-      .withContent({
-        orderId: like('ord-123'),
-        customerId: like('cust-456'),
-        totalAmount: like(99.99),
-        items: eachLike({ productId: 'prod-789', quantity: 2 }),
-      })
-      .verify(async (message) => {
-        const result = await processOrderEvent(message);
-        expect(result.inventoryUpdated).toBe(true);
-      });
-  });
+  })
+    .expectsToReceive('an order created event')
+    .withContent({ orderId: like('ord-123'), customerId: like('cust-456') })
+    .verify(async (message) => {
+      const result = await processOrderEvent(message);
+      expect(result.inventoryUpdated).toBe(true);
+    });
 });
 ```
-
----
 
 ## CI Integration
 
 ### Pact Broker Workflow
 
-```
+```text
 Consumer CI:                    Provider CI:
-1. Run consumer tests      →   1. Pull pacts from broker
-2. Generate pact files     →   2. Verify against provider
-3. Publish to Pact Broker  →   3. Publish verification results
-4. can-i-deploy check      →   4. can-i-deploy check
-5. Deploy consumer         →   5. Deploy provider
+1. Run consumer tests      ->   1. Pull pacts from broker
+2. Generate pact files     ->   2. Verify against provider
+3. Publish to broker       ->   3. Publish verification results
+4. can-i-deploy            ->   4. can-i-deploy
+5. Deploy consumer         ->   5. Deploy provider
 ```
 
-### GitHub Actions Pipeline
+### GitHub Actions
 
 ```yaml
 contract-test:
@@ -174,7 +128,6 @@ contract-test:
   steps:
     - name: Run consumer tests
       run: npm test -- --testPathPattern=pact
-
     - name: Publish pacts
       run: |
         npx pact-broker publish ./pacts \
@@ -182,7 +135,6 @@ contract-test:
           --branch=${{ github.ref_name }} \
           --broker-base-url=${{ secrets.PACT_BROKER_URL }} \
           --broker-token=${{ secrets.PACT_BROKER_TOKEN }}
-
     - name: Can I Deploy?
       run: |
         npx pact-broker can-i-deploy \
@@ -192,26 +144,21 @@ contract-test:
           --broker-base-url=${{ secrets.PACT_BROKER_URL }}
 ```
 
----
-
 ## Breaking Change Detection
 
-| Change Type | Breaking? | Detection |
-|-------------|-----------|-----------|
-| **Add optional field** | No | Safe |
-| **Add required field** | Yes (provider) | Pact verification fails |
-| **Remove field** | Yes (if consumed) | Consumer test fails |
-| **Change field type** | Yes | Both sides fail |
-| **Change enum values** | Maybe | Depends on consumer usage |
-| **Change URL path** | Yes | Consumer test fails |
-| **Add new endpoint** | No | Safe |
+| Change | Breaking? | Detection |
+| --- | --- | --- |
+| Add optional field | No | safe |
+| Add required field | Yes | provider or consumer verification fails |
+| Remove field | Yes if consumed | consumer contract fails |
+| Change field type | Yes | both sides fail |
+| Change enum values | Maybe | depends on consumer assumptions |
+| Change URL path | Yes | consumer contract fails |
+| Add new endpoint | No | safe |
 
-### Contract Versioning Strategy
+## Versioning Strategy
 
-```markdown
-- Use Pact Broker with `can-i-deploy` before every deployment
-- Tag pacts with branch name and environment
-- Use pending pacts for new interactions (WIP)
-- Enable `enablePending: true` on provider verification
-- Run webhook on pact change to trigger provider verification
-```
+- Run `can-i-deploy` before every deployment.
+- Publish pacts with branch and environment metadata.
+- Use pending pacts for new interactions.
+- Re-verify provider contracts whenever pacts change.

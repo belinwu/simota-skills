@@ -1,23 +1,24 @@
 # Load Testing Guide
 
-k6/Locust/Artillery設定、ランプアップ戦略、SLO検証のリファレンス。
+Purpose: Use this file for tool selection, workload design, SLO validation, CI integration, and report structure in `LOAD` mode.
 
----
+## Contents
+
+- Tool comparison
+- k6, Locust, and Artillery starter patterns
+- Ramp profiles and thresholds
+- CI integration
+- Load test report template
 
 ## Tool Comparison
 
-| Feature | k6 | Locust | Artillery |
-|---------|-----|--------|-----------|
-| **Language** | JavaScript | Python | YAML/JS |
-| **Protocol** | HTTP, WS, gRPC | HTTP, custom | HTTP, WS, Socket.io |
-| **Distributed** | k6 Cloud, k6-operator | Built-in | Artillery Cloud |
-| **Metrics** | Built-in + extensions | Minimal built-in | Built-in |
-| **Learning curve** | Medium | Low | Low |
-| **Best for** | Performance CI/CD | Custom protocols | Quick API tests |
+| Tool | Language | Protocols | Best for | Tradeoff |
+| --- | --- | --- | --- | --- |
+| `k6` | JavaScript | HTTP, WS, gRPC | CI-friendly performance gates | More scripting than YAML tools |
+| `Locust` | Python | HTTP, custom | custom user behavior and Python-heavy stacks | Lighter built-in reporting |
+| `Artillery` | YAML/JS | HTTP, WS, Socket.io | quick API and traffic-shape tests | Less flexible than full-code harnesses |
 
----
-
-## k6 Configuration Patterns
+## k6 Patterns
 
 ### Basic Load Test
 
@@ -27,11 +28,11 @@ import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '2m', target: 50 },   // Ramp up
-    { duration: '5m', target: 50 },   // Steady state
-    { duration: '2m', target: 100 },  // Peak
-    { duration: '5m', target: 100 },  // Sustained peak
-    { duration: '2m', target: 0 },    // Ramp down
+    { duration: '2m', target: 50 },
+    { duration: '5m', target: 50 },
+    { duration: '2m', target: 100 },
+    { duration: '5m', target: 100 },
+    { duration: '2m', target: 0 },
   ],
   thresholds: {
     http_req_duration: ['p(95)<500', 'p(99)<1000'],
@@ -50,14 +51,14 @@ export default function () {
 }
 ```
 
-### SLO Validation Test
+### SLO Validation
 
 ```javascript
 export const options = {
   scenarios: {
     slo_validation: {
       executor: 'constant-arrival-rate',
-      rate: 100,           // 100 RPS
+      rate: 100,
       timeUnit: '1s',
       duration: '10m',
       preAllocatedVUs: 50,
@@ -65,45 +66,41 @@ export const options = {
     },
   },
   thresholds: {
-    // SLO: 99.9% availability
     http_req_failed: ['rate<0.001'],
-    // SLO: p99 latency < 200ms
     http_req_duration: ['p(99)<200'],
   },
 };
 ```
 
----
+## Ramp Profiles
 
-## Ramp-Up Strategies
+| Profile | Pattern | Use when |
+| --- | --- | --- |
+| Linear ramp | gradual increase | general capacity validation |
+| Step ramp | hold at each level | finding the breaking point |
+| Spike | sudden jump | flash sales or thundering-herd simulation |
+| Soak | long steady run | memory leaks or degradation over time |
+| Stress | beyond expected peak | limit discovery and graceful-failure tests |
 
-| Strategy | Pattern | Use Case |
-|----------|---------|----------|
-| **Linear ramp** | Gradual increase | General load testing |
-| **Step ramp** | Plateau at each level | Find breaking point |
-| **Spike** | Sudden jump to peak | Flash sale simulation |
-| **Soak** | Steady for hours | Memory leak detection |
-| **Stress** | Beyond expected peak | Find system limits |
-
-### Step Ramp Pattern
+### Step Ramp
 
 ```javascript
 export const options = {
   stages: [
-    { duration: '5m', target: 100 },  // Step 1
-    { duration: '5m', target: 100 },  // Hold
-    { duration: '5m', target: 200 },  // Step 2
-    { duration: '5m', target: 200 },  // Hold
-    { duration: '5m', target: 400 },  // Step 3
-    { duration: '5m', target: 400 },  // Hold
-    { duration: '5m', target: 0 },    // Ramp down
+    { duration: '5m', target: 100 },
+    { duration: '5m', target: 100 },
+    { duration: '5m', target: 200 },
+    { duration: '5m', target: 200 },
+    { duration: '5m', target: 400 },
+    { duration: '5m', target: 400 },
+    { duration: '5m', target: 0 },
   ],
 };
 ```
 
----
+## Alternative Tool Starters
 
-## Locust Configuration
+### Locust
 
 ```python
 from locust import HttpUser, task, between
@@ -117,22 +114,10 @@ class ApiUser(HttpUser):
 
     @task(1)
     def create_item(self):
-        self.client.post("/api/items", json={
-            "name": "test-item",
-            "price": 9.99
-        })
-
-    def on_start(self):
-        """Login on start."""
-        self.client.post("/auth/login", json={
-            "username": "loadtest",
-            "password": "test123"
-        })
+        self.client.post("/api/items", json={"name": "test-item", "price": 9.99})
 ```
 
----
-
-## Artillery Configuration
+### Artillery
 
 ```yaml
 config:
@@ -150,32 +135,11 @@ config:
   ensure:
     p95: 500
     maxErrorRate: 1
-
-scenarios:
-  - name: "Browse and purchase"
-    flow:
-      - get:
-          url: "/api/products"
-          capture:
-            - json: "$[0].id"
-              as: "productId"
-      - get:
-          url: "/api/products/{{ productId }}"
-      - post:
-          url: "/api/cart"
-          json:
-            productId: "{{ productId }}"
-            quantity: 1
 ```
-
----
 
 ## CI Integration
 
-### k6 in CI Pipeline
-
 ```yaml
-# GitHub Actions
 load-test:
   runs-on: ubuntu-latest
   steps:
@@ -191,13 +155,22 @@ load-test:
         fi
 ```
 
-### Load Test Report Template
+## Required Guardrails
+
+- Warm up for `5-10 min` before measuring.
+- Report `p50/p95/p99/max`, error rate, and throughput.
+- Run important tests at least `3` times.
+- Add realistic think time such as `sleep(1-3s)` unless the scenario intentionally models machine traffic.
+- Include unhappy-path traffic when the system must survive mixed conditions.
+
+## Load Test Report Template
 
 ```markdown
 ## Load Test Report
 
 ### Test Parameters
 - Duration: [X] minutes
+- Warmup: [X] minutes
 - Peak VUs: [N]
 - Target RPS: [N]
 
