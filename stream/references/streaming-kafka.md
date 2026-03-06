@@ -1,32 +1,43 @@
 # Streaming Architecture — Kafka Design
 
+Purpose: topic, consumer, schema, and delivery guidance for event-driven and Kafka-based pipelines.
+
+## Contents
+
+1. Topic design
+2. Consumer-group rules
+3. Event schema
+4. Delivery guarantees
+5. Outbox and processing patterns
+
 ## Topic Design
 
 ```yaml
 topic_naming_convention:
-  pattern: "{domain}.{entity}.{event_type}"
+  pattern: "{domain}.{entity}.{event}"
   examples:
     - "orders.order.created"
     - "users.profile.updated"
     - "payments.transaction.completed"
-
-topic_configuration:
-  partitions:
-    rule: "10x expected peak throughput in MB/s"
-    minimum: 3
-    maximum: 100  # Per topic, practical limit
-
-  retention:
-    production: "7d"  # Or based on replay requirements
-    compacted: "infinite"  # For state topics
-
-  replication_factor:
-    production: 3
-    staging: 2
-    development: 1
 ```
 
-## Consumer Group Design
+### Topic Configuration Rules
+
+| Setting | Rule |
+|---------|------|
+| Partitions | `10x` expected peak throughput in MB/s |
+| Minimum partitions | `3` |
+| Practical maximum | `100` per topic |
+| Production retention | `7d` by default, extend for replay needs |
+| Compacted retention | effectively infinite for state topics |
+| Replication factor | prod `3`, staging `2`, dev `1` |
+
+Anti-pattern guards:
+- do not create a god topic
+- do not use `1` partition for scalable workloads
+- do not jump to `1000` partitions without a hard need
+
+## Consumer Group Rules
 
 ```yaml
 consumer_groups:
@@ -35,92 +46,54 @@ consumer_groups:
     - "analytics-aggregator"
     - "notification-sender"
     - "audit-logger"
-
-  scaling:
-    rule: "consumers <= partitions"
-    auto_scaling: "based on consumer lag"
 ```
 
-## Event Schema Design
+Rules:
+- `consumers <= partitions`
+- scale off consumer lag, not guesswork
+- separate groups by purpose, not convenience
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "required": ["event_id", "event_type", "timestamp", "data"],
-  "properties": {
-    "event_id": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Unique event identifier for idempotency"
-    },
-    "event_type": {
-      "type": "string",
-      "enum": ["created", "updated", "deleted"]
-    },
-    "timestamp": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "version": {
-      "type": "integer",
-      "default": 1
-    },
-    "source": {
-      "type": "string",
-      "description": "Service that produced the event"
-    },
-    "correlation_id": {
-      "type": "string",
-      "description": "For tracing across services"
-    },
-    "data": {
-      "type": "object",
-      "description": "Event payload"
-    }
-  }
-}
-```
+## Event Schema
 
-## Stream Processing Patterns
+Required metadata:
+- `event_id`
+- `event_type`
+- `timestamp`
+- `version`
+- `source`
+- `correlation_id`
+- `data`
 
-### Pattern 1: Stateless Transform
+Compatibility rules:
+- allow additive fields
+- do not remove fields or change types without versioning
+- use Schema Registry for shared or critical streams
 
-```python
-# Simple mapping, filtering, enrichment
-def process_event(event):
-    return {
-        **event,
-        'processed_at': datetime.utcnow().isoformat(),
-        'enriched_field': lookup_value(event['key']),
-    }
-```
+Recommended event size: `1KB-10KB`. If payloads grow beyond that, prefer reference patterns.
 
-### Pattern 2: Windowed Aggregation
+## Delivery Guarantees
 
-```python
-# Flink / Spark Structured Streaming
-from pyspark.sql.functions import window, sum, count
+| Level | Use When | Notes |
+|-------|----------|-------|
+| At-most-once | loss is acceptable | avoid for business-critical data |
+| At-least-once | default | combine with idempotent consumers |
+| Exactly-once | narrow Kafka-to-Kafka cases | external systems still need idempotent sinks |
 
-orders_stream \
-    .withWatermark("event_time", "10 minutes") \
-    .groupBy(
-        window("event_time", "1 hour", "15 minutes"),
-        "store_id"
-    ) \
-    .agg(
-        sum("amount").alias("total_revenue"),
-        count("*").alias("order_count")
-    )
-```
+Prefer "effectively once": `acks=all` + manual commit after processing + idempotent sink or deduplication.
 
-### Pattern 3: Stream-Table Join
+## Outbox And Processing Patterns
 
-```python
-# Enrich stream with dimension table
-enriched = orders_stream.join(
-    customers_table,
-    orders_stream.customer_id == customers_table.id,
-    "left"
-)
-```
+Use Outbox when DB writes and event publication must remain atomic:
+1. write business data and outbox record in one DB transaction
+2. capture outbox changes with CDC
+3. publish to Kafka from the CDC pipeline
+
+Common processing shapes:
+- stateless transform
+- windowed aggregation
+- stream-table join
+
+Operational guards:
+- use manual commit after successful processing
+- send poison pills to a DLT/DLQ
+- track consumer lag, throughput, error rate, rebalance frequency, disk usage, and under-replicated partitions

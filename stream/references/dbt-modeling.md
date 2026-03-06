@@ -1,145 +1,90 @@
 # dbt Model Design
 
-## Model Layer Structure
+Purpose: canonical dbt layer structure, naming, materialization defaults, and test expectations for Stream output.
 
-```
+## Contents
+
+1. Layer structure
+2. Naming rules
+3. Materialization defaults
+4. Minimal templates
+5. Core tests
+
+## Layer Structure
+
+```text
 models/
-├── staging/           # 1:1 with source tables
-│   ├── stg_orders.sql
-│   └── stg_customers.sql
-├── intermediate/      # Business logic, joins
-│   ├── int_orders_enriched.sql
-│   └── int_customer_metrics.sql
-├── marts/            # Final business entities
-│   ├── core/
-│   │   ├── dim_customers.sql
-│   │   └── fct_orders.sql
-│   └── marketing/
-│       └── fct_campaigns.sql
-└── exposures/        # BI tool connections
-    └── exposures.yml
+├── staging/
+├── intermediate/
+├── marts/
+└── exposures/
 ```
 
-## Staging Model Template
+### Roles
+
+| Layer | Purpose | Rules |
+|-------|---------|-------|
+| `staging` | source-aligned cleanup | `1:1` with source tables; no joins |
+| `intermediate` | business logic and enrichment | small, reusable, single-responsibility transforms |
+| `marts` | business-facing outputs | `dim_*`, `fct_*`, `rpt_*` |
+| `exposures` | BI or API dependencies | document downstream usage |
+
+## Naming Rules
+
+- `stg_{source}__{entity}`
+- `int_{entity}_{verb}`
+- `dim_{entity}`
+- `fct_{event}`
+- `rpt_{report}`
+
+## Materialization Defaults
+
+| Layer | Default |
+|-------|---------|
+| `stg_*` | `view` |
+| `int_*` | `ephemeral` or `table` |
+| `dim_*` | `table` |
+| `fct_*` | `table` or `incremental` |
+| `rpt_*` | `table` |
+
+## Minimal Templates
+
+### Staging
 
 ```sql
--- models/staging/stg_orders.sql
-{{
-    config(
-        materialized='view',
-        tags=['staging', 'orders']
-    )
-}}
+{{ config(materialized='view', tags=['staging']) }}
 
 with source as (
-    select * from {{ source('raw', 'orders') }}
-),
-
-renamed as (
-    select
-        -- Primary key
-        id as order_id,
-
-        -- Foreign keys
-        customer_id,
-        store_id,
-
-        -- Dimensions
-        status,
-        channel,
-
-        -- Measures
-        total_amount,
-        discount_amount,
-
-        -- Timestamps
-        created_at,
-        updated_at,
-
-        -- Metadata
-        _loaded_at
-
-    from source
+  select * from {{ source('raw', 'orders') }}
 )
-
-select * from renamed
+select
+  id as order_id,
+  customer_id,
+  total_amount,
+  created_at,
+  updated_at
+from source
 ```
 
-## Intermediate Model Template
+### Intermediate
 
 ```sql
--- models/intermediate/int_orders_enriched.sql
-{{
-    config(
-        materialized='table',
-        tags=['intermediate', 'orders']
-    )
-}}
+{{ config(materialized='table', tags=['intermediate']) }}
 
 with orders as (
-    select * from {{ ref('stg_orders') }}
-),
-
-customers as (
-    select * from {{ ref('stg_customers') }}
-),
-
-stores as (
-    select * from {{ ref('stg_stores') }}
-),
-
-enriched as (
-    select
-        o.order_id,
-        o.customer_id,
-        c.customer_name,
-        c.customer_segment,
-        o.store_id,
-        s.store_name,
-        s.region,
-        o.total_amount,
-        o.discount_amount,
-        o.total_amount - o.discount_amount as net_amount,
-        o.created_at,
-        date_trunc('day', o.created_at) as order_date
-
-    from orders o
-    left join customers c on o.customer_id = c.customer_id
-    left join stores s on o.store_id = s.store_id
+  select * from {{ ref('stg_orders') }}
 )
-
-select * from enriched
+select
+  order_id,
+  customer_id,
+  total_amount,
+  date_trunc('day', created_at) as order_date
+from orders
 ```
 
-## dbt Tests
+## Core Tests
 
-```yaml
-# models/staging/schema.yml
-version: 2
-
-models:
-  - name: stg_orders
-    description: "Staged orders from source system"
-    columns:
-      - name: order_id
-        description: "Primary key"
-        tests:
-          - unique
-          - not_null
-
-      - name: customer_id
-        description: "Foreign key to customers"
-        tests:
-          - not_null
-          - relationships:
-              to: ref('stg_customers')
-              field: customer_id
-
-      - name: total_amount
-        description: "Order total in cents"
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 10000000  # $100,000 max
-```
+Always define:
+- `unique` and `not_null` on primary keys
+- `relationships` on foreign keys
+- range or business-rule tests for critical measures

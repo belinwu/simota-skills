@@ -1,144 +1,72 @@
 # Pipeline Architecture
 
+Purpose: choose the right pipeline mode and core architecture before designing detailed components.
+
+## Contents
+
+1. Batch vs streaming matrix
+2. Decision rules
+3. Architecture patterns
+4. ETL vs ELT
+5. Minimal orchestration template
+
 ## Batch vs Streaming Decision Matrix
 
 | Factor | Batch | Streaming | Hybrid |
 |--------|-------|-----------|--------|
-| **Latency requirement** | Hours/Days | Seconds/Minutes | Mixed |
-| **Data volume** | Large, bounded | Continuous | Both |
-| **Processing complexity** | Complex joins/aggregations | Simple transforms | Both |
-| **Cost sensitivity** | High (optimize resources) | Lower (always-on) | Balanced |
-| **Replay requirement** | Easy | Complex | Depends |
+| Latency requirement | hours to days | seconds to minutes | mixed |
+| Data volume | large and bounded | continuous | both |
+| Processing complexity | complex joins and aggregations | simpler incremental transforms | both |
+| Cost sensitivity | high | moderate | balanced |
+| Replay requirement | easy | harder | depends |
 
-## Decision Tree
+## Decision Rules
 
-```
-                    Latency < 1 minute?
-                    /              \
-                  YES               NO
-                   |                 |
-          Volume > 10K/sec?     Complex analytics?
-          /          \          /          \
-        YES          NO       YES           NO
-         |            |        |             |
-     Kafka +       Kafka    Batch        Simple Batch
-     Flink/Spark   Only     (Spark)      (Airflow)
-```
+- `latency < 1 minute` -> streaming candidate
+- `volume > 10K events/sec` + low latency -> Kafka + Flink/Spark
+- complex analytics without sub-minute latency -> batch
+- mixed operational + analytical outputs -> hybrid
 
 ## Architecture Patterns
 
-### Pattern 1: Lambda Architecture (Legacy)
+### Lambda Architecture
 
-```
-Raw Data ──┬── Batch Layer ──── Batch View ──┐
-           │                                  ├── Serving Layer
-           └── Speed Layer ──── Real-time ───┘
-```
+Use only when legacy constraints require separate batch and speed layers. Avoid for new systems when Kappa or hybrid designs are sufficient.
 
-**Use when:** Legacy systems require both batch accuracy and real-time speed
-**Avoid:** Complexity is high; prefer Kappa for new systems
+### Kappa Architecture
 
-### Pattern 2: Kappa Architecture (Recommended)
+Use when stream processing can be unified around an immutable log and replay is a first-class requirement.
 
-```
-Raw Data ─── Stream Processing ─── Serving Layer
-                    │
-              Replay from log
-```
+### Medallion Architecture
 
-**Use when:** All processing can be unified as stream processing
-**Key:** Kafka as immutable log enables replay
+Use for lakehouse-style pipelines with progressive refinement:
+- `Bronze`: raw
+- `Silver`: cleaned and standardized
+- `Gold`: business-ready outputs
 
-### Pattern 3: Medallion Architecture (Data Lake)
-
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Bronze    │───▶│   Silver    │───▶│    Gold     │
-│   (Raw)     │    │  (Cleaned)  │    │ (Business)  │
-└─────────────┘    └─────────────┘    └─────────────┘
-```
-
-**Use when:** Data lake with progressive refinement
-**Tools:** Databricks, Delta Lake, Apache Iceberg
-
----
-
-## ETL vs ELT Selection
+## ETL vs ELT
 
 | Aspect | ETL | ELT |
 |--------|-----|-----|
-| **Transform location** | Before loading | After loading |
-| **Best for** | Limited destination compute | Powerful data warehouse |
-| **Data volume** | Small to medium | Large |
-| **Flexibility** | Less (predefined transforms) | More (SQL-based) |
-| **Tools** | Airflow + Python | dbt + Snowflake/BigQuery |
+| Transform location | before load | after load |
+| Best for | constrained destinations or legacy systems | powerful warehouses |
+| Data volume | small to medium | medium to large |
+| Flexibility | lower | higher |
+| Common stack | Airflow + Python | dbt + Snowflake/BigQuery |
 
-## ELT Pipeline Template (dbt)
+Rules:
+- cloud warehouses usually favor ELT
+- constrained operational databases usually favor ETL
 
-```
-Sources ─── Staging ─── Intermediate ─── Marts ─── Exposures
-   │           │             │             │           │
-   │       Raw copy      Business      Aggregated   BI/API
-   │       + types       logic         metrics      output
-   │
-   └── External systems (APIs, files, DBs)
-```
-
-## ETL Pipeline Template (Airflow)
+## Minimal Orchestration Template
 
 ```python
-# dags/etl_pipeline.py
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from datetime import datetime, timedelta
-
-default_args = {
-    'owner': 'data-team',
-    'depends_on_past': False,
-    'email_on_failure': True,
-    'retries': 3,
-    'retry_delay': timedelta(minutes=5),
-}
-
-with DAG(
-    'etl_orders_daily',
-    default_args=default_args,
-    description='Daily orders ETL pipeline',
-    schedule_interval='@daily',
-    start_date=datetime(2024, 1, 1),
-    catchup=False,
-    tags=['etl', 'orders'],
-) as dag:
-
-    extract = PythonOperator(
-        task_id='extract_orders',
-        python_callable=extract_from_source,
-        op_kwargs={'date': '{{ ds }}'},
-    )
-
-    validate_source = PythonOperator(
-        task_id='validate_source_data',
-        python_callable=run_quality_checks,
-        op_kwargs={'stage': 'source'},
-    )
-
-    transform = PythonOperator(
-        task_id='transform_orders',
-        python_callable=apply_business_logic,
-    )
-
-    validate_transform = PythonOperator(
-        task_id='validate_transformed',
-        python_callable=run_quality_checks,
-        op_kwargs={'stage': 'transform'},
-    )
-
-    load = PostgresOperator(
-        task_id='load_to_warehouse',
-        postgres_conn_id='warehouse',
-        sql='sql/load_orders.sql',
-    )
+with DAG("etl_orders_daily", default_args=default_args, catchup=False) as dag:
+    extract = PythonOperator(task_id="extract_orders", python_callable=extract_from_source)
+    validate_source = PythonOperator(task_id="validate_source", python_callable=run_quality_checks)
+    transform = PythonOperator(task_id="transform_orders", python_callable=apply_business_logic)
+    validate_transform = PythonOperator(task_id="validate_transform", python_callable=run_quality_checks)
+    load = PostgresOperator(task_id="load_to_warehouse", postgres_conn_id="warehouse", sql="sql/load_orders.sql")
 
     extract >> validate_source >> transform >> validate_transform >> load
 ```
