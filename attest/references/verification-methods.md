@@ -178,3 +178,18 @@ Each verification carries a confidence level:
 | **LOW** | 0.2-0.5 | Indirect evidence, inference required |
 
 When confidence < 0.5: mark as NOT_TESTED with recommendation for runtime verification.
+
+---
+
+## Resource Allocation Guideline
+
+When scope or time is limited, allocate verification effort by priority:
+
+| Priority | Effort Share | Minimum Scope |
+|----------|-------------|---------------|
+| CRITICAL | 40% | Full verification (all 5 methods + adversarial probes) |
+| HIGH | 30% | Inspection + Analysis + basic probes |
+| MEDIUM | 20% | Inspection + basic probes |
+| LOW | 10% | Inspection only |
+
+When forced to reduce scope further, always complete all CRITICAL criteria first, then HIGH, then sample MEDIUM. LOW criteria are deferred to AUDIT mode.

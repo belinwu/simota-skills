@@ -12,13 +12,13 @@ ALL of the following must be true:
 - Every CRITICAL criterion: PASS
 - Every HIGH criterion: PASS or NOT_TESTED (with runtime test plan)
 - No CRITICAL adversarial probes open
-- Traceability coverage ≥ 90%
+- Traceability coverage >= 90%
 
 ### CONDITIONAL
 
 ALL of the following must be true:
 - No CRITICAL criterion: FAIL
-- ≤3 HIGH criteria: PARTIAL
+- <=3 HIGH criteria: PARTIAL
 - Remediation plan attached for all non-PASS items
 - Timeline for remediation specified
 - No unresolved CONTRADICTION probes
@@ -36,116 +36,118 @@ ANY of the following triggers REJECTED:
 
 ## Report Template
 
+Note: Final output is rendered in Japanese per Output Language rules. The structure below defines the sections and their content.
+
 ```markdown
-## Attest 適合レポート
+## Attest Compliance Report
 
-### 概要
+### Summary
 
-| 項目 | 値 |
-|------|---|
-| 仕様書 | [仕様書パス・名前] |
-| 対象実装 | [ファイル/モジュール一覧] |
-| 検証モード | FULL / EXTRACT / AUDIT / ADVERSARIAL |
-| **判定** | **CERTIFIED** / **CONDITIONAL** / **REJECTED** |
-| 検証日時 | YYYY-MM-DD |
+| Field | Value |
+|-------|-------|
+| Specification | [spec path/name] |
+| Implementation | [files/modules list] |
+| Mode | FULL / EXTRACT / AUDIT / ADVERSARIAL |
+| **Verdict** | **CERTIFIED** / **CONDITIONAL** / **REJECTED** |
+| Date | YYYY-MM-DD |
 
-### 基準サマリー
+### Criteria Summary
 
-| 判定 | CRITICAL | HIGH | MEDIUM | LOW | 合計 |
-|------|----------|------|--------|-----|------|
+| Verdict | CRITICAL | HIGH | MEDIUM | LOW | Total |
+|---------|----------|------|--------|-----|-------|
 | PASS | X | X | X | X | X |
 | PARTIAL | X | X | X | X | X |
 | FAIL | X | X | X | X | X |
 | NOT_TESTED | X | X | X | X | X |
 | AMBIGUOUS | X | X | X | X | X |
-| **合計** | X | X | X | X | **X** |
+| **Total** | X | X | X | X | **X** |
 
-### トレーサビリティマトリクス
+### Traceability Matrix
 
-| 基準ID | 優先度 | 仕様セクション | 実装ファイル | テスト | 判定 |
-|--------|--------|----------------|-------------|--------|------|
+| Criterion ID | Priority | Spec Section | Implementation | Tests | Verdict |
+|-------------|----------|-------------|---------------|-------|---------|
 | AC-XXX-001 | CRITICAL | spec.md:L24 | src/xxx.ts:42 | test/xxx.test.ts:15 | PASS |
 | AC-XXX-002 | HIGH | spec.md:L31 | — | — | FAIL |
 | ... | | | | | |
 
-**トレーサビリティカバレッジ:** XX% (基準→実装マッピング完了率)
+**Traceability Coverage:** XX% (criteria-to-implementation mapping completion rate)
 
-### 検出事項（重大度順）
+### Findings (by severity)
 
 #### CRITICAL
 
-**[F-001] AC-XXX-002: {基準の説明}**
-- 判定: FAIL
-- 検証手法: ABSENCE_CHECK
-- エビデンス: {実装が見つからない旨の説明}
-- 影響: {この違反の影響範囲}
-- 推奨対応: Builder にて実装追加
-- 対応エージェント: Builder
+**[F-001] AC-XXX-002: {criterion description}**
+- Verdict: FAIL
+- Method: ABSENCE_CHECK
+- Evidence: {description of missing implementation}
+- Impact: {scope of this violation}
+- Recommended action: Add implementation via Builder
+- Assigned agent: Builder
 
 #### HIGH
 
-**[F-002] AC-XXX-005: {基準の説明}**
-- 判定: PARTIAL
-- 検証手法: LOGIC_TRACE
-- エビデンス: `src/xxx.ts:89` — {部分的に実装されている旨}
-- ギャップ: {不足している部分の説明}
-- 推奨対応: {具体的な修正内容}
-- 対応エージェント: Builder
+**[F-002] AC-XXX-005: {criterion description}**
+- Verdict: PARTIAL
+- Method: LOGIC_TRACE
+- Evidence: `src/xxx.ts:89` — {partial implementation description}
+- Gap: {description of missing parts}
+- Recommended action: {specific fix description}
+- Assigned agent: Builder
 
 #### MEDIUM / LOW
 
-[同形式で記載]
+[Same format as above]
 
-### 敵対的プローブ結果
+### Adversarial Probe Results
 
-| Probe ID | カテゴリ | 説明 | リスク | 仕様ギャップ |
-|----------|---------|------|--------|-------------|
-| PRB-001 | Boundary | {説明} | HIGH | {仕様に不足している内容} |
-| PRB-002 | Omission | {説明} | MEDIUM | {仕様に不足している内容} |
-| PRB-003 | Implicit | {説明} | LOW | {暗黙の前提} |
+| Probe ID | Category | Description | Risk | Spec Gap |
+|----------|----------|-------------|------|----------|
+| PRB-001 | Boundary | {description} | HIGH | {missing spec content} |
+| PRB-002 | Omission | {description} | MEDIUM | {missing spec content} |
+| PRB-003 | Implicit | {description} | LOW | {implicit assumption} |
 
-### 仕様品質フィードバック
+### Specification Quality Feedback
 
-| 問題 | 種別 | 影響 | 推奨改善 |
-|------|------|------|---------|
-| {曖昧な基準} | AMBIGUOUS | HIGH | {明確化の提案} |
-| {欠落した要件} | OMISSION | MEDIUM | {追加すべき要件} |
+| Issue | Type | Impact | Recommended Improvement |
+|-------|------|--------|------------------------|
+| {ambiguous criterion} | AMBIGUOUS | HIGH | {clarification proposal} |
+| {missing requirement} | OMISSION | MEDIUM | {requirement to add} |
 
-### 改善計画（CONDITIONAL/REJECTEDの場合）
+### Remediation Plan (for CONDITIONAL/REJECTED)
 
-| # | 対応内容 | 対応エージェント | 優先度 | 見積もり |
-|---|---------|----------------|--------|---------|
-| 1 | AC-XXX-002 の実装追加 | Builder | CRITICAL | — |
-| 2 | AC-XXX-005 のギャップ修正 | Builder | HIGH | — |
-| 3 | BDDシナリオのテスト化 | Radar | HIGH | — |
-| 4 | 仕様の曖昧性解消 | Scribe | MEDIUM | — |
+| # | Action | Assigned Agent | Priority | Estimate |
+|---|--------|---------------|----------|----------|
+| 1 | Add implementation for AC-XXX-002 | Builder | CRITICAL | — |
+| 2 | Fix gap in AC-XXX-005 | Builder | HIGH | — |
+| 3 | Convert BDD scenarios to tests | Radar | HIGH | — |
+| 4 | Resolve specification ambiguities | Scribe | MEDIUM | — |
 
-### BDDシナリオ（生成済み）
+### BDD Scenarios (generated)
 
-合計: X シナリオ
+Total: X scenarios
 - Happy Path: X
 - Negative: X
 - Boundary: X
 - Edge Case: X
 
-[シナリオファイルの参照先]
+[Reference to scenario file]
 ```
 
 ---
 
 ## Traceability Matrix Format
 
-The traceability matrix maps: **Specification → Implementation → Tests**
+The traceability matrix maps: **Specification -> Implementation -> Tests**
 
 ```
-Spec Criterion ──→ Implementation File:Line ──→ Test File:Line
-   AC-XXX-001  →  src/handler.ts:42         →  test/handler.test.ts:15
+Spec Criterion --> Implementation File:Line --> Test File:Line
+   AC-XXX-001  ->  src/handler.ts:42         ->  test/handler.test.ts:15
 ```
 
 ### Coverage Calculation
 
 ```
-Traceability Coverage = (Criteria with Implementation Mapping) / (Total Criteria) × 100
+Traceability Coverage = (Criteria with Implementation Mapping) / (Total Criteria) x 100
 
 Example:
   Total criteria: 12
@@ -158,10 +160,10 @@ Example:
 
 | Coverage | Assessment |
 |----------|-----------|
-| ≥90% | Excellent — supports CERTIFIED |
+| >= 90% | Excellent — supports CERTIFIED |
 | 70-89% | Good — supports CONDITIONAL |
 | 50-69% | Insufficient — requires remediation |
-| <50% | Unacceptable — triggers REJECTED |
+| < 50% | Unacceptable — triggers REJECTED |
 
 ---
 

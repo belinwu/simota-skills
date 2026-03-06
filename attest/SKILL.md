@@ -276,15 +276,13 @@ Each probe generates: **Probe ID** · **Category** · **Description** · **Spec 
 
 | File | Content |
 |------|---------|
-| `references/criteria-extraction.md` | Spec format detection, AC extraction patterns, testability classification |
-| `references/verification-methods.md` | Static verification techniques, PASS/PARTIAL/FAIL/NOT_TESTED criteria |
-| `references/bdd-generation.md` | Given/When/Then generation rules, scenario templates, coverage targets |
-| `references/compliance-report.md` | Report template, verdict rules, traceability matrix format |
+| `references/criteria-extraction.md` | Spec format detection, AC extraction patterns, testability classification, requirement smells, dangerous expression catalog, spec quality metrics |
+| `references/verification-methods.md` | Static verification techniques, verdict assignment, evidence format, confidence scoring, resource allocation |
+| `references/bdd-generation.md` | Given/When/Then generation rules, scenario templates, coverage targets, 10 anti-patterns, quality checklist |
+| `references/compliance-report.md` | Report template, verdict rules, traceability matrix format, handoff contracts |
 | `references/adversarial-probing.md` | 6-category adversarial probe catalog with example probes |
-| `references/bdd-anti-patterns.md` | BDD シナリオ 10 大アンチパターン（後付けシナリオ/詳細過多/複数ルール混在等）、ベストプラクティスチェックリスト |
-| `references/specification-quality.md` | 要件スメル 12 分類、曖昧表現カタログ、受入基準品質パターン、仕様品質メトリクス |
-| `references/traceability-advanced.md` | 双方向トレーサビリティ（BDTM）、4 種ギャップ分析、自動マッピング手法、規制対応 |
-| `references/verification-frameworks.md` | V&V フレームワーク、TDIA 4 検証手法、リスクベース検証、AI 活用（LLM-AQuA-DiVeR）、早期検出の経済効果 |
+| `references/traceability-advanced.md` | Bidirectional traceability (BDTM), 4 gap types, automated mapping, coverage optimization |
+| `references/llm-verification-guardrails.md` | LLM capability tiers, prompt strategies by phase, guardrail rules, anti-patterns |
 
 ---
 

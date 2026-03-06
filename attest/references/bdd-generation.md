@@ -1,6 +1,6 @@
 # BDD Scenario Generation
 
-Rules and templates for generating Behavior-Driven Development scenarios from acceptance criteria.
+Rules, templates, anti-patterns, and quality checklist for generating BDD scenarios from acceptance criteria.
 
 ---
 
@@ -218,7 +218,7 @@ SCENARIO_COVERAGE:
     boundary: 1      # Minimum 1
     edge_case: 0     # Optional
   total: 4
-  coverage_verdict: SUFFICIENT  # ≥3 scenarios = SUFFICIENT
+  coverage_verdict: SUFFICIENT  # >=3 scenarios = SUFFICIENT
 ```
 
 ### Minimum Coverage Requirements
@@ -247,3 +247,48 @@ BDD_SCENARIOS:
   coverage_verdict: SUFFICIENT
   gherkin_file: "generated/login.feature"
 ```
+
+---
+
+## Anti-Patterns
+
+### Process Anti-Patterns
+
+**AP-001: Retrospective Scenarios** — Writing Gherkin after implementation. Scenarios become "test scripts" instead of requirements. Use EXTRACT mode pre-implementation to prevent this.
+
+**AP-002: Isolated Authoring** — PO/BA writes scenarios alone without Three Amigos review. Results in low-testability criteria. Flag with AMBIGUOUS_FLAG and route to Scribe/Accord for collaborative refinement.
+
+**AP-003: BDD as Testing Tool** — Treating BDD as a QA tool, not a specification process. Generate scenarios in business language, verify Given/When/Then are user-action-centric, warn when implementation details leak in.
+
+### Scenario Writing Anti-Patterns
+
+**AP-004: Incidental Details** — Including irrelevant details (UI steps, password input sequences). Focus on "outcome of action", keep When to one primary action, describe user goals not UI operations.
+
+**AP-005: Multiple Rules per Scenario** — Verifying multiple business rules in one scenario. Enforce 1 scenario = 1 business rule. Auto-split compound criteria ("A and B" → separate scenarios) during extraction.
+
+**AP-006: Poor Scenario Titles** — Generic titles like "Test Login". Use pattern: criterion ID + business rule summary (e.g., "SC-AC-LOGIN-001-HP-001: Valid credentials grant dashboard access").
+
+**AP-007: Given/When/Then Mixing** — Confusing preconditions (Given) with actions (When). Given: passive/completed state. When: one active action. Then: observable verifiable result.
+
+### Coverage Anti-Patterns
+
+**AP-008: Over-Specification** — Trying to cover every code path with scenarios. Stick to priority-based minimums (CRITICAL:5, HIGH:3, MEDIUM:2, LOW:1). Focus on customer-visible behavior.
+
+**AP-009: UI-Focused Testing** — Writing all scenarios as UI operation sequences. Describe user journeys (intent), delegate UI details to Voyager/Radar. "User logs in" not "User types email, types password, clicks button."
+
+**AP-010: Missing Negative Scenarios** — Happy-path only coverage. Require at least 1 negative scenario for every CRITICAL/HIGH criterion. Link to adversarial-probing's Omission category for automatic gap detection.
+
+---
+
+## Quality Checklist
+
+Before finalizing BDD scenarios, verify:
+
+- [ ] Scenarios created before or during implementation (not after)?
+- [ ] 1 scenario = 1 business rule?
+- [ ] Written in business language (no technical jargon)?
+- [ ] Given = preconditions, When = 1 action, Then = verifiable result?
+- [ ] Titles clearly express purpose?
+- [ ] Negative and boundary scenarios included?
+- [ ] User goals described (not UI operations)?
+- [ ] Scenario count within priority-based limits?
