@@ -1,111 +1,59 @@
 # UX Anti-Patterns & Ethical Design
 
-> ダークパターン、認知過負荷、アクセシビリティ違反、倫理的デザイン原則
+Purpose: Use this file when reviewing dark patterns, cognitive overload, accessibility violations, or ethical-design requirements.
 
-## 1. ダークパターン 7 類型
+Contents:
+- dark-pattern catalog
+- cognitive-overload catalog
+- accessibility violation catalog
+- ethical design principles and gates
 
-| # | ダークパターン | 手法 | ユーザーへの影響 | 倫理的代替策 |
-|---|-------------|------|---------------|------------|
-| **DP-01** | **Trick Questions** | 二重否定・紛らわしいチェックボックス | 意図しないオプトイン | 明確な肯定文ラベル（「週次メールを受け取る」） |
-| **DP-02** | **Sneak into Basket** | カートに未要求商品を自動追加 | 不要な課金 | 明示的なオプトイン、購入前の全商品表示 |
-| **DP-03** | **Roach Motel** | 登録簡単・解約困難 | サービス脱出不能 | 対称的プロセス（登録 2 ステップなら解約も 2 ステップ） |
-| **DP-04** | **Forced Continuity** | 無料試用後の自動課金（リマインダーなし） | 無意識の課金 | 試用期限前リマインダー、継続/解約を等しく簡単に |
-| **DP-05** | **Bait and Switch** | 意図したアクションと異なる結果 | 設定の無断変更 | 変更の透明な説明、明示的同意の取得 |
-| **DP-06** | **Privacy Zuckering** | 複雑な利用規約でデータ共有を誘導 | 過剰なデータ共有 | 明確・簡潔・アクセシブルなプライバシーポリシー |
-| **DP-07** | **Confirm Shaming** | 拒否に否定的言語（「お得を見逃します」） | 罪悪感による操作 | 中立的な選択肢提示、shame-free な表現 |
+## Dark Patterns (`DP-01` to `DP-07`)
 
-```
-規制状況（2025）:
-  - EU Digital Services Act: ダークパターンを明示的に違反として規定
-  - California CPRA: オプトアウトをオプトインより困難にすることを禁止
-  - OECD AI Principles: AI を利用したダークパターンに言及
-  - 642 サイト/アプリ調査: 76% に 1 つ以上のダークパターン検出
-```
+| ID | Pattern | Harm | Ethical alternative |
+|----|---------|------|---------------------|
+| `DP-01` | Trick Questions | accidental opt-in | plain affirmative labels |
+| `DP-02` | Sneak into Basket | unwanted charges | explicit opt-in |
+| `DP-03` | Roach Motel | hard cancellation | symmetric signup and cancellation |
+| `DP-04` | Forced Continuity | unnoticed billing | reminders before renewal |
+| `DP-05` | Bait and Switch | action/result mismatch | transparent outcome disclosure |
+| `DP-06` | Privacy Zuckering | excessive data sharing | concise and accessible privacy choices |
+| `DP-07` | Confirm Shaming | emotional manipulation | neutral language |
 
----
+## Cognitive Overload (`CO-01` to `CO-06`)
 
-## 2. 認知過負荷アンチパターン
+| ID | Pattern | Response |
+|----|---------|----------|
+| `CO-01` | feature overload | progressive disclosure |
+| `CO-02` | too many choices | keep primary choices around `5-7` |
+| `CO-03` | visual noise | content-first reduction |
+| `CO-04` | inconsistent UI patterns | unify through the design system |
+| `CO-05` | dense information blocks | hierarchy and whitespace |
+| `CO-06` | hidden navigation | keep primary routes visible |
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **CO-01** | **機能過多表示** | 全機能を一画面に詰め込み | Progressive Disclosure（段階的開示） |
-| **CO-02** | **選択肢過剰** | 選択肢が多すぎて決断麻痺 | Hick's Law 適用（選択肢 5-7 個以下） |
-| **CO-03** | **視覚的ノイズ** | 装飾過剰で本質が埋没 | コンテンツ優先の最小限デザイン |
-| **CO-04** | **非一貫 UI パターン** | 画面ごとに異なるインタラクション | デザインシステムでパターン統一 |
-| **CO-05** | **情報密度過多** | テキスト・データの過密表示 | ホワイトスペース活用、情報の優先度設計 |
-| **CO-06** | **隠れたナビゲーション** | 重要機能がハンバーガーメニュー内のみ | 主要ナビゲーションの常時表示 |
+## Accessibility Violations (`AV-01` to `AV-06`)
 
----
+| ID | Violation | Rule | Response |
+|----|-----------|------|----------|
+| `AV-01` | low contrast | WCAG `1.4.3`, AA `4.5:1` | verify text contrast |
+| `AV-02` | color-only status | WCAG `1.4.1` | add icon or text |
+| `AV-03` | hidden focus indicator | WCAG `2.4.7` | visible focus ring |
+| `AV-04` | unclear disabled state | WCAG `1.4.11`, AA `3:1` | visible distinction plus semantics |
+| `AV-05` | keyboard-inaccessible interaction | WCAG `2.1.1` | full keyboard support |
+| `AV-06` | excessive motion | WCAG `2.3.3` | support `prefers-reduced-motion` |
 
-## 3. アクセシビリティ違反パターン
+## Ethical Design Principles
 
-| # | 違反 | WCAG 基準 | 影響 | 修正策 |
-|---|------|----------|------|--------|
-| **AV-01** | **低コントラスト** | 1.4.3 (AA: 4.5:1) | 視覚障害ユーザーが読めない | コントラストチェッカーで全テキスト検証 |
-| **AV-02** | **色のみのエラー表示** | 1.4.1 | 色覚障害ユーザーがエラー認識不能 | アイコン + テキストの併用 |
-| **AV-03** | **フォーカスインジケータ非表示** | 2.4.7 | キーボードユーザーが現在位置不明 | 明確なフォーカスリング（:focus-visible） |
-| **AV-04** | **不明確な無効状態** | 1.4.11 (AA: 3:1) | 無効要素と有効要素の区別困難 | 明確な視覚的差異 + aria-disabled |
-| **AV-05** | **キーボード操作不能** | 2.1.1 | マウスなしで操作不可 | 全インタラクティブ要素のキーボード対応 |
-| **AV-06** | **モーション過多** | 2.3.3 | 前庭障害ユーザーの不快感 | prefers-reduced-motion 対応 |
+1. Respect user autonomy.
+2. Be transparent about data, AI, and consequences.
+3. Design inclusively with `WCAG 2.2 AA` as the floor.
+4. Consider sustainability and unnecessary resource use.
+5. Favor long-term trust over short-term conversion tricks.
 
----
+## Quality Gates
 
-## 4. 倫理的デザイン原則
-
-```
-5 つの倫理的デザイン原則:
-
-  1. ユーザー自律性の尊重
-     - 選択の自由を保証
-     - デフォルトはユーザーに有利な設定
-     - オプトイン/オプトアウトの対称性
-
-  2. 透明性
-     - データ収集目的の明示
-     - アルゴリズムの影響の可視化
-     - AI 生成コンテンツの明示
-
-  3. インクルーシブ設計
-     - WCAG 2.2 AA を最低基準
-     - 多様な能力・コンテキストへの配慮
-     - 脆弱なユーザーグループの保護
-
-  4. 持続可能性
-     - パフォーマンス最適化（低エネルギーモード対応）
-     - ダークモード対応（OLED 省電力）
-     - 不要なリソース読み込みの排除
-
-  5. 長期的ユーザー関係
-     - 短期コンバージョンより長期信頼
-     - ダークパターン排除
-     - ユーザーフィードバックの真摯な反映
-
-ダークパターン検出チェックリスト:
-  □ フォーム言語に二重否定・紛らわしい表現がないか
-  □ 解約プロセスは登録プロセスと同等の簡易さか
-  □ デフォルト設定はユーザーに有利か（プライバシー最優先）
-  □ 感情操作的な言語（Confirm Shaming）がないか
-  □ カートに自動追加される商品がないか
-  □ 無料試用の期限リマインダーが設定されているか
-```
-
----
-
-## 5. Vision との連携
-
-```
-Vision での活用:
-  1. REVIEW モードで DP-01〜07 / CO-01〜06 / AV-01〜06 のスクリーニング
-  2. NEW_PRODUCT モードで倫理的デザイン原則の組み込み
-  3. REDESIGN モードでダークパターン除去と代替策設計
-  4. Palette 委譲時にアクセシビリティ要件を同梱
-
-品質ゲート:
-  - 全テキストのコントラスト比 4.5:1 以上（AV-01 防止）
-  - 色のみのステータス表示 → アイコン/テキスト併用を要求（AV-02 防止）
-  - 解約フロー vs 登録フロー → ステップ数の対称性確認（DP-03 防止）
-  - デフォルト設定 → ユーザーに有利な設定かレビュー（DP-06 防止）
-  - prefers-reduced-motion 対応確認（AV-06 防止）
-```
-
-**Source:** [UX Playbook: Dark Patterns & Ethical Design](https://uxplaybook.org/articles/ux-dark-patterns-and-ethical-design) · [commonUX: Dark Patterns in 2025](https://www.commonux.org/ux-ethics/dark-patterns-in-2025-manipulation-by-design-or-design-for-manipulation/) · [iterates: UI/UX Design Mistakes 2025](https://www.iterates.be/2025/02/06/ui-ux-design-mistakes-to-avoid-in-2025/) · [Eleken: Dark Patterns Examples](https://www.eleken.co/blog-posts/dark-patterns-examples)
+- text contrast must meet `4.5:1` where required
+- status must not rely on color alone
+- cancellation should not be meaningfully harder than signup
+- default settings should favor the user, especially for privacy
+- motion-heavy proposals must specify reduced-motion behavior

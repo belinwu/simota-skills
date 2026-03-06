@@ -1,194 +1,110 @@
 # Design Methodology
 
-Vision's systematic design process across all operating modes.
+Purpose: Use this file when you need the full process for `REDESIGN`, `NEW_PRODUCT`, `REVIEW`, or `TREND_APPLICATION`.
 
----
+Contents:
+- Mode-specific process steps
+- Shared phase model
+- Warden pre-check rules
+- Warden handoff templates
 
-## Operating Modes
+## Mode Processes
 
-### Mode 1: REDESIGN
+### `REDESIGN`
+- Visual audit of the current state
+- Competitive and trend analysis
+- Define principles
+- Create `3+` directions
+- Detail the selected direction
+- Define style guide and token direction
+- Prioritize components
+- Prepare delegation plan
 
-**Purpose**: Modernize existing UI while respecting brand identity
-**Trigger Keywords**: "redesign", "modernize", "refresh", "update look"
+Output: direction doc plus component specifications
 
-**Process**:
-1. Visual Audit of current state
-2. Competitive & trend analysis
-3. Design Principles definition
-4. 3 direction proposals
-5. Selected direction detailing
-6. Style Guide & Token definition
-7. Prioritized component list
-8. Delegation plan to Muse/Palette/Flow
+### `NEW_PRODUCT`
+- integrate research and personas
+- create moodboards
+- define color, typography, spacing, and motion foundations
+- draft wireframes
+- define token architecture
+- instruct prototype work
 
-**Output**: Design Direction Document + Component Specifications
+Output: design-system foundation plus wireframes
 
-### Mode 2: NEW_PRODUCT
+### `REVIEW`
+- run Nielsen's 10 heuristics
+- audit visual consistency
+- run trend-gap analysis
+- run accessibility checks
+- prioritize fixes
+- assign next agents
 
-**Purpose**: Create design system and visual identity from scratch
-**Trigger Keywords**: "new product", "from scratch", "greenfield", "new app"
+Output: improvement report plus action items
 
-**Process**:
-1. User research integration (from Researcher)
-2. Persona/use case confirmation (with Echo)
-3. Moodboard creation
-4. Color/Typography/Spacing foundation
-5. Wireframe proposals
-6. Design Token architecture
-7. Prototype instruction to Forge
+### `TREND_APPLICATION`
+- select applicable trends
+- check brand alignment
+- propose phased rollout
+- pick pilot targets
+- recommend testing approach when uncertainty is material
 
-**Output**: Design System Foundation + Page Wireframes
+Output: trend application plan plus before/after concepts
 
-### Mode 3: REVIEW
+## Shared Phases
 
-**Purpose**: Evaluate existing design and identify improvements
-**Trigger Keywords**: "review", "audit", "evaluate", "assess"
+| Phase | Key question |
+|-------|--------------|
+| `UNDERSTAND` | what business, user, brand, and technical constraints shape the design? |
+| `ENVISION` | what `3+` directions could solve the problem? |
+| `SYSTEMATIZE` | what tokens, components, states, and breakpoints define the system? |
+| `DELEGATE` | which agents should execute what, in which order? |
+| `VALIDATE` | what evidence shows the direction is coherent, usable, and safe? |
 
-**Process**:
-1. Heuristic Evaluation (Nielsen's 10)
-2. Visual Consistency Audit
-3. Trend Gap Analysis
-4. Accessibility Check
-5. Prioritized improvement list
-6. Agent assignment for each item
+## Warden Pre-check
 
-**Output**: Design Improvement Report + Action Items
+Before delegating implementation work, request a V.A.I.R.E. pre-check from `Warden`.
 
-### Mode 4: TREND_APPLICATION
-
-**Purpose**: Apply modern design trends to existing UI
-**Trigger Keywords**: "trending", "modern style", "update style", "apply trend"
-
-**Process**:
-1. Applicable trend selection
-2. Brand alignment check
-3. Phased application plan
-4. Pilot target selection
-5. A/B test proposal
-
-**Output**: Trend Application Plan + Before/After Concepts
-
----
-
-## Methodology Phases
-
-### Phase 1: UNDERSTAND
-
-#### 1.1 Context Gathering
-- [ ] Business objectives clarification
-- [ ] Target user understanding (Researcher/Echo collaboration)
-- [ ] Existing brand asset collection
-- [ ] Technical constraint identification
-- [ ] Competitor analysis
-
-#### 1.2 Visual Audit (if existing UI)
-- [ ] Screenshot collection (Lens collaboration)
-- [ ] Consistency issue identification
-- [ ] Design debt listing
-- [ ] Strength/weakness summary
-
-### Phase 2: ENVISION
-
-#### 2.1 Design Principles
-Define 3-5 core principles that guide all decisions:
-- Example: "Clarity over Complexity"
-- Example: "Accessible by Default"
-- Example: "Delightful Interactions"
-
-#### 2.2 Moodboard Creation
-- Reference design collection
-- Color palette candidates
-- Typography style options
-- Visual tone keywords (Modern/Classic/Playful/Minimal)
-
-#### 2.3 Direction Proposals
-Minimum 3 distinct directions with:
-- One-line concept summary
-- Visual characteristics
-- Pros and cons
-- Best suited use case
-- Recommended option with justification
-
-### Phase 3: SYSTEMATIZE
-
-#### 3.1 Design Token Definition
-
-**Color tokens:**
-- Primary (50-900 scale)
-- Secondary (50-900 scale)
-- Neutral (50-900 scale)
-- Semantic (success, error, warning, info)
-
-**Typography tokens:**
-- Font families (display, body, mono)
-- Size scale (major third ratio: 1.25)
-- Weight scale
-- Line height scale
-
-**Spacing tokens:**
-- 8px grid: 4, 8, 12, 16, 24, 32, 48, 64, 96
-
-**Effect tokens:**
-- Shadows (sm, md, lg, xl)
-- Border radius (sm, md, lg, full)
-
-#### 3.2 Component Strategy
-- Atomic Design hierarchy application
-- Priority component identification
-- Component relationship map
-
-#### 3.3 Responsive Strategy
-- Breakpoint definition (mobile, tablet, desktop)
-- Layout behavior per breakpoint
-- Touch vs mouse interaction considerations
-
-### Phase 4: DELEGATE
-
-#### 4.1 Agent Assignment
-Delegate to appropriate agents:
-- Muse: Token implementation, visual consistency
-- Palette: UX improvements, interaction quality
-- Flow: Animations, micro-interactions
-- Forge: Prototype construction
-- Echo: User validation
-
-#### 4.2 Execution Order
-Define priority and dependencies:
-1. [Agent]: [Task] (prerequisite: none)
-2. [Agent]: [Task] (prerequisite: step 1)
-3. ...
-
-### Quality Pre-check (Before Delegation)
-
-Before delegating design direction to implementation agents, request a V.A.I.R.E. pre-check from Warden.
-
-**Pre-check Request:**
-1. Prepare a summary of the selected design direction (key principles, token strategy, component priorities)
-2. Send to Warden via `VISION_TO_WARDEN_PRECHECK` handoff
-3. Await Warden's assessment on all 5 V.A.I.R.E. dimensions
-
-**Handling Results:**
+Result handling:
 
 | Result | Action |
 |--------|--------|
-| PASS | Proceed to delegation (Phase 4) |
-| CONDITIONAL | Address flagged items, document mitigations, then proceed |
-| FAIL | Return to Phase 2 (ENVISION), revise direction, re-submit |
+| `PASS` | proceed to delegation |
+| `CONDITIONAL` | address flagged items and document mitigations |
+| `FAIL` | return to `ENVISION`, revise, and resubmit |
 
-**Skip Conditions:**
-- Minor component-level changes (scope < 1 page)
-- Token value adjustments within existing system
-- Trend applications marked as "low risk"
+Skip conditions:
+- minor component-level changes with scope `< 1 page`
+- token value adjustments inside an existing system
+- trend work explicitly marked `low risk`
 
-> **Template**: See `references/handoff-formats.md` for `VISION_TO_WARDEN_PRECHECK` and `WARDEN_TO_VISION_FEEDBACK` templates.
+Escalation:
+- maximum `2` pre-check rounds per direction
+- if still `FAIL` after `2` rounds, escalate with Warden's concerns documented
+- `FAIL` on `Agency` or `Resilience` always requires resolution
 
-### Phase 5: VALIDATE
+## Warden Handoff Templates
 
-#### 5.1 Design Review
-- Lens: Before/After comparison
-- Echo: Persona validation
-- Palette: Heuristic evaluation
+```markdown
+## VISION_TO_WARDEN_PRECHECK
 
-#### 5.2 Iteration
-- Feedback integration
-- Direction adjustment if needed
+- Direction summary: [selected direction]
+- Principles: [3-5 principles]
+- Token strategy: [color/type/spacing/motion summary]
+- Component priorities: [top priorities]
+- Constraints: [brand/business/technical constraints]
+- Open risks: [known concerns]
+```
+
+```markdown
+## WARDEN_TO_VISION_FEEDBACK
+
+- Result: PASS | CONDITIONAL | FAIL
+- Value: [notes]
+- Agency: [notes]
+- Identity: [notes]
+- Resilience: [notes]
+- Echo: [notes]
+- Required changes: [list]
+- Recheck needed: Yes | No
+```
