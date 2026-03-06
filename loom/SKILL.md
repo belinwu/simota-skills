@@ -324,13 +324,15 @@ Figma Make の既知制約を踏まえたプロンプト・Guidelines設計：
 
 | Constraint | Impact | Workaround |
 |-----------|--------|------------|
+| **React only** | コード生成は React のみ対応 | 非 React プロジェクトではデザイン出力のみ活用 |
+| **Per-file Guidelines** | Guidelines はファイル単位、グローバル共有不可 | 各ファイルに Guidelines を設定 |
+| **Credit system** | 月間クレジット制限あり（~25-45/prompt） | 詳細プロンプトで反復を最小化し節約 |
 | **Auto Layout推論限界** | 複雑なネストALを正しく生成できない場合あり | 3階層以下に制約、明示的にAL方向・gap・paddingを指定 |
-| **トークン参照の不完全性** | Variables名を正確に参照しないことがある | Guidelinesに正確な変数名リスト+使用例を明記 |
-| **レスポンシブ制約** | Min/Max width の自動設定が不安定 | 具体的なpx値+挙動をプロンプトに明記 |
+| **トークン参照の不完全性** | Variables名を正確に参照しないことがある | Guidelinesに正確な変数フルパス+使用例を明記 |
 | **コンポーネント複雑度** | 5+ variants のコンポーネントは精度低下 | variant分割生成→後で統合 |
 | **一括生成の限界** | 1プロンプトで3画面以上は品質低下 | Atomic Decomposition原則を適用 |
 
-Details and workaround patterns → `references/figma-make-constraints.md`
+Details, credit system, DS packages, workarounds → `references/figma-make-constraints.md`
 
 ---
 
@@ -354,12 +356,12 @@ Figma Make 出力のファイル構造を以下の観点で分析・提案：
 
 | File | Content |
 |------|---------|
-| `references/guidelines-templates.md` | Guidelines.md構成テンプレート集（SaaS/EC/Dashboard別スターター） |
-| `references/prompt-patterns.md` | Figma Makeプロンプトの効果的パターン・分割戦略・Before/After例 |
-| `references/validation-checklist.md` | 出力検証チェックリスト・スコアリング基準 |
-| `references/token-alignment-guide.md` | Figma Variables vs コードトークン比較手法・差分レポートテンプレート |
-| `references/collaboration-handoffs.md` | パートナーエージェントとのハンドオフテンプレート集 |
-| `references/figma-make-constraints.md` | Figma Make既知制約・quirks・ワークアラウンドパターン集 |
+| `references/guidelines-templates.md` | 公式推奨マルチファイル構造準拠のGuidelines.mdテンプレート集（SaaS/EC/LP別） |
+| `references/prompt-patterns.md` | TC-EBCフレームワーク・プロンプトパターン・分割戦略・クレジット最適化 |
+| `references/validation-checklist.md` | 5カテゴリ出力検証チェックリスト・Design/Functionality Score・スコアリング基準 |
+| `references/token-alignment-guide.md` | W3C DTCG 1.0準拠トークン比較・差分レポート・Check Designs連携 |
+| `references/collaboration-handoffs.md` | コアハンドオフ3パターン（Token Sync/Design Context/Component Feed）+概要7パターン |
+| `references/figma-make-constraints.md` | プラットフォーム制約（React only/クレジット/DS Packages）・既知quirks・回避パターン |
 
 ---
 
