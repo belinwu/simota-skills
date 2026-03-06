@@ -1,125 +1,85 @@
 # Real-Time Update Architecture
 
-> SSE推奨、差分更新プロトコル、レイヤードアーキテクチャの設計ガイド
+Purpose: Guide future evolution of Realm live mode beyond the current polling implementation while preserving the data limits and diff semantics Realm already relies on.
 
-## 1. プロトコル選定: SSE 推奨
+Contents:
+- Current runtime baseline
+- Protocol recommendation
+- Diff protocol
+- Layered architecture
+- Browser limits
+- Upgrade priorities
 
-| 基準 | WebSocket | SSE | 推奨 |
-|------|-----------|-----|------|
-| 通信方向 | 双方向 | サーバー→クライアント | **SSE** |
-| 複雑度 | 高（プロトコル管理） | 低（HTTP標準） | **SSE** |
-| 自動再接続 | 手動実装必要 | ブラウザ標準搭載 | **SSE** |
-| HTTP/2互換 | 別接続 | 多重化対応 | **SSE** |
-| スケーリング | 専用インフラ必要 | 既存HTTPインフラ | **SSE** |
+## Current Runtime Baseline
 
-**結論:** Realm live mode はサーバー→クライアントのデータ配信が主目的。SSE が最適。
+Current `serve.py` live mode uses HTTP polling:
+- `/api/hash` every `3s`
+- `/api/activity` every `5s`
 
-**Source:** [SSE Beat WebSockets for 95% of Real-Time Apps](https://dev.to/polliog/server-sent-events-beat-websockets-for-95-of-real-time-apps-heres-why-a4l) · [SSE vs WebSockets 2026](https://www.nimbleway.com/blog/server-sent-events-vs-websockets-what-is-the-difference-2026-guide)
+Use this reference when you need a more scalable real-time architecture, not for the baseline static/live contract already implemented in `serve.py`.
 
-### SSE サーバー実装（Python）
+## Protocol Recommendation
 
-```python
-from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
-import asyncio, json
+Prefer `SSE` for future live-mode evolution.
 
-app = FastAPI()
+| Criterion | WebSocket | SSE | Recommendation |
+|---|---|---|---|
+| Direction | Bi-directional | Server to client | `SSE` |
+| Complexity | Higher | Lower | `SSE` |
+| Auto reconnect | Manual | Browser-native | `SSE` |
+| HTTP/2 compatibility | Separate connection | Native multiplexing | `SSE` |
+| Infra footprint | Dedicated stateful infra | Existing HTTP infra | `SSE` |
 
-async def realm_event_stream():
-    while True:
-        state = await collect_ecosystem_state()
-        yield f"data: {json.dumps(state)}\n\n"
-        await asyncio.sleep(3)
+## Three-Layer Buffering
 
-@app.get("/events")
-async def sse_endpoint():
-    return StreamingResponse(
-        realm_event_stream(),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
-    )
-```
+| Layer | Cadence | Responsibility |
+|---|---|---|
+| Data collection | `1s` | Detect changes from git, `PROJECT.md`, `ECOSYSTEM.md`, and journals |
+| Batch aggregation | `3s` | Send only diffs after the initial full state |
+| Client render | `requestAnimationFrame` | Queue updates and animate transitions smoothly |
 
-### SSE クライアント実装
+## Diff Protocol
 
-```javascript
-class RealmDataBridge {
-  constructor(url) {
-    this.source = new EventSource(url);
-    this.source.onmessage = (e) => this.dispatch(JSON.parse(e.data));
-    this.source.onerror = () => console.log('[Realm] Reconnecting...');
-  }
-  dispatch(data) {
-    // agent_update / quest_complete / rank_up 等をハンドリング
-  }
-}
-```
-
----
-
-## 2. 差分更新プロトコル
-
-### 3層バッファリング
-
-```
-Layer 1: データ収集 (1秒) — git log, PROJECT.md, ECOSYSTEM.md の差分検出
-Layer 2: バッチ集約 (3秒) — 変更時のみSSE送信、差分のみ（フル状態は初回のみ）
-Layer 3: クライアント描画 (rAF) — キューイング → フレーム単位反映 → 補間遷移
-```
-
-**Source:** [Real-Time Chart Updates with Live Dashboards](https://dev.to/byte-sized-news/real-time-chart-updates-using-websockets-to-build-live-dashboards-3hml)
-
-### プロトコル定義
+### Initial payload
 
 ```json
-// 初回接続: フル状態
 { "type": "full_state", "agents": [...], "quests": [...], "departments": [...] }
+```
 
-// 以降: 差分のみ
-{ "type": "delta", "timestamp": 1709550000, "changes": [
+### Delta payload
+
+```json
+{
+  "type": "delta",
+  "timestamp": 1709550000,
+  "changes": [
     { "path": "agents.builder.xp", "value": 4250 },
     { "path": "quests.Q-42.status", "value": "completed" },
     { "path": "events", "append": { "type": "Victory", "summary": "..." } }
-]}
+  ]
+}
 ```
 
----
+## Layered Architecture
 
-## 3. レイヤードアーキテクチャ
+| Layer | Responsibility |
+|---|---|
+| Client layer | Render HTML/Phaser and manage interaction state |
+| Data bridge layer | Transport updates and apply diffs |
+| State manager layer | Read and write `.agents/realm-state.md`, compute change sets |
+| Data collector layer | Watch git, journals, project logs, and ecosystem state |
 
-```
-┌──────────────────────────────┐
-│  Client Layer (HTML/Phaser)  │  描画・インタラクション
-├──────────────────────────────┤
-│  Data Bridge Layer (SSE)     │  リアルタイム通信・差分適用
-├──────────────────────────────┤
-│  State Manager Layer         │  realm-state.md 管理・差分計算
-├──────────────────────────────┤
-│  Data Collector Layer        │  git/agents/*.md 収集・変更検出
-└──────────────────────────────┘
-```
+## Browser Data Limits
 
-**Source:** [Layered WebSocket Architecture](https://medium.com/@jamala.zawia/designing-a-layered-websocket-architecture-for-scalable-real-time-systems-1ba3591e3ffb)
+- Keep only the latest 100 events on the client.
+- Keep only the latest agent stats on the client; historical trends stay server-side.
+- Keep only the latest 50 completed quests on the client.
 
----
+## Upgrade Priorities
 
-## 4. ブラウザ側データ管理
-
-> "Browsers don't love maintaining unlimited history."
-
-- 直近100イベントのみ保持
-- エージェント統計は最新値のみ（履歴はサーバー側）
-- クエスト履歴は完了後50件のみ
-
-**Source:** [Building Real-Time Dashboards with Node.js](https://blog.openreplay.com/real-time-dashboards-nodejs/)
-
----
-
-## 改善優先度サマリー
-
-| 優先度 | 改善項目 | 工数 | 効果 |
-|--------|----------|------|------|
-| P0 | WebSocket → SSE 移行 | 中 | 複雑度削減・信頼性向上 |
-| P0 | 差分更新プロトコル | 中 | 帯域削減・応答性向上 |
-| P1 | 3層バッファリング | 小 | 描画パフォーマンス向上 |
-| P2 | レイヤードアーキテクチャ | 大 | 保守性向上 |
+| Priority | Upgrade | Cost | Benefit |
+|---|---|---|---|
+| P0 | Polling to SSE migration | Medium | Lower complexity and better reliability |
+| P0 | Diff-only update protocol | Medium | Lower bandwidth and faster refresh |
+| P1 | Three-layer buffering | Small | Smoother rendering |
+| P2 | Fully layered architecture | Large | Better maintainability |

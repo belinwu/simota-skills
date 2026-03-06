@@ -1,30 +1,36 @@
 # Isometric Office Design
 
-> アイソメトリック表示、エージェント行動パターン、Depth Sorting の設計ガイド
+Purpose: Document the optional isometric migration path for Realm's office simulation while preserving the current top-down baseline.
 
-## 1. Top-Down vs Isometric
+Contents:
+- Top-down vs isometric tradeoff
+- Phased migration
+- Coordinate transform
+- Placement and behavior rules
+- Depth sorting
+- Sprite guidance
 
-| 基準 | Top-Down | Isometric | 判定 |
-|------|----------|-----------|------|
-| 実装難易度 | 低 | 中〜高 | Top-Down |
-| 視覚的魅力 | 普通 | 高い | **Isometric** |
-| 奥行き表現 | なし | あり | **Isometric** |
-| オフィス感 | 弱い | 強い（Sim/Tycoon感） | **Isometric** |
-| Phaser対応 | 完全 | Tilemap標準対応 | 同等 |
+## Top-Down Vs Isometric
 
-**推奨: 段階的移行**
-1. Phase 1: Top-Down強化（パーティクル、アニメーション追加）
-2. Phase 2: `--iso` フラグでIsometric提供
-3. Phase 3: デフォルト切替
+| Criterion | Top-Down | Isometric | Preferred |
+|---|---|---|---|
+| Implementation difficulty | Low | Medium to high | Top-Down |
+| Visual appeal | Moderate | High | Isometric |
+| Depth perception | None | Strong | Isometric |
+| Office-sim feel | Weak | Strong | Isometric |
+| Phaser fit | Strong | Strong | Tie |
 
-**Source:** [Isometric video game graphics](https://en.wikipedia.org/wiki/Isometric_video_game_graphics) · [Fundamentals of Isometric Pixel Art](https://pixelparmesan.com/blog/fundamentals-of-isometric-pixel-art)
+## Migration Path
 
----
+1. Phase 1: improve the current top-down mode with particles and animation.
+2. Phase 2: add an optional `--iso` flag.
+3. Phase 3: switch the default only after the optional mode is stable.
 
-## 2. Isometric 座標変換
+## Coordinate Transform
 
 ```javascript
-const TILE_WIDTH = 64, TILE_HEIGHT = 32; // 2:1 比率
+const TILE_WIDTH = 64;
+const TILE_HEIGHT = 32;
 
 function worldToScreen(x, y) {
   return {
@@ -32,78 +38,47 @@ function worldToScreen(x, y) {
     screenY: (x + y) * TILE_HEIGHT / 2
   };
 }
-
-// Phaser 3 ネイティブ対応
-const map = this.make.tilemap({
-  tileWidth: 64, tileHeight: 32, width: 20, height: 20,
-  orientation: 'isometric'
-});
 ```
 
----
+## Placement Rules
 
-## 3. 部門配置ルール
+| Rule | Meaning |
+|---|---|
+| Adjacency | Place frequently collaborating departments next to each other |
+| Hierarchy | Keep orchestration and meta layers visually elevated |
+| Accessibility | Keep Command Center central |
+| Visibility | Place critical departments toward the front and keep them readable |
 
-| ルール | 説明 |
-|--------|------|
-| 隣接性 | 協力頻度が高い部門を隣接配置 |
-| 階層性 | Meta/Orchestration を上位に配置 |
-| アクセス性 | Command Center を中央に固定 |
-| 視認性 | 重要部門を前面に配置（depth sorting） |
+## Agent Behavior Patterns
 
----
+| Behavior | Probability | Duration | Condition |
+|---|---|---|---|
+| `idle` | 0.60 | `5000-15000ms` | Default |
+| `wander` | 0.20 | `3000-8000ms` | Default |
+| `collaborate` | 0.15 | `2000-5000ms` | Active quest with 2+ party members |
+| `celebrate` | 0.05 | `1000-3000ms` | Recent event present |
 
-## 4. エージェント行動パターン
+## Depth Sorting
 
-```javascript
-const AGENT_BEHAVIORS = {
-  idle:        { animation: 'work',      probability: 0.6,  duration: [5000, 15000] },
-  wander:      { animation: 'walk',      probability: 0.2,  duration: [3000, 8000] },
-  collaborate: { animation: 'talk',      probability: 0.15, duration: [2000, 5000],
-                 condition: (a) => a.activeQuest?.party?.length > 1 },
-  celebrate:   { animation: 'celebrate', probability: 0.05, duration: [1000, 3000],
-                 condition: (a) => a.recentEvent != null }
-};
-```
+- Sort by layer first, then by Y position.
+- Keep nearer actors in front.
+- Enable child sorting at the scene level when using many moving actors.
 
-**Source:** [Office Management 101 — Woes of Isometry](https://www.indiedb.com/games/office-management-101/features/woes-of-isometry)
+## Sprite Guidance
 
----
+| Item | Spec |
+|---|---|
+| Base size | `16×16` default, `20-28px` for higher ranks |
+| Palette | 8 class colors minimum |
+| Animation frames | 4 directions × 4-6 frames |
+| CSS | `image-rendering: pixelated` or `crisp-edges` |
 
-## 5. Depth Sorting
+## Upgrade Priorities
 
-```javascript
-// Phaser 3 自動ソート
-this.children.sortChildrenFlag = true;
-
-// カスタムソート: レイヤー優先 → Y座標
-scene.children.sort((a, b) => {
-  if (a.layer !== b.layer) return a.layer - b.layer;
-  return a.y - b.y; // 手前を上に描画
-});
-```
-
----
-
-## 6. ピクセルアートスプライト仕様
-
-| 項目 | 仕様 |
-|------|------|
-| 基本サイズ | 16×16px（通常）、20-28px（高ランク） |
-| カラーパレット | クラス別8色 |
-| アニメフレーム | 4方向 × 4-6フレーム |
-| CSS | `image-rendering: pixelated` / `crisp-edges` |
-
-**Source:** [Crisp pixel art look - MDN](https://developer.mozilla.org/en-US/docs/Games/Techniques/Crisp_pixel_art_look)
-
----
-
-## 改善優先度サマリー
-
-| 優先度 | 改善項目 | 工数 | 効果 |
-|--------|----------|------|------|
-| P1 | Depth Sorting導入 | 小 | Top-Downでも効果 |
-| P1 | エージェント行動パターン | 中 | 生き生きとした可視化 |
-| P2 | Isometric `--iso` フラグ | 大 | 視覚的魅力大幅向上 |
-| P2 | プロシージャルスプライト生成 | 中 | ランク/クラス差別化 |
-| P3 | 協力ベース部門配置 | 中 | レイアウト最適化 |
+| Priority | Upgrade | Cost | Benefit |
+|---|---|---|---|
+| P1 | Depth sorting | Small | Stronger depth even in top-down mode |
+| P1 | Agent behavior patterns | Medium | More lively map |
+| P2 | `--iso` flag | Large | Major visual upgrade |
+| P2 | Procedural sprites | Medium | Better role differentiation |
+| P3 | Collaboration-based department placement | Medium | Better spatial storytelling |

@@ -1,15 +1,19 @@
 # Class System
 
-Agent categories mapped to RPG game classes with traits and thematic abilities.
+Purpose: Map ecosystem categories to RPG classes, preserve class flavor, and define synergy bonuses for quests and rankings.
 
----
+Contents:
+- Category-to-class mapping
+- Class roster, role, and signature bonus
+- Multi-class rules
+- Class synergy bonuses
 
-## Category → Class Mapping
+## Category To Class Mapping
 
 | # | Category | Class | Archetype | Signature Trait |
 |---|---|---|---|---|
 | 1 | Orchestration | Commander | Strategic leader | Party coordination |
-| 2 | Investigation | Ranger | Scout & tracker | Keen observation |
+| 2 | Investigation | Ranger | Scout and tracker | Keen observation |
 | 3 | Implementation | Artisan | Master crafter | Code forging |
 | 4 | Testing | Guardian | Shield bearer | Defect detection |
 | 5 | Security | Paladin | Holy warrior | Threat purging |
@@ -30,177 +34,47 @@ Agent categories mapped to RPG game classes with traits and thematic abilities.
 | 20 | Data | Transmuter | Material converter | Format transformation |
 | 21 | Incident | Watcher | Night sentinel | Anomaly detection |
 
----
+## Class Roster And Flavor
 
-## Class Details
-
-### Commander (Orchestration)
-- **Members:** Nexus, Sherpa, Titan
-- **Role in Company:** Command Center leadership — coordinates all military and civic operations
-- **Passive Ability:** *Rally* — boosts party efficiency when leading multi-agent chains
-- **Class Bonus:** +10% CHA for all chain coordination tasks
-- **Flavor:** "A commander's strength is measured not by their own sword, but by how many swords they direct."
-
-### Ranger (Investigation)
-- **Members:** Scout, Spark, Compete, Voice, Researcher, Triage, Rewind
-- **Role in Company:** Intelligence Corps — scouts threats, gathers intel, tracks anomalies
-- **Passive Ability:** *Track* — uncovers hidden patterns in code and data
-- **Class Bonus:** +10% INT for investigation tasks
-- **Flavor:** "The ranger sees what others overlook, hears what others dismiss."
-
-### Artisan (Implementation)
-- **Members:** Builder, Forge, Artisan, Schema, Arena, Architect
-- **Role in Company:** Craftsmen's Guild — forges tools, weapons, and structures
-- **Passive Ability:** *Forge* — produces high-quality artifacts with consistent reliability
-- **Class Bonus:** +10% STR for code generation tasks
-- **Flavor:** "Every line of code is a hammer stroke on the anvil of creation."
-
-### Guardian (Testing)
-- **Members:** Radar, Voyager
-- **Role in Company:** City Watch — patrols the walls, catches intruders before they breach
-- **Passive Ability:** *Shield Wall* — blocks defects from reaching production
-- **Class Bonus:** +10% CON for test coverage tasks
-- **Flavor:** "The guardian does not seek glory, only the quiet satisfaction of a wall unbreached."
-
-### Paladin (Security)
-- **Members:** Sentinel, Probe
-- **Role in Company:** Holy Order — purges corruption and protects the realm's sanctity
-- **Passive Ability:** *Purify* — detects and neutralizes vulnerabilities
-- **Class Bonus:** +10% INT for security analysis tasks
-- **Flavor:** "Where darkness hides, the paladin's light reveals."
-
-### Sage (Review)
-- **Members:** Judge, Zen, Sweep, Warden
-- **Role in Company:** Academy Council — reviews petitions, judges quality, preserves standards
-- **Passive Ability:** *Discern* — identifies code quality issues with precision
-- **Class Bonus:** +10% WIS for review tasks
-- **Flavor:** "The sage reads not just the words, but the intent behind them."
-
-### Alchemist (Performance)
-- **Members:** Bolt, Tuner
-- **Role in Company:** Alchemist's Tower — transmutes slow lead into swift gold
-- **Passive Ability:** *Transmute* — converts bottlenecks into optimized paths
-- **Class Bonus:** +10% DEX for optimization tasks
-- **Flavor:** "Speed is not haste. The alchemist knows the difference."
-
-### Scribe (Documentation)
-- **Members:** Quill, Scribe, Canvas
-- **Role in Company:** Grand Library — records all knowledge for posterity
-- **Passive Ability:** *Chronicle* — captures complex concepts in accessible form
-- **Class Bonus:** +10% WIS for documentation tasks
-- **Flavor:** "What is not written is forgotten. What is poorly written is misunderstood."
-
-### Architect (Architecture)
-- **Members:** Atlas, Gateway, Scaffold, Ripple
-- **Role in Company:** Master Planners — design the company's foundations and expansions
-- **Passive Ability:** *Blueprint* — foresees structural implications before they manifest
-- **Class Bonus:** +10% INT for design tasks
-- **Flavor:** "The architect builds not for today, but for the centuries to come."
-
-### Enchanter (UX/Design)
-- **Members:** Vision, Palette, Muse, Flow, Echo, Showcase
-- **Role in Company:** Court of Enchantments — weaves spells of delight and usability
-- **Passive Ability:** *Charm* — enhances user experience through intuitive design
-- **Class Bonus:** +10% CHA for UX tasks
-- **Flavor:** "The finest enchantment is one the user never notices — it simply feels right."
-
-### Engineer (DevOps)
-- **Members:** Anvil, Gear, Launch, Pipe, Orbit
-- **Role in Company:** Siege Works — builds and maintains the company's infrastructure and automation
-- **Passive Ability:** *Automate* — creates self-sustaining mechanical processes
-- **Class Bonus:** +10% CON for infrastructure tasks
-- **Flavor:** "The engineer's art: making the complex appear effortless."
-
-### Merchant (Growth)
-- **Members:** Growth, Retain
-- **Role in Company:** Merchant's Quarter — drives commerce and citizen retention
-- **Passive Ability:** *Trade* — amplifies value through strategic engagement
-- **Class Bonus:** +10% CHA for growth tasks
-- **Flavor:** "A prosperous company is built not on conquest, but on loyal citizens."
-
-### Oracle (Analytics)
-- **Members:** Pulse, Experiment
-- **Role in Company:** Oracle's Sanctum — reads the threads of fate and probability
-- **Passive Ability:** *Foresight* — predicts outcomes through data divination
-- **Class Bonus:** +10% WIS for analytics tasks
-- **Flavor:** "The oracle speaks in numbers, but the wise hear stories."
-
-### Herald (Git/PR)
-- **Members:** Guardian, Harvest
-- **Role in Company:** Royal Heralds — announce changes, manage the company's chronicles
-- **Passive Ability:** *Proclaim* — ensures changes are properly communicated
-- **Class Bonus:** +10% DEX for version control tasks
-- **Flavor:** "Every change deserves a herald. Every herald deserves precision."
-
-### Demiurge (Meta/Tooling)
-- **Members:** Sigil, Darwin, Realm
-- **Role in Company:** The Pantheon — shapes the world itself, meta-creators of the realm
-- **Passive Ability:** *Shape Reality* — modifies ecosystem structure and dynamics
-- **Class Bonus:** +10% WIS for ecosystem tasks
-- **Flavor:** "The demiurge does not dwell within the story — they write it."
-
-### Strategist (Strategy)
-- **Members:** Helm, Levy
-- **Role in Company:** War Council — plans long-term campaigns and resource allocation
-- **Passive Ability:** *Stratagem* — models future scenarios with multi-path analysis
-- **Class Bonus:** +10% INT for strategy tasks
-- **Flavor:** "Strategy is the art of making the inevitable appear coincidental."
-
-### Diplomat (Communication)
-- **Members:** Relay
-- **Role in Company:** Embassy — bridges the realm with external partners and allies
-- **Passive Ability:** *Bridge* — connects disparate systems and protocols
-- **Class Bonus:** +10% CHA for integration tasks
-- **Flavor:** "The diplomat's true weapon is understanding."
-
-### Pioneer (Modernization)
-- **Members:** Horizon, Polyglot
-- **Role in Company:** Explorer's Guild — ventures into unknown territories, brings back new knowledge
-- **Passive Ability:** *Trailblaze* — opens paths to modern technologies
-- **Class Bonus:** +10% DEX for migration tasks
-- **Flavor:** "The pioneer walks the path that others will someday pave."
-
-### Navigator (Browser)
-- **Members:** Navigator, Director
-- **Role in Company:** Cartographer's Hall — maps external territories and captures their essence
-- **Passive Ability:** *Chart* — systematically maps and records external environments
-- **Class Bonus:** +10% DEX for browser automation tasks
-- **Flavor:** "To navigate is to know. To know is to command."
-
-### Transmuter (Data)
-- **Members:** Stream, Morph
-- **Role in Company:** Transmutation Workshop — converts raw materials into refined goods
-- **Passive Ability:** *Refine* — transforms data between any format with fidelity
-- **Class Bonus:** +10% STR for data processing tasks
-- **Flavor:** "In the transmuter's hands, lead becomes gold and chaos becomes order."
-
-### Watcher (Incident)
-- **Members:** Specter
-- **Role in Company:** Night Watch — stands eternal vigil against unseen threats
-- **Passive Ability:** *Vigil* — detects anomalies that escape normal observation
-- **Class Bonus:** +10% INT for concurrency analysis tasks
-- **Flavor:** "The watcher never sleeps, for the realm's peace depends on their eyes."
-
----
+| Class | Members | Company role | Passive ability | Bonus | Flavor |
+|---|---|---|---|---|---|
+| Commander | Nexus, Sherpa, Titan | Command Center leadership | Rally | +10% CHA on chain coordination | A commander directs many swords at once. |
+| Ranger | Scout, Spark, Compete, Voice, Researcher, Triage, Rewind | Intelligence and scouting | Track | +10% INT on investigation tasks | Rangers find what others miss. |
+| Artisan | Builder, Forge, Artisan, Schema, Arena, Architect | Craft and production | Forge | +10% STR on code generation tasks | Every artifact is a deliberate strike. |
+| Guardian | Radar, Voyager | Quality defense | Shield Wall | +10% CON on test tasks | Guardians keep the wall intact. |
+| Paladin | Sentinel, Probe | Security order | Purify | +10% INT on security tasks | Paladins reveal hidden corruption. |
+| Sage | Judge, Zen, Sweep, Warden | Review and standards | Discern | +10% WIS on review tasks | Sages read intent, not just text. |
+| Alchemist | Bolt, Tuner | Performance lab | Transmute | +10% DEX on optimization tasks | Alchemists turn slowness into speed. |
+| Scribe | Quill, Scribe, Canvas | Library and records | Chronicle | +10% WIS on documentation tasks | Scribes preserve meaning across time. |
+| Architect | Atlas, Gateway, Scaffold, Ripple | Structural planning | Blueprint | +10% INT on design tasks | Architects design for future load. |
+| Enchanter | Vision, Palette, Muse, Flow, Echo, Showcase | UX and design court | Charm | +10% CHA on UX tasks | Enchanters make complexity feel effortless. |
+| Engineer | Anvil, Gear, Launch, Pipe, Orbit | Infrastructure and automation | Automate | +10% CON on infrastructure tasks | Engineers make the complex repeatable. |
+| Merchant | Growth, Retain | Value amplification | Trade | +10% CHA on growth tasks | Merchants turn engagement into loyalty. |
+| Oracle | Pulse, Experiment | Measurement and foresight | Foresight | +10% WIS on analytics tasks | Oracles translate numbers into futures. |
+| Herald | Guardian, Harvest | Change communication | Proclaim | +10% DEX on version-control tasks | Heralds keep change legible. |
+| Demiurge | Sigil, Darwin, Realm | Ecosystem meta layer | Shape Reality | +10% WIS on ecosystem tasks | Demiurges shape the world itself. |
+| Strategist | Helm, Levy | Long-range planning | Stratagem | +10% INT on strategy tasks | Strategists shape tomorrow's battlefield. |
+| Diplomat | Relay | External bridge | Bridge | +10% CHA on integration tasks | Diplomats turn boundaries into bridges. |
+| Pioneer | Horizon, Polyglot | Frontier modernization | Trailblaze | +10% DEX on migration tasks | Pioneers make the first safe path. |
+| Navigator | Navigator, Director | Browser and environment mapping | Chart | +10% DEX on browser tasks | Navigators convert terrain into routes. |
+| Transmuter | Stream, Morph | Data conversion | Refine | +10% STR on data-processing tasks | Transmuters turn raw material into form. |
+| Watcher | Specter | Incident vigilance | Vigil | +10% INT on concurrency and anomaly tasks | Watchers catch what normal sight misses. |
 
 ## Multi-Class Agents
 
-Some agents' activities span multiple categories. In such cases:
-- **Primary class** = the agent's registered category
-- **Secondary class** = determined by most frequent cross-category activity
-- Secondary class provides half its class bonus (+5% instead of +10%)
-- Multi-class status is earned at Rank B or higher
+- Primary class = registered category class.
+- Secondary class = most frequent cross-category activity.
+- Secondary class bonus = half strength (`+5%` instead of `+10%`).
+- Multi-class status unlocks at Rank `B` or higher.
 
 ## Class Synergies
 
-When multiple agents of complementary classes work together in a chain:
-
 | Combination | Synergy Name | Bonus |
 |---|---|---|
-| Commander + Artisan | *Directed Strike* | +5% quest XP |
-| Ranger + Artisan | *Precision Craft* | +5% quest XP |
-| Guardian + Sage | *Fortified Review* | +5% quality bonus |
-| Paladin + Guardian | *Holy Shield* | +5% security bonus |
-| Enchanter + Artisan | *Enchanted Forge* | +5% UX bonus |
-| Scribe + Sage | *Illuminated Text* | +5% documentation quality |
-| Alchemist + Engineer | *War Machine* | +5% performance bonus |
+| Commander + Artisan | Directed Strike | +5% quest XP |
+| Ranger + Artisan | Precision Craft | +5% quest XP |
+| Guardian + Sage | Fortified Review | +5% quality bonus |
+| Paladin + Guardian | Holy Shield | +5% security bonus |
+| Enchanter + Artisan | Enchanted Forge | +5% UX bonus |
+| Scribe + Sage | Illuminated Text | +5% documentation quality |
+| Alchemist + Engineer | War Machine | +5% performance bonus |

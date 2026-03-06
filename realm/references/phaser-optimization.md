@@ -1,107 +1,78 @@
 # Phaser 3 Optimization & Best Practices
 
-> パフォーマンス最適化、Object Pooling、Tilemap、アニメーション、バージョン更新
+Purpose: Preserve Realm's Phaser-specific performance rules, rank-based sprite sizing, and version guidance for the game template.
 
-## 1. パフォーマンス最適化 7原則
+Contents:
+- Performance principles
+- Object pooling
+- Tilemap option
+- Animation and sprite sizing
+- Version policy
+- Upgrade priorities
 
-| # | 手法 | Realm適用 |
-|---|------|-----------|
-| 1 | FPSカウンター | Live modeでFPS表示 |
-| 2 | Object Pooling | エージェントスプライト/パーティクル再利用 |
-| 3 | 参照キャッシュ | 部門/エージェントデータのキャッシュ |
-| 4 | ゲームループ最適化 | 可視エリアのみ更新（カリング） |
-| 5 | アセット圧縮 | テクスチャアトラス化 |
-| 6 | Lazy Loading | 画面外部門の遅延ロード |
-| 7 | Canvas/WebGL切替 | 低スペック機で最大30%向上 |
+## Performance Principles
 
-**Source:** [How I optimized my Phaser 3 action game — in 2025](https://franzeus.medium.com/how-i-optimized-my-phaser-3-action-game-in-2025-5a648753f62b)
+| # | Technique | Realm use |
+|---|---|---|
+| 1 | FPS counter | Show FPS in live mode when debugging |
+| 2 | Object pooling | Reuse agent sprites and particles |
+| 3 | Reference caching | Cache department and agent lookups |
+| 4 | Loop optimization | Update only the visible area |
+| 5 | Asset compression | Prefer atlases over many small textures |
+| 6 | Lazy loading | Defer off-screen department details |
+| 7 | Canvas/WebGL fallback | Improve compatibility and lower-end performance |
 
----
+## Object Pooling
 
-## 2. Object Pooling
+- Use Phaser `Group` objects as sprite pools.
+- Target pool size: around 100 entities to support `60+` active agents plus effects.
+- Despawn instead of destroying transient sprites wherever possible.
 
-Phaser 3のGroupをObject Poolとして活用。60+エージェント環境でメモリ効率を確保。
+## Tilemap / Procedural Layout Option
 
-```javascript
-class AgentPool {
-  constructor(scene) {
-    this.pool = scene.add.group({ classType: AgentSprite, maxSize: 100, runChildUpdate: true });
-  }
-  spawn(data) {
-    const agent = this.pool.get(data.x, data.y);
-    if (agent) { agent.setActive(true).setVisible(true); agent.configure(data); }
-    return agent;
-  }
-  despawn(agent) { this.pool.killAndHide(agent); }
-}
-```
+This is an optional upgrade path, not the baseline layout:
+- Start from a central lobby (`Command Center`).
+- Place strongly collaborating departments adjacent to each other.
+- Connect departments with corridor paths.
+- Support fog, darkening, or other health-based room styling only if it does not hide essential status.
 
-**Source:** [Object Pooling Sprites in Phaser](https://www.thepolyglotdeveloper.com/2020/09/object-pooling-sprites-phaser-game-performance-gains/) · [Phaser 3 Sprite Pool](https://phaser.io/examples/v3/view/game-objects/group/sprite-pool)
+## Animation State Machine
 
----
+| State | Frames | Rate |
+|---|---|---|
+| `idle` | `[0, 1]` | 2 |
+| `walk` | `[2, 3, 4, 5]` | 8 |
+| `work` | `[6, 7]` | 4 |
+| `celebrate` | `[8, 9, 10, 11]` | 12 |
+| `battle` | `[12, 13, 14]` | 10 |
 
-## 3. Tilemap プロシージャルレイアウト
+### Rank-Based Sprite Size
 
-現在のプログラマティック描画からTilemapベースへの移行オプション。
+| Rank | Size | Effect |
+|---|---|---|
+| F-E | `12×12` | No aura |
+| D-C | `16×16` | Walking shadow |
+| B-A | `20×20` | Subtle glow |
+| S | `24×24` | Gold aura |
+| SS | `28×28` | Rainbow particles |
 
-**Room-Based Generation:**
-1. 中央ロビー（Command Center）から開始
-2. 協力頻度の高い部門を隣接配置（重み付けグラフ）
-3. 廊下で部門間を接続
+## Version Policy
 
-**フォグ・オブ・ウォー:** 部門に入ると上層タイル透明化、退出時にフォグ。部門ヘルスが低い部門を暗く表現。
+| Version | Release | Notes |
+|---|---|---|
+| 3.80 | 2024-02 | Particle improvements |
+| 3.85 | 2024-09 | `ParticleEmitter` GameObject support |
+| 3.87 | 2025-02 | Latest stable target |
 
-**Source:** [Modular Game Worlds — Procedural Dungeon](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-3-procedural-dungeon-3bc19b841cd)
+Action: keep the Realm game CDN on Phaser `3.87` unless a newer stable version is explicitly adopted.
 
----
+## Upgrade Priorities
 
-## 4. Animation State Machine
-
-```javascript
-const AGENT_STATES = {
-  idle:      { frames: [0, 1], rate: 2 },
-  walk:      { frames: [2, 3, 4, 5], rate: 8 },
-  work:      { frames: [6, 7], rate: 4 },
-  celebrate: { frames: [8, 9, 10, 11], rate: 12 },
-  battle:    { frames: [12, 13, 14], rate: 10 }
-};
-```
-
-### ランク別スプライトサイズ
-
-| ランク | サイズ | エフェクト |
-|--------|--------|-----------|
-| F-E | 12×12px | なし |
-| D-C | 16×16px | 歩行時に影 |
-| B-A | 20×20px | 常時微光 |
-| S | 24×24px | ゴールドオーラ |
-| SS | 28×28px | レインボーパーティクル |
-
-**Source:** [Pixel Art Tutorial 2025](https://generalistprogrammer.com/tutorials/pixel-art-complete-tutorial-beginner-to-pro) · [Crisp pixel art - MDN](https://developer.mozilla.org/en-US/docs/Games/Techniques/Crisp_pixel_art_look)
-
----
-
-## 5. Phaser 3 バージョン
-
-| Version | Release | Notable |
-|---------|---------|---------|
-| 3.80 | 2024-02 | Particle Emitter改善 |
-| 3.85 | 2024-09 | ParticleEmitter GameObject対応 |
-| 3.87 | 2025-02 | 最新安定版 |
-
-**Action:** CDN読み込みを3.87に更新。
-
-**Source:** [Phaser GitHub Releases](https://github.com/phaserjs/phaser/releases)
-
----
-
-## 改善優先度サマリー
-
-| 優先度 | 改善項目 | 工数 | 効果 |
-|--------|----------|------|------|
-| P0 | Object Pooling導入 | 小 | パフォーマンス大幅向上 |
-| P0 | Phaser CDN 3.87更新 | 極小 | バグ修正・新機能 |
-| P1 | Animation State Machine | 中 | 視覚的魅力向上 |
-| P1 | Canvas/WebGLフォールバック | 小 | 互換性向上 |
-| P2 | Tilemap化 | 大 | レイアウト柔軟性 |
-| P2 | プロシージャルスプライト | 中 | ランク差別化 |
+| Priority | Upgrade | Cost | Benefit |
+|---|---|---|---|
+| P0 | Object pooling | Small | Major performance improvement |
+| P0 | Phaser CDN `3.87` | Very small | Bug fixes and stability |
+| P1 | Animation state machine | Medium | Better clarity and charm |
+| P1 | Canvas/WebGL fallback | Small | Better compatibility |
+| P2 | Tilemap migration | Large | More flexible layout |
+| P2 | Procedural sprite generation | Medium | Better rank/class differentiation |
