@@ -1,127 +1,90 @@
 # Sweep Cleanup Target Catalog Reference
 
-Systematic identification guide for cleanup candidates.
+Purpose: candidate categories, detection signals, and verification hints for cleanup proposals.
 
----
+## Contents
 
-## Dead Code Files
+1. Dead code
+2. Orphan assets
+3. Unused dependencies
+4. Build artifacts and temp files
+5. Duplicate files
+6. Configuration remnants
 
-**Indicators:**
-- Source files with no imports/requires from other files
-- Exported functions/classes with zero external usage
-- Test files for deleted source files
-- Storybook/documentation for removed components
+## Dead Code
 
-**Detection Approach:**
-1. Build dependency graph from imports/requires
-2. Identify nodes with no incoming edges (except entry points)
-3. Verify against entry points (main, index, configs)
-4. Cross-check with git history (recently removed references?)
+**Indicators**
+- Source files with no imports or requires
+- Exported functions or classes with zero external usage
+- Tests for deleted source files
+- Stories or docs for removed components
+- Commented-out code or files marked `old`, `backup`, or `deprecated`
 
-**Common Patterns:**
-- `*.backup.ts`, `*.old.js` - Explicitly marked old files
-- `*.deprecated.*` - Deprecated implementations
-- Files in `unused/`, `archive/`, `legacy/` folders
-- Components with `// TODO: remove` comments
-
----
+**Verify by**
+1. Building an import graph
+2. Checking entry points and public exports
+3. Searching for dynamic references
+4. Reviewing recent git history
 
 ## Orphan Assets
 
-**Indicators:**
-- Images/icons not referenced in code or CSS
-- Fonts not used in stylesheets
-- Static files not served or imported
+**Indicators**
+- Images, icons, fonts, or static files with no code, CSS, or HTML reference
+- Placeholder assets never integrated
+- Duplicate logo or image variants
 
-**Detection Approach:**
-1. Scan all asset directories (public/, assets/, static/)
-2. Search codebase for references to each filename
-3. Check CSS/SCSS for url() references
-4. Verify build config includes (webpack, vite, etc.)
-
-**Common Patterns:**
-- Duplicate images with different resolutions
-- Unused logo variants
-- Test/placeholder images left behind
-- Downloaded assets never integrated
-
----
+**Verify by**
+1. Scanning asset directories
+2. Searching filename references across code and styles
+3. Checking `url()` usage in CSS/SCSS
+4. Verifying build or bundler includes
 
 ## Unused Dependencies
 
-**Indicators:**
-- Packages in package.json not imported anywhere
-- devDependencies for removed tooling
-- Peer dependencies no longer needed
+**Indicators**
+- Packages declared but never imported
+- Tooling dependencies for removed workflows
+- Peer or dev dependencies no longer referenced
 
-**Detection Approach:**
-1. Parse package.json dependencies
-2. Search for import/require of each package
-3. Check config files (babel, eslint, etc.) for plugin usage
-4. Verify scripts in package.json
+**Verify by**
+1. Parsing dependency manifests
+2. Searching imports and requires
+3. Checking scripts and config files
+4. Confirming CI or build usage
 
-**Common Patterns:**
-- Old testing libraries after migration
-- Build tools from previous setup
-- Polyfills for dropped browser support
-- Experimental packages never adopted
+## Build Artifacts And Temp Files
 
----
+**Indicators**
+- Committed files that match `.gitignore`
+- Generated output in the source tree
+- Cache, log, or temporary files tracked by mistake
 
-## Build Artifacts & Temp Files
-
-**Indicators:**
-- Files matching .gitignore patterns but committed
-- Build output in source tree
-- Cache files that should be transient
-
-**Detection Approach:**
-1. Compare committed files against .gitignore patterns
-2. Look for common build output directories
-3. Identify cache/temp file patterns
-
-**Common Patterns:**
-- `dist/`, `build/`, `out/` accidentally committed
-- `.cache/`, `node_modules/` (partial commits)
-- `*.log`, `*.tmp`, `*.bak` files
-- IDE-specific files (`.idea/`, `.vscode/` settings)
-
----
+**Common examples**
+- `dist/`, `build/`, `out/`
+- `.cache/`
+- `*.log`, `*.tmp`, `*.bak`
+- partial `node_modules/` commits
 
 ## Duplicate Files
 
-**Indicators:**
-- Files with identical content but different names
-- Copy-pasted utilities across directories
-- Multiple versions of same library
+**Indicators**
+- Identical content stored under different names
+- Copy-pasted utilities across features
+- Vendored files duplicated instead of imported
 
-**Detection Approach:**
-1. Calculate file hashes for content comparison
-2. Compare file sizes first (optimization)
-3. Group files by hash
-4. Analyze which copy to keep
-
-**Common Patterns:**
-- `utils.ts` duplicated in multiple features
-- Vendor files copied instead of npm installed
-- Assets with renamed copies
-
----
+**Verify by**
+1. Grouping files by size and hash
+2. Confirming which copy is canonical
+3. Checking import paths before removing duplicates
 
 ## Configuration Remnants
 
-**Indicators:**
-- Config files for tools no longer in use
+**Indicators**
+- Config files for tools no longer used
 - Environment files for deprecated services
-- CI/CD configs for removed workflows
+- CI or deployment config for removed workflows
 
-**Detection Approach:**
-1. Map config files to their tools
-2. Verify tool is still in use (scripts, devDependencies)
-3. Check for orphan environment variables
-
-**Common Patterns:**
-- `.babelrc` after moving to `babel.config.js`
-- Old ESLint configs after migration
-- Heroku/Vercel configs for changed platforms
-- Docker files for deprecated services
+**Verify by**
+1. Mapping each config file to its tool or service
+2. Checking scripts, CI, hooks, and IDE integration
+3. Confirming no active environment or deployment dependency

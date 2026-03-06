@@ -1,144 +1,106 @@
 # Sweep Detection Strategy Reference
 
-Comprehensive detection matrix, quantitative thresholds, and confidence-gated flowchart.
+Purpose: thresholds and decision cues for candidate prioritization across file types, risk levels, and git history.
 
----
+## Contents
+
+1. Detection by file type
+2. Detection by risk level
+3. Quantitative thresholds
+4. Confidence-gated flow
+5. Git history checks
 
 ## By File Type
 
-| File Type | Detection Method | Risk Level | Tools |
-|-----------|------------------|------------|-------|
-| Source Code | Import analysis | High | knip, ts-prune, vulture, staticcheck |
-| Assets | Reference search | Medium | grep, custom scripts |
-| Config | Tool verification | Medium | Manual + scripts |
-| Dependencies | Import scan | Low | knip, depcheck, npm-check |
-| Build Output | .gitignore check | Low | git status |
-| Duplicates | Hash comparison | Medium | fdupes, custom |
-
----
+| File Type | Primary Method | Risk | Tooling |
+|-----------|----------------|------|---------|
+| Source code | Import and symbol analysis | High | `knip`, `ts-prune`, `vulture`, `staticcheck` |
+| Assets | Reference search | Medium | `rg`, custom scripts |
+| Config | Tool and workflow verification | Medium | Manual + scripts |
+| Dependencies | Import and script scan | Low | `knip`, `depcheck`, package-manager tooling |
+| Build output | `.gitignore` and VCS check | Low | `git status`, ignore rules |
+| Duplicates | Hash comparison | Medium | `md5`, `fdupes`, custom scripts |
 
 ## By Risk Level
 
-| Risk | Files | Approach |
-|------|-------|----------|
-| Critical | Core source, configs | Manual review required |
-| High | Feature code, tests | Verify no references |
-| Medium | Assets, utilities | Check all usages |
-| Low | Cache, temp, backups | Safe to remove |
-
----
+| Risk | Typical Targets | Required Approach |
+|------|-----------------|-------------------|
+| Critical | Core source, entry points, configs | Manual review only |
+| High | Feature code, tests, framework files | Verify all references and conventions |
+| Medium | Assets, utilities, duplicates | Check direct and indirect usage |
+| Low | Cache, temp, committed artifacts | Safe to propose once verified |
 
 ## Quantitative Thresholds
 
-Use these thresholds as guidelines for prioritizing cleanup candidates.
+### File Age
 
-### File Age Thresholds
+| Age | Priority | Meaning |
+|-----|----------|---------|
+| `< 7 days` | Very Low | Likely still in active use |
+| `7-30 days` | Low | Verify before deletion |
+| `30-90 days` | Medium | Investigate usage |
+| `90-365 days` | High | Strong stale candidate |
+| `> 365 days` | Very High | Likely unused, still verify references |
 
-| Age | Priority | Interpretation |
-|-----|----------|----------------|
-| < 7 days | Very Low | Recently created, likely still in use |
-| 7-30 days | Low | Recently active, verify before deletion |
-| 30-90 days | Medium | May be stale, investigate usage |
-| 90-365 days | High | Likely unused, strong deletion candidate |
-| > 365 days | Very High | Almost certainly unused |
-
-### File Size Thresholds
+### File Size
 
 | Size | Impact | Action |
 |------|--------|--------|
-| < 1 KB | Low | Safe to delete if unused |
-| 1-10 KB | Low | Standard verification |
-| 10-100 KB | Medium | Check for code reuse potential |
-| 100 KB - 1 MB | High | Detailed review recommended |
-| > 1 MB | Very High | Investigate before deletion |
+| `< 1 KB` | Low | Standard verification |
+| `1-10 KB` | Low | Standard verification |
+| `10-100 KB` | Medium | Check reuse potential |
+| `100 KB - 1 MB` | High | Ask first and review carefully |
+| `> 1 MB` | Very High | Investigate before proposing deletion |
 
-### Reference Count Thresholds
+### Reference Count
 
-| References | Status | Action |
-|------------|--------|--------|
-| 0 | Orphan | Strong deletion candidate |
-| 1 (self only) | Dead code | Verify no external entry points |
-| 1-2 | Low usage | Check if references are active |
-| 3+ | Active | Likely needed, do not delete |
+| References | Meaning | Action |
+|------------|---------|--------|
+| `0` | Orphan candidate | Strong candidate |
+| `1 (self only)` | Dead-code candidate | Verify no entry-point role |
+| `1-2` | Low usage | Check whether references are live |
+| `3+` | Active | Usually keep |
 
 ### Dependency Metrics
 
 | Metric | Threshold | Meaning |
 |--------|-----------|---------|
-| Unused exports | > 50% | File may need refactoring |
-| Circular deps | Any | Investigate before cleanup |
-| Transitive deps | > 10 | Core file, be cautious |
+| Unused exports | `> 50%` | File may need refactoring or pruning |
+| Circular deps | `Any` | Investigate before cleanup |
+| Transitive deps | `> 10` | Treat as core or central utility |
 
----
+## Confidence-Gated Flow
 
-## Confidence-Gated Detection Flowchart
+Use this order:
 
-Confidence Score is calculated inline in SKILL.md. This flowchart integrates confidence gates into the detection process.
-
-```
-File Discovered
-    │
-    ├─ Is it in exclusion list? (.sweepignore, never-delete)
-    │   └─ Yes → SKIP
-    │
-    ├─ Is it in .gitignore?
-    │   ├─ Yes, but committed → Candidate (build artifact) → Score
-    │   └─ No → Continue analysis
-    │
-    ├─ Is it imported/referenced?
-    │   ├─ No references found → Candidate (orphan) → Score
-    │   ├─ Only self-reference → Candidate (dead code) → Score
-    │   └─ Has references → Keep, verify references are live
-    │
-    ├─ Is it a config file?
-    │   ├─ Tool not in use → Candidate (config remnant) → Score
-    │   └─ Tool active → Keep
-    │
-    ├─ Is it a duplicate?
-    │   ├─ Identical content exists → Candidate (duplicate) → Score
-    │   └─ Unique content → Keep
-    │
-    └─ CONFIDENCE GATE (applied to all candidates)
-        ├─ ≥90 → Batch delete proposal
-        ├─ 70-89 → Individual review proposal
-        ├─ 50-69 → Manual review queue
-        ├─ 30-49 → Keep (low confidence)
-        └─ <30 → Never delete
-```
-
----
+1. Skip anything in exclusions or never-delete lists.
+2. Check whether ignored or generated output is committed.
+3. Check imports and references.
+4. Check config or build ownership.
+5. Check duplicates.
+6. Apply confidence scoring:
+   - `>=90`: batch proposal
+   - `70-89`: individual review
+   - `50-69`: manual review queue
+   - `30-49`: keep
+   - `<30`: never delete
 
 ## Git History Verification
 
-Use git history to validate cleanup candidates and understand file context.
-
 ```bash
-# Check file's last modification date and author
 git log -1 --format="%ai %an" -- path/to/file
-
-# View file's complete history
 git log --oneline -- path/to/file
-
-# Check if file was recently deleted and restored
 git log --diff-filter=D --name-only -- path/to/file
-
-# Find who added the file and why
 git log --diff-filter=A --format="%h %s" -- path/to/file
-
-# Check if file is referenced in any commit messages
 git log --all --grep="filename"
-
-# List files not modified in the last N months
-git log --since="6 months ago" --name-only --pretty=format: | sort -u > active_files.txt
-comm -23 <(git ls-files | sort) <(sort active_files.txt) > stale_files.txt
 ```
 
-### Git-based Decision Criteria
+### Git-Based Decision Cues
 
-| Criterion | Safe to Delete | Caution Required |
-|-----------|----------------|------------------|
-| Last modified | > 6 months ago | < 1 month ago |
-| Commit frequency | 1-2 commits total | Many commits |
-| Last author | Bot / CI | Core contributor |
-| Commit message | "temp", "wip", "test" | Feature description |
-| Delete/restore history | Never restored | Was restored before |
+| Criterion | Safer to Delete | Caution Required |
+|-----------|-----------------|------------------|
+| Last modified | `> 6 months ago` | `< 1 month ago` |
+| Commit frequency | `1-2 commits total` | many edits over time |
+| Last author | bot or maintenance actor | core contributor |
+| Commit intent | `temp`, `wip`, `test` | feature or release work |
+| Delete/restore history | never restored | restored before |

@@ -1,12 +1,10 @@
 # Sweep Exclusion Patterns Reference
 
-Directories and files that should never be scanned or deleted.
+Purpose: directories and files that should not be scanned or should not be deleted.
 
----
+## Directories To Exclude From Scan
 
-## Directories to Exclude from Scan
-
-```
+```text
 # Package managers
 node_modules/
 vendor/
@@ -19,14 +17,14 @@ __pycache__/
 .svn/
 .hg/
 
-# Build outputs (scan but don't manually delete)
+# Build outputs
 dist/
 build/
 out/
 .next/
 .nuxt/
 
-# IDE/Editor
+# IDE / editor
 .idea/
 .vscode/
 *.swp
@@ -38,11 +36,9 @@ out/
 .turbo/
 ```
 
----
+## Files Never To Delete
 
-## Files Never to Delete
-
-```
+```text
 # Critical project files
 LICENSE*
 LICENCE*
@@ -50,7 +46,7 @@ CHANGELOG*
 SECURITY*
 CONTRIBUTING*
 
-# Lock files (managed by package managers)
+# Lock files
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
@@ -58,7 +54,7 @@ Gemfile.lock
 poetry.lock
 go.sum
 
-# Environment files (may contain secrets)
+# Environment files
 .env*
 *.local
 
@@ -67,34 +63,30 @@ go.sum
 .gitattributes
 .gitmodules
 
-# CI/CD (verify before suggesting removal)
+# CI / CD
 .github/
 .gitlab-ci.yml
 .circleci/
 Jenkinsfile
 ```
 
----
+## `.sweepignore` Template
 
-## .sweepignore Template
-
-Create a `.sweepignore` file in project root to customize exclusions:
-
-```
+```text
 # Project-specific exclusions for Sweep
 
-# Third-party code (vendored)
+# Vendored code
 src/vendor/
 
 # Generated code
 src/generated/
 
-# Legacy code under migration (temporary)
+# Legacy code under migration
 src/legacy/
 
-# Public assets (referenced dynamically)
+# Public assets loaded dynamically
 public/images/icons/
 
-# Localization files (loaded at runtime)
+# Runtime-loaded localization files
 locales/
 ```

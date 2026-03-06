@@ -1,139 +1,101 @@
 # Sweep Language-Specific Patterns Reference
 
-Detection strategies and tools by programming language.
+Purpose: language-specific detection tooling, fallback rules, and common false-positive cases.
 
----
+## Contents
+
+1. TypeScript / JavaScript
+2. Python
+3. Go
+4. Rust
+5. Language-agnostic risk patterns
 
 ## TypeScript / JavaScript
 
-### knip-first Strategy
+### `knip`-First Strategy
 
-**knip is the primary tool for TS/JS projects.** It replaces ts-prune, depcheck, and unimported with a single unified analysis covering files, exports, dependencies, and types.
+`knip` is the primary tool for TS/JS projects. It replaces `ts-prune`, `depcheck`, and `unimported` for files, exports, dependencies, and types.
 
 ```bash
-# Primary: comprehensive analysis (always run first)
 npx knip --reporter compact
-
-# Detailed JSON output for automation
 npx knip --reporter json
-
-# Check specific areas
-npx knip --include files          # unused files only
-npx knip --include exports        # unused exports only
-npx knip --include dependencies   # unused deps only
+npx knip --include files
+npx knip --include exports
+npx knip --include dependencies
 ```
 
 ### Fallback Tools
 
-Use only when knip is unavailable (no knip config, older project, knip errors):
+Use these only when `knip` is unavailable, unsupported, or failing:
 
 | Tool | Purpose | When to Use |
 |------|---------|-------------|
-| `ts-prune` | Unused exports | knip unavailable, exports-only check |
-| `depcheck` | Unused dependencies | knip unavailable, deps-only check |
-| `unimported` | Unimported files | knip unavailable, files-only check |
+| `ts-prune` | Unused exports | Export-only fallback |
+| `depcheck` | Unused dependencies | Dependency-only fallback |
+| `unimported` | Unused files | File-only fallback |
 
 ```bash
-# Fallback: unused exports
 npx ts-prune --error
-
-# Fallback: unused dependencies
 npx depcheck --ignores="@types/*,eslint-*"
 ```
 
 ### Common False Positives
-- Dynamic imports with template literals
-- Re-exports in barrel files (`index.ts`)
-- Type-only exports (use `--skip-type-only` in ts-prune)
-- Framework convention files (pages, routes)
 
----
+- Dynamic imports with template literals
+- Re-export barrels such as `index.ts`
+- Type-only exports
+- Framework convention files
 
 ## Python
-
-### Recommended Tools
 
 | Tool | Purpose | Usage |
 |------|---------|-------|
 | `vulture` | Dead code | `vulture src/ --min-confidence 80` |
 | `autoflake` | Unused imports | `autoflake --check .` |
-| `pip-autoremove` | Unused packages | `pip-autoremove --list` |
+| `pip-autoremove` | Package review | `pip-autoremove --list` |
 
-### Common False Positives
-- `__init__.py` files (module markers)
-- Dunder methods (`__str__`, `__repr__`)
-- Flask/Django routes with decorators
-- Celery tasks
+Common false positives:
+- `__init__.py`
+- dunder methods
+- decorator-driven routes and tasks
 
-### Detection Commands
 ```bash
-# Find dead code with whitelist
 vulture src/ whitelist.py --min-confidence 80
-
-# Check unused imports
 autoflake --check --remove-all-unused-imports -r .
 ```
 
----
-
 ## Go
-
-### Recommended Tools
 
 | Tool | Purpose | Usage |
 |------|---------|-------|
-| `staticcheck` | Comprehensive linter | `staticcheck ./...` |
-| `deadcode` | Dead code detection | `deadcode ./...` |
-| `go mod tidy` | Unused deps | `go mod tidy -v` |
+| `staticcheck` | Unused code | `staticcheck -checks U1000 ./...` |
+| `deadcode` | Reachability review | `deadcode -test ./...` |
+| `go mod tidy` | Dependency cleanup | `go mod tidy -v` |
 
-### Common False Positives
-- Interface implementations
-- Exported but unused (public API)
+Common false positives:
+- interface implementations
+- exported public API
 - `init()` functions
-- CGO-related code
-
-### Detection Commands
-```bash
-# Find unused code
-staticcheck -checks U1000 ./...
-
-# Find dead code
-deadcode -test ./...
-
-# Clean up dependencies
-go mod tidy -v 2>&1 | grep -E "(unused|removed)"
-```
-
----
+- CGO glue
 
 ## Rust
-
-### Recommended Tools
 
 | Tool | Purpose | Usage |
 |------|---------|-------|
 | `cargo udeps` | Unused dependencies | `cargo +nightly udeps` |
 | `cargo clippy` | Dead code warnings | `cargo clippy -- -W dead_code` |
 
-### Detection Commands
 ```bash
-# Unused dependencies
 cargo +nightly udeps
-
-# Dead code warnings
-cargo clippy -- -W dead_code
-
-# Check workspace-wide
 cargo +nightly udeps --workspace
+cargo clippy -- -W dead_code
 ```
 
----
+## Language-Agnostic Risk Patterns
 
-## Language-Agnostic Patterns
-
-**Files commonly misdetected across languages:**
-- Entry points (`main.*`, `index.*`, `app.*`)
-- Config files (`*.config.*`, `.*rc`)
-- Test fixtures and mocks
-- Generated code (`*.generated.*`, `*.g.*`)
-- Documentation (`*.md`, `docs/*`)
+Files frequently misdetected across stacks:
+- entry points such as `main.*`, `index.*`, `app.*`
+- config files such as `*.config.*`, `.*rc`
+- test fixtures and mocks
+- generated code such as `*.generated.*`
+- documentation and docs-linked assets

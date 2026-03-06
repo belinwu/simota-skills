@@ -1,164 +1,49 @@
 # Large-Scale & AI-Assisted Dead Code Cleanup
 
-> エンタープライズ規模のデッドコード自動削除、AI 活用、モノレポ対応
+Purpose: patterns for monorepos, enterprise-scale cleanup, and cautious AI-assisted candidate expansion.
 
-## 1. Meta SCARF システム
+## Contents
 
-### 概要
+1. Meta SCARF lessons
+2. AI-assisted detection
+3. Monorepo rules
+4. Enterprise workflow
 
-```
-SCARF (Systematic Code and Asset Removal Framework):
-  - 5 年間で 1 億行以上のデッドコード削除
-  - 37 万件以上の変更リクエスト自動生成
-  - 複数言語サポート: Java, Objective-C, JavaScript, Hack, Python
-```
+## Meta SCARF Lessons
 
-### アーキテクチャ
+What scales well:
+- combine static analysis, runtime signals, and text search
+- analyze at symbol level when tooling allows it
+- generate human-reviewable change requests
+- keep human review for risky or low-confidence cases
 
-```
-Step 1: 拡張依存グラフの構築
-  - コンパイラからコード関係を Glean 経由で抽出
-  - ランタイム使用データで拡張:
-    - API エンドポイント使用（運用ログ）
-    - スクリプト呼び出し
-    - テンプレートフック
-    - 非同期ディスパッチメソッド
+Key lesson: static analysis alone is insufficient for dynamic systems.
 
-Step 2: シンボルレベル分析
-  - ファイルレベルではなくシンボル（関数/クラス/変数）レベルで精密ターゲティング
-  - 相互依存の循環検出
+## AI-Assisted Detection
 
-Step 3: テキスト検索フォールバック
-  - BigGrep による横断検索
-  - 静的解析では検出できない動的参照のカバー
+Use AI only to expand the candidate list or explain why a candidate may be dead.
 
-Step 4: 変更リクエスト生成
-  - CodemodService でヒューマンリーダブルな変更を自動生成
-  - 「なぜこのコードが dead か」の説明付き
+Rules:
+- AI suggestions increase evidence, not authority
+- final deletion still requires confidence scoring and human review
+- dynamic references, reflection, plugin systems, and business rules remain high-risk
 
-Step 5: レビュー & マージ
-  - 大部分は人間レビュー必須
-  - 特定言語では高信頼度分析により自動マージ
-```
+Treat AI evidence as part of `Tool Agreement`, not a replacement for verification.
 
-### 教訓
+## Monorepo Rules
 
-```
-成功要因:
-  ✅ 静的解析 + 動的解析の組み合わせ
-  ✅ シンボルレベルの精密さ
-  ✅ テキスト検索によるフォールバック安全網
-  ✅ 自動生成の変更リクエストで人間レビューを効率化
-  ✅ グラフレベル分析でカバレッジ 50% 向上
+- Use workspace-aware tooling such as `npx knip --workspace`
+- Prefer incremental scans against changed packages
+- Check cross-package exports before deletion
+- Require extra review when cleanup crosses package boundaries
+- Route ownership-sensitive changes using package owners or `CODEOWNERS`
 
-課題:
-  ❌ 動的参照（文字列ベースのメソッド呼び出し、eval）
-  ❌ アプリケーション固有のパターン
-  ❌ False positive のトリアージコスト
-```
+## Enterprise Workflow
 
----
-
-## 2. DCE-LLM（AI によるデッドコード除去）
-
-### 2025 年の最新研究
-
-```
-DCE-LLM (Dead Code Elimination with LLMs):
-  - NAACL 2025 で発表
-  - 小型 CodeBERT モデル + Attribution-based Line Selector
-  - LLM が判断・説明・パッチを生成
-
-性能:
-  - 未使用コード・到達不能コードで F1 > 94%
-  - GPT-4o を 30% 上回る
-  - 複数プログラミング言語に対応
-  - 高度な到達不能性検出
-  - 自動修正パッチ生成
-```
-
-### AI がデッドコード検出で優れる点
-
-| 能力 | 説明 | 従来ツールとの比較 |
-|------|------|-------------------|
-| **コンテキスト理解** | コードの意図を推論 | パターンマッチのみ |
-| **高度な到達不能性** | 複雑な条件分岐を解析 | 単純な制御フローのみ |
-| **説明生成** | 「なぜ dead か」を説明 | フラグのみ |
-| **パッチ生成** | 安全な削除コードを生成 | 検出のみ |
-
-### AI の限界
-
-```
-注意点:
-  - ハルシネーション: 使用中のコードを「dead」と判定するリスク
-  - 動的参照: eval、リフレクション、プラグインシステム
-  - ドメイン知識: ビジネスロジックの暗黙の依存
-  - スケール: 大規模コードベースでのコスト
-
-Sweep での活用方針:
-  - AI は「候補リストの拡張」に使用
-  - 最終判断は confidence scoring + 人間レビュー
-  - AI 提案は Tool Agreement weight (20%) に加算
-```
-
----
-
-## 3. モノレポでのデッドコード検出
-
-### 課題
-
-```
-モノレポ固有の問題:
-  1. クロスパッケージ依存: パッケージ A の export がパッケージ B で使用
-  2. 巨大 PR: 50-200 ファイルの変更でレビュアー疲労
-  3. ビルド時間: 全パッケージスキャンの計算コスト
-  4. 共有コード: ユーティリティパッケージの使用追跡
-  5. 部分ビルド: 変更パッケージのみビルドする場合の影響範囲
-```
-
-### 対策
-
-```
-1. knip のモノレポモード
-   - ワークスペース対応の依存グラフ構築
-   - パッケージ間参照の追跡
-   - npx knip --workspace
-
-2. インクリメンタルスキャン
-   - git diff ベースで変更パッケージのみスキャン
-   - maintenance-workflow.md の Incremental scan と連携
-
-3. パッケージレベルの所有権
-   - CODEOWNERS に基づく削除提案のルーティング
-   - パッケージオーナーが最終承認
-
-4. CI パイプライン統合
-   - PR 単位で影響パッケージのデッドコードチェック
-   - パッケージ境界をまたぐ削除は追加レビュー必須
-```
-
----
-
-## 4. エンタープライズ規模のワークフロー
-
-```
-Phase 1: コードベース健全性評価
-  → 全体のデッドコード率を計測
-  → ホットスポット（高変更頻度 × 高デッドコード率）を特定
-
-Phase 2: 自動検出パイプライン構築
-  → CI に knip/vulture/staticcheck を統合
-  → 定期フルスキャン + PR 単位インクリメンタルスキャン
-
-Phase 3: 安全な削除フロー
-  → Confidence Score ≥ 90: バッチ削除
-  → 70-89: 個別レビュー
-  → < 70: キュー保留
-
-Phase 4: 継続的改善
-  → メトリクス追跡（削除率、リグレッション率、FP 率）
-  → ベースライン更新
-  → 検出ルールのチューニング
-```
-
-**Source:** [Meta Engineering: Automating Dead Code Cleanup (SCARF)](https://engineering.fb.com/2023/10/24/data-infrastructure/automating-dead-code-cleanup/) · [ACL Anthology: DCE-LLM (NAACL 2025)](https://aclanthology.org/2025.naacl-long.501/) · [CodeAnt AI: Monorepo Code Review](https://www.codeant.ai/blogs/ai-code-review-tools-github-monorepos)
+1. Measure overall dead-code health and hotspots.
+2. Build automated detection into CI and periodic scans.
+3. Use confidence thresholds:
+   - `>=90`: batch proposal
+   - `70-89`: individual review
+   - `<70`: hold for manual review
+4. Track regressions, false positives, and cleanup velocity.
