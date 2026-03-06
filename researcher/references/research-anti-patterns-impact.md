@@ -1,198 +1,61 @@
 # Research Anti-Patterns & Impact Measurement
 
-> リサーチの失敗パターン、インサイトの墓場問題、ROI 測定フレームワーク、ステークホルダーアライメント
+Purpose: Prevent research failure modes and frame research value in business and organizational terms.
+Contents: anti-patterns, impact framework, ROI framing, stakeholder alignment, prevention checklist.
 
-## 1. UX リサーチの主要課題（2025-2026）
+## Anti-Patterns
 
-### リサーチャーが直面する課題
+| Anti-pattern | Symptom | Prevention |
+|--------------|---------|------------|
+| Research theater | Study is done but ignored | Define how findings will be used before research starts |
+| Insight graveyard | Findings disappear in long reports | Use executive summary + insight cards + repository |
+| Scope creep | Study tries to answer everything | Filter with key scoping questions |
+| Over-commitment | Too many concurrent studies degrade quality | Limit concurrent load and say no when needed |
+| Maturity mismatch | Team expects research value without supporting process | Assess ResearchOps maturity early |
+| Data overload | Raw data overwhelms stakeholders | Prioritize top 3-5 insights |
+| Hypothesis-free research | Vague learning goals | Write clear research questions in DEFINE |
 
-| 課題 | 割合 |
-|------|------|
-| 時間とバンド幅の制約 | **63%** |
-| 適切な参加者のリクルーティング | **48%** |
-| 結果のビジネス成果への変換 | **42%** |
-| リサーチ価値/ROI の証明 | **25%** |
-| 速度と品質のバランス | **21%** |
-| ステークホルダーの買い込み | **20%** |
-| AI ツールへの追随 | **12%** |
-| リサーチのスケーリング | **11%** |
-| インサイトの効果的管理 | **10%** |
+## Scoping Questions
 
----
+Use these before committing:
+1. What exact question must this study answer?
+2. How will the insight be used?
+3. Does the insight have an expiration date?
 
-## 2. リサーチ・アンチパターン
+If these cannot be answered clearly, split scope or deprioritize.
 
-### Pattern 1: リサーチ・シアター（Research Theater）
+## Impact Framework
 
-**症状**: リサーチを「実施した」という事実のために行い、結果が意思決定に使われない。
+| Level | Focus | Example measures |
+|-------|-------|------------------|
+| Outcomes | user, business, or societal value | retention, risk reduction, accessibility |
+| Organizational influence | decision and stakeholder impact | roadmap changes, research request volume |
+| Research practice | operational quality | tooling, transparency, process maturity |
 
-```
-❌ 「ユーザーに聞いたから大丈夫」（結果を無視して予定通りビルド）
-✅ 「リサーチから学んだことに基づいて方向を変えた」
-```
+## ROI Framing
 
-**対策**: リサーチ開始前に「この結果をどう使うか?」を明確化（Maria Sbrocca の3つの質問）。
+| Approach | Use case |
+|----------|----------|
+| Cost avoidance | prevented rework or bad bets |
+| Revenue impact | conversion or retention changes after research-driven improvement |
+| Time saved | shorter tasks at scale |
+| Risk reduction | avoided investment in the wrong direction |
 
-### Pattern 2: インサイトの墓場（Insight Graveyard）
+## Stakeholder Alignment
 
-**症状**: リサーチ結果が共有ドライブやメールの受信箱で「埃をかぶる」。
+| Audience | What they care about | Framing |
+|----------|----------------------|---------|
+| Executives | ROI, cost, risk | financial and strategic outcomes |
+| PMs | prioritization, roadmap | insight -> decision |
+| Designers | needs and pain points | personas and journeys |
+| Engineers | task flow and constraints | behavior patterns and flow evidence |
 
-| 原因 | 対策 |
-|------|------|
-| レポートが長すぎて読まれない | 1ページエグゼクティブサマリー + インサイトカード |
-| 適切なタイミングで共有されない | 意思決定の直前に関連インサイトをプッシュ |
-| 検索不可能な形式で保存 | Atomic Research リポジトリの構築 |
-| フォローアップの仕組みなし | 推奨事項の採用追跡（DISTILL） |
+## Prevention Checklist
 
-### Pattern 3: スコープ膨張（Scope Creep）
-
-**症状**: ステークホルダーの全質問に一度に答えようとし、焦点がぼやける。
-
-**対策 — Maria Sbrocca の3つの資格質問:**
-
-1. **「どの質問に答える必要があるか?」** — スコープの明確化
-2. **「これらのインサイトをどう使うか?」** — アクション可能性の確認
-3. **「これらのインサイトに消費期限はあるか?」** — 緊急度の判定
-
-→ 3つに明確に答えられないリクエストはフェーズ分割または優先度下げ。
-
-### Pattern 4: 過剰コミットメント（Over-commitment）
-
-**症状**: 同時に複数の研究を引き受け、品質低下と燃え尽き。
-
-```
-例: 1日に4セッション × 3つの異なる研究
-  → エンゲージメントとエネルギーの低下
-  → データ品質の劣化
-```
-
-**対策**: 「今はできません」と言うスキルの習得。最適なタイミングでの実施が価値を最大化。
-
-### Pattern 5: 成熟度の見誤り（Maturity Mismatch）
-
-**症状**: 組織のリサーチ成熟度を評価せずにチームに参加し、期待値のミスマッチ。
-
-**確認すべき質問（面接時）:**
-> 「リサーチのインサイトが製品決定を変えた最後の事例を教えてください」
-
-- リーダーシップがリサーチ価値を理解: **58%**（同僚は 74%）
-- リサーチチームの約半数は設立 **5年未満**
-
-### Pattern 6: データの過剰提示（Data Overload）
-
-**症状**: 「完全に客観的」に見せるため、未整理の大量データをそのまま提示。
-
-| 危険 | 改善 |
-|------|------|
-| データの洪水でステークホルダーが圧倒 | トップ3-5のインサイトに絞る |
-| 「すべて重要」= 「何も重要でない」 | 優先度 + 信頼度で階層化 |
-| 解釈の欠如 | 「So What?」を必ず付加 |
-
-### Pattern 7: 仮説なきリサーチ（Hypothesis-Free Research）
-
-**症状**: 「とりあえずユーザーの声を聞こう」で始まる探索的リサーチの乱用。
-
-```
-❌ 「ユーザーについて知りたい」（漠然）
-✅ 「オンボーディングの離脱が30%ある。原因を特定したい」（具体的）
-```
-
-**対策**: DEFINE フェーズで必ずリサーチクエスチョンを明文化。
-
----
-
-## 3. リサーチインパクト測定
-
-### Multi-Level Framework（Karin den Bouwmeester）
-
-3つのレベルで UXR インパクトを包括的に評価:
-
-#### Level 1: Outcomes（価値創出）
-
-| 種別 | 指標例 |
-|------|--------|
-| **ビジネス価値** | リスク削減、リテンション向上、ROI |
-| **ユーザー価値** | UX 満足度、ゴール達成率、アクセシビリティ |
-| **社会的価値** | インクルーシブなソリューション、アルゴリズムバイアス削減 |
-
-#### Level 2: Organizational Influence（組織的影響）
-
-| 指標 | 測定方法 |
-|------|---------|
-| **意思決定への影響** | リサーチに基づくプロダクト戦略変更の件数 |
-| **ステークホルダー関与** | ユーザビリティテストへの参加率、リサーチリクエスト件数 |
-
-#### Level 3: Research Practice（研究基盤）
-
-| 指標 | 測定方法 |
-|------|---------|
-| **研究運用** | インフラ整備度、ツール標準化、プロセス透明性 |
-| **研究活動** | 実施件数、探索的 vs 評価的のバランス |
-
-### インパクト・ストーリーの構築
-
-因果関係の証明ではなく、**信頼できるナラティブ**でレベルを接続:
-
-```
-Level 3: 「トピック X について5つの研究を実施」
-  → Level 2: 「3つの製品変更につながった」
-    → Level 1: 「NPS が 42 → 55 に改善」
-```
-
-→ リサーチの**貢献**を認識。排他的な責任は主張しない。
-
-### ROI 計算アプローチ
-
-| アプローチ | 方法 | 適用場面 |
-|-----------|------|---------|
-| **コスト回避** | リサーチで防いだ手戻り・再開発コスト | 評価的リサーチ |
-| **収益影響** | リサーチ → 機能改善 → コンバージョン/リテンション変化 | 生成的リサーチ |
-| **時間節約** | タスク完了時間の短縮 × ユーザー数 | ユーザビリティテスト |
-| **リスク削減** | 誤った方向への投資を回避した金額 | 探索的リサーチ |
-
----
-
-## 4. ステークホルダーアライメント
-
-### リサーチ価値の伝え方
-
-| ステークホルダー | 関心事 | 伝え方 |
-|----------------|--------|--------|
-| **経営層** | ビジネスインパクト、ROI | 収益・コスト・リスクの数値で語る |
-| **PM** | 機能優先度、ロードマップ | インサイト → 具体的な機能推奨 |
-| **デザイナー** | ユーザーニーズ、ペインポイント | ペルソナ + ジャーニーマップ |
-| **エンジニア** | 技術的実現可能性 | ユーザー行動パターン + タスクフロー |
-
-### エバンジェリズム戦術
-
-1. **ステークホルダーをセッションに招待** — 直接ユーザーの声を聞かせる
-2. **ハイライトリール** — 30秒の衝撃的クリップを共有
-3. **定期的なインサイトダイジェスト** — 月次のトップインサイトを Slack/メールで配信
-4. **成功事例の蓄積** — 「リサーチが変えた判断」のケーススタディ集
-
----
-
-## 5. アンチパターン防止チェックリスト
-
-### リサーチ開始前
-
-- [ ] リサーチクエスチョンは明確か?（仮説なきリサーチ防止）
-- [ ] 結果の使用計画はあるか?（リサーチシアター防止）
-- [ ] スコープは Sbrocca の3質問でフィルターしたか?（スコープ膨張防止）
-- [ ] キャパシティは十分か?（過剰コミットメント防止）
-
-### リサーチ実施中
-
-- [ ] バイアスチェックを実施しているか?
-- [ ] 参加者データは適切に管理されているか?
-- [ ] 予期せぬ発見を記録しているか?
-
-### リサーチ完了後
-
-- [ ] インサイトはリポジトリに登録したか?（墓場防止）
-- [ ] エグゼクティブサマリーは1ページ以内か?（データ過剰防止）
-- [ ] 推奨事項は具体的・アクション可能か?
-- [ ] インパクトの測定計画はあるか?（DISTILL 連携）
-- [ ] ステークホルダーへの共有計画はあるか?
-
-**Source:** [User Interviews: 3 Common Research Mistakes](https://www.userinterviews.com/blog/research-mistakes) · [UXinsight: Multi-Level Impact Framework](https://uxinsight.org/how-to-measure-ux-research-impact-a-multi-level-framework/) · [UXArmy: Research ROI 2025](https://uxarmy.com/blog/ux-research-roi-product-metrics/) · [Maze: Calculating Research ROI](https://maze.co/collections/user-research/roi/) · [Dscout: Demonstrate Research Impact](https://dscout.com/people-nerds/demonstrate-impact-research) · [UXArmy: Top Challenges 2025](https://uxarmy.com/blog/challenges-faced-by-user-researchers/) · [Lyssna: UX Research Trends 2026](https://www.lyssna.com/blog/ux-research-trends/)
+- research question is explicit
+- use plan exists before the study begins
+- scope is filtered and time-boxed
+- capacity is realistic
+- insights are registered in the repository
+- report has a short summary
+- adoption/impact review is planned
