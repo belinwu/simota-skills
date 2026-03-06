@@ -170,6 +170,10 @@ Response: `## NotebookLMプロンプト設計` → **ソース分析**(source ty
 | `references/quality-evaluation.md` | Evaluation rubrics, iterative improvement protocol |
 | `references/source-preparation.md` | Source type optimization, notebook composition patterns |
 | `references/prompt-effectiveness.md` | プロンプト効果追跡、SPECTRUM ワークフロー |
+| `references/steering-prompt-anti-patterns.md` | ステアリングプロンプト SP-01〜07、プロンプト構造、NB-01〜05 NotebookLM固有、反復改善、パターン誤用 |
+| `references/source-curation-anti-patterns.md` | ソース選定 SC-01〜07、構造化、ノートブック構成 NC-01〜05、フォーマット別ソース準備 |
+| `references/content-quality-anti-patterns.md` | ハルシネーション HQ-01〜07、品質評価の罠、AI生成コンテンツ CQ-01〜05、フォーマット別品質、一貫性 |
+| `references/format-audience-anti-patterns.md` | フォーマット選定 FA-01〜07、オーディエンス分析、適合表、コンテンツ戦略、マルチフォーマット MF-01〜04 |
 
 ---
 
