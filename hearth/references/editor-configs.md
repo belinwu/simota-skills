@@ -1,40 +1,45 @@
 # Editor Configuration Patterns
 
-Reference for neovim and vim configuration best practices.
+Purpose: Read this when configuring `neovim`, `vim`, or `Zed`, or when you need plugin layout, `lazy.nvim`, keymap design, `blink.cmp`, or Neovim 0.10+ guidance.
 
----
+## Contents
+
+- [Neovim configuration](#neovim-configuration)
+- [Vim configuration](#vim-configuration)
+- [Keymap design principles](#keymap-design-principles)
+- [Minimal vs full configuration](#minimal-vs-full-configuration)
+- [Neovim 0.10 plus features](#neovim-010-plus-features)
+- [blink.cmp](#blinkcmp)
+- [Zed configuration](#zed-configuration)
 
 ## Neovim Configuration
 
 ### Directory Structure
 
-```
+```text
 ~/.config/nvim/
-├── init.lua                  # Entry point
-├── lazy-lock.json            # Plugin lockfile (auto-generated)
+├── init.lua
+├── lazy-lock.json
 └── lua/
     ├── config/
-    │   ├── autocmds.lua      # Autocommands
-    │   ├── keymaps.lua       # Key mappings
-    │   ├── lazy.lua          # Plugin manager bootstrap
-    │   └── options.lua       # vim.opt settings
+    │   ├── autocmds.lua
+    │   ├── keymaps.lua
+    │   ├── lazy.lua
+    │   └── options.lua
     └── plugins/
-        ├── colorscheme.lua   # Theme
-        ├── completion.lua    # nvim-cmp / blink.cmp
-        ├── editor.lua        # Editor enhancements (mini.pairs, surround)
-        ├── lsp.lua           # LSP configuration
-        ├── telescope.lua     # Fuzzy finder
-...
+        ├── colorscheme.lua
+        ├── completion.lua
+        ├── editor.lua
+        ├── lsp.lua
+        ├── telescope.lua
 ```
 
-### init.lua Entry Point
+### `init.lua` Entry Point
 
 ```lua
--- Bootstrap lazy.nvim and load configuration
 require("config.options")
 require("config.lazy")
 
--- Load after plugins (via lazy.nvim event)
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   callback = function()
@@ -47,28 +52,20 @@ vim.api.nvim_create_autocmd("User", {
 ### Core Options
 
 ```lua
--- lua/config/options.lua
 local opt = vim.opt
 
--- Line numbers
 opt.number = true
 opt.relativenumber = true
-
--- Indentation
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
 opt.smartindent = true
-
--- Search
 opt.ignorecase = true
-// ...
 ```
 
-### lazy.nvim Bootstrap
+### `lazy.nvim` Bootstrap
 
 ```lua
--- lua/config/lazy.lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -83,34 +80,26 @@ require("lazy").setup("plugins", {
   defaults = { lazy = true },
   install = { colorscheme = { "catppuccin" } },
   checker = { enabled = true, notify = false },
-// ...
+})
 ```
 
 ### Key Mapping Design
 
 ```lua
--- lua/config/keymaps.lua
 local map = vim.keymap.set
 
--- Leader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Better window navigation
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
-
--- Buffer navigation
-map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-// ...
 ```
 
 ### LSP Configuration
 
 ```lua
--- lua/plugins/lsp.lua
 return {
   {
     "neovim/nvim-lspconfig",
@@ -120,18 +109,19 @@ return {
       "mason-lspconfig.nvim",
     },
     config = function()
-      -- Diagnostics
       vim.diagnostic.config({
         virtual_text = { spacing = 4, prefix = "●" },
         signs = true,
         underline = true,
-// ...
+      })
+    end,
+  },
+}
 ```
 
 ### Essential Plugin Specs
 
 ```lua
--- lua/plugins/treesitter.lua
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
@@ -146,22 +136,19 @@ return {
     },
     highlight = { enable = true },
     indent = { enable = true },
-// ...
+  },
+}
 ```
-
----
 
 ## Vim Configuration
 
-### Minimal .vimrc
+### Minimal `.vimrc`
 
 ```vim
-" Sensible defaults
 set nocompatible
 filetype plugin indent on
 syntax enable
 
-" UI
 set number relativenumber
 set cursorline
 set signcolumn=yes
@@ -169,15 +156,12 @@ set scrolloff=8
 set nowrap
 set termguicolors
 
-" Indentation
 set tabstop=2 shiftwidth=2 expandtab
-// ...
 ```
 
-### vim-plug Setup
+### `vim-plug` Setup
 
 ```vim
-" Auto-install vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs
@@ -192,112 +176,86 @@ Plug 'tpope/vim-commentary'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
-// ...
 ```
-
----
 
 ## Keymap Design Principles
 
-1. **Mnemonic bindings**: `<leader>f` = find, `<leader>g` = git, `<leader>l` = LSP
-2. **Consistency**: Same keys for same actions across plugins
-3. **Discoverability**: Use which-key plugin to show available keymaps
-4. **Avoid conflicts**: Check existing mappings with `:map <key>`
-5. **Progressive disclosure**: Basic keys first, advanced behind leader
+1. Use mnemonic prefixes such as `<leader>f`, `<leader>g`, and `<leader>l`.
+2. Keep the same key for the same action across plugins when possible.
+3. Prefer discoverability over density; use `which-key` or equivalent when available.
+4. Check for conflicts before rebinding defaults.
+5. Put advanced actions behind leader prefixes rather than overriding core motions.
 
-### Common Leader Key Namespace
+### Common Leader Namespace
 
 | Prefix | Domain | Examples |
-|--------|--------|---------|
-| `<leader>f` | Find/Files | `ff` files, `fg` grep, `fb` buffers |
-| `<leader>g` | Git | `gs` status, `gb` blame, `gd` diff |
-| `<leader>l` | LSP | `lr` rename, `la` action, `ld` definition |
-| `<leader>b` | Buffer | `bd` delete, `bp` prev, `bn` next |
-| `<leader>w` | Window | `wv` vsplit, `ws` hsplit, `wq` close |
-| `<leader>t` | Toggle | `tt` terminal, `te` explorer, `tz` zen |
-
----
+|--------|--------|----------|
+| `<leader>f` | Find / files | `ff`, `fg`, `fb` |
+| `<leader>g` | Git | `gs`, `gb`, `gd` |
+| `<leader>l` | LSP | `lr`, `la`, `ld` |
+| `<leader>b` | Buffer | `bd`, `bp`, `bn` |
+| `<leader>w` | Window | `wv`, `ws`, `wq` |
+| `<leader>t` | Toggle | `tt`, `te`, `tz` |
 
 ## Minimal vs Full Configuration
 
 | Aspect | Minimal | Standard | Full |
 |--------|---------|----------|------|
-| Plugin count | 0-5 | 10-20 | 30-50+ |
+| Plugin count | `0-5` | `10-20` | `30-50+` |
 | LSP | None | Primary language | Multi-language |
-| Completion | Built-in | nvim-cmp | nvim-cmp + AI |
-| File finder | Built-in | telescope | telescope + extensions |
-| Startup time | <50ms | <100ms | <200ms |
+| Completion | Built-in | `nvim-cmp` or `blink.cmp` | Completion plus AI |
+| File finder | Built-in | `telescope` | `telescope` + extensions |
+| Startup time | `<50ms` | `<100ms` | `<200ms` |
 | Use case | Quick edits | Daily driver | IDE replacement |
 
----
-
-## Neovim 0.10+ Features
+## Neovim 0.10 Plus Features
 
 ### Native Snippets (`vim.snippet`)
 
 ```lua
--- Built-in snippet expansion (no plugin required for basic use)
 vim.snippet.expand("function ${1:name}(${2:params})\n\t${0}\nend")
 
--- Jump between snippet placeholders
 vim.keymap.set({ "i", "s" }, "<Tab>", function()
   if vim.snippet.active({ direction = 1 }) then
     return "<cmd>lua vim.snippet.jump(1)<cr>"
   end
   return "<Tab>"
 end, { expr = true })
-
-vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
-  if vim.snippet.active({ direction = -1 }) then
-    return "<cmd>lua vim.snippet.jump(-1)<cr>"
-  end
-// ...
 ```
 
 ### OSC 52 Clipboard
 
 ```lua
--- Native clipboard over SSH/tmux via OSC 52 (no xclip/pbcopy needed)
--- Enabled by default in 0.10+ when $SSH_TTY is set
--- Works with ghostty, kitty, wezterm, alacritty, tmux 3.3+
 vim.opt.clipboard = "unnamedplus"
--- No additional configuration needed for remote sessions
 ```
 
-### Built-in Comment Toggling (`gc`)
+This works over SSH and tmux on modern terminals without extra clipboard plugins.
 
-```lua
--- Native in Neovim 0.10+ (no vim-commentary or Comment.nvim needed)
--- gc{motion}  — toggle comment
--- gcc         — toggle comment on current line
--- gc          — toggle comment in visual mode
--- Respects commentstring from treesitter/filetype
+### Built-in Comment Toggling
+
+```text
+gc{motion}  toggle comment
+gcc         toggle current line
+gc          toggle selected lines
 ```
 
-### Default Colorscheme Improvements
+Neovim 0.10+ can replace dedicated comment plugins for many setups.
 
-Neovim 0.10+ ships with an improved default colorscheme and `vim.hl` namespace for highlight management. Treesitter highlighting is enabled by default for supported filetypes.
+## `blink.cmp`
 
----
+### Comparison with `nvim-cmp`
 
-## blink.cmp (Alternative to nvim-cmp)
+| Aspect | `nvim-cmp` | `blink.cmp` |
+|--------|------------|-------------|
+| Architecture | Lua-based | Rust core |
+| Performance | Good | Faster under many-source loads |
+| Configuration | More verbose | Simpler |
+| Snippet support | External | Built-in `vim.snippet` integration |
+| Recommendation | Existing setups | New setups |
 
-### Comparison with nvim-cmp
-
-| Aspect | nvim-cmp | blink.cmp |
-|--------|----------|-----------|
-| Architecture | Lua-based, multi-source | Rust core, async-first |
-| Performance | Good (can lag with many sources) | Faster (Rust fuzzy matching) |
-| Configuration | Verbose, many plugins | Simpler, fewer dependencies |
-| Source ecosystem | Large (30+ source plugins) | Growing (compatible adapter) |
-| Maturity | Stable, widely adopted | Newer, rapidly evolving |
-| Snippet support | Via cmp-luasnip/cmp-vsnip | Built-in vim.snippet |
-| Ghost text | Via plugin | Built-in |
-
-### Basic blink.cmp Configuration
+### Basic `blink.cmp` Configuration
 
 ```lua
--- lua/plugins/completion.lua
 return {
   "saghen/blink.cmp",
   version = "*",
@@ -312,45 +270,33 @@ return {
       ["<C-e>"] = { "cancel", "fallback" },
       ["<CR>"] = { "accept", "fallback" },
       ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
-// ...
+    },
+  },
+}
 ```
 
-### When to Choose blink.cmp
+Choose `blink.cmp` for new setups. Keep `nvim-cmp` when the existing setup depends on sources not yet replaced.
 
-- Prefer **blink.cmp** for new setups (simpler config, better performance)
-- Prefer **nvim-cmp** if you need specific source plugins not yet ported
-- Both work well with mason.nvim and LSP
+## Zed Configuration
 
----
+Zed is supported as a lightweight alternative. Hearth still treats Neovim as the primary recommendation for power users.
 
-## Zed Editor Configuration
-
-### Overview
-
-Zed is a GPU-accelerated editor written in Rust. Hearth provides minimal support — Neovim remains the recommended editor for power users.
-
-### Configuration (`~/.config/zed/settings.json`)
+### `settings.json`
 
 ```jsonc
 {
-  // Theme
   "theme": {
     "mode": "dark",
     "dark": "Catppuccin Mocha",
     "light": "Catppuccin Latte"
   },
-
-  // Font
   "buffer_font_family": "JetBrains Mono",
   "buffer_font_size": 14,
-  "ui_font_size": 14,
-
-  // Editor behavior
-  "tab_size": 2,
-// ...
+  "ui_font_size": 14
+}
 ```
 
-### Zed Keymap (`~/.config/zed/keymap.json`)
+### `keymap.json`
 
 ```jsonc
 [
@@ -365,9 +311,7 @@ Zed is a GPU-accelerated editor written in Rust. Hearth provides minimal support
 ]
 ```
 
-### LSP in Zed
-
-Zed has built-in LSP support — no mason.nvim equivalent needed. Language servers are auto-installed on first use. Custom LSP configuration:
+### Built-in LSP
 
 ```jsonc
 {

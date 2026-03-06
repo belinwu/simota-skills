@@ -1,112 +1,102 @@
 # Shell Configuration Anti-Patterns
 
-> zsh/bash/fishの設定ミス、起動時間の劣化要因、プラグイン管理、パフォーマンス最適化の失敗パターン
+Purpose: Read this when auditing shell startup performance, module structure, plugin-management risk, or shell regressions. Keep the `SH-*` and `PM-*` identifiers intact in findings and handoffs.
 
-## 1. シェル起動パフォーマンス 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **SH-01** | **Eager Version Manager Loading（バージョンマネージャ即時読込）** | nvm/pyenv/rbenv/condaを.zshrcで即座に`eval`実行 | nvm単体で300-500ms追加、全体で1秒超 | 遅延ロード: ラッパー関数で初回使用時に初期化、またはmiseに統合 |
-| **SH-02** | **Multiple compinit Calls（複数compinit呼出）** | 複数ファイルから`compinit`を重複呼出 | 補完システム初期化が毎回200ms+消費 | `compinit`は全`$fpath`設定後に1回のみ、日次キャッシュで再ビルド抑制 |
-| **SH-03** | **Oh-My-Zsh Full Framework（フルフレームワーク依存）** | oh-my-zshを全機能有効で使用 | 起動時間の55%がフレームワーク読込、30%が補完 | 必要プラグインのみ有効化、またはsheldon/zimに移行 |
-| **SH-04** | **Synchronous Plugin Loading（同期プラグイン読込）** | 全プラグインを起動時に同期的にsource | プラグイン数に比例して起動時間が線形増加 | `zsh-defer`/sheldon deferred loading/zinit turbo modeで非同期化 |
-| **SH-05** | **Heavy Theme Rendering（重いテーマ）** | gitステータス等をプロンプトで毎回サブプロセス実行 | 大規模リポジトリでプロンプト表示に数秒 | Powerlevel10k（Instant Prompt）またはstarship（Rust製高速描画） |
-| **SH-06** | **eval "$(tool init zsh)" Pattern（eval initパターン）** | 毎回ツール初期化を`eval`で実行 | starship/zoxide/fzf等のinit実行が毎起動で発生 | 出力をファイルにキャッシュ: `tool init zsh > ~/.cache/tool.zsh` + `source` |
-| **SH-07** | **Auto-Update on Every Launch（毎起動自動更新）** | oh-my-zsh/プラグインマネージャの自動更新チェック | 起動のたびにネットワークチェック発生 | `DISABLE_AUTO_UPDATE="true"`、手動更新に切替 |
+- [Startup-performance anti-patterns](#startup-performance-anti-patterns)
+- [Structure anti-patterns](#structure-anti-patterns)
+- [Plugin-management anti-patterns](#plugin-management-anti-patterns)
+- [Measurement and targets](#measurement-and-targets)
+- [How Hearth uses this reference](#how-hearth-uses-this-reference)
 
----
+## Startup-Performance Anti-Patterns
 
-## 2. 設定構造のアンチパターン
+| Code | Anti-pattern | Risk | Signal | Countermeasure |
+|------|--------------|------|--------|----------------|
+| `SH-01` | Eager version-manager loading | `nvm` / `pyenv` / `rbenv` / `conda` add `300-500ms` each | Shell startup exceeds `1s` | Lazy-load wrappers or consolidate with `mise` |
+| `SH-02` | Multiple `compinit` calls | Completion initialization repeats `200ms+` work | Completion setup appears in multiple files | Run `compinit` once after `$fpath` is complete and cache the dump daily |
+| `SH-03` | Full `oh-my-zsh` framework usage | Framework + completion dominate startup cost | Framework time dominates `zprof` | Keep only required plugins or switch to `sheldon` / `zim` |
+| `SH-04` | Synchronous plugin loading | Startup cost grows linearly with plugin count | Prompt appears only after all plugins load | Use `zsh-defer`, `sheldon` defer, or `zinit` turbo |
+| `SH-05` | Heavy prompt rendering | Prompt runs expensive subprocesses on every draw | Large repos make the prompt stall | Prefer `starship` or `powerlevel10k` instant prompt |
+| `SH-06` | `eval "$(tool init zsh)"` everywhere | Re-runs tool initialization on every shell start | `starship`, `zoxide`, or `fzf` init calls dominate profiles | Cache the generated init script and `source` the cache |
+| `SH-07` | Auto-update on every launch | Hidden network checks slow every shell start | Plugin manager checks the network at startup | Disable auto-update and update explicitly |
 
-```
-構造の失敗:
+## Structure Anti-Patterns
 
-  ❌ Monolithic .zshrc（モノリス設定ファイル）:
-    → 500行超の.zshrcに全設定を一括記述
-    → 変更時の影響範囲が不明、デバッグ困難
-    → 対策: モジュール分割（env.zsh/aliases.zsh/plugins.zsh/local.zsh）
+| Pattern | Risk | Countermeasure |
+|---------|------|----------------|
+| Monolithic `.zshrc` | Change impact is unclear; debugging is slow | Split into `env.zsh`, `aliases.zsh`, `plugins.zsh`, `local.zsh`, and related modules |
+| No `local.zsh` separation | Machine-specific values leak into tracked files | Keep machine-local data in a gitignored file |
+| Hard-coded paths | Shared configs break across macOS and Linux | Detect OS and tool installation paths before exporting them |
+| No XDG compliance | Home directory sprawl and weak portability | Set `ZDOTDIR=$XDG_CONFIG_HOME/zsh` in `~/.zshenv` |
+| Source-order mistakes | Tools fail because `PATH` or env vars are not ready | Preserve `env -> path -> plugins -> completions -> aliases -> local` |
 
-  ❌ No local.zsh Separation（ローカル設定未分離）:
-    → マシン固有設定（パス、トークン参照）を共通ファイルに混在
-    → dotfileリポジトリに秘密情報が混入するリスク
-    → 対策: local.zshをgitignoreし、マシン固有設定を分離
+## Plugin-Management Anti-Patterns
 
-  ❌ Hardcoded Paths（ハードコードパス）:
-    → `/opt/homebrew/bin`等をOS判定なしに記述
-    → macOS/Linux間でdotfile共有不能
-    → 対策: `[[ -d /opt/homebrew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"`
+| Code | Anti-pattern | Risk | Countermeasure |
+|------|--------------|------|----------------|
+| `PM-01` | Plugin hoarding | Unused plugins keep slowing startup | Review monthly and remove plugins unused for two weeks |
+| `PM-02` | Framework lock-in | Adding or swapping plugins becomes expensive | Prefer per-plugin managers such as `sheldon` or `zim` |
+| `PM-03` | Compilation overhead | Compile steps add first-run latency and cache issues | Prefer `sheldon` when compile-time tricks are unnecessary |
+| `PM-04` | No plugin pinning | Updates break reproducibility | Pin tags or commit SHAs where the manager supports it |
 
-  ❌ No XDG Compliance（XDG非準拠）:
-    → zsh設定を~/直下に散在（.zshrc, .zprofile, .zshenv等）
-    → ホームディレクトリ汚染、管理困難
-    → 対策: ZDOTDIR=$XDG_CONFIG_HOME/zsh を ~/.zshenv で設定
+## Measurement and Targets
 
-  ❌ Source Order Ignorance（読込順序無視）:
-    → 環境変数設定よりプラグイン読込を先に実行
-    → PATHが未設定のままツールが見つからないエラー
-    → 対策: env → path → plugins → completions → aliases → local の順序厳守
-```
+### Measurement Commands
 
----
+```text
+Profiling:
+  1. zmodload zsh/zprof
+  2. zprof
 
-## 3. プラグイン管理のアンチパターン
-
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **PM-01** | **Plugin Hoarding（プラグイン肥大）** | 使わないプラグインが大量に残留 | `zprof`で未使用プラグインが上位に表示 | 月次棚卸し: 2週間使わないプラグインは削除 |
-| **PM-02** | **Framework Lock-in（フレームワークロックイン）** | oh-my-zsh/preztoに全面依存 | フレームワーク外のプラグイン追加が困難 | sheldon/zimで個別プラグイン管理 |
-| **PM-03** | **Compilation Overhead（コンパイルオーバーヘッド）** | zinit compile等のコンパイル処理が起動時に実行 | 初回起動が異常に遅い、キャッシュ不整合 | TOMLベースのsheldon（コンパイル不要）推奨 |
-| **PM-04** | **No Plugin Pinning（プラグインバージョン未固定）** | プラグインを常にHEAD参照 | 更新で突然壊れる、再現不能な環境差異 | sheldon/zimでタグ/コミットSHA固定 |
-
----
-
-## 4. パフォーマンス計測と目標
-
-```
-計測方法:
-
-  プロファイリング:
-    1. zmodload zsh/zprof      # .zshrc先頭
-    2. zprof                   # .zshrc末尾 or シェル起動後に実行
-    → "self"列が最大の項目から優先対処
-
-  壁時計計測:
-    /usr/bin/time zsh -i -c exit     # 実際の起動時間
-    hyperfine 'zsh -i -c exit'       # 統計的計測（推奨）
-
-  起動時間目標:
-    | Profile  | 目標      | 許容上限  |
-    |----------|-----------|-----------|
-    | Minimal  | < 50ms    | < 100ms   |
-    | Standard | < 150ms   | < 250ms   |
-    | Power    | < 250ms   | < 400ms   |
-
-  最適化優先順位:
-    1. バージョンマネージャ遅延ロード（効果: 300-500ms削減）
-    2. compinit単一化+キャッシュ（効果: 100-200ms削減）
-    3. 未使用プラグイン除去（効果: 50-150ms削減）
-    4. テーマ軽量化（効果: 50-100ms削減）
-    5. eval initキャッシュ化（効果: 30-80ms削減）
+Wall-clock:
+  /usr/bin/time zsh -i -c exit
+  hyperfine 'zsh -i -c exit'
 ```
 
----
+### Startup Targets
 
-## 5. Hearth との連携
+| Profile | Target | Upper bound |
+|---------|--------|-------------|
+| `Minimal` | `< 50ms` | `< 100ms` |
+| `Standard` | `< 150ms` | `< 250ms` |
+| `Power` | `< 250ms` | `< 400ms` |
 
+### Optimization Priority
+
+1. Lazy-load version managers: expected improvement `300-500ms`
+2. Run `compinit` once and cache results: expected improvement `100-200ms`
+3. Remove unused plugins: expected improvement `50-150ms`
+4. Simplify the prompt: expected improvement `50-100ms`
+5. Cache `tool init` output: expected improvement `30-80ms`
+
+### Quality Gates
+
+- Startup time `> 250ms` requires `zprof` analysis and a bottleneck report.
+- `.zshrc` over `200` lines should trigger modularization guidance.
+- `.zshrc` over `500` lines is an anti-pattern, not just a style issue.
+- Keep `compinit` to one call after `$fpath` is final.
+
+## How Hearth Uses This Reference
+
+```text
+SCAN:
+  Screen for SH-01..07 startup regressions
+
+PLAN:
+  Check module structure, XDG layout, and plugin strategy
+
+CRAFT:
+  Design fixes for PM-01..04 and source-order issues
+
+VERIFY:
+  Run timing, profiling, and target comparison
 ```
-Hearth での活用:
-  1. SCAN フェーズで SH-01〜07 の起動時間スクリーニング
-  2. PLAN フェーズで設定構造の品質チェック
-  3. CRAFT フェーズで PM-01〜04 のプラグイン管理設計
-  4. VERIFY フェーズでパフォーマンス計測と目標達成確認
 
-品質ゲート:
-  - 起動時間 > 250ms → zprof分析+ボトルネック特定（SH-01〜07 防止）
-  - .zshrc 200行超 → モジュール分割提案（構造 防止）
-  - eval "$(tool init)" 検出 → キャッシュ化提案（SH-06 防止）
-  - oh-my-zshフル使用 → 軽量代替提案（SH-03 防止）
-  - nvm/pyenv直接eval → 遅延ロード or mise提案（SH-01 防止）
-  - XDG非準拠設定 → ZDOTDIR移行提案（構造 防止）
-```
+### Required Gates
 
-**Source:** [OpenReplay: Why zsh Is Slow to Start](https://blog.openreplay.com/zsh-slow-startup-fix/) · [Mike Kasberg: Optimizing Zsh Init with ZProf](https://www.mikekasberg.com/blog/2025/05/29/optimizing-zsh-init-with-zprof.html) · [Santacloud: Optimizing ZSH Startup to Under 70ms](http://santacloud.dev/posts/optimizing-zsh-startup-performance/) · [DEV.to: Achieving 30ms Zsh Startup](https://dev.to/tmlr/achieving-30ms-zsh-startup-40n1) · [Kian's Blog: Profiling ZSH](https://kasad.com/blog/zsh-profiling/)
+- Detect `eval "$(tool init)"` and recommend cache-based replacement.
+- Detect full `oh-my-zsh` usage and recommend lighter alternatives.
+- Detect direct `nvm` / `pyenv` eager loading and recommend lazy loading or `mise`.
+- Detect non-XDG zsh layouts and recommend `ZDOTDIR` migration.
