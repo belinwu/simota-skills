@@ -1,110 +1,135 @@
-# Supply Chain Security & SCA (Software Composition Analysis)
+# Supply Chain Security & SCA
 
 Purpose: Use this reference when scanning dependencies, lockfiles, SBOMs, CI/CD pipelines, or AI-recommended packages.
 
-## Contents
+---
 
-- threat landscape
-- attack vectors
-- SCA tooling
-- SBOM requirements
-- CI/CD hardening
-- dependency workflows
-- scan commands
+## 1. Threat Landscape (2025-2026)
 
-## Threat Landscape
-
-- `70-90%` of modern applications are composed of OSS components.
-- OWASP Top 10 (2025) elevates supply-chain risk to `A03`.
-- AI-recommended dependencies are a major risk source.
+- 70-90% of modern applications are composed of OSS components
+- OWASP Top 10 (2025) elevates supply-chain risk to A03
+- 512,847 malicious packages detected in 2024 (+156% YoY); 845,204 cumulative by Q2 2025
+- Verizon DBIR 2025: 30% of breaches involved third-party components (2x increase)
+- AI-recommended dependencies: 44-49% may have known CVEs
 
 ### Attack Vectors
 
 | Vector | Method | Example |
 |--------|--------|---------|
-| `Typosquatting` | Publish a similar package name | `lodash` -> `lodahs` |
-| `Dependency Confusion` | Publish an internal package name publicly | 2021 Alex Birsan |
-| `Slopsquatting` | Register a non-existent package suggested by AI | `5-21%` of AI-suggested packages may not exist |
-| `Compromised Maintainer` | Take over a maintainer account | `event-stream` |
-| `Build System Attack` | Inject into CI/CD | `SolarWinds` |
-| `Malicious Update` | Ship a hostile update from a legitimate package | `ua-parser-js` |
+| Typosquatting | Similar package name | `lodash` → `lodahs` |
+| Dependency Confusion | Public package matching internal name | 2021 Alex Birsan |
+| **Slopsquatting** | Register AI-hallucinated package name | 19.7% of AI-suggested packages don't exist |
+| Compromised Maintainer | Take over maintainer account | `event-stream` (2018), XZ Utils (2024) |
+| Build System Attack | Inject into CI/CD | `tj-actions/changed-files` (2025) |
+| Malicious Update | Hostile update from legitimate package | `ua-parser-js` |
 
-### AI Dependency Risk
+### Key Incidents (2024-2025)
 
-- `44-49%` of AI-suggested dependencies may already have known CVEs
-- only about `20%` of AI-suggested packages are considered safe by default
-- security-tool-assisted AI improves safe-package selection to about `57%`
-- treat AI-generated code and AI-suggested packages as untrusted third-party input
+**XZ Utils Backdoor (CVE-2024-3094):** Attacker ("Jia Tan") spent 3 years building trust as maintainer, embedded backdoor enabling RCE via OpenSSH. CVSS 10.0. Discovered by accident.
 
-## SCA And Reachability
+**tj-actions/changed-files (CVE-2025-30066):** Attacker compromised GitHub Action used by 23,000+ repos. Secrets (PATs, npm tokens, RSA keys) leaked to CI logs. Triggered via compromised `reviewdog/action-setup@v1`. CISA emergency alert issued.
 
-SCA manages third-party component risk. Use it alongside SAST, not instead of SAST.
+---
+
+## 2. Slopsquatting (AI Package Hallucination)
+
+Research (576,000 samples, 16 models):
+
+| Metric | Value |
+|--------|-------|
+| Hallucination rate (all models) | 19.7% |
+| Open-source models | 21.7% |
+| Proprietary models | 5.2% |
+| Unique hallucinated package names | 205,474 |
+| Repeat across queries | 43% appear every time |
+
+Defense: verify package existence before install, use lockfiles, run AI-suggested installs in isolated containers, integrate SCA into CI/CD.
+
+---
+
+## 3. SCA Tools
 
 | Tool | Strength |
 |------|----------|
 | `Snyk` | Developer-friendly, auto-fix PRs |
 | `Dependabot` | GitHub-native, low setup |
-| `Socket` | Supply-chain attack detection |
-| `Mend (WhiteSource)` | Enterprise license and policy control |
-| `Endor Labs` | Reachability and noise reduction |
+| `Socket` | Behavior analysis, zero-day detection (pre-CVE) |
+| `Endor Labs` | Function-level reachability analysis, noise reduction |
 | `OWASP Dependency-Check` | Language-agnostic NVD matching |
 | `Trivy` | Filesystem, container, and IaC scanning |
 
-Reachability factors:
+Prioritization factors: CVSS + EPSS + runtime reachability + exploit maturity + network exposure.
 
-1. `CVSS` and `EPSS`
-2. runtime reachability
-3. exploit maturity
-4. network exposure and privilege context
+---
 
-## SBOM
-
-An SBOM is required when provenance, regulated delivery, or broad dependency traceability matters.
+## 4. SBOM Requirements
 
 ### Accepted Formats
 
-- `SPDX`
-- `CycloneDX`
-- `SWID`
+- SPDX, CycloneDX, SWID
 
-### CISA 2025 Minimum Elements
+### CISA 2025 Minimum Elements (Updated)
 
-- `Supplier Name`
-- `Component Name`
-- `Version`
-- `Unique Identifiers` such as `CPE`, `PURL`, `SWID`
-- `Dependency Relationship`
-- `Author`
-- `Timestamp`
+- Software Producer, Component Name, Version
+- Unique Identifiers (CPE, PURL, SWID)
+- Dependency Relationship
+- **Component Hash** (new requirement)
+- **License Information** (new requirement)
+- Tool Name, Generation Timestamp
+- Known unknowns disclosure
 
-Sentinel checks:
+### EU Cyber Resilience Act (CRA)
 
-- all required fields present
-- transitive dependencies included
-- AI-related components identified where relevant
+- Compliance deadline: December 2027
+- Machine-readable SBOM (CycloneDX or SPDX)
+- At minimum top-level dependencies
+- Must be available for authority submission
 
 ### Generation Commands
 
 ```bash
-# CycloneDX (npm)
-npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json
-
-# Syft
-syft dir:. -o cyclonedx-json > sbom.json
-
-# Trivy
-trivy fs . --format cyclonedx --output sbom.json
+npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json    # CycloneDX (npm)
+syft dir:. -o cyclonedx-json > sbom.json                          # Syft
+trivy fs . --format cyclonedx --output sbom.json                  # Trivy
 ```
 
-## CI/CD Hardening
+---
 
-Pipeline principles:
+## 5. Package Provenance & Signing
 
-1. least privilege
-2. isolation
-3. immutable signed artifacts
-4. hash pinning for third-party actions
-5. audit logging
+### Sigstore Adoption (2024-2025)
+
+| Ecosystem | Status |
+|-----------|--------|
+| npm | GA since 2023; `npm publish --provenance` |
+| PyPI | Sigstore signing since 2024 |
+| Homebrew | Sigstore since 2024 |
+| Maven Central | Sigstore since 2025 |
+
+### SLSA Framework v1.1
+
+| Level | Guarantee |
+|-------|-----------|
+| L0 | No requirements |
+| L1 | Provenance exists |
+| L2 | Signed provenance from build service |
+| L3 | Verified and hardened build platform |
+
+---
+
+## 6. CI/CD Hardening
+
+### Critical Rules (Post tj-actions Incident)
+
+1. **SHA-pin all third-party actions** — tags are mutable and can be rewritten
+   ```yaml
+   uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29  # v4.2.2
+   ```
+2. **Use OIDC tokens** instead of static secrets for cloud auth
+3. **Set `GITHUB_TOKEN` to `read-only`** default; grant write per-job
+4. **Isolate untrusted code** (external PRs) in restricted environments
+
+### CI Pipeline Template
 
 ```yaml
 name: Supply Chain Security
@@ -113,60 +138,30 @@ on: [push, pull_request]
 jobs:
   sca-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-      - name: Run npm audit
-        run: npm audit --audit-level=high
-      - name: Generate SBOM
-        run: npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json
-      - name: Verify lockfile integrity
-        run: npm ci --ignore-scripts
-      - name: License check
-        run: npx license-checker --failOn "GPL-3.0;AGPL-3.0"
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      - run: npm audit --audit-level=high
+      - run: npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json
+      - run: npm ci --ignore-scripts
+      - run: npx license-checker --failOn "GPL-3.0;AGPL-3.0"
 ```
 
-## Dependency Workflow
+### Dependency Workflow
 
-Required:
+Required: commit lockfile, use `npm ci` in CI, review lockfile diffs.
+Forbidden: ignoring lockfiles in git, non-deterministic installs in CI.
 
-- commit the lockfile (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`)
-- use deterministic install commands such as `npm ci` in CI
-- review lockfile diffs
+### Sentinel Checklist
 
-Forbidden:
+- [ ] Run `npm audit` / `yarn audit`
+- [ ] Detect known CVEs with reachability context
+- [ ] Flag unused packages
+- [ ] Check lockfile existence and integrity
+- [ ] Check private package names against public registries
+- [ ] Inspect `postinstall` scripts
+- [ ] Review license compatibility
+- [ ] Verify GitHub Actions are SHA-pinned
 
-- ignoring lockfiles in git
-- using non-deterministic dependency installs in CI
-
-Recommended flow:
-
-1. run daily CVE scans
-2. prioritize by `CVSS + EPSS + reachability`
-3. fix with controlled PRs
-4. verify with tests
-5. track unresolved risk explicitly
-
-## Sentinel Checklist And Commands
-
-Checklist:
-
-- run `npm audit` / `yarn audit`
-- detect known CVEs
-- flag unused packages
-- check lockfile existence and integrity
-- check private package names against public registries
-- inspect `postinstall` scripts
-- review license compatibility
-
-Commands:
-
-```bash
-npm audit --json > audit-report.json
-yarn audit --json > audit-report.json
-npx snyk test --json > snyk-report.json
-trivy fs . --severity HIGH,CRITICAL --format json > trivy-report.json
-
-npm update package-name
-npm audit fix
-npm audit fix --force
-```
+**Source:** [OWASP A03:2025 Supply Chain](https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/) · [CISA 2025 SBOM Requirements](https://www.cisa.gov/resources-tools/resources/2025-minimum-elements-software-bill-materials-sbom) · [CISA tj-actions Alert](https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-tj-actionschanged-files-cve-2025-30066-and-reviewdogaction) · [Socket Slopsquatting](https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks) · [Sonatype Q2 2025 Malware Index](https://www.sonatype.com/press-releases/q2-2025-open-source-malware-index) · [SLSA Framework](https://slsa.dev/spec/v1.0/) · [EU CRA SBOM Guide](https://anchore.com/sbom/eu-cra/)

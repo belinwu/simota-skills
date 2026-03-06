@@ -1,13 +1,8 @@
-# Defensive Controls: Headers, Validation, Secrets & Rate Limiting
+# Defensive Controls & False Positive Management
 
-Purpose: Apply established defensive controls when `SECURE` requires headers, validation, secret handling, or rate limiting.
+Purpose: Apply established defensive controls during `SECURE`, and manage false positives during `FILTER`. Covers headers, validation, secrets, rate limiting, confidence scoring, delta scanning, and SARIF output.
 
-## Contents
-
-- security headers
-- input validation
-- secret management
-- rate limiting
+---
 
 ## 1. Security Headers
 
@@ -17,20 +12,20 @@ Purpose: Apply established defensive controls when `SECURE` requires headers, va
 | `Strict-Transport-Security` | Force HTTPS | Critical |
 | `X-Content-Type-Options` | Prevent MIME sniffing | High |
 | `X-Frame-Options` | Prevent clickjacking | High |
-| `X-XSS-Protection` | Legacy XSS filter | Medium |
 | `Referrer-Policy` | Control referrer leakage | Medium |
 | `Permissions-Policy` | Disable unnecessary browser features | Medium |
+
+Note: `X-XSS-Protection` is deprecated in modern browsers; CSP is the replacement.
 
 ### Next.js
 
 ```typescript
-// next.config.js
 const securityHeaders = [
   {
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Tighten in production
+      "script-src 'self'", // Avoid 'unsafe-inline' 'unsafe-eval' in production
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "font-src 'self'",
@@ -43,7 +38,6 @@ const securityHeaders = [
   { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
 ];
@@ -60,7 +54,6 @@ module.exports = {
 ```typescript
 import helmet from 'helmet';
 app.use(helmet());
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -71,26 +64,16 @@ app.use(
     },
   })
 );
-app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true, preload: true }));
-app.use(helmet.frameguard({ action: 'deny' }));
-app.use(helmet.noSniff());
-app.use(helmet.xssFilter());
-app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 ```
 
 ### CSP Violation Reporting
 
 ```typescript
-{
-  key: 'Content-Security-Policy-Report-Only',
-  value: "default-src 'self'; report-uri /api/csp-report",
-}
-
-app.post('/api/csp-report', express.json({ type: 'application/csp-report' }), (req, res) => {
-  console.warn('CSP Violation:', req.body);
-  res.status(204).end();
-});
+// Use report-only mode during rollout, then switch to enforcing
+{ key: 'Content-Security-Policy-Report-Only', value: "default-src 'self'; report-uri /api/csp-report" }
 ```
+
+---
 
 ## 2. Input Validation
 
@@ -101,17 +84,11 @@ Boundary validation is mandatory. Prefer `Zod` when adding runtime schemas.
 ```typescript
 import { z } from 'zod';
 
-const emailSchema = z.string().email('Invalid email format').max(254, 'Email too long');
-const passwordSchema = z.string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(128, 'Password too long')
-  .regex(/[A-Z]/, 'Must contain uppercase letter')
-  .regex(/[a-z]/, 'Must contain lowercase letter')
-  .regex(/[0-9]/, 'Must contain number')
-  .regex(/[^A-Za-z0-9]/, 'Must contain special character');
-const urlSchema = z.string().url('Invalid URL')
-  .refine((url) => url.startsWith('https://'), 'URL must use HTTPS');
-const uuidSchema = z.string().uuid('Invalid ID format');
+const emailSchema = z.string().email().max(254);
+const passwordSchema = z.string().min(8).max(128)
+  .regex(/[A-Z]/).regex(/[a-z]/).regex(/[0-9]/).regex(/[^A-Za-z0-9]/);
+const urlSchema = z.string().url().refine((url) => url.startsWith('https://'), 'Must use HTTPS');
+const uuidSchema = z.string().uuid();
 
 const userFormSchema = z.object({
   email: emailSchema,
@@ -121,40 +98,16 @@ const userFormSchema = z.object({
 });
 ```
 
-### Common Validation Patterns
-
-```typescript
-const identifierSchema = z.string()
-  .regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, 'Invalid identifier');
-
-const safePathSchema = z.string()
-  .refine((path) => !path.includes('..') && !path.startsWith('/'), 'Invalid path');
-
-const jsonInputSchema = z.string()
-  .max(10000, 'Payload too large')
-  .transform((val) => JSON.parse(val));
-
-const tagsSchema = z.array(z.string().max(50)).max(10, 'Too many tags');
-const statusSchema = z.enum(['active', 'inactive', 'pending']);
-```
-
 ### Express Validation Middleware
 
 ```typescript
-import { z, ZodSchema } from 'zod';
-import { Request, Response, NextFunction } from 'express';
-
 function validate(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse({
-      body: req.body, query: req.query, params: req.params,
-    });
+    const result = schema.safeParse({ body: req.body, query: req.query, params: req.params });
     if (!result.success) {
       return res.status(400).json({
         error: 'Validation failed',
-        details: result.error.issues.map((i) => ({
-          path: i.path.join('.'), message: i.message,
-        })),
+        details: result.error.issues.map((i) => ({ path: i.path.join('.'), message: i.message })),
       });
     }
     req.validated = result.data;
@@ -163,6 +116,8 @@ function validate(schema: ZodSchema) {
 }
 ```
 
+---
+
 ## 3. Secret Management
 
 Never hardcode secrets. Prefer environment variables with schema validation, then move to managed secret stores for production.
@@ -170,17 +125,13 @@ Never hardcode secrets. Prefer environment variables with schema validation, the
 ### Environment Variables
 
 ```typescript
-import { z } from 'zod';
-
 const envSchema = z.object({
   API_KEY: z.string().min(1),
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(32),
   NODE_ENV: z.enum(['development', 'production', 'test']),
 });
-
 const env = envSchema.parse(process.env);
-export { env };
 ```
 
 ### `.env` Hygiene
@@ -192,124 +143,114 @@ export { env };
 .env.*.local
 *.pem
 *.key
-
-# .env.example
-API_KEY=your_api_key_here
-DATABASE_URL=postgresql://user:pass@localhost:5432/db
-JWT_SECRET=generate_a_32_char_secret_here
 ```
 
-### AWS Secrets Manager
+### Secret Stores (Production)
 
-```typescript
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+- **AWS Secrets Manager**: `GetSecretValueCommand` with region config
+- **HashiCorp Vault**: `vault.read('secret/data/path')`
+- **Rotation**: Use TTL-based cache (5min default) with lazy refresh
 
-const client = new SecretsManagerClient({ region: 'ap-northeast-1' });
-
-async function getSecret(secretName: string): Promise<Record<string, string>> {
-  const command = new GetSecretValueCommand({ SecretId: secretName });
-  const response = await client.send(command);
-  if (!response.SecretString) throw new Error('Secret not found');
-  return JSON.parse(response.SecretString);
-}
-```
-
-### HashiCorp Vault
-
-```typescript
-import Vault from 'node-vault';
-
-const vault = Vault({
-  apiVersion: 'v1',
-  endpoint: process.env.VAULT_ADDR,
-  token: process.env.VAULT_TOKEN,
-});
-
-async function getSecret(path: string): Promise<Record<string, string>> {
-  const result = await vault.read(`secret/data/${path}`);
-  return result.data.data;
-}
-```
-
-### Rotation Pattern
-
-```typescript
-class SecretCache {
-  private cache = new Map<string, { value: string; expiresAt: number }>();
-  private ttlMs = 5 * 60 * 1000;
-
-  async get(key: string, fetcher: () => Promise<string>): Promise<string> {
-    const cached = this.cache.get(key);
-    if (cached && cached.expiresAt > Date.now()) return cached.value;
-    const value = await fetcher();
-    this.cache.set(key, { value, expiresAt: Date.now() + this.ttlMs });
-    return value;
-  }
-}
-```
+---
 
 ## 4. Rate Limiting
 
-Use stricter limits on auth and expensive endpoints. Move to Redis-backed limits when the system is distributed.
-
-### Express Rate Limiting
+Use stricter limits on auth and expensive endpoints.
 
 ```typescript
 import rateLimit from 'express-rate-limit';
-import RedisStore from 'rate-limit-redis';
-import { createClient } from 'redis';
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { error: 'Too many requests, please try again later' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
 app.use(limiter);
 
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 5,
-  skipSuccessfulRequests: true,
-  message: { error: 'Too many login attempts, please try again later' },
-});
+const authLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, skipSuccessfulRequests: true });
 app.use('/api/auth/login', authLimiter);
-
-const redisClient = createClient({ url: process.env.REDIS_URL });
-await redisClient.connect();
-
-const distributedLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  store: new RedisStore({
-    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
-  }),
-});
 ```
 
-### Next.js API Rate Limiting
+For distributed systems, use Redis-backed stores (`rate-limit-redis`).
 
-```typescript
-import { LRUCache } from 'lru-cache';
+---
 
-type RateLimitOptions = { interval: number; uniqueTokenPerInterval: number };
+## 5. False Positive Management
 
-export function rateLimit(options: RateLimitOptions) {
-  const tokenCache = new LRUCache<string, number[]>({
-    max: options.uniqueTokenPerInterval,
-    ttl: options.interval,
-  });
+Raw SAST alerts contain ~53% false positives. Without filtering, teams stop trusting the tool.
 
-  return {
-    check: (limit: number, token: string): Promise<void> =>
-      new Promise((resolve, reject) => {
-        const tokenCount = tokenCache.get(token) || [0];
-        if (tokenCount[0] >= limit) { reject(new Error('Rate limit exceeded')); return; }
-        tokenCount[0] += 1;
-        tokenCache.set(token, tokenCount);
-        resolve();
-      }),
-  };
+| FP rate | Assessment | Developer trust |
+|---------|------------|-----------------|
+| `> 40%` | Harmful | Very low |
+| `20-40%` | Needs work | Low |
+| `10-20%` | Target range | Medium-High |
+| `< 10%` | Excellent | High |
+
+### Framework-Aware Suppression
+
+Suppress findings when framework-native protections are in place:
+
+```text
+sanitizer_functions: [sanitizeHtml, escapeSQL, purifyInput]
+auth_middleware: [requireAuth, requireRole, requireApiKey]
+csrf_protection: "Next.js built-in CSRF protection"
+rate_limiting: "Handled at API Gateway"
+```
+
+### Delta Scanning
+
+| Mode | Scope | Use when |
+|------|-------|----------|
+| PR-level | Changed files only | Fast review and merge gates |
+| Periodic | Full repository | Weekly or explicit full audits |
+| Baseline | Existing findings suppressed | New scanner rollout on legacy code |
+
+### Confidence Scoring
+
+| Factor | Weight |
+|--------|--------|
+| Multi-engine consensus | `+30%` |
+| Known pattern match | `+20%` |
+| Data-flow reachability | `+25%` |
+| Framework mismatch | `-20%` |
+| Test or mock location | `-30%` |
+
+Tiers: `HIGH (≥80%)` → include immediately · `MEDIUM (50-79%)` → report with note · `LOW (<50%)` → suppress unless exhaustive
+
+### Hybrid LLM+SAST Filtering
+
+| Approach | Accuracy |
+|----------|----------|
+| Rules only (SAST) | 35.7% |
+| LLM only | 65.5% |
+| LLM + SAST (Hybrid) | 89.5% |
+
+LLM excels at: cross-function data-flow reasoning, upstream validation recognition, exploit-feasibility assessment, framework security guarantee recognition.
+
+Semgrep Assistant Memories achieves 85% FP reduction by learning from past triage decisions. SAST-Genius (Semgrep + fine-tuned LLM) achieves 91% FP reduction.
+
+---
+
+## 6. SARIF Output
+
+Use SARIF when CI, GitHub Code Scanning, or IDE tooling needs machine-readable results.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "Sentinel", "version": "1.0" } },
+    "results": [{
+      "ruleId": "SECRET-001",
+      "level": "error",
+      "message": { "text": "Hardcoded API key detected" },
+      "locations": [{
+        "physicalLocation": {
+          "artifactLocation": { "uri": "src/config.ts" },
+          "region": { "startLine": 42 }
+        }
+      }],
+      "properties": { "confidence": 0.92, "owasp": "A07:2025" }
+    }]
+  }]
 }
 ```
+
+**Source:** [OWASP Top 10:2025](https://owasp.org/Top10/2025/) · [Semgrep Assistant Memories](https://semgrep.dev/blog/2025/why-ai-powered-memories-are-the-future-of-semgrep-sast/) · [SAST-Genius (arXiv)](https://arxiv.org/abs/2509.15433v2) · [InfoWorld: SAST + AI FP Reduction](https://www.infoworld.com/article/4093079/how-pairing-sast-with-ai-dramatically-reduces-false-positives-in-code-security.html)

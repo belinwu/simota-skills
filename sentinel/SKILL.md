@@ -96,19 +96,17 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | File | Read this when... |
 |------|-------------------|
 | `references/vulnerability-patterns.md` | You are in `SCAN` and need detection heuristics, regex patterns, or good/bad secure coding examples |
-| `references/defensive-controls.md` | You need implementation patterns for headers, validation, secret handling, or rate limiting |
-| `references/false-positive-management.md` | You need confidence scoring, delta scanning, SARIF output, or framework-aware suppression rules |
+| `references/defensive-controls.md` | You need implementation patterns for headers, validation, secret handling, rate limiting, confidence scoring, delta scanning, SARIF output, or FP suppression |
 | `references/owasp-2025-checklist.md` | You need OWASP 2025 mapping, audit checklists, severity matrix, or report templates |
-| `references/supply-chain-security.md` | The work involves CVEs, SBOM, SCA tools, lockfiles, CI/CD hardening, or package provenance |
-| `references/ai-code-security.md` | The code is AI-generated, AI-assisted, or uses LLM tooling that changes the threat model |
+| `references/supply-chain-security.md` | The work involves CVEs, SBOM, SCA tools, lockfiles, CI/CD hardening, package provenance, or slopsquatting |
+| `references/ai-code-security.md` | The code is AI-generated, AI-assisted, uses LLM/MCP tooling, or the SAST landscape needs consulting |
 | `references/api-security.md` | The target is an HTTP API, GraphQL endpoint, OAuth flow, or SSRF/BOLA/BFLA risk |
-| `references/multi-engine-mode.md` | You are running `multi-engine` or need independent engine scans and union merge behavior |
 
 ## Multi-Engine Mode
 
 - Trigger when instructed via Nexus or the user with `multi-engine`, or when findings are ambiguous enough that multiple security engines improve confidence.
-- Use independent scans and merge by union.
-- Read `references/multi-engine-mode.md` before dispatching. Keep prompts loose and minimal; do not preload OWASP checklists or detailed pattern catalogs into the engine prompt.
+- Use independent scans and merge by union. Dispatch each engine with minimal context: role (one line), target code, usage context, and output format. Do not preload OWASP checklists or detailed pattern catalogs.
+- Merge rules: collect all findings → deduplicate by location + type → sort by severity → boost confidence for multi-engine consensus → keep single-engine findings as lower-confidence candidates.
 
 ## AUTORUN Support
 

@@ -1,157 +1,135 @@
 # AI-Generated Code Security & Modern SAST
 
-Purpose: Use this reference when the target code was AI-generated, AI-assisted, or depends on AI-native tooling that changes the threat model.
+Purpose: Use this reference when the target code was AI-generated, AI-assisted, or when AI tooling changes the threat model. Also covers modern SAST landscape and hybrid LLM+SAST approaches.
 
-## Contents
+---
 
-- risk snapshot
-- AI-specific anti-patterns
-- review checklist
-- SAST landscape
-- hybrid LLM-SAST
-- IDE and policy risks
-
-## Risk Snapshot (2025-2026)
+## 1. Risk Snapshot (2025-2026)
 
 | Metric | Value |
 |--------|-------|
-| Vulnerable AI-generated code | `45-62%` |
-| XSS failure rate | `86%` |
-| Vulnerable Java AI-generated code | `72%` |
-| XSS rate: AI code vs human code | `2.74x` |
-| Organizations that deployed vulnerable AI-generated code | `81%` |
-| Breaches linked to AI-generated code | `1 in 5` |
-| High-risk vulnerability growth | `8.3% -> 11.3%` |
-| AI share of production code | `24%` (`29%` in the US) |
+| AI-generated code containing vulnerabilities | 45-62% |
+| XSS failure rate (AI-generated) | 86% |
+| Vulnerable Java AI-generated code | 72% |
+| XSS rate: AI vs human code | 2.74x |
+| Organizations that deployed vulnerable AI code | 81% |
+| AI share of production code | 24% (29% in US) |
+| AI-suggested packages with known CVEs | 44-49% |
 
-Why AI misses security:
+Security of AI-generated code has not improved despite functional accuracy improvements through 2025.
 
-1. weak application-specific threat modeling
-2. missing internal policy context
-3. insecure training data
-4. blind spots in auth and authorization logic
-5. syntactic correctness is not the same as security correctness
+---
 
-## Top 10 AI-Specific Anti-Patterns
+## 2. AI Coding Tool Threat Model (2025)
 
-| Rank | Pattern | Score | Detection |
-|------|---------|-------|-----------|
-| 1 | `Slopsquatting` | `24` | registry lookup |
-| 2 | XSS | `23` | output escaping review |
-| 3 | Hardcoded secrets | `23` | regex and entropy |
-| 4 | SQL injection | `22` | missing parameterization |
-| 5 | Authentication failures | `22` | broken auth flow |
-| 6 | Missing input validation | `21` | no boundary validation |
-| 7 | Command injection | `21` | unsafe shell execution |
-| 8 | Missing rate limiting | `20` | sensitive endpoints unprotected |
-| 9 | Excessive data exposure | `20` | API over-returning |
-| 10 | Unrestricted file upload | `20` | no type/size limits |
+### Rules File Backdoor (March 2025)
+
+- Attacker embeds malicious instructions in `.cursorrules` or `.github/copilot-instructions.md` using Unicode invisible characters
+- AI assistant follows the hidden instructions and generates backdoored code
+- Propagates through forks/clones — entire supply chain at risk
+- **Defense:** Code-review rule files, scan for Unicode invisibles, treat rule files as security-critical
+
+### IDEsaster (December 2025)
+
+- 30+ CVEs across GitHub Copilot, Cursor, Windsurf, Zed, Roo Code, Claude Code, Gemini CLI, and others
+- Three-stage attack chain: prompt injection → auto-approved tool calls → IDE feature abuse (data exfiltration, RCE)
+- Example: CVE-2025-54135 (CurXecute) — RCE via Cursor
+- **Defense:** Minimize auto-approval scope, sandbox AI agents, patch IDEs immediately
+
+### MCP Tool Security
+
+- 13,000+ MCP servers on GitHub as of 2025
+- **Tool Poisoning:** Hidden malicious instructions in MCP tool descriptions, invisible to user but processed by LLM
+- **Rug Pull:** MCP tool changes its definition after installation (safe Day 1, malicious Day 7)
+- **Tool Redefinition:** Malicious MCP server overwrites legitimate tools in multi-server environments
+- Critical CVE: CVE-2025-6514 (mcp-remote, CVSS 9.6) — arbitrary OS command execution
+- **Defense:** Sandbox MCP servers, validate all inputs/outputs, require human approval for state changes, monitor tool definition changes
+
+---
+
+## 3. Top 10 AI-Specific Anti-Patterns
+
+| Rank | Pattern | Detection |
+|------|---------|-----------|
+| 1 | Slopsquatting (hallucinated packages) | Registry lookup |
+| 2 | XSS (unescaped output) | Output escaping review |
+| 3 | Hardcoded secrets | Regex + entropy |
+| 4 | SQL injection (missing parameterization) | Query pattern analysis |
+| 5 | Authentication failures (broken auth flow) | Structural review |
+| 6 | Missing input validation | Boundary check |
+| 7 | Command injection (unsafe shell) | Exec pattern detection |
+| 8 | Missing rate limiting | Endpoint analysis |
+| 9 | Excessive data exposure (API over-returning) | Response field review |
+| 10 | Unrestricted file upload | Type/size limit check |
 
 Language tendencies:
+- **Java:** highest failure rate (72%), XSS and log injection
+- **Python:** shell injection, unsafe deserialization
+- **JS/TS:** XSS, prototype pollution, `eval()` patterns
+- **Go:** error-handling gaps, race-adjacent logic
 
-- `Java`: highest failure rate, especially XSS and log injection
-- `Python`: shell injection and unsafe deserialization
-- `JS/TS`: XSS, prototype pollution, `eval()` patterns
-- `Go`: error-handling gaps and race-adjacent logic issues
+---
 
-## Review Checklist
+## 4. AI Code Review Checklist
 
 ### Critical
 
-- no hardcoded secrets
-- parameterized SQL and NoSQL
-- escaped output
-- no direct user input in shell execution
-- authz checks present
+- [ ] No hardcoded secrets
+- [ ] Parameterized SQL and NoSQL
+- [ ] Output escaped (no raw `innerHTML`)
+- [ ] No user input in shell execution
+- [ ] Authorization checks present
+- [ ] Rule files (.cursorrules, copilot-instructions.md) reviewed for hidden instructions
 
 ### High
 
-- boundary validation present
-- no sensitive data in errors
-- upload type and size limits
-- minimal API responses
-- rate limiting on exposed endpoints
+- [ ] Boundary validation present
+- [ ] No sensitive data in error messages
+- [ ] Upload type and size limits
+- [ ] Minimal API responses (no over-returning)
+- [ ] Rate limiting on exposed endpoints
 
 ### Medium
 
-- packages exist and are maintained
-- licenses are compatible
-- deprecated APIs removed
-- logs do not contain secrets
+- [ ] Packages exist and are maintained (anti-slopsquatting)
+- [ ] Licenses are compatible
+- [ ] Deprecated APIs removed
+- [ ] Logs do not contain secrets
 
-AI-specific scan extensions:
+---
 
-1. detect non-existent package recommendations
-2. flag unsafe but common AI patterns such as `eval()`, `exec()`, `Function()`, `innerHTML`, and string-built SQL
-3. validate auth-flow completeness
-4. review error-handling consistency
+## 5. Modern SAST Landscape (2025-2026)
 
-## Modern SAST Landscape
+| Tool | Strength | AI Integration |
+|------|----------|----------------|
+| `Semgrep` | Rule-based, fast, broad language | Assistant Memories (85% FP reduction), AI-Powered IDOR detection |
+| `CodeQL` | Semantic queries, GitHub-native | Copilot Autofix (manual time 1.5h → 28min) |
+| `Snyk Code` | IDE-native feedback | DeepCode AI, Agent Fix, BOLA detection |
+| `Endor Labs` | Reachability + AI-native SAST | 3-agent system (detect/triage/remediate), 95% FP reduction |
+| `Opengrep` | OSS fork of Semgrep (LGPL-2.1) | Community-driven, full Semgrep rule compat |
+| `SonarQube` | Quality gate + taint analysis | Mixed quality + security |
 
-| Tool | Strength | AI support |
-|------|----------|------------|
-| `Semgrep` | rule-based, fast, broad language support | AI filtering |
-| `CodeQL` | semantic GitHub-native queries | custom queries |
-| `Snyk Code` | IDE-native feedback | AI autofix |
-| `Veracode` | enterprise reporting | AI code risk views |
-| `Checkmarx` | platform integration | AI-assisted remediation |
-| `SonarQube` | quality gate plus taint analysis | mixed quality + security |
-| `DryRun Security` | PR-native, natural-language policy | MCP integration |
-| `Endor Labs` | reachability and noise reduction | policy-driven |
-| `Aikido` | developer-first triage | automated triage |
-| `Mend SAST` | editor integration | MCP server |
+### Hybrid LLM+SAST Pipeline
 
-## Hybrid LLM-SAST
+```
+1. Run Semgrep/CodeQL (breadth + repeatability)
+2. Collect context (data flow, call sites)
+3. LLM classifies TP vs FP (contextual reasoning)
+4. Merged result for prioritization + repair guidance
+```
 
-Accuracy comparison:
+Key insight: rules provide breadth; LLMs provide contextual reasoning; hybrid is better than either alone.
 
-| Approach | Accuracy |
-|----------|----------|
-| Rules only | `35.7%` |
-| LLM only | `65.5%` |
-| `LLM + SAST` | `89.5%` |
+---
 
-IRIS-style flow:
+## 6. Sentinel Integration
 
-1. run `CodeQL` / `Semgrep`
-2. collect context such as data flow and call sites
-3. let an LLM classify TP vs FP
-4. use the merged result for prioritization and repair guidance
+| Phase | AI-security actions |
+|-------|---------------------|
+| `SCAN` | Detect unsafe AI patterns (eval, innerHTML, string SQL), non-existent packages, auth-flow gaps, rule file tampering |
+| `FILTER` | Apply LLM-assisted FP triage, boost confidence from hybrid evidence |
+| `PRIORITIZE` | Boost severity for AI-generated code (2.74x XSS baseline) |
+| `SECURE` | Apply safer alternatives, defensive patterns |
+| `VERIFY` | Confirm fix did not introduce new AI-specific anti-patterns |
 
-Key insight:
-
-- rules provide breadth and repeatability
-- LLMs provide contextual reasoning
-- the hybrid approach is better than either alone
-
-## IDE And Policy Risks
-
-IDE threat notes:
-
-- `30+` IDE security issues were publicly discussed in 2025
-- common failure modes: prompt injection, data exfiltration, and RCE through trusted features
-
-Minimum controls:
-
-- minimize extensions
-- sandbox AI agents
-- require human review before execution
-- patch IDEs quickly
-
-Policy rules:
-
-1. define policies in natural language, not regex only
-2. enforce them on PRs
-3. include remediation examples
-4. allow cross-file authorization and IDOR checks
-5. centralize policy visibility
-
-## Sentinel Integration
-
-| Phase | Use AI-security detail for... |
-|-------|-------------------------------|
-| `SCAN` | unsafe AI patterns, non-existent packages, auth-flow gaps |
-| `FILTER` | LLM-assisted false-positive review |
-| `PRIORITIZE` | confidence boost from hybrid evidence |
-| `SECURE` | safer autofix suggestions and defensive alternatives |
-| `VERIFY` | confirm the fix did not introduce new insecure AI patterns |
+**Source:** [Veracode GenAI Code Security Report 2025](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) · [Pillar Security: Rules File Backdoor](https://www.pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents) · [IDEsaster: 30+ AI IDE Flaws](https://thehackernews.com/2025/12/researchers-uncover-30-flaws-in-ai.html) · [Invariant Labs: MCP Tool Poisoning](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) · [Semgrep AI-Powered Detection](https://semgrep.dev/blog/2025/ai-powered-detection-with-semgrep/) · [Endor Labs AI SAST](https://www.endorlabs.com/learn/introducing-ai-sast-that-thinks-like-a-security-engineer) · [OpenSSF: Security Guide for AI Code Assistants](https://best.openssf.org/Security-Focused-Guide-for-AI-Code-Assistant-Instructions) · [OWASP LLM Top 10:2025](https://genai.owasp.org/llm-top-10/)
