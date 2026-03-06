@@ -96,13 +96,7 @@ Reject or revise the document if any of these fail:
 - Target audience is not stated
 - Reviewer path or next handoff is missing
 
-Use these references when the draft is weak:
-
-- Requirement quality and PRD/SRS anti-patterns: [requirements-writing-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/requirements-writing-anti-patterns.md)
-- HLD/LLD anti-patterns: [design-document-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/design-document-anti-patterns.md)
-- Test documentation anti-patterns: [test-documentation-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/test-documentation-anti-patterns.md)
-- AI-assisted documentation anti-patterns: [ai-documentation-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/ai-documentation-anti-patterns.md)
-- Writing precision and examples: [writing-guidelines.md](/Users/simota/.claude/skills/scribe/references/writing-guidelines.md)
+Use this reference when the draft is weak: [anti-patterns.md](/Users/simota/.claude/skills/scribe/references/anti-patterns.md)
 
 ## Routing And Handoffs
 
@@ -150,12 +144,8 @@ Response shape:
 | [design-template.md](/Users/simota/.claude/skills/scribe/references/design-template.md) | You need HLD, LLD, scaling strategy, config, or rollback sections. |
 | [checklist-template.md](/Users/simota/.claude/skills/scribe/references/checklist-template.md) | You need implementation, review, or quick delivery checklists. |
 | [test-spec-template.md](/Users/simota/.claude/skills/scribe/references/test-spec-template.md) | You need test plans, traceability, or Gherkin structure. |
-| [writing-guidelines.md](/Users/simota/.claude/skills/scribe/references/writing-guidelines.md) | You need examples of good vs bad requirements, criteria, or checklist items. |
+| [anti-patterns.md](/Users/simota/.claude/skills/scribe/references/anti-patterns.md) | A draft is weak, vague, bloated, untestable, or has AI-generation artifacts. |
 | [documentation-calibration.md](/Users/simota/.claude/skills/scribe/references/documentation-calibration.md) | You need INSCRIBE tracking, thresholds, or EVOLUTION_SIGNAL rules. |
-| [requirements-writing-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/requirements-writing-anti-patterns.md) | The PRD or SRS is bloated, vague, over-specified, or not testable. |
-| [design-document-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/design-document-anti-patterns.md) | HLD or LLD lacks structure, traceability, audience fit, or NFR coverage. |
-| [test-documentation-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/test-documentation-anti-patterns.md) | Test docs show poor pyramid balance, weak traceability, or low-value coverage. |
-| [ai-documentation-anti-patterns.md](/Users/simota/.claude/skills/scribe/references/ai-documentation-anti-patterns.md) | AI-generated docs are generic, over-instructed, or missing human review gates. |
 
 ## AUTORUN Support
 
