@@ -1,15 +1,21 @@
 # Testing Patterns
 
-Core testing patterns for unit and integration tests across frameworks.
+Purpose: Core TS/JS testing defaults for Radar. Read this when adding unit or integration tests in JavaScript or TypeScript repositories.
 
----
+Contents:
+
+- AAA and naming rules
+- React Testing Library defaults
+- MSW and test-data strategy
+- Integration test patterns
+- Coverage and mock decisions
 
 ## Arrange-Act-Assert (AAA)
 
-The fundamental test structure pattern.
+Use explicit phases. If the test is too small for comments, keep the logical separation anyway.
 
 ```typescript
-test('adds item to cart', () => {
+test('adds an item to the cart', () => {
   // Arrange
   const cart = new Cart();
   const item = { id: '1', price: 100 };
@@ -23,364 +29,140 @@ test('adds item to cart', () => {
 });
 ```
 
----
+## Naming Rules
 
-## Test Naming Conventions
-
-### Given-When-Then
+Prefer names that explain behavior, trigger, and outcome.
 
 ```typescript
-// ✅ GOOD: Descriptive test names
-test('GIVEN an empty cart WHEN checkout is clicked THEN it shows empty warning', () => {
+test('GIVEN an empty cart WHEN checkout is clicked THEN it shows an empty warning', () => {
   // ...
 });
 
-// ✅ GOOD: Behavior-focused
-test('calculateDiscount throws error for negative percentage', () => {
+test('calculateDiscount throws for a negative percentage', () => {
   expect(() => calculateDiscount(100, -5)).toThrow('Invalid percentage');
 });
-
-// ❌ BAD: Vague
-test('should work', () => { /* Work how? */ });
 ```
 
----
+Avoid vague names such as `should work`.
 
-## React Testing Library
-
-### Basic Patterns
-
-```typescript
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-const user = userEvent.setup();
-
-test('submits form with valid data', async () => {
-  const onSubmit = vi.fn();
-  render(<LoginForm onSubmit={onSubmit} />);
-
-  await user.type(screen.getByLabelText('Email'), 'test@example.com');
-  await user.type(screen.getByLabelText('Password'), 'password123');
-  await user.click(screen.getByRole('button', { name: 'Login' }));
-
-  expect(onSubmit).toHaveBeenCalledWith({
-    email: 'test@example.com',
-// ...
-```
+## React Testing Library Defaults
 
 ### Query Priority
 
-```typescript
-// Priority order (most to least preferred):
-// 1. getByRole - accessible to everyone
-// 2. getByLabelText - form fields
-// 3. getByPlaceholderText - fallback for inputs
-// 4. getByText - non-interactive elements
-// 5. getByTestId - last resort
+Use the highest semantic query available.
 
-screen.getByRole('button', { name: 'Submit' });
-screen.getByRole('textbox', { name: 'Email' });
-screen.getByRole('checkbox', { name: 'Remember me' });
-```
+| Priority | Query | Typical Use |
+|----------|-------|-------------|
+| 1 | `getByRole` | Buttons, links, headings, form controls |
+| 2 | `getByLabelText` | Form fields |
+| 3 | `getByPlaceholderText` | Input fallback |
+| 4 | `getByText` | Static copy |
+| 5 | `getByTestId` | Last resort |
 
-### Async Testing
+### Async Pattern
 
 ```typescript
-test('shows loading then data', async () => {
+test('shows loading, then data', async () => {
   render(<UserList />);
 
-  // Loading state (sync)
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-
-  // Wait for data (async)
   expect(await screen.findByText('John Doe')).toBeInTheDocument();
-
-  // Loading should be gone
   expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
 });
 ```
 
-### Custom Render with Providers
+### Provider Wrapper
+
+Use a shared `renderWithProviders` helper when components need router, query client, or store context.
 
 ```typescript
-// test-utils.tsx
-import { render, RenderOptions } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
-
-function AllProviders({ children }: { children: React.ReactNode }) {
+function renderWithProviders(ui: React.ReactElement) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  return (
+  return render(
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>{ui}</BrowserRouter>
     </QueryClientProvider>
   );
 }
-// ...
 ```
 
----
+## MSW Defaults
 
-## MSW (Mock Service Worker)
-
-### Setup
+Use MSW for network boundaries in component and integration tests.
 
 ```typescript
-import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
-
 const server = setupServer(
-  http.get('/api/users', () => {
-    return HttpResponse.json([{ id: 1, name: 'Test User' }]);
-  }),
-  http.post('/api/users', async ({ request }) => {
-    const body = await request.json();
-    return HttpResponse.json({ id: 2, ...body }, { status: 201 });
-  })
+  http.get('/api/users', () => HttpResponse.json([{ id: 1, name: 'Test User' }])),
 );
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
-// ...
+afterAll(() => server.close());
 ```
 
-### Error Scenarios
+Add dedicated error handlers for `500`, timeout, and malformed payload scenarios.
 
-```typescript
-test('handles server error', async () => {
-  server.use(
-    http.get('/api/users', () => {
-      return HttpResponse.json({ message: 'Internal Error' }, { status: 500 });
-    })
-  );
+## Test Data Strategy
 
-  render(<UserList />);
-  expect(await screen.findByText('Failed to load users')).toBeInTheDocument();
-});
+| Pattern | Use When | Notes |
+|--------|----------|-------|
+| Factory | Most tests | Best default; override only relevant fields |
+| Fixture object | Small stable datasets | Keep local and readable |
+| DB seed | Integration tests with real persistence | Reset state between tests |
 
-test('handles network error', async () => {
-  server.use(
-    http.get('/api/users', () => {
-      return HttpResponse.error();
-// ...
-```
-
----
-
-## Test Data Management
-
-### Factory Pattern
-
-```typescript
-// factories/user.factory.ts
-import { faker } from '@faker-js/faker';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'user';
-  createdAt: Date;
-}
-
-export function createUser(overrides: Partial<User> = {}): User {
-  return {
-    id: faker.string.uuid(),
-    email: faker.internet.email(),
-// ...
-```
-
-### Fixture Pattern
-
-```typescript
-// fixtures/orders.fixture.ts
-export const fixtures = {
-  emptyOrder: {
-    id: 'order-1',
-    items: [],
-    total: 0,
-    status: 'pending' as const,
-  },
-  singleItemOrder: {
-    id: 'order-2',
-    items: [{ productId: 'prod-1', quantity: 1, price: 100 }],
-    total: 100,
-    status: 'pending' as const,
-  },
-  completedOrder: {
-// ...
-```
-
-### Database Seeding (Integration Tests)
-
-```typescript
-import { prisma } from '../lib/prisma';
-import { createUser } from '../factories/user.factory';
-
-export async function seedTestDatabase() {
-  await prisma.user.deleteMany();
-  await prisma.order.deleteMany();
-
-  const users = await Promise.all([
-    prisma.user.create({ data: createUser({ role: 'admin' }) }),
-    prisma.user.create({ data: createUser({ role: 'user' }) }),
-  ]);
-
-  return { users };
-}
-
-// ...
-```
-
----
+Prefer factories over giant fixtures when a suite keeps growing.
 
 ## Integration Test Patterns
 
-### API Tests (supertest)
+### API Boundary
 
 ```typescript
-describe('POST /api/orders', () => {
-  test('creates order and returns 201', async () => {
-    const response = await request(app)
-      .post('/api/orders')
-      .send({ productId: '123', quantity: 2 })
-      .expect(201);
+test('POST /api/orders returns 201 and the created order', async () => {
+  const response = await request(app)
+    .post('/api/orders')
+    .send({ productId: '123', quantity: 2 })
+    .expect(201);
 
-    expect(response.body).toMatchObject({
-      id: expect.any(String),
-      status: 'pending',
-    });
+  expect(response.body).toMatchObject({
+    id: expect.any(String),
+    status: 'pending',
   });
 });
 ```
 
-### Database Tests (Testcontainers)
+### Database Integration
 
-```typescript
-describe('UserRepository', () => {
-  let db: TestDatabase;
+Use Testcontainers only when realism matters more than setup cost:
 
-  beforeAll(async () => {
-    db = await TestDatabase.start();
-  });
+- repository and transaction behavior
+- migration-sensitive flows
+- query correctness against a real engine
 
-  afterAll(() => db.stop());
-  beforeEach(() => db.reset());
+If setup cost is high and the repo has no container pattern yet, ask first.
 
-  test('creates user and retrieves by email', async () => {
-    const repo = new UserRepository(db.connection);
-    await repo.create({ email: 'test@example.com', name: 'Test' });
-    const user = await repo.findByEmail('test@example.com');
-    expect(user?.name).toBe('Test');
-// ...
-```
+## Coverage Commands
 
----
-
-## E2E Testing Patterns (Playwright)
-
-### Page Object Model
-
-```typescript
-class CheckoutPage {
-  constructor(private page: Page) {}
-
-  async fillShippingAddress(address: Address) {
-    await this.page.fill('[data-testid="address"]', address.street);
-    await this.page.fill('[data-testid="city"]', address.city);
-  }
-
-  async submitOrder() {
-    await this.page.click('[data-testid="submit-order"]');
-    await this.page.waitForURL('**/confirmation');
-  }
-}
-
-test('user can complete checkout', async ({ page }) => {
-// ...
-```
-
----
-
-## Coverage Configuration
-
-### Vitest
-
-```typescript
-// vitest.config.ts
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  test: {
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
-      reportsDirectory: './coverage',
-      thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 75,
-        statements: 80,
-      },
-// ...
-```
-
-### Jest
-
-```javascript
-// jest.config.js
-module.exports = {
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  coverageThreshold: {
-    global: { branches: 75, functions: 80, lines: 80, statements: 80 },
-    './src/utils/payment.ts': {
-      branches: 100, functions: 100, lines: 100,
-    },
-  },
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.test.{ts,tsx}',
-    '!src/**/*.stories.{ts,tsx}',
-// ...
-```
-
-### Coverage Commands
-
-```bash
-# Run tests with coverage
-pnpm test --coverage
-
-# Specific file
-pnpm test src/utils/payment.test.ts --coverage
-
-# HTML report
-pnpm test --coverage --coverage.reporter=html
-open coverage/index.html
-```
-
----
+| Goal | Vitest | Jest |
+|------|--------|------|
+| Full coverage | `pnpm test --coverage` | `pnpm jest --coverage` |
+| Specific file | `pnpm test src/foo.test.ts --coverage` | `pnpm jest src/foo.test.ts --coverage` |
+| HTML report | `pnpm test --coverage --coverage.reporter=html` | `pnpm jest --coverage --coverageReporters=html` |
 
 ## Mock Strategy Decision Tree
 
-```
-Is it an external service (3rd party API, payment)?
-  → YES: Always mock (unreliable, costs money)
-  → NO: Continue...
+| Dependency | Default | Escalate To |
+|-----------|---------|-------------|
+| Pure function / local module | No mock | Direct call |
+| HTTP API | MSW | Contract test if schema drift matters |
+| Database | Fake or repository stub | Testcontainers when SQL behavior matters |
+| Time / randomness | Fake timers / fixed seed | Never use real time in flaky-sensitive tests |
+| Browser / DOM-only E2E concern | Hand off | Voyager |
 
-Is it a database?
-  → Unit tests: Mock the repository
-  → Integration tests: Use real DB (testcontainers)
+## Quick Rules
 
-Is it a sibling service in your system?
-  → Unit tests: Mock the client
-  → Integration tests: Consider contract tests
-
-Is it slow (> 100ms)?
-  → Consider mocking for unit tests
-  → Use real implementation for integration tests
-```
+- Prefer one behavior per test.
+- Prefer explicit edge cases over snapshot sprawl.
+- Prefer helpers that clarify intent, not helpers that hide assertions.
+- Prefer integration tests over deep mock trees once behavior crosses a meaningful boundary.

@@ -1,281 +1,95 @@
 # Test Selection & Prioritization Strategy
 
-CI高速化の核心：変更に基づくテスト選択と優先順位付け。
+Purpose: Cut CI time without throwing away signal. Read this when Radar runs in `SELECT` mode or when suites are too slow to run fully on every change.
 
----
+Contents:
+
+- changed-file selection
+- priority tiers
+- incremental gates
+- monorepo patterns
+- skip conditions
 
 ## Changed-File Based Selection
 
 ### Vitest
 
 ```bash
-# Run tests related to changed files (vs main)
 npx vitest --changed HEAD~1
-
-# Run tests related to specific files
 npx vitest --related src/utils/auth.ts
-
-# Run tests affected by staged changes
 npx vitest --changed
-```
-
-```typescript
-// vitest.config.ts - Workspace-aware changed detection
-export default defineConfig({
-  test: {
-    // Only in CI: run related tests for changed files
-    ...(process.env.CI && {
-      // Uses git to find changed files
-      changed: 'HEAD~1',
-    }),
-  },
-});
 ```
 
 ### Jest
 
 ```bash
-# Find tests related to changed files
 npx jest --findRelatedTests src/utils/auth.ts src/services/user.ts
-
-# Run tests changed since a branch point
 npx jest --changedSince=main
-
-# Only re-run failed tests from last run
 npx jest --onlyFailures
-
-# Combine: changed files + only failures
 npx jest --changedSince=main --onlyFailures
-```
-
-```json
-// package.json - CI script
-{
-  "scripts": {
-    "test:changed": "jest --changedSince=main --passWithNoTests",
-    "test:related": "jest --findRelatedTests $(git diff --name-only main -- '*.ts' '*.tsx')"
-  }
-}
 ```
 
 ### pytest
 
 ```bash
-# Install testmon for change-based selection
 pip install pytest-testmon
-
-# First run: build dependency database
 pytest --testmon
-
-# Subsequent runs: only affected tests
-pytest --testmon
-
-# Combine with coverage
 pytest --testmon --cov=src
-
-# Manual: run tests in changed directories
 pytest $(git diff --name-only main -- '*.py' | xargs -I{} dirname {} | sort -u)
-```
-
-```ini
-# pytest.ini - testmon configuration
-[pytest]
-addopts = --testmon
-testmon_datadir = .testmondata
-```
-
-```yaml
-# .github/workflows/test.yml - Cache testmon data
-- name: Cache testmon data
-  uses: actions/cache@v4
-  with:
-    path: .testmondata
-    key: testmon-${{ runner.os }}-${{ hashFiles('src/**/*.py') }}
-    restore-keys: testmon-${{ runner.os }}-
 ```
 
 ### Go
 
 ```bash
-# Run tests for changed packages only
 CHANGED_PKGS=$(git diff --name-only main -- '*.go' | xargs -I{} dirname {} | sort -u | sed 's|^|./|')
 go test $CHANGED_PKGS
-
-# Run tests for package and its dependents
 go test ./pkg/auth/...
-
-# List packages that depend on changed package
-go list -f '{{.ImportPath}}' ./... | xargs -I{} go list -f '{{if (index .Deps "mymodule/pkg/auth")}}{{.ImportPath}}{{end}}' {}
-```
-
-```bash
-# go-affected: find all packages affected by changes
-# Script: scripts/go-affected-tests.sh
-#!/bin/bash
-set -euo pipefail
-
-BASE_BRANCH=${1:-main}
-CHANGED_FILES=$(git diff --name-only "$BASE_BRANCH" -- '*.go')
-CHANGED_PKGS=$(echo "$CHANGED_FILES" | xargs -I{} dirname {} | sort -u)
-
-# Find reverse dependencies
-ALL_PKGS=""
-for pkg in $CHANGED_PKGS; do
-  DEPS=$(go list -f '{{ join .Deps "\n" }}' "./..." 2>/dev/null | grep "$pkg" | sort -u)
-  ALL_PKGS="$ALL_PKGS $DEPS ./$pkg/..."
-done
-# ...
 ```
 
 ### Rust
 
 ```bash
-# cargo-nextest: modern test runner with better selection
-cargo install cargo-nextest
-
-# Run tests for changed crates in workspace
 cargo nextest run -p my-crate
-
-# Run with partitioning (for CI sharding)
 cargo nextest run --partition count:1/4
-
-# Filter by test name pattern
 cargo nextest run -E 'test(auth::)'
-
-# Run only tests that previously failed
 cargo nextest run --run-ignored=only
 ```
 
-```toml
-# .config/nextest.toml
-[profile.ci]
-retries = 2
-fail-fast = false
-status-level = "slow"
-slow-timeout = { period = "60s", terminate-after = 2 }
-
-[profile.ci.junit]
-path = "target/nextest/ci/junit.xml"
-```
-
----
-
 ## Fail-Likely-First Prioritization
 
-### Priority Levels
+| Priority | Category | Meaning | Typical Source |
+|----------|----------|---------|----------------|
+| `P0` | Last-Failed | Failed in the last CI run | `--onlyFailures`, retry list |
+| `P1` | Direct | Directly related to changed files | `--findRelatedTests`, `--changed` |
+| `P2` | Dependent | Import / dependency graph fallout | reverse dependency analysis |
+| `P3` | Proximate | Same module or directory | directory-based fallback |
+| `P4` | Full | Everything else | full suite |
 
-| Priority | Category | Description | Selection Criteria |
-|----------|----------|-------------|-------------------|
-| **P0** | Last-Failed | 直前CIで失敗したテスト | `--onlyFailures` / retry list |
-| **P1** | Direct | 変更ファイルの直接テスト | `--findRelatedTests` / `--changed` |
-| **P2** | Dependent | 変更ファイルの依存先テスト | Import graph analysis |
-| **P3** | Proximate | 同ディレクトリ・同モジュールのテスト | Directory-based selection |
-| **P4** | Full | 全テストスイート | Full run |
-
-### Implementation: Priority-Based Runner
-
-```typescript
-// scripts/prioritized-test-runner.ts
-import { execSync } from 'child_process';
-
-interface TestTier {
-  name: string;
-  command: string;
-  timeout: number; // minutes
-  required: boolean;
-}
-
-const tiers: TestTier[] = [
-  {
-    name: 'P0: Last-Failed',
-    command: 'npx vitest --reporter=verbose run --bail 5 2>/dev/null || true',
-    timeout: 2,
-// ...
-```
-
-### CI Priority Matrix
-
-```yaml
-# .github/workflows/prioritized-tests.yml
-jobs:
-  determine-scope:
-    runs-on: ubuntu-latest
-    outputs:
-      changed-files: ${{ steps.changes.outputs.files }}
-      run-full: ${{ steps.scope.outputs.full }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - id: changes
-        run: |
-          FILES=$(git diff --name-only origin/main -- '*.ts' '*.tsx' | tr '\n' ' ')
-# ...
-```
-
----
+Run `P0 -> P1 -> P2` before you consider skipping a risky merge.
 
 ## Incremental Execution Pipeline
 
 ### 3-Gate Strategy
 
-```
-┌──────────────┐    ┌──────────────────┐    ┌────────────────┐
-│  Fast Gate   │───▶│ Integration Gate  │───▶│  Full Suite     │
-│  ≤ 2 min     │    │  ≤ 5 min          │    │  ≤ 15 min       │
-│              │    │                    │    │                 │
-│ • Lint       │    │ • Changed-related  │    │ • All tests     │
-│ • Type check │    │ • Integration      │    │ • Mutation (opt) │
-│ • Unit (P0+P1)│   │ • Contract         │    │ • Performance   │
-└──────────────┘    └──────────────────┘    └────────────────┘
-  PR required         PR required              main only
-```
+| Gate | Includes | Time Budget | Typical Outcome |
+|------|----------|-------------|-----------------|
+| Fast | Lint, type check, unit `P0 + P1` | `<= 2min` | PR block |
+| Integration | Related integration and contract tests | `<= 5min` | PR block |
+| Full | All tests, optional mutation, performance, security | `<= 15min` | main or nightly |
 
-### Gate Configuration
+Related CI planning from the broader test-DX perspective:
 
-```yaml
-# .github/workflows/gates.yml
-name: Test Gates
+- `Gate 1`: lint + type check `< 1min`
+- `Gate 2`: affected unit tests `< 3min`
+- `Gate 3`: affected integration tests `< 5min`
 
-on:
-  pull_request:
-    branches: [main, develop]
+Use the stricter gate when the pipeline already supports it.
 
-jobs:
-  # Gate 1: Fast (always runs, blocks PR)
-  fast-gate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-# ...
-```
+## Retry And Re-Run Rules
 
----
-
-## CI-Specific Patterns
-
-### Test Result Caching
+Retries are allowed only to surface flakes, not to hide real failures.
 
 ```yaml
-# Cache test results for faster re-runs
-- name: Cache Vitest
-  uses: actions/cache@v4
-  with:
-    path: |
-      node_modules/.vitest
-      .vitest-failures
-    key: vitest-${{ runner.os }}-${{ hashFiles('src/**/*.ts', 'tests/**/*.ts') }}
-    restore-keys: |
-      vitest-${{ runner.os }}-
-```
-
-### Failed Test Auto Re-run
-
-```yaml
-# Retry failed tests up to 2 times
 - name: Run tests with retry
   uses: nick-fields/retry@v3
   with:
@@ -283,160 +97,90 @@ jobs:
     max_attempts: 3
     retry_on: error
     command: npx vitest run --reporter=junit --outputFile=test-results.xml
-
-# Or use built-in retry
-- name: Run tests
-  run: npx vitest run --retry 2
 ```
 
-### Matrix Strategy for Multi-Environment
-
-```yaml
-strategy:
-  fail-fast: false
-  matrix:
-    node-version: [18, 20, 22]
-    os: [ubuntu-latest, windows-latest]
-    exclude:
-      - node-version: 18
-        os: windows-latest
+```bash
+npx vitest run --retry 2
 ```
 
----
+## CI-Specific Patterns
 
-## Monorepo Strategy
+| Pattern | Benefit | When To Use |
+|--------|---------|-------------|
+| Result cache | Faster re-runs | Stable dependency graph |
+| Sharding | Linear speed-up | Large deterministic suites |
+| Matrix split | Environment coverage | Only when cross-platform value is real |
+| Fail-fast | Faster signal | Safe only when later jobs do not add unique evidence |
+
+## Monorepo Patterns
 
 ### Turborepo
 
 ```bash
-# Run tests only for affected packages
 npx turbo run test --filter=...[origin/main]
-
-# Run tests for specific package and dependents
 npx turbo run test --filter=@myorg/auth...
-
-# Dry run to see what would execute
 npx turbo run test --filter=...[origin/main] --dry-run
-```
-
-```json
-// turbo.json
-{
-  "pipeline": {
-    "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"],
-      "cache": true,
-      "inputs": ["src/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
-    },
-    "test:ci": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**", "test-results/**"],
-      "cache": false
-    }
-  }
-// ...
 ```
 
 ### pnpm Workspace
 
 ```bash
-# Run tests in changed packages only
 pnpm --filter "...[origin/main]" run test
-
-# Run tests in specific package
 pnpm --filter @myorg/auth run test
-
-# Run tests in all packages matching pattern
-pnpm --filter "./packages/core-*" run test
-
-# Parallel execution across packages
 pnpm -r --parallel run test
 ```
 
 ### Nx
 
 ```bash
-# Run affected tests
 npx nx affected --target=test --base=main
-
-# Run tests for specific project graph
 npx nx run-many --target=test --projects=auth,users
-
-# Visualize affected graph
 npx nx affected:graph --base=main
 ```
 
-```json
-// nx.json
-{
-  "targetDefaults": {
-    "test": {
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "dependsOn": ["^build"]
-    }
-  },
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*", "!{projectRoot}/**/*.md"]
-  }
-}
-```
+## Skip Conditions
 
----
+Safe skip candidates:
 
-## Decision Tree: Test Selection Strategy
+- docs-only changes
+- pure asset changes with no executable code impact
+- config changes that provably cannot affect runtime behavior
 
-```
-PR opened / Push event
-        │
-        ▼
-  ┌─────────────────┐
-  │ Changed files?   │
-  │ (git diff)       │
-  └────────┬────────┘
-           │
-     ┌─────┴─────┐
-     │           │
-  Yes ▼        No ▼
-  ┌──────┐   ┌──────────┐
-  │Select│   │Skip tests│
-  │scope │   │(docs only)│
-  └──┬───┘   └──────────┘
-...
-```
+Unsafe skip candidates:
 
-### Skip Conditions
+- schema changes
+- dependency upgrades
+- shared library changes
+- test utilities or global setup changes
+
+Example:
 
 ```yaml
-# Skip tests when only docs/config changed
-- name: Check for skippable changes
-  id: skip-check
-  run: |
-    CHANGED=$(git diff --name-only origin/main)
-    # Skip if only markdown, docs, or non-code files changed
-    if echo "$CHANGED" | grep -qvE '\.(md|txt|png|jpg|svg|yml|yaml)$'; then
-      echo "skip=false" >> $GITHUB_OUTPUT
-    else
-      echo "skip=true" >> $GITHUB_OUTPUT
-    fi
-
-- name: Run tests
-  if: steps.skip-check.outputs.skip != 'true'
-  run: npx vitest run
+if echo "$CHANGED" | grep -qvE '\\.(md|txt|png|jpg|svg|yml|yaml)$'; then
+  echo "skip=false" >> $GITHUB_OUTPUT
+else
+  echo "skip=true" >> $GITHUB_OUTPUT
+fi
 ```
 
----
+## Decision Rule
+
+Use the smallest selection strategy that still covers:
+
+1. last failures
+2. directly changed behavior
+3. high-value dependents
+4. integration contracts touched by the change
+
+If that still exceeds the budget, optimize sharding or caching before weakening the gate.
 
 ## Quick Reference
 
-| Strategy | Tool/Flag | Use Case |
-|----------|-----------|----------|
-| Changed files | `vitest --changed` | PR テスト高速化 |
-| Related files | `jest --findRelatedTests` | 依存先テスト |
-| Failed first | `jest --onlyFailures` | リグレッション優先 |
-| Monorepo scope | `turbo --filter=...[main]` | 影響パッケージのみ |
-| Shard | `vitest --shard=1/4` | CI 並列化 |
-| Retry | `vitest --retry 2` | Flaky 対策 |
-| Skip | Path filter in CI | Docs-only 変更スキップ |
-| Priority | P0→P4 tier | 段階的実行 |
+| Strategy | Command / Tool | Use Case |
+|----------|----------------|----------|
+| Changed files | `vitest --changed` | Fast PR validation |
+| Related tests | `jest --findRelatedTests` | Dependency-aware JS/TS validation |
+| Last failed first | `jest --onlyFailures` | Regression-first reruns |
+| Python change selection | `pytest --testmon` | Incremental pytest suites |
+| Monorepo scope | `turbo --filter=...[main]` | Affected packages only |
+| Retry | `vitest --retry 2` | Flake diagnosis, not permanent masking |

@@ -1,204 +1,102 @@
 # Shift-Left/Shift-Right & Production Testing
 
-> 開発ライフサイクル全体でのテスト戦略、可観測性駆動テスト、カオステスト、QAOps
+Purpose: Connect Radar with the full software lifecycle, from early design checks to production feedback loops. Read this when testing strategy depends on observability, QAOps, or production-facing validation.
 
-## 1. Shift-Left テスティング
+Contents:
 
-### 定義
+- shift-left maturity
+- shift-right test types
+- observability-driven prioritization
+- chaos and QAOps gates
+- synthetic monitoring
 
-テスト活動を開発ライフサイクルの「左側」（早期段階）に移動し、バグの早期発見・修正コスト削減を実現するアプローチ。
+## Shift-Left Testing
 
-### Shift-Left 成熟度モデル
+### Maturity Model
 
-| レベル | 段階 | テスト活動 | コスト |
-|--------|------|----------|--------|
-| L0 | コーディング後 | 手動テスト | ×100 |
-| L1 | コーディング中 | ユニットテスト（TDD） | ×10 |
-| L2 | 設計中 | 仕様からのテスト生成 | ×1 |
-| L3 | 要件定義中 | BDD/ATDD、受入基準テスト | ×0.1 |
+| Level | When Testing Starts | Relative Cost |
+|-------|---------------------|---------------|
+| L0 | After coding | `×100` |
+| L1 | During coding | `×10` |
+| L2 | During design | `×1` |
+| L3 | During requirements | `×0.1` |
 
-### Shift-Left プラクティス
+High-value shift-left practices:
 
-| プラクティス | タイミング | 効果 |
-|------------|----------|------|
-| **Static Analysis** | コミット前 | 構文・型・セキュリティの即時検出 |
-| **Pre-commit hooks** | コミット時 | リンター・フォーマッター自動実行 |
-| **TDD** | コーディング中 | 設計品質 + テストカバレッジ同時獲得 |
-| **BDD** | 要件定義時 | ビジネス要件とテストの直結 |
-| **Contract-First** | API設計時 | インターフェース互換性の早期保証 |
-| **Threat Modeling** | 設計時 | セキュリティリスクの早期特定 |
+- static analysis
+- pre-commit hooks
+- TDD for unstable logic
+- BDD / acceptance criteria for business-critical flows
+- contract-first design for APIs
 
----
+## Shift-Right Testing
 
-## 2. Shift-Right テスティング
+| Test Type | Purpose | Risk |
+|-----------|---------|------|
+| Canary release | Gradual blast-radius control | Low |
+| Feature flag rollout | Limited user exposure | Low |
+| A/B test | Behavioral comparison | Low |
+| Synthetic monitoring | Ongoing health verification | Low |
+| Chaos test | Resilience validation | Medium to high |
+| Traffic mirroring | Real-request shadow validation | Medium |
 
-### 定義
+## Observability-Driven Testing
 
-テスト活動を開発ライフサイクルの「右側」（本番環境）に拡張し、実際のユーザー行動・負荷・環境での品質を検証するアプローチ。
+Use production signals to shape test priorities.
 
-### Shift-Right テスト種別
+| Signal | Radar Action | Priority |
+|--------|--------------|----------|
+| Error-rate spike | Add regression tests immediately | `P0` |
+| SLO budget burn `> 50%` | Strengthen related test paths | `P1` |
+| New error pattern | Add edge-case tests | `P1` |
+| P99 latency degradation | Add performance-aware checks or hand off | `P2` |
+| Failure on a rare path | Add long-tail coverage | `P3` |
 
-| テスト種別 | 目的 | リスク | ツール例 |
-|-----------|------|--------|---------|
-| **カナリアリリース** | 段階的デプロイで影響確認 | 低 | Argo Rollouts, Flagger |
-| **Feature Flags** | 特定ユーザーに限定公開 | 低 | LaunchDarkly, Unleash |
-| **A/B テスト** | ユーザー行動の統計的比較 | 低 | Optimizely, GrowthBook |
-| **Synthetic Monitoring** | 合成トラフィックで常時監視 | 低 | Datadog, New Relic |
-| **Chaos Testing** | 意図的な障害注入 | 中-高 | Chaos Monkey, Litmus |
-| **Traffic Mirroring** | 本番トラフィックのコピーでテスト | 中 | Istio, Envoy |
+## Chaos Testing
 
----
+Chaos experiments should stay explicit and reversible.
 
-## 3. 可観測性駆動テスト（Observability-Driven Testing）
+Recommended template fields:
 
-### 概念
+- steady-state hypothesis
+- injected fault
+- blast radius
+- rollback trigger
+- result and follow-up action
 
-テストの設計と優先付けを、本番環境の可観測性データ（メトリクス、ログ、トレース）に基づいて行うアプローチ。
+Useful fault candidates:
 
-### 3本柱との統合
+- network latency
+- dependency outage
+- CPU load `80%+`
+- disk pressure `90%+`
+- DNS failure
 
-```
-Metrics（メトリクス）
-  → エラーレート上昇 → 回帰テスト追加
-  → レイテンシ劣化 → パフォーマンステスト追加
+## QAOps Gates
 
-Logs（ログ）
-  → 未処理例外パターン → エッジケーステスト追加
-  → ユーザーエラー頻度 → バリデーションテスト強化
+| Gate | Includes | Budget | Failure Effect |
+|------|----------|--------|----------------|
+| Gate 1 | lint, type check, unit | `< 2min` | block PR |
+| Gate 2 | integration, contract | `< 10min` | block merge |
+| Gate 3 | E2E, performance, security | `< 30min` | block deploy |
+| Gate 4 | smoke, synthetic, canary | continuous | trigger rollback or incident flow |
 
-Traces（トレース）
-  → 高頻度パス → 優先テストカバレッジ
-  → 障害伝播パターン → 統合テスト追加
-```
+## Synthetic Monitoring
 
-### テスト優先度への反映
+| Scenario | Frequency | Example |
+|----------|-----------|---------|
+| Health check | `1 min` | API ping |
+| Critical path | `5 min` | login -> key action -> logout |
+| Transaction | `15 min` | payment or checkout flow |
+| Global reachability | `30 min` | multi-region probe |
 
-| 可観測性シグナル | テストアクション | 優先度 |
-|----------------|----------------|--------|
-| エラーレート急増 | 回帰テスト即時追加 | P0 |
-| SLO バジェット消費 > 50% | 関連パスのテスト強化 | P1 |
-| 新規エラーパターン検出 | エッジケーステスト追加 | P1 |
-| レイテンシ P99 悪化 | パフォーマンステスト追加 | P2 |
-| 低頻度パスの障害 | ロングテールテスト追加 | P3 |
+Synthetic monitoring is not a substitute for pre-release E2E. It is the production safety net after release.
 
----
+## Radar Integration
 
-## 4. カオステスティング
-
-### カオスエンジニアリング原則
-
-```
-1. 定常状態の仮説を立てる
-2. 現実世界のイベントを変数化する
-3. 本番環境で実験する（安全に）
-4. 自動化して継続的に実行する
-5. 影響範囲を最小化する（ブラストラディウス制御）
-```
-
-### カオス実験テンプレート
-
-```markdown
-## Chaos Experiment
-
-### 仮説
-[定常状態の定義: 例「API レスポンスタイム P95 < 200ms」]
-
-### 変数（注入する障害）
-- [ ] ネットワーク遅延（100ms-500ms）
-- [ ] サービス停止（依存サービス A）
-- [ ] CPU 高負荷（80%+）
-- [ ] ディスク枯渇（90%+）
-- [ ] DNS 障害
-
-### ブラストラディウス
-- 対象: [特定のサービス/Pod/リージョン]
-- 影響ユーザー: [%]
-- ロールバック: [自動/手動、タイムアウト]
-
-### 結果
-- 定常状態維持: [Yes/No]
-- 検出されたレジリエンスギャップ: [...]
-- 改善アクション: [...]
-```
-
-### ツール比較
-
-| ツール | 対象 | 特徴 |
-|--------|------|------|
-| **Chaos Monkey** | VM/インスタンス | Netflix発、ランダムインスタンス終了 |
-| **Litmus** | Kubernetes | CNCF、宣言的カオス実験 |
-| **Gremlin** | マルチプラットフォーム | SaaS、安全な実験管理 |
-| **Toxiproxy** | ネットワーク | プロキシベースの障害注入 |
-| **Chaos Toolkit** | 汎用 | 拡張可能なフレームワーク |
-
----
-
-## 5. QAOps
-
-### 定義
-
-QA プラクティスと DevOps パイプラインを統合し、品質を継続的デリバリーの一部として組み込むアプローチ。
-
-### QAOps パイプライン設計
-
-```
-コミット → ビルド → テスト（段階的ゲート） → デプロイ → 監視
-                      │
-              ┌───────┼───────┐
-              │       │       │
-           Gate 1  Gate 2  Gate 3
-           Static  Unit+   E2E+
-           Analysis Integration Performance
-           < 1min  < 5min  < 15min
-```
-
-### テストゲート設計
-
-| ゲート | 含むテスト | 制限時間 | 失敗時 |
-|--------|----------|---------|--------|
-| **Gate 1: Fast** | Lint, Type check, Unit | < 2min | PR ブロック |
-| **Gate 2: Standard** | Integration, Contract | < 10min | マージブロック |
-| **Gate 3: Full** | E2E, Performance, Security | < 30min | デプロイブロック |
-| **Gate 4: Production** | Smoke, Synthetic, Canary | 継続 | ロールバック |
-
----
-
-## 6. Synthetic Monitoring（合成監視）
-
-### 定義
-
-スクリプト化されたユーザーシナリオを定期的に自動実行し、本番環境の可用性とパフォーマンスを常時監視する手法。
-
-### テストシナリオ設計
-
-| シナリオ種別 | 頻度 | 例 |
-|------------|------|-----|
-| **ヘルスチェック** | 1分 | API エンドポイント応答確認 |
-| **クリティカルパス** | 5分 | ログイン→主要機能→ログアウト |
-| **トランザクション** | 15分 | 決済フロー全体の検証 |
-| **グローバル** | 30分 | 複数リージョンからのアクセス |
-
-### E2E テストとの差異
-
-| 観点 | E2E テスト | Synthetic Monitoring |
-|------|----------|---------------------|
-| 実行タイミング | CI/CD パイプライン内 | 本番環境で継続的 |
-| 目的 | リリース前の品質保証 | リリース後の可用性監視 |
-| 失敗時アクション | デプロイ停止 | アラート→インシデント対応 |
-| 環境 | ステージング/テスト | 本番 |
-| 頻度 | デプロイごと | 定期的（分〜時間） |
-
----
-
-## 7. Radar との統合
-
-### Shift-Left/Right の適用マップ
-
-| Radar モード | Shift-Left 適用 | Shift-Right 適用 |
-|-------------|----------------|-----------------|
-| Default | エッジケーステスト早期追加 | 本番エラーパターンからのテスト逆生成 |
-| FLAKY | 非決定的テストの早期検出 | 本番フレーキーの可観測性分析 |
-| AUDIT | カバレッジギャップの設計段階検出 | 本番パスカバレッジとの差分分析 |
-| SELECT | 変更影響のテスト自動選択 | 本番障害パターンに基づくテスト優先度 |
-
-**Source:** [SmartBear: Shift-Left Testing](https://smartbear.com/learn/automated-testing/shift-left-testing/) · [Netflix: Chaos Engineering](https://netflixtechblog.com/tagged/chaos-engineering) · [Gremlin: Chaos Engineering Guide](https://www.gremlin.com/community/tutorials/chaos-engineering-the-history-principles-and-practice/) · [Datadog: Synthetic Monitoring](https://www.datadoghq.com/product/synthetic-monitoring/) · [Testlio: QAOps](https://testlio.com/blog/software-testing-trends/)
+| Radar Mode | Shift-Left Use | Shift-Right Use |
+|------------|----------------|-----------------|
+| Default | Add edge-case tests earlier | Feed back production errors into regression coverage |
+| FLAKY | Detect nondeterminism early | Compare against production instability signals |
+| AUDIT | Catch design-time coverage gaps | Compare test coverage to real production paths |
+| SELECT | Auto-select tests from change impact | Prioritize by observed production failures |

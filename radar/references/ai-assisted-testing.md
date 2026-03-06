@@ -1,186 +1,80 @@
 # AI-Assisted Testing & Modern Trends (2025-2026)
 
-> AI テスト自動化、自己修復テスト、AI 生成コードのテスト、テスト品質の AI 強化
+Purpose: Use AI to accelerate testing without delegating judgment. Read this when Radar is asked to generate tests with AI assistance or evaluate AI-generated test suites.
 
-## 1. AI テスティングの現状（2025-2026）
+Contents:
 
-### 主要統計
+- AI usage boundaries
+- self-healing limits
+- AI-generated code testing strategy
+- Radar integration rules
 
-| 指標 | データ |
-|------|--------|
-| AI テスティングを最優先と回答 | **72.8%**（QA リーダー） |
-| AI テスト結果を「人間レビュー付きで」信頼 | **67%** |
-| GenAI を #1 QE スキルと認識 | **63%** |
-| AI QE に取り組む組織 | **90%**（ただしエンタープライズ規模は **15%**） |
-| AI による定性分析時間削減 | **最大 80%** |
-| AI テスト作成時間削減 | **50-70%**（Playwright AI 等） |
+## Current State
 
-### 2026年 テスティング 5大トレンド（Parasoft）
+Use these numbers as directional context, not as deployment criteria:
 
-| トレンド | 説明 |
-|---------|------|
-| **AI エージェントによる自律テスト** | 生成→実行→報告まで自動化 |
-| **AI 生成コードのテスト** | >50% に論理・セキュリティ欠陥 |
-| **AI 搭載アプリのテスト** | 確信度ベースの評価が必要 |
-| **コンプライアンス駆動 AI テスト** | EU AI Act 等の規制対応 |
-| **AI 根本原因分析 & 自己修復** | 失敗パターンから自動修復 |
+- AI-assisted test creation can reduce drafting time by roughly `50-70%`
+- AI-generated tests often require substantial rewrite; assume `> 70%` may need revision
+- human review remains mandatory even when generated tests look plausible
 
----
+## AI Test Generation Rules
 
-## 2. AI テスト生成
+AI can help with:
 
-### 生成パターン
+- first-pass edge-case enumeration
+- boring scaffolding for test files
+- variant generation for existing assertions
+- flaky-log clustering and hypothesis generation
 
-| パターン | 説明 | ツール例 |
-|---------|------|---------|
-| **コード→テスト** | 実装コードからテストを自動生成 | Copilot, Codex, Cursor |
-| **仕様→テスト** | 自然言語仕様からテストケース生成 | TestRigor, Meticulous |
-| **録画→テスト** | ユーザー操作録画からE2Eテスト生成 | Playwright MCP, Mabl |
-| **変更→テスト** | diff から影響範囲のテストを生成 | Diffblue Cover（Java） |
+AI cannot replace:
 
-### AI テスト生成の品質管理
+- meaningful assertion design
+- business-priority judgment
+- deciding whether a test belongs at unit, integration, or E2E level
 
-```
-AI 生成テスト → 人間レビュー必須
-  ↓
-チェックポイント:
-  1. アサーションが意味を持つか?（The Liar 防止）
-  2. エッジケースをカバーしているか?
-  3. 内部実装に依存していないか?（The Inspector 防止）
-  4. テストが独立して実行可能か?
-```
+## Review Checklist For AI-Generated Tests
 
-**注意:** AI 生成テストの >70% は「そのままでは使えない」レベル。人間による精査と改修が不可欠。
+- assertions are meaningful and non-empty
+- tests can actually fail when behavior regresses
+- edge cases include null, empty, boundary, and error conditions where relevant
+- mocks reflect plausible reality
+- no optimistic assumptions hide failure modes
+- non-deterministic inputs are controlled
 
-### Playwright MCP 統合
+## Self-Healing Test Boundaries
 
-```
-MCP（Model Context Protocol）
-  → Playwright をAIエージェントに接続
-    → 自然言語でテストシナリオ記述
-      → 自動的にテストコード生成・実行
+| Level | What It Can Repair | Automation Level |
+|------|---------------------|------------------|
+| L1 | Selector drift and obvious locator changes | High |
+| L2 | Small flow changes | Medium, review required |
+| L3 | Business-logic drift | Low, human decision required |
 
-利点: E2Eテスト作成の大幅な時間短縮
-制約: 複雑なシナリオ・条件分岐は人間設計が必要
-```
+Use self-healing only to recover from presentation drift, not to reinterpret intended product behavior.
 
----
+## AI-Generated Code Testing Strategy
 
-## 3. 自己修復テスト（Self-Healing Tests）
+When the underlying code is AI-generated:
 
-### 定義
+1. treat property-based testing as strongly preferred
+2. use mutation testing when the generated tests themselves are AI-assisted
+3. add contract tests for generated clients or API layers
+4. apply security scanning as a non-optional companion
 
-テストの失敗原因（セレクタ変更、レイアウト変更等）を AI が自動検出し、テストコードを修正して再実行する仕組み。
+## Radar Integration
 
-### 自己修復メカニズム
+| Radar Phase | AI Helps With | Human Must Still Decide |
+|-------------|---------------|-------------------------|
+| `SCAN` | detect likely gaps and risky files | priority and business impact |
+| `LOCK` | estimate complexity | what is worth testing now |
+| `PING` | draft tests and variants | final assertions and scope |
+| `VERIFY` | cluster flaky signals and suggest fixes | whether the fix is real and sufficient |
+| `FLAKY` | pattern mining across repeated failures | root-cause confirmation |
 
-| レベル | 修復対象 | 自動化度 |
-|--------|---------|---------|
-| **L1: セレクタ修復** | CSS/XPath セレクタの変更 | 高（AI で自動） |
-| **L2: フロー修復** | UIフローの変更（ステップ追加/削除） | 中（提案→人間承認） |
-| **L3: ロジック修復** | ビジネスロジック変更への追従 | 低（人間判断必須） |
+## Default Guardrail
 
-### 実装アプローチ
+Treat AI-generated tests as draft material until a human has:
 
-```
-1. 失敗検出
-   → セレクタ not found? タイムアウト? アサーション失敗?
-2. 原因分析（AI）
-   → DOM diff 分析、スクリーンショット比較
-3. 修復候補生成
-   → 代替セレクタ提案、フロー変更提案
-4. 検証
-   → 修復版テストの実行・結果確認
-5. 適用判断
-   → L1: 自動適用 / L2-L3: 人間レビュー
-```
-
-### ツール比較
-
-| ツール | 特徴 | 修復レベル |
-|--------|------|----------|
-| **Healenium** | Selenium 拡張、セレクタ自動修復 | L1 |
-| **Mabl** | クラウドベース、ML で自己修復 | L1-L2 |
-| **TestRigor** | 自然言語テスト、AI 修復 | L1-L2 |
-| **Playwright AI** | MCP 経由、コンテキスト認識修復 | L1 |
-
----
-
-## 4. AI 生成コードのテスト戦略
-
-### 問題の深刻さ
-
-| 欠陥種別 | AI 生成コードでの発生率 |
-|---------|---------------------|
-| 論理エラー | >50% のサンプルで検出 |
-| セキュリティ脆弱性 | >50% のサンプルで検出 |
-| リライトが必要なコード | >70% |
-
-### AI 生成コード専用テスト戦略
-
-```
-1. Property-Based Testing（必須）
-   → AI が「もっともらしいが間違った」コードを書くケースを自動検出
-
-2. Mutation Testing（推奨）
-   → AI 生成テストの品質を検証（テストもAI生成の場合特に重要）
-
-3. Contract Testing
-   → AI が生成した API クライアントの互換性検証
-
-4. セキュリティスキャン
-   → SAST/DAST を AI 生成コードに必須適用
-```
-
-### AI テスト品質チェックリスト
-
-```markdown
-## AI-Generated Test Review
-
-### 必須チェック
-- [ ] アサーションが空でない（The Liar 検出）
-- [ ] テストが失敗可能か確認（fail-first）
-- [ ] エッジケース（null, 空, 境界値）をカバー
-- [ ] モック設定が現実的か
-
-### 追加チェック
-- [ ] テスト名が振る舞いを説明
-- [ ] プロダクションコードのコピペがない
-- [ ] 非決定的要素（時刻、乱数）が制御されている
-- [ ] AI が生成した「過度に楽観的な」テストがない
-```
-
----
-
-## 5. AI によるフレーキーテスト検出
-
-### コストデータ
-
-| 指標 | データ |
-|------|--------|
-| フレーキーテストに浪費するエンジニア時間 | **6-8 時間/週** |
-| CI パイプラインの遅延原因トップ | フレーキーテスト（35%） |
-| 「テスト結果を信頼しない」開発者 | 40%+ |
-
-### AI 検出アプローチ
-
-| 手法 | 説明 |
-|------|------|
-| **統計的フレーキー検出** | 同一コミットでの複数実行結果を統計分析 |
-| **パターン認識** | 時間帯・負荷・環境との相関を ML で検出 |
-| **根本原因分類** | 失敗ログから原因カテゴリを自動分類 |
-| **影響度スコアリング** | フレーキーテストのビジネス影響を自動評価 |
-
----
-
-## 6. Radar との統合指針
-
-| Radar フェーズ | AI 活用ポイント | 注意点 |
-|---------------|---------------|--------|
-| SCAN | AI でカバレッジギャップ・リスク箇所を自動検出 | 人間による優先度判断は必須 |
-| LOCK | AI で対象の複雑度・リスクを評価 | ビジネスコンテキストは人間が補完 |
-| PING | AI でテストコード生成 → 人間レビュー | >70% リライト前提で使用 |
-| VERIFY | AI でフレーキー検出・根本原因分析 | 修復の判断は人間 |
-| FLAKY mode | AI 統計分析で非決定的テストを特定 | パターン分析結果の検証必要 |
-
-**Source:** [Parasoft: Top 5 Software Testing Trends 2026](https://www.parasoft.com/blog/top-5-software-testing-trends/) · [Testlio: Software Testing Trends 2026](https://testlio.com/blog/software-testing-trends/) · [LambdaTest: AI Testing Trends 2025](https://www.lambdatest.com/blog/ai-in-testing/) · [Playwright MCP: Documentation](https://github.com/anthropics/anthropic-cookbook/tree/main/misc/mcp_playwright)
+- reviewed the assertions
+- run the tests
+- confirmed the tests fail when they should
+- removed optimistic or duplicated cases

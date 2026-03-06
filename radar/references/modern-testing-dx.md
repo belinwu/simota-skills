@@ -1,193 +1,92 @@
 # Modern Testing Developer Experience (2025-2026)
 
-> テストフレームワーク最新動向、DX 改善、テスト文化醸成、メトリクス駆動改善
+Purpose: Optimize testing feedback loops, tool choice, and team habits without weakening quality. Read this when Radar is asked to improve test DX or CI economics.
 
-## 1. テストフレームワーク動向（2025-2026）
+Contents:
 
-### JavaScript/TypeScript エコシステム
+- framework selection trends
+- DX metrics
+- maturity model
+- CI optimization
+- ROI heuristics
 
-| フレームワーク | 最新動向 | 特徴 |
-|-------------|---------|------|
-| **Vitest 4.x** | ブラウザネイティブテスト、workspace 強化 | ESM ファースト、Vite 統合、高速 HMR |
-| **Jest 30** | Rust ベース transformer、パフォーマンス改善 | 成熟エコシステム、広範なサポート |
-| **Playwright** | MCP 統合、AI テスト生成、コンポーネントテスト | クロスブラウザ、トレース機能 |
-| **Bun Test** | Bun ランタイム内蔵テストランナー | 超高速実行、Jest 互換 |
+## Framework Direction
 
-### Vitest vs Jest（2026年選定指針）
+### JavaScript / TypeScript
 
-| 観点 | Vitest | Jest |
-|------|--------|------|
-| **速度** | 高速（ESM ネイティブ、watch モード最適化） | 中程度（CommonJS 変換あり） |
-| **設定** | Vite 設定を共有（ゼロコンフィグに近い） | 独自設定（webpack 等との二重管理） |
-| **ESM** | ネイティブ対応 | 実験的サポート |
-| **エコシステム** | 成長中（Vite エコシステムと統合） | 成熟（豊富なプラグイン） |
-| **ブラウザテスト** | ネイティブブラウザモード | jsdom のみ |
-| **推奨** | 新規プロジェクト、Vite 使用プロジェクト | 既存 Jest プロジェクト、React Native |
+| Framework | Best Fit |
+|-----------|----------|
+| Vitest 4.x | New Vite or ESM-first projects |
+| Jest 30 | Mature Jest ecosystems and React Native |
+| Playwright | Browser and component testing where full browser realism matters |
+| Bun Test | Speed experiments, not default enterprise baseline |
 
-### Python エコシステム
+### Other Ecosystems
 
-| フレームワーク | 最新動向 |
-|-------------|---------|
-| **pytest** | プラグインエコシステム拡大、型ヒント対応強化 |
-| **pytest-xdist** | 並列実行の高度な負荷分散 |
-| **Hypothesis** | Property-based testing の成熟、戦略の拡充 |
+| Language | Notable Direction |
+|----------|-------------------|
+| Python | pytest remains the default, with stronger plugin support |
+| Go | standard tooling plus fuzzing and better helpers |
+| Rust | `cargo-nextest` and mutation tooling continue to improve |
 
-### Go / Rust エコシステム
+## DX Metrics
 
-| 言語 | 動向 |
-|------|------|
-| **Go** | `testing/fstest` 等の標準ライブラリ拡充、`go test -fuzz` ファジング標準化 |
-| **Rust** | `cargo-nextest` 高速テストランナー、`cargo-mutants` 変異テスト |
+| Metric | Healthy Target |
+|--------|----------------|
+| Unit suite runtime | `< 5 min` |
+| Full suite runtime | `< 15 min` |
+| Flaky rate | `< 1%` |
+| Failure diagnosis time | `< 15 min` |
+| Watch startup | `< 3 sec` |
+| Save-to-feedback loop | `< 10 sec` |
 
----
+Useful directional costs:
 
-## 2. テスト DX（Developer Experience）メトリクス
+- flaky tests can waste `6-8 hours` per engineer per week
+- flaky tests can drive roughly `35%` of avoidable CI delay
+- `40%+` distrust in test results is an organizational warning sign
 
-### フレーキーテストのコスト
+## Testing Culture Maturity
 
-| メトリクス | データ |
-|-----------|--------|
-| エンジニアが週あたり浪費する時間 | **6-8 時間** |
-| フレーキーテストによる CI 遅延 | 全パイプラインの **35%** |
-| テスト結果を「信頼しない」開発者 | **40%+** |
-| フレーキーテスト 1件の年間コスト | **$7,600**（大規模チーム） |
+| Level | Name | Signal |
+|-------|------|--------|
+| L1 | Reactive | coverage `< 30%` |
+| L2 | Proactive | coverage `50-70%` and tests ship with features |
+| L3 | Strategic | coverage `70%+`, mutation `60%+`, testing influences design |
+| L4 | Optimized | test signals are integrated with production and observability |
 
-### DX 改善メトリクス
+## Test Data Strategy
 
-| メトリクス | 測定方法 | 良好な基準 |
-|-----------|---------|-----------|
-| **テスト実行速度（Unit）** | CI 計測 | < 5 分 |
-| **テスト実行速度（Full Suite）** | CI 計測 | < 15 分 |
-| **フレーキーレート** | 失敗÷実行回数 | < 1% |
-| **テスト作成時間** | タスク計測 | 実装の 30% 以内 |
-| **テスト失敗→原因特定時間** | インシデント計測 | < 15 分 |
-| **Watch モード起動時間** | ローカル計測 | < 3 秒 |
-| **テストフィードバックループ** | 保存→結果表示 | < 10 秒 |
+| Strategy | Best Use |
+|----------|----------|
+| Factory pattern | Default for unit and integration suites |
+| Fixture files | Small, stable canned inputs |
+| Seed scripts | Persistent or DB-backed integration tests |
+| Synthetic data | Large or varied datasets |
+| Production sampling | Only with proper masking and approval |
 
-### DX 改善プラクティス
+## CI Optimization Matrix
 
-| プラクティス | 効果 | 実装コスト |
-|------------|------|----------|
-| **Watch モード** | 即座のフィードバック | 低（フレームワーク内蔵） |
-| **テスト並列実行** | スイート時間短縮 | 低-中 |
-| **変更ファイルベース選択** | 不要なテスト実行削減 | 中 |
-| **テストデータファクトリ** | セットアップの簡素化 | 中 |
-| **Snapshot の選択的使用** | メンテナンスコスト削減 | 低 |
-| **IDE テスト統合** | エディタ内でのテスト実行・デバッグ | 低 |
-| **AI テスト補助** | テスト作成の加速 | 低-中 |
+| Technique | Typical Time Reduction | Complexity |
+|-----------|------------------------|------------|
+| Parallel execution | `50-80%` | Low |
+| Changed-file selection | `60-90%` | Medium |
+| Cache reuse | `30-50%` | Low |
+| Sharding | Near-linear on large suites | Medium |
+| Diff coverage | Quality improvement, not runtime reduction | Medium |
 
----
+Recommended execution pattern:
 
-## 3. テスト文化と組織パターン
+- PR open: lint + type check `< 1min`, affected unit `< 3min`, affected integration `< 5min`
+- Merge / main: full unit `< 5min`, full integration `< 10min`, critical E2E `< 15min`
+- Nightly: full E2E, performance regression, mutation on important modules, security scan
 
-### テスト文化の成熟度モデル
+## ROI Heuristics
 
-| レベル | 名称 | 特徴 | 指標 |
-|--------|------|------|------|
-| L1 | **Reactive** | バグ発生後にテスト追加 | カバレッジ < 30% |
-| L2 | **Proactive** | 新機能にテスト同梱が標準 | カバレッジ 50-70% |
-| L3 | **Strategic** | テストが設計の一部（TDD/BDD） | カバレッジ 70%+, Mutation 60%+ |
-| L4 | **Optimized** | テスト戦略が可観測性・本番データと統合 | 全メトリクス最適化 |
+Testing investment usually pays back in stages:
 
-### テスト文化醸成のプラクティス
+- around 3 months: fewer obvious regressions
+- around 6 months: more predictable releases
+- around 12 months: lower incident cost and faster change confidence
 
-| プラクティス | 対象 | 効果 |
-|------------|------|------|
-| **テストメンタリング** | 新メンバー | テストスキルの底上げ |
-| **テストレビュー** | 全 PR | テスト品質の標準化 |
-| **テストの日（Test Day）** | チーム全体 | 技術的負債の解消 |
-| **フレーキーテストバジェット** | CI チーム | フレーキー許容上限の明確化 |
-| **テスト作成ゲーミフィケーション** | 開発チーム | テスト作成のモチベーション |
-
----
-
-## 4. テストデータ管理の最新手法
-
-### テストデータ戦略
-
-| 戦略 | 用途 | ツール例 |
-|------|------|---------|
-| **Factory Pattern** | Unit/Integration テスト | Fishery(TS), Factory Boy(Py), Gofakeit(Go) |
-| **Fixture Files** | 静的テストデータ | JSON/YAML ファイル |
-| **Snapshot** | 出力の回帰検出 | Vitest/Jest 内蔵 |
-| **Seed Script** | DB初期データ | Prisma seed, Django fixtures |
-| **Synthetic Data** | 大量データ生成 | Faker.js, Hypothesis |
-| **Production Sampling** | 本番データのマスク済みコピー | DBT, Tonic |
-
-### テストデータの原則
-
-```
-1. テストデータは「最小限」: 必要なフィールドのみ指定
-2. テストデータは「独立」: テスト間で共有しない
-3. テストデータは「宣言的」: ファクトリで意図を明確に
-4. テストデータは「安全」: 本番データは匿名化必須
-```
-
----
-
-## 5. CI/CD テスト最適化の最新手法
-
-### テスト実行最適化マトリクス
-
-| 手法 | 時間削減 | 実装難度 | 参照 |
-|------|---------|---------|------|
-| **並列実行** | 50-80% | 低 | フレームワーク設定 |
-| **変更ファイルベース選択** | 60-90% | 中 | `test-selection-strategy.md` |
-| **テストシャーディング** | 線形スケール | 中 | CI設定 |
-| **キャッシュ活用** | 30-50% | 低 | CI キャッシュ設定 |
-| **Fail-Fast** | 可変 | 低 | `--bail` フラグ |
-| **差分カバレッジ** | N/A（品質向上） | 中 | `coverage-strategy.md` |
-
-### 2026年の CI テスト実行パターン
-
-```
-PR Open:
-  → Gate 1: Lint + Type Check (< 1min)
-  → Gate 2: Affected Unit Tests (< 3min)
-  → Gate 3: Affected Integration Tests (< 5min)
-
-PR Merge:
-  → Full Unit Suite (< 5min)
-  → Full Integration Suite (< 10min)
-  → E2E Critical Path (< 15min)
-
-Nightly:
-  → Full E2E Suite
-  → Performance Regression
-  → Mutation Testing（重要モジュール）
-  → Security Scan
-```
-
----
-
-## 6. テスト自動化の ROI 計算
-
-### コスト項目
-
-| 項目 | 計算 |
-|------|------|
-| テスト作成コスト | 開発者時間 × 時給 |
-| テスト維持コスト | 月間修正時間 × 時給 |
-| CI 実行コスト | 月間 CI 分数 × 単価 |
-| フレーキー対応コスト | 週間浪費時間 × 時給 × チーム人数 |
-
-### 価値項目
-
-| 項目 | 計算 |
-|------|------|
-| バグ早期発見 | 本番バグコスト × 検出率 |
-| リリース速度向上 | 手動テスト時間 × 頻度 |
-| 信頼性向上 | インシデント削減 × 平均対応コスト |
-| 開発者信頼 | コード変更のリードタイム短縮 |
-
-### 投資回収の目安
-
-```
-典型的な ROI タイムライン:
-  3ヶ月: Unit テスト基盤構築 → バグ検出率向上
-  6ヶ月: Integration テスト充実 → リリース信頼性向上
-  12ヶ月: E2E + Monitoring → インシデント削減
-  18ヶ月: 最適化 + AI → 開発速度加速
-```
-
-**Source:** [Vitest: Documentation](https://vitest.dev/) · [Jest: Documentation](https://jestjs.io/) · [Playwright: Documentation](https://playwright.dev/) · [Google Testing Blog: Flaky Tests](https://testing.googleblog.com/) · [Spotify Engineering: Testing Culture](https://engineering.atspotify.com/) · [Thoughtworks: Technology Radar](https://www.thoughtworks.com/radar)
+Use ROI to sequence improvements, not to justify removing critical tests.
