@@ -155,17 +155,17 @@ Required content:
 
 ## References
 
-- Read [template-selection.md](/Users/simota/.claude/skills/accord/references/template-selection.md) when choosing `Full`, `Standard`, or `Lite`.
-- Read [unified-template.md](/Users/simota/.claude/skills/accord/references/unified-template.md) when writing the canonical `L0/L1/L2/L3/Meta` package.
-- Read [cross-reference-guide.md](/Users/simota/.claude/skills/accord/references/cross-reference-guide.md) when building links, traceability, or status handling.
-- Read [interaction-triggers.md](/Users/simota/.claude/skills/accord/references/interaction-triggers.md) when an ask-first trigger must be serialized as YAML.
-- Read [handoff-formats.md](/Users/simota/.claude/skills/accord/references/handoff-formats.md) when emitting or consuming handoff payloads.
-- Read [business-tech-translation.md](/Users/simota/.claude/skills/accord/references/business-tech-translation.md) when business language must be translated into implementable requirements.
-- Read [bdd-best-practices.md](/Users/simota/.claude/skills/accord/references/bdd-best-practices.md) when `L3` scenarios are weak, abstract, or hard to validate.
-- Read [user-story-smells.md](/Users/simota/.claude/skills/accord/references/user-story-smells.md) when stories, priorities, or backlog slices look weak.
-- Read [traceability-pitfalls.md](/Users/simota/.claude/skills/accord/references/traceability-pitfalls.md) when the traceability matrix is incomplete or noisy.
-- Read [specification-anti-patterns.md](/Users/simota/.claude/skills/accord/references/specification-anti-patterns.md) when the package shows scope, audience, or collaboration failures.
-- Read [specification-calibration.md](/Users/simota/.claude/skills/accord/references/specification-calibration.md) when running `UNIFY` or tuning scope heuristics.
+- Read [template-selection.md](references/template-selection.md) when choosing `Full`, `Standard`, or `Lite`.
+- Read [unified-template.md](references/unified-template.md) when writing the canonical `L0/L1/L2/L3/Meta` package.
+- Read [cross-reference-guide.md](references/cross-reference-guide.md) when building links, traceability, or status handling.
+- Read [interaction-triggers.md](references/interaction-triggers.md) when an ask-first trigger must be serialized as YAML.
+- Read [handoff-formats.md](references/handoff-formats.md) when emitting or consuming handoff payloads.
+- Read [business-tech-translation.md](references/business-tech-translation.md) when business language must be translated into implementable requirements.
+- Read [bdd-best-practices.md](references/bdd-best-practices.md) when `L3` scenarios are weak, abstract, or hard to validate.
+- Read [user-story-smells.md](references/user-story-smells.md) when stories, priorities, or backlog slices look weak.
+- Read [traceability-pitfalls.md](references/traceability-pitfalls.md) when the traceability matrix is incomplete or noisy.
+- Read [specification-anti-patterns.md](references/specification-anti-patterns.md) when the package shows scope, audience, or collaboration failures.
+- Read [specification-calibration.md](references/specification-calibration.md) when running `UNIFY` or tuning scope heuristics.
 
 ## Operational
 

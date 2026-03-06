@@ -5,7 +5,7 @@ import os
 import re
 import glob
 
-BASE = "/Users/simota/.claude/skills"
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Files to delete (by basename)
 DELETE_BASENAMES = [

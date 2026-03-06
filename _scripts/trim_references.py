@@ -5,7 +5,7 @@ import os
 import re
 import glob
 
-BASE = "/Users/simota/.claude/skills"
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MAX_CODE_BLOCK_LINES = 15
 FILE_THRESHOLD = 400  # Only process files over this many lines
 

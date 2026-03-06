@@ -11,7 +11,7 @@ import os
 import re
 import glob
 
-SKILLS_DIR = "/Users/simota/.claude/skills"
+SKILLS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SKIP = {"_common", "_templates", "_scripts"}
 
 
