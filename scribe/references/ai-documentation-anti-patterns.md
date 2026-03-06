@@ -1,140 +1,68 @@
 # AI-Assisted Documentation Anti-Patterns
 
-> AI 支援ドキュメント作成の落とし穴、コンテキスト管理、品質保証、人間との協働パターン
+Purpose: Use this file when AI-generated documentation is generic, over-instructed, structurally weak, or missing review discipline.
 
-## 1. AI ドキュメント作成 7 大アンチパターン
+Contents:
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **AD-01** | **コンテキスト過負荷** | 全情報を AI に投入してドキュメント生成 | 冗長な出力、焦点の欠如、トークンコスト爆発 | 構造化された必要最小限のコンテキスト投入 |
-| **AD-02** | **人間レビュースキップ** | AI 出力をそのまま最終成果物に | プロジェクト固有知識の欠落、暗黙の前提の未反映 | AI は下書き、人間が編集・精査・承認 |
-| **AD-03** | **指示の呪い** | 過剰な指示でドキュメント品質が低下 | 300 行超のプロンプトで AI の精度劣化、矛盾する指示 | 重要なルールのみに絞る + 優先順位明示 |
-| **AD-04** | **一般論の氾濫** | AI がプロジェクト固有でない一般的内容を生成 | 「〇〇は重要です」的な記述の羅列、具体性の欠如 | プロジェクト固有のコンテキスト・事例を必須入力に |
-| **AD-05** | **構造の画一化** | 全ドキュメントに同一テンプレートを機械的適用 | ドキュメント種別に合わない構造、読者にとって不自然 | ドキュメント種別 × 対象読者でテンプレートを選択 |
-| **AD-06** | **仕様なき実装** | ドキュメントなしで AI に直接コード生成 | 要件の暗黙化、保守困難、知識の属人化 | Spec-Driven Development（仕様→計画→実装） |
-| **AD-07** | **フィードバックループの欠如** | AI 生成ドキュメントの品質を追跡しない | 同じ品質問題の繰り返し、改善なし | INSCRIBE フェーズでの品質追跡 + テンプレート改善 |
+- `AD-01` to `AD-07`
+- Spec-Driven Development
+- AI quality management
+- context strategy
 
----
+## `AD-01` to `AD-07`
 
-## 2. Spec-Driven Development（仕様駆動開発）
+| ID | Anti-Pattern | Risk | Prevention |
+|----|--------------|------|------------|
+| `AD-01` | Context overload | Redundant output, poor focus, high token cost | Load only structured minimum context. |
+| `AD-02` | Skipping human review | Missed tacit knowledge and bad assumptions | Treat AI output as draft; require human review. |
+| `AD-03` | Curse of instructions | Prompt quality degrades when rules are excessive | Keep prompts below the level where they become self-conflicting; prompts over `300` lines are a warning sign. |
+| `AD-04` | Generic filler | Documentation lacks project specificity | Require project-specific examples and constraints. |
+| `AD-05` | Template monoculture | The wrong structure for the reader or document type | Choose template by document type and audience. |
+| `AD-06` | Implementation without specification | Hard-to-maintain code and hidden assumptions | Use Spec-Driven Development. |
+| `AD-07` | No feedback loop | Same documentation failures repeat | Run INSCRIBE and update patterns. |
 
-```
-AI 時代の開発ワークフロー:
+## Spec-Driven Development
 
-  Phase 1: SPECIFY（仕様定義）
-    → 人間が目的・スコープ・成功基準を定義
-    → AI が仕様ドラフトを生成
-    → 人間がレビュー・修正・承認
-    → 成果物: 承認済み仕様書
+Preferred sequence:
 
-  Phase 2: PLAN（計画策定）
-    → 仕様書を入力として AI が計画を生成
-    → 技術選定・アーキテクチャ・リスク評価
-    → 人間がレビュー・修正
-    → 成果物: 実行計画
+`SPECIFY -> PLAN -> TASKS -> IMPLEMENT`
 
-  Phase 3: TASKS（タスク分解）
-    → 計画を入力として AI がタスクを分解
-    → 依存関係・優先順位の定義
-    → 人間がレビュー・調整
-    → 成果物: タスクリスト
+Rules:
 
-  Phase 4: IMPLEMENT（実装）
-    → 仕様 + 計画 + タスクを入力として AI がコード生成
-    → 仕様との整合性を継続的に検証
-    → 成果物: 仕様準拠の実装
+- Documentation comes before implementation when ambiguity is material.
+- AI can draft any phase, but a human reviews before progression.
+- Use Scribe for specification, Sherpa for breakdown, Builder for implementation.
 
-  各フェーズの共通ルール:
-    → AI は下書き担当
-    → 人間がレビューゲート
-    → 前フェーズの成果物が次フェーズの入力
-```
+## AI Quality Management
 
----
+Require:
 
-## 3. AI ドキュメント品質管理
+- explicit source inputs
+- project-specific constraints
+- audience declaration
+- acceptance criteria and traceability
+- human review before finalization
 
-```
-AI 生成ドキュメントの品質チェック:
+Reject:
 
-  プロジェクト固有性チェック:
-    □ プロジェクト名・固有用語が正確
-    □ 既存アーキテクチャとの整合性
-    □ チームの慣習・規約に準拠
-    □ 一般論ではなく具体的な記述
+- unedited AI output
+- project-agnostic filler
+- duplicated sections caused by broad context dumps
 
-  正確性チェック:
-    □ 技術的事実の正確性
-    □ バージョン・API の最新性
-    □ 引用・参照の実在確認
-    □ 矛盾する記述の有無
+## Context Strategy
 
-  完全性チェック:
-    □ 必須セクションの網羅
-    □ エッジケースの考慮
-    □ NFR（非機能要件）の包含
-    □ 暗黙の前提の明示化
+| Rule | Guidance |
+|------|----------|
+| Load only what is needed | Keep active context below `30%` of available budget when possible. |
+| Prioritize hierarchy | main contract -> relevant template -> one targeted anti-pattern ref |
+| Keep rules explicit | Do not hide critical thresholds in narrative prose. |
+| Separate draft from approval | AI drafts; humans approve. |
 
-  読者適切性チェック:
-    □ 対象読者に適した詳細度
-    □ 専門用語の適切な使用
-    □ 図表による視覚的補助
-    □ アクション可能な記述
-```
+## Scribe Usage
 
----
+Use this file during:
 
-## 4. コンテキスト管理戦略
-
-```
-AI へのコンテキスト投入の最適化:
-
-  ❌ 悪いパターン:
-    → 「このリポジトリ全部読んで仕様書を書いて」
-    → トークン浪費 + 焦点散漫 + 品質低下
-
-  ✅ 良いパターン:
-    → 目的: 〇〇機能の PRD を作成
-    → スコープ: △△モジュールの □□機能
-    → 制約: ◇◇フレームワーク、☆☆ DB を使用
-    → 参照: 既存 API 仕様（構造化抜粋）
-    → 非目標: ××は対象外
-
-  コンテキスト階層:
-    必須: 目的 + スコープ + 制約 + 成功基準
-    推奨: 既存設計 + 技術スタック + チーム規約
-    任意: 関連ドキュメント + 過去の決定事項
-
-  トークン予算管理:
-    → コンテキスト投入量 < 全体の 30% を目安
-    → 構造化データ（JSON/YAML）で効率的に投入
-    → 長文の散文より箇条書き + 表形式
-```
-
----
-
-## 5. Scribe との連携
-
-```
-Scribe での活用:
-  1. 全フェーズで AD-01〜07 を意識したドキュメント生成
-  2. documentation-calibration.md と連携した AD-07（フィードバック欠如）防止
-  3. UNDERSTAND フェーズでコンテキスト管理戦略を適用（AD-01 防止）
-  4. REVIEW フェーズで AI ドキュメント品質チェック適用（AD-02/AD-04 防止）
-
-品質ゲート:
-  - 全コンテキスト投入 → 構造化必要最小限に（AD-01 防止）
-  - レビューなし承認 → 人間レビュー必須（AD-02 防止）
-  - プロンプト 300 行超 → 重要ルールに絞る（AD-03 防止）
-  - 一般論記述 → プロジェクト固有の具体例要求（AD-04 防止）
-  - テンプレート画一適用 → 種別 × 読者で選択（AD-05 防止）
-  - 仕様なし実装 → Spec-Driven Development 推奨（AD-06 防止）
-  - 品質追跡なし → INSCRIBE フェーズ実行必須（AD-07 防止）
-
-Spec-Driven Development との統合:
-  → Scribe は Phase 1（SPECIFY）の中核エージェント
-  → 仕様書品質が後続フェーズの全品質を決定
-  → INSCRIBE フェーズで仕様→実装の整合性を追跡
-```
-
-**Source:** [Addy Osmani: The Best Way to Build AI Agent Specs](https://addyosmani.com/blog/ai-agent-specs/) · [Aakash Gupta: How to Write an Effective PRD in the AI Era](https://news.aakashg.com/p/how-to-write-an-effective-prd-in-the)
+- `UNDERSTAND` to choose context scope
+- `DRAFT` to avoid generic filler
+- `REVIEW` to enforce human quality gates
+- `INSCRIBE` to improve future prompt and template choices

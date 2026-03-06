@@ -1,141 +1,73 @@
 # Test Documentation Anti-Patterns
 
-> テスト仕様書・テスト計画の失敗パターン、テスト種別の誤用、テスト文化の罠
+Purpose: Use this file when a test spec has weak coverage strategy, poor traceability, low signal, or excessive execution cost.
 
-## 1. テストドキュメント 7 大アンチパターン
+Contents:
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **TD-01** | **単体のみ / 結合のみ** | テスト種別の偏り | 単体は通るが結合で壊れる、または結合のみで原因特定不能 | テストピラミッド準拠（単体 > 結合 > E2E） |
-| **TD-02** | **誤った種別のテスト** | 結合テストで単体テスト的検証、またはその逆 | テスト実行時間の爆発、フレーキーテスト増加 | 各テスト種別の目的を明確に定義 |
-| **TD-03** | **間違った機能のテスト** | ビジネス価値の低い機能に過剰テスト | 高リスク機能のカバレッジ不足、低価値機能の過剰テスト | リスクベーステスト（ビジネスインパクト × 変更頻度） |
-| **TD-04** | **内部実装のテスト** | プライベートメソッド・内部状態をテスト | リファクタリングでテスト壊滅、テスト保守コスト爆発 | 公開インターフェース・振る舞いをテスト |
-| **TD-05** | **カバレッジ至上主義** | 数値目標のためだけのテスト | 無意味なテスト増加、テスト品質低下、偽の安心感 | 意味のあるテスト + ミューテーションテストで品質検証 |
-| **TD-06** | **フレーキー / 低速テスト** | 不安定または遅すぎるテスト | CI パイプライン不信、テスト結果無視の文化 | フレーキーテスト即修正ポリシー + テスト実行時間予算 |
-| **TD-07** | **テストコード二等市民** | テストコードの品質管理を怠る | テストの可読性低下、メンテナンス放棄、テスト負債蓄積 | テストコードにもコードレビュー + リファクタリング |
+- `TD-01` to `TD-07`
+- additional planning pitfalls
+- quality metrics
+- review gates
 
----
+## `TD-01` to `TD-07`
 
-## 2. テスト仕様の 6 つの追加アンチパターン
+| ID | Anti-Pattern | Risk | Prevention |
+|----|--------------|------|------------|
+| `TD-01` | Only unit or only integration tests | Coverage imbalance | Follow the test pyramid. |
+| `TD-02` | Wrong test type for the job | Slow and noisy feedback | Define purpose per test layer. |
+| `TD-03` | Testing the wrong functionality | High-value paths remain under-tested | Prioritize by business impact and change frequency. |
+| `TD-04` | Testing internal implementation | Refactors break tests needlessly | Test public behavior and observable outcomes. |
+| `TD-05` | Coverage fetish | High numbers with weak signal | Measure meaningful coverage and mutation quality. |
+| `TD-06` | Flaky or slow suites | CI distrust and ignored failures | Set execution budgets and fix flakes immediately. |
+| `TD-07` | Treating test code as second class | Test debt grows fast | Review and refactor test code like production code. |
 
-```
-テスト計画・仕様で避けるべきパターン:
+## Additional Planning Pitfalls
 
-  ❌ 手動テスト実行の常態化:
-    → テスト自動化なしで手動テストに依存
-    → リグレッション検出が遅延
-    → 対策: 自動化可能なテストは必ず自動化
+- Manual execution as the default
+- Bug fixes without regression tests
+- Dogmatic TDD where it hurts discovery
+- Writing tests before reading framework guidance
+- Accepting anti-test team culture
+- Hard-coded test data instead of factories or fixtures
 
-  ❌ バグをテストに変換しない:
-    → バグ修正後にリグレッションテストを追加しない
-    → 同じバグの再発
-    → 対策: 全バグ修正に対応するテスト追加を必須化
+## Quality Metrics
 
-  ❌ TDD 教条主義:
-    → TDD を全ケースに強制適用
-    → 探索的開発やプロトタイプで非効率
-    → 対策: TDD は手法の一つ、状況に応じて選択
+| Metric | Meaning | Target |
+|--------|---------|--------|
+| `PDWT` | Percentage of defects found by written tests | `>= 70%` |
+| `PBCNT` | Percentage of bugs caught by new tests | Track trend |
+| `PTVB` | Percentage of tests validating business logic | `>= 60%` |
+| `PTD` | Percentage of tests with documented intent and setup | `>= 80%` |
 
-  ❌ ドキュメント未読のテスト作成:
-    → フレームワーク/ライブラリの公式ドキュメントを読まずにテスト
-    → 車輪の再発明、非効率なテストパターン
-    → 対策: 公式テストガイドの事前確認
+Recommended pyramid:
 
-  ❌ テスト文化の毀損:
-    → テスト嫌いの空気を容認
-    → テスト工数の過小見積もり
-    → 対策: テストはコードの一部という文化醸成
+`Unit : Integration : E2E = 70 : 20 : 10`
 
-  ❌ テストデータの直書き:
-    → テストデータがテスト内にハードコード
-    → データ変更時の大量修正
-    → 対策: テストデータファクトリ + フィクスチャ
-```
+Avoid:
 
----
+- inverted pyramid (`E2E` dominant)
+- diamond shape (integration dominant)
 
-## 3. テスト品質メトリクス
+## Review Gates
 
-```
-テスト品質の 4 指標（PDWT フレームワーク）:
+Reject or revise the test spec if any are missing:
 
-  1. PDWT（Percentage of Defects in Written Tests）:
-     → テスト対象のバグのうちテストが検出した割合
-     → 目標: ≥ 70%
+- explicit test type and scope
+- setup and data preparation
+- positive, negative, and boundary cases
+- critical-path coverage
+- expected result per test case
+- traceability to requirement IDs
+- failure escalation path
 
-  2. PBCNT（Percentage of Bugs Caught by New Tests）:
-     → 新規テストが検出したバグの割合
-     → テスト追加の効果測定
+## Scribe Usage
 
-  3. PTVB（Percentage of Tests Validating Business logic）:
-     → ビジネスロジックを検証するテストの割合
-     → 目標: ≥ 60%（低い場合は TD-03 の兆候）
+Use this file during:
 
-  4. PTD（Percentage of Tests with Documentation）:
-     → テストケースの意図・前提が文書化されている割合
-     → 目標: ≥ 80%
+- `STRUCTURE` to balance test types
+- `REVIEW` to check signal, speed, and traceability
+- handoff to Radar or Voyager when test depth is unclear
 
-テストピラミッドの推奨比率:
-  単体テスト : 結合テスト : E2E テスト = 70 : 20 : 10
+Source:
 
-  ❌ アンチパターン: アイスクリームコーン
-    → E2E > 結合 > 単体（逆ピラミッド）
-    → テスト実行時間・メンテナンスコスト爆発
-
-  ❌ アンチパターン: ダイヤモンド
-    → 結合テストが最多
-    → 原因特定困難 + 実行時間増大
-```
-
----
-
-## 4. テスト仕様書の品質チェックリスト
-
-```
-テスト仕様書レビュー基準:
-
-  構造:
-    □ テスト種別（単体/結合/E2E）が明記
-    □ テスト対象のスコープが定義
-    □ テスト実行の前提条件が記述
-    □ テストデータの準備方法が定義
-
-  網羅性:
-    □ 正常系テストケースがある
-    □ 異常系テストケースがある
-    □ 境界値テストケースがある
-    □ ビジネスクリティカルパスがカバー
-
-  品質:
-    □ 各テストケースに期待結果が明記
-    □ テスト間の独立性が保たれている
-    □ フレーキーリスクが評価されている
-    □ テスト実行時間の見積もりがある
-
-  トレーサビリティ:
-    □ 要件 ID とテストケースの対応がある
-    □ テスト結果の記録方法が定義
-    □ 不合格時のエスカレーションパスがある
-```
-
----
-
-## 5. Scribe との連携
-
-```
-Scribe での活用:
-  1. STRUCTURE フェーズで TD-01〜07 のスクリーニング
-  2. test-spec-template.md と連携したテスト種別適切性チェック
-  3. REVIEW フェーズでテスト品質チェックリスト適用
-  4. checklist-template.md と連携したテスト計画品質検証
-
-品質ゲート:
-  - テスト種別偏り → テストピラミッド準拠を確認（TD-01 防止）
-  - 内部実装テスト → 振る舞いテストへの修正推奨（TD-04 防止）
-  - カバレッジ目標のみ → 品質メトリクス追加（TD-05 防止）
-  - テストデータ直書き → ファクトリパターン推奨（追加パターン防止）
-  - 要件トレーサビリティなし → 対応表追加必須（トレーサビリティ確保）
-  - バグ修正テストなし → リグレッションテスト追加ポリシー（追加パターン防止）
-```
-
-**Source:** [Codepipes: Software Testing Anti-Patterns](https://codepipes.com/essays/testing-anti-patterns.html)
+- Codepipes, "Software Testing Anti-Patterns"
