@@ -185,6 +185,53 @@ get_screenshot(
 
 ---
 
+## Phase 3.5: VALIDATE (Pre-Handoff)
+
+### Validation Checkpoint
+
+Run between EXTRACT and PACKAGE to ensure extraction quality.
+
+```markdown
+## Pre-Handoff Validation
+
+### Naming Consistency
+- [ ] Figma component names match Code Connect mapping names
+- [ ] Variable names follow consistent convention (camelCase, kebab-case, etc.)
+
+### Token Coverage
+- [ ] Raw color values mapped to Figma Variables where available
+- [ ] Spacing values referenced by variable names, not pixel literals
+- [ ] Typography values linked to variable definitions
+
+### Completeness
+- [ ] All target components from SURVEY plan successfully extracted
+- [ ] No critical components missing (check against SURVEY inventory)
+- [ ] Auto Layout properties captured for layout containers
+
+### Code Connect
+- [ ] Existing Code Connect mappings retrieved and included
+- [ ] Unmapped components flagged for downstream awareness
+
+### Rate Budget
+- [ ] Current usage tracked (calls made / daily limit)
+- [ ] Sufficient budget remaining for any follow-up extractions
+
+### Gap Documentation
+- [ ] Missing data explicitly noted with reason (rate limit, access, complexity)
+- [ ] Figma URLs provided for any content not extracted
+```
+
+### Validation Failures
+
+| Failure | Action |
+|---------|--------|
+| Missing critical component | Re-extract if budget allows; otherwise note gap |
+| Raw values without token mapping | Re-run `get_variable_defs` to build mapping |
+| No Code Connect data | Run `get_code_connect_map`; include coverage gap in handoff |
+| Budget exhausted | Deliver partial results with clear scope documentation |
+
+---
+
 ## Phase 4: PACKAGE
 
 ### Packaging Decision
@@ -275,8 +322,9 @@ Detailed handoff templates → `handoff-formats.md`
 
 | Reference | Content |
 |-----------|---------|
-| `connection-setup.md` | MCP server setup, authentication, troubleshooting |
-| `rate-limit-strategy.md` | Plan-specific limits, optimization patterns |
+| `infrastructure-constraints.md` | MCP connection, rate limits, troubleshooting |
 | `handoff-formats.md` | Agent-specific handoff templates |
 | `code-connect-guide.md` | Code Connect workflow and mapping |
 | `prompt-strategy.md` | Effective prompts per MCP tool |
+| `figma-mcp-server-ga.md` | MCP Server GA tools, features, known issues |
+| `design-to-code-anti-patterns.md` | Quality guardrails and failure modes |

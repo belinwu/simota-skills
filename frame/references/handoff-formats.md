@@ -49,6 +49,10 @@ Focus: Figma Variables → CSS token definitions
 - [ ] Dark mode
 - [ ] Other: [mode names]
 
+### Token Standard Note
+- Figma Variables support W3C DTCG format (`.tokens.json`) for export
+- If Muse needs standards-compliant tokens, note DTCG compatibility
+
 ### Notes for Muse
 - [Any observations about variable organization]
 - [Inconsistencies or gaps in variable definitions]

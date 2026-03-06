@@ -186,12 +186,29 @@ Code Connect mappings can become stale when:
 - New variants are added
 - Code refactoring changes export names
 
+### Drift Detection Procedure
+
+```
+1. Run get_code_connect_map → get current mappings
+2. For each mapping:
+   a. Check "Last Updated" age (flag if >30 days)
+   b. Verify code_path still exists in codebase
+   c. Compare Figma component props against mapped props
+   d. Check for new Figma variants not yet mapped
+3. Classify drift:
+   - STALE: >30 days since update, props unchanged → low risk
+   - BROKEN: code_path no longer exists → critical, needs fix
+   - INCOMPLETE: new Figma props/variants not mapped → medium risk
+   - ORPHANED: code component deleted → remove mapping
+4. Report drift findings in DELIVER phase
+```
+
 ### Maintenance Schedule
 
 | Frequency | Action |
 |-----------|--------|
-| Per sprint | Quick audit — check for stale mappings |
-| Monthly | Full audit — coverage report, drift detection |
+| Per sprint | Quick audit — check for stale mappings (>30 days) |
+| Monthly | Full audit — coverage report, drift detection procedure |
 | After design changes | Targeted update — affected components only |
 | After code refactoring | Path update — fix moved/renamed files |
 

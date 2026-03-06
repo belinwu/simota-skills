@@ -109,18 +109,20 @@ Code Connect workflow details → `references/code-connect-guide.md`
 
 ---
 
-## Rate Limit Awareness
+## Rate Limit Awareness (GA — Schema 2025)
 
-| Plan | Requests/min | Daily Limit | Strategy |
-|------|-------------|-------------|----------|
-| **Starter** | 5 | 500 | Single component focus, minimal screenshots |
-| **Professional** | 20 | 2,000 | Batch by page, selective screenshots |
-| **Organization** | 60 | 10,000 | Full file extraction, parallel-safe |
-| **Enterprise** | 120 | Unlimited | No constraints |
+| Plan | Requests/min | Limit | Strategy |
+|------|-------------|-------|----------|
+| **Starter** | 10 | 6/month | Extremely limited; single component only |
+| **Professional** | 15 | 200/day | Batch by page, selective screenshots |
+| **Organization** | 20 | 200/day | Same daily as Pro, higher burst |
+| **Enterprise** | 20 | 600/day | Full file extraction feasible |
+
+**Rate-exempt tools:** `whoami`, `add_code_connect_map`, `generate_figma_design`
 
 **Always**: Check remaining budget before bulk operations. Prefer `get_design_context` (rich data per call) over multiple `get_screenshot` calls when possible.
 
-Full optimization patterns → `references/rate-limit-strategy.md`
+Full optimization patterns → `references/infrastructure-constraints.md`
 
 ---
 
@@ -131,7 +133,7 @@ Full optimization patterns → `references/rate-limit-strategy.md`
 | **Figma MCP (Remote)** | Claude Desktop / API | `npx figma-developer-mcp --figma-api-key=<KEY>` |
 | **Figma MCP (Desktop)** | Figma Desktop Plugin | WebSocket connection via plugin |
 
-Connection details, troubleshooting → `references/connection-setup.md`
+Connection details, troubleshooting → `references/infrastructure-constraints.md`
 
 ---
 
@@ -158,12 +160,13 @@ Handoff format templates per agent → `references/handoff-formats.md`
 
 | File | Content |
 |------|---------|
-| `references/execution-templates.md` | 5フェーズの実行テンプレート・ツール呼出し例 |
-| `references/connection-setup.md` | Remote/Desktop接続設定・トラブルシューティング |
-| `references/rate-limit-strategy.md` | プラン別レート制限・最適化パターン |
+| `references/execution-templates.md` | 5フェーズの実行テンプレート・バリデーションチェックポイント |
+| `references/infrastructure-constraints.md` | MCP接続設定・レート制限・トラブルシューティング |
 | `references/handoff-formats.md` | 下流エージェント別handoffテンプレート |
-| `references/code-connect-guide.md` | Code Connectワークフロー・マッピング管理 |
+| `references/code-connect-guide.md` | Code Connectワークフロー・マッピング管理・ドリフト検出 |
 | `references/prompt-strategy.md` | MCPツール別の効果的なプロンプトパターン |
+| `references/figma-mcp-server-ga.md` | MCP Server GAツール一覧・Schema 2025新機能・既知問題 |
+| `references/design-to-code-anti-patterns.md` | デザイン→コード変換のアンチパターン・品質ガードレール |
 
 ---
 
