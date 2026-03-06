@@ -1,415 +1,263 @@
 # Design Token System
 
-Token categories, naming conventions, scales, audit patterns, and code standards.
+Purpose: Use this reference when defining token categories, naming rules, typography and spacing scales, audit logic, or framework integration.
 
----
+## Contents
+
+- Token categories
+- Naming convention
+- Definition process
+- File structure
+- Typography scale
+- Spacing system
+- Design token audit
+- Modern token integration
+- Code standards
 
 ## Token Categories
 
-```
-PRIMITIVE TOKENS (raw values):
-├── Colors
-│   ├── Palette: blue-50, blue-100, ..., blue-900
-│   ├── Neutral: gray-50, gray-100, ..., gray-900
-│   └── Brand: brand-primary, brand-secondary
-├── Spacing: 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24
-├── Typography
-│   ├── Font Families: sans, serif, mono
-│   ├── Font Sizes: xs, sm, base, lg, xl, 2xl, ...
-│   ├── Font Weights: light, normal, medium, semibold, bold
-│   └── Line Heights: none, tight, snug, normal, relaxed, loose
-├── Border Radius: none, sm, md, lg, xl, full
-├── Shadows: none, sm, md, lg, xl
-└── Breakpoints: sm, md, lg, xl, 2xl
+| Layer | Purpose | Examples |
+|------|---------|----------|
+| Primitive | Raw values and neutral building blocks | `blue-500`, `gray-100`, `space-4`, `shadow-md` |
+| Semantic | Context-aware aliases | `bg-primary`, `text-secondary`, `border-focus` |
+| Component | Component-specific composition | `button-radius`, `card-shadow`, `input-border` |
 
-...
-```
+Rules:
 
----
+- Primitive tokens hold raw values only.
+- Semantic tokens express purpose, not color names.
+- Component tokens may depend on semantic tokens, not raw primitives.
 
-## Token Naming Convention
+## Naming Convention
 
-```
-Pattern: --{category}-{property}-{variant}-{state}
+| Layer | Pattern | Example |
+|------|---------|---------|
+| Primitive color | `{family}-{scale}` | `blue-500` |
+| Semantic color | `{role}-{variant}` | `bg-primary`, `text-muted` |
+| Component token | `{component}-{property}` | `button-padding-x` |
+| CSS variable | `--{category}-{property}-{variant}-{state}` | `--color-bg-primary-default` |
 
-Examples:
-  --color-bg-primary           # Primary background color
-  --color-text-secondary       # Secondary text color
-  --color-border-focus         # Border color for focus state
-  --space-padding-card         # Card padding
-  --font-size-heading-lg       # Large heading size
-  --radius-button              # Button border radius
-  --shadow-card-hover          # Card shadow on hover
-```
+Rules:
 
-### Token Definition Template
+- Prefer purpose-based naming over value-based naming.
+- Keep names short enough to scan quickly.
+- Reserve dark/light branching for tokens that visually change across modes.
+- Attach lifecycle status comments when a token is not yet stable, for example `@status: propose|adopt|stable|deprecated|frozen`.
 
-```css
-/*
- * Token: --color-bg-primary
- * Category: Semantic / Background
- * Purpose: Primary background for main content areas
- * Light mode: white or near-white
- * Dark mode: dark gray
- * Usage: Page backgrounds, card backgrounds, modal backgrounds
- */
-:root {
-  --color-bg-primary: var(--gray-50);
-}
+## Token Definition Process
 
-[data-theme="dark"] {
-  --color-bg-primary: var(--gray-900);
-}
-```
-
-### Token Definition Process
-
-1. **Identify the need**: What value needs to be reused? Is it primitive or semantic?
-2. **Name with intent**: Use semantic names that describe purpose, not appearance
-3. **Define the scale**: Ensure the value fits within an existing or new scale
-4. **Document usage**: When and where should this token be used?
-5. **Implement in code**: Create CSS custom properties, Tailwind config, or equivalent
-
----
+1. Confirm the value belongs to a reusable system, not a one-off fix.
+2. Choose the correct layer: primitive, semantic, or component.
+3. Name it by intent.
+4. Add it to token files and documentation.
+5. Replace hardcoded references and verify light/dark behavior.
 
 ## Token File Structure
 
-```
+```text
 tokens/
-├── primitives/
-│   ├── colors.css       # Raw color palette
-│   ├── spacing.css      # Spacing scale
-│   ├── typography.css   # Font definitions
-│   └── effects.css      # Shadows, borders
-├── semantic/
-│   ├── colors.css       # Contextual color tokens
-│   ├── components.css   # Component-specific tokens
-│   └── dark-mode.css    # Dark theme overrides
-└── index.css            # Token aggregation
+  primitives/
+    colors.css
+    spacing.css
+    typography.css
+    shadows.css
+    radius.css
+  semantic/
+    colors.css
+    surfaces.css
+    feedback.css
+  components/
+    button.css
+    card.css
+    input.css
 ```
 
----
+Rules:
 
-## Typography Scale (Major Third - 1.25 ratio)
+- Keep primitives and semantic tokens globally available.
+- Scope component tokens closer to the component when possible.
+- Use the lifecycle status defined in [token-lifecycle.md](/Users/simota/.claude/skills/muse/references/token-lifecycle.md) for unstable or deprecated tokens.
+
+## Typography Scale
+
+Default ratio: Major Third (`1.25`)
 
 ```css
 :root {
-  /* Font Sizes */
-  --text-xs: 0.75rem;    /* 12px - captions, labels, fine print */
-  --text-sm: 0.875rem;   /* 14px - secondary text, metadata */
-  --text-base: 1rem;     /* 16px - body text, default */
-  --text-lg: 1.125rem;   /* 18px - lead paragraphs */
-  --text-xl: 1.25rem;    /* 20px - h5, card titles */
-  --text-2xl: 1.5rem;    /* 24px - h4, section headers */
-  --text-3xl: 1.875rem;  /* 30px - h3 */
-  --text-4xl: 2.25rem;   /* 36px - h2 */
-  --text-5xl: 3rem;      /* 48px - h1, hero text */
-  --text-6xl: 3.75rem;   /* 60px - display, marketing */
-
-  /* Line Heights */
-  --leading-none: 1;
-/* ... */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px - secondary text, metadata */
+  --text-base: 1rem;      /* 16px - body */
+  --text-lg: 1.125rem;    /* 18px - lead paragraphs */
+  --text-xl: 1.25rem;     /* 20px - h5 */
+  --text-2xl: 1.5rem;     /* 24px - h4 */
+  --text-3xl: 1.875rem;   /* 30px - h3 */
+  --text-4xl: 2.25rem;    /* 36px - h2 */
+  --text-5xl: 3rem;       /* 48px - h1 */
+}
 ```
 
-### Typography Usage Guide
+Usage guide:
 
-| Element | Size | Weight | Line Height | Tracking |
-|---------|------|--------|-------------|----------|
-| Display | 6xl | bold | tight | tighter |
-| H1 | 5xl | bold | tight | tight |
-| H2 | 4xl | semibold | tight | tight |
-| H3 | 3xl | semibold | snug | normal |
-| H4 | 2xl | semibold | snug | normal |
-| H5 | xl | medium | normal | normal |
-| H6 | lg | medium | normal | normal |
-| Body | base | normal | relaxed | normal |
-| Body Small | sm | normal | normal | normal |
-| Caption | xs | normal | normal | wide |
-| Label | sm | medium | none | wide |
+| Token | Typical use |
+|------|-------------|
+| `--text-sm` | metadata, helper text |
+| `--text-base` | default body, keep mobile body text at `min 16px` |
+| `--text-lg` | lead text |
+| `--text-2xl` | section headers |
+| `--text-5xl` | hero headlines |
 
-### Responsive Typography
+Responsive guidance:
 
-```
-Mobile (< 640px):
-  - Display: 4xl
-  - H1: 3xl
-  - H2: 2xl
-  - Body: base (min 16px for readability)
+- Mobile: compress the upper end of the scale.
+- Desktop (`>= 1024px`): full scale is allowed.
 
-Desktop (>= 1024px):
-  - Display: 6xl
-  - H1: 5xl
-  - H2: 4xl
-  - Body: base or lg
-```
+## Spacing System
 
----
-
-## Spacing System (8px Grid)
+Base system: `8px` grid with `4px` support for tight pairings.
 
 ```css
 :root {
-  --space-0: 0;
-  --space-px: 1px;
-  --space-0.5: 0.125rem;  /* 2px */
-  --space-1: 0.25rem;     /* 4px */
-  --space-2: 0.5rem;      /* 8px */
-  --space-3: 0.75rem;     /* 12px */
-  --space-4: 1rem;        /* 16px */
-  --space-5: 1.25rem;     /* 20px */
-  --space-6: 1.5rem;      /* 24px */
-  --space-8: 2rem;        /* 32px */
-  --space-10: 2.5rem;     /* 40px */
-  --space-12: 3rem;       /* 48px */
-  --space-16: 4rem;       /* 64px */
-  --space-20: 5rem;       /* 80px */
-/* ... */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+}
 ```
 
-### Spacing Usage Guide
+Usage guide:
 
-| Context | Recommended | Tokens |
-|---------|-------------|--------|
-| Icon to text | 4-8px | space-1, space-2 |
-| Button padding | 8-16px | space-2, space-4 |
-| Card padding | 16-24px | space-4, space-6 |
-| Component gap | 8-16px | space-2, space-4 |
-| Section gap | 24-48px | space-6, space-12 |
-| Page margins | 16-64px | space-4, space-16 |
+| Use case | Range | Tokens |
+|---------|-------|--------|
+| Icon to text | `4-8px` | `space-1`, `space-2` |
+| Button padding | `8-16px` | `space-2`, `space-4` |
+| Card padding | `16-24px` | `space-4`, `space-6` |
+| Section gap | `24-48px` | `space-6`, `space-12` |
+| Page margins | `16-64px` | `space-4`, `space-16` |
 
-### 8px Grid Verification
+Responsive guidance:
 
-```
-Valid spacing values (on grid):
-  4px, 8px, 12px, 16px, 20px, 24px, 32px, 40px, 48px, 64px...
+- Mobile: page margin `16px`, section gap `24px`
+- Tablet: page margin `24px`, section gap `32px`
+- Desktop: page margin `32-64px`, section gap `48px`
 
-Invalid spacing values (off grid):
-  5px, 7px, 9px, 10px, 11px, 13px, 14px, 15px, 17px, 18px, 19px...
+Grid verification:
 
-Exception: 1px for borders/dividers, 2px for fine adjustments
-```
-
-### Responsive Spacing
-
-```
-Mobile:  Page margins space-4 (16px), Section gap space-6 (24px)
-Tablet:  Page margins space-6 (24px), Section gap space-8 (32px)
-Desktop: Page margins space-8 to space-16, Section gap space-12 (48px)
-```
-
----
+- Valid examples: `4px`, `8px`, `12px`, `16px`, `20px`, `24px`, `32px`, `40px`, `48px`, `64px`
+- Suspicious values: `5px`, `7px`, `9px`, `10px`, `11px`, `13px`, `14px`, `15px`, `17px`, `18px`, `19px`
+- Exceptions: `1px` borders and dividers, `2px` micro-adjustments only when visually necessary.
 
 ## Design Token Audit
 
 ### Detection Patterns
 
-```
-HARDCODED_COLORS:
-  - HEX: #xxx, #xxxxxx, #xxxxxxxx
-  - RGB: rgb(x,x,x), rgba(x,x,x,x)
-  - HSL: hsl(x,x%,x%), hsla(x,x%,x%,x)
-  - Named: red, blue (except currentColor, inherit, transparent)
-
-HARDCODED_SPACING:
-  - Values not on 4px/8px grid: 5px, 7px, 9px, 11px, 13px, etc.
-  - Inconsistent margins/paddings
-
-HARDCODED_TYPOGRAPHY:
-  - Font sizes not in scale: 13px, 15px, 17px, 19px, etc.
-  - Line heights as arbitrary decimals: 1.37, 1.62
-  - Font weights as raw numbers without semantic meaning
-```
+- Raw `HEX` or `RGB` values in components
+- Primitive tokens used directly where semantic tokens should exist
+- Spacing values outside the `4px/8px` system
+- Shadow, radius, or z-index magic numbers
+- Inconsistent dark-mode token mapping
+- Single-use tokens and duplicated token values
 
 ### Audit Report Format
 
-```markdown
+```md
 ### Design Token Audit Report: [Component/File]
-
-| Category | Hardcoded | Tokenized | Coverage |
-|----------|-----------|-----------|----------|
-| Colors | X | Y | Z% |
-| Spacing | X | Y | Z% |
-| Typography | X | Y | Z% |
-| Shadows | X | Y | Z% |
-| Border Radius | X | Y | Z% |
-
-**Critical Issues** (should fix immediately):
-- `file.tsx:42` - `#ff5733` → `var(--color-error)`
-- `component.tsx:18` - `padding: 13px` → `var(--space-3)`
-
-**Warnings** (should fix when touching file):
-...
+- Coverage:
+- Categories:
+  - Hardcoded:
+  - Tokenized:
+  - Coverage:
+- Critical Issues:
+- Warnings:
+- Off-grid spacing:
+- Raw color usage:
+- Dark mode status:
+- Recommended token changes:
+- Risks / follow-up:
 ```
 
----
+Quick commands:
 
-## W3C Design Tokens Community Group (DTCG) Format
-
-The emerging standard for token interchange between design and code tools.
-
-### DTCG Token Format
-
-```json
-{
-  "color": {
-    "primary": {
-      "$value": "#3b82f6",
-      "$type": "color",
-      "$description": "Primary brand color"
-    },
-    "bg": {
-      "primary": {
-        "$value": "{color.neutral.50}",
-        "$type": "color",
-        "$description": "Primary background"
-      }
-    }
-  },
-// ...
+```sh
+grep -r "var(--{old-token})" src/
+git diff src/styles/tokens.css
 ```
 
 ## Modern Token Integration
 
-### Tailwind v4 CSS-first Configuration
+### W3C DTCG Format
 
-```css
-/* app.css - Tailwind v4 uses CSS for config */
-@import "tailwindcss";
-
-@theme {
-  --color-primary: #3b82f6;
-  --color-secondary: #8b5cf6;
-  --color-bg-primary: var(--color-neutral-50);
-  --color-bg-secondary: var(--color-neutral-100);
-
-  --spacing-4: 1rem;
-  --spacing-6: 1.5rem;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-/* ... */
-```
-
-### Panda CSS Token Integration
-
-```ts
-// panda.config.ts
-import { defineConfig } from '@pandacss/dev';
-
-export default defineConfig({
-  theme: {
-    tokens: {
-      colors: {
-        primary: { value: '#3b82f6' },
-        neutral: {
-          50: { value: '#fafafa' },
-          900: { value: '#171717' },
-        },
-      },
-      spacing: {
-        4: { value: '1rem' },
-// ...
-```
-
-### Open Props (CSS Custom Properties Library)
-
-```css
-/* Use Open Props as a baseline, extend with project tokens */
-@import "open-props/style";
-@import "open-props/normalize";
-
-:root {
-  /* Override Open Props defaults with project tokens */
-  --surface-1: var(--color-bg-primary);
-  --text-1: var(--color-text-primary);
-  --brand: var(--color-primary);
+```json
+{
+  "color": {
+    "bg-primary": {
+      "$value": "{color.primitive.gray.100}",
+      "$type": "color",
+      "$description": "Primary application background"
+    }
+  }
 }
 ```
 
-### CSS-in-JS (styled-components / emotion)
-
-```ts
-const theme = {
-  colors: {
-    primary: 'var(--color-primary)',
-    bg: { primary: 'var(--color-bg-primary)' },
-    text: { primary: 'var(--color-text-primary)' },
-  },
-  space: {
-    4: 'var(--space-4)',
-    6: 'var(--space-6)',
-  },
-};
-```
-
----
-
-### Token Lifecycle Status
-
-Every token definition should include a lifecycle status comment:
+### Tailwind v4
 
 ```css
-/* Primitive tokens */
---blue-500: #3b82f6;          /* @status: stable */
---blue-600: #2563eb;          /* @status: stable */
-
-/* Semantic tokens */
---color-bg-primary: var(--blue-500);     /* @status: stable */
---color-brand: var(--blue-600);          /* @status: adopt — replaces --color-primary in v2.0 */
---color-primary: var(--blue-600);        /* @status: deprecated — use --color-brand instead */
+@theme {
+  --color-bg-primary: var(--color-neutral-0);
+  --color-bg-secondary: var(--color-neutral-100);
+  --spacing-4: var(--space-4);
+}
 ```
 
-**Status values:**
+### Panda CSS
 
-| Status | Meaning | Action Required |
-|--------|---------|-----------------|
-| `@status: propose` | Under review, not yet approved | Do not use in production |
-| `@status: adopt` | Approved, gaining adoption | Prefer over alternatives |
-| `@status: stable` | Standard token, fully integrated | Use freely |
-| `@status: deprecated` | Scheduled for removal | Migrate to replacement |
-| `@status: frozen` | On hold due to external blocker | Use with caution |
+```ts
+semanticTokens: {
+  colors: {
+    bg: {
+      value: { base: "{colors.white}", _dark: "{colors.gray.900}" }
+    }
+  }
+}
+```
 
-> **Detail:** See `references/token-lifecycle.md` for full lifecycle process, migration templates, and deprecation playbook.
+### Open Props
 
----
+- Use it as a baseline only if it aligns with the project vocabulary.
+- Rename or wrap props with semantic aliases before product use.
+
+### CSS-in-JS
+
+- Prefer central token imports over ad hoc constants.
+- Do not bypass tokens inside component files.
 
 ## Code Standards
 
 ### Good Muse Code
 
-```tsx
-// Using design tokens/utility classes
-<div className="p-4 bg-surface-primary rounded-md shadow-sm">
-  <h2 className="text-lg font-bold text-text-primary">Title</h2>
-  <p className="text-sm text-text-secondary mt-2">Description</p>
-</div>
-
-// Consistent spacing using tokens
+```css
 .card {
-  padding: var(--space-4);
-  margin-bottom: var(--space-6);
-  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
-
-// Dark mode support
-.card {
-// ...
 ```
 
 ### Bad Muse Code
 
-```tsx
-// Magic numbers and raw colors
-<div style={{ padding: '13px', backgroundColor: '#f0f2f5' }}>
-  <h2 style={{ fontSize: '19px', color: '#333' }}>Title</h2>
-</div>
-
-// Off-grid spacing, hardcoded colors
+```css
 .card {
-  padding: 15px;
-  margin-bottom: 25px;
   background: #ffffff;
-  border: 1px solid #e5e5e5;
+  color: #111827;
+  padding: 18px;
+  border-radius: 7px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 ```

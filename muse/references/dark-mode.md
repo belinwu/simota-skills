@@ -1,95 +1,71 @@
 # Dark Mode
 
-Checklists, verification processes, color scheme strategies, and implementation patterns.
+Purpose: Use this reference when implementing dark mode, choosing a theme strategy, adapting colors and elevation, or verifying accessibility in dark surfaces.
 
----
+## Contents
+
+- Checklist
+- Implementation strategies
+- Color adaptation rules
+- Theme toggle implementation
+- Verification report format
 
 ## Dark Mode Checklist
 
 ### Colors
 
-```
-[ ] Semantic colors properly inverted
-    - Background: light → dark
-    - Text: dark → light
-    - Borders: adjusted for visibility
-[ ] Contrast ratios meet WCAG AA (4.5:1 for text, 3:1 for large text)
-[ ] No pure white (#fff) on dark backgrounds (use off-white)
-[ ] No pure black (#000) on light backgrounds (use off-black)
-[ ] Brand colors adjusted for dark backgrounds if needed
-[ ] Interactive state colors (hover, focus, active) work in both modes
-```
+- Contrast meets WCAG AA: `4.5:1` for normal text, `3:1` for large text.
+- Avoid pure `#000000`; prefer dark grays such as `#121212+`.
+- Avoid pure white body text on dark surfaces and pure black body text on light surfaces unless explicitly justified and re-verified.
+- Adjust accent colors if glare appears.
+- Keep semantic roles stable across themes.
 
-### Images & Icons
+### Images And Icons
 
-```
-[ ] Icons use currentColor or have dark mode variants
-[ ] Logos have dark mode alternatives
-[ ] Shadows adjusted (lighter/more subtle in dark mode)
-[ ] No "glowing" effect from images with light backgrounds
-[ ] Consider backdrop-filter for glassmorphism effects
-```
+- Provide dark-appropriate logo or image treatment when light assets bloom.
+- Ensure icons remain legible on dark surfaces.
+- Avoid white-background imagery that glows excessively.
 
 ### Components
 
-```
-[ ] Form inputs have proper dark styling
-    - Input backgrounds
-    - Placeholder text contrast
-    - Border visibility
-[ ] Focus states visible in dark mode
-[ ] Hover states have appropriate contrast
-[ ] Disabled states distinguishable in both modes
-[ ] Selection/highlight colors work in dark mode
-```
+- Verify surfaces, borders, dividers, and overlays at each elevation.
+- Ensure focus rings are visible in both themes.
+- Verify empty, loading, error, success, and disabled states.
 
 ### Edge Cases
 
-```
-[ ] Embedded content (iframes, videos)
-[ ] User-generated content (may have inline styles)
-[ ] Third-party widgets and embeds
-[ ] Print styles (usually should be light)
-[ ] Code blocks and syntax highlighting
-[ ] Charts and data visualizations
-```
-
----
+- Form controls
+- Charts and data visualization
+- Scrollbars, code blocks, syntax highlighting
+- Modal backdrops and layered surfaces
 
 ## Dark Mode Implementation Strategies
 
-### Strategy 1: CSS Custom Properties (Recommended)
+### Strategy 1: CSS Custom Properties
+
+Recommended for most projects.
 
 ```css
 :root {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fafb;
+  --color-bg-surface: #ffffff;
   --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
-  --color-border: #e5e7eb;
 }
 
 [data-theme="dark"] {
-  --color-bg-primary: #111827;
-  --color-bg-secondary: #1f2937;
-  --color-text-primary: #f9fafb;
-  --color-text-secondary: #9ca3af;
-  --color-border: #374151;
+  --color-bg-surface: #121212;
+  --color-text-primary: #f3f4f6;
 }
 ```
 
-### Strategy 2: prefers-color-scheme Media Query
+### Strategy 2: `prefers-color-scheme`
+
+Best when the product follows the system setting without a custom toggle.
 
 ```css
-:root {
-  --color-bg-primary: #ffffff;
-  --color-text-primary: #111827;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg-primary: #111827;
-    --color-text-primary: #f9fafb;
+    --color-bg-surface: #121212;
+    --color-text-primary: #f3f4f6;
   }
 }
 ```
@@ -97,126 +73,84 @@ Checklists, verification processes, color scheme strategies, and implementation 
 ### Strategy 3: Tailwind Dark Mode
 
 ```html
-<!-- Class-based (requires manual toggle) -->
-<div class="bg-white dark:bg-gray-900">
-  <p class="text-gray-900 dark:text-gray-100">Content</p>
-</div>
+<p class="text-gray-900 dark:text-gray-100">Content</p>
 ```
 
-```js
-// tailwind.config.js
-module.exports = {
-  darkMode: 'class', // or 'media' for system preference
-};
-```
+Use when the project already relies on Tailwind’s `dark:` variant.
 
-### Strategy 4: CSS color-scheme Property
+### Strategy 4: `color-scheme`
+
+Use to align browser-native controls with the active theme.
 
 ```css
-:root {
-  color-scheme: light dark;
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
-
-/* Browser auto-adjusts form elements, scrollbars, etc. */
 ```
-
----
 
 ## Color Adaptation Rules
 
 ### Lightness Inversion Table
 
-| Light Mode | Dark Mode | Reason |
-|-----------|-----------|--------|
-| White (#fff) | Gray-900 (#111827) | Never use pure black |
-| Gray-50 | Gray-800 | Subtle backgrounds |
-| Gray-100 | Gray-700 | Card backgrounds |
-| Gray-900 | Gray-50 | Primary text |
-| Gray-600 | Gray-400 | Secondary text |
-| Blue-600 | Blue-400 | Links/actions (increase lightness) |
-| Red-600 | Red-400 | Errors (increase lightness) |
-| Green-600 | Green-400 | Success (increase lightness) |
+| Light mode role | Dark mode counterpart | Notes |
+|-----------------|----------------------|-------|
+| Background | Dark surface | keep content readable first |
+| Gray-100 surface | Gray-700+ surface | maintain hierarchy |
+| Light border | Dark border | keep separation subtle |
+| Muted text | Higher-lightness muted text | maintain contrast |
+
+### Saturation And Glare
+
+- If an accent color feels harsh on dark surfaces, reduce saturation by `10-20%` and raise lightness slightly.
+- Preserve semantic meaning before visual novelty.
 
 ### Shadow Adaptation
 
-```css
-/* Light mode: visible shadows */
-.card { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+- Shadows in dark mode often need lower opacity and stronger separation with surface layers.
+- Use shadow tokens or surface elevation tokens, not hardcoded shadow values.
 
-/* Dark mode: reduce or replace with borders */
-[data-theme="dark"] .card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  /* or use border instead */
-  border: 1px solid var(--color-border);
-}
-```
+### Elevation In Dark Mode
 
-### Elevation in Dark Mode
-
-```
-Light mode: Elevation via shadows (subtle gray shadows)
-Dark mode: Elevation via lightness (higher = lighter background)
-
-Surface-0: gray-900 (lowest)
-Surface-1: gray-800
-Surface-2: gray-700
-Surface-3: gray-600 (highest)
-```
-
----
+- Express hierarchy through surface lightness progression, not through brighter shadows alone.
+- Example: `Surface-0 (darkest) -> Surface-3 (lightest)` for layered components.
 
 ## Theme Toggle Implementation
 
-### React
+Provide `System / Light / Dark` whenever the product allows explicit choice.
+
+### React Example
 
 ```tsx
-function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'light';
-    return localStorage.getItem('theme') as 'light' | 'dark'
-      ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  });
+function ThemeToggle() {
+  const setTheme = (theme: "system" | "light" | "dark") => {
+    document.documentElement.dataset.theme = theme;
+  };
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');
-  return { theme, toggle };
+  return null;
 }
 ```
 
 ### System Preference Listener
 
 ```ts
-window.matchMedia('(prefers-color-scheme: dark)')
-  .addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-    }
-  });
+window.matchMedia("(prefers-color-scheme: dark)");
 ```
 
----
+Use it only if the selected mode is `system`.
 
 ## Dark Mode Verification Report Format
 
-```markdown
+```md
 ### Dark Mode Verification: [Component]
-
-**Status**: ✅ Pass / ⚠️ Issues Found / ❌ Fail
-
-**Checklist Results**:
-- Colors: [X/Y passed]
-- Images/Icons: [X/Y passed]
-- Components: [X/Y passed]
-- Edge Cases: [X/Y passed]
-
-**Issues Found**:
-1. [Issue description] - [file:line]
-   - Current: [problematic value]
-   - Fix: [recommended change]
-
-**Recommendation**: [Pass as-is / Fix before merge / Major rework needed]
+- Status:
+- Checklist passed:
+- Strategy:
+- Text contrast:
+- Large text contrast:
+- Focus visibility:
+- Surface hierarchy:
+- Image/icon adaptation:
+- Edge cases checked:
+- Issues:
+- Recommendation:
 ```

@@ -1,149 +1,59 @@
-# Color System & Dark Mode Anti-Patterns
+# Color System And Dark Mode Anti-Patterns
 
-> ダークモード実装の落とし穴、カラーコントラスト失敗、ハレーション問題、インクルーシブダークテーマ設計
+Purpose: Use this reference when dark mode feels harsh, inaccessible, visually noisy, or structurally inconsistent.
 
-## 1. ダークモード 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | ユーザーへの影響 | 対策 |
-|---|-------------|------|---------------|------|
-| **DM-01** | **純黒背景** | `#000000` を背景に使用 | 過度なコントラストで眼精疲労、ハレーション発生 | `#121212` 以上のダークグレー使用 |
-| **DM-02** | **コントラスト不足** | テキストが WCAG AA 基準未達 | 読みにくさ、a11y 違反 | テキスト 4.5:1、大テキスト 3:1 を確認 |
-| **DM-03** | **彩度過多** | 高彩度アクセントカラーをそのまま使用 | 暗い背景上で目がチカチカ、疲労増大 | ダークモードでは彩度を 10-20% 下げ、明度を上げる |
-| **DM-04** | **エレベーション不整合** | 表面階層が不明瞭 | 奥行き感がなく、コンテンツの関係性が不明 | 明度で階層表現: Surface-0(暗) → Surface-3(明) |
-| **DM-05** | **画像未適応** | ライトモード用画像をそのまま表示 | 白背景画像が眩しい「発光」効果 | 画像に backdrop-filter、ロゴはダークモード版を用意 |
-| **DM-06** | **強制ダークモード** | ユーザーにモード選択の自由なし | 乱視ユーザー等で可読性低下 | System / Light / Dark の 3 択トグル |
-| **DM-07** | **フォーカス不可視** | ダークモードでフォーカスリングが見えない | キーボードナビゲーション不能、a11y 違反 | テーマごとにフォーカスカラーをトークン化 |
+- Dark mode anti-patterns
+- Glare and halation guidance
+- Contrast recommendations
+- Inclusive color checks
+- Muse review checklist
 
----
+## Dark Mode Anti-Patterns
 
-## 2. ハレーション（Halation）問題
+| ID | Anti-pattern | Signal | Risk | Correction |
+|----|--------------|--------|------|-----------|
+| `DM-01` | Pure black surfaces | Background uses `#000000` | Eye strain and halation | Use dark gray such as `#121212+` |
+| `DM-02` | Insufficient contrast | Text fails WCAG AA | Readability and accessibility failure | Enforce `4.5:1` for text and `3:1` for large text |
+| `DM-03` | Over-saturated accents | Light-mode accent copied directly to dark mode | Flicker and fatigue | Reduce saturation by `10-20%` and raise lightness when needed |
+| `DM-04` | Broken elevation | Surfaces look flat or indistinguishable | Loss of hierarchy | Express elevation through surface steps |
+| `DM-05` | Unadapted imagery | Light-background assets glow on dark screens | Visual disruption | Provide dark variants or soften backgrounds |
+| `DM-06` | Forced dark mode | User cannot choose theme | Accessibility and preference issues | Offer `System / Light / Dark` |
+| `DM-07` | Invisible focus | Focus rings disappear in dark mode | Keyboard navigation fails | Tokenize focus colors per theme |
 
-```
-ハレーションとは:
-  - 明るいテキストが暗い背景上で「にじんで」見える現象
-  - 特に乱視のあるユーザー（成人の約 30%）で顕著
-  - 純白 (#FFFFFF) × 純黒 (#000000) の組み合わせで最も発生
+## Glare And Halation Guidance
 
-対策:
-  テキスト側:
-    ❌ #FFFFFF（純白）
-    ✅ #E0E0E0〜#F5F5F5（オフホワイト）
-    → コントラスト比を 15:1 → 12:1 程度に調整
+- Avoid extreme white-on-black pairings unless required by brand and verified carefully.
+- Reduce pure-white surfaces and unadapted light imagery.
+- Treat accent saturation and lightness as separate tuning knobs.
+- Comfortable contrast often falls around `7:1-12:1`; values `15:1+` can feel harsher than necessary on dark surfaces.
 
-  背景側:
-    ❌ #000000（純黒）
-    ✅ #121212〜#1E1E1E（ダークグレー）
+## Contrast Recommendations
 
-  タイポグラフィ:
-    - サンセリフフォント推奨（セリフは細部がにじみやすい）
-    - ダークモードでは font-weight を 1 段階上げることを検討
-    - letter-spacing をわずかに広げる（0.01-0.02em）
+| UI role | Requirement |
+|--------|-------------|
+| Body text | `4.5:1+` |
+| Large text | `3:1+` |
+| Links and actions | `4.5:1+` |
+| Error / success / warning status text | `4.5:1+` |
 
-  CSS アンチエイリアシング:
-    [data-theme="dark"] {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-```
+Suggested dark-theme ranges:
 
----
+- Background: `#121212-#1E1E1E`
+- Primary body text: `#E0E0E0-#F5F5F5`
+- Body text size: `min 16px`
+- Body letter-spacing: `0.01-0.02em` when needed for legibility
 
-## 3. カラーコントラスト推奨値
+## Inclusive Color Checks
 
-| 要素 | ライトモード | ダークモード | コントラスト比 |
-|------|-----------|-----------|------------|
-| 主背景 | `#FFFFFF` | `#121212` | 15.8:1 |
-| Surface 1 | `#F5F5F5` | `#1E1E1E` | 12.6:1 |
-| Surface 2 | `#EEEEEE` | `#2C2C2C` | — |
-| 主テキスト | `#212121` | `#E0E0E0` | 13.5:1 |
-| 二次テキスト | `#757575` | `#B3B3B3` | 7.2:1 |
-| リンク/アクション | Blue-600 | Blue-300 | 4.5:1+ |
-| エラー | Red-600 | Red-300 | 4.5:1+ |
-| 成功 | Green-700 | Green-300 | 4.5:1+ |
+- Verify low-vision readability.
+- Do not rely on color alone for meaning.
+- Keep focus and status indicators perceivable in all themes.
 
----
+## Muse Review Checklist
 
-## 4. カラーシステム設計の落とし穴
-
-```
-色のみの情報伝達（a11y 違反）:
-  ❌ エラーを赤色のみで表示
-  ✅ 赤色 + アイコン + テキストの併用
-
-コントラストの逆説:
-  ❌ コントラスト比を最大化すれば良い
-  ✅ 過度なコントラストは振動・グレア・可読性低下を引き起こす
-  → テキスト: 7:1〜12:1 が快適範囲（15:1+ は避ける）
-
-ブランドカラーのダークモード適応:
-  ❌ ライトモードと同じブランドカラーをそのまま使用
-  ✅ 明度を上げ、彩度を下げた専用バリアントを定義
-  → Semantic トークンでモード切替: --color-brand: var(--blue-600) → var(--blue-300)
-
-シャドウのダークモード適応:
-  ❌ ライトモードと同じ box-shadow
-  ✅ ダークモードではシャドウを減らし、ボーダーで代替
-  ✅ エレベーションは明度の差で表現（高い = 明るい背景）
-
-チャート・データ可視化:
-  ❌ ライトモード用のカラーパレットをそのまま適用
-  ✅ ダークモード専用のデータカラーパレットを定義
-  ✅ 色覚多様性を考慮したパレット設計（パターン/テクスチャ併用）
-```
-
----
-
-## 5. 視覚障害への配慮
-
-```
-対象ユーザー別の設計指針:
-
-  乱視（成人の約 30%）:
-    - ハレーション防止: 純黒回避 + オフホワイトテキスト
-    - フォントサイズ: 最低 16px
-    - letter-spacing: やや広め
-
-  弱視:
-    - 高コントラスト + スケーラブルフォント
-    - ユーザーによるテキストサイズ調整可能
-
-  光過敏:
-    - 明るい要素の最小化
-    - 明度の調整オプション提供
-    - prefers-contrast: more への対応
-
-  糖尿病性網膜症:
-    - シンプルなデザイン、高コントラスト余白
-    - 装飾を最小限に
-
-  白内障:
-    - 純黒回避、柔らかいミュートカラー
-    - ダークグレー + ソフトカラーの組み合わせ
-
-メディアクエリ活用:
-  @media (prefers-color-scheme: dark) { ... }
-  @media (prefers-contrast: more) { ... }
-  @media (prefers-reduced-motion: reduce) { ... }
-```
-
----
-
-## 6. Muse との連携
-
-```
-Muse での活用:
-  1. SCAN フェーズで DM-01〜07 のスクリーニング
-  2. ダークモードトークン定義時にコントラスト比検証
-  3. ブランドカラーのダークモードバリアント自動提案
-  4. VERIFY フェーズでハレーションチェック
-
-品質ゲート:
-  - 背景に #000000 → #121212+ に変更（DM-01 防止）
-  - テキストコントラスト < 4.5:1 → トークン値調整（DM-02 防止）
-  - 高彩度アクセント → 彩度下げ + 明度上げ（DM-03 防止）
-  - フォーカスリング非表示 → テーマ別フォーカストークン追加（DM-07 防止）
-  - 色のみのエラー表示 → アイコン + テキスト併用を要求
-  - ライトモードと同じシャドウ → ダークモード用シャドウトークン定義
-```
-
-**Source:** [Smashing Magazine: Inclusive Dark Mode](https://www.smashingmagazine.com/2025/04/inclusive-dark-mode-designing-accessible-dark-themes/) · [UI Deploy: Complete Dark Mode Design Guide 2025](https://ui-deploy.com/blog/complete-dark-mode-design-guide-ui-patterns-and-implementation-best-practices-2025) · [AllAccessible: Color Contrast WCAG Guide 2025](https://www.allaccessible.org/blog/color-contrast-accessibility-wcag-guide-2025)
+- `DM-01`: move pure black toward a safer dark gray.
+- `DM-02`: adjust token values until contrast passes.
+- `DM-03`: reduce accent saturation in dark mode.
+- `DM-07`: add theme-specific focus tokens.

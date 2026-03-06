@@ -1,247 +1,117 @@
 # Design System Construction
 
-Layers, file structure, construction phases, health metrics, and framework integration.
+Purpose: Use this reference when building or restructuring the token foundation, file layout, framework integration, or governance baseline for a design system.
 
----
+## Contents
+
+- Design system layers
+- File structure
+- Construction phases
+- Health metrics
+- Framework integration
+- Visualization hooks
 
 ## Design System Layers
 
-```
-Layer 1: FOUNDATIONS (Muse owns)
-├── Design Tokens (colors, spacing, typography, effects)
-├── CSS Reset / Normalize
-├── Base Typography Styles
-└── Utility Classes (optional)
-
-Layer 2: COMPONENTS (Muse + Forge collaborate)
-├── Atomic Components (Button, Input, Badge, Icon)
-├── Molecular Components (Card, Form Field, List Item)
-└── Organism Components (Header, Sidebar, Modal)
-
-Layer 3: PATTERNS (Muse + Artisan collaborate)
-├── Layout Patterns (Grid, Stack, Cluster)
-├── Interaction Patterns (Navigation, Forms, Feedback)
-└── Composition Patterns (Page templates)
-
-Layer 4: DOCUMENTATION (Muse + Showcase collaborate)
-├── Token Reference
-├── Component Catalog
-├── Usage Guidelines
-└── Brand Guidelines
-```
-
----
+| Layer | Purpose | Typical artifacts |
+|------|---------|-------------------|
+| Token Foundation | Primitive and semantic token definitions | colors, spacing, typography, shadow, radius |
+| Base Styles | Global resets and base mappings | theme roots, typography defaults, surface defaults |
+| Component Tokenization | Component-level tokens and usage patterns | buttons, cards, forms, overlays |
+| Documentation And Governance | Usage guidance, stories, ownership, drift control | Storybook, docs, lifecycle records |
 
 ## File Structure
 
-```
+```text
 design-system/
-├── tokens/                    # Layer 1: Foundations
-│   ├── primitives/
-│   └── semantic/
-├── styles/
-│   ├── reset.css
-│   ├── base.css              # Base typography, links
-│   └── utilities.css         # Optional utility classes
-├── components/               # Layer 2: Components
-│   ├── button/
-│   │   ├── button.css
-│   │   └── button.stories.tsx
-│   └── ...
-├── patterns/                 # Layer 3: Patterns
-│   ├── layouts/
-│   └── compositions/
-└── docs/                     # Layer 4: Documentation
-    ├── tokens.md
-    ├── components.md
-    └── guidelines.md
+  tokens/
+    primitives/
+    semantic/
+    components/
+  styles/
+    base.css
+    themes.css
+  docs/
+    guidelines.md
+    lifecycle.md
+  stories/
 ```
 
----
+Rules:
+
+- Tokens are the source of truth.
+- Docs and stories must point back to the same token vocabulary.
+- Component code should consume semantic or component tokens, not raw values.
 
 ## Construction Phases
 
 ### Phase 1: Token Foundation
-1. Audit existing codebase for colors, spacing, typography in use
-2. Define primitive token scales (color palette, spacing grid, type scale)
-3. Create semantic token layer mapping primitives to use cases
-4. Implement dark mode token variants
+
+- Define primitives and semantics.
+- Set typography and spacing scales.
+- Decide light/dark theme strategy.
 
 ### Phase 2: Base Styles
-1. Establish CSS reset/normalize
-2. Define base typography (body, headings, links)
-3. Create foundational utility classes if needed
+
+- Wire tokens into root styles and theme wrappers.
+- Standardize surface, text, and focus defaults.
 
 ### Phase 3: Component Tokenization
-1. Identify core components in the codebase
-2. Replace hardcoded values with tokens
-3. Document component token usage
-4. Ensure dark mode compatibility
 
-### Phase 4: Documentation & Governance
-1. Create token reference documentation
-2. Establish contribution guidelines
-3. Set up design-dev handoff process
-4. Define token deprecation strategy
+- Replace hardcoded values.
+- Introduce component-level tokens only when reuse or clarity justifies them.
 
----
+### Phase 4: Documentation And Governance
+
+- Publish stories and token usage docs.
+- Track lifecycle states and ownership.
+- Establish drift review cadence.
 
 ## Health Metrics
 
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| Token Coverage | 95%+ | Audit for hardcoded values |
-| Dark Mode Support | 100% | Checklist verification |
-| Component Token Usage | 100% | No magic numbers in components |
-| Documentation Currency | < 1 sprint | Last update date |
-
----
+| Metric | Target | Meaning |
+|-------|--------|---------|
+| Token Coverage | `95%+` | Hardcoded values are exceptional, not normal |
+| Dark Mode Support | `100%` | No light-only components remain |
+| Component Token Usage | `100%` | Components use tokens instead of magic numbers |
+| Documentation Currency | `< 1 sprint` stale | Docs keep up with actual implementation |
 
 ## Framework Integration
 
-### CSS Custom Properties (Universal)
+### CSS Custom Properties
 
-```css
-:root {
-  --color-primary: #3b82f6;
-  --space-4: 1rem;
-}
-```
+- Default recommendation for broad compatibility.
+- Use them as the cross-framework token source.
 
-### Tailwind CSS (v3)
+### Tailwind CSS v3
 
-```js
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        primary: 'var(--color-primary)',
-      },
-      spacing: {
-        4: 'var(--space-4)',
-      }
-    }
-  }
-}
-```
+- Map tokens into `theme.extend`.
+- Avoid duplicating token values in config and CSS if one source can generate both.
 
-### Tailwind CSS v4 (CSS-first)
+### Tailwind CSS v4
 
-```css
-@import "tailwindcss";
-
-@theme {
-  --color-primary: #3b82f6;
-  --color-bg-primary: var(--color-neutral-50);
-  --spacing-4: 1rem;
-  --radius-md: 0.375rem;
-}
-```
+- Use `@theme` and generated CSS variables.
+- Keep semantic aliases visible in CSS-first config.
 
 ### Panda CSS
 
-```ts
-import { defineConfig } from '@pandacss/dev';
+- Use `semanticTokens` for mode-aware values.
+- Avoid mixing Panda tokens with raw CSS values in components.
 
-export default defineConfig({
-  theme: {
-    tokens: {
-      colors: {
-        primary: { value: '#3b82f6' },
-      },
-    },
-    semanticTokens: {
-      colors: {
-        bg: {
-          primary: {
-            value: { base: '{colors.neutral.50}', _dark: '{colors.neutral.900}' },
-          },
-        },
-      },
-    },
-  },
-});
-```
+### CSS Modules / Scoped Styles
 
-### CSS Modules
+- Import and consume global tokens; do not recreate them locally.
 
-```css
-/* button.module.css */
-.button {
-  padding: var(--space-2) var(--space-4);
-  background: var(--color-primary);
-  border-radius: var(--radius-md);
-  color: var(--color-text-inverse);
-}
-```
+### Vue / Svelte
 
-### Vue / Svelte Scoped Styles
+- Keep tokens global and semantic.
+- Scope only component-specific aliases when required.
 
-```vue
-<style scoped>
-.card {
-  padding: var(--space-4);
-  background: var(--color-bg-primary);
-  border-radius: var(--radius-lg);
-}
-</style>
-```
+## Visualization Hooks
 
----
+Use Canvas when any of the following would unblock design system work:
 
-## Canvas Integration
-
-### Color Palette Diagram
-
-```mermaid
-graph LR
-    subgraph Primary
-        P50[primary-50] --> P100[primary-100] --> P500[primary-500] --> P900[primary-900]
-    end
-    subgraph Neutral
-        N50[neutral-50] --> N100[neutral-100] --> N500[neutral-500] --> N900[neutral-900]
-    end
-    subgraph Semantic
-        Success[success]
-        Warning[warning]
-        Error[error]
-        Info[info]
-    end
-```
-
-### Typography Scale Diagram
-
-```
-Typography Scale (Major Third 1.25)
-
-Display (60px)  ████████████████████████████████
-H1 (48px)       ██████████████████████████
-H2 (36px)       ████████████████████
-H3 (30px)       ████████████████
-H4 (24px)       █████████████
-H5 (20px)       ███████████
-H6 (18px)       ██████████
-Body (16px)     █████████
-Small (14px)    ████████
-Caption (12px)  ██████
-```
-
-### Spacing System Diagram
-
-```
-8px Grid System
-
-┌──────────────────────────────────────────────────┐
-│ space-16 (64px)                                  │
-│  ┌────────────────────────────────────────────┐  │
-│  │ space-12 (48px)                            │  │
-│  │  ┌──────────────────────────────────────┐  │  │
-│  │  │ space-8 (32px)                       │  │  │
-│  │  │  ┌────────────────────────────────┐  │  │  │
-│  │  │  │ space-4 (16px)                │  │  │  │
-│  │  │  │  ┌──────────────────────────┐  │  │  │  │
-│  │  │  │  │ space-2 (8px)           │  │  │  │  │
-│  │  │  │  │  ┌────────────────────┐  │  │  │  │  │
-│  │  │  │  │  │ space-1 (4px)     │  │  │  │  │  │
-```
+- palette hierarchy diagrams
+- typography scale diagrams
+- spacing system diagrams
+- dependency views for token adoption

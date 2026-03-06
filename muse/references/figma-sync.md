@@ -1,18 +1,24 @@
 # Figma Token Sync
 
-Figma Variables sync, Style Dictionary / Token Studio configuration, and diff reports.
+Purpose: Use this reference when syncing Figma variables or Token Studio with code, generating DTCG tokens, or automating token diffs in CI.
 
----
+## Contents
+
+- Sync workflow
+- Figma variables structure
+- Style Dictionary configuration
+- Token Studio workflow
+- CI/CD automation
+- Manual sync
+- Token diff report
 
 ## Token Sync Workflow
 
-```
-Figma Variables → tokens.json → CSS/Tailwind → Component styles
-     ↑                                              |
-     └──────────── Design review ←──────────────────┘
-```
-
----
+1. Define or update variables in Figma.
+2. Export in DTCG-compatible form.
+3. Transform tokens into code artifacts.
+4. Verify diffs and dark-mode behavior.
+5. Run visual regression when token changes affect UI surfaces.
 
 ## Figma Variables Structure
 
@@ -20,116 +26,61 @@ Figma Variables → tokens.json → CSS/Tailwind → Component styles
 {
   "colors": {
     "primitive": {
-      "blue-500": { "value": "#3b82f6", "type": "color" },
       "gray-100": { "value": "#f3f4f6", "type": "color" }
     },
     "semantic": {
-      "bg-primary": { "value": "{colors.primitive.gray-100}", "type": "color" },
-      "text-primary": { "value": "{colors.primitive.gray-900}", "type": "color" }
+      "bg-primary": { "value": "{colors.primitive.gray-100}", "type": "color" }
     }
   },
   "spacing": {
-    "4": { "value": "16px", "type": "dimension" },
     "6": { "value": "24px", "type": "dimension" }
   }
 }
 ```
 
----
+Rules:
+
+- Preserve primitive vs semantic separation.
+- Prefer a single source of truth per team or repo.
+- Keep dark-mode tokens explicit instead of embedding theme ambiguity.
+- For Token Studio, keep sets clearly separated, such as `global`, `light`, and `dark`.
 
 ## Style Dictionary Configuration
 
+### Style Dictionary v4
+
 ```js
-// style-dictionary.config.js
-module.exports = {
-  source: ['tokens/**/*.json'],
+export default {
+  source: ["tokens/**/*.json"],
+  preprocessors: ["tokens-studio"],
   platforms: {
     css: {
-      transformGroup: 'css',
-      buildPath: 'src/styles/',
-      files: [{
-        destination: 'tokens.css',
-        format: 'css/variables',
-        options: { outputReferences: true }
-      }]
-    },
-    tailwind: {
-      transformGroup: 'js',
-      buildPath: 'src/styles/',
-      files: [{
-        destination: 'tailwind-tokens.js',
-        format: 'javascript/module'
-      }]
+      transformGroup: "css",
+      buildPath: "dist/css/",
+      files: [{ destination: "tokens.css", format: "css/variables", options: { outputReferences: true } }]
     }
   }
 };
 ```
 
-### Style Dictionary v4 (DTCG support)
+Use v4 for native DTCG support where possible.
 
-```js
-// style-dictionary.config.mjs
-import StyleDictionary from 'style-dictionary';
-
-const sd = new StyleDictionary({
-  source: ['tokens/**/*.tokens.json'],
-  preprocessors: ['tokens-studio'],
-  platforms: {
-    css: {
-      transformGroup: 'css',
-      buildPath: 'src/styles/',
-      files: [{
-        destination: 'tokens.css',
-        format: 'css/variables',
-      }]
-    }
-  }
-});
-
-await sd.buildAllPlatforms();
-```
-
----
-
-## Token Studio for Figma (formerly Figma Tokens)
+## Token Studio For Figma
 
 ### Plugin Setup
 
-1. Install "Tokens Studio for Figma" plugin
-2. Connect to Git repository (GitHub/GitLab)
-3. Configure token sets (primitives, semantic, component)
-4. Enable automatic sync
+- Organize token sets by primitive, semantic, and component scope.
+- Keep theme variants explicit.
+- Sync via Git when the team expects code-first review.
 
-### Token Studio JSON Format
+### Token Studio JSON
 
 ```json
 {
   "global": {
     "color": {
-      "primary": {
-        "value": "#3b82f6",
-        "type": "color"
-      }
-    },
-    "spacing": {
-      "4": {
-        "value": "16",
-        "type": "spacing"
-      }
-    }
-  },
-  "light": {
-    "bg": {
-      "primary": {
-        "value": "{global.color.neutral.50}",
-        "type": "color"
-      }
-    }
-  },
-  "dark": {
-    "bg": {
-      "primary": {
-        "value": "{global.color.neutral.900}",
+      "bg-primary": {
+        "value": "{color.gray.100}",
         "type": "color"
       }
     }
@@ -137,92 +88,60 @@ await sd.buildAllPlatforms();
 }
 ```
 
-### Git Sync Configuration
+### Git Sync
 
-```json
-// .tokens-studio.json
-{
-  "provider": "github",
-  "repository": "org/design-tokens",
-  "branch": "main",
-  "filePath": "tokens/",
-  "commitMessage": "style(tokens): sync from Figma"
-}
-```
-
----
+- Commit token source files, not only generated assets.
+- Review token diffs like code.
+- Tag breaking token changes with the lifecycle and semver context.
 
 ## CI/CD Automation
 
-### GitHub Actions Token Sync
+### GitHub Actions Example
 
 ```yaml
-# .github/workflows/sync-tokens.yml
-name: Sync Figma Tokens
+name: sync-tokens
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 9 * * 1'  # Weekly Monday 9am
-
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Export Figma Variables
-        uses: figma/export-variables-action@v1
-        with:
-          file-id: ${{ secrets.FIGMA_FILE_ID }}
-          token: ${{ secrets.FIGMA_TOKEN }}
-          output: tokens/figma-export.json
-      - name: Transform tokens
-        run: npx style-dictionary build
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: 'style(tokens): sync from Figma'
-          body: 'Automated token sync from Figma Variables'
+      - run: npm run tokens:build
+      - run: npm run test:visual
 ```
 
-### Manual Token Sync
+Rules:
 
-```bash
-# 1. Export from Figma Tokens plugin / Token Studio
-# File → Export → tokens.json
+- Build generated assets deterministically.
+- Review token diffs before publishing.
+- Pair token sync with visual regression when UI output changes.
 
-# 2. Transform to CSS
+## Manual Sync
+
+1. Export from Figma Variables or Token Studio.
+2. Transform into CSS or framework artifacts.
+3. Verify changed tokens and affected components.
+4. Run visual regression or snapshot checks.
+
+Common commands:
+
+```sh
 npx style-dictionary build
-
-# 3. Verify changes
 git diff src/styles/tokens.css
-
-# 4. Run visual regression
 npm run test:visual
 ```
 
----
-
 ## Token Diff Report
 
-When tokens change, generate a diff report:
-
-```markdown
+```md
 ### Token Sync Report
-
-**Source**: Figma file `Design System v2.1`
-**Sync Date**: YYYY-MM-DD
-
-| Token | Previous | New | Impact |
-|-------|----------|-----|--------|
-| --color-primary | #3b82f6 | #2563eb | 12 components |
-| --space-4 | 16px | 1rem | Unit change only |
-| --radius-lg | NEW | 12px | New token added |
-
-**Breaking Changes**: 0
-**New Tokens**: 1
-**Modified Tokens**: 2
-
-**Action Required**:
-- [ ] Review color-primary change for contrast
-- [ ] Update Storybook documentation
+- Source:
+- Breaking Changes:
+- New Tokens:
+- Modified Tokens:
+- Deprecated Tokens:
+- Dark mode impact:
+- Visual regression status:
+- Action Required:
 ```
