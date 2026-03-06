@@ -1,515 +1,104 @@
 # Advanced Patterns
 
-Monorepo CI, self-hosted runners, multi-platform builds, deployment pipelines, service containers, debugging, and expressions.
+Purpose: Cover monorepo CI, self-hosted runners, multi-platform builds, advanced deployment flows, service containers, and deep workflow debugging.
 
----
+## Contents
+
+- Monorepo CI
+- Self-hosted runners
+- Multi-platform builds
+- Deployment patterns
+- Service containers
+- Debugging
+- Expressions and functions
 
 ## Monorepo CI
 
-### The Challenge
+Workflow-level `paths` filters are not enough for job-level routing in a monorepo.
 
-Built-in `paths` filters work at the **workflow level** only. You cannot conditionally skip individual jobs based on changed paths without additional tooling.
+| Need | Preferred tool or pattern |
+|------|---------------------------|
+| Job-level file routing | `dorny/paths-filter` |
+| Dependency-aware package routing | `nx affected` or `turbo --filter` |
+| Required checks with selective execution | always-run `ci-gate` job |
+| Team/package ownership separation | split workflows by package or domain when logic becomes hard to follow |
 
-### dorny/paths-filter
+Safe default:
 
-Job-level and step-level conditional execution based on changed files.
-
-```yaml
-jobs:
-  detect:
-    runs-on: ubuntu-latest
-    outputs:
-      api: ${{ steps.filter.outputs.api }}
-      web: ${{ steps.filter.outputs.web }}
-      shared: ${{ steps.filter.outputs.shared }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            api:
-              - 'packages/api/**'
-# ...
-```
-
-### TurboRepo Integration
-
-```yaml
-jobs:
-  ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2  # Need parent commit for diff
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install --frozen-lockfile
-
-# ...
-```
-
-### Required Checks + Path Filters Problem
-
-**Problem:** If a required check is skipped (due to path filter), the PR is blocked because the check never reports a status.
-
-**Solutions:**
-
-```yaml
-# Solution 1: Always-run job that reports success
-jobs:
-  detect:
-    outputs:
-      api: ${{ steps.filter.outputs.api }}
-    steps:
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            api:
-              - 'packages/api/**'
-
-  test-api:
-    needs: detect
-# ...
-```
-
-```yaml
-# Solution 2: Separate workflow per package with path filter
-# packages/api/.github/workflows/ci.yml
-on:
-  pull_request:
-    paths: ['packages/api/**', 'packages/shared/**']
-```
-
----
+- detect changed areas first
+- run only affected jobs
+- keep one always-reporting gate for required checks
 
 ## Self-Hosted Runners
 
-### Actions Runner Controller (ARC)
+Use self-hosted runners only when GitHub-hosted runners cannot satisfy networking, hardware, or compliance constraints.
 
-Kubernetes-based auto-scaling for self-hosted runners.
+Rules:
 
-```yaml
-# runner-deployment.yaml (Kubernetes)
-apiVersion: actions.summerwind.dev/v1alpha1
-kind: RunnerDeployment
-metadata:
-  name: example-runner
-spec:
-  replicas: 3
-  template:
-    spec:
-      repository: my-org/my-repo
-      labels:
-        - self-hosted
-        - linux
-        - x64
----
-# ...
-```
-
-### Ephemeral Runners
-
-Create a fresh runner for each job, destroy after completion:
-
-```yaml
-# In workflow
-runs-on: [self-hosted, ephemeral]
-```
-
-**Benefits:** No state leakage between jobs, clean environment, reduced security risk.
-
-### Runner Groups and Labels
-
-```yaml
-# Use specific runner groups/labels
-jobs:
-  build:
-    runs-on: [self-hosted, linux, gpu]  # GPU-enabled runner
-
-  test:
-    runs-on: [self-hosted, linux, x64]  # Standard runner
-
-  ios:
-    runs-on: [self-hosted, macOS, arm64]  # Apple Silicon runner
-```
-
-### Security Considerations
-
-| Risk | Mitigation |
-|------|------------|
-| **Public repos:** Anyone can trigger workflows | Never use self-hosted runners for public repos |
-| **Persistent state:** Previous job artifacts remain | Use ephemeral runners |
-| **Network access:** Runner has LAN access | Isolate runners in dedicated VPC/subnet |
-| **Privilege escalation:** Container breakout | Run as non-root, use rootless containers |
-| **Supply chain:** Malicious workflow code | Restrict who can modify `.github/workflows/` |
-
-### Custom Runner Images
-
-```dockerfile
-# Dockerfile for custom runner
-FROM ghcr.io/actions/actions-runner:latest
-
-# Install project-specific tools
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    chromium-browser \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
-```
-
----
+- prefer ephemeral runners
+- prefer ARC for elastic scale
+- use explicit labels and runner groups
+- never use self-hosted runners for public repositories
+- rebuild runner images regularly
 
 ## Multi-Platform Builds
 
-### Docker Buildx + QEMU
+- Use `docker/setup-qemu-action` and `docker/setup-buildx-action` for multi-arch image builds.
+- Keep full OS matrices for PRs, release, or nightly flows, not every push.
+- Prefer Ubuntu by default and add Windows/macOS only when required by the product surface.
 
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+## Deployment Patterns
 
-      - uses: docker/setup-qemu-action@v3
+| Pattern | Use it when | Guardrail |
+|---------|-------------|-----------|
+| Rolling | low-risk stateless services | keep health checks and concurrency |
+| Blue-green | fast cutover with strong rollback need | keep old environment ready until verification passes |
+| Canary | production validation on a small slice | define rollback trigger and evaluation window |
+| Manual rollback | previous artifact or config restore | use controlled `workflow_dispatch` |
 
-      - uses: docker/setup-buildx-action@v3
+Deployment rules:
 
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-# ...
-```
-
-### Matrix OS Builds
-
-```yaml
-jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-          - os: macos-latest
-            target: darwin-arm64
-          - os: windows-latest
-            target: win-x64
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm run build -- --target ${{ matrix.target }}
-# ...
-```
-
----
-
-## Deployment Pipelines
-
-### Staged Deployment
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm install --frozen-lockfile && pnpm build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: dist/
-
-  deploy-staging:
-    needs: build
-    environment:
-      name: staging
-# ...
-```
-
-### Blue-Green Deploy Pattern
-
-```yaml
-jobs:
-  deploy:
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to inactive slot
-        run: |
-          ACTIVE=$(curl -s https://myapp.com/slot)
-          INACTIVE=$([ "$ACTIVE" = "blue" ] && echo "green" || echo "blue")
-          ./deploy.sh "$INACTIVE"
-
-      - name: Health check
-        run: |
-          for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w '%{http_code}' "https://${INACTIVE}.myapp.com/health")
-# ...
-```
-
-### Rollback Workflow
-
-```yaml
-# .github/workflows/rollback.yml
-name: Rollback
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        type: environment
-        required: true
-      version:
-        type: string
-        description: 'Version to rollback to'
-        required: true
-
-jobs:
-# ...
-```
-
----
+- protect environments with reviewers
+- do not cancel active production deploys automatically
+- keep rollback entry points explicit
 
 ## Service Containers
 
-### Database Testing
+Use service containers for fast integration tests when the dependency can be expressed locally.
 
-```yaml
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-# ...
-```
+Checklist:
 
-### Container Job vs Runner Job
+- pin service images
+- add health checks
+- isolate credentials
+- use them only in jobs that need them
 
-| Aspect | Container Job | Runner Job |
-|--------|--------------|------------|
-| Runs in | Docker container | Runner VM directly |
-| Services | `localhost` hostname | `localhost` (mapped ports) |
-| Performance | Slightly slower (container overhead) | Faster |
-| Isolation | Better | Less |
-| Use when | Need specific OS/tools | Standard builds |
+## Debugging
 
-```yaml
-# Container job
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    container:
-      image: node:20-slim
-    services:
-      db:
-        image: postgres:16
-    # In container, service hostname is the service name, not localhost
-    env:
-      DATABASE_URL: postgresql://test:test@db:5432/testdb
-```
+| Tool | Use it for |
+|------|-------------|
+| `actionlint` | YAML, expression, and workflow static validation |
+| `act` | local workflow smoke tests |
+| `ACTIONS_STEP_DEBUG` / `ACTIONS_RUNNER_DEBUG` | temporary deep logs |
+| `workflow_dispatch` | safe repro with explicit inputs |
 
----
+Typical failure classes:
 
-## Debugging and Troubleshooting
+- trigger did not match filters
+- required check name mismatch
+- hidden dependency on repo secrets or environment
+- unsupported `act` behavior for cloud-only or service-heavy jobs
 
-### Enable Debug Logging
+## Expressions And Functions
 
-```yaml
-# Method 1: Repository secret
-# Set secret: ACTIONS_STEP_DEBUG = true
+Useful functions to keep close:
 
-# Method 2: Re-run with debug
-# Click "Re-run all jobs" → check "Enable debug logging"
-
-# Method 3: In workflow
-- name: Debug info
-  run: |
-    echo "Event: ${{ github.event_name }}"
-    echo "Ref: ${{ github.ref }}"
-    echo "SHA: ${{ github.sha }}"
-    echo "Actor: ${{ github.actor }}"
-    echo "Runner OS: ${{ runner.os }}"
-    echo "Runner Arch: ${{ runner.arch }}"
-```
-
-### Local Testing with `act`
-
-```bash
-# Install
-brew install act  # macOS
-# or: curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | bash
-
-# Run default event (push)
-act
-
-# Run specific event
-act pull_request
-
-# Run specific job
-act -j test
-
-# Run with specific workflow
-act -W .github/workflows/ci.yml
-# ...
-```
-
-### Common `act` Limitations
-
-| Limitation | Workaround |
-|-----------|------------|
-| No `services:` support | Use docker-compose alongside |
-| No `cache` action | Set `ACT=true` env and skip cache steps |
-| No OIDC | Mock with environment variables |
-| No GitHub API (some) | Provide `GITHUB_TOKEN` via `.secrets` file |
-| No `reusable workflows` | Inline the reusable workflow content |
-
-### Common Error Patterns
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Resource not accessible by integration` | Missing permissions | Add required `permissions:` |
-| `No matching runner` | Wrong `runs-on` label | Check available runner labels |
-| `Cache not found` | Key mismatch or first run | Verify `hashFiles()` path, check restore-keys |
-| `Annotations limit exceeded` | Too many lint warnings | Filter to errors only in CI |
-| `Job cancelled` | Concurrency group cancelled it | Check `cancel-in-progress` settings |
-| `Deployment protection rules not satisfied` | Missing approval | Approve in environment settings |
-
-### Runner Image Software
-
-Check pre-installed software on GitHub-hosted runners:
-
-```yaml
-- name: Check installed software
-  run: |
-    node --version
-    python3 --version
-    docker --version
-    # Full list: https://github.com/actions/runner-images
-```
-
----
-
-## Expressions, Contexts, and Conditions
-
-### Key Contexts
-
-| Context | Description | Example |
-|---------|-------------|---------|
-| `github` | Event/workflow info | `github.ref`, `github.sha`, `github.actor` |
-| `env` | Environment variables | `env.MY_VAR` |
-| `job` | Current job info | `job.status` |
-| `steps` | Step outputs/status | `steps.my-step.outputs.value` |
-| `needs` | Job dependency outputs | `needs.build.outputs.version` |
-| `matrix` | Matrix values | `matrix.os`, `matrix.node` |
-| `inputs` | Workflow inputs | `inputs.environment` |
-| `secrets` | Secrets | `secrets.GITHUB_TOKEN` |
-| `runner` | Runner info | `runner.os`, `runner.arch`, `runner.temp` |
-
-### Conditional Patterns
-
-```yaml
-# Run on specific branch
-if: github.ref == 'refs/heads/main'
-
-# Run on tag
-if: startsWith(github.ref, 'refs/tags/')
-
-# Run on PR (not push)
-if: github.event_name == 'pull_request'
-
-# Run on specific actor
-if: github.actor == 'dependabot[bot]'
-
-# Combine conditions
-if: |
-  github.ref == 'refs/heads/main' &&
-# ...
-```
-
-### GITHUB_OUTPUT
-
-```yaml
-# Set output
-- id: my-step
-  run: |
-    echo "version=1.2.3" >> "$GITHUB_OUTPUT"
-    echo "changed=true" >> "$GITHUB_OUTPUT"
-
-# Multiline output
-- id: multiline
-  run: |
-    {
-      echo 'content<<EOF'
-      cat report.txt
-      echo 'EOF'
-    } >> "$GITHUB_OUTPUT"
-
-# ...
-```
-
-### GITHUB_ENV
-
-```yaml
-# Set environment variable for subsequent steps
-- run: echo "MY_VAR=hello" >> "$GITHUB_ENV"
-
-# Use in next step
-- run: echo "$MY_VAR"  # Output: hello
-```
-
-### Dynamic Values
-
-```yaml
-# fromJSON: Parse JSON string to object
-strategy:
-  matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
-
-# format: String formatting
-- run: echo ${{ format('Hello {0}, welcome to {1}!', github.actor, github.repository) }}
-
-# contains: Check array/string membership
-if: contains(fromJSON('["main", "develop"]'), github.ref_name)
-
-# hashFiles: Generate hash for cache keys
-key: deps-${{ hashFiles('**/pnpm-lock.yaml', '**/package.json') }}
-
-# toJSON: Debug - print entire context
-- run: echo '${{ toJSON(github.event) }}'
-```
-
----
-
-## Community Resources
-
-| Resource | URL | Description |
-|----------|-----|-------------|
-| Awesome Actions | `sdras/awesome-actions` | Curated action list |
-| Runner Images | `actions/runner-images` | Pre-installed software specs |
-| GitHub Actions Docs | docs.github.com/actions | Official documentation |
-| act | `nektos/act` | Local workflow testing |
-| actionlint | `rhysd/actionlint` | Workflow YAML linter |
+- `success()`
+- `failure()`
+- `cancelled()`
+- `always()`
+- `contains()`
+- `startsWith()`
+- `hashFiles()`
+- `fromJSON()`
+- `toJSON()`
