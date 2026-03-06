@@ -4,7 +4,24 @@ Staged verification ensures remediation success before declaring an incident res
 
 ---
 
-## 4-Stage Verification Cascade
+## Verification Cascade
+
+### Stage 0: Input Validation (Pre-Remediation)
+
+**Actor:** Mend (pre-check)
+**Purpose:** Verify that incoming telemetry and diagnosis are consistent and not adversarially crafted.
+
+| Check | Pass Criteria | Fail Action |
+|-------|--------------|-------------|
+| Schema validation | All required handoff fields present, values in plausible ranges | Reject — request re-diagnosis |
+| Cross-source corroboration | ≥ 2 independent sources confirm the signal (exception: T1 with trusted health check) | Downgrade to INVESTIGATE mode |
+| User-content isolation | Pattern match uses structured fields, not raw user-generated text | Sanitize before proceeding |
+| Input anomaly detection | No volume anomalies, contradictions, or suspiciously uniform timing | Hold — flag for human review |
+
+**Duration:** < 5 seconds (automated checks)
+**On Fail:** Downgrade autonomy — never auto-remediate on suspicious input. See `references/adversarial-defense.md` for full protocol.
+
+---
 
 ### Stage 1: Health Check (Immediate, +0s)
 

@@ -265,8 +265,22 @@ Known failure patterns organized by category. Each pattern includes symptoms, ro
 ```
 Base confidence = number of matching symptoms / total pattern symptoms × 100
 Adjusted confidence = Base + Σ(confidence factors that apply)
-Final confidence = min(Adjusted, 100)
+Time decay = -5% × floor(days_since_last_successful_match / 30)
+Final confidence = min(max(Adjusted + Time decay, 0), 100)
 ```
+
+### Confidence Decay
+
+Patterns that haven't been matched recently lose confidence over time to prevent stale remediation:
+
+| Days Since Last Match | Decay | Effect |
+|-----------------------|-------|--------|
+| 0-29 | 0% | Full confidence |
+| 30-59 | -5% | Minor reduction |
+| 60-89 | -10% | Noticeable reduction |
+| 90+ | Triggers review | Pattern health check required (see learning-loop.md) |
+
+**Rationale:** Infrastructure evolves continuously. A pattern that hasn't matched in 90+ days may target components that no longer exist or behave differently. Decay ensures stale patterns are reviewed before blind application.
 
 ### Match Thresholds
 

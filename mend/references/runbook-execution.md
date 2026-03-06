@@ -123,13 +123,43 @@ When timeout is reached:
 3. If step is partially applied: evaluate rollback need
 4. Log timeout with context for postmortem
 
+### Idempotency Requirements
+
+Every runbook step must be idempotent — safe to re-run without side effects. Non-idempotent retries are a top failure mode in runbook automation (e.g., scaling out twice, applying config change twice).
+
+| Requirement | Detail |
+|-------------|--------|
+| **Pre-retry state check** | Before retrying, verify the step hasn't already been applied (check post-condition) |
+| **Idempotency assertion** | Each step must declare how idempotency is achieved (e.g., "set to X" not "increment by X") |
+| **Convergent actions** | Prefer declarative state (desired state) over imperative mutations (change commands) |
+| **Guard clauses** | Steps should check current state before acting: skip if already in target state |
+
+If a step cannot be made idempotent, it must be classified as **T3 minimum** (approval required) regardless of other risk factors.
+
+### Conditional Branching
+
+Runbooks may include conditional logic for multi-path remediation:
+
+```
+Step N: Check condition
+  ├── If [condition A] → Execute Step N+1a
+  ├── If [condition B] → Execute Step N+1b
+  └── If [neither] → Escalate
+```
+
+**Rules:**
+- Each branch must have its own rollback path
+- Branch conditions must be evaluable from observable system state (not assumptions)
+- Maximum nesting depth: 2 levels (to maintain comprehensibility)
+- Default branch must always exist (typically: escalate)
+
 ### Retry Policy
 
 | Condition | Action |
 |-----------|--------|
-| Transient failure (network timeout, temporary unavailability) | Retry up to 2 times with exponential backoff (10s, 30s) |
+| Transient failure (network timeout, temporary unavailability) | Retry up to 2 times with exponential backoff (10s, 30s) — **only if step is idempotent** |
 | Deterministic failure (permission denied, invalid config) | No retry — escalate immediately |
-| Partial success (some targets applied, others failed) | Retry failed targets only |
+| Partial success (some targets applied, others failed) | Retry failed targets only — **verify unapplied state first** |
 | After 2 failed retries | Stop retrying — escalate to Triage |
 
 ### Blast Radius Re-evaluation

@@ -225,10 +225,11 @@ Full verification strategies → `references/verification-strategies.md`
 | File | Content |
 |------|---------|
 | `references/safety-model.md` | 4-tier safety classification, risk scoring, emergency override protocol |
-| `references/remediation-patterns.md` | Known failure pattern catalog (Infra/App/Config/Deploy) |
-| `references/runbook-execution.md` | Runbook parsing, step execution protocol, guardrails |
-| `references/verification-strategies.md` | 4-stage verification, rollback criteria, recovery confirmation |
-| `references/learning-loop.md` | Postmortem → pattern extraction → catalog registration workflow |
+| `references/remediation-patterns.md` | Known failure pattern catalog (Infra/App/Config/Deploy), confidence decay |
+| `references/runbook-execution.md` | Runbook parsing, step execution protocol, idempotency, conditional branching, guardrails |
+| `references/verification-strategies.md` | Input validation (Stage 0), 4-stage verification, rollback criteria, recovery confirmation |
+| `references/learning-loop.md` | Multi-stage postmortem analysis pipeline, pattern extraction, catalog registration |
+| `references/adversarial-defense.md` | Telemetry validation, input sanitization, cross-source corroboration, anomaly detection |
 
 ---
 

@@ -21,9 +21,22 @@ Mend Pattern Analysis
 
 ## Pattern Extraction Workflow
 
-### Step 1: Postmortem Analysis
+### Step 1: Postmortem Analysis (Multi-Stage Pipeline)
 
-When Triage publishes a postmortem, Mend analyzes:
+When Triage publishes a postmortem, Mend analyzes using a 4-stage pipeline. Single-pass analysis has 40%+ hallucination rates; staged processing reduces this to negligible levels.
+
+#### Stage Pipeline
+
+| Stage | Purpose | Output |
+|-------|---------|--------|
+| **1. Summarize** | Extract 5 dimensions from postmortem | Issue summary, root causes, impact, resolution, preventive actions |
+| **2. Classify** | Identify explicit technology and category connections | Category tag (INFRA/APP/CONFIG/DEPLOY), affected technologies |
+| **3. Analyze** | Produce root cause digest | 3-5 sentence summary capturing root causes and technological roles |
+| **4. Synthesize** | Cross-reference with existing patterns | New pattern candidate, existing pattern update, or no actionable pattern |
+
+Each stage processes independently, then results are aggregated ("map-fold" approach). This avoids the "lost in the middle" effect of large-context processing.
+
+#### Extraction Fields
 
 | Element | What to Extract |
 |---------|-----------------|
@@ -31,7 +44,24 @@ When Triage publishes a postmortem, Mend analyzes:
 | **Root Cause** | Confirmed root cause from postmortem |
 | **Fix Applied** | What remediation was actually effective |
 | **Timeline** | Detection → diagnosis → fix → verification timing |
+| **Time to Remediation** | Duration from detection to successful fix (for MTTR tracking) |
 | **What Didn't Work** | Failed remediation attempts (negative patterns) |
+
+#### Quality Controls
+
+| Metric | Target | Action if Exceeded |
+|--------|--------|--------------------|
+| Hallucination rate | < 5% | Re-run with stricter prompts, increase human review |
+| Surface attribution error | < 10% | Flag for manual verification |
+| Numerical data accuracy | Verify against source | Never trust auto-extracted impact numbers without confirmation |
+
+#### Human Verification Strategy
+
+| Maturity Phase | Verification Rate | Criteria to Advance |
+|----------------|-------------------|---------------------|
+| Initial (first 20 extractions) | 100% manual review | All outputs verified correct |
+| Growing (21-100 extractions) | 30-50% random sampling | Hallucination rate < 10% for 20 consecutive |
+| Mature (100+ extractions) | 10-20% random sampling | Hallucination rate < 5% sustained |
 
 ### Step 2: Pattern Candidate Assessment
 
@@ -95,8 +125,9 @@ Track pattern effectiveness over time:
 | **Match accuracy** | ≥ 85% | Correct matches / total matches |
 | **Fix success rate** | ≥ 90% | Successful remediations / attempted |
 | **False positive rate** | < 10% | Incorrect matches / total matches |
-| **Time to remediation** | Improving | Mean time from detection to fix |
+| **MTTR per pattern** | Improving | Mean time from detection to fix, tracked per pattern_id |
 | **Rollback rate** | < 15% | Rollbacks / total remediations |
+| **Extraction hallucination rate** | < 5% | Incorrect facts in postmortem extraction / total extractions |
 
 ### Pattern Health Check
 
