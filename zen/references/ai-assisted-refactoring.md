@@ -1,175 +1,95 @@
 # AI-Assisted Refactoring (2025-2026)
 
-> AI リファクタリングツール、テクニック、リスク、ベストプラクティス、Zen への適用
+Purpose: Use this file when Zen runs Multi-Engine or any AI-assisted refactoring workflow. It keeps the safety guardrails explicit.
 
-## 1. 2025-2026 年の AI リファクタリング現状
+## Contents
+- [Current Snapshot](#current-snapshot)
+- [Strengths and Limits](#strengths-and-limits)
+- [Hallucination Watchlist](#hallucination-watchlist)
+- [Zen Guardrails](#zen-guardrails)
+- [Enterprise Workflow](#enterprise-workflow)
+- [Target Metrics](#target-metrics)
 
-```
-統計:
-  - AI ツール使用チームはレビュー時間 40-60% 短縮
-  - リグレッションバグ 60% 削減
-  - 200 LOC 以下の変更でレビュー時間 60% 低下
-  - 高インパクトレガシーコンポーネント優先で 4x ROI
-  - AI リファクタリング訓練チームは 3x 高速な近代化サイクル
-  - 体系的テストプロトコル導入で 70% のデプロイ後問題削減
-```
+## Current Snapshot
 
----
+These figures are directional reference points, not hard gates:
 
-## 2. AI リファクタリング能力
+- Review time often improves by `40-60%` when teams use AI refactoring tools well.
+- Smaller changes perform better; `<=200 LOC` is the preferred atomic size.
+- Structured test protocols materially reduce post-deploy issues.
+- High-impact legacy targets tend to produce the best ROI.
 
-### 現在 AI が得意なこと
+## Strengths and Limits
 
-| 能力 | 説明 | 信頼度 |
-|------|------|--------|
-| **変数リネーム** | 複数ファイルにまたがるスコープ追跡付きリネーム | 高 |
-| **関数抽出** | パラメータスレッディング付き関数分解 | 中-高 |
-| **デッドコード除去** | 未使用 import、到達不能ブロックの削除 | 高 |
-| **ドキュメント生成** | JSDoc/TSDoc の自動生成 | 中 |
-| **スタイル統一** | コーディングスタイルの標準化 | 高 |
-| **型推論強化** | `any` → 具体的な型定義への変換 | 中 |
+### Reliable AI strengths
 
-### AI がまだ苦手なこと
+| Capability | Typical confidence |
+|------------|--------------------|
+| Variable and symbol renaming across files | High |
+| Function extraction and structural cleanup | Medium-high |
+| Dead-code removal | High |
+| Style unification | High |
+| Type tightening such as `any` reduction | Medium |
+| Documentation scaffolding | Medium |
 
-```
-限界:
-  - ドメイン固有のビジネスロジック理解
-  - アーキテクチャレベルの判断
-  - レガシーシステムの暗黙の制約把握
-  - コンテキスト依存のトレードオフ評価
-  - 高レベルまたはコンテキスト特有のリファクタリング
-    （GPT-4 でも相当な手動介入が必要）
-```
+### Persistent weak spots
 
----
+- Domain-specific business logic
+- Architecture-level tradeoffs
+- Legacy constraints that live outside the code
+- Context-specific risk balancing
+- High-level refactors that depend on product intent rather than structure
 
-## 3. AI リファクタリングのリスク
+## Hallucination Watchlist
 
-### Hallucination Watchlist
+Check these explicitly after any AI-generated proposal:
 
-```
-AI が導入する典型的な「静かな」問題:
+| Risk | Typical symptoms |
+|------|------------------|
+| **Incorrect imports** | Non-existent modules, wrong API versions, broken moved symbols |
+| **Edge-case mishandling** | Added or removed null checks, boundary-condition drift |
+| **Overzealous optimization** | Behavior changed in the name of cleanliness or performance |
+| **Behavioral modification** | Tests pass but domain semantics or error handling changed |
+| **Context loss** | Historical comments removed or legacy constraints ignored |
 
-1. Incorrect Imports
-   - 存在しないモジュールからの import
-   - バージョン不一致の API 使用
+## Zen Guardrails
 
-2. Edge Case Mishandling
-   - null/undefined チェックの過剰追加 or 欠落
-   - 境界値の処理変更
+### Multi-Engine mitigation
 
-3. Overzealous Optimization
-   - 「改善」のつもりで動作を変更
-   - 不要な抽象化の導入
+1. Run `3` independent proposals.
+2. Use the `Compete` merge strategy.
+3. Score on `readability`, `consistency`, and `change volume`.
+4. Keep a human review gate before adoption.
 
-4. Behavioral Modification
-   - テストは通るがドメインロジックが変わる
-   - エラーハンドリングの意図しない変更
+### Additional safety rules
 
-5. Context Loss
-   - コメントの意図を理解せず削除
-   - 歴史的理由のあるコードの「改善」
-```
+- Keep each AI-assisted change to `<=200 LOC`.
+- Run static analysis in the verification path.
+- Compare Before/After metrics, not just prose claims.
+- Prepare rollback support for risky migrations, including feature-flag fallback when appropriate.
+- Keep AI changes structural. Humans decide domain-logic changes.
+- Start from non-critical utilities before higher-risk modules.
+- Run the relevant local test suite before merge.
 
-### リスク軽減策
+## Enterprise Workflow
 
-```
-Zen の Multi-Engine Mode での対策:
+| Phase | Purpose |
+|------|---------|
+| **1. Code Health Assessment** | Capture baseline metrics |
+| **2. Strategic Prioritization** | Overlay risk and change frequency |
+| **3. Tool Selection** | Match tool choice to scope and compliance needs |
+| **4. Atomic Transformation** | Keep `1 PR = 1 change`, ideally `<=200 LOC` |
+| **5. Automated Quality Gates** | Apply CI/static-analysis checks |
+| **6. Continuous Measurement** | Track improvement over time, not just one PR |
 
-1. 3 エンジンが独立してリファクタリング提案
-2. Compete パターンで最善案を選択
-3. 評価軸: readability, consistency, volume
-4. 人間レビューを必ず介在
+## Target Metrics
 
-追加の安全策:
-  □ 200 LOC 以下の変更に制限
-  □ 静的解析 pre-commit hook
-  □ Before/After メトリクス比較
-  □ Feature flag でのロールバック準備
-```
-
----
-
-## 4. AI リファクタリングツールランドスケープ
-
-| ツール | 特徴 | コンテキスト窓 | 言語サポート |
-|--------|------|---------------|------------|
-| **Claude Code** | エージェント型、codebase-aware | 200K+ | 多言語 |
-| **GitHub Copilot** | インライン提案、PR 要約 | 中 | 多言語 |
-| **CodeScene ACE** | 技術的負債可視化、ホットスポット | - | 多言語 |
-| **Augment Code** | 200K トークン窓、マルチリポ | 200K+ | 56+ |
-| **Amazon Q Developer** | AWS 統合、Java 近代化 | 大 | 多言語 |
-| **Moderne (Moddy)** | LST ベース、ロスレスリファクタリング | - | Java 中心 |
-| **Qodo** | テスト生成統合、PR ワークフロー | 大 | 多言語 |
-
-### 2026 年の進化: Codebase-Aware Refactoring
-
-```
-次世代の特徴:
-  - LLM + インデックス/検索/グラフの統合
-  - 複数ファイル（複数リポ）にまたがる推論
-  - Agentic AI による自律的リファクタリング
-  - Lossless Semantic Trees (LST) によるスタイル保持
-```
-
----
-
-## 5. 6 フェーズエンタープライズワークフロー
-
-```
-Phase 1: Code Health Assessment
-  → ベースラインメトリクス計測（CodeScene/SonarQube）
-
-Phase 2: Strategic Prioritization
-  → リスク × 変更頻度のオーバーレイ
-
-Phase 3: Tool Selection
-  → スコープとコンプライアンスに応じたツール選定
-
-Phase 4: Atomic Transformation
-  → 1 PR = 1 変更（200 LOC 以下）
-
-Phase 5: Automated Quality Gates
-  → CI/CD 統合の静的解析
-
-Phase 6: Continuous Measurement
-  → スプリントごとのメトリクス追跡
-```
-
----
-
-## 6. Zen での AI リファクタリング活用
-
-```
-Zen × AI のベストプラクティス:
-
-1. AI 提案を鵜呑みにしない
-   → Before/After メトリクスで客観評価
-
-2. Multi-Engine Mode で複数提案を比較
-   → 単一 AI の偏りを排除
-
-3. ドメインロジック変更は人間が判断
-   → AI は構造改善に限定
-
-4. Hallucination Watchlist を活用
-   → import、エッジケース、最適化を重点チェック
-
-5. 段階的適用
-   → 非クリティカルなユーティリティから開始
-   → フルテストスイートをローカルで実行
-```
-
----
-
-## 7. メトリクス目標
-
-| メトリクス | 目標値 |
-|-----------|--------|
-| 循環的複雑度の削減 | 15-25% |
-| コード重複の排除率 | 測定可能な削減 |
-| レビュー時間の短縮 | 40-60% |
-| リファクタリング後のバグ率 | 非リファクタリングコード以下 |
-| 変更あたりの LOC | ≤ 200 |
+| Metric | Target |
+|--------|--------|
+| Cyclomatic complexity reduction | `15-25%` |
+| Duplicate-code reduction | Measurable decrease |
+| Review time reduction | `40-60%` |
+| Post-refactor bug rate | No worse than non-refactored code |
+| LOC per change | `<=200` |
 
 **Source:** [Augment Code: AI Code Refactoring](https://www.augmentcode.com/tools/ai-code-refactoring-tools-tactics-and-best-practices) · [IBM: AI Code Refactoring](https://www.ibm.com/think/topics/ai-code-refactoring) · [DX: Enterprise AI Refactoring](https://getdx.com/blog/enterprise-ai-refactoring-best-practices/) · [Qodo: Evolution of Code Refactoring Tools](https://www.qodo.ai/blog/evolution-code-refactoring-tools-ai-efficiency/) · [Second Talent: 5 AI Tools for Code Refactoring 2026](https://www.secondtalent.com/resources/ai-tools-for-code-refactoring-and-optimization/)

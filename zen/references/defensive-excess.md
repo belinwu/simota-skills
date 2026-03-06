@@ -1,5 +1,12 @@
 # Defensive Excess — Unnecessary Fallback Detection and Fixes
 
+Purpose: Use this file when fallback-heavy code may be hiding bugs or cluttering internal code paths.
+
+## Contents
+- [6 Patterns](#6-patterns)
+- [Detection Tooling](#detection-tooling)
+- [Judgment Guide — Keep vs Remove](#judgment-guide--keep-vs-remove)
+
 Detect and remove over-defensive coding patterns that reduce readability, hide bugs, and add noise.
 
 **Key principle**: Defensive code is valuable at system boundaries (user input, external APIs, file I/O). It becomes harmful when applied to internal, type-checked, or control-flow-guaranteed paths.

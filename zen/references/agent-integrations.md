@@ -1,41 +1,41 @@
 # Zen Agent Integrations
 
-Radar and Canvas integration patterns for test verification and visualization.
+Purpose: Use this file when Zen collaborates with Radar, Canvas, Judge, Guardian, AUTORUN, or Nexus.
 
----
+## Contents
+- [Radar Integration](#radar-integration)
+- [Canvas Integration](#canvas-integration)
+- [Judge Integration](#judge-integration)
+- [Guardian Integration](#guardian-integration)
+- [AUTORUN Flow](#autorun-flow)
 
-## RADAR INTEGRATION
+## Radar Integration
 
-Coordinate with Radar for test verification.
+Coordinate with Radar whenever verification or coverage work exceeds Zen's boundary.
 
-### When to Request Radar
+### Request Radar before refactoring
 
-- Before refactoring code with low test coverage
-- After refactoring to verify no regression
-- When removing code that might affect tests
-
-### Pre-Refactoring Check
+- Coverage is unknown or below threshold
+- Existing tests might not protect the refactor
+- Dead-code removal could affect hidden test dependencies
 
 ```markdown
 ### Radar Test Verification Request (Pre-Refactoring)
 
-**Target**: [file/function to refactor]
+**Target**: [file/function]
 
 **Checks Needed**:
-- [ ] Current test coverage percentage
-- [ ] List of tests covering this code
-- [ ] Edge cases that may need additional tests
-- [ ] All tests currently passing?
+- [ ] Current coverage percentage
+- [ ] Existing tests covering this code
+- [ ] Missing edge cases
+- [ ] All tests currently passing
 
 **Coverage Requirements**:
 - Minimum before refactoring: 80%
-- If below 80%: Add tests first, then refactor
-
-Suggested command:
-`/Radar check coverage for [file]`
+- If below 80%: add tests first, then refactor
 ```
 
-### Post-Refactoring Verification
+### Request Radar after refactoring
 
 ```markdown
 ### Radar Test Verification Request (Post-Refactoring)
@@ -49,260 +49,97 @@ Suggested command:
 - [ ] Edge cases still covered
 
 **Expected Results**:
-- Tests: All passing
+- Tests: all passing
 - Coverage: >= previous coverage
-
-Suggested command:
-`/Radar run tests for [file]`
 ```
 
-### Integrating Radar Results
+### Report Radar results back
 
 ```markdown
 ### Test Verification Results
 
 **Pre-Refactoring**:
-- Coverage: 78%
-- Tests: 24 passing, 0 failing
+- Coverage: [X%]
+- Tests: [N passing, M failing]
 
 **Post-Refactoring**:
-- Coverage: 82% (+4%)
-- Tests: 24 passing, 0 failing
+- Coverage: [Y%]
+- Tests: [N passing, M failing]
 
-**Conclusion**: ✅ Safe to merge
+**Conclusion**: [Safe to merge / Needs follow-up]
 ```
 
----
+## Canvas Integration
 
-## CANVAS INTEGRATION
+Use Canvas only when a diagram materially improves understanding.
 
-Generate visual documentation for refactoring.
+### Typical requests
 
-### Dependency Graph (Before/After)
+- **Dependency graph**: before/after dependencies for large cleanup
+- **Class structure diagram**: extracted responsibilities from a large class
+- **Impact map**: files changed, tests affected, untouched areas
+
+Keep Canvas requests minimal:
 
 ```markdown
-### Canvas Integration: Dependency Graph
+### Canvas Integration: [Dependency Graph / Class Extraction / Refactoring Impact]
 
-Request Canvas to generate before/after comparison:
-
-\`\`\`mermaid
-graph TD
-    subgraph Before
-        A[GodClass] --> B[Database]
-        A --> C[Logger]
-        A --> D[Config]
-        A --> E[Validator]
-        A --> F[Formatter]
-        A --> G[Notifier]
-    end
-\`\`\`
-
-\`\`\`mermaid
-graph TD
-    subgraph After
-        A1[OrderService] --> B1[OrderRepository]
-        A1 --> C1[OrderValidator]
-        B1 --> D1[Database]
-        C1 --> E1[ValidationRules]
-    end
-\`\`\`
-
-To generate: `/Canvas visualize dependencies for [file]`
+**Target**: [file/module]
+**Need**: [before/after view or impact map]
+**Focus**: [dependencies / classes / changed files]
 ```
 
-### Class Structure Diagram
+## Judge Integration
 
-```markdown
-### Canvas Integration: Class Extraction
+Judge invokes Zen during PDCA-style quality loops.
 
-\`\`\`mermaid
-classDiagram
-    class Before_UserManager {
-        -users: User[]
-        -db: Database
-        -mailer: Mailer
-        -logger: Logger
-        +createUser()
-        +deleteUser()
-        +sendWelcome()
-        +logActivity()
-        +validateEmail()
-        +hashPassword()
-    }
+- Zen usually runs in the `DO` phase after Builder fixes bugs.
+- Zen should refactor only what the latest `CHECK` phase identified.
+- Judge owns the iteration budget and the stop/go decision.
+- Zen must report measurable improvement, not only narrative cleanup.
 
-    class After_UserService {
-        -repository: UserRepository
-        -validator: UserValidator
-        +createUser()
-        +deleteUser()
-    }
-    class After_UserRepository {
-        -db: Database
-        +save()
-        +delete()
-    }
-    class After_UserValidator {
-        +validateEmail()
-        +validatePassword()
-    }
-    class After_NotificationService {
-        -mailer: Mailer
-        +sendWelcome()
-    }
-\`\`\`
-```
-
-### Impact Analysis Diagram
-
-```markdown
-### Canvas Integration: Refactoring Impact
-
-\`\`\`
-Refactoring Impact Map
-
-Target: UserService.validateUser()
-
-Direct Changes:
-├── src/services/UserService.ts:45-120 (modify)
-├── src/validators/UserValidator.ts (new file)
-└── src/types/ValidationResult.ts (new file)
-
-Import Updates:
-├── src/controllers/UserController.ts
-├── src/middleware/AuthMiddleware.ts
-└── src/routes/userRoutes.ts
-
-Test Updates:
-├── tests/services/UserService.test.ts
-└── tests/validators/UserValidator.test.ts (new)
-
-No Changes Needed:
-├── src/models/User.ts
-├── src/repositories/UserRepository.ts
-└── src/utils/helpers.ts
-\`\`\`
-```
-
----
-
-## AGENT COLLABORATION ARCHITECTURE
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INPUT PROVIDERS                          │
-│  Judge → Quality observations (INFO findings)               │
-│  Atlas → Complexity hotspots, architectural issues          │
-│  Builder → Code needing cleanup after implementation        │
-│  Judge → PDCA quality cycle (DO-refactor phase)            │
-│  Guardian → PR noise separation, tech debt hotspots         │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-            ┌─────────────────┐
-            │       ZEN       │
-            │  Code Gardener  │
-            │ (Refactor Only) │
-            └────────┬────────┘
-                     ↓
-┌─────────────────────────────────────────────────────────────┐
-│                   OUTPUT CONSUMERS                          │
-│  Radar → Test verification (pre/post refactoring)          │
-│  Canvas → Dependency/structure diagrams                     │
-│  Judge → Re-review after cleanup                            │
-│  Quill → Documentation updates for refactored code          │
-│  Judge → PDCA cycle results (DO → CHECK transition)        │
-│  Guardian → Cleanup completion, commit strategy             │
-│  Nexus → AUTORUN results                                    │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## JUDGE INTEGRATION
-
-Coordinate with Judge for iterative PDCA quality improvement cycles.
-
-### When Judge Invokes Zen
-
-- During DO phase of PDCA cycle, after Builder fixes bugs
-- When CHECK phase detects complexity or code smell issues
-- Diminishing returns not yet reached (improvement > threshold)
-
-### PDCA Cycle Position
-
-```
-PLAN (Judge)
-  ↓
-DO (Builder → Zen)    ← Zen handles refactoring within the cycle
-  ↓
-CHECK (Judge + Radar)
-  ↓
-ACT (Judge decides: another cycle or stop)
-```
-
-### Key Constraints
-
-- Time-boxed: Judge sets a time/iteration budget per cycle
-- Targeted: Only refactor what CHECK phase identified
-- Measurable: Report quantitative improvement for Judge to evaluate
-
----
-
-## GUARDIAN INTEGRATION
-
-Coordinate with Guardian for PR quality and commit hygiene.
+## Guardian Integration
 
 ### Pattern H: PR Noise Separation
 
-Guardian detects mixed concerns in a PR (feature + cleanup):
-1. Guardian identifies "noise" (style fixes, dead code, formatting)
-2. Sends GUARDIAN_TO_ZEN_HANDOFF for cleanup extraction
-3. Zen performs cleanup as a separate, isolated change
-4. Returns ZEN_TO_GUARDIAN_HANDOFF with commit suggestions
-5. Guardian organizes commits into clean PR structure
+Use when a PR mixes feature work with cleanup:
+
+1. Guardian identifies cleanup noise.
+2. Guardian sends `GUARDIAN_TO_ZEN_HANDOFF`.
+3. Zen extracts the cleanup into an isolated refactor.
+4. Zen returns `ZEN_TO_GUARDIAN_HANDOFF` with commit guidance.
 
 ### Pattern I: Tech Debt Hotspot Refactoring
 
-Guardian identifies tech debt during PR review:
-1. Guardian flags complexity hotspots in changed files
-2. Sends GUARDIAN_TO_ZEN_HANDOFF for targeted refactoring
-3. Zen refactors and sends to Radar for verification
-4. Clean result goes back to Guardian for PR strategy
+Use when Guardian flags changed files with debt hotspots:
 
----
+1. Guardian sends `GUARDIAN_TO_ZEN_HANDOFF`.
+2. Zen performs targeted, behavior-preserving cleanup.
+3. Zen routes verification to Radar if needed.
+4. Guardian uses the result for PR strategy.
 
-## AUTORUN EXECUTION FLOW
+## AUTORUN Flow
 
 ```
-_AGENT_CONTEXT received
-         ↓
-┌─────────────────────────────────────────┐
-│ 1. Parse Input Handoff                  │
-│    - JUDGE_TO_ZEN (quality observations)│
-│    - ATLAS_TO_ZEN (complexity hotspots) │
-│    - BUILDER_TO_ZEN (cleanup request)   │
-└─────────────────────┬───────────────────┘
-                      ↓
-┌─────────────────────────────────────────┐
-│ 2. Analyze Current State                │
-│    - Measure complexity                 │
-│    - Identify code smells               │
-│    - Check test coverage                │
-└─────────────────────┬───────────────────┘
-                      ↓
-┌─────────────────────────────────────────┐
-│ 3. Apply Refactoring                    │
-│    - One meaningful change at a time    │
-│    - Preserve behavior                  │
-│    - Measure improvement                │
-└─────────────────────┬───────────────────┘
-                      ↓
-┌─────────────────────────────────────────┐
-│ 4. Prepare Output Handoff               │
-│    - ZEN_TO_RADAR (test verification)   │
-│    - ZEN_TO_JUDGE (re-review)           │
-│    - ZEN_TO_CANVAS (diagrams)           │
-│    - ZEN_TO_QUILL (documentation)       │
-└─────────────────────┬───────────────────┘
-                      ↓
-         _STEP_COMPLETE emitted
+_AGENT_CONTEXT
+  -> Parse input handoff
+  -> Measure current state
+  -> Apply one meaningful refactor
+  -> Prepare follow-up handoffs
+  -> Emit _STEP_COMPLETE
 ```
+
+### Common AUTORUN input tokens
+
+- `JUDGE_TO_ZEN`
+- `ATLAS_TO_ZEN`
+- `BUILDER_TO_ZEN`
+- `GUARDIAN_TO_ZEN_HANDOFF`
+
+### Common AUTORUN output tokens
+
+- `ZEN_TO_RADAR`
+- `ZEN_TO_JUDGE`
+- `ZEN_TO_CANVAS`
+- `ZEN_TO_QUILL`
+- `ZEN_TO_GUARDIAN_HANDOFF`

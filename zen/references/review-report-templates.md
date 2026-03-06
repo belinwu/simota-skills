@@ -1,32 +1,37 @@
 # Review & Report Templates
 
+Purpose: Use this file when Zen is in review mode or needs an exact output anchor for refactoring reports.
+
+## Contents
+- [Review Checklist](#review-checklist)
+- [Review Output Format](#review-output-format)
+- [Refactoring Report Format](#refactoring-report-format)
+
 ## Review Checklist
 
 ### Readability
-- [ ] Variable/function names are descriptive
+- [ ] Variable and function names are descriptive
 - [ ] Code is self-documenting
-- [ ] No magic numbers or strings
-- [ ] Complexity is reasonable (CC < 10)
+- [ ] No unnecessary magic numbers or strings
+- [ ] Complexity is reasonable (`CC < 10` when possible)
 
 ### Structure
-- [ ] Functions are small and focused (< 20 lines)
+- [ ] Functions are focused and usually `<20` lines
 - [ ] No unnecessary duplication
-- [ ] Abstractions are appropriate
-- [ ] Nesting depth <= 3 levels
+- [ ] Abstractions fit the actual problem
+- [ ] Nesting depth stays `<=3` when possible
 
 ### Correctness
-- [ ] Edge cases handled
-- [ ] Error cases handled appropriately
-- [ ] No potential null/undefined issues
-- [ ] Logic correct for all inputs
+- [ ] Edge cases are handled
+- [ ] Error paths remain intact
+- [ ] No new null/undefined risk is introduced
+- [ ] Logic matches the existing behavior
 
 ### Maintainability
-- [ ] Easy to modify in future
-- [ ] No hidden dependencies
-- [ ] Code is testable
-- [ ] Changes are reversible
-
----
+- [ ] The code is easier to change later
+- [ ] No hidden dependency was introduced
+- [ ] The result remains testable
+- [ ] The change is reversible if needed
 
 ## Review Output Format
 
@@ -39,16 +44,16 @@
 
 ### Complexity Analysis
 | File | Function | CC | Cognitive | Status |
-|------|----------|----|-----------| -------|
+|------|----------|----|-----------|--------|
 | ... | ... | ... | ... | ... |
 
 ### Strengths
-- [What's done well - be specific]
+- [Specific positive point]
 
 ### Suggestions
 - **[File:Line]** - [Suggestion]
   - Why: [Reasoning]
-  - How: [Code example if helpful]
+  - How: [Concrete fix]
 
 ### Issues
 - **[File:Line]** - [Issue] (Severity: Minor/Moderate/Critical)
@@ -58,8 +63,6 @@
 ### Verdict
 Approve | Request Changes | Comment Only
 ```
-
----
 
 ## Refactoring Report Format
 
@@ -77,50 +80,14 @@ Approve | Request Changes | Comment Only
 | Code Smells Resolved | - | - | N |
 
 ### Changes Applied
-1. [Recipe]: [Target] → [Result]
-2. [Recipe]: [Target] → [Result]
+1. [Recipe]: [Target] -> [Result]
+2. [Recipe]: [Target] -> [Result]
 
 ### Test Verification
 - Pre-refactor: [Pass/Fail] (X tests)
 - Post-refactor: [Pass/Fail] (X tests)
-- Coverage: X% → Y%
+- Coverage: X% -> Y%
 
 ### Remaining Opportunities
-- [ ] [Next refactoring candidate]
-```
-
----
-
-## Code Standards Examples
-
-### Good Zen Code
-
-```javascript
-// Descriptive names, early return, named constants
-const MAX_RETRY_ATTEMPTS = 3;
-const RETRY_DELAY_MS = 1000;
-
-function processOrder(order) {
-  if (!order?.isValid) return null;
-
-  const total = calculateOrderTotal(order);
-  const discount = applyDiscount(total, order.customer);
-
-  return saveOrder(order, discount);
-}
-```
-
-### Bad Zen Code
-
-```javascript
-// Magic numbers, deep nesting, vague names
-function doIt(d) {
-  if (d.v) {
-    if (d.c > 100) {
-      for (let i = 0; i < 3; i++) {
-        // ... 50 lines of nested logic
-      }
-    }
-  }
-}
+- [ ] [Next candidate]
 ```

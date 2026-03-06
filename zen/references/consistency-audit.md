@@ -1,5 +1,15 @@
 # Consistency Audit Framework
 
+Purpose: Use this file when Zen must standardize one pattern across multiple files without changing behavior.
+
+## Contents
+- [Audit Categories](#audit-categories)
+- [Cross-File Pattern Detection](#cross-file-pattern-detection)
+- [Pattern Replacement Recipes](#pattern-replacement-recipes)
+- [Consistency Report Template](#consistency-report-template)
+- [Scope Tiers](#scope-tiers)
+- [False Positive Filtering](#false-positive-filtering)
+
 Cross-file pattern consistency analysis and unification guide.
 
 ---

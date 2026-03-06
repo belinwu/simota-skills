@@ -1,5 +1,14 @@
 # Dead Code Detection Guide
 
+Purpose: Use this file before deleting code that might be unused, exported, dynamic, or protected by feature flags.
+
+## Contents
+- [Detection Tools by Language](#detection-tools-by-language)
+- [Dead Code Categories](#dead-code-categories)
+- [Safe Removal Checklist](#safe-removal-checklist)
+- [Dead Code Cleanup Pattern](#dead-code-cleanup-pattern)
+- [Language-Specific Patterns](#language-specific-patterns)
+
 Comprehensive guide for detecting and safely removing dead code across languages.
 
 ---

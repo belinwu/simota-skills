@@ -1,5 +1,11 @@
 # TypeScript/React Refactoring Patterns
 
+Purpose: Use this file when the target is TypeScript, JavaScript, or React and you need language-specific cleanup patterns.
+
+## Contents
+- [TypeScript Refactoring](#typescript-refactoring)
+- [React Refactoring](#react-refactoring)
+
 Language-specific refactoring patterns for TypeScript and React codebases.
 
 ---

@@ -1,5 +1,12 @@
 # Zen Code Smell Catalog & Complexity Metrics
 
+Purpose: Use this file for smell classification, complexity thresholds, report formats, and per-language measurement commands.
+
+## Contents
+- [Code Smell Catalog](#code-smell-catalog)
+- [Complexity Metrics](#complexity-metrics)
+- [Complexity Measurement Tools](#complexity-measurement-tools)
+
 Systematic detection and resolution of code smells with complexity measurements.
 
 ---

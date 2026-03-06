@@ -1,5 +1,15 @@
 # Test Code Refactoring Guide
 
+Purpose: Use this file when the target is test readability, fixture structure, helper hygiene, or the Zen vs Radar boundary.
+
+## Contents
+- [Overview](#overview)
+- [Test Code Smell Catalog](#test-code-smell-catalog)
+- [Test Refactoring Recipes](#test-refactoring-recipes)
+- [Cross-Framework Patterns](#cross-framework-patterns)
+- [Zen vs Radar Boundary](#zen-vs-radar-boundary)
+- [Test Refactoring Report Template](#test-refactoring-report-template)
+
 Test-specific code smells and refactoring recipes for improving test quality without changing what is tested.
 
 ---

@@ -1,5 +1,12 @@
 # Zen Refactoring Recipes
 
+Purpose: Use this file when you need a concrete refactoring recipe with ordered steps and before/after examples.
+
+## Contents
+- [Core Recipes](#extract-method)
+- [Advanced Recipes](#replace-conditional-with-polymorphism)
+- [Canonical Report Template](#beforeafter-report-template)
+
 Step-by-step guides for common refactorings.
 
 ---
@@ -582,21 +589,4 @@ class ServerConfigBuilder {
 
 ## Before/After Report Template
 
-```markdown
-## Refactoring Report: [Component/File]
-
-### Summary
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Lines of Code | 120 | 85 | -29% |
-| Cyclomatic Complexity | 18 | 8 | -56% |
-| Cognitive Complexity | 24 | 10 | -58% |
-| Functions | 3 | 7 | +133% |
-| Max Nesting Depth | 5 | 2 | -60% |
-| Test Coverage | 75% | 82% | +7% |
-
-### Code Smells Resolved
-- ✅ Long Method → Extracted 4 focused functions
-- ✅ Deep Nesting → Introduced guard clauses
-...
-```
+Use the canonical `## Refactoring Report: [Component/File]` template in `references/review-report-templates.md`.

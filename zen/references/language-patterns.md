@@ -1,7 +1,17 @@
 # Multi-Language Refactoring Patterns
 
-Language-specific refactoring recipes beyond TypeScript/React.
-Auto-detect language from file extensions and project config files.
+Purpose: Use this file for non-TypeScript language patterns or concurrency cleanup that still preserves behavior.
+
+## Contents
+- [Language Detection](#language-detection)
+- [Python Patterns](#python-patterns)
+- [Go Patterns](#go-patterns)
+- [Rust Patterns](#rust-patterns)
+- [Java Patterns](#java-patterns)
+- [Async/Concurrency Patterns](#asyncconcurrency-patterns)
+- [Cross-Language Principles](#cross-language-principles)
+
+Language-specific refactoring recipes beyond TypeScript/React. Auto-detect language from file extensions and project config files.
 
 ---
 
