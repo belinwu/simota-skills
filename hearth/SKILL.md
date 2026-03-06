@@ -431,6 +431,10 @@ When input contains `## NEXUS_ROUTING`, return results via `## NEXUS_HANDOFF`:
 | `references/editor-configs.md` | neovim 0.10+ init.lua/lazy.nvim/LSP, blink.cmp, Zed, vim .vimrc |
 | `references/tmux-starship.md` | tmux (prefix, pane nav, tpm), starship.toml, p10k |
 | `references/dotfile-management.md` | stow/chezmoi/yadm/bare git, Brewfile, XDG compliance |
+| `references/shell-config-anti-patterns.md` | シェル起動パフォーマンス SH-01〜07、設定構造、プラグイン管理 PM-01〜04、計測目標 |
+| `references/editor-terminal-anti-patterns.md` | Neovim設定 NV-01〜07、ターミナルエミュレータ、tmux TM-01〜07、補完・LSP |
+| `references/dotfile-security-anti-patterns.md` | dotfile管理 DF-01〜07、シークレット漏洩、リポジトリ構造 RS-01〜04、マルチマシン |
+| `references/environment-workflow-anti-patterns.md` | 環境再現性 EN-01〜07、macOS設定、ツール選定 TS-01〜04、ワークフロー統合、モダンツールスタック |
 
 ---
 
