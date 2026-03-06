@@ -4,73 +4,88 @@ Builder agent's React frontend implementation patterns.
 
 ## React Server Components (RSC)
 
-```typescript
-// Server Component - Data fetching on server
-// app/users/page.tsx
-export default async function UsersPage() {
-  const users = await userRepository.findAll(); // Direct DB access
+**Key rules:**
+- Server Components are the **DEFAULT** in Next.js App Router
+- `'use client'` is the **EXCEPTION** — use only for interactivity/browser APIs
+- Push client components down to the leaves of the component tree
+- Use Server Actions for form mutations (replaces API routes)
 
-  return (
-    <div>
-      <h1>Users</h1>
-      <UserList users={users} />
-      {/* Client Component only for interactive parts */}
-      <AddUserButton />
-    </div>
-  );
+```tsx
+// Server Component (default) — direct data access, no 'use client'
+async function UsersPage() {
+  const users = await db.users.findMany(); // Server-side DB access
+  return <UserList users={users} />;
 }
 
-// Client Component - Interactive parts only
-// components/AddUserButton.tsx
+// Client Component (exception) — interactivity only
 'use client';
+export function SearchBar({ onSearch }: Props) {
+  const [query, setQuery] = useState('');
+  return <input value={query} onChange={e => setQuery(e.target.value)} />;
+}
+```
 
-export function AddUserButton() {
-  const [isOpen, setIsOpen] = useState(false);
+```typescript
+// Server Action — form processing (replaces API routes for mutations)
+// app/actions/users.ts
+'use server';
+export async function createUser(formData: FormData) {
+  const name = formData.get('name') as string;
+  await db.users.create({ data: { name } });
+  revalidatePath('/users');
+}
+
+// Usage in a Server Component form
+export default function NewUserPage() {
   return (
-    <>
-      <button onClick={() => setIsOpen(true)}>Add User</button>
-      {isOpen && <AddUserModal onClose={() => setIsOpen(false)} />}
-    </>
+    <form action={createUser}>
+      <input name="name" />
+      <button type="submit">Add User</button>
+    </form>
   );
 }
 ```
 
-## State Management Patterns
+## State Management Selection Matrix
 
-### Server State (TanStack Query)
+```
+State Type        → Recommended Tool
+─────────────────────────────────────
+Server State      → TanStack Query v5
+Client Global     → Zustand (small-med) / Redux Toolkit (large)
+Client Local      → useState / useReducer
+Atomic/Derived    → Jotai
+Complex Flows     → XState
+Form State        → React Hook Form + Zod v4
+
+Anti-pattern: Same data in multiple stores (e.g., both Context API and Redux)
+```
+
+### Server State (TanStack Query v5)
 
 ```typescript
-// hooks/useUser.ts
-export function useUser(userId: string) {
-  return useQuery({
-    queryKey: ['users', userId],
-    queryFn: () => userApi.getById(userId),
-    staleTime: 5 * 60 * 1000, // 5 minute cache
-    retry: 3,
-  });
-}
+// TanStack Query v5: no more onSuccess/onError in useQuery
+const { data, error, isPending } = useQuery({
+  queryKey: ['users', id],
+  queryFn: () => fetchUser(id),
+});
 
-export function useUpdateUser() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: userApi.update,
-    onMutate: async (newUser) => {
-      // Optimistic update
-      await queryClient.cancelQueries({ queryKey: ['users', newUser.id] });
-      const previousUser = queryClient.getQueryData(['users', newUser.id]);
-      queryClient.setQueryData(['users', newUser.id], newUser);
-      return { previousUser };
-    },
-    onError: (err, newUser, context) => {
-      // Rollback
-      queryClient.setQueryData(['users', newUser.id], context?.previousUser);
-    },
-    onSettled: (data, error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['users', variables.id] });
-    },
-  });
-}
+// Mutations with optimistic updates
+const mutation = useMutation({
+  mutationFn: updateUser,
+  onMutate: async (newUser) => {
+    await queryClient.cancelQueries({ queryKey: ['users', newUser.id] });
+    const previous = queryClient.getQueryData(['users', newUser.id]);
+    queryClient.setQueryData(['users', newUser.id], newUser);
+    return { previous };
+  },
+  onError: (err, newUser, context) => {
+    queryClient.setQueryData(['users', newUser.id], context?.previous);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
 ```
 
 ### Client State (Zustand)
@@ -174,33 +189,28 @@ export default function UsersPage() {
 ## Optimistic UI Updates
 
 ```typescript
-// hooks/useOptimisticUpdate.ts
+// hooks/useOptimisticLike.ts
 export function useOptimisticLike(postId: string) {
   const queryClient = useQueryClient();
   const [optimisticLiked, setOptimisticLiked] = useState<boolean | null>(null);
-
   const mutation = useMutation({
     mutationFn: () => postApi.toggleLike(postId),
     onMutate: async () => {
-      // Optimistically update UI
-      const previousPost = queryClient.getQueryData<Post>(['posts', postId]);
-      setOptimisticLiked(!previousPost?.liked);
-      return { previousPost };
+      const prev = queryClient.getQueryData<Post>(['posts', postId]);
+      setOptimisticLiked(!prev?.liked);
+      return { prev };
     },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      setOptimisticLiked(null);
-      toast.error('Failed to like');
-    },
+    onError: () => { setOptimisticLiked(null); toast.error('Failed to like'); },
     onSuccess: () => {
       setOptimisticLiked(null);
       queryClient.invalidateQueries({ queryKey: ['posts', postId] });
     },
   });
-
   const post = queryClient.getQueryData<Post>(['posts', postId]);
-  const liked = optimisticLiked ?? post?.liked ?? false;
-
-  return { liked, toggle: mutation.mutate, isLoading: mutation.isPending };
+  return { liked: optimisticLiked ?? post?.liked ?? false, toggle: mutation.mutate, isLoading: mutation.isPending };
 }
 ```
+
+---
+
+**Source:** [Vercel: Understanding React Server Components](https://vercel.com/blog/understanding-react-server-components) · [developerway: React State Management 2025](https://www.developerway.com/posts/react-state-management-2025) · [Strapi: React & Next.js 2025 Best Practices](https://strapi.io/blog/react-and-nextjs-in-2025-modern-best-practices)
