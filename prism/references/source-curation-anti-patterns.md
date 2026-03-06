@@ -1,143 +1,54 @@
 # Source Curation Anti-Patterns
 
-> NotebookLMソース選定・準備・構成の失敗パターン、ノートブック設計の罠
+Purpose: Prevent bad source sets from degrading NotebookLM outputs through overload, low quality, poor structure, or wrong notebook composition.
 
-## 1. ソース選定 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **SC-01** | **Source Overload（ソース過多）** | 20+のソースを投入し焦点がぼやける | 出力が表面的で一般論に終始、特定トピックの深掘りなし | 推奨5-15本、最適は2-5本で焦点を絞る |
-| **SC-02** | **Quality Blindness（品質盲目）** | ソース品質を確認せず投入 | ハルシネーション混入、不正確な引用、信頼性の低い主張 | Pre-Upload Checklistで品質検証: 正確性・最新性・出典信頼性 |
-| **SC-03** | **Contradictory Sources（矛盾ソース無管理）** | ソース間の矛盾を意図せず含む | 出力が一方のソースに偏る、矛盾する主張の混在 | 矛盾は意図的に含める（Debate用）か、事前に解消する |
-| **SC-04** | **Scan PDF Trap（スキャンPDFの罠）** | OCR未処理のスキャンPDFを投入 | テキスト抽出失敗、内容が認識されない | テキスト選択可能なPDFを使用、スキャンPDFはOCR処理後に投入 |
-| **SC-05** | **Paywall/Login Source（アクセス制限ソース）** | ログイン必須・ペイウォール付きURLを指定 | コンテンツ取得失敗、空のソースとして処理 | パブリックアクセス可能なURLのみ使用 |
-| **SC-06** | **Language Mix（言語混在）** | 異なる言語のソースを無計画に混合 | 出力で言語切り替えが発生、一貫性の欠如 | ソース言語を統一、または多言語の意図を明示 |
-| **SC-07** | **Stale Sources（古いソース）** | 最新情報が必要なのに古いソースを使用 | 出力が現状と乖離、古い統計・情報の引用 | 最終更新日を確認、時間感度の高いトピックは最新ソース優先 |
+- Source curation anti-patterns `SC-01..SC-07`
+- Notebook composition anti-patterns `NC-01..NC-05`
+- Format-specific source guidance
+- Quick quality gates
 
----
+## Source Curation Anti-Patterns
 
-## 2. ソース構造化の罠
+| ID | Anti-pattern | Symptom | Fix |
+|----|--------------|---------|-----|
+| `SC-01` | Source Overload | Output stays broad and shallow | Stay within `5-15` sources; prefer `2-5` for focus |
+| `SC-02` | Quality Blindness | Inaccurate or weak claims | Run a pre-upload quality check |
+| `SC-03` | Contradictory Sources by Accident | Output mixes incompatible claims | Resolve the conflict or use it intentionally for Debate/Critique |
+| `SC-04` | Scan PDF Trap | Missing or broken extraction | OCR scanned PDFs first |
+| `SC-05` | Paywall/Login Source | Source is inaccessible | Replace with public sources |
+| `SC-06` | Language Mix | Output switches language unexpectedly | Unify source language or make multilingual intent explicit |
+| `SC-07` | Stale Sources | Old facts appear as current | Prefer fresher sources for time-sensitive topics |
 
-```
-構造化の失敗:
+## Notebook Composition Anti-Patterns
 
-  ❌ Flat Text Dump（フラットテキスト投入）:
-    → 見出し・セクション分けなしのプレーンテキスト
-    → AIが情報の階層構造を把握できない
-    → 対策: H1/H2/H3見出しで構造化、箇条書きで重要ポイントを明示
+| ID | Anti-pattern | Symptom | Fix |
+|----|--------------|---------|-----|
+| `NC-01` | Pattern Mismatch | Format and source structure fight each other | Match composition pattern to format |
+| `NC-02` | No Role Assignment | Every source is treated equally | Give each source a clear role |
+| `NC-03` | Depth-Breadth Confusion | Deep Dive turns superficial | Use `1-3` sources for deep analysis |
+| `NC-04` | Missing Context Source | Key terms feel unexplained | Add one orientation or glossary source |
+| `NC-05` | Unbalanced Perspectives | Debate/Critique feels one-sided | Balance evidence across viewpoints |
 
-  ❌ Header Noise（ヘッダー/フッターノイズ）:
-    → PDFのページ番号・免責事項・ナビゲーション要素が残留
-    → ノイズがAIの情報抽出を阻害
-    → 対策: アップロード前に不要なボイラープレートを除去
+## Format-Specific Source Guidance
 
-  ❌ Buried Key Info（重要情報の埋没）:
-    → 重要な結論・データがドキュメント末尾に配置
-    → LLMの「先頭・末尾偏重」特性で中間情報が見落とされる
-    → 対策: エグゼクティブサマリーをドキュメント先頭に配置
+| Format | Recommended source shape |
+|--------|--------------------------|
+| `Audio Overview` | `2-5` focused sources with arguments, trade-offs, or strong narrative |
+| `Video Overview` | Sources with visualizable concepts, data, or scene-worthy structure |
+| `Slides` | Clear headings, bullets, and source data for charts |
+| `Infographic` | Numeric, comparative, or ranking data |
+| `Deep Research` | High-trust, high-depth, high-relevance sources |
 
-  ❌ Image-Only Data（画像内データ）:
-    → 図表・チャートが画像として埋め込まれている
-    → テキスト抽出でデータが消失
-    → 対策: 図表データをテキストテーブルとして補足、キャプション追加
+## Quick Quality Gates
 
-  ❌ Duplicate Content（重複コンテンツ）:
-    → 同じ情報が複数ソースに含まれる
-    → 重複が出力の多様性を低下、特定トピックに過度に偏る
-    → 対策: ソース間で重複を確認・排除、各ソースに明確な役割を付与
-```
-
----
-
-## 3. ノートブック構成のアンチパターン
-
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **NC-01** | **Pattern Mismatch（パターン不一致）** | 目的に合わないノートブック構成を選択 | Debate形式なのに単一視点ソース、比較なのに1対象のみ | フォーマット→構成パターンの適合ガイドに従う |
-| **NC-02** | **No Role Assignment（ソース役割未定義）** | 各ソースの目的・役割が不明確 | 出力でソースが均等に扱われ、メリハリなし | 各ソースに明確な役割を付与（概要/詳細/反論/データ） |
-| **NC-03** | **Depth-Breadth Confusion（深さ-広さの混同）** | 深掘りしたいのに多数のソースで広く浅くカバー | Deep Dive出力が表面的、Lecture Modeが散漫 | 深い分析: 1-3ソース、広い概観: 5-10ソース |
-| **NC-04** | **Missing Context Source（コンテキストソース不足）** | 専門用語・前提知識を説明するソースがない | 出力で用語が説明なく使用、初心者に不親切 | 用語集・概要ソースを「コンテキスト」として追加 |
-| **NC-05** | **Unbalanced Perspectives（視点の偏り）** | Multi-Perspective構成で一方の視点が圧倒的に多い | Debate出力が一方的、公平性の欠如 | 各視点に同程度の情報量のソースを配分 |
-
----
-
-## 4. フォーマット別ソース準備の罠
-
-```
-Audio Overview ソースの罠:
-  ❌ ソース10本以上 → 対話が表面的で焦点散漫
-    → 最適: 2-5本、対話の「種」となる対立見解を含む
-  ❌ 箇条書きのみのソース → 対話が単調で発展しない
-    → 対策: 議論を誘発する主張・分析を含むソースを選択
-  ❌ 太字・ハイライトなし → AIが重要ポイントを見逃す
-    → 対策: 触れてほしいポイントを強調表示
-
-Video Overview ソースの罠:
-  ❌ テキストのみで視覚的要素なし → ビジュアルが退屈
-    → 対策: 図解可能なコンテンツ、データ・統計を含むソース
-  ❌ ストーリー性のないソース → 動画の構成が平坦
-    → 対策: 起承転結のあるストーリーアーク付きソース
-
-Slide Deck ソースの罠:
-  ❌ 非構造化テキスト → スライド構成が崩壊
-    → 対策: 箇条書き・番号リスト・見出し構造を持つソース
-  ❌ 図表の元データ欠如 → チャートが再現されない
-    → 対策: グラフの元データをテキストテーブルとして含める
-
-Infographic ソースの罠:
-  ❌ 定性情報のみで数値データなし → 視覚化しにくい
-    → 対策: 数値・統計・ランキングデータを含むソース
-  ❌ 複数テーマを混在 → インフォグラフィックが散漫
-    → 対策: 1テーマに絞ったソース構成
-```
-
----
-
-## 5. ソース品質チェックの落とし穴
-
-```
-品質検証の罠:
-
-  ❌ Confirmation Bias（確認バイアス）:
-    → 自分の結論を支持するソースだけを選択
-    → 出力が偏り、重要な反論や代替見解が欠落
-    → 対策: 意図的に反対意見・批判的視点のソースを1つ追加
-
-  ❌ Authority Fallacy（権威の誤謬）:
-    → 著名な出典というだけでソース品質を確認しない
-    → 古い情報・誤った統計が権威付きで出力される
-    → 対策: 出典の権威に関わらず、データの正確性・最新性を個別検証
-
-  ❌ Quantity Over Quality（量より質）:
-    → ソース数を増やせば出力が良くなると思い込む
-    → 50ソース投入で処理が遅延、出力品質も低下
-    → 対策: 「5つの優れたソース > 20の平凡なソース」の原則
-
-  ❌ No Pre-Flight Check（事前チェック省略）:
-    → ソース投入前の品質チェックリストを実行しない
-    → 機械読み取り不能、アクセス不可、文字化け等の問題が後から発覚
-    → 対策: Pre-Upload Checklist を毎回実行
-```
-
----
-
-## 6. Prism との連携
-
-```
-Prism での活用:
-  1. SOURCE フェーズで SC-01〜07 のソース品質スクリーニング
-  2. PREPARE フェーズでソース構造化の品質チェック
-  3. STEER フェーズでノートブック構成パターンの適合確認
-  4. EVALUATE フェーズでソース起因の品質問題の根本原因分析
-
-品質ゲート:
-  - ソース15本超 → 絞り込み提案（SC-01 防止）
-  - スキャンPDF検出 → OCR処理推奨（SC-04 防止）
-  - ログイン必須URL → パブリックURL代替提案（SC-05 防止）
-  - 言語混在 → 統一または意図の確認（SC-06 防止）
-  - 見出し構造なし → 構造化アドバイス（Flat Text Dump 防止）
-  - 重複コンテンツ → 排除提案（Duplicate Content 防止）
-  - 単一視点のDebate用ソース → 反対意見ソース追加提案（NC-05 防止）
-```
-
-**Source:** [Google: NotebookLM Help](https://support.google.com/notebooklm/?hl=en) · [Analytics Vidhya: NotebookLM Super Prompts](https://www.analyticsvidhya.com/blog/2026/01/notebooklm-super-prompts-for-pro-level-productivity/) · [Google Blog: 8 Expert Tips for NotebookLM](https://blog.google/innovation-and-ai/products/notebooklm-beginner-tips/) · [DataCamp: NotebookLM Tutorial](https://www.datacamp.com/tutorial/notebooklm)
+| Gate | Action |
+|------|--------|
+| Source count `15+` | Trim before proceeding |
+| Source count `20+` | Treat as overload |
+| Deep analysis with more than `3` sources | Reduce scope |
+| Broad overview with fewer than `5` sources | Add breadth if needed |
+| PDF is a scan | OCR first |
+| URL needs login | Replace it |
+| Mixed-language set | Unify language or declare multilingual intent |

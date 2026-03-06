@@ -1,27 +1,17 @@
 # Prompt Effectiveness System (SPECTRUM)
 
-Prompt pattern tracking, format-audience fit analysis, template performance measurement, and steering strategy improvement.
-Prism gets better at designing steering prompts by learning from outcomes.
+Purpose: Track prompt outcomes, calibrate reusable prompt heuristics, and emit stable learning signals without overreacting to small samples.
 
----
+## Contents
 
-## Overview
+- RECORD schema
+- EVALUATE thresholds
+- CALIBRATE rules
+- PROPAGATE format
 
-The SPECTRUM phase runs post-task (or periodically) to close the feedback loop between prompt design activities and actual output quality. Without SPECTRUM, prompt recommendations stay static and format-audience fit remains uncalibrated. With it, Prism's prompt designs become progressively more effective and audience-aligned.
+## RECORD
 
-```
-RECORD ──→ EVALUATE ──→ CALIBRATE ──→ PROPAGATE
-  │            │            │            │
-  │ Log       │ Measure    │ Update    │ Share with
-  │ prompts   │ quality &  │ pattern   │ Lore
-  │ & scores  │ trends     │ weights   │
-```
-
----
-
-## RECORD — Log Prompt Design Activities
-
-After each prompt design task, record:
+Log these fields after each Prism task:
 
 ```yaml
 Task: [task-id]
@@ -47,148 +37,75 @@ Iterations_Required: [count]
 Downstream_Handoff: [Morph/Growth/Canvas/Lore/None]
 ```
 
-### What to Track
+## EVALUATE
 
-| Data Point | Why | Used For |
-|-----------|-----|----------|
-| Format × audience quality | Core calibration input | Format recommendation improvement |
-| Prompt pattern effectiveness | Which patterns produce highest quality per context | Pattern selection heuristic |
-| Source composition impact | Which notebook patterns work best for which formats | Source advice improvement |
-| Iteration count | How many rounds needed to reach quality target | Prompt template refinement |
-| Three-layer completeness | Which layers are most impactful per format | Layer guidance tuning |
-| Downstream utilization | Did Morph/Growth/Canvas use the output? | Output format improvement |
+### Quality Trend Thresholds
 
----
+| Average overall score | Interpretation | Action |
+|-----------------------|----------------|--------|
+| `> 4.2` | Excellent | Keep the pattern and reuse it |
+| `3.5-4.2` | Good | Minor tuning only |
+| `2.5-3.5` | Moderate | Review pattern selection and source advice |
+| `< 2.5` | Low | Investigate root causes immediately |
 
-## EVALUATE — Measure Prompt Design Impact
+### Format-Audience Fit Thresholds
 
-### Quality Trend Tracking
-
-```
-Average Quality Score = Sum of Overall Scores / Total Tasks
-
-> 4.2  = Excellent prompt design (pattern is working)
-3.5-4.2 = Good quality (maintain approach, minor tuning)
-2.5-3.5 = Moderate quality (review pattern selection, source advice)
-< 2.5  = Low quality (investigate root causes)
-```
-
-### Format-Audience Fit Tracking
-
-```
-Fit Score = Tasks Scoring ≥ 4.0 on Audience Fit / Total Tasks for Format × Audience
-
-> 0.85  = Highly effective combination
-0.70-0.85 = Good, some contexts need tuning
-< 0.70  = Underperforming (review template, audience guidance)
-```
+| Fit score | Interpretation | Action |
+|-----------|----------------|--------|
+| `> 0.85` | Highly effective | Prefer this combination |
+| `0.70-0.85` | Good | Keep using with situational tuning |
+| `< 0.70` | Underperforming | Rework the template or audience guidance |
 
 ### Evaluation Triggers
 
-| Trigger | Check |
-|---------|-------|
-| Quality score < 3.0 | Source quality, prompt pattern selection, format match |
-| User requests major revision | Audience mismatch, tone calibration, scope issue |
-| 3+ iterations required | Template completeness, pattern guidance |
-| New NotebookLM feature released | Format capability updates, constraint changes |
-| Quarterly review | Overall prompt design health |
+- Quality score `< 3.0`
+- User requests a major revision
+- `3+ iterations` were required
+- A new NotebookLM feature changes format behavior
+- Quarterly review
 
-### Per-Period Evaluation Summary
+## CALIBRATE
 
-```markdown
-### Prompt Design Evaluation
+### Default Pattern Weights
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Prompt designs completed | 15 | — |
-| Average quality score | 4.1/5.0 | ↑ |
-| Score ≥ 4.0 rate | 73% (11/15) | ↑ |
-| Average iterations | 1.8 | ↓ |
-| Most used format | Audio Deep Dive (40%) | — |
-| Most used pattern | Audience Anchor (87%) | — |
-| Downstream utilization | 80% (12/15) | — |
-
-**Strongest combination**: Audio Deep Dive × Senior Engineer (4.5 avg)
-**Weakest area**: Video Brief × General Public (3.2 avg — tone calibration needed)
-**Note**: Negative Space pattern improved focus scores by 25%.
-```
-
----
-
-## CALIBRATE — Update Prompt Design Heuristics
-
-### Pattern Effectiveness Scoring
-
-Track which patterns work best in which contexts:
-
-```yaml
-# Default pattern effectiveness by format
-audio_patterns:
-  audience_anchor: 0.95
-  negative_space: 0.90
-  focus_laser: 0.85
-  tone_dial: 0.85
-  duration_target: 0.80
-  structural_blueprint: 0.75
-video_patterns:
-  audience_anchor: 0.90
-  focus_laser: 0.90
-  tone_dial: 0.80
-  structural_blueprint: 0.85
-  duration_target: 0.75
-  negative_space: 0.70
-slide_patterns:
-  structural_blueprint: 0.95
-  focus_laser: 0.90
-  audience_anchor: 0.85
-  negative_space: 0.80
-  tone_dial: 0.70
-  duration_target: 0.65
-
-# Calibrated (from SPECTRUM data)
-# Example: Negative Space more effective than expected for Audio
-audio_patterns:
-  negative_space: 0.90 → 0.95  # Explicit skip lists dramatically improved focus
-```
+| Format | Pattern weights |
+|--------|-----------------|
+| `Audio` | `Audience Anchor 0.95`, `Negative Space 0.90`, `Focus Laser 0.85`, `Tone Dial 0.85`, `Duration Target 0.80`, `Structural Blueprint 0.75` |
+| `Video` | `Audience Anchor 0.90`, `Focus Laser 0.90`, `Tone Dial 0.80`, `Structural Blueprint 0.85`, `Duration Target 0.75`, `Negative Space 0.70` |
+| `Slides` | `Structural Blueprint 0.95`, `Focus Laser 0.90`, `Audience Anchor 0.85`, `Negative Space 0.80`, `Tone Dial 0.70`, `Duration Target 0.65` |
 
 ### Calibration Rules
 
-1. **3+ tasks required** before adjusting pattern effectiveness scores
-2. **Max adjustment per cycle**: ±0.15 (prevent overcorrection)
-3. **Decay**: Adjustments decay 10% per quarter toward defaults
-4. **Override**: User explicit prompt preferences always win
+- Require `3+ tasks` before changing any pattern weight.
+- Cap each adjustment at `±0.15` per calibration cycle.
+- Apply `10% per quarter` decay toward defaults.
+- User-explicit preferences always override calibrated defaults.
 
-### Format-Audience Fit Calibration
+### Audience-Fit Defaults
 
-Track optimal format-audience combinations:
+| Audience | Best audio | Best video | Best slides |
+|----------|------------|------------|-------------|
+| `C-suite` | `Brief: Executive Summary` | `Explainer: Corporate` | `Presenter: Internal` |
+| `Senior Engineer` | `Deep Dive: Technical` | `Explainer: Whiteboard` | `Detailed: Handout` |
+| `General Public` | `Deep Dive: General` | `Brief: Casual` | `Presenter: TED-style` |
+| `Student` | `Lecture: Tutorial` | `Explainer: Classroom` | `Detailed: Educational` |
+| `Researcher` | `Critique: Research` | `Explainer: Academic` | `Detailed: Handout` |
 
-| Audience | Best Audio | Best Video | Best Slides | Notes |
-|----------|-----------|-----------|------------|-------|
-| C-suite | Brief: Executive Summary | Brief: Corporate | Presenter: Internal | Short, actionable |
-| Senior Engineers | Deep Dive: Technical | Explainer: Whiteboard | Detailed: Handout | Depth over breadth |
-| General Public | Deep Dive: General | Brief: Casual | Presenter: TED-style | Engagement first |
-| Students | Lecture: Tutorial | Explainer: Classroom | Detailed: Educational | Building-block structure |
-| Researchers | Critique: Research | Explainer: Academic | Detailed: Handout | Evidence-focused |
+### Source Pattern Defaults
 
-### Source Composition Calibration
+| Source pattern | Best for | Notes |
+|----------------|----------|-------|
+| `Single Deep` | Lecture Mode, Deep Research | Strongest focus |
+| `Multi-Perspective` | Debate, Critique | Strongest tension and contrast |
+| `Hierarchical` | Lecture, Detailed Deck | Best for structured learning |
+| `Comparative` | Infographic, Critique | Strong comparison scaffolding |
+| `Chronological` | Deep Dive, Presenter | Good narrative flow |
 
-Track which notebook composition patterns produce best results:
+## PROPAGATE
 
-| Source Pattern | Best For | Quality Score | Notes |
-|---------------|----------|--------------|-------|
-| Single Deep | Lecture Mode, Deep Research | High | Focus single topic deeply |
-| Multi-Perspective | Debate, Critique | Very High | Tension drives engagement |
-| Hierarchical | Lecture, Detailed Deck | High | Natural learning flow |
-| Comparative | Infographic, Critique | High | Clear structure for comparison |
-| Chronological | Deep Dive, Presenter | Medium-High | Narrative arc strength |
+### Journal Entry
 
----
-
-## PROPAGATE — Share Validated Patterns
-
-### Journal Entry Format
-
-Record SPECTRUM insights in `.agents/prism.md`:
+Record major findings in `.agents/prism.md`:
 
 ```markdown
 ## YYYY-MM-DD - SPECTRUM: [Format × Audience]
@@ -196,7 +113,7 @@ Record SPECTRUM insights in `.agents/prism.md`:
 **Tasks assessed**: N
 **Average quality**: X/5.0
 **Key insight**: [description]
-**Calibration adjustment**: [pattern/fit: old → new]
+**Calibration adjustment**: [pattern/fit: old -> new]
 **Apply when**: [future scenario]
 **reusable**: true
 
@@ -211,57 +128,17 @@ reusable: true
 -->
 ```
 
-### Pattern Library
+### Quick SPECTRUM
 
-Build a library of effective prompt design approaches by context:
-
-| Context | Best Format | Key Patterns | Effectiveness |
-|---------|-----------|-------------|---------------|
-| Technical knowledge sharing | Audio Deep Dive | Audience Anchor + Focus Laser + Negative Space | Very High |
-| Executive briefing | Audio Brief | Duration Target + Focus Laser | High |
-| Product comparison | Infographic | Structural Blueprint + Focus Laser | High |
-| Educational content | Audio Lecture + Detailed Deck | Structural Blueprint + Audience Anchor | High |
-| Social media content | Video Brief + Audio Brief | Tone Dial + Duration Target | Medium-High |
-| Research analysis | Audio Critique + Deep Research | Audience Anchor + Negative Space | High |
-
-### Quick Calibration (Small Tasks)
-
-For tasks with < 3 prompt designs:
+Use this when there are fewer than `3` tasks:
 
 ```markdown
 ## Quick SPECTRUM
 
 **Tasks**: 1 completed
 **Quality**: 4.2/5.0
-**Note**: Negative Space pattern with explicit skip list improved Audio Deep Dive focus
+**Note**: [small-sample insight]
 **Action**: No weight change (insufficient data)
 ```
 
-Rule: Do not adjust weights from a single small task. Accumulate data across tasks.
-
----
-
-## Integration with Ecosystem
-
-SPECTRUM data feeds into prompt design decisions:
-
-| SPECTRUM Signal | Ecosystem Impact |
-|----------------|-------------------|
-| Quality improving steadily | Prompt design approach is working — continue |
-| Quality degrading | Re-examine source advice, template selection, format-audience fit |
-| Pattern consistently effective | Standardize for similar contexts |
-| Format-audience mismatch detected | Update recommendation heuristics |
-| Low downstream utilization | Adjust output format, improve handoff quality |
-| Validated prompt pattern | Share with Lore, update prompt catalog |
-
----
-
-## Feedback to Ecosystem
-
-When SPECTRUM discovers patterns valuable beyond a single task:
-
-1. **Record in journal** with `reusable: true` tag
-2. **Emit EVOLUTION_SIGNAL** for Lore to collect
-3. **Feed to Growth** if content strategy patterns improve engagement
-4. **Inform Cast** if audience-format fit data improves persona design
-5. **Update prompt catalog** if new template approaches prove more effective
+Do not change weights from a single small task.

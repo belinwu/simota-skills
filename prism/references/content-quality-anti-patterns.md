@@ -1,140 +1,59 @@
 # AI Content Quality Anti-Patterns
 
-> AI生成コンテンツの品質評価、ハルシネーション対策、反復改善の失敗パターン
+Purpose: Catch hallucination, attribution, repetition, weak endings, and consistency failures before Prism recommends a prompt as ready.
 
-## 1. ハルシネーション対策 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **HQ-01** | **Unchecked Fabrication（未検証の創作）** | AI出力の事実確認を行わない | ソースに存在しない統計・引用・事実が含まれる | 全主張をソースと照合、引用要求をプロンプトに含める |
-| **HQ-02** | **Confidence Blindness（確信度盲目）** | AIが自信満々に語る内容を無条件に信頼 | 流暢だが不正確な記述、もっともらしい嘘 | 「ソースに情報がない場合はその旨を明示して」と指示 |
-| **HQ-03** | **Source Scope Creep（ソース範囲超過）** | ソース外の一般知識がAI出力に混入 | ソースにない事例・比喩・補足情報の出現 | 「提供されたソースの情報のみに基づいて」制約を明示 |
-| **HQ-04** | **Statistical Hallucination（統計のハルシネーション）** | 存在しない数値・パーセンテージの創作 | 「約67%が…」等、ソースにない具体的数字 | 数値の引用は必ずソース出典を付記させる |
-| **HQ-05** | **Attribution Confusion（帰属の混乱）** | ソースAの主張をソースBに帰属させる | 引用元の誤り、主張の混同 | ソースごとにラベル付けし、帰属の明確化を指示 |
-| **HQ-06** | **Interpolation Illusion（補間の幻想）** | ソース間のギャップをAIが「合理的推論」で埋める | ソースが示唆していない因果関係・結論の創出 | ギャップは「不明」として明示させる指示 |
-| **HQ-07** | **Recency Fabrication（最新情報の捏造）** | 古いソースから「最新の」データを生成 | 「2026年時点で…」等、ソースの時期と不整合 | ソースの日付を明示し、時期に関する注意を指示 |
+- Hallucination anti-patterns `HQ-01..HQ-07`
+- Common content failures `CQ-01..CQ-05`
+- Format-specific quality pitfalls
+- Consistency rules
 
----
+## Hallucination Anti-Patterns
 
-## 2. 品質評価の罠
+| ID | Anti-pattern | Symptom | Fix |
+|----|--------------|---------|-----|
+| `HQ-01` | Unchecked Fabrication | Facts or claims are not traceable to the source | Cross-check all claims |
+| `HQ-02` | Confidence Blindness | Fluent output sounds right but is wrong | Require explicit source grounding |
+| `HQ-03` | Source Scope Creep | The model adds outside knowledge | Constrain to provided sources |
+| `HQ-04` | Statistical Hallucination | Unsupported percentages or numbers appear | Require sourced numbers only |
+| `HQ-05` | Attribution Confusion | Claims are credited to the wrong source | Label sources clearly |
+| `HQ-06` | Interpolation Illusion | Gaps are filled with invented causal logic | Mark gaps as unknown |
+| `HQ-07` | Recency Fabrication | Old sources are framed as current facts | State source dates explicitly |
 
-```
-評価プロセスの失敗:
+## Common Content Failures
 
-  ❌ Single-Axis Evaluation（単軸評価）:
-    → 「正確かどうか」だけで判断
-    → オーディエンス適合度・エンゲージメント・行動喚起力を見落とす
-    → 対策: 5軸ルーブリック（Accuracy 30% / Audience Fit 25% / Engagement 20% / Completeness 15% / Actionability 10%）
+| ID | Failure | Symptom | Fix |
+|----|---------|---------|-----|
+| `CQ-01` | AI-sounding prose | Generic, overpolished, pattern-heavy output | Tighten tone and negative constraints |
+| `CQ-02` | Redundancy | Same point appears repeatedly | Tighten focus and trim scope |
+| `CQ-03` | Context breaks | Tone or depth changes across the piece | Use stronger structural guidance |
+| `CQ-04` | Flat expression | Everything sounds equally important | Mix evidence, story, comparison, and emphasis intentionally |
+| `CQ-05` | Weak ending | No meaningful summary or CTA | Require a closing synthesis or next action |
 
-  ❌ Binary Judgment（二値判断）:
-    → 「良い」か「悪い」の二択で評価
-    → 何を改善すべきかの具体的指針が得られない
-    → 対策: 1-5のスコアリング + 各軸の具体的観察記録
+## Format-Specific Quality Pitfalls
 
-  ❌ Creator Bias（作成者バイアス）:
-    → 自分が作ったプロンプトの出力を好意的に評価
-    → 客観的な品質問題を見逃す
-    → 対策: ターゲットオーディエンスの視点で評価、第三者レビュー
+| Format | Pitfall | Guardrail |
+|--------|---------|-----------|
+| `Audio` | Same point repeated `3+` times | Reduce scope and add stronger focus |
+| `Audio` | One speaker dominates `80%+` | Ask for better balance |
+| `Video` | Visuals do not support the spoken message | Re-state the visual role explicitly |
+| `Slides` | Text walls or unlabeled charts | Enforce one message per slide and explicit chart labels |
+| `Infographic` | Source or statistic is not attributed | Require visible attribution |
 
-  ❌ First Impression Lock（第一印象固定）:
-    → 最初の30秒の印象で全体を判断
-    → 中盤の構成崩壊や結末の弱さを見逃す
-    → 対策: フォーマット別ルーブリックで全セクションを体系的に評価
+## Consistency Rules
 
-  ❌ Perfection Paralysis（完璧主義の麻痺）:
-    → スコア5.0を追求して無限に再生成
-    → 時間の浪費、限界収益逓減
-    → 対策: スコア4.0以上で「十分に良い」、3ラウンドで打ち切り
-```
+- Keep the tone stable from opening to close.
+- Keep depth consistent across sections unless a deliberate sequence is specified.
+- Keep the same core message across Audio, Video, and Slides when they belong to the same content funnel.
+- Preserve brand voice when the user or source implies one.
 
----
+## Quick Quality Gates
 
-## 3. AI生成コンテンツの共通品質問題
-
-| # | 問題 | 兆候 | 根本原因 | 対策 |
-|---|------|------|---------|------|
-| **CQ-01** | **AI臭い文体** | 定型的なフレーズ、過剰な丁寧語、パターン化された構成 | LLMのトレーニングデータの平均化傾向 | トーン・スタイルを具体的に指定、「避けるべき表現」を明示 |
-| **CQ-02** | **過度な冗長性** | 同じポイントの言い換え繰り返し、不要な前置き | LLMの「役立とう」とする傾向 | 長さ制限+「簡潔に」指示、不要セクションの明示的除外 |
-| **CQ-03** | **文脈の断絶** | 前半と後半でトーン・深度が変わる | 長文生成での一貫性維持の困難 | 構成を明示的に指示、セクション間の接続を要求 |
-| **CQ-04** | **均質な表現** | 全セクションが同じリズム・構造 | パターンマッチングによる画一的生成 | バリエーションを明示的に要求: 「ストーリー、データ、引用を混ぜて」 |
-| **CQ-05** | **結論の弱さ** | まとめが単なる繰り返し、行動喚起なし | 生成の後半で品質が低下する傾向 | 結論・CTAを明示的に構成指示に含める |
-
----
-
-## 4. フォーマット別品質の罠
-
-```
-Audio Overview の品質問題:
-  ❌ 同じポイントを3回以上繰り返す → Focus Laserで重点トピック限定
-  ❌ 片方の話者が80%以上話す → バランス指示を追加
-  ❌ 突然のトピック転換 → Structural Blueprintで構成を明示
-  ❌ 結論なく終わる → 「明確なまとめと次のアクションで締めて」
-  ❌ ソースにない「事実」の創作 → 引用制約を追加
-
-Video Overview の品質問題:
-  ❌ 音声とビジュアルの不一致 → Visual style指定の明確化
-  ❌ テキストが小さすぎて読めない → 「テキスト最小限、ビジュアル重視」
-  ❌ ビジュアル切替が速すぎる → 「各ビジュアルに2-3秒の表示時間」
-  ❌ スタイルの途中変更 → 一貫したVisual style指定
-
-Slide Deck の品質問題:
-  ❌ テキストの壁（text wall） → 「1スライド1メッセージ」指示
-  ❌ スライド間の論理的飛躍 → フロー構造を明示
-  ❌ グラフのラベル欠落 → データソースとラベルの明示指示
-  ❌ 結論/CTAスライドの欠如 → 最終スライドの内容を指定
-
-Infographic の品質問題:
-  ❌ データ出典不明 → 全統計に出典付記を要求
-  ❌ 色使いが多すぎ → カラーパレット指定
-  ❌ 60秒で要点把握不能 → 情報量の制限指示
-```
-
----
-
-## 5. コンテンツ一貫性のアンチパターン
-
-```
-一貫性の罠:
-
-  ❌ Tone Drift（トーンのドリフト）:
-    → 出力の前半はカジュアル、後半がフォーマルに変化
-    → 対策: トーン指示を具体的に: 「友人との会話のように。フォーマルな表現を避けて」
-
-  ❌ Depth Inconsistency（深度の不均一）:
-    → トピックAは詳細だがトピックBは表面的
-    → 対策: 各セクションに時間/文字数の配分を指定
-
-  ❌ Persona Switching（ペルソナ切替）:
-    → 途中でAIの「キャラクター」が変わる
-    → 対策: ペルソナ指定を強調し、一貫性を明示的に要求
-
-  ❌ Cross-Channel Inconsistency（チャネル間不整合）:
-    → 同じソースからAudio/Video/Slideを生成した際に内容が矛盾
-    → 対策: コアメッセージを明示し、全フォーマットで一貫させる
-
-  ❌ Brand Voice Loss（ブランドボイスの喪失）:
-    → AI生成コンテンツが組織のトーン&マナーから乖離
-    → 対策: ブランドボイスガイドラインをソースまたは指示に含める
-```
-
----
-
-## 6. Prism との連携
-
-```
-Prism での活用:
-  1. EVALUATE フェーズで HQ-01〜07 のハルシネーションチェック
-  2. REFINE フェーズで品質評価の罠を回避した体系的改善
-  3. STEER フェーズで CQ-01〜05 の予防的プロンプト設計
-  4. SPECTRUM フェーズで品質トレンドの追跡・パターン検出
-
-品質ゲート:
-  - ソースにない数値の出現 → ハルシネーション警告（HQ-04 防止）
-  - 引用のソース帰属不明 → 帰属確認指示追加（HQ-05 防止）
-  - 単軸での品質判断 → 5軸ルーブリック適用（Single-Axis 防止）
-  - AI臭い文体の検出 → トーン・スタイル指示強化（CQ-01 防止）
-  - 同一ポイントの3回以上の繰り返し → Focus指示追加（Audio繰り返し 防止）
-  - 結論の弱さ → CTA/まとめの明示指示追加（CQ-05 防止）
-```
-
-**Source:** [Lakera: LLM Hallucinations Guide 2026](https://www.lakera.ai/blog/guide-to-hallucinations-in-large-language-models) · [Wellows: 10 AI Content Mistakes](https://wellows.com/blog/ai-mistakes-marketers-should-avoid/) · [Optimizely: AI Content Consistency](https://www.optimizely.com/insights/blog/ai-for-content-consistency/) · [arxiv: Taxonomy of Prompt Defects](https://arxiv.org/html/2509.14404v1)
+| Gate | Action |
+|------|--------|
+| Unsupported number detected | Flag hallucination risk immediately |
+| Attribution is unclear | Add attribution requirements before another round |
+| Repetition `3+` times | Narrow focus and shorten duration |
+| Ending has no next step | Add summary or CTA |
+| Weighted score `< 4.0` | Iterate if another round is justified |
