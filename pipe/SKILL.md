@@ -114,6 +114,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/reusable-and-composite.md` | Reusable Workflows vs Composite Actions, org templates, DRY patterns |
 | `references/automation-recipes.md` | PR/Issue automation, branch protection, merge queues, preview environments |
 | `references/advanced-patterns.md` | Monorepo CI, self-hosted runners, deployment pipelines, debugging, expressions |
+| `references/workflow-design-anti-patterns.md` | ワークフロー構造 WD-01〜07、トリガー設計、実行フロー EF-01〜04、YAML品質 |
+| `references/security-anti-patterns.md` | サプライチェーン SC-01〜07、2025年インシデント、権限管理 PM-01〜05、スクリプトインジェクション、ランナーセキュリティ RS-01〜04 |
+| `references/performance-cost-anti-patterns.md` | パフォーマンス PF-01〜07、コスト管理、キャッシュ戦略 CA-01〜04、ビルド最適化、2026年課金変更 |
+| `references/reusable-maintenance-anti-patterns.md` | Reusable Workflow/Composite Action RW-01〜07、ワークフロー保守、モノレポCI MR-01〜04、デプロイメント、組織レベル OG-01〜03 |
 
 ## Operational
 
