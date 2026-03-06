@@ -1,109 +1,47 @@
 # Retain Re-engagement Triggers
 
-Trigger configuration and message templates.
-
----
+Purpose: Trigger design, cadence limits, and reusable message structure for re-engagement.
+Contents: trigger table, channel selection, delay rules, message examples.
 
 ## Trigger Configuration
 
-```typescript
-// lib/engagement-triggers.ts
-interface EngagementTrigger {
-  name: string;
-  condition: (user: UserData) => boolean;
-  action: 'email' | 'push' | 'in_app' | 'sms';
-  template: string;
-  delay: number;  // hours after condition is met
-  maxFrequency: number;  // max times per month
-}
+| Trigger | Condition | Channel | Delay | Max frequency |
+|---------|-----------|---------|-------|---------------|
+| `dormant_3_days` | `3 <= daysSinceLastVisit < 7` | Push | `0h` | `4/month` |
+| `dormant_7_days` | `7 <= daysSinceLastVisit < 14` | Email | `12h` | `2/month` |
+| `incomplete_onboarding` | Onboarding incomplete and `>= 1 day` since signup | Email | `24h` | `3/month` |
+| `feature_discovery` | `> 5` sessions and key feature unused | In-app | `0h` | `1/month` |
+| `streak_at_risk` | Active streak and `< 6h` until expiry | Push | `0h` | `30/month` |
 
-const engagementTriggers: EngagementTrigger[] = [
-  {
-    name: 'dormant_3_days',
-    condition: (user) => daysSinceLastVisit(user) >= 3 && daysSinceLastVisit(user) < 7,
-    action: 'push',
-    template: 'miss_you_3_days',
-    delay: 0,
-    maxFrequency: 4
-  },
-  {
-    name: 'dormant_7_days',
-    condition: (user) => daysSinceLastVisit(user) >= 7 && daysSinceLastVisit(user) < 14,
-    action: 'email',
-    template: 'win_back_7_days',
-    delay: 12,
-    maxFrequency: 2
-  },
-  {
-    name: 'incomplete_onboarding',
-    condition: (user) => !user.onboardingComplete && daysSinceSignup(user) >= 1,
-    action: 'email',
-    template: 'complete_setup',
-    delay: 24,
-    maxFrequency: 3
-  },
-  {
-    name: 'feature_discovery',
-    condition: (user) => user.sessionsCount > 5 && !user.hasUsedFeature('advanced_search'),
-    action: 'in_app',
-    template: 'discover_feature',
-    delay: 0,
-    maxFrequency: 1
-  },
-  {
-    name: 'streak_at_risk',
-    condition: (user) => user.currentStreak > 0 && hoursUntilStreakExpires(user) < 6,
-    action: 'push',
-    template: 'protect_streak',
-    delay: 0,
-    maxFrequency: 30
-  }
-];
-```
+## Channel Rules
 
----
+- Push: use for short-lived urgency, including early dormancy and streak protection.
+- Email: use for recovery, incomplete setup, and higher-context value reminders.
+- In-app: use for contextual feature discovery after a user has demonstrated core adoption.
 
-## Message Templates
+## Message Patterns
 
 ```typescript
-// lib/engagement-templates.ts
 const templates = {
   miss_you_3_days: {
-    title: 'お待ちしています！',
-    body: '最後のご利用から3日が経ちました。[最近の更新]をチェックしませんか？',
-    cta: '今すぐチェック'
+    title: 'We miss you',
+    body: 'It has been 3 days since your last visit. Want to see what is new?',
+    cta: 'Check it now'
   },
-
   win_back_7_days: {
-    subject: '[名前]さん、お元気ですか？',
-    body: `
-      しばらくお見えになりませんね。
-
-      最近、新機能[機能名]を追加しました！
-      [メリット]ができるようになりました。
-
-      ぜひお試しください。
-    `,
-    cta: '新機能を見る'
+    subject: '[Name], here is what changed',
+    body: 'You have been away for a while. We shipped [feature] so you can now [benefit].',
+    cta: 'See what is new'
   },
-
   complete_setup: {
-    subject: 'あと少しで完了です！',
-    body: `
-      セットアップが途中です。
-
-      残りのステップを完了すると、
-      [ベネフィット]が使えるようになります。
-
-      5分で完了できます。
-    `,
-    cta: 'セットアップを続ける'
+    subject: 'You are almost done',
+    body: 'Finish the remaining setup steps to unlock [benefit]. It should take about 5 minutes.',
+    cta: 'Continue setup'
   },
-
   protect_streak: {
-    title: '連続記録を守りましょう！',
-    body: '現在[N]日連続！今日も利用して記録を伸ばしましょう。',
-    cta: '利用する'
+    title: 'Keep your streak alive',
+    body: 'You are on a [N]-day streak. Use the product today to keep it going.',
+    cta: 'Open the product'
   }
 };
 ```

@@ -1,8 +1,7 @@
 # Retain Retention Analysis Framework
 
-Cohort retention analysis and churn prediction models.
-
----
+Purpose: Cohort analysis, churn scoring, drop-off diagnosis, and retention reporting.
+Contents: cohort template, risk signal scoring, churn tiers, recommended actions, report template.
 
 ## Cohort Retention Analysis Template
 
@@ -32,99 +31,62 @@ Cohort retention analysis and churn prediction models.
 | Week 1-4 | [X%] | [Reason] | [Action] |
 
 ### Retention Curve Shape
-- **Flattening Point:** Week [X] (when retention stabilizes)
-- **Target:** Increase stable retention to [X%]
+- Flattening point: Week [X]
+- Target stable retention: [X%]
 ```
 
----
+## Churn Risk Scoring
 
-## Churn Prediction Model
+| Signal | Threshold | Score impact | Interpretation |
+|--------|-----------|--------------|----------------|
+| Inactivity | `> 14 days` | `+30` | Severe dormancy |
+| Inactivity | `> 7 days` | `+15` | Early dormancy |
+| Usage decline | `sessionsLast7Days < 50%` of recent baseline | `+25` | Fast engagement drop |
+| Feature adoption | `featureUsageScore < 30` | `+20` | Core value not adopted |
+| Support issues | `supportTicketsOpen > 2` | `+15` | Unresolved friction |
+| NPS | `<= 6` | `+20` | Detractor risk |
+| Billing | `billingIssues = true` | `+25` | Payment friction |
 
-```typescript
-// lib/churn-prediction.ts
-interface ChurnSignals {
-  daysSinceLastVisit: number;
-  sessionsLast7Days: number;
-  sessionsLast30Days: number;
-  featureUsageScore: number;    // 0-100
-  supportTicketsOpen: number;
-  npsScore?: number;
-  billingIssues: boolean;
-}
+## Churn Levels And Default Actions
 
-interface ChurnRisk {
-  score: number;        // 0-100
-  level: 'low' | 'medium' | 'high' | 'critical';
-  signals: string[];
-  recommendedAction: string;
-}
+| Score | Level | Default action |
+|-------|-------|----------------|
+| `>= 70` | Critical | Immediate 1:1 follow-up |
+| `50-69` | High | Personalized re-engagement |
+| `30-49` | Medium | Automated re-engagement campaign |
+| `< 30` | Low | Continue normal engagement |
 
-function calculateChurnRisk(signals: ChurnSignals): ChurnRisk {
-  let riskScore = 0;
-  const riskSignals: string[] = [];
+## Implementation Notes
 
-  // Inactivity signals
-  if (signals.daysSinceLastVisit > 14) {
-    riskScore += 30;
-    riskSignals.push('14日以上未訪問');
-  } else if (signals.daysSinceLastVisit > 7) {
-    riskScore += 15;
-    riskSignals.push('7日以上未訪問');
-  }
+- Combine behavior, satisfaction, and billing signals; do not rely on a single flag.
+- Use the scoring table as a prioritization tool, not as a replacement for segment context.
+- Escalate faster when inactivity and unresolved support issues appear together.
 
-  // Engagement decline
-  if (signals.sessionsLast7Days < signals.sessionsLast30Days / 4 * 0.5) {
-    riskScore += 25;
-    riskSignals.push('利用頻度が50%以上減少');
-  }
+## Report Template
 
-  // Feature adoption
-  if (signals.featureUsageScore < 30) {
-    riskScore += 20;
-    riskSignals.push('主要機能の利用率が低い');
-  }
+```markdown
+## Retention Analysis: [Product/Feature]
 
-  // Support issues
-  if (signals.supportTicketsOpen > 2) {
-    riskScore += 15;
-    riskSignals.push('複数のサポート問題が未解決');
-  }
+### Cohort Retention Table
+| Cohort | Week 0 | Week 1 | Week 2 | Week 4 | Week 8 | Week 12 |
+|--------|--------|--------|--------|--------|--------|---------|
+| [Cohort] | 100% | [X%] | [X%] | [X%] | [X%] | [X%] |
 
-  // NPS detractor
-  if (signals.npsScore !== undefined && signals.npsScore <= 6) {
-    riskScore += 20;
-    riskSignals.push('NPS批判者');
-  }
+### Key Metrics
+| Metric | Current | Target | Status |
+|--------|---------|--------|--------|
+| Day 1 Retention | [X%] | [Y%] | [Status] |
+| Week 1 Retention | [X%] | [Y%] | [Status] |
+| Month 1 Retention | [X%] | [Y%] | [Status] |
+| Month 3 Retention | [X%] | [Y%] | [Status] |
 
-  // Billing issues
-  if (signals.billingIssues) {
-    riskScore += 25;
-    riskSignals.push('請求に関する問題あり');
-  }
+### Drop-off Analysis
+| Period | Drop-off % | Primary Reason | Intervention |
+|--------|-----------|----------------|--------------|
+| [Period] | [X%] | [Reason] | [Action] |
 
-  // Determine risk level and action
-  let level: ChurnRisk['level'];
-  let recommendedAction: string;
-
-  if (riskScore >= 70) {
-    level = 'critical';
-    recommendedAction = '即座に個別対応（電話/1:1メール）';
-  } else if (riskScore >= 50) {
-    level = 'high';
-    recommendedAction = 'パーソナライズされた再エンゲージメント施策';
-  } else if (riskScore >= 30) {
-    level = 'medium';
-    recommendedAction = '自動リエンゲージメントキャンペーン';
-  } else {
-    level = 'low';
-    recommendedAction = '通常のエンゲージメント施策を継続';
-  }
-
-  return {
-    score: Math.min(riskScore, 100),
-    level,
-    signals: riskSignals,
-    recommendedAction
-  };
-}
+### Churn Risk Priorities
+| Segment | Score | Level | Top Signals | Action |
+|---------|-------|-------|-------------|--------|
+| [Segment] | [X] | [Level] | [Signals] | [Action] |
 ```

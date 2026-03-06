@@ -1,130 +1,49 @@
 # Retain Subscription Retention Strategies
 
-Cancellation flow optimization and save offer implementation.
+Purpose: Cancellation flow design, save-offer ordering, and subscription retention reporting.
+Contents: cancellation funnel, pause rules, offer matrix, selection logic, metrics template.
 
----
-
-## Subscription Retention Flow
-
-```markdown
 ## Subscription Retention Flow
 
 ### Cancellation Funnel
-| Step | Option | Expected Conversion |
-|------|--------|-------------------|
-| 1 | 解約理由の選択 | 100% (required) |
-| 2 | 一時停止オプション提示 | 20-25% accept |
-| 3 | ダウングレード提案 | 15-20% accept |
-| 4 | 割引オファー | 10-15% accept |
-| 5 | 解約完了（理由収集） | Remaining |
+
+| Step | Option | Expected conversion |
+|------|--------|---------------------|
+| 1 | Collect churn reason | `100%` required |
+| 2 | Offer pause | `20-25%` accept |
+| 3 | Offer downgrade | `15-20%` accept |
+| 4 | Offer discount | `10-15%` accept |
+| 5 | Complete cancellation and log reason | Remaining users |
 
 ### Pause Options
-| Duration | Eligibility | Data Retention | Re-activation Rate |
+
+| Duration | Eligibility | Data retention | Reactivation rate |
 |----------|-------------|----------------|-------------------|
-| 1ヶ月 | 全ユーザー | 全データ保持 | 70%+ |
-| 2ヶ月 | 6ヶ月以上利用 | 全データ保持 | 60%+ |
-| 3ヶ月 | 1年以上利用 | 全データ保持 | 50%+ |
+| `1 month` | All users | Preserve all data | `70%+` |
+| `2 months` | `6+ months` tenure | Preserve all data | `60%+` |
+| `3 months` | `1+ year` tenure | Preserve all data | `50%+` |
 
 ### Save Offer Matrix
-| Churn Reason | Offer Type | Discount | Duration |
+
+| Churn reason | Offer type | Discount | Duration |
 |--------------|-----------|----------|----------|
-| 高すぎる | 割引 | 30% | 3ヶ月 |
-| 予算削減 | ダウングレード | - | - |
-| 使いこなせない | トレーニング | 無料 | - |
-| 一時的に不要 | 一時停止 | - | 最大3ヶ月 |
-| 競合製品 | 特別オファー | 40% | 6ヶ月 |
-```
+| Price too high | Discount | `30%` | `3 months` |
+| Budget cut | Downgrade | `-` | `-` |
+| Cannot realize value | Training | Free | `-` |
+| Temporary pause in need | Pause | `-` | `up to 3 months` |
+| Competitor pressure | Special offer | `40%` | `6 months` |
 
----
+## Offer Selection Rules
 
-## Retention Flow Implementation
+- First save attempt: start with pause.
+- Price-driven churn:
+  - always consider downgrade
+  - add discount when tenure is `> 90 days`
+  - use `30%` for high-value accounts, otherwise prefer smaller discounts
+- Usage or feature frustration: offer training before discounts.
+- Competitor-driven churn: only use the `40% / 6 months` offer for users with `> 180 days` tenure.
 
-```typescript
-// lib/subscription-retention.ts
-interface RetentionOffer {
-  type: 'pause' | 'downgrade' | 'discount' | 'training' | 'none';
-  details: {
-    pauseDuration?: number;
-    targetPlan?: string;
-    discountPercent?: number;
-    discountDuration?: number;
-    trainingType?: string;
-  };
-  priority: number;
-  expectedSaveRate: number;
-}
-
-interface ChurnReason {
-  category: 'price' | 'features' | 'usage' | 'temporary' | 'competitor' | 'other';
-  subReason: string;
-}
-
-function generateRetentionOffers(context: UserContext): RetentionOffer[] {
-  const offers: RetentionOffer[] = [];
-
-  // Pause offer (universal, but duration based on tenure)
-  if (context.previousSaveAttempts === 0) {
-    const pauseDuration = context.tenure > 365 ? 90 :
-                          context.tenure > 180 ? 60 : 30;
-    offers.push({
-      type: 'pause',
-      details: { pauseDuration },
-      priority: 1,
-      expectedSaveRate: 0.22
-    });
-  }
-
-  // Reason-specific offers
-  switch (context.churnReason.category) {
-    case 'price':
-      offers.push({
-        type: 'downgrade',
-        details: { targetPlan: getDowngradePlan(context.plan) },
-        priority: 2,
-        expectedSaveRate: 0.18
-      });
-      if (context.tenure > 90) {
-        offers.push({
-          type: 'discount',
-          details: {
-            discountPercent: context.mrr > 10000 ? 30 : 20,
-            discountDuration: 3
-          },
-          priority: 3,
-          expectedSaveRate: 0.12
-        });
-      }
-      break;
-
-    case 'usage':
-    case 'features':
-      offers.push({
-        type: 'training',
-        details: { trainingType: 'onboarding_refresh' },
-        priority: 2,
-        expectedSaveRate: 0.15
-      });
-      break;
-
-    case 'competitor':
-      if (context.tenure > 180) {
-        offers.push({
-          type: 'discount',
-          details: { discountPercent: 40, discountDuration: 6 },
-          priority: 2,
-          expectedSaveRate: 0.10
-        });
-      }
-      break;
-  }
-
-  return offers.sort((a, b) => a.priority - b.priority);
-}
-```
-
----
-
-## Retention Metrics Template
+## Metrics Template
 
 ```markdown
 ## Subscription Retention Report: [Period]
@@ -132,23 +51,23 @@ function generateRetentionOffers(context: UserContext): RetentionOffer[] {
 ### Cancellation Funnel Performance
 | Step | Entries | Exits | Conversion |
 |------|---------|-------|------------|
-| 解約開始 | [N] | - | - |
-| 一時停止受諾 | [N] | [N saved] | [X%] |
-| ダウングレード受諾 | [N] | [N saved] | [X%] |
-| 割引受諾 | [N] | [N saved] | [X%] |
-| 解約完了 | [N] | - | - |
+| Cancellation started | [N] | - | - |
+| Pause accepted | [N] | [N saved] | [X%] |
+| Downgrade accepted | [N] | [N saved] | [X%] |
+| Discount accepted | [N] | [N saved] | [X%] |
+| Cancellation completed | [N] | - | - |
 
 ### Save Offer Effectiveness
 | Offer Type | Offered | Accepted | Rate | Revenue Saved |
 |------------|---------|----------|------|---------------|
-| 一時停止 | [N] | [N] | [X%] | ¥[X] |
-| ダウングレード | [N] | [N] | [X%] | ¥[X] |
-| 30%割引 | [N] | [N] | [X%] | ¥[X] |
+| Pause | [N] | [N] | [X%] | [Amount] |
+| Downgrade | [N] | [N] | [X%] | [Amount] |
+| Discount | [N] | [N] | [X%] | [Amount] |
 
 ### Pause Reactivation Tracking
 | Pause Duration | Started | Reactivated | Rate |
 |----------------|---------|-------------|------|
-| 1ヶ月 | [N] | [N] | [X%] |
-| 2ヶ月 | [N] | [N] | [X%] |
-| 3ヶ月 | [N] | [N] | [X%] |
+| 1 month | [N] | [N] | [X%] |
+| 2 months | [N] | [N] | [X%] |
+| 3 months | [N] | [N] | [X%] |
 ```
