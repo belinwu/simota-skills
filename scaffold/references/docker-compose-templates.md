@@ -1,13 +1,16 @@
 # Docker Compose Templates
 
-Local development environment templates and verification checklists.
+Purpose: Use this file when the task is a local development stack, production-like local stack, or Compose verification plan.
 
----
+Contents:
+1. Full development stack
+2. Production-like local stack
+3. Minimal quick-start
+4. Verification checklist
 
 ## Full Development Stack
 
 ```yaml
-# docker-compose.yml
 services:
   app:
     build:
@@ -44,7 +47,6 @@ services:
       POSTGRES_DB: app_dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     healthcheck:
@@ -64,87 +66,40 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    command: redis-server --appendonly yes
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
-
-  minio:
-    image: minio/minio:latest
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
 
 volumes:
   postgres_data:
   redis_data:
-  minio_data:
-
-networks:
-  default:
-    name: app-network
 ```
-
----
 
 ## Production-Like Local Stack
 
 ```yaml
-# docker-compose.prod-local.yml
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
     env_file:
       - .env.production.local
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
     restart: unless-stopped
 
   nginx:
     image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       - app
     restart: unless-stopped
 ```
 
----
-
 ## Minimal Quick-Start
 
 ```yaml
-# docker-compose.minimal.yml
 services:
   db:
     image: postgres:16-alpine
@@ -161,51 +116,23 @@ services:
       - "6379:6379"
 ```
 
----
-
 ## Verification Checklist
 
-### Startup Verification
+- `docker compose up -d` completes successfully
+- Every required service reaches healthy status
+- App, database, and cache connectivity work
+- Seed data and migrations are applied
+- Volumes survive restart when persistence is expected
+- Hot reload and logs are usable in development
 
-- [ ] `docker compose up -d` completes successfully
-- [ ] All services reach healthy state (`docker compose ps`)
-- [ ] Required ports are available and accessible
-
-### Connectivity Verification
-
-- [ ] Application connects to database
-- [ ] Redis connection works (if applicable)
-- [ ] External service mocks (MinIO, etc.) are operational
-
-### Data Verification
-
-- [ ] Seed data is loaded
-- [ ] Migrations are applied
-- [ ] Volumes are persisted across restarts
-
-### Developer Experience
-
-- [ ] Hot reload works
-- [ ] Logs are readable (`docker compose logs -f`)
-- [ ] Debugger can attach (if applicable)
-
-### Verification Commands
+Useful commands:
 
 ```bash
-# Full startup
 docker compose up -d
-
-# Health check
 docker compose ps
-
-# Individual service connectivity
 docker compose exec app curl localhost:3000/health
 docker compose exec db pg_isready -U postgres
 docker compose exec redis redis-cli ping
-
-# Log inspection
 docker compose logs -f app
-
-# Cleanup
 docker compose down -v
 ```

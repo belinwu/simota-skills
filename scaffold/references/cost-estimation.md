@@ -1,68 +1,40 @@
 # Terraform Cost Estimation Reference
 
-Systematic approach to estimating monthly costs from Terraform code. Covers both tool-based (Infracost) and manual estimation methods for AWS and GCP.
+Purpose: Use this file when you need a cost estimate, warning thresholds, tagging rules, or budget patterns for Terraform-managed infrastructure.
 
----
+Contents:
+1. Estimation workflow
+2. Infracost quick start
+3. High-cost signals
+4. Environment multipliers and formulas
+5. Report template
+6. Budgets, tagging, commitments, optimization
 
 ## Estimation Workflow
 
-```
-Read Terraform files
-+-- Identify resource blocks
-|   +-- Map each resource type to pricing category
-|   +-- Extract cost-relevant attributes (instance type, storage size, count, etc.)
-+-- Calculate per-resource cost
-|   +-- Fixed cost (base charges)
-|   +-- Variable cost (usage-based estimates)
-+-- Apply environment multipliers
-|   +-- dev: minimize (single AZ, small instances, no HA)
-|   +-- staging: moderate (production-like but scaled down)
-|   +-- prod: full (multi-AZ, HA, backups, monitoring)
-+-- Generate cost report
-    +-- Per-resource breakdown
-    +-- Per-category subtotals
-    +-- Environment comparison
-...
-```
+1. Read Terraform files and identify billable resource blocks.
+2. Extract cost-driving attributes: size, count, AZ count, HA flags, transfer, storage, `min_instances`.
+3. Apply environment multipliers:
+   - `dev`: single-AZ, smaller, no HA when safe
+   - `staging`: production-like but scaled down
+   - `prod`: full HA, backups, monitoring
+4. Produce:
+   - per-resource breakdown
+   - category subtotal
+   - warning list
 
----
-
-## Infracost Integration
-
-### Setup
+## Infracost Quick Start
 
 ```bash
-# Install
-brew install infracost  # macOS
-curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh  # Linux
-
-# Register (free tier: 1,000 runs/month)
+brew install infracost
 infracost auth login
-
-# Verify
-infracost --version
-```
-
-### Usage Patterns
-
-```bash
-# Single directory estimate
 infracost breakdown --path /path/to/terraform
-
-# Compare two states (e.g., before/after a change)
 infracost diff --path /path/to/terraform --compare-to infracost-base.json
-
-# Generate base snapshot for comparison
-infracost breakdown --path /path/to/terraform --format json --out-file infracost-base.json
-
-# Multi-project (monorepo)
-infracost breakdown --config-file infracost.yml
 ```
 
-### Infracost Config (Monorepo)
+Monorepo example:
 
 ```yaml
-# infracost.yml
 version: 0.1
 projects:
   - path: environments/dev
@@ -73,358 +45,54 @@ projects:
     name: prod
 ```
 
-### CI/CD Integration (GitHub Actions)
+Note: the free tier referenced in the existing skill is `1,000` runs/month.
 
-```yaml
-# .github/workflows/infracost.yml
-name: Infracost
-on: [pull_request]
-jobs:
-  infracost:
-    runs-on: ubuntu-latest
-    permissions: { contents: read, pull-requests: write }
-    steps:
-      - uses: actions/checkout@v4
-      - uses: infracost/actions/setup@v3
-        with:
-          api-key: ${{ secrets.INFRACOST_API_KEY }}
-      - run: infracost breakdown --path=environments/prod --format=json --out-file=/tmp/infracost.json
-      - uses: infracost/actions/comment@v1
-        with:
-# ...
+## High-Cost Signals
+
+Flag these explicitly:
+
+| Resource | Warning |
+|----------|---------|
+| NAT Gateway (AWS/GCP) | Always flag, roughly `$45-50` per gateway/month before meaningful transfer |
+| Interface VPC Endpoints | Flag if `>3` endpoints |
+| RDS / Cloud SQL HA | Flag in `dev` or `staging` |
+| Transit Gateway | Flag per attachment |
+| ElastiCache / Memorystore | Flag above small tiers |
+| EKS / GKE Standard | Flag node count `>3` |
+| Spanner / AlloyDB | Always flag; baseline is `>$500/month` and often much higher |
+| Always-on Cloud Run | Flag `min_instances > 0` outside prod |
+
+## Environment Multipliers And Formulas
+
+Key heuristics:
+- AWS Graviton / GCP Tau can reduce compute cost by about `20%`
+- Cloud SQL `REGIONAL` is about `1.8x` `ZONAL`
+- Savings Plans / RI / CUD can reduce steady-state cost by roughly `28-72%` depending on commitment type
+- Spot / Preemptible can reduce cost by about `60-90%` for interruptible workloads
+
+Useful formulas:
+
+```text
+Fargate monthly
+= desired_count × (vCPU_price × vCPU + memory_price × memory_GB) × 730
+
+Lambda monthly
+= request_cost + GB-seconds × compute_rate
+
+Aurora Serverless v2 monthly
+= avg_ACU × ACU_rate × 730 + storage_GB × storage_rate
+
+Cloud Run monthly
+= active_seconds × per-second price + request charges
 ```
 
----
-
-## Manual Estimation: Resource-to-Cost Mapping
-
-When Infracost is unavailable, use these tables to manually estimate costs from Terraform resource blocks.
-
-### How to Read Terraform for Cost
-
-1. **Find resource blocks**: `resource "aws_*"` or `resource "google_*"`
-2. **Extract cost attributes**: instance type, storage size, count/for_each, AZ count, etc.
-3. **Look up base price** in the tables below
-4. **Apply multipliers**: Multi-AZ (x2), count, data transfer estimates
-5. **Sum all resources** for total monthly estimate
-
-### Attribute Extraction Patterns
-
-```
-resource "aws_instance" "web" {
-  instance_type = "t3.medium"    # → Look up instance pricing
-  count         = 3               # → Multiply base cost x 3
-}
-
-resource "aws_rds_cluster" "main" {
-  engine              = "aurora-postgresql"  # → Aurora pricing
-  instance_class      = "db.serverless"      # → Serverless v2 ACU pricing
-  backup_retention    = 35                   # → Backup storage cost
-  deletion_protection = true                 # → (no cost impact)
-}
-
-resource "aws_ecs_service" "app" {
-  desired_count = 2               # → Tasks x 2
-  # Check task_definition for cpu/memory → Fargate pricing
-...
-```
-
----
-
-## AWS Pricing Reference (Tokyo Region, ap-northeast-1)
-
-All prices are approximate monthly costs in USD.
-
-### Compute
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `aws_instance` | `instance_type` | t3.micro | $10 |
-| | | t3.small | $20 |
-| | | t3.medium | $40 |
-| | | t3.large | $80 |
-| | | m6i.large | $100 |
-| | | m6i.xlarge | $200 |
-| | | c6i.large | $85 |
-| | | r6i.large | $130 |
-| `aws_ecs_service` | cpu/memory (task def) | 0.25 vCPU / 0.5 GB | $15 |
-| | | 0.5 vCPU / 1 GB | $30 |
-| | | 1 vCPU / 2 GB | $55 |
-| | | 2 vCPU / 4 GB | $110 |
-| | | 4 vCPU / 8 GB | $220 |
-| `aws_lambda_function` | `memory_size` / invocations | 128MB, 1M req, 200ms avg | $0.60 |
-| | | 256MB, 1M req, 200ms avg | $1.10 |
-| | | 512MB, 10M req, 200ms avg | $18 |
-| `aws_apprunner_service` | cpu/memory | 0.25 vCPU / 0.5 GB | $7 (idle) + usage |
-| | | 1 vCPU / 2 GB | $20 (idle) + usage |
-
-**Graviton discount**: ARM instances (t4g, m7g, c7g, r7g) are ~20% cheaper than equivalent x86.
-
-### Database
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `aws_db_instance` | `instance_class` | db.t3.micro | $15 |
-| | | db.t3.small | $30 |
-| | | db.t3.medium | $60 |
-| | | db.r6g.large | $200 |
-| | `multi_az = true` | Multiply above x 2 | |
-| | `allocated_storage` | Per 100 GB (gp3) | $12 |
-| `aws_rds_cluster` (Aurora) | `instance_class` | db.serverless (per ACU-hr) | $0.12/ACU-hr |
-| | | Typical: 2-8 ACU avg | $180-720 |
-| | | db.r6g.large (provisioned) | $250 |
-| `aws_dynamodb_table` | `billing_mode` | On-Demand, light use | $5-20 |
-| | | Provisioned, 25 RCU/WCU | $15 |
-| `aws_elasticache_cluster` | `node_type` | cache.t3.micro | $15 |
-| | | cache.t3.small | $30 |
-| | | cache.r6g.large | $165 |
-
-### Networking
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `aws_lb` (ALB) | type = "application" | Base charge | $20 |
-| | | + per LCU | $6-15 |
-| `aws_lb` (NLB) | type = "network" | Base charge | $20 |
-| `aws_nat_gateway` | per gateway | Base + 10GB transfer | $50 |
-| | | Base + 100GB transfer | $90 |
-| `aws_vpc_endpoint` | Gateway (S3/DynamoDB) | | Free |
-| | Interface | Per endpoint | $8 |
-| `aws_cloudfront_distribution` | | 100GB transfer, 10M req | $15 |
-| `aws_eip` | unattached | Per hour | $4 |
-| `aws_ec2_transit_gateway` | per attachment | Base + per GB | $40/attachment |
-
-### Storage
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `aws_s3_bucket` | | 100 GB Standard | $3 |
-| | | 1 TB Standard | $25 |
-| | | 100 GB IA | $1.5 |
-| `aws_ebs_volume` | `type` | gp3, 100 GB | $10 |
-| | | gp3, 500 GB | $48 |
-| | | io2, 100 GB, 3000 IOPS | $30 |
-| `aws_efs_file_system` | | 100 GB Standard | $35 |
-| `aws_ecr_repository` | | Per GB stored | $0.10/GB |
-
-### Security & Management
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `aws_secretsmanager_secret` | per secret | + 10K API calls | $0.50 |
-| `aws_kms_key` | per key | + 10K requests | $1.10 |
-| `aws_wafv2_web_acl` | per ACL | + 1M requests | $7 |
-| `aws_cloudwatch_log_group` | ingestion | Per GB ingested | $0.76/GB |
-| `aws_cloudwatch_metric_alarm` | per alarm | Standard resolution | $0.10 |
-
-### Free / Negligible Cost Resources
-
-These Terraform resources have no direct cost:
-- `aws_iam_*` (roles, policies, users, groups)
-- `aws_security_group`, `aws_security_group_rule`
-- `aws_route_table`, `aws_route`
-- `aws_subnet`, `aws_vpc` (VPC itself is free)
-- `aws_internet_gateway`
-- `aws_db_subnet_group`
-- `aws_ecs_cluster` (cluster itself is free; tasks cost)
-- `aws_ecs_task_definition` (definition is free; running tasks cost)
-- `aws_cloudwatch_log_group` (group is free; ingestion/storage cost)
-- `aws_sns_topic` (first 1M requests free)
-
----
-
-## GCP Pricing Reference (Tokyo Region, asia-northeast1)
-
-### Compute
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `google_compute_instance` | `machine_type` | e2-micro | $8 |
-| | | e2-small | $15 |
-| | | e2-medium | $30 |
-| | | e2-standard-2 | $60 |
-| | | e2-standard-4 | $120 |
-| | | n2-standard-2 | $75 |
-| `google_cloud_run_v2_service` | cpu/memory | 1 vCPU, 512 MiB, always-on | $40 |
-| | | 1 vCPU, 512 MiB, scale-to-zero | $5-30 (usage) |
-| | | 2 vCPU, 1 GiB, always-on | $80 |
-| `google_cloudfunctions2_function` | memory/invocations | 256MB, 1M req, 200ms | $1.50 |
-| `google_container_cluster` (GKE) | | Management fee (Autopilot) | Free |
-| | node pool | e2-standard-4 x 3 nodes | $360 |
-| | autopilot | 2 vCPU, 4 GiB (sustained) | $80 |
-
-### Database
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `google_sql_database_instance` | `tier` | db-f1-micro | $10 |
-| | | db-custom-1-3840 | $55 |
-| | | db-custom-2-8192 | $130 |
-| | | db-custom-4-16384 | $260 |
-| | `availability_type = "REGIONAL"` | Multiply above x ~1.8 | |
-| | `disk_size` (SSD) | Per 100 GB | $19 |
-| `google_alloydb_cluster` | | Base (primary + read pool) | $500+ |
-| `google_spanner_instance` | `num_nodes` | Per node | $700 |
-| `google_redis_instance` | `memory_size_gb` | 1 GB Basic | $40 |
-| | | 5 GB Standard (HA) | $300 |
-| `google_firestore_database` | | Light use (100K reads/day) | $5-15 |
-
-### Networking
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `google_compute_global_forwarding_rule` | | Per forwarding rule | $20 |
-| `google_compute_router_nat` | | Gateway + 10GB transfer | $35 |
-| | | Gateway + 100GB transfer | $45 |
-| `google_compute_global_address` | static IP | External (unused) | $8 |
-| `google_compute_security_policy` | Cloud Armor | Policy + 1M req | $12 |
-| `google_dns_managed_zone` | | Per zone + queries | $0.25 |
-
-### Storage
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `google_storage_bucket` | `storage_class` | 100 GB Standard | $2.60 |
-| | | 100 GB Nearline | $1.30 |
-| | | 1 TB Standard | $26 |
-| `google_compute_disk` | `type` | pd-ssd, 100 GB | $19 |
-| | | pd-balanced, 100 GB | $11 |
-| `google_artifact_registry_repository` | | Per GB stored | $0.10/GB |
-
-### Security & Management
-
-| Terraform Resource | Attribute | Spec | Monthly |
-|--------------------|-----------|------|---------|
-| `google_secret_manager_secret` | per secret version | + 10K access | $0.06/version |
-| `google_kms_crypto_key` | per key version | + 10K operations | $0.06 + ops |
-| `google_logging_project_sink` | storage | BigQuery ingestion | $0.05/GB |
-| `google_monitoring_alert_policy` | per policy | | Free (basic) |
-| `google_pubsub_topic` | | Per 1M messages (small) | $0.04 |
-
-### Free / Negligible Cost Resources
-
-- `google_project_iam_*` (IAM bindings)
-- `google_compute_network`, `google_compute_subnetwork`
-- `google_compute_firewall`
-- `google_service_account`
-- `google_container_cluster` (GKE management fee is free for Standard; Autopilot charges per pod)
-- `google_project_service` (API enablement)
-- `google_org_policy_policy`
-
----
-
-## Cost Calculation Formulas
-
-### Count / For_each Multiplier
-
-```hcl
-# count = N → base_cost x N
-resource "aws_nat_gateway" "main" {
-  count = length(var.availability_zones)  # If 3 AZs → $50 x 3 = $150/month
-}
-
-# for_each → base_cost x length(set)
-resource "aws_vpc_endpoint" "interface" {
-  for_each = toset(["ecr.api", "ecr.dkr", "secretsmanager", "logs"])  # 4 x $8 = $32/month
-}
-```
-
-### Conditional Resources
-
-```hcl
-# count with condition → cost only if true
-resource "aws_nat_gateway" "main" {
-  count = var.enable_nat_gateway ? length(var.availability_zones) : 0
-  # If false → $0, if true with 2 AZs → $100/month
-}
-
-resource "google_sql_database_instance" "read_replica" {
-  count = var.enable_read_replica ? 1 : 0
-  # If true → add replica cost
-}
-```
-
-### Environment-Based Cost Variance
-
-```hcl
-# Attribute changes by environment affect cost
-resource "aws_rds_cluster" "main" {
-  backup_retention_period = var.environment == "prod" ? 35 : 7  # More backup storage in prod
-  deletion_protection     = var.environment == "prod"           # No cost impact
-}
-
-resource "google_sql_database_instance" "main" {
-  settings {
-    availability_type = var.environment == "prod" ? "REGIONAL" : "ZONAL"
-    # REGIONAL ≈ 1.8x ZONAL cost
-  }
-}
-
-resource "google_cloud_run_v2_service" "main" {
-  template {
-// ...
-```
-
-### ECS Fargate Cost Formula
-
-```
-Monthly = desired_count × (vCPU_price × vCPU + memory_price × memory_GB) × 730 hours
-
-Tokyo region:
-  vCPU_price  = $0.05056 / vCPU-hour
-  memory_price = $0.00553 / GB-hour
-
-Example: 2 tasks × (1 vCPU + 2 GB) = 2 × ($0.05056 + $0.01106) × 730 = $90/month
-```
-
-### Lambda Cost Formula
-
-```
-Monthly = requests × $0.0000002 + (GB-seconds × $0.0000167)
-GB-seconds = requests × (memory_MB / 1024) × avg_duration_sec
-
-Example: 10M requests, 256MB, 200ms average
-  Request cost = 10M × $0.0000002 = $2.00
-  Compute cost = 10M × (256/1024) × 0.2 × $0.0000167 = $8.35
-  Total ≈ $10.35/month
-```
-
-### Aurora Serverless v2 Cost Formula
-
-```
-Monthly = avg_ACU × $0.12/ACU-hour × 730 hours + storage_GB × $0.12/GB
-
-Example: avg 4 ACU, 50GB storage
-  ACU cost = 4 × $0.12 × 730 = $350.40
-  Storage  = 50 × $0.12 = $6.00
-  Total ≈ $356/month
-```
-
-### Cloud Run Cost Formula
-
-```
-# Always-on (min_instances > 0):
-Monthly = min_instances × (vCPU_price × vCPU + memory_price × memory_GiB) × 730 hours
-
-Tokyo region:
-  vCPU_price   = $0.0000324 / vCPU-second (idle: $0.0000324 × 0.1 for cpu_idle=true)
-  memory_price = $0.0000035 / GiB-second
-
-# Scale-to-zero (min_instances = 0):
-Monthly ≈ avg_active_seconds × instance_count × per-second pricing + request_charges
-```
-
----
-
-## Cost Report Output Template
-
-When estimating costs from Terraform code, produce output in this format:
+## Cost Report Template
 
 ```markdown
 ## Cost Estimate: [Project/Module Name]
 
-**Provider**: AWS / GCP
-**Region**: ap-northeast-1 / asia-northeast1
+**Provider**: AWS / GCP / Azure
+**Region**: [region]
 **Estimated by**: Manual analysis / Infracost
 **Date**: YYYY-MM-DD
 
@@ -432,185 +100,47 @@ When estimating costs from Terraform code, produce output in this format:
 
 | # | Resource | Terraform Reference | Spec | Count | Monthly (USD) |
 |---|----------|-------------------|------|-------|---------------|
-| 1 | [type]   | `resource.name`   | [spec] | N   | $XX           |
-| 2 | ...      | ...               | ...  | ...   | ...           |
-| | | | | **Subtotal** | **$XXX** |
+| 1 | [type]   | `resource.name`   | [spec] | N | $XX |
 
-...
+### Warnings
+
+- [High-cost or high-risk item]
+
+### Optimization Opportunities
+
+- [Potential saving and rationale]
 ```
 
----
+## Budgets, Tagging, Commitments, Optimization
 
-## Quick Estimation Cheat Sheet
+### Budget alerts
 
-For rapid estimation without detailed analysis:
+Use staged alerts at:
+- `50%`
+- `80%`
+- `100%`
+- `120%`
 
-### AWS Typical Stack Costs
+### Required cost tags
 
-| Stack Pattern | Dev | Staging | Prod |
-|---------------|-----|---------|------|
-| **Minimal** (ALB + Fargate x1 + RDS micro) | $55 | $90 | $180 |
-| **Standard** (ALB + Fargate x2 + RDS small + NAT + Redis) | $175 | $280 | $450 |
-| **Full** (ALB + Fargate x3 + Aurora + NAT x2 + Redis + CloudFront) | $350 | $550 | $900 |
-| **Serverless** (API GW + Lambda + DynamoDB) | $5 | $10 | $30-200 |
+Use these tags everywhere cost allocation matters:
+- `Project`
+- `Environment`
+- `Team`
+- `CostCenter`
+- `ManagedBy`
 
-### GCP Typical Stack Costs
+### Commitment strategy
 
-| Stack Pattern | Dev | Staging | Prod |
-|---------------|-----|---------|------|
-| **Minimal** (Cloud Run x1 + Cloud SQL micro) | $25 | $70 | $200 |
-| **Standard** (Cloud Run x2 + Cloud SQL small + NAT + Redis) | $140 | $250 | $500 |
-| **GKE** (Autopilot 3-pod + Cloud SQL + NAT) | $200 | $350 | $600 |
-| **Serverless** (Cloud Run scale-to-zero + Firestore) | $5 | $10 | $20-150 |
+- Start around `60-70%` committed coverage for stable workloads.
+- Keep the remaining `30-40%` flexible with on-demand or spot capacity.
+- Prefer flexible commitments before rigid family locks.
 
-### High-Cost Warning Thresholds
+### Optimization checklist
 
-Flag these resources when encountered — they often dominate the bill:
-
-| Resource | Warning Threshold |
-|----------|------------------|
-| NAT Gateway (AWS/GCP) | Always flag (~$45-50/gateway) |
-| RDS/Cloud SQL Multi-AZ | Flag in dev/staging |
-| ElastiCache/Memorystore | Flag if > cache.t3.small / 1GB |
-| EKS/GKE Standard nodes | Flag node count > 3 |
-| CloudFront/Cloud CDN | Flag if high transfer volume expected |
-| Transit Gateway | Flag per-attachment cost |
-| VPC Endpoints (Interface) | Flag if > 3 endpoints |
-| Cloud Armor Advanced | Flag WAF rules per-request cost |
-| Spanner / AlloyDB | Always flag (>$500/month baseline) |
-
----
-
-## FinOps: Cost Management via Terraform
-
-### Budget Alerts (AWS)
-
-```hcl
-# modules/cost-management/aws-budget.tf
-resource "aws_budgets_budget" "monthly" {
-  name         = "${var.project_name}-${var.environment}-monthly"
-  budget_type  = "COST"
-  limit_amount = var.monthly_budget_usd
-  limit_unit   = "USD"
-  time_unit    = "MONTHLY"
-
-  cost_filter {
-    name   = "TagKeyValue"
-    values = ["user:Project$${var.project_name}"]
-  }
-
-  notification {
-    comparison_operator       = "GREATER_THAN"
-// ...
-```
-
-### Budget Alerts (GCP)
-
-```hcl
-# modules/cost-management/gcp-budget.tf
-resource "google_billing_budget" "monthly" {
-  billing_account = var.billing_account_id
-  display_name    = "${var.project_name}-${var.environment}-monthly"
-
-  budget_filter {
-    projects               = ["projects/${var.gcp_project_id}"]
-    credit_types_treatment = "EXCLUDE_ALL_CREDITS"
-  }
-
-  amount {
-    specified_amount {
-      currency_code = "USD"
-      units         = var.monthly_budget_usd
-    }
-// ...
-```
-
-### Cost Allocation Tagging Strategy
-
-All Terraform resources must include cost allocation tags:
-
-```hcl
-locals {
-  cost_tags = {
-    Project     = var.project_name
-    Environment = var.environment
-    Team        = var.team_name
-    CostCenter  = var.cost_center
-    ManagedBy   = "terraform"
-  }
-}
-
-# Apply to all resources via default_tags (AWS provider)
-provider "aws" {
-  region = var.region
-
-  default_tags {
-// ...
-```
-
-### Tag Enforcement via OPA Policy
-
-```rego
-# policy/cost-tags.rego
-package terraform
-
-required_cost_tags := {"Project", "Environment", "Team", "CostCenter", "ManagedBy"}
-
-deny[msg] {
-  resource := input.resource_changes[_]
-  resource.change.actions[_] == "create"
-
-  tags := object.get(resource.change.after, "tags", {})
-  missing := required_cost_tags - {key | tags[key]}
-  count(missing) > 0
-
-  msg := sprintf(
-    "%s '%s' missing cost allocation tags: %v",
-// ...
-```
-
-### Savings Plans / Reserved Instances / CUDs
-
-| Strategy | AWS | GCP | Savings | Commitment |
-|----------|-----|-----|---------|------------|
-| **Compute Savings Plan** | 1yr/3yr, all/partial/no upfront | — | 30-60% | Compute spend |
-| **EC2 Instance SP** | Specific family+region | — | 40-72% | Instance type |
-| **Reserved Instances** | Standard/Convertible | — | 40-72% | Instance type |
-| **Committed Use Discounts** | — | 1yr/3yr | 28-55% | vCPU + memory |
-| **Spot/Preemptible** | Spot Instances | Spot VMs | 60-90% | Interruptible |
-| **Graviton/Tau** | ARM (t4g, m7g, c7g) | Tau T2A | 20% | Architecture |
-
-#### Terraform Right-Sizing Pattern
-
-```hcl
-variable "use_spot" {
-  description = "Use Spot/Preemptible instances for non-critical workloads"
-  type        = bool
-  default     = false
-}
-
-# AWS Spot
-resource "aws_instance" "worker" {
-  instance_type          = var.instance_type
-  instance_market_options {
-    market_type = var.use_spot ? "spot" : null
-    spot_options {
-      max_price = var.use_spot ? var.spot_max_price : null
-    }
-  }
-// ...
-```
-
-### Cost Optimization Checklist
-
-| Check | Action | Potential Savings |
-|-------|--------|-------------------|
-| NAT Gateway in dev/staging | Remove or use VPC endpoints | $45-90/gateway |
-| Multi-AZ RDS in dev | Switch to single-AZ | 50% of DB cost |
-| Unused EIPs | Release unattached | $4/month each |
-| Over-provisioned instances | Right-size based on CloudWatch/Monitoring | 20-50% |
-| S3 lifecycle policies | Move to IA/Glacier after 30/90 days | 40-80% storage |
-| Always-on Cloud Run min_instances | Scale-to-zero in dev/staging | 60-90% |
-| GP2 → GP3 EBS volumes | Migrate to GP3 (cheaper baseline) | 20% |
-| On-demand → Savings Plan | Commit for 1yr steady workloads | 30-40% |
-| ARM/Graviton instances | Switch t3 → t4g, m6i → m7g | 20% |
+- Remove NAT gateways from low-risk non-prod environments when alternatives exist.
+- Replace Multi-AZ databases in non-prod with single-AZ where safe.
+- Release unattached EIPs, stale disks, empty load balancers, and old snapshots.
+- Move old storage to cheaper classes.
+- Scale Cloud Run to zero in non-prod when appropriate.
+- Right-size after at least `2+ weeks` of usage data.
