@@ -1,5 +1,14 @@
 # Performance Report Template
 
+Purpose: Use this file when producing the final before/after database performance report.
+
+Contents:
+- executive summary
+- top issues
+- changes applied
+- validation results
+- future recommendations
+
 ```markdown
 ## Database Performance Report
 
@@ -13,34 +22,20 @@
 | Disk I/O | 80% | 30% | 62% |
 
 ### Top Issues Identified
-
-1. **Missing index on users.email** - 40% of slow queries
-2. **N+1 in orders listing** - 100+ queries per page
-3. **Full table scan on logs** - 10M+ rows scanned
+1. **[Issue]** - [impact]
+2. **[Issue]** - [impact]
 
 ### Changes Applied
-
-#### Index Additions
-\`\`\`sql
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);
-\`\`\`
-
-#### Query Rewrites
-- Converted lazy loading to eager loading in OrderService
-- Added pagination to log queries
+- [index additions]
+- [query rewrites]
+- [config changes]
 
 ### Validation Results
-
 | Query | Before | After | Status |
 |-------|--------|-------|--------|
-| User lookup | 200ms | 2ms | ✅ |
-| Order listing | 5s | 100ms | ✅ |
-| Log search | 30s | 500ms | ✅ |
+| [query] | [time] | [time] | ✅ |
 
 ### Recommendations for Future
-
-1. Set up slow query monitoring
-2. Regular index usage review
-3. Query pattern analysis before new features
+1. [recommendation]
+2. [recommendation]
 ```

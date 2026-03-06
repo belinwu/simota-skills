@@ -1,18 +1,29 @@
 # Connection Pool Tuning
 
+Purpose: Use this file when the issue is connection pressure, pool sizing, or wait-event diagnosis.
+
+Contents:
+- sizing formula
+- PostgreSQL settings
+- monitoring queries
+
 ## Pool Size Formula
-```
+
+```text
 pool_size = (core_count * 2) + effective_spindle_count
 ```
-Typical: 10-20 connections for most applications.
 
-## Key Settings (PostgreSQL)
-- max_connections: Server limit
-- work_mem: Per-operation memory
-- shared_buffers: Cache size (25% of RAM)
-- effective_cache_size: OS cache hint (50-75% of RAM)
+Typical range: `10-20` connections for many applications, but validate against workload and DB limits.
+
+## Key PostgreSQL Settings
+
+- `max_connections`
+- `work_mem`
+- `shared_buffers`
+- `effective_cache_size`
 
 ## Monitoring
+
 ```sql
 SELECT count(*) FROM pg_stat_activity WHERE state = 'active';
 SELECT count(*) FROM pg_stat_activity WHERE state = 'idle';

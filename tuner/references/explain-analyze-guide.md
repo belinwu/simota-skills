@@ -1,48 +1,29 @@
 # EXPLAIN ANALYZE Guide
 
-## Reading Execution Plans
+Purpose: Use this file when interpreting execution plans or selecting the right `EXPLAIN` command for PostgreSQL, MySQL, or SQLite.
 
-Key metrics:
-- **Actual Time:** Real execution time (ms)
-- **Rows:** Actual vs estimated rows
-- **Loops:** Number of iterations
-- **Buffers:** Shared hit/read counts
+Contents:
+- DB-specific `EXPLAIN` commands
+- node meanings
+- threshold table
+- red flags
 
-## Common Node Types
+## Core Metrics
 
-| Node | Meaning | Concern |
-|------|---------|---------|
-| Seq Scan | Full table scan | Missing index |
-| Index Scan | Index lookup | Good |
-| Index Only Scan | Covered by index | Best |
-| Nested Loop | Row-by-row join | OK for small sets |
-| Hash Join | Hash-based join | Good for large sets |
-| Sort | In-memory/disk sort | Check work_mem |
+- `Actual Time`: real execution time in ms
+- `Rows`: actual vs estimated rows
+- `Loops`: number of iterations
+- `Buffers`: shared hit/read counts
 
-## Red Flags
-- Seq Scan on large tables
-- Estimated vs actual rows differ > 10x
-- Sort using disk (external merge)
-- Nested Loop with large outer set
-
----
-
-## EXPLAIN Commands by Database
+## Commands by Database
 
 ### PostgreSQL
 
 ```sql
--- Basic EXPLAIN
 EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
-
--- With execution statistics
 EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'test@example.com';
-
--- Detailed output (recommended for analysis)
 EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
 SELECT * FROM users WHERE email = 'test@example.com';
-
--- Without actually executing (for dangerous queries)
 EXPLAIN (COSTS, VERBOSE)
 SELECT * FROM users WHERE email = 'test@example.com';
 ```
@@ -50,102 +31,44 @@ SELECT * FROM users WHERE email = 'test@example.com';
 ### MySQL
 
 ```sql
--- Basic EXPLAIN
 EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
-
--- Extended format
 EXPLAIN FORMAT=JSON SELECT * FROM users WHERE email = 'test@example.com';
-
--- With actual execution (MySQL 8.0.18+)
 EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'test@example.com';
-
--- Show warnings after EXPLAIN
-EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
 SHOW WARNINGS;
 ```
 
 ### SQLite
 
 ```sql
--- Query plan
 EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = 'test@example.com';
-
--- Detailed bytecode (advanced)
 EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
 ```
 
----
+## Common Node Types
 
-## Execution Plan Analysis
+| Node | Meaning | Concern |
+|------|---------|---------|
+| `Seq Scan` | full table scan | missing or unusable index |
+| `Index Scan` | index lookup | usually good |
+| `Index Only Scan` | covered by index | best case |
+| `Nested Loop` | row-by-row join | bad when both sides are large |
+| `Hash Join` | hash-based join | watch memory and spills |
+| `Sort` | in-memory or disk sort | check `work_mem` and index support |
 
-### Key Metrics
+## Thresholds
 
-| Metric | Good | Warning | Critical |
+| Signal | Good | Warning | Critical |
 |--------|------|---------|----------|
-| **Seq Scan** | Small tables (<1K rows) | Medium tables | Large tables |
-| **Index Scan** | Always preferred | - | - |
-| **Nested Loop** | Small inner tables | Medium tables | Large tables both |
-| **Hash Join** | Equal-sized tables | Very large hash | Memory exceeded |
-| **Sort** | Uses index | Disk sort | Very large sort |
-| **Rows** | Close to actual | 10x difference | 100x+ difference |
+| `Seq Scan` | small tables `< 1K rows` | medium tables | large tables |
+| `Rows` estimate vs actual | close | `> 10x` | `100x+` |
+| `Nested Loop` | small inner side | medium inner side | large tables on both sides |
+| `Sort` | index-backed or memory sort | large memory sort | disk sort |
 
-### Plan Node Types (PostgreSQL)
+## Red Flags
 
-```markdown
-## Sequential Scan (Seq Scan)
-- Full table scan
-- Warning: Table > 10K rows
-- Fix: Add appropriate index
-
-## Index Scan
-- Uses index to find rows
-- Best for selective queries
-- Check: Index actually being used
-
-## Index Only Scan
-- Data retrieved from index alone
-- Best possible scenario
-- Requires VACUUM for visibility map
-
-## Bitmap Index Scan
-- Creates bitmap from index
-- Good for: OR conditions, multiple indexes
-- Watch: Recheck condition
-
-## Nested Loop
-- For each outer row, scan inner
-- Good when: Inner is small/indexed
-- Bad when: Both sides large
-
-## Hash Join
-- Builds hash table from one side
-- Good for: Large equal joins
-- Watch: work_mem usage
-
-## Merge Join
-- Both sides sorted, merge
-- Good for: Large sorted datasets
-- Requires: Both sides sorted
-```
-
-### Red Flags in Execution Plans
-
-```markdown
-## CRITICAL
-- Seq Scan on table > 100K rows
-- Nested Loop with large tables
-- "Sort Method: external merge Disk"
-- Rows estimate off by 100x+
-
-## WARNING
-- Bitmap Heap Scan with high "Recheck Cond" rows
-- Hash Join with "Batches: X" (spilling to disk)
-- Filter removing > 90% of rows
-- Multiple sequential scans in one query
-
-## GOOD SIGNS
-- Index Only Scan
-- Rows actual ≈ Rows estimated
-- "Heap Fetches: 0" for Index Only Scan
-- Small actual time values
-```
+- `Seq Scan` on table `> 100K rows`
+- estimated vs actual rows off by `100x+`
+- `Sort Method: external merge Disk`
+- `Nested Loop` with large outer and inner sets
+- filters removing `> 90%` of rows after scanning
+- hash join spilling to disk
