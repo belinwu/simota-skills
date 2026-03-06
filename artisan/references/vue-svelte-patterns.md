@@ -276,3 +276,53 @@ export const userName = derived(
   ($auth) => $auth.user?.name ?? 'Guest'
 );
 ```
+
+---
+
+## Vue Performance Hints
+
+### v-memo
+
+リストアイテムの不要な再レンダリングを防止。指定した依存値が変わらない限り、VNode の再生成をスキップする。
+
+```vue
+<template>
+  <!-- selected が変わった行のみ再レンダリング -->
+  <div v-for="item in items" :key="item.id" v-memo="[item.id === selectedId]">
+    <ItemComponent :item="item" :selected="item.id === selectedId" />
+  </div>
+</template>
+```
+
+| 使い所 | 効果 |
+|--------|------|
+| 大規模リスト (100+ 行) | 不要な VNode diff をスキップ |
+| 選択状態の切り替え | 変更行のみ更新 |
+| テーブルの行ハイライト | 全行の再レンダリングを防止 |
+
+**注意:** `v-memo="[]"` は `v-once` と同等（一度だけレンダリング）。
+
+### markRaw
+
+リアクティビティ不要なオブジェクトをマークし、Proxy 化を回避する。
+
+```ts
+import { markRaw, ref } from 'vue';
+
+// Bad: 大きなライブラリオブジェクトをリアクティブにする（パフォーマンスコスト大）
+const map = ref(new MapLibreGL.Map({ /* ... */ }));
+
+// Good: markRaw でリアクティビティを回避
+const map = ref(markRaw(new MapLibreGL.Map({ /* ... */ })));
+
+// サードパーティクラスインスタンスに有効
+const chart = markRaw(new Chart(canvas, config));
+const editor = markRaw(new Monaco.Editor(container));
+```
+
+| 対象 | 理由 |
+|------|------|
+| 地図ライブラリ (Mapbox, Leaflet) | 内部状態が膨大で Proxy 化不要 |
+| チャートライブラリ (Chart.js, D3) | 独自の更新メカニズムを持つ |
+| エディタインスタンス (Monaco, CodeMirror) | リアクティビティが干渉する |
+| 不変の設定オブジェクト | 変更されないため Proxy 不要 |
