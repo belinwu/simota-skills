@@ -1,242 +1,125 @@
 # Usage Examples
 
-Sketch エージェントの使用例とワークフローパターン。
+Purpose: show must-keep request examples, mode-specific script shapes, and agent handoff examples without repeating the full implementation reference.
 
-> **動作確認環境**: google-genai SDK v1.38.0 + Google AI API（`gemini-2.5-flash-image`）
+## Contents
+- Basic requests
+- Mode examples
+- Collaboration examples
+- Packaging patterns
 
----
+Verified environment:
+- `google-genai SDK v1.38.0`
+- Google AI API
+- `gemini-2.5-flash-image`
 
-## Basic Examples
+## Basic Requests
 
-### Example 1: Simple Text-to-Image
+Keep these examples because they define common trigger shapes:
+
+### Example 1: Simple text-to-image
 
 **Request**: 「ランディングページ用のヒーロー画像を生成して」
 
-**Generated Script**:
+Expected output:
+- single Python script
+- safe API-key lookup
+- timestamped output path
+- basic image save flow
 
-```python
-#!/usr/bin/env python3
-"""Landing page hero image generation."""
-
-import json
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-
-api_key = os.environ.get("GEMINI_API_KEY")
-if not api_key:
-    print("Error: GEMINI_API_KEY not set")
-# ...
-```
-
----
-
-### Example 2: Style-Specified Generation
+### Example 2: Style-specified generation
 
 **Request**: 「水彩風のイラストで、東京の街並みを描いて。9:16のストーリーサイズで」
 
-**Generated Script**:
+Expected output:
+- single Python script
+- translated English prompt
+- `9:16` prompt instruction or parameter
+- style preset applied
 
-```python
-#!/usr/bin/env python3
-"""Watercolor-style Tokyo cityscape for Stories."""
+## Mode Examples
 
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Error: GEMINI_API_KEY not set"))
-output_dir = Path("./generated/tokyo")
-output_dir.mkdir(parents=True, exist_ok=True)
-
-# ...
-```
-
----
-
-## Iterative Editing Example
-
-### Example 3: Multi-Turn Refinement
+### Example 3: Iterative refinement
 
 **Request**: 「カフェの画像を生成して、段階的に調整したい」
 
-**Generated Script**:
+Expected output:
+- `ITERATIVE` mode
+- chat/session-based edit script
+- saved intermediate outputs
 
-```python
-#!/usr/bin/env python3
-"""Iterative image editing with multi-turn chat."""
-
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Error: GEMINI_API_KEY not set"))
-output_dir = Path("./generated/cafe_iterations")
-output_dir.mkdir(parents=True, exist_ok=True)
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-# ...
-```
-
----
-
-## Batch Generation Example
-
-### Example 4: Multiple Variations
+### Example 4: Batch generation
 
 **Request**: 「プロダクトのアイコン候補を5パターン生成して」
 
-**Generated Script**:
+Expected output:
+- `BATCH` mode
+- sequential generation
+- batch-aware filenames
+- rate-limit-safe pacing
 
-```python
-#!/usr/bin/env python3
-"""Batch generation of product icon variations."""
-
-import json
-import os
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-
-from google import genai
-from google.genai import types
-from google.api_core import exceptions as api_exceptions
-
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Error: GEMINI_API_KEY not set"))
-# ...
-```
-
----
-
-## Reference-Based Example
-
-### Example 5: Image Editing with Reference
+### Example 5: Reference-based edit
 
 **Request**: 「この写真の背景を変更して」
 
-**Generated Script**:
+Expected output:
+- `REFERENCE_BASED` mode
+- reference image loading
+- edited output plus metadata
 
-```python
-#!/usr/bin/env python3
-"""Edit image background using reference image."""
+## Collaboration Examples
 
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
+### `VISION_TO_SKETCH`
 
-from google import genai
-from google.genai import types
+Use when `Vision` provides creative direction.
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY") or sys.exit("Error: GEMINI_API_KEY not set"))
-output_dir = Path("./generated/edited")
-output_dir.mkdir(parents=True, exist_ok=True)
+Required fields:
+- `creative_direction`
+- `target_use`
+- `requirements`
+  - `aspect_ratio`
+  - `style`
+  - `constraints`
+- `reference_images`
 
-# ...
-```
+Typical Sketch response:
+- hero + feature image generation scripts
+- aligned prompt family
+- asset-specific ratios
 
----
+### `SKETCH_TO_MUSE`
 
-## Agent Collaboration Examples
+Use when generated assets need design-system integration.
 
-### Example 6: Vision → Sketch Pipeline
+Required fields:
+- `generated_images`
+- `metadata`
+- `prompt_used`
+- `integration_notes`
 
-**Scenario**: Vision がクリエイティブディレクションを提供し、Sketch が画像生成コードを作成
+Keep notes about:
+- crop guidance
+- color extraction
+- SynthID disclosure
 
-**Vision からのハンドオフ**:
+## Packaging Patterns
 
-```yaml
-VISION_TO_SKETCH:
-  creative_direction: "Warm, organic, approachable brand aesthetic"
-  target_use: "Marketing landing page hero + 3 feature section backgrounds"
-  requirements:
-    aspect_ratio: "16:9 for hero, 4:3 for features"
-    style: "Photorealistic with subtle warm color grading"
-    constraints:
-      - "No people — use objects and environments"
-      - "Brand colors: warm amber (#F5A623), deep forest (#2D5016)"
-      - "Must feel premium but approachable"
-  reference_images: []
-```
+### Pattern A: CLI wrapper
 
-**Sketch の出力**: 4つの画像生成スクリプト（hero + 3 features）
+Use when the user needs:
+- a reusable command-line entry point
+- prompt, ratio, and output-dir flags
+- a single operator-friendly script
 
-### Example 7: Sketch → Muse Pipeline
+### Pattern B: API wrapper class
 
-**Scenario**: 生成画像をデザインシステムに統合
+Use when the user needs:
+- reusable image generation methods
+- one abstraction over `generate`, `edit`, and `batch`
+- shared retry and metadata logic
 
-**Sketch からのハンドオフ**:
-
-```yaml
-SKETCH_TO_MUSE:
-  generated_images:
-    - "./generated/hero/20250615_143022_hero.png"
-    - "./generated/features/20250615_143105_feature_01.png"
-    - "./generated/features/20250615_143148_feature_02.png"
-    - "./generated/features/20250615_143231_feature_03.png"
-  metadata: "./generated/metadata.json"
-  prompt_used: "Modern SaaS workspace, warm amber and forest green tones..."
-  integration_notes: |
-    - Hero image: Use as full-width background with overlay gradient
-    - Feature images: Crop to 4:3, apply 8px border-radius
-    - All images contain SynthID watermark (AI-generated disclosure may be needed)
-    - Color palette extracted: #F5A623 (primary), #2D5016 (accent), #FFF8F0 (bg)
-```
-
----
-
-## Production Patterns
-
-### Pattern A: CLI Tool Wrapper
-
-```python
-#!/usr/bin/env python3
-"""CLI tool for image generation.
-
-Usage:
-    python generate_cli.py --prompt "Your prompt"
-    python generate_cli.py --prompt "Your prompt" --ratio 16:9
-    python generate_cli.py --prompt "Your prompt" --output ./my_images
-"""
-
-import argparse
-import json
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
-# ...
-```
-
-### Pattern B: API Wrapper Class
-
-```python
-"""Reusable Gemini image generation wrapper.
-
-Usage:
-    from image_generator import ImageGenerator
-
-    gen = ImageGenerator()  # Uses GEMINI_API_KEY env var
-    files = gen.generate("A sunset over mountains")
-    files = gen.edit("input.png", "Change background to beach")
-    files = gen.batch(["prompt1", "prompt2", "prompt3"])
-"""
-
-import json
-import os
-import time
-from datetime import datetime
-# ...
-```
+Both patterns must still preserve:
+- environment-variable auth
+- safe error handling
+- deterministic file output
+- metadata capture
