@@ -1,170 +1,123 @@
 # Prototype-to-Production Handoff Guide
 
-> プロトタイプから本番コードへの移行戦略、Throwaway vs Evolutionary、ハンドオフの落とし穴、Builder 連携
+> Purpose: choose `Throwaway` vs `Evolutionary`, prevent handoff loss, and move validated prototypes toward Builder-ready quality.
 
-## 1. Throwaway vs Evolutionary プロトタイプ
+## Contents
 
-### 比較マトリクス
+- Strategy selection
+- Handoff pitfalls
+- Required handoff package
+- `L0-L3` quality ladder
+- Tech-debt recording rules
 
-| 特性 | Throwaway（使い捨て） | Evolutionary（進化型） |
-|------|---------------------|---------------------|
-| **目的** | 仮説検証・学習 | 段階的な本番構築 |
-| **コード品質** | 低（速度優先） | 中〜高（構造化） |
-| **寿命** | 検証後に破棄 | 本番まで進化 |
-| **リスク** | 学びの喪失 | Lava Flow（古いコード残留） |
-| **コスト** | 初期低・再構築高 | 初期高・再構築低 |
-| **適用場面** | 不確実性が高い | 方向性が明確 |
-| **Forge での頻度** | 70%（デフォルト） | 30%（明確な場合） |
+## Strategy Selection
 
-### 判定フロー
+| Dimension | `Throwaway` | `Evolutionary` |
+|---|---|---|
+| Purpose | Validate a hypothesis fast | Grow a validated slice toward production |
+| Code quality target | Low, speed-first | Medium to high, structured from the start |
+| Lifetime | Discard after learning | Continue into Builder handoff |
+| Risk | Lost learning if undocumented | Lava Flow if debt is hidden |
+| Cost profile | Low upfront, rebuild later | Higher upfront, less rewrite later |
+| Best fit | High uncertainty | Direction already clear |
+| Forge default | `70%` | `30%` |
 
-```
-要件の確実性は？
-  │
-  ├─ 不確実（仮説段階）→ Throwaway
-  │   - 速度最優先
-  │   - 本番とは別技術でも OK
-  │   - 学びを forge-insights.md に記録
-  │   - 検証後に DISCARD
-  │
-  ├─ やや確実（方向性は決定）→ Evolutionary
-  │   - 本番と同じ技術スタック
-  │   - 最低限の構造化を維持
-  │   - 段階的に品質を向上
-  │
-  └─ 確実（仕様が明確）→ Forge 不要、直接 Builder へ
-```
+Decision rules:
+- Use `Throwaway` by default when requirements are still exploratory.
+- Use `Evolutionary` only when stack, direction, and user value are already clear.
+- If requirements are already stable, skip Forge and route directly to Builder.
 
----
+## Handoff Pitfalls
 
-## 2. ハンドオフの 7 大落とし穴
+| ID | Pitfall | What goes wrong | Required mitigation |
+|---|---|---|---|
+| `HO-01` | Hidden rationale | Builder cannot recover why decisions were made | Record decisions and reasons in `.agents/forge-insights.md` |
+| `HO-02` | Prototype mistaken for spec | Stakeholders assume the prototype is shippable | Mark the status explicitly as prototype |
+| `HO-03` | Mock / API drift | Real integration requires large rewrites | Align contracts early and keep mocks contract-shaped |
+| `HO-04` | Debt inheritance | Temporary shortcuts silently become permanent | Record debt explicitly in `.agents/forge-insights.md` |
+| `HO-05` | Missing edge cases | Happy path only; production breaks later | List known edge cases and omissions |
+| `HO-06` | Lost design intent | Artisan or Builder has to rediscover interaction choices | Record UI rationale and tradeoffs |
+| `HO-07` | Missing test intent | Production teams do not know what to verify | State the target test strategy |
 
-| # | 落とし穴 | 問題 | 対策 |
-|---|---------|------|------|
-| **HO-01** | **暗黙知の消失** | プロトタイプ作成者の頭の中にある判断理由が伝わらない | forge-insights.md に意思決定と理由を記録 |
-| **HO-02** | **プロトタイプ＝仕様の誤解** | ステークホルダーが「このまま出荷」と期待 | ステータスタグ（⚡ PROTOTYPE）を明示 |
-| **HO-03** | **モックと実 API の乖離** | モックデータの構造が実 API と異なる → 大規模修正 | OpenAPI/型定義を先に合意 · MSW で契約準拠 |
-| **HO-04** | **技術的負債の引き継ぎ** | プロトタイプの「仮実装」がそのまま本番に → Lava Flow | forge-insights.md に tech-debt セクション必須 |
-| **HO-05** | **エッジケースの未考慮** | ハッピーパスのみ → 本番で想定外のエラー | 既知のエッジケースを forge-insights.md にリスト |
-| **HO-06** | **デザイン意図の喪失** | なぜこの UI 構造にしたかが不明 → Artisan が再設計 | UI 判断の理由をコメント or insights に記録 |
-| **HO-07** | **テスト戦略の不在** | プロトタイプにテストがない → 本番で何をテストすべきか不明 | テスト方針を forge-insights.md に記載 |
+## Required Handoff Package
 
----
+Required artifacts:
 
-## 3. Forge → Builder ハンドオフ・チェックリスト
+- `Feature.tsx`
+- `types.ts`
+- `handlers.ts`
+- `errors.ts`
+- `.agents/forge-insights.md`
 
-### 必須成果物
+Recommended status tags:
 
-```
-□ Feature.tsx（UI コンポーネント）
-□ types.ts（型定義 — 本番で再利用可能な品質）
-□ handlers.ts（MSW ハンドラー or API モック）
-□ errors.ts（エラーケース定義）
-□ forge-insights.md（ドメイン知識・判断記録）
-```
+- `⚡ PROTOTYPE`
+- `🧪 EXPERIMENT`
+- `🔁 ITERATE`
 
-### forge-insights.md 必須セクション
+## `.agents/forge-insights.md` Template
 
 ```markdown
-## 検証した仮説
-- [仮説の記述]
-- 結果: CONFIRMED / REJECTED / NEEDS_MORE_DATA
+# Forge Insights: [Feature Name]
 
-## 意思決定ログ
-- [日付] [決定内容] — 理由: [なぜ]
+## Verified Hypotheses
+- [ ] [Hypothesis]
+- Result: `CONFIRMED` / `REJECTED` / `NEEDS_MORE_DATA`
 
-## 技術的負債
-- [ ] [項目]: [理由と推奨対応]
+## Decision Log
+- [Date] [Decision] — Reason: [why]
 
-## エッジケース（未対応）
-- [ケース]: [発見経緯と想定影響]
+## Tech Debt
+- [ ] [file:line] [shortcut] — Reason: [why temporary] · Recommended fix: [next step]
 
-## テスト方針
-- ユニットテスト: [対象コンポーネント/関数]
-- 統合テスト: [対象フロー]
+## Known Edge Cases
+- [Case]: [impact and current gap]
 
-## UI 判断メモ
-- [判断]: [理由]
+## Test Strategy
+- Unit: [what should be covered]
+- Integration: [what flow should be covered]
+
+## UI Rationale
+- [Decision]: [reason]
 ```
 
----
+## `L0-L3` Quality Ladder
 
-## 4. Evolutionary プロトタイプの段階的品質向上
+| Level | Stage | Minimum quality | Typical phase |
+|---|---|---|---|
+| `L0` | Concept proof | Works, hardcoded data allowed | `SCAFFOLD -> STRIKE` |
+| `L1` | Verifiable | Types separated, mocks separated, basic structure | `COOL` |
+| `L2` | Demoable | Loading/error/empty states, responsive basics, realistic mock data | `PRESENT` |
+| `L3` | Handoff-ready | Builder package complete, insights complete, debt called out | `-> Builder` |
 
-### 品質レベル定義
+Typical progression:
 
-| レベル | 段階 | 品質基準 | Forge フェーズ |
-|--------|------|---------|--------------|
-| **L0** | 概念実証 | 動けば良い · ハードコード OK | SCAFFOLD → STRIKE |
-| **L1** | 検証可能 | 型定義あり · モック分離 · 基本構造 | COOL |
-| **L2** | デモ可能 | エラー状態対応 · レスポンシブ · リアルデータ風 | PRESENT |
-| **L3** | ハンドオフ可能 | Builder Integration 完了 · insights 完備 | → Builder |
+- `L0 (2-4h)`: inline mock data, single-file code, minimal debug output.
+- `L1 (+2-4h)`: extract `types.ts`, extract `handlers.ts`, split files.
+- `L2 (+4-8h)`: add loading, error, and empty states; basic responsiveness; realistic fixtures.
+- `L3 (+2-4h)`: add `.agents/forge-insights.md`, `errors.ts`, explicit status tag, and handoff notes.
 
-### L0 → L3 の進め方
+## Tech-Debt Recording Rules
 
-```
-L0（2-4 時間）:
-  - インラインモック、ハードコードデータ
-  - 単一ファイルでも OK
-  - console.log デバッグ
+Classify debt as:
 
-L1（+ 2-4 時間）:
-  - types.ts を分離
-  - モックを handlers.ts に分離
-  - コンポーネントのファイル分割
+| Type | Example | Risk |
+|---|---|---|
+| Intentional and documented | Hardcoded token for a non-auth prototype | Predictable |
+| Intentional but undocumented | “Temporary” shortcut with no record | Dangerous |
+| Unintentional | Hidden anti-pattern introduced during speed work | Hard to detect |
 
-L2（+ 4-8 時間）:
-  - ローディング/エラー/空状態の対応
-  - レスポンシブ対応（基本的な breakpoint）
-  - リアルっぽいモックデータ（faker.js）
+Recording format:
 
-L3（+ 2-4 時間）:
-  - forge-insights.md 作成
-  - errors.ts 作成
-  - ステータスタグとテスト手順の文書化
+```text
+- [ ] [file:line] [temporary implementation] — Reason: [why temporary] · Recommended: [production fix]
 ```
 
----
+## Forge Integration Rules
 
-## 5. プロトタイプの技術的負債管理
-
-### 負債の分類
-
-| 種類 | 例 | 本番への影響 | 対応優先度 |
-|------|---|-------------|----------|
-| **意図的・記録済み** | 「ハードコードした認証トークン」 | 予測可能 | 計画的に対応 |
-| **意図的・未記録** | 「とりあえず動かした部分」 | 見つかりにくい | 危険 — forge-insights 必須 |
-| **非意図的** | 「知らずにアンチパターン使用」 | 発見が遅れる | レビューで検出 |
-
-### 負債の記録ルール
-
-```
-forge-insights.md の tech-debt セクションに必ず記載:
-
-形式:
-  - [ ] [ファイル:行] [内容] — 理由: [なぜ仮実装か] · 推奨: [本番での対応方法]
-
-例:
-  - [ ] Feature.tsx:42 ハードコード認証トークン — 理由: 認証フローは検証対象外 · 推奨: AuthContext から取得
-  - [ ] handlers.ts:15 固定遅延 300ms — 理由: リアルな遅延シミュレーション · 推奨: 実 API に置換
-```
-
----
-
-## 6. Forge との連携
-
-```
-Forge での活用:
-  1. SCAFFOLD フェーズで Throwaway/Evolutionary の判定を実行
-  2. Evolutionary の場合、L0→L3 の段階的品質向上を計画
-  3. PRESENT フェーズで必須成果物チェックリストを適用
-  4. ハンドオフ時に HO-01〜07 の落とし穴チェックを実施
-
-品質ゲート:
-  - forge-insights.md の tech-debt セクション空 → 警告（HO-04 防止）
-  - ステータスタグなし → ハンドオフ前にブロック（HO-02 防止）
-  - types.ts が未分離 → L1 未達の警告（段階的品質）
-  - エッジケースセクション空 → 警告（HO-05 防止）
-```
-
-**Source:** [Budibase: Throwaway Prototyping](https://budibase.com/blog/inside-it/throwaway-prototyping/) · [Simplicable: Evolutionary vs Throwaway Prototype](https://simplicable.com/productivity/evolutionary-prototype-vs-throwaway-prototype) · [UXPin: Throwaway Prototyping](https://www.uxpin.com/studio/blog/throwaway-prototyping/)
+- Run the strategy selection during `SCAFFOLD`.
+- If the prototype is `Evolutionary`, plan the `L0 -> L3` progression up front.
+- Block Builder handoff if the status tag is missing.
+- Warn if `.agents/forge-insights.md` has no tech-debt section.
+- Warn if `types.ts` is missing in an `Evolutionary` prototype.
+- Warn if known edge cases are not recorded.

@@ -1,5 +1,14 @@
 # Forge API Mock Patterns
 
+> Purpose: choose the lightest mock strategy that still supports the prototype’s learning goal.
+
+## Contents
+
+- `MSW` handlers
+- Inline mock fetch
+- `json-server`
+- Error response mocking
+
 Mock strategies for rapid prototyping.
 
 ---

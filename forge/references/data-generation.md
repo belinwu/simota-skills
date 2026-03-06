@@ -1,5 +1,13 @@
 # Forge Prototype Data Generation
 
+> Purpose: generate realistic, repeatable sample data for demos and interaction testing.
+
+## Contents
+
+- Faker patterns
+- Type-safe factories
+- Common entity fixtures
+
 Mock data factories and fixtures for rapid prototyping.
 
 ---

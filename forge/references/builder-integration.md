@@ -1,55 +1,57 @@
 # Forge Builder Integration
 
-Required output formats for handing off prototypes to Builder.
+> Purpose: define the minimum artifact set and handoff contract required when a Forge prototype moves to Builder.
 
----
+## Contents
+
+- Required output structure
+- `types.ts` template
+- `errors.ts` template
+- `.agents/forge-insights.md` template
+- `BUILDER_HANDOFF`
+- Production checklist
 
 ## Required Output Structure
 
-```
+```text
 components/prototypes/
-├── Feature.tsx          # UI実装（必須）
-├── types.ts             # 型定義（必須）← Builder が Value Object に変換
-├── Feature.test.tsx     # 簡易テスト（オプション）
-└── README.md            # 使用方法（オプション）
+├── Feature.tsx          # required UI prototype
+├── types.ts             # required type definitions
+├── Feature.test.tsx     # optional quick tests
+└── README.md            # optional usage notes
 
 mocks/
-├── handlers.ts          # MSW ハンドラ（必須）← Builder が API Client に変換
-└── errors.ts            # エラーケース（必須）← Builder が DomainError に変換
+├── handlers.ts          # required MSW handlers
+└── errors.ts            # required error cases
 
 .agents/
-└── forge-insights.md    # ドメイン知識（必須）← Builder がビジネスルールとして参照
+└── forge-insights.md    # required domain and decision record
 ```
 
----
-
-## types.ts Template
+## `types.ts` Template
 
 ```typescript
-// types.ts - Builder が Value Object / Entity に変換する元データ
+// types.ts - Builder will translate these into production-grade domain types
 
-// Entity候補（IDを持つもの）
 export interface User {
-  id: string;           // → UserId Value Object
-  email: string;        // → Email Value Object
-  name: string;         // → UserName Value Object
-  role: 'admin' | 'user' | 'guest';  // → UserRole Enum
-  createdAt: string;    // → ISO date
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'user' | 'guest';
+  createdAt: string;
 }
 
-// Value Object候補（IDを持たないもの）
 export interface Address {
   street: string;
   city: string;
-  postalCode: string;   // → 検証ルールが必要
+  postalCode: string;
   country: string;
 }
 
-// API Request/Response 型
 export interface CreateUserRequest {
   email: string;
   name: string;
-  password: string;     // → 検証ルールが必要（8文字以上など）
+  password: string;
 }
 
 export interface CreateUserResponse {
@@ -57,7 +59,6 @@ export interface CreateUserResponse {
   token: string;
 }
 
-// エラーレスポンス型
 export interface ApiError {
   code: string;
   message: string;
@@ -65,37 +66,34 @@ export interface ApiError {
 }
 ```
 
----
-
-## errors.ts Template
+## `errors.ts` Template
 
 ```typescript
-// mocks/errors.ts - Builder が DomainError に変換する元データ
+// mocks/errors.ts - Builder will map these into production error handling
 
 import { http, HttpResponse } from 'msw';
 
 export const errorHandlers = [
-  // バリデーションエラー
   http.post('/api/users', async ({ request }) => {
     const body = await request.json() as { email?: string; name?: string };
 
     if (!body.email) {
       return HttpResponse.json(
-        { code: 'EMAIL_REQUIRED', message: 'メールアドレスは必須です' },
+        { code: 'EMAIL_REQUIRED', message: 'Email is required' },
         { status: 400 }
       );
     }
 
     if (!body.email.includes('@')) {
       return HttpResponse.json(
-        { code: 'INVALID_EMAIL', message: 'メールアドレスの形式が無効です' },
+        { code: 'INVALID_EMAIL', message: 'Email format is invalid' },
         { status: 400 }
       );
     }
 
     if (!body.name || body.name.length < 1) {
       return HttpResponse.json(
-        { code: 'NAME_REQUIRED', message: '名前は必須です' },
+        { code: 'NAME_REQUIRED', message: 'Name is required' },
         { status: 400 }
       );
     }
@@ -103,91 +101,59 @@ export const errorHandlers = [
     return HttpResponse.json({ id: '1', ...body }, { status: 201 });
   }),
 
-  // 認証エラー
   http.get('/api/protected', ({ request }) => {
     const token = request.headers.get('Authorization');
     if (!token) {
       return HttpResponse.json(
-        { code: 'UNAUTHORIZED', message: '認証が必要です' },
+        { code: 'UNAUTHORIZED', message: 'Authentication is required' },
         { status: 401 }
       );
     }
     return HttpResponse.json({ data: 'secret' });
   }),
 
-  // 権限エラー
   http.delete('/api/admin/:id', () => {
     return HttpResponse.json(
-      { code: 'FORBIDDEN', message: '権限がありません' },
+      { code: 'FORBIDDEN', message: 'Insufficient permissions' },
       { status: 403 }
     );
-  }),
-
-  // 存在しないリソース
-  http.get('/api/users/:id', ({ params }) => {
-    if (params.id === '999') {
-      return HttpResponse.json(
-        { code: 'USER_NOT_FOUND', message: 'ユーザーが見つかりません' },
-        { status: 404 }
-      );
-    }
-    return HttpResponse.json({ id: params.id, name: 'Test' });
-  }),
-
-  // 競合エラー
-  http.post('/api/users', async ({ request }) => {
-    const body = await request.json() as { email: string };
-    if (body.email === 'existing@example.com') {
-      return HttpResponse.json(
-        { code: 'EMAIL_ALREADY_EXISTS', message: 'このメールアドレスは既に使用されています' },
-        { status: 409 }
-      );
-    }
-    return HttpResponse.json({ id: '1', ...body }, { status: 201 });
   }),
 ];
 ```
 
----
-
-## forge-insights.md Template
+## `.agents/forge-insights.md` Template
 
 ```markdown
-# Forge Insights: [機能名]
+# Forge Insights: [Feature Name]
 
-## 発見したビジネスルール
+## Verified Rules
+- [ ] Email addresses must be unique
+- [ ] Passwords must meet minimum policy requirements
+- [ ] Only admins can delete users
 
-### 検証済みルール
-- [ ] ユーザーのメールアドレスは一意でなければならない
-- [ ] パスワードは8文字以上で、大文字・小文字・数字を含む必要がある
-- [ ] 管理者のみがユーザーを削除できる
+## Assumed Rules To Confirm
+- [ ] Is email change rate-limited?
+- [ ] Is user deletion soft delete or hard delete?
 
-### 推測したルール（Builder に確認を依頼）
-- [ ] メールアドレス変更後24時間は再変更不可？
-- [ ] 削除されたユーザーのデータは論理削除？物理削除？
+## Confirmed UI Behavior
+### Success
+- Submit -> loading -> success message -> redirect
 
-## UI/UXで確認した挙動
+### Failure
+- Validation errors under fields
+- Server errors shown as toast with retry
+- Network errors show offline state
 
-### 成功パターン
-- フォーム送信 → ローディング表示 → 成功メッセージ → リダイレクト
+## Performance Notes
+- Tested with roughly 50 list items
+- Virtualization may be needed above 1000 items
+- Upload UI currently assumes a 5 MB limit
 
-### エラーパターン
-- バリデーションエラー → フィールド下にエラー表示
-- サーバーエラー → トースト通知 + リトライボタン
-- ネットワークエラー → オフライン表示
-
-## パフォーマンス観点
-- リストは50件程度でテスト済み
-- 1000件以上の場合は仮想化が必要かも
-- 画像アップロードは5MB制限をUIで設定
-
-## 未解決の疑問
-1. セッション有効期限は？
-2. 同時編集時の競合処理は？
-3. 削除確認ダイアログは必要？
+## Open Questions
+1. What is the session lifetime?
+2. How are concurrent edits resolved?
+3. Is destructive confirmation required?
 ```
-
----
 
 ## Builder Handoff Template
 
@@ -201,54 +167,47 @@ export const errorHandlers = [
 - Insights: `.agents/forge-insights.md`
 
 ### Validated Features
-- [x] Feature 1: 基本機能実装済み
-- [x] Feature 2: ユーザーフロー確認済み
+- [x] [Validated behavior 1]
+- [x] [Validated behavior 2]
 
 ### For Builder to Implement
-- [ ] types.ts → Value Object / Entity に変換
-- [ ] handlers.ts → API Client に変換
-- [ ] errors.ts → DomainError に変換
-- [ ] forge-insights.md → ビジネスルールとして実装
+- [ ] Convert `types.ts` into production-grade domain types
+- [ ] Replace `handlers.ts` with a real API client
+- [ ] Map `errors.ts` into production error handling
+- [ ] Implement the rules recorded in `.agents/forge-insights.md`
 
 ### Quick Reference
 - API Base: `/api/v1`
-- Auth: Bearer token in header
+- Auth: `Bearer` token in header
 - Error format: `{ code: string, message: string }`
 ```
-
----
 
 ## Prototype-to-Production Checklist
 
 ### Code Quality
-- [ ] Remove all `console.log` debugging
-- [ ] Replace inline styles with proper CSS/styled-components
-- [ ] Add proper TypeScript types (no `any`)
-- [ ] Extract magic numbers to constants
-- [ ] Remove TODO comments or create tickets
+- [ ] Remove debug logging
+- [ ] Replace placeholder styles if the prototype is being adopted
+- [ ] Remove `any`
+- [ ] Extract magic numbers if the value is reused
+- [ ] Convert lingering `#TODO(agent)` items into tickets if the work is adopted
 
 ### Error Handling
 - [ ] Add loading states
-- [ ] Add error states with retry
-- [ ] Handle edge cases (empty, null, undefined)
-- [ ] Add form validation
-- [ ] Implement error boundaries
+- [ ] Add error states with retry where relevant
+- [ ] Handle empty, null, and undefined states
+- [ ] Add minimum validation rules
 
 ### API Integration
-- [ ] Replace mock data with API calls
-- [ ] Add request/response types
+- [ ] Replace mock data with real API calls
+- [ ] Keep request and response types explicit
 - [ ] Handle API errors gracefully
-- [ ] Add request caching if needed
-- [ ] Implement optimistic updates if needed
 
 ### Testing
-- [ ] Add unit tests for logic
-- [ ] Add component tests
-- [ ] Test error scenarios
-- [ ] Test loading states
+- [ ] Add at least the tests Builder needs for the validated behavior
+- [ ] Test one error scenario
+- [ ] Test one loading or async scenario
 
 ### Accessibility
-- [ ] Add proper ARIA labels
-- [ ] Ensure keyboard navigation
-- [ ] Check color contrast
-- [ ] Test with screen reader
+- [ ] Add the minimum ARIA labels required by the prototype path
+- [ ] Ensure basic keyboard navigation
+- [ ] Check contrast for key actions and status states

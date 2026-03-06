@@ -1,153 +1,102 @@
-# Prototyping Anti-Patterns & Best Practices
+# Prototyping Anti-Patterns & Guardrails
 
-> プロトタイピングの落とし穴、Lava Flow 問題、スコープ管理、品質と速度のバランス
+> Purpose: keep Forge fast without letting prototypes sprawl, rot, or get mistaken for production code.
 
-## 1. プロトタイピング 10 大アンチパターン
+## Contents
 
-| # | アンチパターン | 症状 | 対策 |
-|---|-------------|------|------|
-| **FP-01** | **Lava Flow（溶岩流）** | プロトタイプコードがそのまま本番に残る → 「触れない」レガシーの蓄積 | プロトタイプに明確な寿命を設定 · forge-insights.md で技術的負債を明記 |
-| **FP-02** | **スコープクリープ** | 「ついでにこれも」で機能追加 → プロトタイプが肥大化し完成しない | 1 プロトタイプ = 1 仮説の厳守 · Time-box 強制 |
-| **FP-03** | **完璧主義の罠** | ピクセルパーフェクト追求 → プロトタイプの速度優位性を喪失 | "Done is better than perfect" の徹底 · 80% ルール |
-| **FP-04** | **Spaghetti Prototype** | リファクタリングなしの急速開発 → コード構造が破綻し理解不能 | 最小限の構造化（ファイル分割・型定義）は維持 |
-| **FP-05** | **モック依存固定化** | モックデータに最適化 → 実 API 接続時に大規模リライト | API インターフェースを先に定義 · MSW で実 API 契約に準拠 |
-| **FP-06** | **ゾンビプロトタイプ** | 検証されず放置されたプロトタイプが蓄積 → リポジトリ汚染 | 検証 → 採用 or 削除の二択を強制 · 期限設定 |
-| **FP-07** | **フィードバック不在** | ステークホルダーに見せずに進む → 方向修正が遅延 | PRESENT フェーズでのデモを必須化 |
-| **FP-08** | **重複プロトタイプ** | チーム間で同じ検証を重複実施 → リソース浪費 | プロトタイプレジストリの管理 · 検証済みパターンの共有 |
-| **FP-09** | **God Prototype** | 1 つのプロトタイプに全仮説を詰め込む → 失敗時に何が原因か不明 | 仮説ごとにプロトタイプを分離 |
-| **FP-10** | **ハンドオフ不在** | プロトタイプの知見が文書化されず → 本番実装時にゼロから再発見 | forge-insights.md の必須生成 · Builder Integration 遵守 |
+- `FP-01..10` anti-pattern catalog
+- Core principles
+- Time-box rules
+- Lifecycle decisions
+- Minimum quality floor
 
----
+## Anti-Pattern Catalog
 
-## 2. プロトタイピングの 3 大原則
+| ID | Anti-pattern | What goes wrong | Guardrail |
+|---|---|---|---|
+| `FP-01` | Lava Flow | Prototype code survives as untouchable legacy | Give every prototype an explicit lifespan and debt log |
+| `FP-02` | Scope creep | “One more thing” prevents completion | Enforce `1 prototype = 1 hypothesis` and a time-box |
+| `FP-03` | Perfection trap | Pixel-perfect work kills the speed advantage | Use the `80%` rule |
+| `FP-04` | Spaghetti prototype | Zero structure makes iteration and handoff painful | Keep minimum file, type, and naming structure |
+| `FP-05` | Mock lock-in | Real APIs require a rewrite later | Define the interface early and keep mocks contract-shaped |
+| `FP-06` | Zombie prototype | Unvalidated prototypes pollute the repo | Force `ADOPT / ITERATE / DISCARD` and expiry review |
+| `FP-07` | No feedback loop | Direction stays wrong too long | `PRESENT` is mandatory |
+| `FP-08` | Duplicate prototype work | Teams repeat the same exploration | Share validated patterns and record decisions |
+| `FP-09` | God prototype | Too many hypotheses make the result uninterpretable | Split by hypothesis |
+| `FP-10` | No handoff package | Production teams rediscover everything from scratch | Generate `.agents/forge-insights.md` and handoff artifacts |
 
-### 原則 1: 1 プロトタイプ = 1 仮説
+## Core Principles
 
-```
-Bad:  「ユーザー管理画面のプロトタイプ」
-      → 仮説が曖昧、スコープが無限に拡大
+### 1. One prototype = one hypothesis
 
-Good: 「テーブル vs カード表示でユーザー一覧の閲覧効率は変わるか？」
-      → 検証可能、スコープが明確、成否が判定可能
-```
+Bad:
 
-### 原則 2: Time-box は絶対
-
-```
-推奨 Time-box:
-  Quick Check（概念検証）    : 2-4 時間
-  UI コンポーネント           : 4-8 時間
-  ページ/フロー               : 1-2 日
-  フルスタック PoC            : 2-3 日
-
-Time-box 超過時のアクション:
-  1. 現状を PRESENT（完成度不問）
-  2. ブロッカーを文書化
-  3. 継続 or 中止の判断をステークホルダーに委ねる
+```text
+"Prototype the whole admin dashboard."
 ```
 
-### 原則 3: 80% ルール
+Good:
 
-```
-プロトタイプの完成度:
-  - UI: 80% の見た目で十分（ピクセルパーフェクト不要）
-  - データ: ハッピーパスが動けば十分（エッジケース不要）
-  - エラー処理: console.log で十分（本格的なハンドリング不要）
-  - テスト: 手動確認で十分（自動テスト不要）
-  - ドキュメント: forge-insights.md で十分（詳細仕様書不要）
+```text
+"Does a card layout help users scan account status faster than a dense table?"
 ```
 
----
+### 2. Time-box is mandatory
 
-## 3. プロトタイプの寿命管理
+Recommended time-box:
 
-### ライフサイクル
+| Prototype type | Time-box |
+|---|---|
+| Quick check | `2-4 hours` |
+| UI component | `4-8 hours` |
+| Page / flow | `1-2 days` |
+| Full-stack PoC | `2-3 days` |
 
-```
-CREATE → DEMO → VALIDATE → DECIDE
-                             │
-                   ┌─────────┼─────────┐
-                   │         │         │
-                ADOPT     ITERATE    DISCARD
-                  │         │         │
-            Builder へ    Time-box   ファイル削除
-            ハンドオフ    リセット   + 知見記録
-```
+If the time-box is exceeded:
+- Demo the current state anyway.
+- Document blockers.
+- Decide whether to continue or stop.
 
-### 判定基準
+### 3. Use the 80% rule
 
-| 判定 | 条件 | アクション |
-|------|------|----------|
-| **ADOPT** | 仮説が検証され、本番実装の価値あり | Builder Integration 実行、forge-insights.md 作成 |
-| **ITERATE** | 方向性は正しいが追加検証が必要 | Time-box リセット、スコープ再定義 |
-| **DISCARD** | 仮説が否定された、または価値が不十分 | 学びを文書化、ファイルを削除（Sweep 連携） |
+- UI: `80%` visual fidelity is enough.
+- Data: happy path is enough unless the hypothesis depends on edge cases.
+- Error handling: minimum meaningful states only.
+- Testing: manual verification is enough unless the prototype is intended to survive.
 
----
+## Lifecycle Decisions
 
-## 4. 品質と速度のバランス
-
-### プロトタイプで維持すべき最低品質
-
-| 項目 | 必須 | 不要 |
-|------|------|------|
-| **型定義** | interface/type 定義 | 完全な型カバレッジ |
-| **ファイル構造** | コンポーネント/モック/型の分離 | 完全なディレクトリ構造 |
-| **命名** | 意図が伝わる名前 | 完全な命名規則準拠 |
-| **エラー処理** | 基本的な try-catch | カスタムエラー型・リトライ |
-| **スタイリング** | Tailwind ユーティリティ | デザイントークン完全適用 |
-| **テスト** | 手動での動作確認 | 自動テスト |
-| **コメント** | 仮説・意図の記録 | JSDoc/TSDoc |
-
-### コード品質 vs 速度の判断フロー
-
-```
-この部分は本番に残る可能性が高いか？
-  │
-  ├─ Yes → 最低品質を維持（型定義・構造化・命名）
-  │
-  └─ No → 速度最優先（インライン・ハードコード OK）
-       ただし forge-insights.md に「要リライト」を明記
+```text
+CREATE -> DEMO -> VALIDATE -> DECIDE
+                           -> ADOPT
+                           -> ITERATE
+                           -> DISCARD
 ```
 
----
+| Decision | When | Action |
+|---|---|---|
+| `ADOPT` | Hypothesis validated and worth production work | Prepare Builder handoff |
+| `ITERATE` | Direction is promising but not yet proven | Reset time-box and narrow scope |
+| `DISCARD` | Hypothesis is weak, disproven, or stale | Record learning and remove the prototype |
 
-## 5. チーム開発でのプロトタイピング
+Stale prototype rule:
+- Review prototypes left untouched for more than `2 weeks` for discard.
 
-### コミュニケーション・プラクティス
+## Minimum Quality Floor
 
-```
-1. プロトタイプ開始時:
-   - 検証する仮説を 1 文で宣言
-   - Time-box を設定
-   - 使用技術・モック戦略を共有
+| Area | Keep | Do not require |
+|---|---|---|
+| Types | Core interfaces and obvious unions | Full type coverage |
+| Structure | Separate component, mocks, and types when reusable | Perfect project architecture |
+| Errors | Minimum meaningful error and loading states | Full resilience design |
+| Styles | Fast styling that communicates intent | Full token integration |
+| Tests | Manual run steps | Complete automated coverage |
+| Docs | `.agents/forge-insights.md` | Full specification docs |
 
-2. プロトタイプ完了時:
-   - PRESENT フェーズを必ず実行（デモ）
-   - 判定（ADOPT/ITERATE/DISCARD）を明示
-   - 知見を forge-insights.md に記録
+## Forge Integration Rules
 
-3. 重複防止:
-   - 検証済みパターンのカタログ化
-   - プロトタイプ一覧の可視化
-```
-
----
-
-## 6. Forge との連携
-
-```
-Forge での活用:
-  1. SCAFFOLD フェーズで FP-01〜10 のチェックを実施
-  2. Time-box 設定を SCAFFOLD の標準ステップに組み込み
-  3. COOL フェーズで「仮説検証」の成否判定を追加
-  4. PRESENT フェーズで ADOPT/ITERATE/DISCARD の判定を必須化
-
-品質ゲート:
-  - Time-box 未設定 → 警告（FP-02 防止）
-  - 仮説が未定義 → 開始前に明確化を要求（FP-09 防止）
-  - PRESENT フェーズのスキップ → ブロック（FP-07 防止）
-  - forge-insights.md 未生成 → ハンドオフ前にブロック（FP-10 防止）
-  - 2 週間以上の放置プロトタイプ → DISCARD 検討を通知（FP-06 防止）
-```
-
-**Source:** [SourceMaking: Lava Flow Anti-Pattern](https://sourcemaking.com/antipatterns/software-development-antipatterns) · [Budibase: Throwaway Prototyping](https://budibase.com/blog/inside-it/throwaway-prototyping/) · [molfar.io: Rapid MVP Development](https://www.molfar.io/blog/rapid-prototyping-mvp-development)
+- Run `FP-01..10` as a checklist during `SCAFFOLD`.
+- Block handoff if `.agents/forge-insights.md` is missing.
+- Warn if the hypothesis is not explicit.
+- Block if `PRESENT` is skipped.
+- Warn if the prototype is both over time-box and still growing in scope.

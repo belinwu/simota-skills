@@ -1,201 +1,104 @@
 # Rapid Iteration Methodology
 
-> 高速イテレーション手法、Time-boxing、フィードバックループ、MVP 思考、速度最適化
+> Purpose: keep Forge cycles short, demoable, and decision-oriented.
 
-## 1. Forge の高速イテレーションサイクル
+## Contents
 
-### 4 段階サイクル
+- Stage timing
+- Speed tactics
+- Progressive build pattern
+- Feedback cadence
+- Pivot rules
 
-```
-┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
-│ SCAFFOLD │ →  │  STRIKE  │ →  │   COOL   │ →  │ PRESENT  │
-│          │    │          │    │          │    │          │
-│  2-4h    │    │  4-8h    │    │  1-2h    │    │  1h      │
-│  仮説定義 │    │  実装    │    │  検証    │    │  デモ    │
-└──────────┘    └──────────┘    └──────────┘    └──────────┘
-                                                     │
-                                          ┌──────────┼──────────┐
-                                          │          │          │
-                                       ADOPT     ITERATE    DISCARD
-```
+## Stage Timing
 
-### Time-box テンプレート
+| Prototype type | `SCAFFOLD` | `STRIKE` | `COOL` | `PRESENT` | Total |
+|---|---:|---:|---:|---:|---:|
+| Quick check | `30 min` | `1-2h` | `30 min` | `30 min` | `2-4h` |
+| UI component | `1h` | `4-6h` | `1h` | `1h` | `7-9h` |
+| Page / flow | `2h` | `8-12h` | `2h` | `1h` | `1-2 days` |
+| Full-stack PoC | `4h` | `12-16h` | `4h` | `2h` | `2-3 days` |
 
-| プロトタイプ種類 | SCAFFOLD | STRIKE | COOL | PRESENT | 合計 |
-|---------------|----------|--------|------|---------|------|
-| **Quick Check** | 30 min | 1-2h | 30 min | 30 min | 2-4h |
-| **UI コンポーネント** | 1h | 4-6h | 1h | 1h | 7-9h |
-| **ページ/フロー** | 2h | 8-12h | 2h | 1h | 1-2 日 |
-| **フルスタック PoC** | 4h | 12-16h | 4h | 2h | 2-3 日 |
+## Speed Tactics
 
----
+| Tactic | Why it helps | Use when |
+|---|---|---|
+| Hardcode first | Removes API waiting time | Data-dependent UI |
+| Write Tailwind utilities inline | Avoids context switching | Fast UI work |
+| Single-file first | Minimizes navigation | Quick checks |
+| Copy-paste is allowed | Speed beats DRY in prototypes | Throwaway work |
+| Reuse existing UI primitives | Skip styling from zero | Component prototypes |
+| Fixed-seed Faker data | Stable demos and screenshots | Repeated demos |
+| Template `MSW` handlers | Instant CRUD-like mocks | API-dependent UI |
+| Build one vertical slice | Keeps each iteration demoable | Pages and flows |
+| Use AI for boilerplate | Speeds structure, not judgment | Repetitive scaffolding |
 
-## 2. 速度最適化テクニック
+## Progressive Build Pattern
 
-### 即時適用可能な 10 のテクニック
+Build in this order:
 
-| # | テクニック | 効果 | 適用場面 |
-|---|----------|------|---------|
-| **1** | **ハードコードファースト** | API 待ち時間ゼロ | データ依存の UI |
-| **2** | **Tailwind ユーティリティ直書き** | CSS ファイル切り替え不要 | 全 UI |
-| **3** | **単一ファイルコンポーネント** | ファイル間移動不要 | Quick Check |
-| **4** | **コピペ OK ポリシー** | DRY より速度 | プロトタイプ限定 |
-| **5** | **既存 UI ライブラリ活用** | ゼロからのスタイリング回避 | shadcn/ui, Radix |
-| **6** | **faker.js の seed 固定** | 一貫したモックデータ | デモ用 |
-| **7** | **MSW ハンドラーのテンプレート化** | CRUD モック即座に生成 | API 依存 UI |
-| **8** | **スクリーンショット駆動開発** | 完成イメージを先に固定 | ページ/フロー |
-| **9** | **漸進的複雑化** | 最小 → 機能追加 → 仕上げ | 全プロトタイプ |
-| **10** | **AI アシスタント活用** | ボイラープレート自動生成 | 全プロトタイプ |
+1. Static layout with hardcoded data
+2. Basic interaction with state
+3. Mock data flow with inline mocks or `MSW`
+4. Loading / error / empty states
 
-### 漸進的複雑化パターン
+Run a `COOL` check after each step:
+- Does it compile?
+- Does it render?
+- Does the main interaction work?
+- Is the concept obvious to another person?
 
-```
-Step 1: 静的 HTML（データハードコード）
-  → 「見た目」を確定
+## Feedback Cadence
 
-Step 2: インタラクション追加（useState）
-  → 「操作感」を確定
+| Feedback loop | Frequency | Goal |
+|---|---|---|
+| Self-check | Every `30 minutes` | Catch breakage early |
+| Pair check | Every `2-4 hours` | Direction check |
+| Stakeholder demo | `PRESENT` phase | Force `ADOPT / ITERATE / DISCARD` |
 
-Step 3: モックデータ接続（MSW/inline）
-  → 「データフロー」を確定
+`PRESENT` structure:
 
-Step 4: エラー/ローディング状態
-  → 「エッジケース」を確認
+1. Hypothesis in one sentence
+2. Demo the happy path
+3. Show 1-2 meaningful variations
+4. State what was learned
+5. Ask for `ADOPT / ITERATE / DISCARD`
 
-各ステップで COOL チェック:
-  - コンパイルするか？
-  - レンダリングするか？
-  - インタラクションは動くか？
-  - コンセプトは伝わるか？
-```
+## MVP Slicing Rules
 
----
+Prefer vertical slices:
 
-## 3. フィードバックループの設計
+- Good: one user-visible slice that can be demoed end-to-end
+- Bad: all UI first, all logic later, all APIs last
 
-### 高速フィードバック・フレームワーク
+Include:
+- Core interaction
+- Minimum context to understand the idea
+- One happy path
 
-```
-フィードバックの種類と頻度:
+Exclude unless the hypothesis depends on them:
+- Auth and permissions
+- Full accessibility work
+- Performance optimization
+- Animation polish
+- Full responsive coverage
 
-  セルフチェック（COOL）: 30 分ごと
-    - ビルドが通るか
-    - 画面が表示されるか
-    - 基本操作が動くか
+## Pivot Rules
 
-  ペアチェック: 2-4 時間ごと
-    - 同僚に 5 分デモ
-    - 「これで方向性合ってる？」レベル
+Iterate when:
+- Direction looks right but needs refinement
+- New evidence suggests a narrower next test
+- Stakeholders request specific, bounded follow-up
 
-  ステークホルダーデモ: PRESENT フェーズ
-    - 構造化されたデモ
-    - ADOPT/ITERATE/DISCARD の判定
-```
+Discard when:
+- The hypothesis is clearly disproven
+- The approach is technically infeasible for the intended path
+- Business priority changed
+- The prototype exceeds the time-box twice without clearer learning
 
-### デモの構造化
+## Forge Integration Rules
 
-```
-PRESENT フェーズのテンプレート:
-
-1. コンテキスト（30 秒）
-   - 何を検証しようとしたか（仮説）
-
-2. デモ（2-3 分）
-   - ハッピーパスを実演
-   - 1-2 のバリエーション
-
-3. 学び（1 分）
-   - 分かったこと
-   - 予想と違ったこと
-
-4. 判定依頼（1 分）
-   - ADOPT: 本番実装に進む
-   - ITERATE: 追加検証が必要
-   - DISCARD: この方向は見送り
-```
-
----
-
-## 4. MVP 思考のプロトタイピング
-
-### Feature Slicing（機能の薄切り）
-
-```
-Bad: 横方向のスライス
-  Layer 1: 全画面の UI を作る
-  Layer 2: 全画面のロジックを作る
-  Layer 3: 全画面の API を接続する
-  → デモ可能になるまで時間がかかる
-
-Good: 縦方向のスライス（Vertical Slice）
-  Slice 1: ユーザー一覧画面（表示のみ）→ デモ可能
-  Slice 2: ユーザー詳細画面 → デモ可能
-  Slice 3: ユーザー作成フロー → デモ可能
-  → 各スライスが独立してデモ可能
-```
-
-### 「最小限で最大価値」の判定
-
-```
-プロトタイプに含めるもの:
-  ✓ コア仮説の検証に必要な UI/操作
-  ✓ ユーザーが「理解できる」最小限のコンテキスト
-  ✓ 1 つのハッピーパス
-
-プロトタイプに含めないもの:
-  ✗ 認証/認可（ハードコードでバイパス）
-  ✗ エラーハンドリング（console.log で十分）
-  ✗ レスポンシブ対応（1 ブレークポイントで十分）
-  ✗ アクセシビリティ（本番で Palette が対応）
-  ✗ パフォーマンス最適化（本番で Bolt が対応）
-  ✗ アニメーション（本番で Flow が対応）
-```
-
----
-
-## 5. イテレーション管理
-
-### イテレーション・ログ
-
-```
-各イテレーションで記録:
-
-| # | 日時 | 仮説 | 結果 | 学び | 次のアクション |
-|---|------|------|------|------|--------------|
-| 1 | MM/DD HH:MM | [検証内容] | OK/NG/要追加検証 | [発見] | ITERATE/ADOPT/DISCARD |
-```
-
-### ピボット判断基準
-
-```
-ITERATE する条件:
-  - 方向性は正しいが、UI/UX の調整が必要
-  - 追加データ/シナリオの検証が必要
-  - ステークホルダーから具体的な改善要望
-
-DISCARD する条件:
-  - 仮説が明確に否定された
-  - 技術的に実現不可能と判明
-  - ビジネス優先度が変更された
-  - Time-box を 2 回超過しても完了しない
-```
-
----
-
-## 6. Forge との連携
-
-```
-Forge での活用:
-  1. SCAFFOLD で Time-box テンプレートを適用
-  2. STRIKE で漸進的複雑化パターンを実行
-  3. COOL で 30 分ごとのセルフチェックを実施
-  4. PRESENT でデモテンプレートを使用
-
-品質ゲート:
-  - Time-box 未設定 → SCAFFOLD 開始前に設定を強制
-  - Vertical Slice になっていない → 分割を推奨
-  - COOL チェック未実施 → STRIKE 中に定期リマインド
-  - イテレーション 3 回超 → スコープ再評価を強制
-```
-
-**Source:** [molfar.io: Rapid MVP Development](https://www.molfar.io/blog/rapid-prototyping-mvp-development) · [Netguru: Rapid MVP Development 2025](https://www.netguru.com/blog/rapid-mvp-development) · [Miro: What is Rapid Prototyping?](https://miro.com/prototyping/what-is-rapid-prototyping/)
+- Set the time-box before coding.
+- Use progressive build order by default.
+- Require a `COOL` check at least every `30 minutes`.
+- Force scope review after `3` iterations.

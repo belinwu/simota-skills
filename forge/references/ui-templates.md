@@ -1,5 +1,15 @@
 # Forge UI Component Templates
 
+> Purpose: provide minimal starter templates for the most common prototype UI shapes.
+
+## Contents
+
+- Basic form
+- List with search and pagination
+- Modal / dialog
+- Card layout
+- Async content states
+
 Rapid prototyping UI templates for common patterns.
 
 ---

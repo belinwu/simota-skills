@@ -1,5 +1,14 @@
 # Forge Backend PoC Templates
 
+> Purpose: provide the smallest useful backend scaffolds for prototype-only server behavior.
+
+## Contents
+
+- Express CRUD
+- Fastify CRUD
+- In-memory storage
+- WebSocket example
+
 Minimal server templates for rapid prototyping.
 
 ---

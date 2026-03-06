@@ -1,5 +1,13 @@
 # Forge Muse Integration
 
+> Purpose: hand functional prototypes to Muse for token-driven polish without losing implementation context.
+
+## Contents
+
+- `MUSE_HANDOFF`
+- Style migration guide
+- Common conversion patterns
+
 Design handoff templates for polish and styling.
 
 ---

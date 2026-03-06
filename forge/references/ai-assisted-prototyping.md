@@ -1,195 +1,107 @@
 # AI-Assisted Prototyping Guide
 
-> AI ツール活用のプロトタイピング、Vibe Coding、ツール選定、制限事項、ワークフロー統合
+> Purpose: use AI to accelerate Forge safely without handing it architecture, domain truth, or quality judgment.
 
-## 1. AI プロトタイピング・ツールマップ
+## Contents
 
-### カテゴリ別ツール
+- Tool map
+- Phase-by-phase use
+- Prompt strategy
+- Safe use boundaries
+- Quality checks
 
-| カテゴリ | ツール | 強み | 制限 |
-|---------|-------|------|------|
-| **汎用 AI チャット** | Claude, ChatGPT | コンセプト検証・コード生成 | 状態管理・複数画面が苦手 |
-| **オールインワン** | Bolt, Lovable, Replit | リアルタイムプレビュー・フルスタック | 複雑なビジネスロジック困難 |
-| **デザイン→コード** | Vercel v0, Figma Make | Figma/スクリーンショットからコード | デザインシステム知識が必要 |
-| **IDE 統合** | Claude Code, GitHub Copilot, Cursor | 既存プロジェクトへの統合 | プロジェクトコンテキスト依存 |
+## Tool Map
 
-### Forge フェーズ別の AI 活用
+| Category | Examples | Best use | Common weakness |
+|---|---|---|---|
+| General AI chat | Claude, ChatGPT | concept shaping, boilerplate, quick variants | weak long-range state management |
+| Design-to-code tools | v0, Lovable, Make-style builders | fast visual scaffolds | low reliability for nuanced behavior |
+| IDE assistants | Claude Code, Cursor, Copilot | local integration and repetitive edits | quality depends on existing project context |
 
-| フェーズ | AI 活用方法 | 具体例 |
-|---------|-----------|--------|
-| **SCAFFOLD** | コンセプト壁打ち・技術選定 | 「この UI を React で作る最速の方法は？」 |
-| **STRIKE** | ボイラープレート生成・UI 骨格 | 「ユーザー一覧テーブルの TSX を生成して」 |
-| **COOL** | バグ修正・コードレビュー | 「このコンポーネントが表示されない原因は？」 |
-| **PRESENT** | デモ資料・テスト手順作成 | 「このプロトタイプのテスト手順を書いて」 |
+## Best Use by Forge Phase
 
----
+| Forge phase | Use AI for | Do not delegate |
+|---|---|---|
+| `SCAFFOLD` | option generation, stack choice, slice framing | deciding product truth without evidence |
+| `STRIKE` | boilerplate, starter TSX, mock handlers, sample data | complex domain rules or final architecture |
+| `COOL` | quick bug triage, edge-case prompts, checklist generation | final quality judgment |
+| `PRESENT` | demo steps, summary bullets, validation prompts | stakeholder decision-making |
 
-## 2. AI プロトタイピングのベストプラクティス
+## Prompt Strategy
 
-### 効果的なプロンプト戦略
+Use staged prompts instead of one giant ask:
 
-```
-原則 1: コンテキストを先に提供
-  Bad:  「ダッシュボードを作って」
-  Good: 「React + Tailwind で、SaaS の管理者ダッシュボードを作りたい。
-         ユーザー数・収益・最近のアクティビティを表示する。
-         モックデータはハードコードで OK。」
+1. Ask for the minimum skeleton.
+2. Ask for one interaction.
+3. Ask for one mock strategy.
+4. Ask for review against the current hypothesis.
 
-原則 2: 段階的に依頼（Single Logical Change）
-  Bad:  「ユーザー管理画面全体を作って（一覧・詳細・編集・削除）」
-  Good: Step 1「ユーザー一覧テーブルを表示するコンポーネントを作って」
-        Step 2「行クリックで詳細モーダルを表示して」
-        Step 3「編集フォームを追加して」
+Good prompt qualities:
+- explicit scope
+- explicit time-box
+- declared prototype type: `Throwaway` or `Evolutionary`
+- declared framework and output files
+- one request per pass
 
-原則 3: 制約を明示
-  Bad:  「かっこいい UI にして」
-  Good: 「shadcn/ui の Table コンポーネントを使って。
-         カラム: 名前・メール・ロール・作成日。
-         ソート可能にして。」
-```
+## Safe AI Boundaries
 
-### AI が得意なこと / 苦手なこと
+AI is good at:
+- CRUD UI skeletons
+- form and table scaffolds
+- starter `MSW` handlers
+- realistic sample data shapes
+- repetitive boilerplate
 
-| AI が得意 | AI が苦手 |
-|----------|----------|
-| CRUD UI の骨格生成 | 複雑な状態管理 |
-| Tailwind スタイリング | ピクセルパーフェクトなデザイン |
-| 型定義の生成 | ドメイン固有のビジネスロジック |
-| MSW ハンドラーの雛形 | 複数サービス間の連携 |
-| エラー状態の追加 | セキュリティ要件の実装 |
-| テストデータの生成 | パフォーマンス最適化 |
-| コンポーネント分割の提案 | アーキテクチャ全体設計 |
+AI is weak at:
+- hidden business rules
+- multi-service orchestration
+- production-ready state architecture
+- long-lived maintainability decisions
 
----
+Safe Vibe Coding scope:
+- throwaway demos
+- internal exploration
+- quick local-only prototypes
 
-## 3. Vibe Coding とプロトタイピング
+Ask first before relying on AI-generated structure when:
+- the prototype is intended to evolve into production
+- the domain has non-obvious business constraints
+- the prototype spans multiple services
 
-### Vibe Coding とは
+## One-Day Prototype Pattern
 
-```
-定義（2025 年〜）:
-  自然言語の指示で AI にコードを生成させ、結果をテストしながら
-  反復的に改善する開発手法。従来のコーディングと異なり、
-  コードの詳細な理解よりも「意図の伝達」に重点を置く。
+Morning:
+- frame the hypothesis
+- generate the base UI
+- connect fixtures or `MSW`
 
-Forge との親和性:
-  - プロトタイピングは「完璧なコード」が不要 → Vibe Coding の最適領域
-  - 高速イテレーション → AI との対話で実現
-  - 仮説検証が目的 → コード品質 < 検証速度
-```
+Afternoon:
+- add interaction and failure states
+- run `COOL` checks
+- prepare the demo and decision notes
 
-### Vibe Coding の安全な適用範囲
+## Quality Checks for AI-Generated Code
 
-| 適用 OK | 適用 NG |
-|---------|---------|
-| UI コンポーネントのプロトタイプ | 認証/認可フロー |
-| モックデータ生成 | 決済処理 |
-| レイアウト・スタイリング | データベースマイグレーション |
-| インタラクションの検証 | セキュリティ関連コード |
-| デモ用のフルページ | 本番 API エンドポイント |
+Check these before accepting AI output:
 
-### Vibe Coding 利用時の注意
+- build passes
+- component actually renders
+- mock contract matches expected field names
+- no unexplained `any`
+- no silent missing states
+- no invented API behavior
+- no hidden third-party dependency creep
 
-```
-必ず守ること:
-  1. 生成コードの型定義は確認する（型エラーは連鎖する）
-  2. 本番に持ち込む場合は必ずレビュー
-  3. forge-insights.md に「AI 生成」のタグを付ける
-  4. セキュリティ関連は AI 生成を使わない
+Common failure signals:
+- wrong framework API usage
+- stale library syntax
+- inconsistent data shape
+- missing loading / error state
+- unexplained business assumptions
 
-開発者調査（2025）:
-  - 84% の開発者が AI を使用または使用予定
-  - 46% が AI 生成コードの正確性を信頼していない
-  → プロトタイプ限定なら許容、本番は人間レビュー必須
-```
+## Forge Integration Rules
 
----
-
-## 4. AI プロトタイピング・ワークフロー
-
-### 1 日プロトタイプの流れ
-
-```
-午前（SCAFFOLD + STRIKE 前半）:
-  09:00 - コンセプト整理・仮説定義
-  09:30 - AI で UI 骨格を生成（v0 or Claude Code）
-  10:00 - 生成コードを調整・型定義を確認
-  11:00 - モックデータ接続（AI で MSW ハンドラー生成）
-  12:00 - 昼休み
-
-午後（STRIKE 後半 + COOL + PRESENT）:
-  13:00 - インタラクション追加（AI でイベントハンドラー生成）
-  14:00 - エラー/ローディング状態の追加
-  15:00 - COOL チェック（ビルド・表示・操作確認）
-  16:00 - forge-insights.md 作成
-  16:30 - PRESENT（デモ + ADOPT/ITERATE/DISCARD 判定）
-```
-
-### AI ツール選定ガイド
-
-```
-判定基準:
-
-既存プロジェクトへの追加か？
-  │
-  ├─ Yes → Claude Code / Cursor（プロジェクトコンテキスト活用）
-  │
-  └─ No → 新規プロトタイプ
-           │
-           ├─ UI デザインが先にある？
-           │   Yes → Vercel v0 / Figma Make
-           │   No ↓
-           │
-           ├─ フルスタックが必要？
-           │   Yes → Bolt / Lovable / Replit
-           │   No ↓
-           │
-           └─ UI コンポーネントのみ → Claude Code + shadcn/ui
-```
-
----
-
-## 5. AI 生成コードの品質管理
-
-### プロトタイプ限定の品質基準
-
-| チェック項目 | 必須 | 推奨 | 不要 |
-|------------|------|------|------|
-| TypeScript コンパイル | ✓ | | |
-| 型定義の正確性 | ✓ | | |
-| コンポーネントの表示 | ✓ | | |
-| 基本インタラクション | ✓ | | |
-| エラー状態の考慮 | | ✓ | |
-| アクセシビリティ | | | ✓ |
-| パフォーマンス | | | ✓ |
-| テストカバレッジ | | | ✓ |
-
-### AI 生成コードの典型的な問題
-
-| 問題 | 頻度 | 対処 |
-|------|------|------|
-| 型の不整合 | 高 | 生成後に手動確認 |
-| 不要な依存追加 | 中 | import を確認 |
-| 古い API の使用 | 中 | フレームワークバージョン明記 |
-| ハードコードされた値 | 高 | プロトタイプでは許容 |
-| 過剰な抽象化 | 中 | シンプルに戻す |
-
----
-
-## 6. Forge との連携
-
-```
-Forge での活用:
-  1. SCAFFOLD フェーズで AI ツール選定ガイドを適用
-  2. STRIKE フェーズで段階的プロンプト戦略を使用
-  3. COOL フェーズで AI 生成コードの品質チェックを実施
-  4. forge-insights.md に AI 活用の記録を含める
-
-品質ゲート:
-  - AI 生成コードの TypeScript エラー → STRIKE 中に解決必須
-  - セキュリティ関連コードの AI 生成 → ブロック
-  - 本番ハンドオフ時の AI 生成コード → レビュー必須タグ付け
-  - AI ツールの選定理由が不明 → SCAFFOLD で明確化
-```
-
-**Source:** [Product School: AI Prototyping Guide](https://productschool.com/blog/artificial-intelligence/ai-prototyping) · [Parallel HQ: AI-Powered Prototyping Tools 2025](https://www.parallelhq.com/blog/ai-powered-prototyping-tools) · [Alloy: AI Frontend Code Generator 2026](https://alloy.app/library/ai-frontend-code-generator) · [Stack Overflow Developer Survey 2025](https://survey.stackoverflow.co/2025/)
+- Use AI to accelerate scaffolding, not to define the prototype’s meaning.
+- Require a human review during `COOL`.
+- Resolve TypeScript or build errors before `PRESENT`.
+- Document why a given AI tool was chosen when the prototype survives beyond a quick check.
