@@ -1,107 +1,116 @@
 # Multi-Agent System Design Anti-Patterns
 
-> マルチエージェントアーキテクチャの落とし穴、協調パターンの失敗、スケーリングの罠、トポロジー選択ミス
+**Purpose:** Collaboration-topology pitfalls and coordination-tax guidance.
+**Read when:** The design may be over-orchestrated or using the wrong multi-agent pattern.
 
-## 1. マルチエージェント設計 7 大アンチパターン
+## Contents
+- 1. The Seven Core Multi-Agent Anti-Patterns
+- 2. Collaboration Pattern Selection
+- 3. Coordination Tax
+- 4. Architect Integration
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **MA-01** | **早すぎるマルチエージェント化** | 単一エージェントで十分な問題にマルチエージェントを導入 | デバッグ困難、コスト爆発、レイテンシ増大 | まず単一エージェント + ツールで最適化、限界に達してから分割 |
-| **MA-02** | **プロンプティングの誤謬** | システムレベルの協調失敗をプロンプト改善で解決しようとする | 同じ失敗の繰り返し、プロンプト肥大化 | アーキテクチャ自体の見直し（構造問題は構造で解決） |
-| **MA-03** | **スーパーバイザーボトルネック** | 全タスクが中央オーケストレーターを経由 | レイテンシスパイク、コンテキストウィンドウ枯渇 | 階層化またはピアツーピアパターンで分散 |
-| **MA-04** | **スケーリング幻想** | エージェント追加で性能が線形に向上すると期待 | 性能頭打ち・低下、協調オーバーヘッド増大 | 協調税（coordination tax）を考慮した設計 |
-| **MA-05** | **トポロジー不一致** | 全問題に同一アーキテクチャを適用 | 一部タスクで著しい性能低下 | タスク特性に応じたパターン選択（下表参照） |
-| **MA-06** | **無限ループ** | エージェント間でタスクを無限にバウンス | 解決なしのコスト消費、デバッグ不能 | イテレーション制限、タイムアウト、停止条件の必須化 |
-| **MA-07** | **コンテキスト蓄積** | ステートフルパターンでトークンが際限なく増大 | トークン予算超過、品質劣化 | コンテキスト要約、選択的記憶、ウィンドウ管理 |
+> Common multi-agent coordination failures: premature decomposition, supervisor bottlenecks, runaway scaling assumptions, topology mismatch, and context bloat.
 
----
+## 1. The Seven Core Multi-Agent Anti-Patterns
 
-## 2. 協調パターンの選択指針
-
-| パターン | 最適な用途 | リスク | Architect エコシステムでの対応 |
-|----------|-----------|--------|---------------------------|
-| **Supervisor-based（直列）** | 順序的推論、コンプライアンスチェック | 認知ボトルネック、レイテンシ | Nexus のハブ＆スポーク |
-| **Blackboard（共有メモリ）** | 創造的タスク、反復的改善 | 外部ストレージ必要、協調オーバーヘッド | PROJECT.md / journal の共有 |
-| **Peer-to-peer** | 探索、発見、ナビゲーション | 断片化、検証なしのループ | エージェント間直接ハンドオフ |
-| **Swarm** | 並列調査、大量探索 | トークン消費、ドリフト、決定なき量産 | Rally による並列実行 |
-| **Hybrid（推奨）** | 高速並列 + 定期的集約 | 設計複雑性 | Nexus + 専門エージェント群 |
-
-```
-パターン選択の 3 つの質問（設計前に必ず確認）:
-
-  Q1: Organization — このタスクの情報フローに合う協調パターンは？
-    → 順序的 → Supervisor / Handoffs
-    → 並列的 → Subagents / Router
-    → 反復的 → Blackboard / Evaluator-Optimizer
-
-  Q2: Hiring — 各役割にどのモデル/エージェントが適切か？
-    → 生成・計画 → Decoder-only（GPT, Claude）
-    → 分析・検証 → Encoder-only（BERT 系）
-    → 推論・論理 → Reasoning model（o1, Claude thinking）
-
-  Q3: Scaling Risk — 複雑性増大時にどう破綻するか？
-    → 協調税の非線形増大
-    → コンテキストウィンドウの枯渇
-    → エラーの増幅（amplification）
-```
+| # | Anti-Pattern | Problem | Symptoms | Mitigation |
+|---|-------------|---------|----------|------------|
+| **MA-01** | **Premature Multi-Agent Design** | A multi-agent system is introduced when a single agent is enough | Hard debugging, exploding cost, higher latency | Optimize the single-agent-plus-tools path first |
+| **MA-02** | **Prompting Fallacy** | System-level coordination failures are treated like prompt-only problems | The same failure repeats while the prompt grows | Revisit the architecture itself |
+| **MA-03** | **Supervisor Bottleneck** | Every task routes through one orchestrator | Latency spikes and context-window exhaustion | Use hierarchical or peer patterns where appropriate |
+| **MA-04** | **Scaling Illusion** | More agents are assumed to improve performance linearly | Performance plateaus or declines while coordination overhead grows | Design with coordination tax in mind |
+| **MA-05** | **Topology Mismatch** | The same architecture is applied to every task | Some task classes perform much worse | Match topology to task characteristics |
+| **MA-06** | **Infinite Bounce Loop** | Tasks bounce forever between agents | Cost burns without resolution and debugging becomes impossible | Require iteration caps, timeouts, and termination conditions |
+| **MA-07** | **Context Accumulation** | Stateful patterns grow token usage without bound | Token-budget overflow and degraded quality | Use summarization, selective memory, and window management |
 
 ---
 
-## 3. 協調税（Coordination Tax）
+## 2. Collaboration Pattern Selection
+
+| Pattern | Best Use | Risk | Architect Ecosystem Mapping |
+|---------|----------|------|-----------------------------|
+| **Supervisor-based (serial)** | Ordered reasoning, compliance checks | Cognitive bottleneck, latency | Nexus hub-and-spoke |
+| **Blackboard (shared memory)** | Creative work, iterative refinement | External storage needs, coordination overhead | Shared `PROJECT.md` and journal |
+| **Peer-to-peer** | Exploration, discovery, navigation | Fragmentation and unverified loops | Direct agent-to-agent handoff risk |
+| **Swarm** | Large parallel search | Token burn, drift, output sprawl | Rally-style parallel execution |
+| **Hybrid** | Fast parallel work with periodic aggregation | Design complexity | Nexus plus specialist agents |
 
 ```
-マルチエージェントの隠れコスト:
+Three design questions to ask before selecting a pattern:
 
-  通信コスト:
-    - エージェント間のメッセージパッシング
-    - コンテキスト共有のためのトークン消費
-    - ハンドオフ時の情報損失
+  Q1: Organization — what information flow fits the task?
+    → Sequential → Supervisor / Handoffs
+    → Parallel   → Subagents / Router
+    → Iterative  → Blackboard / Evaluator-Optimizer
 
-  レイテンシ:
-    - 直列実行: 各エージェントの応答時間の合計
-    - 並列実行: 最遅エージェントがボトルネック
-    - 集約: 結果統合の追加処理時間
+  Q2: Hiring — which model or agent type fits each role?
+    → Generation and planning → decoder-style reasoning model
+    → Analysis and verification → evaluation-oriented model or agent
+    → Logic-heavy reasoning → dedicated reasoning-capable model
 
-  デバッグ複雑性:
-    - 10-50+ の LLM コール分析が必要
-    - 障害の因果関係追跡が困難
-    - 再現性の低さ（非決定的な動作）
-
-  品質リスク:
-    - エラーの複合（compounding errors）
-    - 中間ステップでのハルシネーション注入
-    - タスク境界の曖昧化
-
-判断基準:
-  ✅ マルチエージェントが正当化される場合:
-    - 明確に異なるドメイン知識が必要
-    - 複数の会話コンテキストが必要
-    - ツールセットが大きすぎて単一プロンプトに収まらない
-
-  ❌ マルチエージェントが過剰な場合:
-    - 単一エージェント + ツールで解決可能
-    - 再現性と予測可能性が最優先
-    - コストとレイテンシの制約が厳しい
+  Q3: Scaling risk — how will the design fail as complexity grows?
+    → Nonlinear coordination tax
+    → Context-window exhaustion
+    → Error amplification across stages
 ```
 
 ---
 
-## 4. Architect との連携
+## 3. Coordination Tax
 
 ```
-Architect での活用:
-  1. ANALYZE フェーズでパターン選択の 3 質問を実施
-  2. 新エージェント設計時に MA-01〜07 のスクリーニング
-  3. エコシステム拡張時に協調税を事前評価
-  4. Nexus ルーティング設計時にトポロジー適合性を検証
+Hidden costs of multi-agent systems:
 
-品質ゲート:
-  - 単一エージェントで解決可能 → マルチエージェント化を却下（MA-01 防止）
-  - プロンプト改善を 3 回以上試行 → アーキテクチャ見直し（MA-02 防止）
-  - 全ルートが Nexus 経由 → 階層化/分散の検討（MA-03 防止）
-  - エージェント追加で性能低下 → 協調税の再評価（MA-04 防止）
-  - 停止条件未設定 → イテレーション制限必須化（MA-06 防止）
-  - ステートフルパターン → コンテキスト管理戦略必須（MA-07 防止）
+  Communication cost:
+    - Message passing between agents
+    - Token spend for shared context
+    - Information loss during handoff
+
+  Latency:
+    - Serial execution accumulates response times
+    - Parallel execution is bottlenecked by the slowest branch
+    - Aggregation adds merge overhead
+
+  Debugging complexity:
+    - Requires analysis of 10-50+ LLM calls
+    - Causal tracing is harder
+    - Non-determinism reduces reproducibility
+
+  Quality risk:
+    - Compounding errors
+    - Hallucination injected in intermediate stages
+    - Blurred task boundaries
+
+Decision rule:
+  ✅ Multi-agent is justified when:
+    - Clearly different domain expertise is required
+    - Multiple conversation contexts must be maintained
+    - The tool surface no longer fits one prompt responsibly
+
+  ❌ Multi-agent is excessive when:
+    - A single agent plus tools can solve the task
+    - Reproducibility and predictability matter most
+    - Cost and latency budgets are tight
+```
+
+---
+
+## 4. Architect Integration
+
+```
+How Architect uses this reference:
+  1. Ask the three pattern-selection questions during `ANALYZE`
+  2. Screen for MA-01 through MA-07 when proposing new agents
+  3. Estimate coordination tax before expanding the ecosystem
+  4. Validate topology fit when designing Nexus routing
+
+Quality gates:
+  - Solvable by one agent → reject multi-agent expansion (prevents MA-01)
+  - `3+` failed prompt-only iterations → revisit architecture (prevents MA-02)
+  - Every route passes through one hub → consider hierarchy or distribution (prevents MA-03)
+  - More agents reduce performance → reassess coordination tax (prevents MA-04)
+  - No termination condition → require iteration cap (prevents MA-06)
+  - Stateful design without context strategy → require memory management plan (prevents MA-07)
 ```
 
 **Source:** [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) · [O'Reilly: Designing Effective Multi-Agent Architectures](https://www.oreilly.com/radar/designing-effective-multi-agent-architectures/) · [LangChain: Choosing the Right Multi-Agent Architecture](https://blog.langchain.com/choosing-the-right-multi-agent-architecture/)

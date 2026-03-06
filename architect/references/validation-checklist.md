@@ -1,5 +1,21 @@
 # Validation Checklist
 
+**Purpose:** Structured validation checklist for generated skill files.
+**Read when:** You need to verify completeness, quality, or Nexus compatibility.
+
+## Contents
+- Overview
+- Validation Categories
+- 1. Structure Validation (REQUIRED)
+- 2. Content Quality Validation
+- 3. Overlap Check Validation
+- 4. Nexus Compatibility Validation
+- 5. Style & Conventions Validation
+- Validation Report Template
+- Quick Validation Checklist
+- 6. Context Efficiency Validation (OPTIONAL)
+- Automated Validation Script
+
 Complete quality validation checklist for generated agent specifications.
 
 ---
@@ -39,7 +55,7 @@ Every generated SKILL.md must pass this validation checklist before being consid
 - [ ] **S1.2** `description` field present and valid
   - Japanese language
   - Maximum 100 characters
-  - Includes usage trigger (〜な時に使用)
+  - Includes a usage trigger written in Japanese
 
 ### HTML Comment Section
 
@@ -384,7 +400,7 @@ Validate context optimization when COMPRESS phase has been applied.
   - Boilerplate sections identified and measured
   - Deduplication opportunities documented or applied
 
-- [ ] **E6.3** Ma/間 compliance checked
+- [ ] **E6.3** Ma layout compliance checked
   - Zone 1 (first 15%): Identity and boundaries present
   - Zone 4 (last 15%): Actionable templates present
   - Separator frequency: `---` every 50-80 lines

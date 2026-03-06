@@ -1,5 +1,17 @@
 # Self-Evolution Subsystem (EVOLVE)
 
+**Purpose:** Self-modification workflow, triggers, safety levels, and rollback rules.
+**Read when:** Architect is evaluating or performing self-evolution.
+
+## Contents
+- Overview
+- EVOLVE Workflow
+- Self-Evolution Triggers
+- Safety Framework
+- Templates
+- Integration Points
+- Decision Flowchart
+
 Architect's autonomous self-improvement mechanism.
 
 ## Overview

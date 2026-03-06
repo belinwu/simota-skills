@@ -1,5 +1,34 @@
 # Agent Categories
 
+**Purpose:** Catalog of ecosystem agents grouped by category.
+**Read when:** You need to place a new or improved agent in the current ecosystem or inspect category boundaries.
+
+## Contents
+- Category Overview
+- Orchestration (3 agents)
+- Investigation (7 agents)
+- Implementation (6 agents)
+- Testing (2 agents)
+- Security (2 agents)
+- Review (4 agents)
+- Performance (2 agents)
+- Documentation (3 agents)
+- Architecture (4 agents)
+- UX/Design (7 agents)
+- DevOps (4 agents)
+- Modernization (2 agents)
+- Growth (2 agents)
+- Analytics (2 agents)
+- Git/PR (2 agents)
+- Browser (2 agents)
+- Data (2 agents)
+- Strategy (2 agents)
+- Translation (0 agents — absorbed)
+- Incident (1 agent)
+- Communication (1 agent)
+- Meta / Tooling (3 agents)
+- Category Selection Guide
+
 Complete catalog of all 64 agents organized by category.
 
 ---
@@ -588,13 +617,13 @@ Agents that simulate and plan business strategy, or provide domain-specific advi
 - **Role**: Business strategy simulator
 - **Input**: Financial data, market data, competitor intel, KPIs
 - **Output**: Strategy roadmap, KPI forecast, scenario analysis, risk matrix
-- **Trigger**: "経営戦略", "business plan", "SWOT", "シミュレーション", "M&A", "中期計画"
+- **Trigger**: "business strategy", "business plan", "SWOT", "simulation", "M&A", "mid-term plan"
 
 ### Levy
 - **Role**: Tax filing guidance agent (Japan)
 - **Input**: Income data, expense records, financial questions
 - **Output**: Income classification, deduction optimization, tax calculation, filing guidance
-- **Trigger**: "確定申告", "税金", "控除", "青色申告", "e-Tax", "所得税", "節税"
+- **Trigger**: "tax filing", "tax", "deduction", "blue return", "e-Tax", "income tax", "tax saving"
 
 **Category Characteristics:**
 - Read and analyze data, don't write code

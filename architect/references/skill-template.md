@@ -1,5 +1,17 @@
 # SKILL.md Template
 
+**Purpose:** Canonical template and section contract for generated skills.
+**Read when:** You are drafting or checking the structure of a skill package.
+
+## Contents
+- File Structure Overview
+- Complete SKILL.md Template
+- NEXUS_HANDOFF
+- Ma Layout Notes
+- Section Guidelines
+- Line Count Guidelines
+- Quality Checklist
+
 Complete template for generating new agent SKILL.md files.
 
 ---
@@ -23,7 +35,7 @@ Complete template for generating new agent SKILL.md files.
 ````markdown
 ---
 name: [AgentName]
-description: [日本語説明。100文字以内で、エージェントの目的と使用タイミングを記述。例：「〜を担当。〜が必要な時に使用。」]
+description: [Japanese description. Keep it within 100 characters and state the agent purpose plus when to use it.]
 ---
 
 <!--
@@ -60,15 +72,15 @@ COLLABORATION PATTERNS:
 ...
 ```yaml
 questions:
-  - question: "[質問文。？で終わる明確な質問]"
+  - question: "[Clear question ending with a question mark]"
     header: "[Short Label]"  # Max 12 chars
     options:
-      - label: "[Option 1]（推奨）"
-        description: "[このオプションを選んだ場合の結果]"
+      - label: "[Option 1] (Recommended)"
+        description: "[Outcome if this option is selected]"
       - label: "[Option 2]"
-        description: "[このオプションを選んだ場合の結果]"
+        description: "[Outcome if this option is selected]"
       - label: "[Option 3]"
-        description: "[このオプションを選んだ場合の結果]"
+        description: "[Outcome if this option is selected]"
     multiSelect: false
 ```
 
@@ -319,7 +331,7 @@ Follow `_common/GIT_GUIDELINES.md` for commit messages and PR titles:
 
 ---
 
-## Ma/間 Layout Notes
+## Ma Layout Notes
 
 When generating SKILL.md, consider attention-optimized placement of sections.
 
@@ -340,7 +352,7 @@ When generating SKILL.md, consider attention-optimized placement of sections.
 | Standard | 600-1000 | 2500-4000 | 12% |
 | Extended | 1000-1400 | 4000-5500 | 15% |
 
-See `references/context-compression.md` for detailed compression strategies and Ma/間 principles.
+See `references/context-compression.md` for detailed compression strategies and Ma principles.
 
 ---
 
@@ -351,7 +363,7 @@ See `references/context-compression.md` for detailed compression strategies and 
 ```yaml
 ---
 name: AgentName        # PascalCase, 1-2 syllables preferred
-description: 日本語説明  # Max 100 chars, include trigger
+description: Japanese description  # Max 100 chars, include trigger
 ---
 ```
 

@@ -1,5 +1,18 @@
 # Enhancement Proposal Framework
 
+**Purpose:** Scoring and proposal framework for improving an existing skill.
+**Read when:** You are evaluating or planning an improvement instead of creating a new skill.
+
+## Contents
+- Overview
+- Health Score Assessment
+- Grade Interpretation
+- Enhancement Proposal Template
+- Priority Classification
+- Improvement Workflow (Detailed)
+- Proposal Presentation Format
+- Integration with Review Loop
+
 Standardized methodology for proposing, evaluating, and tracking improvements to existing agents.
 
 ---
@@ -82,7 +95,7 @@ Applied as a tiebreaker on top of the base 100-point Health Score.
 |-----------|--------|----------|
 | Boilerplate ratio < 15% | 3 | Deduplication applied to common sections |
 | Token budget within target | 3 | Section-level token estimates documented |
-| Ma/間 layout compliance | 2 | Zone 1-4 structure followed |
+| Ma layout compliance | 2 | Zone 1-4 structure followed |
 | Compression equivalence verified | 2 | 4-axis verification passed |
 
 **Maximum Bonus: 10 points** (added to base score, used only as tiebreaker for same-grade agents)
@@ -176,7 +189,7 @@ Criteria:
 - Automation of manual processes
 - Advanced capabilities beyond core mission
 - Future-proofing for anticipated ecosystem growth
-- Context efficiency optimization (token budget, Ma/間 layout, boilerplate reduction)
+- Context efficiency optimization (token budget, Ma layout, boilerplate reduction)
 
 ---
 

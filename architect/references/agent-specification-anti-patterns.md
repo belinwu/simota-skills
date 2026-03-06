@@ -1,202 +1,210 @@
 # Agent Specification Anti-Patterns
 
-> エージェント仕様設計の落とし穴、システムプロンプト設計ミス、ツール設計失敗、役割定義の罠
+**Purpose:** Prompt, tool, boundary, and role-definition pitfalls for agent specs.
+**Read when:** A proposed skill looks vague, overloaded, unsafe, or poorly tooled.
 
-## 1. エージェント仕様設計 8 大アンチパターン
+## Contents
+- 1. The Eight Core Specification Anti-Patterns
+- 2. System Prompt Design Best Practices
+- 3. Tool Design Principles
+- 4. Role-Definition Patterns
+- 5. Separating Planning and Execution
+- 6. Architect Integration
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **AS-01** | **タスク過負荷** | 単一エージェントに多数の異なるタスクを詰め込む | ハルシネーション増加、タスク漏れ、品質低下 | 1 エージェント 1 責務、責務が多い場合は分割 |
-| **AS-02** | **曖昧な指示** | 解釈の余地がある指示を与える | 出力のばらつき、意図しない動作 | 具体的かつ明示的な指示、制約条件の明記 |
-| **AS-03** | **安全策の欠如** | ガードレール・停止条件なしで自律動作させる | カスケードエラー、暴走実行 | 各ステップでバリデーション、max_iterations 設定 |
-| **AS-04** | **ツール文書不足** | ツールの名前・説明・パラメータが不十分 | 誤ったツール選択、セマンティック不整合 | 例示付きの詳細なツール仕様、エッジケース明記 |
-| **AS-05** | **生 API 露出** | REST API をそのままツールとして公開 | モデルが API の内部構造を理解できない | ビジネスタスク指向のツール設計（例: `POST /calendar/v1/events` → `Schedule Meeting`） |
-| **AS-06** | **冗長プロンプト** | 2000+ ワードの過剰に詳細なプロンプト | 処理速度低下、注意力分散、遵守率低下 | 本質的指示のみ、詳細は references/ に分離 |
-| **AS-07** | **コンテキスト不提供** | モデルが背景知識を持っていると仮定する | 不適切な推測、ドメインエラー | 必要な全コンテキストを明示的に提供 |
-| **AS-08** | **静的プロンプト固着** | フィードバックループなしで初回プロンプトを維持 | 繰り返し同じ失敗、改善停滞 | 反復的改良サイクル、失敗パターンの分析と反映 |
+> Common failures in agent specification: weak system prompts, poor tool design, unsafe autonomy, and blurry role definitions.
+
+## 1. The Eight Core Specification Anti-Patterns
+
+| # | Anti-Pattern | Problem | Symptoms | Mitigation |
+|---|-------------|---------|----------|------------|
+| **AS-01** | **Task Overload** | One agent is packed with too many unrelated tasks | More hallucination, missed work, lower quality | Keep one agent focused on one responsibility; split when responsibilities multiply |
+| **AS-02** | **Ambiguous Instructions** | Instructions leave too much room for interpretation | Output variance and unintended behavior | Use explicit instructions and clear constraints |
+| **AS-03** | **Missing Safety Controls** | Autonomous behavior has no guardrails or stop conditions | Cascading errors and runaway execution | Add validation at each step and explicit stop conditions such as `max_iterations` |
+| **AS-04** | **Under-Documented Tools** | Tool names, descriptions, or parameters are incomplete | Wrong tool selection and semantic mismatch | Document tools with examples, constraints, and edge cases |
+| **AS-05** | **Raw API Exposure** | REST APIs are exposed directly as tools | The model cannot reason naturally about raw API structure | Design business-task-oriented tools instead |
+| **AS-06** | **Verbose Prompting** | The prompt is overloaded with 2000+ words of detail | Slower execution, diffused attention, worse compliance | Keep only essential instructions inline and move detail to `references/` |
+| **AS-07** | **Missing Context** | The model is expected to infer background knowledge | Wrong assumptions and domain errors | Provide all required context explicitly |
+| **AS-08** | **Static Prompt Lock-In** | The first prompt is kept forever without a feedback loop | The same mistakes repeat and improvement stalls | Use iterative improvement and feed back observed failure patterns |
 
 ---
 
-## 2. システムプロンプト設計のベストプラクティス
+## 2. System Prompt Design Best Practices
 
 ```
-効果的なシステムプロンプトの構造:
+Structure of an effective system prompt:
 
-  1. 役割定義（Role）:
+  1. Role definition:
      ✅ "You are Architect - the creative meta-designer who..."
-     ❌ "You are a helpful assistant"（汎用的すぎ）
-     → 明確なペルソナ、専門領域、他エージェントとの差別化
+     ❌ "You are a helpful assistant"
+     → Define persona, specialty, and differentiation clearly
 
-  2. 知識ベース（Knowledge）:
-     ✅ ドメイン固有の知識を構造化して提供
-     ❌ モデルの事前知識に依存
-     → RAG、references/、コンテキスト注入
+  2. Knowledge base:
+     ✅ Provide domain-specific knowledge in structured form
+     ❌ Rely on model pretraining alone
+     → Use `references/`, retrieval, and context injection deliberately
 
-  3. 応答ガイドライン（Response Guidelines）:
-     ✅ フォーマット、トーン、制約を明示
-     ❌ "適切に回答してください"
-     → 出力形式、禁止事項、品質基準を具体的に
+  3. Response guidelines:
+     ✅ Make format, tone, and constraints explicit
+     ❌ "Please answer appropriately"
+     → State output structure, prohibitions, and quality bars concretely
 
-  4. タスク定義（Task Definition）:
-     ✅ 段階的なワークフロー定義
-     ❌ "タスクを完了してください"
-     → フェーズ分離、チェックポイント、成功基準
+  4. Task definition:
+     ✅ Define staged workflow
+     ❌ "Complete the task"
+     → Separate phases, checkpoints, and success criteria
 
-  5. 制約事項（Constraints）:
-     ✅ Always / Ask first / Never の 3 層
-     ❌ 制約なし or 過剰制約
-     → 自律性と安全性のバランス
+  5. Constraints:
+     ✅ Use `Always / Ask first / Never`
+     ❌ No constraints or excessive constraints
+     → Balance autonomy and safety
 
-Ma/間 の適用:
-  - Primacy（最初の 15%）: 最も重要な役割定義と原則
-  - Recency（最後の 15%）: 記憶に残る行動指針
-  - Middle Sag（中間 70%）: 構造化で注意力低下を補償
+  Ma layout usage:
+    - Primacy (first 15%): role and principles
+    - Recency (last 15%): memorable operating guidance
+    - Middle Sag (middle 70%): use structure to offset attention drop
 ```
 
 ---
 
-## 3. ツール設計の原則
+## 3. Tool Design Principles
 
 ```
-ACI（Agent-Computer Interface）Excellence:
+ACI (Agent-Computer Interface) excellence:
 
-  設計原則（Anthropic 推奨）:
+  1. Clarity:
+     → Think from the model's point of view
+     → Make the tool instantly understandable
+     → Include examples, edge cases, and scope
 
-  1. 明確性（Clarity）:
-     → 「モデルの立場に立って考える」
-     → ツールの使い方が一目でわかるか？
-     → 例示、エッジケース、使用範囲を含める
+  2. Format choice:
+     → Prefer formats the model naturally recognizes
+     → Leave enough token budget for reasoning
+     → Eliminate friction such as manual line counting or awkward escaping
 
-  2. フォーマット選択:
-     → モデルが「自然に見たことのある」形式に近づける
-     → 十分なトークンで思考する余地を残す
-     → 行番号カウントや文字列エスケープなどの摩擦を排除
+  3. Poka-yoke:
+     → Make mistakes harder through argument design
+     → Remove ambiguous parameter names
+     → Use safe, helpful defaults
 
-  3. ポカヨケ:
-     → ミスを「困難にする」引数設計
-     → 曖昧なパラメータ名の排除
-     → デフォルト値の適切な設定
+  4. Iterative testing:
+     → Test with many input examples
+     → Observe actual model failure patterns
+     → Improve the tool contract from those failures
 
-  4. 反復テスト:
-     → 多数の入力例でテスト
-     → モデルがどんなミスをするか観察
-     → ミスパターンに基づいてツール仕様を改善
+Tool-design anti-patterns:
 
-ツール設計アンチパターン:
+  ❌ Similar-name tools:
+    `schedule_meeting` and `create_meeting` coexist
+    → Semantic confusion
 
-  ❌ 類似名ツール:
-    schedule_meeting と create_meeting が共存
-    → セマンティック不整合でモデルが混乱
+  ❌ Too many tools:
+    50+ tools attached to one agent
+    → Worse tool selection and more unintended calls
+    → Prefer 10-15 tools or staged loading
 
-  ❌ 過剰なツール数:
-    50+ ツールを単一エージェントに提供
-    → 選択精度低下、意図しないツール使用
-    → 10-15 ツール以下に制限、または段階的ロード
-
-  ❌ 未検証ツール出力:
-    ツール結果をそのまま次のステップに使用
-    → 不正データの伝播、カスケードエラー
-    → ツール出力のバリデーション必須化
+  ❌ Unvalidated tool output:
+    Tool results feed directly into later steps
+    → Invalid data propagates and cascades
+    → Validate tool outputs before reuse
 ```
 
 ---
 
-## 4. 役割定義の設計パターン
+## 4. Role-Definition Patterns
 
 ```
-効果的な役割定義の要素:
+Elements of an effective role definition:
 
-  1. アイデンティティ:
-     → 名前 + メタファー（"Motion creates emotion"）
-     → 原則（3-5 個、記憶可能な量）
-     → 他エージェントとの差別化ポイント
+  1. Identity:
+     → Name plus metaphor
+     → 3-5 memorable principles
+     → Clear differentiation from other agents
 
-  2. 境界（Boundaries）:
-     3 層構造が最も効果的:
-     - Always: 自律的に実行すべきこと
-     - Ask first: 確認が必要なこと
-     - Never: 絶対にしないこと
+  2. Boundaries:
+     Best pattern: three-layer boundary model
+     - Always: autonomous obligations
+     - Ask first: confirmation points
+     - Never: forbidden behavior
 
-  3. 能力の公開範囲:
-     → CAPABILITIES_SUMMARY: ルーティング用（外部可視）
-     → references/: 詳細知識（内部参照）
-     → 全てを SKILL.md に詰め込まない
+  3. Visibility of capabilities:
+     → `CAPABILITIES_SUMMARY`: routing-facing surface
+     → `references/`: internal detail
+     → Do not pack everything into `SKILL.md`
 
-  4. 協調パターン:
-     → INPUT/OUTPUT パートナーの明示
-     → ハンドオフテンプレートの定義
-     → 逆フィードバック経路の確保
+  4. Collaboration pattern:
+     → Explicit INPUT / OUTPUT partners
+     → Defined handoff templates
+     → Reverse-feedback path preserved
 
-役割定義アンチパターン:
+Role-definition anti-patterns:
 
   ❌ God Agent:
-    1 つのエージェントが全責務を担う
-    → 専門性の欠如、品質低下、スケール不能
+    One agent owns every responsibility
+    → Weak specialization, low quality, poor scalability
 
   ❌ Phantom Agent:
-    定義はあるが実際に使用されない
-    → エコシステムの肥大化、メンテ負荷
+    Defined but never used
+    → Ecosystem bloat and maintenance drag
 
   ❌ Clone Agent:
-    既存エージェントとの重複が 30%+
-    → 混乱、ルーティング曖昧性
+    `30%+` overlap with an existing agent
+    → Routing ambiguity and confusion
 
   ❌ Orphan Agent:
-    INPUT/OUTPUT パートナーが未定義
-    → エコシステムから孤立、活用されない
+    INPUT / OUTPUT partners are undefined
+    → Isolation from the ecosystem and low reuse
 ```
 
 ---
 
-## 5. 計画と実行の分離
+## 5. Separating Planning and Execution
 
 ```
-Dual-Mode Architecture（推奨パターン）:
+Recommended dual-mode architecture:
 
-  Plan Mode（計画フェーズ）:
-    - コンテキスト収集
-    - 要件の明確化
-    - アプローチの設計
-    - ユーザー確認
-    → 読み取り専用ツールのみ
+  Plan mode:
+    - Gather context
+    - Clarify requirements
+    - Design the approach
+    - Confirm with the user when required
+    → Read-only tools only
 
-  Act Mode（実行フェーズ）:
-    - ステップバイステップ実行
-    - 各ステップ後の検証
-    - 問題発生時の適応
-    → 全ツールアクセス
+  Act mode:
+    - Execute step by step
+    - Verify after each step
+    - Adapt when problems occur
+    → Full tool access as needed
 
-  ❌ アンチパターン: 計画なき実行
-    → 前提の誤りが後工程で発覚
-    → 手戻りコスト大
+  ❌ Anti-pattern: execution without planning
+    → Wrong assumptions surface late and create costly rework
 
-  ❌ アンチパターン: 過剰な計画
-    → 実行前に全てを予測しようとする
-    → 分析麻痺（analysis paralysis）
+  ❌ Anti-pattern: excessive planning
+    → Trying to predict everything before execution
+    → Analysis paralysis
 
-  ✅ 推奨: 計画 → 承認 → 実行 → 検証のサイクル
-    → Architect のフレームワーク:
-      UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE
+  ✅ Recommended cycle:
+    plan → approval when needed → execute → verify
+    → Architect maps this to `UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE`
 ```
 
 ---
 
-## 6. Architect との連携
+## 6. Architect Integration
 
 ```
-Architect での活用:
-  1. DESIGN フェーズで AS-01〜08 のスクリーニング
-  2. SKILL.md 生成時にシステムプロンプト構造を検証
-  3. ツール定義を含むエージェントは ACI 原則を適用
-  4. 役割定義で God/Phantom/Clone/Orphan をチェック
+How Architect uses this reference:
+  1. Screen for AS-01 through AS-08 during `DESIGN`
+  2. Validate system-prompt structure during skill generation
+  3. Apply ACI principles when the agent includes tools
+  4. Check for God / Phantom / Clone / Orphan patterns in role design
 
-品質ゲート:
-  - 責務 3+ 個の CAPABILITIES → 分割を検討（AS-01 防止）
-  - Always/Ask first/Never 未定義 → 3 層境界必須化（AS-03 防止）
-  - references/ なし → 詳細を分離（AS-06 防止）
-  - INPUT/OUTPUT パートナーなし → 協調パターン定義必須（Orphan 防止）
-  - 既存エージェントと重複 30%+ → 差別化または統合（Clone 防止）
-  - 使用実績なし → 削除を検討（Phantom 防止）
+Quality gates:
+  - `3+` major capabilities → consider splitting (prevents AS-01)
+  - Missing `Always / Ask first / Never` → require three-layer boundaries (prevents AS-03)
+  - No `references/` → move detail out of `SKILL.md` (prevents AS-06)
+  - No INPUT / OUTPUT partners → require collaboration pattern (prevents Orphan)
+  - `30%+` overlap → differentiate or merge (prevents Clone)
+  - No observed usage → consider removal (prevents Phantom)
 ```
 
 **Source:** [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) · [PromptHub: Prompt Engineering for AI Agents](https://www.prompthub.us/blog/prompt-engineering-for-ai-agents) · [Patronus AI: AI Agent Architecture](https://www.patronus.ai/ai-agent-development/ai-agent-architecture) · [Glaforge: AI Agentic Patterns and Anti-Patterns](https://glaforge.dev/talks/2025/12/02/ai-agentic-patterns-and-anti-patterns/)

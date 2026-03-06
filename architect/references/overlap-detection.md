@@ -1,5 +1,20 @@
 # Overlap Detection
 
+**Purpose:** Overlap-scoring method and confirmation thresholds.
+**Read when:** You must prove differentiation or decide whether overlap is too high.
+
+## Contents
+- Overview
+- Overlap Calculation Method
+- Overlap Categories
+- Overlap Detection Matrix
+- Threshold Guidelines
+- Common Overlap Scenarios
+- Differentiation Strategies
+- Overlap Report Template
+- Automated Overlap Detection
+- Exception Cases
+
 Rules and methods for detecting functional overlap between agents.
 
 ---

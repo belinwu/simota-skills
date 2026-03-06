@@ -1,213 +1,223 @@
 # Agent Evaluation & Guardrails
 
-> エージェント評価戦略、安全ガードレール、プロダクション対応、可観測性、継続的改善
+**Purpose:** Evaluation design, safety guardrails, and production-readiness rules for agent specifications.
+**Read when:** You are validating a skill or designing quality and safety checks.
 
-## 1. エージェント評価の 6 大アンチパターン
+## Contents
+- 1. The Six Core Evaluation Anti-Patterns
+- 2. Two-Layer Evaluation Architecture
+- 3. IVO (Immediately Validatable Output)
+- 4. Production Readiness Checklist
+- 5. Continuous Improvement Framework
+- 6. Human-on-the-Loop Design
+- 7. Architect Integration
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **AE-01** | **Vibe Check（雰囲気テスト）** | 「なんとなく動いている」で評価完了 | 本番障害で初めて問題発覚 | Golden Responses + LLM-as-a-Judge + 形式的評価フェーズ |
-| **AE-02** | **ベースライン不在** | よりシンプルな手法との比較なし | 複雑なエージェントが単純なプロンプトに劣る | 常にシンプルなベースラインと比較測定 |
-| **AE-03** | **Silent Confabulation** | RAG 使用でもハルシネーションが静かに混入 | ユーザーが信頼して誤情報を使用 | ソース引用強制 + IVO（即時検証可能出力） |
-| **AE-04** | **ポイントインタイム検証のみ** | 個別ステップの検証だけで全体を見ない | システム的な問題が検出されない | 実行トレース全体の分析（trace analysis） |
-| **AE-05** | **手動テストのみ** | 自動化された品質検証なし | テスト負荷増大、回帰見逃し | CI 統合、自動評価パイプライン |
-| **AE-06** | **静的評価** | 初期テストのみで継続的評価なし | 時間経過での品質劣化に気づかない | 継続的モニタリング + フィードバックループ |
+> Evaluation strategy, safety guardrails, production readiness, observability, and continuous improvement for agent designs.
 
----
+## 1. The Six Core Evaluation Anti-Patterns
 
-## 2. 2 層評価アーキテクチャ
-
-```
-Tier 1: リアルタイムガードレール（各ステップ検証）
-
-  ハルシネーション検出:
-    → 提供コンテキストに裏付けのない情報を検出
-    → 「情報源不明」フラグの自動付与
-
-  プロンプトインジェクション防御:
-    → 入力の悪意ある指示の検出・無効化
-    → 安全なデフォルト動作への切替
-
-  危険操作防止:
-    → 破壊的コマンドの事前ブロック
-    → 高リスク操作の human-in-the-loop 要求
-
-  品質基準チェック:
-    → 出力フォーマットの遵守確認
-    → ブランドボイス・トーンの一貫性
-    → 個人情報・機密情報の漏洩防止
-
-Tier 2: 構造的トレース分析（実行後検証）
-
-  ツール選択エラー:
-    → 誤ったツールの選択パターンを検出
-    → ツール仕様の改善フィードバック
-
-  指示解釈ミス:
-    → 意図と実行のギャップを特定
-    → システムプロンプトの改善提案
-
-  メモリ不整合:
-    → 会話内での矛盾を検出
-    → コンテキスト管理の改善
-
-  オーケストレーション障害:
-    → エージェント間連携の失敗パターン
-    → 協調アーキテクチャの改善提案
-```
+| # | Anti-Pattern | Problem | Symptoms | Mitigation |
+|---|-------------|---------|----------|------------|
+| **AE-01** | **Vibe Check** | Declaring success because the agent "kind of works" | The first real problem appears in production | Use Golden Responses, LLM-as-a-Judge, and a formal evaluation phase |
+| **AE-02** | **Missing Baseline** | Never comparing against a simpler approach | A complex agent performs worse than a simple prompt | Always benchmark against the simplest viable baseline |
+| **AE-03** | **Silent Confabulation** | Hallucinated claims slip through even with retrieval | Users trust and act on unsupported output | Enforce source citation and IVO output |
+| **AE-04** | **Point-in-Time Validation Only** | Validating isolated steps but not the full execution trace | Systemic failures remain invisible | Analyze the complete execution trace |
+| **AE-05** | **Manual Tests Only** | No automated quality verification | Testing effort grows and regressions slip through | Add CI integration and automated evaluation |
+| **AE-06** | **Static Evaluation** | Initial testing happens once, with no ongoing assessment | Quality degrades silently over time | Add continuous monitoring and feedback loops |
 
 ---
 
-## 3. IVO（Immediately Validatable Output）原則
+## 2. Two-Layer Evaluation Architecture
 
 ```
-IVO = ユーザーが一目で結果を検証できる出力設計
+Tier 1: Real-time guardrails (validate each step)
 
-  実践方法:
+  Hallucination detection:
+    → Detect information not grounded in provided context
+    → Attach an automatic "source unknown" flag when needed
 
-  1. ソース引用の強制:
-     → 「この情報は [source] に基づいています」
-     → 引用なしの主張にはフラグを付与
+  Prompt-injection defense:
+    → Detect and neutralize malicious instructions in input
+    → Fall back to safe default behavior
 
-  2. 構造化された出力:
-     → テーブル、リスト、コードブロックで明確に
-     → 曖昧な散文を避ける
+  Dangerous-operation prevention:
+    → Block destructive commands in advance
+    → Require human-in-the-loop for high-risk actions
 
-  3. 差分表示:
-     → Before/After で変更を可視化
-     → 「何が変わったか」を即座に理解可能
+  Quality checks:
+    → Verify output-format compliance
+    → Check brand voice and tone consistency when relevant
+    → Prevent leakage of personal or confidential information
 
-  4. 確認ポイントの設計:
-     → 重要な判断の前にユーザー確認
-     → 自動実行と手動確認の境界を明確に
+Tier 2: Structural trace analysis (post-execution validation)
 
-  エコシステムへの適用:
-    → SKILL.md の VALIDATE フェーズで IVO チェック
-    → エージェント出力が即座に検証可能か確認
-    → ハンドオフ時の情報完全性を担保
+  Tool-selection errors:
+    → Detect recurring wrong-tool patterns
+    → Feed improvements back into tool design
+
+  Instruction misinterpretation:
+    → Identify the gap between intent and execution
+    → Propose system-prompt improvements
+
+  Memory inconsistency:
+    → Detect contradictions inside the conversation or workflow
+    → Improve context management
+
+  Orchestration failures:
+    → Detect inter-agent coordination failure patterns
+    → Propose collaboration-architecture improvements
 ```
 
 ---
 
-## 4. プロダクション対応チェックリスト
+## 3. IVO (Immediately Validatable Output)
 
 ```
-エージェントのプロダクション準備:
+IVO = output that a user can verify at a glance
 
-  □ 仕様の完全性:
-    ✅ 役割、境界、協調パターンが明確に定義
-    ✅ CAPABILITIES_SUMMARY がルーティングに十分な情報を含む
-    ✅ references/ に専門知識が文書化
+  Practical rules:
 
-  □ 安全性:
-    ✅ Always/Ask first/Never の 3 層境界が定義
-    ✅ 停止条件（max_iterations）が設定
-    ✅ 破壊的操作の human-in-the-loop が設計
-    ✅ エラー時のフォールバック動作が定義
+  1. Enforce source citation:
+     → "This is based on [source]"
+     → Flag unsupported claims
 
-  □ 可観測性:
-    ✅ Activity Logging セクションが含まれる
-    ✅ journal エントリの基準が明確
-    ✅ ハンドオフの成功/失敗が追跡可能
+  2. Prefer structured output:
+     → Use tables, lists, and code blocks for clarity
+     → Avoid ambiguous narrative where verification matters
 
-  □ テスト:
-    ✅ Golden Responses（期待出力）が定義
-    ✅ エッジケースのシナリオが文書化
-    ✅ ベースラインとの比較が実施
-    ✅ VALIDATE フェーズの通過
+  3. Show diffs:
+     → Use Before / After views for changes
+     → Make the delta obvious immediately
 
-  □ 運用:
-    ✅ AUTORUN Support セクションが含まれる
-    ✅ Nexus Hub Mode に対応
-    ✅ 逆フィードバック経路が確保
-    ✅ 自己改善トリガーが定義（self-evolution 対応）
+  4. Design explicit confirmation points:
+     → Ask before major decisions when risk warrants it
+     → Keep the line between autonomous execution and manual confirmation clear
+
+  Ecosystem application:
+    → Run IVO checks during the `VALIDATE` phase
+    → Verify that agent outputs can be checked immediately
+    → Preserve handoff integrity across agent boundaries
 ```
 
 ---
 
-## 5. 継続的改善フレームワーク
+## 4. Production Readiness Checklist
 
 ```
-フィードバックループの 3 レベル:
+Production readiness for an agent design:
 
-  Level 1: 即時フィードバック（タスク内）
-    → 各ステップのバリデーション結果
-    → ツール使用の成功/失敗パターン
-    → コンテキスト内でのプロンプト適応
+  □ Specification completeness:
+    ✅ Role, boundaries, and collaboration patterns are explicit
+    ✅ `CAPABILITIES_SUMMARY` is sufficient for routing
+    ✅ Domain knowledge is documented in `references/`
 
-  Level 2: セッションフィードバック（タスク間）
-    → journal への INSIGHTS 記録
-    → 繰り返しパターンの検出
-    → Health Score の更新
+  □ Safety:
+    ✅ `Always / Ask first / Never` boundaries are defined
+    ✅ Stop conditions such as `max_iterations` are set when relevant
+    ✅ High-risk and destructive actions use human-in-the-loop
+    ✅ Fallback behavior exists for failure paths
 
-  Level 3: エコシステムフィードバック（システム横断）
-    → Lore による知識統合
-    → Darwin による進化トリガー
-    → Architect の INTROSPECT による自己改善
+  □ Observability:
+    ✅ `Activity Logging` exists
+    ✅ Journal entry criteria are clear
+    ✅ Handoff success and failure can be traced
 
-改善の優先度:
+  □ Testing:
+    ✅ Golden Responses are defined
+    ✅ Edge-case scenarios are documented
+    ✅ Baseline comparison is completed
+    ✅ The `VALIDATE` phase passes
 
-  P0（<24h）: 安全性問題 — ガードレール突破、破壊的動作
-  P1（<1wk）: 機能障害 — ツール選択エラー、ハンドオフ失敗
-  P2（<2wk）: 品質改善 — 出力精度向上、レイテンシ改善
-  P3（<1mo）: 最適化 — トークン効率、ドキュメント更新
-
-❌ アンチパターン: 改善なき運用
-  → 「動いているから触らない」は品質劣化の始まり
-  → モデル更新、要件変化で静かに性能が低下
-
-✅ 推奨: 計測 → 分析 → 改善の PDCA サイクル
-  → review-loop.md のトリガーに基づく定期レビュー
-  → Health Score の定量的追跡
+  □ Operations:
+    ✅ `AUTORUN Support` exists
+    ✅ Nexus Hub Mode is supported
+    ✅ Reverse-feedback channels exist
+    ✅ Self-improvement triggers are defined when applicable
 ```
 
 ---
 
-## 6. Human-on-the-Loop 設計
+## 5. Continuous Improvement Framework
 
 ```
-自律性と監視のバランス:
+Three feedback-loop levels:
 
-  Routine（自律的実行）:
-    → 定型的な判断、低リスク操作
-    → 例: コード検索、ドキュメント読み取り、フォーマット変換
+  Level 1: Immediate feedback (inside one task)
+    → Validation result for each step
+    → Tool-usage success and failure patterns
+    → In-context prompt adaptation
 
-  Escalation（人間確認を要求）:
-    → 曖昧な要件、高リスク操作、例外的状況
-    → 例: ファイル削除、外部 API コール、設計上の重要判断
+  Level 2: Session feedback (across tasks)
+    → Record INSIGHTS in the journal
+    → Detect repeated patterns
+    → Update `Health Score`
 
-  Monitor（ダッシュボード監視）:
-    → エージェント活動のリアルタイム可視化
-    → 異常パターンのアラート
-    → 介入のための低遅延チャネル
+  Level 3: Ecosystem feedback (system-wide)
+    → Lore synthesizes shared knowledge
+    → Darwin emits evolution triggers
+    → Architect runs `INTROSPECT` for self-improvement
 
-  ❌ アンチパターン: 全自律 or 全手動
-    → 全自律: 予測不能な動作のリスク
-    → 全手動: エージェントの価値が消失
+  Priority windows:
+    P0 (<24h): safety failures
+    P1 (<1wk): functional failures
+    P2 (<2wk): quality improvements
+    P3 (<1mo): optimization work
 
-  ✅ 推奨: タスク特性に応じた自律度の調整
-    → Architect の Ask first 層がこの設計に対応
-    → 自律度の段階的向上（信頼獲得モデル）
+  ❌ Anti-pattern: operating without improvement
+    → "If it works, don't touch it" invites silent degradation
+
+  ✅ Recommended: measure → analyze → improve
+    → Use the PDCA triggers in `review-loop.md`
+    → Track `Health Score` quantitatively
 ```
 
 ---
 
-## 7. Architect との連携
+## 6. Human-on-the-Loop Design
 
 ```
-Architect での活用:
-  1. VALIDATE フェーズで AE-01〜06 のスクリーニング
-  2. 新エージェント設計時にプロダクション対応チェック
-  3. IVO 原則の出力設計への適用
-  4. Health Score 計測で継続的改善を駆動
+Balancing autonomy and oversight:
 
-品質ゲート:
-  - テスト未定義 → Golden Responses 必須化（AE-01 防止）
-  - ベースライン比較なし → シンプル手法との比較（AE-02 防止）
-  - ソース引用なし → IVO 原則の適用（AE-03 防止）
-  - Activity Logging 未設定 → 可観測性セクション必須化（AE-04 防止）
-  - Always/Ask first/Never 不完全 → 3 層境界の補完（安全性確保）
-  - Health Score < C → 改善計画策定（AE-06 防止）
+  Routine (fully autonomous):
+    → Repetitive, low-risk decisions
+    → Example: code search, document reading, format conversion
+
+  Escalation (requires human confirmation):
+    → Ambiguous requirements, high-risk actions, unusual situations
+    → Example: file deletion, external API calls, major design decisions
+
+  Monitor (human watches a dashboard):
+    → Real-time visibility into agent activity
+    → Alerts for abnormal patterns
+    → Low-latency intervention channel
+
+  ❌ Anti-pattern: all-autonomous or all-manual
+    → All-autonomous raises unpredictability risk
+    → All-manual destroys the value of the agent system
+
+  ✅ Recommended: tune autonomy to task risk
+    → Architect's `Ask first` layer is the control surface for this
+    → Increase autonomy gradually as trust is earned
+```
+
+---
+
+## 7. Architect Integration
+
+```
+How Architect uses this reference:
+  1. Screen for AE-01 through AE-06 during `VALIDATE`
+  2. Run production-readiness checks during new-agent design
+  3. Apply IVO principles to output design
+  4. Use `Health Score` to drive continuous improvement
+
+Quality gates:
+  - No tests defined → require Golden Responses (prevents AE-01)
+  - No baseline comparison → compare against a simple method (prevents AE-02)
+  - No source citation → apply IVO (prevents AE-03)
+  - No Activity Logging → require observability section (prevents AE-04)
+  - Incomplete `Always / Ask first / Never` → complete the three-layer boundary model
+  - `Health Score < C` → create an improvement plan (prevents AE-06)
 ```
 
 **Source:** [Patronus AI: AI Agent Architecture](https://www.patronus.ai/ai-agent-development/ai-agent-architecture) · [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) · [Glaforge: AI Agentic Patterns and Anti-Patterns](https://glaforge.dev/talks/2025/12/02/ai-agentic-patterns-and-anti-patterns/) · [Comet: AI Agent Design Patterns](https://www.comet.com/site/blog/ai-agent-design/)

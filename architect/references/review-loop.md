@@ -1,5 +1,19 @@
 # Ecosystem Review Loop
 
+**Purpose:** Health Score model and ecosystem review cadence.
+**Read when:** You need scoring, degradation detection, or review timing.
+
+## Contents
+- Overview
+- Review Cycle Framework
+- Review Triggers
+- Agent Health Score
+- Health Score Calculation Template
+- Improvement Queue
+- Review Session Templates
+- Ecosystem-wide Review
+- Integration with SKILL.md
+
 Continuous improvement framework for the agent ecosystem.
 PDCA cycle for maintaining and improving 56 agents.
 

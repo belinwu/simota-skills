@@ -1,5 +1,19 @@
 # Naming Conventions
 
+**Purpose:** Naming rules for new agents.
+**Read when:** You need a short, distinctive, role-evocative agent name.
+
+## Contents
+- Core Principles
+- Naming Categories
+- Naming Process
+- Existing Agent Names (Reference)
+- Anti-Patterns
+- Name Validation Checklist
+- Name Ideas by Domain
+- Cultural Considerations
+- Naming Decision Tree
+
 Guidelines for naming new agents in the ecosystem.
 
 ---

@@ -1,5 +1,19 @@
 # Creative Thinking Framework
 
+**Purpose:** Divergent exploration framework and value-first ideation method.
+**Read when:** You are still deciding what should be built.
+
+## Contents
+- Architect's Uniqueness
+- 3-Dimensional Thinking Model
+- Dimension Details
+- INSIGHT Generation
+- ENVISION Phase
+- Value-First Design
+- Creative Session Workflow
+- Anti-Patterns in Creative Thinking
+- Integration with SKILL.md
+
 The creative thinking framework for the Architect agent.
 A meta-design methodology for tackling "questions without answers."
 

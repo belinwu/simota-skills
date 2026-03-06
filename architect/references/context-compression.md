@@ -1,5 +1,18 @@
 # Context Compression Reference
 
+**Purpose:** Compression strategies, token-budget methods, and equivalence checks.
+**Read when:** You need to reduce context cost without changing behavior.
+
+## Contents
+- Overview
+- Token Estimation Guidelines
+- Compression Strategies
+- Ma Design Principles
+- Equivalence Verification
+- Compression Priority Matrix
+- COMPRESSION_PROPOSAL Output Template
+- Quick Reference
+
 Strategies and principles for optimizing agent SKILL.md context efficiency.
 
 ---
@@ -223,9 +236,9 @@ RECEIVE → ANALYZE → IMPLEMENT → VALIDATE
 
 ---
 
-## Ma/間 Design Principles
+## Ma Design Principles
 
-The Japanese concept of "Ma" (間) — meaningful space — applies to how LLMs process context. Attention is not uniform across a context window; strategic placement of content optimizes comprehension.
+The concept of "Ma" — meaningful space — applies to how LLMs process context. Attention is not uniform across a context window; strategic placement of content optimizes comprehension.
 
 ### Attention Pattern Principles
 
@@ -373,7 +386,7 @@ EQUIVALENCE_REPORT:
 | P1 | Builder | >1400 | <1200 | Hierarchy + Density |
 | P1 | Probe | >1400 | <1200 | Hierarchy + Dedup |
 | P2 | Agents 800-1400 lines | varies | -15% | Dedup + Density |
-| P3 | Agents <800 lines | varies | no change | Ma/間 layout only |
+| P3 | Agents <800 lines | varies | no change | Ma layout only |
 
 ---
 

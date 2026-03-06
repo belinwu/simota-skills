@@ -1,5 +1,22 @@
 # Nexus Integration
 
+**Purpose:** AUTORUN, hub-mode, and handoff requirements for Nexus compatibility.
+**Read when:** You need the exact integration contract with Nexus.
+
+## Contents
+- Overview
+- Integration Requirements
+- Routing Matrix Update
+- Category Registration
+- NEXUS_HANDOFF Format
+- _AGENT_CONTEXT Format
+- _STEP_COMPLETE Format
+- Execution Flow Integration
+- Guardrail Compatibility
+- Testing Integration
+- Documentation Updates
+- Rollback Procedure
+
 Guide for integrating new agents into the Nexus orchestration system.
 
 ---
@@ -92,14 +109,14 @@ When adding a new agent, update the routing matrix:
 ```yaml
 TASK_TYPES:
   # Existing types
-  BUG: "バグ修正"
-  FEATURE: "機能開発"
-  REFACTOR: "リファクタリング"
-  SECURITY: "セキュリティ"
-  PERF: "パフォーマンス"
-  TEST: "テスト"
-  DOCS: "ドキュメント"
-  INFRA: "インフラ"
+  BUG: "bug fix"
+  FEATURE: "feature development"
+  REFACTOR: "refactoring"
+  SECURITY: "security"
+  PERF: "performance"
+  TEST: "testing"
+  DOCS: "documentation"
+  INFRA: "infrastructure"
 
   # New type if needed
   NEW_TYPE: "[Description]"
