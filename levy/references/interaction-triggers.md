@@ -1,23 +1,28 @@
 # Interaction Triggers
 
-Levyが判断を求めるべきタイミングとYAMLテンプレート。
+Purpose: Read this when a user request hits a decision boundary and you need the canonical trigger, default action, keyword heuristic, or YAML interaction template.
 
----
+## Contents
 
-## トリガー一覧
+- [Trigger list](#trigger-list)
+- [YAML templates](#yaml-templates)
+- [Keyword heuristics](#keyword-heuristics)
 
-| Trigger | Condition | Default Action |
-|---------|-----------|---------------|
-| FISCAL_YEAR_UNKNOWN | 対象年度が不明 | 直近の申告年度を適用 |
-| INCOME_TYPE_AMBIGUOUS | 事業所得と雑所得の判定が困難 | 事業所得の要件チェックリストを提示 |
-| SPECIAL_INCOME | 暗号資産・海外所得・ストックオプション等の特殊所得 | 税理士相談を推奨 |
-| CONSUMPTION_TAX | 年間売上1,000万円超 or インボイス関連 | 課税事業者判定フローを提示 |
-| AMENDMENT_REQUEST | 修正申告・更正の請求 | 対応レベルL3として税理士相談を推奨 |
-| BLUE_FILING_ELIGIBILITY | 青色申告承認申請の提出状況が不明 | 申請状況を確認 |
+## Trigger List
 
----
+| Trigger | Condition | Default action |
+|---------|-----------|----------------|
+| `FISCAL_YEAR_UNKNOWN` | The target filing year is not stated | Apply the latest filing year by default |
+| `INCOME_TYPE_AMBIGUOUS` | Business income vs miscellaneous income is unclear | Show the business-income checklist |
+| `SPECIAL_INCOME` | Crypto, foreign income, stock options, large property sales, or similar cases | Recommend a tax accountant and stay at general guidance |
+| `CONSUMPTION_TAX` | Revenue exceeds JPY 10 million or invoice registration is relevant | Show the taxable-business decision flow |
+| `AMENDMENT_REQUEST` | The user asks about amended returns, correction claims, or late filing | Treat as `L3` and recommend a tax accountant |
+| `BLUE_FILING_ELIGIBILITY` | Blue filing approval status is unclear | Confirm the approval status |
+| `SALARY_PLUS_BUSINESS` | Salary income and business income must be filed together | Switch to the combined-filing guide |
+| `ACCRUAL_BASIS_CHECK` | The user asks about a transaction crossing the year-end | Reconfirm accrual-basis timing |
+| `DEDUCTION_OVERLAP_CHECK` | Duplicate deduction input is likely | Run the overlap checklist |
 
-## YAML テンプレート
+## YAML Templates
 
 ### FISCAL_YEAR_UNKNOWN
 
@@ -27,14 +32,14 @@ INTERACTION_TRIGGER:
   condition: "対象年度が明示されていない"
   question: "どの年度の確定申告についてお聞きですか？"
   options:
-    - "令和6年分（2024年）— 2025年3月申告期限(Recommended)"
-    - "令和7年分（2025年）— 2026年3月申告期限"
-    - "令和5年分（2023年）以前 — 期限後申告・還付申告"
+    - "直近の申告年度 — 直近の法定申告期限がある年度(Recommended)"
+    - "1つ前の申告年度"
+    - "過年度 — 期限後申告・還付申告"
     - "Other（詳細を教えてください）"
   context:
     current_date: "[現在日付]"
     filing_deadline: "対象年度の翌年3月15日"
-  default: "令和6年分（2024年）"
+  default: "直近の申告年度"
 ```
 
 ### INCOME_TYPE_AMBIGUOUS
@@ -135,8 +140,6 @@ INTERACTION_TRIGGER:
   reference: "所得税法第143条〜第151条"
 ```
 
----
-
 ### SALARY_PLUS_BUSINESS
 
 ```yaml
@@ -195,18 +198,18 @@ INTERACTION_TRIGGER:
   reference: "references/salary-plus-side-business.md 控除の重複回避チェックリスト"
 ```
 
----
+## Keyword Heuristics
 
-## トリガー検出のヒューリスティクス
+Keep these Japanese keyword cues unchanged because they are part of the routing behavior.
 
-| 検出キーワード | 推定トリガー |
-|-------------|------------|
-| 「何年」「いつの」「年度」が不明な入力 | FISCAL_YEAR_UNKNOWN |
-| 「副業」「事業か雑か」「開業届」「300万円」 | INCOME_TYPE_AMBIGUOUS |
-| 「暗号資産」「仮想通貨」「海外」「ストックオプション」「不動産売却」 | SPECIAL_INCOME |
-| 「消費税」「インボイス」「1000万円」「課税事業者」「簡易課税」 | CONSUMPTION_TAX |
-| 「修正申告」「更正」「間違えた」「やり直し」「期限後」 | AMENDMENT_REQUEST |
-| 「青色申告」「65万円控除」「承認申請」 | BLUE_FILING_ELIGIBILITY |
-| 「会社員」「給与+副業」「サラリーマン」「合算」 | SALARY_PLUS_BUSINESS |
-| 「売掛金」「発生主義」「年末」「12月分」「計上時期」 | ACCRUAL_BASIS_CHECK |
-| 「控除の重複」「源泉徴収票」「二重」「入力済み」 | DEDUCTION_OVERLAP_CHECK |
+| Detected keyword | Trigger |
+|------------------|---------|
+| `「何年」`, `「いつの」`, `「年度」` with no clear year | `FISCAL_YEAR_UNKNOWN` |
+| `「副業」`, `「事業か雑か」`, `「開業届」`, `「300万円」` | `INCOME_TYPE_AMBIGUOUS` |
+| `「暗号資産」`, `「仮想通貨」`, `「海外」`, `「ストックオプション」`, `「不動産売却」` | `SPECIAL_INCOME` |
+| `「消費税」`, `「インボイス」`, `「1000万円」`, `「課税事業者」`, `「簡易課税」` | `CONSUMPTION_TAX` |
+| `「修正申告」`, `「更正」`, `「間違えた」`, `「やり直し」`, `「期限後」` | `AMENDMENT_REQUEST` |
+| `「青色申告」`, `「65万円控除」`, `「承認申請」` | `BLUE_FILING_ELIGIBILITY` |
+| `「会社員」`, `「給与+副業」`, `「サラリーマン」`, `「合算」` | `SALARY_PLUS_BUSINESS` |
+| `「売掛金」`, `「発生主義」`, `「年末」`, `「12月分」`, `「計上時期」` | `ACCRUAL_BASIS_CHECK` |
+| `「控除の重複」`, `「源泉徴収票」`, `「二重」`, `「入力済み」` | `DEDUCTION_OVERLAP_CHECK` |

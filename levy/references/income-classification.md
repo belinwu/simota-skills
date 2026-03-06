@@ -1,104 +1,118 @@
-# 所得分類リファレンス
+# Income Classification Reference
 
-## 10種所得分類
+Purpose: Read this when the user needs income-type classification, comprehensive vs separate taxation, or loss-offset rules.
 
-| # | 所得区分 | 定義 | 主な該当者 | 課税方式 |
-|---|---------|------|-----------|---------|
-| 1 | **利子所得** | 預貯金・公社債の利子 | 預金者全般 | 源泉分離 |
-| 2 | **配当所得** | 株式配当・投資信託分配金 | 株主・投資家 | 総合 or 申告分離（選択） |
-| 3 | **不動産所得** | 土地・建物の貸付 | 大家・地主 | 総合 |
-| 4 | **事業所得** | 事業から生じる所得 | フリーランス・個人事業主 | 総合 |
-| 5 | **給与所得** | 勤務先からの給料・賞与 | サラリーマン | 総合 |
-| 6 | **退職所得** | 退職金・一時金 | 退職者 | 分離 |
-| 7 | **山林所得** | 山林の譲渡（5年超保有） | 山林所有者 | 分離（5分5乗方式） |
-| 8 | **譲渡所得** | 資産の売却益 | 不動産・株式売却者 | 総合 or 分離 |
-| 9 | **一時所得** | 懸賞・保険満期金等 | 臨時の利得者 | 総合（1/2課税） |
-| 10 | **雑所得** | 上記に該当しない所得 | 副業・年金受給者 | 総合 |
+## Contents
 
-## 総合課税 vs 分離課税
+- [Income categories](#income-categories)
+- [Taxation method](#taxation-method)
+- [Loss offset and carryforward](#loss-offset-and-carryforward)
+- [Common patterns](#common-patterns)
 
-### 総合課税（合算して累進税率適用）
+## Income Categories
 
-対象: 利子（一部）・配当（選択時）・不動産・事業・給与・一時・雑
+| # | Income type | Definition | Typical taxpayers | Taxation method |
+|---|-------------|------------|-------------------|-----------------|
+| 1 | Interest income (`利子所得`) | Interest on deposits and bonds | Depositors | Withholding separate taxation |
+| 2 | Dividend income (`配当所得`) | Stock dividends and fund distributions | Investors | Comprehensive or separate by election |
+| 3 | Real-estate income (`不動産所得`) | Rent from land or buildings | Landlords | Comprehensive |
+| 4 | Business income (`事業所得`) | Income from a business | Freelancers and sole proprietors | Comprehensive |
+| 5 | Employment income (`給与所得`) | Salary and bonuses | Employees | Comprehensive |
+| 6 | Retirement income (`退職所得`) | Retirement allowances | Retirees | Separate |
+| 7 | Forestry income (`山林所得`) | Sale of forest assets held for more than five years | Forest owners | Separate (`5分5乗方式`) |
+| 8 | Capital gains (`譲渡所得`) | Gains on asset sales | Property or stock sellers | Comprehensive or separate |
+| 9 | Temporary income (`一時所得`) | Prize winnings, insurance maturity proceeds, and similar windfalls | Individuals with one-off gains | Comprehensive (`1/2` inclusion) |
+| 10 | Miscellaneous income (`雑所得`) | Income not covered above | Side-business workers, pensioners | Comprehensive |
 
-```
-各所得金額 → 合算 → 所得控除 → 課税総所得金額 → 累進税率
-```
+## Taxation Method
 
-### 申告分離課税（他の所得と分離して課税）
+### Comprehensive Taxation
 
-| 所得 | 税率 | 備考 |
-|------|------|------|
-| 上場株式等の配当 | 20.315% | 所得税15.315%+住民税5% |
-| 上場株式等の譲渡 | 20.315% | 同上 |
-| 土地・建物の譲渡（短期） | 39.63% | 所有5年以下 |
-| 土地・建物の譲渡（長期） | 20.315% | 所有5年超 |
-| 先物取引 | 20.315% | |
-| 退職所得 | 累進税率 | 分離で計算するが税率は累進 |
-| 山林所得 | 5分5乗方式 | |
+Apply progressive rates after combining eligible income types.
 
-### 源泉分離課税（源泉徴収で課税完了）
-
-対象: 預貯金利子（20.315%）、特定公社債以外の利子等
-
-## 損益通算
-
-### 通算可能な所得（赤字を他の所得から差し引ける）
-
-| 赤字の所得 | 通算先 | 制限事項 |
-|-----------|--------|---------|
-| 事業所得 | 全所得 | 株式等の譲渡損失は除外 |
-| 不動産所得 | 全所得 | 土地取得の借入金利子分は除外 |
-| 山林所得 | 全所得 | — |
-| 譲渡所得 | 全所得 | 生活用動産、株式等は特別ルール |
-
-### 通算不可
-
-- 配当所得・給与所得・一時所得・雑所得の赤字
-- 生活用動産の譲渡損失
-- 上場株式等の譲渡損失（同じ分離課税グループ内でのみ通算可）
-
-### 損益通算の順序
-
-```
-1. 経常所得グループ内（事業・不動産 ↔ 利子・配当・給与・雑）
-2. 譲渡・一時所得グループ内（譲渡 ↔ 一時）
-3. グループ間通算（経常 ↔ 譲渡・一時）
-4. 山林所得・退職所得との通算
+```text
+Income amounts -> combine -> income deductions -> taxable income -> progressive rates
 ```
 
-### 繰越控除（通算しきれない損失）
+Typical categories: partial interest income, dividends when elected, real-estate income, business income, employment income, temporary income, and miscellaneous income.
 
-| 種類 | 繰越年数 | 要件 |
-|------|---------|------|
-| 純損失の繰越 | 3年 | 青色申告が必要 |
-| 雑損失の繰越 | 3年 | 白色でも可 |
-| 上場株式等の譲渡損失 | 3年 | 毎年確定申告が必要 |
-| 居住用財産の譲渡損失 | 3年 | 一定要件あり |
+### Separate Taxation
 
-## フリーランス/個人事業主の典型パターン
+| Income | Rate | Notes |
+|--------|------|-------|
+| Listed-stock dividends | 20.315% | Income tax 15.315% + resident tax 5% |
+| Listed-stock gains | 20.315% | Same as above |
+| Short-term land/building gains | 39.63% | Held for five years or less |
+| Long-term land/building gains | 20.315% | Held for more than five years |
+| Futures trading | 20.315% | Separate group |
+| Retirement income | Progressive rates | Calculated separately even though the rate is progressive |
+| Forestry income | `5分5乗方式` | Separate regime |
 
+### Withholding Separate Taxation
+
+Applies mainly to deposit interest and similar products where withholding completes the taxation.
+
+## Loss Offset and Carryforward
+
+### Offsettable Losses
+
+| Loss source | Offset against | Limits |
+|-------------|----------------|--------|
+| Business income | Most other income | Stock-transfer losses are excluded |
+| Real-estate income | Most other income | Interest on debt for land acquisition is excluded |
+| Forestry income | Most other income | — |
+| Capital losses | Most other income | Household assets and listed stocks have special rules |
+
+### Non-offsettable Losses
+
+- Losses from dividends, employment income, temporary income, or miscellaneous income
+- Losses on household assets
+- Listed-stock losses outside the same separate-taxation group
+
+### Offset Order
+
+```text
+1. Ordinary-income group (business / real estate with other ordinary income)
+2. Capital-gain and temporary-income group
+3. Cross-group offset
+4. Forestry income and retirement income
 ```
-事業所得 = 事業収入 − 必要経費 − 青色申告特別控除（最大65万円）
-課税所得 = 事業所得 − 所得控除
+
+### Carryforward
+
+| Type | Carryforward period | Requirement |
+|------|---------------------|-------------|
+| Net operating loss | 3 years | Blue return required |
+| Casualty loss | 3 years | Available even for white returns |
+| Listed-stock transfer loss | 3 years | Filing required every year |
+| Residential-property transfer loss | 3 years | Additional requirements apply |
+
+## Common Patterns
+
+### Freelancers and Sole Proprietors
+
+```text
+Business income = business revenue - necessary expenses - blue filing special deduction (up to JPY 650,000)
+Taxable income = business income - income deductions
 ```
 
-## 副業サラリーマンの典型パターン
+### Salary Earners with Side Work
 
-| 副業の種類 | 所得区分 | 判定基準 |
-|-----------|---------|---------|
-| 業務委託（継続・反復） | 事業所得 or 雑所得 | 事業的規模かどうか（※300万円基準は廃止） |
-| 単発の原稿料・講演料 | 雑所得 | 継続性・事業性なし |
-| フリマ・せどり | 事業所得 or 雑所得 | 営利目的・継続性で判断 |
-| 不動産賃貸 | 不動産所得 | 5棟10室基準 |
-| 株式投資 | 配当所得+譲渡所得 | 源泉徴収口座なら申告不要 |
-| 暗号資産 | 雑所得 | 総合課税 |
+| Side-work pattern | Typical income type | Main decision signal |
+|-------------------|---------------------|----------------------|
+| Ongoing contractor work | Business income or miscellaneous income | Whether it reaches business scale |
+| One-off manuscript or speaking fee | Miscellaneous income | No continuity or business structure |
+| Resale / marketplace trading | Business income or miscellaneous income | Profit motive and continuity |
+| Rental income | Real-estate income | `5棟10室基準` and rental pattern |
+| Stock investing | Dividend income + capital gains | Filing may be unnecessary in withholding accounts |
+| Crypto assets | Miscellaneous income | Comprehensive taxation |
 
-### 事業所得 vs 雑所得の判定（国税庁通達 令和4年改正）
+### Business Income vs Miscellaneous Income
 
-社会通念上、事業と認められるかどうかで判定:
-- 帳簿書類の保存がある → 概ね事業所得（反証がない限り）
-- 帳簿書類の保存がない → 概ね雑所得
-- 主たる収入に対する割合、費やす時間・労力なども考慮
+Under the 2022 NTA clarification, decide based on whether the activity is socially recognized as a business:
 
-> **注意**: この分類は一般的な解説であり、個別具体的な所得区分の判定は税理士に相談してください。
+- Books and supporting documents are maintained -> generally closer to business income unless strong contrary facts exist.
+- Books and supporting documents are not maintained -> generally closer to miscellaneous income.
+- Also consider the share of total income, time/effort spent, continuity, and business independence.
+
+> Keep this as general guidance only. If the classification materially affects tax treatment and facts are disputed, respond as `L3` and recommend a tax accountant.

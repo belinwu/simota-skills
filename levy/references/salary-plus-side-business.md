@@ -1,39 +1,44 @@
-# 会社員+副業（青色申告）合算申告ガイド
+# Salary Plus Side Business Guide
 
-会社員として給与所得があり、副業として個人事業（青色申告）を行っている場合の確定申告パターン。
+Purpose: Read this when salary income and business income must be filed together. This file covers accrual timing, mixed personal/business accounts, duplicate-deduction traps, and sanity checks for the final tax result.
 
-> **対象**: 給与所得 + 事業所得（青色申告）の合算申告
+## Contents
 
----
+- [Accrual timing and year-end receivables](#accrual-timing-and-year-end-receivables)
+- [Personal-account bookkeeping patterns](#personal-account-bookkeeping-patterns)
+- [IT and software-development expenses](#it-and-software-development-expenses)
+- [Duplicate-deduction checklist](#duplicate-deduction-checklist)
+- [Tax-result sanity check](#tax-result-sanity-check)
 
-## 1. 発生主義と年末売掛金処理
+## Accrual Timing and Year-End Receivables
 
-### 原則: 発生主義（権利確定主義）
+### Core Rule
 
-所得税法第36条に基づき、収入は**権利が確定した時点**で計上する。
+Under `所得税法第36条`, revenue is recognized when the right to receive it becomes fixed.
 
-| 基準 | 計上タイミング | 例 |
-|------|-------------|---|
-| 役務提供日基準 | サービスを提供した日が属する年 | 12月にコンサルティング実施 → その年の売上 |
-| 請求書発行日基準 | 請求書の発行日 | — |
-| 検収完了日基準 | 成果物が検収された日 | — |
+| Timing basis | Recognition point | Example |
+|--------------|-------------------|---------|
+| Service-delivery basis | The year in which the service is delivered | Consulting performed in December -> that year’s revenue |
+| Invoice-date basis | The invoice issue date | Use only if it matches the actual recognition rule |
+| Inspection-acceptance basis | The date the work is accepted | Use consistently if contract terms require it |
 
-> **推奨**: 契約形態に応じて一貫した基準を採用し、年度間で変更しない。
+> Use one consistent basis that matches the contract facts. Do not change the basis between years without a clear reason.
 
-### 年末の売掛金処理
+### Year-End Receivable Patterns
 
-| パターン | 仕訳 | 計上年度 |
-|---------|------|---------|
-| 12月に役務提供、翌1月に請求・入金 | `売掛金 / 売上高` | **当年**の売上 |
-| 前年12月に役務提供、当年1月に入金 | `普通預金 / 売掛金` | **前年**の売上（当年は売掛金回収のみ） |
-| 12月に役務提供、12月中に入金 | `普通預金 / 売上高` | **当年**の売上 |
+| Pattern | Journal entry | Filing year |
+|---------|---------------|-------------|
+| Service in December, invoice/payment in January | `売掛金 / 売上高` | Current year revenue |
+| Service in previous December, payment in current January | `普通預金 / 売掛金` | Previous year revenue only |
+| Service and payment both in December | `普通預金 / 売上高` | Current year revenue |
 
-**前年12月分の混入防止チェック**:
-1. 前年末の売掛金残高を確認
-2. 当年1月〜2月の入金のうち、前年の売掛金回収分を特定
-3. 当年の売上に含めていないことを確認
+### Checklist to Avoid Mixing Prior-Year Revenue
 
-```
+1. Confirm the prior-year year-end receivable balance.
+2. Identify January and February collections that belong to prior-year receivables.
+3. Confirm those collections are not included again in current-year revenue.
+
+```text
 【12月: 役務提供時（売上計上）】
   売掛金 XXX,XXX / 売上高 XXX,XXX
 
@@ -42,178 +47,159 @@
   ※翌年の売上ではなく、売掛金の回収
 ```
 
----
+## Personal-Account Bookkeeping Patterns
 
-## 2. 個人口座兼用時の仕訳パターン
+Use `事業主貸` and `事業主借` when the taxpayer does not keep a dedicated business account.
 
-副業の場合、事業専用口座を持たず個人口座で事業取引を行うことがある。この場合、事業主貸/事業主借を使って個人と事業の資金移動を記録する。
+### Which Account to Use
 
-### 事業主貸/事業主借の使い分け
+| Account | Direction | Typical use |
+|---------|-----------|-------------|
+| `事業主貸` | Business -> personal | Revenue landing in a personal account, private spending from business funds |
+| `事業主借` | Personal -> business | Business expense paid from personal funds |
 
-| 科目 | 方向 | 使用場面 |
-|------|------|---------|
-| **事業主貸** | 事業 → 個人 | 事業資金から生活費を引き出す、個人用の支出 |
-| **事業主借** | 個人 → 事業 | 個人の資金で事業経費を支払う |
+### Common Patterns
 
-### 全パターン一覧
-
-```
+```text
 【パターン1: 個人口座に事業売上が入金】
   事業主貸 XXX,XXX / 売上高 XXX,XXX
-  ※個人口座への入金 = 事業から個人へ資金移動
 
 【パターン2: 個人口座に売掛金が入金（源泉徴収あり）】
   事業主貸 XXX,XXX / 売掛金 XXX,XXX
   事業主貸  XX,XXX     （源泉徴収税額分）
-  ※源泉徴収税額も含めて売掛金全額を回収
 
 【パターン3: 個人口座・個人クレカで事業経費を支払い】
   通信費 X,XXX / 事業主借 X,XXX
-  ※個人の資金で事業経費を支払った
 
 【パターン4: 個人口座から家賃引落し（按分あり）】
   地代家賃 XX,XXX / 事業主借 XXX,XXX
   事業主貸 XX,XXX
-  ※事業分は地代家賃、個人分は事業主貸
 
 【パターン5: 事業用クレカで個人的な買い物】
   事業主貸 X,XXX / 未払金 X,XXX
-  ※事業とは無関係の支出
 ```
 
-### 決算時の処理
+### Year-End Handling
 
-```
+```text
 事業主貸と事業主借は損益に影響しない資本の勘定科目。
 期末に残高をそのまま貸借対照表に記載する。
 
 翌期首の元入金への振替:
-  元入金(翌期首) = 元入金(前期末) + 事業主借(前期末) − 事業主貸(前期末) + 所得(前期)
+  元入金(翌期首) = 元入金(前期末) + 事業主借(前期末) - 事業主貸(前期末) + 所得(前期)
 ```
 
----
+## IT and Software-Development Expenses
 
-## 3. IT/ソフトウェア開発の経費分類
+### Recommended Account Mapping
 
-### 主要経費の科目割当
+| Spending | Recommended account | e-Tax bucket | Notes |
+|----------|---------------------|--------------|-------|
+| SaaS fees such as GitHub, AWS, or Figma | `支払手数料` | Optional account | Cloud and platform usage fees |
+| Internet connection | `通信費` | Standard account 12 | Allocate between business and private use |
+| Mobile phone | `通信費` | Standard account 12 | Allocate if mixed use |
+| Technical books and e-books | `新聞図書費` | Optional account | Directly related to the business |
+| Conferences and online training | `研修費` | Optional account | Skill-building cost |
+| PC or display over JPY 100,000 | `減価償却費` | Standard account 18 | PC useful life is usually four years |
+| Peripherals under JPY 100,000 | `消耗品費` | Standard account 17 | Expense immediately |
+| Coworking fee | `地代家賃` | Standard account 23 | Monthly location fee |
+| Domain and hosting | `支払手数料` or `通信費` | Optional or standard | Keep the choice consistent |
+| Outsourced design or translation work | `外注工賃` | Standard account 21 | Check withholding obligations |
 
-| 支出内容 | 推奨勘定科目 | e-Tax区分 | 備考 |
-|---------|------------|----------|------|
-| SaaS利用料（GitHub, AWS, Figma等） | **支払手数料** | 任意科目 | クラウドサービスの利用対価 |
-| インターネット回線 | 通信費 | 標準科目12 | 按分必要（事業用割合） |
-| 携帯電話 | 通信費 | 標準科目12 | 按分必要 |
-| 技術書籍・電子書籍 | **新聞図書費** | 任意科目 | 業務に直接関連するもの |
-| 技術カンファレンス参加費 | **研修費** | 任意科目 | — |
-| オンライン講座（Udemy等） | **研修費** | 任意科目 | 業務スキル向上目的 |
-| PC・ディスプレイ（10万円以上） | 減価償却費 | 標準科目18 | 耐用年数4年（PC） |
-| PC周辺機器（10万円未満） | 消耗品費 | 標準科目17 | 全額経費 |
-| コワーキングスペース | 地代家賃 | 標準科目23 | 月額利用料 |
-| ドメイン・サーバー費用 | **支払手数料** or 通信費 | 任意/標準 | どちらでも可、一貫性を保つ |
-| 外注費（デザイン、翻訳等） | 外注工賃 | 標準科目21 | 源泉徴収の確認 |
+### Allocation Ranges Often Seen in Side Businesses
 
-### 按分率の目安（会社員+副業）
+| Cost | Typical range | Logic |
+|------|---------------|-------|
+| Internet | 30% to 50% | Business-use time over total use time |
+| Mobile phone | 20% to 40% | Business calls and data use |
+| Home rent | 10% to 30% | Workspace share times usage time |
+| Electricity | 10% to 30% | Space or time basis |
+| Mixed-use PC | 50% to 80% | Business-use time share |
 
-| 経費 | 按分率の目安 | 根拠の考え方 |
-|------|-----------|------------|
-| インターネット回線 | 30〜50% | 事業使用時間 ÷ 総使用時間（副業は日中の稼働少） |
-| 携帯電話 | 20〜40% | 事業通話・通信の割合 |
-| 家賃（自宅兼事務所） | 10〜30% | 作業スペース面積比 × 使用時間比 |
-| 電気代 | 10〜30% | 面積比 or 使用時間比 |
-| PC（事業専用でない場合） | 50〜80% | 事業使用時間の割合 |
+> These are only rough guides. The user still needs a reasonable factual basis that can be explained later.
 
-> **注意**: 按分率は実態に基づく合理的な根拠が必要。「副業だから低め」ではなく、実際の使用割合を記録・説明できること。
+## Duplicate-Deduction Checklist
 
----
+This is one of the highest-value checks in salary-plus-side-business filing.
 
-## 4. 控除の重複回避チェックリスト
+| # | Item | Check on the withholding slip | Return input |
+|---|------|-------------------------------|--------------|
+| 1 | Basic deduction | — | Usually automatic, do not add manually |
+| 2 | Social-insurance deduction from salary withholding | `社会保険料等の金額` | Do not input again |
+| 3 | Additional social-insurance payments such as extra pension | Certificate | Input separately |
+| 4 | Life-insurance deduction | `生命保険料の控除額` | Do not input again if already reflected |
+| 5 | Earthquake-insurance deduction | `地震保険料の控除額` | Do not input again if already reflected |
+| 6 | Spouse deduction | Withholding-slip entry | Do not input again |
+| 7 | Dependent deduction | Withholding-slip entry | Do not input again |
+| 8 | iDeCo contributions | Breakdown of `社会保険料等の金額` | Add only if paid personally, not via employer |
+| 9 | Medical-expense deduction | — | Input in the final return |
+| 10 | Furusato Nozei | — | Input every municipality in the final return |
+| 11 | Housing-loan credit after year 2 | `住宅借入金等特別控除の額` | Usually already reflected |
+| 12 | First-year housing-loan credit | — | Input in the final return |
 
-確定申告で最もよくあるミスの一つが、源泉徴収票で処理済みの控除を重複入力すること。
+### Why This Matters
 
-### チェックリスト
+- Overstated income deductions can create additional tax and `過少申告加算税` risk.
+- Overstated tax credits create the same downstream risk.
+- e-Tax catches only some duplicate-input patterns.
 
-| # | 確認項目 | 確認方法 | 対応 |
-|---|---------|---------|------|
-| 1 | 基礎控除 | — | 自動適用。手動入力不要 |
-| 2 | 社会保険料控除（給与天引き分） | 源泉徴収票「社会保険料等の金額」 | **入力不要**（源泉徴収票転記で反映） |
-| 3 | 社会保険料控除（国民年金追加分等） | 控除証明書 | **要入力**（給与天引き以外の支払い） |
-| 4 | 生命保険料控除 | 源泉徴収票「生命保険料の控除額」 | **入力不要**（源泉徴収票転記で反映） |
-| 5 | 地震保険料控除 | 源泉徴収票「地震保険料の控除額」 | **入力不要**（源泉徴収票転記で反映） |
-| 6 | 配偶者控除 | 源泉徴収票の記載 | **入力不要** |
-| 7 | 扶養控除 | 源泉徴収票の記載 | **入力不要** |
-| 8 | iDeCo掛金 | 源泉徴収票「社会保険料等の金額」の内訳 | 会社経由なら入力不要。個人払込なら要入力 |
-| 9 | 医療費控除 | — | **要入力**（年末調整不可の控除） |
-| 10 | ふるさと納税 | — | **要入力**（全件。ワンストップは無効化される） |
-| 11 | 住宅ローン控除（2年目以降） | 源泉徴収票「住宅借入金等特別控除の額」 | **入力不要**（源泉徴収票転記で反映） |
-| 12 | 住宅ローン控除（初年度） | — | **要入力**（初年度は年末調整不可） |
+## Tax-Result Sanity Check
 
-### 重複入力した場合の影響
+### Combined Calculation Flow
 
-- 所得控除が過大 → 税額が過少 → **過少申告加算税のリスク**
-- 税額控除が過大 → 同上
-- e-Taxは一部の重複を検出してエラーにするが、すべてではない
+```text
+Step 1: Employment income
+  salary revenue - employment-income deduction = employment income
 
----
+Step 2: Business income
+  business revenue - necessary expenses - blue filing special deduction = business income
 
-## 5. 税額検証チェックリスト
+Step 3: Total income
+  employment income + business income = total income
+  Apply the employment-income adjustment if it is relevant.
 
-### 合算計算ステップ
+Step 4: Taxable income
+  total income - total deductions = taxable income
 
-```
-Step 1: 給与所得の計算
-  給与収入 − 給与所得控除 = 給与所得
-  ※給与所得控除は収入金額に応じて自動計算
+Step 5: Income tax
+  taxable income x rate - quick deduction = calculated income tax
 
-Step 2: 事業所得の計算
-  事業収入 − 必要経費 − 青色申告特別控除 = 事業所得
+Step 6: Tax credits
+  calculated income tax - tax credits = base income tax
 
-Step 3: 合計所得金額
-  給与所得 + 事業所得 = 合計所得金額
-  ※所得金額調整控除の適用がある場合はここで差し引く
+Step 7: Reconstruction special income tax
+  base income tax x 2.1% = reconstruction tax
 
-Step 4: 課税所得金額
-  合計所得金額 − 所得控除合計 = 課税所得金額
-
-Step 5: 所得税額
-  課税所得金額 × 税率 − 速算控除額 = 算出所得税額
-
-Step 6: 税額控除の適用
-  算出所得税額 − 税額控除（住宅ローン控除等） = 基準所得税額
-
-Step 7: 復興特別所得税
-  基準所得税額 × 2.1% = 復興特別所得税額
-
-Step 8: 申告納税額
-  (基準所得税額 + 復興特別所得税額) − 源泉徴収税額 = 申告納税額
-  ※プラス → 追加納税、マイナス → 還付
+Step 8: Final filing result
+  (base income tax + reconstruction tax) - withholding tax = final payable/refundable amount
 ```
 
-### 追加納税額の妥当性チェック
+### Quick Reasonableness Check
 
-副業の事業所得に対する追加納税額の目安:
+```text
+Approximate additional tax ≒ business income x marginal rate
 
+Example:
+  taxable income JPY 6 million
+  national income-tax marginal rate 20%
+  resident-tax rate about 10%
+  rough total incremental burden ≒ 30% of side-business income
 ```
-概算追加納税額 ≒ 事業所得 × 限界税率
 
-限界税率 = 合計課税所得が属する税率区間の税率
-  例: 課税所得600万円 → 限界税率20%（所得税）+ 10%（住民税）= 約30%
-```
+| Check | What to confirm |
+|------|-----------------|
+| Additional national income tax is roughly 15% to 33% of business income | Usually reasonable |
+| Withholding tax was subtracted correctly | Compare with the withholding slip |
+| Contractor withholding exists | Confirm it appears in `第二表` income detail |
+| Furusato Nozei reflected | Confirm the donation deduction appears |
+| Estimated tax exists | Confirm it is credited |
 
-| チェック項目 | 確認方法 |
-|------------|---------|
-| 追加納税額が事業所得の15〜33%程度か | 限界税率（所得税のみ）× 事業所得で概算 |
-| 源泉徴収税額が正しく差し引かれているか | 源泉徴収票の金額と一致するか確認 |
-| 事業の源泉徴収がある場合 | 第二表の所得の内訳に記載されているか |
-| ふるさと納税の控除が反映されているか | 寄附金控除欄に金額が表示されているか |
-| 予定納税がある場合 | 予定納税額が差し引かれているか |
+### Suspicious Signs
 
-### 計算結果の疑わしいサイン
+| Sign | Likely cause |
+|------|--------------|
+| Additional tax exceeds 50% of business income | Missing deductions or missing withholding credits |
+| Additional tax is zero or negative despite profitable side business | Salary-income input may be missing |
+| Resident-tax notice is far from expectation | Income or deduction input may be wrong |
 
-| サイン | 考えられる原因 |
-|-------|-------------|
-| 追加納税額が事業所得の50%を超える | 控除の入力漏れ、源泉徴収額の未反映 |
-| 追加納税額が0円またはマイナス | 給与所得の入力漏れ（事業赤字でなければ異常） |
-| 住民税の通知が大幅に違う | 所得や控除の入力ミス |
-
----
-
-⚠️ 本ガイドは会社員+副業（青色申告）の一般的な申告パターンを解説したものです。個別具体的な税務判断に該当するものではありません。実際の申告にあたっては、対象年度の最新の税法・通達を確認し、必要に応じて税理士にご相談ください。
+> Use this file together with `references/e-tax-screen-guide.md` when the user needs screen-level instructions. Keep the final answer in Japanese and include the standard disclaimer.

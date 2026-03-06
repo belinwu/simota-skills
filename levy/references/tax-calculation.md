@@ -1,234 +1,231 @@
-# 税額計算リファレンス
+# Tax Calculation Reference
 
-## 所得税の計算ステップ
+Purpose: Read this when the user needs tax formulas, rate tables, resident tax, business tax, consumption-tax thresholds, or a sanity check for combined salary and business income.
 
-```
-Step 1: 各所得金額の計算
-  収入金額 − 必要経費（or 給与所得控除）= 所得金額
+## Contents
 
-Step 2: 課税標準の計算
-  総合課税の所得合算 → 損益通算 → 繰越控除 = 総所得金額
+- [Calculation flow](#calculation-flow)
+- [Income-tax rate table](#income-tax-rate-table)
+- [Employment-income adjustment](#employment-income-adjustment)
+- [Salary plus business example flow](#salary-plus-business-example-flow)
+- [Resident tax](#resident-tax)
+- [Business tax](#business-tax)
+- [Consumption tax](#consumption-tax)
+- [Effective-rate guide](#effective-rate-guide)
 
-Step 3: 課税所得金額の計算
-  総所得金額 − 所得控除 = 課税総所得金額
+## Calculation Flow
 
-Step 4: 所得税額の計算
-  課税総所得金額 × 税率 − 控除額 = 算出税額
+```text
+Step 1: Calculate each income amount
+  revenue - necessary expenses (or employment-income deduction) = income amount
 
-Step 5: 税額控除の適用
-  算出税額 − 税額控除 = 基準所得税額
+Step 2: Calculate total income
+  combine comprehensive-taxation income -> apply loss offset -> apply carryforward = total income
 
-Step 6: 復興特別所得税の加算
-  基準所得税額 × 2.1% = 復興特別所得税額
-  基準所得税額 + 復興特別所得税額 = 所得税及び復興特別所得税額
+Step 3: Calculate taxable income
+  total income - income deductions = taxable income
 
-Step 7: 申告納税額
-  所得税及び復興特別所得税額 − 源泉徴収税額 − 予定納税額 = 申告納税額
-```
+Step 4: Calculate income tax
+  taxable income x rate - quick deduction = calculated income tax
 
-## 所得税の速算表（累進税率）
+Step 5: Apply tax credits
+  calculated income tax - tax credits = base income tax
 
-| 課税所得金額 | 税率 | 控除額 |
-|-------------|------|--------|
-| 〜194.9万円 | 5% | 0円 |
-| 195万円〜329.9万円 | 10% | 97,500円 |
-| 330万円〜694.9万円 | 20% | 427,500円 |
-| 695万円〜899.9万円 | 23% | 636,000円 |
-| 900万円〜1,799.9万円 | 33% | 1,536,000円 |
-| 1,800万円〜3,999.9万円 | 40% | 2,796,000円 |
-| 4,000万円〜 | 45% | 4,796,000円 |
+Step 6: Add reconstruction special income tax
+  base income tax x 2.1% = reconstruction tax
+  base income tax + reconstruction tax = total national income tax
 
-### 計算例
-
-課税所得金額 500万円の場合:
-```
-500万円 × 20% − 427,500円 = 572,500円（所得税額）
-572,500円 × 2.1% = 12,022円（復興特別所得税）
-合計: 584,500円（100円未満切捨て → 584,500円）
+Step 7: Calculate the filing result
+  total national income tax - withholding tax - estimated tax = final payable/refundable amount
 ```
 
-## 復興特別所得税
+## Income-Tax Rate Table
 
-- 税率: 基準所得税額 × **2.1%**
-- 期間: 2013年（平成25年）〜2037年（令和19年）の25年間
-- 源泉徴収でも加算済み（例: 所得税15% → 15.315%）
+| Taxable income | Rate | Quick deduction |
+|----------------|------|-----------------|
+| Up to JPY 1.949 million | 5% | JPY 0 |
+| JPY 1.95 million to JPY 3.299 million | 10% | JPY 97,500 |
+| JPY 3.3 million to JPY 6.949 million | 20% | JPY 427,500 |
+| JPY 6.95 million to JPY 8.999 million | 23% | JPY 636,000 |
+| JPY 9 million to JPY 17.999 million | 33% | JPY 1,536,000 |
+| JPY 18 million to JPY 39.999 million | 40% | JPY 2,796,000 |
+| JPY 40 million and above | 45% | JPY 4,796,000 |
 
-## 所得金額調整控除
+### Example
 
-給与収入850万円超の場合に、以下のいずれかに該当すると適用される（租税特別措置法第41条の3の3）。
+For taxable income of JPY 5 million:
 
-| 適用要件（いずれかに該当） | 控除額 |
-|------------------------|--------|
-| 本人が特別障害者 | (給与収入−850万円)×10%（上限15万円） |
-| 23歳未満の扶養親族あり | 同上 |
-| 特別障害者の同一生計配偶者・扶養親族あり | 同上 |
-
-> 所得金額調整控除は給与所得から差し引かれる（所得控除ではなく所得金額の調整）。Step 1で給与所得を計算する際に適用する。
-
----
-
-## 給与所得+事業所得の合算計算ステップ例
-
-会社員+副業（事業所得）の場合の合算計算:
-
-```
-Step 1: 給与所得
-  給与収入 XXX万円 − 給与所得控除 = 給与所得
-  ※給与収入850万円超 → 所得金額調整控除の適用可否を確認
-
-Step 2: 事業所得
-  事業収入 − 必要経費 − 青色申告特別控除(65万円) = 事業所得
-
-Step 3: 合計所得金額
-  給与所得 + 事業所得 = 合計所得金額
-
-Step 4: 所得控除
-  基礎控除 + 社会保険料控除 + その他控除 = 所得控除合計
-  ※源泉徴収票で処理済みの控除と確定申告で追加する控除を区別
-
-Step 5: 課税所得金額
-  合計所得金額 − 所得控除合計 = 課税所得金額
-
-Step 6: 所得税額
-  課税所得金額 × 税率 − 速算控除額 = 算出所得税額
-
-Step 7: 追加納税額
-  (算出所得税額 + 復興特別所得税) − 源泉徴収税額 = 追加納税額
+```text
+JPY 5,000,000 x 20% - JPY 427,500 = JPY 572,500 (income tax)
+JPY 572,500 x 2.1% = JPY 12,022 (reconstruction special income tax)
+Total: JPY 584,500 after truncation below JPY 100
 ```
 
-### 追加納税額の妥当性チェック
+## Reconstruction Special Income Tax
 
-```
-概算追加納税額 ≒ 事業所得 × 限界税率（所得税のみ）
+- Rate: `base income tax x 2.1%`
+- Period: 2013 through 2037
+- Withholding often already includes the add-on rate, for example `15.315%`
 
-限界税率 = 合算後の課税所得が属する税率区間の税率
-  例: 合算課税所得600万円 → 限界税率20%
-      事業所得100万円 → 概算追加所得税 ≒ 100万円 × 20% = 20万円
-```
+## Employment-Income Adjustment
 
-| チェック | 判断基準 |
-|---------|---------|
-| 追加納税額が事業所得の15〜33%程度 | 正常範囲（所得税のみの目安） |
-| 追加納税額が事業所得の50%超 | 異常 → 控除漏れや源泉徴収額未反映の可能性 |
-| 追加納税額が0円またはマイナス（事業黒字なのに） | 異常 → 給与所得の入力漏れの可能性 |
+Apply when salary income exceeds JPY 8.5 million and the statutory condition is met.
 
-→ 詳細: `references/salary-plus-side-business.md` 税額検証チェックリスト
+| Condition | Amount |
+|-----------|--------|
+| Taxpayer is specially disabled | `(salary income - JPY 8.5 million) x 10%`, capped at JPY 150,000 |
+| Has a dependent under 23 | Same |
+| Has a specially disabled spouse or dependent | Same |
 
----
+> This adjustment belongs in the salary-income calculation, not in the income-deduction stage.
 
-## 給与所得控除
+## Salary Plus Business Example Flow
 
-| 給与収入 | 控除額 |
-|---------|--------|
-| 〜162.5万円 | 55万円 |
-| 162.5万円超〜180万円 | 収入×40%−10万円 |
-| 180万円超〜360万円 | 収入×30%+8万円 |
-| 360万円超〜660万円 | 収入×20%+44万円 |
-| 660万円超〜850万円 | 収入×10%+110万円 |
-| 850万円超 | 195万円（上限） |
+```text
+Step 1: Employment income
+  salary revenue - employment-income deduction = employment income
+  If salary revenue exceeds JPY 8.5 million, confirm the employment-income adjustment.
 
-## 公的年金等控除
+Step 2: Business income
+  business revenue - necessary expenses - blue filing special deduction = business income
 
-| 年齢 | 年金収入 | 控除額 |
-|------|---------|--------|
-| 65歳未満 | 〜130万円 | 60万円 |
-| 65歳以上 | 〜330万円 | 110万円 |
+Step 3: Total income
+  employment income + business income = total income
 
-> 公的年金等に係る雑所得以外の所得が1,000万円超の場合は控除額が逓減
+Step 4: Income deductions
+  basic deduction + social-insurance deduction + other deductions = total deductions
+  Separate items already reflected in the withholding slip from items that must be added in the return.
 
----
+Step 5: Taxable income
+  total income - total deductions = taxable income
 
-## 住民税
+Step 6: Calculated income tax
+  taxable income x rate - quick deduction = calculated income tax
 
-### 概要
-
-| 項目 | 内容 |
-|------|------|
-| 課税主体 | 都道府県 + 市区町村 |
-| 基準日 | 1月1日時点の住所地 |
-| 税率 | 所得割10%（道府県4%+市町村6%）+ 均等割 |
-| 均等割 | 約5,000円/年（自治体による） |
-
-### 所得税との主な違い
-
-| 項目 | 所得税 | 住民税 |
-|------|--------|--------|
-| 基礎控除 | 48万円 | 43万円 |
-| 配偶者控除 | 38万円 | 33万円 |
-| 扶養控除（一般） | 38万円 | 33万円 |
-| 税率 | 5〜45%（累進） | 10%（一律） |
-| 課税方式 | 申告納税 | 賦課課税 |
-
-### ふるさと納税の住民税控除
-
-```
-住民税からの控除(基本分) = (寄附金−2,000円) × 10%
-住民税からの控除(特例分) = (寄附金−2,000円) × (100%−10%−所得税率×1.021)
-  ※特例分は住民税所得割額の20%が上限
+Step 7: Final filing result
+  calculated income tax + reconstruction tax - withholding tax = final payable/refundable amount
 ```
 
----
+### Sanity Check for Additional Tax
 
-## 個人事業税
+```text
+Approximate additional national income tax ≒ business income x marginal tax rate
 
-| 項目 | 内容 |
-|------|------|
-| 課税対象 | 法定70業種 |
-| 税率 | 3%〜5%（多くの業種は5%） |
-| 控除 | 事業主控除290万円 |
-| 計算 | (事業所得−290万円) × 税率 |
-| 納付 | 8月・11月の2回 |
+Marginal rate = the rate bracket reached after combining salary income and business income
+Example:
+  combined taxable income JPY 6 million -> marginal income-tax rate 20%
+  business income JPY 1 million -> rough additional national income tax ≒ JPY 200,000
+```
 
-### 非課税業種の例
+| Check | Interpretation |
+|------|----------------|
+| Additional tax is roughly 15% to 33% of business income | Usually within the normal range for national income tax only |
+| Additional tax exceeds 50% of business income | Recheck missing deductions or missing withholding credits |
+| Additional tax is zero or negative despite profitable side business | Recheck salary-income input and withholding data |
 
-文筆業、漫画家、音楽家、プログラマー（※請負ではないソフトウェア開発）
+For detailed combined-filing traps, load `references/salary-plus-side-business.md`.
 
-> **注意**: 「プログラマー」が個人事業税の対象になるかは自治体の判断による。システム開発の請負は「請負業」として課税されることがある。
+## Employment-Income Deduction
 
----
+| Salary revenue | Deduction |
+|----------------|-----------|
+| Up to JPY 1.625 million | JPY 550,000 |
+| Over JPY 1.625 million to JPY 1.8 million | Revenue x 40% - JPY 100,000 |
+| Over JPY 1.8 million to JPY 3.6 million | Revenue x 30% + JPY 80,000 |
+| Over JPY 3.6 million to JPY 6.6 million | Revenue x 20% + JPY 440,000 |
+| Over JPY 6.6 million to JPY 8.5 million | Revenue x 10% + JPY 1.1 million |
+| Over JPY 8.5 million | JPY 1.95 million |
 
-## 消費税（個人事業主）
+## Public-Pension Deduction
 
-### 納税義務の判定
+| Age | Pension revenue | Deduction |
+|-----|-----------------|-----------|
+| Under 65 | Up to JPY 1.3 million | JPY 600,000 |
+| 65 or older | Up to JPY 3.3 million | JPY 1.1 million |
 
-| 判定基準 | 内容 |
-|---------|------|
-| 基準期間（2年前）の課税売上高 | 1,000万円超 → 課税事業者 |
-| 特定期間（前年1/1〜6/30）の課税売上高 | 1,000万円超 → 課税事業者 |
-| インボイス登録 | 登録 → 課税事業者（売上に関わらず） |
+> The deduction is phased down if non-pension income exceeds JPY 10 million.
 
-### 簡易課税制度
+## Resident Tax
 
-| みなし仕入率 | 事業区分 |
-|-------------|---------|
-| 90% | 第1種（卸売業） |
-| 80% | 第2種（小売業） |
-| 70% | 第3種（製造業等） |
-| 60% | 第4種（その他） |
-| 50% | 第5種（サービス業等） |
-| 40% | 第6種（不動産業） |
+### Overview
 
-- 適用要件: 基準期間の課税売上高5,000万円以下 + 届出
-- フリーランス（サービス業）は第5種が一般的
+| Item | Content |
+|------|---------|
+| Taxing authority | Prefecture plus municipality |
+| Reference date | Address as of January 1 |
+| Rate | 10% income-based levy plus per-capita levy |
+| Per-capita levy | Roughly JPY 5,000 per year, depending on the municipality |
 
-### 2割特例（インボイス制度経過措置）
+### Main Differences from Income Tax
 
-- 対象: インボイス登録で新たに課税事業者になった事業者
-- 期間: 令和5年10月〜令和8年9月の課税期間
-- 内容: 納税額 = 売上税額 × 20%
+| Item | Income tax | Resident tax |
+|------|------------|--------------|
+| Basic deduction | JPY 480,000 | JPY 430,000 |
+| Spouse deduction | JPY 380,000 | JPY 330,000 |
+| General dependent deduction | JPY 380,000 | JPY 330,000 |
+| Rate | 5% to 45% progressive | 10% flat income levy |
+| Filing method | Self-assessment | Assessed by the municipality |
 
----
+### Furusato Nozei Resident-Tax Relief
 
-## 実効税率の目安
+```text
+Basic resident-tax reduction = (donation - JPY 2,000) x 10%
+Special resident-tax reduction = (donation - JPY 2,000) x (100% - 10% - income-tax rate x 1.021)
+The special part is capped at 20% of resident-tax income levy.
+```
 
-| 課税所得 | 所得税率 | 住民税率 | 合計（概算） |
-|---------|---------|---------|------------|
-| 200万円 | 約5.1% | 10% | 約15% |
-| 400万円 | 約10.4% | 10% | 約20% |
-| 600万円 | 約13.7% | 10% | 約24% |
-| 800万円 | 約16.5% | 10% | 約27% |
-| 1,000万円 | 約20.4% | 10% | 約30% |
+## Business Tax
 
-> 上記は所得控除を基礎控除のみとした概算。実際の実効税率は適用される控除により変動する。
+| Item | Content |
+|------|---------|
+| Tax base | Statutory business categories |
+| Rate | 3% to 5% for most categories |
+| Deduction | JPY 2.9 million business-owner deduction |
+| Formula | `(business income - JPY 2.9 million) x rate` |
+| Payment timing | Usually two installments in August and November |
 
-> **注意**: 税率・控除額は税制改正により変更される可能性があります。対象年度の最新情報を確認してください。
+### Common Non-Taxable Example
+
+Writers, cartoonists, musicians, and some programmers may fall outside the taxable categories, but contract software development can still be treated as `請負業` depending on the prefecture.
+
+## Consumption Tax
+
+### Taxable-Business Threshold
+
+| Test | Result |
+|------|--------|
+| Taxable sales in the base period (two years prior) exceed JPY 10 million | Taxable business |
+| Taxable sales in the specified period (January 1 to June 30 of the prior year) exceed JPY 10 million | Taxable business |
+| Invoice registration is completed | Taxable business regardless of revenue |
+
+### Simplified Taxation
+
+| Deemed purchase rate | Business category |
+|----------------------|------------------|
+| 90% | Wholesale |
+| 80% | Retail |
+| 70% | Manufacturing and similar |
+| 60% | Other categories |
+| 50% | Services and similar |
+| 40% | Real estate |
+
+- Requirement: taxable sales in the base period are JPY 50 million or less, plus a valid election.
+- Freelancers in service businesses usually fall into the 50% category.
+
+### 20% Transitional Rule
+
+- Applies to businesses that became taxable due to invoice registration.
+- Transitional period: from October 2023 through September 2026.
+- Formula: `output tax x 20%`
+
+## Effective-Rate Guide
+
+| Taxable income | Income-tax rate | Resident-tax rate | Approximate total |
+|----------------|-----------------|-------------------|-------------------|
+| JPY 2 million | about 5.1% | 10% | about 15% |
+| JPY 4 million | about 10.4% | 10% | about 20% |
+| JPY 6 million | about 13.7% | 10% | about 24% |
+| JPY 8 million | about 16.5% | 10% | about 27% |
+| JPY 10 million | about 20.4% | 10% | about 30% |
+
+> These are rough guides assuming only the basic deduction. Actual effective rates move materially when deductions or tax credits change.

@@ -1,289 +1,241 @@
-# e-Tax 確定申告書等作成コーナー 画面別入力ガイド
+# e-Tax Screen Guide
 
-確定申告書等作成コーナーの主要画面ごとに、入力すべき項目と注意点をまとめる。
+Purpose: Read this when the user needs screen-by-screen guidance for `確定申告書等作成コーナー`, common error handling, or the recommended order of e-Tax inputs.
 
-> **対象**: 個人事業主（青色申告）+ 給与所得がある場合を含む
+## Contents
 
----
+- [Blue return financial statement](#blue-return-financial-statement)
+- [Income-tax return screens](#income-tax-return-screens)
+- [Common errors](#common-errors)
+- [Screen order](#screen-order)
 
-## Part 1: 青色申告決算書
+## Blue Return Financial Statement
 
-### 1-1. 月別売上入力
+### Monthly Sales Entry
 
-**画面**: 青色申告決算書 → 売上（収入）金額の内訳
+Screen: `青色申告決算書 -> 売上（収入）金額の内訳`
 
-| 項目 | 入力内容 | 注意点 |
-|------|---------|--------|
-| 月別売上高（1月〜12月） | 各月の売上金額 | 発生主義: 役務提供日が属する月に計上 |
-| 合計欄 | **空欄にする（自動計算）** | 手入力するとKS-E20009エラーが発生する |
+| Field | What to enter | Important note |
+|-------|---------------|----------------|
+| Monthly sales (January to December) | Sales recognized in each month | Use the service-delivery month under the accrual basis |
+| Total field | Leave blank | Manual input causes `KS-E20009` |
 
-**よくあるミス**:
-- 入金日ではなく役務提供日（請求書の対象期間）で月を判定すること
-- 12月に役務提供・翌1月請求の場合 → 12月の売上として計上
-- 前年12月提供分が当年1月に入金 → 当年の売上に含めない（前年の売掛金回収）
-- 合計欄に手入力してしまい、エラーで進めなくなるケースが多い
+Common traps:
 
-### 1-2. 売上原価
+- Decide the month by service-delivery timing, not the payment date.
+- Service delivered in December and billed in January still belongs to December sales.
+- A January payment for prior-December work is collection of prior-year receivables, not current-year sales.
 
-**画面**: 青色申告決算書 → 売上原価
+### Cost of Goods Sold
 
-| 項目 | IT/ソフトウェア開発の場合 |
-|------|------------------------|
-| 期首商品棚卸高 | 空欄（仕入なし） |
-| 仕入金額 | 空欄 |
-| 期末商品棚卸高 | 空欄 |
-| 差引原価 | 空欄 |
+Screen: `青色申告決算書 -> 売上原価`
 
-> IT/ソフトウェア開発業は物理的な仕入がないため、売上原価セクションは通常すべて空欄。外注費は経費の「外注工賃」で計上する。
+| Field | Typical handling for IT / software development |
+|-------|-----------------------------------------------|
+| Opening inventory | Leave blank |
+| Purchases | Leave blank |
+| Closing inventory | Leave blank |
+| Cost of goods sold | Leave blank |
 
-### 1-3. 経費入力
+> Service businesses without inventory usually leave this section blank. Outsourcing belongs in `外注工賃`, not in inventory or purchases.
 
-**画面**: 青色申告決算書 → 経費
+### Expense Entry
 
-e-Taxの経費欄は標準科目（科目番号8〜24）と任意科目（科目番号25〜30）で構成される。
+Screen: `青色申告決算書 -> 経費`
 
-#### 標準科目（8〜24）
+#### Standard Accounts (`8` to `24`)
 
-| 番号 | 科目名 | IT/ソフトウェア開発での典型的な内容 |
-|------|--------|--------------------------------|
-| 8 | 租税公課 | 個人事業税、固定資産税（按分）、印紙税 |
-| 9 | 荷造運賃 | — |
-| 10 | 水道光熱費 | 電気代（按分） |
-| 11 | 旅費交通費 | 打合せ移動、出張 |
-| 12 | 通信費 | インターネット（按分）、携帯電話（按分） |
-| 13 | 広告宣伝費 | ポートフォリオサイト運営費等 |
-| 14 | 接待交際費 | クライアントとの飲食 |
-| 15 | 損害保険料 | — |
-| 16 | 修繕費 | PC修理等 |
-| 17 | 消耗品費 | 10万円未満のPC周辺機器、文具 |
-| 18 | 減価償却費 | PC、ディスプレイ等（詳細画面で入力） |
-| 19 | 福利厚生費 | — |
-| 20 | 給料賃金 | 従業員がいる場合 |
-| 21 | 外注工賃 | 業務委託先への支払い |
-| 22 | 利子割引料 | 事業用借入の利息 |
-| 23 | 地代家賃 | 自宅兼事務所の家賃（按分） |
-| 24 | 雑費 | 上記に該当しない少額経費 |
+| No. | Account | Common IT / software example |
+|-----|---------|------------------------------|
+| 8 | `租税公課` | Business tax, allocated fixed-asset tax, stamp tax |
+| 10 | `水道光熱費` | Allocated electricity |
+| 11 | `旅費交通費` | Meetings and business travel |
+| 12 | `通信費` | Allocated internet and mobile phone |
+| 13 | `広告宣伝費` | Portfolio-site costs |
+| 14 | `接待交際費` | Client meals |
+| 16 | `修繕費` | PC repairs |
+| 17 | `消耗品費` | Items under JPY 100,000 |
+| 18 | `減価償却費` | PC, display, and similar assets |
+| 20 | `給料賃金` | Employee wages, if any |
+| 21 | `外注工賃` | Outsourcing payments |
+| 22 | `利子割引料` | Business-loan interest |
+| 23 | `地代家賃` | Allocated home-office rent |
+| 24 | `雑費` | Small uncategorized expenses |
 
-#### 任意科目（25〜30）
+#### Optional Accounts (`25` to `30`)
 
-標準科目にない経費科目を最大6つ追加できる。
+| Recommended account | Typical use |
+|---------------------|-------------|
+| `支払手数料` | SaaS or cloud-service fees |
+| `新聞図書費` | Technical books and subscriptions |
+| `研修費` | Conferences and courses |
+| `諸会費` | Associations or coworking memberships |
 
-| 推奨追加科目 | 内容 | 典型的な支出 |
-|------------|------|------------|
-| **支払手数料** | SaaSサービス利用料、クラウドサービス | GitHub, AWS, Figma, Slack等の月額利用料 |
-| **新聞図書費** | 技術書籍、電子書籍、技術系サブスクリプション | O'Reilly, Udemy, 技術書 |
-| **研修費** | カンファレンス参加費、オンライン講座 | 技術カンファレンス、資格試験 |
-| **諸会費** | 業界団体、コワーキングスペース月額 | — |
+> `支払手数料` is often the clearest bucket for SaaS costs because there is no dedicated standard account.
 
-> **SaaS利用料の科目選択**: e-Taxの標準科目には「支払手数料」がないため、任意科目として追加する。通信費に含める方法もあるが、金額が大きい場合は分離した方が明瞭。
+### Depreciation Detail Screen
 
-### 1-4. 減価償却費の詳細入力
+Screen: `青色申告決算書 -> 経費 -> 減価償却費 -> 入力`
 
-**画面**: 青色申告決算書 → 経費 → 減価償却費の「入力」ボタン → 詳細画面
+| Field | Entry | Note |
+|-------|-------|------|
+| Asset name | Clear asset label | Example: laptop, monitor |
+| Acquisition date | Purchase date | Count the acquisition month as one month |
+| Acquisition cost | Purchase amount | Follow the taxpayer’s accounting basis |
+| Method | Usually straight-line | Sole-proprietor default unless another method was elected |
+| Useful life | Asset-specific years | PC `4`, software `5` |
+| Current-year depreciation | `cost x rate x months / 12` | Monthly proration applies |
+| Business-use ratio | Allocation percentage | `100` if fully business-use |
+| Expense amount | Depreciation x business ratio | Sometimes auto-calculated |
+| Undepreciated balance | Cost minus accumulated depreciation | Keep consistent with ledgers |
 
-各資産ごとに1行ずつ入力する。
+Low-cost asset rules:
 
-| 入力項目 | 内容 | 注意点 |
-|---------|------|--------|
-| 資産の名称 | 例: ノートPC、ディスプレイ | わかりやすい名称で |
-| 取得年月 | 購入日 | 月の途中でも1ヶ月としてカウント |
-| 取得価額 | 購入金額（税込 or 税抜は経理方式による） | — |
-| 償却方法 | 定額法（個人事業主の原則） | 届出なしなら定額法 |
-| 耐用年数 | 資産区分に応じた年数 | PC=4年、ソフトウェア=5年 |
-| 本年分の償却費 | 取得価額 × 償却率 × 使用月数/12 | 年の途中取得は月割り |
-| 事業専用割合 | 家事按分率（%） | 100%事業用なら100 |
-| 本年分の経費算入額 | 償却費 × 事業専用割合 | 自動計算される場合あり |
-| 未償却残高 | 取得価額 − 償却累計額 | — |
+- Blue-filer special rule under JPY 300,000 -> choose the applicable special treatment and expense immediately.
+- JPY 100,000 to under JPY 200,000 -> use the three-year equal-depreciation path.
 
-**少額資産の特例適用時**:
-- 青色申告の30万円未満特例 → 措法28の2を選択し、全額を本年分の経費に
-- 一括償却資産（10万円以上20万円未満） → 3年均等償却を選択
+### Balance Sheet
 
-### 1-5. 貸借対照表
+Screen: `青色申告決算書 -> 貸借対照表`
 
-**画面**: 青色申告決算書 → 貸借対照表
+| Area | What to keep aligned |
+|------|----------------------|
+| Assets | `現金`, `普通預金`, `売掛金`, `工具器具備品`, and similar year-end balances |
+| Liabilities | `未払金`, `預り金`, and other year-end balances |
+| Capital side | `元入金`, `事業主貸`, `事業主借`, and current-year result |
 
-65万円（e-Tax利用）または55万円の青色申告特別控除を受けるには貸借対照表の提出が必要。
+Important checks:
 
-| 区分 | 主な科目 | 入力のポイント |
-|------|---------|--------------|
-| **資産の部** | 現金、普通預金、売掛金、工具器具備品 | 期首（1/1）と期末（12/31）の残高 |
-| **負債の部** | 未払金、預り金 | 期首と期末の残高 |
-| **資本の部** | 元入金、事業主貸、事業主借、青色申告特別控除前の所得 | — |
+1. Fixed assets must be entered at book value, not acquisition cost.
+2. `事業主貸` and `事業主借` should reflect the full-year totals if personal accounts were used.
+3. `資産合計 = 負債合計 + 資本合計` must balance.
+4. A difference of one to a few yen may come from rounding; larger gaps usually mean missing or duplicated entries.
 
-**重要な注意点**:
+## Income-Tax Return Screens
 
-1. **固定資産は帳簿価額（純額）で記載**: 取得価額ではなく、取得価額 − 減価償却累計額
-2. **事業主貸/事業主借**: 個人口座兼用の場合、年間を通じた累計額
-3. **元入金**: 前年期末の元入金 + 前年の事業主借 − 前年の事業主貸 + 前年の所得
-4. **バランスチェック**: 資産合計 = 負債合計 + 資本合計 が一致すること
+### Select Income Types
 
-**バランスが合わない場合の対処**:
-- 1円〜数円のズレ → 事業主貸または事業主借で調整（端数処理の差異）
-- 大きなズレ → 仕訳の漏れや二重計上を確認
+Screen: `確定申告書等作成コーナー -> 所得の種類を選択`
 
-> **e-Taxと会計ソフトの端数差異**: 消費税の端数処理方式（切捨て/四捨五入/切上げ）の違いで1円ズレが発生することがある。この場合、事業主貸/事業主借で調整するのが一般的。
+| Check item | When to select it |
+|------------|-------------------|
+| `給与所得` | Salary or wages exist |
+| `事業所得` | Business revenue exists |
+| `不動産所得` | Rent revenue exists |
+| `雑所得` | Miscellaneous side income or pension income exists |
+| `配当所得` | Dividend income is being filed under comprehensive taxation |
 
----
+Most important trap: in salary-plus-side-business cases, keep both `給与所得` and `事業所得`. Selecting only business income can understate tax materially.
 
-## Part 2: 所得税確定申告書
+### Withholding Slip Input
 
-### 2-1. 所得の選択
+Screen: `確定申告書 -> 給与所得 -> 源泉徴収票の入力`
 
-**画面**: 確定申告書等作成コーナー → 所得の種類を選択
-
-| チェック項目 | 該当する場合 |
-|------------|------------|
-| 給与所得 | 会社員・パートの給与がある場合 |
-| 事業所得 | 個人事業主・フリーランスの事業収入がある場合 |
-| 不動産所得 | 家賃収入がある場合 |
-| 雑所得 | 副業収入（事業所得に該当しない場合）、年金等 |
-| 配当所得 | 株式配当がある場合（総合課税を選択する場合） |
-
-**最重要注意点**: 会社員+副業の場合、**給与所得と事業所得の両方にチェック**を入れること。事業所得のみにチェックすると、給与所得が反映されず、税額が大幅に誤る。
-
-### 2-2. 源泉徴収票の転記
-
-**画面**: 確定申告書 → 給与所得 → 源泉徴収票の入力
-
-源泉徴収票の記載項目とe-Tax入力欄の対応:
-
-| 源泉徴収票の項目 | e-Tax入力欄 | 注意点 |
-|---------------|-----------|--------|
-| 支払金額 | 収入金額 | そのまま転記 |
-| 給与所得控除後の金額 | 所得金額 | 空欄の場合は年調未済→手計算 |
-| 所得控除の額の合計額 | 所得控除合計 | 源泉徴収票で処理済みの控除 |
-| 源泉徴収税額 | 源泉徴収税額 | 年末調整済みの納付済み税額 |
-| 社会保険料等の金額 | 社会保険料控除 | **源泉徴収票に記載済みなら自動反映** |
-| 生命保険料の控除額 | 生命保険料控除（控除額） | 控除額をそのまま |
-| 生命保険料の金額 | — | 支払保険料額（控除証明書の金額）も参照される場合あり |
-| 地震保険料の控除額 | 地震保険料控除 | 控除額をそのまま |
-| 住宅借入金等特別控除の額 | 住宅ローン控除 | 税額控除として反映 |
-| 配偶者控除・扶養控除 | 各控除欄 | 源泉徴収票の内容をそのまま転記 |
-
-**生命保険料控除の入力**:
-- e-Tax画面では**控除額**と**支払保険料額**の両方の入力欄がある場合がある
-- 源泉徴収票には控除額のみ記載 → 支払保険料額は控除証明書で確認
-- 一般・介護医療・個人年金の区分ごとに入力
-
-### 2-3. 控除入力（重複回避）
-
-**画面**: 確定申告書 → 所得控除の入力
-
-**大原則**: 源泉徴収票で処理済みの控除は、確定申告で重複入力しない。
-
-| 控除 | 源泉徴収票で処理済み？ | 確定申告での入力 |
-|------|---------------------|---------------|
-| 基礎控除 | ✅ 処理済み | **入力不要**（自動反映） |
-| 配偶者控除 | ✅ 処理済み | **入力不要** |
-| 扶養控除 | ✅ 処理済み | **入力不要** |
-| 社会保険料控除（給与天引き） | ✅ 処理済み | **入力不要** |
-| 生命保険料控除 | ✅ 処理済み | **入力不要** |
-| 地震保険料控除 | ✅ 処理済み | **入力不要** |
-| 社会保険料控除（国民年金等の追加分） | ❌ 未処理 | **要入力** |
-| 医療費控除 | ❌ 年末調整不可 | **要入力** |
-| 寄附金控除（ふるさと納税等） | ❌ 年末調整不可 | **要入力** |
-| 小規模企業共済等掛金控除（iDeCo） | △ 会社経由なら処理済み | 源泉徴収票を確認 |
-
-> **確認方法**: 源泉徴収票の各控除額欄に金額が記載されていれば処理済み。記載がなければ未処理→確定申告で入力。
-
-### 2-4. 扶養親族入力
-
-**画面**: 確定申告書 → 配偶者・扶養親族の入力
-
-| 区分 | 所得控除の対象 | e-Taxへの入力 |
-|------|-------------|-------------|
-| 16歳以上の扶養親族 | ✅ 対象 | 扶養控除の対象として入力 |
-| **16歳未満の扶養親族** | ❌ 控除なし | **入力必要（住民税の非課税判定に影響）** |
-
-**16歳未満の子供がいる場合**: 所得税の扶養控除は受けられないが、住民税の非課税限度額の計算に影響するため、確定申告書の「住民税に関する事項」の「16歳未満の扶養親族」欄に必ず入力する。
-
-### 2-5. ふるさと納税
-
-**画面**: 確定申告書 → 寄附金控除の入力
-
-**最重要注意点**: 確定申告を行うと、ワンストップ特例の申請は**すべて無効**になる。
-
-| 状態 | 必要な対応 |
-|------|----------|
-| ワンストップ特例を申請済み | 確定申告により全件無効 → **全自治体分を入力** |
-| ワンストップ特例を申請していない | 通常通り全件入力 |
-
-**入力方法**:
-1. 「寄附金控除」を選択
-2. 各自治体の寄附金受領証明書に基づき、1件ずつ入力
-3. 寄附先の名称、寄附金額、寄附日を入力
-4. 「都道府県・市区町村に対する寄附金（ふるさと納税）」を選択
-
-> **xml一括取り込み**: マイナポータル連携を利用すると、ふるさと納税の情報を一括取り込みできる場合がある。ただし対応プラットフォームに限る。
-
-### 2-6. 住民税の徴収方法
-
-**画面**: 確定申告書 → 住民税に関する事項 → 給与、公的年金等以外の所得に係る住民税の徴収方法
-
-| 選択肢 | 内容 | 影響 |
-|--------|------|------|
-| **自分で納付**（普通徴収） | 事業所得分の住民税を自分で納付書で支払う | 勤務先に副業の住民税額が通知されない |
-| 給与から差引き（特別徴収） | 全所得の住民税を勤務先の給与天引きで支払う | 住民税額の増加により勤務先に副業が推察される可能性 |
-
-> **会社員+副業の場合**: 副業を勤務先に知られたくない場合は「自分で納付」を選択する。ただし、自治体によっては普通徴収を選択しても特別徴収に統合される場合がある。
-
-### 2-7. 所得金額調整控除
-
-**画面**: 確定申告書 → 給与所得の入力時に自動判定
-
-給与収入850万円超の場合に自動判定される控除。
-
-| 適用要件（いずれかに該当） | 控除額 |
-|------------------------|--------|
-| 本人が特別障害者 | (給与収入−850万円)×10%（上限15万円） |
-| 23歳未満の扶養親族あり | 同上 |
-| 特別障害者の同一生計配偶者・扶養親族あり | 同上 |
-
-> e-Taxでは源泉徴収票と扶養情報の入力に基づき自動計算されることが多いが、適用漏れがないか確認する。
-
----
-
-## Part 3: よくあるエラーと対処法
-
-| エラー/問題 | 原因 | 対処法 |
-|-----------|------|--------|
-| KS-E20009 | 月別売上の合計欄に手入力 | 合計欄を空にして自動計算に任せる |
-| 貸借対照表が合わない | 仕訳漏れ、端数差異 | 1円〜数円なら事業主貸/借で調整。大きな差は仕訳を再確認 |
-| 控除額が源泉徴収票と異なる | 控除の重複入力 | 源泉徴収票で処理済みの控除を確定申告で再入力していないか確認 |
-| 所得税が想定より高い/低い | 給与所得の入力漏れ | 所得の選択画面で給与と事業の両方にチェックが入っているか確認 |
-| ふるさと納税の控除が反映されない | ワンストップ特例との混同 | 確定申告では全件手入力が必要（ワンストップは無効化） |
-| 減価償却費が経費に反映されない | 詳細画面未入力 | 経費欄の減価償却費→「入力」ボタンから詳細画面で各資産を入力 |
-| 16歳未満の扶養親族が反映されない | 住民税欄への入力漏れ | 「住民税に関する事項」で16歳未満の扶養親族を入力 |
-| e-Taxと手計算で1円ズレ | 端数処理方式の違い | e-Taxの計算結果を正とする（国税庁の端数処理ルールに準拠） |
-| 事業所得の経費が0円 | 青色申告決算書が未連携 | 青色申告決算書を先に完成させてから確定申告書に進む |
-
-### 画面遷移の基本フロー
-
-```
-1. 作成開始
-   └→ 申告書の種類を選択（所得税）
-   └→ 提出方式を選択（e-Tax/印刷）
-
-2. 青色申告決算書（事業所得がある場合は先に作成）
-   └→ 売上入力（月別）
-   └→ 売上原価
-   └→ 経費入力
-      └→ 減価償却費の詳細入力
-   └→ 貸借対照表
-   └→ 決算書完成 → 確定申告書に連携
-
-3. 確定申告書
-   └→ 所得の選択（給与+事業 等）
-   └→ 給与所得（源泉徴収票の転記）
-   └→ 事業所得（決算書から自動連携）
-   └→ 所得控除の入力
-   └→ 税額控除の入力
-   └→ 扶養親族・住民税に関する事項
-   └→ 計算結果の確認
-   └→ 送信
+| Withholding-slip field | e-Tax field | Note |
+|------------------------|-------------|------|
+| `支払金額` | Revenue | Copy directly |
+| `給与所得控除後の金額` | Income amount | If blank, year-end adjustment may be unfinished |
+| `所得控除の額の合計額` | Total deductions | Already reflected in the slip |
+| `源泉徴収税額` | Withholding tax | Credit against final tax |
+| `社会保険料等の金額` | Social-insurance deduction | Usually already reflected |
+| `生命保険料の控除額` | Life-insurance deduction | Use the deduction amount |
+| `地震保険料の控除額` | Earthquake-insurance deduction | Use the deduction amount |
+| `住宅借入金等特別控除の額` | Housing-loan credit | Tax-credit item |
+| Spouse and dependent entries | Matching deduction fields | Transfer consistently |
+
+If the screen also asks for insurance-premium amounts, the deduction certificate may still be needed in addition to the withholding slip.
+
+### Deduction Input
+
+Screen: `確定申告書 -> 所得控除の入力`
+
+Keep this rule explicit: do not input again what was already processed on the withholding slip.
+
+| Deduction | Usually already processed on the slip? | Return input |
+|-----------|----------------------------------------|--------------|
+| Basic deduction | Yes | Usually no manual input |
+| Spouse deduction | Yes | Do not duplicate |
+| Dependent deduction | Yes | Do not duplicate |
+| Social insurance withheld from salary | Yes | Do not duplicate |
+| Life-insurance deduction | Yes | Do not duplicate |
+| Earthquake-insurance deduction | Yes | Do not duplicate |
+| Additional social-insurance payments | No | Add in the return |
+| Medical-expense deduction | No | Add in the return |
+| Donation deduction | No | Add in the return |
+| iDeCo | Depends | Check whether the employer already reflected it |
+
+### Dependents
+
+Screen: `確定申告書 -> 配偶者・扶養親族の入力`
+
+| Category | Income-tax deduction? | e-Tax handling |
+|----------|-----------------------|----------------|
+| Dependents age 16 and older | Yes | Enter as normal dependents |
+| Dependents under 16 | No | Still enter them in `住民税に関する事項` |
+
+### Furusato Nozei
+
+Screen: `確定申告書 -> 寄附金控除の入力`
+
+Most important trap: once a final return is filed, every one-stop filing becomes invalid.
+
+| Situation | What to do |
+|-----------|------------|
+| One-stop filing was submitted | Re-enter every municipality in the return |
+| No one-stop filing was submitted | Enter every municipality normally |
+
+`xml` import through My Number Portal may help, but support depends on the platform.
+
+### Resident-Tax Collection Method
+
+Screen: `確定申告書 -> 住民税に関する事項 -> 給与、公的年金等以外の所得に係る住民税の徴収方法`
+
+| Option | Meaning | Typical consequence |
+|--------|---------|---------------------|
+| `自分で納付` (`普通徴収`) | Pay the resident tax on non-salary income directly | May reduce visibility of side income to the employer |
+| `給与から差引き` (`特別徴収`) | All resident tax is withheld from salary | The employer may infer side income from the higher amount |
+
+> Some municipalities still combine everything into special collection even when ordinary collection is requested.
+
+### Employment-Income Adjustment Check
+
+Screen: salary input flow, usually auto-detected
+
+If salary income exceeds JPY 8.5 million, confirm whether the conditions for the employment-income adjustment are reflected.
+
+## Common Errors
+
+| Error or issue | Likely cause | What to do |
+|----------------|-------------|------------|
+| `KS-E20009` | Manual input in the monthly-sales total field | Leave the total blank and let e-Tax calculate it |
+| Balance sheet does not match | Missing entry or rounding difference | Small gaps can be adjusted with `事業主貸/借`; large gaps need a ledger review |
+| Deduction amount differs from the withholding slip | Duplicate deduction input | Check whether the slip already reflected the deduction |
+| Income tax is too high or too low | Salary-income input may be missing | Confirm both salary and business income were selected |
+| Furusato Nozei does not reduce tax | One-stop filing misunderstanding | Enter every municipality in the return |
+| Depreciation is missing from expenses | Detail screen not completed | Open the depreciation detail screen and enter each asset |
+| Under-16 dependent effect is missing | Resident-tax screen entry missing | Enter the child in `住民税に関する事項` |
+| e-Tax differs from manual calculation by JPY 1 | Rounding rules differ | Prefer the e-Tax result |
+| Business expenses show as zero | `青色申告決算書` was not completed first | Complete the blue-return statement before the final return |
+
+## Screen Order
+
+```text
+1. Start the return
+2. Choose income tax and the submission method
+3. If business income exists, complete 青色申告決算書 first:
+   - monthly sales
+   - cost of goods sold
+   - expenses
+   - depreciation detail
+   - balance sheet
+4. Move to the final return:
+   - select income types
+   - input salary from 源泉徴収票
+   - confirm business income transfer
+   - input deductions and tax credits
+   - input dependents and resident-tax items
+   - review the tax result
+   - submit
 ```
 
----
-
-⚠️ 本ガイドは確定申告書等作成コーナーの一般的な画面構成に基づく解説です。e-Taxの画面レイアウトやボタン配置は年度により変更される場合があります。最新の操作方法は国税庁サイト（https://www.nta.go.jp）を確認してください。実際の申告にあたっては、必要に応じて税理士にご相談ください。
+> Use this file only for screen navigation. For combined-filing reasoning and overlap checks, pair it with `references/salary-plus-side-business.md`.

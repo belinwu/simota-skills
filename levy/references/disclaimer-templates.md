@@ -1,74 +1,80 @@
-# 免責事項テンプレート
+# Disclaimer Templates
 
-## 標準免責事項（全出力に付記）
+Purpose: Read this when you need the mandatory disclaimer text, the `L1`-`L4` guardrail level, or escalation wording.
 
-```
+## Standard Disclaimer
+
+Append this to every response:
+
+```text
 ⚠️ 本回答は一般的な税法解説であり、個別具体的な税務判断・税務相談に該当するものではありません。
 実際の申告にあたっては、対象年度の最新の税法・通達を確認し、必要に応じて税理士にご相談ください。
 ```
 
-## 計算結果への免責事項
+## Calculation Disclaimer
 
-```
+Use this for any estimate, simulation, or tax preview:
+
+```text
 ⚠️ 本計算は提供された情報に基づく概算です。
 ・対象年度: [年度]
 ・前提条件: [使用した前提をリスト]
 正確な税額は、全ての所得・控除を反映した確定申告書の作成が必要です。
 ```
 
-## 税制改正に関する免責事項
+## Tax-Law Update Disclaimer
 
-```
+Use this when the answer depends on year-sensitive rules:
+
+```text
 ⚠️ 本情報は[年度]時点の税法に基づいています。
 税制改正により要件・税率・控除額等が変更される可能性があります。
 最新情報は国税庁サイト（https://www.nta.go.jp）を確認してください。
 ```
 
-## 特殊所得に関する免責事項
+## Special-Income Disclaimer
 
-```
+Use this for crypto, foreign income, stock options, or similar cases:
+
+```text
 ⚠️ [暗号資産取引/海外所得/ストックオプション等]の税務処理は複雑であり、
 取引の態様・時期・金額等により取扱いが異なります。
 専門の税理士への相談を強く推奨します。
 ```
 
----
+## Guardrail Levels
 
-## ガードレール定義
+| Level | Response policy | Typical examples |
+|-------|-----------------|------------------|
+| `L1` | Answer directly | Income-tax basics, deduction categories, filing flow |
+| `L2` | Answer with disclaimer | Salary-plus-side-business estimate, deduction calculations |
+| `L3` | General guidance only, then recommend a tax accountant | Income-type judgment, complex eligibility calls, amendments |
+| `L4` | Refuse and point to expert help | Tax evasion, fabricated expenses, audit avoidance |
 
-### 対応範囲の判定
+## Never Include
 
-| レベル | 対応 | 例 |
-|--------|------|---|
-| **L1: 一般解説** | 回答OK | 所得税の仕組み、控除の種類、申告手順 |
-| **L2: 類型的な計算** | 回答OK（免責付き） | 給与+副業の概算税額、控除額の計算 |
-| **L3: 個別判断を含む** | 一般論+税理士推奨 | 所得区分の判定、特殊な控除の適用可否 |
-| **L4: 高リスク** | 回答拒否+専門家紹介 | 脱税的手法、悪質な節税スキーム |
+| Prohibited content | Why |
+|--------------------|-----|
+| `「確実に〜できます」`, `「必ず〜です」` | Guarantee language can become de facto tax judgment |
+| `「申告しなくてもバレません」` | Implies tax evasion |
+| Definitive individualized tax judgment | Risks violating tax-accountant practice limits |
+| My Number or bank-account retention | Sensitive personal data |
+| Instructions for fabricated expenses | Assists tax evasion |
+| Instructions for avoiding a tax audit | Non-compliant and unsafe |
 
-### 回答に含めてはいけない内容
+## Recommend a Tax Accountant When
 
-| 禁止事項 | 理由 |
-|---------|------|
-| 「確実に〜できます」「必ず〜です」 | 保証表現は税務判断の代行に該当しうる |
-| 「申告しなくてもバレません」 | 脱税の示唆 |
-| 個別具体的な税務判断の断定 | 税理士法52条（税理士業務の制限）抵触のおそれ |
-| マイナンバー・口座番号の保持 | 個人情報保護 |
-| 架空経費の計上方法 | 脱税幇助 |
-| 税務調査の回避方法 | 法令遵守に反する |
+- Annual revenue exceeds JPY 10 million and consumption tax becomes relevant.
+- Incorporation is under consideration.
+- Crypto trading volume is large.
+- Foreign transactions or overseas residency history are involved.
+- Inheritance or gift tax intersects with income tax.
+- The user has received a tax-audit notice.
+- The request concerns an amended return or a correction claim.
 
-### 税理士への相談を推奨するトリガー
+## Escalation Template
 
-- 年間売上1,000万円超（消費税の検討）
-- 法人成りの検討
-- 暗号資産の大量取引
-- 海外取引・海外居住歴
-- 相続・贈与と所得税の絡み
-- 税務調査の通知を受けた
-- 修正申告・更正の請求
-
-### エスカレーションテンプレート
-
-```
+```text
 この質問は個別具体的な税務判断に該当するため、一般的な解説にとどめます。
 
 正確な判断には以下をおすすめします:

@@ -1,157 +1,158 @@
-# 控除カタログ
+# Deduction Catalog
 
-## 所得控除（15種）
+Purpose: Read this when checking deduction eligibility, blue filing benefits, tax credits, or overlap-sensitive items such as Furusato Nozei and under-16 dependents.
 
-課税所得を計算する際に所得金額から差し引く控除。
+## Contents
 
-### 人的控除
+- [Income deductions](#income-deductions)
+- [Tax credits](#tax-credits)
+- [Blue filing special deduction](#blue-filing-special-deduction)
+- [Priority checks](#priority-checks)
+- [Overlap-sensitive cases](#overlap-sensitive-cases)
 
-| # | 控除名 | 控除額 | 主な要件 |
-|---|--------|--------|---------|
-| 1 | **基礎控除** | 最大48万円（※R7は58万円に増額） | 合計所得2,500万円以下（2,400万円超で逓減） |
-| 2 | **配偶者控除** | 最大38万円（老人48万円） | 配偶者の合計所得48万円以下、納税者の合計所得1,000万円以下 |
-| 3 | **配偶者特別控除** | 最大38万円（逓減） | 配偶者の合計所得48万円超133万円以下 |
-| 4 | **扶養控除** | 38〜63万円 | 親族の合計所得48万円以下 |
-| 5 | **障害者控除** | 27万円（特別40万円、同居特別75万円） | 障害者手帳保有等 |
-| 6 | **寡婦控除** | 27万円 | 合計所得500万円以下の寡婦 |
-| 7 | **ひとり親控除** | 35万円 | 合計所得500万円以下のひとり親 |
-| 8 | **勤労学生控除** | 27万円 | 勤労学生で合計所得75万円以下 |
+## Income Deductions
 
-### 扶養控除の区分
+### Personal Deductions
 
-| 区分 | 年齢 | 控除額 |
-|------|------|--------|
-| 一般の扶養親族 | 16歳以上 | 38万円 |
-| 特定扶養親族 | 19歳以上23歳未満 | 63万円 |
-| 老人扶養親族（同居） | 70歳以上 | 58万円 |
-| 老人扶養親族（別居） | 70歳以上 | 48万円 |
+| # | Deduction | Amount | Main requirement |
+|---|-----------|--------|------------------|
+| 1 | Basic deduction (`基礎控除`) | Up to JPY 480,000 (`R7` note: `580,000`) | Total income `<= JPY 25 million`, phased down above `JPY 24 million` |
+| 2 | Spouse deduction (`配偶者控除`) | Up to JPY 380,000 (`480,000` for elderly spouse) | Spouse income `<= JPY 480,000`, taxpayer income `<= JPY 10 million` |
+| 3 | Spouse special deduction (`配偶者特別控除`) | Up to JPY 380,000 | Spouse income between `JPY 480,001` and `JPY 1.33 million` |
+| 4 | Dependent deduction (`扶養控除`) | JPY 380,000 to JPY 630,000 | Relative income `<= JPY 480,000` |
+| 5 | Disability deduction (`障害者控除`) | JPY 270,000, `400,000`, or `750,000` | Qualifying disability status |
+| 6 | Widow deduction (`寡婦控除`) | JPY 270,000 | Taxpayer income `<= JPY 5 million` |
+| 7 | Single-parent deduction (`ひとり親控除`) | JPY 350,000 | Taxpayer income `<= JPY 5 million` |
+| 8 | Working-student deduction (`勤労学生控除`) | JPY 270,000 | Working student with income `<= JPY 750,000` |
 
-> **注意**: 16歳未満は扶養控除の対象外（児童手当の対象）。ただし住民税の非課税限度額の計算に影響するため、確定申告書の「住民税に関する事項」に記載が必要。
+### Dependent-Deduction Bands
 
-### 物的控除
+| Category | Age | Amount |
+|----------|-----|--------|
+| General dependent | 16 or older | JPY 380,000 |
+| Specific dependent | 19 to under 23 | JPY 630,000 |
+| Elderly dependent living together | 70 or older | JPY 580,000 |
+| Elderly dependent living separately | 70 or older | JPY 480,000 |
 
-| # | 控除名 | 控除額 | 主な要件 |
-|---|--------|--------|---------|
-| 9 | **社会保険料控除** | 全額 | 国民年金・健康保険・介護保険等 |
-| 10 | **小規模企業共済等掛金控除** | 全額 | iDeCo・小規模企業共済・企業型DC |
-| 11 | **生命保険料控除** | 最大12万円 | 一般・介護医療・個人年金（各最大4万円） |
-| 12 | **地震保険料控除** | 最大5万円 | 地震保険料の全額（上限5万円） |
-| 13 | **医療費控除** | 最大200万円 | (医療費−保険補填)−10万円 or 所得5%の低い方 |
-| 14 | **寄附金控除** | 寄附金−2,000円 | ふるさと納税・認定NPO等（所得の40%上限）※確定申告時はワンストップ特例が全無効→全件入力 |
-| 15 | **雑損控除** | 損失額−所得の10% | 災害・盗難・横領による損失 |
+> Children under 16 do not qualify for income-tax dependent deduction, but they still affect resident-tax non-taxable thresholds. Keep the `住民税に関する事項` entry in scope.
 
-### 所得金額調整控除
+### Other Income Deductions
 
-給与収入が850万円を超え、以下のいずれかに該当する場合に適用される（租税特別措置法第41条の3の3）。
+| # | Deduction | Amount | Main requirement |
+|---|-----------|--------|------------------|
+| 9 | Social-insurance deduction (`社会保険料控除`) | Full amount | National pension, health insurance, long-term care insurance, and similar payments |
+| 10 | Small-business mutual aid deduction (`小規模企業共済等掛金控除`) | Full amount | iDeCo, `小規模企業共済`, corporate DC, and similar contributions |
+| 11 | Life-insurance deduction (`生命保険料控除`) | Up to JPY 120,000 | General / medical-care / personal-annuity categories |
+| 12 | Earthquake-insurance deduction (`地震保険料控除`) | Up to JPY 50,000 | Qualifying earthquake-insurance premiums |
+| 13 | Medical-expense deduction (`医療費控除`) | Up to JPY 2 million | `(medical cost - insurance reimbursement) - lower of JPY 100,000 or 5% of income` |
+| 14 | Donation deduction (`寄附金控除`) | Donation minus JPY 2,000 | Furusato Nozei, certified NPOs, and similar donations; capped at 40% of income |
+| 15 | Casualty loss deduction (`雑損控除`) | Loss minus 10% of income | Disaster, theft, or embezzlement loss |
 
-| 適用要件（いずれかに該当） | 控除額 |
-|------------------------|--------|
-| 本人が特別障害者 | (給与収入−850万円)×10%（上限15万円） |
-| 23歳未満の扶養親族あり | 同上 |
-| 特別障害者の同一生計配偶者・扶養親族あり | 同上 |
+### Employment-Income Adjustment Deduction
 
-> **注意**: 所得金額調整控除は給与所得から差し引かれる（所得控除ではなく所得金額の調整）。e-Taxでは源泉徴収票と扶養情報の入力により自動計算されることが多い。
+Apply when salary income exceeds JPY 8.5 million and one of the listed conditions is met (`租税特別措置法第41条の3の3`).
 
-### 医療費控除の特例（セルフメディケーション税制）
+| Condition | Amount |
+|-----------|--------|
+| Taxpayer is a specially disabled person | `(salary income - JPY 8.5 million) x 10%`, capped at JPY 150,000 |
+| Has a dependent relative under 23 | Same |
+| Has a spouse or dependent who is specially disabled | Same |
 
-- 対象: 特定一般用医薬品等購入費
-- 控除額: (購入費−12,000円) で最大88,000円
-- 要件: 健診や予防接種を受けていること
-- 通常の医療費控除との選択適用
+> This is an adjustment to employment income, not an income deduction. In e-Tax it is often calculated automatically from the withholding slip and dependent data.
 
-### iDeCo（個人型確定拠出年金）の掛金上限
+### Self-Medication Tax System
 
-| 加入者区分 | 月額上限 | 年額上限 |
-|-----------|---------|---------|
-| 自営業者（第1号） | 68,000円 | 816,000円 |
-| 会社員（企業年金なし） | 23,000円 | 276,000円 |
-| 会社員（企業型DCのみ） | 20,000円 | 240,000円 |
-| 会社員（DB等あり） | 12,000円 | 144,000円 |
-| 公務員 | 12,000円 | 144,000円 |
-| 専業主婦（第3号） | 23,000円 | 276,000円 |
+- Eligible spending: designated OTC medication purchases
+- Amount: purchase cost minus JPY 12,000, capped at JPY 88,000
+- Requirement: the taxpayer took a health check, vaccination, or similar preventive measure
+- Use either this system or the standard medical-expense deduction, not both
 
----
+### iDeCo Contribution Limits
 
-## 税額控除
+| Subscriber type | Monthly limit | Annual limit |
+|-----------------|---------------|--------------|
+| Self-employed (`第1号`) | JPY 68,000 | JPY 816,000 |
+| Company employee without corporate pension | JPY 23,000 | JPY 276,000 |
+| Company employee with only corporate DC | JPY 20,000 | JPY 240,000 |
+| Company employee with DB or similar plan | JPY 12,000 | JPY 144,000 |
+| Public servant | JPY 12,000 | JPY 144,000 |
+| Homemaker (`第3号`) | JPY 23,000 | JPY 276,000 |
 
-税額から直接差し引く控除。所得控除より節税効果が大きい。
+## Tax Credits
 
-| 控除名 | 控除額 | 主な要件 |
-|--------|--------|---------|
-| **住宅借入金等特別控除（住宅ローン控除）** | 年末残高×0.7%（最大13年） | 新築・中古取得・増改築、床面積50㎡以上等 |
-| **配当控除** | 配当所得×10%(or 5%) | 総合課税を選択した場合のみ |
-| **外国税額控除** | 外国所得税額 | 二重課税排除 |
-| **政党等寄附金特別控除** | (寄附金−2,000円)×30% | 政党・政治資金団体への寄附 |
-| **認定NPO法人寄附金特別控除** | (寄附金−2,000円)×40% | 所得控除との選択 |
-| **災害減免額** | 所得に応じて全額〜1/4軽減 | 災害で住宅等に被害 |
+| Credit | Amount | Main requirement |
+|--------|--------|------------------|
+| Housing-loan credit (`住宅借入金等特別控除`) | Year-end balance x 0.7% | Home purchase / renovation meeting statutory requirements |
+| Dividend credit (`配当控除`) | Dividend income x 10% or 5% | Only when comprehensive taxation is chosen |
+| Foreign tax credit (`外国税額控除`) | Foreign income tax paid | Double-tax relief |
+| Political-donation credit | `(donation - JPY 2,000) x 30%` | Qualifying political donations |
+| Certified-NPO donation credit | `(donation - JPY 2,000) x 40%` | Choose either tax credit or income deduction |
+| Disaster relief credit | Full to one-quarter reduction | Disaster damage to home or property |
 
-### 住宅ローン控除の概要（令和4年以降入居）
+### Housing-Loan Credit Overview (`令和4年` move-in or later)
 
-| 住宅種別 | 借入限度額 | 控除率 | 控除期間 |
-|---------|-----------|--------|---------|
-| 認定住宅（新築） | 4,500万円 | 0.7% | 13年 |
-| ZEH水準省エネ住宅 | 3,500万円 | 0.7% | 13年 |
-| 省エネ基準適合住宅 | 3,000万円 | 0.7% | 13年 |
-| その他の住宅 | 0円（令和6年以降） | — | — |
-| 既存住宅（認定） | 3,000万円 | 0.7% | 10年 |
-| 既存住宅（その他） | 2,000万円 | 0.7% | 10年 |
+| Housing type | Debt cap | Credit rate | Period |
+|--------------|----------|-------------|--------|
+| Certified new home | JPY 45 million | 0.7% | 13 years |
+| ZEH-level energy-efficient home | JPY 35 million | 0.7% | 13 years |
+| Energy-standard home | JPY 30 million | 0.7% | 13 years |
+| Other new homes | JPY 0 from `令和6年` onward | — | — |
+| Certified used home | JPY 30 million | 0.7% | 10 years |
+| Other used home | JPY 20 million | 0.7% | 10 years |
 
----
+## Blue Filing Special Deduction
 
-## 青色申告特別控除
+| Amount | Requirement |
+|--------|-------------|
+| JPY 650,000 | Double-entry bookkeeping plus e-Tax filing or compliant electronic bookkeeping |
+| JPY 550,000 | Double-entry bookkeeping without the e-Tax / electronic-bookkeeping condition |
+| JPY 100,000 | Simple bookkeeping or non-business-scale real-estate income |
 
-| 控除額 | 要件 |
-|--------|------|
-| **65万円** | 複式簿記 + e-Tax申告 or 電子帳簿保存 |
-| **55万円** | 複式簿記（e-Tax・電子帳簿保存なし） |
-| **10万円** | 簡易簿記、または不動産所得が事業的規模でない場合 |
+### Main Benefits
 
-### 青色申告の主なメリット
+1. Special deduction up to JPY 650,000
+2. Full expense treatment for `青色事業専従者給与` with prior filing
+3. Net-loss carryforward for three years
+4. Net-loss carryback for refund claims
+5. Immediate expensing of assets under JPY 300,000, up to JPY 3 million per year
+6. Bad-debt reserve rules for eligible receivables
 
-1. **特別控除**: 最大65万円の所得控除
-2. **専従者給与**: 家族への給与を全額経費計上（届出要）
-3. **純損失の繰越**: 赤字を3年間繰り越し可能
-4. **純損失の繰戻**: 前年の黒字と通算して還付請求
-5. **少額減価償却**: 30万円未満の資産を一括経費（年間300万円限度）
-6. **貸倒引当金**: 売掛金等の5.5%を引当金計上
+### Blue Filing Deadlines
 
-### 青色申告の届出期限
+| Case | Deadline |
+|------|----------|
+| New business started between January 1 and January 15 | March 15 of that year |
+| New business started on or after January 16 | Within two months from the start date |
+| White return to blue return switch | March 15 of the year to apply |
 
-| ケース | 届出期限 |
-|--------|---------|
-| 新規開業（1/1〜1/15に開業） | その年の3/15 |
-| 新規開業（1/16以降に開業） | 開業日から2ヶ月以内 |
-| 白色→青色への切り替え | 適用を受けようとする年の3/15 |
+## Priority Checks
 
----
+Use this order when the user asks where to check first for tax savings:
 
-## 控除適用の優先順位（節税効果が大きい順）
+1. `小規模企業共済等掛金控除` (iDeCo and similar)
+2. `社会保険料控除`
+3. `医療費控除`
+4. `寄附金控除` (`ふるさと納税`)
+5. Housing-loan tax credit
+6. `生命保険料控除`
 
-1. **小規模企業共済等掛金控除（iDeCo等）** — 全額控除、運用益非課税
-2. **社会保険料控除** — 全額控除（支払い義務があるもの）
-3. **医療費控除** — 高額医療費がある年に有効
-4. **寄附金控除（ふるさと納税）** — 実質負担2,000円で返礼品
-5. **住宅ローン控除（税額控除）** — 税額から直接差引
-6. **生命保険料控除** — 上限あるが確実に適用可能
+## Overlap-Sensitive Cases
 
-### ふるさと納税と確定申告
+### Furusato Nozei
 
-確定申告を行う場合、ワンストップ特例の申請は**すべて無効**になる。
+Once a final tax return is filed, every one-stop filing becomes invalid.
 
-| 状況 | 対応 |
-|------|------|
-| ワンストップ特例を申請済みだが確定申告する | 全自治体分を寄附金控除として入力（ワンストップは全件無効化） |
-| ワンストップ特例を申請していない | 全件を寄附金控除として入力 |
+| Situation | Required handling |
+|-----------|-------------------|
+| One-stop filing already submitted but the taxpayer now files a return | Enter every municipality again as donation deduction |
+| No one-stop filing submitted | Enter every municipality normally |
 
-> **注意**: 一部だけワンストップ特例を残すことはできない。確定申告すると全件無効になるため、必ず全自治体分を入力すること。
+> Do not leave only part of the one-stop filing in place. Filing a return voids all of it.
 
-### 16歳未満の扶養親族と住民税
+### Dependents Under 16
 
-16歳未満の子供は所得税の扶養控除の対象外だが、**住民税の非課税判定**に影響する。
+- No income-tax dependent deduction applies.
+- The child still matters for resident-tax non-taxable thresholds.
+- Keep the child in `住民税に関する事項` to avoid missing that resident-tax treatment.
 
-- 確定申告書の「住民税に関する事項」→「16歳未満の扶養親族」欄に記載が必要
-- 入力しないと住民税の非課税判定に反映されず、不利になる場合がある
-
----
-
-> **注意**: 控除額・要件は税制改正により変更される可能性があります。対象年度の最新情報を国税庁サイトで確認してください。R7（令和7年）分の基礎控除は58万円に増額されています。
+> Amounts and requirements are year-sensitive. If the active filing year is uncertain or changed by reform, pair this file with the tax-law update disclaimer from `references/disclaimer-templates.md`.

@@ -1,158 +1,166 @@
-# 申告要否判定リファレンス
+# Filing Requirement Reference
 
-## 確定申告が必要な人
+Purpose: Read this when the user needs a filing-required decision, the `20万円ルール`, refund-filing guidance, or penalty rules.
 
-### 判定フローチャート
+## Contents
 
-```
-Q1: 給与所得者（サラリーマン）ですか？
-├── Yes → Q2へ
-└── No → Q3へ
+- [Who must file](#who-must-file)
+- [The 20万円 rule](#the-20万円-rule)
+- [Salary earners with side work](#salary-earners-with-side-work)
+- [Freelancers and sole proprietors](#freelancers-and-sole-proprietors)
+- [Penalties and relief](#penalties-and-relief)
+- [Refund filing](#refund-filing)
+- [Pensioners](#pensioners)
 
-Q2: 以下のいずれかに該当しますか？
-├── 給与収入が2,000万円超 → 申告必要
-├── 給与を2箇所以上から受けている → ※条件あり
-├── 給与以外の所得が20万円超 → 申告必要
-├── 医療費控除等を受けたい → 申告すると有利
-├── 住宅ローン控除（初年度） → 申告必要
-├── ふるさと納税（6自治体以上 or ワンストップ未利用） → 申告必要
-├── 年末調整を受けていない → 申告必要
-├── 上場株式等の損失を繰り越したい → 申告必要
-└── いずれにも該当しない → 原則不要
+## Who Must File
 
-Q3: 以下のいずれかに該当しますか？
-├── 事業所得がある（フリーランス・個人事業主） → 申告必要
-├── 不動産所得がある → 申告必要
-├── 退職所得（退職所得の受給に関する申告書を未提出） → 申告必要
-├── 公的年金等の収入が400万円超 → 申告必要
-├── 公的年金等以外の所得が20万円超 → 申告必要
-├── 譲渡所得がある（不動産、株式等） → 条件による
-├── 上記以外で各種所得の合計が基礎控除額超 → 申告必要
-└── いずれにも該当しない → 原則不要
-```
+### Decision Flow
 
-## 20万円ルール
+```text
+Q1: Is the person mainly an employee?
+├── Yes -> check the salary-earner conditions below
+└── No -> check the non-salary conditions below
 
-### 適用条件
+Salary-earner conditions:
+├── Salary income exceeds JPY 20 million -> filing required
+├── Salary from two or more employers -> filing may be required
+├── Non-salary income exceeds JPY 200,000 -> filing required
+├── Wants medical-expense deduction or similar refund-only deduction -> filing is beneficial
+├── Wants first-year housing-loan deduction -> filing required
+├── Furusato Nozei with six or more municipalities or no one-stop filing -> filing required
+├── Year-end adjustment not completed -> filing required
+├── Wants to carry forward listed-stock losses -> filing required
+└── Otherwise -> usually not required
 
-給与所得者で以下をすべて満たす場合:
-1. 給与収入が2,000万円以下
-2. 給与を1箇所のみから受けている（又は2箇所以上でも従たる給与等が20万円以下）
-3. 年末調整を受けている
-
-→ **給与以外の所得が20万円以下なら確定申告不要**
-
-### 重要な注意点
-
-| ポイント | 内容 |
-|---------|------|
-| **住民税は別** | 所得税の確定申告が不要でも、住民税の申告は必要（市区町村に申告） |
-| **収入ではなく所得** | 収入−経費=所得 で20万円を判定 |
-| **申告すると全額課税** | 医療費控除等で確定申告する場合、20万円以下の副業所得も合算して申告が必要 |
-| **源泉徴収済みは除外** | 源泉徴収ありの特定口座の利益は20万円ルールの所得に含めなくてよい |
-| **暗号資産は含む** | 暗号資産の利益は雑所得として20万円判定に含める |
-
-### 20万円ルールの対象外（確定申告が必要）
-
-- 給与収入2,000万円超
-- 同族会社の役員で貸付金利子等を受け取っている
-- 災害減免法の適用を受けている
-- 源泉徴収義務のない者から給与を受けている
-
----
-
-## 副業サラリーマンの判定
-
-```
-Step 1: 副業の年間収入を確認
-Step 2: 副業にかかった経費を差し引き → 所得を計算
-Step 3: 所得が20万円以下か？
-├── Yes → 所得税の確定申告不要（ただし住民税申告は必要）
-└── No → 確定申告が必要
-       → Step 4: 事業所得 or 雑所得の判定
-          ├── 帳簿あり・継続反復・相応の規模 → 事業所得（青色申告可能）
-          └── それ以外 → 雑所得
+Non-salary conditions:
+├── Business income exists -> filing required
+├── Real-estate income exists -> filing required
+├── Retirement income without the proper declaration -> filing required
+├── Public pension income exceeds JPY 4 million -> filing required
+├── Non-pension income exceeds JPY 200,000 -> filing required
+├── Capital gains exist -> depends on the category
+├── Total income exceeds the basic deduction -> filing required
+└── Otherwise -> usually not required
 ```
 
----
+### Quick Boundaries to Preserve
 
-## フリーランス/個人事業主の判定
+| Condition | Income-tax filing | Notes |
+|-----------|-------------------|-------|
+| One salary source + other income `<= JPY 200,000` | Usually not required | Resident-tax filing may still be required |
+| Salary from two or more employers | Required in many cases | Check the subordinate-salary exception |
+| Salary income `> JPY 20 million` | Required | No year-end-adjustment shortcut |
+| Public pension income `<= JPY 4 million` and other income `<= JPY 200,000` | Usually not required | Resident-tax filing may still be required |
+| Business income exists | Required in principle | Sole proprietors normally file |
+| Medical-expense deduction or first-year housing-loan deduction | Filing required or beneficial | Refund filing path |
 
+## The 20万円 Rule
+
+### Applies Only If All Conditions Hold
+
+1. Salary income is JPY 20 million or less.
+2. Salary is from one employer only, or subordinate salary is within the allowed limit.
+3. Year-end adjustment has been completed.
+
+If all three conditions hold, non-salary income of JPY 200,000 or less usually does not require an income-tax return.
+
+### Important Notes
+
+| Point | Meaning |
+|-------|---------|
+| Resident tax is separate | Even when income-tax filing is unnecessary, resident-tax filing may still be required. |
+| Judge by income, not revenue | Use `revenue - expenses = income`. |
+| Filing cancels the shortcut | If the user files for medical expenses or another reason, the under-JPY-200,000 side income must also be included. |
+| Withholding-account gains can be excluded | Listed-stock gains in withholding accounts are often outside this rule. |
+| Crypto gains count | Crypto gains are usually miscellaneous income for this test. |
+
+### Cases Outside the Rule
+
+- Salary income exceeds JPY 20 million.
+- The taxpayer is an officer of a closely held company and receives certain related income.
+- Disaster-relief special treatment applies.
+- Salary is paid by a payer with no withholding obligation.
+
+## Salary Earners with Side Work
+
+```text
+Step 1: Confirm annual side-work revenue.
+Step 2: Subtract expenses to calculate side-work income.
+Step 3: If side-work income is JPY 200,000 or less:
+  -> Income-tax filing may be unnecessary, but resident-tax filing may still be required.
+Step 4: If side-work income exceeds JPY 200,000:
+  -> Filing required.
+Step 5: Decide whether the side-work income is business income or miscellaneous income.
 ```
-原則: 事業所得がある → 確定申告が必要
 
-例外: 所得が基礎控除額（48万円）以下
-  → 所得税の確定申告は不要だが、以下の場合は申告推奨:
-  ├── 赤字の繰越控除を受けたい（青色申告の場合）
-  ├── 源泉徴収税額の還付を受けたい
-  └── 住民税の申告が必要
+## Freelancers and Sole Proprietors
+
+```text
+General rule: if business income exists, filing is required.
+
+Exception: if taxable income stays within the basic deduction range, income-tax filing may be unnecessary.
+Still consider filing when:
+- a loss carryforward is needed,
+- withholding tax should be refunded, or
+- resident-tax filing remains necessary.
 ```
 
----
+## Penalties and Relief
 
-## 申告しなかった場合のペナルティ
+### Additional Taxes
 
-### 加算税
-
-| 種類 | 税率 | 適用条件 |
+| Type | Rate | Trigger |
 |------|------|---------|
-| **無申告加算税** | 15%（50万円超部分は20%） | 期限後に申告 |
-| 〃（自主的な期限後申告） | 5% | 税務署の調査通知前に自主申告 |
-| **過少申告加算税** | 10%（50万円超又は期限内申告税額超部分は15%） | 修正申告（税務調査後） |
-| 〃（自主的な修正申告） | 0% | 税務署の調査通知前に自主修正 |
-| **重加算税** | 35%（無申告の場合40%） | 仮装・隠蔽があった場合 |
+| `無申告加算税` | 15% (`20%` above JPY 500,000) | Late filing |
+| Voluntary late filing | 5% | Filed before a tax-office notice |
+| `過少申告加算税` | 10% (`15%` above the higher threshold) | Underreported tax found after filing |
+| Voluntary correction | 0% | Corrected before a tax-office notice |
+| `重加算税` | 35% (`40%` for no filing) | Concealment or fabrication |
 
-### 延滞税
+### Delinquency Tax
 
-| 期間 | 税率（令和6年） |
-|------|--------------|
-| 申告期限翌日〜2ヶ月 | 年2.4% |
-| 2ヶ月超 | 年8.7% |
+| Period | Rate (`令和6年`) |
+|--------|-----------------|
+| From the day after the deadline to two months later | 2.4% per year |
+| More than two months late | 8.7% per year |
 
-### 刑事罰（悪質な場合）
+### Criminal Exposure
 
-| 罪名 | 法定刑 |
-|------|--------|
-| 脱税（所得税法238条） | 10年以下の懲役 or 1,000万円以下の罰金（併科可） |
-| 無申告（所得税法241条） | 1年以下の懲役 or 50万円以下の罰金 |
+| Offense | Statutory penalty |
+|---------|-------------------|
+| Tax evasion (`所得税法238条`) | Up to 10 years in prison or up to JPY 10 million fine, or both |
+| Failure to file (`所得税法241条`) | Up to 1 year in prison or up to JPY 500,000 fine |
 
-### 軽減措置
+### Relief for Voluntary Late Filing
 
-- **期限後申告の特例**: 以下をすべて満たすと無申告加算税が不適用
-  1. 法定申告期限から1ヶ月以内の自主的申告
-  2. 期限内に全額納付済み
-  3. 過去5年に無申告加算税・重加算税を受けていない
+No `無申告加算税` if all of the following hold:
 
----
+1. The return is filed voluntarily within one month after the deadline.
+2. Full payment was completed by the original deadline.
+3. No `無申告加算税` or `重加算税` was imposed in the previous five years.
 
-## 還付申告
+## Refund Filing
 
-### 還付申告ができるケース
+### Common Cases
 
-| ケース | 対象者 |
-|--------|--------|
-| 年末調整済みだが医療費控除を受ける | 給与所得者 |
-| ふるさと納税の寄附金控除 | 給与所得者（ワンストップ未利用） |
-| 住宅ローン控除（初年度） | 住宅取得者 |
-| 中途退職（年末調整未済） | 退職者 |
-| 源泉徴収税額の過大納付 | フリーランス等 |
+| Situation | Typical taxpayer |
+|-----------|------------------|
+| Medical-expense deduction after year-end adjustment | Salary earner |
+| Furusato Nozei deduction without the one-stop route | Salary earner |
+| First-year housing-loan deduction | Home purchaser |
+| Mid-year resignation without year-end adjustment | Former employee |
+| Excess withholding tax | Freelancer or contractor |
 
-### 還付申告の期限
+### Deadline
 
-- **翌年1月1日から5年間**（通常の確定申告期限に関わらず）
-- 例: 令和6年分 → 令和7年1月1日〜令和11年12月31日
+Refund filing can usually be made from January 1 of the following year for five years.
 
----
+## Pensioners
 
-## 年金受給者の確定申告
+The simplified no-filing path usually applies only if all of the following are true:
 
-### 確定申告不要制度
+1. Public pension income is JPY 4 million or less.
+2. All public pension income was subject to withholding.
+3. Non-pension income is JPY 200,000 or less.
 
-以下をすべて満たす場合、確定申告不要:
-1. 公的年金等の収入が400万円以下
-2. 公的年金等のすべてが源泉徴収の対象
-3. 公的年金等以外の所得が20万円以下
-
-> ただし、住民税の申告は別途必要な場合がある
-
-> **注意**: 本リファレンスは一般的な判定基準を解説しています。個別の状況によっては例外が適用される場合があります。判断に迷う場合は税理士または税務署に相談してください。
+> This file is a general decision aid. If facts are unusual or a filing decision materially affects tax treatment, respond as `L3` and recommend the tax office or a tax accountant.

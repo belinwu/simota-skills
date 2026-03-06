@@ -1,189 +1,165 @@
-# 確定申告手続きガイド
+# Filing Guide
 
-## e-Tax画面別ガイド
+Purpose: Read this when the user needs forms, required documents, deadlines, payment methods, or a filing checklist. Use `references/e-tax-screen-guide.md` for screen-by-screen entry instructions.
 
-e-Tax確定申告書等作成コーナーの画面ごとの入力手順・注意点は以下を参照:
+## Contents
 
-→ **`references/e-tax-screen-guide.md`** — 青色申告決算書・所得税確定申告書の画面別入力ガイド
+- [Forms](#forms)
+- [Required documents](#required-documents)
+- [Freelancer checklist](#freelancer-checklist)
+- [Deadlines](#deadlines)
+- [e-tax overview](#e-tax-overview)
+- [Post-filing fixes](#post-filing-fixes)
 
-→ **`references/salary-plus-side-business.md`** — 会社員+副業（青色申告）の合算申告パターン
+## Forms
 
----
+### Main Return Types
 
-## 申告書の種類
+| Form | Who uses it | Main purpose |
+|------|-------------|--------------|
+| Final tax return (`確定申告書`) | All filers | Income-tax return |
+| Blue return financial statement (`青色申告決算書`) | Blue return filers | Business or real-estate results |
+| Income and expense statement (`収支内訳書`) | White return filers | Business or real-estate income and expenses |
 
-| 申告書 | 対象者 | 主な用途 |
-|--------|--------|---------|
-| **確定申告書** | 全申告者 | 所得税の申告（令和5年分から様式統一） |
-| **青色申告決算書** | 青色申告者 | 事業所得・不動産所得の決算 |
-| **収支内訳書** | 白色申告者 | 事業所得・不動産所得の収支 |
+> The old `申告書A/B` split has already been abolished. Keep answers aligned with the unified form.
 
-> 以前の申告書A・Bの区分は廃止され、様式が統一された
+### Form Structure
 
-## 申告書の構成
+| Form section | What it contains |
+|--------------|------------------|
+| `第一表` | Income, deductions, tax calculation, tax credits, final payable/refundable amount |
+| `第二表` | Withholding breakdown, spouse/dependent details, deduction details |
+| `第三表` | Separate-taxation items such as property or stock transfers |
+| `第四表` | Loss offset, carryforward, and carryback items |
 
-### 第一表
+## Required Documents
 
-| セクション | 記載内容 |
-|-----------|---------|
-| 収入金額等 | 各所得の収入金額（ア〜ス） |
-| 所得金額等 | 各所得の所得金額（①〜⑫） |
-| 所得から差し引かれる金額 | 所得控除（⑬〜㉙） |
-| 税金の計算 | 課税所得→税額→税額控除→申告納税額 |
+### Core Documents
 
-### 第二表
+| Document | Source |
+|----------|--------|
+| Final tax return | NTA website or tax office |
+| My Number card, or notice card plus ID | Taxpayer |
 
-| セクション | 記載内容 |
-|-----------|---------|
-| 所得の内訳 | 源泉徴収税額の内訳 |
-| 特例適用条文等 | 住宅ローン控除等 |
-| 配偶者や親族に関する事項 | 扶養控除等の詳細 |
-| 社会保険料控除等 | 各控除の明細 |
+### Salary Earners
 
-### 第三表（分離課税用）
+| Document | Source |
+|----------|--------|
+| Withholding slip (`源泉徴収票`) | Employer |
 
-対象: 土地・建物の譲渡、株式等の譲渡、先物取引、退職所得等
+### Business Income Filers
 
-### 第四表（損失申告用）
+| Document | Source | Applies to |
+|----------|--------|------------|
+| `青色申告決算書` | Prepared by the taxpayer | Blue return |
+| `収支内訳書` | Prepared by the taxpayer | White return |
+| Books and ledgers | Prepared by the taxpayer | Both |
+| Invoices and receipts | Counterparties or self-issued copies | Both |
 
-対象: 損益通算、純損失の繰越控除・繰戻還付
+### Salary Plus Side Business
 
----
+| Document | Source | Notes |
+|----------|--------|-------|
+| `源泉徴収票` | Employer | Needed for salary-income input |
+| `青色申告決算書` | Prepared by the taxpayer | Needed for side-business income |
+| Books and ledgers | Prepared by the taxpayer | Usually kept for seven years |
+| Invoices and receipts | Counterparties or self-issued copies | Keep as evidence |
+| Deduction certificates | Relevant institutions | Medical expenses, donations, insurance, iDeCo, and similar items |
+| My Number card | Taxpayer | Needed for standard e-Tax filing |
 
-## 必要書類一覧
+### Deduction Evidence
 
-### 全員必要
+| Deduction | Typical document | Source |
+|-----------|------------------|--------|
+| Medical-expense deduction | Medical-expense statement | Prepared by the taxpayer |
+| Social-insurance deduction | Social-insurance payment certificate | Pension service or insurer |
+| Life-insurance deduction | Deduction certificate | Insurance company |
+| Earthquake-insurance deduction | Deduction certificate | Insurance company |
+| Donation deduction | Donation receipt | Municipality or organization |
+| First-year housing-loan credit | Balance certificate, registry extract, sales contract, and similar documents | Bank / registry office |
+| iDeCo | Contribution certificate | National Pension Fund Association |
 
-| 書類 | 入手先 |
-|------|--------|
-| 確定申告書 | 国税庁サイト/税務署 |
-| マイナンバーカード（又は通知カード+本人確認書類） | — |
+## Freelancer Checklist
 
-### 給与所得者
+Use this when a freelancer asks for a quick filing-prep checklist.
 
-| 書類 | 入手先 |
-|------|--------|
-| 源泉徴収票 | 勤務先 |
+| # | Item | What to confirm |
+|---|------|-----------------|
+| 1 | Opening notification (`開業届`) | Was it filed? |
+| 2 | Blue filing approval | Was it filed on time? |
+| 3 | Books and ledgers | Double-entry or simple bookkeeping? |
+| 4 | Invoice and receipt storage | Is electronic-storage compliance in place? |
+| 5 | Household allocation | Is the allocation basis reasonable and documented? |
+| 6 | Deduction review | iDeCo, social insurance, medical expenses, Furusato Nozei, and similar items |
+| 7 | Consumption tax | Does the JPY 10 million line or invoice registration matter? |
+| 8 | Return preparation | Is e-Tax being used for the JPY 650,000 blue filing deduction path? |
+| 9 | Deadline | Is the standard `3/15` filing deadline still the correct one for the target year? |
 
-### 事業所得者（フリーランス）
+## Deadlines
 
-| 書類 | 入手先 | 青色/白色 |
-|------|--------|----------|
-| 青色申告決算書 | 作成 | 青色 |
-| 収支内訳書 | 作成 | 白色 |
-| 帳簿（仕訳帳・総勘定元帳等） | 作成 | 両方（保存義務） |
-| 請求書・領収書控え | 取引先/自作 | 両方（保存義務） |
+### Income-Tax Filing
 
-### 会社員+副業（事業所得）の必要書類
+| Item | Typical deadline |
+|------|------------------|
+| Filing period | February 16 to March 15 of the following year |
+| Refund filing | From January 1 of the following year for five years |
+| Account transfer date | Usually mid-April |
+| Extension by deferred payment | March 15 filing plus deferred payment to May 31, with interest |
 
-| 書類 | 入手先 | 備考 |
-|------|--------|------|
-| 源泉徴収票 | 勤務先 | 給与所得の入力に必要 |
-| 青色申告決算書 | 作成 | 副業の事業所得用 |
-| 帳簿（仕訳帳・総勘定元帳等） | 作成 | 保存義務（7年） |
-| 請求書・領収書控え | 取引先/自作 | 保存義務 |
-| 各控除証明書 | 各機関 | ふるさと納税受領証明書、医療費明細等 |
-| マイナンバーカード | — | e-Tax利用時 |
+### Related Notifications
 
-> 源泉徴収票で処理済みの控除（社保、生保等）の証明書は原則不要だが、保存義務あり。
+| Filing / notice | Deadline |
+|-----------------|----------|
+| Blue filing approval | March 15 of the application year, or within two months from opening |
+| Blue-family-employee salary notice | March 15 of the application year |
+| Consumption-tax taxable-business notice | Promptly after the trigger event |
+| Simplified-consumption-tax election | By the day before the applicable tax period starts |
+| Opening notification (`開業届`) | Within one month from opening |
 
-### 控除関連
+### Estimated Tax
 
-| 控除 | 必要書類 | 入手先 |
-|------|---------|--------|
-| 医療費控除 | 医療費控除の明細書 | 作成（領収書は保存） |
-| 社会保険料控除 | 社会保険料控除証明書 | 年金機構等 |
-| 生命保険料控除 | 控除証明書 | 保険会社 |
-| 地震保険料控除 | 控除証明書 | 保険会社 |
-| 寄附金控除 | 寄附金受領証明書 | 寄附先 |
-| 住宅ローン控除（初年度） | 残高証明書、登記事項証明書、売買契約書等 | 金融機関/法務局 |
-| iDeCo | 小規模企業共済等掛金払込証明書 | 国民年金基金連合会 |
+| Item | Deadline |
+|------|----------|
+| First installment | July 31 |
+| Second installment | November 30 |
+| Reduction request for first installment | July 15 |
+| Reduction request for second installment | November 15 |
 
----
+## e-Tax Overview
 
-## 期限カレンダー
+### Filing Methods
 
-### 確定申告（所得税）
+| Method | What is required | Notes |
+|--------|------------------|-------|
+| My Number card method | My Number card plus card reader or smartphone | Standard path and compatible with the JPY 650,000 blue deduction requirement |
+| ID/password method | Credentials issued by the tax office | Transitional option without a card |
 
-| 項目 | 期限 |
-|------|------|
-| 申告期間 | 翌年2月16日〜3月15日 |
-| 還付申告 | 翌年1月1日から5年間 |
-| 口座振替日 | 例年4月中旬 |
-| 延納の届出 | 3月15日まで（5月31日まで延長、利子税あり） |
+### High-Level Flow
 
-### 関連する届出期限
-
-| 届出 | 期限 |
-|------|------|
-| 青色申告承認申請書 | 適用年の3月15日（新規開業は2ヶ月以内） |
-| 青色事業専従者給与の届出 | 適用年の3月15日 |
-| 消費税課税事業者届出書 | 事由発生後速やかに |
-| 消費税簡易課税制度選択届出書 | 適用課税期間の前日まで |
-| 開業届 | 開業日から1ヶ月以内 |
-
-### 予定納税
-
-| 項目 | 期限 |
-|------|------|
-| 第1期 | 7月31日 |
-| 第2期 | 11月30日 |
-| 減額申請（第1期） | 7月15日まで |
-| 減額申請（第2期） | 11月15日まで |
-
----
-
-## e-Tax（電子申告）
-
-### 利用方法
-
-| 方式 | 必要なもの | 特徴 |
-|------|-----------|------|
-| **マイナンバーカード方式** | マイナンバーカード + ICカードリーダー（又はスマホ） | 推奨。青色65万円控除の要件 |
-| **ID・パスワード方式** | 税務署で発行されたID・パスワード | マイナンバーカード不要だが暫定措置 |
-
-### e-Tax申告の手順
-
-```
-1. 事前準備
-   - マイナンバーカード取得（未取得の場合）
-   - 利用者識別番号の取得（初回のみ）
-   - e-Taxソフト or 確定申告書等作成コーナーへアクセス
-
-2. 申告書作成
-   - 国税庁「確定申告書等作成コーナー」にアクセス
-   - 画面の案内に従い収入・所得・控除を入力
-   - 自動計算された税額を確認
-
-3. 送信
-   - マイナンバーカードで電子署名
-   - 送信（受付番号が発行される）
-
-4. 納付（税額がある場合）
-   - ダイレクト納付（e-Taxから即時 or 期日指定）
-   - インターネットバンキング（Pay-easy）
-   - クレジットカード（手数料あり）
-   - スマホアプリ納付（30万円以下）
-   - QRコードでコンビニ納付（30万円以下）
-   - 振替納税（口座振替）
-   - 窓口納付（金融機関/税務署）
+```text
+1. Prepare access and identification
+2. Create the return in the NTA filing corner
+3. Review the tax result
+4. Submit electronically
+5. Pay, arrange account transfer, or receive a refund
 ```
 
-### e-Tax利用のメリット
+### Payment Options
 
-1. 青色申告特別控除65万円の適用要件を満たす
-2. 還付が早い（3週間程度、書面は1〜2ヶ月）
-3. 添付書類の提出省略（証明書等の原本は保存義務あり）
-4. 24時間提出可能（メンテナンス時間除く）
+- Direct payment in e-Tax
+- Internet banking (`Pay-easy`)
+- Credit card
+- Smartphone payment (up to JPY 300,000)
+- QR-code convenience-store payment (up to JPY 300,000)
+- Account transfer
+- Counter payment at a financial institution or tax office
 
----
+## Post-Filing Fixes
 
-## 申告ミスへの対応
+| Situation | Action | General deadline |
+|-----------|--------|------------------|
+| Too much tax was reported | `更正の請求` | Within five years from the original deadline |
+| Too little tax was reported | `修正申告` | As soon as possible |
+| No return was filed | `期限後申告` | As soon as possible |
 
-| 状況 | 対応方法 | 期限 |
-|------|---------|------|
-| 税額を多く申告 | 更正の請求 | 法定申告期限から5年以内 |
-| 税額を少なく申告 | 修正申告 | 速やかに（延滞税・加算税の対象） |
-| 申告を忘れた | 期限後申告 | 速やかに（無申告加算税の対象） |
-
-> **注意**: この手順は一般的な流れを解説したものです。個別の状況に応じて必要書類や手順が異なる場合があります。最新の手順は国税庁サイト（https://www.nta.go.jp）を確認してください。
+> Use this file for process guidance only. If the user needs screen-level steps, load `references/e-tax-screen-guide.md`. If the user asks about amendment strategy or individualized judgment, treat the case as `L3`.
