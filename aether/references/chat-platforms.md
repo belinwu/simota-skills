@@ -1,45 +1,50 @@
 # Chat Platforms
 
-YouTube Live / Twitch チャット統合パターン、統一メッセージフォーマット、認証フロー。
+Purpose: Read this when selecting `YouTube` / `Twitch`, implementing chat ingestion, normalizing platform events, or defining filtering and command handling.
 
----
+## Contents
+
+- [Platform comparison](#platform-comparison)
+- [YouTube Live Chat API](#youtube-live-chat-api)
+- [Twitch chat integration](#twitch-chat-integration)
+- [Unified message format](#unified-message-format)
+- [Filtering and command handling](#filtering-and-command-handling)
 
 ## Platform Comparison
 
 | Feature | YouTube Live | Twitch |
 |---------|-------------|--------|
-| **Chat API** | liveChatMessages (REST polling) | IRC + EventSub (WebSocket) |
-| **Real-time** | Polling (5-10s interval) | WebSocket (instant) |
-| **Auth** | OAuth 2.0 (Google) | OAuth 2.0 (Twitch) |
-| **Rate limit** | 10,000 units/day (quota) | 20 msg/30s (moderator) |
-| **Superchat/Bits** | Super Chat / Super Stickers | Bits / Cheers |
-| **Commands** | No native support | Native ! commands |
-| **Emotes** | Limited | Extensive (BTTV, FFZ, 7TV) |
-| **Moderation** | YouTube moderation API | AutoMod + custom bots |
+| Chat API | `liveChatMessages` (REST polling) | IRC + EventSub (WebSocket) |
+| Real-time path | Polling (`5-10s` interval) | WebSocket (near-instant) |
+| Auth | OAuth 2.0 (Google) | OAuth 2.0 (Twitch) |
+| Rate limit | `10,000` units/day (quota) | `20 msg / 30s` (moderator baseline) |
+| Paid interactions | Super Chat / Super Stickers | Bits / Cheers |
+| Commands | No native support | Native `!` commands |
+| Emotes | Limited | Extensive (`BTTV`, `FFZ`, `7TV`) |
+| Moderation | YouTube moderation APIs | AutoMod + custom bots |
 
----
+Use `YouTube` when platform reach matters more than ingestion latency. Use `Twitch` when command-driven real-time interaction matters more.
 
 ## YouTube Live Chat API
 
 ### Polling Architecture
 
-```
+```text
 ┌────────────┐     GET /liveChatMessages      ┌──────────────┐
 │   Aether   │ ──────────────────────────────▶ │ YouTube API  │
 │  Chat      │ ◀────────────────────────────── │              │
 │  Listener  │     { messages, nextPageToken,  │              │
-│            │       pollingIntervalMillis }    │              │
+│            │       pollingIntervalMillis }   │              │
 └────────────┘                                  └──────────────┘
      │
      │ pollingIntervalMillis (typically 5000-10000ms)
-     │
      ▼
   Next poll with nextPageToken
 ```
 
 ### Key Endpoints
 
-```
+```text
 # Get live broadcast
 GET https://www.googleapis.com/youtube/v3/liveBroadcasts
   ?part=snippet,status
@@ -63,17 +68,17 @@ POST https://www.googleapis.com/youtube/v3/liveChat/messages
 
 ### Message Types
 
-| Type | Field | Description |
-|------|-------|-------------|
-| `textMessageEvent` | textMessageDetails.messageText | 通常メッセージ |
-| `superChatEvent` | superChatDetails.amountMicros | スーパーチャット |
-| `superStickerEvent` | superStickerDetails | スーパーステッカー |
-| `membershipGiftingEvent` | — | メンバーシップギフト |
-| `newSponsorEvent` | — | 新規メンバー |
+| Type | Field | Meaning |
+|------|-------|---------|
+| `textMessageEvent` | `textMessageDetails.messageText` | Standard message |
+| `superChatEvent` | `superChatDetails.amountMicros` | Super Chat |
+| `superStickerEvent` | `superStickerDetails` | Super Sticker |
+| `membershipGiftingEvent` | — | Membership gift |
+| `newSponsorEvent` | — | New member |
 
 ### OAuth 2.0 Flow
 
-```
+```text
 1. Authorization URL:
    https://accounts.google.com/o/oauth2/v2/auth
    ?client_id={CLIENT_ID}
@@ -91,28 +96,27 @@ POST https://www.googleapis.com/youtube/v3/liveChat/messages
 
 ### Quota Management
 
-YouTube Data API v3 has a daily quota (default 10,000 units):
+YouTube Data API v3 uses a daily quota budget (default `10,000` units).
 
 | Operation | Cost |
 |-----------|------|
-| liveChatMessages.list | 5 units |
-| liveChat/messages.insert | 50 units |
-| liveBroadcasts.list | 100 units |
+| `liveChatMessages.list` | `5` units |
+| `liveChat/messages.insert` | `50` units |
+| `liveBroadcasts.list` | `100` units |
 
-**Budget calculation:**
-- Polling every 5s: 5 units × 12/min × 60 min = 3,600 units/hour
-- 2-hour stream: ~7,200 units (polling only)
-- Remaining: ~2,800 units for sending messages
+Budget example:
 
-**Optimization:** Increase polling interval during low-activity periods (e.g., 10s when < 1 msg/poll).
+- Poll every `5s`: `5` units × `12/min` × `60 min` = `3,600 units/hour`
+- `2`-hour stream: about `7,200` units for polling only
+- Remaining budget: about `2,800` units for chat sends and control calls
 
----
+Optimization rule: increase the polling interval during low-activity windows, for example `10s` when fewer than `1` message arrives per poll.
 
 ## Twitch Chat Integration
 
 ### IRC + EventSub Architecture
 
-```
+```text
 ┌────────────┐     WebSocket (IRC)            ┌──────────────┐
 │   Aether   │ ──────────────────────────────▶ │   Twitch     │
 │  Chat      │ ◀────────────────────────────── │   IRC        │
@@ -130,7 +134,7 @@ YouTube Data API v3 has a daily quota (default 10,000 units):
 
 ### IRC Connection
 
-```
+```text
 WebSocket URL: wss://irc-ws.chat.twitch.tv:443
 
 Authentication:
@@ -149,21 +153,21 @@ Incoming message format:
   user-type=mod :user!user@user.tmi.twitch.tv PRIVMSG #channel :Hello!
 ```
 
-### EventSub (Bits, Subscriptions, Raids)
+### EventSub
 
-```
+```text
 WebSocket URL: wss://eventsub.wss.twitch.tv/ws
 
 Subscription types:
-  channel.cheer          → Bits/Cheers
-  channel.subscribe      → New subscriber
-  channel.raid           → Incoming raid
-  channel.channel_points_custom_reward_redemption.add → Channel point redemption
+  channel.cheer
+  channel.subscribe
+  channel.raid
+  channel.channel_points_custom_reward_redemption.add
 ```
 
 ### Twitch OAuth 2.0
 
-```
+```text
 1. Authorization:
    https://id.twitch.tv/oauth2/authorize
    ?client_id={CLIENT_ID}
@@ -174,14 +178,12 @@ Subscription types:
 2. Token exchange: POST https://id.twitch.tv/oauth2/token
 
 3. Validate: GET https://id.twitch.tv/oauth2/validate
-   (Required periodically — Twitch revokes tokens if not validated)
+   (Validate periodically; Twitch may revoke inactive or invalid tokens)
 ```
-
----
 
 ## Unified Message Format
 
-プラットフォーム差異を吸収し、パイプライン内部で統一されたメッセージ形式を使用。
+Normalize platform-specific events before they enter the response pipeline.
 
 ```typescript
 interface UnifiedChatMessage {
@@ -189,7 +191,6 @@ interface UnifiedChatMessage {
   platform: 'youtube' | 'twitch';
   timestamp: number;             // Unix ms
 
-  // Author
   author: {
     id: string;                  // Platform user ID
     name: string;                // Display name
@@ -199,7 +200,6 @@ interface UnifiedChatMessage {
     badges: string[];            // Raw badge strings
   };
 
-  // Content
   content: {
     text: string;                // Raw message text
     isCommand: boolean;          // Starts with ! or /
@@ -207,7 +207,6 @@ interface UnifiedChatMessage {
     commandArgs?: string[];      // Parsed command args
   };
 
-  // Monetary (superchat / bits)
   monetary?: {
     amount: number;              // Normalized to JPY
     currency: string;            // Original currency code
@@ -215,7 +214,6 @@ interface UnifiedChatMessage {
     tier?: string;               // Superchat tier color / bits badge
   };
 
-  // Metadata
   meta: {
     type: 'message' | 'superchat' | 'bits' | 'subscription' | 'raid' | 'membership';
     priority: number;            // 1-4 (computed from type + monetary)
@@ -246,8 +244,7 @@ function normalizeYouTubeMessage(raw: YouTubeLiveChatMessage): UnifiedChatMessag
       text: isSuperChat
         ? raw.snippet.superChatDetails?.userComment ?? ''
         : raw.snippet.textMessageDetails?.messageText ?? '',
-      isCommand: false, // YouTube has no native commands
-      // Parse ! commands manually from text
+      isCommand: false,
     },
     monetary: isSuperChat ? {
       amount: Number(raw.snippet.superChatDetails.amountMicros) / 1_000_000,
@@ -258,19 +255,17 @@ function normalizeYouTubeMessage(raw: YouTubeLiveChatMessage): UnifiedChatMessag
     meta: {
       type: isSuperChat ? 'superchat' : 'message',
       priority: isSuperChat ? 1 : 4,
-      isFirstMessage: false, // YouTube API doesn't expose this
+      isFirstMessage: false,
     },
   };
 }
 ```
 
----
-
-## Message Filtering & Command Recognition
+## Filtering and Command Handling
 
 ### Filter Pipeline
 
-```
+```text
 Raw Message
   → Spam filter (repeated chars, known spam patterns)
   → Safety filter (toxic content, personal info)
@@ -283,12 +278,12 @@ Raw Message
 
 | Command | Action | Priority |
 |---------|--------|----------|
-| `!ask [question]` | Force LLM response to question | 2 |
-| `!song [title]` | Request BGM change | 3 |
-| `!emotion [name]` | Trigger avatar expression | 3 |
-| `!skip` | Skip current TTS playback | 2 (mod only) |
-| `!queue` | Show TTS queue status | 4 |
-| `!stats` | Show stream stats | 4 |
+| `!ask [question]` | Force an LLM answer | `2` |
+| `!song [title]` | Request BGM change | `3` |
+| `!emotion [name]` | Trigger avatar expression | `3` |
+| `!skip` | Skip current TTS playback | `2` (moderator only) |
+| `!queue` | Show TTS queue status | `4` |
+| `!stats` | Show stream stats | `4` |
 
 ### Safety Filtering
 

@@ -1,48 +1,51 @@
-# Lip Sync & Expression
+# Lip Sync and Expression
 
-日本語音素→Viseme マッピング、VOICEVOX 音素タイミング取得、口形状パラメータ制御、感情→表情遷移。
+Purpose: Read this when converting Japanese phonemes into avatar mouth movement, extracting timing from `VOICEVOX`, or compositing lip sync with emotion layers.
 
----
+## Contents
 
-## Japanese Phoneme → Viseme Mapping
+- [Japanese phoneme to viseme mapping](#japanese-phoneme-to-viseme-mapping)
+- [VOICEVOX phoneme timing extraction](#voicevox-phoneme-timing-extraction)
+- [Lip sync playback engine](#lip-sync-playback-engine)
+- [Live2D application](#live2d-application)
+- [Emotion transition](#emotion-transition)
+- [Compositing rule](#compositing-rule)
 
-日本語は5母音（あいうえお）ベースのため、リップシンクは比較的シンプル。
+## Japanese Phoneme to Viseme Mapping
+
+Japanese lip sync is vowel-dominant, so the vowel viseme is usually the main control signal.
 
 ### Vowel Viseme Table
 
-| 母音 | 音素 | Viseme | Live2D MouthOpenY | Live2D MouthForm | VRM BlendShape |
-|------|------|--------|-------------------|-----------------|----------------|
-| あ (a) | a | Open wide | 0.8 | 0.0 | `aa`: 1.0 |
-| い (i) | i | Wide narrow | 0.2 | 0.6 | `ih`: 1.0 |
-| う (u) | u | Rounded small | 0.3 | -0.3 | `ou`: 1.0 |
-| え (e) | e | Half open | 0.5 | 0.3 | `ee`: 1.0 |
-| お (o) | o | Rounded open | 0.6 | -0.5 | `oh`: 1.0 |
-| ん (N) | N | Closed | 0.0 | 0.0 | (all 0) |
-| 促音 (cl) | cl | Closed (pause) | 0.0 | 0.0 | (all 0) |
-| 無音 (pau) | pau | Neutral | 0.0 | 0.0 | (all 0) |
+| Vowel | Phoneme | Viseme | Live2D MouthOpenY | Live2D MouthForm | VRM BlendShape |
+|-------|---------|--------|-------------------|------------------|----------------|
+| あ (a) | `a` | Open wide | `0.8` | `0.0` | `aa: 1.0` |
+| い (i) | `i` | Wide narrow | `0.2` | `0.6` | `ih: 1.0` |
+| う (u) | `u` | Rounded small | `0.3` | `-0.3` | `ou: 1.0` |
+| え (e) | `e` | Half open | `0.5` | `0.3` | `ee: 1.0` |
+| お (o) | `o` | Rounded open | `0.6` | `-0.5` | `oh: 1.0` |
+| ん (N) | `N` | Closed | `0.0` | `0.0` | all `0` |
+| 促音 (cl) | `cl` | Closed (pause) | `0.0` | `0.0` | all `0` |
+| 無音 (pau) | `pau` | Neutral | `0.0` | `0.0` | all `0` |
 
 ### Consonant Influence
 
-子音は口形状を若干変化させるが、日本語では母音が支配的なため、主に母音の Viseme を使用。
-
-| 子音グループ | 影響 | MouthOpenY 補正 | 例 |
-|-------------|------|-----------------|-----|
-| k, g | 奥舌 | -0.05 | か、が |
-| s, z, sh | 歯摩擦 | -0.1, MouthForm +0.2 | さ、ざ、しゃ |
-| t, d, n | 歯茎 | -0.05 | た、だ、な |
-| h, f | 唇/声門 | -0.05 | は、ふ |
-| m, b, p | 両唇 | -0.2 (momentary close) | ま、ば、ぱ |
-| r | 弾音 | 0 | ら |
-| y | 半母音 | 0 | や |
-| w | 半母音 | -0.1, MouthForm -0.2 | わ |
-
----
+| Consonant group | Effect | MouthOpenY adjustment | Example |
+|-----------------|--------|-----------------------|---------|
+| `k`, `g` | Back-tongue | `-0.05` | か, が |
+| `s`, `z`, `sh` | Dental fricative | `-0.1`, `MouthForm +0.2` | さ, ざ, しゃ |
+| `t`, `d`, `n` | Alveolar | `-0.05` | た, だ, な |
+| `h`, `f` | Lip / glottal | `-0.05` | は, ふ |
+| `m`, `b`, `p` | Bilabial | `-0.2` (momentary close) | ま, ば, ぱ |
+| `r` | Tap | `0` | ら |
+| `y` | Semivowel | `0` | や |
+| `w` | Semivowel | `-0.1`, `MouthForm -0.2` | わ |
 
 ## VOICEVOX Phoneme Timing Extraction
 
-VOICEVOX の `audio_query` API は、合成前に音素タイミングデータを返す。これをリップシンクに活用。
+Use the `audio_query` response to derive lip-sync timing before synthesis starts.
 
-### audio_query Response Structure
+### `audio_query` Response Structure
 
 ```json
 {
@@ -117,19 +120,17 @@ function generateVisemeTimeline(query: VOICEVOXQuery): VisemeKeyframe[] {
 
   for (const phrase of query.accent_phrases) {
     for (const mora of phrase.moras) {
-      // Consonant phase (mouth preparing for vowel)
       if (mora.consonant && mora.consonant_length) {
         const duration = mora.consonant_length * 1000 / query.speedScale;
         keyframes.push({
           time: currentTime,
           viseme: getConsonantViseme(mora.consonant, mora.vowel),
           duration,
-          intensity: 0.5, // Consonants are transitional
+          intensity: 0.5,
         });
         currentTime += duration;
       }
 
-      // Vowel phase (main viseme)
       const vowelDuration = mora.vowel_length * 1000 / query.speedScale;
       keyframes.push({
         time: currentTime,
@@ -140,7 +141,6 @@ function generateVisemeTimeline(query: VOICEVOXQuery): VisemeKeyframe[] {
       currentTime += vowelDuration;
     }
 
-    // Pause between phrases
     if (phrase.pause_mora) {
       const pauseDuration = phrase.pause_mora.vowel_length * 1000 / query.speedScale;
       keyframes.push({
@@ -157,18 +157,12 @@ function generateVisemeTimeline(query: VOICEVOXQuery): VisemeKeyframe[] {
 }
 
 function getConsonantViseme(consonant: string, followingVowel: string): string {
-  // Bilabial consonants (m, b, p) → momentary close
   if (['m', 'b', 'p'].includes(consonant)) return 'cl';
-  // Otherwise, use the following vowel with reduced intensity
   return followingVowel;
 }
 ```
 
----
-
 ## Lip Sync Playback Engine
-
-音声再生とVisemeタイムラインを同期して、アバターの口形状をリアルタイム制御。
 
 ```typescript
 class LipSyncPlayer {
@@ -186,13 +180,11 @@ class LipSyncPlayer {
     this.currentIndex = 0;
   }
 
-  /** Called every frame. Returns current viseme parameters */
   getCurrentViseme(): { viseme: string; intensity: number } | null {
     if (this.timeline.length === 0) return null;
 
     const elapsed = performance.now() - this.startTime;
 
-    // Find current keyframe
     while (
       this.currentIndex < this.timeline.length - 1 &&
       this.timeline[this.currentIndex + 1].time <= elapsed
@@ -202,10 +194,9 @@ class LipSyncPlayer {
 
     const kf = this.timeline[this.currentIndex];
     if (!kf || elapsed > kf.time + kf.duration) {
-      return { viseme: 'pau', intensity: 0 }; // Past end
+      return { viseme: 'pau', intensity: 0 };
     }
 
-    // Interpolate intensity (ease in/out within keyframe)
     const progress = (elapsed - kf.time) / kf.duration;
     const easedIntensity = kf.intensity * this.easeInOut(progress);
 
@@ -213,15 +204,14 @@ class LipSyncPlayer {
   }
 
   private easeInOut(t: number): number {
-    // Quick attack, slow release for natural mouth movement
-    if (t < 0.2) return t / 0.2;           // Fast open
-    if (t > 0.7) return (1 - t) / 0.3;     // Gradual close
-    return 1.0;                              // Sustain
+    if (t < 0.2) return t / 0.2;
+    if (t > 0.7) return (1 - t) / 0.3;
+    return 1.0;
   }
 }
 ```
 
-### Live2D Integration
+## Live2D Application
 
 ```typescript
 function applyVisemeToLive2D(
@@ -245,45 +235,40 @@ function applyVisemeToLive2D(
 }
 ```
 
----
-
-## Emotion → Expression Transition
-
-感情分析結果からアバター表情への遷移を管理。急激な表情変化を防ぎ、自然な遷移を実現。
+## Emotion Transition
 
 ### Emotion Detection Sources
 
 | Source | Method | Latency | Accuracy |
 |--------|--------|---------|----------|
-| LLM response metadata | Emotion tag in prompt | 0ms (inline) | High |
-| Chat message sentiment | Keyword/emoji analysis | < 10ms | Medium |
-| LLM-based analysis | Separate emotion classification | 200-500ms | High |
+| LLM response metadata | Emotion tag in prompt | `0ms` | High |
+| Chat sentiment | Keyword / emoji analysis | `< 10ms` | Medium |
+| Separate LLM analysis | Dedicated classifier | `200-500ms` | High |
 
 ### Transition Algorithm
 
 ```typescript
 interface EmotionState {
   emotion: string;
-  intensity: number;    // 0.0 - 1.0
+  intensity: number;
   timestamp: number;
 }
 
 class EmotionController {
   private currentEmotion: EmotionState = { emotion: 'neutral', intensity: 1.0, timestamp: 0 };
-  private transitionDuration = 500;  // ms
+  private transitionDuration = 500;
 
-  /** Set new emotion (from sentiment analysis or LLM metadata) */
   setEmotion(emotion: string, intensity: number): void {
     this.currentEmotion = { emotion, intensity, timestamp: performance.now() };
   }
 
-  /** Called every frame. Returns blended expression parameters */
   getExpressionParams(now: number): Record<string, number> {
     const elapsed = now - this.currentEmotion.timestamp;
     const progress = Math.min(elapsed / this.transitionDuration, 1.0);
     const eased = this.easeOutQuad(progress);
 
-    const targetParams = EMOTION_EXPRESSION_MAP[this.currentEmotion.emotion] ?? EMOTION_EXPRESSION_MAP.neutral;
+    const targetParams =
+      EMOTION_EXPRESSION_MAP[this.currentEmotion.emotion] ?? EMOTION_EXPRESSION_MAP.neutral;
     const result: Record<string, number> = {};
 
     for (const [key, value] of Object.entries(targetParams)) {
@@ -308,20 +293,18 @@ const EMOTION_EXPRESSION_MAP: Record<string, Record<string, number>> = {
 };
 ```
 
-### Expression + Lip Sync Compositing
+## Compositing Rule
 
-表情とリップシンクは独立したレイヤーとして合成する。
+Compose animation layers in this order:
 
-```
-Layer 1: Idle animation (breathing, blink, head sway)
+```text
+Layer 1: Idle animation
   ↓ blend
-Layer 2: Emotion expression (happy, sad, angry, etc.)
+Layer 2: Emotion expression
   ↓ blend
-Layer 3: Lip sync (mouth parameters override emotion mouth)
+Layer 3: Lip sync
   ↓
 Final avatar parameters
-
-Rule: Lip sync mouth parameters OVERRIDE emotion mouth parameters
-      (speaking face always moves mouth regardless of emotion)
-      Other facial parameters (eyes, brows) come from emotion layer
 ```
+
+Rule: lip-sync mouth parameters override emotion mouth parameters. Eyes, brows, and other non-mouth facial controls stay driven by the emotion layer.

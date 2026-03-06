@@ -1,101 +1,82 @@
 # TTS Engines
 
-AITuber 向けリアルタイム TTS エンジン比較、TTSAdapter パターン、音声キュー管理。
+Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` boundary, tuning voice parameters, or managing the audio queue.
 
----
+## Contents
+
+- [Engine comparison](#engine-comparison)
+- [Use-case recommendations](#use-case-recommendations)
+- [TTSAdapter contract](#ttsadapter-contract)
+- [VOICEVOX example](#voicevox-example)
+- [Audio queue management](#audio-queue-management)
+- [Parameter tuning](#parameter-tuning)
 
 ## Engine Comparison
 
-| Engine | Type | Latency | Quality | Japanese | GPU Required | Cost | API |
-|--------|------|---------|---------|----------|-------------|------|-----|
-| **VOICEVOX** | Local | 200-800ms | High | ✅ Native | Optional | Free (OSS) | REST (localhost:50021) |
-| **Style-Bert-VITS2** | Local | 500-1500ms | Very High | ✅ Native | Recommended | Free (OSS) | REST |
-| **COEIROINK** | Local | 200-600ms | High | ✅ Native | Optional | Free | REST (localhost:50032) |
-| **NIJIVOICE** | Cloud | 300-1000ms | Very High | ✅ Native | No | Pay-per-use | REST (API key) |
-| **VOICEVOX Nemo** | Local | 200-800ms | High | ✅ Native | Optional | Free (OSS) | REST (localhost:50021) |
+| Engine | Type | Latency | Quality | Japanese | GPU required | Cost | Notes |
+|--------|------|---------|---------|----------|--------------|------|-------|
+| `VOICEVOX` | Local | `200-800ms` | High | Native | Optional | OSS | Strong lip-sync support |
+| `Style-Bert-VITS2` | Local | `500-1500ms` | Very high | Native | Recommended | OSS | Best quality and custom voice training |
+| `COEIROINK` | Local | `200-600ms` | High | Native | Optional | Free | Lightweight |
+| `NIJIVOICE` | Cloud | `300-1000ms` | Very high | Native | No | Paid | Good when GPU is unavailable |
+| `VOICEVOX Nemo` | Local | `200-800ms` | High | Native | Optional | OSS | Same API family as VOICEVOX |
 
-### Detailed Comparison
+## Use-Case Recommendations
 
-| Feature | VOICEVOX | SBV2 | COEIROINK | NIJIVOICE | VOICEVOX Nemo |
-|---------|----------|------|-----------|-----------|---------------|
-| **Speaker count** | 60+ | Custom trained | 80+ | 100+ | 20+ |
-| **Voice cloning** | ❌ | ✅ (fine-tune) | ❌ | ❌ | ❌ |
-| **Emotion control** | Speed/Pitch/Intonation | Style mixing | Speed/Pitch | Limited | Speed/Pitch/Intonation |
-| **Streaming output** | ❌ (full synthesis) | ❌ (full synthesis) | ❌ (full synthesis) | ✅ (chunked) | ❌ (full synthesis) |
-| **Phoneme timing** | ✅ (query API) | Partial | ❌ | ❌ | ✅ (query API) |
-| **Lip sync support** | ✅ Excellent | ⚠️ Manual | ❌ | ❌ | ✅ Excellent |
-| **Setup complexity** | Low (binary) | High (Python env) | Low (binary) | Low (API key) | Low (binary) |
-| **Offline** | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Commercial use** | Per-character license | Model-dependent | Per-character license | License required | Per-character license |
+| Use case | Recommended engine | Why |
+|----------|--------------------|-----|
+| v1 / fastest setup | `VOICEVOX` | Lowest setup friction and phoneme timing support |
+| Highest naturalness | `Style-Bert-VITS2` | Strongest voice quality |
+| Low-resource local run | `COEIROINK` | Lightweight and quick |
+| No GPU available | `NIJIVOICE` | Offloads compute |
+| Custom trained voice | `Style-Bert-VITS2` | Fine-tuning support |
 
-### Recommendation by Use Case
+## TTSAdapter Contract
 
-| Use Case | Recommended | Reason |
-|----------|-------------|--------|
-| **v1 / Quick start** | VOICEVOX | Low setup, good quality, phoneme data for lip sync |
-| **Highest quality** | Style-Bert-VITS2 | Best naturalness, custom voice training |
-| **Low resource** | COEIROINK | Lightweight, fast synthesis |
-| **No GPU available** | NIJIVOICE (cloud) | Offload computation, consistent latency |
-| **Custom voice** | Style-Bert-VITS2 | Fine-tuning with custom dataset |
-
----
-
-## TTSAdapter Pattern
-
-共通インターフェースで TTS エンジンを抽象化し、パイプライン変更なしでエンジン切り替えを実現。
+Keep the engine boundary behind a single interface so the pipeline can switch engines without architectural rewrites.
 
 ```typescript
 interface TTSAdapter {
-  /** エンジン名 */
+  /** Engine name */
   readonly name: string;
 
-  /** 利用可能か確認 */
+  /** Check availability */
   isAvailable(): Promise<boolean>;
 
-  /** 音声合成 */
+  /** Synthesize speech */
   synthesize(params: TTSSynthesizeParams): Promise<TTSResult>;
 
-  /** 音素タイミング取得（リップシンク用、対応エンジンのみ） */
+  /** Get phoneme timing for lip sync when the engine supports it */
   getPhonemeTimings?(text: string, speakerId: number): Promise<PhonemeTiming[]>;
 
-  /** 話者一覧取得 */
+  /** List available speakers */
   getSpeakers(): Promise<TTSSpeaker[]>;
 
-  /** エンジン停止 */
+  /** Shut down or release the engine */
   dispose(): Promise<void>;
 }
 
 interface TTSSynthesizeParams {
   text: string;
   speakerId: number;
-  speed?: number;       // 0.5 - 2.0 (default: 1.0)
-  pitch?: number;       // -0.15 - 0.15 (default: 0.0)
-  intonation?: number;  // 0.0 - 2.0 (default: 1.0)
-  volume?: number;      // 0.0 - 2.0 (default: 1.0)
+  speed?: number;
+  pitch?: number;
+  intonation?: number;
+  volume?: number;
 }
 
 interface TTSResult {
-  audio: Buffer;           // WAV audio data
+  audio: Buffer;
   format: 'wav' | 'mp3';
-  duration: number;        // ms
+  duration: number;
   phonemes?: PhonemeTiming[];
-  synthesisTime: number;   // ms (for latency tracking)
-}
-
-interface PhonemeTiming {
-  phoneme: string;    // 'a', 'i', 'u', 'e', 'o', 'N', 'cl', 'pau'
-  startTime: number;  // ms
-  endTime: number;    // ms
-}
-
-interface TTSSpeaker {
-  id: number;
-  name: string;
-  styles: { id: number; name: string }[];
+  synthesisTime: number;
 }
 ```
 
-### VOICEVOX Adapter Example
+## VOICEVOX Example
+
+Use this when phoneme timing is required for lip sync:
 
 ```typescript
 class VOICEVOXAdapter implements TTSAdapter {
@@ -118,33 +99,27 @@ class VOICEVOXAdapter implements TTSAdapter {
   async synthesize(params: TTSSynthesizeParams): Promise<TTSResult> {
     const start = Date.now();
 
-    // Step 1: Generate audio query (includes phoneme timing)
     const query = await fetch(
       `${this.baseUrl}/audio_query?text=${encodeURIComponent(params.text)}&speaker=${params.speakerId}`,
       { method: 'POST' }
     ).then(r => r.json());
 
-    // Apply parameters
     if (params.speed) query.speedScale = params.speed;
     if (params.pitch) query.pitchScale = params.pitch;
     if (params.intonation) query.intonationScale = params.intonation;
     if (params.volume) query.volumeScale = params.volume;
 
-    // Step 2: Synthesize audio
     const audioRes = await fetch(
       `${this.baseUrl}/synthesis?speaker=${params.speakerId}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(query) }
     );
     const audio = Buffer.from(await audioRes.arrayBuffer());
 
-    // Step 3: Extract phoneme timings from query
-    const phonemes = this.extractPhonemes(query);
-
     return {
       audio,
       format: 'wav',
       duration: this.calculateDuration(query),
-      phonemes,
+      phonemes: this.extractPhonemes(query),
       synthesisTime: Date.now() - start,
     };
   }
@@ -157,12 +132,17 @@ class VOICEVOXAdapter implements TTSAdapter {
     return this.extractPhonemes(query);
   }
 
+  async getSpeakers(): Promise<TTSSpeaker[]> {
+    return fetch(`${this.baseUrl}/speakers`).then(r => r.json());
+  }
+
+  async dispose(): Promise<void> {
+    // VOICEVOX runs as a separate process
+  }
+
   private extractPhonemes(query: any): PhonemeTiming[] {
-    // VOICEVOX audio_query returns accent_phrases with moras
-    // Each mora has: text, consonant, consonant_length, vowel, vowel_length, pitch
     const phonemes: PhonemeTiming[] = [];
     let currentTime = 0;
-
     for (const phrase of query.accent_phrases) {
       for (const mora of phrase.moras) {
         if (mora.consonant) {
@@ -195,24 +175,12 @@ class VOICEVOXAdapter implements TTSAdapter {
     }
     return total * 1000;
   }
-
-  async getSpeakers(): Promise<TTSSpeaker[]> {
-    return fetch(`${this.baseUrl}/speakers`).then(r => r.json());
-  }
-
-  async dispose(): Promise<void> {
-    // VOICEVOX runs as separate process — no cleanup needed
-  }
 }
 ```
 
----
-
 ## Audio Queue Management
 
-リアルタイム配信では複数のチャットメッセージが連続して到着するため、音声合成・再生の管理が重要。
-
-### Priority Queue
+Real-time chat produces bursty audio work. The queue must stay bounded.
 
 ```typescript
 interface AudioQueueItem {
@@ -227,84 +195,51 @@ interface AudioQueueItem {
 class AudioQueue {
   private queue: AudioQueueItem[] = [];
   private maxSize = 10;
-  private processing = false;
 
   enqueue(item: AudioQueueItem): boolean {
-    // Dedup: skip if same text within 5s
     if (this.queue.some(q => q.text === item.text && Date.now() - q.timestamp < 5000)) {
       return false;
     }
 
-    // Queue full: drop lowest priority
     if (this.queue.length >= this.maxSize) {
       const lowestPriority = Math.max(...this.queue.map(q => q.priority));
-      if (item.priority >= lowestPriority) return false; // New item is also low priority
+      if (item.priority >= lowestPriority) return false;
       const dropIndex = this.queue.findLastIndex(q => q.priority === lowestPriority);
       this.queue.splice(dropIndex, 1);
     }
 
-    // Insert by priority (stable sort)
     const insertIndex = this.queue.findIndex(q => q.priority > item.priority);
-    if (insertIndex === -1) {
-      this.queue.push(item);
-    } else {
-      this.queue.splice(insertIndex, 0, item);
-    }
+    if (insertIndex === -1) this.queue.push(item);
+    else this.queue.splice(insertIndex, 0, item);
     return true;
   }
 
   dequeue(): AudioQueueItem | null {
     return this.queue.shift() ?? null;
   }
-
-  get depth(): number {
-    return this.queue.length;
-  }
-
-  clear(): void {
-    this.queue = [];
-  }
 }
 ```
 
-### Double-Buffered Audio Playback
+### Playback Rule
 
-```
-Buffer A: [Playing current sentence audio]
-Buffer B: [Synthesizing next sentence] ← ready before A finishes
+Use double buffering so the next sentence is synthesized while the current sentence is still playing.
 
-Timeline:
-  A plays ──────────────┐
-  B synthesizing ────┐  │
-                     ▼  ▼
-  B plays ──────────────┐  (seamless transition)
-  C synthesizing ────┐  │
-                     ▼  ▼
-  C plays ──────────────┐
-  ...
-```
+## Parameter Tuning
 
----
+| Character type | Speed | Pitch | Intonation | Volume |
+|----------------|-------|-------|------------|--------|
+| Energetic | `1.1-1.2` | `+0.05` | `1.3-1.5` | `1.1` |
+| Gentle | `0.85-0.95` | `-0.03` | `0.8-1.0` | `0.9` |
+| Cool | `0.95-1.0` | `-0.05` | `0.7-0.9` | `1.0` |
+| Tsundere | `1.0-1.1` | `+0.03` | `1.2-1.5` | `1.0-1.2` |
+| Calm | `0.9-1.0` | `-0.02` | `0.9-1.1` | `0.95` |
 
-## TTS Parameter Tuning
-
-### Voice Character Profiles
-
-| Character Type | Speed | Pitch | Intonation | Volume |
-|---------------|-------|-------|------------|--------|
-| 元気系 (Energetic) | 1.1-1.2 | +0.05 | 1.3-1.5 | 1.1 |
-| おっとり系 (Gentle) | 0.85-0.95 | -0.03 | 0.8-1.0 | 0.9 |
-| クール系 (Cool) | 0.95-1.0 | -0.05 | 0.7-0.9 | 1.0 |
-| ツンデレ系 (Tsundere) | 1.0-1.1 | +0.03 | 1.2-1.5 | 1.0-1.2 |
-| 落ち着き系 (Calm) | 0.9-1.0 | -0.02 | 0.9-1.1 | 0.95 |
-
-### Emotion-Based Parameter Adjustment
+### Emotion Overrides
 
 | Emotion | Speed Δ | Pitch Δ | Intonation Δ | Volume Δ |
-|---------|---------|---------|-------------|----------|
-| Joy / Excited | +0.1 | +0.05 | +0.3 | +0.1 |
-| Sad | -0.15 | -0.05 | -0.2 | -0.1 |
-| Angry | +0.05 | +0.03 | +0.4 | +0.2 |
-| Surprised | +0.15 | +0.08 | +0.5 | +0.15 |
-| Thinking | -0.1 | 0 | -0.1 | -0.05 |
-| Neutral | 0 | 0 | 0 | 0 |
+|---------|---------|---------|--------------|----------|
+| Joy / excited | `+0.1` | `+0.05` | `+0.3` | `+0.1` |
+| Sad | `-0.15` | `-0.05` | `-0.2` | `-0.1` |
+| Angry | `+0.05` | `+0.03` | `+0.4` | `+0.2` |
+| Surprised | `+0.15` | `+0.08` | `+0.5` | `+0.15` |
+| Thinking | `-0.1` | `0` | `-0.1` | `-0.05` |
