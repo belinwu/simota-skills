@@ -1,145 +1,95 @@
-# OWASP ZAP Scanning Guide
+# ZAP Scanning Guide
 
-## Scan Types
+Purpose: Use this file when you need OWASP ZAP defaults for baseline web scanning, API scanning, authentication testing, or ZAP daemon/API usage.
 
-| Scan | Purpose | Duration | Impact |
-|------|---------|----------|--------|
-| Spider | Discover pages/endpoints | Minutes | None |
-| Passive Scan | Analyze responses | Real-time | None |
-| Active Scan | Test for vulnerabilities | Hours | May modify data |
-| Ajax Spider | JavaScript-heavy apps | Minutes | None |
+## Contents
 
-## ZAP CLI Commands
+- Scan track selection
+- CLI commands
+- Baseline defaults
+- API scan defaults
+- Authentication checks
+- ZAP API example
+
+## Choose The Right Track
+
+| Track | Use when | Default rule |
+| --- | --- | --- |
+| Baseline scan | General web app or first-pass DAST | Spider + passive + targeted active scan |
+| API scan | OpenAPI/REST scope exists | Import schema and focus on API rules |
+| Auth test | Session, login, logout, fixation, or privilege context matters | Use authenticated context and session checks |
+
+## Core Safety Rules
+
+- Prefer staging or pre-production.
+- Production testing is passive-only unless explicitly approved.
+- Never use destructive payloads as the first step.
+- Keep proof safe and reversible.
+
+## CLI Commands
 
 ```bash
-# Start ZAP in daemon mode
 zap.sh -daemon -port 8080
-
-# Spider a target
-zap-cli spider https://target.example.com
-
-# Run active scan
-zap-cli active-scan https://target.example.com
-
-# Generate report
-zap-cli report -o report.html -f html
+zap-cli --zap-url http://127.0.0.1 --zap-port 8080 spider https://target.example
+zap-cli --zap-url http://127.0.0.1 --zap-port 8080 active-scan https://target.example
+zap-cli --zap-url http://127.0.0.1 --zap-port 8080 report -o zap-report.html -f html
 ```
 
-## ZAP API (Python)
+## Baseline Scan Defaults
+
+| Setting | Default |
+| --- | --- |
+| Spider `maxDuration` | `5` minutes |
+| Spider `maxDepth` | `5` |
+| Passive scan wait | `10` minutes |
+| Active rule max duration | `5` minutes |
+| Total scan duration | `30` minutes |
+
+Use this baseline when you need broad coverage without long-lived destructive testing.
+
+## API Scan Defaults
+
+| Item | Default |
+| --- | --- |
+| Schema import | OpenAPI first |
+| Priority rules | XSS, SQLi, command injection, auth/authz, SSRF |
+| Strength | High for injection families, Medium for noisy rules |
+| Scope | Authenticated API surface only |
+
+## Authentication Test Checklist
+
+Probe these scenarios whenever auth matters:
+
+- Session fixation
+- Session timeout
+- Logout effectiveness
+- Concurrent session handling
+- Reuse of expired or rotated tokens
+- Privilege switching after role change
+
+## Minimal ZAP API Example
 
 ```python
 from zapv2 import ZAPv2
 
-zap = ZAPv2(apikey='your-api-key', proxies={'http': 'http://127.0.0.1:8080'})
+zap = ZAPv2(apikey="", proxies={
+    "http": "http://127.0.0.1:8080",
+    "https": "http://127.0.0.1:8080",
+})
 
-# Spider
-zap.spider.scan('https://target.example.com')
-
-# Active scan
-zap.ascan.scan('https://target.example.com')
-
-# Get alerts
-alerts = zap.core.alerts()
+target = "https://target.example"
+zap.urlopen(target)
+zap.spider.scan(target)
+zap.ascan.scan(target)
 ```
 
----
+## Output Expectations
 
-## Baseline Scan Configuration
+For each ZAP run, capture:
 
-```yaml
-# zap-baseline.yaml
-env:
-  contexts:
-    - name: "Application Context"
-      urls:
-        - "${TARGET_URL}"
-      includePaths:
-        - "${TARGET_URL}.*"
-      excludePaths:
-        - ".*logout.*"
-        - ".*\.js$"
-        - ".*\.css$"
-      authentication:
-        method: "form"
-        parameters:
-          loginUrl: "${LOGIN_URL}"
-          loginRequestData: "username={%username%}&password={%password%}"
-
-jobs:
-  - type: spider
-    parameters:
-      maxDuration: 5
-      maxDepth: 5
-  - type: passiveScan-wait
-    parameters:
-      maxDuration: 10
-  - type: activeScan
-    parameters:
-      maxRuleDurationInMins: 5
-      maxScanDurationInMins: 30
-```
-
-## API Scan Configuration
-
-```yaml
-# zap-api-scan.yaml
-env:
-  contexts:
-    - name: "API Context"
-      urls:
-        - "${API_BASE_URL}"
-      technology:
-        include:
-          - "API"
-          - "Language.JavaScript"
-
-jobs:
-  - type: openapi
-    parameters:
-      apiUrl: "${OPENAPI_SPEC_URL}"
-  - type: activeScan
-    policyDefinition:
-      rules:
-        - id: 40012  # Cross Site Scripting (Reflected)
-          strength: "HIGH"
-        - id: 40014  # Cross Site Scripting (Persistent)
-          strength: "HIGH"
-        - id: 40018  # SQL Injection
-          strength: "HIGH"
-        - id: 40019  # SQL Injection - MySQL
-          strength: "MEDIUM"
-        - id: 90019  # Server Side Include
-          strength: "MEDIUM"
-        - id: 90020  # Remote OS Command Injection
-          strength: "HIGH"
-```
-
-## Authentication Test Scenarios
-
-```yaml
-# auth-test-scenarios.yaml
-scenarios:
-  - name: "Session Fixation"
-    steps:
-      - action: "Get session before login"
-      - action: "Login with valid credentials"
-      - verify: "Session ID changed after login"
-
-  - name: "Session Timeout"
-    steps:
-      - action: "Login and get session"
-      - action: "Wait for timeout period"
-      - verify: "Session is invalidated"
-
-  - name: "Logout Effectiveness"
-    steps:
-      - action: "Login and perform actions"
-      - action: "Logout"
-      - verify: "Previous session cannot be reused"
-
-  - name: "Concurrent Session"
-    steps:
-      - action: "Login from location A"
-      - action: "Login same user from location B"
-      - verify: "Policy enforced (allow/deny/invalidate)"
-```
+- Target and environment
+- Authentication context used
+- Scan type and duration
+- Rules emphasized or disabled
+- Confirmed findings vs noisy signals
+- Exported artifacts such as HTML, JSON, or SARIF-convertible results
