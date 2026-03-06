@@ -1,201 +1,57 @@
 # Motion Design Anti-Patterns
 
-> 目的のないアニメーション、視覚的過負荷、認知疲労、装飾 vs 機能的モーション、タイミングの失敗
+Purpose: Use this file when you need to judge whether motion is meaningful, proportional, and cognitively appropriate.
 
-## 1. モーションデザイン 7 大アンチパターン
+## Contents
+- `MD-01` to `MD-07`
+- Functional vs decorative decision test
+- Timing guidance
+- Motion hierarchy
 
-| # | アンチパターン | 問題 | ユーザーへの影響 | 対策 |
-|---|-------------|------|---------------|------|
-| **MD-01** | **目的のないアニメーション** | 「かっこいいから」で追加された装飾的動き | 情報伝達に寄与せず、注意力を浪費 | 各アニメーションに明確な目的（フィードバック/ガイド/状態伝達）を定義 |
-| **MD-02** | **視覚的過負荷** | 画面内の多数要素が同時にアニメーション | 「すべてが動くと、何も目立たない」 | 1 画面内の同時アニメーションを 2-3 に制限 |
-| **MD-03** | **認知疲労** | 過剰なモーションによるユーザーの精神的消耗 | 集中力低下、タスク完了率低下、離脱増 | 機能的モーションのみ残し、装飾を削減 |
-| **MD-04** | **注意力ハイジャック** | 重要でない要素のアニメーションが視線を奪う | ユーザーが本来注目すべき情報を見逃す | 視覚的階層に従いアニメーション強度を設定 |
-| **MD-05** | **タイミングの不整合** | 速すぎて知覚できない / 遅すぎて待たされる | 操作感の違和感、「もっさり感」 | 用途別 duration ガイドラインに従う |
-| **MD-06** | **文脈無視のイージング** | 全て同じイージングカーブを使用 | 動きが単調、自然さの欠如 | 入場は ease-out、退場は ease-in、状態変化は ease-in-out |
-| **MD-07** | **アニメーション依存の UI** | アニメーションなしでは意味が通じない UI | 低速環境やモーション無効時に機能破綻 | アニメーションは「強化」、静的状態でも完全に機能 |
+## Anti-Patterns
 
----
+| ID | Failure | Required Fix |
+|----|---------|--------------|
+| `MD-01` | Purpose-free animation | Define feedback, guidance, or state purpose, or remove it |
+| `MD-02` | Visual overload | Keep simultaneous prominent motion to `2-3` items |
+| `MD-03` | Cognitive fatigue | Remove repeated decorative motion |
+| `MD-04` | Attention hijack | Match motion strength to content importance |
+| `MD-05` | Bad timing | Use the correct duration band for the surface |
+| `MD-06` | Wrong easing for the context | Use entry=`ease-out`, exit=`ease-in`, state=`ease-in-out` |
+| `MD-07` | UI depends on animation to make sense | Keep full meaning in static states |
 
-## 2. 機能的モーション vs 装飾的モーション
+## Functional vs Decorative Decision Test
 
-```
-機能的モーション（✅ 維持すべき）:
-  フィードバック:
-    - ボタン押下のリアクション → 操作が受理されたことを伝達
-    - フォーム送信成功/失敗 → 結果を即座に伝達
-    - ドラッグ中の位置フィードバック → 操作の連続性を維持
+Ask:
+1. If this animation disappears, does the user lose information?
+2. Does it explain spatial or causal change?
+3. Does it respond to user action or system state?
 
-  ガイダンス:
-    - ページ遷移のスライド → 空間的位置関係を伝達
-    - 新要素のフェードイン → 追加されたことを知覚させる
-    - ツールチップの出現 → 情報の存在を示す
+If all answers are `No`, the motion is decorative and should be optional.
 
-  状態伝達:
-    - ローディングスピナー → 処理中であることを伝達
-    - トグルの切替 → ON/OFF 状態の変化を視覚化
-    - 折りたたみ開閉 → コンテンツの存在/非存在を示す
+## Timing Bands
 
-装飾的モーション（⚠️ 削減を検討）:
-  - ページロード時の凝ったエントランスアニメーション
-  - 常時動くグラデーション背景
-  - マウス追従パーティクル
-  - 意味のないパララックス効果
-  - 華美なページ遷移エフェクト
+| Use | Duration |
+|-----|----------|
+| Micro interaction | `100-200ms` |
+| UI entry/exit | `150-300ms` |
+| Panel or modal | `200-350ms` |
+| Page transition | `200-500ms` |
+| Complex sequence | `300-700ms` |
+| Loading / skeleton | `1000ms+` |
 
-判定基準:
-  Q1: このアニメーションを削除すると、ユーザーは情報を失うか？
-  Q2: このアニメーションは空間的関係を伝達しているか？
-  Q3: このアニメーションはユーザーの操作にフィードバックを返しているか？
-  → 全て No ならば装飾的モーション → reduced-motion 時は完全削除可
-```
+Rules:
+- `<100ms` is usually too fast for meaningful motion
+- `>500ms` for basic UI often feels slow
+- Exit duration is usually `60-80%` of entry duration
 
----
+## Motion Hierarchy
 
-## 3. モーションの 4 つの柱
+| Level | Intensity | Typical Use |
+|-------|-----------|-------------|
+| `1` | subtle | color, opacity, focus |
+| `2` | light | press, hover, small state change |
+| `3` | standard | modal, dropdown, content transition |
+| `4` | strong | page transition, major emphasis |
 
-```
-Disney アニメーション原則の UI 適用:
-
-  1. 期待（Expectation）:
-     - 何が起こるかを予測させる
-     - ホバー時の微小変化 → クリック可能であることを示唆
-     - ドラッグ開始時のリフト → 移動可能であることを示唆
-     ❌ アンチ: 予告なしの突然のアニメーション
-
-  2. 連続性（Continuity）:
-     - 要素間の関係を維持
-     - 共有要素トランジション → 同じアイテムであることを示す
-     - スライド方向 → 進む/戻るの空間的関係
-     ❌ アンチ: 方向性のない突然の切替
-
-  3. 物語（Narrative）:
-     - 一連の動きで物語を語る
-     - ステップウィザードの進行 → 進捗の物語
-     - エラー → シェイク → 修正 → 成功 → 物語的完結
-     ❌ アンチ: バラバラで一貫性のない動き
-
-  4. 関係性（Relationship）:
-     - 要素同士のつながりを表現
-     - 親要素の展開 → 子要素の出現
-     - ドロップダウンのトリガーからの展開方向
-     ❌ アンチ: 関連要素なのに無関係な動き
-```
-
----
-
-## 4. タイミングガイドライン
-
-| 用途 | Duration | 理由 |
-|------|----------|------|
-| マイクロインタラクション（ボタン、トグル） | 100-200ms | 即座のフィードバック、遅延感なし |
-| UI 要素の入場/退場 | 150-300ms | 知覚可能だが待たされない |
-| パネル/モーダルの開閉 | 200-350ms | 空間的変化の理解に十分な時間 |
-| ページ遷移 | 200-500ms | 文脈の切替を伝達 |
-| 複雑なアニメーション | 300-700ms | 物語的展開に必要な時間 |
-| ローディング/スケルトン | 1000ms+ | 処理中の認知を維持 |
-
-```
-タイミングの失敗パターン:
-
-  ❌ 速すぎ（< 100ms）:
-    → 変化を知覚できない、何が起こったか分からない
-    → 例外: 色変化やopacity変化は100ms以下でも可
-
-  ❌ 遅すぎ（> 500ms for UI elements）:
-    → 「もっさり」感、ユーザーが次の操作を待たされる
-    → 300ms を超えると「遅い」と感じ始める（Doherty threshold）
-
-  ❌ 均一タイミング:
-    → 小さい要素と大きい要素が同じ duration
-    → 小さい変化は速く（100-150ms）、大きい変化は遅く（200-350ms）
-
-  ✅ 知覚的タイミング:
-    → 入場は遅め（ゆっくり現れて注目させる）
-    → 退場は速め（素早く去ってコンテンツに集中させる）
-    → exit duration ≈ entry duration × 0.6-0.8
-```
-
----
-
-## 5. 視覚的階層とモーション強度
-
-```
-モーション強度のヒエラルキー:
-
-  Level 1（最小 — 状態変化）:
-    - color transition, opacity, box-shadow
-    - 100-150ms, subtle
-    - 例: ホバー色変化、フォーカスリング
-
-  Level 2（控えめ — 要素フィードバック）:
-    - scale(0.97-1.03), translateY(1-3px)
-    - 150-200ms, noticeable
-    - 例: ボタンプレス、チェックボックス
-
-  Level 3（標準 — コンテンツ遷移）:
-    - translateY(8-16px), scale(0.95-1.0), fade
-    - 200-300ms, clear
-    - 例: モーダル開閉、ドロップダウン展開
-
-  Level 4（強調 — 注目誘導）:
-    - translateY(20px+), scale(0.9-1.0), rotate
-    - 300-500ms, prominent
-    - 例: ページ遷移、重要な通知
-
-  原則:
-    - 操作頻度が高い → Level 低（繰り返しの動きは控えめに）
-    - 重要度が高い → Level 高（注目を集める）
-    - 画面内の同時 Level 4 は 1 つまで
-```
-
----
-
-## 6. 「最高のモーションは見えない」原則
-
-```
-見えないモーションの実践:
-
-  1. 意識させない自然さ:
-     → ユーザーが「動いた」と意識せず「変わった」と認知
-     → 適切な duration + easing = 自然な物理感
-
-  2. 期待に沿う動き:
-     → 右にスワイプ → 右にスライドアウト（期待通り）
-     → ❌ 右にスワイプ → 上にフライアウト（期待外れ）
-
-  3. 一貫したモーション言語:
-     → 同じ種類の操作 = 同じ種類のアニメーション
-     → カード展開が 3 種類のアニメーション → 混乱
-
-  4. 控えめさの美学:
-     → 凝ったアニメーション ≠ 良い UX
-     → translateY(4px) + opacity + 200ms で十分
-     → 過度な演出は初回感動 → 反復疲労
-
-テスト:
-  - 初回ユーザー: 「操作の意味がすぐ分かった」→ ✅
-  - リピートユーザー: 「アニメーションが邪魔にならない」→ ✅
-  - パワーユーザー: 「アニメーションに気づかない」→ ✅（最高の評価）
-```
-
----
-
-## 7. Flow との連携
-
-```
-Flow での活用:
-  1. 実装前に「目的テスト」（Q1-Q3）を実施
-  2. 用途別 duration ガイドラインに従う
-  3. 視覚的階層に基づいてモーション強度を設定
-  4. 機能的/装飾的の分類で reduced-motion 戦略を決定
-
-品質ゲート:
-  - 目的未定義のアニメーション → 目的を明確化または削除（MD-01 防止）
-  - 同時アニメーション 3+ → stagger または削減（MD-02 防止）
-  - 全アニメーション同一イージング → 用途別イージング適用（MD-06 防止）
-  - アニメーション無効で機能破綻 → 静的状態の完全性確認（MD-07 防止）
-  - entry と exit が同じ duration → exit を 60-80% に短縮（MD-05 防止）
-  - Level 4 アニメーション 2+ 同時 → 1 つに削減（MD-04 防止）
-```
-
-**Source:** [UX Design Institute: UI Animation Design Principles](https://www.uxdesigninstitute.com/blog/ui-animation-design-principles/) · [Interaction Design Foundation: Animation in UX](https://www.interaction-design.org/literature/article/animation-in-ux) · [Google Material Design: Motion Principles](https://m3.material.io/styles/motion)
+Keep simultaneous level-4 motion to one focal surface at a time.
