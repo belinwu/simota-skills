@@ -1,117 +1,89 @@
 # Task Decomposition Anti-Patterns
 
-> タスク分解の失敗パターン、見積もり精度の罠、WBS 設計ミス
+Purpose: Use this file to validate decomposition quality during `MAP`, especially when steps are too large, too early, or structurally misleading.
 
-## 1. タスク分解 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **TD-01** | **God Task（神タスク）** | 分解が不十分で巨大タスクのまま着手 | 15分超のステップが複数、完了見通しが不明、テスト/コミットポイントが不明確 | 8/80ルール適用（8時間〜80時間の作業単位）、Sherpaでは15分以内のAtomic Stepまで分解 |
-| **TD-02** | **Premature Decomposition（早すぎる分解）** | 要件不明確なまま詳細なサブタスクを作成 | 着手後に大幅な再計画、見積もりが2倍以上のずれ、依存関係の見落ち | まずScout調査で要件を明確化、分解は理解度に応じて段階的に |
-| **TD-03** | **Skill-Based Splitting（スキル別分割）** | 「コーディング」「テスト」「ドキュメント」と工程別に分割 | チーム内サイロ化、Daily Scrumが他メンバーに無関係、所有感の欠如 | コンポーネント別分割（フロントエンド、API、DB等）、1タスク=1機能スライス |
-| **TD-04** | **Template Addiction（テンプレート依存）** | 全PBIに同じタスクテンプレートを機械的に適用 | ストーリー固有の要件が見落とされる、不要なタスクの存在、柔軟性の欠如 | タスクは議論から生成（emerge）させる、テンプレートは出発点のみ |
-| **TD-05** | **Missing 100% Rule（100%ルール違反）** | WBSがスコープの100%をカバーしていない | 隠れた作業の発覚、「あとXXもやる必要があった」、スコープ漏れ | 分解時にWBS 100%ルール検証、漏れやすい作業（設定、テスト、ドキュメント）を明示的にチェック |
-| **TD-06** | **Dependency Blindness（依存関係盲目）** | タスク間の依存関係を分解時に考慮しない | 並行作業が実は直列、ブロッカーの遅延発覚、クリティカルパスの見誤り | 分解と同時に依存グラフを作成、ブロッカーを先に識別 |
-| **TD-07** | **Over-Decomposition（過剰分解）** | タスクを細かくしすぎて管理オーバーヘッドが増大 | 50+のサブタスク、ステータス更新に時間を浪費、「木を見て森を見ず」 | Atomic Step数の上限目安（Epic: 10-20、Story: 3-8）、管理コストとのバランス |
+- `TD-01` to `TD-07`
+- Decomposition signals
+- Vertical vs horizontal slicing
+- WBS checklist
 
----
+## Anti-Patterns
 
-## 2. 分解の判断基準
+| ID | Anti-pattern | Symptom | Fix |
+| --- | --- | --- | --- |
+| `TD-01` | God Task | many steps still exceed `15 min`; no clear test or commit point | keep decomposing to atomic steps |
+| `TD-02` | Premature Decomposition | detailed plan before the requirements are clear | investigate first, then decompose gradually |
+| `TD-03` | Skill-Based Splitting | “coding / testing / docs” slices create silos | prefer functional or component slices |
+| `TD-04` | Template Addiction | every story gets the same boilerplate breakdown | let tasks emerge from the actual work |
+| `TD-05` | Missing 100% Rule | hidden work appears later | explicitly check setup, tests, docs, and config |
+| `TD-06` | Dependency Blindness | parallel work later proves serial | create a dependency graph during decomposition |
+| `TD-07` | Over-Decomposition | `20+` tasks or status work dominates real work | regroup and reduce management overhead |
 
-```
-分解が必要なサイン:
-  □ 所要時間が15分を超える → 分解
-  □ テスト方法が不明確 → 分解 or Scout調査
-  □ コミットポイントが設定できない → 分解
-  □ 複数のファイルやモジュールにまたがる → 分解検討
-  □ 「〜してから〜する」が含まれる → 分解（暗黙の依存）
+## Decomposition Signals
 
-分解を止めるべきサイン:
-  □ 5分未満の作業 → 粒度が細かすぎ
-  □ 単独でテスト/検証できない → 上位タスクに統合
-  □ ステータス管理のコスト > タスク実行のコスト → 統合
-  □ タスク数が20超 → 中間グルーピングを検討
+### Split Further When
 
-分解のスイートスポット:
-  → Epic(1-5日) は 3-5 Story に分解
-  → Story(2-8時間) は 3-8 Task に分解
-  → Task(30-120分) は 2-4 Atomic Step に分解
-  → Atomic Step(5-15分) は分解しない
-```
+- a step exceeds `15 min`
+- the test method is unclear
+- no clean commit point exists
+- multiple files or modules are touched
+- the step contains implicit sequencing such as “do X, then Y”
 
----
+### Stop Splitting When
 
-## 3. 機能スライス vs 工程スライス
+- work is under `5 min`
+- the sub-step cannot be verified on its own
+- tracking cost exceeds execution cost
+- the current list already exceeds about `20` items
 
-```
-❌ 工程スライス（Horizontal Slicing）:
-  タスク1: 全画面のHTML作成
-  タスク2: 全画面のCSS作成
-  タスク3: 全画面のJS作成
-  タスク4: 全APIエンドポイント作成
-  タスク5: 全テスト作成
-  → 問題: 最後まで何も動かない、統合リスクが末尾に集中
+### Sweet Spot
 
-✅ 機能スライス（Vertical Slicing）:
-  タスク1: ログインフォーム（HTML+CSS+JS+API+テスト）
-  タスク2: バリデーション（フロント+バック+テスト）
-  タスク3: エラーハンドリング（UI+API+テスト）
-  → 利点: 各ステップで動くものが確認可能、早期フィードバック
+- Epic -> `3-5` Stories
+- Story -> `3-8` Tasks
+- Task -> `2-4` Atomic Steps
+- Atomic Step -> do not decompose further
 
-機能スライスの原則:
-  → INVEST基準: Independent, Negotiable, Valuable, Estimable, Small, Testable
-  → 各スライスが独立してデプロイ/テスト可能
-  → ユーザーに見える価値を含む
-  → 技術的リスクが高い部分を先にスライス
+## Vertical vs Horizontal Slicing
+
+```text
+Horizontal slice (bad):
+- HTML for all screens
+- CSS for all screens
+- JS for all screens
+- API for all endpoints
+
+Vertical slice (good):
+- Login form (HTML + CSS + JS + API + test)
+- Validation (front + back + test)
+- Error handling (UI + API + test)
 ```
 
----
+Prefer vertical slices because each slice produces something testable and reviewable.
 
-## 4. WBS 設計チェックリスト
+## WBS Checklist
 
+```text
+Before decomposition:
+- goal and success criteria are clear
+- out-of-scope is explicit
+- assumptions are listed
+- high-risk areas are known
+
+During decomposition:
+- 100% rule checked
+- tasks are mutually exclusive
+- step size is 5-15 min
+- each step is testable
+- each step has a commit point
+- dependencies are explicit
+- owning agent is clear
+
+After decomposition:
+- critical path identified
+- parallel work identified
+- blocker candidates flagged
+- risk buffer considered
+- management overhead remains acceptable
 ```
-分解前（MAP フェーズ）:
-  □ ゴールと成功基準が明確か
-  □ スコープ外が定義されているか
-  □ 前提条件が列挙されているか
-  □ リスクの高い領域が特定されているか
-
-分解中:
-  □ 100%ルール: スコープの全作業が含まれているか
-  □ 相互排他: 各タスクが重複していないか
-  □ 適切な粒度: 5-15分のAtomic Stepか
-  □ テスト可能: 各ステップの完了を検証できるか
-  □ コミット可能: クリーンなセーブポイントか
-  □ 依存関係: 順序制約が明示されているか
-  □ 担当エージェント: 各ステップの実行者が明確か
-
-分解後:
-  □ クリティカルパスが特定されているか
-  □ 並行可能なステップが識別されているか
-  □ ブロッカー候補にフラグが立っているか
-  □ 見積もりにリスクバッファが含まれているか
-  □ 管理オーバーヘッドが許容範囲か
-```
-
----
-
-## 5. Sherpa との連携
-
-```
-Sherpa での活用:
-  1. MAP フェーズで TD-01〜07 のスクリーニング
-  2. 分解判断基準で適切な粒度を維持
-  3. 機能スライス原則でタスク構造を設計
-  4. WBS チェックリストで品質を検証
-
-品質ゲート:
-  - 15分超のステップ → 再分解提案（TD-01 防止）
-  - 要件不明のまま詳細分解 → Scout調査推奨（TD-02 防止）
-  - 工程別分割 → 機能スライス提案（TD-03 防止）
-  - 全PBIに同一テンプレート → 議論ベース分解（TD-04 防止）
-  - スコープ漏れ検出 → 100%ルール確認（TD-05 防止）
-  - 依存関係未記述 → 依存グラフ作成（TD-06 防止）
-  - タスク20超 → グルーピング/統合提案（TD-07 防止）
-```
-
-**Source:** [Asana: Work Breakdown Structure](https://asana.com/resources/work-breakdown-structure) · [monday.com: WBS Guide 2026](https://monday.com/blog/project-management/work-breakdown-structure/) · [Agilemania: Sprint Planning Anti-Patterns](https://agilemania.com/anti-patterns-of-sprint-planning-task-creation) · [Wrike: WBS in Project Management](https://www.wrike.com/project-management-guide/faq/what-is-work-breakdown-structure-in-project-management/)

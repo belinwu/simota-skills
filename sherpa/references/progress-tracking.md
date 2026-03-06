@@ -1,10 +1,18 @@
 # Progress Tracking
 
-Epic dashboard, stalled detection, task tool integration, dependency graphs, velocity tracking, and session retrospectives.
+Purpose: Use this file when Sherpa needs dashboards, stalled detection, dependency analysis, retrospectives, or pace adjustment rules.
 
----
+## Contents
 
-## Epic Dashboard Template
+- Epic dashboard
+- Stalled progress detection
+- Task tool integration
+- Dependency graph
+- Velocity tracking
+- Retrospectives
+- Adaptive pacing
+
+## Epic Dashboard
 
 ```markdown
 ## Epic Dashboard: [Name]
@@ -19,7 +27,7 @@ Epic dashboard, stalled detection, task tool integration, dependency graphs, vel
 ### Velocity
 - Completed: 4 steps in 45 min
 - Average: 11 min/step
-- Projected completion: 1h 15min remaining
+- Projected completion: 1h 15m remaining
 
 ### Steps
 | # | Step | Size | Est | Actual | Status |
@@ -28,11 +36,9 @@ Epic dashboard, stalled detection, task tool integration, dependency graphs, vel
 | 2 | API mock | M | 20m | 25m | Done |
 | 3 | UI skeleton | M | 20m | 12m | Done |
 | 4 | Form logic | S | 15m | - | In Progress |
-| 5 | Validation | S | 10m | - | Pending |
 
 ### Commits
 - `abc123` feat(payment): add payment types
-- `def456` feat(payment): add api mock
 
 ### Blockers
 - None currently
@@ -41,66 +47,42 @@ Epic dashboard, stalled detection, task tool integration, dependency graphs, vel
 - 14:23 - "Also fix footer" -> Added to backlog
 ```
 
----
-
 ## Stalled Progress Detection
 
-| Condition | Threshold | Action |
-|-----------|-----------|--------|
-| No progress | > 30 min on one step | Prompt: "Need help?" |
-| Repeated attempts | Same step 3x | Suggest: Scout investigation |
-| Blocked | External dependency | Suggest: Switch to parallel task |
-| Overwhelmed | User reports stuck | Offer: Break down further |
+| Condition | Threshold | Response |
+| --- | --- | --- |
+| No progress | `> 30 min` on one step | prompt for help or further decomposition |
+| Repeated attempts | same step `3x` | suggest `Scout` investigation |
+| Blocked | external dependency | switch to a valid parallel task |
+| Overwhelmed | user reports being stuck | shrink the step |
 
-### Stalled Response Template
+### Stalled Response
 
 ```markdown
 ## Progress Check
 
 **Current Step**: [Step Name]
-**Time on Step**: 35 minutes (threshold: 30 min)
-
-It looks like this step is taking longer than expected.
+**Time on Step**: 35 minutes
 
 **What might help?**
-1. **Break down further** - This step might be too big
-2. **Scout investigation** - Need more information?
-3. **Pair with specialist** - Request Builder/Artisan help
-4. **Take a break** - Fresh eyes in 10 minutes
-5. **Skip for now** - Move to parallel task, return later
+1. Break down further
+2. Scout investigation
+3. Pair with a specialist
+4. Take a short break
+5. Skip to a valid parallel task
 ```
-
----
 
 ## Task Tool Integration
 
-Sherpa uses Claude Code's native task management tools to persist progress.
+Sherpa persists progress with Claude Code task tools.
 
-### Automatic Task Creation
+### Lifecycle
 
-When breaking down an Epic, automatically create tasks using `TaskCreate`:
-
-```yaml
-On Epic Breakdown:
-  1. Create parent task for Epic (if not exists)
-  2. Create child tasks for each Atomic Step
-  3. Set up dependencies using TaskUpdate (addBlockedBy)
-  4. Mark current step as in_progress
-```
-
-### Task Lifecycle
-
-```
+```text
 TaskCreate (pending) -> TaskUpdate (in_progress) -> TaskUpdate (completed)
-                              |
-                    User works on step
-                              |
-                    Sherpa monitors progress
 ```
 
-### Task Metadata
-
-Store Sherpa-specific data in task metadata:
+### Metadata Example
 
 ```typescript
 TaskCreate({
@@ -119,7 +101,7 @@ TaskCreate({
 })
 ```
 
-### Resume from Previous Session
+## Resume Template
 
 ```markdown
 ## Resuming Expedition
@@ -129,62 +111,39 @@ TaskCreate({
 **Progress**: 4/10 steps completed
 
 ### Where We Left Off
-- Steps 1-4 completed and committed
-- Step 5 was in progress (Form validation)
+- Step 5 was in progress
 - Steps 6-10 pending
 
 **Resume Options**:
-1. **Continue Step 5** (Recommended) - Pick up where you left off
-2. **Review completed work** - Check what was done before
-3. **Start fresh** - Re-plan remaining steps
+1. Continue Step 5 (Recommended)
+2. Review completed work
+3. Re-plan the remaining work
 ```
 
----
+## Dependency Analysis
 
-## Dependency Graph
-
-### Dependency Types
-
-| Type | Symbol | Description |
-|------|--------|-------------|
-| Sequential | `->` | Must complete A before B |
-| Parallel | `\|\|` | Can run A and B simultaneously |
-| Blocking | `X` | External blocker (approval, API, etc.) |
-| Optional | `?` | Can skip if time-constrained |
-
-### Dependency Analysis Template
+| Type | Symbol | Meaning |
+| --- | --- | --- |
+| Sequential | `->` | A must finish before B |
+| Parallel | `||` | A and B can run together |
+| Blocking | `X` | external blocker |
+| Optional | `?` | can be skipped if time is tight |
 
 ```markdown
 ### Step Dependencies
 
 | Step | Depends On | Blocks | Parallel With |
 |------|------------|--------|---------------|
-| 1. Define types | - | 2, 3 | - |
-| 2. Create API mock | 1 | 4 | 3 |
-| 3. Build UI skeleton | 1 | 4 | 2 |
-| 4. Integrate API | 2, 3 | 5 | - |
-| 5. Add error handling | 4 | - | - |
+| 1 | - | 2, 3 | - |
+| 2 | 1 | 4 | 3 |
+| 3 | 1 | 4 | 2 |
+| 4 | 2, 3 | 5 | - |
 
-**Critical Path**: 1 -> 2 -> 4 -> 5 (estimated: 45 min)
-**Parallelizable**: Steps 2 and 3
-**Blockers**: None identified
+**Critical Path**: 1 -> 2 -> 4 -> 5
+**Parallelizable**: 2 and 3
 ```
-
-### Visual Dependency Graph
-
-```
-Step 1 (Types)
-    |
-    +---> Step 2 (API Mock) --+
-    |                         +---> Step 4 (Integration) ---> Step 5 (Errors)
-    +---> Step 3 (UI) --------+
-```
-
----
 
 ## Velocity Tracking
-
-Track actual vs estimated time to calibrate future estimates:
 
 ```markdown
 ### Velocity Analysis
@@ -194,23 +153,18 @@ Track actual vs estimated time to calibrate future estimates:
 - Total time: 85 minutes
 - Average: 14.2 min/step
 
-**Calibration Factor**: 0.95x (slightly faster than estimates)
+**Calibration Factor**: 0.95x
 
 | Step | Estimated | Actual | Delta |
 |------|-----------|--------|-------|
 | 1 | 10 min | 8 min | -20% |
 | 2 | 15 min | 18 min | +20% |
 | 3 | 10 min | 9 min | -10% |
-
-**Pattern Detected**: Faster on familiar tasks, slower on new APIs.
-**Adjustment**: Add 1.2x multiplier for API integration steps.
 ```
 
----
+## Retrospectives
 
-## Session Retrospective
-
-### Full Retrospective Template
+### Full Retrospective
 
 ```markdown
 ## Session Retrospective
@@ -220,10 +174,10 @@ Track actual vs estimated time to calibrate future estimates:
 **Epic**: [Name]
 
 ### Progress Summary
-- **Started at**: Step N
-- **Ended at**: Step M
-- **Completed**: X steps
-- **Commits**: Y
+- Started at: Step N
+- Ended at: Step M
+- Completed: X steps
+- Commits: Y
 
 ### Metrics
 | Metric | Value | Notes |
@@ -232,25 +186,9 @@ Track actual vs estimated time to calibrate future estimates:
 | Avg step time | Y min | On/off estimate |
 | Drift incidents | Z | Managed/unmanaged |
 | Blockers | N | Resolved/pending |
-
-### What Went Well
-- [Positive observation]
-
-### What Slowed Us Down
-- [Friction point]
-
-### Learnings for Next Time
-- [Actionable insight]
-
-### Tomorrow's Starting Point
-**Step**: [Next step name]
-**Prep needed**: [Any preparation]
-**First action**: [Concrete first action]
 ```
 
-### Quick Retrospective (Short Sessions)
-
-For sessions < 1 hour:
+### Quick Retro
 
 ```markdown
 ## Quick Retro
@@ -261,35 +199,29 @@ For sessions < 1 hour:
 **Note**: [Key observation]
 ```
 
----
-
 ## Adaptive Pacing
 
-### Pacing Modes
-
-| Mode | When | Step Size | Check-in Frequency |
-|------|------|-----------|-------------------|
-| **Sprint** | Fresh, deadline pressure | Normal (10-15 min) | After each step |
-| **Cruise** | Normal working | Normal | Every 2-3 steps |
-| **Recovery** | After blocker/break | Smaller (5-10 min) | After each step |
-| **Wind-down** | End of session | Smallest, clean stops | Frequent |
-
-### Auto-Adjust Triggers
+| Mode | When | Step size | Check-in frequency |
+| --- | --- | --- | --- |
+| Sprint | fresh, deadline pressure | normal (`10-15 min`) | after each step |
+| Cruise | normal working mode | normal | every `2-3` steps |
+| Recovery | after blocker or break | smaller (`5-10 min`) | after each step |
+| Wind-down | end of session | smallest, clean stops | frequent |
 
 ```yaml
 Increase step size when:
-  - Velocity > 1.2x estimate for 3+ steps
-  - User requests "faster pace"
-  - Simple, repetitive tasks
+  - velocity > 1.2x estimate for 3+ steps
+  - user requests a faster pace
+  - work is simple and repetitive
 
 Decrease step size when:
-  - Velocity < 0.8x estimate for 2+ steps
-  - Errors or drift increasing
-  - Complex/unfamiliar territory
-  - User shows fatigue signals
+  - velocity < 0.8x estimate for 2+ steps
+  - errors or drift are increasing
+  - territory is unfamiliar
+  - fatigue signals appear
 
 Switch to Wind-down when:
-  - Session > 3 hours
-  - User mentions "one more thing then done"
-  - Approaching natural break point
+  - session > 3 hours
+  - user says "one more thing then done"
+  - a natural stop point is near
 ```

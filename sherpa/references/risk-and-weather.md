@@ -1,29 +1,31 @@
 # Risk Assessment & Weather System
 
-Risk categories, severity levels, mitigation strategies, project health monitoring, and fatigue detection.
+Purpose: Use this file when Sherpa needs structured risk assessment, weather thresholds, or fatigue-aware pacing.
 
----
+## Contents
+
+- Risk categories
+- Risk levels
+- Risk assessment template
+- Weather system
+- Fatigue detection
 
 ## Risk Categories
 
 | Category | Description |
-|----------|-------------|
-| Technical | New technology, complex logic, unfamiliar patterns |
-| Blocker | External dependencies, approvals, third-party APIs |
-| Scope | Unclear requirements, potential scope creep |
-| Time | Underestimated complexity, unknown unknowns |
-
----
+| --- | --- |
+| Technical | new technology, complex logic, unfamiliar patterns |
+| Blocker | external dependencies, approvals, third-party APIs |
+| Scope | unclear requirements, likely scope creep |
+| Time | underestimation, hidden complexity, unknown unknowns |
 
 ## Risk Levels
 
-| Level | Action |
-|-------|--------|
-| Low | Proceed normally |
-| Medium | Monitor closely, have fallback ready |
-| High | Investigate first, consider alternatives |
-
----
+| Level | Guidance |
+| --- | --- |
+| Low | proceed normally |
+| Medium | monitor closely, keep fallback ready |
+| High | investigate first, consider alternatives or specialist support |
 
 ## Risk Assessment Template
 
@@ -34,56 +36,33 @@ Risk categories, severity levels, mitigation strategies, project health monitori
 |------|------------|----------|------|------------|
 | 1 | Low | - | Standard task | - |
 | 2 | Medium | Technical | New API pattern | Review docs first |
-| 3 | Low | - | Standard UI | - |
-| 4 | High | Blocker | External API unstable | Mock fallback ready |
-| 5 | Medium | Scope | Error cases unclear | Scout investigation |
+| 3 | High | Blocker | External API unstable | Mock fallback ready |
 
 **Overall Risk**: Medium
-**High Risk Steps**: Step 4 - prepare mock fallback
-**Recommended**: Scout investigation before Step 5
+**High Risk Steps**: Step 3
+**Recommended**: Scout investigation before Step 3
 ```
 
----
+## Mitigation Strategies
 
-## Risk Mitigation Strategies
+| Risk type | Preferred actions |
+| --- | --- |
+| Technical | spike first, time-box exploration, involve the right specialist |
+| Blocker | identify early, prepare mock/stub fallback, communicate dependency risk |
+| Scope | define MVP explicitly, investigate unclear requirements, get written confirmation |
+| Time | split smaller, add buffer, identify cut points before running late |
 
-### Technical Risk
-- Spike/prototype first
-- Pair with expert (suggest specialist agent)
-- Time-box investigation
-
-### Blocker Risk
-- Identify early in planning
-- Prepare mock/stub fallback
-- Communicate dependencies to stakeholders
-
-### Scope Risk
-- Request Scout investigation
-- Define MVP scope explicitly
-- Get written confirmation before starting
-
-### Time Risk
-- Break down further (smaller atoms)
-- Add buffer to estimates
-- Identify cut points if running late
-
----
-
-## Weather System (Project Health)
-
-Monitor project conditions continuously, like a mountain guide reading the weather.
-
-### Weather Indicators
+## Weather System
 
 | Indicator | Clear | Cloudy | Stormy | Dangerous |
-|-----------|-------|--------|--------|-----------|
-| **Velocity** | On/ahead of estimate | 10-20% slower | 20-50% slower | >50% slower |
-| **Risk accumulation** | 0-1 high-risk steps | 2 high-risk steps | 3+ high-risk | Cascading risks |
-| **Blockers** | None | 1 manageable | Multiple | Critical path blocked |
-| **Scope changes** | None | Minor additions | Significant growth | Uncontrolled |
-| **User energy** | Focused | Normal | Fatigued signals | Frustrated/stuck |
+| --- | --- | --- | --- | --- |
+| Velocity | on or ahead of estimate | `10-20%` slower | `20-50%` slower | `>50%` slower |
+| Risk accumulation | `0-1` high-risk steps | `2` high-risk steps | `3+` high-risk steps | cascading risks |
+| Blockers | none | `1` manageable | multiple | critical path blocked |
+| Scope changes | none | minor additions | significant growth | uncontrolled growth |
+| User energy | focused | normal | fatigued signals | frustrated or stuck |
 
-### Weather Report Template
+### Weather Report
 
 ```markdown
 ## Weather Report
@@ -98,51 +77,39 @@ Monitor project conditions continuously, like a mountain guide reading the weath
 | Blockers | None | - |
 | Scope | Stable | No changes |
 | Energy | 3h into session | Consider break soon |
-
-**Forecast**: Clear conditions for next 2 steps. Expect turbulence at Step 4.
-
-**Recommendations**:
-- Complete Steps 2-3 while conditions are good
-- Prepare API mock before reaching Step 4
-- Schedule break after Step 3
 ```
 
 ### Weather-Based Decisions
 
 | Condition | Guidance |
-|-----------|----------|
-| **Clear** | Proceed at full speed; can take on slightly larger steps; good time for challenging work |
-| **Cloudy** | Proceed with monitoring; stick to estimated step sizes; address warnings early |
-| **Stormy** | Slow down, smaller steps only; focus on stabilizing; frequent commits |
-| **Dangerous** | STOP new feature work; assess continue or retreat; invoke Triage if needed |
-
----
+| --- | --- |
+| Clear | proceed at full speed; slightly larger steps are acceptable |
+| Cloudy | stay on normal-sized steps and address warnings early |
+| Stormy | slow down, use smaller steps, commit frequently |
+| Dangerous | stop new feature work; assess retreat or escalation |
 
 ## Fatigue Detection
 
-Watch for signs of user fatigue:
-
 | Signal | Pattern | Response |
-|--------|---------|----------|
-| Increasing errors | Same mistake 2+ times | Suggest break |
-| Slowing velocity | Steps taking 2x longer | Acknowledge, adjust |
-| Drift frequency | 3+ drift alerts in 30 min | Focus check |
-| Frustration language | "This is annoying", "Why won't..." | Empathize, simplify |
-| Long silences | No progress for 15+ min | Check in gently |
+| --- | --- | --- |
+| Increasing errors | same mistake `2+` times | suggest a break |
+| Slowing velocity | steps take `2x` longer | reduce step size |
+| Drift frequency | `3+` drift alerts in `30 min` | run a focus check |
+| Frustration language | “This is annoying” | simplify and stabilize |
+| Long silence | no progress for `15+ min` | check in gently |
 
-### Rest Stop Suggestion Template
+### Rest Stop Suggestion
 
 ```markdown
 ## Rest Stop Suggestion
 
-You've been climbing for 2.5 hours and completed 6 steps. Great progress!
+You've been climbing for 2.5 hours and completed 6 steps.
 
-I notice the pace is slowing - this is normal. Options:
+Options:
+1. Quick break (5 min)
+2. Commit checkpoint
+3. Switch to an easier parallel task
+4. Push through if the deadline truly requires it
 
-1. **Quick break** (5 min) - Step away, return refreshed
-2. **Commit checkpoint** - Save progress, continue tomorrow
-3. **Switch to easier terrain** - Move to a simpler parallel task
-4. **Push through** - If deadline requires it
-
-Your current step is 80% done. Good stopping point after completion.
+Your current step is 80% done.
 ```

@@ -1,152 +1,81 @@
 # Context Switching & Flow State Anti-Patterns
 
-> コンテキストスイッチの隠れたコスト、フロー状態の破壊パターン、集中力保護戦略
+Purpose: Use this file when Sherpa needs hard rules for WIP limits, focus protection, pacing, or context-switch cost.
 
-## 1. コンテキストスイッチ 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **CS-01** | **No WIP Limit（WIP制限なし）** | 同時進行タスク数の制限がない | 複数タスクが全て「進行中」、完了タスクが少ない、キューの増大 | WIP制限 1-2 タスク/人、完了してから次を開始 |
-| **CS-02** | **Interrupt Culture（割り込み文化）** | チャット/メンション/会議が常時フロー状態を破壊 | 平均2分ごとのping、275回/日の割り込み、集中時間ゼロ | 非同期コミュニケーション、フォーカスブロック（例: 9-11時） |
-| **CS-03** | **Multi-Project Juggling（マルチプロジェクト掛け持ち）** | 開発者が3+プロジェクトを同時担当 | 生産性 55%以下（3PJ）→15%（5PJ）、どのPJも進まない | 1人=1プロジェクト原則、最大2プロジェクトまで |
-| **CS-04** | **Review Delay Loop（レビュー遅延ループ）** | PRレビューの待ち時間中に別タスクを開始 | レビュー返却時に元タスクのコンテキストが消失、手戻りコスト増大 | 24時間以内のレビュー義務化、レビュー時間のブロック確保 |
-| **CS-05** | **Tool Fragmentation（ツール分散）** | IDE/ターミナル/ブラウザ/Slack/Jira/ドキュメントの行き来 | 1日1,200回のアプリ切替（24秒に1回）、1時間/日の情報検索 | ツール統合、ドキュメントのコード近接配置、コンテキスト一元化 |
-| **CS-06** | **Firefighting Addiction（消火活動中毒）** | 本番障害対応が頻繁で開発作業が常に中断 | 週2-3回以上のインシデント対応、計画作業の完遂率低下 | オンコールローテーション、根本原因解決への投資、サービス所有権の明確化 |
-| **CS-07** | **Meeting Fragmentation（会議による分断）** | 1日を通じて散発的に会議が入り集中ブロックが確保できない | 30分の隙間が多数あるが2時間の連続時間がゼロ | 会議のバッチ化（特定の日/時間帯）、会議なしの日の設定 |
+- `CS-01` to `CS-07`
+- switch-cost statistics
+- flow protection
+- WIP limits
+- pacing-mode integration
 
----
+## Anti-Patterns
 
-## 2. コンテキストスイッチのコスト（統計データ）
+| ID | Anti-pattern | Symptom | Preferred fix |
+| --- | --- | --- | --- |
+| `CS-01` | No WIP Limit | many in-progress tasks, few completions | keep WIP at `1-2` tasks/person |
+| `CS-02` | Interrupt Culture | constant chat, mentions, or meetings | use asynchronous communication and focus blocks |
+| `CS-03` | Multi-Project Juggling | `3+` projects in parallel destroy throughput | prefer one project, cap at two when possible |
+| `CS-04` | Review Delay Loop | review wait time spawns unrelated new work | reserve review blocks and return quickly |
+| `CS-05` | Tool Fragmentation | heavy app switching and search time | consolidate context and colocate docs |
+| `CS-06` | Firefighting Addiction | frequent incidents kill planned work | use rotations and invest in root-cause fixes |
+| `CS-07` | Meeting Fragmentation | no uninterrupted block remains | batch meetings and protect meeting-free time |
 
-```
-認知コスト:
-  → 1回のスイッチで認知能力の20%を消費（SEI CMU研究）
-  → 完全な集中回復に23分15秒必要（Dr. Gloria Mark, UCI）
-  → 中断されたタスクは2倍の時間がかかり、2倍のエラーを含む
-  → 重度のマルチタスクでIQが10ポイント低下
+## Switch-Cost Data
 
-生産性への影響:
-  同時プロジェクト数 | 生産的時間 | 損失
-  1プロジェクト     | 100%     | 0%
-  2プロジェクト     | 80%      | 20%
-  3プロジェクト     | 55%      | 45%
-  4プロジェクト     | 35%      | 65%
-  5プロジェクト     | 15%      | 85%
+```text
+Reference costs:
+- full recovery to deep focus: ~23m 15s
+- cognitive hit per switch: ~20%
+- same codebase switch: ~5-10 min
+- different-domain switch: ~30-60 min
 
-経済的コスト:
-  → 米国経済で年間$450B（4500億ドル）の生産性損失
-  → 8時間勤務で実質4.8時間の生産的アウトプット
-  → 週4時間をアプリ切替後の再オリエンテーションに消費
-
-開発者特有のコスト:
-  → 1回のスイッチで15-30分のコーディング生産性を損失
-  → コードのメンタルモデル（アーキテクチャ、変数状態、ロジックフロー）の再構築が必要
-  → 低コストスイッチ（同一コードベース）: 5-10分
-  → 高コストスイッチ（異なるドメイン）: 30-60分
+Project load impact:
+1 project -> 100% productive time
+2 projects -> 80%
+3 projects -> 55%
+4 projects -> 35%
+5 projects -> 15%
 ```
 
----
+## Flow Protection
 
-## 3. フロー状態の保護戦略
-
-```
-フロー状態の条件:
-  □ 明確な目標（何をすべきか分かっている）
-  □ 即座のフィードバック（進捗が見える）
-  □ スキルと挑戦のバランス（簡単すぎず難しすぎず）
-  □ 深い集中（外部割り込みなし）
-  □ コントロール感（自分で決定できる）
-
-フロー保護の実践:
-  1. フォーカスブロック: 2時間の割り込み禁止時間を確保
-  2. 通知の制御: 開発中はSlack/メール通知をオフ
-  3. コミュニケーションの緊急度分類:
-     即座（本番障害）: 電話/DM
-     当日（PRレビュー）: メンション
-     翌日（一般質問）: チャンネル/メール
-     非同期（情報共有）: 期限なし
-  4. 「集中中」のシグナル: ステータス表示、ヘッドフォン等
-  5. バッチ処理: メール/チャットを特定の時間帯にまとめて処理
+```text
+Protect flow with:
+1. a 2-hour focus block
+2. notification control
+3. urgency-based communication channels
+4. visible "in focus" signals
+5. batched message handling
 ```
 
----
+## WIP Limit Rules
 
-## 4. WIP制限のベストプラクティス
+```text
+Principle:
+Lead time = WIP / Throughput
 
-```
-WIP制限の原理（リトルの法則）:
-  → リードタイム = WIP / スループット
-  → WIPを減らせば、スループットが同じでもリードタイムが短縮
-  → WIP 10→5 で平均完了時間 3週→1.5週（実例）
-
-WIP制限の設定:
-  個人レベル: 最大1-2タスクを「進行中」に
-  チームレベル: ボードの各カラムにWIP上限を設定
-  エクスペダイトレーン: 緊急用に1枠を別途確保
-
-よくある失敗:
-  ❌ 制限が高すぎる（行動変化を強制しない）
-  ❌ プレッシャー下で制限を放棄（エスカレーションプロセスに変換すべき）
-  ❌ ボトルネックの無視（制限は問題を露呈する→解決すべき）
-  ❌ 個人最適化（チームフローを優先すべき）
-
-成功指標:
-  □ サイクルタイムの短縮
-  □ スループットの維持 or 向上
-  □ コンテキストスイッチ頻度の減少
-  □ 完了タスク数の増加（開始タスク数ではなく）
+Practical limits:
+- individual: 1-2 in-progress tasks
+- team columns: explicit WIP caps
+- expedite lane: reserve 1 slot for real emergencies
 ```
 
----
+## Pacing Modes
 
-## 5. Sherpa のペーシングモードとの統合
+| Mode | WIP | Interruptions | Step size | Use when |
+| --- | --- | --- | --- | --- |
+| Sprint | `1` | blocked | `10-15 min` | deep focus, deadline pressure |
+| Cruise | `1-2` | batched | normal | standard work |
+| Recovery | `1` | tolerated | `5-10 min` | after blockers or breaks |
+| Wind-down | finish only | tolerated | smallest | session end |
 
+## Quality Gates
+
+```text
+- multiple concurrent steps -> apply WIP limit
+- interruption-driven drift -> use Parking Lot
+- 3+ projects in parallel -> move to Base Camp prioritization
+- session > 3h -> suggest break or Wind-down
 ```
-コンテキストスイッチとペーシング:
-
-  Sprint モード（集中度: 高）:
-    → WIP: 1タスクのみ
-    → 割り込み: ブロック
-    → ステップサイズ: 通常（10-15分）
-    → 適用: フロー状態時、デッドライン前
-
-  Cruise モード（集中度: 中）:
-    → WIP: 1-2タスク
-    → 割り込み: バッチ処理（30分ごと）
-    → ステップサイズ: 通常
-    → 適用: 通常作業時
-
-  Recovery モード（集中度: 低）:
-    → WIP: 1タスクのみ（短い）
-    → 割り込み: 許容（コンテキスト再構築が軽い）
-    → ステップサイズ: 小（5-10分）
-    → 適用: ブロッカー後、休憩後
-
-  Wind-down モード（集中度: 漸減）:
-    → WIP: 完了のみ（新規開始しない）
-    → 割り込み: 許容
-    → ステップサイズ: 最小、クリーンな停止点
-    → 適用: セッション終了前
-```
-
----
-
-## 6. Sherpa との連携
-
-```
-Sherpa での活用:
-  1. GUIDE フェーズで ONE ステップのみ提示（WIP制限の体現）
-  2. LOCATE フェーズでコンテキストスイッチ要因の検出
-  3. ASSESS フェーズで Weather にフロー状態を反映
-  4. PACK フェーズでクリーンなセーブポイント確保（スイッチコスト低減）
-
-品質ゲート:
-  - 複数ステップが同時進行中 → WIP制限の適用（CS-01 防止）
-  - 割り込みによるフロー破壊検出 → Parking Lot 活用（CS-02 防止）
-  - 3+プロジェクト掛け持ち → Base Camp での優先順位整理（CS-03 防止）
-  - PRレビュー待ちで別作業開始 → 短時間タスクへの誘導（CS-04 防止）
-  - 会議による分断 → フォーカスブロック提案（CS-07 防止）
-  - セッション長 > 3時間 → 休憩/Wind-downモード提案
-```
-
-**Source:** [Jellyfish: Context Switching in Software Development](https://jellyfish.co/library/developer-productivity/context-switching/) · [SpeakWise: Context Switching Statistics 2026](https://speakwiseapp.com/blog/context-switching-statistics) · [Kanban.fit: WIP Limits Productivity](https://www.kanban.fit/blog/wip-limits-productivity-optimization) · [Atlassian: WIP Limits for Kanban](https://www.atlassian.com/agile/kanban/wip-limits)

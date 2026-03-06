@@ -1,133 +1,84 @@
 # Estimation & Planning Anti-Patterns
 
-> 見積もりの罠、計画策定の失敗パターン、スプリント実行のアンチパターン
+Purpose: Use this file when estimates, capacity plans, or sprint-level planning quality look distorted.
 
-## 1. 見積もり 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **EP-01** | **Solo Estimation（一人見積もり）** | チーム全体でなく一人が見積もりを決定 | 技術的考慮の見落とし、DB担当/デザイナー/インフラの観点欠如 | チーム全員で見積もり、意見の差異を議論のきっかけに |
-| **EP-02** | **Anchoring Bias（アンカリングバイアス）** | 最初に発言した人の数字に全員が引きずられる | 見積もりがいつも似た値に収束、低い人が言い出せない雰囲気 | 同時公開方式（Planning Poker）、先入観なしで独立判断 |
-| **EP-03** | **Time-Point Confusion（時間≠ポイント混同）** | ストーリーポイントを時間に換算してしまう | 「3ポイント=3時間」の暗黙変換、ポイントの意味が形骸化 | ポイントは相対的な複雑性（effort + complexity + uncertainty）の指標 |
-| **EP-04** | **Velocity Obsession（ベロシティ偏重）** | ベロシティを生産性指標やパフォーマンス評価に使用 | ベロシティインフレ（見積もりを膨らませる）、チーム間比較、信頼喪失 | ベロシティは予測用ツールのみ、チーム固有・比較不可 |
-| **EP-05** | **Safety Padding（安全パディング）** | 見積もりに「念のため」のバッファを個人的に上乗せ | 見積もりが交渉に変質、正直な見積もりが消失、精度悪化 | チームレベルのリスクバッファ（15-20%）を別途設定、個人パディング禁止 |
-| **EP-06** | **Estimation as Commitment（見積もり=コミットメント）** | 見積もりが達成すべき目標として扱われる | 未達時の責任追及、チームの防御的見積もり、イノベーション抑制 | 見積もりはスコープとリスクの共有理解であり、目標ではない |
-| **EP-07** | **Refinement Skip（リファインメント省略）** | 未洗練のバックログアイテムをそのまま見積もり | ストーリーに隠れたスコープ、依存関係の見落とし、大幅な見積もりズレ | 見積もり前にリファインメント必須、受入基準の明確化 |
+- `EP-01` to `EP-07`
+- `PP-01` to `PP-07`
+- calibration and capacity rules
+- execution pitfalls
+- retrospective completion trap
 
----
+## Estimation Anti-Patterns
 
-## 2. 計画策定 7 大アンチパターン
+| ID | Anti-pattern | Core issue | Preferred fix |
+| --- | --- | --- | --- |
+| `EP-01` | Solo Estimation | one person decides the estimate | estimate with the whole team |
+| `EP-02` | Anchoring Bias | the first number dominates | reveal estimates simultaneously |
+| `EP-03` | Time-Point Confusion | points are treated as hours | keep points relative, not time-based |
+| `EP-04` | Velocity Obsession | velocity becomes a performance score | use velocity only for forecasting |
+| `EP-05` | Safety Padding | personal buffer hides real uncertainty | use a separate team buffer of `15-20%` |
+| `EP-06` | Estimation as Commitment | estimate becomes a promise | treat estimate as shared understanding |
+| `EP-07` | Refinement Skip | vague backlog item is estimated anyway | refine before estimating |
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **PP-01** | **Overcommitment Pressure（過剰コミットメント圧力）** | POやマネージャーがキャパ以上の作業を押し込む | バーンアウト、品質低下、Sprint Goal未達の常態化 | チーム予測を尊重、80-85%キャパシティでコミット |
-| **PP-02** | **Missing Sprint Goal（Sprint Goal不在）** | 統一的なゴールなくランダムなタスクリストで作業 | 方向性の欠如、説明責任不明、作業のまとまりなし | 明確で測定可能なSprint Goalを設定、全作業がGoalに紐づく |
-| **PP-03** | **Capacity Blindness（キャパシティ盲目）** | 休暇、会議、割り込みを考慮せずに計画 | 非現実的なコミットメント、毎Sprint未達、持続不可能なペース | キャパシティ確認を計画の最初に実施、利用可能時間を正直に算出 |
-| **PP-04** | **Last-Minute Items（直前アイテム投入）** | 未洗練のアイテムを計画セッションに突然投入 | 見積もり精度の低下、チームの緊張、タスク分解の質低下 | 定期的なリファインメント、計画には準備済みアイテムのみ |
-| **PP-05** | **Multi-Sprint Waterfall（マルチスプリント計画）** | 数スプリント先まで詳細に計画 | 柔軟性の喪失、手戻り、チームの士気低下 | ローリングウェーブ計画、次Sprint以降は大まかに |
-| **PP-06** | **Plan Over Goal（計画 > ゴール）** | 詳細な計画に固執しゴールを見失う | 計画通りに実行しても価値が生まれない、適応の遅れ | ゴールにコミット、計画はDaily Scrumで適応 |
-| **PP-07** | **Tech Debt Avoidance（技術的負債回避）** | 機能開発のみ優先し技術的負債を放置 | 開発速度の漸減、品質低下、将来の見積もり膨張 | Sprintキャパシティの最大20%を技術的負債削減に確保 |
+## Planning Anti-Patterns
 
----
+| ID | Anti-pattern | Core issue | Preferred fix |
+| --- | --- | --- | --- |
+| `PP-01` | Overcommitment Pressure | too much work is pushed into the plan | commit at about `80-85%` capacity |
+| `PP-02` | Missing Sprint Goal | work is a random list, not a coherent goal | define one measurable goal |
+| `PP-03` | Capacity Blindness | holidays, meetings, and interruptions are ignored | calculate available time honestly |
+| `PP-04` | Last-Minute Items | unrefined work appears during planning | admit only prepared items |
+| `PP-05` | Multi-Sprint Waterfall | detailed plans go too far ahead | use rolling-wave planning |
+| `PP-06` | Plan Over Goal | the plan matters more than the outcome | adapt the plan to protect the goal |
+| `PP-07` | Tech Debt Avoidance | only features are planned | reserve up to `20%` for debt reduction when needed |
 
-## 3. 見積もり精度向上のベストプラクティス
+## Best-Practice Rules
 
-```
-見積もりセッション:
-  □ リファインメント済みアイテムのみ見積もる
-  □ 全チームメンバーが参加（多角的視点）
-  □ 同時公開（アンカリング防止）
-  □ 意見の差異を議論のきっかけに活用
-  □ 見積もり変更の理由を記録（学習資産）
+```text
+Estimation:
+- estimate only refined items
+- include the full team
+- reveal estimates simultaneously
+- record why estimates changed
 
-見積もりスケール:
-  → T-shirt Sizing (XS/S/M/L/XL): ロードマップ・初期計画に最適
-  → Fibonacci (1/2/3/5/8/13): Sprint計画の精緻な見積もりに最適
-  → バケットサイズ: 大量のアイテムを素早く相対比較
-  → 参照ストーリー: 「6月のauth refactorは8ポイントだった」
+Calibration:
+- compare estimate vs actual every sprint or session
+- target accuracy ratio: 0.85-1.15
+- adjust multipliers only after 3+ sprints or 3+ data points
 
-キャリブレーション:
-  → 見積もり vs 実績を毎Sprint追跡
-  → 精度比率 0.85-1.15 が目標範囲
-  → パターン別精度分析（API作業、UI作業、テスト等）
-  → 3Sprint以上のデータで乗数を調整
-  → Sherpa の CALIBRATE フェーズと連携
-
-キャパシティ計画:
-  → 利用可能時間 = (稼働日 × 時間/日) - 会議 - 休暇 - 割り込みバッファ
-  → 80-85% キャパシティでコミット（改善1件 + 予備）
-  → Retrospective アクション1件をSprintに含める
-  → 新メンバーのオンボーディング時間を考慮
+Capacity:
+- available time = workdays × hours/day - meetings - leave - interruption buffer
+- commit at about 80-85% capacity
+- include at least one retrospective improvement action when possible
 ```
 
----
+## Execution Pitfalls
 
-## 4. スプリント実行のアンチパターン
+| Pitfall | Why it hurts | Countermeasure |
+| --- | --- | --- |
+| Cherry-Picking | easy tasks win, goal-critical work slips | prioritize by goal and critical path |
+| Gold-Plating | scope expands during execution | enforce Definition of Done |
+| Side-Gigs | invisible work bypasses the board | make all work visible |
+| Hardening Sprint | quality is postponed | build quality into normal work |
+| Variable Sprint Length | timebox is stretched | adjust scope, not the sprint |
+| Everything's a Bug | normal work abuses the emergency lane | define bug severity clearly |
 
+## Retrospective Completion Trap
+
+- common completion rate is roughly `33%`
+- root causes:
+  - the action never enters the backlog
+  - no owner exists
+  - no follow-up happens
+
+Use this rule:
+
+```text
+At each retrospective:
+1. review the previous action first
+2. convert each new action into a backlog item
+3. assign owner, due point, and done criteria
+4. record the impact after completion
 ```
-よくある実行時の罠:
-
-  ❌ Cherry-Picking（つまみ食い）:
-    → 簡単なタスクを優先し、Sprint Goal達成に直結する作業を後回し
-    → 対策: Sprint Goal に基づく優先順位付け、WIP制限
-
-  ❌ Gold-Plating（金メッキ）:
-    → 受入基準を超えてスコープを勝手に拡大
-    → 対策: PO との頻繁なコミュニケーション、Definition of Done の遵守
-
-  ❌ Side-Gigs（隠れ作業）:
-    → ボード上に見えない作業を並行実行
-    → 対策: 全作業をボードに可視化、透明性の確保
-
-  ❌ Hardening Sprint（品質修正Sprint）:
-    → バグ修正専用Sprintの設置 = 品質を後回しにした証拠
-    → 対策: Definition of Done に品質基準を組み込み、毎Sprint品質を維持
-
-  ❌ Variable Sprint Length（Sprint延長）:
-    → ゴール未達時にSprintを延長
-    → 対策: タイムボックス厳守、スコープを調整して対応
-
-  ❌ Everything's a Bug（何でもバグ扱い）:
-    → 通常の要望を「バグ」として緊急レーンに投入
-    → 対策: バグの明確な分類基準、エクスプレスレーンの厳格な管理
-```
-
----
-
-## 5. Retrospective アクションの罠
-
-```
-Retrospective の完了率問題:
-  → 平均完了率: 約33%（3分の1しか実行されない）
-  → 原因: アクションがバックログに入らない、オーナー不在、追跡されない
-  → 結果: 同じ問題が繰り返される、チームの改善停滞
-
-対策:
-  □ 各Retro で前回アクションの完了確認から開始
-  □ アクションを即座にバックログアイテム化（オーナー+期限+完了基準）
-  □ 次Sprint に最低1件の改善アクションを含める
-  □ 完了時にインパクトノートを記録（「レビュー時間 6h→90min に短縮」等）
-```
-
----
-
-## 6. Sherpa との連携
-
-```
-Sherpa での活用:
-  1. MAP フェーズで EP-01〜07 のスクリーニング
-  2. 見積もりセッションのベストプラクティス適用
-  3. CALIBRATE フェーズで見積もり精度を継続的に改善
-  4. Sprint 実行中の LOCATE フェーズで実行時アンチパターン検出
-
-品質ゲート:
-  - 一人だけの見積もり → チーム見積もり推奨（EP-01 防止）
-  - 見積もりが常に同じ値 → アンカリング検出（EP-02 防止）
-  - ポイント=時間の変換 → 相対見積もりの説明（EP-03 防止）
-  - 見積もり未達で責任追及 → 見積もり≠コミットメント（EP-06 防止）
-  - 未洗練アイテムの見積もり → リファインメント優先（EP-07 防止）
-  - キャパシティ確認なし → 利用可能時間の算出（PP-03 防止）
-  - 技術的負債の無視 → 20%キャパシティ確保提案（PP-07 防止）
-```
-
-**Source:** [Easy Agile: Estimation Challenges 2026](https://www.easyagile.com/blog/agile-estimation-planning-poker-sprint-predictability-jira) · [Age-of-Product: Sprint Anti-Patterns](https://age-of-product.com/sprint-anti-patterns-2/) · [Agilemania: Sprint Planning Anti-Patterns](https://agilemania.com/anti-patterns-of-sprint-planning-task-creation) · [Scrum.org: 27 Sprint Anti-Patterns](https://www.scrum.org/resources/blog/27-sprint-anti-patterns)
