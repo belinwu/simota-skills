@@ -79,6 +79,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `references/tool-integration.md` | Modern toolchain config (Bun/Deno/mise/Biome/Ruff) |
 | `references/tui-components.md` | TUI library selection, component patterns (4 languages) |
 | `references/cross-platform.md` | Platform-specific config, XDG dirs, shell detection |
+| `references/cli-design-anti-patterns.md` | フラグ設計 CD-01〜07、引数処理、エラーメッセージ EM-01〜05、出力設計、ヘルプテキスト、対話モード IM-01〜05 |
+| `references/tui-ux-anti-patterns.md` | カラー管理 TU-01〜07、キーボードナビゲーション、レイアウト LY-01〜05、プログレス表示、アクセシビリティ |
+| `references/tool-integration-anti-patterns.md` | Linter/Formatter設定 TI-01〜07、ビルドツール統合、テストランナー、Doctor/Healthcheck DH-01〜04、設定管理 |
+| `references/distribution-packaging-anti-patterns.md` | バイナリ配布 DP-01〜07、npm/pip/cargo/go別の罠、セキュリティ SC-01〜04、リリース・バージョニング、クロスプラットフォームビルド |
 
 ## Operational
 
