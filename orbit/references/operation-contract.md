@@ -1,22 +1,24 @@
 # Operation Contract
 
+Purpose: load this when creating or auditing loop artifacts. It defines the minimum contract for `goal.md`, `progress.md`, `done.md`, `state.env`, and the required footer.
+
 ## Contract Checklist
 
-- `goal.md` includes:
-  - Goal statement
-  - Why this matters
-  - 3-6 measurable acceptance criteria
-  - Out-of-scope notes
-- `progress.md` per iteration includes:
+- `goal.md` must include:
+  - goal statement
+  - why it matters
+  - `3-6` measurable acceptance criteria
+  - out-of-scope notes
+- `progress.md` must record per iteration:
   - UTC timestamp
   - iteration number
-  - changed files + summary
-  - verification commands + outcomes
+  - changed files and summary
+  - verification commands and outcomes
   - remaining work
-  - decision (`CONTINUE` or `DONE`)
-- `done.md` includes:
+  - decision: `CONTINUE` or `DONE`
+- `done.md` must include:
   - completion timestamp
-  - acceptance checklist + evidence
+  - acceptance checklist with evidence
   - rollback note
 
 ## Footer Contract
@@ -29,19 +31,19 @@ NEXUS_LOOP_SUMMARY: <single-line summary>
 ```
 
 Rules:
-- `NEXUS_LOOP_STATUS` must be exact token.
-- Summary should stay concise and operational.
+- `NEXUS_LOOP_STATUS` must use the exact token.
+- Keep the summary concise and operational.
 - Missing footer defaults to `CONTINUE` in conservative mode.
 
 ## Resume Contract
 
-`state.env` should keep:
+`state.env` should preserve:
 - `NEXT_ITERATION`
 - `LAST_STATUS`
 - `LAST_UPDATED_AT`
-- `ORIGIN_BRANCH` (branch before loop started; when BRANCH_ISOLATION enabled)
-- `ITER_BRANCH` (iteration branch name; when BRANCH_ISOLATION enabled)
-- session resume flags
+- `ORIGIN_BRANCH` when `BRANCH_ISOLATION` is enabled
+- `ITER_BRANCH` when `BRANCH_ISOLATION` is enabled
+- any session resume flags
 
 Recovery priority:
 1. `progress.md` timeline

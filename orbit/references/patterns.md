@@ -1,5 +1,19 @@
 # Orbit Patterns
 
+Purpose: load this when multi-loop coordination, dirty-baseline protection, or handoff structure matters. These are reusable operating patterns, not script templates.
+
+## Contents
+
+1. Contract-first stabilization
+2. Evidence-gated done
+3. Dirty-baseline safe commit
+4. Resume drift recovery
+5. Parallel-loop conflict detection
+6. Sequential-loop handoff
+7. Loop-of-loops isolation
+8. Dirty-baseline edge cases
+9. Pre-flight health gate
+
 ## 1. Contract-First Stabilization
 
 Use when loop behavior is unstable or non-deterministic.
@@ -15,30 +29,30 @@ Use when `DONE` is claimed.
 
 - Require acceptance checklist mapping.
 - Require verification commands and outcomes.
-- Require rollback note for last mutation.
-- If any missing: recommend `CONTINUE`.
+- Require rollback note for the latest mutation.
+- If any are missing, recommend `CONTINUE`.
 
 ## 3. Dirty-Baseline Safe Commit
 
-Use when worktree is dirty at loop start.
+Use when the worktree was dirty before loop start.
 
-- Snapshot baseline dirty paths.
-- Build candidate path list from current delta.
-- Exclude baseline paths.
-- Stage/commit only candidate paths.
+1. Snapshot baseline dirty paths.
+2. Build candidate paths from current delta.
+3. Exclude baseline paths.
+4. Stage and commit candidate paths only.
 
 ## 4. Resume Drift Recovery
 
-Use when `state.env` and progress timeline diverge.
+Use when `state.env` and the progress timeline disagree.
 
-- Parse latest iteration record from progress.
-- Compare with `NEXT_ITERATION` and `LAST_STATUS`.
-- Reconstruct state from evidence source.
-- Annotate decision and reason.
+1. Parse the latest iteration record from `progress.md`.
+2. Compare it with `NEXT_ITERATION` and `LAST_STATUS`.
+3. Reconstruct state from the evidence source.
+4. Annotate the recovery decision and reason.
 
 ## 5. Parallel Loop Commit Scope Conflict Detection
 
-Use when multiple loops are running concurrently and may touch overlapping paths.
+Use when multiple active loops may touch overlapping paths.
 
 ```bash
 # 1. Enumerate active loops (collect loop dirs with LAST_STATUS=CONTINUE)
@@ -50,23 +64,21 @@ for loop_dir in $active_loops; do
     > "${loop_dir}/.candidate-paths.tmp"
 done
 
-# 3. Detect overlapping paths → report CROSS_LOOP_CONFLICT
+# 3. Detect overlapping paths -> report CROSS_LOOP_CONFLICT
 cat */.candidate-paths.tmp | sort | uniq -d > .conflict-paths.tmp
 if [[ -s .conflict-paths.tmp ]]; then
-  echo "CROSS_LOOP_CONFLICT: $(cat .conflict-paths.tmp)" # → delegate to Guardian
+  echo "CROSS_LOOP_CONFLICT: $(cat .conflict-paths.tmp)"
 fi
 ```
 
-**When CROSS_LOOP_CONFLICT is detected:**
-1. Suspend the loop containing conflicting paths (keep `LAST_STATUS=CONTINUE`)
-2. Delegate commit order arbitration to Guardian via `ORBIT_TO_GUARDIAN_HANDOFF`
-3. Skip commit processing for the affected loop until Guardian's decision is received
+On `CROSS_LOOP_CONFLICT`:
+1. Suspend the affected loop and keep `LAST_STATUS=CONTINUE`.
+2. Delegate commit-order arbitration via `ORBIT_TO_GUARDIAN_HANDOFF`.
+3. Skip commit processing until the conflict is resolved.
 
 ## 6. Sequential Loop Handoff Implementation Guide
 
-Protocol for explicitly referencing predecessor loop completion as the start condition of the successor loop.
-
-### Append Handoff Checklist to done.md
+### Append checklist to predecessor `done.md`
 
 ```markdown
 ## Handoff Checklist (for successor loop)
@@ -76,7 +88,7 @@ Protocol for explicitly referencing predecessor loop completion as the start con
 - [ ] Known limitations: <list>
 ```
 
-### Link prerequisites in successor loop's goal.md
+### Link prerequisites in successor `goal.md`
 
 ```markdown
 ## Prerequisites (from predecessor loop)
@@ -89,56 +101,44 @@ Protocol for explicitly referencing predecessor loop completion as the start con
 > Orbit MUST validate each prerequisite independently before proceeding.
 ```
 
-**Rules:**
-- Always check the `prerequisites` section during successor loop Intake phase
-- Existence of predecessor `done.md` alone is insufficient — verify each AC independently
-- If any prerequisite is unverified, classify as `CONTRACT_MISSING`
+Rules:
+- Always inspect prerequisites during successor-loop intake.
+- Existence of predecessor `done.md` alone is insufficient.
+- If any prerequisite is unverified, classify `CONTRACT_MISSING`.
 
 ## 7. Loop-of-Loops Isolation Rule
 
-Rule table defining the boundary between the meta-loop (outer) and inner loops.
+| Operation | Meta-loop allowed? | Reason |
+|-----------|--------------------|--------|
+| Consume inner `_STEP_COMPLETE` | Yes | designed communication channel |
+| Read inner `state.env` | Read-only only | status check |
+| Write inner `state.env` | No | induces `STATE_DRIFT` |
+| Append to inner `progress.md` | No | contaminates evidence |
+| Delete or move inner `done.md` | No | destroys evidence |
+| Force-terminate inner loop | Guardian approval required | impact must be assessed |
+| Classify inner failures independently | Yes | prevents contamination of outer state |
 
-| Operation | Meta-loop Allowed? | Reason |
-|------|--------------------------|------|
-| Consume inner loop's `_STEP_COMPLETE` | ✅ Permitted | Designed communication channel |
-| Read inner loop's `state.env` | ✅ Read-only permitted | Status check only |
-| Write inner loop's `state.env` | ❌ Prohibited | Induces STATE_DRIFT |
-| Append to inner loop's `progress.md` | ❌ Prohibited | Contaminates inner loop evidence trail |
-| Delete/move inner loop's `done.md` | ❌ Prohibited | Irreversible and destroys evidence |
-| Force-terminate inner loop | ⚠️ Guardian approval required | Impact scope assessment needed |
-| Classify inner loop failures independently | ✅ Recommended | Prevents propagation to meta-loop |
-
-**Principle:** The meta-loop is an "observer" of inner loops, not an "intervener."
+Principle: the meta-loop observes inner loops; it does not intervene in their state.
 
 ## 8. Dirty Baseline Edge Cases
 
-Edge cases and handling for `dirty-start-paths.txt`.
-
 | Case | Problem | Mitigation |
-|--------|------|--------|
-| Partial path match | Loop artifact path matches a baseline path prefix | `comm -23` does exact line matching, so naturally avoided. Manually verify if an entire subdirectory is dirty |
-| Same file modified by parallel loops | Commit conflict proceeds undetected without CROSS_LOOP_CONFLICT | Pre-detect using Pattern 5 algorithm. Delegate arbitration to Guardian |
-| gitignore-listed tracked files | `git check-ignore` does not ignore tracked files | `git ls-files --others --exclude-standard` only covers untracked. Tracked+ignored appear in `git diff` and are included in baseline. Create an explicit exclusion list |
-| symlink / submodule | `git diff --name-only` reports symlink targets | Record the symlink path itself in baseline. Recommended: exclude submodules with `--ignore-submodules=all` |
+|------|---------|------------|
+| Partial path match | baseline prefix matches loop artifact path | exact-line `comm -23` already helps; verify dirty subdirectories manually |
+| Same file modified by parallel loops | conflict may slip through | use Pattern 5 and delegate to Guardian |
+| Gitignored tracked files | `git check-ignore` does not hide tracked files | maintain an explicit exclusion list |
+| Symlink or submodule | path reporting may be confusing | record the symlink path itself; use `--ignore-submodules=all` when needed |
 
 ## 9. Pre-flight Health Gate
 
-Use before every loop execution to ensure system readiness.
+Pre-flight checks before the main loop:
+1. disk space `>= 100MB`
+2. no active `.run-loop.lock` or auto-clear stale lock
+3. no git rebase in progress when `AUTOCOMMIT=true`
+4. rotate `runner.log` above `MAX_LOG_SIZE`
+5. validate `state.env.sha256`
 
-**Pre-flight checks (before main loop):**
-1. Disk space ≥ 100MB free (`df -k`)
-2. No active `.run-loop.lock` (PID liveness via `kill -0`)
-3. Stale lock auto-removal (dead PID detected)
-4. Git repository health: no rebase in progress (AUTOCOMMIT only)
-5. Log rotation: `runner.log` > `MAX_LOG_SIZE` → rename to `.prev`
-6. State integrity: `state.env.sha256` checksum validation
-
-**Iteration health checks (top of every iteration):**
-1. Disk space ≥ 50MB free → BLOCKED if below
-2. Git rebase status → BLOCKED if active (AUTOCOMMIT only)
-3. Log rotation check
-
-**Lock lifecycle:**
-- Acquired: after pre-flight passes (`echo $$ > .run-loop.lock`)
-- Released: at loop exit and in `cleanup()` signal handler
-- Stale detection: read PID from lock, `kill -0` test, remove if dead
+Iteration health checks:
+1. disk space `>= 50MB`
+2. git rebase status still safe for auto-commit
+3. log rotation check

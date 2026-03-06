@@ -1,8 +1,17 @@
 # Orbit Script Templates
 
-## Script Generation Decision Table
+Purpose: load this only when Orbit must generate or patch actual loop scripts. This file contains the executable templates; other references explain policy, flow, and failure handling.
 
-Determine which scripts to generate based on the scenario before generating.
+## Contents
+
+1. Script generation decision table
+2. `run-loop.sh`
+3. `bootstrap.sh`
+4. `recover.sh`
+5. `verify.sh`
+6. `notify.sh`
+
+## Script Generation Decision Table
 
 | Scenario | Generate | Do Not Generate | Notes |
 |---------|---------|-----------|------|
@@ -821,24 +830,3 @@ fi
 #--- Log record ---
 echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] iter=${ITER} status=${STATUS} verify=${VERIFY_RESULT} text=${NOTIFY_TEXT}" >> "${LOOP_DIR}/runner.log"
 ```
-
-## Generation Parameters
-
-When generating scripts, Orbit customizes these parameters based on the goal:
-
-| Parameter | Default | Customize When |
-|-----------|---------|----------------|
-| `MAX_ITERATIONS` | 20 | Goal complexity suggests more/fewer iterations |
-| `RETRY_LIMIT` | 3 | Unstable environment or flaky tools |
-| `RETRY_BACKOFF_BASE` | 2 | Network-dependent operations need longer backoff |
-| `EXEC_TIMEOUT` | 600 | Seconds before killing a hung EXEC_CMD process |
-| `EXEC_CMD` | `codex` | Different executor — see `references/executor-engines.md` |
-| `AUTOCOMMIT` | true | User wants manual commit control |
-| `COMMIT_MSG_PREFIX` | `loop` | Match repo's conventional commit scope |
-| `VERIFY_CMD` | (from goal.md) | Goal specifies test/lint/build commands |
-| `MAX_LOG_SIZE` | 5242880 | Log rotation threshold in bytes (5MB default) |
-| `ADAPTIVE_TIMEOUT` | false | Enable adaptive timeout based on recent execution times |
-| `SKIP_PREFLIGHT` | false | Bypass pre-flight checks (testing/debug only) |
-| `BRANCH_ISOLATION` | true | Isolate auto-commits on iteration branch |
-| `SQUASH_ON_DONE` | true | Squash iteration commits to summary branch on DONE |
-| `SQUASH_MSG_ENGINE` | auto | LLM engine for squash commit message (auto/gemini/claude/codex) |
