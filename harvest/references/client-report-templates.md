@@ -1,328 +1,125 @@
 # Client Report Templates
 
-クライアント報告用のレポートテンプレート。工数、タイムライン、グラフを含む美しいフォーマット。
+Purpose: Use these templates when Harvest must generate client-facing Markdown, HTML, or PDF reports with effort estimates, timelines, and visual summaries.
 
----
+## Contents
 
-## Work Hours Calculation
+- Report structure
+- Work-hour inputs
+- Chart options
+- Work-items table
+- HTML/PDF packaging
+- Command examples
 
-### 工数算出ロジック
+## Work-Hour Inputs
 
-PRの工数は以下の指標から推定:
+Client reports may use:
+- the implemented baseline estimation from `scripts/generate-report.js`
+- optional refinement layers from `work-hours.md`
 
-| 指標 | 計算方法 | 係数 |
-|------|----------|------|
-| コード行数 | (additions + deletions) | 100行 = 1時間 |
-| 複雑度補正 | ファイル数 × 0.25時間 | - |
-| レビュー時間 | 作成〜マージの実時間の20% | - |
+Always label the result as an estimate.
 
-```typescript
-function estimateHours(pr: PR): number {
-  const codeHours = (pr.additions + pr.deletions) / 100;
-  const complexityHours = pr.changedFiles * 0.25;
-  const reviewHours = getBusinessHours(pr.createdAt, pr.mergedAt) * 0.2;
-
-  return Math.max(0.5, Math.round((codeHours + complexityHours + reviewHours) * 2) / 2);
-}
-```
-
-### 工数カテゴリ
-
-| カテゴリ | 工数目安 | PR規模 |
-|----------|----------|--------|
-| 軽微 | 0.5 - 2h | XS, S |
-| 標準 | 2 - 8h | M |
-| 大規模 | 8 - 24h | L |
-| 特大 | 24h+ | XL |
-
----
-
-## Client Report Template
+## Client Report Structure
 
 ```markdown
-# 作業報告書
+# Work Report
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Project:** {project_name}
+**Reporting Period:** {start_date} to {end_date}
+**Report Date:** {report_date}
+**Owner:** {author_name}
 
-**プロジェクト:** {project_name}
-**報告期間:** {start_date} 〜 {end_date}
-**報告日:** {report_date}
-**担当者:** {author_name}
+## Summary
+- Completed Tasks: {completed_count}
+- Estimated Hours: {total_hours}h
+- Code Changes: +{additions} / -{deletions}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## Work Timeline
+{timeline_chart}
 
-## 📊 サマリー
-
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   完了タスク        {completed_count} 件                     │
-│   総工数           {total_hours} 時間                        │
-│   コード変更        +{additions} / -{deletions} 行           │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-
----
-
-## 📅 作業タイムライン
-
-{timeline_gantt_chart}
-
----
-
-## 📈 日別作業実績
-
+## Daily Activity
 {daily_activity_chart}
 
----
-
-## 🗂️ カテゴリ別工数
-
+## Hours by Category
 {category_breakdown_chart}
 
----
-
-## 📋 作業詳細
-
+## Work Details
 {work_items_table}
 
----
-
-## 📊 進捗サマリー
-
+## Progress Summary
 {progress_summary}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-以上
 ```
 
----
+## Chart Options
 
-## Chart Templates
+| Chart | Best format | Use when |
+|------|-------------|----------|
+| Timeline | Mermaid `gantt` or ASCII timeline | Showing task periods and sequencing |
+| Daily activity | Mermaid `xychart-beta` or ASCII bars | Showing effort over time |
+| Category breakdown | Mermaid `pie` or table | Showing effort share by category |
+| Progress | ASCII progress bars | PDF-safe summary view |
 
-### 1. Gantt Chart (Mermaid)
+Use ASCII fallback when Mermaid rendering is unreliable in the target export path.
 
-タイムライン表示用のガントチャート:
+## Work-Items Table
 
-```mermaid
-gantt
-    title 作業タイムライン
-    dateFormat YYYY-MM-DD
-
-    section 機能開発
-    OAuth2認証機能      :done, feat1, 2026-01-21, 2d
-    ダッシュボード      :done, feat2, 2026-01-23, 3d
-    通知機能           :active, feat3, 2026-01-26, 4d
-
-    section バグ修正
-    ログインタイムアウト :done, fix1, 2026-01-22, 1d
-    メモリリーク        :done, fix2, 2026-01-24, 2d
-
-    section リファクタリング
-    認証モジュール整理   :done, ref1, 2026-01-25, 2d
-```
-
-### 2. XY Chart - Daily Activity (Mermaid)
-
-日別作業量のグラフ:
-
-```mermaid
-xychart-beta
-    title "日別作業実績（工数：時間）"
-    x-axis ["01/21", "01/22", "01/23", "01/24", "01/25", "01/26", "01/27"]
-    y-axis "工数（時間）" 0 --> 20
-    bar [12, 4, 8, 6, 10, 4, 8]
-```
-
-### 3. Pie Chart - Category Distribution (Mermaid)
-
-カテゴリ別工数の円グラフ:
-
-```mermaid
-pie showData
-    title カテゴリ別工数
-    "機能開発" : 32
-    "バグ修正" : 12
-    "リファクタリング" : 8
-    "ドキュメント" : 4
-```
-
-### 4. ASCII Timeline
-
-Mermaidが使えない環境用のASCIIタイムライン:
-
-```
-作業タイムライン
-================================================================================
-
-    01/21   01/22   01/23   01/24   01/25   01/26   01/27
-      │       │       │       │       │       │       │
-──────┼───────┼───────┼───────┼───────┼───────┼───────┼──────
-      │       │       │       │       │       │       │
-feat  ████████████████████████████████████████░░░░░░░░  OAuth2, Dashboard
-      │       │       │       │       │       │       │
-fix   ░░░░░░░░████████████████░░░░░░░░░░░░░░░░░░░░░░░░  Login, Memory
-      │       │       │       │       │       │       │
-ref   ░░░░░░░░░░░░░░░░░░░░░░░░████████████████░░░░░░░░  Auth module
-      │       │       │       │       │       │       │
-──────┴───────┴───────┴───────┴───────┴───────┴───────┴──────
-
-████ = 作業期間    ░░░░ = 待機/レビュー
-```
-
-### 5. ASCII Bar Chart - Daily Hours
-
-```
-日別作業工数
-================================================================================
-
-01/21  ████████████████████████  12.0h  ▲ ピーク
-01/22  ████████                   4.0h
-01/23  ████████████████           8.0h
-01/24  ████████████               6.0h
-01/25  ████████████████████      10.0h
-01/26  ████████                   4.0h
-01/27  ████████████████           8.0h
-       ├────────┼────────┼────────┼────────┤
-       0        5        10       15       20 (時間)
-
-合計: 52.0h
-```
-
-### 6. Progress Bar
-
-```
-進捗状況
-================================================================================
-
-機能開発    [████████████████████████████████████████████░░░░] 90%  (9/10)
-バグ修正    [████████████████████████████████████████████████] 100% (5/5)
-リファクタ  [████████████████████████████░░░░░░░░░░░░░░░░░░░░] 60%  (3/5)
-ドキュメント [████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 33%  (1/3)
-```
-
----
-
-## Work Items Table Format
-
-### 詳細テーブル（工数付き）
+Canonical table:
 
 ```markdown
-### 📋 作業詳細
-
-| No. | タスク | カテゴリ | 工数 | 期間 | ステータス |
-|:---:|--------|:--------:|-----:|------|:----------:|
-| 1 | OAuth2認証機能の実装 | 🚀 feat | 16.0h | 01/21-01/22 | ✅ 完了 |
-| 2 | ダッシュボードウィジェット | 🚀 feat | 12.0h | 01/23-01/25 | ✅ 完了 |
-| 3 | ログインタイムアウト修正 | 🐛 fix | 2.0h | 01/22 | ✅ 完了 |
-| 4 | メモリリーク対応 | 🐛 fix | 4.0h | 01/24-01/25 | ✅ 完了 |
-| 5 | 認証モジュールリファクタ | 🔧 refactor | 8.0h | 01/25-01/26 | ✅ 完了 |
-| 6 | 通知機能の実装 | 🚀 feat | 10.0h | 01/26-01/29 | 🔄 進行中 |
-
-**合計工数: 52.0h**
+| No. | Task | Category | Hours | Period | Status |
+|:---:|------|:--------:|------:|--------|:------:|
+| 1 | OAuth2 support | 🚀 feat | 16.0h | 01/21-01/22 | ✅ Completed |
 ```
 
-### カテゴリアイコン
+### Category icons
 
-| カテゴリ | アイコン | 説明 |
-|----------|----------|------|
-| feat | 🚀 | 新機能開発 |
-| fix | 🐛 | バグ修正 |
-| refactor | 🔧 | リファクタリング |
-| docs | 📝 | ドキュメント |
-| test | 🧪 | テスト |
-| perf | ⚡ | パフォーマンス改善 |
-| chore | 📦 | メンテナンス |
+| Category | Icon |
+|----------|------|
+| `feat` | `🚀` |
+| `fix` | `🐛` |
+| `refactor` | `🔧` |
+| `docs` | `📝` |
+| `test` | `🧪` |
+| `perf` | `⚡` |
+| `chore` | `📦` |
 
-### ステータスアイコン
+### Status icons
 
-| ステータス | アイコン |
-|------------|----------|
-| 完了 | ✅ |
-| 進行中 | 🔄 |
-| レビュー中 | 👀 |
-| 保留 | ⏸️ |
-| 未着手 | ⬜ |
+| Status | Icon |
+|--------|------|
+| Completed | `✅` |
+| In progress | `🔄` |
+| Under review | `👀` |
+| Paused | `⏸️` |
+| Not started | `⬜` |
 
----
+## HTML/PDF Packaging
 
-## Summary Box Styles
+Prefer repo assets before external tools:
 
-### Style 1: Bordered Box
+| Need | Preferred asset or script |
+|------|---------------------------|
+| HTML report generation | `scripts/generate-report.js` |
+| HTML template | `templates/client-report.html` |
+| Report styling | `styles/harvest-style.css` |
+| HTML -> PDF | `scripts/html-to-pdf.sh` |
+| Puppeteer fallback | `scripts/puppeteer-pdf.js` |
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     📊 期間サマリー                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│   📝 完了タスク        12 件                                 │
-│   ⏱️  総工数           52.0 時間                             │
-│   📈 コード変更        +8,141 / -748 行                      │
-│   👤 担当者            @simota                              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Style 2: Clean Metrics
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  完了タスク       12 件
-  総工数          52.0 時間
-  稼働日数          7 日
-  1日平均工数      7.4 時間
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-### Style 3: Card Style
-
-```
-╔═══════════════════════════════════════════════════════════════╗
-║                                                               ║
-║    ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   ║
-║    │    12    │  │   52.0   │  │  +8,141  │  │   100%   │   ║
-║    │  タスク   │  │   時間   │  │   行追加  │  │  完了率  │   ║
-║    └──────────┘  └──────────┘  └──────────┘  └──────────┘   ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-```
-
----
-
-## Full Client Report Example
-
-完全なクライアント報告書のサンプルは `samples/client-report-*.md` を参照。
-
-### 生成コマンド例
+## Command Examples
 
 ```bash
-# 週次報告
-/Harvest --format client --period week --author @username
+# Weekly client report
+node scripts/generate-report.js --days 7 --output client-report-YYYY-MM-DD.html
 
-# 月次報告
-/Harvest --format client --period month --project "Project Name"
+# Monthly client report for one author
+node scripts/generate-report.js --days 30 --author username --output client-report-YYYY-MM-DD.html
 
-# カスタム期間
-/Harvest --format client --from 2026-01-01 --to 2026-01-31
+# Convert HTML to PDF
+./scripts/html-to-pdf.sh client-report-YYYY-MM-DD.html
 ```
 
----
+## Delivery Notes
 
-## Localization
-
-| English | Japanese |
-|---------|----------|
-| Work Report | 作業報告書 |
-| Summary | サマリー |
-| Timeline | タイムライン |
-| Daily Activity | 日別作業実績 |
-| Work Hours | 工数 |
-| Completed Tasks | 完了タスク |
-| Total Hours | 総工数 |
-| Category | カテゴリ |
-| Status | ステータス |
-| In Progress | 進行中 |
-| Completed | 完了 |
-| Under Review | レビュー中 |
+- Keep the report readable for non-engineers.
+- Prefer impact, progress, and risks over raw implementation detail.
+- Do not expose private repository URLs, sensitive labels, or personal data.

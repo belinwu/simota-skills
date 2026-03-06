@@ -1,18 +1,19 @@
-# Outbound Collaboration Patterns (Harvest → Other Agents)
+# Outbound Handoffs
 
----
+Purpose: Use these payloads when Harvest must pass structured results to another agent without re-describing the same data manually.
 
-## Pattern A: Release Flow (Guardian → Harvest)
+## Contents
 
-```
-Guardian (リリース準備)
-    ↓
-Harvest (リリースノート生成)
-    ↓
-Release Notes (Markdown)
-```
+- Guardian release flow
+- Pulse metrics sync
+- Canvas visualization
+- Zen title analysis
+- Sherpa large-PR escalation
+- Radar coverage correlation
+- Launch release handoff
 
-**Guardian → Harvest Handoff:**
+## Guardian Release Request
+
 ```yaml
 GUARDIAN_TO_HARVEST_HANDOFF:
   request: "release_notes"
@@ -23,19 +24,8 @@ GUARDIAN_TO_HARVEST_HANDOFF:
   include_contributors: true
 ```
 
----
+## Harvest -> Pulse
 
-## Pattern B: Metrics Integration (Harvest → Pulse)
-
-```
-Harvest (PR統計収集)
-    ↓
-Pulse (メトリクス統合)
-    ↓
-Dashboard (KPI反映)
-```
-
-**Harvest → Pulse Handoff:**
 ```yaml
 HARVEST_TO_PULSE_HANDOFF:
   metrics:
@@ -48,19 +38,8 @@ HARVEST_TO_PULSE_HANDOFF:
       data: { xs: 10, s: 8, m: 5, l: 2 }
 ```
 
----
+## Harvest -> Canvas
 
-## Pattern C: Visual Reports (Harvest → Canvas)
-
-```
-Harvest (トレンドデータ)
-    ↓
-Canvas (可視化)
-    ↓
-Charts (Mermaid/ASCII)
-```
-
-**Harvest → Canvas Handoff:**
 ```yaml
 HARVEST_TO_CANVAS_HANDOFF:
   visualization_type: "trend_chart"
@@ -68,53 +47,28 @@ HARVEST_TO_CANVAS_HANDOFF:
     - week: "W1"
       merged: 12
       opened: 15
-    - week: "W2"
-      merged: 18
-      opened: 14
   format: "mermaid_xychart"
 ```
 
----
+## Harvest -> Zen
 
-## Pattern D: PR Quality Analysis (Harvest → Zen)
-
-```
-Harvest (PRタイトル収集)
-    ↓
-Zen (命名規則分析)
-    ↓
-Improvement Suggestions (改善提案)
-```
-
-**Harvest → Zen Handoff:**
 ```yaml
 HARVEST_TO_ZEN_HANDOFF:
   request: "pr_title_analysis"
   prs:
     - number: 123
       title: "fix bug"
-      # 規約違反: Conventional Commits形式でない
     - number: 124
       title: "feat: add user authentication with OAuth2 support"
-      # 良好
   conventions:
     - "Conventional Commits"
-    - "50文字以内"
+    - "50 characters max"
 ```
 
----
+## Harvest -> Sherpa
 
-## Pattern E: Large PR Detection (Harvest → Sherpa)
+Use when PR size exceeds the split threshold used by your report.
 
-```
-Harvest (PRサイズ分析)
-    ↓
-Sherpa (分割戦略立案)
-    ↓
-Split Recommendations (分割提案)
-```
-
-**Harvest → Sherpa Handoff:**
 ```yaml
 HARVEST_TO_SHERPA_HANDOFF:
   request: "large_pr_analysis"
@@ -124,25 +78,13 @@ HARVEST_TO_SHERPA_HANDOFF:
       additions: 2500
       deletions: 300
       files: 45
-      # 分割候補
   threshold:
     lines: 1000
     files: 20
 ```
 
----
+## Harvest -> Radar
 
-## Pattern F: Test Coverage Correlation (Harvest → Radar)
-
-```
-Harvest (PR/テスト情報)
-    ↓
-Radar (カバレッジ分析)
-    ↓
-Coverage Report (相関レポート)
-```
-
-**Harvest → Radar Handoff:**
 ```yaml
 HARVEST_TO_RADAR_HANDOFF:
   request: "coverage_correlation"
@@ -151,25 +93,10 @@ HARVEST_TO_RADAR_HANDOFF:
       category: "feat"
       files_changed: ["src/auth.ts", "src/utils.ts"]
       test_files: ["tests/auth.test.ts"]
-    - number: 124
-      category: "fix"
-      files_changed: ["src/cart.ts"]
-      test_files: []  # テスト追加なし - 要確認
 ```
 
----
+## Harvest -> Launch
 
-## Pattern G: Release Notes to Launch (Harvest → Launch)
-
-```
-Harvest (Release notes generated)
-    ↓
-Launch (Release execution)
-    ↓
-Published Release
-```
-
-**Harvest → Launch Handoff:**
 ```yaml
 HARVEST_TO_LAUNCH_HANDOFF:
   type: "release_notes_generated"

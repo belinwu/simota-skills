@@ -1,140 +1,57 @@
 # Engineering Metrics Pitfalls
 
-> DORA/SPACE フレームワークの落とし穴、バニティメトリクス、AI 生産性パラドックス
+Purpose: Use this reference when Harvest reports include DORA, SPACE, throughput, burnout, or AI-productivity commentary.
 
-## 1. DORA メトリクスの 6 大落とし穴
+## Contents
 
-| # | 落とし穴 | 問題 | 対策 |
-|---|---------|------|------|
-| **EM-01** | **遅行指標依存** | DORA 4指標は過去の結果を測る → 改善の原因特定が困難 | 先行指標（PR サイクルタイム、レビュー待ち時間）と併用 |
-| **EM-02** | **Elite ステータスの追求** | DORA ベンチマークの「Elite」を目標にする → 数字のゲーミングが発生 | チームの文脈に合った目標設定 · ベンチマークは方向性の参考に留める |
-| **EM-03** | **デプロイ頻度の独り歩き** | 頻度だけを上げる → 品質劣化・バーンアウト | 変更失敗率・復旧時間とのバランスを必ず確認 |
-| **EM-04** | **速度≠デリバリー** | リードタイム短縮に集中 → ユーザー価値の検証を省略 | ビジネスインパクト指標（採用率、NPS）と紐付け |
-| **EM-05** | **チーム間比較の罠** | 異なるコンテキストのチームを DORA で比較 → 不公平な評価 | チーム内のトレンド改善に焦点 · 横比較は避ける |
-| **EM-06** | **変更失敗率の定義曖昧** | 何を「失敗」とするかが統一されていない → 数値が信頼不能 | 失敗の定義をチームで明文化（ロールバック、ホットフィックス、インシデント） |
+- DORA pitfalls
+- SPACE limits
+- Vanity metrics
+- Actionable flow metrics
+- Harvest reporting guardrails
 
----
+## DORA Pitfalls
 
-## 2. SPACE フレームワークの限界
+| ID | Pitfall | Guardrail |
+|----|---------|-----------|
+| `EM-01` | Lagging-indicator dependence | Pair with leading indicators such as cycle time and review wait |
+| `EM-02` | Chasing "Elite" as a status badge | Use benchmarks as context, not as the target itself |
+| `EM-03` | Deployment frequency without quality balance | Always pair with failure rate and recovery time |
+| `EM-04` | Speed without value | Tie flow metrics to business or user outcomes |
+| `EM-05` | Cross-team comparison | Focus on intra-team trend, not leaderboard behavior |
+| `EM-06` | Ambiguous failure definition | Define rollback, hotfix, and incident criteria explicitly |
 
-### 5 次元とその注意点
+## SPACE Limits
 
-| 次元 | 測定対象 | 注意点 |
-|------|---------|--------|
-| **Satisfaction** | 開発者の満足度 | 自己評価バイアス（94%が平均以上と自己評価する研究あり） |
-| **Performance** | 成果の質と影響 | コード品質≠ビジネス価値 · 測定指標の選択が恣意的になりやすい |
-| **Activity** | アクションの量 | 最もゲーミングされやすい次元 · コミット数/PR数は容易に水増し可能 |
-| **Communication** | チーム協働 | 定量化が困難 · プロキシ指標（レビュー応答時間等）に頼らざるを得ない |
-| **Efficiency** | フローと中断 | 個人の主観に依存 · コンテキストスイッチの客観的測定が難しい |
+- Do not use `Activity` alone as a performance proxy.
+- Cover at least `3` dimensions if you reference SPACE.
+- Treat SPACE as a checklist, not a single composite score.
 
-### SPACE の構造的問題
+## Vanity Metrics To Avoid
 
-```
-問題点:
-  1. 明確な目標値がない → 「何が良い状態か」の判断が曖昧
-  2. 実証データが薄い → フレームワーク自体の効果測定が不十分
-  3. 5次元すべてを測定するコストが高い → 部分適用になりがち
-  4. 次元間のトレードオフが未定義 → Activity↑ で Satisfaction↓ の場合の指針なし
+| ID | Metric | Why it is unsafe |
+|----|--------|------------------|
+| `VM-01` | Commit count | Easy to inflate |
+| `VM-02` | LOC as productivity | Penalizes refactoring and varies by language |
+| `VM-03` | PR count | Encourages artificial fragmentation |
+| `VM-04` | Hours worked | Long hours can become negative productivity |
+| `VM-05` | Approval rate alone | Can hide rubber-stamping |
+| `VM-06` | Bug fixes closed | More fixes do not mean better quality |
+| `VM-07` | Story points | Unstable across teams |
 
-推奨:
-  - SPACE は「チェックリスト」として使用（スコアリングフレームワークではない）
-  - 最低 3 次元をカバーする指標セットを選定
-  - Activity 単独での評価は絶対に避ける
-```
+## Actionable Metrics
 
----
+| Metric | Suggested target or warning |
+|--------|-----------------------------|
+| Cycle time | Median `24-48h` |
+| Review response time | Median `< 4h` |
+| Flow efficiency | `< 60%` suggests a bottleneck |
+| Night/weekend commits | `> 10%` triggers burnout warning |
+| Individual PR concentration | One person `> 40%` of team flow triggers imbalance warning |
 
-## 3. AI ツール生産性パラドックス
+## Harvest Guardrails
 
-### 2025年の実証研究
-
-```
-RCT（ランダム化比較試験）結果:
-  - 経験豊富な開発者が AI ツール使用時、実測で 19% 遅くなった
-  - 同じ開発者が「20% 速くなった」と自己評価
-  - 自己評価と実測の乖離: 約 39 ポイント
-
-2024 DORA レポート:
-  - AI 導入率 25% 増加ごとにデリバリースループット 1.5% 低下
-  - AI コード生成 → レビュー負荷増加 → 全体のスループット低下
-  - 「個人の速度向上」が「チームのフロー低下」に転化
-
-示唆:
-  - AI ツールの生産性向上を前提としたレポートは誤解を招く
-  - 自己申告ベースの生産性データには構造的バイアスがある
-  - チーム全体のフロー指標で効果を測定すべき
-```
-
----
-
-## 4. バニティメトリクス（虚栄の指標）
-
-### 7 大バニティメトリクス
-
-| # | メトリクス | なぜ危険か | 代替指標 |
-|---|----------|----------|---------|
-| **VM-01** | **コミット数** | 小分けにすれば水増し可能 · コミットの質は無関係 | PR マージ数 + 変更のインパクト |
-| **VM-02** | **コード行数 (LOC)** | 言語依存 · リファクタリングがペナルティ · 解決策の複雑さ≠問題の複雑さ | 機能デリバリー数 · ストーリーポイント消化率 |
-| **VM-03** | **PR 数** | 細分化で水増し · 大きな PR を避ける逆インセンティブ | サイクルタイム · PR の顧客価値 |
-| **VM-04** | **稼働時間** | 長時間労働≠高生産性 · 疲労による負の生産性を無視 | フロー効率 · 集中時間の割合 |
-| **VM-05** | **PR 承認率** | ラバースタンプ文化を助長 · レビュー品質と無関係 | レビューコメント密度 · 変更要求率 |
-| **VM-06** | **バグ修正数** | バグを多く直す＝品質が良い、ではない | バグ脱出率 · 予防対修正の比率 |
-| **VM-07** | **ストーリーポイント** | チーム間で比較不能 · インフレーションが発生 | 予測精度 · デリバリーのリズム安定性 |
-
----
-
-## 5. アクショナブルメトリクス（実用的な指標）
-
-### フローメトリクス（推奨）
-
-```
-Cycle Time: PR作成からマージまでの時間
-  → チームのデリバリー速度を直接反映
-  → 目標: 中央値 24-48 時間
-
-Lead Time: 要件確定からデプロイまでの時間
-  → ビジネスからの視点でのアジリティ
-  → DORA リードタイムの上位概念
-
-Flow Efficiency: 作業時間 / (作業時間 + 待ち時間) × 100%
-  → 60% 未満はプロセスのボトルネックを示唆
-
-Review Response Time: レビュー依頼から最初のレビューまでの時間
-  → チーム協働の健全性を反映
-  → 目標: 中央値 4 時間以内
-```
-
-### チームヘルスメトリクス
-
-```
-バーンアウトリスク指標:
-  - 深夜・週末のコミット割合（> 10% で警告）
-  - 個人の PR 集中度（1人が全体の 40% 超で警告）
-  - レビュー負荷の偏り（上位 20% が 80% のレビューで警告）
-
-品質指標:
-  - バグ脱出率: 本番バグ / (テストで発見 + 本番バグ) × 100%
-  - 変更失敗率: 障害を引き起こしたデプロイ / 全デプロイ × 100%
-  - 平均復旧時間 (MTTR): インシデント発生から復旧までの時間
-```
-
----
-
-## 6. Harvest との連携
-
-```
-Harvest での活用:
-  1. Summary レポートで VM-01〜07 のバニティメトリクスを避ける
-  2. フローメトリクス（Cycle Time, Review Response Time）を標準出力に含める
-  3. Individual レポートでバーンアウトリスク指標を警告として表示
-  4. AI ツール使用の効果報告では自己評価バイアスを注記
-  5. チーム間比較を含む場合は EM-05 の注意を明記
-
-品質ゲート:
-  - LOC を「生産性」として表示しない（VM-02 防止）
-  - コミット数を個人評価に使用しない（VM-01 防止）
-  - 深夜・週末コミット > 10% で健康警告を付与
-  - DORA メトリクスを報告する場合はコンテキスト注記を必須化
-```
-
-**Source:** [DORA Report 2024](https://dora.dev/research/) · [SPACE Framework (ACM Queue)](https://queue.acm.org/detail.cfm?id=3454124) · [DX Newsletter: AI Tools & Developer Productivity](https://newsletter.getdx.com/p/ai-tools-developer-productivity) · [Uplevel: DORA Metrics Pitfalls 2024](https://uplevelteam.com/blog/posts/dora-metrics) · [LinearB: Developer Productivity Metrics](https://linearb.io/blog/developer-productivity-metrics)
+- Never report LOC as a direct productivity score.
+- Add context for every key number: previous period, target, or trend.
+- Avoid team-vs-team ranking unless the user explicitly asks and understands the limitation.
+- If AI-tool productivity is discussed, note that self-report and measured throughput can diverge.

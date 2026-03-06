@@ -1,118 +1,78 @@
-# Work Hours Calculation (工数計算)
+# Work Hours Estimation
 
-PRの工数は以下のロジックで推定します。
+Purpose: Use this reference when Harvest must estimate effort for individual reports or client-facing summaries.
 
----
+## Contents
 
-## 計算式
+- Implemented baseline formula
+- Optional refinement layers
+- Size bands
+- Adjustment factors
+- Range reporting rules
 
-```
-工数(h) = ベース工数 × ファイル重み + 複雑度補正 + 新規ファイルボーナス
+## Implemented Baseline Formula
 
-ベース工数     = (additions + deletions) / 100
-複雑度補正     = changedFiles × 0.25
-新規ファイル   = 新規ファイル数 × 0.5h
-最小工数       = 0.5h
-```
+This is the baseline currently implemented in `scripts/generate-report.js`.
 
----
+```text
+baseline_hours =
+  ((additions + deletions) / 100)
+  + (changedFiles * 0.25)
 
-## ファイル種類による重み付け
-
-| ファイル種類 | パターン | 重み | 理由 |
-|-------------|---------|:----:|------|
-| テスト | `*.test.*`, `*.spec.*` | 0.7 | 比較的定型的 |
-| 設定ファイル | `*.json`, `*.yaml`, `*.toml` | 0.5 | 変更量と工数が比例しない |
-| ドキュメント | `*.md`, `*.txt`, `*.rst` | 0.3 | テキスト主体 |
-| ソースコード | その他 | 1.0 | 標準 |
-
----
-
-## 工数カテゴリ
-
-| サイズ | 行数 | 工数目安 |
-|:------:|-----:|:--------:|
-| XS | < 50 | 0.5 - 1h |
-| S | 50-200 | 1 - 3h |
-| M | 200-500 | 3 - 8h |
-| L | 500-1000 | 8 - 16h |
-| XL | > 1000 | 16h+ |
-
----
-
-## 集計コマンド
-
-### 基本工数付きPRリスト取得
-
-```bash
-gh pr list --state merged --limit 100 --json number,title,additions,deletions,createdAt,mergedAt | \
-  jq '[.[] | {
-    number,
-    title,
-    lines: (.additions + .deletions),
-    hours: (([(.additions + .deletions) / 100, 0.5] | max) | . * 2 | floor / 2)
-  }]'
+minimum = 0.5h
+rounding = nearest 0.5h
 ```
 
-### 詳細な工数計算（ファイル情報含む）
+Use this baseline unless the report explicitly requires a richer estimate.
 
-```bash
-gh pr list --state merged --limit 100 --json number,title,additions,deletions,changedFiles | \
-  jq '[.[] | {
-    number,
-    title,
-    lines: (.additions + .deletions),
-    files: .changedFiles,
-    hours: ((([(.additions + .deletions) / 100, 0.5] | max) + (.changedFiles * 0.25)) | . * 2 | floor / 2)
-  }]'
+## Optional Refinement Layers
+
+These refinements exist in Harvest guidance and may be applied manually when the audience needs more nuance:
+
+| Layer | Rule |
+|------|------|
+| File weights | `test=0.7`, `config=0.5`, `docs=0.3`, `source=1.0` |
+| New-file bonus | `new_files * 0.5h` |
+| Review-time overlay | `business_hours(createdAt, mergedAt) * 0.2` |
+| Complexity multiplier | Add `20-100%` depending on architecture, security, APIs, or multi-service impact |
+
+If you apply refinement layers, say so explicitly in the report.
+
+## Size Bands
+
+| Band | Total changed lines | Typical range |
+|------|---------------------|---------------|
+| `XS` | `< 50` | `0.5-1h` |
+| `S` | `50-200` | `1-3h` |
+| `M` | `200-500` | `3-8h` |
+| `L` | `500-1000` | `8-16h` |
+| `XL` | `> 1000` | `16h+` |
+
+## Adjustment Factors
+
+Use these only as additive caution, not as hard truth:
+
+| Factor | Suggested adjustment |
+|--------|----------------------|
+| New architecture or novel pattern | `+50-100%` |
+| Security-sensitive work | `+30-50%` |
+| Data integrity risk | `+30-50%` |
+| External API integration | `+20-40%` |
+| Performance-sensitive work | `+20-40%` |
+| Multi-service change | `+20-30%` |
+| Significant test work | `+10-20%` |
+
+## Range Reporting Rules
+
+Prefer ranges for management or client reporting:
+
+```text
+min      = expected * 0.7
+expected = refined_or_baseline
+max      = expected * 1.5
 ```
 
-### スクリプトによる自動計算
-
-```bash
-# generate-report.js を使用（推奨）
-node scripts/generate-report.js --days 30 --json | jq '.prs[] | {title, hours}'
-```
-
----
-
-## LLMによる工数推定（推奨）
-
-機械的な行数カウントよりも、LLMによる分析がより正確な工数推定を提供できます。
-
-### LLMに依頼する際のプロンプト
-
-```
-以下のPR情報から、各PRの工数を推定してください。
-
-考慮すべき要素:
-1. PRタイトルと説明から読み取れる作業の複雑さ
-2. 変更の種類（新機能、バグ修正、リファクタリング）
-3. ドメインの複雑さ（認証、決済、データ処理は複雑度が高い）
-4. 必要な付随作業（テスト作成、ドキュメント更新、レビュー対応）
-5. 統合の難易度（既存コードとの整合性確保）
-
-PRデータ:
-[PRリストをJSON形式で提供]
-
-出力形式:
-| PR# | タイトル | 推定工数 | 根拠 |
-```
-
-### LLM工数推定の精度向上ファクター
-
-| ファクター | 複雑度上昇 | 例 |
-|-----------|:----------:|---|
-| 新規アーキテクチャ | +50-100% | 新しいパターン導入 |
-| セキュリティ関連 | +30-50% | 認証、暗号化 |
-| データ整合性 | +30-50% | マイグレーション、同期 |
-| 外部API統合 | +20-40% | サードパーティ連携 |
-| パフォーマンス最適化 | +20-40% | キャッシュ、クエリ最適化 |
-| 複数サービス影響 | +20-30% | マイクロサービス間変更 |
-| テスト作成必須 | +10-20% | カバレッジ要件 |
-
-### Harvest実行時のLLM活用
-
-1. PRデータ取得後、LLMに工数推定を依頼
-2. 推定結果をレポートに反映
-3. クライアント報告書では「推定工数」として記載
+Rules:
+- Label hours as estimates.
+- Do not present LOC-derived values as productivity rankings.
+- Warn when night/weekend work exceeds `10%` of activity because fatigue can distort effort signals.
