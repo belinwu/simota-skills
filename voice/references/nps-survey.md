@@ -1,128 +1,82 @@
 # Voice NPS Survey Design
 
-NPS implementation and scoring framework.
+Purpose: Use this file when the task is loyalty measurement, NPS implementation, follow-up design, or NPS interpretation.
 
----
+Contents:
+- Core NPS question and score bands
+- Follow-up prompts by respondent type
+- Formula and benchmark ranges
+- Minimal implementation contract
+- Analysis checklist
 
-## NPS Question Template
+## Core Survey
 
 ```markdown
 ## NPS Survey
 
 ### Core Question
-「[サービス名]を友人や同僚にお勧めする可能性はどのくらいありますか？」
+"How likely are you to recommend [product name] to a friend or colleague?"
 
-| Score | Label |
-|-------|-------|
-| 0-6 | Detractors（批判者） |
-| 7-8 | Passives（中立者） |
-| 9-10 | Promoters（推奨者） |
-
-### Follow-up Questions
-
-**For Promoters (9-10):**
-「特にお気に入りの点を教えてください。」
-
-**For Passives (7-8):**
-「どのような改善があれば10点になりますか？」
-
-**For Detractors (0-6):**
-「どのような点が期待に沿わなかったですか？」
-
-### NPS Calculation
+| Score | Segment |
+|-------|---------|
+| 0-6 | Detractors |
+| 7-8 | Passives |
+| 9-10 | Promoters |
 ```
+
+## Follow-up Prompts
+
+| Segment | Prompt |
+|---------|--------|
+| `Promoters (9-10)` | "What do you value most?" |
+| `Passives (7-8)` | "What would make this a 10?" |
+| `Detractors (0-6)` | "What did not meet your expectations?" |
+
+## Formula and Benchmarks
+
+```text
 NPS = % Promoters - % Detractors
 ```
 
-### Benchmark Targets
 | NPS Range | Interpretation |
 |-----------|----------------|
-| 70+ | World-class |
-| 50-69 | Excellent |
-| 30-49 | Good |
-| 0-29 | Needs improvement |
-| Below 0 | Critical |
-```
+| `70+` | World-class |
+| `50-69` | Excellent |
+| `30-49` | Good |
+| `0-29` | Needs improvement |
+| `Below 0` | Critical |
 
----
+## Implementation Rules
 
-## NPS Implementation
+- Ask only after the user has experienced meaningful value.
+- Keep the score mandatory and the open-text follow-up optional but visible.
+- Store `score`, `feedback`, `userId`, `segment`, `touchpoint`, and `timestamp`.
+- Track the derived category: `promoter`, `passive`, or `detractor`.
+- Separate product outreach consent from the survey response if follow-up is planned.
+
+## Minimal Data Contract
 
 ```typescript
-// components/NPSSurvey.tsx
-import { useState } from 'react';
-import { trackEvent } from '@/lib/analytics';
-
 interface NPSResponse {
   score: number;
   feedback?: string;
   userId: string;
+  segment?: string;
+  touchpoint?: string;
   timestamp: string;
 }
 
-export function NPSSurvey({ userId, onComplete }: { userId: string; onComplete: () => void }) {
-  const [score, setScore] = useState<number | null>(null);
-  const [feedback, setFeedback] = useState('');
-
-  const handleSubmit = async () => {
-    const response: NPSResponse = {
-      score: score!,
-      feedback,
-      userId,
-      timestamp: new Date().toISOString()
-    };
-
-    // Track NPS response
-    trackEvent('nps_submitted', {
-      score: response.score,
-      category: score! >= 9 ? 'promoter' : score! >= 7 ? 'passive' : 'detractor',
-      has_feedback: feedback.length > 0
-    });
-
-    await submitNPSResponse(response);
-    onComplete();
-  };
-
-  const getFollowUpQuestion = () => {
-    if (score === null) return null;
-    if (score >= 9) return '特にお気に入りの点を教えてください。';
-    if (score >= 7) return 'どのような改善があれば10点になりますか？';
-    return 'どのような点が期待に沿わなかったですか？';
-  };
-
-  return (
-    <div className="nps-survey">
-      <h3>このサービスを友人や同僚にお勧めする可能性はどのくらいありますか？</h3>
-
-      <div className="score-buttons">
-        {[0,1,2,3,4,5,6,7,8,9,10].map(n => (
-          <button
-            key={n}
-            onClick={() => setScore(n)}
-            className={score === n ? 'selected' : ''}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-
-      <div className="score-labels">
-        <span>全くお勧めしない</span>
-        <span>強くお勧めする</span>
-      </div>
-
-      {score !== null && (
-        <>
-          <p>{getFollowUpQuestion()}</p>
-          <textarea
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            placeholder="ご意見をお聞かせください（任意）"
-          />
-          <button onClick={handleSubmit}>送信</button>
-        </>
-      )}
-    </div>
-  );
-}
+trackEvent('nps_submitted', {
+  score,
+  category: score >= 9 ? 'promoter' : score >= 7 ? 'passive' : 'detractor',
+  has_feedback: Boolean(feedback)
+});
 ```
+
+## Analysis Checklist
+
+- Report overall NPS and response volume.
+- Break down NPS by plan, segment, tenure, and touchpoint.
+- Extract promoter strengths, passive upgrade opportunities, and detractor pain points.
+- Flag statistically weak samples before recommending broad product changes.
+- Route recurrent feature requests to `Spark`, churn-risk themes to `Retain`, and metric instrumentation gaps to `Pulse`.

@@ -1,131 +1,95 @@
 # Voice CSAT & CES Surveys
 
-Customer Satisfaction and Customer Effort Score implementations.
+Purpose: Use this file when the task is touchpoint satisfaction measurement, effort measurement, or post-action survey design.
 
----
+Contents:
+- CSAT scale and calculation
+- CES scale, targets, and touchpoints
+- Follow-up rules
+- Minimal data contracts
+- CES analysis format
 
-## CSAT Survey Framework
+## CSAT Framework
 
 ```markdown
-## CSAT Survey: [Touchpoint Name]
+## CSAT Survey: [Touchpoint]
 
 ### Core Question
-「[特定のアクション]についてどの程度満足していますか？」
+"How satisfied were you with [specific action or touchpoint]?"
 
 | Score | Label | Emoji |
 |-------|-------|-------|
-| 5 | とても満足 | 😄 |
-| 4 | 満足 | 🙂 |
-| 3 | 普通 | 😐 |
-| 2 | 不満 | 🙁 |
-| 1 | とても不満 | 😞 |
-
-### Calculation
-```
-CSAT = (満足回答数 / 全回答数) × 100
+| 5 | Very satisfied | 😄 |
+| 4 | Satisfied | 🙂 |
+| 3 | Neutral | 😐 |
+| 2 | Dissatisfied | 🙁 |
+| 1 | Very dissatisfied | 😞 |
 ```
 
-### Common Touchpoints
-- 購入完了後
-- サポート対応後
-- 機能初回利用後
-- オンボーディング完了後
+```text
+CSAT = (satisfied responses / total responses) x 100
 ```
 
----
+Best moments:
+- after purchase completion
+- after support resolution
+- after first successful feature use
+- after onboarding completion
 
-## CSAT Implementation
-
-```typescript
-// components/CSATWidget.tsx
-interface CSATResponse {
-  score: 1 | 2 | 3 | 4 | 5;
-  touchpoint: string;
-  feedback?: string;
-}
-
-export function CSATWidget({
-  touchpoint,
-  question,
-  onSubmit
-}: {
-  touchpoint: string;
-  question: string;
-  onSubmit: (response: CSATResponse) => void;
-}) {
-  const [score, setScore] = useState<number | null>(null);
-
-  const emojis = ['😞', '🙁', '😐', '🙂', '😄'];
-
-  return (
-    <div className="csat-widget">
-      <p>{question}</p>
-      <div className="emoji-buttons">
-        {emojis.map((emoji, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setScore(index + 1);
-              onSubmit({
-                score: (index + 1) as 1|2|3|4|5,
-                touchpoint
-              });
-            }}
-            className={score === index + 1 ? 'selected' : ''}
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
----
-
-## CES (Customer Effort Score) Framework
-
-CES measures how easy it was for users to complete a task. Lower effort = higher loyalty.
+## CES Framework
 
 ```markdown
 ## CES Survey
 
 ### Core Question
-「[タスク]を完了するのはどの程度簡単でしたか？」
+"How easy was it to complete [task]?"
 
 | Score | Label | Interpretation |
 |-------|-------|----------------|
-| 1 | とても難しかった | High effort - churn risk |
-| 2-3 | 難しかった | Friction points exist |
-| 4 | どちらでもない | Neutral |
-| 5-6 | 簡単だった | Good experience |
-| 7 | とても簡単だった | Effortless - loyalty driver |
-
-### CES Calculation
-```
-CES = (全スコアの合計 / 回答数)
-Target: 5.5+ (7-point scale)
+| 1 | Very difficult | High effort, churn risk |
+| 2-3 | Difficult | Friction exists |
+| 4 | Neutral | Mixed signal |
+| 5-6 | Easy | Healthy experience |
+| 7 | Very easy | Loyalty driver |
 ```
 
-### Best Touchpoints for CES
-| Touchpoint | Trigger | Question Example |
+```text
+CES = total score / total responses
+Target: 5.5+ on the 7-point scale
+```
+
+Operational thresholds:
+- `1-3` = high effort
+- `4` = neutral
+- `5-7` = low effort
+- high-effort share target: `<20%`
+- low-effort share target: `>60%`
+
+## Best CES Touchpoints
+
+| Touchpoint | Trigger | Example question |
 |------------|---------|------------------|
-| サポート問い合わせ後 | Ticket closed | 「問題の解決はどの程度簡単でしたか？」 |
-| 機能初回利用後 | Feature first use | 「[機能名]の使い始めはどの程度簡単でしたか？」 |
-| 設定変更後 | Settings updated | 「設定の変更はどの程度簡単でしたか？」 |
-| オンボーディング完了後 | Onboarding complete | 「アカウントのセットアップはどの程度簡単でしたか？」 |
-| 購入完了後 | Purchase complete | 「購入手続きはどの程度簡単でしたか？」 |
-```
+| Support resolution | ticket closed | "How easy was it to resolve your issue?" |
+| First feature use | first successful use | "How easy was it to start using [feature]?" |
+| Settings change | settings updated | "How easy was it to change this setting?" |
+| Onboarding completion | account setup complete | "How easy was it to set up your account?" |
+| Purchase completion | checkout complete | "How easy was it to complete your purchase?" |
 
----
+## Follow-up Rules
 
-## CES Implementation
+- CSAT `1-2`: ask what caused dissatisfaction.
+- CSAT `4-5`: ask what worked well when qualitative context is needed.
+- CES `1-3`: ask where effort or friction was highest.
+- CES `6-7`: ask what made the experience easy enough to preserve.
+
+## Minimal Data Contracts
 
 ```typescript
-// components/CESSurvey.tsx
-import { useState } from 'react';
-import { trackEvent } from '@/lib/analytics';
+interface CSATResponse {
+  score: 1 | 2 | 3 | 4 | 5;
+  touchpoint: string;
+  feedback?: string;
+}
 
 interface CESResponse {
   score: 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -134,99 +98,9 @@ interface CESResponse {
   userId: string;
   timestamp: string;
 }
-
-export function CESSurvey({
-  touchpoint,
-  question,
-  userId,
-  onComplete
-}: {
-  touchpoint: string;
-  question: string;
-  userId: string;
-  onComplete: () => void;
-}) {
-  const [score, setScore] = useState<number | null>(null);
-  const [feedback, setFeedback] = useState('');
-
-  const labels = [
-    'とても難しかった',
-    '難しかった',
-    'やや難しかった',
-    'どちらでもない',
-    'やや簡単だった',
-    '簡単だった',
-    'とても簡単だった'
-  ];
-
-  const handleSubmit = async () => {
-    const response: CESResponse = {
-      score: score as CESResponse['score'],
-      touchpoint,
-      feedback: feedback || undefined,
-      userId,
-      timestamp: new Date().toISOString()
-    };
-
-    trackEvent('ces_submitted', {
-      score: response.score,
-      touchpoint,
-      effort_level: score! <= 3 ? 'high_effort' : score! >= 5 ? 'low_effort' : 'neutral',
-      has_feedback: feedback.length > 0
-    });
-
-    await submitCESResponse(response);
-    onComplete();
-  };
-
-  const getFollowUpQuestion = () => {
-    if (score === null) return null;
-    if (score <= 3) return '何が難しかったですか？改善のためにお聞かせください。';
-    if (score >= 6) return '特に簡単だった点があれば教えてください。';
-    return 'もっと簡単にするためのご提案があればお聞かせください。';
-  };
-
-  return (
-    <div className="ces-survey">
-      <h3>{question}</h3>
-
-      <div className="score-buttons">
-        {[1,2,3,4,5,6,7].map(n => (
-          <button
-            key={n}
-            onClick={() => setScore(n)}
-            className={score === n ? 'selected' : ''}
-            title={labels[n - 1]}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-
-      <div className="score-labels">
-        <span>とても難しかった</span>
-        <span>とても簡単だった</span>
-      </div>
-
-      {score !== null && (
-        <>
-          <p>{getFollowUpQuestion()}</p>
-          <textarea
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            placeholder="ご意見をお聞かせください（任意）"
-          />
-          <button onClick={handleSubmit}>送信</button>
-        </>
-      )}
-    </div>
-  );
-}
 ```
 
----
-
-## CES Analysis Template
+## CES Analysis Report: [Period]
 
 ```markdown
 ## CES Analysis Report: [Period]
@@ -241,19 +115,18 @@ export function CESSurvey({
 ### CES by Touchpoint
 | Touchpoint | CES Score | Responses | Trend |
 |------------|-----------|-----------|-------|
-| オンボーディング | [X.X] | [N] | ↑/↓/→ |
-| 初回購入 | [X.X] | [N] | ↑/↓/→ |
-| サポート | [X.X] | [N] | ↑/↓/→ |
-| 設定変更 | [X.X] | [N] | ↑/↓/→ |
+| Onboarding | [X.X] | [N] | Up/Down/Flat |
+| First purchase | [X.X] | [N] | Up/Down/Flat |
+| Support | [X.X] | [N] | Up/Down/Flat |
+| Settings | [X.X] | [N] | Up/Down/Flat |
 
-### High Effort Issues (Action Required)
+### High Effort Issues
 | Issue | CES | Count | Root Cause | Fix |
 |-------|-----|-------|------------|-----|
 | [Issue 1] | [X.X] | [N] | [Cause] | [Action] |
-| [Issue 2] | [X.X] | [N] | [Cause] | [Action] |
 
 ### Effort Reduction Priorities
-1. **[Touchpoint]**: [Current CES] → [Target CES]
+1. **[Touchpoint]**: [Current CES] -> [Target CES]
    - Action: [Specific improvement]
    - Owner: [Team]
 ```
