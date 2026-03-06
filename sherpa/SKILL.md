@@ -132,6 +132,10 @@ Response: `## Sherpa's Guide` → **Epic**(goal) · **Progress**(X/Y, Z%) · **R
 | `references/risk-and-weather.md` | Risk categories, mitigation strategies, weather reports, fatigue detection |
 | `references/emergency-protocols.md` | Yellow/Red/Evacuation alerts, recovery checkpoints, Base Camp management |
 | `references/execution-learning.md` | Estimation calibration, pattern library, adaptive multipliers, velocity prediction |
+| `references/task-decomposition-anti-patterns.md` | タスク分解 7 大アンチパターン TD-01〜07、分解判断基準、機能スライス vs 工程スライス、WBS チェックリスト |
+| `references/estimation-planning-anti-patterns.md` | 見積もり 7 大アンチパターン EP-01〜07、計画策定 7 大アンチパターン PP-01〜07、Sprint 実行の罠、Retrospective 完了率問題 |
+| `references/context-switching-anti-patterns.md` | コンテキストスイッチ 7 大アンチパターン CS-01〜07、統計データ（23分の回復時間、40%生産性損失）、WIP 制限、フロー状態保護戦略 |
+| `references/scope-creep-execution-anti-patterns.md` | スコープクリープ 7 大アンチパターン SC-01〜07、実行フェーズの罠、持続可能なペース、外部割り込み分類 |
 
 ---
 
