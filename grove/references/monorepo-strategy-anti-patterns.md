@@ -1,154 +1,119 @@
 # Monorepo Strategy Anti-Patterns
 
-> モノレポ vs ポリレポの判断ミス、ガバナンススケーリングの罠、オーナーシップの課題
+Purpose: Use this reference when deciding between monorepo, polyrepo, or hybrid structure, or when auditing governance and ownership issues in a monorepo.
 
-## 1. モノレポ戦略 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **MS-01** | **Google Envy（巨大企業模倣）** | Google/Meta 規模のモノレポ戦略を中小チームに適用 | 専用ツールチーム不在でモノレポ運用、ビルド時間が1時間超 | 自社の規模・リソースに適合する戦略を選定、99%のケースではモノレポで十分 |
-| **MS-02** | **Premature Split（早すぎるポリレポ分割）** | 計測可能な痛みなくポリレポへ分割 | 「スケールしないかも」という恐怖だけが根拠、具体的ボトルネック不在 | 実測ベースで判断、Git partial clone/sparse-checkout で緩和を先に試す |
-| **MS-03** | **Monolith Confusion（モノリスとの混同）** | モノレポ＝モノリスと誤解し、密結合コードを許容 | パッケージ間の直接参照、独立デプロイ不能、1変更で全サービスに影響 | モノレポ内でもパッケージ境界・公開API・独立ビルドを厳格に維持 |
-| **MS-04** | **Cross-Team Mega Refactor（チーム横断大規模リファクタ）** | モノレポの利便性で他チームのコードまで一括変更 | 1つのPRで10チーム分のコード変更、レビュー不能な巨大PR | 各チームが自分の担当部分を個別にリファクタ、APIコントラクトで分離 |
-| **MS-05** | **Governance Vacuum（ガバナンス不在）** | ブランチポリシー・アクセス制御・自動化なしでモノレポ運用 | 午後4時にmain pushが詰まる（100人開発での実例）、レビュー品質低下 | trunk-based development、CODEOWNERS、自動化された品質ゲート |
-| **MS-06** | **Ownership Ambiguity（オーナーシップ曖昧性）** | ディレクトリ/コンポーネントのオーナーが未定義 | 変更承認のボトルネック、責任の押し付け合い、品質基準のバラつき | CODEOWNERS ファイル必須、段階的自律権（実績に基づく権限拡大） |
-| **MS-07** | **Tool Lock-in（ツールロックイン）** | Nx/Turborepo 等が開発ワークフロー全体を支配 | ツール固有の設定に過度に依存、ツール変更時の移行コスト甚大 | ツール非依存の構造設計、標準的なパッケージマネージャー機能を優先活用 |
+- Monorepo strategy anti-patterns
+- Monorepo vs polyrepo decision framework
+- Governance scaling
+- Ownership patterns
+- AI-era considerations
+- Grove integration
 
----
+Monorepo-vs-polyrepo decision mistakes, governance traps, and ownership risks.
 
-## 2. モノレポ vs ポリレポ判断フレームワーク
+## 1. Monorepo Strategy Anti-Patterns
 
-```
-判断の 3 つの基礎質問:
+| ID | Anti-Pattern | What Goes Wrong | Typical Signals | Recommended Response |
+|---|---|---|---|---|
+| **MS-01** | **Google Envy** | A small or medium team copies a hyperscale monorepo strategy. | No platform team exists, yet builds take more than an hour. | Choose a strategy that matches current scale and staffing. |
+| **MS-02** | **Premature Split** | Teams split into polyrepos before measurable pain exists. | The only argument is “we may not scale.” | Measure actual bottlenecks first; try partial clone or sparse-checkout before splitting. |
+| **MS-03** | **Monolith Confusion** | Teams treat a monorepo as permission for tightly coupled code. | Direct cross-package imports and non-independent deployment. | Keep strict package boundaries, public APIs, and independent buildability. |
+| **MS-04** | **Cross-Team Mega Refactor** | A monorepo enables giant cross-team PRs. | One PR changes code owned by many teams and becomes unreviewable. | Refactor one team boundary at a time and separate changes by API contract. |
+| **MS-05** | **Governance Vacuum** | A monorepo runs without branch policy, ownership, or automated checks. | Review quality falls and `main` becomes a bottleneck. | Use trunk-based development, CODEOWNERS, and automated quality gates. |
+| **MS-06** | **Ownership Ambiguity** | Nobody can say who owns a directory or component. | Review approvals stall and quality standards vary by change author. | Define ownership explicitly and expand autonomy gradually. |
+| **MS-07** | **Tool Lock-in** | The repository structure becomes hostage to one monorepo tool. | Migration away from Nx/Turborepo becomes prohibitively costly. | Favor tool-agnostic boundaries and standard package-manager capabilities. |
 
-  1. スケール評価:
-     → チーム規模・コードベース・ユーザー数は本当にモノレポの限界に達しているか？
-     → 大半の企業は Google/Meta/Uber レベルのスケールには到達しない
+## 2. Monorepo vs Polyrepo Decision Framework
 
-  2. ツーリング複雑性:
-     → 「組織の問題」を「技術的な複雑なシステム」で解決しようとしていないか？
-     → Resume Driven Development（履歴書のための技術選定）ではないか？
+Ask three questions:
+1. Has the team actually reached monorepo limits in size, build time, or coordination cost?
+2. Are you solving an organizational problem with unnecessary technical complexity?
+3. Is the pain measurable and not fixable with cheaper mitigations?
 
-  3. 計測可能な痛み:
-     → 具体的で再現可能なボトルネックが存在するか？
-     → 「追加のコンピュートリソース」で解決できない問題か？
+Decision matrix:
 
-判断マトリクス:
+| Team size | Coupling | Default recommendation |
+|---|---|---|
+| `1-10` | High | Monorepo |
+| `1-10` | Low | Monorepo or polyrepo |
+| `10-50` | High | Monorepo with strong governance |
+| `10-50` | Low | Hybrid |
+| `50-200` | High | Monorepo with a platform team |
+| `50-200` | Low | Polyrepo with a developer portal |
+| `200+` | Any | Dedicated evaluation required |
 
-  チーム規模    | コード結合度 | 推奨
-  ------------|------------|-------
-  1-10人       | 高          | モノレポ
-  1-10人       | 低          | モノレポ or ポリレポ（どちらでも可）
-  10-50人      | 高          | モノレポ + 厳格なガバナンス
-  10-50人      | 低          | ハイブリッド（プラットフォーム=モノレポ、アプリ=ポリレポ）
-  50-200人     | 高          | モノレポ + 専用プラットフォームチーム
-  50-200人     | 低          | ポリレポ + Developer Portal（Backstage 等）
-  200人+       | —           | 専門チームによる評価必須
+Important:
+- Human and organizational problems are harder than technical ones.
+- Psychological safety and cross-team trust are prerequisites for a healthy monorepo.
 
-  ⚠️ 重要: 「人の問題」は「技術的な問題」より解決が難しい
-  → 組織文化・心理的安全性がモノレポ成功の前提条件
-```
+## 3. Governance Scaling
 
----
+Monorepo prerequisites:
+- automated formatting and linting
+- strict branch policy
+- CODEOWNERS-based ownership
+- consistent dependency management
+- collaborative engineering culture
 
-## 3. ガバナンススケーリングの課題
+Monorepo scaling risks:
+- individual cognitive load rises with repo size
+- unrelated commits affect more developers
+- history and blame become slower to reason about
 
-```
-モノレポのガバナンス要件:
+Polyrepo prerequisites:
+- explicit technology-stack policy
+- shared tooling for security and dependency updates
+- platform investment in developer experience
 
-  必須:
-    □ 自動化されたコードフォーマット・リント（手動レビューに頼らない）
-    □ 厳格なブランチポリシー（trunk-based development 推奨）
-    □ CODEOWNERS による明示的なオーナーシップ宣言
-    □ 依存関係管理の一貫したアプローチ
-    □ 協調的で心理的安全性のあるエンジニアリング文化
+Polyrepo scaling risks:
+- duplicate code grows
+- consistency across repositories gets harder
+- observability and governance become fragmented
 
-  スケーリング課題:
-    → リポジトリが大きくなるほど個々のエンジニアの管理負荷が指数的に増大
-    → 無関係な部分のコミットが開発者のサブツリーに影響
-    → DAG（有向非巡回グラフ）の肥大化で git log/blame が遅延
-    → 50+ リポジトリのポリレポ環境では依存更新に 20-30% 余分な時間
+## 4. Ownership Patterns
 
-ポリレポのガバナンス要件:
+| Pattern | Ownership unit | Main risk |
+|---|---|---|
+| Monorepo | Directory / component | Boundary-crossing changes |
+| Polyrepo | Repository | Fragmented dependency management |
+| Hybrid | Platform + product mix | Higher tooling and governance cost |
 
-  必須:
-    □ 一貫した技術スタック or 明示的な例外ルール
-    □ 横断的なツーリング統一（Backstage, Dependabot, Renovate）
-    □ セキュリティ脆弱性の横断的な更新プロセス
-    □ Developer Experience に投資するプラットフォームチーム
+Conway-aligned guidance:
+- Product autonomy tends to favor polyrepos.
+- Strong platform teams favor monorepos.
+- Repository strategy that fights org structure creates friction.
 
-  スケーリング課題:
-    → コード重複によるメンテナンス負荷増大
-    → リポジトリ間の一貫性維持が困難
-    → オブザーバビリティ（可観測性）の分断
-```
+Healthy ownership indicators:
+- stable review cycle time
+- reliable dependency-update cadence
+- manageable cross-team coordination overhead
+- clear responsibility boundaries
 
----
+## 5. AI-Era Considerations
 
-## 4. オーナーシップパターン
+Potential monorepo benefit:
+- AI assistants get more consistent cross-stack context.
 
-```
-オーナーシップモデル比較:
+Potential polyrepo benefit:
+- each repository boundary is clearer and smaller.
 
-  パターン      | オーナーシップ単位     | 主なリスク
-  ------------|---------------------|------------------
-  モノレポ      | ディレクトリ/コンポーネント | 変更の境界越え伝播
-  ポリレポ      | リポジトリ単位          | 依存管理の断片化
-  ハイブリッド   | 混合（プラットフォーム+プロダクト） | 高度なツーリング必須
+Do not decide repo strategy based on AI tooling alone. Treat it as a secondary factor after scale, coupling, and governance.
 
-  Conway の法則の適用:
-    → プロダクト自律性重視 → ポリレポが適合
-    → 強力なプラットフォームチーム → モノレポが適合
-    → 組織構造に逆らうリポジトリ戦略は必ず摩擦を生む
+## 6. Grove Integration
 
-  ハイブリッド成功事例:
-    → Microsoft .NET: プラットフォームコンポーネント=モノレポ、アプリ開発=ポリレポ
-    → コンポーネントベースオーナーシップで「ビルド時間 40% 削減、コード共有 60% 改善」
+Use this reference in Grove as follows:
+1. Detect whether the repository is mono, poly, or hybrid.
+2. Screen `MS-01` through `MS-07`.
+3. Choose strategy recommendations from the decision matrix.
+4. Report governance and ownership health explicitly.
 
-  健全なオーナーシップの指標:
-    □ コードレビューサイクルタイムの一貫性
-    □ 依存関係更新の頻度と失敗率
-    □ クロスチームコラボレーション摩擦（調整オーバーヘッド）
-    □ オーナーシップ明確性スコア（チーム間の責任合意度）
-```
-
----
-
-## 5. AI 時代の考慮事項（2024-2025）
-
-```
-AI アシスタントとリポジトリ戦略:
-
-  モノレポの利点:
-    → AI コーディングアシスタント（Copilot, Claude）に統一コンテキストを提供
-    → クロススタック変更の自動化が容易
-    → Stack Overflow 2024: 67% の組織がモノレポでコード発見性向上を報告
-
-  ポリレポの利点:
-    → 58% の組織がチーム自律性を主なメリットとして報告
-    → リポジトリ単位の AI コンテキストが明確
-
-  判断: AI ツール活用を最大化するなら、モノレポがコンテキスト面で有利
-  → ただし、これだけで判断してはならない（MS-01 防止）
-```
-
----
-
-## 6. Grove との連携
-
-```
-Grove での活用:
-  1. DETECT フェーズでモノレポ/ポリレポの種別判定
-  2. AUDIT フェーズで MS-01〜07 のスクリーニング
-  3. PLAN フェーズで判断マトリクスに基づく戦略提案
-  4. REPORT フェーズでガバナンス健全性評価
-
-品質ゲート:
-  - 巨大企業模倣 → 自社規模適合性検証必須（MS-01 防止）
-  - 具体的痛みなしの分割提案 → 実測データ要求（MS-02 防止）
-  - パッケージ間密結合 → 境界強制ツール導入（MS-03 防止）
-  - チーム横断巨大PR → 分割リファクタ計画必須（MS-04 防止）
-  - CODEOWNERS 未設定 → オーナーシップ定義必須（MS-06 防止）
-```
+Quality gates:
+- hyperscale imitation requires scale-fit evidence
+- no measured pain means no split recommendation
+- tight package coupling requires stronger boundary enforcement
+- giant cross-team PRs require staged refactor planning
+- missing CODEOWNERS requires ownership definition
 
 **Source:** [Buildkite: Monorepo vs. Polyrepo](https://buildkite.com/resources/blog/monorepo-polyrepo-choosing/) · [CrashBytes: Code Ownership Patterns](https://crashbytes.com/blog/code-ownership-patterns-polyrepo-vs-monorepo-architectures) · [CircleCI: Monorepo Dev Practices](https://circleci.com/blog/monorepo-dev-practices/) · [DEV.to: Notes on the Monorepo Pattern](https://dev.to/david_whitney/notes-on-the-monorepo-pattern-5egc)

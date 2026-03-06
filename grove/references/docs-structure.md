@@ -1,5 +1,14 @@
 # Documentation Directory Structure
 
+Purpose: Use this reference when a repository needs a structured `docs/` tree aligned with Scribe outputs and review workflows.
+
+## Contents
+
+- Complete `docs/` structure
+- Required document categories
+- Lifecycle rules
+- Naming conventions
+
 Detailed docs/ directory layout aligned with Scribe agent output format.
 
 ---

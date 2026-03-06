@@ -1,5 +1,15 @@
 # Migration Strategies
 
+Purpose: Use this reference when you need a safe, staged migration plan for structure changes, config cleanup, or full repository reorganization.
+
+## Contents
+
+- Migration principles
+- Migration levels
+- Decision tree
+- Language-specific notes
+- PR template
+
 Strategies for restructuring existing repositories safely.
 
 ---

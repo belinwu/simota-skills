@@ -1,210 +1,151 @@
 # Project Scaffolding Anti-Patterns
 
-> プロジェクト初期構造設計の失敗パターン、テンプレートの罠、設定管理の課題
+Purpose: Use this reference when auditing initial repository setup, template design, config hygiene, and staged structure growth.
 
-## 1. プロジェクトスキャフォールディング 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **PS-01** | **Template Cargo Cult（テンプレートカーゴカルト）** | FAANG企業のリポジトリ構造をそのまま複製 | 使わないディレクトリが大量に存在、複雑な設定が理解されていない | プロジェクト規模・チームスキルに合った最小構造から開始 |
-| **PS-02** | **Skeleton Overload（スケルトン過積載）** | スキャフォールディングで過剰な初期構造を生成 | 空の src/features/auth/, docs/adr/ 等が初日から存在、実コードなし | 必要になった時点で追加（YAGNI）、初期は最小限の構造 |
-| **PS-03** | **Config Proliferation（設定ファイル増殖）** | プロジェクト初期から設定ファイルが乱立 | ルートに15+の設定ファイル、重複する設定（.eslintrc.js + .eslintrc.json） | フラットコンフィグ統合、config/ ディレクトリへの集約、設定ツール統合 |
-| **PS-04** | **Framework Lock-in Structure（フレームワーク固定構造）** | フレームワーク固有の構造に過度に依存 | Express→Fastify 移行でディレクトリ全体の再設計が必要 | フレームワーク非依存のドメイン中心設計、アダプターパターン |
-| **PS-05** | **AI-Generated Chaos（AI生成の混乱）** | AI ツールが独自の構造を発明 | 要求していないディレクトリ構造が生成される、一貫性のないパターン | AI 使用前にスキャフォールディングを完了、CLAUDE.md/rules で構造を指定 |
-| **PS-06** | **Monorepo Premature（早すぎるモノレポ化）** | 単一アプリをモノレポ構造で開始 | apps/web/ に1アプリのみ、packages/ に1パッケージのみ、turbo.json の無駄 | 単一リポジトリで開始、パッケージ分割の実際のニーズが発生してから移行 |
-| **PS-07** | **Convention Blindness（規約無視）** | 言語/フレームワークの標準規約を無視した構造 | Go で src/ 使用、Next.js で独自ルーティング構造、Django でアプリ構造無視 | 言語検出 → 標準規約テンプレート適用、フレームワーク公式ドキュメント参照 |
+- Scaffolding anti-pattern catalog
+- Progressive scaffolding strategy
+- Config hygiene rules
+- Template-repository design
+- AI-era scaffolding rules
+- Startup checklist
+- Grove integration
 
----
+Initial repository setup failures, template traps, and config-management risks.
 
-## 2. 段階的スキャフォールディング戦略
+## 1. Project Scaffolding Anti-Patterns
 
-```
-Minimal Viable Structure（最小実行可能構造）:
+| ID | Anti-Pattern | What Goes Wrong | Typical Signals | Recommended Response |
+|---|---|---|---|---|
+| **PS-01** | **Template Cargo Cult** | A team copies a FAANG-scale repository layout wholesale. | Many unused directories exist and nobody understands the tooling. | Start from the smallest structure that fits the team and domain. |
+| **PS-02** | **Skeleton Overload** | The project starts with too much empty structure. | Empty `features/`, `adr/`, or `auth/` trees exist before any code. | Add directories only when the project actually needs them. |
+| **PS-03** | **Config Proliferation** | Config files multiply early and drift apart. | `15+` config files live at the root; overlapping configs coexist. | Consolidate with flat config, inheritance, or a dedicated `config/` directory. |
+| **PS-04** | **Framework Lock-in Structure** | The layout overfits one framework. | A framework swap forces a full directory redesign. | Prefer domain-centered structure with framework adapters at the edges. |
+| **PS-05** | **AI-Generated Chaos** | AI tools invent structure ad hoc. | Generated files land in inconsistent places and patterns drift. | Establish scaffolding before AI-assisted generation and document placement rules. |
+| **PS-06** | **Monorepo Premature** | A single app starts in monorepo form without real need. | `apps/web/` and `packages/` exist but hold only one application. | Start as a single repository and split only when real package boundaries emerge. |
+| **PS-07** | **Convention Blindness** | The layout ignores language or framework defaults. | Go uses `src/`; Next.js uses a custom router layout; Django skips app conventions. | Detect the platform first and apply the official structural baseline. |
 
-  Phase 0（プロトタイプ）:
-    /
-    ├── src/           ← ソースコード
-    ├── README.md      ← プロジェクト概要
-    ├── .gitignore     ← Git 除外設定
-    └── (言語設定)     ← package.json / pyproject.toml / go.mod 等
+## 2. Progressive Scaffolding Strategy
 
-  Phase 1（初期開発 ~20ファイル）:
-    /
-    ├── src/
-    │   └── (フラット構造)
-    ├── tests/         ← テスト追加時に作成
-    ├── docs/          ← 最初の仕様書作成時に作成
-    │   └── README.md
-    ├── scripts/       ← 最初のスクリプト作成時に作成
-    └── .github/       ← CI/CD 設定時に作成
+| Phase | Typical size | Structure rule |
+|---|---|---|
+| Phase 0 | Prototype | `src/`, `README.md`, `.gitignore`, language config only |
+| Phase 1 | Up to `20` files | Add `tests/`, `docs/`, `scripts/`, `.github/` only when first needed |
+| Phase 2 | `20-100` files | Start feature grouping, extract shared code, split tests by scope |
+| Phase 3 | `100+` files | Evaluate FSD, DDD, stricter module boundaries, or package splits |
 
-  Phase 2（成長期 20-100ファイル）:
-    src/
-    ├── features/      ← 機能別グルーピング開始
-    │   ├── auth/
-    │   └── user/
-    └── shared/        ← 共有コード抽出
-    tests/
-    ├── unit/
-    └── integration/
-    docs/
-    ├── design/        ← 設計書追加時に作成
-    └── adr/           ← 最初の ADR 作成時に作成
+Core rules:
+- do not create empty directories speculatively
+- let structure evolve with code volume
+- prefer staged refactors over upfront full design
 
-  Phase 3（成熟期 100+ファイル）:
-    → Feature-Sliced Design or DDD への移行検討
-    → モジュール境界の強制（ESLint rules, internal/ 等）
-    → パッケージ分割の検討
+## 3. Config Hygiene Rules
 
-  原則:
-    → 空ディレクトリは作らない（必要になったら作る）
-    → 構造はコードの成長に合わせて進化させる
-    → 一度に全体を設計しない（段階的リファクタ）
-```
+Root-required config:
+- `package.json` / `pyproject.toml` / `go.mod`
+- `tsconfig.json`
+- `turbo.json` / `nx.json` if monorepo
+- `.gitignore`
 
----
+Root-recommended config:
+- `eslint.config.js`
+- `prettier.config.js`
+- `vitest.config.ts` or `jest.config.ts`
 
-## 3. 設定ファイル管理戦略
+Usually movable to `config/`:
+- `webpack.config.js`
+- `postcss.config.js`
+- `docker-compose.yml`
 
-```
-Config Hygiene（設定衛生）:
+Consolidation guidance:
+- move to ESLint flat config
+- use `extends` for TypeScript config families
+- keep one test runner
+- keep one formatter
+- keep one bundler unless there is a proven need
 
-  ルートに必須の設定（移動不可）:
-    → package.json / pyproject.toml / go.mod
-    → tsconfig.json
-    → turbo.json / nx.json（モノレポ）
-    → .gitignore
+Thresholds:
+- `<=10` config files at root: healthy
+- `10-15`: review for consolidation
+- `15+`: treat as `AP-003`
 
-  ルートに推奨の設定:
-    → eslint.config.js（フラットコンフィグ）
-    → prettier.config.js
-    → vitest.config.ts / jest.config.ts
+## 4. Template Repository Design
 
-  config/ に移動可能:
-    → webpack.config.js
-    → postcss.config.js
-    → docker-compose.yml
+Required template elements:
+- `README.md`
+- `.gitignore`
+- language configuration
+- CI workflow
+- `.editorconfig`
 
-  設定統合のベストプラクティス:
-    □ ESLint: .eslintrc.* → eslint.config.js（フラットコンフィグ）
-    □ TypeScript: 複数 tsconfig → extends で継承
-    □ テストランナー: Jest OR Vitest（両方入れない）
-    □ フォーマッター: Prettier OR Biome（両方入れない）
-    □ バンドラー: 1つだけ選択（webpack OR vite OR rspack）
+Optional elements:
+- `docs/` skeleton for larger projects
+- `tests/` starter structure
+- `.agents/`
+- `CLAUDE.md` or cursor rules when the team uses AI tooling
 
-  設定ファイル数の目安:
-    → 10以下: 健全
-    → 10-15: 注意（統合検討）
-    → 15+: Config Soup（AP-003）、即時対応
-```
+Do not include:
+- tool configs the project will not use
+- many empty feature directories
+- project-specific business logic
+- hard-coded project names or URLs
+- outdated dependencies
 
----
+Refresh templates quarterly or when core tooling conventions change.
 
-## 4. テンプレートリポジトリの設計
+## 5. AI-Era Scaffolding Rules
 
-```
-良いテンプレートの条件:
+To help AI understand structure:
+- document directory conventions
+- document naming rules
+- expose public APIs clearly
+- add directory-level READMEs only when they carry real decision value
 
-  必須要素:
-    □ README.md（プロジェクト概要テンプレート）
-    □ .gitignore（言語/フレームワーク適切）
-    □ 言語設定ファイル（package.json 等）
-    □ CI/CD ワークフロー（.github/workflows/）
-    □ .editorconfig（エディタ設定統一）
+To control AI generation:
+- finish scaffolding before broad AI-assisted generation
+- specify expected destination directories explicitly
+- verify structural consistency after generation
 
-  任意要素（プロジェクト規模に応じて）:
-    □ docs/ 骨格（大規模プロジェクト向け）
-    □ tests/ 骨格 + 最初のテスト例
-    □ .agents/ ディレクトリ（エージェント活用プロジェクト）
-    □ CLAUDE.md / .cursor/rules（AI ツール連携）
+Do not accept AI-suggested structure uncritically. Team size, domain shape, and project maturity still decide the right structure.
 
-  アンチパターン:
-    ❌ 使わないツールの設定を含む
-    ❌ 空の feature ディレクトリを大量に含む
-    ❌ 特定プロジェクトのビジネスロジックを含む
-    ❌ ハードコードされたプロジェクト名・URL
-    ❌ 古いバージョンのツール/ライブラリ
+## 6. Startup Checklist
 
-  テンプレート更新サイクル:
-    → 四半期ごとに依存関係更新
-    → 新しいベストプラクティス反映（ESLint flat config 等）
-    → 実際のプロジェクト経験からのフィードバック反映
-```
+At project start:
+- detect language and framework
+- confirm the standard layout for that stack
+- start with Phase 0
+- add `README.md`, `.gitignore`, and language config
+- add a basic CI workflow
+- add `.editorconfig`
 
----
+Add later as needed:
+- `tests/` at first test
+- `docs/` at first spec
+- `scripts/` at first automation script
+- `features/` at `20+` files
+- `shared/` when duplication appears
+- stronger module boundaries at `100+` files
 
-## 5. AI 時代のスキャフォールディング
+Avoid:
+- designing the full structure on day one
+- copying another project’s tree wholesale
+- creating many empty folders
+- adding tools with no immediate use
 
-```
-AI ツール連携の考慮事項:
+## 7. Grove Integration
 
-  AI の構造理解を助ける:
-    □ CLAUDE.md / .cursor/rules でディレクトリ規約を明示
-    □ 命名規約の文書化
-    □ barrel export（index.ts）で公開 API を明確化
-    □ ディレクトリの README.md で各ディレクトリの責務を記述
+Use this reference in Grove as follows:
+1. Screen `PS-01` through `PS-07`.
+2. Apply staged scaffolding for new repositories.
+3. Run config-hygiene checks for existing repositories.
+4. Audit template repositories periodically.
 
-  AI 生成の制御:
-    □ スキャフォールディングは AI 使用前に完了する
-    □ AI が生成するファイルの配置先を明示的に指定
-    □ 生成後にディレクトリ構造の一貫性をチェック
-
-  モノレポでの AI 活用:
-    → AI アシスタントにリポジトリ全体のコンテキストを提供
-    → パッケージ境界を AI が理解できるよう exports フィールドを設定
-    → .gitignore で node_modules 等を除外し AI のノイズを削減
-
-  ⚠️ 注意: AI ツールは便利だが、構造の「正解」は
-  チーム・規模・ドメインによって異なる
-  → AI の提案を無批判に受け入れない（PS-05 防止）
-```
-
----
-
-## 6. 初期構造チェックリスト
-
-```
-新規プロジェクト開始時:
-
-  □ 言語/フレームワーク検出
-  □ 言語標準の構造規約を確認
-  □ 最小実行可能構造で開始（Phase 0）
-  □ README.md + .gitignore + 言語設定
-  □ CI/CD ワークフロー（基本的なもの）
-  □ .editorconfig（チーム統一）
-
-  成長に応じて追加:
-  □ tests/ ディレクトリ（最初のテスト作成時）
-  □ docs/ ディレクトリ（最初の仕様書作成時）
-  □ scripts/ ディレクトリ（最初のスクリプト作成時）
-  □ features/ グルーピング（ファイル 20+ 時）
-  □ shared/ 抽出（コード重複検出時）
-  □ モジュール境界強制（ファイル 100+ 時）
-
-  避けるべきこと:
-  ❌ 初日からフル構造を設計
-  ❌ 他プロジェクトの構造をそのままコピー
-  ❌ 空ディレクトリの大量作成
-  ❌ 必要のないツールの設定追加
-```
-
----
-
-## 7. Grove との連携
-
-```
-Grove での活用:
-  1. DETECT フェーズで PS-01〜07 のスクリーニング
-  2. 新規プロジェクトでは段階的スキャフォールディング戦略を適用
-  3. 既存プロジェクトでは Config Hygiene チェック
-  4. テンプレートリポジトリの定期監査
-
-品質ゲート:
-  - FAANG 構造コピー → 規模適合性チェック（PS-01 防止）
-  - 空ディレクトリ多数 → 最小構造提案（PS-02 防止）
-  - ルート設定 15+ → 統合・移動提案（PS-03 防止）
-  - 言語規約違反 → 標準テンプレート提案（PS-07 防止）
-  - モノレポ構造に1アプリ → 単一リポジトリ提案（PS-06 防止）
-```
+Quality gates:
+- copied enterprise template: require scale-fit review
+- many empty directories: propose the minimum viable structure
+- `15+` root configs: propose consolidation
+- convention violations: propose the standard template
+- one-app monorepo shell: recommend a single-repo baseline
 
 **Source:** [Iterators: Project Codebase Organization](https://www.iteratorshq.com/blog/a-comprehensive-guide-on-project-folder-organization/) · [GitHub Well-Architected: Anti-Patterns](https://wellarchitected.github.com/library/scenarios/anti-patterns/) · [FnJoin: Code Your Own Scaffolding First](https://fnjoin.com/post/2025-12-21-code-your-own-scaffolding-first/)

@@ -1,190 +1,146 @@
 # Codebase Organization Anti-Patterns
 
-> フォルダ構造設計の失敗パターン、レイヤーベース vs フィーチャーベースの罠、スケーラビリティ問題
+Purpose: Use this reference when choosing a source tree shape, diagnosing codebase-structure drift, or planning a safe reorganization.
 
-## 1. コードベース構造 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **CO-01** | **Type-First Trap（型別構造の罠）** | components/hooks/utils/styles で全ファイルを分類 | 1機能の理解に5-7ディレクトリ横断、変更が多フォルダに波及 | Feature-based organization への移行、Feature-Sliced Design 検討 |
-| **CO-02** | **Copy-Paste Discovery（コピペ発見）** | 構造の見通しが悪く既存コードが見つからずコピペ | 同一ロジックが複数箇所に散在、リファクタ時に漏れ発生 | 機能別グルーピング、barrel export による公開 API 明確化 |
-| **CO-03** | **Convention Mismatch（規約不一致）** | 言語固有の慣習を無視した構造設計 | Go で src/ 配置、Python で __init__.py 未配置、Java でパッケージ規約違反 | 言語検出 → 言語固有テンプレート適用（Go: cmd/internal/, Python: pyproject.toml 等） |
-| **CO-04** | **Premature Abstraction（早すぎる抽象化）** | 初期段階で過度に階層化した構造を設計 | 3ファイルのプロジェクトに5層のディレクトリ、空フォルダ多数 | 現在のサイズに適した構造、成長に応じて段階的にリファクタ |
-| **CO-05** | **Naming Collision（命名衝突）** | lib/shared/utils/helpers/common が混在 | 同じ目的のディレクトリが複数存在、新規ファイルの配置先が曖昧 | 1つの目的に1つの名前、チーム合意の命名規約 |
-| **CO-06** | **Cyclic Module Dependency（循環モジュール依存）** | モジュール間の双方向依存が発生 | 独立テスト・独立デプロイ不能、変更影響の予測不能 | 依存方向の一方向化、共有インターフェースの抽出、イベントバスによる分離 |
-| **CO-07** | **Test-Source Divorce（テスト-ソース離婚）** | テストとソースの対応関係が崩壊 | テストファイルの配置が不統一、カバレッジ測定困難、CI設定の複雑化 | co-location（Go/Rust 式）or centralized（JS/Python 式）を1つ選び統一 |
+- Codebase anti-pattern catalog
+- Pattern comparison
+- Structure selection rules
+- Scalability checkpoints
+- Naming rules
+- Grove integration
 
----
+Folder-organization failure modes, layer-vs-feature traps, and scaling risks.
 
-## 2. 構造パターン比較
+## 1. Codebase Organization Anti-Patterns
 
-```
-Type-Based（レイヤーベース）:
+| ID | Anti-Pattern | What Goes Wrong | Typical Signals | Recommended Response |
+|---|---|---|---|---|
+| **CO-01** | **Type-First Trap** | Files are grouped only by technical type (`components/`, `hooks/`, `utils/`) instead of business capability. | Understanding one feature requires crossing `5-7` directories; changes spread across many folders. | Move toward feature-based modules; consider Feature-Sliced Design for larger frontends. |
+| **CO-02** | **Copy-Paste Discovery** | Poor structure makes existing code hard to find, so teams duplicate logic. | Similar logic appears in multiple directories; refactors miss copies. | Group by feature, define public module APIs, add barrel exports where appropriate. |
+| **CO-03** | **Convention Mismatch** | The layout ignores language-specific defaults. | Go uses `src/`; Python misses package boundaries; Java package layout is broken. | Detect language first, then apply the language-specific template. |
+| **CO-04** | **Premature Abstraction** | The structure is too deep too early. | A `3`-file project ships with `5` layers and many empty folders. | Start with the smallest viable structure and refactor as the codebase grows. |
+| **CO-05** | **Naming Collision** | Multiple directories serve the same purpose under different names. | `lib/`, `shared/`, `utils/`, `helpers/`, and `common/` coexist. | Pick one name per purpose and enforce it consistently. |
+| **CO-06** | **Cyclic Module Dependency** | Modules depend on each other bidirectionally. | Independent testing or deployment becomes impossible; impact analysis is unreliable. | Restore one-way dependencies, extract interfaces, or split shared contracts. |
+| **CO-07** | **Test-Source Divorce** | The source tree and test tree stop matching. | Test placement is inconsistent, coverage is hard to measure, CI config grows complex. | Standardize on either co-location or centralized tests per language. |
 
-  src/
-    components/     ← UIコンポーネント全部
-    hooks/          ← カスタムフック全部
-    services/       ← API呼び出し全部
-    utils/          ← ユーティリティ全部
-    styles/         ← スタイル全部
+## 2. Pattern Comparison
 
-  問題:
-    → 低凝集: 関連する機能が 5-7 ディレクトリに散在
-    → 高結合: 無関係なモジュールが相互インポート
-    → 変更増幅: 1機能の変更が多数のフォルダに波及
-    → チーム並行開発が困難（同じフォルダを複数チームが変更）
+### Type-Based
 
-Feature-Based（機能ベース）:
-
-  src/
-    features/
-      auth/
-        components/
-        hooks/
-        services/
-        index.ts      ← 公開 API（barrel export）
-      user/
-        components/
-        hooks/
-        services/
-        index.ts
-    shared/
-      ui/
-      utils/
-
-  利点:
-    → 高凝集: 関連ファイルが1ディレクトリに集約
-    → 低結合: 公開 API 経由のみでアクセス
-    → チーム独立: 各チームが自分の feature を独立開発
-    → 安全なリファクタ: 内部変更が外部に影響しない
-
-Feature-Sliced Design（FSD）:
-
-  src/
-    app/              ← 初期化、ルーティング
-    pages/            ← ルーティング可能な画面
-    widgets/          ← 複合セクション
-    features/         ← ユーザーインタラクション
-    entities/         ← ビジネスモデル
-    shared/           ← 再利用コード
-
-  依存ルール: app → pages → widgets → features → entities → shared
-  → 上位レイヤーは下位に依存可能、逆は禁止
-  → 各スライスは index.ts で公開 API を制御
-
-  適用条件:
-    ✓ 複数ビジネスドメイン、長期プロダクト、チーム拡大
-    ✗ 小規模プロトタイプ、マーケティングサイト、個人開発
+```text
+src/
+  components/
+  hooks/
+  services/
+  utils/
+  styles/
 ```
 
----
+- Best only for very small codebases with low domain complexity.
+- Degrades quickly because related behavior is split across many directories.
+- Encourages wide change amplification and weak ownership boundaries.
 
-## 3. 構造選択の判断基準
+### Feature-Based
 
-```
-プロジェクト規模別推奨:
-
-  規模          | ファイル数  | 推奨構造
-  ------------|----------|-------------------
-  小規模        | ~20      | フラット構造（サブディレクトリ最小限）
-  中規模        | 20-100   | Feature-Based（機能別グルーピング）
-  大規模        | 100-500  | Feature-Sliced Design or DDD
-  超大規模      | 500+     | モノレポ + パッケージ分割
-
-  判断フロー:
-    Q1: チーム人数は？
-      1-3人 → シンプルな Feature-Based
-      4-10人 → Feature-Based + 公開 API 制御
-      10人+ → FSD or DDD + モジュール境界強制
-
-    Q2: ドメイン複雑性は？
-      単純（CRUD中心） → レイヤーベースでも可
-      中程度 → Feature-Based
-      複雑（複数ドメイン） → DDD + Bounded Context
-
-    Q3: フレームワーク規約は？
-      強い規約あり（Next.js App Router, Rails） → フレームワーク規約に従う
-      弱い or なし → Feature-Based を基本選択
+```text
+src/
+  features/
+    auth/
+      components/
+      hooks/
+      services/
+      index.ts
+    user/
+      components/
+      hooks/
+      services/
+      index.ts
+  shared/
+    ui/
+    utils/
 ```
 
----
+- Higher cohesion because one feature lives in one subtree.
+- Lower coupling when other modules access the feature only through its public API.
+- Works well for most application-scale repositories.
 
-## 4. スケーラビリティの落とし穴
+### Feature-Sliced Design
 
-```
-成長に伴う構造劣化パターン:
-
-  Stage 1（初期）:
-    → フラット構造で問題なし
-    → 全員がすべてのファイルを把握
-
-  Stage 2（成長期）:
-    → ファイル数 50+ で発見性が低下
-    → 「どこに置けばいいかわからない」問題の発生
-    → CO-01（Type-First Trap）に陥りやすい
-
-  Stage 3（成熟期）:
-    → 100+ ファイルで構造のリファクタが必要
-    → しかしリファクタのコストが高く先送り
-    → CO-02（Copy-Paste Discovery）が蔓延
-
-  Stage 4（危機）:
-    → God Directory（AP-001）や Flat Hell（AP-008）が定着
-    → 新メンバーのオンボーディング時間が倍増
-    → 構造変更の合意形成が困難
-
-  予防策:
-    → Stage 2 で Feature-Based への移行を計画
-    → 20 ファイル超で最初のグルーピングを開始
-    → 50 ファイル超で公開 API（barrel export/index.ts）を導入
-    → 100 ファイル超でモジュール境界の強制を検討
+```text
+src/
+  app/
+  pages/
+  widgets/
+  features/
+  entities/
+  shared/
 ```
 
----
+- Use when the product spans multiple domains and long-lived teams.
+- Enforce dependency direction: `app -> pages -> widgets -> features -> entities -> shared`.
+- Avoid for small prototypes and marketing sites.
 
-## 5. 命名規約の統一
+## 3. Structure Selection Rules
 
-```
-ディレクトリ命名ガイド:
+| Project size | Approx. file count | Default recommendation |
+|---|---:|---|
+| Small | `<=20` | Flat structure with minimal subdirectories |
+| Medium | `20-100` | Feature-based organization |
+| Large | `100-500` | Feature-Sliced Design or DDD-style modularization |
+| Very large | `500+` | Monorepo with package-level boundaries |
 
-  統一すべき名前:
-    ソースコード    → src/ (Go 以外) or cmd/internal/ (Go)
-    テスト         → tests/ (centralized) or *.test.* (co-located)
-    ドキュメント    → docs/
-    設定           → config/
-    スクリプト      → scripts/
-    共有コード      → shared/ (1つだけ選ぶ、lib/utils/helpers/common は NG)
+Decision prompts:
+- Team size `1-3`: use simple feature grouping.
+- Team size `4-10`: use feature grouping plus public API control.
+- Team size `10+`: consider stronger module-boundary enforcement.
+- Strong framework conventions: follow them first.
+- No strong framework conventions: default to feature-based organization.
 
-  ファイル命名:
-    → 言語規約に従う（CamelCase/snake_case/kebab-case）
-    → 目的を名前に含める（auth.service.ts, auth.controller.ts）
-    → テストファイルはソースと対応させる（auth.service.test.ts）
+## 4. Scalability Checkpoints
 
-  アンチパターン:
-    ❌ lib/ + shared/ + utils/ + helpers/ + common/ の併存
-    ❌ 言語規約と異なるケース使用
-    ❌ 略語の多用（util, svc, mgr, hdlr）
-    ❌ 連番やバージョン付きディレクトリ（v2/, new-src/）
-```
+| Stage | Signal | Recommended action |
+|---|---|---|
+| Early | Structure still flat and discoverable | Keep it simple |
+| Growth | `20+` files in a domain | Start feature grouping |
+| Expansion | `50+` files | Add explicit public APIs and module boundaries |
+| Maturity | `100+` files | Evaluate FSD, DDD, or package boundaries |
+| Crisis | `AP-001` or `AP-008` already present | Plan a phased structural migration |
 
----
+## 5. Naming Rules
 
-## 6. Grove との連携
+Use one stable name per purpose:
 
-```
-Grove での活用:
-  1. DETECT フェーズで言語検出 → 構造パターン推奨
-  2. SCAN フェーズで CO-01〜07 のスクリーニング
-  3. AUDIT フェーズで AP-001〜016 との複合評価
-  4. PLAN フェーズで規模別の構造移行提案
+| Purpose | Preferred name |
+|---|---|
+| Source | `src/` except Go (`cmd/`, `internal/`) |
+| Tests | `tests/` or co-located `*.test.*` |
+| Docs | `docs/` |
+| Config | `config/` |
+| Scripts | `scripts/` |
+| Shared code | one of `shared/` or another single agreed name |
 
-品質ゲート:
-  - Type-Based 検出 → Feature-Based 移行提案（CO-01 防止）
-  - 同一ロジック重複 → 共有モジュール抽出提案（CO-02 防止）
-  - 言語規約違反 → 自動修正提案（CO-03 防止）
-  - 空ディレクトリ多数 → 構造簡素化提案（CO-04 防止）
-  - 同目的ディレクトリ重複 → 統合提案（CO-05 防止）
-  - 循環依存検出 → 依存方向整理提案（CO-06 防止）
-```
+Avoid:
+- Mixing `lib/`, `shared/`, `utils/`, `helpers/`, and `common/`
+- Case conventions that violate the language norm
+- Abbreviation-heavy names such as `svc`, `mgr`, `hdlr`
+- Versioned directory names like `v2/` or `new-src/`
+
+## 6. Grove Integration
+
+Use this reference in Grove as follows:
+1. Detect language and framework conventions before recommending a structure.
+2. Screen `CO-01` through `CO-07` during structural audits.
+3. Combine these findings with `AP-001` through `AP-016`.
+4. Choose a migration strategy based on current size and team structure.
+
+Quality gates:
+- Type-based layout at medium scale: recommend feature grouping.
+- Repeated logic across features: propose a shared module extraction.
+- Language-convention mismatch: propose template correction.
+- Too many empty folders: simplify the structure.
+- Duplicate-purpose folders: consolidate naming.
+- Cyclic dependencies: reorganize dependency direction.
 
 **Source:** [Feature-Sliced Design: Frontend Folder Structure](https://feature-sliced.design/blog/frontend-folder-structure) · [Iterators: Project Codebase Organization](https://www.iteratorshq.com/blog/a-comprehensive-guide-on-project-folder-organization/) · [GitHub Well-Architected: Anti-Patterns](https://wellarchitected.github.com/library/scenarios/anti-patterns/)

@@ -1,5 +1,14 @@
 # Directory Templates
 
+Purpose: Use this reference when you need a default repository layout for a detected language, framework, or monorepo strategy.
+
+## Contents
+
+- Universal base structure
+- Single-repo templates by language
+- Monorepo templates by language
+- Detection rules
+
 Language-specific directory structure templates and conventions.
 
 ---
@@ -317,11 +326,11 @@ src/
 
 ### Key Conventions (Python Monorepo)
 
-- uv workspace: `pyproject.toml` の `[tool.uv.workspace]` でメンバー定義
-- Pants/Bazel: `BUILD` ファイルで依存関係を明示的に宣言
-- 各パッケージが独立した `pyproject.toml` を持つ
-- 共有 lock ファイル（`uv.lock`）でバージョン一貫性を保証
-- パッケージ間参照は `workspace:` プロトコルまたは path dependency
+- uv workspace: define members in `pyproject.toml` under `[tool.uv.workspace]`
+- Pants/Bazel: declare dependencies explicitly in `BUILD` files
+- Give each package its own `pyproject.toml`
+- Use one shared lock file (`uv.lock`) to keep versions aligned
+- Reference sibling packages through `workspace:` or path dependencies
 
 ---
 
@@ -350,12 +359,12 @@ services/                   # Individual Go modules
 
 ### Key Conventions (Go Monorepo)
 
-- `go.work` でワークスペースメンバーを定義（Go 1.18+）
-- 各サービスが独立した `go.mod` を持つ
-- `pkg/` は共有ライブラリ（公開インポート可能）
-- `internal/` はモジュール外から参照不可（Go コンパイラが強制）
-- `services/*/cmd/` が各サービスのエントリポイント
-- CI では `go.work` を使わず各モジュール単位でビルド可能にする
+- Define workspace members with `go.work` (Go 1.18+)
+- Give each service its own `go.mod`
+- Use `pkg/` for shared libraries that may be imported publicly
+- Use `internal/` for code that must stay private to the module
+- Treat `services/*/cmd/` as the entrypoint for each service
+- In CI, keep every module buildable without relying on `go.work`
 
 ---
 
@@ -405,12 +414,12 @@ docs/
 
 ### Key Conventions (Java/Kotlin Monorepo)
 
-- Gradle: `settings.gradle.kts` の `include()` でモジュール定義
-- Maven: 親 `pom.xml` の `<modules>` でモジュール定義
-- `buildSrc/` (Gradle) でビルドロジックを共有
-- Convention plugins でビルド設定の一貫性を保証
-- モジュール間依存は `implementation(project(":core"))` で宣言
-- BOM (Bill of Materials) で依存バージョンを一元管理
+- Gradle: define modules with `include()` in `settings.gradle.kts`
+- Maven: define modules in the parent `<modules>` section
+- Use `buildSrc/` in Gradle to share build logic
+- Use convention plugins to keep build settings aligned
+- Declare inter-module dependencies explicitly, for example `implementation(project(":core"))`
+- Use a BOM (Bill of Materials) to centralize dependency versions
 
 ---
 

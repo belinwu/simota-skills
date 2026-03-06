@@ -1,5 +1,14 @@
 # Monorepo Health Check & Proposals
 
+Purpose: Use this reference when the repository is already a monorepo and you need health scoring, diagnostics, or proposal templates.
+
+## Contents
+
+- Monorepo Health Score
+- Diagnostic commands by ecosystem
+- Proposal framework
+- Baseline and alert handling
+
 Health check mechanisms, diagnostic commands, and improvement proposal framework specific to monorepos.
 
 ---

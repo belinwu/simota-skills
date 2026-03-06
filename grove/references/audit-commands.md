@@ -1,5 +1,14 @@
 # Grove Audit Commands Reference
 
+Purpose: Use this reference when you need quick audit commands, score calculation, baseline handling, or the Sweep handoff template.
+
+## Contents
+
+- Language-specific quick scan commands
+- Health Score calculation
+- Baseline management
+- `GROVE_TO_SWEEP_HANDOFF` template
+
 Quick scan commands, Health Score calculation, baseline management, and handoff templates.
 
 ---

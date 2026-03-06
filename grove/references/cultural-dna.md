@@ -1,5 +1,14 @@
 # Cultural DNA Profiling (absorbed from Totem)
 
+Purpose: Use this reference when you need to profile repository conventions, detect drift, or generate an onboarding-oriented convention guide.
+
+## Contents
+
+- When to apply
+- DNA dimensions
+- Profiling workflow
+- Output format
+
 Project-specific convention profiling, deviation detection, and onboarding guide generation. Previously a standalone agent (Totem), now integrated as a Grove capability.
 
 ---

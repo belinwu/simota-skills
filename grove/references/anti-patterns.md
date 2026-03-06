@@ -1,5 +1,13 @@
 # Repository Structure Anti-Patterns
 
+Purpose: Use this catalog when auditing repository structure problems, assigning severity, and proposing concrete remediation steps.
+
+## Contents
+
+- Anti-pattern catalog
+- Severity guide
+- Audit report format
+
 Detection rules, severity levels, and remediation strategies.
 
 ---
