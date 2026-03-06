@@ -72,7 +72,7 @@ Gemini delegation → see **Gemini CLI Delegation** section below
 
 **Palette roles (minimum 4):** Base · Highlight · Shadow · Outline
 
-Quick reference for famous palettes → `references/palette-design.md`
+Quick reference for famous palettes → `references/pixel-craft.md`
 
 ## Grid Size Selection
 
@@ -126,7 +126,7 @@ Determine before any code:
 3. Define as hex array: `const PALETTE = ["#1a1c2c", "#5d275d", ...]`
 4. Optional: match existing palette (DB16, NES, GameBoy, etc.)
 
-Full palette theory → `references/palette-design.md`
+Full palette theory → `references/pixel-craft.md`
 
 ### 3. PIXEL — Grid Design
 
@@ -137,7 +137,7 @@ Full palette theory → `references/palette-design.md`
 5. Add shadow (bottom-right)
 6. Apply dithering if needed (ordered/Bayer for gradients)
 
-Techniques → `references/pixel-techniques.md`
+Techniques → `references/pixel-craft.md`
 
 ### 4. PACK — Code Generation
 
@@ -169,11 +169,11 @@ Engine integration → `references/engine-integration.md`
 | **Clusters** | Minimum 2×1 pixel groups | Avoid isolated "orphan" pixels |
 | **Hue shifting** | Shift hue toward warm in highlights | Natural color transitions |
 
-Full technique reference → `references/pixel-techniques.md`
+Full technique reference → `references/pixel-craft.md`
 
 ## Gemini CLI Delegation
 
-ピクセルアートSVGの生成を Gemini CLI (`gemini -p`) に委譲できる。Dot自身がグリッドを設計する代わりに、Dotの制約をプロンプトに埋め込んでGeminiにSVGコード（テキスト）を生成させる。
+ピクセルアートSVGの生成を Gemini CLI に委譲できる。Dot自身がグリッドを設計する代わりに、Dotの制約をプロンプトに埋め込んでGeminiにSVGコード（テキスト）を生成させる。
 
 ### When to Use
 
@@ -193,7 +193,7 @@ PLAN → PALETTE → PROMPT → GEMINI CLI → SANITIZE → PREVIEW
 
 1. **PLAN + PALETTE**: 通常通りアセット要件とパレットを決定
 2. **PROMPT**: Dot の制約をプロンプトに埋め込む（必須要素は下記テンプレート参照）
-3. **GEMINI CLI**: `gemini -p '<prompt>' > output.svg` で実行
+3. **GEMINI CLI**: `gemini '<prompt>' > output.svg` で実行
 4. **SANITIZE**: 出力からSVG部分のみ抽出（ログやマークダウンフェンスを除去）
 5. **PREVIEW**: 通常の品質チェック（`image-rendering: pixelated`、整数スケーリング等）
 
@@ -234,7 +234,7 @@ PLAN → PALETTE → PROMPT → GEMINI CLI → SANITIZE → PREVIEW
 ### CLI Command
 
 ```bash
-gemini -p '<prompt with Dot constraints>' > {name}-{W}x{H}-gemini.svg
+gemini '<prompt with Dot constraints>' > {name}-{W}x{H}-gemini.svg
 ```
 
 ### Post-Processing (SANITIZE)
@@ -281,12 +281,11 @@ grep -o '<svg.*</svg>' output.svg > clean.svg && mv clean.svg output.svg
 
 | File | Content |
 |------|---------|
-| `references/palette-design.md` | Famous palettes, color theory, genre-specific recommendations |
+| `references/code-patterns.md` | SVG/Canvas/Phaser 3/Pillow/CSS code templates, SVG optimization |
+| `references/pixel-craft.md` | Famous palettes, color theory, dithering, outlines, shading, anti-patterns |
 | `references/sprite-animation.md` | Spritesheet layout, FPS tables, frame counts, metadata JSON |
 | `references/tileset-design.md` | Tile sizes, auto-tiling rules, seamless patterns |
-| `references/pixel-techniques.md` | Dithering patterns, outline rules, anti-alias avoidance |
-| `references/code-patterns.md` | SVG/Canvas/Phaser 3/Pillow/CSS code templates |
-| `references/engine-integration.md` | Phaser 3/Godot/Unity setup, browser rendering config |
+| `references/engine-integration.md` | Phaser 3-4/Godot 4/Unity/PixiJS v8 setup, browser rendering config |
 
 ## Operational
 

@@ -531,7 +531,7 @@ def create_sprite(grid, palette, scale=1):
                 img.putpixel((x, y), (r, g, b, 255))
 
     if scale > 1:
-        img = img.resize((w * scale, h * scale), Image.NEAREST)
+        img = img.resize((w * scale, h * scale), Image.Resampling.NEAREST)
 
     return img
 ```

@@ -449,7 +449,9 @@ Each output tile is composed of 4 quarter-sub-tiles
 arranged from these 5 sources -> 48 combinations
 ```
 
-### Godot 4 TileSet Setup
+### Godot 4.3+ TileSet Setup (TileMapLayer)
+
+Godot 4.3 deprecated `TileMap` in favor of individual `TileMapLayer` nodes:
 
 ```gdscript
 # In editor:
@@ -461,9 +463,11 @@ arranged from these 5 sources -> 48 combinations
 #    - Terrain Set 0: Match Sides (4-bit / 16 tiles)
 # 5. Paint terrain bits on each tile in the atlas
 
-# In code:
-var tilemap = $TileMap
-tilemap.set_cell(0, Vector2i(x, y), source_id, atlas_coords)
+# In code (Godot 4.3+: use TileMapLayer, not TileMap):
+var ground = $GroundLayer   # TileMapLayer node
+var objects = $ObjectLayer  # TileMapLayer node
+ground.set_cell(Vector2i(x, y), source_id, atlas_coords)
+# Note: no layer index parameter — each TileMapLayer is a separate node
 ```
 
 ---

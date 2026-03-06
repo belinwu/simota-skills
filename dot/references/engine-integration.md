@@ -327,20 +327,29 @@ anim_sprite.sprite_frames = frames
 anim_sprite.play("walk")
 ```
 
-### Godot 4 TileMap
+### Godot 4.3+ TileMapLayer (replaces TileMap)
+
+Godot 4.3 deprecated the monolithic `TileMap` node. Use individual `TileMapLayer` nodes instead:
 
 ```gdscript
-# TileMap node setup
-# 1. Create TileSet in inspector
-# 2. Set tile size: 16x16
-# 3. Add atlas source (tileset image)
-# 4. Configure terrains:
+# Godot 4.3+: Use TileMapLayer nodes (one per layer)
+# 1. Create TileMapLayer node (not TileMap)
+# 2. Assign TileSet resource
+# 3. Set tile size: 16x16
+# 4. Configure terrains in TileSet editor
 
-var tilemap = $TileMap
+var ground_layer = $GroundLayer  # TileMapLayer node
+var object_layer = $ObjectLayer  # TileMapLayer node
+
 # Place tile programmatically
-tilemap.set_cell(0, Vector2i(5, 3), 0, Vector2i(0, 0))
-# Args: layer, coords, source_id, atlas_coords
+ground_layer.set_cell(Vector2i(5, 3), 0, Vector2i(0, 0))
+# Args: coords, source_id, atlas_coords (no layer index needed)
+
+# Godot 4.3+: integer scale mode for pixel-perfect rendering
+# Project Settings → Display → Window → Stretch → Scale Mode = "integer"
 ```
+
+**Migration from TileMap:** Replace single `TileMap` with multiple `TileMapLayer` children. Remove the layer index parameter from `set_cell()` calls.
 
 ---
 
@@ -421,24 +430,28 @@ var animation = gameObject.AddComponent<Animation>();
 
 ---
 
-## PixiJS Configuration
+## PixiJS v8 Configuration (2024+)
+
+PixiJS v8 rewrote the rendering pipeline. Key API changes for pixel art:
 
 ```javascript
-const app = new PIXI.Application({
+// v8: Application is now async
+const app = new PIXI.Application();
+await app.init({
   width: 320,
   height: 180,
-  resolution: 4,                    // Scale factor
+  resolution: 4,
   autoDensity: true,
   antialias: false,
   backgroundColor: 0x000000,
 });
 
-// Set default scale mode for all textures
-PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST;
+// v8: Set default scale mode for all textures
+PIXI.TextureStyle.defaultOptions.scaleMode = 'nearest';
 
 // Or per-texture
 const texture = PIXI.Texture.from('hero.png');
-texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+texture.source.scaleMode = 'nearest';
 
 // Sprite
 const sprite = new PIXI.Sprite(texture);
@@ -450,6 +463,15 @@ const animSprite = new PIXI.AnimatedSprite(sheet.animations['walk']);
 animSprite.animationSpeed = 0.15;  // 0-1 range, roughly FPS/60
 animSprite.play();
 ```
+
+### PixiJS v7 → v8 Migration (Pixel Art)
+
+| v7 API | v8 API |
+|--------|--------|
+| `new PIXI.Application({ ... })` | `await new PIXI.Application().init({ ... })` |
+| `PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST` | `PIXI.TextureStyle.defaultOptions.scaleMode = 'nearest'` |
+| `texture.baseTexture.scaleMode` | `texture.source.scaleMode` |
+| `PIXI.SCALE_MODES.NEAREST` | `'nearest'` (string) |
 
 ---
 
@@ -536,5 +558,5 @@ Before shipping pixel art to any engine:
 | **Godot 4** | Viewport scaling can introduce blur | Use "viewport" stretch mode |
 | **Unity** | Sprite Editor resets filter on reimport | Create TextureImporter preset |
 | **Unity** | Pixel Perfect Camera conflicts with cinemachine | Use PP Camera's own follow logic |
-| **PixiJS** | Scale mode must be set before texture loads | Set `defaultOptions` early |
+| **PixiJS v8** | `Application()` is now async, requires `await app.init()` | Use `await` pattern; set `TextureStyle.defaultOptions` early |
 | **CSS** | `transform: scale()` can trigger anti-aliasing | Use `image-rendering: pixelated` on parent |
