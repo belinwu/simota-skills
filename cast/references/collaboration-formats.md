@@ -1,395 +1,142 @@
 # Cast Collaboration Formats
 
-5 collaboration patterns with detailed handoff formats for inter-agent communication.
+Purpose: Preserve the exact handoff anchors and the minimum payload each collaboration pattern requires.
 
----
+## Contents
+
+1. Pattern overview
+2. Researcher pattern
+3. Trace pattern
+4. Voice pattern
+5. Spark pattern
+6. Retain pattern
+7. Nexus integration
+8. General handoff rules
 
 ## Pattern Overview
 
-| Pattern | Flow | Purpose |
-|---------|------|---------|
-| **A** | Researcher → Cast[FUSE] → Echo | Research data → persona integration → UI validation |
-| **B** | Trace → Cast[EVOLVE] | Behavioral data → persona evolution |
-| **C** | Voice → Cast[FUSE] | Feedback segments → persona enrichment |
-| **D** | Cast[DISTRIBUTE] → Spark | Personas → feature proposals |
-| **E** | Cast[DISTRIBUTE] → Retain | Personas → retention strategies |
+| Pattern | Flow | Use when |
+|---|---|---|
+| `A` | Researcher -> Cast -> Echo | Research findings become testing personas |
+| `B` | Trace -> Cast | Behavioral data updates personas |
+| `C` | Voice -> Cast | Feedback data enriches personas |
+| `D` | Cast -> Spark | Personas inform feature ideation |
+| `E` | Cast -> Retain | Personas inform retention strategy |
 
----
+## Pattern A: Researcher -> Cast -> Echo
 
-## Pattern A: Researcher → Cast → Echo
+### Inbound anchor
 
-### Use Case
+`## CAST_HANDOFF: Research Integration`
 
-Researcher completes user interviews or usability tests. Cast integrates findings into personas. Echo validates UI with enriched personas.
+Minimum fields:
 
-### Step 1: Researcher → Cast Handoff
+- `Source`
+- `Findings`
+- `User Segments Identified`
+- `Goals Discovered`
+- `Pain Points Discovered`
+- `Behavioral Insights`
+- `Recommended Persona Updates`
 
-**Input format** (what Cast receives from Researcher):
+### Outbound anchor
 
-```markdown
-## CAST_HANDOFF: Research Integration
+`## ECHO_HANDOFF: Updated Personas Ready`
 
-### Source
-- **Agent:** Researcher
-- **Research type:** [Interview/Usability Test/Survey]
-- **Date:** YYYY-MM-DD
-- **Participants:** [count]
+Minimum fields:
 
-### Findings
+- `Source`
+- `Persona Summary`
+- `Recommended Validation Flows`
+- `Files`
 
-#### User Segments Identified
-| Segment | Description | Evidence |
-|---------|-------------|----------|
-| [Segment 1] | [Description] | [Interview quote/data reference] |
-| [Segment 2] | [Description] | [Interview quote/data reference] |
+## Pattern B: Trace -> Cast
 
-#### Goals Discovered
-- [Goal 1] — Evidence: [quote/observation]
-- [Goal 2] — Evidence: [quote/observation]
+### Inbound anchor
 
-#### Pain Points Discovered
-- [Pain 1] — Evidence: [quote/observation]
-- [Pain 2] — Evidence: [quote/observation]
+`## CAST_HANDOFF: Behavioral Data`
 
-#### Behavioral Insights
-- [Insight 1] — Evidence: [observation]
-- [Insight 2] — Evidence: [observation]
+Minimum fields:
 
-#### Recommended Persona Updates
-| Existing Persona | Suggested Changes | Confidence |
-|-----------------|-------------------|------------|
-| [Persona name] | [What to update] | [High/Medium/Low] |
-| [New segment] | [Create new persona] | [High/Medium/Low] |
-```
+- `Source`
+- `Behavioral Clusters`
+- `Drift Signals`
+- `Raw Metrics`
 
-### Step 2: Cast Processing
+## Pattern C: Voice -> Cast
 
-Cast receives handoff and:
-1. Matches findings to existing personas via FUSE mode
-2. Creates new personas for unmatched segments via CONJURE
-3. Updates confidence scores with research contribution (+0.30)
-4. Updates registry
+### Inbound anchor
 
-### Step 3: Cast → Echo Handoff
+`## CAST_HANDOFF: Feedback Integration`
 
-**Output format** (what Cast sends to Echo):
+Minimum fields:
 
-```markdown
-## ECHO_HANDOFF: Updated Personas Ready
+- `Source`
+- `Segment Insights`
+- `Feedback-to-Persona Mapping`
+- `Emerging Segments`
 
-### Source
-- **Agent:** Cast (via Researcher findings)
-- **Personas updated:** [count]
-- **Personas created:** [count]
+## Pattern D: Cast -> Spark
 
-### Persona Summary
-| Persona | Status | Confidence | Echo Mapping | File |
-|---------|--------|------------|-------------|------|
-| [Name 1] | Updated (v1.1→v1.2) | 0.85 | Newbie | [path] |
-| [Name 2] | New | 0.75 | Power User | [path] |
+### Outbound anchor
 
-### Recommended Validation Flows
-1. [Flow 1] — Test with [Persona 1] (new pain point discovered)
-2. [Flow 2] — Test with [Persona 2] (new segment)
+`## SPARK_HANDOFF: Personas for Feature Ideation`
 
-### Files
-- `.agents/personas/{service}/[persona-1].md`
-- `.agents/personas/{service}/[persona-2].md`
-```
+Minimum fields:
 
----
+- `Source`
+- `Persona Summaries (Feature-Focused)`
+- `Cross-Persona Opportunities`
+- `Files`
 
-## Pattern B: Trace → Cast
+## Pattern E: Cast -> Retain
 
-### Use Case
+### Outbound anchor
 
-Trace extracts behavioral patterns from session replay data. Cast evolves personas with behavioral evidence.
+`## RETAIN_HANDOFF: Personas for Retention Strategy`
 
-### Trace → Cast Handoff
+Minimum fields:
 
-**Input format** (what Cast receives from Trace):
-
-```markdown
-## CAST_HANDOFF: Behavioral Data
-
-### Source
-- **Agent:** Trace
-- **Period:** YYYY-MM-DD to YYYY-MM-DD
-- **Sessions analyzed:** [count]
+- `Source`
+- `Persona Profiles (Retention-Focused)`
+- `Cross-Persona Retention Matrix`
+- `Files`
 
-### Behavioral Clusters
+## Nexus Integration
 
-#### Cluster 1: [Cluster Name]
-- **Size:** [% of sessions]
-- **Device mix:** Mobile [%], Desktop [%]
-- **Avg session duration:** [time]
-- **Key navigation pattern:** [description]
-- **Drop-off points:** [list]
-- **Suggested persona mapping:** [Existing persona name or "New segment"]
+### AUTORUN step completion
 
-#### Cluster 2: [Cluster Name]
-- **Size:** [% of sessions]
-- **Device mix:** Mobile [%], Desktop [%]
-- **Avg session duration:** [time]
-- **Key navigation pattern:** [description]
-- **Drop-off points:** [list]
-- **Suggested persona mapping:** [persona name]
+Return `_STEP_COMPLETE:` with:
 
-### Drift Signals
-| Persona | Axis | Current | Observed | Significance |
-|---------|------|---------|----------|-------------|
-| [Name] | Behavior | Desktop 60% | Desktop 40% | Moderate |
-| [Name] | Pain Points | Cart abandonment 15% | Cart abandonment 25% | Significant |
+- `Mode`
+- `Personas processed`
+- `Registry updated`
+- `Confidence notes`
+- `Next`
 
-### Raw Metrics
-| Metric | Previous Period | Current Period | Change |
-|--------|----------------|---------------|--------|
-| Mobile sessions % | 60% | 70% | +10% |
-| Avg pages/session | 4.2 | 3.8 | -0.4 |
-| Cart abandonment | 15% | 25% | +10% |
-```
+### Hub handoff
 
-### Cast Processing
-
-Cast receives Trace handoff and:
-1. Maps behavioral clusters to existing personas
-2. Identifies drift signals across 4 axes
-3. Applies EVOLVE workflow for each affected persona
-4. Bumps confidence with Trace contribution (+0.25)
-5. Updates evolution logs and registry
-
----
-
-## Pattern C: Voice → Cast
-
-### Use Case
-
-Voice analyzes user feedback (NPS, reviews, support tickets). Cast fuses feedback insights into personas.
-
-### Voice → Cast Handoff
-
-**Input format** (what Cast receives from Voice):
-
-```markdown
-## CAST_HANDOFF: Feedback Integration
-
-### Source
-- **Agent:** Voice
-- **Feedback type:** [NPS/CSAT/Reviews/Support Tickets]
-- **Period:** YYYY-MM-DD to YYYY-MM-DD
-- **Responses analyzed:** [count]
-
-### Segment Insights
-
-#### Promoters (NPS 9-10)
-- **Theme 1:** [Positive theme] — Quote: "[user quote]"
-- **Theme 2:** [Positive theme] — Quote: "[user quote]"
-- **Suggested persona impact:** [Which persona, what to update]
-
-#### Detractors (NPS 0-6)
-- **Theme 1:** [Negative theme] — Quote: "[user quote]"
-- **Theme 2:** [Negative theme] — Quote: "[user quote]"
-- **Suggested persona impact:** [Which persona, what to update]
-
-### Feedback-to-Persona Mapping
-| Feedback Theme | Frequency | Affected Persona | Suggested Update |
-|---------------|-----------|-----------------|-----------------|
-| "Shipping cost surprise" | 23% of detractors | First-Time Buyer | Add to Frustrations |
-| "Fast checkout" | 45% of promoters | Power Shopper | Confirm Goal |
-| "Confusing returns" | 18% of detractors | First-Time Buyer | Add to Pain Points |
-
-### Emerging Segments
-- [New user type not covered by existing personas]: Evidence: "[feedback quotes]"
-```
-
-### Cast Processing
-
-Cast receives Voice handoff and:
-1. Maps feedback themes to existing persona attributes
-2. Updates Frustrations/Goals based on feedback patterns
-3. Refines Emotion Triggers from actual user quotes
-4. Creates new personas for emerging segments
-5. Bumps confidence with Voice contribution (+0.20)
-
----
-
-## Pattern D: Cast → Spark
-
-### Use Case
-
-Cast distributes personas to Spark for feature ideation based on unmet needs and frustrations.
-
-### Cast → Spark Handoff
-
-**Output format** (what Cast sends to Spark):
-
-```markdown
-## SPARK_HANDOFF: Personas for Feature Ideation
-
-### Source
-- **Agent:** Cast
-- **Personas included:** [count]
-- **Focus:** Unmet needs and high-friction areas
-
-### Persona Summaries (Feature-Focused)
-
-#### [Persona 1 Name] (Confidence: 0.82)
-**Role:** [Role]
-**Primary frustration:** [Top frustration]
-**Unmet needs:**
-1. [Need 1] — JTBD: [functional job]
-2. [Need 2] — JTBD: [emotional job]
-
-**High-friction flows:**
-- [Flow 1]: Emotion Score [-2] — [Description]
-- [Flow 2]: Emotion Score [-3] — [Description]
-
-**Feature opportunity signals:**
-- [Signal 1 from behavioral/feedback data]
-- [Signal 2 from behavioral/feedback data]
-
-#### [Persona 2 Name] (Confidence: 0.75)
-[Same structure]
-
-### Cross-Persona Opportunities
-| Opportunity | Affected Personas | Evidence | Priority |
-|-------------|------------------|----------|----------|
-| [Feature area 1] | [Persona 1, 2] | [Shared frustration/need] | High |
-| [Feature area 2] | [Persona 1] | [Unique need] | Medium |
-
-### Files
-- `.agents/personas/{service}/[persona-1].md`
-- `.agents/personas/{service}/[persona-2].md`
-```
-
----
-
-## Pattern E: Cast → Retain
-
-### Use Case
-
-Cast distributes personas to Retain for designing persona-specific retention and re-engagement strategies.
-
-### Cast → Retain Handoff
-
-**Output format** (what Cast sends to Retain):
-
-```markdown
-## RETAIN_HANDOFF: Personas for Retention Strategy
-
-### Source
-- **Agent:** Cast
-- **Personas included:** [count]
-- **Focus:** Lifecycle stages, churn risks, engagement patterns
-
-### Persona Profiles (Retention-Focused)
-
-#### [Persona 1 Name] (Confidence: 0.82)
-**Role:** [Role]
-**Lifecycle stage:** [Awareness/Adoption/Active/At-risk/Churned]
-**Usage frequency:** [Daily/Weekly/Monthly]
-
-**Engagement indicators:**
-- Session frequency: [trend]
-- Feature usage depth: [shallow/medium/deep]
-- Last active: [date or "N/A for template"]
-
-**Churn risk factors:**
-1. [Risk factor 1] — Evidence: [data source]
-2. [Risk factor 2] — Evidence: [data source]
-
-**Retention levers:**
-- [What keeps this persona engaged]
-- [Trigger for re-engagement]
-- [Value proposition that resonates]
-
-**Emotion triggers (retention-relevant):**
-| Positive | Negative |
-|----------|----------|
-| Delighted (+3): [trigger] | Frustrated (-2): [trigger] |
-| Satisfied (+2): [trigger] | Abandoned (-3): [trigger] |
-
-#### [Persona 2 Name] (Confidence: 0.75)
-[Same structure]
-
-### Cross-Persona Retention Matrix
-| Strategy | [Persona 1] | [Persona 2] | [Persona 3] |
-|----------|-------------|-------------|-------------|
-| Onboarding email | High impact | Medium impact | Low impact |
-| Feature discovery | Medium impact | High impact | High impact |
-| Re-engagement push | High impact | Low impact | Medium impact |
-
-### Files
-- `.agents/personas/{service}/[persona-1].md`
-- `.agents/personas/{service}/[persona-2].md`
-```
-
----
-
-## NEXUS Integration
-
-### AUTORUN Step Complete Format
-
-```markdown
-_STEP_COMPLETE
-- Agent: Cast
-- Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-- Output:
-  - Mode: CONJURE | FUSE | EVOLVE | AUDIT | DISTRIBUTE | SPEAK
-  - Personas affected: [count]
-  - Personas created: [count]
-  - Confidence changes: [summary]
-  - Registry updated: true | false
-- Next: Echo | Spark | Retain | VERIFY | DONE
-```
-
-### NEXUS_HANDOFF Format
-
-When Cast receives `## NEXUS_ROUTING`:
-
-```markdown
-## NEXUS_HANDOFF
-
-### Step
-[Current step in chain]
-
-### Agent
-Cast
-
-### Summary
-[1-2 sentence summary of what Cast did]
-
-### Key Findings
-- [Finding 1]
-- [Finding 2]
-
-### Artifacts
-- `.agents/personas/{service}/[persona-1].md`
-- `.agents/personas/registry.yaml`
-
-### Risks
-- [Any risks identified]
-
-### Open Questions
-- [Unresolved questions]
-
-### Confirmations
-- [Decisions made during execution]
-
-### Suggested Next
-- [Agent] for [purpose]
-
-### Next Action
-[Specific next step recommendation]
-```
-
----
-
-## General Handoff Principles
-
-1. **Always include source attribution** — Every handoff identifies the originating agent and data
-2. **Confidence is transparent** — All handoffs include confidence scores
-3. **Evidence-backed** — Recommendations reference specific data points
-4. **Actionable** — Handoffs include clear next steps for the receiving agent
-5. **File references** — Always include paths to persona files for direct access
-6. **Format adaptation** — Adapt handoff detail level to receiving agent's needs (see `distribution-adapters.md`)
+Use the exact anchor:
+
+`## NEXUS_HANDOFF`
+
+Required fields:
+
+- `Step`
+- `Agent`
+- `Summary`
+- `Key Findings`
+- `Artifacts`
+- `Risks`
+- `Open Questions`
+- `Confirmations`
+- `Suggested Next`
+- `Next Action`
+
+## General Handoff Rules
+
+- Keep payloads small and evidence-first.
+- Preserve exact anchors.
+- Do not drop confidence or file references.
+- When a persona changed, state what changed and why.
+- When uncertainty remains, say so explicitly instead of implying certainty.

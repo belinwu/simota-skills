@@ -1,177 +1,90 @@
 # Persona Validation Methods
 
-> データ駆動型ペルソナバリデーション、ML クラスタリング、三角測量法、定量的検証
+Purpose: Define how Cast validates personas with triangulation, survey evidence, clustering, and staged confidence upgrades.
 
-## 1. バリデーションの必要性
+## Contents
 
-```
-なぜ検証が必要か:
-  - Proto-Persona は仮説に過ぎない → 実データで検証しないと危険
-  - 確証バイアス: 作成者の思い込みがペルソナに投影される
-  - 代表性の問題: 少数インタビューが全ユーザーを代表するとは限らない
-  - 時間経過: 検証済みペルソナも市場変化で無効化する
+1. Why validation matters
+2. Triangulation patterns
+3. Survey thresholds
+4. Clustering guidance
+5. Synthetic persona rules
+6. Validation statuses
 
-検証なしのリスク:
-  × 実在しないユーザー像に基づく機能開発
-  × リソースの無駄遣い（存在しないセグメントへの投資）
-  × チーム内で異なるユーザー理解 → 意思決定の不整合
-```
+## Why Validation Matters
 
----
+Validation exists to avoid:
 
-## 2. 三角測量法（Triangulation）
+- proto-personas treated as facts
+- confirmation bias from creators
+- over-generalizing from too little data
+- stale personas surviving market or product change
 
-### 概要
+## Triangulation Patterns
 
-```
-Methodological Triangulation:
-  複数の調査手法を組み合わせて発見を相互検証する手法
-  → 単一手法のバイアスを相殺し、結果の信頼性を向上
+| Pattern | Methods | Strength |
+|---|---|---|
+| Basic | interview `5-10` + survey `350+` | Cost-efficient |
+| Behavioral | interview + behavior logs + experiment / test evidence | Verifies saying vs doing |
+| Full | interview + survey + behavior logs + usability evidence | Highest confidence |
 
-NN/G データ:
-  - 定性インタビュー + 定量サーベイの三角測量で
-    プロジェクト成功率が 32% 向上
-```
+## Quantitative Survey Thresholds
 
-### 三角測量パターン
+- `350+` respondents per segment for `95%` confidence
+- `1000+` total when comparing multiple segments
+- Prefer behavior-based questions over preference-only questions
+- Likert + free text is the default hybrid
 
-| パターン | 手法 1 | 手法 2 | 手法 3 | 強み |
-|---------|--------|--------|--------|------|
-| **基本** | インタビュー (5-10名) | サーベイ (350+名) | — | コスト効率が良い |
-| **行動** | インタビュー | 行動ログ分析 | A/B テスト | 言動一致の確認 |
-| **完全** | インタビュー | サーベイ | 行動ログ + ユーザビリティテスト | 最高精度 |
+## ML Clustering Guidance
 
-### 定量サーベイの要件
+### Algorithm Fit
 
-```
-統計的有意性の確保:
-  - セグメントあたり 350+ 回答者（信頼度 95%）
-  - 全体として 1000+ 回答者（複数セグメント比較時）
-  - サンプリングバイアスの最小化（ランダム or 層化抽出）
+| Algorithm | Use when | Caveat |
+|---|---|---|
+| K-means | clearly separated segments | requires preselected cluster count |
+| DBSCAN | irregular clusters and outliers | parameter-sensitive |
+| Hierarchical clustering | exploratory structure analysis | weak for very large datasets |
+| Gaussian mixture | overlapping segments | higher computational cost |
 
-サーベイ設計:
-  - 行動ベースの質問（「何をしたか」）を優先
-  - 態度ベースの質問（「何を好むか」）は補助的に使用
-  - リッカート尺度 + 自由記述のハイブリッド
-```
+### Cluster Count Rules
 
----
+- Use `Elbow + Silhouette + Gap` together.
+- `Silhouette > 0.5` is a good signal.
+- Recommended persona count is `3-7`.
+  - early product: `3-4`
+  - mature product: `5-7`
 
-## 3. ML クラスタリングによるペルソナ検証
+## Validation Workflow
 
-### アルゴリズム選択
+1. Collect behavior, survey, support, and satisfaction data.
+2. Preprocess and normalize.
+3. Cluster with more than one method when possible.
+4. Match clusters against current personas.
+5. Treat uncovered clusters as new persona candidates.
+6. Raise confidence only after evidence-backed mapping.
 
-| アルゴリズム | 特徴 | 適用場面 | 弱点 |
-|------------|------|---------|------|
-| **K-means** | 高速、球状クラスタに最適 | 明確に分離されたセグメント | クラスタ数の事前指定が必要 |
-| **DBSCAN** | 密度ベース、ノイズ耐性 | 不規則形状のクラスタ、外れ値検出 | パラメータ感度が高い |
-| **階層的クラスタリング** | 樹形図で可視化、カット位置で柔軟 | 探索的分析、セグメント階層の把握 | 大規模データに不向き |
-| **Gaussian Mixture** | 確率的、ソフトクラスタリング | 重複するセグメント | 計算コストが高い |
+## Synthetic Persona Rules
 
-### クラスタ数の決定
+- Synthetic personas are hypothesis tools, not production truth.
+- Use them to improve guides, expose gaps, or explore edge cases.
+- Never treat them as substitutes for real user validation.
+- Keep synthetic and real-data-backed personas explicitly separated.
 
-```
-手法の組み合わせ:
-  1. Elbow Method: SSE（Sum of Squared Errors）の変曲点
-  2. Silhouette Score: クラスタ凝集度 vs 分離度（0.5+ が良好）
-  3. Gap Statistics: ランダム分布との差
-  → 3 手法の合意点をクラスタ数とする
+## Validation Statuses
 
-ペルソナ数の推奨:
-  3-7 ペルソナ（7 超は組織で管理困難）
-  - プロダクト初期: 3-4 ペルソナ
-  - 成熟プロダクト: 5-7 ペルソナ
-```
+| Status | Meaning |
+|---|---|
+| `proto` | hypothesis only |
+| `partial` | validated by one stream only |
+| `validated` | triangulated |
+| `ml_validated` | supported by clustering evidence |
 
-### 検証ワークフロー
+### Confidence Contributions
 
-```
-Step 1: データ収集
-  - 行動ログ（セッション、クリック、購買）
-  - サーベイ回答
-  - サポートチケット
-  - NPS/CSAT スコア
-
-Step 2: 前処理
-  - 次元削減（PCA/t-SNE）で重要変数を特定
-  - 欠損値処理
-  - 正規化/標準化
-
-Step 3: クラスタリング
-  - 複数アルゴリズムで実行
-  - クラスタ数を Elbow + Silhouette + Gap で決定
-  - 安定性検証（ブートストラップ再抽出で再現性確認）
-
-Step 4: ペルソナとの照合
-  - 各クラスタと既存ペルソナの対応付け
-  - カバレッジ率の計算（全クラスタが既存ペルソナで説明可能か）
-  - 未カバークラスタ → 新ペルソナ候補
-
-Step 5: ペルソナ更新
-  - クラスタ特性で既存ペルソナ属性を検証・修正
-  - 信頼スコアの更新（ML 検証: +0.20）
-  - 新ペルソナの追加 or 不要ペルソナの統合・廃止
-```
-
----
-
-## 4. 自己教師あり ML 検証（2025 最新）
-
-```
-ScienceDirect 研究 (2025):
-  - 自己教師あり ML によるペルソナ検証で重み付き精度 88-94%
-  - トレーニングデータを超えた汎化能力
-  - 従来の手動検証と比較して大幅なコスト削減
-
-アプローチ:
-  1. ラベルなしデータで事前学習（自己教師あり）
-  2. 少量のラベル付きデータで微調整
-  3. ペルソナ属性の正確性を自動評価
-  → 特にヘルスケア領域で実証（患者ペルソナの検証）
-```
-
----
-
-## 5. Synthetic Persona（合成ペルソナ）の活用
-
-```
-AI 合成ペルソナの位置づけ:
-  × リアルユーザーの代替 → 危険
-  ○ 仮説生成 + ギャップ発見のツール → 有効
-
-活用パターン:
-  1. インタビューガイドの改善 → 合成ペルソナで質問の死角を発見
-  2. リクルーティング基準の精緻化 → 想定セグメントの事前検証
-  3. プロトタイプシナリオの拡充 → エッジケースの洗い出し
-  4. 既存ペルソナの網羅性チェック → 見落としセグメントの発見
-
-原則:
-  - 合成ペルソナは必ず実データで検証してから本番運用
-  - 合成と実データベースを明示的に区別（confidence に反映）
-  - Proto-Persona 同様、暫定的な位置づけ
-```
-
----
-
-## 6. Cast との連携
-
-```
-Cast の CONJURE/AUDIT モードでの活用:
-  1. CONJURE で生成したペルソナに検証ステータスを付与
-     - proto: 未検証（仮説ベース）
-     - partial: 一部検証済み（定性 or 定量の片方）
-     - validated: 三角測量で検証済み
-     - ml_validated: ML クラスタリングで検証済み
-  2. AUDIT モードで検証ステータスとデータ鮮度を確認
-  3. Trace/Voice からの行動データで継続的バリデーション
-  4. confidence スコアに検証レベルを反映
-
-confidence への寄与:
-  - Proto-Persona: base 0.30
-  - Interview 検証: +0.20
-  - Survey 検証: +0.15
-  - ML クラスタリング検証: +0.20
-  - 三角測量完了: +0.10 (ボーナス)
-```
-
-**Source:** [ScienceDirect: Self-Supervised ML Persona Validation](https://www.sciencedirect.com/science/article/pii/S1532046425000449) · [ScienceDirect: Predictive Personas](https://www.sciencedirect.com/science/article/abs/pii/S1071581923001568) · [MixBright: 23 Persona Validation Methods](https://mixbright.com/buyer-persona-validation-methods/) · [MarketingCourse: Advanced Customer Segmentation 2025](https://marketingcourse.org/advanced-customer-segmentation-how-data-is-defining-personas-in-2025/) · [IxDF: Research-Backed User Personas 2025](https://ixdf.org/literature/article/user-persona-guide)
+| Validation state | Contribution |
+|---|---|
+| Proto baseline | `0.30` |
+| Interview validation | `+0.20` |
+| Survey validation | `+0.15` |
+| ML validation | `+0.20` |
+| Triangulation complete | `+0.10` |

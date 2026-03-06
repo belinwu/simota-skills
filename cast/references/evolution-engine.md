@@ -1,271 +1,143 @@
 # Cast Evolution Engine
 
-Evolution mechanism specification for data-driven persona updates.
+Purpose: Define drift detection, severity assessment, change application, confidence decay, and identity protection for `EVOLVE`.
 
----
+## Contents
 
-## Overview
-
-The evolution engine detects persona drift from new data, applies controlled updates, and maintains a full audit trail. Inspired by Harvest's chronicle system but adapted for structured persona data.
-
-```
-┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
-│  DETECT   │───→│  ASSESS   │───→│  APPLY    │───→│  LOG      │───→│ PROPAGATE│
-│  Drift    │    │  Impact   │    │  Changes  │    │  History  │    │  Notify  │
-└──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
-```
-
----
+1. Drift axes
+2. Severity levels
+3. Merge rules
+4. Log and versioning
+5. Confidence decay
+6. Batch evolution
+7. Identity protection
 
 ## Drift Detection
 
-### The 4 Drift Axes
+### Four Drift Axes
 
-Cast monitors persona drift across 4 axes:
-
-| Axis | What Changes | Detection Signals | Threshold |
-|------|-------------|-------------------|-----------|
-| **Goals** | User objectives evolve | New JTBD patterns, changed priorities | ≥1 goal significantly shifted |
-| **Pain Points** | Frustrations change | New complaints, resolved issues | ≥1 pain point added/removed |
-| **Behavior** | Usage patterns shift | Session patterns, device mix, frequency | ≥2 behavioral attributes changed |
-| **Segment** | User demographic shifts | New user types emerge, existing segments merge | Segment boundaries change |
-
-### Detection Algorithm
-
-```
-FOR each active persona in registry:
-  FOR each drift axis:
-    compare(persona.current_state, new_data)
-    IF difference > axis_threshold:
-      flag_drift(persona, axis, difference)
-
-  IF count(flagged_axes) >= 1:
-    trigger_evolution(persona)
-```
+| Axis | Detect | Threshold |
+|---|---|---|
+| `Goals` | Objective shift, changed JTBD, changed priorities | `>=1` significant goal shift |
+| `Pain Points` | New complaints or resolved issues | `>=1` pain point added or removed |
+| `Behavior` | Device mix, frequency, flow, navigation changes | `>=2` behavioral attributes changed |
+| `Segment` | Segment boundaries or dominant user type changes | Segment boundary changes |
 
 ### Signal Sources
 
-| Source Agent | Drift Signals Provided |
-|-------------|----------------------|
-| **Trace** | Session duration changes, navigation pattern shifts, device mix changes, drop-off point changes |
-| **Voice** | New feedback themes, NPS score shifts, emerging complaints, resolved pain points |
-| **Pulse** | Funnel metric changes, cohort behavior shifts, engagement pattern changes |
-| **Researcher** | New interview findings, updated user segments, revised journey maps |
-
----
+| Source | Typical drift signal |
+|---|---|
+| Trace | session pattern change, device mix change, drop-off shift |
+| Voice | feedback themes, NPS shift, complaint emergence |
+| Pulse | funnel change, cohort shift, engagement change |
+| Researcher | new interview findings, revised segments, journey change |
 
 ## Impact Assessment
 
-### Severity Levels
-
 | Severity | Criteria | Action |
-|----------|----------|--------|
-| **Minor** | 1 attribute changed within 1 axis | Auto-apply, minor version bump |
-| **Moderate** | 2-3 attributes changed across 1-2 axes | Auto-apply with notification, minor version bump |
-| **Significant** | 4+ attributes changed across 2+ axes | Require confirmation, minor version bump |
-| **Identity** | Role or Category would change | Block — create new persona instead |
+|---|---|---|
+| `Minor` | `1` attribute within `1` axis | Auto-apply, minor version bump |
+| `Moderate` | `2-3` attributes across `1-2` axes | Auto-apply with notification |
+| `Significant` | `4+` attributes across `2+` axes | Ask first |
+| `Identity` | Role or category would change | Block and create a new persona |
 
-### Change Classification
+### Typical Change Classes
 
-```yaml
-change_classification:
-  minor_changes:
-    - device_percentage_shift (< 20%)
-    - session_duration_change (< 50%)
-    - single_pain_point_update
-    - single_behavior_update
-    - emotion_trigger_refinement
-
-  moderate_changes:
-    - tech_level_shift
-    - usage_frequency_change
-    - multiple_pain_point_updates
-    - goal_priority_reorder
-    - context_scenario_addition
-
-  significant_changes:
-    - primary_goal_change
-    - major_behavior_pattern_shift (3+ behaviors)
-    - segment_boundary_change
-    - echo_base_mapping_change
-
-  identity_changes:
-    - role_change
-    - category_change
-    - fundamental_user_type_shift
-```
-
----
+| Class | Examples |
+|---|---|
+| Minor | device share shift `<20%`, single behavior refinement, one pain point update |
+| Moderate | tech-level shift, usage-frequency change, multiple pain-point updates |
+| Significant | primary goal change, major behavior shift, segment boundary change, Echo mapping change |
+| Identity | role change, category change, fundamental user-type shift |
 
 ## Evolution Application
 
 ### Merge Rules
 
-When applying new data to existing persona attributes:
+| Rule | Meaning |
+|---|---|
+| Newer wins | More recent evidence takes precedence |
+| Higher confidence wins | When timestamps are similar, stronger evidence wins |
+| Additive preferred | Add or refine instead of replacing without cause |
+| Evidence required | Every change cites its source |
+| `[inferred]` preserved | Keep inferred markers until real data replaces them |
 
-| Rule | Description |
-|------|-------------|
-| **Newer wins** | When conflicting, more recent data takes precedence |
-| **Higher confidence wins** | When timestamps are similar, higher confidence source wins |
-| **Additive preferred** | Add new attributes rather than replacing existing ones |
-| **Evidence required** | Every change must reference its data source |
-| **Inferred preserved** | `[inferred]` markers stay until real data confirms/replaces |
+### Section-Level Behavior
 
-### Section-Level Application
-
-| Section | Evolution Behavior |
-|---------|-------------------|
-| **Profile** | Individual attribute updates (except Role — immutable) |
-| **Quote** | Replace if new data provides more representative voice |
-| **Goals** | Reorder, refine wording, add/remove (maintain 3) |
-| **Frustrations** | Add new, resolve old, reword (maintain 3) |
-| **Behaviors** | Update based on behavioral data (maintain 3) |
-| **Emotion Triggers** | Refine triggers, adjust scores based on evidence |
-| **Context Scenarios** | Add new scenarios, update existing environment details |
-| **JTBD** | Refine jobs, rarely replace (fundamental needs are stable) |
-| **Echo Testing Focus** | Update priority flows based on new friction data |
-| **Extended Sections** | Update individual attributes with new evidence |
+| Section | Evolution behavior |
+|---|---|
+| `Profile` | Update attributes except Core Identity |
+| `Quote` | Replace only when new evidence is clearly more representative |
+| `Goals / Frustrations / Behaviors` | Maintain `3`; reorder, refine, add, or remove |
+| `Emotion Triggers` | Refine trigger wording and polarity scores |
+| `Context Scenarios` | Add or update scenarios |
+| `JTBD` | Refine, but rarely replace |
+| `Echo Testing Focus` | Update based on fresh friction data |
+| Extended sections | Update attribute-by-attribute with evidence |
 
 ### Frontmatter Updates
 
-On every evolution:
-```yaml
-version: "X.Y+1"           # Bump minor version
-status: active              # Reset to active (from evolved)
-updated: "YYYY-MM-DD"      # Current date
-evolution_count: N+1        # Increment
-confidence: recalculated    # Recalculate from all sources
-```
+On accepted evolution:
 
----
+- bump minor `version`
+- set `status: active`
+- refresh `updated`
+- increment `evolution_count`
+- recalculate `confidence`
 
 ## Evolution Log
 
-### Entry Format
+Append one row per accepted evolution:
 
-Each evolution adds a row to the persona's Evolution Log:
+| Field | Meaning |
+|---|---|
+| `Version` | New version |
+| `Date` | ISO date |
+| `Source` | Triggering evidence source |
+| `Changes` | Concise summary |
+| `Confidence Delta` | Signed change in confidence |
 
-```markdown
-## Evolution Log
+## Confidence Decay
 
-| Version | Date | Source | Changes | Confidence Delta |
-|---------|------|--------|---------|-----------------|
-| 1.0 | 2026-02-01 | README, src/auth | Initial creation | 0.65 |
-| 1.1 | 2026-02-08 | Trace session data | Behavior: device split 60/40→70/30 mobile. Context: added commute scenario | +0.10 |
-| 1.2 | 2026-02-15 | Voice NPS feedback | Frustration: added "hidden shipping costs". Pain Points refined | +0.07 |
-```
+| Age since update | Rule |
+|---|---|
+| `<30` days | No decay |
+| `30-60` days | `-0.05/week` |
+| `60-90` days | `-0.10/week` |
+| `90+` days | Freeze and recommend archival review |
 
-### Entry Fields
+### Notifications
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Version** | New version after this evolution | `1.2` |
-| **Date** | ISO 8601 date | `2026-02-15` |
-| **Source** | Data source that triggered evolution | `Trace session data` |
-| **Changes** | Concise description of what changed | `Behavior: device split updated` |
-| **Confidence Delta** | Change in confidence score | `+0.07` or `-0.05` |
+| Day | Notification | Severity |
+|---|---|---|
+| `30` | Persona stale warning | Info |
+| `45` | Confidence decay notice | Warning |
+| `60` | Faster decay notice | Warning |
+| `90` | Archival review recommendation | Critical |
 
----
+## Batch Evolution
 
-## Confidence Decay Algorithm
+When running `EVOLVE ALL`:
 
-### Decay Schedule
-
-```
-current_date = today()
-days_since_update = current_date - persona.updated
-
-IF days_since_update < 30:
-  decay = 0  # No decay within 30 days
-
-ELIF days_since_update < 60:
-  weeks_over = ceil((days_since_update - 30) / 7)
-  decay = weeks_over * 0.05  # -0.05/week
-
-ELIF days_since_update < 90:
-  weeks_over = ceil((days_since_update - 30) / 7)
-  decay_30_60 = 4 * 0.05  # First 4 weeks at -0.05
-  weeks_60_plus = ceil((days_since_update - 60) / 7)
-  decay = decay_30_60 + (weeks_60_plus * 0.10)  # -0.10/week after 60 days
-
-ELSE:
-  # Freeze at current value, recommend archival
-  decay = frozen
-  recommend_archival(persona)
-
-new_confidence = max(0.0, persona.confidence - decay)
-```
-
-### Decay Notifications
-
-| Days Since Update | Notification | Severity |
-|-------------------|-------------|----------|
-| 30 | "Persona {name} hasn't been updated in 30 days" | Info |
-| 45 | "Persona {name} confidence decaying (-0.05/week)" | Warning |
-| 60 | "Persona {name} confidence decaying faster (-0.10/week)" | Warning |
-| 90 | "Persona {name} recommended for archival review" | Critical |
-
----
-
-## Batch Evolution (EVOLVE ALL)
-
-When scanning all personas for drift:
-
-### Process
-
-1. **Collect** new data from all source agents (Trace, Voice, Pulse)
-2. **Compare** each active persona against new data
-3. **Rank** evolutions by impact (significant first)
-4. **Apply** based on severity rules (auto-apply minor, confirm significant)
-5. **Report** summary of all changes
-
-### Batch Report Format
-
-```markdown
-## Cast Evolution Report
-
-**Scan date:** 2026-02-16
-**Personas scanned:** 8
-**Evolutions detected:** 3
-**Auto-applied:** 2
-**Requires confirmation:** 1
-
-| Persona | Severity | Axes | Changes | New Confidence |
-|---------|----------|------|---------|---------------|
-| First-Time Buyer | Minor | Behavior | Device split updated | 0.82 → 0.85 |
-| Power Shopper | Moderate | Goals, Pain | Goal priority shifted, new frustration | 0.75 → 0.80 |
-| Enterprise Admin | Significant | Behavior, Segment | Usage pattern fundamentally changed | 0.70 (review needed) |
-```
-
----
+1. Collect new data.
+2. Compare each active persona.
+3. Rank by severity.
+4. Auto-apply minor/moderate changes.
+5. Ask before significant changes.
+6. Return a batch report with `persona / severity / axes / changes / confidence`.
 
 ## Core Identity Protection
 
 ### Immutable Fields
 
-The following fields cannot be changed through evolution:
-
-| Field | Location | Why Immutable |
-|-------|----------|---------------|
-| `Role` | Profile section | Defines who the persona IS |
-| `category` | Frontmatter | Fundamental classification |
-| `service` | Frontmatter | Service binding |
+- `Role`
+- `category`
+- `service`
 
 ### Identity Change Protocol
 
-When data suggests Core Identity should change:
-
-1. **Flag** the change as Identity-level severity
-2. **Present** evidence to user with `ON_IDENTITY_CHANGE` trigger
-3. **If approved** → Create new persona + archive old one
-4. **Cross-reference** → New persona's Source Analysis references old persona
-5. **Update registry** → Remove old, add new, update coverage
-
-```markdown
-## Source Analysis
-
-| Source | Extracted Information |
-|--------|----------------------|
-| Evolved from Power Shopper v1.3 | Behavioral data showed role shift from "frequent buyer" to "marketplace seller". New persona created to reflect fundamentally different user type |
-| Trace session data (2026-02-15) | Session patterns match seller behavior: listing creation, inventory management, pricing comparison |
-```
+1. Flag as `Identity`.
+2. Trigger `ON_IDENTITY_CHANGE`.
+3. If approved, create a new persona and archive the old one.
+4. Cross-reference the old persona in `Source Analysis`.
+5. Update registry coverage and lifecycle state.
