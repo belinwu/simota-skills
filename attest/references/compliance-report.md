@@ -1,45 +1,64 @@
 # Compliance Report
 
-Template and rules for generating specification compliance reports.
+Purpose: Read this when issuing a final verdict, assembling `## Attest 適合レポート`, calculating traceability coverage, or generating `ATTEST_TO_*_HANDOFF` payloads.
 
----
+## Contents
 
-## Verdict Rules
+- [Verdict contract](#verdict-contract)
+- [Report structure](#report-structure)
+- [Traceability matrix](#traceability-matrix)
+- [Handoff payloads](#handoff-payloads)
+- [Quality rules](#quality-rules)
 
-### CERTIFIED
+## Verdict Contract
 
-ALL of the following must be true:
-- Every CRITICAL criterion: PASS
-- Every HIGH criterion: PASS or NOT_TESTED (with runtime test plan)
-- No CRITICAL adversarial probes open
-- Traceability coverage >= 90%
+Final outputs are rendered in Japanese. The rules below define the decision logic and required report contents.
 
-### CONDITIONAL
+| Verdict | Required condition set |
+|---------|------------------------|
+| `CERTIFIED` | Every `CRITICAL` criterion is `PASS`; every `HIGH` criterion is `PASS` or `NOT_TESTED` with a runtime plan; no open `CRITICAL` adversarial probes; traceability coverage `>= 90%` |
+| `CONDITIONAL` | No `CRITICAL` criterion is `FAIL`; `<= 3` `HIGH` criteria are `PARTIAL`; remediation plan attached for every non-`PASS` item; remediation timeline specified; no unresolved `CTR` probes |
+| `REJECTED` | Any `CRITICAL` criterion is `FAIL`; `> 3` `HIGH` criteria are `FAIL`; unresolved `CTR` probes remain; traceability coverage `< 50%`; or more than `5` unresolved `AMBIGUOUS_FLAG`s remain |
 
-ALL of the following must be true:
-- No CRITICAL criterion: FAIL
-- <=3 HIGH criteria: PARTIAL
-- Remediation plan attached for all non-PASS items
-- Timeline for remediation specified
-- No unresolved CONTRADICTION probes
+Decision rules:
 
-### REJECTED
+- `NOT_TESTED` is allowed only when the criterion requires runtime validation and the report includes a runtime plan.
+- `CONDITIONAL` and `REJECTED` must include a remediation plan.
+- Do not issue `CERTIFIED` if any unresolved contradiction, critical probe, or critical criterion failure remains.
 
-ANY of the following triggers REJECTED:
-- Any CRITICAL criterion: FAIL
-- >3 HIGH criteria: FAIL
-- Unresolved CONTRADICTION adversarial probes
-- Traceability coverage < 50%
-- Specification has >5 AMBIGUOUS_FLAGs without clarification
+## Report Structure
 
----
+Keep the section order below exactly.
 
-## Report Template
+```text
+## Attest 適合レポート
+### Summary
+### Criteria Summary
+### Traceability Matrix
+### Findings (by severity)
+### Adversarial Probe Results
+### Specification Quality Feedback
+### Remediation Plan (for CONDITIONAL/REJECTED)
+### BDD Scenarios (generated)
+```
 
-Note: Final output is rendered in Japanese per Output Language rules. The structure below defines the sections and their content.
+### Section Requirements
+
+| Section | Must include |
+|---------|--------------|
+| `### Summary` | Specification source, implementation scope, mode, final verdict, date |
+| `### Criteria Summary` | Counts by priority and verdict |
+| `### Traceability Matrix` | Criterion ID, priority, spec section, implementation mapping, tests, verdict, coverage percentage |
+| `### Findings (by severity)` | `CRITICAL` first, then `HIGH`, then `MEDIUM/LOW`; each finding includes verdict, method, evidence, impact, and assigned agent |
+| `### Adversarial Probe Results` | Open and closed probe summary with risk and spec gap |
+| `### Specification Quality Feedback` | Ambiguities, omissions, contradictions, and recommended improvements |
+| `### Remediation Plan (for CONDITIONAL/REJECTED)` | Action, assigned agent, priority, estimate or timeline |
+| `### BDD Scenarios (generated)` | Total scenario count and category breakdown |
+
+### Minimal Skeleton
 
 ```markdown
-## Attest Compliance Report
+## Attest 適合レポート
 
 ### Summary
 
@@ -48,128 +67,73 @@ Note: Final output is rendered in Japanese per Output Language rules. The struct
 | Specification | [spec path/name] |
 | Implementation | [files/modules list] |
 | Mode | FULL / EXTRACT / AUDIT / ADVERSARIAL |
-| **Verdict** | **CERTIFIED** / **CONDITIONAL** / **REJECTED** |
+| Verdict | CERTIFIED / CONDITIONAL / REJECTED |
 | Date | YYYY-MM-DD |
 
 ### Criteria Summary
 
-| Verdict | CRITICAL | HIGH | MEDIUM | LOW | Total |
-|---------|----------|------|--------|-----|-------|
-| PASS | X | X | X | X | X |
-| PARTIAL | X | X | X | X | X |
-| FAIL | X | X | X | X | X |
-| NOT_TESTED | X | X | X | X | X |
-| AMBIGUOUS | X | X | X | X | X |
-| **Total** | X | X | X | X | **X** |
+[Counts by verdict and priority]
 
 ### Traceability Matrix
 
-| Criterion ID | Priority | Spec Section | Implementation | Tests | Verdict |
-|-------------|----------|-------------|---------------|-------|---------|
-| AC-XXX-001 | CRITICAL | spec.md:L24 | src/xxx.ts:42 | test/xxx.test.ts:15 | PASS |
-| AC-XXX-002 | HIGH | spec.md:L31 | — | — | FAIL |
-| ... | | | | | |
-
-**Traceability Coverage:** XX% (criteria-to-implementation mapping completion rate)
+[Criterion-to-implementation-to-test mapping]
 
 ### Findings (by severity)
 
-#### CRITICAL
-
-**[F-001] AC-XXX-002: {criterion description}**
-- Verdict: FAIL
-- Method: ABSENCE_CHECK
-- Evidence: {description of missing implementation}
-- Impact: {scope of this violation}
-- Recommended action: Add implementation via Builder
-- Assigned agent: Builder
-
-#### HIGH
-
-**[F-002] AC-XXX-005: {criterion description}**
-- Verdict: PARTIAL
-- Method: LOGIC_TRACE
-- Evidence: `src/xxx.ts:89` — {partial implementation description}
-- Gap: {description of missing parts}
-- Recommended action: {specific fix description}
-- Assigned agent: Builder
-
-#### MEDIUM / LOW
-
-[Same format as above]
+[Grouped findings]
 
 ### Adversarial Probe Results
 
-| Probe ID | Category | Description | Risk | Spec Gap |
-|----------|----------|-------------|------|----------|
-| PRB-001 | Boundary | {description} | HIGH | {missing spec content} |
-| PRB-002 | Omission | {description} | MEDIUM | {missing spec content} |
-| PRB-003 | Implicit | {description} | LOW | {implicit assumption} |
+[Probe summary]
 
 ### Specification Quality Feedback
 
-| Issue | Type | Impact | Recommended Improvement |
-|-------|------|--------|------------------------|
-| {ambiguous criterion} | AMBIGUOUS | HIGH | {clarification proposal} |
-| {missing requirement} | OMISSION | MEDIUM | {requirement to add} |
+[Ambiguities, omissions, contradictions]
 
 ### Remediation Plan (for CONDITIONAL/REJECTED)
 
-| # | Action | Assigned Agent | Priority | Estimate |
-|---|--------|---------------|----------|----------|
-| 1 | Add implementation for AC-XXX-002 | Builder | CRITICAL | — |
-| 2 | Fix gap in AC-XXX-005 | Builder | HIGH | — |
-| 3 | Convert BDD scenarios to tests | Radar | HIGH | — |
-| 4 | Resolve specification ambiguities | Scribe | MEDIUM | — |
+[Required when verdict is not CERTIFIED]
 
 ### BDD Scenarios (generated)
 
-Total: X scenarios
-- Happy Path: X
-- Negative: X
-- Boundary: X
-- Edge Case: X
-
-[Reference to scenario file]
+[Scenario totals and file reference]
 ```
 
----
+## Traceability Matrix
 
-## Traceability Matrix Format
+The traceability matrix maps:
 
-The traceability matrix maps: **Specification -> Implementation -> Tests**
-
-```
-Spec Criterion --> Implementation File:Line --> Test File:Line
-   AC-XXX-001  ->  src/handler.ts:42         ->  test/handler.test.ts:15
+```text
+Specification criterion -> implementation file:line -> test file:line
 ```
 
 ### Coverage Calculation
 
-```
-Traceability Coverage = (Criteria with Implementation Mapping) / (Total Criteria) x 100
+```text
+Traceability Coverage = Criteria with implementation mapping / Total criteria x 100
 
 Example:
-  Total criteria: 12
-  Mapped to implementation: 10
-  Mapped to tests: 8
-  Coverage: 10/12 = 83% (implementation), 8/12 = 67% (test)
+- Total criteria: 12
+- Criteria mapped to implementation: 10
+- Criteria mapped to tests: 8
+- Implementation coverage: 10 / 12 = 83%
+- Test coverage: 8 / 12 = 67%
 ```
 
 ### Coverage Thresholds
 
 | Coverage | Assessment |
-|----------|-----------|
-| >= 90% | Excellent — supports CERTIFIED |
-| 70-89% | Good — supports CONDITIONAL |
-| 50-69% | Insufficient — requires remediation |
-| < 50% | Unacceptable — triggers REJECTED |
+|----------|------------|
+| `>= 90%` | Excellent; supports `CERTIFIED` |
+| `70-89%` | Good; usually supports `CONDITIONAL` |
+| `50-69%` | Insufficient; remediation required |
+| `< 50%` | Unacceptable; triggers `REJECTED` |
 
----
+For L1/L2/L3 coverage details and bidirectional analysis, read `references/traceability-advanced.md`.
 
-## Handoff Formats
+## Handoff Payloads
 
-### To Builder (Violation Fixes)
+### `ATTEST_TO_BUILDER_HANDOFF`
 
 ```yaml
 ATTEST_TO_BUILDER_HANDOFF:
@@ -182,13 +146,13 @@ ATTEST_TO_BUILDER_HANDOFF:
       suggested_location: "src/controllers/auth.ts"
     - criterion_id: AC-XXX-005
       priority: HIGH
-      gap: "Error message format doesn't match spec"
+      gap: "Error message format does not match the spec"
       current: "Generic error returned"
       expected: "Specific error with error code"
   bdd_scenarios: "generated/login.feature"
 ```
 
-### To Radar (Test Generation)
+### `ATTEST_TO_RADAR_HANDOFF`
 
 ```yaml
 ATTEST_TO_RADAR_HANDOFF:
@@ -209,7 +173,7 @@ ATTEST_TO_RADAR_HANDOFF:
       suggested_test_type: "e2e"
 ```
 
-### To Warden (Release Gate)
+### `ATTEST_TO_WARDEN_HANDOFF`
 
 ```yaml
 ATTEST_TO_WARDEN_HANDOFF:
@@ -227,7 +191,7 @@ ATTEST_TO_WARDEN_HANDOFF:
   recommendation: "Spec compliance verified. Proceed to V.A.I.R.E. evaluation."
 ```
 
-### To Scribe (Spec Gap Report)
+### `ATTEST_TO_SCRIBE_HANDOFF`
 
 ```yaml
 ATTEST_TO_SCRIBE_HANDOFF:
@@ -244,3 +208,11 @@ ATTEST_TO_SCRIBE_HANDOFF:
     - criteria: [AC-XXX-003, AC-XXX-009]
       description: "AC-003 says allow retry, AC-009 says lock immediately"
 ```
+
+## Quality Rules
+
+- Use report prose to explain evidence and impact; do not change the verdict rules in prose.
+- Every finding must map back to a criterion, probe, or explicit spec gap.
+- If the report uses `NOT_TESTED`, include the runtime plan or handoff target.
+- If the report uses `AMBIGUOUS`, include the clarification or rewrite suggestion.
+- Keep verdict logic deterministic and separate from explanatory language.

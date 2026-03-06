@@ -1,53 +1,185 @@
 # Adversarial Probing Catalog
 
-Systematic adversarial verification across 6 categories to discover gaps between specifications and implementations.
+Purpose: Read this when you need probe selection, category coverage, risk assignment, or the `ADVERSARIAL_PROBES` payload.
 
----
+## Contents
 
-## Overview
+- [Probe contract](#probe-contract)
+- [Risk classification](#risk-classification)
+- [Probe families](#probe-families)
+- [Execution strategy](#execution-strategy)
+- [Output format](#output-format)
+- [Quality rules](#quality-rules)
 
-Adversarial probing goes beyond confirming what the spec says. It actively searches for what the spec **doesn't say** — the assumptions, contradictions, and edge cases that become production incidents.
+## Probe Contract
+
+Adversarial probing searches for what the specification forgot, contradicted, or left unsafe. Run it after extracting criteria and before issuing any final verdict.
 
 ### Probe ID Convention
 
-```
+```text
 PRB-{category_code}-{NNN}
 
-Category codes: BND (Boundary), OMS (Omission), CTR (Contradiction),
-                IMP (Implicit), NEG (Negative), CNC (Concurrency)
+Category codes:
+- BND = Boundary
+- OMS = Omission
+- CTR = Contradiction
+- IMP = Implicit
+- NEG = Negative
+- CNC = Concurrency
 ```
 
-### Risk Classification
+Each probe must include:
 
-| Risk | Definition | Action Required |
-|------|-----------|----------------|
-| **CRITICAL** | Will cause data loss, security breach, or system failure | Block CERTIFIED, require fix |
-| **HIGH** | Will cause user-facing errors or broken workflows | Block CERTIFIED, remediation plan |
-| **MEDIUM** | May cause unexpected behavior in edge cases | Flag for remediation |
-| **LOW** | Minor behavioral gaps, unlikely in practice | Document for awareness |
+- `id`
+- `category`
+- `target_criterion` or affected scope
+- `description`
+- `spec_gap`
+- `risk`
+- `suggested_criterion`
+- `implementation_status` when implementation evidence exists
 
----
+## Risk Classification
 
-## Category 1: Boundary (BND)
+| Risk | Definition | Effect on verdict |
+|------|------------|-------------------|
+| `CRITICAL` | Likely data loss, security breach, or system failure | Blocks `CERTIFIED`; requires remediation |
+| `HIGH` | Likely user-facing failure or broken workflow | Blocks `CERTIFIED`; remediation plan required |
+| `MEDIUM` | Edge-case or expectation gap with clear impact | Report and route for remediation |
+| `LOW` | Minor or rare behavioral gap | Document for awareness |
 
-**Focus:** Edge values, limits, thresholds, and extremes.
+## Probe Families
 
-### Common Probes
+### Boundary (`BND`)
 
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| BND-001 | Empty/null input | What happens with empty string, null, undefined? |
-| BND-002 | Maximum length | String at max length, max+1 |
-| BND-003 | Zero values | Quantity=0, price=0, count=0 |
-| BND-004 | Negative values | Negative quantity, negative price |
-| BND-005 | Integer overflow | Values near MAX_INT, MIN_INT |
-| BND-006 | Float precision | 0.1 + 0.2 calculations, currency rounding |
-| BND-007 | Collection limits | Empty list, list with 1 item, list at max |
-| BND-008 | Date boundaries | Leap year, year 2038, timezone midnight |
-| BND-009 | Unicode extremes | Emoji, RTL text, zero-width characters |
-| BND-010 | File size limits | Zero-byte file, max size, just over max |
+Use for limits, extremes, and threshold behavior.
 
-### Boundary Probe Template
+| Probe focus | Typical checks | Example gap |
+|-------------|----------------|-------------|
+| Empty or null input | `null`, empty string, missing field | No required-field behavior specified |
+| Numeric boundaries | `0`, negative, max, max+1, rounding | No overflow or precision rule |
+| Collection size | empty list, single item, max size | No behavior for zero results |
+| Date and time | leap day, timezone edge, midnight crossover | No timezone definition |
+| Encoding and files | Unicode extremes, zero-byte file, oversized file | No invalid-file handling |
+
+### Omission (`OMS`)
+
+Use for behavior the spec forgot to mention.
+
+| Probe focus | Typical checks | Example gap |
+|-------------|----------------|-------------|
+| Error messaging | distinct failure paths | No error text or error code rule |
+| Loading and empty states | loading spinner, zero results | No empty-state behavior |
+| Timeout and partial failure | slow dependency, batch partial success | No retry or recovery rule |
+| Undo and notification | user reversal, event notice | No rollback or notification rule |
+| Auditability | logging, tracking, audit trail | No recordkeeping requirement |
+
+Omission review prompts:
+
+1. What happens when the feature fails?
+2. What states can each entity enter?
+3. What happens before and after the user action?
+4. What happens if the dependency is unavailable?
+
+### Contradiction (`CTR`)
+
+Use for conflicting requirements inside one spec or across related specs.
+
+| Probe focus | Typical conflict |
+|-------------|------------------|
+| Cross-feature behavior | One feature allows X, another forbids X |
+| Priority and UX | "Simple" conflicts with "cover all edge cases" |
+| Permissions | Global admin power conflicts with local restriction |
+| Data model | Create requires a field, update makes it optional |
+| Timing model | Real-time promise conflicts with batch-only process |
+| Security vs convenience | Seamless flow conflicts with strict re-authentication |
+
+Contradiction review steps:
+
+1. Group requirements by shared entity, workflow, or permission.
+2. Compare action, timing, and state assumptions.
+3. Flag any requirement that negates or weakens another.
+4. Keep the probe open until the contradiction is clarified or resolved.
+
+### Implicit (`IMP`)
+
+Use for hidden assumptions that implementations often depend on.
+
+| Probe focus | Typical assumption |
+|-------------|--------------------|
+| Time and locale | server timezone, locale-specific formatting |
+| Auth state | user is already logged in or verified |
+| Network conditions | always-online or low-latency behavior |
+| Ordering and idempotency | stable sort order, safe retry |
+| Scale and retention | data size, rate limits, retention period |
+| Platform support | browser, device, or OS assumptions |
+
+Assumption prompts:
+
+1. Who is assumed to use this?
+2. Where is it assumed to run?
+3. When does ordering or timing matter?
+4. How much volume or scale is assumed?
+5. What breaks if the assumption is false?
+
+### Negative (`NEG`)
+
+Use for forbidden, invalid, or unauthorized behavior.
+
+| Probe focus | Typical checks |
+|-------------|----------------|
+| Invalid input | malformed JSON, injection payloads, missing fields |
+| Unauthorized access | other user's data, admin-only endpoint |
+| Invalid transitions | impossible workflow steps or expired resources |
+| Duplicate or out-of-order actions | double submit, retry before completion |
+| Resource exhaustion | too many requests, full disk, OOM |
+| Integrity violations | deleting parent with active children |
+
+### Concurrency (`CNC`)
+
+Use for race conditions, ordering, and parallel activity.
+
+| Probe focus | Typical checks |
+|-------------|----------------|
+| Simultaneous updates | two users edit the same resource |
+| Read-after-write | stale read immediately after mutation |
+| Double submission | rapid repeat action |
+| Cache or queue ordering | stale cache, reordered messages |
+| Lost updates | last-write-wins without merge rule |
+| Session collisions | same user on multiple devices |
+
+## Execution Strategy
+
+### Priority Order
+
+1. `CTR` because contradictions can invalidate the entire spec.
+2. `OMS` because missing requirements become production defects.
+3. `NEG` because validation and authorization gaps are high-risk.
+4. `BND` because data limits often break integrity.
+5. `IMP` because hidden assumptions create latent failures.
+6. `CNC` because concurrency is narrower but expensive when missed.
+
+### Minimum Probes per Mode
+
+| Mode | Minimum probes | Coverage rule |
+|------|----------------|---------------|
+| `FULL` | `12` | Cover all 6 categories |
+| `ADVERSARIAL` | `24` | Cover all 6 categories with deeper variants |
+| `AUDIT` | `6` | Focus on `OMS` and `CTR` |
+| `EXTRACT` | `0` | No probing |
+
+### Review Sequence
+
+1. Map each probe to a criterion or spec section.
+2. Verify the claimed gap against the actual spec text.
+3. Assign risk based on business, security, and integrity impact.
+4. Add a measurable `suggested_criterion`.
+5. Feed open probes into the compliance report and remediation plan.
+
+## Output Format
+
+### Probe Template
 
 ```yaml
 PROBE:
@@ -62,131 +194,7 @@ PROBE:
   suggested_criterion: "When email field is empty, display 'Email is required' error"
 ```
 
----
-
-## Category 2: Omission (OMS)
-
-**Focus:** Requirements the specification forgot to mention.
-
-### Common Probes
-
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| OMS-001 | Error messages | What error text is shown for each failure mode? |
-| OMS-002 | Loading states | What does the UI show while data loads? |
-| OMS-003 | Empty states | What if the list/table has zero items? |
-| OMS-004 | Default values | What are the defaults for optional fields? |
-| OMS-005 | Pagination | What happens with 10,000 results? |
-| OMS-006 | Timeout handling | What if an external service doesn't respond? |
-| OMS-007 | Partial failure | What if 3 of 5 items in a batch fail? |
-| OMS-008 | Undo/rollback | Can the user undo this action? |
-| OMS-009 | Notification | Should the user be notified of this event? |
-| OMS-010 | Audit trail | Should this action be logged/tracked? |
-
-### Omission Detection Strategy
-
-1. For each specified feature, ask: "What happens when it fails?"
-2. For each data entity, ask: "What are all the states it can be in?"
-3. For each user action, ask: "What happens before and after?"
-4. For each integration, ask: "What if it's unavailable?"
-
----
-
-## Category 3: Contradiction (CTR)
-
-**Focus:** Conflicting requirements within or across specifications.
-
-### Common Probes
-
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| CTR-001 | Cross-feature conflicts | Feature A allows X, Feature B prevents X |
-| CTR-002 | Priority conflicts | "Must be simple" vs "Must support all edge cases" |
-| CTR-003 | Permission conflicts | Admin can do X everywhere, but not in this module? |
-| CTR-004 | Data model conflicts | Field required in Create but optional in Update |
-| CTR-005 | Timing conflicts | "Real-time" vs "batch processing" for same data |
-| CTR-006 | UX vs Security | "Seamless experience" vs "re-authenticate every 15 min" |
-
-### Contradiction Detection Strategy
-
-1. Collect all requirements mentioning the same entity/feature
-2. Compare behavioral assertions across requirements
-3. Flag where one requirement implies negation of another
-4. Check cross-module consistency for shared data/flows
-
----
-
-## Category 4: Implicit (IMP)
-
-**Focus:** Unstated assumptions that implementations depend on.
-
-### Common Probes
-
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| IMP-001 | Timezone handling | Does "today" mean user's TZ or server TZ? |
-| IMP-002 | Locale/language | Is currency formatting locale-dependent? |
-| IMP-003 | Authentication state | Does this feature assume user is logged in? |
-| IMP-004 | Network conditions | Does this assume always-online? |
-| IMP-005 | Data ordering | Is the list sorted? By what? |
-| IMP-006 | Concurrent users | Can multiple users edit the same resource? |
-| IMP-007 | Browser/device | Which browsers/devices must be supported? |
-| IMP-008 | Data retention | How long is this data kept? |
-| IMP-009 | Rate limiting | Are there API call limits? |
-| IMP-010 | Idempotency | Can this action be safely retried? |
-
-### Implicit Assumption Extraction
-
-For each feature, ask:
-1. **Who?** — What user roles/states are assumed?
-2. **Where?** — What environment/platform is assumed?
-3. **When?** — What timing/ordering is assumed?
-4. **How much?** — What volume/scale is assumed?
-5. **What if not?** — What if the assumption is violated?
-
----
-
-## Category 5: Negative (NEG)
-
-**Focus:** Forbidden, invalid, and unauthorized paths.
-
-### Common Probes
-
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| NEG-001 | Invalid input format | SQL injection, XSS, malformed JSON |
-| NEG-002 | Unauthorized access | Accessing other user's data |
-| NEG-003 | Invalid state transitions | Shipping a cancelled order |
-| NEG-004 | Expired resources | Using expired token, link, coupon |
-| NEG-005 | Missing required fields | Submitting form with required fields empty |
-| NEG-006 | Duplicate actions | Double-clicking submit, double payment |
-| NEG-007 | Out-of-order operations | Step 3 before Step 1 |
-| NEG-008 | Resource exhaustion | Too many requests, full disk, OOM |
-| NEG-009 | Privilege escalation | Regular user accessing admin endpoints |
-| NEG-010 | Data integrity | Deleting parent with active children |
-
----
-
-## Category 6: Concurrency (CNC)
-
-**Focus:** Race conditions, ordering issues, and parallel execution problems.
-
-### Common Probes
-
-| Probe | What to Check | Example |
-|-------|--------------|---------|
-| CNC-001 | Simultaneous updates | Two users editing the same document |
-| CNC-002 | Read-after-write | Reading data immediately after writing |
-| CNC-003 | Double submission | Form submitted twice in rapid succession |
-| CNC-004 | Stale cache | Showing outdated data after update |
-| CNC-005 | Lost updates | Last write wins vs merge strategy |
-| CNC-006 | Deadlock potential | Circular resource dependencies |
-| CNC-007 | Queue ordering | Message processing order guarantee |
-| CNC-008 | Session conflicts | Same user logged in on multiple devices |
-
----
-
-## Probe Output Format
+### `ADVERSARIAL_PROBES`
 
 ```yaml
 ADVERSARIAL_PROBES:
@@ -207,31 +215,17 @@ ADVERSARIAL_PROBES:
     - id: PRB-OMS-003
       category: Omission
       target: AC-LOGIN-001
-      description: "Login spec doesn't mention account lockout"
+      description: "Login spec does not mention account lockout"
       spec_gap: "No lockout mechanism specified after failed attempts"
       risk: CRITICAL
-      suggested_criterion: "After 5 failed login attempts, lock account for 30 minutes"
+      suggested_criterion: "After 5 failed login attempts, lock the account for 30 minutes"
       implementation_status: NOT_IMPLEMENTED
 ```
 
----
+## Quality Rules
 
-## Probe Execution Strategy
-
-### Priority Order
-
-1. **Contradiction** — Most damaging, spec-level defect
-2. **Omission** — Missing requirements become production bugs
-3. **Negative** — Security and validation gaps
-4. **Boundary** — Data integrity risks
-5. **Implicit** — Hidden assumption failures
-6. **Concurrency** — Complex but specific scenarios
-
-### Minimum Probes per Mode
-
-| Mode | Min Probes | Category Coverage |
-|------|-----------|-------------------|
-| FULL | 12 | All 6 categories |
-| ADVERSARIAL | 24 | All 6, deep coverage |
-| AUDIT | 6 | Focus on Omission + Contradiction |
-| EXTRACT | 0 | No probing (extraction only) |
+- Do not keep a probe if the spec already addresses the concern.
+- Do not invent a suggested criterion that is unrelated to the existing business intent.
+- Treat unresolved `CTR` probes as release-blocking until clarified.
+- Prefer one precise probe over several overlapping weak probes.
+- Keep probes measurable so they can become criteria or tests immediately.

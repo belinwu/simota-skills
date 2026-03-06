@@ -1,99 +1,101 @@
 # LLM-Assisted Specification Verification
 
-Capabilities, guardrails, and anti-patterns for using LLMs in specification compliance verification.
+Purpose: Read this when using LLM assistance during `INGEST`, `EXTRACT`, `GENERATE`, or `VERIFY`, and when you need guardrails against hallucinated evidence or verdict inflation.
 
----
+## Contents
+
+- [Capability tiers](#capability-tiers)
+- [Phase strategies](#phase-strategies)
+- [Evidence chain pattern](#evidence-chain-pattern)
+- [Guardrail rules](#guardrail-rules)
+- [Communication roles](#communication-roles)
+- [Anti-patterns](#anti-patterns)
 
 ## Capability Tiers
 
-### Tier 1: Reliable (Use Freely)
+### Tier 1: Reliable
 
-| Task | Method | Expected Quality |
-|------|--------|-----------------|
-| Ambiguity detection | Pattern scan + LLM reasoning | High (~89% precision per Paska tool research) |
-| BDD scenario generation | Template + LLM expansion | High (structural templates constrain output) |
-| Explanation generation | LLM prose from structured findings | High (translating structured data to natural language) |
-| Testability evaluation | Keyword + LLM classification | High (well-defined classification criteria) |
-| Dangerous expression scan | Catalog match + LLM context | High (catalog provides anchor patterns) |
+| Task | Why it is acceptable |
+|------|----------------------|
+| Ambiguity detection | Catalogs and pattern scans constrain the reasoning space |
+| BDD scenario generation | Structural templates limit drift |
+| Explanation generation | Converts structured findings into prose |
+| Testability evaluation | Classification rules are explicit |
+| Dangerous-expression scan | Uses anchored pattern catalogs |
 
-### Tier 2: Assisted (Human Review Required)
+### Tier 2: Assisted
 
-| Task | Risk | Mitigation |
-|------|------|------------|
-| Code-spec compliance judgment | Hallucinated evidence references | Always verify file:line references exist. Cross-check with grep. |
-| Implicit assumption inference | Over-inference from absent information | Prefix inferences with confidence level. Flag as MEDIUM confidence. |
-| Contradiction detection | False contradictions from misunderstood context | Require 2+ supporting evidence points per contradiction. |
-| Spec gap identification | Inventing requirements not implied by spec | Ground all suggested criteria in spec context or domain conventions. |
+| Task | Main risk | Required mitigation |
+|------|-----------|---------------------|
+| Code-spec compliance judgment | Hallucinated `file:line` evidence | Verify all references against actual files |
+| Implicit assumption inference | Over-inference from silence | Mark confidence and keep it below `HIGH` without support |
+| Contradiction detection | False contradiction from misunderstood context | Require at least two supporting evidence points |
+| Spec-gap identification | Invented requirements | Ground each suggestion in quoted spec context or explicit domain convention |
 
 ### Tier 3: Forbidden
 
-| Task | Why Forbidden |
-|------|--------------|
-| AI-only CERTIFIED verdict | Compliance certification requires deterministic rule application, not probabilistic reasoning |
-| FAIL based solely on LLM inference | Absence reasoning is hallucination-prone; absence must be confirmed by code search |
-| Formal verification substitute | LLMs cannot provide mathematical guarantees |
-| Verdict override without evidence | All verdict changes must cite file:line or spec:section evidence |
+| Task | Why forbidden |
+|------|---------------|
+| AI-only `CERTIFIED` verdict | Final verdicts must be deterministic and evidence-based |
+| `FAIL` based only on LLM inference | Absence requires real search evidence |
+| Formal-verification substitute | LLM output is probabilistic, not mathematically sound |
+| Verdict override without evidence | Every override requires explicit evidence |
 
----
+## Phase Strategies
 
-## Prompt Strategies by Phase
+| Phase | Recommended strategy | Constraint |
+|-------|----------------------|-----------|
+| `INGEST` | Zero-shot with format examples | Use examples only to classify format |
+| `EXTRACT` | Few-shot with criterion extraction examples | Keep output grounded in source text |
+| `GENERATE` | Template-constrained generation | Do not let the model invent scenario structure |
+| `VERIFY` | Evidence-first reasoning chain | Verdict depends on verified evidence, not fluent prose |
+| `ATTEST` | Rule-based verdict, LLM for explanation only | Decision thresholds stay mechanical |
 
-| Phase | Strategy | Why |
-|-------|----------|-----|
-| INGEST | Zero-shot with spec format examples | Format detection is well-defined; examples anchor classification |
-| EXTRACT | Few-shot with criterion extraction examples | Extraction quality improves with format-specific examples |
-| GENERATE | Template-constrained generation | Templates prevent structural drift; LLM fills domain-specific content |
-| VERIFY | Chain-of-Thought with evidence chain | CoT forces explicit reasoning steps, making verification auditable |
-| ATTEST | Rule-based (no LLM for verdict) | Verdict rules are mechanical thresholds; LLM generates explanation text only |
+## Evidence Chain Pattern
 
-### Evidence Chain Pattern (VERIFY phase)
+Use the sequence below during `VERIFY`:
 
+```text
+1. Quote what the criterion requires.
+2. Search for implementation artifacts using explicit terms.
+3. Read each candidate artifact and assess match quality.
+4. Assign verdict from evidence completeness.
+5. Assign confidence from evidence directness.
 ```
-Step 1: Identify what the criterion requires (quote spec)
-Step 2: Search for implementation artifacts (list search terms)
-Step 3: For each finding, assess match quality (quote code)
-Step 4: Determine verdict based on evidence completeness
-Step 5: Assign confidence based on evidence directness
-```
-
----
 
 ## Guardrail Rules
 
-1. **Evidence-First**: Never state a verdict without file:line or spec:section reference. If no evidence found, verdict is NOT_TESTED or FAIL (absence), never inferred PASS.
+1. Evidence first: never state `PASS`, `PARTIAL`, or `FAIL` without `file:line` or `spec:section` evidence.
+2. Confidence gating: if confidence `< 0.5`, route to `NOT_TESTED` with a runtime plan.
+3. Reference verification: cross-check every LLM-produced file path and line number against actual file reads.
+4. Dual verification for `CRITICAL`: run two independent reasoning passes; disagreement triggers review.
+5. Probe self-check: remove adversarial probes whose claimed gap is already covered by the spec.
+6. No verdict inflation: ambiguous evidence defaults to `PARTIAL` or `NOT_TESTED`, never optimistic `PASS`.
 
-2. **Confidence Gating**: When verification confidence < 0.5, automatically route to NOT_TESTED with runtime verification plan. Never escalate low-confidence to PASS.
+## Communication Roles
 
-3. **Hallucination Detection**: Cross-verify all LLM-generated file references with actual file reads. If a referenced file or line doesn't exist, flag as hallucination and re-verify.
+### Explanation Assistant
 
-4. **Dual Verification for CRITICAL**: For CRITICAL criteria, run verification reasoning twice with different prompt framings. Disagreement triggers manual review flag.
+Use the LLM to:
 
-5. **Adversarial Self-Check**: After generating adversarial probes, verify each probe's spec gap claim against actual spec text. Remove probes where the spec actually addresses the concern.
+- translate structured findings into stakeholder-readable language
+- explain why a criterion failed or stayed partial
+- produce concrete impact statements without changing the evidence set
 
----
+### Refinement Assistant
 
-## LLM-AQuA-DiVeR Pattern
+Use the LLM to:
 
-Adapted from ICSE 2025 research for Attest's stakeholder communication:
-
-**Explanation Assistant role** (used in compliance report):
-- Translate technical findings to business-readable language
-- Explain WHY a criterion failed, not just THAT it failed
-- Provide concrete impact statements for each finding
-
-**Refinement Assistant role** (used in AMBIGUOUS_FLAG suggestions):
-- Generate specific, measurable replacement criteria for ambiguous specs
-- Propose testable alternatives that preserve business intent
-- Structure suggestions as before/after pairs for easy review
-
----
+- rewrite `AMBIGUOUS_FLAG` items into measurable criteria
+- propose testable replacements that preserve business intent
+- produce before/after wording for `Scribe` handoff
 
 ## Anti-Patterns
 
-| Anti-Pattern | Description | Prevention |
-|-------------|-------------|------------|
-| **Confident Hallucination** | LLM states "implementation found at file:line" for non-existent code | Always verify references with actual file reads |
-| **Over-Inference** | LLM infers complex behavior from simple code patterns | Require multi-point evidence for MEDIUM+ findings |
-| **Spec Projection** | LLM adds requirements not in spec based on "common practice" | Ground all criteria in quoted spec text |
-| **False Absence** | LLM claims feature missing when it exists under different name/pattern | Use multiple search strategies before declaring absence |
-| **Verdict Inflation** | LLM tends toward PASS when evidence is ambiguous | Default to PARTIAL when evidence is incomplete |
+| Anti-pattern | Failure mode | Prevention |
+|-------------|--------------|------------|
+| Confident hallucination | Non-existent `file:line` reference | Always re-open referenced files |
+| Over-inference | Complex behavior inferred from thin evidence | Require multiple evidence points |
+| Spec projection | Best-practice ideas presented as requirements | Quote the source requirement or mark as suggestion |
+| False absence | Feature declared missing under the wrong search terms | Use multiple search strategies before `ABSENCE_CHECK` |
+| Verdict inflation | Weak evidence upgraded to `PASS` | Keep deterministic thresholds and confidence gating |

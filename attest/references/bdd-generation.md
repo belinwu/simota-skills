@@ -1,236 +1,162 @@
 # BDD Scenario Generation
 
-Rules, templates, anti-patterns, and quality checklist for generating BDD scenarios from acceptance criteria.
+Purpose: Read this when turning `AC-*` criteria into `SC-*` scenarios, checking scenario coverage by priority, or validating Given/When/Then quality.
 
----
+## Contents
+
+- [Generation rules](#generation-rules)
+- [Given/When/Then structure](#givenwhenthen-structure)
+- [Scenario templates by category](#scenario-templates-by-category)
+- [Coverage matrix](#coverage-matrix)
+- [Output format](#output-format)
+- [Anti-patterns](#anti-patterns)
+- [Quality checklist](#quality-checklist)
 
 ## Generation Rules
 
 ### Core Principle
 
-Every acceptance criterion produces **minimum 3 scenarios**:
-1. **Happy path** — normal successful execution
-2. **Negative path** — expected failure/rejection
-3. **Edge/Boundary** — limits, thresholds, empty states
+Every acceptance criterion produces at least:
+1. Happy path
+2. Negative path
+3. Edge or boundary path
 
 ### Scenario ID Convention
 
-```
+```text
 SC-{criterion_id}-{type}-{NNN}
 
-Types: HP (Happy Path), NP (Negative Path), BP (Boundary Probe), EP (Edge/Error Path)
-
-Examples:
-  SC-AC-LOGIN-001-HP-001  → Happy path for login criterion 1
-  SC-AC-LOGIN-001-NP-001  → Negative path for login criterion 1
-  SC-AC-LOGIN-001-BP-001  → Boundary probe for login criterion 1
+Types:
+  HP = Happy Path
+  NP = Negative Path
+  BP = Boundary Probe
+  EP = Edge / Error Path
 ```
-
----
 
 ## Given/When/Then Structure
 
-### Given (Preconditions)
+### Given
 
-- Establish the initial state required for the scenario
-- Include user roles, data state, system configuration
-- Use concrete examples, not abstract descriptions
+- Establish the starting state.
+- Include roles, data state, or system configuration when relevant.
+- Prefer concrete examples over abstract placeholders.
 
 ```gherkin
-# Good
 Given a registered user with email "user@example.com" and role "admin"
-
-# Bad (too abstract)
-Given a user exists in the system
 ```
 
-### When (Action)
+### When
 
-- One primary action per scenario
-- Include the specific input values
-- Describe the user action or system event
+- One primary action per scenario.
+- Include the relevant input values.
+- Describe the business action, not incidental UI clicks.
 
 ```gherkin
-# Good
-When the user submits the login form with email "user@example.com" and password "correct-password"
-
-# Bad (multiple actions)
-When the user opens the page and fills in the form and clicks submit
+When the user submits the login form with correct credentials
 ```
 
-### Then (Expected Outcome)
+### Then
 
-- Observable, verifiable outcomes
-- Include specific values where possible
-- Multiple Then clauses for compound outcomes
+- Use observable, verifiable outcomes.
+- Include concrete status codes, values, or state changes when possible.
+- Add secondary `And` clauses only when they describe required outcomes.
 
 ```gherkin
-# Good
 Then the HTTP response status is 200
-And the response body contains a valid JWT token
 And the user is redirected to "/dashboard"
-
-# Bad (vague)
-Then the login is successful
 ```
-
----
 
 ## Scenario Templates by Category
 
-### Happy Path Template
+### Happy Path
 
 ```gherkin
 @happy-path @{criterion_id}
-Scenario: {Descriptive name for successful case}
+Scenario: {Business rule succeeds}
   Given {valid preconditions}
-  And {additional context if needed}
   When {the primary action with valid inputs}
-  Then {expected successful outcome}
-  And {secondary outcomes}
+  Then {the successful outcome}
 ```
 
-### Negative Path Template
+### Negative Path
 
 ```gherkin
 @negative @{criterion_id}
-Scenario: {Descriptive name for failure case}
+Scenario: {Business rule rejects invalid input}
   Given {preconditions}
-  When {the action with invalid/unauthorized input}
-  Then {expected error response}
-  And {system state remains unchanged}
+  When {the action with invalid or unauthorized input}
+  Then {the expected rejection}
+  And {state remains unchanged if required}
 ```
 
-### Boundary Probe Template
+### Boundary Probe
 
 ```gherkin
 @boundary @{criterion_id}
-Scenario: {Descriptive name for boundary case}
-  Given {preconditions at boundary values}
+Scenario: {Boundary value handling}
+  Given {boundary preconditions}
   When {the action with boundary input}
-  Then {expected behavior at boundary}
+  Then {the expected boundary behavior}
 ```
 
-### Edge Case Template
+### Edge / Error Path
 
 ```gherkin
 @edge-case @{criterion_id}
-Scenario: {Descriptive name for edge case}
-  Given {unusual but valid preconditions}
+Scenario: {Unusual but valid situation}
+  Given {edge-condition preconditions}
   When {the action under edge conditions}
-  Then {expected graceful handling}
+  Then {the graceful outcome}
 ```
 
----
-
-## Common Scenario Patterns
-
-### Authentication/Authorization
+### Must-Keep Example
 
 ```gherkin
-# Happy: Valid login
-Scenario: User logs in with valid credentials
-  Given a verified user with email "user@example.com"
-  When the user submits login with correct password
-  Then a session is created
-  And the user is redirected to dashboard
+# AC-LOGIN-001: Valid credentials grant access
+Scenario: Successful login with valid credentials
+  Given a registered user with email "user@example.com"
+  And the user has a valid password
+  When the user submits the login form with correct credentials
+  Then the user is redirected to the dashboard
+  And a session token is issued
 
-# Negative: Invalid credentials
-Scenario: Login rejected with wrong password
-  Given a verified user with email "user@example.com"
-  When the user submits login with incorrect password
-  Then a 401 error is returned
-  And no session is created
+Scenario: Login failure with invalid password
+  Given a registered user with email "user@example.com"
+  When the user submits the login form with an incorrect password
+  Then an error message "Invalid credentials" is displayed
+  And no session token is issued
 
-# Negative: Unauthorized access
-Scenario: Non-admin cannot access admin panel
-  Given a user with role "viewer"
-  When the user requests "/admin/settings"
-  Then a 403 error is returned
-
-# Boundary: Account lockout threshold
-Scenario: Account locked after max failed attempts
-  Given a user with 4 failed login attempts
-  When the user fails login again
-  Then the account is locked
-  And a lockout notification email is sent
+Scenario: Login with boundary email length
+  Given a registered user with a 254-character email
+  When the user submits the login form with correct credentials
+  Then the user is redirected to the dashboard
 ```
-
-### CRUD Operations
-
-```gherkin
-# Happy: Create
-Scenario: Create new resource with valid data
-  Given an authenticated user with "create" permission
-  When the user submits a new {resource} with all required fields
-  Then the {resource} is created with a unique ID
-  And a 201 response is returned
-
-# Negative: Duplicate
-Scenario: Cannot create duplicate {resource}
-  Given a {resource} with name "existing-name" already exists
-  When the user creates a {resource} with name "existing-name"
-  Then a 409 conflict error is returned
-
-# Boundary: Maximum field length
-Scenario: Create with maximum allowed name length
-  Given an authenticated user
-  When the user creates a {resource} with a 255-character name
-  Then the {resource} is created successfully
-
-# Boundary: Exceeds maximum
-Scenario: Reject creation with name exceeding maximum
-  Given an authenticated user
-  When the user creates a {resource} with a 256-character name
-  Then a 400 validation error is returned
-```
-
-### State Transitions
-
-```gherkin
-# Happy: Valid transition
-Scenario: Order confirmed after payment
-  Given an order in "PENDING" state
-  When payment is successfully processed
-  Then the order transitions to "CONFIRMED"
-
-# Negative: Invalid transition
-Scenario: Cannot ship an unconfirmed order
-  Given an order in "PENDING" state
-  When a ship request is submitted
-  Then the request is rejected with "Invalid state transition"
-  And the order remains in "PENDING" state
-```
-
----
 
 ## Coverage Matrix
-
-For each criterion, track scenario coverage:
 
 ```yaml
 SCENARIO_COVERAGE:
   criterion_id: AC-LOGIN-001
   criterion_text: "Valid credentials grant access"
   scenarios:
-    happy_path: 1    # Minimum 1
-    negative: 2      # Minimum 1
-    boundary: 1      # Minimum 1
-    edge_case: 0     # Optional
+    happy_path: 1
+    negative: 2
+    boundary: 1
+    edge_case: 0
   total: 4
-  coverage_verdict: SUFFICIENT  # >=3 scenarios = SUFFICIENT
+  coverage_verdict: SUFFICIENT
 ```
 
 ### Minimum Coverage Requirements
 
-| Priority | Min Scenarios | Required Types |
-|----------|--------------|----------------|
-| CRITICAL | 5 | HP(1) + NP(2) + BP(1) + EP(1) |
-| HIGH | 3 | HP(1) + NP(1) + BP(1) |
-| MEDIUM | 2 | HP(1) + NP(1) |
-| LOW | 1 | HP(1) |
+| Priority | Min scenarios | Required types |
+|----------|---------------|----------------|
+| `CRITICAL` | `5` | `HP(1)` + `NP(2)` + `BP(1)` + `EP(1)` |
+| `HIGH` | `3` | `HP(1)` + `NP(1)` + `BP(1)` |
+| `MEDIUM` | `2` | `HP(1)` + `NP(1)` |
+| `LOW` | `1` | `HP(1)` |
 
----
+Coverage verdict: `SUFFICIENT` when the minimum requirement is met or exceeded.
 
 ## Output Format
 
@@ -248,47 +174,27 @@ BDD_SCENARIOS:
   gherkin_file: "generated/login.feature"
 ```
 
----
-
 ## Anti-Patterns
 
-### Process Anti-Patterns
-
-**AP-001: Retrospective Scenarios** — Writing Gherkin after implementation. Scenarios become "test scripts" instead of requirements. Use EXTRACT mode pre-implementation to prevent this.
-
-**AP-002: Isolated Authoring** — PO/BA writes scenarios alone without Three Amigos review. Results in low-testability criteria. Flag with AMBIGUOUS_FLAG and route to Scribe/Accord for collaborative refinement.
-
-**AP-003: BDD as Testing Tool** — Treating BDD as a QA tool, not a specification process. Generate scenarios in business language, verify Given/When/Then are user-action-centric, warn when implementation details leak in.
-
-### Scenario Writing Anti-Patterns
-
-**AP-004: Incidental Details** — Including irrelevant details (UI steps, password input sequences). Focus on "outcome of action", keep When to one primary action, describe user goals not UI operations.
-
-**AP-005: Multiple Rules per Scenario** — Verifying multiple business rules in one scenario. Enforce 1 scenario = 1 business rule. Auto-split compound criteria ("A and B" → separate scenarios) during extraction.
-
-**AP-006: Poor Scenario Titles** — Generic titles like "Test Login". Use pattern: criterion ID + business rule summary (e.g., "SC-AC-LOGIN-001-HP-001: Valid credentials grant dashboard access").
-
-**AP-007: Given/When/Then Mixing** — Confusing preconditions (Given) with actions (When). Given: passive/completed state. When: one active action. Then: observable verifiable result.
-
-### Coverage Anti-Patterns
-
-**AP-008: Over-Specification** — Trying to cover every code path with scenarios. Stick to priority-based minimums (CRITICAL:5, HIGH:3, MEDIUM:2, LOW:1). Focus on customer-visible behavior.
-
-**AP-009: UI-Focused Testing** — Writing all scenarios as UI operation sequences. Describe user journeys (intent), delegate UI details to Voyager/Radar. "User logs in" not "User types email, types password, clicks button."
-
-**AP-010: Missing Negative Scenarios** — Happy-path only coverage. Require at least 1 negative scenario for every CRITICAL/HIGH criterion. Link to adversarial-probing's Omission category for automatic gap detection.
-
----
+| Code | Anti-pattern | Prevention |
+|------|--------------|------------|
+| `AP-001` | Retrospective scenarios | Generate scenarios before or during implementation, not after |
+| `AP-002` | Isolated authoring | Use collaborative refinement for ambiguous specs |
+| `AP-003` | BDD treated only as QA | Keep scenarios in business language |
+| `AP-004` | Incidental details | Focus on outcomes, not UI click sequences |
+| `AP-005` | Multiple rules per scenario | Enforce one business rule per scenario |
+| `AP-006` | Poor titles | Use criterion ID + business-rule summary |
+| `AP-007` | Given/When/Then mixing | Keep state in `Given`, action in `When`, result in `Then` |
+| `AP-008` | Over-specification | Stop at priority-based minimums unless risk requires more |
+| `AP-009` | UI-focused writing | Describe user intent and business behavior |
+| `AP-010` | Missing negative coverage | Require at least one negative scenario for every `CRITICAL` / `HIGH` criterion |
 
 ## Quality Checklist
 
-Before finalizing BDD scenarios, verify:
-
-- [ ] Scenarios created before or during implementation (not after)?
-- [ ] 1 scenario = 1 business rule?
-- [ ] Written in business language (no technical jargon)?
-- [ ] Given = preconditions, When = 1 action, Then = verifiable result?
-- [ ] Titles clearly express purpose?
-- [ ] Negative and boundary scenarios included?
-- [ ] User goals described (not UI operations)?
-- [ ] Scenario count within priority-based limits?
+- [ ] Scenarios were generated before or during implementation
+- [ ] One scenario covers one business rule
+- [ ] Language is business-facing, not implementation-facing
+- [ ] `Given` = state, `When` = one action, `Then` = verifiable result
+- [ ] Titles describe the business purpose clearly
+- [ ] Negative and boundary coverage is present where required
+- [ ] Scenario count satisfies priority-based minimums

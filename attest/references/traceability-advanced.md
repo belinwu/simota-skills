@@ -1,35 +1,38 @@
 # Advanced Traceability Techniques
 
-Bidirectional traceability, automation, gap analysis, and coverage optimization.
+Purpose: Read this when running `AUDIT`, building `BIDIRECTIONAL_TRACEABILITY`, classifying traceability gaps, or evaluating L1/L2/L3 coverage.
 
----
+## Contents
 
-## 1. Bidirectional Traceability (BDTM)
+- [Bidirectional traceability](#bidirectional-traceability)
+- [Gap analysis](#gap-analysis)
+- [Coverage levels](#coverage-levels)
+- [Automation patterns](#automation-patterns)
+- [Audit and regulatory use](#audit-and-regulatory-use)
+- [Anti-patterns](#anti-patterns)
 
-### Overview
+## Bidirectional Traceability
 
+Bidirectional traceability checks both directions:
+
+```text
+Forward traceability:
+  Requirements -> Implementation -> Tests
+  "Was every requirement implemented and tested?"
+
+Backward traceability:
+  Tests / Implementation -> Requirements
+  "Does every artifact have a requirement justification?"
 ```
-Forward Traceability:
-  Requirements -> Design -> Implementation -> Tests
-  "Are all requirements implemented?"
 
-Backward Traceability:
-  Tests -> Implementation -> Design -> Requirements
-  "Does all code/tests have a requirement justification?"
+### Mapping Types
 
-Bidirectional = Forward + Backward:
-  - Detect unimplemented requirements (Forward Gap)
-  - Detect code/tests without requirements (Backward Gap = Gold Plating)
-```
-
-### Bidirectional Mapping in Attest
-
-| Direction | Mapping | Detected Issue |
-|-----------|---------|---------------|
-| **Forward** | AC-ID -> Implementation file:line -> Test file:line | Unimplemented criteria (FAIL) |
-| **Backward** | Implementation file -> AC-ID | Implementation without requirement (Gold Plating) |
-| **Test Forward** | AC-ID -> Test case | Untested criteria |
-| **Test Backward** | Test case -> AC-ID | Tests without criteria (Orphan Test) |
+| Direction | Mapping | Main issue detected |
+|-----------|---------|---------------------|
+| Forward | `AC-ID -> implementation -> test` | Unimplemented or untested criteria |
+| Backward | `implementation -> AC-ID` | Gold plating or undocumented behavior |
+| Test forward | `AC-ID -> test` | Missing test coverage |
+| Test backward | `test -> AC-ID` | Orphan tests |
 
 ### Output Format
 
@@ -54,114 +57,99 @@ BIDIRECTIONAL_TRACEABILITY:
       - file: test/deprecated.test.ts
         description: "Test not mapped to any criterion"
   coverage:
-    implementation: 83%  # 10/12
-    test: 67%           # 8/12
-    full_chain: 67%     # Requirement -> Implementation -> Test complete chain
+    implementation: 83%
+    test: 67%
+    full_chain: 67%
 ```
 
----
+## Gap Analysis
 
-## 2. Gap Analysis
+### Gap Types
 
-### 4 Gap Types
-
-| Gap Type | Definition | Risk | Detection Method |
-|----------|-----------|------|-----------------|
-| **Implementation Gap** | No implementation for a criterion | High | Forward trace |
-| **Test Gap** | Implementation exists but no tests | Medium-High | Forward trace |
-| **Specification Gap** | Implementation exists but no criterion | Medium | Backward trace |
-| **Coverage Gap** | Tests exist but are insufficient | Medium | Coverage analysis |
+| Gap type | Definition | Risk | Detection method |
+|----------|------------|------|------------------|
+| `Implementation Gap` | Criterion has no implementation mapping | High | Forward trace |
+| `Test Gap` | Implementation exists but no mapped test | Medium-High | Forward trace |
+| `Specification Gap` | Implementation exists but no mapped criterion | Medium | Backward trace |
+| `Coverage Gap` | Tests exist but do not cover the full criterion intent | Medium | Coverage analysis |
 
 ### Gap Priority Matrix
 
-```
-              Criterion exists   No criterion
-Has impl      [Normal]           [Spec Gap]
-              Has tests          -> Recommend adding spec
-              No tests
-              [Test Gap]
-
-No impl       [Impl Gap]         [N/A]
-              -> Add impl         Out of scope
+```text
+Criterion exists + implementation missing -> Implementation Gap
+Criterion exists + implementation present + tests missing -> Test Gap
+Implementation present + criterion missing -> Specification Gap
+Implementation and tests present but incomplete -> Coverage Gap
 ```
 
-### Gap Detection in AUDIT Mode
+### AUDIT-Mode Sequence
 
-```
-AUDIT mode additional analysis:
-  1. Build Forward mapping: criteria -> implementation
-  2. Build Forward mapping: implementation -> tests
-  3. Build Backward mapping: tests -> criteria
-  4. Classify each gap type
-  5. Calculate coverage rates
-  6. Generate gap report
-```
+1. Build forward mapping: criteria -> implementation.
+2. Build forward mapping: implementation -> tests.
+3. Build backward mapping: tests -> criteria.
+4. Classify each discovered gap.
+5. Calculate L1, L2, and L3 coverage.
+6. Report orphan artifacts and remediation priorities.
 
----
+## Coverage Levels
 
-## 3. Traceability Automation
+| Level | Definition | Formula |
+|-------|------------|---------|
+| `L1` | Requirements coverage | Criteria with implementation / Total criteria |
+| `L2` | Test coverage | Criteria with tests / Total criteria |
+| `L3` | Full-chain coverage | Criteria with implementation and tests / Total criteria |
+| `L4` | Result coverage | Passing criteria / Total criteria |
 
-### Automated Mapping Techniques
+### Coverage Thresholds
 
-| Technique | Description | Accuracy | Use Case |
-|-----------|-------------|----------|----------|
-| **Naming convention** | Infer AC-ID from file/test names | High | When test names include AC-ID |
-| **Comment/tag based** | Search for `@covers AC-LOGIN-001` tags | High | When tagging is enforced |
-| **Pattern matching** | Match route/handler names with criterion keywords | Medium | When naming conventions are consistent |
-| **Code search** | Grep for criterion keywords | Medium-Low | Fallback technique |
-| **LLM inference** | AI matches code intent with criteria | Medium | When other methods are inconclusive |
+| Level | `CERTIFIED` tendency | `CONDITIONAL` tendency | `REJECTED` tendency |
+|-------|----------------------|------------------------|---------------------|
+| `L1` | `>= 90%` | `>= 70%` | `< 70%` |
+| `L2` | `>= 80%` | `>= 60%` | `< 60%` |
+| `L3` | `>= 70%` | `>= 50%` | `< 50%` |
 
-### Recommended Tag Conventions
+Use `L3` for release confidence when the environment requires full-chain evidence.
 
-```
-Code side:
+## Automation Patterns
+
+### Mapping Techniques
+
+| Technique | Strength | Use when |
+|-----------|----------|----------|
+| Naming convention | High accuracy | Files or tests include `AC-*` IDs |
+| Comment or tag mapping | High accuracy | `@requirement` or `@covers` tags are enforced |
+| Pattern matching | Medium accuracy | Route or handler names match criterion language |
+| Code search | Medium-Low accuracy | Used as fallback when tags are absent |
+| LLM inference | Medium accuracy | Only after deterministic methods are exhausted |
+
+### Recommended Tags
+
+```text
+Code:
   // @requirement AC-LOGIN-001
   // @covers AC-LOGIN-001, AC-LOGIN-002
 
-Test side:
+Tests:
   describe('AC-LOGIN-001: Valid credentials grant access', () => { ... })
   // @criterion AC-LOGIN-001
 
-Gherkin side:
+Gherkin:
   @AC-LOGIN-001
   Scenario: Successful login with valid credentials
 ```
 
----
+## Audit and Regulatory Use
 
-## 4. Coverage Optimization
+- Use `AUDIT` mode when the goal is gap analysis, not just verdict issuance.
+- Regulated environments often require bidirectional traceability and full-chain coverage.
+- For regulated releases, treat `L3` as a release gate and preserve orphan-artifact reporting.
 
-### Coverage Levels
+## Anti-Patterns
 
-| Level | Definition | Formula |
-|-------|-----------|---------|
-| **L1: Requirements Coverage** | Criteria mapped to implementation | Criteria with impl / Total criteria |
-| **L2: Test Coverage** | Criteria mapped to tests | Criteria with tests / Total criteria |
-| **L3: Full Chain Coverage** | Criteria -> impl -> test complete chain | Full chain criteria / Total criteria |
-| **L4: Result Coverage** | Criteria with passing tests | PASS criteria / Total criteria |
-
-### Coverage Thresholds
-
-| Level | CERTIFIED | CONDITIONAL | REJECTED |
-|-------|-----------|-------------|----------|
-| L1 | >= 90% | >= 70% | < 70% |
-| L2 | >= 80% | >= 60% | < 60% |
-| L3 | >= 70% | >= 50% | < 50% |
-
----
-
-## 5. Regulatory Traceability
-
-Regulated industries (FDA 21 CFR Part 11, ISO 26262, DO-178C, ISO 29148) require bidirectional traceability and full chain coverage. Use AUDIT mode + L3 full chain coverage. Refer to each standard's documentation for detailed requirements.
-
----
-
-## 6. Traceability Anti-Patterns
-
-| Anti-Pattern | Symptom | Mitigation |
+| Anti-pattern | Symptom | Mitigation |
 |-------------|---------|------------|
-| **Manual-Only RTM** | Excel-managed, quickly becomes stale | Tag-based automated mapping |
-| **One-Way Only** | Forward only, ignoring Backward | Require bidirectional tracing |
-| **Snapshot RTM** | Created only at project start | Continuous updates (periodic AUDIT mode runs) |
-| **Over-Granular** | Mapping every variable and line | Maintain criterion-level granularity |
-| **Orphan Tolerance** | Allowing code without requirements | Report Backward Gaps as MEDIUM or above |
+| Manual-only RTM | Spreadsheet goes stale | Prefer tag-based or generated mapping |
+| One-way traceability | Only forward gaps are visible | Require backward mapping too |
+| Snapshot RTM | Matrix updated only once | Re-run `AUDIT` continuously |
+| Over-granular mapping | Line-by-line trace noise | Keep mapping at criterion level |
+| Orphan tolerance | Unmapped code or tests accepted silently | Report as `MEDIUM` or above |
