@@ -1,477 +1,156 @@
 # Pandoc Recipes
 
-Morphエージェントのためのpandoc詳細レシピ集。
+Purpose: Use this reference when Pandoc is the chosen tool and you need canonical commands, templates, filters, metadata handling, or batch automation.
 
----
+## Contents
 
-## 基本変換レシピ
+- Core conversions
+- PDF recipes
+- Metadata and templates
+- HTML and Word recipes
+- Batch automation
+- Filters and debugging
 
-### Markdown → PDF (基本)
+## Core Conversions
 
-```bash
+```sh
+# Markdown -> PDF
 pandoc input.md -o output.pdf
-```
 
-### Markdown → PDF (日本語対応)
-
-```bash
+# Markdown -> PDF (Japanese)
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
-  -V CJKmainfont="Hiragino Mincho ProN" \
-  -V CJKsansfont="Hiragino Kaku Gothic ProN" \
-  -V CJKmonofont="Osaka-Mono"
-```
+  -V CJKmainfont="Hiragino Mincho ProN"
 
-### Markdown → PDF (目次付き)
-
-```bash
+# Markdown -> PDF with TOC
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
-  --toc \
-  --toc-depth=3 \
-  -V toc-title="目次"
-```
+  --toc --toc-depth=3
 
-### Markdown → Word
-
-```bash
+# Markdown -> Word
 pandoc input.md -o output.docx
+
+# Markdown -> HTML
+pandoc input.md -o output.html -s
 ```
 
-### Markdown → HTML (スタンドアロン)
+## PDF Recipes
 
-```bash
-pandoc input.md -o output.html \
-  -s \
-  --metadata title="Document Title"
-```
+### Professional Document
 
----
-
-## 高度なPDFレシピ
-
-### プロフェッショナル文書
-
-```bash
+```sh
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
   --toc \
-  --toc-depth=3 \
-  --number-sections \
-  -V documentclass=report \
-  -V papersize=a4 \
-  -V geometry:margin=25mm \
-  -V fontsize=11pt \
-  -V CJKmainfont="Hiragino Mincho ProN" \
-  -V linkcolor=blue \
+  --metadata-file=metadata.yaml \
+  --template=corporate-ja.tex
+```
+
+### Technical Document
+
+```sh
+pandoc input.md -o output.pdf \
+  --pdf-engine=xelatex \
+  --template=technical-ja.tex \
   --highlight-style=tango
 ```
 
-### 技術文書 (コードハイライト)
+### Print-Optimized PDF
 
-```bash
+```sh
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
-  --highlight-style=zenburn \
-  --listings \
-  -V fontsize=10pt \
-  -V monofont="JetBrains Mono" \
-  -V geometry:margin=20mm
-```
-
-### 印刷最適化
-
-```bash
-pandoc input.md -o output.pdf \
-  --pdf-engine=xelatex \
-  -V papersize=a4 \
-  -V geometry:top=30mm \
-  -V geometry:bottom=30mm \
-  -V geometry:left=35mm \
-  -V geometry:right=25mm \
   -V fontsize=12pt \
-  -V linestretch=1.5
+  -V geometry="margin=25mm"
 ```
 
-### ヘッダー/フッター付き
-
-```bash
-pandoc input.md -o output.pdf \
-  --pdf-engine=xelatex \
-  -V header-includes='\usepackage{fancyhdr}' \
-  -V header-includes='\pagestyle{fancy}' \
-  -V header-includes='\fancyhead[L]{Company Name}' \
-  -V header-includes='\fancyhead[R]{\thepage}' \
-  -V header-includes='\fancyfoot[C]{Confidential}'
-```
-
----
-
-## メタデータ活用
-
-### YAMLメタデータファイル
+## Metadata And Templates
 
 ```yaml
-# metadata.yaml
----
-title: "Document Title"
-subtitle: "Subtitle"
-author:
-  - name: "Author One"
-    affiliation: "Company A"
-  - name: "Author Two"
-    affiliation: "Company B"
-date: "2025-01-15"
-lang: ja
-abstract: |
-  This is the abstract of the document.
-  It can span multiple lines.
+title: Document Title
+author: Author Name
+date: 2026-03-06
 keywords:
-# ...
+  - conversion
+  - report
+lang: ja
 ```
 
-### メタデータファイル使用
-
-```bash
+```sh
+# Apply metadata file
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
   --metadata-file=metadata.yaml
-```
 
-### インラインメタデータ (Markdown内)
-
-```markdown
----
-title: "Document Title"
-author: "Author Name"
-date: "2025-01-15"
----
-
-# Introduction
-
-Document content starts here...
-```
-
----
-
-## テンプレート
-
-### LaTeXテンプレート作成
-
-```bash
-# デフォルトテンプレートを出力
+# Export default LaTeX template
 pandoc -D latex > template.tex
-```
 
-### カスタムテンプレート適用
-
-```bash
+# Apply custom template
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
-  --template=custom-template.tex
+  --template=template.tex
 ```
 
-### シンプルな企業テンプレート
+## HTML And Word Recipes
 
-```latex
-% corporate-template.tex
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(papersize)$$papersize$paper,$endif$]{article}
+```sh
+# HTML with CSS
+pandoc input.md -o output.html -s --css=corporate.css
 
-\usepackage{fontspec}
-\usepackage{xeCJK}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-\usepackage{hyperref}
-
-\setCJKmainfont{$CJKmainfont$}
-\setmainfont{$mainfont$}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\includegraphics[height=1cm]{logo.png}}
-// ...
-```
-
----
-
-## HTML変換レシピ
-
-### スタンドアロンHTML
-
-```bash
-pandoc input.md -o output.html \
-  -s \
-  --metadata title="Title" \
-  --css=style.css
-```
-
-### CSSインライン埋め込み
-
-```bash
-pandoc input.md -o output.html \
-  -s \
-  --self-contained \
-  --css=style.css
-```
-
-### シンタックスハイライト付き
-
-```bash
-pandoc input.md -o output.html \
-  -s \
-  --highlight-style=pygments \
-  --css=style.css
-```
-
-### 利用可能なハイライトスタイル
-
-```bash
-pandoc --list-highlight-styles
-# pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock
-```
-
-### レスポンシブHTMLテンプレート
-
-```html
-<!-- template.html -->
-<!DOCTYPE html>
-<html lang="$lang$">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>$title$</title>
-  <style>
-    body {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      font-family: sans-serif;
-      line-height: 1.6;
-    }
-<!-- ... -->
-```
-
-```bash
-pandoc input.md -o output.html \
-  --template=template.html \
-  --toc
-```
-
----
-
-## Word変換レシピ
-
-### 基本変換
-
-```bash
-pandoc input.md -o output.docx
-```
-
-### リファレンスドキュメント使用
-
-```bash
-# リファレンス作成
-pandoc -o reference.docx --print-default-data-file reference.docx
-
-# スタイルをカスタマイズしてから使用
+# DOCX with reference document
 pandoc input.md -o output.docx --reference-doc=reference.docx
+
+# DOCX with TOC
+pandoc input.md -o output.docx --toc --reference-doc=reference.docx
 ```
 
-### 目次付きWord
-
-```bash
-pandoc input.md -o output.docx \
-  --toc \
-  --toc-depth=3
-```
-
----
-
-## バッチ処理レシピ
-
-### ディレクトリ内全変換
+## Batch Automation
 
 ```bash
 #!/bin/bash
 # convert-all.sh
-
-INPUT_DIR="${1:-.}"
-OUTPUT_DIR="${2:-./output}"
+OUTPUT_DIR="${2:-out}"
 FORMAT="${3:-pdf}"
-
 mkdir -p "$OUTPUT_DIR"
-
-for file in "$INPUT_DIR"/*.md; do
-  if [ -f "$file" ]; then
-    filename=$(basename "$file" .md)
-    echo "Converting: $filename"
-
-    pandoc "$file" -o "$OUTPUT_DIR/$filename.$FORMAT" \
-# ...
+for file in "$1"/*.md; do
+  filename=$(basename "$file" .md)
+  pandoc "$file" -o "$OUTPUT_DIR/$filename.$FORMAT" --pdf-engine=xelatex
+done
 ```
 
-### Makefile
-
-```makefile
+```make
 SOURCES := $(wildcard *.md)
 PDFS := $(SOURCES:.md=.pdf)
-DOCX := $(SOURCES:.md=.docx)
-HTML := $(SOURCES:.md=.html)
-
 PANDOC_OPTS := --pdf-engine=xelatex --toc -V CJKmainfont="Hiragino Mincho ProN"
-
-.PHONY: all pdf docx html clean
-
-all: pdf
 
 pdf: $(PDFS)
 
-docx: $(DOCX)
-
-// ...
+%.pdf: %.md
+	pandoc $< -o $@ $(PANDOC_OPTS)
 ```
 
----
-
-## 特殊機能
-
-### 数式 (LaTeX)
-
-```markdown
-インライン数式: $E = mc^2$
-
-ブロック数式:
-$$
-\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
-$$
-```
-
-```bash
-pandoc input.md -o output.pdf --pdf-engine=xelatex
-```
-
-### 脚注
-
-```markdown
-これは脚注付きの文章です[^1]。
-
-[^1]: これが脚注の内容です。
-```
-
-### 引用
-
-```markdown
-> これは引用文です。
-> 複数行も可能です。
->
-> — 著者名
-```
-
-### 定義リスト
-
-```markdown
-用語1
-:   定義1の説明
-
-用語2
-:   定義2の説明
-```
-
-### タスクリスト
-
-```markdown
-- [x] 完了タスク
-- [ ] 未完了タスク
-- [ ] 別の未完了タスク
-```
-
----
-
-## フィルター
-
-### Luaフィルター
-
-```lua
--- uppercase-headers.lua
-function Header(el)
-  return pandoc.walk_inline(el, {
-    Str = function(s)
-      return pandoc.Str(string.upper(s.text))
-    end
-  })
-end
-```
-
-```bash
-pandoc input.md -o output.pdf --lua-filter=uppercase-headers.lua
-```
-
-### 組み込みフィルター
-
-```bash
-# 引用スタイル適用
-pandoc input.md -o output.pdf --citeproc --bibliography=refs.bib
-```
-
----
-
-## トラブルシューティング
-
-### よくある問題
-
-| 問題 | 解決策 |
-|------|--------|
-| 日本語が表示されない | `-V CJKmainfont` を指定 |
-| 画像が見つからない | 絶対パスを使用、または `--resource-path` |
-| 目次が生成されない | `--toc` オプション追加 |
-| フォントエラー | システムにフォントをインストール |
-| メモリ不足 | 画像を事前に圧縮 |
-
-### デバッグ
-
-```bash
-# 中間形式を確認
-pandoc input.md -t latex -o debug.tex
-
-# バージョン確認
-pandoc --version
-
-# 対応フォーマット確認
-pandoc --list-input-formats
-pandoc --list-output-formats
-```
-
-### 画像パス解決
-
-```bash
-# リソースパス指定
-pandoc input.md -o output.pdf --resource-path=.:images:assets
-```
-
----
-
-## パフォーマンス最適化
-
-### 大きなドキュメント
-
-```bash
-# メモリ制限緩和
-pandoc input.md -o output.pdf \
-  --pdf-engine=xelatex \
-  +RTS -M2G -RTS
-```
-
-### 並列処理
-
-```bash
-# GNU Parallel使用
+```sh
 find . -name "*.md" | parallel pandoc {} -o {.}.pdf
 ```
 
-### キャッシュ活用
+## Filters And Debugging
 
-```bash
-# LaTeXキャッシュ利用
-export TEXMFVAR=/tmp/texmf-var
-pandoc input.md -o output.pdf --pdf-engine=xelatex
+```sh
+# Citation processing
+pandoc input.md -o output.pdf --citeproc --bibliography=refs.bib
+
+# Lua filter
+pandoc input.md -o output.pdf --lua-filter=uppercase-headers.lua
+
+# Inspect intermediate LaTeX
+pandoc input.md -t latex -o debug.tex
+
+# Resource path
+pandoc input.md -o output.pdf --resource-path=.:images:assets
 ```
+
+Rules:
+
+- Use `pandoc` when the source is structurally clean and the target pair is supported.
+- Prefer template and metadata files over long inline flag chains when the workflow will recur.
+- For large documents or frequent builds, script or make the conversion instead of repeating ad hoc commands.

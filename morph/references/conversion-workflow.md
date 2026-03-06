@@ -1,123 +1,88 @@
 # Morph Conversion Workflow
 
-Detailed 5-step conversion process: Analyze → Configure → Convert → Verify → Deliver.
+Purpose: Use this reference when preparing a reproducible conversion job, including source analysis, tool configuration, logging, verification, and delivery.
 
----
+## Contents
 
-## 1. ANALYZE — Understand the Source
+- Source analysis template
+- Conversion config template
+- Conversion log template
+- Verification checklist
+- Delivery template
 
-**Input Analysis:**
-- Identify source format and structure
-- Detect features that may not convert (tables, images, code blocks)
-- Check for external dependencies (images, fonts, stylesheets)
-- Estimate conversion complexity
+## 1. ANALYZE — Source Analysis
 
-**Feature Inventory Template:**
-```markdown
+```md
 ## Source Analysis: [filename]
-
-**Format:** Markdown / Word / HTML / Other
-**Size:** X pages / Y KB
-**Structure:**
-- Headings: [levels used]
-- Tables: [count, complexity]
+- Format:
+- Target:
+- Headings:
+- Lists:
+- Tables:
+- Code blocks:
 - Images: [count, formats]
-- Code blocks: [count, languages]
-- Cross-references: [internal links]
-
-**Potential Issues:**
-- [Feature that may not convert]
-- [Missing dependencies]
+- Links / references:
+- Metadata present:
+- Potential fidelity risks:
+- Missing dependencies:
 ```
 
----
+## 2. CONFIGURE — Conversion Config
 
-## 2. CONFIGURE — Select Tools and Options
-
-**Tool Selection:**
-- Choose best tool for source → target conversion
-- Configure output options (page size, margins, fonts)
-- Select template if applicable
-- Set up metadata (title, author, date)
-
-**Configuration Template:**
 ```yaml
-conversion:
-  source: input.md
-  target: output.pdf
-  tool: pandoc
-  options:
-    pdf-engine: xelatex
-    toc: true
-    toc-depth: 3
-    template: corporate
-    metadata:
-      title: "Document Title"
-      author: "Author Name"
-      date: "2025-01-15"
+source: input.md
+target: output.pdf
+tool: pandoc
+options:
+  pdf-engine: xelatex
+  toc: true
+  metadata-file: metadata.yaml
+template: corporate-ja.tex
+quality_profile: standard
 ```
 
----
+## 3. CONVERT — Conversion Log
 
-## 3. CONVERT — Execute Transformation
-
-**Conversion Steps:**
-1. Validate source file
-2. Prepare dependencies (images, fonts)
-3. Execute conversion command
-4. Check for errors/warnings
-5. Generate output
-
-**Error Handling Template:**
-```markdown
+```md
 ## Conversion Log
-
-**Status:** SUCCESS / PARTIAL / FAILED
-
-**Warnings:**
-- [Warning about feature loss]
-- [Font substitution]
-
-**Errors:**
-- [Critical error if any]
-
-**Output:** [path/to/output.pdf]
+- Source:
+- Target:
+- Tool:
+- Template:
+- Start time:
+- End time:
+- Output:
+- Warnings:
+- Errors:
+- Substitutions:
 ```
 
----
+Rules:
 
-## 4. VERIFY — Quality Check
+- Fail explicitly when conversion errors occur.
+- Do not silently continue after a broken conversion.
 
-**Quality Checklist:**
-- [ ] All headings preserved
-- [ ] Tables render correctly
-- [ ] Images display properly
-- [ ] Code blocks formatted
-- [ ] Links functional (internal/external)
-- [ ] Page breaks appropriate
-- [ ] Fonts render correctly
+## 4. VERIFY — Quality Checklist
+
+- [ ] Headings preserved
+- [ ] Lists preserved
+- [ ] Tables preserved or loss documented
+- [ ] Code blocks readable
+- [ ] Images resolved
+- [ ] Links preserved
 - [ ] Metadata present
+- [ ] Target-specific checks completed
 
----
+## 5. DELIVER — Completion Template
 
-## 5. DELIVER — Provide Output
-
-**Delivery Template:**
-```markdown
+```md
 ## Conversion Complete
-
-**Source:** [source file path]
-**Output:** [output file path]
-**Format:** PDF / Word / HTML
-
-**Quality Score:** X/10
-
-**Notes:**
-- [Any important observations]
-- [Recommendations for future]
-
-**Command Used:**
-\`\`\`bash
-[actual command]
-\`\`\`
+- Source:
+- Target:
+- Output path:
+- Tool and template:
+- Quality grade:
+- Known limitations:
+- Accessibility / archival status:
+- Next action:
 ```
