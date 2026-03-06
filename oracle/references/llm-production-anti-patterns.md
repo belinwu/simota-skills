@@ -1,124 +1,118 @@
-# LLM Production Anti-Patterns
+# LLM Production Anti-Patterns (2025-2026)
 
-> LLM アプリケーションの本番運用における既知問題パターン、失敗モード、防御戦略
+> Production failure modes, architecture anti-patterns, security threats, reasoning limits, MCP anti-patterns
 
-## 1. LLM 本番課題の 8 大カテゴリ
+## 1. 8 Production Challenge Categories
 
-| # | カテゴリ | 問題 | 影響度 | Oracle での対策 |
-|---|---------|------|-------|---------------|
-| **LP-01** | **ハルシネーション** | もっともらしい嘘を自信満々に生成 | Critical | RAG によるグラウンディング · 引用強制 · 低 Temperature (0.0-0.2) |
-| **LP-02** | **プロンプトインジェクション** | 悪意ある指示が安全ルールを上書き | Critical | 入力サニタイズ · 指示/データ分離 · 権限最小化 · 監査ログ |
-| **LP-03** | **コンテキストウィンドウ限界** | 長い会話で初期情報が「Lost in the Middle」 | High | チャンク分割 (400-800 tokens) · Top 5-8 取得 · 要約圧縮 |
-| **LP-04** | **非決定性** | 同じ入力で異なる出力、デバッグ不能 | High | Temperature 固定 · モデルバージョン固定 · 全パラメータログ |
-| **LP-05** | **コスト・レイテンシ** | 月額 $6,000+ · 5-10 秒待機 | High | モデル階層化 · キャッシュ · プロンプト圧縮 · ストリーミング |
-| **LP-06** | **バイアス・公平性** | 性別・人種・年齢の偏り | Medium | 多様なデモグラフィックテスト · 20% 超の偏差フラグ · 定期監査 |
-| **LP-07** | **プライバシー・データ漏洩** | PII が学習データやコンテキストから露出 | Critical | PII 検出・マスキング · テナント分離 · 自動削除 · ローカルモデル |
-| **LP-08** | **推論限界** | 算術・多段論理・時間推論の失敗 | High | ツールコール (計算/日付/ポリシー検索) · バリデーション層 · 専門モデル |
-
----
-
-## 2. アーキテクチャ・設計アンチパターン
-
-| # | アンチパターン | 問題 | 修正 |
-|---|-------------|------|------|
-| **LA-01** | **過度な複雑性** | 単一エージェントで十分な問題にマルチエージェントフレームワーク導入 | 最もシンプルなアプローチから開始、必要に応じてエスカレーション |
-| **LA-02** | **1 リクエスト多タスク** | 1 プロンプトで抽出 + 判定 + 生成を同時要求 → ハルシネーション・タスク欠落 | Single Logical Change: 1 リクエスト 1 タスク |
-| **LA-03** | **フレームワーク過依存** | 汎用プラットフォームで全てを解決しようとする | ドメイン固有のニーズにはカスタムツールが効果的 |
-| **LA-04** | **モデル無謬性の仮定** | LLM を「頭脳」として信頼し、出力を検証しない | LLM を「信頼できないコンピュート」として扱い、全出力を検証 |
-| **LA-05** | **出力ハンドリング欠如** | LLM 出力を未検証で他システムに渡す → XSS / RCE リスク | 出力サニタイズ · スキーマバリデーション · 権限最小化 |
-| **LA-06** | **浮動モデル名** | `gpt-4` 指定で暗黙のモデル更新 → 挙動変化 | 固定バージョン指定 (例: `gpt-4-turbo-2024-04-09`) |
-| **LA-07** | **過剰権限エージェント** | ツール呼び出し可能なモデルに広い権限付与 | 最小権限原則 · 読み取り専用デフォルト · アクション監査 |
-| **LA-08** | **サプライチェーン盲信** | モデル形式、サーバー、ハブ、コネクタの脆弱性を無視 | 依存関係監査 · 安全でないデシリアライゼーション検出 |
+| # | Category | Problem | Impact | Mitigation |
+|---|---------|---------|--------|-----------|
+| **LP-01** | **Hallucination** | Confident generation of plausible falsehoods | Critical | RAG grounding · citation enforcement · low temperature (0.0-0.2) |
+| **LP-02** | **Prompt Injection** | Malicious instructions override safety rules | Critical | Input sanitization · instruction/data separation · least privilege · audit logs |
+| **LP-03** | **Context Window Limits** | Early info "Lost in the Middle" in long conversations | High | Chunk splitting (400-800 tokens) · top 5-8 retrieval · summary compression |
+| **LP-04** | **Non-determinism** | Same input → different output; impossible to debug | High | Fixed temperature · pinned model version · full parameter logging |
+| **LP-05** | **Cost & Latency** | $6,000+/month bills; 5-10s response times | High | Model tiering · caching · prompt compression · streaming |
+| **LP-06** | **Bias & Fairness** | Gender, race, age biases in outputs | Medium | Diverse demographic testing · >20% deviation flagging · quarterly audits |
+| **LP-07** | **Privacy & Data Leakage** | PII exposure from training data or context | Critical | PII detection/masking · tenant isolation · auto-deletion · local models |
+| **LP-08** | **Reasoning Limits** | Arithmetic, multi-step logic, temporal reasoning failures | High | Tool calls (calculator, date, policy lookup) · validation layer · specialist models |
 
 ---
 
-## 3. セキュリティ脅威と防御
+## 2. Architecture & Design Anti-Patterns
 
-### OWASP Top 10 for LLM Applications（主要項目）
-
-| 脅威 | 攻撃例 | 防御 |
-|------|-------|------|
-| **プロンプトインジェクション** | 「前の指示を無視して...」をドキュメントに埋め込み | 指示/データ分離 · 入力サニタイズ · パターンブロック |
-| **安全でない出力処理** | LLM 出力の HTML/JS を未サニタイズで表示 | 出力エスケープ · CSP ヘッダー · サンドボックス実行 |
-| **機密情報開示** | コンテキスト内の PII がレスポンスに漏洩 | PII マスキング · 出力フィルタリング · データ分離 |
-| **過剰エージェンシー** | ツール呼び出しで意図しないアクション実行 | 権限最小化 · 人間承認ゲート · アクション監査 |
-| **データポイズニング** | RAG インデックスに悪意あるドキュメント注入 | ソース認証 · データ品質チェック · 異常検出 |
+| # | Anti-Pattern | Problem | Fix |
+|---|-------------|---------|-----|
+| **LA-01** | **Over-complexity** | Multi-agent framework for single-agent problem | Start simplest; escalate only when needed |
+| **LA-02** | **Multi-task per request** | Extract + judge + generate in one prompt → hallucination | Single Logical Change: one request = one task |
+| **LA-03** | **Framework over-reliance** | Generic platform for all problems | Domain-specific custom tools when needed |
+| **LA-04** | **Model infallibility assumption** | Trust LLM output without verification | Treat LLM as "unreliable compute"; validate all outputs |
+| **LA-05** | **No output handling** | Pass raw LLM output to downstream systems → XSS/RCE | Output sanitization · schema validation · least privilege |
+| **LA-06** | **Floating model names** | `gpt-4` auto-updates → behavior change | Pin exact version (e.g., `claude-sonnet-4-6`) |
+| **LA-07** | **Over-privileged agents** | Tool-calling model with broad permissions | Least privilege · read-only default · action audit |
+| **LA-08** | **Supply chain blindness** | Ignore model format, server, hub, connector vulnerabilities | Dependency audit · unsafe deserialization detection |
 
 ---
 
-## 4. コスト・レイテンシ最適化パターン
+## 3. MCP-Specific Anti-Patterns
+
+| # | Anti-Pattern | Problem | Fix |
+|---|-------------|---------|-----|
+| **MA-01** | **God server** | One MCP server handles all tools | Single responsibility: one server = one domain |
+| **MA-02** | **No input validation** | Raw user input passed to tool parameters | Validate and sanitize all parameters before execution |
+| **MA-03** | **Unconfirmed state changes** | Tools modify state without user awareness | Require confirmation for writes/deletes/spending; support dry-run |
+| **MA-04** | **Secret leakage** | API keys or tokens echoed in tool results | Never return secrets in tool outputs or elicitation messages |
+| **MA-05** | **Missing output schemas** | Tool outputs are unstructured → wasted context window | Declare output schemas for efficient token usage |
+| **MA-06** | **No rate limiting** | Unrestricted tool invocations → cost explosion | Per-server rate limits and cost ceilings |
+
+---
+
+## 4. Agent-Specific Anti-Patterns
+
+| # | Anti-Pattern | Problem | Fix |
+|---|-------------|---------|-----|
+| **AA-01** | **God agent** | One agent handles all responsibilities | Single responsibility per agent |
+| **AA-02** | **Implicit communication** | Natural language only between agents | Structured data interfaces (JSON schemas) |
+| **AA-03** | **Failure propagation** | Sub-agent failure crashes entire system | Fault isolation; graceful degradation |
+| **AA-04** | **Distributed decisions** | No central management; each agent decides independently | Orchestration layer for coordination |
+| **AA-05** | **Infinite loops** | ReAct agent without step cap; recursive tool calls | Max steps + circuit breaker + cost ceiling |
+| **AA-06** | **Heavy custom agents** | 25k+ token agent definitions → bottleneck | Keep agents <3k tokens for fluid orchestration |
+
+---
+
+## 5. Reasoning Limit Compensations
 
 ```
-コスト削減の 5 段階:
+Areas where LLMs fail and compensations:
 
-  1. プロンプト最適化（-10〜30%）
-     - 不要なコンテキスト除去
-     - 圧縮プロンプト（例: 150 tokens → 80 tokens）
-     - max_tokens を実際の必要量に設定
+  Arithmetic: $47,382 − $31,547 − $8,200 = ?
+    LLM answer: $7,600 (correct: $7,635)
+    → Tool call: calculator, spreadsheet functions
 
-  2. モデル階層化（-30〜60%）
-     - ルーティング: Haiku/Flash-Lite で分類 → 複雑タスクのみ上位モデル
-     - タスク別: Simple → Haiku, Medium → Sonnet, Complex → Opus
+  Multi-step logic: Missing steps, dropped conditions
+    → Chain-of-Thought + structured output + step count verification
 
-  3. キャッシュ戦略（-10〜70%）
-     - Exact Cache: 同一クエリ（FAQ ボット 50-80% ヒット率）
-     - Semantic Cache: 類似クエリ（チャットサポート 10-30%）
-     - Prompt Cache: 共通システムプロンプト（最大 80% レイテンシ削減）
+  Constraint satisfaction: Policy check omissions
+    → Constraint checker + validation layer
 
-  4. バッチ処理（-20〜40%）
-     - レイテンシ許容時: リクエストバッチ化
-     - 並列処理: Retrieval とモデルウォームアップの並行
+  Temporal reasoning: Relative dates, timezone errors
+    → Dedicated tool call + current time context injection
 
-  5. エラーコスト排除（-5〜10%）
-     - リトライ無限ループ防止（Circuit Breaker）
-     - バリデーション失敗の早期検出
-     - 不要な再生成の回避
-
-例: 5,000 ユーザー × 50K req/day
-  キャッシュなし: $6,000/月
-  Prompt Cache 適用: $2,625/月（56% 削減）
-```
-
----
-
-## 5. 推論限界の補償パターン
-
-```
-LLM が失敗しやすい領域と補償:
-
-  算術: $47,382 − $31,547 − $8,200 = ? → LLM: $7,600（正解: $7,635）
-  → ツールコール（計算機、日付計算、ポリシー検索）
-
-  多段論理: 手順の欠落、条件の見落とし
-  → Chain-of-Thought + 構造化出力 + ステップ数検証
-
-  制約充足: 返金条件のチェック漏れ → ポリシー違反
-  → 制約チェッカー + バリデーション層
-
-  時間推論: 相対日付、タイムゾーン計算の誤り
-  → 専用ツールコール + 現在時刻のコンテキスト注入
-
-核心原則:
-  「LLM を完璧にしようとするな — LLM の欠陥にもかかわらず
-   信頼性高く動作するシステムを構築せよ」
+Core principle:
+  "Don't try to make the LLM perfect — build a system
+   that works reliably DESPITE the LLM's flaws."
 ```
 
 ---
 
-## 6. Oracle との連携
+## 6. Security Threat Matrix (OWASP LLM 2025 Alignment)
+
+| Threat | Attack Vector | Defense |
+|--------|--------------|---------|
+| **Prompt Injection** | "Ignore previous instructions..." in documents | Instruction/data separation · input sanitization · pattern blocking |
+| **Unsafe Output Handling** | LLM-generated HTML/JS rendered unsanitized | Output escaping · CSP headers · sandboxed execution |
+| **Sensitive Info Disclosure** | PII in context leaks to response | PII masking · output filtering · data isolation |
+| **Excessive Agency** | Tool calls perform unintended actions | Least privilege · human approval gates · action audit |
+| **Data Poisoning** | Malicious documents injected into RAG index | Source authentication · data quality checks · anomaly detection |
+| **System Prompt Leakage** | Attacker extracts system prompt contents | Externalize secrets · output guardrails · prompt isolation |
+| **Vector Weaknesses** | RAG vector DB unauthorized access / poisoning | Access controls · fine-grained partitioning · source validation |
+
+---
+
+## 7. Oracle Integration
 
 ```
-Oracle での活用:
-  1. ASSESS モードで LP-01〜08 の検出チェックリスト適用
-  2. DESIGN モードで LA-01〜08 のアンチパターン回避設計
-  3. SPECIFY モードでセキュリティ要件（OWASP Top 10 for LLM）を仕様に含める
-  4. EVALUATE モードで推論限界の補償パターンの有効性を検証
+Oracle workflow integration:
+  1. ASSESS: Run LP-01–08 detection checklist on existing system
+  2. DESIGN: Avoid LA-01–08 and MA-01–06 in architecture
+  3. SPECIFY: Include security requirements (OWASP alignment) in specs
+  4. EVALUATE: Test reasoning limit compensations for effectiveness
 
-品質ゲート:
-  - 出力バリデーション未実装 → DESIGN 段階でブロック（LA-04, LA-05 防止）
-  - モデルバージョン未固定 → 固定バージョン指定を要求（LA-06 防止）
-  - 権限設計なし → 最小権限設計を要求（LA-07 防止）
-  - 算術/論理タスクにツールコール未設計 → 補償パターン追加を要求（LP-08 防止）
+Quality gates:
+  - No output validation → block at DESIGN (LA-04, LA-05)
+  - Model version not pinned → require exact version (LA-06)
+  - No permission design → require least privilege (LA-07)
+  - Arithmetic/logic tasks without tool calls → add compensation (LP-08)
+  - MCP server with broad scope → require single responsibility (MA-01)
+  - Agent without step cap → require circuit breaker (AA-05)
 ```
 
-**Source:** [ShiftAsia: 8 LLM Production Challenges](https://shiftasia.com/community/8-llm-production-challenges-problems-solutions/) · [Martin Fowler: Emerging Patterns in Building GenAI Products](https://martinfowler.com/articles/gen-ai-patterns/) · [Medium: Patterns and Anti-Patterns for Building with LLMs](https://medium.com/marvelous-mlops/patterns-and-anti-patterns-for-building-with-llms-42ea9c2ddc90) · [Mend.io: LLM Security in 2025](https://www.mend.io/blog/llm-security-risks-mitigations-whats-next/)
+**Source:** [ShiftAsia: 8 LLM Production Challenges](https://shiftasia.com/community/8-llm-production-challenges-problems-solutions/) · [Martin Fowler: GenAI Patterns](https://martinfowler.com/articles/gen-ai-patterns/) · [OWASP Top 10 for LLM 2025](https://genai.owasp.org/llm-top-10/) · [MCP Specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) · [Anthropic: Building Agents with Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)

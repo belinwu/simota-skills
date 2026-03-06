@@ -1,154 +1,180 @@
-# Cost Optimization Reference
+# Cost Optimization (2025-2026)
 
-トークン経済、モデル選定マトリクス、プロンプト圧縮、キャッシュROI のリファレンス。
+> Token economics, model selection, prompt caching, batching, model routing, cost monitoring
 
----
+## 1. Token Economics (2025-2026 Pricing)
 
-## Token Economics
-
-### Token Pricing Comparison (per 1M tokens)
-
-| Model | Input | Output | Speed | Quality |
-|-------|-------|--------|-------|---------|
+| Model | Input (per 1M) | Output (per 1M) | Speed | Quality |
+|-------|----------------|------------------|-------|---------|
 | **Claude Opus 4.6** | $15.00 | $75.00 | Slow | Highest |
-| **Claude Sonnet 4.5** | $3.00 | $15.00 | Medium | High |
+| **Claude Sonnet 4.6** | $3.00 | $15.00 | Medium | High |
 | **Claude Haiku 4.5** | $0.80 | $4.00 | Fast | Good |
 | **GPT-4o** | $2.50 | $10.00 | Medium | High |
 | **GPT-4o-mini** | $0.15 | $0.60 | Fast | Good |
 
-### Cost Estimation Formula
+### Cost Formula
 
 ```
-Cost = (input_tokens × input_price + output_tokens × output_price) × requests_per_day × 30
+Monthly cost = (input_tokens × input_price + output_tokens × output_price)
+               × requests_per_day × 30
 
-Example: 1000 requests/day, avg 500 input + 200 output tokens, Claude Sonnet
-= (500 × $3/1M + 200 × $15/1M) × 1000 × 30
-= ($0.0015 + $0.003) × 30000
-= $135/month
+Example: 1000 req/day, avg 500 input + 200 output, Claude Sonnet 4.6
+= (500 × $3/1M + 200 × $15/1M) × 1000 × 30 = $135/month
 ```
 
 ---
 
-## Model Selection Matrix
+## 2. 5-Stage Cost Reduction Framework
 
-### Decision Framework
+### Stage 1: Prompt Optimization (−10 to 30%)
 
-```
-Task complexity:
-  Simple (classification, extraction) → Haiku
-  Medium (summarization, Q&A) → Sonnet or GPT-4o-mini
-  Complex (reasoning, code, analysis) → Sonnet
-  Hardest (research, multi-step reasoning) → Opus
+| Technique | Savings | Risk |
+|-----------|---------|------|
+| Remove redundant context | 10-30% | None if careful |
+| Compress instructions | 10-20% | May reduce clarity |
+| Reduce few-shot examples | 20-50% | Medium quality risk |
+| Set max_tokens to actual need | 5-15% | None |
+| Remove over-prompting from pre-4.6 era | 10-20% | None (4.6 is more responsive) |
 
-Latency requirement:
-  < 500ms → Haiku or GPT-4o-mini
-  < 2s → Sonnet
-  < 10s → Opus
-
-Budget per query:
-  < $0.001 → Haiku or GPT-4o-mini
-  < $0.01 → Sonnet
-  < $0.10 → Opus
-```
-
-### Model Routing
+### Stage 2: Model Routing (−30 to 60%)
 
 ```python
 def select_model(task: Task) -> str:
+    # Start with cheapest viable model; escalate on failure
     if task.complexity == "simple" and task.latency_budget < 500:
         return "claude-haiku-4-5-20251001"
     elif task.requires_reasoning or task.complexity == "complex":
-        return "claude-sonnet-4-5-20250929"
+        return "claude-sonnet-4-6"
     elif task.complexity == "hardest":
         return "claude-opus-4-6"
     else:
-        return "claude-sonnet-4-5-20250929"  # Default
+        return "claude-sonnet-4-6"  # Default
+```
+
+**Dynamic model selection pattern:**
+Start with Haiku 4.5 → validate output → escalate to Sonnet if validation fails.
+Haiku 4.5 delivers ~90% of Sonnet's agentic performance at 2× speed, 3× cost savings.
+
+### Stage 3: Caching (−10 to 90%)
+
+| Strategy | Expected Hit Rate | Savings | Best For |
+|----------|------------------|---------|----------|
+| **Prompt cache** (provider-level) | Automatic | Up to 90% input cost, 80% latency | Repeated system prompts, tool definitions |
+| **Exact cache** (application-level) | 40-70% for FAQ | Direct cost reduction | Identical repeated queries |
+| **Semantic cache** | 10-30% for chat | Variable | Similar queries |
+
+**Prompt caching specifics:**
+- Caches system prompts, tool definitions, shared RAG context
+- Latency reduction: up to 80%
+- Input token cost reduction: up to 90%
+- Effectiveness depends on prompt stability; dynamic content reduces hit rate
+- Cache invalidation policy design is required
+
+### Stage 4: Batching (−20 to 40%)
+
+- **Batch API**: Multiple prompts in a single request; lower per-call overhead
+- **Continuous batching**: Groups requests dynamically on GPU backends
+- **Parallel processing**: Retrieval and model warm-up concurrently
+- Best for: async workflows where latency tolerance > 30s
+
+### Stage 5: Error Cost Elimination (−5 to 10%)
+
+- Circuit breaker to prevent infinite retry loops
+- Early validation failure detection
+- Avoid unnecessary re-generation
+- Monitor wasted tokens on errors (target: <5% of total spend)
+
+### Compound Effect
+
+```
+Techniques are complementary:
+  Prompt compression + model routing + caching = 60-80% cost reduction
+  without quality compromise.
+
+Example: 5,000 users × 50K req/day
+  No optimization: $6,000/month
+  With prompt cache: $2,625/month (56% reduction)
+  With full pipeline: ~$1,200/month (80% reduction)
 ```
 
 ---
 
-## Prompt Compression Techniques
+## 3. Effort Parameter Optimization (Claude 4.6)
 
-| Technique | Token Reduction | Quality Impact |
-|-----------|----------------|---------------|
-| **Remove whitespace/formatting** | 5-10% | None |
-| **Abbreviate instructions** | 10-20% | Low risk |
-| **Reduce few-shot examples** | 20-50% | Medium risk |
-| **Use structured references** | 10-15% | Low risk |
-| **LLMLingua compression** | 30-60% | Medium risk |
-| **Summary of long context** | 40-70% | Variable |
+| Effort | Use Case | Token Impact | Latency |
+|--------|----------|-------------|---------|
+| `low` | Classification, simple extraction | Minimal thinking | Fast |
+| `medium` | General tasks, content generation | Balanced | Medium |
+| `high` | Agentic coding, complex reasoning | Deep thinking | Slower |
+| `max` | Research, deep analysis | Maximum reasoning | Slowest |
 
-### Before/After Example
+**Cost tip:** Use `medium` as default for most applications. Reserve `high`/`max` for genuinely complex tasks. Setting max_tokens to 64k at medium effort gives room for thinking without runaway token usage.
 
-```
-# Before (150 tokens)
-You are a helpful customer support agent. Your job is to help customers
-with their questions about our product. You should always be polite and
-professional. If you don't know the answer, say "I don't know" rather
-than making something up. Always provide sources for your claims.
+---
 
-# After (80 tokens)
-Role: Customer support agent.
-Rules: Be polite. Cite sources. Say "I don't know" if uncertain.
-Never fabricate information.
+## 4. Model Registry
+
+```json
+{
+  "model_id": "intent-classifier-v2.1",
+  "provider": "anthropic",
+  "model_name": "claude-haiku-4-5-20251001",
+  "prompt_version": "v2.1.0",
+  "status": "production",
+  "metrics": {
+    "accuracy": 0.94,
+    "p95_latency_ms": 450,
+    "cost_per_1k_queries": 0.12
+  },
+  "deployed_at": "2026-01-15T10:00:00Z",
+  "rollback_to": "intent-classifier-v2.0"
+}
 ```
 
 ---
 
-## Caching ROI Calculator
-
-### Cache Hit Rate Impact
-
-| Cache Hit Rate | Cost Reduction | LLM Calls Saved |
-|---------------|---------------|-----------------|
-| 10% | 10% | 1 in 10 |
-| 30% | 30% | 3 in 10 |
-| 50% | 50% | 5 in 10 |
-| 70% | 70% | 7 in 10 |
-
-### Caching Strategy by Use Case
-
-| Use Case | Expected Hit Rate | Cache Strategy |
-|----------|------------------|----------------|
-| FAQ bot | 50-80% | Exact + Semantic cache |
-| Code review | 5-15% | Prompt caching only |
-| Data extraction | 20-40% | Exact cache by document |
-| Chat support | 10-30% | Semantic cache |
-| Classification | 40-70% | Exact cache |
-
-### ROI Calculation
-
-```
-Monthly LLM cost without cache: $1000
-Cache infrastructure cost: $50/month
-Cache hit rate: 50%
-
-Savings = $1000 × 0.50 - $50 = $450/month
-ROI = $450 / $50 = 900%
-Break-even hit rate = $50 / $1000 = 5%
-```
-
----
-
-## Cost Monitoring Dashboard
-
-### Key Metrics
+## 5. Cost Monitoring Dashboard
 
 | Metric | Granularity | Alert Threshold |
 |--------|------------|----------------|
 | **Daily spend** | Per model | > 120% of budget |
-| **Cost per query** | Per endpoint | > 2x baseline |
+| **Cost per query** | Per endpoint | > 2× baseline |
 | **Token efficiency** | Per prompt version | Output/Input ratio spike |
 | **Cache hit rate** | Per cache | < 50% of expected |
 | **Error cost** | Wasted tokens on errors | > 5% of total |
+| **Thinking tokens** | Per effort level | Unexpected increase |
 
-### Cost Reduction Checklist
+---
+
+## 6. Cost Reduction Checklist
 
 - [ ] Use cheapest model that meets quality requirements
-- [ ] Implement caching for repeated/similar queries
-- [ ] Compress prompts without quality loss
-- [ ] Reduce max_tokens to actual need (not default)
+- [ ] Enable prompt caching for system prompts and tool definitions
+- [ ] Implement application-level caching for repeated/similar queries
+- [ ] Set max_tokens to actual need (not default maximum)
+- [ ] Use appropriate effort level (don't default to `high` for everything)
 - [ ] Monitor and eliminate token waste (retries, errors)
-- [ ] Use prompt caching for repeated system prompts
 - [ ] Batch similar requests where latency allows
-- [ ] Set spending alerts and hard limits
+- [ ] Set spending alerts and hard limits per model/endpoint
+- [ ] Track cost per feature, not just total spend
+- [ ] Review model selection quarterly as pricing and capabilities evolve
+
+---
+
+## 7. Oracle Integration
+
+```
+Oracle workflow integration:
+  1. DESIGN: Include cost implications in every architecture decision
+  2. ASSESS: Audit current model selection and caching strategy
+  3. SPECIFY: Include cost constraints in Builder handoff specs
+  4. EVALUATE: Measure cost per query alongside quality metrics
+
+Quality gates:
+  - No cost estimate → require budget projection before design approval
+  - Using Opus for simple tasks → require model routing justification
+  - No caching strategy → recommend caching ROI analysis
+  - max_tokens at default → require actual output size analysis
+```
+
+**Source:** [Koombea: LLM Cost Optimization Guide](https://ai.koombea.com/blog/llm-cost-optimization) · [FutureAGI: LLM Cost Optimization 2025](https://futureagi.com/blogs/llm-cost-optimization-2025) · [PremAI: Save 90% on LLM API Costs](https://blog.premai.io/how-to-save-90-on-llm-api-costs-without-losing-performance/) · [Anthropic: Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)

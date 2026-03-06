@@ -63,13 +63,12 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Area | Scope | Reference |
 |------|-------|-----------|
-| **Prompt Engineering** | Design patterns, versioning, testing, optimization | `references/prompt-engineering.md` |
-| **RAG Architecture** | Chunking, embeddings, vector DBs, retrieval quality | `references/rag-architecture.md` |
-| **LLM Patterns** | Agent architecture, tool use, structured output, caching | `references/llm-patterns.md` |
-| **AI Safety** | Guardrails, hallucination detection, bias evaluation | `references/ai-safety.md` |
-| **Evaluation** | LLM-as-judge, regression testing, benchmarks | `references/evaluation-frameworks.md` |
-| **MLOps** | Deployment, monitoring, feature stores | `references/mlops-patterns.md` |
-| **Cost Optimization** | Token economics, model selection, prompt compression | `references/cost-optimization.md` |
+| **Prompt Engineering** | Claude 4.x patterns, adaptive thinking, structured outputs, versioning, testing | `references/prompt-engineering.md` |
+| **RAG Design** | Modern RAG taxonomy (GraphRAG, Agentic RAG), chunking, hybrid search, 10 anti-patterns | `references/rag-design-anti-patterns.md` |
+| **LLM Patterns** | Agent architecture, MCP integration, tool use, multi-agent design, caching | `references/llm-application-patterns.md` |
+| **AI Safety** | OWASP Top 10 LLM 2025, guardrails, agent safety, PII handling | `references/ai-safety-guardrails.md` |
+| **Evaluation** | LLM-as-Judge anti-patterns, observability, CI/CD integration, monitoring | `references/evaluation-observability.md` |
+| **Cost Optimization** | Prompt caching, model routing, batching, effort parameter, monitoring | `references/cost-optimization.md` |
 
 ## Priorities
 
@@ -93,17 +92,13 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | File | Content |
 |------|---------|
-| `references/prompt-engineering.md` | Prompt design patterns, versioning, testing |
-| `references/rag-architecture.md` | Chunking, embeddings, vector DB selection |
-| `references/llm-patterns.md` | Agent architecture, tool use, structured output |
-| `references/ai-safety.md` | Guardrails, hallucination detection, bias evaluation |
-| `references/evaluation-frameworks.md` | LLM-as-judge, regression testing, benchmarks |
-| `references/mlops-patterns.md` | Deployment, monitoring, feature stores |
-| `references/cost-optimization.md` | Token economics, model selection, prompt compression |
-| `references/rag-anti-patterns.md` | RAG 10 大アンチパターン（RP-01〜10）、カスケード失敗モデル、Hybrid Search 戦略、3 層評価モデル |
-| `references/llm-production-anti-patterns.md` | LLM 本番 8 大課題（LP-01〜08）、設計アンチパターン（LA-01〜08）、OWASP Top 10 for LLM、推論限界補償 |
-| `references/llm-evaluation-observability.md` | LLM-as-Judge 8 大アンチパターン（EV-01〜08）、オブザーバビリティ 7 つの柱、監視ダッシュボード設計、CI/CD 統合評価 |
-| `references/agentic-ai-patterns.md` | エージェントアーキテクチャ 5 パターン（AP-01〜05）、信頼性 5 大原則、失敗モード対策、マルチエージェント設計原則 |
+| `references/prompt-engineering.md` | Claude 4.x patterns, adaptive/extended thinking, structured outputs, XML tags, versioning, testing, agentic prompts |
+| `references/rag-design-anti-patterns.md` | Modern RAG taxonomy (GraphRAG, Agentic RAG, Self-RAG), hybrid search, 10 anti-patterns (RP-01–10), cascade failure, 3-tier evaluation |
+| `references/llm-application-patterns.md` | Agent architecture (AP-01–05), MCP integration, tool use, multi-agent design, reliability principles, caching, streaming |
+| `references/ai-safety-guardrails.md` | OWASP Top 10 LLM 2025 (LLM01–10), defense-in-depth guardrails, hallucination detection, agent safety, PII handling, regulatory compliance |
+| `references/evaluation-observability.md` | LLM-as-Judge anti-patterns (EV-01–08), observability 7 pillars (OB-01–05), CI/CD integration, monitoring dashboard, deployment checklist |
+| `references/cost-optimization.md` | Token economics, 5-stage cost reduction, prompt caching, model routing, batching, effort parameter, monitoring dashboard |
+| `references/llm-production-anti-patterns.md` | 8 production challenges (LP-01–08), architecture anti-patterns (LA-01–08), MCP anti-patterns (MA-01–06), agent anti-patterns (AA-01–06), OWASP alignment |
 
 ---
 
