@@ -1,274 +1,118 @@
 # Lifecycle Management
 
-Rally's team lifecycle management.
-Seven phases from TeamCreate to TeamDelete, plus error scenario handling.
+> Purpose: Read this when executing Rally's 7-phase lifecycle, handling teammate failures, or shutting the team down safely.
 
----
+## Table of Contents
 
-## Phase 1: ASSESS (Task Analysis)
+1. Phase Summary
+2. Phase Details
+3. Error Scenarios
 
-### Purpose
-Evaluate the task's parallelizability and determine whether Rally is the right agent.
+## Phase Summary
 
-### Checklist
-- [ ] Does the task have parallelizable independent units?
-- [ ] Have file-level dependencies been identified?
-- [ ] Are 2+ teammates needed? (1 teammate = Nexus/Sherpa is sufficient)
-- [ ] Does estimated time exceed parallelization overhead?
+| Phase | Goal | Mandatory action |
+|-------|------|------------------|
+| `ASSESS` | decide whether Rally is appropriate | reject false parallelism early |
+| `DESIGN` | choose team pattern and ownership | present design through `ON_TEAM_DESIGN` when needed |
+| `SPAWN` | create the team and teammates | `TeamCreate` before any `Task` spawn |
+| `ASSIGN` | create tasks and dependencies | set `owner`, `status`, and `addBlockedBy` correctly |
+| `MONITOR` | supervise progress | poll `TaskList`, respond to failures, and interpret `idle` correctly |
+| `SYNTHESIZE` | merge results and verify quality | trigger `ON_RESULT_CONFLICT` if outputs collide |
+| `CLEANUP` | end the session safely | `shutdown_request` each teammate, then `TeamDelete` |
 
-### Decision Criteria
+## Phase Details
 
-| Condition | Verdict |
-|-----------|---------|
-| 2+ independent units, no file overlap | Rally is appropriate ✅ |
-| Dependencies exist but staged parallelism possible | Rally is appropriate (control via blockedBy) ✅ |
-| All tasks depend on the same files | Delegate to Nexus/Sherpa ❌ |
-| Only one task | Execute directly or delegate to Nexus ❌ |
+### `ASSESS`
 
----
+Use Rally only when:
 
-## Phase 2: DESIGN (Team Design)
+- `2+` independent units exist, or
+- staged parallelism is possible through `blockedBy`, and
+- parallel gain is likely to exceed coordination cost.
 
-### Purpose
-Determine the optimal team composition and declare file ownership.
+Reject Rally when all work writes the same files, only one task exists, or the task is investigation-only.
 
-### Steps
+### `DESIGN`
 
-1. **Select pattern**: Choose from `references/team-design-patterns.md`
-2. **Define teammates**:
-   ```yaml
-   teammates:
-     - name: "backend-impl"
-       subagent_type: "general-purpose"
-       model: "sonnet"  # optional
-       mode: "bypassPermissions"
-     - name: "frontend-impl"
-       subagent_type: "general-purpose"
-       model: "sonnet"
-       mode: "bypassPermissions"
-   ```
-3. **Map ownership**: Follow `references/file-ownership-protocol.md`
-4. **Confirm with user**: Present team composition via ON_TEAM_DESIGN trigger
+1. Select a pattern from `references/team-design-patterns.md`.
+2. Choose teammate names, `subagent_type`, model, and mode.
+3. Declare ownership via `references/file-ownership-protocol.md`.
+4. Ask through `ON_TEAM_DESIGN` when design approval is required.
 
----
+### `SPAWN`
 
-## Phase 3: SPAWN (Team Creation)
+1. Run `TeamCreate`.
+2. Spawn teammates via `Task` with `run_in_background: true`.
+3. Confirm the prompt includes:
+   team name and role, task, `exclusive_write` and `shared_read`, conventions, dependencies, completion criteria, and `TaskUpdate` instructions.
 
-### Steps
+### `ASSIGN`
 
-**Step 3.1: TeamCreate**
+1. Create tasks with `TaskCreate`.
+2. Wire dependencies through `TaskUpdate.addBlockedBy`.
+3. Set the owner and move the task to `in_progress`.
+4. DM the owner when blockers are cleared.
 
-```
-TeamCreate:
-  team_name: "feature-xyz"
-  description: "Parallel implementation team for XYZ feature"
-```
+### `MONITOR`
 
-**Step 3.2: Spawn teammates (Task tool)**
+Use this loop until all tasks finish:
 
-Spawn each teammate via the Task tool:
+- `completed` -> prepare for synthesis
+- `in_progress` -> normal; process idle notifications
+- `pending` + unblocked -> assign or nudge the owner
+- `blocked` -> resolve the blocker or re-sequence work
 
-```
-Task:
-  subagent_type: "general-purpose"
-  team_name: "feature-xyz"
-  name: "backend-impl"
-  description: "Backend API implementation"
-  mode: "bypassPermissions"
-  run_in_background: true
-  prompt: |
-    You are backend-impl on the feature-xyz team.
-    [Context injection - see SKILL.md §3 for details]
-```
+`idle` means waiting. It does not mean done.
 
-**Notes:**
-- Use `run_in_background: true` for async spawning
-- All teammates can be spawned in parallel
-- After spawning, teammates are automatically registered in the team config
+### `SYNTHESIZE`
 
-**Step 3.3: Context Injection Checklist**
+1. Collect completed tasks and `files_changed`.
+2. Check the ownership map.
+3. Verify build, tests, and lint or type checks.
+4. Fire `ON_RESULT_CONFLICT` if same-file edits or incompatible outputs appear.
 
-Verify prompt includes:
-- [ ] Team name and role
-- [ ] Specific task description
-- [ ] File ownership (exclusive_write / shared_read)
-- [ ] Tech stack, coding conventions
-- [ ] Dependencies, prerequisites
-- [ ] Completion criteria
-- [ ] Reporting instructions via TaskUpdate
+### `CLEANUP`
 
----
-
-## Phase 4: ASSIGN (Task Assignment)
-
-### Steps
-
-**Step 4.1: Create tasks via TaskCreate**
-
-```
-TaskCreate:
-  subject: "Implement auth API endpoints"
-  description: |
-    Implement POST /api/auth/login and POST /api/auth/register.
-    Include JWT token generation/validation middleware.
-    Files: src/api/auth/**, src/services/auth/**
-  activeForm: "Implementing auth API endpoints"
-```
-
-**Step 4.2: Set dependencies**
-
-```
-TaskUpdate:
-  taskId: "3"
-  addBlockedBy: ["1", "2"]
-```
-
-**Step 4.3: Assign owner**
-
-```
-TaskUpdate:
-  taskId: "1"
-  owner: "backend-impl"
-  status: "in_progress"
-```
-
-**Step 4.4: Notify teammates**
-
-When blockedBy is resolved for a task, notify the owner via DM:
-
-```
-SendMessage:
-  type: "message"
-  recipient: "frontend-impl"
-  content: "Blockers for task 3 have been resolved. Please begin work."
-  summary: "Blocker resolved notification"
-```
-
----
-
-## Phase 5: MONITOR (Progress Monitoring)
-
-### Monitoring Loop
-
-```
-while (incomplete tasks remain):
-  1. Check all task states via TaskList
-  2. Handle each task state:
-     - completed → Prepare for Phase 6
-     - in_progress → Normal (process idle notifications)
-     - pending + unblocked → Nudge or assign owner
-     - blocked → Help resolve blocker
-  3. Receive idle notifications → respond as needed
-  4. Receive error/failure messages → enter failure handling flow
-```
-
-### Handling Idle Notifications
-
-| Idle Context | Response |
-|-------------|----------|
-| Idle after task completion | Normal. Assign next task |
-| Idle after sending message | Normal. Waiting for reply |
-| Extended idle (no progress) | DM to check status |
-| Idle after error report | Enter failure handling flow |
-
----
-
-## Phase 6: SYNTHESIZE (Output Integration)
-
-### Steps
-
-1. **Collect outputs**: Check completed tasks via TaskList
-2. **Gather file change list**: Collect files_changed from each task description/report
-3. **Conflict check**: Verify no changes to the same file
-4. **Integration verification**:
-   - Build check
-   - Test execution
-   - Lint check
-5. **Conflict resolution**: Fire ON_RESULT_CONFLICT trigger if needed
-
----
-
-## Phase 7: CLEANUP
-
-### Steps
-
-**Step 7.1: Confirm all tasks completed**
-
-Verify all tasks show completed in TaskList.
-
-**Step 7.2: Send shutdown_request**
-
-Send to each teammate sequentially:
-
-```
-SendMessage:
-  type: "shutdown_request"
-  recipient: "backend-impl"
-  content: "All tasks complete. Please shut down."
-```
-
-**Step 7.3: Wait for shutdown_response**
-
-Confirm `approve: true` from each teammate.
-
-**Step 7.4: TeamDelete**
-
-After all shutdown confirmations:
-
-```
-TeamDelete
-```
-
-**Step 7.5: Report results**
-
-Report final results to user:
-- Team composition summary
-- Completed task list
-- Changed files list
-- Build/test results
-- Remaining risks
-
----
+1. Confirm all tasks are complete.
+2. Send `shutdown_request` to each teammate.
+3. Wait for `approve: true`.
+4. Run `TeamDelete`.
+5. Report team composition, completed tasks, changed files, verification results, and remaining risks.
 
 ## Error Scenarios
 
 ### Teammate Hang
 
-**Symptom:** Remains in_progress with no response, no idle notifications
+Symptom: still `in_progress`, no progress, no meaningful replies.
 
-**Response:**
-1. DM to check status (up to 2 attempts)
-2. No response → send shutdown_request
-3. No shutdown_response → force terminate via TaskStop
-4. Reassign task to a new teammate
+Response:
+1. DM a status check up to `2` times.
+2. If still no response, send `shutdown_request`.
+3. If shutdown still fails, stop the task and replace the teammate.
+4. Reassign the task.
 
 ### Teammate Failure
 
-**Symptom:** Task status FAILED, error message received
+Symptom: task reports failure or becomes blocked with an error.
 
-**Response:**
-1. Confirm with user via ON_TEAMMATE_FAILURE trigger
-2. Retry → provide additional context via DM
-3. Replace → shutdown_request → spawn new teammate
-4. Skip → change task to manual handling
+Response:
+1. Confirm next action via `ON_TEAMMATE_FAILURE` when needed.
+2. Retry with more context.
+3. Retry with reduced scope.
+4. Replace the teammate.
+5. Skip and report if replacement is not justified.
 
 ### All Teammates Failed
 
-**Symptom:** All tasks FAILED or BLOCKED
-
-**Response:**
-1. Send shutdown_request to all teammates
-2. TeamDelete
-3. Report situation to user with alternatives:
-   - Sequential execution via Nexus/Sherpa
-   - Reduce task scope
-   - Review prerequisites
+Response:
+1. Send `shutdown_request` to all teammates.
+2. Run `TeamDelete`.
+3. Report alternatives:
+   sequential fallback, reduced scope, or prerequisite review.
 
 ### Shutdown Rejected
 
-**Symptom:** Teammate returns `approve: false`
-
-**Response:**
-1. Check rejection reason
-2. If remaining tasks → wait for completion
-3. If unclear reason → report to user
+Response:
+1. Check the rejection reason.
+2. Wait if tasks remain.
+3. Report to the user if the reason is unclear or unresolved.

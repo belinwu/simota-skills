@@ -1,150 +1,88 @@
 # Multi-Agent Anti-Patterns & Failure Modes
 
-> MAST失敗分類、過剰並列化メトリクス、設計・通信・検証アンチパターン、Claude Code固有の落とし穴
+> Purpose: Read this when checking whether Rally is a bad fit, diagnosing coordination failures, or setting safe limits for a team session.
 
-## 1. 失敗率の実態（2025年研究）
+## Table of Contents
 
-arXiv論文 (2503.13657) の分析結果:
+1. Failure Taxonomy
+2. Over-Parallelization Signals
+3. Anti-Patterns
+4. Maker-Checker Rules
+5. Rally Checklist
 
-- 本番マルチエージェントLLMシステムの **41〜86.7% が失敗**
-- 問題の **79% はプロンプト改善で解決不能**（仕様・調整問題）
-- **「プロンプティングの誤謬」**: プロンプト改善だけでシステム的な調整失敗を解決できるという誤った信念
+## Failure Taxonomy
 
----
+System design failures are common in multi-agent work. Treat coordination and scope as first-class risks, not prompt-tuning problems.
 
-## 2. MAST（Multi-Agent System Failure Taxonomy）
+| Category | Failure mode | Symptom | Rally safeguard |
+|----------|--------------|---------|-----------------|
+| System design | ambiguous roles | teammates drift into each other's work | clear boundaries + `exclusive_write` |
+| System design | bad state management | loops or long stalls | checkpoints + timeouts |
+| System design | incompatible outputs | synthesis breaks | shared interfaces in `shared_read` |
+| Inter-agent mismatch | context reset | teammate loses assumptions | re-inject context |
+| Inter-agent mismatch | wrong assumptions continue | silent divergence | explicit reports + verification |
+| Inter-agent mismatch | context drift | contradictory outputs | semantic contracts |
+| Verification failure | repeated completed steps | looped execution | mark completion via `TaskUpdate` |
+| Verification failure | hallucination propagation | bad upstream facts spread downstream | cross-check and source verification |
 
-### カテゴリ1: システム設計の問題
+## Over-Parallelization Signals
 
-| 失敗モード | 症状 | 対策 |
-|-----------|------|------|
-| 役割定義の曖昧さ | エージェントが役割を「逸脱」 | 明確な Boundaries + exclusive_write |
-| 不適切な状態管理 | 無限ループ（4時間の事例あり） | ステートチェックポイント + タイムアウト |
-| 出力互換性の欠如 | 非互換な成果物の生成 | 共通インターフェース定義（shared_read） |
+| Signal | Meaning |
+|--------|---------|
+| Team completion is slower than a single agent | coordination overhead dominates |
+| Message count exceeds `3 x` task count | communication is excessive |
+| Ownership conflicts recur | partitioning is too weak |
+| Integration consumes `> 50%` of total effort | parallelism is too expensive |
 
-### カテゴリ2: エージェント間の不整合
+Reference impact:
+- parallelizable tasks can improve by about `+81%`
+- sequentially dependent tasks can degrade by about `-70%`
 
-| 失敗モード | 症状 | 対策 |
-|-----------|------|------|
-| 会話リセット | 予期しないコンテキスト消失 | チェックポイント + コンテキスト再注入 |
-| 誤った前提での続行 | 確認なしで処理続行 | 明示的な完了報告 + 検証ステップ |
-| Ping-Pong問題 | 繰り返しハンドオフ | 最大ハンドオフ回数の上限設定 |
-| コンテキストドリフト | 共有基盤の消失 → 矛盾出力 | Semantic Contracts パターン |
+## Anti-Patterns
 
-### カテゴリ3: タスク検証の失敗
+### Design Anti-Patterns
 
-| 失敗モード | 症状 | 対策 |
-|-----------|------|------|
-| 完了ステップの繰り返し | ループ実行 | TaskUpdate による完了マーキング |
-| 前コンテキストの忘却 | 成果物の不整合 | 十分なコンテキスト注入 |
-| ハルシネーション伝播 | 上流の誤情報が下流で増幅 | ソース引用強制 + クロスチェック |
+| Anti-pattern | Symptom | Countermeasure |
+|--------------|---------|----------------|
+| Over-agenting | simple work gets too many agents | start with one agent or a smaller team |
+| Ambiguous roles | multiple agents act as the same specialist | separate role, scope, and ownership |
+| Unlimited autonomy | loops or cost blow-up | set iteration and cost limits |
+| Nested teams | recursive `TeamCreate` | enforce one team per session |
+| Wrong framework choice | Rally used for non-parallel work | route by requirement, not trend |
 
----
+### Communication Anti-Patterns
 
-## 3. 過剰並列化の危険
+| Anti-pattern | Symptom | Countermeasure |
+|--------------|---------|----------------|
+| Broadcast overuse | noisy, expensive updates | DM by default |
+| Excess context transfer | teammates receive full history | pass only necessary context |
+| Hidden decisions | black-box coordination | use `TaskList`, reports, and explicit summaries |
+| Human overtrust | recommendations accepted blindly | keep HITL checkpoints |
 
-### 定量的影響
+### Agent Teams-Specific Anti-Patterns
 
-| タスクタイプ | マルチエージェント効果 |
-|------------|---------------------|
-| 並列化可能タスク | **+81% 向上** |
-| 逐次依存タスク | **-70% 劣化** |
+| Anti-pattern | Example | Countermeasure |
+|--------------|---------|----------------|
+| Ambiguous spawn prompt | "Build the app" | include API, conventions, goal, and ownership |
+| Same-file writes | two teammates edit `index.ts` | define `exclusive_write` first |
+| Team on sequential work | staged dependency chain | keep it in one session or pipeline |
+| Nested team creation | teammate opens another team | one session, one team |
+| Idle treated as failure | unnecessary intervention | `idle` is normal waiting |
+| `TeamDelete` without shutdown | active members remain | shutdown all teammates first |
 
-### 調整コストの指数的増大
+## Maker-Checker Rules
 
-エージェント数 N の増加 → インタラクション数は **O(N²)** で増大（線形ではない）。調整コストが総リソースの **最大70%** を消費する事例も報告。
+1. Give the checker explicit pass or fail criteria.
+2. Set a maximum iteration cap.
+3. Define a fallback once the cap is reached.
+4. Keep the checker simpler and more reliable than the maker.
 
-### 過剰並列化の兆候
+## Rally Checklist
 
-1. チーム完了時間が単一エージェントより遅い
-2. 通信メッセージ数がタスク数の3倍以上
-3. ownership conflict が頻発
-4. 統合フェーズが全体の50%以上を占める
-
----
-
-## 4. 設計アンチパターン
-
-| # | アンチパターン | 症状 | 対策 |
-|---|-------------|------|------|
-| 1 | **過度なエージェント化** | 単純タスクに複数エージェント | まず単一エージェントで試す |
-| 2 | **曖昧なロール定義** | 複数が同じ "リサーチ" 役 | 役割・権限・スコープを明確に分離 |
-| 3 | **制約なしの自律性** | 無限ループ・コスト爆発 | 最大反復回数・コスト上限を設定 |
-| 4 | **アクティビティ演劇** | 大量のコード生成 ≠ 価値 | アウトカム中心の評価基準 |
-| 5 | **過剰なネスト** | エージェントがサブエージェントを無制限生成 | 1セッション1チーム制限 |
-| 6 | **フレームワーク選択の誤り** | 人気度で選択 | 要件ベースで評価 |
-
----
-
-## 5. 通信アンチパターン
-
-| # | アンチパターン | 症状 | 対策 |
-|---|-------------|------|------|
-| 1 | **ハルシネーション伝播** | 上流の誤情報が下流で増幅 | IVO（即座に検証可能な出力）パターン |
-| 2 | **非同期キャッシュ不整合** | エージェント毎に異なるデータ鮮度 | 共有コンテキスト層 / Single-Writer |
-| 3 | **透明性の欠如** | ブラックボックス決定 | E2Eトレーシング（TaskList） |
-| 4 | **人間の過信** | AI推奨を無検証で受入 | HITL チェックポイント |
-| 5 | **broadcast の濫用** | N倍コストの不要な通知 | DM をデフォルト、broadcast は緊急のみ |
-| 6 | **コンテキストの過剰伝達** | 会話履歴全体の引き渡し | 必要最小限のコンテキストのみ |
-
----
-
-## 6. Claude Code Agent Teams 固有のアンチパターン
-
-| # | アンチパターン | 具体例 | 対策 |
-|---|-------------|-------|------|
-| 1 | **曖昧なスポーンプロンプト** | 「アプリを作って」 | API仕様・規約・具体目標を含める |
-| 2 | **同一ファイルへの複数書き込み** | 2人が同じ `index.ts` を編集 | exclusive_write を事前定義 |
-| 3 | **逐次タスクへのチーム投入** | 依存関係のある直列タスク | 単一セッションで実行 |
-| 4 | **チームのネスト** | 再帰的 TeamCreate | 1セッション1チーム |
-| 5 | **不十分なコンテキスト注入** | プロジェクト構造を伝えない | Context Checklist の完全実行 |
-| 6 | **idle を異常と誤認** | idle 通知で不要な介入 | idle = 正常（待機中） |
-| 7 | **shutdown なしの TeamDelete** | アクティブメンバー残存 | 全 shutdown_request → 確認 → TeamDelete |
-
----
-
-## 7. Maker-Checker ループの注意点
-
-生成エージェント（Maker）と検証エージェント（Checker）のサイクルにおける必須要件:
-
-1. Checker に **明確な合否基準** を定義
-2. **最大反復回数の上限** を設定（無限精製ループ防止）
-3. 上限到達時の **フォールバック**（人間エスカレーション or 品質警告付き最良結果）
-4. Checker は Maker より **単純で信頼性が高い** ロジックにする
-
----
-
-## 8. 3ロール分離アーキテクチャ（Cursor社の知見）
-
-### 失敗したアプローチ
-
-| 方式 | 結果 |
-|------|------|
-| ロック方式 | エージェントがロックを長時間保持 → 20エージェントのスループットが2-3相当に |
-| 楽観的並行制御 | エージェントがリスク回避 → 難しいタスクを回避 |
-
-### 成功したアーキテクチャ
-
-```
-Planners: コードベースを継続探索してタスクを生成
-Workers: 割り当てタスクを互いに調整せず実行し、完了したらpush
-Judge: 各サイクル終了時に継続判断
-```
-
-**Rally への適用**: ASSESS(Planner的) → SPAWN+ASSIGN(Worker的) → SYNTHESIZE(Judge的)
-
----
-
-## 9. Rally のアンチパターン・チェックリスト
-
-チーム設計時に以下を確認:
-
-- [ ] タスクは本当に並列化可能か？（逐次依存なら単一セッション）
-- [ ] 2つ以上の独立した作業単位が存在するか？
-- [ ] ファイル所有権の重複はないか？
-- [ ] チームサイズは最小限か？（2-4が理想）
-- [ ] スポーンプロンプトに十分なコンテキストがあるか？
-- [ ] タイムアウト・反復上限は設定されているか？
-- [ ] 統合フェーズの検証基準は明確か？
-
-**Source:** [Why Do Multi-Agent LLM Systems Fail? (arXiv 2503.13657)](https://arxiv.org/abs/2503.13657) · [O'Reilly - Designing Effective Multi-Agent Architectures](https://www.oreilly.com/radar/designing-effective-multi-agent-architectures/) · [Anti-Patterns in Multi-Agent Gen AI (Medium)](https://medium.com/@armankamran/anti-patterns-in-multi-agent-gen-ai-solutions-enterprise-pitfalls-and-best-practices-ea39118f3b70) · [AI Coding Agents 2026 (Mike Mason)](https://mikemason.ca/writing/ai-coding-agents-jan-2026/)
+- [ ] Is the task truly parallelizable?
+- [ ] Are there at least `2` independent work units?
+- [ ] Is `ownership_map` conflict-free?
+- [ ] Is team size minimal (`2-4` preferred)?
+- [ ] Does every spawn prompt include enough context?
+- [ ] Are timeout or retry limits defined?
+- [ ] Are synthesis verification criteria explicit?
