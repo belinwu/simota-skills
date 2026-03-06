@@ -1,171 +1,102 @@
 # Rollback & Recovery Anti-Patterns
 
-> ロールバック戦略の落とし穴、DB マイグレーション問題、前方互換パターン、復旧戦略
+Purpose: Use this file when you need rollback design, database migration safety, recovery timing, or post-rollback obligations.
 
-## 1. ロールバック 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **RB-01** | **ロールバック未テスト** | 計画はあるが一度もテストしていない → 本番で初めて実行して失敗 | Staging で毎リリース前にロールバックテスト実施 |
-| **RB-02** | **DB マイグレーションの楽観的ロールバック** | Down マイグレーションが機能する前提 → 部分適用で進退窮まる | 前方互換マイグレーション · ロールバックは backup/restore |
-| **RB-03** | **データ損失の無視** | カラム削除の Down マイグレーション → 再適用してもデータは戻らない | 削除系の変更は遅延実行（2 リリース後） |
-| **RB-04** | **ロールバック時間の未見積もり** | 復旧時間が不明 → SLA 違反の判断ができない | ロールバック方式ごとの RTO を事前測定 |
-| **RB-05** | **単一ロールバック手段** | Feature Flag のみに依存 → フラグサービス障害で詰む | 複数のロールバック手段を段階的に準備 |
-| **RB-06** | **ロールバック後の前進計画なし** | ロールバックして安心 → 根本原因修正が遅延 | ロールバック後 24 時間以内に修正計画を策定 |
-| **RB-07** | **ステートフルリソースの無視** | アプリのロールバックのみ → DB、キャッシュ、キューの状態が不整合 | 全ステートフルリソースの状態管理を含めたロールバック計画 |
+1. Rollback anti-patterns
+2. Why DB rollback is hard
+3. Forward-compatible migration pattern
+4. Layered rollback model
+5. Post-rollback process
+6. Launch enforcement points
 
----
+## 1. Rollback Anti-Patterns
 
-## 2. DB マイグレーションの根本問題
+| ID | Anti-pattern | What goes wrong | Guardrail |
+|----|--------------|-----------------|-----------|
+| `RB-01` | Untested rollback | First real rollback fails in production | Test rollback in staging before release |
+| `RB-02` | Optimistic DB rollback | Down migrations fail in partial states | Prefer forward-compatible migrations; use backup / restore for true DB recovery |
+| `RB-03` | Ignoring data loss | Recreated columns do not restore deleted data | Delay destructive removal by `2 releases` |
+| `RB-04` | Unknown rollback time | SLA and incident decisions become guesswork | Measure RTO per rollback method |
+| `RB-05` | Single rollback method | One failed method leaves no safe fallback | Keep multiple rollback options ready |
+| `RB-06` | No forward plan after rollback | Teams stop at recovery and delay the real fix | Create the next-step plan within `24 hours` |
+| `RB-07` | Ignoring stateful resources | App rollback leaves DB, cache, or queue inconsistent | Include all stateful resources in rollback planning |
 
-### Down マイグレーションが失敗する 3 つの理由
+## 2. Why DB Rollback Is Hard
 
-```
-理由 1: 素朴な仮定
-  - Down マイグレーションは変更適用「前」に書かれる
-  - 変更が途中で失敗した場合 → 部分適用状態
-  - Down マイグレーションは「完全適用」を前提としている
-  - MySQL は DDL のトランザクションをサポートしない → 部分適用が頻発
+Main issues:
 
-理由 2: データ損失リスク
-  - カラム削除のロールバック = カラム再作成（データは空）
-  - 再適用してもデータは復旧しない
-  - "チームは通常、ユーザーのデータ損失を避けるため DB 変更のロールバックを避ける"
+- partial migration application
+- data loss on destructive changes
+- deployment version and DB state drift
 
-理由 3: デプロイメントとの非互換
-  - ロールバック機構は「現在の DB バージョン」を知る必要がある
-  - 以前のバージョンのコンテナには Down ファイルが含まれない
-  - GitOps の「前のコミットに戻す」がステートフルリソースでは機能しない
-```
+Operational rule:
 
-### 前方互換マイグレーションパターン
+- do not assume down migrations are safe enough to be the primary recovery plan
 
-```
-Expand-Contract パターン（推奨）:
+## 3. Forward-Compatible Migration Pattern
 
-  Phase 1: Expand（拡張）
-    - 新しいカラム/テーブルを追加
-    - 古い構造を維持（両方が共存）
-    - アプリは新旧両方をサポート
+### Expand-Contract
 
-  Phase 2: Migrate（移行）
-    - データを新構造にコピー/変換
-    - 新構造からの読み取りに切り替え
+1. `Expand`
+   - add new schema elements
+   - keep old structure working
+2. `Migrate`
+   - copy or transform data
+   - cut reads and writes over progressively
+3. `Contract`
+   - remove old structure `1-2 releases later`
 
-  Phase 3: Contract（収縮）
-    - 古い構造を削除（1-2 リリース後）
-    - この時点でのみロールバック不可
+Benefits:
 
-利点:
-  - Phase 1-2 はいつでもロールバック可能
-  - アプリのロールバックが DB ロールバックを必要としない
-  - データ損失リスクがない
-```
+- app rollback often avoids DB rollback
+- destructive changes are delayed
+- data loss risk is reduced
 
-### 3 分前復旧戦略
+### Fast recovery pattern
 
-```
-DB 変更とコード変更を分離するパターン:
+- apply DB changes before app rollout when they are forward-compatible
+- roll back only the app first
+- postpone destructive DB cleanup
 
-  T-24h: DB マイグレーション適用（前方互換）
-         → 旧アプリバージョンで動作確認
-  T-0:   新アプリバージョンをデプロイ
-         → 問題発生時はアプリのみロールバック（DB はそのまま）
-  T+7d:  旧構造の削除マイグレーション
-         → この時点でのみ DB ロールバックが不可能に
+## 4. Layered Rollback Model
 
-復旧時間:
-  アプリロールバック: 2-5 分（コンテナ切り替え）
-  DB には触れない: 0 分
-  合計: 2-5 分（DB マイグレーションの 15-60 分を回避）
-```
+| Level | Method | RTO | Risk | Use when |
+|-------|--------|-----|------|---------|
+| `L1` | feature flag disable | `< 1 minute` | very low | feature is flag-controlled |
+| `L2` | deployment / container rollback | `2-5 minutes` | low | DB unchanged or forward-compatible |
+| `L3` | config revert + traffic shift | `5-15 minutes` | medium | blue-green or canary environment exists |
+| `L4` | DB restore + full rollback | `15-60 minutes` | high | DB change is incompatible |
 
----
+Escalation rule:
 
-## 3. ロールバック戦略の段階設計
+- if only `L4` is viable, require stakeholder approval
 
-### 4 段階ロールバックモデル
+## 5. Post-Rollback Process
 
-| 段階 | 手段 | RTO | リスク | 適用条件 |
-|------|------|-----|------|---------|
-| **L1** | Feature Flag 無効化 | < 1 分 | 極低 | フラグで制御されている機能 |
-| **L2** | コンテナ/デプロイメントロールバック | 2-5 分 | 低 | DB 変更なし or 前方互換 |
-| **L3** | 設定変更 + トラフィック切り替え | 5-15 分 | 中 | Blue-Green/Canary 環境 |
-| **L4** | DB リストア + フルロールバック | 15-60 分 | 高 | DB 非互換変更あり（最終手段） |
+### Immediate
 
-### ロールバック判断フロー
+- verify service health
+- notify stakeholders
+- create incident ticket
+- assess blast radius
 
-```
-障害検出
-  │
-  ├─ Feature Flag で制御されているか？
-  │   Yes → L1: フラグ無効化 → 安定確認 → 根本原因調査
-  │   No ↓
-  │
-  ├─ DB 変更を含むか？
-  │   No → L2: コンテナロールバック → 安定確認
-  │   Yes ↓
-  │
-  ├─ DB 変更は前方互換か？
-  │   Yes → L2: コンテナロールバック（DB はそのまま）
-  │   No ↓
-  │
-  └─ L4: DB リストア + フルロールバック
-     （最終手段 · ステークホルダー承認要）
-```
+### Within `24 hours`
 
----
+- identify root cause
+- define forward fix or next-release plan
+- analyze why pre-release validation missed it
 
-## 4. ポストロールバックプロセス
+### Within `1-7 days`
 
-### ロールバック後の必須アクション
+- run postmortem
+- update tests, release gates, and rollback plan
 
-```
-即時（0-1 時間）:
-  □ サービス正常性確認（ヘルスチェック、エラー率、レイテンシ）
-  □ ステークホルダーへの通知
-  □ インシデントチケット作成
-  □ 影響範囲の初期評価
+## 6. Launch Enforcement Points
 
-短期（1-24 時間）:
-  □ 根本原因の特定
-  □ 修正計画の策定（ホットフィックス or 次リリースに含める）
-  □ ロールバックの原因分析（なぜリリース前に検出できなかったか）
-
-中期（1-7 日）:
-  □ ポストモーテム実施（Blameless）
-  □ プロセス改善アクションの特定
-  □ テスト・検証プロセスの強化
-  □ ロールバック計画の更新
-```
-
-### ロールバック原因の分類
-
-| 原因カテゴリ | 根本原因例 | 再発防止策 |
-|------------|----------|----------|
-| **テスト不足** | エッジケース未検証 | テストカバレッジ基準の引き上げ |
-| **環境差異** | Staging と本番の設定差分 | 環境パリティの強化 |
-| **依存関係** | 外部サービスの変更 | 契約テスト・モック強化 |
-| **データ起因** | 本番データの特異性 | 本番データサンプルでのテスト |
-| **負荷起因** | 高トラフィックでのみ発現 | 負荷テストの強化 |
-
----
-
-## 5. Launch との連携
-
-```
-Launch での活用:
-  1. Rollback Plan 作成時に RB-01〜07 のチェックを適用
-  2. DB マイグレーションを含むリリースで Expand-Contract パターンを推奨
-  3. 4 段階ロールバックモデルでリリースごとの RTO を事前計算
-  4. ポストロールバックプロセスを Triage へのハンドオフに含める
-
-品質ゲート:
-  - ロールバックテスト未実施 → リリースブロック（RB-01 強制）
-  - DB マイグレーション + Down マイグレーション依存 → Expand-Contract を提案（RB-02 防止）
-  - カラム削除を含む場合 → 2 リリース後の遅延削除を提案（RB-03 防止）
-  - ロールバック手段が 1 つのみ → 複数手段の準備を要求（RB-05 防止）
-  - L4 ロールバックが必要な場合 → ステークホルダー承認を必須化
-```
-
-**Source:** [Atlas: The Hard Truth about GitOps and Database Rollbacks](https://atlasgo.io/blog/2024/11/14/the-hard-truth-about-gitops-and-db-rollbacks) · [Octopus Deploy: Modern Rollback Strategies](https://octopus.com/blog/modern-rollback-strategies) · [Harness: Database Rollback Strategies in DevOps](https://www.harness.io/harness-devops-academy/database-rollback-strategies-in-devops) · [Agile Seekers: Handling Rollback Strategies for Failed Deployments](https://agileseekers.com/blog/handling-rollback-strategies-for-failed-product-deployments) · [Redgate: Implementing a Rollback Strategy](https://documentation.red-gate.com/rca/implementing-a-roll-back-strategy)
+- Block release if rollback test is missing (`RB-01`).
+- Recommend `Expand-Contract` for DB changes that would otherwise rely on unsafe down migrations (`RB-02`).
+- Delay destructive schema cleanup by `2 releases` where possible (`RB-03`).
+- Require multiple rollback methods (`RB-05`).
+- Require stakeholder approval for `L4` rollback scenarios.

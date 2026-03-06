@@ -1,513 +1,250 @@
 # Launch Release Strategies
 
+Purpose: Use this file when you need versioning rules, CHANGELOG and release-note structure, rollback options, rollout defaults, hotfix flow, or release-window guidance.
+
+## Contents
+
+1. Versioning strategies
+2. CHANGELOG rules
+3. Release notes
+4. Rollback options
+5. Feature flag strategy
+6. Release checklist and Go/No-Go
+7. Hotfix workflow
+8. Release windows and cadence
+9. Git and GitHub commands
+
 ## 1. Versioning Strategies
 
-### Semantic Versioning (SemVer)
+### Semantic Versioning
 
-```
-MAJOR.MINOR.PATCH
+`MAJOR.MINOR.PATCH`
 
-MAJOR: Breaking changes (incompatible API changes)
-MINOR: New features (backwards compatible)
-PATCH: Bug fixes (backwards compatible)
+- `MAJOR`: breaking changes
+- `MINOR`: backwards-compatible features
+- `PATCH`: backwards-compatible fixes
+
+| Change type | Version bump | Example |
+|-------------|--------------|---------|
+| Breaking API change | `MAJOR` | `1.4.2 -> 2.0.0` |
+| New feature | `MINOR` | `1.4.2 -> 1.5.0` |
+| Bug fix | `PATCH` | `1.4.2 -> 1.4.3` |
+| Security fix | `PATCH` | `1.4.2 -> 1.4.3` |
+| Dependency update | `PATCH` or `MINOR` | depends on impact |
+| Documentation only | none | no release bump required |
+
+### Pre-release labels
+
+| Label | Use for |
+|-------|---------|
+| `alpha` | early development |
+| `beta` | feature complete, test-heavy |
+| `rc` | release candidate |
+
+Guardrails:
+
+- Keep `rc` windows under `2 weeks`.
+- If `alpha` or `beta` exceeds `1 month`, recommend stabilizing or canceling the channel.
+
+### CalVer
+
+Use `CalVer` when time-based releases or continuous delivery make strict SemVer noisy.
 
 Examples:
-  1.0.0 → 2.0.0  Breaking API change
-  1.0.0 → 1.1.0  New feature added
-  1.0.0 → 1.0.1  Bug fix
-```
 
-### Pre-release Versions
+- `YYYY.MM.DD` -> `2026.03.06`
+- `YYYY.MM.MICRO` -> `2026.03.3`
+- `YY.MM` -> `26.03`
 
-```
-1.0.0-alpha.1    Early development
-1.0.0-beta.1     Feature complete, testing
-1.0.0-rc.1       Release candidate
-1.0.0            Stable release
-```
+Recommended fit:
 
-### CalVer (Calendar Versioning)
+| Project type | Preferred strategy |
+|--------------|--------------------|
+| OSS library | SemVer |
+| SaaS with frequent deployment | CalVer or automated build numbering |
+| Mobile app | SemVer plus build number |
+| Internal tool | CalVer |
+| Public API | URI/API version + SemVer |
 
-```
-YYYY.MM.DD      2024.01.15
-YYYY.MM.MICRO   2024.01.1
-YY.MM           24.01
+## 2. CHANGELOG Rules
 
-Use when:
-- Time-based releases (monthly/quarterly)
-- Continuous deployment models
-- SaaS products with frequent updates
-```
+Use Keep a Changelog categories:
 
-### Version Decision Matrix
+| Category | Use for |
+|----------|---------|
+| `Added` | new features |
+| `Changed` | behavior changes |
+| `Deprecated` | soon-to-be removed features |
+| `Removed` | removed behavior |
+| `Fixed` | bug fixes |
+| `Security` | security work |
 
-| Change Type | SemVer | Example |
-|-------------|--------|---------|
-| Breaking API change | MAJOR | 1.x.x → 2.0.0 |
-| New feature (compatible) | MINOR | 1.0.x → 1.1.0 |
-| Bug fix | PATCH | 1.0.0 → 1.0.1 |
-| Security fix | PATCH | 1.0.0 → 1.0.1 |
-| Dependency update | PATCH/MINOR | Depends on impact |
-| Documentation only | No bump | N/A |
+Commit mapping:
 
----
+| Commit type | CHANGELOG category |
+|-------------|--------------------|
+| `feat` | `Added` |
+| `fix` | `Fixed` |
+| `security` | `Security` |
+| `perf` | `Changed` |
+| `refactor` | `Changed` |
+| `deprecate` | `Deprecated` |
+| `remove` | `Removed` |
+| `docs` | skip unless user-facing and significant |
+| `chore` | skip |
+| `test` | skip |
+| `ci` | skip |
 
-## 2. CHANGELOG Generation
+## 3. Release Notes
 
-### Keep a Changelog Format
+Release notes are user-facing. CHANGELOG is developer-facing.
 
-```markdown
-# Changelog
+| Aspect | Release notes | CHANGELOG |
+|--------|---------------|-----------|
+| Audience | end users / stakeholders | developers |
+| Tone | plain language | technical |
+| Focus | benefits and impact | exact change list |
+| Timing | per release | continuous record |
 
-All notable changes to this project will be documented in this file.
+Minimum release notes content:
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- release version and date
+- highlights
+- user-visible changes
+- fixes and security changes worth calling out
+- migration / caution notes if relevant
 
-## [Unreleased]
+## 4. Rollback Options
 
-### Added
-- New feature description (#123)
+Default rollback trigger:
 
-### Changed
-- Modified behavior description (#124)
+- `error_rate > 5% for 5 minutes`
 
-...
-```
+Preferred rollback methods:
 
-### CHANGELOG Entry Guidelines
+| Method | Typical command shape | Time | Risk |
+|--------|------------------------|------|------|
+| Disable feature flag | API or dashboard toggle | `< 1 minute` | Low |
+| Roll back deployment | `kubectl rollout undo ...` | `2-5 minutes` | Low |
+| Revert config | config rollback | `1-3 minutes` | Low |
+| Reverse DB migration | migration rollback | `5-15 minutes` | Medium |
+| Restore backup | backup / restore | `15-60 minutes` | High |
 
-| Category | Description | Example |
-|----------|-------------|---------|
-| **Added** | New features | "Add OAuth2 authentication" |
-| **Changed** | Existing functionality changes | "Update dashboard layout" |
-| **Deprecated** | Soon-to-be removed features | "Deprecate legacy API v1" |
-| **Removed** | Removed features | "Remove deprecated endpoint" |
-| **Fixed** | Bug fixes | "Fix memory leak in worker" |
-| **Security** | Security improvements | "Patch XSS vulnerability" |
+Post-rollback actions:
 
-### Commit to CHANGELOG Mapping
-
-```yaml
-changelog_mapping:
-  feat: Added
-  fix: Fixed
-  security: Security
-  perf: Changed
-  refactor: Changed
-  deprecate: Deprecated
-  remove: Removed
-  docs: (skip unless significant)
-  chore: (skip)
-  test: (skip)
-  ci: (skip)
-```
-
----
-
-## 3. Release Notes Generation
-
-### User-Facing Release Notes Template
-
-```markdown
-# Release v1.2.0
-
-**Release Date:** January 15, 2024
-
-## Highlights
-
-- **OAuth2 Authentication** - Sign in with Google or GitHub
-- **Report Export** - Download reports as PDF or CSV
-
-## What's New
-
-### User Authentication
-You can now sign in using your Google or GitHub account. This provides:
-- Faster login experience
-- No need to remember another password
-...
-```
-
-### Release Notes vs CHANGELOG
-
-| Aspect | Release Notes | CHANGELOG |
-|--------|--------------|-----------|
-| Audience | End users | Developers |
-| Language | Plain language | Technical |
-| Format | Narrative | Structured list |
-| Focus | Benefits, impact | What changed |
-| Updates | Per release | Continuous |
-
----
-
-## 4. Rollback Planning
-
-### Rollback Plan Template
-
-```markdown
-# Rollback Plan: v1.2.0
-
-## Pre-Deployment Checklist
-
-- [ ] Database backup completed
-- [ ] Previous version artifact available
-- [ ] Rollback procedure tested in staging
-- [ ] Monitoring alerts configured
-- [ ] On-call team notified
-
-## Rollback Triggers
-
-Initiate rollback if ANY of these occur:
-1. Error rate > 5% for 5 minutes
-2. P95 latency > 2x baseline
-...
-```bash
-# Disable feature flag
-curl -X POST https://api.flags.io/flags/oauth-v2/disable
-
-# Verify
-curl https://api.flags.io/flags/oauth-v2/status
-```
-**Time to effect:** < 1 minute
-**Risk:** Low
-
-### Option B: Container Rollback
-```bash
-# Roll back Kubernetes deployment
-kubectl rollout undo deployment/app -n production
-
-# Verify rollback
-kubectl rollout status deployment/app -n production
-```
-**Time to effect:** 2-5 minutes
-**Risk:** Low
-
-### Option C: Database Rollback (If schema changed)
-```bash
-# Run down migration
-pnpm prisma migrate rollback --to v1.1.0
-
-# Verify schema
-pnpm prisma migrate status
-```
-**Time to effect:** 5-15 minutes
-**Risk:** Medium (data loss possible)
-
-## Post-Rollback Actions
-
-1. [ ] Notify stakeholders of rollback
-2. [ ] Create incident report
-3. [ ] Schedule postmortem
-4. [ ] Tag rolled-back version in git
-
-## Rollback Verification
-
-- [ ] Health check passing
-- [ ] Error rate normalized
-- [ ] User flows functional
-...
-```
-
-### Rollback Strategy Matrix
-
-| Change Type | Rollback Method | Time | Risk |
-|-------------|-----------------|------|------|
-| Feature flag controlled | Disable flag | < 1 min | Low |
-| Container/deployment | Rollback deployment | 2-5 min | Low |
-| Configuration change | Revert config | 1-3 min | Low |
-| Database migration | Down migration | 5-15 min | Medium |
-| Data migration | Restore backup | 15-60 min | High |
-
----
+- notify stakeholders
+- create incident record
+- schedule postmortem
+- tag or document the rolled-back version
 
 ## 5. Feature Flag Strategy
 
-### Feature Flag Types
+### Flag types
 
 | Type | Purpose | Example |
 |------|---------|---------|
-| **Release Flag** | Hide incomplete features | `enable-new-checkout` |
-| **Ops Flag** | Circuit breaker | `use-cache-v2` |
-| **Experiment Flag** | A/B testing | `experiment-pricing-v3` |
-| **Permission Flag** | User segmentation | `beta-users-only` |
+| `Release Flag` | hide incomplete features | `enable-new-checkout` |
+| `Ops Flag` | emergency switch / circuit breaker | `disable-cache-v2` |
+| `Experiment Flag` | controlled test | `pricing-v3-experiment` |
+| `Permission Flag` | user segmentation | `beta-users-only` |
 
-### Gradual Rollout Strategy
+### Rollout default
 
-```yaml
-rollout_plan:
-  stage_1:
-    name: "Internal Testing"
-    percentage: 0%
-    targets: ["internal-team"]
-    duration: "2 days"
-    success_criteria:
-      - error_rate: < 1%
-      - no_critical_bugs: true
+`5% -> 25% -> 50% -> 100%`
 
-  stage_2:
-    name: "Beta Users"
-    percentage: 5%
-    targets: ["beta-users"]
-    duration: "3 days"
-# ...
-```
+Minimum rollout requirements:
 
-### Feature Flag Lifecycle
+- canary size at least `5%`
+- canary duration at least `24 hours`
+- explicit success criteria
+- explicit rollback conditions
 
-```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ Create  │───▶│ Rollout │───▶│ Stable  │───▶│ Remove  │
-│  Flag   │    │  100%   │    │ Period  │    │  Flag   │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-     │              │              │              │
-   Day 0        Day 7-14       Day 30+        Day 60+
-```
+### Flag lifecycle
 
-### Flag Configuration Template
+| Phase | Required fields |
+|-------|-----------------|
+| `CREATE` | owner, purpose, type, expiry, fallback, cleanup ticket |
+| `ROLLOUT` | stages, success criteria, rollback trigger |
+| `STABLE` | 100% reached, side effects checked, metrics stable |
+| `CLEANUP` | code removal PR created, tests updated |
+| `REMOVED` | code and flag-service cleanup complete |
 
-```json
-{
-  "name": "oauth-v2",
-  "description": "OAuth 2.0 authentication flow",
-  "owner": "@auth-team",
-  "created": "2024-01-01",
-  "expires": "2024-03-01",
-  "rollout": {
-    "percentage": 25,
-    "targets": {
-      "include": ["beta-users", "internal"],
-      "exclude": ["legacy-integrations"]
-    }
-  },
-  "fallback": false,
-  "cleanup_ticket": "JIRA-456"
-// ...
-```
+## 6. Release Checklist And Go/No-Go
 
----
+Minimum gate set:
 
-## 6. Release Checklist Generation
+- all relevant tests passing
+- security scan passing
+- staging verification complete
+- rollback plan available
+- CHANGELOG complete
+- stakeholder approval if required
+- on-call or incident coverage ready
+- release window acceptable
+- code coverage `> 80%`
 
-### Standard Release Checklist
+Go/No-Go logic:
 
-```markdown
-# Release Checklist: v1.2.0
-
-## Pre-Release (T-2 days)
-
-### Code Freeze
-- [ ] Feature branch merged to release branch
-- [ ] No new features after freeze
-- [ ] Only bug fixes allowed
-
-### Quality Gates
-- [ ] All tests passing (unit, integration, e2e)
-- [ ] Code coverage > 80%
-- [ ] No critical/high security issues
-- [ ] Performance benchmarks met
-
-...
-```
-
-### Go/No-Go Decision Matrix
-
-| Criterion | Status | Required | Blocker |
-|-----------|--------|----------|---------|
-| All tests passing | ✅ / ❌ | Yes | Yes |
-| Security scan clean | ✅ / ❌ | Yes | Yes |
-| Staging verified | ✅ / ❌ | Yes | Yes |
-| Rollback tested | ✅ / ❌ | Yes | Yes |
-| CHANGELOG complete | ✅ / ❌ | Yes | No |
-| Stakeholder approval | ✅ / ❌ | Yes | Yes |
-| On-call available | ✅ / ❌ | Yes | Yes |
-| Low-risk window | ✅ / ❌ | Preferred | No |
-
----
+- `GO` only if all mandatory gates pass
+- `NO-GO` if any mandatory blocker remains
+- preferred gates can warn, but do not override mandatory blockers
 
 ## 7. Hotfix Workflow
 
-### Hotfix Process
+Use a hotfix when production impact is critical and waiting for the next planned release is unacceptable.
 
-```
-Production Issue Detected
-         │
-         ▼
-┌─────────────────┐
-│ Create hotfix   │
-│ branch from tag │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Apply fix     │
-│  (minimal diff) │
-└────────┬────────┘
-         │
-         ▼
-...
-```
+Typical flow:
 
-### Hotfix Branch Naming
+1. Create a hotfix branch from the affected release tag.
+2. Apply the smallest possible fix.
+3. Get expedited review.
+4. Deploy with reduced ceremony but not without rollback.
+5. Tag the hotfix.
+6. Cherry-pick or merge the fix back to the mainline.
 
-```
-hotfix/v1.2.1-login-timeout
-hotfix/v1.2.1-security-patch
-```
+Suggested branch naming:
 
-### Hotfix Version Bump
+- `hotfix/v1.2.1`
 
-```
-Current: v1.2.0
-Hotfix:  v1.2.1
+## 8. Release Windows And Cadence
 
-CHANGELOG:
-## [1.2.1] - 2024-01-16
+Preferred windows:
 
-### Fixed
-- Critical: Login timeout under high load (#130)
-```
+- Tuesday to Thursday
+- business hours with support coverage
 
----
+Avoid:
 
-## 8. Release Calendar
+- Friday releases without explicit approval
+- low-staff windows
+- major freeze periods without approval
 
-### Release Window Guidelines
+Cadence rule:
 
-| Window | Risk Level | Recommended |
-|--------|------------|-------------|
-| Monday AM | Medium | Avoid (post-weekend issues) |
-| Tuesday-Thursday | Low | ✅ Best |
-| Friday | High | ❌ Avoid |
-| Holiday eve | High | ❌ Never |
-| Weekend | High | ❌ Emergency only |
+- Prefer at least one release per week to avoid oversized batches.
 
-### Release Cadence Options
+## 9. Git And GitHub Commands
 
-| Cadence | Description | Best For |
-|---------|-------------|----------|
-| Continuous | Every commit to main | SaaS, small teams |
-| Daily | Once per day | Active development |
-| Weekly | Tuesday/Wednesday | Most teams |
-| Bi-weekly | Every sprint end | Scrum teams |
-| Monthly | First week of month | Enterprise, stable |
-
-### Freeze Period Planning
-
-```yaml
-freeze_periods:
-  - name: "Holiday Freeze"
-    start: "2024-12-20"
-    end: "2024-01-02"
-    exceptions: "Critical security only"
-
-  - name: "Q4 Close"
-    start: "2024-12-15"
-    end: "2024-12-31"
-    exceptions: "Finance-approved changes"
-
-  - name: "Major Event"
-    start: "2024-03-10"
-    end: "2024-03-12"
-    exceptions: "Event support only"
-```
-
----
-
-## Git Commands for Releases
-
-### Create Release Branch
+### Release branch
 
 ```bash
-# From main, create release branch
-git checkout main
-git pull origin main
-git checkout -b release/v1.2.0
-
-# Tag when ready
-git tag -a v1.2.0 -m "Release v1.2.0"
-git push origin v1.2.0
+git checkout -b release/v1.2.0 main
 ```
 
-### Hotfix from Tag
+### Hotfix from tag
 
 ```bash
-# Create hotfix branch from release tag
 git checkout -b hotfix/v1.2.1 v1.2.0
-
-# After fix
-git tag -a v1.2.1 -m "Hotfix v1.2.1"
-git push origin v1.2.1
-
-# Cherry-pick to main
-git checkout main
-git cherry-pick <commit-hash>
 ```
 
-### Generate Changelog from Commits
+### CHANGELOG input
 
 ```bash
-# List commits since last tag
 git log v1.1.0..HEAD --oneline --no-merges
-
-# Group by type
-git log v1.1.0..HEAD --pretty=format:"%s" | grep "^feat"
-git log v1.1.0..HEAD --pretty=format:"%s" | grep "^fix"
 ```
 
-### GitHub Release with gh CLI
+### Release creation
 
 ```bash
-# Create release with notes
-gh release create v1.2.0 \
-  --title "v1.2.0" \
-  --notes-file RELEASE_NOTES.md \
-  --target release/v1.2.0
-
-# Create pre-release
-gh release create v1.2.0-beta.1 \
-  --title "v1.2.0 Beta 1" \
-  --prerelease \
-  --notes "Beta release for testing"
-```
-
----
-
-## Quick Reference
-
-### Version Bump Cheatsheet
-
-```
-Breaking change?      → MAJOR (x.0.0)
-New feature?          → MINOR (0.x.0)
-Bug fix?              → PATCH (0.0.x)
-Pre-release?          → Add suffix (-alpha.1)
-```
-
-### CHANGELOG Categories
-
-```
-Added      - New features
-Changed    - Existing behavior changes
-Deprecated - Features to be removed
-Removed    - Deleted features
-Fixed      - Bug fixes
-Security   - Security improvements
-```
-
-### Release Timing Quick Guide
-
-```
-Tuesday-Thursday AM   → Best
-Monday AM             → Okay (with caution)
-Friday                → Avoid
-Holiday/Weekend       → Never (except emergency)
-```
-
-### Rollback Speed Guide
-
-```
-Feature flag          → < 1 minute
-Container rollback    → 2-5 minutes
-Full redeploy         → 5-15 minutes
-Database restore      → 15-60 minutes
+gh release create v1.2.0 --notes-file releases/v1.2.0.md
 ```

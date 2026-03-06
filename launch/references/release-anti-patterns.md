@@ -1,96 +1,69 @@
 # Release & Deployment Anti-Patterns
 
-> リリース・デプロイメントプロセスの落とし穴、AWS Well-Architected ガイダンス準拠
+Purpose: Use this file when you need release-process failure modes, canary and blue-green cautions, or cadence and timing guardrails.
 
-## 1. デプロイメント 8 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **RL-01** | **Big Bang デプロイ** | 大量の変更を一度にリリース → 障害時の原因特定が困難・影響範囲が広い | 小さく頻繁なリリース · Feature Flag で段階的公開 |
-| **RL-02** | **本番直接デプロイ** | Pre-production テストをスキップ → 未発見のバグが本番で発覚 | Staging 環境での完全検証を必須化 · Go/No-Go ゲート |
-| **RL-03** | **手動デプロイ** | 手動コピー・手動スクリプト実行 → ヒューマンエラー・再現性なし | CI/CD パイプラインで完全自動化 · Infrastructure as Code |
-| **RL-04** | **ロールバック未計画** | ロールバック手順なしでリリース → 障害時に長時間のサービス停止 | リリース前にロールバック計画の作成・テストを必須化 |
-| **RL-05** | **全ユーザー同時公開** | 新機能を全ユーザーに即時公開 → 障害の影響が全体に波及 | Canary リリース · Dark launching · 段階的ロールアウト |
-| **RL-06** | **モノリシックパイプライン** | 全変更を単一パイプラインでデプロイ → 1つのテスト失敗で全体がブロック | サービス/コンポーネント単位の独立パイプライン |
-| **RL-07** | **金曜デプロイ** | 週末直前にリリース → 問題発生時に対応体制が不十分 | 火-木の午前にリリース · 高リスク時間帯を禁止ウィンドウに設定 |
-| **RL-08** | **ドキュメント駆動デプロイ** | 手順書に従って手動実行 → 手順の陳腐化・実行漏れ | ドキュメントをコード化（Pipeline as Code） · 手順書は参考資料に |
+1. Deployment anti-patterns
+2. Communication and decision anti-patterns
+3. Canary and blue-green pitfalls
+4. Release cadence pitfalls
+5. Launch enforcement points
 
----
+## 1. Deployment Anti-Patterns
 
-## 2. リリースプロセスのアンチパターン
+| ID | Anti-pattern | What goes wrong | Guardrail |
+|----|--------------|-----------------|-----------|
+| `RL-01` | Big bang deploy | Too much change ships at once; root cause isolation becomes slow | Prefer small, frequent releases and staged exposure |
+| `RL-02` | Deploying straight to production | Unverified behavior reaches users | Require staging verification |
+| `RL-03` | Manual deployment | Human error and poor reproducibility | Prefer pipeline-driven deployment |
+| `RL-04` | No rollback plan | Recovery becomes slow and unsafe | Block release without rollback |
+| `RL-05` | Immediate release to all users | Failures affect everyone at once | Use canary, dark launch, or staged rollout |
+| `RL-06` | Monolithic pipeline | One failed path blocks the whole delivery train | Split by service or component where possible |
+| `RL-07` | Friday release | Recovery coverage is usually weaker | Prefer Tuesday to Thursday |
+| `RL-08` | Procedure-only deployment | Human-run playbooks drift | Keep deployment logic in code or pipelines |
 
-### コミュニケーション・判断の問題
+## 2. Communication And Decision Anti-Patterns
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **RL-09** | **サイレントリリース** | ステークホルダーへの通知なしでリリース → 問題の早期発見が遅れる | リリース通知フロー確立 · Post-deploy チェックリスト |
-| **RL-10** | **Go/No-Go スキップ** | リリース判定なしで進行 → ブロッカーを見逃す | Go/No-Go マトリクスの必須化 · 全基準のチェック |
-| **RL-11** | **CHANGELOG 後回し** | リリース後に CHANGELOG を書く → 漏れ・不正確 · ユーザーの信頼低下 | リリースプロセスに CHANGELOG 作成を組み込み |
-| **RL-12** | **ポストモーテム回避** | 障害後の振り返りをスキップ → 同じ失敗を繰り返す | 障害後 48 時間以内のポストモーテム必須化 · Blameless 文化 |
+| ID | Anti-pattern | What goes wrong | Guardrail |
+|----|--------------|-----------------|-----------|
+| `RL-09` | Silent release | Stakeholders cannot detect regressions quickly | Notify release stakeholders |
+| `RL-10` | Skipping Go/No-Go | Blockers stay hidden | Require explicit Go/No-Go review |
+| `RL-11` | Writing CHANGELOG after release | Missing or inaccurate notes | Generate CHANGELOG before release |
+| `RL-12` | Skipping postmortem | The same failure repeats | Run postmortem within `48 hours` after a significant failure |
 
----
+## 3. Canary And Blue-Green Pitfalls
 
-## 3. 高度なデプロイ戦略の落とし穴
+### Canary pitfalls
 
-### Canary リリースの落とし穴
+- Canary traffic below `1%` is usually too small to detect meaningful issues.
+- Use at least `5%` traffic for signal.
+- Keep the canary live for at least `24 hours`.
+- Define success metrics before rollout.
+- Avoid bundling incompatible DB changes with canary traffic shifts.
 
-```
-よくある失敗:
-  1. Canary のトラフィック比率が小さすぎる（< 1%）→ 統計的に有意な問題を検出不能
-  2. Canary 期間が短すぎる → 遅延発現するバグを見逃す
-  3. メトリクスの比較基準が曖昧 → Go/No-Go 判断が主観的に
-  4. データベース変更を含む Canary → 新旧バージョンでデータ不整合
+### Blue-Green pitfalls
 
-推奨:
-  - Canary トラフィック: 最低 5%（統計的検出力を確保）
-  - Canary 期間: 最低 24 時間（日中パターンをカバー）
-  - 明確な成功基準: エラー率、レイテンシ、ビジネスメトリクス
-  - DB 変更は先行して適用（アプリのロールアウトとは分離）
-```
+- Shared state can break rollback assumptions.
+- Both environments can double cost if not managed.
+- Warm-up gaps can create false negatives or latency spikes.
+- Switch only after health checks pass.
 
-### Blue-Green デプロイの落とし穴
+## 4. Release Cadence Pitfalls
 
-```
-よくある失敗:
-  1. データベースの状態が Blue/Green 間で共有 → 切り替え時のデータ不整合
-  2. 両環境のコスト管理ミス → リソースが 2 倍
-  3. 長時間の切り替えギャップ → セッション切断
-  4. Green 環境のウォームアップ不足 → 初期レイテンシスパイク
+| Pitfall | What goes wrong | Guardrail |
+|---------|-----------------|-----------|
+| Releasing too rarely | Change batches become too large and risky | Release at least weekly where feasible |
+| Releasing too often without gates | Quality drops | Keep quality gates intact |
+| Treating schedule as absolute | Unready work ships | Schedule is a target, quality is the gate |
+| Always releasing at the same hot spot | Load and coordination risk concentrate | Use flexible release windows |
 
-推奨:
-  - DB は前方互換マイグレーション（両バージョンで動作）
-  - 非アクティブ環境のスケールダウン自動化
-  - ヘルスチェック通過後に切り替え
-  - ウォームアップトラフィック送信後に本番切り替え
-```
+## 5. Launch Enforcement Points
 
----
+Apply these during `Review` and `Evaluate`:
 
-## 4. リリース頻度のアンチパターン
-
-| アンチパターン | 問題 | 推奨 |
-|-------------|------|------|
-| **リリース過少** | 変更が蓄積 → Big Bang 化 · リスク増大 | 最低週 1 回のリリースケイデンス |
-| **リリース過多（品質無視）** | テスト不十分なまま高速リリース → 品質劣化 | 品質ゲートを維持しつつ頻度を上げる |
-| **固定スケジュール厳守** | 準備不足でもスケジュール通りリリース → 障害 | スケジュールは目標、品質基準はゲート |
-| **特定曜日・時間帯への偏り** | 全リリースが火曜 10 時 → 負荷集中 | リスクに応じた柔軟なウィンドウ |
-
----
-
-## 5. Launch との連携
-
-```
-Launch での活用:
-  1. RELEASE Framework の Review フェーズで RL-01〜12 のチェックを適用
-  2. Go/No-Go マトリクスに RL-04（ロールバック計画）RL-10（判定プロセス）を必須化
-  3. Canary/Blue-Green 戦略の選択時に落とし穴チェックリストを提示
-  4. リリース後にポストモーテム実施要否を判断（RL-12 防止）
-
-品質ゲート:
-  - ロールバック計画なし → リリースブロック（RL-04 強制）
-  - Staging 検証スキップ → リリースブロック（RL-02 強制）
-  - 金曜 15 時以降のリリース → 警告（RL-07 防止）
-  - CHANGELOG 未作成 → 警告（RL-11 防止）
-```
-
-**Source:** [AWS Well-Architected: Anti-patterns for Advanced Deployment Strategies](https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/anti-patterns-for-advanced-deployment-strategies.html) · [AWS Well-Architected: Anti-patterns for Continuous Delivery](https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/anti-patterns-for-continuous-delivery.html) · [DZone: Continuous Delivery Patterns and Anti-Patterns](https://dzone.com/refcardz/continuous-delivery-patterns) · [Octopus Deploy: Modern Rollback Strategies](https://octopus.com/blog/modern-rollback-strategies)
+- Block if rollback plan is missing (`RL-04`).
+- Block if staging verification is skipped (`RL-02`).
+- Warn on Friday afternoon release windows (`RL-07`).
+- Warn if CHANGELOG is missing (`RL-11`).
+- Require explicit Go/No-Go review (`RL-10`).

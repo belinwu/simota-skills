@@ -1,228 +1,93 @@
 # Launch Collaboration Patterns
 
-## Pattern A: Plan-to-Release Flow
+Purpose: Use this file when the release task spans multiple agents and you need the minimum safe handoff shape or orchestration pattern.
 
-```
-Plan → Launch → Guardian
-```
+## Contents
 
-**Trigger:** Release planning initiated
-**Flow:**
-1. Plan defines release scope and timeline
-2. Launch creates version strategy, CHANGELOG, rollback plan
-3. Guardian prepares release commits and tags
+1. Collaboration patterns
+2. Standard orchestration paths
+3. Minimum payload expectations
 
-**Input from Plan:**
-```yaml
-release_scope:
-  features: ["#100", "#101"]
-  target_date: "2024-01-15"
-  type: "minor"
-```
+## 1. Collaboration Patterns
 
-**Output to Guardian:**
-```yaml
-release_commits:
-  tag: "v1.2.0"
-  changelog_entry: "..."
-  release_notes: "..."
-```
+| Pattern | Flow | Use when | Output from Launch |
+|---------|------|----------|--------------------|
+| `A` | `Plan -> Launch -> Guardian` | release scope and timeline already exist | version, tag, CHANGELOG, branch strategy |
+| `B` | `Builder -> Launch -> Gear` | completed features are ready to ship | deployment request, release metadata, flags |
+| `C` | `Launch -> Quill` | release docs must be published | CHANGELOG, notes, doc update list |
+| `D` | `Launch -> Canvas` | release timeline or rollout needs a diagram | timeline / rollout visualization request |
+| `E` | `Launch -> Triage` | post-release incident response needs a playbook | rollback triggers, recovery steps |
+| `F` | `Launch <-> Builder` | feature flags require implementation alignment | flag design, rollout stages, cleanup timing |
 
----
+## 2. Standard Orchestration Paths
 
-## Pattern B: Build-to-Release Flow
+### Standard release
 
-```
-Builder → Launch → Gear
-```
+`Plan -> Launch -> Guardian -> Gear -> Launch (verify)`
 
-**Trigger:** Features complete, ready for release
-**Flow:**
-1. Builder confirms feature completion
-2. Launch generates release artifacts
-3. Gear executes deployment pipeline
+### Hotfix release
 
-**Input from Builder:**
-```yaml
-feature_status:
-  complete: ["oauth", "export"]
-  tested: true
-  ready_for_release: true
-```
+`Triage -> Launch -> Guardian -> Gear -> Triage (monitor)`
 
-**Output to Gear:**
-```yaml
-deployment_request:
-  version: "v1.2.0"
-  environment: "production"
-  feature_flags: [...]
-```
+### Feature release with flags
 
----
+`Plan -> Launch -> Builder (flag) -> Launch -> Gear -> Launch (rollout)`
 
-## Pattern C: Release Documentation
+### Documentation-heavy release
 
-```
-Launch → Quill
-```
+`Launch -> Quill -> Guardian -> Gear`
 
-**Trigger:** Release notes finalized
-**Flow:**
-1. Launch generates CHANGELOG and release notes
-2. Quill updates README, documentation
+## 3. Minimum Payload Expectations
 
-**Output to Quill:**
-```yaml
-documentation_update:
-  changelog: "CHANGELOG.md"
-  release_notes: "releases/v1.2.0.md"
-  readme_section: "Latest Release"
-```
+### Input from `Plan`
 
----
+- release scope
+- target date
+- release type
+- explicit blockers or constraints
 
-## Pattern D: Release Visualization
+### Input from `Builder`
 
-```
-Launch → Canvas
-```
+- completed features
+- tested status
+- flag integration status
+- rollout readiness
 
-**Trigger:** Release timeline needed
-**Flow:**
-1. Launch provides release schedule data
-2. Canvas creates visual timeline
+### Input from `Gear`
 
-**Output to Canvas:**
-```yaml
-diagram_request:
-  type: "timeline"
-  data:
-    releases:
-      - version: "v1.2.0"
-        date: "2024-01-15"
-        features: 5
-      - version: "v1.3.0"
-        date: "2024-02-01"
-        features: 3
-```
+- pipeline readiness
+- environment readiness
+- deploy timing constraints
 
----
+### Output to `Guardian`
 
-## Pattern E: Post-Release Monitoring
+- version
+- tag
+- branch strategy
+- release commit guidance
 
-```
-Launch → Triage
-```
+### Output to `Gear`
 
-**Trigger:** Release deployed
-**Flow:**
-1. Launch provides rollback procedures
-2. Triage monitors for incidents
+- deployment request
+- environment
+- rollout method
+- feature flag stages
+- rollback method
 
-**Output to Triage:**
-```yaml
-incident_playbook:
-  version: "v1.2.0"
-  rollback_triggers:
-    - "error_rate > 5%"
-    - "p95_latency > 2s"
-  rollback_procedure: "rollback-v1.2.0.md"
-```
+### Output to `Triage`
 
----
+- rollback triggers
+- rollback procedure
+- incident playbook notes
 
-## Pattern F: Feature Flag Integration
+### Output to `Canvas`
 
-```
-Launch ↔ Builder
-```
+- timeline type
+- milestones
+- rollout stages
 
-**Trigger:** Gradual rollout planned
-**Flow:**
-1. Launch designs flag strategy
-2. Builder implements flag integration
-3. Launch monitors rollout stages
+### Output to `Quill`
 
-**Bidirectional:**
-```yaml
-flag_design:
-  name: "oauth-v2"
-  rollout_stages: [5, 25, 50, 100]
-  targets: ["beta-users"]
-
-implementation_status:
-  flag_integrated: true
-  fallback_tested: true
-```
-
----
-
-## Orchestration Patterns
-
-### Standard Release
-
-```
-Plan → Launch → Guardian → Gear → Launch (verify)
-```
-
-### Hotfix Release
-
-```
-Triage → Launch → Guardian → Gear → Triage (monitor)
-```
-
-### Feature Release with Flags
-
-```
-Plan → Launch → Builder (flag) → Launch → Gear → Launch (rollout)
-```
-
-### Documentation Release
-
-```
-Launch → Quill → Guardian → Gear
-```
-
----
-
-## Agent Collaboration Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INPUT PROVIDERS                          │
-│  Plan → Release scope / Timeline                            │
-│  Guardian → PR readiness / Commit structure                 │
-│  Builder → Feature completion status                        │
-│  Gear → CI/CD status / Pipeline readiness                   │
-│  Harvest → PR history / Contributor data                    │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-            ┌─────────────────┐
-            │     LAUNCH      │
-            │  Release Plan   │
-            │   Versioning    │
-            │   CHANGELOG     │
-            │  Rollback Plan  │
-            └────────┬────────┘
-                     ↓
-┌─────────────────────────────────────────────────────────────┐
-│                   OUTPUT CONSUMERS                          │
-│  Guardian → Release commits    Gear → Deployment trigger    │
-│  Triage → Incident playbook    Canvas → Release timeline    │
-│  Quill → Documentation         Nexus → AUTORUN results      │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Integration Summary
-
-| Agent | Launch's Role | Handoff |
-|-------|---------------|---------|
-| **Plan** | Receive release scope | Release plan |
-| **Guardian** | Coordinate release commits | Tag and branch strategy |
-| **Builder** | Verify feature completion | Feature flag integration |
-| **Gear** | Trigger deployment | Pipeline execution |
-| **Harvest** | Get PR data for notes | CHANGELOG input |
-| **Triage** | Provide incident playbook | Rollback procedures |
-| **Canvas** | Request visualizations | Release timeline |
-| **Quill** | Documentation updates | Release documentation |
-| **Nexus** | AUTORUN coordination | Release status |
+- CHANGELOG location
+- release notes location
+- docs update scope
