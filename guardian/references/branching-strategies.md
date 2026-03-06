@@ -1,65 +1,77 @@
 # Branching Strategies
 
-> Trunk-Based vs GitHub Flow vs Git Flow、Feature Flags、選定ガイド
+Purpose: Choose the branch workflow that matches team size, release model, CI maturity, and feature-flag capability.
 
-## 1. 戦略比較
+## Contents
 
-| 観点 | Trunk-Based | GitHub Flow | Git Flow |
-|------|:-----------:|:-----------:|:--------:|
-| ブランチ寿命 | 数時間〜1-2日 | 数日 | 数日〜数週間 |
-| ブランチ数 | 最小 | 少 | 多 |
-| リリースモデル | 継続的デプロイ | main マージ = デプロイ | リリースブランチ管理 |
-| チーム規模 | 小〜大 (経験豊富) | 小〜中 | 中〜大 |
-| 複雑さ | 低 | 低〜中 | 高 |
-| 適したプロダクト | SaaS, Web | SaaS, Web | バージョン管理ソフト |
+- Strategy comparison
+- Selection guide
+- Feature flags vs feature branches
+- Naming guidance
+- Anti-patterns
 
----
+## Strategy Comparison
 
-## 2. 選定ガイド
+| Factor | Trunk-Based | GitHub Flow | Git Flow |
+|--------|-------------|-------------|----------|
+| Branch lifetime | hours to `1-2` days | a few days | days to weeks |
+| Branch count | minimal | low | high |
+| Release model | continuous deployment | merge to `main` drives deployment | release-branch based |
+| Team size fit | any mature team | small to medium | medium to large |
+| Complexity | low | low to medium | high |
+| Best fit | SaaS, web, internal apps | SaaS, web, service repos | versioned products, multi-version support |
 
+## Selection Guide
+
+Use:
+- `Trunk-Based` when CI/CD is mature, feature flags exist, and the team can keep branches short-lived.
+- `GitHub Flow` when simplicity matters more than release-branch ceremony.
+- `Git Flow` when you must support parallel versions or hotfixes with explicit release branches.
+
+### Prerequisites for Trunk-Based
+
+- strong CI/CD pipeline
+- feature-flag infrastructure
+- consistent code review culture
+- reliable automated test coverage
+
+### When Git Flow Is Justified
+
+- predictable, scheduled release cycles
+- concurrent support of multiple released versions
+- separate hotfix handling is operationally required
+
+## Feature Flags vs Feature Branches
+
+| Factor | Feature Branches | Feature Flags |
+|--------|------------------|---------------|
+| Isolation method | Git branch | runtime gating |
+| Deployability | after merge | before exposure |
+| A/B testing | weak | strong |
+| Merge-conflict risk | increases with branch age | none from branching itself |
+| Debt type | branch cleanup | stale-flag cleanup |
+
+Recommended default for 2025-era teams:
+- build on short-lived feature branches
+- roll out in production with feature flags
+
+Representative flag platforms:
+- `LaunchDarkly`
+- `Statsig`
+- `Unleash`
+- `Flagsmith`
+
+## Naming Guidance
+
+Guardian's default branch naming remains:
+
+```text
+<type>/<short-kebab-description>
 ```
-プロダクト種別？
-├── SaaS / Web アプリ
-│   ├── CI/CD成熟 + 経験豊富チーム → Trunk-Based
-│   └── シンプルさ重視 / 小中規模 → GitHub Flow
-└── パッケージ / バージョン管理ソフト
-    └── 複数バージョン同時サポート → Git Flow
-```
 
-### Trunk-Based Development の前提条件
+Alternative org-specific patterns can still be supported if they are already established:
 
-- CI/CD パイプラインが成熟
-- Feature flag インフラが整備
-- チームにコードレビューの文化がある
-- 自動テストカバレッジが十分
-
-### Git Flow が必要な場面
-
-- 予測可能な長期リリースサイクル
-- 複数バージョンの同時サポート
-- ホットフィックスの明確な分離が必要
-
----
-
-## 3. Feature Flags vs Feature Branches
-
-| 観点 | Feature Branches | Feature Flags |
-|------|:----------------:|:-------------:|
-| 隔離方法 | Gitブランチ | ランタイム制御 |
-| デプロイ可能性 | マージ後のみ | フラグ OFF でデプロイ可 |
-| A/Bテスト | 困難 | 容易 |
-| マージコンフリクト | 長寿命で増加 | 発生しない |
-| 技術的負債 | ブランチ削除で解消 | 古いフラグの掃除が必要 |
-
-**2025年の推奨:** 両方を組み合わせる。短寿命 feature branch で開発 → feature flag で本番ロールアウトを制御。
-
-**主要サービス:** LaunchDarkly · Statsig · Unleash · Flagsmith
-
----
-
-## 4. ブランチ命名規則
-
-```
+```text
 feature/<issue-id>-<short-description>
 fix/<issue-id>-<short-description>
 hotfix/<version>-<description>
@@ -67,16 +79,12 @@ release/<version>
 chore/<description>
 ```
 
----
+## Anti-Patterns
 
-## 5. アンチパターン
-
-| # | パターン | 問題 | 修正 |
-|---|---------|------|------|
-| 1 | 長寿命ブランチ | マージコンフリクト蓄積 ("merge hell") | 1-2日以内にマージ |
-| 2 | main 直接コミット (大規模チーム) | レビューなしのコード混入 | ブランチ保護ルール |
-| 3 | 命名不統一 | `feature/`, `feat/`, `f/` 混在 | 命名規則を統一・自動化 |
-| 4 | 古いブランチ放置 | リポジトリ汚染 | マージ後に自動削除 |
-| 5 | リリースブランチ乱立 | 管理コスト指数的増大 | 必要最小限に制限 |
-
-**Source:** [Trunk-Based vs Git Flow (Assembla)](https://get.assembla.com/blog/trunk-based-development-vs-git-flow/) · [Trunk-Based Development (Atlassian)](https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development) · [Feature Flags vs Branches (Statsig)](https://www.statsig.com/perspectives/feature-flags-vs-feature-branches)
+| Pattern | Risk | Safer default |
+|---------|------|---------------|
+| long-lived branches | conflict buildup and context drift | merge or rebase within `1-2` days when possible |
+| direct commits to `main` in larger teams | bypassed review and quality gates | protect branches and require review |
+| inconsistent naming (`feature/`, `feat/`, `f/`) | weak discoverability and automation | standardize and automate naming |
+| abandoned stale branches | repository clutter | auto-delete after merge and alert on stale age |
+| too many release branches | management overhead grows fast | keep only the minimum supported branches |

@@ -1,6 +1,16 @@
 # Guardian AUTORUN Mode Reference
 
-Details for autonomous operation in Nexus agent chains.
+Purpose: Define Guardian's autonomous behavior, pause conditions, partial completion rules, and `_STEP_COMPLETE` contract inside Nexus chains.
+
+## Contents
+
+- AUTORUN context
+- Auto-execute actions
+- Pause conditions
+- Guardrails and recovery
+- `_STEP_COMPLETE` contract
+- Status semantics
+- Partial execution rules
 
 ## AUTORUN Context Format
 
@@ -13,61 +23,57 @@ _AGENT_CONTEXT:
   Input: [Handoff received from previous agent]
 ```
 
-## Auto-Execute (No Confirmation)
+## Auto-Execute
 
-- Change category classification
-- Branch name generation (suggestions)
+Guardian may execute these without confirmation:
+- change classification
+- branch-name generation
 - PR size assessment
-- Noise detection and reporting
-- Release notes draft generation
-- Handoff format generation
-- **Quality score calculation**
-- **Commit message analysis**
-- **Risk factor assessment**
-- **Hotspot detection**
-- **Reviewer recommendations**
-- **Branch health check**
-- **Pre-merge checklist generation**
-- **Squash group detection and scoring**
-- **Noise commit identification**
-- **Squash optimization report generation**
-- **Rebase script generation**
+- noise detection and reporting
+- quality score calculation
+- commit message analysis
+- risk factor assessment
+- hotspot detection
+- reviewer recommendation
+- branch health check
+- pre-merge checklist generation
+- coverage integration
+- squash group detection and scoring
+- noise-commit identification
+- squash optimization report generation
+- rebase script generation
 
 ## Pause for Confirmation
 
-- PR split recommendations
-- Merge strategy selection
-- Force-push suggestions
-- History rewriting operations
-- Destructive Git operations
-- **Quality score < 35 (F grade)**
-- **Risk score > 85 (CRITICAL)**
-- **High-risk file changes without security review**
-- **Hotspot refactoring recommendations**
-- **Squash plans involving 10+ commits**
-- **Multi-author squash (attribution concern)**
-- **Squash score in neutral zone (-14 to +14)**
-- **History rewrite on shared/pushed branches**
+Pause when any of these apply:
+- PR split recommendation affects release timing
+- merge strategy choice materially changes shared workflow
+- force-push or history rewrite is suggested
+- destructive Git operation would be required
+- `quality_score < 35`
+- `risk_score > 85`
+- high-risk file changes have no security review
+- hotspot refactoring recommendation changes scope
+- squash plan involves `10+` commits
+- multi-author squash raises attribution concerns
+- squash score is neutral (`-14` to `+14`)
+- history rewrite targets a shared or already-pushed branch
 
 ## Guardian-Specific Guardrails
 
 ```yaml
-error_handling:
+guardrails:
   git_conflict_unresolved:
-    detection: "Merge conflict markers in files"
-    action: "Handoff to Scout for conflict investigation"
-    recovery: "Resume after Scout provides resolution context"
+    detection: "merge conflict markers remain"
+    action: "handoff to Scout for conflict investigation"
 
   pr_too_large:
-    detection: "PR size > XL threshold"
-    action: "Auto-generate split proposal"
-    recovery: "Continue with chunked analysis"
+    detection: "PR size > XL"
+    action: "auto-generate split proposal"
 
   branch_name_collision:
-    detection: "Branch name already exists"
-    action: "Generate alternative with suffix (-v2, -alt)"
-    recovery: "Propose alternatives to user"
-# ...
+    detection: "suggested branch already exists"
+    action: "generate suffixed alternatives such as -v2 or -alt"
 ```
 
 ## Recovery Strategies
@@ -76,353 +82,68 @@ error_handling:
 recovery_strategies:
   retry_with_reduced_scope:
     triggers: [analysis_timeout, memory_limit]
-    action: "Reduce analysis to essential files only"
+    action: "limit analysis to essential files first"
     max_retries: 2
 
-  fallback_to_manual:
-    triggers: [git_conflict_unresolved, semantic_conflict]
-    action: "Provide manual resolution guidance"
-    handoff: Scout
+  fallback_to_report_only:
+    triggers: [missing_metadata, partial_ci_data]
+    action: "report uncertainty and continue with explicit caveats"
 
-  escalate_to_human:
-    triggers: [3_consecutive_failures, security_concern]
-    action: "Pause AUTORUN, request human intervention"
-    format: "BLOCKED status with context"
+  defer_blocking_decision:
+    triggers: [shared_branch_rewrite, conflicting_handoffs]
+    action: "emit BLOCKED or PARTIAL and require next decision point"
 ```
 
-## AUTORUN Output Format
-
-```yaml
-guardian_analysis:
-  branch: feat/oauth-integration
-  target: main
-
-  summary:
-    total_files: 47
-    total_lines: +1234/-567
-    size_rating: L
-    reviewability: 4/10
-
-  # Quality Metrics
-  quality:
-    score: 68
-    grade: B
-    components:
-# ...
-
-  # Squash Optimization
-  squash_optimization:
-    original_commits: 12
-    optimized_commits: 5
-    reduction_pct: 58
-    groups:
-      - id: 1
-        action: squash
-        commits: ["abc1234", "def5678", "ghi9012"]
-        result_message: "feat(auth): add OAuth2 provider integration"
-        score: 42
-      - id: 2
-        action: pick
-        commits: ["jkl3456"]
-        result_message: null  # keep original
-        score: -18
-    noise_commits: 4
-    noise_strategy: "fixup"  # minimal / moderate / heavy
-    attribution_verified: true
-    rebase_script_available: true
-```
-
-## _STEP_COMPLETE Format
+## `_STEP_COMPLETE` Format
 
 ```yaml
 _STEP_COMPLETE:
   Agent: Guardian
-  Status: SUCCESS | PARTIAL | BLOCKED
-
-  Output:
-    branch_name: "feat/oauth2-provider"
-    commit_plan:
-      - order: 1
-        message: "feat(auth): add OAuth2 provider"
-        files: ["oauth.ts", "types.d.ts"]
-      - order: 2
-        message: "test(auth): add OAuth2 tests"
-        files: ["oauth.test.ts"]
-    pr_strategy:
-      size: M
-    squash_plan:
-      original_count: 8
-      optimized_count: 3
-      rebase_script: |
-        pick abc1234 feat(auth): add OAuth2 provider
-        fixup def5678 WIP oauth
-        fixup ghi9012 fix typo
-        pick jkl3456 test(auth): add OAuth2 tests
-        pick mno7890 chore(deps): update lock file
-      verification_commands:
-        - "git diff backup/feat-oauth2-pre-squash..HEAD"
-        - "git rebase --exec 'npm run build' $(git merge-base HEAD main)"
-# ...
+  Status: SUCCESS|PARTIAL|BLOCKED|FAILED
+  Output: <primary artifact or report>
+  Next: <next action or next agent>
 ```
 
 ## Status Definitions
 
-| Status | Meaning | Next Action |
-|--------|---------|-------------|
-| **SUCCESS** | Analysis complete, ready for handoff | Proceed to Next agent |
-| **PARTIAL** | Analysis done but needs user decision | Pause for confirmation |
-| **BLOCKED** | Cannot proceed (conflicts, missing info) | Request intervention |
+- `SUCCESS`: all requested analysis completed with no blocking uncertainty
+- `PARTIAL`: usable output exists, but one or more non-fatal gaps remain
+- `BLOCKED`: analysis cannot safely proceed without an external decision or handoff
+- `FAILED`: required analysis could not be completed
 
 ## PARTIAL Status Conditions
 
-```yaml
-partial_conditions:
-  awaiting_decision:
-    - PR split strategy needs approval
-    - Merge strategy selection required
-    - Security concerns need acknowledgment
-
-  external_verification:
-    - Sentinel security review in progress
-    - Judge quality gate verification pending
-    - Atlas architecture analysis pending
-
-  incomplete_data:
-    - Large PR chunked analysis ongoing
-    - Some files inaccessible
-    - Git history incomplete
-# ...
-```
-
----
+Use `PARTIAL` when:
+- some CI, coverage, or risk metadata is missing
+- branch or PR context is incomplete but enough evidence exists for a scoped recommendation
+- a non-blocking handoff is recommended but not yet completed
+- analysis was intentionally reduced to essential files to stay within limits
 
 ## Decision Matrix
 
-### Action Decision Framework
-
-Guardian uses this matrix to determine actions during AUTORUN:
-
-```yaml
-decision_matrix:
-  # Format: condition -> action + blocking
-
-  security:
-    critical_classification:
-      action: HANDOFF_SENTINEL
-      blocking: true
-      auto_proceed: false
-    sensitive_with_auth:
-      action: HANDOFF_SENTINEL
-      blocking: false
-      auto_proceed: true
-    dangerous_pattern:
-      action: PAUSE_FOR_CONFIRMATION
-      blocking: true
-# ...
-```
-
-### Decision Priority Order
-
-```yaml
-decision_priority:
-  1_security: "Always evaluate first, can block everything"
-  2_conflicts: "Cannot proceed with unresolved conflicts"
-  3_quality: "Poor quality may need restructure"
-  4_risk: "High risk may need additional review"
-  5_coverage: "Coverage gaps may need tests"
-  6_noise: "Noise cleanup can often parallel"
-  7_architecture: "Architecture usually advisory"
-```
-
-### Multi-Condition Resolution
-
-```yaml
-multi_condition_resolution:
-  strategy: "Most restrictive wins"
-
-  examples:
-    security_critical_and_noise_high:
-      result: PAUSE (security blocking)
-      parallel: Zen can prepare while waiting
-
-    quality_poor_and_coverage_critical:
-      result: PAUSE (coverage blocking)
-      sequence: Fix coverage → Re-evaluate quality
-
-    risk_high_and_architecture_cross_module:
-      result: PROCEED_WITH_ATTENTION
-      parallel: [Atlas analysis, Normal flow]
-```
-
----
+| Condition | Action |
+|-----------|--------|
+| destructive or shared-history change | pause |
+| quality `< 35` | pause |
+| risk `> 85` | pause |
+| blocking security finding | handoff and block |
+| non-blocking coverage or noise issue | handoff and continue |
+| partial but actionable data | return `PARTIAL` |
 
 ## Partial Execution Support
 
-### PARTIAL Status Detailed Behavior
+When returning partial results:
+- state which sections are complete
+- mark missing evidence explicitly
+- preserve all blocking findings
+- recommend the smallest safe next action
 
-```yaml
-partial_execution:
-  definition: |
-    PARTIAL status indicates Guardian has completed some work
-    but requires external input before full completion.
-
-  characteristics:
-    - Partial results are available
-    - Some handoffs are pending
-    - User decision may be needed
-    - Recovery path is defined
-
-  output_structure:
-    completed_work:
-      - Analysis results
-      - Partial recommendations
-# ...
-```
-
-### Partial Execution Scenarios
-
-```yaml
-partial_scenarios:
-  scenario_1_sentinel_review:
-    trigger: "CRITICAL security classification"
-    completed:
-      - Change analysis
-      - Branch naming
-      - Commit structure
-      - PR description draft
-    pending:
-      - Sentinel security approval
-    blocking: true
-    resume_on: "SENTINEL_TO_GUARDIAN_RESPONSE"
-    output_status: PARTIAL
-
-  scenario_2_zen_cleanup:
-# ...
-```
-
-### Partial _STEP_COMPLETE Format
+### Partial `_STEP_COMPLETE` Example
 
 ```yaml
 _STEP_COMPLETE:
   Agent: Guardian
   Status: PARTIAL
-  Reason: "[Specific reason for partial status]"
-
-  Completed:
-    analysis:
-      essential: 12
-      supporting: 5
-      noise: 28
-    branch_name: "feat/oauth2-provider"
-    commit_plan:
-      - order: 1
-        message: "feat(auth): add OAuth2"
-        files: [list]
-# ...
-```
-
----
-
-## Recovery Strategies (Enhanced)
-
-### Comprehensive Recovery Matrix
-
-```yaml
-recovery_matrix:
-  handoff_timeout:
-    sentinel:
-      timeout: "24h"
-      recovery:
-        1: "Send reminder notification"
-        2: "Escalate to security team lead"
-        3: "Request manual override from PR author"
-      fallback: BLOCKED
-
-    zen:
-      timeout: "30m"
-      recovery:
-        1: "Continue without cleanup"
-        2: "Flag noise in PR description"
-# ...
-```
-
-### Recovery Execution Flow
-
-```
-┌─────────────────────────────────────┐
-│         Issue Detected               │
-└─────────────────┬───────────────────┘
-                  ↓
-┌─────────────────────────────────────┐
-│    Lookup Recovery Strategy          │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Auto-Retry    │──YES──→ Execute Retry
-         │ Available?    │              ↓
-         └───────┬───────┘         Success? ──YES──→ Continue
-                 │                      │
-                 │NO                    │NO
-                 ↓                      ↓
-...
-```
-
-## PARTIAL _STEP_COMPLETE Example
-
-```yaml
-_STEP_COMPLETE:
-  Agent: Guardian
-  Status: PARTIAL
-  Reason: "Security review required before merge approval"
-
-  Output:
-    branch_name: "feat/auth-update"
-    analysis:
-      essential: 8
-      noise: 5
-    security:
-      classification: CRITICAL
-      sentinel_required: true
-
-  Pending:
-# ...
-```
-
-## Chain Integration Examples
-
-**Plan → Guardian → Builder**:
-```yaml
-_STEP_COMPLETE:
-  Agent: Guardian
-  Status: SUCCESS
-  Output:
-    branch_name: "feat/user-export"
-    commit_plan: [...]
-  Next: Builder
-```
-
-**Builder → Guardian → Judge**:
-```yaml
-_STEP_COMPLETE:
-  Agent: Guardian
-  Status: SUCCESS
-  Output:
-    pr_strategy: {...}
-    analysis: {...}
-  Handoff:
-    Format: GUARDIAN_TO_JUDGE_HANDOFF
-    Content: [...]
-  Next: Judge
-```
-
-**Guardian → Zen (Noise Loop)**:
-```yaml
-_STEP_COMPLETE:
-  Agent: Guardian
-  Status: PARTIAL
-  Output:
-    noise_detected: 58%
-    cleanup_needed: true
-  Next: Zen
-  Notes: "High noise ratio - requesting Zen cleanup before continuing"
+  Output: "PR quality score, risk report, and split proposal"
+  Next: "Run Radar for missing coverage validation"
 ```

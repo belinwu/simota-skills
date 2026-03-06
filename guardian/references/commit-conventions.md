@@ -1,10 +1,20 @@
 # Commit Conventions & Best Practices
 
-> Conventional Commits 仕様、Atomic Commits、コミット署名、commitlint、アンチパターン
+Purpose: Preserve clean, atomic, conventional commits that support bisecting, changelog generation, and readable history.
 
-## 1. Conventional Commits 仕様 (v1.0.0)
+## Contents
 
-```
+- Conventional Commits
+- Atomic commit rules
+- Signing guidance
+- `commitlint` defaults
+- Anti-patterns
+
+## Conventional Commits
+
+Format:
+
+```text
 <type>[optional scope]: <description>
 
 [optional body]
@@ -12,67 +22,63 @@
 [optional footer(s)]
 ```
 
-| Type | 用途 | SemVer |
-|------|------|--------|
-| `feat` | 新機能 | MINOR |
-| `fix` | バグ修正 | PATCH |
-| `docs` | ドキュメントのみ | — |
-| `style` | フォーマット（意味変更なし） | — |
-| `refactor` | リファクタリング | — |
-| `perf` | パフォーマンス改善 | — |
-| `test` | テストの追加・修正 | — |
-| `build` | ビルドシステム・外部依存 | — |
-| `ci` | CI設定変更 | — |
-| `chore` | その他雑務 | — |
+| Type | Purpose | SemVer effect |
+|------|---------|---------------|
+| `feat` | new feature | MINOR |
+| `fix` | bug fix | PATCH |
+| `docs` | documentation only | none |
+| `style` | formatting without behavior change | none |
+| `refactor` | restructuring without behavior change | none |
+| `perf` | performance improvement | none |
+| `test` | add or update tests | none |
+| `build` | build system or dependency changes | none |
+| `ci` | CI configuration changes | none |
+| `chore` | maintenance work | none |
+| `revert` | revert a previous commit | context-dependent |
 
-### Breaking Change
+Breaking changes:
 
-```
+```text
 feat(api)!: remove deprecated endpoints
 
 BREAKING CHANGE: The /v1/users endpoint has been removed.
 Use /v2/users instead.
 ```
 
-- `!` を type/scope 直後に置く → SemVer MAJOR
-- footer に `BREAKING CHANGE:` でも可
+## Atomic Commit Rules
 
----
+| Rule | Why it matters |
+|------|----------------|
+| one commit = one logical change | makes revert and review safer |
+| each commit should build or pass the relevant checks | preserves bisectability |
+| separate formatting from logic | avoids noisy reverts |
+| keep subject concise | improves readability in Git tools |
+| use imperative mood | matches common Git and changelog conventions |
+| explain `why` in the body, not `what` | the diff already shows the `what` |
 
-## 2. Atomic Commits
+Preferred length guidance:
+- subject target: `<= 50` characters when practical
+- hard commitlint limit: `72`
+- body line limit: `100`
 
-| 原則 | 説明 |
-|------|------|
-| 1コミット = 1論理的変更 | 独立して適用・revert 可能 |
-| 常に動作状態 | 各コミット後もテストがパス |
-| 関心の分離 | フォーマット変更とロジック変更を混ぜない |
-| subject は50文字以内 | Git ツールでの可読性確保 |
-| 命令形で記述 | "Add feature" (O) / "Added feature" (X) |
-| body で "why" を説明 | "what" は diff で分かる |
+## Signing Guidance
 
----
+| Option | Use when | Notes |
+|--------|----------|-------|
+| `GPG` | broad forge support matters | more setup |
+| `SSH` | GitHub/GitLab workflow and existing SSH keys | simpler, requires Git `2.34+` |
 
-## 3. コミット署名
-
-| 観点 | GPG | SSH |
-|------|-----|-----|
-| プラットフォーム | GitHub, GitLab, Bitbucket 全て | GitHub, GitLab のみ |
-| セットアップ | やや複雑 | 既存SSH鍵を流用でき簡単 |
-| 最小Git版 | 制限なし | Git 2.34+ |
+Example SSH signing setup:
 
 ```bash
-# SSH 署名の設定
 git config --global gpg.format ssh
 git config --global user.signingkey ~/.ssh/id_ed25519.pub
 git config --global commit.gpgsign true
 ```
 
----
-
-## 4. commitlint 設定
+## `commitlint` Defaults
 
 ```javascript
-// commitlint.config.js
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
@@ -86,17 +92,13 @@ module.exports = {
 };
 ```
 
----
+## Anti-Patterns
 
-## 5. アンチパターン
-
-| # | パターン | 問題 | 修正 |
-|---|---------|------|------|
-| 1 | "Update file.rb" | ファイル名はdiffで分かる | 意味的な変更内容を記述 |
-| 2 | "Bugfix" / "fix stuff" | 何のバグか不明 | 修正対象と方法を明記 |
-| 3 | `-m` フラグ多用 | マルチライン記述不可 | エディタでコミットメッセージ作成 |
-| 4 | 巨大コミット | bisect・revert 困難 | Atomic commits に分割 |
-| 5 | フォーマット + ロジック混在 | revert が困難 | 別コミットに分離 |
-| 6 | WIP コミットの放置 | 履歴が不透明 | interactive rebase で整理 |
-
-**Source:** [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) · [Atomic Commits (PHP Architect)](https://www.phparch.com/2025/06/atomic-commits-explained-stop-writing-useless-git-messages/) · [Commit Message Best Practices 2025](https://blog.pullnotifier.com/blog/8-git-commit-message-best-practices-for-2025)
+| Pattern | Problem | Safer alternative |
+|---------|---------|-------------------|
+| `Update file.rb` | file names are already in the diff | describe intent and impact |
+| `Bugfix` or `fix stuff` | unclear scope | name the bug or subsystem |
+| repeated `-m` one-liners | weak body quality | open an editor for multi-line messages |
+| huge mixed commits | hard to bisect and revert | split into atomic commits |
+| formatting + logic together | noisy history | commit separately |
+| leftover `WIP` commits | obscures narrative | clean up with interactive rebase before sharing |

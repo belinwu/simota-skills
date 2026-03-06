@@ -1,258 +1,96 @@
 # Predictive Quality Gate Reference
 
-Guardian's system for predicting Judge/Zen feedback before review.
+Purpose: Predict likely Judge and Zen findings before review so Guardian can warn early without over-blocking.
 
-## Overview
+## Contents
 
-The Predictive Quality Gate analyzes code changes and predicts potential issues that Judge or Zen would typically flag, allowing preemptive fixes.
+- Judge prediction
+- Zen prediction
+- historical learning
+- predictive report
+- review-flow integration
+- accuracy tracking
 
-**Expected Impact**: Reduce review cycles by **1 iteration (40%)**
+## Judge Prediction
 
----
+Typical Judge issue families:
+- null handling
+- race conditions
+- logic bugs
+- missing guards
+- unsafe assumptions
 
-## Judge Issue Prediction
+Confidence bands:
+- high: `>= 80%`
+- medium: `60-79%`
+- low: `< 60%`
 
-### Common Judge Findings Patterns
+Warning rule:
+- high confidence -> always warn
+- medium confidence -> warn only if `risk_score > 50`
 
-```yaml
-judge_patterns:
-  bug_detection:
-    null_pointer:
-      pattern: "optional_access_without_check"
-      example: "user.profile.name without null check"
-      detection:
-        - "Accessing nested properties"
-        - "No optional chaining (?.) used"
-        - "No null/undefined guard"
-      prediction_confidence: 85%
+## Zen Prediction
 
-    race_condition:
-      pattern: "async_state_mutation"
-      example: "Multiple async ops on same state"
-      detection:
-# ...
-```
+Typical Zen issue families:
+- generic names
+- mixed naming conventions
+- large functions
+- magic numbers
+- noisy formatting mixed with logic
 
-### Judge Prediction Algorithm
+Auto-fix rule:
+- only for code-quality issues
+- only when confidence `> 90%`
 
-```yaml
-judge_prediction:
-  analyze:
-    1: "Scan changed code for known patterns"
-    2: "Match against historical Judge findings"
-    3: "Weight by project-specific frequency"
-    4: "Calculate prediction confidence"
+## Historical Learning
 
-  scoring:
-    high_confidence: ">= 80%"
-    medium_confidence: "60-79%"
-    low_confidence: "< 60%"
+Adjust predictions with:
+- accepted or rejected Judge findings
+- accepted or rejected Zen suggestions
+- project-specific false positive patterns
 
-  threshold_for_warning:
-    high_confidence: "Always warn"
-    medium_confidence: "Warn if risk_score > 50"
-# ...
-```
+False positive handling:
+- decrease pattern confidence by `5%`
 
----
-
-## Zen Issue Prediction
-
-### Common Zen Refactoring Patterns
-
-```yaml
-zen_patterns:
-  naming:
-    generic_names:
-      pattern: "non_descriptive_identifier"
-      examples: ["data", "temp", "result", "value", "item"]
-      detection:
-        - "Variable name matches generic list"
-        - "Function parameter is generic"
-        - "Loop variable reused"
-      prediction_confidence: 90%
-
-    inconsistent_naming:
-      pattern: "mixed_conventions"
-      examples: ["camelCase vs snake_case mixed"]
-      detection:
-# ...
-```
-
-### Zen Prediction Algorithm
-
-```yaml
-zen_prediction:
-  analyze:
-    1: "Apply static analysis patterns"
-    2: "Compare with project style guide"
-    3: "Match against historical Zen suggestions"
-    4: "Prioritize by impact"
-
-  categories:
-    must_fix: "Significantly impacts readability/maintainability"
-    should_fix: "Improves code quality"
-    nice_to_have: "Minor improvements"
-```
-
----
-
-## Historical Pattern Learning
-
-### Learning from Past Reviews
-
-```yaml
-historical_learning:
-  data_sources:
-    judge_reviews:
-      - Issues found in past PRs
-      - Fix patterns applied
-      - False positives identified
-
-    zen_refactorings:
-      - Refactoring suggestions made
-      - Accepted vs rejected
-      - Project-specific preferences
-
-  pattern_extraction:
-    frequency_analysis:
-      - Count occurrence of each issue type
-# ...
-```
-
-### Project-Specific Calibration
-
-```yaml
-project_calibration:
-  style_preferences:
-    - Preferred naming conventions
-    - Accepted complexity levels
-    - Team-specific patterns
-
-  exception_rules:
-    - Generated code patterns to ignore
-    - Legacy code areas with different standards
-    - Third-party integration patterns
-
-  weight_adjustments:
-    - Increase weight for frequently flagged issues
-    - Decrease for consistently ignored suggestions
-    - Add new patterns from repeated findings
-```
-
----
-
-## Prediction Report
-
-### Predictive Analysis Template
+## Predictive Report
 
 ```markdown
 ## Predictive Quality Gate Analysis
 
-**PR**: #123 - feat(auth): add OAuth2 support
-**Files Analyzed**: 12
-
 ### Predicted Judge Findings
-
-| Severity | File | Line | Issue | Confidence |
-|----------|------|------|-------|------------|
-| HIGH | oauth.ts | 45 | Potential null pointer | 85% |
-| HIGH | callback.ts | 72 | Missing error handling | 80% |
-| MEDIUM | token.ts | 33 | Race condition risk | 75% |
-| LOW | utils.ts | 15 | Possible off-by-one | 65% |
+- possible null handling issue (85%)
 
 ### Predicted Zen Suggestions
-...
+- split formatting noise from logic change (92%)
 ```
 
----
+## Integration With Review Flow
 
-## Integration with Review Flow
+Use predictive findings before review to:
+- enrich Guardian's report
+- decide whether Judge or Zen should be called early
+- avoid unnecessary review churn
 
-### Pre-Review Gate
-
-```yaml
-pre_review_gate:
-  trigger: "Before GUARDIAN_TO_JUDGE_HANDOFF"
-
-  actions:
-    1: "Run predictive analysis"
-    2: "Generate predictions report"
-    3: "Calculate fix effort"
-    4: "Present to developer"
-
-  options:
-    fix_now:
-      description: "Address predicted issues before review"
-      benefit: "Fewer review cycles"
-
-    review_anyway:
-# ...
-```
-
-### AUTORUN Integration
-
-```yaml
-autorun_prediction:
-  auto_execute:
-    - Run all predictions
-    - Generate report
-    - Include in handoff
-
-  auto_fix:
-    condition: "autorun_mode AND confidence > 90%"
-    scope: "Code quality issues only (not logic bugs)"
-    handoff: Zen
-
-  pause_conditions:
-    - "Predicted security issue"
-    - "High confidence logic bug"
-    - "Multiple conflicting fixes"
-# ...
-```
-
----
+Pause when:
+- predicted security issue is high confidence
+- predicted logic bug is high confidence and high impact
+- multiple predicted fixes conflict
 
 ## Accuracy Tracking
 
-### Prediction Metrics
+Targets:
+- Judge prediction accuracy `> 75%`
+- Zen prediction accuracy `> 80%`
+- false positive rate `< 20%`
 
-```yaml
-prediction_metrics:
-  tracked:
-    - true_positives: "Predicted and confirmed by reviewer"
-    - false_positives: "Predicted but not flagged"
-    - false_negatives: "Not predicted but found by reviewer"
-    - prediction_accuracy: "TP / (TP + FP + FN)"
-
-  targets:
-    judge_accuracy: "> 75%"
-    zen_accuracy: "> 80%"
-    false_positive_rate: "< 20%"
-
-  calibration:
-    on_false_positive:
-      - Decrease pattern confidence by 5%
-# ...
-```
-
-### Accuracy Report Template
+Canonical accuracy report:
 
 ```markdown
 ## Prediction Accuracy Report (Last 30 Days)
 
 ### Judge Predictions
-| Metric | Value |
-|--------|-------|
-| Predictions Made | 145 |
-| True Positives | 98 |
-| False Positives | 25 |
-| False Negatives | 22 |
-| **Accuracy** | **67.6%** |
+- accuracy: ...
 
 ### Zen Predictions
-| Metric | Value |
-|--------|-------|
-| Predictions Made | 230 |
-...
+- accuracy: ...
 ```

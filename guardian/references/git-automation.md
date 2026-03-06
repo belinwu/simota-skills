@@ -1,22 +1,31 @@
 # Git Hooks & Automation
 
-> Hook マネージャー比較、lint-staged、シークレット検出、auto-merge、Monorepo CI パターン
+Purpose: Standardize lightweight Git automation for quality checks, secrets scanning, auto-merge, and monorepo-aware CI.
 
-## 1. Hook マネージャー比較
+## Contents
 
-| 観点 | Husky | Lefthook | pre-commit |
-|------|:-----:|:--------:|:----------:|
-| 言語 | Node.js | Go | Python |
-| 実行速度 | 普通（逐次） | **高速（並列）** | 遅め |
-| ベンチマーク | — | 1.0s | 5.1s |
-| 設定形式 | `.husky/` シェルスクリプト | YAML | YAML |
-| 言語依存 | Node.js 必須 | **言語非依存** | Python 必須 |
-| 適したPJ | Node.js/JS | ポリグロット/高速 | Python/多言語 |
+- Hook manager selection
+- Secret detection
+- Auto-merge
+- Monorepo CI
+- Recommended 2025 stack
 
-### Lefthook 設定例
+## Hook Manager Selection
+
+| Factor | Husky | Lefthook | pre-commit |
+|--------|-------|----------|------------|
+| Runtime | Node.js | Go | Python |
+| Speed | serial / moderate | parallel / fast | slower |
+| Config style | `.husky/` shell scripts | YAML | YAML |
+| Best fit | JS/TS repos | polyglot repos | Python-heavy repos |
+
+Recommended default:
+- `Lefthook` for polyglot or performance-sensitive repos
+- `Husky` for JS-first repos already committed to Node tooling
+
+Example `lefthook.yml`:
 
 ```yaml
-# lefthook.yml
 pre-commit:
   parallel: true
   commands:
@@ -36,7 +45,7 @@ commit-msg:
       run: npx commitlint --edit {1}
 ```
 
-### Husky + lint-staged
+Example `husky` + `lint-staged`:
 
 ```bash
 # .husky/pre-commit
@@ -44,7 +53,6 @@ npx lint-staged
 ```
 
 ```json
-// package.json
 {
   "lint-staged": {
     "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
@@ -53,21 +61,24 @@ npx lint-staged
 }
 ```
 
----
+## Secret Detection
 
-## 2. シークレット検出
+Recommended tools:
+- `gitleaks`
+- `detect-secrets`
+- `trufflehog`
 
-| ツール | 特徴 |
-|--------|------|
-| **gitleaks** | Go製、高速、CI統合容易 |
-| **detect-secrets** | Yelp製、Python、ベースライン管理 |
-| **trufflehog** | 広範なパターン検出 |
+Rule:
+- run secret detection in `pre-commit` or CI before merge
 
-pre-commit hook に組み込むことで、シークレットのコミットを事前防止。
+## Auto-Merge
 
----
+Use auto-merge only for low-risk PRs such as:
+- dependency updates
+- documentation-only changes
+- clearly non-breaking maintenance
 
-## 3. GitHub Actions Auto-Merge
+Example:
 
 ```yaml
 name: Auto Merge
@@ -88,23 +99,18 @@ jobs:
           MERGE_DELETE_BRANCH: true
 ```
 
-**適用対象:** 依存関係更新、ドキュメント変更等の低リスクPR。ブランチ保護ルールとの組み合わせ必須。
+Require branch protection alongside auto-merge.
 
----
+## Monorepo CI
 
-## 4. Monorepo CI パターン
-
-### Affected パッケージ検出
+Affected package detection:
 
 ```bash
-# Turborepo
 turbo run build --affected
-
-# Nx
 nx affected -t build
 ```
 
-**必須:** CI で `fetch-depth: 0` を指定（shallow clone では affected 検出が失敗）。
+Always set:
 
 ```yaml
 - uses: actions/checkout@v4
@@ -112,7 +118,7 @@ nx affected -t build
     fetch-depth: 0
 ```
 
-### パスベース選択的 CI
+Path-based CI:
 
 ```yaml
 on:
@@ -122,7 +128,7 @@ on:
       - 'packages/shared/**'
 ```
 
-### dorny/paths-filter による動的検出
+Dynamic path detection:
 
 ```yaml
 - uses: dorny/paths-filter@v3
@@ -135,25 +141,21 @@ on:
         - 'packages/api/**'
 ```
 
-### Changesets (Monorepo バージョニング)
+Versioning for monorepos:
 
 ```bash
-npx changeset          # 変更インパクトを宣言
-npx changeset version  # バージョン更新 + CHANGELOG 生成
-npx changeset publish  # npm 公開
+npx changeset
+npx changeset version
+npx changeset publish
 ```
 
----
+## Recommended 2025 Stack
 
-## 5. 推奨スタック (2025)
-
-| 用途 | 推奨 |
-|------|------|
-| パッケージ管理 | pnpm |
-| タスク実行 | Turborepo or Nx |
-| Hook管理 | Lefthook (ポリグロット) / Husky (JS) |
-| コミット検証 | commitlint |
-| バージョニング | Changesets |
-| CI/CD | GitHub Actions |
-
-**Source:** [Git Hooks Guide 2025](https://dev.to/arasosman/git-hooks-for-automated-code-quality-checks-guide-2025-372f) · [Lefthook vs Husky](https://dev.to/quave/lefthook-benefits-vs-husky-and-how-to-use-30je) · [Auto-Merge Actions](https://oneuptime.com/blog/post/2025-12-20-github-actions-auto-merge/view) · [Monorepo CI Best Practices (Buildkite)](https://buildkite.com/resources/blog/monorepo-ci-best-practices/)
+| Concern | Recommended default |
+|---------|---------------------|
+| package manager | `pnpm` |
+| task runner | `Turborepo` or `Nx` |
+| hooks | `Lefthook` or `Husky` |
+| commit validation | `commitlint` |
+| versioning | `Changesets` |
+| CI/CD | `GitHub Actions` |

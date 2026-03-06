@@ -1,338 +1,124 @@
 # Security-Aware Change Analysis Reference
 
-Guardian's security analysis patterns, detection rules, and escalation criteria.
+Purpose: Classify security impact, trigger Sentinel or Probe when required, and surface dangerous change patterns early.
+
+## Contents
+
+- Security categories
+- Classification criteria
+- Escalation flow
+- Sentinel protocol
+- Probe integration
+- Dangerous patterns
+- Report template
+- AI-generated code checks
 
 ## Security Impact Categories
 
 | Category | Description | Action |
 |----------|-------------|--------|
-| **CRITICAL** | Auth, crypto, secrets, permissions | Immediate Sentinel handoff |
-| **SENSITIVE** | User data, session, API keys | Sentinel review recommended |
-| **ADJACENT** | Code near security boundaries | Monitor for side effects |
-| **NEUTRAL** | No security implications | Standard review |
-
----
+| `CRITICAL` | auth, crypto, secrets, permissions | immediate Sentinel handoff |
+| `SENSITIVE` | user data, session, API keys | Sentinel review recommended |
+| `ADJACENT` | code near security boundaries | monitor closely |
+| `NEUTRAL` | no obvious security implications | standard review |
 
 ## Classification Criteria
 
-### CRITICAL Classification
+### `CRITICAL`
 
-**Auto-handoff to Sentinel: REQUIRED (Blocking)**
+Blocking Sentinel handoff is required for patterns such as:
+- `**/auth/**`
+- `**/security/**`
+- `**/crypto/**`
+- `**/permissions/**`
+- `**/rbac/**`
+- `.env*`
+- `**/*.key`
+- `**/*.pem`
+- `**/secrets/**`
 
-```yaml
-critical_criteria:
-  file_patterns:
-    - "**/auth/**"
-    - "**/security/**"
-    - "**/crypto/**"
-    - "**/permissions/**"
-    - "**/rbac/**"
-    - "**/acl/**"
-    - "**/*.key"
-    - "**/*.pem"
-    - ".env*"
-    - "**/secrets/**"
+### `SENSITIVE`
 
-  code_patterns:
-    - jwt_handling: "jwt.sign|jwt.verify|jsonwebtoken"
-# ...
-```
+Typical examples:
+- `**/api/**`
+- `**/middleware/**`
+- `**/session/**`
+- `**/payment/**`
+- user-data processing, validation, session or cookie handling
 
-### SENSITIVE Classification
+### `ADJACENT`
 
-**Auto-handoff to Sentinel: RECOMMENDED (Non-blocking)**
+Typical examples:
+- `**/config/**`
+- `**/database/**`
+- migrations that affect auth or user-data behavior
 
-```yaml
-sensitive_criteria:
-  file_patterns:
-    - "**/api/**"
-    - "**/middleware/**"
-    - "**/handlers/**"
-    - "**/user/**"
-    - "**/profile/**"
-    - "**/payment/**"
-    - "**/session/**"
+## Escalation Flow
 
-  code_patterns:
-    - user_data: "user\.|profile\.|email|phone|address"
-    - api_endpoints: "@Get|@Post|router\.|app\.get|app\.post"
-    - data_validation: "validate|sanitize|escape"
-    - session_ops: "session\.|cookie\.|localStorage"
-# ...
-```
-
-### ADJACENT Classification
-
-**Monitor and flag, no auto-handoff**
-
-```yaml
-adjacent_criteria:
-  file_patterns:
-    - "**/config/**"
-    - "**/settings/**"
-    - "**/database/**"
-    - "**/migration/**"
-
-  change_types:
-    - Configuration that affects security behavior
-    - Database schema changes for auth tables
-    - Environment variable handling
-    - Third-party service integration
-
-  monitoring:
-    - Flag in PR description
-# ...
-```
-
-### NEUTRAL Classification
-
-**Standard review process**
-
-```yaml
-neutral_criteria:
-  indicators:
-    - No security-related file patterns matched
-    - No dangerous code patterns detected
-    - No auth/crypto imports
-    - Pure UI/presentation changes
-    - Test file only changes
-    - Documentation updates
-
-  action:
-    - Standard review process
-    - No security handoff needed
-```
-
----
-
-## Escalation Decision Flow
-
-```
-┌─────────────────────────────────────┐
-│     Analyze Changed Files            │
-└─────────────────┬───────────────────┘
-                  ↓
-┌─────────────────────────────────────┐
-│   Match Against File Patterns        │
-└─────────────────┬───────────────────┘
-                  ↓
-         ┌───────────────┐
-         │ Critical      │──YES──→ CRITICAL Classification
-         │ Pattern?      │         → AUTO Sentinel Handoff (BLOCKING)
-         └───────┬───────┘
-                 │NO
-                 ↓
-┌─────────────────────────────────────┐
-...
-```
-
----
+1. classify file and code patterns
+2. mark blocking vs non-blocking
+3. hand off to Sentinel when required
+4. hand off to Probe for runtime API/auth validation when needed
+5. fold returned findings into Guardian risk and PR strategy
 
 ## Sentinel Auto-Link Protocol
 
-### Handoff Trigger Conditions
+Trigger Sentinel when:
+- `security_classification == CRITICAL`
+- `SENSITIVE` change affects auth or permissions
+- dangerous pattern count `> 0`
+- secret exposure risk exists
 
-```yaml
-auto_handoff_triggers:
-  immediate_blocking:
-    conditions:
-      - classification: CRITICAL
-      - dangerous_pattern_count: "> 0"
-      - secret_exposure: true
-    action:
-      type: GUARDIAN_TO_SENTINEL_HANDOFF
-      blocking: true
-      timeout: "24h"
+## Probe Integration
 
-  recommended_non_blocking:
-    conditions:
-      - classification: SENSITIVE
-      - auth_files_involved: true
-# ...
-```
+Use Probe for:
+- API changes
+- auth or token flow changes
+- validation or runtime exploit verification
 
-### Response Handling Protocol
-
-```yaml
-sentinel_response_handling:
-  on_approved:
-    action: "Clear security gate"
-    update_status: SUCCESS
-    pr_badge: "Security Approved"
-    proceed_to: Judge
-
-  on_issues_high:
-    action: "Block merge"
-    update_status: BLOCKED
-    create_issues: true
-    notify: PR_AUTHOR
-    require: "Fix and re-review"
-
-  on_issues_medium:
-# ...
-```
-
----
-
-## Probe Integration (DAST)
-
-### API Change Detection
-
-```yaml
-probe_triggers:
-  endpoint_changes:
-    - New API endpoint created
-    - Authentication middleware modified
-    - Authorization logic changed
-    - Input validation altered
-
-  auto_handoff:
-    condition: "api_endpoint_changed AND (auth_modified OR validation_modified)"
-    target: Probe
-    request: DAST_SCAN
-    environment: STAGING
-```
-
-### Probe Handoff Template
+Template:
 
 ```markdown
 ## GUARDIAN_TO_PROBE_HANDOFF
 
-**Trigger**: API endpoint security verification
-
-**Changed Endpoints**:
-| Endpoint | Method | Change | Risk |
-|----------|--------|--------|------|
-| /api/auth/login | POST | Auth logic modified | HIGH |
-| /api/users/:id | PATCH | Validation changed | MEDIUM |
-
-**DAST Targets**:
-- [ ] Authentication bypass
-- [ ] Authorization boundary
-- [ ] Input injection
-- [ ] Session fixation
-...
-```
-
-## Security-Related File Patterns
-
-```yaml
-security_file_patterns:
-  critical:
-    directories:
-      - auth/
-      - security/
-      - crypto/
-      - permissions/
-      - rbac/
-      - acl/
-    files:
-      - "**/auth*.{ts,js,py,go,java}"
-      - "**/login*.{ts,js,py,go,java}"
-      - "**/session*.{ts,js,py,go,java}"
-      - "**/*.key"
-      - "**/*.pem"
-# ...
+**Reason**: API/auth/runtime security verification needed
+**Changed areas**:
+- ...
 ```
 
 ## Dangerous Code Patterns
 
-```yaml
-dangerous_patterns:
-  credential_exposure:
-    - password
-    - token
-    - secret
-    - api_key
-    - apiKey
-    - private_key
-    - jwt
-    - bearer
+High-signal examples:
+- secret or key material in source
+- unsafe auth/permission handling
+- insecure crypto usage
+- missing validation on exposed endpoints
+- unsafe AI-generated code near security boundaries
 
-  injection_risk:
-    - eval(
-    - exec(
-    - innerHTML
-# ...
-```
-
-## Security Analysis Report Template
+## Report Template
 
 ```markdown
 ## Security Impact Assessment
 
 ### Classification
-```
-CRITICAL:   ██░░░░░░░░ 2 files (auth/)
-SENSITIVE:  ███░░░░░░░ 4 files (api/, user data)
-ADJACENT:   █░░░░░░░░░ 1 file (config/)
-NEUTRAL:    ██████░░░░ 15 files
-```
+- Security category: ...
 
 ### Critical Changes (Sentinel Handoff Required)
-| File | Change | Risk |
-|------|--------|------|
-| `src/auth/jwt.ts` | Token validation modified | HIGH - verify no bypass |
-| `src/auth/oauth.ts` | New OAuth provider | MEDIUM - scope review |
+- ...
 
 ### Dangerous Patterns Detected
-| File | Pattern | Line | Concern |
-|------|---------|------|---------|
-| `src/api/query.ts` | raw SQL | 45 | Injection risk |
-| `src/utils/render.ts` | innerHTML | 23 | XSS potential |
+- ...
 
 ### Recommendation
-1. **Handoff to Sentinel** for static security analysis
-...
+- ...
 ```
 
 ## AI-Generated Code Detection
 
-### Detection Patterns (Code-Based Only)
+Code-based categories:
+- `Verified`
+- `Suspected`
+- `Untested`
+- `Human`
 
-```yaml
-ai_code_indicators:
-  naming_patterns:
-    - Generic variable names: data, result, temp, value, item, output
-    - Sequential naming: data1, data2, func1, func2
-    - Overly verbose: getUserByIdFromDatabase, processDataAndReturnResult
-
-  structural_patterns:
-    - Unusual code density (high logic per function)
-    - Inconsistent with project patterns
-    - Overly uniform comment styles
-    - Perfect but context-unaware implementations
-
-  project_mismatch:
-    - Different naming conventions than existing code
-    - Unfamiliar utility patterns
-# ...
-```
-
-### AI Code Categories
-
-| Category | Indicator | Action |
-|----------|-----------|--------|
-| **Verified** | Reviewed and tested | Proceed normally |
-| **Suspected** | Pattern match detected | Request Judge verification |
-| **Untested** | New code without tests | Radar test coverage |
-| **Human** | No AI indicators | Standard review |
-
-### AI Detection in Analysis Report
-
-```markdown
-### AI Code Assessment
-```
-AI Suspected:   ██░░░░░░░░ 20% (5 files)
-Untested:       █░░░░░░░░░ 10% (3 files)
-Verified/Human: ███████░░░ 70% (17 files)
-```
-
-**Suspected AI-Generated Files**:
-| File | Indicators | Recommendation |
-|------|------------|----------------|
-| `src/utils/parser.ts` | Generic naming, uniform comments | Request Judge verification |
-| `src/api/handler.ts` | Perfect but context-unaware | Add integration tests |
-
-→ Handoff to Judge for dependency verification and hallucination check
-```
+Use AI-code status to raise caution, not to replace direct security evidence.
