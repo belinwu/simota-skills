@@ -86,6 +86,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/data-reliability.md` | Quality check layers, Great Expectations, CDC/Debezium, Idempotency (Redis/UPSERT/Kafka), Backfill playbook |
 | `references/examples.md` | Implementation examples and code samples |
 | `references/patterns.md` | Common pipeline patterns and best practices |
+| `references/pipeline-design-anti-patterns.md` | パイプライン設計 7 大アンチパターン PD-01〜07、ETL/ELT 判断ミス、オーケストレーションの罠、テスト戦略 |
+| `references/event-streaming-anti-patterns.md` | イベントストリーミング 7 大アンチパターン ES-01〜07、イベントモデリングの罠、Kafka 運用、Outbox Pattern |
+| `references/dbt-warehouse-anti-patterns.md` | dbt モデリング 7 大アンチパターン DW-01〜07、レイヤー設計、Materialization 戦略、セマンティックレイヤー |
+| `references/data-observability-anti-patterns.md` | データ可観測性 7 大アンチパターン DO-01〜07、品質管理の進化、5 Pillars 実装、Data Contract |
 
 ## Domain Knowledge Summary
 
