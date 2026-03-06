@@ -1,45 +1,44 @@
 # Resource Management Patterns
 
-> リソースリーク防止、接続プール管理、コードレビューチェックリスト、言語別パターン
+Purpose: detect resource leaks, validate cleanup discipline, and size pools safely.
 
-## 1. リソースリークの 5 カテゴリ
+## Contents
+- Resource classes
+- Language patterns
+- Pool thresholds
+- Review checklist
+- Anti-patterns
+- Incident lessons
 
-| カテゴリ | OS 上限 | 枯渇時の影響 | 検出難易度 |
-|---------|--------|------------|----------|
-| **Memory** | プロセスメモリ上限 | OOM Kill、クラッシュ | 中（ヒープ分析で可視化） |
-| **File Handle** | 1,024〜65,536/プロセス | EMFILE エラー、ファイル操作不可 | 高（`lsof` で確認可能） |
-| **DB Connection** | プールサイズ依存 | タイムアウト、カスケード障害 | 中（プール統計で監視） |
-| **Network Socket** | ~65,535/ホスト | 接続不可、タイムアウト | 高（netstat/ss で確認） |
-| **Thread/Worker** | プールサイズ依存 | 新タスク処理不可 | 中（プール統計で監視） |
+## Resource Classes
 
----
+| Resource | Typical limit | Failure mode when exhausted | Detection difficulty |
+| --- | --- | --- | --- |
+| Memory | Process memory limit | OOM kill, crash | Medium |
+| File handle | `1,024-65,536` per process | `EMFILE`, file ops fail | High |
+| DB connection | Pool-size dependent | Timeouts, cascading outages | Medium |
+| Network socket | `~65,535` per host | Connection failures, timeouts | High |
+| Thread/worker | Pool-size dependent | New work stalls | Medium |
 
-## 2. 言語別リソース管理パターン
+## Language Patterns
 
-### JavaScript/TypeScript
+### JavaScript / TypeScript
 
 ```typescript
-// Symbol.dispose (TC39 Stage 3 — Explicit Resource Management)
-// TypeScript 5.2+ で使用可能
+// TypeScript 5.2+ explicit resource management surface
 class DatabaseConnection {
   [Symbol.dispose]() {
     this.close();
   }
 }
 
-// using 宣言（提案中）
-{
-  using conn = new DatabaseConnection();
-  // スコープ終了時に自動 dispose
-}
-
-// 現在の推奨パターン: try-finally
+// Current safe default: try-finally
 async function query() {
   const conn = await pool.getConnection();
   try {
     return await conn.query('SELECT ...');
   } finally {
-    conn.release();  // 必ず実行
+    conn.release();
   }
 }
 ```
@@ -47,12 +46,9 @@ async function query() {
 ### Python
 
 ```python
-# Context Manager（推奨）
 with open('file.txt') as f:
     data = f.read()
-# 自動 close
 
-# async Context Manager
 async with aiohttp.ClientSession() as session:
     async with session.get(url) as response:
         data = await response.json()
@@ -61,128 +57,95 @@ async with aiohttp.ClientSession() as session:
 ### Go
 
 ```go
-// defer（推奨）
 func query() error {
     conn, err := pool.Get()
     if err != nil { return err }
-    defer conn.Close()  // 必ず実行
+    defer conn.Close()
     // ...
+    return nil
 }
 ```
 
----
+## Pool Thresholds
 
-## 3. 接続プール管理
+| Parameter | Recommended range | Notes |
+| --- | --- | --- |
+| `maxConnections` | `10-50` | Depends on workload and DB capacity |
+| `minConnections` | `2-5` | Keep warm capacity without overcommitting |
+| `acquireTimeout` | `5000-30000ms` | Fail fast enough to avoid request pileups |
+| `idleTimeout` | `30000-600000ms` | Release idle connections predictably |
+| `leakDetectionThreshold` | `2000-5000ms` | Warn on long-held pooled resources |
+| `maxLifetime` | `1800000ms (30min)` | Rotate long-lived connections |
 
-### 設定パラメータ
+### Leak Detection
 
-| パラメータ | 推奨値 | 説明 |
-|-----------|--------|------|
-| **maxConnections** | 10-50（用途依存） | 最大接続数 |
-| **minConnections** | 2-5 | 最小接続数（ウォームアップ） |
-| **acquireTimeout** | 5000-30000ms | 接続取得タイムアウト |
-| **idleTimeout** | 30000-600000ms | アイドル接続の解放時間 |
-| **leakDetectionThreshold** | 2000-5000ms | リーク検出閾値 |
-| **maxLifetime** | 1800000ms (30min) | 接続の最大寿命 |
+- Record acquire timestamps and emit warnings when hold time exceeds `leakDetectionThreshold`.
+- Capture stack traces on acquire where the pool supports it.
+- Track acquire/release symmetry and periodically inspect pool utilization such as `pool.numUsed()`.
 
-### リーク検出メカニズム
+### Exhaustion Cascade
 
-```
-HikariCP 型のリーク検出:
-  1. 接続取得時にタイムスタンプを記録
-  2. leakDetectionThreshold 超過で警告ログ
-  3. スタックトレースを出力（どこで取得されたか）
+1. Request A acquires a connection and never releases it.
+2. The pool slowly depletes.
+3. New requests fail on `acquireTimeout`.
+4. Health checks also fail to acquire connections.
+5. The load balancer marks the instance unhealthy.
+6. Traffic shifts to the remaining instances.
+7. The same leak repeats and the failure becomes systemic.
 
-Node.js (knex/pg-pool):
-  pool.on('acquire', () => { /* 取得追跡 */ });
-  pool.on('release', () => { /* 解放追跡 */ });
+Real incident class: DB pool exhaustion impacted `75%` of global users.
 
-  リーク検出:
-    - acquire から release までの時間を監視
-    - 閾値超過で警告
-    - pool.numUsed() を定期監視
-```
+## Review Checklist
 
-### 接続プール枯渇のカスケード
+### Acquisition and cleanup
 
-```
-枯渇シナリオ:
-  1. リクエスト A が接続を取得、解放しない（コードバグ）
-  2. 接続プールが徐々に枯渇
-  3. 新しいリクエストが acquireTimeout で失敗
-  4. ヘルスチェックも接続取得に失敗
-  5. ロードバランサーがサーバーを unhealthy 判定
-  6. トラフィックが残りのサーバーに集中
-  7. 残りサーバーも同じバグで枯渇 → 全体障害
+- Every acquisition has a matching release.
+- Cleanup is guaranteed with `finally`, `defer`, `with`, `async with`, or equivalent.
+- Early returns do not bypass cleanup.
+- Exception paths still release resources.
+- Loop-scoped acquisitions are not released only after the loop finishes.
 
-実例: DB 接続プール枯渇でグローバルユーザーの 75% に影響
-```
+### Connections and streams
 
----
+- DB clients define timeouts.
+- HTTP clients define timeouts.
+- WebSocket flows include reconnect and cleanup logic.
+- Streams handle both piping and error paths.
+- Temporary files are removed after use.
 
-## 4. コードレビューチェックリスト
+### Events and timers
 
-### リソース取得・解放
+- `addEventListener` has matching `removeEventListener`.
+- `setInterval` has matching `clearInterval`.
+- Subscriptions have matching unsubscribe/dispose.
+- React `useEffect` returns cleanup when needed.
+- `AbortController` is used where fetches can outlive the caller.
 
-```
-□ すべてのリソース取得に対応する解放があるか？
-□ 解放は finally / defer / using / with で保証されているか？
-□ 早期 return がリソース解放をバイパスしていないか？
-□ 例外パスでリソース解放が行われるか？
-□ ループ内でリソースを取得し、ループ外で解放しているか？
-```
+### Pools and caches
 
-### 接続・ストリーム
+- Pool size matches workload and infrastructure limits.
+- Caches have a size limit or TTL.
+- Global collections define eviction.
+- `WeakMap` or `WeakRef` is considered where ownership is weak.
 
-```
-□ DB 接続にタイムアウトが設定されているか？
-□ HTTP クライアントにタイムアウトが設定されているか？
-□ WebSocket に reconnect/cleanup ロジックがあるか？
-□ Stream が pipe() で接続され、エラーハンドリングがあるか？
-□ 一時ファイルが使用後に削除されるか？
-```
+## Anti-Patterns
 
-### イベント・タイマー
+| Anti-pattern | Symptom | Safer rule |
+| --- | --- | --- |
+| Happy Path Only | Cleanup exists only on success | Require `try-finally` or equivalent |
+| Early Return Bypass | Return exits before cleanup | Put cleanup in a guaranteed finalizer |
+| Nested Resource | Only the outer resource is released | Guard each resource independently |
+| Pooled but Unreleased | Pool usage climbs over time | Enable leak detection and audit symmetry |
+| Fire-and-Forget Close | Async close is not awaited | Await close/dispose completion |
+| Conditional Cleanup | Cleanup runs only on some branches | Make cleanup unconditional |
 
-```
-□ addEventListener に対応する removeEventListener があるか？
-□ setInterval に対応する clearInterval があるか？
-□ Observable/EventEmitter の subscribe に unsubscribe があるか？
-□ React useEffect に cleanup return があるか？
-□ AbortController でフェッチがキャンセル可能か？
-```
+## Incident Lessons
 
-### プール・キャッシュ
+| Incident | Root cause | Operational lesson |
+| --- | --- | --- |
+| `CVE-2024-21626` | `runc` file descriptor leak | Resource leaks can become security issues |
+| Global DB outage | Pool exhaustion cascade | Small leaks can create fleet-wide failures |
+| Google Shakespeare | Leaks under load | High traffic amplifies latent leaks |
+| CheckMK handle leak | Windows handle accumulation | Long-lived agents need explicit cleanup audits |
 
-```
-□ 接続プールの maxConnections が適切か？
-□ キャッシュにサイズ上限/TTL があるか？
-□ Global コレクションにエビクションポリシーがあるか？
-□ WeakMap/WeakRef が適用できる箇所はないか？
-```
-
----
-
-## 5. リソースリークのアンチパターン
-
-| アンチパターン | 症状 | 対策 |
-|--------------|------|------|
-| **Happy Path Only** | 正常系でのみ解放、例外パスで漏れ | try-finally を必須化 |
-| **Early Return Bypass** | return で finally をスキップ | finally は return 後も実行（JS/Java） |
-| **Nested Resource** | 外側のリソースのみ解放 | 各リソースを個別に try-finally |
-| **Pooled but Unleased** | プールから取得して解放しない | リーク検出閾値の設定 |
-| **Fire-and-Forget Close** | close() の Promise を await しない | await で完了を確認 |
-| **Conditional Cleanup** | 特定条件でのみクリーンアップ | 無条件クリーンアップ |
-
----
-
-## 6. 実世界のインシデント
-
-| インシデント | 原因 | 影響 |
-|------------|------|------|
-| **CVE-2024-21626** | runc のファイルディスクリプタリーク | コンテナエスケープ攻撃 |
-| **グローバル DB 障害** | 接続プール枯渇のカスケード | 75% のユーザーに影響 |
-| **Google Shakespeare** | 高負荷時のリソースリーク | サービスカスケード障害 |
-| **CheckMK ハンドルリーク** | Windows ハンドルの累積 | 複数サーバーで障害 |
-
-**Source:** [Propel: Resource Leak Detection Guide](https://www.propelcode.ai/blog/resource-leak-detection-code-review-comprehensive-guide) · [DZone: DB Connection Leak Detection](https://dzone.com/articles/detecting-and-resolving-database-connection-leaks) · [DoHost: Connection Pool Exhaustion](https://dohost.us/index.php/2025/08/01/troubleshooting-connection-pool-exhaustion/) · [Etleap: Preventing DB Connection Leaks](https://etleap.com/blog/preventing-database-connection-leaks)
+Source: Propel resource leak guide, DZone DB leak detection, DoHost connection pool exhaustion, Etleap DB connection leak prevention.

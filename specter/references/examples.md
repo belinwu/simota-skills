@@ -1,283 +1,105 @@
 # Usage Examples & Report Samples
 
-Specterの使用例とレポート出力サンプル。
+Purpose: preserve must-keep invocation examples, canonical report structure, confidence wording, and AUTORUN output shape.
 
----
+## Contents
+
+1. Invocation examples
+2. Report templates
+3. Confidence wording
+4. False-positive notes
+5. AUTORUN output
 
 ## Invocation Examples
 
-### Example 1: Vague Symptom Report
+### Example 1: Vague Symptom
 
-**User Input:**
-```
+**User Input**
+```text
 アプリを使っていると段々重くなってきます
 ```
 
-**Specter's Interpretation:**
-```
-Symptom Analysis:
-- Pattern: "重くなっていく" → Progressive performance degradation
-- Primary Hypothesis: Memory Leak (Event listeners, timers, closures)
-- Secondary Hypothesis: Resource Leak (Connections, handles)
-- Scan Priority: Components with useEffect, global event handlers, timers
+**Interpretation**
+- primary hypothesis: memory leak
+- secondary hypothesis: resource leak
+- scan priority: `useEffect`, listeners, timers, subscriptions
 
-Starting scan for Memory Leak patterns...
-```
+### Example 2: Concurrency Data Corruption
 
-**Specter's Response:**
-```markdown
-## Specter Detection Report
-
-### Summary
-**Ghost Category:** Memory Leak
-**Issues Found:** 2 CRITICAL, 3 HIGH, 5 MEDIUM
-**Confidence:** HIGH
-**Scan Scope:** src/components/**/*.tsx, src/hooks/**/*.ts
-
-### Critical Issues
-
-#### SPECTER-001: Event Listener Leak in Modal Component
-**Location:** `src/components/Modal.tsx:45`
-**Risk Score:** 8.7/10 (CRITICAL)
-**Category:** Event Listener Leak
-
-...
-```typescript
-// Line 45-48: Current code
-useEffect(() => {
-  window.addEventListener('keydown', handleEscape);
-  document.addEventListener('click', handleOutsideClick);
-  // Missing cleanup - listeners accumulate on each modal open
-}, []);
-```
-
-**Remediation:**
-```typescript
-useEffect(() => {
-  window.addEventListener('keydown', handleEscape);
-  document.addEventListener('click', handleOutsideClick);
-  return () => {
-    window.removeEventListener('keydown', handleEscape);
-    document.removeEventListener('click', handleOutsideClick);
-  };
-}, []);
-```
-
-**Risk Breakdown:**
-| Dimension | Score | Rationale |
-|-----------|-------|-----------|
-| Detectability | 9 | Silent accumulation, no visible error |
-| Impact | 8 | Gradual memory growth, eventual crash |
-| Frequency | 9 | Every modal open/close cycle |
-| Recovery | 7 | Requires page refresh |
-| Data Risk | 2 | No data corruption |
-
-**Suggested Tests:**
-- Open/close modal 50 times, measure memory growth
-- Verify listener count in DevTools
-
----
-...
-```
-
----
-
-### Example 2: Specific Race Condition Report
-
-**User Input:**
-```
+**User Input**
+```text
 チェックアウト処理で時々在庫数がおかしくなります。同時に複数のユーザーが注文すると起きるようです。
 ```
 
-**Specter's Interpretation:**
-```
-Symptom Analysis:
-- Pattern: "同時実行でおかしい" + "在庫数" → Race Condition
-- Primary Hypothesis: Shared state mutation without synchronization
-- Secondary Hypothesis: Read-modify-write without atomicity
-- Scan Priority: Checkout flow, inventory management, order processing
+**Interpretation**
+- primary hypothesis: race condition
+- secondary hypothesis: non-atomic read-modify-write
+- scan priority: checkout flow, inventory service, concurrent updates
 
-Starting scan for Race Condition patterns...
-```
+### Example 3: Full Scan
 
-**Specter's Response:**
-```markdown
-## Specter Detection Report
-
-### Summary
-**Ghost Category:** Race Condition
-**Issues Found:** 1 CRITICAL, 2 HIGH
-**Confidence:** HIGH
-**Scan Scope:** src/services/checkout.ts, src/services/inventory.ts
-
-### Critical Issues
-
-#### SPECTER-001: Race Condition in Inventory Update
-**Location:** `src/services/inventory.ts:34`
-**Risk Score:** 9.2/10 (CRITICAL)
-**Category:** Read-Modify-Write Race
-
-...
-```typescript
-// Line 34-40: Current code
-async function decrementStock(productId: string, quantity: number) {
-  const product = await db.products.findOne({ id: productId });
-  if (product.stock >= quantity) {
-    await db.products.update(
-      { id: productId },
-      { stock: product.stock - quantity }  // Race: stock may have changed
-    );
-    return true;
-  }
-  return false;
-}
-```
-
-**Race Scenario:**
-```
-Time T1: User A reads stock = 5
-Time T2: User B reads stock = 5
-Time T3: User A writes stock = 5 - 3 = 2
-Time T4: User B writes stock = 5 - 3 = 2  // Should be -1 (oversold!)
-```
-
-**Remediation:**
-```typescript
-async function decrementStock(productId: string, quantity: number) {
-  // Atomic update with condition
-  const result = await db.products.updateOne(
-    { id: productId, stock: { $gte: quantity } },
-    { $inc: { stock: -quantity } }
-  );
-  return result.modifiedCount > 0;
-}
-```
-
-**Alternative (with optimistic locking):**
-```typescript
-async function decrementStock(productId: string, quantity: number) {
-  const maxRetries = 3;
-  for (let i = 0; i < maxRetries; i++) {
-    const product = await db.products.findOne({ id: productId });
-    if (product.stock < quantity) return false;
-
-    const result = await db.products.updateOne(
-      { id: productId, version: product.version },
-      {
-        $inc: { stock: -quantity },
-        $inc: { version: 1 }
-      }
-    );
-    if (result.modifiedCount > 0) return true;
-    // Retry on conflict
-  }
-  throw new Error('Concurrent update conflict');
-}
-```
-
-**Risk Breakdown:**
-| Dimension | Score | Rationale |
-|-----------|-------|-----------|
-| Detectability | 10 | No error, silently wrong data |
-| Impact | 10 | Financial loss, overselling |
-| Frequency | 7 | During concurrent orders |
-| Recovery | 8 | Manual inventory correction |
-| Data Risk | 10 | Data integrity compromised |
-
-**Suggested Tests:**
-- Simulate 100 concurrent orders for item with stock=1
-- Verify final stock is never negative
-- Load test with parallel requests
-```
-
----
-
-### Example 3: Full Category Scan
-
-**User Input:**
-```
+**User Input**
+```text
 /specter scan全体
 ```
 
-**Specter's Response:**
-```markdown
-## Specter Full Scan Report
+Use a full-category scan and summarize findings by ghost type and severity.
 
-### Summary
-**Scan Scope:** All ghost categories
-**Total Issues:** 5 CRITICAL, 12 HIGH, 23 MEDIUM, 8 LOW
+## Report Templates
 
-### By Category
-
-#### Memory Leaks (12 issues)
-- 2 CRITICAL: Event listener accumulation
-- 4 HIGH: Timer leaks
-- 6 MEDIUM: Subscription cleanup missing
-
-#### Race Conditions (8 issues)
-- 2 CRITICAL: Shared state mutation
-...
-```
-
----
-
-## Report Format Templates
-
-### Minimal Report (Single Issue)
-
-```markdown
-## Specter Finding
-
-**Issue:** [Brief description]
-**Location:** `path/to/file.ts:123`
-**Risk:** X/10 ([LEVEL])
-**Category:** [Ghost type]
-
-**Bad:**
-```code
-// Current problematic code
-```
-
-**Good:**
-```code
-// Fixed code
-```
-
-**Action:** [Who should fix and how]
-```
-
----
-
-### Standard Report (Multiple Issues)
+### Standard Report
 
 ```markdown
 ## Specter Detection Report
 
 ### Summary
 **Ghost Category:** [Category]
-**Issues Found:** X CRITICAL, Y HIGH, Z MEDIUM
+**Issues Found:** X CRITICAL, Y HIGH, Z MEDIUM, W LOW
 **Confidence:** [HIGH/MEDIUM/LOW]
+**Scan Scope:** [Files or subsystems]
 
 ### Critical Issues
-[Details for each CRITICAL issue]
+#### SPECTER-001: [Title]
+**Location:** `path/to/file.ts:123`
+**Risk Score:** 8.7/10 (CRITICAL)
+**Category:** [Ghost type]
+**Detection Pattern:** [Pattern ID]
+**Evidence:** [Why this is real]
 
-### High Priority Issues
-[Details for each HIGH issue]
+**Bad:**
+```code
+// current problematic code
+```
+
+**Good:**
+```code
+// remediation example
+```
+
+**Risk Breakdown:**
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| Detectability | X | ... |
+| Impact | X | ... |
+| Frequency | X | ... |
+| Recovery | X | ... |
+| Data Risk | X | ... |
+
+**Suggested Tests:**
+- [test 1]
+- [test 2]
 
 ### Recommendations
 1. [Priority fix order]
-...
+
+### False Positive Notes
+- [If any]
 ```
 
----
-
-### Comprehensive Report (Full Scan)
+### Full Scan Summary
 
 ```markdown
 ## Specter Full Scan Report
-
-### Executive Summary
-[Overview paragraph]
 
 ### Statistics
 | Category | CRITICAL | HIGH | MEDIUM | LOW |
@@ -286,90 +108,24 @@ async function decrementStock(productId: string, quantity: number) {
 | Race Conditions | X | X | X | X |
 | Resource Leaks | X | X | X | X |
 | Async Issues | X | X | X | X |
-
-### Detailed Findings
-[Categorized detailed findings]
-...
 ```
 
----
+## Confidence Wording
 
-## Confidence Assessment Examples
+| Level | Use when |
+|-------|----------|
+| `HIGH` | pattern and context both confirm |
+| `MEDIUM` | pattern matches but architecture or call-site handling is unclear |
+| `LOW` | likely intentional or framework-managed pattern |
 
-### HIGH Confidence
+## False-Positive Notes
 
-```markdown
-**Confidence:** HIGH
+Use explicit notes for:
+- intentional fire-and-forget
+- framework-managed cleanup
+- global error-boundary handling
 
-**Rationale:**
-- Pattern match: Clear addEventListener without cleanup
-- Context confirmed: Inside React useEffect
-- No visible cleanup in file
-- Similar pattern caused issues before in this codebase
-```
-
-### MEDIUM Confidence
-
-```markdown
-**Confidence:** MEDIUM
-
-**Rationale:**
-- Pattern match: Promise without catch
-- Context unclear: May be caught at call site
-- Need to verify error handling strategy
-- Recommend manual verification
-```
-
-### LOW Confidence
-
-```markdown
-**Confidence:** LOW
-
-**Rationale:**
-- Pattern match: Async function without try-catch
-- Context suggests: Global error boundary handles
-- Likely false positive given architecture
-- Listed for completeness, low priority
-```
-
----
-
-## Edge Case Handling
-
-### Intentional Patterns
-
-Some detected patterns may be intentional:
-
-```markdown
-**Note:** This appears to be an intentional fire-and-forget pattern.
-
-```typescript
-// Intentional: Analytics doesn't need error handling
-analytics.track('page_view');  // No await by design
-```
-
-**Assessment:** False positive. Marked as intentional in codebase comments.
-```
-
-### Framework-Specific Patterns
-
-```markdown
-**Note:** Framework handles cleanup automatically.
-
-```typescript
-// React Query handles subscription cleanup
-const { data } = useQuery('key', fetchData);
-// No manual cleanup needed
-```
-
-**Assessment:** False positive. React Query manages lifecycle.
-```
-
----
-
-## AUTORUN Mode Output
-
-### Abbreviated Format
+## AUTORUN Output
 
 ```yaml
 _STEP_COMPLETE:
@@ -387,5 +143,5 @@ _STEP_COMPLETE:
       location: src/components/Modal.tsx:45
       risk_score: 8.7
       category: Event Listener Leak
-# ...
+  Next: Builder
 ```
