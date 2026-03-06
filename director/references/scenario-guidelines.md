@@ -1,25 +1,21 @@
 # Scenario Design Guidelines
 
-Principles and best practices for demo video scenario design.
+Principles, templates, and best practices for demo video scenario design.
 
 ---
 
-## Scenario Design Principles
+## Storytelling Structure
 
-### 1. Storytelling Structure
-
-Design demos as "stories," not just "operation sequences."
+Design demos as **stories**, not operation sequences. Follow the Problem > Solution > Result arc.
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Setup            │ Conflict        │ Resolution    │
-│  ─────────────   │ ─────────────   │ ─────────────  │
-│  Explain context │ Address task    │ Achieve goal  │
-│  5-10 sec        │ 20-40 sec       │ 5-10 sec      │
-└─────────────────────────────────────────────────────┘
+Problem (Setup)      Solution (Action)     Result (Resolution)
+-----------------    -----------------     -----------------
+Explain context      Address task          Achieve goal
+5-10 sec             20-40 sec             5-10 sec
 ```
 
-### 2. Four-Act Structure Application
+### Four-Act Application
 
 | Phase | Purpose | Example (Login Feature) |
 |-------|---------|------------------------|
@@ -30,9 +26,85 @@ Design demos as "stories," not just "operation sequences."
 
 ---
 
-## Operation Granularity Design
+## Scenario Templates
 
-### Choosing Appropriate Granularity
+### Standard Template
+
+```markdown
+## Demo Request: [Feature Name]
+
+### Target Audience
+- [ ] New users (onboarding)
+- [ ] Existing users (new feature introduction)
+- [ ] Investors / Stakeholders
+- [ ] Sales / Marketing
+- [ ] Internal documentation
+
+### Demo Objective
+What should viewers understand after watching this demo?
+> [Describe in 1-2 sentences]
+
+### Prerequisites
+- Login state: [ ] Not logged in [ ] Logged in [ ] Admin
+- Initial data: [Description of required data]
+- Environment: [ ] Development [ ] Staging [ ] Demo-dedicated
+
+### Story Flow
+
+#### 1. Opening (5-10 seconds)
+**Scene**: [First screen to display]
+**Message**: [Context to convey to viewers]
+**Overlay**: [ ] Yes [ ] No
+> Overlay text: "[Text]"
+
+#### 2. Main Action (20-40 seconds)
+**Step list**:
+1. [Action 1] -> [Expected result]
+2. [Action 2] -> [Expected result]
+3. [Action 3] -> [Expected result]
+
+**Emphasis points**:
+- [X seconds]: [What to emphasize]
+
+#### 3. Closing (5-10 seconds)
+**Scene**: [Final screen to display]
+**Message**: [Impression to leave with viewers]
+**Overlay**: [ ] Yes [ ] No
+> Overlay text: "[Text]"
+
+### Test Data Requirements
+| Data Type | Content | Notes |
+|-----------|---------|-------|
+| User | demo@example.com | Display name: Demo User |
+
+### Recording Settings
+- Resolution: [ ] 1280x720 (recommended) [ ] 1920x1080 [ ] 375x667 (mobile)
+- slowMo: [ ] 500ms (standard) [ ] 700ms (form-heavy) [ ] 1000ms (slow)
+- Max duration: [XX] seconds
+- Output formats: [ ] WebM [ ] MP4 [ ] GIF
+```
+
+### Quick Template
+
+```markdown
+## Quick Demo: [Feature Name]
+
+**Audience**: [Who is this for?]
+**Objective**: [What to convey?]
+**Duration**: [XX seconds]
+
+**Flow**:
+1. [Screen] - [Action] - [Result]
+2. [Screen] - [Action] - [Result]
+3. [Screen] - [Action] - [Result]
+
+**Test Data**: [Required data]
+**Settings**: [Resolution] / slowMo [X]ms
+```
+
+---
+
+## Operation Granularity Design
 
 | Operation Type | Recommended Granularity | Reason |
 |---------------|------------------------|--------|
@@ -41,20 +113,18 @@ Design demos as "stories," not just "operation sequences."
 | Page transition | Wait for completion | Recognize screen change |
 | Animation | Wait until complete | Avoid incomplete states |
 
-### Granularity Examples
-
 ```typescript
-// ❌ Too coarse (viewer can't follow)
+// Bad: Too coarse (viewer can't follow)
 await page.fill('#email', 'demo@example.com');
 await page.fill('#password', 'password');
 await page.click('#submit');
 
-// ✅ Appropriate granularity (each operation visible)
+// Good: Appropriate granularity with locator-based waits
 await page.fill('#email', 'demo@example.com');
-await page.waitForTimeout(300); // Show input
+await expect(page.locator('#email')).toHaveValue('demo@example.com');
 
 await page.fill('#password', 'password');
-await page.waitForTimeout(300);
+await page.waitForTimeout(300); // Deliberate pacing pause
 
 await page.click('#submit');
 await expect(page.locator('#dashboard')).toBeVisible();
@@ -62,9 +132,22 @@ await expect(page.locator('#dashboard')).toBeVisible();
 
 ---
 
-## Wait Time Guidelines
+## Wait Strategy
 
-### Wait Time Reference Table
+### Prefer Locator-Based Waits for State Changes
+
+Use `waitForTimeout()` **only** for deliberate pacing pauses. For all state changes, use explicit waits:
+
+| Scene | Strategy | Example |
+|-------|----------|---------|
+| Element appears | `expect(locator).toBeVisible()` | After click, modal appears |
+| Page navigation | `page.waitForURL()` | After login redirect |
+| Network idle | `page.waitForLoadState('networkidle')` | After page load |
+| Animation complete | `expect(locator).toHaveCSS()` | After transition |
+
+### Pacing Pauses (waitForTimeout)
+
+Use **only** for viewer comprehension — these are intentional delays, not state waits:
 
 | Scene | Recommended Wait | Purpose |
 |-------|-----------------|---------|
@@ -75,52 +158,34 @@ await expect(page.locator('#dashboard')).toBeVisible();
 | Important result display | 1500-2000ms | Emphasize result |
 | During overlay display | Based on text length | Until reading complete |
 
-### Wait Time Calculation Formula
+### Overlay Display Time Formula
 
 ```
-Overlay display time = (character count × 100ms) + 500ms
+Overlay display time = (character count x 100ms) + 500ms
 ```
 
-Example: "Login successful" (16 chars) = 16 × 100 + 500 = 2100ms
+Example: "Login successful" (16 chars) = 16 x 100 + 500 = 2100ms
 
 ---
 
 ## Overlay Display Patterns
 
-### 1. Step Explanation Overlay
+### Step Explanation Overlay
 
 ```typescript
-// Display at bottom center
 await showOverlay(page, 'Step 1: Enter email address', 2000);
 ```
 
-```
-┌──────────────────────────────────────┐
-│                                      │
-│                                      │
-│                                      │
-│                                      │
-│                                      │
-│   ┌──────────────────────────────┐   │
-│   │ Step 1: Enter email address  │   │
-│   └──────────────────────────────┘   │
-└──────────────────────────────────────┘
-```
-
-### 2. Highlight Overlay
+### Highlight Overlay
 
 ```typescript
-// Display near specific element
 await showHighlight(page, '#submit-button', 'Click here!');
 ```
 
-### 3. Success/Error Overlay
+### Success/Error Overlay
 
 ```typescript
-// Success: green background
 await showSuccessOverlay(page, 'Registration complete!');
-
-// Error: red background
 await showErrorOverlay(page, 'An error occurred');
 ```
 
@@ -137,144 +202,82 @@ await showErrorOverlay(page, 'An error occurred');
 
 ---
 
-## Scenario Design Anti-Patterns
-
-### 1. Information Overload
-
-```
-❌ Pack 3 features into 1 demo
-✅ 1 demo = 1 feature
-```
-
-### 2. Too Fast Progression
-
-```
-❌ slowMo: 100ms (high speed execution)
-✅ slowMo: 500-700ms (pace humans can follow)
-```
-
-### 3. Starting Without Context
-
-```
-❌ Start immediately with form input
-✅ "Let's try ○○" to set context
-```
-
-### 4. Incomplete Ending
-
-```
-❌ End on button click (result not visible)
-✅ Display result screen for 1-2 seconds then end
-```
-
-### 5. Unnatural Test Data
-
-```
-❌ email: test@test.com, name: aaa
-✅ email: demo@example.com, name: Demo User
-```
-
----
-
-## Audience-Specific Scenario Adjustments
+## Audience-Specific Adjustments
 
 ### For New Users
-
 - Don't skip basic operations
 - Avoid or explain technical terms
 - Emphasize success experience
 
 ### For Existing Users
-
 - Quick basic operations
 - Focus on new features
 - Emphasize differences from previous version
 
 ### For Investors/Stakeholders
-
 - Emphasize business value
 - Differentiation from competitors
 - Imply scalability
 
 ### For Developers
-
 - Include technical details
 - Show API integration
 - Customization points
 
 ---
 
+## Time Allocation Guidelines
+
+| Duration | Use Case |
+|----------|----------|
+| Under 30 seconds | Simple single operation |
+| 30-60 seconds | Standard feature demo |
+| 60-120 seconds | Complex flow |
+| Over 120 seconds | Consider splitting |
+
+---
+
+## Scenario Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Feature dump | 3+ features in 1 demo | 1 demo = 1 feature |
+| Too fast | slowMo: 100ms | slowMo: 500-700ms |
+| No context | Start immediately with form input | "Let's try XX" to set context |
+| Incomplete ending | End on button click | Display result 1-2 seconds |
+| Fake data | email: test@test.com, name: aaa | email: demo@example.com, name: Demo User |
+| Timeout-only waits | All waits are `waitForTimeout` | Use `toBeVisible()` for state changes |
+
+---
+
+## Test Data Realism
+
+- Fictional but realistic names and emails
+- Meaningful numbers ($39.80 instead of $100)
+- Use appropriate language for content
+- Never use production data or real user information
+- Keep data consistent across scenes
+
+---
+
 ## Scenario Review Checklist
 
 ### Story
-
 - [ ] Has clear starting point
 - [ ] What viewer wants to achieve is clear
 - [ ] Has satisfying conclusion
 
 ### Pacing
-
-- [ ] Sufficient time for each step
-- [ ] No parts that are too rushed
+- [ ] Uses locator-based waits for state changes
+- [ ] Uses `waitForTimeout` only for deliberate pauses
 - [ ] No redundant waits
 
 ### Data
-
 - [ ] Test data is realistic
 - [ ] No confidential information included
 - [ ] Data is consistent
 
 ### Technical
-
 - [ ] Reproducible scenario
 - [ ] No flaky elements
 - [ ] All selectors are stable
-
----
-
-## Scenario Document Template
-
-```markdown
-# Demo Scenario: [Feature Name]
-
-## Meta Information
-- Created: YYYY-MM-DD
-- Author: [Name]
-- Target version: v1.0.0
-- Estimated duration: XX seconds
-
-## Story Overview
-> Explain demo purpose in 1-2 sentences
-
-## Prerequisites
-- Auth state: [Logged in/Not logged in]
-- Required data: [List]
-- Environment: [Development/Staging]
-
-## Scenario Details
-
-### Scene 1: Opening (X sec)
-- Screen: [Screen name]
-- Action: [None/Operation]
-- Overlay: "[Text]"
-- Wait: Xms
-
-### Scene 2: [Scene Name] (X sec)
-- Screen: [Screen name]
-- Actions:
-  1. [Action 1]
-  2. [Action 2]
-- Overlay: "[Text]"
-- Wait: Xms
-
-[...continue...]
-
-## Test Data
-| Key | Value | Notes |
-|-----|-------|-------|
-| user.email | demo@example.com | |
-| user.name | Demo User | |
-
-## Notes
-- [Special notes if any]
-```

@@ -24,7 +24,30 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'demos/report' }],
   ],
-// ...
+
+  use: {
+    // === Browser Settings ===
+    headless: false,
+    launchOptions: {
+      slowMo: 500,
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--disable-infobars',
+      ],
+    },
+
+    // === Video Settings ===
+    video: {
+      mode: 'on',
+      size: { width: 1280, height: 720 },
+    },
+
+    // === Other ===
+    viewport: { width: 1280, height: 720 },
+    locale: 'ja-JP',
+    timezoneId: 'Asia/Tokyo',
+  },
+});
 ```
 
 ---
@@ -49,7 +72,9 @@ export default defineConfig({
     video: {
       mode: 'on',
       size: { width: 1280, height: 720 },
-// ...
+    },
+  },
+}
 ```
 
 ### Mobile Settings
@@ -64,13 +89,22 @@ export default defineConfig({
       mode: 'on',
       size: { width: 390, height: 844 },
     },
-    // Touch operation visualization
     hasTouch: true,
   },
 }
 
 {
-// ...
+  name: 'demo-mobile-android',
+  use: {
+    ...devices['Pixel 5'],
+    launchOptions: { slowMo: 600 },
+    video: {
+      mode: 'on',
+      size: { width: 393, height: 851 },
+    },
+    hasTouch: true,
+  },
+}
 ```
 
 ### Tablet Settings
@@ -114,7 +148,6 @@ export default defineConfig({
 ### Codec Settings
 
 Playwright's default codec is VP8 (WebM).
-To change, specify via environment variable:
 
 ```bash
 # VP9 (higher compression)
@@ -138,14 +171,13 @@ PLAYWRIGHT_VIDEO_CODEC=vp9 npx playwright test --config=playwright.config.demo.t
 ### Dynamic slowMo Adjustment
 
 ```typescript
-// Change speed only for specific operations
 test('demo emphasizing form input', async ({ page }) => {
   // Normal speed for navigation
   await page.goto('/signup');
 
   // Slow for form input (adjust with manual wait)
   await page.getByLabel('Name').fill('Demo User');
-  await page.waitForTimeout(500); // Additional wait
+  await page.waitForTimeout(500); // Additional pacing pause
 
   await page.getByLabel('Email').fill('demo@example.com');
   await page.waitForTimeout(500);
@@ -157,40 +189,81 @@ test('demo emphasizing form input', async ({ page }) => {
 
 ---
 
-## Output File Naming Conventions
+## Output Formats and Conversion
 
-### Automatic Naming (Playwright Default)
+### Default Output (WebM)
 
-```
-demos/output/
-├── demo-login-Demo-Login-Flow-shows-complete-login-experience/
-│   └── video.webm
-└── demo-checkout-Demo-Purchase-Flow-add-product-to-cart/
-    └── video.webm
-```
+Playwright natively outputs WebM (VP8). For broader compatibility, convert to MP4 or GIF.
 
-### Custom Naming
+### FFmpeg Post-Processing Helper
 
 ```typescript
-// demos/specs/demo-login.spec.ts
-test.afterEach(async ({ page }, testInfo) => {
-  const video = page.video();
-  if (video) {
-    const originalPath = await video.path();
-    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const newName = `login_flow_${date}.webm`;
-    const newPath = `demos/output/${newName}`;
+// demos/helpers/video-convert.ts
+import { execSync } from 'child_process';
+import path from 'path';
 
-    // Rename video
-    await video.saveAs(newPath);
+/**
+ * Convert WebM to MP4 (H.264) for universal playback
+ */
+export function convertToMp4(webmPath: string): string {
+  const mp4Path = webmPath.replace(/\.webm$/, '.mp4');
+  execSync(
+    `ffmpeg -i "${webmPath}" -c:v libx264 -preset fast -crf 22 -c:a aac "${mp4Path}" -y`,
+    { stdio: 'pipe' }
+  );
+  return mp4Path;
+}
 
-    // Attach to test results
-    await testInfo.attach('demo-video', {
-      path: newPath,
-// ...
+/**
+ * Convert WebM to GIF for embedding in docs/README
+ */
+export function convertToGif(webmPath: string, opts?: { width?: number; fps?: number }): string {
+  const { width = 640, fps = 10 } = opts ?? {};
+  const gifPath = webmPath.replace(/\.webm$/, '.gif');
+  execSync(
+    `ffmpeg -i "${webmPath}" -vf "fps=${fps},scale=${width}:-1:flags=lanczos" "${gifPath}" -y`,
+    { stdio: 'pipe' }
+  );
+  return gifPath;
+}
 ```
 
-### Naming Convention
+### Auto-Conversion in afterEach
+
+```typescript
+import { convertToMp4, convertToGif } from '../helpers/video-convert';
+
+test.afterEach(async ({ page }, testInfo) => {
+  const video = page.video();
+  if (!video) return;
+
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const baseName = `${testInfo.title.replace(/\s+/g, '_')}_${date}`;
+  const webmPath = `demos/output/${baseName}.webm`;
+
+  await video.saveAs(webmPath);
+
+  // Generate MP4 for Slack/email/presentations
+  convertToMp4(webmPath);
+
+  // Generate GIF for README/docs (optional)
+  // convertToGif(webmPath, { width: 800, fps: 12 });
+
+  await testInfo.attach('demo-video', { path: webmPath, contentType: 'video/webm' });
+});
+```
+
+### Format Selection Guide
+
+| Format | Use Case | Pros | Cons |
+|--------|----------|------|------|
+| WebM | Web embedding, internal | Small size, native output | Limited player support |
+| MP4 | Slack, email, presentations | Universal playback | Larger file, needs FFmpeg |
+| GIF | README, docs, PRs | Inline display, no player | Large file, no audio, lower quality |
+
+---
+
+## Output File Naming Conventions
 
 | Pattern | Example | Use Case |
 |---------|---------|----------|
@@ -203,16 +276,12 @@ test.afterEach(async ({ page }, testInfo) => {
 
 ## Environment Variables
 
-### Required Environment Variables
-
 ```bash
 # .env.demo
 DEMO_BASE_URL=http://localhost:3000
 DEMO_USER_EMAIL=demo@example.com
 DEMO_USER_PASSWORD=DemoPass123
 ```
-
-### Usage in Configuration File
 
 ```typescript
 // playwright.config.demo.ts
@@ -248,95 +317,49 @@ jobs:
   record:
     runs-on: ubuntu-latest
     steps:
-# ...
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Record demos
+        run: npx playwright test --config=playwright.config.demo.ts
+      - name: Convert to MP4
+        run: |
+          sudo apt-get install -y ffmpeg
+          for f in demos/output/*.webm; do
+            ffmpeg -i "$f" -c:v libx264 -preset fast -crf 22 "${f%.webm}.mp4" -y
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-videos
+          path: |
+            demos/output/*.webm
+            demos/output/*.mp4
+```
+
+---
+
+## Directory Structure
+
+```
+demos/
+├── specs/           # Demo test files
+├── helpers/         # Helper functions (overlay, auth, data, video-convert)
+├── fixtures/        # Test data, images
+├── output/          # Generated videos (WebM + MP4 + GIF)
+└── report/          # HTML reports
 ```
 
 ---
 
 ## Troubleshooting
 
-### Video Not Generated
-
-```typescript
-// Ensure context.close() is called
-test.afterEach(async ({ page }) => {
-  // Video is finalized after context.close()
-  await page.close();
-});
-```
-
-### Video Cut Off Midway
-
-```typescript
-// Add sufficient wait before test ends
-test('record until the end', async ({ page }) => {
-  // ... operations ...
-
-  // Add wait at end to ensure complete recording
-  await page.waitForTimeout(1000);
-});
-```
-
-### Video is Choppy
-
-```bash
-# Disable GPU in headless mode
-npx playwright test --headed=false --config=playwright.config.demo.ts
-```
-
-### File Size Too Large
-
-```typescript
-// Lower resolution
-video: {
-  mode: 'on',
-  size: { width: 854, height: 480 }, // 480p
-}
-```
-
----
-
-## Best Practices
-
-### 1. Use Dedicated Configuration File
-
-```bash
-# Normal tests
-npx playwright test
-
-# Demo recording
-npx playwright test --config=playwright.config.demo.ts
-```
-
-### 2. Demo-Dedicated Directory
-
-```
-demos/
-├── specs/           # Demo test files
-├── helpers/         # Helper functions
-├── fixtures/        # Test data, images
-├── output/          # Generated videos
-└── report/          # HTML reports
-```
-
-### 3. Separate from Normal E2E Tests
-
-```typescript
-// playwright.config.ts (for normal tests)
-testDir: './e2e',
-video: 'retain-on-failure',
-
-// playwright.config.demo.ts (for demos)
-testDir: './demos/specs',
-video: 'on',
-```
-
-### 4. Separate Environments
-
-```bash
-# Local development
-DEMO_BASE_URL=http://localhost:3000
-
-# Staging
-DEMO_BASE_URL=https://staging.example.com
-```
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Video not generated | Context not closed | Ensure `page.close()` in afterEach |
+| Video cut off midway | Test ends too fast | Add `waitForTimeout(1000)` at end |
+| Video is choppy | Machine load | Use `headless: true` or reduce resolution |
+| File size too large | High resolution/duration | Lower to 720p, reduce duration |
+| WebM won't play | Player doesn't support VP8 | Convert to MP4 with FFmpeg |

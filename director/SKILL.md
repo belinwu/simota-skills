@@ -92,25 +92,24 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Domain | Reference | Key Content |
 |--------|-----------|-------------|
-| Playwright Config | `references/playwright-config.md` | slowMo guidelines, resolution settings, mobile config, demo-specific config |
-| Scenario Design | `references/scenario-guidelines.md` | Story flow templates, audience targeting, directory structure, file naming |
-| Prompt Templates | `references/prompt-template.md` | Scenario design template, audience/goal/story flow structure |
-| Implementation | `references/implementation-patterns.md` | Demo code patterns, overlay helpers, performance visualization, before/after comparison, AI narration, visual effects, persona-aware recording |
-| Quality Checklist | `references/checklist.md` | Pre/post-recording checklists, quality gates |
+| Playwright Config | `references/playwright-config.md` | slowMo guidelines, resolution settings, mobile config, output format conversion (MP4/GIF), CI/CD |
+| Scenario Design | `references/scenario-guidelines.md` | Story flow templates, audience targeting, scenario templates, wait strategy, overlay patterns |
+| Implementation | `references/implementation-patterns.md` | test.step() scene organization, overlay helpers, ARIA snapshot validation, performance visualization, before/after comparison, AI narration, visual effects, persona-aware recording |
+| Quality Checklist | `references/checklist.md` | Pre/post-recording checklists, accessibility gates, quality scorecard |
 
 ### Domain Summary
 
 | Domain | One-line Description |
 |--------|---------------------|
-| Playwright Config | slowMo (300-1500ms by content type), resolutions (720p-4K), mobile viewport matching, demo project config |
-| Scenarios | Audience→Goal→Story Flow (Opening/Action/Result), key moments, test data requirements |
-| Implementation Patterns | Basic demo structure, overlay/annotation injection, auth state helpers, test data factories |
+| Playwright Config | slowMo (300-1500ms by content type), resolutions (720p-4K), FFmpeg conversion (WebM→MP4/GIF), CI/CD |
+| Scenarios | Audience→Goal→Story Flow, wait strategy (locator-based > timeout), overlay patterns, anti-patterns |
+| Implementation Patterns | test.step() scene organization, ARIA snapshot validation, overlay/annotation injection, auth state helpers |
 | Performance Visualization | Core Web Vitals overlay (LCP/CLS/INP), compact/detailed display modes, threshold indicators |
 | Before/After Comparison | Split-screen, PiP, sequential layouts for redesign/performance/A-B/migration demos |
 | AI Narration | Web Speech API live TTS, voice selection, timestamped scripts, platform voice availability |
 | Visual Effects | Progress bar (steps/percentage/timed), spotlight effect with label positioning |
 | Persona-Aware Recording | Echo integration, persona timing (Newbie 600-700ms / Power User 300-400ms / Senior 800-1000ms) |
-| Checklists | Pre-recording (scenario/data/config) and post-recording (playback/clarity/pacing/security/naming) |
+| Checklists | Pre/post-recording quality gates, accessibility verification, quality scorecard (/65) |
 
 ---
 
@@ -167,11 +166,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | File | Content |
 |------|---------|
-| `references/playwright-config.md` | slowMo guidelines, resolution settings, mobile config, demo-specific config |
-| `references/scenario-guidelines.md` | Story flow templates, audience targeting, directory structure, file naming |
-| `references/prompt-template.md` | Scenario design template, audience/goal/story flow structure |
-| `references/implementation-patterns.md` | Demo code patterns, overlay helpers, performance visualization, before/after comparison, AI narration, visual effects, persona-aware recording |
-| `references/checklist.md` | Pre/post-recording checklists, quality gates |
+| `references/playwright-config.md` | slowMo guidelines, resolution settings, mobile config, output format conversion (MP4/GIF), CI/CD |
+| `references/scenario-guidelines.md` | Story flow templates, scenario templates, audience targeting, wait strategy, overlay patterns |
+| `references/implementation-patterns.md` | test.step() scene organization, ARIA snapshot validation, overlay helpers, performance visualization, before/after comparison, AI narration, visual effects, persona-aware recording |
+| `references/checklist.md` | Pre/post-recording checklists, accessibility gates, quality scorecard |
 
 ## Daily Process
 

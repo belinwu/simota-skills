@@ -6,24 +6,50 @@ Playwright implementation patterns for demo video recording.
 
 ## Basic Test Structure
 
-### Standard Demo Test
+### Standard Demo Test (using test.step)
+
+Use `test.step()` to organize scenes — provides structured reporting and pinpoints failures to exact scenes.
 
 ```typescript
 // demos/specs/demo-login.spec.ts
 import { test, expect } from '@playwright/test';
-import { showOverlay, waitForTransition } from '../helpers/overlay';
-import { prepareAuthState } from '../helpers/auth';
+import { showOverlay } from '../helpers/overlay';
 import { DemoData } from '../helpers/data';
 
 test.describe('Demo: Login Flow', () => {
   test.beforeEach(async ({ page }) => {
-    // Start from clean state
     await page.goto('/');
     await page.waitForLoadState('networkidle');
   });
 
   test('shows complete login experience', async ({ page }) => {
-    // === Scene 1: Opening ===
+    await test.step('Scene: Opening — Landing page', async () => {
+      await showOverlay(page, 'Let\'s log in', 2000);
+      await page.waitForTimeout(1000); // Pacing pause
+    });
+
+    await test.step('Scene: Login form input', async () => {
+      await page.getByRole('link', { name: 'Login' }).click();
+      await expect(page.getByLabel('Email')).toBeVisible();
+
+      await page.getByLabel('Email').fill(DemoData.user.email);
+      await page.waitForTimeout(400);
+
+      await page.getByLabel('Password').fill(DemoData.user.password);
+      await page.waitForTimeout(400);
+    });
+
+    await test.step('Scene: Submit and redirect', async () => {
+      await page.getByRole('button', { name: 'Login' }).click();
+      await page.waitForURL('**/dashboard');
+      await expect(page.getByText('Welcome')).toBeVisible();
+    });
+
+    await test.step('Scene: Closing — Dashboard', async () => {
+      await showOverlay(page, 'Login complete!', 2000);
+      await page.waitForTimeout(1500);
+    });
+  });
 // ...
 ```
 
@@ -1118,6 +1144,76 @@ DEMO_PERSONA=powerUser npx playwright test --config=playwright.config.persona.ts
 # demos/output/newbie/
 # demos/output/poweruser/
 ```
+
+---
+
+## ARIA Snapshot Validation
+
+Validate accessibility tree at key demo moments to ensure demos showcase accessible UI.
+
+### Basic ARIA Validation in Demo
+
+```typescript
+// demos/helpers/aria-validation.ts
+import { Page, expect, Locator } from '@playwright/test';
+
+/**
+ * Validate accessibility structure at a key demo moment.
+ * Use sparingly — at scene transitions or result screens.
+ */
+export async function validateAriaAt(
+  locator: Locator,
+  expectedSnapshot: string
+): Promise<void> {
+  await expect(locator).toMatchAriaSnapshot(expectedSnapshot);
+}
+```
+
+### Usage in Demo Test
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('dashboard demo with a11y validation', async ({ page }) => {
+  await test.step('Scene: Dashboard loaded', async () => {
+    await page.goto('/dashboard');
+    await expect(page.getByRole('main')).toBeVisible();
+
+    // Validate key navigation structure is accessible
+    await expect(page.getByRole('navigation')).toMatchAriaSnapshot(`
+      - navigation:
+        - link "Home"
+        - link "Settings"
+        - link "Profile"
+    `);
+  });
+
+  await test.step('Scene: Data table', async () => {
+    await page.getByRole('link', { name: 'Reports' }).click();
+    await expect(page.getByRole('table')).toBeVisible();
+
+    // Validate table has proper headers
+    await expect(page.getByRole('table')).toMatchAriaSnapshot(`
+      - table:
+        - rowgroup:
+          - row:
+            - columnheader "Date"
+            - columnheader "Revenue"
+            - columnheader "Status"
+    `);
+  });
+});
+```
+
+### When to Use ARIA Validation in Demos
+
+| Scenario | Use ARIA? | Reason |
+|----------|-----------|--------|
+| Navigation structure | Yes | Core a11y landmark |
+| Form inputs | Yes | Label association critical |
+| Data tables | Yes | Header structure matters |
+| Decorative elements | No | Not semantically important |
+| Animations/transitions | No | Visual-only concerns |
 
 ---
 
