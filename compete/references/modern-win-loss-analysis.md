@@ -1,177 +1,129 @@
-# Modern Win/Loss Analysis
+# Modern Win-Loss Analysis
 
-> Clozd メソドロジー、高度なインタビュー手法、データドリブン Win/Loss、ベンチマーク
+Purpose: Use this file when Compete must explain why deals were won or lost, identify repeated decision factors, or feed market learning back into strategy.
 
-## 1. Win/Loss 分析の4つの柱（Clozd）
+## Contents
 
-### 概要
+- core pillars
+- evidence hierarchy
+- benchmarks
+- interview techniques
+- hybrid data model
+- feedback loop
 
-| 柱 | 内容 | 効果 |
-|----|------|------|
-| **直接バイヤーフィードバック** | 成約・失注アカウントの意思決定者との実際の会話 | CRM フィールドや営業報告より豊かなインサイト |
-| **クロスファンクショナル設計** | 営業・マーケ・プロダクトのニーズを反映した質問設計 | 複数部門で活用可能な知見 |
-| **継続的プログラム** | 一回限りではなく継続的に実施 | ポジティブ ROI: 継続 **85%** vs プロジェクト **55%** |
-| **組織的バイイン** | エグゼクティブスポンサーによる結果のエバンジェライズ | 複数部門のステークホルダー巻き込み |
+## Four Pillars
 
-### データソースの信頼性ピラミッド
+| Pillar | Meaning | Effect |
+|---|---|---|
+| direct buyer feedback | talk to actual decision-makers | richer than CRM fields alone |
+| cross-functional design | sales, marketing, and product shape the study | reusable insights across teams |
+| continuous program | not a one-off project | stronger ROI over time |
+| organizational buy-in | executive sponsorship and adoption | insights influence multiple teams |
 
-```
-最高: バイヤー直接インタビュー（第三者実施）
-  ↓
-高:  バイヤー直接インタビュー（自社実施）
-  ↓
-中:  ターゲットサーベイ
-  ↓
-低:  CRM の競合フィールド / 営業担当者の報告
-```
+Program effectiveness signals:
+- continuous programs: `85%` positive ROI
+- project-based efforts: `55%` positive ROI
 
----
+## Evidence Hierarchy
 
-## 2. 主要統計とベンチマーク
+| Tier | Source |
+|---|---|
+| Highest | third-party buyer interviews |
+| High | direct buyer interviews by your team |
+| Medium | target surveys |
+| Low | CRM competitor fields and seller recollection |
 
-### Win/Loss プログラムの効果（2025年）
+Rule:
+- use CRM as supporting evidence, not as the sole explanation for a win or loss
 
-| 指標 | データ |
-|------|--------|
-| ウィンレート向上を報告 | **63%** |
-| 2年以上運用プログラムでの向上 | **84%** |
-| 第三者活用で 10%+ 向上の確率 | **38% 高い** |
-| エグゼクティブの可視性 | **98%** |
-| 厳密な Win/Loss でウィンレート最大改善（Gartner） | **50%** |
+## Benchmarks
 
-### B2B セールスのベンチマーク
+| Metric | Signal |
+|---|---|
+| teams reporting win-rate improvement | `63%` |
+| programs running `2+ years` with improvement | `84%` |
+| higher chance of `10%+` improvement with third-party interviews | `38%` |
+| executive visibility | `98%` |
+| healthy B2B win-rate band | `20-35%` |
+| strong performance | `35%+` |
 
-| 指標 | 数値 |
-|------|------|
-| 平均的な B2B ウィンレート | **~21%**（5件中4件近くが失注） |
-| 健全な範囲 | **20-35%** |
-| 高パフォーマンス | **35%+** |
+## Interview Techniques
 
----
+### Five Whys
 
-## 3. 高度なインタビュー手法
+Use this to turn surface reasons into root decision drivers.
 
-### Five Whys（5回のなぜ）
-
-表面的な回答を超えて真の意思決定ドライバーを掘り下げる。
-
-```
-「なぜ競合を選びましたか?」
-  → 「機能が良かった」
-    → 「具体的にどの機能ですか?」
-      → 「ダッシュボードのカスタマイズ」
-        → 「なぜそれが重要でしたか?」
-          → 「上司への週次レポートが自動化できる」
-            → 真のニーズ: レポーティングの自動化
+```text
+Why did they choose the competitor?
+-> Because the feature set felt stronger.
+-> Which feature mattered most?
+-> Dashboard customization.
+-> Why did that matter?
+-> It automated weekly executive reporting.
+-> Root need: reporting automation.
 ```
 
-### Laddering（ラダリング）
+### Laddering
 
-機能的属性 → 結果 → 個人的価値観へと段階的に深掘り。
+Move from feature -> consequence -> personal value.
 
-| レベル | 質問例 | 回答例 |
-|--------|-------|-------|
-| 属性 | 「何が決め手でしたか?」 | 「APIの柔軟性」 |
-| 結果 | 「それによって何が可能になりますか?」 | 「既存システムとの統合が容易」 |
-| 価値 | 「それはあなたにとってなぜ重要ですか?」 | 「チームの生産性向上 → 評価」 |
+| Level | Question | Example answer |
+|---|---|---|
+| Attribute | What mattered? | API flexibility |
+| Consequence | What did that enable? | easier integration |
+| Value | Why did that matter personally? | better team productivity and recognition |
 
-### 第三者インタビューの優位性
+## Hybrid Win-Loss Model
 
-| 観点 | 自社実施 | 第三者実施 |
-|------|---------|----------|
-| 率直さ | バイアスあり（遠慮） | 率直で正直 |
-| 深さ | 表面的になりがち | 深いインサイト |
-| 規模 | リソース制約 | スケーラブル |
-| データアクセス満足度 | **38%** | **67%** |
-| アクション可能なインサイト | 基準 | **+35%** |
+Use a mixed evidence approach:
 
----
+- buyer interviews for depth
+- surveys for breadth
+- CRM for structure and coverage
+- AI conversation analysis for scale and pattern detection
 
-## 4. データドリブン Win/Loss
+Pattern rule:
+- repeated feedback `3` times or more requires action planning
 
-### ハイブリッドアプローチ（2025年推奨）
-
-```
-バイヤーインタビュー（定性・深い）
-  + ターゲットサーベイ（定量・広い）
-  + CRM データ（構造化・全件）
-  + AI 会話分析（自動・スケーラブル）
-  = 包括的なディールアウトカムビュー
-```
-
-### パターン認識のルール
-
-- **3回ルール**: 同じフィードバックが3回聞こえたらアクションが必要
-- **個別 < パターン**: 個別インタビューよりも複数インタビューにわたるパターンが重要
-- **一貫性が鍵**: 散発的 < 継続的フィードバック収集
-
-### 決定要因分析テンプレート（拡張版）
+## Decision Factor Template
 
 ```markdown
 ## Win/Loss Decision Factor Analysis
 
-### 定量スコア（1-10, 加重付き）
-| 要因 | 重み | 自社 | 競合A | 競合B |
-|------|------|------|-------|-------|
-| 価格/TCO | ___% | | | |
-| 機能適合 | ___% | | | |
-| UX/使いやすさ | ___% | | | |
-| サポート品質 | ___% | | | |
-| 統合/API | ___% | | | |
-| ブランド/信頼 | ___% | | | |
-| セキュリティ | ___% | | | |
-| 営業体験 | ___% | | | |
+| Factor | Weight | Us | Competitor |
+|---|---:|---:|---:|
+| Price / TCO | ___% | | |
+| Feature fit | ___% | | |
+| UX / Ease of Use | ___% | | |
+| Support | ___% | | |
+| Integration / API | ___% | | |
+| Brand / Trust | ___% | | |
+| Security | ___% | | |
+| Sales Experience | ___% | | |
 
-### 定性インサイト
-- **最終決定者**: ___
-- **決定までの期間**: ___
-- **検討した競合数**: ___
-- **Five Whys による真のニーズ**: ___
-- **Laddering による価値観**: ___
-
-### パターン分析
-- **過去30日の Win 共通要因 Top 3**: ___
-- **過去30日の Loss 共通要因 Top 3**: ___
-- **改善アクション**: ___
+### Qualitative Insights
+- Final decision-maker: [...]
+- Evaluation period: [...]
+- Competitors considered: [...]
+- Root need from Five Whys: [...]
+- Value insight from Laddering: [...]
 ```
 
----
+## Feedback Loop
 
-## 5. Win/Loss → 競合戦略へのフィードバックループ
+Win/loss findings should feed:
 
-### 統合フロー
+- battle card updates
+- Spark feature ideation
+- pricing and packaging review
+- Growth messaging adjustments
+- SHARPEN calibration
 
-```
-Win/Loss データ
-  → パターン抽出（3回ルール）
-    → バトルカード更新（playbooks.md）
-    → 機能ギャップ → Spark 連携
-    → 価格インサイト → 価格戦略更新
-    → メッセージング改善 → Growth 連携
-    → SHARPEN サイクルへ入力（精度追跡）
-```
+Mapping to Compete:
 
-### Compete への組み込み
-
-| Compete フェーズ | Win/Loss 活用 |
-|----------------|-------------|
-| MAP | 失注理由から未知の競合を発見 |
-| ANALYZE | 決定要因スコアで競合の真の強み/弱みを定量化 |
-| DIFFERENTIATE | 勝因パターンから差別化戦略を強化 |
-| SHARPEN | 予測精度と Win/Loss データの相関を追跡 |
-
----
-
-## 6. AI 時代の Win/Loss 進化
-
-### AI + 人間のハイブリッド
-
-| 手法 | 役割 | スケーラビリティ |
-|------|------|---------------|
-| **AI 主導** | 全案件の構造化分析、パターン検出 | 高 |
-| **人間主導** | 戦略的アカウントの深い文脈理解 | 低（選択的） |
-| **ハイブリッド** | AI が全件分析 + 人間が重要案件を深掘り | 最適 |
-
-**効果**: 手動リサーチ時間 **85-95% 削減**、競合勝率 **30-40% 改善**
-
-**Source:** [Four Pillars of Win-Loss - Clozd](https://www.clozd.com/blog/four-pillars-of-effective-win-loss-analysis) · [2025 State of Win-Loss - Clozd](https://www.clozd.com/state-of-win-loss) · [Gartner: Win rates +50%](https://www.inflexion-point.com/blog/gartner-boost-your-sales-win-rates-by-50-via-win-loss-analysis) · [Advanced Interview Techniques - CIA](https://www.competitiveintelligencealliance.io/how-to-use-advanced-interview-techniques-to-unlock-true-win-loss-insights/) · [Win-Loss Done Right - Corporate Visions](https://corporatevisions.com/blog/win-loss-analysis-best-practices/) · [Win Rate Benchmarks 2026 - Salesmotion](https://salesmotion.io/blog/sales-win-rate-benchmarks-2026)
+| Compete phase | Win/loss contribution |
+|---|---|
+| `MAP` | reveals unknown competitors or substitutes |
+| `ANALYZE` | quantifies real decision factors |
+| `DIFFERENTIATE` | strengthens strategic positioning |
+| `SHARPEN` | validates prediction quality against real outcomes |

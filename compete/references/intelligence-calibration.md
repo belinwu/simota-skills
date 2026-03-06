@@ -1,27 +1,25 @@
-# Intelligence Calibration System (SHARPEN)
+# Intelligence Calibration System
 
-Intelligence accuracy tracking, source reliability scoring, prediction validation, and strategic impact measurement.
-Compete gets better at competitive analysis by learning from outcomes.
+Purpose: Use this file when running `SHARPEN`, validating predictions, tuning source reliability, or emitting reusable competitive patterns.
 
----
+## Contents
 
-## Overview
+- SHARPEN loop
+- Tracking schema
+- Accuracy bands
+- Source calibration
+- Confidence by analysis type
+- Propagation format
 
-The SHARPEN phase runs post-analysis (or periodically) to close the feedback loop between competitive intelligence and actual market outcomes. Without SHARPEN, intelligence quality stagnates. With it, Compete's analyses become progressively more accurate and actionable.
+## SHARPEN Loop
 
-```
-TRACK ──→ VALIDATE ──→ CALIBRATE ──→ PROPAGATE
-  │            │            │            │
-  │ Record    │ Check     │ Update    │ Share with
-  │ analyses  │ predictions│ source   │ Lore/Helm
-  │ & sources │ vs actual  │ weights  │
-```
+`TRACK -> VALIDATE -> CALIBRATE -> PROPAGATE`
 
----
+Without SHARPEN, analyses decay into one-off opinions. With SHARPEN, Compete learns which sources, claims, and outputs actually matter.
 
-## TRACK — Record Intelligence Activities
+## TRACK
 
-After each analysis, record:
+Record every material analysis.
 
 ```yaml
 Analysis: [analysis-id]
@@ -31,52 +29,48 @@ Sources_Used: [list with reliability tier]
 Key_Predictions:
   - prediction: [description]
     confidence: [High/Medium/Low]
-    timeframe: [when should this be validated]
+    timeframe: [validation window]
 Actionability: [immediately_actionable | needs_further_research | monitoring_only]
-Downstream_Handoff: [Spark/Growth/Helm/None]
+Downstream_Handoff: [Spark | Growth | Helm | None]
 ```
 
-### What to Track
+Track at minimum:
 
-| Data Point | Why | Used For |
-|-----------|-----|----------|
-| Prediction accuracy | Core calibration input | Confidence adjustment |
-| Source reliability | Which sources produce useful data | Source prioritization |
-| Actionability rate | What % of analyses led to action | Focus improvement |
-| Handoff effectiveness | Did downstream agents use the output? | Collaboration tuning |
-| Alert hit rate | How often alerts were meaningful | Alert threshold tuning |
+| Data Point | Why |
+|---|---|
+| prediction accuracy | calibrates confidence |
+| source reliability | tunes evidence weighting |
+| actionability rate | tells whether outputs change decisions |
+| downstream utilization | shows whether handoffs are usable |
+| alert hit rate | tunes urgency thresholds |
 
----
+## VALIDATE
 
-## VALIDATE — Check Predictions
+### Accuracy Bands
 
-### Prediction Outcome Tracking
-
-```
-Accuracy = Correct Predictions / Total Predictions
-
-> 0.80  = Strong analyst (maintain approach)
-0.60-0.80 = Good, room for improvement
-< 0.60  = Weak predictions (review methodology)
-```
+| Accuracy | Interpretation | Default action |
+|---|---|---|
+| `> 0.80` | strong analyst performance | maintain method |
+| `0.60-0.80` | acceptable with room to improve | inspect weak spots |
+| `< 0.60` | weak prediction quality | review sources and framing |
 
 ### Validation Triggers
 
 | Trigger | Check |
-|---------|-------|
-| Competitor launches feature we predicted | Prediction accuracy |
-| Competitor pricing changes | Price intel accuracy |
-| Market trend materializes | Trend prediction accuracy |
-| Win/Loss data available | Battle card effectiveness |
-| Quarterly review | Overall intelligence quality |
+|---|---|
+| feature launch | feature prediction accuracy |
+| pricing change | price intelligence accuracy |
+| trend materialization | market trend accuracy |
+| win/loss update | battle card effectiveness |
+| quarterly review | overall intelligence quality |
 
-### Per-Period Validation Summary
+### Summary Template
 
 ```markdown
 ### Validation Report
 
 | Metric | Value | Trend |
-|--------|-------|-------|
+|---|---|---|
 | Analyses produced | 12 | — |
 | Predictions made | 8 | — |
 | Predictions validated | 5 | — |
@@ -84,69 +78,52 @@ Accuracy = Correct Predictions / Total Predictions
 | Actionability rate | 67% (8/12) | — |
 | Downstream utilization | 75% (6/8) | — |
 
-**Strongest area**: Feature gap prediction (90% accuracy)
-**Weakest area**: Pricing predictions (50% accuracy)
-**Note**: More financial data sources needed for pricing analysis.
+Strongest area: [...]
+Weakest area: [...]
 ```
 
----
+## CALIBRATE
 
-## CALIBRATE — Update Intelligence Weights
-
-### Source Reliability Scoring
-
-Track which sources consistently provide accurate and useful intelligence:
+### Default Reliability Weights
 
 ```yaml
-# Default reliability weights
-official_sources: 0.90   # Company website, docs, changelog
-review_platforms: 0.75   # G2, Capterra, TrustRadius
-financial_data: 0.85     # SEC filings, funding announcements
-job_postings: 0.65       # Hiring patterns
-community_signals: 0.60  # Reddit, forums, social media
-
-# Calibrated weights (from SHARPEN data)
-# Example: Community signals consistently predict features
-community_signals: 0.60 → 0.75  # Reddit discussions predicted 3 features
-job_postings: 0.65 → 0.70       # Hiring accurately predicted tech stack changes
+official_sources: 0.90
+review_platforms: 0.75
+financial_data: 0.85
+job_postings: 0.65
+community_signals: 0.60
 ```
 
 ### Calibration Rules
 
-1. **3+ data points required** before adjusting reliability weights
-2. **Max adjustment per cycle**: ±0.15 (prevent overcorrection)
-3. **Decay**: Adjustments decay 10% per quarter toward defaults
-4. **Override**: User explicit source preferences always win
+1. require `3+` data points before changing a source weight
+2. maximum adjustment per cycle is `+/-0.15`
+3. learned adjustments decay `10%` per quarter toward defaults
+4. explicit user source preferences override calibration
 
-### Confidence Factor Calibration
+### Confidence by Analysis Type
 
-Track which analysis types have highest/lowest accuracy:
+| Analysis Type | Typical Accuracy | Default Confidence |
+|---|---:|---|
+| Feature Matrix | `85%` | High |
+| Tech Stack | `90%` | High |
+| SWOT | `70%` | Medium |
+| Market Trends | `60%` | Medium |
+| Pricing | `55%` | Low |
 
-| Analysis Type | Avg Accuracy | Default Confidence |
-|--------------|-------------|-------------------|
-| Feature Matrix | 85% | High |
-| Tech Stack | 90% | High |
-| SWOT | 70% | Medium |
-| Market Trends | 60% | Medium (wider timeframes) |
-| Pricing | 55% | Low (mark speculative) |
+## PROPAGATE
 
----
-
-## PROPAGATE — Share Validated Patterns
-
-### Journal Entry Format
-
-Record SHARPEN insights in `.agents/compete.md`:
+### Journal Entry
 
 ```markdown
 ## YYYY-MM-DD - SHARPEN: [Analysis Type]
 
-**Analyses validated**: N
-**Overall accuracy**: X%
-**Key insight**: [description]
-**Calibration adjustment**: [source/type: old → new]
-**Apply when**: [future scenario]
-**reusable**: true
+Analyses validated: N
+Overall accuracy: X%
+Key insight: [...]
+Calibration adjustment: [source/type: old -> new]
+Apply when: [...]
+reusable: true
 
 <!-- EVOLUTION_SIGNAL
 type: PATTERN
@@ -161,53 +138,23 @@ reusable: true
 
 ### Pattern Library
 
-Build a library of recurring competitive patterns:
-
 | Pattern | Indicators | Typical Timeframe | Reliability |
-|---------|-----------|-------------------|-------------|
-| Pricing undercut | Price reduction 10%+ | 1-3 months to impact | High |
-| Feature convergence | 3+ competitors ship same feature | 6-12 months | Medium |
-| Market consolidation | 2+ acquisitions in segment | 12-24 months | Medium |
-| Niche expansion | Leader enters adjacent market | 3-6 months to respond | High |
-| Talent drain | Key hires moving to competitor | 6-12 months delayed | Low |
+|---|---|---|---|
+| Pricing undercut | price reduction `10%+` | `1-3 months` | High |
+| Feature convergence | `3+` competitors ship the same feature | `6-12 months` | Medium |
+| Market consolidation | `2+` acquisitions in segment | `12-24 months` | Medium |
+| Niche expansion | leader enters adjacent market | `3-6 months` | High |
+| Talent drain | key hires move to competitor | `6-12 months` | Low |
 
-### Quick Calibration (Small Analyses)
+### Quick SHARPEN
 
-For analyses with < 3 predictions:
+Use this when there are too few predictions to recalibrate.
 
 ```markdown
 ## Quick SHARPEN
 
-**Analyses**: 2 completed
-**Predictions**: 1 (too few to calibrate)
-**Note**: Feature matrix was immediately used by Spark
-**Action**: No weight change (insufficient data)
+Analyses: 2
+Predictions: 1
+Note: insufficient data to recalibrate
+Action: keep current weights
 ```
-
-Rule: Do not adjust weights from a single small analysis. Accumulate data across analyses.
-
----
-
-## Integration with Ecosystem
-
-SHARPEN data feeds into strategic decisions:
-
-| SHARPEN Signal | Ecosystem Impact |
-|---------------|------------------|
-| Intelligence accuracy improving | Confidence in strategic recommendations increases |
-| Accuracy degrading | Re-examine sources, methodology |
-| Source consistently unreliable | Deprioritize, find alternatives |
-| High actionability rate | Intelligence approach is working — continue |
-| Low downstream utilization | Adjust output format, improve handoff quality |
-| Validated competitive pattern | Share with Helm for strategy simulation |
-
----
-
-## Feedback to Ecosystem
-
-When SHARPEN discovers patterns valuable beyond a single analysis:
-
-1. **Record in journal** with `reusable: true` tag
-2. **Emit EVOLUTION_SIGNAL** for Lore to collect
-3. **Feed to Helm** if pattern affects strategic planning
-4. **Update alert thresholds** if alert hit rate data suggests adjustment

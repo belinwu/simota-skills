@@ -1,229 +1,133 @@
-# Competitive Moats & Category Design
+# Competitive Moats And Category Design
 
-> AI 時代の競争モート、Blue Ocean Strategy、カテゴリー創造、PLG 競争ダイナミクス、価格インテリジェンス
+Purpose: Use this file when Compete must reason about durable advantage, category creation, PLG competition, pricing posture, or developer-experience competition.
 
-## 1. AI 時代の競争モート（2025-2026）
+## Contents
 
-### 「SaaSpocalypse」の現実
+- modern moats
+- ERRC and Blue Ocean framing
+- category design
+- PLG competition
+- pricing intelligence
+- DX competition
 
-- ソフトウェア株式時価総額が **約 $285B 消失**（2026年初頭）
-- 2024年に2〜6週間かかった SaaS 機能開発が、AI ツールで **1日で出荷可能** に
-- **機能ベースのモートは事実上崩壊**
+## Modern Moats
 
-### AI が複製できない6つの新モート
+Feature moats compress quickly. Prefer advantages that compound over time.
 
-| モート | 説明 | 時間依存性 |
-|--------|------|----------|
-| **SEO** | 長期蓄積型の検索優位性 | 年単位 |
-| **ブランド** | 信頼と認知の累積 | 年単位 |
-| **テイスト（審美眼）** | デザインと UX の判断力 | 経験依存 |
-| **スピード** | 実行速度、イテレーション速度 | 組織文化依存 |
-| **データ** | 学習速度のフライホイール | システム的 |
-| **トラスト（信頼）** | 顧客との関係性の深さ | 年単位 |
+| Moat | Why it lasts |
+|---|---|
+| SEO | long accumulation and discoverability |
+| Brand | trust compounds slowly |
+| Taste | design judgment is hard to copy |
+| Speed | organizational execution habit |
+| Data | learning flywheel |
+| Trust | deep customer relationship and reliability |
 
-**共通特性**: 時間依存性 + 経験依存性 + システム的複雑性。組み合わせで「複合モート」形成。
+Common properties:
+- time-dependent
+- experience-dependent
+- system-dependent
 
-### データフライホイール
-
-```
-より多くのユーザー
-  → より豊富なデータ
-    → より良い AI/体験
-      → さらに多くのユーザー
-```
-
-**鍵**: データの「所有」ではなく「学習速度」が競争優位。全ユーザーインタラクションが全ユーザーの体験を向上させる仕組み。
-
-### ディープインテグレーション・モート
-
-AI は技術的スイッチングコストを削減するが、新たな**組織的コスト**が浮上:
-
-- 顧客ワークフローへの深い組み込み
-- プロセスの自動化
-- 制度的知識のキャプチャ
-- AI モデルのカスタマイズ
-
-→ 競合が迅速にコピーできない障壁を形成。
-
-### Compete での活用
+### Moat Assessment
 
 ```markdown
-## Moat Assessment Template
+## Moat Assessment
 
-### 自社のモート評価
-| モート | 強度(1-5) | 構築期間 | 競合対比 |
-|--------|----------|---------|---------|
+| Moat | Strength (1-5) | Build Time | Relative to Competitors |
+|---|---:|---|---|
 | SEO | | | |
-| ブランド | | | |
-| テイスト | | | |
-| スピード | | | |
-| データ | | | |
-| トラスト | | | |
+| Brand | | | |
+| Taste | | | |
+| Speed | | | |
+| Data | | | |
+| Trust | | | |
 
-### 複合モート分析
-- 組み合わせ効果: ___
-- 最も脆弱なモート: ___
-- 強化推奨: ___
+Composite moat: [...]
+Weakest moat: [...]
+Reinforcement priority: [...]
 ```
 
----
+## Blue Ocean Framing
 
-## 2. Blue Ocean Strategy（最新ツール）
+### ERRC Grid
 
-### ERRC Grid（排除・削減・増加・創造）
+| Action | Question |
+|---|---|
+| Eliminate | what does the category keep that buyers do not truly value? |
+| Reduce | what can be cut below the industry norm? |
+| Raise | what deserves more investment than the norm? |
+| Create | what valuable element does the category still not offer? |
 
-| アクション | 問い | Compete での適用 |
-|-----------|------|----------------|
-| **Eliminate（排除）** | 業界が当然視しているが不要な要素は? | 競合が過剰投資している領域の特定 |
-| **Reduce（削減）** | 業界標準以下に減らせる要素は? | コスト構造の差別化機会 |
-| **Raise（増加）** | 業界標準以上に高めるべき要素は? | 顧客が最も価値を感じる領域 |
-| **Create（創造）** | 業界が未提供の新しい要素は? | 未充足ニーズ = 最大の差別化機会 |
+Use ERRC when the task asks for differentiation rather than parity.
 
-### Strategy Canvas（戦略キャンバス）
+## Category Design
 
-業界の**バリューカーブ**をマッピングし、自社 vs 競合の差別化を視覚化。
+| Zone | Description | Risk |
+|---|---|---|
+| Green | compete inside the existing category | red-ocean pressure |
+| Blue | vision is too far ahead of the market | adoption timing risk |
+| Sweet Spot | vision leads the market by `2-3 years` | best category-design window |
 
-```
-価値要素: 価格 機能数 UX サポート 統合 セキュリティ AI カスタマイズ
-競合A:    ████ █████ ███ ████  ████  █████    ██  ███
-競合B:    ███  ████  ████ ███  ███   ████     ███ ██
-自社:     ██   ███   █████ █████ █████ ████   █████ █████
-         ↑削減       ↑増加  ↑増加  ↑増加      ↑創造 ↑創造
-```
+Use category creation only when the value curve is meaningfully different from incumbents.
 
-### Three Tiers of Non-Customers（非顧客の3層）
+## PLG Competition
 
-| 層 | 定義 | Compete での分析対象 |
-|----|------|-------------------|
-| 第1層 | 市場の端にいて離脱しそうな層 | チャーンリスク顧客 |
-| 第2層 | 意識的に市場を拒否している層 | 間接競合のユーザー |
-| 第3層 | 市場を認識すらしていない層 | 新しいカテゴリー機会 |
+Key signals:
 
----
+| Metric | Signal |
+|---|---|
+| SaaS companies using PLG | `58%` |
+| planning to expand PLG investment | `91%` |
+| reporting sustained growth | `27%` |
+| AI app spend coming through PLG | `27%` |
 
-## 3. カテゴリー・デザイン（Play Bigger）
+### PLG Evaluation Axes
 
-### 核心原則
+| Axis | What to inspect |
+|---|---|
+| Time to Value | how fast value appears |
+| Freemium Design | upgrade path and value exposure |
+| Onboarding | guidance quality and drop-off points |
+| Viral Coefficient | sharing and invite mechanics |
+| AI Integration | personalization or automation in product |
+| Product-Led Sales | handoff from self-serve to sales |
 
-既存市場で競争するのではなく、**新しいカテゴリーを創造・定義・支配**する戦略。
+Heuristic:
+- products needing more than `60 seconds` to reveal value are exposed to faster PLG alternatives
 
-**データ**: カテゴリーキングは市場価値の大部分を獲得（DocuSign, Airbnb, Uber, Slack）。
+## Pricing Posture
 
-### 診断フレームワーク
+| Signal | Data |
+|---|---|
+| value-based pricing adoption | `78%` |
+| AI-driven personalized pricing in enterprise SaaS | `65%` |
+| usage-based pricing adopted or planned | `85%` |
+| hybrid pricing adoption | `61%` |
 
-| ゾーン | 状態 | リスク |
-|--------|------|-------|
-| **グリーン** | 既存カテゴリーに参入し、価格や機能で競争 | 差別化困難、レッドオーシャン化 |
-| **ブルー** | ビジョンが市場の10年先 | 市場が追いつく前に資金が尽きるリスク |
-| **スイートスポット** | 市場の2-3年先を行くビジョン | カテゴリー創造の最適タイミング |
+Value-based pricing outcomes:
+- revenue can improve by `30%+`
+- ARPU can improve by `23%`
 
-### Compete での適用
+Use pricing analysis to decide:
+- whether the category is moving toward value-based, usage-based, or hybrid pricing
+- whether a competitor is winning on lower price or clearer value capture
 
-- DIFFERENTIATE フェーズで「既存カテゴリーでの競争」vs「新カテゴリー創造」を判断
-- Strategy Canvas でバリューカーブが大きく異なる場合 → カテゴリー創造の候補
-- Helm 連携でカテゴリー創造の戦略シミュレーション
+## DX Competition
 
----
+| Signal | Data |
+|---|---|
+| high-quality DX improves delivery flow likelihood | `31%` higher |
+| top DX teams outperform | `4-5x` |
+| top developer velocity performers grow revenue faster | `5x` |
 
-## 4. PLG 競争ダイナミクス
+### DX Comparison Axes
 
-### 主要統計（2025-2026）
-
-| 指標 | データ |
-|------|--------|
-| PLG 導入済み SaaS 企業 | **58%** |
-| 投資拡大を計画 | **91%** |
-| 持続的成長を報告 | **27%** のみ |
-| AI アプリ支出の PLG 経由割合 | **27%**（従来型 SaaS は 7%） |
-
-### 60秒ルール
-
-```
-旧基準: 「初回セッションで価値を」
-  ↓
-2026年: 「60秒以内に価値を提供できるか？」
-```
-
-5分以上かかる製品は30秒で価値を届ける競合に負ける。
-
-### PLG 競合分析の評価軸
-
-| 軸 | 評価ポイント |
-|----|------------|
-| **Time to Value** | サインアップから価値実感までの時間（秒単位） |
-| **フリーミアム設計** | 無料版の制限と有料への自然な誘導 |
-| **オンボーディング** | ガイダンスの有無、完了率、ドロップオフ |
-| **バイラル係数** | 招待機能、共有メカニズム、ネットワーク効果 |
-| **AI 統合** | AI による体験パーソナライゼーション |
-| **Product-Led Sales** | 製品体験 → セールスエンゲージメントの自然な遷移 |
-
----
-
-## 5. 価格インテリジェンス（最新動向）
-
-### SaaS 価格戦略の進化
-
-| トレンド | データ |
-|---------|--------|
-| バリューベース価格採用 | **78%**（2023年: 62%） |
-| AI 駆動パーソナライズド価格設定 | **65%** のエンタープライズ SaaS |
-| UBP（使用量ベース）導入済み/予定 | **85%** |
-| ハイブリッドモデル採用 | **61%**（2024年: 49%） |
-
-### バリューベース vs 競合ベース
-
-| アプローチ | 効果 |
-|-----------|------|
-| バリューベース | 収益 **30%+ 増加**、ARPU **23% 向上** |
-| AI ダイナミックプライシング | 年間収益 **12-40% 増加**、チャーン **22% 減少** |
-
-### Compete の価格分析強化
-
-```markdown
-## Enhanced Pricing Intelligence
-
-### 価格モデル比較
-| 要素 | 自社 | 競合A | 競合B |
-|------|------|-------|-------|
-| モデル | サブスク/UBP/ハイブリッド | | |
-| エントリー価格 | | | |
-| 最上位価格 | | | |
-| 無料枠 | | | |
-| UBP 要素 | | | |
-| AI 価格最適化 | | | |
-
-### Value-Based 分析
-- WTP（支払意思額）推定: ___
-- 価値/価格比率: ___
-- 競合との価値ギャップ: ___
-
-### ダイナミック要素
-- 価格変更頻度: ___
-- セグメント別価格: ___
-- 地域別価格: ___
-```
-
----
-
-## 6. DX（開発者体験）競合分析
-
-### なぜ DX が競争優位か
-
-| 指標 | データ |
-|------|--------|
-| 高品質 DX → デリバリーフロー改善可能性 | **31% 高い**（Gartner） |
-| DX 上位チームのパフォーマンス差 | **4-5倍** |
-| Developer Velocity Index 上位企業の収益成長 | **5倍** |
-
-### DX 競合ベンチマーク軸
-
-| 軸 | 評価ポイント |
-|----|------------|
-| **ドキュメント品質** | 完全性、最新性、検索性、コード例 |
-| **SDK/API 品質** | 型安全性、エラーメッセージ、一貫性 |
-| **オンボーディング** | Hello World までの時間、チュートリアル品質 |
-| **コミュニティ** | Stack Overflow、Discord/Slack、GitHub 活性度 |
-| **CI/CD 統合** | ビルド時間、テスト環境、デプロイフロー |
-| **サポート** | レスポンス時間、チャネル、ナレッジベース |
-
-**Source:** [AI Killed the Feature Moat](https://medium.com/@cenrunzhe/ai-killed-the-feature-moat-heres-what-actually-defends-your-saas-company-in-2026-9a5d3d20973b) · [New Software Moats - BloomVP](https://bloomvp.substack.com/p/the-new-software-moats-stickiness) · [Blue Ocean Strategy Tools](https://www.blueoceanstrategy.com/tools/strategy-canvas/) · [Play Bigger - Category Design](https://www.playbigger.com/categorydesign) · [PLG Predictions 2026 - ProductLed](https://productled.com/blog/plg-predictions-for-2026) · [SaaS Pricing 2025 - Monetizely](https://www.getmonetizely.com/articles/saas-pricing-benchmark-study-2025-insights-from-100-companies) · [UBP 2025 - Metronome](https://metronome.com/state-of-usage-based-pricing-2025) · [DX Revolution - SensioLabs](https://sensiolabs.com/blog/2026/the-developer-experience-revolution-2026) · [DX Index - GetDX](https://getdx.com/blog/guide-to-developer-experience-index/)
+| Axis | What to inspect |
+|---|---|
+| Documentation | completeness, freshness, searchability |
+| SDK / API quality | consistency, errors, typing |
+| Onboarding | time to first success |
+| Community | forum, Discord, GitHub activity |
+| CI/CD integration | build, test, deploy friction |
+| Support | response time and knowledge base quality |
