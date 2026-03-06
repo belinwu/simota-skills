@@ -1,6 +1,11 @@
 # E2E Environment Management
 
-Setup, configuration, and management of environments for E2E testing.
+Purpose: Use this file when Voyager must stand up, seed, or parameterize the environments used by E2E suites.
+
+Contents:
+- Docker, DB seeding, and preview-environment setup
+- Auth state, env vars, mail capture, and service mocking
+- Local-only workflow and environment-choice rules
 
 ---
 
@@ -421,16 +426,3 @@ npx playwright test --debug -g "login"
 | **External services** | Mock with MSW | Real in containers | Real or mocked |
 | **Reliability** | Developer-dependent | Consistent | Consistent |
 | **Use when** | Prototyping, learning | Team development | Production pipeline |
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright configuration | `playwright-patterns.md` |
-| CI/CD integration | `ci-reporting.md` |
-| Cloud testing services | `cloud-testing.md` |
-| Debug & monitoring | `debug-monitoring.md` |
-| Edge cases & i18n | `edge-cases-i18n.md` |
-| Performance testing | `performance-testing.md` |

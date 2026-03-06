@@ -1,6 +1,11 @@
 # Cloud Testing Services
 
-Browser testing in cloud environments: BrowserStack, Sauce Labs, LambdaTest integration, CI pipelines, cost optimization, and security considerations.
+Purpose: Use this file when Voyager must run browser suites on BrowserStack, Sauce Labs, LambdaTest, or a similar cloud matrix.
+
+Contents:
+- Agent boundary and cloud vs local decision rules
+- Provider integration templates and CI usage
+- Cost, security, and troubleshooting rules
 
 ---
 
@@ -303,15 +308,3 @@ LT_ACCESS_KEY=your_access_key
 | **Tunnel connection fail** | Firewall/proxy | Check corporate proxy settings |
 | **Flaky on cloud only** | Timing differences | Add explicit waits, avoid `networkidle` |
 | **High cost** | Running all tests on cloud | Use tiered matrix strategy |
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright configuration | `playwright-patterns.md` |
-| CI/CD integration | `ci-reporting.md` |
-| Mobile testing (native) | `mobile-native-testing.md` |
-| Performance testing | `performance-testing.md` |
-| Environment management | `environment-management.md` |

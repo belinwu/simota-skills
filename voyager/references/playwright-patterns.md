@@ -1,6 +1,11 @@
 # Playwright Patterns
 
-Configuration, Page Object Model, authentication, wait strategies, parallel execution, and modern API features.
+Purpose: Default implementation patterns for Playwright-based Voyager work.
+
+Contents:
+- Project setup, Page Objects, and authentication state
+- Waits, data setup, sharding, and tag-based execution
+- Modern Playwright APIs, mocking, cross-browser coverage, and flake prevention
 
 ---
 
@@ -45,8 +50,6 @@ e2e/
 │   │   └── purchase.spec.ts
 ...
 ```
-
----
 
 ## Page Object Model
 
@@ -626,21 +629,3 @@ test('modifies response headers', async ({ page }) => {
 test('conditional response modification', async ({ page }) => {
 // ...
 ```
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
-| Complex scenarios (multi-tab, WebSocket) | `complex-scenarios.md` |
-| Environment management (Docker, seeding) | `environment-management.md` |
-| Debug & monitoring (HAR, console, trace) | `debug-monitoring.md` |
-| Edge cases & i18n (timezone, locale) | `edge-cases-i18n.md` |
-| Visual regression & accessibility | `visual-a11y-testing.md` |
-| CI/CD integration & reporting | `ci-reporting.md` |
-| Cloud testing (BrowserStack, Sauce Labs) | `cloud-testing.md` |
-| Mobile native testing (Appium) | `mobile-native-testing.md` |
-| Cypress patterns | `cypress-guide.md` |
-| Framework comparison & selection | `framework-selection.md` |

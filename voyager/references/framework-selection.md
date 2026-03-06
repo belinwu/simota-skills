@@ -1,5 +1,12 @@
 # Framework Selection Guide
 
+Purpose: Use this file when Voyager must justify Playwright, Cypress, WebdriverIO, or TestCafe for a given project.
+
+Contents:
+- Comparison matrix and decision guide
+- Advanced-scenario support and modern Playwright features
+- Version requirements and minimal TestCafe fallback patterns
+
 ## Framework Comparison
 
 | Criteria | Playwright | Cypress | WebdriverIO | TestCafe |
@@ -156,16 +163,3 @@ test('displays mocked users', async (t) => {
 | **TestCafe** | 3.5+ | 3.6+ | Declining ecosystem |
 | **Node.js** | 18+ | 20 LTS | Required by all frameworks |
 | **TypeScript** | 5.0+ | 5.3+ | Recommended for type safety |
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (POM, auth, waits) | `playwright-patterns.md` |
-| Cypress guide | `cypress-guide.md` |
-| Mobile native testing (Appium) | `mobile-native-testing.md` |
-| Cloud testing (BrowserStack, Sauce Labs) | `cloud-testing.md` |
-| CI/CD integration | `ci-reporting.md` |
-| Performance testing | `performance-testing.md` |

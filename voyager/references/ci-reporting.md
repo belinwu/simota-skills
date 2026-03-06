@@ -1,6 +1,11 @@
 # CI/CD Integration & Reporting
 
-GitHub Actions workflows, sharding, test reporters (HTML/Allure/Slack), and video recording strategies.
+Purpose: Use this file when Voyager must integrate E2E suites into CI, reporting, and artifact collection.
+
+Contents:
+- GitHub Actions workflows and sharding
+- Reporters, video modes, and artifact retention
+- Prioritization and performance-budget gates
 
 ---
 
@@ -289,17 +294,3 @@ jobs:
 ```
 
 See `performance-testing.md` for detailed Lighthouse CI integration and performance budget configuration.
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (config, auth) | `playwright-patterns.md` |
-| Debug & monitoring (trace, console) | `debug-monitoring.md` |
-| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
-| Cloud testing (BrowserStack CI) | `cloud-testing.md` |
-| Mobile native CI | `mobile-native-testing.md` |
-| Environment management | `environment-management.md` |
-| Framework selection | `framework-selection.md` |

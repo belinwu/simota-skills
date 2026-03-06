@@ -1,6 +1,11 @@
 # Mobile Native Testing
 
-Playwright mobile emulation limits, WebdriverIO + Appium setup, real device testing, and mobile-specific patterns.
+Purpose: Use this file when Voyager must decide between browser emulation and native mobile automation.
+
+Contents:
+- Agent boundary and emulation-vs-native decision rules
+- Playwright mobile emulation patterns
+- WebdriverIO/Appium and real-device execution
 
 ---
 
@@ -304,15 +309,3 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BROWSERSTACK_APP_URL: ${{ secrets.BROWSERSTACK_APP_URL }}
 ```
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright emulation patterns | `playwright-patterns.md` |
-| Cloud testing services | `cloud-testing.md` |
-| CI/CD integration | `ci-reporting.md` |
-| Visual regression (responsive) | `visual-a11y-testing.md` |
-| Framework selection (WebdriverIO) | `framework-selection.md` |

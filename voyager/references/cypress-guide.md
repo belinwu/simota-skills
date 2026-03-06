@@ -1,6 +1,11 @@
 # Cypress Guide
 
-Configuration, custom commands, network stubbing, and session management for Cypress E2E testing.
+Purpose: Use this file when a project already relies on Cypress and Voyager must extend or maintain that suite.
+
+Contents:
+- Cypress vs Playwright decision boundary
+- Project setup, commands, and session patterns
+- Network stubbing, CI wiring, and a11y integration
 
 ---
 
@@ -136,7 +141,7 @@ describe('With API Stubs', () => {
   it('handles API error gracefully', () => {
     cy.intercept('GET', '/api/products', { statusCode: 500, body: { error: 'Server error' } });
     cy.visit('/products');
-    cy.getByTestId('error-message').should('contain', 'エラーが発生しました');
+    cy.getByTestId('error-message').should('contain', 'An unexpected error occurred');
   });
 });
 ```

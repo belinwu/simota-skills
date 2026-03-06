@@ -1,134 +1,154 @@
 # E2E Testing Anti-Patterns & Test Architecture
 
-> E2E テストの失敗パターン、スケーラブルなテストアーキテクチャ、フレーキーテスト防止、テストスイート管理
+Purpose: Use this file to keep Voyager suites small, deterministic, and maintainable.
 
-## 1. E2E テスト・アンチパターン
+Contents:
+- Anti-patterns that cause brittle or bloated suites
+- Flaky root causes, targets, and retry limits
+- Suite architecture ratios, tags, and runtime goals
+- Maintenance rules that preserve long-term stability
 
-### セレクタの脆弱性（Selector Fragility）
+## Anti-Patterns
+
+| Anti-pattern | Symptom | Safer rule |
+|--------------|---------|------------|
+| Selector fragility | UI refactors break tests for non-user-facing reasons | Prefer `getByRole`, `getByLabel`, or `getByTestId` |
+| Test interdependence | One failure cascades through the suite | Make every test create and clean up its own data |
+| Excessive waiting | Slow, flaky suites with arbitrary timing | Wait on UI state, network events, or explicit conditions |
+| Test bloat | One giant test hides the failing business goal | Split by business outcome |
+| Wrong test level | E2E covers logic that belongs in unit or integration tests | Keep E2E for critical user journeys only |
+| Test explosion | AI or manual growth creates redundant suites and CI cost | Tag, prune, and keep only business-critical coverage in CI |
+
+### Selector Fragility
 
 ```typescript
-// ❌ Anti-pattern: 位置ベース・CSS クラスセレクタ
+// Anti-pattern: position-based or CSS-class selectors
 await page.click('div:nth-child(3) > button');
 await page.click('.btn-primary-v2');
 
-// ✅ Pattern: data-testid / ARIA ロール
-await page.getByRole('button', { name: 'Submit' });
-await page.getByTestId('checkout-button');
+// Safer pattern: semantic or intentional selectors
+await page.getByRole('button', { name: 'Submit' }).click();
+await page.getByTestId('checkout-button').click();
 ```
 
-**影響:** UI リファクタリングのたびにテスト破損 → メンテナンスコスト増大
+Impact: every UI refactor becomes a test-maintenance event.
 
-### テスト間依存（Test Interdependence）
+### Test Interdependence
 
+```text
+Anti-pattern:
+  Test A creates a user -> Test B logs in as that user -> Test C updates the profile
+  If Test A fails, B and C fail for the wrong reason.
+
+Safer pattern:
+  Each test creates its own data -> runs the scenario -> cleans up.
 ```
-❌ Test A: ユーザー作成 → Test B: そのユーザーでログイン → Test C: プロフィール更新
-  → Test A が失敗すると B, C も連鎖失敗
 
-✅ 各テストが独立: 自分のデータを作成 → 操作 → クリーンアップ
-```
+Rule: use API-first setup plus a fresh browser context for each test.
 
-**対策:** API ファーストなデータセットアップ、テストごとのフレッシュコンテキスト
-
-### 過剰な待機（Excessive Waiting）
+### Excessive Waiting
 
 ```typescript
-// ❌ Anti-pattern: 任意のタイムアウト
+// Anti-pattern: arbitrary timeout
 await page.waitForTimeout(5000);
 
-// ✅ Pattern: 条件付き待機
+// Safer pattern: explicit condition
 await page.waitForResponse(resp => resp.url().includes('/api/data'));
 await expect(page.getByRole('heading')).toBeVisible();
 ```
 
-**Playwright の auto-waiting を最大限活用。** 明示的待機は API レスポンス・特定要素の出現のみ。
+Rule: let Playwright auto-wait whenever possible. Add explicit waits only for a concrete signal.
 
-### テスト肥大化（Test Bloat / The Giant）
+### Test Bloat
 
+```text
+Anti-pattern:
+  One 100-step flow covers login -> profile -> search -> cart -> payment -> order confirmation.
+
+Safer pattern:
+  - user can log in
+  - user can add an item to the cart
+  - user can complete checkout
 ```
-❌ 1テストで 100ステップ:
-   ログイン → プロフィール設定 → 商品検索 → カート追加 → 決済 → 注文確認
 
-✅ ビジネス目的ごとに分割:
-   - test: ユーザーがログインできる
-   - test: ユーザーが商品をカートに追加できる
-   - test: ユーザーが決済を完了できる
-```
+### Wrong Test Level
 
-### E2E の乱用（Wrong Test Level）
+| Do not cover with E2E | Better test level |
+|-----------------------|-------------------|
+| Input validation rules | Unit |
+| Data transformation or formatting | Unit |
+| API response shape | Integration / contract |
+| Single-component rendering | Component |
 
-| ❌ E2E で書くべきでないもの | ✅ 適切なレベル |
-|--------------------------|--------------|
-| 入力バリデーションロジック | Unit テスト |
-| データ変換・フォーマット | Unit テスト |
-| API レスポンス形式 | Integration / Contract テスト |
-| 単一コンポーネントの表示 | Component テスト |
+### Test Explosion
 
-### テスト爆発（Test Explosion）
+2026 risk: AI-assisted generation makes it easy to create hundreds of tests. The bottleneck becomes deciding what belongs in CI and what is redundant.
 
-**2026年の新課題:** AI テスト生成により数百のテストが容易に作成可能 → どのテストが CI に属するか、冗長か、コスト高すぎるかの判断がボトルネックに。
+Rules:
+- Tag with `@critical`, `@smoke`, or `@regression`.
+- Keep CI coverage focused on business-critical paths.
+- Prune redundant or low-value tests on a regular cadence.
 
-**対策:**
-- タグベースの優先度分類（`@critical` / `@smoke` / `@regression`）
-- ビジネスクリティカルパスのみ CI 必須
-- 冗長テストの定期的なプルーニング
+## Flaky Prevention
 
----
+### Root Causes
 
-## 2. フレーキーテスト防止戦略
+| Cause | Typical share | Primary mitigation |
+|-------|---------------|--------------------|
+| Timing / async issues | 40% | Auto-waiting and explicit condition waits |
+| Test-data pollution | 25% | API-first setup and isolation |
+| Environment mismatch | 20% | Ephemeral environments or Docker |
+| Shared state | 10% | Fresh browser context and isolated accounts |
+| External dependencies | 5% | Network interception and mocks |
 
-### フレーキーの根本原因
+### Targets
 
-| 原因 | 割合 | 対策 |
-|------|------|------|
-| **タイミング/非同期** | 40% | auto-waiting、条件付き待機 |
-| **テストデータの汚染** | 25% | API ファーストデータ、テスト分離 |
-| **環境の不整合** | 20% | エフェメラル環境、Docker |
-| **共有状態** | 10% | フレッシュブラウザコンテキスト |
-| **外部依存** | 5% | ネットワークインターセプト、モック |
+- Keep flaky rate below `1%`.
+- Limit retries to a maximum of `2`.
+- Track root cause, not just retry success.
 
-### フレーキー防止チェックリスト
+### Flaky Prevention Checklist
 
 ```markdown
 ## Flaky Prevention Checklist
 
-### 設計時
-- [ ] テストは完全に独立して実行可能か?
-- [ ] テストデータは API で作成しているか?
-- [ ] `waitForTimeout()` を使用していないか?
-- [ ] 外部サービスをモック/インターセプトしているか?
+### Design
+- [ ] Can the test run independently?
+- [ ] Is test data created through an API or factory?
+- [ ] Does the test avoid `waitForTimeout()`?
+- [ ] Are external services mocked or intercepted when needed?
 
-### 実装時
-- [ ] auto-waiting が機能するロケータを使用しているか?
-- [ ] ネットワークレスポンスの待機が明示的か?
-- [ ] アニメーション完了を適切に待機しているか?
-- [ ] 日時/タイムゾーン依存がないか?
+### Implementation
+- [ ] Do locators support Playwright auto-waiting?
+- [ ] Are network waits explicit when they matter?
+- [ ] Are animations or loading states handled intentionally?
+- [ ] Is the test free from date, timezone, and locale fragility?
 
-### CI 運用
-- [ ] 同一テストを複数回実行してフレーキーを検出しているか?
-- [ ] フレーキーレート < 1% を維持しているか?
-- [ ] リトライは最大 2回に制限しているか?
-- [ ] フレーキーテストの root cause を追跡しているか?
+### CI
+- [ ] Do repeated runs surface flake before merge?
+- [ ] Is flaky rate below `1%`?
+- [ ] Are retries capped at `2`?
+- [ ] Is each flaky failure assigned a root cause?
 ```
 
----
+## Suite Architecture
 
-## 3. テストスイートアーキテクチャ
+### Test Pyramid Ratio
 
-### テストピラミッド内の E2E 比率
-
-```
-E2E テスト: 5-10%（ビジネスクリティカルのみ）
-  → 目標: 30分以内で完了
-  → 並列実行 + シャーディング
-  → タグベース優先実行
+```text
+E2E: 5-10%
+  -> business-critical journeys only
+  -> target runtime below 30 minutes
+  -> parallel execution plus sharding
+  -> tag-based prioritization
 
 Integration: 20%
 Unit: 70%
 ```
 
-### ディレクトリ構造パターン
+### Recommended Layout
 
-```
+```text
 tests/
   e2e/
     auth/
@@ -150,37 +170,32 @@ tests/
     test-data-factory.ts
 ```
 
-### テスト分類とタグ戦略
+### Tag Strategy
 
-| タグ | 実行タイミング | 含むテスト | 目標時間 |
-|------|-------------|----------|---------|
-| `@smoke` | 全 PR | ログイン、主要フロー | < 5分 |
-| `@critical` | マージ前 | 決済、認証、データ操作 | < 15分 |
-| `@regression` | Nightly | 全 E2E テスト | < 30分 |
-| `@visual` | 週次 / 手動 | Visual regression | 可変 |
+| Tag | Run timing | Typical content | Target runtime |
+|-----|------------|-----------------|----------------|
+| `@smoke` | Every PR | Login and the shortest critical flows | `< 5 min` |
+| `@critical` | Before merge | Checkout, auth, and data mutation flows | `< 15 min` |
+| `@regression` | Nightly | Full E2E suite | `< 30 min` |
+| `@visual` | Weekly or manual | Visual regression | Variable |
 
----
+## Maintenance Rules
 
-## 4. テストメンテナンスの原則
+Treat test code like production code:
+1. Review it.
+2. Refactor it.
+3. Keep naming consistent, such as `should_verb_when_condition`.
+4. Keep helpers and fixtures DRY.
+5. Prune dead or redundant tests regularly.
 
-### テストコードは本番コードと同等に扱う
+### Patterns That Reduce Cost
 
-```
-1. コードレビューの対象にする
-2. リファクタリングを定期的に行う
-3. 命名規則を統一する（should_verb_when_condition）
-4. ヘルパー/ユーティリティを DRY にする
-5. 不要なテストを定期的にプルーニングする
-```
+| Pattern | Benefit |
+|---------|---------|
+| Page Object Model | Localizes UI change impact |
+| Test-data factory | Centralizes data creation |
+| Custom fixtures | Reuses setup logic |
+| Network interception | Removes external flake |
+| Tag-based execution | Runs only the tests that matter |
 
-### メンテナンスコスト低減パターン
-
-| パターン | 効果 |
-|---------|------|
-| Page Object Model | UI 変更の影響を 1箇所に集約 |
-| テストデータファクトリ | データ作成の一元化 |
-| カスタムフィクスチャ | セットアップの再利用 |
-| ネットワークインターセプト | 外部依存の排除 |
-| タグベース実行 | 必要なテストのみ実行 |
-
-**Source:** [Thunders.ai: Modern E2E Test Architecture](https://www.thunders.ai/articles/modern-e2e-test-architecture-patterns-and-anti-patterns-for-a-maintainable-test-suite) · [Bunnyshell: E2E Testing Best Practices 2025](https://www.bunnyshell.com/blog/best-practices-for-end-to-end-testing-in-2025/) · [Playwright: Best Practices](https://playwright.dev/docs/best-practices) · [Momentic: Playwright E2E Best Practices](https://momentic.ai/blog/playwright-e2e-testing-best-practices)
+Sources: [Thunders.ai: Modern E2E Test Architecture](https://www.thunders.ai/articles/modern-e2e-test-architecture-patterns-and-anti-patterns-for-a-maintainable-test-suite) · [Bunnyshell: E2E Testing Best Practices 2025](https://www.bunnyshell.com/blog/best-practices-for-end-to-end-testing-in-2025/) · [Playwright: Best Practices](https://playwright.dev/docs/best-practices) · [Momentic: Playwright E2E Best Practices](https://momentic.ai/blog/playwright-e2e-testing-best-practices)

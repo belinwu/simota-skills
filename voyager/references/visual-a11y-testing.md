@@ -1,6 +1,11 @@
 # Visual Regression & Accessibility Testing
 
-Screenshot comparison, axe-core integration, keyboard navigation, and WCAG compliance verification.
+Purpose: Use this file when Voyager must verify screenshots, keyboard access, or automated accessibility rules.
+
+Contents:
+- Visual snapshot configuration and update rules
+- axe-core, keyboard, and WCAG checks
+- Responsive and SaaS-backed visual regression patterns
 
 ---
 
@@ -106,7 +111,7 @@ test.describe('Accessibility', () => {
     await page.goto('/login');
 
     // Check form elements have labels
-    await expect(page.getByLabel('メールアドレス')).toBeVisible();
+    await expect(page.getByLabel('Email address')).toBeVisible();
 // ...
 ```
 
@@ -118,10 +123,10 @@ test('navigation is keyboard accessible', async ({ page }) => {
 
   // Tab through navigation
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'ホーム' })).toBeFocused();
+  await expect(page.getByRole('link', { name: 'Home' })).toBeFocused();
 
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: '製品' })).toBeFocused();
+  await expect(page.getByRole('link', { name: 'Products' })).toBeFocused();
 
   // Enter key activates link
   await page.keyboard.press('Enter');
@@ -335,17 +340,3 @@ test('layout switches at breakpoints', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
 // ...
 ```
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (assertions, POM) | `playwright-patterns.md` |
-| Aria Snapshots (PW 1.50+) | `playwright-patterns.md` → Playwright 1.50+ |
-| Percy/Chromatic (component level) | `showcase` agent (Storybook stories) |
-| Cloud testing (cross-browser visual) | `cloud-testing.md` |
-| Mobile responsive testing | `mobile-native-testing.md` |
-| Edge cases & i18n (RTL, locale) | `edge-cases-i18n.md` |
-| Performance testing | `performance-testing.md` |

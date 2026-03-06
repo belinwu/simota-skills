@@ -1,6 +1,11 @@
 # Edge Cases & i18n Testing
 
-Timezone variation, localization, cookie/storage edge cases, legacy browser handling, and network condition simulation.
+Purpose: Use this file when E2E coverage must exercise locale, timezone, storage, offline, or network-condition edge cases.
+
+Contents:
+- Timezone and locale validation
+- Cookie, storage, and third-party-cookie behavior
+- Network throttling, timeout, and offline scenarios
 
 ---
 
@@ -145,8 +150,6 @@ test('formats currency correctly per locale', async ({ browser }) => {
 
 // ...
 ```
-
----
 
 ## Cookie & Storage Edge Cases
 
@@ -300,17 +303,3 @@ test('queues actions while offline and syncs on reconnect', async ({ page, conte
 
 // ...
 ```
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (POM, waits) | `playwright-patterns.md` |
-| Visual regression (responsive, a11y) | `visual-a11y-testing.md` |
-| Complex scenarios (offline, WebSocket) | `complex-scenarios.md` |
-| Environment management | `environment-management.md` |
-| Debug & monitoring | `debug-monitoring.md` |
-| CI/CD integration | `ci-reporting.md` |
-| Cloud testing (cross-browser) | `cloud-testing.md` |

@@ -1,6 +1,11 @@
 # Performance Testing in E2E Context
 
-Measurement, assertion, and regression detection for web performance metrics within E2E tests.
+Purpose: Use this file when Voyager must measure browser performance, enforce budgets, or hand off evidence to Bolt.
+
+Contents:
+- Agent boundary and budget thresholds
+- Core Web Vitals and Lighthouse integration
+- Regression detection, resource analysis, and Bolt handoff fields
 
 ---
 
@@ -304,25 +309,11 @@ test('no excessive API calls on page load', async ({ page }) => {
 | **Bundle (JS)** | Per budget | `page.on('response')` |
 | **Total Weight** | Per budget | `page.on('response')` |
 
----
-
 ## Handoff to Bolt
 
-When Voyager detects performance issues, hand off to Bolt for code-level optimization:
-- See `handoff-formats.md` → `VOYAGER_TO_BOLT_HANDOFF`
-- Include: metric name, measured value, target, affected page, evidence (traces/screenshots)
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (config, API testing) | `playwright-patterns.md` |
-| CI/CD integration (Lighthouse CI) | `ci-reporting.md` |
-| Cloud testing (performance on real devices) | `cloud-testing.md` |
-| Debug & monitoring (profiling, coverage) | `debug-monitoring.md` |
-| Environment management | `environment-management.md` |
-| Complex scenarios (offline, ServiceWorker) | `complex-scenarios.md` |
-| Handoff formats (Voyager → Bolt) | `handoff-formats.md` |
-| Load testing (Siege agent) | Siege agent |
+When Voyager detects performance issues, hand off to Bolt for code-level optimization with:
+- metric name and measured value
+- target or budget
+- affected page or journey
+- evidence such as traces, Lighthouse output, HAR files, or screenshots
+- suspected bottleneck when known

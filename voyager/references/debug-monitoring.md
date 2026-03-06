@@ -1,6 +1,11 @@
 # E2E Debug & Monitoring
 
-HAR analysis, console error detection, trace viewer, profiling, and test execution analytics.
+Purpose: Use this file when Voyager must explain, reproduce, or stabilize failing browser tests.
+
+Contents:
+- HAR capture and replay
+- Console, trace, CPU, and coverage diagnostics
+- Slow-test analytics and retry strategy
 
 ---
 
@@ -63,8 +68,6 @@ export const test = base.extend<{ networkLogs: NetworkLog[] }>({
 
 // ...
 ```
-
----
 
 ## Browser Console Error Detection
 
@@ -317,22 +320,8 @@ test.describe('Stable tests', () => {
 test.describe('External service tests', () => {
   test.describe.configure({ retries: 3 });
 
-  test('third-party API test', async ({ page }) => {
+test('third-party API test', async ({ page }) => {
     // Extra retries for external dependencies
   });
 });
 ```
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (POM, auth) | `playwright-patterns.md` |
-| CI/CD integration & reporting | `ci-reporting.md` |
-| Performance testing (CWV, Lighthouse) | `performance-testing.md` |
-| Complex scenarios (multi-tab, WebSocket) | `complex-scenarios.md` |
-| Environment management (Docker, seeding) | `environment-management.md` |
-| Cloud testing services | `cloud-testing.md` |
-| Edge cases & i18n | `edge-cases-i18n.md` |

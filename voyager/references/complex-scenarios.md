@@ -1,6 +1,11 @@
 # Complex E2E Scenarios
 
-Advanced Playwright patterns for multi-tab, iframe, file handling, WebSocket, offline mode, and other complex scenarios.
+Purpose: Use this file when a flow includes browser behaviors that exceed the normal single-tab CRUD path.
+
+Contents:
+- Multi-tab, iframe, file, and Shadow DOM handling
+- WebSocket, offline, and permissions scenarios
+- Clipboard, drag-and-drop, and geolocation patterns
 
 ---
 
@@ -391,23 +396,3 @@ test('interacts with Shadow DOM elements', async ({ page }) => {
   expect(value).toBe('expected-value');
 // ...
 ```
-
----
-
-## Cloud Testing Services
-
-> Moved to dedicated file. See `cloud-testing.md` for BrowserStack, Sauce Labs, LambdaTest integration, CI workflows, cost optimization, and security.
-
----
-
-## Cross-Reference Links
-
-| Topic | Reference File |
-|-------|---------------|
-| Playwright patterns (POM, auth) | `playwright-patterns.md` |
-| Cloud testing services | `cloud-testing.md` |
-| Mobile native testing | `mobile-native-testing.md` |
-| Edge cases & i18n | `edge-cases-i18n.md` |
-| Environment management | `environment-management.md` |
-| Debug & monitoring | `debug-monitoring.md` |
-| Visual regression & accessibility | `visual-a11y-testing.md` |
