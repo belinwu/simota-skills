@@ -1,140 +1,86 @@
 # Scout Bug Pattern Catalog Reference
 
-Common bug patterns with symptoms, investigation approaches, and typical causes.
+Purpose: Use this file when the symptom already resembles a known bug family and you need a fast pattern-based investigation path.
 
-## Null/Undefined Reference
+Contents:
 
-**Symptoms:**
-- TypeError: Cannot read property 'x' of undefined/null
-- Unexpected undefined values in output
+- null or undefined
+- race condition
+- off-by-one
+- state synchronization
+- memory leak
+- infinite loop
 
-**Investigation Approach:**
-1. Trace the variable back to its source
-2. Check all code paths that can set this variable
-3. Look for missing null checks or optional chaining
-4. Check async timing (data not loaded yet)
+## Null / Undefined Reference
 
-**Common Causes:**
-- Missing API response handling
-- Race condition in data loading
-- Optional property accessed without check
-- Array index out of bounds
-
----
+- Symptoms: property access `TypeError`, unexpected `undefined`, partially rendered output
+- Investigate:
+  1. trace the value to its source
+  2. inspect all code paths that can leave it empty
+  3. check null guards and optional chaining
+  4. check async timing
+- Common causes:
+  - missing API response handling
+  - race condition in data loading
+  - optional property access without guard
+  - array index out of bounds
 
 ## Race Condition
 
-**Symptoms:**
-- Intermittent failures
-- "Works sometimes"
-- Different results on fast vs slow machines
-- Flaky tests
-
-**Investigation Approach:**
-1. Add timestamps to logs to identify order of operations
-2. Look for shared mutable state
-3. Check useEffect cleanup functions
-4. Look for missing await/Promise handling
-5. Check for event listener cleanup
-
-**Common Causes:**
-- Missing await on async operation
-- Stale closure capturing old state
-- Component unmount during async operation
-- Multiple rapid state updates
-
----
+- Symptoms: intermittent failure, flaky tests, machine-speed differences
+- Investigate:
+  1. add timestamps
+  2. inspect shared mutable state
+  3. check cleanup functions
+  4. inspect missing `await` or concurrent requests
+- Common causes:
+  - missing `await`
+  - stale closure
+  - unmount during async work
+  - rapid repeated updates
 
 ## Off-by-One Error
 
-**Symptoms:**
-- Missing first or last item
-- Index out of bounds
-- Loop runs one too many/few times
-
-**Investigation Approach:**
-1. Check loop boundaries (< vs <=)
-2. Check array indexing (0-based vs 1-based)
-3. Check slice/substring parameters
-4. Verify length calculations
-
-**Common Causes:**
-- Confusion between length and last index
-- Inclusive vs exclusive range
-- Fence post error in loops
-
----
+- Symptoms: missing first or last item, bounds errors, loop runs too many or too few times
+- Investigate:
+  1. compare `<` vs `<=`
+  2. check `0`-based vs `1`-based indexing
+  3. verify `slice` and `substring` semantics
+  4. inspect length calculations
 
 ## State Synchronization Issue
 
-**Symptoms:**
-- UI shows stale data
-- Updates don't reflect immediately
-- Inconsistent state across components
-
-**Investigation Approach:**
-1. Trace state flow from source to consumer
-2. Check for multiple sources of truth
-3. Verify state update triggers re-render
-4. Look for shallow vs deep comparison issues
-
-**Common Causes:**
-- Mutating state instead of creating new reference
-- Missing dependency in useEffect
-- Derived state out of sync with source
-- Cache invalidation issues
-
----
+- Symptoms: stale UI, inconsistent component state, delayed updates
+- Investigate:
+  1. trace state flow from source to consumer
+  2. look for multiple sources of truth
+  3. verify re-render triggers
+  4. inspect shallow vs deep comparison behavior
 
 ## Memory Leak
 
-**Symptoms:**
-- Performance degrades over time
-- Browser/app becomes slow
-- Increasing memory usage in DevTools
+- Symptoms: performance degrades over time, heap grows, slow tab or process
+- Investigate:
+  1. compare heap snapshots
+  2. look for detached DOM nodes
+  3. inspect event listeners, intervals, and retained closures
 
-**Investigation Approach:**
-1. Use DevTools Memory tab to take heap snapshots
-2. Compare snapshots before/after suspected operation
-3. Look for detached DOM nodes
-4. Check for unremoved event listeners
+## Infinite Loop / Recursion
 
-**Common Causes:**
-- Event listeners not removed on cleanup
-- Intervals/timeouts not cleared
-- Closures holding references to large objects
-- Circular references preventing GC
-
----
-
-## Infinite Loop/Recursion
-
-**Symptoms:**
-- Browser freezes
-- Maximum call stack exceeded
-- CPU spikes to 100%
-
-**Investigation Approach:**
-1. Add counter to suspected loops
-2. Check recursion base case
-3. Look for circular dependencies
-4. Check useEffect dependency arrays
-
-**Common Causes:**
-- Missing or incorrect base case
-- State update triggering re-render that updates state
-- Circular import/dependency
-- Infinite re-render cycle
-
----
+- Symptoms: freeze, `Maximum call stack exceeded`, CPU at `100%`
+- Investigate:
+  1. add a counter
+  2. verify base case
+  3. inspect circular dependency or state-triggered rerenders
+  4. check dependency arrays
 
 ## Quick Pattern Identification
 
 | Pattern | Key Symptom | First Check |
 |---------|-------------|-------------|
-| Null/Undefined | TypeError property access | Stack trace location |
-| Race Condition | Intermittent failure | Timing/async code |
-| Off-by-One | Missing first/last | Loop boundaries |
-| State Sync | Stale UI | State mutation |
-| Memory Leak | Slow over time | Event listeners |
-| Infinite Loop | Browser freeze | Dependency arrays |
+| Null / Undefined | property access `TypeError` | stack trace location |
+| Race Condition | intermittent failure | async and timing code |
+| Off-by-One | missing first or last | loop boundaries |
+| State Sync | stale UI | state mutation or stale derivation |
+| Memory Leak | slow over time | listeners, timers, heap |
+| Infinite Loop | freeze or stack overflow | dependency arrays, recursion |

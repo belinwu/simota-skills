@@ -1,158 +1,64 @@
 # Debugging Anti-Patterns & Cognitive Biases
 
-> デバッグにおける認知バイアス、よくある間違い、科学的デバッグ手法
+Purpose: Use this file when an investigation is drifting, overfitting an early theory, or generating noise faster than evidence.
 
-## 1. デバッグにおける認知バイアス
+Contents:
 
-### 主要バイアス一覧
+- cognitive biases
+- debugging anti-patterns
+- scientific debugging
+- Scout checklist
 
-| バイアス | デバッグへの影響 | 対策 |
-|---------|---------------|------|
-| **確証バイアス** | 仮説を支持する証拠だけを探し、矛盾を無視 | 意図的に反証を探す。仮説を「否定」するテストを設計 |
-| **アンカリング** | 最初に見たエラーメッセージや仮説に過度に固執 | 複数の仮説を並列に保持。最初の仮説を記録して意識的に距離を置く |
-| **利用可能性ヒューリスティック** | 最近遭遇した類似バグに引きずられる | パターンマッチングを意識的に疑う。証拠ベースで判断 |
-| **固着バイアス** | 一度立てた仮説への切り替えが遅れる | タイムボックスを設定（30分で進展なし → 仮説変更） |
-| **双曲割引** | 根本原因調査より「とりあえずの修正」を選好 | 修正前に再現手順と根本原因の理解を確認 |
-| **選択的知覚** | 予期するパターンだけに注目 | チェックリストで網羅的に確認 |
+## Cognitive Biases
 
-### Scout のバイアス対策
+| Bias | Failure Mode | Countermeasure |
+|------|--------------|----------------|
+| Confirmation bias | only seeks supporting evidence | design falsification tests |
+| Anchoring | sticks to the first error or theory | keep multiple active hypotheses |
+| Availability heuristic | overweights recent similar bugs | require evidence before pattern matching |
+| Fixation bias | slow hypothesis switching | use a `30-minute` progress rule |
+| Hyperbolic discounting | prefers a quick patch over understanding | require repro and cause before fix handoff |
+| Selective perception | sees only expected patterns | use a checklist and structured notes |
 
-1. **TRIAGE フェーズ**: 3仮説を**異なるカテゴリ**から生成（最頻出・最近の変更・パターンベース）
-2. **TRACE フェーズ**: 仮説を書き出し、各仮説の検証結果を記録（検証ジャーナル）
-3. **Multi-Engine Mode**: 複数 AI の独立仮説で確証バイアスを軽減
+## Debugging Anti-Patterns
 
----
+| Pattern | Failure Mode | Guardrail |
+|---------|--------------|-----------|
+| Shotgun debugging | many random changes, no learning | change one thing at a time |
+| Premature fix | symptom suppressed, cause preserved | reproduce -> locate -> assess before fix |
+| Printf overload | too much unstructured noise | if you add `10+` prints, switch to debugger or structured logs |
+| Correlation mistaken for causation | wrong culprit | verify with rollback, repro, or traffic analysis |
+| Cascading-error trap | fixes secondary failures first | resolve the first error, then rerun |
+| Unverified assumptions | wrong mental model | assume nothing, verify everything |
+| Multiple simultaneous changes | unclear causal result | isolate one variable per experiment |
 
-## 2. デバッグのアンチパターン
+## Scientific Debugging
 
-### Pattern 1: ショットガンデバッギング
+`OBSERVE -> HYPOTHESIZE -> EXPERIMENT -> CONCLUDE`
 
-**症状**: 無方向なコード変更を行い、バグが消えることを祈る。
+Use:
 
-```
-❌ 「この変数を変えてみよう」→「あれも変えよう」→「全部元に戻そう」→ 混乱
-✅ 仮説 → 1つの変更 → 観察 → 結論 → 次の仮説
-```
+- `Wolf Fence` style narrowing for large search spaces
+- rubber-duck explanation to expose hidden assumptions
+- pair debugging or fresh eyes when the investigation stalls
 
-**危険性**: 問題をさらに悪化させ、元の状態が不明になる。
+## Scout Checklist
 
-### Pattern 2: 早すぎる修正（Premature Fix）
+Before starting:
 
-**症状**: 問題を完全に理解する前に修正を適用。症状を抑えるが根本原因を放置。
+- [ ] symptom, timing, and environment recorded
+- [ ] `3` hypotheses from different categories generated
+- [ ] timebox set for each hypothesis
 
-```
-❌ エラーを catch して握りつぶす → 別の場所で問題が再発
-✅ 再現 → 根本原因特定 → 影響範囲評価 → 修正仕様作成
-```
+During investigation:
 
-**Scout の原則**: 修正は書かない。理解を深めることに集中。
+- [ ] no single hypothesis has consumed more than `30 minutes` without progress
+- [ ] results are recorded, not remembered
+- [ ] one variable at a time is changing
+- [ ] causal claims are backed by evidence
 
-### Pattern 3: printf 過多デバッグ
+Before reporting:
 
-**症状**: print/console.log を際限なく追加してバグを探る。
-
-**判断基準**: 10個以上の printf を書いている場合、構造化されたアプローチに切り替えるべきサイン。
-
-**代替手段:**
-- 対話型デバッガ（ブレークポイント、ステップ実行）
-- 構造化ログ（JSON 形式、trace_id 付き）
-- 条件付きブレークポイント
-
-### Pattern 4: 相関と因果の混同
-
-**症状**: 時間的に近接したイベントを因果関係と誤認。
-
-```
-❌ 「デプロイ直後にエラー増加 → デプロイが原因」
-✅ ロールバックで検証 or トラフィックパターン変化を確認
-```
-
-### Pattern 5: 最初のエラーを無視（Cascading Error Trap）
-
-**症状**: 複数エラーの後続エラーから対処し始める。
-
-**現実**: 後続エラーの多くは最初のエラーの波及効果（spurious errors）。
-
-```
-✅ 常に最初のエラーだけを解決し、再実行する
-```
-
-### Pattern 6: 仮定の検証怠慢（Assumption Failure）
-
-**症状**: 変数の値や関数の動作を確認せず、期待通りと仮定。
-
-**原則**: "Assume nothing, verify everything"
-
-### Pattern 7: 複数変更の同時適用
-
-**症状**: 複数の修正を一度に適用し、どの変更が効果を持ったか不明。
-
-```
-✅ 一度に1つの変更だけを行い、影響を観察する
-```
-
----
-
-## 3. 科学的デバッグ手法
-
-### 4ステップメソッド
-
-```
-1. OBSERVE   → 症状を正確に記録（トリガー、条件、環境）
-2. HYPOTHESIZE → 検証可能な仮説を立てる
-3. EXPERIMENT  → 制御された実験で仮説を検証
-4. CONCLUDE   → 結果に基づき仮説を更新 or 次の仮説へ
-```
-
-### Wolf Fence アルゴリズム
-
-二分探索に基づくバグ分離。コードの半分をコメントアウトし、バグの存在を確認。`git bisect` はこのアルゴリズムの実装。
-
-```
-問題のある範囲: [──────────────────]
-          ↓ 半分に分割
-         [─────────][─────────]
-          ↓ バグがある方を特定
-         [─────────]
-          ↓ さらに半分に
-         [────][────]
-          ↓
-         [────]  ← 根本原因の範囲を O(log n) で特定
-```
-
-### ラバーダックデバッグ
-
-コードをステップバイステップで自然言語に説明する。暗黙の前提が明示化され、論理の飛躍が発見される。
-
-**AI 時代の変化**: LLM が「インタラクティブなラバーダック」として機能。ただし LLM の回答を無検証で信じるのは新たなアンチパターン。
-
-### ペアデバッグ
-
-- 2人の開発者が互いに考えを説明しながらデバッグ
-- 異なる視点が確証バイアスの軽減に有効
-- 「新鮮な目」テクニック: 一定時間離れた後に問題に戻る
-
----
-
-## 4. Scout のデバッグチェックリスト
-
-### 調査開始前
-
-- [ ] 症状を正確に記録したか?（エラーメッセージ、タイミング、環境）
-- [ ] 3つの仮説を異なるカテゴリから生成したか?
-- [ ] 各仮説にタイムボックスを設定したか?
-
-### 調査中
-
-- [ ] 1つの仮説に固執していないか?（30分ルール）
-- [ ] 検証結果を記録しているか?
-- [ ] 相関を因果と混同していないか?
-- [ ] 一度に1つの変数だけを変えているか?
-
-### 調査完了時
-
-- [ ] 根本原因をエビデンスで裏付けたか?
-- [ ] 影響範囲を評価したか?
-- [ ] 再現手順を最小化したか?
-
-**Source:** [The Debugging Guide - UChicago CS](https://uchicago-cs.github.io/debugging-guide/) · [Debugging Techniques - Upsun](https://upsun.com/blog/debugging-techniques-for-developers/) · [Cognitive Biases in SE - arXiv](https://arxiv.org/pdf/1707.03869) · [Wolf Fence Algorithm - ACM](https://dl.acm.org/doi/10.1145/358690.358695) · [MIT Debugging - Reading 11](https://web.mit.edu/6.005/www/fa15/classes/11-debugging/)
+- [ ] root cause is evidence-backed
+- [ ] impact scope is assessed
+- [ ] reproduction is minimal or conditions are clearly stated

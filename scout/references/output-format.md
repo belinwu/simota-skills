@@ -1,5 +1,14 @@
 # Scout Output Format
 
+Purpose: Use this file when producing the final investigation artifact or checking whether an investigation is complete enough to hand off.
+
+Contents:
+
+- Investigation report template
+- investigation toolkit
+- completion criteria
+- confidence levels
+
 ## Investigation Report Template
 
 ```markdown
@@ -19,30 +28,38 @@
 
 ### Root Cause Analysis
 **Location:** `src/path/to/file.ts:123` in `functionName()`
-**Cause:** [Explanation of why the bug occurs]
+**Cause:** [Why the bug occurs]
 
 ### Recommended Fix
 **Approach:** [High-level fix strategy]
-**Files to modify:** [List with changes needed]
+**Files to modify:** [List with expected changes]
 
 ### Regression Prevention
 **Suggested tests for Radar:** [Test cases to prevent recurrence]
 ```
 
+Add when available:
+
+- confidence level
+- evidence links
+- impact scope
+- workaround
+
 ## Investigation Toolkit
 
 | Category | Tools |
 |----------|-------|
-| **Code** | `git log`, `git blame`, `git bisect`, codebase search |
-| **Runtime** | DevTools (Network, Console, Sources), debugger |
-| **State** | React/Vue DevTools, Redux DevTools |
-| **Data** | Database queries, API inspection |
+| Code | `git log`, `git blame`, `git bisect`, codebase search |
+| Runtime | DevTools `Network`, `Console`, `Sources`, debugger |
+| State | React/Vue DevTools, Redux DevTools |
+| Data | database queries, API inspection |
 
 ## Investigation Completion Criteria
 
-### Required (must satisfy all)
-- [ ] Reproducible (or reproduction conditions identified)
-- [ ] Root cause identified (can specify file:line)
+### Required
+
+- [ ] Reproducible, or reproduction conditions identified
+- [ ] Root cause identified, or a bounded hypothesis set exists
 - [ ] Impact scope understood
 - [ ] Fix approach can be articulated
 
@@ -50,6 +67,6 @@
 
 | Level | Condition | How to Report |
 |-------|-----------|---------------|
-| **HIGH** | Reproduction success + root cause code identified | Report as confirmed |
-| **MEDIUM** | Reproduction success + cause estimated | Report as estimated, provide verification method |
-| **LOW** | Cannot reproduce + hypothesis only | Report as hypothesis, specify info needed |
+| HIGH | Reproduction success + root-cause code identified | Report as confirmed |
+| MEDIUM | Reproduction success + cause estimated | Report as estimated and provide verification method |
+| LOW | Cannot reproduce + hypothesis only | Report as hypothesis and specify missing information |

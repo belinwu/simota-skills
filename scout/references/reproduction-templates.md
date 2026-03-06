@@ -1,6 +1,14 @@
 # Scout Reproduction Templates Reference
 
-Standardized templates for documenting bug reproduction across different bug types.
+Purpose: Use this file when you need a consistent reproduction record for UI, API, state, async, or general failures.
+
+Contents:
+
+- UI bug template
+- API bug template
+- state bug template
+- async bug template
+- general bug report template
 
 ## UI Bug Template
 
@@ -14,9 +22,9 @@ Standardized templates for documenting bug reproduction across different bug typ
 - User role: [Admin / Regular / Guest]
 
 **Setup State:**
-- [ ] Fresh login (no cached state)
+- [ ] Fresh login
 - [ ] Specific data exists: [describe]
-- [ ] Feature flags: [list any]
+- [ ] Feature flags: [list]
 
 **Steps:**
 1. Navigate to [URL/page]
@@ -24,15 +32,11 @@ Standardized templates for documenting bug reproduction across different bug typ
 3. [User action]
 4. Observe [element/area]
 
-**Expected:** [What should appear/happen]
-**Actual:** [What actually appears/happens]
-
+**Expected:** [What should happen]
+**Actual:** [What actually happens]
 **Visual Evidence:** [Screenshot or recording link]
-
 **Reproducibility:** [Always / 80% / Specific conditions]
 ```
-
----
 
 ## API Bug Template
 
@@ -48,90 +52,54 @@ Standardized templates for documenting bug reproduction across different bug typ
     "Authorization": "Bearer [token type]",
     "Content-Type": "application/json"
   },
-  "body": { }
+  "body": {}
 }
 ```
 
-**Expected Response:**
-```json
-{
-  "status": 200,
-  "body": { }
-}
-```
-
-**Actual Response:**
-```json
-{
-  "status": [actual],
-  "body": { }
-}
-```
+**Expected Response:** [status/body]
+**Actual Response:** [status/body]
 
 **cURL Command:**
 ```bash
 curl -X POST https://api.example.com/endpoint \
   -H "Authorization: Bearer xxx" \
   -H "Content-Type: application/json" \
-  -d '{"key": "value"}'
+  -d '{"key":"value"}'
 ```
 
 **Reproducibility:** [Always / Specific conditions]
 ```
 
----
-
-## State Management Bug Template
+## State Bug Template
 
 ```markdown
 ## State Bug Reproduction
 
-**State Location:** [Redux store / React Context / Component state]
+**State Location:** [Redux store / React Context / component state]
 **State Path:** [store.user.profile / context.theme]
 
-**Initial State:**
-```json
-{ }
-```
-
-**Action/Trigger:** [What causes the state change]
-
-**Expected State:**
-```json
-{ }
-```
-
-**Actual State:**
-```json
-{ }
-```
+**Initial State:** [json]
+**Action/Trigger:** [what changes the state]
+**Expected State:** [json]
+**Actual State:** [json]
 
 **State Timeline:**
-1. [Time T0] Initial state: {...}
-2. [Time T1] Action dispatched: {...}
-3. [Time T2] State after: {...}
+1. [T0] Initial state
+2. [T1] Action dispatched
+3. [T2] Unexpected state
 
-**DevTools Evidence:** [Redux DevTools / React DevTools screenshot]
+**DevTools Evidence:** [Redux DevTools / React DevTools]
 ```
-
----
 
 ## Async Bug Template
 
 ```markdown
 ## Async Bug Reproduction
 
-**Async Operation:** [API call / Timer / Event listener]
+**Async Operation:** [API call / timer / event listener]
 
 **Sequence:**
-```
-User    →  Component  →  Service  →  API
-  │           │            │          │
-  ├──click────┤            │          │
-  │           ├──fetch─────┤          │
-  │           │            ├──request─┤
-  │           │            │    ⚡ Error occurs here
-```
+User -> Component -> Service -> API
 
 **Timing Information:**
 - Operation start: [timestamp]
@@ -145,16 +113,9 @@ User    →  Component  →  Service  →  API
 - [ ] Component unmount
 - [ ] Multiple concurrent requests
 
-**Console Logs (with timestamps):**
+**Console Logs:**
+[timestamped logs]
 ```
-[10:00:00.000] Starting fetch...
-[10:00:00.050] Component rendering...
-[10:00:00.100] User navigated away
-[10:00:00.500] Fetch completed - setState on unmounted!
-```
-```
-
----
 
 ## General Bug Report Template
 
@@ -167,7 +128,7 @@ User    →  Component  →  Service  →  API
 
 **Environment:**
 - [Browser/OS/Node version]
-- [Environment: Dev/Staging/Prod]
+- [Dev/Staging/Prod]
 
 **Steps to Reproduce:**
 1. [Step 1]
@@ -178,24 +139,20 @@ User    →  Component  →  Service  →  API
 **Actual Behavior:** [What actually happens]
 
 **Error Messages:**
-```
-[Paste exact error text]
-```
+[exact error text]
 
 **Additional Context:**
-- Recent changes: [If known]
-- Affected users: [Scope]
-- Workaround: [If any]
+- Recent changes: [if known]
+- Affected users: [scope]
+- Workaround: [if any]
 ```
-
----
 
 ## Template Selection Guide
 
-| Bug Type | Template | Key Focus |
-|----------|----------|-----------|
-| Visual/UI | UI Bug | Screenshots, viewport, user role |
-| API | API Bug | Request/response, cURL command |
-| State | State Management | State snapshots, timeline |
-| Timing | Async Bug | Sequence diagram, timestamps |
-| General | Bug Report | Standard format for any bug |
+| Bug Type | Template | Focus |
+|----------|----------|-------|
+| Visual / UI | UI Bug | screenshot, viewport, role |
+| API | API Bug | request/response, `curl` |
+| State | State Bug | snapshots, timeline |
+| Timing | Async Bug | sequence, timestamps |
+| Mixed or unclear | General Bug Report | common baseline |
