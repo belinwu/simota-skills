@@ -1,14 +1,39 @@
 # Hook Recipes
 
-Proven, ready-to-use hook configurations for common workflows. Each recipe includes the settings.json snippet, explanation, and customization notes.
+Purpose: Read this when you need a proven hook pattern, recipe ID, or stack-specific recipe combination.
 
----
+## Contents
+
+- [Recipe catalog](#recipe-catalog)
+- [Security recipes](#security-recipes)
+- [Quality recipes](#quality-recipes)
+- [Context and workflow recipes](#context-and-workflow-recipes)
+- [Tech stack sets](#tech-stack-sets)
+- [Combining recipes](#combining-recipes)
+
+## Recipe Catalog
+
+| ID | Event | Matcher | Type | Use |
+|----|-------|---------|------|-----|
+| `S1` | `PreToolUse` | `Write|Edit` | `prompt` | Block writes to sensitive paths |
+| `S2` | `PreToolUse` | `Bash` | `prompt` | Guard dangerous shell commands |
+| `S3` | `PreToolUse` | `Write|Edit` | `command` | Detect secrets before file writes |
+| `S4` | `PreToolUse` | `mcp__.*__delete.*` | `prompt` | Confirm risky MCP deletions |
+| `Q1` | `Stop` | `*` | `prompt` | Require tests before stopping |
+| `Q2` | `PostToolUse` | `Write|Edit` | `command` | Run linter after edits |
+| `Q3` | `Stop` | `*` | `command` | Enforce a type-check gate |
+| `Q4` | `Stop` | `*` | `prompt` | Require a successful build |
+| `C1` | `SessionStart` | `*` | `command` | Detect project type and load context |
+| `C2` | `PreCompact` | `*` | `command` | Preserve critical context before compaction |
+| `W1` | `Notification` | `*` | `command` | Log notifications |
+| `W2` | `PreToolUse` | `Bash` | `command` | Enable temporary strict mode via flag file |
+| `W3` | `SessionStart` / `SessionEnd` | `*` | `command` | Keep a session audit trail |
 
 ## Security Recipes
 
-### S1: File Write Security Validation
+### `S1`: File Write Security Validation
 
-Block writes to sensitive files and system directories.
+Use when writes must avoid system directories, `.env`, credentials, or traversal.
 
 ```json
 {
@@ -18,7 +43,7 @@ Block writes to sensitive files and system directories.
       "hooks": [
         {
           "type": "prompt",
-          "prompt": "File path: $TOOL_INPUT.file_path. Verify: 1) Not in /etc or system directories 2) Not .env, credentials, or key files 3) Path doesn't contain '..' traversal 4) Not overwriting critical config without reason. Return 'approve' or 'deny' with reason.",
+          "prompt": "File path: $TOOL_INPUT.file_path. Verify: 1) Not in /etc or system directories 2) Not .env, credentials, or key files 3) Path does not contain .. traversal 4) Not overwriting critical config without reason. Return approve or deny with reason.",
           "timeout": 15
         }
       ]
@@ -27,12 +52,9 @@ Block writes to sensitive files and system directories.
 }
 ```
 
-**Risk level:** Low (non-blocking by default, prompt-based)
-**Customization:** Add project-specific protected paths to the prompt.
+### `S2`: Bash Command Safety Validation
 
-### S2: Bash Command Safety Validation
-
-Detect and block dangerous shell commands.
+This is the most common safety recipe and must remain easy to discover.
 
 ```json
 {
@@ -42,7 +64,7 @@ Detect and block dangerous shell commands.
       "hooks": [
         {
           "type": "prompt",
-          "prompt": "Command: $TOOL_INPUT.command. Check for: 1) rm -rf with broad paths 2) Destructive database commands (DROP, DELETE without WHERE) 3) Permission changes (chmod 777) 4) Network operations to unknown hosts 5) Package installs from untrusted sources. Return 'approve', 'deny', or 'ask' for user confirmation.",
+          "prompt": "Command: $TOOL_INPUT.command. Check for: 1) rm -rf with broad paths 2) Destructive database commands 3) chmod 777 4) Network operations to unknown hosts 5) Package installs from untrusted sources. Return approve, deny, or ask.",
           "timeout": 15
         }
       ]
@@ -51,12 +73,9 @@ Detect and block dangerous shell commands.
 }
 ```
 
-**Risk level:** Medium (may use 'ask' to pause)
-**Customization:** Add approved command patterns for your project.
+### `S3`: Secret Leak Prevention
 
-### S3: Secret Leak Prevention
-
-Detect secrets in file writes using command hook.
+Keep this example because it is the canonical `stderr + exit 2 + permissionDecision: deny` pattern.
 
 ```json
 {
@@ -75,29 +94,21 @@ Detect secrets in file writes using command hook.
 }
 ```
 
-**Script (`~/.claude/hooks/check-secrets.sh`):**
 ```bash
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 input=$(cat)
 content=$(echo "$input" | jq -r '.tool_input.content // empty')
 
-if [ -z "$content" ]; then
-  exit 0
-fi
-
-# Check for common secret patterns
-if echo "$content" | grep -qiE '(api[_-]?key|password|secret|token|private[_-]?key)\s*[:=]\s*["\x27]?[A-Za-z0-9+/]{20,}'; then
+if [ -n "$content" ] && echo "$content" | grep -qiE '(api[_-]?key|password|secret|token|private[_-]?key)\s*[:=]\s*["\x27]?[A-Za-z0-9+/]{20,}'; then
   echo '{"hookSpecificOutput":{"permissionDecision":"deny"},"systemMessage":"Potential secret detected in content. Remove secrets before writing."}' >&2
   exit 2
 fi
 
-# ...
+exit 0
 ```
 
-### S4: MCP Delete Operation Guard
-
-Require confirmation for all MCP delete operations.
+### `S4`: MCP Delete Operation Guard
 
 ```json
 {
@@ -107,7 +118,7 @@ Require confirmation for all MCP delete operations.
       "hooks": [
         {
           "type": "prompt",
-          "prompt": "MCP deletion detected. Tool: $TOOL_INPUT. Verify: Is deletion intentional? Can it be undone? Are there backups? Return 'ask' to confirm with user unless clearly safe.",
+          "prompt": "MCP deletion detected. Verify intent, reversibility, and backups. Return ask unless the deletion is clearly safe.",
           "timeout": 15
         }
       ]
@@ -116,13 +127,11 @@ Require confirmation for all MCP delete operations.
 }
 ```
 
----
-
 ## Quality Recipes
 
-### Q1: Test Execution Enforcement (Stop)
+### `Q1`: Test Execution Enforcement
 
-Block stopping if code was changed but tests weren't run.
+Keep this as the default `Stop` quality gate.
 
 ```json
 {
@@ -132,7 +141,7 @@ Block stopping if code was changed but tests weren't run.
       "hooks": [
         {
           "type": "prompt",
-          "prompt": "Review the session transcript. If code was modified (Write/Edit tools used), verify that tests were executed (test commands in Bash). If no tests were run after code changes, block with reason 'Tests must be run after code changes'. If no code was changed or tests passed, approve.",
+          "prompt": "If code was modified, verify that tests were executed. If no tests ran after code changes, block with reason. Otherwise approve.",
           "timeout": 30
         }
       ]
@@ -141,12 +150,7 @@ Block stopping if code was changed but tests weren't run.
 }
 ```
 
-**Risk level:** Medium (blocks completion)
-**Note:** This is a blocking hook — Claude will be asked to run tests before stopping.
-
-### Q2: Auto Lint After Edit (PostToolUse)
-
-Run linter automatically after file edits.
+### `Q2`: Auto Lint After Edit
 
 ```json
 {
@@ -165,29 +169,9 @@ Run linter automatically after file edits.
 }
 ```
 
-**Script (`~/.claude/hooks/auto-lint.sh`):**
-```bash
-#!/bin/bash
-set -euo pipefail
-input=$(cat)
-file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+Use a file-extension switch inside the script so the hook exits quickly for unsupported files.
 
-if [ -z "$file_path" ] || [ ! -f "$file_path" ]; then
-  exit 0
-fi
-
-# Run appropriate linter
-case "$file_path" in
-  *.ts|*.tsx|*.js|*.jsx)
-    npx eslint "$file_path" --fix 2>&1 || true
-    ;;
-  *.py)
-# ...
-```
-
-### Q3: Type Check Enforcement
-
-Ensure TypeScript type checking passes after code changes.
+### `Q3`: Type Check Enforcement
 
 ```json
 {
@@ -206,28 +190,9 @@ Ensure TypeScript type checking passes after code changes.
 }
 ```
 
-**Script (`~/.claude/hooks/check-types.sh`):**
-```bash
-#!/bin/bash
-cd "$CLAUDE_PROJECT_DIR" || exit 0
+Use when the project has a deterministic type-check command.
 
-# Only run if TypeScript project
-if [ ! -f "tsconfig.json" ]; then
-  exit 0
-fi
-
-result=$(npx tsc --noEmit 2>&1)
-if [ $? -ne 0 ]; then
-  echo "{\"decision\":\"block\",\"reason\":\"TypeScript errors found\",\"systemMessage\":\"$result\"}" >&2
-  exit 2
-fi
-
-exit 0
-```
-
-### Q4: Build Verification
-
-Ensure build succeeds before stopping.
+### `Q4`: Build Verification
 
 ```json
 {
@@ -237,7 +202,7 @@ Ensure build succeeds before stopping.
       "hooks": [
         {
           "type": "prompt",
-          "prompt": "Check if code was modified during this session. If Write/Edit tools were used, verify the project was built successfully (npm run build, cargo build, go build, etc). If not built, block and request a build step.",
+          "prompt": "If code was modified, verify that the project build succeeded. If no build ran after code changes, block and request a build step.",
           "timeout": 30
         }
       ]
@@ -246,13 +211,11 @@ Ensure build succeeds before stopping.
 }
 ```
 
----
+## Context and Workflow Recipes
 
-## Context Recipes
+### `C1`: Project Context Auto-Load
 
-### C1: Project Context Auto-Load (SessionStart)
-
-Automatically detect project type and load relevant context.
+This is the canonical `SessionStart` context recipe and must stay discoverable.
 
 ```json
 {
@@ -271,29 +234,11 @@ Automatically detect project type and load relevant context.
 }
 ```
 
-**Script (`~/.claude/hooks/load-project-context.sh`):**
-```bash
-#!/bin/bash
-cd "$CLAUDE_PROJECT_DIR" || exit 0
+Use `$CLAUDE_ENV_FILE` to persist variables such as `PROJECT_TYPE` and package-manager hints.
 
-context=""
+### `C2`: PreCompact Critical Info Preservation
 
-# Detect project type
-if [ -f "package.json" ]; then
-  context="Node.js project."
-  echo "export PROJECT_TYPE=nodejs" >> "$CLAUDE_ENV_FILE"
-
-  # Detect package manager
-  if [ -f "pnpm-lock.yaml" ]; then
-    context="$context Uses pnpm."
-    echo "export PKG_MANAGER=pnpm" >> "$CLAUDE_ENV_FILE"
-  elif [ -f "bun.lockb" ]; then
-# ...
-```
-
-### C2: PreCompact Critical Info Preservation
-
-Save important context before compaction.
+Keep this example because it directly affects context-preserving behavior.
 
 ```json
 {
@@ -312,10 +257,8 @@ Save important context before compaction.
 }
 ```
 
-**Script (`~/.claude/hooks/preserve-context.sh`):**
 ```bash
 #!/bin/bash
-# Read PROJECT.md and inject as system message for context preservation
 project_file="$CLAUDE_PROJECT_DIR/.agents/PROJECT.md"
 
 if [ -f "$project_file" ]; then
@@ -326,13 +269,7 @@ fi
 exit 0
 ```
 
----
-
-## Workflow Recipes
-
-### W1: Notification Logging
-
-Log all Claude notifications for audit.
+### `W1`: Notification Logging
 
 ```json
 {
@@ -351,18 +288,9 @@ Log all Claude notifications for audit.
 }
 ```
 
-**Script (`~/.claude/hooks/log-notification.sh`):**
-```bash
-#!/bin/bash
-input=$(cat)
-timestamp=$(date -Iseconds)
-echo "$timestamp | notification | $input" >> ~/.claude/logs/notifications.log
-exit 0
-```
+### `W2`: Temporary Hook via Flag File
 
-### W2: Temporary Hook (Flag File Control)
-
-Hook that only runs when a flag file exists.
+Keep this example because it is the main reversible strict-mode pattern.
 
 ```json
 {
@@ -381,170 +309,51 @@ Hook that only runs when a flag file exists.
 }
 ```
 
-**Script (`~/.claude/hooks/strict-bash-check.sh`):**
 ```bash
 #!/bin/bash
 FLAG_FILE="$CLAUDE_PROJECT_DIR/.enable-strict-validation"
 
-# Quick exit if not enabled
 if [ ! -f "$FLAG_FILE" ]; then
   exit 0
 fi
 
-# Strict validation when enabled
 input=$(cat)
 command=$(echo "$input" | jq -r '.tool_input.command // empty')
 
-# Block all rm commands in strict mode
 if echo "$command" | grep -qE '\brm\b'; then
   echo '{"hookSpecificOutput":{"permissionDecision":"deny"},"systemMessage":"Strict mode: rm commands blocked. Remove .enable-strict-validation to disable."}' >&2
-# ...
+  exit 2
+fi
+
+exit 0
 ```
 
-**Usage:**
+Usage:
+
 ```bash
-# Enable strict mode
 touch .enable-strict-validation
-
-# Disable strict mode
 rm .enable-strict-validation
-# Restart Claude Code for changes to take effect
+# Restart Claude Code after changing the flag state
 ```
 
-### W3: Session Audit Trail
+### `W3`: Session Audit Trail
 
-Log session start and end for tracking.
+Use paired `SessionStart` and `SessionEnd` command hooks to append session start/end lines to a shared log.
 
-```json
-{
-  "SessionStart": [
-    {
-      "matcher": "*",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash -c 'echo \"$(date -Iseconds) | session_start | $CLAUDE_PROJECT_DIR\" >> ~/.claude/logs/sessions.log'",
-          "timeout": 5
-        }
-      ]
-    }
-  ],
-  "SessionEnd": [
-    {
-// ...
-```
+## Tech Stack Sets
 
----
+Use stack sets as combinations of recipe IDs plus one or two stack-specific checks instead of copying large JSON blocks.
 
-## Tech Stack Recommended Sets
-
-### Node.js / TypeScript
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {"matcher": "*", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/load-project-context.sh", "timeout": 10}]}
-    ],
-    "PreToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "prompt", "prompt": "Validate file write: not .env, not node_modules, not dist/. Return 'approve' or 'deny'.", "timeout": 10}]},
-      {"matcher": "Bash", "hooks": [{"type": "prompt", "prompt": "Check bash command safety. Block: rm -rf node_modules (use package manager), npm publish without --dry-run. Return 'approve' or 'ask'.", "timeout": 10}]}
-    ],
-    "PostToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/auto-lint.sh", "timeout": 30}]}
-    ],
-    "Stop": [
-      {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If code was changed, verify: 1) Tests run 2) TypeScript compiles 3) No console.log left in production code. Approve or block.", "timeout": 30}]}
-    ]
-// ...
-```
-
-### Go
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {"matcher": "*", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/load-project-context.sh", "timeout": 10}]}
-    ],
-    "PreToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "prompt", "prompt": "Validate Go file write: proper package declaration, no vendor/ modifications. Return 'approve' or 'deny'.", "timeout": 10}]}
-    ],
-    "PostToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash -c 'input=$(cat); fp=$(echo \"$input\" | jq -r \".tool_input.file_path\"); [[ \"$fp\" == *.go ]] && gofmt -w \"$fp\" 2>&1 || true'", "timeout": 15}]}
-    ],
-    "Stop": [
-      {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Go code was changed, verify: 1) go build succeeds 2) go test passes 3) go vet clean. Approve or block.", "timeout": 30}]}
-    ]
-  }
-// ...
-```
-
-### Rust
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {"matcher": "*", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/load-project-context.sh", "timeout": 10}]}
-    ],
-    "PreToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "prompt", "prompt": "Validate Rust file write: not modifying Cargo.lock directly, proper module structure. Return 'approve' or 'deny'.", "timeout": 10}]}
-    ],
-    "PostToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash -c 'input=$(cat); fp=$(echo \"$input\" | jq -r \".tool_input.file_path\"); [[ \"$fp\" == *.rs ]] && rustfmt \"$fp\" 2>&1 || true'", "timeout": 15}]}
-    ],
-    "Stop": [
-      {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Rust code was changed, verify: 1) cargo check passes 2) cargo test passes 3) No clippy warnings. Approve or block.", "timeout": 60}]}
-    ]
-  }
-// ...
-```
-
-### Python
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {"matcher": "*", "hooks": [{"type": "command", "command": "bash ~/.claude/hooks/load-project-context.sh", "timeout": 10}]}
-    ],
-    "PreToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "prompt", "prompt": "Validate Python file write: not .env, not __pycache__, not venv/. Return 'approve' or 'deny'.", "timeout": 10}]},
-      {"matcher": "Bash", "hooks": [{"type": "prompt", "prompt": "Check: pip install without --dry-run, dangerous subprocess calls, eval/exec usage. Return 'approve' or 'ask'.", "timeout": 10}]}
-    ],
-    "PostToolUse": [
-      {"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "bash -c 'input=$(cat); fp=$(echo \"$input\" | jq -r \".tool_input.file_path\"); [[ \"$fp\" == *.py ]] && python -m ruff check \"$fp\" --fix 2>&1 || true'", "timeout": 15}]}
-    ],
-    "Stop": [
-      {"matcher": "*", "hooks": [{"type": "prompt", "prompt": "If Python code was changed, verify: 1) pytest passes 2) ruff/mypy clean 3) No breakpoint() left. Approve or block.", "timeout": 30}]}
-    ]
-// ...
-```
-
----
+| Stack | Start with | Add these stack-specific checks |
+|-------|------------|---------------------------------|
+| Node.js / TypeScript | `C1 + S1 + S2 + Q1 + Q2 + Q4` | Guard `node_modules` and `dist`, avoid unsafe `npm publish`, add `Q3` for type-checking |
+| Go | `C1 + S1 + Q2 + Q4` | Prevent `vendor/` edits, run `gofmt`, verify `go build`, `go test`, and `go vet` |
+| Rust | `C1 + S1 + Q2 + Q4` | Avoid direct `Cargo.lock` edits, run `rustfmt`, verify `cargo check`, `cargo test`, and `clippy` |
+| Python | `C1 + S1 + S2 + Q1 + Q2 + Q4` | Guard `.env`, `venv`, and `__pycache__`, run `ruff`, and verify `pytest` plus optional `mypy` |
 
 ## Combining Recipes
 
-Recipes are composable. To combine multiple recipes, merge the event arrays:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      { "comment": "S1: File write security" },
-      { "matcher": "Write|Edit", "hooks": [{"type": "prompt", "prompt": "..."}] },
-      { "comment": "S2: Bash safety" },
-      { "matcher": "Bash", "hooks": [{"type": "prompt", "prompt": "..."}] },
-      { "comment": "S4: MCP guard" },
-      { "matcher": "mcp__.*__delete.*", "hooks": [{"type": "prompt", "prompt": "..."}] }
-    ],
-    "Stop": [
-      { "comment": "Q1: Test enforcement" },
-      { "matcher": "*", "hooks": [{"type": "prompt", "prompt": "..."}] }
-    ],
-    "SessionStart": [
-// ...
-```
-
-**Tip:** Start with 1-2 recipes and add gradually. Too many hooks can slow down the workflow.
+- Merge recipes by concatenating matcher groups under the same event.
+- Keep recipe comments or IDs in the config so the purpose stays discoverable.
+- Start with `1-2` recipes and add more gradually.
+- Too many hooks can slow the workflow or create false positives.

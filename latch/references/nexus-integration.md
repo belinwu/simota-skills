@@ -1,94 +1,104 @@
 # Nexus Integration
 
-AUTORUN I/O templates and NEXUS_HANDOFF format for Latch.
+Purpose: Read this when Latch runs under Nexus `AUTORUN`, when the input contains `## NEXUS_ROUTING`, or when you need `_STEP_COMPLETE:` / `## NEXUS_HANDOFF` templates.
 
----
+## Contents
+
+- [AUTORUN agent context](#autorun-agent-context)
+- [AUTORUN step completion](#autorun-step-completion)
+- [NEXUS handoff format](#nexus_handoff-format)
+- [Nexus routing integration](#nexus-routing-integration)
 
 ## AUTORUN Agent Context
 
-When Nexus invokes Latch in AUTORUN mode:
+When Nexus invokes Latch in `AUTORUN` mode:
 
-```
+```yaml
 _AGENT_CONTEXT:
   Role: Latch
-  Task: [具体的なタスク]
+  Task: [Specific hook task]
   Input:
-    request: [ユーザーの要求]
-    current_hooks: [現在のフック設定概要]
-    project_type: [プロジェクトタイプ]
+    request: [User request]
+    current_hooks: [Current hook summary]
+    project_type: [Project type]
   Constraints:
-    - settings.json のみ変更（hooks セクション）
-    - 変更前にバックアップ作成
-    - セッション再起動リマインド必須
+    - Change only the `hooks` section in settings.json
+    - Create a backup before modification
+    - Remind the user to restart the session
   Expected_output:
-    - 設定変更内容
-    - 作成したスクリプト
-    - 検証結果
+    - Settings changes
+    - Scripts created
+    - Verification result
 ```
 
----
+## AUTORUN Step Completion
 
-## AUTORUN Step Complete
+After Latch finishes, append:
 
-After Latch completes its task:
-
-```
+```yaml
 _STEP_COMPLETE:
   Agent: Latch
   Status: SUCCESS|PARTIAL|BLOCKED|FAILED
   Output:
-    hooks_configured: [設定したフック一覧]
-    scripts_created: [作成したスクリプト一覧]
+    hooks_configured: [Configured hooks]
+    scripts_created: [Created scripts]
     settings_modified: true|false
     backup_created: true|false
-    verification: [検証結果の概要]
+    verification: [Verification summary]
   Risks:
-    - [リスク項目があれば記載]
+    - [Risk item if any]
   Reminders:
-    - セッション再起動が必要
-  Next: [次のエージェント]|DONE
+    - Session restart required
+  Next: [Next agent]|DONE
 ```
-
----
 
 ## NEXUS_HANDOFF Format
 
-When returning results to Nexus hub:
+When returning results to Nexus hub, use `## NEXUS_HANDOFF` and preserve the broader field contract defined in `SKILL.md`.
 
 ```markdown
 ## NEXUS_HANDOFF
 
 ### Step: Latch
-**Summary:** [1行の要約]
+**Agent:** Latch
+**Summary:** [One-line summary]
 
-### Changes
-- **settings.json:** [変更内容]
-- **Scripts:** [作成/変更したスクリプト]
-- **Backup:** [バックアップ情報]
+### Key findings
+- [Finding]
+
+### Artifacts
+- **settings.json:** [Changed content]
+- **Scripts:** [Created or updated scripts]
+- **Backup:** [Backup information]
 
 ### Verification
-- `/hooks` で確認: [確認結果]
-- `claude --debug` テスト: [テスト結果]
-- スクリプト単体テスト: [テスト結果]
+- `/hooks`: [Result]
+- `claude --debug`: [Result]
+- Script test: [Result]
 
-### Risks & Follow-ups
-- [リスクや後続タスク]
-- セッション再起動が必要
+### Risks
+- [Risk or follow-up]
+- Session restart required
+
+### Open questions
+- [Question if any]
+
+### Pending Confirmations (Trigger/Question/Options/Recommended)
+- [Confirmation item if any]
+
+### User Confirmations
+- [Accepted confirmation if any]
 
 ### Next
-**Agent:** [次のエージェント]
-**Action:** [次のアクション]
+**Suggested next agent:** [Next agent]
+**Next action:** [Next action]
 ```
-
----
 
 ## Nexus Routing Integration
 
-Latch is routed by Nexus for the following task types:
-
-| Task Type | Chain | When |
-|-----------|-------|------|
-| HOOKS | Latch | Claude Code フックの設定・デバッグ |
-| HOOKS/security | Sentinel → Latch | セキュリティ要件をフックで実装 |
-| HOOKS/quality | Latch → Radar | 品質ゲートフック＋テスト検証 |
-| INFRA/hooks | Latch → Gear | フック＋CI/CD 連携 |
+| Task Type | Chain | Use when |
+|-----------|-------|----------|
+| `HOOKS` | `Latch` | Configure or debug Claude Code hooks |
+| `HOOKS/security` | `Sentinel -> Latch` | Turn security requirements into hooks |
+| `HOOKS/quality` | `Latch -> Radar` | Pair quality-gate hooks with test verification |
+| `INFRA/hooks` | `Latch -> Gear` | Connect hooks with infrastructure or CI/CD work |

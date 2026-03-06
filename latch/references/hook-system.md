@@ -1,147 +1,33 @@
 # Claude Code Hook System Reference
 
-## Overview
+Purpose: Read this when selecting a hook event, deciding between `prompt` and `command`, editing `settings.json`, or validating hook I/O and lifecycle rules.
 
-Claude Code hooks are event-driven automation scripts that execute in response to Claude Code lifecycle events. They enable validation, policy enforcement, context injection, and workflow automation without modifying Claude Code itself.
+## Contents
 
-**Two configuration formats:**
-- **settings.json** (primary for end users): `~/.claude/settings.json` — direct event keys at top level
-- **hooks.json** (for plugins): `hooks/hooks.json` — wrapped in `{"hooks": {...}}` container
+- [Configuration formats](#configuration-formats)
+- [Event catalog](#event-catalog)
+- [Hook types](#hook-types)
+- [Matcher patterns](#matcher-patterns)
+- [Input format](#input-format)
+- [Output format](#output-format)
+- [Environment variables](#environment-variables)
+- [Lifecycle constraints](#lifecycle-constraints)
 
-Latch primarily manages settings.json format.
+## Configuration Formats
 
----
+Latch primarily manages the end-user `settings.json` format.
 
-## Hook Events (9 Events)
+| Format | Location | Use |
+|--------|----------|-----|
+| `settings.json` | `~/.claude/settings.json` | Primary end-user hook configuration |
+| `hooks.json` | `hooks/hooks.json` | Plugin-oriented configuration under a `{"hooks": {...}}` wrapper |
 
-| # | Event | Trigger Timing | Primary Use |
-|---|-------|---------------|-------------|
-| 1 | **PreToolUse** | Before any tool executes | Approve, deny, or modify tool calls |
-| 2 | **PostToolUse** | After tool completes | React to results, provide feedback, log |
-| 3 | **UserPromptSubmit** | When user submits a prompt | Add context, validate, or block prompts |
-| 4 | **Stop** | When main agent considers stopping | Validate task completeness |
-| 5 | **SubagentStop** | When subagent considers stopping | Ensure subagent task completion |
-| 6 | **SessionStart** | When Claude Code session begins | Load context, set environment |
-| 7 | **SessionEnd** | When session ends | Cleanup, logging, state preservation |
-| 8 | **PreCompact** | Before context compaction | Preserve critical information |
-| 9 | **Notification** | When Claude sends notifications | React to notifications, logging |
-
-### Event Details
-
-#### PreToolUse
-- **Prompt hooks supported:** Yes
-- **Can block:** Yes (permissionDecision: "deny")
-- **Can modify input:** Yes (updatedInput field)
-- **Input fields:** `tool_name`, `tool_input`
-- **Output format:**
-```json
-{
-  "hookSpecificOutput": {
-    "permissionDecision": "allow|deny|ask",
-    "updatedInput": {"field": "modified_value"}
-  },
-  "systemMessage": "Explanation for Claude"
-}
-```
-
-#### PostToolUse
-- **Prompt hooks supported:** Yes
-- **Can block:** No (informational only)
-- **Input fields:** `tool_name`, `tool_input`, `tool_result`
-- **Output behavior:** Exit 0 → stdout in transcript; Exit 2 → stderr fed to Claude; systemMessage in context
-
-#### UserPromptSubmit
-- **Prompt hooks supported:** Yes
-- **Can block:** Yes
-- **Input fields:** `user_prompt`
-
-#### Stop / SubagentStop
-- **Prompt hooks supported:** Yes
-- **Can block:** Yes (decision: "block")
-- **Input fields:** `reason`
-- **Output format:**
-```json
-{
-  "decision": "approve|block",
-  "reason": "Explanation",
-  "systemMessage": "Additional context"
-}
-```
-
-#### SessionStart
-- **Prompt hooks supported:** No (command only)
-- **Special capability:** Environment variable persistence via `$CLAUDE_ENV_FILE`
-```bash
-echo "export PROJECT_TYPE=nodejs" >> "$CLAUDE_ENV_FILE"
-```
-
-#### SessionEnd
-- **Prompt hooks supported:** No (command only)
-- **Use for:** Cleanup, final logging, state save
-
-#### PreCompact
-- **Prompt hooks supported:** No (command only)
-- **Use for:** Inject critical context to preserve through compaction
-
-#### Notification
-- **Prompt hooks supported:** No (command only)
-- **Use for:** External notification forwarding, audit logging
-
----
-
-## Hook Types
-
-### Prompt-Based Hooks (Recommended for complex logic)
-
-```json
-{
-  "type": "prompt",
-  "prompt": "Evaluate if this tool use is appropriate: $TOOL_INPUT",
-  "timeout": 30
-}
-```
-
-- Uses LLM reasoning for context-aware decisions
-- Supported on: PreToolUse, PostToolUse, UserPromptSubmit, Stop, SubagentStop
-- Default timeout: 30 seconds
-- Access input via: `$TOOL_INPUT`, `$TOOL_RESULT`, `$USER_PROMPT`
-
-**When to use:** Complex validation logic, context-dependent decisions, natural language policy enforcement
-
-### Command Hooks (For fast deterministic checks)
-
-```json
-{
-  "type": "command",
-  "command": "bash /path/to/script.sh",
-  "timeout": 60
-}
-```
-
-- Executes bash commands, receives JSON via stdin
-- Supported on: All 9 events
-- Default timeout: 60 seconds
-
-**When to use:** Fast checks, file operations, external tool integration, performance-critical validation
-
----
-
-## Settings.json Configuration Structure
+### `settings.json` Shape
 
 ```json
 {
   "hooks": {
     "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Validate file write safety.",
-            "timeout": 15
-          }
-        ]
-      },
       {
         "matcher": "Bash",
         "hooks": [
@@ -152,84 +38,117 @@ echo "export PROJECT_TYPE=nodejs" >> "$CLAUDE_ENV_FILE"
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Verify task completion: tests run, build succeeded."
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/load-context.sh",
-            "timeout": 10
-          }
-        ]
-      }
     ]
   }
 }
 ```
 
-**Key structure rules:**
-- `hooks` key at top level of settings.json
-- Each event key contains an array of matcher groups
-- Each matcher group has `matcher` (string) and `hooks` (array)
-- Each hook has `type`, `command`/`prompt`, and optional `timeout`
+Structure rules:
 
----
+- `hooks` lives at the top level.
+- Each event key maps to an array of matcher groups.
+- Each matcher group has `matcher` plus `hooks`.
+- Each hook has `type`, `command` or `prompt`, and optional `timeout`.
+
+## Event Catalog
+
+| Event | Timing | Can block | Prompt hook | Primary use |
+|-------|--------|-----------|-------------|-------------|
+| `PreToolUse` | Before tool execution | Yes | Yes | Approve, deny, or modify tool calls |
+| `PostToolUse` | After tool completion | No | Yes | Feedback, logging, post-action automation |
+| `UserPromptSubmit` | When the user sends a prompt | Yes | Yes | Prompt validation or context injection |
+| `Stop` | When the main agent considers stopping | Yes | Yes | Completion and quality gates |
+| `SubagentStop` | When a subagent considers stopping | Yes | Yes | Subagent completion checks |
+| `SessionStart` | When the session starts | No | No | Context loading and environment setup |
+| `SessionEnd` | When the session ends | No | No | Cleanup, final logging, state save |
+| `PreCompact` | Before context compaction | No | No | Preserve critical context |
+| `Notification` | When Claude sends a notification | No | No | External forwarding and audit logging |
+
+### Event-Specific Contracts
+
+| Event | Required input fields | Special output behavior |
+|-------|-----------------------|-------------------------|
+| `PreToolUse` | `tool_name`, `tool_input` | May return `permissionDecision` and `updatedInput` |
+| `PostToolUse` | `tool_name`, `tool_input`, `tool_result` | Informational only; cannot block |
+| `UserPromptSubmit` | `user_prompt` | May block the prompt |
+| `Stop`, `SubagentStop` | `reason` | Uses `decision: approve|block` |
+| `SessionStart` | Common fields only | Command-only; may write to `$CLAUDE_ENV_FILE` |
+| `SessionEnd`, `PreCompact`, `Notification` | Common fields only | Command-only |
+
+### `PreToolUse` Blocking Example
+
+```json
+{
+  "hookSpecificOutput": {
+    "permissionDecision": "allow|deny|ask",
+    "updatedInput": {"field": "modified_value"}
+  },
+  "systemMessage": "Explanation for Claude"
+}
+```
+
+### `Stop` / `SubagentStop` Blocking Example
+
+```json
+{
+  "decision": "approve|block",
+  "reason": "Explanation",
+  "systemMessage": "Additional context"
+}
+```
+
+## Hook Types
+
+### `prompt`
+
+```json
+{
+  "type": "prompt",
+  "prompt": "Evaluate whether this tool use is appropriate: $TOOL_INPUT",
+  "timeout": 30
+}
+```
+
+Use `prompt` for context-aware decisions, policy checks, and nuanced validation. It is supported only on `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, and `SubagentStop`.
+
+### `command`
+
+```json
+{
+  "type": "command",
+  "command": "bash /path/to/script.sh",
+  "timeout": 60
+}
+```
+
+Use `command` for fast deterministic checks, file operations, external tools, and all command-only events.
 
 ## Matcher Patterns
 
-### Exact Match
-```json
-"matcher": "Write"
-```
+| Pattern | Example | Use |
+|---------|---------|-----|
+| Exact | `"Write"` | One tool only |
+| OR | `"Read|Write|Edit"` | Small explicit tool family |
+| Wildcard | `"*"` | Everything |
+| Regex | `"mcp__.*__delete.*"` | Tool families such as MCP delete operations |
 
-### OR Combination (Multiple tools)
-```json
-"matcher": "Read|Write|Edit"
-```
+Common examples:
 
-### Wildcard (All tools/events)
-```json
-"matcher": "*"
-```
-
-### Regex Pattern
-```json
-"matcher": "mcp__.*__delete.*"
-```
-
-### Common Matcher Examples
-
-| Pattern | Matches |
+| Matcher | Matches |
 |---------|---------|
-| `"Write"` | Write tool only |
-| `"Write\|Edit"` | Write or Edit |
-| `"Read\|Write\|Edit"` | All file operations |
-| `"Bash"` | Bash commands |
+| `"Write"` | `Write` only |
+| `"Write|Edit"` | `Write` or `Edit` |
+| `"Bash"` | `Bash` only |
 | `"mcp__.*"` | All MCP tools |
-| `"mcp__plugin_asana_.*"` | Specific plugin's MCP tools |
+| `"mcp__plugin_asana_.*"` | One plugin namespace |
 | `"mcp__.*__delete.*"` | MCP delete operations |
-| `"*"` | Everything |
+| `"*"` | All tools or all events |
 
-**Note:** Matchers are case-sensitive.
+Matchers are case-sensitive.
 
----
+## Input Format
 
-## Hook Input Format (stdin JSON)
-
-All hooks receive JSON via stdin with common fields:
+All hooks receive JSON on stdin with common fields:
 
 ```json
 {
@@ -241,20 +160,10 @@ All hooks receive JSON via stdin with common fields:
 }
 ```
 
-**Event-specific additional fields:**
+## Output Format
 
-| Event | Additional Fields |
-|-------|------------------|
-| PreToolUse | `tool_name`, `tool_input` |
-| PostToolUse | `tool_name`, `tool_input`, `tool_result` |
-| UserPromptSubmit | `user_prompt` |
-| Stop / SubagentStop | `reason` |
+### Standard Output
 
----
-
-## Hook Output Format
-
-### Standard Output (All hooks)
 ```json
 {
   "continue": true,
@@ -263,59 +172,59 @@ All hooks receive JSON via stdin with common fields:
 }
 ```
 
-- `continue`: If false, halt processing (default true)
-- `suppressOutput`: Hide output from transcript (default false)
-- `systemMessage`: Message shown to Claude
+Output fields:
+
+- `continue`: halt processing if `false`
+- `suppressOutput`: hide output from transcript if `true`
+- `systemMessage`: message injected into Claude's context
 
 ### Exit Codes
 
 | Code | Meaning | Behavior |
 |------|---------|----------|
-| 0 | Success | stdout shown in transcript |
-| 2 | Blocking error | stderr fed back to Claude |
-| Other | Non-blocking error | Logged but doesn't block |
-
----
+| `0` | Success | Stdout appears in the transcript |
+| `2` | Blocking error | Stderr is fed back to Claude |
+| Other | Non-blocking error | Logged but does not block |
 
 ## Environment Variables
 
-Available in all command hooks:
-
 | Variable | Description | Availability |
-|----------|-------------|-------------|
-| `$CLAUDE_PROJECT_DIR` | Project root path | All hooks |
-| `$CLAUDE_PLUGIN_ROOT` | Plugin directory (for portable paths) | Plugin hooks |
-| `$CLAUDE_ENV_FILE` | File to persist env vars | SessionStart only |
-| `$CLAUDE_CODE_REMOTE` | Set if running remotely | All hooks |
+|----------|-------------|--------------|
+| `$CLAUDE_PROJECT_DIR` | Project root path | All command hooks |
+| `$CLAUDE_PLUGIN_ROOT` | Plugin directory for portable paths | Plugin hooks |
+| `$CLAUDE_ENV_FILE` | File used to persist environment variables | `SessionStart` only |
+| `$CLAUDE_CODE_REMOTE` | Set when running remotely | All command hooks |
 
----
+`SessionStart` can persist environment variables with:
+
+```bash
+echo "export PROJECT_TYPE=nodejs" >> "$CLAUDE_ENV_FILE"
+```
 
 ## Lifecycle Constraints
 
-### Hooks Load at Session Start
-- Changes to hook configuration require restarting Claude Code
-- Cannot hot-swap hooks during a session
-- Editing settings.json won't affect current session
+### Load and Restart
 
-### Session Restart Required
-1. Edit hook configuration
-2. Exit Claude Code session
-3. Restart: `claude` or `cc`
-4. Verify with `/hooks` command
+- Hooks load only at session start.
+- Editing hook configuration does not affect the current session.
+- After changes: edit -> restart Claude Code -> verify with `/hooks`.
 
-### Parallel Execution
-- All matching hooks within a matcher group run in parallel
-- Hooks don't see each other's output
-- Non-deterministic ordering
-- Design for independence — never rely on execution order
+### Parallelism
 
-### Validation at Startup
-- Invalid JSON causes loading failure
-- Missing scripts cause warnings
-- Syntax errors reported in `claude --debug` mode
-- Use `/hooks` to review loaded hooks
+- Matching hooks inside the same matcher group run in parallel.
+- Hooks do not see each other's output.
+- Ordering is non-deterministic.
+- Design hooks to be independent.
+
+### Startup Validation
+
+- Invalid JSON prevents loading.
+- Missing scripts cause warnings.
+- Syntax errors surface in `claude --debug`.
+- Use `/hooks` to confirm the active configuration.
 
 ### Timeout Defaults
-- Command hooks: 60 seconds
-- Prompt hooks: 30 seconds
-- Always set explicit timeouts for production hooks
+
+- `prompt`: `30s`
+- `command`: `60s`
+- Production hooks should still set explicit `timeout` values.
