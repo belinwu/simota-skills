@@ -1,54 +1,43 @@
-# Normalization & Denormalization Guide
+# Normalization Guide
+
+Purpose: Use this file when you need the default normalization baseline or a documented reason to denormalize.
+
+Contents:
+1. Normal forms
+2. Denormalization decision table
+3. Denormalization patterns
+4. Audit checklist
 
 ## Normal Forms
 
-### 1NF: Atomic values, no repeating groups
-Violation: `tags VARCHAR(500)` with "a,b,c" → Fix: Junction table
+| Form | Rule | Common violation | Preferred fix |
+|------|------|------------------|---------------|
+| `1NF` | Atomic values, no repeating groups | `tags = 'a,b,c'` | Junction table |
+| `2NF` | No partial dependency on part of a composite PK | `product_name` stored in `order_items` | Move to `products` |
+| `3NF` | No transitive dependency | `city` depends on `zip_code`, not `user_id` | Separate reference table |
 
-### 2NF: No partial dependencies
-Violation: `product_name` in order_items depends only on `product_id` → Fix: Move to products table
+## When To Denormalize
 
-### 3NF: No transitive dependencies
-Violation: `city` depends on `zip_code` not `user_id` → Fix: Separate zip_codes table
-
-## When to Denormalize
-
-| Factor | Normalize | Denormalize |
-|--------|-----------|-------------|
+| Factor | Stay normalized | Denormalize |
+|--------|-----------------|-------------|
 | Write frequency | High | Low |
-| Read frequency | Low | High |
-| Consistency | Critical | Eventually OK |
-| Query complexity | Simple joins OK | Complex joins slow |
+| Read frequency | Low or mixed | High and repetitive |
+| Consistency requirement | Strict | Eventual consistency is acceptable |
+| Query complexity | Simple joins are acceptable | Joins are the bottleneck |
 
 ## Denormalization Patterns
 
-### 1. Materialized Views
-```sql
-CREATE MATERIALIZED VIEW mv_summary AS SELECT ...;
-REFRESH MATERIALIZED VIEW CONCURRENTLY mv_summary;
-```
-
-### 2. Snapshot Columns (Audit)
-Store product_name/price at time of purchase in order_items.
-
-### 3. Counter Cache
-```sql
-ALTER TABLE posts ADD COLUMN comment_count INT DEFAULT 0;
--- Update via trigger on comments INSERT/DELETE
-```
-
-### 4. JSON Aggregation
-```sql
-CREATE TABLE products (
-  id UUID PRIMARY KEY,
-  attributes JSONB DEFAULT '{}'
-);
-CREATE INDEX ON products USING GIN (attributes);
-```
+| Pattern | Use when | Typical implementation |
+|---------|----------|------------------------|
+| Materialized view | Read-heavy dashboard or summary query | `REFRESH MATERIALIZED VIEW CONCURRENTLY` |
+| Snapshot columns | Historical point-in-time values matter | Store price/name at purchase time |
+| Counter cache | Count is queried constantly | `comment_count`, `order_count` |
+| JSON aggregation | Attribute set is sparse and truly dynamic | `JSONB` column plus `GIN` index |
 
 ## Audit Checklist
-- [ ] No comma-separated values (1NF)
-- [ ] No repeating column groups (1NF)
-- [ ] All non-key columns depend on entire PK (2NF)
-- [ ] No transitive dependencies (3NF)
-- [ ] Denormalization documented with rationale
+
+- No comma-separated values or repeating column groups
+- All non-key columns depend on the whole key
+- No transitive dependencies remain in core tables
+- Every denormalization choice has a documented rationale
+- Source-of-truth ownership is explicit for duplicated data

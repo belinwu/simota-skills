@@ -1,67 +1,71 @@
 # Migration Patterns
 
-## Safe Migration Decision Tree
+Purpose: Use this file when planning safe schema changes, rollback, or framework-specific migration commands.
 
-```
-Schema Change Needed
+Contents:
+1. Safe change decision tree
+2. Expand-contract pattern
+3. Zero-downtime index creation
+4. Framework commands
+5. Pre-migration checklist
+
+## Safe Change Decision Tree
+
+```text
+Schema change needed
 ├── Adding new?
-│   ├── New table → CREATE TABLE (safe)
-│   ├── New column (nullable) → ALTER TABLE ADD COLUMN (safe)
-│   ├── New column (NOT NULL) → Expand-Contract pattern
-│   └── New index → CREATE INDEX CONCURRENTLY (PG)
+│   ├── New table -> CREATE TABLE (safe)
+│   ├── New nullable column -> ADD COLUMN (safe)
+│   ├── New NOT NULL column -> Expand-contract
+│   └── New index -> Online / concurrent creation
 ├── Modifying existing?
-│   ├── Rename column → Expand-Contract (3 phases)
-│   ├── Change type → Check conversion safety
-│   ├── Add constraint → Validate existing data first
-│   └── Change default → Usually safe
+│   ├── Rename column -> Expand-contract
+│   ├── Change type -> Verify conversion safety first
+│   ├── Add constraint -> Validate existing data first
+│   └── Change default -> Usually safe
 └── Removing?
-    ├── Drop column → Backup first, Expand-Contract
-    ├── Drop table → Backup required, irreversible
-    ├── Drop index → Safe, check query performance
-    └── Drop constraint → Safe, check data integrity
+    ├── Drop column -> Backup first, then phased removal
+    ├── Drop table -> Backup required, irreversible
+    ├── Drop index -> Safe, but verify query impact
+    └── Drop constraint -> Safe, but verify integrity risk
 ```
 
 ## Expand-Contract Pattern
 
-### Phase 1: Expand
-- Add new column (always nullable)
-- Create sync trigger for both columns
-- Deploy application writing to both
-
-### Phase 2: Migrate
-- Backfill existing data (batch for large tables)
-- Add NOT NULL constraint after backfill
-
-### Phase 3: Contract
-- Drop sync trigger
-- Drop old column (after verification)
-- Rename new column if needed
+| Phase | Goal | Required actions |
+|------|------|------------------|
+| Expand | Introduce the new structure safely | Add new column/table, keep it nullable, dual-write if needed |
+| Migrate | Backfill and validate | Batch copy data, validate consistency, add `NOT NULL` only after backfill |
+| Contract | Remove the old structure | Switch reads, remove sync path, drop old column only after verification |
 
 ## Zero-Downtime Index Creation
 
 ```sql
--- PostgreSQL: Non-blocking
-CREATE INDEX CONCURRENTLY idx_name ON table(column);
+-- PostgreSQL
+CREATE INDEX CONCURRENTLY idx_name ON table_name(column_name);
 
--- MySQL 8.0+: Online DDL
-ALTER TABLE t ADD INDEX idx_name (col), ALGORITHM=INPLACE, LOCK=NONE;
+-- MySQL 8.0+
+ALTER TABLE t
+  ADD INDEX idx_name (col),
+  ALGORITHM=INPLACE,
+  LOCK=NONE;
 ```
 
 ## Framework Migration Commands
 
 | Framework | Create | Run | Rollback |
 |-----------|--------|-----|----------|
-| Prisma | `prisma migrate dev --name [n]` | `prisma migrate deploy` | Manual |
-| TypeORM | `typeorm migration:generate -n [N]` | `typeorm migration:run` | `typeorm migration:revert` |
+| Prisma | `prisma migrate dev --name [name]` | `prisma migrate deploy` | Manual |
+| TypeORM | `typeorm migration:generate -n [Name]` | `typeorm migration:run` | `typeorm migration:revert` |
 | Drizzle | `drizzle-kit generate:pg` | `drizzle-kit push:pg` | Manual |
-| Knex | `knex migrate:make [n]` | `knex migrate:latest` | `knex migrate:rollback` |
+| Knex | `knex migrate:make [name]` | `knex migrate:latest` | `knex migrate:rollback` |
 
 ## Pre-Migration Checklist
 
-- [ ] Backup production database
-- [ ] Test on staging with production-like data
-- [ ] Verify rollback works
-- [ ] Estimate lock duration
-- [ ] Check disk space
-- [ ] Schedule low-traffic window if locking
-- [ ] Prepare post-migration monitoring
+- Backup is available and verified
+- Migration was tested on production-like data
+- Rollback path was tested or explicitly marked backup-required
+- Lock duration was estimated
+- Disk space and index-build impact were checked
+- Low-traffic window is selected if blocking work remains
+- Post-migration monitoring is prepared
