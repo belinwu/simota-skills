@@ -1,230 +1,143 @@
-# Prompt Engineering Patterns (2025-2026)
+Purpose: Use this file when you are designing prompts, choosing Claude-specific prompting techniques, or defining prompt tests and versioning rules.
 
-> Design patterns, versioning, testing, optimization, and Claude 4.x–specific techniques
+## Contents
+- Core design patterns
+- Claude 4.x techniques
+- Prompt versioning
+- Prompt testing
+- Optimization checklist
+- Agentic prompt patterns
 
-## 1. Core Design Patterns
+# Prompt Engineering Patterns
 
-| Pattern | Description | Best For |
-|---------|-------------|----------|
-| **Role-based** | Assign persona with expertise in system prompt | Domain-specific tasks |
-| **Chain-of-Thought** | Step-by-step reasoning (or use extended thinking) | Complex reasoning, math |
-| **Few-shot** | 3–5 structured examples in `<examples>` tags | Format consistency, tone |
-| **Self-consistency** | Multiple reasoning paths → majority vote | High-stakes decisions |
-| **ReAct** | Reasoning + Action interleaving | Tool-using agents |
-| **Plan-and-Execute** | Plan steps → execute each with validation | Multi-step workflows |
+## Core Design Patterns
 
-### Prompt Structure Template
+| Pattern | Best for | Note |
+|---------|----------|------|
+| Role-based | domain-specific tasks | assign explicit expertise in the system prompt |
+| Chain-of-Thought / extended thinking | complex reasoning | prefer model-native thinking over micromanaged step scripts |
+| Few-shot | format consistency, tone | start with `3-5` examples only |
+| Self-consistency | high-stakes reasoning | multiple paths, then compare |
+| ReAct | tool-using agents | use for dynamic sub-tasks |
+| Plan-and-Execute | long multi-step workflows | default for auditable agent plans |
+
+## Prompt Structure Template
 
 ```markdown
 ## Role
 You are [role] with expertise in [domain].
 
 ## Context
-[Background information relevant to the task]
+[Background relevant to the task]
 
 ## Instructions
 1. [Step 1]
 2. [Step 2]
 
 ## Output Format
-[Exact format specification with example]
+[Exact format with example]
 
 ## Constraints
 - [Constraint 1]
 - [Constraint 2]
 
 ## Examples
-<examples>
-  <example>
-    <input>[example input]</input>
-    <output>[example output]</output>
-  </example>
-</examples>
+<examples>...</examples>
 ```
 
----
+## Claude 4.x Techniques
 
-## 2. Claude 4.x–Specific Techniques
+### Adaptive Thinking
 
-### Adaptive Thinking (Opus 4.6 / Sonnet 4.6)
+| Effort | Use case |
+|--------|----------|
+| `low` | latency-sensitive classification or extraction |
+| `medium` | default for general production tasks |
+| `high` | agentic coding or complex reasoning |
+| `max` | deep research or hardest analysis |
 
-```python
-# Adaptive thinking — Claude decides when and how much to think
-client.messages.create(
-    model="claude-opus-4-6",
-    max_tokens=64000,
-    thinking={"type": "adaptive"},
-    output_config={"effort": "high"},  # max | high | medium | low
-    messages=[{"role": "user", "content": "..."}],
-)
-```
-
-| Effort | Use Case | Thinking Behavior |
-|--------|----------|-------------------|
-| `max` | Research, deep analysis | Maximum reasoning depth |
-| `high` | Agentic coding, multi-step | Deep reasoning on complex queries |
-| `medium` | General tasks | Balanced quality/speed |
-| `low` | High-volume, latency-sensitive | Minimal or no thinking |
-
-**Key rules:**
-- Prefer `"think thoroughly"` over hand-written step-by-step plans — Claude's reasoning often exceeds what you'd prescribe
-- Use `<thinking>` tags in few-shot examples to show reasoning patterns
-- Ask Claude to self-check: "Before finishing, verify your answer against [criteria]"
-- If Claude overthinks, add: "Choose an approach and commit. Avoid revisiting decisions unless new information contradicts your reasoning."
+Rules:
+- prefer `"think thoroughly"` over brittle hand-written reasoning scripts;
+- ask Claude to self-check against explicit criteria;
+- if overthinking appears, tell it to choose and commit unless new evidence appears.
 
 ### Structured Outputs
 
-```python
-# Guaranteed JSON schema compliance (beta)
-response = client.messages.create(
-    model="claude-sonnet-4-6",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": text}],
-    # Option 1: Tool-based structured output
-    tools=[{
-        "name": "extract_info",
-        "description": "Extract structured information",
-        "input_schema": schema
-    }],
-    tool_choice={"type": "tool", "name": "extract_info"}
-)
+- prefer tool-based schemas or `output_format` JSON mode over plain-text JSON prompting;
+- validate every output with a schema before downstream use;
+- use enums and defaults to reduce output drift.
 
-# Option 2: output_format for JSON mode
-response = client.messages.create(
-    model="claude-sonnet-4-6",
-    max_tokens=1024,
-    output_format={"type": "json", "schema": schema},
-    messages=[...]
-)
-```
+### XML Tags
 
-### XML Tags — Claude's Native Structuring
+- use clear tags such as `<instructions>`, `<context>`, `<documents>`, and `<output_format>`;
+- place long source documents near the top of the prompt;
+- use `<example>` blocks to keep examples separate from instructions.
 
-```xml
-<instructions>Task description</instructions>
-<context>Background information</context>
-<documents>
-  <document index="1">
-    <source>file.md</source>
-    <document_content>{{CONTENT}}</document_content>
-  </document>
-</documents>
-<output_format>Expected structure</output_format>
-```
+### Prefill Deprecation
 
-**Best practices:**
-- Use consistent, descriptive tag names
-- Nest tags for hierarchical content
-- Place long documents at the TOP of the prompt (up to 30% quality improvement)
-- Use `<example>` tags to separate examples from instructions
-
-### Prefill Deprecation (Claude 4.6+)
-
-Prefilled responses on the last assistant turn are no longer supported. Migrations:
-
-| Old Pattern | New Approach |
+| Old pattern | Replacement |
 |-------------|-------------|
-| Force JSON format | Structured Outputs API or tool_choice |
-| Skip preamble | System prompt: "Respond directly without preamble" |
-| Avoid refusals | Clear prompting (Claude 4.6 handles refusals better) |
-| Continuations | "Your previous response ended with `[text]`. Continue from there." |
+| force JSON via assistant prefill | Structured Outputs API or tool choice |
+| skip preamble | direct system instruction |
+| continue partial answer | explicit continuation instruction |
 
----
+## Prompt Versioning
 
-## 3. Prompt Versioning
+| Change type | Version bump |
+|-------------|--------------|
+| system prompt rewrite | Major |
+| few-shot example changes | Minor |
+| wording tweak | Patch |
 
-```
-prompts/
-├── v1.0.0/
-│   ├── system.md
-│   ├── examples.json
-│   └── config.yaml
-├── v2.0.0/
-│   └── ...
-└── registry.json        # Active version mapping
-```
+Keep prompts versioned like code:
+- system prompt
+- examples
+- config
+- active registry mapping
 
-| Change Type | Version Bump | Example |
-|------------|-------------|---------|
-| Instructions rewrite | Major (X.0.0) | System prompt restructured |
-| Few-shot examples updated | Minor (0.X.0) | Added 3 new examples |
-| Wording tweaks | Patch (0.0.X) | Clarified constraint |
+## Prompt Testing
 
----
+| Category | Priority |
+|----------|----------|
+| Happy path | Must pass |
+| Edge cases | Must pass |
+| Adversarial | Must pass |
+| Format | Must pass |
+| Consistency | Should pass |
+| Regression | Must pass |
 
-## 4. Prompt Testing
+Rules:
+- keep a stable regression set;
+- add new tests from real failures;
+- run A/B tests with the same cases and fixed metrics;
+- measure quality and cost together.
 
-### Test Case Categories
+## Optimization Checklist
 
-| Category | Priority | Description |
-|----------|----------|-------------|
-| **Happy path** | Must pass | Normal expected inputs |
-| **Edge cases** | Must pass | Empty, very long, special characters |
-| **Adversarial** | Must pass | Prompt injection, role-breaking |
-| **Format** | Must pass | Output matches expected structure |
-| **Consistency** | Should pass | Same input → similar output |
-| **Regression** | Must pass | Previously fixed issues don't recur |
+- remove context that does not measurably help output quality
+- reduce few-shot count until quality drops
+- try a smaller model before escalating to a larger one
+- set `max_tokens` to realistic output needs
+- choose effort intentionally; do not default to `high`
+- enable prompt caching for stable system prompts
+- re-run regression tests after every prompt change
+- remove pre-4.6 over-prompting patterns
 
-### A/B Testing
-
-```python
-class PromptABTest:
-    def run(self, test_cases, metrics: list[str]) -> dict:
-        for case in test_cases:
-            for variant_name, prompt in self.variants.items():
-                response = call_llm(prompt, case.input, self.model)
-                scores = {m: evaluate_metric(m, response, case) for m in metrics}
-                self.results[variant_name].append(scores)
-        return {
-            "winner": self.determine_winner(),
-            "metrics": self.aggregate_metrics(),
-            "significance": self.statistical_test()
-        }
-```
-
----
-
-## 5. Optimization Checklist
-
-- [ ] Remove unnecessary context that doesn't improve output
-- [ ] Test with fewer examples (start with 0, add until quality meets threshold)
-- [ ] Try smaller model with optimized prompt before using larger model
-- [ ] Measure cost per query and quality score together
-- [ ] Use appropriate effort level (low for simple, high for complex)
-- [ ] Enable prompt caching for repeated system prompts
-- [ ] Validate with regression test suite after any change
-- [ ] Remove over-prompting from pre-4.6 era ("CRITICAL: You MUST..." → "Use this tool when...")
-
----
-
-## 6. Agentic Prompt Patterns
+## Agentic Prompt Patterns
 
 ### Parallel Tool Calling
 
-```xml
-<use_parallel_tool_calls>
-If you intend to call multiple tools and there are no dependencies
-between the tool calls, make all independent calls in parallel.
-Do NOT call dependent tools in parallel — call them sequentially.
-Never use placeholders or guess missing parameters.
-</use_parallel_tool_calls>
-```
+- call independent tools in parallel only when there are no dependencies;
+- call dependent tools sequentially;
+- never guess missing parameters.
 
-### Autonomy vs Safety Balance
+### Autonomy vs Safety
 
-```
-Consider the reversibility and potential impact of your actions.
-Freely take local, reversible actions (editing files, running tests).
-For actions that are hard to reverse or affect shared systems,
-ask the user before proceeding.
-```
+- freely take local, reversible actions;
+- ask before hard-to-reverse actions or changes to shared systems.
 
 ### Subagent Orchestration
 
-- Light custom agents (<3k tokens) enable fluid orchestration
-- Heavy agents (25k+ tokens) create bottlenecks
-- Explicit guidance prevents excessive delegation:
-  "Use subagents when tasks can run in parallel or require isolated context.
-   For simple tasks or single-file edits, work directly."
-
-**Source:** [Anthropic: Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) · [Anthropic: Structured Outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) · [Anthropic: Adaptive Thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) · [Anthropic: Building Agents with Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)
+- light custom agents `<3k` tokens enable fluid orchestration;
+- heavy custom agents `25k+` tokens create bottlenecks;
+- use subagents for parallel or isolated work, not trivial single-step tasks.

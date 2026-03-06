@@ -1,237 +1,127 @@
-# Evaluation & Observability (2025-2026)
+Purpose: Use this file when you are designing evaluation suites, CI gates, rollout checks, tracing, or production monitoring for AI systems.
 
-> LLM-as-Judge, metrics, regression testing, CI/CD integration, production observability, monitoring dashboards
+## Contents
+- Two-layer evaluation model
+- LLM-as-judge anti-patterns
+- Task metrics
+- CI/CD and rollout gates
+- Observability pillars
+- Monitoring thresholds
+- Oracle gates
 
-## 1. Two-Layer Safety Net Model
+# Evaluation And Observability
 
-```
-Layer 1: Automated Metrics (first line of defense)
-  ├── Text similarity: BLEU, ROUGE-L, BERTScore
-  ├── Correctness: Exact Match, F1 Score
-  ├── Quality scoring: LLM-as-Judge, GPTScore
-  └── RAG-specific: Faithfulness, Relevancy, Context Precision
+## Two-Layer Safety Net
 
-Layer 2: Human Review (second line of defense)
-  ├── Likert scale evaluation (1-5)
-  ├── Domain expert judgment
-  ├── Edge case / nuance detection
-  └── Bias / fairness audits
+- Layer 1: automated metrics for fast regression detection
+- Layer 2: human review for nuance, bias, and domain correctness
 
-Core: Automated metrics flag obvious issues;
-      human review catches nuance.
-      → Combined performance exceeds either alone.
-```
+Use both. Automated metrics catch scale problems; humans catch subtle failures.
 
----
+## LLM-as-Judge Anti-Patterns
 
-## 2. LLM-as-Judge Anti-Patterns
+| ID | Anti-pattern | Mitigation |
+|----|--------------|------------|
+| `EV-01` | self-evaluation | different judge model or human review |
+| `EV-02` | position bias | randomize order and repeat |
+| `EV-03` | verbosity bias | score conciseness explicitly |
+| `EV-04` | no rubric | use anchored scoring rubrics |
+| `EV-05` | single judge | use `3+` judges or mixed review |
+| `EV-06` | no ground truth | provide reference answers |
+| `EV-07` | regenerated test sets | keep a stable test set |
+| `EV-08` | monolithic evaluation | split Retrieval / Generation / Task |
 
-| # | Anti-Pattern | Problem | Mitigation |
-|---|-------------|---------|-----------|
-| **EV-01** | Self-evaluation | LLM judges its own output → reinforces errors | Use a different model as judge, or pair with human eval |
-| **EV-02** | Position Bias | Prefers answer presented first in A/B comparison | Randomize order · run multiple times · average results |
-| **EV-03** | Verbosity Bias | Rates longer answers as higher quality | Include conciseness in rubric · normalize by length |
-| **EV-04** | No Rubric | Vague score definitions → inter-judge disagreement | Define anchored rubric with concrete examples per score |
-| **EV-05** | Single Judge | One model's bias reflected directly | Multi-Judge (3+) with majority vote or average |
-| **EV-06** | No Ground Truth | Absolute evaluation without reference → criteria drift | Always provide ground truth for reference grounding |
-| **EV-07** | Regenerated test sets | New test data each run → noise, results incomparable | Fix a stable test set; only measure changes |
-| **EV-08** | Monolithic evaluation | Retrieval + Generation evaluated as one → can't locate bottleneck | Component-level evaluation (Retrieval / Generation / Task) |
+Judge prompt essentials:
+- task
+- rubric anchors
+- question
+- ground truth
+- response under test
+- JSON output format
 
-### Judge Prompt Template
+## Task-Specific Metrics
 
-```markdown
-## Task
-Evaluate the AI response on these criteria:
-1. **Accuracy** (1-5): Are the facts correct?
-2. **Relevance** (1-5): Does it answer the question?
-3. **Completeness** (1-5): Are all aspects addressed?
-4. **Clarity** (1-5): Is it well-organized and clear?
+| Task | Primary metrics |
+|------|-----------------|
+| classification | accuracy, F1, precision, recall |
+| extraction | exact match, partial match, F1 |
+| summarization | ROUGE-L, BERTScore, faithfulness |
+| generation | human preference, judge score |
+| RAG | faithfulness, relevancy, Recall@K |
+| code generation | Pass@K, execution success |
+| agentic systems | task completion, step efficiency, tool-call accuracy, cost |
 
-## Rubric Anchors
-- 5: Excellent — fully correct, comprehensive, perfectly structured
-- 3: Adequate — mostly correct, addresses main points, readable
-- 1: Poor — factually wrong, misses the question, confusing
+## CI/CD And Rollout
 
-## Question
-{question}
+Development:
+1. run evals on every prompt change
+2. block if regression is `>= 5%`
+3. add failure traces to the stable test set
 
-## Reference Answer (Ground Truth)
-{reference}
+Deployment:
+1. shadow mode `24h` minimum
+2. canary `5% -> 25% -> 50% -> 100%`
+3. validate quality, latency, cost, and safety at each stage
 
-## AI Response to Evaluate
-{response}
+Production:
+1. sample evaluation on `5%` of requests
+2. drift alerts
+3. periodic human review
+4. feed findings back into the eval set
 
-## Output Format (JSON)
-{ "accuracy": {"score": N, "reasoning": "..."}, ... "overall": N }
-```
+## Observability: 7 Pillars
 
----
+| Pillar | Required fields |
+|--------|-----------------|
+| semantic instrumentation | `trace_id`, `span_id`, `session_id` |
+| full request/response capture | query, response, tool calls, retrieved docs |
+| continuous metrics | tokens, cost, `latency_p95`, eval score |
+| integrated evaluation | auto score, human score, agreement rate |
+| real-time alerting | threshold and incident count |
+| data export | export format and destination |
+| enterprise security | access control and compliance status |
 
-## 3. Task-Specific Metrics
+### Observability Anti-Patterns
 
-| Task Type | Primary Metrics | Secondary Metrics |
-|-----------|----------------|-------------------|
-| **Classification** | Accuracy, F1, Precision, Recall | Confusion matrix |
-| **Extraction** | Exact match, Partial match, F1 | Field-level accuracy |
-| **Summarization** | ROUGE-L, BERTScore, Faithfulness | Length ratio |
-| **Generation** | Human preference, LLM-judge score | Diversity, Fluency |
-| **RAG** | Faithfulness, Relevancy, Recall@K | Context precision |
-| **Code generation** | Pass@K, Execution success | Test pass rate |
-| **Agentic** | Task completion rate, Step efficiency | Tool call accuracy, Cost |
+| ID | Anti-pattern | Mitigation |
+|----|--------------|------------|
+| `OB-01` | siloed data | unify traces, evals, and alerts |
+| `OB-02` | request-only view | add session-level tracing |
+| `OB-03` | engineer-only evaluation | expose eval workflows to PM/QA/domain experts |
+| `OB-04` | black-box inference | log rationale, tool calls, and checkpoints |
+| `OB-05` | no multi-step tracing | trace Retrieval, Reranking, Generation, Tool Call separately |
 
----
+## Monitoring Dashboard
 
-## 4. CI/CD Integration
+| Category | Alert threshold |
+|----------|-----------------|
+| p95 latency | `> 2x` baseline |
+| sampled quality score | `< 90%` of baseline |
+| daily spend | `> 120%` budget |
+| error rate | `> 1%` |
+| guardrail trigger rate | `> 5%` |
+| user satisfaction | `< 80%` |
 
-```
-Development phase:
-  1. Prompt change → eval suite auto-runs
-  2. Regression detection (≥5% drop → block merge)
-  3. Add new test cases from failure traces
+Deployment checklist:
+- eval metrics meet or exceed baseline
+- no regression in stable test suite
+- safety guardrails tested
+- latency within SLO
+- cost per query within budget
+- rollback plan documented
 
-Deployment phase:
-  4. Shadow mode validation (24h minimum)
-  5. Canary (5%) → 25% → 50% → 100%
-  6. Quality metrics check at each stage
+## Tools
 
-Production phase:
-  7. Sampling evaluation (5% of requests)
-  8. Drift detection alerts
-  9. Periodic human evaluation (weekly/monthly)
-  10. Feedback → next eval dataset
+- `DeepEval` for general LLM evaluation
+- `RAGAS` for RAG-specific metrics
+- `Langfuse` for tracing and observability
+- `Braintrust` for eval plus prompt versioning
+- custom suites for domain-specific acceptance
 
-Anti-pattern: Treating evaluation as final pre-release check only
-  → Cannot handle drift, model updates, or data changes
-```
+## Oracle Gates
 
-### Regression Detection
-
-```python
-def detect_regressions(current: dict, baseline: dict, threshold: float = 0.05) -> list:
-    regressions = []
-    for metric, value in current.items():
-        if metric in baseline:
-            delta = value - baseline[metric]
-            if delta < -threshold:
-                regressions.append({
-                    "metric": metric, "baseline": baseline[metric],
-                    "current": value, "delta": delta
-                })
-    return regressions
-```
-
----
-
-## 5. Observability — 7 Pillars
-
-| # | Pillar | Required Metrics |
-|---|--------|-----------------|
-| **1** | Semantic instrumentation | trace_id, span_id, session_id |
-| **2** | Full request-response capture | query, response, tool_calls, retrieved_docs |
-| **3** | Continuous metrics monitoring | tokens, cost, latency_p95, eval_score |
-| **4** | Integrated evaluation | auto_score, human_score, agreement_rate |
-| **5** | Real-time alerting | alert_threshold, incident_count |
-| **6** | Data export | export_format, destination |
-| **7** | Enterprise security | access_control, compliance_status |
-
-### Tracing Architecture
-
-```
-Session (multi-turn conversation)
-  └── Trace (end-to-end request processing)
-       ├── Span: Query processing
-       ├── Span: Retrieval (RAG context fetch)
-       ├── Span: Reranking
-       ├── Span: Generation (LLM call)
-       ├── Span: Tool Call (external API)
-       └── Span: Guardrail validation
-
-Each span includes:
-  - Start/end timestamps
-  - Token usage
-  - Model version
-  - Input/output
-  - Custom metadata (experiment_id, user_segment)
-```
-
----
-
-## 6. Observability Anti-Patterns
-
-| # | Anti-Pattern | Problem | Mitigation |
-|---|-------------|---------|-----------|
-| **OB-01** | Siloed data | Logs, eval, alerts in separate tools | Unified feedback loop: traces + eval + alerts |
-| **OB-02** | Request-level isolation | Each request treated independently | Session-level tracing; conversation analysis |
-| **OB-03** | Engineer-only evaluation | Only devs can run evals → scale constraint | Evaluation UI accessible to PM, QA, domain experts |
-| **OB-04** | Black-box inference | Model internals opaque | Externalize CoT · detailed tool call logs · decision rationale |
-| **OB-05** | No multi-step tracing | RAG/agent pipeline stages uninstrumented | Per-stage spans: Retrieval / Reranking / Generation / Tool Call |
-
----
-
-## 7. Production Monitoring Dashboard
-
-| Category | Metric | Alert Threshold |
-|----------|--------|----------------|
-| **Performance** | p50 / p95 / p99 latency | p95 > 2× baseline |
-| **Quality** | LLM-as-Judge score (sampled) | < 90% of baseline |
-| **Cost** | Tokens per request / daily spend | > 120% budget |
-| **Errors** | Failed request rate | > 1% |
-| **Safety** | Guardrail trigger rate | > 5% |
-| **Drift** | Input distribution change | Significant shift detected |
-| **User feedback** | 👍/👎 rate, NPS | Satisfaction < 80% |
-
-### Deployment Checklist (from MLOps)
-
-```markdown
-## Pre-Deploy
-- [ ] Eval metrics meet or exceed baseline
-- [ ] No regressions in regression test suite
-- [ ] Safety guardrails tested
-- [ ] Latency within SLO (p95 < Xms)
-- [ ] Cost per query within budget
-- [ ] Rollback plan documented
-
-## Deploy
-- [ ] Shadow mode validation (24h minimum)
-- [ ] Canary at 5% for 1h
-- [ ] Monitor error rate, latency, quality metrics
-- [ ] Expand to 25% → 50% → 100%
-
-## Post-Deploy
-- [ ] Quality metrics stable for 24h
-- [ ] No increase in user complaints
-- [ ] Cost tracking aligned with projections
-```
-
----
-
-## 8. Evaluation Tools (2025-2026)
-
-| Tool | Specialty | Key Feature |
-|------|-----------|-------------|
-| **DeepEval** | General LLM eval | 14+ metrics, RAG + fine-tuning |
-| **RAGAS** | RAG-specific | Faithfulness, context relevancy, answer correctness |
-| **Langfuse** | Tracing + eval | Open-source, LLM observability |
-| **Braintrust** | Eval + logging | Prompt versioning + scoring |
-| **Custom** | Domain-specific | Tailored test suites + LLM-as-Judge |
-
----
-
-## 9. Oracle Integration
-
-```
-Oracle workflow integration:
-  1. EVALUATE: Apply EV-01–08 anti-pattern checklist
-  2. DESIGN: Ensure OB-01–05 are avoided in observability design
-  3. ASSESS: Gap analysis of production monitoring dashboard
-  4. SPECIFY: Include tracing + eval requirements in Builder specs
-
-Quality gates:
-  - LLM judges itself → require different model (EV-01)
-  - Test set not fixed → require stable set creation (EV-07)
-  - Observability = logs only → require tracing + eval integration (OB-01)
-  - Evaluation is engineer-only → recommend accessible eval UI (OB-03)
-  - No deployment checklist → require pre/post-deploy validation
-```
-
-**Source:** [Datadog: LLM Evaluation Framework Best Practices](https://www.datadoghq.com/blog/llm-evaluation-framework-best-practices/) · [Maxim AI: LLM Observability Best Practices 2025](https://www.getmaxim.ai/articles/llm-observability-best-practices-for-2025/) · [FutureAGI: LLM Evaluation Frameworks 2026](https://futureagi.substack.com/p/llm-evaluation-frameworks-metrics) · [Monte Carlo Data: LLM-as-Judge Best Practices](https://www.montecarlodata.com/blog-llm-as-judge/)
+- LLM judges itself -> require different judge
+- test set is not fixed -> require stable set creation
+- observability means logs only -> require tracing + eval integration
+- evaluation is engineer-only -> recommend accessible eval workflows
+- no deployment checklist -> require pre/post-deploy validation

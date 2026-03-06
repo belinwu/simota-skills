@@ -1,179 +1,127 @@
-# AI Safety & Guardrails (2025-2026)
+Purpose: Use this file when you are designing guardrails, reviewing OWASP LLM risks, or defining hallucination, bias, and PII controls.
 
-> OWASP Top 10 for LLM 2025, guardrail architecture, hallucination detection, PII handling, agent safety
+## Contents
+- OWASP LLM Top 10
+- Defense-in-depth guardrails
+- Hallucination and grounding
+- Agent and MCP safety
+- PII and bias handling
+- Oracle gates
 
-## 1. OWASP Top 10 for LLM Applications (2025)
+# AI Safety And Guardrails
 
-| # | Threat | Risk | Key Mitigations |
-|---|--------|------|-----------------|
-| **LLM01** | **Prompt Injection** | Attacker overrides instructions via direct/indirect injection | Instruction/data separation · input sanitization · pattern blocking |
-| **LLM02** | **Sensitive Information Disclosure** | PII leaks via training data, RAG, or jailbreaks | Data sanitization · input/output validation · PII masking |
-| **LLM03** | **Supply Chain** | Backdoors in pre-trained models, LoRA adapters, datasets | Verified sources · integrity checks · signed SBOM |
-| **LLM04** | **Data Poisoning** | Manipulated training/fine-tuning data | Data provenance tracking · trusted source validation |
-| **LLM05** | **Improper Output Handling** | Unvalidated LLM output to downstream systems (XSS, RCE) | Context-aware encoding · output sanitization · sandboxed execution |
-| **LLM06** | **Excessive Agency** | Agentic systems granted too much autonomy/permissions | Minimal tool scope · human approval gates · action audit |
-| **LLM07** | **System Prompt Leakage** | Sensitive info in system prompts exposed to attackers | Keep secrets external · output guardrails · prompt isolation |
-| **LLM08** | **Vector & Embedding Weaknesses** | RAG vector DB access, embedding inversion, data poisoning | Access controls · fine-grained partitioning · source validation |
-| **LLM09** | **Misinformation** | Hallucinations, bias, user over-reliance | RAG with verified sources · cross-verification · human fact-checking |
-| **LLM10** | **Unbounded Consumption** | Resource exhaustion from oversized inputs or request floods | Rate limiting · timeouts · dynamic resource monitoring |
+## OWASP Top 10 For LLM Applications (2025)
 
----
+| ID | Threat | Key mitigations |
+|----|--------|-----------------|
+| `LLM01` | Prompt Injection | instruction/data separation, input sanitization, pattern blocking |
+| `LLM02` | Sensitive Information Disclosure | input/output validation, PII masking |
+| `LLM03` | Supply Chain | verified sources, integrity checks, signed SBOM |
+| `LLM04` | Data Poisoning | provenance tracking, trusted-source validation |
+| `LLM05` | Improper Output Handling | output sanitization, context-aware encoding, sandboxing |
+| `LLM06` | Excessive Agency | least privilege, approval gates, action audit |
+| `LLM07` | System Prompt Leakage | keep secrets external, prompt isolation |
+| `LLM08` | Vector And Embedding Weaknesses | access controls, partitioning, source validation |
+| `LLM09` | Misinformation | verified-source grounding, cross-checks, human review |
+| `LLM10` | Unbounded Consumption | rate limits, timeouts, resource monitoring |
 
-## 2. Guardrail Architecture — Defense in Depth
+## Defense In Depth
 
-```
-User Input → [Input Guardrails] → [LLM] → [Output Guardrails] → User Output
-                   ↓                              ↓
-             - PII detection               - Hallucination check
-             - Prompt injection             - Toxicity filter
-             - Topic boundary               - PII redaction
-             - Input length limit           - Format validation
-             - Rate limiting                - Confidence threshold
-```
+Pipeline:
+1. input guardrails
+2. model call
+3. output guardrails
 
 ### Input Guardrails
 
-| Guardrail | Purpose | Implementation |
-|-----------|---------|----------------|
-| **Prompt injection detection** | Prevent instruction override | Classifier + heuristics + instruction/data separation |
-| **PII detection** | Protect user data | Regex + NER model; redact BEFORE sending to LLM |
-| **Topic boundary** | Keep on-topic | Intent classifier |
-| **Input length limit** | Prevent token abuse | Token counter with hard ceiling |
-| **Rate limiting** | Prevent abuse | Token bucket per user/session |
+- prompt-injection detection
+- PII detection and pre-LLM redaction
+- topic boundary checks
+- input-length ceilings
+- rate limiting
 
 ### Output Guardrails
 
-| Guardrail | Purpose | Implementation |
-|-----------|---------|----------------|
-| **Factuality check** | Verify claims against sources | Source attribution + citation enforcement |
-| **PII redaction** | Remove leaked PII from output | Regex + NER post-processing |
-| **Output sanitization** | Prevent XSS/injection in downstream use | Context-aware encoding before rendering |
-| **Format validation** | Ensure output structure | JSON schema validation (Structured Outputs) |
-| **Confidence threshold** | Flag uncertain answers | Self-evaluation prompt or calibrated scoring |
+- factuality or citation checks
+- PII redaction
+- output sanitization
+- format validation
+- confidence thresholds
 
----
+## Hallucination Controls
 
-## 3. Hallucination Detection
+| Strategy | Reliability |
+|----------|-------------|
+| source attribution | High |
+| retrieval verification | High |
+| entailment / NLI checks | High |
+| self-consistency | Medium-High |
+| self-scored confidence | Medium |
 
-| Strategy | Mechanism | Reliability |
-|----------|-----------|-------------|
-| **Source attribution** | Require [Source: doc_id] citations | High |
-| **Self-consistency** | Multiple generations, compare for agreement | Medium-High |
-| **Retrieval verification** | Check claims against knowledge base | High |
-| **Entailment check** | NLI model on (source, claim) pairs | High |
-| **Confidence scoring** | LLM self-rates confidence | Medium |
+Grounding rules:
+- answer only from provided context;
+- cite factual claims;
+- state uncertainty explicitly;
+- do not extrapolate beyond source evidence.
 
-### Grounding Prompt Template
+Faithfulness targets:
+- Faithfulness `> 0.95` for grounded production answers
+- Answer relevancy `> 0.85`
+- Context precision `> 0.80`
+- Context recall `> 0.80`
 
-```markdown
-Answer based ONLY on the provided context.
-If the answer is not in the context, say "I don't have enough information."
+## Agent And MCP Safety
+
+- least privilege by default
+- human approval for state changes, external actions, or spending
+- tool-call audit logs
+- one bounded responsibility per agent
+- cost and time caps per execution
+
+MCP-specific:
+- OAuth 2.1 for HTTP transport
+- never echo secrets
+- validate parameters before execution
+- require confirmation for state-changing or cost-incurring actions
+- offer dry-run mode for destructive actions
+
+## PII Handling
+
+| Category | Action |
+|----------|--------|
+| direct identifiers | redact before LLM |
+| contact info | redact or mask |
+| financial data | redact before LLM |
+| health data | redact before LLM |
+| names | context-dependent handling |
 
 Rules:
-- Every factual claim must be supported by the context
-- Use [Source: doc_id] citations after each claim
-- State uncertainty explicitly when applicable
-- Never extrapolate beyond what the context states
-```
+- preserve reversible mapping only if a legitimate downstream need exists;
+- keep tenant isolation and data residency requirements explicit.
 
-### Faithfulness Targets
+## Bias Evaluation
 
-| Metric | Target |
-|--------|--------|
-| Faithfulness | >0.95 (claims supported by sources) |
-| Answer relevancy | >0.85 (answer addresses question) |
-| Context precision | >0.80 (retrieved docs are relevant) |
-| Context recall | >0.80 (relevant docs are retrieved) |
+| Dimension | Flag threshold |
+|-----------|----------------|
+| gender | `> 20%` variance |
+| race / ethnicity | `> 20%` variance |
+| age | `> 20%` variance |
+| socioeconomic context | `> 20%` variance |
 
----
+Cadence: quarterly audits for production systems.
 
-## 4. Agent Safety (2025 — Year of LLM Agents)
+## Compliance Baseline
 
-### Excessive Agency Prevention
+- trace prompt/model/dataset versions
+- retain immutable audit trails
+- apply PII masking and tenant isolation
+- require human approval for high-risk decisions
+- disclose AI involvement where regulation requires it
 
-| Principle | Implementation |
-|-----------|---------------|
-| **Least privilege** | Read-only default; allowlist only needed permissions |
-| **Human approval gates** | Require confirmation for state changes, spending, external actions |
-| **Action audit** | Log all tool calls with timestamps, parameters, results |
-| **Scope limitation** | One agent = one bounded responsibility |
-| **Cost/time caps** | Per-execution budget ceiling + circuit breaker |
+## Oracle Gates
 
-### MCP Security
-
-- OAuth 2.1 mandatory for HTTP-based transport
-- Never echo secrets in tool results or elicitation messages
-- Validate all tool parameters before execution
-- Require confirmation for state-changing or cost-incurring operations
-- Implement dry-run mode for destructive actions
-
----
-
-## 5. PII Handling
-
-| Category | Examples | Detection | Action |
-|----------|----------|-----------|--------|
-| **Direct identifiers** | SSN, passport | Regex | Redact BEFORE LLM |
-| **Contact info** | Email, phone | Regex | Redact or mask |
-| **Financial** | Credit card, bank account | Regex + Luhn | Redact BEFORE LLM |
-| **Health** | Medical records | NER model | Redact BEFORE LLM |
-| **Names** | Full names | NER model | Context-dependent |
-
-### Redaction Strategy
-
-```python
-def redact_pii(text: str) -> tuple[str, dict]:
-    """Redact PII and return mapping for re-identification if needed."""
-    mapping = {}
-    # Email, Phone, SSN patterns → replace with [EMAIL_0], [PHONE_0], etc.
-    # Store mapping for post-processing re-insertion if required
-    return redacted_text, mapping
-```
-
----
-
-## 6. Bias Evaluation
-
-| Dimension | Test Method | Flag Threshold |
-|-----------|------------|----------------|
-| **Gender** | Swap pronouns, compare outputs | >20% variance |
-| **Race/Ethnicity** | Swap names, compare treatment | >20% variance |
-| **Age** | Test with different age contexts | >20% variance |
-| **Socioeconomic** | Test with different economic contexts | >20% variance |
-
-Schedule: Quarterly bias audits for production systems.
-
----
-
-## 7. Regulatory Compliance (2025-2026)
-
-```
-EU AI Act / US State Laws:
-  1. Traceability: Link eval scores to exact prompt/model/dataset versions
-  2. Fairness audits: Quarterly bias testing
-  3. Audit trail: Immutable logs of all tool calls and decision rationale
-  4. Data protection: PII masking · tenant isolation · data residency
-  5. Accountability: Human approval gates for high-risk decisions
-  6. Transparency: Disclose AI involvement to end users where required
-```
-
----
-
-## 8. Oracle Integration
-
-```
-Oracle workflow integration:
-  1. ASSESS: Evaluate against OWASP LLM01–10 checklist
-  2. DESIGN: Apply defense-in-depth guardrail architecture
-  3. SPECIFY: Include security requirements in Builder handoff specs
-  4. EVALUATE: Run adversarial testing (prompt injection, PII leak, bias)
-
-Quality gates:
-  - No output validation → block at DESIGN (LLM05)
-  - No prompt injection defense → require input guardrails (LLM01)
-  - Agent with broad permissions → require least-privilege design (LLM06)
-  - System prompt contains secrets → externalize (LLM07)
-  - No PII handling → require redaction strategy (LLM02)
-```
-
-**Source:** [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/) · [Confident AI: OWASP Top 10 2025 Analysis](https://www.confident-ai.com/blog/owasp-top-10-2025-for-llm-applications-risks-and-mitigation-techniques) · [MCP Specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) · [Anthropic: Agent Safety](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)
+- no output validation -> block at `DESIGN`
+- no prompt-injection defense -> require input guardrails
+- no least-privilege design -> block at `DESIGN`
+- secrets inside system prompts -> externalize
+- no PII handling -> require redaction strategy
