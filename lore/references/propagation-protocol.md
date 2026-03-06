@@ -84,6 +84,62 @@ How Lore distributes insights to consuming agents effectively.
 
 ---
 
+## Negative Knowledge Prioritization
+
+Failure patterns and anti-patterns are the most valuable institutional memory — they prevent repeated mistakes. Research shows organizations disproportionately forget "what doesn't work," leading to wasted effort.
+
+<!-- Ref: "The Real Reason AI Research Keeps Repeating Itself" (ACM, 2024), "Anti-Patterns in Multi-Agent Gen AI Solutions" (Medium, 2025) -->
+
+### Priority Boost Rules
+
+| Pattern Type | Priority Modifier | Rationale |
+|-------------|------------------|-----------|
+| `FAILURE` | +2 urgency levels | Failures are forgotten fastest; early propagation prevents repetition |
+| `ANTI` | +2 urgency levels | Anti-patterns save the most effort when caught early |
+| `TRADEOFF` | +1 urgency level | Trade-off awareness prevents one-sided decisions |
+| `SUCCESS` | +0 (baseline) | Successes are naturally retained through practice |
+| `HEURISTIC` | +0 (baseline) | Rules of thumb are useful but not urgent |
+
+### Negative Knowledge Preservation Protocol
+
+1. **Tag explicitly**: All FAILURE and ANTI patterns include a `**What went wrong:**` field with concrete consequences
+2. **Lower confidence threshold for propagation**: Propagate FAILURE/ANTI patterns at Emerging (2) confidence, not Pattern (3+)
+3. **Extend freshness**: FAILURE/ANTI patterns use 1.5× TTL multiplier for decay — negative lessons stay relevant longer
+4. **Require explicit deprecation**: FAILURE/ANTI patterns cannot be auto-archived by time alone; require manual review
+
+---
+
+## Context Compression for Propagation
+
+Each token added to a consuming agent's context reduces its effective attention budget. Knowledge propagation must be compact to maximize uptake.
+
+<!-- Ref: "Effective context engineering for AI agents" (Anthropic, 2025) -->
+
+### Tiered Detail Levels
+
+| Tier | Max Length | When to Use | Format |
+|------|----------|-------------|--------|
+| **Headline** | 1 line (≤ 100 chars) | Weekly digest, low-relevance consumers | `[ID]: [one-sentence pattern]` |
+| **Summary** | 3-5 lines | Standard propagation, domain consumers | Pattern + confidence + recommended action |
+| **Full** | Unlimited | On-request, high-impact patterns, contradictions | Complete METAPATTERNS entry with all evidence |
+
+### Consumer-Type Compression Rules
+
+| Consumer Type | Default Tier | Upgrade Trigger |
+|--------------|-------------|-----------------|
+| Primary (Architect, Darwin, Nexus) | Summary | Ecosystem-wide pattern → Full |
+| Domain (Builder, Mend, etc.) | Headline | Direct domain match → Summary |
+| Meta (Sigil, Judge, Grove) | Headline | Cross-agent scope → Summary |
+
+### Compact Context Guidelines
+
+- **Lead with action**: Start every insight with what the consumer should DO, not background
+- **Evidence by reference**: Cite `METAPATTERNS.md → [ID]` instead of inlining full evidence lists
+- **One insight per message**: Never batch multiple unrelated patterns in a single propagation
+- **Omit redundant fields**: Skip confidence/scope if consumer already knows the context
+
+---
+
 ## Feedback Loop
 
 After propagation, Lore tracks effectiveness:

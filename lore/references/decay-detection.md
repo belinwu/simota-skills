@@ -26,6 +26,42 @@ FRESH ──(30 days)──→ CURRENT ──(90 days)──→ AGING ──(180
 
 ---
 
+## Domain-Specific Freshness Policy
+
+Knowledge half-life varies significantly by content type. Applying uniform TTL thresholds causes premature archival of stable process patterns and late detection of stale security patterns. Use domain-specific multipliers to adjust the base freshness thresholds.
+
+<!-- Ref: "The Knowledge Decay Problem" (RAG About It, 2025), "Data freshness rot" (Glen Rhodes, 2025) -->
+
+### Domain TTL Multipliers
+
+| Domain | Multiplier | Effective Thresholds (FRESH/CURRENT/AGING/STALE) | Rationale |
+|--------|-----------|--------------------------------------------------|-----------|
+| `SECURITY` | 0.5× | 15 / 45 / 90 / 90+ days | Threat landscape changes rapidly; patterns go stale fast |
+| `INFRA` | 0.75× | 22 / 67 / 135 / 135+ days | Tool versions and cloud APIs evolve frequently |
+| `PERF` | 0.75× | 22 / 67 / 135 / 135+ days | Performance characteristics shift with dependencies |
+| `APP` | 1.0× | 30 / 90 / 180 / 180+ days | Standard decay rate (baseline) |
+| `TEST` | 1.0× | 30 / 90 / 180 / 180+ days | Testing practices evolve at moderate pace |
+| `UX` | 1.0× | 30 / 90 / 180 / 180+ days | Design patterns shift with trends |
+| `DESIGN` | 1.25× | 37 / 112 / 225 / 225+ days | Architectural patterns are relatively stable |
+| `PROCESS` | 1.5× | 45 / 135 / 270 / 270+ days | Workflow patterns change slowly |
+| `META` | 1.5× | 45 / 135 / 270 / 270+ days | Ecosystem-level insights have long shelf life |
+
+### Applying Multipliers
+
+When evaluating freshness state for a pattern:
+
+```
+effective_threshold = base_threshold × domain_multiplier
+
+Example: SECURITY-ANTI-005, last evidence 50 days ago
+  Base CURRENT threshold = 90 days → Effective = 90 × 0.5 = 45 days
+  50 > 45 → State = AGING (not CURRENT as base thresholds would indicate)
+```
+
+If a pattern spans multiple domains, use the **lowest multiplier** (most aggressive decay) to err on the side of freshness.
+
+---
+
 ## Decay Signals
 
 ### Primary Signals (Automatic Detection)

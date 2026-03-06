@@ -67,6 +67,48 @@ Track pattern evolution over time:
 
 ---
 
+## Relationship Tracking
+
+Patterns stored as flat entries miss deeper insights. Explicit inter-pattern links improve contradiction detection, reveal systemic issues, and surface emergent knowledge.
+
+<!-- Ref: "A-MEM: Agentic Memory for LLM Agents" (arXiv 2502.12110, 2025) -->
+
+### Link Types
+
+| Link Type | Notation | Meaning | Example |
+|-----------|----------|---------|---------|
+| **Reinforces** | `→reinforces→` | Pattern A provides additional evidence for Pattern B | INFRA-SUCCESS-003 →reinforces→ INFRA-HEURISTIC-007 |
+| **Contradicts** | `→contradicts→` | Pattern A conflicts with Pattern B in some context | APP-SUCCESS-012 →contradicts→ APP-HEURISTIC-005 |
+| **Specializes** | `→specializes→` | Pattern A is a domain-specific case of broader Pattern B | SECURITY-ANTI-002 →specializes→ APP-ANTI-009 |
+| **Generalizes** | `→generalizes→` | Pattern A is a broader version of Pattern B | META-HEURISTIC-001 →generalizes→ PROCESS-SUCCESS-004 |
+
+### Relationship Maintenance Protocol
+
+1. **On registration**: When adding a new pattern, scan existing patterns in the same domain for potential links. Check cross-domain patterns with similarity ≥ 60%.
+2. **On reinforcement**: When updating evidence, check if the new evidence also reinforces or contradicts linked patterns.
+3. **On contradiction detection**: Automatically create a `→contradicts→` link between the conflicting patterns.
+4. **On archival**: When archiving a pattern, review its links — if a `→generalizes→` target is archived, check if the specialized pattern should also be flagged.
+
+### Recording Links in METAPATTERNS.md
+
+Extend the existing `**Related:**` field with typed links:
+
+```markdown
+**Related:**
+- →reinforces→ INFRA-HEURISTIC-007 (rolling restart effectiveness)
+- →contradicts→ APP-SUCCESS-012 (when scale > 10k RPS)
+- →specializes→ APP-ANTI-009 (security-specific case)
+```
+
+### Relationship-Driven Insights
+
+During synthesis, actively look for:
+- **Contradiction clusters**: 3+ patterns with mutual `→contradicts→` links indicate a domain with unclear best practices — escalate to Architect
+- **Reinforcement chains**: A→B→C reinforcement chains indicate foundational knowledge — consider promoting the root pattern
+- **Orphan patterns**: Patterns with zero relationships after 90 days may be too narrow or poorly classified
+
+---
+
 ## Deduplication Protocol
 
 Before registering a new pattern, check:

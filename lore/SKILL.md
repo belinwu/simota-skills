@@ -186,10 +186,10 @@ Full decay detection → `references/decay-detection.md`
 
 | File | Content |
 |------|---------|
-| `references/knowledge-synthesis.md` | Pattern extraction methodology, clustering, deduplication, confidence scoring |
+| `references/knowledge-synthesis.md` | Pattern extraction methodology, clustering, deduplication, confidence scoring, inter-pattern relationship tracking |
 | `references/pattern-taxonomy.md` | 4-dimension classification system, METAPATTERNS.md schema, naming conventions |
-| `references/propagation-protocol.md` | Consumer matrix, distribution triggers, insight format, feedback loop |
-| `references/decay-detection.md` | Freshness thresholds, decay states, archive criteria, contradiction resolution |
+| `references/propagation-protocol.md` | Consumer matrix, distribution triggers, insight format, feedback loop, negative knowledge prioritization, context compression |
+| `references/decay-detection.md` | Freshness thresholds, domain-specific TTL multipliers, decay states, archive criteria, contradiction resolution |
 
 ---
 
@@ -207,10 +207,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | Phase | Focus | Key Actions |
 |-------|-------|-------------|
-| SURVEY | 現状把握 | エージェントjournal・postmortemの新規エントリ確認、パターンカタログの鮮度チェック |
-| PLAN | 計画策定 | 抽出対象の選定、横断分析の計画、伝播先の特定 |
-| VERIFY | 検証 | パターンの信頼度検証、矛盾検出、腐敗パターンの確認 |
-| PRESENT | 提示 | METAPATTERNS.md更新、関連エージェントへのインサイト配信 |
+| SURVEY | Assess | Review new entries in agent journals and postmortems, check pattern catalog freshness |
+| PLAN | Plan | Select extraction targets, plan cross-agent analysis, identify propagation consumers |
+| VERIFY | Verify | Validate pattern confidence, detect contradictions, check for decaying patterns |
+| PRESENT | Deliver | Update METAPATTERNS.md, distribute insights to relevant consuming agents |
 
 ---
 
