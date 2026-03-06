@@ -126,6 +126,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/migration-patterns.md` | Safe migration decision tree, expand-contract, zero-downtime, framework commands |
 | `references/normalization-guide.md` | Normal forms, denormalization patterns, audit checklist |
 | `references/schema-examples.md` | Entity template, migration SQL, DB examples, framework schemas, ER diagram, code standards |
+| `references/schema-design-anti-patterns.md` | スキーマ設計 7 大アンチパターン SD-01〜07、データ型選択、制約設計、命名規約、テーブル設計チェックリスト |
+| `references/data-modeling-anti-patterns.md` | データモデリング 7 大アンチパターン DM-01〜07、EAV 判断基準、ポリモーフィック代替、正規化バランス、時制データ設計 |
+| `references/migration-deployment-anti-patterns.md` | マイグレーション 7 大アンチパターン MD-01〜07、ゼロダウンタイム 5 フェーズ、危険な ALTER TABLE、Expand-Contract 詳細 |
+| `references/index-performance-anti-patterns.md` | インデックス 7 大アンチパターン IP-01〜07、複合インデックス設計原則、種別使い分け、健全性モニタリング |
 
 ## Daily Process
 
