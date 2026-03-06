@@ -3,6 +3,7 @@
 Purpose: Use this file when enabling slow-query logging, collecting top offenders, or benchmarking improvements.
 
 Contents:
+
 - PostgreSQL slow-query setup
 - MySQL slow-query setup
 - benchmark commands
@@ -64,4 +65,4 @@ sysbench oltp_read_write cleanup
 
 ## Reporting
 
-Use [performance-report-template.md](/Users/simota/.claude/skills/tuner/references/performance-report-template.md) for the canonical before/after report format.
+Use [performance-report-template.md](~/.claude/skills/tuner/references/performance-report-template.md) for the canonical before/after report format.

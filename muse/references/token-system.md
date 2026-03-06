@@ -16,11 +16,11 @@ Purpose: Use this reference when defining token categories, naming rules, typogr
 
 ## Token Categories
 
-| Layer | Purpose | Examples |
-|------|---------|----------|
+| Layer     | Purpose                                | Examples                                       |
+| --------- | -------------------------------------- | ---------------------------------------------- |
 | Primitive | Raw values and neutral building blocks | `blue-500`, `gray-100`, `space-4`, `shadow-md` |
-| Semantic | Context-aware aliases | `bg-primary`, `text-secondary`, `border-focus` |
-| Component | Component-specific composition | `button-radius`, `card-shadow`, `input-border` |
+| Semantic  | Context-aware aliases                  | `bg-primary`, `text-secondary`, `border-focus` |
+| Component | Component-specific composition         | `button-radius`, `card-shadow`, `input-border` |
 
 Rules:
 
@@ -30,12 +30,12 @@ Rules:
 
 ## Naming Convention
 
-| Layer | Pattern | Example |
-|------|---------|---------|
-| Primitive color | `{family}-{scale}` | `blue-500` |
-| Semantic color | `{role}-{variant}` | `bg-primary`, `text-muted` |
-| Component token | `{component}-{property}` | `button-padding-x` |
-| CSS variable | `--{category}-{property}-{variant}-{state}` | `--color-bg-primary-default` |
+| Layer           | Pattern                                     | Example                      |
+| --------------- | ------------------------------------------- | ---------------------------- |
+| Primitive color | `{family}-{scale}`                          | `blue-500`                   |
+| Semantic color  | `{role}-{variant}`                          | `bg-primary`, `text-muted`   |
+| Component token | `{component}-{property}`                    | `button-padding-x`           |
+| CSS variable    | `--{category}-{property}-{variant}-{state}` | `--color-bg-primary-default` |
 
 Rules:
 
@@ -76,7 +76,7 @@ Rules:
 
 - Keep primitives and semantic tokens globally available.
 - Scope component tokens closer to the component when possible.
-- Use the lifecycle status defined in [token-lifecycle.md](/Users/simota/.claude/skills/muse/references/token-lifecycle.md) for unstable or deprecated tokens.
+- Use the lifecycle status defined in [token-lifecycle.md](~/.claude/skills/muse/references/token-lifecycle.md) for unstable or deprecated tokens.
 
 ## Typography Scale
 
@@ -84,27 +84,27 @@ Default ratio: Major Third (`1.25`)
 
 ```css
 :root {
-  --text-xs: 0.75rem;     /* 12px */
-  --text-sm: 0.875rem;    /* 14px - secondary text, metadata */
-  --text-base: 1rem;      /* 16px - body */
-  --text-lg: 1.125rem;    /* 18px - lead paragraphs */
-  --text-xl: 1.25rem;     /* 20px - h5 */
-  --text-2xl: 1.5rem;     /* 24px - h4 */
-  --text-3xl: 1.875rem;   /* 30px - h3 */
-  --text-4xl: 2.25rem;    /* 36px - h2 */
-  --text-5xl: 3rem;       /* 48px - h1 */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px - secondary text, metadata */
+  --text-base: 1rem; /* 16px - body */
+  --text-lg: 1.125rem; /* 18px - lead paragraphs */
+  --text-xl: 1.25rem; /* 20px - h5 */
+  --text-2xl: 1.5rem; /* 24px - h4 */
+  --text-3xl: 1.875rem; /* 30px - h3 */
+  --text-4xl: 2.25rem; /* 36px - h2 */
+  --text-5xl: 3rem; /* 48px - h1 */
 }
 ```
 
 Usage guide:
 
-| Token | Typical use |
-|------|-------------|
-| `--text-sm` | metadata, helper text |
+| Token         | Typical use                                       |
+| ------------- | ------------------------------------------------- |
+| `--text-sm`   | metadata, helper text                             |
 | `--text-base` | default body, keep mobile body text at `min 16px` |
-| `--text-lg` | lead text |
-| `--text-2xl` | section headers |
-| `--text-5xl` | hero headlines |
+| `--text-lg`   | lead text                                         |
+| `--text-2xl`  | section headers                                   |
+| `--text-5xl`  | hero headlines                                    |
 
 Responsive guidance:
 
@@ -117,28 +117,28 @@ Base system: `8px` grid with `4px` support for tight pairings.
 
 ```css
 :root {
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.25rem;   /* 20px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-8: 2rem;      /* 32px */
-  --space-10: 2.5rem;   /* 40px */
-  --space-12: 3rem;     /* 48px */
-  --space-16: 4rem;     /* 64px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
 }
 ```
 
 Usage guide:
 
-| Use case | Range | Tokens |
-|---------|-------|--------|
-| Icon to text | `4-8px` | `space-1`, `space-2` |
-| Button padding | `8-16px` | `space-2`, `space-4` |
-| Card padding | `16-24px` | `space-4`, `space-6` |
-| Section gap | `24-48px` | `space-6`, `space-12` |
-| Page margins | `16-64px` | `space-4`, `space-16` |
+| Use case       | Range     | Tokens                |
+| -------------- | --------- | --------------------- |
+| Icon to text   | `4-8px`   | `space-1`, `space-2`  |
+| Button padding | `8-16px`  | `space-2`, `space-4`  |
+| Card padding   | `16-24px` | `space-4`, `space-6`  |
+| Section gap    | `24-48px` | `space-6`, `space-12` |
+| Page margins   | `16-64px` | `space-4`, `space-16` |
 
 Responsive guidance:
 
@@ -167,6 +167,7 @@ Grid verification:
 
 ```md
 ### Design Token Audit Report: [Component/File]
+
 - Coverage:
 - Categories:
   - Hardcoded:

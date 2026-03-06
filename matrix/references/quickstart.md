@@ -1,12 +1,17 @@
 # Quickstart Templates
 
-Matrix の即席テンプレート3種。コピー&ペーストして使用可能。
+Purpose: Use this file when you need a fast, copy-pasteable starter matrix without reading the full methodology.
 
----
+## Contents
 
-## Q1: テストマトリクス（browser × os × auth）
+- Test matrix
+- Deploy matrix
+- Risk matrix
+- Usage notes
 
-**ユースケース**: Webアプリのブラウザ互換性テスト計画
+## Test Matrix
+
+Use this when planning browser, OS, auth, or locale coverage.
 
 ```yaml
 matrix:
@@ -19,23 +24,23 @@ matrix:
     - name: auth
       values: [logged_in, anonymous]
   constraints:
-    - exclude: {browser: Safari, os: Windows}
-    - exclude: {browser: Safari, os: Linux}
+    exclude:
+      - { browser: Safari, os: Windows }
+      - { browser: Safari, os: Linux }
   optimization: pairwise
   priority_axis: browser
 ```
 
-**結果例**:
-- 全組み合わせ: 18 → Pairwise後: 6件（削減率 67%）
-- カバレッジ: 全2軸ペア 100%
+Expected outcome:
 
-**後続エージェント**: `Voyager`（E2Eテスト実装）/ `Radar`（テストカバレッジ向上）
+- Original combinations: `18`
+- Optimized set: about `6`
+- Coverage guarantee: `2-way 100%`
+- Suggested next agent: `Voyager` or `Radar`
 
----
+## Deploy Matrix
 
-## Q2: デプロイマトリクス（environment × region × traffic）
-
-**ユースケース**: カナリアリリースの段階的デプロイ計画
+Use this when rollout order depends on environment, region, or traffic.
 
 ```yaml
 matrix:
@@ -46,25 +51,25 @@ matrix:
     - name: region
       values: [us-east, ap-northeast, eu-west]
     - name: traffic
-      values: [100%, 50%, 10%]
+      values: ["100%", "50%", "10%"]
   constraints:
-    - if: {environment: staging}
-      then_exclude: {traffic: "100%"}
+    conditional:
+      - if: { environment: staging }
+        then: { traffic: "100%" }
   optimization: pairwise
   priority_axis: region
 ```
 
-**結果例**:
-- 全組み合わせ: 18 → Pairwise後: 6件（削減率 67%）
-- カバレッジ: 全2軸ペア 100%
+Expected outcome:
 
-**後続エージェント**: `Scaffold`（インフラプロビジョニング）/ `Gear`（デプロイパイプライン）
+- Original combinations: `18`
+- Optimized set: about `6`
+- Coverage guarantee: `2-way 100%`
+- Suggested next agent: `Scaffold` or `Gear`
 
----
+## Risk Matrix
 
-## Q3: リスクマトリクス（threat × surface × auth_level）
-
-**ユースケース**: セキュリティリスク評価の優先順位付け
+Use this when threat, surface, and privilege combinations need prioritization.
 
 ```yaml
 matrix:
@@ -80,19 +85,15 @@ matrix:
   priority_axis: threat
 ```
 
-**結果例**:
-- 全組み合わせ: 36 → Pairwise後: 9件（削減率 75%）
-- カバレッジ: 全2軸ペア 100%
+Expected outcome:
 
-**後続エージェント**: `Triage`（インシデント対応）/ `Sentinel`（静的セキュリティ分析）/ `Scout`（根本原因調査）
+- Original combinations: `36`
+- Optimized set: about `9`
+- Coverage guarantee: `2-way 100%`
+- Suggested next agent: `Triage`, `Sentinel`, or `Scout`
 
----
+## Usage Notes
 
-## 使い方
-
-1. 上記YAMLをコピーしてMatrixに渡す
-2. Matrixが最適化された実行計画を生成
-3. 後続エージェントに渡して実行
-
-より多くのドメインパターン: `references/domain-patterns.md`
-完全なYAML仕様: `references/input-schema.md`
+1. Start here when the user needs a matrix quickly.
+2. Move to [input-schema.md](~/.claude/skills/matrix/references/input-schema.md) when constraints, weights, or metadata become more complex.
+3. Move to [output-templates.md](~/.claude/skills/matrix/references/output-templates.md) when the result must be handed off formally.

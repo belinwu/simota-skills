@@ -31,12 +31,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Operating Modes
 
-| Mode | Trigger | Deliverable |
-|------|---------|-------------|
-| `ASSESS` | review an existing AI/ML system | gap analysis, anti-pattern findings, priority fixes |
-| `DESIGN` | create a new prompt / RAG / agent architecture | architecture choice, guardrails, metrics, cost plan |
-| `EVALUATE` | benchmark or regression-check an AI workflow | eval suite, thresholds, regressions, rollout recommendation |
-| `SPECIFY` | hand off AI work for implementation | Builder-ready spec with schemas, contracts, tests, and limits |
+| Mode       | Trigger                                        | Deliverable                                                   |
+| ---------- | ---------------------------------------------- | ------------------------------------------------------------- |
+| `ASSESS`   | review an existing AI/ML system                | gap analysis, anti-pattern findings, priority fixes           |
+| `DESIGN`   | create a new prompt / RAG / agent architecture | architecture choice, guardrails, metrics, cost plan           |
+| `EVALUATE` | benchmark or regression-check an AI workflow   | eval suite, thresholds, regressions, rollout recommendation   |
+| `SPECIFY`  | hand off AI work for implementation            | Builder-ready spec with schemas, contracts, tests, and limits |
 
 ## Delivery Loop
 
@@ -44,35 +44,35 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Critical Decision Rules
 
-| Area | Rule |
-|------|------|
-| Prompt | use `3-5` few-shot examples only when they measurably help; prefer structured outputs and task-matched adaptive thinking |
-| RAG | default to Hybrid Search; keep context to top `5-8` chunks; require `Recall@5 >= 0.8`, `Precision@5 >= 0.7`, `Faithfulness >= 0.8` |
-| Evaluation | fixed test sets only; regressions `>= 5%` block merge or rollout; LLM-as-judge needs a different judge model or human review |
-| Safety | no output validation, no prompt-injection defense, or no PII strategy -> block at `DESIGN`; bias variance `> 20%` requires mitigation |
-| Rollout | shadow mode `24h` minimum; canary `5% -> 25% -> 50% -> 100%`; p95 latency alert `> 2x` baseline; safety-trigger rate alert `> 5%` |
-| Cost | budget alert `> 120%`; wasted-token cost target `< 5%`; cache hit rate below `50%` of expected requires investigation |
-| Agent design | prefer custom agents `< 3k` tokens; `25k+` agents need redesign |
+| Area         | Rule                                                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Prompt       | use `3-5` few-shot examples only when they measurably help; prefer structured outputs and task-matched adaptive thinking              |
+| RAG          | default to Hybrid Search; keep context to top `5-8` chunks; require `Recall@5 >= 0.8`, `Precision@5 >= 0.7`, `Faithfulness >= 0.8`    |
+| Evaluation   | fixed test sets only; regressions `>= 5%` block merge or rollout; LLM-as-judge needs a different judge model or human review          |
+| Safety       | no output validation, no prompt-injection defense, or no PII strategy -> block at `DESIGN`; bias variance `> 20%` requires mitigation |
+| Rollout      | shadow mode `24h` minimum; canary `5% -> 25% -> 50% -> 100%`; p95 latency alert `> 2x` baseline; safety-trigger rate alert `> 5%`     |
+| Cost         | budget alert `> 120%`; wasted-token cost target `< 5%`; cache hit rate below `50%` of expected requires investigation                 |
+| Agent design | prefer custom agents `< 3k` tokens; `25k+` agents need redesign                                                                       |
 
 ## Workflow
 
-| Step | Action | Gate |
-|------|--------|------|
-| `ASSESS` | inspect current prompts, retrieval, safety, evaluation, and cost posture | identify RP / EV / LP / LA / MA / AA gaps |
-| `DESIGN` | choose prompt, RAG, agent, and guardrail patterns | block unsafe or unmeasured designs |
-| `EVALUATE` | define metrics, stable test sets, rollout checks, and observability | require baseline and regression gates |
-| `SPECIFY` | prepare implementation-facing contracts | include schemas, model abstraction, guardrails, eval gates, and cost ceilings |
+| Step       | Action                                                                   | Gate                                                                          |
+| ---------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `ASSESS`   | inspect current prompts, retrieval, safety, evaluation, and cost posture | identify RP / EV / LP / LA / MA / AA gaps                                     |
+| `DESIGN`   | choose prompt, RAG, agent, and guardrail patterns                        | block unsafe or unmeasured designs                                            |
+| `EVALUATE` | define metrics, stable test sets, rollout checks, and observability      | require baseline and regression gates                                         |
+| `SPECIFY`  | prepare implementation-facing contracts                                  | include schemas, model abstraction, guardrails, eval gates, and cost ceilings |
 
 ## Routing And Handoffs
 
-| Situation | Route |
-|-----------|-------|
-| AI architecture is approved and needs implementation | hand off to `Builder` with interfaces, prompt versions, schemas, safety gates, and rollback notes |
-| evaluation suite, regression tests, or benchmark automation is needed | hand off to `Radar` with metrics, datasets, pass criteria, and failure thresholds |
-| API schema or external contract design is central | route to `Gateway` with structured-output and safety requirements |
-| pipeline ingestion, retrieval indexing, or data refresh is central | route to `Stream` with retrieval SLOs, update cadence, and source-governance rules |
-| security review is dominant | route to `Sentinel` with OWASP LLM risks, PII handling, and output-validation expectations |
-| orchestration across multiple specialists is needed | route back through `Nexus` |
+| Situation                                                             | Route                                                                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| AI architecture is approved and needs implementation                  | hand off to `Builder` with interfaces, prompt versions, schemas, safety gates, and rollback notes |
+| evaluation suite, regression tests, or benchmark automation is needed | hand off to `Radar` with metrics, datasets, pass criteria, and failure thresholds                 |
+| API schema or external contract design is central                     | route to `Gateway` with structured-output and safety requirements                                 |
+| pipeline ingestion, retrieval indexing, or data refresh is central    | route to `Stream` with retrieval SLOs, update cadence, and source-governance rules                |
+| security review is dominant                                           | route to `Sentinel` with OWASP LLM risks, PII handling, and output-validation expectations        |
+| orchestration across multiple specialists is needed                   | route back through `Nexus`                                                                        |
 
 ## Output Requirements
 
@@ -83,15 +83,15 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## References
 
-| File | Read this when... |
-|------|-------------------|
-| [prompt-engineering.md](/Users/simota/.claude/skills/oracle/references/prompt-engineering.md) | you are designing prompts, structured outputs, Claude-specific behavior, or prompt tests. |
-| [rag-design-anti-patterns.md](/Users/simota/.claude/skills/oracle/references/rag-design-anti-patterns.md) | you need retrieval architecture, chunking, Hybrid Search defaults, or RAG anti-pattern checks. |
-| [llm-application-patterns.md](/Users/simota/.claude/skills/oracle/references/llm-application-patterns.md) | you are choosing agent patterns, MCP design, tool-use contracts, or caching strategy. |
-| [ai-safety-guardrails.md](/Users/simota/.claude/skills/oracle/references/ai-safety-guardrails.md) | you need OWASP LLM coverage, guardrail layers, hallucination controls, or PII handling. |
-| [evaluation-observability.md](/Users/simota/.claude/skills/oracle/references/evaluation-observability.md) | you are building eval suites, CI gates, tracing, monitoring, or rollout checks. |
-| [cost-optimization.md](/Users/simota/.claude/skills/oracle/references/cost-optimization.md) | you need model routing, caching, batching, effort tuning, or cost monitoring. |
-| [llm-production-anti-patterns.md](/Users/simota/.claude/skills/oracle/references/llm-production-anti-patterns.md) | you need production failure modes, architecture anti-patterns, MCP pitfalls, or reasoning compensations. |
+| File                                                                                                  | Read this when...                                                                                        |
+| ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [prompt-engineering.md](~/.claude/skills/oracle/references/prompt-engineering.md)                     | you are designing prompts, structured outputs, Claude-specific behavior, or prompt tests.                |
+| [rag-design-anti-patterns.md](~/.claude/skills/oracle/references/rag-design-anti-patterns.md)         | you need retrieval architecture, chunking, Hybrid Search defaults, or RAG anti-pattern checks.           |
+| [llm-application-patterns.md](~/.claude/skills/oracle/references/llm-application-patterns.md)         | you are choosing agent patterns, MCP design, tool-use contracts, or caching strategy.                    |
+| [ai-safety-guardrails.md](~/.claude/skills/oracle/references/ai-safety-guardrails.md)                 | you need OWASP LLM coverage, guardrail layers, hallucination controls, or PII handling.                  |
+| [evaluation-observability.md](~/.claude/skills/oracle/references/evaluation-observability.md)         | you are building eval suites, CI gates, tracing, monitoring, or rollout checks.                          |
+| [cost-optimization.md](~/.claude/skills/oracle/references/cost-optimization.md)                       | you need model routing, caching, batching, effort tuning, or cost monitoring.                            |
+| [llm-production-anti-patterns.md](~/.claude/skills/oracle/references/llm-production-anti-patterns.md) | you need production failure modes, architecture anti-patterns, MCP pitfalls, or reasoning compensations. |
 
 ## Operational
 
@@ -107,6 +107,7 @@ When invoked in Nexus AUTORUN mode: execute normal work, keep narration minimal,
 When input contains `## NEXUS_ROUTING`: treat Nexus as the hub, do not instruct direct agent calls, and return results via `## NEXUS_HANDOFF`.
 
 Required fields:
+
 - `Step`
 - `Agent`
 - `Summary`

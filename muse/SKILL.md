@@ -28,49 +28,49 @@ Use Muse when the task requires any of the following:
 
 ## Boundaries
 
-| Type | Rules |
-|------|-------|
-| Always | Define tokens for colors, spacing, typography, shadows, and radius. Create token files for the active stack. Replace hardcoded values with semantic tokens. Verify light and dark mode. Audit changed files for hardcoded values and off-grid spacing. Follow the lifecycle in [token-lifecycle.md](/Users/simota/.claude/skills/muse/references/token-lifecycle.md). Process reverse feedback from Palette, Flow, Showcase, and Judge. |
-| Ask first | Breaking token value changes. Page layout restructuring. Full design system migration. Overriding component styles instead of fixing tokens. Deprecating or removing `STABLE` tokens. |
-| Never | Use raw HEX/RGB values in components unless defining tokens. Make subjective visual changes without a system basis. Trade accessibility for aesthetics. Delete or rename tokens without a migration path. |
+| Type      | Rules                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Always    | Define tokens for colors, spacing, typography, shadows, and radius. Create token files for the active stack. Replace hardcoded values with semantic tokens. Verify light and dark mode. Audit changed files for hardcoded values and off-grid spacing. Follow the lifecycle in [token-lifecycle.md](~/.claude/skills/muse/references/token-lifecycle.md). Process reverse feedback from Palette, Flow, Showcase, and Judge. |
+| Ask first | Breaking token value changes. Page layout restructuring. Full design system migration. Overriding component styles instead of fixing tokens. Deprecating or removing `STABLE` tokens.                                                                                                                                                                                                                                       |
+| Never     | Use raw HEX/RGB values in components unless defining tokens. Make subjective visual changes without a system basis. Trade accessibility for aesthetics. Delete or rename tokens without a migration path.                                                                                                                                                                                                                   |
 
 ## Workflow
 
-| Phase | Focus | Required checks |
-|------|-------|-----------------|
-| `SCAN` | Find inconsistencies, hardcoded values, off-grid spacing, dark mode gaps, stale docs, and reverse feedback. | Audit changed files and active token sets. |
-| `POLISH` | Pick the highest-impact improvement that reinforces the system. | Prefer visible, isolated, reusable fixes. |
-| `REFINE` | Apply tokens, flatten architecture issues, and clean naming or lifecycle drift. | Avoid ad hoc overrides. |
-| `VERIFY` | Confirm responsive behavior, dark mode, accessibility, and token coverage. | Run palette-style contrast checks when colors changed. |
-| `PRESENT` | Summarize before/after impact and document token decisions. | Include lifecycle status and migration notes when relevant. |
+| Phase     | Focus                                                                                                       | Required checks                                             |
+| --------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `SCAN`    | Find inconsistencies, hardcoded values, off-grid spacing, dark mode gaps, stale docs, and reverse feedback. | Audit changed files and active token sets.                  |
+| `POLISH`  | Pick the highest-impact improvement that reinforces the system.                                             | Prefer visible, isolated, reusable fixes.                   |
+| `REFINE`  | Apply tokens, flatten architecture issues, and clean naming or lifecycle drift.                             | Avoid ad hoc overrides.                                     |
+| `VERIFY`  | Confirm responsive behavior, dark mode, accessibility, and token coverage.                                  | Run palette-style contrast checks when colors changed.      |
+| `PRESENT` | Summarize before/after impact and document token decisions.                                                 | Include lifecycle status and migration notes when relevant. |
 
 ## Critical Thresholds
 
-| Area | Rule |
-|------|------|
-| Typography scale | Default to Major Third (`1.25`). |
-| Spacing system | Use an `8px` grid. `4px` is allowed only for tight pairings such as icon-to-text spacing. |
-| Health targets | Token coverage `95%+`. Dark mode support `100%`. Component token usage `100%`. Documentation should be `< 1 sprint` stale. |
-| Lifecycle gates | `ADOPT -> STABLE` after usage in `3+ components`. `DEPRECATE` stays active for `2 sprints` with a migration guide. |
+| Area               | Rule                                                                                                                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Typography scale   | Default to Major Third (`1.25`).                                                                                                                                                          |
+| Spacing system     | Use an `8px` grid. `4px` is allowed only for tight pairings such as icon-to-text spacing.                                                                                                 |
+| Health targets     | Token coverage `95%+`. Dark mode support `100%`. Component token usage `100%`. Documentation should be `< 1 sprint` stale.                                                                |
+| Lifecycle gates    | `ADOPT -> STABLE` after usage in `3+ components`. `DEPRECATE` stays active for `2 sprints` with a migration guide.                                                                        |
 | Dark mode contrast | Text `4.5:1`. Large text `3:1`. Provide `System / Light / Dark` selection. Avoid pure `#000000`; prefer `#121212+`. Reduce accent saturation by `10-20%` in dark mode when glare appears. |
-| Token hygiene | Single-use values stay local until reused in `2+ components`. Consolidate `3+` tokens with the same value. Keep token names within `3-4` meaningful segments. |
-| CSS architecture | Keep `var()` nesting to `<= 2` steps. If `:root` token count exceeds `100`, move component tokens into local scope. |
+| Token hygiene      | Single-use values stay local until reused in `2+ components`. Consolidate `3+` tokens with the same value. Keep token names within `3-4` meaningful segments.                             |
+| CSS architecture   | Keep `var()` nesting to `<= 2` steps. If `:root` token count exceeds `100`, move component tokens into local scope.                                                                       |
 
 ## Routing And Reverse Feedback
 
-| Route | Use it when |
-|------|-------------|
-| Forge -> Muse | A prototype needs tokenization or system cleanup. |
-| Vision -> Muse | Creative direction must become tokens and reusable rules. |
-| Artisan -> Muse | Components need token audit or hardcoded value replacement. |
-| Nexus -> Muse | The task is delegated as a design-system or token-system job. |
-| Muse -> Palette | Colors, contrast, readability, or dark-mode semantics changed. |
-| Muse -> Flow | Motion tokens or timing tokens changed. |
-| Muse -> Canvas | The design system or token hierarchy needs visualization. |
-| Muse -> Showcase | Token updates require Storybook or documentation updates. |
-| Muse -> Judge | Token migration or consistency changes need code review. |
-| Muse -> Ripple | Stable token deprecation or rename needs impact analysis. |
-| Palette/Flow/Showcase/Judge -> Muse | Reverse feedback requires token or lifecycle adjustment. |
+| Route                               | Use it when                                                    |
+| ----------------------------------- | -------------------------------------------------------------- |
+| Forge -> Muse                       | A prototype needs tokenization or system cleanup.              |
+| Vision -> Muse                      | Creative direction must become tokens and reusable rules.      |
+| Artisan -> Muse                     | Components need token audit or hardcoded value replacement.    |
+| Nexus -> Muse                       | The task is delegated as a design-system or token-system job.  |
+| Muse -> Palette                     | Colors, contrast, readability, or dark-mode semantics changed. |
+| Muse -> Flow                        | Motion tokens or timing tokens changed.                        |
+| Muse -> Canvas                      | The design system or token hierarchy needs visualization.      |
+| Muse -> Showcase                    | Token updates require Storybook or documentation updates.      |
+| Muse -> Judge                       | Token migration or consistency changes need code review.       |
+| Muse -> Ripple                      | Stable token deprecation or rename needs impact analysis.      |
+| Palette/Flow/Showcase/Judge -> Muse | Reverse feedback requires token or lifecycle adjustment.       |
 
 ## Output Requirements
 
@@ -85,15 +85,15 @@ Use Muse when the task requires any of the following:
 
 ## References
 
-- [token-system.md](/Users/simota/.claude/skills/muse/references/token-system.md): Read this when defining categories, naming, scales, audits, or framework token wiring.
-- [token-lifecycle.md](/Users/simota/.claude/skills/muse/references/token-lifecycle.md): Read this when proposing, adopting, deprecating, or removing tokens.
-- [dark-mode.md](/Users/simota/.claude/skills/muse/references/dark-mode.md): Read this when implementing, verifying, or debugging dark mode behavior.
-- [design-system-construction.md](/Users/simota/.claude/skills/muse/references/design-system-construction.md): Read this when building or restructuring a design system foundation.
-- [figma-sync.md](/Users/simota/.claude/skills/muse/references/figma-sync.md): Read this when syncing Figma variables, Token Studio, or Style Dictionary with code.
-- [token-anti-patterns.md](/Users/simota/.claude/skills/muse/references/token-anti-patterns.md): Read this when token naming, hierarchy, reuse, or versioning quality is unclear.
-- [design-system-governance-anti-patterns.md](/Users/simota/.claude/skills/muse/references/design-system-governance-anti-patterns.md): Read this when adoption, ownership, or documentation drift becomes the problem.
-- [color-dark-mode-anti-patterns.md](/Users/simota/.claude/skills/muse/references/color-dark-mode-anti-patterns.md): Read this when dark mode, glare, contrast, or color semantics break down.
-- [css-token-architecture-anti-patterns.md](/Users/simota/.claude/skills/muse/references/css-token-architecture-anti-patterns.md): Read this when CSS token structure, scoping, or theming architecture is unstable.
+- [token-system.md](~/.claude/skills/muse/references/token-system.md): Read this when defining categories, naming, scales, audits, or framework token wiring.
+- [token-lifecycle.md](~/.claude/skills/muse/references/token-lifecycle.md): Read this when proposing, adopting, deprecating, or removing tokens.
+- [dark-mode.md](~/.claude/skills/muse/references/dark-mode.md): Read this when implementing, verifying, or debugging dark mode behavior.
+- [design-system-construction.md](~/.claude/skills/muse/references/design-system-construction.md): Read this when building or restructuring a design system foundation.
+- [figma-sync.md](~/.claude/skills/muse/references/figma-sync.md): Read this when syncing Figma variables, Token Studio, or Style Dictionary with code.
+- [token-anti-patterns.md](~/.claude/skills/muse/references/token-anti-patterns.md): Read this when token naming, hierarchy, reuse, or versioning quality is unclear.
+- [design-system-governance-anti-patterns.md](~/.claude/skills/muse/references/design-system-governance-anti-patterns.md): Read this when adoption, ownership, or documentation drift becomes the problem.
+- [color-dark-mode-anti-patterns.md](~/.claude/skills/muse/references/color-dark-mode-anti-patterns.md): Read this when dark mode, glare, contrast, or color semantics break down.
+- [css-token-architecture-anti-patterns.md](~/.claude/skills/muse/references/css-token-architecture-anti-patterns.md): Read this when CSS token structure, scoping, or theming architecture is unstable.
 
 ## Operational
 

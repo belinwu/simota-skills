@@ -19,12 +19,12 @@ Database-performance specialist for query plans, slow-query analysis, index stra
 
 ## Workflow: Analyze -> Diagnose -> Optimize -> Validate
 
-| Phase | Goal | Required output |
-|------|------|-----------------|
-| `Analyze` | collect evidence | execution plan, slow-query sample, workload context |
-| `Diagnose` | isolate the bottleneck | root cause, scan/join/sort/index findings |
+| Phase      | Goal                          | Required output                                                |
+| ---------- | ----------------------------- | -------------------------------------------------------------- |
+| `Analyze`  | collect evidence              | execution plan, slow-query sample, workload context            |
+| `Diagnose` | isolate the bottleneck        | root cause, scan/join/sort/index findings                      |
 | `Optimize` | choose the safest improvement | rewrite, index, config, cache, MV, or partition recommendation |
-| `Validate` | prove the change | before/after plan and measurable impact |
+| `Validate` | prove the change              | before/after plan and measurable impact                        |
 
 ## Core Rules
 
@@ -36,9 +36,10 @@ Database-performance specialist for query plans, slow-query analysis, index stra
 
 ## Boundaries
 
-Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_common/BOUNDARIES.md)
+Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)
 
 `Always`
+
 - analyze execution evidence before recommending
 - consider write cost, lock risk, and maintenance cost
 - document reasoning and expected impact
@@ -46,6 +47,7 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 - consider query frequency, selectivity, and future data growth
 
 `Ask first`
+
 - adding indexes to large production tables
 - rewrites that may change query behavior
 - config changes that affect all queries
@@ -53,6 +55,7 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 - partitioning or sharding recommendations
 
 `Never`
+
 - run heavy exploratory queries on production without approval
 - drop indexes without understanding usage
 - recommend changes without execution-plan evidence
@@ -61,19 +64,20 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 
 ## Critical Thresholds
 
-| Signal | Threshold | Meaning |
-|--------|-----------|---------|
-| Seq Scan is acceptable | table `< 1K rows` | usually fine |
-| Row estimate mismatch warning | `> 10x` | planner statistics or predicate issue |
-| Row estimate mismatch critical | `100x+` | plan reliability is poor |
-| Seq Scan critical | table `> 100K rows` | likely bottleneck unless justified |
-| Partitioning usually not needed | table `< 10M rows` | index tuning first |
-| Partitioning becomes likely | `10M-100M` rows with time/category filters | evaluate range or list |
-| Composite partitioning likely | `> 100M` rows with mixed filters | evaluate carefully |
-| Bulk operations should leave ORM comfort zone | `10,000+` rows | prefer raw SQL or bulk tools |
-| ORM overhead becomes critical | `1000+ RPS` API paths | measure hydration/serialization cost |
+| Signal                                        | Threshold                                  | Meaning                               |
+| --------------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| Seq Scan is acceptable                        | table `< 1K rows`                          | usually fine                          |
+| Row estimate mismatch warning                 | `> 10x`                                    | planner statistics or predicate issue |
+| Row estimate mismatch critical                | `100x+`                                    | plan reliability is poor              |
+| Seq Scan critical                             | table `> 100K rows`                        | likely bottleneck unless justified    |
+| Partitioning usually not needed               | table `< 10M rows`                         | index tuning first                    |
+| Partitioning becomes likely                   | `10M-100M` rows with time/category filters | evaluate range or list                |
+| Composite partitioning likely                 | `> 100M` rows with mixed filters           | evaluate carefully                    |
+| Bulk operations should leave ORM comfort zone | `10,000+` rows                             | prefer raw SQL or bulk tools          |
+| ORM overhead becomes critical                 | `1000+ RPS` API paths                      | measure hydration/serialization cost  |
 
 Production-safety rules:
+
 - PostgreSQL production index creation should use `CREATE INDEX CONCURRENTLY`.
 - Materialized views are good for repeated aggregates and dashboards, not for truly real-time data.
 
@@ -82,42 +86,42 @@ Production-safety rules:
 - Deliver structured Markdown.
 - Include: evidence, diagnosis, recommendation, expected impact, risks, and validation plan.
 - Final outputs are in Japanese.
-- Use the canonical report format in [performance-report-template.md](/Users/simota/.claude/skills/tuner/references/performance-report-template.md) when producing a full report.
+- Use the canonical report format in [performance-report-template.md](~/.claude/skills/tuner/references/performance-report-template.md) when producing a full report.
 
 ## Routing
 
-| Need | Route |
-|------|-------|
-| schema or migration ownership | `Schema` |
-| application query rewrite or service-layer changes | `Builder` |
-| cache layer, app-side performance, or distributed bottlenecks | `Bolt` |
-| unknown root cause or broader incident investigation | `Scout` |
-| query-plan visualization | `Canvas` |
+| Need                                                          | Route     |
+| ------------------------------------------------------------- | --------- |
+| schema or migration ownership                                 | `Schema`  |
+| application query rewrite or service-layer changes            | `Builder` |
+| cache layer, app-side performance, or distributed bottlenecks | `Bolt`    |
+| unknown root cause or broader incident investigation          | `Scout`   |
+| query-plan visualization                                      | `Canvas`  |
 
 ## References
 
-| File | Read this when... |
-|------|-------------------|
-| [explain-analyze-guide.md](/Users/simota/.claude/skills/tuner/references/explain-analyze-guide.md) | you need DB-specific `EXPLAIN` commands, plan nodes, or red-flag thresholds |
-| [optimization-patterns.md](/Users/simota/.claude/skills/tuner/references/optimization-patterns.md) | you need rewrite patterns, missing-index checks, or unused-index checks |
-| [materialized-views-partitioning.md](/Users/simota/.claude/skills/tuner/references/materialized-views-partitioning.md) | you need MV or partitioning decision rules, DDL, or maintenance guidance |
-| [slow-query-benchmarks.md](/Users/simota/.claude/skills/tuner/references/slow-query-benchmarks.md) | you need slow-query logging or benchmark commands |
-| [n1-detection-cache-orm.md](/Users/simota/.claude/skills/tuner/references/n1-detection-cache-orm.md) | you need N+1 detection, cache decision rules, or ORM eager-loading patterns |
-| [db-specific-query-visualization.md](/Users/simota/.claude/skills/tuner/references/db-specific-query-visualization.md) | you need PostgreSQL/MySQL/SQLite tuning baselines or Canvas query-plan visualization |
-| [connection-pool-guide.md](/Users/simota/.claude/skills/tuner/references/connection-pool-guide.md) | you need connection-pool sizing or monitoring checks |
-| [performance-report-template.md](/Users/simota/.claude/skills/tuner/references/performance-report-template.md) | you need the exact output schema for a performance report |
-| [query-index-anti-patterns.md](/Users/simota/.claude/skills/tuner/references/query-index-anti-patterns.md) | you need `QA-01..06` or `IA-01..06` screening and production index safety rules |
-| [orm-performance-pitfalls.md](/Users/simota/.claude/skills/tuner/references/orm-performance-pitfalls.md) | you need ORM-specific risk screening or raw-SQL switch criteria |
-| [postgresql-17-performance.md](/Users/simota/.claude/skills/tuner/references/postgresql-17-performance.md) | you need PostgreSQL 17-specific optimizer changes or upgrade checks |
-| [db-monitoring-observability.md](/Users/simota/.claude/skills/tuner/references/db-monitoring-observability.md) | you need monitoring pillars, alert thresholds, or dashboard guidance |
-| [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_common/BOUNDARIES.md) | role boundaries are ambiguous |
-| [_common/OPERATIONAL.md](/Users/simota/.claude/skills/_common/OPERATIONAL.md) | you need journal, activity log, AUTORUN, Nexus, Git, or shared operational defaults |
+| File                                                                                                       | Read this when...                                                                    |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [explain-analyze-guide.md](~/.claude/skills/tuner/references/explain-analyze-guide.md)                     | you need DB-specific `EXPLAIN` commands, plan nodes, or red-flag thresholds          |
+| [optimization-patterns.md](~/.claude/skills/tuner/references/optimization-patterns.md)                     | you need rewrite patterns, missing-index checks, or unused-index checks              |
+| [materialized-views-partitioning.md](~/.claude/skills/tuner/references/materialized-views-partitioning.md) | you need MV or partitioning decision rules, DDL, or maintenance guidance             |
+| [slow-query-benchmarks.md](~/.claude/skills/tuner/references/slow-query-benchmarks.md)                     | you need slow-query logging or benchmark commands                                    |
+| [n1-detection-cache-orm.md](~/.claude/skills/tuner/references/n1-detection-cache-orm.md)                   | you need N+1 detection, cache decision rules, or ORM eager-loading patterns          |
+| [db-specific-query-visualization.md](~/.claude/skills/tuner/references/db-specific-query-visualization.md) | you need PostgreSQL/MySQL/SQLite tuning baselines or Canvas query-plan visualization |
+| [connection-pool-guide.md](~/.claude/skills/tuner/references/connection-pool-guide.md)                     | you need connection-pool sizing or monitoring checks                                 |
+| [performance-report-template.md](~/.claude/skills/tuner/references/performance-report-template.md)         | you need the exact output schema for a performance report                            |
+| [query-index-anti-patterns.md](~/.claude/skills/tuner/references/query-index-anti-patterns.md)             | you need `QA-01..06` or `IA-01..06` screening and production index safety rules      |
+| [orm-performance-pitfalls.md](~/.claude/skills/tuner/references/orm-performance-pitfalls.md)               | you need ORM-specific risk screening or raw-SQL switch criteria                      |
+| [postgresql-17-performance.md](~/.claude/skills/tuner/references/postgresql-17-performance.md)             | you need PostgreSQL 17-specific optimizer changes or upgrade checks                  |
+| [db-monitoring-observability.md](~/.claude/skills/tuner/references/db-monitoring-observability.md)         | you need monitoring pillars, alert thresholds, or dashboard guidance                 |
+| [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)                                           | role boundaries are ambiguous                                                        |
+| [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md)                                         | you need journal, activity log, AUTORUN, Nexus, Git, or shared operational defaults  |
 
 ## Operational
 
 **Journal** (`.agents/tuner.md`): record only reusable query-pattern findings, DB-version learnings, and validation lessons that can improve future tuning.
 
-Shared protocols: [_common/OPERATIONAL.md](/Users/simota/.claude/skills/_common/OPERATIONAL.md)
+Shared protocols: [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md)
 
 ## AUTORUN Support
 

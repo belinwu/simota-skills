@@ -31,19 +31,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Scope Tiers
 
-| Tier | Scope | Budget | Default action |
-|------|-------|--------|----------------|
-| Micro | single component or interaction | `< 50` lines | implement directly |
-| Meso | one page or screen | `< 200` lines | implement directly |
+| Tier  | Scope                                             | Budget         | Default action                                              |
+| ----- | ------------------------------------------------- | -------------- | ----------------------------------------------------------- |
+| Micro | single component or interaction                   | `< 50` lines   | implement directly                                          |
+| Meso  | one page or screen                                | `< 200` lines  | implement directly                                          |
 | Macro | cross-page flow or information architecture shift | evaluate first | document and delegate to `Vision` when redesign is required |
 
 ## Three-Lens Observation
 
-| Lens | Scope | Check for |
-|------|-------|-----------|
-| Micro | component | missing hover/pressed/loading/success/error states, silent failures, unclear affordances, destructive actions without confirmation or undo |
-| Meso | page | empty/error/loading/offline/first-use states, information overload, weak hierarchy, vague CTAs, poor result feedback, broken data-display UX |
-| Macro | flow | wayfinding gaps, dead ends, weak onboarding, poor progress cues, trust breakdown after submit or save |
+| Lens  | Scope     | Check for                                                                                                                                    |
+| ----- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Micro | component | missing hover/pressed/loading/success/error states, silent failures, unclear affordances, destructive actions without confirmation or undo   |
+| Meso  | page      | empty/error/loading/offline/first-use states, information overload, weak hierarchy, vague CTAs, poor result feedback, broken data-display UX |
+| Macro | flow      | wayfinding gaps, dead ends, weak onboarding, poor progress cues, trust breakdown after submit or save                                        |
 
 Cross-cutting checks:
 
@@ -52,20 +52,20 @@ Cross-cutting checks:
 
 ## Heuristic Evaluation
 
-Score each heuristic `1-5` and use the canonical report format in [ux-evaluation.md](/Users/simota/.claude/skills/palette/references/ux-evaluation.md).
+Score each heuristic `1-5` and use the canonical report format in [ux-evaluation.md](~/.claude/skills/palette/references/ux-evaluation.md).
 
-| # | Heuristic |
-|---|-----------|
-| 1 | Visibility of System Status |
-| 2 | Match User's Mental Model |
-| 3 | User Control and Freedom |
-| 4 | Consistency and Standards |
-| 5 | Error Prevention |
-| 6 | Recognition over Recall |
-| 7 | Flexibility and Efficiency |
-| 8 | Minimalist Design |
-| 9 | Error Recovery |
-| 10 | Contextual Help |
+| #   | Heuristic                   |
+| --- | --------------------------- |
+| 1   | Visibility of System Status |
+| 2   | Match User's Mental Model   |
+| 3   | User Control and Freedom    |
+| 4   | Consistency and Standards   |
+| 5   | Error Prevention            |
+| 6   | Recognition over Recall     |
+| 7   | Flexibility and Efficiency  |
+| 8   | Minimalist Design           |
+| 9   | Error Recovery              |
+| 10  | Contextual Help             |
 
 Priority: `1-2 = High`, `3 = Medium`, `4 = Low`, `5 = monitor only`.
 
@@ -83,29 +83,29 @@ Address issues in this order unless a stronger user or safety constraint overrid
 
 ## Workflow
 
-| Step | Action | Focus |
-|------|--------|-------|
-| Observe | inspect Micro, Meso, and Macro | capture friction, states, recovery gaps, and confidence failures |
-| Score | run heuristic evaluation | quantify problems and rank urgency |
-| Select | choose scope tier | prefer the smallest change with clear UX value |
-| Implement | apply the UX improvement | reuse system patterns and keep behavior explicit |
-| Verify | test the experience | confirm feedback, recovery, keyboard flow, mobile behavior, and lint/tests |
-| Present | report the change | explain before/after impact, heuristics improved, and next validation path |
+| Step      | Action                         | Focus                                                                      |
+| --------- | ------------------------------ | -------------------------------------------------------------------------- |
+| Observe   | inspect Micro, Meso, and Macro | capture friction, states, recovery gaps, and confidence failures           |
+| Score     | run heuristic evaluation       | quantify problems and rank urgency                                         |
+| Select    | choose scope tier              | prefer the smallest change with clear UX value                             |
+| Implement | apply the UX improvement       | reuse system patterns and keep behavior explicit                           |
+| Verify    | test the experience            | confirm feedback, recovery, keyboard flow, mobile behavior, and lint/tests |
+| Present   | report the change              | explain before/after impact, heuristics improved, and next validation path |
 
 ## Routing And Handoffs
 
-| Situation | Route |
-|-----------|-------|
-| friction discovered by persona walkthrough | use `ECHO_TO_PALETTE_HANDOFF`; send completed fixes back with `PALETTE_TO_ECHO_VALIDATION` |
-| motion or transition tuning is required | route to `Flow` with `PALETTE_TO_FLOW_HANDOFF` |
-| token or semantic-style gaps appear | route to `Muse` with `PALETTE_TO_MUSE_TOKEN_REQUEST` |
-| UX change affects auth, error disclosure, or security-sensitive handling | route to `Sentinel` with `PALETTE_TO_SENTINEL_REVIEW` |
-| code changes need accessibility or interaction tests | route to `Radar` with `PALETTE_TO_RADAR_TEST_REQUEST` |
-| diagrams or journey visualization help adoption | route to `Canvas` with `PALETTE_TO_CANVAS_VISUALIZATION` |
-| change materially affects V.A.I.R.E. quality | request a `Warden` pass |
-| redesign spans a multi-page flow or major information architecture change | escalate to `Vision` |
+| Situation                                                                 | Route                                                                                      |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| friction discovered by persona walkthrough                                | use `ECHO_TO_PALETTE_HANDOFF`; send completed fixes back with `PALETTE_TO_ECHO_VALIDATION` |
+| motion or transition tuning is required                                   | route to `Flow` with `PALETTE_TO_FLOW_HANDOFF`                                             |
+| token or semantic-style gaps appear                                       | route to `Muse` with `PALETTE_TO_MUSE_TOKEN_REQUEST`                                       |
+| UX change affects auth, error disclosure, or security-sensitive handling  | route to `Sentinel` with `PALETTE_TO_SENTINEL_REVIEW`                                      |
+| code changes need accessibility or interaction tests                      | route to `Radar` with `PALETTE_TO_RADAR_TEST_REQUEST`                                      |
+| diagrams or journey visualization help adoption                           | route to `Canvas` with `PALETTE_TO_CANVAS_VISUALIZATION`                                   |
+| change materially affects V.A.I.R.E. quality                              | request a `Warden` pass                                                                    |
+| redesign spans a multi-page flow or major information architecture change | escalate to `Vision`                                                                       |
 
-All handoff templates live in [collaboration-patterns.md](/Users/simota/.claude/skills/palette/references/collaboration-patterns.md).
+All handoff templates live in [collaboration-patterns.md](~/.claude/skills/palette/references/collaboration-patterns.md).
 
 ## Output Requirements
 
@@ -121,24 +121,24 @@ All handoff templates live in [collaboration-patterns.md](/Users/simota/.claude/
   - affected states covered
   - accessibility and mobile checks performed
   - validation path or requested handoff
-- Use the before/after structure from [ux-evaluation.md](/Users/simota/.claude/skills/palette/references/ux-evaluation.md) when documenting a meaningful improvement.
+- Use the before/after structure from [ux-evaluation.md](~/.claude/skills/palette/references/ux-evaluation.md) when documenting a meaningful improvement.
 
 ## References
 
-| File | Read this when... |
-|------|-------------------|
-| [collaboration-patterns.md](/Users/simota/.claude/skills/palette/references/collaboration-patterns.md) | you need any Palette handoff token or partner workflow. |
-| [page-flow-patterns.md](/Users/simota/.claude/skills/palette/references/page-flow-patterns.md) | you are fixing empty, error, loading, offline, onboarding, navigation, search, filter, or dashboard UX. |
-| [ux-writing-patterns.md](/Users/simota/.claude/skills/palette/references/ux-writing-patterns.md) | you are changing CTA labels, error messages, confirmations, success copy, or tone. |
-| [mobile-ux-patterns.md](/Users/simota/.claude/skills/palette/references/mobile-ux-patterns.md) | the issue involves touch, gestures, thumb reach, keyboard overlap, or mobile navigation. |
-| [form-patterns.md](/Users/simota/.claude/skills/palette/references/form-patterns.md) | you are improving validation, multi-step forms, defaults, submission, or unsaved-changes handling. |
-| [accessibility-patterns.md](/Users/simota/.claude/skills/palette/references/accessibility-patterns.md) | you need WCAG 2.1 AA, keyboard, screen reader, contrast, or reduced-motion rules. |
-| [microinteraction-patterns.md](/Users/simota/.claude/skills/palette/references/microinteraction-patterns.md) | you are implementing feedback states, toasts, optimistic UI, or destructive-action safeguards. |
-| [ux-evaluation.md](/Users/simota/.claude/skills/palette/references/ux-evaluation.md) | you need the heuristic template, SUS ranges, UX metrics, or before/after report shape. |
-| [interaction-anti-patterns.md](/Users/simota/.claude/skills/palette/references/interaction-anti-patterns.md) | you need a fast audit for interaction mistakes and destructive-action failures. |
-| [cognitive-load-anti-patterns.md](/Users/simota/.claude/skills/palette/references/cognitive-load-anti-patterns.md) | you need choice, hierarchy, progressive disclosure, or information-density guidance. |
-| [perceived-performance-patterns.md](/Users/simota/.claude/skills/palette/references/perceived-performance-patterns.md) | you are choosing between skeletons, spinners, progress bars, or optimistic UI. |
-| [wcag22-inclusive-design.md](/Users/simota/.claude/skills/palette/references/wcag22-inclusive-design.md) | you need WCAG 2.2 deltas, inclusive design rules, or AV-pattern audits. |
+| File                                                                                                       | Read this when...                                                                                       |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [collaboration-patterns.md](~/.claude/skills/palette/references/collaboration-patterns.md)                 | you need any Palette handoff token or partner workflow.                                                 |
+| [page-flow-patterns.md](~/.claude/skills/palette/references/page-flow-patterns.md)                         | you are fixing empty, error, loading, offline, onboarding, navigation, search, filter, or dashboard UX. |
+| [ux-writing-patterns.md](~/.claude/skills/palette/references/ux-writing-patterns.md)                       | you are changing CTA labels, error messages, confirmations, success copy, or tone.                      |
+| [mobile-ux-patterns.md](~/.claude/skills/palette/references/mobile-ux-patterns.md)                         | the issue involves touch, gestures, thumb reach, keyboard overlap, or mobile navigation.                |
+| [form-patterns.md](~/.claude/skills/palette/references/form-patterns.md)                                   | you are improving validation, multi-step forms, defaults, submission, or unsaved-changes handling.      |
+| [accessibility-patterns.md](~/.claude/skills/palette/references/accessibility-patterns.md)                 | you need WCAG 2.1 AA, keyboard, screen reader, contrast, or reduced-motion rules.                       |
+| [microinteraction-patterns.md](~/.claude/skills/palette/references/microinteraction-patterns.md)           | you are implementing feedback states, toasts, optimistic UI, or destructive-action safeguards.          |
+| [ux-evaluation.md](~/.claude/skills/palette/references/ux-evaluation.md)                                   | you need the heuristic template, SUS ranges, UX metrics, or before/after report shape.                  |
+| [interaction-anti-patterns.md](~/.claude/skills/palette/references/interaction-anti-patterns.md)           | you need a fast audit for interaction mistakes and destructive-action failures.                         |
+| [cognitive-load-anti-patterns.md](~/.claude/skills/palette/references/cognitive-load-anti-patterns.md)     | you need choice, hierarchy, progressive disclosure, or information-density guidance.                    |
+| [perceived-performance-patterns.md](~/.claude/skills/palette/references/perceived-performance-patterns.md) | you are choosing between skeletons, spinners, progress bars, or optimistic UI.                          |
+| [wcag22-inclusive-design.md](~/.claude/skills/palette/references/wcag22-inclusive-design.md)               | you need WCAG 2.2 deltas, inclusive design rules, or AV-pattern audits.                                 |
 
 ## Operational
 
@@ -155,6 +155,7 @@ When called in Nexus AUTORUN mode: execute the UX work, keep narration minimal, 
 When input contains `## NEXUS_ROUTING`: treat Nexus as the hub, do not instruct direct agent calls, and return results via `## NEXUS_HANDOFF`.
 
 Required fields:
+
 - `Step`
 - `Agent:Palette`
 - `Summary`

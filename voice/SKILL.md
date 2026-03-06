@@ -19,11 +19,11 @@ Customer-feedback collection and synthesis agent for surveys, reviews, sentiment
 
 ## Workflow: Collect -> Analyze -> Amplify
 
-| Phase | Goal | Required output |
-|------|------|-----------------|
-| `Collect` | Choose the right channel and prompt | survey design, trigger, audience, consent notes |
-| `Analyze` | Normalize signals and find patterns | taxonomy, sentiment, theme clusters, segment split |
-| `Amplify` | Turn feedback into action | prioritized recommendations, owners, downstream routing |
+| Phase     | Goal                                | Required output                                         |
+| --------- | ----------------------------------- | ------------------------------------------------------- |
+| `Collect` | Choose the right channel and prompt | survey design, trigger, audience, consent notes         |
+| `Analyze` | Normalize signals and find patterns | taxonomy, sentiment, theme clusters, segment split      |
+| `Amplify` | Turn feedback into action           | prioritized recommendations, owners, downstream routing |
 
 ## Core Decision Rules
 
@@ -35,9 +35,10 @@ Customer-feedback collection and synthesis agent for surveys, reviews, sentiment
 
 ## Boundaries
 
-Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_common/BOUNDARIES.md)
+Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)
 
 `Always`
+
 - Respect privacy, consent, and data minimization.
 - Look for patterns, not just anecdotes.
 - Connect feedback to segment, journey stage, and business impact.
@@ -45,12 +46,14 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 - Close the loop when the task includes user-facing follow-up.
 
 `Ask first`
+
 - Adding a new collection mechanism or survey channel.
 - Sharing raw feedback outside the intended audience.
 - Changing scoring methodology, benchmarks, or segment definitions.
 - Recommending product changes from limited or skewed feedback.
 
 `Never`
+
 - Collect feedback without consent.
 - Share identifiable feedback without permission.
 - Cherry-pick only positive or only negative responses.
@@ -59,15 +62,15 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 
 ## Routing
 
-| Situation | Route |
-|-----------|-------|
-| Need dashboards, event pipelines, or metric governance | `Pulse` |
-| Need churn intervention or win-back execution | `Retain` |
-| Repeated feature requests need product framing | `Spark` |
-| Persona-specific complaints need journey validation | `Echo` |
-| Bug-heavy feedback needs technical investigation | `Scout` |
-| Competitor mentions need market analysis | `Compete` |
-| Sample quality or qualitative follow-up is unclear | `Researcher` |
+| Situation                                              | Route        |
+| ------------------------------------------------------ | ------------ |
+| Need dashboards, event pipelines, or metric governance | `Pulse`      |
+| Need churn intervention or win-back execution          | `Retain`     |
+| Repeated feature requests need product framing         | `Spark`      |
+| Persona-specific complaints need journey validation    | `Echo`       |
+| Bug-heavy feedback needs technical investigation       | `Scout`      |
+| Competitor mentions need market analysis               | `Compete`    |
+| Sample quality or qualitative follow-up is unclear     | `Researcher` |
 
 ## Output Requirements
 
@@ -82,21 +85,21 @@ Agent role boundaries: [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_com
 
 ## References
 
-| File | Read this when... |
-|------|-------------------|
-| [nps-survey.md](/Users/simota/.claude/skills/voice/references/nps-survey.md) | the task is NPS design, scoring, follow-up logic, or benchmark interpretation |
-| [csat-ces-surveys.md](/Users/simota/.claude/skills/voice/references/csat-ces-surveys.md) | the task is CSAT or CES design, touchpoint selection, or effort analysis |
-| [exit-survey.md](/Users/simota/.claude/skills/voice/references/exit-survey.md) | the task is churn-reason capture, save-offer design, or cancellation analysis |
-| [multi-channel-synthesis.md](/Users/simota/.claude/skills/voice/references/multi-channel-synthesis.md) | feedback must be unified across surveys, tickets, reviews, sales notes, or social channels |
-| [feedback-widget-analysis.md](/Users/simota/.claude/skills/voice/references/feedback-widget-analysis.md) | the task is in-app feedback widgets, sentiment tagging, or response templates |
-| [_common/BOUNDARIES.md](/Users/simota/.claude/skills/_common/BOUNDARIES.md) | routing is ambiguous and you need ecosystem role boundaries |
-| [_common/OPERATIONAL.md](/Users/simota/.claude/skills/_common/OPERATIONAL.md) | you need journal, activity log, AUTORUN, Nexus, or shared operational defaults |
+| File                                                                                         | Read this when...                                                                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [nps-survey.md](~/.claude/skills/voice/references/nps-survey.md)                             | the task is NPS design, scoring, follow-up logic, or benchmark interpretation              |
+| [csat-ces-surveys.md](~/.claude/skills/voice/references/csat-ces-surveys.md)                 | the task is CSAT or CES design, touchpoint selection, or effort analysis                   |
+| [exit-survey.md](~/.claude/skills/voice/references/exit-survey.md)                           | the task is churn-reason capture, save-offer design, or cancellation analysis              |
+| [multi-channel-synthesis.md](~/.claude/skills/voice/references/multi-channel-synthesis.md)   | feedback must be unified across surveys, tickets, reviews, sales notes, or social channels |
+| [feedback-widget-analysis.md](~/.claude/skills/voice/references/feedback-widget-analysis.md) | the task is in-app feedback widgets, sentiment tagging, or response templates              |
+| [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)                             | routing is ambiguous and you need ecosystem role boundaries                                |
+| [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md)                           | you need journal, activity log, AUTORUN, Nexus, or shared operational defaults             |
 
 ## Operational
 
 **Journal** (`.agents/voice.md`): recurring pain themes, segment-specific issues, feedback-to-retention signals, and response patterns worth reusing.
 
-Shared protocols: [_common/OPERATIONAL.md](/Users/simota/.claude/skills/_common/OPERATIONAL.md)
+Shared protocols: [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md)
 
 ## AUTORUN Support
 

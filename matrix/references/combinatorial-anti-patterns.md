@@ -1,115 +1,60 @@
 # Combinatorial Testing Anti-Patterns
 
-> パラメータモデリング・制約設計・プロセスにおける 12 大アンチパターン
+Purpose: Use this file when parameter modeling, constraint design, or pairwise assumptions look suspicious.
 
-## 1. パラメータモデリングの落とし穴
+## Contents
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **CT-01** | **過剰パラメータ化** | 意味のない区別まで軸に含める → 不必要に巨大なテストセット | 「意味のある差異テスト」を適用 — 2つの値が異なるシステム挙動を生むか問う |
-| **CT-02** | **抽象度の不一致** | 粒度が細かすぎ（Chrome 119/120/121）or 粗すぎ（ブラウザ全般） | 代表値を使用（Current Chrome, Chrome N-1 等） |
-| **CT-03** | **パラメータ漏れ** | 環境要因・隠れた入力を見落とし → 相互作用バグを検出できない | 要件分析時にパラメータ識別を開始 · ユーザー制御可能な入力 + 挙動に影響する要因を網羅 |
-| **CT-04** | **静的モデル** | 一度作ったパラメータモデルを更新しない → 製品進化との乖離 | パラメータモデルを Living Document として扱う · 変更時は必ず再生成 |
+- Parameter modeling failures
+- Constraint failures
+- Coverage misconceptions
+- Process failures
 
-### 意味のある差異テスト
+## Parameter Modeling Failures
 
-```
-パラメータ値の選択基準:
-  □ この値は他の値と異なるシステム挙動を引き起こすか？
-  □ この値はユーザーが実際に使用する可能性があるか？
-  □ この値は他の軸との相互作用で特異な挙動を生むか？
+| ID | Anti-pattern | Why it fails | Corrective action |
+|---|---|---|---|
+| `CT-01` | Over-parameterization | Noise creates a needlessly huge set | Keep only behaviorally meaningful differences |
+| `CT-02` | Mismatched granularity | Values are too fine or too coarse | Use representative values |
+| `CT-03` | Missing parameters | Hidden environmental inputs go unmodeled | Add user-facing and behavior-changing factors |
+| `CT-04` | Static models | The matrix drifts from the product | Regenerate whenever the model changes |
 
-  Yes → 含める
-  No → 除外（ノイズを減らす）
-```
+## Constraint Failures
 
----
+| ID | Anti-pattern | Why it fails | Corrective action |
+|---|---|---|---|
+| `CT-05` | Over-constraint | Useful coverage disappears | Review once exclusion rate exceeds `30%` |
+| `CT-06` | Contradictory constraints | No valid space remains | detect conflicts and escalate |
+| `CT-07` | Unvalidated constraints | Assumptions hide real cases | confirm with product or engineering owners |
+| `CT-08` | Undocumented constraints | No one can maintain the model | record rule, rationale, and example |
 
-## 2. 制約設計の落とし穴
+Constraint health:
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **CT-05** | **過剰制約** | 制約が全ペアの 30-40% 以上を除外 → 有意義なテスト組み合わせを失う | 30% 超で再検討 · 制約の正当性をビジネスルールで検証 |
-| **CT-06** | **制約の矛盾** | 複数制約が同時充足不能 → 有効な組み合わせがゼロに | 制約に優先度を設定 · 矛盾検出を自動化 |
-| **CT-07** | **未検証制約** | 実際のシステム挙動でなく思い込みで制約 → 有効な組み合わせを誤除外 | 制約を開発者と検証 · ビジネスルール根拠を文書化 |
-| **CT-08** | **制約未文書化** | 制約の理由が不明 → モデルが不可読 · メンテナンス不能 | 制約ごとに ID・根拠・形式的定義・除外例を記録 |
+- `< 30%` excluded: healthy
+- `30-40%`: suspicious, review
+- `> 40%`: redesign recommended
 
-### 制約の3分類
+## Coverage Misconceptions
 
-```
-制約タイプ:
-  Hard Constraint:    物理的に不可能な組み合わせ（Safari × Windows）
-  Soft Constraint:    可能だが望ましくない組み合わせ（優先度で管理）
-  Business Rule:      ドメイン固有の制限（管理者は本番環境のみ等）
+| ID | Anti-pattern | Why it fails | Corrective action |
+|---|---|---|---|
+| `CT-09` | Pairwise equals full coverage | `2-way 100%` is not system coverage `100%` | state the guarantee precisely |
+| `CT-10` | Pairwise is always enough | some domains need `3-way+` | escalate strength for safety-critical or higher-order evidence |
+| `CT-11` | Sequence is ignored | order-dependent defects survive | pair Matrix with sequence-oriented specialists |
 
-健全性チェック:
-  制約による除外率 < 30% → 健全
-  制約による除外率 30-40% → 要再検討（過剰制約の疑い）
-  制約による除外率 > 40% → モデル再設計を推奨
-```
+Do not rely on pairwise alone when:
 
----
+- the main risk is sequencing
+- regulation requires exhaustive or stronger coverage
+- known defects are `3-way+`
 
-## 3. カバレッジの誤解
+## Process Failures
 
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **CT-09** | **Pairwise = 完全カバレッジ** | 100% Pairwise を 100% テスト網羅と誤解 | 明確に区別: 2-way 100% ≠ システムカバレッジ 100% · 実測で 70-95% 欠陥検出 |
-| **CT-10** | **Pairwise 万能信仰** | 全プロジェクトに Pairwise を一律適用 | 欠陥分布を分析し適切な t-way を選択 · 安全クリティカルでは 3-way 以上 |
-| **CT-11** | **シーケンス無視** | パラメータ組み合わせのみ検証 → 操作順序起因のバグを見逃す | シーケンスベーステストと併用 · 操作フローは別途 Voyager/Echo で検証 |
+| ID | Anti-pattern | Why it fails | Corrective action |
+|---|---|---|---|
+| `CT-12` | Manual maintenance | generated cases drift from reality | regenerate instead of patching manually |
 
-### Pairwise が不適切なケース
+Quality gates:
 
-```
-使うべきでない場合:
-  ✗ 単一パラメータのワークフロー（軸が1つ）
-  ✗ 3-way以上の複合インタラクションが主要な欠陥源
-  ✗ 規制で網羅テストが義務付けられている安全クリティカルシステム
-  ✗ エッジケースの探索的テストが必要な場合
-  ✗ 欠陥の大半が実行順序に起因する場合
-```
-
----
-
-## 4. プロセス・組織の落とし穴
-
-| # | アンチパターン | 問題 | 対策 |
-|---|-------------|------|------|
-| **CT-12** | **手動メンテナンス** | 生成したテストケースを手動で維持 → 変更追従不能 | パラメータ/値/制約が変更されたら毎回再生成 |
-
-### その他のプロセス課題
-
-```
-チーム協働の不足:
-  - SME（ドメイン専門家）がパラメータ特定に参加していない
-  - QA がフォーマット化するが開発者が技術的正確性を検証していない
-  - PO が相互作用の重要度を優先付けしていない
-  → 全ロール参加のパラメータ設計セッションを実施
-
-ツール選定の失敗:
-  - 機能リストだけでツールを選定 → チームが使いこなせない
-  - 対策: 実際の環境で代表的なモデルを作り、複数ツールで比較評価
-
-事後分析の欠如:
-  - 本番で発見された欠陥が Pairwise でカバーされていたか検証しない
-  - 対策: 本番バグの遡及分析 → パラメータモデルの改善にフィードバック
-```
-
----
-
-## 5. Matrix との連携
-
-```
-Matrix での活用:
-  1. PARSE フェーズで CT-01〜04 のパラメータモデリングチェックを適用
-  2. EXPAND フェーズで CT-05〜08 の制約健全性を検証
-  3. OPTIMIZE フェーズで CT-09〜11 のカバレッジ前提を明示
-  4. PLAN フェーズで CT-12 の再生成ルールを後続エージェントに伝達
-
-品質ゲート:
-  - 制約除外率 > 30% で警告（CT-05 防止）
-  - 安全クリティカルドメインで 2-way 選択時に 3-way 以上を提案（CT-10 防止）
-  - パラメータ変更時に再生成を要求（CT-12 防止）
-```
-
-**Source:** [Master Software Testing: Pairwise Testing Complete Guide](https://mastersoftwaretesting.com/testing-fundamentals/types-of-testing/specialized-testing/pairwise-testing) · [TestSigma: Combinatorial Testing Guide](https://testsigma.com/blog/combinatorial-testing/) · [NIST: Practical Combinatorial Testing SP 800-142](https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-142.pdf) · [RWTH Aachen: Combinatorial Testing with Constraints](https://swc.rwth-aachen.de/docs/2018_ICSTW_Foegen.pdf)
+- exclusion rate `> 30%` -> warning
+- safety-critical + `2-way` only -> recommend `3-way+`
+- parameter model changed -> regenerate the plan

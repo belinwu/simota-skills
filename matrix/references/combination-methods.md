@@ -1,182 +1,126 @@
 # Combination Methods
 
-Matrix が使用する組み合わせ生成・最適化手法の詳細ガイド。
+Purpose: Use this file when you need the method definitions, reduction expectations, and constraint thresholds behind Matrix planning.
 
----
+## Contents
 
-## 1. 全組み合わせ（Cartesian Product）
+- Full enumeration
+- Pairwise
+- Orthogonal arrays
+- Higher-strength CIT
+- Constraint handling
 
-### 定義
-n個の軸に対して全ての組み合わせを列挙する基本操作。
+## Full Enumeration
 
-```
-軸A: [a1, a2, a3]
-軸B: [b1, b2]
-軸C: [c1, c2, c3]
-→ 全組み合わせ数: 3 × 2 × 3 = 18
-```
+Use the full Cartesian set when:
 
-### 計算
-```
-総組み合わせ数 = ∏(各軸の値数) = n1 × n2 × n3 × ... × nk
-```
+- axes `<= 2`
+- the user explicitly requires exhaustive coverage
+- the domain is small enough that optimization would hide important cases
 
-### 出力例
-```yaml
-combinations:
-  total: 18
-  axes:
-    - {name: browser, count: 3}
-    - {name: os,      count: 2}
-    - {name: role,    count: 3}
+Formula:
+
+```text
+total_combinations = ∏(value_count_per_axis)
 ```
 
-**注意**: 全組み合わせをそのまま実行計画にしてはいけない。必ず最適化手法を適用する。
+Do not present full enumeration as the default once the matrix becomes expensive.
 
----
+## Pairwise
 
-## 2. Pairwise Testing（All-pairs法）
+Definition:
 
-### 定義
-「どの2軸ペアも、少なくとも1回は全ての値の組み合わせでカバーされる」という条件を満たす最小の組み合わせセット。
+- Guarantee that every `2-way` value pair appears at least once.
 
-### 原理
-実際のバグの85%以上は2つ以下の変数の相互作用で発生するという統計的知見に基づく。
+Use pairwise when:
 
-### 削減効果
+- axes `>= 3`
+- invalid pairs stay below roughly `30%`
+- the domain is not safety-critical
 
-| 軸構成 | 全組み合わせ | Pairwise | 削減率 |
-|-------|-----------|---------|-------|
-| 3軸×3値 | 27 | 9 | 67% |
-| 4軸×3値 | 81 | 9-12 | 85-89% |
-| 5軸×4値 | 1,024 | 16-20 | 98% |
-| 6軸×3値 | 729 | 12-18 | 98% |
-| 10軸×3値 | 59,049 | 18-27 | 99%+ |
+Typical reduction:
 
-### 手順
-1. 最大の値数を持つ軸を1列目に配置
-2. 2列目以降を順番に追加し、追加時に未カバーのペアが最も多くカバーされる行を選択
-3. 全ペアがカバーされるまで繰り返す
+| Shape | Full | Pairwise | Reduction |
+|---|---:|---:|---:|
+| `3 axes x 3 values` | `27` | `9` | `67%` |
+| `4 axes x 3 values` | `81` | `9-12` | `85-89%` |
+| `10 axes x 3 values` | `59,049` | `18-27` | `99%+` |
 
-### 適用条件
-- 軸が3以上
-- 軸間の独立性が比較的高い
-- invalid pairs（除外組み合わせ）が少ない（全体の30%未満）
+Default evidence baseline:
 
-### ツール参照
-- ACTS (Automated Combinatorial Testing for Software)
-- pict (Microsoft Pairwise Independent Combinatorial Testing)
-- allpairs (Python ライブラリ)
+- Pairwise usually detects `70-95%` of interaction faults in non-safety-critical software.
 
----
+## Orthogonal Arrays
 
-## 3. 直交配列（Orthogonal Array, OA）
+Use an orthogonal array when:
 
-### 定義
-各軸の各値が均等に出現し、任意の2列を見たとき全ての値の組み合わせが同数回現れる配列。
+- each axis has the same number of values
+- balanced representation matters as much as raw reduction
+- a fixed, well-known array is easier than greedy generation
 
-### 記法
-`OA(N; k; v; t)` = N行、k因子、v水準、t-way直交
+Common arrays:
 
-最も使われる: `L9(3^4)` = 9行、4因子、3水準、2-way直交
+| Array | Rows | Max factors | Levels |
+|---|---:|---:|---:|
+| `L4` | `4` | `3` | `2` |
+| `L8` | `8` | `7` | `2` |
+| `L9` | `9` | `4` | `3` |
+| `L16` | `16` | `15` | `2` or `5 factors x 4 levels` |
+| `L27` | `27` | `13` | `3` |
 
-### L9(3^4) 例
-```
-| # | A | B | C | D |
-|---|---|---|---|---|
-| 1 | 1 | 1 | 1 | 1 |
-| 2 | 1 | 2 | 2 | 2 |
-| 3 | 1 | 3 | 3 | 3 |
-| 4 | 2 | 1 | 2 | 3 |
-| 5 | 2 | 2 | 3 | 1 |
-| 6 | 2 | 3 | 1 | 2 |
-| 7 | 3 | 1 | 3 | 2 |
-| 8 | 3 | 2 | 1 | 3 |
-| 9 | 3 | 3 | 2 | 1 |
-```
+Choose OA over pairwise when value-balance is more important than the smallest possible row count.
 
-### よく使われる直交配列
+## Higher-Strength CIT
 
-| 配列 | 行数(N) | 最大因子数(k) | 水準数(v) |
-|------|---------|------------|---------|
-| L4 | 4 | 3 | 2 |
-| L8 | 8 | 7 | 2 |
-| L9 | 9 | 4 | 3 |
-| L16 | 16 | 15 | 2 / 5因子4水準 |
-| L27 | 27 | 13 | 3 |
+Use `3-way+` coverage when:
 
-### 適用条件
-- 軸数が固定（因子数が決まっている）
-- 各軸の値数が均一（全て2水準、または全て3水準）
-- バランスの取れたカバレッジが必要な場合
+- the system is safety-critical or regulated
+- historical defects show higher-order interactions
+- the user explicitly requests stronger assurance
 
-### Pairwiseとの比較
-| 観点 | Pairwise | 直交配列 |
-|------|---------|--------|
-| 柔軟性 | 高い（値数が不均一でも可） | 低い（水準数が固定） |
-| 最小行数 | 通常より少ない | 固定 |
-| バランス | 保証なし | 均等保証 |
-| 実装難易度 | 中 | 低（表を参照するだけ） |
+Recommended baseline:
 
----
+| Context | Minimum | Preferred |
+|---|---|---|
+| Normal application | `2-way` | `2-way` |
+| High-quality or complex interaction domain | `2-way` | `3-way` |
+| Safety-critical or regulated | `3-way` | `4-way+` |
 
-## 4. Combinatorial Interaction Testing (CIT)
+Size guidance:
 
-### 定義
-2-way（Pairwise）を超えた t-way（t≧3）のインタラクションをカバーする手法。
+| Strength | Relative size vs pairwise | Typical use |
+|---|---|---|
+| `2-way` | baseline | general planning |
+| `3-way` | `2-3x` | high-risk interaction zones |
+| `4-way` | `3-5x` | regulated or safety-critical systems |
 
-### 適用タイミング
-- 安全クリティカルなシステム（航空宇宙、医療機器）
-- 3つ以上の変数の複合バグが予想される場合
-- 規制要件（DO-178C Level A など）
+## Constraint Handling
 
-### t-wayカバレッジの行数目安
+Constraint types:
 
-| t-way | 3軸×4値 | 5軸×3値 | 10軸×3値 |
-|-------|---------|---------|---------|
-| 2-way | 12 | 9 | 18 |
-| 3-way | 16 | 27 | 45 |
-| 4-way | 64 | 81 | 108 |
+- `exclude`: impossible or invalid combinations
+- `conditional`: one value forces another
+- `require`: combinations that must appear in the final set
 
-### 実用上の選択
-```
-通常プロジェクト   → 2-way (Pairwise)
-高品質要件        → 3-way
-安全クリティカル   → 4-way 以上
-```
+Constraint health:
 
----
+| Exclusion rate | Interpretation | Action |
+|---|---|---|
+| `< 30%` | healthy | proceed |
+| `30-40%` | suspicious | review model and business rules |
+| `> 40%` | over-constrained | recommend redesign |
 
-## 5. 制約付き最適化（Custom Constraints）
+Escalate when:
 
-### invalid pairs（除外すべき組み合わせ）の定義
+- constraints remove every valid combination -> `ON_CONSTRAINT_UNKNOWN`
+- constraints are too complex for simple pairwise reasoning -> mention SAT-solver style tooling
 
-```yaml
-constraints:
-  exclude:
-    # ブラウザ×OS の不正組み合わせ
-    - {browser: Safari, os: Windows}
-    - {browser: IE, os: macOS}
+## Method Selection Summary
 
-  conditional:
-    # 管理者ロールは本番環境のみ
-    - if: {role: admin}
-      then: {env: production}
-
-  require:
-    # v2.0は必ず新UIと組み合わせる
-    - {version: "2.0", ui: new}
-```
-
-### 制約処理フロー
-1. invalid pairsを除外した有効組み合わせ空間を生成
-2. 有効空間に対してPairwiseまたは直交配列を適用
-3. conditional constraintを後処理で適用
-4. require constraintを強制的に含める
-
-### 制約が多い場合の対処
-- invalid pairs が全体の30%超: Pairwiseの適用前に除外
-- 制約が複雑: SAT solverベースのツール（CASA等）を推奨
-- 制約が矛盾: ユーザーに確認（ON_CONSTRAINT_UNKNOWN trigger）
-
-→ 手法選択フローは `references/optimization-algorithms.md` を参照
+| Situation | Default choice |
+|---|---|
+| `<= 2` axes | Full |
+| `3+` axes, normal risk | Pairwise |
+| Uniform value counts, balanced representation needed | OA |
+| Safety-critical or higher-order evidence | `3-way+` CIT |
+| Heavy constraints plus budget | Constrained, budgeted optimization |

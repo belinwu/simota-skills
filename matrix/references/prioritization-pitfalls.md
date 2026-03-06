@@ -1,115 +1,55 @@
-# Prioritization & Risk Scoring Pitfalls
+# Prioritization Pitfalls
 
-> リスクマトリクス・優先度スコアリングの落とし穴、改善手法、バイアス対策
+Purpose: Use this file when the ranking looks biased, compressed, or too subjective.
 
-## 1. リスクマトリクスの 8 大落とし穴
+## Contents
 
-| # | 落とし穴 | 問題 | 対策 |
-|---|---------|------|------|
-| **RP-01** | **レンジ圧縮** | 定量的に大きく異なるリスクに同一評価を付与 → 優先順位が区別不能 | スコアリング粒度を細かくする（3段階→5段階、連続値の活用） |
-| **RP-02** | **逆転現象** | 定量的に小さいリスクに高い定性評価を誤って付与 | 定量データとの照合 · クロスバリデーション |
-| **RP-03** | **主観性バイアス** | 評価者ごとに尤度・影響度の解釈が異なる → 一貫性なし | 評価基準の明確な定義 · 複数評価者の平均 · 標準化された時間軸 |
-| **RP-04** | **全部 Critical** | 全リスクを最高優先度に分類 → 真の高リスクが埋没 | Critical は全体の 20% 以下に制限 · 強制ランキング法 |
-| **RP-05** | **静的評価** | 一度の評価で固定 → リスク環境の変化に追従不能 | 定期的な再評価 · Living Assessment |
-| **RP-06** | **虚偽の安心感** | マトリクスの視覚的整理 → 実際のリスク理解と混同 | マトリクスは「議論のスターター」として使用 · 補完ツールと併用 |
-| **RP-07** | **相互依存の無視** | リスク間の連鎖・相関を無視 → 複合リスクを見落とす | リスク間の依存関係マッピング · シナリオベース評価 |
-| **RP-08** | **リソース配分不能** | カテゴリ情報だけでは具体的なリソース配分計算ができない | 定量スコアリングとの併用 · コスト対効果分析 |
+- Risk-matrix pitfalls
+- Scoring pitfalls
+- Domain-specific bias
+- Priority health checks
 
----
+## Risk-Matrix Pitfalls
 
-## 2. 優先度スコアリングの落とし穴
+| ID | Pitfall | Why it fails | Corrective action |
+|---|---|---|---|
+| `RP-01` | Range compression | materially different risks get the same label | use finer or normalized scales |
+| `RP-02` | Priority inversion | lower quantitative risk gets a higher label | cross-check with data |
+| `RP-03` | Subjective scoring | each evaluator interprets risk differently | define scoring anchors |
+| `RP-04` | Everything is critical | real priorities disappear | keep `Critical <= 20%` |
+| `RP-05` | Static ranking | the environment changes but the plan does not | reassess regularly |
+| `RP-06` | False confidence | the matrix looks tidy but reality is not | treat it as a discussion starter |
+| `RP-07` | Ignoring dependencies | chained risks remain hidden | model dependent scenarios |
+| `RP-08` | No resource mapping | labels do not map to execution effort | pair ranking with cost or impact |
 
-### スコアリング設計の問題
+## Scoring Pitfalls
 
-| 問題 | 影響 | 対策 |
-|------|------|------|
-| **重み付けの恣意性** | 軸の重要度が根拠なく決定される | ドメインデータ · 過去の欠陥分布に基づく重み設定 |
-| **線形スコアの限界** | `risk × impact × cost` の単純乗算 → 極端値を過大評価 | 対数スケール · 正規化 · 上限キャップ |
-| **値のリスクスコア固定** | 特定の値（例: Safari = 3）を固定 → 文脈変化に対応不能 | コンテキスト依存のスコアリング · 定期的な見直し |
-| **優先度ラベルの不均衡** | HIGH/MEDIUM/LOW の閾値が偏る → 大半が HIGH に | 分布目標を設定（HIGH: 20%, MEDIUM: 50%, LOW: 30%） |
+| Problem | Why it fails | Corrective action |
+|---|---|---|
+| arbitrary weights | the order is unjustified | base weights on domain data |
+| naive linear scoring | extreme values dominate strangely | normalize or cap the scale |
+| fixed value-risk tables | scores drift out of context | review periodically |
+| skewed label thresholds | nearly everything becomes HIGH | use percentile or target distributions |
 
-### 改善されたスコアリング戦略
+Useful percentile bands:
 
-```
-基本スコアリング（現行）:
-  Score = Σ(axis_weight × value_risk)
+- `P90+` -> `Critical`
+- `P70-89` -> `High`
+- `P30-69` -> `Medium`
+- `P0-29` -> `Low`
 
-改善版1: 正規化スコアリング
-  Normalized_Score = Score / Max_Possible_Score × 10
-  → 0-10 の統一スケールで比較可能に
+## Domain-Specific Bias
 
-改善版2: 多軸スコアリング
-  Priority_Score = (Risk × 0.4) + (Impact × 0.3) + (Frequency × 0.2) + (Cost × 0.1)
-  → 重みは過去データから算出
+| Domain | Common bias | Guardrail |
+|---|---|---|
+| test | happy-path bias | keep at least `30%` abnormal or edge-oriented cases |
+| risk | CVSS-only bias | add exposure and bypass ease |
+| deploy | production-only bias | require staging coverage |
+| experiment | novelty bias | keep measurement and segment realism |
 
-改善版3: 相対ランキング
-  1. 全組み合わせをスコアリング
-  2. パーセンタイルで分類
-     P90+: Critical（上位10%）
-     P70-89: High
-     P30-69: Medium
-     P0-29: Low
-```
+## Priority Health Checks
 
----
-
-## 3. ドメイン別の優先度付けバイアス
-
-### テストドメイン
-
-| バイアス | 問題 | 対策 |
-|---------|------|------|
-| **ブラウザシェアバイアス** | Chrome を常に最優先 → 他ブラウザ固有バグを見逃す | ユーザーデータに基づくが、少数派ブラウザも一定カバレッジ保証 |
-| **ハッピーパス偏重** | 正常系を優先しすぎ → エッジケースの検出遅延 | 正常系と異常系のバランス指標（最低 30% は異常系） |
-| **新機能偏重** | 新機能にリソース集中 → 回帰テストが手薄に | 回帰テストの最低カバレッジ基準を設定 |
-
-### リスクドメイン
-
-| バイアス | 問題 | 対策 |
-|---------|------|------|
-| **CVSS スコア依存** | 公開 CVE のスコアのみで優先度 → 未知脅威を無視 | 攻撃面の露出度・認証バイパス容易性を加味 |
-| **最新脅威偏重** | メディアで話題の脅威を過大評価 → 基本的な脅威を軽視 | 脅威の発生確率データに基づく客観的評価 |
-
-### デプロイドメイン
-
-| バイアス | 問題 | 対策 |
-|---------|------|------|
-| **本番偏重** | 本番環境のみ重視 → staging のカバレッジ不足 | staging は必ず全パターン実行（require 制約） |
-| **リージョン序列固定** | 常に同じリージョンから開始 → 地域固有の問題を見逃す | ローテーションまたはランダム化 |
-
----
-
-## 4. 優先度付けのベストプラクティス
-
-```
-チェックリスト:
-  □ 優先度の根拠はデータに基づいているか（主観ではなく）
-  □ Critical/High が全体の 30% 以下か
-  □ スコアリングの重み付けに根拠があるか
-  □ 正常系と異常系のバランスが取れているか
-  □ 定期的な再評価プロセスがあるか
-  □ リスク間の相互依存を考慮しているか
-  □ スコアリング結果を複数人で検証しているか
-```
-
----
-
-## 5. Matrix との連携
-
-```
-Matrix での活用:
-  1. PLAN フェーズで RP-01〜08 のチェックを適用
-  2. 優先度スコアリング時にバイアスチェックリストを実行
-  3. ドメイン別のデフォルト重み付けを提供
-     - test: browser_share(0.3) × failure_history(0.4) × complexity(0.3)
-     - risk: threat_score(0.4) × exposure(0.3) × auth_bypass(0.3)
-     - deploy: blast_radius(0.5) × rollback_cost(0.3) × traffic(0.2)
-  4. 優先度分布の偏りを検出して警告
-
-品質ゲート:
-  - Critical が全体の 30% 超で警告（RP-04 防止）
-  - 全組み合わせが同一優先度の場合は再スコアリングを提案
-  - 正規化前後のスコアを併記してレンジ圧縮を可視化
-```
-
-**Source:** [Human Risks: Risk Matrix in 2024](https://humanrisks.com/blog/unpacking-the-role-of-a-risk-matrix-in-2024/) · [Wikipedia: Risk Matrix](https://en.wikipedia.org/wiki/Risk_matrix) · [Tracker Networks: Risk Assessment Matrix Guide 2025](https://www.trackernetworks.com/blog/risk-assessment-matrix-guide) · [ChemInst: Risk Matrices Good Bad Ugly](https://www.cheminst.ca/wp-content/uploads/2019/04/CSChE20200420-20Alp.pdf) · [Wrike: Risk Matrix 2024 Guide](https://www.wrike.com/blog/what-is-risk-matrix/)
+- `Critical <= 20%`
+- `Critical + High <= 30%`
+- not every case lands in the same bucket
+- the ranking rationale is explainable in one sentence per case
