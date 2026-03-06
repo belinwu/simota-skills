@@ -1,95 +1,63 @@
+Purpose: Use this reference to detect and reduce cognitive bias in strategic work. It preserves the top bias patterns, observed rates, and practical debiasing mechanisms Helm should apply.
+
+## Contents
+- `CB-01..CB-10`
+- Debiasing methods
+- Phase risk map
+- Helm integration
+
 # Cognitive Biases in Strategic Decision-Making
 
-> 戦略的意思決定における認知バイアス 10 選、発生率データ、デバイアシング技法
+## Top Biases
 
-## 1. 戦略策定に影響する認知バイアス Top 10
+| ID | Bias | Observed rate | Strategic impact | Debiasing move |
+|---|---|---:|---|---|
+| `CB-01` | Confirmation bias | `78.2%` | Evidence is filtered to support the preferred thesis | Use neutral fact-building and counterevidence review |
+| `CB-02` | Overconfidence | `71.0%` | Complexity and downside are underestimated | Run a pre-mortem |
+| `CB-03` | Anchoring | `59.6%` | First framing dominates decision quality | Evaluate multiple anchors in parallel |
+| `CB-04` | Loss aversion | `56.0%` | Necessary exits or pivots are delayed | Make opportunity cost explicit |
+| `CB-05` | Action bias | — | Teams act before thinking deeply enough | Force a deliberate evaluation window |
+| `CB-06` | Planning fallacy | — | Time, cost, and risk are underestimated | Compare with external reference cases |
+| `CB-07` | Groupthink | — | Harmony blocks critique and diversity | Require dissent and structured review |
+| `CB-08` | Dunning-Kruger effect | — | Teams overestimate internal capability | Use benchmarking and 360 feedback |
+| `CB-09` | Framing effect | — | Choice changes with wording | Reframe the same case multiple ways |
+| `CB-10` | Sunflower bias | — | Teams align with leader preference instead of evidence | Anonymous input, leader speaks last |
 
-| # | バイアス | 発生率 | 影響 | デバイアシング技法 |
-|---|---------|--------|------|-----------------|
-| **CB-01** | **確証バイアス** | 78.2% | 自説を支持する情報のみ収集、反証を無視 | 中立的第三者によるファクトベース構築 |
-| **CB-02** | **過信バイアス** | 71.0% | 複雑性の過小評価、早期警告の無視、楽観的計画 | Pre-mortem分析（失敗した前提で逆算） |
-| **CB-03** | **アンカリング** | 59.6% | 初期情報への過度な依存、代替案の軽視 | Red Team設置 · 複数アンカー並行評価 |
-| **CB-04** | **損失回避** | 56.0% | 損失を過大評価 → 必要な撤退・ピボットの遅延 | 機会費用の明示的計算 |
-| **CB-05** | **行動志向バイアス** | — | 十分な検討前の早急な意思決定 | 意図的な評価期間の設定 |
-| **CB-06** | **計画錯誤** | — | 時間・コスト・リスクの過小評価 | 類似プロジェクトとの比較 · 外部専門家見積 |
-| **CB-07** | **集団思考** | — | 調和優先 → 批判的思考・イノベーション抑制 | 代替案の体系的探索 · 全員発言の保証 |
-| **CB-08** | **ダニング=クルーガー効果** | — | 能力の過大評価 → 非現実的な戦略立案 | 360度フィードバック · ベンチマーキング |
-| **CB-09** | **フレーミング効果** | — | 情報の提示方法が判断を歪める | 同一データの複数フレームでの再提示 |
-| **CB-10** | **サンフラワーバイアス** | — | リーダーの意見に追従 → 多様性喪失 | 匿名投票 · リーダー最後発言ルール |
+## Debiasing Toolkit
 
----
+### Structural Interventions
 
-## 2. デバイアシング技法の詳細
+| Tool | Use | Best for |
+|---|---|---|
+| Red Team / Devil’s Advocate | Build the strongest argument against the preferred path | confirmation bias, groupthink |
+| Pre-mortem | Assume failure first, then work backward | overconfidence, planning fallacy |
+| External perspective | Bring in benchmarks or independent review | confirmation bias, anchoring |
+| Anonymous voting / Delphi | Collect judgments before social influence kicks in | groupthink, sunflower bias |
 
-### 組織的デバイアシング
+### AI- and Data-Assisted Debiasing
 
-```
-構造的対策:
-  1. Red Team / Devil's Advocate:
-     - 専任チームが主要提案に対する反論を構築
-     - 戦略レビューの標準プロセスに組込み
-     - 効果: 意思決定品質の有意な向上（HBR 2024）
+| Signal | Use |
+|---|---|
+| Bias pattern detection | Detect language patterns that imply overconfidence or cherry-picking |
+| Scenario diversity scoring | Flag scenario sets that are too homogeneous |
+| Accuracy tracking | Feed `FORESIGHT` to see where bias keeps recurring |
+| Tool-assisted debiasing | Research suggests up to `16%` improvement in strategic outcomes |
 
-  2. Pre-mortem 分析:
-     - 「この戦略は失敗した」と仮定して逆算
-     - 失敗原因の事前特定 → 緩和策の策定
-     - 効果: 過信バイアスの軽減に最も有効
+## Phase Risk Map
 
-  3. 外部視点の導入:
-     - 中立的第三者によるファクトベース構築
-     - 業界ベンチマークとの比較
-     - 効果: 確証バイアス 78.2% → 大幅に軽減
+| Phase | Highest-risk biases | Mandatory check |
+|---|---|---|
+| Environment analysis | confirmation bias, availability | search for disconfirming evidence |
+| Goal setting | overconfidence, planning fallacy | compare against outside benchmarks |
+| Strategy design | anchoring, groupthink | run Red Team review |
+| Decision-making | loss aversion, framing | restate options from multiple frames |
+| Execution planning | planning fallacy, action bias | compare with similar prior cases |
+| Monitoring | confirmation bias, sunk-cost logic | predefine kill criteria |
 
-  4. 匿名投票 / Delphi 法:
-     - 個人見解を匿名で収集・集約
-     - 集団思考とサンフラワーバイアスを同時に軽減
-     - 効果: 意見多様性の維持
-```
+## Helm Integration
 
-### テクノロジー支援デバイアシング
-
-```
-AI/データ駆動型対策（2025 研究）:
-  - バイアス検出アルゴリズムによる過信・アンカリングパターンの特定
-  - デバイアシングツール導入で戦略的成果が 16% 向上（ScienceDirect 2025）
-  - 感情分析による意思決定バイアスのリアルタイム検出
-
-推奨統合:
-  - 戦略文書のバイアススキャン（確証バイアスの言語パターン検出）
-  - シナリオの多様性スコア自動計算
-  - 予測精度のトラッキングによるキャリブレーション
-```
-
----
-
-## 3. 戦略フェーズ別バイアスリスクマップ
-
-| フェーズ | 高リスクバイアス | 影響 | 必須チェック |
-|---------|----------------|------|------------|
-| **環境分析** | 確証バイアス · 利用可能性 | データ収集の偏り | 反証情報の意図的探索 |
-| **目標設定** | 過信 · 計画錯誤 | 非現実的目標 | 外部ベンチマーク比較 |
-| **戦略策定** | アンカリング · 集団思考 | 代替案の不足 | Red Team レビュー |
-| **意思決定** | 損失回避 · フレーミング | 最適でない選択 | 複数フレームでの再評価 |
-| **実行計画** | 計画錯誤 · 行動志向 | リソース不足 · 拙速 | 類似事例比較 |
-| **モニタリング** | 確証バイアス · サンク コスト | 撤退遅延 | Kill criteria の事前定義 |
-
----
-
-## 4. Helm との連携
-
-```
-Helm での活用:
-  1. 全モード（SCAN/MODEL/SIMULATE/ROADMAP）でバイアスチェックリストを統合
-  2. SIMULATE モードで Pre-mortem 分析を標準化
-  3. FORESIGHT でバイアス検出パターンを戦略文書に適用
-  4. シナリオ生成時に多様性スコアを自動評価
-  5. 戦略レビュー報告書にバイアスリスクマップを含める
-
-バイアス軽減ワークフロー:
-  - Phase 1: バイアス自己評価（各フェーズ開始時）
-  - Phase 2: 構造的対策の実施（Red Team/Pre-mortem）
-  - Phase 3: 結果の検証と記録
-  - Phase 4: FORESIGHT へのフィードバック（バイアス発見 → キャリブレーション）
-```
-
-**Source:** [ResearchGate: Impact of Cognitive Biases on Strategic Decision-Making](https://www.researchgate.net/publication/392283169) · [LSA Global: Top 10 Cognitive Biases in Strategic Planning](https://lsaglobal.com/blog/top-10-cognitive-biases-that-affect-strategic-planning/) · [ScienceDirect: Cognitive Biases in Strategic Decision Making](https://www.sciencedirect.com/science/article/abs/pii/S0024630125000329) · [SAGE: Mitigating Cognitive Bias in Organizational Decisions](https://journals.sagepub.com/doi/10.1177/01492063241287188) · [Risk Management Magazine: Overcoming Cognitive Biases](https://www.rmmagazine.com/articles/article/2025/11/06/how-to-overcome-cognitive-biases-in-risk-management)
+1. Apply a bias check in every `SCAN`, `MODEL`, `SIMULATE`, and `ROADMAP` pass.
+2. Standardize pre-mortems in `SIMULATE`.
+3. Feed detected patterns into `FORESIGHT`.
+4. Score scenario diversity before finalizing a strategy package.
+5. Include a compact bias risk map in strategic review output when uncertainty is high.

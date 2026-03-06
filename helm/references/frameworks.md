@@ -1,155 +1,134 @@
 # Strategic Frameworks Reference — Helm
 
-経営戦略フレームワークの詳細適用ガイド。各フレームワークの使用場面・手順・出力形式を定義する。
+Purpose: Select the right strategic framework, apply it consistently, and produce decision-ready outputs without mixing incompatible lenses.
 
----
+## Contents
 
-## Framework Selection Decision Tree
+- Framework selection rules
+- Framework-specific execution notes
+- Combination patterns
 
+## Framework Selection Rules
+
+| Goal | Primary framework | Add-on frameworks | Use when |
+|------|-------------------|------------------|----------|
+| overall business diagnosis | `SWOT` | `PESTLE`, `Porter` | you need internal and external summary in one pass |
+| external environment scan | `PESTLE` | `SWOT` | the question is market, regulation, macro, or technology shift |
+| industry attractiveness | `Porter 5 Forces` | `PESTLE` | pricing power, entry barriers, substitutes, or supplier leverage drive the decision |
+| portfolio allocation | `BCG Matrix` | financial model | you need invest/hold/exit prioritization across products |
+| execution management | `BSC` | monitoring | you need KPI cascade and strategy tracking |
+| growth direction | `Ansoff Matrix` | `SWOT`, `Porter` | you need penetration, market expansion, product expansion, or diversification |
+| advantage source | `Value Chain` | `SWOT` | you need process-level cost or differentiation insight |
+| category creation | `Blue Ocean` | `PESTLE`, `BSC` | the goal is value innovation rather than head-on competition |
+
+## Decision Tree
+
+```text
+Overall assessment -> SWOT
+External scan -> PESTLE
+Industry structure -> Porter 5 Forces
+Portfolio allocation -> BCG Matrix
+Execution management -> Balanced Scorecard
+Growth direction -> Ansoff Matrix
+Competitive advantage source -> Value Chain
+Category creation -> Blue Ocean Strategy
 ```
-目的は何か？
-├── 現状の総合評価 → SWOT
-├── 外部環境スキャン → PESTLE
-├── 業界構造の理解 → Porter 5 Forces
-├── 事業ポートフォリオ管理 → BCG Matrix
-├── 戦略の実行管理 → Balanced Scorecard
-├── 成長戦略の方向性 → Ansoff Matrix
-├── 競争優位の源泉分析 → Value Chain
-└── まったく新しい市場創造 → Blue Ocean Strategy
-```
 
----
+## Framework Notes
 
-## 1. SWOT Analysis
+### SWOT
 
-### 実施手順
+Use `Strengths / Weaknesses / Opportunities / Threats` and always finish with `SO / WO / ST / WT` action paths.
 
-**Step 1: 内部分析（コントロール可能）**
+Output requirements:
+- evidence for each factor
+- one prioritized strategy
+- explicit tradeoff if strengths and threats conflict
 
-- **強み (Strengths):** 競合に対する優位性、固有リソース・能力、顧客からの評価、財務的な強さ（利益率・CF・資本）
-- **弱み (Weaknesses):** 競合に劣る点、欠如リソース・能力、顧客からの不満・改善要望、財務的脆弱性（負債比率・CF不安定等）
+### PESTLE
 
-**Step 2: 外部分析（コントロール不可能）**
+Cover `Political / Economic / Social / Technological / Legal / Environmental`.
 
-- **機会 (Opportunities):** 市場の成長トレンド、規制緩和・政策支援、競合の弱点・撤退領域、技術革新による新機会
-- **脅威 (Threats):** 競合強化・新規参入、規制強化・政策リスク、顧客行動・嗜好の変化、マクロ経済リスク（景気・為替等）
+Output requirements:
+- top trend per dimension
+- business impact
+- time horizon
+- positive/negative direction
+- note cross-effects such as technology creating legal change
 
-**Step 3: Cross SWOT戦略生成**
+### Porter 5 Forces
 
-| | 強み (S) | 弱み (W) |
-|---|---------|---------|
-| **機会 (O)** | **SO戦略:** 強みを使って機会を最大化 | **WO戦略:** 弱みを補って機会を獲得 |
-| **脅威 (T)** | **ST戦略:** 強みで脅威を最小化・回避 | **WT戦略:** 弱み・脅威のダメージ最小化 |
+Score each force `High = 3`, `Medium = 2`, `Low = 1`. Lower total = more attractive structure.
 
-→ 出力: 各S/W/O/Tに根拠を付記、Cross SWOT 4戦略を具体化し優先戦略1位を選定理由付きで提示。
+Required forces:
+- rivalry
+- threat of entry
+- threat of substitutes
+- buyer power
+- supplier power
 
----
+Output requirements:
+- score table
+- top structural risk
+- top structural advantage
 
-## 2. PESTLE Analysis
+### BCG Matrix
 
-### 6次元チェックリスト
+| Quadrant | Meaning | Default action |
+|----------|---------|----------------|
+| `Star` | high growth, high share | invest and defend |
+| `Cash Cow` | low growth, high share | harvest and fund other bets |
+| `Question Mark` | high growth, low share | selective investment or exit |
+| `Dog` | low growth, low share | improve, divest, or shut down |
 
-- **Political（政治）:** 政権安定性、業界規制の方向性、補助金・税制優遇、貿易政策・輸出入規制、地政学リスク
-- **Economic（経済）:** GDP成長率・景気サイクル、金利動向、為替レート影響、インフレ率、失業率・労働市場、業界固有の経済指標
-- **Social（社会）:** 人口動態（少子高齢化・都市集中等）、消費者行動・価値観変化、労働価値観変化、健康・ウェルネス意識、デジタルリテラシー、多様性・インクルージョン
-- **Technological（技術）:** AI/ML・生成AIの業界影響、クラウド・SaaS化、DX推進動向、自動化・ロボット化、サイバーセキュリティリスク、プラットフォームエコノミー
-- **Legal（法規制）:** データプライバシー規制（GDPR等）、労働法規制、環境規制・排出基準、独禁法・競争法、知財保護、消費者保護法
-- **Environmental（環境）:** 気候変動リスク（物理的・移行）、ESG投資家要件、サプライチェーンのカーボン規制、廃棄物・循環経済規制、自然災害リスク（BCP）、水・エネルギー資源制約
+### Balanced Scorecard
 
-→ 出力: 6次元×（主要トレンド / ビジネス影響 / 時間軸 / 評価±）のサマリーテーブル + 最重要外部要因 TOP3（戦略的含意付き）。注意: 各次元の相互関係（例: 技術変化→法規制変化）も分析する。
+Keep the 4 perspectives explicit:
+- Financial
+- Customer
+- Internal process
+- Learning and growth
 
----
+Strategy map order:
+`Learning and growth -> Process -> Customer -> Financial`
 
-## 3. Porter's Five Forces
+### Ansoff Matrix
 
-各力を **高（3点）/ 中（2点）/ 低（1点）** で評価。合計が低いほど業界の魅力度が高い。
+| Product / Market | Existing market | New market |
+|------------------|-----------------|------------|
+| Existing product | Market penetration | Market development |
+| New product | Product development | Diversification |
 
-### 5つの力: High/Low シグナル比較
+Use `low / medium / high` risk framing. Always explain why diversification is justified if chosen.
 
-| Force | 高いシグナル | 低いシグナル |
-|-------|------------|------------|
-| **既存競合の競争強度** | 競合多数・規模均等 / 業界成長率が低い / 固定費高く稼働率維持必要 / 差別化困難 / スイッチングコスト低 / Exit障壁高 | 市場リーダー明確（寡占） / 急成長市場 / 明確な差別化確立 / スイッチングコスト高 |
-| **新規参入の脅威** | 低資本で参入可能 / 規制少ない / 既存企業の優位性弱い / デジタル化で障壁低下 / 資金調達容易 | 高い設備投資必要 / 規制・ライセンスが制限 / ブランド・顧客関係確立済 / 特許・知財保護 / 規模の経済が圧倒的 |
-| **代替品の脅威** | 低コスト代替手段存在 / 代替品の性能向上中 / スイッチングコスト低 / 技術変化で代替加速 | 代替品へのスイッチ困難 / 代替品のコスト・品質劣る / 顧客の習慣・慣性強い |
-| **買い手の交渉力** | 少数の大口顧客に売上集中 / 価格感度高い / 製品の標準化 / 後方統合可能 / 複数サプライヤー使い分け | 多数・分散した顧客基盤 / 製品がビジネスに不可欠 / スイッチングコスト高 / 差別化価値認識 |
-| **供給者の交渉力** | 供給者少数・集中 / 特定供給者への依存度高 / 前方統合可能 / 供給品の代替困難 | 多数の代替供給者 / 自社が供給者の重要顧客 / 内製化が現実的 / 汎用品・コモディティ調達 |
+### Value Chain
 
-→ 出力: 5 Forces スコアテーブル（Force / スコア / 評価 / 主要根拠）+ 業界総合魅力度 + 戦略的含意（最大リスクのForceと対策、活用すべき優位と戦略）。
+Trace advantage across:
+- inbound logistics
+- operations or development
+- outbound logistics
+- marketing and sales
+- service
+- support activities
 
----
+Use it when the strategy depends on operational advantage, not just market choice.
 
-## 4. BCG Growth-Share Matrix
+### Blue Ocean
 
-### 4象限の定義
+Use the `ERRC` lens:
+- Eliminate
+- Reduce
+- Raise
+- Create
 
-| 象限 | 特性 | 推奨戦略 |
-|------|------|---------|
-| **Star ★** | 高成長・高シェア、要投資 | 積極投資・シェア維持 |
-| **Cash Cow** | 低成長・高シェア、CF創出 | 収益最大化・他事業への資金供給 |
-| **Question Mark ?** | 高成長・低シェア、選択必要 | 選択的投資またはStar化 / 撤退判断 |
-| **Dog** | 低成長・低シェア、CF消費 | 収益改善 / 売却 / 事業終了検討 |
+Require a strategy canvas if the output claims category differentiation.
 
-→ 出力: 事業/製品ごとの（市場成長率 / 相対シェア / 象限 / 推奨アクション）テーブル + 資源配分推奨（Cash Cow→Star/Question Markへの投資、Dog事業の扱い）。
+## Combination Patterns
 
----
-
-## 5. Balanced Scorecard (BSC)
-
-### 4視点とKPI例
-
-- **財務の視点:** 「株主に対してどう見えるべきか」 — 売上成長率、ROE、EBITDA、キャッシュフロー
-- **顧客の視点:** 「顧客にどう見えるべきか」 — 顧客満足度(CSAT)、NPS、市場シェア、チャーン率
-- **業務プロセスの視点:** 「どのプロセスに秀でるべきか」 — 製品開発サイクル、品質指標、リードタイム、不良率
-- **学習と成長の視点:** 「変化・改善能力をどう維持するか」 — 従業員満足度、研修時間、イノベーション件数、離職率
-
-### 戦略マップの構造
-
-財務目標[収益増加] ← 顧客満足[価値提供] ← 業務効率[プロセス改善] ← 組織能力[人材育成]
-
----
-
-## 6. Ansoff Matrix
-
-### 4戦略とリスク評価
-
-| | 既存市場 | 新市場 |
-|---|---------|-------|
-| **既存製品** | **市場浸透** (低リスク): シェア拡大、価格競争、顧客維持強化 | **市場開発** (中リスク): 新地域展開、新セグメント開拓、新チャネル開拓 |
-| **新製品** | **製品開発** (中リスク): 既存顧客への新製品、機能拡張、新製品ライン | **多角化** (高リスク): 関連多角化、非関連多角化、垂直統合 |
-
----
-
-## 7. Value Chain Analysis
-
-主活動: [購買物流] → [製造/開発] → [販売物流] → [マーケ&営業] → [サービス] → 利益
-
-支援活動: インフラ管理 / 人材管理 / 技術開発 / 調達管理
-
-→ 競争優位の源泉となる活動を特定し、コスト・価値を最適化する。
-
----
-
-## 8. Blue Ocean Strategy
-
-### 4つのアクション（ERRC Framework）
-
-- **Eliminate（取り除く）:** 業界の常識だが価値のない要素は何か
-- **Reduce（減らす）:** 標準以下に減らすべき要素は何か
-- **Raise（増やす）:** 標準以上に高めるべき要素は何か
-- **Create（創造する）:** 業界に前例のない要素は何か
-
-### 戦略キャンバス
-
-横軸: 業界が競争する要素（価格・品質・サービス等）、縦軸: 提供水準（高/低）。自社と競合の「価値曲線」を描画し、差別化点を可視化。
-
----
-
-## Framework Combination Patterns
-
-| 目的 | 推奨組み合わせ | 順序 |
-|------|--------------|------|
-| 総合戦略策定 | PESTLE → SWOT → Porter → Ansoff | 外部→内部→業界→成長方向 |
-| M&A検討 | Porter → SWOT → BCG → 財務モデル | 業界評価→強みマッチ→ポートフォリオ→数値検証 |
-| 新市場参入 | PESTLE → Porter → Ansoff → Blue Ocean | 環境→構造→戦略→差別化 |
-| 事業改善 | BSC → Value Chain → SWOT | 現状把握→プロセス→強み活用 |
-| 長期ビジョン | Blue Ocean → PESTLE → BSC | 理想→環境→実行管理 |
+| Objective | Recommended sequence | Reason |
+|-----------|----------------------|--------|
+| comprehensive strategy | `PESTLE -> SWOT -> Porter -> Ansoff` | external context, internal fit, industry structure, then growth path |
+| M&A evaluation | `Porter -> SWOT -> BCG -> Financial model` | structure, fit, portfolio effect, then valuation |
+| new market entry | `PESTLE -> Porter -> Ansoff -> Blue Ocean` | environment, structural friction, entry mode, then differentiation |
+| business improvement | `BSC -> Value Chain -> SWOT` | performance baseline, process levers, strategic synthesis |
+| long-term vision | `Blue Ocean -> PESTLE -> BSC` | future position first, constraints second, execution third |

@@ -1,100 +1,80 @@
+Purpose: Use this checklist to prevent low-quality scenario work. It preserves the practical traps, the bias layer, and the quality gate Helm should apply before trusting scenarios.
+
+## Contents
+- `SCN-01..SCN-10`
+- Bias impact
+- Scenario quality checklist
+- Helm quality gate
+
 # Scenario Planning Pitfalls
 
-> シナリオプランニングの 10 大落とし穴、認知バイアスの影響、実践的な対策
+## Anti-Pattern Catalog
 
-## 1. シナリオプランニング 10 大落とし穴
+| ID | Pitfall | Failure mode | Fix |
+|---|---|---|---|
+| `SCN-01` | Searching for the “correct” future | Treats scenarios as prediction instead of decision support | Use “plausible” and “challenging,” then ask what action each scenario demands |
+| `SCN-02` | Asking the wrong question | Question is too broad, too narrow, or detached from decisions | Anchor the scenario question to a live investment or policy choice |
+| `SCN-03` | Mixing trends and uncertainties | Uses deterministic trends as scenario axes | Separate fixed trends from true uncertainties |
+| `SCN-04` | Four versions of the same worldview | Scenarios do not force different choices | Require materially different decisions per scenario |
+| `SCN-05` | Data dominance, no imagination | Spreadsheets replace creative future recombination | Use data to inform stories, not to flatten them |
+| `SCN-06` | Lifeless narrative | No actors, weak causality, no memorability | Add concrete actors, motives, and causal links |
+| `SCN-07` | Decision-makers excluded | Scenarios do not change executive thinking | Involve decision-makers early in question and uncertainty selection |
+| `SCN-08` | Missing “So what?” | Scenario creation stops before strategic implications | Spend equal time on action implications |
+| `SCN-09` | One-off exercise | Scenarios are published and forgotten | Build early-warning indicators and review cadence |
+| `SCN-10` | Ignoring emotional impact | Stakeholders resist because threatening futures are emotionally unmanaged | Normalize discomfort and make implications explicit |
 
-### 設計フェーズの落とし穴
+## Bias Layer
 
-| # | 落とし穴 | 問題 | 対策 |
-|---|---------|------|------|
-| **SCN-01** | **正しい未来を探す** | シナリオを「最も可能性の高い未来」を見つける予測ツールとして使用 | 「もっともらしい」「挑戦的」という言語を使用 · 各シナリオで何をするかに焦点 |
-| **SCN-02** | **誤った問い** | 広すぎる/狭すぎる/意思決定に無関係な焦点質問 | 実際の投資・政策判断にアンカー · 意思決定者でテスト |
-| **SCN-03** | **トレンドと不確実性の混同** | 確定的トレンド（人口動態等）をシナリオ軸に使用 → 4つの似た未来 | STEEP分析で確定トレンドと真の不確実性を区別 |
-| **SCN-04** | **公式見解の4バリエーション** | 単一の世界観を少しずつ変えただけの同質的シナリオ | 各シナリオが異なる意思決定を強いることを検証 |
-| **SCN-05** | **データ偏重・想像力欠如** | スプレッドシートのデータに溺れ、未来の創造的再結合を忘れる | データは物語を「情報提供」するもの、「支配」するものではない |
+| Bias | Distortion | Mitigation |
+|---|---|---|
+| Confirmation bias | Preferred scenario appears “most likely” | Assign a devil’s advocate |
+| Anchoring | First scenario dominates evaluation | Start from multiple anchors |
+| Overconfidence | Ranges are too narrow | Run a pre-mortem |
+| Availability heuristic | Recent events dominate scenario salience | Review historical analogs |
+| Framing | Wording shifts scenario evaluation | Reframe the same scenario from multiple angles |
+| Groupthink | Agreement pressure reduces diversity | Use anonymous voting / Delphi-style input |
 
-### 組織・プロセスの落とし穴
+## Scenario Quality Checklist
 
-| # | 落とし穴 | 問題 | 対策 |
-|---|---------|------|------|
-| **SCN-06** | **生命力のない物語** | 人間不在・論理矛盾・難解な文章 → 意思決定者の記憶に残らない | 実在の人物・組織を登場させる · 内部一貫性チェック |
-| **SCN-07** | **意思決定者の排除** | コンサルタントが単独で作成 → リーダーの思考が変わらない | 質問策定・不確実性投票・マトリクス選択に意思決定者を早期参加 |
-| **SCN-08** | **So What? の欠如** | シナリオ作成で終了 → 戦略への接続なし | シナリオ構築と戦略導出に同等の時間を確保 |
-| **SCN-09** | **一回限りのイベント** | 公表後に棚上げ → 環境変化でシグナルが出ても更新なし | 早期警戒システム構築 · STEEP定期レビュー · 計画サイクルに統合 |
-| **SCN-10** | **感情的インパクトの軽視** | スキル・ビジネスモデルへの脅威 → 無視された感情が抵抗に | 不安を正常化「不安を感じないなら十分に挑戦していない」 |
+### Design Quality
 
----
+- The focus question is tied to a real decision.
+- Scenario axes reflect genuine uncertainty, not fixed trends.
+- The scenarios force different decisions.
+- Each scenario is internally coherent.
 
-## 2. シナリオプランニングと認知バイアス
+### Narrative Quality
 
-### バイアスの影響
+- Human actors and incentives are visible.
+- Causal chains are explicit.
+- The story is understandable to non-specialists.
 
-```
-シナリオプランニングを歪めるバイアス:
-  - 確証バイアス: 自説に合うシナリオを「最も可能性が高い」と判断
-  - アンカリング: 最初に検討したシナリオに過度に固執
-  - 過信バイアス: 不確実性の範囲を過小評価
-  - 利用可能性ヒューリスティック: 最近の出来事に基づくシナリオを過大評価
-  - フレーミング効果: シナリオの提示方法が評価を歪める
-  - 集団思考: 合意志向がシナリオの多様性を減少
-```
+### Process Quality
 
-### バイアス軽減策
+- Decision-makers participated.
+- Strategic implications were derived.
+- Early-warning indicators were defined.
+- A refresh schedule exists.
 
-| バイアス | 軽減策 | 実装方法 |
-|---------|--------|---------|
-| 確証バイアス | Devil's Advocate | 各シナリオに反論チームを設置 |
-| アンカリング | 複数アンカー | 複数の初期仮説から並行検討 |
-| 過信 | Pre-mortem | 「失敗した前提」で逆算検討 |
-| 利用可能性 | 歴史的アナロジー | 過去30年の類似事例を体系的にレビュー |
-| フレーミング | 再フレーミング | 同じシナリオを肯定的/否定的両面から記述 |
-| 集団思考 | 匿名投票 | Delphi法で個人見解を匿名収集 |
+### Bias Check
 
----
+- A Red Team or devil’s advocate reviewed the set.
+- “Most likely” language was avoided.
+- At least one uncomfortable scenario was included.
 
-## 3. シナリオ品質チェックリスト
+## Helm Quality Gate
 
-```
-設計品質:
-  □ 焦点質問は具体的な意思決定にアンカーされているか
-  □ 軸は真の不確実性か（確定トレンドではないか）
-  □ 4つのシナリオは十分に異なるか（異なる意思決定を要求するか）
-  □ 各シナリオは内部的に一貫しているか
+| Gate | Rule |
+|---|---|
+| Post-generation review | Run the full checklist on every scenario set |
+| Bias penalty | If bias checks were skipped, subtract `0.2` from confidence |
+| Refresh warning | If no update schedule exists, add a warning flag |
+| Simulation use | Only feed high-quality scenarios into `SIMULATE` and `ROADMAP` |
 
-物語品質:
-  □ 人間のアクター・動機が含まれているか
-  □ 因果関係の連鎖が明確か
-  □ 非専門家にも理解可能か
+## Integration
 
-プロセス品質:
-  □ 意思決定者が設計プロセスに参加したか
-  □ 戦略的含意（So What?）が導出されたか
-  □ 早期警戒指標が定義されたか
-  □ 更新スケジュールが設定されたか
+Use these rules with:
 
-バイアスチェック:
-  □ Devil's Advocate / Red Team が実施されたか
-  □ 「最も可能性が高い」ラベルを避けているか
-  □ 不快なシナリオが含まれているか
-```
-
----
-
-## 4. Helm との連携
-
-```
-Helm での活用:
-  1. SIMULATE モードで SCN-01〜10 チェックリストを事前実行
-  2. simulation-patterns の ST-1〜4/MT-1〜4/LT-1〜4 でバイアスチェックを統合
-  3. FORESIGHT でシナリオ品質スコアを追跡
-  4. 各シナリオに「異なる意思決定テスト」を必須化
-  5. 早期警戒指標を strategy-monitoring の TRACK フェーズに統合
-
-品質ゲート:
-  - シナリオ生成後に品質チェックリストを全項目確認
-  - バイアスチェック未実施のシナリオは confidence を 0.2 減算
-  - 更新スケジュール未設定のシナリオに警告フラグ
-```
-
-**Source:** [Serious Insights: Ten Ways Scenario Planning Can Go Wrong](https://www.seriousinsights.net/ten-ways-scenario-planning-can-go-wrong/) · [ScienceDirect: Cognitive Biases in Strategic Decision-Making](https://www.sciencedirect.com/science/article/abs/pii/S0024630125000329) · [LSA Global: Cognitive Biases in Strategic Planning](https://lsaglobal.com/blog/top-10-cognitive-biases-that-affect-strategic-planning/)
+- `simulation-patterns.md` for short-, mid-, and long-horizon scenario generation
+- `strategic-calibration.md` to track scenario quality over time
+- `strategy-monitoring.md` to bind scenarios to live signals and assumption drift

@@ -1,27 +1,30 @@
+Purpose: Use `FORESIGHT` after strategy work to track forecast quality, recalibrate heuristics, and share reusable patterns without overreacting to thin data.
+
+## Contents
+- Workflow
+- Accuracy and bracket thresholds
+- Calibration rules
+- Default assumption library
+- Propagation format
+
 # Strategic Calibration System (FORESIGHT)
 
-Prediction accuracy tracking, framework effectiveness scoring, assumption validation, and scenario quality measurement.
-Helm gets better at strategic simulation by learning from outcomes.
+`FORESIGHT = TRACK -> VALIDATE -> CALIBRATE -> PROPAGATE`
 
----
+Use this after a simulation, quarterly review, or any point where outcomes can be compared with predictions.
 
-## Overview
+## Workflow
 
-The FORESIGHT phase runs post-engagement (or periodically) to close the feedback loop between strategic simulations and actual business outcomes. Without FORESIGHT, framework selection stays static and scenario parameters remain uncalibrated. With it, Helm's simulations become progressively more accurate and actionable.
+| Phase | Goal | Keep |
+|---|---|---|
+| `TRACK` | Record what Helm predicted | simulation type, horizon, frameworks, assumptions, confidence, data completeness |
+| `VALIDATE` | Compare predictions with actuals | accuracy rate, bracket rate, downstream utilization |
+| `CALIBRATE` | Tune heuristics conservatively | framework effectiveness, scenario ranges, assumption defaults |
+| `PROPAGATE` | Share reusable learnings | journal note, `EVOLUTION_SIGNAL`, future default updates |
 
-```
-TRACK ──→ VALIDATE ──→ CALIBRATE ──→ PROPAGATE
-  │            │            │            │
-  │ Record    │ Check     │ Update    │ Share with
-  │ simulations│ predictions│ framework │ Lore
-  │ & predictions│ vs actual │ weights  │
-```
+## TRACK
 
----
-
-## TRACK — Record Simulation Activities
-
-After each simulation engagement, record:
+Record each engagement in a compact structure:
 
 ```yaml
 Simulation: [simulation-id]
@@ -44,52 +47,50 @@ Data_Completeness: [Tier 1 only | Tier 1+2 | Tier 1+2+3 | Full]
 Downstream_Handoff: [Magi/Scribe/Sherpa/Canvas/None]
 ```
 
-### What to Track
+Track at minimum:
 
-| Data Point | Why | Used For |
-|-----------|-----|----------|
-| Prediction accuracy | Core calibration input | Scenario parameter adjustment |
-| Framework effectiveness | Which frameworks yield best insights per context | Framework selection heuristic |
-| Assumption accuracy | Were industry defaults/estimates valid? | Assumption library improvement |
-| Scenario quality | Did the 3 scenarios bracket actual outcomes? | Scenario range calibration |
-| Data completeness impact | Does more data actually improve accuracy? | Input requirement prioritization |
-| Downstream utilization | Did Magi/Scribe/Sherpa use the output? | Output format improvement |
+| Signal | Why it matters |
+|---|---|
+| Prediction accuracy | Calibrates scenario confidence |
+| Framework effectiveness | Tunes framework selection by context |
+| Assumption accuracy | Improves default values when data is missing |
+| Scenario bracketing quality | Checks whether optimistic/pessimistic ranges are realistic |
+| Data completeness impact | Shows whether more data materially improves quality |
+| Downstream utilization | Tests whether Helm output is decision-ready |
 
----
+## VALIDATE
 
-## VALIDATE — Check Predictions Against Outcomes
+### Accuracy Thresholds
 
-### Prediction Accuracy Tracking
+```text
+Accuracy = predictions within ±15% of actual / total validated predictions
 
-```
-Accuracy = Predictions Within ±15% of Actual / Total Validated Predictions
-
-> 0.75  = Strong forecasting (maintain approach)
-0.50-0.75 = Moderate accuracy (review assumptions, scenario parameters)
-< 0.50  = Weak predictions (review methodology, data sources)
+> 0.75      strong
+0.50-0.75   moderate
+< 0.50      weak
 ```
 
-### Scenario Bracketing Quality
+### Scenario Bracket Thresholds
 
-```
-Bracket Rate = Actuals Falling Within Optimistic-Pessimistic Range / Total Scenarios
+```text
+Bracket Rate = actuals inside optimistic-pessimistic range / total scenarios
 
-> 0.85  = Well-calibrated scenarios
-0.70-0.85 = Good, some outliers
-< 0.70  = Scenarios too narrow or biased (widen range or review drivers)
+> 0.85      well-calibrated
+0.70-0.85   acceptable
+< 0.70      too narrow or biased
 ```
 
 ### Validation Triggers
 
-| Trigger | Check |
-|---------|-------|
-| Quarterly KPI results available | Short-term prediction accuracy |
-| Annual financial results | Mid-term prediction accuracy |
-| Industry report published | Long-term trend prediction |
-| Helm detects strategy drift | Assumption validity |
-| M&A/Exit outcome known | Valuation accuracy |
+| Trigger | Validate |
+|---|---|
+| Quarterly KPI results | Short-term forecasts |
+| Annual results | Mid-term forecasts |
+| New industry report | Long-term trend assumptions |
+| Strategy drift detected | Assumption validity |
+| M&A / exit result known | Valuation logic |
 
-### Per-Period Validation Summary
+### Validation Snapshot
 
 ```markdown
 ### Strategic Validation
@@ -103,22 +104,23 @@ Bracket Rate = Actuals Falling Within Optimistic-Pessimistic Range / Total Scena
 | Scenario bracket rate | 80% (8/10) | — |
 | Framework combinations used | 5 | — |
 | Downstream utilization | 88% (7/8) | — |
-
-**Strongest framework**: PESTLE→SWOT→Porter combo (highest insight yield)
-**Weakest area**: Long-term pricing predictions (40% accuracy)
-**Note**: Tier 2 data (KPI from Pulse) improved short-term accuracy by 25%.
 ```
 
----
+## CALIBRATE
 
-## CALIBRATE — Update Strategic Heuristics
+### Calibration Rules
 
-### Framework Effectiveness Scoring
+1. Require `3+ simulations` before changing framework effectiveness weights.
+2. Cap any single adjustment at `±0.15`.
+3. Apply `10%` decay per quarter back toward defaults.
+4. User-stated framework preferences always override calibrated defaults.
+5. If there are fewer than `3` validated predictions, record the result but do not change weights.
 
-Track which frameworks work best in which contexts:
+### Framework Effectiveness
+
+Use effectiveness scores by context, then tune cautiously:
 
 ```yaml
-# Default framework effectiveness by context
 swot_effectiveness:
   overall_assessment: 0.85
   startup_strategy: 0.80
@@ -135,50 +137,39 @@ bcg_effectiveness:
   portfolio_management: 0.90
   investment_allocation: 0.85
   product_strategy: 0.80
-
-# Calibrated (from FORESIGHT data)
-# Example: BSC unexpectedly effective for startup strategy
-bsc_effectiveness:
-  startup_strategy: 0.65 → 0.80  # KPI-driven approach resonated with founders
 ```
 
-### Calibration Rules
+Example:
 
-1. **3+ simulations required** before adjusting framework effectiveness scores
-2. **Max adjustment per cycle**: ±0.15 (prevent overcorrection)
-3. **Decay**: Adjustments decay 10% per quarter toward defaults
-4. **Override**: User explicit framework preferences always win
+```yaml
+bsc_effectiveness:
+  startup_strategy: 0.65 -> 0.80
+```
 
-### Scenario Parameter Calibration
+### Scenario Parameter Defaults
 
-Track whether scenario ranges are well-calibrated:
+| Parameter | Default | Calibrated example | Use |
+|---|---|---|---|
+| Optimistic uplift | `+20~40%` | `+25~35%` | tighten if upside is consistently overestimated |
+| Pessimistic downside | `-20~40%` | `-25~45%` | widen if downside is repeatedly underestimated |
+| Short-term confidence | `±10%` | `±8%` | tighten when predictions are reliably close |
+| Long-term confidence | `±30%` | `±35%` | widen when uncertainty is structurally high |
 
-| Parameter | Default Range | Calibrated Range | Adjustment Basis |
-|-----------|--------------|-----------------|-----------------|
-| Optimistic uplift | +20~40% | +25~35% | Actuals rarely exceeded +35% |
-| Pessimistic downside | -20~40% | -25~45% | Severe downturns underestimated |
-| Short-term confidence | ±10% | ±8% | Short-term more predictable |
-| Long-term confidence | ±30% | ±35% | Long-term less predictable |
+### Default Assumption Library
 
-### Assumption Default Calibration
+| Assumption | Default | Observed range | Reliability |
+|---|---|---|---|
+| SaaS churn rate | `1-2%/mo` | `0.8-3.5%/mo` | Medium |
+| SaaS gross margin | `70-80%` | `65-85%` | High |
+| Japan IT market growth | `3-5%/yr` | `2-7%/yr` | Medium |
+| CAC Payback | `12-18mo` | `8-24mo` | Medium |
+| LTV/CAC target | `3:1+` | `2.5:1-5:1` | High |
 
-Track accuracy of industry default values used when data is missing:
+## PROPAGATE
 
-| Assumption | Default Value | Actual Range Observed | Reliability |
-|-----------|--------------|---------------------|-------------|
-| SaaS churn rate | 1-2%/mo | 0.8-3.5%/mo | Medium |
-| SaaS gross margin | 70-80% | 65-85% | High |
-| Japan IT market growth | 3-5%/yr | 2-7%/yr | Medium |
-| CAC Payback (B2B SaaS) | 12-18mo | 8-24mo | Medium |
-| LTV/CAC target | 3:1+ | 2.5:1-5:1 | High |
+### Journal Format
 
----
-
-## PROPAGATE — Share Validated Patterns
-
-### Journal Entry Format
-
-Record FORESIGHT insights in `.agents/helm.md`:
+Write reusable findings to `.agents/helm.md`:
 
 ```markdown
 ## YYYY-MM-DD - FORESIGHT: [Simulation Type]
@@ -186,7 +177,7 @@ Record FORESIGHT insights in `.agents/helm.md`:
 **Simulations assessed**: N
 **Overall accuracy**: X%
 **Key insight**: [description]
-**Calibration adjustment**: [framework/parameter: old → new]
+**Calibration adjustment**: [framework/parameter: old -> new]
 **Apply when**: [future scenario]
 **reusable**: true
 
@@ -203,56 +194,24 @@ reusable: true
 
 ### Pattern Library
 
-Build a library of effective strategic approaches by context:
+| Context | Best framework chain | Notes |
+|---|---|---|
+| Annual strategy | `PESTLE -> SWOT -> Porter -> Ansoff` | Best with Tier `1+2` data |
+| M&A evaluation | `Porter -> SWOT -> BCG -> Financial` | Best with Tier `1+2+3C` data |
+| New market entry | `PESTLE -> Porter -> Ansoff -> Blue Ocean` | Market research quality is decisive |
+| Crisis response | `SWOT -> ST-3` | Speed matters more than depth |
+| KPI forecasting | `ST-1 / ST-2` | Tier `2A` data is critical |
+| Long-term vision | `Blue Ocean -> PESTLE -> BSC` | Use wider scenario ranges |
 
-| Context | Best Framework Combo | Key Parameters | Accuracy |
-|---------|---------------------|---------------|----------|
-| Annual strategy | PESTLE→SWOT→Porter→Ansoff | Full Tier 1+2 data | High |
-| M&A evaluation | Porter→SWOT→BCG→Financial | Tier 1+2+3C data | Medium-High |
-| New market entry | PESTLE→Porter→Ansoff→Blue Ocean | Market research critical | Medium |
-| Crisis response | SWOT→ST-3 pattern | Speed over depth | High |
-| KPI forecasting | ST-1/ST-2 patterns | Tier 2A data essential | High |
-| Long-term vision | Blue Ocean→PESTLE→BSC | Low certainty, wide scenarios | Medium |
+### Quick FORESIGHT
 
-### Quick Calibration (Small Engagements)
-
-For engagements with < 3 predictions:
+Use this when evidence is too thin to recalibrate:
 
 ```markdown
 ## Quick FORESIGHT
 
 **Simulations**: 1 completed
 **Predictions**: 2 (too few to calibrate)
-**Note**: PESTLE→SWOT combo provided clear strategic direction
+**Note**: PESTLE -> SWOT produced clear strategic direction
 **Action**: No weight change (insufficient data)
 ```
-
-Rule: Do not adjust weights from a single small engagement. Accumulate data across engagements.
-
----
-
-## Integration with Ecosystem
-
-FORESIGHT data feeds into strategic simulation decisions:
-
-| FORESIGHT Signal | Ecosystem Impact |
-|-----------------|-----------------|
-| Prediction accuracy improving | Confidence in strategic recommendations increases |
-| Accuracy degrading | Re-examine frameworks, data sources, assumptions |
-| Framework consistently underperforming | Deprioritize, try alternative combinations |
-| Scenario brackets too narrow | Widen optimistic/pessimistic ranges |
-| High downstream utilization | Output approach is working — continue |
-| Low utilization by Magi | Adjust output format for decision-readiness |
-| Validated strategic pattern | Share with Lore for knowledge, apply to Helm's own monitoring |
-
----
-
-## Feedback to Ecosystem
-
-When FORESIGHT discovers patterns valuable beyond a single engagement:
-
-1. **Record in journal** with `reusable: true` tag
-2. **Emit EVOLUTION_SIGNAL** for Lore to collect
-3. **Apply to Helm's own monitoring** if prediction accuracy data improves monitoring thresholds
-4. **Inform Magi** if framework effectiveness data improves decision quality
-5. **Update assumption defaults** if industry benchmarks prove inaccurate

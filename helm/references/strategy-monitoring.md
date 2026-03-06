@@ -1,33 +1,29 @@
-# Strategy Monitoring (absorbed from Compass)
+Purpose: Track strategic execution after Helm delivers a plan. Use this for assumption monitoring, drift detection, health reporting, and OKR cascade design.
 
-Strategy execution monitoring, assumption tracking, and OKR cascading methodology. Previously a standalone agent (Compass), now integrated as a Helm capability.
+## Contents
+- Monitoring workflow
+- Assumption states and alerts
+- Alignment score
+- Health report template
 
----
+# Strategy Monitoring
 
-## When to Apply
+This absorbed the former Compass capability. Use it after Helm produces a roadmap, simulation, or strategic recommendation.
 
-Use after Helm produces a strategy/roadmap:
-- Track execution progress against plan
-- Monitor assumption validity over time
-- Cascade strategy into team-level OKRs
-- Detect strategic drift early
+## Workflow
 
----
+`ANCHOR -> TRACK -> ALERT -> CASCADE`
 
-## Framework: ANCHOR → TRACK → ALERT → CASCADE
-
-| Phase | Purpose | Key Actions |
-|-------|---------|-------------|
-| **ANCHOR** | 戦略基準点の確立 | Map assumptions to measurable metrics, set baseline KPIs |
-| **TRACK** | 進捗・前提の追跡 | Monitor milestones, KPI actuals vs targets, assumption validity |
-| **ALERT** | 乖離の早期検知 | Drift detection, assumption breach alerts, health reporting |
-| **CASCADE** | OKR展開 | Strategy → Company OKR → Team OKR → Individual KR |
-
----
+| Phase | Goal | Key actions |
+|---|---|---|
+| `ANCHOR` | Establish the baseline | Map assumptions to KPIs, define thresholds, capture the starting state |
+| `TRACK` | Observe execution and assumptions | Compare actuals vs targets, check milestone progress, review assumption validity |
+| `ALERT` | Detect drift early | Trigger WATCH/BREACH states and health alerts |
+| `CASCADE` | Connect strategy to work | Translate strategy into company, team, and individual OKRs |
 
 ## Assumption Monitoring
 
-### Assumption → Metric Mapping
+### Assumption -> Metric Mapping
 
 ```markdown
 | Assumption | Metric | Threshold | Status |
@@ -39,70 +35,64 @@ Use after Helm produces a strategy/roadmap:
 
 ### Assumption States
 
-```
-VALID → WATCH → BREACH
-  ↑               │
-  └───────────────┘ (can recover if conditions improve)
+```text
+VALID -> WATCH -> BREACH
 ```
 
 | State | Meaning | Action |
-|-------|---------|--------|
-| **VALID** | Assumption holds | Continue as planned |
-| **WATCH** | Warning threshold crossed | Prepare contingency |
-| **BREACH** | Assumption invalidated | Trigger strategy revision |
-
----
+|---|---|---|
+| `VALID` | Assumption still holds | Continue as planned |
+| `WATCH` | Early warning threshold crossed | Prepare a contingency |
+| `BREACH` | Assumption no longer holds | Trigger strategy revision or Magi escalation |
 
 ## Alert Levels
 
 | Level | Trigger | Response |
-|-------|---------|----------|
-| 🟢 **GREEN** | All KPIs on track, assumptions valid | Continue, monitor |
-| 🟡 **YELLOW** | 1-2 KPIs off by <20%, assumption in WATCH | Investigate, prepare contingency |
-| 🔴 **RED** | Major KPI miss (>20%), assumption BREACH | Escalate to Magi for decision |
-| ⚫ **BLACK** | Multiple BREACH, strategy fundamentally invalid | Full strategy revision needed |
+|---|---|---|
+| `GREEN` | All KPIs on track and assumptions valid | Continue monitoring |
+| `YELLOW` | `1-2` KPIs miss by `<20%`, or an assumption is in WATCH | Investigate and prepare mitigation |
+| `RED` | Major KPI miss `>20%`, or an assumption breaches | Escalate to Magi |
+| `BLACK` | Multiple breaches or core strategy invalidated | Rebuild the strategy |
 
----
+## OKR Cascade
 
-## OKR Cascading
+### Top-Down Translation
 
-### Top-Down Decomposition
-
+```text
+Strategy -> Company Objective -> Company KR -> Team OKR -> Individual KR
 ```
-Company Objective: "Be the market leader in X"
-├── Company KR1: Revenue $10M (measurable)
-│   ├── Sales Team OKR: Close 200 deals
-│   │   └── Individual KR: 20 demos/month
-│   └── Product Team OKR: Launch feature Y
-│       └── Individual KR: Ship by Q2
-├── Company KR2: NPS > 50
-│   └── Support Team OKR: MTTR < 4hrs
-└── Company KR3: 95% retention
-    └── Product Team OKR: Reduce churn triggers
+
+Example:
+
+```text
+Company Objective: Be the market leader in X
+  -> Revenue KR
+  -> NPS KR
+  -> Retention KR
 ```
 
 ### Alignment Score
 
+```text
+Alignment = KRs with a clear parent link / Total KRs
+
+Target: >80%
+Warning: <60%
 ```
-Alignment = (KRs with clear parent link / Total KRs) × 100
 
-Target: > 80%
-Warning: < 60% (orphan KRs suggest misalignment)
-```
+Use low alignment as a sign of orphan work, weak ownership, or strategic drift.
 
----
-
-## Strategy Health Report Template
+## Strategy Health Report
 
 ```markdown
 ## Strategy Health Report — [Period]
 
-### Overall Status: [🟢/🟡/🔴/⚫]
+### Overall Status: [GREEN / YELLOW / RED / BLACK]
 
 ### KPI Dashboard
 | KPI | Target | Actual | Trend | Status |
 |-----|--------|--------|-------|--------|
-| [KPI] | [target] | [actual] | [↑↓→] | [🟢🟡🔴] |
+| [KPI] | [target] | [actual] | [↑↓→] | [GREEN/YELLOW/RED] |
 
 ### Assumption Monitor
 | Assumption | Status | Last Checked | Notes |
@@ -116,3 +106,12 @@ Warning: < 60% (orphan KRs suggest misalignment)
 
 ### Next Review: [date]
 ```
+
+## Integration Rules
+
+| Signal | Use |
+|---|---|
+| Repeated WATCH states | tighten monitoring cadence |
+| Any BREACH on a core assumption | reopen the strategy in Helm or escalate to Magi |
+| Alignment `<60%` | re-cascade strategy into OKRs |
+| Health `RED/BLACK` | treat the roadmap as stale until reviewed |

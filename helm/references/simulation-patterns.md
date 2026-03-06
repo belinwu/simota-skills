@@ -1,270 +1,202 @@
 # Simulation Patterns Reference — Helm
 
-短期・中期・長期シミュレーションの詳細パターン、計算式、出力形式を定義する。
+Purpose: Apply horizon-specific simulation models without mixing cadence, assumptions, or output grain.
 
----
+## Contents
 
-## シミュレーション基本原則
+- Core simulation rules
+- Short-term patterns
+- Mid-term patterns
+- Long-term patterns
+- Quality checklist
 
-1. **仮定の明示** — すべての前提パラメータを表形式で明示する
-2. **3シナリオ義務** — ベースライン/楽観/悲観を常に生成する
-3. **感度分析付記** — 主要変数の変動が結果に与える影響を示す
-4. **時間軸の独立性** — 短期・中期・長期を混合しない（それぞれ独立分析）
-5. **数値の粒度** — 月次（短期）/ 半期〜年次（中期）/ 5年ブロック（長期）
+## Core Rules
 
----
+- Always disclose assumptions.
+- Always generate `Baseline / Optimistic / Pessimistic`.
+- Always include sensitivity analysis on major drivers.
+- Keep cadences separate:
+  - `SHORT = monthly or quarterly`
+  - `MID = annual`
+  - `LONG = 3/5/10-year directional blocks`
 
-## SHORT-TERM SIMULATION (0-1 Year)
+## SHORT-TERM SIMULATION (`0-1 Year`)
 
-### Pattern ST-1: 月次KPI予測モデル
+### Pattern `ST-1`: Monthly KPI Forecast
 
-**用途:** MRR/ARR成長の月次追跡と予測
+Use for MRR, ARR, customer-count, and churn-driven growth tracking.
 
-**計算式:**
-```
+Formula:
+
+```text
 MRR_next = MRR_current × (1 + growth_rate) - churned_MRR + new_MRR + expansion_MRR
-
 growth_rate = (new_customers × ARPU + expansion_revenue) / MRR_current - churn_rate
 ```
 
-**入力パラメータ:**
-| パラメータ |
-|-----------|
-| 現在MRR（月初実績） |
-| 新規獲得数/月（直近3ヶ月平均） |
-| ARPU（平均月額単価） |
-| チャーン率（MRR/ロゴベース区別） |
-| エクスパンション率 |
-| CAC（顧客獲得コスト） |
+Required inputs:
+- current MRR
+- new customers per month
+- ARPU
+- churn rate
+- expansion rate
+- CAC
 
-**出力テンプレート:**
-```markdown
-| 月 | MRR | 累積顧客数 | チャーン | 新規 | Net New MRR |
-|----|-----|----------|---------|------|-------------|
-| 1月 | ¥Xm | X社 | -¥X | +¥X | +¥X |
+Default scenario shift:
+- `Optimistic = +30%`
+- `Pessimistic = -25%`
 
-シナリオ比較: ベース / 楽観(+30%) / 悲観(-25%) → 12ヶ月後MRR・ARR換算
+### Pattern `ST-2`: Cash Flow and Runway
+
+Use for runway, burn, and fundraising timing.
+
+Formula:
+
+```text
+Monthly Burn = Fixed Costs + Variable Costs - Revenue
+Runway = Cash Position / Monthly Burn
+Break-even = Fixed Costs / Gross Margin
 ```
 
-### Pattern ST-2: キャッシュフロー & ランウェイ分析
+Required inputs:
+- cash balance
+- fixed costs
+- variable costs
+- revenue
+- gross margin
 
-**用途:** 資金繰り管理、資金調達タイミングの判断
+### Pattern `ST-3`: Crisis Response
 
-**計算式:**
-```
-Monthly Burn Rate = 固定費 + 変動費 - 収益
-Runway (months) = 現金残高 / Monthly Burn Rate
+Use when a discrete shock changes assumptions fast.
 
-Break-even Point = 固定費 / 粗利率
-```
+| Shock | Immediate response (`0-30 days`) | Medium response (`30-90 days`) |
+|------|----------------------------------|--------------------------------|
+| top customer churns (`>20%` of revenue) | replace pipeline, cut spend | diversify concentration risk |
+| major competitor enters | sharpen differentiation, lock in customers | invest in product separation |
+| recession signal | protect retention, compress CAC | rework cost base |
+| key employee leaves | retention action, temporary coverage | hiring and knowledge transfer |
+| security incident | incident response and customer communication | trust recovery and prevention |
 
-**入力パラメータ:**
-| パラメータ |
-|-----------|
-| 現金残高 |
-| 月次固定費（人件費・家賃・SaaS等） |
-| 月次変動費（CAC・インフラ等） |
-| 月次収益 |
-| 粗利率 |
+### Pattern `ST-4`: Budget vs Actual
 
-**出力テンプレート:**
-```markdown
-| シナリオ | 月次バーン | ランウェイ | 枯渇予測 |
-|---------|-----------|-----------|---------|
-| ベース | ¥Xm | Xヶ月 | YYYY/MM |
+Use for monthly operating review and forecast correction.
 
-推奨: 悲観シナリオでランウェイ短 → 資金調達/コスト削減検討
-```
+Track:
+- budget
+- actual
+- variance
+- variance %
+- cause
+- recommended correction
 
-### Pattern ST-3: 危機対応シナリオ
+## MID-TERM SIMULATION (`1-3 Years`)
 
-**用途:** 突発的ショック（主要顧客解約、競合参入、市場収縮等）への対応計画
+### Pattern `MT-1`: Market Expansion
 
-**トリガーイベント × 対応パターン:**
+Use Ansoff-based strategy comparison:
+- market penetration
+- market development
+- product development
+- diversification
 
-| ショック | 影響 | 即時対応（0-30日） | 中期対応（30-90日） |
-|---------|------|-----------------|-----------------|
-| 主要顧客（売上20%超）解約 | MRR急落 | 代替顧客パイプライン加速、コスト削減 | 顧客集中リスク分散戦略 |
-| 競合が主力製品に参入 | チャーン増加リスク | 差別化メッセージ強化、既存顧客ロック | 機能差別化投資 |
-| 景気後退シグナル | 新規獲得鈍化 | 既存顧客維持優先、CAC圧縮 | コスト構造見直し |
-| 主要人材の離職 | 生産性・信頼低下 | 引き留め施策、臨時体制 | 採用・ナレッジ移転 |
-| セキュリティインシデント | 顧客信頼・売上影響 | 即時対応・顧客通知（Triage参照） | 再発防止・信頼回復 |
+Minimum outputs:
+- initial investment
+- 3-year revenue uplift
+- ROI
+- risk
+- recommendation
 
-### Pattern ST-4: 予算vs実績 差異分析
+### Pattern `MT-2`: Portfolio Plan
 
-**用途:** 月次経営会議での業績検証、軌道修正判断
+Use BCG-based resource allocation.
 
-**出力テンプレート:**
-```markdown
-| KPI | 予算 | 実績 | 差異 | 差異率 | 要因分析 |
-|-----|------|------|------|--------|---------|
-| 新規MRR | ¥Xm | ¥Xm | ±¥Xm | ±X% | [要因] |
+Track:
+- current quadrant
+- 1-year expected quadrant
+- 3-year expected quadrant
+- investment policy
 
-軌道修正推奨: 差異の原因と対処策 / 残り期間での取り返し可能性評価
-```
+### Pattern `MT-3`: Organization and Hiring Roadmap
 
----
+Track:
+- hiring by function
+- personnel cost
+- personnel cost ratio
+- purpose of each hiring wave
 
-## MID-TERM SIMULATION (1-3 Years)
+### Pattern `MT-4`: P&L Forecast
 
-### Pattern MT-1: 市場拡大シミュレーション (Ansoffベース)
+Required parameters:
+- revenue growth by scenario
+- gross margin movement
+- fixed-cost growth
+- variable-cost ratio
 
-**用途:** 4戦略別の財務インパクト評価
+Minimum outputs:
+- revenue
+- gross profit and margin
+- SG&A
+- R&D
+- operating income and margin
+- EBITDA
 
-**出力テンプレート:**
-```markdown
-#### 戦略別期待リターン比較
-| 戦略 | 初期投資 | 3年後収益増 | ROI | リスク | 推奨度 |
-|------|---------|-----------|-----|--------|--------|
-| 市場浸透（シェア拡大） | ¥Xm | +¥Xm | X% | 低 | ★★★ |
+## LONG-TERM SIMULATION (`3-10 Years`)
 
-#### 推奨戦略の3年シミュレーション
-前提: 市場成長率 / 自社シェア目標 / 投資計画
+### Pattern `LT-1`: Industry Transformation
 
-| 年度 | 売上 | 粗利 | 営業利益 | 顧客数 | 市場シェア |
-|------|------|------|---------|--------|-----------|
-| 現在 | ¥Xm | ¥Xm | ¥Xm | X社 | X% |
+Use for 5-10 year structure shifts.
 
-3シナリオ（3年後）: ベース / 楽観 / 悲観 → 売上・市場シェア
-```
+Required outputs:
+- three named scenarios
+- explicit probabilities
+- industry impact
+- company opportunities and threats
+- strategy valid across all scenarios
 
-### Pattern MT-2: 製品ポートフォリオ計画 (BCGベース)
+### Pattern `LT-2`: M&A Scenario
 
-**出力テンプレート:**
-```markdown
-| 製品/事業 | 現在 | 1年後予測 | 3年後予測 | 投資方針 |
-|---------|------|---------|---------|---------|
-| [製品A] | Star | Star | Cash Cow | 投資維持→収穫 |
+Track:
+- target
+- valuation
+- strategic rationale
+- integration difficulty
+- ROI / payback
+- major risk
 
-投資配分推奨: 総予算 → Star/Question Mark X% / Cash Cow X% / Dog X%
-```
+### Pattern `LT-3`: Exit Strategy
 
-### Pattern MT-3: 組織・人材ロードマップ
+Required inputs:
+- current valuation method
+- current value
+- target exit timeline
 
-**出力テンプレート:**
-```markdown
-#### 採用計画
-| 職種 | 1年目 | 2年目 | 3年目 | 目的 |
-|------|-------|-------|-------|------|
-| [職種A] | X名 | X名 | X名 | [成長領域対応] |
+Compare:
+- IPO
+- Strategic M&A
+- PE
+- continue independently
 
-#### 人件費シミュレーション
-| 年度 | 人員 | 人件費 | 人件費率 |
-|------|------|--------|---------|
-| 現在 | X名 | ¥Xm | X% |
+### Pattern `LT-4`: Long-Range Financial Model
 
-組織設計の方向性: 課題 → 推奨変革
-```
+This is directional, not precision forecasting.
 
-### Pattern MT-4: 損益計算書 (P&L) 予測
+Required inputs:
+- TAM and growth
+- attainable share
+- business model durability
+- external shocks
 
-**3年間のP&L模擬シート:**
+Required outputs:
+- current vs `3 / 5 / 10` year metrics
+- optimistic downside and disruption case
+- disclaimer that long-term numbers confirm direction, not exact results
 
-**入力パラメータ:**
-| パラメータ |
-|-----------|
-| 収益成長率（ベース/楽観/悲観） |
-| 粗利率（製品ミックス変動考慮） |
-| 固定費成長率（規模非連動部分） |
-| 変動費率（売上連動部分） |
+## Quality Checklist
 
-**出力テンプレート:**
-```markdown
-| 項目 | 現在 | 1年後(B) | 1年後(O) | 1年後(P) | 3年後(B) | 3年後(O) | 3年後(P) |
-|------|------|---------|---------|---------|---------|---------|---------|
-| 売上高 | ¥Xm | ¥Xm | ¥Xm | ¥Xm | ¥Xm | ¥Xm | ¥Xm |
-| 粗利 / 粗利率 / 販管費 / R&D費 / 営業利益 / 営業利益率 / EBITDA
-
-B=ベース / O=楽観 / P=悲観
-```
-
----
-
-## LONG-TERM SIMULATION (3-10 Years)
-
-### Pattern LT-1: 産業変革シナリオ
-
-**用途:** 5-10年の業界シナリオ設計
-
-**出力テンプレート:**
-```markdown
-**分析対象業界:** [業界名]
-
-#### Scenario A: デジタル変革加速 (楽観) — 確率X%
-前提 / 業界影響 / 自社の機会・脅威 / 推奨ポジション
-
-#### Scenario B: 漸進的変化 (ベース) — 確率X%
-前提 / 業界影響 / 推奨ポジション
-
-#### Scenario C: 規制強化・市場縮小 (悲観) — 確率X%
-前提 / 業界影響 / 自社リスク / コンティンジェンシー
-
-共通戦略的インプリケーション: 全シナリオ有効戦略 / シナリオ依存施策
-```
-
-### Pattern LT-2: M&Aシナリオ評価
-
-**出力テンプレート:**
-```markdown
-| オプション | 対象 | 推定バリュエーション | 戦略的目的 | 統合難度 | 推奨度 |
-|----------|------|------------------|---------|---------|--------|
-| 買収 (A社) | [会社名] | ¥Xm | [技術/顧客/市場] | 高/中/低 | ★★★ |
-
-推奨オプション詳細: シナジー試算 / 統合コスト / ROI(5年) / Payback期間 / 主要リスク
-```
-
-### Pattern LT-3: Exit戦略シミュレーション
-
-**入力パラメータ:**
-| パラメータ |
-|-----------|
-| 現在バリュエーション（Revenue/EBITDA倍率） |
-| 目標Exitバリュー |
-| 目標Exit時期 |
-
-**出力テンプレート:**
-```markdown
-| Exit形態 | 期待バリュー | 実現条件 | タイムライン | メリット | デメリット |
-|---------|-----------|---------|------------|--------|---------|
-| IPO | ¥Xm | ARR ¥Xm、利益X% | X年後 | 流動性・ブランド | コスト・規制 |
-
-推奨Exitシナリオの実行ロードマップ: 段階別マイルストーン
-```
-
-### Pattern LT-4: 長期財務モデル（5-10年）
-
-**注意:** 長期財務モデルは「方向性の確認ツール」。数値の精度より、成長の形（S字カーブ/線形等）と分岐点の理解に重点。
-
-**入力パラメータ:**
-| パラメータ |
-|-----------|
-| TAM（総市場規模）・成長率 |
-| 達成可能シェア目標 |
-| ビジネスモデル継続性の前提 |
-| 外部ショック想定 |
-
-**出力テンプレート:**
-```markdown
-| 指標 | 現在 | 3年後 | 5年後 | 10年後 |
-|------|------|-------|-------|--------|
-| 売上高 | ¥Xm | ¥Xm | ¥Xm | ¥Xm |
-
-長期リスク: 楽観(業界高成長) / 悲観(競合激化) / 破壊的シナリオ(事業モデル変換)
-```
-
----
-
-## SIMULATION QUALITY CHECKLIST
-
-シミュレーション出力前に確認:
-
-```
-□ 全仮定パラメータを明示したか
-□ 3シナリオ（ベース/楽観/悲観）を生成したか
-□ 感度分析（主要変数±20%の影響）を含めたか
-□ 時間軸に適した粒度（月次/年次）で出力したか
-□ 業界標準ベンチマークを参照したか（あれば）
-□ Sherpaが分解できる粒度の実行ステップを含めたか
-□ リスクマトリクスを付記したか
-□ 長期予測には「方向性の確認ツール」の免責を付けたか
-```
+- assumptions explicitly listed
+- 3 scenarios generated
+- sensitivity analysis at `±20%`
+- time grain matches horizon
+- benchmark comparison included when relevant
+- roadmap is decomposable by Sherpa
+- risk matrix included
+- long-term output carries directional-not-precise disclaimer
