@@ -78,12 +78,22 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |--------|----------|----------------|-----------|
 | `text-to-3d`, `generate model` | Provider API call | `.py` | `references/api-integration.md`, `references/prompt-engineering.md` |
 | `image-to-3d`, `reconstruct` | Provider API call | `.py` | `references/api-integration.md` |
+| `video-to-3d`, `turntable`, `scan` | Video-to-3D pipeline | `.py` | `references/api-integration.md` |
+| `text-to-texture`, `retexture`, `reskin` | Texture generation API | `.py` | `references/api-integration.md`, `references/prompt-engineering.md` |
+| `gaussian`, `3dgs`, `splat` | 3DGS viewer / mesh conversion | `.py` / `.js` | `references/code-patterns.md`, `references/api-integration.md` |
 | `blender`, `bpy`, `retopo`, `LOD` | Blender Python script | `.py` | `references/code-patterns.md`, `references/game-pipeline.md` |
 | `three.js`, `threejs`, `webgl` | Three.js scene code | `.js` / `.ts` | `references/code-patterns.md` |
+| `webgpu`, `three/webgpu` | Three.js WebGPU renderer | `.js` / `.ts` | `references/code-patterns.md` |
+| `r3f`, `react three fiber`, `drei` | React Three Fiber component | `.tsx` / `.jsx` | `references/code-patterns.md` |
 | `babylon`, `babylonjs` | Babylon.js scene code | `.js` / `.ts` | `references/code-patterns.md` |
 | `openscad`, `parametric`, `cad` | OpenSCAD module | `.scad` | `references/code-patterns.md` |
-| `pipeline`, `bake`, `UV`, `atlas` | Pipeline script | `.py` / `.js` | `references/game-pipeline.md` |
-| `validate`, `QC`, `check` | Validation script | `.py` | `references/quality-validation.md` |
+| `usd`, `usdc`, `materialx`, `openpbr` | USD / MaterialX scene | `.py` / `.xml` | `references/code-patterns.md`, `references/game-pipeline.md` |
+| `rig`, `animate`, `skeleton`, `mixamo` | Auto-rigging pipeline | `.py` | `references/game-pipeline.md`, `references/api-integration.md` |
+| `nanite`, `ue5`, `unreal` | UE5 Nanite-optimized export | `.py` | `references/game-pipeline.md` |
+| `pipeline`, `bake`, `UV`, `atlas`, `compress`, `ktx2` | Pipeline script | `.py` / `.js` | `references/game-pipeline.md` |
+| `validate`, `QC`, `check`, `clip score` | Validation script | `.py` | `references/quality-validation.md` |
+| `download`, `fetch model`, `sketchfab`, `objaverse` | External model download | `.py` | `references/api-integration.md` |
+| `search model`, `find asset`, `browse`, `marketplace` | Model source search | `.py` | `references/api-integration.md` |
 | unclear request | Provider API call (Meshy) | `.py` | `references/api-integration.md` |
 
 Routing rules:
