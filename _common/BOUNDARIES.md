@@ -224,3 +224,4 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Sketch** | AI image generation | Gemini API image creation | Yes |
 | **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes + Gemini CLI delegation | Yes |
 | **Clay** | AI 3D model generation | Text-to-3D/Image-to-3D API code, Blender Python, Three.js, OpenSCAD, game pipeline (LOD/retopo/UV/QC) | Yes |
+| **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
