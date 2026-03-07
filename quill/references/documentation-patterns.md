@@ -1,5 +1,15 @@
 # Documentation Patterns Reference
 
+Purpose: Read this when Quill needs annotation decisions, documentation quality checks, comment-quality rules, rot prevention, or README ordering guidance.
+
+Contents:
+- `JSDoc/TSDoc Annotation Decision Tree`: when each tag or comment style is required
+- `Documentation Quality Checklist`: completeness, accuracy, readability, maintainability checks
+- `Comment Quality Spectrum`: noise-vs-context grading
+- `Documentation Rot Prevention`: tactics that reduce drift
+- `Type Documentation Priority Matrix`: `any` replacement priority by scope
+- `README Section Ordering`: recommended section order by project type
+
 ## JSDoc/TSDoc Annotation Decision Tree
 
 ```

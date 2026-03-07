@@ -1,5 +1,13 @@
 # Documentation Types & Templates
 
+Purpose: Read this when Quill must scaffold or update changelogs, contributing guides, OpenAPI examples, or ADR-style documentation.
+
+Contents:
+- `CHANGELOG.md (Keep a Changelog format)`: release-note structure
+- `CONTRIBUTING.md (Essential sections)`: contribution guide checklist
+- `OpenAPI/Swagger Documentation`: response and example template
+- `Architecture Decision Record (ADR)`: decision log template
+
 ## CHANGELOG.md (Keep a Changelog format)
 
 ```markdown

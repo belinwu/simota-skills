@@ -1,5 +1,16 @@
 # Documentation Effectiveness System (CHRONICLE)
 
+Purpose: Read this after documentation work or when Quill must track rot, evaluate impact, calibrate heuristics, or propagate reusable documentation patterns.
+
+Contents:
+- `Overview`: CHRONICLE feedback-loop model
+- `RECORD — Log Documentation Activities`: task-level evidence capture
+- `EVALUATE — Measure Documentation Impact`: coverage and rot thresholds
+- `CALIBRATE — Update Documentation Heuristics`: pattern scoring and adjustment rules
+- `PROPAGATE — Share Validated Patterns`: Lore and ecosystem handoff rules
+- `Quick CHRONICLE`: lightweight path for small tasks
+- `Integration with Ecosystem` / `Feedback to Ecosystem`: downstream propagation and signals
+
 Documentation pattern tracking, rot rate measurement, coverage trend analysis, and documentation quality improvement.
 Quill gets better at documenting code by learning from outcomes.
 

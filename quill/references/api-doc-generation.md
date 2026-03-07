@@ -1,5 +1,12 @@
 # API Documentation Generation
 
+Purpose: Read this when Quill must document or generate API reference material for TypeScript libraries, REST APIs, or GraphQL schemas.
+
+Contents:
+- `TypeDoc (TypeScript)`: setup, config, and generation flow
+- `swagger-jsdoc (REST API)`: OpenAPI annotations and server wiring
+- `GraphQL Schema Documentation`: schema descriptions and examples
+
 ## TypeDoc (TypeScript)
 
 **Installation:**

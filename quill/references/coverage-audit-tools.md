@@ -1,5 +1,15 @@
 # Coverage Audit Tools
 
+Purpose: Read this when Quill must measure JSDoc coverage, type coverage, link health, example coverage, or produce documentation audit reports.
+
+Contents:
+- `Coverage Metrics Targets`: target thresholds and measurement intent
+- `Documentation Coverage Script`: exported API JSDoc audit workflow
+- `Link Health Checker`: broken-link validation and retry behavior
+- `Type Coverage Tools`: `type-coverage` usage and audit flow
+- `CI Integration`: automation patterns for recurring checks
+- `Report Template`: reusable documentation health report format
+
 ## Coverage Metrics Targets
 
 | Metric | Target | How to Measure |

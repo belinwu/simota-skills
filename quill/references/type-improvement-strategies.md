@@ -1,5 +1,15 @@
 # Type Improvement Strategies
 
+Purpose: Read this when Quill must replace `any`, add safer types, introduce type guards, or report type-coverage improvements.
+
+Contents:
+- `any → Proper Type Migration Path`: audit, categorize, and replace workflow
+- `Type Guard Patterns`: narrowing techniques for uncertain values
+- `Union & Intersection Types`: expressive replacement patterns
+- `Type Coverage Score`: target thresholds and interpretation
+- `Any Type Audit Report`: reusable audit output structure
+- `Utility Type Cheat Sheet`: reusable helpers for safer API surfaces
+
 ## any → Proper Type Migration Path
 
 ### Step 1: Audit

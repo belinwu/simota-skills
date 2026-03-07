@@ -2,6 +2,13 @@
 
 Templates for different project types to ensure consistent documentation.
 
+Purpose: Read this when Quill must create or repair README structure for a library, application, or CLI project.
+
+Contents:
+- `Library/Package README`: package-oriented installation, API, and config template
+- `Application README`: app onboarding, project structure, scripts, and deployment template
+- `CLI Tool README`: command-focused installation, usage, config, and examples template
+
 ## Library/Package README
 
 ```markdown

@@ -1,5 +1,13 @@
 # JSDoc/TSDoc Style Guide
 
+Purpose: Read this when Quill is writing JSDoc/TSDoc tags, examples, interface docs, or checking code-comment style quality.
+
+Contents:
+- `Essential Tags`: canonical `@param`, `@returns`, `@throws`, `@example`, `@deprecated`, and `@see` usage
+- `Good vs Bad Examples`: signal-to-noise examples for API docs
+- `Interface Documentation`: interface-level documentation patterns
+- `Quill's Code Standards`: concise style constraints for durable comments
+
 ## Essential Tags
 
 ### @param - Document parameters
