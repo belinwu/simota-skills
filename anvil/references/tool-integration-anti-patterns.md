@@ -1,147 +1,157 @@
 # Tool Integration Anti-Patterns
 
-> Linter/Formatter設定、ビルドツール統合、CI/CD連携の失敗パターン
+**Purpose:** Failure patterns for linting, formatting, build/test tooling, doctor commands, and configuration management.
+**Read when:** Reviewing project tooling for setup friction, CI drift, missing diagnostics, or fragile config behavior.
 
-## 1. Linter/Formatter設定 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **TI-01** | **Config Fragmentation（設定ファイル分散）** | 10+の依存関係と3+の設定ファイルが必要 | ESLint + Prettier + tsconfig + .editorconfig + lint-staged が必要、初期設定に30分+ | 統合ツール採用（Biome = lint+format）、プリセット設定の提供 |
-| **TI-02** | **Rule Suppression Addiction（ルール無効化中毒）** | 理解せずに lint ルールを `// eslint-disable` で無効化 | ファイル先頭に大量の disable コメント、実質的にlintが機能していない | disable理由の必須記載、baselineファイルで既存違反を管理、新規コードは厳格に |
-| **TI-03** | **Version Conflict Hell（バージョン競合地獄）** | Linter/Formatter/Plugin間のバージョン互換性問題 | `npm install` 時に peer dependency 警告、実行時エラー | ロックファイルの厳格管理、互換性テスト済みプリセットの使用 |
-| **TI-04** | **Format-on-Save Only（保存時フォーマットのみ）** | エディタ設定に依存し、CI/CDでの検証がない | チームメンバーのエディタ設定差異で不整合、PRでフォーマット差分が大量発生 | CI/CDでフォーマットチェック必須化、pre-commit hookの導入 |
-| **TI-05** | **Inconsistent Tool Chain（ツールチェーン不整合）** | ローカル開発とCI/CDで異なるツール/バージョンを使用 | ローカルではパスするがCIでは失敗、環境依存のバグ | mise/asdf でツールバージョンをピン留め、CI/CDでも同じツール使用 |
-| **TI-06** | **Kitchen Sink Config（全部入り設定）** | 推奨ルールセットを全て有効化し、プロジェクトに不要なルールも適用 | 意味のない警告が大量発生、開発者がlintを無視する文化の醸成 | プロジェクトに必要なルールのみ選択、段階的にルール追加 |
-| **TI-07** | **No Baseline Strategy（ベースライン戦略なし）** | 既存コードベースに新ルールを一括適用 | 数千の既存違反が発生、修正が不可能で結局ルールを無効化 | ベースライン設定で既存違反を凍結、新規コードのみ厳格適用 |
+- Seven Linter and Formatter Setup Anti-Patterns
+- Build Tool Integration Anti-Patterns
+- Test Runner Integration Anti-Patterns
+- Doctor / Healthcheck Anti-Patterns
+- Configuration Management Anti-Patterns
+- How To Use With Anvil
 
----
+## 1. Seven Linter and Formatter Setup Anti-Patterns
 
-## 2. ビルドツール統合のアンチパターン
-
-```
-ビルド統合の罠:
-
-  ❌ Slow Feedback Loop（遅いフィードバックループ）:
-    → ファイル変更からlint/テスト結果まで10秒以上
-    → 開発者がフィードバックを待たず先に進む、バグの見落とし
-    → 対策: インクリメンタルビルド、ファイル変更のみ再チェック、キャッシュ活用
-
-  ❌ Global Install Dependency（グローバルインストール依存）:
-    → ツールのグローバルインストールを前提
-    → チーム間のバージョン差異、新メンバーのセットアップ困難
-    → 対策: npx/pipx/go run による実行、プロジェクトローカルインストール
-
-  ❌ Implicit Tool Resolution（暗黙のツール解決）:
-    → PATH上の最初に見つかったツールバージョンを使用
-    → 環境によって異なるバージョンが実行、再現不能な結果
-    → 対策: mise/asdf でプロジェクト単位のバージョン固定
-
-  ❌ Monolithic Check Script（モノリシックチェックスクリプト）:
-    → `npm run check` で lint+format+test+build を一括実行
-    → 最初の失敗で停止、並列実行不可、個別実行不可
-    → 対策: 個別コマンド化 + 集約コマンド提供、並列実行サポート
-
-  ❌ No Cache Strategy（キャッシュ戦略なし）:
-    → CI/CDで毎回フルビルド・フル lint
-    → ビルド時間の増大、CI/CDコスト増加
-    → 対策: ツール固有のキャッシュ（ESLint --cache, Biome --cached）活用
-
-  ❌ Hook Bypass Culture（Hook バイパス文化）:
-    → --no-verify でpre-commitフックを常にスキップ
-    → フックの存在意義が消失、品質ゲートが機能しない
-    → 対策: CIでの必須チェック、フックの実行時間短縮（5秒以内目標）
-```
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **TI-01** | **Config Fragmentation** | Requiring 10+ packages and 3+ config files for basic quality tooling | ESLint + Prettier + tsconfig + `.editorconfig` + lint-staged just to start; setup takes 30+ minutes | Prefer consolidated tooling such as Biome and provide presets |
+| **TI-02** | **Rule Suppression Addiction** | Disabling lint rules without understanding them | Files accumulate `// eslint-disable` headers and lint stops meaning anything | Require a reason for suppressions, baseline legacy violations, and keep new code strict |
+| **TI-03** | **Version Conflict Hell** | Letting linters, formatters, and plugins drift out of compatibility | `npm install` shows peer dependency warnings or runtime crashes | Lock versions strictly and prefer tested presets |
+| **TI-04** | **Format-on-Save Only** | Relying only on editor integration for formatting | Team editors disagree and PRs contain huge formatting-only diffs | Enforce formatting in CI and add pre-commit hooks |
+| **TI-05** | **Inconsistent Tool Chain** | Using different tool versions locally and in CI | Local checks pass but CI fails | Pin tool versions with mise/asdf and reuse the same versions in CI |
+| **TI-06** | **Kitchen Sink Config** | Enabling every recommended rule regardless of project needs | Meaningless warnings flood the output and developers learn to ignore linting | Start with project-relevant rules and add more gradually |
+| **TI-07** | **No Baseline Strategy** | Applying strict new rules to a legacy codebase all at once | Thousands of violations appear and teams abandon the effort | Freeze legacy violations in a baseline and enforce strictness on new code only |
 
 ---
 
-## 3. テストランナー統合のアンチパターン
+## 2. Build Tool Integration Anti-Patterns
 
-```
-テスト統合の罠:
+```text
+Build integration traps:
 
-  ❌ Inconsistent Test Commands（テストコマンド不整合）:
-    → プロジェクトごとに異なるテスト実行方法
-    → 新メンバーが実行方法を毎回調べる必要
-    → 対策: package.json/Makefile/Taskfile に標準コマンドを定義
+  ❌ Slow Feedback Loop:
+    → Lint or test feedback takes more than 10 seconds after a file change
+    → Developers move on before feedback arrives
+    → Fix: use incremental builds, change-based checks, and caching
 
-  ❌ No Watch Mode（ウォッチモード未提供）:
-    → テストの手動再実行が必要
-    → フィードバックループの断絶
-    → 対策: --watch フラグでファイル変更監視+自動再実行
+  ❌ Global Install Dependency:
+    → Assuming tools are installed globally
+    → Team machines drift and onboarding becomes painful
+    → Fix: prefer `npx`, `pipx`, `go run`, or project-local installs
 
-  ❌ All-or-Nothing Testing（全か無かテスト）:
-    → 変更ファイルに関係なくフルテストスイート実行
-    → テスト実行に数分、開発者がテスト実行を避ける
-    → 対策: 影響テストのみ実行（--changed/--related-tests）
+  ❌ Implicit Tool Resolution:
+    → Using whichever tool version appears first on `PATH`
+    → Different environments run different versions and results become non-reproducible
+    → Fix: pin versions per project with mise/asdf or equivalent
 
-  ❌ Noisy Test Output（騒がしいテスト出力）:
-    → 成功テストも含め全詳細を出力
-    → 失敗箇所の特定が困難
-    → 対策: デフォルトは失敗のみ表示、--verbose で全出力
+  ❌ Monolithic Check Script:
+    → `npm run check` bundles lint, format, test, and build into one opaque command
+    → The first failure stops everything and individual workflows cannot run separately
+    → Fix: keep granular commands and add an aggregate entrypoint on top
 
-  ❌ No Parallel Execution（並列実行なし）:
-    → テストを逐次実行
-    → テストスイート全体の実行時間が線形に増加
-    → 対策: テストランナーの並列実行設定（--parallel, --workers）
+  ❌ No Cache Strategy:
+    → Running full builds and full linting in CI every time
+    → Build time and CI costs grow needlessly
+    → Fix: use tool-native caches such as `--cache` / `--cached`
+
+  ❌ Hook Bypass Culture:
+    → Teams always pass `--no-verify` to skip hooks
+    → Local quality gates stop mattering
+    → Fix: make CI mandatory and keep hook runtimes fast, ideally under five seconds
 ```
 
 ---
 
-## 4. Doctor/Healthcheck パターンのアンチパターン
+## 3. Test Runner Integration Anti-Patterns
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **DH-01** | **No Doctor Command（Doctor未提供）** | 環境問題の診断手段がない | ユーザーが手動でバージョン確認・設定確認を実施 | `app doctor` コマンドで環境チェックを一括実行 |
-| **DH-02** | **Diagnostic Without Fix（診断のみ修正なし）** | 問題を検出するが修復コマンドを提示しない | ユーザーが修正方法を自力で調べる必要 | 問題ごとに具体的な修正コマンドを提示 |
-| **DH-03** | **Silent Dependency（暗黙の依存関係）** | 必要なツールが未インストール時に暗号的なエラー | `command not found` や `ENOENT` エラー | 起動時に依存チェック、未インストールならインストール手順を表示 |
-| **DH-04** | **Version Ambiguity（バージョン曖昧性）** | 必要なバージョン範囲が不明確 | 古いバージョンで不可解なエラー | `doctor` で現在/必要バージョンを並べて表示 |
+```text
+Test integration traps:
 
----
+  ❌ Inconsistent Test Commands:
+    → Every project uses a different way to run tests
+    → New contributors have to rediscover the commands
+    → Fix: define standard commands in `package.json`, `Makefile`, or `Taskfile`
 
-## 5. 設定管理のアンチパターン
+  ❌ No Watch Mode:
+    → Re-running tests manually after every change
+    → Feedback loops break
+    → Fix: provide `--watch` for file-change-driven execution
 
-```
-設定管理の罠:
+  ❌ All-or-Nothing Testing:
+    → Always running the full test suite regardless of the change
+    → Tests take minutes, so developers stop running them
+    → Fix: support changed-test or related-test execution
 
-  ❌ Config Discovery Mystery（設定ファイル探索の謎）:
-    → どの設定ファイルが実際に読み込まれているか不明
-    → 設定が効かない原因が特定できない
-    → 対策: --config-debug で読み込まれた設定ファイルのパスと優先順位を表示
+  ❌ Noisy Test Output:
+    → Printing every passing test in detail
+    → Failures become hard to find
+    → Fix: keep default output failure-focused and move full detail behind `--verbose`
 
-  ❌ Schema-less Config（スキーマなし設定）:
-    → 設定ファイルのバリデーションなし
-    → タイプミスが無言で無視される（例: `colr: true` が `color: true` の代わり）
-    → 対策: JSONスキーマ定義、起動時バリデーション、タイプミス候補の提示
-
-  ❌ Breaking Config Changes（設定の破壊的変更）:
-    → バージョンアップで設定フォーマットが変わり既存設定が動かない
-    → アップデート後に突然動作しなくなる
-    → 対策: 設定バージョニング、マイグレーションガイド/コマンドの提供
-
-  ❌ No Default Config（デフォルト設定なし）:
-    → 設定ファイルの作成がないと起動できない
-    → 初回起動の障壁が高い
-    → 対策: ゼロコンフィグで合理的なデフォルト動作、`app init` で設定生成
+  ❌ No Parallel Execution:
+    → Running tests serially by default when the runner supports parallelism
+    → Total suite time grows linearly
+    → Fix: enable `--parallel`, `--workers`, or runner-specific equivalents
 ```
 
 ---
 
-## 6. Anvil との連携
+## 4. Doctor / Healthcheck Anti-Patterns
 
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **DH-01** | **No Doctor Command** | There is no first-class way to diagnose environment issues | Users manually inspect versions and config state | Provide `app doctor` to run environment checks in one place |
+| **DH-02** | **Diagnostic Without Fix** | The tool detects problems but never suggests repairs | Users must research every fix themselves | Print concrete repair commands or next steps per issue |
+| **DH-03** | **Silent Dependency** | Missing tools lead to cryptic runtime failures | Users see `command not found` or `ENOENT` without context | Check dependencies at startup and print install instructions |
+| **DH-04** | **Version Ambiguity** | Required version ranges are unclear | Old versions fail in strange ways | Show current vs required versions explicitly in `doctor` |
+
+---
+
+## 5. Configuration Management Anti-Patterns
+
+```text
+Configuration management traps:
+
+  ❌ Config Discovery Mystery:
+    → Users cannot tell which config file actually loaded
+    → Misconfigurations are hard to debug
+    → Fix: add `--config-debug` to print the loaded files and precedence order
+
+  ❌ Schema-less Config:
+    → Config files are never validated
+    → Typos like `colr: true` silently do nothing
+    → Fix: validate against JSON Schema or an equivalent typed schema and suggest likely keys
+
+  ❌ Breaking Config Changes:
+    → Upgrades silently change config structure
+    → Existing installs stop working after an update
+    → Fix: version config formats and provide migration commands or guides
+
+  ❌ No Default Config:
+    → The CLI cannot start without a hand-written config file
+    → First-run experience is hostile
+    → Fix: support zero-config defaults and offer `app init` to generate config
 ```
-Anvil での活用:
-  1. BLUEPRINT フェーズで TI-01〜07 のツール統合設計レビュー
-  2. CAST フェーズでビルドスクリプト・コマンド構造の検証
-  3. HARDEN フェーズでCI/CD連携・クロス環境動作の確認
-  4. PRESENT フェーズで Doctor コマンド・設定管理の品質チェック
 
-品質ゲート:
-  - 設定ファイル3+種 → 統合ツール提案（TI-01 防止）
-  - disable コメント5+個/ファイル → ベースライン戦略導入（TI-02 防止）
-  - グローバルインストール前提 → npx/pipx 方式に変更（Global Install 防止）
-  - フルビルドが10秒超 → キャッシュ/インクリメンタル対応（Slow Feedback 防止）
-  - Doctor コマンド未提供 → 環境チェック実装提案（DH-01 防止）
-  - 設定バリデーションなし → JSONスキーマ導入提案（Schema-less Config 防止）
+---
+
+## 6. How To Use With Anvil
+
+```text
+Use within Anvil:
+  1. Review TI-01 to TI-07 during BLUEPRINT to shape toolchain scope
+  2. Review build scripts and command structure during CAST
+  3. Review CI/CD and cross-environment behavior during HARDEN
+  4. Review doctor commands and config management during PRESENT
+
+Quality gates:
+  - 3+ config files for one toolchain concern → propose consolidation (prevent TI-01)
+  - 5+ disable comments per file → introduce a baseline strategy (prevent TI-02)
+  - Global installs required → move to local execution patterns (prevent Global Install Dependency)
+  - Full build exceeds 10 seconds → introduce cache or incremental checks (prevent Slow Feedback Loop)
+  - No doctor command → add environment diagnostics (prevent DH-01)
+  - No config validation → add schema-backed validation (prevent Schema-less Config)
 ```
 
 **Source:** [Meta: Fixit 2 Linter](https://engineering.fb.com/2023/08/07/developer-tools/fixit-2-linter-meta/) · [Command Line Interface Guidelines](https://clig.dev/) · [Atlassian: 10 Design Principles for Delightful CLIs](https://www.atlassian.com/blog/it-teams/10-design-principles-for-delightful-clis) · [ESLint Documentation](https://eslint.org/)

@@ -1,155 +1,165 @@
 # TUI & Terminal UX Anti-Patterns
 
-> ターミナルUI設計の失敗パターン、カラー管理、キーボードナビゲーション、アクセシビリティの問題
+**Purpose:** Failure patterns for color, navigation, layout, progress indicators, and terminal accessibility.
+**Read when:** Reviewing terminal UX, accessibility, keyboard flows, or non-TTY behavior before shipping a TUI.
 
-## 1. カラー管理 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **TU-01** | **Color-Only Semantics（色のみの意味付与）** | 色だけで情報を伝達（赤=エラー、緑=成功） | 色覚多様性ユーザーが状態を判別不能、モノクロ端末で情報喪失 | 色+アイコン/テキストの2チャネル（✓成功、✗失敗、⚠警告） |
-| **TU-02** | **NO_COLOR Ignorance（NO_COLOR無視）** | `NO_COLOR` 環境変数を無視 | アクセシビリティ設定を尊重しないツール、ユーザーの選択権剥奪 | `NO_COLOR` 設定時は色出力を完全に無効化 |
-| **TU-03** | **True Color Assumption（True Color前提）** | 全端末が24bit色に対応していると仮定 | 古いターミナルで文字化け・不可読な表示、SSH接続時の崩壊 | ANSI 16色→256色→True Colorの段階的フォールバック |
-| **TU-04** | **Low Contrast Colors（低コントラスト色）** | 薄いグレー文字、暗い背景に暗い色 | テキストが読めない、特に明るいテーマの端末で問題 | WCAG AA基準（4.5:1コントラスト比）を目標、端末テーマ依存の色を避ける |
-| **TU-05** | **ANSI Leak（ANSIエスケープ漏洩）** | パイプ・リダイレクト時にANSIエスケープシーケンスが出力 | ログファイルに `\e[31m` が残留、grep結果にゴミ文字 | 出力先のTTY判定: `isatty(stdout)` で制御 |
-| **TU-06** | **Hardcoded Colors（ハードコード色）** | ユーザーのターミナルテーマに関係なく固定色を使用 | ダークテーマで白背景が眩しい、ライトテーマで黒文字が見えない | ANSI標準色を使用し端末テーマに追従、またはテーマ検出 |
-| **TU-07** | **Excessive Coloring（過剰な色使い）** | すべての出力に色を付け虹色状態 | 情報の優先度が不明、色の意味が形骸化、視覚的ノイズ | 色は意味を持つ要素にのみ使用: エラー(赤), 警告(黄), 成功(緑), 強調(太字) |
+- Seven Color Management Anti-Patterns
+- Keyboard Navigation Anti-Patterns
+- Layout and Display Anti-Patterns
+- Progress Display Anti-Patterns
+- Accessibility Anti-Patterns
+- How To Use With Anvil
 
----
+## 1. Seven Color Management Anti-Patterns
 
-## 2. キーボードナビゲーションのアンチパターン
-
-```
-キーバインド設計の罠:
-
-  ❌ Hotkey Overload（ホットキー過多）:
-    → 100+のキーバインドを記憶する必要
-    → 例: Tigは全機能使用に約100のキーコンビネーションが必要
-    → 対策: 最頻出操作のみキーバインド、残りはコマンドパレット
-
-  ❌ Non-Standard Bindings（非標準キーバインド）:
-    → vi/emacsの慣習（j/k, Ctrl+N/P）を無視した独自キー
-    → 他ツールと異なるナビゲーション操作
-    → 対策: vi/emacs互換モード提供、hjkl/矢印キーの両方サポート
-
-  ❌ No Inline Hints（インラインヒントなし）:
-    → キーバインドが表示されずマニュアル参照が必要
-    → ユーザーが機能を発見できない
-    → 対策: ボタンラベルにキーを表示（例: [s]hop [a]ccount [q]uit）
-
-  ❌ Context-Blind Help（文脈無視ヘルプ）:
-    → 全キーバインドを一覧表示、現在のビューに無関係な項目も含む
-    → 情報過多で必要なキーが見つからない
-    → 対策: ビューごとにコンテキスト依存のヘルプを表示
-
-  ❌ No Escape Path（脱出経路なし）:
-    → モーダルダイアログからの戻り方が不明
-    → q, Esc, Ctrl+C の挙動が不統一
-    → 対策: Esc/q で常に前の画面に戻る一貫したパターン
-
-  ❌ Destructive Without Confirmation（確認なし破壊操作）:
-    → 単一キー押下でデータ削除・上書き
-    → 誤操作のリカバリが不可能
-    → 対策: 破壊的操作には確認プロンプト、Undo機能
-```
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **TU-01** | **Color-Only Semantics** | Communicating state by color alone | Color-blind users and monochrome terminals lose the meaning of the UI | Pair color with icons or text such as `✓`, `✗`, and `⚠` |
+| **TU-02** | **NO_COLOR Ignorance** | Ignoring the `NO_COLOR` environment variable | Accessibility preferences are bypassed and users lose control | Disable color output completely when `NO_COLOR` is set |
+| **TU-03** | **True Color Assumption** | Assuming every terminal supports 24-bit color | Old terminals, remote shells, or SSH sessions render unreadable output | Fall back progressively: ANSI 16 colors → 256 colors → true color |
+| **TU-04** | **Low Contrast Colors** | Using pale or low-contrast text colors | Text becomes unreadable, especially across light and dark themes | Target WCAG AA contrast (`4.5:1`) and avoid theme-dependent low-contrast palettes |
+| **TU-05** | **ANSI Leak** | Emitting ANSI escapes into pipes and redirects | Log files contain `\e[31m` noise and grep results become polluted | Detect TTY with `isatty(stdout)` before enabling escapes |
+| **TU-06** | **Hardcoded Colors** | Forcing colors that ignore the terminal theme | Light themes become unreadable and dark themes become blinding | Prefer ANSI semantic colors that follow terminal themes, or detect themes safely |
+| **TU-07** | **Excessive Coloring** | Coloring everything until nothing stands out | Priority becomes unclear and output turns into visual noise | Use color only for meaningful states: errors, warnings, success, or emphasis |
 
 ---
 
-## 3. レイアウト・表示のアンチパターン
+## 2. Keyboard Navigation Anti-Patterns
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **LY-01** | **Fixed Width Assumption（固定幅前提）** | 80カラム固定のレイアウト | ワイドスクリーンで余白過多、狭い端末で折り返し崩壊 | ターミナル幅を動的に取得しリフロー |
-| **LY-02** | **Unicode Blindness（Unicode非対応）** | ASCII文字のみ使用、全角文字幅を考慮しない | CJK文字でテーブルが崩れる、絵文字で位置がずれる | Unicode幅計算（wcwidth）を使用、全角文字の2カラム幅を考慮 |
-| **LY-03** | **Scroll Amnesia（スクロール健忘）** | 画面外にスクロールした内容が消失 | 長いリストの先頭が確認不能、alternate screenの出口で情報喪失 | ステータスバーに位置情報表示、alternate screen使用時は結果を保持 |
-| **LY-04** | **Dense Wall of Text（テキストの壁）** | 区切り・見出し・空行なしの密集出力 | 情報の構造が読み取れない、重要項目を見落とす | セクション区切り、見出し、空行を適切に使用 |
-| **LY-05** | **No Responsive Design（レスポンシブ非対応）** | ターミナルリサイズ時にレイアウトが崩壊 | ウィンドウサイズ変更後に表示が乱れる | SIGWINCH シグナルを処理し再描画 |
+```text
+Keybinding design traps:
 
----
+  ❌ Hotkey Overload:
+    → Requiring users to memorize 100+ keybindings
+    → Example: full Tig fluency demands a very large key vocabulary
+    → Fix: bind only the most frequent actions and move the rest behind a command palette or menu
 
-## 4. プログレス表示のアンチパターン
+  ❌ Non-Standard Bindings:
+    → Ignoring familiar vi/emacs conventions such as `j/k` or `Ctrl+N/P`
+    → Navigation feels wrong compared with adjacent tools
+    → Fix: support vi/emacs-compatible modes or accept both `hjkl` and arrow keys
 
-```
-進捗表示の罠:
+  ❌ No Inline Hints:
+    → Hiding keybindings in external docs only
+    → Users cannot discover features in-context
+    → Fix: surface hints inline, for example `[s]hop [a]ccount [q]uit`
 
-  ❌ Indeterminate Everything（すべて不定スピナー）:
-    → 進捗率が計算可能なのにスピナーだけ表示
-    → ユーザーが完了までの見通しを得られない
-    → 対策: 計算可能ならプログレスバー + ETA、不可能ならスピナー + 経過時間
+  ❌ Context-Blind Help:
+    → Showing every keybinding regardless of the current screen
+    → The current action set is hard to find
+    → Fix: show view-specific help only
 
-  ❌ No Output for Long Tasks（長時間タスクの無出力）:
-    → 30秒以上何も出力しない
-    → ユーザーがハングと誤解、Ctrl+Cで中断
-    → 対策: 長時間操作には必ず進捗表示、最低でも経過時間
+  ❌ No Escape Path:
+    → Making it unclear how to leave a modal or nested view
+    → `q`, `Esc`, and `Ctrl+C` behave inconsistently
+    → Fix: keep `Esc` / `q` as a consistent “go back” pattern
 
-  ❌ Progress Without Context（文脈なき進捗）:
-    → "42%" だけ表示、何をしているか不明
-    → ユーザーが現在の処理内容を把握できない
-    → 対策: "Downloading dependencies... 42% (128/305)" のように内容+進捗
-
-  ❌ Overwritten Important Info（重要情報の上書き）:
-    → スピナーが前の重要な出力を上書き
-    → エラーメッセージやWarningが消失
-    → 対策: 重要情報は独立行に保持、スピナーは最下行のみ
-
-  ❌ Flicker Hell（フリッカー地獄）:
-    → 高頻度のターミナル更新で画面がちらつく
-    → 視覚的不快感、読み取り不能
-    → 対策: 更新頻度を制限（10-30fps）、ダブルバッファリング
+  ❌ Destructive Without Confirmation:
+    → Triggering destructive actions with one keypress
+    → Mistakes are hard or impossible to recover from
+    → Fix: add confirmation and, when possible, undo
 ```
 
 ---
 
-## 5. アクセシビリティのアンチパターン
+## 3. Layout and Display Anti-Patterns
 
-```
-アクセシビリティの罠:
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **LY-01** | **Fixed Width Assumption** | Designing around an 80-column terminal only | Wide screens waste space and narrow screens wrap badly | Read terminal width dynamically and reflow the layout |
+| **LY-02** | **Unicode Blindness** | Assuming ASCII width rules for all text | CJK, emoji, and full-width characters break table alignment | Use Unicode width calculation (`wcwidth`) and account for double-width characters |
+| **LY-03** | **Scroll Amnesia** | Losing context once content scrolls off-screen | Users cannot recover the list head or understand their position | Show position in the status bar and preserve key results after alternate-screen exits |
+| **LY-04** | **Dense Wall of Text** | Printing dense output without spacing or hierarchy | Important items disappear into a block of text | Use section breaks, headings, and whitespace deliberately |
+| **LY-05** | **No Responsive Design** | Failing to redraw on terminal resize | The layout breaks after the window changes size | Handle `SIGWINCH` and re-render |
 
-  ❌ Screen Reader Hostile（スクリーンリーダー非対応）:
-    → 頻繁な画面クリア・全画面書き換え
-    → スクリーンリーダーが変更を追跡できない
-    → 対策: ARIA的な変更通知パターン、差分更新の最小化
+---
 
-  ❌ TERM=dumb Crash（dumbターミナル非対応）:
-    → TERM=dumb 環境でANSI制御を送信しクラッシュ
-    → エミュレーション能力の低い端末で使用不能
-    → 対策: TERM変数チェック、dumb/unknown時はプレーンテキストモード
+## 4. Progress Display Anti-Patterns
 
-  ❌ Speed-Only Interface（速度前提インターフェース）:
-    → タイムアウト付きプロンプト、高速入力前提
-    → 運動障害のあるユーザーが操作不能
-    → 対策: タイムアウトを設けない、または十分な時間を確保
+```text
+Progress display traps:
 
-  ❌ Mouse-Required TUI（マウス必須TUI）:
-    → マウスクリックでしか実行できない操作がある
-    → キーボードのみのユーザーが機能にアクセス不能
-    → 対策: 全操作にキーボードショートカットを提供
+  ❌ Indeterminate Everything:
+    → Showing only a spinner when a percentage is available
+    → Users cannot estimate completion
+    → Fix: show a progress bar + ETA when measurable; otherwise show a spinner + elapsed time
 
-  ❌ Tiny Touch Targets（小さいクリック領域）:
-    → TUIのボタン/リンクが1文字幅
-    → マウス操作時のクリック困難
-    → 対策: クリック可能領域を十分な幅に拡大
+  ❌ No Output for Long Tasks:
+    → Printing nothing for 30+ seconds
+    → Users assume the process is hung and press `Ctrl+C`
+    → Fix: every long-running task needs at least progress or elapsed-time output
+
+  ❌ Progress Without Context:
+    → Showing `42%` without saying what is happening
+    → Users cannot tell which stage is active
+    → Fix: include both activity and progress, such as `Downloading dependencies... 42% (128/305)`
+
+  ❌ Overwritten Important Info:
+    → Letting spinners overwrite warnings or errors
+    → Critical information disappears from the screen
+    → Fix: keep important messages on dedicated lines and reserve the last line for transient indicators
+
+  ❌ Flicker Hell:
+    → Updating the screen too frequently
+    → Output becomes visually noisy and hard to read
+    → Fix: cap refresh rates around 10-30 fps and use buffered redraws
 ```
 
 ---
 
-## 6. Anvil との連携
+## 5. Accessibility Anti-Patterns
 
+```text
+Accessibility traps:
+
+  ❌ Screen Reader Hostile:
+    → Clearing or repainting the full screen too often
+    → Screen readers cannot follow the changes
+    → Fix: prefer minimal diff updates and explicit status changes over full wipes
+
+  ❌ TERM=dumb Crash:
+    → Sending ANSI control sequences to `TERM=dumb`
+    → Low-capability terminals break or show noise
+    → Fix: detect `TERM=dumb` / unknown terminals and fall back to plain text
+
+  ❌ Speed-Only Interface:
+    → Requiring fast input or relying on prompt timeouts
+    → Users with motor impairments cannot complete actions
+    → Fix: avoid timeouts or make them generous and optional
+
+  ❌ Mouse-Required TUI:
+    → Providing actions that only work with mouse clicks
+    → Keyboard-only users lose access to features
+    → Fix: provide keyboard shortcuts for every action
+
+  ❌ Tiny Touch Targets:
+    → Making clickable targets only one character wide
+    → Mouse usage becomes unnecessarily difficult
+    → Fix: expand interactive hit areas
 ```
-Anvil での活用:
-  1. TEMPER フェーズで TU-01〜07 のカラー管理レビュー
-  2. CAST フェーズでキーバインド設計のチェック
-  3. HARDEN フェーズでアクセシビリティ・クロスターミナル対応検証
-  4. PRESENT フェーズでTUIコンポーネントのUXレビュー
 
-品質ゲート:
-  - 色のみで情報伝達 → アイコン/テキスト併用を提案（TU-01 防止）
-  - NO_COLOR 未対応 → 環境変数チェック実装（TU-02 防止）
-  - True Color直接使用 → ANSI 16色フォールバック追加（TU-03 防止）
-  - ANSIエスケープのパイプ出力 → TTY判定追加（TU-05 防止）
-  - ホットキー10+個 → コマンドパレット導入提案（Hotkey Overload 防止）
-  - 80カラム固定レイアウト → 動的幅対応（LY-01 防止）
-  - 30秒+の無出力 → プログレス表示追加（No Output 防止）
-  - TERM=dumb でクラッシュ → プレーンテキストフォールバック（TERM=dumb Crash 防止）
+---
+
+## 6. How To Use With Anvil
+
+```text
+Use within Anvil:
+  1. Review TU-01 to TU-07 during TEMPER for color and terminal semantics
+  2. Review keybinding choices during CAST
+  3. Review accessibility and cross-terminal behavior during HARDEN
+  4. Review overall TUI polish during PRESENT
+
+Quality gates:
+  - Meaning conveyed by color alone → add icons or text (prevent TU-01)
+  - `NO_COLOR` ignored → implement environment-variable handling (prevent TU-02)
+  - True color assumed everywhere → add ANSI 16-color fallback (prevent TU-03)
+  - ANSI escapes leak into pipes → add TTY detection (prevent TU-05)
+  - 10+ hotkeys with poor discoverability → consider a command palette (prevent Hotkey Overload)
+  - Fixed 80-column layout → make width dynamic (prevent LY-01)
+  - 30+ seconds of silence → add visible progress (prevent No Output for Long Tasks)
+  - `TERM=dumb` crashes → add a plain-text fallback (prevent TERM=dumb Crash)
 ```
 
 **Source:** [Command Line Interface Guidelines](https://clig.dev/) · [Jens Roemer: TUI Design](https://jensroemer.com/writing/tui-design/) · [NO_COLOR Standard](https://no-color.org/) · [Chris Yeh: Terminal Colors](https://chrisyeh96.github.io/2020/03/28/terminal-colors.html) · [Alex Chan: Designer's Guide to the Terminal](https://www.alexchantastic.com/designers-guide-to-the-terminal)

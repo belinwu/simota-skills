@@ -1,8 +1,19 @@
 # CLI Design Patterns
 
-Command structure, argument design, output formatting, error handling, exit codes, shell completion, and project init patterns.
+**Purpose:** Canonical command-line patterns for command structure, flags, help, output, exit codes, completion, and project scaffolding.
+**Read when:** Designing a new CLI contract, reviewing an existing command surface, or choosing framework/completion/init patterns.
 
----
+## Contents
+
+- Command Structure Principles
+- Argument Design Patterns
+- Standard Flags
+- Output Formatting
+- Exit Codes
+- Error Handling Pattern
+- CLI Framework Selection by Language
+- Shell Completion
+- Project Init Patterns
 
 ## Command Structure Principles
 

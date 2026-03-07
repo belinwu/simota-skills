@@ -1,8 +1,18 @@
 # Development Tool Integration
 
-Linter/Formatter setup, test runner configuration, build tools, and modern toolchain options.
+**Purpose:** Canonical setup patterns for linters, formatters, test runners, build tools, doctor commands, and modern CLI toolchains.
+**Read when:** Selecting or wiring project tooling for a CLI, especially when you need reproducible lint/test/build workflows or a doctor command.
 
----
+## Contents
+
+- Linter/Formatter Matrix
+- Biome
+- oxlint
+- Ruff
+- golangci-lint
+- Test Runner Matrix
+- Build Tool Matrix
+- Modern Toolchain Options
 
 ## Linter/Formatter Matrix
 

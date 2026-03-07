@@ -1,8 +1,15 @@
 # TUI Components
 
-Progress indicators, spinners, tables, selection menus, and interactive prompts across Node.js, Python, Go, and Rust.
+**Purpose:** Practical TUI component patterns for prompts, tables, spinners, and progress views across Node.js, Python, Go, and Rust.
+**Read when:** Adding terminal interactivity, rich output, or a full-screen TUI to a CLI.
 
----
+## Contents
+
+- Language/Library Matrix
+- Progress Indicators
+- Selection Menus
+- Table Display
+- Rust CLI Full Pattern
 
 ## Language/Library Matrix
 

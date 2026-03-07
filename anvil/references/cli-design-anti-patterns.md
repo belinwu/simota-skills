@@ -1,157 +1,169 @@
 # CLI Design Anti-Patterns
 
-> コマンドライン設計の失敗パターン、フラグ・引数・出力・エラーメッセージの設計ミス
+**Purpose:** Failure patterns for flags, arguments, errors, output, help text, and interactive CLI flows.
+**Read when:** Auditing a CLI contract, debugging confusing command behavior, or hardening interface UX before release.
 
-## 1. フラグ設計 7 大アンチパターン
+## Contents
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **CD-01** | **Namespace Pollution（名前空間汚染）** | まれにしか使わないオプションに単一文字フラグを割り当て | `-x`, `-z` 等の意味不明な短縮フラグが乱立、将来のフラグ追加が困難 | 頻繁に使うオプションのみ短縮フラグを付与、残りは `--long-name` のみ |
-| **CD-02** | **Secret Exposure via Flags（フラグ経由のシークレット漏洩）** | `--token=xxx` のようにフラグでシークレットを受け取る | `ps` コマンドでプロセス引数が見え、シークレットが漏洩 | 環境変数、設定ファイル、stdin経由で受け取る。`--token-file` パターンを推奨 |
-| **CD-03** | **Position-Dependent Flags（位置依存フラグ）** | フラグがサブコマンドの前後で異なる意味を持つ | `app --verbose run` と `app run --verbose` で挙動が異なる、ユーザー混乱 | フラグの位置に関係なく同一の解釈を保証 |
-| **CD-04** | **Ambiguous Abbreviation（曖昧な省略）** | サブコマンドの任意の省略を許可 | `app d` が `delete` か `deploy` か不明、将来のコマンド追加でbreaking change | 省略は許可しない、またはエイリアスを明示的に定義 |
-| **CD-05** | **Flag Overload（フラグ過多）** | 1コマンドに20+のフラグを詰め込み | `--help` が画面に収まらない、ユーザーが必要なフラグを見つけられない | サブコマンドに分割、設定ファイルに移動、Progressive disclosure |
-| **CD-06** | **Missing Standard Flags（標準フラグの欠如）** | `--help`, `--version`, `--verbose`, `--quiet` 等の標準フラグがない | ユーザーが慣れた操作で情報取得できない | POSIX/GNU標準フラグを必ず実装: `-h`, `-v`, `-q`, `--no-color`, `--json` |
-| **CD-07** | **Boolean Negation Gap（ブール否定の欠如）** | `--color` はあるが `--no-color` がない | ユーザーがデフォルト挙動を無効化できない、CI環境で問題発生 | すべてのブールフラグに `--no-xxx` 対応を提供 |
+- Seven Flag Design Anti-Patterns
+- Argument Handling Anti-Patterns
+- Error Message Anti-Patterns
+- Output Design Anti-Patterns
+- Help Text Anti-Patterns
+- Interactive Mode Anti-Patterns
+- How To Use With Anvil
 
----
+## 1. Seven Flag Design Anti-Patterns
 
-## 2. 引数処理のアンチパターン
-
-```
-引数設計の罠:
-
-  ❌ Multiple Positional Args（複数位置引数）:
-    → app <source> <destination> <format> のように3+の位置引数
-    → 順序の記憶が困難、間違いに気づきにくい
-    → 対策: 2つ以上はフラグに変換: app <source> --dest X --format Y
-
-  ❌ Implicit Stdin（暗黙のstdin待ち）:
-    → パイプ入力を期待するが、TTYでも無言で待機
-    → ユーザーはハングしたと誤解
-    → 対策: TTY検出し、stdin待ちならヘルプ表示して即終了
-
-  ❌ No Dash Convention（ダッシュ規約の無視）:
-    → `-` による stdin/stdout の指定を未サポート
-    → パイプラインで使用不可
-    → 対策: ファイル引数に `-` を受け付ける
-
-  ❌ Catch-All Subcommand（推測サブコマンド）:
-    → 未知の引数を最も近いコマンドに自動マッチ
-    → 誤ったコマンドが意図せず実行される危険
-    → 対策: 未知のコマンドは明示的にエラー + Did you mean? 提案
-```
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **CD-01** | **Namespace Pollution** | Assigning single-letter flags to rarely used options | Meaningless short flags like `-x` and `-z` multiply, and future flag additions become difficult | Reserve short flags for frequent options only; keep the rest long-form (`--long-name`) |
+| **CD-02** | **Secret Exposure via Flags** | Accepting secrets via flags such as `--token=xxx` | `ps` or process inspection exposes credentials | Use environment variables, config files, stdin, or a `--token-file` pattern |
+| **CD-03** | **Position-Dependent Flags** | A flag means different things before and after a subcommand | `app --verbose run` behaves differently from `app run --verbose` | Interpret flags consistently regardless of position |
+| **CD-04** | **Ambiguous Abbreviation** | Allowing arbitrary subcommand abbreviations | `app d` could mean `delete` or `deploy`; future commands create breaking changes | Disallow implicit abbreviation or define explicit aliases |
+| **CD-05** | **Flag Overload** | Packing 20+ flags into one command | `--help` no longer fits on one screen; users cannot find the right flag | Split into subcommands, move advanced options into config, and use progressive disclosure |
+| **CD-06** | **Missing Standard Flags** | Omitting common flags such as `--help`, `--version`, `--verbose`, or `--quiet` | Users cannot rely on familiar CLI conventions | Always provide standard flags: `-h`, `-V`, `-v`, `-q`, `--no-color`, `--json` |
+| **CD-07** | **Boolean Negation Gap** | Shipping `--color` without `--no-color` | Users cannot disable default behavior; CI output breaks | Provide `--no-xxx` for every meaningful boolean flag |
 
 ---
 
-## 3. エラーメッセージのアンチパターン
+## 2. Argument Handling Anti-Patterns
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **EM-01** | **Stack Trace Dump（スタックトレース表示）** | ユーザーにデフォルトでスタックトレースを表示 | エラー発生時に20行以上の技術情報が表示、重要情報が埋もれる | ユーザー向けメッセージのみ表示、`--debug` でスタックトレース |
-| **EM-02** | **No Actionable Suggestion（対処法なし）** | 「Error: invalid input」で終了 | ユーザーが何を修正すべきかわからない | 「何が間違い」「どう修正すべきか」「詳細情報のリンク」を含める |
-| **EM-03** | **Stdout Pollution（stdout汚染）** | エラーメッセージをstdoutに出力 | パイプラインでエラーが次のコマンドに渡される | エラー・警告・ログはすべてstderrに出力 |
-| **EM-04** | **Silent Failure（サイレント失敗）** | エラー時に何も出力せず終了 | ユーザーが問題の存在に気づけない、デバッグ不能 | エラー時は必ずstderrに出力 + 非ゼロ終了コード |
-| **EM-05** | **Exit Code Anarchy（終了コード無秩序）** | 全エラーを終了コード1で返す | スクリプトでエラー種別を判別不能 | 種別ごとに終了コードを定義: 1=一般, 2=使用法, 126=権限, 127=未発見 |
+```text
+Argument design traps:
 
----
+  ❌ Multiple Positional Args:
+    → Using 3+ positional arguments such as `app <source> <destination> <format>`
+    → Order is hard to memorize and mistakes are hard to spot
+    → Fix: Keep at most two positional args; convert the rest to flags
+      Example: `app <source> --dest X --format Y`
 
-## 4. 出力設計のアンチパターン
+  ❌ Implicit Stdin:
+    → Waiting on stdin silently even when attached to a TTY
+    → Users think the CLI is hung
+    → Fix: Detect TTY; if stdin is required, explain it and exit quickly
 
-```
-出力フォーマットの罠:
+  ❌ No Dash Convention:
+    → Failing to support `-` for stdin/stdout
+    → The CLI cannot participate in shell pipelines
+    → Fix: Accept `-` anywhere a file path is expected
 
-  ❌ One Format Fits All（単一フォーマット）:
-    → 人間向けの装飾付き出力のみ、機械解析が困難
-    → パイプ・スクリプトで使用不可
-    → 対策: --json フラグでJSON出力、TTY検出で自動切替
-
-  ❌ Color Without Escape（エスケープ制御なし）:
-    → ファイルリダイレクト・パイプ時にANSIエスケープが混入
-    → ログファイルに `\e[31m` が残る
-    → 対策: TTY検出、NO_COLOR対応、--no-color フラグ
-
-  ❌ Animation in CI（CI環境でのアニメーション）:
-    → 非TTY環境でスピナーやプログレスバーを表示
-    → CIログに制御文字が大量出力
-    → 対策: TTY判定して非対話環境ではシンプル出力に切替
-
-  ❌ Verbose Default（デフォルト過多出力）:
-    → 通常実行で大量の情報を出力
-    → 重要な情報が埋もれる、UNIXの「沈黙は金」に反する
-    → 対策: デフォルトは簡潔、--verbose で詳細表示
-
-  ❌ End-Truncation（末尾切り捨て）:
-    → 重要な情報が出力の先頭にあり、末尾はノイズ
-    → ターミナルで見える最後の行が無意味
-    → 対策: 重要情報（サマリー、次のアクション）を末尾に配置
+  ❌ Catch-All Subcommand:
+    → Guessing the closest subcommand when input is unknown
+    → The wrong command can run unintentionally
+    → Fix: Fail explicitly and add a `Did you mean ...?` suggestion
 ```
 
 ---
 
-## 5. ヘルプテキストのアンチパターン
+## 3. Error Message Anti-Patterns
 
-```
-ヘルプ設計の罠:
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **EM-01** | **Stack Trace Dump** | Showing a full stack trace by default | Errors print 20+ lines of internal details and hide the actionable message | Show a user-facing error only; gate stack traces behind `--debug` |
+| **EM-02** | **No Actionable Suggestion** | Exiting with messages like `Error: invalid input` | Users do not know what to fix next | Include what failed, how to fix it, and where to get more detail |
+| **EM-03** | **Stdout Pollution** | Printing errors to stdout | Pipelines treat error text as normal output | Send errors, warnings, and logs to stderr |
+| **EM-04** | **Silent Failure** | Exiting without any visible error | Users miss the failure entirely and cannot debug it | Always emit an error message to stderr and return a non-zero exit code |
+| **EM-05** | **Exit Code Anarchy** | Returning exit code `1` for every failure mode | Scripts cannot distinguish usage errors from dependency failures | Define exit codes by category: `1=general`, `2=usage`, `126=permission`, `127=missing command` |
 
-  ❌ Help Dump（情報過多ヘルプ）:
-    → -h で全コマンド・全オプションの詳細を表示
-    → 100行+の出力、必要な情報を見つけられない
-    → 対策: -h は簡潔な概要+例、--help は詳細、man/webで完全版
+---
 
-  ❌ No Examples（使用例なし）:
-    → フラグの説明のみで具体的な使い方がない
-    → ユーザーが正しい使い方を推測できない
-    → 対策: ヘルプの先頭に2-3の実用例を配置
+## 4. Output Design Anti-Patterns
 
-  ❌ Inconsistent Help（ヘルプの不整合）:
-    → -h と --help で異なる内容を表示
-    → ユーザーが混乱、情報の信頼性が低下
-    → 対策: -h と --help は同一内容（または -h=簡潔, --help=詳細の明確な使い分け）
+```text
+Output formatting traps:
 
-  ❌ No Next Step（次の一手なし）:
-    → エラー時やコマンド完了時に次に何をすべきか示さない
-    → ユーザーが迷子になる
-    → 対策: 関連コマンド・次のステップを提案
+  ❌ One Format Fits All:
+    → Only shipping decorated, human-readable output
+    → Scripts and pipes cannot parse results
+    → Fix: Add `--json` and switch output style based on TTY detection
 
-  ❌ Hidden Features（隠し機能）:
-    → ヘルプに記載されていないフラグや環境変数が存在
-    → 発見不可能な機能、ドキュメントとの乖離
-    → 対策: 全フラグ・環境変数をヘルプに記載、コマンド補完を提供
+  ❌ Color Without Escape Control:
+    → Printing ANSI escapes into redirected output and pipes
+    → Log files end up with `\e[31m` noise
+    → Fix: Detect TTY, honor `NO_COLOR`, and support `--no-color`
+
+  ❌ Animation in CI:
+    → Showing spinners or progress bars in non-TTY environments
+    → CI logs fill with control characters
+    → Fix: Downgrade to simple line-based status output outside interactive terminals
+
+  ❌ Verbose Default:
+    → Dumping too much information on normal execution
+    → Important information gets buried
+    → Fix: Keep defaults concise; expand detail behind `--verbose`
+
+  ❌ End-Truncation:
+    → Placing the important summary at the top and noise at the end
+    → The last visible terminal lines are meaningless
+    → Fix: End with summary, status, and next actions
 ```
 
 ---
 
-## 6. 対話モードのアンチパターン
+## 5. Help Text Anti-Patterns
 
-| # | アンチパターン | 問題 | 兆候 | 対策 |
-|---|-------------|------|------|------|
-| **IM-01** | **Prompt in Pipe（パイプ中のプロンプト）** | stdinがパイプなのにインタラクティブプロンプトを表示 | スクリプトがハング、CI/CDが停止 | TTY検出して非対話時はエラー終了 or デフォルト値使用 |
-| **IM-02** | **No Bypass Flag（バイパスフラグなし）** | `--yes`/`--no-input` フラグがない | 自動化でプロンプトを回避できない | `--yes`/`-y` でプロンプトをスキップ |
-| **IM-03** | **Password Echo（パスワードエコー）** | パスワード入力が画面に表示される | セキュリティリスク、ショルダーハック | ターミナルのエコー無効化を使用 |
-| **IM-04** | **No Escape（脱出不能）** | Ctrl+Cでプロンプトをキャンセルできない | ユーザーが操作を中止できない | シグナルハンドラでgraceful exit |
-| **IM-05** | **Destructive Default（危険なデフォルト）** | `Delete all files? [Y/n]` のようにYesがデフォルト | 安易なEnterで破壊的操作が実行 | 破壊的操作はNoをデフォルト、または確認文字列の入力を要求 |
+```text
+Help design traps:
+
+  ❌ Help Dump:
+    → `-h` prints every command and option in exhaustive detail
+    → Output exceeds 100 lines and users cannot scan it
+    → Fix: Keep `-h` concise, use `--help` or docs for the full reference
+
+  ❌ No Examples:
+    → Only describing flags without showing real usage
+    → Users must guess the intended invocation
+    → Fix: Put 2-3 practical examples near the top of help output
+
+  ❌ Inconsistent Help:
+    → `-h` and `--help` disagree
+    → Users lose trust in the help system
+    → Fix: Make them identical or define a clear short-vs-long split
+
+  ❌ No Next Step:
+    → Errors and completions never suggest what to do next
+    → Users get stuck after each action
+    → Fix: Recommend related commands and next steps
+
+  ❌ Hidden Features:
+    → Shipping undocumented flags or environment variables
+    → Important capabilities are undiscoverable
+    → Fix: Document all public flags and env vars, and offer shell completion
+```
 
 ---
 
-## 7. Anvil との連携
+## 6. Interactive Mode Anti-Patterns
 
-```
-Anvil での活用:
-  1. BLUEPRINT フェーズで CD-01〜07 のフラグ設計レビュー
-  2. CAST フェーズで引数処理・ヘルプテキストの品質チェック
-  3. TEMPER フェーズで出力・対話モードのアンチパターン検出
-  4. HARDEN フェーズでエラーメッセージ・終了コードの検証
+| # | Anti-Pattern | Problem | Signals | Fix |
+|---|-------------|---------|---------|-----|
+| **IM-01** | **Prompt in Pipe** | Showing interactive prompts while stdin is piped | Scripts hang and CI jobs stall | Detect TTY; in non-interactive mode, fail clearly or use safe defaults |
+| **IM-02** | **No Bypass Flag** | Omitting `--yes` or `--no-input` | Automation cannot skip prompts | Provide `--yes` / `-y` to bypass prompts |
+| **IM-03** | **Password Echo** | Displaying password input on screen | Sensitive input is exposed to shoulder surfing and logs | Disable terminal echo for secrets |
+| **IM-04** | **No Escape** | Ignoring `Ctrl+C` during prompts | Users cannot cancel safely | Add signal handling and graceful exits |
+| **IM-05** | **Destructive Default** | Defaulting destructive prompts to “yes” | A single Enter press triggers dangerous actions | Make destructive prompts default to “no” or require a confirmation string |
 
-品質ゲート:
-  - 短縮フラグ10+個 → 名前空間汚染（CD-01 防止）
-  - フラグでシークレット受け取り → stdin/ファイル方式に変更（CD-02 防止）
-  - 位置引数3+個 → フラグへの変換提案（Multiple Positional Args 防止）
-  - エラーにスタックトレース → --debug 限定に変更（EM-01 防止）
-  - エラーメッセージに対処法なし → 修正提案を追加（EM-02 防止）
-  - エラーがstdoutに出力 → stderr出力に修正（EM-03 防止）
-  - CI環境でプロンプト → TTY検出+--no-input対応（IM-01 防止）
-  - 破壊的操作のデフォルトYes → デフォルトNo+確認強化（IM-05 防止）
+---
+
+## 7. How To Use With Anvil
+
+```text
+Use within Anvil:
+  1. Review CD-01 to CD-07 during BLUEPRINT to stress-test flag design
+  2. Review argument handling and help text during CAST
+  3. Review output and interactive mode during TEMPER
+  4. Review error handling and exit codes during HARDEN
+
+Quality gates:
+  - 10+ short flags → likely namespace pollution (prevent CD-01)
+  - Secrets accepted via flags → move to stdin, env vars, or files (prevent CD-02)
+  - 3+ positional args → recommend flag conversion (prevent Multiple Positional Args)
+  - Default stack traces on errors → limit to `--debug` (prevent EM-01)
+  - Errors without fixes → add actionable suggestions (prevent EM-02)
+  - Errors written to stdout → move them to stderr (prevent EM-03)
+  - Prompts active in CI → add TTY detection and `--no-input` / `--yes` (prevent IM-01)
+  - Destructive confirmation defaults to yes → switch to no and strengthen confirmation (prevent IM-05)
 ```
 
 **Source:** [Command Line Interface Guidelines](https://clig.dev/) · [Atlassian: 10 Design Principles for Delightful CLIs](https://www.atlassian.com/blog/it-teams/10-design-principles-for-delightful-clis) · [Better CLI](https://bettercli.org/) · [Shopify: CLI Error Handling](https://shopify.github.io/cli/cli/error_handling.html)

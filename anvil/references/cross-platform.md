@@ -1,8 +1,16 @@
 # Cross-Platform Patterns
 
-XDG directories, configuration file loading, platform/shell detection, signal handling, and CI environment detection.
+**Purpose:** Cross-platform patterns for configuration paths, precedence, platform and shell detection, signal handling, and CI-aware terminal behavior.
+**Read when:** Making a CLI work consistently across Windows, macOS, Linux, shells, TTY/non-TTY environments, or config-loading scenarios.
 
----
+## Contents
+
+- XDG Base Directory Specification
+- Configuration Priority
+- Platform Detection
+- Platform-Specific Config Directories
+- Shell Detection
+- Signal Handling
 
 ## XDG Base Directory Specification
 
