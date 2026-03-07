@@ -11,8 +11,6 @@
 - 5. Separating Planning and Execution
 - 6. Architect Integration
 
-> Common failures in agent specification: weak system prompts, poor tool design, unsafe autonomy, and blurry role definitions.
-
 ## 1. The Eight Core Specification Anti-Patterns
 
 | # | Anti-Pattern | Problem | Symptoms | Mitigation |

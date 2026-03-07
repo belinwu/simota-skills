@@ -17,8 +17,6 @@
 - Documentation Updates
 - Rollback Procedure
 
-Guide for integrating new agents into the Nexus orchestration system.
-
 ---
 
 ## Overview

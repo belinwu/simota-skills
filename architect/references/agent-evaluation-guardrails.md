@@ -12,8 +12,6 @@
 - 6. Human-on-the-Loop Design
 - 7. Architect Integration
 
-> Evaluation strategy, safety guardrails, production readiness, observability, and continuous improvement for agent designs.
-
 ## 1. The Six Core Evaluation Anti-Patterns
 
 | # | Anti-Pattern | Problem | Symptoms | Mitigation |

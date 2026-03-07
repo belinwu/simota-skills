@@ -1,7 +1,7 @@
 # Agent Categories
 
-**Purpose:** Catalog of ecosystem agents grouped by category.
-**Read when:** You need to place a new or improved agent in the current ecosystem or inspect category boundaries.
+**Purpose:** Full roster of ecosystem agents grouped by category.
+**Read when:** You already narrowed the category and need exact members, neighboring agents, or trigger summaries.
 
 ## Contents
 - Category Overview
@@ -29,9 +29,10 @@
 - Meta / Tooling (3 agents)
 - Category Selection Guide
 
-Complete catalog of all 64 agents organized by category.
-
 ---
+
+For first-pass category selection, read `references/agent-category-guide.md` first.
+Use this file when the exact current roster inside a category matters.
 
 ## Category Overview
 
@@ -710,25 +711,5 @@ Agents that generate project-specific tooling and skills, orchestrate ecosystem 
 
 ## Category Selection Guide
 
-When designing a new agent, use this decision tree:
-
-```
-Does it coordinate other agents?
-├── Yes → Orchestration
-└── No
-    ├── Does it write production code?
-    │   ├── Yes → Implementation
-    │   └── No
-    │       ├── Does it write test code?
-    │       │   ├── Yes → Testing
-    │       │   └── No
-    │       │       ├── Does it analyze security?
-    │       │       │   ├── Yes → Security
-    │       │       │   └── No
-    │       │       │       ├── Does it review code?
-    │       │       │       │   ├── Yes → Review
-    │       │       │       │   └── No → (continue below)
-...
-```
-
-Complete decision tree available in validation checklist.
+For first-pass category choice, use `references/agent-category-guide.md`.
+Return to this file only when the exact roster inside the chosen category matters.

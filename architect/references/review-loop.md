@@ -14,9 +14,6 @@
 - Ecosystem-wide Review
 - Integration with SKILL.md
 
-Continuous improvement framework for the agent ecosystem.
-PDCA cycle for maintaining and improving 56 agents.
-
 ---
 
 ## Overview
@@ -311,7 +308,7 @@ CONSISTENCY_CHECK:
 ## Ecosystem Health: [YYYY-MM-DD]
 
 ### Summary
-- **Total Agents:** 56
+- **Total Agents:** [count]
 - **Average Health Score:** [X/100]
 - **Agents at Risk (Score < 70):** [count]
 

@@ -14,8 +14,6 @@
 - Cultural Considerations
 - Naming Decision Tree
 
-Guidelines for naming new agents in the ecosystem.
-
 ---
 
 ## Core Principles
@@ -49,7 +47,7 @@ The name should immediately suggest what the agent does:
 
 ### 4. Unique in Ecosystem
 
-- Check all 56 existing agent names
+- Check all current agent names
 - No phonetic duplicates
 - No confusing abbreviations
 
@@ -173,7 +171,7 @@ Verify against existing names:
 
 ```yaml
 CONFLICT_CHECK:
-  exact_match: [Check all 56 names]
+  exact_match: [Check all current names]
   phonetic_similar: [Sounds like existing?]
   abbreviation_conflict: [Same abbreviation?]
   semantic_conflict: [Similar meaning?]

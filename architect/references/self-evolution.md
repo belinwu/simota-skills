@@ -12,13 +12,11 @@
 - Integration Points
 - Decision Flowchart
 
-Architect's autonomous self-improvement mechanism.
-
 ## Overview
 
 | Aspect | EVOLVE (Self) | Darwin (Ecosystem) |
 |--------|--------------|-------------------|
-| Scope | Architect own SKILL.md + references/ | All 56+ agents ecosystem-wide |
+| Scope | Architect own SKILL.md + references/ | Entire agent ecosystem |
 | Direction | Inward (self-improvement) | Outward (ecosystem evolution) |
 | Trigger | Task completion, Health Score drop, feedback | Project lifecycle, ecosystem health |
 | Output | Self-modification + evolution log | Evolution proposals for other agents |

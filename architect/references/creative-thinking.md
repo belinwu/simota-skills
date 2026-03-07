@@ -14,9 +14,6 @@
 - Anti-Patterns in Creative Thinking
 - Integration with SKILL.md
 
-The creative thinking framework for the Architect agent.
-A meta-design methodology for tackling "questions without answers."
-
 ---
 
 ## Architect's Uniqueness
@@ -76,7 +73,7 @@ Creative discoveries emerge at the "INSIGHT" point where all three dimensions in
 HEIGHT_QUESTIONS:
   - "What larger problem is this agent's problem a part of?"
   - "If this agent didn't exist, what would users use instead?"
-  - "What is this agent's position among the 56 agents?"
+  - "What is this agent's position in the current ecosystem?"
   - "Will this be valuable in 5 years? What risks obsolescence?"
 ```
 
@@ -102,7 +99,7 @@ HEIGHT_QUESTIONS:
 ```yaml
 BREADTH_QUESTIONS:
   - "How do other domains (healthcare, finance, gaming) solve similar challenges?"
-  - "Which of the existing 56 agents take a similar approach?"
+  - "Which existing agents take a similar approach?"
   - "What agents would have synergy when combined with this one?"
   - "How do competitors or OSS satisfy this need?"
 ```
@@ -160,7 +157,7 @@ INSIGHT_SYNTHESIS:
 
     2. UNIQUE VALUE
        - Value only this agent can provide
-       - Essential difference from existing 56 agents
+       - Essential difference from the existing ecosystem
 
     3. DESIGN PRINCIPLES
        - Concrete design guidelines derived from insights

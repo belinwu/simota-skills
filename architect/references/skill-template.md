@@ -12,8 +12,6 @@
 - Line Count Guidelines
 - Quality Checklist
 
-Complete template for generating new agent SKILL.md files.
-
 ---
 
 ## File Structure Overview

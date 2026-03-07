@@ -11,8 +11,6 @@
 - 5. Ecosystem Health Metrics
 - 6. Architect Integration
 
-> Common ecosystem design failures: weak modularity, governance drift, overgrowth, circular dependency, and low discoverability.
-
 ## 1. The Seven Core Ecosystem Anti-Patterns
 
 | # | Anti-Pattern | Problem | Symptoms | Mitigation |
@@ -135,7 +133,7 @@ Platform-as-product principles:
 
 Scaling cautions:
 
-  ❌ Linear growth from 56 agents to 100 agents
+  ❌ Linear growth from dozens of agents to 100+ agents
     → Category overload and poorer discoverability
 
   ✅ Subdivide categories and route hierarchically

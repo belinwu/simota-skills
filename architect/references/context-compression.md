@@ -13,13 +13,11 @@
 - COMPRESSION_PROPOSAL Output Template
 - Quick Reference
 
-Strategies and principles for optimizing agent SKILL.md context efficiency.
-
 ---
 
 ## Overview
 
-With 64 agents averaging ~878 lines per SKILL.md (56,203 total lines), an estimated 12.2% (~6,875 lines) consists of repeated boilerplate. This reference provides systematic approaches to reduce token consumption while preserving behavioral equivalence.
+In a large agent ecosystem, repeated boilerplate can consume a meaningful share of the token budget. This reference provides systematic approaches to reduce token consumption while preserving behavioral equivalence.
 
 ---
 
@@ -86,7 +84,7 @@ TOKEN_ESTIMATE:
 
 Identify sections that are identical or near-identical across agents and extract them to `_common/` shared files.
 
-**Before (6 lines per agent × 64 agents = 384 lines):**
+**Before (example across 64 agents: 384 lines):**
 ```markdown
 ## Activity Logging (REQUIRED)
 

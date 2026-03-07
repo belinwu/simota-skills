@@ -13,8 +13,6 @@
 - Proposal Presentation Format
 - Integration with Review Loop
 
-Standardized methodology for proposing, evaluating, and tracking improvements to existing agents.
-
 ---
 
 ## Overview

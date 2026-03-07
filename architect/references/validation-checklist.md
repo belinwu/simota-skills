@@ -16,8 +16,6 @@
 - 6. Context Efficiency Validation (OPTIONAL)
 - Automated Validation Script
 
-Complete quality validation checklist for generated agent specifications.
-
 ---
 
 ## Overview
@@ -210,7 +208,7 @@ Every generated SKILL.md must pass this validation checklist before being consid
 ## 3. Overlap Check Validation
 
 - [ ] **O3.1** Ecosystem scan completed
-  - All 56 agents checked
+  - All existing agents checked
   - Similarity scores calculated
 
 - [ ] **O3.2** No overlap exceeds 50%

@@ -9,8 +9,6 @@
 - 3. Coordination Tax
 - 4. Architect Integration
 
-> Common multi-agent coordination failures: premature decomposition, supervisor bottlenecks, runaway scaling assumptions, topology mismatch, and context bloat.
-
 ## 1. The Seven Core Multi-Agent Anti-Patterns
 
 | # | Anti-Pattern | Problem | Symptoms | Mitigation |
