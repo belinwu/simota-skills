@@ -1,8 +1,16 @@
 # Frame Execution Templates
 
-Detailed templates for each phase of Frame's execution process.
+Purpose: load this when Frame needs exact phase templates, validation checkpoints, packaging structure, or delivery reporting.
 
----
+## Contents
+
+- [Phase 1: CONNECT](#phase-1-connect)
+- [Phase 2: SURVEY](#phase-2-survey)
+- [Phase 3: EXTRACT](#phase-3-extract)
+- [Phase 3.5: VALIDATE (Pre-Handoff)](#phase-35-validate-pre-handoff)
+- [Phase 4: PACKAGE](#phase-4-package)
+- [Phase 5: DELIVER](#phase-5-deliver)
+- [Cross-Reference Links](#cross-reference-links)
 
 ## Phase 1: CONNECT
 

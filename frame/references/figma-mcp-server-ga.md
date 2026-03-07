@@ -1,10 +1,18 @@
 # Figma MCP Server — GA Reference
 
-Official reference for Figma MCP Server capabilities, updated for GA release (Schema 2025).
+Purpose: load this when Frame needs the official GA tool inventory, Schema 2025 features, Code Connect API surface, or known client issues.
 
 Source: https://developers.figma.com/docs/figma-mcp-server/
 
----
+## Contents
+
+- [Tool Inventory (GA)](#tool-inventory-ga)
+- [Code Connect Integration](#code-connect-integration)
+- [Schema 2025 New Features](#schema-2025-new-features)
+- [Known Issues (MCP Clients)](#known-issues-mcp-clients)
+- [Prop Mapping Types (Code Connect)](#prop-mapping-types-code-connect)
+- [Supported Clients](#supported-clients)
+- [Key URLs](#key-urls)
 
 ## Tool Inventory (GA)
 

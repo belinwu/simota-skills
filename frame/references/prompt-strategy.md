@@ -1,8 +1,22 @@
 # Frame Prompt Strategy
 
-Effective prompt patterns for each Figma MCP tool to maximize extraction quality and minimize rate usage.
+Purpose: load this when Frame needs tool-specific prompt wording, chaining order, or scope-control patterns for Figma MCP calls.
 
----
+## Contents
+
+- [General Principles](#general-principles)
+- [get_design_context](#get_design_context)
+- [get_variable_defs](#get_variable_defs)
+- [get_screenshot](#get_screenshot)
+- [get_metadata](#get_metadata)
+- [whoami](#whoami)
+- [get_code_connect_map](#get_code_connect_map)
+- [get_code_connect_suggestions](#get_code_connect_suggestions)
+- [add_code_connect_map / send_code_connect_mappings](#add_code_connect_map--send_code_connect_mappings)
+- [create_design_system_rules](#create_design_system_rules)
+- [get_figjam](#get_figjam)
+- [generate_diagram](#generate_diagram)
+- [Tool Chaining Patterns](#tool-chaining-patterns)
 
 ## General Principles
 

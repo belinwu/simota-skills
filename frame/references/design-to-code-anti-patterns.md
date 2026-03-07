@@ -1,8 +1,15 @@
 # Design-to-Code Anti-Patterns & Quality Guardrails
 
-Common failure modes in design-to-code translation and guardrails for Frame's extraction quality.
+Purpose: load this when validating extraction quality, documenting known gaps, or preventing design-to-code failure modes before handoff.
 
----
+## Contents
+
+- [The 70% Problem](#the-70-problem)
+- [Anti-Patterns](#anti-patterns)
+- [Quality Guardrails for Frame](#quality-guardrails-for-frame)
+- [Component-First Extraction Principle](#component-first-extraction-principle)
+- [W3C Design Tokens (DTCG) Standard](#w3c-design-tokens-dtcg-standard)
+- [Sources](#sources)
 
 ## The 70% Problem
 

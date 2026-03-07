@@ -1,8 +1,19 @@
 # Frame Infrastructure & Constraints
 
-MCP connection setup, rate limits, budget strategies, and operational constraints.
+Purpose: load this when Frame must connect to Figma MCP, plan rate budget, troubleshoot extraction issues, or enforce security and operational constraints.
 
----
+## Contents
+
+- [Connection Methods](#connection-methods)
+- [Connection Verification](#connection-verification)
+- [Rate Limits (GA — Schema 2025)](#rate-limits-ga--schema-2025)
+- [Request Cost by Tool](#request-cost-by-tool)
+- [Budget Planning](#budget-planning)
+- [Optimization Patterns](#optimization-patterns)
+- [Rate Limit Error Handling](#rate-limit-error-handling)
+- [Troubleshooting](#troubleshooting)
+- [Security](#security)
+- [Monitoring Template](#monitoring-template)
 
 ## Connection Methods
 

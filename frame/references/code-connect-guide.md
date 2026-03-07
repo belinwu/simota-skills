@@ -1,8 +1,18 @@
 # Frame Code Connect Guide
 
-Code Connect workflow, mapping management, and bidirectional sync between Figma components and code implementations.
+Purpose: load this when Frame must audit, suggest, map, sync, or maintain Code Connect relationships between Figma components and code.
 
----
+## Contents
+
+- [What is Code Connect?](#what-is-code-connect)
+- [Workflow](#workflow)
+- [Phase 1: AUDIT](#phase-1-audit)
+- [Phase 2: SUGGEST](#phase-2-suggest)
+- [Phase 3: MAP](#phase-3-map)
+- [Phase 4: SYNC](#phase-4-sync)
+- [Phase 5: MAINTAIN](#phase-5-maintain)
+- [Collaboration with Showcase](#collaboration-with-showcase)
+- [Best Practices](#best-practices)
 
 ## What is Code Connect?
 

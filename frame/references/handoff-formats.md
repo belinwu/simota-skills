@@ -1,8 +1,18 @@
 # Frame Handoff Formats
 
-Agent-specific handoff templates for packaging extracted Figma design context.
+Purpose: load this when Frame must package extracted design context for a specific downstream agent. These templates define the required handoff shapes.
 
----
+## Contents
+
+- [Common Header (All Handoffs)](#common-header-all-handoffs)
+- [Frame -> Muse (Design-to-Token)](#frame---muse-design-to-token)
+- [Frame -> Forge (Design-to-Prototype)](#frame---forge-design-to-prototype)
+- [Frame -> Artisan (Design-to-Production)](#frame---artisan-design-to-production)
+- [Frame -> Builder (API/Data Context)](#frame---builder-apidata-context)
+- [Frame -> Schema (Data Model)](#frame---schema-data-model)
+- [Frame -> Vision (Visual Context)](#frame---vision-visual-context)
+- [Frame -> Showcase (Code Connect)](#frame---showcase-code-connect)
+- [Frame -> Canvas (Diagram)](#frame---canvas-diagram)
 
 ## Common Header (All Handoffs)
 
