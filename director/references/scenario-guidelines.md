@@ -2,6 +2,20 @@
 
 Principles, templates, and best practices for demo video scenario design.
 
+Purpose: Read this when Director must design a story arc, tune pacing, select overlay timing, adapt the demo to an audience, or review scenario quality before recording.
+
+Contents:
+- `Storytelling Structure`: problem → solution → result framing
+- `Scenario Templates`: full and quick planning templates
+- `Operation Granularity Design`: step sizing rules for viewer comprehension
+- `Wait Strategy`: explicit waits vs pacing pauses
+- `Overlay Display Patterns`: overlay timing and style rules
+- `Audience-Specific Adjustments`: new user, existing user, investor, developer variants
+- `Time Allocation Guidelines`: duration guidance by scope
+- `Scenario Anti-Patterns`: must-avoid pacing and structure mistakes
+- `Test Data Realism`: realism and privacy rules
+- `Scenario Review Checklist`: pre-recording quality review
+
 ---
 
 ## Storytelling Structure

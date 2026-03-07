@@ -2,6 +2,20 @@
 
 Configuration guide for demo video recording with Playwright.
 
+Purpose: Read this when Director must choose demo-specific Playwright configuration, device profiles, output formats, naming conventions, environment variables, CI, or troubleshooting steps.
+
+Contents:
+- `Basic Configuration`: demo-dedicated Playwright config
+- `Device-Specific Project Settings`: desktop, mobile, and tablet presets
+- `Video Recording Settings`: video mode and resolution matrix
+- `slowMo Configuration Guide`: pace ranges and usage rules
+- `Output Formats and Conversion`: WebM baseline plus MP4/GIF conversion
+- `Output File Naming Conventions`: canonical demo naming patterns
+- `Environment Variables`: `.env.demo` defaults
+- `CI/CD Configuration`: GitHub Actions recording flow
+- `Directory Structure`: expected demo file layout
+- `Troubleshooting`: common recording failures and fixes
+
 ---
 
 ## Basic Configuration

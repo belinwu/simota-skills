@@ -2,6 +2,24 @@
 
 Playwright implementation patterns for demo video recording.
 
+Purpose: Read this when Director needs concrete Playwright implementation patterns for scenes, auth, overlays, interaction effects, performance demos, comparison layouts, narration, persona-aware flows, or ARIA validation.
+
+Contents:
+- `Basic Test Structure`: scene organization with `test.step()`
+- `Authentication Patterns`: API login, localStorage, and storage-state setup
+- `File Upload Pattern` / `Smooth Scroll Pattern`: common demo interactions
+- `Overlay` / `Highlight` / `Cursor` / `Interaction Feedback`: viewer-guidance helpers
+- `Scenario Recording System`: reusable step-driven recording orchestration
+- `Performance Visualization System`: Core Web Vitals overlays and performance framing
+- `Before/After Comparison Mode`: redesign and comparison layouts
+- `AI Narration System`: narration helpers and synchronization
+- `Progress Bar` / `Spotlight`: visual emphasis helpers
+- `Page Transition Wait Pattern`: state-change pacing rules
+- `Test Data Factory`: realistic demo data setup
+- `Persona-Aware Demo Recording`: Echo-driven persona timing patterns
+- `ARIA Snapshot Validation`: accessibility validation during demos
+- `Complete Demo Example`: integrated reference pattern
+
 ---
 
 ## Basic Test Structure

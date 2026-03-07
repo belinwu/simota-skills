@@ -2,6 +2,15 @@
 
 Quality gates for each phase of demo video production.
 
+Purpose: Read this when Director must validate demo readiness, playback quality, security hygiene, or final delivery quality.
+
+Contents:
+- `Pre-Recording Checklist`: scenario, environment, and accessibility setup
+- `Post-Recording Checklist`: playback, content, security, and output validation
+- `Pre-Delivery Checklist`: packaging and reproducibility checks
+- `Quick Check (3 minutes)`: rapid go/no-go review
+- `Quality Scorecard`: `/65` scoring and release thresholds
+
 ---
 
 ## Pre-Recording Checklist
