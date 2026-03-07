@@ -1,5 +1,15 @@
 # Learning Loop — Pattern Extraction & Registration
 
+Purpose: Read this file after incident resolution or failed remediation when updating the pattern catalog, registering a new pattern, or reviewing negative-pattern lessons.
+
+## Contents
+
+- Pattern extraction workflow
+- Pattern quality metrics
+- Negative pattern catalog
+- Knowledge transfer
+- Catalog maintenance schedule
+
 How Mend learns from incidents to expand the remediation pattern catalog over time.
 
 ---

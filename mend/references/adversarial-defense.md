@@ -1,5 +1,14 @@
 # Adversarial Defense — Telemetry Validation & Input Sanitization
 
+Purpose: Read this file when telemetry may be manipulated, contradictory, novel, or overly dependent on free-text signals before remediation.
+
+## Contents
+
+- Threat model
+- Input validation pipeline
+- Anomaly detection
+- Safety-model integration
+
 Mend receives telemetry and diagnosis from upstream agents (Triage, Beacon). This data must be validated before pattern matching or remediation execution. Research demonstrates 89-97% attack success rates against undefended LLM-based AIOps agents via telemetry manipulation.
 
 ---

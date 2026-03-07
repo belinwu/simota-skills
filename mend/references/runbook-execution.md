@@ -1,5 +1,15 @@
 # Runbook Execution Protocol
 
+Purpose: Read this file when parsing, validating, dry-running, or executing a Triage-authored runbook under Mend guardrails.
+
+## Contents
+
+- Runbook parsing
+- Pre-execution validation
+- Step execution and state machine
+- Guardrails, retries, and branching
+- Dry-run and completion reports
+
 How Mend parses, validates, and executes runbooks provided by Triage. Every runbook execution follows strict guardrails.
 
 ---

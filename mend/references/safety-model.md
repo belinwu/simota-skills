@@ -1,5 +1,14 @@
 # Safety Model — Detailed Reference
 
+Purpose: Read this file when classifying a remediation action, calculating `Risk Score`, applying emergency override, or checking mandatory audit-trail fields.
+
+## Contents
+
+- 4-tier safety classification
+- Risk score calculation
+- Emergency override protocol
+- Audit trail requirements
+
 Mend's safety model ensures every remediation action is classified, gated, and auditable. No action is taken without tier classification.
 
 ---

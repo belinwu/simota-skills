@@ -1,5 +1,14 @@
 # Verification Strategies
 
+Purpose: Read this file when validating incoming remediation input, running the staged verification cascade, deciding rollback, or writing the verification report.
+
+## Contents
+
+- Verification cascade
+- Rollback criteria
+- Extended monitoring
+- Post-verification report
+
 Staged verification ensures remediation success before declaring an incident resolved. Every fix goes through 4 stages.
 
 ---

@@ -1,5 +1,15 @@
 # Remediation Pattern Catalog
 
+Purpose: Read this file when matching incident symptoms to a known pattern, checking confidence modifiers, or selecting a catalog-backed remediation and verification path.
+
+## Contents
+
+- Infrastructure patterns
+- Application patterns
+- Configuration patterns
+- Deployment patterns
+- Pattern matching protocol
+
 Known failure patterns organized by category. Each pattern includes symptoms, root cause, safety tier, and remediation steps.
 
 ---
