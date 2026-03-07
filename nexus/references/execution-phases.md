@@ -12,6 +12,20 @@ Detailed phase descriptions for AUTORUN modes.
 
 ---
 
+## Simplified 3-Phase Path (cross-model)
+
+When 7-phase state tracking is difficult, use this simplified path:
+
+| Simplified | Maps To | Actions |
+|------------|---------|---------|
+| PLAN | PLAN + PREPARE + CHAIN_SELECT | Classify task, assess complexity, select chain |
+| DO | EXECUTE + AGGREGATE | Execute chain steps, merge parallel results |
+| CHECK | VERIFY + DELIVER | Run tests, deliver final output |
+
+Each phase completes before the next begins. Track only: current phase (PLAN/DO/CHECK) and current step (X/Y).
+
+---
+
 ## Phase 0: PROACTIVE_ANALYSIS (Optional)
 
 Automatically activates when `/Nexus` is invoked by itself. Skip this phase when a normal task instruction is present.

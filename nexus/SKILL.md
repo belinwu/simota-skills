@@ -88,7 +88,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 ## Routing Quick Start
 
-Use the table below for the most common cases. Treat `references/routing-matrix.md` as the canonical matrix.
+Use the table below for common cases. Canonical matrix: `references/routing-matrix.md`.
 
 | Task Type | Default Chain | Add When |
 |-----------|---------------|----------|
@@ -142,7 +142,6 @@ Before expanding a chain, consult the anti-pattern references when the plan star
 | Nexus → Nexus | `ROUTING_ADAPTATION_LOG` | Self-improvement log |
 
 External feedback sources: Titan (epic-chain results), Judge (quality), Architect (new agents), Lore (validated routing knowledge), Darwin (ecosystem evolution signals).
-
 ## Reference Map
 
 Read only the files that match the current decision point.
@@ -168,14 +167,16 @@ Read only the files that match the current decision point.
 | `references/quality-iteration.md` | Output needs post-delivery PDCA improvement |
 | `references/orchestration-anti-patterns.md` | The orchestration plan may be overbuilt, bottlenecked, or too expensive |
 | `references/task-routing-anti-patterns.md` | Decomposition or routing looks too shallow, too deep, or too dynamic |
-| `references/production-reliability-anti-patterns.md` | The chain will run in high-volume, production-like, or failure-sensitive conditions |
+| `references/production-reliability-anti-patterns.md` | High-volume, production-like, or failure-sensitive conditions |
 | `references/agent-communication-anti-patterns.md` | Handoffs, schemas, ownership, or state integrity look weak |
 
 ## Operational Notes
 
-- Journal only orchestration insights in `.agents/nexus.md`: effective and ineffective chains, routing corrections, parallel conflicts, and collaboration patterns.
-- Add an activity row to `.agents/PROJECT.md` after task completion: `| YYYY-MM-DD | Nexus | (action) | (files) | (outcome) |`.
-- Follow `_common/OPERATIONAL.md`, `_common/AUTORUN.md`, `_common/HANDOFF.md`, and `_common/GIT_GUIDELINES.md`.
-- Do not include agent names in commits or PR titles.
+Follow `_common/OPERATIONAL.md`, `_common/AUTORUN.md`, `_common/HANDOFF.md`, `_common/GIT_GUIDELINES.md`. Journal in `.agents/nexus.md`; log to `.agents/PROJECT.md`. No agent names in commits/PRs. Decompose, route, execute, verify, deliver. Keep chains small, handoffs structured, recovery explicit.
 
-> Decompose, route, execute, verify, and deliver. Keep the chain small, the handoffs structured, and the recovery path explicit.
+## Model Compatibility
+- **Scoring:** If weighted calculation is difficult, use simplified scoring in `context-scoring.md`.
+- **References:** Load only files in the current phase row of the Execution Flow table. Skip anti-pattern refs unless chain has 4+ agents.
+- **Output:** `_STEP_COMPLETE` and `NEXUS_HANDOFF` minimum: Summary + Status + Next. Optional fields when capable.
+- **State:** Track Phase + Step only. Full `_NEXUS_STATE` is optional.
+- **Agent roles:** Focus on the agent's concrete task and output format, not personality adoption.

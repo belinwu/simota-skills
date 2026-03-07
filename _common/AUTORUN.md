@@ -58,6 +58,15 @@ When executing as a specific agent, Nexus should:
 3. **Use Agent Outputs**: Generate outputs in the agent's expected format
 4. **Respect Boundaries**: Honor the agent's "Always/Ask first/Never" rules
 
+### Simplified Agent Execution (cross-model)
+
+When personality/philosophy adoption is difficult, focus on the agent's **output contract** instead:
+
+1. Read the agent's "Always" rules from SKILL.md
+2. Execute the specific task in `_AGENT_CONTEXT.Task`
+3. Produce output in the agent's expected format
+4. Skip philosophy adoption — deliverables matter
+
 ### Example: Executing as Scout
 
 ```

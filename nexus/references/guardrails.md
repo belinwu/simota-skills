@@ -202,6 +202,24 @@ recovery_confidence:
     - no_rollback_available: -0.10
 ```
 
+### Simplified Recovery Confidence (cross-model)
+
+When numeric calculation is difficult, use qualitative assessment:
+
+| Factor | YES | NO |
+|--------|-----|-----|
+| Similar recovery succeeded before? | +1 | 0 |
+| Rollback point available? | +1 | 0 |
+| Failure cause is clear? | +1 | 0 |
+| Change scope is small (< 5 files)? | +1 | 0 |
+| Previous recovery failed? | -1 | 0 |
+
+| Total | Confidence | Action |
+|-------|-----------|--------|
+| 3-4 | HIGH | Auto-execute recovery chain |
+| 1-2 | MEDIUM | Execute with caution (AUTORUN_FULL) or ask user |
+| 0 or less | LOW | Ask user before recovery |
+
 ---
 
 ## Recovery Decision Flow

@@ -102,6 +102,8 @@ Parallel (if any):
 
 All agents MUST use V2 format with confidence scoring.
 
+**Compliance Levels:** Level 1 (Minimal) requires only `step`, `agent`, `status`, `summary`, `next_agent`, `next_action` — confidence is inferred from status (see `handoff-validation.md` Compliance Levels). Level 2 adds `confidence` as a single number. Level 3 (Full/Claude default) adds `confidence_breakdown` with 3 axes.
+
 ```yaml
 ## NEXUS_HANDOFF
 step: [X/Y]

@@ -153,6 +153,24 @@ Where:
   = final_confidence (0.00 - 1.00)
 ```
 
+### Simplified Scoring (cross-model)
+
+When weighted calculation is difficult, use qualitative classification instead:
+
+| Source | HIGH (3) | MEDIUM (2) | LOW (1) | NONE (0) |
+|--------|----------|------------|---------|----------|
+| `git_history` | Branch + commits match task | Some related commits | Repo exists, no match | No git info |
+| `project_md` | Activity directly matches | Related activity found | File exists, no match | No file |
+| `conversation` | Explicit clear request | Inferable intent | Vague request | No context |
+| `codebase` | Clear pattern to follow | Partial patterns exist | Files exist, no pattern | No codebase |
+
+| Total Points (max 12) | Confidence Level | Action |
+|------------------------|-----------------|--------|
+| 10-12 | HIGH | AUTO_PROCEED |
+| 7-9 | MEDIUM | PROCEED_WITH_ASSUMPTIONS |
+| 4-6 | LOW | SINGLE_CLARIFICATION |
+| 0-3 | VERY_LOW | STRUCTURED_CLARIFICATION |
+
 ### Example Calculation
 
 ```yaml

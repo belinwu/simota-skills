@@ -203,9 +203,28 @@ reason: [Why this next step]
 
 ---
 
+## Compliance Levels
+
+| Level | Fields Required | Use When |
+|-------|----------------|----------|
+| Level 1 (Minimal) | `step`, `agent`, `status`, `summary`, `next_agent`, `next_action` | Model cannot produce reliable confidence scores |
+| Level 2 (Standard) | Level 1 + `confidence` (single number) | Model can estimate overall confidence |
+| Level 3 (Full/Claude default) | Level 2 + `confidence_breakdown` (3 axes) | Full scoring capability |
+
+Level 1 confidence inference (applied automatically):
+
+| status | Inferred confidence |
+|--------|-------------------|
+| SUCCESS | 0.80 |
+| PARTIAL | 0.60 |
+| BLOCKED | 0.40 |
+| FAILED | 0.20 |
+
+Level 2 without breakdown: all three components assumed equal to overall confidence.
+
 ## Backward Compatibility
 
-For agents not yet updated to V2:
+The Compliance Levels above formalize the backward compatibility rules:
 
 ```yaml
 v1_to_v2_migration:

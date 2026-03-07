@@ -37,6 +37,20 @@ Auto-Decision enables Nexus to proceed autonomously when confidence levels meet 
 | Agent Routing | >= 0.80 | Medium bar - misrouting causes delays |
 | Parallel vs Sequential | >= 0.70 | Lower bar - both are valid, just different efficiency |
 
+### Decision by Confidence Level (cross-model)
+
+When numeric thresholds are difficult to calculate, map directly from confidence levels (see `context-scoring.md` Simplified Scoring):
+
+| Decision Type | Minimum Level | Rationale |
+|---------------|--------------|-----------|
+| Chain Selection | HIGH | Wrong chain wastes significant effort |
+| Approach Selection | MEDIUM+ | Approaches are usually recoverable |
+| Recovery Action | MEDIUM | Recovery is inherently corrective |
+| Agent Routing | MEDIUM+ | Misrouting causes delays |
+| Parallel vs Sequential | MEDIUM | Both are valid, just different efficiency |
+
+`MEDIUM+` = MEDIUM with no blocking open questions. If open questions exist, treat as LOW.
+
 ---
 
 ## Auto-Proceed Conditions
