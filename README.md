@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-89-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-90-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **89 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **90 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 89 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 90 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -188,9 +188,11 @@ This repository contains 89 specialized AI agents covering various aspects of so
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
 | **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
 | **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Gemini CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
+| **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3D model generation agent. Produces code (Python/JS/OpenSCAD) for text-to-3D and image-to-3D via Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability APIs. Game pipeline: LOD, retopology, UV, texture baking, QC validation | 3D pipeline code (Python/JS/SCAD) |
 
 **Vision > Dot > Forge chain**: Vision (art direction) > Dot (pixel art code) > Forge (prototype integration)
 **Dot > Realm chain**: Dot (Phaser 3 textures) > Realm (ecosystem visualization)
+**Vision > Clay > Builder chain**: Vision (art direction) > Clay (3D asset code) > Builder (game logic integration)
 
 ### Architecture
 
@@ -1363,6 +1365,7 @@ Use a 16-color palette and output as SVG with spritesheet metadata.
 - **Canvas**: Diagrams and charts (Mermaid, ASCII art, draw.io)
 - **Sketch**: AI image generation code (Python code for Gemini API)
 - **Dot**: Pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS sprites)
+- **Clay**: AI 3D model generation code (Python/JS/OpenSCAD for Meshy/Tripo/Hunyuan3D/Rodin/Sloyd/Stability APIs)
 
 ---
 
