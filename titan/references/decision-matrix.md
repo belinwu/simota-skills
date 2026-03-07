@@ -1,5 +1,17 @@
 # Decision Matrix
 
+Purpose: Read this file when Titan must classify a decision, score cumulative risk, choose whether to consult Magi, or record a decision log entry.
+
+## Contents
+
+- Decision classification
+- Decision matrix
+- Risk scoring
+- Risk budget management
+- Magi consultation protocol
+- Decision log format
+- Common decision patterns
+
 Risk-based autonomous decision framework for Titan.
 
 ---
@@ -88,7 +100,7 @@ Budget does NOT reset between phases. Only user approval (via ON_CRITICAL_RISK_B
 3. **Evaluate consensus**: All agree → strong confidence · Split → document minority view
 4. **Record**: Full rationale including minority perspective in Decision Log
 
-Formal MAGI_REQUEST/MAGI_VERDICT formats, consensus-based actions, and Decision Log integration → `references/magi-protocol.md`
+Formal `MAGI_REQUEST` / `MAGI_VERDICT` usage and Decision Log integration are defined in this file.
 
 ### Magi Request Format
 ```

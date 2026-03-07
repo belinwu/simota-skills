@@ -1,5 +1,17 @@
 # Product Lifecycle — L/XL Phase Reference
 
+Purpose: Read this file when Titan classifies work as `L` or `XL`, chooses lifecycle phases, or needs the exact phase chain and shortcut rules.
+
+## Contents
+
+- Scope detection
+- Quick reference
+- L scope phases
+- XL scope additions
+- Phase execution pattern
+- Nexus chain format
+- Agent justification shortcuts
+
 ```
 DISCOVER → DEFINE → ARCHITECT → BUILD → HARDEN → VALIDATE → LAUNCH → GROW → EVOLVE
 ```

@@ -1,5 +1,16 @@
 # Exit Criteria Auto-Validation
 
+Purpose: Read this file when Titan validates a phase transition, applies pass thresholds, or uses simplified `S/M` validation and override rules.
+
+## Contents
+
+- Overview
+- Validation chains
+- Phase-specific validation checklists
+- Scoring and pass rules
+- Scope-adaptive validation
+- Validation overrides
+
 Defines automated validation of phase exit criteria before Titan approves phase transitions.
 
 ---

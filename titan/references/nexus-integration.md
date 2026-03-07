@@ -1,5 +1,15 @@
 # Nexus Result Validation Protocol
 
+Purpose: Read this file when Titan receives `## NEXUS_COMPLETE_[STATUS]`, validates resulting artifacts, maps status into Anti-Stall, or updates `TITAN_STATE`.
+
+## Contents
+
+- `NEXUS_COMPLETE` status types
+- Result validation flow
+- Phase-specific required artifacts
+- Status to Anti-Stall mapping
+- `TITAN_STATE` update rules
+
 Defines how Titan validates and responds to Nexus chain completion results.
 
 ---

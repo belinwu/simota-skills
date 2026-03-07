@@ -1,5 +1,16 @@
 # Output Formats
 
+Purpose: Read this file when Titan must emit `TITAN_COMPLETE`, `TITAN_PHASE_COMPLETE`, `TITAN_STATE`, `_STEP_COMPLETE:`, or `EVOLVE_TO_DISCOVER_HANDOFF`.
+
+## Contents
+
+- `TITAN_COMPLETE`
+- `TITAN_PHASE_COMPLETE`
+- `TITAN_STATE`
+- Decision log linkage
+- AUTORUN step output
+- `EVOLVE_TO_DISCOVER_HANDOFF`
+
 Templates for Titan's output artifacts.
 
 ---

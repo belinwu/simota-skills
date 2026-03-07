@@ -1,5 +1,17 @@
 # Momentum System
 
+Purpose: Read this file when Titan must prove forward progress, score cycle output, validate velocity, or decide whether Rally is justified.
+
+## Contents
+
+- Forward progress guarantee
+- Weighted progress score
+- Velocity metrics
+- Parallel execution rules
+- Epic prioritization
+- Never idle principle
+- Phase transition momentum
+
 Velocity tracking and forward progress guarantee for Titan.
 
 ---
