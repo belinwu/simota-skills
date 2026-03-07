@@ -2,6 +2,14 @@
 
 Templates for postmortem documentation and incident reports.
 
+Purpose: Read this when Triage must produce an internal postmortem, an external PIR, or an executive summary after incident resolution.
+
+Contents:
+- `Internal Postmortem Template`: technical retrospective with timeline, root cause, and action items
+- `Professional Incident Report (PIR) Template`: customer or executive facing incident report
+- `Executive Summary Only Template`: short external or leadership-ready summary
+- `Postmortem vs PIR Comparison`: audience and tone differences
+
 ## Internal Postmortem Template
 
 ```markdown

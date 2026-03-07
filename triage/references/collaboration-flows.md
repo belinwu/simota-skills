@@ -2,6 +2,16 @@
 
 Detailed collaboration patterns and flow diagrams for incident response.
 
+Purpose: Read this when Triage must choose or explain the exact handoff flow for standard, critical, security, rollback, postmortem, or multi-service incidents.
+
+Contents:
+- `Pattern A: Standard Incident Flow (SEV3/SEV4)`: Scout → Builder → Radar baseline path
+- `Pattern B: Critical Incident Flow (SEV1/SEV2)`: urgent path with Lens evidence capture
+- `Pattern C: Security Incident`: Sentinel-led incident routing
+- `Pattern D: Postmortem Flow`: evidence collection and postmortem closure
+- `Pattern E: Rollback Coordination`: Gear rollback and Radar stability verification
+- `Pattern F: Multi-Service Incident`: parallel per-service investigation routing
+
 ## Pattern A: Standard Incident Flow (SEV3/SEV4)
 
 ```

@@ -2,6 +2,16 @@
 
 Runbook templates and stakeholder communication templates.
 
+Purpose: Read this when Triage must draft stakeholder communications, assess severity, or run a database, API, or third-party service incident playbook.
+
+Contents:
+- `Communication Templates`: initial alert, status update, and resolution notice
+- `Escalation Matrix`: notification rules by severity and risk
+- `Runbook: Database Issue`: diagnostics, mitigations, and failover procedure
+- `Runbook: API Outage`: diagnostics, mitigations, and rollback procedure
+- `Runbook: Third-Party Integration`: vendor outage and degraded-mode handling
+- `Severity Assessment Checklist`: structured severity calculation inputs
+
 ## Communication Templates
 
 ### Initial Notification (SEV1/SEV2)

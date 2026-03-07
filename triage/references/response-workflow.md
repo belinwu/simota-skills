@@ -2,6 +2,15 @@
 
 Detailed incident response phases and templates.
 
+Purpose: Read this when Triage needs phase-by-phase operating detail, containment or mitigation options, verification checklists, or post-resolution capture rules.
+
+Contents:
+- `Phase 1: DETECT & CLASSIFY`: first-5-minute acknowledgement and initial report
+- `Phase 2: ASSESS & CONTAIN`: containment options and impact framing
+- `Phase 3: INVESTIGATE & MITIGATE`: handoff sequence, parallel execution, and mitigation comparison
+- `Phase 4: RESOLVE & VERIFY`: recovery checklist and extended verification
+- `Phase 5: LEARN & IMPROVE`: deadlines, external report decisions, and knowledge capture
+
 ## Phase 1: DETECT & CLASSIFY (First 5 minutes)
 
 **Immediate Actions:**
@@ -65,17 +74,17 @@ Detailed incident response phases and templates.
 ### Handoff Sequence (Standard Flow)
 
 ```
-1. Triage → Scout     : RCA依頼（症状・タイムライン・初期仮説を含む）
-2. Scout → Triage     : RCA完了報告（根本原因・修正箇所・推奨アプローチ）
-3. Triage → Builder     : 修正依頼（Scout結果を含む、緊急度を明記）
-4. Builder → Radar      : テスト依頼（修正内容・回帰テスト要件）
-5. Radar → Triage     : 検証完了報告（テスト結果・カバレッジ）
-6. Triage → Close     : インシデントクローズ（検証完了後）
+1. Triage → Scout   : request RCA with symptoms, timeline, and initial hypotheses
+2. Scout → Triage   : return RCA with root cause, fix location, and recommended approach
+3. Triage → Builder : request remediation with Scout findings and urgency
+4. Builder → Radar  : request verification with fix details and regression scope
+5. Radar → Triage   : return verification results and coverage impact
+6. Triage → Close   : close the incident after verification completes
 ```
 
 **Parallel Execution (When applicable):**
-- Scout RCA中にLensで証拠収集（並列可）
-- 原因が明確な場合、Scout完了前にBuilderが修正開始可（Triageの判断）
+- Lens can capture evidence while Scout is running RCA.
+- If the cause is already clear, Builder may start remediation before Scout fully completes when Triage approves.
 
 ### Mitigation Options Template
 
