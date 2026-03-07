@@ -1,8 +1,17 @@
 # Code Patterns Reference
 
-SVG/Canvas/Phaser 3/Pillow/CSS の各アプローチに対応するコードテンプレートと最適化パターン。
+Purpose: load this when implementing the selected output format. It keeps templates and optimization patterns for SVG, Canvas, Phaser 3, Pillow, and CSS in one place.
 
----
+## Contents
+
+- [Approach 1: SVG `<rect>` Grid](#approach-1-svg-rect-grid)
+- [Approach 2: HTML Canvas](#approach-2-html-canvas)
+- [Approach 3: Phaser 3 `generateTexture()`](#approach-3-phaser-3-generatetexture)
+- [Approach 4: Python + Pillow](#approach-4-python--pillow)
+- [Approach 5: CSS `box-shadow`](#approach-5-css-box-shadow)
+- [Grid Data Format](#grid-data-format)
+- [Approach Selection Guide](#approach-selection-guide)
+- [Common Patterns](#common-patterns)
 
 ## Approach 1: SVG `<rect>` Grid
 

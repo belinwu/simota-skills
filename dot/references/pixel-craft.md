@@ -1,8 +1,24 @@
 # Pixel Craft Reference
 
-Palette design, color theory, dithering, outline techniques, shading, anti-patterns, and readability rules.
+Purpose: load this when Dot must choose a palette, shape clusters, shading rules, or readability checks. It contains craft rules and anti-pattern guidance, not output-format templates.
 
----
+## Contents
+
+- [Color count theory](#color-count-theory)
+- [Palette role system](#palette-role-system)
+- [Famous palettes](#famous-palettes)
+- [Color theory for pixel art](#color-theory-for-pixel-art)
+- [Genre-specific palette recommendations](#genre-specific-palette-recommendations)
+- [Dithering patterns](#dithering-patterns)
+- [Outline techniques](#outline-techniques)
+- [Shading and lighting](#shading-and-lighting)
+- [Anti-patterns](#anti-patterns)
+- [Anti-aliasing](#anti-aliasing)
+- [Pixel cluster rules](#pixel-cluster-rules)
+- [Sub-pixel animation](#sub-pixel-animation)
+- [Readability](#readability)
+- [Palette construction method](#palette-construction-method)
+- [Design checklist](#design-checklist)
 
 ## Color Count Theory
 

@@ -1,8 +1,19 @@
 # Engine Integration Reference
 
-ゲームエンジン・ブラウザでのピクセルアート表示設定、`image-rendering` 互換性、エンジン別スプライト設定、レンダリング比較。
+Purpose: load this when the asset must run in a browser, Phaser, Godot, Unity, PixiJS, or RPG Maker. It preserves pixel-perfect rendering rules, engine configuration, and troubleshooting guidance.
 
----
+## Contents
+
+- [Browser `image-rendering` compatibility](#browser-image-rendering-compatibility)
+- [Rendering method comparison](#rendering-method-comparison)
+- [Phaser 3 configuration](#phaser-3-configuration)
+- [Godot 4 configuration](#godot-4-configuration)
+- [Unity configuration](#unity-configuration)
+- [PixiJS v8 configuration](#pixijs-v8-configuration-2024)
+- [RPG Maker MV/MZ configuration](#rpg-maker-mvmz-configuration)
+- [Common integration checklist](#common-integration-checklist)
+- [Scaling matrix](#scaling-matrix)
+- [Troubleshooting](#troubleshooting)
 
 ## Browser `image-rendering` Compatibility
 

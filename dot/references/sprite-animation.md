@@ -1,8 +1,21 @@
 # Sprite Animation Reference
 
-スプライトシートのレイアウト規則、アニメーションフレーム設計、メタデータ仕様、アニメーション原則。
+Purpose: load this when the asset has multiple frames, state changes, or spritesheet metadata. It preserves layout rules, timing guidance, metadata formats, and animation pitfalls.
 
----
+## Contents
+
+- [Spritesheet layout rules](#spritesheet-layout-rules)
+- [Standard frame counts](#standard-frame-counts)
+- [FPS guidelines](#fps-frames-per-second-guidelines)
+- [Walk cycle deep dive](#walk-cycle-deep-dive)
+- [Attack animation breakdown](#attack-animation-breakdown)
+- [Jump animation](#jump-animation)
+- [Death and hit animations](#death--hit-animations)
+- [Animation principles for pixel art](#animation-principles-for-pixel-art)
+- [Color techniques in animation](#color-techniques-in-animation)
+- [Metadata formats](#metadata-formats)
+- [Animation state machine](#animation-state-machine)
+- [Common pitfalls](#common-pitfalls)
 
 ## Spritesheet Layout Rules
 

@@ -1,8 +1,21 @@
 # Tileset Design Reference
 
-タイルセット設計規則、オートタイリング、シームレスパターン、Wang タイル、地形トランジション。
+Purpose: load this when Dot must design tilesets, autotiles, terrain transitions, or tilemap metadata. It preserves engine-agnostic tiling rules and engine-specific autotile expectations.
 
----
+## Contents
+
+- [Standard tile sizes](#standard-tile-sizes)
+- [Basic tileset layout](#basic-tileset-layout)
+- [Auto-tiling systems](#auto-tiling-systems)
+- [Wang tiles](#wang-tiles)
+- [Terrain transitions](#terrain-transitions)
+- [Animated tiles](#animated-tiles)
+- [Seamless tiling patterns](#seamless-tiling-patterns)
+- [Common tile categories](#common-tile-categories)
+- [Engine-specific auto-tile formats](#engine-specific-auto-tile-formats)
+- [Tileset code template (Phaser 3)](#tileset-code-template-phaser-3)
+- [Tilemap metadata JSON](#tilemap-metadata-json)
+- [Design checklist](#design-checklist)
 
 ## Standard Tile Sizes
 
