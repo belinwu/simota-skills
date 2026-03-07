@@ -64,6 +64,7 @@ Sources that informed this persona:
 ## Literacy & Experience [Optional]            # Literacy details
 ## Social Context [Optional]                   # Social context
 ## Life Stage [Optional]                       # Life stage
+## Cognitive Profile [Optional]                # CPM: Beliefs, Goals, Emotions, Values, Stance, Communication Style
 ## Workflow Context [Internal Persona]         # For development org (when type: internal)
 ## Goals / Frustrations / Behaviors (Required) # Core attributes
 ## Emotion Triggers (Required)                 # Emotion triggers
@@ -124,8 +125,22 @@ Six extended categories are optional. Use only the sections needed based on serv
 | Literacy & Experience | ◎ | ◎ | Terminology, onboarding, help format |
 | Social Context | ◎ | ○ | Approval flow, sharing, permissions |
 | Life Stage | ○ | ◎ | Onboarding length, upsell, pricing |
+| Cognitive Profile | ◎ | ◎ | Deep persona simulation fidelity |
 
 ◎ = Recommended, ○ = Situational
+
+### Cognitive Profile [Optional]
+
+6-dimension deep simulation model. Use for high-fidelity persona simulations where implicit persona descriptions are insufficient. Full specification: `references/cognitive-persona-model.md`
+
+| Sub-section | Description | Key Attributes |
+|-------------|-------------|----------------|
+| Beliefs | What the persona holds to be true | `technology_beliefs`, `self_efficacy`, `trust_disposition`, `mental_models`, `assumptions` |
+| Goals | Hierarchical motivation (extends JTBD) | `immediate_goals`, `journey_goals`, `life_goals`, `goal_conflicts`, `goal_priority_triggers` |
+| Emotions | Persona-specific emotional profile | `baseline_mood` (VAD), `emotional_reactivity`, `frustration_threshold`, `recovery_pattern`, `delight_sensitivity` |
+| Values | What matters beyond the task | `value_axes`, `non_negotiables`, `willingness_to_pay`, `effort_tolerance` |
+| Stance | Pre-formed opinions on UX patterns | `feature_stances`, `ux_pattern_preferences`, `risk_appetite`, `decision_style` |
+| Communication Style | How they express their experience | `vocabulary_level`, `expression_style`, `complaint_pattern`, `question_style`, `reference_frame` |
 
 ### Emotion Triggers
 
@@ -169,7 +184,8 @@ This mapping enables use of Echo's existing analysis frameworks (Mental Model Ga
 
 ### Minimal Persona (Required fields only)
 
-For quick generation or simple services:
+For quick generation or simple services. Cognitive Profile is not needed at this level:
+
 
 ```markdown
 # [Name]
@@ -184,7 +200,7 @@ For quick generation or simple services:
 
 ### Full Persona (All fields)
 
-For detailed analysis or complex B2B/B2C services:
+For detailed analysis or complex B2B/B2C services. Add Cognitive Profile for deep simulation fidelity:
 
 ```markdown
 # [Name]
@@ -196,6 +212,7 @@ For detailed analysis or complex B2B/B2C services:
 ## Literacy & Experience
 ## Social Context
 ## Life Stage
+## Cognitive Profile
 ## Goals / Frustrations / Behaviors
 ## Emotion Triggers
 ## Context Scenarios

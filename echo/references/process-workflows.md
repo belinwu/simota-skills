@@ -20,6 +20,13 @@ Choose from Core, Extended, or **Saved Service-Specific** personas AND add envir
 3. Add context scenario (e.g., "Rushing Parent" or "Commuter")
 4. Adjust requirements based on context
 5. Consider multi-persona comparison if comprehensive analysis needed
+6. **Activate Cognitive Profile (if present)**:
+   a. Load Beliefs → set mental model expectations for gap detection
+   b. Load Hierarchical Goals → identify session objective and conflict points
+   c. Load Emotional Profile → set baseline mood and frustration threshold
+   d. Load Values → configure non-negotiable exit conditions
+   e. Load Stance → prime UX pattern reactions
+   f. Load Communication Style → set voice parameters for SPEAK step
 
 ### 3. WALK - Traverse the Path
 
@@ -28,14 +35,23 @@ Choose from Core, Extended, or **Saved Service-Specific** personas AND add envir
 3. Assign emotion scores using:
    - Basic: -3 to +3 linear scale
    - Advanced: Valence/Arousal/Dominance (when detailed analysis needed)
+   - CPM-adjusted: Apply baseline_mood offset and frustration_threshold (if Cognitive Profile active)
 4. Track cognitive load at each step (Intrinsic/Extraneous/Germane)
 5. Detect mental model gaps when confusion occurs
+   - CPM: Cross-reference with Beliefs.mental_models (if Cognitive Profile active)
 6. Monitor for cognitive biases and dark patterns
+   - CPM: Factor in Values.non_negotiables as exit triggers; Stance.risk_appetite for bias vulnerability (if Cognitive Profile active)
 7. Note implicit expectation violations
 8. Identify latent needs (JTBD analysis)
+   - CPM: Use Hierarchical Goals to contextualize needs (if Cognitive Profile active)
 9. For Accessibility persona: Run the WCAG checklist
 10. For Competitor persona: Note expectation gaps
+    - CPM: Use Communication Style.reference_frame for comparison anchors (if Cognitive Profile active)
 11. Evaluate interruption recovery capability
+12. CPM Decision Point Simulation (if Cognitive Profile active):
+    - Evaluate goal_conflicts at choice screens
+    - Apply value_axes to tradeoff decisions
+    - Use decision_style to determine time spent and approach
 
 ### 4. SPEAK - Voice the Friction
 
@@ -46,6 +62,10 @@ Choose from Core, Extended, or **Saved Service-Specific** personas AND add envir
 - Explain the cognitive mechanism behind confusion
 - Articulate unmet latent needs
 - Flag any dark patterns detected
+- CPM Communication Style integration (if Cognitive Profile active):
+  - Match vocabulary_level and expression_style to persona voice
+  - Apply complaint_pattern (self-blame vs system-blame vs silent)
+  - Use Emotional Profile.reactivity to modulate score magnitude
 
 ### 5. ANALYZE - Deep Pattern Recognition
 
@@ -54,6 +74,12 @@ Choose from Core, Extended, or **Saved Service-Specific** personas AND add envir
 3. Calculate Cognitive Load Index totals
 4. Generate JTBD analysis for key friction points
 5. If multi-persona: Create cross-persona comparison matrix
+6. Run CPM Consistency Check (if Cognitive Profile was active):
+   - Axis 1: Adherence — did simulation match defined profile?
+   - Axis 2: Consistency — were dimensions internally coherent throughout?
+   - Axis 3: Naturalness — did it feel like a real person, not a checklist?
+   - Calculate Fidelity Score (15-item checklist → percentage → High/Moderate/Low)
+   - See `references/cognitive-persona-model.md` for full checklist
 
 ### 6. PRESENT - Report the Experience
 

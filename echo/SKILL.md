@@ -97,6 +97,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Cross-Persona Insights** | Universal/Segment/Edge Case/Non-Issue classification |
 | **Predictive Friction** | Pattern-based pre-analysis (8 risk signals) |
 | **Accessibility** | WCAG 2.1 simplified checklist (Perceivable/Operable/Understandable/Robust) |
+| **Cognitive Persona Model** | 6-dimension deep simulation: Beliefs, Goals, Emotions, Values, Stance, Communication Style (BDI + Eval4Sim) |
 | **Competitor Comparison** | Expectation Gap · Muscle Memory · Feature Parity · Terminology Mismatch |
 
 → Full frameworks, tables & checklists: `references/ux-frameworks.md`
@@ -143,6 +144,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/output-templates.md` | All report formats (emotion, cognitive, JTBD, behavioral, visual review, a11y) |
 | `references/collaboration-patterns.md` | Agent handoff templates (6 patterns) |
 | `references/persona-generation.md` | Persona generation detailed workflow |
+| `references/cognitive-persona-model.md` | CPM framework: 6 dimensions, cross-dimension interactions, consistency verification, example profiles |
 | `references/persona-template.md` | Persona definition template |
 | `references/question-templates.md` | Interaction trigger YAML templates |
 | `references/visual-review.md` | Visual review mode detailed process |
