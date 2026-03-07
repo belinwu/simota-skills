@@ -2,6 +2,12 @@
 
 Purpose: load this when creating or auditing loop artifacts. It defines the minimum contract for `goal.md`, `progress.md`, `done.md`, `state.env`, and the required footer.
 
+## Contents
+
+- [Contract checklist](#contract-checklist)
+- [Footer contract](#footer-contract)
+- [Resume contract](#resume-contract)
+
 ## Contract Checklist
 
 - `goal.md` must include:
