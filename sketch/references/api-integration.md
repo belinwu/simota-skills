@@ -1,6 +1,6 @@
 # API Integration Reference
 
-Purpose: provide the canonical Gemini API integration rules, compatibility notes, error handling, and cost guidance used by Sketch.
+Purpose: Read this when Sketch needs canonical Gemini API integration rules, compatibility notes, error handling, rate guidance, or SynthID handling details.
 
 ## Contents
 - SDK compatibility

@@ -1,6 +1,6 @@
 # Usage Examples
 
-Purpose: show must-keep request examples, mode-specific script shapes, and agent handoff examples without repeating the full implementation reference.
+Purpose: Read this when Sketch needs must-keep trigger examples, mode-specific script shapes, collaboration handoffs, or reusable packaging patterns.
 
 ## Contents
 - Basic requests

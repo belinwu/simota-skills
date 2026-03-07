@@ -1,6 +1,6 @@
 # Prompt Patterns Reference
 
-Purpose: define Sketch's canonical prompt architecture, prompt-quality thresholds, JP -> EN translation rules, and advanced prompt controls.
+Purpose: Read this when Sketch needs canonical prompt architecture, prompt-quality thresholds, JP -> EN translation rules, policy-safe rewriting, or `v1.50+` prompt controls.
 
 ## Contents
 - Prompt architecture
