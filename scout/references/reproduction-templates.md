@@ -1,14 +1,15 @@
 # Scout Reproduction Templates Reference
 
-Purpose: Use this file when you need a consistent reproduction record for UI, API, state, async, or general failures.
+**Purpose:** Reusable reproduction templates for UI, API, state, async, and general failures.
+**Read when:** You need a consistent reproduction record instead of writing ad hoc repro notes.
 
-Contents:
+## Contents
 
 - UI bug template
 - API bug template
-- state bug template
-- async bug template
-- general bug report template
+- State bug template
+- Async bug template
+- General bug report template
 
 ## UI Bug Template
 

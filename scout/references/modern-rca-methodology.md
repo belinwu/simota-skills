@@ -1,14 +1,15 @@
 # Modern RCA Methodology
 
-Purpose: Use this file when simple single-cause RCA is too shallow and you need evidence-driven, contributing-factor analysis.
+**Purpose:** Evidence-driven RCA guidance for multi-factor failures and incident reviews.
+**Read when:** Simple single-cause RCA is too shallow and you need contributing-factor analysis.
 
-Contents:
+## Contents
 
-- contributing factors
-- evidence-driven RCA
-- causal graphs
+- Contributing factors
+- Evidence-driven RCA
+- Causal graphs
 - AI-assisted RCA
-- incident review
+- Incident review
 
 ## From Root Cause To Contributing Factors
 

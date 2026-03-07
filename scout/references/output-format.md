@@ -1,13 +1,14 @@
 # Scout Output Format
 
-Purpose: Use this file when producing the final investigation artifact or checking whether an investigation is complete enough to hand off.
+**Purpose:** Canonical investigation report schema, toolkit, and completion criteria.
+**Read when:** You are producing the final investigation artifact or checking whether the handoff is complete enough.
 
-Contents:
+## Contents
 
 - Investigation report template
-- investigation toolkit
-- completion criteria
-- confidence levels
+- Investigation toolkit
+- Completion criteria
+- Confidence levels
 
 ## Investigation Report Template
 

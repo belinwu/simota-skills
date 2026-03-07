@@ -1,14 +1,15 @@
 # Scout Debug Strategy Reference
 
-Purpose: Use this file to choose the first debugging move by error type, reproducibility, or environment difference.
+**Purpose:** First-move debugging guide by error type, reproducibility, or environment difference.
+**Read when:** You need the next probe quickly and do not yet know which debugging path is cheapest.
 
-Contents:
+## Contents
 
-- by error type
-- by reproducibility
-- by environment
-- quick triage flow
-- checklist
+- By error type
+- By reproducibility
+- By environment
+- Quick triage flow
+- Checklist
 
 ## By Error Type
 

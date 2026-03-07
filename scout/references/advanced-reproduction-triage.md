@@ -1,14 +1,15 @@
 # Advanced Reproduction & Triage
 
-Purpose: Use this file when reproduction is difficult, failures are flaky, or business prioritization needs formal scoring.
+**Purpose:** Advanced reproduction methods and formal severity / priority scoring.
+**Read when:** Reproduction is difficult, failures are flaky, or business prioritization needs formal scoring.
 
-Contents:
+## Contents
 
-- time-travel debugging
-- flaky-test strategy
+- Time-travel debugging
+- Flaky-test strategy
 - severity vs priority
 - `RICE` / `ICE`
-- assess-phase template
+- Assess-phase template
 
 ## Time-Travel Debugging
 

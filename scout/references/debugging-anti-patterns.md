@@ -1,12 +1,13 @@
 # Debugging Anti-Patterns & Cognitive Biases
 
-Purpose: Use this file when an investigation is drifting, overfitting an early theory, or generating noise faster than evidence.
+**Purpose:** Bias checks and anti-pattern guardrails for stalled or noisy investigations.
+**Read when:** The investigation is drifting, overfitting an early theory, or generating noise faster than evidence.
 
-Contents:
+## Contents
 
-- cognitive biases
-- debugging anti-patterns
-- scientific debugging
+- Cognitive biases
+- Debugging anti-patterns
+- Scientific debugging
 - Scout checklist
 
 ## Cognitive Biases

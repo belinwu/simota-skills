@@ -1,15 +1,16 @@
 # Scout Bug Pattern Catalog Reference
 
-Purpose: Use this file when the symptom already resembles a known bug family and you need a fast pattern-based investigation path.
+**Purpose:** Pattern-based investigation shortcuts for common bug families.
+**Read when:** The symptom already resembles a known bug family and a fast pattern-based path is useful.
 
-Contents:
+## Contents
 
-- null or undefined
-- race condition
-- off-by-one
-- state synchronization
-- memory leak
-- infinite loop
+- Null or undefined
+- Race condition
+- Off-by-one
+- State synchronization
+- Memory leak
+- Infinite loop
 
 ## Null / Undefined Reference
 

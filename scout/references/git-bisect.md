@@ -1,14 +1,15 @@
 # Scout Git Bisect Reference
 
-Purpose: Use this file when the issue looks like a regression and commit-level isolation is faster than wider code archaeology.
+**Purpose:** Commit-level regression isolation workflow and guardrails.
+**Read when:** The issue looks like a regression and `git bisect` is faster than wider code archaeology.
 
-Contents:
+## Contents
 
-- basic workflow
-- finding the good commit
-- automation
-- skip and recovery rules
-- best practices
+- Basic workflow
+- Finding the good commit
+- Automation
+- Skip and recovery rules
+- Best practices
 
 ## Basic Bisect Workflow
 

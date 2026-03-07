@@ -1,14 +1,15 @@
 # Observability-Driven Debugging
 
-Purpose: Use this file when production signals, distributed systems, or runtime-only failures require traces, logs, metrics, or profiling.
+**Purpose:** Runtime-debugging guidance for traces, logs, metrics, profiling, and production-safe probing.
+**Read when:** Production signals, distributed systems, or runtime-only failures require observability evidence.
 
-Contents:
+## Contents
 
-- four signals
-- distributed tracing
-- structured logging
-- profiling and leak detection
-- production-safe debugging
+- Four signals
+- Distributed tracing
+- Structured logging
+- Profiling and leak detection
+- Production-safe debugging
 
 ## The Four Signals
 

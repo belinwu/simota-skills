@@ -1,14 +1,15 @@
 # Vague Report Handling Reference
 
-Purpose: Use this file when a bug report is incomplete, emotional, indirect, image-only, or missing explicit reproduction steps.
+**Purpose:** Intake patterns and pre-question guardrails for incomplete or noisy bug reports.
+**Read when:** The report is incomplete, emotional, indirect, image-only, or missing explicit reproduction steps.
 
-Contents:
+## Contents
 
-- report pattern dictionary
-- context collection
-- 3-hypothesis generation
-- pre-question checklist
-- completion criteria
+- Report pattern dictionary
+- Context collection
+- Three-hypothesis generation
+- Pre-question checklist
+- Completion criteria
 
 ## Report Pattern Dictionary
 
