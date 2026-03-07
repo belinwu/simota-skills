@@ -1,5 +1,18 @@
 # Propagation Protocol — Knowledge Distribution
 
+Purpose: Read this file when choosing consumers, urgency, message shape, compression level, or feedback collection for propagated knowledge.
+
+## Contents
+
+- Propagation triggers
+- Consumer relevance matrix
+- Insight delivery formats
+- Negative knowledge prioritization
+- Context compression
+- Feedback loop
+- Propagation schedule
+- Knowledge gaps report
+
 How Lore distributes insights to consuming agents effectively.
 
 ---

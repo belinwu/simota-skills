@@ -1,5 +1,14 @@
 # Pattern Taxonomy — Classification System
 
+Purpose: Read this file when assigning pattern dimensions, generating IDs, structuring `METAPATTERNS.md`, or deciding lifecycle state transitions.
+
+## Contents
+
+- 4-dimension classification
+- Pattern ID convention
+- `METAPATTERNS.md` full schema
+- Pattern lifecycle
+
 How Lore classifies, names, and structures patterns in METAPATTERNS.md.
 
 ---

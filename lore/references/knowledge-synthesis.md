@@ -1,5 +1,17 @@
 # Knowledge Synthesis — Pattern Extraction Methodology
 
+Purpose: Read this file when harvesting journals, clustering similar insights, deduplicating candidates, resolving contradictions, or producing the Lore synthesis report.
+
+## Contents
+
+- Harvest protocol
+- Clustering algorithm
+- Relationship tracking
+- Deduplication protocol
+- Confidence scoring
+- Contradiction resolution
+- Synthesis report output
+
 How Lore harvests, clusters, deduplicates, and scores patterns from agent journals.
 
 ---

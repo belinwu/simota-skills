@@ -1,5 +1,17 @@
 # Decay Detection — Knowledge Freshness Management
 
+Purpose: Read this file when evaluating freshness, applying domain TTL multipliers, revalidating stale patterns, or deciding archive and resurrection actions.
+
+## Contents
+
+- Freshness states
+- Domain-specific freshness policy
+- Decay signals
+- Audit protocol
+- Revalidation protocol
+- Archive management
+- Health score contribution
+
 How Lore monitors knowledge freshness, detects staleness, and manages the lifecycle of patterns.
 
 ---
