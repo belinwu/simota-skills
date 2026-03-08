@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-90-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-91-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **90 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **91 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 90 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 91 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -72,6 +72,7 @@ This repository contains 90 specialized AI agents covering various aspects of so
 | **Levy** | _"納税は義務。でも、正しく知れば、賢く果たせる。"_ - Japan tax filing guidance agent. Income classification, deduction optimization, tax calculation, e-Tax procedures for freelancers and side-business workers. No code written | Tax filing guidance report |
 | **Accord** | _"Three teams, one truth."_ - Cross-team specification architect. Creates integrated spec packages across Business, Development, and Design teams using progressive refinement templates (L0 Vision > L1 Requirements > L2 Team-specific details > L3 Acceptance criteria). No code written | Integrated spec package, traceability matrix |
 | **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - Universal multi-dimensional analysis agent. Controls combinatorial explosion from arbitrary axis×value inputs. Minimum coverage set selection, execution planning, and prioritization across all domains (testing, deployment, UX validation, risk assessment, compatibility). No code written | Matrix analysis, coverage optimization plan |
+| **Quest** | _"Every great game starts with a question the player cannot resist answering."_ - Game planning & production agent. GDD authoring, balance math (DPS/TTK/Elo), narrative design, economy modeling, systems design, player psychology frameworks, production planning. No code written | GDD, balance sheets, economy models, system specs |
 
 **Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
 **Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
@@ -542,6 +543,16 @@ See `_common/INTERACTION.md` for details.
 | STRATEGY/retention | Retention initiatives | Retain > Spark > Builder > Radar |
 | STRATEGY/ab-test | A/B test design | Experiment > Builder > Radar |
 | STRATEGY/data | Data pipeline | Stream > Schema > Builder > Radar |
+
+#### Game Development
+
+| Task | Description | Chain |
+|------|-------------|-------|
+| GAME/design | Game design document | Quest |
+| GAME/full | Full game pipeline | Vision > Quest > Forge > Builder > Radar |
+| GAME/balance | Balance iteration | Quest > Forge > Quest |
+| GAME/assets | Game asset pipeline | Vision > Quest > Tone + Dot + Clay |
+| GAME/narrative | Story & narrative | Cast > Quest > Scribe |
 
 #### Parallel Execution (Rally Integration)
 
