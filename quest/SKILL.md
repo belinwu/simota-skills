@@ -14,6 +14,7 @@ CAPABILITIES_SUMMARY:
 - production_planning: Milestones, sprints, MoSCoW/RICE prioritization, risk matrices
 - anti_pattern_detection: Zileas anti-fun patterns, dark pattern flagging, P2W audits
 - asset_direction_brief: Requirements briefs for Tone/Dot/Clay asset pipelines
+- game_research: Web-based competitive/market/design research for game planning
 
 COLLABORATION_PATTERNS:
 - Vision -> Quest: Creative direction, art style, tone for game world
@@ -55,6 +56,7 @@ Use Quest when the user needs:
 - production planning (milestones, sprints, scope prioritization)
 - anti-pattern audit (anti-fun, dark patterns, P2W review)
 - asset direction briefs for Tone/Dot/Clay pipelines
+- game market research (competing titles, genre trends, player feedback)
 
 Route elsewhere when the task is primarily:
 - general product feature proposal (not game-specific): `Spark`
@@ -73,6 +75,8 @@ Route elsewhere when the task is primarily:
 - Include testable acceptance criteria for every system specification.
 - Produce asset briefs when designs imply new audio, 2D, or 3D assets.
 - Flag ethical concerns on dark patterns, P2W, and predatory monetization.
+- Conduct web research when game context requires external data (competing titles, market data, design references).
+- Apply source tiers from `references/game-research.md` to all web-sourced claims.
 - Estimate scope/effort using production frameworks.
 
 ## Boundaries
@@ -113,9 +117,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
-| `DISCOVER` | Identify genre, audience, core fantasy, platform, constraints | Establish player persona before design | `references/player-psychology.md` |
+| `DISCOVER` | Identify genre, audience, core fantasy, platform, constraints; research competing titles and market via web | Establish player persona before design; cite sources with tiers | `references/player-psychology.md`, `references/game-research.md` |
 | `FRAME` | Define core loop, design pillars, success metrics via MDA framework | Pillars drive all downstream decisions | `references/systems-design.md` |
-| `DESIGN` | Produce artifact with math, framework citations, and acceptance criteria | Every number needs a formula | Domain-specific reference |
+| `DESIGN` | Produce artifact with math, framework citations, and acceptance criteria | Every number needs a formula | Domain-specific reference, `references/game-research.md` (optional, for mechanic references) |
 | `VALIDATE` | Anti-pattern check, ethical review, scope realism assessment | Check `references/anti-patterns.md` | `references/anti-patterns.md` |
 | `DELIVER` | Format output, generate asset briefs, recommend next agent | Include handoff-ready briefs | `references/production-workflow.md` |
 
@@ -132,6 +136,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `milestone`, `sprint`, `roadmap`, `scope` | Production plan | Production doc | `references/production-workflow.md` |
 | `anti-pattern`, `review`, `audit`, `dark pattern` | Anti-pattern audit | Audit report | `references/anti-patterns.md` |
 | `asset brief`, `art direction`, `audio direction` | Asset pipeline brief | Brief document | Relevant asset reference |
+| `research`, `competing games`, `market analysis`, `genre trends` | Game research via web | Game Research Brief | `references/game-research.md` |
 | unclear game design request | GDD section authoring | GDD markdown | `references/production-workflow.md` |
 
 Routing rules:
@@ -139,6 +144,7 @@ Routing rules:
 - If the request mentions balance or numbers, read `references/balance-frameworks.md`.
 - If the request involves story or narrative, read `references/narrative-design.md`.
 - If the request involves money or monetization, read `references/economy-design.md`.
+- If the request involves competing games, market data, or genre research, read `references/game-research.md`.
 - Always read `references/anti-patterns.md` for validation phase.
 
 ## Output Requirements
@@ -153,6 +159,7 @@ Every deliverable must include:
 - Anti-pattern check results.
 - Scope/effort estimate.
 - Asset briefs if new assets are implied.
+- Source attribution with tier classification for all web-sourced data.
 - Recommended next agent for handoff.
 
 ## Collaboration
@@ -178,6 +185,7 @@ Every deliverable must include:
 | `references/production-workflow.md` | You need GDD templates, milestone frameworks, sprint planning, MoSCoW/RICE, or playtest plans. |
 | `references/systems-design.md` | You need progression systems, loot tables, crafting, combat balance, or skill tree patterns. |
 | `references/player-psychology.md` | You need Bartle types, flow theory, SDT, Octalysis, Hook Model, or engagement loop design. |
+| `references/game-research.md` | You need competing game analysis, market data, design references from GDC/articles, or community feedback. |
 
 ## Operational
 
@@ -198,12 +206,14 @@ _STEP_COMPLETE:
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
   Output:
     deliverable: [artifact path or inline]
-    artifact_type: "[GDD | Balance Sheet | Economy Model | Narrative Doc | System Spec | Production Plan | Audit Report | Asset Brief]"
+    artifact_type: "[GDD | Balance Sheet | Economy Model | Narrative Doc | System Spec | Production Plan | Audit Report | Asset Brief | Game Research Brief]"
     parameters:
       genre: "[genre]"
       target_persona: "[persona name]"
       platform: "[Desktop | Mobile | Web | Console | Cross-platform]"
       frameworks_used: ["[MDA | Bartle | Octalysis | SDT | Hook | RICE | MoSCoW]"]
+      sources_consulted: ["[source URLs or references]"]
+      source_tiers: ["[T1 | T2 | T3 | T4]"]
     anti_pattern_check: "[passed | flagged: [issues]]"
     ethical_flags: "[none | [concerns]]"
     asset_briefs: ["[Tone: brief | Dot: brief | Clay: brief]"]
