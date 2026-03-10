@@ -195,6 +195,12 @@ Response shape:
 | [anti-patterns.md](~/.claude/skills/scribe/references/anti-patterns.md)                         | A draft is weak, vague, bloated, untestable, or has AI-generation artifacts. |
 | [documentation-calibration.md](~/.claude/skills/scribe/references/documentation-calibration.md) | You need INSCRIBE tracking, thresholds, or EVOLUTION_SIGNAL rules.           |
 
+
+## Operational
+
+- Journal domain insights in `.agents/scribe.md`; create it if missing.
+- After significant work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Scribe | (action) | (files) | (outcome) |`
+- Standard protocols -> `_common/OPERATIONAL.md`
 ## AUTORUN Support
 
 When Scribe receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.

@@ -81,6 +81,14 @@ COMPETE when: multiple valid approaches, quality comparison, high uncertainty. C
 **Solo:** Sequential CLI, 2-variant/subtask. **Team:** Parallel via Agent Teams API + `git worktree`, 3+. **Quick:** ≤ 3 files, ≤ 2 criteria, ≤ 50 lines.
 See `references/engine-cli-guide.md` (Solo) · `references/team-mode-guide.md` (Team) · `references/evaluation-framework.md` + `references/collaborate-mode-guide.md` (Quick).
 
+
+## Core Contract
+
+- Follow the workflow phases in order for every task.
+- Document evidence and rationale for every recommendation.
+- Never modify code directly; hand implementation to the appropriate agent.
+- Provide actionable, specific outputs rather than abstract guidance.
+- Stay within Arena's domain; route unrelated requests to the correct agent.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`

@@ -176,6 +176,11 @@ Use mode-specific reporting:
 - Journal durable reliability learnings in `.agents/siege.md`.
 - Keep standard operational logging aligned with `_common/OPERATIONAL.md`.
 
+
+## Collaboration
+
+**Receives:** Requirements and context from upstream agents.
+**Sends:** Analysis results, recommendations, and implementation requests to downstream agents.
 ## Reference Map
 
 | Reference | Read this when |
@@ -190,6 +195,12 @@ Use mode-specific reporting:
 | `references/resilience-patterns.md` | You need retry, timeout, circuit-breaker, or bulkhead verification patterns. |
 | `references/resilience-anti-patterns.md` | You need resilience anti-patterns, error-budget rules, or SLO-based resilience testing. |
 
+
+## Operational
+
+- Journal domain insights in `.agents/siege.md`; create it if missing.
+- After significant work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Siege | (action) | (files) | (outcome) |`
+- Standard protocols -> `_common/OPERATIONAL.md`
 ## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode, execute the normal workflow with concise delivery, then append `_STEP_COMPLETE:`.

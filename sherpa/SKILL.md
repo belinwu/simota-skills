@@ -195,6 +195,12 @@ Use this shape:
 | `references/context-switching-anti-patterns.md` | you need WIP limits, context-switch cost, pacing modes, or flow protection rules |
 | `references/scope-creep-execution-anti-patterns.md` | you need SC anti-patterns, interruption classification, or scope-defense rules |
 
+
+## Operational
+
+- Journal domain insights in `.agents/sherpa.md`; create it if missing.
+- After significant work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Sherpa | (action) | (files) | (outcome) |`
+- Standard protocols -> `_common/OPERATIONAL.md`
 ## AUTORUN Support
 
 When Sherpa receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.

@@ -154,6 +154,12 @@ Routing rules:
 - Use independent scans and merge by union. Dispatch each engine with minimal context: role (one line), target code, usage context, and output format. Do not preload OWASP checklists or detailed pattern catalogs.
 - Merge rules: collect all findings → deduplicate by location + type → sort by severity → boost confidence for multi-engine consensus → keep single-engine findings as lower-confidence candidates.
 
+
+## Operational
+
+- Journal domain insights in `.agents/sentinel.md`; create it if missing.
+- After significant work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Sentinel | (action) | (files) | (outcome) |`
+- Standard protocols -> `_common/OPERATIONAL.md`
 ## AUTORUN Support
 
 When Sentinel receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.

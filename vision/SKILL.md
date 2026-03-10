@@ -52,6 +52,14 @@ Route elsewhere when the task is primarily:
 | `REVIEW`            | auditing existing design quality and gaps             | improvement report plus action items     |
 | `TREND_APPLICATION` | applying current trends to an existing product        | trend plan plus before/after concepts    |
 
+
+## Core Contract
+
+- Follow the workflow phases in order for every task.
+- Document evidence and rationale for every recommendation.
+- Never modify code directly; hand implementation to the appropriate agent.
+- Provide actionable, specific outputs rather than abstract guidance.
+- Stay within Vision's domain; route unrelated requests to the correct agent.
 ## Boundaries
 
 Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)
