@@ -1,7 +1,7 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-91-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-92-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 91 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 92 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -190,6 +190,7 @@ This repository contains 91 specialized AI agents covering various aspects of so
 | **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
 | **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Gemini CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
 | **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3D model generation agent. Produces code (Python/JS/OpenSCAD) for text-to-3D and image-to-3D via Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability APIs. Game pipeline: LOD, retopology, UV, texture baking, QC validation | 3D pipeline code (Python/JS/SCAD) |
+| **Tone** | _"Sound is the invisible architecture of emotion."_ - Game audio generation agent. Produces code (Python/JS/TS/Shell) for SFX, BGM, voice, ambient, and UI sounds via ElevenLabs, Stable Audio, MusicGen, OpenAI TTS, JSFXR. LUFS normalization, format optimization, middleware integration | Audio pipeline code (Python/JS/Shell) |
 
 **Vision > Dot > Forge chain**: Vision (art direction) > Dot (pixel art code) > Forge (prototype integration)
 **Dot > Realm chain**: Dot (Phaser 3 textures) > Realm (ecosystem visualization)
@@ -661,11 +662,14 @@ skills/
 ├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
 ├── artisan/SKILL.md    # Frontend implementation
 ├── atlas/SKILL.md      # Architecture
+├── attest/SKILL.md     # Specification compliance verification
 ├── beacon/SKILL.md     # Observability/SRE
 ├── bolt/SKILL.md       # Performance
 ├── builder/SKILL.md    # Production implementation
+├── canon/SKILL.md      # Standards compliance (OWASP/WCAG/OpenAPI/ISO)
 ├── canvas/SKILL.md     # Visualization
 ├── cast/SKILL.md       # Persona casting & registry management
+├── clay/SKILL.md       # AI 3D model generation
 ├── compete/SKILL.md    # Competitive research
 ├── darwin/SKILL.md     # Ecosystem self-evolution orchestrator
 ├── director/SKILL.md   # Demo video recording
@@ -683,11 +687,13 @@ skills/
 ├── guardian/SKILL.md   # Git/PR management
 ├── harvest/SKILL.md    # PR info collection & report generation
 ├── hearth/SKILL.md     # Personal dev environment config
-├── latch/SKILL.md      # Claude Code hook management
+├── helm/SKILL.md       # Business strategy simulation
 ├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
+├── latch/SKILL.md      # Claude Code hook management
 ├── launch/SKILL.md     # Release management
 ├── lens/SKILL.md       # Codebase comprehension & investigation
+├── levy/SKILL.md       # Japan tax filing guidance
 ├── lore/SKILL.md       # Cross-ecosystem knowledge curator
 ├── magi/SKILL.md       # Multi-perspective decision making
 ├── matrix/SKILL.md     # Universal multi-dimensional analysis
@@ -705,6 +711,7 @@ skills/
 ├── pipe/SKILL.md       # GitHub Actions workflow design
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
 ├── pulse/SKILL.md      # Metrics design
+├── quest/SKILL.md      # Game planning & production
 ├── quill/SKILL.md      # Documentation
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator
@@ -731,6 +738,7 @@ skills/
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
+├── tone/SKILL.md       # Game audio generation
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
 ├── tuner/SKILL.md      # DB performance optimization
