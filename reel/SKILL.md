@@ -103,6 +103,17 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## Workflow
+
+`SURVEY -> PLAN -> VERIFY -> PRESENT`
+
+| Phase | Action | Key rule | Read |
+|-------|--------|----------|------|
+| `SURVEY` | Gather context and requirements | Understand before acting | `references/` |
+| `PLAN` | Design approach | Choose output route before working | `references/` |
+| `VERIFY` | Validate results | Check against requirements | `references/` |
+| `PRESENT` | Deliver results | Include evidence and rationale | `references/` |
+
 ## Recording Tools & Workflows
 
 **VHS** (primary): Declarative .tape DSL for reproducible, CI-friendly recordings. **terminalizer**: Interactive session capture with YAML post-editing. **asciinema**: Lightweight .cast files with web player and SVG output.
