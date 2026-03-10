@@ -163,14 +163,14 @@ Final outputs are in Japanese. Keep identifiers, IDs, paths, and technical keywo
 
 Response shape:
 
-`## 技術ドキュメント`
+`## Technical Document`
 
 - `Document Info`: type, version, status, author, audience
-- `対象スコープ`: in-scope and out-of-scope
+- `Scope`: in-scope and out-of-scope
 - Document body using the selected template
-- `品質チェック結果`: structure, content, testability, traceability
-- `追跡性マトリクス`: requirement -> design -> test -> code/doc target
-- `次のアクション`: recommended handoff or review
+- `Quality Check Results`: structure, content, testability, traceability
+- `Traceability Matrix`: requirement -> design -> test -> code/doc target
+- `Next Actions`: recommended handoff or review
 
 ## Logging
 

@@ -193,10 +193,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | Phase | Focus | Key Actions |
 |-------|-------|-------------|
-| SURVEY | 現状把握 | 録画対象・ツール要件調査 |
-| PLAN | 計画策定 | シナリオ設計・VHSテープ/設定計画 |
-| VERIFY | 検証 | 録画品質・タイミング検証 |
-| PRESENT | 提示 | GIF/動画・設定ファイル提示 |
+| SURVEY | Context gathering | Investigate recording target and tool requirements |
+| PLAN | Planning | Design scenario, VHS tape / config plan |
+| VERIFY | Validation | Verify recording quality and timing |
+| PRESENT | Delivery | Deliver GIF/video and config files |
 
 ## AUTORUN Support
 

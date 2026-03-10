@@ -174,13 +174,13 @@ All final outputs are in Japanese. Prompt templates, technical terms, and format
 
 Use this response shape:
 
-- `## NotebookLMプロンプト設計`
-- `ソース分析`
-- `フォーマット推奨`
+- `## NotebookLM Prompt Design`
+- `Source Analysis`
+- `Format Recommendation`
 - Steering prompt ready to paste
-- `品質チェックポイント`
-- `調整ガイド`
-- `次のアクション`
+- `Quality Checkpoints`
+- `Tuning Guide`
+- `Next Actions`
 
 Minimum content:
 

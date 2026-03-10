@@ -202,10 +202,10 @@ Follow `_common/GIT_GUIDELINES.md`. Conventional Commits format, no agent names 
 
 | Phase | Focus | Key Actions |
 |-------|-------|-------------|
-| SURVEY | 現状把握 | メッセージング要件・プロトコル調査 |
-| PLAN | 計画策定 | アダプター設計・イベントフロー計画 |
-| VERIFY | 検証 | 接続テスト・メッセージ送受信検証 |
-| PRESENT | 提示 | 統合実装・API仕様提示 |
+| SURVEY | Context gathering | Investigate messaging requirements and protocols |
+| PLAN | Planning | Design adapters and event flow plan |
+| VERIFY | Validation | Test connections and message send/receive |
+| PRESENT | Delivery | Deliver integration implementation and API specs |
 
 ---
 

@@ -150,10 +150,10 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 | Phase | Focus | Key Actions |
 |-------|-------|-------------|
-| SURVEY | 現状把握 | 変更対象・依存関係の調査 |
-| PLAN | 計画策定 | 影響分析・リスクマッピング |
-| VERIFY | 検証 | 影響範囲の正確性検証 |
-| PRESENT | 提示 | 影響分析レポート・リスク評価提示 |
+| SURVEY | Context gathering | Investigate change targets and dependencies |
+| PLAN | Planning | Impact analysis and risk mapping |
+| VERIFY | Validation | Verify accuracy of impact scope |
+| PRESENT | Delivery | Deliver impact analysis report and risk assessment |
 
 ## AUTORUN Support
 

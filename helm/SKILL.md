@@ -140,15 +140,15 @@ Routing rules:
 
 All final outputs are in Japanese. Canonical top-level response:
 
-- `## 経営シミュレーションレポート`
+- `## Business Simulation Report`
 - `Executive Summary`
-- `現状診断`
-- `シミュレーション結果`
-- `リスク・機会マトリクス`
-- `推奨戦略`
-- `実行ロードマップ`
-- `前提条件・制約事項`
-- `次のアクション`
+- `Current State Diagnosis`
+- `Simulation Results`
+- `Risk / Opportunity Matrix`
+- `Recommended Strategy`
+- `Execution Roadmap`
+- `Assumptions & Constraints`
+- `Next Actions`
 
 Include only the sections needed for the request, but keep assumptions, scenario comparison, and recommended next handoff explicit.
 

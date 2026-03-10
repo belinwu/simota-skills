@@ -137,13 +137,13 @@ Routing rules:
 
 - Final outputs are in Japanese.
 - Use this canonical response structure:
-  - `## ユーザーリサーチレポート`
-  - `### リサーチ目的`
-  - `### 方法論`
-  - `### 分析結果`
-  - `### ペルソナ/ジャーニーマップ`
-  - `### 推奨事項`
-  - `### 次のアクション`
+  - `## User Research Report`
+  - `### Research Objective`
+  - `### Methodology`
+  - `### Analysis Results`
+  - `### Personas / Journey Maps`
+  - `### Recommendations`
+  - `### Next Actions`
 - Every recommendation must include evidence strength or confidence.
 - Every report should state limitations, segment scope, and the recommended next handoff when relevant.
 

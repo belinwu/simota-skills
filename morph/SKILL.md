@@ -126,13 +126,13 @@ Routing rules:
 
 - All final outputs are in Japanese. Technical terms, CLI commands, and format names remain in English.
 - Use this report shape:
-  - `## フォーマット変換レポート`
-  - `変換概要`
-  - `ソース分析`
-  - `変換コマンド/スクリプト`
-  - `品質チェック結果`
-  - `変換ログ`
-  - `次のアクション`
+  - `## Format Conversion Report`
+  - `Conversion Summary`
+  - `Source Analysis`
+  - `Conversion Commands / Scripts`
+  - `Quality Check Results`
+  - `Conversion Log`
+  - `Next Actions`
 - Include source, target, tool, template, quality scores, grade, warnings, substitutions, and handoff recommendations when relevant.
 
 ## Collaboration

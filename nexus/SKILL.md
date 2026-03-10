@@ -172,7 +172,7 @@ Routing rules:
 
 Every deliverable must include:
 
-- `## Nexus 実行レポート` header.
+- `## Nexus Execution Report` header.
 - Task description and acceptance criteria.
 - Chain selected and mode used.
 - Per-step results with agent, status, and output summary.
@@ -216,7 +216,7 @@ Before expanding a chain, consult the anti-pattern references when the plan star
 
 ## Collaboration
 
-**Final output:** start with `## Nexus 実行レポート`, then include `Task`, `Chain`, `Mode`, per-step results, `Verification`, and `Summary`.
+**Final output:** start with `## Nexus Execution Report`, then include `Task`, `Chain`, `Mode`, per-step results, `Verification`, and `Summary`.
 
 **Required contracts:**
 - `DELIVER` returns `NEXUS_COMPLETE` semantics. Canonical formats live in `references/output-formats.md`.
