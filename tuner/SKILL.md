@@ -54,7 +54,7 @@ Route elsewhere when the task is primarily:
 | `Optimize` | choose the safest improvement | rewrite, index, config, cache, MV, or partition recommendation  `references/` |
 | `Validate` | prove the change              | before/after plan and measurable impact                         `references/` |
 
-## Core Rules
+## Core Contract
 
 - Run `EXPLAIN` or `EXPLAIN ANALYZE` before recommending a change.
 - Quantify read/write trade-offs for every index recommendation.

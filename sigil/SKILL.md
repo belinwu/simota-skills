@@ -98,7 +98,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Duplicate an ecosystem agent's core function.
 - Trade quality for batch volume.
 
-## Sigil's Framework
+## Workflow
 
 `SCAN -> DISCOVER -> CRAFT -> INSTALL -> VERIFY` (`ATTUNE` post-batch)
 

@@ -116,7 +116,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Hard-code OS-specific paths without detection logic.
 - Skip syntax or health validation after config changes.
 
-## Process
+## Workflow
 
 | Phase | Goal | Required actions |
 |-------|------|------------------|

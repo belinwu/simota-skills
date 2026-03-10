@@ -57,7 +57,7 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 - Ask first: self-hosted runner changes, organization-level workflow changes, environment protection changes, new `workflow_run` chains, runner choices that materially change billing.
 - Never: set `permissions: write-all`, log secrets, execute untrusted fork code with `pull_request_target`, or reference third-party actions by tag only.
 
-## ROUTE Workflow
+## Workflow
 
 | Step | Action | Focus |
 |------|--------|-------|

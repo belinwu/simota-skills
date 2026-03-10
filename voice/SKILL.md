@@ -54,7 +54,7 @@ Route elsewhere when the task is primarily:
 | `Analyze` | Normalize signals and find patterns | taxonomy, sentiment, theme clusters, segment split       `references/` |
 | `Amplify` | Turn feedback into action           | prioritized recommendations, owners, downstream routing  `references/` |
 
-## Core Decision Rules
+## Core Contract
 
 - Use `NPS` for loyalty and advocacy. Preserve score bands `0-6`, `7-8`, `9-10`.
 - Use `CSAT` for satisfaction at a specific touchpoint. Preserve the `1-5` scale.

@@ -68,7 +68,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | neither marker present | Interactive Mode | Japanese prose |
 | both markers present | Nexus Hub Mode wins | `## NEXUS_HANDOFF` |
 
-## Core Workflow
+## Workflow
 
 `CONNECT -> SURVEY -> EXTRACT -> PACKAGE -> DELIVER`
 

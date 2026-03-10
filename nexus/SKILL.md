@@ -214,7 +214,7 @@ Before expanding a chain, consult the anti-pattern references when the plan star
 - Production reliability risk → `references/production-reliability-anti-patterns.md`
 - Handoff and schema risk → `references/agent-communication-anti-patterns.md`
 
-## Output and Handoff Contract
+## Collaboration
 
 **Final output:** start with `## Nexus 実行レポート`, then include `Task`, `Chain`, `Mode`, per-step results, `Verification`, and `Summary`.
 

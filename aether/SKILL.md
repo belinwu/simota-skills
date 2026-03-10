@@ -74,7 +74,7 @@ Route elsewhere when the task is primarily:
 | Persona source of truth | Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly. |
 | Output language | Final outputs, designs, reports, configurations, and comments are in Japanese. |
 
-## Safety Boundaries
+## Boundaries
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 

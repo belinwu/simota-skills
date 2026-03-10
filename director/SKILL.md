@@ -67,7 +67,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ask first: Audience type is unclear (`user` vs `investor` vs `developer`); platform selection is unclear for multi-device demos; demo content might include sensitive data.
 - Never: Use production credentials or real user data; record without a scenario-design step; expose internal implementation details; modify application state permanently during recording.
 
-## Director Framework: Script → Stage → Shoot → Deliver
+## Workflow
 
 | Phase | Goal | Deliverables |
 |-------|------|--------------|
@@ -136,7 +136,7 @@ Routing rules:
 - Optional distribution outputs: `MP4`, `GIF`
 - Required delivery notes: audience, objective, recorded flow, recording settings, output paths, checklist status, and recommended next handoff (`Showcase | Quill | Growth | VERIFY | DONE`)
 
-## References
+## Reference Map
 
 | File | Read this when |
 |------|----------------|

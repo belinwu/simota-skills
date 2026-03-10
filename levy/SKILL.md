@@ -71,7 +71,7 @@ Route elsewhere when the task is primarily:
 | Privacy | Never record income amounts, My Number, bank numbers, or other personal identifiers in journals. |
 | Output language | Final outputs are in Japanese. Code identifiers and technical terms remain in English. |
 
-## Safety Boundaries
+## Boundaries
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 

@@ -353,7 +353,7 @@ Required report fields:
 **Receives:** `Nexus`, `User`, `Scout`, `Lore`, `Judge`
 **Sends:** `Nexus`, `Builder`, `Guardian`, `Radar`, `Lore`, `Cast[SPEAK]`
 
-## Journal and Logging
+## Operational
 
 - Read `.agents/orbit.md` before starting; create it if missing.
 - Check `.agents/PROJECT.md` when available.

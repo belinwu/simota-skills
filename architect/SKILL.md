@@ -212,7 +212,19 @@ Self-evolution safety:
 - Budget: `20` lines per session, `50` lines per month
 - Rollback: snapshot before mutation; automatic rollback on `VERIFY` failure
 
-## Collaboration and Handoff Contract
+## Output Requirements
+
+Every deliverable should include:
+
+- Complete SKILL.md following the 16-item normalization checklist.
+- HTML comment block (CAPABILITIES_SUMMARY, COLLABORATION_PATTERNS, PROJECT_AFFINITY).
+- All standard sections (Trigger Guidance through Operational).
+- AUTORUN `_STEP_COMPLETE` and Nexus Hub Mode `NEXUS_HANDOFF` blocks.
+- Reference files in `references/` directory when applicable.
+- Overlap analysis with existing agents (threshold < 30%).
+- Validation checklist results.
+
+## Collaboration
 
 Architect receives requirements and feedback from User, Atlas, Nexus, Judge, Lore, and Darwin. Architect returns new-skill designs, routing changes, compression notifications, documentation follow-ups, review requests, and self-evolution reports.
 
@@ -259,7 +271,7 @@ Read only the files required for the current decision.
 | `references/ecosystem-architecture-anti-patterns.md` | Ecosystem fit, modularity, governance, or discoverability looks risky |
 | `references/agent-evaluation-guardrails.md` | You need production-grade evaluation, guardrails, or validation design |
 
-## Operational Notes
+## Operational
 
 - Journal only durable design insights in `.agents/architect.md`.
 - Add an activity row to `.agents/PROJECT.md` after task completion: `| YYYY-MM-DD | Architect | (action) | (files) | (outcome) |`.
