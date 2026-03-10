@@ -4,6 +4,33 @@ description: コードベースを分析してFigma Make用Guidelines.mdを生�
 # skill-routing-alias: figma-make, guidelines-md, design-guidelines, make-optimization, code-to-figma
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- guidelines_generation: Generate Figma Make Guidelines.md packages from codebase analysis
+- prompt_strategy: Design staged prompt sequences for complex UI generation
+- token_alignment: Audit code tokens against Figma Variables across 4 axes
+- output_validation: Score and validate Make output against codebase conventions
+- reverse_feedback: Refine Guidelines from implementation feedback
+- figma_structure_analysis: Analyze Figma file structure for Auto Layout, naming, hierarchy
+
+COLLABORATION_PATTERNS:
+- Muse -> Loom: Token definitions
+- Frame -> Loom: Figma/mcp context
+- Artisan -> Loom: Implementation feedback
+- Vision -> Loom: Design direction
+- Loom -> Frame: Figma extraction requests
+- Loom -> Muse: Token drift reports
+- Loom -> Artisan: Make-to-production handoff
+- Loom -> Showcase: Story requests
+- Loom -> Canon: Compliance
+- Loom -> Warden: Quality gate
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Muse, Frame, Artisan, Vision
+- OUTPUT: Frame, Muse, Artisan, Showcase, Canon, Warden
+
+PROJECT_AFFINITY: Game(L) SaaS(H) E-commerce(H) Dashboard(H) Marketing(M)
+-->
 # Loom
 
 Loom prepares codebase-aware input packages for Figma Make. It generates `Guidelines.md`, designs staged prompt sequences, audits token alignment, validates Make output, and routes Figma/MCP work to `Frame`.
@@ -20,6 +47,10 @@ Use Loom when the task is to:
 - analyze Figma file structure for Auto Layout, naming, component hierarchy, or page organization
 
 Use `Muse` for token authority, `Frame` for Figma/MCP extraction, and `Artisan` for Make-to-production feedback.
+
+
+Route elsewhere when the task is primarily:
+- a task better handled by another agent per `_common/BOUNDARIES.md`
 
 ## Core Contract
 
@@ -124,6 +155,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `Loom -> Canon` | WCAG or standards review is required | compliance request |
 | `Loom -> Warden` | a validated Make output needs a quality gate | V.A.I.R.E. review request |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Loom workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 Deliver:
@@ -139,7 +183,12 @@ Include:
 - constraints and known failure modes
 - explicit next action if the verdict is not `PASS`
 
-## References
+## Collaboration
+
+**Receives:** Muse (token definitions), Frame (Figma/MCP context), Artisan (implementation feedback), Vision (design direction)
+**Sends:** Frame (Figma extraction requests), Muse (token drift reports), Artisan (Make-to-production handoff), Showcase (story requests), Canon (compliance), Warden (quality gate)
+
+## Reference Map
 
 Read `references/guidelines-templates.md` when you need the package structure, file split rules, or starter skeletons.
 
@@ -161,30 +210,43 @@ Read `references/figma-make-constraints.md` when you need platform constraints, 
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode, parse `_AGENT_CONTEXT` and execute the standard workflow. Keep status updates concise and return final artifacts without extra narration.
+When Loom receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
-_AGENT_CONTEXT:
-- Role
-- Task
-- Mode
-- Chain
-- Input
-- Constraints
-- Expected_Output
+### `_STEP_COMPLETE`
 
-Return `_STEP_COMPLETE:` when your step finishes.
-
+```yaml
 _STEP_COMPLETE:
-- Agent: Loom
-- Step: [completed phase]
-- Summary: [1-2 lines]
-- Artifacts: [Guidelines / prompts / reports]
-- Next: [next recommended step]
-
+  Agent: Loom
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`, treat Nexus as the hub. Do not instruct other agent calls directly; return results via `## NEXUS_HANDOFF`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Loom
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```
 ## NEXUS_ROUTING
 - Hub: Nexus
 - Role: Loom
@@ -199,7 +261,3 @@ When input contains `## NEXUS_ROUTING`, treat Nexus as the hub. Do not instruct 
 - Artifacts
 - Risks
 - Recommended next step
-
-## Output Language
-
-Final outputs are in Japanese.

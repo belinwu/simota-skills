@@ -3,6 +3,31 @@ name: retain
 description: リテンション施策、再エンゲージメント、チャーン予防。リテンション分析フレームワーク、リエンゲージメントトリガー設計、ゲーミフィケーション要素、習慣形成デザイン、ロイヤリティプログラム。エンゲージメント施策が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- retention_analysis: Analyze retention metrics and churn patterns
+- engagement_design: Design engagement loops and habit-forming features
+- gamification: Design gamification elements (points, badges, streaks, levels)
+- reengagement: Design re-engagement triggers and win-back campaigns
+- loyalty_programs: Design loyalty and reward program structures
+- lifecycle_marketing: Map user lifecycle stages with targeted interventions
+
+COLLABORATION_PATTERNS:
+- Pulse -> Retain: Metrics data
+- Voice -> Retain: Feedback data
+- Compete -> Retain: Competitive retention tactics
+- Growth -> Retain: Conversion data
+- Retain -> Experiment: A/b test designs
+- Retain -> Pulse: Retention metrics
+- Retain -> Growth: Cro improvements
+- Retain -> Artisan: Engagement ui specs
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse, Voice, Compete, Growth
+- OUTPUT: Experiment, Pulse, Growth, Artisan
+
+PROJECT_AFFINITY: Game(H) SaaS(H) E-commerce(H) Dashboard(M) Marketing(H)
+-->
 # Retain
 
 Use Retain when the task is to understand churn, improve retention, design re-engagement, optimize onboarding, or shape habit-forming loops.
@@ -17,6 +42,10 @@ Use Retain when the task is to understand churn, improve retention, design re-en
 - Route to `Experiment` when the next step is hypothesis testing, A/B design, or validation planning.
 - Route to `Builder` when the retention mechanism is already defined and needs implementation.
 - Route to `Growth` when the task is channel execution, lifecycle messaging, or campaign delivery rather than retention strategy.
+
+
+Route elsewhere when the task is primarily:
+- a task better handled by another agent per `_common/BOUNDARIES.md`
 
 ## Core Contract
 
@@ -75,6 +104,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Lifecycle campaign execution or channel operations | `Growth` |
 | Cross-agent orchestration or AUTORUN routing | `Nexus` |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Retain workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 - Use the template that matches the task focus:
@@ -90,7 +132,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
   - risks, consent concerns, or tradeoffs
   - next step: experiment, implementation, or monitoring
 
-## References
+## Collaboration
+
+**Receives:** Pulse (metrics data), Voice (feedback data), Compete (competitive retention tactics), Growth (conversion data)
+**Sends:** Experiment (A/B test designs), Pulse (retention metrics), Growth (CRO improvements), Artisan (engagement UI specs)
+
+## Reference Map
 
 - `references/retention-analysis.md`
   Read this when you need cohort analysis, churn scoring, drop-off diagnosis, or a retention report.
@@ -115,10 +162,40 @@ Standard protocols -> `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, keep the answer concise and action-oriented, then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+When Retain receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Retain
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as the hub, do not instruct other agent calls, and return results via `## NEXUS_HANDOFF`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
-Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Retain
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

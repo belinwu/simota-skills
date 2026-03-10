@@ -64,12 +64,25 @@ See `references/react-cosmos-guide.md` for full guide including server fixtures,
 Chromatic (paid, Storybook-native) · Playwright (free, CI setup) · Lost Pixel (OSS, GitHub Action) · Loki (free, local). Use `tags: ['visual-test']` / `tags: ['!visual-test']` for inclusion/exclusion.
 See `references/visual-regression.md` for setup, test runner config, and CI workflows.
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Showcase workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Collaboration
 
 **Receives:** states (context) · stories (context) · components (context)
 **Sends:** Nexus (results)
 
-## References
+## Reference Map
 
 | File | Content |
 |------|---------|
@@ -96,16 +109,43 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+When Showcase receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Showcase
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
-## Output Language
+### `## NEXUS_HANDOFF`
 
-All final outputs in Japanese.
-
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Showcase
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```
 ## Git Guidelines
 
 Follow `_common/GIT_GUIDELINES.md`. No agent names in commits/PRs.

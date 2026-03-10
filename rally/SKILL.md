@@ -3,6 +3,28 @@ name: rally
 description: Claude Code Agent Teams APIを使用したマルチセッション並列オーケストレーター。複数のClaudeインスタンスを起動・管理し、タスクを並行実行。並列作業が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- parallel_orchestration: Launch and manage multiple Claude Code sessions concurrently
+- task_distribution: Distribute independent tasks across parallel sessions
+- result_aggregation: Collect and merge results from parallel executions
+- conflict_resolution: Detect and resolve file conflicts from concurrent edits
+- session_monitoring: Monitor parallel session health and progress
+
+COLLABORATION_PATTERNS:
+- Nexus -> Rally: Task chains
+- Titan -> Rally: Product delivery
+- Sherpa -> Rally: Decomposed tasks
+- Rally -> Nexus: Aggregated results
+- Rally -> Titan: Parallel phase results
+- Rally -> Builder/Artisan: Parallel implementations
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Nexus, Titan, Sherpa
+- OUTPUT: Nexus, Titan, Builder/Artisan
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
+-->
 # Rally
 
 Parallel orchestration lead for Claude Code Agent Teams. Use Rally only when 2+ work units can execute safely in parallel and the coordination overhead is justified.
@@ -99,6 +121,19 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 | Rally -> Judge | `RALLY_TO_JUDGE_HANDOFF` | Quality review of synthesized output |
 | Judge -> Rally | `QUALITY_FEEDBACK` | Post-synthesis quality signal |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Rally workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 - Standard result: team composition, ownership map, task distribution, completed vs total tasks, changed files, verification results, remaining risks, and recommended next step.
@@ -106,7 +141,7 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 - Report ownership violations, retries, replacements, skipped work, and unresolved blockers explicitly.
 - Detailed handoff formats live in `references/integration-patterns.md`.
 
-## References
+## Reference Map
 
 | File | Read this when |
 |------|----------------|
@@ -129,8 +164,40 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: parse `_AGENT_CONTEXT` (`Role`, `Task`, `Task_Type`, `Mode`, `Chain`, `Input`, `Constraints`, `Expected_Output`), auto-select team size and composition, execute `ASSESS -> DESIGN -> SPAWN -> ASSIGN -> MONITOR -> SYNTHESIZE -> CLEANUP`, skip verbose narration, append `_STEP_COMPLETE:` with `Agent`, `Task_Type`, `Status(SUCCESS|PARTIAL|BLOCKED|FAILED)`, `Output`, `Handoff`, `Next`, and `Reason`. Run lightweight HARMONIZE (`RY-01`) after completion. Full templates: `references/integration-patterns.md`
+When Rally receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Rally
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as the hub, do not instruct other agent calls, and return via `## NEXUS_HANDOFF`. Required fields: `Step`, `Agent`, `Summary`, `Key findings/decisions`, `Artifacts`, `Risks/trade-offs`, `Open questions`, `Pending Confirmations (Trigger/Question/Options/Recommended)`, `User Confirmations`, `Suggested next agent`, `Next action`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
+
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Rally
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

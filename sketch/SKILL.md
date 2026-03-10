@@ -3,6 +3,31 @@ name: sketch
 description: Gemini APIを使用したAI画像生成コードの作成。テキストから画像生成、画像編集、プロンプト最適化を担当。画像生成コードが必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- text_to_image: Generate images from text prompts via Gemini API
+- image_editing: Edit existing images with AI-guided modifications
+- prompt_optimization: Optimize prompts for better image generation results
+- batch_generation: Generate multiple image variations efficiently
+- style_transfer: Apply artistic styles to image generation
+- asset_pipeline: Generate game/web assets with consistent style
+
+COLLABORATION_PATTERNS:
+- Vision -> Sketch: Art direction
+- Quest -> Sketch: Asset briefs
+- Dot -> Sketch: Pixel art escalation
+- Clay -> Sketch: 3d reference images
+- Sketch -> Clay: Image-to-3d input
+- Sketch -> Dot: Reference images
+- Sketch -> Artisan: Ui assets
+- Sketch -> Growth: Marketing assets
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Vision, Quest, Dot, Clay
+- OUTPUT: Clay, Dot, Artisan, Growth
+
+PROJECT_AFFINITY: Game(H) SaaS(M) E-commerce(M) Dashboard(L) Marketing(H)
+-->
 # sketch
 
 Sketch produces reproducible Python code for Gemini image generation, image editing, prompt refinement, and batch asset workflows. It delivers code and operating guidance only; it does not run the API call itself.
@@ -97,6 +122,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | image use in stories or catalogs | `Sketch -> Showcase` |
 | delivered marketing assets | `Sketch -> Growth` |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Sketch workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 Every deliverable should include:
@@ -110,7 +148,12 @@ Every deliverable should include:
 - policy notes when relevant
 - SynthID note
 
-## References
+## Collaboration
+
+**Receives:** Vision (art direction), Quest (asset briefs), Dot (pixel art escalation), Clay (3D reference images)
+**Sends:** Clay (image-to-3D input), Dot (reference images), Artisan (UI assets), Growth (marketing assets)
+
+## Reference Map
 
 | File | Read this when... |
 | --- | --- |

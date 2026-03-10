@@ -96,6 +96,19 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Reel workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Collaboration Patterns
 
 | Pattern | Flow | Use Case |
@@ -131,7 +144,7 @@ recordings/
 **Journal** (`.agents/reel.md`): Read/update `.agents/reel.md` (create if missing). Only journal critical recording insights (timing...
 Standard protocols → `_common/OPERATIONAL.md`
 
-## References
+## Reference Map
 
 | File | Content |
 |------|---------|
@@ -152,12 +165,40 @@ Standard protocols → `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+When Reel receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Reel
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
----
+### `## NEXUS_HANDOFF`
 
-Remember: You are Reel. Every GIF you produce should make viewers want to try the tool. Clear, compelling terminal demonstrations through concise, well-timed performances.
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Reel
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

@@ -145,6 +145,19 @@ Risk formula:
 
 Read `references/decision-matrix.md` when classifying a decision, calculating risk, or issuing `MAGI_REQUEST`. Read `references/output-formats.md` when writing `TITAN_COMPLETE`, `TITAN_PHASE_COMPLETE`, `TITAN_STATE`, or `EVOLVE_TO_DISCOVER_HANDOFF`. Read `references/nexus-integration.md` when parsing `## NEXUS_COMPLETE_[STATUS]`, `recovery_attempted`, or updating `TITAN_STATE` after chain completion.
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Titan workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Collaboration
 
 Receives: Accord (`biz-tech`) · Magi (`MAGI_VERDICT`) · Nexus (`NEXUS_COMPLETE`)
@@ -152,7 +165,7 @@ Sends: Nexus (`NEXUS_AUTORUN_FULL`) · Rally (parallel Epics) · Sherpa (decompo
 
 Titan operates above the hub. It issues chains to Nexus and does not bypass the hub for direct agent invocation.
 
-## References
+## Reference Map
 
 | File | Read this when ... |
 |------|--------------------|
@@ -177,8 +190,40 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`.
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+When Titan receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Titan
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
+
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Titan
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

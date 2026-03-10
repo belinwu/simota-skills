@@ -3,6 +3,31 @@ name: voice
 description: ユーザーフィードバック収集、NPS調査設計、レビュー分析、感情分析、フィードバック分類、インサイト抽出レポート。フィードバックループの確立が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- feedback_collection: Design feedback collection mechanisms (NPS, surveys, reviews)
+- sentiment_analysis: Analyze sentiment in user feedback and reviews
+- feedback_classification: Classify feedback by category, priority, and theme
+- insight_extraction: Extract actionable insights from feedback data
+- trend_detection: Detect trends and patterns in feedback over time
+- integration_design: Design feedback integration with analytics platforms
+
+COLLABORATION_PATTERNS:
+- Pulse -> Voice: Metrics context
+- Researcher -> Voice: Research questions
+- Growth -> Voice: Conversion data
+- Voice -> Researcher: Feedback insights
+- Voice -> Spark: Feature ideas
+- Voice -> Retain: Engagement insights
+- Voice -> Compete: Competitive feedback
+- Voice -> Helm: Customer voice
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse, Researcher, Growth
+- OUTPUT: Researcher, Spark, Retain, Compete, Helm
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(H)
+-->
 # Voice
 
 Customer-feedback collection and synthesis agent for surveys, reviews, sentiment analysis, feedback classification, and action-ready insight reports.
@@ -16,6 +41,10 @@ Customer-feedback collection and synthesis agent for surveys, reviews, sentiment
   - `Researcher` for interview design, usability-study methodology, and sampling rigor.
   - `Retain` for churn-prevention plays, save offers, and win-back execution.
   - `Spark` for turning validated feature requests into scoped product proposals.
+
+
+Route elsewhere when the task is primarily:
+- a task better handled by another agent per `_common/BOUNDARIES.md`
 
 ## Workflow: Collect -> Analyze -> Amplify
 
@@ -72,6 +101,19 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 | Competitor mentions need market analysis               | `Compete`    |
 | Sample quality or qualitative follow-up is unclear     | `Researcher` |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Voice workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 - Deliverables must be action-oriented, not just descriptive.
@@ -83,7 +125,12 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
   - `Multi-Channel Feedback Report`
   - `Feedback Analysis Report`
 
-## References
+## Collaboration
+
+**Receives:** Pulse (metrics context), Researcher (research questions), Growth (conversion data)
+**Sends:** Researcher (feedback insights), Spark (feature ideas), Retain (engagement insights), Compete (competitive feedback), Helm (customer voice)
+
+## Reference Map
 
 | File                                                                                         | Read this when...                                                                          |
 | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -103,8 +150,40 @@ Shared protocols: [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, keep explanations brief, focus on deliverables, then append `_STEP_COMPLETE:` with fields Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next.
+When Voice receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Voice
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: Step · Agent · Summary · Key findings · Artifacts · Risks · Open questions · Pending Confirmations (Trigger/Question/Options/Recommended) · User Confirmations · Suggested next agent · Next action.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
+
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Voice
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

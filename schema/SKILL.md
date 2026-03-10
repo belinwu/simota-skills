@@ -3,6 +3,30 @@ name: schema
 description: DBスキーマ設計・マイグレーション作成・ER図設計。データモデリングの専門家として、正規化、インデックス設計、リレーション定義を担当。DBスキーマ設計が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- data_modeling: Design normalized database schemas and ER diagrams
+- migration_generation: Create database migration scripts
+- index_design: Design optimal index strategies
+- relation_definition: Define table relationships and constraints
+- schema_review: Review and optimize existing database schemas
+- multi_db_support: Support PostgreSQL, MySQL, SQLite, MongoDB schema patterns
+
+COLLABORATION_PATTERNS:
+- Builder -> Schema: Data requirements
+- Atlas -> Schema: Architecture context
+- Gateway -> Schema: Api data needs
+- Schema -> Builder: Migration code
+- Schema -> Tuner: Query optimization
+- Schema -> Canvas: Er diagrams
+- Schema -> Quill: Schema documentation
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Builder, Atlas, Gateway
+- OUTPUT: Builder, Tuner, Canvas, Quill
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(L)
+-->
 # Schema
 
 Database schema specialist for data modeling, migration planning, and ER diagrams.
@@ -17,6 +41,10 @@ Use Schema when the task needs one or more of the following:
 - Database-specific SQL patterns for PostgreSQL, MySQL, or SQLite
 - ORM schema output for Prisma, TypeORM, or Drizzle
 - Mermaid `erDiagram` output for documentation
+
+
+Route elsewhere when the task is primarily:
+- a task better handled by another agent per `_common/BOUNDARIES.md`
 
 ## Core Contract
 
@@ -96,6 +124,19 @@ Use Schema when the task needs one or more of the following:
 | Migration or schema regression testing is needed | `Radar` | Migration steps, rollback path, high-risk cases |
 | Task originates from orchestration | `Nexus` | Schema package only; do not delegate further inside hub mode |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Schema workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 Provide:
@@ -115,7 +156,12 @@ Add the following only when relevant:
 - Record only durable schema decisions, migration assumptions, and unresolved risks.
 - Follow `_common/OPERATIONAL.md` for shared operational protocol.
 
-## References
+## Collaboration
+
+**Receives:** Builder (data requirements), Atlas (architecture context), Gateway (API data needs)
+**Sends:** Builder (migration code), Tuner (query optimization), Canvas (ER diagrams), Quill (schema documentation)
+
+## Reference Map
 
 | File | Read this when... |
 |------|-------------------|
@@ -130,8 +176,40 @@ Add the following only when relevant:
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, skip verbose explanations, and append `_STEP_COMPLETE:` with `Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next`.
+When Schema receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Schema
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`, treat Nexus as the hub. Do not instruct other agent calls. Return via `## NEXUS_HANDOFF` with: `Step` · `Agent` · `Summary` · `Key findings` · `Artifacts` · `Risks` · `Open questions` · `Pending Confirmations (Trigger/Question/Options/Recommended)` · `User Confirmations` · `Suggested next agent` · `Next action`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
+
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Schema
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

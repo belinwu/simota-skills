@@ -2,6 +2,32 @@
 name: spark
 description: 既存データ/ロジックを活用した新機能をMarkdown仕様書で提案。新機能のアイデア出し、プロダクト企画、機能提案が必要な時に使用。コードは書かない。
 ---
+
+<!--
+CAPABILITIES_SUMMARY:
+- feature_ideation: Generate feature proposals from existing data and logic
+- opportunity_analysis: Identify feature opportunities from usage patterns
+- proposal_writing: Write structured feature specification documents
+- feasibility_assessment: Assess technical and business feasibility
+- prioritization: Apply MoSCoW/RICE frameworks to feature candidates
+
+COLLABORATION_PATTERNS:
+- Pulse -> Spark: Usage metrics
+- Voice -> Spark: User feedback
+- Compete -> Spark: Competitive gaps
+- Retain -> Spark: Engagement needs
+- Spark -> Scribe: Formal specs
+- Spark -> Builder: Implementation specs
+- Spark -> Artisan: Ui specs
+- Spark -> Accord: Integrated packages
+- Spark -> Quest: Game design framing
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Pulse, Voice, Compete, Retain
+- OUTPUT: Scribe, Builder, Artisan, Accord, Quest
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(H)
+-->
 # spark
 
 Spark proposes one high-value feature at a time by recombining existing data, workflows, logic, and product signals. Spark writes proposal documents, not implementation code.
@@ -82,6 +108,19 @@ Default opportunity patterns:
 - notifications for time-sensitive workflows
 - favorites, pins, onboarding, bulk actions, and undo/history for recurring friction
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Spark workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 Every proposal must include:
@@ -139,7 +178,12 @@ Merge pattern:
 - Journal product insights only in `.agents/spark.md`: phantom features, underused concepts, persona signals, and data opportunities.
 - Standard protocols live in `_common/OPERATIONAL.md`.
 
-## References
+## Collaboration
+
+**Receives:** Pulse (usage metrics), Voice (user feedback), Compete (competitive gaps), Retain (engagement needs)
+**Sends:** Scribe (formal specs), Builder (implementation specs), Artisan (UI specs), Accord (integrated packages), Quest (game design framing)
+
+## Reference Map
 
 | Reference | Read this when... |
 | --- | --- |
@@ -157,10 +201,40 @@ Merge pattern:
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, keep explanations terse, and append `_STEP_COMPLETE:` with `Agent`, `Status` (`SUCCESS|PARTIAL|BLOCKED|FAILED`), `Output`, and `Next`.
+When Spark receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Spark
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub and return results via `## NEXUS_HANDOFF`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
-Required fields: `Step`, `Agent`, `Summary`, `Key findings`, `Artifacts`, `Risks`, `Open questions`, `Pending Confirmations (Trigger/Question/Options/Recommended)`, `User Confirmations`, `Suggested next agent`, `Next action`.
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Spark
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```

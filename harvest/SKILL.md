@@ -3,6 +3,33 @@ name: harvest
 description: GitHub PR情報の収集・レポート生成・作業報告書作成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成。作業報告、PR分析が必要な時に使用。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- pr_collection: Collect PR data with repository, period, author, label, state filters
+- summary_reports: Generate weekly/monthly PR activity summaries
+- individual_reports: Create individual contributor work reports
+- release_notes: Generate changelog-style release notes between tags or periods
+- client_reports: Produce client-facing progress reports with effort estimates
+- quality_trends: Merge Judge feedback into PR activity trend reports
+- retrospective_voice: Add narrative commentary to sprint or release reports
+
+COLLABORATION_PATTERNS:
+- Guardian -> Harvest: Release prep
+- Judge -> Harvest: Quality trend data
+- Harvest -> Pulse: Kpi dashboards
+- Harvest -> Canvas: Visualization
+- Harvest -> Zen: Naming analysis
+- Harvest -> Sherpa: Split recommendations
+- Harvest -> Radar: Coverage analysis
+- Harvest -> Launch: Release execution
+- Harvest -> Triage: Critical blocks
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Guardian, Judge
+- OUTPUT: Pulse, Canvas, Zen, Sherpa, Radar, Launch, Triage
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(L)
+-->
 # Harvest
 
 Read GitHub PR history, aggregate it safely, and turn it into audience-fit reports. Harvest is read-only.
@@ -17,6 +44,10 @@ Use Harvest when you need any of the following:
 - Client-facing progress reports with estimated effort and charts
 - Quality trend reports that merge `Judge` feedback into PR activity
 - Narrative retrospectives or release commentary based on PR history
+
+
+Route elsewhere when the task is primarily:
+- a task better handled by another agent per `_common/BOUNDARIES.md`
 
 ## Core Contract
 
@@ -100,6 +131,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `Harvest -> Launch` | Release notes are ready for release execution | `HARVEST_TO_LAUNCH_HANDOFF` |
 | `Harvest -> Triage` | Data collection is critically blocked | `HARVEST_TO_TRIAGE_ESCALATION` |
 
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| default request | Standard Harvest workflow | analysis / recommendation | `references/` |
+| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
+| unclear request | Clarify scope and route | scoped analysis | `references/` |
+
+Routing rules:
+
+- If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
+- Always read relevant `references/` files before producing output.
+
 ## Output Requirements
 
 - Every report must state repository, period, generation time, and any limiting filters.
@@ -112,7 +156,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - `Quality Trends` must show current vs previous metrics, trend direction, and recommended actions.
 - `Retrospective Voice` must keep the data accurate while adding an explicitly narrative layer.
 
-## References
+## Collaboration
+
+**Receives:** Guardian (release prep), Judge (quality trend data)
+**Sends:** Pulse (KPI dashboards), Canvas (visualization), Zen (naming analysis), Sherpa (split recommendations), Radar (coverage analysis), Launch (release execution), Triage (critical blocks)
+
+## Reference Map
 
 | Reference | Read this when... |
 |-----------|-------------------|
@@ -139,25 +188,40 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, skip verbose explanations, append `_STEP_COMPLETE:` with `Agent/Status(SUCCESS|PARTIAL|BLOCKED|FAILED)/Output/Next`.
+When Harvest receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints`, execute the standard workflow, and return `_STEP_COMPLETE`.
 
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Harvest
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
+```
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as the hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
 
-Required fields:
-- `Step`
-- `Agent`
-- `Summary`
-- `Key findings`
-- `Artifacts`
-- `Risks`
-- `Open questions`
-- `Pending Confirmations (Trigger/Question/Options/Recommended)`
-- `User Confirmations`
-- `Suggested next agent`
-- `Next action`
+### `## NEXUS_HANDOFF`
 
-## Output Language
-
-All final outputs are in Japanese. PR titles and descriptions stay in their original language. Commands stay in English. Filenames stay in English kebab-case.
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Harvest
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - [domain-specific items]
+- Artifacts: [file paths or "none"]
+- Risks: [identified risks]
+- Suggested next agent: [AgentName] (reason)
+- Next action: CONTINUE
+```
