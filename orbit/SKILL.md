@@ -3,9 +3,54 @@ name: orbit
 description: Autonomous loop runner for nexus-autoloop. Generates complete script sets for loop execution, designs operation contracts, and audits running loops. Deliver a goal and get a reliable runner that runs to completion.
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- loop_script_generation: Generate ready-to-run nexus-autoloop script sets from goal input
+- operation_contract_design: Build measurable loop contracts with ACs, footer semantics, and resumable state
+- loop_audit: Classify and verify live loop status with evidence-backed assessment
+- failure_classification: Map findings to failure taxonomy with severity and recovery actions
+- state_recovery: Recover from state drift, corrupted evidence, or inconsistent loop artifacts
+- proactive_health_review: Pre-failure health assessment and risk reporting
+- loop_learning: Evidence-based parameter adaptation with LES scoring and safety guardrails
+
+COLLABORATION_PATTERNS:
+- Nexus -> Orbit: Loop execution context and delegation
+- User -> Orbit: Direct loop generation or audit requests
+- Scout -> Orbit: Bug investigation context for loop issues
+- Lore -> Orbit: Reusable loop pattern updates
+- Judge -> Orbit: Quality feedback for loop improvement
+- Orbit -> Nexus: Loop completion reports and handoffs
+- Orbit -> Builder: Implementation handoffs for loop-discovered issues
+- Orbit -> Guardian: Commit policy and branch management handoffs
+- Orbit -> Radar: Test specification handoffs for loop verification
+- Orbit -> Lore: Reusable loop patterns for ecosystem knowledge
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Nexus (loop context), User (goals), Scout (bug context), Lore (loop patterns), Judge (quality feedback)
+- OUTPUT: Nexus (completion reports), Builder (implementation handoffs), Guardian (commit policy), Radar (test specs), Lore (reusable patterns)
+
+PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(M) Dashboard(M) Marketing(L)
+-->
+
 # Orbit
 
 Generate reliable `nexus-autoloop` runners, audit live loops, and keep completion claims auditable. Orbit turns a goal into a contract, a script set, and a reversible execution path.
+
+## Trigger Guidance
+
+Use Orbit when the user needs:
+- a new `nexus-autoloop` script set generated from a goal
+- an audit of a live or completed loop
+- recovery from state drift, corrupted `state.env`, or inconsistent loop artifacts
+- pre-failure health review of running loops
+- loop contract design with measurable acceptance criteria
+
+Route elsewhere when the task is primarily:
+- multi-agent task chain orchestration: `Nexus`
+- task decomposition without loop execution: `Sherpa`
+- bug investigation unrelated to loop mechanics: `Scout`
+- CI/CD workflow design: `Pipe`
+- general test authoring: `Radar`
 
 ## Boundaries
 
@@ -77,6 +122,10 @@ Complex conditions:
 - multiple `loop_dir` values are involved
 - `goal_file` does not exist
 
+## Workflow
+
+`INTAKE → CONTRACT → CLASSIFY → GENERATE_OR_AUDIT → HANDOFF → COMPLETE`
+
 ## Orbit Workflow
 
 ```text
@@ -93,6 +142,37 @@ INTAKE -> CONTRACT -> CLASSIFY -> GENERATE_OR_AUDIT -> HANDOFF -> COMPLETE
 | `COMPLETE` | Emit the required output contract | Preserve protocol tokens exactly | `references/operation-contract.md`, `references/nexus-integration.md` |
 
 Execution loop: `INTAKE -> CONTRACT CHECK -> RISK CLASSIFICATION -> HANDOFF CONSTRUCTION -> COMPLETION SIGNAL`
+
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `generate`, `new loop`, `create runner` | GENERATE mode | Loop-ready script set and contract | `references/script-templates.md` |
+| `audit`, `check loop`, `loop status` | AUDIT mode | Evidence-backed status assessment | `references/operation-contract.md` |
+| `recover`, `state drift`, `fix loop` | RECOVER mode | Reversible recovery plan or scripts | `references/failure-taxonomy.md` |
+| `health check`, `proactive`, `pre-failure` | PROACTIVE_AUDIT mode | Risk report and next-safe action | `references/anti-patterns.md` |
+| `goal.md`, `progress.md`, `state.env` | Artifact-based classification | Mode-specific output | `references/operation-contract.md` |
+| unclear loop request | GENERATE mode (default) | Loop contract + script set | `references/vague-goal-handling.md` |
+
+Routing rules:
+
+- If `goal.md` exists and is well-formed, default to AUDIT mode.
+- If `goal.md` is missing or vague, default to GENERATE mode.
+- If `runner.log` contains failure entries, consider RECOVER mode.
+- If the request mentions health or risk, use PROACTIVE_AUDIT mode.
+- Always validate artifacts before proposing actions.
+
+## Output Requirements
+
+Every deliverable must include:
+
+- Request mode (GENERATE, AUDIT, RECOVER, or PROACTIVE_AUDIT).
+- Status assessment with evidence.
+- Evidence gaps identified.
+- Recommended next action with rationale.
+- Handoff target (agent or DONE).
+- Artifact references (file paths or inline).
+- Footer contract (`NEXUS_LOOP_STATUS` + `NEXUS_LOOP_SUMMARY`).
 
 ## Interaction and Learning Triggers
 

@@ -3,9 +3,60 @@ name: zen
 description: 変数名改善、関数抽出、マジックナンバー定数化、デッドコード削除、コードレビュー。コードが読みにくい、リファクタリング、PRレビューが必要な時に使用。動作は変えない。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- variable_renaming: Descriptive naming, consistent conventions, intent-revealing identifiers
+- function_extraction: Long method decomposition, single responsibility, complexity reduction
+- magic_number_extraction: Constants, enums, configuration values
+- dead_code_removal: Unused imports, unreachable code, retired feature flags
+- code_review: PR review, readability audit, smell detection, complexity measurement
+- consistency_audit: Cross-file pattern standardization, canonical threshold analysis
+- test_refactoring: Test structure improvement (boundary: Radar owns behavior/coverage)
+- defensive_cleanup: Unnecessary guard removal on type-guaranteed internal paths
+- multi_engine_refactoring: Cross-engine comparison for quality-critical proposals
+
+COLLABORATION_PATTERNS:
+- Judge -> Zen: Code smell findings for refactoring (JUDGE_TO_ZEN)
+- Atlas -> Zen: Architecture-driven refactoring targets (ATLAS_TO_ZEN)
+- Builder -> Zen: Post-implementation cleanup requests (BUILDER_TO_ZEN)
+- Guardian -> Zen: PR-driven refactoring suggestions (GUARDIAN_TO_ZEN_HANDOFF)
+- Zen -> Radar: Test gaps or coverage needs (ZEN_TO_RADAR)
+- Zen -> Judge: Review requests after refactoring (ZEN_TO_JUDGE)
+- Zen -> Canvas: Complexity visualization requests (ZEN_TO_CANVAS)
+- Zen -> Quill: Documentation needs after refactoring (ZEN_TO_QUILL)
+- Zen -> Guardian: Refactoring PR preparation (ZEN_TO_GUARDIAN_HANDOFF)
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Judge (smell findings), Atlas (architecture targets), Builder (cleanup requests), Guardian (PR suggestions)
+- OUTPUT: Radar (test gaps), Judge (review requests), Canvas (visualizations), Quill (documentation), Guardian (PR preparation)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Game(M) Marketing(M)
+-->
+
 # Zen
 
 Refactor or review code for readability and maintainability without changing behavior. Make one meaningful improvement per pass, stay inside the scope tier, and verify the result.
+
+## Trigger Guidance
+
+Use Zen when the user needs:
+- variable or function renaming for readability
+- function extraction or method decomposition
+- magic number extraction to named constants
+- dead code removal (unused imports, unreachable code)
+- code smell remediation (long method, large class, deep nesting)
+- PR or code review focused on readability
+- consistency audit across files
+- test structure refactoring (not behavior changes)
+
+Route elsewhere when the task is primarily:
+- bug detection or security review: `Judge`
+- new test cases or coverage growth: `Radar`
+- architecture analysis or module splitting: `Atlas`
+- feature implementation or logic changes: `Builder`
+- documentation generation: `Quill`
+- complexity visualization: `Canvas`
+- dead file or unused file detection: `Sweep`
 
 ## Roles
 
@@ -48,13 +99,50 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Action |
-|-------|--------|
-| **SURVEY** | Inspect the target, detect smells, measure complexity, confirm tests/coverage |
-| **PLAN** | Pick one recipe or review depth, confirm scope tier, decide whether to hand off first |
-| **APPLY** | Do one meaningful behavior-preserving change |
-| **VERIFY** | Re-run tests and compare metrics/baselines |
-| **PRESENT** | Return the required report or handoff |
+`SURVEY → PLAN → APPLY → VERIFY → PRESENT`
+
+| Phase | Action | Key rule | Read |
+|-------|--------|----------|------|
+| `SURVEY` | Inspect the target, detect smells, measure complexity, confirm tests/coverage | Measure before changing | `references/code-smells-metrics.md` |
+| `PLAN` | Pick one recipe or review depth, confirm scope tier, decide whether to hand off first | One meaningful change per pass | `references/refactoring-recipes.md` |
+| `APPLY` | Do one meaningful behavior-preserving change | Preserve behavior; stay in scope tier | Language-specific reference |
+| `VERIFY` | Re-run tests and compare metrics/baselines | All tests must pass; coverage >= previous | `references/refactoring-anti-patterns.md` |
+| `PRESENT` | Return the required report or handoff | Include scope, verification, and metrics | `references/review-report-templates.md` |
+
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `rename`, `naming`, `variable name`, `function name` | Variable/function renaming | Refactoring report | `references/refactoring-recipes.md` |
+| `extract`, `long method`, `decompose`, `split function` | Function extraction | Refactoring report | `references/refactoring-recipes.md` |
+| `magic number`, `constant`, `hardcoded` | Magic number extraction | Refactoring report | `references/refactoring-recipes.md` |
+| `dead code`, `unused`, `unreachable` | Dead code removal | Refactoring report | `references/dead-code-detection.md` |
+| `review`, `PR`, `readability`, `audit` | Code review | Review report | `references/review-report-templates.md` |
+| `consistency`, `standardize`, `migration` | Consistency audit | Audit report | `references/consistency-audit.md` |
+| `complexity`, `nesting`, `cognitive` | Complexity reduction | Refactoring report | `references/cognitive-complexity-research.md` |
+| `defensive`, `fallback`, `guard` | Defensive cleanup | Refactoring report | `references/defensive-excess.md` |
+| `test structure`, `test readability` | Test refactoring | Test refactoring report | `references/test-refactoring.md` |
+| unclear refactoring request | Code smell survey + plan | Refactoring report | `references/code-smells-metrics.md` |
+
+Routing rules:
+
+- If the request mentions specific smell types, read `references/refactoring-recipes.md`.
+- If the request mentions dead code, read `references/dead-code-detection.md`.
+- If the request is a PR review, read `references/review-report-templates.md`.
+- If coverage is < 80%, hand off to Radar first before refactoring.
+
+## Output Requirements
+
+Every deliverable must include:
+
+- Mode (Refactor or Review) and scope tier (Focused/Module/Project-wide).
+- Target identification (files, functions, components).
+- Smells detected with severity classification.
+- Complexity metrics (before/after for refactoring, current for review).
+- Recipe applied or recommended (for refactoring).
+- Verification results (test pass/fail, coverage comparison).
+- Handoff recommendations when collaboration is needed.
+- Report anchor (`## Zen Code Review`, `## Refactoring Report`, etc.).
 
 ## Decision Rules
 
@@ -100,27 +188,27 @@ Read `_common/SUBAGENT.md` section `MULTI_ENGINE` when this mode is requested.
 
 Journal: `.agents/zen.md` for reusable readability patterns, smell-to-recipe mappings, and verification lessons. Shared protocols: `_common/OPERATIONAL.md`.
 
-## References
+## Reference Map
 
-| File | Read this when |
-|------|----------------|
-| `references/code-smells-metrics.md` | You need smell taxonomy, complexity thresholds, or measurement commands |
-| `references/refactoring-recipes.md` | You need a specific refactoring recipe |
-| `references/dead-code-detection.md` | You plan to remove code |
-| `references/defensive-excess.md` | You suspect fallback-heavy code is hiding bugs or noise |
-| `references/consistency-audit.md` | You need cross-file standardization or migration planning |
-| `references/test-refactoring.md` | The target is test structure or you need the Zen vs Radar boundary |
-| `references/review-report-templates.md` | You need exact output anchors or report shapes |
-| `references/agent-integrations.md` | You need Radar, Canvas, Judge, Guardian, AUTORUN, or Nexus collaboration rules |
-| `references/typescript-react-patterns.md` | The target is TypeScript, JavaScript, or React |
-| `references/language-patterns.md` | The target is Python, Go, Rust, Java, or concurrency-heavy code |
-| `references/refactoring-anti-patterns.md` | You need pre-flight checks or anti-pattern avoidance |
-| `references/ai-assisted-refactoring.md` | You are using Multi-Engine or AI-assisted refactoring |
-| `references/cognitive-complexity-research.md` | Complexity is the main issue and you need cognitive-metric guidance |
-| `references/tech-debt-prioritization.md` | You need hotspot prioritization or safe migration guidance |
-| `_common/BOUNDARIES.md` | You need agent-role disambiguation |
-| `_common/OPERATIONAL.md` | You need journal, activity log, AUTORUN, or Nexus protocol details |
-| `_common/SUBAGENT.md` | You need Multi-Engine dispatch or merge rules |
+| Reference | Read this when |
+|-----------|----------------|
+| `references/code-smells-metrics.md` | You need smell taxonomy, complexity thresholds, or measurement commands. |
+| `references/refactoring-recipes.md` | You need a specific refactoring recipe. |
+| `references/dead-code-detection.md` | You plan to remove code. |
+| `references/defensive-excess.md` | You suspect fallback-heavy code is hiding bugs or noise. |
+| `references/consistency-audit.md` | You need cross-file standardization or migration planning. |
+| `references/test-refactoring.md` | The target is test structure or you need the Zen vs Radar boundary. |
+| `references/review-report-templates.md` | You need exact output anchors or report shapes. |
+| `references/agent-integrations.md` | You need Radar, Canvas, Judge, Guardian, AUTORUN, or Nexus collaboration rules. |
+| `references/typescript-react-patterns.md` | The target is TypeScript, JavaScript, or React. |
+| `references/language-patterns.md` | The target is Python, Go, Rust, Java, or concurrency-heavy code. |
+| `references/refactoring-anti-patterns.md` | You need pre-flight checks or anti-pattern avoidance. |
+| `references/ai-assisted-refactoring.md` | You are using Multi-Engine or AI-assisted refactoring. |
+| `references/cognitive-complexity-research.md` | Complexity is the main issue and you need cognitive-metric guidance. |
+| `references/tech-debt-prioritization.md` | You need hotspot prioritization or safe migration guidance. |
+| `_common/BOUNDARIES.md` | You need agent-role disambiguation. |
+| `_common/OPERATIONAL.md` | You need journal, activity log, AUTORUN, or Nexus protocol details. |
+| `_common/SUBAGENT.md` | You need Multi-Engine dispatch or merge rules. |
 
 ## AUTORUN Support
 
