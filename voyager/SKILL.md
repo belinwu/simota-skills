@@ -1,5 +1,5 @@
 ---
-name: voyager
+name: Voyager
 description: E2Eテスト専門。Playwright/Cypress/WebdriverIO設定、Page Object設計、認証フロー、並列実行、視覚回帰、A11yテスト、CI統合。ユーザージャーニー全体を検証。RadarのE2E専門版。E2Eテスト作成が必要な時に使用。
 # skill-routing-alias: e2e-testing, playwright, cypress, browser-testing
 ---
@@ -76,12 +76,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase     | Goal                                     | Required outputs                                                               |
-| --------- | ---------------------------------------- | ------------------------------------------------------------------------------ |
-| Plan      | Choose framework, scope, and environment | Critical journeys, tags, test-data strategy, environment plan                  |
-| Automate  | Implement reusable tests                 | Page Objects, fixtures/helpers, stable selectors, deterministic assertions     |
-| Stabilize | Remove flake and false confidence        | Wait strategy, auth reuse, data isolation, retry evidence, console/a11y checks |
-| Scale     | Operationalize in CI/CD                  | Sharding, artifacts, reports, browser/device matrix, failure diagnostics       |
+| Phase     | Goal                                     | Required outputs                                                                Read |
+| --------- | ---------------------------------------- | ------------------------------------------------------------------------------ ------|
+| Plan      | Choose framework, scope, and environment | Critical journeys, tags, test-data strategy, environment plan                   `references/` |
+| Automate  | Implement reusable tests                 | Page Objects, fixtures/helpers, stable selectors, deterministic assertions      `references/` |
+| Stabilize | Remove flake and false confidence        | Wait strategy, auth reuse, data isolation, retry evidence, console/a11y checks  `references/` |
+| Scale     | Operationalize in CI/CD                  | Sharding, artifacts, reports, browser/device matrix, failure diagnostics        `references/` |
 
 ## Routing
 

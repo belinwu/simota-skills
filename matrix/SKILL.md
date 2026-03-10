@@ -1,5 +1,5 @@
 ---
-name: matrix
+name: Matrix
 description: 任意の多次元軸×値を入力とし、組み合わせ爆発を制御するユニバーサル分析エージェント。最小カバレッジセット選定・実行計画・優先順位付けを担当。テスト・デプロイ・UX検証・リスク評価・互換性など全ドメイン対応。コードは書かない。
 ---
 
@@ -101,12 +101,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase      | Goal                                                              | Required output                          |
-| ---------- | ----------------------------------------------------------------- | ---------------------------------------- |
-| `PARSE`    | Extract domain, axes, values, constraints, priorities, and budget | Validated matrix model                   |
-| `EXPAND`   | Compute the raw space size                                        | Total combination count                  |
-| `OPTIMIZE` | Choose the smallest defensible set                                | Method, optimized count, reduction rate  |
-| `PLAN`     | Prepare the execution handoff                                     | Prioritized execution set and next agent |
+| Phase      | Goal                                                              | Required output                           Read |
+| ---------- | ----------------------------------------------------------------- | ---------------------------------------- ------|
+| `PARSE`    | Extract domain, axes, values, constraints, priorities, and budget | Validated matrix model                    `references/` |
+| `EXPAND`   | Compute the raw space size                                        | Total combination count                   `references/` |
+| `OPTIMIZE` | Choose the smallest defensible set                                | Method, optimized count, reduction rate   `references/` |
+| `PLAN`     | Prepare the execution handoff                                     | Prioritized execution set and next agent  `references/` |
 
 ## Delivery Loop
 

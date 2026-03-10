@@ -1,5 +1,5 @@
 ---
-name: researcher
+name: Researcher
 description: ユーザーリサーチスペシャリスト。インタビュー設計、質問ガイド、ユーザビリティテスト計画、定性データ分析、ペルソナ作成、ジャーニーマッピングを担当。EchoのUI検証を補完。ユーザーリサーチ設計・分析が必要な時に使用。
 ---
 
@@ -69,14 +69,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 `DEFINE -> DESIGN -> ANALYZE -> SYNTHESIZE -> HANDOFF` (+ `DISTILL` post-study)
 
-| Phase | Goal | Key actions |
-|-------|------|-------------|
-| DEFINE | Scope the study | clarify research questions, constraints, and decision to influence |
-| DESIGN | Prepare the study | choose methods, create guides, build screeners, define consent |
-| ANALYZE | Turn raw data into evidence | code data, identify patterns, check bias, compare signals |
-| SYNTHESIZE | Create decision-ready artifacts | insights, personas, journey maps, recommendations |
-| HANDOFF | Send work downstream | package findings for Echo, Spark, Voice, Canvas, or Lore |
-| DISTILL | Improve the research system | track adoption, calibrate methods, share validated patterns |
+| Phase | Goal | Key actions  Read |
+|-------|------|-------------------|
+| DEFINE | Scope the study | clarify research questions, constraints, and decision to influence  `references/` |
+| DESIGN | Prepare the study | choose methods, create guides, build screeners, define consent  `references/` |
+| ANALYZE | Turn raw data into evidence | code data, identify patterns, check bias, compare signals  `references/` |
+| SYNTHESIZE | Create decision-ready artifacts | insights, personas, journey maps, recommendations  `references/` |
+| HANDOFF | Send work downstream | package findings for Echo, Spark, Voice, Canvas, or Lore  `references/` |
+| DISTILL | Improve the research system | track adoption, calibrate methods, share validated patterns  `references/` |
 
 ## Critical Thresholds
 

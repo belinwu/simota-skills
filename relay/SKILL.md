@@ -80,13 +80,13 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Workflow: LISTEN → ROUTE → ADAPT → WIRE → GUARD
 
-| Phase | Purpose | Key Outputs |
-|-------|---------|-------------|
-| **LISTEN** | Requirements discovery | Platform priority list · Message type inventory (text/rich/interactive/ephemeral) · Direction (in/out/bidirectional) · Latency budget · Volume estimates |
-| **ROUTE** | Message architecture | Unified schema (discriminated union) · Routing matrix (event→handler) · Command parser spec · Conversation state machine · DLQ strategy |
-| **ADAPT** | Channel adapter design | Adapter interface (send/receive/normalize/adapt) · SDK selection · Normalization rules (platform→unified) · Adaptation rules (unified→platform) · Feature mapping (threads/reactions/embeds) |
-| **WIRE** | Transport implementation | Server architecture (WebSocket rooms/webhook endpoints) · Middleware chain (auth→validate→rate-limit→route→handle) · Connection lifecycle · Retry with backoff · Queue integration |
-| **GUARD** | Security & reliability | HMAC-SHA256 verification · Token rotation · Rate limiting (per-user/channel/global) · Idempotency keys · Health checks · Alert thresholds |
+| Phase | Purpose | Key Outputs  Read |
+|-------|---------|-------------------|
+| **LISTEN** | Requirements discovery | Platform priority list · Message type inventory (text/rich/interactive/ephemeral) · Direction (in/out/bidirectional) · Latency budget · Volume estimates  `references/` |
+| **ROUTE** | Message architecture | Unified schema (discriminated union) · Routing matrix (event→handler) · Command parser spec · Conversation state machine · DLQ strategy  `references/` |
+| **ADAPT** | Channel adapter design | Adapter interface (send/receive/normalize/adapt) · SDK selection · Normalization rules (platform→unified) · Adaptation rules (unified→platform) · Feature mapping (threads/reactions/embeds)  `references/` |
+| **WIRE** | Transport implementation | Server architecture (WebSocket rooms/webhook endpoints) · Middleware chain (auth→validate→rate-limit→route→handle) · Connection lifecycle · Retry with backoff · Queue integration  `references/` |
+| **GUARD** | Security & reliability | HMAC-SHA256 verification · Token rotation · Rate limiting (per-user/channel/global) · Idempotency keys · Health checks · Alert thresholds  `references/` |
 
 ## Output Routing
 

@@ -1,5 +1,5 @@
 ---
-name: siege
+name: Siege
 description: 負荷テスト、契約テスト、カオスエンジニアリング、ミューテーションテスト、レジリエンス検証の専門エージェント。システム限界の検証、非機能テスト、信頼性検証が必要な時に使用。
 ---
 
@@ -59,7 +59,7 @@ Route elsewhere when the task is primarily:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Always**
+### Always
 - define steady state or success criteria before execution
 - start from the smallest safe blast radius
 - have a rollback or kill switch ready before chaos experiments
@@ -67,14 +67,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - reuse existing project patterns for test setup and CI integration
 - clean up test data, injected faults, and temporary resources
 
-**Ask first**
+### Ask First
 - production load or chaos testing
 - chaos beyond staging, canary, or explicitly approved environments
 - adding a new testing framework
 - changes that materially increase CI time or infrastructure cost
 - contract changes affecting multiple teams or public interfaces
 
-**Never**
+### Never
 - run chaos without a kill switch
 - load test production without approval
 - ignore SLO violations in the final recommendation

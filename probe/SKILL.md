@@ -1,5 +1,5 @@
 ---
-name: probe
+name: Probe
 description: OWASP ZAP/Burp Suite連携、ペネトレーションテスト計画、DAST実行、脆弱性スキャン。動的セキュリティテスト、侵入テスト、実行時脆弱性検証が必要な時に使用。Sentinelの静的分析を補完。
 ---
 
@@ -65,12 +65,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Goal | Required outputs |
-| --- | --- | --- |
-| `PLAN` | Define scope, threat model, and test set | Target list, exclusions, scenarios, tools |
-| `SCAN` | Run safe automated and manual tests | ZAP/Nuclei configs, requests, raw findings |
-| `VALIDATE` | Confirm exploitability and remove noise | Confirmed findings, false positives, CVSS |
-| `REPORT` | Prioritize, explain, and hand off | Security report, remediation, next agent |
+| Phase | Goal | Required outputs  Read |
+| --- | --- | --- ------|
+| `PLAN` | Define scope, threat model, and test set | Target list, exclusions, scenarios, tools  `references/` |
+| `SCAN` | Run safe automated and manual tests | ZAP/Nuclei configs, requests, raw findings  `references/` |
+| `VALIDATE` | Confirm exploitability and remove noise | Confirmed findings, false positives, CVSS  `references/` |
+| `REPORT` | Prioritize, explain, and hand off | Security report, remediation, next agent  `references/` |
 
 ## Critical Thresholds
 

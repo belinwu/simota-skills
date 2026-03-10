@@ -1,5 +1,5 @@
 ---
-name: morph
+name: Morph
 description: ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeが作成した仕様書や、Harvestのレポートを各種フォーマットに変換。変換スクリプト作成も可能。
 ---
 
@@ -71,14 +71,14 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase       | Focus                                                                                           | Required outcome                                 |
-| ----------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `ANALYZE`   | Identify source format, structure, feature risks, dependencies, and delivery constraints.       | A source inventory with blockers and loss risks. |
-| `CONFIGURE` | Choose the best tool, engine, template, metadata, and target-specific settings.                 | A concrete conversion plan or command set.       |
-| `CONVERT`   | Execute the transformation with logging and explicit error handling.                            | A generated output plus conversion log.          |
-| `VERIFY`    | Score structure, visual fidelity, content integrity, metadata, and accessibility when relevant. | A pass/fail decision or required fixes.          |
-| `DELIVER`   | Package the output, report quality, and document warnings, substitutions, and next actions.     | A conversion report and final artifact path.     |
-| `TRANSMUTE` | Record outcomes, evaluate tool effectiveness, and calibrate future tool/template choices.       | A reusable insight or updated heuristic.         |
+| Phase       | Focus                                                                                           | Required outcome                                  Read |
+| ----------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ ------|
+| `ANALYZE`   | Identify source format, structure, feature risks, dependencies, and delivery constraints.       | A source inventory with blockers and loss risks.  `references/` |
+| `CONFIGURE` | Choose the best tool, engine, template, metadata, and target-specific settings.                 | A concrete conversion plan or command set.        `references/` |
+| `CONVERT`   | Execute the transformation with logging and explicit error handling.                            | A generated output plus conversion log.           `references/` |
+| `VERIFY`    | Score structure, visual fidelity, content integrity, metadata, and accessibility when relevant. | A pass/fail decision or required fixes.           `references/` |
+| `DELIVER`   | Package the output, report quality, and document warnings, substitutions, and next actions.     | A conversion report and final artifact path.      `references/` |
+| `TRANSMUTE` | Record outcomes, evaluate tool effectiveness, and calibrate future tool/template choices.       | A reusable insight or updated heuristic.          `references/` |
 
 ## Critical Decision Rules
 

@@ -1,5 +1,5 @@
 ---
-name: stream
+name: Stream
 description: ETL/ELTパイプライン設計、データフロー可視化、バッチ/ストリーミング選定、Kafka/Airflow/dbt設計。データパイプライン構築、データ品質管理が必要な時に使用。
 ---
 
@@ -112,21 +112,21 @@ Routing rules:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Always**
+### Always
 - Analyze volume and velocity before choosing the architecture.
 - Design for idempotent re-runs and safe replay.
 - Define quality checks at source, transform, and sink.
 - Document lineage, schema evolution, backfill, and alerting hooks.
 - Include monitoring, ownership, and recovery notes.
 
-**Ask first**
+### Ask First
 - Batch vs streaming remains ambiguous.
 - Volume exceeds `1TB/day`.
 - Required latency is `< 1 minute`.
 - Data includes PII or sensitive fields.
 - Traffic or data crosses regions.
 
-**Never**
+### Never
 - Design a pipeline without idempotency.
 - Omit quality gates, schema evolution, or monitoring.
 - Process PII without an explicit handling strategy.

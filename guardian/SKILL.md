@@ -1,5 +1,5 @@
 ---
-name: guardian
+name: Guardian
 description: Git/PRの番人。変更の本質を見極め、適切な粒度・命名・戦略を提案する。PR準備、コミット戦略が必要な時に使用。
 ---
 
@@ -83,12 +83,12 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase | Goal | Required actions |
-|------|------|------------------|
-| `SURVEY` | Understand the change | inspect diff, commits, affected files, branch state, and review context |
-| `PLAN` | Build the Git strategy | classify changes, pick branch/PR strategy, suggest split or squash plan |
-| `VERIFY` | Check safety and reviewability | score quality, risk, hotspot overlap, coverage, and predictive issues |
-| `PRESENT` | Deliver a usable recommendation | output branch, commit, PR, risk, reviewer, and handoff guidance |
+| Phase | Goal | Required actions  Read |
+|------|------|------------------------|
+| `SURVEY` | Understand the change | inspect diff, commits, affected files, branch state, and review context  `references/` |
+| `PLAN` | Build the Git strategy | classify changes, pick branch/PR strategy, suggest split or squash plan  `references/` |
+| `VERIFY` | Check safety and reviewability | score quality, risk, hotspot overlap, coverage, and predictive issues  `references/` |
+| `PRESENT` | Deliver a usable recommendation | output branch, commit, PR, risk, reviewer, and handoff guidance  `references/` |
 
 ## Critical Decision Rules
 

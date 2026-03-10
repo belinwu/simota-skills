@@ -1,5 +1,5 @@
 ---
-name: accord
+name: Accord
 description: ビジネス・開発・デザイン3チーム横断の統合仕様パッケージを作成。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない。
 ---
 
@@ -101,14 +101,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 `ALIGN → STRUCTURE → ELABORATE → BRIDGE → VERIFY → DELIVER`
 
-| Phase | Goal | Required result |
-|---|---|---|
-| `ALIGN` | Identify stakeholders, goals, and shared context | Team map and working scope |
-| `STRUCTURE` | Choose scope and package shape | `Full`, `Standard`, or `Lite` structure |
-| `ELABORATE` | Write `L0 -> L1 -> L2 -> L3` in order | Staged specification package |
-| `BRIDGE` | Align terminology and links across teams | Cross-reference integrity and traceability |
-| `VERIFY` | Validate readability, completeness, and BDD quality | Cross-team review-ready package |
-| `DELIVER` | Hand off the package and next actions | Delivery-ready spec package |
+| Phase | Goal | Required result  Read |
+|---|---|---------|
+| `ALIGN` | Identify stakeholders, goals, and shared context | Team map and working scope  `references/` |
+| `STRUCTURE` | Choose scope and package shape | `Full`, `Standard`, or `Lite` structure  `references/` |
+| `ELABORATE` | Write `L0 -> L1 -> L2 -> L3` in order | Staged specification package  `references/` |
+| `BRIDGE` | Align terminology and links across teams | Cross-reference integrity and traceability  `references/` |
+| `VERIFY` | Validate readability, completeness, and BDD quality | Cross-team review-ready package  `references/` |
+| `DELIVER` | Hand off the package and next actions | Delivery-ready spec package  `references/` |
 
 ## UNIFY Post-Task
 

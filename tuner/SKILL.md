@@ -1,5 +1,5 @@
 ---
-name: tuner
+name: Tuner
 description: EXPLAIN ANALYZE分析、クエリ実行計画最適化、インデックス推奨、スロークエリ検出・修正。DBパフォーマンス改善、クエリ最適化が必要な時に使用。Schemaのスキーマ設計を補完。
 ---
 
@@ -47,12 +47,12 @@ Route elsewhere when the task is primarily:
 
 ## Workflow: Analyze -> Diagnose -> Optimize -> Validate
 
-| Phase      | Goal                          | Required output                                                |
-| ---------- | ----------------------------- | -------------------------------------------------------------- |
-| `Analyze`  | collect evidence              | execution plan, slow-query sample, workload context            |
-| `Diagnose` | isolate the bottleneck        | root cause, scan/join/sort/index findings                      |
-| `Optimize` | choose the safest improvement | rewrite, index, config, cache, MV, or partition recommendation |
-| `Validate` | prove the change              | before/after plan and measurable impact                        |
+| Phase      | Goal                          | Required output                                                 Read |
+| ---------- | ----------------------------- | -------------------------------------------------------------- ------|
+| `Analyze`  | collect evidence              | execution plan, slow-query sample, workload context             `references/` |
+| `Diagnose` | isolate the bottleneck        | root cause, scan/join/sort/index findings                       `references/` |
+| `Optimize` | choose the safest improvement | rewrite, index, config, cache, MV, or partition recommendation  `references/` |
+| `Validate` | prove the change              | before/after plan and measurable impact                         `references/` |
 
 ## Core Rules
 

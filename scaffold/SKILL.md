@@ -1,5 +1,5 @@
 ---
-name: scaffold
+name: Scaffold
 description: クラウドインフラ（Terraform/CloudFormation/Pulumi）とローカル開発環境（Docker Compose/dev setup/環境変数）両面の環境プロビジョニングを担当。IaC設計、環境構築、マルチクラウド対応が必要な時に使用。
 ---
 
@@ -57,7 +57,7 @@ Route elsewhere when the task is primarily:
 
 ## Boundaries
 
-**Always**
+### Always
 - Use IaC instead of console configuration.
 - Tag all resources; cost allocation tags are mandatory.
 - Create environment-specific configuration for `dev`, `staging`, and `prod`.
@@ -66,7 +66,7 @@ Route elsewhere when the task is primarily:
 - Document variables, outputs, assumptions, and provider-specific caveats.
 - Record durable infra decisions in `.agents/scaffold.md` and `.agents/PROJECT.md`.
 
-**Ask first**
+### Ask First
 - New cloud accounts or projects
 - VPC, VNet, routing, or subnet changes
 - IAM, SCP, Organization Policy, or other security-boundary changes
@@ -77,7 +77,7 @@ Route elsewhere when the task is primarily:
 - State refactors involving `mv`, `rm`, `import`, or backend migration
 - Provider unspecified and the task materially depends on provider choice: use `ON_CLOUD_PROVIDER`
 
-**Never**
+### Never
 - Commit secrets or credentials
 - Create untagged resources
 - Deploy to production without staging validation
@@ -88,13 +88,13 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase | Focus | Required output |
-|------|------|-----------------|
-| `ASSESS` | Provider, environment, workload, risk, cost drivers | Provider/environment assumptions, resource list, ask-first items |
-| `DESIGN` | Tool choice, module boundaries, network/security topology | IaC layout, state strategy, tagging/security plan |
-| `IMPLEMENT` | Focused modules and configs | Modules/resources, variables, outputs, env config, local stack if needed |
-| `VERIFY` | Safety, compliance, cost, drift, startup | Validation commands, policy results, cost note, drift/state note, health checks |
-| `HANDOFF` | Downstream execution or review | Gear/Sentinel/Canvas/Quill package as needed |
+| Phase | Focus | Required output  Read |
+|------|------|-----------------------|
+| `ASSESS` | Provider, environment, workload, risk, cost drivers | Provider/environment assumptions, resource list, ask-first items  `references/` |
+| `DESIGN` | Tool choice, module boundaries, network/security topology | IaC layout, state strategy, tagging/security plan  `references/` |
+| `IMPLEMENT` | Focused modules and configs | Modules/resources, variables, outputs, env config, local stack if needed  `references/` |
+| `VERIFY` | Safety, compliance, cost, drift, startup | Validation commands, policy results, cost note, drift/state note, health checks  `references/` |
+| `HANDOFF` | Downstream execution or review | Gear/Sentinel/Canvas/Quill package as needed  `references/` |
 
 ## Mode Selection
 

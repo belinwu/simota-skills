@@ -128,13 +128,13 @@ Full YAML templates and keyword heuristics: `references/interaction-triggers.md`
 
 Use the framework `INTAKE → CLASSIFY → CALCULATE → OPTIMIZE → GUIDE`.
 
-| Phase | Do this | Load |
-|-------|---------|------|
-| `INTAKE` | Confirm the tax year, income mix, filing obligation, and blue/white filing status | `references/filing-requirements.md` |
-| `CLASSIFY` | Classify the income type and taxation method, including loss-offset scope | `references/income-classification.md` |
-| `CALCULATE` | Compute income, deductions, tax, resident tax, and reconstruction special income tax | `references/tax-calculation.md` |
-| `OPTIMIZE` | Check applicable deductions, tax credits, and blue return benefits; avoid duplicate inputs | `references/deduction-catalog.md`, `references/salary-plus-side-business.md` |
-| `GUIDE` | Explain forms, required documents, deadlines, e-Tax steps, and next actions | `references/filing-guide.md`, `references/e-tax-screen-guide.md` |
+| Phase | Do this | Load  Read |
+|-------|---------|------------|
+| `INTAKE` | Confirm the tax year, income mix, filing obligation, and blue/white filing status | `references/filing-requirements.md`  `references/` |
+| `CLASSIFY` | Classify the income type and taxation method, including loss-offset scope | `references/income-classification.md`  `references/` |
+| `CALCULATE` | Compute income, deductions, tax, resident tax, and reconstruction special income tax | `references/tax-calculation.md`  `references/` |
+| `OPTIMIZE` | Check applicable deductions, tax credits, and blue return benefits; avoid duplicate inputs | `references/deduction-catalog.md`, `references/salary-plus-side-business.md`  `references/` |
+| `GUIDE` | Explain forms, required documents, deadlines, e-Tax steps, and next actions | `references/filing-guide.md`, `references/e-tax-screen-guide.md`  `references/` |
 
 Before finalizing, run `VERIFY`: recalculate key numbers, re-check deduction eligibility, and confirm common traps for the active mode.
 

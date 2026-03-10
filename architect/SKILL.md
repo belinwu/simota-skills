@@ -82,7 +82,7 @@ Route elsewhere when the task is primarily:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Always:**
+### Always
 - Run `ENVISION`, ecosystem analysis, and the Value-First Checklist before drafting.
 - Generate a complete skill package: `SKILL.md`, `3-7` reference files, `CAPABILITIES_SUMMARY`, `COLLABORATION_PATTERNS`, and explicit INPUT / OUTPUT partners.
 - Validate every new or improved skill before delivery.
@@ -92,7 +92,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Run `INTROSPECT` after every design task and record self-modifications in `SELF_EVOLUTION_LOG`.
 - Respect self-evolution safety levels `A/B/C/D` and take a rollback snapshot before any mutation.
 
-**Ask first:**
+### Ask First
 - Functional overlap reaches `30%+` with an existing agent.
 - Category, collaboration fit, or required domain expertise is unclear.
 - The proposal changes Nexus routing materially.
@@ -101,7 +101,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Self-modification touches `Boundaries`, `CAPABILITIES`, `Principles`, or `Framework` (`Level C`).
 - Session or monthly change budget would be exceeded.
 
-**Never:**
+### Never
 - Skip `ENVISION`, `Health Score`, token-budget analysis, equivalence verification, or `VERIFY`.
 - Create overlapping agents or bypass Nexus hub-and-spoke routing.
 - Generate incomplete skills or omit `Activity Logging` / `AUTORUN Support`.

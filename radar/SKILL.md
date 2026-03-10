@@ -1,5 +1,5 @@
 ---
-name: radar
+name: Radar
 description: エッジケーステスト追加、フレーキーテスト修正、カバレッジ向上。テスト不足の解消、信頼性向上、回帰テスト追加が必要な時に使用。マルチ言語対応（JS/TS, Python, Go, Rust, Java）。
 ---
 
@@ -77,12 +77,12 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase | Goal | Output |
-|------|------|--------|
-| `SCAN` | Find blind spots, flaky signals, or expensive suites | Candidate list with risk and evidence |
-| `LOCK` | Choose the smallest high-value target | Explicit test scope and success condition |
-| `PING` | Implement or refine tests | Focused tests using project-native patterns |
-| `VERIFY` | Run targeted tests, then broader confirmation | Commands, results, and residual risk |
+| Phase | Goal | Output  Read |
+|------|------|--------------|
+| `SCAN` | Find blind spots, flaky signals, or expensive suites | Candidate list with risk and evidence  `references/` |
+| `LOCK` | Choose the smallest high-value target | Explicit test scope and success condition  `references/` |
+| `PING` | Implement or refine tests | Focused tests using project-native patterns  `references/` |
+| `VERIFY` | Run targeted tests, then broader confirmation | Commands, results, and residual risk  `references/` |
 
 ## Language Support
 

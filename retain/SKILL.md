@@ -1,5 +1,5 @@
 ---
-name: retain
+name: Retain
 description: リテンション施策、再エンゲージメント、チャーン予防。リテンション分析フレームワーク、リエンゲージメントトリガー設計、ゲーミフィケーション要素、習慣形成デザイン、ロイヤリティプログラム。エンゲージメント施策が必要な時に使用。
 ---
 
@@ -67,12 +67,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Goal | Actions |
-|-------|------|---------|
-| 1. **MONITOR** | Track retention health | Review cohorts · inspect health scores · check trigger coverage |
-| 2. **IDENTIFY** | Find risk and opportunity | Segment at-risk users · score churn risk · isolate drop-off windows |
-| 3. **INTERVENE** | Design the smallest useful tactic | Match signal to intervention · personalize by segment · define guardrails |
-| 4. **MEASURE** | Verify the tactic works | Define KPI changes · estimate ROI · propose an experiment or rollout check |
+| Phase | Goal | Actions  Read |
+|-------|------|---------------|
+| 1. **MONITOR** | Track retention health | Review cohorts · inspect health scores · check trigger coverage  `references/` |
+| 2. **IDENTIFY** | Find risk and opportunity | Segment at-risk users · score churn risk · isolate drop-off windows  `references/` |
+| 3. **INTERVENE** | Design the smallest useful tactic | Match signal to intervention · personalize by segment · define guardrails  `references/` |
+| 4. **MEASURE** | Verify the tactic works | Define KPI changes · estimate ROI · propose an experiment or rollout check  `references/` |
 
 ## Critical Thresholds
 

@@ -127,14 +127,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 Use the framework `PERSONA → PIPELINE → STAGE → STREAM → MONITOR → EVOLVE`.
 
-| Phase | Goal | Required outputs | Load |
-|-------|------|------------------|------|
-| `PERSONA` | Extend Cast persona for streaming | Voice profile, expression map, interaction rules | `references/persona-extension.md` |
-| `PIPELINE` | Design the real-time architecture | Component diagram, interfaces, latency budget, fallback plan | `references/pipeline-architecture.md`, `references/response-generation.md` |
-| `STAGE` | Define the stream stage and control plane | OBS scenes, audio routing, avatar-control contract | `references/obs-streaming.md`, `references/avatar-control.md` |
-| `STREAM` | Prepare launch execution | Integration checklist, dry-run protocol, go-live gate | `references/chat-platforms.md`, `references/tts-engines.md`, `references/lip-sync-expression.md` |
-| `MONITOR` | Keep the live system healthy | Dashboard, alerts, recovery rules | `references/pipeline-architecture.md`, `references/obs-streaming.md` |
-| `EVOLVE` | Improve based on feedback and metrics | Tuning plan, persona-evolution handoff, verification plan | `references/persona-extension.md`, `references/response-generation.md` |
+| Phase | Goal | Required outputs | Load  Read |
+|-------|------|------------------|------------|
+| `PERSONA` | Extend Cast persona for streaming | Voice profile, expression map, interaction rules | `references/persona-extension.md`  `references/` |
+| `PIPELINE` | Design the real-time architecture | Component diagram, interfaces, latency budget, fallback plan | `references/pipeline-architecture.md`, `references/response-generation.md`  `references/` |
+| `STAGE` | Define the stream stage and control plane | OBS scenes, audio routing, avatar-control contract | `references/obs-streaming.md`, `references/avatar-control.md`  `references/` |
+| `STREAM` | Prepare launch execution | Integration checklist, dry-run protocol, go-live gate | `references/chat-platforms.md`, `references/tts-engines.md`, `references/lip-sync-expression.md`  `references/` |
+| `MONITOR` | Keep the live system healthy | Dashboard, alerts, recovery rules | `references/pipeline-architecture.md`, `references/obs-streaming.md`  `references/` |
+| `EVOLVE` | Improve based on feedback and metrics | Tuning plan, persona-evolution handoff, verification plan | `references/persona-extension.md`, `references/response-generation.md`  `references/` |
 
 Execution loop: `SURVEY → PLAN → VERIFY → PRESENT`.
 

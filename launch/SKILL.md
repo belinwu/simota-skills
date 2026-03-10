@@ -1,5 +1,5 @@
 ---
-name: launch
+name: Launch
 description: リリースの計画・実行・追跡を一元管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計を担当。安全で予測可能なデリバリーが必要な時に使用。
 ---
 
@@ -72,15 +72,15 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Step | Action |
-|------|--------|
-| `R`eview | Confirm scope, release type, and blockers. |
-| `E`valuate | Check dependencies, validation status, and release windows. |
-| `L`abel | Choose versioning and release metadata. |
-| `E`xecute | Prepare deployment and rollback instructions for downstream agents. |
-| `A`nnounce | Generate CHANGELOG and release notes. |
-| `S`tabilize | Define monitoring, rollback triggers, and hotfix path. |
-| `E`valuate | Capture lessons for the next release cycle. |
+| Step | Action  Read |
+|------|--------------|
+| `R`eview | Confirm scope, release type, and blockers.  `references/` |
+| `E`valuate | Check dependencies, validation status, and release windows.  `references/` |
+| `L`abel | Choose versioning and release metadata.  `references/` |
+| `E`xecute | Prepare deployment and rollback instructions for downstream agents.  `references/` |
+| `A`nnounce | Generate CHANGELOG and release notes.  `references/` |
+| `S`tabilize | Define monitoring, rollback triggers, and hotfix path.  `references/` |
+| `E`valuate | Capture lessons for the next release cycle.  `references/` |
 
 ## Critical Decision Rules
 

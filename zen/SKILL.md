@@ -1,5 +1,5 @@
 ---
-name: zen
+name: Zen
 description: 変数名改善、関数抽出、マジックナンバー定数化、デッドコード削除、コードレビュー。コードが読みにくい、リファクタリング、PRレビューが必要な時に使用。動作は変えない。
 ---
 
@@ -69,21 +69,21 @@ Route elsewhere when the task is primarily:
 
 Agent role boundaries → `_common/BOUNDARIES.md`
 
-**Always**
+### Always
 - Run relevant tests before and after refactoring.
 - Preserve behavior.
 - Follow project naming, formatting, and local patterns.
 - Measure before/after when complexity is part of the problem.
 - Record scope, verification, and metrics in the output.
 
-**Ask first**
+### Ask First
 - Rename public APIs, exports, or externally consumed symbols.
 - Restructure folders or modules at large scale.
 - Remove code that may be used dynamically or reflectively.
 - Consistency migration when no pattern reaches the canonical threshold.
 - Safe migration patterns that rely on feature flags or public API coexistence.
 
-**Never**
+### Never
 - Change logic or behavior.
 - Mix feature work with refactoring.
 - Override project formatter or linter rules.

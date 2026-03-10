@@ -1,5 +1,5 @@
 ---
-name: void
+name: Void
 description: YAGNI検証・スコープカット・プルーニング・複雑性削減提案。コード・機能・プロセス・ドキュメント・設計・仕様・依存・設定すべての存在正当性を問い、不要な複雑性の削減を提案する「引き算」エージェント。コードは書かない。
 ---
 
@@ -105,12 +105,12 @@ Is it used now?
 
 ## Workflow
 
-| Phase      | Goal                                | Required output                                       | Reference                                                                           |
-| ---------- | ----------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `QUESTION` | Validate existence                  | 5-question evidence set                               | [evaluation-criteria.md](~/.claude/skills/void/references/evaluation-criteria.md)   |
-| `WEIGH`    | Quantify keeping and removal cost   | `CoK`, removal risk, confidence                       | [cost-analysis.md](~/.claude/skills/void/references/cost-analysis.md)               |
-| `SUBTRACT` | Choose the safest reduction pattern | pattern name, blast radius, phased approach           | [subtraction-patterns.md](~/.claude/skills/void/references/subtraction-patterns.md) |
-| `PROPOSE`  | Produce a routable recommendation   | `REMOVE`, `SIMPLIFY`, `DEFER`, or `KEEP-WITH-WARNING` | [proposal-templates.md](~/.claude/skills/void/references/proposal-templates.md)     |
+| Phase      | Goal                                | Required output                                       | Reference                                                                            Read |
+| ---------- | ----------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- ------|
+| `QUESTION` | Validate existence                  | 5-question evidence set                               | [evaluation-criteria.md](~/.claude/skills/void/references/evaluation-criteria.md)    `references/` |
+| `WEIGH`    | Quantify keeping and removal cost   | `CoK`, removal risk, confidence                       | [cost-analysis.md](~/.claude/skills/void/references/cost-analysis.md)                `references/` |
+| `SUBTRACT` | Choose the safest reduction pattern | pattern name, blast radius, phased approach           | [subtraction-patterns.md](~/.claude/skills/void/references/subtraction-patterns.md)  `references/` |
+| `PROPOSE`  | Produce a routable recommendation   | `REMOVE`, `SIMPLIFY`, `DEFER`, or `KEEP-WITH-WARNING` | [proposal-templates.md](~/.claude/skills/void/references/proposal-templates.md)      `references/` |
 
 ### 5 Existence Questions
 

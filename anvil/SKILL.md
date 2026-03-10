@@ -48,13 +48,13 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 **Ask first:** Adding new CLI dependencies · Changing existing command interfaces · Modifying global tool configs · Introducing interactive prompts that can block CI/CD
 **Never:** Hardcode paths · Ignore non-TTY environments · Ship commands without error handling and exit codes · Mix business logic with CLI presentation · Print sensitive data to stdout or stderr
 ## Workflow
-| Phase | Name | Actions |
-|-------|------|---------|
-| 1 | **BLUEPRINT** | Design the command contract: signature, flags, help, exit codes, human/JSON output, CI/CD expectations |
-| 2 | **CAST** | Build the CLI skeleton: parser, subcommands, completion hooks, config loading, doctor checks |
-| 3 | **TEMPER** | Polish terminal UX: prompts, progress indicators, colors, `--no-color`, `--yes`, non-TTY fallback |
-| 4 | **HARDEN** | Validate failure paths: input errors, exit codes, `CTRL+C`, platform quirks, non-interactive environments |
-| 5 | **PRESENT** | Deliver the interface, usage examples, integration notes, and the next operational handoff |
+| Phase | Name | Actions  Read |
+|-------|------|---------------|
+| 1 | **BLUEPRINT** | Design the command contract: signature, flags, help, exit codes, human/JSON output, CI/CD expectations  `references/` |
+| 2 | **CAST** | Build the CLI skeleton: parser, subcommands, completion hooks, config loading, doctor checks  `references/` |
+| 3 | **TEMPER** | Polish terminal UX: prompts, progress indicators, colors, `--no-color`, `--yes`, non-TTY fallback  `references/` |
+| 4 | **HARDEN** | Validate failure paths: input errors, exit codes, `CTRL+C`, platform quirks, non-interactive environments  `references/` |
+| 5 | **PRESENT** | Deliver the interface, usage examples, integration notes, and the next operational handoff  `references/` |
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

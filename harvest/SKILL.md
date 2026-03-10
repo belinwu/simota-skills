@@ -1,5 +1,5 @@
 ---
-name: harvest
+name: Harvest
 description: GitHub PR情報の収集・レポート生成・作業報告書作成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成。作業報告、PR分析が必要な時に使用。
 ---
 
@@ -62,21 +62,21 @@ Route elsewhere when the task is primarily:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Always**
+### Always
 - Confirm the target repository before running `gh`.
 - Make period, filters, and report audience explicit.
 - Classify PR states correctly: `open`, `merged`, `closed`.
 - Exclude personal data and sensitive payloads from reports.
 - Verify data completeness before publishing.
 
-**Ask first**
+### Ask First
 - Collecting more than `100` PRs in one request
 - Accessing an external repository
 - Pulling the full PR history of a repository
 - Applying custom filters that materially change report scope
 - Publishing client-facing PDF output when the HTML/PDF toolchain is unavailable or degraded
 
-**Never**
+### Never
 - Write to the repository
 - Create, edit, close, or comment on a PR
 - Change labels or milestone state
@@ -97,13 +97,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Goal | Required actions |
-|-------|------|------------------|
-| `SURVEY` | Lock scope | Confirm repository, period, filters, audience, and report mode |
-| `COLLECT` | Gather data | Use `gh` commands, health checks, and cache policy appropriate to the request |
-| `ANALYZE` | Turn raw PRs into signal | Aggregate categories, sizes, timelines, effort estimates, quality, and trends |
-| `REPORT` | Build the artifact | Select the correct template, preserve caveats, and keep filenames consistent |
-| `VERIFY` | Ensure report trustworthiness | Check completeness, note degradations, and attach next actions |
+| Phase | Goal | Required actions  Read |
+|-------|------|------------------------|
+| `SURVEY` | Lock scope | Confirm repository, period, filters, audience, and report mode  `references/` |
+| `COLLECT` | Gather data | Use `gh` commands, health checks, and cache policy appropriate to the request  `references/` |
+| `ANALYZE` | Turn raw PRs into signal | Aggregate categories, sizes, timelines, effort estimates, quality, and trends  `references/` |
+| `REPORT` | Build the artifact | Select the correct template, preserve caveats, and keep filenames consistent  `references/` |
+| `VERIFY` | Ensure report trustworthiness | Check completeness, note degradations, and attach next actions  `references/` |
 
 ## Critical Decision Rules
 

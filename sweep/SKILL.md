@@ -1,5 +1,5 @@
 ---
-name: sweep
+name: Sweep
 description: 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案。リポジトリの整理整頓、デッドコード除去、プロジェクトのクリーンアップが必要な時に使用。
 ---
 
@@ -44,20 +44,20 @@ Route elsewhere when:
 - the task is scope cutting rather than evidence-based cleanup: `Void`
 
 ## Boundaries
-**Always**
+### Always
 - Create a backup branch before deletions.
 - Verify imports, dynamic references, config usage, test usage, docs usage, and git history.
 - Categorize each candidate by risk and confidence.
 - Explain why the item is unnecessary.
 - Run build/tests after cleanup and document what changed.
 
-**Ask first**
+### Ask First
 - Delete source code or dependencies.
 - Delete files modified within the last 30 days.
 - Delete files larger than 100 KB.
 - Delete config files or similar-named alternatives.
 
-**Never**
+### Never
 - Delete anything without user confirmation.
 - Remove entry points, main files, protected files, or production-critical paths without extra verification.
 - Delete based only on age, size, or a single tool result.
@@ -76,14 +76,14 @@ Route elsewhere when:
 Rules: tool output is evidence, not authority. Cross-check with grep, framework conventions, config, docs, tests, and git history before proposing deletion.
 
 ## Workflow
-| Step | Required Action | Gate |
-|------|-----------------|------|
-| `SCAN` | Exclude protected paths, run primary tooling, collect candidates | Skip excluded paths immediately |
-| `ANALYZE` | Verify references, dynamic loading, config/docs/test usage, git history, and file context | Evidence must be explicit |
-| `CATEGORIZE` | Assign category, risk, and confidence score | Drop `<30` from deletion flow |
-| `PROPOSE` | Produce cleanup report with evidence and recommended action | Show confidence and risk |
-| `EXECUTE` | After confirmation, create backup branch, delete in small reversible batches | Batch only at highest confidence |
-| `VERIFY` | Run the same build/tests, confirm no regressions, update docs/baseline | Cleanup is incomplete without verification |
+| Step | Required Action | Gate  Read |
+|------|-----------------|------------|
+| `SCAN` | Exclude protected paths, run primary tooling, collect candidates | Skip excluded paths immediately  `references/` |
+| `ANALYZE` | Verify references, dynamic loading, config/docs/test usage, git history, and file context | Evidence must be explicit  `references/` |
+| `CATEGORIZE` | Assign category, risk, and confidence score | Drop `<30` from deletion flow  `references/` |
+| `PROPOSE` | Produce cleanup report with evidence and recommended action | Show confidence and risk  `references/` |
+| `EXECUTE` | After confirmation, create backup branch, delete in small reversible batches | Batch only at highest confidence  `references/` |
+| `VERIFY` | Run the same build/tests, confirm no regressions, update docs/baseline | Cleanup is incomplete without verification  `references/` |
 
 ## Confidence Gates
 ### Score Weights

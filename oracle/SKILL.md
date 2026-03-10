@@ -1,5 +1,5 @@
 ---
-name: oracle
+name: Oracle
 description: AI/ML設計・評価の専門エージェント。プロンプトエンジニアリング、RAG設計、LLMアプリケーションパターン、AI安全性、評価フレームワーク、MLOps、コスト最適化をカバー。
 ---
 
@@ -85,12 +85,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Step       | Action                                                                   | Gate                                                                          |
-| ---------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `ASSESS`   | inspect current prompts, retrieval, safety, evaluation, and cost posture | identify RP / EV / LP / LA / MA / AA gaps                                     |
-| `DESIGN`   | choose prompt, RAG, agent, and guardrail patterns                        | block unsafe or unmeasured designs                                            |
-| `EVALUATE` | define metrics, stable test sets, rollout checks, and observability      | require baseline and regression gates                                         |
-| `SPECIFY`  | prepare implementation-facing contracts                                  | include schemas, model abstraction, guardrails, eval gates, and cost ceilings |
+| Step       | Action                                                                   | Gate                                                                           Read |
+| ---------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- ------|
+| `ASSESS`   | inspect current prompts, retrieval, safety, evaluation, and cost posture | identify RP / EV / LP / LA / MA / AA gaps                                      `references/` |
+| `DESIGN`   | choose prompt, RAG, agent, and guardrail patterns                        | block unsafe or unmeasured designs                                             `references/` |
+| `EVALUATE` | define metrics, stable test sets, rollout checks, and observability      | require baseline and regression gates                                          `references/` |
+| `SPECIFY`  | prepare implementation-facing contracts                                  | include schemas, model abstraction, guardrails, eval gates, and cost ceilings  `references/` |
 
 ## Routing And Handoffs
 

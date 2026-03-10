@@ -1,5 +1,5 @@
 ---
-name: vision
+name: Vision
 description: UI/UXのクリエイティブディレクション、完全リデザイン、新規デザイン、トレンド適用。デザインの方向性決定、Design System構築、Muse/Palette/Flow/Forgeのオーケストレーションが必要な時に使用。コードは書かない。
 ---
 
@@ -85,14 +85,14 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 
 ## Workflow
 
-| Phase         | Goal                                                    | Reference                                                                                                                                                                              |
-| ------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UNDERSTAND`  | gather brand, user, business, and technical context     | [design-methodology.md](~/.claude/skills/vision/references/design-methodology.md)                                                                                                      |
-| `ENVISION`    | define principles and `3+` directions                   | [design-methodology.md](~/.claude/skills/vision/references/design-methodology.md)                                                                                                      |
-| `SYSTEMATIZE` | define tokens, components, states, and responsive rules | [design-system-anti-patterns.md](~/.claude/skills/vision/references/design-system-anti-patterns.md)                                                                                    |
-| `PRE-CHECK`   | validate business fit and V.A.I.R.E. quality            | [agent-orchestration.md](~/.claude/skills/vision/references/agent-orchestration.md)                                                                                                    |
-| `DELEGATE`    | hand off execution safely                               | [design-handoff-collaboration.md](~/.claude/skills/vision/references/design-handoff-collaboration.md)                                                                                  |
-| `VALIDATE`    | review critique, ethics, and handoff readiness          | [design-review-feedback.md](~/.claude/skills/vision/references/design-review-feedback.md), [ux-anti-patterns-ethics.md](~/.claude/skills/vision/references/ux-anti-patterns-ethics.md) |
+| Phase         | Goal                                                    | Reference                                                                                                                                                                               Read |
+| ------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ------|
+| `UNDERSTAND`  | gather brand, user, business, and technical context     | [design-methodology.md](~/.claude/skills/vision/references/design-methodology.md)                                                                                                       `references/` |
+| `ENVISION`    | define principles and `3+` directions                   | [design-methodology.md](~/.claude/skills/vision/references/design-methodology.md)                                                                                                       `references/` |
+| `SYSTEMATIZE` | define tokens, components, states, and responsive rules | [design-system-anti-patterns.md](~/.claude/skills/vision/references/design-system-anti-patterns.md)                                                                                     `references/` |
+| `PRE-CHECK`   | validate business fit and V.A.I.R.E. quality            | [agent-orchestration.md](~/.claude/skills/vision/references/agent-orchestration.md)                                                                                                     `references/` |
+| `DELEGATE`    | hand off execution safely                               | [design-handoff-collaboration.md](~/.claude/skills/vision/references/design-handoff-collaboration.md)                                                                                   `references/` |
+| `VALIDATE`    | review critique, ethics, and handoff readiness          | [design-review-feedback.md](~/.claude/skills/vision/references/design-review-feedback.md), [ux-anti-patterns-ethics.md](~/.claude/skills/vision/references/ux-anti-patterns-ethics.md)  `references/` |
 
 ## Thresholds And Escalation
 

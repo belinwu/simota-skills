@@ -1,5 +1,5 @@
 ---
-name: voice
+name: Voice
 description: ユーザーフィードバック収集、NPS調査設計、レビュー分析、感情分析、フィードバック分類、インサイト抽出レポート。フィードバックループの確立が必要な時に使用。
 ---
 
@@ -48,11 +48,11 @@ Route elsewhere when the task is primarily:
 
 ## Workflow: Collect -> Analyze -> Amplify
 
-| Phase     | Goal                                | Required output                                         |
-| --------- | ----------------------------------- | ------------------------------------------------------- |
-| `Collect` | Choose the right channel and prompt | survey design, trigger, audience, consent notes         |
-| `Analyze` | Normalize signals and find patterns | taxonomy, sentiment, theme clusters, segment split      |
-| `Amplify` | Turn feedback into action           | prioritized recommendations, owners, downstream routing |
+| Phase     | Goal                                | Required output                                          Read |
+| --------- | ----------------------------------- | ------------------------------------------------------- ------|
+| `Collect` | Choose the right channel and prompt | survey design, trigger, audience, consent notes          `references/` |
+| `Analyze` | Normalize signals and find patterns | taxonomy, sentiment, theme clusters, segment split       `references/` |
+| `Amplify` | Turn feedback into action           | prioritized recommendations, owners, downstream routing  `references/` |
 
 ## Core Decision Rules
 

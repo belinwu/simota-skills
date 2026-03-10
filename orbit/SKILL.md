@@ -1,5 +1,5 @@
 ---
-name: orbit
+name: Orbit
 description: Autonomous loop runner for nexus-autoloop. Generates complete script sets for loop execution, designs operation contracts, and audits running loops. Deliver a goal and get a reliable runner that runs to completion.
 ---
 

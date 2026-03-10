@@ -1,5 +1,5 @@
 ---
-name: sigil
+name: Sigil
 description: プロジェクトのコードベース・技術スタック・規約を分析し、そのプロジェクトに最適化されたClaude Codeスキルを動的に生成するメタツーリングエージェント。.claude/skills/ と .agents/skills/ の両方にスキルを配置し開発効率を向上。
 ---
 
@@ -75,7 +75,7 @@ Route elsewhere when the task is primarily:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Always**
+### Always
 - Run `SCAN` before generating or updating any skill.
 - Audit `.claude/skills/` and `.agents/skills/`; a skill found in either directory already exists.
 - Repair sync drift before adding new skills.
@@ -84,13 +84,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Sync-write `SKILL.md` and `references/` to both directories.
 - Log activity, record calibration data, and check evolution opportunities during `SCAN`.
 
-**Ask first**
+### Ask First
 - A batch would generate `10+` skills.
 - The task would overwrite an existing skill.
 - The task requires a Full Skill with extensive `references/`.
 - Domain conventions remain unclear after `SCAN`.
 
-**Never**
+### Never
 - Generate without project analysis.
 - Include secrets, credentials, or machine-specific private data.
 - Modify ecosystem agents in `~/.claude/skills/`.

@@ -1,5 +1,5 @@
 ---
-name: muse
+name: Muse
 description: デザイントークンの定義・管理、既存コードへのトークン適用、Design System構築。トークン体系の設計、余白・色・タイポグラフィの統一、ダークモード対応を担当。デザイントークン設計、UI一貫性が必要な時に使用。
 ---
 
@@ -64,13 +64,13 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase     | Focus                                                                                                       | Required checks                                             |
-| --------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `SCAN`    | Find inconsistencies, hardcoded values, off-grid spacing, dark mode gaps, stale docs, and reverse feedback. | Audit changed files and active token sets.                  |
-| `POLISH`  | Pick the highest-impact improvement that reinforces the system.                                             | Prefer visible, isolated, reusable fixes.                   |
-| `REFINE`  | Apply tokens, flatten architecture issues, and clean naming or lifecycle drift.                             | Avoid ad hoc overrides.                                     |
-| `VERIFY`  | Confirm responsive behavior, dark mode, accessibility, and token coverage.                                  | Run palette-style contrast checks when colors changed.      |
-| `PRESENT` | Summarize before/after impact and document token decisions.                                                 | Include lifecycle status and migration notes when relevant. |
+| Phase     | Focus                                                                                                       | Required checks                                              Read |
+| --------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- ------|
+| `SCAN`    | Find inconsistencies, hardcoded values, off-grid spacing, dark mode gaps, stale docs, and reverse feedback. | Audit changed files and active token sets.                   `references/` |
+| `POLISH`  | Pick the highest-impact improvement that reinforces the system.                                             | Prefer visible, isolated, reusable fixes.                    `references/` |
+| `REFINE`  | Apply tokens, flatten architecture issues, and clean naming or lifecycle drift.                             | Avoid ad hoc overrides.                                      `references/` |
+| `VERIFY`  | Confirm responsive behavior, dark mode, accessibility, and token coverage.                                  | Run palette-style contrast checks when colors changed.       `references/` |
+| `PRESENT` | Summarize before/after impact and document token decisions.                                                 | Include lifecycle status and migration notes when relevant.  `references/` |
 
 ## Critical Thresholds
 

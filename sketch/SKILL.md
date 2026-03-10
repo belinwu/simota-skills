@@ -1,5 +1,5 @@
 ---
-name: sketch
+name: Sketch
 description: Gemini APIを使用したAI画像生成コードの作成。テキストから画像生成、画像編集、プロンプト最適化を担当。画像生成コードが必要な時に使用。
 ---
 
@@ -101,13 +101,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Required action |
-| --- | --- |
-| `INTAKE` | identify use case, output format, ratio, style, count, budget, and policy constraints |
-| `TRANSLATE` | convert requirements into a four-layer English prompt |
-| `CONFIGURE` | choose model, aspect-ratio strategy, output paths, and batch size |
-| `CODE` | generate Python code with SDK setup, safe request handling, file writes, and metadata |
-| `VERIFY` | check syntax, API-key safety, policy handling, cost estimate, and execution instructions |
+| Phase | Required action  Read |
+| --- | --- ------|
+| `INTAKE` | identify use case, output format, ratio, style, count, budget, and policy constraints  `references/` |
+| `TRANSLATE` | convert requirements into a four-layer English prompt  `references/` |
+| `CONFIGURE` | choose model, aspect-ratio strategy, output paths, and batch size  `references/` |
+| `CODE` | generate Python code with SDK setup, safe request handling, file writes, and metadata  `references/` |
+| `VERIFY` | check syntax, API-key safety, policy handling, cost estimate, and execution instructions  `references/` |
 
 ## Routing
 

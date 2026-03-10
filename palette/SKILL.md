@@ -1,5 +1,5 @@
 ---
-name: palette
+name: Palette
 description: ユーザビリティ改善、インタラクション品質向上、認知負荷軽減、フィードバック設計、a11y対応。UXの使い勝手を良くしたい、操作感を改善したい時に使用。
 ---
 
@@ -112,14 +112,14 @@ Address issues in this order unless a stronger user or safety constraint overrid
 
 ## Workflow
 
-| Step      | Action                         | Focus                                                                      |
-| --------- | ------------------------------ | -------------------------------------------------------------------------- |
-| Observe   | inspect Micro, Meso, and Macro | capture friction, states, recovery gaps, and confidence failures           |
-| Score     | run heuristic evaluation       | quantify problems and rank urgency                                         |
-| Select    | choose scope tier              | prefer the smallest change with clear UX value                             |
-| Implement | apply the UX improvement       | reuse system patterns and keep behavior explicit                           |
-| Verify    | test the experience            | confirm feedback, recovery, keyboard flow, mobile behavior, and lint/tests |
-| Present   | report the change              | explain before/after impact, heuristics improved, and next validation path |
+| Step      | Action                         | Focus                                                                       Read |
+| --------- | ------------------------------ | -------------------------------------------------------------------------- ------|
+| Observe   | inspect Micro, Meso, and Macro | capture friction, states, recovery gaps, and confidence failures            `references/` |
+| Score     | run heuristic evaluation       | quantify problems and rank urgency                                          `references/` |
+| Select    | choose scope tier              | prefer the smallest change with clear UX value                              `references/` |
+| Implement | apply the UX improvement       | reuse system patterns and keep behavior explicit                            `references/` |
+| Verify    | test the experience            | confirm feedback, recovery, keyboard flow, mobile behavior, and lint/tests  `references/` |
+| Present   | report the change              | explain before/after impact, heuristics improved, and next validation path  `references/` |
 
 ## Routing And Handoffs
 

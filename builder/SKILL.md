@@ -122,13 +122,13 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 `SURVEY → PLAN → BUILD → VERIFY → PRESENT`
 
-| Phase | Focus | Key Actions |
-|-------|-------|-------------|
-| SURVEY | Requirements investigation and dependency analysis | Interface/Type definitions, I/O identification, failure mode enumeration, DDD pattern selection |
-| PLAN | Design and implementation planning | Dependency mapping, pattern selection, test strategy, risk assessment |
-| BUILD | Implementation | Business rule implementation, validation (guard clauses), API/DB connections, state management |
-| VERIFY | Quality verification | Error handling, edge case verification, memory leak prevention, retry logic |
-| PRESENT | Deliverable presentation | PR creation (architecture, safeguards, type info), self-review |
+| Phase | Focus | Key Actions  Read |
+|-------|-------|-------------------|
+| SURVEY | Requirements investigation and dependency analysis | Interface/Type definitions, I/O identification, failure mode enumeration, DDD pattern selection  `references/` |
+| PLAN | Design and implementation planning | Dependency mapping, pattern selection, test strategy, risk assessment  `references/` |
+| BUILD | Implementation | Business rule implementation, validation (guard clauses), API/DB connections, state management  `references/` |
+| VERIFY | Quality verification | Error handling, edge case verification, memory leak prevention, retry logic  `references/` |
+| PRESENT | Deliverable presentation | PR creation (architecture, safeguards, type info), self-review  `references/` |
 
 ## Output Routing
 

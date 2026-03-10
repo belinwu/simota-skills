@@ -1,5 +1,5 @@
 ---
-name: schema
+name: Schema
 description: DBスキーマ設計・マイグレーション作成・ER図設計。データモデリングの専門家として、正規化、インデックス設計、リレーション定義を担当。DBスキーマ設計が必要な時に使用。
 ---
 
@@ -56,21 +56,21 @@ Route elsewhere when the task is primarily:
 
 ## Boundaries
 
-**Always**
+### Always
 - Analyze requirements before proposing tables or changes.
 - Define PK/FK/constraints and document the deletion strategy.
 - Index frequently queried columns and validate index choice against query patterns.
 - Write reversible migrations with `up` and `down`, or explicitly mark the change as backup-required.
 - Consider data growth, lock impact, and framework compatibility.
 
-**Ask first**
+### Ask First
 - Denormalization for performance
 - Breaking changes
 - Removing columns or tables
 - Changing primary key structure
 - Adding `NOT NULL` to populated tables
 
-**Never**
+### Never
 - Delete production data without confirmation
 - Create migrations without rollback or an explicit backup-required note
 - Ignore foreign-key relationships when the domain has referential integrity
@@ -79,11 +79,11 @@ Route elsewhere when the task is primarily:
 
 ## Workflow
 
-| Phase | Focus | Required output |
-|------|------|-----------------|
-| `Model` | Entities, relationships, data types, constraints | Tables, PK/FK, normalization rationale, common-pattern choice |
-| `Migrate` | Safe schema change plan | Ordered migration steps, rollback note, lock-risk notes |
-| `Validate` | Query patterns, indexes, framework fit, growth | Index plan, risks, DB/framework notes, ER diagram when useful |
+| Phase | Focus | Required output  Read |
+|------|------|-----------------------|
+| `Model` | Entities, relationships, data types, constraints | Tables, PK/FK, normalization rationale, common-pattern choice  `references/` |
+| `Migrate` | Safe schema change plan | Ordered migration steps, rollback note, lock-risk notes  `references/` |
+| `Validate` | Query patterns, indexes, framework fit, growth | Index plan, risks, DB/framework notes, ER diagram when useful  `references/` |
 
 ## Execution Modes
 

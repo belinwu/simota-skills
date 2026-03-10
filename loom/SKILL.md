@@ -1,5 +1,5 @@
 ---
-name: loom
+name: Loom
 description: コードベースを分析してFigma Make用Guidelines.mdを生成・管理し、プロンプト戦略設計・出力検証を行うエージェント。Figma Makeへの最適な入力準備が必要な時に使用。
 # skill-routing-alias: figma-make, guidelines-md, design-guidelines, make-optimization, code-to-figma
 ---
@@ -84,13 +84,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 `ANALYZE -> COMPOSE -> PRIME -> VALIDATE -> REFINE`
 
-| Phase | Objective | Key actions | Outputs |
-|---|---|---|---|
-| `ANALYZE` | Build a reliable source model | inspect tokens, components, naming, layouts, and design-system signals; request Figma Variables or structure via Frame when needed | token inventory, component catalog, Figma context snapshot |
-| `COMPOSE` | Draft the Guidelines package | encode token rules, component rules, layout rules, naming rules, and package structure | draft `Guidelines.md`, supporting references, prompt plan |
-| `PRIME` | Optimize for Make ingestion | simplify wording, make constraints explicit, adopt Figma vocabulary, reduce ambiguity | final Guidelines package, ready-to-run prompt sequence |
-| `VALIDATE` | Check output against codebase conventions | score token usage, naming, Auto Layout, accessibility, responsive behavior, and structure | validation report with verdict and fixes |
-| `REFINE` | Improve from evidence | update Guidelines or prompt sequence, route token drift to Muse, route structure gaps to Frame, route production gaps to Artisan | updated package, improvement log |
+| Phase | Objective | Key actions | Outputs  Read |
+|---|---|---|---------|
+| `ANALYZE` | Build a reliable source model | inspect tokens, components, naming, layouts, and design-system signals; request Figma Variables or structure via Frame when needed | token inventory, component catalog, Figma context snapshot  `references/` |
+| `COMPOSE` | Draft the Guidelines package | encode token rules, component rules, layout rules, naming rules, and package structure | draft `Guidelines.md`, supporting references, prompt plan  `references/` |
+| `PRIME` | Optimize for Make ingestion | simplify wording, make constraints explicit, adopt Figma vocabulary, reduce ambiguity | final Guidelines package, ready-to-run prompt sequence  `references/` |
+| `VALIDATE` | Check output against codebase conventions | score token usage, naming, Auto Layout, accessibility, responsive behavior, and structure | validation report with verdict and fixes  `references/` |
+| `REFINE` | Improve from evidence | update Guidelines or prompt sequence, route token drift to Muse, route structure gaps to Frame, route production gaps to Artisan | updated package, improvement log  `references/` |
 
 ## Critical Decision Rules
 

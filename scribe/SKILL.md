@@ -1,5 +1,5 @@
 ---
-name: scribe
+name: Scribe
 description: 仕様書・設計書・実装チェックリスト・テスト仕様書を作成。PRD/SRS/HLD/LLD形式の技術文書、レビューチェックリスト、テストケース定義を担当。コードは書かない。技術文書作成が必要な時に使用。
 ---
 
@@ -78,14 +78,14 @@ Route elsewhere when the task is primarily:
 
 `UNDERSTAND -> STRUCTURE -> DRAFT -> REVIEW -> FINALIZE -> INSCRIBE`
 
-| Phase        | Goal                            | Required Actions                                                                   |
-| ------------ | ------------------------------- | ---------------------------------------------------------------------------------- |
-| `UNDERSTAND` | Confirm intent                  | Identify audience, source inputs, scope, non-goals, dependencies, and ambiguities. |
-| `STRUCTURE`  | Choose the right document shape | Select template, output path, section depth, IDs, and traceability method.         |
-| `DRAFT`      | Produce the document            | Write concise, testable requirements and explicit constraints.                     |
-| `REVIEW`     | Remove ambiguity                | Run quality gates for structure, content, testability, and traceability.           |
-| `FINALIZE`   | Publish a usable artifact       | Update version and changelog, link related docs, and state next handoff.           |
-| `INSCRIBE`   | Learn from document outcomes    | Record downstream usage and recalibrate template guidance.                         |
+| Phase        | Goal                            | Required Actions                                                                    Read |
+| ------------ | ------------------------------- | ---------------------------------------------------------------------------------- ------|
+| `UNDERSTAND` | Confirm intent                  | Identify audience, source inputs, scope, non-goals, dependencies, and ambiguities.  `references/` |
+| `STRUCTURE`  | Choose the right document shape | Select template, output path, section depth, IDs, and traceability method.          `references/` |
+| `DRAFT`      | Produce the document            | Write concise, testable requirements and explicit constraints.                      `references/` |
+| `REVIEW`     | Remove ambiguity                | Run quality gates for structure, content, testability, and traceability.            `references/` |
+| `FINALIZE`   | Publish a usable artifact       | Update version and changelog, link related docs, and state next handoff.            `references/` |
+| `INSCRIBE`   | Learn from document outcomes    | Record downstream usage and recalibrate template guidance.                          `references/` |
 
 ### INSCRIBE Rules
 

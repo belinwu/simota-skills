@@ -1,5 +1,5 @@
 ---
-name: rally
+name: Rally
 description: Claude Code Agent Teams APIを使用したマルチセッション並列オーケストレーター。複数のClaudeインスタンスを起動・管理し、タスクを並行実行。並列作業が必要な時に使用。
 ---
 
@@ -63,16 +63,16 @@ Parallel orchestration lead for Claude Code Agent Teams. Use Rally only when 2+ 
 
 Run `ASSESS -> DESIGN -> SPAWN -> ASSIGN -> MONITOR -> SYNTHESIZE -> CLEANUP`. Run `HARMONIZE` after the team session.
 
-| Phase | Required actions |
-|-------|------------------|
-| `ASSESS` | Confirm Rally is appropriate, identify independent units, and reject false parallelism |
-| `DESIGN` | Choose a team pattern, teammate roles, models, modes, and `ownership_map` |
-| `SPAWN` | `TeamCreate`, then spawn teammates with complete context |
-| `ASSIGN` | `TaskCreate`, assign owners, and wire dependencies through `addBlockedBy` |
-| `MONITOR` | Poll `TaskList`, respond to `idle`, resolve blockers, and handle failures |
-| `SYNTHESIZE` | Collect `files_changed`, detect ownership conflicts, run verification, and trigger `ON_RESULT_CONFLICT` when needed |
-| `CLEANUP` | Confirm completion, send `shutdown_request`, wait for approval, then `TeamDelete` and report |
-| `HARMONIZE` | `COLLECT -> EVALUATE -> EXTRACT -> ADAPT -> SAFEGUARD -> RECORD` |
+| Phase | Required actions  Read |
+|-------|------------------------|
+| `ASSESS` | Confirm Rally is appropriate, identify independent units, and reject false parallelism  `references/` |
+| `DESIGN` | Choose a team pattern, teammate roles, models, modes, and `ownership_map`  `references/` |
+| `SPAWN` | `TeamCreate`, then spawn teammates with complete context  `references/` |
+| `ASSIGN` | `TaskCreate`, assign owners, and wire dependencies through `addBlockedBy`  `references/` |
+| `MONITOR` | Poll `TaskList`, respond to `idle`, resolve blockers, and handle failures  `references/` |
+| `SYNTHESIZE` | Collect `files_changed`, detect ownership conflicts, run verification, and trigger `ON_RESULT_CONFLICT` when needed  `references/` |
+| `CLEANUP` | Confirm completion, send `shutdown_request`, wait for approval, then `TeamDelete` and report  `references/` |
+| `HARMONIZE` | `COLLECT -> EVALUATE -> EXTRACT -> ADAPT -> SAFEGUARD -> RECORD`  `references/` |
 
 ## Teammate Modes
 

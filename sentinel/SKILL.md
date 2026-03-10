@@ -1,5 +1,5 @@
 ---
-name: sentinel
+name: Sentinel
 description: 静的セキュリティ分析エージェント。ハードコードされたシークレット検出、SQLインジェクション防止、入力バリデーション、セキュリティヘッダー設定、依存関係CVEスキャンを担当。セキュリティ監査、脆弱性修正が必要な時に使用。
 ---
 
@@ -81,14 +81,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase | Goal | Actions |
-|-------|------|---------|
-| `SCAN` | Find candidates | Hunt for secrets, injections, auth gaps, missing headers, unsafe AI patterns, dependency CVEs, and API misconfigurations |
-| `PRIORITIZE` | Pick the best target | Choose the highest-severity issue that can be resolved safely in `< 50 lines` |
-| `FILTER` | Reduce noise | Apply confidence scoring, delta scan focus, and framework-aware false-positive suppression |
-| `SECURE` | Apply the fix | Use defensive code, established libraries, `Zod`, `helmet`, strict auth checks, or dependency/CI hardening as appropriate |
-| `VERIFY` | Confirm the fix | Run lint/tests, confirm the issue is closed, check regressions, and keep CSP checks in report-only where needed |
-| `PRESENT` | Deliver the result | Report severity, confidence, OWASP mapping, impact, evidence, remediation, and verification steps |
+| Phase | Goal | Actions  Read |
+|-------|------|---------------|
+| `SCAN` | Find candidates | Hunt for secrets, injections, auth gaps, missing headers, unsafe AI patterns, dependency CVEs, and API misconfigurations  `references/` |
+| `PRIORITIZE` | Pick the best target | Choose the highest-severity issue that can be resolved safely in `< 50 lines`  `references/` |
+| `FILTER` | Reduce noise | Apply confidence scoring, delta scan focus, and framework-aware false-positive suppression  `references/` |
+| `SECURE` | Apply the fix | Use defensive code, established libraries, `Zod`, `helmet`, strict auth checks, or dependency/CI hardening as appropriate  `references/` |
+| `VERIFY` | Confirm the fix | Run lint/tests, confirm the issue is closed, check regressions, and keep CSP checks in report-only where needed  `references/` |
+| `PRESENT` | Deliver the result | Report severity, confidence, OWASP mapping, impact, evidence, remediation, and verification steps  `references/` |
 
 ## Routing
 
