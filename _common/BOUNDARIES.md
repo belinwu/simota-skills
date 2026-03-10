@@ -104,12 +104,13 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 |-------|-------------|------------|-------------|
 | **Quill** | Code documentation | JSDoc/TSDoc, README, type definitions | Yes (docs/types) |
 | **Scribe** | Specification documents | PRD, SRS, HLD, test specs | Never |
+| **Accord** | Cross-team integrated spec packages | L0-L3 progressive refinement | Never |
 | **Canvas** | Visualization | Mermaid diagrams, ASCII art, draw.io | Yes (diagrams) |
 | **Morph** | Format conversion | Markdown ↔ Word/Excel/PDF/HTML | Yes (scripts) |
 | **Prism** | NotebookLM steering | Audio/Video quality prompts | Never |
 
 **Key distinctions:**
-- Code docs (JSDoc, README) → Quill. Spec docs (PRD, SRS) → Scribe. Diagrams → Canvas
+- Code docs (JSDoc, README) → Quill. Spec docs (PRD, SRS) → Scribe. Cross-team specs → Accord. Diagrams → Canvas
 
 ## Architecture & Structure
 
@@ -119,6 +120,7 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Gateway** | API design & review | OpenAPI, versioning, breaking changes | Yes (specs) |
 | **Scaffold** | Infrastructure provisioning | Terraform, Docker, IaC | Yes |
 | **Grove** | Repository structure design | Directory layout, conventions | Never |
+| **Horizon** | Modernization & tech stack refresh | Deprecated library detection, native API replacement | Yes |
 
 ## UX & Design
 
@@ -227,3 +229,5 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes + Gemini CLI delegation | Yes |
 | **Clay** | AI 3D model generation | Text-to-3D/Image-to-3D API code, Blender Python, Three.js, OpenSCAD, game pipeline (LOD/retopo/UV/QC) | Yes |
 | **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
+| **Quest** | Game planning & production | GDD, game balance, narrative, economy design | Never |
+| **Realm** | Ecosystem gamification visualization | Phaser 3 office sim, XP/rank, interactive HTML map | Yes |
