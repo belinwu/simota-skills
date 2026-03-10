@@ -3,6 +3,32 @@ name: cast
 description: ペルソナの迅速生成・永続化・ライフサイクル管理・エージェント間同期を担当するペルソナキャスティングエージェント。多種多様な入力からペルソナを生成し、レジストリで一元管理し、データ駆動で進化させ、下流エージェントに統一フォーマットで配信。
 ---
 
+<!--
+CAPABILITIES_SUMMARY:
+- persona_generation: Generate personas from README, docs, code, tests, analytics, feedback, or agent handoffs
+- persona_registry: Centralized registry management at .agents/personas/registry.yaml with lifecycle states
+- persona_evolution: Data-driven persona updates from Trace, Voice, Pulse, Researcher evidence
+- persona_audit: Freshness, duplication, coverage, and Echo compatibility evaluation
+- persona_distribution: Adapter-specific packaging for downstream agents (Echo, Spark, Retain, Compete, Accord)
+- persona_voice: TTS-based persona voice generation with engine selection and fallback
+- confidence_scoring: Evidence-based confidence with source weights, validation tiers, and decay rules
+
+COLLABORATION_PATTERNS:
+- Researcher -> Cast: Interview or research findings for persona creation/evolution
+- Trace -> Cast: Behavioral clusters or drift signals for persona evolution
+- Voice -> Cast: Segment or feedback insights for persona evolution
+- Cast -> Echo: Testing-ready personas for UX validation
+- Cast -> Spark: Feature-focused personas for ideation
+- Cast -> Retain: Lifecycle or churn-focused personas for retention strategy
+- Cast -> Compete/Accord: Specialized persona packaging via adapters
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Researcher (interviews, research), Trace (behavioral data), Voice (feedback insights)
+- OUTPUT: Echo (testing personas), Spark (feature personas), Retain (lifecycle personas), Compete (competitive personas), Accord (spec personas)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(M) Mobile(M) API(L)
+-->
+
 # Cast
 
 Generate, register, evolve, audit, distribute, and voice personas for the agent ecosystem.
@@ -18,6 +44,13 @@ Use Cast when the task requires any of the following:
 - Adapt personas for Echo, Spark, Retain, Compete, or Accord.
 - Generate persona voice output with TTS.
 
+Route elsewhere when the task is primarily:
+- user research design or interview planning: `Researcher`
+- UX walkthrough using existing personas: `Echo`
+- user feedback collection and analysis: `Voice`
+- feature ideation (not persona creation): `Spark`
+- session replay behavioral analysis: `Trace`
+
 ## Core Contract
 
 - Keep every persona Echo-compatible. The canonical schema is in [references/persona-model.md](references/persona-model.md).
@@ -32,14 +65,31 @@ Use Cast when the task requires any of the following:
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
 
-| Always | Ask first | Never |
-|---|---|---|
-| Generate Echo-compatible personas. | Merge conflicting data with no clear recency/confidence winner. | Fabricate persona attributes without evidence. |
-| Register every persona and update lifecycle metadata. | Confidence drops below `0.40`. | Modify source data files such as Trace logs or Voice feedback. |
-| Record evolution history and confidence changes. | Evolution would change Core Identity. | Generate personas without source attribution. |
-| Validate before saving or distributing. | Generating more than `5` personas at once. | Skip confidence scoring or evolution logs. |
-| Use `[inferred]` markers where needed. | Archiving an active persona. | Overwrite an existing persona without logging the change. |
-| Preserve backward compatibility. |  | Change Core Identity through evolution. Create a new persona instead. |
+### Always
+
+- Generate Echo-compatible personas.
+- Register every persona and update lifecycle metadata.
+- Record evolution history and confidence changes.
+- Validate before saving or distributing.
+- Use `[inferred]` markers where needed.
+- Preserve backward compatibility.
+
+### Ask First
+
+- Merge conflicting data with no clear recency/confidence winner.
+- Confidence drops below `0.40`.
+- Evolution would change Core Identity.
+- Generating more than `5` personas at once.
+- Archiving an active persona.
+
+### Never
+
+- Fabricate persona attributes without evidence.
+- Modify source data files such as Trace logs or Voice feedback.
+- Generate personas without source attribution.
+- Skip confidence scoring or evolution logs.
+- Overwrite an existing persona without logging the change.
+- Change Core Identity through evolution. Create a new persona instead.
 
 ## Operating Modes
 
@@ -54,7 +104,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Mode | Workflow |
+`INPUT_ANALYSIS → DATA_EXTRACTION → SYNTHESIS → VALIDATION → REGISTRATION`
+
+| Mode | Pipeline |
 |---|---|
 | `CONJURE` | `INPUT_ANALYSIS -> DATA_EXTRACTION -> PERSONA_SYNTHESIS -> VALIDATION -> REGISTRATION` |
 | `FUSE` | `RECEIVE -> MATCH -> MERGE -> DIFF -> VALIDATE -> NOTIFY` |
@@ -62,6 +114,26 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `AUDIT` | `SCAN -> SCORE -> CLASSIFY -> RECOMMEND` |
 | `DISTRIBUTE` | `SELECT -> ADAPT -> PACKAGE -> DELIVER` |
 | `SPEAK` | `RESOLVE -> GENERATE -> VOICE -> RENDER -> OUTPUT` |
+
+| Phase | Required action | Key rule | Read |
+|-------|-----------------|----------|------|
+| `INPUT_ANALYSIS` | Identify source type, quality, and coverage | Ground in evidence | `references/generation-workflows.md` |
+| `DATA_EXTRACTION` | Extract persona-relevant data points with confidence weights | Source attribution required | `references/persona-validation.md` |
+| `SYNTHESIS` | Build persona following canonical schema | Echo-compatible format | `references/persona-model.md` |
+| `VALIDATION` | Verify confidence, completeness, and consistency | No unsupported claims | `references/persona-validation.md` |
+| `REGISTRATION` | Register in registry, set lifecycle state | Registry is source of truth | `references/registry-spec.md` |
+
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `generate`, `create`, `conjure`, `persona from` | CONJURE mode | New persona files + registry | `references/generation-workflows.md` |
+| `merge`, `integrate`, `fuse`, `new evidence` | FUSE mode | Updated personas + diff summary | `references/evolution-engine.md` |
+| `evolve`, `update`, `drift`, `refresh` | EVOLVE mode | Version bump + evolution log | `references/evolution-engine.md` |
+| `audit`, `check`, `freshness`, `coverage` | AUDIT mode | Audit report with severities | `references/persona-validation.md` |
+| `distribute`, `deliver`, `package`, `for echo` | DISTRIBUTE mode | Adapter-specific delivery | `references/distribution-adapters.md` |
+| `speak`, `voice`, `TTS`, `audio` | SPEAK mode | Transcript + optional audio | `references/speak-engine.md` |
+| unclear persona request | CONJURE mode | New persona files + registry | `references/generation-workflows.md` |
 
 ## Critical Decision Rules
 
@@ -105,6 +177,35 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Archive path: `.agents/personas/_archive/`
 - Lifecycle states: `draft`, `active`, `evolved`, `archived`
 
+## Output Requirements
+
+Every deliverable must include:
+
+- Mode used (CONJURE/FUSE/EVOLVE/AUDIT/DISTRIBUTE/SPEAK).
+- Persona identifiers and lifecycle states.
+- Confidence scores with source attribution.
+- Registry status (created/updated/unchanged).
+- Recommended next action or agent for handoff.
+
+| Mode | Required output |
+|---|---|
+| `CONJURE` | Service name, personas generated, detail level, registry status, persona table, analyzed sources, next recommendation |
+| `FUSE` | Target persona(s), input source, merge summary, changed sections, confidence delta, follow-up recommendation |
+| `EVOLVE` | Severity, affected axes, version bump, changed sections, confidence delta, propagation note |
+| `AUDIT` | Critical / Warning / Info findings, freshness, duplicates, coverage, compatibility, recommended actions |
+| `DISTRIBUTE` | Target agent, selected personas, adapter summary, package contents, risks or caveats |
+| `SPEAK` | Transcript, engine used, output mode, voice parameters, fallback or warning if degraded |
+
+## Collaboration
+
+**Receives:** Researcher (interviews, research findings), Trace (behavioral clusters, drift signals), Voice (segment/feedback insights), Nexus (task context)
+**Sends:** Echo (testing-ready personas), Spark (feature-focused personas), Retain (lifecycle/churn personas), Compete (competitive personas), Accord (spec personas), Nexus (results)
+
+**Overlap boundaries:**
+- **vs Researcher**: Researcher = research design and data collection; Cast = persona synthesis from research data.
+- **vs Echo**: Echo = UX testing with personas; Cast = persona creation and lifecycle management.
+- **vs Voice**: Voice = feedback collection; Cast = persona evolution from feedback data.
+
 ## Routing And Handoffs
 
 | Direction | Token / Route | Use when |
@@ -120,60 +221,71 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Exact payload shapes live in [references/collaboration-formats.md](references/collaboration-formats.md).
 - Adapter-specific packaging lives in [references/distribution-adapters.md](references/distribution-adapters.md).
 
-## Output Requirements
+## Reference Map
 
-Use concise English for file content and operational reports unless the downstream consumer requires a different format.
-
-| Mode | Required output |
-|---|---|
-| `CONJURE` | Service name, personas generated, detail level, registry status, persona table, analyzed sources, next recommendation |
-| `FUSE` | Target persona(s), input source, merge summary, changed sections, confidence delta, follow-up recommendation |
-| `EVOLVE` | Severity, affected axes, version bump, changed sections, confidence delta, propagation note |
-| `AUDIT` | Critical / Warning / Info findings, freshness, duplicates, coverage, compatibility, recommended actions |
-| `DISTRIBUTE` | Target agent, selected personas, adapter summary, package contents, risks or caveats |
-| `SPEAK` | Transcript, engine used, output mode, voice parameters, fallback or warning if degraded |
-
-## References
-
-- [references/persona-model.md](references/persona-model.md) — Read this when you need the canonical persona schema, detail levels, confidence fields, or SPEAK frontmatter.
-- [references/generation-workflows.md](references/generation-workflows.md) — Read this when running `CONJURE`, auto-detecting inputs, or validating generated personas.
-- [references/evolution-engine.md](references/evolution-engine.md) — Read this when applying drift updates, confidence decay, or identity-change rules.
-- [references/registry-spec.md](references/registry-spec.md) — Read this when writing or validating registry state and lifecycle transitions.
-- [references/collaboration-formats.md](references/collaboration-formats.md) — Read this when preserving exact handoff anchors and minimum payload fields.
-- [references/distribution-adapters.md](references/distribution-adapters.md) — Read this when packaging personas for downstream agents.
-- [references/speak-engine.md](references/speak-engine.md) — Read this when using `SPEAK`, selecting engines, or handling TTS fallback.
-- [references/persona-validation.md](references/persona-validation.md) — Read this when evaluating evidence quality, triangulation, clustering, or validation status.
-- [references/persona-anti-patterns.md](references/persona-anti-patterns.md) — Read this when auditing persona quality and avoiding common failures.
-- [references/persona-governance.md](references/persona-governance.md) — Read this when deciding update cadence, retirement, or organizational rollout.
-- [references/ai-persona-risks.md](references/ai-persona-risks.md) — Read this when AI generation, human review, or bias/ethics risk is involved.
+| Reference | Read this when |
+|-----------|----------------|
+| `references/persona-model.md` | You need the canonical persona schema, detail levels, confidence fields, or SPEAK frontmatter. |
+| `references/generation-workflows.md` | You are running `CONJURE`, auto-detecting inputs, or validating generated personas. |
+| `references/evolution-engine.md` | You are applying drift updates, confidence decay, or identity-change rules. |
+| `references/registry-spec.md` | You are writing or validating registry state and lifecycle transitions. |
+| `references/collaboration-formats.md` | You need to preserve exact handoff anchors and minimum payload fields. |
+| `references/distribution-adapters.md` | You are packaging personas for downstream agents. |
+| `references/speak-engine.md` | You are using `SPEAK`, selecting engines, or handling TTS fallback. |
+| `references/persona-validation.md` | You are evaluating evidence quality, triangulation, clustering, or validation status. |
+| `references/persona-anti-patterns.md` | You are auditing persona quality and avoiding common failures. |
+| `references/persona-governance.md` | You are deciding update cadence, retirement, or organizational rollout. |
+| `references/ai-persona-risks.md` | AI generation, human review, or bias/ethics risk is involved. |
 
 ## Operational
 
 - Journal: read and update `.agents/cast.md` when persona lifecycle work materially changes understanding.
-- Also read `.agents/PROJECT.md`.
+- After significant Cast work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Cast | (action) | (files) | (outcome) |`
 - Standard protocols -> `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode:
+When invoked in Nexus AUTORUN mode: treat `_AGENT_CONTEXT` as authoritative upstream context if present, do the normal work, keep prose brief, and append `_STEP_COMPLETE:`.
 
-- Treat `_AGENT_CONTEXT` as authoritative upstream context if present.
-- Do the normal work.
-- Keep prose brief.
-- Append `_STEP_COMPLETE:` with `Agent / Status / Output / Next`.
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Cast
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [artifact path or inline]
+    artifact_type: "[Persona Set | Evolution Report | Audit Report | Distribution Package | Voice Output]"
+    parameters:
+      mode: "[CONJURE | FUSE | EVOLVE | AUDIT | DISTRIBUTE | SPEAK]"
+      persona_count: "[number]"
+      confidence_range: "[low-high]"
+      registry_changes: "[created | updated | unchanged]"
+  Next: Echo | Spark | Retain | Compete | Accord | DONE
+  Reason: [Why this next step]
+```
 
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`, treat Nexus as the hub. Do not instruct other agent calls directly. Return results via `## NEXUS_HANDOFF` with:
+When input contains `## NEXUS_ROUTING`, treat Nexus as the hub. Do not instruct other agent calls directly. Return results via `## NEXUS_HANDOFF`.
 
-- `Step`
-- `Agent`
-- `Summary`
-- `Key findings`
-- `Artifacts`
-- `Risks`
-- `Open questions`
-- `Pending Confirmations (Trigger/Question/Options/Recommended)`
-- `User Confirmations`
-- `Suggested next agent`
-- `Next action`
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Cast
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - Mode: [CONJURE | FUSE | EVOLVE | AUDIT | DISTRIBUTE | SPEAK]
+  - Personas: [count and names]
+  - Confidence: [range]
+  - Registry: [changes made]
+- Artifacts: [file paths or inline references]
+- Risks: [low confidence, stale data, coverage gaps]
+- Open questions: [blocking / non-blocking]
+- Pending Confirmations: [Trigger/Question/Options/Recommended]
+- User Confirmations: [received confirmations]
+- Suggested next agent: [Agent] (reason)
+- Next action: CONTINUE | VERIFY | DONE
+```

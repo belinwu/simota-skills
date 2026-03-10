@@ -1,7 +1,33 @@
 ---
-name: flow
+name: Flow
 description: ホバー効果、ローディング状態、モーダル遷移などのCSS/JSアニメーションを実装。UIに動きを付けたい、インタラクションを滑らかにしたい時に使用。
 ---
+
+<!--
+CAPABILITIES_SUMMARY:
+- micro_animation: Hover, press, toggle, validation, toast, feedback animations
+- page_transition: Route changes, modal/panel transitions, staged content entry
+- gesture_animation: Drag, swipe, snap, long press, touch feedback
+- motion_system_design: Motion tokens, scale design, cataloging, audits
+- modern_css_animation: View Transitions, @starting-style, scroll timelines, @property
+- reduced_motion: prefers-reduced-motion support and accessible motion paths
+- performance_optimization: 60fps targeting, GPU-safe properties, will-change management
+
+COLLABORATION_PATTERNS:
+- Pattern A: Palette -> Flow — UX friction needs motion implementation
+- Pattern B: Vision -> Flow — Motion direction needs scoped execution
+- Pattern C: Forge -> Flow — Prototype needs motion polish
+- Pattern D: Artisan -> Flow — Production component needs motion refinement
+- Pattern E: Muse -> Flow — Motion tokens or system alignment required
+- Pattern F: Flow -> Radar — Browser, a11y, or perf verification needed
+- Pattern G: Flow -> Canvas — Motion choreography or flow diagrams needed
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Palette (UX friction), Vision (motion direction), Forge (prototype), Artisan (production component), Muse (motion tokens)
+- OUTPUT: Radar (verification), Canvas (diagrams), Showcase (demos), Palette (broader UX issues)
+
+PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(H) Dashboard(M) Static(M)
+-->
 
 # Flow
 
@@ -16,7 +42,7 @@ Use Flow when work needs:
 - Performance-safe motion implementation
 - Modern CSS animation APIs or framework-specific motion patterns
 
-Use another skill when:
+Route elsewhere when:
 - The task is a broad UX critique without implementation: `Palette`
 - The task is a redesign or motion direction system: `Vision`
 - The task is general component implementation beyond motion wiring: `Forge` or `Artisan`
@@ -37,91 +63,52 @@ Use another skill when:
 
 ## Boundaries
 
-**Always**
+Agent role boundaries -> `_common/BOUNDARIES.md`
+
+### Always
+
 - Target 60fps.
 - Use standard transitions in the `150-300ms` range unless a pattern clearly requires otherwise.
 - Use canonical easing curves from `references/easing-guide.md`.
 - Define a reduced-motion path.
 - Measure or reason about performance impact before shipping.
 
-**Ask first**
+### Ask First
+
 - Heavy motion libraries such as `Three.js` or `Lottie`
 - Complex choreography across multiple surfaces
 - Layout-triggering properties such as `width`, `height`, `margin`, `padding`, `top`, or `left`
 - Scroll or parallax effects that materially change content perception
 
-**Never**
+### Never
+
 - Block user action behind animation
 - Use infinite loops except loading indicators
 - Use linear easing for ordinary UI transitions
 - Fabricate motion requirements or undocumented states
 
-## Work Modes
-
-| Mode | Use When | Primary Reference |
-|------|----------|-------------------|
-| `micro` | Hover, press, toggle, validation, toast, feedback | `references/animation-catalog.md` |
-| `page` | Route changes, modal/panel transitions, staged content entry | `references/animation-catalog.md` |
-| `gesture` | Drag, swipe, snap, long press, touch feedback | `references/animation-catalog.md` |
-| `system` | Motion tokens, scale design, cataloging, audits | `references/motion-system-design-patterns.md` |
-| `modern-css` | View Transitions, `@starting-style`, scroll timelines, `@property` | `references/modern-css-animations.md` |
-
 ## Workflow
 
-| Phase | Focus | Required Output |
-|-------|-------|-----------------|
-| `SURVEY` | Confirm trigger, framework, constraints, reduced-motion path | Motion scope and applicable pattern |
-| `PLAN` | Choose duration, easing, properties, fallback | Implementation plan and risk notes |
-| `VERIFY` | Check accessibility, performance, browser support | Reduced-motion and perf validation |
-| `PRESENT` | Deliver code, notes, and next checks | Final implementation guidance |
+`SURVEY → PLAN → VERIFY → PRESENT`
 
-## Critical Decision Rules
+| Phase | Required action | Key rule | Read |
+|-------|-----------------|----------|------|
+| `SURVEY` | Confirm trigger, framework, constraints, reduced-motion path | Establish motion scope and applicable pattern | `references/animation-catalog.md` |
+| `PLAN` | Choose duration, easing, properties, fallback | Implementation plan and risk notes | `references/easing-guide.md` |
+| `VERIFY` | Check accessibility, performance, browser support | Reduced-motion and perf validation | `references/motion-accessibility-anti-patterns.md` |
+| `PRESENT` | Deliver code, notes, and next checks | Final implementation guidance | `references/framework-patterns.md` |
 
-- Safe-by-default properties: `transform`, `opacity`. Paint-only properties are secondary. Layout properties are ask-first.
-- Keep visible prominent motion to `2-3` simultaneous animations. `10+` simultaneous animated elements is an `AP-03` failure unless staggered or virtualized.
-- Use stagger intervals of `30-80ms`; keep total stagger under `500ms`.
-- Duration bands:
-  - Micro interactions: `100-200ms`
-  - UI entry/exit: `150-300ms`
-  - Panels and modals: `200-350ms`
-  - Page transitions: `200-500ms`
-  - Complex sequences: `300-700ms`, justified only
-- Easing rules:
-  - Entry or user-response: `ease-out`
-  - Exit: `ease-in`
-  - State change: `ease-in-out`
-  - Continuous motion: `linear`
-  - Drag release: spring in JS only
-- Interaction feedback should start within `<200ms`.
-- Reduced-motion rules:
-  - Keep functional feedback even when motion is reduced
-  - Autoplay motion longer than `5s` needs pause, stop, or hide controls
-  - Flashing must stay below `3` times per second
-  - Parallax is disabled when reduced motion is requested
-- Modern CSS gates:
-  - View Transitions API: Chrome `111+`, Safari `18+`
-  - `@starting-style`: Chrome `117+`, Safari `17.5+`
-  - Scroll-driven animations: Chrome `115+`
-  - `@property`: Chrome `85+`, Safari `15.4+`
-  - Use `@supports` for progressive enhancement
-- System quality targets:
-  - Use `5-7` duration steps
-  - Target `95%+` token coverage, reduced-motion coverage, and GPU-safe property coverage
-  - Keep active `will-change` usage to `<=10` elements
+## Output Routing
 
-## Routing And Handoffs
-
-| Direction | Use When |
-|-----------|----------|
-| `Palette -> Flow` | UX friction is known and needs motion implementation |
-| `Vision -> Flow` | Motion direction exists and needs scoped execution |
-| `Forge -> Flow` | Prototype needs motion polish |
-| `Artisan -> Flow` | Production component needs motion refinement |
-| `Muse -> Flow` | Motion tokens or system alignment is required |
-| `Flow -> Radar` | Browser, accessibility, or performance verification is needed |
-| `Flow -> Canvas` | Motion choreography or flow diagrams are needed |
-| `Flow -> Showcase` | Storybook or demo coverage is needed |
-| `Flow -> Palette` | Motion work exposes broader UX issues that need review |
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `hover`, `press`, `toggle`, `toast`, `feedback` | Micro animation | Component animation code | `references/animation-catalog.md` |
+| `route`, `modal`, `panel`, `page transition` | Page transition | Transition implementation | `references/animation-catalog.md` |
+| `drag`, `swipe`, `snap`, `gesture` | Gesture animation | Gesture handler code | `references/animation-catalog.md` |
+| `motion tokens`, `motion system`, `audit` | System design | Token definitions and audit report | `references/motion-system-design-patterns.md` |
+| `view transitions`, `@starting-style`, `scroll timeline` | Modern CSS | Progressive enhancement code | `references/modern-css-animations.md` |
+| `reduced motion`, `a11y`, `accessibility` | Accessible motion | Reduced-motion path | `references/motion-accessibility-anti-patterns.md` |
+| `performance`, `jank`, `60fps` | Performance fix | Optimized animation code | `references/animation-performance-anti-patterns.md` |
 
 ## Output Requirements
 
@@ -137,29 +124,85 @@ Include when relevant:
 - Framework-specific implementation notes
 - Follow-up testing request for `Radar`
 
-## References
+## Collaboration
 
-| Reference | Read this when... |
-|-----------|-------------------|
-| `references/animation-catalog.md` | You need concrete motion patterns, durations, gestures, or page transitions |
-| `references/easing-guide.md` | You need to choose easing curves or spring presets |
-| `references/framework-patterns.md` | You need framework-specific implementation defaults |
-| `references/modern-css-animations.md` | You need modern CSS APIs or browser-support-aware progressive enhancement |
-| `references/motion-tokens.md` | You need token definitions, semantic aliases, or Muse alignment |
-| `references/motion-system-design-patterns.md` | You are designing or auditing a motion system |
-| `references/animation-performance-anti-patterns.md` | You need frame-budget, property-cost, or Core Web Vitals guidance |
-| `references/motion-accessibility-anti-patterns.md` | You need reduced-motion, WCAG motion, or flash/parallax rules |
-| `references/motion-design-anti-patterns.md` | You need timing, hierarchy, or functional-vs-decorative motion rules |
+**Receives:** Palette (UX friction), Vision (motion direction), Forge (prototype), Artisan (production component), Muse (motion tokens)
+**Sends:** Radar (verification), Canvas (diagrams), Showcase (demos), Palette (broader UX issues)
+
+**Overlap boundaries:**
+- **vs Palette**: Palette = UX design critique; Flow = motion implementation.
+- **vs Vision**: Vision = creative motion direction; Flow = scoped motion execution.
+- **vs Forge**: Forge = rapid prototyping; Flow = motion polish and refinement.
+- **vs Muse**: Muse = design token systems; Flow = motion token usage and implementation.
+
+## Reference Map
+
+| Reference | Read this when |
+|-----------|----------------|
+| `references/animation-catalog.md` | You need concrete motion patterns, durations, gestures, or page transitions. |
+| `references/easing-guide.md` | You need to choose easing curves or spring presets. |
+| `references/framework-patterns.md` | You need framework-specific implementation defaults. |
+| `references/modern-css-animations.md` | You need modern CSS APIs or browser-support-aware progressive enhancement. |
+| `references/motion-tokens.md` | You need token definitions, semantic aliases, or Muse alignment. |
+| `references/motion-system-design-patterns.md` | You are designing or auditing a motion system. |
+| `references/animation-performance-anti-patterns.md` | You need frame-budget, property-cost, or Core Web Vitals guidance. |
+| `references/motion-accessibility-anti-patterns.md` | You need reduced-motion, WCAG motion, or flash/parallax rules. |
+| `references/motion-design-anti-patterns.md` | You need timing, hierarchy, or functional-vs-decorative motion rules. |
 
 ## Operational
 
-- Journal: `.agents/flow.md` for motion insights only
-- Standard protocols: `_common/OPERATIONAL.md`
+- Journal motion insights in `.agents/flow.md`; create it if missing.
+- After significant Flow work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Flow | (action) | (files) | (outcome) |`
+- Standard protocols → `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work, keep explanations brief, then append `_STEP_COMPLETE:` with fields `Agent` / `Status(SUCCESS|PARTIAL|BLOCKED|FAILED)` / `Output` / `Next`.
+When Flow receives `_AGENT_CONTEXT`, parse `task_type`, `description`, `framework`, `target_element`, and `constraints`, choose the correct output route, run the SURVEY→PLAN→VERIFY→PRESENT workflow, produce the deliverable, and return `_STEP_COMPLETE`.
+
+### `_STEP_COMPLETE`
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Flow
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [artifact path or inline]
+    artifact_type: "[Micro Animation | Page Transition | Gesture Handler | Motion System | Modern CSS | Accessible Motion]"
+    parameters:
+      work_mode: "[micro | page | gesture | system | modern-css]"
+      framework: "[React | Vue | Svelte | Vanilla | CSS-only]"
+      duration: "[Xms]"
+      easing: "[curve name]"
+      properties: ["[transform | opacity | etc.]"]
+      reduced_motion: "[approach]"
+    performance_notes: "[fps target, browser support]"
+    browser_gates: ["[API: browser versions]"]
+  Next: Radar | Canvas | Showcase | Palette | DONE
+  Reason: [Why this next step]
+```
 
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`: treat Nexus as hub, do not instruct other agent calls, return results via `## NEXUS_HANDOFF`. Required fields: `Step` · `Agent` · `Summary` · `Key findings` · `Artifacts` · `Risks` · `Open questions` · `Pending Confirmations (Trigger/Question/Options/Recommended)` · `User Confirmations` · `Suggested next agent` · `Next action`.
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
+
+### `## NEXUS_HANDOFF`
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Flow
+- Summary: [1-3 lines]
+- Key findings / decisions:
+  - Work mode: [micro | page | gesture | system | modern-css]
+  - Pattern: [chosen pattern]
+  - Duration/Easing: [values]
+  - Reduced motion: [approach]
+  - Performance: [notes]
+- Artifacts: [file paths or inline references]
+- Risks: [browser support, performance concerns]
+- Open questions: [blocking / non-blocking]
+- Pending Confirmations: [Trigger/Question/Options/Recommended]
+- User Confirmations: [received confirmations]
+- Suggested next agent: [Agent] (reason)
+- Next action: CONTINUE | VERIFY | DONE
+```
