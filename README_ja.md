@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-90-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-93-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **90種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **93種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする90種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする93種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -49,6 +49,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
 | **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全69エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - 動的スキル生成エージェント。プロジェクトのコードベースを分析し、パターン・規約を発見し、最適化されたClaude Codeスキルをプロジェクトの`.claude/skills/`に生成 | プロジェクト固有スキル |
+| **Gauge** | _"What gets measured gets managed. What gets audited gets normalized."_ - SKILL.md正規化監査・自己進化エージェント。16項目チェックリストに基づくコンプライアンススキャン、修正提案、Webベースのベストプラクティス自動取得 | コンプライアンスレポート、修正プラン |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
 | **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - エコシステム自己進化オーケストレーター。プロジェクトライフサイクルを検出し、エージェントの関連性を評価し、横断的知識を統合してエコシステム全体を進化させる | エコシステムフィットネススコア、進化提案 |
 | **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - エコシステム横断の知識統合・パターン抽出・伝播を担うメモリキュレーター。エージェントjournalから共通パターンを発見し、カタログ化して関連エージェントへ配信。知識の腐敗検出・ベストプラクティス伝播により制度的記憶を維持 | METAPATTERNS.md、知識インサイト |
@@ -69,6 +70,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Magi** | _"Three minds, one verdict. Consensus through diversity."_ - 3視点（論理・共感・実利）による多角的意思決定。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定 | 意思決定レポート |
 | **Cast** | _"Personas are not invented. They are discovered, born, and evolved."_ - ペルソナキャスティングエージェント。多種多様な入力からペルソナを迅速生成・永続化・ライフサイクル管理し、下流エージェントに統一フォーマットで配信 | ペルソナレジストリ |
 | **Helm** | _"A ship without a destination has no favorable wind. A ship without a helm has no direction at all."_ - 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント。SWOT/PESTLE/Porter分析、シナリオプランニング、KPI予測、戦略ロードマップ生成。コードは書かない | 戦略シミュレーションレポート |
+| **Levy** | _"納税は義務。でも、正しく知れば、賢く果たせる。"_ - 日本の確定申告ガイダンスエージェント。所得分類・控除最適化・税額計算・e-Tax手続きをフリーランス/副業向けに解説。コードは書かない | 確定申告ガイダンスレポート |
 | **Accord** | _"Three teams, one truth."_ - 3チーム横断（ビジネス・開発・デザイン）の統合仕様パッケージを作成する仕様アーキテクト。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない | 統合仕様パッケージ、トレーサビリティマトリクス |
 | **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - 任意の多次元軸×値を入力とし、組み合わせ爆発を制御するユニバーサル分析エージェント。最小カバレッジセット選定・実行計画・優先順位付け。テスト・デプロイ・UX検証・リスク評価・互換性など全ドメイン対応。コードは書かない | マトリクス分析、カバレッジ最適化計画 |
 
@@ -186,6 +188,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI画像生成コード職人。Gemini APIを使用した画像生成用Pythonコードの作成。プロンプトエンジニアリング、バッチ生成、コスト見積もり | Pythonコード |
 | **Realm** | _"Every company tells a story — let the agents write theirs."_ - エージェントエコシステムをゲーミフィケーションで可視化するメタ可視化エージェント。Phaser 3による2Dオフィスシミュレーション、リアルタイムXP成長・ランクアップエフェクト、インタラクティブHTMLマップ、キャラクターシート、クエストボード、バッジシステム | RPGスタイルダッシュボード、ゲーム可視化 |
 | **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - ピクセルアート専門エージェント。コード（SVG/Canvas/Phaser 3/Pillow/CSS）でドット絵を生成。パレット設計、スプライトシート、タイルセット、フレームアニメーション、Gemini CLIへのSVG生成委譲をサポート | ピクセルアートコード（SVG/Canvas/CSS） |
+| **Quest** | _"Every great game starts with a question the player cannot resist answering."_ - ゲーム企画・プロダクションエージェント。GDD構造化、ゲームバランス数理、ナラティブ設計、経済設計、システムデザイン、プレイヤー心理学。コードは書かない | GDD、バランスシート、経済モデル |
+| **Tone** | _"Sound is the invisible architecture of emotion."_ - ゲームオーディオ生成エージェント。ElevenLabs/Stable Audio/MusicGen/OpenAI TTS/JSFXR等によるSFX・BGM・Voice・Ambient・UIサウンド用コード生成。LUFS正規化、ミドルウェア統合 | オーディオパイプラインコード |
 | **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3Dモデル生成エージェント。Meshy/Tripo/Hunyuan3D/Rodin/Sloyd/Stability APIを使用したtext-to-3D・image-to-3D用コード（Python/JS/OpenSCAD）を生成。ゲームパイプライン：LOD、リトポロジー、UV、テクスチャベイク、QC検証 | 3Dパイプラインコード（Python/JS/SCAD） |
 
 **Vision → Dot → Forge の連携**：Vision（アートディレクション）→ Dot（ピクセルアートコード）→ Forge（プロトタイプ統合）
@@ -648,11 +652,14 @@ skills/
 ├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atlas/SKILL.md      # アーキテクチャ
+├── attest/SKILL.md     # 仕様適合検証
 ├── beacon/SKILL.md     # 可観測性/SRE
 ├── bolt/SKILL.md       # パフォーマンス
 ├── builder/SKILL.md    # 本番実装
 ├── canvas/SKILL.md     # 可視化
+├── canon/SKILL.md      # 世界標準・業界標準準拠検証
 ├── cast/SKILL.md       # ペルソナキャスティング＆レジストリ管理
+├── clay/SKILL.md       # AI 3Dモデル生成
 ├── compete/SKILL.md    # 競合調査
 ├── darwin/SKILL.md     # エコシステム自己進化オーケストレーター
 ├── director/SKILL.md   # デモ動画撮影
@@ -663,6 +670,7 @@ skills/
 ├── forge/SKILL.md      # プロトタイプ
 ├── frame/SKILL.md      # Figmaデザイン・コード変換ブリッジ
 ├── loom/SKILL.md       # Figma Make最適化エージェント
+├── gauge/SKILL.md      # SKILL.md正規化監査・自己進化
 ├── gateway/SKILL.md    # API設計
 ├── gear/SKILL.md       # DevOps
 ├── grove/SKILL.md      # リポジトリ構造設計
@@ -670,11 +678,13 @@ skills/
 ├── guardian/SKILL.md   # Git/PR管理
 ├── harvest/SKILL.md    # PR情報収集・レポート生成
 ├── hearth/SKILL.md     # 個人開発環境設定
-├── latch/SKILL.md      # Claude Codeフック管理
+├── helm/SKILL.md       # 経営戦略シミュレーション
 ├── horizon/SKILL.md    # モダナイゼーション
 ├── judge/SKILL.md      # コードレビュー（codex review）
+├── latch/SKILL.md      # Claude Codeフック管理
 ├── launch/SKILL.md     # リリース管理
 ├── lens/SKILL.md       # コードベース理解・調査
+├── levy/SKILL.md       # 確定申告ガイド
 ├── lore/SKILL.md       # エコシステム横断知識キュレーター
 ├── magi/SKILL.md       # 多角的意思決定
 ├── matrix/SKILL.md     # ユニバーサル多次元分析
@@ -692,6 +702,7 @@ skills/
 ├── probe/SKILL.md      # セキュリティ動的テスト（DAST）
 ├── prose/SKILL.md      # UXライティング＆コンテンツ戦略
 ├── pulse/SKILL.md      # メトリクス設計
+├── quest/SKILL.md      # ゲーム企画・プロダクション
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
 ├── rally/SKILL.md      # マルチセッション並列オーケストレーター
@@ -718,6 +729,7 @@ skills/
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括
+├── tone/SKILL.md       # ゲームオーディオ生成
 ├── trace/SKILL.md      # セッションリプレイ分析
 ├── triage/SKILL.md     # 障害対応
 ├── tuner/SKILL.md      # DBパフォーマンス最適化
@@ -733,7 +745,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全89エージェントの使用例を紹介します。
+> カテゴリ別に全93エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
