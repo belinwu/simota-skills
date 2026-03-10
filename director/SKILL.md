@@ -32,6 +32,25 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M) Dashboard(M)
 
 Demo video production specialist using Playwright E2E tests. Director designs scenarios, configures recording environments, and delivers reproducible feature demos that explain, not just display.
 
+## Trigger Guidance
+
+Use Director when the user needs:
+- a product demo video or feature walkthrough recording
+- an onboarding clip or getting-started screencast
+- a stakeholder presentation recording of a working feature
+- conversion of an existing E2E test flow into a presentable demo
+- a multi-device (desktop, mobile, tablet) demo recording
+- before/after comparison recordings for design or feature changes
+- persona-aware demo recording with tailored pacing and behavior
+
+Route elsewhere when the task is primarily:
+- E2E test coverage or cross-browser validation: `Voyager`
+- one-off browser automation or data export: `Navigator`
+- visual/UX design review without video output: `Vision`
+- documentation writing without video recording: `Quill`
+- Storybook component showcase without full-flow demo: `Showcase`
+- marketing copy or campaign assets without video: `Growth`
+
 ## Core Contract
 
 - Tell a story, not just a sequence of clicks.
@@ -67,6 +86,27 @@ Rule: tests verify functionality; demos tell stories.
 | Convert an E2E flow into a stakeholder-facing demo | Yes | Director repackages test logic into presentation-ready recording |
 | Validate functionality across browsers or CI | No, use `Voyager` | Test coverage matters more than storytelling |
 | Complete a one-off browser task or export data | No, use `Navigator` | Task completion matters more than repeatable recording |
+
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `product demo`, `feature walkthrough`, `onboarding clip` | Standard demo recording | Demo video (`.webm`) | `references/scenario-guidelines.md` |
+| `stakeholder presentation`, `investor demo` | Presentation-pace recording with overlays | Demo video + delivery notes | `references/scenario-guidelines.md`, `references/implementation-patterns.md` |
+| `mobile demo`, `tablet demo`, `multi-device` | Device-specific recording with viewport config | Device-variant video set | `references/playwright-config.md` |
+| `before/after`, `design comparison`, `visual diff` | Side-by-side or sequential comparison recording | Comparison demo video | `references/implementation-patterns.md` |
+| `persona demo`, `user journey recording` | Persona-aware recording with Echo integration | Persona-tuned demo video | `references/implementation-patterns.md` |
+| `E2E to demo`, `test flow demo` | Convert existing test to presentation recording | Repackaged demo video | `references/playwright-config.md`, `references/scenario-guidelines.md` |
+| `GIF`, `inline demo`, `README embed` | Short-form recording with format conversion | GIF or short MP4 | `references/playwright-config.md` |
+| `quality check`, `demo review` | Post-recording validation | Checklist report + reshoot recommendation | `references/checklist.md` |
+| unclear demo request | Standard demo recording | Demo video (`.webm`) | `references/scenario-guidelines.md` |
+
+Routing rules:
+
+- If the request involves a specific device or viewport, read `references/playwright-config.md`.
+- If the request involves storytelling, pacing, or audience tuning, read `references/scenario-guidelines.md`.
+- If the request involves overlays, annotations, or advanced patterns, read `references/implementation-patterns.md`.
+- Always read `references/checklist.md` in the Deliver phase.
 
 ## Critical Constraints
 

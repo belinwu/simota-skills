@@ -55,8 +55,60 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | 3 | **TEMPER** | Polish terminal UX: prompts, progress indicators, colors, `--no-color`, `--yes`, non-TTY fallback |
 | 4 | **HARDEN** | Validate failure paths: input errors, exit codes, `CTRL+C`, platform quirks, non-interactive environments |
 | 5 | **PRESENT** | Deliver the interface, usage examples, integration notes, and the next operational handoff |
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `cli`, `command`, `subcommand`, `flags`, `args` | CLI command design | Command skeleton + help text | `references/cli-design-patterns.md` |
+| `tui`, `interactive`, `prompt`, `menu`, `selection` | TUI component build | Interactive terminal UI | `references/tui-components.md` |
+| `spinner`, `progress`, `table`, `color` | Terminal UX polish | Styled output components | `references/tui-components.md` |
+| `linter`, `formatter`, `test runner`, `build tool` | Tool integration wiring | Config + runner setup | `references/tool-integration.md` |
+| `doctor`, `healthcheck`, `environment check` | Doctor command pattern | Diagnostic command | `references/tool-integration.md` |
+| `completion`, `bash completion`, `zsh completion` | Shell completion generation | Completion scripts | `references/cli-design-patterns.md` |
+| `scaffold`, `init`, `project init`, `template` | Project scaffolding | Interactive init flow | `references/cli-design-patterns.md` |
+| `cross-platform`, `xdg`, `config path`, `signal` | Platform compatibility | Cross-platform handling | `references/cross-platform.md` |
+| `ci`, `non-tty`, `json output`, `exit code` | CI/CD-ready CLI behavior | Machine-readable output | `references/cross-platform.md` |
+| `package`, `binary`, `distribute`, `release` | Distribution packaging | Build + packaging config | `references/distribution-packaging-anti-patterns.md` |
+| `review`, `audit`, `anti-pattern` | CLI/TUI anti-pattern audit | Audit report | `references/cli-design-anti-patterns.md` |
+| unclear CLI/TUI request | CLI command design | Command skeleton + help text | `references/cli-design-patterns.md` |
+
+Routing rules:
+
+- If the request involves command structure, flags, or help text, read `references/cli-design-patterns.md`.
+- If the request involves interactive prompts, menus, or progress displays, read `references/tui-components.md`.
+- If the request involves linters, formatters, test runners, or build tools, read `references/tool-integration.md`.
+- If the request involves platform compatibility, config paths, or CI behavior, read `references/cross-platform.md`.
+- Always check relevant anti-pattern references during the HARDEN phase.
+
+## Output Requirements
+
+Every deliverable must include:
+
+- Artifact type (command skeleton, TUI component, tool config, doctor command, completion script, etc.).
+- Target language/framework and runtime assumptions.
+- TTY/non-TTY behavior specification (human-readable default, `--json` machine-readable).
+- Exit code contract (0 = success, non-zero = specific failure categories).
+- Error handling strategy (stderr messages, graceful `CTRL+C` cleanup).
+- Cross-platform notes where applicable (paths, signals, shell differences).
+- Anti-pattern check results (from relevant anti-pattern references).
+- Integration notes for downstream handoff (Gear for CI/CD, Radar for tests, Quill for docs).
+- Recommended next agent for handoff.
+
 ## Collaboration
 **Primary hub:** Nexus · **Typical inbound partners:** Forge, Builder, Gear · **Typical outbound partners:** Gear, Radar, Quill, Judge
+## Reference Map
+
+| Reference | Read this when |
+|-----------|----------------|
+| `references/cli-design-patterns.md` | You need command structure, flag conventions, help text design, output formatting, exit codes, shell completion, or init/scaffold flows. |
+| `references/tool-integration.md` | You need to wire linters, formatters, test runners, build tools, doctor commands, or modern toolchains (Bun, Deno, mise, oxlint). |
+| `references/tui-components.md` | You need spinners, progress bars, tables, selection menus, interactive prompts, or full-screen terminal UI patterns. |
+| `references/cross-platform.md` | You need XDG path handling, config precedence, platform/shell detection, signal handling, or CI/non-TTY behavior. |
+| `references/cli-design-anti-patterns.md` | You need to audit flags, arguments, errors, output, help text, or interactive behavior for CLI UX regressions. |
+| `references/tui-ux-anti-patterns.md` | You need to review color usage, keyboard navigation, layout, progress displays, or accessibility in terminal UIs. |
+| `references/tool-integration-anti-patterns.md` | You need to audit toolchain setup, test/build commands, doctor flows, or config management for common pitfalls. |
+| `references/distribution-packaging-anti-patterns.md` | You need to review binary packaging, distribution channels, release signing, or cross-platform build strategy. |
+
 ## References
 - `references/cli-design-patterns.md` — Read this when designing command structure, flags, help, output formatting, exit codes, completion, or init flows.
 - `references/tool-integration.md` — Read this when wiring linters, formatters, test runners, build tools, doctor commands, or modern toolchains.

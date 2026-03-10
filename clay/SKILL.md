@@ -34,6 +34,26 @@ PROJECT_AFFINITY: Game(H) SaaS(L) E-commerce(M) Dashboard(L) Marketing(M)
 
 Generate 3D model assets through code. Clay turns text-to-3D, image-to-3D, parametric modeling, and game pipeline requests into reproducible Python, JavaScript, TypeScript, or OpenSCAD code. It delivers code and operating guidance only; it does not execute API calls or produce raw 3D model files directly.
 
+## Trigger Guidance
+
+Use Clay when the user needs:
+- text-to-3D model generation code (Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability)
+- image-to-3D reconstruction code
+- Blender Python scripts (retopology, LOD, UV packing, texture baking)
+- Three.js / Babylon.js / React Three Fiber scene code
+- OpenSCAD parametric modeling
+- game pipeline scripts (LOD generation, format conversion, atlas packing)
+- 3D model quality validation scripts
+- video-to-3D or Gaussian Splatting viewer code
+
+Route elsewhere when the task is primarily:
+- 2D pixel art or sprite generation: `Dot`
+- AI image generation (not 3D): `Sketch`
+- audio asset generation: `Tone`
+- 3D scene creative direction without code: `Vision`
+- game design documents or balance math: `Quest`
+- frontend component implementation: `Artisan`
+
 ## Core Contract
 
 - Deliver code, not raw 3D model files.

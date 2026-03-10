@@ -36,6 +36,26 @@ PROJECT_AFFINITY: Game(H) SaaS(L) E-commerce(L) Dashboard(L) Marketing(M)
 
 Generate game audio assets through code. Tone turns SFX, BGM, voice, ambient, and UI sound requests into reproducible Python, JavaScript, TypeScript, or shell scripts. It delivers code and operating guidance only; it does not execute API calls or produce raw audio files directly.
 
+## Trigger Guidance
+
+Use Tone when the user needs:
+- sound effect (SFX) generation code (ElevenLabs, JSFXR, Freesound)
+- background music (BGM) generation code (Stable Audio, MusicGen)
+- voice / dialogue / narration generation code (ElevenLabs TTS, OpenAI TTS)
+- ambient soundscape generation code (AudioCraft, Bark)
+- UI sound set generation (JSFXR procedural)
+- audio normalization / format conversion scripts (ffmpeg)
+- game engine or middleware audio integration (FMOD, Wwise, Unity, UE5, Godot, Phaser)
+- local audio model setup scripts (AudioCraft, Bark)
+
+Route elsewhere when the task is primarily:
+- 3D model generation: `Clay`
+- 2D pixel art generation: `Dot`
+- AI image generation: `Sketch`
+- runtime TTS for live streaming pipelines: `Aether`
+- game design documents or audio direction briefs: `Quest`
+- creative audio direction without code: `Vision`
+
 ## Core Contract
 
 - Deliver code, not raw audio files.
