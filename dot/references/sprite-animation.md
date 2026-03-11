@@ -16,6 +16,7 @@ Purpose: load this when the asset has multiple frames, state changes, or sprites
 - [Metadata formats](#metadata-formats)
 - [Animation state machine](#animation-state-machine)
 - [Common pitfalls](#common-pitfalls)
+- [AI-Generated Sprite Animation Workflow (GPT Image)](#ai-generated-sprite-animation-workflow-gpt-image)
 
 ## Spritesheet Layout Rules
 
@@ -666,3 +667,171 @@ When multiple inputs occur simultaneously:
 | **Twinning** | Both arms/legs move identically | Offset limb pairs: when left arm forward, right arm back |
 | **Even timing** | All frames same duration | Use variable timing: hold key poses, speed through in-betweens |
 | **Orphan frames** | Unused frames in sheet waste texture space | Pack efficiently, remove unused frames before export |
+
+---
+
+## AI-Generated Sprite Animation Workflow (GPT Image)
+
+Reference workflow for generating consistent animated spritesheets using AI image generation (GPT Image 1.5 / Edit API). This approach anchors generation to a shipped production frame for character consistency.
+
+### Workflow Overview
+
+```
+1. Shipped seed frame (anchor)
+2. Build reference canvas for Edit API
+3. Generate full strip in one request
+4. Normalize into fixed-size game frames
+5. Rebuild asset index and preview in-engine
+```
+
+### Step 1: Start From A Shipped Seed Frame
+
+Anchor the AI generation to an actual production sprite (e.g., `idle/frame-01.png`). This locks in:
+
+- Face details
+- Body proportions
+- Color palette
+- Silhouette
+
+**Do NOT** use loose concept art or text-only prompts — always provide the shipped sprite as the visual anchor.
+
+### Step 2: Build A Reference Canvas For The Edit API
+
+Do not send the raw small sprite (e.g., 64×64) directly. Instead:
+
+1. **Upscale** the seed frame with **nearest-neighbor** interpolation (no anti-aliasing)
+2. **Place** it into a larger transparent canvas (e.g., 1024×1024) with reserved frame slots
+
+```
+┌──────────────────────────────────────┐
+│  [Seed]   [Slot 2]  [Slot 3]  [Slot 4]  │  ← 1024×1024 canvas
+│  256×256  256×256   256×256   256×256    │     4 slots, centered vertically
+└──────────────────────────────────────┘
+```
+
+A 1024×1024 edit canvas gives enough room for multi-frame animations. Create this canvas with a Python script.
+
+**API parameters for this step:**
+- `input_fidelity="high"` — preserves character identity from the seed frame
+- `background="transparent"` — maintains alpha channel for game-ready output
+- `output_format="png"` — required for transparency support
+
+See `references/gpt-image-edit.md` for the full parameter reference.
+
+### Step 3: Generate The Full Strip In One Request
+
+**Critical:** Do NOT generate frame-by-frame — character consistency degrades rapidly. Instead, request the entire animation strip at once.
+
+**gpt-image-1.5 advantages for this step:**
+- **Consistency Locking** — maintains character identity and style across the generated frames
+- **Grid Consistency** — generates structured layouts where each cell contains a distinct frame without visual interference
+- **Semantic Locking** — allows localized modifications while keeping primary features static
+
+#### Prompt Template (Hurt Animation Example)
+
+```
+Intended use: candidate production spritesheet for a 2D side-view pirate
+platformer hurt animation review. Edit the provided transparent
+reference-canvas image into a single horizontal four-frame hurt
+spritesheet. The existing sprite in the leftmost slot is the exact
+shipped idle-v2 starting frame and must remain the starting frame for
+this sequence: same compact pirate hero, same right-facing side view,
+same red bandana, same blue tunic, same brown boots, same tan skin,
+same readable face, same proportions, same pixel-art silhouette family.
+
+Composition: keep the image transparent, keep exactly one row of four
+equal 256×256 frame slots laid out left to right across the 1024×1024
+canvas, centered vertically, no overlap between frame slots, no extra
+characters, no labels, no UI.
+
+Action: frame 1 stays as the calm idle starting pose, frames 2 through 4
+show a short hurt reaction from a hit, with the same pirate recoiling
+backward, torso pulled back, head jolted, one brief pain expression,
+then slight recovery. Keep body size, head size, and outfit proportions
+consistent across all four frames.
+
+Style: authentic 16-bit pixel art, crisp pixel clusters, stepped shading,
+restrained palette, production game asset, not concept art.
+
+Constraints: no sword, no weapon, no scenery, no floor, no glow, no
+atmospheric haze, no impact effects, no shadows outside the sprite
+contours, no collage, no poster layout, no blurry details. Keep wide
+transparent empty space outside the four frame slots.
+```
+
+#### Prompt Structure Guidelines
+
+| Section | Purpose |
+|---------|---------|
+| **Intended use** | Anchors the model to "production asset" mode |
+| **Identity lock** | Exhaustively list visual attributes to preserve |
+| **Composition** | Canvas size, slot layout, transparency |
+| **Action** | Frame-by-frame description of the animation |
+| **Style** | Pixel art style constraints |
+| **Constraints** | Negative prompting — what to avoid |
+
+### Step 4: Normalize The Strip Into Game Frames
+
+The raw AI output is NOT game-ready. Per-frame sizes often differ. Normalize with a Python script that:
+
+1. **Detects** sprite components in the raw strip
+2. **Uses** the player anchor image (e.g., `idle/frame-01.png`)
+3. **Computes one shared scale** for the whole animation
+4. **Pads** each frame into a fixed-size transparent canvas (e.g., 64×64)
+5. **Optionally locks frame 01** to the exact shipped idle frame
+
+**Important:** When the animation should start from idle, explicitly replace the exported `01.png` with the real idle frame so the animation starts from the exact sprite already used in-game.
+
+### Step 5: Handling Complex Poses (Scale Consistency)
+
+**Problem:** One pose may be taller than another (e.g., sword-up attack vs neutral). If you scale that pose down independently, the whole character looks smaller.
+
+**Fix:**
+
+| Approach | Description |
+|----------|-------------|
+| **One global scale** | Use a single scale factor for the entire strip |
+| **Pose height via padding** | Let pose differences show up as extra height inside the frame |
+| **Shared anchor** | Use padding and a shared anchor point instead of per-frame rescaling |
+
+**Wrong:** Per-frame rescaling → character "squashes" in taller poses
+**Right:** Global scale + padding → consistent character size across all frames
+
+### API Parameters for Spritesheet Generation
+
+Recommended settings when calling the GPT Image Edit API for spritesheet generation:
+
+| Parameter | Value | Reason |
+|-----------|-------|--------|
+| `model` | `gpt-image-1.5` | Best consistency / grid / semantic locking |
+| `input_fidelity` | `"high"` | Preserves character identity from seed frame |
+| `background` | `"transparent"` | Game-ready alpha channel output |
+| `quality` | `"high"` | Best detail for pixel art |
+| `output_format` | `"png"` | Lossless + transparency |
+| `size` | `"1024x1024"` | 4 slots × 256px each |
+
+For full parameter reference → `references/gpt-image-edit.md`
+
+### Common Pitfalls (AI Generation)
+
+| Pitfall | Symptom | Fix |
+|---------|---------|-----|
+| **Serial edit degradation** | Grainy output after 3+ consecutive edits | Generate all frames in one request; use PNG only |
+| **Soft mask behavior** | Entire image regenerated despite mask | Use `input_fidelity="high"` + preservation language; mask is guidance only with GPT models |
+| **Consistency drift** | Character proportions/colors shift between frames | Exhaustive identity lock in prompt; generate full strip at once |
+| **Transparency loss** | White background instead of transparent | Set `background="transparent"` + `output_format="png"` |
+| **Style escalation** | AI adds smooth shading, gradients beyond pixel art | Add "no anti-aliasing, no gradients, crisp pixel clusters" |
+| **Frame overlap** | Sprites bleed into adjacent slots | Specify exact slot dimensions + "no overlap between frame slots" |
+
+For detailed pitfalls and workarounds → `references/gpt-image-edit.md`
+
+### Summary: Consistency Checklist
+
+| Step | Action |
+|------|--------|
+| 1 | Pick the exact shipped sprite frame as anchor |
+| 2 | Build upscaled reference canvas with frame slots |
+| 3 | Generate full strip in one request (never frame-by-frame) |
+| 4 | Normalize with one shared scale |
+| 5 | Lock frame 01 back to shipped sprite when starting from idle |
+| 6 | Verify in preview scene before treating as production-ready |

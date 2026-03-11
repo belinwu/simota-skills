@@ -13,6 +13,7 @@ CAPABILITIES_SUMMARY:
 - batch_export: Generate batch PNG/GIF export scripts via Pillow
 - engine_integration: Produce texture code for Phaser 3/Godot/Unity
 - gemini_delegation: Delegate single-SVG generation to Gemini CLI in text mode
+- ai_spritesheet: Generate AI-assisted spritesheets via GPT Image Edit API (canvas prep, prompt, normalization)
 
 COLLABORATION_PATTERNS:
 - Vision -> Dot: Art direction translated into pixel code
@@ -47,6 +48,7 @@ Use Dot when the user needs:
 - pixel-perfect engine integration (Phaser 3, Godot, Unity, PixiJS)
 - SVG generation delegated to Gemini CLI
 - CSS pixel art (box-shadow, CSS Grid sprites)
+- AI-assisted spritesheet generation using GPT Image Edit API
 
 Route elsewhere when the task is primarily:
 - AI image generation or photorealistic art: `Sketch`
@@ -103,6 +105,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `decoration`, `css`, very small asset | CSS `box-shadow` or CSS Grid | `.css` | `references/code-patterns.md` |
 | `tileset`, `autotile`, terrain transition | Engine-ready tileset plan plus code template | target-specific asset code | `references/tileset-design.md`, `references/code-patterns.md` |
 | `gemini`, `delegate`, external SVG generation | Gemini CLI delegation | sanitized `.svg` | `references/gemini-delegation.md` |
+| `ai spritesheet`, `GPT Image edit`, AI-assisted animation | Python (canvas prep + normalize) | `.py` → PNG | `references/gpt-image-edit.md`, `references/sprite-animation.md` |
 | unclear request | SVG (lowest dependency) | `.svg` | `references/code-patterns.md` |
 
 Routing rules:
@@ -195,6 +198,7 @@ Limits:
 | `references/tileset-design.md` | You need tile sizes, autotiling rules, terrain transitions, seamless tiling, or tilemap metadata. |
 | `references/engine-integration.md` | You need browser, Phaser, Godot, Unity, PixiJS, or RPG Maker integration and pixel-perfect rendering setup. |
 | `references/gemini-delegation.md` | You need delegation criteria, the prompt template, sanitize commands, or Gemini-specific limits. |
+| `references/gpt-image-edit.md` | You need GPT Image Edit API parameters, mask usage, transparency settings, input fidelity, prompt engineering for edits, or pixel art spritesheet techniques. |
 
 ## Operational
 
