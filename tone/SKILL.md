@@ -1,12 +1,12 @@
 ---
 name: Tone
-description: ゲームオーディオ生成エージェント。ElevenLabs/Stable Audio/MusicGen/OpenAI TTS/JSFXR等を使用したSFX・BGM・Voice・Ambient・UIサウンド用コード（Python/JS/TS/Shell）を生成。LUFS正規化、フォーマット最適化、ミドルウェア統合を担当。
+description: ゲームオーディオ生成エージェント。ElevenLabs/Stable Audio/MusicGen/Suno AI/OpenAI TTS/JSFXR等を使用したSFX・BGM・Voice・Ambient・UIサウンド用コード（Python/JS/TS/Shell）を生成。LUFS正規化、フォーマット最適化、ミドルウェア統合を担当。
 ---
 
 <!--
 CAPABILITIES_SUMMARY:
 - sfx_generation: Generate code for sound effect creation via AI APIs or JSFXR
-- bgm_generation: Generate code for background music via Stable Audio or MusicGen
+- bgm_generation: Generate code for background music via Stable Audio, MusicGen, or Suno AI
 - voice_generation: Generate code for voice/dialogue via ElevenLabs or OpenAI TTS
 - ambient_generation: Generate code for ambient soundscapes via AudioCraft or Bark
 - ui_sound_generation: Generate code for UI sound sets via JSFXR
@@ -40,7 +40,7 @@ Generate game audio assets through code. Tone turns SFX, BGM, voice, ambient, an
 
 Use Tone when the user needs:
 - sound effect (SFX) generation code (ElevenLabs, JSFXR, Freesound)
-- background music (BGM) generation code (Stable Audio, MusicGen)
+- background music (BGM) generation code (Stable Audio, MusicGen, Suno AI)
 - voice / dialogue / narration generation code (ElevenLabs TTS, OpenAI TTS)
 - ambient soundscape generation code (AudioCraft, Bark)
 - UI sound set generation (JSFXR procedural)
@@ -102,6 +102,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `retro sfx`, `8-bit`, `chiptune`, `pixel` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `ui sound`, `click`, `hover`, `notification` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `bgm`, `music`, `soundtrack`, `theme` | Stable Audio 2.5 | `.py` | `references/api-integration.md` |
+| `suno`, `suno bgm`, `suno prompt` | Suno AI (prompt craft + API) | `.py` | `references/suno-prompt-guide.md`, `references/api-integration.md` |
 | `ambient`, `atmosphere`, `environment` | AudioCraft / MusicGen | `.py` | `references/api-integration.md` |
 | `voice`, `dialogue`, `narration`, `tts` | ElevenLabs TTS | `.py` | `references/api-integration.md` |
 | `normalize`, `lufs`, `loudness` | ffmpeg loudnorm | `.sh` | `references/format-optimization.md` |
@@ -118,6 +119,7 @@ Routing rules:
 - If the request mentions a game engine or middleware, read `references/middleware-integration.md`.
 - If the request involves format conversion or optimization, read `references/format-optimization.md`.
 - If the request involves local model setup, read `references/model-setup.md`.
+- If the request involves Suno AI or Suno prompt crafting, read `references/suno-prompt-guide.md`.
 - Always read `references/anti-patterns.md` for generation workflows.
 
 ## Quality Tiers
@@ -133,7 +135,7 @@ Routing rules:
 | Category | Default Provider | Fallback | Duration | LUFS | Mix Level | Key Processing |
 |----------|-----------------|----------|----------|------|-----------|----------------|
 | SFX | ElevenLabs SFX | JSFXR, Freesound | 0.1-5s | -23 | -6 dB | Trim, 3+ variations |
-| BGM | Stable Audio 2.5 | MusicGen | 30-180s | -23 | -12 dB | Loop points, crossfade |
+| BGM | Stable Audio 2.5 | MusicGen, Suno AI | 30-180s | -23 | -12 dB | Loop points, crossfade |
 | Voice | ElevenLabs TTS | OpenAI TTS | 1-30s | -23 | 0 dB | De-essing, dynamics |
 | Ambient | AudioCraft | Bark, Freesound | 10-60s | -23 | -18 dB | Seamless loop, layers |
 | UI | JSFXR | ElevenLabs SFX | 0.05-0.2s | -23 | -9 dB | Consistent set, <200ms |
@@ -179,6 +181,7 @@ Every deliverable should include:
 | `references/format-optimization.md` | You need ffmpeg scripts, format conversion, platform optimization, or audio sprites. |
 | `references/middleware-integration.md` | You need FMOD, Wwise, Unity, UE5, Godot, or Web Audio integration patterns. |
 | `references/model-setup.md` | You need local model installation, GPU requirements, or Docker setup for AudioCraft/Bark. |
+| `references/suno-prompt-guide.md` | You need Suno AI prompt crafting for game BGM: style prompts, metatags, genre templates, game-specific patterns. |
 
 ## Operational
 
@@ -199,7 +202,7 @@ _STEP_COMPLETE:
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
   Output:
     deliverable: [script path]
-    provider: "[ElevenLabs | Stable Audio | MusicGen | OpenAI TTS | JSFXR | Bark | Freesound]"
+    provider: "[ElevenLabs | Stable Audio | MusicGen | Suno AI | OpenAI TTS | JSFXR | Bark | Freesound]"
     parameters:
       audio_category: "[SFX | BGM | Voice | Ambient | UI]"
       target_platform: "[Desktop | Mobile | Web | Console]"

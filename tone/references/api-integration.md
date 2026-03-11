@@ -14,25 +14,28 @@ Provider integration patterns for game audio generation APIs. Covers sound effec
 | **Google Cloud TTS** | Wide language/voice selection | Voice | Text/SSML | Per-character (~$4-16/1M chars) | MP3/WAV/OGG | 1-3s |
 | **Bark** | Expressive speech + non-speech sounds | Voice/Ambient | Text + tags | Per-generation (~$0.02-0.05) | WAV | 5-30s |
 | **JSFXR** | Retro/chiptune procedural SFX | SFX/UI/Retro | Parameters | Free (local) | WAV | <1ms |
+| **Suno AI** | Full song / instrumental BGM with structure control | BGM | Style prompt + metatags | Credit-based (~$0.10-0.30) | MP3/WAV | 30-120s |
 | **Freesound** | Massive CC-licensed sound library | All (search) | Search query | Free (rate limited) | WAV/MP3/OGG/FLAC | N/A (download) |
 
 ### Provider Capability Matrix
 
-| Capability | ElevenLabs SFX | ElevenLabs TTS | Stable Audio | MusicGen | OpenAI TTS | Google TTS | Bark | JSFXR | Freesound |
-|-----------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| Sound Effects | Yes | No | Yes | No | No | No | Limited | Yes | Yes |
-| Background Music | No | No | Yes | Yes | No | No | No | No | Yes |
-| Voice/Speech | No | Yes | No | No | Yes | Yes | Yes | No | Yes |
-| Ambient/Atmosphere | No | No | Yes | Yes | No | No | Yes | No | Yes |
-| UI Sounds | Yes | No | No | No | No | No | No | Yes | Yes |
-| Non-speech vocals | No | No | No | No | No | No | Yes | No | Yes |
-| Multilingual | N/A | Yes | N/A | N/A | Yes | Yes | Yes | N/A | N/A |
-| SSML Support | N/A | No | N/A | N/A | No | Yes | No | N/A | N/A |
-| Duration Control | Yes | N/A | Yes | Yes | N/A | N/A | No | No | N/A |
-| Streaming | No | Yes | No | No | Yes | Yes | No | N/A | N/A |
-| Seed Control | No | No | Yes | Yes | No | No | No | Yes | N/A |
-| Continuation | No | No | No | Yes | No | No | No | No | N/A |
-| Local/Offline | No | No | No | No | No | No | No | Yes | No |
+| Capability | ElevenLabs SFX | ElevenLabs TTS | Stable Audio | MusicGen | Suno AI | OpenAI TTS | Google TTS | Bark | JSFXR | Freesound |
+|-----------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Sound Effects | Yes | No | Yes | No | No | No | No | Limited | Yes | Yes |
+| Background Music | No | No | Yes | Yes | Yes | No | No | No | No | Yes |
+| Voice/Speech | No | Yes | No | No | No | Yes | Yes | Yes | No | Yes |
+| Ambient/Atmosphere | No | No | Yes | Yes | Limited | No | No | Yes | No | Yes |
+| UI Sounds | Yes | No | No | No | No | No | No | No | Yes | Yes |
+| Non-speech vocals | No | No | No | No | Yes | No | No | Yes | No | Yes |
+| Multilingual | N/A | Yes | N/A | N/A | N/A | Yes | Yes | Yes | N/A | N/A |
+| SSML Support | N/A | No | N/A | N/A | No | No | Yes | No | N/A | N/A |
+| Duration Control | Yes | N/A | Yes | Yes | Limited | N/A | N/A | No | No | N/A |
+| Streaming | No | Yes | No | No | No | Yes | Yes | No | N/A | N/A |
+| Seed Control | No | No | Yes | Yes | No | No | No | No | Yes | N/A |
+| Continuation | No | No | No | Yes | Yes | No | No | No | No | N/A |
+| Local/Offline | No | No | No | No | No | No | No | No | Yes | No |
+| Structure Control | No | No | No | No | Yes | No | No | No | No | N/A |
+| Stem Separation | No | No | No | No | Yes | No | No | No | No | N/A |
 
 ## Authentication Pattern
 
@@ -57,6 +60,7 @@ Environment variable naming convention:
 | Provider | Environment Variable |
 |----------|---------------------|
 | ElevenLabs (SFX + TTS) | `ELEVENLABS_API_KEY` |
+| Suno AI (via suno-api) | `SUNO_COOKIE` + `SUNO_BASE_URL` |
 | Stable Audio (via Replicate) | `REPLICATE_API_TOKEN` |
 | MusicGen (via Replicate) | `REPLICATE_API_TOKEN` |
 | Bark (via Replicate) | `REPLICATE_API_TOKEN` |
@@ -2285,8 +2289,9 @@ Quick reference for choosing the right provider per audio category:
 | Narrator/cutscene | OpenAI TTS (HD) | ElevenLabs TTS | OpenAI HD for consistency |
 | Tutorial voice | OpenAI TTS | Google TTS | Clear, neutral voices |
 | Character emotes | Bark | ElevenLabs TTS | Bark for non-speech sounds |
-| Battle BGM | Stable Audio | MusicGen | Stable Audio for quality |
-| Menu music | MusicGen | Stable Audio | MusicGen for melody |
+| Battle BGM | Stable Audio | Suno AI, MusicGen | Stable Audio for quality, Suno for structured arrangement |
+| Menu music | MusicGen | Suno AI, Stable Audio | MusicGen for melody, Suno for full arrangement |
+| Game theme song | Suno AI | Stable Audio | Suno for structured BGM with intro/verse/chorus |
 | Ambient loops | Stable Audio | Freesound | Stable Audio for custom, Freesound for natural |
 | Horror atmosphere | Bark + Stable Audio | Freesound | Layer Bark whispers with Stable Audio drones |
 | Retro/chiptune SFX | JSFXR | N/A | Only option for authentic 8-bit sounds |
