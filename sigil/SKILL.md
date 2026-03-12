@@ -106,9 +106,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-------|---------|----------------|-----------|
 | `SCAN` | Detect stack, structure, rule files, existing skills, and drift | Mandatory. Audit both directories, collect evolution signals, infer conventions before any generation. | `references/context-analysis.md`, `references/cross-tool-rules-landscape.md`, `references/claude-md-best-practices.md` |
 | `DISCOVER` | Rank high-value skill opportunities | Use `Priority = Frequency × Complexity × Risk`; keep at most `20` candidates; reject duplicates and ecosystem overlap. | `references/skill-catalog.md` |
-| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, and keep references one hop away. | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md` |
+| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, and keep references one hop away. | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
 | `INSTALL` | Place and sync generated skills | Write identical skill contents to `.claude/skills/` and `.agents/skills/`; add `references/` only for Full Skills. | `references/claude-code-skills-api.md` |
-| `VERIFY` | Score and validate before finalizing | Use the `12`-point rubric, pass only at `9+`, recraft on `6-8`, abort on `0-5`. | `references/validation-rules.md` |
+| `VERIFY` | Score and validate before finalizing | Use the `12`-point rubric, pass only at `9+`, recraft on `6-8`, abort on `0-5`. | `references/validation-rules.md`, `references/official-skill-guide.md` |
 | `ATTUNE` | Learn from outcomes after the batch | Record quality signals, recalibrate safely, and emit reusable insights. | `references/skill-effectiveness.md`, `references/meta-prompting-self-improvement.md` |
 
 ### Decision: Micro vs Full
@@ -226,6 +226,7 @@ Return `## Sigil's Report` and include:
 | `references/claude-md-best-practices.md` | You are generating or reconciling CLAUDE.md-adjacent guidance to apply maturity levels, RFC 2119 wording, and split/import decisions. |
 | `references/cross-tool-rules-landscape.md` | You are reconciling project rules across AI tools to compare CLAUDE.md, .cursorrules, .windsurfrules, AGENTS.md, and Copilot instructions. |
 | `references/meta-prompting-self-improvement.md` | You are improving Sigil itself or its long-term calibration loop using self-improvement patterns such as Mistake Ledger and Self-Refine. |
+| `references/official-skill-guide.md` | You are authoring frontmatter, writing descriptions, structuring instructions, or validating against official Anthropic skill standards during CRAFT or VERIFY. |
 
 ## Operational
 

@@ -270,6 +270,7 @@ Read only the files required for the current decision.
 | `references/agent-specification-anti-patterns.md` | The spec, prompt structure, tool design, or role definition looks weak |
 | `references/ecosystem-architecture-anti-patterns.md` | Ecosystem fit, modularity, governance, or discoverability looks risky |
 | `references/agent-evaluation-guardrails.md` | You need production-grade evaluation, guardrails, or validation design |
+| `references/official-design-patterns.md` | You need official use case categories, the 5 canonical skill patterns, success criteria frameworks, or progressive disclosure design during ENVISION or DESIGN. |
 
 ## Operational
 

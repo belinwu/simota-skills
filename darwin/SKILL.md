@@ -95,7 +95,7 @@ Agent role boundaries → `_common/BOUNDARIES.md` (Meta-Orchestration section)
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
 | `SENSE` | Collect signals from git, files, activity logs, journals, existing scores | Confidence ≥0.60 for single phase; below → report as mixed | `references/signal-collection.md` |
-| `ASSESS` | Calculate EFS across 5 dimensions; evaluate RS per agent | Grade: S(95+) A(85+) B(70+) C(55+) D(40+) F(<40) | `references/assessment-models.md` |
+| `ASSESS` | Calculate EFS across 5 dimensions; evaluate RS per agent; calculate OSC | Grade: S(95+) A(85+) B(70+) C(55+) D(40+) F(<40) | `references/assessment-models.md`, `references/official-fitness-criteria.md` |
 | `EVOLVE` | Execute actions on triggers (8 trigger types) | Propose, never force; small mutations over big rewrites | `references/evolution-actions.md` |
 | `VERIFY` | Confirm EFS does not decrease; RS changes correlate with usage | If EFS drops >5 points within 7 days → flag for review | `references/verification-metrics.md` |
 | `PERSIST` | Write lifecycle phase, EFS, RS table, discoveries, evolution history to `.agents/ECOSYSTEM.md` | Always persist after every check | `references/subsystems.md` |
@@ -143,6 +143,7 @@ Every deliverable must include:
 | `references/evolution-actions.md` | You need trigger definitions, Dynamic AFFINITY, or output formats. |
 | `references/verification-metrics.md` | You need evolution effect measurement or VERIFY criteria. |
 | `references/subsystems.md` | You need detail on the 7 internal subsystems. |
+| `references/official-fitness-criteria.md` | You need Official Spec Conformance (OSC) scoring, lifecycle-phase minimum thresholds, RS enhancement from official metrics, or use-case coverage analysis during ASSESS or EVOLVE. |
 
 ## Operational
 

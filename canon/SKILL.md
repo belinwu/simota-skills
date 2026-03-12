@@ -115,6 +115,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | API / Data | OpenAPI 3.x, JSON Schema, RFC 7231, GraphQL Spec | references/api-standards.md |
 | Quality | ISO/IEC 25010, IEEE 830, Clean Code, SOLID | references/quality-standards.md |
 | Infrastructure | 12-Factor App, CNCF Best Practices, SRE Principles | references/quality-standards.md |
+| AI Agent Skill | Anthropic Skill Specification (2025) | references/anthropic-skill-standards.md |
 | Industry (ref only) | PCI-DSS, HIPAA, GDPR, SOC 2 | Consult professionals |
 
 **Important:** Canon does NOT make legal compliance determinations. Always consult appropriate professionals for regulated industries.
@@ -186,6 +187,7 @@ Every deliverable must include:
 | `references/api-standards.md` | You need OpenAPI, JSON Schema, RFC, or GraphQL. |
 | `references/quality-standards.md` | You need ISO 25010, 12-Factor, CNCF, or SRE. |
 | `references/compliance-templates.md` | You need compliance report template. |
+| `references/anthropic-skill-standards.md` | You need Anthropic official skill specification for SKILL.md compliance assessment, frontmatter validation, description quality evaluation, or progressive disclosure verification during ASSESS. |
 
 ## Operational
 

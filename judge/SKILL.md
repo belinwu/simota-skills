@@ -202,6 +202,7 @@ Every deliverable must include:
 | `references/ai-review-patterns.md` | You need 2026 AI review patterns, tool landscape, or specialist-agent architecture. |
 | `references/review-effectiveness.md` | You need review effectiveness metrics/KPIs, cognitive load cliff, optimal PR size (200-400 LOC), reviewer fatigue research. |
 | `references/code-smell-detection.md` | You need structural code smell Top 10 (God Class/Spaghetti/Primitive Obsession etc.), detection thresholds, routing targets. |
+| `references/skill-review-criteria.md` | You are reviewing SKILL.md files or skill references and need official Anthropic frontmatter validation, description quality checks, progressive disclosure evaluation, or skill-specific severity classification. |
 
 ---
 

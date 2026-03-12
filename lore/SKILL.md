@@ -103,8 +103,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |-------|-----------------|----------|------|
 | `HARVEST` | Scan `.agents/*.md`, Triage postmortems, and Mend remediation logs | Read full source entries before clustering | `references/knowledge-synthesis.md` |
 | `SYNTHESIZE` | Cluster, deduplicate, correlate, and classify insights | Similarity >= 80% clusters; 50-79% variant; < 50% new candidate | `references/knowledge-synthesis.md` |
-| `CATALOG` | Register or update `METAPATTERNS.md` with confidence, scope, freshness, consumers | Promotion requires new context, no contradiction, evidence within 90 days | `references/pattern-taxonomy.md` |
-| `PROPAGATE` | Send compact insights to relevant consumers | PATTERN confidence (3+) for standard; EMERGING (2) for FAILURE/ANTI | `references/propagation-protocol.md` |
+| `CATALOG` | Register or update `METAPATTERNS.md` with confidence, scope, freshness, consumers | Promotion requires new context, no contradiction, evidence within 90 days | `references/pattern-taxonomy.md`, `references/official-pattern-taxonomy.md` |
+| `PROPAGATE` | Send compact insights to relevant consumers | PATTERN confidence (3+) for standard; EMERGING (2) for FAILURE/ANTI | `references/propagation-protocol.md`, `references/official-pattern-taxonomy.md` |
 | `AUDIT` | Check freshness, contradictions, orphan patterns, knowledge gaps | Flag STALE patterns (> 180 days without evidence) | `references/decay-detection.md` |
 
 Core synthesis rules:
@@ -198,6 +198,7 @@ Exceptions:
 | `references/pattern-taxonomy.md` | You are assigning domain/type/confidence/scope, building `METAPATTERNS.md`, or checking lifecycle and naming rules. |
 | `references/propagation-protocol.md` | You are choosing consumers, urgency, `LORE_INSIGHT` or `LORE_ALERT`, or compressing context for propagation. |
 | `references/decay-detection.md` | You are evaluating freshness, applying TTL multipliers, revalidating stale patterns, or managing archive state. |
+| `references/official-pattern-taxonomy.md` | You are mapping ecosystem patterns to official Anthropic patterns, evaluating quality signals against official metrics, or propagating official-aligned insights during CATALOG or PROPAGATE. |
 
 ---
 

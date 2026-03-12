@@ -182,6 +182,7 @@ Every deliverable must include:
 | `references/report-templates.md` | You need dashboard, per-skill, or ecosystem health score formats. |
 | `references/web-sources.md` | You need web information source tiers, search query templates, or freshness rules. |
 | `references/self-evolution.md` | You need safety levels, evolution triggers, change budget, or rollback procedures. |
+| `references/official-standards.md` | You need official Anthropic standards for frontmatter validation, troubleshooting common issues, or comparing ecosystem checklist against official spec during CLASSIFY or RECOMMEND. |
 
 ## Operational
 

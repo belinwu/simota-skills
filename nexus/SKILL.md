@@ -116,7 +116,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 | Phase | Purpose | Keep Inline | Read When |
 |------|---------|-------------|-----------|
-| `CLASSIFY` | Detect task type, complexity, context confidence, and guardrail needs | Task type, complexity, routing confidence | `references/context-scoring.md`, `references/intent-clarification.md`, `references/auto-decision.md` |
+| `CLASSIFY` | Detect task type, complexity, context confidence, official category, and guardrail needs | Task type, complexity, routing confidence, official category/pattern | `references/context-scoring.md`, `references/intent-clarification.md`, `references/auto-decision.md`, `references/official-skill-categories.md` |
 | `CHAIN` | Select the minimum viable chain and plan parallel branches | Quick routing defaults and adjustment rules | `references/routing-matrix.md`, `references/agent-chains.md`, `references/agent-disambiguation.md`, `references/task-routing-anti-patterns.md` |
 | `EXECUTE` | Run sequential or parallel steps with checkpoints | Mode semantics and no-confirmation rule | `references/execution-phases.md`, `references/guardrails.md`, `references/error-handling.md`, `references/orchestration-patterns.md` |
 | `AGGREGATE` | Merge branch outputs and resolve conflicts | Hub-spoke merge ownership | `references/conflict-resolution.md`, `references/handoff-validation.md`, `references/agent-communication-anti-patterns.md` |
@@ -263,6 +263,7 @@ Read only the files that match the current decision point.
 | `references/task-routing-anti-patterns.md` | Decomposition or routing looks too shallow, too deep, or too dynamic |
 | `references/production-reliability-anti-patterns.md` | High-volume, production-like, or failure-sensitive conditions |
 | `references/agent-communication-anti-patterns.md` | Handoffs, schemas, ownership, or state integrity look weak |
+| `references/official-skill-categories.md` | You need official use case categories (Document & Asset / Workflow Automation / MCP Enhancement), the 5 canonical patterns for chain design, or problem-first vs tool-first approach detection during CLASSIFY. |
 
 ## Operational Notes
 
