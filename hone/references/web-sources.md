@@ -1,6 +1,6 @@
 # Web Sources
 
-**Purpose:** Information source tier classification, search query templates, and freshness management for Codex CLI and Gemini CLI best practices.
+**Purpose:** Information source tier classification, search query templates, and freshness management for Codex CLI, Gemini CLI, and Claude Code best practices.
 **Read when:** Entering the FETCH phase or when web research is required.
 
 ---
@@ -9,8 +9,8 @@
 
 | Tier | Description | Trust | Examples | Usage |
 |------|-------------|-------|---------|-------|
-| **T1** | Official documentation | Highest | Codex CLI docs, OpenAI platform docs, Gemini CLI docs, Google AI docs | Accept directly; cite as authoritative |
-| **T2** | Official repo & maintainer | High | openai/codex GitHub, google-gemini/gemini-cli GitHub, OpenAI blog, Google AI blog, maintainer statements | Accept with verification; cross-reference with T1 |
+| **T1** | Official documentation | Highest | Codex CLI docs, OpenAI platform docs, Gemini CLI docs, Google AI docs, Claude Code docs, Anthropic docs | Accept directly; cite as authoritative |
+| **T2** | Official repo & maintainer | High | openai/codex GitHub, google-gemini/gemini-cli GitHub, anthropics/claude-code GitHub, OpenAI blog, Google AI blog, Anthropic blog, maintainer statements | Accept with verification; cross-reference with T1 |
 | **T3** | Community knowledge | Medium | Reddit, developer blogs, X/Twitter, YouTube tutorials | Signals only; require T1/T2 corroboration |
 | **T4** | Indirect/academic | Variable | AI agent papers, general CLI best practices | Theoretical grounding; never sole basis for recommendations |
 
@@ -107,6 +107,44 @@ site:github.com/google-gemini/gemini-cli releases
 "gemini cli" breaking changes migration
 ```
 
+### Claude Code Official
+
+```
+"claude code" settings.json configuration
+"claude code" CLAUDE.md best practices
+site:github.com/anthropics/claude-code config
+"claude code" permissions configuration
+"claude code" MCP server setup
+```
+
+### Claude Code Setup & Optimization
+
+```
+"claude code" setup guide 2026
+"claude code" CLAUDE.md instructions best practices
+"claude code" custom commands setup
+"claude code" hooks configuration
+"claude code" permissions allow deny
+```
+
+### Claude Code Model & Auth Configuration
+
+```
+"claude code" model selection
+"claude code" CLAUDE_MODEL settings
+anthropic latest models "claude code"
+"ANTHROPIC_API_KEY" best practices
+"claude code" oauth login
+```
+
+### Claude Code Release & Changelog
+
+```
+site:github.com/anthropics/claude-code releases
+"claude code" changelog new features
+"claude code" breaking changes migration
+```
+
 ---
 
 ## Freshness Management
@@ -168,6 +206,20 @@ site:github.com/google-gemini/gemini-cli releases
 |--------|-------------|---------------|-------|
 | google-gemini/gemini-cli GitHub | github.com/google-gemini/gemini-cli | Initial | Source code, config schema, issues |
 | Google AI Blog | blog.google/technology/ai | Initial | Feature announcements |
+
+### T1: Official Primary (Claude Code)
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| Claude Code Docs | docs.anthropic.com/claude-code | Initial | Primary reference |
+| Anthropic Docs | docs.anthropic.com | Initial | Model availability, API |
+
+### T2: Official Secondary (Claude Code)
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| anthropics/claude-code GitHub | github.com/anthropics/claude-code | Initial | Source code, config schema, issues |
+| Anthropic Blog | anthropic.com/blog | Initial | Feature announcements |
 
 ### T4: Indirect
 

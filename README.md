@@ -232,13 +232,13 @@ This repository contains 94 specialized AI agents covering various aspects of so
 | **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 | **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
-| **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Gemini CLI). Collects official best practices via web, audits config.toml/settings.json/AGENTS.md/GEMINI.md/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
+| **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Gemini CLI / Claude Code). Collects official best practices via web, audits config.toml/settings.json/CLAUDE.md/GEMINI.md/AGENTS.md/permissions/commands/hooks/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
-- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/` settings)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
@@ -1523,6 +1523,9 @@ Audit my Codex CLI configuration and suggest optimizations based on latest best 
 
 /Hone
 Audit my Gemini CLI settings.json and safety settings for best practice alignment.
+
+/Hone
+Audit my Claude Code permissions and MCP server configuration for security best practices.
 ```
 
 **Output**: Audit report with Before/After diff proposals, priority classification, safety labels
@@ -1551,7 +1554,7 @@ Set up my neovim configuration with LSP support and lazy.nvim plugin management.
 
 **Hearth vs Hone vs Gear vs Scaffold responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
-- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/` settings)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)

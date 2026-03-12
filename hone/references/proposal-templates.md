@@ -206,7 +206,7 @@ Every proposal must include:
 # AI CLI Configuration Audit Report
 
 **Date:** YYYY-MM-DD
-**Target CLI:** {Codex CLI | Gemini CLI | Both}
+**Target CLI:** {Codex CLI | Gemini CLI | Claude Code | All}
 **CLI version:** {version}
 **Config path:** {~/.codex/ | ~/.gemini/ | both}
 
