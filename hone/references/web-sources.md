@@ -1,0 +1,176 @@
+# Web Sources
+
+**Purpose:** Information source tier classification, search query templates, and freshness management for Codex CLI and Gemini CLI best practices.
+**Read when:** Entering the FETCH phase or when web research is required.
+
+---
+
+## Source Tier Classification
+
+| Tier | Description | Trust | Examples | Usage |
+|------|-------------|-------|---------|-------|
+| **T1** | Official documentation | Highest | Codex CLI docs, OpenAI platform docs, Gemini CLI docs, Google AI docs | Accept directly; cite as authoritative |
+| **T2** | Official repo & maintainer | High | openai/codex GitHub, google-gemini/gemini-cli GitHub, OpenAI blog, Google AI blog, maintainer statements | Accept with verification; cross-reference with T1 |
+| **T3** | Community knowledge | Medium | Reddit, developer blogs, X/Twitter, YouTube tutorials | Signals only; require T1/T2 corroboration |
+| **T4** | Indirect/academic | Variable | AI agent papers, general CLI best practices | Theoretical grounding; never sole basis for recommendations |
+
+### Tier Usage Rules
+
+1. **Config change recommendations:** Require at least 1 T1 or 2 T2 sources.
+2. **Feature flag guidance:** Require at least 1 T2 source.
+3. **General tips:** T3 acceptable if clearly attributed.
+4. **Never** recommend config changes based solely on T4 sources.
+
+---
+
+## Search Query Templates
+
+### Codex CLI Official
+
+```
+"codex cli" config.toml settings
+"codex cli" configuration best practices
+site:github.com/openai/codex config
+"codex cli" trust level configuration
+"codex cli" feature flags
+```
+
+### Codex CLI Setup & Optimization
+
+```
+"codex cli" setup guide 2026
+"codex cli" MCP server configuration
+"codex cli" instructions.md best practices
+"codex cli" AGENTS.md guide
+"codex cli" rules directory setup
+```
+
+### Model & Provider Configuration
+
+```
+"codex cli" model selection
+"codex cli" reasoning_effort setting
+openai latest models "codex cli"
+```
+
+### Release & Changelog
+
+```
+site:github.com/openai/codex releases
+"codex cli" changelog new features
+"codex cli" breaking changes migration
+```
+
+### Community Practices
+
+```
+site:reddit.com "codex cli" config tips
+"codex cli" workflow optimization
+"codex cli" productivity setup
+```
+
+### Gemini CLI Official
+
+```
+"gemini cli" settings.json configuration
+"gemini cli" configuration best practices
+site:github.com/google-gemini/gemini-cli config
+"gemini cli" safety settings configuration
+"gemini cli" extensions setup
+```
+
+### Gemini CLI Setup & Optimization
+
+```
+"gemini cli" setup guide 2026
+"gemini cli" GEMINI.md best practices
+"gemini cli" extension configuration
+"gemini cli" sandbox mode
+"gemini cli" yolo mode safety
+```
+
+### Gemini Model & Auth Configuration
+
+```
+"gemini cli" model selection
+"gemini cli" selectedModel settings
+google gemini latest models "gemini cli"
+"gemini cli" oauth vs api key
+"GEMINI_API_KEY" best practices
+```
+
+### Gemini Release & Changelog
+
+```
+site:github.com/google-gemini/gemini-cli releases
+"gemini cli" changelog new features
+"gemini cli" breaking changes migration
+```
+
+---
+
+## Freshness Management
+
+### Staleness Thresholds
+
+| Content type | Stale after | Action |
+|--------------|-------------|--------|
+| T1 sources (official docs) | 60 days | Re-verify; update citations |
+| T2 sources (repo, blog) | 45 days | Re-verify; flag if outdated |
+| T3 sources (community) | 30 days | Re-verify; consider removal |
+| T4 sources (academic) | 180 days | Re-verify relevance |
+| Config schema reference | 60 days | Refresh from latest release |
+| This file (web-sources.md) | 90 days | Full refresh of query templates |
+
+### Freshness Check Protocol
+
+1. Record last-verified date for each source citation.
+2. During FETCH phase, check all cited sources against staleness thresholds.
+3. Flag stale sources for re-verification.
+4. Remove sources that are no longer accessible (404, removed).
+5. Update query templates if search landscape has changed.
+
+---
+
+## Currently Tracked Sources
+
+### T1: Official Primary
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| Codex CLI Docs | openai.com/codex | Initial | Primary reference |
+| OpenAI Platform Docs | platform.openai.com | Initial | Model availability, API |
+
+### T2: Official Secondary
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| openai/codex GitHub | github.com/openai/codex | Initial | Source code, config schema, issues |
+| OpenAI Blog | openai.com/blog | Initial | Feature announcements |
+
+### T3: Community
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| Reddit | reddit.com (various) | Initial | Community practices |
+| Developer blogs | Various | Initial | Practitioner experiences |
+
+### T1: Official Primary (Gemini)
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| Gemini CLI Docs | ai.google.dev/gemini-cli | Initial | Primary reference |
+| Google AI Docs | ai.google.dev | Initial | Model availability, API |
+
+### T2: Official Secondary (Gemini)
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| google-gemini/gemini-cli GitHub | github.com/google-gemini/gemini-cli | Initial | Source code, config schema, issues |
+| Google AI Blog | blog.google/technology/ai | Initial | Feature announcements |
+
+### T4: Indirect
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| CLI best practices | Various | Initial | General CLI configuration patterns |

@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-93-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-94-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **93 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **94 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 93 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 94 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -232,11 +232,13 @@ This repository contains 93 specialized AI agents covering various aspects of so
 | **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 | **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
+| **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Gemini CLI). Collects official best practices via web, audits config.toml/settings.json/AGENTS.md/GEMINI.md/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
 
-**Hearth vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
+**Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
@@ -690,6 +692,7 @@ skills/
 ├── harvest/SKILL.md    # PR info collection & report generation
 ├── hearth/SKILL.md     # Personal dev environment config
 ├── helm/SKILL.md       # Business strategy simulation
+├── hone/SKILL.md       # Codex CLI config audit & optimization
 ├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
 ├── latch/SKILL.md      # Claude Code hook management
@@ -1512,6 +1515,20 @@ Create Terraform configuration for building a staging environment on AWS.
 
 ---
 
+##### AI CLI Config Audit (Hone)
+
+```
+/Hone
+Audit my Codex CLI configuration and suggest optimizations based on latest best practices.
+
+/Hone
+Audit my Gemini CLI settings.json and safety settings for best practice alignment.
+```
+
+**Output**: Audit report with Before/After diff proposals, priority classification, safety labels
+
+---
+
 ##### Personal Dev Environment Setup (Hearth)
 
 ```
@@ -1532,8 +1549,9 @@ Set up my neovim configuration with LSP support and lazy.nvim plugin management.
 
 **Output**: init.lua structure, lazy.nvim setup, LSP configuration, keybindings
 
-**Hearth vs Gear vs Scaffold responsibilities**:
+**Hearth vs Hone vs Gear vs Scaffold responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)

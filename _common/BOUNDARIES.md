@@ -194,12 +194,14 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Harvest** | PR reporting | Weekly/monthly reports from git data | Never |
 | **Latch** | Claude Code hooks | PreToolUse/PostToolUse event system | Yes |
 | **Hearth** | Dev environment setup | dotfiles, shell, editor config | Yes |
+| **Hone** | AI CLI config audit & optimization | config.toml, settings.json, AGENTS.md, GEMINI.md, rules, MCP, extensions | Never |
 | **Mend** | Known-pattern auto-remediation | Runtime fix, runbook execution, staged verification | Yes |
 
 **Key distinctions:**
 - Existing CI maintenance → Gear. New GHA design → Pipe
 - PR strategy → Guardian. Release execution → Launch. PR reports → Harvest
 - Operational config → Gear. Runtime remediation → Mend
+- AI CLI config audit (Codex, Gemini) → Hone. Personal dev env (dotfiles) → Hearth
 
 ## Communication & Content
 
