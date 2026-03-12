@@ -214,6 +214,18 @@
 | CCH2 | Claude Code Hooks | No plaintext secrets in hook commands | P0 |
 | CCA1 | Claude Code Auth | Authentication method is configured | P0 |
 | CCA2 | Claude Code Auth | `ANTHROPIC_API_KEY` is not hardcoded in settings or CLAUDE.md | P0 |
+| CCE1 | Claude Code Env Tuning | `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is set (70-80 recommended, default 95 is suboptimal) | P1 |
+| CCE2 | Claude Code Env Tuning | `ENABLE_TOOL_SEARCH` is `auto:0` when MCP servers are configured (saves ~32% context) | P1 |
+| CCE3 | Claude Code Env Tuning | `CLAUDE_CODE_MAX_OUTPUT_TOKENS` is reviewed (default 32K, max 64K) | P2 |
+| CCE4 | Claude Code Env Tuning | `MAX_THINKING_TOKENS` is calibrated with `alwaysThinkingEnabled` | P2 |
+| CCE5 | Claude Code Env Tuning | No unnecessary telemetry enabled (privacy review) | P2 |
+| CCD1 | Claude Code Display | `outputStyle` is set for consistent output behavior | P3 |
+| CCD2 | Claude Code Display | `attribution` is explicitly configured (not relying on deprecated `includeCoAuthoredBy`) | P2 |
+| CCD3 | Claude Code Display | `cleanupPeriodDays` is explicitly set | P3 |
+| CCD4 | Claude Code Display | `autoUpdatesChannel` is explicitly set (`stable` recommended) | P2 |
+| CCD5 | Claude Code Display | `respectGitignore` is true | P3 |
+| CCB1 | Claude Code Sandbox | Sandbox configuration reviewed for security posture | P1 |
+| CCB2 | Claude Code Sandbox | `sandbox.filesystem.denyRead` blocks sensitive paths (`~/.aws/credentials`, `~/.ssh/*`) | P1 |
 
 ---
 
@@ -269,3 +281,27 @@
 1. Check that `ANTHROPIC_API_KEY` env var is set or OAuth is configured (CCA1)
 2. Scan settings.json and CLAUDE.md files for hardcoded API keys (CCA2)
 3. Never read `~/.claude/credentials.json` or auth session files
+
+### Claude Code Env Tuning Audit (CCE1-CCE5)
+
+1. Check `env` block in settings.json for performance-critical variables
+2. If MCP servers are configured, verify `ENABLE_TOOL_SEARCH` is `auto:0` for context savings (CCE2)
+3. Check `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` — default 95% causes late compaction; 70-80% recommended (CCE1)
+4. If `CLAUDE_CODE_MAX_OUTPUT_TOKENS` is unset, note default 32K may truncate large outputs (CCE3)
+5. If `alwaysThinkingEnabled: true`, verify `MAX_THINKING_TOKENS` is calibrated for cost/quality balance (CCE4)
+6. Review telemetry/privacy env vars for unnecessary data sharing (CCE5)
+
+### Claude Code Display & Config Hygiene Audit (CCD1-CCD5)
+
+1. Check if `outputStyle` is set for consistent output behavior (CCD1)
+2. Check `attribution` uses new format (not deprecated `includeCoAuthoredBy`) (CCD2)
+3. Verify `cleanupPeriodDays` is explicitly set (CCD3)
+4. Verify `autoUpdatesChannel` is set, prefer `stable` for production use (CCD4)
+5. Verify `respectGitignore` is true (CCD5)
+
+### Claude Code Sandbox Audit (CCB1-CCB2)
+
+1. Review whether sandbox settings exist and are appropriate for security posture (CCB1)
+2. If sandbox enabled, check `sandbox.filesystem.denyRead` blocks sensitive paths (CCB2)
+3. Check `sandbox.network.allowedDomains` is scoped appropriately
+4. Note: Sandbox adoption should be gradual — recommend ask-first for initial enablement

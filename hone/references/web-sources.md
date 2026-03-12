@@ -125,6 +125,15 @@ site:github.com/anthropics/claude-code config
 "claude code" custom commands setup
 "claude code" hooks configuration
 "claude code" permissions allow deny
+"claude code" settings.json hidden features
+"claude code" power user tips
+"claude code" experimental settings
+"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE" context
+"ENABLE_TOOL_SEARCH" MCP context tokens
+"claude code" sandbox configuration
+"claude code" outputStyle settings
+"claude code" companyAnnouncements
+"claude code" fileSuggestion command
 ```
 
 ### Claude Code Model & Auth Configuration
@@ -211,15 +220,38 @@ site:github.com/anthropics/claude-code releases
 
 | Source | URL pattern | Last verified | Notes |
 |--------|-------------|---------------|-------|
-| Claude Code Docs | docs.anthropic.com/claude-code | Initial | Primary reference |
-| Anthropic Docs | docs.anthropic.com | Initial | Model availability, API |
+| Claude Code Docs (Settings) | code.claude.com/docs/en/settings | 2026-03-12 | Primary settings reference |
+| Claude Code Docs (Security) | code.claude.com/docs/en/security | 2026-03-12 | Security guide |
+| Claude Code Docs (Permissions) | code.claude.com/docs/en/permissions | 2026-03-12 | Permission patterns |
+| Claude Code Docs (Sandboxing) | code.claude.com/docs/en/sandboxing | 2026-03-12 | Sandbox configuration |
+| Claude Code Docs (Hooks) | code.claude.com/docs/en/hooks | 2026-03-12 | Hook events |
+| Claude Code Docs (Model Config) | code.claude.com/docs/en/model-config | 2026-03-12 | Model settings |
+| Claude Code Docs (StatusLine) | code.claude.com/docs/en/statusline | 2026-03-12 | Custom statusline |
+| Claude Code Docs (Plugins) | code.claude.com/docs/en/plugins | 2026-03-12 | Plugin system |
+| Claude Code Docs (Scheduled Tasks) | code.claude.com/docs/en/scheduled-tasks | 2026-03-12 | /loop, cron |
+| Anthropic Docs | docs.anthropic.com | 2026-03-12 | Model availability, API |
 
 ### T2: Official Secondary (Claude Code)
 
 | Source | URL pattern | Last verified | Notes |
 |--------|-------------|---------------|-------|
-| anthropics/claude-code GitHub | github.com/anthropics/claude-code | Initial | Source code, config schema, issues |
-| Anthropic Blog | anthropic.com/blog | Initial | Feature announcements |
+| anthropics/claude-code GitHub | github.com/anthropics/claude-code | 2026-03-12 | Source code, config schema, issues |
+| claude-code-settings-schema.json (Gist) | gist.github.com (xdannyrobertsx) | 2026-03-12 | Community schema dump |
+| Anthropic Blog | anthropic.com/blog | 2026-03-12 | Feature announcements |
+| managed-settings.com | managed-settings.com | 2026-03-12 | Enterprise managed settings reference |
+
+### T3: Community (Claude Code)
+
+| Source | URL pattern | Last verified | Notes |
+|--------|-------------|---------------|-------|
+| ClaudeFast Settings Reference | claudefa.st/blog/guide/settings-reference | 2026-03-12 | Comprehensive settings guide |
+| ClaudeFast Context Buffer | claudefa.st/blog/guide/mechanics/context-buffer-management | 2026-03-12 | Compaction optimization |
+| eesel.ai Config Guide | eesel.ai/blog/settings-json-claude-code | 2026-03-12 | Complete config walkthrough |
+| DEV Community Ultimate Guide | dev.to (holasoymalva) | 2026-03-12 | Hidden tricks & hacks |
+| Paddo MCP Flag Blog | paddo.dev/blog/claude-code-hidden-mcp-flag | 2026-03-12 | ENABLE_TOOL_SEARCH discovery |
+| ykdojo/claude-code-tips | github.com/ykdojo/claude-code-tips | 2026-03-12 | 45 community tips |
+| Korny Better Permissions | blog.korny.info | 2026-03-12 | Permission pattern best practices |
+| Trail of Bits Config | github.com/trailofbits/claude-code-config | 2026-03-12 | Security-focused config |
 
 ### T4: Indirect
 
