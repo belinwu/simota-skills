@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Skills — 100の専門AIエージェントが、あなたの開発チームになる</title>
+  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する100の専門エージェント。">
+  <meta property="og:title" content="Agent Skills — AI Agent Ecosystem">
+  <meta property="og:description" content="100の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://simota.github.io/agent-skills/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+/* ==========================================
+   CSS Custom Properties
+   ========================================== */
+:root {
+  --bg-body: #0a0e17;
+  --bg-section: #0d1117;
+  --bg-card: #161b22;
+  --bg-card-hover: #1c2333;
+  --bg-nav: rgba(10, 14, 23, 0.8);
+  --border: #30363d;
+  --border-hover: #58a6ff;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+  --accent: #58a6ff;
+  --accent-glow: rgba(88, 166, 255, 0.15);
+  --glow-purple: rgba(188, 140, 255, 0.12);
+  --glow-blue: rgba(88, 166, 255, 0.12);
+  --font-sans: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  /* Motion Tokens */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-entrance: 600ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: var(--duration-normal) var(--ease-out);
+  /* Category Colors */
+  --c-orchestration: #bc8cff;
+  --c-investigation: #58a6ff;
+  --c-git: #a371f7;
+  --c-quality: #f85149;
+  --c-implementation: #3fb950;
+  --c-performance: #39d2c0;
+  --c-uiux: #ff6eb4;
+  --c-architecture: #d29922;
+  --c-devops: #7ee787;
+  --c-data: #79c0ff;
+  --c-docs: #a5d6ff;
+  --c-growth: #e3b341;
+  --c-creative: #db6d28;
+  --c-specialized: #6e40c9;
+}
+
+/* ==========================================
+   Reset & Base
+   ========================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-body);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
+a:hover { color: #79c0ff; }
+
+::selection { background: rgba(88, 166, 255, 0.3); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ==========================================
+   Nav
+   ========================================== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg-nav);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-normal) var(--ease-out), background var(--duration-normal) var(--ease-out);
+}
+.nav.scrolled { border-bottom-color: var(--border); background: rgba(10, 14, 23, 0.95); }
+
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  font-weight: 800; font-size: 1.15rem; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em;
+}
+.nav-logo .logo-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: linear-gradient(135deg, #bc8cff, #58a6ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #fff;
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a {
+  color: var(--text-secondary); font-size: 0.875rem; font-weight: 500;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.nav-links a:hover { color: var(--text-primary); }
+
+.nav-github {
+  display: flex; align-items: center; gap: 6px; color: var(--text-secondary);
+  font-size: 0.875rem; font-weight: 500; padding: 6px 14px;
+  border: 1px solid var(--border); border-radius: 6px;
+  transition: all var(--transition);
+}
+.nav-github:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+.nav-github svg { width: 18px; height: 18px; fill: currentColor; }
+
+.nav-mobile-btn {
+  display: none; background: none; border: none; color: var(--text-primary);
+  cursor: pointer; padding: 4px;
+}
+.nav-mobile-btn svg { width: 24px; height: 24px; }
+
+/* ==========================================
+   Hero
+   ========================================== */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 24px 80px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(188,140,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 30% 70%, rgba(88,166,255,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,110,180,0.04) 0%, transparent 50%),
+    var(--bg-body);
+}
+/* Grid pattern */
+.hero-grid {
+  position: absolute; inset: 0; z-index: 1;
+  background-image:
+    linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
+}
+/* Floating particles */
+.hero-particles {
+  position: absolute; inset: 0; z-index: 1;
+}
+.particle {
+  position: absolute; border-radius: 50%;
+  animation: particleFloat linear infinite;
+  opacity: 0;
+}
+@keyframes particleFloat {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 860px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 50px;
+  background: rgba(88, 166, 255, 0.08); border: 1px solid rgba(88, 166, 255, 0.2);
+  font-size: 0.8rem; color: var(--accent); margin-bottom: 24px; font-weight: 500;
+}
+.hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #3fb950; animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800;
+  line-height: 1.25; letter-spacing: -0.03em;
+  margin-bottom: 20px; color: var(--text-primary);
+}
+.hero h1 .accent { color: var(--c-orchestration); }
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-secondary);
+  max-width: 640px; margin: 0 auto 36px; line-height: 1.8;
+}
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 8px; font-weight: 600;
+  font-size: 0.95rem; transition: all var(--transition); cursor: pointer;
+  border: none; font-family: var(--font-sans);
+}
+.btn-primary {
+  background: var(--accent); color: #0a0e17; font-weight: 700;
+}
+.btn-primary:hover { background: #79c0ff; transform: translateY(-1px); color: #0a0e17; }
+.btn-secondary {
+  background: transparent; color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-secondary svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* Stats */
+.hero-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  max-width: 640px; margin: 0 auto;
+}
+.stat { text-align: center; }
+.stat-value {
+  font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800;
+  font-variant-numeric: tabular-nums; color: var(--text-primary);
+}
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+/* ==========================================
+   Section Base
+   ========================================== */
+.section { padding: 100px 0; position: relative; }
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-label {
+  font-size: 0.75rem; color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.12em; font-weight: 600; margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.3;
+}
+.section-desc { color: var(--text-secondary); max-width: 560px; margin: 16px auto 0; font-size: 1rem; }
+
+/* Fade-in animation */
+.fade-in { opacity: 0; transform: translateY(24px); transition: opacity var(--duration-entrance) var(--ease-out), transform var(--duration-entrance) var(--ease-out); }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* Hero staged entrance */
+.hero-content > * { opacity: 0; transform: translateY(20px); animation: heroEntrance var(--duration-entrance) var(--ease-out) forwards; }
+.hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.4s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.55s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.75s; }
+@keyframes heroEntrance { to { opacity: 1; transform: translateY(0); } }
+
+/* Staggered chain pulse */
+.chain-nodes .chain-arrow:nth-child(2) { animation-delay: 0s; }
+.chain-nodes .chain-arrow:nth-child(4) { animation-delay: 0.3s; }
+.chain-nodes .chain-arrow:nth-child(6) { animation-delay: 0.6s; }
+.chain-nodes .chain-arrow:nth-child(8) { animation-delay: 0.9s; }
+
+/* ==========================================
+   Features
+   ========================================== */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.feature-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 36px 28px;
+  transition: border-color var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-slow) var(--ease-out);
+  position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--c-orchestration), var(--accent));
+  opacity: 0; transition: opacity var(--transition);
+}
+.feature-card:hover { border-color: rgba(88,166,255,0.3); transform: translateY(-4px); box-shadow: var(--shadow); }
+.feature-card:hover::before { opacity: 1; }
+.feature-icon {
+  width: 40px; height: 40px; border-radius: 8px; display: flex;
+  align-items: center; justify-content: center; margin-bottom: 20px;
+  font-size: 14px; font-weight: 700; font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+.feature-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+.feature-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; }
+
+/* ==========================================
+   Workflow
+   ========================================== */
+.workflow-steps { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin-bottom: 64px; flex-wrap: wrap; }
+.workflow-step {
+  flex: 0 0 auto; text-align: center; padding: 24px 20px;
+  position: relative; max-width: 240px;
+}
+.step-number {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-orchestration), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.1rem; margin: 0 auto 16px; color: #fff;
+}
+.workflow-step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.workflow-step p { color: var(--text-secondary); font-size: 0.85rem; }
+.step-arrow {
+  flex: 0 0 auto; display: flex; align-items: center;
+  padding-top: 36px; color: var(--text-muted); font-size: 1.5rem;
+}
+
+/* Workflow Chains */
+.chains-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.chain-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 24px; transition: all var(--transition);
+}
+.chain-card:hover { border-color: rgba(88,166,255,0.3); }
+.chain-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  font-weight: 700; margin-bottom: 14px; padding: 3px 10px;
+  border-radius: 4px; display: inline-block;
+}
+.chain-nodes { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.chain-node {
+  padding: 6px 14px; border-radius: 6px;
+  font-weight: 600; font-size: 0.8rem; white-space: nowrap;
+  border: 1px solid; position: relative;
+}
+.chain-arrow { color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; }
+.chain-pulse { animation: pulse-flow 2s ease-in-out infinite; }
+@keyframes pulse-flow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ==========================================
+   Catalog
+   ========================================== */
+.catalog-controls {
+  display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;
+}
+.catalog-search-row {
+  display: flex; gap: 12px; align-items: center;
+}
+.search-box {
+  flex: 1; position: relative;
+}
+.search-box input {
+  width: 100%; padding: 12px 16px 12px 44px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-primary);
+  font-size: 0.9rem; font-family: var(--font-sans);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.search-box input:focus { border-color: var(--accent); }
+.search-box input::placeholder { color: var(--text-muted); }
+.search-box svg {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--text-muted); pointer-events: none;
+}
+.catalog-count { color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.filter-bar {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px; border-radius: 50px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.78rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-sans);
+  white-space: nowrap;
+}
+.filter-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.filter-btn.active { color: #fff; border-color: transparent; }
+
+.catalog-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.agent-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 20px;
+  transition: border-color var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-slow) var(--ease-out), opacity var(--duration-slow) var(--ease-out);
+  position: relative; overflow: hidden;
+}
+.agent-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  border-radius: 3px 0 0 3px; transition: width var(--transition);
+}
+.agent-card:hover { border-color: rgba(88,166,255,0.2); transform: translateY(-2px); box-shadow: var(--shadow); }
+.agent-card:hover::before { width: 4px; }
+.agent-name { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.agent-motto { font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; font-family: var(--font-mono); line-height: 1.5; }
+.agent-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+.agent-badge {
+  display: inline-block; font-size: 0.7rem; padding: 2px 10px;
+  border-radius: 50px; font-weight: 600; letter-spacing: 0.02em;
+}
+
+.catalog-empty {
+  grid-column: 1 / -1; text-align: center; padding: 64px 24px;
+  color: var(--text-muted); font-size: 1rem;
+}
+
+/* ==========================================
+   Platforms
+   ========================================== */
+.platforms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.platform-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 36px 28px; text-align: center;
+  transition: all var(--transition);
+}
+.platform-card:hover { border-color: rgba(88,166,255,0.3); transform: translateY(-4px); }
+.platform-icon {
+  font-size: 2.5rem; margin-bottom: 16px; display: block;
+}
+.platform-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.platform-card p { color: var(--text-secondary); font-size: 0.85rem; }
+.platform-note {
+  text-align: center; margin-top: 32px; padding: 20px;
+  background: rgba(88,166,255,0.05); border: 1px solid rgba(88,166,255,0.1);
+  border-radius: var(--radius-sm); color: var(--text-secondary); font-size: 0.9rem;
+}
+
+/* ==========================================
+   Install
+   ========================================== */
+.install-block {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; max-width: 720px; margin: 0 auto 48px;
+}
+.install-header {
+  background: rgba(88,166,255,0.05); padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.install-header span { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+.copy-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary); padding: 4px 12px; border-radius: 4px;
+  font-size: 0.75rem; cursor: pointer; font-family: var(--font-sans);
+  transition: all var(--transition);
+}
+.copy-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+.copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+.install-code {
+  padding: 20px 24px; font-family: var(--font-mono); font-size: 0.9rem;
+  color: var(--text-primary); overflow-x: auto; line-height: 1.8;
+}
+.install-code .comment { color: var(--text-muted); }
+.install-code .cmd { color: #79c0ff; }
+
+.examples-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 720px; margin: 0 auto; }
+.example-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px 20px;
+  transition: all var(--transition);
+}
+.example-card:hover { border-color: rgba(88,166,255,0.2); }
+.example-cmd { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
+.example-desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* ==========================================
+   Footer
+   ========================================== */
+.footer {
+  border-top: 1px solid var(--border); padding: 48px 0;
+  background: var(--bg-section);
+}
+.footer-inner { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 32px; }
+.footer-brand { flex: 1; min-width: 200px; }
+.footer-brand .nav-logo { margin-bottom: 12px; }
+.footer-brand p { color: var(--text-muted); font-size: 0.8rem; }
+.footer-links { display: flex; gap: 48px; flex-wrap: wrap; }
+.footer-col h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
+.footer-col a { display: block; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; }
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
+
+/* ==========================================
+   Responsive
+   ========================================== */
+@media (max-width: 1024px) {
+  .features-grid, .platforms-grid { grid-template-columns: repeat(2, 1fr); }
+  .chains-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-btn { display: block; }
+  .nav-links.open {
+    display: flex; flex-direction: column; position: absolute;
+    top: 64px; left: 0; right: 0; background: var(--bg-section);
+    border-bottom: 1px solid var(--border); padding: 16px 24px; gap: 16px;
+  }
+  .features-grid, .platforms-grid { grid-template-columns: 1fr; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .workflow-steps { flex-direction: column; align-items: center; }
+  .step-arrow { transform: rotate(90deg); padding: 0; }
+  .examples-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; }
+  .catalog-search-row { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 64px 0; }
+  .hero { padding: 100px 16px 60px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .catalog-grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================
+   Reduced Motion
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition-duration: 0.01ms !important; }
+  .fade-in, .hero-content > * { opacity: 1; transform: none; }
+  .particle { display: none; }
+  html { scroll-behavior: auto; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="logo-icon">A</span>
+      Agent Skills
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#agents">Agents</a>
+      <a href="#install">Install</a>
+    </div>
+    <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener" class="nav-github">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+    <button class="nav-mobile-btn" id="navToggle" aria-label="メニューを開く">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Open Source — MIT License
+    </div>
+    <h1><span class="accent">100</span>の専門AIエージェントが、<br>あなたの開発チームになる</h1>
+    <p>バグ調査、セキュリティ監査、UI/UX、リリース管理まで — 開発のあらゆる領域を専門エージェントがカバー。Claude Code・Codex CLI・Gemini CLI で今日から使えるオープンソースエコシステム。</p>
+    <div class="hero-cta">
+      <a href="#install" class="btn btn-primary">インストールする</a>
+      <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener" class="btn btn-secondary">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub で見る
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-value" data-count="100">0</div><div class="stat-label">Agents</div></div>
+      <div class="stat"><div class="stat-value" data-count="14">0</div><div class="stat-label">Categories</div></div>
+      <div class="stat"><div class="stat-value" data-count="50" data-suffix="+">0</div><div class="stat-label">Chains</div></div>
+      <div class="stat"><div class="stat-value" data-text="MIT">MIT</div><div class="stat-label">License</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">なぜ Agent Skills なのか</h2>
+      <p class="section-desc">git clone ひとつで、専門エージェントチームがあなたのCLIに加わります</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon" style="background: rgba(188,140,255,0.12); color: var(--c-orchestration);">/N</div>
+        <h3>Nexus オーケストレーター</h3>
+        <p>「バグを直して」と伝えるだけで Scout → Builder → Radar を自動設計。タスクの種類と複雑度を判断し、最適なエージェントチェーンを即座に組み立てます。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon" style="background: rgba(88,166,255,0.12); color: var(--c-investigation);">14</div>
+        <h3>14領域をカバーする専門チーム</h3>
+        <p>調査・実装・テスト・セキュリティ・UI/UX・AI/ML・インフラ・ドキュメントなど14カテゴリ。それぞれのドメインに深い知識を持つエージェントが、あなたに代わって専門的な判断を下します。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon" style="background: rgba(63,185,80,0.12); color: var(--c-implementation);">D+</div>
+        <h3>自己進化エコシステム</h3>
+        <p>Darwin がフィットネスを監視し、Lore が横断知識を伝播。エージェント間で学びが循環し、プロジェクトを重ねるほど連携が洗練されていきます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WORKFLOW ========== -->
+<section class="section" id="workflow" style="background: var(--bg-section);">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">伝えるだけで、チームが動く</h2>
+      <p class="section-desc">自然言語でタスクを記述するだけ。残りは Nexus が判断します。</p>
+    </div>
+
+    <div class="workflow-steps fade-in">
+      <div class="workflow-step">
+        <div class="step-number">1</div>
+        <h4>タスクを伝える</h4>
+        <p>/Nexus に自然言語でタスクを記述。「ログイン機能のバグを修正して」のように。</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="workflow-step">
+        <div class="step-number">2</div>
+        <h4>Nexus が分析・設計</h4>
+        <p>タスクを分類し、最適なエージェントチェーンを自動で設計。複雑度に応じてモードを選択。</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="workflow-step">
+        <div class="step-number">3</div>
+        <h4>エージェントが連携</h4>
+        <p>各エージェントが専門スキルを発揮。調査 → 実装 → テストの一連の流れを自動実行。</p>
+      </div>
+    </div>
+
+    <h3 style="text-align:center; font-size:1.1rem; margin-bottom:24px; color:var(--text-secondary);" class="fade-in">代表的なチェーン例</h3>
+    <div class="chains-grid fade-in">
+      <div class="chain-card">
+        <div class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">BUG FIX</div>
+        <div class="chain-nodes">
+          <span class="chain-node" style="border-color: rgba(88,166,255,0.4); color: var(--c-investigation); background: rgba(88,166,255,0.08);">Scout</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(63,185,80,0.4); color: var(--c-implementation); background: rgba(63,185,80,0.08);">Builder</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Radar</span>
+        </div>
+      </div>
+      <div class="chain-card">
+        <div class="chain-label" style="background:rgba(63,185,80,0.12); color:#3fb950;">FEATURE</div>
+        <div class="chain-nodes">
+          <span class="chain-node" style="border-color: rgba(188,140,255,0.4); color: var(--c-orchestration); background: rgba(188,140,255,0.08);">Sherpa</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(63,185,80,0.4); color: var(--c-implementation); background: rgba(63,185,80,0.08);">Forge</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(63,185,80,0.4); color: var(--c-implementation); background: rgba(63,185,80,0.08);">Builder</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Radar</span>
+        </div>
+      </div>
+      <div class="chain-card">
+        <div class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">SECURITY</div>
+        <div class="chain-nodes">
+          <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Sentinel</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Probe</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(63,185,80,0.4); color: var(--c-implementation); background: rgba(63,185,80,0.08);">Builder</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Radar</span>
+        </div>
+      </div>
+      <div class="chain-card">
+        <div class="chain-label" style="background:rgba(255,110,180,0.12); color:#ff6eb4;">UI/UX</div>
+        <div class="chain-nodes">
+          <span class="chain-node" style="border-color: rgba(255,110,180,0.4); color: var(--c-uiux); background: rgba(255,110,180,0.08);">Vision</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(255,110,180,0.4); color: var(--c-uiux); background: rgba(255,110,180,0.08);">Muse</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(63,185,80,0.4); color: var(--c-implementation); background: rgba(63,185,80,0.08);">Artisan</span>
+          <span class="chain-arrow chain-pulse">→</span>
+          <span class="chain-node" style="border-color: rgba(255,110,180,0.4); color: var(--c-uiux); background: rgba(255,110,180,0.08);">Showcase</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== AGENT CATALOG ========== -->
+<section class="section" id="agents">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-label">Agent Catalog</div>
+      <h2 class="section-title">エージェントを探す</h2>
+      <p class="section-desc">99の専門エージェントをカテゴリやキーワードで絞り込めます</p>
+    </div>
+    <div class="catalog-controls fade-in">
+      <div class="catalog-search-row">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="エージェントを検索...（名前・説明・モットー）">
+        </div>
+        <div class="catalog-count" id="catalogCount"></div>
+      </div>
+      <div class="filter-bar" id="filterBar"></div>
+    </div>
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </div>
+</section>
+
+<!-- ========== PLATFORMS ========== -->
+<section class="section" id="platforms" style="background: var(--bg-section);">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-label">Platforms</div>
+      <h2 class="section-title">マルチプラットフォーム対応</h2>
+      <p class="section-desc">Markdown 形式のスキルファイルで、あらゆるAI CLIに対応</p>
+    </div>
+    <div class="platforms-grid fade-in">
+      <div class="platform-card">
+        <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-orchestration);">~/.claude</span>
+        <h3>Claude Code</h3>
+        <p>~/.claude/skills/ にクローンすれば準備完了。/Scout や /Nexus のようにスラッシュコマンドでエージェントを即座に呼び出せます。</p>
+      </div>
+      <div class="platform-card">
+        <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-investigation);">AGENTS</span>
+        <h3>Codex CLI</h3>
+        <p>AGENTS.md にスキルパスを記述して統合。Arena エージェントとの連携で codex exec 並列実行もサポートします。</p>
+      </div>
+      <div class="platform-card">
+        <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-implementation);">GEMINI</span>
+        <h3>Gemini CLI</h3>
+        <p>GEMINI.md にスキルパスを設定して統合。Sketch や Dot エージェントと組み合わせれば Gemini API 画像生成も活用できます。</p>
+      </div>
+    </div>
+    <div class="platform-note fade-in">
+      各スキルは標準的な Markdown（SKILL.md）で記述されており、任意のAI CLIツールで活用できます
+    </div>
+  </div>
+</section>
+
+<!-- ========== INSTALL ========== -->
+<section class="section" id="install">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-label">Quick Start</div>
+      <h2 class="section-title">今すぐ始める</h2>
+      <p class="section-desc">1コマンドでインストール完了</p>
+    </div>
+
+    <div class="install-block fade-in">
+      <div class="install-header">
+        <span>Terminal</span>
+        <button class="copy-btn" id="copyBtn" data-copy="git clone https://github.com/simota/agent-skills.git ~/.claude/skills">Copy</button>
+      </div>
+      <div class="install-code">
+        <span class="comment"># Claude Code の場合</span><br>
+        <span class="cmd">git clone https://github.com/simota/agent-skills.git ~/.claude/skills</span><br><br>
+        <span class="comment"># その他のプラットフォーム</span><br>
+        <span class="cmd">git clone https://github.com/simota/agent-skills.git /path/to/your/skills</span>
+      </div>
+    </div>
+
+    <div class="examples-grid fade-in">
+      <div class="example-card">
+        <div class="example-cmd">/Nexus ログイン機能を実装したい</div>
+        <div class="example-desc">Nexusがタスクを分析し、最適なエージェントチェーンを自動設計</div>
+      </div>
+      <div class="example-card">
+        <div class="example-cmd">/Scout このバグの原因を調査して</div>
+        <div class="example-desc">根本原因分析（RCA）で再現手順と修正箇所を特定</div>
+      </div>
+      <div class="example-card">
+        <div class="example-cmd">/Vision ダッシュボードをリデザイン</div>
+        <div class="example-desc">クリエイティブディレクションから実装まで自動連携</div>
+      </div>
+      <div class="example-card">
+        <div class="example-cmd">/Sentinel セキュリティ監査を実行</div>
+        <div class="example-desc">SAST/DAST両面からの脆弱性検出と修正コード生成</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <span class="logo-icon">A</span>
+          Agent Skills
+        </div>
+        <p>Open-source AI agent ecosystem<br>for modern software development.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/simota/agent-skills/blob/main/README_ja.md" target="_blank" rel="noopener">README (日本語)</a>
+          <a href="https://github.com/simota/agent-skills/blob/main/README.md" target="_blank" rel="noopener">README (English)</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://github.com/simota/agent-skills/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+          <a href="https://github.com/simota/agent-skills/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/simota/agent-skills/releases" target="_blank" rel="noopener">Changelog</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      MIT License &copy; simota
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ==========================================
+   Agent Data
+   ========================================== */
+const CATEGORIES = [
+  { id: 'all', name: 'すべて', color: '#58a6ff' },
+  { id: 'orchestration', name: 'オーケストレーション', color: '#bc8cff' },
+  { id: 'investigation', name: '調査・企画', color: '#58a6ff' },
+  { id: 'git', name: 'Git/PR管理', color: '#a371f7' },
+  { id: 'quality', name: '品質保証', color: '#f85149' },
+  { id: 'implementation', name: '実装', color: '#3fb950' },
+  { id: 'performance', name: 'パフォーマンス', color: '#39d2c0' },
+  { id: 'uiux', name: 'UI/UX', color: '#ff6eb4' },
+  { id: 'architecture', name: 'アーキテクチャ', color: '#d29922' },
+  { id: 'devops', name: 'DevOps・運用', color: '#7ee787' },
+  { id: 'data', name: 'データ', color: '#79c0ff' },
+  { id: 'docs', name: 'ドキュメント', color: '#a5d6ff' },
+  { id: 'growth', name: 'グロース・分析', color: '#e3b341' },
+  { id: 'creative', name: 'クリエイティブ', color: '#db6d28' },
+  { id: 'specialized', name: '特化ドメイン', color: '#6e40c9' },
+];
+
+const AGENTS = [
+  // Orchestration (10)
+  { name: 'Nexus', motto: 'The right agent at the right time changes everything.', description: 'チーム統括オーケストレーター。要求を分解し、最適なエージェントチェーンを自動設計', category: 'orchestration' },
+  { name: 'Sherpa', motto: "The mountain doesn't care about your deadline. Plan accordingly.", description: 'タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解', category: 'orchestration' },
+  { name: 'Architect', motto: 'Every agent is a possibility. Every SKILL.md is a birth certificate.', description: '新しいスキルエージェントを設計・生成するメタデザイナー', category: 'orchestration' },
+  { name: 'Rally', motto: 'One task, many hands. Parallel by design.', description: 'Agent Teams APIで複数Claudeインスタンスを並行実行するオーケストレーター', category: 'orchestration' },
+  { name: 'Titan', motto: "Give me a dream. I'll give you the product.", description: 'プロダクトライフサイクル統括。9フェーズでプロダクトを完走まで導く', category: 'orchestration' },
+  { name: 'Sigil', motto: 'Every project has patterns waiting to become power.', description: 'プロジェクト分析からClaude Codeスキルを動的生成', category: 'orchestration' },
+  { name: 'Gauge', motto: 'What gets measured gets managed. What gets audited gets normalized.', description: 'SKILL.md正規化監査・自己進化エージェント', category: 'orchestration' },
+  { name: 'Orbit', motto: "Give me a goal. I'll give you a runner that finishes.", description: '自律ループの完走スクリプト生成・運用契約設計', category: 'orchestration' },
+  { name: 'Darwin', motto: 'Ecosystems that cannot sense themselves cannot evolve themselves.', description: 'エコシステム自己進化オーケストレーター', category: 'orchestration' },
+  { name: 'Lore', motto: 'Forgotten lessons are lessons repeated.', description: 'エコシステム横断の知識統合・パターン抽出・伝播', category: 'orchestration' },
+
+  // Investigation (16)
+  { name: 'Scout', motto: 'Every bug has a story. I read the ending first.', description: 'バグ調査・根本原因分析（RCA）・再現手順の特定', category: 'investigation' },
+  { name: 'Ripple', motto: 'Every change sends ripples. Know where they land before you leap.', description: '変更前の影響分析。縦横両面からリスク評価', category: 'investigation' },
+  { name: 'Spark', motto: "The best feature is the one users didn't know they needed.", description: '新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案', category: 'investigation' },
+  { name: 'Compete', motto: 'Know your enemy. Know the market. Know yourself.', description: '競合調査・差別化ポイント特定・ポジショニング', category: 'investigation' },
+  { name: 'Voice', motto: 'Feedback is a gift. Analysis is unwrapping it.', description: 'ユーザーフィードバック収集・NPS調査設計・感情分析', category: 'investigation' },
+  { name: 'Researcher', motto: "Users don't lie. They just don't know what they want yet.", description: 'ユーザーリサーチ設計・ペルソナ/ジャーニーマップ作成', category: 'investigation' },
+  { name: 'Trace', motto: 'Every click tells a story. I read between the actions.', description: 'セッションリプレイ分析・行動パターン抽出・UX問題の物語化', category: 'investigation' },
+  { name: 'Canon', motto: "Standards are the accumulated wisdom of the industry.", description: 'OWASP/WCAG/OpenAPI/ISO標準への準拠度評価', category: 'investigation' },
+  { name: 'Lens', motto: 'See the code, not just search it.', description: 'コードベース理解・調査スペシャリスト', category: 'investigation' },
+  { name: 'Magi', motto: 'Three minds, one verdict. Consensus through diversity.', description: '3視点（論理・共感・実利）による多角的意思決定', category: 'investigation' },
+  { name: 'Cast', motto: 'Personas are not invented. They are discovered, born, and evolved.', description: 'ペルソナキャスティング・レジストリ管理・エージェント間同期', category: 'investigation' },
+  { name: 'Helm', motto: 'A ship without a helm has no direction at all.', description: '経営シミュレーション。SWOT/PESTLE/Porter分析', category: 'investigation' },
+  { name: 'Levy', motto: '納税は義務。でも、正しく知れば、賢く果たせる。', description: '日本の確定申告ガイダンスエージェント', category: 'investigation' },
+  { name: 'Accord', motto: 'Three teams, one truth.', description: 'ビジネス・開発・デザイン3チーム横断の統合仕様パッケージ', category: 'investigation' },
+  { name: 'Matrix', motto: 'Infinite combinations, finite resources.', description: '多次元軸の組み合わせ爆発を制御するユニバーサル分析', category: 'investigation' },
+  { name: 'Quest', motto: 'Every great game starts with a question the player cannot resist answering.', description: 'ゲーム企画・GDD構造化・バランス数理・経済設計', category: 'investigation' },
+
+  // Git (4)
+  { name: 'Guardian', motto: 'Every commit tells a story. Make it worth reading.', description: 'Git/PRの番人。変更分析、コミット粒度最適化、PR戦略', category: 'git' },
+  { name: 'Harvest', motto: 'Code writes history. I harvest its meaning.', description: 'PR情報収集・週報/月報/リリースノート自動生成', category: 'git' },
+  { name: 'Launch', motto: "Shipping is not the end. It's the beginning of accountability.", description: 'リリース管理。バージョニング・CHANGELOG・Feature Flag', category: 'git' },
+  { name: 'Rewind', motto: 'Every bug has a birthday. Every regression has a parent commit.', description: 'Git履歴調査・リグレッション根本原因分析・コード考古学', category: 'git' },
+
+  // Quality (12)
+  { name: 'Radar', motto: 'Untested code is unfinished code.', description: 'ユニット/統合テスト追加・フレーキーテスト修正・カバレッジ向上', category: 'quality' },
+  { name: 'Voyager', motto: "E2E tests are the user's advocate in CI/CD.", description: 'E2Eテスト専門。Playwright/Cypress/Page Object設計', category: 'quality' },
+  { name: 'Sentinel', motto: "Security is not a feature. It's a responsibility.", description: 'セキュリティ静的分析（SAST）・脆弱性パターン検出', category: 'quality' },
+  { name: 'Probe', motto: 'A system is only as secure as its weakest endpoint.', description: 'セキュリティ動的テスト（DAST）・ペネトレーションテスト', category: 'quality' },
+  { name: 'Judge', motto: 'Good code needs no defense. Bad code has no excuse.', description: 'codex reviewによるコードレビュー・PRレビュー自動化', category: 'quality' },
+  { name: 'Zen', motto: "Clean code is not written. It's rewritten.", description: 'リファクタリング・コード品質改善（動作は変えない）', category: 'quality' },
+  { name: 'Sweep', motto: 'Dead code is technical debt that earns no interest.', description: '不要ファイル検出・未使用コード特定・安全な削除提案', category: 'quality' },
+  { name: 'Warden', motto: 'Quality is not negotiable. Ship nothing unworthy.', description: 'V.A.I.R.E.品質基準の番人。リリース前評価・スコアカード', category: 'quality' },
+  { name: 'Attest', motto: 'Specs are truth. Code is evidence. Attest finds the gaps.', description: '仕様適合検証。BDDシナリオ生成、敵対的検証', category: 'quality' },
+  { name: 'Specter', motto: "The bugs you can't see are the ones that haunt you.", description: '並行性・非同期処理の「見えない」問題を狩る幽霊ハンター', category: 'quality' },
+  { name: 'Siege', motto: 'Break it before users do. Fix it before they notice.', description: '負荷テスト・契約テスト・カオスエンジニアリング', category: 'quality' },
+  { name: 'Void', motto: 'The best code is the code that was never written.', description: 'YAGNI検証・スコープカット・複雑性削減提案', category: 'quality' },
+
+  // Implementation (4)
+  { name: 'Builder', motto: 'Types are contracts. Code is a promise.', description: '型安全かつプロダクションレディな実装職人。TDD・CQRS対応', category: 'implementation' },
+  { name: 'Artisan', motto: 'Prototypes promise. Production delivers.', description: 'React/Vue/Svelteの本番フロントエンド実装職人', category: 'implementation' },
+  { name: 'Forge', motto: 'Done is better than perfect. Ship it, learn, iterate.', description: 'プロトタイプ作成。完璧より動くものを優先', category: 'implementation' },
+  { name: 'Arena', motto: 'Arena is the judge, not a player.', description: 'codex/gemini CLIを直接操り並列実装・評価・採用', category: 'implementation' },
+
+  // Performance (2)
+  { name: 'Bolt', motto: "Speed is a feature. Slowness is a bug you haven't fixed yet.", description: 'フロント・バック両面のパフォーマンス改善', category: 'performance' },
+  { name: 'Tuner', motto: 'A fast query is a happy user. A slow query is a lost customer.', description: 'DBパフォーマンス最適化。EXPLAIN ANALYZE・インデックス推奨', category: 'performance' },
+
+  // UI/UX (9)
+  { name: 'Vision', motto: 'Design is not how it looks. Design is how it feels.', description: 'クリエイティブディレクション。Design System構築', category: 'uiux' },
+  { name: 'Palette', motto: 'Usability is invisible when done right, painful when done wrong.', description: 'ユーザビリティ改善・認知負荷軽減・a11y対応', category: 'uiux' },
+  { name: 'Muse', motto: 'Tokens are the DNA of design. Mutate them with care.', description: 'デザイントークン管理・余白/角丸/シャドウの統一', category: 'uiux' },
+  { name: 'Flow', motto: 'Motion creates emotion. Animation breathes life.', description: 'UIアニメーション・ホバー効果・モーダル遷移', category: 'uiux' },
+  { name: 'Echo', motto: "I don't test interfaces. I feel what users feel.", description: 'ペルソナ検証。ユーザーになりきりUI混乱ポイントを報告', category: 'uiux' },
+  { name: 'Showcase', motto: 'Components without stories are components without context.', description: 'Storybookストーリー作成・カタログ管理・Visual Regression', category: 'uiux' },
+  { name: 'Prose', motto: 'Words are the smallest unit of design.', description: 'UXライティング。マイクロコピー・エラーメッセージ・ボイス&トーン', category: 'uiux' },
+  { name: 'Frame', motto: 'Design speaks in pixels. I translate it to code.', description: 'Figma MCPでデザインコンテキストを抽出・構造化', category: 'uiux' },
+  { name: 'Loom', motto: 'Every thread of context I weave makes creation more precise.', description: 'Figma Make最適化。Guidelines.md生成・プロンプト戦略', category: 'uiux' },
+
+  // Architecture (5)
+  { name: 'Atlas', motto: 'Dependencies are destiny. Map them before they map you.', description: '依存関係分析・循環参照検出・ADR/RFC作成', category: 'architecture' },
+  { name: 'Horizon', motto: "Today's innovation is tomorrow's legacy code.", description: '非推奨ライブラリ検出・ネイティブAPI置換・移行計画', category: 'architecture' },
+  { name: 'Gateway', motto: 'APIs are promises to the future. Design them like contracts.', description: 'API設計・OpenAPI仕様生成・バージョニング戦略', category: 'architecture' },
+  { name: 'Grove', motto: 'A well-structured repository is a well-structured mind.', description: 'リポジトリ構造の設計・最適化・監査', category: 'architecture' },
+  { name: 'Stratum', motto: 'Architecture without visualization is architecture without communication.', description: 'C4モデルによるアーキテクチャモデリング・Structurizr DSL', category: 'architecture' },
+
+  // DevOps (9)
+  { name: 'Anvil', motto: 'The terminal is the first interface. Make it unforgettable.', description: 'Terminal UI構築・CLI開発支援・開発ツール統合', category: 'devops' },
+  { name: 'Gear', motto: "The best CI/CD is the one nobody thinks about.", description: '依存関係管理・CI/CD最適化・Docker設定・運用監視', category: 'devops' },
+  { name: 'Scaffold', motto: 'Infrastructure is the silent foundation of every dream.', description: 'クラウドインフラ（Terraform/Pulumi）・Docker Compose', category: 'devops' },
+  { name: 'Hearth', motto: 'Your tools should feel like home.', description: '個人開発環境の設定職人。zsh/tmux/neovim/ghostty等', category: 'devops' },
+  { name: 'Hone', motto: 'A sharp blade cuts clean. A sharp config cuts friction.', description: 'AI CLI設定の監査・最適化（Claude Code/Codex/Gemini）', category: 'devops' },
+  { name: 'Latch', motto: 'Every event is an opportunity. Hook it before it slips away.', description: 'Claude Codeフック管理。ワークフロー自動化・品質ゲート', category: 'devops' },
+  { name: 'Pipe', motto: 'Workflows are pipelines. Pipelines are promises.', description: 'GitHub Actionsワークフローの専門家。Reusable Workflow設計', category: 'devops' },
+  { name: 'Triage', motto: 'In chaos, clarity is the first act of healing.', description: '障害対応・影響範囲特定・復旧手順策定・ポストモーテム', category: 'devops' },
+  { name: 'Mend', motto: 'Known failures deserve known fixes.', description: '既知障害パターンの自動修復。runbook実行・段階的検証', category: 'devops' },
+
+  // Data (2)
+  { name: 'Schema', motto: 'A schema is a contract with the future.', description: 'DBスキーマ設計・マイグレーション作成・ER図設計', category: 'data' },
+  { name: 'Stream', motto: 'Data flows like water. My job is to build the pipes.', description: 'ETL/ELTパイプライン設計。Kafka/Airflow/dbt対応', category: 'data' },
+
+  // Docs (4)
+  { name: 'Scribe', motto: 'A specification is a contract between vision and reality.', description: 'PRD/SRS/設計書・実装チェックリスト・テスト仕様書を作成', category: 'docs' },
+  { name: 'Quill', motto: 'Code tells computers what to do. Documentation tells humans why.', description: 'JSDoc/TSDoc追加・README更新・型定義改善', category: 'docs' },
+  { name: 'Morph', motto: 'A document is timeless. Its format is temporary.', description: 'ドキュメントフォーマット変換（Markdown↔Word/PDF/HTML）', category: 'docs' },
+  { name: 'Prism', motto: 'One source, many lights.', description: 'NotebookLMステアリングプロンプト設計コンサルタント', category: 'docs' },
+
+  // Growth (4)
+  { name: 'Growth', motto: 'Traffic without conversion is just expensive vanity.', description: 'SEO/SMO/CRO。meta/OGP/JSON-LD・CTA改善', category: 'growth' },
+  { name: 'Retain', motto: 'Acquisition is expensive. Retention is profitable.', description: 'リテンション施策・再エンゲージメント・チャーン予防', category: 'growth' },
+  { name: 'Pulse', motto: 'What gets measured gets managed.', description: 'KPI定義・トラッキングイベント設計・ダッシュボード仕様', category: 'growth' },
+  { name: 'Experiment', motto: 'Every hypothesis deserves a fair trial.', description: 'A/Bテスト設計・サンプルサイズ計算・フィーチャーフラグ', category: 'growth' },
+
+  // Creative (10)
+  { name: 'Canvas', motto: 'A diagram is worth a thousand lines of documentation.', description: 'Mermaid図/ASCIIアート/draw.ioでコード・設計を可視化', category: 'creative' },
+  { name: 'Sketch', motto: 'From words to worlds, prompt to pixel.', description: 'Gemini APIを使用したAI画像生成コードの作成', category: 'creative' },
+  { name: 'Realm', motto: "Every company tells a story — let the agents write theirs.", description: 'ゲーミフィケーションでエージェントエコシステムを可視化', category: 'creative' },
+  { name: 'Dot', motto: 'Every pixel is a decision. Every constraint is a creative opportunity.', description: 'ピクセルアート専門。SVG/Canvas/Phaser 3/CSSで生成', category: 'creative' },
+  { name: 'Clay', motto: 'From prompt to polygon, every vertex earns its place.', description: 'AI 3Dモデル生成。Meshy/Tripo/Hunyuan3D対応', category: 'creative' },
+  { name: 'Tone', motto: 'Sound is the invisible architecture of emotion.', description: 'ゲームオーディオ生成。SFX・BGM・Voice・Ambient', category: 'creative' },
+  { name: 'Director', motto: 'A demo that moves hearts moves products.', description: 'Playwright E2Eを活用した機能デモ動画の自動撮影', category: 'creative' },
+  { name: 'Reel', motto: 'The terminal is a stage. Every keystroke is a performance.', description: 'ターミナル録画・CLIデモ動画生成（VHS/asciinema）', category: 'creative' },
+  { name: 'Saga', motto: 'Every product has a story worth telling.', description: 'ナラティブデザイン。顧客体験の物語化・シナリオストーリー', category: 'creative' },
+  { name: 'Lyric', motto: 'From theme to anthem, verse by verse.', description: 'Suno AI向けソングライティング。メタタグ付き歌詞生成', category: 'creative' },
+
+  // Specialized (8)
+  { name: 'Oracle', motto: 'AI is only as good as its architecture.', description: 'AI/ML設計・評価。プロンプト/RAG/LLMアプリ・安全ガードレール', category: 'specialized' },
+  { name: 'Beacon', motto: "You can't fix what you can't see.", description: '可観測性・SRE。SLO/SLI設計・分散トレーシング・アラート', category: 'specialized' },
+  { name: 'Relay', motto: 'Every message finds its way.', description: 'メッセージング統合・Bot開発・リアルタイム通信', category: 'specialized' },
+  { name: 'Polyglot', motto: 'Every user deserves their mother tongue.', description: '国際化（i18n）・ローカライズ。Intl API・翻訳キー管理', category: 'specialized' },
+  { name: 'Navigator', motto: 'The browser is a stage. Every click is a scene.', description: 'Playwright/Chrome DevToolsによるブラウザ操作自動化', category: 'specialized' },
+  { name: 'Aether', motto: 'The stage is live. The avatar breathes. The audience connects.', description: 'AITuberフルスタック・オーケストレーター。配信パイプライン構築', category: 'specialized' },
+  { name: 'Breach', motto: 'Think like an attacker. Defend like an engineer.', description: 'レッドチームエンジニアリング。攻撃シナリオ・脅威モデリング', category: 'specialized' },
+  { name: 'Vigil', motto: 'Detection is the first line of defense.', description: 'Detection Engineering。Sigma/YARAルール・脅威ハンティング', category: 'specialized' },
+];
+
+/* ==========================================
+   Utility
+   ========================================== */
+function getCategoryColor(catId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  return cat ? cat.color : '#58a6ff';
+}
+function getCategoryName(catId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  return cat ? cat.name : catId;
+}
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+/* ==========================================
+   Nav
+   ========================================== */
+const nav = document.getElementById('nav');
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+navToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+/* ==========================================
+   Particles (CSS-only approach via JS creation)
+   ========================================== */
+(function initParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['rgba(188,140,255,0.4)', 'rgba(88,166,255,0.4)', 'rgba(255,110,180,0.3)', 'rgba(63,185,80,0.3)'];
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 2 + Math.random() * 3;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}%;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration:${8 + Math.random() * 16}s;
+      animation-delay:${Math.random() * 10}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ==========================================
+   Count-up Animation
+   ========================================== */
+function animateCountUp() {
+  document.querySelectorAll('.stat-value[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1500;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+/* ==========================================
+   Intersection Observer — Fade In + Count
+   ========================================== */
+let countAnimated = false;
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      if (!countAnimated && entry.target.closest('.hero')) {
+        countAnimated = true;
+        animateCountUp();
+      }
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Also observe hero for count-up
+const heroSection = document.querySelector('.hero');
+if (heroSection) {
+  const heroObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !countAnimated) {
+      countAnimated = true;
+      animateCountUp();
+    }
+  }, { threshold: 0.3 });
+  heroObs.observe(heroSection);
+}
+
+/* ==========================================
+   Catalog — Filter & Search
+   ========================================== */
+let activeCategory = 'all';
+let searchQuery = '';
+let debounceTimer = null;
+
+function renderFilterBar() {
+  const bar = document.getElementById('filterBar');
+  bar.innerHTML = CATEGORIES.map(cat => {
+    const color = cat.color;
+    const isAll = cat.id === 'all';
+    return `<button class="filter-btn${activeCategory === cat.id ? ' active' : ''}"
+      data-cat="${cat.id}"
+      style="${activeCategory === cat.id
+        ? `background:${color}; color:#fff; border-color:${color};`
+        : ''}">
+      ${cat.name}${!isAll ? ` <span style="opacity:0.7">${AGENTS.filter(a => a.category === cat.id).length}</span>` : ''}
+    </button>`;
+  }).join('');
+  bar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.cat;
+      renderFilterBar();
+      renderCatalog();
+    });
+  });
+}
+
+function renderCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  const q = searchQuery.toLowerCase();
+  const filtered = AGENTS.filter(a => {
+    const catMatch = activeCategory === 'all' || a.category === activeCategory;
+    const textMatch = !q || a.name.toLowerCase().includes(q) || a.description.toLowerCase().includes(q) || a.motto.toLowerCase().includes(q);
+    return catMatch && textMatch;
+  });
+
+  document.getElementById('catalogCount').textContent = `${filtered.length} / ${AGENTS.length} agents`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="catalog-empty">該当するエージェントが見つかりません</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(a => {
+    const color = getCategoryColor(a.category);
+    return `<div class="agent-card" style="--card-color:${color}">
+      <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:${color};border-radius:3px 0 0 3px;"></div>
+      <div class="agent-name">${escapeHtml(a.name)}</div>
+      <div class="agent-motto">"${escapeHtml(a.motto)}"</div>
+      <div class="agent-desc">${escapeHtml(a.description)}</div>
+      <span class="agent-badge" style="background:${color}18; color:${color}; border:1px solid ${color}33;">${getCategoryName(a.category)}</span>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    searchQuery = e.target.value.trim();
+    renderCatalog();
+  }, 200);
+});
+
+renderFilterBar();
+renderCatalog();
+
+/* ==========================================
+   Copy Button
+   ========================================== */
+document.getElementById('copyBtn').addEventListener('click', function() {
+  const text = this.dataset.copy;
+  navigator.clipboard.writeText(text).then(() => {
+    this.textContent = 'Copied!';
+    this.classList.add('copied');
+    setTimeout(() => {
+      this.textContent = 'Copy';
+      this.classList.remove('copied');
+    }, 2000);
+  });
+});
+</script>
+</body>
+</html>
