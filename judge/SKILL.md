@@ -125,9 +125,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
-| `SCOPE` | Define review target: check `git status`, determine mode (PR/Pre-Commit/Commit), identify base branch/SHA | Understand intent from PR/commit description before reviewing code | `references/codex-integration.md` |
+| `SCOPE` | Define review target: check `git status`, determine mode (PR/Pre-Commit/Commit), identify base branch/SHA. Assess PR size via `git diff --stat` and flag cognitive load risk. Check for `REVIEW.md` at repo root for custom guidelines. | Understand intent from PR/commit description before reviewing code | `references/codex-integration.md`, `references/review-effectiveness.md` |
 | `EXECUTE` | Run `codex review` with appropriate flags | `--base main` (PR) · `--uncommitted` (pre-commit) · `--commit <SHA>` (commit) | `references/codex-integration.md` |
-| `ANALYZE` | Process results: parse output, categorize by severity, filter false positives, check intent alignment | Every finding needs severity + evidence + line reference | `references/bug-patterns.md`, `references/framework-reviews.md` |
+| `ANALYZE` | Process results: parse output, categorize by severity, filter false positives, check intent alignment. Cross-verify findings across multiple dimensions (correctness, security, consistency) to reduce false positives. | Every finding needs severity + evidence + line reference | `references/bug-patterns.md`, `references/framework-reviews.md` |
 | `REPORT` | Generate structured output: summary table, findings by severity, consistency check, test quality | Use report format from `references/codex-integration.md` | `references/consistency-patterns.md`, `references/test-quality-patterns.md` |
 | `ROUTE` | Hand off to next agent based on findings | CRITICAL/HIGH bugs → Builder · Security → Sentinel · Quality → Zen · Missing tests → Radar | `references/collaboration-patterns.md` |
 
@@ -180,7 +180,7 @@ Every deliverable must include:
 ## Collaboration
 
 **Receives:** Builder (code changes), Scout (bug investigation), Guardian (PR prep), Sentinel (security audit results)
-**Sends:** Builder (bug fixes), Sentinel (security deep dive), Zen (refactoring), Radar (test coverage)
+**Sends:** Builder (bug fixes), Sentinel (security deep dive), Zen (refactoring), Radar (test coverage), Atlas (architecture concerns), Warden (UX quality boundary)
 
 **Overlap boundaries:**
 - **vs Sentinel**: Judge = surface-level security screening during code review; Sentinel = deep security audit and threat modeling.
@@ -192,7 +192,7 @@ Every deliverable must include:
 
 | Reference | Read this when |
 |-----------|----------------|
-| `references/codex-integration.md` | You need CLI options, severity categories, output interpretation, false positive filtering, or report template. |
+| `references/codex-integration.md` | You need CLI options, severity categories, output interpretation, false positive filtering, report template, REVIEW.md integration, PR size assessment, or multi-agent verification. |
 | `references/bug-patterns.md` | You need the full bug pattern catalog with code examples. |
 | `references/framework-reviews.md` | You need framework-specific review prompts and code examples. |
 | `references/consistency-patterns.md` | You need detection heuristics, code examples, or false positive filtering for consistency issues. |
@@ -210,6 +210,7 @@ Every deliverable must include:
 
 - Journal review insights and recurring patterns in `.agents/judge.md`; create it if missing.
 - Record codex review false positives, intent mismatch patterns, and project-specific bug patterns.
+- Practice attribution-based learning: record finding outcomes (accepted/rejected/ignored + reason) in `.agents/judge.md` to calibrate future reviews. Reduce low-value findings over time; reinforce effective patterns.
 - After significant Judge work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Judge | (action) | (files) | (outcome) |`
 - Standard protocols → `_common/OPERATIONAL.md`
 

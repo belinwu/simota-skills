@@ -1,168 +1,168 @@
 # Code Review Effectiveness & Metrics
 
-> レビュー有効性の測定、認知負荷と最適 PR サイズ、KPI 設計、レビュアー疲労の研究
+> Review effectiveness measurement, cognitive load and optimal PR size, KPI design, and reviewer fatigue research.
 
-## 1. レビュー有効性のキーメトリクス
+## 1. Key Metrics for Review Effectiveness
 
-### 品質メトリクス
+### Quality Metrics
 
-| メトリクス | 説明 | 目標値 |
-|-----------|------|--------|
-| **Defect Escape Rate** | レビュー通過後に発見されたバグの割合 | < 5% |
-| **Review Coverage** | レビューされたコード変更の割合 | > 95% |
-| **False Positive Rate** | 誤った指摘の割合 | < 20% |
-| **Actionable Finding Rate** | 実際に修正に繋がった指摘の割合 | > 60% |
-| **Severity Accuracy** | severity 分類の妥当性 | > 80% |
+| Metric | Description | Target |
+|--------|-------------|--------|
+| **Defect Escape Rate** | Percentage of bugs found after passing review | < 5% |
+| **Review Coverage** | Percentage of code changes reviewed | > 95% |
+| **False Positive Rate** | Percentage of incorrect findings | < 20% |
+| **Actionable Finding Rate** | Percentage of findings that led to actual fixes | > 60% |
+| **Severity Accuracy** | Validity of severity classifications | > 80% |
 
-### 効率メトリクス
+### Efficiency Metrics
 
-| メトリクス | 説明 | 目標値 |
-|-----------|------|--------|
-| **Review Turnaround Time** | PR 作成からレビュー完了まで | < 24時間 |
-| **Time to First Comment** | PR 作成から最初のコメントまで | < 4時間 |
-| **Review Iterations** | 承認までのラウンドトリップ回数 | ≤ 2回 |
-| **PR Rejection Rate** | リジェクトされた PR の割合 | 10-20% |
-| **Lines Reviewed per Hour** | 時間あたりのレビュー行数 | 200-400 LOC |
+| Metric | Description | Target |
+|--------|-------------|--------|
+| **Review Turnaround Time** | Time from PR creation to review completion | < 24 hours |
+| **Time to First Comment** | Time from PR creation to first comment | < 4 hours |
+| **Review Iterations** | Number of round-trips until approval | ≤ 2 |
+| **PR Rejection Rate** | Percentage of rejected PRs | 10–20% |
+| **Lines Reviewed per Hour** | Lines of code reviewed per hour | 200–400 LOC |
 
-### プロセスメトリクス
+### Process Metrics
 
-| メトリクス | 説明 | 目標値 |
-|-----------|------|--------|
-| **PR Size** | 変更行数（追加+削除） | < 400 LOC |
-| **Comment Density** | 変更行数あたりのコメント数 | 適切（多すぎず少なすぎず） |
-| **Review Participation** | レビューに参加するチームメンバーの割合 | > 80% |
-| **Knowledge Distribution** | レビュー担当の分散度 | Gini ≤ 0.4 |
-
----
-
-## 2. 認知負荷と最適 PR サイズ
-
-### Cisco 研究 + 2025年 LinearB 分析
-
-```
-Cisco Study (経年的に確認された知見):
-  - 200-400 LOC が最適レビューサイズ
-  - 60-90分が1セッションの最適時間
-  - 400 LOC/時間を超えるとバグ検出率が急落
-
-LinearB 2025 (610万 PR、3,000チーム分析):
-  - エリートチームの平均: 219 LOC/PR
-  - この数値は Cisco の最適範囲と一致
-```
-
-### 認知負荷の崖（Cognitive Load Cliff）
-
-```
-レビュー行数と欠陥検出率の関係:
-
-LOC/hr  | 欠陥検出率 | 状態
---------|-----------|------
-< 200   | 高        | 最適ゾーン
-200-400 | 中-高     | 推奨範囲
-400-450 | 急落開始  | 警告ゾーン
-> 450   | 13% のみ  | 87% の欠陥を見逃す
-
-原因: ワーキングメモリが約4チャンク → 認知容量を超過
-```
-
-### PR サイズガイドライン
-
-| サイズ | LOC | レビュー深度 | 推奨アクション |
-|--------|-----|-----------|------------|
-| **Small** | < 100 | 深い | 即座にレビュー |
-| **Medium** | 100-400 | 適切 | 標準レビュー |
-| **Large** | 400-1000 | 低下開始 | 分割を推奨 |
-| **XL** | > 1000 | 形骸化リスク | 分割を強制 |
+| Metric | Description | Target |
+|--------|-------------|--------|
+| **PR Size** | Lines changed (additions + deletions) | < 400 LOC |
+| **Comment Density** | Comments per lines changed | Appropriate (neither too many nor too few) |
+| **Review Participation** | Percentage of team members participating in reviews | > 80% |
+| **Knowledge Distribution** | Evenness of review assignment distribution | Gini ≤ 0.4 |
 
 ---
 
-## 3. レビュアー疲労の研究
+## 2. Cognitive Load and Optimal PR Size
 
-### 疲労の原因と影響
-
-| 原因 | 影響 | 研究知見 |
-|------|------|---------|
-| **決定疲労** | 後半の判断品質低下 | 短い/大きい/複雑な変更をスキップ |
-| **コンテキストスイッチ** | 集中力の断片化 | レビュー効率 30% 低下 |
-| **レビュー不安** | 批判への恐れ/プレッシャー | Springer 2024 研究で実証 |
-| **大量 PR 負荷** | バーンアウト | Heroing パターンの原因 |
-
-### 疲労緩和策
+### Cisco Study + 2025 LinearB Analysis
 
 ```
-Judge による緩和:
-  1. 自動レビューで基本チェックを肩代わり
-     → 人間は高次判断に集中
-  2. severity 分類で優先順位を明確化
-     → 「全部見る」必要がない
-  3. false positive フィルタリング
-     → ノイズ削減でレビュー負荷軽減
-  4. PR サマリ自動生成
-     → コンテキスト理解の加速
+Cisco Study (findings confirmed over time):
+  - 200-400 LOC is the optimal review size
+  - 60-90 minutes is the optimal session duration
+  - Bug detection rate drops sharply beyond 400 LOC/hour
 
-組織的緩和:
-  1. レビューローテーションの導入
-  2. 1セッション 60分以内の制限
-  3. 小さな PR の文化を醸成
-  4. レビュー負荷の可視化とバランシング
+LinearB 2025 (6.1M PRs, 3,000 teams analyzed):
+  - Elite team average: 219 LOC/PR
+  - This aligns with Cisco's optimal range
 ```
+
+### Cognitive Load Cliff
+
+```
+Relationship between lines reviewed and defect detection rate:
+
+LOC/hr  | Detection rate | State
+--------|---------------|------
+< 200   | High          | Optimal zone
+200-400 | Medium-High   | Recommended range
+400-450 | Sharp decline | Warning zone
+> 450   | Only 13%      | 87% of defects missed
+
+Cause: Working memory capacity is ~4 chunks → cognitive capacity exceeded
+```
+
+### PR Size Guidelines
+
+| Size | LOC | Review depth | Recommended action |
+|------|-----|-------------|-------------------|
+| **Small** | < 100 | Deep | Review immediately |
+| **Medium** | 100–400 | Adequate | Standard review |
+| **Large** | 400–1000 | Declining | Recommend splitting |
+| **XL** | > 1000 | Perfunctory risk | Strongly recommend splitting |
 
 ---
 
-## 4. DX Core 4 フレームワーク
+## 3. Reviewer Fatigue Research
 
-### 統合的な開発者生産性測定
+### Causes and Effects of Fatigue
+
+| Cause | Effect | Research finding |
+|-------|--------|-----------------|
+| **Decision Fatigue** | Declining judgment quality in later portions | Short/large/complex changes get skipped |
+| **Context Switching** | Fragmented concentration | Review efficiency drops 30% |
+| **Review Anxiety** | Fear of criticism / pressure | Demonstrated in Springer 2024 study |
+| **High PR Volume** | Burnout | Root cause of the Heroing pattern |
+
+### Fatigue Mitigation
 
 ```
-DX Core 4 = DORA + SPACE + DevEx の統合
+Mitigation by Judge:
+  1. Automated review handles basic checks
+     → Humans focus on higher-order judgment
+  2. Severity classification clarifies priorities
+     → No need to "review everything"
+  3. False positive filtering
+     → Noise reduction lowers review burden
+  4. Automated PR summary generation
+     → Accelerates context comprehension
 
-4つの軸:
-  Speed      — デプロイ頻度、リードタイム
-  Effectiveness — 開発者体験、フロー状態
-  Quality    — 変更失敗率、欠陥密度
-  Impact     — ビジネスアウトカム
-
-コードレビューは Quality と Effectiveness の交差点:
-  - 品質ゲートとしての機能（Quality）
-  - 開発者フローを阻害しない設計（Effectiveness）
+Organizational mitigation:
+  1. Introduce review rotation
+  2. Limit sessions to 60 minutes
+  3. Foster a culture of small PRs
+  4. Visualize and balance review load
 ```
 
 ---
 
-## 5. Judge のメトリクス適用
+## 4. DX Core 4 Framework
 
-### 自動計測可能なメトリクス
-
-```
-Judge が自動計測できるもの:
-  □ PR サイズ（LOC）→ 大きい PR に警告
-  □ 指摘数と severity 分布
-  □ false positive 推定率（パターンベース）
-  □ intent alignment スコア
-  □ consistency issue 数
-  □ test quality スコア
-
-Judge が計測できないもの（組織レベル）:
-  × レビューターンアラウンドタイム
-  × defect escape rate
-  × レビュー参加率
-  × 修正反映率
-```
-
-### PR サイズ警告ルール
+### Integrated Developer Productivity Measurement
 
 ```
-Judge レポートでの PR サイズ警告:
+DX Core 4 = DORA + SPACE + DevEx integrated
+
+4 axes:
+  Speed        — Deploy frequency, lead time
+  Effectiveness — Developer experience, flow state
+  Quality      — Change failure rate, defect density
+  Impact       — Business outcomes
+
+Code review sits at the intersection of Quality and Effectiveness:
+  - Quality gate function (Quality)
+  - Design that does not disrupt developer flow (Effectiveness)
+```
+
+---
+
+## 5. Judge's Metrics Application
+
+### Auto-Measurable Metrics
+
+```
+Metrics Judge can measure automatically:
+  □ PR size (LOC) → warn on large PRs
+  □ Finding count and severity distribution
+  □ Estimated false positive rate (pattern-based)
+  □ Intent alignment score
+  □ Consistency issue count
+  □ Test quality score
+
+Metrics Judge cannot measure (organization-level):
+  × Review turnaround time
+  × Defect escape rate
+  × Review participation rate
+  × Fix adoption rate
+```
+
+### PR Size Warning Rules
+
+```
+PR size warnings in Judge reports:
 
 if (totalLOC > 1000):
-  ⚠️ "PR が 1000 LOC を超えています。
-      レビュー品質が著しく低下する可能性があります。
-      分割を強く推奨します。"
+  ⚠️ "PR exceeds 1000 LOC.
+      Review quality may degrade significantly.
+      Strongly recommend splitting."
 
 elif (totalLOC > 400):
-  ℹ️ "PR が 400 LOC を超えています。
-      レビュアーの認知負荷に配慮し、
-      可能であれば分割を検討してください。"
+  ℹ️ "PR exceeds 400 LOC.
+      Consider splitting to reduce
+      reviewer cognitive load."
 ```
 
 **Source:** [PropelCode: Measuring Code Review Effectiveness](https://www.propelcode.ai/learn/measuring-code-review-effectiveness) · [Rishi Baldawa: Cognitive Load Cliff in Code Review](https://rishi.baldawa.com/posts/pr-throughput/cognitive-load-cliff/) · [Arxiv: Rethinking Code Review Workflows with LLM](https://arxiv.org/html/2505.16339v1) · [Springer: Code Review Anxiety](https://link.springer.com/article/10.1007/s10664-024-10550-9) · [Qodo: Code Quality Metrics 2026](https://www.qodo.ai/blog/code-quality-metrics-2026/)

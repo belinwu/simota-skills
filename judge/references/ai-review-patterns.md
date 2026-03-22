@@ -1,172 +1,172 @@
 # AI Code Review Patterns & Tool Landscape (2026)
 
-> 5大 AI レビューパターン、ツール比較、Specialist-Agent アーキテクチャ、Judge への適用
+> 5 major AI review patterns, tool comparison, Specialist-Agent architecture, and application to Judge.
 
-## 1. 2026年の AI コードレビュー現状
+## 1. AI Code Review in 2026
 
-### 統計
+### Statistics
 
 ```
-- 41% のコミットが AI アシスト（2026年初頭）
-- コード生成速度 vs レビュー能力の 40% 品質ギャップ
-- AI レビューツールでバグ検出精度 42-48% 向上
-- レビュー時間 40-60% 短縮
-- 70%+ の開発者が毎週 AI コーディングツールを使用
-- 48% のリーダーがコード品質維持の困難さを報告
+- 41% of commits are AI-assisted (early 2026)
+- 40% quality gap between code generation speed and review capacity
+- AI review tools improve bug detection accuracy by 42-48%
+- Review time reduced by 40-60%
+- 70%+ of developers use AI coding tools weekly
+- 48% of leaders report difficulty maintaining code quality
 ```
 
 ---
 
-## 2. 5大 AI レビューパターン
+## 2. 5 Major AI Review Patterns
 
 ### Pattern 1: Context-First Review
 
 ```
-コンテキストをレビューの必須入力として扱う
+Treat context as a mandatory input for reviews.
 
-事前収集:
-  - クロスリポジトリ使用パターン
-  - 過去の PR 修正履歴
-  - シニアエンジニアのコメント履歴
-  - アーキテクチャドキュメント
-  - チケット要件
+Pre-collection:
+  - Cross-repository usage patterns
+  - Past PR fix history
+  - Senior engineer comment history
+  - Architecture documentation
+  - Ticket requirements
 
-効果:
-  「どこで呼ばれている？」→「正しい設計か？」への質問レベル向上
-  PR 説明の過剰記述が不要に
-  AI サジェスションのハルシネーション削減
+Benefits:
+  Elevates questions from "Where is this called?" to "Is this the right design?"
+  Eliminates the need for overly detailed PR descriptions
+  Reduces AI suggestion hallucinations
 ```
 
-**Judge での適用:** PR description + commit message から intent を抽出し、コードとの整合性を検証（既存の Intent Alignment Check を強化）
+**Application in Judge:** Extract intent from PR description + commit message and verify alignment with code changes (strengthens the existing Intent Alignment Check).
 
 ### Pattern 2: Severity-Driven Review
 
 ```
-全指摘に severity を付与し、重要度で階層化
+Assign severity to all findings and layer by importance.
 
-分類:
-  🔴 Action Required: マージをブロック
-  🟡 Recommended: 対応すべき
-  🟢 Minor Suggestion: 任意
+Classification:
+  🔴 Action Required: Blocks merge
+  🟡 Recommended: Should be addressed
+  🟢 Minor Suggestion: Optional
 
-効果:
-  「スタイルの nit にクリティカルバグが埋もれる」問題を解消
-  チームのデプロイメントポリシーが明確化
+Benefits:
+  Eliminates the problem of critical bugs buried under style nits
+  Clarifies team deployment policies
 ```
 
-**Judge での適用:** 既存の CRITICAL/HIGH/MEDIUM/LOW/INFO を活用。CRITICAL/HIGH のみレポート上位に配置。
+**Application in Judge:** Leverages existing CRITICAL/HIGH/MEDIUM/LOW/INFO levels. Only CRITICAL/HIGH are placed at the top of the report.
 
 ### Pattern 3: Specialist-Agent Review
 
 ```
-1つの汎用モデルではなく、専門エージェントを使用
+Use specialized agents instead of a single general-purpose model.
 
-エージェント構成:
-  🔍 Correctness Agent: ロジックエラー、バグ
-  🔒 Security Agent: 脆弱性、シークレット
-  ⚡ Performance Agent: N+1、メモリリーク
-  📊 Observability Agent: ログ、メトリクス
-  📋 Requirements Agent: 仕様適合
-  📐 Standards Agent: コーディング規約
+Agent composition:
+  🔍 Correctness Agent: Logic errors, bugs
+  🔒 Security Agent: Vulnerabilities, secrets
+  ⚡ Performance Agent: N+1, memory leaks
+  📊 Observability Agent: Logging, metrics
+  📋 Requirements Agent: Specification compliance
+  📐 Standards Agent: Coding conventions
 
-コーディネーターが結果を統合・重複排除
+A coordinator integrates and deduplicates results.
 ```
 
-**Judge での適用:** Judge → Sentinel（セキュリティ）→ Bolt（パフォーマンス）→ Radar（テスト）のパイプラインで実現。
+**Application in Judge:** Realized through the Judge → Sentinel (security) → Bolt (performance) → Radar (testing) pipeline.
 
 ### Pattern 4: Attribution-Based Review
 
 ```
-全指摘のライフサイクルを追跡
+Track the full lifecycle of every finding.
 
-追跡データ:
-  - 指摘 ID
-  - 受入 / 修正 / 却下 / 無視
-  - 修正後の品質変化
-  - false positive レート
+Tracked data:
+  - Finding ID
+  - Accepted / Fixed / Rejected / Ignored
+  - Quality change after fix
+  - False positive rate
 
-効果:
-  低価値な指摘の自動削減
-  有効な指摘パターンの強化
-  チームのベストプラクティスの有機的発見
+Benefits:
+  Automatic reduction of low-value findings
+  Reinforcement of effective finding patterns
+  Organic discovery of team best practices
 ```
 
-**Judge での適用:** `.agents/judge.md` に false positive パターンを記録し、次回以降のフィルタリングに活用。
+**Application in Judge:** Record false positive patterns in `.agents/judge.md` and use them for filtering in subsequent reviews.
 
 ### Pattern 5: Flow-to-Fix Review
 
 ```
-指摘の発見と修正を統合（コンテキストスイッチ排除）
+Integrate finding discovery with fix implementation (eliminate context switches).
 
-フロー:
-  1. 指摘を構造化データとして生成
-  2. AI コーディングアシスタントに直接送信
-  3. 修正パッチを生成
-  4. 修正が問題を解決するか検証
-  5. 開発者が承認・適用
+Flow:
+  1. Generate findings as structured data
+  2. Send directly to AI coding assistant
+  3. Generate fix patch
+  4. Verify fix resolves the issue
+  5. Developer approves and applies
 
-効果:
-  修正コスト最小化 → より多くの指摘が対処される
-  「指摘→修正→検証」のタイトループ
+Benefits:
+  Minimized fix cost → more findings actually get addressed
+  Tight "find → fix → verify" loop
 ```
 
-**Judge での適用:** 指摘に remediation agent（Builder/Sentinel/Zen/Radar）を付与し、修正フローへシームレスに接続。
+**Application in Judge:** Attach a remediation agent (Builder/Sentinel/Zen/Radar) to each finding, enabling seamless connection to the fix flow.
 
 ---
 
-## 3. AI コードレビューツールランドスケープ
+## 3. AI Code Review Tool Landscape
 
-| ツール | 特徴 | コンテキスト | セキュリティ |
-|--------|------|------------|------------|
-| **Qodo** | 15+ PR ワークフロー、マルチリポ | コードベース全体 | OWASP、シークレット |
-| **CodeRabbit** | 最大普及（200万リポ）、インライン | PR 差分 | 基本的 |
-| **Greptile** | コードベースグラフ、クロスファイル | 依存関係グラフ | 中程度 |
-| **GitHub Copilot** | 高速、GitHub ネイティブ | PR 差分 | 基本的 |
-| **Sourcery** | Python 特化、リファクタリング | ファイルレベル | 限定的 |
-| **Codex Review** | CLI ベース、ローカル実行 | コミット/PR差分 | 中程度 |
+| Tool | Features | Context | Security |
+|------|----------|---------|----------|
+| **Qodo** | 15+ PR workflows, multi-repo | Full codebase | OWASP, secrets |
+| **CodeRabbit** | Largest adoption (2M repos), inline | PR diff | Basic |
+| **Greptile** | Codebase graph, cross-file | Dependency graph | Moderate |
+| **GitHub Copilot** | Fast, GitHub-native | PR diff | Basic |
+| **Sourcery** | Python-focused, refactoring | File-level | Limited |
+| **Codex Review** | CLI-based, local execution | Commit/PR diff | Moderate |
 
-### ツール選択の考慮事項
+### Tool Selection Considerations
 
 ```
-大規模 diff の処理:
-  - 1,000行超の diff → AI のコンテキストウィンドウ超過
-  - 解決策: 小さな変更を強制 or コードベース事前インデックス
+Handling large diffs:
+  - Diffs over 1,000 lines → exceed AI context window
+  - Solutions: enforce small changes or pre-index codebase
 
-セキュリティ:
-  - 転送中・保存中の暗号化
-  - SOC 2 コンプライアンス
-  - データ保持ポリシー
-  - セルフホストオプション
+Security:
+  - Encryption in transit and at rest
+  - SOC 2 compliance
+  - Data retention policies
+  - Self-host options
 
-マルチツール戦略:
-  ルールベース（Linter/SAST）+ AI（コンテキスト理解）の併用が最善
+Multi-tool strategy:
+  Rule-based (Linter/SAST) + AI (context understanding) combination is optimal
 ```
 
 ---
 
-## 4. Judge エコシステムでの位置づけ
+## 4. Judge's Position in the Ecosystem
 
 ```
-コードレビューの階層:
+Code review hierarchy:
 
-Layer 1: 自動チェック（CI/CD）
-  - Linter、フォーマッター、型チェック
-  - SAST（Semgrep, CodeQL）
-  - テスト実行
+Layer 1: Automated Checks (CI/CD)
+  - Linters, formatters, type checkers
+  - SAST (Semgrep, CodeQL)
+  - Test execution
 
-Layer 2: AI レビュー（Judge）
-  - codex review による自動レビュー
-  - severity 分類
-  - intent alignment チェック
-  - 一貫性検出
+Layer 2: AI Review (Judge)
+  - Automated review via codex review
+  - Severity classification
+  - Intent alignment check
+  - Consistency detection
 
-Layer 3: 人間レビュー
-  - アーキテクチャ判断
-  - ビジネスロジック検証
-  - 暗黙知ベースの判断
+Layer 3: Human Review
+  - Architecture decisions
+  - Business logic verification
+  - Judgments based on tacit knowledge
 
-Judge は Layer 2 を担当し、Layer 1 の結果を統合、
-Layer 3 の人間レビュアーが高次判断に集中できるようにする
+Judge handles Layer 2, integrating Layer 1 results so that
+Layer 3 human reviewers can focus on higher-order decisions.
 ```
 
 **Source:** [Qodo: 5 AI Code Review Pattern Predictions 2026](https://www.qodo.ai/blog/5-ai-code-review-pattern-predictions-in-2026/) · [Qodo: Best AI Code Review Tools 2026](https://www.qodo.ai/blog/best-ai-code-review-tools-2026/) · [Verdent: Best AI for Code Review 2026](https://www.verdent.ai/guides/best-ai-for-code-review-2026) · [DEV.to: Best AI Code Review Tools 2026](https://dev.to/heraldofsolace/the-best-ai-code-review-tools-of-2026-2mb3)

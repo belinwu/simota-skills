@@ -166,3 +166,63 @@ echo "Focus on authentication flow and session handling" | codex review --base m
 - [ ] No unrelated changes included
 - [ ] Scope is appropriate (not too broad/narrow)
 - [ ] Breaking changes are documented
+
+---
+
+## REVIEW.md Integration
+
+If the repository contains a `REVIEW.md` at its root, treat it as project-specific review guidelines.
+
+**Discovery flow:**
+
+1. Check for `REVIEW.md` at the repository root before starting the review.
+2. If found, prepend its contents as custom instructions to the `codex review` prompt.
+3. Project-specific rules in `REVIEW.md` take precedence over generic review heuristics.
+4. If `REVIEW.md` is absent, proceed with default review guidelines — do not warn or block.
+
+**Example usage:**
+
+```bash
+# Prepend REVIEW.md content as custom review instructions
+cat REVIEW.md | codex review --base main -
+```
+
+---
+
+## PR Size Assessment
+
+Measure PR size using `git diff --stat` and classify into tiers. Cognitive load research shows defect detection drops sharply beyond 400 LOC (see `review-effectiveness.md`).
+
+| Tier | LOC (added + deleted) | Review depth | Action |
+|------|----------------------|--------------|--------|
+| **Small** | < 100 | Deep | Review immediately |
+| **Medium** | 100–400 | Adequate | Standard review |
+| **Large** | 400–1000 | Declining | Recommend splitting |
+| **XL** | > 1000 | Perfunctory risk | Strongly recommend splitting |
+
+**Warning thresholds in review report:**
+
+- **> 1000 LOC**: `⚠️ PR exceeds 1000 LOC. Review quality degrades significantly. Strongly recommend splitting.`
+- **> 400 LOC**: `ℹ️ PR exceeds 400 LOC. Consider splitting to reduce reviewer cognitive load.`
+
+---
+
+## Multi-Agent Verification
+
+Cross-verify findings across multiple dimensions to reduce false positive rate below 1%.
+
+**Verification dimensions:**
+
+| Dimension | Focus | Example agents |
+|-----------|-------|----------------|
+| Correctness | Logic errors, edge cases | Judge (primary) |
+| Security | Vulnerabilities, secrets | Sentinel |
+| Consistency | Pattern adherence, naming | Zen |
+
+**Confidence rules:**
+
+- **Duplicate finding** (flagged by ≥2 dimensions): Elevate confidence — high-priority fix.
+- **Single-dimension finding**: Add a verification note; recommend manual confirmation.
+- **Contradictory signals** (one dimension flags, another clears): Report both perspectives; do not auto-dismiss.
+
+**Workflow:** Run Judge's core analysis first, then cross-reference with Sentinel and Zen outputs when available. Merge duplicate findings and annotate confidence level in the report.
