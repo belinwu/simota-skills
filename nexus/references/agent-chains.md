@@ -135,6 +135,132 @@ Complete chain templates and dynamic adjustment rules.
 | REVIEW | standard | Judge → Builder → Radar |
 | REVIEW | deep-dive | Judge → Zen → Builder → Radar → Sentinel |
 | DB_DESIGN | with-streaming | Schema → Stream → Builder → Radar |
+| SECURITY | red-team | Sentinel → Breach → Builder → Radar |
+| SECURITY | purple-team | Breach → Vigil → Builder → Radar → Sentinel |
+| SECURITY | detection | Vigil → Gear → Radar |
+| SECURITY | detection-full | Sentinel → Vigil → Gear → Radar → Scribe |
+| SECURITY | ai-red-team | Oracle → Breach → Builder → Radar → Sentinel |
+| SECURITY | threat-model | Stratum → Breach → Scribe |
+| GAME | prototype | Quest → Forge → Builder → Radar |
+| GAME | full | Quest → Forge → Builder → Tone → Dot → Radar |
+| GAME | 3d-asset | Quest → Vision → Clay → Builder → Radar |
+| GAME | audio | Quest → Tone → Builder → Radar |
+| GAME | narrative | Quest → Saga → Prose → Builder |
+| GAME | soundtrack | Quest → Lyric → Tone → Builder |
+| GAME | balance | Quest → Matrix → Radar |
+| DESIGN | figma-to-code | Frame → Muse → Artisan → Radar |
+| DESIGN | figma-make | Vision → Loom → Frame → Artisan → Radar |
+| DESIGN | figma-handoff | Frame → Forge → Builder → Radar |
+| DESIGN | token-sync | Frame → Muse → Loom → Artisan |
+| DESIGN_SYSTEM | figma-driven | Frame → Vision → Muse → Showcase → Quill |
+| DECISION | deadlock | Magi → Flux → Magi → Builder |
+| FEATURE | innovation | Researcher → Flux → Spark → Builder → Radar |
+| STRATEGY | reframe | Accord → Flux → Helm → Scribe |
+| REFACTOR | rethink | Atlas → Flux → Atlas → Sherpa → Zen → Radar |
+| ARCHITECTURE | c4-model | Lens → Stratum → Canvas → Scribe |
+| ARCHITECTURE | c4-review | Stratum → Atlas → Scribe |
+| ARCHITECTURE | c4-evolution | Ripple → Stratum → Canvas |
+| ARCHITECTURE | deployment | Stratum → Scaffold → Gear → Canvas |
+| CREATIVE | image-gen | Vision → Sketch → Artisan |
+| CREATIVE | image-to-3d | Vision → Sketch → Clay → Builder |
+| CREATIVE | marketing-asset | Growth → Sketch → Prose → Artisan |
+| STRATEGY | simulation | Helm → Canvas → Scribe |
+| STRATEGY | simulation-full | Compete → Helm → Magi → Scribe → Canvas |
+| REQUIREMENTS | narrative | Cast → Saga → Accord → Scribe |
+| FEATURE | story-driven | Saga → Spark → Forge → Builder → Radar |
+| QA | combinatorial | Matrix → Radar → Voyager |
+| DEPLOY | matrix | Matrix → Scaffold → Gear → Radar |
+| E2E | matrix | Matrix → Voyager → Lens → Radar |
+| SPEC_VERIFY | quick | Attest → Scribe |
+| SPEC_VERIFY | standard | Attest → Scribe → Radar → Builder |
+| SPEC_VERIFY | full | Attest → Scribe → Radar → Builder → Warden |
+| LOOP_OPS | simple | Orbit → Builder → Radar |
+| LOOP_OPS | full | Orbit → Builder → Guardian → Radar |
+| EVOLUTION | quick | Darwin → Canvas |
+| EVOLUTION | standard | Darwin → Architect → Void → Canvas |
+| EVOLUTION | full | Darwin → Architect → Void → Lore → Canvas |
+| KNOWLEDGE_SYNC | - | Lore → Darwin → Architect |
+| SKILL_GEN | quick | Sigil → Lens |
+| SKILL_GEN | full | Sigil → Lens → Grove → Gauge |
+| YAGNI | quick | Void → Sweep |
+| YAGNI | standard | Void → Sweep → Zen → Radar |
+| YAGNI | full | Void → Magi → Sweep → Zen → Pulse → Radar |
+| REMEDIATE | quick | Mend → Radar |
+| REMEDIATE | standard | Mend → Radar → Beacon |
+| REMEDIATE | full | Triage → Mend → Radar → Beacon → Vigil |
+| GHA_WORKFLOW | new | Pipe → Gear → Radar |
+| GHA_WORKFLOW | security | Pipe → Sentinel → Vigil → Gear |
+| GHA_WORKFLOW | release | Pipe → Guardian → Launch → Harvest |
+| PROJECT | init | Titan → Grove → Scaffold → Pipe → Gear |
+| PROJECT | full | Titan → Sherpa → Builder → Radar → Guardian → Launch |
+| ECOSYSTEM | skill-audit | Gauge → Architect → Darwin |
+| ECOSYSTEM | health-check | Darwin → Gauge → Canvas |
+| ECOSYSTEM | visualization | Darwin → Realm → Canvas |
+| DEV_EXPERIENCE | cli-audit | Hone → Hearth → Gear |
+| DEV_EXPERIENCE | cli-full | Hone → Hearth → Latch → Gear → Sentinel |
+| BUSINESS | tax-guide | Levy → Scribe |
+| BUSINESS | tax-calc | Levy → Builder → Radar |
+| BUSINESS | tax-data | Levy → Schema → Builder → Radar |
+| PROJECT | onboarding | Lens → Stratum → Canvas → Scribe → Prism |
+| INVESTIGATE | architecture | Lens → Stratum → Atlas → Canvas |
+| QA | full | Matrix → Lens → Echo → Radar → Voyager |
+| QA | coverage | Matrix → Radar → Sentinel |
+| TEST | matrix | Matrix → Judge → Zen → Radar |
+| TEST | full | Matrix → Judge → Zen → Radar → Sentinel → Canvas |
+| E2E | full | Matrix → Voyager → Lens → Radar → Sentinel |
+| REVIEW | matrix | Matrix → Judge → Builder → Radar |
+| REVIEW | thorough | Matrix → Judge → Zen → Builder → Radar → Sentinel |
+| REVIEW | blind-spot | Judge → Flux → Matrix → Builder → Radar |
+| COMPARE | matrix | Matrix → Arena → Guardian |
+| COMPARE | thorough | Matrix → Sherpa → Arena → Radar → Guardian |
+| FEATURE | explore | Spark → Matrix → Magi → Builder → Radar |
+| FEATURE | L-matrix | Spark → Matrix → Sherpa → Forge → Builder → Radar → Quill |
+| FEATURE | UX-matrix | Researcher → Echo → Matrix → Spark → Builder → Radar |
+| FEATURE | lateral | Spark → Flux → Matrix → Sherpa → Builder → Radar |
+| DECISION | multi-axis | Matrix → Magi → Flux → Scribe |
+| DECISION | explore | Flux → Matrix → Magi → Builder |
+| STRATEGY | innovation | Flux → Compete → Spark → Matrix → Builder → Radar |
+| STRATEGY | pivot | Flux → Helm → Magi → Scribe → Canvas |
+| LOAD_TEST | matrix | Matrix → Siege → Bolt → Builder → Radar |
+| PRERELEASE | matrix | Matrix → Sentinel → Warden → Radar → Guardian → Launch |
+| SECURITY | matrix | Matrix → Sentinel → Probe → Builder → Radar |
+| AI_FEATURE | explore | Oracle → Flux → Spark → Builder → Radar |
+| REFACTOR | lateral | Flux → Atlas → Sherpa → Zen → Radar |
+| INVESTIGATE | reframe | Lens → Flux → Canvas → Scribe |
+| INVESTIGATE | first-principles | Flux → Lens → Matrix → Canvas |
+| ARCHITECTURE | first-principles | Flux → Stratum → Atlas → Scribe |
+| REQUIREMENTS | first-principles | Flux → Accord → Matrix → Scribe |
+| BUG | first-principles | Flux → Scout → Lens → Builder → Radar |
+| REFACTOR | first-principles | Flux → Atlas → Matrix → Sherpa → Zen → Radar |
+| SECURITY | first-principles | Flux → Breach → Matrix → Sentinel → Scribe |
+| OPTIMIZE | first-principles | Flux → Bolt → Matrix → Builder → Radar |
+| OPTIMIZE | db-matrix | Matrix → Tuner → Schema → Builder → Radar |
+| MODERNIZE | first-principles | Flux → Lens → Horizon → Matrix → Sherpa → Builder → Radar |
+| MODERNIZE | migration-matrix | Matrix → Horizon → Sherpa → Builder → Radar |
+| DB_DESIGN | first-principles | Flux → Schema → Matrix → Builder → Radar |
+| API | matrix | Matrix → Gateway → Builder → Radar → Quill |
+| API | first-principles | Flux → Gateway → Matrix → Builder → Radar |
+| INCIDENT | postmortem-deep | Triage → Flux → Scout → Matrix → Scribe |
+| INCIDENT | prevention | Flux → Matrix → Sentinel → Beacon → Scribe |
+| UX_DESIGN | first-principles | Flux → Vision → Muse → Forge → Artisan → Radar |
+| UX_DESIGN | variant-matrix | Matrix → Vision → Muse → Artisan → Radar |
+| UX_RESEARCH | matrix | Matrix → Researcher → Echo → Palette |
+| YAGNI | first-principles | Flux → Void → Magi → Sweep → Zen → Radar |
+| CONTENT | reframe | Flux → Prose → Echo → Artisan → Radar |
+| CONTENT | variant | Matrix → Prose → Echo → Artisan → Radar |
+| DEPLOY | environment-matrix | Matrix → Guardian → Launch → Harvest |
+| INFRA | matrix | Matrix → Scaffold → Gear → Radar |
+| OBSERVABILITY | matrix | Matrix → Beacon → Gear → Builder → Radar |
+| AI_FEATURE | first-principles | Flux → Oracle → Matrix → Builder → Radar |
+| ECOSYSTEM | first-principles | Flux → Darwin → Architect → Void → Canvas |
+| GAME | design-matrix | Quest → Matrix → Forge → Builder → Radar |
+| GAME | first-principles | Flux → Quest → Saga → Matrix → Scribe |
+| GHA_WORKFLOW | matrix | Matrix → Pipe → Gear → Radar |
+| DESIGN_SYSTEM | matrix | Matrix → Vision → Muse → Showcase → Artisan → Radar |
+| STRATEGY | compete-reframe | Flux → Compete → Matrix → Spark → Scribe |
+| STRATEGY | ab-matrix | Matrix → Experiment → Builder → Radar |
+| SPEC_VERIFY | matrix | Matrix → Attest → Scribe → Radar |
+| KNOWLEDGE | first-principles | Flux → Researcher → Scribe → Prism |
 
 ---
 
@@ -171,6 +297,33 @@ Builder then applies:
 - Builder detects ON_AMBIGUOUS_SPEC → Escalate to user or return to Spark
 - Complex distributed workflow → Builder activates Event Sourcing/Saga patterns
 - High read/write ratio disparity → Builder applies CQRS pattern
+- Red team assessment requested → Add Breach after Sentinel
+- Detection rules needed → Add Vigil
+- Problem framing stuck → Add Flux for perspective shift
+- Figma design available → Add Frame before Artisan
+- Game assets needed → Add Tone/Dot/Clay as applicable
+- C4 architecture documentation needed → Add Stratum
+- Combinatorial testing needed → Add Matrix before Radar
+- Feature has 3+ independent dimensions or variants → Add Matrix after Spark
+- Review covers 4+ files across 2+ modules → Add Matrix before Judge
+- Test coverage gaps identified → Add Matrix to define coverage matrix
+- Comparison involves 3+ candidates or criteria → Add Matrix before Arena
+- Load test targets multiple endpoints/scenarios → Add Matrix before Siege
+- Prerelease covers multiple platforms/environments → Add Matrix before Sentinel
+- Approach stuck or single-perspective bias detected → Add Flux for reframing
+- Feature ideation yields < 2 options → Add Flux before Spark
+- Architecture decision has hidden assumptions → Add Flux before Magi
+- Review finds no issues but confidence is low → Add Flux for blind-spot check
+- First principles analysis requested or root assumptions questioned → Add Flux at chain start, combine with Matrix for decomposition
+- Optimization target unclear or premature → Add Flux before Bolt/Tuner to question "are we optimizing the right thing?"
+- Migration involves 3+ technology dimensions → Add Matrix before Horizon for migration path analysis
+- Postmortem reveals recurring pattern → Add Flux after Triage for deeper root cause reframing
+- API design has 3+ resource types or versioning concerns → Add Matrix before Gateway
+- UX design has 3+ user segments or device types → Add Matrix before Vision
+- Deployment targets multiple environments/regions → Add Matrix before Guardian
+- Content needs A/B testing across segments → Add Matrix before Prose
+- Remediation of known pattern → Replace Scout with Mend
+- Ecosystem health check → Add Gauge
 
 ### Rally Parallel Escalation Triggers
 

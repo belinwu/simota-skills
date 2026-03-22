@@ -36,24 +36,231 @@
 
 ### 1. First Principles Thinking
 
-**Core idea:** Strip away assumptions until only fundamental, irreducible truths remain. Rebuild solutions from those truths.
+**Core idea:** Strip away assumptions until only fundamental, irreducible truths remain. Rebuild solutions from those truths. Aristotle defined a first principle as "a basic proposition or assumption that cannot be deduced from any other proposition or assumption."
 
-**Procedure:**
-1. **Identify** the problem or belief.
-2. **List all assumptions** embedded in the current understanding (aim for 10-20).
-3. **Challenge each assumption**: "Is this actually true? What evidence supports it?"
-4. **Decompose** to the most basic, undeniable elements.
-5. **Reconstruct** a solution from these elements alone.
+**Key distinction — First Principles vs. Reasoning by Analogy:**
 
-**Example:**
-- Problem: "Electric cars are too expensive."
-- Assumptions: batteries are expensive, we need cobalt, cars need dealerships...
-- First Principle: What are the raw material costs of a battery? ($80/kWh at material level)
-- Reconstruction: Build batteries from raw materials at scale → dramatically lower cost.
+| Aspect | First Principles | Analogy |
+|--------|-----------------|---------|
+| Approach | Build up from fundamental truths | Copy from similar past cases |
+| Speed | Slow (deep analysis) | Fast (pattern matching) |
+| Innovation | High (breaks existing frames) | Low (stays within known frames) |
+| Risk | Reaches unknown solutions | Anchors to past successes |
+| Use when | Root change needed | Quick incremental response |
 
-**When to use:** The problem seems impossible under current assumptions. "Everyone knows" framing dominates.
+> Musk: "Boil things down to the most fundamental truths and say 'what are we sure is true?' — then reason up from there."
+> Battery example: Analogy says "$600/kWh because batteries have always been expensive." First Principles says "raw materials cost $80/kWh on the London Metal Exchange — so the question is how to combine them cheaply."
 
-**Source:** Aristotle's Metaphysics; popularized by Elon Musk. See also James Clear's explanation: jamesclear.com/first-principles
+---
+
+#### Full Procedure (5 stages)
+
+**Stage 1: DECOMPOSE — 問題を基本要素に分解**
+1. State the problem clearly in one sentence.
+2. Extract all nouns, verbs, adjectives — each is a potential assumption carrier.
+3. List every assumption embedded in the statement (aim for 10-20).
+4. For each: label as **FACT** (verified data), **ASSUMPTION** (unverified belief), or **CONVENTION** (industry habit).
+
+**Stage 2: QUESTION — ソクラテス式質問で各仮定を検証**
+
+Apply the **5 Categories of Socratic Questions** (see detailed section below):
+
+| Category | Purpose | Priority Trigger |
+|----------|---------|-----------------|
+| 1. Clarifying | Remove ambiguity | Problem is vague |
+| 2. Probing Assumptions | Surface hidden beliefs | Many untested premises |
+| 3. Probing Evidence | Verify data quality | Claims lack data |
+| 4. Viewpoints | Widen perspective | Tunnel vision detected |
+| 5. Implications | Trace consequences | Impact unclear |
+
+**Stage 3: IDENTIFY FUNDAMENTALS — 第一原理を確定**
+1. Extract only verified facts and immutable constraints.
+2. Classify constraints:
+   - **Physical** (unchangeable): laws of physics, memory limits, speed of light
+   - **Logical** (unchangeable): CAP theorem, mathematical proofs
+   - **Institutional** (hard to change): regulations, org structure
+   - **Conventional** (changeable): "we've always done it this way"
+   - **Self-imposed** (changeable): unquestioned mental models
+3. The verified facts + physical/logical constraints = **First Principles**.
+
+**Stage 4: RECONSTRUCT — 第一原理からゼロベースで再構築**
+1. Use ONLY first principles as the foundation.
+2. Start with the simplest possible solution.
+3. Apply Constraint Removal: "If [convention] didn't exist, what would we build?"
+4. Generate 3-5 alternative constructions.
+5. Add complexity only when justified by a first principle.
+
+**Stage 5: VALIDATE — 再構築した解を検証**
+1. Does the solution address the original problem?
+2. Have new assumptions crept in? (re-run Stage 2 if yes)
+3. Apply Category 5 questions: "If this is true, what else must be true?"
+4. Pre-mortem: "Assume this failed in 6 months — why?"
+
+---
+
+#### Socratic Question Templates (全5カテゴリ)
+
+**Category 1 — Clarifying Questions（明確化）**
+```
+"When you say [X], what specifically do you mean?"
+"Can you rephrase the problem without using [jargon/assumption]?"
+"What would this look like to someone with no context?"
+"What is the simplest way to state this problem?"
+```
+
+**Category 2 — Probing Assumptions（前提探索）** ★ Most critical for First Principles
+```
+"What are we assuming to be true here that might not be?"
+"What if [assumption] were false? What would change?"
+"Is this a physical/logical constraint, or a self-imposed one?"
+"When was this assumption last validated?"
+"Who established this premise? Is their context still valid?"
+"Does this hold universally, or only in specific conditions?"
+```
+
+**Category 3 — Probing Evidence（証拠検証）**
+```
+"What evidence supports this approach over alternatives?"
+"Is this based on data, or on precedent/convention?"
+"What would convince you this is wrong?"
+"Is this correlation or causation?"
+```
+
+**Category 4 — Viewpoints（視点転換）**
+```
+"How would [different stakeholder] view this problem?"
+"What would a newcomer with no legacy knowledge suggest?"
+"If we were starting from scratch today, would we make the same choice?"
+"How does [different industry] solve the equivalent problem?"
+"What would this look like in 5 years?"
+```
+
+**Category 5 — Implications（含意と結果）**
+```
+"If we do [X], what second-order effects should we expect?"
+"What does this decision make easier? What does it make harder?"
+"If this assumption is true, what else must also be true?"
+"What is the worst-case scenario? The best-case?"
+```
+
+**Question selection heuristic:**
+- Problem is vague → Category 1 first
+- Many untested premises → Category 2 first
+- Claims lack data → Category 3 first
+- Tunnel vision → Category 4 first
+- Impact unclear → Category 5 first
+
+---
+
+#### Complementary Techniques
+
+**Five Whys → First Principles (拡張版)**
+Standard 5 Whys stops at proximate cause. First Principles 5 Whys continues until it reaches a verified fact or immutable constraint.
+
+```
+Problem: "We should adopt microservices"
+Why 1: "We need scalability" → ASSUMPTION (verify: do we?)
+Why 2: "Users will grow 10x" → check data → ASSUMPTION if no data
+Why 3: "Only microservices scale" → FALSE (monoliths can scale horizontally)
+Why 4: "Certain components have uneven load" → FACT (verified by metrics)
+Why 5: First Principle → "Handle uneven load distribution"
+→ Solution space opens: microservices, modular monolith, serverless functions...
+```
+
+**Assumption Mapping Matrix**
+Plot assumptions on 2 axes to prioritize which to challenge:
+
+```
+         Importance HIGH
+              |
+    VALIDATE  |  CRITICAL
+    URGENTLY  |  (challenge first)
+              |
+  ────────────┼──────────────
+              |
+    IGNORE    |  MONITOR
+    (low risk)|  (watch)
+              |
+         Importance LOW
+  Uncertainty HIGH ←────→ Uncertainty LOW
+```
+
+**Constraint Removal Technique**
+```
+"If we had unlimited [time/money/people], how would we solve this?"
+"If we didn't have to support [legacy system], what would we build?"
+"If there were no organizational boundaries, how would we structure this?"
+"If [convention] didn't exist, what becomes possible?"
+```
+
+**Inversion Thinking (逆転思考)**
+Instead of "How do we succeed?", ask "How would we guarantee failure?" — then avoid those conditions.
+```
+"How to build an unscalable system": shared state, sync-only, single point of failure, no caching
+→ Invert each → scalable architecture emerges
+```
+
+**Pre-mortem Analysis**
+Before committing to a decision:
+1. "Assume this project failed 6 months from now. Why?"
+2. Each perspective independently lists failure causes
+3. Analyze each cause with First Principles
+4. Design preventive measures
+
+---
+
+#### Software Engineering Applications
+
+**Architecture Selection:**
+```
+Analogy: "Netflix uses microservices, so should we"
+First Principles:
+  1. What are our actual load patterns? → Data shows 100 req/s peak
+  2. Team size? → 4 developers
+  3. Deploy frequency needed? → Weekly
+  4. Independent scaling needed? → Only for image processing
+  → Modular monolith + serverless for image processing
+```
+
+**Database Selection:**
+```
+Analogy: "Everyone uses MongoDB for modern apps"
+First Principles:
+  1. Data nature? → Structured with relationships
+  2. Consistency needs? → Strong consistency required
+  3. Query patterns? → Complex JOINs frequent
+  4. Scale? → Single server sufficient
+  → PostgreSQL is optimal
+```
+
+**Performance Optimization:**
+```
+Analogy: "Add caching to speed things up"
+First Principles:
+  1. Where is the actual bottleneck? → Profile first
+  2. Why is it slow? → N+1 queries from ORM lazy loading
+  3. Simplest fix? → Switch to eager loading
+  → No cache needed, query optimization suffices
+```
+
+---
+
+#### Anti-patterns (First Principles の誤用)
+
+| Anti-pattern | Description | Countermeasure |
+|-------------|-------------|----------------|
+| **Analysis Paralysis** | Trying to first-principles everything, unable to decide | Apply only to high-importance + high-uncertainty decisions |
+| **Ignoring Wisdom** | Rejecting all prior knowledge as "mere analogy" | Use first principles to *validate* existing approaches, not always replace them |
+| **False First Principles** | Mistaking assumptions for facts | Ask "Is this a law of physics, a mathematical proof, or verified data?" |
+| **NIH Justification** | "First principles says we should build it ourselves" | Reality: often reinventing the wheel |
+| **Dunning-Kruger Trap** | Insufficient domain knowledge to identify true first principles | Seek diverse expert input; acknowledge unknown unknowns |
+| **Overthinking Simple Problems** | Applying first principles where best practices suffice | Reserve for genuinely stuck or high-stakes situations |
+
+**When to use:** The problem seems impossible under current assumptions. "Everyone knows" framing dominates. The same solution keeps failing. Root-level change is needed.
+
+**When NOT to use:** Clear best practice exists and works. Time pressure demands quick action. Problem is well-understood and incremental.
+
+**Source:** Aristotle's *Physica* / *Metaphysics*; Elon Musk (battery cost example); James Clear (jamesclear.com/first-principles); Farnam Street (fs.blog/first-principles); Shane Parrish mental models.
 
 ---
 
