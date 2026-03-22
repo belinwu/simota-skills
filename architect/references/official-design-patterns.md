@@ -2,11 +2,11 @@
 
 > Source: "The Complete Guide to Building Skills for Claude" (Anthropic, 2025)
 
-Architect が ENVISION / DESIGN フェーズで参照する公式デザインパターンリファレンス。
+Official design pattern reference for Architect's ENVISION / DESIGN phases.
 
 ---
 
-## 1. 3つのユースケースカテゴリ
+## 1. Three Use Case Categories
 
 ### Category 1: Document & Asset Creation
 
@@ -55,7 +55,9 @@ Architect が ENVISION / DESIGN フェーズで参照する公式デザインパ
 
 ---
 
-## 2. 5つの公式パターン
+## 2. Five Official Patterns
+
+> These are implementation patterns for Claude skill design. For inter-agent structural patterns, see Section 7.
 
 ### Pattern 1: Sequential Workflow Orchestration
 
@@ -183,7 +185,7 @@ ELSE → flag for review, create compliance case
 
 ---
 
-## 3. 計画方法論
+## 3. Planning Methodology
 
 ### Use Case Definition Template
 
@@ -213,7 +215,7 @@ Result: [Expected outcome]
 
 ---
 
-## 4. 成功基準フレームワーク
+## 4. Success Criteria Framework
 
 ### Quantitative Metrics
 
@@ -244,7 +246,7 @@ Result: [Expected outcome]
 
 ---
 
-## 5. Progressive Disclosure 設計原則
+## 5. Progressive Disclosure Design Principle
 
 ### Three-Level System
 
@@ -263,7 +265,7 @@ Result: [Expected outcome]
 
 ---
 
-## 6. Composability 原則
+## 6. Composability Principle
 
 ### Portability
 
@@ -293,3 +295,154 @@ Result: [Expected outcome]
 | Claude Code | Place in skills directory |
 | API | `/v1/skills` endpoint, `container.skills` parameter |
 | Organization | Admin workspace-wide deployment |
+
+---
+
+## 7. Agentic Composable Patterns (Anthropic 2025-2026)
+
+> Source: Anthropic "Building effective agents" (2025) + subsequent updates (2026)
+
+The 5 patterns in Section 2 are intra-skill implementation patterns. This section covers inter-agent and inter-workflow structural patterns.
+
+### Design Philosophy: Simplicity First
+
+The key to successful agent systems is to start with the simplest possible configuration and only add complexity when there is measurable improvement. Rather than introducing frameworks or orchestration layers upfront, build up from composable primitive patterns as needed.
+
+### Pattern A: Prompt Chaining
+
+**Structure**: Fixed-step sequential pipeline. Each step's output becomes the next step's input.
+
+```
+Step 1 → Gate ✓ → Step 2 → Gate ✓ → Step 3 → Output
+                ✗ → Abort/Retry
+```
+
+**When to use**: Tasks naturally decompose into independent subtasks, and you want to gate quality at each step.
+**Skill design implication**: Superset of Sequential Workflow Orchestration (Pattern 1). Explicitly insert gates (quality checks, approvals, validations) between steps.
+
+### Pattern B: Routing
+
+**Structure**: Classify input and dispatch to specialized handlers.
+
+```
+Input → Classifier → Handler A (domain 1)
+                   → Handler B (domain 2)
+                   → Handler C (domain 3)
+```
+
+**When to use**: Different input types require different optimal processing paths. Each path can be optimized independently.
+**Skill design implication**: Generalization of Context-Aware Tool Selection (Pattern 4). Nexus routing logic is a canonical example. Use `Output Routing` tables to make branching conditions explicit.
+
+### Pattern C: Parallelization
+
+**Structure**: Execute tasks concurrently and aggregate results. Two variants:
+
+| Variant | Description | Example |
+|---------|-------------|---------|
+| **Sectioning** | Split task into independent parts for parallel processing | Concurrent review of multiple files |
+| **Voting** | Execute the same task multiple times and aggregate results | Multi-perspective evaluation, consensus judgment |
+
+**When to use**: Subtasks are independent (Sectioning), or reliability/diversity is needed (Voting).
+**Skill design implication**: Arena (Voting) and Nexus chains (Sectioning) are existing implementations. Specify parallelizable partners in `COLLABORATION_PATTERNS`.
+
+### Pattern D: Orchestrator-Worker
+
+**Structure**: Central orchestrator dynamically decomposes tasks and delegates to workers.
+
+```
+Orchestrator → [dynamic task decomposition]
+  → Worker 1 (Task A)
+  → Worker 2 (Task B)
+  → Worker N (Task N)
+Orchestrator ← [result synthesis]
+```
+
+**When to use**: Task decomposition cannot be predicted in advance and requires runtime judgment.
+**Skill design implication**: Nexus Hub-and-Spoke model and Titan's 9-phase lifecycle exemplify this pattern. Ensure hub compatibility via the `Nexus Compatibility` section.
+
+### Pattern E: Evaluator-Optimizer
+
+**Structure**: Generate → Evaluate → Improve feedback loop.
+
+```
+Generator → Output → Evaluator → Feedback
+    ↑                                 │
+    └─────────── Refine ──────────────┘
+```
+
+**When to use**: Clear evaluation criteria exist, and iterative refinement improves quality.
+**Skill design implication**: Structured version of Iterative Refinement (Pattern 3). Judge→Builder feedback loop is a canonical example. Extract evaluation criteria into `references/` and separate generation from evaluation responsibilities.
+
+### Pattern F: Autonomous Agent
+
+**Structure**: Autonomously loop tool usage based on environment feedback.
+
+```
+while (!done) {
+  Observe → Plan → Act (tool use) → Evaluate result
+}
+```
+
+**When to use**: Exploratory tasks, multi-stage problem solving, or tasks requiring environment interaction.
+**Skill design implication**: Scout (bug investigation) and Navigator (browser automation) are existing implementations. Always design loop termination conditions and guardrails (max iterations, timeouts, safety constraints).
+
+### Existing ↔ Agentic Pattern Mapping
+
+| Agentic Pattern | Closest Existing Pattern (Section 2) | Relationship | Ecosystem Example |
+|----------------|--------------------------------------|--------------|-------------------|
+| A: Prompt Chaining | P1: Sequential Workflow | P1 is a concrete impl of A | Orbit (runner scripts) |
+| B: Routing | P4: Context-Aware Tool Selection | P4 is B specialized for tool selection | Nexus (Output Routing) |
+| C: Parallelization | — (new) | No existing pattern | Arena (Voting), Rally (Sectioning) |
+| D: Orchestrator-Worker | P2: Multi-MCP Coordination | P2 is D specialized for MCP | Nexus, Titan |
+| E: Evaluator-Optimizer | P3: Iterative Refinement | P3 is a self-contained version of E | Judge↔Builder loop |
+| F: Autonomous Agent | P5: Domain-Specific Intelligence | P5 adds domain knowledge to F | Scout, Navigator |
+
+---
+
+## 8. Simplicity-First Design Principle
+
+### Decision Ladder
+
+A framework for progressively escalating agent system complexity. Do not advance to a higher level if the lower level can solve the problem.
+
+| Level | Composition | When to Use |
+|-------|-------------|-------------|
+| **L0** | Single prompt + retrieval | One-shot Q&A, knowledge lookup |
+| **L1** | Single prompt + tools | Single task with external integration |
+| **L2** | Prompt Chaining / Routing | Fixed-flow multi-stage processing |
+| **L3** | Orchestrator-Worker / Evaluator-Optimizer | Dynamic task decomposition or iterative refinement needed |
+| **L4** | Multi-Agent Autonomous | Multiple autonomous agents cooperating |
+
+### Application to Skill Design
+
+- **ENVISION phase**: Map requirements to the Decision Ladder and identify the minimum level.
+- **DESIGN phase**: Apply the Agentic Pattern corresponding to the chosen level. Document specific reasons before escalating to a higher level.
+- **VALIDATE phase**: Verify the final design uses the minimum necessary complexity.
+
+---
+
+## 9. Interoperability Awareness
+
+### MCP (Model Context Protocol)
+
+Industry-standard protocol connecting AI models to external services and data sources.
+
+- When a skill depends on MCP servers, declare it explicitly in the `compatibility` field.
+- Skills in the MCP Enhancement category (Section 1) assume MCP server availability.
+- Recommend **graceful degradation** so basic functionality works without MCP.
+
+### A2A Protocol (Agent-to-Agent)
+
+Agent-to-agent communication protocol proposed by Google. Defines capability advertisement via Agent Cards and task-based asynchronous communication.
+
+- No direct impact on skill design at present, but recognized as a future consideration.
+- The ecosystem's `CAPABILITIES_SUMMARY` is conceptually equivalent to Agent Card capability advertisement.
+- The Nexus Hub-and-Spoke model is structurally similar to A2A's task delegation pattern.
+
+### Agent Harness Pattern (Anthropic 2026)
+
+State management pattern for long-running agents. Structures interruption, resumption, and state recovery.
+
+- Limited direct applicability since the current ecosystem uses a 1-session = 1-task model.
+- However, Orbit's `state files` and Rally's `multi-session` design are partial implementations of this pattern.
+- Recorded as a reference pattern for future cross-session design.

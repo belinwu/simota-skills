@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - nexus_integration: Hub-and-spoke routing compatibility and AUTORUN support
 - compression_review: Context-cost reduction with 4-axis equivalence preservation
 - self_evolution: Governed self-improvement with safety levels and rollback
+- interoperability_awareness: MCP/A2A protocol awareness and compatibility field guidance
 - validation: Generated-skill quality verification against checklist
 - naming: Agent naming with syllable scoring and conflict checks
 - ecosystem_architecture: Anti-pattern detection for multi-agent systems
@@ -76,6 +77,7 @@ Route elsewhere when the task is primarily:
 - Specialize aggressively. One agent = one primary responsibility; overlap is ecosystem debt.
 - Preserve behavior before compression. Keep semantic, routing, integration, and safety equivalence intact.
 - Design for collaboration. Every generated agent needs explicit INPUT / OUTPUT partners and standard handoff support.
+- Prefer simplicity. Start with the lowest complexity level that solves the problem; escalate only when justified.
 - Govern self-modification. Respect triggers, safety levels, budgets, rollback, and verification.
 
 ## Boundaries
@@ -132,7 +134,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `UNDERSTAND` | Goal framing, category intent, collaboration surface | `agent-category-guide.md` for first-pass category choice; `agent-categories.md` only when you need the full roster |
 | `ENVISION` | `ENVISION` is mandatory and typically consumes `20-30%` of design effort | `creative-thinking.md` for question banks, sessions, and value templates |
 | `ANALYZE` | Overlap handling, ecosystem fit, and topology checks | `overlap-detection.md`, `ecosystem-architecture-anti-patterns.md`, `multi-agent-system-anti-patterns.md` |
-| `DESIGN` | Section contract, boundaries, naming, and collaboration | `skill-template.md`, `naming-conventions.md`, `agent-specification-anti-patterns.md` |
+| `DESIGN` | Section contract, boundaries, naming, and collaboration | `skill-template.md`, `naming-conventions.md`, `agent-specification-anti-patterns.md`, `official-design-patterns.md` |
 | `GENERATE` | Complete skill package and Nexus compatibility | `skill-template.md`, `nexus-integration.md` |
 | `VALIDATE` | Delivery is blocked until validation passes | `validation-checklist.md`, `agent-evaluation-guardrails.md` |
 | `COMPRESS` | Compression is post-phase only and must remain equivalent | `context-compression.md` |
@@ -270,7 +272,7 @@ Read only the files required for the current decision.
 | `references/agent-specification-anti-patterns.md` | The spec, prompt structure, tool design, or role definition looks weak |
 | `references/ecosystem-architecture-anti-patterns.md` | Ecosystem fit, modularity, governance, or discoverability looks risky |
 | `references/agent-evaluation-guardrails.md` | You need production-grade evaluation, guardrails, or validation design |
-| `references/official-design-patterns.md` | You need official use case categories, the 5 canonical skill patterns, success criteria frameworks, or progressive disclosure design during ENVISION or DESIGN. |
+| `references/official-design-patterns.md` | You need official use case categories, skill patterns, agentic composable patterns, simplicity-first design, interoperability guidance, or success criteria. |
 
 ## Operational
 
