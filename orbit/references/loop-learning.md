@@ -18,7 +18,7 @@ Purpose: load this when Orbit analyzes completed loops, adapts defaults, or sync
 
 | Phase | Purpose | Key actions |
 |-------|---------|-------------|
-| `OBSERVE` | collect execution results | capture iterations, final status, failures, recoveries, interventions, timings, contract quality |
+| `OBSERVE` | collect execution results | capture iterations, final status, failures, recoveries, interventions, timings, contract quality, resource usage (tokens/cost), circuit breaker events |
 | `MEASURE` | evaluate effectiveness | calculate LES against recent tier history |
 | `ANALYZE` | identify patterns | detect success patterns, failure sequences, and parameter fit |
 | `IMPROVE` | propose changes | suggest parameter, template, or taxonomy changes with rationale and rollback plan |
@@ -60,6 +60,17 @@ LES = Completion_Rate × 0.30
 | `Contract_Quality` | `0.15` | measurable-AC ratio times goal-clarity score |
 | `User_Autonomy` | `0.10` | fewer user interventions per iteration scores higher |
 
+#### Resource Efficiency Bonus
+
+When `COST_TRACKING=true`, an optional resource efficiency modifier can be applied:
+
+```text
+Resource_Efficiency = 1 - (actual_cost / budget_cost)
+LES_adjusted = LES * (1 + Resource_Efficiency * 0.05)
+```
+
+This modifier has a maximum impact of `±0.05` on the final LES, rewarding cost-efficient loops without dominating the score.
+
 ### Grading Scale
 
 | Grade | LES range | Meaning |
@@ -94,6 +105,56 @@ LES is valid only after `>= 3` completed loops of the same tier. Below that, rep
 | failure-taxonomy refinement | `1` |
 | verification-gate tightening | `1` |
 | default-script enhancement | `1` |
+
+### Adaptive Timeout Algorithm
+
+When `ADAPTIVE_TIMEOUT=true`, timeout values are dynamically adjusted based on historical execution data.
+
+#### Algorithm
+
+```text
+effective_timeout = max(
+  EXEC_TIMEOUT,
+  min(
+    moving_average(last_N_durations) + 1.5 * stddev(last_N_durations),
+    EXEC_TIMEOUT * 3
+  )
+)
+```
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `N` (window size) | `5` | number of recent timings to consider |
+| multiplier | `1.5σ` | standard deviation multiplier for safety margin |
+| floor | `EXEC_TIMEOUT` | never go below the configured base timeout |
+| ceiling | `EXEC_TIMEOUT * 3` | never exceed 3x the configured base timeout |
+
+#### Integration with REFINE Cycle
+
+The adaptive timeout feeds into the REFINE cycle at the `OBSERVE` and `ANALYZE` phases:
+
+| Phase | Adaptive timeout data used |
+|-------|---------------------------|
+| `OBSERVE` | collect per-iteration durations and timeout effectiveness |
+| `MEASURE` | include timeout-hit rate in Iteration_Economy calculation |
+| `ANALYZE` | detect timeout trends (increasing = possible complexity drift, decreasing = efficiency gain) |
+| `IMPROVE` | propose base `EXEC_TIMEOUT` adjustment when adaptive values consistently differ `> 50%` from base |
+
+#### Tier-Specific Bounds
+
+| Tier | Base `EXEC_TIMEOUT` | Adaptive floor | Adaptive ceiling |
+|------|---------------------|----------------|------------------|
+| Light | `300` | `300` | `900` |
+| Standard | `600` | `600` | `1800` |
+| Heavy | `900` | `900` | `2700` |
+| Marathon | `1200` | `1200` | `3600` |
+
+#### Safety Rules
+
+- Adaptive timeout is disabled until `>= 3` timing data points exist.
+- If `3` consecutive iterations hit the adaptive ceiling, emit `[ADAPTIVE:WARN]` and propose tier upgrade.
+- Timeout data is stored in `${LOOP_DIR}/.iter-timings.log` (one duration per line in seconds).
+- The `REFINE` cycle may propose changing `ADAPTIVE_TIMEOUT` from `false` to `true` when sufficient data exists (RF-01 lightweight record).
 
 Application process:
 1. propose

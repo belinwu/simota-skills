@@ -94,6 +94,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Adapt parameters with fewer than `3` execution data points.
 - Skip `SAFEGUARD` when changing defaults or the failure taxonomy.
 - Override Lore-validated loop patterns without human approval.
+- Disable the circuit breaker without explicit user approval.
 
 ## Operating Modes
 
@@ -213,6 +214,32 @@ Priority:
 | Log size | `runner.log <= MAX_LOG_SIZE` | rotate to `runner.log.prev` | — |
 | State integrity | `state.env.sha256` matches | auto-run `recover.sh` | — |
 
+### Circuit Breaker
+
+Prevents infinite retry loops when the same error recurs.
+
+| State | Condition | Behavior |
+|-------|-----------|----------|
+| `CLOSED` | `< CIRCUIT_THRESHOLD` consecutive same failures | normal retry policy |
+| `HALF_OPEN` | exactly `CIRCUIT_THRESHOLD` same failures | allow one probe; fail → `OPEN` |
+| `OPEN` | probe failed or threshold exceeded | block execution, emit `BLOCKED` |
+
+State file: `${LOOP_DIR}/.circuit-state`
+Reset: `recover.sh --reset-circuit` or manual deletion of `.circuit-state`
+Cooldown: `OPEN` → `HALF_OPEN` after `CIRCUIT_COOLDOWN` seconds
+
+### 3-Tier Timeout
+
+Timeouts operate at three independent layers:
+
+| Layer | Variable | Scope |
+|-------|----------|-------|
+| Tool | `TOOL_TIMEOUT` | single tool invocation within executor |
+| Iteration | `EXEC_TIMEOUT` | one full iteration |
+| Loop | `LOOP_TIMEOUT` | entire loop execution |
+
+Each layer has independent fallback behavior. See `references/executor-engines.md` for details.
+
 ### Core Defaults
 
 | Parameter | Default | Rule |
@@ -227,15 +254,23 @@ Priority:
 | `BRANCH_ISOLATION` | `true` | dedicated iteration and summary branches |
 | `SQUASH_ON_DONE` | `true` | squash on successful completion |
 | `LOOP_TIER` | `auto` | override only when necessary |
+| `CIRCUIT_BREAKER` | `true` | enable circuit breaker for repeated failures |
+| `CIRCUIT_THRESHOLD` | `3` | consecutive same-signature failures to trip |
+| `CIRCUIT_COOLDOWN` | `300` | seconds before auto-retry after circuit opens |
+| `TOOL_TIMEOUT` | `120` | per-tool invocation timeout |
+| `LOOP_TIMEOUT` | `0` | total loop execution timeout; `0` = unlimited |
+| `STRUCTURED_LOG` | `true` | emit JSON Lines to `runner.jsonl` |
+| `COST_TRACKING` | `false` | enable token and cost tracking |
+| `TOKEN_BUDGET` | `0` | max cost in USD; `0` = unlimited |
 
 ### Loop Tiers
 
-| Tier | AC count | `MAX_ITERATIONS` | `EXEC_TIMEOUT` | `RETRY_LIMIT` |
-|------|----------|------------------|----------------|---------------|
-| Light | `1-3` | `10` | `300` | `2` |
-| Standard | `3-6` | `20` | `600` | `3` |
-| Heavy | `6-10` | `30` | `900` | `4` |
-| Marathon | `10+` | `50` | `1200` | `5` |
+| Tier | AC count | `MAX_ITERATIONS` | `EXEC_TIMEOUT` | `RETRY_LIMIT` | `TOOL_TIMEOUT` | `LOOP_TIMEOUT` |
+|------|----------|------------------|----------------|---------------|----------------|----------------|
+| Light | `1-3` | `10` | `300` | `2` | `60` | `3000` |
+| Standard | `3-6` | `20` | `600` | `3` | `120` | `12000` |
+| Heavy | `6-10` | `30` | `900` | `4` | `180` | `27000` |
+| Marathon | `10+` | `50` | `1200` | `5` | `240` | `0` |
 
 Tier selection:
 
@@ -297,6 +332,7 @@ If any item is missing, return `CONTINUE`.
 | `VERIFY_GAP` | false completion | downgrade to `CONTINUE` |
 | `COMMIT_SCOPE_RISK` | unrelated changes in commit scope | restrict staging or delegate commit policy |
 | `TOOL_FAILURE` | runner or executor halt | bounded retry, then recovery or escalation |
+| `CIRCUIT_OPEN` | repeated same-signature failure | cooldown or manual reset |
 
 ### Severity Matrix
 
@@ -375,13 +411,13 @@ Required report fields:
 |-----------|----------------|
 | `references/operation-contract.md` | You are creating or auditing `goal.md`, `progress.md`, `done.md`, `state.env`, or footer semantics. |
 | `references/vague-goal-handling.md` | `goal.md` is weak, vague, or missing and contract strengthening is required. |
-| `references/failure-taxonomy.md` | You need failure-class mapping, severity logic, reporting schema, or recovery commands. |
+| `references/failure-taxonomy.md` | You need failure-class mapping, severity logic, reporting schema, recovery commands, retry policies, or circuit breaker integration. |
 | `references/anti-patterns.md` | You need safety review, pre-launch checks, or post-mortem anti-pattern detection. |
 | `references/script-templates.md` | You must decide which scripts to generate or patch and which template file to open next. |
 | `references/script-template-runner.md` | You are generating or patching `run-loop.sh`. |
 | `references/script-template-support.md` | You are generating or patching `bootstrap.sh`, `recover.sh`, `verify.sh`, or `notify.sh`. |
 | `references/script-flow.md` | You are debugging lifecycle behavior, recovery order, verification structure, or inter-script relationships. |
-| `references/executor-engines.md` | You are changing `EXEC_CMD`, engine flags, budget controls, or executor troubleshooting. |
+| `references/executor-engines.md` | You are changing `EXEC_CMD`, engine flags, budget controls, timeout architecture, or executor troubleshooting. |
 | `references/patterns.md` | You need multi-loop coordination, dirty-baseline safety, handoff sequencing, or isolation rules. |
 | `references/loop-learning.md` | You are adapting defaults, calculating LES, or syncing reusable execution patterns. |
 | `references/examples.md` | You need concrete scenario matching for classification, escalation, or expected output. |

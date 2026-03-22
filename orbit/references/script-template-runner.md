@@ -35,6 +35,16 @@ BRANCH_ISOLATION="${BRANCH_ISOLATION:-true}"
 SQUASH_ON_DONE="${SQUASH_ON_DONE:-true}"
 SQUASH_MSG_ENGINE="${SQUASH_MSG_ENGINE:-auto}"
 
+#--- Resilience configuration ---
+CIRCUIT_BREAKER="${CIRCUIT_BREAKER:-true}"
+CIRCUIT_THRESHOLD="${CIRCUIT_THRESHOLD:-3}"
+CIRCUIT_COOLDOWN="${CIRCUIT_COOLDOWN:-300}"
+TOOL_TIMEOUT="${TOOL_TIMEOUT:-120}"
+ITER_TIMEOUT="${ITER_TIMEOUT:-${EXEC_TIMEOUT}}"
+STRUCTURED_LOG="${STRUCTURED_LOG:-true}"
+COST_TRACKING="${COST_TRACKING:-false}"
+TOKEN_BUDGET="${TOKEN_BUDGET:-0}"
+
 #--- Portable timeout (macOS + Linux) ---
 portable_timeout() {
   local secs="$1"; shift
@@ -123,11 +133,103 @@ rotate_log() {
 }
 rotate_log
 
+#--- Structured logging (JSON Lines) ---
+emit_log() {
+  if [[ "${STRUCTURED_LOG}" != "true" ]]; then return; fi
+  local level="$1" event="$2"; shift 2
+  local ts
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local json="{\"timestamp\":\"${ts}\",\"level\":\"${level}\",\"event\":\"${event}\",\"iteration\":${ITER:-0}"
+  while [[ $# -gt 0 ]]; do
+    json="${json},\"$1\":\"$2\""
+    shift 2
+  done
+  json="${json}}"
+  echo "${json}" >> "${LOOP_DIR}/runner.jsonl"
+}
+
+#--- Circuit breaker ---
+CIRCUIT_FILE="${LOOP_DIR}/.circuit-state"
+CB_STATE="CLOSED"
+CB_FAIL_COUNT=0
+CB_LAST_SIGNATURE=""
+CB_LAST_UPDATED=0
+
+load_circuit_state() {
+  if [[ -f "${CIRCUIT_FILE}" ]]; then
+    source "${CIRCUIT_FILE}"
+  fi
+}
+
+save_circuit_state() {
+  cat > "${CIRCUIT_FILE}" <<CB_EOF
+CB_STATE=${CB_STATE:-CLOSED}
+CB_FAIL_COUNT=${CB_FAIL_COUNT}
+CB_LAST_SIGNATURE=${CB_LAST_SIGNATURE}
+CB_LAST_UPDATED=$(date +%s)
+CB_EOF
+}
+
+check_circuit() {
+  load_circuit_state
+  if [[ "${CIRCUIT_BREAKER}" != "true" ]]; then return 0; fi
+  local now
+  now=$(date +%s)
+  case "${CB_STATE:-CLOSED}" in
+    OPEN)
+      local elapsed=$(( now - ${CB_LAST_UPDATED:-0} ))
+      if [[ "${elapsed}" -ge "${CIRCUIT_COOLDOWN}" ]]; then
+        CB_STATE="HALF_OPEN"
+        emit_log "INFO" "circuit_state_change" "from" "OPEN" "to" "HALF_OPEN" "reason" "cooldown_elapsed"
+        save_circuit_state
+        return 0
+      fi
+      emit_log "WARN" "circuit_open" "remaining_cooldown" "$((CIRCUIT_COOLDOWN - elapsed))"
+      return 1
+      ;;
+    HALF_OPEN|CLOSED)
+      return 0
+      ;;
+  esac
+}
+
+record_circuit_failure() {
+  local signature="$1"
+  if [[ "${CIRCUIT_BREAKER}" != "true" ]]; then return; fi
+  if [[ "${signature}" == "${CB_LAST_SIGNATURE}" ]]; then
+    CB_FAIL_COUNT=$((CB_FAIL_COUNT + 1))
+  else
+    CB_FAIL_COUNT=1
+    CB_LAST_SIGNATURE="${signature}"
+  fi
+  if [[ "${CB_STATE:-CLOSED}" == "HALF_OPEN" ]]; then
+    CB_STATE="OPEN"
+    emit_log "WARN" "circuit_state_change" "from" "HALF_OPEN" "to" "OPEN" "signature" "${signature}"
+  elif [[ "${CB_FAIL_COUNT}" -ge "${CIRCUIT_THRESHOLD}" ]]; then
+    CB_STATE="OPEN"
+    emit_log "WARN" "circuit_state_change" "from" "CLOSED" "to" "OPEN" "signature" "${signature}" "count" "${CB_FAIL_COUNT}"
+  fi
+  save_circuit_state
+}
+
+record_circuit_success() {
+  if [[ "${CIRCUIT_BREAKER}" != "true" ]]; then return; fi
+  if [[ "${CB_STATE:-CLOSED}" != "CLOSED" ]]; then
+    emit_log "INFO" "circuit_state_change" "from" "${CB_STATE}" "to" "CLOSED" "reason" "success"
+  fi
+  CB_STATE="CLOSED"
+  CB_FAIL_COUNT=0
+  CB_LAST_SIGNATURE=""
+  save_circuit_state
+}
+
 #--- Graceful shutdown (SIGINT/SIGTERM) ---
 SHUTDOWN=0
 cleanup() {
-  echo "[SIGNAL] Caught signal — writing state and exiting"
+  echo "[SIGNAL] Caught signal — initiating graceful shutdown"
   SHUTDOWN=1
+
+  # Step 1: State snapshot
   local tmp
   tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
   cat > "${tmp}" <<STATE_EOF
@@ -138,7 +240,24 @@ ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
 ITER_BRANCH=${ITER_BRANCH:-}
 STATE_EOF
   mv "${tmp}" "${LOOP_DIR}/state.env"
+  shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
+
+  # Step 2: Partial results summary
+  {
+    echo ""
+    echo "## Iteration ${ITER} — INTERRUPTED"
+    echo "- Signal: graceful shutdown"
+    echo "- Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    echo "- Last verify: ${VERIFY_RESULT:-N/A}"
+    echo "- Partial work preserved for resume"
+  } >> "${LOOP_DIR}/progress.md"
+
+  # Step 3: Structured log
+  emit_log "WARN" "graceful_shutdown" "iteration" "${ITER}" "verify" "${VERIFY_RESULT:-N/A}"
+
+  # Step 4: Cleanup
   rm -f "${LOOP_DIR}/.run-loop.lock"
+  echo "[SIGNAL] State saved — safe to resume from iteration ${ITER}"
   exit 130
 }
 trap cleanup SIGINT SIGTERM
@@ -245,6 +364,24 @@ COMMIT_HASH="no-commit"
 while [[ "${STATUS}" != "DONE" ]] && [[ "${ITER}" -le "${MAX_ITERATIONS}" ]]; do
   [[ "${SHUTDOWN}" -eq 1 ]] && break
 
+  # Circuit breaker gate
+  if ! check_circuit; then
+    echo "[CIRCUIT:OPEN] Execution blocked — waiting for cooldown or manual reset" | tee -a "${LOOP_DIR}/runner.log"
+    STATUS="BLOCKED"
+    state_tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+    cat > "${state_tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=BLOCKED
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
+STATE_EOF
+    mv "${state_tmp}" "${LOOP_DIR}/state.env"
+    shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
+    emit_log "ERROR" "circuit_breaker_block" "state" "OPEN"
+    break
+  fi
+
   ITER_START=$(date +%s)
   VERIFY_RESULT="N/A"
   COMMIT_HASH="no-commit"
@@ -287,18 +424,39 @@ STATE_EOF
   fi
   rotate_log
 
-  #--- Bounded retry execution ---
+  #--- Bounded retry execution with error classification ---
   EXEC_SUCCESS=false
   RETRY_COUNT=0
+  LAST_EXIT_CODE=0
   while [[ "${RETRY_COUNT}" -lt "${RETRY_LIMIT}" ]]; do
-    if portable_timeout "${EFFECTIVE_TIMEOUT}" ${EXEC_CMD} 2>&1 | tee -a "${LOOP_DIR}/runner.log"; then
+    LAST_EXIT_CODE=0
+    portable_timeout "${EFFECTIVE_TIMEOUT}" ${EXEC_CMD} 2>&1 | tee -a "${LOOP_DIR}/runner.log" || LAST_EXIT_CODE=$?
+
+    if [[ "${LAST_EXIT_CODE}" -eq 0 ]]; then
       EXEC_SUCCESS=true
+      record_circuit_success
+      emit_log "INFO" "exec_success" "attempt" "$((RETRY_COUNT + 1))"
       break
     fi
+
+    # Error classification: permanent errors skip retry
+    ERROR_SIG="exit_${LAST_EXIT_CODE}"
+    case "${LAST_EXIT_CODE}" in
+      126|127) # permission denied / command not found
+        emit_log "ERROR" "permanent_failure" "exit_code" "${LAST_EXIT_CODE}" "category" "PERMANENT"
+        record_circuit_failure "${ERROR_SIG}"
+        break
+        ;;
+    esac
+
     RETRY_COUNT=$((RETRY_COUNT + 1))
+    record_circuit_failure "${ERROR_SIG}"
+    emit_log "WARN" "exec_retry" "attempt" "${RETRY_COUNT}" "exit_code" "${LAST_EXIT_CODE}" "category" "TRANSIENT"
+
     if [[ "${RETRY_COUNT}" -lt "${RETRY_LIMIT}" ]]; then
-      BACKOFF=$((RETRY_BACKOFF_BASE ** RETRY_COUNT))
-      echo "[RETRY] Attempt ${RETRY_COUNT}/${RETRY_LIMIT} failed — waiting ${BACKOFF}s"
+      JITTER=$((RANDOM % (RETRY_BACKOFF_BASE ** RETRY_COUNT / 2 + 1)))
+      BACKOFF=$((RETRY_BACKOFF_BASE ** RETRY_COUNT + JITTER))
+      echo "[RETRY] Attempt ${RETRY_COUNT}/${RETRY_LIMIT} failed (exit=${LAST_EXIT_CODE}) — waiting ${BACKOFF}s"
       sleep "${BACKOFF}"
     fi
   done
@@ -391,6 +549,11 @@ STATE_EOF
   if [[ "${NOTIFY_ENABLED}" == "true" ]] && [[ -f "${LOOP_DIR}/notify.sh" ]]; then
     bash "${LOOP_DIR}/notify.sh" "${ITER}" "${STATUS}" "${VERIFY_RESULT}" "${ITER_DURATION}" "${LOOP_DIR}" "${COMMIT_HASH}" || true
   fi
+
+  emit_log "INFO" "iteration_complete" \
+    "status" "${STATUS}" "verify" "${VERIFY_RESULT}" \
+    "commit" "${COMMIT_HASH}" "duration" "${ITER_DURATION}" \
+    "retries" "${RETRY_COUNT}" "exit_code" "${LAST_EXIT_CODE}"
 
   echo "[ITER ${ITER}] status=${STATUS} verify=${VERIFY_RESULT} commit=${COMMIT_HASH} duration=${ITER_DURATION}s"
   ITER=${NEXT_ITER}
@@ -493,6 +656,8 @@ FINAL_STATUS="${STATUS}"
 if [[ "${FINAL_STATUS}" != "DONE" ]]; then
   FINAL_STATUS="CONTINUE"
 fi
+emit_log "INFO" "loop_complete" "final_status" "${FINAL_STATUS}" "iterations" "$((ITER - 1))" "max" "${MAX_ITERATIONS}"
+
 echo ""
 echo "NEXUS_LOOP_STATUS: ${FINAL_STATUS}"
 echo "NEXUS_LOOP_SUMMARY: Iteration ${ITER}/${MAX_ITERATIONS}, status=${STATUS}, verify=${VERIFY_RESULT}"

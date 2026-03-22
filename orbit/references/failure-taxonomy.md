@@ -74,6 +74,29 @@ The runner or executor cannot make progress.
 | `EXEC_TIMEOUT` exceeded | retry once, then `P1` | increase timeout or enable adaptive timeout |
 | deterministic non-zero exit | apply retry policy once | escalate to Builder if repeatable |
 | `RETRY_LIMIT` exhausted | classify `P1`, record `BLOCKED` | investigate via `ORBIT_TO_SCOUT_HANDOFF` |
+| circuit breaker `OPEN` | classify `P1`, record `BLOCKED` | cooldown or manual reset via `recover.sh --reset-circuit` |
+
+### Retry Policy by Error Type
+
+Errors are classified into two categories for retry policy:
+
+| Category | Examples | Retry behavior | Backoff |
+|----------|----------|----------------|---------|
+| `TRANSIENT` | network timeout, DNS failure, API rate limit, OOM (after cleanup), `EXEC_TIMEOUT` exceeded | retry up to `RETRY_LIMIT` | exponential with jitter: `base^attempt + random(0, base^attempt * 0.5)` |
+| `PERMANENT` | permission/token error, invalid input, deterministic non-zero exit, schema violation | no retry; escalate immediately | — |
+
+Detection heuristics:
+
+| Signal | Category | Rationale |
+|--------|----------|-----------|
+| exit code `124` (timeout) | `TRANSIENT` | timeout is environment-dependent |
+| exit code `1` on consecutive identical input | `PERMANENT` | deterministic failure |
+| exit code `137` (OOM killed) | `TRANSIENT` | memory pressure may be temporary |
+| HTTP `429`, `502`, `503` in stderr | `TRANSIENT` | server-side rate limit or outage |
+| HTTP `401`, `403` in stderr | `PERMANENT` | credentials or permissions issue |
+| identical error message `3` consecutive times | `PERMANENT` | upgrade from transient to permanent |
+
+When a `TRANSIENT` error is retried `3` consecutive times with the same error signature, it is reclassified as `PERMANENT` and the circuit breaker is engaged (see SKILL.md § Circuit Breaker).
 
 ## Severity Priority
 
@@ -90,6 +113,8 @@ ORBIT_FAILURE_REPORT:
   class: "<taxonomy class>"
   severity: "P0|P1|P2"
   sub_class: "<specific signal>"
+  retry_category: "TRANSIENT|PERMANENT"
+  circuit_state: "CLOSED|HALF_OPEN|OPEN"
   evidence:
     - "<file:line>"
   impact: "<what breaks>"
@@ -118,3 +143,19 @@ ORBIT_FAILURE_REPORT:
 - `P0` always preempts `P1` and `P2`.
 - Use one handoff at a time.
 - Record remaining issues as pending issues for the next audit cycle.
+
+## Circuit Breaker Integration
+
+When the same failure signature (class + sub_class + error message hash) occurs `3` times:
+
+| State | Condition | Behavior |
+|-------|-----------|----------|
+| `CLOSED` | `< 3` consecutive same-signature failures | normal retry policy applies |
+| `HALF_OPEN` | exactly `3` consecutive same-signature failures | allow one probe execution; if it fails, transition to `OPEN` |
+| `OPEN` | `> 3` consecutive same-signature failures or probe failed | stop execution, emit `BLOCKED` status, require manual reset or cooldown |
+
+Cooldown: `OPEN` state auto-transitions to `HALF_OPEN` after `CIRCUIT_COOLDOWN` seconds (default: `300`).
+
+Reset: manual reset via `recover.sh --reset-circuit` or by clearing `${LOOP_DIR}/.circuit-state`.
+
+Reporting: circuit breaker state changes are logged in the structured log (see `script-template-runner.md § Structured Logging`).
