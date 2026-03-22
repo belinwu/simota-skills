@@ -237,6 +237,30 @@ semanticTokens: {
 - Prefer central token imports over ad hoc constants.
 - Do not bypass tokens inside component files.
 
+## Typography Selection Rules
+
+When defining typography tokens, the display typeface must be intentionally chosen. See [typography-selection-guide.md](~/.claude/skills/muse/references/typography-selection-guide.md) for the full selection process.
+
+**Banned display fonts:** Inter, Roboto, Arial — these signal "generic AI template" and provide zero brand differentiation. System fonts are acceptable for body text only.
+
+## Token Role Mapping
+
+Map semantic color tokens to these standard roles for consistent cross-project usage:
+
+| Role | Token | Purpose |
+|------|-------|---------|
+| Background | `--color-bg-*` | Page and section backgrounds |
+| Surface | `--color-surface-*` | Raised containers, cards, panels |
+| Primary text | `--color-text-primary` | Headings, body text, high-emphasis content |
+| Muted text | `--color-text-muted` | Secondary information, metadata, helper text |
+| Accent | `--color-accent-*` | CTAs, links, active states, key focal points |
+
+Rules:
+- Every project must define all 5 roles before component work begins.
+- Accent tokens should be used sparingly — only on interactive or focal elements.
+- Surface tokens create visual hierarchy through subtle background shifts, not borders.
+- Muted text must still meet WCAG AA contrast ratios (4.5:1 for normal text).
+
 ## Code Standards
 
 ### Good Muse Code

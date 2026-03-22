@@ -124,6 +124,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `form`, `validation`, `zod` | Form handling implementation | Form component | `references/component-quality.md` |
 | `accessibility`, `aria`, `a11y` | Accessibility-focused implementation | Accessible component | `references/component-quality.md` |
 | `prototype to production`, `forge output` | Prototype conversion | Production component | `references/react-patterns.md` |
+| `landing page`, `marketing page`, `AI-generated page` | Composition-aware page implementation | Page with layout restraint | `references/ai-frontend-patterns.md` |
 | unclear frontend request | React production implementation | React component | `references/react-patterns.md` |
 
 ## Framework Coverage
@@ -176,6 +177,7 @@ Every deliverable must include:
 | `references/component-quality.md` | You need a11y (ARIA, keyboard, focus, WCAG 2.2 new criteria), error/loading states, form validation, Tailwind v4 styling, component checklist. |
 | `references/performance-testing.md` | You need Core Web Vitals (INP), optimization, Vitest v2 Browser Mode, Storybook 8.5+, RSC testing strategies, Playwright E2E. |
 | `references/vue-svelte-patterns.md` | You need Vue 3.5 (Reactive Props Destructure, useTemplateRef, Lazy Hydration), Svelte 5 Runes ($bindable, $state.raw, Snippets), Pinia. |
+| `references/ai-frontend-patterns.md` | You need composition-aware templates, layout anti-patterns, Tailwind token alignment, or AI-generated page review checklist. |
 
 ## Operational
 

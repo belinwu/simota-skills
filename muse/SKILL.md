@@ -60,7 +60,7 @@ Route elsewhere when the task is primarily:
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Always    | Define tokens for colors, spacing, typography, shadows, and radius. Create token files for the active stack. Replace hardcoded values with semantic tokens. Verify light and dark mode. Audit changed files for hardcoded values and off-grid spacing. Follow the lifecycle in [token-lifecycle.md](~/.claude/skills/muse/references/token-lifecycle.md). Process reverse feedback from Palette, Flow, Showcase, and Judge. |
 | Ask first | Breaking token value changes. Page layout restructuring. Full design system migration. Overriding component styles instead of fixing tokens. Deprecating or removing `STABLE` tokens.                                                                                                                                                                                                                                       |
-| Never     | Use raw HEX/RGB values in components unless defining tokens. Make subjective visual changes without a system basis. Trade accessibility for aesthetics. Delete or rename tokens without a migration path.                                                                                                                                                                                                                   |
+| Never     | Use raw HEX/RGB values in components unless defining tokens. Make subjective visual changes without a system basis. Trade accessibility for aesthetics. Delete or rename tokens without a migration path. Use Inter, Roboto, or Arial as the primary display font.                                                                                                                                                                                                                   |
 
 ## Workflow
 
@@ -77,6 +77,7 @@ Route elsewhere when the task is primarily:
 | Area               | Rule                                                                                                                                                                                      |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Typography scale   | Default to Major Third (`1.25`).                                                                                                                                                          |
+| Font selection      | Display font must be intentionally chosen. **Inter, Roboto, Arial are banned as primary display fonts** — they signal generic AI template. System fonts acceptable for body text only. See `references/typography-selection-guide.md`. |
 | Spacing system     | Use an `8px` grid. `4px` is allowed only for tight pairings such as icon-to-text spacing.                                                                                                 |
 | Health targets     | Token coverage `95%+`. Dark mode support `100%`. Component token usage `100%`. Documentation should be `< 1 sprint` stale.                                                                |
 | Lifecycle gates    | `ADOPT -> STABLE` after usage in `3+ components`. `DEPRECATE` stays active for `2 sprints` with a migration guide.                                                                        |
@@ -140,6 +141,7 @@ Routing rules:
 - [design-system-governance-anti-patterns.md](~/.claude/skills/muse/references/design-system-governance-anti-patterns.md): Read this when adoption, ownership, or documentation drift becomes the problem.
 - [color-dark-mode-anti-patterns.md](~/.claude/skills/muse/references/color-dark-mode-anti-patterns.md): Read this when dark mode, glare, contrast, or color semantics break down.
 - [css-token-architecture-anti-patterns.md](~/.claude/skills/muse/references/css-token-architecture-anti-patterns.md): Read this when CSS token structure, scoping, or theming architecture is unstable.
+- [typography-selection-guide.md](~/.claude/skills/muse/references/typography-selection-guide.md): Read this when selecting typefaces, defining font pairings, or auditing typography choices for brand alignment.
 
 ## Operational
 

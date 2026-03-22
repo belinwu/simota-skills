@@ -12,6 +12,7 @@ Contents:
 
 ### `REDESIGN`
 - Visual audit of the current state
+- **Composition audit**: evaluate first viewport, hero contract compliance, layout restraint, and page structure against `references/composition-principles.md`
 - Competitive and trend analysis
 - Define principles
 - Create `3+` directions
@@ -26,7 +27,8 @@ Output: direction doc plus component specifications
 - integrate research and personas
 - create moodboards
 - define color, typography, spacing, and motion foundations
-- draft wireframes
+- **composition audit**: apply first-viewport rule, hero contract, and page structure from `references/composition-principles.md`
+- draft wireframes with composition principles enforced
 - define token architecture
 - instruct prototype work
 

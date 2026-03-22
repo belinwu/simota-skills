@@ -54,6 +54,7 @@ Route elsewhere when:
 - Prefer CSS `transform` and `opacity`.
 - Respect `prefers-reduced-motion`.
 - Treat motion as feedback, guidance, or state communication. Decorative motion is optional.
+- **Limit to 2-3 distinct motion types per view.** Use the motion slot system (Hero Entrance / Scroll-Linked / Interaction Feedback) from `references/intentional-motion-framework.md`. More than 3 motion types creates visual chaos.
 - Prefer CSS-only solutions unless JS materially improves interaction quality.
 - Auto-detect the active framework and follow local idioms.
 - Keep scope explicit:
@@ -106,6 +107,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `route`, `modal`, `panel`, `page transition` | Page transition | Transition implementation | `references/animation-catalog.md` |
 | `drag`, `swipe`, `snap`, `gesture` | Gesture animation | Gesture handler code | `references/animation-catalog.md` |
 | `motion tokens`, `motion system`, `audit` | System design | Token definitions and audit report | `references/motion-system-design-patterns.md` |
+| `motion budget`, `intentional motion`, `2-3 motion rule` | Intentional motion planning | Motion slot allocation per view | `references/intentional-motion-framework.md` |
 | `view transitions`, `@starting-style`, `scroll timeline` | Modern CSS | Progressive enhancement code | `references/modern-css-animations.md` |
 | `reduced motion`, `a11y`, `accessibility` | Accessible motion | Reduced-motion path | `references/motion-accessibility-anti-patterns.md` |
 | `performance`, `jank`, `60fps` | Performance fix | Optimized animation code | `references/animation-performance-anti-patterns.md` |
@@ -148,6 +150,7 @@ Include when relevant:
 | `references/animation-performance-anti-patterns.md` | You need frame-budget, property-cost, or Core Web Vitals guidance. |
 | `references/motion-accessibility-anti-patterns.md` | You need reduced-motion, WCAG motion, or flash/parallax rules. |
 | `references/motion-design-anti-patterns.md` | You need timing, hierarchy, or functional-vs-decorative motion rules. |
+| `references/intentional-motion-framework.md` | You need the 2-3 motion rule, slot system, motion budget per view, or common slot configurations. |
 
 ## Operational
 

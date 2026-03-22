@@ -396,6 +396,57 @@ These indicate likely FAIL without full evaluation:
 
 ---
 
+## Composition Test
+
+Quick evaluation for visual composition quality. Run this before or alongside V.A.I.R.E. evaluation when reviewing designs, landing pages, or AI-generated frontends.
+
+### 6-Point Litmus Test
+
+| # | Question | Dimension |
+|---|----------|-----------|
+| 1 | Is the brand clear within 2 seconds? | Identity |
+| 2 | Is there a single visual anchor in the first viewport? | Value |
+| 3 | Do the headlines tell a story without the rest of the page? | Value |
+| 4 | Does each section have exactly one job? | Value |
+| 5 | Are cards actually needed, or just filling space? | Identity |
+| 6 | Is motion purposeful or just present? | Echo |
+
+**Score:** 6/6 = proceed · 4-5/6 = fix gaps · ≤3/6 = significant revision needed
+
+### Rejection Criteria
+
+| Pattern | Severity | Dimension | Action |
+|---------|----------|-----------|--------|
+| Generic SaaS grid (first viewport is card/stat/icon grid) | **FAIL** | Identity | Redesign hero with composition principles |
+| Beautiful images, weak brand (generic visuals, no product connection) | CONDITIONAL | Identity + Value | Replace with product-specific imagery |
+| Strong headlines, no action (missing or weak CTAs) | **FAIL** | Value | Add clear primary CTA per viewport |
+| Busy images behind text (complex images without contrast treatment) | **FAIL** | Resilience | Add overlay or move text outside image |
+| Carousels without narrative (arbitrary slide order) | CONDITIONAL | Agency + Value | Replace with single strong content or narrative sequence |
+| Stacked cards as layout (entire page built from cards) | CONDITIONAL | Identity + Value | Remove cards from static content, use spacing |
+
+→ Full details: `references/design-litmus-check.md`
+
+---
+
+## Visual Identity Quick Check
+
+Fast check for design identity and differentiation, complementing the full Identity dimension evaluation.
+
+| Check | Pass Criteria |
+|-------|---------------|
+| **Brand Recognition** | Remove the logo — is the brand still identifiable from color, typography, and visual style? |
+| **Template Differentiation** | Could this design belong to a competitor? If yes, identity is weak |
+| **Font Intentionality** | Is the display font intentionally chosen (not Inter/Roboto/Arial)? |
+| **Color Purposefulness** | Does the color palette reinforce the brand personality, or is it generic blue/gray? |
+| **Visual Anchor** | Does the first viewport have a single dominant visual element? |
+
+**Scoring:** Integrate results into the Identity dimension of V.A.I.R.E. scorecard:
+- 5/5 passes → Identity score ≥ 2 (from visual perspective)
+- 3-4/5 passes → Identity score at risk, document gaps
+- ≤2/5 passes → Identity likely fails, return to Vision
+
+---
+
 ## Re-Evaluation Triggers
 
 When to request Warden re-evaluation:

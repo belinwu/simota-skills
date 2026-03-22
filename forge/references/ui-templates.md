@@ -106,6 +106,53 @@ const MOCK_PRODUCTS: Product[] = [
 
 ---
 
+## Composition-Aware Page Template
+
+Use this template instead of the default card layout when prototyping landing pages or marketing sites.
+
+```tsx
+// components/prototypes/LandingPage.tsx
+interface LandingPageProps {
+  hero: {
+    headline: string;
+    subline: string;
+    ctaLabel: string;
+    ctaHref: string;
+    imageSrc: string;
+    imageAlt: string;
+  };
+  sections: Array<{
+    purpose: string;
+    headline: string;
+    content: React.ReactNode;
+    background?: 'base' | 'raised';
+  }>;
+  finalCta: {
+    headline: string;
+    ctaLabel: string;
+    ctaHref: string;
+  };
+}
+
+// Structure: Hero → Support → Detail → Final CTA
+// Each section has a named purpose
+// No default card grids — use spacing and typography for hierarchy
+```
+
+### Card Usage Note
+
+**Cards are NOT a layout tool.** In prototypes:
+- Use cards only for interactive, actionable items (products, projects, settings)
+- Do NOT wrap static features or benefits in cards
+- Use spacing (`py-12` / `py-16`) and background color (`bg-gray-50`) for section separation
+- Default to text sections with clear typography hierarchy
+
+When a card grid seems like the answer, ask: "Is each item individually clickable or comparable?" If not, cards are wrong.
+
+→ Full composition principles: `vision/references/composition-principles.md`
+
+---
+
 ## Loading and Error States
 
 ```tsx

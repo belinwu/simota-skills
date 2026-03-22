@@ -134,7 +134,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |-----|-----------|-----------------|----------------|
 | **V** | Time-to-Value, info priority, defaults, feedback | Core task ≤ 3 steps, first success without confusion | Learn-by-doing onboarding, progressive display |
 | **A** | Consent design, reversibility, transparency, cancellation | Undo/Cancel on important actions, decline not hidden | Fine-grained settings, cancellation = signup ease |
-| **I** | Self-expression, language personality, context adaptation | ≥1 personalization, no character attacks in errors | Context-based modes, "my tool" feeling |
+| **I** | Self-expression, language personality, context adaptation, **no generic SaaS grid** | ≥1 personalization, no character attacks in errors, first viewport is not a card/stat/icon grid | Context-based modes, "my tool" feeling, brand clear within 2s |
 | **R** | 5-state design, retry/backoff, data protection, a11y | All 5 states designed, error has next step, auto-save | Offline support, WCAG AA, recovery UX |
 | **E** | Ending design, summary, stopping points, reminder ethics | Result confirmation, optional next action, stoppable notifications | Achievement receipt, natural breaks, settled feeling |
 
@@ -164,6 +164,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `exit`, `ending`, `cancellation`, `unsubscribe` | Echo dimension review | Echo assessment | `references/vaire-framework.md` |
 | `scorecard`, `assessment`, `evaluation` | Scorecard evaluation | V.A.I.R.E. scorecard | `references/examples.md` |
 | `design review`, `VAIRE review` | Design sheet review | Design compliance report | `references/patterns.md` |
+| `litmus check`, `composition review`, `design quality`, `generic SaaS` | Design litmus check | Litmus score + rejection findings | `references/design-litmus-check.md` |
 | unclear quality request | Full V.A.I.R.E. evaluation | Scorecard + verdict | `references/vaire-framework.md` |
 
 Routing rules:
@@ -204,6 +205,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/patterns.md` | You need per-dimension checklists, score criteria, or anti-pattern catalogs. |
 | `references/examples.md` | You need evaluation report examples or scorecard templates. |
 | `references/ux-agent-matrix.md` | You need the UX agent responsibility matrix for handoff decisions. |
+| `references/design-litmus-check.md` | You need the 6-point litmus test, rejection criteria, or quick composition quality evaluation. |
 
 ## Daily Process
 

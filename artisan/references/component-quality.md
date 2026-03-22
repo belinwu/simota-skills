@@ -269,7 +269,55 @@ const Button = ({ variant = 'primary', size = 'md', className, children }: Butto
 
 ---
 
-## 6. Component Checklist
+## 6. Layout Restraint Rules
+
+When building page-level components or landing pages, enforce these composition constraints to avoid generic AI-generated layouts.
+
+### Card Usage
+
+- **Do NOT default to card grids** for features, benefits, or static content
+- Cards are for **interactive, actionable, comparable items** only (products, projects, settings groups)
+- If content is static text, use sections with spacing and typography hierarchy instead
+
+### Section Purpose
+
+- **1 section = 1 purpose** — if a section serves two jobs, split it
+- Every `<section>` should have a nameable purpose (e.g., "hero", "social-proof", "features", "final-cta")
+- Use `data-purpose` attribute for auditability
+
+```tsx
+// DO: Named purpose, no unnecessary card wrapper
+<section data-purpose="features" className="py-16 px-6">
+  <div className="max-w-5xl mx-auto space-y-12">
+    <h2>Features that matter</h2>
+    {/* Feature descriptions as text sections, NOT cards */}
+  </div>
+</section>
+
+// DON'T: Card grid default
+<section className="py-16 px-6">
+  <div className="grid grid-cols-3 gap-6">
+    <div className="rounded-lg border p-6">Feature 1</div>
+    <div className="rounded-lg border p-6">Feature 2</div>
+    <div className="rounded-lg border p-6">Feature 3</div>
+  </div>
+</section>
+```
+
+### Layout Anti-Patterns to Reject
+
+| Pattern | Code Signal | Fix |
+|---------|------------|-----|
+| Card grid in hero | `grid grid-cols-3` at page top | Single hero composition |
+| Pill cluster | `flex flex-wrap gap-2` with short text | Categorized list or text group |
+| Stat strip | 3-4 sibling `<div>` with large numbers | Stats in narrative context |
+| Icon row | `grid grid-cols-4` with icon + text | Feature sections with descriptions |
+
+→ Full patterns: `references/ai-frontend-patterns.md`
+
+---
+
+## 7. Component Checklist
 
 ### Functionality
 - [ ] All props typed with TypeScript

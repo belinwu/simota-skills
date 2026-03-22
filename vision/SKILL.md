@@ -51,6 +51,7 @@ Route elsewhere when the task is primarily:
 | `NEW_PRODUCT`       | creating a visual system from scratch                 | design-system foundation plus wireframes |
 | `REVIEW`            | auditing existing design quality and gaps             | improvement report plus action items     |
 | `TREND_APPLICATION` | applying current trends to an existing product        | trend plan plus before/after concepts    |
+| `LINEAR_RESTRAINT`  | designing calm, minimal, high-confidence UI (Linear-style) | restrained direction doc plus token constraints |
 
 
 ## Core Contract
@@ -169,6 +170,8 @@ Routing rules:
 | [design-handoff-collaboration.md](~/.claude/skills/vision/references/design-handoff-collaboration.md) | you need handoff readiness, state coverage, or dev-collaboration rules         |
 | [design-review-feedback.md](~/.claude/skills/vision/references/design-review-feedback.md)             | you need critique structure, review cadence, or feedback quality rules         |
 | [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md)                                      | role boundaries are ambiguous                                                  |
+| [composition-principles.md](~/.claude/skills/vision/references/composition-principles.md)             | you need first-viewport rules, hero contract, layout restraint, image strategy, or page structure |
+| [linear-restraint-mode.md](~/.claude/skills/vision/references/linear-restraint-mode.md)               | you need Linear-style restraint: calm surfaces, minimal chrome, card usage rules, or app vs marketing guidance |
 | [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md)                                    | you need journal, activity log, AUTORUN, Nexus, or shared operational defaults |
 
 ## Operational

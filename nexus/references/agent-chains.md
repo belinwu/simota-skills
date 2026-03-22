@@ -257,6 +257,12 @@ Complete chain templates and dynamic adjustment rules.
 | GAME | first-principles | Flux → Quest → Saga → Matrix → Scribe |
 | GHA_WORKFLOW | matrix | Matrix → Pipe → Gear → Radar |
 | DESIGN_SYSTEM | matrix | Matrix → Vision → Muse → Showcase → Artisan → Radar |
+| DESIGN | landing-page | Vision → Prose → Sherpa → Muse → Forge → Artisan → Warden → Radar |
+| DESIGN | app-ui-restrained | Vision → Sherpa → Muse → Artisan → Flow → Warden → Radar |
+| DESIGN | moodboard-first | Forge → Vision → Sherpa → Muse → Artisan → Radar |
+| UX_DESIGN | content-first | Prose → Vision → Sherpa → Muse → Forge → Artisan → Warden |
+| UX_DESIGN | motion-intentional | Vision → Flow → Artisan → Warden → Radar |
+| DESIGN_SYSTEM | composition | Vision → Sherpa → Muse → Artisan → Flow → Warden → Showcase → Quill |
 | STRATEGY | compete-reframe | Flux → Compete → Matrix → Spark → Scribe |
 | STRATEGY | ab-matrix | Matrix → Experiment → Builder → Radar |
 | SPEC_VERIFY | matrix | Matrix → Attest → Scribe → Radar |
@@ -324,6 +330,13 @@ Builder then applies:
 - Content needs A/B testing across segments → Add Matrix before Prose
 - Remediation of known pattern → Replace Scout with Mend
 - Ecosystem health check → Add Gauge
+- Landing page or marketing site → Use DESIGN/landing-page chain (includes Prose for content-first approach)
+- App UI with "clean" or "minimal" requirement → Use DESIGN/app-ui-restrained chain
+- Visual direction unclear → Add Forge with moodboard mode before Vision
+- Content strategy needed → Add Prose before or after Vision
+- First viewport has cards/stats/metadata → Warden litmus check triggers composition review
+- Design chain spans 5+ agents with implementation (Muse/Forge/Artisan) → Add Sherpa after Vision/Prose direction phase to decompose into atomic steps before implementation begins
+- Warden FAIL triggers redesign loop → Add Sherpa to re-decompose revised scope before re-entering implementation agents
 
 ### Rally Parallel Escalation Triggers
 

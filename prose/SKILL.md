@@ -121,6 +121,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **3. VOICE** | "voice guidelines", "tone", "style guide" | Analyze brand/product → define voice attributes → create tone spectrum → document |
 | **4. ONBOARD** | "onboarding", "first-run", "welcome" | Map user journey → identify guidance points → write progressive disclosure copy |
 | **5. A11Y** | "accessibility text", "screen reader", "ARIA" | Audit interactive elements → write ARIA labels → create screen reader text |
+| **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first" | Write headlines before layout → apply 30% cut rule → align copy with composition |
 
 ## Output Routing
 
@@ -196,6 +197,7 @@ Every deliverable must include:
 | `references/voice-tone-framework.md` | You need voice attributes, tone spectrum, conversational UI tone, or style guide structure. |
 | `references/onboarding-copy-patterns.md` | You need progressive disclosure, first-run experience, or feature introduction patterns. |
 | `references/accessibility-text-guide.md` | You need alt text rules, ARIA label patterns, screen reader text, or WCAG 2.2 criteria. |
+| `references/content-strategy-design.md` | You need product language principles, 30% cut rule, copy-first design process, hero copy contract, or content-composition alignment. |
 
 ---
 

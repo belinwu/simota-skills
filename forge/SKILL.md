@@ -86,6 +86,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
+| `moodboard`, `visual direction`, `design exploration` | Moodboard mode | 3+ moodboard variants + evaluation | `references/moodboard-workflow.md` |
 | `component`, `widget`, `state pattern` | UI Component mode | Component file + mock data | `references/ui-templates.md` |
 | `page`, `flow`, `journey`, `screen` | Page/Flow mode | Route/page + minimal states | `references/ui-templates.md` |
 | `api mock`, `MSW`, `mock server` | API Mock mode | handlers.ts or mock fetch wrapper | `references/api-mocking.md` |
@@ -125,6 +126,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `references/prototype-to-production.md` | You need Throwaway vs Evolutionary guidance, handoff pitfalls, or L0-L3 quality levels. |
 | `references/rapid-iteration-methodology.md` | You need fast iteration tactics, demo structure, or pivot rules. |
 | `references/ai-assisted-prototyping.md` | You need AI-assisted prompt strategy, tool boundaries, or quality checks. |
+| `references/moodboard-workflow.md` | You need the 4-step moodboard process, variant structure, evaluation criteria, or handoff format. |
 
 ## Operational
 

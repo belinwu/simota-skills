@@ -39,11 +39,21 @@ Contents:
 ### Recommendation
 [Selected option and justification]
 
+### Composition Strategy
+
+| Aspect | Decision | Rationale |
+|--------|----------|-----------|
+| First Viewport | [single composition description] | [why this hero approach] |
+| Hero Visual | [image strategy: real photo / custom illustration / etc.] | [brand alignment notes] |
+| Layout Approach | [card usage policy, section strategy] | [restraint level and rationale] |
+| Page Flow | [Hero → Support → Detail → CTA or custom] | [narrative reasoning] |
+| Motion Budget | [which 2-3 motion slots are filled] | [intentionality notes] |
+
 ### Token Foundation
 | Area | Decision | Notes |
 |------|----------|-------|
 | Color | [palette approach] | [reason] |
-| Typography | [type system] | [reason] |
+| Typography | [type system — must not default to Inter/Roboto/Arial for display] | [reason] |
 | Spacing | [grid or scale] | [reason] |
 | Motion | [style] | [reason] |
 
