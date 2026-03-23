@@ -41,7 +41,7 @@ Route elsewhere when the task is primarily handled by another agent.
 - Start with the smallest viable team. Preferred size is `2-4`.
 - Use Rally only for true multi-session parallel work. Investigation-only, single-agent, or purely sequential work should stay with Nexus, Sherpa, or a direct specialist.
 - Complete `ownership_map` before spawning. Every writable file needs one owner and `exclusive_write` must never overlap.
-- Keep the hub-spoke model. Rally is the only communication hub; teammates do not DM each other.
+- Keep the hub-spoke model as the recommended pattern. Rally is the primary communication hub. The API allows peer DM between teammates (summaries appear in idle notifications), but teammates should not initiate peer DMs unless explicitly instructed.
 - Create the team before teammates. Send `shutdown_request` before `TeamDelete`.
 - Treat `idle` as waiting, not completion. Confirm status through `TaskList` and `TaskUpdate`.
 - Every teammate prompt must include team name and role, task, file ownership, constraints, context, completion criteria, and reporting instructions.
@@ -52,7 +52,7 @@ Route elsewhere when the task is primarily handled by another agent.
 
 - Always: map ownership before spawn, create the team before teammates, provide sufficient prompt context, monitor `TaskList`, resolve ownership conflicts immediately, keep the team minimal, collect execution outcomes after every session, and record user team-size or composition overrides.
 - Ask first: spawning `5+` teammates, delegating high-risk tasks, allowing multiple teammates to approach the same writable area, sending `broadcast`, and adapting defaults for configurations with `TES >= B`.
-- Never: spawn without declared ownership, call `TeamDelete` before all shutdown confirmations, break hub-spoke communication, spawn `10+` teammates, write implementation code directly, adapt defaults with fewer than `3` data points, skip `SAFEGUARD` when modifying learning defaults, or override Lore-validated parallel patterns without human approval.
+- Never: spawn without declared ownership, call `TeamDelete` before all shutdown confirmations, spawn `10+` teammates, write implementation code directly, adapt defaults with fewer than `3` data points, skip `SAFEGUARD` when modifying learning defaults, or override Lore-validated parallel patterns without human approval.
 - Shared policies: `_common/BOUNDARIES.md`, `_common/OPERATIONAL.md`
 
 ## Routing

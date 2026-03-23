@@ -66,3 +66,20 @@
 2. Use `haiku` aggressively for low-complexity work.
 3. Use `opus` only when the task truly needs it.
 4. Investigation work often succeeds with `haiku` or `Explore`.
+
+## `isolation` Guide
+
+Use `isolation: "worktree"` on the `Agent` tool to run a teammate in an independent git worktree.
+
+| Scenario | Use worktree? |
+|----------|---------------|
+| Teammates edit completely separate files | No (default) |
+| Potential overlap in writable files | Yes |
+| Need clean merge workflow with PR-style review | Yes |
+| Lightweight investigation or read-only work | No |
+
+When worktree isolation is active, the teammate works on a separate branch. If changes are made, Rally receives the worktree path and branch name for merge.
+
+## `auto` Mode
+
+The `auto` mode provides automatic permission handling. Use it when you want teammates to proceed without manual approval but still respect system-level safety checks. It is the most hands-off mode after `bypassPermissions`.

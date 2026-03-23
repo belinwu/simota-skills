@@ -16,7 +16,7 @@
 | Tool | Use for |
 |------|---------|
 | `TeamCreate` | create the team context and task directory |
-| `Task` | spawn a teammate into the team |
+| `Agent` | spawn a teammate into the team |
 | `TaskCreate` | create work items |
 | `TaskUpdate` | assign owners, statuses, and dependencies |
 | `TaskList` | inspect all tasks |
@@ -39,10 +39,10 @@ Creates:
 - `~/.claude/teams/{team-name}/config.json`
 - `~/.claude/tasks/{team-name}/`
 
-### `Task` (spawn teammate)
+### `Agent` (spawn teammate)
 
 ```yaml
-Task:
+Agent:
   subagent_type: string      # required teammate type
   team_name: string          # required team name
   name: string               # unique name inside the team
@@ -51,7 +51,7 @@ Task:
   mode: string               # optional permission mode
   model: string              # optional model id
   run_in_background: boolean # optional async spawn flag
-  max_turns: integer         # optional turn cap
+  isolation: string          # optional "worktree" for git worktree isolation
 ```
 
 #### `subagent_type`
@@ -72,7 +72,7 @@ Task:
 | `default` | ask the user when approval is needed |
 | `acceptEdits` | auto-approve file edits |
 | `dontAsk` | run without asking |
-| `delegate` | delegation mode |
+| `auto` | automatic permission handling |
 
 #### `model`
 
@@ -81,6 +81,16 @@ Task:
 | `sonnet` | default |
 | `opus` | highest capability |
 | `haiku` | lightest option |
+
+> Model ID reference: `sonnet` = `claude-sonnet-4-6`, `opus` = `claude-opus-4-6`, `haiku` = `claude-haiku-4-5-20251001`. Use the short names above when spawning teammates.
+
+#### `isolation`
+
+| Value | Meaning |
+|-------|---------|
+| `"worktree"` | Run the teammate in an isolated git worktree (independent copy of the repo). The worktree is auto-cleaned if no changes are made; if changes exist, the worktree path and branch are returned. |
+
+Use `isolation: "worktree"` when teammates may edit overlapping files or when you want a clean merge workflow.
 
 ## Task Tools
 
@@ -91,6 +101,7 @@ TaskCreate:
   subject: string        # required imperative title
   description: string    # required task details
   activeForm: string     # recommended in-progress label
+  metadata: object       # optional key-value metadata
 ```
 
 ### `TaskUpdate`
@@ -231,11 +242,11 @@ Always reference teammates by `name`, not `agentId`.
 - Teammates become `idle` at the end of a turn; this is normal.
 - You can message an idle teammate and wake it back up.
 
-### Hub-spoke rule
+### Hub-spoke rule (recommended pattern)
 
-- Rally is the hub.
-- Teammates do not communicate directly.
-- All team communication flows through Rally.
+- Rally is the hub. All planned coordination flows through Rally.
+- The API allows peer DM between teammates, and DM summaries are included in idle notifications visible to Rally.
+- Rally's recommended practice is hub-spoke: teammates should not initiate peer DMs unless explicitly instructed. This keeps coordination predictable and observable.
 
 ### File operations
 
@@ -249,3 +260,19 @@ Always reference teammates by `name`, not `agentId`.
 - `split-pane`: shown in an IDE-integrated split view
 
 Display mode is currently chosen by the system.
+
+### Teammate self-discovery
+
+Teammates can read `~/.claude/teams/{team-name}/config.json` to discover other team members, their names, and agent types. This enables situational awareness without requiring Rally to relay the full roster.
+
+### Task claim ordering
+
+When multiple tasks are available for a teammate to claim, prefer claiming by task ID order (lowest ID first). This prevents starvation and ensures predictable progress.
+
+### Structured JSON messages prohibited
+
+Teammates must not send structured JSON status messages (e.g., `{"type":"idle",...}`). Use natural language in `SendMessage.content`. The system handles structured status tracking internally.
+
+### `summary` field requirements
+
+The `summary` field is **required** for `message` and `broadcast` types. It must be a concise 5-10 word preview of the message content. The system uses `summary` in idle notifications and message previews.

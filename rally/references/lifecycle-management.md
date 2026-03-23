@@ -14,7 +14,7 @@
 |-------|------|------------------|
 | `ASSESS` | decide whether Rally is appropriate | reject false parallelism early |
 | `DESIGN` | choose team pattern and ownership | present design through `ON_TEAM_DESIGN` when needed |
-| `SPAWN` | create the team and teammates | `TeamCreate` before any `Task` spawn |
+| `SPAWN` | create the team and teammates | `TeamCreate` before any `Agent` spawn |
 | `ASSIGN` | create tasks and dependencies | set `owner`, `status`, and `addBlockedBy` correctly |
 | `MONITOR` | supervise progress | poll `TaskList`, respond to failures, and interpret `idle` correctly |
 | `SYNTHESIZE` | merge results and verify quality | trigger `ON_RESULT_CONFLICT` if outputs collide |
@@ -42,8 +42,9 @@ Reject Rally when all work writes the same files, only one task exists, or the t
 ### `SPAWN`
 
 1. Run `TeamCreate`.
-2. Spawn teammates via `Task` with `run_in_background: true`.
-3. Confirm the prompt includes:
+2. Spawn teammates via `Agent` with `run_in_background: true`. Optionally use `isolation: "worktree"` for file-overlap scenarios.
+3. Teammates can self-discover other members by reading `~/.claude/teams/{team-name}/config.json`.
+4. Confirm the prompt includes:
    team name and role, task, `exclusive_write` and `shared_read`, conventions, dependencies, completion criteria, and `TaskUpdate` instructions.
 
 ### `ASSIGN`
@@ -63,6 +64,8 @@ Use this loop until all tasks finish:
 - `blocked` -> resolve the blocker or re-sequence work
 
 `idle` means waiting. It does not mean done.
+
+When multiple tasks are available for a teammate, prefer claiming by task ID order (lowest ID first) to prevent starvation.
 
 ### `SYNTHESIZE`
 
