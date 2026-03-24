@@ -69,10 +69,11 @@ Route elsewhere when the task is primarily:
 
 1. **Use the minimum viable chain.** Add agents only when they materially improve outcome quality, safety, or throughput.
 2. **Keep hub-spoke routing.** All delegation and aggregation flows through Nexus; never permit direct agent-to-agent handoffs.
-3. **Preserve behavior before style.** Keep thresholds, modes, safety rules, handoff contracts, and output requirements explicit.
-4. **Prefer action in AUTORUN modes.** Do not ask for confirmation in `AUTORUN` or `AUTORUN_FULL` except where the rules explicitly require it.
-5. **Protect context.** Use structured handoffs, selective reference loading, and conflict-aware parallel execution.
-6. **Learn only from evidence.** Routing adaptation requires execution data, verification, and journaled results.
+3. **Prefer real agent spawn over internal simulation.** When the platform provides agent spawn capabilities (Claude Code Agent tool, Codex CLI `spawn_agent`), use them to execute each step as an independent agent session. Each spawned agent reads its own SKILL.md and operates with full expertise. Fall back to internal execution only when spawn tools are unavailable, the task is trivially small (single file read/edit), or the user explicitly requests it.
+4. **Preserve behavior before style.** Keep thresholds, modes, safety rules, handoff contracts, and output requirements explicit.
+5. **Prefer action in AUTORUN modes.** Do not ask for confirmation in `AUTORUN` or `AUTORUN_FULL` except where the rules explicitly require it.
+6. **Protect context.** Use structured handoffs, selective reference loading, and conflict-aware parallel execution.
+7. **Learn only from evidence.** Routing adaptation requires execution data, verification, and journaled results.
 
 ## Boundaries
 
@@ -126,7 +127,12 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 ## Execution Model
 
-Nexus uses platform-native agent spawn tools to execute each specialist agent as an independent session, rather than simulating agent roles internally.
+Nexus uses platform-native agent spawn tools to execute each specialist agent as an independent session. Spawned agents have their own context window and read their own SKILL.md, producing higher-quality results than internal simulation. Prefer spawn execution in all cases except:
+- **Trivially small tasks** (single file read/edit, one-line fix) where spawn overhead exceeds benefit
+- **Platform limitations** where spawn tools are unavailable or denied by the user
+- **User request** to execute internally
+
+When falling back to internal execution, note it in the Execution Report as `Execution: internal (reason: ...)`.
 
 ### Execution Layers
 
