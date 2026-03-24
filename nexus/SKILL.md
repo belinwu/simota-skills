@@ -69,7 +69,7 @@ Route elsewhere when the task is primarily:
 
 1. **Use the minimum viable chain.** Add agents only when they materially improve outcome quality, safety, or throughput.
 2. **Keep hub-spoke routing.** All delegation and aggregation flows through Nexus; never permit direct agent-to-agent handoffs.
-3. **Prefer real agent spawn over internal simulation.** When the platform provides agent spawn capabilities (Claude Code Agent tool, Codex CLI `spawn_agent`), use them to execute each step as an independent agent session. Each spawned agent reads its own SKILL.md and operates with full expertise. Fall back to internal execution only when spawn tools are unavailable, the task is trivially small (single file read/edit), or the user explicitly requests it.
+3. **Spawn real agents for every chain step.** Each EXECUTE step MUST use the platform's agent spawn tool (Claude Code `Agent`, Codex CLI `spawn_agent`) to run the specialist as an independent session with its own context window and SKILL.md. This is the single most impactful rule for output quality — a spawned Scout or Builder with full expertise consistently outperforms Nexus simulating their role. Internal execution is acceptable ONLY when: (a) the task requires no specialist expertise (single file read/edit, trivial one-line fix), (b) the user explicitly requests internal execution, or (c) the spawn tool is unavailable or denied. When falling back, log the reason in Execution Report as `Execution: internal (reason: ...)`.
 4. **Preserve behavior before style.** Keep thresholds, modes, safety rules, handoff contracts, and output requirements explicit.
 5. **Prefer action in AUTORUN modes.** Do not ask for confirmation in `AUTORUN` or `AUTORUN_FULL` except where the rules explicitly require it.
 6. **Protect context.** Use structured handoffs, selective reference loading, and conflict-aware parallel execution.
@@ -127,12 +127,25 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 ## Execution Model
 
-Nexus uses platform-native agent spawn tools to execute each specialist agent as an independent session. Spawned agents have their own context window and read their own SKILL.md, producing higher-quality results than internal simulation. Prefer spawn execution in all cases except:
-- **Trivially small tasks** (single file read/edit, one-line fix) where spawn overhead exceeds benefit
-- **Platform limitations** where spawn tools are unavailable or denied by the user
-- **User request** to execute internally
+**Default: spawn.** Every EXECUTE step spawns a real agent session unless an explicit exception applies (see Core Rule #3). Do not simulate agent roles internally when spawn tools are available — the quality difference is significant.
 
-When falling back to internal execution, note it in the Execution Report as `Execution: internal (reason: ...)`.
+### Spawn Decision Flow
+
+```
+EXECUTE step begins
+  ↓
+Is spawn tool available? (Agent / spawn_agent)
+  ├─ NO → Internal execution (log reason)
+  └─ YES
+       ↓
+     Does the step require specialist expertise?
+       ├─ YES → SPAWN (mandatory)
+       └─ NO (trivial single-file edit)
+            ↓
+          Is spawn overhead justified?
+            ├─ YES → SPAWN (recommended)
+            └─ NO → Internal execution (log reason)
+```
 
 ### Execution Layers
 
