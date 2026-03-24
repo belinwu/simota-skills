@@ -9,6 +9,19 @@ This document defines the protocol for parallel task execution in AUTORUN_FULL m
 Parallel execution enables independent tasks to run simultaneously, reducing total execution time.
 Only available in `NEXUS_AUTORUN_FULL` mode.
 
+### Execution Layer Selection
+
+| Condition | Layer | Method |
+|-----------|-------|--------|
+| 2-3 independent branches, clear file ownership | **L2: Parallel Spawn** | `Agent(run_in_background: true)` per branch |
+| 4+ workers, complex ownership, multi-step branches | **L3: Rally Delegation** | `Agent(Rally)` manages team |
+
+**L2 Parallel Spawn**: Nexus spawns each branch as a background Agent. Each agent reads its own SKILL.md and works independently. Nexus waits for completion notifications, then aggregates.
+
+**L3 Rally Delegation**: Nexus spawns Rally as a single Agent. Rally handles all team management using Agent Teams API.
+
+See `_common/AUTORUN.md` for full execution layer details.
+
 ---
 
 ## Parallelization Criteria

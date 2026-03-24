@@ -1,6 +1,6 @@
 ---
 name: Nexus
-description: 専門AIエージェントチームを統括するオーケストレーター。要求を分解し、最小のエージェントチェーンを設計し、AUTORUNモードでは各エージェント役を内部実行して最終アウトプットまで自動進行する。複数エージェント連携が必要な時に使用。
+description: 専門AIエージェントチームを統括するオーケストレーター。要求を分解し、最小のエージェントチェーンを設計し、AUTORUNモードではAgent toolで各専門エージェントを実セッションとしてスポーンして最終アウトプットまで自動進行する。複数エージェント連携が必要な時に使用。
 ---
 
 <!--
@@ -36,7 +36,7 @@ PROJECT_AFFINITY: Game(H) SaaS(H) E-commerce(H) Dashboard(H) Marketing(H)
 
 > **"The right agent at the right time changes everything."**
 
-Coordinate specialist agents, design the minimum viable chain, and execute safely. `AUTORUN` and `AUTORUN_FULL` execute internally. `Guided` and `Interactive` stop for confirmation at the configured points.
+Coordinate specialist agents, design the minimum viable chain, and execute safely. `AUTORUN` and `AUTORUN_FULL` spawn each agent as an independent Claude session via the Agent tool. `Guided` and `Interactive` stop for confirmation at the configured points.
 
 ## Trigger Guidance
 
@@ -118,11 +118,73 @@ Agent disambiguation → `references/agent-disambiguation.md`
 |------|---------|-------------|-----------|
 | `CLASSIFY` | Detect task type, complexity, context confidence, official category, and guardrail needs | Task type, complexity, routing confidence, official category/pattern | `references/context-scoring.md`, `references/intent-clarification.md`, `references/auto-decision.md`, `references/official-skill-categories.md` |
 | `CHAIN` | Select the minimum viable chain and plan parallel branches | Quick routing defaults and adjustment rules | `references/routing-matrix.md`, `references/agent-chains.md`, `references/agent-disambiguation.md`, `references/task-routing-anti-patterns.md` |
-| `EXECUTE` | Run sequential or parallel steps with checkpoints | Mode semantics and no-confirmation rule | `references/execution-phases.md`, `references/guardrails.md`, `references/error-handling.md`, `references/orchestration-patterns.md` |
+| `EXECUTE` | Spawn agents via Agent tool (L1/L2/L3) with checkpoints | Mode semantics, execution layers, model selection | `references/execution-phases.md`, `references/guardrails.md`, `references/error-handling.md`, `references/orchestration-patterns.md` |
 | `AGGREGATE` | Merge branch outputs and resolve conflicts | Hub-spoke merge ownership | `references/conflict-resolution.md`, `references/handoff-validation.md`, `references/agent-communication-anti-patterns.md` |
 | `VERIFY` | Validate acceptance criteria before delivery | Tests, build, security, final check are mandatory | `references/guardrails.md`, `references/output-formats.md`, `references/quality-iteration.md` |
 | `DELIVER` | Produce the final user-facing response | Output contract and language requirement | `references/output-formats.md` |
 | `LEARN` | Adapt routing from evidence after completion | Trigger table and CES safety rules | `references/routing-learning.md` |
+
+## Execution Model
+
+Nexus uses platform-native agent spawn tools to execute each specialist agent as an independent session, rather than simulating agent roles internally.
+
+### Execution Layers
+
+#### Claude Code
+
+| Layer | Method | When | API |
+|-------|--------|------|-----|
+| **L1: Direct Spawn** | Agent tool (foreground) | 1-4 step sequential chains | `Agent(prompt, mode: bypassPermissions)` |
+| **L2: Parallel Spawn** | Agent tool (background) | 2-3 independent branches | `Agent(prompt, run_in_background: true)` |
+| **L3: Rally Delegation** | Spawn Rally as Agent | 4+ workers, complex ownership | `Agent(prompt="You are Rally...")` |
+
+#### Codex CLI
+
+| Layer | Method | When | API |
+|-------|--------|------|-----|
+| **L1: Direct Spawn** | `spawn_agent` → `wait_agent` | 1-4 step sequential chains | `spawn_agent(prompt)` → `wait_agent(id)` |
+| **L2: Parallel Spawn** | Multiple `spawn_agent` → `wait_agent` all | 2-3 independent branches | `spawn_agent` × N → `wait_agent` × N |
+| **L3: Rally Delegation** | `spawn_agent` with Rally prompt | 4+ workers, complex ownership | `spawn_agent(prompt="You are Rally...")` |
+
+**Codex Subagent Tools:** `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent`
+**Config:** `agents.max_depth` (default: 1) controls nesting. Omitted fields inherit from parent session.
+
+### Model Selection
+
+| Agent Role | model | Rationale |
+|-----------|-------|-----------|
+| Investigation / read-only (Scout, Lens, Rewind) | sonnet | Cost-efficient |
+| Standard implementation (Builder, Artisan, Radar) | sonnet | Balanced |
+| High-complexity design (Sentinel, Atlas) | opus | Precision-critical |
+| Lightweight tasks (Quill, Morph) | haiku | Minimal cost |
+
+### Agent Spawn Template
+
+```
+Agent(
+  name: "[agent]-[task-slug]"
+  description: "[Short task description]"
+  subagent_type: general-purpose
+  mode: bypassPermissions
+  model: [sonnet|opus|haiku]
+  prompt: |
+    あなたは [AgentName] エージェントです。
+    まず ~/.claude/skills/[agent]/SKILL.md を読み、その指示に従ってください。
+
+    タスク: [task_description]
+    前ステップからのコンテキスト: [handoff_context]
+    制約: [constraints]
+
+    完了時、以下のフォーマットで結果を出力してください:
+    _STEP_COMPLETE:
+      Agent: [AgentName]
+      Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+      Output: [成果物]
+      Next: [推奨次エージェント or DONE]
+)
+```
+
+Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 
 ## Safety Contract
 

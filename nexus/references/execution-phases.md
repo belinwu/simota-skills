@@ -130,21 +130,126 @@ _PARALLEL_CHAINS:
 ```
 
 ### Phase 4: EXECUTE
-Execute steps with guardrail checkpoints:
+Spawn agents via Agent tool with guardrail checkpoints:
 
-**Sequential:**
-1. Execute agent role for current step
-2. Perform work according to SKILL.md
-3. Guardrail Check at configured checkpoints
-4. Record result as `_STEP_COMPLETE`
-5. Verify success conditions
-6. Proceed to next step OR trigger recovery
+**L1: Sequential Spawn (foreground)**
 
-**Parallel:**
-1. Launch parallel branches simultaneously
-2. Each branch executes independently
-3. Monitor for conflicts
-4. Wait for all branches at merge point
+For chains with 1-4 sequential steps:
+
+1. Spawn agent via `Agent(name, description, subagent_type: general-purpose, mode: bypassPermissions, model, prompt)` in foreground
+2. Agent reads its own SKILL.md and executes autonomously
+3. Receive `_STEP_COMPLETE` from the spawned agent's response
+4. Guardrail Check at configured checkpoints
+5. Extract handoff context from result
+6. Spawn next agent with accumulated context OR trigger recovery
+
+```
+# Step 1: Spawn Scout
+Agent(
+  name: "scout-[task-slug]"
+  description: "[Short description]"
+  subagent_type: general-purpose
+  mode: bypassPermissions
+  model: sonnet
+  prompt: |
+    あなたは Scout エージェントです。
+    まず ~/.claude/skills/scout/SKILL.md を読み、その指示に従ってください。
+    タスク: [task]
+    制約: [constraints]
+    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+)
+
+# Step 2: Use Scout's output to spawn Builder
+Agent(
+  name: "builder-[task-slug]"
+  ...
+  prompt: |
+    ...
+    前ステップからのコンテキスト: [Scout's _STEP_COMPLETE output]
+    ...
+)
+```
+
+**L2: Parallel Spawn (background)**
+
+For 2-3 independent branches:
+
+1. Spawn independent agents via `Agent(run_in_background: true)` simultaneously
+2. Each agent reads its own SKILL.md and works independently
+3. Wait for all background agents to complete (notifications arrive automatically)
+4. Collect results from all agents
+5. Proceed to AGGREGATE
+
+```
+# Spawn Branch A and Branch B simultaneously
+Agent(
+  name: "builder-email-validation"
+  description: "Implement email validation"
+  run_in_background: true
+  mode: bypassPermissions
+  model: sonnet
+  prompt: |
+    あなたは Builder エージェントです。
+    まず ~/.claude/skills/builder/SKILL.md を読み、その指示に従ってください。
+    タスク: メールバリデーション機能を実装
+    ファイル所有権: src/validators/email.ts, tests/validators/email.test.ts
+    制約: 上記ファイルのみ変更可能
+    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+)
+
+Agent(
+  name: "builder-phone-validation"
+  description: "Implement phone validation"
+  run_in_background: true
+  mode: bypassPermissions
+  model: sonnet
+  prompt: |
+    あなたは Builder エージェントです。
+    まず ~/.claude/skills/builder/SKILL.md を読み、その指示に従ってください。
+    タスク: 電話番号バリデーション機能を実装
+    ファイル所有権: src/validators/phone.ts, tests/validators/phone.test.ts
+    制約: 上記ファイルのみ変更可能
+    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+)
+```
+
+**L3: Rally Delegation**
+
+For 4+ workers or complex ownership management:
+
+1. Spawn Rally as an Agent with full task context
+2. Rally reads its own SKILL.md and manages team creation, task distribution, and monitoring
+3. Rally returns aggregated results via `_STEP_COMPLETE`
+
+```
+Agent(
+  name: "rally-parallel-impl"
+  description: "Parallel implementation coordination"
+  subagent_type: general-purpose
+  mode: bypassPermissions
+  model: sonnet
+  prompt: |
+    あなたは Rally エージェントです。
+    まず ~/.claude/skills/rally/SKILL.md を読み、その指示に従ってください。
+
+    タスク: 以下の実装を並列で実行してください。
+    ワーカー:
+      1. Builder: メールバリデーション (src/validators/email.ts)
+      2. Builder: 電話番号バリデーション (src/validators/phone.ts)
+      3. Artisan: フォームUIコンポーネント (src/components/Form.tsx)
+      4. Radar: 全体テスト (tests/)
+
+    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+)
+```
+
+### Layer Selection Criteria
+
+| Condition | Layer | Rationale |
+|-----------|-------|-----------|
+| Sequential chain, 1-4 steps | L1: Direct Spawn | Simple, low overhead |
+| 2-3 independent branches, clear file ownership | L2: Parallel Spawn | True parallelism via background agents |
+| 4+ workers, complex ownership, or multi-step branches | L3: Rally Delegation | Full team management needed |
 
 ### Phase 5: AGGREGATE
 Merge parallel results:

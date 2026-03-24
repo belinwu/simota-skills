@@ -1,6 +1,6 @@
 ---
 name: Rally
-description: Claude Code Agent Teams APIを使用したマルチセッション並列オーケストレーター。複数のClaudeインスタンスを起動・管理し、タスクを並行実行。並列作業が必要な時に使用。
+description: マルチセッション並列オーケストレーター。Claude Code Agent Teams API / Codex CLI Subagentsを使用して複数インスタンスを起動・管理し、タスクを並行実行。並列作業が必要な時に使用。
 ---
 
 <!--
@@ -27,7 +27,7 @@ PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
 -->
 # Rally
 
-Parallel orchestration lead for Claude Code Agent Teams. Use Rally only when 2+ work units can execute safely in parallel and the coordination overhead is justified.
+Parallel orchestration lead for Claude Code Agent Teams and Codex CLI Subagents. Use Rally only when 2+ work units can execute safely in parallel and the coordination overhead is justified.
 
 
 ## Trigger Guidance
@@ -35,6 +35,17 @@ Parallel orchestration lead for Claude Code Agent Teams. Use Rally only when 2+ 
 Use Rally when the user needs specialized assistance in this agent's domain.
 
 Route elsewhere when the task is primarily handled by another agent.
+
+### Nexus Agent Spawn Mode
+
+Rally may be spawned by Nexus as an Agent (L3 delegation) when 4+ workers are needed or complex ownership management is required. In this mode:
+
+1. Rally receives the full task context in the Agent prompt
+2. Rally reads its own SKILL.md and operates autonomously
+3. Rally creates and manages teams using Agent Teams API as normal
+4. Rally returns results via `_STEP_COMPLETE` in its response
+
+No behavioral changes are needed — Rally operates identically whether invoked directly by the user, via Nexus hub mode, or spawned as an Agent.
 
 ## Core Contract
 
@@ -147,6 +158,48 @@ Routing rules:
 - Verification must report build, tests, and lint or type-check status when applicable.
 - Report ownership violations, retries, replacements, skipped work, and unresolved blockers explicitly.
 - Detailed handoff formats live in `references/integration-patterns.md`.
+
+## Codex CLI Subagent Orchestration
+
+When running on Codex CLI, Rally uses `spawn_agent` / `wait_agent` / `send_input` / `close_agent` instead of Agent Teams API.
+
+### API Mapping
+
+| Claude Code Agent Teams | Codex CLI Subagents | Notes |
+|------------------------|---------------------|-------|
+| `TeamCreate` | N/A | No explicit team concept |
+| `TeamDelete` | `close_agent` × N | Close all subagents |
+| Teammate spawn | `spawn_agent(prompt)` | Returns agent ID |
+| `TaskCreate` / `TaskUpdate` | `send_input(id, msg)` | Send task via prompt or input |
+| `TaskList` / `TaskGet` | `wait_agent(id)` | Wait for completion |
+| `SendMessage` (DM) | `send_input(id, msg)` | Direct message to subagent |
+| `SendMessage` (broadcast) | `send_input` × N | Loop over all agents |
+| Plan approval | N/A | No plan mode in Codex subagents |
+
+### Codex Subagent Parallel Pattern
+
+```
+# SPAWN phase - spawn all workers
+worker_a = spawn_agent(prompt: "AGENTS.md の builder 指示に従い、メールバリデーションを実装...")
+worker_b = spawn_agent(prompt: "AGENTS.md の builder 指示に従い、電話番号バリデーションを実装...")
+
+# MONITOR phase - wait for all
+result_a = wait_agent(worker_a)
+result_b = wait_agent(worker_b)
+
+# SYNTHESIZE phase - collect results, detect conflicts
+# (Rally handles this internally)
+
+# CLEANUP phase
+close_agent(worker_a)
+close_agent(worker_b)
+```
+
+### Configuration
+
+- `agents.max_depth` (default: 1) — controls subagent nesting depth
+- Omitted `spawn_agent` fields inherit from parent session (model, sandbox_mode, etc.)
+- `nickname_candidates` — set descriptive names for each worker
 
 ## Reference Map
 

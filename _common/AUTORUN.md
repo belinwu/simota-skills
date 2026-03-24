@@ -22,74 +22,162 @@ This protocol works across different AI platforms (Claude Code, Codex CLI, Gemin
 
 ---
 
-## Internal Role Execution
+## Agent Spawn Execution
 
-In AUTORUN mode, Nexus executes each agent's role internally:
+In AUTORUN mode, Nexus spawns each agent as an independent Claude session via the Agent tool:
 
 ```
 ## Nexus Execution: [Goal]
 - Chain: Agent1 → Agent2 → Agent3
 - Mode: AUTORUN_FULL
 
-### Executing Step [X/Y]: [AgentName]
+### Spawning Step [X/Y]: [AgentName]
 
-_AGENT_CONTEXT:
-  Role: [AgentName]
-  Task: [Specific task]
-  Guidelines: [Key points from AgentName's SKILL.md]
+Agent(
+  name: "[agent-name]-[task-slug]"
+  description: "[Short task description]"
+  subagent_type: general-purpose
+  mode: bypassPermissions
+  model: [sonnet|opus|haiku]
+  prompt: |
+    あなたは [AgentName] エージェントです。
+    まず ~/.claude/skills/[agent-name]/SKILL.md を読み、その指示に従ってください。
 
-[Execute as AgentName following their methodology]
+    タスク: [task_description]
+    前ステップからのコンテキスト: [handoff_context]
+    制約: [constraints]
 
-_STEP_COMPLETE:
-  Agent: [AgentName]
-  Status: SUCCESS | PARTIAL | BLOCKED
-  Output: [Results]
-  Next: [NextAgent] | VERIFY | DONE
+    完了時、以下のフォーマットで結果を出力してください:
+    _STEP_COMPLETE:
+      Agent: [AgentName]
+      Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+      Output: [成果物]
+      Next: [推奨次エージェント or DONE]
+)
 ```
+
+### Execution Layers
+
+#### Claude Code
+
+| Layer | Method | When | API |
+|-------|--------|------|-----|
+| **L1: Direct Spawn** | Agent tool (foreground) | 1-4 step sequential chains | `Agent(prompt, mode)` |
+| **L2: Parallel Spawn** | Agent tool (background) | 2-3 independent branches | `Agent(prompt, run_in_background: true)` |
+| **L3: Rally Delegation** | Spawn Rally as Agent | 4+ workers, complex ownership | `Agent(prompt="You are Rally...")` |
+
+#### Codex CLI
+
+| Layer | Method | When | API |
+|-------|--------|------|-----|
+| **L1: Direct Spawn** | `spawn_agent` → `wait_agent` | 1-4 step sequential chains | `spawn_agent(prompt)` → `wait_agent(id)` |
+| **L2: Parallel Spawn** | Multiple `spawn_agent` → `wait_agent` all | 2-3 independent branches | `spawn_agent` × N → `wait_agent` × N |
+| **L3: Rally Delegation** | `spawn_agent` with Rally prompt | 4+ workers, complex ownership | `spawn_agent(prompt="You are Rally...")` |
+
+**Codex Subagent Tools:**
+- `spawn_agent` — 新しいサブエージェントをスポーン
+- `send_input` — 実行中のサブエージェントに追加指示を送信
+- `wait_agent` — サブエージェントの完了を待機
+- `resume_agent` — 一時停止したサブエージェントを再開
+- `close_agent` — サブエージェントのスレッドを閉じる
+
+### Layer Selection
+
+```
+Steps <= 4 AND sequential?     → L1: Direct Spawn (foreground / spawn_agent)
+2-3 independent branches?      → L2: Parallel Spawn (background / spawn_agent × N)
+4+ workers OR complex ownership? → L3: Rally Delegation
+```
+
+### Model Selection
+
+| Agent Role | model | Rationale |
+|-----------|-------|-----------|
+| Investigation / read-only (Scout, Lens, Rewind) | sonnet | Cost-efficient |
+| Standard implementation (Builder, Artisan, Radar) | sonnet | Balanced |
+| High-complexity design (Sentinel, Atlas) | opus | Precision-critical |
+| Lightweight tasks (Quill, Morph) | haiku | Minimal cost |
 
 ---
 
 ## Agent Context Injection
 
-When executing as a specific agent, Nexus should:
+When spawning an agent, Nexus provides context through the prompt:
 
-1. **Load Agent Personality**: Adopt the agent's philosophy and approach
-2. **Follow Agent Process**: Execute according to their defined methodology
-3. **Use Agent Outputs**: Generate outputs in the agent's expected format
-4. **Respect Boundaries**: Honor the agent's "Always/Ask first/Never" rules
+1. **SKILL.md Path**: Tell the agent to read its own SKILL.md first
+2. **Task Description**: Clear, specific task with acceptance criteria
+3. **Handoff Context**: Results from previous steps in the chain
+4. **Constraints**: Guardrail level, file ownership, scope limits
+5. **Output Format**: Request `_STEP_COMPLETE` format in the response
 
-### Simplified Agent Execution (cross-model)
+The spawned agent reads its own SKILL.md and follows its own methodology autonomously. Nexus does not need to simulate the agent's personality or process.
 
-When personality/philosophy adoption is difficult, focus on the agent's **output contract** instead:
-
-1. Read the agent's "Always" rules from SKILL.md
-2. Execute the specific task in `_AGENT_CONTEXT.Task`
-3. Produce output in the agent's expected format
-4. Skip philosophy adoption — deliverables matter
-
-### Example: Executing as Scout
+### Example: Spawning Scout
 
 ```
-_AGENT_CONTEXT:
-  Role: Scout
-  Task: Investigate login bug
-  Guidelines:
-    - Start from symptoms, dig to root cause
-    - Use 5-Why Analysis
-    - Assess impact before recommending fixes
+Agent(
+  name: "scout-login-bug"
+  description: "Investigate login bug root cause"
+  subagent_type: general-purpose
+  mode: bypassPermissions
+  model: sonnet
+  prompt: |
+    あなたは Scout エージェントです。
+    まず ~/.claude/skills/scout/SKILL.md を読み、その指示に従ってください。
 
-[Scout Investigation]
-Symptom: Users cannot log in
-→ Why? Invalid session token
-→ Why? Token not refreshed
-→ Why? Refresh endpoint returns 401
-→ Why? Auth middleware rejects expired tokens
-→ Root Cause: Token refresh timing issue
+    タスク: ログインバグの根本原因を調査してください。
+    症状: ユーザーがログインできない
+    制約: コードは変更しない（調査のみ）
 
+    完了時、以下のフォーマットで結果を出力してください:
+    _STEP_COMPLETE:
+      Agent: Scout
+      Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+      Output: [調査結果]
+      Next: [推奨次エージェント or DONE]
+)
+```
+
+Scout returns:
+```
 _STEP_COMPLETE:
   Agent: Scout
   Status: SUCCESS
-  Output: Root cause identified - token refresh timing
+  Output: Root cause identified - token refresh timing issue in auth middleware
+```
+
+### Example: Spawning Scout (Codex CLI)
+
+```
+# Step 1: Spawn Scout
+scout_id = spawn_agent(
+  prompt: |
+    あなたは Scout エージェントです。
+    まず ~/.claude/skills/scout/SKILL.md を読み、その指示に従ってください。
+
+    タスク: ログインバグの根本原因を調査してください。
+    症状: ユーザーがログインできない
+    制約: コードは変更しない（調査のみ）
+
+    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+)
+
+# Step 2: Wait for completion
+result = wait_agent(scout_id)
+
+# Step 3: Use result to spawn Builder
+builder_id = spawn_agent(
+  prompt: |
+    あなたは Builder エージェントです。
+    まず ~/.claude/skills/builder/SKILL.md を読み、その指示に従ってください。
+    前ステップからのコンテキスト: {result}
+    ...
+)
+wait_agent(builder_id)
+
+# Step 4: Cleanup
+close_agent(scout_id)
+close_agent(builder_id)
   Next: Builder
 ```
 
@@ -99,17 +187,17 @@ _STEP_COMPLETE:
 
 ### Automatic Transition (AUTORUN)
 
-After `_STEP_COMPLETE`, Nexus automatically:
-1. Records the completed step
-2. Updates context with findings
-3. Proceeds to the next agent in chain
+After receiving `_STEP_COMPLETE` from a spawned agent, Nexus automatically:
+1. Records the completed step and captures the agent's output
+2. Extracts handoff context from the result
+3. Spawns the next agent in the chain with accumulated context
 
 ### Manual Transition (GUIDED)
 
-After step completion, Nexus:
-1. Outputs the `## NEXUS_HANDOFF` block
-2. Waits for user to invoke next agent
-3. Continues when `## NEXUS_HANDOFF` is provided
+After receiving the agent's result, Nexus:
+1. Outputs the `## NEXUS_HANDOFF` block to the user
+2. Waits for user to confirm continuation
+3. Spawns the next agent when confirmed
 
 ---
 
@@ -215,6 +303,6 @@ Chain: [Executed chain]
 ## NEXUS_AUTORUN_FULL
 task
 ```
-→ Nexus executes all steps internally → Final result
+→ Nexus spawns each agent via Agent tool → Each agent reads its own SKILL.md → Final result
 
-**Key change**: Users no longer need to manually copy-paste between agents.
+**Key change**: Each agent runs as an independent Claude session with full access to its own expertise, rather than Nexus simulating the agent's role.
