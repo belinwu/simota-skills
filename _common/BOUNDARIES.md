@@ -171,6 +171,7 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Stream** | Data pipeline design | ETL/ELT, Kafka, Airflow, dbt | Yes |
 | **Helm** | Business strategy simulation | SWOT/PESTLE, scenario planning | Never |
 | **Levy** | Tax filing guidance (Japan) | Income tax, deductions, e-Tax | Never |
+| **Crest** | Engineer self-branding strategy | GitHub/blog/LinkedIn/talk positioning | Never |
 
 **Key distinctions:**
 - Competitive intel → Compete. Business simulation → Helm. Compete feeds into Helm
