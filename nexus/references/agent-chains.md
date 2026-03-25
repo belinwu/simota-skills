@@ -253,6 +253,13 @@ Complete chain templates and dynamic adjustment rules.
 | OBSERVABILITY | matrix | Matrix → Beacon → Gear → Builder → Radar |
 | AI_FEATURE | first-principles | Flux → Oracle → Matrix → Builder → Radar |
 | ECOSYSTEM | first-principles | Flux → Darwin → Architect → Void → Canvas |
+| MOCKUP | simple | Pixel → Radar |
+| MOCKUP | figma | Frame → Pixel → Radar |
+| MOCKUP | full | Frame → Pixel → Muse → Artisan → Warden → Radar |
+| MOCKUP | responsive | Pixel → Matrix → Artisan → Radar |
+| BRANDING | audit | Crest → Quill |
+| BRANDING | full | Crest → Growth → Prose → Quill → Canvas |
+| BRANDING | portfolio | Crest → Harvest → Quill |
 | GAME | design-matrix | Quest → Matrix → Forge → Builder → Radar |
 | GAME | first-principles | Flux → Quest → Saga → Matrix → Scribe |
 | GHA_WORKFLOW | matrix | Matrix → Pipe → Gear → Radar |
@@ -307,6 +314,8 @@ Builder then applies:
 - Detection rules needed → Add Vigil
 - Problem framing stuck → Add Flux for perspective shift
 - Figma design available → Add Frame before Artisan
+- Mockup/screenshot to code → Add Pixel (faithful reproduction from image)
+- Personal branding or portfolio → Add Crest
 - Game assets needed → Add Tone/Dot/Clay as applicable
 - C4 architecture documentation needed → Add Stratum
 - Combinatorial testing needed → Add Matrix before Radar

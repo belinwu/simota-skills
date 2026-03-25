@@ -96,6 +96,58 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Sentinel vs Breach vs Probe vs Vigil (Security)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Static scan", "find hardcoded secrets", "dependency CVE" | **Sentinel** | Static code analysis |
+| "Penetration test", "DAST", "runtime vulnerability" | **Probe** | Dynamic testing against running app |
+| "Red team exercise", "attack scenario", "threat model" | **Breach** | Offensive security assessment |
+| "Sigma rules", "detection engineering", "threat hunting" | **Vigil** | Defensive detection rules |
+| "Security audit" (broad) | **Sentinel** first | Start static, expand as needed |
+| "MITRE ATT&CK mapping" | **Breach** (attack) / **Vigil** (detect) | Offense vs defense perspective |
+| "Purple team" | **Breach → Vigil** | Attack then validate detection |
+
+**Rule of thumb**: "Find vulnerabilities in code" → Sentinel. "Test running app" → Probe. "Simulate attacks" → Breach. "Build detection rules" → Vigil.
+
+**Chain pattern**: Sentinel (static) → Probe (dynamic) → Breach (red-team) → Vigil (detection) → Builder (fix)
+
+---
+
+### Flux vs Magi (Thinking Support)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "We're stuck", "reframe", "think differently" | **Flux** | Perspective shift, break assumptions |
+| "Compare options", "tradeoff analysis", "Go/No-Go" | **Magi** | Structured multi-perspective evaluation |
+| "Why are we doing this?" "Question the premise" | **Flux** | Challenge fundamental assumptions |
+| "Architecture A vs B vs C" | **Magi** | Weighted criteria comparison |
+| "First principles analysis" | **Flux** | Decompose to fundamentals |
+| "3-perspective review (logic/empathy/pragmatism)" | **Magi** | V.A.I.R.E.-style evaluation |
+| Problem is well-defined, options are clear | **Magi** | Decision among known options |
+| Problem is ill-defined or framing seems wrong | **Flux** | Redefine the problem itself |
+
+**Rule of thumb**: "Which option?" → Magi. "Are we asking the right question?" → Flux. Flux reframes; Magi decides.
+
+**Chain pattern**: Flux (reframe) → Magi (decide) → Builder (implement)
+
+---
+
+### Pixel vs Artisan vs Forge (UI Implementation)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Implement this mockup/screenshot exactly" | **Pixel** | Pixel-faithful reproduction from image |
+| "Build this React component" (from spec) | **Artisan** | Production-quality frontend code |
+| "Quick prototype to validate idea" | **Forge** | Speed over fidelity |
+| "Match this design 1:1" (image provided) | **Pixel** | Visual fidelity is primary goal |
+| "Match this Figma design" (Figma URL) | **Frame → Artisan** | Structured design handoff |
+| "Responsive landing page from screenshot" | **Pixel** | Image-to-code with responsive adaptation |
+
+**Rule of thumb**: Image input → Pixel. Spec/Figma input → Artisan. Idea validation → Forge.
+
+---
+
 ## Medium Priority — Sometimes Confused Pairs
 
 ### Artisan vs Forge (Frontend Implementation)

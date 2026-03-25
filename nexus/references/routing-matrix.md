@@ -63,5 +63,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | DESIGN | Frame → Artisan → Radar | +Muse (tokens), +Loom (guidelines), +Vision (direction), +Forge (prototype) |
 | ARCHITECTURE | Stratum → Canvas | +Lens (analysis), +Atlas (review), +Scribe (docs), +Ripple (impact) |
 | CREATIVE | Vision → Sketch → Artisan | +Clay (3D), +Dot (pixel), +Growth (marketing) |
+| MOCKUP | Pixel → Radar | +Frame (Figma source), +Muse (tokens), +Flow (animations), +Warden (fidelity gate) |
+| BRANDING | Crest → Quill | +Growth (SEO/SMO), +Canvas (viz), +Prose (content), +Harvest (portfolio) |
 | BUSINESS | Levy → Scribe | +Schema (data), +Builder (calc), +Canvas (flow) |
 | ECOSYSTEM | Darwin → Gauge → Canvas | +Architect (design), +Realm (viz), +Void (prune), +Lore (knowledge) |
