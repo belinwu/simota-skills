@@ -102,6 +102,60 @@ Steps <= 4 AND sequential?     → L1: Direct Spawn (foreground / spawn_agent)
 
 **Context Strategy**: `reset` = file-based handoff (fresh context per agent), `continuous` = in-context handoff (accumulated context), `hybrid` = Nexus continuous + spawned agents reset. See `nexus/references/context-strategy.md` for details.
 
+### Advanced Spawn Options
+
+Agent tool (v2.1.63+) supports additional frontmatter fields for fine-grained control:
+
+| Option | Description | When to Use |
+|--------|-------------|-------------|
+| `maxTurns` | Maximum agentic turns before stopping | コスト管理、暴走防止。調査系: 20-30、実装系: 50-80 |
+| `effort` | Reasoning effort (`low`/`medium`/`high`/`max`) | Haiku+low で超軽量タスク、Opus+max で最高精度 |
+| `isolation: worktree` | Git worktree で隔離実行 | L2並列時のファイル競合防止。各ブランチが独立コピーで作業 |
+| `resume` (agent ID) | 既存サブエージェントを再開 | 失敗リトライ、追加作業の継続。フル履歴を保持 |
+| `skills` | Skill content を事前注入 | SKILL.md を prompt 内で「読め」と言う代わりに直接注入 |
+| `memory` | Persistent memory (`user`/`project`/`local`) | ルーティング学習、パターン蓄積のクロスセッション永続化 |
+
+**Worktree isolation for L2:**
+```
+# L2 並列スポーン時に worktree を使うと、ファイル競合リスクがゼロになる
+Agent(
+  name: "builder-feature-a"
+  isolation: worktree          # 独立した git worktree で実行
+  run_in_background: true
+  ...
+)
+Agent(
+  name: "builder-feature-b"
+  isolation: worktree
+  run_in_background: true
+  ...
+)
+# 両者が完了後、worktree の変更をマージ
+```
+
+### Custom Subagent Definitions
+
+`.claude/agents/` (project) or `~/.claude/agents/` (user) に Markdown ファイルを配置することで、カスタム subagent_type を事前定義できる。これにより spawn 時のプロンプトが簡潔になり、ツール制限・モデル選択・スキル注入が確実に効く。
+
+```yaml
+# ~/.claude/agents/scout-agent.md
+---
+name: scout-agent
+description: Bug investigation and root cause analysis. Use proactively for bug reports.
+tools: Read, Grep, Glob, Bash
+disallowedTools: Write, Edit
+model: sonnet
+maxTurns: 30
+memory: project
+skills:
+  - scout
+---
+あなたは Scout エージェントです。バグの根本原因を調査し、再現手順と影響範囲を特定してください。
+コードは変更しません。完了時は _STEP_COMPLETE フォーマットで報告してください。
+```
+
+定義済みエージェントは `subagent_type: "scout-agent"` で直接参照可能。
+
 ---
 
 ## Agent Context Injection
@@ -310,3 +364,94 @@ task
 → Nexus spawns each agent via Agent tool → Each agent reads its own SKILL.md → Final result
 
 **Key change**: Each agent runs as an independent Claude session with full access to its own expertise, rather than Nexus simulating the agent's role.
+
+---
+
+## Subagent Context Rules
+
+Understanding context inheritance is critical for reliable chain execution:
+
+| Aspect | Behavior |
+|--------|----------|
+| **会話履歴** | サブエージェントは親の会話履歴を引き継がない。プロンプトで明示的に渡す |
+| **Skills** | サブエージェントは親のskillsを引き継がない。`skills` フィールドで明示注入が必要 |
+| **権限** | 親の権限設定を継承。親が `bypassPermissions` なら子も同様（上書き不可） |
+| **Auto mode** | 親が `auto` mode の場合、子の `permissionMode` は無視される |
+| **Auto-compaction** | ~95%容量で自動発動。`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` で変更可能 |
+| **トランスクリプト** | `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl` に保存 |
+| **ネスト** | サブエージェントは他のサブエージェントをスポーンできない（1階層のみ） |
+
+---
+
+## Subagent Lifecycle Hooks
+
+`settings.json` でサブエージェントのライフサイクルをモニタリングできる。Latch エージェントで設計・実装を推奨。
+
+### チェーン実行モニタリング
+
+```json
+{
+  "hooks": {
+    "SubagentStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "./scripts/log-agent-start.sh" }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "./scripts/log-agent-stop.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Agent Teams 品質ゲート (Rally L3)
+
+| Hook Event | Matcher | 用途 |
+|-----------|---------|------|
+| `TeammateIdle` | — | チームメイトがアイドル直前。exit 2 で作業継続を強制 |
+| `TaskCompleted` | — | タスク完了マーク時。exit 2 で完了を阻止しフィードバック送信 |
+
+### サブエージェント内フック（frontmatter定義）
+
+サブエージェント定義ファイル内で `hooks` を定義すると、そのサブエージェント実行中のみ有効なフックが設定される。
+
+```yaml
+---
+name: safe-builder
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: "./scripts/validate-safe-command.sh"
+  PostToolUse:
+    - matcher: "Edit|Write"
+      hooks:
+        - type: command
+          command: "./scripts/run-linter.sh"
+---
+```
+
+`Stop` フックは frontmatter 内で定義すると自動的に `SubagentStop` に変換される。
+
+---
+
+## Agent Teams Constraints (Rally L3)
+
+Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` 必要) の制限事項:
+
+| 制限 | 影響 |
+|------|------|
+| 実験的機能 | 設定で明示的に有効化が必要 |
+| 1セッション1チーム | 複数チームの同時管理不可 |
+| ネスト不可 | チームメイトは自チームを作れない |
+| リーダー固定 | 作成セッションが永続リーダー（移譲不可） |
+| セッション再開制限 | `/resume` で in-process チームメイトは復元されない |
+| 権限はスポーン時に固定 | 全チームメイトがリーダーの権限モードを継承 |
+| Split-pane | tmux または iTerm2 が必要（VS Code Terminal 非対応） |

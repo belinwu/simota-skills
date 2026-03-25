@@ -1,6 +1,6 @@
 # Subagent Parallel Protocol
 
-Common protocol for individual skills to spawn parallel sub-agents via the **Task tool**.
+Common protocol for individual skills to spawn parallel sub-agents via the **Agent tool** (formerly Task tool, renamed in v2.1.63).
 For Nexus internal parallel branches → `_common/PARALLEL.md`. For full team orchestration (4+ workers) → Rally.
 
 ---
@@ -42,15 +42,20 @@ Task received
 
 ---
 
-## Task Tool Quick Reference
+## Agent Tool Quick Reference
 
 ### subagent_type Selection
 
-| Type | Tools Available | Best For |
-|------|----------------|----------|
-| `Explore` | Read-only (Glob, Grep, Read, WebFetch, WebSearch) | Research, codebase exploration, information gathering |
-| `Plan` | Read-only | Architecture analysis, approach design |
-| `general-purpose` | All (including Edit, Write, Bash) | Implementation, testing, any task requiring changes |
+| Type | Model Default | Tools Available | Best For |
+|------|-------------|----------------|----------|
+| `Explore` | Haiku | Read-only (Glob, Grep, Read — Write/Edit denied) | Fast codebase exploration, file search |
+| `Plan` | Inherits | Read-only (Write/Edit denied) | Architecture analysis, plan mode research |
+| `general-purpose` | Inherits | All (including Edit, Write, Bash, MCP) | Implementation, testing, any task requiring changes |
+| `Bash` | Inherits | Shell only | Terminal commands in separate context |
+| `claude-code-guide` | Haiku | Read-only + WebFetch/WebSearch | Questions about Claude Code features |
+| Custom (`name`) | Per definition | Per `.claude/agents/` definition | Domain-specific tasks with tailored config |
+
+**Custom Subagent Definitions:** `.claude/agents/` (project) or `~/.claude/agents/` (user) に配置したMarkdownファイルで独自のsubagent_typeを定義可能。`tools`, `disallowedTools`, `model`, `permissionMode`, `skills`, `memory`, `hooks`, `maxTurns`, `effort`, `isolation` 等を事前設定できる。
 
 ### model Selection
 
@@ -58,17 +63,32 @@ Task received
 |-----------|-------|----------|
 | Low | `haiku` | Simple searches, formatting, extraction |
 | Medium | `sonnet` | Standard analysis, code review, moderate reasoning |
-| High | (default/inherit) | Complex reasoning, architecture decisions |
+| High | `opus` | Complex reasoning, architecture decisions |
+| — | `inherit` (default) | Use parent session's model |
+
+Full model IDs (`claude-opus-4-6`, `claude-sonnet-4-6` 等) も使用可能。
+
+### Key Frontmatter Fields (Custom Subagents)
+
+| Field | Description |
+|-------|-------------|
+| `maxTurns` | Maximum agentic turns (暴走防止・コスト管理) |
+| `effort` | Reasoning effort: `low`/`medium`/`high`/`max` (Opus 4.6 only) |
+| `isolation` | `worktree` for git worktree isolation (並列作業時のファイル競合防止) |
+| `memory` | Persistent memory: `user`/`project`/`local` (クロスセッション学習) |
+| `skills` | Skill content to inject at startup (SKILL.md事前注入) |
+| `hooks` | Lifecycle hooks scoped to this subagent |
+| `background` | `true` to always run as background task |
 
 ### Parallel Launch
 
-Spawn multiple subagents by issuing **multiple Task tool calls in a single message**. The system executes them concurrently.
+Spawn multiple subagents by issuing **multiple Agent tool calls in a single message**. The system executes them concurrently.
 
 ```
-# In one message, call Task 2-3 times:
-Task(subagent_type="Explore", prompt="Research area A...")
-Task(subagent_type="Explore", prompt="Research area B...")
-Task(subagent_type="Explore", prompt="Research area C...")
+# In one message, call Agent 2-3 times:
+Agent(subagent_type="Explore", prompt="Research area A...")
+Agent(subagent_type="Explore", prompt="Research area B...")
+Agent(subagent_type="Explore", prompt="Research area C...")
 ```
 
 ---
@@ -126,8 +146,8 @@ gemini -p "$(cat /tmp/prompt.md)" --yolo
 ```
 
 ```yaml
-# Claude (Task tool)
-Task:
+# Claude (Agent tool)
+Agent:
   subagent_type: general-purpose
   mode: dontAsk
   description: "[task description]"
@@ -223,3 +243,17 @@ Multiple subagents implement different solutions to the same problem, then the b
 | File ownership | **Exclusive** | No two subagents modify the same file |
 | Cost awareness | **Each subagent = separate Claude instance** | Only parallelize when benefit > overhead |
 | Spawn decision | **Agent's judgment** | Unless Nexus explicitly instructs `multi-engine` |
+| Nesting | **禁止** | サブエージェントは他のサブエージェントをスポーンできない |
+
+## Context Inheritance Rules
+
+サブエージェントのコンテキスト挙動を理解しておくことが重要:
+
+| Aspect | Inherits? | Notes |
+|--------|-----------|-------|
+| 親の会話履歴 | No | プロンプトで明示的に渡す必要あり |
+| 親の Skills | No | `skills` フィールドで事前注入が必要 |
+| 権限設定 | Yes | 親の権限を継承。`bypassPermissions` は上書き不可 |
+| MCP servers | Partial | `mcpServers` で明示指定。inline定義はサブエージェント専用 |
+| CLAUDE.md | Yes (teams) | Agent Teams のチームメイトは通常通り読み込む |
+| Tool access | Configurable | `tools`/`disallowedTools` で制限可能 |

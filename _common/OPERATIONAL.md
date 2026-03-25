@@ -97,7 +97,7 @@ Follow `_common/GIT_GUIDELINES.md`:
 
 ## Subagent Parallel
 
-When a task has 2-3 independent subtasks, agents may spawn sub-agents via the Task tool for parallel execution.
+When a task has 2-3 independent subtasks, agents may spawn sub-agents via the Agent tool for parallel execution.
 
 **Decision & patterns:** → `_common/SUBAGENT.md`
 
