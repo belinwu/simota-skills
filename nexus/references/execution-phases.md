@@ -5,7 +5,7 @@
 
 ## Contents
 - Phase 0: PROACTIVE_ANALYSIS (Optional)
-- AUTORUN_FULL (7 Phases)
+- AUTORUN_FULL (7 Phases) — Phase 2 includes Sprint Contract, Phase 6 includes Evaluator Loop
 - AUTORUN (5 Phases - Simple Tasks Only)
 
 Detailed phase descriptions for AUTORUN modes.
@@ -113,6 +113,7 @@ Set up execution environment:
 2. **Rollback Point Definition** - Create git stash or branch for recovery
 3. **Guardrail Configuration** - Set appropriate levels per step
 4. **Parallel Branch Preparation** - Split independent tasks, assign file ownership
+5. **Sprint Contract Creation** (when Evaluator Loop applicable) - Define acceptance criteria, select rubric template, assign Generator and Evaluators. See `references/sprint-contract.md` for format and applicability rules. Skip for SIMPLE complexity or tasks where Evaluator Loop is disabled.
 
 ### Phase 3: CHAIN_SELECT
 Auto-select agent chain based on classification.
@@ -258,13 +259,27 @@ Merge parallel results:
 2. Conflict Resolution - Resolve or escalate file conflicts
 3. Context Consolidation - Update L1_GLOBAL, prepare unified state
 
-### Phase 6: VERIFY
-Verify acceptance criteria:
+### Phase 6: VERIFY (with optional Evaluator Loop)
+
+**When Evaluator Loop is DISABLED** (default for SIMPLE tasks, BUG, small REFACTOR):
 
 1. Run tests (Radar equivalent)
 2. Confirm build passes
 3. Security scan if applicable (Sentinel)
 4. Final Guardrail Check (L2_CHECKPOINT minimum)
+
+**When Evaluator Loop is ENABLED** (FEATURE MEDIUM+, SECURITY, complex BUG/REFACTOR):
+
+1. Spawn Evaluator team in parallel (background agents) per Sprint Contract
+2. Each Evaluator scores deliverable against rubric dimensions
+3. Aggregate `EVALUATION_FEEDBACK` from all Evaluators
+4. Decision:
+   - All ACCEPT → proceed to Phase 7: DELIVER
+   - Any REVISE (iteration < max) → return to Phase 4: EXECUTE with `REVISION_BRIEF`
+   - Any REVISE (iteration >= max) → accept best result, proceed to DELIVER with quality notes
+   - Any BLOCK → ESCALATE to user
+
+See `references/evaluator-loop.md` for full pattern, `references/rubric-system.md` for scoring, and `references/sprint-contract.md` for contract format.
 
 ### Phase 7: DELIVER
 Finalize and present results:

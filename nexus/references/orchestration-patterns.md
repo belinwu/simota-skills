@@ -10,6 +10,8 @@
 - Pattern D: Recovery Loop
 - Pattern E: Escalation Path
 - Pattern F: Verification Gate
+- Pattern G: Rally Delegation
+- Pattern H: Evaluator Loop
 - Hub Communication Protocol
 
 Detailed patterns for agent chain execution.
@@ -287,6 +289,110 @@ Agent(
 ```
 
 **Escalation from L2 to L3**: If L2 parallel spawn encounters ownership conflicts or requires more than 3 branches, escalate to L3 Rally delegation.
+
+---
+
+## Pattern H: Evaluator Loop
+
+```
+Nexus → Agent(Generator, foreground) → _STEP_COMPLETE
+                                          ↓
+Nexus → spawn Evaluators in parallel:
+         Agent(Evaluator-1, bg) + Agent(Evaluator-2, bg)
+                                          ↓ (wait for all)
+Nexus → Aggregate EVALUATION_FEEDBACK
+         ├─ All ACCEPT     → DELIVER
+         ├─ Any REVISE     → compile REVISION_BRIEF
+         │                    → Agent(Generator, with feedback) → loop
+         └─ Any BLOCK      → ESCALATE to user
+```
+
+**Use when**: Task qualifies for Evaluator Loop (FEATURE MEDIUM+, SECURITY, complex tasks). The Generator produces deliverables; independent Evaluator agents assess them against the Sprint Contract rubric.
+
+**Key constraint**: Evaluators are read-only — they assess but do not modify code. Only the Generator makes changes.
+
+**Implementation**: Generator runs in foreground. Evaluators spawn as background agents with the Sprint Contract and Generator's output. Nexus aggregates feedback and either accepts, compiles a revision brief for the Generator, or escalates.
+
+```
+# Step 1: Generator produces deliverable
+result = Agent(
+  name: "builder-feature-impl"
+  description: "Implement feature"
+  mode: bypassPermissions
+  model: sonnet
+  prompt: "あなたは Builder エージェントです。まず ~/.claude/skills/builder/SKILL.md を読み...
+    Sprint Contract: {contract}
+    タスク: {task_description}"
+)
+
+# Step 2: Spawn Evaluators in parallel
+Agent(
+  name: "judge-eval-feature"
+  description: "Code quality evaluation"
+  run_in_background: true
+  mode: bypassPermissions
+  model: sonnet
+  prompt: "あなたは Judge エージェントです。まず ~/.claude/skills/judge/SKILL.md を読み...
+    モード: EVALUATOR (評価のみ、コード変更不可)
+    Sprint Contract: {contract}
+    評価対象: {result}"
+)
+
+Agent(
+  name: "radar-eval-feature"
+  description: "Test coverage evaluation"
+  run_in_background: true
+  mode: bypassPermissions
+  model: sonnet
+  prompt: "あなたは Radar エージェントです。まず ~/.claude/skills/radar/SKILL.md を読み...
+    モード: EVALUATOR (評価のみ、コード変更不可)
+    Sprint Contract: {contract}
+    評価対象: {result}"
+)
+
+# Step 3: Aggregate feedback → ACCEPT / REVISE / BLOCK
+```
+
+**Loop limits**: Max iterations default 3. Terminate on: all ACCEPT, diminishing returns (score delta < 0.2), or max iterations reached.
+
+### Codex CLI Implementation
+
+```
+# Step 1: Generator
+gen_id = spawn_agent(
+  prompt: "あなたは Builder エージェントです。まず ~/.claude/skills/builder/SKILL.md を読み...
+    Sprint Contract: {contract}
+    タスク: {task_description}"
+)
+gen_result = wait_agent(gen_id)
+
+# Step 2: Evaluators in parallel
+judge_id = spawn_agent(
+  prompt: "あなたは Judge エージェントです。まず ~/.claude/skills/judge/SKILL.md を読み...
+    モード: EVALUATOR (評価のみ、コード変更不可)
+    Sprint Contract: {contract}
+    評価対象: {gen_result}"
+)
+radar_id = spawn_agent(
+  prompt: "あなたは Radar エージェントです。まず ~/.claude/skills/radar/SKILL.md を読み...
+    モード: EVALUATOR (評価のみ、コード変更不可)
+    Sprint Contract: {contract}
+    評価対象: {gen_result}"
+)
+
+# Step 3: Collect feedback
+judge_feedback = wait_agent(judge_id)
+radar_feedback = wait_agent(radar_id)
+
+# Step 4: Aggregate → ACCEPT / REVISE / BLOCK
+# If REVISE: spawn_agent(Generator with REVISION_BRIEF)
+# Cleanup
+close_agent(gen_id)
+close_agent(judge_id)
+close_agent(radar_id)
+```
+
+See `references/evaluator-loop.md` for full specification, `references/sprint-contract.md` for contract format, `references/rubric-system.md` for scoring criteria.
 
 ---
 

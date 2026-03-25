@@ -337,7 +337,11 @@ Read only the files that match the current decision point.
 | `references/conflict-resolution.md` | Parallel branches touch overlapping files or logic |
 | `references/handoff-validation.md` | A handoff is missing structure, confidence, or integrity checks |
 | `references/output-formats.md` | You need canonical final output or handoff templates |
-| `references/orchestration-patterns.md` | You need a concrete execution pattern such as sequential, parallel, or verification-gated flow |
+| `references/orchestration-patterns.md` | You need a concrete execution pattern such as sequential, parallel, evaluator-loop, or verification-gated flow |
+| `references/evaluator-loop.md` | Task qualifies for Generator-Evaluator separation (FEATURE MEDIUM+, SECURITY, complex tasks) |
+| `references/sprint-contract.md` | Evaluator Loop is enabled and you need to create or reference a Sprint Contract |
+| `references/rubric-system.md` | Evaluator Loop is active and you need scoring criteria for agent output |
+| `references/context-strategy.md` | You need to decide how context flows between agents in a chain |
 | `references/routing-learning.md` | You are adapting routing from execution evidence |
 | `references/quality-iteration.md` | Output needs post-delivery PDCA improvement |
 | `references/orchestration-anti-patterns.md` | The orchestration plan may be overbuilt, bottlenecked, or too expensive |
@@ -348,7 +352,7 @@ Read only the files that match the current decision point.
 
 ## Operational Notes
 
-Follow `_common/OPERATIONAL.md`, `_common/AUTORUN.md`, `_common/HANDOFF.md`, `_common/GIT_GUIDELINES.md`. Journal in `.agents/nexus.md`; log to `.agents/PROJECT.md`. No agent names in commits/PRs. Decompose, route, execute, verify, deliver. Keep chains small, handoffs structured, recovery explicit.
+Follow `_common/OPERATIONAL.md`, `_common/AUTORUN.md`, `_common/HANDOFF.md`, `_common/GIT_GUIDELINES.md`, `_common/HARNESS_EVOLUTION.md`. Journal in `.agents/nexus.md`; log to `.agents/PROJECT.md`. No agent names in commits/PRs. Decompose, route, execute, verify, deliver. Keep chains small, handoffs structured, recovery explicit.
 
 ## Nexus Hub Mode
 

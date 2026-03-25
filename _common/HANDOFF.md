@@ -28,6 +28,7 @@ Standard format for `## NEXUS_HANDOFF` output. Designed for flexibility: include
 | **Step** | Step number in chain (e.g., 2/5) |
 | **Agent** | Current agent name |
 | **Artifacts** | Files created or modified |
+| **Contract_Ref** | Sprint Contract ID (e.g., SC-login-feature-20260325) when Evaluator Loop is active |
 | **Pending Confirmations** | Decisions awaiting user input |
 | **User Confirmations** | Decisions already confirmed by user |
 | **Suggested alternatives** | Alternative approaches considered |

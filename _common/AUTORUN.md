@@ -91,12 +91,16 @@ Steps <= 4 AND sequential?     → L1: Direct Spawn (foreground / spawn_agent)
 
 ### Model Selection
 
-| Agent Role | model | Rationale |
-|-----------|-------|-----------|
-| Investigation / read-only (Scout, Lens, Rewind) | sonnet | Cost-efficient |
-| Standard implementation (Builder, Artisan, Radar) | sonnet | Balanced |
-| High-complexity design (Sentinel, Atlas) | opus | Precision-critical |
-| Lightweight tasks (Quill, Morph) | haiku | Minimal cost |
+| Agent Role | model | Context Strategy | Rationale |
+|-----------|-------|-----------------|-----------|
+| Investigation / read-only (Scout, Lens, Rewind) | sonnet | reset | Cost-efficient; focused context |
+| Standard implementation (Builder, Artisan, Radar) | sonnet | hybrid | Balanced; receives handoff context |
+| High-complexity design (Sentinel, Atlas) | opus | continuous | Precision-critical; deep reasoning |
+| Lightweight tasks (Quill, Morph) | haiku | reset | Minimal cost; fresh context |
+| Evaluator (Judge, Voyager, Warden in eval mode) | sonnet | reset | Evaluators need only contract + output |
+| Generator (revision iteration) | sonnet | continuous | Benefits from feedback accumulation |
+
+**Context Strategy**: `reset` = file-based handoff (fresh context per agent), `continuous` = in-context handoff (accumulated context), `hybrid` = Nexus continuous + spawned agents reset. See `nexus/references/context-strategy.md` for details.
 
 ---
 
