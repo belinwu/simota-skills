@@ -71,83 +71,14 @@ NEXUS_COMPLETE_[STATUS] received
 
 ## Phase-Specific Required Artifacts
 
-### DISCOVER Phase
+Single source of truth for phase-specific artifact requirements and exit criteria: `references/exit-criteria-validation.md`.
 
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Product Definition | `docs/product-definition.md` exists, >100 lines | **Yes** |
-| Target Personas | Defined in product-definition or separate file | **Yes** |
-| Competitive Analysis | SWOT or feature comparison present | Recommended |
-| Codebase Analysis | Lens report (for existing projects) | Conditional |
+When validating `NEXUS_COMPLETE` results, check artifacts against the phase-specific validation checklists defined there. Key validation rules:
 
-### DEFINE Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Roadmap | `docs/roadmap.md` with prioritized features | **Yes** |
-| Feature Specs | `docs/specs/*.md` with acceptance criteria | **Yes** |
-| SUCCESS_CRITERIA | Measurable criteria defined | **Yes** |
-| KPI Definitions | Tracking events specified | Recommended |
-
-### ARCHITECT Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| ADR | `docs/adr/*.md` with decision rationale | **Yes** |
-| API Spec | OpenAPI or equivalent spec | Conditional |
-| DB Schema | Schema definition or ER description | Conditional |
-| Repo Structure | Directory layout defined | **Yes** |
-
-### BUILD Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Source Code | Implementation files created/modified | **Yes** |
-| Tests | Test files with basic coverage | **Yes** |
-| Tests Passing | Test runner returns exit 0 | **Yes** |
-| Build Success | Build command returns exit 0 | **Yes** |
-
-### HARDEN Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Security Report | Sentinel/Probe scan, no critical issues | **Yes** |
-| Performance Results | Bolt/Tuner optimization evidence | **Yes** |
-| Quality Assessment | Warden approval or score | **Yes** |
-| All Tests Green | Full test suite passing | **Yes** |
-
-### VALIDATE Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| E2E Tests | Voyager test suite passing | **Yes** |
-| UX Validation | Echo persona-based review | Recommended |
-| Experiment Config | A/B test setup (if applicable) | Conditional |
-
-### LAUNCH Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Documentation | README, API docs updated | **Yes** |
-| Release Notes | CHANGELOG or release notes | **Yes** |
-| CI/CD | Pipeline configured | Recommended |
-| Demos | Showcase/Director/Reel outputs | Recommended |
-
-### GROW Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| SEO Optimization | Meta tags, structured data | Conditional |
-| Analytics | Tracking events implemented | Recommended |
-| Growth Features | Retention/engagement features | Conditional |
-
-### EVOLVE Phase
-
-| Artifact | Evidence | Required |
-|----------|---------|----------|
-| Feedback Report | Voice analysis output | **Yes** |
-| Improvement Plan | Prioritized improvements for next cycle | **Yes** |
-| Tech Debt Inventory | Sweep/Horizon findings | Recommended |
+- **Required** artifacts must be present and non-empty for the phase to pass.
+- **Recommended** artifacts improve the exit score but are not blocking.
+- **Conditional** artifacts depend on scope or project type (e.g., A/B setup is XL only).
+- Use the scope-adaptive validation rules (S/M/L/XL) to determine which phases and criteria apply.
 
 ---
 

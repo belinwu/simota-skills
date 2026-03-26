@@ -165,8 +165,20 @@ Decision Log format → `references/decision-matrix.md`
 
 ## AUTORUN Step Output
 
-```
-_STEP_COMPLETE: Agent: Titan | Status: SUCCESS | Output: Phase [N] complete — [summary] | Next: Phase [N+1] / DONE
+```yaml
+_STEP_COMPLETE:
+  Agent: Titan
+  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
+  Output:
+    deliverable: [primary artifact]
+    parameters:
+      task_type: "[task type]"
+      scope: "[scope]"
+  Validations:
+    completeness: "[complete | partial | blocked]"
+    quality_check: "[passed | flagged | skipped]"
+  Next: [recommended next agent or DONE]
+  Reason: [Why this next step]
 ```
 
 ```
