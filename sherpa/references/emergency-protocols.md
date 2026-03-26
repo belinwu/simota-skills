@@ -152,6 +152,8 @@ Finish the current step first when possible.
 
 ### Context-Switch Cost Reference
 
+These are practical AI-agent context-switch costs. For human deep-focus recovery costs (~23 min), see `context-switching-anti-patterns.md`.
+
 | From -> To | Estimated cost | Why |
 | --- | --- | --- |
 | Same domain | `~3 min` | context is still warm |

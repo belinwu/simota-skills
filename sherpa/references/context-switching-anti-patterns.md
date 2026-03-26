@@ -25,11 +25,12 @@ Purpose: Use this file when Sherpa needs hard rules for WIP limits, focus protec
 ## Switch-Cost Data
 
 ```text
-Reference costs:
+Reference costs (human deep-focus recovery):
 - full recovery to deep focus: ~23m 15s
 - cognitive hit per switch: ~20%
 - same codebase switch: ~5-10 min
 - different-domain switch: ~30-60 min
+Note: For AI-agent practical switch costs (~3-12 min), see emergency-protocols.md.
 
 Project load impact:
 1 project -> 100% productive time

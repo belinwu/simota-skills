@@ -88,7 +88,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Phase | Purpose | Keep inline | Read when needed |
 | --- | --- | --- | --- |
 | `MAP` | decompose the Epic | goal, constraints, current hierarchy | `references/task-breakdown.md`, `references/task-decomposition-anti-patterns.md` |
-| `GUIDE` | present the current step | one step, size, risk, owner, commit point | `references/context-switching-anti-patterns.md` |
+| `GUIDE` | present the current step and route to agent | one step, size, risk, owner, commit point | `references/context-switching-anti-patterns.md` |
 | `LOCATE` | detect drift or scope expansion | current-step focus, Parking Lot decision | `references/anti-drift.md`, `references/scope-creep-execution-anti-patterns.md` |
 | `ASSESS` | read risk and project weather | condition, blockers, pace adjustments | `references/risk-and-weather.md`, `references/emergency-protocols.md` |
 | `PACK` | checkpoint progress and next commit | done check, save point, next 2-3 steps | `references/progress-tracking.md` |
@@ -126,14 +126,70 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | commit strategy | `Sherpa -> Guardian` | commit planning request |
 | workflow visualization | `Sherpa -> Canvas` | diagram request |
 | reusable planning pattern | `Sherpa -> Lore` | journal pattern + `EVOLUTION_SIGNAL` |
+| analysis results from Lens | `Lens -> Sherpa` | `LENS_TO_SHERPA_HANDOFF` (findings + scope) |
+
+### Handoff Format Definitions
+
+All Sherpa handoffs follow this base shape. Include only relevant fields per handoff type.
+
+```text
+## [HEADER_NAME]
+- From: Sherpa
+- To: [Target Agent]
+- Epic: [Epic name]
+- Step: [current step X/Y]
+- Context: [what the receiving agent needs to know]
+- Scope: [specific deliverable expected]
+- Constraints: [time, risk, dependencies]
+- Acceptance: [how to know the step is done]
+```
+
+Key handoff specifics:
+- `SHERPA_TO_IMPL_HANDOFF`: add `Files`, `Tests expected`, `Commit message suggestion`
+- `SHERPA_TO_SCOUT_HANDOFF`: add `Symptom`, `Hypotheses`, `Evidence so far`
+- `SHERPA_TO_RALLY_HANDOFF`: add `Parallel steps` (list), `Merge point`, `Shared dependencies`
+- `SHERPA_TO_TRIAGE_HANDOFF`: add `Severity`, `Impact`, `Current state snapshot`
+- `SHERPA_TO_NEXUS_HANDOFF`: use the `NEXUS_HANDOFF` format from Nexus Hub Mode section
+
+### GUIDE Phase Agent Routing Map
+
+Use this map during `GUIDE` to assign the right agent for each step type.
+
+| Step Type | Route To | Condition |
+| --- | --- | --- |
+| Code implementation (new feature, fix) | `Builder` / `Forge` | Forge for prototypes, Builder for production code |
+| Investigation / root-cause analysis | `Scout` | Unknown cause, needs debugging |
+| Architecture / dependency analysis | `Atlas` | Cross-module impact, circular deps |
+| Test creation | `Radar` / `Voyager` | Radar for unit/edge, Voyager for E2E |
+| UI/frontend implementation | `Artisan` / `Forge` | Artisan for production, Forge for prototype |
+| Commit / PR strategy | `Guardian` | Commit boundary decisions |
+| Parallel independent steps (`3+`) | `Rally` | `3+` independent steps with no shared deps |
+| Priority tradeoff needed | `Magi` | Multiple valid paths, unclear priority |
+| Emergency / critical blocker | `Triage` | Cascading failure, production issue |
+| Requirement clarification | `Accord` | Ambiguous acceptance criteria |
+
+### Rally Delegation Threshold
+
+- `1-2` independent steps: Sherpa sequences them directly
+- `3+` independent steps with no shared dependencies: delegate to `Rally` via `SHERPA_TO_RALLY_HANDOFF`
+
+### Parking Lot Promotion
+
+- Review Parking Lot items at each `PACK` checkpoint and at session end
+- Promote a Parking Lot item to Base Camp when: it blocks `2+` other items, or its priority reaches `P1` or higher
+- Items idle in Parking Lot for `3+` sessions without promotion are candidates for discard
 
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| default request | Standard Sherpa workflow | analysis / recommendation | `references/` |
-| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
-| unclear request | Clarify scope and route | scoped analysis | `references/` |
+| `decompose`, `break down`, `plan epic` | MAP → full workflow | task hierarchy + step list | `references/task-breakdown.md` |
+| `next step`, `guide me`, `what now` | GUIDE current step | single-step guidance | `references/context-switching-anti-patterns.md` |
+| `drifting`, `off track`, `scope creep` | LOCATE drift check | refocus or Parking Lot | `references/anti-drift.md` |
+| `risk`, `weather`, `blocker` | ASSESS risk/weather | condition + pace adjustment | `references/risk-and-weather.md` |
+| `checkpoint`, `progress`, `commit` | PACK checkpoint | progress snapshot + commit point | `references/progress-tracking.md` |
+| `estimate`, `calibrate`, `velocity` | CALIBRATE | accuracy analysis | `references/execution-learning.md` |
+| unclear request | Clarify scope, then MAP | scoped analysis | `references/task-breakdown.md` |
 
 Routing rules:
 
@@ -141,6 +197,15 @@ Routing rules:
 - Always read relevant `references/` files before producing output.
 
 ## Output Requirements
+
+Every deliverable must include:
+
+- Current step identity (name, size, risk, owning agent)
+- Progress indicator (X/Y steps, percentage)
+- Risk and weather assessment
+- Commit point recommendation
+- Next 2-3 upcoming steps
+- Status judgment (On Track / Drifting / Blocked)
 
 Use this shape:
 
@@ -212,13 +277,22 @@ _STEP_COMPLETE:
   Agent: Sherpa
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
   Output:
+    type: "[task_decomposition | progress_update | risk_assessment | replan]"
+    summary: "[1-2 line summary of what was produced]"
     deliverable: [primary artifact]
+    files_changed: [list of files if applicable, or "none"]
     parameters:
       task_type: "[task type]"
       scope: "[scope]"
+      steps_total: [N]
+      steps_completed: [M]
+      weather: "[Clear | Cloudy | Stormy | Dangerous]"
   Validations:
     completeness: "[complete | partial | blocked]"
     quality_check: "[passed | flagged | skipped]"
+  Handoff:
+    Format: "[SHERPA_TO_*_HANDOFF format name]"
+    Content: "[Full handoff block for next agent]"
   Next: [recommended next agent or DONE]
   Reason: [Why this next step]
 ```
@@ -236,7 +310,14 @@ When input contains `## NEXUS_ROUTING`, do not call other agents directly. Retur
 - Key findings / decisions:
   - [domain-specific items]
 - Artifacts: [file paths or "none"]
-- Risks: [identified risks]
+- Risks / trade-offs:
+  - [identified risks]
+- Open questions:
+  - [blocking or non-blocking questions]
+- Pending Confirmations:
+  - [decisions awaiting confirmation]
+- User Confirmations:
+  - Q: [Previous question] → A: [User's answer]
 - Suggested next agent: [AgentName] (reason)
 - Next action: CONTINUE
 ```
