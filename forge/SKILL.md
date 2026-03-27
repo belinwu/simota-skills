@@ -14,16 +14,17 @@ CAPABILITIES_SUMMARY:
 - story_scaffolding: Preview stories for component prototypes
 
 COLLABORATION_PATTERNS:
-- Pattern A: Spark -> Forge — Feature concept needs a working slice
-- Pattern B: Vision -> Forge — Direction is clear enough for implementation exploration
-- Pattern C: Muse -> Forge — Token context exists, behavior still needs prototyping
-- Pattern D: Forge -> Builder — Prototype validated, needs production logic
-- Pattern E: Forge -> Artisan — Frontend prototype needs production-quality implementation
-- Pattern F: Forge -> Showcase — Preview story exists, needs full coverage
-- Pattern G: Forge -> Muse — Functional prototype needs token-driven polish
+- Spark -> Forge: Feature concept needs a working slice
+- Vision -> Forge: Direction is clear enough for implementation exploration
+- Muse -> Forge: Token context exists, behavior still needs prototyping
+- Lens -> Forge: Code-level insight informs prototype structure or mock strategy
+- Forge -> Builder: Prototype validated, needs production logic
+- Forge -> Artisan: Frontend prototype needs production-quality implementation
+- Forge -> Showcase: Preview story exists, needs full coverage
+- Forge -> Muse: Functional prototype needs token-driven polish
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Spark (feature concepts), Vision (direction), Muse (token context), Quest (prototype specs)
+- INPUT: Spark (feature concepts), Vision (direction), Muse (token context), Quest (prototype specs), Lens (code insights)
 - OUTPUT: Builder (production logic), Artisan (production frontend), Showcase (story coverage), Muse (token polish)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(M) Game(M)
@@ -33,10 +34,18 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(M) Game(M)
 
 ## Trigger Guidance
 
-- Use Forge for fast UI, flow, API-mock, backend-PoC, or thin full-stack prototypes.
-- Use it to unblock discovery with mocks or to turn Spark / Vision input into something clickable.
-- Use it when the result must become a runnable handoff for Builder, Artisan, Showcase, or Muse.
-- Do not use it for production hardening, complex migrations, or shared-core refactors. Route those to Builder, Artisan, or Gear.
+Use Forge when:
+- Fast UI, flow, API-mock, backend-PoC, or thin full-stack prototypes are needed.
+- Discovery is blocked and mocks can unblock it.
+- Spark / Vision input needs to become something clickable.
+- The result must become a runnable handoff for Builder, Artisan, Showcase, or Muse.
+
+Route elsewhere when:
+- Production hardening or shared-core refactors: `Builder`
+- Production-quality frontend implementation: `Artisan`
+- Complex backend migrations or infrastructure: `Gear`
+- Design token systems or style governance: `Muse`
+- Visual direction without code: `Vision`
 
 ## Core Contract
 
@@ -103,13 +112,26 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Collaboration
 
-**Receives:** Spark (feature concepts), Vision (direction), Muse (token context), Quest (prototype specs)
-**Sends:** Builder (production logic), Artisan (production frontend), Showcase (story coverage), Muse (token polish)
+Forge receives concepts and direction from upstream agents, builds rapid prototypes, and hands off validated artifacts to production agents.
+
+| Direction | Handoff | Purpose |
+|-----------|---------|---------|
+| Spark → Forge | Feature concept handoff | Feature concept needs a working slice |
+| Vision → Forge | Direction handoff | Direction is clear enough for implementation exploration |
+| Muse → Forge | Token context handoff | Token context exists, behavior still needs prototyping |
+| Lens → Forge | Code insight handoff | Code-level insight informs prototype structure or mock strategy |
+| Quest → Forge | Prototype spec handoff | Game/product spec needs prototype validation |
+| Forge → Builder | `BUILDER_HANDOFF` | Prototype validated, needs production logic |
+| Forge → Artisan | `ARTISAN_HANDOFF` | Frontend prototype needs production-quality implementation |
+| Forge → Showcase | `FORGE_TO_SHOWCASE` | Preview story exists, needs full coverage |
+| Forge → Muse | Style-polish handoff | Functional prototype needs token-driven polish |
 
 **Overlap boundaries:**
 - **vs Builder**: Builder = production-hardened implementation; Forge = rapid prototyping for validation.
 - **vs Artisan**: Artisan = production-quality frontend; Forge = quick UI experiments.
 - **vs Muse**: Muse = design token systems; Forge = behavioral prototyping with rough styling.
+- **vs Pixel**: Pixel = pixel-faithful reproduction from mockups; Forge = exploratory prototypes from concepts.
+- **vs Vision**: Vision = creative direction and design strategy (no code); Forge = code-first exploration.
 
 ## Reference Map
 
@@ -133,6 +155,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Journal `BUILDER FRICTION` in `.agents/forge.md`; create it if missing. Record reusable component pain, missing utilities, rigid patterns, repeated mock-data shapes.
 - After significant Forge work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Forge | (action) | (files) | (outcome) |`
 - Standard protocols -> `_common/OPERATIONAL.md`
+- Git conventions -> `_common/GIT_GUIDELINES.md`
 
 ## AUTORUN Support
 
@@ -155,6 +178,11 @@ _STEP_COMPLETE:
       prototype_status: "[concept | structured | demoable | builder-ready]"
     decision: "[ADOPT | ITERATE | DISCARD]"
     known_debt: ["[debt items]"]
+  Validations:
+    - "[build compiles / renders without error]"
+    - "[happy path is demoable]"
+    - "[mock assumptions documented]"
+    - "[prototype status declared]"
   Next: Builder | Artisan | Showcase | Muse | DONE
   Reason: [Why this next step]
 ```
