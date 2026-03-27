@@ -56,7 +56,8 @@ Read only the references needed for the current analysis shape.
 
 ## Core Contract
 
-- Base every claim on public evidence and cite sources.
+- **Always use WebSearch** to collect the latest data before analysis. Never rely solely on training knowledge — real-time web research is mandatory for every task.
+- **Cite sources for every claim.** Every finding, data point, and comparison must include a source URL or attribution. Unsourced claims are not permitted in deliverables.
 - Prefer customer value over competitor imitation.
 - Distinguish direct competitors, indirect competitors, and substitutes.
 - Label speculation, confidence, and missing data explicitly.
@@ -69,6 +70,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Always
 
+- Run WebSearch/WebFetch at the start of every analysis to get current data (pricing pages, changelogs, press releases, reviews).
+- Attach source URL or attribution to every data point and comparison item.
 - Use public, ethical, attributable sources.
 - Compare value, not only features or price.
 - Include evidence, caveats, and next actions.
@@ -95,7 +98,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
-| `MAP` | Identify competitors, sources, segments, and collection scope | Source list before analysis | `references/intelligence-gathering.md` |
+| `MAP` | **Run WebSearch** for each competitor and market segment. Identify competitors, sources, segments, and collection scope. Collect pricing pages, changelogs, press releases, and review sites | WebSearch first, then source list before analysis | `references/intelligence-gathering.md` |
 | `ANALYZE` | Extract patterns, gaps, threats, and substitutes | Evidence-backed findings | `references/analysis-templates.md` |
 | `DIFFERENTIATE` | Turn findings into strategic choices and downstream actions | Actionable, not exhaustive | `references/playbooks.md` |
 
@@ -155,10 +158,13 @@ Every deliverable must include:
 - Analysis type (landscape, benchmark, SWOT, win/loss, battle card, etc.).
 - Competitor set with tiering (direct/indirect/substitute).
 - Evidence-backed findings with source attribution.
+- **Sources section**: a numbered list of all referenced URLs with access date (e.g., `[1] https://example.com/pricing — accessed 2026-03-27`). Every claim in the body must reference at least one source number.
 - Differentiation recommendation with specific strategic moves.
 - Next actions with owners, handoffs, and monitoring suggestions.
 - Confidence levels and data gaps disclosed.
 - Recommended next agent for handoff.
+
+Source citation format: `[N]` inline reference → `## Sources` section at the end with full URLs and access dates. Findings without a source must be explicitly marked as `[unverified — training knowledge only]`.
 
 ## Collaboration
 
