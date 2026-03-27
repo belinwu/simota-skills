@@ -198,28 +198,27 @@ Every deliverable must include:
 
 ## Collaboration
 
-**Receives:** Researcher (interviews, research findings), Trace (behavioral clusters, drift signals), Voice (segment/feedback insights), Nexus (task context)
-**Sends:** Echo (testing-ready personas), Spark (feature-focused personas), Retain (lifecycle/churn personas), Compete (competitive personas), Accord (spec personas), Nexus (results)
+Cast receives persona requests and evidence from upstream agents, generates and manages personas, and distributes them to downstream agents.
+
+| Direction | Handoff | Purpose |
+|-----------|---------|---------|
+| Researcher → Cast | Research integration | Interview or research findings for persona creation/evolution |
+| Trace → Cast | Behavioral data | Behavioral clusters or drift signals for persona evolution |
+| Voice → Cast | Feedback integration | Segment or feedback insights for persona evolution |
+| Nexus → Cast | Task delegation | Persona task context from orchestration |
+| Cast → Echo | Persona delivery | Testing-ready personas for UX validation |
+| Cast → Spark | Feature personas | Feature-focused personas for ideation |
+| Cast → Retain | Lifecycle personas | Lifecycle or churn-focused personas for retention strategy |
+| Cast → Compete | Competitive personas | Specialized persona packaging for competitive analysis |
+| Cast → Accord | Spec personas | Specialized persona packaging for specification alignment |
+
+Exact payload shapes → `references/collaboration-formats.md`. Adapter-specific packaging → `references/distribution-adapters.md`.
 
 **Overlap boundaries:**
 - **vs Researcher**: Researcher = research design and data collection; Cast = persona synthesis from research data.
 - **vs Echo**: Echo = UX testing with personas; Cast = persona creation and lifecycle management.
 - **vs Voice**: Voice = feedback collection; Cast = persona evolution from feedback data.
-
-## Routing And Handoffs
-
-| Direction | Token / Route | Use when |
-|---|---|---|
-| Inbound | `## CAST_HANDOFF: Research Integration` | Researcher provides interview or research findings. |
-| Inbound | `## CAST_HANDOFF: Behavioral Data` | Trace provides behavioral clusters or drift signals. |
-| Inbound | `## CAST_HANDOFF: Feedback Integration` | Voice provides segment or feedback insights. |
-| Outbound | `## ECHO_HANDOFF: Updated Personas Ready` | Echo needs testing-ready personas. |
-| Outbound | `## SPARK_HANDOFF: Personas for Feature Ideation` | Spark needs feature-focused personas. |
-| Outbound | `## RETAIN_HANDOFF: Personas for Retention Strategy` | Retain needs lifecycle or churn-focused personas. |
-| Outbound | Adapter routing | Compete and Accord need specialized persona packaging. |
-
-- Exact payload shapes live in [references/collaboration-formats.md](references/collaboration-formats.md).
-- Adapter-specific packaging lives in [references/distribution-adapters.md](references/distribution-adapters.md).
+- **vs Trace**: Trace = session replay analysis and behavior pattern extraction; Cast = persona evolution from behavioral data.
 
 ## Reference Map
 
@@ -242,10 +241,11 @@ Every deliverable must include:
 - Journal: read and update `.agents/cast.md` when persona lifecycle work materially changes understanding.
 - After significant Cast work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Cast | (action) | (files) | (outcome) |`
 - Standard protocols -> `_common/OPERATIONAL.md`
+- Git conventions -> `_common/GIT_GUIDELINES.md`
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: treat `_AGENT_CONTEXT` as authoritative upstream context if present, do the normal work, keep prose brief, and append `_STEP_COMPLETE:`.
+When Cast receives `_AGENT_CONTEXT`, parse `task_type`, `description`, `mode`, `target_personas`, and `constraints`, choose the correct output route (CONJURE / FUSE / EVOLVE / AUDIT / DISTRIBUTE / SPEAK), run the corresponding workflow pipeline, produce the deliverable, and return `_STEP_COMPLETE`.
 
 ### `_STEP_COMPLETE`
 
