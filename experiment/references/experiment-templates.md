@@ -22,18 +22,18 @@
 | Treatment | [Describe change] | 50% |
 
 ### Metrics
-**Primary Metric (決定指標):**
+**Primary Metric (Decision Metric):**
 - Metric: [Name]
 - Definition: [Exact calculation]
 - Current Baseline: [X%]
 - MDE (Minimum Detectable Effect): [Y%]
 - Expected Lift: [Z%]
 
-**Secondary Metrics (参考指標):**
+**Secondary Metrics (Reference Metrics):**
 1. [Metric name] - [Definition]
 2. [Metric name] - [Definition]
 
-**Guardrail Metrics (ガードレール指標):**
+**Guardrail Metrics (Guardrail Metrics):**
 1. [Metric name] - [Threshold that should not be crossed]
 2. [Metric name] - [Threshold]
 
@@ -112,3 +112,83 @@
 - [Link to raw data]
 - [Link to dashboard]
 ```
+
+---
+
+## Experimentation Maturity Model
+
+Use this model to assess your team's current experimentation capability and plan the next step.
+
+| Level | Name | Characteristics |
+|-------|------|----------------|
+| **Level 1** | Ad Hoc | Experiments run without documentation; no pre-registration; results interpreted post-hoc |
+| **Level 2** | Defined | Standard hypothesis template used; sample size calculated upfront; primary metric pre-registered |
+| **Level 3** | Managed | Automated assignment and tracking; SRM checks; sequential testing available; centralized platform |
+| **Level 4** | Optimized | CUPED variance reduction; automated guardrail monitoring; experimentation culture across teams |
+| **Level 5** | Continuous | Always-on adaptive experiments (bandits); warehouse-native analysis; organization-wide learning loops |
+
+---
+
+## Experiment Review Process Template
+
+```markdown
+## Pre-Launch Review Checklist
+
+### Hypothesis Quality
+- [ ] Falsifiable hypothesis stated (If/Then/Because)
+- [ ] Primary metric pre-registered and owned by one team
+- [ ] Guardrail metrics defined with explicit thresholds
+- [ ] Minimum detectable effect (MDE) is practically significant
+
+### Statistical Design
+- [ ] Power analysis completed (80%+ power, 5% significance)
+- [ ] Sample size achievable within experiment duration
+- [ ] Randomization unit appropriate (user-level, session-level, etc.)
+- [ ] No overlapping experiments on same population
+
+### Technical Setup
+- [ ] Feature flag configured and tested in staging
+- [ ] Exposure tracking implemented and verified
+- [ ] SRM check query prepared
+- [ ] Rollback plan documented
+
+### Ethical / Risk Review
+- [ ] No negative UX impact on critical flows (if yes, approval required)
+- [ ] Experiment duration ≤ 4 weeks (if longer, approval required)
+- [ ] Data privacy and consent requirements met
+
+---
+
+## Post-Launch Review Checklist
+
+### Data Quality
+- [ ] SRM check passed (χ² p-value > 0.05)
+- [ ] No mid-flight parameter changes
+- [ ] Sample size target reached before analysis
+
+### Results Interpretation
+- [ ] Analysis used pre-registered primary metric
+- [ ] Confidence intervals reported alongside p-values
+- [ ] Segment analysis does not drive primary decision
+- [ ] Guardrail metrics reviewed
+
+### Decision and Learning
+- [ ] Ship / Iterate / Abandon decision documented
+- [ ] Key learnings recorded for future experiments
+- [ ] Feature flag cleanup scheduled
+```
+
+---
+
+## Experiments with Learning (EwL) Metrics
+
+Beyond primary/secondary metrics, EwL metrics capture *what we learned* — not just *what we measured*.
+
+| EwL Metric | Definition | Why It Matters |
+|------------|------------|----------------|
+| **Hypothesis Quality Score** | % of experiments with falsifiable, pre-registered hypothesis | Prevents p-hacking and HARK-ing |
+| **SRM Detection Rate** | % of experiments that ran an SRM check | Ensures data integrity |
+| **Null Result Rate** | % of experiments with null result | Healthy rate (40-60%) signals good calibration |
+| **Experiment Velocity** | Experiments shipped per month per team | Tracks learning throughput |
+| **Time to Decision** | Days from launch to ship/iterate/abandon decision | Identifies bottlenecks in analysis |
+| **Learning Reuse Rate** | % of experiments that reference prior learnings | Measures institutional memory |

@@ -112,6 +112,282 @@ function normalCDF(x: number): number {
 }
 ```
 
+---
+
+## CUPED — Controlled experiment Using Pre-Experiment Data
+
+CUPED reduces variance in experiment metrics by removing the component explained by pre-experiment covariates, allowing you to detect smaller effects with the same sample size.
+
+**Core formula:**
+
+```
+Y_adj = Y - θ * X
+θ = Cov(Y, X) / Var(X)
+
+Var(Y_adj) = Var(Y) × (1 – Cor(Y, X)²)
+```
+
+Where `X` is the pre-experiment covariate (e.g., last 30 days metric), `Y` is the experiment outcome metric, and `θ` is the regression coefficient.
+
+**Variance reduction:** If `Cor(Y, X) = 0.5`, variance is reduced by 25%. If `Cor(Y, X) = 0.8`, variance is reduced by 64%.
+
+**When to apply CUPED:**
+- Pre-experiment data for the same metric is available (at least 2 weeks)
+- The covariate correlates with the outcome metric (|Cor| > 0.2)
+- You need to reduce experiment duration without sacrificing power
+
+**TypeScript implementation:**
+
+```typescript
+interface CupedData {
+  userId: string;
+  preExperimentValue: number; // X: covariate
+  experimentValue: number;    // Y: outcome during experiment
+  variant: 'control' | 'treatment';
+}
+
+function computeTheta(data: CupedData[]): number {
+  const n = data.length;
+  const meanY = data.reduce((s, d) => s + d.experimentValue, 0) / n;
+  const meanX = data.reduce((s, d) => s + d.preExperimentValue, 0) / n;
+
+  const cov = data.reduce((s, d) =>
+    s + (d.experimentValue - meanY) * (d.preExperimentValue - meanX), 0) / n;
+  const varX = data.reduce((s, d) =>
+    s + Math.pow(d.preExperimentValue - meanX, 2), 0) / n;
+
+  return cov / varX;
+}
+
+function applyCuped(data: CupedData[]): Array<CupedData & { adjustedValue: number }> {
+  const theta = computeTheta(data);
+  const globalMeanX = data.reduce((s, d) => s + d.preExperimentValue, 0) / data.length;
+
+  return data.map(d => ({
+    ...d,
+    // Subtract the covariate contribution relative to the global mean
+    adjustedValue: d.experimentValue - theta * (d.preExperimentValue - globalMeanX)
+  }));
+}
+
+function analyzeCuped(data: CupedData[], significance = 0.05): AnalysisResult {
+  const adjusted = applyCuped(data);
+  const control = adjusted.filter(d => d.variant === 'control').map(d => d.adjustedValue);
+  const treatment = adjusted.filter(d => d.variant === 'treatment').map(d => d.adjustedValue);
+
+  // Use standard t-test on adjusted values
+  return analyzeWithWelchTTest(control, treatment, significance);
+}
+
+function analyzeWithWelchTTest(
+  control: number[],
+  treatment: number[],
+  significance: number
+): AnalysisResult {
+  const n1 = control.length, n2 = treatment.length;
+  const mean1 = control.reduce((a, b) => a + b, 0) / n1;
+  const mean2 = treatment.reduce((a, b) => a + b, 0) / n2;
+  const var1 = control.reduce((s, v) => s + Math.pow(v - mean1, 2), 0) / (n1 - 1);
+  const var2 = treatment.reduce((s, v) => s + Math.pow(v - mean2, 2), 0) / (n2 - 1);
+  const se = Math.sqrt(var1 / n1 + var2 / n2);
+  const tStat = (mean2 - mean1) / se;
+  const pValue = 2 * (1 - normalCDF(Math.abs(tStat)));
+  const zAlpha = 1.96;
+  const ci: [number, number] = [
+    (mean2 - mean1) - zAlpha * se,
+    (mean2 - mean1) + zAlpha * se
+  ];
+  return {
+    controlRate: mean1,
+    treatmentRate: mean2,
+    relativeLift: (mean2 - mean1) / Math.abs(mean1),
+    absoluteLift: mean2 - mean1,
+    zScore: tStat,
+    pValue,
+    isSignificant: pValue < significance,
+    confidenceInterval: ci
+  };
+}
+```
+
+---
+
+## Bayesian A/B Testing
+
+Bayesian methods produce probability statements ("there is a 95% probability that treatment is better") rather than binary significance decisions. This avoids the peeking problem and is more interpretable.
+
+### Beta-Binomial Model (for conversion metrics)
+
+For binary outcomes (converted / not converted), the Beta distribution is the conjugate prior to the Binomial likelihood.
+
+**Prior:** `Beta(α₀, β₀)` — typically `Beta(1, 1)` (uniform/non-informative)
+
+**Posterior update:** After observing `k` conversions out of `n` trials:
+```
+Posterior = Beta(α₀ + k, β₀ + n - k)
+```
+
+**Posterior predictive probability that treatment > control:**
+Computed via Monte Carlo sampling from both posteriors.
+
+```typescript
+interface BayesianResult {
+  controlPosterior: { alpha: number; beta: number };
+  treatmentPosterior: { alpha: number; beta: number };
+  probTreatmentBetter: number;
+  expectedLift: number;
+  credibleInterval: [number, number]; // 95% HDI on lift
+}
+
+function bayesianAbTest(
+  control: { conversions: number; total: number },
+  treatment: { conversions: number; total: number },
+  priorAlpha = 1,
+  priorBeta = 1,
+  nSamples = 100_000
+): BayesianResult {
+  const controlPost = {
+    alpha: priorAlpha + control.conversions,
+    beta: priorBeta + (control.total - control.conversions)
+  };
+  const treatmentPost = {
+    alpha: priorAlpha + treatment.conversions,
+    beta: priorBeta + (treatment.total - treatment.conversions)
+  };
+
+  // Monte Carlo: sample from both posteriors
+  const controlSamples = sampleBeta(controlPost.alpha, controlPost.beta, nSamples);
+  const treatmentSamples = sampleBeta(treatmentPost.alpha, treatmentPost.beta, nSamples);
+
+  const wins = treatmentSamples.filter((t, i) => t > controlSamples[i]).length;
+  const lifts = treatmentSamples.map((t, i) => (t - controlSamples[i]) / controlSamples[i]);
+
+  lifts.sort((a, b) => a - b);
+  const credibleInterval: [number, number] = [
+    lifts[Math.floor(nSamples * 0.025)],
+    lifts[Math.floor(nSamples * 0.975)]
+  ];
+
+  return {
+    controlPosterior: controlPost,
+    treatmentPosterior: treatmentPost,
+    probTreatmentBetter: wins / nSamples,
+    expectedLift: lifts.reduce((a, b) => a + b, 0) / nSamples,
+    credibleInterval
+  };
+}
+
+// Beta distribution sampler using Johnk's method
+function sampleBeta(alpha: number, beta: number, n: number): number[] {
+  return Array.from({ length: n }, () => {
+    // Approximation via normal when alpha and beta are large
+    if (alpha > 1 && beta > 1) {
+      const mean = alpha / (alpha + beta);
+      const variance = (alpha * beta) / (Math.pow(alpha + beta, 2) * (alpha + beta + 1));
+      return Math.max(0, Math.min(1, mean + Math.sqrt(variance) * gaussianRandom()));
+    }
+    // Exact: use gamma variates ratio
+    const x = gammaSample(alpha);
+    const y = gammaSample(beta);
+    return x / (x + y);
+  });
+}
+
+function gaussianRandom(): number {
+  // Box-Muller transform
+  const u1 = Math.random(), u2 = Math.random();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+
+function gammaSample(shape: number): number {
+  // Marsaglia-Tsang method approximation
+  if (shape < 1) return gammaSample(1 + shape) * Math.pow(Math.random(), 1 / shape);
+  const d = shape - 1 / 3;
+  const c = 1 / Math.sqrt(9 * d);
+  while (true) {
+    let x: number, v: number;
+    do { x = gaussianRandom(); v = 1 + c * x; } while (v <= 0);
+    v = v * v * v;
+    const u = Math.random();
+    if (u < 1 - 0.0331 * (x * x) * (x * x)) return d * v;
+    if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v;
+  }
+}
+```
+
+### Frequentist vs Bayesian Comparison
+
+| Aspect | Frequentist (Z-test) | Bayesian (Beta-Binomial) |
+|--------|---------------------|--------------------------|
+| **Output** | p-value, reject/fail to reject H₀ | P(treatment > control), credible interval |
+| **Interpretation** | "If H₀ is true, data this extreme occurs X% of the time" | "There is X% probability treatment is better" |
+| **Peeking** | Inflates false positive rate | Can monitor continuously with proper stopping rules |
+| **Prior knowledge** | Not incorporated | Can incorporate via informative priors |
+| **Sample size** | Required upfront | More flexible; stop when confidence is sufficient |
+| **Common use** | Standard industry A/B tests | Continuous experimentation, revenue optimization |
+
+---
+
+## Thompson Sampling
+
+Thompson Sampling is a Bayesian bandit algorithm that allocates more traffic to better-performing variants dynamically — balancing exploration (learning) and exploitation (earning).
+
+**When to use Thompson Sampling over A/B testing:**
+- Reward is immediate (not delayed conversion)
+- You want to minimize regret during the experiment
+- Variants are clearly ordered by performance (not complex interactions)
+- See `references/adaptive-experimentation.md` for full MAB vs A/B selection guide
+
+```typescript
+interface ThompsonArm {
+  name: string;
+  alpha: number; // successes + prior_alpha
+  beta: number;  // failures + prior_beta
+}
+
+class ThompsonSampler {
+  private arms: ThompsonArm[];
+
+  constructor(armNames: string[], priorAlpha = 1, priorBeta = 1) {
+    this.arms = armNames.map(name => ({
+      name,
+      alpha: priorAlpha,
+      beta: priorBeta
+    }));
+  }
+
+  // Select arm by sampling from each arm's Beta posterior
+  selectArm(): string {
+    const samples = this.arms.map(arm => ({
+      name: arm.name,
+      sample: sampleBeta(arm.alpha, arm.beta, 1)[0]
+    }));
+    return samples.reduce((best, s) => s.sample > best.sample ? s : best).name;
+  }
+
+  // Update arm with observed reward (1 = success, 0 = failure)
+  update(armName: string, reward: 0 | 1): void {
+    const arm = this.arms.find(a => a.name === armName);
+    if (!arm) return;
+    arm.alpha += reward;
+    arm.beta += 1 - reward;
+  }
+
+  getStats(): Array<{ name: string; estimatedRate: number; uncertainty: number }> {
+    return this.arms.map(arm => ({
+      name: arm.name,
+      estimatedRate: arm.alpha / (arm.alpha + arm.beta),
+      uncertainty: Math.sqrt(
+        (arm.alpha * arm.beta) /
+        (Math.pow(arm.alpha + arm.beta, 2) * (arm.alpha + arm.beta + 1))
+      )
+    }));
+  }
+}
+```
+
+---
+
 ## Example Analysis
 
 ```typescript

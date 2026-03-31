@@ -38,6 +38,97 @@ interface FeatureFlag {
 
 ---
 
+## Platform Comparison Matrix
+
+| Feature | Statsig | Eppo | GrowthBook | LaunchDarkly |
+|---------|---------|------|------------|--------------|
+| **Statistical engine** | Sequential testing, CUPED built-in | Frequentist + Bayesian, CUPED | Frequentist (Bayesian optional) | Basic frequentist |
+| **Feature flags** | Full (targeting, rollout, kill switch) | Limited (experiment-focused) | Full | Industry-leading |
+| **Warehouse-native** | Yes (Snowflake, BigQuery, Redshift) | Yes (primary focus) | Yes | No (event streaming only) |
+| **Metrics catalog** | Yes | Yes | Yes | No |
+| **Auto-rollback** | Yes | No | No | Yes (via monitoring) |
+| **Open source** | No | No | Yes (self-host) | No |
+| **Pricing model** | Per event or flat | Per experiment | Free OSS / paid cloud | Per seat |
+| **Best for** | Growth teams with high experiment velocity | Data warehouse-centric orgs | Cost-sensitive teams, OSS preference | Enterprise feature management |
+
+### Selection Guide
+
+| Your situation | Recommended platform |
+|---------------|---------------------|
+| High-velocity experimentation, integrated analytics | **Statsig** |
+| All metrics live in data warehouse (Snowflake/BigQuery) | **Eppo** |
+| Budget-constrained, want full control | **GrowthBook** (self-hosted) |
+| Need mature enterprise FF + SSO + audit logs | **LaunchDarkly** |
+| Small team, just need simple feature toggles | Custom implementation (see below) |
+
+---
+
+## Warehouse-Native Integration Pattern
+
+Warehouse-native experimentation analyses experiment results directly in your data warehouse, giving you full control and auditability.
+
+```
+┌─────────────┐    exposure events    ┌──────────────────┐
+│  Feature    │ ──────────────────▶  │   Data Warehouse  │
+│  Flag SDK   │                      │ (Snowflake/BigQuery│
+└─────────────┘                      │  /Redshift/etc.)   │
+                                     └──────────┬────────┘
+                                                │
+                                         SQL analysis
+                                                │
+                                     ┌──────────▼────────┐
+                                     │  Experiment Report │
+                                     │  (dbt / Jupyter)   │
+                                     └───────────────────┘
+```
+
+**Exposure table schema:**
+
+```sql
+CREATE TABLE experiment_exposures (
+  exposure_id       STRING NOT NULL,
+  experiment_name   STRING NOT NULL,
+  variant           STRING NOT NULL,  -- 'control' | 'treatment'
+  user_id           STRING NOT NULL,
+  exposed_at        TIMESTAMP NOT NULL,
+  session_id        STRING,
+  device_type       STRING,
+  PRIMARY KEY (experiment_name, user_id)  -- one exposure per user per experiment
+);
+```
+
+**Analysis query (BigQuery example):**
+
+```sql
+WITH exposure AS (
+  SELECT
+    user_id,
+    variant,
+    DATE(exposed_at) AS exposure_date
+  FROM experiment_exposures
+  WHERE experiment_name = 'checkout_redesign'
+    AND exposed_at BETWEEN '2024-01-01' AND '2024-01-15'
+),
+conversions AS (
+  SELECT DISTINCT user_id
+  FROM order_events
+  WHERE event_type = 'purchase'
+    AND created_at BETWEEN '2024-01-01' AND '2024-01-22'
+)
+SELECT
+  e.variant,
+  COUNT(DISTINCT e.user_id)                         AS users,
+  COUNT(DISTINCT c.user_id)                         AS conversions,
+  ROUND(COUNT(DISTINCT c.user_id) * 100.0
+        / COUNT(DISTINCT e.user_id), 2)             AS conversion_rate_pct
+FROM exposure e
+LEFT JOIN conversions c USING (user_id)
+GROUP BY e.variant
+ORDER BY e.variant;
+```
+
+---
+
 ## Basic Feature Flag Setup
 
 ```typescript
