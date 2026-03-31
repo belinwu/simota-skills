@@ -47,6 +47,126 @@ export async function getStaticProps() {
 
 ## INP (Interaction to Next Paint) - Target: < 200ms
 
+### Thresholds
+
+| Rating | INP Value |
+|--------|-----------|
+| Good | ≤ 200ms |
+| Needs Improvement | 200–500ms |
+| Poor | > 500ms |
+
+### INP Component Breakdown
+
+INP measures the worst interaction latency, decomposed into 3 phases:
+
+1. **Input Delay** — time from user action to event handler start (caused by long tasks blocking main thread)
+2. **Processing Time** — time spent executing event handlers
+3. **Presentation Delay** — time from handler completion to next frame paint
+
+### Reduce Input Delay: Break Up Long Tasks
+
+```typescript
+// Use scheduler.yield() to yield to main thread between tasks
+async function processLargeDataset(items: string[]): Promise<void> {
+  for (let i = 0; i < items.length; i++) {
+    processItem(items[i]);
+    // Yield every 50 items to keep input delay low
+    if (i % 50 === 0 && 'scheduler' in window) {
+      await (window as any).scheduler.yield();
+    }
+  }
+}
+```
+
+### Optimize Processing Time: Minimize Event Handlers
+
+```typescript
+import { memo, useMemo, useCallback } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+
+// Memoize expensive components to skip re-renders
+const ExpensiveList = memo(({ items }: { items: string[] }) => (
+  <ul>{items.map(item => <li key={item}>{item}</li>)}</ul>
+));
+
+function SearchPage() {
+  const [query, setQuery] = React.useState('');
+  const [results, setResults] = React.useState<string[]>([]);
+
+  // Debounce to limit processing frequency
+  const handleSearch = useDebouncedCallback(async (value: string) => {
+    const data = await fetchResults(value);
+    setResults(data);
+  }, 300);
+
+  // Throttle scroll handler
+  const handleScroll = useCallback(
+    throttle(() => { /* scroll logic */ }, 100),
+    []
+  );
+
+  return (
+    <>
+      <input onChange={e => { setQuery(e.target.value); handleSearch(e.target.value); }} />
+      <ExpensiveList items={results} />
+    </>
+  );
+}
+```
+
+### Reduce Presentation Delay: DOM & CSS Optimizations
+
+```css
+/* CSS containment: limit layout/paint scope */
+.card {
+  contain: layout paint;
+}
+
+/* content-visibility: skip rendering off-screen content */
+.below-fold-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px; /* estimated height */
+}
+```
+
+```typescript
+// Defer non-critical UI updates using startTransition
+import { startTransition } from 'react';
+
+function FilterPanel({ onFilter }: { onFilter: (f: string) => void }) {
+  const handleChange = (value: string) => {
+    // Mark heavy state update as non-urgent
+    startTransition(() => {
+      onFilter(value);
+    });
+  };
+  return <select onChange={e => handleChange(e.target.value)}>{/* options */}</select>;
+}
+```
+
+### Measure INP with RUM
+
+```typescript
+import { onINP, type INPMetricWithAttribution } from 'web-vitals/attribution';
+
+onINP((metric: INPMetricWithAttribution) => {
+  const { name, value, rating, attribution } = metric;
+  const { interactionType, interactionTime, inputDelay, processingDuration, presentationDelay } = attribution;
+
+  // Send breakdown to analytics for per-interaction debugging
+  navigator.sendBeacon('/analytics', JSON.stringify({
+    metric: name,
+    value,
+    rating,
+    interactionType,
+    interactionTime,
+    inputDelay,
+    processingDuration,
+    presentationDelay,
+  }));
+});
+```
+
 ### Debounce/Throttle Event Handlers
 
 ```typescript
