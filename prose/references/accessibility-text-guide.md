@@ -200,3 +200,117 @@ h1: "Account Settings"
 - [ ] WCAG 2.2: Authentication steps have clear text instructions
 - [ ] WCAG 2.2: Pre-filled fields are labeled to explain auto-populated data
 ```
+
+---
+
+## WCAG 2.2 Detailed Implementation Guide
+
+### 2.5.7 Dragging Movements — Text Alternatives
+
+For any UI where users drag to perform an action, provide a text-based alternative:
+
+```markdown
+## Patterns
+- Drag handle: "Drag to reorder, or use the up/down buttons"
+- Slider: "Drag to adjust, or type a value in the field below"
+- Sortable list: "Drag items to reorder, or use arrow keys when focused"
+- Range control: "Slide to set range. Use keyboard: Left/Right arrows to adjust"
+
+## Implementation Notes
+- Provide the alternative in visible help text OR in aria-describedby
+- Keyboard alternative must be functional, not just documented
+- Touch: swipe alternatives must also exist (tap to select, then move)
+```
+
+### 3.2.6 Consistent Help — Copy Standards
+
+Help mechanisms must appear in consistent locations across multiple pages:
+
+```markdown
+## Rules
+1. If a help link appears in the header on page A, it must appear in the header on all pages
+2. Help copy must use consistent labels: "Help" not "Help" on one page and "Support" on another
+3. Contact information copy must be identical wherever it appears
+4. FAQ links must use the same label across all pages
+
+## Consistent Help Labels
+✅ "Help" (consistent across all pages)
+✅ "Contact support" (consistent across all pages)
+❌ "Help" on homepage, "Get help" on checkout, "Support" on settings
+
+## Placement Consistency Checklist
+- [ ] Help mechanism appears at the same position across all pages
+- [ ] Help label text is identical across all pages
+- [ ] Contact copy is verbatim consistent
+```
+
+### 3.3.7 Redundant Entry — Pre-fill Copy Patterns
+
+Do not ask users to re-enter information they have already provided:
+
+```markdown
+## Pre-fill Announcement Patterns
+"Using your saved address: [address]. Change"
+"Pre-filled from your profile. Update if needed."
+"We found your previous entry: [value]. Confirm or update."
+
+## Suggestion Copy
+"Same as your billing address — use it? [Yes / No]"
+"Your name from step 1: [name]. Use this? [Confirm / Change]"
+"Last used: [value]. Use again?"
+
+## Rules
+1. Label pre-filled fields clearly — don't silently populate without notification
+2. Always provide an edit path: "Change" or "Update"
+3. For auto-populated values from session: "Based on what you told us earlier"
+4. Never pre-fill sensitive data (passwords, payment CVV) silently
+```
+
+### 3.3.3 Error Suggestion — Specific Recovery Text
+
+Error messages must suggest how to correct the input:
+
+```markdown
+## Templates
+"[Field] must be [requirement]. Example: [concrete example]"
+"Enter a valid [format]. Example: name@company.com"
+"[Field] is too [long/short]. Use [X] to [Y] characters."
+
+## High-Quality Error Suggestion Examples
+✅ "Password must be 8–64 characters and include at least one number."
+✅ "Enter a date in MM/DD/YYYY format. Example: 03/15/2025"
+✅ "Phone number must include country code. Example: +1 555 000 0000"
+❌ "Invalid input"
+❌ "Error in field"
+❌ "Please try again"
+```
+
+### 3.3.4 Error Prevention — Confirmation Copy for Irreversible Actions
+
+For legal, financial, or data-deletion actions, provide review and confirmation:
+
+```markdown
+## Review Step Copy
+"Review your order before confirming."
+"Check the details below. This action cannot be undone."
+"You are about to [action]. Please confirm."
+
+## Confirmation Dialog Patterns
+### Destructive Action (e.g., delete)
+Title: "Delete [item name]?"
+Body: "This will permanently delete [item]. You can't undo this."
+Confirm CTA: "Delete [item name]"  ← be specific
+Cancel CTA: "Keep [item name]"
+
+### High-Stakes Action (e.g., submit legal form)
+Title: "Submit your application?"
+Body: "Once submitted, you won't be able to edit your responses."
+Confirm CTA: "Submit application"
+Cancel CTA: "Go back and review"
+
+## Rules
+1. Confirm buttons must name the specific action: "Delete account" not "OK"
+2. Never use "OK/Cancel" for destructive actions
+3. The cancel action should be the safe default (visually prominent)
+4. For financial transactions: show amount and recipient in the confirmation copy
+```

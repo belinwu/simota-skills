@@ -218,3 +218,207 @@ Instead of          → Use
 - Show that previous output is still available
 - If result changes, explain: "Results may vary with each attempt"
 ```
+
+---
+
+## Conversational UI Copy
+
+### Turn Design Copy Hierarchy
+
+Conversational interfaces have a layered copy structure:
+
+| Level | Definition | Copy Responsibility |
+|-------|-----------|---------------------|
+| **Utterance** | A single message/response | Immediate copy: labels, prompts, responses |
+| **Sequence** | A related series of turns | Flow copy: progress indicators, continuity cues |
+| **Activity** | A complete task within the conversation | State copy: confirmation, completion, transition |
+| **Dialog** | The full conversation session | Session copy: welcome, session summary, re-entry |
+
+### Escalation Copy Patterns (Bot → Human)
+
+When a conversation needs to transfer from automated to human support:
+
+```markdown
+## Planned Escalation
+"I'll connect you with our support team who can help with this."
+"Let me bring in a specialist for this request."
+"This needs a human touch — I'm transferring you now."
+
+## Fallback Escalation (when bot cannot handle request)
+"I'm not the right fit for this. Let me connect you with someone who is."
+"I want to make sure you get the right help. Here's our support team."
+"I've reached the limits of what I can do here. A person will take it from here."
+
+## Rules
+1. Never make the user repeat themselves after escalation
+2. Pass context: "I've shared your question with the team"
+3. Set expectations: "Typical response time is under 2 hours"
+4. Provide fallback: offer async channel if live support is unavailable
+```
+
+### Fallback Design Principles
+
+Fallback responses are first-class content — treat them with the same priority as the core experience:
+
+| Principle | Application |
+|-----------|-------------|
+| **Acknowledge the failure** | "I didn't catch that" not silent redirect |
+| **Stay in voice** | Fallbacks use the same tone as normal responses |
+| **Offer a path forward** | Always provide an alternative action or channel |
+| **Limit fallback loops** | After 2 fallbacks, escalate or offer human handoff |
+| **Avoid "I don't understand"** | Reframe as "That's outside what I can help with" |
+
+```markdown
+## Fallback Copy Patterns
+"I'm not sure I understood that. Could you try rephrasing?"
+"That's outside what I can help with here. [Alternative action]"
+"I didn't get that — want to try one of these options instead?"
+[Show 2-3 quick reply suggestions]
+```
+
+### Persona Consistency Across Turns
+
+Voice and tone must remain consistent regardless of conversation state:
+
+```markdown
+## Rules
+1. Define persona traits before writing any turn copy
+2. Test persona under stress: error states, confusion, escalation
+3. Persona in errors: if the bot is "friendly and direct", errors must be too
+4. No personality switching: don't go formal when things go wrong
+5. Document persona decisions in the voice framework
+
+## Consistency Checklist
+- [ ] Welcome message and error message use the same voice
+- [ ] Escalation copy matches the brand tone
+- [ ] Fallback copy is not more formal or robotic than normal turns
+- [ ] Confirmation messages feel like the same "person" as onboarding
+```
+
+### Multimodal Copy Alignment
+
+When copy appears alongside voice, images, or touch:
+
+| Modality | Copy Adaptation |
+|----------|----------------|
+| **Voice output** | Short sentences; no markdown; numbers spelled out |
+| **Image + text** | Alt text must carry the same message as visual |
+| **Touch/gesture** | Label alternatives: "Tap or say 'confirm'" |
+| **Screen + voice** | Screen text = visual anchor; voice = elaboration |
+
+---
+
+## AI UX Copy
+
+### Uncertainty Expression Patterns
+
+When AI confidence is limited, communicate it without undermining trust:
+
+| Confidence Level | Copy Pattern | Example |
+|-----------------|-------------|---------|
+| **High** | State directly | "Based on your history, here's what we found." |
+| **Medium** | Hedge lightly | "Based on available data, this looks like..." |
+| **Low** | Disclose clearly | "This may not be accurate — please verify before acting." |
+| **Unknown** | Acknowledge limits | "We don't have enough information to give a confident answer." |
+
+### Confidence Indicators
+
+Adjust tone based on confidence — not just the content:
+
+```markdown
+## High Confidence
+- Use active voice and present tense
+- State findings directly: "Your order ships tomorrow."
+
+## Medium Confidence
+- Use "Based on..." or "It appears that..."
+- Invite review: "Does this look right to you?"
+
+## Low Confidence
+- Lead with the uncertainty: "We're not certain, but..."
+- Offer verification path: "Check [source] to confirm"
+- Use passive/conditional: "This may be..." / "It's possible that..."
+```
+
+### Anti-Anthropomorphism Guidelines
+
+AI systems must not pretend to have human experiences:
+
+```markdown
+## Prohibited Framing
+"I learned that..." → "The model was trained on..."
+"I think..." → "Based on the data..."
+"I feel confident..." → "This result has high confidence."
+"I made a mistake" → "The output was incorrect."
+"I understand how you feel" → "This sounds frustrating."
+"I'm happy to help" → "Here's what this tool can do."
+
+## Rules
+1. AI does not feel, think, believe, or understand
+2. Use "we" (product team) for brand voice, not "I" (AI)
+3. Describe what the system does, not what it experiences
+4. Never simulate empathy — acknowledge the user's situation instead
+```
+
+### Hallucination Disclaimers
+
+For outputs that may contain AI-generated errors:
+
+```markdown
+## Standard Disclaimer Pattern
+"AI-generated content. Verify important information before acting."
+"This was created by AI. Please review for accuracy."
+"Generated by AI — may contain errors or outdated information."
+
+## Context-Specific Variants
+Medical/Legal: "This is not professional advice. Consult a qualified expert."
+Financial: "For reference only. This is not financial advice."
+Research: "AI-generated summary. Check original sources for accuracy."
+
+## Placement Rules
+- Inline (preferred for short outputs): directly below the content
+- Modal (for high-stakes outputs): require acknowledgment before proceeding
+- Persistent badge: for interfaces where all content is AI-generated
+```
+
+### Attribution and Citation Patterns
+
+When AI draws on sources, attribute clearly:
+
+```markdown
+## Patterns
+"Source: [Name], accessed [date]"
+"Based on [document/data set]"
+"This summary references [X] sources — view all"
+
+## Rules
+1. Always link to primary source when available
+2. Show recency: "Data as of [date]"
+3. If source is unavailable: "Based on training data through [date]"
+4. Never fabricate citations
+```
+
+### Framing Labels
+
+Label AI-generated content clearly without making it feel dangerous:
+
+| Label | When to Use |
+|-------|-------------|
+| "AI suggestion" | Optional recommendations |
+| "AI draft" | Editable generated content |
+| "AI summary" | Condensed content |
+| "Reference only" | Informational, non-actionable output |
+| "Needs review" | High-stakes content requiring human verification |
+
+### Processing State Microcopy
+
+During AI operations, set accurate expectations:
+
+| State | Copy Pattern | Notes |
+|-------|-------------|-------|
+| **Generating** | "Generating your summary..." | Use progressive verb |
+| **Waiting** | "Almost there..." / "Still working..." | Use after 3+ seconds |
+| **Processing** | "Analyzing your data..." | Describe the action, not the AI |
+| **Partial result** | "Here's what we have so far. Still working..." | Show progress |
+| **Error** | "Couldn't generate a result. Try with different input." | Actionable |
+| **Timeout** | "This is taking longer than expected. Try again." | Honest + actionable |
