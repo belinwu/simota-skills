@@ -322,3 +322,123 @@ const { t, n, d, locale } = useI18n();
 - **Heavy ICU message usage?** react-intl (native ICU)
 - **Vue project?** vue-i18n (only option)
 - **Unsure?** Default to i18next (largest ecosystem)
+
+## next-intl v4 (Next.js 15 App Router)
+
+next-intl v4 provides native React Server Components support with static rendering and type safety for Next.js 15 App Router.
+
+### Installation
+
+```bash
+npm install next-intl
+```
+
+### Server Configuration
+
+```typescript
+// src/i18n/request.ts
+import { getRequestConfig } from 'next-intl/server';
+import { routing } from './routing';
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  let locale = await requestLocale;
+  if (!locale || !routing.locales.includes(locale as any)) {
+    locale = routing.defaultLocale;
+  }
+  return {
+    locale,
+    messages: (await import(`../../messages/${locale}.json`)).default,
+  };
+});
+```
+
+### Routing
+
+```typescript
+// src/i18n/routing.ts
+import { defineRouting } from 'next-intl/routing';
+
+export const routing = defineRouting({
+  locales: ['en', 'ja', 'zh', 'ko'],
+  defaultLocale: 'en',
+});
+```
+
+### Middleware
+
+```typescript
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './src/i18n/routing';
+
+export default createMiddleware(routing);
+
+export const config = {
+  matcher: ['/((?!api|_next|.*\\..*).*)'],
+};
+```
+
+### Server Component
+
+```typescript
+// app/[locale]/page.tsx
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+export async function generateStaticParams() {
+  return ['en', 'ja', 'zh', 'ko'].map((locale) => ({ locale }));
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: 'HomePage' });
+  return <h1>{t('title')}</h1>;
+}
+```
+
+### Client Component
+
+```typescript
+'use client';
+import { useTranslations } from 'next-intl';
+
+export default function Counter() {
+  const t = useTranslations('Counter');
+  return <button>{t('increment')}</button>;
+}
+```
+
+### Type-Safe Messages (AppConfig)
+
+```typescript
+// global.d.ts
+import en from './messages/en.json';
+import type { formats } from './src/i18n/request';
+
+declare module 'next-intl' {
+  interface AppConfig {
+    Messages: typeof en;
+    Formats: typeof formats;
+    Locale: 'en' | 'ja' | 'zh' | 'ko';
+  }
+}
+```
+
+### Turbopack Compatibility
+
+- Next.js 15 uses Turbopack as default bundler
+- next-intl v4 is fully compatible with Turbopack
+- Register the plugin in `next.config.ts` for automatic integration
+
+### Library Selection Guide
+
+| Library | Strengths | Best For |
+|---------|-----------|----------|
+| next-intl v4 | RSC native, static rendering, type safety | Next.js 15 App Router |
+| i18next + react-i18next | Large ecosystem, plugins | Pages Router / Vite React |
+| react-intl (FormatJS) | ICU-heavy, strong standards | ICU-centric projects |
+| vue-i18n | Composition API, SFC i18n blocks | Vue 3 projects |

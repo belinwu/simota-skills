@@ -193,3 +193,104 @@ function UserContent({ content, dir }: { content: string; dir: 'ltr' | 'rtl' }) 
 - Chrome DevTools: Force RTL with `document.dir = 'rtl'`
 - Browser extensions: RTL toggle extensions
 - Pseudo-locale: Use RTL test locale
+
+## I18n Test Automation
+
+### Pseudo-Locale Generation
+
+Generate pseudo-localized strings that expand text by 30-40% and replace characters with accented variants to detect layout overflow before real translations arrive.
+
+```typescript
+// scripts/generate-pseudo-locale.ts
+const CHAR_MAP: Record<string, string> = {
+  a: 'á', b: 'b̈', c: 'ć', d: 'ď', e: 'é', f: 'f̈',
+  g: 'ĝ', h: 'ḧ', i: 'í', j: 'ĵ', k: 'ǩ', l: 'ĺ',
+  m: 'm̈', n: 'ń', o: 'ó', p: 'ṗ', q: 'q̈', r: 'ŕ',
+  s: 'ś', t: 'ţ', u: 'ú', v: 'v̈', w: 'ŵ', x: 'x̃',
+  y: 'ý', z: 'ź',
+};
+
+function toPseudoLocale(str: string): string {
+  const withoutVars = str.replace(/(\{\{?\w+\}?\})/g, '\0$1\0');
+  const parts = withoutVars.split('\0');
+  const converted = parts
+    .map((part) =>
+      part.startsWith('{')
+        ? part
+        : part.split('').map((c) => CHAR_MAP[c.toLowerCase()] ?? c).join('')
+    )
+    .join('');
+  return `[!! ${converted} !!]`;
+}
+
+toPseudoLocale('Hello, {{name}}!');
+// → "[!! Ḧéĺĺó, {{name}}! !!]"
+```
+
+### Playwright Screenshot Tests
+
+```typescript
+// tests/i18n/screenshot.spec.ts
+import { test, expect } from '@playwright/test';
+
+const LOCALES = ['en', 'ja', 'ar', 'pseudo'] as const;
+
+for (const locale of LOCALES) {
+  test(`layout renders correctly for ${locale}`, async ({ page }) => {
+    await page.goto(`/${locale}/dashboard`);
+    await expect(page).toHaveScreenshot(`dashboard-${locale}.png`, {
+      fullPage: true,
+      threshold: 0.05,
+    });
+  });
+}
+```
+
+### Translation Coverage Test
+
+```typescript
+// tests/i18n/coverage.test.ts
+import en from '../../messages/en.json';
+import ja from '../../messages/ja.json';
+
+function flattenKeys(obj: object, prefix = ''): string[] {
+  return Object.entries(obj).flatMap(([k, v]) =>
+    typeof v === 'object' && v !== null
+      ? flattenKeys(v, `${prefix}${k}.`)
+      : [`${prefix}${k}`]
+  );
+}
+
+describe('translation coverage', () => {
+  const enKeys = flattenKeys(en);
+  const jaKeys = flattenKeys(ja);
+
+  test('ja has all en keys', () => {
+    const missing = enKeys.filter((k) => !jaKeys.includes(k));
+    expect(missing).toEqual([]);
+  });
+
+  test('ja has no extra keys', () => {
+    const extra = jaKeys.filter((k) => !enKeys.includes(k));
+    expect(extra).toEqual([]);
+  });
+});
+```
+
+### RTL Layout Verification
+
+```typescript
+// tests/i18n/rtl.spec.ts
+test('Arabic layout is RTL', async ({ page }) => {
+  await page.goto('/ar/dashboard');
+
+  const dir = await page.getAttribute('html', 'dir');
+  expect(dir).toBe('rtl');
+
+  const card = page.locator('.card').first();
+  const marginStart = await card.evaluate((el) =>
+    getComputedStyle(el).marginInlineStart
+  );
+  expect(parseFloat(marginStart)).toBeGreaterThan(0);
+});
+```

@@ -213,3 +213,102 @@ locales/
   "_delete_confirm_comment": "Confirmation dialog. itemName can be long (up to 50 chars)."
 }
 ```
+
+## TypeScript Type-Safe Translation Keys
+
+### next-intl v4 (Recommended for Next.js)
+
+```typescript
+// global.d.ts
+import en from './messages/en.json';
+
+declare module 'next-intl' {
+  interface AppConfig {
+    Messages: typeof en;
+    Locale: 'en' | 'ja' | 'zh' | 'ko';
+  }
+}
+
+// Usage — type errors on invalid keys
+const t = useTranslations('HomePage');
+t('title');          // OK
+t('nonExistent');    // TS Error
+```
+
+### i18next TypeScript Extension
+
+```typescript
+// i18next.d.ts
+import 'i18next';
+import type common from '../locales/en/common.json';
+import type auth from '../locales/en/auth.json';
+
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    defaultNS: 'common';
+    resources: {
+      common: typeof common;
+      auth: typeof auth;
+    };
+  }
+}
+```
+
+### Dot-Notation Key Type Utility
+
+```typescript
+type DotKeys<T, Prefix extends string = ''> = T extends object
+  ? {
+      [K in keyof T]: K extends string
+        ? T[K] extends object
+          ? DotKeys<T[K], `${Prefix}${K}.`>
+          : `${Prefix}${K}`
+        : never;
+    }[keyof T]
+  : never;
+
+import type en from '../locales/en.json';
+type TranslationKey = DotKeys<typeof en>;
+// → "home.hero.title" | "home.hero.description" | "auth.login.title" | ...
+```
+
+## AI Translation Workflow Integration
+
+### GitHub Actions Auto-Translation
+
+```yaml
+# .github/workflows/i18n-translate.yml
+name: Auto Translate i18n
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'messages/en.json'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: i18n-actions/ai-i18n@v1
+        with:
+          provider: anthropic
+          source-locale: en
+          target-locales: ja,zh,ko
+          source-file: messages/en.json
+          format: json
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'i18n: auto-translate updated strings'
+          body: 'LLM auto-translation. Merge after human review.'
+          branch: i18n/auto-translate
+```
+
+### Best Practices
+
+- LLM translation is effective for UI copy (buttons, error messages) at minimal cost
+- Include translation context in prompts (`_comment` field helps)
+- Recommended workflow: machine translate → human review → update translation memory
+- Use lingo.dev CLI for CI/CD integration: `lingo push` / `lingo pull`

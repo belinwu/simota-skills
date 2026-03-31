@@ -248,3 +248,74 @@ function getDateFormatter(locale: string): Intl.DateTimeFormat {
   return formatterCache.get(locale)!;
 }
 ```
+
+## Duration Formatting (Intl.DurationFormat)
+
+Intl.DurationFormat became Baseline Newly Available in March 2025 (Chrome 129+, Firefox 136+).
+
+### Basic Usage
+
+```typescript
+const duration = { hours: 1, minutes: 46, seconds: 40 };
+
+// Long style
+new Intl.DurationFormat('ja-JP', { style: 'long' }).format(duration);
+// → "1時間46分40秒"
+
+new Intl.DurationFormat('en-US', { style: 'long' }).format(duration);
+// → "1 hour, 46 minutes, and 40 seconds"
+
+// Digital style (timer display)
+new Intl.DurationFormat('en-US', { style: 'digital' }).format(duration);
+// → "1:46:40"
+
+// Short style
+new Intl.DurationFormat('ja-JP', { style: 'short' }).format(duration);
+// → "1 時間 46 分 40 秒"
+```
+
+### Helper with Fallback
+
+```typescript
+function formatDuration(
+  duration: Intl.DurationFormatInput,
+  locale: string,
+  style: 'long' | 'short' | 'narrow' | 'digital' = 'short'
+): string {
+  if ('DurationFormat' in Intl) {
+    return new Intl.DurationFormat(locale, { style }).format(duration);
+  }
+  const { hours = 0, minutes = 0, seconds = 0 } = duration;
+  return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+```
+
+## Text Segmentation (Intl.Segmenter)
+
+Intl.Segmenter provides locale-aware text segmentation for word, sentence, and grapheme boundaries.
+
+### Word Segmentation
+
+```typescript
+const segmenter = new Intl.Segmenter('ja-JP', { granularity: 'word' });
+const text = 'こんにちは世界、今日はいい天気ですね。';
+
+const words = [...segmenter.segment(text)]
+  .filter((s) => s.isWordLike)
+  .map((s) => s.segment);
+// → ["こんにちは", "世界", "今日", "いい", "天気", "です", "ね"]
+```
+
+### Grapheme-Safe Truncation
+
+```typescript
+function truncateByGrapheme(text: string, maxLength: number, locale: string): string {
+  const segmenter = new Intl.Segmenter(locale, { granularity: 'grapheme' });
+  const graphemes = [...segmenter.segment(text)];
+  if (graphemes.length <= maxLength) return text;
+  return graphemes.slice(0, maxLength).map((s) => s.segment).join('') + '…';
+}
+
+truncateByGrapheme('👨‍👩‍👧‍👦 family', 3, 'en-US');
+// → "👨‍👩‍👧‍👦 f…" (correctly counts family emoji as 1 grapheme)
+```
