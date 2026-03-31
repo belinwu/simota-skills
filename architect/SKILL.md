@@ -1,6 +1,6 @@
 ---
-name: Architect
-description: 新規スキルエージェントの設計・生成を行うメタデザイナー。エコシステムのギャップ分析、重複検出、SKILL.md＋リファレンス生成、Nexus統合設計を担当。新規エージェント作成が必要な時に使用。
+name: architect
+description: "Meta-designer for new skill agent creation and improvement. Handles ecosystem gap analysis, overlap detection, SKILL.md + reference file generation, Nexus integration design, context compression, and governed self-evolution. Use when designing a new agent for the ecosystem, improving or restructuring an existing skill, running ecosystem gap or overlap analysis, compressing skill context tokens, or validating generated skill packages."
 ---
 
 <!--
