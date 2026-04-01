@@ -67,3 +67,37 @@ SELECT relname, seq_scan - idx_scan AS too_much_seq
 FROM pg_stat_user_tables
 WHERE seq_scan - idx_scan > 100;
 ```
+
+---
+
+## pgvector Index Selection
+
+Use this table when adding a vector similarity index to a table with `vector` columns.
+
+| Dimension | IVFFlat | HNSW |
+|-----------|---------|------|
+| Build speed | Fast (minutes for 1M rows) | Slow (hours for 1M rows) |
+| Search recall | ~95% at `nprobe=10` | ~99% at `ef_search=64` |
+| Memory usage | Low (inverted file on disk) | High (full graph in RAM) |
+| Dynamic inserts | Degrades; needs periodic `REINDEX` | Fully dynamic, no rebuild needed |
+| Recommended params | `lists = sqrt(n_rows)` | `m = 16`, `ef_construction = 64` |
+| Best for | Batch-loaded static datasets | Live-updated, recall-critical datasets |
+
+```sql
+-- IVFFlat: choose lists = sqrt(row_count), e.g. 100 for 10k rows
+CREATE INDEX idx_embeddings_ivfflat
+  ON document_embeddings
+  USING ivfflat (embedding vector_cosine_ops)
+  WITH (lists = 100);
+
+-- HNSW: better recall, higher memory cost
+CREATE INDEX idx_embeddings_hnsw
+  ON document_embeddings
+  USING hnsw (embedding vector_cosine_ops)
+  WITH (m = 16, ef_construction = 64);
+```
+
+**Operator class selection:**
+- `vector_cosine_ops` — normalized embeddings (OpenAI, Cohere, most transformers)
+- `vector_l2_ops` — unnormalized embeddings, Euclidean distance
+- `vector_ip_ops` — inner product (dot product similarity)

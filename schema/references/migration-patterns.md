@@ -69,3 +69,90 @@ ALTER TABLE t
 - Disk space and index-build impact were checked
 - Low-traffic window is selected if blocking work remains
 - Post-migration monitoring is prepared
+
+---
+
+## Drizzle ORM Best Practices
+
+```typescript
+// drizzle.config.ts — recommended settings
+import { defineConfig } from 'drizzle-kit';
+
+export default defineConfig({
+  schema: './src/db/schema.ts',
+  out: './drizzle',
+  dialect: 'postgresql',
+  strict: true,     // fail on ambiguous schema changes (column drops, renames)
+  verbose: true,    // print SQL statements before execution
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+});
+```
+
+**Key rules:**
+- Always use `strict: true` — prevents silent data-loss migrations.
+- Use `verbose: true` in CI to surface generated SQL for review.
+- Run `drizzle-kit check` in CI before `drizzle-kit migrate` to detect breaking changes.
+- Store generated migration files in version control; never hand-edit them.
+
+---
+
+## Prisma 7 Migration Notes
+
+Prisma 7 replaces the Rust-based query engine with a pure TypeScript implementation.
+
+**Breaking changes from Prisma 6:**
+- The `prisma-engines` binary is no longer included; remove it from Dockerfile `COPY` commands.
+- `datasource.binaryTargets` is deprecated — remove from `schema.prisma`.
+- Cold-start time improves significantly (no native binary load), but first-query memory increases slightly.
+
+**Migration steps:**
+```bash
+npm install prisma@7 @prisma/client@7
+npx prisma generate  # regenerates the TypeScript client
+```
+
+**Verify:**
+- Remove `binaryTargets = ["native", "linux-musl"]` from `schema.prisma`.
+- Remove `prisma-engines` from `.dockerignore` allowlist if present.
+- Test connection pooling configuration — `connectionLimit` semantics unchanged.
+
+---
+
+## Shadow Tables Pattern
+
+Shadow tables allow zero-downtime schema changes on high-traffic tables by building the new schema alongside the old one.
+
+**6-step procedure:**
+
+1. **Create** the shadow table with the new schema alongside the original.
+   ```sql
+   CREATE TABLE orders_v2 (LIKE orders INCLUDING ALL);
+   ALTER TABLE orders_v2 ADD COLUMN currency TEXT NOT NULL DEFAULT 'USD';
+   ```
+
+2. **Backfill** existing rows from original to shadow in batches.
+   ```sql
+   INSERT INTO orders_v2
+   SELECT *, 'USD' AS currency FROM orders
+   WHERE id BETWEEN $batch_start AND $batch_end
+   ON CONFLICT (id) DO NOTHING;
+   ```
+
+3. **Dual-write** — application writes to both tables simultaneously.
+
+4. **Verify** row counts and checksums between tables.
+
+5. **Cut over** — rename tables atomically.
+   ```sql
+   BEGIN;
+   ALTER TABLE orders RENAME TO orders_old;
+   ALTER TABLE orders_v2 RENAME TO orders;
+   COMMIT;
+   ```
+
+6. **Drop** the old table after a monitoring period (typically 1–7 days).
+   ```sql
+   DROP TABLE orders_old;
+   ```
