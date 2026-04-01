@@ -58,3 +58,27 @@ Purpose: Use this file when you need to choose easing curves or spring presets t
   transition={{ type: "spring", stiffness: 300, damping: 20 }}
 />
 ```
+
+## Scroll-Driven Animation Easing
+
+Scroll-driven animations should use `linear` as the base timing function to maintain 1:1 correspondence between scroll position and animation progress.
+
+```css
+.scroll-driven {
+  animation-timeline: view();
+  animation-timing-function: linear;
+}
+```
+
+### CSS linear() Function for Custom Scroll Curves
+
+```css
+/* Custom ease-out curve via linear() (Chrome 113+) */
+.scroll-driven-eased {
+  animation-timing-function: linear(
+    0, 0.004, 0.016, 0.035, 0.063, 0.098 13.6%,
+    0.196 27.3%, 0.489 54.5%, 0.607, 0.697,
+    0.772, 0.83, 0.875, 0.908 90.9%, 0.961 100%
+  );
+}
+```

@@ -94,6 +94,15 @@ Rule: exits are usually `60-80%` of entry duration.
     animation: fadeIn 120ms ease-out both;
   }
 }
+
+## Modern CSS Patterns (2025)
+
+| Pattern | Duration | Easing | Use When | Notes |
+|---------|----------|--------|----------|-------|
+| MPA cross-document fade | `200-250ms` | ease-out | Astro/MPA route changes | `@view-transition { navigation: auto }` only |
+| Scroll-driven reveal | continuous | linear | ViewTimeline usage | `animation-range: entry 0% entry 60%` |
+| Popover/dialog entry (pure CSS) | `150-200ms` | ease-out | `@starting-style` + `allow-discrete` | No JS required |
+| Gradient hover transition | `300ms` | ease-out | `@property` gradient animation | Chrome/Safari only |
 ```
 
 ```tsx

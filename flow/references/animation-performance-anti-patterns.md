@@ -58,3 +58,22 @@ Purpose: Use this file when motion work may affect frame time, Core Web Vitals, 
 - No excessive concurrency
 - No non-essential infinite loops
 - Reduced-motion path still works
+
+## AP-08 / AP-09: Scroll-Driven Animation Performance
+
+| ID | Failure | Why It Fails | Safe Replacement |
+|----|---------|--------------|------------------|
+| `AP-08` | Layout properties in scroll-driven animations | Layout thrashing on every scroll frame | Use `transform` / `opacity` only |
+| `AP-09` | Scroll-driven animations on all sections | Simultaneous animation count explosion, GPU overload | Limit to viewport elements, max 5-10 elements |
+
+### View Transitions Performance Notes
+
+```css
+/* Apply view-transition-name only to specific elements */
+.hero-image {
+  view-transition-name: hero-image;
+}
+
+/* NEVER do this — memory consumption explosion */
+/* * { view-transition-name: auto; } */
+```

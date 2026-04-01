@@ -60,4 +60,28 @@ Default to functional clarity. Motion is enhancement, not dependency.
     transition: opacity 120ms ease-out;
   }
 }
+
+## MA-08: Scroll-Driven Animations Without Reduced-Motion
+
+| ID | Failure | Required Fix |
+|----|---------|--------------|
+| `MA-08` | Scroll-driven animations without reduced-motion fallback | Wrap in `@supports` inside `@media (prefers-reduced-motion: no-preference)` |
+
+### Safe Pattern
+
+```css
+/* Default: always visible */
+.reveal { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      opacity: 0;
+      animation: fadeIn linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+```
 ```
