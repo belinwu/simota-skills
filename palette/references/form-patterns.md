@@ -66,6 +66,50 @@ Preferred pattern:
 - warn before discarding unsaved changes
 - for destructive form actions, prefer confirm or undo patterns
 
+## Passkeys and Modern Authentication
+
+Prefer passwordless flows when the platform supports them.
+
+| Flow | Trigger | Notes |
+|------|---------|-------|
+| Passkey creation | registration or settings | use `navigator.credentials.create()` with WebAuthn |
+| Passkey sign-in | login page | use `navigator.credentials.get()` with conditional UI |
+| Magic link | fallback for unsupported devices | send to email, expire after single use |
+| OTP fallback | SMS or TOTP app | add `autocomplete="one-time-code"` to the input |
+
+Identifier-first flow: collect email or username on step 1, then determine the best credential method on step 2. Do not reveal whether an account exists during step 1 (prevents account enumeration).
+
+WebAuthn Conditional UI (autofill-based passkey prompt):
+
+```typescript
+if (
+  window.PublicKeyCredential &&
+  PublicKeyCredential.isConditionalMediationAvailable
+) {
+  const available = await PublicKeyCredential.isConditionalMediationAvailable();
+  if (available) {
+    // Add autocomplete="username webauthn" to the username input
+    // Then call get() with mediation: 'conditional'
+    const credential = await navigator.credentials.get({
+      publicKey: {
+        challenge: serverChallenge,
+        rpId: window.location.hostname,
+        userVerification: 'preferred',
+        allowCredentials: [],
+      },
+      mediation: 'conditional',
+    });
+  }
+}
+```
+
+UX rules:
+
+- always offer a visible alternative (password or magic link) alongside passkeys
+- do not block password-manager autofill — use standard `autocomplete` attributes
+- show clear error messages when biometric verification fails, with a retry path
+- never require the user to remember a passkey ID — device handles it
+
 ## Accessibility Checklist
 
 - labels and grouping are explicit

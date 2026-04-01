@@ -73,3 +73,19 @@ Prefer:
 - respect `prefers-reduced-motion`
 - pause auto-motion by default for reduced-motion users
 - keep inclusive alternatives for animation-heavy or drag-heavy interactions
+
+## WCAG 3.0 Roadmap (2025-2026)
+
+| Item | Status |
+|------|--------|
+| Working Draft published | September 2025 |
+| WCAG 3 timeline plan | Target April 2026 |
+| Candidate Recommendation | Expected Q4 2027 |
+| W3C Recommendation | No earlier than 2028 |
+
+Conformance model change:
+- Bronze: roughly equivalent to WCAG 2.2 AA (current compliance baseline)
+- Silver: holistic testing required (assistive technology + usability testing)
+- Gold: highest standard
+
+Current legal baseline remains WCAG 2.2 AA. Do not design for WCAG 3.0 compliance yet — treat it as a strategic signal only.

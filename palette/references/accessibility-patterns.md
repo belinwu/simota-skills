@@ -71,6 +71,49 @@ Use native or accessible primitives for:
 - skip link
 - dialogs and sheets
 
+## Dark Mode / Color Scheme Toggle
+
+Support three options: Light, Dark, and System (default).
+
+```css
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #f1f1f1;
+    --surface-1: #1a1a1a;
+    --surface-2: #2a2a2a;
+  }
+}
+
+[data-theme="dark"] {
+  --text-primary: #f1f1f1;
+  --surface-1: #1a1a1a;
+  --surface-2: #2a2a2a;
+}
+
+[data-theme="light"] {
+  --text-primary: #111111;
+  --surface-1: #ffffff;
+  --surface-2: #f5f5f5;
+}
+```
+
+Dark palette rules:
+
+- maintain contrast ratios at or above `4.5:1` in both schemes
+- do not rely on color inversion alone — remap semantic tokens explicitly
+- test focus rings and error states in both dark and light schemes
+- persist the user's preference to `localStorage` and apply it before first paint to avoid flash
+
+```typescript
+const saved = localStorage.getItem('color-scheme') as 'light' | 'dark' | null;
+const preferred = saved ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+document.documentElement.dataset.theme = preferred;
+```
+
 ## Testing
 
 Run both:

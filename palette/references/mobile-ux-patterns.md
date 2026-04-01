@@ -54,6 +54,27 @@ Rules:
 | Bottom sheet | contextual secondary navigation or actions |
 | Drawer | many destinations, lower-frequency navigation |
 
+## Foldable Device Patterns
+
+| Rule | Rationale |
+|------|-----------|
+| Treat posture change as a state change, not a resize event | User intent shifts from scanning to evaluating when unfolded |
+| Keep critical elements away from the hinge zone | Seam gaps and folds obscure content |
+| Use primary-secondary split layout when unfolded | Left: list/nav, Right: detail — mirrors email or settings patterns |
+| Place primary actions within thumb-reach even when unfolded | Foldables are heavier; grip changes when open |
+
+Posture-aware layout:
+```css
+@media (screen-spanning: single-fold-vertical) {
+  .layout {
+    display: grid;
+    grid-template-columns: env(fold-left) 1fr;
+  }
+}
+```
+
+Edge-swipe safe zone: ensure interactive elements near screen edges maintain at least 20px inset to avoid conflict with system gesture navigation (Android back gesture, iPadOS multitasking).
+
 ## Performance And Accessibility
 
 - keep scroll and touch handling light
