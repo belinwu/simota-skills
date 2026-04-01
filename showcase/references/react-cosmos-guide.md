@@ -466,3 +466,67 @@ import { Button } from './Button';
   }
 }
 ```
+
+## React Cosmos 7 (2024-2025)
+
+### Key Changes from v6
+
+| Feature | v6 | v7 |
+|---------|----|----|
+| React version | 18 | 18 + **19 support** |
+| Next.js | 14 | **15 support** |
+| Vite plugin | Manual index.html | **Auto-generated** |
+| Remote rendering | Basic | **Stable over network** |
+| Mobile UI | Not supported | **Slide panel** |
+
+### Installation (v7)
+
+```bash
+npm install --save-dev react-cosmos@latest react-cosmos-plugin-vite@latest
+```
+
+### Vite Plugin Auto-Config (v7)
+
+```json
+// cosmos.config.json (v7 — minimal)
+{
+  "plugins": ["react-cosmos-plugin-vite"],
+  "staticPath": "public"
+}
+```
+
+### Lazy Mode
+
+Delays fixture imports until opened. Significantly improves startup for large libraries.
+
+```json
+// cosmos.config.json
+{
+  "plugins": ["react-cosmos-plugin-vite"],
+  "lazy": true
+}
+```
+
+### Remote Rendering (v7)
+
+Preview fixtures across multiple browsers and resolutions simultaneously.
+
+```bash
+# Start Cosmos in server mode
+npx cosmos --host 0.0.0.0
+
+# Connect from another device at http://<local-ip>:5050
+```
+
+### Fixture Options API (v6.2+)
+
+```typescript
+// Card.fixture.tsx
+export default {
+  options: {
+    fixtureId: { name: 'Card / Default' },
+    viewport: { width: 375, height: 667 },
+  },
+  default: <Card title="Default" />,
+};
+```

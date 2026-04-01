@@ -376,3 +376,47 @@ export const WithSlot: Story = {
 - **Cosmos (dev) + Storybook (docs)**: Best of both worlds for React
 - **Histoire (dev) + Storybook (docs)**: Vue/Svelte equivalent
 - **Ladle (dev) + Chromatic (visual)**: Fast dev with visual regression
+
+## AI-Assisted Story Generation (2025)
+
+### Approach Comparison
+
+| Approach | Tool | Characteristics |
+|----------|------|----------------|
+| LLM prompt | Claude Code / GPT | Conversational CSF 3.0 generation |
+| CLI tool | auto-story-generator | Prop type analysis + auto-generation |
+| PR integration | Claude Code + hooks | Auto-commit stories on PR creation |
+| IDE plugin | Cursor / Copilot | Right-click component to generate |
+
+### auto-story-generator Addon
+
+```bash
+npm install --save-dev @takuma-ru/auto-story-generator
+```
+
+```typescript
+// .storybook/main.ts
+export default {
+  addons: [
+    {
+      name: '@takuma-ru/auto-story-generator',
+      options: {
+        fileType: 'tsx',
+        componentPath: 'src/components/**/*.tsx',
+      },
+    },
+  ],
+};
+```
+
+### Claude Code Story Generation Prompt
+
+```markdown
+<!-- .claude/commands/generate-story.md -->
+Read the component file and generate a CSF 3.0 story:
+- Use `satisfies Meta<typeof ComponentName>`
+- Set controls based on prop types (boolean → checkbox, union → select)
+- Add play functions for interactive elements
+- Include `tags: ['autodocs']`
+- Create at least 3 variants (Default, Loading/Disabled, Error)
+```

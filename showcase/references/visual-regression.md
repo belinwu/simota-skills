@@ -303,3 +303,39 @@ export const config: CustomProjectConfig = {
   failOnDifference: true,
 };
 ```
+
+## Storybook Test Widget (Storybook 9)
+
+Storybook 9 adds a built-in Test Widget that runs all story tests in watch mode.
+
+### Setup
+
+```typescript
+// .storybook/main.ts (Storybook 9)
+export default {
+  addons: ['@storybook/experimental-addon-test'],
+};
+```
+
+### CI Workflow
+
+```yaml
+# .github/workflows/storybook-tests.yml
+name: Storybook Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build-storybook -- --quiet
+      - name: Serve and test
+        run: |
+          npx concurrently -k -s first \
+            "npx http-server storybook-static --port 6006 --silent" \
+            "npx wait-on tcp:6006 && npm run test-storybook"
+```

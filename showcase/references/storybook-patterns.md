@@ -369,3 +369,229 @@ const meta = {
   title: 'Components/ComponentName',
 // ...
 ```
+
+## Storybook 9 / 10 New Features (2025)
+
+### Vitest Addon (Official Integration)
+
+`@storybook/experimental-addon-test` became official in Storybook 9. Runs stories in Vitest browser mode with unified Interaction, Accessibility, and Visual testing.
+
+```typescript
+// vitest.config.ts (Storybook 9 recommended)
+import { defineConfig } from 'vitest/config';
+import { storybookTest } from '@storybook/experimental-addon-test/vitest-plugin';
+
+export default defineConfig({
+  plugins: [
+    storybookTest({ storybookScript: 'npm run storybook -- --ci' }),
+  ],
+  test: {
+    browser: {
+      enabled: true,
+      provider: 'playwright',
+      name: 'chromium',
+      headless: true,
+    },
+    setupFiles: ['.storybook/vitest.setup.ts'],
+  },
+});
+```
+
+```typescript
+// .storybook/vitest.setup.ts
+import { setProjectAnnotations } from '@storybook/react';
+import * as previewAnnotations from './preview';
+
+const project = setProjectAnnotations([previewAnnotations]);
+beforeAll(project.beforeAll);
+```
+
+### Tag-Based Filtering (Storybook 9)
+
+Control test and documentation targets with fine-grained tags.
+
+```typescript
+const meta = {
+  component: Button,
+  tags: [
+    'autodocs',      // auto-generate docs
+    'visual-test',   // Chromatic / Playwright target
+    '!test',         // exclude from Vitest
+    '!dev',          // exclude from sidebar
+  ],
+} satisfies Meta<typeof Button>;
+```
+
+### CSF Factories (Storybook 10)
+
+Type-safe story definitions with less boilerplate.
+
+```typescript
+// CSF Factories (Storybook 10)
+import { config } from '#.storybook/preview';
+
+const { story } = config.meta({ component: Button });
+export const Primary = story({ args: { variant: 'primary' } });
+```
+
+## Play Function Best Practices (Storybook 9)
+
+### mount Hook for Before-Render Setup
+
+```typescript
+export const WithPreloadedData: Story = {
+  play: async ({ canvasElement, mount }) => {
+    await mount(<Button variant="primary">Click me</Button>);
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button'));
+    await expect(canvas.getByText('Clicked!')).toBeInTheDocument();
+  },
+};
+```
+
+### step for Complex Flow Organization
+
+```typescript
+export const CheckoutFlow: Story = {
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('Add item to cart', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Add' }));
+      await expect(canvas.getByText('Cart: 1')).toBeInTheDocument();
+    });
+
+    await step('Checkout', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Buy' }));
+      await expect(canvas.getByRole('dialog')).toBeVisible();
+    });
+  },
+};
+```
+
+### Accessibility Check in Play Functions
+
+```typescript
+import { checkA11y } from '@storybook/addon-a11y/playwright';
+
+export const AccessibleForm: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await checkA11y(canvasElement);
+  },
+};
+```
+
+## Portable Stories (composeStories)
+
+Reuse stories in Jest / Vitest unit tests. Eliminates test setup duplication.
+
+### Setup (Vitest)
+
+```typescript
+// vitest.setup.ts
+import { setProjectAnnotations } from '@storybook/react';
+import * as previewAnnotations from './.storybook/preview';
+
+const annotations = setProjectAnnotations([previewAnnotations]);
+beforeAll(annotations.beforeAll);
+```
+
+### composeStories (All Stories)
+
+```typescript
+// Button.test.tsx
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/react';
+import * as stories from './Button.stories';
+
+const { Primary, Secondary, Disabled } = composeStories(stories);
+
+describe('Button', () => {
+  test('Primary renders', () => {
+    render(<Primary />);
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  test('Disabled state', () => {
+    render(<Disabled />);
+    expect(screen.getByRole('button')).toBeDisabled();
+  });
+
+  test('Runs play function', async () => {
+    const { container } = render(<Primary />);
+    await Primary.run({ canvasElement: container });
+  });
+});
+```
+
+### composeStory (Single Story + Overrides)
+
+```typescript
+import { composeStory } from '@storybook/react';
+import meta, { Primary as PrimaryStory } from './Button.stories';
+
+const PrimaryJa = composeStory(PrimaryStory, meta, {
+  globals: { locale: 'ja' },
+});
+
+test('Japanese locale', async () => {
+  const { container } = render(<PrimaryJa />);
+  await PrimaryJa.run({ canvasElement: container });
+});
+```
+
+## Design Token Documentation
+
+### storybook-design-token Addon
+
+Extract tokens from CSS/SCSS annotations and generate visual documentation.
+
+```bash
+npm install --save-dev storybook-design-token
+```
+
+```typescript
+// .storybook/main.ts
+export default {
+  addons: ['storybook-design-token'],
+};
+```
+
+### CSS Annotations
+
+```css
+/* tokens.css */
+:root {
+  /**
+   * @tokens Colors
+   * @presenter Color
+   */
+  --color-primary-500: #3b82f6;
+  --color-primary-900: #1e3a8a;
+
+  /**
+   * @tokens Spacing
+   * @presenter Spacing
+   */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-4: 16px;
+}
+```
+
+### MDX Integration
+
+```mdx
+{/* DesignTokens.mdx */}
+import { Meta } from '@storybook/blocks';
+import { DesignTokenDocBlock } from 'storybook-design-token/dist/doc-blocks';
+
+<Meta title="Design System/Tokens" />
+
+# Design Tokens
+
+<DesignTokenDocBlock categoryName="Colors" viewType="card" />
+<DesignTokenDocBlock categoryName="Spacing" viewType="table" />
+```
