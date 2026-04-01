@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-95-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-102-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **95種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **102種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする95種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする102種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -47,7 +47,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
-| **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全69エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
+| **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全102エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - 動的スキル生成エージェント。プロジェクトのコードベースを分析し、パターン・規約を発見し、最適化されたClaude Codeスキルをプロジェクトの`.claude/skills/`に生成 | プロジェクト固有スキル |
 | **Gauge** | _"What gets measured gets managed. What gets audited gets normalized."_ - SKILL.md正規化監査・自己進化エージェント。16項目チェックリストに基づくコンプライアンススキャン、修正提案、Webベースのベストプラクティス自動取得 | コンプライアンスレポート、修正プラン |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
@@ -74,6 +74,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Levy** | _"納税は義務。でも、正しく知れば、賢く果たせる。"_ - 日本の確定申告ガイダンスエージェント。所得分類・控除最適化・税額計算・e-Tax手続きをフリーランス/副業向けに解説。コードは書かない | 確定申告ガイダンスレポート |
 | **Accord** | _"Three teams, one truth."_ - 3チーム横断（ビジネス・開発・デザイン）の統合仕様パッケージを作成する仕様アーキテクト。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない | 統合仕様パッケージ、トレーサビリティマトリクス |
 | **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - 任意の多次元軸×値を入力とし、組み合わせ爆発を制御するユニバーサル分析エージェント。最小カバレッジセット選定・実行計画・優先順位付け。テスト・デプロイ・UX検証・リスク評価・互換性など全ドメイン対応。コードは書かない | マトリクス分析、カバレッジ最適化計画 |
+| **Saga** | _"Features don't sell. Stories do."_ - プロダクト・機能のユースケースをストーリーテリングで語るナラティブデザインエージェント。顧客体験の物語化、シナリオストーリー、プロダクトナラティブ。コードは書かない | ナラティブドキュメント |
 
 **Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
 **Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
@@ -112,6 +113,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - 並行性・非同期処理・リソース管理の「見えない」問題を狩る幽霊ハンター。Race Condition、Memory Leak、Resource Leak、Deadlockを検出・分析・レポート | 検出レポート |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
+| **Vigil** | _"Detection is the first line of defense. Engineering is the last."_ - Detection Engineeringエージェント。Sigma/YARAルール設計、検出カバレッジマッピング、脅威ハンティング仮説設計、Detection-as-Code CI/CD統合 | 検出ルール、カバレッジマップ |
 
 ### 実装
 
