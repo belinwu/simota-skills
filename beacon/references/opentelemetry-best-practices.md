@@ -395,3 +395,185 @@ Quality gates:
 ```
 
 **Source:** [OTel Semantic Conventions v1.40](https://opentelemetry.io/docs/specs/semconv/) · [Better Stack: OTel Best Practices](https://betterstack.com/community/guides/observability/opentelemetry-best-practices/) · [CNCF: Cost-Effective OTel](https://www.cncf.io/blog/2025/12/16/how-to-build-a-cost-effective-observability-platform-with-opentelemetry/) · [Dash0: OTel Collector Guide](https://dash0.com/blog/opentelemetry-collector-guide) · [OTel: AI Agent Observability](https://opentelemetry.io/blog/2025/ai-agent-observability/) · [OTel GenAI SemConv](https://opentelemetry.io/docs/specs/semconv/gen-ai/) · [OTel Weaver](https://opentelemetry.io/blog/2025/otel-weaver/)
+
+---
+
+## 13. 2025 Ecosystem Updates
+
+### OTel eBPF Profiler (Public Alpha)
+
+The OpenTelemetry eBPF Profiler enables zero-instrumentation continuous profiling at the kernel level.
+
+```
+Status: Public Alpha (2025)
+SIG participants: Grafana, Splunk, Odigos, Elastic
+
+Key capabilities:
+  - Language-agnostic: works with Go, Python, Java, Node.js, Rust, .NET without code changes
+  - Low overhead: < 1% CPU impact via eBPF
+  - Stack trace → OTel profiles → OTLP export
+  - Correlate profiles with traces (via trace_id on profile frames)
+
+Profile data format:
+  - Follows OTel Profiles specification (experimental)
+  - pprof-compatible export for Grafana Pyroscope
+
+When to use:
+  - CPU hotspot investigation without instrumentation
+  - Memory allocation profiling in production
+  - Correlate slow traces with profile data
+```
+
+### OTel Logs Stability Status
+
+```
+Logs Bridge API: STABLE (as of OTel v1.x)
+  - Use for integrating existing logging frameworks (log4j, winston, etc.)
+  - Bridges log records into OTel pipeline with trace correlation
+
+Event API: EXPERIMENTAL
+  - Use for structured event emission (e.g., user actions, state transitions)
+  - Not yet stable; API may change
+
+Recommendation:
+  - Use Logs Bridge API in production for log → OTLP export
+  - Use span events for in-span structured data (stable)
+  - Avoid Event API in production until stable
+```
+
+### Collector Declarative Configuration Schema (RC3)
+
+The OTel Collector is adopting a declarative configuration schema that replaces the current pipeline YAML.
+
+```yaml
+# New declarative config format (RC3, 2025)
+# Replaces: receivers/processors/exporters/service.pipelines
+receivers:
+  otlp/grpc:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  # QueueBatcher replaces batch processor — combines queuing + batching
+  queuebatcher/traces:
+    max_size: 1000
+    timeout: 5s
+
+  memory_limiter:
+    limit_mib: 512
+    spike_limit_mib: 128
+
+exporters:
+  otlphttp/backend:
+    endpoint: https://otel.backend.internal
+
+# New: pipelines defined inline with connectors
+pipelines:
+  traces:
+    receivers: [otlp/grpc]
+    processors: [memory_limiter, queuebatcher/traces]
+    exporters: [otlphttp/backend]
+```
+
+Key change: **QueueBatcher** replaces the `batch` processor and adds built-in retry queuing, reducing common pipeline configuration complexity.
+
+### Adaptive Telemetry
+
+Adaptive telemetry dynamically adjusts sampling rates based on observed error rates and latency SLOs.
+
+```
+Grafana Cloud Adaptive Metrics: 30-50% cost reduction observed in production
+
+Strategy:
+  1. High-value signals: always-on (errors, SLO violations, critical paths)
+  2. Normal traffic: tail-based sampling (10-20%)
+  3. Healthy, low-latency traffic: head-based sampling (1-5%)
+  4. Metrics: adaptive scrape intervals (longer for stable metrics)
+
+Grafana Adaptive Metrics rules example:
+  # Drop high-cardinality metrics with low query frequency
+  - match: {__name__=~"go_.*"}
+    keep_labels: [job, instance]
+    drop_if_unqueried_for: 7d
+```
+
+---
+
+## 14. 4-Layer Cost Reduction Framework
+
+### Layer 1: Generation (Reduce what you produce)
+
+```
+Techniques:
+  - Remove unused instrumentation (audit with OTel Weaver)
+  - Drop debug spans in production (environment-based filtering)
+  - Use exemplars instead of 100% trace sampling
+  - Instrument at service boundaries, not every function
+
+Cardinality control:
+  - Never use user IDs or request IDs as metric labels
+  - Maximum 10 label combinations per metric
+  - Alert when cardinality exceeds threshold
+
+Cardinality detection query (Prometheus):
+  # Find metrics with > 1000 unique label combinations
+  count by (__name__) (
+    count by (__name__, job, instance) ({__name__=~".+"})
+  ) > 1000
+```
+
+### Layer 2: Transport (Reduce what you move)
+
+```
+Techniques:
+  - Enable OTLP gzip compression (50-70% size reduction)
+  - Batch spans (QueueBatcher: timeout=5s, max_size=1000)
+  - Filter at Collector, not at backend (cheaper CPU)
+  - Use tail-based sampling to drop healthy traces before export
+
+Collector filter example:
+  processors:
+    filter/drop_healthy:
+      error_mode: ignore
+      traces:
+        span:
+          # Drop spans where no error AND duration < 100ms
+          - 'status.code == STATUS_CODE_OK and duration < 100ms and not IsRootSpan()'
+```
+
+### Layer 3: Storage (Reduce what you keep)
+
+```
+Retention tiers (recommended):
+  | Signal  | Hot (query-ready) | Warm (compressed) | Cold (archive) |
+  |---------|-------------------|-------------------|----------------|
+  | Metrics | 15 days           | 90 days           | 1 year         |
+  | Traces  | 3 days            | 14 days           | 90 days        |
+  | Logs    | 7 days            | 30 days           | 1 year         |
+
+Aggregation:
+  - Pre-aggregate high-cardinality metrics with recording rules
+  - Store raw traces only for errors and SLO violations after hot tier
+  - Use log sampling for INFO-level logs after hot tier
+```
+
+### Layer 4: Query (Reduce what you read)
+
+```
+Techniques:
+  - Create recording rules for frequent, expensive queries
+  - Use metric resolution (5m avg) for long-range dashboards
+  - Avoid full-table log scans (use structured log fields)
+  - Cache dashboard queries (Grafana: 30s-5m depending on panel)
+
+Scrape interval optimization:
+  | Metric type              | Recommended interval |
+  |--------------------------|----------------------|
+  | SLO error budget         | 15s                  |
+  | Service RED metrics      | 15s                  |
+  | Infrastructure (CPU/mem) | 30s                  |
+  | Capacity planning        | 60s                  |
+  | Business metrics         | 60s                  |
+  | Build/deploy metrics     | 300s                 |
+```

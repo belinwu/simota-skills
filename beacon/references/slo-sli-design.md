@@ -227,3 +227,150 @@ Unchecked metric creation increases noise, buries signal, and inflates costs. Co
 ```
 
 **Source:** [Google SRE: Implementing SLOs](https://sre.google/workbook/implementing-slos/) · [Google SRE: Error Budget Policy](https://sre.google/workbook/error-budget-policy/) · [Netdata: Error Budget Policies](https://www.netdata.cloud/academy/designing-error-budget-policies/) · [Nobl9: Complete Guide to Error Budgets](https://www.nobl9.com/resources/a-complete-guide-to-error-budgets-setting-up-slos-slis-and-slas-to-maintain-reliability)
+
+---
+
+## SLO-as-Code
+
+### OpenSLO Specification
+
+[OpenSLO](https://openslo.com/) is an open specification for defining SLOs as declarative YAML, enabling GitOps-driven SLO management.
+
+```yaml
+# openslo/payment-service.yaml
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: payment-availability
+  displayName: "Payment Service Availability"
+spec:
+  service: payment-service
+  description: "Proportion of successful payment requests"
+  indicator:
+    metadata:
+      name: payment-success-rate
+    spec:
+      ratioMetric:
+        counter: true
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: |
+                sum(rate(http_requests_total{
+                  job="payment-service",
+                  status!~"5.."
+                }[{{window}}]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: |
+                sum(rate(http_requests_total{
+                  job="payment-service"
+                }[{{window}}]))
+  objectives:
+    - displayName: "Monthly availability"
+      target: 0.999
+      timeWindow:
+        - duration: 1M
+          isRolling: false
+  alertPolicies:
+    - payment-burn-rate-critical
+    - payment-burn-rate-warning
+```
+
+### Sloth — SLO-as-Code Generator
+
+[Sloth](https://sloth.dev/) generates Multi-Window Multi-Burn (MWMB) Prometheus alert rules from SLO definitions.
+
+#### CRD Mode (Kubernetes)
+
+```yaml
+# sloth-slo.yaml — applied via kubectl / ArgoCD
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: payment-service-slos
+  namespace: monitoring
+spec:
+  service: payment-service
+  slos:
+    - name: availability
+      objective: 99.9
+      description: "Payment service availability SLO"
+      sli:
+        events:
+          error_query: |
+            sum(rate(http_requests_total{
+              job="payment-service", status=~"5.."
+            }[{{window}}]))
+          total_query: |
+            sum(rate(http_requests_total{
+              job="payment-service"
+            }[{{window}}]))
+      alerting:
+        name: PaymentServiceAvailability
+        page_alert:
+          labels:
+            severity: critical
+            team: payments
+        ticket_alert:
+          labels:
+            severity: warning
+            team: payments
+```
+
+Sloth auto-generates two MWMB alert rules per SLO:
+
+| Alert | Window pair | Burn rate | When to fire |
+|-------|-------------|-----------|--------------|
+| Page (critical) | 1h + 5m | 14× | 2% budget consumed in 1h |
+| Ticket (warning) | 6h + 30m | 6× | 5% budget consumed in 6h |
+| Ticket (low) | 3d + 6h | 3× | 10% budget consumed in 3d |
+
+#### CLI Mode (CI validation)
+
+```bash
+# Validate and generate rules during CI
+sloth validate --input slos/
+sloth generate --input slos/ --output prometheus-rules/
+
+# Run in Docker for portability
+docker run -v $(pwd):/data ghcr.io/slok/sloth:latest \
+  generate --input /data/slos/ --output /data/rules/
+```
+
+### GitOps Workflow for SLOs
+
+```
+1. Engineer creates/updates SLO YAML in slos/ directory
+2. PR opened → CI pipeline runs:
+   a. sloth validate (schema validation)
+   b. sloth generate (preview generated rules)
+   c. promtool check rules (Prometheus rule syntax)
+3. PR review → merge to main
+4. ArgoCD detects change → applies PrometheusServiceLevel CRD
+5. Sloth controller generates Prometheus recording/alert rules
+6. Alertmanager picks up new rules
+7. Grafana SLO dashboard auto-refreshes (if using dynamic variables)
+```
+
+### Kubernetes SLO Operator Configuration
+
+```yaml
+# Sloth controller deployment (helm values)
+sloth:
+  controller:
+    workers: 5
+    resyncPeriod: 30s
+  # Inject common labels into all generated rules
+  commonLabels:
+    team: "{{ .Metadata.Labels.team }}"
+    environment: production
+  # Disable default Sloth dashboards (use custom ones)
+  disableDefaultDashboards: false
+  grafana:
+    dashboardsEnabled: true
+    datasource: Prometheus
+```
