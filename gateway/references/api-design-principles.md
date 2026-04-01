@@ -90,3 +90,30 @@ DELETE /api/v1/users/delete/{id}  # Redundant action
 | 502 | Bad Gateway | Upstream service error |
 | 503 | Service Unavailable | Temporary overload |
 | 504 | Gateway Timeout | Upstream timeout |
+
+---
+
+## Idempotency
+
+### Idempotency Key Pattern
+
+Allows clients to safely retry non-idempotent operations (POST, PATCH) without risk of duplicate resource creation.
+
+```http
+POST /v1/payments
+Content-Type: application/json
+Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
+
+{
+  "amount": 5000,
+  "currency": "jpy",
+  "customer_id": "cust_abc123"
+}
+```
+
+**Rules:**
+1. Accept `Idempotency-Key` header on all state-mutating endpoints (POST, PATCH, DELETE if non-idempotent).
+2. Keys must be unique per operation — UUIDv4 is the standard format. Keys should be treated as opaque strings (do not parse).
+3. Store the key + response atomically. Return the cached response on duplicate keys — do not re-execute the operation.
+4. Scope key uniqueness to the authenticated caller, not globally — two different users may use the same key value independently.
+5. Keys should expire after a configurable window (24–48 hours is typical). Return `409 Conflict` with a clear message if an expired key is resubmitted for a new operation.

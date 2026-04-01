@@ -124,4 +124,39 @@ Gateway での活用:
   - 全フィールドString型 → カスタムスカラー/format追加（型設計 防止）
 ```
 
+---
+
+## 7. Apollo Federation: v1 vs v2
+
+| Feature | Federation v1 | Federation v2 |
+|---------|--------------|--------------|
+| Composition | `@apollo/gateway` only | `@apollo/composition` (standalone) |
+| `@key` directive | Single subgraph owns entity | Multiple subgraphs can extend entity with `@key(resolvable: false)` |
+| `@extends` | Required for entity extension | Not needed — implicit extension |
+| `@shareable` | Not available | Fields shared across subgraphs must be marked `@shareable` |
+| `@override` | Not available | One subgraph can override another's field ownership |
+| `@inaccessible` | Not available | Mark fields hidden from supergraph consumers |
+| Link import | Not available | `@link` directive for importing external definitions |
+
+### When to Use Federation vs REST
+
+| Criteria | Use GraphQL Federation | Use REST |
+|----------|----------------------|---------|
+| Data shape | Complex, nested, cross-service entities | Simple, flat resource per endpoint |
+| Client variety | Many clients with different field needs | One or few clients with fixed shapes |
+| Team structure | Multiple teams owning schema fragments | Single team or simple CRUD service |
+| Caching | Willing to invest in query-level caching | HTTP response caching sufficient |
+| Real-time | Subscriptions needed across subgraphs | Polling or WebSocket simpler |
+| Operations maturity | Can invest in schema governance tooling | Standard HTTP monitoring sufficient |
+
+### Subgraph Design Rules
+
+1. **Single responsibility**: Each subgraph owns one domain (users, orders, catalog) — no cross-domain mutations.
+2. **Entity key stability**: `@key` fields must be stable identifiers (avoid mutable fields like `email`).
+3. **No circular dependencies**: Subgraph A should not require data from Subgraph B to resolve what Subgraph B also needs from A.
+4. **Define entities at their source of truth**: Only the owning subgraph should define the full entity; others use `@key(resolvable: false)` references.
+5. **Avoid schema sprawl**: Federation does not eliminate the need for schema review — all subgraph changes go through composition validation.
+
+---
+
 **Source:** [LogRocket: Anti-patterns in GraphQL Schema Design](https://blog.logrocket.com/anti-patterns-graphql-schema-design/) · [Composite Code: Top 10 GraphQL Anti-patterns](https://compositecode.blog/2023/08/02/top-10-graphql-anti-patterns-ime-the-horror/) · [Medium: GraphQL at Scale — 9 Anti-Patterns](https://medium.com/@connect.hashblock/graphql-at-scale-9-anti-patterns-faster-fixes-5146a1db9db8) · [Medium: Stop Shipping Fragile APIs — Advanced OpenAPI Best Practices](https://medium.com/@yasaswinitatikonda1/stop-shipping-fragile-apis-the-advanced-openapi-best-practices-every-engineer-should-know-de1fd311cf91) · [APIMatic: 14 Best Practices for OpenAPI](https://www.apimatic.io/blog/2022/11/14-best-practices-to-write-openapi-for-better-api-consumption) · [DEV.to: 10 OpenAPI Best Practices](https://dev.to/hsmall/10-openapi-best-practices-that-elevate-your-api-game-2hpj)
