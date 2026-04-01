@@ -142,6 +142,39 @@ Standard page flow for marketing and product pages:
 
 ---
 
+## Intrinsic Layout (2025-2026)
+
+The paradigm has shifted from "Responsive Design" to "Intrinsic Design." A component does not know the viewport size; it only knows its container size.
+
+### Container Queries (93.92% global browser support, Dec 2025)
+
+Use `@container` instead of `@media` for component-level responsiveness:
+```css
+.card-wrapper { container-type: inline-size; }
+
+@container (min-width: 400px) {
+  .card { display: grid; grid-template-columns: 1fr 2fr; }
+}
+```
+
+### Fluid Typography with clamp()
+
+Single declaration scales smoothly between min and max:
+```css
+h1 { font-size: clamp(1.5rem, 4vw, 3rem); }
+```
+
+### Intrinsic Sizing with CSS Grid
+
+Content defines layout, not arbitrary breakpoints:
+```css
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+```
+
+---
+
 ## Composition Audit Checklist
 
 Use this checklist when reviewing any page or screen composition:

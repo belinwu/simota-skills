@@ -57,3 +57,41 @@ Bad examples:
 - Detect hardcoded values in CI.
 - Keep Figma Variables and code tokens aligned.
 - Review `DS-01` to `DS-08` during `REVIEW` mode.
+
+## AI-Readable Token Guidelines (2025-2026)
+
+Tokens must carry semantic intent so AI tools make context-aware decisions:
+
+| Quality | Example | Problem |
+|---------|---------|---------|
+| Good | `color-feedback-error` | AI understands intent |
+| Good | `spacing-component-button-padding` | AI understands context |
+| Bad | `color-red-500` | AI cannot infer purpose |
+| Bad | `spacing-4` | AI cannot infer usage |
+
+Additional anti-patterns:
+
+| ID | Name | Symptom | Fix |
+|----|------|---------|-----|
+| `DS-09` | AI-unreadable tokens | AI generates wrong values | Add intent context to token names |
+| `DS-10` | Static design system (no MCP) | AI agents lack real-time token/component data | Integrate Figma MCP server for live token sync |
+| `DS-11` | Token/code naming divergence | AI suggestions break design system rules | Supply structured rules file to AI agents |
+
+## Dark Mode Token Integration (2025-2026)
+
+Semantic tokens must be theme-agnostic. Mode switching remaps semantic tokens to reference tokens.
+
+Required semantic token categories:
+- `color.background.surface` (not `color.white` / `color.gray-900`)
+- `color.text.primary` / `color.text.secondary`
+- `color.border.default`
+- `color.feedback.error` / `warning` / `success` / `info`
+- `color.interactive.primary` / `hover` / `active` / `disabled`
+
+CSS `light-dark()` (modern approach):
+```css
+:root { color-scheme: light dark; }
+.surface { background: light-dark(#ffffff, #111111); }
+```
+
+Anti-pattern DS-07 (Theme-blind token model) is the most common cause of dark-mode rewrites. Adopt semantic tokens from day one.

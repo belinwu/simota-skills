@@ -57,3 +57,25 @@ Contents:
 - cancellation should not be meaningfully harder than signup
 - default settings should favor the user, especially for privacy
 - motion-heavy proposals must specify reduced-motion behavior
+
+## Ethical AI Design Principles (2025-2026)
+
+6. Disclose AI involvement: users must know when content or decisions are AI-generated.
+7. Provide explainability: AI outputs must be explainable at a level appropriate to context.
+8. Embed fairness from the start (Ethics-by-Design): apply bias testing during data collection, not only post-deployment.
+9. Support human override: every AI-driven decision must have a clear path for human intervention.
+10. Ethical refusal is valid: declining to deploy GenAI can be the right decision.
+
+## AI-Specific Dark Patterns
+
+| ID | Name | Impact | Fix |
+|----|------|--------|-----|
+| `DP-08` | AI Hallucination Concealment | Trust erosion when discovered | Disclose confidence levels; use Confidence Indicators |
+| `DP-09` | Invisible AI Agency | Users unaware AI is acting on their behalf | Surface AI actions via Proposal Cards; require explicit validation |
+| `DP-10` | Algorithmic Manipulation | Personalization exploiting vulnerabilities | Transparent recommendation logic; user-controllable personalization |
+
+AI quality gates:
+- AI-generated content must be labeled as such.
+- Confidence indicators required for AI outputs in high-stakes contexts.
+- Human override path must exist for every autonomous AI action.
+- Bias testing must be documented before launching AI-driven personalization.
