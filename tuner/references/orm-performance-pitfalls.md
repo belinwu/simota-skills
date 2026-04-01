@@ -58,3 +58,96 @@ Recommended hybrid:
 - ORM bulk writes are not used for `10,000+` row operations
 - production does not use `synchronize: true`
 - generated SQL is reviewed with `EXPLAIN ANALYZE`
+
+---
+
+## Prisma 7 Architecture Changes (2025)
+
+Prisma 7 replaced the Rust-based query engine with a TypeScript/WASM implementation, significantly reducing bundle size and cold-start overhead.
+
+### Performance Impact
+
+| Metric | Prisma 6 (Rust engine) | Prisma 7 (WASM) | Change |
+|--------|------------------------|-----------------|--------|
+| Bundle size | ~14MB | ~1.6MB | -89% |
+| Cold start (serverless) | ~1500ms | ~115ms | -92% |
+| Query speed (CRUD) | baseline | ~3.4x faster | +240% |
+| Memory footprint | Higher (native binary) | Lower (WASM) | Reduced |
+
+### Migration Notes
+
+```typescript
+// Prisma 7: no separate binary download required
+// The WASM engine is bundled with the package
+
+// Edge runtime support (Cloudflare Workers, Vercel Edge)
+import { PrismaClient } from '@prisma/client/edge'
+
+// Standard usage unchanged
+const prisma = new PrismaClient()
+```
+
+**Key behavioral changes in Prisma 7:**
+- No `prisma generate` binary side-effects on cold starts
+- `datasourceUrl` can be set per-query (multi-tenant patterns simplified)
+- `$transaction` API unchanged
+- D1 (Cloudflare) driver adapter now stable
+
+---
+
+## Drizzle ORM Performance Characteristics
+
+Drizzle is a lightweight TypeScript ORM designed for predictable SQL generation and serverless performance.
+
+### Key Metrics
+
+| Metric | Value |
+|--------|-------|
+| Bundle size | ~57KB |
+| Cold start (serverless) | ~75ms |
+| SQL predictability | High (1:1 mapping to generated SQL) |
+| N+1 risk | Low with Relational Queries API |
+
+### Drizzle Relational Queries: Structural N+1 Elimination
+
+Drizzle's Relational Queries API generates a single SQL statement (or minimal JOIN query) for nested relations, structurally preventing N+1.
+
+```typescript
+// N+1 risk pattern (avoid)
+const users = await db.select().from(usersTable);
+for (const user of users) {
+  const posts = await db.select().from(postsTable)
+    .where(eq(postsTable.userId, user.id));
+}
+
+// Drizzle Relational Queries (N+1 free)
+const usersWithPosts = await db.query.users.findMany({
+  with: {
+    posts: true,
+  },
+});
+// Generates: SELECT + single JOIN or 2 queries with IN clause
+```
+
+---
+
+## ORM Selection Comparison (2025)
+
+| ORM | Bundle | Cold Start | Query Speed | N+1 Safety | Type Safety | Best For |
+|-----|--------|-----------|-------------|------------|-------------|----------|
+| Drizzle | 57KB | ~75ms | Fastest (≈ raw SQL) | High (Relational API) | Excellent | Serverless, edge, performance-critical |
+| Prisma 7 | 1.6MB | ~115ms | Fast (3.4x vs Prisma 6) | Good (include) | Excellent | Full-stack, DX-focused, rapid development |
+| TypeORM | ~5MB | ~300ms | Moderate | Poor (lazy default) | Moderate | Legacy, enterprise patterns |
+| Sequelize | ~10MB | ~400ms | Slow | Poor | Weak | Legacy Node.js projects |
+
+**General performance order (2025):**
+
+```text
+Drizzle ≈ raw SQL > Prisma 7 >> TypeORM > Sequelize
+```
+
+**Decision guide:**
+- Serverless / edge: Drizzle (bundle size + cold start)
+- Rapid development / strong DX: Prisma 7
+- N+1-critical reporting: Drizzle Relational Queries or raw SQL
+- Legacy TypeORM migration: evaluate Prisma 7 or Drizzle
