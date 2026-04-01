@@ -629,3 +629,105 @@ test('modifies response headers', async ({ page }) => {
 test('conditional response modification', async ({ page }) => {
 // ...
 ```
+
+---
+
+## Playwright v1.51 Features
+
+### locator.filter({ visible: true })
+
+```typescript
+// Filter locators to only visible elements
+test('only visible items are interactable', async ({ page }) => {
+  await page.goto('/list');
+
+  // Get all items, then filter to visible ones only
+  const visibleItems = page.getByRole('listitem').filter({ visible: true });
+  const count = await visibleItems.count();
+
+  expect(count).toBeGreaterThan(0);
+  await visibleItems.first().click();
+});
+```
+
+### Component Testing Package Changes (v1.51)
+
+As of v1.51, the following CT packages are in maintenance mode (no new features):
+- `@playwright/experimental-ct-vue2` — maintenance only
+- `@playwright/experimental-ct-solid` — maintenance only
+
+Active packages: `@playwright/experimental-ct-react`, `@playwright/experimental-ct-vue`, `@playwright/experimental-ct-svelte`
+
+---
+
+## Playwright v1.52 Features
+
+### Aria Snapshot Enhancements
+
+```typescript
+// /children option — assert partial aria tree
+test('form contains required fields', async ({ page }) => {
+  await page.goto('/signup');
+
+  await expect(page.locator('form')).toMatchAriaSnapshot(`
+    - form:
+      /children: contain
+      - textbox "Email"
+      - textbox "Password"
+  `);
+});
+
+// /url option — verify link URLs
+test('nav links have correct hrefs', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.getByRole('navigation')).toMatchAriaSnapshot(`
+    - navigation:
+      - link "Home" [/url: "/"]
+      - link "Docs" [/url: "/docs"]
+  `);
+});
+
+// ref option — reference elements for assertions
+test('aria ref usage', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  await expect(page.locator('.sidebar')).toMatchAriaSnapshot(`
+    - navigation [ref=mainNav]:
+      - link "Dashboard"
+      - link "Settings"
+  `);
+});
+```
+
+### testProject.workers
+
+```typescript
+// playwright.config.ts — per-project worker override
+export default defineConfig({
+  workers: 4, // global default
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+      workers: 1, // Safari is resource-intensive — limit concurrency
+    },
+  ],
+});
+```
+
+### failOnFlakyTests
+
+```typescript
+// playwright.config.ts — fail CI if any test is detected as flaky
+export default defineConfig({
+  retries: process.env.CI ? 2 : 0,
+  failOnFlakyTests: !!process.env.CI, // Treat flaky as failure in CI
+});
+```
+
+> `failOnFlakyTests: true` causes the run to exit with a non-zero code when any test passes on retry. Use this in CI to prevent flaky tests from silently masking instability.

@@ -124,6 +124,27 @@ Parallel AI roles can be useful when responsibilities are explicit:
 - Performance agent: Core Web Vitals measurement
 - Security-focused probing should be coordinated with specialized security tooling, not embedded casually in Voyager tests
 
+### Self-Healing Tool Comparison
+
+| Tool | Approach | LLM integration | Notes |
+|------|----------|-----------------|-------|
+| **Testim** | ML Smart Locators | Proprietary ML | Locators self-update when DOM changes; integrates with GitHub Actions |
+| **Katalon Studio 11** | Hybrid: script + AI | LLM-assisted healing | Generates tests from natural language; heals broken locators post-run |
+| **Midscene.js** | Image-based + LLM | Vision + GPT-4o | `aiAct`, `aiQuery`, `aiAssert`; works without accessibility tree |
+| **ZeroStep** | Natural language actions | GPT-4 via API | Drop-in Playwright helper — `ai('click the login button')` |
+| **Octomind** | Autonomous E2E agent | LLM-powered crawl | Discovers and writes tests by exploring the running app |
+
+### LLM-Generated Test Accuracy (industry benchmarks, 2025)
+
+| Metric | Value |
+|--------|-------|
+| Correct element targeting | ~77% |
+| Successful test execution on first run | ~82% |
+| Reproducibility across environments | ~85% |
+| Tests requiring manual correction | ~10% |
+
+> These figures represent current industry averages and vary significantly by app complexity, auth complexity, and selector strategy. Treat as directional, not absolute.
+
 Commercial platforms in this area include ZeroStep, Octomind, Currents, Bug0, and Momentic. Use them only when their workflow fits the project constraints better than local Playwright tooling.
 
 ## Adoption Roadmap

@@ -232,3 +232,60 @@ describe('Accessibility', () => {
   });
 });
 ```
+
+---
+
+## Version Notes
+
+### Cypress 14 Breaking Changes
+
+- **Angular**: Support for Angular v17.2.0 and below removed
+- **Vue 2 / Svelte 3-4**: Moved to separate packages (`@cypress/vue2`, `@cypress/svelte3`)
+- **JIT compilation**: Default for Component Testing (no more `devServer.options.webpackConfig`)
+- **`cy.intercept` resourceType**: `resourceType` filter option deprecated — use `middleware: true` or `on('before:http:request')` instead
+- **`ElementSelector` renamed**: `ElementSelector` type renamed to `Selector` in TypeScript definitions
+- **Node.js**: Minimum version is now Node.js v22
+
+```typescript
+// ❌ Deprecated in Cypress 14
+cy.intercept({ resourceType: 'xhr' }, handler);
+
+// ✅ Use middleware or event-based approach
+cy.intercept('**/api/**', { middleware: true }, (req) => {
+  req.on('before:response', (res) => {
+    // inspect/modify response
+  });
+});
+```
+
+### Cypress 15 Breaking Changes
+
+- **Node.js**: Support for Node.js 18 and 23 removed (minimum: Node.js 20 LTS)
+- **glibc**: Linux glibc < 2.31 is no longer supported (affects older CentOS/Debian)
+- **`cy.stub` 3-argument form**: `cy.stub(object, method, replacerFn)` removed — use `.returns()` / `.callsFake()` instead
+- **webpack v4**: No longer supported in Component Testing — upgrade to webpack v5 or Vite
+- **Next.js 16**: Component Testing support added for Next.js 16+
+
+```typescript
+// ❌ Removed in Cypress 15
+cy.stub(myObj, 'method', () => 'stubbed');
+
+// ✅ Current approach
+cy.stub(myObj, 'method').returns('stubbed');
+// or
+cy.stub(myObj, 'method').callsFake(() => 'stubbed');
+```
+
+```typescript
+// Cypress 15 — Next.js 16 component testing config
+// cypress.config.ts
+import { defineConfig } from 'cypress';
+import { devServer } from '@cypress/next';
+
+export default defineConfig({
+  component: {
+    devServer,
+    specPattern: 'src/**/*.cy.{ts,tsx}',
+  },
+});
+```
