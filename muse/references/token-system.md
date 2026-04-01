@@ -286,3 +286,150 @@ Rules:
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 ```
+
+## DTCG 2025.10 Standard
+
+The Design Tokens Community Group published the first stable specification (2025.10) with support from 20+ organizations (Adobe, Google, Microsoft, Figma, Shopify).
+
+File extension: `.tokens` or `.tokens.json`
+MIME type: `application/design-tokens+json`
+
+### Token Types
+
+Standard types: `color`, `dimension`, `font-family`, `font-weight`, `duration`, `cubic-bezier`, `number`.
+Composite types: `shadow`, `border`, `transition`, `gradient`, `typography`.
+
+### $value / $type / $description Notation
+
+```json
+{
+  "color": {
+    "$type": "color",
+    "brand-primary": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.65, 0.2, 260]
+      },
+      "$description": "Brand primary color"
+    }
+  }
+}
+```
+
+### Alias (Reference) Syntax
+
+```json
+{
+  "semantic": {
+    "bg-primary": {
+      "$type": "color",
+      "$value": "{color.brand-primary}"
+    }
+  }
+}
+```
+
+## oklch Color Space for Design Tokens
+
+Browser support: Chrome 111+, Safari 15.4+, Firefox 113+. Global coverage 92%+ (2025 Q2).
+
+Primitive color tokens in oklch:
+```css
+:root {
+  --color-blue-500: oklch(0.55 0.2 260);
+  --color-blue-400: oklch(0.65 0.18 260);
+  --color-blue-600: oklch(0.45 0.22 260);
+}
+```
+
+Relative color syntax for hover states (CSS Colors 5):
+```css
+.button:hover {
+  background: oklch(from var(--color-brand-primary) calc(l + 0.1) c h);
+}
+```
+
+Wide-gamut (P3) support:
+```css
+@media (color-gamut: p3) {
+  :root {
+    --color-brand: oklch(0.65 0.28 260);
+  }
+}
+```
+
+## Container Queries and Token Integration
+
+Container size queries enable responsive token switching at the component level:
+```css
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+@container card (min-width: 400px) {
+  .card {
+    --card-padding: var(--space-8);
+    --card-font-size: var(--text-lg);
+  }
+}
+
+@container card (max-width: 399px) {
+  .card {
+    --card-padding: var(--space-4);
+    --card-font-size: var(--text-base);
+  }
+}
+```
+
+Browser support (2025): size queries fully supported; style queries in progress.
+
+## Multi-Brand Token Architecture
+
+| Dimension | Examples |
+|-----------|----------|
+| Theme | light / dark |
+| Brand | brand-a / brand-b |
+| Platform | web / ios / android |
+| Density | compact / default / comfortable |
+| Accessibility | standard / high-contrast |
+
+Directory structure:
+```
+tokens/
+  core/                    # shared primitives
+    colors.tokens.json
+    spacing.tokens.json
+  brands/
+    brand-a/
+      primitives.tokens.json
+      semantic.tokens.json
+    brand-b/
+      primitives.tokens.json
+      semantic.tokens.json
+  themes/
+    light.tokens.json
+    dark.tokens.json
+  components/
+```
+
+Style Dictionary multi-brand build:
+```js
+const brands = ['brand-a', 'brand-b'];
+for (const brand of brands) {
+  const sd = new StyleDictionary({
+    source: [
+      'tokens/core/**/*.tokens.json',
+      `tokens/brands/${brand}/**/*.tokens.json`,
+    ],
+    platforms: {
+      css: {
+        transformGroup: 'css',
+        buildPath: `dist/${brand}/`,
+        files: [{ destination: 'tokens.css', format: 'css/variables' }]
+      }
+    }
+  });
+  await sd.buildAllPlatforms();
+}
+```

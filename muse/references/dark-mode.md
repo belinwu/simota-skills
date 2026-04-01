@@ -154,3 +154,26 @@ Use it only if the selected mode is `system`.
 - Issues:
 - Recommendation:
 ```
+
+## oklch Semantic Tokens for Dark Mode
+
+oklch provides perceptually uniform lightness, making light/dark mode token pairs more predictable:
+
+```css
+:root {
+  --color-bg-surface: oklch(0.98 0.005 260);
+  --color-text-primary: oklch(0.2 0.01 260);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-surface: oklch(0.15 0.01 260);
+    --color-text-primary: oklch(0.95 0.005 260);
+  }
+}
+```
+
+Rules:
+- Keep the same hue angle across light/dark pairs for brand consistency.
+- Reduce chroma by 10-20% in dark mode to prevent glare on dark backgrounds.
+- Lightness ≥ 0.8 guarantees readable black text; lightness ≤ 0.3 guarantees readable white text.

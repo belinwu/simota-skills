@@ -145,3 +145,61 @@ npm run test:visual
 - Visual regression status:
 - Action Required:
 ```
+
+## Style Dictionary v4
+
+| Change | v3 | v4 |
+|--------|----|----|
+| Module format | CommonJS | ES Modules |
+| Instantiation | object | `new StyleDictionary()` |
+| Core methods | synchronous | async/await |
+| Token identification | CTI structure | `$type` property |
+| Hook naming | `transformer`/`formatter` | `transform`/`format` |
+
+DTCG-aware configuration:
+```js
+import StyleDictionary from 'style-dictionary';
+
+const sd = new StyleDictionary({
+  source: ['tokens/**/*.tokens.json'],
+  preprocessors: ['tokens-studio'],
+  platforms: {
+    css: {
+      transformGroup: 'css',
+      buildPath: 'dist/css/',
+      files: [{
+        destination: 'tokens.css',
+        format: 'css/variables',
+        options: { outputReferences: true }
+      }]
+    }
+  }
+});
+
+await sd.hasInitialized;
+await sd.buildAllPlatforms();
+```
+
+Auto-migration from v3:
+```bash
+npx codemod styledictionary/4/migration-recipe
+```
+
+Note: v4 has partial DTCG support. Full support is planned for v5.
+
+## Figma Extended Collections (Enterprise, November 2025+)
+
+Create brand/theme variants derived from existing collections:
+```json
+{
+  "parentVariableCollectionId": "VariableCollectionId:1:1",
+  "isExtension": true,
+  "variableOverrides": {
+    "VariableId:1:5": { "value": "#FF6B6B" }
+  }
+}
+```
+
+- `rootVariableCollectionId` (January 2026): returns the top-level ancestor collection node ID.
+- Set `null` in an extended collection to fall back to the parent value.
+- Variables REST API requires Enterprise org with Full seat access.
