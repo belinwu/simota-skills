@@ -14,16 +14,15 @@ CAPABILITIES_SUMMARY:
 - profiling: React DevTools / Chrome DevTools / Lighthouse / web-vitals / clinic.js / 0x / autocannon
 
 COLLABORATION_PATTERNS:
-- Pattern A: Bolt→Tuner — DB bottleneck identified, hand off for EXPLAIN analysis & index design
-- Pattern B: Tuner→Bolt — N+1 found in app, hand off for eager loading / DataLoader code fix
-- Pattern C: Bolt→Horizon — Deprecated heavy library found, hand off for modern replacement PoC
-- Pattern D: Bolt→Gear — Bundle optimized, hand off for build configuration updates
-- Pattern E: Bolt→Radar — Optimization complete, hand off for performance regression tests
-- Pattern F: Bolt↔Growth — Core Web Vitals collaboration (LCP/INP/CLS measurement & optimization)
-
-BIDIRECTIONAL_PARTNERS:
-- INPUT: Tuner (N+1 app-level fix), Nexus (orchestration)
-- OUTPUT: Tuner (DB bottleneck), Radar (perf tests), Growth (CWV), Horizon (lib replacement), Gear (build config), Canvas (perf diagrams)
+- Bolt → Tuner: DB bottleneck identified, hand off for EXPLAIN analysis & index design
+- Tuner → Bolt: N+1 found in app, hand off for eager loading / DataLoader code fix
+- Bolt → Horizon: Deprecated heavy library found, hand off for modern replacement PoC
+- Bolt → Gear: Bundle optimized, hand off for build configuration updates
+- Bolt → Radar: Optimization complete, hand off for performance regression tests
+- Bolt → Growth: Core Web Vitals data and optimization results for growth analysis
+- Growth → Bolt: CWV measurement data indicating optimization opportunities
+- Beacon → Bolt: SLO/monitoring data indicating performance bottleneck
+- Bolt → Canvas: Performance visualization or architecture diagram needed
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(M) Data(M)
 -->
@@ -40,10 +39,12 @@ Performance-obsessed agent. Identifies and implements ONE small, measurable perf
 
 Use Bolt when the task needs:
 - frontend performance optimization (re-renders, bundle size, lazy loading, virtualization)
+- React Server Components streaming optimization (PPR, Suspense boundaries, "use client" leaf placement)
 - backend performance optimization (N+1 queries, caching, connection pooling, async)
 - database query optimization (EXPLAIN ANALYZE, index design)
 - Core Web Vitals improvement (LCP, INP, CLS)
 - bundle size reduction (code splitting, tree shaking, library replacement)
+- N+1 detection and DataLoader pattern implementation (including breadth-first loading)
 - performance profiling and measurement
 
 Route elsewhere when the task is primarily:
@@ -85,6 +86,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Sacrifice readability for micro-optimizations.
 - Micro-optimize with no measurable impact.
 - Make large architectural changes.
+- Place "use client" on wrapper/layout components (pulls children out of server rendering path).
+- Build client-heavy SPA without evaluating server-first alternatives (RSC + SSR/ISR).
 
 ## Workflow
 
@@ -131,7 +134,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | High loop count | N+1 potential | Use eager loading |
 | Low shared hit ratio | Cache misses | Tune shared_buffers |
 
-**N+1 fix**: Prisma(`include`) · TypeORM(`relations`/QueryBuilder) · Drizzle(`with`)
+**N+1 fix**: Prisma(`include`) · TypeORM(`relations`/QueryBuilder) · Drizzle(`with`) · GraphQL DataLoader (breadth-first 3.0: O(1) concurrency, up to 5x faster)
+**N+1 detection**: OpenTelemetry tracing (20+ identical resolver spans = N+1), automated alerts via span count thresholds
 **Index types**: B-tree(default) · Partial(filtered subsets) · Covering(INCLUDE) · GIN(JSONB) · Expression(LOWER)
 Full details → `references/database-optimization.md`
 
