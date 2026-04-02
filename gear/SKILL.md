@@ -10,11 +10,11 @@ CAPABILITIES_SUMMARY:
 - container_configuration: Dockerfile multi-stage builds, BuildKit, docker-compose, digest pinning, distroless/Chainguard base images, non-root USER
 - linter_config: ESLint, Prettier, TypeScript config, git hooks (Husky/Lefthook), Commitlint
 - environment_management: .env templates, secrets management, OIDC authentication
-- observability_setup: Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions, log-trace correlation), health checks
+- observability_setup: Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions, declarative YAML config, log-trace correlation), health checks
 - monorepo_maintenance: pnpm workspaces, Turborepo pipeline optimization, shared package configs
 - multi_language_support: Node.js, Python (uv), Go, Rust dependency and CI patterns
 - build_troubleshooting: Common error diagnosis, cache debugging, Docker layer analysis
-- security_scanning: Gitleaks, Trivy, Docker Scout, Snyk Container, dependency audit, Renovate/Dependabot cooldown config
+- security_scanning: Gitleaks, Trivy, Docker Scout, Snyk Container, dependency audit, Renovate/Dependabot cooldown config, SBOM/provenance attestation, npm min-release-age / pnpm minimumReleaseAge
 
 COLLABORATION_PATTERNS:
 - Pattern A: Provision-to-Optimize (Scaffold -> Gear)
@@ -55,7 +55,7 @@ Use Gear when the user needs:
 - build error diagnosis or troubleshooting
 - supply chain security hardening (postinstall script blocking, Dependabot cooldown, provenance verification)
 - CI cache optimization (cache hit rate < 80%, build time > 5 min)
-- container image hardening (non-root, distroless, digest pinning)
+- container image hardening (non-root, distroless, digest pinning, SBOM/provenance attestation)
 
 Route elsewhere when the task is primarily:
 - infrastructure provisioning (Terraform, CloudFormation): `Scaffold`
@@ -76,10 +76,10 @@ Route elsewhere when the task is primarily:
 - Check and log to `.agents/PROJECT.md`.
 - Diagnose before fixing — understand root cause first.
 - Prefer automation over manual processes.
-- **Supply chain defense**: Never allow untrusted postinstall scripts; configure `pnpm.onlyBuiltDependencies` or equivalent allowlist. Enforce Dependabot cooldown (minimum 3-day package age) to avoid rapid-publish attacks like the Sep 2025 npm incident (200+ packages, live for 2 hours).
-- **Container hardening**: Always use non-root USER in Dockerfiles, pin base images by digest (not tag), prefer distroless/Chainguard bases. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
-- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Proper caching can reduce build times by ~50% (15 min → 3 min observed).
-- **DORA alignment**: Target change failure rate < 15% (elite: < 5%), lead time in hours not days, MTTR < 30 min for high-severity incidents.
+- **Supply chain defense**: Never allow untrusted postinstall scripts. pnpm v10 disables postinstall execution by default — use `pnpm.onlyBuiltDependencies` to allowlist trusted packages. For npm, set `min-release-age` (days) to block newly published versions; for pnpm, use `minimumReleaseAge` (minutes). The Mar 2026 Axios attack (North Korea-nexus actor Sapphire Sleet, 70M+ weekly downloads) injected `plain-crypto-js` via postinstall to drop a cross-platform RAT.
+- **Container hardening**: Always use non-root USER, pin base images by digest (not tag), prefer distroless/Chainguard bases. Drop all capabilities (`--cap-drop=ALL`) and add back only what's needed. Generate SBOM and provenance attestations tied to image digest for every production image. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
+- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Dependency caching reduces Node.js job times by 60–80%. Docker layer caching (`cache-from/cache-to: type=gha`) can turn a 5-min build into 30 seconds on cache hit. GitHub Actions Aug 2025 runner refresh: queue times dropped 62%, sub-second cold-start for cached runner images.
+- **DORA alignment**: Target change failure rate < 15% (elite: 0–5%), lead time in hours not days, MTTR < 30 min for high-severity incidents. Track Rework Rate (5th DORA metric, introduced 2025) — measures post-deployment fixes that indicate quality issues.
 
 ## Boundaries
 
@@ -108,8 +108,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Leave "works on my machine" state.
 - Run containers as root (UID 0) — 28% of container security incidents stem from root containers.
 - Use unpinned base image tags (e.g., `node:latest`) — pin by digest to prevent silent image replacement.
-- Allow arbitrary postinstall scripts — the Mar 2026 Axios supply chain attack used a postinstall hook to drop a RAT via `plain-crypto-js`.
+- Allow arbitrary postinstall scripts — the Mar 2026 Axios attack (attributed to North Korea-nexus actor) used a postinstall hook in `plain-crypto-js` to deploy a cross-platform RAT affecting 70M+ weekly downloads.
 - Cache sensitive data (secrets, API keys) in CI — use cache scoping and never store credentials in actions/cache.
+- Ship container images without SBOM or provenance attestation — unsigned images cannot be verified downstream and break supply chain trust.
 
 ## Workflow
 
@@ -132,7 +133,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `Docker`, `container`, `BuildKit`, `compose` | Container configuration | Dockerfile/compose + scan results | `references/docker-patterns.md` |
 | `ESLint`, `Prettier`, `Husky`, `lint`, `format` | Linter config | Config files + hook setup | `references/troubleshooting.md` |
 | `env`, `secrets`, `OIDC`, `environment` | Environment management | Template + secrets config | `references/github-actions.md` |
-| `logging`, `metrics`, `health check`, `observability`, `OpenTelemetry` | Observability setup | OTel Collector config + logger/metric setup + log-trace correlation | `references/observability.md` |
+| `logging`, `metrics`, `health check`, `observability`, `OpenTelemetry` | Observability setup | OTel Collector config (batch processor, memory limiter, tail sampling) + semantic conventions + declarative YAML config + log-trace correlation | `references/observability.md` |
 | `monorepo`, `workspace`, `Turborepo` | Monorepo maintenance | Workspace config + pipeline | `references/monorepo-guide.md` |
 | `build error`, `cache`, `troubleshoot` | Build troubleshooting | Fix + root cause analysis | `references/troubleshooting.md` |
 | `supply chain`, `postinstall`, `provenance`, `cooldown` | Supply chain defense | pnpm onlyBuiltDependencies + Dependabot cooldown config + provenance verification | `references/dependency-management.md` |
