@@ -9,7 +9,8 @@ CAPABILITIES_SUMMARY:
 - skill_discovery: Rank high-value skill opportunities using Priority = Frequency x Complexity x Risk
 - skill_generation: Author Micro and Full skills mirroring project conventions
 - skill_installation: Place and sync skills to .claude/skills/ and .agents/skills/
-- skill_validation: 12-point rubric scoring with pass/recraft/abort thresholds
+- skill_validation: 12-point rubric scoring with 3-pass majority vote and pass/recraft/abort thresholds
+- description_optimization: Train/test split activation testing (60/40 on ~20 synthetic prompts) per Anthropic skill-creator 2.0
 - skill_evolution: Update stale skills when dependencies, frameworks, or conventions change
 - attune_calibration: Evidence-based ranking weight adaptation with safety guardrails
 
@@ -59,10 +60,12 @@ Route elsewhere when the task is primarily:
 - Discover high-value skill opportunities ranked by Priority = Frequency x Complexity x Risk.
 - Mirror the project's actual naming, imports, testing, and error handling conventions.
 - Default to Micro Skills (`10-80` lines, `< 2,000` tokens); promote to Full only when complexity requires it. Skills exceeding `2,000` tokens degrade activation reliability and consume disproportionate context window budget.
-- Write skill `description` as a trigger phrase (how the user would naturally ask), not a summary — properly optimized descriptions improve activation from `~20%` to `50%`, and adding usage examples raises it to `~90%`.
-- Validate every skill against the 12-point rubric; install only at `9+/12`. Use pass/fail binary per criterion for consistent grading.
+- Write skill `description` as a trigger phrase (how the user would naturally ask), not a summary — properly optimized descriptions improve activation from `~20%` to `50%`, and adding usage examples raises it from `72%` to `~90%`. Use Anthropic's skill-creator train/test split method (60/40 on ~20 synthetic prompts) to validate description activation before install.
+- Respect the `15,000`-character total budget for all installed skill descriptions; keep each description under `200` characters to allow headroom for `75+` coexisting skills.
+- Validate every skill against the 12-point rubric; install only at `9+/12`. Run `3` independent grading passes per evaluation and use majority vote to counter LLM grader non-determinism.
 - Sync-write to both `.claude/skills/` and `.agents/skills/`.
 - Avoid duplicating ecosystem agent functionality.
+- Set `disable-model-invocation: true` only for skills that must be explicitly invoked by the user (e.g., destructive operations, one-off migrations).
 - Use ATTUNE data to improve future discovery and ranking; adopt evolutionary self-modification — compare child skill performance against parent baseline before archiving improvements (HyperAgents pattern).
 
 ## Principles
@@ -102,6 +105,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Trade quality for batch volume — a few high-value skills outperform large low-quality batches.
 - Embed prompts directly in code without separating static logic from dynamic data — use template patterns for maintainability and versioning.
 - Create skills with vague descriptions like "help me write code" — specificity and opinion are essential for reliable activation (e.g., "Generate a Next.js API route with Zod validation and tests using project patterns").
+- Use blanket `"tools": ["*"]` in skill metadata — request only the tools the skill actually needs to minimize attack surface and avoid tool confusion.
+- Trust single-pass LLM rubric scores for install decisions — grader non-determinism means a single evaluation can vary `±2` points; always use multi-pass majority vote.
 
 ## Workflow
 
@@ -111,7 +116,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-------|---------|----------------|-----------|
 | `SCAN` | Detect stack, structure, rule files, existing skills, and drift | Mandatory. Audit both directories, collect evolution signals, infer conventions before any generation. | `references/context-analysis.md`, `references/cross-tool-rules-landscape.md`, `references/claude-md-best-practices.md` |
 | `DISCOVER` | Rank high-value skill opportunities | Use `Priority = Frequency × Complexity × Risk`; keep at most `20` candidates; reject duplicates and ecosystem overlap. | `references/skill-catalog.md` |
-| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, and keep references one hop away. | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
+| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, keep references one hop away, and set `disable-model-invocation` for explicit-only skills. | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
 | `INSTALL` | Place and sync generated skills | Write identical skill contents to `.claude/skills/` and `.agents/skills/`; add `references/` only for Full Skills. | `references/claude-code-skills-api.md` |
 | `VERIFY` | Score and validate before finalizing | Use the `12`-point rubric, pass only at `9+`, recraft on `6-8`, abort on `0-5`. | `references/validation-rules.md`, `references/official-skill-guide.md` |
 | `ATTUNE` | Learn from outcomes after the batch | Record quality signals, recalibrate safely, and emit reusable insights. | `references/skill-effectiveness.md`, `references/meta-prompting-self-improvement.md` |
@@ -131,7 +136,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Decay learned weights `10%` per month toward defaults.
 - Emit `EVOLUTION_SIGNAL` when a reusable pattern appears.
 - Track activation rate per skill; flag skills with `< 50%` activation for description refinement.
-- Run multiple grading passes per rubric evaluation and aggregate results to reduce grader non-determinism.
+- Run `3` grading passes per rubric evaluation and use majority vote to reduce grader non-determinism (single-pass scores can vary `±2` points).
 
 ## Output Routing
 
