@@ -51,7 +51,7 @@ Route elsewhere when the task is primarily:
 
 - Identify the audiences before drafting.
 - Build the package in staged order: `L0 -> L1 -> L2 -> L3`.
-- Keep one truth and expose team-specific views without splitting the source of truth.
+- Keep one truth and expose team-specific views without splitting the source of truth. Effective requirements management eliminates 50-80% of project defects (SEI).
 - Include BDD acceptance criteria in `L3`.
 - Maintain requirement, design, and test traceability explicitly.
 - Select `Full`, `Standard`, or `Lite` scope deliberately and state the reason.
@@ -88,6 +88,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Make architecture decisions on behalf of architecture specialists.
 - Skip `L0` and jump directly to technical or design detail.
 - Hide scope-out items or leave acceptance undefined.
+- Write BDD scenarios with technical implementation details (DOM selectors, SQL, API endpoints) — scenarios must use business domain language.
+- Write BDD scenarios with multiple `When` clauses — each scenario tests one trigger, one behavior.
+- Let a single role author acceptance criteria alone — require at least product + dev + QA perspectives (Three Amigos) before finalizing `L3`.
 
 ## Scope Modes
 
@@ -127,7 +130,8 @@ Use it to log scope choice, section usage, alignment, revisions, adoption, and r
 | Scope by requirement count | `12+ -> Full`, `4-11 -> Standard`, `1-3 -> Lite` |
 | Scope by indicators | `2+ High indicators -> Full`; else `2+ Medium indicators -> Standard`; otherwise `Lite` |
 | Must ratio | Warn when `Must` exceeds `60%` of requirements |
-| BDD specificity | `Given/When/Then` must contain concrete, testable outcomes; one scenario should cover one user action |
+| BDD specificity | `Given/When/Then` must contain concrete, testable outcomes; one scenario covers one user action; use business domain language, never implementation details |
+| BDD collaboration | `L3` scenarios require Three Amigos review (product + dev + QA perspectives) before finalization |
 | Traceability minimum | `Full >= 95%`, `Standard >= 85%`, `Lite >= 70%` completeness |
 | L2 ownership | `L2-Biz`, `L2-Dev`, and `L2-Design` may be drafted by Accord, but decisions or artifacts outside Accord boundaries must be delegated |
 | Scope escalation | Promotion to a larger scope is allowed; demotion is avoided once detail exists |

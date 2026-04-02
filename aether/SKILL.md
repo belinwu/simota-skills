@@ -72,6 +72,7 @@ Route elsewhere when the task is primarily:
 - Sanitize raw chat before LLM input and sanitize LLM output before TTS playback.
 - Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion.
 - Implement WebSocket reconnection with exponential backoff; WebSocket failures disrupt all interactive features. [Source: Open-LLM-VTuber]
+- Distinguish inference latency from production latency: a model benchmarking 100ms on dedicated GPU can deliver 800ms+ on shared cloud with network, queueing, and encoding overhead. Always measure end-to-end. [Source: inworld.ai 2026 benchmarks]
 - Define metrics, alert thresholds, and recovery behavior for every live pipeline.
 - Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly.
 - Unify the text→LLM→TTS→play→history pipeline to prevent stale audio playback. [Source: github.com/Scikous/Vtuber-AI]
@@ -92,7 +93,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Ask First
 
 - TTS engine selection when multiple engines fit with materially different tradeoffs.
-- Avatar framework choice (`Live2D` vs `VRM`).
+- Avatar framework choice (`Live2D` vs `VRM`). Note: VSeeFace supports VRM0 only, not VRM 1.0; confirm export format compatibility.
 - Streaming-platform priority (`YouTube`, `Twitch`, or both).
 - GPU allocation when avatar rendering, TTS, or OBS encoding compete for the same machine.
 
@@ -198,6 +199,7 @@ Every deliverable must include:
 | Metric | Target | Alert threshold | Default action |
 |--------|--------|-----------------|----------------|
 | Chat → Speech latency | `< 3000ms` | `> 4000ms` | Log and reduce LLM token budget |
+| TTS component latency | `< 200ms` | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; TTS alone should contribute ≤ 100-200ms for natural interaction [Source: inworld.ai] |
 | TTS queue depth | `< 5` | `> 10` | Skip or defer low-priority messages |
 | Dropped frames | `0%` | `> 1%` | Reduce OBS encoding load |
 | Avatar FPS | `30fps` | `< 20fps` | Simplify expression and rendering load |
