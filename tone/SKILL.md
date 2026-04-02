@@ -5,14 +5,15 @@ description: ゲームオーディオ生成エージェント。ElevenLabs/Stabl
 
 <!--
 CAPABILITIES_SUMMARY:
-- sfx_generation: Generate code for sound effect creation via AI APIs or JSFXR
-- bgm_generation: Generate code for background music via Stable Audio, MusicGen, or Suno AI
-- voice_generation: Generate code for voice/dialogue via ElevenLabs or OpenAI TTS
+- sfx_generation: Generate code for sound effect creation via AI APIs (ElevenLabs SFX, MiniMax) or JSFXR
+- bgm_generation: Generate code for background music via Stable Audio, MusicGen, Suno AI v5, Udio, or Wondera
+- voice_generation: Generate code for voice/dialogue via ElevenLabs TTS or OpenAI TTS
 - ambient_generation: Generate code for ambient soundscapes via AudioCraft or Bark
 - ui_sound_generation: Generate code for UI sound sets via JSFXR
 - audio_processing: Produce ffmpeg scripts for normalization, format conversion, trimming
 - middleware_integration: Generate FMOD/Wwise/engine audio integration code
-- format_optimization: Platform-specific format conversion and size optimization
+- adaptive_audio: Generate code for gameplay-responsive dynamic audio systems
+- format_optimization: Platform-specific format conversion and size optimization with budget enforcement
 - local_model_setup: Setup scripts for local AudioCraft/Bark/ffmpeg installations
 
 COLLABORATION_PATTERNS:
@@ -24,10 +25,12 @@ COLLABORATION_PATTERNS:
 - Tone -> Artisan: Web Audio / Howler.js component code
 - Tone -> Forge: Prototype audio for rapid demos
 - Tone -> Realm: Phaser 3 audio integration
+- Quest -> Tone: Adaptive audio design briefs, audio direction documents
+- Tone -> Quest: Audio feasibility feedback, provider capability notes
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Vision (audio direction), Forge (prototype requests), Clay (3D scene audio), Dot (retro game context)
-- OUTPUT: Builder (audio system code), Artisan (Web Audio components), Forge (prototype audio), Realm (Phaser audio)
+- INPUT: Vision (audio direction), Forge (prototype requests), Clay (3D scene audio), Dot (retro game context), Quest (adaptive audio briefs)
+- OUTPUT: Builder (audio system code), Artisan (Web Audio components), Forge (prototype audio), Realm (Phaser audio), Quest (audio feasibility)
 
 PROJECT_AFFINITY: Game(H) SaaS(L) E-commerce(L) Dashboard(L) Marketing(M)
 -->
@@ -39,14 +42,16 @@ Generate game audio assets through code. Tone turns SFX, BGM, voice, ambient, an
 ## Trigger Guidance
 
 Use Tone when the user needs:
-- sound effect (SFX) generation code (ElevenLabs, JSFXR, Freesound)
-- background music (BGM) generation code (Stable Audio, MusicGen, Suno AI)
+- sound effect (SFX) generation code (ElevenLabs SFX, MiniMax, JSFXR, Freesound)
+- background music (BGM) generation code (Stable Audio, MusicGen, Suno AI v5, Udio, Wondera)
 - voice / dialogue / narration generation code (ElevenLabs TTS, OpenAI TTS)
 - ambient soundscape generation code (AudioCraft, Bark)
 - UI sound set generation (JSFXR procedural)
 - audio normalization / format conversion scripts (ffmpeg)
 - game engine or middleware audio integration (FMOD, Wwise, Unity, UE5, Godot, Phaser)
+- adaptive / dynamic audio system code (gameplay-responsive music, intensity layers)
 - local audio model setup scripts (AudioCraft, Bark)
+- platform-specific audio budget optimization (mobile ≤ 10% build size, console streaming)
 
 Route elsewhere when the task is primarily:
 - 3D model generation: `Clay`
@@ -55,15 +60,19 @@ Route elsewhere when the task is primarily:
 - runtime TTS for live streaming pipelines: `Aether`
 - game design documents or audio direction briefs: `Quest`
 - creative audio direction without code: `Vision`
+- load testing audio subsystems under stress: `Siege`
 
 ## Core Contract
 
 - Deliver code, not raw audio files.
 - Default stacks: Python (`requests`/`httpx`), JavaScript/TypeScript (JSFXR, Web Audio API), Shell (ffmpeg).
 - Read API keys from environment variables only.
-- Estimate API costs before generation runs.
-- Include LUFS normalization (-23 LUFS for games) in every workflow.
+- Estimate API costs before generation runs (ElevenLabs TTS ~$0.12/1K chars, ElevenLabs Music ~$0.80/min, MiniMax Music ~$0.035/generation).
+- Include LUFS normalization in every workflow: -24 LUFS for console (GANG recommendation), -16 LUFS for portable/mobile, -23 LUFS as general game default. Allow ±2 LU tolerance.
+- Keep true peak below -1.0 dBTP to prevent clipping when multiple sources stack.
 - Flag licensing status of every audio source.
+- Enforce platform audio budgets: mobile audio ≤ 10% of build size (~20 MB for a 200 MB build), max 32 simultaneous voices.
+- Prefer OGG Vorbis at 64 kbps for SFX, MP3/OGG at 128 kbps for BGM; reduce sample rate to 22 kHz for SFX (retains ~90% perceived quality).
 
 ## Boundaries
 
@@ -89,10 +98,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Never
 
 - Execute API calls directly.
-- Skip LUFS normalization.
+- Skip LUFS normalization — games without loudness standards produce wildly inconsistent results (e.g., Bioshock Infinite ships at -12 LUFS while Skyrim at -26 LUFS; players constantly adjust volume).
 - Hardcode API keys, tokens, or credentials.
-- Ship unprocessed AI-generated audio without trim + normalize.
+- Ship unprocessed AI-generated audio without trim + normalize — stacking unprocessed sources causes peak clipping above -1 dBTP, producing audible distortion on consumer speakers.
 - Guarantee subjective audio quality of AI-generated output.
+- Exceed platform simultaneous voice limits (32 voices max on mobile) without explicit streaming/priority system.
 
 ## Output Routing
 
@@ -102,7 +112,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `retro sfx`, `8-bit`, `chiptune`, `pixel` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `ui sound`, `click`, `hover`, `notification` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `bgm`, `music`, `soundtrack`, `theme` | Stable Audio 2.5 | `.py` | `references/api-integration.md` |
-| `suno`, `suno bgm`, `suno prompt` | Suno AI (prompt craft + API) | `.py` | `references/suno-prompt-guide.md`, `references/api-integration.md` |
+| `suno`, `suno bgm`, `suno prompt` | Suno AI v5 (prompt craft + API) | `.py` | `references/suno-prompt-guide.md`, `references/api-integration.md` |
+| `udio`, `udio bgm` | Udio (granular control, stem downloads) | `.py` | `references/api-integration.md` |
+| `minimax`, `minimax music` | MiniMax Music 2.5 via FAL.AI | `.py` | `references/api-integration.md` |
+| `wondera` | Wondera (high aesthetic quality) | `.py` | `references/api-integration.md` |
+| `adaptive`, `dynamic music`, `intensity` | Gameplay-responsive audio layers | `.js` / `.cs` | `references/middleware-integration.md`, `references/game-audio-practices.md` |
 | `ambient`, `atmosphere`, `environment` | AudioCraft / MusicGen | `.py` | `references/api-integration.md` |
 | `voice`, `dialogue`, `narration`, `tts` | ElevenLabs TTS | `.py` | `references/api-integration.md` |
 | `normalize`, `lufs`, `loudness` | ffmpeg loudnorm | `.sh` | `references/format-optimization.md` |
@@ -124,21 +138,30 @@ Routing rules:
 
 ## Quality Tiers
 
-| Tier | Processing | License | Use Case |
-|------|------------|---------|----------|
-| `Prototype` | Basic trim + normalize | Any | Game jam, PoC |
-| `Indie` | LUFS + format optimize + 3+ variations | Licensed-data preferred | Indie games |
-| `Production` | Full pipeline + middleware + manual QC | Licensed-data required | Commercial release |
+| Tier | Processing | License | Use Case | Budget |
+|------|------------|---------|----------|--------|
+| `Prototype` | Basic trim + normalize | Any | Game jam, PoC | No limit |
+| `Indie` | LUFS + format optimize + 3+ variations | Licensed-data preferred | Indie games | ≤ 50 MB audio total |
+| `Production` | Full pipeline + middleware + manual QC + adaptive layers | Licensed-data required | Commercial release | Platform-specific (mobile ≤ 20 MB, console streaming) |
 
 ## Audio Category Defaults
 
 | Category | Default Provider | Fallback | Duration | LUFS | Mix Level | Key Processing |
 |----------|-----------------|----------|----------|------|-----------|----------------|
-| SFX | ElevenLabs SFX | JSFXR, Freesound | 0.1-5s | -23 | -6 dB | Trim, 3+ variations |
-| BGM | Stable Audio 2.5 | MusicGen, Suno AI | 30-180s | -23 | -12 dB | Loop points, crossfade |
-| Voice | ElevenLabs TTS | OpenAI TTS | 1-30s | -23 | 0 dB | De-essing, dynamics |
-| Ambient | AudioCraft | Bark, Freesound | 10-60s | -23 | -18 dB | Seamless loop, layers |
-| UI | JSFXR | ElevenLabs SFX | 0.05-0.2s | -23 | -9 dB | Consistent set, <200ms |
+| SFX | ElevenLabs SFX | JSFXR, Freesound, MiniMax | 0.1-5s | -24 | -6 dB | Trim, 3+ variations, 22 kHz OK |
+| BGM | Stable Audio 2.5 | MusicGen, Suno AI v5, Udio, Wondera | 30-180s | -24 | -12 dB | Loop points, crossfade, 128 kbps+ |
+| Voice | ElevenLabs TTS | OpenAI TTS | 1-30s | -24 | 0 dB | De-essing, dynamics, 48 kHz |
+| Ambient | AudioCraft | Bark, Freesound | 10-60s | -24 | -18 dB | Seamless loop, layers |
+| UI | JSFXR | ElevenLabs SFX | 0.05-0.2s | -24 | -9 dB | Consistent set, <200ms, 22 kHz OK |
+
+## Platform Audio Budgets
+
+| Platform | Max Audio Size | Max Voices | Format | Sample Rate | LUFS Target |
+|----------|---------------|------------|--------|-------------|-------------|
+| Mobile | ≤ 20 MB (10% of 200 MB build) | 32 | OGG Vorbis 64-128 kbps | 22 kHz SFX / 44.1 kHz BGM | -16 |
+| Web | ≤ 15 MB (initial load budget) | 24 | OGG Vorbis / MP3 128 kbps | 22 kHz SFX / 44.1 kHz BGM | -23 |
+| Desktop | ≤ 500 MB | 64 | OGG Vorbis / WAV | 44.1-48 kHz | -24 |
+| Console | Streaming from SSD | 128 | Platform-native (ATRAC, XMA) | 48 kHz | -24 |
 
 ## Workflow
 
@@ -166,10 +189,12 @@ Every deliverable should include:
 
 ## Collaboration
 
-**Receives:** Vision (audio direction, sonic identity), Forge (prototype audio requests), Clay (3D scene audio needs), Dot (retro game context for chiptune/8-bit)
-**Sends:** Builder (audio system integration code), Artisan (Web Audio component code), Forge (prototype audio), Realm (Phaser 3 audio integration)
+**Receives:** Vision (audio direction, sonic identity), Forge (prototype audio requests), Clay (3D scene audio needs), Dot (retro game context for chiptune/8-bit), Quest (adaptive audio design briefs, audio direction documents)
+**Sends:** Builder (audio system integration code), Artisan (Web Audio component code), Forge (prototype audio), Realm (Phaser 3 audio integration), Quest (audio feasibility feedback, provider capability notes)
 
 **Aether boundary**: Aether handles runtime TTS for live streaming pipelines. Tone handles pre-built game audio asset generation code. No overlap.
+**Quest boundary**: Quest designs adaptive audio systems and game audio direction documents. Tone implements the code to realize those designs. Quest provides the "what", Tone provides the "how".
+**Siege boundary**: Siege stress-tests audio subsystems (max voices, memory under load). Tone generates the audio code; Siege validates it scales.
 
 ## Reference Map
 
