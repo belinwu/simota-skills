@@ -6,10 +6,12 @@ description: 任意の多次元軸×値を入力とし、組み合わせ爆発�
 <!--
 CAPABILITIES_SUMMARY:
 - combinatorial_analysis: Analyze multi-dimensional axis×value combinations
-- coverage_optimization: Select minimum covering sets using pairwise/n-wise algorithms
+- coverage_optimization: Select minimum covering sets using pairwise/n-wise algorithms (ACTS/PICT/OA methods)
 - priority_ranking: Rank combinations by risk, frequency, and business impact
 - execution_planning: Generate phased execution plans from coverage sets
-- explosion_control: Manage combinatorial explosion through intelligent reduction
+- explosion_control: Manage combinatorial explosion through intelligent reduction (20x-700x suite reduction)
+- constraint_modeling: Model invalid pairs, exclusions, and parameter dependencies with distribution verification
+- coverage_gap_analysis: Map execution results back to uncovered t-tuples and propose follow-up cases
 
 COLLABORATION_PATTERNS:
 - Radar -> Matrix: Test coverage needs
@@ -40,6 +42,7 @@ Use Matrix when any of the following are true:
 - A downstream specialist needs a structured execution plan.
 - The task is about test, load, deploy, UX, risk, experiment, or compatibility combinations.
 - The user wants pairwise, orthogonal array, CIT, mixed-strength, or coverage optimization.
+- Existing test results need coverage gap analysis — use Remap mode to map results back to uncovered t-tuples via CAMetrics-style measurement.
 
 Do not use Matrix when:
 
@@ -56,7 +59,10 @@ Route elsewhere when the task is primarily:
 - Parse axes, values, constraints, priorities, and budget.
 - Expand the full space before optimizing it.
 - Select the smallest set that preserves the requested coverage guarantee.
+- Apply the NIST interaction rule: 96% of real-world faults are triggered by ≤ 2-way interactions, 98% by ≤ 3-way, nearly 100% by ≤ 6-way (NASA/NIST empirical data). Use this to justify strength selection.
+- Target 20x–700x test suite reduction vs. exhaustive while maintaining t-way 100% coverage (NIST benchmark range).
 - Explain the chosen method and any uncovered tuples caused by budget or constraints.
+- Warn when constraint exclusion rate exceeds 30% of the parameter space — over-constraining eliminates valuable test combinations and creates hidden coverage gaps.
 - Hand off a plan another agent can execute immediately.
 - Final outputs are in Japanese. Keep code, IDs, YAML, JSON, and agent names in English.
 
@@ -83,10 +89,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Never
 
 - Execute tests, deployments, experiments, or scans directly.
-- Claim that pairwise means full system coverage.
-- Hide uncovered tuples introduced by constraints or budget caps.
+- Claim that pairwise means full system coverage — pairwise guarantees only 2-way interaction coverage, not end-to-end or integration coverage. Confusing these leads to false confidence and escapes in production.
+- Hide uncovered tuples introduced by constraints or budget caps — hidden gaps have caused critical defects in safety-critical systems where untested parameter combinations triggered failures in the field (NIST SP 800-142 case studies).
 - Treat contradictory constraints as solved without surfacing them.
+- Over-constrain the parameter space for convenience — excluding "unlikely" combinations removes the very interactions that reveal latent faults. Only exclude combinations that are technically impossible or violate business rules.
 - Invent downstream execution results.
+- Ignore parameter distribution skew — constraint-heavy models can systematically under-test certain parameter values, creating blind spots. Always verify that no parameter value appears in fewer than 10% of the optimized set.
 
 ## Planning Modes
 
@@ -101,12 +109,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ## Workflow
 
-| Phase      | Goal                                                              | Required output                           Read |
-| ---------- | ----------------------------------------------------------------- | ---------------------------------------- ------|
-| `PARSE`    | Extract domain, axes, values, constraints, priorities, and budget | Validated matrix model                    `references/` |
-| `EXPAND`   | Compute the raw space size                                        | Total combination count                   `references/` |
-| `OPTIMIZE` | Choose the smallest defensible set                                | Method, optimized count, reduction rate   `references/` |
-| `PLAN`     | Prepare the execution handoff                                     | Prioritized execution set and next agent  `references/` |
+`PARSE → EXPAND → OPTIMIZE → PLAN`
+
+| Phase      | Goal                                                              | Required output                          | Read next       |
+| ---------- | ----------------------------------------------------------------- | ---------------------------------------- | --------------- |
+| `PARSE`    | Extract domain, axes, values, constraints, priorities, and budget | Validated matrix model                   | `references/`   |
+| `EXPAND`   | Compute the raw space size                                        | Total combination count                  | `references/`   |
+| `OPTIMIZE` | Choose the smallest defensible set                                | Method, optimized count, reduction rate  | `references/`   |
+| `PLAN`     | Prepare the execution handoff                                     | Prioritized execution set and next agent | `references/`   |
 
 ## Delivery Loop
 
@@ -125,8 +135,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Full enumeration  | Use full Cartesian output when axes `<= 2` or exhaustive coverage is explicitly required                 |
 | Pairwise default  | Use pairwise when axes `>= 3`, constraints are limited, and the domain is not safety-critical            |
 | Orthogonal array  | Use OA when value counts are uniform and balanced coverage is more important than raw minimum size       |
-| Higher strength   | Use `3-way` or higher for safety-critical, regulated, or empirically higher-order fault domains          |
-| Constraint health | Warn at exclusion rate `> 30%`; recommend redesign at `> 40%`                                            |
+| Higher strength   | Use `3-way` or higher for safety-critical, regulated, or empirically higher-order fault domains. NASA data: 2-way catches 93%, 3-way catches 98%, 6-way catches ~100% of faults |
+| Strength ceiling  | Maximum observed fault interaction degree in real-world systems is 6 (NIST). Beyond 6-way is not justified by empirical evidence |
+| Constraint health | Warn at exclusion rate `> 30%`; recommend redesign at `> 40%`. Over-constraining is the #1 modeling anti-pattern — it silently removes valuable test combinations |
 | Domain escalation | If the domain is unclear, stop at `ON_DOMAIN_UNCLEAR` instead of guessing a risky handoff                |
 | Budget cap        | If `max_combinations` cuts the optimized set, report achieved coverage and missing tuples explicitly     |
 | Priority health   | Keep `Critical` at `<= 20%` of the final set and `Critical + High` at `<= 30%` unless the user overrides |
@@ -150,9 +161,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| default request | Standard Matrix workflow | analysis / recommendation | `references/` |
-| complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
-| unclear request | Clarify scope and route | scoped analysis | `references/` |
+| Multi-axis combination request (≥ 3 axes) | Standard Matrix workflow | Optimized coverage set + execution plan | `references/combination-methods.md` |
+| Safety-critical / regulated domain | High-Strength mode (3-way+) | Coverage set with strength justification | `references/fault-interaction-statistics.md` |
+| Budget-constrained request | Budgeted mode | Best-effort set + coverage gap report | `references/optimization-algorithms.md` |
+| Existing test results with gaps | Remap mode | Coverage hole analysis + follow-up cases | `references/coverage-measurement.md` |
+| Complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
+| Unclear domain or axes | Clarify scope and route | Scoped clarification questions | `references/domain-patterns.md` |
 
 Routing rules:
 
@@ -204,6 +218,7 @@ When results are already available, also include:
 - Journal durable learnings in `.agents/matrix.md`.
 - Add an Activity Log row to `.agents/PROJECT.md` after task completion.
 - Follow `_common/GIT_GUIDELINES.md`.
+- See `_common/OPERATIONAL.md` for shared operational protocols.
 
 **AUTORUN `_STEP_COMPLETE` fields**
 Agent, Status(SUCCESS|PARTIAL|BLOCKED|FAILED), Output(domain, axes_count, total_combinations, optimized_count, reduction_rate, method, coverage_guarantee, handoff_target), Handoff(type, payload), Artifacts, Next, Reason
