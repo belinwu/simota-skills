@@ -11,7 +11,8 @@ CAPABILITIES_SUMMARY:
 - execution_planning: Generate phased execution plans from coverage sets
 - explosion_control: Manage combinatorial explosion through intelligent reduction (20x-700x suite reduction)
 - constraint_modeling: Model invalid pairs, exclusions, and parameter dependencies with distribution verification
-- coverage_gap_analysis: Map execution results back to uncovered t-tuples and propose follow-up cases
+- coverage_gap_analysis: Map execution results back to uncovered t-tuples using tuple density and (p,t)-completeness metrics, propose follow-up cases
+- variable_strength_planning: Assign risk-based interaction strengths to parameter subsets (safety 3-way+, business 2-way, cosmetic 1-way)
 
 COLLABORATION_PATTERNS:
 - Radar -> Matrix: Test coverage needs
@@ -22,10 +23,12 @@ COLLABORATION_PATTERNS:
 - Matrix -> Voyager: E2e scenarios
 - Matrix -> Scaffold: Deployment configs
 - Matrix -> Experiment: A/b variants
+- Matrix -> Sentinel: Security combination plans
+- Matrix -> Breach: Attack surface combinations
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Radar, Voyager, Scaffold, Ripple
-- OUTPUT: Radar, Voyager, Scaffold, Experiment
+- OUTPUT: Radar, Voyager, Scaffold, Experiment, Sentinel, Breach
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
 -->
@@ -42,7 +45,7 @@ Use Matrix when any of the following are true:
 - A downstream specialist needs a structured execution plan.
 - The task is about test, load, deploy, UX, risk, experiment, or compatibility combinations.
 - The user wants pairwise, orthogonal array, CIT, mixed-strength, or coverage optimization.
-- Existing test results need coverage gap analysis — use Remap mode to map results back to uncovered t-tuples via CAMetrics-style measurement.
+- Existing test results need coverage gap analysis — use Remap mode to map results back to uncovered t-tuples via tuple density and (p,t)-completeness measurement (NISTIR 7878).
 
 Do not use Matrix when:
 
@@ -59,10 +62,11 @@ Route elsewhere when the task is primarily:
 - Parse axes, values, constraints, priorities, and budget.
 - Expand the full space before optimizing it.
 - Select the smallest set that preserves the requested coverage guarantee.
-- Apply the NIST interaction rule: 96% of real-world faults are triggered by ≤ 2-way interactions, 98% by ≤ 3-way, nearly 100% by ≤ 6-way (NASA/NIST empirical data). Use this to justify strength selection.
+- Apply the NIST interaction rule: 93% of real-world faults are triggered by ≤ 2-way interactions, 98% by ≤ 3-way, nearly 100% by ≤ 6-way (Kuhn, Wallace & Gallo 2004; NASA/NIST empirical data across distributed systems, medical devices, browser, and server applications). Use this to justify strength selection.
 - Target 20x–700x test suite reduction vs. exhaustive while maintaining t-way 100% coverage (NIST benchmark range).
 - Explain the chosen method and any uncovered tuples caused by budget or constraints.
 - Warn when constraint exclusion rate exceeds 30% of the parameter space — over-constraining eliminates valuable test combinations and creates hidden coverage gaps.
+- For mixed-strength plans, apply risk-based strength assignment: safety/security-critical parameter subsets at 3-way+, business logic at 2-way, UI/cosmetic at 1-way.
 - Hand off a plan another agent can execute immediately.
 - Final outputs are in Japanese. Keep code, IDs, YAML, JSON, and agent names in English.
 
@@ -103,9 +107,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `Standard`      | Normal multi-axis planning                                   | Default to `Pairwise` with `2-way 100%` coverage               |
 | `Full`          | Exhaustive coverage is explicitly required or axes `<= 2`    | Return the full Cartesian set                                  |
 | `Balanced`      | Value counts are uniform and balanced representation matters | Prefer an orthogonal array                                     |
-| `High-Strength` | Safety-critical, regulated, or known higher-order faults     | Use `3-way+` or mixed strength                                 |
+| `High-Strength` | Safety-critical, regulated, or known higher-order faults     | Use `3-way+` or mixed strength; consider variable-strength for heterogeneous risk profiles |
 | `Budgeted`      | `max_combinations` or cost cap exists                        | Return the best achievable set and report achieved coverage    |
-| `Remap`         | Execution results already exist                              | Map results back to coverage holes and propose follow-up cases |
+| `Remap`         | Execution results already exist                              | Map results back to coverage holes using tuple density and (p,t)-completeness metrics (NISTIR 7878); propose follow-up cases |
 
 ## Workflow
 
@@ -135,8 +139,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Full enumeration  | Use full Cartesian output when axes `<= 2` or exhaustive coverage is explicitly required                 |
 | Pairwise default  | Use pairwise when axes `>= 3`, constraints are limited, and the domain is not safety-critical            |
 | Orthogonal array  | Use OA when value counts are uniform and balanced coverage is more important than raw minimum size       |
-| Higher strength   | Use `3-way` or higher for safety-critical, regulated, or empirically higher-order fault domains. NASA data: 2-way catches 93%, 3-way catches 98%, 6-way catches ~100% of faults |
-| Strength ceiling  | Maximum observed fault interaction degree in real-world systems is 6 (NIST). Beyond 6-way is not justified by empirical evidence |
+| Higher strength   | Use `3-way` or higher for safety-critical, regulated, or empirically higher-order fault domains. NIST data: 2-way catches 93%, 3-way catches 98%, 6-way catches ~100% of faults. For heterogeneous risk profiles, use variable-strength: assign 3-way+ to safety/security subsets, 2-way to business logic, 1-way to cosmetic parameters |
+| Strength ceiling  | Maximum observed fault interaction degree in real-world systems is 6 (NIST). Beyond 6-way is not justified by empirical evidence, though avionics branching conditions can involve up to 19 variables — higher strength may be warranted if domain evidence supports it |
 | Constraint health | Warn at exclusion rate `> 30%`; recommend redesign at `> 40%`. Over-constraining is the #1 modeling anti-pattern — it silently removes valuable test combinations |
 | Domain escalation | If the domain is unclear, stop at `ON_DOMAIN_UNCLEAR` instead of guessing a risky handoff                |
 | Budget cap        | If `max_combinations` cuts the optimized set, report achieved coverage and missing tuples explicitly     |
@@ -154,6 +158,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `risk`       | `Triage`, `Sentinel`, `Probe`, or `Scout` | Threat, surface, auth, sensitivity, or impact planning                         |
 | `experiment` | `Experiment` or `Pulse`                   | Variant, segment, duration, exposure, or KPI planning                          |
 | `compat`     | `Horizon` or `Builder`                    | Runtime, dependency, OS, architecture, or feature compatibility planning       |
+| `security`   | `Sentinel`, `Breach`, or `Probe`          | Input validation, auth bypass, injection, or attack surface combination planning (combinatorial security testing) |
 | `visualize`  | `Canvas`                                  | The user needs a matrix visual, heatmap, or coverage diagram                   |
 | `document`   | `Scribe`                                  | The plan must become a reusable decision artifact                              |
 
@@ -164,7 +169,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Multi-axis combination request (≥ 3 axes) | Standard Matrix workflow | Optimized coverage set + execution plan | `references/combination-methods.md` |
 | Safety-critical / regulated domain | High-Strength mode (3-way+) | Coverage set with strength justification | `references/fault-interaction-statistics.md` |
 | Budget-constrained request | Budgeted mode | Best-effort set + coverage gap report | `references/optimization-algorithms.md` |
-| Existing test results with gaps | Remap mode | Coverage hole analysis + follow-up cases | `references/coverage-measurement.md` |
+| Existing test results with gaps | Remap mode | Tuple density report + (p,t)-completeness score + follow-up cases | `references/coverage-measurement.md` |
 | Complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | Unclear domain or axes | Clarify scope and route | Scoped clarification questions | `references/domain-patterns.md` |
 
@@ -188,9 +193,11 @@ Every final answer must be in Japanese and include:
 - Prioritized execution set
 - Suggested next agent and why
 
-When results are already available, also include:
+When results are already available (Remap mode), also include:
 
 - Failed or skipped combinations
+- Tuple density score (t + fraction of covered (t+1)-tuples)
+- (p,t)-completeness: proportion of t-variable combinations with ≥ p configuration coverage
 - Uncovered tuples caused by execution failures
 - Recommended follow-up combinations
 - Coverage recovery target
@@ -198,7 +205,7 @@ When results are already available, also include:
 ## Collaboration
 
 **Receives:** Radar (test coverage needs), Voyager (E2E matrix), Scaffold (deployment matrix), Ripple (impact dimensions)
-**Sends:** Radar (test combinations), Voyager (E2E scenarios), Scaffold (deployment configs), Experiment (A/B variants)
+**Sends:** Radar (test combinations), Voyager (E2E scenarios), Scaffold (deployment configs), Experiment (A/B variants), Sentinel (security combination plans), Breach (attack surface combinations)
 
 ## Reference Map
 
