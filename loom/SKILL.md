@@ -12,6 +12,8 @@ CAPABILITIES_SUMMARY:
 - output_validation: Score and validate Make output against codebase conventions with detach-rate tracking
 - reverse_feedback: Refine Guidelines from implementation feedback and code regression prevention
 - figma_structure_analysis: Analyze Figma file structure for Auto Layout, naming, hierarchy
+- code_connect_integration: Leverage Code Connect mappings to link Figma components with codebase implementations for higher-fidelity Make output
+- credit_budget_optimization: Optimize credit allocation across model tiers (default vs Claude Opus 4.6) based on task complexity
 - design_debt_detection: Detect unnamed layers, detached instances, inconsistent naming that degrade Make output
 
 COLLABORATION_PATTERNS:
@@ -48,7 +50,8 @@ Use Loom when the task is to:
 - refine Guidelines or prompts from reverse feedback or code regression signals
 - analyze Figma file structure for Auto Layout, naming, component hierarchy, or page organization
 - detect design debt (unnamed layers, detached instances, inconsistent naming) that degrades Make output quality
-- prepare MCP-aware Guidelines that leverage Figma Variables, design tokens, and component properties
+- prepare MCP-aware Guidelines that leverage Figma Variables, design tokens, component properties, and Code Connect mappings
+- optimize credit budget across model tiers (Claude Opus 4.6 consumes significantly more credits than default models)
 
 Use `Muse` for token authority, `Frame` for Figma/MCP extraction, and `Artisan` for Make-to-production feedback.
 
@@ -67,7 +70,9 @@ Route elsewhere when the task is primarily:
 - Treat `Frame` as the Figma/MCP bridge. Do not call Figma MCP tools directly.
 - Prefer staged prompt sequences over large one-shot prompts. Front-load the first prompt with Context, Description, Platform, Visual Style, and UI Components to minimize follow-up exchanges.
 - Reference exact component names as they appear in Assets so Make uses the right building blocks instead of inventing generic UI.
-- Connect team library references before prompting; omitting this causes Make to generate detached components.
+- Always use "Select a library" before prompting; omitting this causes Make to guess at components and generate detached, non-reusable UI.
+- Link components to the codebase via Code Connect when available — this gives Make exact code references instead of generic output.
+- Use `get_variable_defs` via MCP to extract exact token names and code syntax, eliminating ambiguity when multiple tokens share the same visual value.
 - Keep Auto Layout nesting ≤ 3 levels; deeper nesting reduces Make output reliability.
 - Limit to 1-2 screens per prompt; > 3 screens per prompt lowers generation reliability.
 - Generate ≤ 4 variants per generation step to maintain consistency.
@@ -89,6 +94,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Process reverse feedback from Artisan or Showcase in the same session.
 - Account for Figma Make constraints: ≤ 3 Auto Layout nesting levels, 1-2 screens per prompt, ≤ 4 variants per step.
 - Reference exact component names from Assets panel to prevent Make from inventing generic UI.
+- Enforce explicit platform context (mobile/tablet/desktop) in every prompt — omitting it causes drift to web patterns even for mobile targets.
 
 ### Ask First
 
@@ -106,6 +112,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Deliver Guidelines without a validation pass — unvalidated packages risk code regression.
 - Generate entire multi-screen flows in a single prompt — this causes consistency failures and increases cleanup cost.
 - Ignore design debt signals (unnamed layers, detached instances) — these degrade Make output quality.
+- Omit platform context from prompts — Make defaults to web patterns, producing unusable layouts for mobile or tablet targets.
 
 ## Interaction Triggers
 
@@ -178,8 +185,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Front-load the first prompt with maximum detail (Context, Description, Platform, Visual Style, UI Components) — subsequent prompts should make small incremental changes only.
 - Expect "vanilla" output from Make — explicitly prompt for brand identity, custom typography, and unique visual style to avoid the watered-down LLM-average look.
 - Guard against code regression: when enough functionality exists, each new feature prompt risks overwriting previous behaviors. Use explicit "preserve existing" constraints.
-- Budget prompts carefully — Professional tier ≈ 3,000 credits (50-70 prompts). Full-screen design attachments consume credits faster.
+- Budget prompts carefully — Professional ≈ 3,000 credits/month, Enterprise ≈ 4,250 credits/month (≈ 50-70 prompts). Claude Opus 4.6 consumes significantly more credits than default models; select model tier based on task complexity. Pay-as-you-go at $0.03/credit available for overages.
 - Clean input frames before prompting: remove unnamed layers, ensure consistent naming, apply proper Auto Layout — dirty input degrades output quality.
+- Leverage Code Connect to link Figma components to codebase implementations — Make generates more accurate code when it can reference existing patterns.
+- Use Figma MCP Remote Access for CI/pipeline-driven Guidelines generation without requiring a desktop app.
 
 ## Routing And Handoffs
 
@@ -205,7 +214,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
 | design debt detected | Design hygiene audit + cleanup plan | debt report with detach rate | `references/validation-checklist.md` |
 | code regression signal | Regression guard analysis | preservation constraints for prompts | `references/prompt-patterns.md` |
-| MCP-aware generation | Figma Variables + token integration | MCP-optimized Guidelines package | `references/token-alignment-guide.md` |
+| MCP-aware generation | Figma Variables + token integration via `get_variable_defs` | MCP-optimized Guidelines package | `references/token-alignment-guide.md` |
+| Code Connect available | Link components to codebase via Code Connect mappings | Code Connect-enhanced Guidelines | `references/guidelines-templates.md` |
 | unclear request | Clarify scope and route | scoped analysis | `references/` |
 
 Routing rules:
