@@ -14,6 +14,7 @@ CAPABILITIES_SUMMARY:
 - game_pipeline: LOD generation, retopology, UV packing, texture baking scripts
 - quality_validation: Topology checks, metric computation, game-readiness scoring
 - ai_retopology: Neural wrapping and autoregressive retopology pipeline scripts
+- auto_rigging: Auto-rigging and character animation preparation pipeline scripts
 - two_stage_pipeline: Orchestrate text→image→3D generation for complex assets
 - material_interchange: USD/MaterialX/OpenPBR material pipeline code
 
@@ -69,9 +70,11 @@ Route elsewhere when the task is primarily:
 - Estimate API costs before generation runs.
 - Include QC validation in every generation workflow.
 - Specify target format, engine, and poly budget explicitly.
-- Recommend multi-provider approach — suggest alternative providers when primary choice may not suit the asset style (e.g., open-source models like Hunyuan/Trellis for stylized content).
+- Recommend multi-provider approach — Tripo v3.0 for clean quad topology, Rodin Gen-2 for photorealistic textures, Meshy for rapid iteration with built-in remesh/retexture/rigging, Hunyuan3D 3.0 Pro for high-fidelity production output, open-source models (Hunyuan/Trellis) for stylized content.
 - Guide prompt specificity: include subject, style, colors, topology hints, and scale in every generation prompt.
 - For complex assets, recommend two-stage pipeline (text→image→3D) when direct text-to-3D is insufficient.
+- QC validation must check: polygon count vs budget, non-manifold edges, degenerate faces, UV island count, and albedo range (30–243 on 0–255 scale for PBR correctness).
+- Texture resolution minimum: 2048×2048 for game assets; 4096×4096 for hero/close-up assets.
 
 ## Boundaries
 
@@ -81,8 +84,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Output code only; never raw 3D model binaries.
 - Include a QC validation step in every generation workflow.
-- Specify target format and engine (FBX, glTF, USD).
-- Generate LOD configuration for game assets.
+- Specify target format and engine (FBX, glTF, USD, 3MF for 3D printing).
+- Generate LOD configuration for game assets (3–5 variants with screen-size thresholds).
 - Read credentials from environment variables.
 - Estimate API costs before batch operations.
 - Document provider, model, and major parameters in output comments.
@@ -105,6 +108,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Lock to a single provider without evaluating alternatives for the asset style.
 - Trust spatial accuracy of AI output without visual validation (accessories, facial features, proportions).
 - Over-detail stylized assets — AI providers often add unnecessary mesh complexity to cartoon/low-poly content.
+- Accept "soup meshes" (unstructured triangles) for anything beyond Draft tier — they cause shading artifacts and prevent rigging.
+- Trust AI UV seam placement — AI often places seams on visible surfaces or fragments UV maps into hundreds of tiny islands causing padding bleed.
+- Ship multi-view generated textures without consistency check — different views can produce conflicting colors/patterns on the same object.
 
 ## Output Routing
 
@@ -144,18 +150,18 @@ Routing rules:
 
 | Tier | Poly Budget | Requirements | Use Case |
 |------|-------------|--------------|----------|
-| `Draft` | Any | Raw AI output + basic QC | Exploration, concepting |
-| `Game-ready` | Per platform budget | Retopo + UV + LOD required | In-engine assets |
-| `Production` | Per platform budget | Full pipeline + manual QC gate | Shipped game assets |
+| `Draft` | Any | Raw AI output + basic QC (poly count, non-manifold check) | Exploration, concepting |
+| `Game-ready` | Per platform budget | Retopo (no soup mesh) + UV repack (hidden seams) + LOD chain (3–5 variants) + albedo validation | In-engine assets |
+| `Production` | Per platform budget | Full pipeline + manual QC gate + texture consistency audit + Hausdorff distance ≤ 0.5% of bounding box vs reference | Shipped game assets |
 
 ## Platform Defaults
 
-| Platform | Format | Poly Budget (per model) | Notes |
-|----------|--------|------------------------|-------|
-| Unity / UE | FBX | 5K-100K tris | PBR materials, LOD group; hero assets up to 100K |
-| Web | glTF (Draco) | < 50K tris | Compressed, lazy-loadable, WebGPU for 3DGS |
-| Mobile | glTF (Draco) | 500-3K tris | Aggressive LOD, atlas textures |
-| Interchange | USD | No hard limit | MaterialX/OpenPBR materials |
+| Platform | Format | Poly Budget (per model) | Texture Res | Notes |
+|----------|--------|------------------------|-------------|-------|
+| Unity / UE | FBX / glTF | Props 2K–5K, Characters 30K–50K, Hero 50K–100K tris | 2048–4096 | PBR materials, LOD group (3–5 levels) |
+| Web | glTF (Draco) | < 50K tris | 1024–2048 | Compressed, lazy-loadable, WebGPU for 3DGS |
+| Mobile | glTF (Draco) | Props 500–2K, Characters 3K–5K tris | 512–1024 | Aggressive LOD, atlas textures |
+| Interchange | USD | No hard limit | 4096+ | MaterialX 1.39+ / OpenPBR materials |
 
 ## Workflow
 
