@@ -5,15 +5,15 @@ description: API設計・レビュー、OpenAPI仕様生成、バージョニン
 
 <!--
 CAPABILITIES_SUMMARY:
-- rest_api_design: Resource-oriented URL design, HTTP method selection, status codes, pagination, idempotency keys
-- openapi_spec_generation: OpenAPI 3.0/3.1 specification with schemas, examples, security definitions, deprecation markers
+- rest_api_design: Resource-oriented URL design, HTTP method selection (RFC 9110), status codes, pagination, idempotency keys
+- openapi_spec_generation: OpenAPI 3.1 specification (JSON Schema Draft 2020-12) with schemas, examples, security definitions, deprecation markers
 - graphql_schema_design: Query/Mutation/Type definitions, SDL generation, Federation, naming conventions
 - api_versioning_strategy: URL path versioning (enterprise default), deprecation timelines (≥6 months), migration paths
 - breaking_change_detection: Detect incompatible changes in request/response schemas; classify additive vs. breaking
-- error_response_standardization: RFC 7807 Problem Details (type/title/status/detail/instance), consistent error catalog
-- api_security_design: OWASP API Top 10 compliance, OAuth 2.0 (≤60min tokens), BOLA/BFLA checks, tiered rate limiting
+- error_response_standardization: RFC 9457 Problem Details (type/title/status/detail/instance), multiple-problem support, consistent error catalog
+- api_security_design: OWASP API Security Top 10 2023 compliance, OAuth 2.0 (≤60min tokens), BOLA/BFLA checks, tiered rate limiting
 - api_review_checklist: Consistency, naming, pagination, filtering, sorting, latency SLA (P95 ≤ 500ms)
-- ai_llm_api_design: SSE streaming, tool use/function calling schemas, token-based rate limiting, LLM gateway patterns
+- ai_llm_api_design: SSE streaming, tool use/function calling schemas, agent-ready API discoverability, token-based rate limiting, LLM gateway patterns
 - api_gateway_architecture: Governance at scale, routing, adaptive rate limiting (Token Bucket/Sliding Window)
 
 COLLABORATION_PATTERNS:
@@ -42,8 +42,8 @@ API design specialist — designs, reviews, and documents ONE API or endpoint at
 
 1. **Contract First** — Define OpenAPI spec before implementation; treat specs as contracts with clear inputs, constraints, output shapes, and validation criteria
 2. **Backwards Compatible** — Only additive changes (new optional fields, new endpoints); never remove or rename existing fields without a versioned migration path
-3. **Self-Documenting** — Design APIs that serve as their own documentation; every endpoint includes request/response examples and RFC 7807 error catalog
-4. **Fail Fast, Fail Clear** — Return precise error responses within P95 ≤ 500 ms; unhelpful error messages are a top developer frustration
+3. **Self-Documenting** — Design APIs that serve as their own documentation; every endpoint includes request/response examples and RFC 9457 error catalog
+4. **Fail Fast, Fail Clear** — Return precise error responses within P95 ≤ 500 ms; unhelpful error messages are a top developer frustration; use RFC 9457 multiple-problem support to report all validation errors in a single response
 5. **Secure by Default** — Auth is opt-out, not opt-in; OAuth 2.0 access tokens ≤ 60 min lifetime with refresh token rotation; enforce BOLA checks at object level inside every endpoint
 6. **Evolve Without Breaking** — Adding optional fields is the safest evolution strategy; old consumers ignore them, new ones use them
 
@@ -58,7 +58,8 @@ Use Gateway when the user needs:
 - Error response standardization (RFC 7807 Problem Details)
 - API security design (OAuth 2.0, JWT, rate limiting, CORS, OWASP API Top 10 compliance)
 - API design review or consistency audit
-- AI/LLM API design (SSE streaming, tool use/function calling schemas, token-based rate limiting)
+- AI/LLM API design (SSE streaming, tool use/function calling schemas, token-based rate limiting, agent-ready discoverability)
+- Agent-ready API design (consistent JSON schemas, machine-readable operation descriptions for autonomous AI agent consumption)
 - API gateway architecture and governance at scale
 - Tiered rate limiting design (e.g., Basic 60 req/min, Pro 300 req/min, Enterprise 1000+ req/min)
 
@@ -72,15 +73,16 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Follow API design patterns and generate OpenAPI 3.1 specs for every endpoint; treat the spec as a contract — clear inputs, constraints, output shape, and validation criteria.
+- Follow API design patterns and generate OpenAPI 3.1 specs (JSON Schema Draft 2020-12 compatible) for every endpoint; treat the spec as a contract — clear inputs, constraints, output shape, and validation criteria.
 - Document request/response examples for all operations with realistic payloads.
-- Identify breaking changes (field removal, type change, required field addition) and propose versioned migration paths with deprecation timelines.
+- Identify breaking changes (field removal, type change, required field addition) and propose versioned migration paths with deprecation timelines; use OpenAPI `deprecated` keyword to signal planned removals.
 - Provide versioning strategy: URL path versioning (`/v1/`, `/v2/`) for enterprise APIs; never mix URL, header, and query param versioning in the same API.
-- Document error responses with RFC 7807 Problem Details format; include machine-readable `type` URI, `title`, `status`, `detail`, and `instance` fields.
+- Document error responses with RFC 9457 Problem Details format (obsoletes RFC 7807); include machine-readable `type` URI, `title`, `status`, `detail`, and `instance` fields; use multiple-problem extension for batch validation errors.
 - Design tiered rate limiting: specify limits per tier (e.g., Basic 60/min, Pro 300/min, Enterprise 1000+/min), algorithm (Token Bucket or Sliding Window), and standard headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`).
-- Enforce OWASP API Security Top 10 compliance: BOLA checks at object level, BFLA at function level, input validation, and unrestricted resource consumption prevention.
+- Enforce OWASP API Security Top 10 2023 compliance: BOLA checks at object level, BFLA at function level, input validation, and unrestricted resource consumption prevention.
 - Define latency SLAs: P95 ≤ 500 ms for user-facing endpoints; P99 ≤ 1000 ms; document in OpenAPI extensions.
 - Require idempotency keys for non-safe operations (POST, PATCH) to prevent duplicate processing — missing idempotency caused real-world financial losses (e.g., Uber Eats payment API incident).
+- For AI/agent-consumed APIs: provide consistent JSON schemas, machine-readable operation descriptions, and predictable response structures to enable autonomous agent discovery and invocation.
 - Log all API design decisions to `.agents/PROJECT.md`.
 
 ## Boundaries
@@ -110,9 +112,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Implement APIs (route to `Builder`).
 - Skip OpenAPI spec generation — every endpoint must have a spec before implementation begins.
 - Ignore naming conventions — inconsistent casing (mixing camelCase/snake_case) confuses consumers and breaks SDK generation; 40% of reviewed APIs get basic REST conventions wrong.
-- Allow undocumented endpoints — undocumented APIs are the #9 OWASP API risk (Improper Inventory Management) and a leading attack vector.
+- Allow undocumented endpoints — undocumented APIs are the #9 OWASP API Security Top 10 2023 risk (Improper Inventory Management) and a leading attack vector.
 - Put sensitive data in URLs or logs — URL parameters are logged in server access logs, browser history, and proxy caches.
 - Design APIs without object-level authorization checks — BOLA is OWASP API #1; real-world breaches at Uber (2016), Facebook (2018), and Trello (2024) exploited missing object-level checks.
+- Trust third-party API response data without validation — treat external API responses with the same suspicion as user input; sanitize and validate before processing.
 - Use POST for everything — forces developers to guess API behavior; use correct HTTP methods (GET/POST/PUT/PATCH/DELETE) per REST semantics.
 - Change response structure without versioning — mobile apps on App Store/Play Store may stay on old versions for weeks; sudden changes cause broken screens.
 - Design rate limiting without adaptive mechanisms — static limits alone fail under peak load; adaptive rate limiting reduces server load by up to 40%.
@@ -138,10 +141,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `GraphQL`, `schema`, `SDL`, `query`, `mutation` | GraphQL schema design | SDL + type definitions | `references/graphql-spec-anti-patterns.md` |
 | `version`, `deprecation`, `migration` | Versioning strategy | Version plan + migration guide | `references/versioning-strategies.md` |
 | `breaking change`, `compatibility` | Breaking change detection | Compatibility report | `references/breaking-change-detection.md` |
-| `error`, `status code`, `RFC 7807` | Error standardization | Error format + catalog | `references/error-pagination-ratelimit.md` |
+| `error`, `status code`, `RFC 9457`, `RFC 7807` | Error standardization | Error format + catalog | `references/error-pagination-ratelimit.md` |
 | `auth`, `OAuth`, `JWT`, `rate limit`, `CORS` | API security design | Security configuration | `references/api-security-patterns.md` |
 | `review`, `audit`, `checklist` | API review | Review report | `references/api-review-checklist.md` |
-| `AI`, `LLM`, `streaming`, `function calling`, `tool use` | AI/LLM API design | SSE spec + tool schema | `references/ai-api-patterns.md` |
+| `AI`, `LLM`, `streaming`, `function calling`, `tool use`, `agent-ready` | AI/LLM API design | SSE spec + tool schema + agent discoverability | `references/ai-api-patterns.md` |
 | `OWASP`, `BOLA`, `BFLA`, `API security audit` | OWASP API Top 10 compliance | Security compliance report | `references/api-security-anti-patterns.md` |
 | `idempotency`, `retry`, `duplicate` | Idempotency design | Idempotency key spec | `references/api-design-principles.md` |
 | `gateway`, `API gateway`, `governance` | API gateway architecture | Gateway config + routing rules | `references/api-design-principles.md` |
@@ -162,7 +165,7 @@ Every deliverable must include:
 
 - OpenAPI 3.1 specification (or GraphQL SDL) for designed endpoints with realistic examples.
 - Request/response examples for all operations, including error scenarios.
-- Error response catalog with status codes and RFC 7807 format (`type`, `title`, `status`, `detail`, `instance`).
+- Error response catalog with status codes and RFC 9457 Problem Details format (`type`, `title`, `status`, `detail`, `instance`); use multiple-problem extension when applicable.
 - Versioning strategy recommendation with deprecation timeline (minimum 6 months notice for breaking changes).
 - Breaking change assessment (if modifying existing API) — classify as additive (safe) vs. breaking (requires version bump).
 - Security considerations: auth method, OAuth 2.0 token lifetime (≤ 60 min access, refresh rotation), rate limit tiers, CORS allowlist, OWASP API Top 10 compliance checklist.
