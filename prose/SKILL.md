@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - onboarding_copy: Progressive disclosure templates, first-run experience text, feature introduction
 - accessibility_text: Alt text rules, ARIA label patterns (aria-labelledby preferred), screen reader text, live region announcements, WCAG 2.2 SC 2.5.3 compliance
 - ai_context_copy: AI output framing, confidence indicators, anti-anthropomorphism, AI state text, AI disclosure labels (EU AI Act compliance)
+- content_system_design: Content principles and decision frameworks over pattern libraries, string file architecture, terminology governance at scale
 - content_audit: Existing copy analysis, consistency scoring, terminology standardization, Flesch-Kincaid readability metrics, tone alignment measurement
 - i18n_preparation: Translation-ready copy, string format standards, glossary management, aria-label translation limitations awareness
 
@@ -46,6 +47,7 @@ Use Prose when the user needs:
 - accessibility text (alt text, ARIA labels, screen reader text, live region announcements)
 - AI context copy (output framing, confidence indicators, AI state text)
 - AI disclosure labels (EU AI Act transparency, "Made with AI" labels, C2PA content provenance)
+- content system design (principles-based content frameworks, string file architecture, terminology governance)
 - content audit (consistency scoring, terminology standardization, readability metrics)
 - i18n-ready copy preparation
 
@@ -71,6 +73,8 @@ Route elsewhere when the task is primarily:
 - Test copy in context (not isolation); UI placement affects meaning.
 - Use existing terminology consistently across the application.
 - For AI-generated content surfaces, apply EU AI Act disclosure taxonomy: "fully AI-generated" vs "AI-assisted" with standardized labels.
+- Build content systems on principles and decision frameworks, not just pattern libraries — pattern samples break at scale, edge cases, and AI-generated content.
+- Before adding AI chatbots or assistants, ensure the underlying content architecture is sound; AI amplifies existing content problems (misrouting, imprecise answers).
 
 ## Boundaries
 
@@ -105,6 +109,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use toast notifications for critical errors — they auto-dismiss before users can read recovery instructions.
 - Rely only on color to indicate errors — always complement with icon + text (WCAG 1.4.1 Use of Color).
 - Use `aria-label` for text that needs translation — browser translation tools (Chrome, Edge, Firefox) do not translate `aria-label` attribute values.
+- Apply `aria-label` to non-interactive elements (div, span without a role) — assistive technology ignores it on generic elements, creating false confidence in accessibility.
+- Deploy AI chatbots over broken content architecture — AI amplifies misrouting, imprecise answers, and user frustration when the underlying information structure is flawed.
 
 ## Workflow
 
@@ -126,7 +132,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **3. VOICE** | "voice guidelines", "tone", "style guide" | Analyze brand/product → define voice attributes → create tone spectrum → document |
 | **4. ONBOARD** | "onboarding", "first-run", "welcome" | Map user journey → identify guidance points → write progressive disclosure copy |
 | **5. A11Y** | "accessibility text", "screen reader", "ARIA" | Audit interactive elements → write ARIA labels (prefer aria-labelledby) → create screen reader text → verify WCAG 2.2 SC 2.5.3 |
-| **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first" | Write headlines before layout → apply 30% cut rule → align copy with composition |
+| **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first", "content system" | Write content wireframes before visual design → define principles and decision frameworks → apply 30% cut rule → align copy with composition |
 | **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft disclosure labels → apply EU AI Act taxonomy → verify platform compliance |
 
 ## Output Routing
@@ -141,6 +147,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `AI copy`, `confidence indicator`, `AI state` | AI context copy | AI-aware UI text | `references/microcopy-patterns.md` |
 | `AI disclosure`, `made with AI`, `AI label`, `transparency` | AI disclosure labeling | Disclosure labels + taxonomy (fully AI-generated / AI-assisted) | `references/microcopy-patterns.md` |
 | `audit`, `consistency`, `terminology` | Content audit | Audit report with readability scores | `references/voice-tone-framework.md` |
+| `content system`, `content framework`, `string architecture`, `terminology governance` | Content system design | Principles doc + decision framework | `references/content-strategy-design.md` |
 | unclear copy request | Microcopy design (default) | UI text with context | `references/microcopy-patterns.md` |
 
 Routing rules:
