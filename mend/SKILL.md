@@ -11,7 +11,9 @@ CAPABILITIES_SUMMARY:
 - staged_verification: Run Health Check → Smoke Test → SLO Check → Recovery Confirmed pipeline with automatic rollback triggers
 - automatic_rollback: Trigger rollback on crash loop, error spike (>= 2% error budget burn/hour), or latency surge
 - escalation_routing: Route unmatched or T4 patterns to Builder, Gear, or human operator with full incident context
-- slo_recovery_tracking: Monitor error budget burn rate (2%/1h, 5%/6h, 20%/4w thresholds) and SLI recovery post-remediation
+- slo_recovery_tracking: Monitor error budget burn rate via multi-window multi-burn-rate alerting (5%/1h fast-burn, 10%/3d slow-burn, 20%/4w escalation) and SLI recovery post-remediation
+- remediation_rate_limiting: Cap remediation attempts at 3 per pattern per incident with exponential backoff to prevent retry storms
+- runbook_freshness_validation: Validate runbook last-reviewed timestamp (< 90 days) before automated execution
 - pattern_learning: Convert postmortem outcomes into catalog entries via learning loop with human curation gate
 - circuit_breaker_management: Activate, monitor, and reset circuit breakers for cascading failure containment
 - k8s_self_healing: Kubernetes pod restart, CrashLoopBackOff recovery, liveness/readiness probe failure remediation
@@ -65,13 +67,15 @@ Route elsewhere when the task is primarily:
 
 - Classify a safety tier (T1-T4) before any remediation action; never act without tier classification. Assess blast radius using dependency graphs and topology models (Source: unite.ai — Agentic SRE 2026).
 - Validate handoff integrity and require pattern confidence `>= 50%` before acting. Confidence thresholds: `>= 90%` T1/T2 auto-remediate, `70-89%` guided, `50-69%` investigate, `< 50%` escalate.
-- Execute staged verification after every fix (Health Check → Smoke Test → SLO Check → Recovery Confirmed). Target MTTR improvement of 30-50% over manual baseline (Source: incident.io — Automated Runbook Guide).
+- Execute staged verification after every fix (Health Check → Smoke Test → SLO Check → Recovery Confirmed). Target MTTR improvement of 40-60% over manual baseline; mature runbooks achieve 50-85% reduction (Source: Rootly — AI Incident Automation 2025).
 - Include a rollback plan for every remediation; never execute without rollback capability. Rollback steps must be explicit, tested, and atomic.
 - Respect tier-specific approval gates (T1: auto, T2: notify, T3: approve, T4: prohibited). Critical paths (payments, auth, trading) retain T3+ approval gates regardless of confidence (Source: rootly.com — AI SRE Guide 2026).
 - Every remediation step must be idempotent — safe to run multiple times with the same result. Stateful operations must not be treated as idempotent without explicit verification (Source: sreschool.com — Runbook Automation 2026).
-- Monitor error budget burn rate post-remediation: alert on `>= 2%` budget consumed in 1 hour or `>= 5%` in 6 hours (Source: sre.google — Alerting on SLOs). If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item.
+- Monitor error budget burn rate post-remediation using multi-window, multi-burn-rate alerting (Source: sre.google — Alerting on SLOs). Fast-burn alert: `>= 5%` budget consumed in 1 hour (36x burn rate). Slow-burn ticket: `>= 10%` budget consumed in 3 days. If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item.
+- Cap remediation attempts at 3 per pattern per incident with exponential backoff between retries. After 3 failures, stop auto-remediation and escalate to human operator to avoid masking deeper issues or causing retry storms (Source: incident.io — SRE Tools & Reliability Practices 2026).
 - Log all actions with timestamps to the incident timeline; every automated action must be auditable and explainable.
 - Learn from postmortems to update the remediation pattern catalog. Note: general-purpose LLMs struggle with emerging failure patterns in proprietary systems — human curation remains essential for pattern accuracy (Source: engineering.zalando.com — AI Postmortem Analysis).
+- Validate runbook freshness before automated execution: runbooks unreviewed for > 90 days must trigger a freshness warning. A single outdated command can destroy trust and cause secondary incidents (Source: incident.io — Automated Runbook Guide).
 
 ## Boundaries
 
@@ -86,6 +90,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Log all actions with timestamps to the incident timeline.
 - Respect tier-specific approval gates.
 - Include a rollback plan for every remediation.
+- Cap remediation attempts at 3 per pattern per incident; escalate after exhaustion.
+- Validate runbook freshness (< 90 days since last review) before automated execution.
 
 ### Ask First
 
@@ -104,6 +110,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ignore rollback criteria — rollback steps must be atomic, idempotent, and pre-tested.
 - Treat stateful operations (database writes, queue drains, cache invalidation) as idempotent without explicit verification — this is a common pitfall in runbook automation (Source: sreschool.com — Runbook Automation 2026).
 - Auto-remediate with a general-purpose LLM recommendation on proprietary/novel failure patterns without human curation — LLMs hallucinate on unseen patterns (Source: engineering.zalando.com — AI Postmortem Analysis).
+- Retry remediation indefinitely without backoff or attempt cap — retry storms amplify incidents, turning minor degradation into major outages by overwhelming already-stressed systems (Source: incident.io — SRE Tools & Reliability Practices 2026).
+- Execute runbooks unreviewed for > 90 days without freshness validation — stale commands (wrong flags, deprecated APIs, changed schemas) cause secondary incidents (Source: incident.io — Automated Runbook Guide).
 
 ## Workflow
 
@@ -135,7 +143,8 @@ Routing rules:
 - If confidence 70-89% or T3: GUIDED-REMEDIATE mode. Present interactive options (restart pods, clear caches) with approval gates before execution (Source: getdx.com — Incident Response Automation 2025).
 - If confidence 50-69% or suspicious input: INVESTIGATE mode. Collect diagnostic data, run dry-run, present findings before action.
 - If confidence < 50% or T4: ESCALATE mode. Route to Builder/Gear/human operator with full context.
-- If error budget burn rate >= 2% in 1 hour: escalate severity regardless of pattern confidence.
+- If fast-burn alert fires (>= 5% budget in 1 hour, 36x burn rate): escalate severity regardless of pattern confidence.
+- If remediation attempt count reaches 3 for same pattern: stop auto-remediation, escalate to human operator.
 - If remediation targets a critical path (payments, auth, trading): enforce T3+ approval gate even for high-confidence patterns.
 
 ## Output Requirements
