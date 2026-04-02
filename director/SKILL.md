@@ -8,7 +8,8 @@ CAPABILITIES_SUMMARY:
 - demo_video_production: Record feature demos using Playwright E2E test framework with storytelling pacing
 - scenario_design: Design demo scenarios with audience-aware pacing, pain-first narrative, and Aha-moment focus
 - recording_configuration: Configure slowMo, viewport, codecs, and device profiles for consistent output
-- overlay_annotation: Inject overlays and annotations at key moments for explanatory content
+- screencast_api: Use page.screencast API for precise start/stop recording control over specific flow segments
+- overlay_annotation: Inject overlays and annotations at key moments; leverage built-in action annotations for element highlighting
 - multi_device_recording: Record desktop, mobile, and tablet variants with viewport-specific settings
 - test_data_preparation: Prepare realistic demo data and auth state for clean recordings
 - video_output: Produce .webm baseline with optional MP4/GIF conversion
@@ -70,8 +71,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 - Design the scenario around audience and story flow.
 - Use `slowMo (300-1500ms)` for demo recordings.
-- Prepare realistic demo data with clean state.
-- Add overlays or annotations for key moments.
+- Prepare realistic demo data with clean state; use `storageState` to skip login flows.
+- Add overlays or annotations for key moments; prefer Playwright's built-in action annotations (element highlighting + action titles) before building custom overlays.
+- Set explicit `video.size` in config — Playwright defaults to viewport scaled to 800×800, which may downscale unexpectedly.
 - Verify the video plays cleanly before delivery.
 - Log activity to `.agents/PROJECT.md`.
 - Use locator-based waits for state changes (not arbitrary timeouts).
@@ -89,7 +91,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Record without a scenario-design step.
 - Expose internal implementation details.
 - Modify application state permanently during recording.
-- Try to demo every feature in a single video — one Aha moment per demo.
+- Try to demo every feature in a single video — one Aha moment per demo. Feature-dumping causes stakeholders to check out within minutes, especially in enterprise contexts with 6+ viewers on a call.
 - Optimize only for desktop viewing when the audience consumes on mobile.
 - Ship a demo without audio/narration quality check when audio is included.
 
@@ -131,11 +133,13 @@ Routing rules:
 
 ## Critical Constraints
 
+- Recording API: use `recordVideo` context option for full-session capture; use `page.screencast` API (Playwright 1.48+) for precise start/stop control over specific flow segments.
 - `slowMo`: use `300-1500ms`; common anchors are `300` quick demo, `500` standard, `600-700` form-heavy, `800-1000` presentation pace.
 - Wait strategy: use locator-based waits for state changes; use `waitForTimeout()` only for deliberate pacing pauses.
-- Resolution/output defaults: `1280x720` is the standard baseline; preserve device-specific variants for desktop, mobile, and tablet.
+- Action annotations: Playwright's built-in action annotations highlight interacted elements and display action titles. Configure `position` ('top-left', 'top', etc.), `duration`, and `fontSize` before resorting to custom overlay injection.
+- Resolution/output defaults: `1280x720` is the standard baseline viewport; always set `video.size` explicitly — Playwright defaults to viewport scaled to 800×800, which silently downscales larger viewports.
 - Output formats: record `WebM` by default; generate `MP4` for broad playback; generate `GIF` only when inline docs or README embedding need it.
-- Duration guidance: under `30s` for simple operations, `30-60s` for standard feature demos, `60-120s` for complex flows; split demos above `120s`.
+- Duration guidance: under `30s` for simple operations, `30-60s` for standard feature demos, `60-120s` for complex flows; split demos above `120s`. Self-guided embeds: 6-8 steps for email/social, 8-15 steps for website.
 - Quality gates: keep the `/65` scorecard and treat `< 30` as a reshoot signal.
 - Video file naming: use descriptive names with timestamps (Playwright generates random filenames by default — always rename after recording).
 - Platform adaptation: social media demos need faster pacing and captions; website demos can be more detailed.
