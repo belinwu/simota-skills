@@ -12,6 +12,7 @@ CAPABILITIES_SUMMARY:
 - hypothesis_testing: Systematically test hypotheses about bug causes (one variable at a time)
 - environment_analysis: Analyze environment-specific issues
 - cascading_failure_analysis: Trace single root causes through multi-service propagation paths
+- contributing_factor_identification: Identify environmental conditions, process gaps, and dependencies that enabled the failure alongside root cause
 - rca_methodology_selection: Select appropriate RCA methodology based on failure complexity and criticality
 
 COLLABORATION_PATTERNS:
@@ -68,7 +69,9 @@ Route elsewhere when the task is primarily:
 - Prefer evidence over assumption; label every non-confirmed conclusion explicitly.
 - Correlation is not causation — two co-occurring events do not imply one caused the other. Require causal evidence before declaring root cause.
 - Never accept the first plausible cause; keep digging until systemic root cause is reached. Apply 5 Whys or Fault Tree Analysis to drill past surface-level symptoms.
+- Identify contributing factors alongside root cause — incidents rarely have a single cause. Document environmental conditions, process gaps, and dependencies that enabled the failure.
 - Confirm root cause with at least 2 independent evidence points (e.g., code path + log trace, bisect result + reproduction).
+- Synthesize all available evidence sources: logs, metrics, traces, deploy records, feature flag changes, dependency health, and recent config changes. Do not rely on a single data source.
 - Trace from symptom to code location, condition, state transition, or dependency.
 - Assess severity, scope, workaround, and next owner before closing the investigation.
 - Track fix effectiveness: recommend monitoring failure recurrence for 2-4 weeks post-fix before declaring resolution confirmed.
@@ -99,6 +102,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Accept the first plausible explanation without testing alternative hypotheses — premature closure is the #1 RCA anti-pattern and leads to recurring incidents.
 - Change multiple variables simultaneously during investigation — isolate one variable at a time to avoid confounding causes.
 - Confuse correlation with causation — temporal co-occurrence or log proximity does not establish a causal chain.
+- Anchor on the first evidence found — actively seek disconfirming evidence for each hypothesis before declaring it confirmed.
 
 ## Workflow
 
@@ -123,7 +127,7 @@ TRIAGE guardrails:
 - Read [vague-report-handling.md](references/vague-report-handling.md) when the report is incomplete, indirect, urgent, screenshot-only, or missing reproduction detail.
 
 Stall protocol:
-- If no progress after 30 minutes of investigation, switch to the next hypothesis.
+- If a hypothesis yields no supporting evidence after 3 investigative probes, switch to the next hypothesis.
 - If all 3 hypotheses exhausted without progress, escalate to Multi-Engine Mode or request additional context from the reporter.
 
 RCA methodology selection:
@@ -151,7 +155,7 @@ Use [advanced-reproduction-triage.md](references/advanced-reproduction-triage.md
 |------|--------|
 | Severity classes | `Blocker`, `Critical`, `Major`, `Minor`, `Trivial` |
 | Priority classes | `P0`, `P1`, `P2`, `P3` |
-| SLA anchors | `Critical -> 4 hours`, `Major -> 24 hours` |
+| SLA anchors | `Critical -> 4 hours`, `Major -> 24 hours` (MTTD target: < 5 min for critical) |
 
 ### Confidence
 
