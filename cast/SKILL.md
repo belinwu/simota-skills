@@ -13,7 +13,8 @@ CAPABILITIES_SUMMARY:
 - persona_voice: TTS-based persona voice generation with engine selection and fallback
 - confidence_scoring: Evidence-based confidence with source weights, validation tiers, and decay rules
 - behavioral_validation: Stated-vs-actual behavior comparison with per-attribute validation scores
-- predictive_evolution: Leading-indicator analysis for proactive persona drift anticipation
+- predictive_evolution: Leading-indicator analysis for proactive persona drift anticipation (≥5% behavioral shift trigger)
+- ai_bias_audit: Detection of mode collapse, bias laundering, over-sanitization, and people-pleasing in AI-generated personas
 
 COLLABORATION_PATTERNS:
 - Researcher -> Cast: Interview or research findings for persona creation/evolution
@@ -46,7 +47,7 @@ Use Cast when the task requires any of the following:
 - Adapt personas for Echo, Spark, Retain, Compete, or Accord.
 - Generate persona voice output with TTS.
 - Create proto-personas from market data or assumptions as rapid initial hypotheses.
-- Run predictive evolution analysis using leading indicators (engagement shifts, cohort trends).
+- Run predictive evolution analysis using leading indicators (engagement shifts, cohort trends, behavioral drift `≥ 5%`).
 
 Route elsewhere when the task is primarily:
 - user research design or interview planning: `Researcher`
@@ -97,7 +98,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Overwrite an existing persona without logging the change.
 - Change Core Identity through evolution. Create a new persona instead.
 - Present AI-only personas as validated. LLM-generated personas are proto-personas by default; they require human research validation to reach `active` status (Synthetic Persona Fallacy).
-- Trust AI-generated sentiment at face value. LLMs exhibit positive sentiment bias and value-skew (e.g., over-weighting environmental factors); audit AI outputs for systematic bias before incorporation.
+- Trust AI-generated sentiment at face value. LLMs exhibit positive sentiment bias (people-pleasing), value-skew, and over-sanitization of negative attributes; audit AI outputs for systematic bias before incorporation.
+- Use naive prompting for diverse persona generation. Without structured diversity dimensions and explicit trait sampling, LLMs produce mode-collapsed populations clustered around stereotypical responses.
+- Treat AI-generated persona language as evidence of real user empathy. LLMs reflect dominant training-data voices (bias laundering); fluent empathetic language can mask systematic underrepresentation of marginalized perspectives.
 
 ## Operating Modes
 
@@ -158,12 +161,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Source contributions: Interview `+0.30` > Session replay `+0.25` > Feedback `+0.20` = Analytics `+0.20` > Code `+0.15` > README `+0.10`.
 - Validation contribution: Interview `+0.20`, Survey `+0.15`, ML clustering `+0.20`, triangulation bonus `+0.10`.
-- AI-only generation is capped at `0.50` (proto-persona tier). Promotion to `active` requires at least one human-research validation stream.
-- Audit AI-generated attributes for systematic bias (positive sentiment skew, value-skew) before incorporation.
+- AI-only generation is capped at `0.50` (proto-persona tier). Promotion to `active` requires at least one human-research validation stream. Experts rate hallucinations (5.94/7) and over-sanitization (5.82/7) as top AI-persona risks.
+- Audit AI-generated attributes for systematic bias (positive sentiment skew, value-skew, over-sanitization of negative traits, bias laundering) before incorporation.
 - Decay:
   - `30+` days: `-0.05/week`
   - `60+` days: `-0.10/week`
   - `90+` days: freeze current confidence and recommend archival review
+- Drift trigger: when behavioral metrics shift `≥ 5%` across multiple tracked features, trigger EVOLVE re-evaluation. Use leading indicators (engagement shifts, cohort trends) over lagging metrics.
 
 ### Audit Gates
 
