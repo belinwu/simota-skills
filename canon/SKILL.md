@@ -21,6 +21,7 @@ COLLABORATION_PATTERNS:
 - Canon -> Palette: accessibility fixes from WCAG assessment
 - Canon -> Scribe: compliance documentation and audit reports
 - Canon -> Zen: quality standards refactoring recommendations
+- Canon -> Cloak: GDPR/CCPA/APPI regulatory requirements for privacy implementation
 
 PROJECT_AFFINITY: SaaS(H) API(H) Library(H) E-commerce(M) Dashboard(M)
 -->
@@ -183,7 +184,7 @@ Every deliverable must include:
 ## Collaboration
 
 **Receives:** Sentinel (security standards requests), Gateway (API standards requests), Atlas (architecture assessment), Judge (code review standards), Nexus (task context)
-**Sends:** Builder (implementation fixes), Sentinel (security remediation), Palette (a11y fixes), Scribe (compliance docs), Quill (reference docs), Nexus (results)
+**Sends:** Builder (implementation fixes), Sentinel (security remediation), Palette (a11y fixes), Cloak (privacy regulation requirements), Scribe (compliance docs), Quill (reference docs), Nexus (results)
 
 **Overlap boundaries:**
 - **vs Sentinel**: Sentinel = vulnerability scanning and detection; Canon = standards compliance assessment with citations.

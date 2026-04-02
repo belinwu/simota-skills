@@ -375,34 +375,18 @@ graph LR
 ## Cookie Consent Implementation
 
 ```typescript
-// Cookie categories aligned with consent purposes
-const COOKIE_CATEGORIES = {
-  necessary: {
-    cookies: ['session_id', 'csrf_token', 'consent_preferences'],
-    description: 'Essential for site functionality',
-    canDisable: false,
-  },
-  analytics: {
-    cookies: ['_ga', '_gid', '_gat'],
-    description: 'Help us understand site usage',
-    canDisable: true,
-  },
-  marketing: {
-    cookies: ['_fbp', '_gcl_au', 'ads_session_id'],
-    description: 'Used for targeted advertising',
-    canDisable: true,
-  },
-} as const;
+// Block third-party scripts until consent (GDPR-compliant)
+// Pattern: register SDK configs, load only after consent check
+interface TrackingSDK {
+  category: keyof ConsentPreferences;
+  scriptUrl: string;
+}
 
-// Block cookies until consent (GDPR-compliant)
-function initializeTracking(consent: ConsentPreferences): void {
-  // Only load analytics SDK if consented
-  if (consent.analytics) {
-    loadScript('https://www.googletagmanager.com/gtag/js');
-  }
-  // Only load marketing pixels if consented
-  if (consent.marketing) {
-    loadScript('https://connect.facebook.net/en_US/fbevents.js');
+function initializeTracking(consent: ConsentPreferences, sdks: TrackingSDK[]): void {
+  for (const sdk of sdks) {
+    if (consent[sdk.category]) {
+      loadScript(sdk.scriptUrl);
+    }
   }
 }
 ```

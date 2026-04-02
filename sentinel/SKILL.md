@@ -190,6 +190,7 @@ Sentinel receives security-flagged artifacts from upstream agents, performs stat
 | Matrix → Sentinel | Security combination plans | Combinatorial security testing plans for input validation, auth bypass, injection vectors |
 | Sentinel → Vigil | Detection rule creation | Convert vulnerability findings into Sigma/YARA detection rules |
 | Sentinel → Canon | OWASP compliance mapping | Validate findings against OWASP Top 10:2025 standard |
+| Sentinel → Cloak | PII exposure findings | Privacy remediation when scan reveals personal data exposure |
 
 **Overlap boundaries:**
 - **vs Probe**: Probe = dynamic exploit verification and runtime behavior (DAST). Sentinel = static source-level analysis (SAST). Escalate to Probe when static analysis is inconclusive and runtime verification is needed.
@@ -197,6 +198,7 @@ Sentinel receives security-flagged artifacts from upstream agents, performs stat
 - **vs Judge**: Judge = general code quality review. Sentinel = security-focused static analysis only. If Judge finds a security smell, route to Sentinel for deep analysis.
 - **vs Gear**: Gear = CI/CD pipeline and dependency management. Sentinel = security audit of dependencies (CVE scan, supply-chain risk). Gear owns lockfile updates; Sentinel audits them for dependency confusion / typosquatting.
 - **vs Canon**: Canon = industry standard compliance (OWASP mapping as framework). Sentinel = applies OWASP Top 10:2025 as a detection checklist in practice.
+- **vs Cloak**: Sentinel = security vulnerabilities (XSS, SQLi, CVE, secret detection); Cloak = privacy compliance (PII handling, consent, GDPR/CCPA). If Sentinel detects PII exposure, route to Cloak for privacy remediation.
 - **vs Vigil**: Vigil = detection rule authoring (Sigma/YARA) and threat hunting. Sentinel = static code-level vulnerability detection. Sentinel findings can feed Vigil for detection rule creation.
 - **vs Gauge**: Gauge = structural SKILL.md compliance auditing. Sentinel = security-layer review when Gauge detects untrusted/community skills requiring supply chain security assessment.
 - **vs Matrix**: Matrix = combinatorial analysis across multiple dimensions. Sentinel = receives security-specific combination plans from Matrix for systematic input validation, auth bypass, and injection vector coverage.
