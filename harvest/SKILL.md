@@ -5,7 +5,7 @@ description: GitHub PR情報の収集・レポート生成・作業報告書作�
 
 <!--
 CAPABILITIES_SUMMARY:
-- pr_collection: Collect PR data with repository, period, author, label, state filters using per_page=100 optimization
+- pr_collection: Collect PR data with repository, period, author, label, state filters using per_page=100 and --paginate optimization
 - summary_reports: Generate weekly/monthly PR activity summaries with DORA-aligned metrics
 - individual_reports: Create individual contributor work reports with effort ranges (never rankings)
 - release_notes: Generate changelog-style release notes between tags or periods via conventional commit mapping
@@ -13,8 +13,8 @@ CAPABILITIES_SUMMARY:
 - quality_trends: Merge Judge feedback into PR activity trend reports with DORA+SPACE dimensions
 - retrospective_voice: Add narrative commentary to sprint or release reports
 - pr_size_analysis: Classify PRs by size thresholds (200/400/1000 LOC) and flag review efficiency risks
-- dora_metrics: Collect deployment frequency, lead time, change failure rate, MTTR from PR/release data
-- review_cycle_analysis: Track first-response time, review cycle time, and comment resolution rate
+- dora_metrics: Collect throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) from PR/release data per DORA 2024
+- review_cycle_analysis: Track first-response time, review cycle time (from ready-for-review, not PR creation), comment resolution rate, and rubber-stamping detection
 
 COLLABORATION_PATTERNS:
 - Guardian -> Harvest: Release prep
@@ -49,8 +49,9 @@ Use Harvest when you need any of the following:
 - Quality trend reports that merge `Judge` feedback into PR activity
 - Narrative retrospectives or release commentary based on PR history
 - PR size distribution analysis (200 LOC target, 400 LOC ceiling benchmarks)
-- DORA metric collection (deployment frequency, lead time, change failure rate, MTTR) from PR/release data
-- Review cycle time and first-response-time reporting
+- DORA metric collection: throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) per DORA 2024 reorganization
+- Review cycle time reporting — measure from "ready for review" timestamp, not PR creation (draft PRs inflate cycle time otherwise)
+- Rubber-stamping detection: flag when review lead time is low and uncorrelated with PR size
 
 Route elsewhere when the task is primarily:
 - Real-time dashboard implementation → Pulse
@@ -68,9 +69,12 @@ Route elsewhere when the task is primarily:
 - Prefer cached results only when they are still valid for the requested report freshness.
 - Treat work-hour outputs as estimates, not productivity scores. Always present effort as ranges (e.g., 2-4h) with explicit caveats — never as precise figures implying measurement accuracy.
 - Apply Goodhart's Law guardrail: never present LOC, commit count, or PR count as direct productivity rankings. Always pair quantity metrics with quality context (review comments, revert rate, defect density).
-- Set `per_page=100` for all `gh` API calls to reduce request count by ~70% vs the default 30-item pages. Use conditional requests (ETags / `If-Modified-Since`) when cache freshness allows.
+- Set `per_page=100` for all `gh` REST API calls to reduce request count by ~70% vs the default 30-item pages. For multi-page fetches, use `gh api --paginate` for automatic pagination. Use conditional requests (ETags / `If-Modified-Since`) when cache freshness allows.
 - PR size benchmarks: flag PRs >400 LOC as "large" and >1,000 LOC as "oversized" in reports, citing 70% lower defect detection rate for oversized PRs.
 - First-response-time benchmark: flag when median first review response exceeds 1 business day (Google's standard).
+- Cycle time accuracy: measure review cycle time from the "ready for review" timestamp (not PR creation), because draft PRs inflate the metric.
+- Rubber-stamping detection: when median review lead time is low and uncorrelated with PR size, flag potential rubber-stamping — reviewers may not be actually reviewing code.
+- AI-inflated metrics caveat: AI coding assistants can inflate individual PR counts (+98% more PRs merged per DORA 2025) while organizational delivery metrics stay flat. Reports must note this context when comparing pre/post-AI periods.
 
 ## Boundaries
 
@@ -98,6 +102,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Present LOC, commits, or PR count as direct productivity rankings — Goodhart's Law: when a measure becomes a target, it ceases to be a good measure. Teams will game PR count by splitting trivially, inflating lines with formatting, or cherry-picking easy fixes
 - Report individual developer "scores" or stack-rank contributors — causes mass-gaming and attrition (McKinsey developer productivity controversy, 2023)
 - Use DORA metrics in isolation without SPACE context — leads to the "Velocity Trap" where teams optimize delivery speed at the cost of burnout and collaboration quality
+- Compare pre-AI and post-AI period metrics without noting AI tooling adoption — AI inflates individual output metrics while organizational throughput stays flat (DORA 2025), making direct comparison misleading
 
 ## Report Modes
 
@@ -118,7 +123,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Phase | Goal | Required actions  Read |
 |-------|------|------------------------|
 | `SURVEY` | Lock scope | Confirm repository, period, filters, audience, and report mode  `references/` |
-| `COLLECT` | Gather data | Use `gh` commands with `per_page=100`, health checks, rate-limit monitoring, and cache policy appropriate to the request  `references/` |
+| `COLLECT` | Gather data | Use `gh` commands with `per_page=100` and `--paginate`, health checks, rate-limit monitoring, and cache policy appropriate to the request  `references/` |
 | `ANALYZE` | Turn raw PRs into signal | Aggregate categories, sizes, timelines, effort estimates, quality, and trends. Apply PR size benchmarks (200/400/1000 LOC thresholds)  `references/` |
 | `REPORT` | Build the artifact | Select the correct template, preserve caveats, pair quantity metrics with quality context, and keep filenames consistent  `references/` |
 | `VERIFY` | Ensure report trustworthiness | Check completeness, validate no productivity rankings leak through, note degradations, and attach next actions  `references/` |
@@ -127,16 +132,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Decision | Rule |
 |----------|------|
-| Large queries | `>100` PRs requires ask-first because of performance and rate-limit risk. GitHub REST API allows 5,000 req/hr authenticated; a 500-PR fetch with `per_page=100` costs only 5 requests |
+| Large queries | `>100` PRs requires ask-first because of performance and rate-limit risk. GitHub REST API allows 5,000 req/hr authenticated; a 500-PR fetch with `per_page=100` and `--paginate` costs only 5 requests |
 | Cache freshness | Use `prefer_cache` by default; switch to `force_refresh` only when freshness matters more than API cost. Use ETags/`If-Modified-Since` headers to minimize API consumption |
 | Graceful degradation | If fields are missing, lower report quality explicitly rather than fabricating data. Label degraded sections clearly |
 | Work-hour calculation | Start with the implemented baseline formula, then apply optional refinement layers only when the audience needs them. Always output as ranges (e.g., 2-4h), never as single precise values |
 | PR size classification | Small: ≤200 LOC, Medium: 201-400 LOC, Large: 401-1000 LOC, Oversized: >1000 LOC. Flag oversized PRs with 70% lower defect detection rate warning |
 | First response time | Flag when median exceeds 1 business day. Google benchmark: max 1 business day for first review response |
-| Release notes | Use Keep a Changelog categories and highlight breaking or deprecated changes. Automate via conventional commit type mapping (feat→Added, fix→Fixed, etc.) |
-| Quality metrics | Include context and actions; avoid vanity metrics and rankings. Combine DORA delivery metrics with SPACE satisfaction/well-being signals when available |
+| Cycle time measurement | Use "ready for review" timestamp as start, not PR creation. Draft PRs distort cycle time if measured from creation |
+| Rubber-stamping | Flag when median review lead time is low and uncorrelated with PR size — indicates reviewers may not be reading code |
+| Release notes | Use Keep a Changelog categories and highlight breaking or deprecated changes. Automate via conventional commit type mapping (feat→Added, fix→Fixed, etc.). User-focused: explain what users gain, not raw commit messages |
+| Quality metrics | Include context and actions; avoid vanity metrics and rankings. Combine DORA throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) with SPACE satisfaction/well-being signals |
+| AI-period comparison | When comparing metrics across periods with different AI adoption levels, note that AI inflates individual PR counts while org delivery stays flat (DORA 2025) |
 | PDF export | Prefer repo scripts and ASCII fallback over brittle ad-hoc export commands |
-| Pagination strategy | Always use `per_page=100`. For GraphQL, use cursor-based pagination with `first` ≤100. Store ETags per page, not per collection |
+| Pagination strategy | Always use `per_page=100` with `gh api --paginate` for automatic multi-page fetches. For GraphQL, use cursor-based pagination with `first` ≤100. Store ETags per page, not per collection |
 
 ## Routing And Handoffs
 
