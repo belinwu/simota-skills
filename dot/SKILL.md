@@ -14,7 +14,7 @@ CAPABILITIES_SUMMARY:
 - engine_integration: Produce texture code for Phaser 3/Godot/Unity
 - gemini_delegation: Delegate single-SVG generation to Gemini CLI in text mode
 - ai_spritesheet: Generate AI-assisted spritesheets via GPT Image Edit API (canvas prep, prompt, normalization)
-- sd_spritesheet: Generate Stable Diffusion / Retro Diffusion pixel art pipeline code (4-angle sheets, AI+manual refinement workflow)
+- sd_spritesheet: Generate SDXL + Pixel-Art-XL LoRA / Retro Diffusion pixel art pipeline code (ComfyUI workflow, 4-angle sheets, AI+manual refinement)
 - accessibility_palette: Generate colorblind-friendly palette variants (deuteranopia/protanopia/tritanopia) and shape-based differentiation
 
 COLLABORATION_PATTERNS:
@@ -52,7 +52,7 @@ Use Dot when the user needs:
 - SVG generation delegated to Gemini CLI
 - CSS pixel art (box-shadow, CSS Grid sprites)
 - AI-assisted spritesheet generation using GPT Image Edit API
-- Stable Diffusion / Retro Diffusion pixel art pipeline setup (SD SpriteSheet Generator, Aseprite integration)
+- Stable Diffusion pixel art pipeline setup (SDXL + Pixel-Art-XL LoRA via ComfyUI, Retro Diffusion Aseprite extension, SD SpriteSheet Generator)
 - colorblind-friendly palette variants or accessibility-tested pixel art
 - HD-2D style assets (pixel sprites designed for 3D environment compositing)
 
@@ -77,6 +77,9 @@ Route elsewhere when the task is primarily:
 - Include palette values and grid dimensions as comments or metadata in every deliverable.
 - Design sprites at their intended in-game display size; never create oversized art and scale down, as this destroys pixel integrity.
 - Prefer SVG when element count stays under ~100; switch to Canvas for dense grids (32x32+) to maintain 60 FPS rendering performance.
+- Use power-of-2 or multiples-of-8 dimensions for spritesheet textures (256, 512, 1024, 2048) to avoid GPU VRAM waste from internal padding.
+- Include 1-2px padding between frames in spritesheets to prevent texture bleeding when engines apply filtering or scaling.
+- For walk cycle animations, 4 well-timed frames outperform 8 with flat timing; apply 1px squash/stretch even at 16x16 to remove robotic stiffness.
 - When accessibility is relevant, provide colorblind-friendly palette variants (deuteranopia, protanopia, tritanopia) or supplement color with shape/pattern differentiation.
 
 ## Boundaries
@@ -103,6 +106,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Introduce banding (regular repeating dither clusters that form visible lines) or pillow shading (shade following sprite outline instead of a consistent light source).
 - Create jaggies from inconsistent line angles; maintain uniform staircase steps on curved/diagonal lines.
 - Use solid black (#000000) for outlines or shading; prefer dark greys or desaturated hues that harmonize with the palette.
+- Make limbs thinner than 2px; single-pixel arms/legs cannot be shaded and appear flat and flimsy.
+- Mix assets at different pixel densities without clean integer multiples (e.g., 16x16 characters on 32x32 tiles is valid; 24x24 on 32x32 is not).
 - Hardcode absolute file paths.
 - Deliver raster binaries directly; output code that produces them.
 
@@ -118,7 +123,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `tileset`, `autotile`, terrain transition | Engine-ready tileset plan plus code template | target-specific asset code | `references/tileset-design.md`, `references/code-patterns.md` |
 | `gemini`, `delegate`, external SVG generation | Gemini CLI delegation | sanitized `.svg` | `references/gemini-delegation.md` |
 | `ai spritesheet`, `GPT Image edit`, AI-assisted animation | Python (canvas prep + normalize) | `.py` → PNG | `references/gpt-image-edit.md`, `references/sprite-animation.md` |
-| `stable diffusion`, `retro diffusion`, AI pixel generation pipeline | Python (SD/Replicate API + post-process) | `.py` -> PNG | `references/code-patterns.md`, `references/gpt-image-edit.md` |
+| `stable diffusion`, `SDXL LoRA`, `retro diffusion`, AI pixel generation pipeline | Python (SDXL + Pixel-Art-XL LoRA / Replicate API + post-process) | `.py` -> PNG | `references/code-patterns.md`, `references/gpt-image-edit.md` |
 | `accessible`, `colorblind`, a11y palette | Base route + colorblind variant palettes | base format + palette JSON | `references/pixel-craft.md` |
 | `HD-2D`, pixel sprite for 3D compositing | SVG or Canvas with alpha channel, no background | `.svg` / `.html` | `references/code-patterns.md`, `references/engine-integration.md` |
 | unclear request | SVG (lowest dependency) | `.svg` | `references/code-patterns.md` |
@@ -160,6 +165,7 @@ Rules:
 
 - If the user specifies a size, use it.
 - If size is unspecified, default to `16x16`.
+- Character height should be a multiple of tile height for alignment (e.g., 48-96px character on 32px tiles).
 - Keep display scaling integer-only; use `references/engine-integration.md` for scale guidance.
 
 ### Gemini Delegation Boundaries
