@@ -6,24 +6,29 @@ description: DBスキーマ設計・マイグレーション作成・ER図設計
 <!--
 CAPABILITIES_SUMMARY:
 - data_modeling: Design normalized database schemas and ER diagrams
-- migration_generation: Create database migration scripts
-- index_design: Design optimal index strategies
+- migration_generation: Create zero-downtime migration scripts using expand-contract pattern
+- index_design: Design optimal index strategies including HNSW/IVFFlat for vector workloads
 - relation_definition: Define table relationships and constraints
-- schema_review: Review and optimize existing database schemas
+- schema_review: Review and optimize existing schemas against known anti-patterns (EAV, God Table, lock cascades)
 - multi_db_support: Support PostgreSQL, MySQL, SQLite, MongoDB schema patterns
+- multi_tenant: Design tenant isolation via RLS, schema-per-tenant, or partitioning strategies
+- vector_schema: Design pgvector columns and indexes for AI/embedding workloads
 
 COLLABORATION_PATTERNS:
 - Builder -> Schema: Data requirements
 - Atlas -> Schema: Architecture context
 - Gateway -> Schema: Api data needs
+- Lens -> Schema: Codebase query pattern analysis
+- Sentinel -> Schema: Security audit for RLS/tenant isolation
 - Schema -> Builder: Migration code
 - Schema -> Tuner: Query optimization
 - Schema -> Canvas: Er diagrams
 - Schema -> Quill: Schema documentation
+- Schema -> Radar: Migration regression test cases
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Builder, Atlas, Gateway
-- OUTPUT: Builder, Tuner, Canvas, Quill
+- INPUT: Builder, Atlas, Gateway, Lens, Sentinel
+- OUTPUT: Builder, Tuner, Canvas, Quill, Radar
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(L)
 -->
@@ -41,10 +46,15 @@ Use Schema when the task needs one or more of the following:
 - Database-specific SQL patterns for PostgreSQL, MySQL, or SQLite
 - ORM schema output for Prisma, TypeORM, or Drizzle
 - Mermaid `erDiagram` output for documentation
-
+- Multi-tenant schema design (shared-schema with RLS, schema-per-tenant, or database-per-tenant)
+- Vector/embedding column design with pgvector (HNSW/IVFFlat index selection)
+- Expand-contract migration planning for zero-downtime DDL
 
 Route elsewhere when the task is primarily:
-- a task better handled by another agent per `_common/BOUNDARIES.md`
+- Query execution tuning or `EXPLAIN ANALYZE` optimization → `Tuner`
+- API endpoint or resource lifecycle design → `Gateway`
+- Architecture decomposition or service boundary decisions → `Atlas`
+- Application-level ORM query implementation → `Builder`
 
 ## Core Contract
 
@@ -53,6 +63,9 @@ Route elsewhere when the task is primarily:
 - Design from access patterns, data integrity, and expected growth.
 - Prefer reversible migrations. If a change is destructive or irreversible, mark it and require backup/confirmation.
 - Keep schema decisions explicit: PK/FK, delete behavior, constraints, indexes, and naming.
+- Set `lock_timeout` (e.g., 5–10 s) and `statement_timeout` before any DDL in production — a single long-running query can block an `ALTER TABLE`, and while it waits every new query queues behind it, cascading into a full outage.
+- Up to 70 % of database performance issues stem from design flaws, not hardware — invest time in modeling before scaling infrastructure.
+- For multi-tenant schemas, include `tenant_id` in every tenant-scoped table **and** in composite foreign keys to prevent cross-tenant data leakage.
 
 ## Boundaries
 
@@ -76,6 +89,10 @@ Route elsewhere when the task is primarily:
 - Ignore foreign-key relationships when the domain has referential integrity
 - Design without considering query patterns
 - Use reserved words as identifiers
+- Run `ALTER TABLE` without `lock_timeout` in production — one blocked DDL can cascade into full outage by queuing all subsequent queries on the table
+- Use the EAV (Entity-Attribute-Value) pattern for core domain data — it sacrifices type safety, indexing, and query simplicity; real-world cases show queries degrading from milliseconds to minutes as metadata grows
+- Create "God Tables" (100+ columns spanning multiple domains) — they cause row-level lock contention across unrelated feature teams, leading to stop-the-world pauses at scale
+- Store multi-valued data as delimited strings (e.g., `"a;b;c"`) — violates 1NF, prevents indexing, and makes queries fragile
 
 ## Workflow
 
@@ -111,9 +128,12 @@ Route elsewhere when the task is primarily:
 
 - Use `CREATE INDEX CONCURRENTLY` on PostgreSQL for production index creation.
 - Treat `DROP COLUMN` and `DROP TABLE` as backup-required.
-- Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation.
+- Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation. Consider pgroll for automated expand-contract with versioned schemas and data backfills.
+- On PostgreSQL 18+, leverage `ALTER TABLE ... ADD COLUMN ... NOT NULL NOT VALID` directly to simplify the expand phase for new non-nullable columns.
 - Prefer DB-native data types over generic `VARCHAR` or `TEXT` for dates, money, booleans, UUIDs, JSON, and status fields.
 - Support Prisma, TypeORM, and Drizzle when framework output is requested, but keep SQL semantics authoritative.
+- For vector/AI workloads (< 10 M vectors), prefer pgvector within PostgreSQL for ACID compliance and hybrid search. Use HNSW index (`m=16`, `ef_construction=64`) for recall-performance balance; use IVFFlat for datasets > 1 M vectors where approximate results are acceptable. Monitor P99 search latency; alert on > 2× baseline.
+- For multi-tenant schemas, place `tenant_id` as the leading column in composite primary keys and create a B-tree index on `tenant_id`. Use PostgreSQL RLS as a safety net alongside application-level filtering. For large tenants, consider declarative list or hash partitioning by `tenant_id`.
 
 ## Routing And Handoffs
 
@@ -130,7 +150,12 @@ Route elsewhere when the task is primarily:
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| default request | Standard Schema workflow | analysis / recommendation | `references/` |
+| new table / relationship design | Model → Migrate → Validate | DDL, ER diagram, migration plan | `references/normalization-guide.md` |
+| migration for existing schema | Expand-contract safety analysis | ordered migration steps, rollback path, lock-risk notes | `references/migration-patterns.md` |
+| index design / slow query schema | Access-pattern-driven index selection | index plan with type rationale | `references/index-strategies.md` |
+| multi-tenant schema | Isolation strategy evaluation | RLS policies, partitioning plan, tenant_id design | `references/multi-tenant-patterns.md` |
+| vector / AI embedding schema | pgvector column + index design | vector column DDL, HNSW/IVF config, distance operator guidance | `references/advanced-patterns.md` |
+| anti-pattern review | Schema audit against known anti-patterns | findings with severity and fix recommendations | `references/schema-design-anti-patterns.md` |
 | complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
 | unclear request | Clarify scope and route | scoped analysis | `references/` |
 
@@ -176,6 +201,7 @@ Schema receives data requirements and architectural context from upstream agents
 | Atlas → Schema | `ATLAS_TO_SCHEMA` | Architecture context and service boundaries |
 | Gateway → Schema | `GATEWAY_TO_SCHEMA` | API data needs and resource lifecycle |
 | Lens → Schema | `LENS_TO_SCHEMA` | Codebase query pattern analysis |
+| Sentinel → Schema | `SENTINEL_TO_SCHEMA` | Security audit findings for RLS policies, tenant isolation gaps |
 | Schema → Builder | `SCHEMA_TO_BUILDER` | Table definitions, migration order, framework mapping |
 | Schema → Tuner | `SCHEMA_TO_TUNER` | Query patterns, index plan, table sizes, lock notes |
 | Schema → Canvas | `SCHEMA_TO_CANVAS_HANDOFF` | Entities, relationships, cardinality, PK/FK labels |
@@ -191,6 +217,7 @@ Schema receives data requirements and architectural context from upstream agents
 | Gateway | Table structure that backs API resources | API specification, request/response shape, endpoint design |
 | Atlas | Logical data model, table-level service ownership | Service decomposition, ADR/RFC for architecture decisions |
 | Scribe | Schema documentation (data dictionary, ER diagram docs) | Implementation specification, API docs, code comments |
+| Sentinel | RLS policy design, tenant isolation schema patterns | Application-level security audit, secret detection, CVE scanning |
 
 ## Reference Map
 
