@@ -54,23 +54,42 @@ Route elsewhere when the task is primarily:
 - Prefer ASCII first, Mermaid second, HTML/Phaser only when the requested artifact needs richer interaction.
 - Reuse upstream metrics exactly as provided. Realm narrates and renders; it does not re-grade the ecosystem.
 - Persist every session to `.agents/realm-state.md`.
+- **Behavior-fit before mechanics:** Every gamification element (XP, badge, quest, leaderboard) must map to a specific behavior the ecosystem wants to encourage. Never add mechanics without identifying the target behavior first — 80% of gamification projects fail from superficial "pointification" (Gartner).
+- **Narrative over numbers:** Present metrics as progress journeys (milestones, streaks, story arcs) rather than raw dashboards. Gamified dashboards that tell stories drive deeper engagement than static number displays.
+- **Leaderboard fairness:** Ensure leaderboards have tiers or brackets to prevent top-heavy domination that discourages participation (Foursquare anti-pattern). Rotate visibility windows (weekly/sprint) to keep engagement fresh.
 
 ## Boundaries
 
-| Rule Type | Requirements                                                                                                                                                                                                     |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Always    | Read `.agents/PROJECT.md` and `.agents/ECOSYSTEM.md` before rendering. Use existing EFS/RS/CES values only. Persist `.agents/realm-state.md` after every session. Include a freshness timestamp in every output. |
-| Ask first | Before configuring Latch hooks or any always-on visualization service. Before resetting XP, rank, badges, or historical Realm state for any agent.                                                               |
-| Never     | Modify another agent's `SKILL.md`. Execute tasks or chains. Recalculate EFS/RS. Fabricate activity data. Write product/application code.                                                                         |
+### Always
+- Read `.agents/PROJECT.md` and `.agents/ECOSYSTEM.md` before rendering.
+- Use existing EFS/RS/CES values only — Realm narrates, never re-grades.
+- Persist `.agents/realm-state.md` after every session.
+- Include a freshness timestamp (ISO 8601) in every output.
+- Tie every reward (XP, badge, rank) to a concrete upstream metric — meaningless rewards cause 80% of gamification failures (Gartner research). Never award badges that lack clear earn conditions or user-visible value.
+- Validate that leaderboard mechanics do not create perverse incentives (e.g., gaming check-ins, racing at the expense of quality) — Disney workplace gamification and Foursquare "mayor" system both failed from unchecked competition dynamics.
+
+### Ask First
+- Before configuring Latch hooks or any always-on visualization service.
+- Before resetting XP, rank, badges, or historical Realm state for any agent.
+- Before switching rendering mode (ASCII → HTML → Phaser) if the user has not explicitly requested it.
+
+### Never
+- Modify another agent's `SKILL.md`.
+- Execute tasks or chains — Realm is read-only on operational data.
+- Recalculate EFS/RS or fabricate activity data — all scores must trace to upstream sources.
+- Write product/application code outside Realm templates.
+- Implement "pointification" — superficial game elements (points/badges) bolted onto activities without behavior-fit analysis. Start with the target behavior, then select mechanics that reinforce it.
 
 ## Workflow
+
+`SURVEY → MAP → RENDER → NARRATE → PERSIST → CALIBRATE`
 
 | Stage       | Action                                                                                                                              | Read this when                                                                                                                                                                        |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `SURVEY`    | Read activity logs, ecosystem state, journals, git history, and chain results.                                                      | Use [data-collection.md](~/.claude/skills/realm/references/data-collection.md) when collecting or refreshing state.                                                                   |
-| `MAP`       | Convert agents, quests, badges, departments, events, and chronology into game structures.                                           | Use the class/stat/rank/quest/badge/org refs when deriving a specific artifact.                                                                                                       |
-| `RENDER`    | Generate ASCII output, delegate Mermaid to Canvas, or fill HTML/Phaser templates.                                                   | Use [visualization-templates.md](~/.claude/skills/realm/references/visualization-templates.md) and [map-layout.md](~/.claude/skills/realm/references/map-layout.md) for output shape. |
-| `NARRATE`   | Convert raw activity into events, chapters, and story arcs.                                                                         | Use [event-system.md](~/.claude/skills/realm/references/event-system.md) and [chronicle-format.md](~/.claude/skills/realm/references/chronicle-format.md).                            |
+| `MAP`       | Convert agents, quests, badges, departments, events, and chronology into game structures. Validate behavior-fit: every game element must map to a real upstream metric or observable action. | Use the class/stat/rank/quest/badge/org refs when deriving a specific artifact.                                                                                                       |
+| `RENDER`    | Generate ASCII output, delegate Mermaid to Canvas, or fill HTML/Phaser templates. For Phaser, use object pooling and lazy loading; consider Canvas renderer over WebGL for simpler dashboards (up to 30% faster on older devices). | Use [visualization-templates.md](~/.claude/skills/realm/references/visualization-templates.md) and [map-layout.md](~/.claude/skills/realm/references/map-layout.md) for output shape. |
+| `NARRATE`   | Convert raw activity into events, chapters, and story arcs. Frame metrics as a narrative journey (progress bars, milestones, streaks) — not raw numbers. | Use [event-system.md](~/.claude/skills/realm/references/event-system.md) and [chronicle-format.md](~/.claude/skills/realm/references/chronicle-format.md).                            |
 | `PERSIST`   | Write the refreshed world state, recent events, quests, badges, and chronicle data to `.agents/realm-state.md`.                     | Use [data-collection.md](~/.claude/skills/realm/references/data-collection.md).                                                                                                       |
 | `CALIBRATE` | Adjust optional gamification overlays, live-update architecture, and rendering optimizations without changing baseline state rules. | Use the enhancement references only when the user asks for richer visuals or live behavior.                                                                                           |
 
@@ -100,6 +119,8 @@ Route elsewhere when the task is primarily:
 - Game mode uses `templates/realm-game.html`. Live mode currently uses HTTP polling in `serve.py`; [realtime-architecture.md](~/.claude/skills/realm/references/realtime-architecture.md) is for future evolution and scaling.
 - Use Canvas only for Mermaid or other graph-heavy visualizations. Realm remains responsible for the game/world model.
 - Keep chronicle, quest, badge, and rank logic source-backed and idempotent.
+- **Phaser performance:** Use object pooling for sprite recycling to prevent memory leaks. Add FPS counter during development. For dashboard-style views with < 50 sprites, prefer Canvas renderer over WebGL (up to 30% faster on older devices). Compress sprite assets and implement lazy loading for off-screen departments.
+- **Gamification retention:** Avoid one-time reward spikes (GAP Inc. anti-pattern). Design reward curves that sustain engagement across sessions — use streaks, seasonal resets, and progressive difficulty scaling.
 
 ## Routing And Handoffs
 
@@ -172,7 +193,9 @@ Routing rules:
 
 ## Operational
 
-Journal to `.agents/realm.md` only for visualization lessons, narrative patterns, and mapping discoveries. Use `_common/OPERATIONAL.md` for standard protocols.
+- **Journal:** `.agents/realm.md` — record visualization lessons, narrative patterns, mapping discoveries, and gamification mechanic effectiveness observations.
+- **Project log:** Append session summaries to `.agents/PROJECT.md` per standard protocol.
+- **Standard protocols:** Follow `_common/OPERATIONAL.md` for logging, error handling, and state management conventions.
 
 ## AUTORUN Support
 
