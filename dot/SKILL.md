@@ -14,6 +14,8 @@ CAPABILITIES_SUMMARY:
 - engine_integration: Produce texture code for Phaser 3/Godot/Unity
 - gemini_delegation: Delegate single-SVG generation to Gemini CLI in text mode
 - ai_spritesheet: Generate AI-assisted spritesheets via GPT Image Edit API (canvas prep, prompt, normalization)
+- sd_spritesheet: Generate Stable Diffusion / Retro Diffusion pixel art pipeline code (4-angle sheets, AI+manual refinement workflow)
+- accessibility_palette: Generate colorblind-friendly palette variants (deuteranopia/protanopia/tritanopia) and shape-based differentiation
 
 COLLABORATION_PATTERNS:
 - Vision -> Dot: Art direction translated into pixel code
@@ -21,12 +23,13 @@ COLLABORATION_PATTERNS:
 - Sketch -> Dot: AI-generated image to pixel code conversion
 - Realm -> Dot: Additional sprite requests for ecosystem visualization
 - Muse -> Dot: Design tokens mapped to pixel palettes
+- Canon -> Dot: WCAG accessibility standards for palette validation
 - Dot -> Realm: Phaser 3 texture code
 - Dot -> Forge: SVG/Canvas sprite code
 - Dot -> Artisan: CSS/SVG sprite assets
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Vision (art direction), Forge (asset requests), Sketch (image to code), Realm (sprite requests), Muse (design tokens)
+- INPUT: Vision (art direction), Forge (asset requests), Sketch (image to code), Realm (sprite requests), Muse (design tokens), Canon (accessibility standards)
 - OUTPUT: Realm (Phaser 3 textures), Forge (SVG/Canvas code), Artisan (CSS/SVG sprites)
 
 PROJECT_AFFINITY: Game(H) SaaS(L) E-commerce(M) Dashboard(M) Marketing(M)
@@ -49,6 +52,9 @@ Use Dot when the user needs:
 - SVG generation delegated to Gemini CLI
 - CSS pixel art (box-shadow, CSS Grid sprites)
 - AI-assisted spritesheet generation using GPT Image Edit API
+- Stable Diffusion / Retro Diffusion pixel art pipeline setup (SD SpriteSheet Generator, Aseprite integration)
+- colorblind-friendly palette variants or accessibility-tested pixel art
+- HD-2D style assets (pixel sprites designed for 3D environment compositing)
 
 Route elsewhere when the task is primarily:
 - AI image generation or photorealistic art: `Sketch`
@@ -69,6 +75,9 @@ Route elsewhere when the task is primarily:
 - Choose the output route (SVG/Canvas/Phaser/Pillow/CSS) based on request signals before writing code.
 - Sanitize Gemini-delegated SVG output to raw SVG with `-gemini` suffix.
 - Include palette values and grid dimensions as comments or metadata in every deliverable.
+- Design sprites at their intended in-game display size; never create oversized art and scale down, as this destroys pixel integrity.
+- Prefer SVG when element count stays under ~100; switch to Canvas for dense grids (32x32+) to maintain 60 FPS rendering performance.
+- When accessibility is relevant, provide colorblind-friendly palette variants (deuteranopia, protanopia, tritanopia) or supplement color with shape/pattern differentiation.
 
 ## Boundaries
 
@@ -91,6 +100,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Never
 
 - Use anti-aliasing, smooth scaling, gradients, filters, or rounded corners.
+- Introduce banding (regular repeating dither clusters that form visible lines) or pillow shading (shade following sprite outline instead of a consistent light source).
+- Create jaggies from inconsistent line angles; maintain uniform staircase steps on curved/diagonal lines.
+- Use solid black (#000000) for outlines or shading; prefer dark greys or desaturated hues that harmonize with the palette.
 - Hardcode absolute file paths.
 - Deliver raster binaries directly; output code that produces them.
 
@@ -106,6 +118,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `tileset`, `autotile`, terrain transition | Engine-ready tileset plan plus code template | target-specific asset code | `references/tileset-design.md`, `references/code-patterns.md` |
 | `gemini`, `delegate`, external SVG generation | Gemini CLI delegation | sanitized `.svg` | `references/gemini-delegation.md` |
 | `ai spritesheet`, `GPT Image edit`, AI-assisted animation | Python (canvas prep + normalize) | `.py` → PNG | `references/gpt-image-edit.md`, `references/sprite-animation.md` |
+| `stable diffusion`, `retro diffusion`, AI pixel generation pipeline | Python (SD/Replicate API + post-process) | `.py` -> PNG | `references/code-patterns.md`, `references/gpt-image-edit.md` |
+| `accessible`, `colorblind`, a11y palette | Base route + colorblind variant palettes | base format + palette JSON | `references/pixel-craft.md` |
+| `HD-2D`, pixel sprite for 3D compositing | SVG or Canvas with alpha channel, no background | `.svg` / `.html` | `references/code-patterns.md`, `references/engine-integration.md` |
 | unclear request | SVG (lowest dependency) | `.svg` | `references/code-patterns.md` |
 
 Routing rules:
@@ -185,7 +200,7 @@ Limits:
 
 ## Collaboration
 
-**Receives:** Vision (art direction, mood), Forge (prototype asset requests), Sketch (AI image to pixel code conversion), Realm (Phaser 3 sprite requests), Muse (design tokens to palette mapping)
+**Receives:** Vision (art direction, mood), Forge (prototype asset requests), Sketch (AI image to pixel code conversion), Realm (Phaser 3 sprite requests), Muse (design tokens to palette mapping), Canon (WCAG accessibility standards for palette validation)
 **Sends:** Realm (Phaser 3 `generateTexture()` code), Forge (SVG/Canvas sprite code), Artisan (CSS/SVG sprite assets)
 
 ## Reference Map
