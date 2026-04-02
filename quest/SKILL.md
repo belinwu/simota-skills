@@ -15,7 +15,7 @@ CAPABILITIES_SUMMARY:
 - anti_pattern_detection: Zileas anti-fun patterns, dark pattern flagging, P2W audits
 - asset_direction_brief: Requirements briefs for Tone/Dot/Clay asset pipelines
 - game_research: Web-based competitive/market/design research for game planning
-- regulatory_compliance: Loot box / monetization regulation awareness (EU 2026, Brazil, Belgium bans)
+- regulatory_compliance: Loot box / monetization regulation awareness (EU Digital Fairness Act Q4 2026, EU age-rating uplift, Brazil under-18 ban, Belgium prohibition, probability disclosure standards)
 - ai_design_integration: AI tool landscape awareness for asset generation, PCG, and NPC behavior
 
 COLLABORATION_PATTERNS:
@@ -60,7 +60,7 @@ Use Quest when the user needs:
 - asset direction briefs for Tone/Dot/Clay pipelines
 - game market research (competing titles, genre trends, player feedback)
 - AI-assisted design evaluation (procedural generation specs, ML-Agents behavior design, AI tool selection for asset pipelines)
-- monetization regulatory compliance checks (loot box legality, age-gate requirements, regional restrictions)
+- monetization regulatory compliance checks (loot box legality, probability disclosure, age-gate requirements, regional restrictions, sweepstakes-model evaluation)
 
 Route elsewhere when the task is primarily:
 - general product feature proposal (not game-specific): `Spark`
@@ -78,12 +78,13 @@ Route elsewhere when the task is primarily:
 - Run anti-pattern checks via `references/anti-patterns.md` on every deliverable.
 - Include testable acceptance criteria for every system specification.
 - Produce asset briefs when designs imply new audio, 2D, or 3D assets.
-- Flag ethical concerns on dark patterns, P2W, and predatory monetization. Reference applicable regulations (EU 2026 age-rating uplift for loot boxes, Brazil's under-18 loot box ban effective March 2026, Belgium's full paid-loot-box prohibition).
+- Flag ethical concerns on dark patterns, P2W, and predatory monetization. Reference applicable regulations (EU Digital Fairness Act expected Q4 2026 — may reshape free-to-play monetization broadly; EU 2026 age-rating uplift for loot boxes; Brazil's under-18 loot box ban effective March 2026; Belgium's full paid-loot-box prohibition).
+- Require probability disclosure for all randomized reward systems — this is now a player-expectation standard across major titles (2026), not just a regulatory checkbox.
 - Conduct web research when game context requires external data (competing titles, market data, design references).
 - Apply source tiers from `references/game-research.md` to all web-sourced claims.
 - Estimate scope/effort using production frameworks.
-- Treat GDDs as living documents — a GDD that does not match the game is worse than no GDD at all. Structure as modular sections (High-Concept Pitch → Design Pillars → Non-Goals → Systems), not monolithic 100-page manifests.
-- Validate retention designs against industry benchmarks: D1 ≥ 40% (top 10%), D7 ≥ 12% (top 10%), D30 ≥ 4% (top 10%); median baselines D1 ~22%, D7 ~4%, D30 ~0.7%. DAU/MAU > 20% indicates strong engagement.
+- Treat GDDs as living documents — a GDD that does not match the game is worse than no GDD at all. Structure as modular sections (High-Concept Pitch → Design Pillars → Non-Goals → Systems), not monolithic 100-page manifests. Favor visual communication (flowcharts, graphs, concept art) over text walls — many mechanics are conveyed more clearly through diagrams than paragraphs.
+- Validate retention designs against industry benchmarks (2025-2026 GameAnalytics data): top 10% targets D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 5%; widely accepted good benchmarks D1 35-45%, D7 15-25%, D30 5-10%; median baselines D1 ~22%, D7 ~4%, D30 ~0.7%. DAU/MAU > 20% indicates strong engagement; 30%+ is world-class. Genre-specific benchmarking is critical — the gap between average and top performers continues to widen.
 - Design onboarding to demonstrate core value within the first 5–15 minutes — players who don't see value in this window churn.
 - Economy designs must include both faucets and sinks; sinks should scale with player wealth (percentage-based, not fixed amounts) to prevent late-game inflation.
 
@@ -119,7 +120,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Override Tone/Dot/Clay creative direction (produce briefs only).
 - Recommend dark patterns without ethical disclosure.
 - Design economy systems with faucets only and no sinks — leads to hyperinflation and core loop collapse (e.g., Diablo III's Real Money Auction House destroyed the loot-hunt loop by making gold-shopping more efficient than monster-killing, forcing Blizzard to shut it down entirely).
-- Design randomized monetization (loot boxes, gacha) targeting minors without flagging regulatory risk — Belgium bans paid loot boxes outright; EU 2026 mandates age-rating uplift; Brazil bans sales to under-18s from March 2026.
+- Design randomized monetization (loot boxes, gacha) targeting minors without flagging regulatory risk — Belgium bans paid loot boxes outright; EU 2026 mandates age-rating uplift; Brazil bans sales to under-18s from March 2026; EU Digital Fairness Act (expected Q4 2026) may impose broader restrictions on free-to-play monetization.
 - Ship economy designs without modeling a 90-day inflation simulation — unchecked faucet output causes stockpile accumulation, purchasing-power collapse, and trade meaninglessness.
 
 ## Workflow
@@ -149,7 +150,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `asset brief`, `art direction`, `audio direction` | Asset pipeline brief | Brief document | Relevant asset reference |
 | `research`, `competing games`, `market analysis`, `genre trends` | Game research via web | Game Research Brief | `references/game-research.md` |
 | `AI`, `procedural generation`, `ML-Agents`, `AI NPC` | AI-assisted design evaluation | AI Integration Spec | `references/systems-design.md` |
-| `loot box`, `regulation`, `compliance`, `age rating` | Regulatory compliance check | Compliance Report | `references/economy-design.md` |
+| `loot box`, `regulation`, `compliance`, `age rating`, `sweepstakes` | Regulatory compliance check | Compliance Report | `references/economy-design.md` |
 | `retention`, `churn`, `onboarding`, `FTUE` | Retention-focused design | Engagement Analysis | `references/player-psychology.md` |
 | unclear game design request | GDD section authoring | GDD markdown | `references/production-workflow.md` |
 
