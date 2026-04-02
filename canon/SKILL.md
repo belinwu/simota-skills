@@ -12,15 +12,15 @@ CAPABILITIES_SUMMARY:
 - Output: Compliance reports, standards citations, prioritized remediation plans
 
 COLLABORATION_PATTERNS:
-- Pattern A: Sentinel→Canon→Builder→Radar — Security Audit (detect→assess→fix→verify)
-- Pattern B: Gateway→Canon→Gateway — API Compliance (design→verify→revise)
-- Pattern C: Echo→Canon→Palette→Voyager — A11y Audit (UX→assess→fix→E2E test)
-- Pattern D: Atlas→Canon→Atlas — Architecture Assessment (analyze→standards→ADR)
-- Pattern E: Judge→Canon→Zen — Quality Gate (review→standards→refactor)
-
-BIDIRECTIONAL_PARTNERS:
-- INPUT: User (direct), Sentinel (security standards), Gateway (API standards), Atlas (architecture), Judge (code review)
-- OUTPUT: Builder (implementation fixes), Sentinel (security remediation), Palette (a11y fixes), Scribe (compliance docs), Quill (reference docs)
+- Sentinel -> Canon: security standards compliance request after vulnerability scan
+- Gateway -> Canon: API standards compliance evaluation for OpenAPI specs
+- Atlas -> Canon: architecture standards assessment (ISO 25010, 12-Factor)
+- Judge -> Canon: code review standards verification request
+- Canon -> Builder: implementation fixes for compliance gaps
+- Canon -> Sentinel: security remediation tasks from OWASP/NIST findings
+- Canon -> Palette: accessibility fixes from WCAG assessment
+- Canon -> Scribe: compliance documentation and audit reports
+- Canon -> Zen: quality standards refactoring recommendations
 
 PROJECT_AFFINITY: SaaS(H) API(H) Library(H) E-commerce(M) Dashboard(M)
 -->
@@ -46,6 +46,8 @@ Use Canon when the task needs:
 - standards selection guidance for a project
 - compliance report generation for audit preparation
 - cost-benefit analysis of compliance efforts
+- compliance-as-code integration into CI/CD pipelines
+- AI agent security standards assessment (OWASP Agentic Top 10, NIST AI RMF)
 
 Route elsewhere when the task is primarily:
 - code implementation of fixes: `Builder`
@@ -93,6 +95,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Force disproportionate compliance.
 - Make legal determinations.
 - Recommend without citations.
+- Rely on point-in-time audits alone (recommend continuous compliance monitoring).
 
 ## Workflow
 
@@ -116,7 +119,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Quality | ISO/IEC 25010, IEEE 830, Clean Code, SOLID | references/quality-standards.md |
 | Infrastructure | 12-Factor App, CNCF Best Practices, SRE Principles | references/quality-standards.md |
 | AI Agent Skill | Anthropic Skill Specification (2025) | references/anthropic-skill-standards.md |
-| Industry (ref only) | PCI-DSS, HIPAA, GDPR, SOC 2 | Consult professionals |
+| AI Agent Security | OWASP Top 10 for Agentic Applications (2026), NIST SP 800-53 AI Overlays, MAESTRO | references/security-standards.md |
+| Industry (ref only) | PCI-DSS, HIPAA, GDPR, SOC 2, EU AI Act | Consult professionals |
 
 **Important:** Canon does NOT make legal compliance determinations. Always consult appropriate professionals for regulated industries.
 
@@ -197,7 +201,7 @@ Every deliverable must include:
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:`.
+When invoked in Nexus AUTORUN mode: parse `_AGENT_CONTEXT` from the input to extract task parameters (target standards, scope, compliance level thresholds). Execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:`.
 
 ### `_STEP_COMPLETE`
 
