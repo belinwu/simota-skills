@@ -14,7 +14,7 @@ CAPABILITIES_SUMMARY:
 - glossary_management: Domain term standardization and translator context comments
 - pseudo_localization: Pseudo-locale generation, CI integration, layout clipping detection
 - coverage_tracking: Translation coverage metrics, unused key detection, CI quality gates
-- continuous_localization: TMS integration via MCP, OTA delivery pipeline design
+- continuous_localization: TMS integration via MCP, OTA edge delivery, AI-powered translation pipeline design
 
 COLLABORATION_PATTERNS:
 - Pattern A: Feature i18n (Builder → Polyglot → Radar)
@@ -51,8 +51,10 @@ Use Polyglot when the user needs:
 - glossary management and translator context comments
 - i18n audit of existing codebase
 - pseudo-localization setup for automated i18n testing in CI
-- continuous localization pipeline design (TMS integration via MCP, OTA delivery)
+- continuous localization pipeline design (TMS integration via MCP, OTA edge delivery)
+- AI-powered translation pipeline evaluation and glossary-aware machine translation setup
 - translation coverage tracking and CI quality gates
+- scaling strategy for large projects (500+ keys, 6+ locales)
 
 Route elsewhere when the task is primarily:
 - UI component implementation: `Builder` or `Artisan`
@@ -67,13 +69,14 @@ Route elsewhere when the task is primarily:
 - Use the project's standard i18n library; never introduce a competing library.
 - Use interpolation for variables (never string concatenation — HSBC spent $10M rebranding after concatenated tagline "Assume Nothing" was mistranslated as "Do Nothing" across markets).
 - Keep keys organized and semantically nested (`feature.element.action`).
-- Use ICU MessageFormat (MF1) for all plurals, gender, and select patterns; evaluate MessageFormat 2.0 (MF2, shipped in ICU 75) for new projects needing advanced modularity.
+- Use ICU MessageFormat (MF1) for all plurals, gender, and select patterns; evaluate MessageFormat 2.0 (MF2, LDML 48 spec / Oct 2025) for new projects — JS implementation via `messageformat` monorepo, i18next integration via `i18next-mf2` plugin.
 - Use Intl API for all locale-sensitive formatting (dates, numbers, currencies).
 - Provide translator context comments for ambiguous strings — include screenshots or UI location metadata when key count exceeds 100.
 - Design UI containers for ≥ 40% text expansion (German/Finnish expand 30–40% vs English; Russian/Greek can reach 50%).
 - Require 100% translation coverage per locale before shipping; track coverage metrics per language in CI.
-- Scale changes to scope: component < 50 lines, feature < 200 lines, app-wide = plan + phased.
+- Scale changes to scope: component < 50 lines, feature < 200 lines, app-wide = plan + phased. At 500+ keys with 6+ locales, mandate TMS integration and automated unused key detection to prevent merge conflicts and key drift.
 - Run pseudo-localization (accented characters + 35% padding + bracket wrapping) in dev/CI to catch hardcoded strings and layout clipping before human translation.
+- For AI-powered translation: require glossary lock (domain terms must match approved glossary), human review for legal/safety-critical strings, and context metadata (UI location + max length) per string.
 
 ## Boundaries
 
@@ -81,13 +84,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Always
 
-- Use project's standard i18n library.
-- Use interpolation for variables (never concatenation).
-- Keep keys organized and nested (`home.hero.title`).
-- Use ICU message formats for plurals.
+- Use project's standard i18n library; use interpolation (never concatenation); use ICU message formats for plurals.
+- Keep keys semantically nested (`home.hero.title`); use Intl API for all locale-sensitive formatting.
 - Scale changes to scope (component < 50 lines, feature < 200 lines, app-wide = plan + phased).
-- Provide context comments for translators.
-- Use Intl API for all locale-sensitive formatting.
+- Provide context comments for translators (UI location + max character length for strings in constrained layouts).
+- Set `dir` attribute in HTML for base direction control — never use CSS alone for base direction (W3C i18n requirement).
 
 ### Ask First
 
@@ -105,6 +106,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Concatenate translated fragments — Facebook's Arabic AI mistranslated a concatenated greeting as "attack them," causing false arrests in Israel.
 - Use hardcoded locale in `toLocaleDateString('en-US')` — always derive from user preference or `navigator.language`.
 - Ship a locale with < 100% key coverage without explicit fallback chain configured.
+- Use AI/machine translation for legal, safety-critical, or regulated content without human review.
 
 ## Workflow
 
@@ -131,7 +133,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `i18n audit`, `check localization` | I18n audit of existing code | Audit report with gaps and recommendations | `references/library-setup.md` |
 | `pseudo-localization`, `pseudo-locale`, `i18n testing` | Pseudo-localization setup | Pseudo-locale config + CI integration | `references/library-setup.md` |
 | `translation coverage`, `missing keys`, `unused keys` | Coverage tracking and cleanup | Coverage report + dead key removal | `references/library-setup.md` |
-| `continuous localization`, `TMS`, `OTA` | Pipeline design | TMS integration config + OTA delivery setup | `references/library-setup.md` |
+| `continuous localization`, `TMS`, `OTA` | Pipeline design | TMS integration config + OTA edge delivery setup | `references/library-setup.md` |
+| `AI translation`, `machine translation`, `glossary` | AI-powered translation pipeline | Glossary-locked MT config + human review workflow | `references/library-setup.md` |
+| `scaling`, `500+ keys`, `merge conflicts` | Large-project i18n strategy | TMS integration + namespace splitting + unused key detection | `references/library-setup.md` |
 | unclear i18n request | String extraction (default) | Extracted translation files | `references/library-setup.md` |
 
 Routing rules:
@@ -191,7 +195,7 @@ Every deliverable must include:
 | SelectOrdinal | `{n, selectordinal, one {#st} two {#nd} ...}` | Ordinal numbers |
 | Nested | `{count, plural, =0 {Empty} other {{name} and # others}}` | Complex messages |
 
-> **MessageFormat 2.0 (MF2):** Shipped in ICU 75. Adds `.match`, `.local`, `.input` declarations and custom function registry for extensibility. JS implementation available via `messageformat` monorepo. Evaluate MF2 for new projects needing advanced formatting logic; MF1 remains standard for existing codebases.
+> **MessageFormat 2.0 (MF2):** LDML 48 spec (Oct 2025). Adds `.match`, `.local`, `.input` declarations and custom function registry. JS: `messageformat` monorepo; React: `mf2react`; i18next: `i18next-mf2` plugin. Evaluate MF2 for new projects; MF1 remains standard for existing codebases.
 
 > **Detail**: See `references/icu-message-format.md` for full patterns and key naming conventions.
 
