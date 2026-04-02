@@ -6,9 +6,9 @@ description: 堅牢なビジネスロジック・API統合・データモデル�
 <!--
 CAPABILITIES_SUMMARY:
 - type_safe_implementation: Type-safe business logic implementation (DDD patterns, always-valid domain model)
-- api_integration: API integration with retry, rate limiting, error handling
-- data_model_design: Data model design (Entity, Value Object with branded types, Aggregate Root)
-- validation: Validation implementation (Zod v4 schemas, Pydantic v2, guard clauses)
+- api_integration: API integration with retry (error categorization: 4xx/429/5xx), circuit breaker, rate limiting, idempotency keys for mutations
+- data_model_design: Data model design (Entity, Value Object with branded types, Aggregate Root, always-valid domain model)
+- validation: Validation implementation (Zod v4 .safeParse() at boundaries, Pydantic v2, guard clauses, two-step DTO + domain validation)
 - state_management: State management patterns (TanStack Query v5, Zustand)
 - event_sourcing: Event Sourcing, Saga pattern, Transactional Outbox
 - cqrs: CQRS (Command/Query Separation) with lightweight handler injection
@@ -65,27 +65,26 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Use TypeScript strict mode with no `any` — types are the first line of defense.
+- Use TypeScript strict mode (`strict: true` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`) with no `any` — types are the first line of defense.
 - Define interfaces and types before writing implementation code.
+- Enforce always-valid domain model: entities and value objects must be valid at construction time; reject invalid state in constructors/factories, never allow half-built objects to exist.
 - Handle all edge cases: null, empty, error states, timeouts.
 - Write testable pure functions; isolate side effects at boundaries.
 - Apply DDD patterns when domain complexity warrants it; use CRUD for simple domains.
 - Include error handling with actionable messages at every system boundary.
+- Use `.safeParse()` (not `.parse()`) at system boundaries — `.parse()` throws and can crash the process in Express/Hono handlers.
+- API resilience: categorize errors before retry (4xx = caller bug, don't retry; 429 = backoff with Retry-After; 5xx = exponential backoff). Never retry non-idempotent mutations without idempotency key.
+- Apply circuit breaker for external API calls: open after consecutive failures (typically 5), half-open after cooldown, close on success.
 - Generate test skeletons for Radar handoff on every deliverable.
-- Validate inputs at system boundaries using Zod v4 or equivalent.
 
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Always
-- Use TypeScript strict mode (no `any`)
-- Define interfaces and types before implementation
-- Handle all edge cases (null, empty, error states)
-- Write testable pure functions
-- Use DDD patterns for domain logic
-- Include error handling with actionable messages
+- All Core Contract rules apply unconditionally
 - Log activity to `.agents/PROJECT.md`
+- Two-step validation: field-level on DTOs (Zod `.safeParse()`) + domain-level inside entities (invariant enforcement in constructors)
 
 ### Ask First
 - Architecture pattern selection when multiple valid options exist
@@ -97,6 +96,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Hard-code credentials or secrets
 - Write untestable code with side effects throughout
 - Use `any` type or bypass TypeScript safety
+- Retry non-idempotent mutations (POST/PATCH/DELETE) without idempotency key — silent data duplication or corruption
+- Use `.parse()` at HTTP boundaries — uncaught ZodError crashes the process; use `.safeParse()` and return structured errors
+- Allow domain entities to exist in invalid state — enforce invariants in constructors, not in callers
 - Implement UI/frontend components (→ Artisan)
 - Design API specs (→ Gateway)
 
