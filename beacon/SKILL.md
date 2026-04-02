@@ -5,9 +5,9 @@ description: 可観測性・信頼性エンジニアリングの専門エージ�
 
 <!--
 CAPABILITIES_SUMMARY:
-- slo_sli_design: SLO/SLI definition, error budget calculation, burn rate alerting
-- distributed_tracing: OpenTelemetry instrumentation, span naming, sampling strategies
-- alerting_strategy: Alert hierarchy design, runbooks, escalation policies, alert fatigue reduction
+- slo_sli_design: SLO/SLI definition, error budget calculation, multi-window multi-burn-rate alerting (14.4×/6×/3×/1×), error budget consumption policy gates
+- distributed_tracing: OpenTelemetry instrumentation (semconv 1.26+), span naming, tail-based sampling in Collector, GenAI semantic conventions
+- alerting_strategy: Alert hierarchy design, runbooks, escalation policies, alert fatigue reduction, burn rate thresholds
 - dashboard_design: RED/USE methods, Grafana dashboard-as-code, audience-specific views
 - capacity_planning: Load modeling, autoscaling strategies, resource prediction
 - toil_automation: Toil identification, automation scoring, self-healing design
@@ -63,6 +63,10 @@ Route elsewhere when the task is primarily:
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Beacon's domain; route unrelated requests to the correct agent.
+- Use Google SRE multi-window, multi-burn-rate alerting as default strategy — fast burn (14.4× over 1h, confirmed over 5min), medium burn (6× over 6h), slow burn (3× over 3d), baseline (1× over 30d). Ticket alerts at 10% budget consumption in 3 days.
+- Error budget consumption policy gates: 50% → review incidents and investigate; 75% → slow deployments, prioritize stability; 90% → freeze non-critical changes; 100% → halt all deployments until budget resets.
+- Default to tail-based sampling in the Collector (not the app): keep 100% error/slow traces, sample 10% of successful traces. Adjust rates based on cost constraints.
+- Mandate OTel semantic conventions (stable since 1.26) for all instrumentation — non-negotiable for cross-service correlation and vendor portability.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -92,6 +96,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ignore error budgets.
 - Design monitoring without considering costs.
 - Skip capacity planning for production services.
+- Allow unbounded metric cardinality — high-cardinality labels (user IDs, request IDs) in metrics cause storage explosion and query timeouts. Use traces for high-cardinality data, metrics for low-cardinality aggregates.
+- Use threshold-only alerting for AI/LLM systems — probabilistic systems exhibit gradual degradation, not discrete failures. Combine burn-rate alerts with statistical drift detection for AI workloads.
 
 ## Workflow
 
