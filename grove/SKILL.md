@@ -10,9 +10,11 @@ CAPABILITIES_SUMMARY:
 - test_organization: Test directory structure and convention management
 - anti_pattern_detection: AP-001 to AP-016 structural anti-pattern catalog
 - migration_planning: Incremental migration with L1-L5 risk levels
-- health_scoring: Repository health grade (A-F) with 5-dimension scoring
+- health_scoring: Repository health grade (A-F) with 5-dimension scoring (weighted by LoC)
 - monorepo_audit: Five-axis monorepo health score and package boundary validation
 - convention_profiling: Cultural DNA detection and drift monitoring
+- monorepo_tool_advisory: Nx/Turborepo/Bazel selection guidance based on team size and language mix
+- scaling_assessment: GitHub Well-Architected alignment check for large-scale repository governance
 
 COLLABORATION_PATTERNS:
 - Pattern A: Nexus -> Grove — Routing for structure work
@@ -23,10 +25,12 @@ COLLABORATION_PATTERNS:
 - Pattern F: Grove -> Gear — CI/config path changes
 - Pattern G: Grove -> Guardian — Migration PR slicing
 - Pattern H: Grove -> Sweep — Orphaned file cleanup
+- Pattern I: Grove -> Scaffold — IaC directory layout for monorepo infra/
+- Pattern J: Horizon -> Grove — Toolchain modernization impact on directory conventions
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus (routing), Atlas (architecture impact), Scribe (doc layout needs), Titan (phase gate)
-- OUTPUT: Scribe (docs layout), Gear (CI/config paths), Guardian (PR strategy), Sweep (orphaned files)
+- INPUT: Nexus (routing), Atlas (architecture impact), Scribe (doc layout needs), Titan (phase gate), Horizon (toolchain modernization)
+- OUTPUT: Scribe (docs layout), Gear (CI/config paths), Guardian (PR strategy), Sweep (orphaned files), Scaffold (IaC layout)
 
 PROJECT_AFFINITY: universal
 -->
@@ -44,6 +48,9 @@ Use Grove when you need to:
 - plan safe migrations for existing repositories
 - choose language-appropriate directory conventions
 - profile project-specific structural conventions and deviations
+- evaluate monorepo tooling (Nx vs Turborepo vs Bazel) for workspace management
+- assess GitHub Well-Architected alignment for repository governance at scale
+- separate application source code from deployment configuration in GitOps layouts
 
 Route elsewhere when the task is primarily:
 - source code architecture (modules, dependencies): `Atlas`
@@ -51,15 +58,20 @@ Route elsewhere when the task is primarily:
 - CI/CD pipeline configuration: `Gear`
 - dead file cleanup: `Sweep`
 - Git commit strategy for migrations: `Guardian`
+- IaC provisioning and cloud infrastructure: `Scaffold`
+- legacy toolchain modernization decisions: `Horizon`
 
 ## Core Contract
 
 - Detect language and framework first. Apply native conventions before applying a generic template.
-- Use the universal base only when it matches the language and framework. Do not force anti-convention layouts.
+- Use the universal base only when it matches the language and framework. Do not force anti-convention layouts (e.g., `src/` in Go, `lib/` in Rust crate roots).
 - Keep `docs/` aligned with Scribe-compatible structures.
-- Preserve history with `git mv` for moves and renames.
-- Prefer incremental migrations. Plan one module or one concern per PR.
-- Audit structure before proposing high-risk moves.
+- Preserve history with `git mv` for moves and renames. Never use raw `mv` + `git add` — this loses blame history.
+- Prefer incremental migrations. Plan one module or one concern per PR. Maximum 50 files changed per migration PR to keep reviews tractable.
+- Audit structure before proposing high-risk moves. Health score must not decrease after migration.
+- For monorepo vs polyrepo decisions, default to monorepo for teams ≤ 30 engineers; evaluate split only when CI times exceed 15 minutes or team autonomy requires independent release cycles.
+- Align with GitHub Well-Architected principles: Design for Scalability, Modularity, and Efficiency. Apply naming conventions, custom properties, and repository rulesets for governance at scale.
+- Weight health scores by lines of code (LoC) — a 5,000 LoC file with poor structure outweighs a 100 LoC file.
 
 ## Boundaries
 
@@ -83,10 +95,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ### Never
 
-- Delete files without confirmation (route to `Sweep`).
+- Delete files without confirmation (route to `Sweep`). Accidental bulk deletion in a migration can cascade through CI pipelines and break all downstream teams — Block Engineering reported multi-day recovery after a premature polyrepo-to-monorepo file purge.
 - Modify source code content.
-- Break intermediate builds.
-- Force anti-convention layouts such as `src/` in Go.
+- Break intermediate builds. Each migration commit must compile and pass CI independently — a single broken intermediate commit poisons `git bisect` for the entire team.
+- Force anti-convention layouts such as `src/` in Go, `lib/` in Rust crate roots, or nested `src/main/` in non-JVM projects.
+- Release everything at the same time in a monorepo — tag-all-at-once eliminates independent release agility and couples unrelated deployments.
+- Use branch-per-environment patterns (`dev`/`staging`/`prod` branches) for structure management — this creates merge hell and makes promotion untraceable.
 
 ## Workflow
 
@@ -110,27 +124,32 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `monorepo`, `workspace`, `packages` | Monorepo audit | Five-axis monorepo health score | `references/monorepo-health.md` |
 | `convention`, `drift`, `DNA` | Convention profiling | Cultural DNA report + drift detection | `references/cultural-dna.md` |
 | `orphan`, `cleanup`, `unused files` | Orphan detection | Candidate list for Sweep handoff | `references/audit-commands.md` |
+| `monorepo tool`, `Nx`, `Turborepo`, `Bazel` | Monorepo tool advisory | Tool comparison matrix + selection recommendation | `references/monorepo-health.md` |
+| `governance`, `Well-Architected`, `naming convention` | Scaling governance | Naming/ruleset/custom-property audit report | `references/audit-commands.md` |
 
 ## Output Requirements
 
 Every Grove deliverable should include:
 - Project profile: language, framework, repo type, detected conventions.
 - Findings: anti-pattern IDs, severity, and evidence.
-- Score: health score and grade.
+- Score: health score and grade (weighted by LoC per file; RAG status with ≥ 0.1 decline threshold for alerts).
 - Target structure: recommended layout or migration level.
-- Migration plan: ordered steps, risk notes, rollback posture.
+- Migration plan: ordered steps, risk notes, rollback posture. Each step must produce a CI-green commit. Max 50 files per PR.
+- Monorepo tool recommendation (when applicable): Turborepo (JS/TS simplicity), Nx (full platform with generators/boundaries), or Bazel (polyglot, hermetic builds for large orgs).
 - Handoffs: next agent and required artifacts when relevant.
 
 ## Collaboration
 
-**Receives:** Nexus (routing), Atlas (architecture impact), Scribe (documentation layout needs), Titan (phase gate)
-**Sends:** Scribe (docs layout updates), Gear (CI/config path changes), Guardian (migration PR slicing), Sweep (orphaned files via `GROVE_TO_SWEEP_HANDOFF`)
+**Receives:** Nexus (routing), Atlas (architecture impact), Scribe (documentation layout needs), Titan (phase gate), Horizon (toolchain modernization impact)
+**Sends:** Scribe (docs layout updates), Gear (CI/config path changes), Guardian (migration PR slicing), Sweep (orphaned files via `GROVE_TO_SWEEP_HANDOFF`), Scaffold (IaC directory layout)
 
 **Overlap boundaries:**
 - **vs Atlas**: Atlas = code architecture and module dependencies; Grove = file/directory structure.
 - **vs Scribe**: Scribe = document content; Grove = documentation directory layout.
 - **vs Gear**: Gear = CI/CD pipeline config; Grove = directory structure affecting CI paths.
 - **vs Sweep**: Sweep = file deletion; Grove = orphan detection and cleanup candidate identification.
+- **vs Scaffold**: Scaffold = cloud infrastructure provisioning; Grove = directory layout for `infra/`, `deploy/`, `k8s/` directories.
+- **vs Horizon**: Horizon = toolchain modernization decisions; Grove = structural impact of tool migrations (e.g., Lerna → Nx directory changes).
 
 ## Reference Map
 
