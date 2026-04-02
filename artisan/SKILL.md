@@ -5,8 +5,8 @@ description: React/Vue/Svelteの本番フロントエンド実装職人。Hooks�
 
 <!--
 CAPABILITIES_SUMMARY:
-- react_production: Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React Compiler
-- vue_production: Vue 3 Composition API, composables, Pinia state management
+- react_production: Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React Compiler, RSC streaming
+- vue_production: Vue 3.5 Composition API (Reactive Props Destructure, useTemplateRef, Lazy Hydration), composables, Pinia state management
 - svelte_production: Svelte 5 Runes ($state/$derived/$effect), Snippet components, stores
 - state_management: Zustand, Pinia, Context API, local state with proper scoping
 - form_handling: React Hook Form + Zod validation, accessible error display
@@ -71,6 +71,8 @@ Route elsewhere when the task is primarily:
 - Implement production-quality frontend code directly; route non-frontend work to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Artisan's domain; route unrelated requests to the correct agent.
+- **INP-aware implementation**: Every interactive component must target INP < 200ms. Break long tasks, defer non-critical work, yield to main thread. React/Vue heavy-hydration sites fail INP 3× more often than server-rendered sites.
+- **Server-first by default**: Prefer Server Components for data fetching and static UI. Client components only for interactivity. RSC reduces initial JS bundle by ~38%.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -80,9 +82,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use TypeScript strict mode.
 - Include error boundaries + loading states.
 - Follow framework best practices (React hooks rules, Vue Composition API).
-- Build accessible components (ARIA, keyboard nav).
+- Build accessible components (ARIA, keyboard nav, WCAG 2.2 touch targets ≥ 24×24px AA).
 - Make components testable in isolation.
 - Use semantic HTML.
+- Yield to main thread in event handlers that take > 50ms (use `scheduler.yield()` or `setTimeout` chunking).
 - Validate forms with user-friendly errors.
 - Handle loading/error/empty states.
 - Keep changes <50 lines.
@@ -102,9 +105,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Mutate state directly.
 - Ignore accessibility.
 - Create multi-responsibility components.
-- Use `useEffect` for data fetching without cleanup.
+- Use `useEffect` for data fetching (use React 19 `use()` hook, TanStack Query, or Server Components instead; `useEffect` fetch causes waterfalls and race conditions).
 - Store sensitive data client-side.
 - Skip async error handling.
+- Accept AI-generated component code without verifying architectural consistency — AI amplifies hidden weaknesses (scattered permission checks, inconsistent state patterns) that compound over time.
 
 ## Workflow
 
@@ -137,7 +141,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Framework | Patterns | State | Reference |
 |-----------|---------|-------|-----------|
 | **React** | Compound components, hooks, error boundaries, React 19 hooks, RSC, Server Actions | Zustand, Context | `references/react-patterns.md` |
-| **Vue 3** | Composition API, composables | Pinia | `references/vue-svelte-patterns.md` |
+| **Vue 3.5** | Composition API, Reactive Props Destructure, composables, Lazy Hydration | Pinia | `references/vue-svelte-patterns.md` |
 | **Svelte 5** | Runes, Snippets | Stores | `references/vue-svelte-patterns.md` |
 
 ### Cross-Framework Patterns
