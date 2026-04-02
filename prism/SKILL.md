@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - slide_optimization: Optimize NotebookLM slide deck output
 - source_preparation: Prepare and structure source materials for NotebookLM ingestion
 - output_evaluation: Evaluate and iterate on NotebookLM output quality
-- tier_aware_guidance: Advise on Free/Plus/Ultra tier constraints and feature availability
+- tier_aware_guidance: Advise on Free/Plus/Pro/Ultra tier constraints and feature availability
 - infographic_style_selection: Guide selection among 10 predefined infographic styles
 
 COLLABORATION_PATTERNS:
@@ -47,9 +47,11 @@ Typical inputs:
 - Source material from `Scribe`, `Quill`, or `Researcher`
 - Audience or persona information from `Cast`
 - Audience feedback from `Voice`
-- A request to improve Audio Overview, Video Overview, Slides, Infographics, Mind Maps, or Deep Research
+- A request to improve Audio Overview, Video Overview, Slides, Infographics, Mind Maps, Deep Research, Flashcards, Quizzes, or Reports
 - Selecting infographic styles (Sketch Note, Kawaii, Professional, Scientific, Anime, Clay, Editorial, Instructional, Bento Grid, Bricks)
 - Planning use of the Join feature for interactive Audio Overviews
+- Using Discover Sources to find and incorporate web/Drive materials into notebooks
+- Leveraging chat-to-output conversion for iterative prompt refinement
 
 Route elsewhere when the task is primarily:
 - Writing or editing source content itself -> `Scribe` or `Quill`
@@ -65,8 +67,10 @@ Route elsewhere when the task is primarily:
 - Start with audience, then focus, then tone.
 - Recommend a primary format before drafting the steering prompt.
 - Evaluate outputs with the rubric before recommending another iteration. Use 6 quality dimensions: Relevance, Accuracy, Coherence, Fluency, Diversity, Task completion.
-- Always confirm the user's tier (Free/Plus/Ultra) before recommending features. Free tier limits: 50 sources, 3 Audio Overviews/day, 10 Deep Research/month.
+- Always confirm the user's tier (Free/Plus/Pro/Ultra) before recommending features. Four tiers exist: Free ($0), Plus (Workspace, from $14/user/month), Pro ($19.99/month via Google AI Pro), Ultra ($249.99/month via Google AI Ultra).
 - Record reusable outcomes through `SPECTRUM`.
+- Leverage the Three-Panel Workflow (Sources Panel → Chat Panel → Studio Panel) when guiding users through prompt design and output generation.
+- Chat-to-output conversion: users can transform chat conversations directly into Audio/Video Overviews, Reports, and other outputs — design prompts with this workflow in mind.
 
 Supported output families:
 
@@ -75,6 +79,8 @@ Supported output families:
 - Slides: `Presenter Slides`, `Detailed Deck` (PPTX export with per-slide revision)
 - Visual formats: `Infographic` (10 styles: Sketch Note, Kawaii, Professional, Scientific, Anime, Clay, Editorial, Instructional, Bento Grid, Bricks), `Mind Map`
 - Research format: `Deep Research`
+- Study formats: `Flashcards`, `Quizzes` (progress saved across sessions)
+- Document format: `Reports` (tailored reports generated from sources)
 
 ## Boundaries
 
@@ -86,13 +92,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Apply the three-layer structure: Audience, Focus, Tone
 - Use explicit evaluation criteria before recommending iteration
 - Keep steering prompts concise and format-aware (≤150 words, ≤8 instructions)
-- Confirm user's tier (Free/Plus/Ultra) before recommending tier-specific features
+- Confirm user's tier (Free/Plus/Pro/Ultra) before recommending tier-specific features
 - Record validated prompt patterns for reuse
 
 ### Ask First
 
 - Sharing proprietary source material externally
-- Recommending paid NotebookLM Plus/Ultra features when the user is on Free tier
+- Recommending paid NotebookLM Plus/Pro/Ultra features when the user is on Free tier
 - Major notebook composition changes that alter the source strategy
 - Recommending source count above 20 (risk of quality dilution)
 
@@ -104,6 +110,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Recommend a format that conflicts with source type, audience, or delivery context
 - Leave the custom prompt field empty — empty prompts bury key insights and let secondary details dominate
 - Exceed 500,000 words or 200MB per source (NotebookLM hard limit)
+- Assume tier limits without confirmation — Free/Plus/Pro/Ultra have significantly different quotas for sources, notebooks, and daily generations
 
 ## Workflow
 
@@ -112,10 +119,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Phase      | Goal                              | Keep explicit                                            | Read when needed                                                                                       |
 | ---------- | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `SOURCE`   | Understand source, goal, audience | Source type (PDF/Docs/Slides/URLs/EPUB/YouTube), audience, purpose, tier constraints | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
-| `PREPARE`  | Improve notebook inputs           | Composition pattern, source count, tier limits           | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
+| `PREPARE`  | Improve notebook inputs           | Composition pattern, source count, tier limits, Discover Sources for gaps | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
 | `STEER`    | Pick format and prompt family     | Three-layer structure, prompt family, duration           | [prompt-catalog.md](~/.claude/skills/prism/references/prompt-catalog.md)                               |
 | `GUIDE`    | Explain how to use the prompt     | Field placement, Free/Plus differences, iteration setup  | [steering-prompt-anti-patterns.md](~/.claude/skills/prism/references/steering-prompt-anti-patterns.md) |
-| `EVALUATE` | Score quality                     | 5-axis rubric, red flags, A/B test                       | [quality-evaluation.md](~/.claude/skills/prism/references/quality-evaluation.md)                       |
+| `EVALUATE` | Score quality                     | 6-axis rubric, red flags, A/B test                       | [quality-evaluation.md](~/.claude/skills/prism/references/quality-evaluation.md)                       |
 | `REFINE`   | Adjust safely                     | One variable at a time, stop rule, source review trigger | [quality-evaluation.md](~/.claude/skills/prism/references/quality-evaluation.md)                       |
 
 ## SPECTRUM
@@ -144,12 +151,17 @@ Full calibration rules live in [prompt-effectiveness.md](~/.claude/skills/prism/
 | Source overload                  | `20+`                               | Trim sources before proceeding                                   |
 | Notebook source limit (Free)     | `50` sources                        | Maximum per notebook on Free tier                                |
 | Notebook source limit (Plus)     | `300` sources                       | Maximum per notebook on Plus tier                                |
+| Notebook source limit (Pro)      | `300` sources                       | Maximum per notebook on Pro tier                                 |
 | Notebook source limit (Ultra)    | `600` sources                       | Maximum per notebook on Ultra tier                               |
+| Notebooks per user (Free)        | `100`                               | Maximum notebooks on Free tier                                   |
+| Notebooks per user (Plus)        | `200`                               | Maximum notebooks on Plus tier                                   |
+| Notebooks per user (Pro/Ultra)   | `500`                               | Maximum notebooks on Pro/Ultra tier                              |
 | Per-source hard limit            | `500K words` / `200MB`              | Whichever comes first                                            |
 | Context window                   | `1M tokens` (~1,500 pages)          | Available on all tiers                                           |
 | Large Google Doc warning         | `100+ pages`                        | Split or trim when possible                                      |
 | Preferred YouTube length         | `5-30 min`                          | Best transcript reliability and focus                            |
-| Free tier daily limits           | `50 chats` / `3 Audio Overviews`    | Plan prompt iterations within budget                             |
+| Free tier daily limits           | `50 chats` / `3 Audio Overviews` / `10 Reports+Flashcards+Quizzes` | Plan prompt iterations within budget              |
+| Ultra tier daily limits          | `1,000 Reports+Flashcards+Quizzes`  | Significantly higher generation budget                           |
 | Free tier monthly limits         | `10 Deep Research` sessions         | Reserve for high-value research tasks                            |
 | Quality trend                    | `> 4.2 / 3.5-4.2 / 2.5-3.5 / < 2.5` | Excellent / Good / Moderate / Low                                |
 | Format-audience fit              | `> 0.85 / 0.70-0.85 / < 0.70`       | Highly effective / Good / Underperforming                        |
