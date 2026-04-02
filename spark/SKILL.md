@@ -66,7 +66,7 @@ Route elsewhere when the task is primarily:
 - Include business rationale, a measurable hypothesis, and realistic scope.
 - Emit a markdown proposal, normally at `docs/proposals/RFC-[name].md`.
 - Frame proposals as outcomes, not outputs — define the behavioral change or business impact, not just the feature shape. [Source: itonics-innovation.com — outcome-oriented development trend 2026]
-- Use Opportunity Solution Trees (OST) to connect proposals to desired outcomes: Outcome → Opportunity → Solution → Experiment. [Source: producttalk.org — Teresa Torres CDH framework]
+- Use Opportunity Solution Trees (OST) to connect proposals to desired outcomes: Outcome → Opportunity → Solution → Experiment. The OST metric must align with a KPI from your OKRs — only initiatives that can move that metric warrant active investigation. [Source: producttalk.org — Teresa Torres CDH framework]
 - Define a **Fail Condition** (the measurement that disproves the hypothesis) in addition to success criteria — teams are overly lenient with success criteria, but a fail condition forces intellectual honesty. [Source: kromatic.com — Lean Startup validation]
 
 ## Boundaries
@@ -87,6 +87,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - The feature changes core data models, privacy posture, or security boundaries.
 - The user wants multi-engine brainstorming.
 - The proposal expands beyond the stated product scope.
+- The user presents a bloated backlog (50+ unscored items) — suggest pruning and prioritizing before proposing new features. [Source: prodpad.com — Agile anti-patterns]
 
 ### Never
 
@@ -95,6 +96,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Skip validation criteria.
 - Recommend dark patterns or manipulative growth tactics.
 - Present a feature that obviously duplicates existing functionality without calling it out.
+- Propose features focused solely on output velocity without measurable outcomes — this is the "feature factory" anti-pattern. Every proposal must define the behavioral change or business metric it targets, not just the feature shape. [Source: logrocket.com — PM anti-patterns; prodpad.com — Agile anti-patterns]
 - Score all RICE Impact at 2-3 ("everything is important") — enforce a distribution where only ≤20% of features score Impact = 3. If everything is high impact, nothing is. [Source: pmtoolkit.ai — RICE scoring anti-patterns]
 - Assign RICE Confidence >50% without evidence (user interviews, analytics, prior experiments). Meeting discussions alone do not justify high confidence. [Source: saasfunnellab.com — RICE overconfidence trap]
 - Calculate Effort using only engineering time — always include design, testing, documentation, and maintenance costs in the estimate. [Source: monday.com — prioritization frameworks 2026]
@@ -115,10 +117,11 @@ Use these defaults unless the user specifies another framework:
 
 ### RICE Scoring Guardrails
 
-- **Reach**: Use segment-specific reach, not total users. A settings feature reaching 100% of users is wrong — only 10-20% open settings. [Source: pmtoolkit.ai]
+- **Reach**: Use segment-specific reach, not total users. A settings feature reaching 100% of users is wrong — only 10-20% open settings. Always use a consistent time period (e.g., quarterly) across all features being compared. [Source: pmtoolkit.ai; saasfunnellab.com]
 - **Impact**: Enforce distribution — ≤20% of features at Impact = 3. Define "High = ≥10% improvement in key metric." [Source: pmtoolkit.ai]
 - **Confidence**: Default to 50% for unvalidated ideas. Only increase above 80% with quantitative evidence (analytics, experiments, large-N surveys). [Source: saasfunnellab.com]
-- **Effort**: Include design + testing + documentation + maintenance, not just engineering person-months. [Source: monday.com]
+- **Effort**: Include design + testing + documentation + maintenance, not just engineering person-months. Always add a ≥30% buffer — things take longer than expected. [Source: monday.com; saasfunnellab.com]
+- **Scope limitation**: RICE deprioritizes tech debt and infrastructure improvements that lack direct user reach. For such items, flag the limitation and recommend a separate evaluation track or route to `Atlas`. [Source: productplan.com — RICE Scoring Model]
 
 ## Workflow
 
