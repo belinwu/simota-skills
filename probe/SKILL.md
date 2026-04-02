@@ -7,7 +7,7 @@ description: OWASP ZAP/Burp Suite連携、ペネトレーションテスト計�
 CAPABILITIES_SUMMARY:
 - penetration_testing: Plan and guide OWASP ZAP/Burp Suite/Nuclei penetration tests with attack-path chaining
 - dast_execution: Configure and run dynamic application security testing in CI/CD pipelines
-- vulnerability_scanning: Scan running applications for OWASP Top 10 2025 and API Top 10 vulnerabilities
+- vulnerability_scanning: Scan running applications for OWASP Top 10 2025 (incl. Supply Chain Failures, Exceptional Conditions) and API Top 10 vulnerabilities
 - api_security_testing: Test API endpoints for BOLA/BFLA, auth flaws, and stateful vulnerabilities
 - report_generation: Generate severity-prioritized security reports with remediation SLAs and SARIF export
 - continuous_security: Design scan cadence strategies (PR-level, staging, nightly) for DevSecOps integration
@@ -38,7 +38,7 @@ Probe is the dynamic security testing specialist. Use it to prove exploitability
 
 Use Probe when the task involves:
 
-- OWASP ZAP, Burp Suite, Nuclei, DAST, penetration testing, or runtime exploit verification
+- ZAP (maintained by Checkmarx, Apache 2.0), Burp Suite, Nuclei, DAST, penetration testing, or runtime exploit verification
 - Validating whether a static finding is actually exploitable in a running environment
 - Testing authentication, authorization, session handling, rate limiting, GraphQL, OAuth, or SSRF in a running app
 - Designing scan strategy, security gates, SARIF export, or CI-integrated security testing
@@ -64,7 +64,8 @@ Route elsewhere when the task is primarily:
 - Prefer staging or pre-production. Production active exploit testing is never the default.
 - Always include BOLA/BFLA checks when API scope exists — BOLA accounts for ~40% of all API attacks (OWASP API Top 10, Wallarm Q2 2025).
 - Remediation SLAs by CVSS: Critical (9.0-10.0) → 24h, High (7.0-8.9) → 7 days, Medium (4.0-6.9) → 30 days, Low (0.1-3.9) → 90 days.
-- Reference OWASP Top 10 2025 (8th edition, 589 CWEs): Broken Access Control (#1), Security Misconfiguration (#2), Vulnerable Components (#3).
+- Reference OWASP Top 10 2025 (8th edition, 589 CWEs): Broken Access Control (#1), Security Misconfiguration (#2), Software Supply Chain Failures (#3, expanded from Vulnerable Components), Injection (#5), Mishandling of Exceptional Conditions (#10, new).
+- Use CVSS v4.0 when tooling supports it — Scope metric removed, Threat replaces Temporal, Supplemental metrics (Automatable, Safety) aid non-technical stakeholder communication. Fall back to CVSS v3.1 when v4.0 is unavailable.
 
 ## Boundaries
 
@@ -73,7 +74,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Always
 
 - Define scope and authorization before testing
-- Use CVSS v3.1/v4.0 scoring for every confirmed finding
+- Use CVSS v4.0 scoring (preferred) or v3.1 for every confirmed finding
 - Document scenarios and results with reproducible evidence
 - Verify findings before reporting — no safe proof means "Unconfirmed", not "Confirmed"
 - Provide actionable remediation with SLA timelines
@@ -99,6 +100,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Test outside defined scope — scope creep invalidates findings and may violate law
 - Share vulnerability details before remediation window closes (responsible disclosure)
 - Apply generic scan profiles across different environments — tailor to each target's technology stack
+- Run unverified Nuclei community templates without review — CVE-2024-43405 (CVSS 7.4) demonstrated signature bypass allowing code execution in Nuclei > 3.0.0; always pin template versions and verify sources
 
 ## Workflow
 
@@ -123,7 +125,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Staging DAST (ZAP active) | `< 15 min` | Run only targeted or diff-based scans |
 | Full pipeline DAST | `> 30 min` | Move to nightly or weekly full scan |
 | API priority | `BOLA` ≈ `40%` of API attacks (Wallarm Q2 2025) | Always include API1/BOLA checks when API scope exists |
-| Nuclei templates | `11,000+` community templates available | Use targeted subsets; full template scan for nightly only |
+| Nuclei templates | `11,000+` community templates available | Use targeted subsets; full template scan for nightly only; pin versions and verify sources (CVE-2024-43405) |
 | Proof requirement | No safe proof = no confirmed finding | Mark as `Needs Review` or `Unconfirmed`, not confirmed |
 | Testing frequency | Only 8% of orgs test continuously (2025 State of Pentesting) | Recommend continuous DAST over one-off assessments |
 
@@ -133,7 +135,7 @@ Per OWASP Top 10 2025 and API Security Top 10:
 
 | Surface | Mandatory focus |
 | --- | --- |
-| Web app | Broken Access Control (#1), Security Misconfiguration (#2), Vulnerable Components (#3), Injection (#5), SSRF (now consolidated under #1) |
+| Web app | Broken Access Control (#1, includes SSRF), Security Misconfiguration (#2), Software Supply Chain Failures (#3), Injection (#5), Mishandling of Exceptional Conditions (#10) |
 | REST API | `BOLA` (API1, ~40% of attacks), `BFLA` (API5), mass assignment (API6), JWT validation, rate limiting |
 | GraphQL | Introspection exposure, depth/alias/batch abuse, field-level auth, variable injection |
 | OAuth 2.0 | Redirect URI validation, PKCE enforcement, state/CSRF, code replay, scope escalation |
