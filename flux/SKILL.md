@@ -74,8 +74,9 @@ Route elsewhere when the task is primarily:
 - Produce 3-5 reframed problem statements, never just one. Each must suggest ≥ 1 new action not available under the original framing.
 - Include an Insight Matrix and Blind Spot Report with every deliverable. Blind Spot Report must explicitly check for bias blind spot (seeing biases in others but not in own analysis).
 - Apply Serendipity Injection in COMBINE and SHIFT phases.
-- Never output a single framework mechanically — compose dynamically based on Cynefin classification. Use Snowden's five domains: Clear, Complicated, Complex, Chaotic, Disorder.
+- Never output a single framework mechanically — compose dynamically based on Cynefin classification. Use Snowden's five domains: Clear, Complicated, Complex, Chaotic, Disorder. When the domain is Disorder (unclear which domain applies), apply the **aporetic turn** — create enough structure to categorize the problem into Complex or an ordered domain before selecting frameworks.
 - Quality gate: every reframing must pass the ASN test — **A**ctionability (suggests concrete next step), **S**pecificity (applies to THIS problem, not any problem), **N**ovelty (not a synonym of the original framing).
+- As an AI agent, vertical reasoning reinforces existing thought structures rather than breaking them (de Bono's core insight). Serendipity Injection is not optional decoration — it is the primary mechanism to escape pattern-reinforcing loops.
 - When TRIZ is applied, identify the specific contradiction (which of the 39 engineering parameters conflict) before selecting from the 40 inventive principles.
 
 ## Boundaries
@@ -106,7 +107,7 @@ Interaction rules → `_common/INTERACTION.md`
 - Suppress surprising or uncomfortable reframings. The most valuable reframings often feel counterintuitive.
 - Claim a single "correct" reframing exists.
 - Pad assumptions to hit quantity targets. 7 genuine assumptions outweigh 20 trivially-true statements (e.g., "users exist", "the internet works").
-- Ignore the bias blind spot — always audit own reframing output for the same cognitive biases flagged in the Blind Spot Report.
+- Ignore the bias blind spot — always audit own reframing output for the same cognitive biases flagged in the Blind Spot Report. Research shows cognitive sophistication does not attenuate the bias blind spot (West & Stanovich, JPSP 2012); being analytically capable makes this audit more important, not less.
 - Produce reframings that are synonym-substitutions. Changing "reduce costs" to "minimize expenses" is not a reframe. Real-world cost: AOL–Time Warner's $165B merger failed to reframe the "digital convergence" assumption, resulting in a $99B write-off — the largest corporate impairment in history. Montgomery Ward assumed post-WWII would mirror post-WWI austerity and missed the consumer boom, ceding market dominance to Sears.
 
 ---
@@ -177,7 +178,7 @@ questions:
 
 | Phase | Purpose | Key Action | Read |
 |-------|---------|------------|------|
-| `CLASSIFY` | Map the problem domain | Cynefin classification → auto-select framework set | `references/domain-classifier.md` |
+| `CLASSIFY` | Map the problem domain | Cynefin classification → auto-select framework set. If Disorder (domain unclear), apply the aporetic turn: create enough structure to move into a classifiable domain | `references/domain-classifier.md` |
 | `CHALLENGE` | Surface and reverse assumptions | List 10-20 assumptions → reverse → First Principles decomposition | `references/thinking-frameworks.md` |
 | `COMBINE` | Cross-pollinate distant domains | Bisociation + SCAMPER + TRIZ with Serendipity Injection | `references/combination-engine.md` |
 | `SHIFT` | Rotate the observation frame | Lateral Thinking + Reframing + Oblique Strategies | `references/thinking-frameworks.md` |
@@ -283,6 +284,7 @@ Every deliverable must include:
 - **Contradiction as Signal**: When two frameworks produce contradictory insights, preserve both — the tension itself is the most valuable output. In TRIZ, contradictions are not obstacles but pointers to inventive solutions.
 - **3-Question Convergence**: At CRYSTALLIZE, ask: "What action does this suggest?", "Who would disagree?", "Is this specific to THIS problem?"
 - **Three-Bucket Separation**: Before reframing, explicitly separate: (1) what we know (verified facts), (2) what we think we know (assumptions), (3) what we need to find out (unknowns). This reduces complexity paralysis and surfaces hidden assumptions.
+- **"How Might We" Reframing**: Convert constraints and pain points into "How Might We ___?" statements to open the solution space. HMW is a proven design thinking catalyst — it reframes challenges as invitations to creativity rather than obstacles.
 - **Bias Blind Spot Audit**: After generating reframings, apply the same bias checklist to your own output. The bias blind spot — recognizing biases in others while missing identical patterns in own thinking — is the most common meta-failure in reframing work.
 
 ## Avoids
@@ -321,7 +323,7 @@ _STEP_COMPLETE:
     deliverable: [reframing package path or inline]
     artifact_type: "[Reframing Package | Assumption Map | Perspective Shift Report | Cross-Domain Insight]"
     parameters:
-      cynefin_domain: "[Clear | Complicated | Complex | Chaotic]"
+      cynefin_domain: "[Clear | Complicated | Complex | Chaotic | Disorder]"
       work_mode: "[DEEP | RAPID | LENS]"
       frameworks_applied: "[list of frameworks used]"
       reframed_statements_count: "[3-5]"
