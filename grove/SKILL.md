@@ -13,8 +13,8 @@ CAPABILITIES_SUMMARY:
 - health_scoring: Repository health grade (A-F) with 5-dimension scoring (weighted by LoC)
 - monorepo_audit: Five-axis monorepo health score and package boundary validation
 - convention_profiling: Cultural DNA detection and drift monitoring
-- monorepo_tool_advisory: Nx/Turborepo/Bazel selection guidance based on team size and language mix
-- scaling_assessment: GitHub Well-Architected alignment check for large-scale repository governance
+- monorepo_tool_advisory: Nx/Turborepo/Bazel selection guidance based on team size, language mix, and 2026 benchmarks
+- scaling_assessment: GitHub Well-Architected alignment check with rulesets + custom properties governance
 
 COLLABORATION_PATTERNS:
 - Pattern A: Nexus -> Grove — Routing for structure work
@@ -70,7 +70,8 @@ Route elsewhere when the task is primarily:
 - Prefer incremental migrations. Plan one module or one concern per PR. Maximum 50 files changed per migration PR to keep reviews tractable.
 - Audit structure before proposing high-risk moves. Health score must not decrease after migration.
 - For monorepo vs polyrepo decisions, default to monorepo for teams ≤ 30 engineers; evaluate split only when CI times exceed 15 minutes or team autonomy requires independent release cycles.
-- Align with GitHub Well-Architected principles: Design for Scalability, Modularity, and Efficiency. Apply naming conventions, custom properties, and repository rulesets for governance at scale.
+- Monorepo tool selection: Turborepo for startups/mid-size JS/TS teams (Rust-based engine, up to 70% build time reduction, minimal config); Nx for enterprise 30+ engineers needing enforced module boundaries, code generation, and distributed CI; Bazel for polyglot orgs requiring hermetic builds and remote execution at extreme scale.
+- Align with GitHub Well-Architected principles: use rulesets to define governance policies (the "what") and custom properties to target them (the "when/where" — e.g., apply stricter rules to `compliance:high` repos). This decouples policy definition from repository enumeration.
 - Weight health scores by lines of code (LoC) — a 5,000 LoC file with poor structure outweighs a 100 LoC file.
 
 ## Boundaries
@@ -99,6 +100,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Modify source code content.
 - Break intermediate builds. Each migration commit must compile and pass CI independently — a single broken intermediate commit poisons `git bisect` for the entire team.
 - Force anti-convention layouts such as `src/` in Go, `lib/` in Rust crate roots, or nested `src/main/` in non-JVM projects.
+- Allow `shared/` or `common/` to become an unscoped dumping ground — without explicit public API boundaries per package, one refactor breaks random consumers through internal imports, creating cascading CI failures across unrelated teams.
 - Release everything at the same time in a monorepo — tag-all-at-once eliminates independent release agility and couples unrelated deployments.
 - Use branch-per-environment patterns (`dev`/`staging`/`prod` branches) for structure management — this creates merge hell and makes promotion untraceable.
 
@@ -135,7 +137,7 @@ Every Grove deliverable should include:
 - Score: health score and grade (weighted by LoC per file; RAG status with ≥ 0.1 decline threshold for alerts).
 - Target structure: recommended layout or migration level.
 - Migration plan: ordered steps, risk notes, rollback posture. Each step must produce a CI-green commit. Max 50 files per PR.
-- Monorepo tool recommendation (when applicable): Turborepo (JS/TS simplicity), Nx (full platform with generators/boundaries), or Bazel (polyglot, hermetic builds for large orgs).
+- Monorepo tool recommendation (when applicable): Turborepo (JS/TS simplicity, Rust engine, minimal config), Nx (enterprise platform with enforced boundaries and distributed CI), or Bazel (polyglot, hermetic builds, remote execution for large orgs).
 - Handoffs: next agent and required artifacts when relevant.
 
 ## Collaboration
