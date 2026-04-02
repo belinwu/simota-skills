@@ -5,11 +5,11 @@ description: フロントエンド（再レンダリング削減、メモ化、l
 
 <!--
 CAPABILITIES_SUMMARY:
-- frontend_optimization: Re-render reduction (memo/callback/context splitting), lazy loading, virtualization, debounce/throttle
+- frontend_optimization: Re-render reduction (React Compiler auto-memo / manual memo for non-Compiler projects), lazy loading, virtualization, debounce/throttle, INP optimization (task breaking, main thread yield)
 - backend_optimization: N+1 fix (eager loading/DataLoader), connection pooling, async processing, compression
 - bundle_optimization: Route/component/library/feature-based code splitting, tree shaking, library replacement
 - database_query_optimization: EXPLAIN ANALYZE metrics, index suggestion (B-tree/Partial/Covering/GIN/Expression), N+1 detection
-- caching_strategy: In-memory LRU / Redis / HTTP Cache-Control, cache-aside / write-through / write-behind patterns
+- caching_strategy: In-memory LRU / Redis / HTTP Cache-Control, cache-aside / write-through / write-behind patterns, stampede prevention (lock/lease, stale-while-revalidate), TTL enforcement
 - core_web_vitals: LCP (≤2.5s) / INP (≤200ms) / CLS (≤0.1) optimization and monitoring
 - profiling: React DevTools / Chrome DevTools / Lighthouse / web-vitals / clinic.js / 0x / autocannon
 
@@ -63,6 +63,9 @@ Route elsewhere when the task is primarily:
 - Implement ONE small, targeted optimization at a time; route unrelated or large-scale refactors to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Bolt's domain; route unrelated requests to the correct agent.
+- **Measure → Identify → Optimize → Verify**: Never optimize without a baseline metric. Profile first, then target the single largest bottleneck.
+- **React Compiler awareness**: React 19+ Compiler auto-memoizes components and hooks at build time. Do not add manual `memo`/`useMemo`/`useCallback` unless: (1) expensive synchronous computation, (2) stable reference for non-React consumer (e.g., `useEffect` dep, third-party lib), or (3) project does not use React Compiler. Verify compiler status before recommending manual memoization.
+- **INP is the #1 failed CWV** (43% of sites fail 200ms threshold). For any frontend optimization, check INP impact: break long tasks > 50ms, yield to main thread via `scheduler.yield()` or `setTimeout(0)`, minimize DOM size (< 1,400 nodes recommended).
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -82,12 +85,15 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 - Modify package.json/tsconfig without instruction.
 - Introduce breaking changes.
-- Premature optimization without bottleneck evidence.
-- Sacrifice readability for micro-optimizations.
-- Micro-optimize with no measurable impact.
+- Premature optimization without bottleneck evidence (measure first, optimize second).
+- Sacrifice readability for micro-optimizations with no measurable impact.
 - Make large architectural changes.
 - Place "use client" on wrapper/layout components (pulls children out of server rendering path).
 - Build client-heavy SPA without evaluating server-first alternatives (RSC + SSR/ISR).
+- Add manual `memo`/`useMemo`/`useCallback` when React Compiler is active — the compiler auto-memoizes more granularly than hand-written hooks.
+- Cache without TTL — keys accumulate indefinitely, causing unbounded memory growth and OOM risk.
+- Ignore cache stampede risk — when a popular key expires, concurrent requests flood the backend simultaneously. Use lock/lease or stale-while-revalidate to prevent thundering herd.
+- Leak database connections — always use try/finally to return connections to pool. A single leaked connection under load cascades into pool exhaustion and full outage.
 
 ## Workflow
 
@@ -124,6 +130,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **Infrastructure** | Resource utilization · Scaling bottlenecks |
 
 **React patterns** (memo/useMemo/useCallback/context splitting/lazy/virtualization/debounce) → `references/react-performance.md`
+**React Compiler note**: React 19+ Compiler auto-applies memoization at build time. Manual `memo`/`useMemo`/`useCallback` still needed for: expensive sync computations, stable refs for non-React consumers, projects without Compiler. Check `react-compiler` babel plugin presence before recommending manual memoization.
 
 ## Database Query Optimization
 
@@ -143,6 +150,7 @@ Full details → `references/database-optimization.md`
 
 **Types**: In-memory LRU (single instance, low complexity) · Redis (distributed, medium) · HTTP Cache-Control (client/CDN, low)
 **Patterns**: Cache-aside (read-heavy) · Write-through (consistency critical) · Write-behind (write-heavy, async)
+**Mandatory**: Always set TTL on cache keys. Use lock/lease or stale-while-revalidate for high-traffic keys to prevent cache stampede (thundering herd on expiry).
 Full details → `references/caching-patterns.md`
 
 ## Bundle Optimization
