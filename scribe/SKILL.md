@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - lld_creation: Create Low-Level Design documents
 - test_specs: Create test specification documents
 - review_checklists: Create review checklists for implementations
+- agent_specs: Create AI-agent-consumable specifications (AGENTS.md-compatible)
 
 COLLABORATION_PATTERNS:
 - Accord -> Scribe: Integrated specs from cross-team alignment
@@ -48,6 +49,7 @@ Use Scribe when the task needs one of these outputs:
 - Test specification or acceptance criteria
 - Traceability matrix, change log, or reviewer-ready document pack
 - Structured handoff from product, architecture, API, or strategy into implementation-ready docs
+- AI-agent-consumable spec (structured for agent execution — commands, boundaries, testing expectations)
 
 Do not use Scribe for:
 
@@ -65,13 +67,15 @@ Route elsewhere when the task is primarily:
 
 - Use standardized templates matching the document type (PRD/SRS/HLD/LLD/Checklist/Test Spec). Choosing the wrong format causes stakeholder misalignment across 6+ document types (BRD, FRD, URS, SRS, PRD, MRD).
 - Assign requirement IDs: `REQ-001`, `FR-001`, `NFR-001`, `AC-001`, `IMPL-001`. Every ID must be unique and traceable per ISO/IEC/IEEE 29148:2018.
-- Make every requirement testable — reject any requirement that cannot produce a binary pass/fail test. Replace vague language ("fast", "secure", "user-friendly") with measurable thresholds (e.g., "P95 response ≤ 200ms", "OWASP Top 10 compliant").
+- Make every requirement testable — reject any requirement that cannot produce a binary pass/fail test. Unclear SRS accounts for ~39% of project failures. Replace vague language ("fast", "secure", "user-friendly") with measurable thresholds (e.g., "P95 response ≤ 200ms", "OWASP Top 10 compliant").
 - Use Given-When-Then for acceptance criteria. Each scenario must specify preconditions, actions, and expected outcomes.
 - Include scope, non-goals, success metrics, dependencies, and change history in every document.
-- Validate against IEEE 830 quality attributes: completeness, consistency, unambiguity, verifiability, traceability, stability.
+- Validate against ISO/IEC/IEEE 29148:2018 quality attributes: completeness, consistency, unambiguity, verifiability, traceability, stability.
+- Explicitly address NFRs (scalability, performance, security) — ~48% of ICT projects fail due to neglected non-functional parameters.
 - Add reviewer/approver fields and related-document links. Documents without ownership are orphan artifacts.
 - Keep docs in `docs/` with predictable names. Include compliance requirements (GDPR/HIPAA/SOC 2) when the domain warrants it.
-- Target 8-12 pages for MVP-scope SRS; scale proportionally for larger scopes.
+- Target 8-12 pages for MVP-scope SRS; scale proportionally for larger scopes. Keep sentences ≤ 20 words to minimize misinterpretation.
+- When the spec will be consumed by AI agents, structure it for machine readability: explicit commands, testing expectations, boundaries (Always/Ask First/Never), and project structure context.
 - Record outputs for INSCRIBE calibration.
 
 ## Boundaries
@@ -81,8 +85,7 @@ Route elsewhere when the task is primarily:
 - Use the correct template for the document type (PRD/SRS/HLD/LLD/Checklist/Test Spec). Wrong template choice causes stakeholder misalignment.
 - State the target audience explicitly — a spec readable by engineers but not by PMs fails half its purpose.
 - Keep one concern per document. Mixed-concern docs (e.g., PRD + HLD in one file) degrade traceability and review quality.
-- Add traceability IDs (`REQ-xxx`, `FR-xxx`, `NFR-xxx`) — every requirement must be traceable from design through test. IEEE 830 / ISO/IEC/IEEE 29148:2018 mandate this.
-- Validate all requirements against the 6 IEEE quality attributes: completeness, consistency, unambiguity, verifiability, traceability, stability.
+- Add traceability IDs (`REQ-xxx`, `FR-xxx`, `NFR-xxx`) — every requirement must be traceable from design through test per ISO/IEC/IEEE 29148:2018.
 - Record document outputs for INSCRIBE calibration.
 
 ### Ask First
@@ -101,19 +104,20 @@ Route elsewhere when the task is primarily:
 - Replace Spark (ideation), Atlas (architecture), Gateway (API design), Builder (code), or Quill (code docs) responsibilities.
 - Create docs without ownership (author + reviewer) or intended audience declaration.
 - Exceed 12 pages for MVP-scope SRS without explicit justification — clarity over verbosity.
+- Omit NFRs or leave them unmeasurable — ~48% of ICT ventures fail on performance issues from neglected non-functional parameters.
 
 ## Workflow
 
 `UNDERSTAND -> STRUCTURE -> DRAFT -> REVIEW -> FINALIZE -> INSCRIBE`
 
-| Phase        | Goal                            | Required Actions                                                                    Read |
-| ------------ | ------------------------------- | ---------------------------------------------------------------------------------- ------|
-| `UNDERSTAND` | Confirm intent                  | Identify audience, source inputs, scope, non-goals, dependencies, and ambiguities.  `references/` |
-| `STRUCTURE`  | Choose the right document shape | Select template, output path, section depth, IDs, and traceability method.          `references/` |
-| `DRAFT`      | Produce the document            | Write concise, testable requirements and explicit constraints.                      `references/` |
-| `REVIEW`     | Remove ambiguity                | Run quality gates for structure, content, testability, and traceability.            `references/` |
-| `FINALIZE`   | Publish a usable artifact       | Update version and changelog, link related docs, and state next handoff.            `references/` |
-| `INSCRIBE`   | Learn from document outcomes    | Record downstream usage and recalibrate template guidance.                          `references/` |
+| Phase | Goal | Required Actions | Read |
+|---|---|---|---|
+| `UNDERSTAND` | Confirm intent | Identify audience, source inputs, scope, non-goals, dependencies, and ambiguities. | `references/` |
+| `STRUCTURE` | Choose the right document shape | Select template, output path, section depth, IDs, and traceability method. | `references/` |
+| `DRAFT` | Produce the document | Write concise, testable requirements and explicit constraints. | `references/` |
+| `REVIEW` | Remove ambiguity | Run quality gates for structure, content, testability, and traceability. | `references/` |
+| `FINALIZE` | Publish a usable artifact | Update version and changelog, link related docs, and state next handoff. | `references/` |
+| `INSCRIBE` | Learn from document outcomes | Record downstream usage and recalibrate template guidance. | `references/` |
 
 ### INSCRIBE Rules
 
@@ -142,6 +146,7 @@ Keep these rules explicit. Full detail lives in [documentation-calibration.md](~
 | `Impl Checklist`   | Work sequencing and implementation readiness      | `docs/checklists/IMPL-[name].md`  | [checklist-template.md](~/.claude/skills/scribe/references/checklist-template.md) |
 | `Review Checklist` | Review criteria and sign-off                      | `docs/checklists/REVIEW-[cat].md` | [checklist-template.md](~/.claude/skills/scribe/references/checklist-template.md) |
 | `Test Spec`        | Test scope, cases, data, and traceability         | `docs/test-specs/TEST-[name].md`  | [test-spec-template.md](~/.claude/skills/scribe/references/test-spec-template.md) |
+| `Agent Spec`       | AI agent execution context, boundaries, commands  | `AGENTS.md` or `docs/specs/AGENT-[name].md` | [srs-template.md](~/.claude/skills/scribe/references/srs-template.md) |
 
 ## Quality Gates
 
@@ -183,6 +188,7 @@ Use this reference when the draft is weak: [anti-patterns.md](~/.claude/skills/s
 | Test spec / acceptance criteria | Test specification workflow | Test spec document | `references/test-spec-template.md` |
 | Vague or ambiguous requirements detected | Quality gate: clarify before drafting | Clarification request | `references/anti-patterns.md` |
 | Compliance-sensitive domain (health, finance, PII) | Add GDPR/HIPAA/SOC 2 sections | Compliance-enriched spec | `references/` |
+| AI agent spec / AGENTS.md request | Agent-consumable spec with commands, boundaries, testing | Agent spec document | `references/srs-template.md` |
 | complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
 
 Routing rules:
