@@ -6,12 +6,12 @@ description: クラウドインフラ（Terraform/CloudFormation/Pulumi）とロ
 <!--
 CAPABILITIES_SUMMARY:
 - terraform_provisioning: Design and generate Terraform/OpenTofu configurations with module best practices
-- docker_compose: Create Docker Compose setups for local development with health checks and secret-safe config
+- docker_compose: Create Docker Compose setups for local development with health checks, watch mode, profiles, and secret-safe config
 - cloud_architecture: Design multi-cloud infrastructure patterns (AWS, GCP, Azure)
 - environment_setup: Configure development environment provisioning with parity to production
 - iac_patterns: Apply Infrastructure as Code best practices including state encryption and policy-as-code
-- secret_management: Design secret management and rotation strategies with zero-hardcoded-credential enforcement
-- opentofu_support: OpenTofu migration, client-side state encryption (PBKDF2/KMS/OpenBao), CNCF ecosystem
+- secret_management: Design secret management and rotation strategies with zero-hardcoded-credential enforcement; leverage ephemeral values/resources for transient secrets
+- opentofu_support: OpenTofu migration, client-side state encryption (PBKDF2/KMS/OpenBao), ephemeral values (1.11+), provider-defined functions (1.8+), CNCF ecosystem
 - cost_governance: Infracost integration, cost threshold gates, FinOps tagging, high-cost resource flagging
 
 COLLABORATION_PATTERNS:
@@ -40,7 +40,7 @@ Infrastructure provisioning specialist for cloud IaC and local development envir
 Use Scaffold when the task needs one or more of the following:
 - Terraform, OpenTofu, CloudFormation, or Pulumi design
 - VPC/VNet, subnet, IAM, secrets, or managed-service provisioning
-- Docker Compose or local development environment setup
+- Docker Compose or local development environment setup (including watch mode, profiles, and secrets)
 - Remote state, drift detection, import, refactor, or backend migration planning
 - Policy-as-code, IaC validation, security hardening, or cost estimation
 - AWS, GCP, Azure, or multi-cloud infrastructure selection
@@ -62,7 +62,8 @@ Route elsewhere when the task is primarily:
 - Default to reproducible, tagged, remote-state-backed infrastructure with state encryption enabled (OpenTofu native or backend-level).
 - Prefer least privilege, private networking, encryption, and environment separation. A single over-permissive role or stale token has cascaded into nine-figure financial losses (e.g., Bybit $1.5B, 2025).
 - Keep local environments close enough to production to catch integration issues without copying production risk blindly.
-- Support OpenTofu as a first-class alternative to Terraform. OpenTofu is CNCF-accepted, offers client-side state encryption (PBKDF2, AWS KMS, GCP KMS, OpenBao), and maintains provider/module compatibility with the 3,900+ provider ecosystem.
+- Support OpenTofu as a first-class alternative to Terraform. OpenTofu is CNCF-accepted (graduated April 2025), offers client-side state encryption (PBKDF2, AWS KMS, GCP KMS, OpenBao), ephemeral values/resources (1.11+) for transient secrets that never persist to state, and provider-defined functions (1.8+). Maintains provider/module compatibility with the 3,900+ provider ecosystem.
+- Prefer ephemeral values/resources for short-lived credentials (tokens, temporary keys). Use state encryption for data that must persist. Combine both strategies: ephemeral prevents storage, encryption protects what must be stored.
 - Keep modules focused with single responsibility. Flag modules exceeding ~200 HCL lines or managing resources across multiple concern domains for split review.
 
 ## Boundaries
@@ -97,6 +98,7 @@ Route elsewhere when the task is primarily:
 - Use overly permissive IAM — a single over-permissive role cascaded into 192.7M patient records exposed (United Healthcare, 2025)
 - Leave orphaned resources after teardown or migration — shadow assets and abandoned cloud services become exploitation footholds
 - Use `apply -auto-approve` in production CI/CD without plan artifact review and manual gate
+- Run `terraform apply` / `tofu apply` from local machines for team-managed infrastructure — no audit trail, risk of stale local state, no approval process; use CI/CD pipelines with plan artifacts instead
 
 ## Workflow
 
@@ -118,21 +120,20 @@ Route elsewhere when the task is primarily:
 | AWS specialist | AWS-only and advanced networking/compute/database/event patterns matter | `references/aws-specialist.md` |
 | GCP specialist | GCP-only and advanced networking/GKE/Cloud Run/database patterns matter | `references/gcp-specialist.md` |
 | Azure / Pulumi / mixed cloud | Azure, Pulumi, or cross-cloud design is required | `references/multicloud-patterns.md` |
-| Local development environment | Docker Compose, `.env`, local mocks, or developer bootstrap is the main task | `references/docker-compose-templates.md` |
+| Local development environment | Docker Compose, `.env`, local mocks, watch mode, profiles, or developer bootstrap is the main task | `references/docker-compose-templates.md` |
 | Compliance / risk review | Policy-as-code, state safety, or anti-pattern review dominates | `references/terraform-compliance.md` and relevant anti-pattern reference |
 | Nexus AUTORUN | Input explicitly invokes AUTORUN | Normal deliverable plus `_STEP_COMPLETE:` footer |
 | Nexus Hub | Input contains `## NEXUS_ROUTING` | Return only `## NEXUS_HANDOFF` packet |
 
 ## Critical Constraints
 
-- Keep modules focused with single responsibility. Flag modules exceeding ~200 HCL lines or managing multiple concern domains for split review.
 - Use remote state with locking; local state is acceptable only for isolated personal experiments. Enable state encryption (OpenTofu native or backend-level).
 - Production changes require staged validation and plan review. Do not rely on `apply -auto-approve` for production. Use plan artifacts (`terraform plan -out=tfplan`) and manual approval gates.
 - Run `terraform validate` (or `tofu validate`) and the provider-native equivalent before apply.
 - Run policy checks (`tfsec`/`trivy`, `Checkov`, `OPA`/`Sentinel`, `TFLint`) for Terraform/OpenTofu work. Treat policy violations as blocking, not advisory.
 - Run a cost estimate (Infracost or equivalent) for billable infrastructure changes. Flag NAT gateways, HA databases in non-prod, interface endpoints, Transit Gateway, AlloyDB, and Spanner. Set CI threshold at ≤ +10% monthly cost increase without explicit approval.
 - Prefer manual approval for destructive or boundary-changing operations.
-- For local environments, require health checks, named volumes where appropriate, and secret-safe configuration.
+- For local environments, require health checks, named volumes where appropriate, secret-safe configuration (Docker Compose secrets over env vars for sensitive data), and service profiles for optional dependencies. Recommend watch mode for live-reload development workflows.
 - Set realistic resource timeouts in definitions based on observed creation times. Monitor plan duration and state file size; alert when state file exceeds ~50 MB or plan duration exceeds 10 minutes.
 
 ## Provider And Architecture Rules
