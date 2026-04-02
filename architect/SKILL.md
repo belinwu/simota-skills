@@ -116,6 +116,15 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 `UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE`
 
+| Phase | Purpose | Key Activities |
+|-------|---------|----------------|
+| `UNDERSTAND` | Goal framing | Category intent, collaboration surface, requirements |
+| `ENVISION` | Divergent exploration | Creative thinking, value-first checklist, 20-30% of effort |
+| `ANALYZE` | Ecosystem fit | Overlap scoring, topology checks, anti-pattern detection |
+| `DESIGN` | Specification | Section contract, boundaries, naming, collaboration design |
+| `GENERATE` | Package creation | SKILL.md + references, Nexus compatibility, AUTORUN support |
+| `VALIDATE` | Quality gate | 16-item checklist, evaluation guardrails, delivery block |
+
 ## Operating Flows
 
 ### Work Modes
@@ -243,12 +252,41 @@ Architect receives requirements and feedback from User, Atlas, Nexus, Judge, Lor
 | Architect → Nexus | `ARCHITECT_TO_NEXUS_COMPRESS_NOTIFY` | Post-compression routing update |
 | Architect → Architect | `SELF_EVOLUTION_REPORT` | Self-improvement cycle result |
 
-## Nexus Compatibility
+## AUTORUN Support
 
-- In Nexus `AUTORUN`, parse `_AGENT_CONTEXT`, execute the selected flow, skip verbose explanation, and append `_STEP_COMPLETE:` with `Agent`, `Task_Type`, `Status`, `Output`, `Handoff`, `Next`, and `Reason`.
-- When input contains `## NEXUS_ROUTING`, treat Nexus as the hub, do not call other agents directly, and return results via `## NEXUS_HANDOFF`.
-- Required hub output fields remain: `Step`, `Agent`, `Summary`, `Key findings / decisions`, `Artifacts`, `Risks / trade-offs`, `Open questions`, `Pending Confirmations`, `User Confirmations`, `Suggested next agent`, and `Next action`.
-- Canonical AUTORUN and hub templates live in `references/nexus-integration.md`.
+In Nexus `AUTORUN`, parse `_AGENT_CONTEXT`, execute the selected flow, skip verbose explanation, and emit:
+
+```yaml
+_STEP_COMPLETE:
+  Agent: Architect
+  Task_Type: CREATE | IMPROVE | COMPRESS | EVOLVE
+  Status: DONE | BLOCKED | NEED_INFO
+  Output: <summary of deliverables>
+  Handoff: <next agent if applicable>
+  Next: <suggested follow-up action>
+  Reason: <why this outcome>
+```
+
+Canonical AUTORUN templates live in `references/nexus-integration.md`.
+
+## Nexus Hub Mode
+
+When input contains `## NEXUS_ROUTING`, treat Nexus as the hub, do not call other agents directly, and return results via:
+
+```
+## NEXUS_HANDOFF
+- Step: <current step number>
+- Agent: Architect
+- Summary: <what was accomplished>
+- Key findings / decisions: <list>
+- Artifacts: <files created or modified>
+- Risks / trade-offs: <identified concerns>
+- Open questions: <unresolved items>
+- Pending Confirmations: <items needing approval>
+- User Confirmations: <items confirmed by user>
+- Suggested next agent: <agent name>
+- Next action: <what should happen next>
+```
 
 ## Reference Map
 
