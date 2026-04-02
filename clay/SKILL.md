@@ -13,6 +13,9 @@ CAPABILITIES_SUMMARY:
 - openscad_parametric: Create parametric 3D models via OpenSCAD .scad files
 - game_pipeline: LOD generation, retopology, UV packing, texture baking scripts
 - quality_validation: Topology checks, metric computation, game-readiness scoring
+- ai_retopology: Neural wrapping and autoregressive retopology pipeline scripts
+- two_stage_pipeline: Orchestrate text→image→3D generation for complex assets
+- material_interchange: USD/MaterialX/OpenPBR material pipeline code
 
 COLLABORATION_PATTERNS:
 - Vision -> Clay: Art direction for 3D assets
@@ -44,6 +47,10 @@ Use Clay when the user needs:
 - OpenSCAD parametric modeling
 - game pipeline scripts (LOD generation, format conversion, atlas packing)
 - 3D model quality validation scripts
+- AI-powered auto-retopology scripts (neural wrapping, deformation-aware edge flow)
+- Gaussian Splatting viewer code with game engine integration (Unity, UE, Godot plugins)
+- USD / MaterialX / OpenPBR material interchange pipeline code
+- two-stage generation pipeline (text→image→3D) orchestration code
 - video-to-3D or Gaussian Splatting viewer code
 
 Route elsewhere when the task is primarily:
@@ -62,6 +69,9 @@ Route elsewhere when the task is primarily:
 - Estimate API costs before generation runs.
 - Include QC validation in every generation workflow.
 - Specify target format, engine, and poly budget explicitly.
+- Recommend multi-provider approach — suggest alternative providers when primary choice may not suit the asset style (e.g., open-source models like Hunyuan/Trellis for stylized content).
+- Guide prompt specificity: include subject, style, colors, topology hints, and scale in every generation prompt.
+- For complex assets, recommend two-stage pipeline (text→image→3D) when direct text-to-3D is insufficient.
 
 ## Boundaries
 
@@ -91,6 +101,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Place assets in a scene without LOD configuration.
 - Hardcode API keys, tokens, or credentials.
 - Guarantee topology quality of AI-generated raw output.
+- Ship raw AI-generated textures to production without refinement.
+- Lock to a single provider without evaluating alternatives for the asset style.
+- Trust spatial accuracy of AI output without visual validation (accessories, facial features, proportions).
+- Over-detail stylized assets — AI providers often add unnecessary mesh complexity to cartoon/low-poly content.
 
 ## Output Routing
 
@@ -114,6 +128,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `validate`, `QC`, `check`, `clip score` | Validation script | `.py` | `references/quality-validation.md` |
 | `download`, `fetch model`, `sketchfab`, `objaverse` | External model download | `.py` | `references/api-integration.md` |
 | `search model`, `find asset`, `browse`, `marketplace` | Model source search | `.py` | `references/api-integration.md` |
+| `auto-retopo`, `neural retopo`, `smart retopo` | AI retopology pipeline | `.py` | `references/game-pipeline.md` |
+| `materialx`, `openpbr`, `material interchange` | USD/MaterialX material code | `.py` / `.xml` | `references/code-patterns.md`, `references/game-pipeline.md` |
+| `text-to-image-to-3d`, `two-stage`, `staged pipeline` | Two-stage generation pipeline | `.py` | `references/api-integration.md`, `references/prompt-engineering.md` |
 | unclear request | Provider API call (Meshy) | `.py` | `references/api-integration.md` |
 
 Routing rules:
@@ -135,9 +152,9 @@ Routing rules:
 
 | Platform | Format | Poly Budget (per model) | Notes |
 |----------|--------|------------------------|-------|
-| Unity / UE | FBX | < 100K tris | PBR materials, LOD group |
-| Web | glTF (Draco) | < 50K tris | Compressed, lazy-loadable |
-| Mobile | glTF (Draco) | < 10K tris | Aggressive LOD, atlas textures |
+| Unity / UE | FBX | 5K-100K tris | PBR materials, LOD group; hero assets up to 100K |
+| Web | glTF (Draco) | < 50K tris | Compressed, lazy-loadable, WebGPU for 3DGS |
+| Mobile | glTF (Draco) | 500-3K tris | Aggressive LOD, atlas textures |
 | Interchange | USD | No hard limit | MaterialX/OpenPBR materials |
 
 ## Workflow
