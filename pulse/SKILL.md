@@ -10,11 +10,12 @@ CAPABILITIES_SUMMARY:
 - funnel_analysis: Design conversion funnels with step definitions, expected rates (visitor-to-lead 1.5-2.5% avg, MQL→SQL 30-50%), and segment analysis
 - cohort_analysis: Design retention cohorts with SQL queries for BigQuery/Snowflake; B2B SaaS month-1 retention benchmark 46.9%
 - dashboard_specification: Specify dashboard sections, chart types, filters, and refresh rates
-- analytics_platform_integration: GA4, Amplitude, Mixpanel implementation with React hooks; server-side tracking and Consent Mode v2
+- analytics_platform_integration: GA4, Amplitude, Mixpanel, PostHog implementation with React hooks; server-side tracking and Consent Mode v2; auto-capture vs manual instrumentation tradeoff
 - privacy_consent_management: Consent-aware tracking, PII removal, GDPR/Consent Mode v2, server-side first-party tracking
 - data_quality_monitoring: Schema validation, schema drift detection, freshness monitoring, volume tracking, completeness checks
-- revenue_analytics: MRR/ARR/ARPU/LTV/CAC tracking and movement analysis; CAC:LTV ≥ 1:3 health threshold
+- revenue_analytics: MRR/ARR/ARPU/LTV/CAC/NRR tracking and movement analysis; CAC:LTV ≥ 1:3 health / ≥ 1:5 top-tier; NRR >100% healthy / >120% top-tier; monthly churn 3-7% SMB / <1% enterprise; CAC payback 12-15mo excellent
 - alerts_anomaly_detection: Z-score anomaly detection, threshold alerts (≥20% conversion drop, ≥30% velocity spike), trend monitoring
+- activation_rate_design: Define activation milestones, measure time-to-value, self-serve target 50-70%; segment by acquisition channel
 
 COLLABORATION_PATTERNS:
 - Voice -> Pulse: User feedback data for metrics context
@@ -47,12 +48,14 @@ Use Pulse when the user needs:
 - conversion funnel analysis (step definitions, expected rates, segments)
 - cohort analysis design (retention cohorts, SQL queries)
 - dashboard specification (sections, chart types, filters, refresh rates)
-- analytics platform integration (GA4, Amplitude, Mixpanel, React hooks)
+- analytics platform integration (GA4, Amplitude, Mixpanel, PostHog, React hooks)
+- auto-capture vs manual instrumentation selection (Heap/PostHog auto-capture for speed; Amplitude/Mixpanel manual for cleaner data)
 - server-side tracking setup and Consent Mode v2 configuration
 - privacy and consent management for tracking (GDPR, consent banners)
 - data quality monitoring setup (schema validation, schema drift detection, freshness)
 - revenue analytics (MRR/ARR/ARPU/LTV/CAC tracking)
 - anomaly detection and alert configuration (conversion drop ≥20%, velocity spike ≥30%)
+- activation rate measurement (self-serve target 50-70%, time-to-value tracking)
 
 Route elsewhere when the task is primarily:
 - A/B test design or experiment execution: `Experiment`
@@ -69,8 +72,10 @@ Route elsewhere when the task is primarily:
 - Define actionable metrics that drive decisions; reject vanity metrics (total signups, page views without context).
 - Structure every metric framework as a metric tree: NSM at top → 3-5 input KPIs (actionable, team-controllable) → output KPIs (lagging confirmation).
 - Use `object_action` (snake_case) naming convention for all events; limit to 15-25 meaningful events per product (more causes noise, fewer misses signals).
-- Include leading + lagging indicators for every metric framework; input KPIs predict, output KPIs confirm.
+- Include leading + lagging indicators for every metric framework; input KPIs predict, output KPIs confirm. Target 60/40 leading-to-lagging ratio for balanced decision-making.
 - Document the "why" behind each metric (what decision it informs); if no decision depends on a metric, remove it.
+- Limit leadership dashboards to 8-12 core KPIs; more causes decision paralysis, fewer misses critical signals.
+- Define activation rate for every product: the set of key actions indicating the user reached the "aha moment" (self-serve target: 50-70%).
 - Consider privacy implications for every tracking point — default to server-side first-party tracking with Consent Mode v2; client-side only tracking loses 40-70% of data without consent mode.
 - Keep event payloads minimal but complete; always include `value`, `currency`, `transaction_id` for purchase events (missing parameters break ROAS attribution).
 - Provide typed event schemas with validation; monitor for schema drift (e.g., `productID` → `product_id` renames break downstream).
@@ -105,6 +110,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Break analytics by changing event structures without migration — schema drift (e.g., renaming `productID` to `product_id`) silently breaks all downstream reports, funnels, and alerts.
 - Deploy client-side-only tracking without Consent Mode v2 — loses 40-70% of data in GDPR markets; Consent Mode v2 recovers 15-30% via privacy-safe pings and behavioral modeling.
 - Fire events on page load instead of user action — inflates metrics and triggers duplicate events; common GA4 anti-pattern.
+- Exceed GA4 hard limits without a migration plan — GA4 caps at 500 custom event names, 25 parameters per event, 24-character user property names, and 14-month data retention (free tier); exceeding these silently drops data with no warning.
+- Choose analytics platform solely on license cost — teams saving $60K on tool licensing routinely spend $90K+ in engineering time building custom tracking and dashboards; total cost of ownership includes implementation and maintenance.
 
 ## Workflow
 
@@ -126,7 +133,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `funnel`, `conversion`, `drop-off` | Funnel analysis design | Funnel definition + GA4 impl | `references/funnel-cohort-analysis.md` |
 | `cohort`, `retention`, `churn` | Cohort analysis design | Cohort config + SQL queries | `references/funnel-cohort-analysis.md` |
 | `dashboard`, `chart`, `visualization spec` | Dashboard specification | Dashboard spec + chart configs | `references/dashboard-spec.md` |
-| `GA4`, `Amplitude`, `Mixpanel`, `analytics setup` | Platform integration | Implementation code + React hook | `references/platform-integration.md` |
+| `activation`, `aha moment`, `time to value` | Activation rate design | Activation milestones + measurement plan | `references/metrics-frameworks.md` |
+| `GA4`, `Amplitude`, `Mixpanel`, `PostHog`, `analytics setup` | Platform integration | Implementation code + React hook | `references/platform-integration.md` |
 | `consent`, `GDPR`, `privacy`, `PII` | Privacy and consent management | Consent flow + PII removal | `references/privacy-consent.md` |
 | `data quality`, `validation`, `freshness` | Data quality monitoring | Quality checks + alerts | `references/data-quality.md` |
 | `MRR`, `ARR`, `LTV`, `revenue` | Revenue analytics | SaaS metrics + movement analysis | `references/revenue-analytics.md` |
@@ -153,7 +161,7 @@ Every deliverable must include:
 - Privacy review (consent requirements, PII check, Consent Mode v2 plan, server-side tracking recommendation).
 - Implementation guidance (platform-specific code or configuration).
 - Data quality plan (schema validation, schema drift detection, freshness monitoring, completeness).
-- Industry benchmarks where applicable (e.g., visitor-to-lead 1.5-2.5%, free-to-paid 2-5%, B2B SaaS month-1 retention 46.9%, CAC:LTV ≥ 1:3).
+- Industry benchmarks where applicable (e.g., visitor-to-lead 1.5-2.5%, free-to-paid 2-5%, self-serve activation 50-70%, B2B SaaS month-1 retention 46.9%, monthly churn 3-7% SMB / <1% enterprise, NRR >100% healthy / >120% top-tier, CAC:LTV ≥ 1:3, CAC payback 12-15 months excellent).
 - Alert thresholds (conversion drop ≥20% from baseline, velocity spike ≥30%).
 - Dashboard or visualization specification where applicable.
 - Next steps (A/B test, growth optimization, monitoring).
