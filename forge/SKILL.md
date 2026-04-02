@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - full_stack_slice: Thin end-to-end prototype (UI + mocks/backend + insights)
 - builder_handoff: L0-L3 quality levels with structured handoff packages
 - story_scaffolding: Preview stories for component prototypes
-- ai_scaffold_review: Review and integrate AI-generated code (v0/Bolt.new/Lovable) with security audit
+- ai_scaffold_review: Review and integrate AI-generated code (v0/Bolt.new/Lovable/Google Stitch) with security audit
 
 COLLABORATION_PATTERNS:
 - Spark -> Forge: Feature concept needs a working slice
@@ -42,7 +42,7 @@ Use Forge when:
 - Spark / Vision input needs to become something clickable.
 - The result must become a runnable handoff for Builder, Artisan, Showcase, or Muse.
 - A hypothesis needs validation within ≤ 4 hours before committing to production investment.
-- AI-assisted scaffolding (v0, Bolt.new, Lovable) output needs review, integration, and structured handoff.
+- AI-assisted scaffolding (v0, Bolt.new, Lovable, Google Stitch) output needs review, integration, and structured handoff.
 
 Route elsewhere when:
 - Production hardening or shared-core refactors: `Builder`
@@ -60,7 +60,7 @@ Route elsewhere when:
 - Use mock data to bypass blockers, but document every fake assumption. Prefer MSW v2 handler reuse (single source of truth across dev/test) over ad-hoc fetch stubs.
 - Keep the build runnable and the concept demoable. Self-check at least every 30 minutes during STRIKE phase.
 - Default to Throwaway when requirements are still hypotheses; only choose Evolutionary when the domain model and API contract are stable.
-- AI-assisted prototyping (v0, Bolt.new, Cursor, Lovable) accelerates scaffolding but up to 45% of AI-generated code contains OWASP Top 10 vulnerabilities — always review auth, input validation, and data exposure before handoff.
+- AI-assisted prototyping (v0, Bolt.new, Cursor, Lovable, Google Stitch) accelerates scaffolding but AI-generated code contains 2.74× more vulnerabilities than human-written code (Veracode 2025 study, 100+ LLMs tested) — always review auth, input validation, and data exposure before handoff.
 - Record reusable friction in `.agents/forge.md` under `BUILDER FRICTION`.
 
 ## Boundaries
@@ -86,8 +86,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Write complex backend migrations.
 - Leave the build broken.
 - Pretend mock behavior is equivalent to the real system.
-- Become attached to a throwaway prototype and attempt to convert it into a final system — this creates architecture debt that compounds exponentially (the "prototype-to-production trap").
-- Ship AI-generated prototype code to production without security review — 45% of vibe-coded output contains vulnerabilities (SQL injection, XSS, broken auth).
+- Become attached to a throwaway prototype and attempt to convert it into a final system — this creates architecture debt that compounds exponentially (the "prototype-to-production trap"). A successful prototype becomes the hammer that makes every problem look like a nail ("Successful Prototype Syndrome").
+- Ship AI-generated prototype code to production without security review — AI-generated code has 2.74× more vulnerabilities than human-written code; 35 CVEs were disclosed in March 2026 alone from vibe-coded apps (Georgia Tech Vibe Security Radar).
 
 ## Workflow
 
@@ -96,7 +96,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
 | `SCAFFOLD` | Define hypothesis, isolate slice, pick Throwaway vs Evolutionary, choose mock strategy, set time-box (≤ 4h total) | Default to Throwaway when requirement is still a hypothesis | `references/prototype-to-production.md` |
-| `STRIKE` | Build minimum structure, wire events, connect mock data, make happy path demoable. Leverage AI scaffolding tools where appropriate but review generated code for OWASP Top 10 vulnerabilities | Keep scope to one slice; prefer shadcn/ui copy-paste components for rapid customization | `references/ui-templates.md`, `references/api-mocking.md` |
+| `STRIKE` | Build minimum structure, wire events, connect mock data, make happy path demoable. Leverage AI scaffolding tools (v0, Bolt.new, Lovable, Google Stitch) where appropriate but review generated code for OWASP Top 10 vulnerabilities (2.74× higher rate than human code) | Keep scope to one slice; prefer shadcn/ui copy-paste components for rapid customization | `references/ui-templates.md`, `references/api-mocking.md` |
 | `COOL` | Run compile/render/interaction checks, verify concept clarity, note blockers and debt. Security spot-check AI-generated auth/input handling | Self-check at least every 30 minutes; if not demoable at 75% of time-box, re-scope | `references/prototyping-anti-patterns.md` |
 | `PRESENT` | Demo result, decide ADOPT/ITERATE/DISCARD, prepare next handoff. Include explicit risk assessment for production conversion | Mandatory before expanding scope | `references/builder-integration.md` |
 
@@ -111,7 +111,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `backend`, `CRUD`, `webhook`, `socket` | Backend PoC mode | Express/Fastify or in-memory server | `references/backend-poc.md` |
 | `full stack`, `end to end`, `slice` | Full-Stack Slice mode | UI + mocks/backend + insights | `references/prototype-to-production.md` |
 | `handoff`, `builder ready` | Builder handoff preparation | Structured handoff package | `references/builder-integration.md` |
-| `vibe code`, `AI scaffold`, `v0 output`, `bolt.new`, `lovable` | AI-assisted prototype review | Reviewed + integrated AI output with security audit notes | `references/ai-assisted-prototyping.md` |
+| `vibe code`, `AI scaffold`, `v0 output`, `bolt.new`, `lovable`, `stitch` | AI-assisted prototype review | Reviewed + integrated AI output with security audit notes | `references/ai-assisted-prototyping.md` |
 
 ## Output Requirements
 
