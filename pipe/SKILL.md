@@ -8,11 +8,13 @@ CAPABILITIES_SUMMARY:
 - gha_workflow_design: Design GitHub Actions workflows with advanced patterns
 - trigger_strategy: Configure push/PR/schedule/dispatch trigger combinations
 - security_hardening: Implement OIDC, token scoping, SHA pinning, egress policy, supply chain defense
-- performance_optimization: Optimize workflow speed with caching (up to 80% reduction), parallelism, matrices, ARM runners
+- performance_optimization: Optimize workflow speed with caching (up to 80% reduction), parallelism, matrices, ARM runners (37% cheaper than x64)
 - reusable_workflows: Design reusable workflow libraries and composite actions with versioned interfaces
 - pr_automation: Automate PR labeling, assignment, checks, and merge policies
-- supply_chain_defense: Deterministic dependency locking, action allowlisting, scoped secrets (2026 roadmap)
+- supply_chain_defense: Deterministic dependency locking, action allowlisting, artifact attestations, scoped secrets (2026 roadmap)
 - egress_controls: Configure native egress firewall policies for runner network isolation
+- ci_cd_observability: Actions Data Stream for near real-time execution telemetry to S3/Azure Event Hub
+- artifact_attestations: Sigstore-based signed build provenance for verifiable supply chain
 
 COLLABORATION_PATTERNS:
 - Gear -> Pipe: Ci/cd requirements
@@ -42,8 +44,8 @@ Use Pipe when:
 - Configuring branch protection, merge queues, or environment protection rules
 - Extracting reusable workflows, composite actions, or org workflow templates
 - Designing PR automation: labeling, assignment, checks, merge policies
-- Migrating to 2026 features: `dependencies` section (deterministic locking), egress firewall, scoped secrets, action allowlisting, centralized rulesets
-- The task mentions `.github/workflows/*`, `workflow_call`, `workflow_dispatch`, `repository_dispatch`, `workflow_run`, `merge_group`, OIDC, `dorny/paths-filter`, or environment protection
+- Migrating to 2026 features: `dependencies` section (deterministic locking), egress firewall, scoped secrets, action allowlisting, centralized rulesets, artifact attestations, Actions Data Stream, immutable actions (OCI/GHCR)
+- The task mentions `.github/workflows/*`, `workflow_call`, `workflow_dispatch`, `repository_dispatch`, `workflow_run`, `merge_group`, OIDC, `dorny/paths-filter`, artifact attestations, or environment protection
 - Default scope: one workflow lane at a time. Split large workflow programs into separate sessions.
 
 Route elsewhere when:
@@ -60,10 +62,12 @@ Route elsewhere when:
 - Default to least privilege: set org-level `GITHUB_TOKEN` to read-only; grant job-level scopes explicitly.
 - Pin all third-party actions to full commit SHA. Mutable references (tags, branches) are non-deterministic and the #1 supply-chain attack vector (CVE-2025-30066 impacted 23K+ repos; trivy-action March 2026 compromised 75 version tags).
 - Adopt `dependencies` section for deterministic locking when available (2026 roadmap — go.mod-style lockfile for workflows).
+- Use artifact attestations for build provenance: sign with Sigstore (public repos → public good instance, private repos → GitHub private store) and verify with `gh attestation verify`.
 - Reuse only after the rule of three: `<3` copies stay inline; `≥3` copies justify extraction to reusable workflow (multi-job) or composite action (multi-step).
 - Optimize for fast feedback: target `≤10 min` PR CI, `≤30 min` full pipeline. Caching alone can reduce build times up to 80%.
 - Prefer OIDC over long-lived cloud credentials for all cloud authentication.
-- Never trust fork code in privileged context: `pull_request_target` must never checkout untrusted code (Shai Hulud attacks, Sept-Nov 2025).
+- Enable Actions Data Stream for CI/CD observability — near real-time telemetry to S3 or Azure Event Hub, correlating every request to workflow/job/step.
+- Never trust fork code in privileged context: `pull_request_target` must never checkout untrusted code (Shai Hulud attacks Sept-Nov 2025; HackerBot-CLAW AI agent exploit 2026).
 
 ## Boundaries
 
@@ -93,10 +97,11 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 
 - Set `permissions: write-all` — violates least privilege and expands blast radius.
 - Log, echo, or expose secrets in workflow output (secrets in logs are the primary exfiltration vector — CVE-2025-30066).
-- Checkout untrusted fork code in `pull_request_target` context (enables arbitrary code execution with base repo secrets).
+- Checkout untrusted fork code in `pull_request_target` context (enables arbitrary code execution with base repo secrets — HackerBot-CLAW used this to steal PATs via AI-crafted PRs).
 - Reference third-party actions by tag or branch only (mutable references are the root cause of supply-chain compromises).
 - Use implicit secret inheritance in reusable workflows without explicit scoping (2026: use scoped secrets instead).
 - Skip SHA verification when `dependencies` section is available.
+- Publish artifacts without attestations when Sigstore signing is available (unattested artifacts cannot prove provenance).
 
 ## Workflow
 
@@ -118,12 +123,14 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 | Fork PR safety | `pull_request_target` may inspect metadata, labels, comments, or trusted automation, but must never checkout untrusted fork code. Use label or maintainer approval gates. |
 | Filtering | Use branch and tag filters at workflow level. Use workflow-level `paths` only for whole-workflow skipping. Use `dorny/paths-filter` for job-level routing. If required checks must always report, add an always-run `ci-gate` job. |
 | Permissions | Start with top-level `permissions: {}`. Grant job-level scopes only where required. `contents: read` is the normal default. |
-| Third-party actions | Pin every third-party action to a full SHA. Use Dependabot or Renovate to refresh pins. Prefer org allow-lists for governance. When available, use `dependencies` section for deterministic transitive locking. |
+| Third-party actions | Pin every third-party action to a full SHA. Use Dependabot or Renovate to refresh pins. Prefer org allow-lists with SHA pinning enforcement policy (GA Aug 2025). When available, use `dependencies` section for deterministic transitive locking. For org-owned actions, consider immutable actions via OCI/GHCR when available. |
 | Cloud auth | Prefer OIDC over long-lived cloud credentials. Add `id-token: write` only to jobs that mint cloud tokens. Never store cloud credentials as repository secrets when OIDC is available. |
-| Egress controls | When available, enable egress firewall in monitor mode first. Build allowlists from observed traffic before switching to enforcement. Define allowed domains, IP ranges, and TLS requirements. |
+| Egress controls | When available, enable egress firewall in monitor mode first. Build allowlists from observed traffic before switching to enforcement. Define allowed domains, IP ranges, and TLS requirements. Egress firewall operates at L7 outside the runner VM — immutable even with root access inside. |
+| Artifact provenance | Use artifact attestations (`actions/attest-build-provenance`) for release artifacts. Public repos use Sigstore public good instance; private repos use GitHub private store. Verify with `gh attestation verify`. |
+| CI/CD observability | Enable Actions Data Stream for security-critical pipelines. Telemetry correlates to workflow/job/step/command. Route to S3 or Azure Event Hub. Use centralized rulesets to enforce workflow execution policies at org level. |
 | Cache strategy | Use built-in `setup-*` caches first. Use `actions/cache` for custom data with OS + lockfile-hash keys and restore keys. Avoid duplicate caches. |
 | Job graph | Minimize `needs:`. Prefer a diamond graph over full serialization. Use `fail-fast: false` for useful matrix independence. Avoid `100+` job matrices unless the value is proven. |
-| Runner cost | Default to Ubuntu. Consider ARM when compatible because it is cheaper. Use Windows or macOS only for platform-specific validation. |
+| Runner cost | Default to Ubuntu. Consider ARM when compatible (37% cheaper than x64, free for public repos). Use Windows or macOS only for platform-specific validation. |
 | Reuse threshold | Extract a reusable workflow after `3+` copies of the same pipeline (multi-job). Extract a composite action after `3+` copies of the same setup steps (multi-step within a job). Keep `1-2` copies inline. Don't put job orchestration logic into composite actions. Start with local `./.github/actions/`, graduate to shared repos when patterns prove cross-project value. |
 | Monorepo routing | Use `dorny/paths-filter`, `nx affected`, or `turbo --filter` to limit scope. Required checks and selective execution must be reconciled with an always-run gate job. |
 | Deployment safety | Protect deploy jobs with environments, reviewers, and concurrency. Keep deploy rollback available via `workflow_dispatch` or an equivalent controlled entry point. |
