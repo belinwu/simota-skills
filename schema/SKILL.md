@@ -7,12 +7,13 @@ description: DBスキーマ設計・マイグレーション作成・ER図設計
 CAPABILITIES_SUMMARY:
 - data_modeling: Design normalized database schemas and ER diagrams
 - migration_generation: Create zero-downtime migration scripts using expand-contract pattern
-- index_design: Design optimal index strategies including HNSW/IVFFlat for vector workloads
+- index_design: Design optimal index strategies including HNSW/IVFFlat for vector workloads and B-tree skip scan awareness
 - relation_definition: Define table relationships and constraints
 - schema_review: Review and optimize existing schemas against known anti-patterns (EAV, God Table, lock cascades)
 - multi_db_support: Support PostgreSQL, MySQL, SQLite, MongoDB schema patterns
 - multi_tenant: Design tenant isolation via RLS, schema-per-tenant, or partitioning strategies
-- vector_schema: Design pgvector columns and indexes for AI/embedding workloads
+- vector_schema: Design pgvector columns and indexes for AI/embedding workloads (HNSW tuning, float16, hybrid retrieval)
+- temporal_schema: Design temporal constraints using WITHOUT OVERLAPS for scheduling and time-series data
 
 COLLABORATION_PATTERNS:
 - Builder -> Schema: Data requirements
@@ -47,7 +48,8 @@ Use Schema when the task needs one or more of the following:
 - ORM schema output for Prisma, TypeORM, or Drizzle
 - Mermaid `erDiagram` output for documentation
 - Multi-tenant schema design (shared-schema with RLS, schema-per-tenant, or database-per-tenant)
-- Vector/embedding column design with pgvector (HNSW/IVFFlat index selection)
+- Vector/embedding column design with pgvector (HNSW/IVFFlat index selection, float16 quantization)
+- Temporal constraint design using PostgreSQL 18 `WITHOUT OVERLAPS` for scheduling/time-series
 - Expand-contract migration planning for zero-downtime DDL
 
 Route elsewhere when the task is primarily:
@@ -66,6 +68,7 @@ Route elsewhere when the task is primarily:
 - Set `lock_timeout` (e.g., 5–10 s) and `statement_timeout` before any DDL in production — a single long-running query can block an `ALTER TABLE`, and while it waits every new query queues behind it, cascading into a full outage.
 - Up to 70 % of database performance issues stem from design flaws, not hardware — invest time in modeling before scaling infrastructure.
 - For multi-tenant schemas, include `tenant_id` in every tenant-scoped table **and** in composite foreign keys to prevent cross-tenant data leakage.
+- On PostgreSQL 18+, prefer `gen_random_uuidv7()` for new primary keys — UUIDv7 embeds a millisecond timestamp, preserving global uniqueness while enabling B-tree-friendly chronological ordering (eliminates the random-write amplification of UUIDv4).
 
 ## Boundaries
 
@@ -119,20 +122,23 @@ Route elsewhere when the task is primarily:
 - Use `3NF` by default. Read [normalization-guide.md](references/normalization-guide.md) when deciding whether to denormalize.
 - Use these default index mappings:
 
-| Query pattern | Default index |
-|--------------|---------------|
-| Exact match / range | `B-tree` |
-| JSON / array membership | `GIN` |
-| Full-text | `GIN` or engine-native full-text |
-| Geospatial | `GiST` / engine-native spatial index |
+| Query pattern | Default index | Notes |
+|--------------|---------------|-------|
+| Exact match / range | `B-tree` | PG18 skip scan allows efficient queries on non-leading columns |
+| JSON / array membership | `GIN` | |
+| Full-text | `GIN` or engine-native full-text | |
+| Geospatial | `GiST` / engine-native spatial index | |
+| Vector similarity (KNN) | `HNSW` (pgvector) | Use `halfvec` for memory savings; prefilter by tenant/category |
 
 - Use `CREATE INDEX CONCURRENTLY` on PostgreSQL for production index creation.
 - Treat `DROP COLUMN` and `DROP TABLE` as backup-required.
 - Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation. Consider pgroll for automated expand-contract with versioned schemas and data backfills.
-- On PostgreSQL 18+, leverage `ALTER TABLE ... ADD COLUMN ... NOT NULL NOT VALID` directly to simplify the expand phase for new non-nullable columns.
+- On PostgreSQL 18, leverage `ALTER TABLE ... ADD COLUMN ... NOT NULL NOT VALID` directly to simplify the expand phase for new non-nullable columns.
+- On PostgreSQL 18, use virtual generated columns (now the default) for derived values — they compute on read without storing, avoiding table rewrites during schema evolution.
+- On PostgreSQL 18, use temporal constraints (`PRIMARY KEY ... WITHOUT OVERLAPS`, `FOREIGN KEY ... PERIOD`) for scheduling, booking, and bitemporal schemas instead of application-level overlap checks.
 - Prefer DB-native data types over generic `VARCHAR` or `TEXT` for dates, money, booleans, UUIDs, JSON, and status fields.
 - Support Prisma, TypeORM, and Drizzle when framework output is requested, but keep SQL semantics authoritative.
-- For vector/AI workloads (< 10 M vectors), prefer pgvector within PostgreSQL for ACID compliance and hybrid search. Use HNSW index (`m=16`, `ef_construction=64`) for recall-performance balance; use IVFFlat for datasets > 1 M vectors where approximate results are acceptable. Monitor P99 search latency; alert on > 2× baseline.
+- For vector/AI workloads, prefer pgvector within PostgreSQL for ACID compliance and hybrid search (benchmarked at 50 M+ vectors with pgvectorscale). Use HNSW index (`m=16`, `ef_construction=64`; raise `ef_construction` to 256 for recall-critical workloads) for recall-performance balance; use IVFFlat only when index build time is the bottleneck. Use `halfvec` (float16) to halve memory with near-identical accuracy. Combine vector KNN with structured prefilters (e.g., `tenant_id`, `language`) for order-of-magnitude speedups over vector-only scans. Monitor P99 search latency; alert on > 2× baseline.
 - For multi-tenant schemas, place `tenant_id` as the leading column in composite primary keys and create a B-tree index on `tenant_id`. Use PostgreSQL RLS as a safety net alongside application-level filtering. For large tenants, consider declarative list or hash partitioning by `tenant_id`.
 
 ## Routing And Handoffs
@@ -154,7 +160,8 @@ Route elsewhere when the task is primarily:
 | migration for existing schema | Expand-contract safety analysis | ordered migration steps, rollback path, lock-risk notes | `references/migration-patterns.md` |
 | index design / slow query schema | Access-pattern-driven index selection | index plan with type rationale | `references/index-strategies.md` |
 | multi-tenant schema | Isolation strategy evaluation | RLS policies, partitioning plan, tenant_id design | `references/multi-tenant-patterns.md` |
-| vector / AI embedding schema | pgvector column + index design | vector column DDL, HNSW/IVF config, distance operator guidance | `references/advanced-patterns.md` |
+| vector / AI embedding schema | pgvector column + index design | vector column DDL, HNSW/IVF config, halfvec, hybrid prefilter guidance | `references/advanced-patterns.md` |
+| temporal / scheduling schema | Temporal constraint design | WITHOUT OVERLAPS PK/FK, period columns, bitemporal pattern | `references/advanced-patterns.md` |
 | anti-pattern review | Schema audit against known anti-patterns | findings with severity and fix recommendations | `references/schema-design-anti-patterns.md` |
 | complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
 | unclear request | Clarify scope and route | scoped analysis | `references/` |
@@ -166,7 +173,7 @@ Routing rules:
 - If the request involves index design or query optimization, read `references/index-strategies.md`.
 - If the request involves migration sequencing or zero-downtime changes, read `references/migration-patterns.md`.
 - If the request involves anti-pattern review, read `references/data-modeling-anti-patterns.md` or `references/schema-design-anti-patterns.md`.
-- If the request involves PostgreSQL 17 features, read `references/postgresql17-features.md`.
+- If the request involves PostgreSQL 17/18 features (UUIDv7, virtual generated columns, temporal constraints, skip scan), read `references/postgresql17-features.md`.
 - If the request involves multi-tenant architecture, read `references/multi-tenant-patterns.md`.
 - If the request involves event sourcing, CQRS, pgvector, or bitemporal design, read `references/advanced-patterns.md`.
 - Always read relevant `references/` files before producing output.
@@ -231,7 +238,7 @@ Schema receives data requirements and architectural context from upstream agents
 | `references/data-modeling-anti-patterns.md` | You are evaluating EAV, polymorphic relations, denormalization, or temporal design. |
 | `references/migration-deployment-anti-patterns.md` | You are planning a risky migration, zero-downtime rollout, or rollback strategy. |
 | `references/index-performance-anti-patterns.md` | You are reviewing composite indexes, bloat, FK indexes, or index health. |
-| `references/postgresql17-features.md` | You need PostgreSQL 17 JSON/SQL:JSON features, partitioning improvements, or logical replication changes. |
+| `references/postgresql17-features.md` | You need PostgreSQL 17 JSON/SQL:JSON features, or PostgreSQL 18 UUIDv7, virtual generated columns, temporal constraints, B-tree skip scan. |
 | `references/multi-tenant-patterns.md` | You are designing a multi-tenant schema (database/schema/shared-schema with RLS). |
 | `references/advanced-patterns.md` | You need event sourcing schema, CQRS projections, pgvector/AI schema, or bitemporal design. |
 
