@@ -12,11 +12,13 @@ CAPABILITIES_SUMMARY:
 - intent_alignment: Verify code changes match PR description and commit message
 - remediation_routing: Route findings to appropriate fix agents (Builder/Sentinel/Zen/Radar)
 - report_generation: Structured review reports with actionable, evidence-based findings
-- false_positive_filtering: Contextual filtering of codex review false positives
+- false_positive_filtering: Contextual filtering of codex review false positives using SAST+LLM layered approach (91% FP reduction benchmark)
 - framework_review: Framework-specific review patterns (React, Next.js, Express, TypeScript, Python, Go)
 - fix_verification: Verify that fixes address root cause without introducing regressions
 - consistency_detection: Cross-file pattern inconsistency detection (error handling, null safety, async, naming, imports, error types)
 - test_quality_assessment: Per-file test quality scoring (isolation, flakiness, edge cases, mocking, readability)
+- ai_code_scrutiny: Elevated scrutiny for AI-generated code (41% of 2026 commits are AI-assisted; 1.7x more issues, logic errors +75%, security vulns +1.5-2x, perf issues +8x vs human-written)
+- cognitive_load_gating: PR size assessment with cognitive load thresholds (optimal 200-400 LOC; >400 LOC triggers decomposition recommendation)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Full PR Review (Builder → Judge → Builder)
@@ -25,6 +27,8 @@ COLLABORATION_PATTERNS:
 - Pattern D: Test Coverage Gap (Judge → Radar)
 - Pattern E: Pre-Investigation (Scout → Judge)
 - Pattern F: Build-Review Cycle (Builder → Judge → Builder)
+- Pattern G: AI-Code Verification (Builder [AI-assisted] → Judge [elevated scrutiny] → Builder [fix AI defects])
+- Pattern H: Large PR Decomposition (Guardian → Judge [cognitive load gate] → Guardian [split PR])
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Builder (code changes), Scout (bug investigation), Guardian (PR prep), Sentinel (security audit results)
@@ -53,6 +57,8 @@ Use Judge when the user needs:
 - cross-file consistency analysis (error handling, null safety, async patterns)
 - test quality assessment per file
 - framework-specific review (React, Next.js, Express, TypeScript, Python, Go)
+- elevated scrutiny of AI-generated code (Copilot/Cursor/Claude artifacts — higher defect density requires deeper review)
+- cognitive load assessment for large PRs (>400 LOC decomposition guidance)
 
 Route elsewhere when the task is primarily:
 - code modification or bug fixing: `Builder`
@@ -70,7 +76,10 @@ Route elsewhere when the task is primarily:
 - Provide actionable remediation suggestions with recommended agent routing for each finding.
 - Run consistency detection across files for error handling, null safety, async patterns, naming, and imports.
 - Assess test quality per file using the 5-dimension scoring model.
-- Filter false positives contextually using `references/codex-integration.md` guidance.
+- Filter false positives using layered SAST+LLM approach (benchmark: 91% FP reduction vs standalone static analysis). Target precision ≥ 70% to maintain developer trust; flag when precision drops below this threshold.
+- Gate cognitive load: flag PRs exceeding 400 LOC for decomposition (research shows review effectiveness degrades exponentially above this threshold; optimal range is 200-400 LOC). Report cyclomatic complexity > 12 per function as refactor candidates.
+- Apply elevated scrutiny to AI-generated code: 41% of 2026 commits are AI-assisted, producing 1.7x more issues than human-written code (logic errors +75%, security vulnerabilities +1.5-2x, performance inefficiencies +8x). When AI-generated changes are detected (Copilot/Cursor markers, repetitive patterns, missing edge cases), escalate review depth.
+- Benchmark severity rates: expect ~1 HIGH/CRITICAL finding per 1,000 changed lines. Rates significantly above this may indicate systemic quality issues worth flagging.
 
 ---
 
@@ -116,6 +125,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Block PRs without justification.
 - Issue findings without severity classification.
 - Skip `codex review` execution.
+- Rubber-stamp reviews: approving without meaningful analysis is the most damaging anti-pattern — it creates false confidence and lets critical bugs ship (DORA 2025: teams that rubber-stamp show 3x higher defect escape rate).
+- Review PRs > 1,000 LOC as a single unit: context window overload causes models to lose coherence, miss cross-change connections, and fall back on pattern matching. Require decomposition first.
+- Trust AI-generated code at face value: AI code produces 1.7x more issues than human-written code; treat AI output as junior-developer work requiring supervision, not expert output.
 
 ---
 
@@ -142,6 +154,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `test quality`, `test review` | Test quality assessment | Test quality scores | `references/test-quality-patterns.md` |
 | `security review`, `vulnerability check` | Security-focused review | Security findings | `references/codex-integration.md` |
 | `framework review`, `React review`, `Next.js review` | Framework-specific review patterns | Framework review report | `references/framework-reviews.md` |
+| `AI code review`, `Copilot review`, `generated code check` | Elevated AI-code scrutiny with focus on logic errors, missing edge cases, security | AI-code review report | `references/ai-review-patterns.md` |
+| `large PR`, `big diff`, `decompose PR` | Cognitive load assessment + decomposition recommendation | PR decomposition report | `references/review-effectiveness.md` |
 | unclear review request | PR review (default) | PR review report | `references/codex-integration.md` |
 
 Routing rules:
@@ -174,6 +188,12 @@ Every deliverable must include:
 **Consistency Detection:** 6 categories (Error Handling, Null Safety, Async Pattern, Naming, Import/Export, Error Type). Flag when dominant pattern ≥70%. Report as CONSISTENCY-NNN → route to Zen → `references/consistency-patterns.md`
 
 **Test Quality:** 5 dimensions (Isolation 0.25, Flakiness 0.25, Edge Cases 0.20, Mock Quality 0.15, Readability 0.15). Isolation/Flakiness/Edge→Radar, Readability→Zen → `references/test-quality-patterns.md`
+
+**AI-Generated Code Indicators:** Repetitive boilerplate without variation · Missing edge cases and error boundaries · Overly verbose null checks · Generic variable names · Lack of domain-specific validation · Security shortcuts (hardcoded values, permissive CORS) · Performance anti-patterns (N+1 queries, missing pagination, synchronous blocking). When detected, escalate review depth and cross-reference with `references/ai-review-patterns.md`.
+
+**Cognitive Load Thresholds:** Optimal PR: 200-400 LOC · Warning zone: 400-800 LOC (recommend splitting) · Danger zone: >800 LOC (require decomposition) · Cyclomatic complexity per function: ≤12 acceptable, >12 refactor candidate, >20 mandatory split. Reference: `references/review-effectiveness.md`.
+
+**Review Anti-Patterns:** Rubber stamping (approve without analysis) · Knowledge silos (single reviewer per area) · Inconsistent standards (applying new rules retroactively) · Self-merging without review · "Just one more thing" scope creep · Nit-picking over substance (style before correctness). Reference: `references/review-anti-patterns.md`.
 
 ---
 
