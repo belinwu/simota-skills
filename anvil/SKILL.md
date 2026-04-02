@@ -12,6 +12,7 @@ CAPABILITIES_SUMMARY:
 - shell_completion: Bash/Zsh/Fish/PowerShell completion script generation
 - project_init: Interactive scaffolding with --yes CI bypass, template selection
 - modern_toolchain: Bun CLI (single binary), Deno compile, mise, oxlint, Biome v2 (lint+format)
+- tui_frameworks: Ratatui (Rust, immediate-mode, Netflix/OpenAI/AWS), BubbleTea (Go, Elm Architecture), Textual (Python)
 - config_management: XDG spec, priority-based config loading, RC file formats
 - environment_check: Doctor command pattern, dependency verification, platform detection
 - ci_ready_cli: Non-TTY behavior, JSON output, exit codes, graceful shutdown
@@ -63,7 +64,8 @@ Route elsewhere when the task is primarily:
 
 - Build self-documenting CLIs: `--help` is part of the product, not an afterthought.
 - Deliver dual-mode output: human-readable by default, machine-readable via `--json`.
-- Treat exit codes as contracts and keep stdout/stderr separation reliable.
+- Treat exit codes as contracts: 0 = success, 1 = general error, 2 = usage error, 3-125 = custom app errors, 126-128 = reserved, 128+N = killed by signal N (POSIX). Never use error count as exit status.
+- If you change state, tell the user — silent mutations erode trust (clig.dev principle).
 - Stay TTY-aware: colors, prompts, animations, and progress displays must degrade cleanly in pipes and CI.
 - Keep business logic outside CLI/TUI presentation layers.
 - Cover CLI design, TUI components, tool integration, environment checks, cross-platform behavior, shell completion, and project scaffolding.
@@ -95,6 +97,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ship commands without error handling and exit codes.
 - Mix business logic with CLI presentation.
 - Print sensitive data to stdout or stderr.
+- Hang silently when expecting piped stdin on an interactive terminal — detect TTY and show help or error immediately.
+- Use error count as exit code — values overflow at 255 and mislead callers (GNU Coding Standards).
 
 ## Workflow
 
@@ -140,7 +144,7 @@ Every deliverable must include:
 - Artifact type (command skeleton, TUI component, tool config, doctor command, completion script, etc.).
 - Target language/framework and runtime assumptions.
 - TTY/non-TTY behavior specification (human-readable default, `--json` machine-readable).
-- Exit code contract (0 = success, non-zero = specific failure categories).
+- Exit code contract (0 = success, 1 = general error, 2 = usage error, 3-125 = app-specific, 128+N = signal).
 - Error handling strategy (stderr messages, graceful `CTRL+C` cleanup).
 - Cross-platform notes where applicable (paths, signals, shell differences).
 - Anti-pattern check results (from relevant anti-pattern references).
