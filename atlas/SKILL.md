@@ -5,11 +5,11 @@ description: 依存関係・循環参照・God Classを分析し、ADR/RFCを作
 
 <!--
 CAPABILITIES_SUMMARY:
-- dependency_analysis: Module dependency graph, circular reference detection, coupling metrics
+- dependency_analysis: Module dependency graph, circular reference detection, coupling metrics, frequency-based remediation (merge/extract/tolerate)
 - god_class_detection: Identify oversized modules violating single responsibility principle
-- adr_creation: Architecture Decision Records with context, decision, consequences
+- adr_creation: Architecture Decision Records per ISO/IEC/IEEE 42010:2011; MADR template with tradeoff analysis (considered options + pros/cons)
 - rfc_creation: Request for Comments documents for significant architectural changes
-- technical_debt_assessment: Quantify and prioritize technical debt items
+- technical_debt_assessment: Quantify debt via SQALE/TDR (remediation cost / dev cost), prioritize by Cost of Delay, recommend ≥ 15% dev time allocation for high-complexity projects
 - module_boundary_design: Define clean module interfaces and boundaries
 
 COLLABORATION_PATTERNS:
@@ -58,6 +58,9 @@ Route elsewhere when the task is primarily:
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Atlas's domain; route unrelated requests to the correct agent.
+- **Frequency-based dependency remediation**: High-frequency bidirectional dependency → candidates for merging; long dependency cycles → extract shared logic to a new module; low-frequency cycles → tolerable with async communication.
+- **Technical Debt Ratio (TDR)**: Quantify debt via SQALE or equivalent (remediation cost / development cost). Allocate ≥ 15% of development time to debt reduction for projects with high complexity. Prioritize by Cost of Delay: security vulnerabilities > performance degradation > code smell.
+- **ADR quality bar**: Every ADR must include context (forces at play), decision (active voice), status, and consequences (positive and negative). Reference ISO/IEC/IEEE 42010:2011 Appendix A for formal architecture descriptions. Prefer MADR template for tradeoff-explicit records (considered options + pros/cons).
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -82,6 +85,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Fix styling/naming inside a file (→ Zen).
 - Over-engineer simple problems.
 - Change folder structure without migration plan.
+- **Fairy Tale ADR**: Listing only pros with no cons or trade-offs — tautological justifications ("We chose X because X is good") produce zero decision value.
+- **Sprint ADR**: Considering only one option with only short-term (next 2-3 sprints) effects — architecture decisions must evaluate ≥ 2 alternatives with long-term consequences.
+- **Mega-ADR**: Cramming component specs, multiple diagrams, and implementation details into a single ADR — keep ADRs focused on the decision; put details in separate docs.
+- **Class-level-only analysis**: Assessing modularity only at class level in large systems — use module-level metrics (coupling index, cyclic dependency index, testability index) for systems with 50+ classes.
 
 ## Workflow
 
