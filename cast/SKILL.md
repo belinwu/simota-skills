@@ -12,6 +12,8 @@ CAPABILITIES_SUMMARY:
 - persona_distribution: Adapter-specific packaging for downstream agents (Echo, Spark, Retain, Compete, Accord)
 - persona_voice: TTS-based persona voice generation with engine selection and fallback
 - confidence_scoring: Evidence-based confidence with source weights, validation tiers, and decay rules
+- behavioral_validation: Stated-vs-actual behavior comparison with per-attribute validation scores
+- predictive_evolution: Leading-indicator analysis for proactive persona drift anticipation
 
 COLLABORATION_PATTERNS:
 - Researcher -> Cast: Interview or research findings for persona creation/evolution
@@ -43,6 +45,8 @@ Use Cast when the task requires any of the following:
 - Audit persona freshness, duplication, coverage, or Echo compatibility.
 - Adapt personas for Echo, Spark, Retain, Compete, or Accord.
 - Generate persona voice output with TTS.
+- Create proto-personas from market data or assumptions as rapid initial hypotheses.
+- Run predictive evolution analysis using leading indicators (engagement shifts, cohort trends).
 
 Route elsewhere when the task is primarily:
 - user research design or interview planning: `Researcher`
@@ -59,6 +63,8 @@ Route elsewhere when the task is primarily:
 - Assign confidence explicitly. Confidence is earned from evidence, not prose.
 - Preserve Core Identity: `Role + category + service` is immutable through evolution.
 - Keep backward compatibility with existing `.agents/personas/` files.
+- Prioritize behavioral data over demographics. Personas should be built around user journeys and behavioral patterns, not demographic profiles.
+- Validate stated vs. actual behavior. Augment qualitative research with behavioral tracking to create per-attribute validation scores.
 - Do not write repository source code.
 
 ## Boundaries
@@ -90,6 +96,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Skip confidence scoring or evolution logs.
 - Overwrite an existing persona without logging the change.
 - Change Core Identity through evolution. Create a new persona instead.
+- Present AI-only personas as validated. LLM-generated personas are proto-personas by default; they require human research validation to reach `active` status (Synthetic Persona Fallacy).
+- Trust AI-generated sentiment at face value. LLMs exhibit positive sentiment bias and value-skew (e.g., over-weighting environmental factors); audit AI outputs for systematic bias before incorporation.
 
 ## Operating Modes
 
@@ -133,6 +141,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `audit`, `check`, `freshness`, `coverage` | AUDIT mode | Audit report with severities | `references/persona-validation.md` |
 | `distribute`, `deliver`, `package`, `for echo` | DISTRIBUTE mode | Adapter-specific delivery | `references/distribution-adapters.md` |
 | `speak`, `voice`, `TTS`, `audio` | SPEAK mode | Transcript + optional audio | `references/speak-engine.md` |
+| `proto-persona`, `hypothesis`, `assumption-based` | CONJURE mode (proto tier) | Proto-persona files capped at 0.50 confidence | `references/generation-workflows.md` |
+| `predict`, `leading indicators`, `proactive evolution` | EVOLVE mode (predictive) | Predicted drift report + recommended changes | `references/evolution-engine.md` |
 | unclear persona request | CONJURE mode | New persona files + registry | `references/generation-workflows.md` |
 
 ## Critical Decision Rules
@@ -148,7 +158,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Source contributions: Interview `+0.30` > Session replay `+0.25` > Feedback `+0.20` = Analytics `+0.20` > Code `+0.15` > README `+0.10`.
 - Validation contribution: Interview `+0.20`, Survey `+0.15`, ML clustering `+0.20`, triangulation bonus `+0.10`.
-- AI-only generation is capped at `0.50`.
+- AI-only generation is capped at `0.50` (proto-persona tier). Promotion to `active` requires at least one human-research validation stream.
+- Audit AI-generated attributes for systematic bias (positive sentiment skew, value-skew) before incorporation.
 - Decay:
   - `30+` days: `-0.05/week`
   - `60+` days: `-0.10/week`
@@ -156,7 +167,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ### Audit Gates
 
-- Freshness: start decay after `30` days.
+- Freshness: start decay after `30` days. Full refresh recommended bi-annually (aligned with business planning cycles).
 - Deduplication: flag when similarity is greater than `70%`.
 - Coverage: generate at least `3` personas by default: `P0`, `P1`, `P2`.
 - Validation count:
