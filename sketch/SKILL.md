@@ -56,15 +56,22 @@ Route elsewhere when the task is primarily:
 - story or catalog integration after assets exist: `Showcase`
 - 3D model generation from images: `Clay`
 
+Model routing within Sketch:
+- Image editing or style transfer: use Gemini-native models (Nano Banana / Nano Banana 2) — Imagen 4 is text-to-image only
+- 4K output: use Nano Banana 2 (`gemini-3.1-flash-image-preview`) — Imagen 4 caps at 2K
+- Best text rendering at lowest cost: Imagen 4 Fast ($0.02/image)
+
 ## Core Contract
 
 - Deliver code, not generated images.
-- Default stack: Python + `google-genai` (require `v1.38+`; recommend `v1.50+` for `ImageGenerationConfig`).
+- Default stack: Python + `google-genai` (require `v1.38+`; recommend `v1.50+` for `ImageGenerationConfig`). The old `google-generativeai` package is deprecated — always use `google-genai`.
 - Default model: `gemini-2.5-flash-image` (~$0.039/image at 1024×1024).
-- Default API surface: Google AI API with API-key auth.
+- Default API surface: Google AI API with API-key auth; use the `/v1beta/` endpoint (image generation is not available on `/v1`).
 - Translate Japanese prompts to English before generation (`JP -> EN`).
-- Prompt structure: `Subject + Style + Composition + Technical`; target 50-200 words; use photographic/cinematic language (lens, angle, lighting) for realism.
+- Prompt structure: `Subject + Style + Composition + Technical`; target 50-200 words; use photographic/cinematic language (lens, angle, lighting) for realism. Avoid prompt stuffing — conflicting keywords degrade quality.
+- Set `response_modalities=["TEXT", "IMAGE"]` — omitting `"TEXT"` causes a silent failure (HTTP 200 with empty `parts`).
 - Enable `thinking_level: high` for complex scenes, text-heavy images, or multi-element compositions.
+- Parse response by iterating over `parts` and checking for `inline_data` attribute — do not assume a fixed index, as the model may return both text and image parts.
 - Save outputs with timestamped filenames and `metadata.json` including seed, model, prompt, and cost.
 - Estimate cost and rate impact before large runs; recommend Batch API (50% discount, 24h delivery) for ≥50 images.
 - Document SynthID in the deliverable — SynthID is embedded during generation (Tournament Sampling), not a removable overlay; disclose this to users.
@@ -78,11 +85,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Read the API key from `os.environ["GEMINI_API_KEY"]`; never inline credentials.
 - Include comprehensive error handling for network failures, quota (429), content-policy blocks (`IMAGE_SAFETY`, `blockReason: OTHER`), silent failures (model returns text instead of image), and 503 service errors.
-- Handle silent failures explicitly — when the model returns no image without an error, retry with an explicit instruction prefix such as "Generate a photorealistic image of…".
+- Handle silent failures with a diagnostic sequence: (1) verify `response_modalities` includes both `"TEXT"` and `"IMAGE"`, (2) confirm `/v1beta/` endpoint, (3) check billing is enabled, then (4) retry with an explicit instruction prefix such as "Generate a photorealistic image of…".
 - Document SynthID watermarking (invisible, non-removable, embedded via Tournament Sampling during generation).
 - Add `.env` and `.gitignore` guidance to protect API keys.
 - Add `# Content policy:` comments when the prompt is policy-sensitive.
 - Set `person_generation: DONT_ALLOW` by default (SDK `v1.50+`).
+- Parse response by iterating over `candidate.content.parts` and checking for `inline_data` attribute — do not assume a fixed index position.
 - Generate `metadata.json` with seed, model, prompt, parameters, cost estimate, and timestamp.
 
 ### Ask First
@@ -103,15 +111,21 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Generate copyrighted characters or real people without explicit request — potential DMCA/personality-rights liability.
 - Omit SynthID disclosure — users must understand outputs are watermarked and traceable.
 - Use `imagen-3.0-*` models on Google AI API — they are Vertex AI only and return 404.
+- Set `response_modalities=["IMAGE"]` without `"TEXT"` — causes silent failure (HTTP 200, empty parts); always include both.
+- Use the deprecated `google-generativeai` package — it is no longer maintained; use `google-genai` instead.
+- Use Imagen 4 for image editing tasks — Imagen 4 is text-to-image only; route editing to Gemini-native models.
 
 ## Critical Constraints
 
 | Topic | Rule |
 | --- | --- |
 | Default model | Use `gemini-2.5-flash-image` (~$0.039/image) unless the user explicitly requires another supported path |
-| Model landscape 2026 | Nano Banana (`gemini-2.5-flash-image`), Nano Banana 2 (`gemini-3.1-flash-image-preview`, 4K, $0.045), Nano Banana Pro (`gemini-3-pro-image-preview`, $0.134), Imagen 4 Fast/Standard/Ultra ($0.02-$0.06) |
+| Model landscape 2026 | Nano Banana (`gemini-2.5-flash-image`), Nano Banana 2 (`gemini-3.1-flash-image-preview`, 0.5K-4K, $0.045), Nano Banana Pro (`gemini-3-pro-image-preview`, $0.134), Imagen 4 Fast/Standard/Ultra ($0.02-$0.06, text-to-image only, max 2K) |
+| Imagen 4 constraints | Text-to-image only — cannot edit existing images; max native resolution 2K (2048×2048); improved text rendering over Gemini-native models |
 | Google AI vs Vertex AI | `imagen-3.0-*` is Vertex AI only; on Google AI API it returns `404` |
-| SDK compatibility | `v1.38+` supports `GenerateContentConfig(response_modalities=["IMAGE"])`; `v1.50+` additionally supports `ImageGenerationConfig` and `person_generation` param |
+| SDK compatibility | `v1.38+` supports `GenerateContentConfig(response_modalities=["TEXT", "IMAGE"])`; `v1.50+` additionally supports `ImageGenerationConfig` and `person_generation` param |
+| responseModalities | Must be `["TEXT", "IMAGE"]` — using `["IMAGE"]` alone returns HTTP 200 with empty `parts` (silent failure) |
+| Endpoint | Must use `/v1beta/` — image generation is not available on `/v1` |
 | Prompt architecture | Use `Subject + Style + Composition + Technical`; use photographic/cinematic language (lens type, camera angle, lighting setup) for realism |
 | Prompt phrasing | Put the subject first, keep style internally consistent, prefer positive phrasing, and avoid conflicting mixes |
 | Prompt language | Output the final generation prompt in English even when the request is Japanese |
@@ -122,7 +136,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Reference images | Maximum `14` images/request; keep each under `4MB` when possible; use for style consistency across series |
 | Aspect ratios | Supported: 1:1, 3:2, 2:3, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9; Nano Banana 2 adds 1:4, 4:1, 1:8, 8:1 |
 | Person generation param | In `v1.50+`, prefer `DONT_ALLOW` by default and `ALLOW_ADULT` only on explicit request |
-| Silent failure handling | If model returns text instead of image, retry with explicit "Generate an image of…" prefix |
+| Silent failure handling | Diagnose in order: (1) `response_modalities` includes `"TEXT"`, (2) `/v1beta/` endpoint, (3) billing enabled, then (4) retry with explicit "Generate an image of…" prefix |
 | Reproducibility | Always include `seed` parameter; document seed in `metadata.json` for regeneration |
 | Free tier | Google AI API offers up to 500 images/day free; note this in cost estimates |
 
