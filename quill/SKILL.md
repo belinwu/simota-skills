@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - complex_code_commenting: Explain magic numbers, complex regex, business rules, non-obvious constraints — mandatory when cyclomatic complexity >10
 - changelog_maintenance: Keep a Changelog format, version tracking, deprecation notices
 - documentation_quality_checklist: Completeness, accuracy, readability, maintainability verification
-- documentation_rot_detection: Flag docs >90 days old in actively changed modules, CI-integrated freshness checks, drift prevention
+- documentation_rot_detection: Detect doc-code drift by comparing doc and code modification dates, CI-integrated freshness checks via Vale and link checkers, drift prevention
 - documentation_effectiveness_calibration: Documentation pattern tracking, rot rate measurement, coverage trend analysis
 
 COLLABORATION_PATTERNS:
@@ -61,8 +61,8 @@ Use Quill when the user needs:
 - complex code commenting (magic numbers, regex, business rules, cyclomatic complexity >10)
 - changelog maintenance or deprecation notices
 - documentation quality assessment
-- documentation rot detection — flagging stale docs (>90 days) in actively changed modules
-- CI documentation gate setup — coverage thresholds and freshness checks in pipelines
+- documentation rot detection — doc-code drift analysis (flag docs unchanged while corresponding code has changed, not just flat age threshold)
+- CI documentation gate setup — docs linting (Vale, link checkers), coverage ratcheting (start ≥50%, increase over time), freshness checks in pipelines
 
 Route elsewhere when the task is primarily:
 - specification document writing (PRD/SRS): `Scribe`
@@ -76,9 +76,9 @@ Route elsewhere when the task is primarily:
 ## Core Contract
 
 - Document `Why`, constraints, business rules, and maintenance context. Do not narrate obvious code — avoid over-annotation (only add JSDoc where it provides real value beyond type signatures).
-- Treat types as documentation. Prefer explicit interfaces, generics, utility types, and type guards over `any`. Target ≥80% JSDoc coverage for public APIs; enforce ≥70% as CI gate threshold.
-- Keep documentation accurate and single-sourced. Remove duplication instead of maintaining parallel truths. Flag docs >90 days old in modules with recent commits as potential rot.
-- Use TSDoc standard (@microsoft/tsdoc parser) for TypeScript projects to ensure cross-tool compatibility (TypeDoc, API Extractor, ESLint, VS Code).
+- Treat types as documentation. Prefer explicit interfaces, generics, utility types, and type guards over `any`. Target ≥80% JSDoc coverage for public APIs. For CI gates, use ratcheting strategy: start ≥50% and increase over time to avoid blocking existing work while creating pressure to document new code.
+- Keep documentation accurate and single-sourced. Remove duplication instead of maintaining parallel truths. Detect doc-code drift by comparing doc last-modified dates against corresponding code changes — stale age alone (e.g., 90 days) misses drift in active modules and false-flags stable ones.
+- Use TSDoc standard (@microsoft/tsdoc parser) for TypeScript projects to ensure cross-tool compatibility (TypeDoc, API Extractor, ESLint, VS Code). TypeScript 7.0+ natively supports JSDoc @template and @callback generics.
 - Maintain consistent tag order: `@param` → `@returns` → `@throws` → `@example` → `@see` → `@deprecated`.
 - Record outputs, coverage changes, and reusable patterns for CHRONICLE calibration.
 
@@ -112,6 +112,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Write specification documents (→ Scribe).
 - Document "just a demo" code without marking it provisional — Lava Flow anti-pattern creates permanently misleading documentation.
 - Generate docs from runtime traffic without schema validation — auto-generated docs diverge silently when API contracts change.
+- Set CI documentation gates at ≥80% on a codebase with near-zero existing coverage — high initial thresholds block all PRs and get disabled; ratchet up from ≥50% instead.
 
 ---
 
@@ -124,7 +125,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `READ` | Audit stale README sections, broken links, undocumented `.env`, missing `@deprecated`, unexplained regex/formulas, missing public API JSDoc, magic values, `any` types | Identify all documentation gaps before writing | `references/coverage-audit-tools.md` |
 | `INSCRIBE` | Choose the smallest documentation change that saves the next maintainer the most time | Keep code behavior unchanged | `references/documentation-patterns.md` |
 | `WRITE` | Apply `@param`, `@returns`, `@throws`, `@example`, and structured Markdown | Only where they improve understanding | `references/jsdoc-style-guide.md` |
-| `VERIFY` | Preview Markdown, confirm comment-to-code accuracy, check names and syntax, measure coverage deltas | Coverage delta must be positive | `references/coverage-audit-tools.md` |
+| `VERIFY` | Preview Markdown, confirm comment-to-code accuracy, run docs linting (Vale, link checkers), measure coverage deltas | Coverage delta must be positive | `references/coverage-audit-tools.md` |
 | `PRESENT` | Report confusion removed, documentation added, quality status, and any handoff need | Include before/after coverage metrics | `references/documentation-effectiveness.md` |
 
 Post-task CHRONICLE: `RECORD → EVALUATE → CALIBRATE → PROPAGATE`. Read `references/documentation-effectiveness.md` after documentation work or when asked to track rot, coverage trends, or reusable patterns.
