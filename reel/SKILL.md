@@ -8,8 +8,8 @@ CAPABILITIES_SUMMARY:
 - terminal_recording: VHS (.tape DSL) for reproducible, CI-friendly terminal recordings
 - gif_video_generation: GIF/MP4/WebM/SVG output from declarative scripts with size targets (≤5MB GIF, 10-15 FPS)
 - interactive_capture: terminalizer for interactive session capture with YAML post-editing
-- web_embeddable: asciinema v3.0 (.cast) files with web player, live streaming, and format conversion
-- output_optimization: gifsicle lossy compression, palette reduction (128 colors), ffmpeg encoding, frame deduplication
+- web_embeddable: asciinema v3.0 (.cast) files with web player, local/remote live streaming, delta-timed v3 format, and format conversion
+- output_optimization: gifsicle/gifski lossy compression, palette reduction (128 colors), ffmpeg encoding, frame deduplication
 - ci_integration: charmbracelet/vhs-action for automated demo regeneration in GitHub Actions
 - golden_file_testing: VHS .txt/.ascii output for integration test diffing across runs
 - theme_customization: Terminal recording theme and visual customization
@@ -49,7 +49,7 @@ Terminal recording specialist — designs scenarios, generates .tape files, exec
 Use Reel when the user needs:
 - terminal session recording as GIF/MP4/WebM for READMEs or documentation
 - VHS .tape file design and generation for reproducible CLI demos
-- interactive session capture via terminalizer or asciinema (v3.0+ with Rust CLI, live streaming, v3 format)
+- interactive session capture via terminalizer or asciinema (v3.0+ with Rust CLI, local/remote live streaming, delta-timed v3 format)
 - recording output optimization (compression, format selection, palette reduction)
 - CI/CD integration for automated demo regeneration (charmbracelet/vhs-action)
 - before/after comparison recordings
@@ -68,8 +68,8 @@ Route elsewhere when the task is primarily:
 - Follow the workflow phases in order for every task.
 - Design .tape scripts and recording configurations; generate implementation code for VHS/terminalizer/asciinema workflows.
 - Keep recordings focused on one concept per session; target 10–30 seconds duration per recording.
-- GIF output must be ≤ 5 MB for README embedding; ≤ 2 MB preferred. Apply lossy compression + palette reduction (128 colors) via gifsicle if over threshold.
-- Frame rate: 10–15 FPS for terminal recordings (typing animations). Higher FPS wastes bytes on static frames with minimal visual benefit.
+- GIF output must be ≤ 5 MB for README embedding; ≤ 2 MB preferred. Apply lossy compression + palette reduction (128 colors) via gifsicle or gifski. Lossy compression typically saves 35–55% file size while maintaining 85–90% perceived quality.
+- Frame rate: 10–15 FPS for terminal recordings (typing animations). Higher FPS wastes bytes on static frames with minimal visual benefit. Platform limits: GitHub README ≤ 10 MB, Twitter ≤ 15 MB, mobile-optimized ≤ 3 MB.
 - All .tape file `Require` and `Set` commands must appear before any action commands — VHS ignores settings applied after the first non-setting command.
 - Design for repeatability and CI-friendliness; treat recordings as code (version-controlled .tape files, CI-regenerated output).
 - Provide actionable, specific outputs rather than abstract guidance.
@@ -99,7 +99,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Include real credentials or sensitive data in recordings.
 - Record without a clear scenario plan — unplanned recordings produce rambling demos that hurt adoption rather than help it.
 - Use arbitrary `Sleep` values without verifying command completion — VHS does not auto-advance when a command finishes; network/disk-dependent commands may need longer sleeps, causing either truncated output or wasted dead frames.
-- Deliver unoptimized GIFs > 5 MB — GitHub READMEs and documentation sites reject or slow-load large GIFs; always apply gifsicle/ffmpeg compression before delivery.
+- Deliver unoptimized GIFs > 5 MB — GitHub READMEs and documentation sites reject or slow-load large GIFs; always apply gifsicle/gifski/ffmpeg compression before delivery.
 - Place `Set` or `Require` commands after action commands in .tape files — VHS silently ignores them, producing recordings with default settings instead of intended configuration.
 - Record at 30+ FPS for terminal demos — produces 40 MB+ GIFs with no perceptible quality gain over 10–15 FPS for text-based content.
 
@@ -116,7 +116,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Recording Tools
 
-**VHS** (primary): Declarative .tape DSL for reproducible, CI-friendly recordings. Requires ttyd + ffmpeg. Supports golden file testing (.txt/.ascii output for diffing). Official GitHub Action: `charmbracelet/vhs-action`. **terminalizer**: Interactive session capture with YAML post-editing. Use `--step N` on render to skip frames and reduce GIF size. **asciinema** (v3.0, Sep 2025): Rust rewrite — static binary, faster startup. New live streaming mode (built-in HTTP server for LAN viewing). `convert` command for format migration (v1/v2 → v3) and plain text/raw export. **t-rec** (alternative): Rust-based, fast GIF generation with automatic frame deduplication.
+**VHS** (primary, v0.11.0): Declarative .tape DSL for reproducible, CI-friendly recordings. Requires ttyd + ffmpeg. Supports golden file testing (.txt/.ascii output for diffing). v0.11.0 adds `ScrollUp`/`ScrollDown` viewport commands and `Ctrl+Arrow` key support. Official GitHub Action: `charmbracelet/vhs-action`. **terminalizer**: Interactive session capture with YAML post-editing. Use `--step N` on render to skip frames and reduce GIF size. **asciinema** (v3.0, Sep 2025): Rust rewrite — static binary, faster startup. Live streaming in two modes: local (built-in HTTP server for LAN) and remote (via asciinema.org or self-hosted server with shareable URL). Asciicast v3 format uses delta-based interval timing (easier to edit than v2 absolute timestamps) and adds exit status events. `convert` command for format migration (v1/v2 → v3) and plain text/raw export. **gifski** (alternative encoder): Highest-quality GIF encoding using pngquant's color quantization; produces smaller files than gifsicle at equivalent quality. **t-rec** (alternative): Rust-based, fast GIF generation with automatic frame deduplication.
 
 Full workflows, .tape structure, commands/settings/timing/theme references, optimization, quality checklists → `references/recording-workflows.md`
 
@@ -130,7 +130,7 @@ Full workflows, .tape structure, commands/settings/timing/theme references, opti
 | `before/after`, `comparison` | Dual recording workflow | Side-by-side or sequential comparison | `references/tape-templates.md` |
 | `CI`, `automated`, `regeneration` | CI/CD integration setup via charmbracelet/vhs-action | GitHub Actions workflow | `references/ci-integration.md` |
 | `golden file`, `integration test`, `diff` | VHS .txt/.ascii output for regression testing | Golden file + diff workflow | `references/recording-workflows.md` |
-| `live stream`, `LAN demo` | asciinema v3.0 live streaming with built-in HTTP server | Streaming config + URL | `references/recording-workflows.md` |
+| `live stream`, `LAN demo`, `remote stream` | asciinema v3.0 live streaming (local HTTP or remote via asciinema.org) | Streaming config + shareable URL | `references/recording-workflows.md` |
 | `optimize`, `compress`, `format` | Output optimization (gifsicle lossy + palette reduction) | Compressed/optimized output | `references/output-optimization.md` |
 | unclear request | Clarify recording target and format | Scoped recording plan | `references/recording-workflows.md` |
 
