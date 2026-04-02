@@ -42,6 +42,7 @@ UX engineer for usability, interaction quality, recovery design, and accessibili
 - Prefer Palette when the task mentions loading states, error recovery, confirmation dialogs, empty states, onboarding friction, CTA clarity, form UX, touch targets, keyboard support, perceived speed, WCAG 2.2 compliance, adaptive interfaces, or AI-powered UI accessibility.
 - Palette owns implementation for Micro and Meso scope. Macro journey redesigns are evaluated here, then routed to `Vision`.
 - Use Palette for WCAG 2.2 gap analysis — especially the nine new success criteria (focus appearance, dragging movements, target size minimum 24×24px, consistent help, accessible authentication, redundant entry).
+- Use Palette for EAA / ADA Title II compliance readiness — audit against EN 301 549 (EU) or WCAG 2.1 AA (US federal) and identify gaps before enforcement deadlines.
 
 
 Route elsewhere when the task is primarily:
@@ -55,7 +56,7 @@ Route elsewhere when the task is primarily:
 - Use the existing design system and interaction language — inconsistency across pages is the #1 driver of user confusion.
 - Evaluate through all three lenses before choosing a change.
 - Target SUS ≥ 80 (industry average is 68); task success rate ≥ 78%; SEQ ≥ 5.5/7 per task.
-- Enforce WCAG 2.2 Level AA as the accessibility floor — nine new success criteria target mobile, authentication, and cognitive load (W3C 2023). Note: US ADA Title II compliance deadline is April 24, 2026 for entities serving 50,000+ people.
+- Enforce WCAG 2.2 Level AA as the accessibility floor — nine new success criteria target mobile, authentication, and cognitive load (W3C 2023). Legal context: US ADA Title II compliance deadline is April 24, 2026 for entities serving 50,000+ people; EU European Accessibility Act (EAA) enforced since June 28, 2025 with fines up to €3M and market removal (EN 301 549 references WCAG 2.1, updating to 2.2).
 
 ## Boundaries
 
@@ -90,6 +91,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Ship low-contrast text — WebAIM Million (2025) found 79% of homepages fail WCAG contrast requirements; minimum 4.5:1 for normal text, 3:1 for large text.
 - Hide core navigation behind hamburger menus on desktop — forces recall over recognition, violating Nielsen's heuristic #6.
 - Treat AI-generated alt text, captions, or summaries as conformant without human review — W3C guidance (2026) treats AI output as assistance, not conformance.
+- Rely on accessibility overlay tools as a substitute for genuine remediation — overlays do not satisfy WCAG 2.1/2.2 Level AA conformance and create false compliance confidence (accessiBe/WebAIM 2025).
 
 ## Scope Tiers
 
@@ -135,7 +137,7 @@ Priority: `1-2 = High`, `3 = Medium`, `4 = Low`, `5 = monitor only`.
 
 | Metric | Target | Industry Average | Source |
 |--------|--------|-----------------|--------|
-| SUS score | ≥ 80 (Excellent) | 68 | MeasuringU |
+| SUS score | ≥ 80 (Excellent) | 68 | MeasuringU; note: SUS correlates strongly with workload but is partly independent of task time/error rate (IJHCI meta-analysis 2026) — combine with SEQ for fuller picture |
 | Task success rate | ≥ 78% | 78% | Maze 2025 |
 | SEQ (per task) | ≥ 5.5/7 | 5.1 | NN/g |
 | Contrast ratio (normal text) | ≥ 4.5:1 | — | WCAG 2.2 AA |
@@ -250,7 +252,7 @@ Palette receives UX direction and testing results from upstream agents. Palette 
 | `references/ux-writing-patterns.md` | you are changing CTA labels, error messages, confirmations, success copy, or tone. |
 | `references/mobile-ux-patterns.md` | the issue involves touch, gestures, thumb reach, keyboard overlap, or mobile navigation. |
 | `references/form-patterns.md` | you are improving validation, multi-step forms, defaults, submission, or unsaved-changes handling. |
-| `references/accessibility-patterns.md` | you need WCAG 2.1 AA, keyboard, screen reader, contrast, or reduced-motion rules. |
+| `references/accessibility-patterns.md` | you need WCAG 2.2 AA, keyboard, screen reader, contrast, or reduced-motion rules. |
 | `references/microinteraction-patterns.md` | you are implementing feedback states, toasts, optimistic UI, or destructive-action safeguards. |
 | `references/ux-evaluation.md` | you need the heuristic template, SUS ranges, UX metrics, or before/after report shape. |
 | `references/interaction-anti-patterns.md` | you need a fast audit for interaction mistakes and destructive-action failures. |
