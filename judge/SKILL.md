@@ -18,7 +18,8 @@ CAPABILITIES_SUMMARY:
 - consistency_detection: Cross-file pattern inconsistency detection (error handling, null safety, async, naming, imports, error types)
 - test_quality_assessment: Per-file test quality scoring (isolation, flakiness, edge cases, mocking, readability)
 - ai_code_scrutiny: Elevated scrutiny for AI-generated code (41% of 2026 commits are AI-assisted; 1.7x more issues, logic errors +75%, security vulns +1.5-2x, perf issues +8x vs human-written)
-- cognitive_load_gating: PR size assessment with cognitive load thresholds (optimal 200-400 LOC; >400 LOC triggers decomposition recommendation)
+- cognitive_load_gating: PR size assessment with cognitive load thresholds (elite <219 LOC, optimal 200-400 LOC, quality cliff >600 LOC; review rate ≤200 LOC/hour)
+- risk_based_review: Risk-stratified review depth allocation (high-risk: auth/payments/security/AI-code → deep review; low-risk: docs/config → light review)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Full PR Review (Builder → Judge → Builder)
@@ -77,8 +78,10 @@ Route elsewhere when the task is primarily:
 - Run consistency detection across files for error handling, null safety, async patterns, naming, and imports.
 - Assess test quality per file using the 5-dimension scoring model.
 - Filter false positives using layered SAST+LLM approach (benchmark: 91% FP reduction vs standalone static analysis). Target precision ≥ 70% to maintain developer trust; flag when precision drops below this threshold.
-- Gate cognitive load: flag PRs exceeding 400 LOC for decomposition (research shows review effectiveness degrades exponentially above this threshold; optimal range is 200-400 LOC). Report cyclomatic complexity > 12 per function as refactor candidates.
-- Apply elevated scrutiny to AI-generated code: 41% of 2026 commits are AI-assisted, producing 1.7x more issues than human-written code (logic errors +75%, security vulnerabilities +1.5-2x, performance inefficiencies +8x). When AI-generated changes are detected (Copilot/Cursor markers, repetitive patterns, missing edge cases), escalate review depth.
+- Gate cognitive load: flag PRs exceeding 400 LOC for decomposition (elite teams average <219 LOC per PR — LinearB 2025 analysis of 6.1M PRs; optimal range is 200-400 LOC). Past 600 LOC, reviewer feedback degrades to style-only comments — require decomposition before review. Report cyclomatic complexity > 12 per function as refactor candidates.
+- Enforce review pacing: recommend ≤200 LOC/hour for thorough review. At >450 LOC/hour, 87% of reviews show below-average defect detection (Cisco study, 2,500 reviews). If time pressure forces fast review, flag reduced confidence in the report.
+- Apply risk-based review depth: allocate deeper scrutiny to high-risk changes (auth, payments, data access, security boundaries, AI-generated code) and lighter review to low-risk changes (docs, config, formatting). This Flow-to-Fix approach maximizes defect detection per review hour.
+- Apply elevated scrutiny to AI-generated code: AI code produces 1.7x more issues than human-written code (logic errors +75%, security vulnerabilities +1.5-2x, performance inefficiencies +8x). Flag when repository AI-code ratio exceeds 40% — teams above this threshold experience 91% longer review times and 9% higher bug rates. When AI-generated changes are detected (Copilot/Cursor markers, repetitive patterns, missing edge cases), escalate review depth.
 - Benchmark severity rates: expect ~1 HIGH/CRITICAL finding per 1,000 changed lines. Rates significantly above this may indicate systemic quality issues worth flagging.
 
 ---
@@ -88,10 +91,11 @@ Route elsewhere when the task is primarily:
 | Mode | Trigger | Command | Output |
 |------|---------|---------|--------|
 | **PR Review** | "review PR", "check this PR" | `codex review --base <branch>` | PR review report |
+| **GitHub Review** | "review on GitHub", CI/CD trigger | `@codex review` in PR comment | Async PR review (posted as GH review) |
 | **Pre-Commit** | "check before commit", "review changes" | `codex review --uncommitted` | Pre-commit check report |
 | **Commit Review** | "review commit" | `codex review --commit <SHA>` | Specific commit review |
 
-**Tip**: If scope is ambiguous, run `git status` first. If uncommitted changes exist, suggest `--uncommitted`.
+**Tip**: If scope is ambiguous, run `git status` first. If uncommitted changes exist, suggest `--uncommitted`. For async CI-integrated review, prefer GitHub-native mode via `@codex review`.
 
 > Full CLI options, severity categories, false positive filtering: `references/codex-integration.md`
 
@@ -126,8 +130,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Issue findings without severity classification.
 - Skip `codex review` execution.
 - Rubber-stamp reviews: approving without meaningful analysis is the most damaging anti-pattern — it creates false confidence and lets critical bugs ship (DORA 2025: teams that rubber-stamp show 3x higher defect escape rate).
-- Review PRs > 1,000 LOC as a single unit: context window overload causes models to lose coherence, miss cross-change connections, and fall back on pattern matching. Require decomposition first.
+- Review PRs > 1,000 LOC as a single unit: past 600 LOC reviewer feedback degrades to style-only comments; past 1,000 LOC context window overload causes models to lose coherence and miss cross-change connections. Require decomposition first.
 - Trust AI-generated code at face value: AI code produces 1.7x more issues than human-written code; treat AI output as junior-developer work requiring supervision, not expert output.
+- Rush reviews at >450 LOC/hour without flagging reduced confidence: speed kills defect detection (87% below-average at high speed — Cisco, 2,500 reviews).
 
 ---
 
@@ -148,6 +153,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
 | `review PR`, `check PR`, `PR review` | PR review via `codex review --base` | PR review report | `references/codex-integration.md` |
+| `review on GitHub`, `CI review`, `async review` | GitHub-native review via `@codex review` in PR comment | Async GH review | `references/codex-integration.md` |
 | `check before commit`, `review changes`, `pre-commit` | Pre-commit review via `codex review --uncommitted` | Pre-commit check report | `references/codex-integration.md` |
 | `review commit`, `check commit` | Commit review via `codex review --commit` | Commit review report | `references/codex-integration.md` |
 | `consistency check`, `pattern check` | Cross-file consistency analysis | Consistency report | `references/consistency-patterns.md` |
@@ -189,9 +195,9 @@ Every deliverable must include:
 
 **Test Quality:** 5 dimensions (Isolation 0.25, Flakiness 0.25, Edge Cases 0.20, Mock Quality 0.15, Readability 0.15). Isolation/Flakiness/Edge→Radar, Readability→Zen → `references/test-quality-patterns.md`
 
-**AI-Generated Code Indicators:** Repetitive boilerplate without variation · Missing edge cases and error boundaries · Overly verbose null checks · Generic variable names · Lack of domain-specific validation · Security shortcuts (hardcoded values, permissive CORS) · Performance anti-patterns (N+1 queries, missing pagination, synchronous blocking). When detected, escalate review depth and cross-reference with `references/ai-review-patterns.md`.
+**AI-Generated Code Indicators:** Repetitive boilerplate without variation · Missing edge cases and error boundaries · Overly verbose null checks · Generic variable names · Lack of domain-specific validation · Security shortcuts (hardcoded values, permissive CORS) · Performance anti-patterns (N+1 queries, missing pagination, synchronous blocking). Sustainable AI-code ratio: 25-40% of commits; above 40% causes 91% longer review times and 9% higher bug rates. When detected, escalate review depth and cross-reference with `references/ai-review-patterns.md`.
 
-**Cognitive Load Thresholds:** Optimal PR: 200-400 LOC · Warning zone: 400-800 LOC (recommend splitting) · Danger zone: >800 LOC (require decomposition) · Cyclomatic complexity per function: ≤12 acceptable, >12 refactor candidate, >20 mandatory split. Reference: `references/review-effectiveness.md`.
+**Cognitive Load Thresholds:** Elite benchmark: <219 LOC (LinearB 6.1M PRs) · Optimal: 200-400 LOC · Warning zone: 400-600 LOC (recommend splitting) · Danger zone: >600 LOC (feedback degrades to style-only; require decomposition) · Hard ceiling: >1,000 LOC (model coherence loss). Review rate: ≤200 LOC/hour optimal, >450 LOC/hour → 87% below-average detection. Cyclomatic complexity per function: ≤12 acceptable, >12 refactor candidate, >20 mandatory split. Reference: `references/review-effectiveness.md`.
 
 **Review Anti-Patterns:** Rubber stamping (approve without analysis) · Knowledge silos (single reviewer per area) · Inconsistent standards (applying new rules retroactively) · Self-merging without review · "Just one more thing" scope creep · Nit-picking over substance (style before correctness). Reference: `references/review-anti-patterns.md`.
 
