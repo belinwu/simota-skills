@@ -44,7 +44,7 @@ AITuber orchestration specialist for the full real-time path from live chat to L
 Use Aether when the user needs:
 - an AITuber / AI VTuber streaming pipeline design or architecture
 - real-time chat-to-speech pipeline orchestration (Chat → LLM → TTS → Avatar → OBS)
-- TTS engine selection, integration, or tuning for live streaming
+- TTS engine selection, integration, or tuning for live streaming (including lightweight CPU-only options like Kyutai Pocket TTS)
 - Live2D or VRM avatar control, lip sync, or expression mapping
 - OBS WebSocket automation, scene management, or streaming configuration
 - live chat integration (YouTube Live Chat API, Twitch IRC/EventSub)
@@ -73,6 +73,8 @@ Route elsewhere when the task is primarily:
 - Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion.
 - Implement WebSocket reconnection with exponential backoff; WebSocket failures disrupt all interactive features. [Source: Open-LLM-VTuber]
 - Distinguish inference latency from production latency: a model benchmarking 100ms on dedicated GPU can deliver 800ms+ on shared cloud with network, queueing, and encoding overhead. Always measure end-to-end. [Source: inworld.ai 2026 benchmarks]
+- Use TTFA (Time to First Audio) as the primary TTS latency metric — it measures when the user hears the first syllable, not when synthesis completes. Target < 200ms; best-in-class achieves 40ms. [Source: camb.ai, deepgram.com]
+- For GPU-constrained or CPU-only deployments, consider lightweight TTS models (e.g., Kyutai Pocket TTS, 100M params, CPU real-time capable). [Source: kyutai.org]
 - Define metrics, alert thresholds, and recovery behavior for every live pipeline.
 - Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly.
 - Unify the text→LLM→TTS→play→history pipeline to prevent stale audio playback. [Source: github.com/Scikous/Vtuber-AI]
@@ -199,7 +201,7 @@ Every deliverable must include:
 | Metric | Target | Alert threshold | Default action |
 |--------|--------|-----------------|----------------|
 | Chat → Speech latency | `< 3000ms` | `> 4000ms` | Log and reduce LLM token budget |
-| TTS component latency | `< 200ms` | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; TTS alone should contribute ≤ 100-200ms for natural interaction [Source: inworld.ai] |
+| TTS TTFA (Time to First Audio) | `< 200ms` | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; best-in-class: Cartesia 40ms, Inworld sub-200ms TTFA [Source: inworld.ai, camb.ai] |
 | TTS queue depth | `< 5` | `> 10` | Skip or defer low-priority messages |
 | Dropped frames | `0%` | `> 1%` | Reduce OBS encoding load |
 | Avatar FPS | `30fps` | `< 20fps` | Simplify expression and rendering load |

@@ -51,7 +51,8 @@ Route elsewhere when the task is primarily:
 
 - Identify the audiences before drafting.
 - Build the package in staged order: `L0 -> L1 -> L2 -> L3`.
-- Keep one truth and expose team-specific views without splitting the source of truth. Effective requirements management eliminates 50-80% of project defects (SEI).
+- Keep one truth and expose team-specific views without splitting the source of truth. Effective requirements management eliminates 50-80% of project defects and 60-80% of rework cost (CMU SEI).
+- Treat BDD as a collaboration tool for building shared understanding, not merely a testing tool. Scenarios exist to align product, dev, and QA — test automation is a secondary benefit.
 - Include BDD acceptance criteria in `L3`.
 - Maintain requirement, design, and test traceability explicitly.
 - Select `Full`, `Standard`, or `Lite` scope deliberately and state the reason.
@@ -91,6 +92,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Write BDD scenarios with technical implementation details (DOM selectors, SQL, API endpoints) — scenarios must use business domain language.
 - Write BDD scenarios with multiple `When` clauses — each scenario tests one trigger, one behavior.
 - Let a single role author acceptance criteria alone — require at least product + dev + QA perspectives (Three Amigos) before finalizing `L3`.
+- Write excessive BDD scenarios to cover all code paths — scenarios should cover the most important positive, negative, and edge case behaviours; defer exhaustive path coverage to unit tests.
 
 ## Scope Modes
 
