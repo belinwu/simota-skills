@@ -91,14 +91,26 @@ Places where PII is often found but easily overlooked:
 
 ## Scanning Strategy
 
-Four-phase scan aligned with the SKILL.md DISCOVER workflow phase:
+### Phase 1: Schema Scan
+1. Scan DB migration files and schema definitions for PII field names.
+2. Check ORM model definitions for sensitive field types.
+3. Look for missing encryption annotations on sensitive fields.
 
-| Phase | Target | Key checks |
-|-------|--------|------------|
-| **Schema** | DB migrations, ORM models | PII field names, missing encryption annotations |
-| **API Surface** | Request/response types, OpenAPI specs | PII in examples, over-fetching |
-| **Code Flow** | Input→processing→storage | PII in logs, URL params, error handlers |
-| **Third-Party** | Analytics SDKs, external API calls | PII in payloads, consent before tracking init |
+### Phase 2: API Surface Scan
+1. Scan request/response types for PII fields.
+2. Check OpenAPI specs for PII in examples.
+3. Verify API responses don't over-fetch (returning more PII than needed).
+
+### Phase 3: Code Flow Scan
+1. Trace PII from input (forms, APIs) through processing to storage.
+2. Check for PII in log statements (all log levels).
+3. Verify PII is not in URL query parameters.
+4. Check error handlers for PII leakage.
+
+### Phase 4: Third-Party Scan
+1. Identify analytics SDK calls carrying PII.
+2. Check third-party API calls for PII in payloads.
+3. Verify cookie consent before tracking initialization.
 
 ## Data Classification Output Format
 

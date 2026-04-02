@@ -5,17 +5,18 @@ description: Storybookストーリー作成・カタログ管理・Visual Regres
 
 <!--
 CAPABILITIES_SUMMARY:
-- Storybook story creation (CSF 3.0, MDX 3, autodocs, play functions, Storybook 9 addon-vitest)
+- Storybook story creation (CSF 3.0, CSF factories in 9.1+, MDX 3, autodocs, play functions, addon-vitest)
 - React Cosmos fixture creation (Cosmos 6+, useFixtureInput, decorators, server fixtures)
-- Story coverage audit (variant/state/a11y/interaction scoring with quantitative thresholds)
+- Story coverage audit (variant/state/a11y/interaction scoring with quantitative thresholds, built-in coverage reports in 9.x)
 - Visual regression testing setup (Chromatic, Playwright VRT, Lost Pixel, Applitools Eyes AI diff)
 - Forge preview story enhancement (prototype → production quality)
 - Multi-framework support (React Storybook 9, Vue Histoire, Svelte 5, Ladle)
 - Component catalog organization (Atoms/Molecules/Organisms hierarchy)
-- Accessibility testing integration (a11y addon, axe-core rules, WCAG 2.2 AA)
+- Accessibility testing integration (redesigned a11y addon in 9.x, axe-core rules, WCAG 2.2 AA)
 - Portable stories (reuse stories in unit/Vitest tests via composeStories)
-- Storybook 9 features (addon-vitest, built-in visual testing, Svelte 5 Runes/Snippets, 48% leaner deps)
+- Storybook 9.1 features (CSF factories API, sb.mock Automocking, Test Codegen, Story Generation from UI, Testing Widget, 48% leaner deps)
 - Design system metrics tracking (component reuse rate, design-code alignment, a11y pass rate)
+- AI-assisted development (stories as AI context per storybook.js.org/docs/ai/best-practices)
 
 COLLABORATION_PATTERNS: Prototype→Docs(Forge→Showcase→Quill) · Design→Catalog(Vision→Showcase→Vision) · Story→Test(Showcase→Radar+Voyager) · TokenAudit(Showcase→Muse→Showcase) · Animation(Flow→Showcase→Flow) · UXReview(Palette→Showcase→Vision) · Demo→Story(Director→Showcase→Radar) · ProductionPolish(Artisan→Showcase→Muse) · PortableStory→UnitTest(Showcase→Radar via composeStories) · A11yGate(Showcase→Canon for WCAG compliance)
 
@@ -36,17 +37,20 @@ Visibility is value · Every state counts · Accessibility built-in · Interacti
 ## Trigger Guidance
 
 Use Showcase when the user needs:
-- Storybook story creation (CSF 3.0, play functions, autodocs, Storybook 9 addon-vitest)
+- Storybook story creation (CSF 3.0, CSF factories in 9.1+, play functions, autodocs, addon-vitest)
 - React Cosmos fixture creation (Cosmos 6+, useFixtureInput, decorators)
-- story coverage audit (variant/state/a11y/interaction scoring with quantitative thresholds)
+- story coverage audit (variant/state/a11y/interaction scoring; built-in coverage reports in 9.x)
 - visual regression testing setup (Chromatic, Playwright VRT, Lost Pixel, Applitools Eyes)
 - Forge preview story enhancement (prototype to production quality)
 - component catalog organization (Atoms/Molecules/Organisms hierarchy)
 - portable stories setup (composeStories for Vitest reuse via addon-vitest)
 - design token documentation in Storybook
-- Storybook 8→9 migration (CSF 2→3, test-runner→addon-vitest)
+- Storybook 8→9 migration (CSF 2→3, test-runner→addon-vitest, `satisfies Meta`→CSF factories)
 - design system metrics tracking (component reuse rate, a11y pass rate, design-code alignment)
 - Svelte 5 story creation (Runes, Snippets support in Storybook 9)
+- Test Codegen (record interactions in Storybook UI → save as play functions, no code required)
+- module mocking with `sb.mock` Automocking API (one-line mock setup, replaces complex MSW patterns for internal modules)
+- Story Generation from Storybook UI (create/edit stories without writing code)
 
 Route elsewhere when the task is primarily:
 - UI component implementation: `Artisan` or `Builder`
@@ -72,13 +76,15 @@ Route elsewhere when the task is primarily:
 - Accessibility pass rate target: ≥95% of stories pass axe-core WCAG 2.2 AA rules.
 - Prefer addon-vitest over legacy test-runner for Vite-based projects (React/Vue/Svelte) — addon-vitest is faster and supersedes test-runner as of Storybook 9.
 - Design-code alignment: flag components existing in Figma/design but missing stories (target ≥90% alignment).
+- For module mocking, prefer `sb.mock` Automocking API (Storybook 9.1+) over manual MSW setup for internal module dependencies — one-line setup, type-safe, integrated with Vitest.
+- Leverage Storybook's built-in test coverage reports (9.x) to identify untested components before manual audit.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Always
 
-- Use CSF 3.0 with `satisfies Meta<typeof Component>`.
+- Use CSF 3.0 with `satisfies Meta<typeof Component>` (Storybook ≤9.0) or CSF factories API (9.1+) for type-safe story definitions.
 - Cover all variants and states.
 - Include `tags: ['autodocs']` for documentation.
 - Add play functions for user interaction flows.
@@ -110,7 +116,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Mode | Triggers | Process | Output |
 |------|----------|---------|--------|
-| **CREATE** | story作成, ストーリー追加, Storybook化, fixture作成, Cosmos化 | Detect tool → Analyze props/variants → Generate story/fixture → All variants → Play functions → a11y → Autodocs/MDX | `*.stories.tsx` or `*.fixture.tsx` + docs |
+| **CREATE** | story作成, ストーリー追加, Storybook化, fixture作成, Cosmos化, Test Codegen, Story Generation | Detect tool → Analyze props/variants → Generate story/fixture (or use Test Codegen / Story Generation from UI) → All variants → Play functions → a11y → Autodocs/MDX | `*.stories.tsx` or `*.fixture.tsx` + docs |
 | **MAINTAIN** | ストーリー更新, Storybook修正, CSF3移行, fixture更新, Storybook 9移行 | Analyze existing → Identify issues → Migrate CSF 2→3 → Migrate test-runner→addon-vitest → Add missing variants → Update interactions → Verify baselines | Updated files + migration report |
 | **AUDIT** | Storybook監査, カバレッジ確認, story audit | Scan components → Compare against stories → Coverage by category → Score quality → Prioritize improvements | Health report + action items |
 
@@ -118,17 +124,17 @@ See `references/storybook-patterns.md` for CSF 3.0 templates, Storybook 8.5+ fea
 
 ## Tool Support
 
-Storybook 9 (React/Vue/Svelte 5, CSF 3.0, addon-vitest, built-in visual testing) · Storybook 8.x (legacy, migration recommended) · React Cosmos 6+ (React, Fixtures) · Histoire (Vue/Svelte) · Ladle (React, CSF-like). Auto-detect: `.storybook/` → Storybook · `cosmos.config.json` → Cosmos · `histoire.config.ts` → Histoire · `.ladle/` → Ladle · `package.json` deps → Infer version (8.x vs 9.x) · None → ON_TOOL_SELECTION.
+Storybook 9.1 (React/Vue/Svelte 5, CSF 3.0 + CSF factories, addon-vitest, sb.mock, Test Codegen, Testing Widget, built-in visual testing + coverage reports) · Storybook 9.0 (CSF 3.0, addon-vitest) · Storybook 8.x (legacy, migration recommended) · React Cosmos 6+ (React, Fixtures) · Histoire (Vue/Svelte) · Ladle (React, CSF-like). Auto-detect: `.storybook/` → Storybook · `cosmos.config.json` → Cosmos · `histoire.config.ts` → Histoire · `.ladle/` → Ladle · `package.json` deps → Infer version (8.x vs 9.0 vs 9.1+) · None → ON_TOOL_SELECTION.
 See `references/framework-alternatives.md` for full comparison and setup guides.
 
 ## React Cosmos 6+
 
-Lightweight fixture-based React component explorer. Multi-variant exports · `useFixtureInput` / `useFixtureSelect` / `useValue` controls · Global (`src/cosmos.decorator.tsx`) and scoped decorators · Lazy fixtures · Coexists with Storybook (`*.fixture.tsx` + `*.stories.tsx`). Note: for most teams in 2025-2026, Storybook's ecosystem advantage (30M+ weekly downloads, addon-vitest, Chromatic) is decisive; recommend Cosmos primarily for lightweight React-only projects or teams already invested in the Cosmos workflow.
+Lightweight fixture-based React component explorer. Multi-variant exports · `useFixtureInput` / `useFixtureSelect` / `useValue` controls · Global (`src/cosmos.decorator.tsx`) and scoped decorators · Lazy fixtures · Coexists with Storybook (`*.fixture.tsx` + `*.stories.tsx`). Note: Storybook's ecosystem advantage (30M+ weekly downloads, addon-vitest, Chromatic, Test Codegen) is decisive for most teams; recommend Cosmos primarily for lightweight React-only projects or teams already invested in the Cosmos workflow.
 See `references/react-cosmos-guide.md` for full guide including server fixtures, MSW integration, and migration patterns.
 
 ## Visual Regression Testing
 
-Chromatic (paid, Storybook-native, AI TurboSnap) · Applitools Eyes (AI-based visual diff, mimics human perception — reduces false positives vs pixel-level comparison) · Playwright VRT (free, CI setup, de facto standard for interface testing 2025-2026) · Lost Pixel (OSS, GitHub Action) · Loki (free, local). Use `tags: ['visual-test']` / `tags: ['!visual-test']` for inclusion/exclusion. Storybook 9 includes built-in visual testing — evaluate before adding external tools.
+Chromatic (paid, Storybook-native, AI TurboSnap) · Applitools Eyes (AI-based visual diff, mimics human perception — reduces false positives vs pixel-level comparison) · Playwright VRT (free, CI setup, de facto standard for interface testing) · Lost Pixel (OSS, GitHub Action) · Loki (free, local). Use `tags: ['visual-test']` / `tags: ['!visual-test']` for inclusion/exclusion. Storybook 9 includes built-in visual testing — evaluate before adding external tools.
 
 Tool selection guidance: Chromatic for Storybook-heavy teams needing zero-config CI · Applitools for cross-browser/cross-device at scale · Playwright VRT for free, CI-first teams · Lost Pixel for OSS projects with GitHub Actions.
 See `references/visual-regression.md` for setup, test runner config, and CI workflows.
@@ -158,6 +164,10 @@ See `references/visual-regression.md` for setup, test runner config, and CI work
 | `play function`, `interaction test` | Interaction testing | Play functions + test setup | `references/storybook-patterns.md` |
 | `portable stories`, `composeStories` | Story reuse in tests | Test files with composed stories | `references/storybook-patterns.md` |
 | `design token`, `token docs` | Token documentation | MDX docs + token config | `references/storybook-patterns.md` |
+| `test codegen`, `record test`, `no-code test` | Test Codegen setup | Test Codegen addon config + recorded play functions | `references/storybook-patterns.md` |
+| `sb.mock`, `automock`, `module mock` | Module mocking with sb.mock | Mock config + story files | `references/storybook-patterns.md` |
+| `story generation`, `generate stories from UI` | Story Generation from UI | Generated story files | `references/storybook-patterns.md` |
+| `CSF factories`, `type-safe stories` | CSF factories migration (9.1+) | Updated story files with factories API | `references/storybook-patterns.md` |
 | unclear story request | Story creation (default) | Story files + autodocs | `references/storybook-patterns.md` |
 
 Routing rules:
