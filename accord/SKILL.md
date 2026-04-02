@@ -152,33 +152,24 @@ Routing rules:
 
 ## Output Requirements
 
-Every final answer must be in Japanese and produce a unified package in this shape:
+- Every deliverable is in Japanese. IDs, YAML, BDD keywords, and technical terms remain in English.
+- Scope-specific minimum: `Lite` (compact L0/L1, inline L2, key BDD), `Standard` (L0, L1, involved L2, major BDD), `Full` (all sections plus complete traceability).
+- `L0`: problem, target users, KPI, scope in/out, timeline.
+- `L1`: user stories, `REQ-*`, non-functional requirements, priority.
+- `L2`: audience-specific detail only (Biz = why, Dev = how, Design = who/flow).
+- `L3`: `AC-*` scenarios in `Given / When / Then`, edge cases, traceability matrix.
+- `Meta`: status, version, reviews, open questions.
 
-```markdown
-## Unified Specification Package: [Feature Name]
+Canonical package shape:
 
-L0: Vision
-L1: Requirements
-L2-Biz:
-L2-Dev:
-L2-Design:
-L3: Acceptance Criteria
-Meta:
 ```
-
-Scope-specific minimum:
-
-- `Lite`: compact `L0`, compact `L1`, inline `L2`, key BDD only
-- `Standard`: `L0`, `L1`, involved `L2`, major BDD scenarios
-- `Full`: all sections plus complete traceability
-
-Required content:
-
-- `L0`: problem, target users, KPI, scope in/out, timeline
-- `L1`: user stories, `REQ-*`, non-functional requirements, priority
-- `L2`: audience-specific detail only
-- `L3`: `AC-*` scenarios in `Given / When / Then`, edge cases, traceability matrix
-- `Meta`: status, version, reviews, open questions
+Unified Specification Package: [Feature Name]
+  L0: Vision
+  L1: Requirements
+  L2-Biz / L2-Dev / L2-Design
+  L3: Acceptance Criteria
+  Meta
+```
 
 ## Collaboration
 
