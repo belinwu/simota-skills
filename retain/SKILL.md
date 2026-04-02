@@ -54,11 +54,11 @@ Route elsewhere when the task is primarily:
 - Retention is a consequence of value, not friction. A 5% churn reduction can increase profitability by 25-95%.
 - Prefer early, evidence-based intervention over last-minute win-back tactics. Customers who don't achieve meaningful value in 30 days rarely survive 90 days.
 - Balance short-term engagement with long-term trust and product usefulness.
-- Keep cancellation transparent. Retain never recommends dark patterns — dark-pattern-heavy flows cause 28% reduction in user trust and 54% decrease in usability scores (ACM EACE 2024). Amazon paid $2.5B in 2025 for manipulative enrollment/cancellation flows (FTC).
-- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention.
-- Apply segment-appropriate NRR targets: Enterprise ≥118%, Mid-Market ≥108%, SMB ≥97% (median benchmarks). Best-in-class NRR >130%.
-- Target GRR ≥90% (median B2B SaaS); best-in-class >95%.
-- Involuntary churn (payment failures) averages 0.8% but fixing it can lift revenue by 8.6% in year one — always address dunning before voluntary churn tactics.
+- Keep cancellation transparent. Retain never recommends dark patterns — dark-pattern-heavy flows cause 28% reduction in user trust and 54% decrease in usability scores (ACM EACE 2024). Companies adopting anti-dark-pattern designs (prominent cancel, clear pricing, no hidden fees) see CLV increase 40-60% and word-of-mouth referrals triple despite 15-30% initial conversion drop.
+- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits.
+- Apply segment-appropriate NRR targets: Enterprise ≥118%, Mid-Market ≥108%, SMB ≥97% (median benchmarks). Best-in-class NRR >130%. Companies with >$100M ARR: median NRR 115%, GRR 94%.
+- Target GRR ≥90% (median B2B SaaS); best-in-class >95%. Bootstrapped SaaS ($3-20M ARR): median GRR 92%, 90th percentile 98%.
+- Involuntary churn represents 20-40% of total churn and averages 0.8% monthly — fixing dunning can lift revenue by 8.6% in year one. Always address involuntary churn before voluntary churn tactics.
 
 ## Boundaries
 
@@ -84,12 +84,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ### Never
 
-- Recommend dark patterns, forced retention, deceptive countdowns, or hidden cancellation paths — 76% of US adults believe subscriptions are intentionally hard to cancel; 92% would switch to a competitor as a result (EmailTooltester 2024)
+- Recommend dark patterns, forced retention, deceptive countdowns, or hidden cancellation paths — 76% of US adults believe subscriptions are intentionally hard to cancel; 92% would switch to a competitor as a result (EmailTooltester 2024). OECD finds 75% of sites contain at least one dark pattern.
 - Use guilt-inducing copywriting as a retention mechanism (87.5% of brands do this; it erodes trust)
 - Spam notifications or exceed segment-appropriate communication cadence
 - Optimize vanity engagement over user value
 - Ignore churn signals because topline usage still looks healthy
-- Design cancellation flows with >3 steps or requiring phone/chat to complete (FTC "click-to-cancel" rule 2024)
+- Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking March 2026.
 
 ## Workflow
 
@@ -122,8 +122,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Subscription save | `20-25% / 15-20% / 10-15%` | Pause / downgrade / discount acceptance | Offer in that order unless a stronger segment rule applies |
 | Monthly churn | Enterprise `<0.8%` / SMB `<4%` | Segment-appropriate ceiling | Investigate if exceeded |
 | NRR | Enterprise `≥118%` / Mid-Market `≥108%` / SMB `≥97%` | Median benchmarks (2025) | Below median triggers retention audit |
+| NRR (by ARR) | `>$100M: 115%` / `$1-10M: 98%` | Size-adjusted median | Bootstrapped $3-20M median 104% |
 | GRR | `≥90%` (median) / `≥95%` (best-in-class) | Revenue retention floor | Below 85% is critical |
-| Involuntary churn | `>1%` monthly | Payment failure ceiling | Prioritize dunning optimization — fixing can lift revenue 8.6% Y1 |
+| Involuntary churn | `>1%` monthly (20-40% of total) | Payment failure ceiling | Prioritize dunning optimization — fixing can lift revenue 8.6% Y1 |
+| Predictive model | AUC `≥0.85` / accuracy `≥90%` | ML churn model quality floor | Below threshold: retrain or add features; use SHAP for explainability |
 
 ## Routing
 
@@ -163,7 +165,7 @@ Every deliverable must include:
 2. **Evidence basis**: Triggering signal, behavioral data, or health score that justifies the intervention
 3. **Intervention design**: Specific tactic with timing, channel, and personalization parameters
 4. **Success metrics**: Primary KPI (NRR, GRR, or retention rate), measurement window, and statistical significance threshold
-5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (FTC click-to-cancel)
+5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (ROSCA, FTC Act §5, state auto-renewal laws)
 6. **Next step**: Experiment design (→ Experiment), implementation spec (→ Builder), or monitoring plan (→ Pulse)
 
 Use the template that matches the task focus:
