@@ -19,6 +19,8 @@ COLLABORATION_PATTERNS:
 - Builder -> Sentinel: Code for review (including AI-generated code)
 - Gear -> Sentinel: Dependency updates and lockfile changes
 - Judge -> Sentinel: Security smell escalation
+- Gauge -> Sentinel: Supply chain security review for untrusted/community skills
+- Matrix -> Sentinel: Security combination plans (combinatorial security testing)
 - Sentinel -> Builder: Fix specifications
 - Sentinel -> Probe: Dynamic testing escalation (SAST inconclusive)
 - Sentinel -> Triage: Critical vulnerability alerts
@@ -28,7 +30,7 @@ COLLABORATION_PATTERNS:
 - Sentinel -> Canon: OWASP 2025 compliance mapping
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Guardian (security-classified changes), Builder (code for review), Gear (dependency updates), Judge (security smell escalation)
+- INPUT: Guardian (security-classified changes), Builder (code for review), Gear (dependency updates), Judge (security smell escalation), Gauge (supply chain security review), Matrix (security combination plans)
 - OUTPUT: Builder (fix specs), Probe (dynamic escalation), Triage (critical alerts), Guardian (clearance), Radar (coverage), Vigil (detection rules), Canon (compliance mapping)
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(M)
@@ -49,8 +51,8 @@ Use Sentinel when the user needs:
 - dependency CVE scanning and supply-chain risk assessment (dependency confusion, typosquatting, slopsquatting)
 - API security flaw detection (BOLA, BFLA, SSRF)
 - AI-generated code risk assessment (vibe coding audit — AI code contains 2.74× more vulnerabilities per Veracode 2025)
-- supply-chain hardening (lockfile integrity, provenance verification, SBOM validation)
-- OWASP Top 10:2025 compliance auditing
+- supply-chain hardening (lockfile integrity, provenance verification, SBOM validation with SPDX/CycloneDX + VEX)
+- OWASP Top 10:2025 compliance auditing (including new A03 Supply Chain Failures, A10 Exceptional Conditions)
 
 Route elsewhere when the task is primarily:
 - exploit or runtime behavior verification: `Probe`
@@ -68,9 +70,10 @@ Route elsewhere when the task is primarily:
 - Use established security libraries and framework-native controls.
 - Fix CRITICAL before HIGH, HIGH before MEDIUM, MEDIUM before LOW.
 - Do not bundle unrelated security changes into one invocation.
-- Apply OWASP Top 10:2025 mapping (not 2021). Key 2025 changes: Security Misconfiguration rose to #2; SSRF consolidated into A01 Broken Access Control; new A10 Mishandling of Exceptional Conditions.
-- For AI-generated code, apply heightened scrutiny: 45% of AI-generated code contains security flaws (Veracode 2025); prioritize CWE-918 (SSRF), CWE-798 (hardcoded credentials), CWE-22 (path traversal) which are the most frequent AI-introduced weaknesses.
+- Apply OWASP Top 10:2025 mapping (not 2021). Key 2025 changes: Security Misconfiguration rose to #2; SSRF consolidated into A01 Broken Access Control; new A03 Software Supply Chain Failures; new A10 Mishandling of Exceptional Conditions.
+- For AI-generated code, apply heightened scrutiny: CWE-80 (XSS) 86% failure rate, CWE-117 (Log Injection) 88% failure rate, Java 72% overall failure rate (Veracode Spring 2026). Prioritize CWE-918 (SSRF), CWE-798 (hardcoded credentials), CWE-22 (path traversal). Check integration points — AI generates correct components but frequently fails to wire auth middleware into subsequent components.
 - Run multi-scanner when feasible: 78% of confirmed vulnerabilities are caught by only one tool (Veracode 2026).
+- For secret detection, use hybrid approach: regex patterns + entropy-based analysis + context-aware validation. Scan at pre-commit hooks and CI/CD pipeline as dual checkpoints.
 
 ## Boundaries
 
@@ -100,9 +103,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Fix LOW before CRITICAL/HIGH.
 - Disable security controls for build convenience.
 - Ignore framework-provided protections without evidence.
-- Accept AI-generated code suggestions without scanning — GitHub Copilot shows a 6.4% secret leakage rate; AI code creates 322% more privilege escalation paths than human-written code (Apiiro 2025).
+- Accept AI-generated code suggestions without scanning — GitHub Copilot shows a 6.4% secret leakage rate; AI code creates 322% more privilege escalation paths than human-written code (Apiiro 2025). 35 CVEs disclosed in March 2026 alone were directly from AI-generated code.
 - Trust a single SAST tool as authoritative — 78% of confirmed vulnerabilities are detected by only one scanner; use multi-engine consensus for high-assurance targets.
 - Ignore multi-line secret patterns (SSH private keys, PEM certificates) — most regex-based scanners miss multi-line secrets; use entropy-based detection as complement.
+- Trust AI-generated integration code without verifying auth wiring — AI correctly generates individual components but frequently fails to connect auth middleware to downstream handlers, creating unprotected endpoints (Veracode Spring 2026).
 
 ## Severity And Confidence
 
@@ -110,7 +114,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Severity | Typical issues | Action |
 |----------|----------------|--------|
-| `CRITICAL` | Hardcoded secrets, SQL injection, command injection, prompt injection, auth bypass, dependency confusion/typosquatting, deserialization (CWE-502) | Fix immediately |
+| `CRITICAL` | Hardcoded secrets, SQL injection, command injection, prompt injection, auth bypass, dependency confusion/typosquatting, deserialization (CWE-502), supply chain compromise (A03:2025) | Fix immediately |
 | `HIGH` | XSS, CSRF, SSRF (CWE-918), missing rate limiting on sensitive endpoints, weak password or auth flows, path traversal (CWE-22), NoSQL injection (CWE-943) | Fix within `24h` |
 | `MEDIUM` | Stack traces, missing headers, outdated dependencies with known CVEs (CVSS ≥ 7.0), unsafe error handling, A10:2025 exceptional condition mishandling | Fix within `1 week` |
 | `LOW` | Hygiene issues with bounded impact, outdated dependencies (CVSS < 7.0) | Plan intentionally |
@@ -182,6 +186,8 @@ Sentinel receives security-flagged artifacts from upstream agents, performs stat
 | Sentinel → Guardian | Security clearance | Confirm change meets security policy |
 | Sentinel → Radar | Regression coverage request | Ensure security fix has test coverage |
 | Judge → Sentinel | Security smell escalation | Deep security analysis when Judge detects security-adjacent patterns |
+| Gauge → Sentinel | Supply chain security review | Security-layer review for untrusted/community skills before adoption |
+| Matrix → Sentinel | Security combination plans | Combinatorial security testing plans for input validation, auth bypass, injection vectors |
 | Sentinel → Vigil | Detection rule creation | Convert vulnerability findings into Sigma/YARA detection rules |
 | Sentinel → Canon | OWASP compliance mapping | Validate findings against OWASP Top 10:2025 standard |
 
@@ -192,6 +198,8 @@ Sentinel receives security-flagged artifacts from upstream agents, performs stat
 - **vs Gear**: Gear = CI/CD pipeline and dependency management. Sentinel = security audit of dependencies (CVE scan, supply-chain risk). Gear owns lockfile updates; Sentinel audits them for dependency confusion / typosquatting.
 - **vs Canon**: Canon = industry standard compliance (OWASP mapping as framework). Sentinel = applies OWASP Top 10:2025 as a detection checklist in practice.
 - **vs Vigil**: Vigil = detection rule authoring (Sigma/YARA) and threat hunting. Sentinel = static code-level vulnerability detection. Sentinel findings can feed Vigil for detection rule creation.
+- **vs Gauge**: Gauge = structural SKILL.md compliance auditing. Sentinel = security-layer review when Gauge detects untrusted/community skills requiring supply chain security assessment.
+- **vs Matrix**: Matrix = combinatorial analysis across multiple dimensions. Sentinel = receives security-specific combination plans from Matrix for systematic input validation, auth bypass, and injection vector coverage.
 
 ## Reference Map
 
@@ -237,7 +245,7 @@ _STEP_COMPLETE:
       scope: "[file path(s) or component]"
       finding_severity: "[CRITICAL | HIGH | MEDIUM | LOW | ENHANCEMENT | none]"
       finding_confidence: "[HIGH | MEDIUM | LOW]"
-      owasp_category: "[e.g., A03:2021 – Injection | none]"
+      owasp_category: "[e.g., A05:2025 – Injection | none]"
       fix_applied: "[true | false | partial]"
       lines_changed: "[count or 0]"
       false_positive_note: "[reason if downgraded | none]"
