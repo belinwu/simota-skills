@@ -146,20 +146,20 @@ Additional layers:
 
 - Property-based testing for invariants and edge discovery — pairing with mutation testing boosts kill scores from 70% to 92% on async code (Source: johal.in 2026)
 - Contract testing for service boundaries
-- Mutation testing to verify test strength — watch for equivalent mutants (false survivors) and tool-specific timeouts in distributed CI (>200ms latency causes Stryker .NET failures; apply exponential backoff, Source: johal.in 2026)
+- Mutation testing to verify test strength — watch for equivalent mutants (false survivors) and tool-specific timeouts in distributed CI (>200ms latency causes Stryker .NET failures; apply exponential backoff, Source: johal.in 2026). Agentic mutation tools (mewt for Rust/Solidity) enable LLM-guided mutant generation targeting high-risk code paths (Source: Trail of Bits 2026)
 - Snapshot testing only for stable, intentional output shapes
-- AI-assisted test generation for accelerating edge-case discovery — AI augments testing capacity but does not replace human judgment on test intent and assertion quality (Source: momentic.ai 2026)
+- AI-assisted test generation for accelerating edge-case discovery — AI augments testing capacity but does not replace human judgment on test intent and assertion quality. LLM-powered mutation testing (e.g., Meta ACH) generates targeted tests for undetected faults, making mutation testing practical at enterprise scale (Source: Meta Engineering 2025, momentic.ai 2026)
 
 ## Critical Constraints
 
 - Default diff coverage floor: `80%+`; then apply code-type targets from `references/coverage-strategy.md`.
 - Critical module coverage (payments, auth, data integrity): `90%+`; security-related code: target `100%` (Source: LaunchDarkly, BotGauge QA Metrics 2025).
 - Mutation score guidance: `90%+` excellent, `75-89%` good, `60-74%` acceptable, `< 60%` poor. Pair property-based tests with mutation testing to boost scores — hypothesis + mutmut improved async code scores from 70% → 92% (Source: johal.in 2026).
-- Flaky-rate guidance: healthy `< 1%`, investigation trigger `> 2%` over rolling window, warning `1-5%`, critical `> 5%` (Source: TestDino Benchmark 2026).
+- Flaky-rate guidance: healthy `< 1%`, investigation trigger `> 2%` over rolling window, warning `1-5%`, critical `> 5%` (Source: TestDino Benchmark 2026). Team-level prevalence is growing: 26% of teams experienced test flakiness in 2025, up from 10% in 2022 (Source: Bitrise Mobile Insights 2025).
 - Top 3 flaky root causes: (1) async wait/timing issues, (2) concurrency and shared state, (3) test order dependency — address in this priority order (Source: accelq.com, TestDino 2026).
 - Unit suite target: `< 5min`; full suite target: `< 15min`; use selection strategies before cutting signal.
 - Prefer `waitFor`, `findBy*`, retries with context, and deterministic clocks over sleeps.
-- Quarantine flaky tests out of the main CI/CD pipeline immediately; schedule dedicated fix sessions rather than deprioritizing against feature work (Source: oneuptime.com 2026).
+- Quarantine flaky tests out of the main CI/CD pipeline immediately; schedule dedicated fix sessions rather than deprioritizing against feature work (Source: oneuptime.com 2026). Modern CI platforms (Bitbucket, Harness) now offer built-in AI-powered flaky detection and auto-quarantine — leverage platform-native capabilities before building custom solutions (Source: Atlassian Engineering 2026, Harness 2026).
 
 ## Output Routing
 
