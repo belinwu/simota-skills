@@ -9,10 +9,10 @@ CAPABILITIES_SUMMARY:
 - page_transition: Route changes, modal/panel transitions, staged content entry
 - gesture_animation: Drag, swipe, snap, long press, touch feedback
 - motion_system_design: Motion tokens, scale design, cataloging, audits
-- modern_css_animation: View Transitions API (same-doc Baseline Oct 2025, cross-doc Chrome 126+/Safari 18.2+), @starting-style, scroll-driven animations (animation-timeline scroll()/view()), @property
+- modern_css_animation: View Transitions API (same-doc Baseline Oct 2025, cross-doc Chrome 126+/Edge 126+/Safari 18.5+/Firefox 146+ partial), @starting-style, scroll-driven animations (animation-timeline scroll()/view()), @property
 - reduced_motion: prefers-reduced-motion support and accessible motion paths
-- performance_optimization: 60fps targeting, GPU-safe properties, will-change management, CWV guard (CLS < 0.1, INP < 200ms)
-- library_guidance: Motion (React, MIT, 2.5x faster), GSAP (framework-agnostic, timeline), Tailwind CSS Motion (5KB CSS-only)
+- performance_optimization: 60fps targeting, GPU-safe properties (transform/opacity/filter/clip-path), will-change budget (≤2 elements/page), CWV guard (CLS < 0.1, INP < 200ms)
+- library_guidance: Motion v12 (React, MIT, hardware-accelerated scroll, oklch/oklab color animation), GSAP (framework-agnostic, timeline), Tailwind CSS Motion (5KB CSS-only)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Palette -> Flow — UX friction needs motion implementation
@@ -42,8 +42,8 @@ Use Flow when work needs:
 - Motion token design or motion cleanup
 - `prefers-reduced-motion` support
 - Performance-safe motion implementation
-- Modern CSS animation APIs: View Transitions API (same-document Baseline Oct 2025; cross-document Chrome 126+/Safari 18.2+), scroll-driven animations (`animation-timeline: scroll()`/`view()` — cross-browser Baseline 2025), `@starting-style` for entry animations
-- Framework-specific motion patterns (Motion/React, GSAP/vanilla, Tailwind CSS Motion)
+- Modern CSS animation APIs: View Transitions API (same-document Baseline Oct 2025; cross-document Chrome 126+/Edge 126+/Safari 18.5+/Firefox 146+ partial), scroll-driven animations (`animation-timeline: scroll()`/`view()` — cross-browser Baseline 2025), `@starting-style` for entry animations
+- Framework-specific motion patterns (Motion v12/React, GSAP/vanilla, Tailwind CSS Motion)
 - Core Web Vitals remediation for animation-induced CLS or INP failures
 
 Route elsewhere when:
@@ -56,13 +56,15 @@ Route elsewhere when:
 
 ## Core Contract
 
-- Prefer CSS `transform` and `opacity` — these are compositor-only properties that avoid layout/paint and stay within the 16.7ms frame budget.
+- Prefer CSS `transform`, `opacity`, `filter`, and `clip-path` — these are compositor-only properties that avoid layout/paint and stay within the 16.7ms frame budget.
 - Respect `prefers-reduced-motion`. Remove or simplify decorative motion; preserve essential state communication.
 - Treat motion as feedback, guidance, or state communication. Decorative motion is optional.
 - **Limit to 2-3 distinct motion types per view.** Use the motion slot system (Hero Entrance / Scroll-Linked / Interaction Feedback) from `references/intentional-motion-framework.md`. More than 3 motion types creates visual chaos.
 - Prefer CSS-only solutions unless JS materially improves interaction quality. Use `requestAnimationFrame` — never `setInterval`/`setTimeout` — for JS-driven animation.
 - **Guard Core Web Vitals:** animations must not degrade CLS (< 0.1) or INP (< 200ms). Non-composited animations cause CLS on 39% of mobile pages.
-- Auto-detect the active framework and follow local idioms. For React, prefer Motion (formerly Framer Motion, MIT, 2.5× faster than GSAP for unknown-value animations). For framework-agnostic or complex timeline work, prefer GSAP (note: Webflow-owned, license restricts competing tools).
+- Auto-detect the active framework and follow local idioms. For React, prefer Motion v12 (formerly Framer Motion, MIT, hardware-accelerated scroll animations, oklch/oklab color support). For framework-agnostic or complex timeline work, prefer GSAP (note: Webflow-owned, license restricts competing tools).
+- **Scroll-driven animations:** use `linear` easing (the scroll gesture itself provides natural easing). Set `animation-duration: 1ms` (not `0`) for Firefox compatibility. Animate only compositor-safe properties — custom properties and `font-size` force main-thread execution.
+- **`will-change` budget:** limit to ≤2 elements per page. Overuse creates excessive GPU memory consumption and can degrade rather than improve performance.
 - Keep scope explicit:
   - Single interaction: `<50` lines
   - Page transition: `<150` lines
@@ -96,6 +98,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Animate CSS custom properties in large DOMs — inherited variable recalculation is unpredictable at scale (thousands of nodes + complex selectors blow up performance despite working in isolated demos)
 - Animate layout-triggering properties (`top`, `left`, `width`, `height`) on scroll — use `transform: translateY()` instead; layout-triggering scroll animations are a top CLS contributor
 - Use `setInterval`/`setTimeout` for animation loops — causes frame drift and jank; always use `requestAnimationFrame`
+- Animate `font-size` or custom properties in scroll-driven animations — these force the entire animation to run on the main thread, negating the compositor advantage of scroll-driven animations
 
 ## Workflow
 
