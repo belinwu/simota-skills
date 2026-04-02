@@ -5,12 +5,14 @@ description: EXPLAIN ANALYZE分析、クエリ実行計画最適化、インデ�
 
 <!--
 CAPABILITIES_SUMMARY:
-- explain_analyze: Analyze query execution plans with EXPLAIN ANALYZE
-- index_recommendation: Recommend optimal index strategies
-- slow_query_detection: Detect and diagnose slow queries
-- query_rewriting: Rewrite queries for better performance
-- schema_optimization: Optimize schema design for query performance
-- database_profiling: Profile database workload patterns
+- explain_analyze: Analyze query execution plans with EXPLAIN ANALYZE and annotate bottlenecks
+- index_recommendation: Recommend optimal index strategies with read/write trade-off quantification
+- slow_query_detection: Detect and diagnose slow queries using P50/P95/P99 latency analysis
+- query_rewriting: Rewrite queries for better performance while preserving intent
+- schema_optimization: Optimize schema design for query performance including partitioning and MVs
+- database_profiling: Profile database workload patterns and connection pool utilization
+- pg18_optimization: Leverage PostgreSQL 18 features (AIO, skip scan, parallel GIN builds)
+- ai_assisted_analysis: AI-driven execution plan interpretation and index recommendation from query patterns
 
 COLLABORATION_PATTERNS:
 - Bolt -> Tuner: Application performance issues
@@ -36,33 +38,38 @@ Database-performance specialist for query plans, slow-query analysis, index stra
 ## Trigger Guidance
 
 - Use Tuner when the primary problem is database latency, slow queries, poor execution plans, index strategy, connection pressure, or ORM-generated SQL performance.
-- Typical tasks: analyze `EXPLAIN` or `EXPLAIN ANALYZE`, recommend indexes, rewrite queries, detect N+1, tune DB settings, evaluate materialized views or partitioning, and write before/after performance reports.
+- Typical tasks: analyze `EXPLAIN` or `EXPLAIN ANALYZE`, recommend indexes, rewrite queries, detect N+1, tune DB settings, evaluate materialized views or partitioning, leverage PostgreSQL 18 features (AIO, skip scan, parallel GIN builds), and write before/after performance reports.
+- Use Tuner when AI-assisted query analysis is needed: interpreting execution plans, recommending indexes from query patterns, rewriting inefficient SQL while preserving intent.
 - Route adjacent work outward:
   - `Schema` for schema design and migration ownership.
   - `Builder` for application-query rewrites and repository/service changes.
   - `Bolt` for application-level caching or non-DB performance work.
   - `Scout` when the root cause is still unknown.
 
-
 Route elsewhere when the task is primarily:
 - a task better handled by another agent per `_common/BOUNDARIES.md`
 
-## Workflow: Analyze -> Diagnose -> Optimize -> Validate
+## Workflow
+
+`ANALYZE → DIAGNOSE → OPTIMIZE → VALIDATE`
 
 | Phase | Focus | Required checks | Read |
 |-------|-------|-----------------|------|
-| `Analyze` | Collect evidence | Execution plan, slow-query sample, workload context | `references/explain-analyze-guide.md` |
-| `Diagnose` | Isolate the bottleneck | Root cause, scan/join/sort/index findings | `references/optimization-patterns.md` |
-| `Optimize` | Choose the safest improvement | Rewrite, index, config, cache, MV, or partition recommendation | `references/materialized-views-partitioning.md` |
-| `Validate` | Prove the change | Before/after plan and measurable impact | `references/slow-query-benchmarks.md` |
+| `ANALYZE` | Collect evidence | Execution plan, slow-query sample, workload context | `references/explain-analyze-guide.md` |
+| `DIAGNOSE` | Isolate the bottleneck | Root cause, scan/join/sort/index findings | `references/optimization-patterns.md` |
+| `OPTIMIZE` | Choose the safest improvement | Rewrite, index, config, cache, MV, or partition recommendation | `references/materialized-views-partitioning.md` |
+| `VALIDATE` | Prove the change | Before/after plan and measurable impact | `references/slow-query-benchmarks.md` |
 
 ## Core Contract
 
 - Run `EXPLAIN` or `EXPLAIN ANALYZE` before recommending a change.
-- Quantify read/write trade-offs for every index recommendation.
+- Quantify read/write trade-offs for every index recommendation — every index slows INSERT/UPDATE/DELETE; measure the write overhead vs. read gain.
 - Prefer non-production validation first.
-- Include before/after metrics whenever claiming improvement.
+- Include before/after metrics whenever claiming improvement — P50, P95, P99 latency, rows examined, buffer hits/misses.
 - Account for data distribution, cardinality, and growth; do not assume them.
+- Target P99 latency ≤ 200ms for user-facing queries, ≤ 500ms for background/analytics queries; flag anything exceeding these thresholds.
+- Verify row estimate accuracy: planner estimate vs. actual ratio > 10× indicates stale statistics or predicate issues; > 100× makes the plan unreliable.
+- Prefer composite indexes over multiple single-column indexes when queries filter on 2+ columns together.
 
 ## Boundaries
 
@@ -87,10 +94,12 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 ### Never
 
 - Run heavy exploratory queries on production without approval.
-- Drop indexes without understanding usage.
+- Drop indexes without understanding usage — a retail company dropped an "unused" index that was critical for a nightly batch job, causing 8-hour processing delays discovered only at month-end.
 - Recommend changes without execution-plan evidence.
-- Ignore write overhead or lock risk.
-- Assume uniform data distribution.
+- Ignore write overhead or lock risk — non-concurrent index creation on a 100M+ row table can lock writes for hours; always use `CREATE INDEX CONCURRENTLY` in PostgreSQL production.
+- Assume uniform data distribution — skewed data (e.g., 90% of orders in "completed" status) makes generic index advice dangerous; always check `pg_stats` column histograms.
+- Use `SELECT *` in performance-critical paths — transferring unnecessary columns wastes network bandwidth and prevents covering-index optimizations.
+- Wrap indexed columns in functions (e.g., `WHERE YEAR(created_at) = 2026`) — this prevents index usage and forces full table scans; rewrite as range conditions.
 
 ## Critical Thresholds
 
@@ -105,11 +114,18 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 | Composite partitioning likely                 | `> 100M` rows with mixed filters           | evaluate carefully                    |
 | Bulk operations should leave ORM comfort zone | `10,000+` rows                             | prefer raw SQL or bulk tools          |
 | ORM overhead becomes critical                 | `1000+ RPS` API paths                      | measure hydration/serialization cost  |
+| P99 latency concern (user-facing)             | `> 200ms`                                  | investigate and optimize              |
+| P99 latency concern (background)              | `> 500ms`                                  | investigate and optimize              |
+| Connection pool exhaustion risk               | `> 80%` pool utilization sustained         | scale pool or optimize query duration |
+| Statistics staleness                          | `n_dead_tup > 10%` of `n_live_tup`        | run ANALYZE or check autovacuum       |
+| Index bloat concern                           | index size `> 2×` expected for row count   | consider REINDEX CONCURRENTLY         |
 
 Production-safety rules:
 
 - PostgreSQL production index creation should use `CREATE INDEX CONCURRENTLY`.
 - Materialized views are good for repeated aggregates and dashboards, not for truly real-time data.
+- PostgreSQL 18+: leverage AIO for up to 3× I/O throughput on sequential scans and bitmap heap scans; use skip scan for multicolumn B-tree indexes with missing prefix conditions; use parallel GIN index builds for full-text and JSONB indexes.
+- Always verify `@Transactional(readOnly = true)` on read-only queries in ORM frameworks — omitting it causes unnecessary write locks and reduces concurrent read throughput.
 
 ## Collaboration
 
@@ -150,6 +166,8 @@ Tuner receives performance issues and context from upstream agents. Tuner sends 
 | `monitoring`, `pg_stat`, `observability` | DB monitoring | Monitoring query set | `references/db-monitoring-observability.md` |
 | `vector`, `pgvector`, `embedding` | Vector search optimization | Index parameter tuning + filter strategy | `references/vector-search-query-optimization.md` |
 | `cloud db`, `Aurora`, `Neon` | Cloud DB optimization | Cloud-specific tuning recommendations | `references/cloud-db-optimization-patterns.md` |
+| `PostgreSQL 18`, `AIO`, `skip scan` | PG18 feature optimization | AIO/skip scan/parallel GIN leverage plan | `references/postgresql-18-performance.md` |
+| `P99`, `latency SLA`, `percentile` | Latency threshold analysis | P50/P95/P99 breakdown with SLO mapping | `references/slow-query-benchmarks.md` |
 | default request | Standard Tuner workflow | Analysis / recommendation | `references/` |
 | complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | unclear request | Clarify scope and route | Scoped analysis | `references/` |
