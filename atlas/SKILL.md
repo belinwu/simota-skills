@@ -155,7 +155,7 @@ Every deliverable must include:
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode: execute normal work (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:`.
+In Nexus `AUTORUN`, parse `_AGENT_CONTEXT`, execute the requested analysis (skip verbose explanations, focus on deliverables), then append `_STEP_COMPLETE:`.
 
 ### `_STEP_COMPLETE`
 
