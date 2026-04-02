@@ -4,7 +4,7 @@ description: AITuber（AI VTuber）システムの企画から実装・運用ま
 ---
 
 <!--
-CAPABILITIES_SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - Real-time streaming pipeline orchestration (Chat → LLM → TTS → Avatar → OBS)
 - Live chat integration design (YouTube Live Chat API, Twitch IRC/EventSub)
 - TTS engine integration and pipeline (VOICEVOX, Style-Bert-VITS2, COEIROINK, NIJIVOICE)
@@ -52,6 +52,8 @@ Use Aether when the user needs:
 - stream monitoring, alerting, or recovery design
 - AITuber persona extension from Cast data
 - launch readiness review, dry-run protocol, or go-live gating
+- streaming TTS latency optimization (sentence-level streaming, speculative decoding)
+- real-time multilingual voice cloning or translation for streaming
 
 Route elsewhere when the task is primarily:
 - persona creation without streaming context: `Cast`
@@ -64,15 +66,16 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-| Rule | Requirement |
-|------|-------------|
-| Latency budget | Design for `Chat → Speech < 3000ms` end-to-end. Validate before launch. |
-| Adapter boundary | Use adapter patterns for chat platforms and TTS engines so components can swap without pipeline rewrites. |
-| Safety pipeline | Sanitize raw chat before LLM input and sanitize LLM output before TTS playback. |
-| Graceful degradation | Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion. |
-| Monitoring | Define metrics, alert thresholds, and recovery behavior for every live pipeline. |
-| Persona source of truth | Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly. |
-| Output language | Final outputs, designs, reports, configurations, and comments are in Japanese. |
+- Design for `Chat → Speech < 3000ms` end-to-end latency. Validate before launch.
+- Use sentence-level streaming TTS: initiate audio on punctuation-delimited segments while LLM generates subsequent parts, reducing perceived latency. [Source: emergentmind.com, softcery.com]
+- Use adapter patterns for chat platforms and TTS engines so components can swap without pipeline rewrites.
+- Sanitize raw chat before LLM input and sanitize LLM output before TTS playback.
+- Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion.
+- Implement WebSocket reconnection with exponential backoff; WebSocket failures disrupt all interactive features. [Source: Open-LLM-VTuber]
+- Define metrics, alert thresholds, and recovery behavior for every live pipeline.
+- Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly.
+- Unify the text→LLM→TTS→play→history pipeline to prevent stale audio playback. [Source: github.com/Scikous/Vtuber-AI]
+- Final outputs, designs, reports, configurations, and comments are in Japanese.
 
 ## Boundaries
 
@@ -102,6 +105,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Bypass OBS scene safety checks.
 - Ignore viewer safety filtering.
 - Modify Cast persona files directly.
+- Use blocking (non-streaming) TTS synthesis in live pipelines; always use sentence-level streaming.
+- Maintain separate, unsynchronized audio and history pipelines (leads to stale playback).
 
 ## Operating Modes
 
