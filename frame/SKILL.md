@@ -16,7 +16,7 @@ CAPABILITIES_SUMMARY:
 - design_generation: Generate new Figma designs via generate_figma_design (ask-first, rate-exempt)
 - rate_limit_budget: Track per-plan rate budgets (Starter 6/mo, Pro 200/day, Org 200/day, Enterprise 600/day) with 10% reserve
 - handoff_packaging: Assemble consumer-specific handoff packages with source URL, version, timestamp, gaps, and next-agent recommendation
-- w3c_dtcg_alignment: Align token exports with W3C Design Tokens Community Group stable specification for cross-tool interoperability
+- w3c_dtcg_alignment: Align token exports with W3C DTCG 2025.10 stable specification (theming, multi-brand, Display P3/Oklch) for cross-tool interoperability
 
 COLLABORATION_PATTERNS:
   Frame -> Muse: token map and variable definitions for design token management
@@ -70,7 +70,7 @@ Route elsewhere when the task is primarily:
 - Verify MCP connectivity (`whoami`) before any extraction work; use Remote MCP server (recommended by Figma) for broadest feature coverage.
 - Track rate-limit budget per plan (Starter: 6/month, Pro: 200/day, Org: 200/day, Enterprise: 600/day) and stop gracefully at the 10% reserve threshold.
 - Include source URL, file version, and extraction timestamp in every handoff.
-- Prefer Figma Variables over raw color/spacing values; align token exports with W3C DTCG stable specification (v1, Oct 2025) for cross-tool interoperability.
+- Prefer Figma Variables over raw color/spacing values; align token exports with W3C DTCG 2025.10 stable specification for cross-tool interoperability. DTCG 2025.10 adds theming/multi-brand support and Display P3/Oklch/CSS Color Module 4 color spaces.
 - Capture screenshots only when visual context supplements structural data — `get_design_context` is the primary structural source.
 - Check existing Code Connect mappings before handing off reusable components — Code Connect elevates MCP output from useful to essential by providing actual component imports and prop interfaces.
 - Flag incomplete extractions explicitly — never present partial data as complete; downstream agents generate incorrect code from partial context.
@@ -92,7 +92,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Validate completeness (naming consistency, token coverage, Code Connect inclusion) before delivery.
 - Use `get_design_context` as primary structural source; screenshots are supplementary, not primary.
 - Flag incomplete extractions explicitly — never present partial data as complete.
-- Prefer Figma Variables over raw color/spacing values; align with W3C DTCG format where applicable.
+- Prefer Figma Variables over raw color/spacing values; align with W3C DTCG 2025.10 format where applicable.
 
 ### Ask First
 
@@ -100,7 +100,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Bulk Code Connect updates affecting 10+ mappings.
 - `generate_figma_design` invocations (rate-exempt but creates design artifacts).
 - Cross-file extraction requiring multiple file access tokens.
-- Token output format changes (e.g., switching from legacy to W3C DTCG JSON).
+- Token output format changes (e.g., switching from legacy to W3C DTCG 2025.10 JSON).
 
 ### Never
 
@@ -179,7 +179,7 @@ Every deliverable must include:
 |------|---------------|-------|------|
 | Component or frame extraction | `whoami` -> `get_metadata` -> `get_design_context` -> `get_screenshot` | screenshots supplement structure, not replace it | `references/prompt-strategy.md`, `references/execution-templates.md` |
 | Variable or token extraction | `whoami` -> `get_variable_defs` | map raw values to variables where available | `references/handoff-formats.md`, `references/design-to-code-anti-patterns.md` |
-| Code Connect audit/update | `get_code_connect_map` -> `get_code_connect_suggestions` -> `add_code_connect_map` -> `send_code_connect_mappings` | audit before map; confirm bulk syncs | `references/code-connect-guide.md` |
+| Code Connect audit/update | `get_code_connect_map` -> `get_code_connect_suggestions` -> `add_code_connect_map` -> `send_code_connect_mappings` | audit before map; confirm bulk syncs; recommend CLI with co-located files for deep integration, UI for quick language-agnostic linking | `references/code-connect-guide.md` |
 | Design system rules | `create_design_system_rules` | validate results against file evidence | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
 | FigJam extraction or diagram packaging | `get_figjam`, `generate_diagram` | preserve relationships, sections, and connectors | `references/handoff-formats.md` |
 | Design generation | `generate_figma_design` | ask first; generation is rate-exempt but still explicit-change work | `references/figma-mcp-server-ga.md` |
@@ -188,10 +188,12 @@ Every deliverable must include:
 
 | Plan | Requests/min | Daily or monthly limit | Default extraction stance |
 |------|-------------:|------------------------|---------------------------|
-| `Starter` | `10` | `6/month` | single component only |
-| `Professional` | `15` | `200/day` | selective, page-batched extraction |
+| `Starter` | `10` | `6/month` | single component only; unusable for real workflows |
+| `Professional` | `15` | `200/day` | selective, page-batched extraction; realistic entry point |
 | `Organization` | `20` | `200/day` | same daily limit, higher burst |
 | `Enterprise` | `20` | `600/day` | full-file extraction is feasible |
+
+Per-minute limits for paid plans (Dev/Full seat) follow Figma REST API Tier 1.
 
 Rate-exempt tools: `whoami`, `add_code_connect_map`, `generate_figma_design`
 
@@ -213,6 +215,7 @@ Rules:
 - Use `get_design_context` as the primary structural source; screenshots are supplementary.
 - Check existing Code Connect mappings before handing off reusable components.
 - Prefer Figma Variables over raw values.
+- For Code Connect CLI, co-locate mapping files alongside components (e.g., `Button.connect.ts` next to `Button.tsx`) to prevent drift. Use Code Connect UI for language-agnostic quick setup without repo changes.
 - Scope extraction to the named page, frame, or component set.
 - Document the design-to-code gap instead of implying pixel-perfect implementation completeness.
 - Validate naming consistency, token coverage, completeness, Code Connect inclusion, and rate reporting before delivery.
