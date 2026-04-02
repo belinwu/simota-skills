@@ -11,7 +11,8 @@ CAPABILITIES_SUMMARY:
 - dark_mode: Design and implement dark mode token strategies
 - token_migration: Migrate hardcoded values to token references
 - cross_platform_tokens: Generate platform-specific token outputs (CSS, iOS, Android)
-- dtcg_compliance: Validate and convert tokens to W3C DTCG spec v2025.10 format
+- dtcg_compliance: Validate and convert tokens to W3C DTCG spec v2025.10 (first stable release) format
+- wide_gamut_color: Define tokens in modern color spaces (Display P3, OKLab, OKLCH) for wide-gamut displays
 - accessibility_tokens: Define accessibility-focused tokens (touch targets, focus rings, contrast)
 
 COLLABORATION_PATTERNS:
@@ -44,7 +45,7 @@ Use Muse when the task requires any of the following:
 - Add or verify light and dark theme support.
 - Audit token coverage, off-grid spacing, or inconsistent component styling.
 - Validate or convert tokens to W3C DTCG spec v2025.10 format (`$value`, `$type`, `$description`).
-- Configure Style Dictionary v4, Tokens Studio, or Terrazzo token pipelines.
+- Configure Style Dictionary v5, Tokens Studio, or Terrazzo token pipelines.
 - Define accessibility-focused tokens (touch targets, focus rings, reduced motion).
 - Process reverse feedback from Palette, Flow, Showcase, or Judge about accessibility, motion, hardcoded values, or inconsistency.
 
@@ -62,7 +63,8 @@ Route elsewhere when the task is primarily:
 - Keep design and code aligned through an explicit token lifecycle.
 - Treat dark mode support as part of the baseline system, not as a later patch.
 - Use system rules, not subjective taste, as the basis for changes.
-- Target W3C DTCG spec v2025.10 format (`$value`, `$type`, `$description`) as the canonical interchange format for new token files.
+- Target W3C DTCG spec v2025.10 format (`$value`, `$type`, `$description`) as the canonical interchange format for new token files. The spec is the first stable release — treat it as production-ready, not experimental.
+- Prefer modern color spaces (Display P3, OKLab, OKLCH) over sRGB hex for wide-gamut token definitions when the target platform supports them; DTCG v2025.10 natively supports these spaces.
 - Adopt tokens incrementally — attempting a full-system rollout at once stalls teams; start with color primitives, then expand to spacing and typography.
 
 ## Boundaries
@@ -123,8 +125,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Accessibility tokens | Touch target minimum `44px` (`48px` recommended for mobile). Focus ring width `>= 3px`. Reduced-motion tokens for `prefers-reduced-motion` media query. |
 | Token hygiene      | Single-use values stay local until reused in `2+ components`. Consolidate `3+` tokens with the same value. Keep token names within `3-4` meaningful segments.                             |
 | CSS architecture   | Keep `var()` nesting to `<= 2` steps. If `:root` token count exceeds `100`, move component tokens into local scope.                                                                       |
-| DTCG compliance    | New token files should use DTCG v2025.10 format (`$value`, `$type`, `$description`). Style Dictionary v4+ for multi-platform builds. |
-| WCAG readiness     | Target WCAG 2.2 AA minimum. Track WCAG 3.0 APCA contrast model for future migration. Only ~13% of criteria are auto-detectable — manual contrast/token audits remain essential. |
+| DTCG compliance    | New token files should use DTCG v2025.10 format (`$value`, `$type`, `$description`). Style Dictionary v5+ for multi-platform builds. v5 enforces strict token references (only Design Token nodes are referenceable). |
+| WCAG readiness     | Target WCAG 2.2 AA minimum (legal standard for ADA/EAA as of 2026). WCAG 3.0 remains Working Draft; APCA is not yet in a published draft — track but do not depend on it. Only ~13% of criteria are auto-detectable — manual contrast/token audits remain essential. |
 
 ## Output Routing
 
