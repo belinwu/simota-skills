@@ -12,6 +12,8 @@ CAPABILITIES_SUMMARY:
 - state_recovery: Recover from state drift, corrupted evidence, or inconsistent loop artifacts
 - proactive_health_review: Pre-failure health assessment and risk reporting
 - loop_learning: Evidence-based parameter adaptation with LES scoring and safety guardrails
+- convergence_detection: Detect semantically stuck loops via action similarity and output delta analysis
+- deduplication_guard: Block duplicate or semantically equivalent tool calls within a sliding window
 
 COLLABORATION_PATTERNS:
 - Nexus -> Orbit: Loop execution context and delegation
@@ -49,8 +51,9 @@ Use Orbit when the user needs:
 - pre-failure health review of running loops
 - loop contract design with measurable acceptance criteria
 - cost-per-task analysis or efficiency optimization of existing loops
-- bounded autonomy configuration: defining operational limits, escalation paths, and audit trails for autonomous loops [Source: machinelearningmastery.com — Agentic AI Trends 2026]
-- checkpointing strategy for long-running workflows that must survive interruptions [Source: spaceo.ai — Agentic AI Frameworks 2026]
+- bounded autonomy configuration: defining operational limits, escalation paths, and audit trails for autonomous loops
+- checkpointing strategy for long-running workflows that must survive interruptions
+- stuck-loop detection when an agent repeats semantically equivalent actions without progress [Source: dev.to/boucle2026 — Stuck Agent Detection from 220 Loops]
 
 Route elsewhere when the task is primarily:
 - multi-agent task chain orchestration: `Nexus`
@@ -72,6 +75,8 @@ Route elsewhere when the task is primarily:
 - Track cost-per-completed-task (LLM calls + tool executions + human escalations) as the primary efficiency metric, not cost-per-token. [Source: medium.com/data-science-collective — AI Agents Stack 2026]
 - Implement bounded autonomy: define clear operational limits, escalation paths, and audit trails for every loop. [Source: machinelearningmastery.com — Agentic AI Trends 2026]
 - Combine retry + timeout + circuit breaker as a unified resilience trio; never use retries without circuit breaker protection. [Source: dasroot.net — Building Resilient Systems 2026]
+- Require idempotency keys for every effectful tool invocation; retries without idempotency risk double-execution of side effects. [Source: fast.io — AI Agent State Checkpointing]
+- Separate task state (workflow checkpoints, artifacts) from system state (policies, budgets, permissions) in checkpoint design; mixing them causes agents to "remember" the wrong things. [Source: fast.io — AI Agent State Checkpointing]
 
 ## Boundaries
 
@@ -111,6 +116,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Create independent circuit breakers per service instance rather than per service — this misses systemic failures and leads to cascading outages. [Source: oneuptime.com — Circuit Breaker Patterns 2026]
 - Retry without exponential backoff — ties up threads, exhausts connection pools, and causes cascading failure in upstream services. [Source: medium.com/@rafaeljcamara — Downstream Resiliency Patterns]
 - Use stateless recovery for long-running workflows — state must be checkpointed to survive interruptions gracefully. [Source: spaceo.ai — Agentic AI Frameworks 2026]
+- Allow duplicate tool calls without de-duplication — check the last `5` actions before execution; block if the agent is about to repeat the same call or a semantically equivalent rephrasing. [Source: medium.com/@sattyamjain96 — Loop of Death in Production Agents]
+- Run unmonitored loops without token budget caps — recursive agent loops have escalated from $127 to $18,400/week when cost tracking was absent. [Source: earezki.com — The $47,000 AI Agent Loop]
+- Stack retry layers across multiple abstraction levels (load balancer + service code + client library) — this doubles or triples call volume to a failing endpoint, worsening cascading failure. [Source: medium.com/@michael.hannecke — Resilience Circuit Breakers for Agentic AI]
 
 ## Operating Modes
 
@@ -238,6 +246,18 @@ State file: `${LOOP_DIR}/.circuit-state`
 Reset: `recover.sh --reset-circuit` or manual deletion of `.circuit-state`
 Cooldown: `OPEN` → `HALF_OPEN` after `CIRCUIT_COOLDOWN` seconds
 
+### Convergence Detection (Stuck-Loop Guard)
+
+Traditional circuit breakers catch error-code failures but miss semantic failures — agents stuck in loops producing 200-status responses with no meaningful progress. [Source: medium.com/@michael.hannecke — Resilience Circuit Breakers for Agentic AI]
+
+| Metric | Threshold | Action |
+|--------|-----------|--------|
+| Action similarity | `>= 85%` across `3` consecutive iterations | block and escalate |
+| Output delta | `< 5%` net change in artifacts across `3` iterations | flag as stalled |
+| Token burn rate | `> 2x` median cost per iteration | alert and review |
+
+Detection checks run after each iteration. When triggered, emit `BLOCKED` with class `CONVERGENCE_STALL` and persist state for human review. [Source: dev.to/boucle2026 — Stuck Agent Detection from 220 Loops]
+
 ### 3-Tier Timeout
 
 Timeouts operate at three independent layers:
@@ -275,6 +295,9 @@ Each layer has independent fallback behavior. See `references/executor-engines.m
 | `TOKEN_BUDGET` | `0` | max cost in USD; `0` = unlimited |
 | `CHECKPOINT_INTERVAL` | `1` | checkpoint state every N iterations for crash recovery [Source: spaceo.ai] |
 | `ESCALATION_THRESHOLD` | `0.3` | human intervention rate above 30% triggers loop redesign review [Source: medium.com/data-science-collective] |
+| `DEDUP_WINDOW` | `5` | check last N actions for duplicate tool calls before execution [Source: medium.com/@sattyamjain96] |
+| `CONVERGENCE_THRESHOLD` | `0.85` | action similarity ratio that triggers stuck-loop detection [Source: dev.to/boucle2026] |
+| `CONVERGENCE_WINDOW` | `3` | consecutive similar iterations before escalation |
 
 ### Loop Tiers
 
@@ -346,6 +369,7 @@ If any item is missing, return `CONTINUE`.
 | `COMMIT_SCOPE_RISK` | unrelated changes in commit scope | restrict staging or delegate commit policy |
 | `TOOL_FAILURE` | runner or executor halt | bounded retry, then recovery or escalation |
 | `CIRCUIT_OPEN` | repeated same-signature failure | cooldown or manual reset |
+| `CONVERGENCE_STALL` | semantically equivalent actions with no progress | persist state, escalate to human |
 
 ### Severity Matrix
 
