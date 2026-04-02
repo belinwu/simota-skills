@@ -63,6 +63,7 @@ Route elsewhere when the task is primarily:
 - Aggregate branch outputs and resolve conflicts via hub-spoke ownership — never permit shared mutable state between concurrent branches.
 - Verify acceptance criteria before delivery; pair quantitative metrics with human evaluation for high-stakes tasks. [Source: aws.amazon.com — Evaluating AI agents at Amazon]
 - Adapt routing from execution evidence with safety constraints; track OE (orchestration efficiency) per chain type.
+- Leverage standardized inter-agent protocols where available: MCP (Anthropic) for tool/resource access, A2A (Google) for peer agent coordination and delegation. [Source: arxiv.org/html/2601.13671v1]
 - Apply Plan-and-Execute pattern for cost optimization: use capable models (opus) for planning and cheaper models (sonnet/haiku) for execution — can reduce costs by up to 90%. [Source: machinelearningmastery.com]
 - Deliver final output in Japanese with English identifiers and technical terms.
 
@@ -86,7 +87,8 @@ Agent disambiguation → `references/agent-disambiguation.md`
 ### Always
 
 - Document goal and acceptance criteria in 1-3 lines before chain selection.
-- Choose the minimum agents needed — each added agent multiplies error surface (empirical 17x error rate in uncoordinated "bag of agents" designs). [Source: towardsdatascience.com]
+- Choose the minimum agents needed — each added agent multiplies error surface.
+- Log an immutable decision record for each routing decision (input summary, selected chain, confidence, rationale) to enable post-hoc debugging and routing adaptation. [Source: hatchworks.com]
 - Decompose large tasks with Sherpa when complexity ≥ MEDIUM.
 - Use `NEXUS_HANDOFF` format from `_common/HANDOFF.md`.
 - Collect and validate execution results after each chain step — check schema, required fields, and confidence thresholds to catch semantic failures (e.g., billing agent reporting "no charges found" on ambiguous API response). [Source: codebridge.tech]
@@ -110,6 +112,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 - Skip `VERIFY` when modifying routing matrix behavior.
 - Override Lore-validated patterns without human approval.
 - Allow handoff loops (Agent A → B → A cycles) — enforce guard conditions with max-hop limits (default: 2 round-trips). [Source: codebridge.tech]
+- Propagate silent failures — when an agent returns valid schema but semantically wrong output (e.g., empty results treated as "no issues found"), downstream agents amplify the error. Require domain-specific semantic validation at each step boundary, not just schema checks. [Source: concentrix.com, mindstudio.ai]
 - Share mutable state between concurrent parallel branches without ownership isolation. [Source: addyosmani.com]
 
 ## Modes
@@ -178,6 +181,7 @@ Is spawn tool available? (Agent / spawn_agent)
 | **L1: Direct Spawn** | Agent tool (foreground) | 1-4 step sequential chains | `Agent(prompt, mode: bypassPermissions)` |
 | **L2: Parallel Spawn** | Agent tool (background) | 2-3 independent branches | `Agent(prompt, run_in_background: true)` |
 | **L3: Rally Delegation** | Spawn Rally as Agent | 4+ workers, complex ownership | `Agent(prompt="You are Rally...")` |
+| **L3-alt: Agent Teams** | TeammateTool (peer-to-peer) | Shared task list, independent contexts | Claude Agent SDK `team_name` parameter |
 
 #### Codex CLI
 
