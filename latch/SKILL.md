@@ -17,6 +17,8 @@ CAPABILITIES_SUMMARY:
 - hook_type_selection: Guide command vs prompt vs http vs agent hook type selection based on latency and verification depth
 - mcp_governance: Design hooks to audit and verify MCP tool actions for deterministic governance
 - hook_performance: Optimize hook latency, consolidate matchers, limit per-event hook count
+- input_modification: Design updatedInput hooks for transparent tool argument rewriting (path correction, secret redaction, dry-run injection)
+- dependency_safety: Design fail-open/fail-closed strategies for hooks with external command dependencies
 
 COLLABORATION_PATTERNS:
 - Nexus -> Latch: Task context for hook configuration
@@ -56,6 +58,7 @@ Use Latch when the user needs:
 - HTTP webhook hooks for external audit logging or CI integration
 - agent-type hooks for multi-turn verification with tool access
 - MCP tool governance via hooks (audit and verify MCP actions)
+- transparent input modification via `updatedInput` (path correction, secret redaction, dry-run injection)
 - hook performance optimization (latency reduction, matcher consolidation)
 
 Route elsewhere when the task is primarily:
@@ -76,8 +79,12 @@ Route elsewhere when the task is primarily:
 - Stay within Latch's domain; route unrelated requests to the correct agent.
 - Hooks are hard constraints, not suggestions — treat every hook as a deterministic enforcement point, not advisory guidance.
 - Never allow more than one PreToolUse hook to modify the same tool's `updatedInput` — hooks run in parallel with non-deterministic ordering, so the last writer wins unpredictably.
+- When using `updatedInput` to modify tool arguments, always pair it with `permissionDecision: "allow"` — omitting this causes the rewritten operation to still prompt for permission, defeating transparent modification.
 - Every security-critical PreToolUse hook must use `exit 2` to block; `exit 1` only logs a warning and provides no enforcement.
 - All human-readable messages from command hooks must go to stderr; stdout is reserved for JSON protocol data. Violating this corrupts tool input.
+- PreToolUse hooks fire before any permission-mode check — a hook returning `permissionDecision: "deny"` blocks the tool even in `bypassPermissions` mode, making hooks the strongest policy enforcement layer.
+- Every command hook must explicitly handle missing dependencies (jq, grep, etc.) — design as fail-closed (`exit 2`) for security hooks or fail-open (`exit 0`) for monitoring hooks, and document the choice.
+
 ## Boundaries
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
@@ -106,7 +113,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use `exit 1` for security enforcement — it only logs a warning and does not block the tool. Use `exit 2` for blocking.
 - Write human-readable text to stdout in command hooks — stdout is the JSON protocol channel; misuse corrupts tool input and causes silent failures.
 - Use `set -e` in hook scripts — it causes premature exits on benign failures; use `set -uo pipefail` instead.
-- Use invalid event names (e.g., `PreTool` instead of `PreToolUse`) — the hook silently never fires with no error.
+- Use invalid event names (e.g., `PreTool` instead of `PreToolUse`) — the hook silently never fires with no error message.
+- Deploy hooks that depend on external commands (jq, grep, curl) without verifying their availability — the script fails silently or exits with an unexpected code, causing either a false pass or a false block.
 
 ## Session Scope
 
@@ -157,7 +165,8 @@ Selection rules:
 - `Stop` and `SubagentStop` are for completion gates, not routine linting after every edit.
 - `PreToolUse` with `*` is high-risk and belongs in `Ask First` — it fires on every tool call and adds latency to the entire session.
 - Use MCP Tools for agent actions and Hooks to audit and verify those actions — this separation is the 2026 best practice for deterministic governance.
-- Limit total hooks per event to ≤ 5 to avoid compounding latency; each hook adds ~100-500ms overhead depending on type.
+- Limit total hooks per event to ≤ 5 to avoid compounding latency; target ≤ 200ms per individual command hook for scalable deployments (practitioners report 95+ hooks without noticeable latency when each completes under 200ms).
+- Prompt hooks use `$ARGUMENTS` placeholder to inject the hook's JSON input data into the prompt text — omitting it means the LLM receives no context about the tool call.
 
 ## Hook Contract
 
@@ -170,7 +179,7 @@ Selection rules:
 | `http` | External service integration, audit logging to remote endpoints | `30s` | All events |
 | `agent` | Multi-turn verification requiring tool access and deep reasoning | `120s` | `PreToolUse`, `PostToolUse`, `Stop`, `SubagentStop` |
 
-Selection guidance: Start with `command` hooks for formatting and linting, graduate to `prompt` hooks for security and policy decisions, use `agent` hooks only for deep verification requiring tool access. Prefer `command` for latency-sensitive paths (P99 ≤ 500ms target). Use `http` for external audit trails and webhook integrations.
+Selection guidance: Start with `command` hooks for formatting and linting, graduate to `prompt` hooks for security and policy decisions, use `agent` hooks only for deep verification requiring tool access. Prefer `command` for latency-sensitive paths (target ≤ 200ms per hook). Use `http` for external audit trails and webhook integrations. Command hooks do not consume token quota; prompt/agent hooks trigger model invocations that consume quota — reserve them for high-value decisions.
 
 ### Exit Codes
 
@@ -231,6 +240,7 @@ Structure rules:
 | `webhook`, `http hook`, `audit log` | HTTP hook design | HTTP hook with endpoint and payload schema | `references/hook-system.md` |
 | `mcp governance`, `mcp audit` | MCP tool governance | Audit hooks for MCP tool actions | `references/hook-system.md` |
 | `hook performance`, `hook slow`, `latency` | Performance optimization | Matcher consolidation and hook count reduction plan | `references/debugging-guide.md` |
+| `updatedInput`, `modify input`, `rewrite`, `redact` | Input modification | PreToolUse hook with updatedInput + permissionDecision design | `references/hook-system.md` |
 | unclear hook request | PROPOSE focus | Hook-set design | `references/hook-system.md` |
 
 Routing rules:
