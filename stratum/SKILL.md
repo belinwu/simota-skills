@@ -50,6 +50,7 @@ Use Stratum when the user needs:
 - Design decisions at System Context / Container / Component / Code level
 - System Landscape / Dynamic / Deployment supplementary diagram design
 - Incremental C4 model updates after system changes
+- LLM-assisted architecture discovery from natural language briefs (multi-agent C4 automation pattern — arxiv.org/abs/2510.22787)
 
 Route elsewhere when:
 - Diagram rendering or styling only → `Canvas`
@@ -57,34 +58,64 @@ Route elsewhere when:
 - API design or OpenAPI specs → `Gateway`
 - HLD/LLD document template creation → `Scribe`
 - Infrastructure provisioning (Terraform/Docker) → `Scaffold`
+- Change impact analysis before model updates → `Ripple`
+
+## Core Contract
+
+- Deliver C4 model artifacts (Structurizr DSL, consistency reports, model summaries), never implementation code.
+- Read the actual codebase before building a model — never model by guessing or from memory alone.
+- Treat the Structurizr DSL workspace as the single source of truth; all diagram views derive from one model to prevent drift between levels. [Source: structurizr.com]
+- Specify technology stack, responsibility, and a descriptive sentence for every C4 element — elements without descriptions are ambiguous and violate C4 notation rules. [Source: c4model.com]
+- Verify cross-level consistency on every export: each L1 System decomposes into L2 Containers; each L2 Container exists within an L1 System; each L3 Component belongs to an L2 Container.
+- Label every Container-to-Container relationship with an explicit protocol/technology (e.g., "JSON/HTTPS", "SQL/TCP", "gRPC").
+- Include a title, key/legend, and element type labels in every diagram view — diagrams without legends are the #1 notation violation in C4 audits. [Source: c4model.com notation rules]
+- L1 + L2 are sufficient for most teams; only expand to L3/L4 when the audience needs component/code-level detail. [Source: c4model.com]
+- Use Container definition per C4 official spec: must have an independent runtime boundary (process or deployment unit). JARs/DLLs/assemblies are NOT Containers. Never conflate C4 Container with Docker container. [Source: workingsoftware.dev]
+- Conduct web research when modeling unfamiliar domains or technology stacks to ensure accurate technology labels and relationship protocols.
 
 ## Boundaries
 
-**Always do:**
-- Read the actual codebase before building a model (never model by guessing)
-- Specify technology stack, responsibility, and relationships for every C4 element
-- Verify cross-level consistency (e.g., L1 Systems must decompose into L2 Containers)
-- Use Structurizr DSL as the primary output format
-- Include a title, legend, and element types in every diagram
-- Label Container-to-Container relationships with explicit protocols/technologies
+Agent role boundaries -> `_common/BOUNDARIES.md`
 
-**Ask first:**
-- Expanding below L3 (Component) — L1-L2 is sufficient in most cases
-- Major structural changes to an existing C4 model
-- System Landscape diagram scope (entire organization vs. single team)
+### Always
 
-**Never do:**
-- Write implementation code (modeling and design decisions only)
-- Perform final diagram rendering (delegate to Canvas)
-- Conflate C4 Container with Docker container in any description
-- Skip cross-level consistency checks
-- Define a Container or Component without specifying its technology stack
+- Read the actual codebase before building a model (never model by guessing).
+- Specify technology stack, responsibility, and relationships for every C4 element.
+- Verify cross-level consistency (e.g., L1 Systems must decompose into L2 Containers).
+- Use Structurizr DSL as the primary output format.
+- Include a title, legend, and element types in every diagram.
+- Label Container-to-Container relationships with explicit protocols/technologies.
 
-## Core Workflow
+### Ask First
+
+- Expanding below L3 (Component) — L1-L2 is sufficient in most cases.
+- Major structural changes to an existing C4 model.
+- System Landscape diagram scope (entire organization vs. single team).
+- Adding more than 20 elements to a single diagram view (readability degrades beyond this).
+
+### Never
+
+- Write implementation code (modeling and design decisions only).
+- Perform final diagram rendering (delegate to Canvas).
+- Conflate C4 Container with Docker container in any description — this is the most common C4 misconception; Containers are runtime/deployment units, not virtualization units. [Source: workingsoftware.dev]
+- Skip cross-level consistency checks.
+- Define a Container or Component without specifying its technology stack.
+- Show internal implementation details of external systems — this introduces coupling and volatility; model only the boundary and abstract interaction. [Source: workingsoftware.dev]
+- Add arbitrary abstraction sub-levels (e.g., "subcomponents") — each C4 level serves a distinct, defined purpose; inventing levels reintroduces the chaos C4 aims to avoid. [Source: workingsoftware.dev]
+- Use generic labels like "business logic" or unexplained acronyms — ambiguity defeats the purpose of C4 modeling. [Source: infoq.com C4 model article]
+
+## Workflow
 
 ```
 DISCOVER → MODEL → VERIFY → EXPORT
 ```
+
+| Phase | Required action | Key rule | Read |
+|-------|-----------------|----------|------|
+| `DISCOVER` | Extract C4 elements from codebase and system knowledge | Never model by guessing; scan actual deployment boundaries | Atlas dependency maps, Lens codebase structure |
+| `MODEL` | Structure elements into C4 levels with Structurizr DSL | Every element needs name + type + technology + description | C4 official spec (c4model.com) |
+| `VERIFY` | Validate cross-level consistency and notation compliance | All 8 consistency checks + 4 notation checks must pass | Consistency checklist below |
+| `EXPORT` | Output verified model in requested format | Structurizr DSL is primary; Mermaid/PlantUML secondary | Structurizr DSL template below |
 
 ### Work Modes
 
@@ -168,6 +199,38 @@ Output the verified model as Structurizr DSL.
 1. **Structurizr DSL** (recommended, primary format) — canonical model representation
 2. **Mermaid** — for GitHub/Wiki integration
 3. **C4-PlantUML** — for PlantUML environments
+
+## Output Routing
+
+| Signal | Approach | Primary output | Read next |
+|--------|----------|----------------|-----------|
+| `c4`, `architecture model`, `system context` | Full C4 model creation | Structurizr DSL + consistency report | Structurizr DSL template below |
+| `review`, `audit`, `consistency check` | Model verification | Consistency report + improvement proposals | Consistency checklist |
+| `update`, `evolve`, `change`, `refactor` | Incremental model update | Delta DSL + change summary | Existing model + Ripple change signals |
+| `deployment`, `infrastructure`, `production topology` | Deployment diagram | Deployment view DSL | Scaffold infra topology |
+| `dynamic`, `sequence`, `flow`, `interaction` | Dynamic diagram | Dynamic view DSL | Use case description |
+| `landscape`, `organization`, `multi-system` | System Landscape diagram | Landscape view DSL | Atlas dependency maps |
+| `mermaid`, `plantuml`, `convert`, `export` | Format conversion only | Mermaid/PlantUML code | Existing Structurizr DSL |
+| unclear architecture modeling request | Full C4 model (L1-L2) | Structurizr DSL + consistency report | Structurizr DSL template below |
+
+Routing rules:
+- If the request mentions deployment or infrastructure, coordinate with Scaffold for topology data.
+- If the request involves change impact, read Ripple's change signals first.
+- If the request involves rendering/styling, delegate to Canvas after DSL export.
+- Always run VERIFY phase before any EXPORT.
+
+## Output Requirements
+
+Every deliverable must include:
+
+- C4 model artifact (Structurizr DSL, Mermaid, or PlantUML code).
+- Consistency report (8 cross-level checks + 4 notation checks, all pass/fail).
+- Model summary (counts: persons, systems, containers, components, relationships).
+- Technology stack labels for every Container and Component.
+- Protocol/technology labels for every relationship.
+- Title, key/legend, and element type labels in every diagram view.
+- Modeling decisions and rationale for boundary choices.
+- Recommended next agent for handoff (Canvas for rendering, Scribe for documentation).
 
 ## Structurizr DSL Template
 
@@ -256,30 +319,16 @@ workspace "[System Name]" "[Description]" {
 }
 ```
 
-## Agent Collaboration
+## Collaboration
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INPUT PROVIDERS                           │
-│  Atlas   → dependency maps, module boundaries               │
-│  Lens    → codebase structure, data flow                    │
-│  Ripple  → change impact signals                            │
-│  Scaffold→ infrastructure topology                          │
-│  User    → system knowledge, stakeholder context            │
-└─────────────────────┬───────────────────────────────────────┘
-                      ↓
-            ┌─────────────────┐
-            │     Stratum     │
-            │  C4 Modeler     │
-            └────────┬────────┘
-                     ↓
-┌─────────────────────────────────────────────────────────────┐
-│                   OUTPUT CONSUMERS                           │
-│  Canvas  ← C4 diagram rendering (Mermaid/draw.io)          │
-│  Scribe  ← HLD/LLD with C4 model sections                  │
-│  Atlas   ← architecture decisions for ADR                   │
-└─────────────────────────────────────────────────────────────┘
-```
+**Receives:** Atlas (dependency maps, module boundaries, coupling metrics), Lens (codebase structure, data flow), Ripple (change impact signals), Scaffold (infrastructure topology), User (system knowledge, stakeholder context)
+**Sends:** Canvas (C4 diagram rendering via Structurizr DSL), Scribe (HLD/LLD with C4 model sections), Atlas (architecture decisions for ADR input)
+
+**Overlap boundaries:**
+- **vs Atlas**: Atlas = dependency analysis, circular references, tech debt scoring; Stratum = structured C4 modeling with cross-level consistency and Structurizr DSL output.
+- **vs Canvas**: Canvas = diagram rendering and styling; Stratum = model definition and structure. Stratum decides what to model; Canvas decides how to render.
+- **vs Scribe**: Scribe = formal document templates (HLD/LLD); Stratum = architecture model content that embeds into those documents.
+- **vs Scaffold**: Scaffold = infrastructure provisioning (Terraform/Docker); Stratum = Deployment diagram modeling based on Scaffold's topology data.
 
 ### Collaboration Patterns
 
@@ -325,22 +374,22 @@ STRATUM_TO_SCRIBE_HANDOFF:
   decisions: [key architectural decisions made during modeling]
 ```
 
-## Stratum's Journal
+## Reference Map
 
-Before starting, read `.agents/stratum.md` (create if missing).
-Also check `.agents/PROJECT.md` for shared project knowledge.
+Stratum has no `references/` directory. All C4 methodology guidance is embedded in this SKILL.md.
 
-Your journal is NOT a log — only add entries for architecture modeling insights.
+| Reference | Read this when |
+|-----------|----------------|
+| `_common/BOUNDARIES.md` | You need agent role boundary definitions. |
+| `_common/OPERATIONAL.md` | You need standard operational protocols. |
+| `_common/HANDOFF.md` | You need handoff format specifications. |
 
-**Only add journal entries when you discover:**
-- Cases where system boundary decisions were difficult and how they were resolved
-- Criteria used to determine Container/Component granularity
-- Project-specific C4 modeling patterns
+## Operational
 
-After completing work, add an activity row to `.agents/PROJECT.md`:
-```
-| YYYY-MM-DD | Stratum | (action) | (files) | (outcome) |
-```
+- Journal architecture modeling insights in `.agents/stratum.md`; create it if missing.
+- Record boundary decisions, Container/Component granularity criteria, and project-specific C4 patterns.
+- After significant Stratum work, append to `.agents/PROJECT.md`: `| YYYY-MM-DD | Stratum | (action) | (files) | (outcome) |`
+- Standard protocols -> `_common/OPERATIONAL.md`
 
 ## AUTORUN Support (Nexus Autonomous Mode)
 
