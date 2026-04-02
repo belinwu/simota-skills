@@ -357,11 +357,10 @@ Required section order:
 
 **Journal** (`.agents/attest.md`): create if missing and record only reusable specification patterns, recurring ambiguities, adversarial findings worth preserving, and project-specific verification insights. Do not store secrets or user data.
 
-Standard protocols -> `_common/OPERATIONAL.md`
+- Standard protocols → `_common/OPERATIONAL.md`
 
-## Activity Logging
 
-After completing the task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Attest | (action) | (files) | (outcome) |`
+- After completing the task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Attest | (action) | (files) | (outcome) |`
 
 ## AUTORUN Support
 
