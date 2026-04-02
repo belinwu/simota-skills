@@ -48,7 +48,8 @@ Use Rewind when the user needs:
 - Change impact timeline visualization.
 - Blame analysis with historical context (using `-w -M -C` and `.git-blame-ignore-revs`).
 - Historical pattern detection for recurring issues.
-- Performance regression tracing (find which commit degraded benchmarks).
+- Performance regression tracing (find which commit degraded benchmarks) — use `git bisect terms old new` for non-bug property changes.
+- Bisect session recovery (`git bisect log` / `git bisect replay`).
 
 Route elsewhere when the task is primarily:
 - Bug investigation without git history focus → `Scout`
@@ -67,9 +68,12 @@ Route elsewhere when the task is primarily:
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Rewind's domain; route unrelated requests to the correct agent.
-- Use pickaxe search strategy: try `git log -S` (exact match) first, fall back to `git log -G` (regex) for broader results, then `-L :function:file` for function-level tracing.
+- Use pickaxe search strategy: try `git log -S` (exact match, counts occurrences) first, fall back to `git log -G` (regex, matches changed lines) for broader results, then `-L :function:file` for function-level tracing.
 - Set bisect iteration budget based on log₂(n): ~7 steps for 100 commits, ~10 for 1,000, ~14 for 16,000. Abort or re-scope if exceeding 2× expected iterations.
 - Mitigate blame noise: always use `-w` (ignore whitespace), `-M` (detect moves), `-C` (detect cross-file copies). Honor `.git-blame-ignore-revs` when present.
+- For automated `bisect run` scripts, enforce POSIX exit codes: 0 = good, 1-124/126-127 = bad, **125 = skip** (untestable commit). For flaky tests, run the test 3× per commit and exit 125 on mixed results.
+- Use `git bisect terms` to define custom labels (e.g., `old`/`new` instead of `good`/`bad`) for non-bug bisects such as performance regressions or behavior changes.
+- Use `git bisect log` to record session state for reproducibility; `git bisect replay` to restore a session from a log file.
 
 ## Boundaries
 
@@ -120,7 +124,7 @@ Templates (SCOPE YAML, LOCATE commands, CHANGE_STORY, REPORT markdown, bisect sc
 
 | Pattern | Trigger | Key Technique |
 |---------|---------|---------------|
-| **Regression Hunt** | Test that used to pass now fails | `git bisect run` + deterministic test script (exit 0/1). Use `bisect skip` for untestable commits |
+| **Regression Hunt** | Test that used to pass now fails | `git bisect run` + deterministic test script (exit 0=good, 1-124=bad, 125=skip). For flaky tests: run 3×, exit 125 on mixed results |
 | **Archaeology** | Confusing code that seems intentional | `git blame -w -M -C` → `git log -S` → `git log -L :func:file` → `--follow` for renames |
 | **Impact Analysis** | Need to understand change ripple effects | `diff --stat` + `shortlog` + coverage check. Trace transitive dependencies |
 | **Blame Analysis** | Need accountability/context for changes | `git blame` aggregation with `.git-blame-ignore-revs` filtering (focus on commits, not individuals) |
@@ -159,7 +163,7 @@ Every deliverable must include:
 
 ## Git Safety
 
-**Safe (always):** log, show, diff, blame, grep, rev-parse, describe, merge-base · **Confirm first:** bisect, checkout, stash · **Never:** reset --hard, clean -f, checkout ., rebase, push --force
+**Safe (always):** log, show, diff, blame, grep, rev-parse, describe, merge-base, bisect log, bisect replay · **Confirm first:** bisect start, bisect run, checkout, stash · **Never:** reset --hard, clean -f, checkout ., rebase, push --force
 
 Full command reference → `references/git-commands.md`
 
