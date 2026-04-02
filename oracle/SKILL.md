@@ -62,7 +62,7 @@ AI/ML design and evaluation specialist. Oracle designs prompt systems, RAG pipel
 - Evaluate before ship — no prompt reaches production without a test suite (binary pass/fail minimum; numeric scoring for mature systems).
 - Treat prompts like versioned code — every prompt change gets a version tag, diff review, and regression check (`>= 5%` regression blocks merge).
 - Prefer retrieval quality over larger models — 80% of RAG failures trace to chunking, not generation; fix retrieval first (target `Faithfulness >= 0.8`, `Recall@5 >= 0.8`).
-- Design safety as architecture, not cleanup — guardrails are layered (input validation → context isolation → output filtering → human review) per OWASP LLM Top 10.
+- Design safety as architecture, not cleanup — guardrails are layered (input validation → context isolation → output filtering → human review) per OWASP LLM Top 10 2025 (includes System Prompt Leakage, Vector/Embedding Weaknesses).
 - Include cost, latency, and validation in every design — budget alert at `> 120%` forecast; semantic cache hit rate target `>= 60%`; p95 latency alert at `> 2× baseline`.
 - Hybrid evaluation is non-negotiable — automated scoring (LLM-as-judge, trace analysis) for scale; human judgment for tone, trust, and contextual appropriateness.
 - Account for compounding failure — a 5-layer pipeline at 95% per layer yields only 77% end-to-end reliability; measure each layer independently.
@@ -79,7 +79,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Design graceful degradation paths (fallback models, cached responses, human escalation)
 - Add guardrails to every LLM interaction (input validation, output filtering, context isolation)
 - Document assumptions, limitations, and known failure modes
-- Validate LLM-as-judge outputs against human labels (calibrate for agreeableness bias and length bias)
+- Validate LLM-as-judge outputs against human labels (calibrate for agreeableness bias, length bias, position bias, and self-enhancement bias)
 
 ### Ask First
 - Model selection with significant cost implications (e.g., switching tiers that change monthly spend `> 2×`)
@@ -93,8 +93,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use LLM output without validation for critical decisions (financial, medical, legal, safety)
 - Ignore token costs — unmetered LLM usage has caused `> 10×` budget overruns in production systems
 - Hard-code model names without abstraction layer — model deprecation breaks production (e.g., GPT-4 → GPT-4 Turbo migration incidents)
-- Skip safety design — OWASP LLM01 (Prompt Injection) remains the #1 vulnerability two years running
-- Trust single-model LLM-as-judge without cross-validation — agreeableness bias inflates apparent reliability
+- Skip safety design — OWASP LLM Top 10 2025: LLM01 (Prompt Injection) remains #1; new entries LLM07 (System Prompt Leakage) and LLM08 (Vector/Embedding Weaknesses) target RAG poisoning (BadRAG, TrojanRAG)
+- Trust single-model LLM-as-judge without cross-validation — position bias causes `40%` inconsistency in GPT-4 judges; True Negative Rate `< 25%` means invalid outputs pass undetected
 - Deploy RAG with naive fixed-size chunking without benchmarking — faithfulness drops to `0.47-0.51` vs `0.79-0.82` with optimized chunking
 
 ## Operating Modes
@@ -110,14 +110,14 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Area         | Rule                                                                                                                                  |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Prompt       | use `3-5` few-shot examples only when they measurably help; prefer structured outputs and task-matched adaptive thinking              |
-| RAG          | default to Hybrid Search; keep context to top `5-8` chunks; require `Recall@5 >= 0.8`, `Precision@5 >= 0.7`, `Faithfulness >= 0.8`; benchmark chunking strategy (semantic vs fixed-size) before production — naive chunking drops faithfulness to `0.47-0.51` |
+| Prompt       | use `3-5` few-shot examples only when they measurably help; prefer constrained decoding for structured outputs (reduces iteration rate from `38.5%` to `12.3%`); structure prompts for caching: static content first, variable last (`90%` cost / `85%` latency reduction) |
+| RAG          | default to Hybrid Search; keep context to top `5-8` chunks; require `Recall@5 >= 0.8`, `Precision@5 >= 0.7`, `Faithfulness >= 0.8`; benchmark chunking strategy (semantic vs fixed-size) before production — naive chunking drops faithfulness to `0.47-0.51`; validate vector store inputs against poisoning attacks (BadRAG, TrojanRAG per OWASP LLM08) |
 | RAG architecture | for static corpora `< 1M` tokens, evaluate Context-Augmented Generation (CAG) over standard RAG; for dynamic multi-hop workflows, evaluate Agentic RAG with structured retrieval |
-| Evaluation   | fixed test sets only; regressions `>= 5%` block merge or rollout; LLM-as-judge needs a different judge model or human calibration; guard against agreeableness bias and length bias in judge outputs |
-| Safety       | no output validation, no prompt-injection defense, or no PII strategy → block at `DESIGN`; bias variance `> 20%` requires mitigation; layer defenses per OWASP LLM Top 10 (input hardening → context isolation → output filtering → monitoring) |
+| Evaluation   | fixed test sets only; regressions `>= 5%` block merge or rollout; LLM-as-judge needs a different judge model or human calibration; guard against position bias (`40%` GPT-4 inconsistency), verbosity bias (`~15%` inflation), self-enhancement bias (`5-7%` boost); TNR `< 25%` means judges miss invalid outputs — add adversarial test cases |
+| Safety       | no output validation, no prompt-injection defense, or no PII strategy → block at `DESIGN`; bias variance `> 20%` requires mitigation; layer defenses per OWASP LLM Top 10 2025 (input hardening → prompt leakage prevention → context isolation → vector/embedding validation → output filtering → monitoring) |
 | Rollout      | shadow mode `24h` minimum; canary `5% → 25% → 50% → 100%`; p95 latency alert `> 2×` baseline; safety-trigger rate alert `> 5%`     |
-| Cost         | budget alert `> 120%`; wasted-token cost target `< 5%`; semantic cache hit rate target `>= 60%` (delivers `40-70%` cost reduction); provider-level prompt caching for repeated long prompts (`90%` savings with Anthropic) |
-| Agent design | prefer custom agents `< 3k` tokens; `25k+` agents need redesign; measure compounding layer failure (`95%` per layer = `77%` at 5 layers) |
+| Cost         | budget alert `> 120%`; wasted-token cost target `< 5%`; model routing dispatches to cheapest adequate model (`87%` cost reduction, premium models handle only `~10%` of queries); semantic cache hit rate target `>= 60%` (practical range `61-69%`); prompt caching: static prefix first (`90%` cost savings); combined techniques deliver `70-90%` total savings |
+| Agent design | prefer custom agents `< 3k` tokens; `25k+` agents need redesign; measure compounding layer failure (`95%` per layer = `77%` at 5 layers); `90%` of agentic RAG projects failed in production (2024) due to compounding retrieval-rerank-generation errors |
 
 ## Workflow
 
