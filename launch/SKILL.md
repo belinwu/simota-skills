@@ -45,9 +45,10 @@ Use Launch when the task requires any of the following:
 - Generate or review a CHANGELOG or release notes from PR/commit history.
 - Plan staged rollout, canary, blue-green, ring-based progressive delivery, hotfix, or release windows.
 - Design rollback steps, automated rollback triggers, post-release monitoring, or Go/No-Go gates.
-- Design feature flag rollout, cleanup, retirement policy, or AI-powered progressive delivery.
+- Design feature flag rollout, cleanup, retirement policy, or AI-driven progressive delivery with automated canary analysis.
 - Define production readiness checklists with measurable thresholds.
-- Automate release workflows with tools like `semantic-release`, `release-please`, or `git-cliff`.
+- Automate release workflows with tools like `semantic-release`, `release-please`, `git-cliff`, or `changesets`.
+- Plan rollback drills or rehearsals to validate recovery procedures.
 
 Route elsewhere when the task is primarily:
 
@@ -60,7 +61,7 @@ Route elsewhere when the task is primarily:
 ## Core Contract
 
 - Plan releases. Do not deploy code yourself.
-- Every release must be reversible before go-live. No deployment without a tested rollback path.
+- Every release must be reversible before go-live. No deployment without a tested rollback path. Conduct rollback drills before major releases — an untested rollback plan is not a real plan.
 - Prefer explicit versioning, explicit communication, and small batches. Big Bang deployments are an anti-pattern — stagger through wave, one-box, or rolling deployments.
 - Keep CHANGELOG and release notes aligned with the shipped scope. Use Conventional Commits as the foundation for automated CHANGELOG generation.
 - Define measurable Go/No-Go criteria before release — not vague "ensure good performance" but specific thresholds (e.g., "load test at ≥ 2× expected peak traffic with < 5% error rate").
@@ -90,7 +91,7 @@ Route elsewhere when the task is primarily:
 
 ### Never
 
-- Deploy without a tested rollback path — Knight Capital lost $440M in 45 minutes from a deployment without rollback capability (2012).
+- Deploy without a tested rollback path — ~70% of production downtime is caused by changes to live systems. Knight Capital lost $440M in 45 minutes from a deployment without rollback capability (2012).
 - Skip CHANGELOG for user-facing changes — users and support teams depend on accurate change documentation.
 - Publish release notes before deployment succeeds — creates false expectations and support confusion.
 - Remove feature flags before rollout is verified stable for ≥ 24 hours at 100%.
@@ -118,11 +119,11 @@ Route elsewhere when the task is primarily:
 | Versioning | Use SemVer by default: breaking → `MAJOR`, backwards-compatible feature → `MINOR`, fix/security → `PATCH`. Recommend `CalVer` or automated numbering when CD makes strict SemVer low-signal. Enforce via Conventional Commits + commitlint/Husky. |
 | Stability window | If `0.x.y` lasts more than `6 months`, recommend `1.0.0`. If `alpha` or `beta` lasts more than `1 month`, recommend stabilize or cancel. Keep `rc` windows under `2 weeks`. |
 | Go/No-Go | Use a scored checklist (each criterion 1.0 = met, 0.5 = partial, 0 = unmet; threshold ≥ 80%). Required criteria: tests green, security scan clean (`Sentinel`), staging verification, rollback plan tested, CHANGELOG generated, load test at ≥ 2× expected peak with < 5% error rate, SLO baselines captured (`Beacon`), and stakeholder approval when needed. Code coverage above `80%` unless the project has a stronger local standard. |
-| Rollback | Define automated rollback triggers before deploy — manual undoing is an anti-pattern. Baseline trigger: `error_rate > 5% for 5 min` OR `P99 latency > baseline + 50% for 5 min`. Preferred methods: flag disable `< 1 min`, deployment rollback `2-5 min`, DB rollback `5-15 min`, data restore `15-60 min`. Always include DB rollback scripts or forward-compatible migration patterns. |
-| Feature flags | Ring-based rollout: Internal team (5-20 people, 24-48h) → Canary `1-5%` (error rate < 0.1%) → Beta `10-25%` (user feedback) → GA `100%` (7-day stability). Minimum canary duration `24 hours`. Nesting depth `1`. Approval if active flags exceed `50`. Stale release flag cleanup after `60 days`. Define success metrics before enabling each flag. |
+| Rollback | Define automated rollback triggers before deploy — manual undoing is an anti-pattern. Baseline trigger: `error_rate > 5% for 5 min` OR `P99 latency > baseline + 50% for 5 min`. Preferred methods: flag disable `< 1 min`, deployment rollback `2-5 min`, DB rollback `5-15 min`, data restore `15-60 min`. Always include DB rollback scripts or forward-compatible migration patterns. For Kubernetes, use Argo Rollouts or Flagger for automated progressive delivery with metric-driven rollback. Conduct rollback drills quarterly or before major releases. |
+| Feature flags | Ring-based rollout: Internal team (5-20 people, 24-48h) → Canary `1-5%` (error rate < 0.1%) → Beta `10-25%` (user feedback) → GA `100%` (7-day stability). Minimum canary duration `24 hours`. Nesting depth `1`. Approval if active flags exceed `50`. Stale release flag cleanup after `60 days`. Define success metrics before enabling each flag. For AI-driven canary analysis, tools like Argo Rollouts and Harness can dynamically adjust rollout pace based on real-time error/latency signals. |
 | Release timing | Prefer Tuesday to Thursday. Avoid Friday or low-staff windows unless approved. Run postmortem within `48 hours` after a significant release failure and define a forward-fix plan within `24 hours` after rollback. |
 | Database safety | Prefer `Expand-Contract`. Delay destructive column removal by `≥ 2 releases`. If old and new app versions must coexist, DB changes must remain forward-compatible. Use migration tools (Flyway, Liquibase) for versioned, auditable schema changes. |
-| CHANGELOG | Automate generation from Conventional Commits. Tools: `semantic-release` (full CI/CD automation), `release-please` (simplicity), `git-cliff` (customizable). Validate commit format on PR via commitlint. Keep entries user-focused, not developer-focused. |
+| CHANGELOG | Automate generation from Conventional Commits. Tools: `semantic-release` (full CI/CD automation), `release-please` (PR-based review flow), `git-cliff` (fast standalone binary — 120ms for 10k commits), `changesets` (monorepo-optimized). Validate commit format on PR via commitlint. Keep entries user-focused, not developer-focused. |
 
 ## Routing And Handoffs
 
