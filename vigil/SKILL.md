@@ -75,6 +75,7 @@ Route elsewhere when the task is primarily:
 - Pair detection rules with recommended response actions (SOC playbook steps).
 - Treat detection rules as living code: version-controlled, peer-reviewed, CI/CD-deployed, and continuously tuned based on production feedback.
 - Apply Detection-as-Code (DaC) principles: detection logic is testable, repeatable, and integrated with development workflows — not UI-driven manual processes.
+- Use Sigma Specification v2.0+ as the default rule format — leverage correlation rules for multi-event detection sequences and new modifiers (cidr, regex, time extraction) for precision filtering. Use pySigma/sigma-cli as the conversion and validation toolchain.
 
 ---
 
@@ -99,7 +100,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Never
 - Deploy detection rules directly to production without testing — poorly tuned automated rules have quarantined entire departments and taken down business-critical applications, with recovery measured in hours and business impact in hundreds of thousands of dollars.
-- Write overly broad rules that generate alert fatigue — fewer than 5% of rules generate most noise; 53% of SOC alerts are false positives (Google Cloud 2025 study), overwhelming analysts and causing real threats to be missed.
+- Write overly broad rules that generate alert fatigue — fewer than 5% of rules generate most noise; 60%+ of SOC teams encounter false positives frequently (SANS 2025 survey), and 82.3% of organizations that suffered significant incidents cited alert fatigue as a contributing factor.
 - Skip MITRE ATT&CK mapping for any detection rule — unmapped rules create invisible coverage gaps and prevent meaningful maturity measurement.
 - Write implementation code beyond detection rule syntax (delegate to Builder/Gear).
 - Ignore false positive rates when recommending rules.
@@ -246,7 +247,7 @@ DETECTION_RULE:
 
 Write the actual detection rule in the selected format.
 
-**Sigma example:**
+**Sigma v2.0+ example:**
 ```yaml
 title: Suspicious PowerShell Encoded Command
 id: det-001
@@ -272,13 +273,30 @@ tags:
   - attack.t1059.001
 ```
 
+**Sigma v2.0+ correlation rule example (multi-event detection):**
+```yaml
+title: Brute Force Login Followed by Lateral Movement
+name: brute_force_lateral
+type: event_count
+rules:
+  - failed_login_rule
+group-by:
+  - SourceIP
+timespan: 10m
+condition:
+  gte: 10
+action: correlation
+```
+
+Use `pySigma` + `sigma-cli` for rule validation, conversion, and pipeline integration (legacy `sigmac` is deprecated).
+
 ### 4. TEST (Validation)
 
 Validate rules against sample data before deployment.
 
 | Test Type | Purpose | Method |
 |-----------|---------|--------|
-| Syntax validation | Rule parses correctly | sigma-cli check, YARA compile |
+| Syntax validation | Rule parses correctly | sigma-cli check (pySigma), YARA compile |
 | True positive test | Rule fires on attack data | Replay known-bad logs |
 | False positive test | Rule does not fire on benign data | Replay production sample |
 | Performance test | Rule executes within time limits | Benchmark against log volume |
@@ -332,6 +350,7 @@ HUNTING_HYPOTHESIS:
 | AP-4 | **Copy-Paste Rules** — using community rules without adaptation | Rules tuned for this environment? | Customize log sources, thresholds, and exclusions |
 | AP-5 | **Detection Silo** — building rules without attack team input | Breach findings consumed? | Establish Purple Team feedback loop |
 | AP-6 | **Endpoint Tunnel Vision** — detecting only on one telemetry layer | Multiple domains covered? | Add network, cloud, and application-layer detections |
+| AP-7 | **Static Detection Logic** — rules that never adapt to environmental context | Rules incorporate environmental baselines? | Add context-aware thresholds, user/entity baselines, and Sigma correlation rules for multi-event sequences |
 
 ---
 
