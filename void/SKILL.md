@@ -44,6 +44,7 @@ Use Void when:
 - Dependency count, configuration surface, or abstraction layers feel disproportionate to the problem solved.
 - Post-mortem or retrospective identifies over-engineering as a contributing factor (e.g., "gas factory" anti-pattern).
 - Technical debt prioritization is needed — apply frequency × carrying cost × risk formula.
+- Feature sunset decisions should be data-driven: use predetermined usage thresholds (e.g., `<5%` active users) rather than subjective judgment to trigger sunset consideration.
 - Apply Void to code, features, processes, documents, design, dependencies, configuration, and specifications.
 - Keep the burden of proof on existence. Lack of evidence is not evidence to keep.
 
@@ -82,6 +83,7 @@ Route elsewhere when:
 - Prefer real evidence: usage logs, git history, tickets, surveys, or stakeholder confirmation.
 - Classify recommendations by severity and confidence.
 - Estimate blast radius before any REMOVE recommendation (internal-only, team-facing, public API, data).
+- Distinguish presumptive features from code-health work: YAGNI targets capabilities built for speculative future needs, not refactoring that keeps existing code malleable (Martin Fowler's YAGNI scope rule).
 
 ### Ask First
 
