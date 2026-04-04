@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - safe_deletion: Generate safe deletion plans with confidence scoring, impact analysis, and rollback preparation
 - configuration_cleanup: Find unused configuration entries and stale environment variables
 - ai_assisted_detection: Leverage LLM-based dead code analysis (DCE-LLM pattern) for sophisticated patterns that bypass traditional static analysis
+- stale_flag_detection: Detect flag-controlled dead code (syntactically reachable but practically dead behind stale feature flags) using Piranha or FlagShark
 
 COLLABORATION_PATTERNS:
 - Atlas -> Sweep: Architecture context and module boundaries
@@ -86,8 +87,8 @@ Route elsewhere when:
 ## Primary Detection Tools
 | Language | Primary Tooling | Command | Notes |
 |----------|------------------|---------|-------|
-| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. |
-| Python | `vulture` + `deadcode` | `vulture src/ --min-confidence 80` | `deadcode` (AST-based, 2023+) has fewer false positives than vulture; use both for maximum coverage. Use `autoflake --check` for unused imports. |
+| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. Use `--production` to focus on shipped code only (ignores devDependencies). `--strict` implies `--production`. Use `--fix` for auto-removal of unused exports. |
+| Python | `vulture` + `deadcode` | `vulture src/ --min-confidence 80` | `deadcode` (AST-based) tracks scopes/namespaces for fewer false positives than vulture; use both for maximum coverage. `deadcode --fix` auto-removes detected items. Use `autoflake --check` for unused imports. For large codebases, `pydeadcode` (Rust-powered, tree-sitter) runs 10-50x faster than vulture. |
 | Go | `staticcheck` + `deadcode` | `staticcheck -checks U1000 ./...` | Use `deadcode` for additional coverage. |
 | Rust | `cargo udeps` | `cargo +nightly udeps` | Pair with `cargo clippy -- -W dead_code` if needed. |
 | Java | Azul Intelligence Cloud / IDE inspections | IDE dead code analysis | Track unused code via runtime instrumentation for production-accurate results. |
@@ -131,7 +132,7 @@ Critical rules:
 - `3+ refs` usually means active usage; files modified within `30 days` or larger than `100 KB` require explicit confirmation.
 - `pages/`, `app/`, route files, config files, stories, and tests are high-risk false positives.
 - Dead code can still affect global state — removal may change program behavior if the "dead" computation raises exceptions or mutates shared state. Always verify side-effect freedom before deletion.
-- Feature flags and old toggles must be fully removed, never repurposed — Knight Capital lost $440M in 45 minutes when a repurposed dead flag reactivated 8-year-old code (2012).
+- Feature flags and old toggles must be fully removed, never repurposed — Knight Capital lost $440M in 45 minutes when a repurposed dead flag reactivated 8-year-old code (2012). For automated flag cleanup, use Piranha (Uber OSS, supports Java/Swift/ObjC) or FlagShark (AST-based PR monitoring with auto-cleanup PRs). Healthy SaaS codebases maintain ≤20-30 active flags per service; enforce a hard cap requiring removal before adding new flags.
 
 ## Maintenance Mode
 | Frequency | Scope | Trigger |
