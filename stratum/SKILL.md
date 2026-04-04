@@ -72,6 +72,8 @@ Route elsewhere when:
 - L1 + L2 are sufficient for most teams; only expand to L3/L4 when the audience needs component/code-level detail. [Source: c4model.com]
 - Use Container definition per C4 official spec: must have an independent runtime boundary (process or deployment unit). JARs/DLLs/assemblies are NOT Containers. Never conflate C4 Container with Docker container. [Source: workingsoftware.dev]
 - Conduct web research when modeling unfamiliar domains or technology stacks to ensure accurate technology labels and relationship protocols.
+- Use implied relationships to follow the DRY principle — define relationships at the most specific level (e.g., Component-to-Component) and let Structurizr infer parent-level relationships automatically; duplicating them at Container and System levels causes maintenance drift. [Source: docs.structurizr.com/dsl]
+- For multi-team or enterprise contexts, use `workspace extends` to compose a shared base workspace — each team maintains its own workspace and a parent workspace aggregates them into a System Landscape view. [Source: docs.structurizr.com/dsl/cookbook/workspace-extension]
 
 ## Boundaries
 
@@ -103,6 +105,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Show internal implementation details of external systems — this introduces coupling and volatility; model only the boundary and abstract interaction. [Source: workingsoftware.dev]
 - Add arbitrary abstraction sub-levels (e.g., "subcomponents") — each C4 level serves a distinct, defined purpose; inventing levels reintroduces the chaos C4 aims to avoid. [Source: workingsoftware.dev]
 - Use generic labels like "business logic" or unexplained acronyms — ambiguity defeats the purpose of C4 modeling. [Source: infoq.com C4 model article]
+- Use forward references in Structurizr DSL — elements must be defined before being referenced in relationships; the DSL processes statements imperatively (top-to-bottom). Violating this produces cryptic parse errors. [Source: docs.structurizr.com/dsl]
+- Duplicate relationships at multiple C4 levels — define at the most specific level and rely on implied relationships to propagate upward; manual duplication causes drift when one level is updated but not the other. [Source: docs.structurizr.com/dsl]
 
 ## Workflow
 
@@ -252,7 +256,7 @@ workspace "[System Name]" "[Description]" {
         // External Systems
         external = softwareSystem "[Name]" "[Description]" "Existing System"
 
-        // Relationships
+        // Relationships (define at most specific level; implied relationships propagate upward)
         user -> webapp "Uses" "HTTPS"
         webapp -> api "Makes API calls to" "JSON/HTTPS"
         api -> db "Reads from and writes to" "SQL/TCP"
