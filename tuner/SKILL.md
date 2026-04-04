@@ -70,6 +70,7 @@ Route elsewhere when the task is primarily:
 - Target P99 latency ≤ 200ms for user-facing queries, ≤ 500ms for background/analytics queries; flag anything exceeding these thresholds.
 - Verify row estimate accuracy: planner estimate vs. actual ratio > 10× indicates stale statistics or predicate issues; > 100× makes the plan unreliable.
 - Prefer composite indexes over multiple single-column indexes when queries filter on 2+ columns together.
+- On PostgreSQL 18+, recommend `uuidv7()` over `gen_random_uuid()` for indexed primary keys — UUIDv7's time-ordering eliminates B-tree page splits and reduces buffer hits by ~30× compared to random UUIDv4.
 
 ## Boundaries
 
@@ -100,6 +101,7 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 - Assume uniform data distribution — skewed data (e.g., 90% of orders in "completed" status) makes generic index advice dangerous; always check `pg_stats` column histograms.
 - Use `SELECT *` in performance-critical paths — transferring unnecessary columns wastes network bandwidth and prevents covering-index optimizations.
 - Wrap indexed columns in functions (e.g., `WHERE YEAR(created_at) = 2026`) — this prevents index usage and forces full table scans; rewrite as range conditions.
+- Use random UUIDv4 as primary key on high-write tables without considering the index fragmentation cost — random inserts scatter across B-tree pages, causing ~30× more buffer hits than time-ordered UUIDv7 or bigserial; on PostgreSQL 18+ recommend `uuidv7()` instead.
 
 ## Critical Thresholds
 
@@ -116,7 +118,7 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 | ORM overhead becomes critical                 | `1000+ RPS` API paths                      | measure hydration/serialization cost  |
 | P99 latency concern (user-facing)             | `> 200ms`                                  | investigate and optimize              |
 | P99 latency concern (background)              | `> 500ms`                                  | investigate and optimize              |
-| Connection pool exhaustion risk               | `> 80%` pool utilization sustained         | scale pool or optimize query duration |
+| Connection pool exhaustion risk               | `> 80%` pool utilization sustained         | scale pool or optimize query duration — PgBouncer for <50 clients, PgCat for >50 clients or read/write splitting, Supavisor for serverless |
 | Statistics staleness                          | `n_dead_tup > 10%` of `n_live_tup`        | run ANALYZE or check autovacuum       |
 | Index bloat concern                           | index size `> 2×` expected for row count   | consider REINDEX CONCURRENTLY         |
 
@@ -124,7 +126,7 @@ Production-safety rules:
 
 - PostgreSQL production index creation should use `CREATE INDEX CONCURRENTLY`.
 - Materialized views are good for repeated aggregates and dashboards, not for truly real-time data.
-- PostgreSQL 18+: leverage AIO for up to 3× I/O throughput on sequential scans and bitmap heap scans; use skip scan for multicolumn B-tree indexes with missing prefix conditions; use parallel GIN index builds for full-text and JSONB indexes.
+- PostgreSQL 18+: leverage AIO for up to 3× I/O throughput on sequential scans and bitmap heap scans; use skip scan for multicolumn B-tree indexes where the leading column has low cardinality (~40% speedup over seq scan); use parallel GIN index builds for full-text and JSONB indexes; prefer `uuidv7()` for primary keys (time-ordered writes eliminate B-tree fragmentation); leverage improved merge joins with incremental sort and faster hash joins.
 - Always verify `@Transactional(readOnly = true)` on read-only queries in ORM frameworks — omitting it causes unnecessary write locks and reduces concurrent read throughput.
 
 ## Collaboration
