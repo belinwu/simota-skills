@@ -5,8 +5,8 @@ description: ゲームオーディオ生成エージェント。ElevenLabs/Stabl
 
 <!--
 CAPABILITIES_SUMMARY:
-- sfx_generation: Generate code for sound effect creation via AI APIs (ElevenLabs SFX, MiniMax) or JSFXR
-- bgm_generation: Generate code for background music via Stable Audio, MusicGen, Suno AI v5, Udio, or Wondera
+- sfx_generation: Generate code for sound effect creation via AI APIs (ElevenLabs SFX V2, MiniMax) or JSFXR
+- bgm_generation: Generate code for background music via Stable Audio, MusicGen, Suno AI v5.5, Udio, or Wondera
 - voice_generation: Generate code for voice/dialogue via ElevenLabs TTS or OpenAI TTS
 - ambient_generation: Generate code for ambient soundscapes via AudioCraft or Bark
 - ui_sound_generation: Generate code for UI sound sets via JSFXR
@@ -42,8 +42,8 @@ Generate game audio assets through code. Tone turns SFX, BGM, voice, ambient, an
 ## Trigger Guidance
 
 Use Tone when the user needs:
-- sound effect (SFX) generation code (ElevenLabs SFX, MiniMax, JSFXR, Freesound)
-- background music (BGM) generation code (Stable Audio, MusicGen, Suno AI v5, Udio, Wondera)
+- sound effect (SFX) generation code (ElevenLabs SFX V2, MiniMax, JSFXR, Freesound)
+- background music (BGM) generation code (Stable Audio, MusicGen, Suno AI v5.5, Udio, Wondera)
 - voice / dialogue / narration generation code (ElevenLabs TTS, OpenAI TTS)
 - ambient soundscape generation code (AudioCraft, Bark)
 - UI sound set generation (JSFXR procedural)
@@ -68,7 +68,7 @@ Route elsewhere when the task is primarily:
 - Default stacks: Python (`requests`/`httpx`), JavaScript/TypeScript (JSFXR, Web Audio API), Shell (ffmpeg).
 - Read API keys from environment variables only.
 - Estimate API costs before generation runs (ElevenLabs TTS ~$0.12/1K chars, ElevenLabs Music ~$0.80/min, MiniMax Music ~$0.035/generation).
-- Include LUFS normalization in every workflow: -24 LUFS for console (GANG recommendation), -16 LUFS for portable/mobile, -23 LUFS as general game default. Allow ±2 LU tolerance.
+- Include LUFS normalization in every workflow: -24 LUFS for home console (ASWG-R001), -18 LUFS for portable/handheld (ASWG-R001), -16 LUFS for mobile, -23 LUFS as general game default. Allow ±2 LU tolerance. Nintendo Switch: docked follows home spec (-24), handheld follows portable spec (-18).
 - Keep true peak below -1.0 dBTP to prevent clipping when multiple sources stack.
 - Flag licensing status of every audio source.
 - Enforce platform audio budgets: mobile audio ≤ 10% of build size (~20 MB for a 200 MB build), max 32 simultaneous voices.
@@ -108,11 +108,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| `sfx`, `sound effect`, `explosion`, `footstep` | ElevenLabs SFX API | `.py` | `references/api-integration.md` |
+| `sfx`, `sound effect`, `explosion`, `footstep` | ElevenLabs SFX V2 API | `.py` | `references/api-integration.md` |
 | `retro sfx`, `8-bit`, `chiptune`, `pixel` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `ui sound`, `click`, `hover`, `notification` | JSFXR procedural | `.js` / `.ts` | `references/api-integration.md` |
 | `bgm`, `music`, `soundtrack`, `theme` | Stable Audio 2.5 | `.py` | `references/api-integration.md` |
-| `suno`, `suno bgm`, `suno prompt` | Suno AI v5 (prompt craft + API) | `.py` | `references/suno-prompt-guide.md`, `references/api-integration.md` |
+| `suno`, `suno bgm`, `suno prompt` | Suno AI v5.5 (prompt craft + API) | `.py` | `references/suno-prompt-guide.md`, `references/api-integration.md` |
 | `udio`, `udio bgm` | Udio (granular control, stem downloads) | `.py` | `references/api-integration.md` |
 | `minimax`, `minimax music` | MiniMax Music 2.5 via FAL.AI | `.py` | `references/api-integration.md` |
 | `wondera` | Wondera (high aesthetic quality) | `.py` | `references/api-integration.md` |
@@ -121,12 +121,12 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `voice`, `dialogue`, `narration`, `tts` | ElevenLabs TTS | `.py` | `references/api-integration.md` |
 | `normalize`, `lufs`, `loudness` | ffmpeg loudnorm | `.sh` | `references/format-optimization.md` |
 | `convert`, `format`, `compress`, `ogg`, `mp3` | ffmpeg pipeline | `.sh` | `references/format-optimization.md` |
-| `loop`, `seamless`, `crossfade` | ffmpeg + processing | `.sh` / `.py` | `references/format-optimization.md`, `references/game-audio-practices.md` |
+| `loop`, `seamless`, `crossfade` | ElevenLabs SFX V2 loop / ffmpeg | `.py` / `.sh` | `references/api-integration.md`, `references/format-optimization.md` |
 | `fmod`, `wwise`, `middleware` | Engine integration | `.cs` / `.cpp` | `references/middleware-integration.md` |
 | `unity`, `unreal`, `godot`, `phaser` | Native engine audio | `.cs` / `.gd` / `.js` | `references/middleware-integration.md` |
 | `web audio`, `howler`, `three.js audio` | Web Audio API | `.js` / `.ts` | `references/middleware-integration.md` |
 | `setup`, `install`, `local model` | Setup scripts | `.sh` / `.py` | `references/model-setup.md` |
-| unclear request | ElevenLabs SFX API | `.py` | `references/api-integration.md` |
+| unclear request | ElevenLabs SFX V2 API | `.py` | `references/api-integration.md` |
 
 Routing rules:
 
@@ -148,8 +148,8 @@ Routing rules:
 
 | Category | Default Provider | Fallback | Duration | LUFS | Mix Level | Key Processing |
 |----------|-----------------|----------|----------|------|-----------|----------------|
-| SFX | ElevenLabs SFX | JSFXR, Freesound, MiniMax | 0.1-5s | -24 | -6 dB | Trim, 3+ variations, 22 kHz OK |
-| BGM | Stable Audio 2.5 | MusicGen, Suno AI v5, Udio, Wondera | 30-180s | -24 | -12 dB | Loop points, crossfade, 128 kbps+ |
+| SFX | ElevenLabs SFX V2 | JSFXR, Freesound, MiniMax | 0.1-30s | -24 | -6 dB | Trim, 3+ variations, 22 kHz OK, loop param for ambient |
+| BGM | Stable Audio 2.5 | MusicGen, Suno AI v5.5, Udio, Wondera | 30-180s | -24 | -12 dB | Loop points, crossfade, 128 kbps+ |
 | Voice | ElevenLabs TTS | OpenAI TTS | 1-30s | -24 | 0 dB | De-essing, dynamics, 48 kHz |
 | Ambient | AudioCraft | Bark, Freesound | 10-60s | -24 | -18 dB | Seamless loop, layers |
 | UI | JSFXR | ElevenLabs SFX | 0.05-0.2s | -24 | -9 dB | Consistent set, <200ms, 22 kHz OK |
@@ -162,6 +162,8 @@ Routing rules:
 | Web | ≤ 15 MB (initial load budget) | 24 | OGG Vorbis / MP3 128 kbps | 22 kHz SFX / 44.1 kHz BGM | -23 |
 | Desktop | ≤ 500 MB | 64 | OGG Vorbis / WAV | 44.1-48 kHz | -24 |
 | Console | Streaming from SSD | 128 | Platform-native (ATRAC, XMA) | 48 kHz | -24 |
+| Switch (docked) | ≤ 200 MB | 48 | OGG Vorbis / Opus | 44.1-48 kHz | -24 |
+| Switch (handheld) | ≤ 200 MB | 48 | OGG Vorbis / Opus | 22 kHz SFX / 44.1 kHz BGM | -18 |
 
 ## Workflow
 
@@ -227,7 +229,7 @@ _STEP_COMPLETE:
   Status: SUCCESS | PARTIAL | BLOCKED | FAILED
   Output:
     deliverable: [script path]
-    provider: "[ElevenLabs | Stable Audio | MusicGen | Suno AI | OpenAI TTS | JSFXR | Bark | Freesound]"
+    provider: "[ElevenLabs SFX V2 | ElevenLabs TTS | Stable Audio | MusicGen | Suno AI | OpenAI TTS | JSFXR | Bark | Freesound]"
     parameters:
       audio_category: "[SFX | BGM | Voice | Ambient | UI]"
       target_platform: "[Desktop | Mobile | Web | Console]"
