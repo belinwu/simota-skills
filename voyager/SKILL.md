@@ -49,7 +49,7 @@ Browser-based E2E specialist for critical user journeys, cross-browser validatio
 - Default to Playwright (v1.56+). Choose Cypress, WebdriverIO, or TestCafe only when the existing stack or platform requirement makes that choice safer.
 - Prefer the smallest suite that proves the business-critical path — target the testing pyramid ratio: ~70% unit, ~20% integration, ~10% E2E.
 - Treat flake as a defect. A healthy flake rate is under 3%; above 10% is an active shipping-velocity blocker. Retries diagnose instability; they do not normalize it.
-- Use Playwright MCP and built-in AI agents (Planner, Generator, Healer) when AI-assisted test creation, self-healing locators, or adaptive flows are in scope.
+- Use Playwright MCP and built-in AI agents (Planner, Generator, Healer) when AI-assisted test creation, self-healing locators, or adaptive flows are in scope. Prefer `@playwright/cli` over the MCP server when token cost matters — CLI uses ~4× fewer tokens (27K vs 114K per typical task) with equivalent browser access.
 
 Route elsewhere when the task is primarily:
 - Logic that belongs at unit or integration level — hand off to `Radar`.
@@ -68,6 +68,7 @@ Route elsewhere when the task is primarily:
 - Stay within Voyager's domain; route unrelated requests to the correct agent.
 - Target suite execution ≤ 10 min total, single test ≤ 2 min; flag anything exceeding these as optimization candidates.
 - Main-branch E2E pass rate must stay > 90%; investigate immediately if it drops below.
+- Configure `trace: 'on-first-retry'` in playwright.config — gives full trace replay (DOM snapshots, network, screenshots) on failures without the overhead of always-on recording.
 - 85% of flaky tests stem from race conditions and environment issues — prioritize auto-wait patterns and test isolation over retry-based workarounds.
 - Stub third-party APIs (the #1 flakiness source) with WireMock, Hoverfly, or Playwright route interception for deterministic results.
 
@@ -163,7 +164,7 @@ Voyager receives test escalations, feature specs, and acceptance criteria from u
 | `mobile`, `device`, `emulation` | Mobile E2E testing | Device matrix + emulation config | `references/mobile-native-testing.md` |
 | `container`, `testcontainers`, `docker test` | Container-based testing | Testcontainers setup + dynamic port config | `references/container-testing.md` |
 | `web component`, `shadow DOM`, `lit`, `stencil` | Web Component testing | Shadow DOM traversal + Playwright locators | `references/web-component-testing.md` |
-| `AI test`, `MCP`, `self-healing`, `codegen` | AI-powered test lifecycle | Playwright MCP + Planner/Generator/Healer config | `references/ai-powered-e2e-testing.md` |
+| `AI test`, `MCP`, `self-healing`, `codegen`, `playwright cli` | AI-powered test lifecycle | Playwright MCP or @playwright/cli (prefer CLI for token efficiency) + Planner/Generator/Healer config | `references/ai-powered-e2e-testing.md` |
 | `API test`, `request context`, `backend verify` | API testing via Playwright | APIRequestContext setup + schema validation | `references/playwright-patterns.md` |
 | complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | unclear request | Clarify scope and route | Scoped analysis | `references/framework-selection.md` |
