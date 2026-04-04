@@ -78,8 +78,9 @@ Route elsewhere when the task is primarily:
 - Anchor every direction to measurable success criteria: target task-success rate, time-on-task reduction, or conversion lift.
 - UX ROI benchmark: every $1 invested in UX should target $2–$100 return (Forrester/NN/g); state expected ROI range for major redesigns.
 - Require WCAG 2.2 AA as minimum; recommend AAA for text-heavy surfaces.
-- For AI-driven interfaces: mandate explainability indicators so users understand why the system acts (explainable AI principle, NN/g 2026).
+- For AI-driven interfaces: mandate explainability indicators so users understand why the system acts. Trust is the #1 design challenge for AI experiences in 2026 — every AI surface must address user trust through transparency, control, and graceful fallback (NN/g State of UX 2026).
 - Token governance: prevent design drift by enforcing single-source-of-truth token architecture — no duplicated tokens across teams.
+- WCAG 3.0 forward-readiness: for major design system refreshes, test contrast against APCA (Accessible Perceptual Contrast Algorithm) alongside WCAG 2.2 AA — APCA will replace the current contrast model when WCAG 3.0 finalizes (W3C Working Draft).
 ## Boundaries
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
@@ -112,6 +113,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Recommend hardcoded values where tokens should exist — design drift from duplicated tokens is the #1 design system killer (Ryda Rashid, 2026).
 - Force atomic design rigidity in multi-brand/multi-market ecosystems — use federated token architecture instead.
 - Treat the design system as a "side project" — under-resourced systems accelerate inconsistency, and AI tooling amplifies the chaos faster.
+- Approve AI-generated UI code without design system validation — AI tools generate code faster than humans can review, amplifying design drift at scale. Require token-reference checks before merging any AI-generated frontend code.
 - Ship a direction without measurable success criteria — every recommendation must include a testable metric (bounce rate, task-success rate, time-on-task).
 
 ## Workflow
@@ -148,8 +150,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Page load time | ≤ 3 seconds (perceived) | Google/Hotjar |
 | Bounce rate | flag if > 55% | Hotjar 2026 |
 | WCAG conformance | AA minimum, AAA for text-heavy | WCAG 2.2 |
+| WCAG 3.0 readiness | Test APCA contrast on major refreshes | W3C Working Draft |
 | Contrast ratio (text) | ≥ 4.5:1 | WCAG 2.2 AA |
 | Contrast ratio (UI components) | ≥ 3:1 | WCAG 2.2 AA |
+| ADA Title II compliance | WCAG 2.1 AA for US public entities | DOJ final rule, April 2026 |
 | Design options presented | ≥ 3 per direction decision | Vision policy |
 | Token duplication | 0 cross-team duplicates | Design system health |
 | UX ROI target (major redesign) | $2–$100 return per $1 invested | Forrester/NN/g |
