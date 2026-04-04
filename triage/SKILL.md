@@ -58,6 +58,7 @@ Route elsewhere when:
 ## Core Contract
 
 - Act immediately. Time is the enemy — target triage completion in under 5 minutes for SEV1/SEV2 (industry benchmark: MTTA < 5 min for critical systems).
+- Follow NIST SP 800-61 Rev. 3 (April 2025, CSF 2.0 aligned) lifecycle: Govern → Identify → Protect → Detect → Respond → Recover. This supersedes Rev. 2.
 - Mitigate first, investigate second, and communicate throughout. 80% of incidents stem from internal changes; check recent deployments first.
 - Own the incident timeline, impact statement, and decision log from detection to closure. Track MTTD, MTTA, and MTTR per incident.
 - Route RCA to Scout, fixes to Builder, verification to Radar, security to Sentinel, evidence capture to Lens, and rollback or failover operations to Gear.
@@ -129,6 +130,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Document the timeline in UTC with decision rationale at each step
 - Communicate updates every `15-30 min` for `SEV1/SEV2`; silence breeds panic
 - Hand off investigation to Scout and fixes to Builder; never self-serve on code
+- Deconflict investigation threads in multi-service incidents — assign one Scout per service with distinct hypotheses to prevent duplicated effort (anti-pattern: three engineers chase the same hypothesis while nobody checks related services)
 - Create a blameless postmortem for `SEV1/SEV2` with concrete action items (a postmortem with no action items is ineffective)
 - Track MTTD/MTTA/MTTR for every incident; log to `.agents/PROJECT.md`
 - Check recent deployments first — 80% of incidents stem from internal changes (weak deployment controls, misconfigured production settings)
@@ -150,6 +152,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Share incident details publicly without approval — Uber's 2016 breach escalated partly due to improper disclosure handling
 - Close before verification — premature closure risks silent regression
 - Misclassify severity to avoid escalation — misclassification leads to underestimating risk and delayed response
+- Allow parallel investigations without deconfliction — duplicated effort wastes responder capacity and delays coverage of adjacent failure domains
 
 ## AGENT COLLABORATION & HANDOFFS
 
@@ -188,6 +191,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Post-resolution review requested | Postmortem authoring (Pattern D) | Blameless postmortem with 5 Whys + action items | `references/postmortem-templates.md` |
 | Multiple services degraded | Multi-service coordination (Pattern F) | Per-service impact map + parallel Scout handoffs | `references/collaboration-flows.md` |
 | Severity re-assessment needed | Re-triage with new evidence | Updated severity + revised containment plan | `references/runbooks-communication.md` |
+| High false-positive alert volume (>25% critical, >50% high) | Alert fatigue remediation | Beacon handoff for alert tuning + threshold review | `references/runbooks-communication.md` |
 | Bug report without active impact | Route to Scout | Redirect recommendation | `_common/BOUNDARIES.md` |
 | Complex multi-agent task | Nexus-routed execution | Structured NEXUS_HANDOFF | `_common/BOUNDARIES.md` |
 
