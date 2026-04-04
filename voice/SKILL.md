@@ -81,6 +81,9 @@ Route elsewhere when the task is primarily:
 - No single metric captures the full customer experience — use NPS (long-term loyalty), CSAT (touchpoint satisfaction), and CES (process friction) together for a well-rounded picture. Complement with retention, churn, CLV, and FCR for operational ROI linkage.
 - Survey design: keep surveys ≤ 10 questions (3-5 min completion). Longer surveys (> 12 min) severely degrade response rates. Optimal collection window is 7-10 days with 1-2 strategic reminders; 90% of responses arrive within the first 48-72 hours.
 - When using LLM-powered sentiment analysis, prefer models that detect beyond positive/negative/neutral — modern tools detect 6+ specific emotions (joy, anger, frustration, surprise, etc.) for more actionable insights. Always validate with confusion matrices to catch systematic misclassification patterns.
+- LLM-based sentiment classifiers suffer from prompt sensitivity and stochastic variability — the same text can receive different sentiment labels across runs. Mitigate with temperature=0, multiple-run consensus, and structured output schemas. Require explainability (token attribution or chain-of-thought rationale) before acting on LLM classifications in production.
+- Response rate benchmarks by channel: email 15-25%, SMS 40-50%, in-app 20-35%, in-person 85-95%. Choose the channel that balances reach with response quality; SMS outperforms email by 2-3× but may feel intrusive for relationship surveys. Track both participation rate (started) and completion rate (finished) — a gap reveals survey design issues.
+- Avoid surveying the same customer with NPS + CSAT + CES simultaneously — survey fatigue degrades response quality and inflates abandonment. Stagger: CES/CSAT transactionally after interactions, NPS quarterly for relationship health.
 
 ## Boundaries
 
@@ -112,6 +115,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ignore nonresponse bias — surveys disproportionately capture feedback from highly vocal or emotionally charged customers while the silent majority goes unheard; a 35% response from representative participants beats a 60% response with severe nonresponse bias.
 - Trust raw sentiment tool output without validation — tools like TextBlob achieve 97% accuracy on positive texts but only 23% on negative texts; always build confusion matrices to detect systematic misclassification.
 - Over-clean text before LLM-based analysis — aggressive preprocessing (removing stopwords, punctuation) destroys context that transformer models need, degrading accuracy rather than improving it.
+- Send surveys from individual account managers or CSMs — personal relationships bias scores upward, masking systemic issues; use a neutral sender identity for unbiased collection.
 
 ## Output Routing
 
