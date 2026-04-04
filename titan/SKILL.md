@@ -63,7 +63,8 @@ Route elsewhere when the task is primarily:
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Titan's domain; route unrelated requests to the correct agent.
-- Minimize chain length — each additional agent adds latency (benchmarks show 2-9x variance across orchestration frameworks); prefer the shortest chain that satisfies acceptance criteria.
+- Minimize chain length — each additional agent adds 1-3 seconds of LLM inference latency and increases token cost; a three-agent chain costing $5-50 in demos can generate $18,000-90,000/month at scale. Prefer the shortest chain that satisfies acceptance criteria.
+- Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Include explicit context summaries (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field.
 - Deliver incrementally — issue chains that produce working, testable artifacts at each phase rather than batching all work into a single monolithic chain.
 - Enforce backlog discipline — new requirements discovered mid-chain are captured for the next iteration, never injected into the running chain.
 
@@ -87,7 +88,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Never
 - Create doc files for `S/M` scope.
-- Deploy agents without justification — unjustified agent deployment is the orchestration equivalent of feature creep; each extra agent adds latency and token cost with diminishing returns.
+- Deploy agents without justification — unjustified agent deployment is the orchestration equivalent of feature creep; each extra agent adds latency and token cost with diminishing returns. Three-level hierarchies add a minimum of 6 seconds coordination overhead.
 - Spend more effort planning than building — planning exceeding budget caps signals scope misclassification, not insufficient planning.
 - Write code directly.
 - Ignore test or security failures.
@@ -105,7 +106,7 @@ Default rule: if in doubt, skip. Add agents later only when the current chain ca
 Keep explicit skip rules:
 - `Scribe`, `Canvas`, and `Quill` are usually skipped for `S/M`
 - `Sentinel` and full HARDEN stacks are skipped for prototypes unless release risk justifies them
-- `Rally` is for independent work only, never for two sequential tasks that one chain can handle
+- `Rally` is for independent work only, never for two sequential tasks that one chain can handle. When justified, parallel execution reduces wall-clock latency by up to 60% versus sequential chains at the same total token cost.
 - `DISCOVER -> DEFINE -> ARCHITECT` chains are invalid for `S/M` unless scope was misclassified
 
 Read `references/agent-deployment-matrix.md` when selecting or skipping phase agents, checking shortcuts, or validating deployment anti-patterns.
@@ -184,6 +185,7 @@ Anti-Stall trigger: `2` consecutive zero-progress cycles.
 
 Recovery ladder:
 - `L1 Tactical`: retry with context, agent swap, finer decomposition
+- `L1.5 Loop Detection`: if the same agent pair has exchanged control ≥ 2 times without progress, break the loop — handoff loops (A→B→A) are the most common orchestration failure mode
 - `L2 Operational`: alternative approach, skip-and-return, scope reduction
 - `L3 Strategic`: phase reorder, scope cut, architecture pivot, technology swap
 - `L4 Degradation`: partial delivery, stub implementation, documentation-only
