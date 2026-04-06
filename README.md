@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-102-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-103-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **102 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **103 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 102 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 103 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -178,12 +178,14 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc additions, README updates, typing `any` to proper type definitions | Documentation |
 | **Morph** | _"A document is timeless. Its format is temporary."_ - Document format conversion (Markdown <> Word/Excel/PDF/HTML). Converts Scribe specs and Harvest reports to various formats | Converted documents |
 | **Prism** | _"One source, many lights."_ - NotebookLM steering prompt design consultant. Advises on source preparation and optimal output format selection (Audio/Video/Slide/Infographic/Mind Map) | Steering prompts |
+| **Tome** | _"Changes are forgotten. Knowledge endures."_ - Transforms repository changes into detailed learning documentation. Explains terminology, flows, design decisions, and anti-patterns | Learning docs |
 
-**Scribe vs Quill vs Morph vs Prism responsibilities**:
+**Scribe vs Quill vs Morph vs Prism vs Tome responsibilities**:
 - **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
 - **Quill**: Code documentation (JSDoc/TSDoc, README, type definitions)
 - **Morph**: Format conversion (Markdown > PDF/Word/HTML, etc.)
 - **Prism**: NotebookLM content optimization (steering prompts for Audio/Video/Slide)
+- **Tome**: Change-based learning materials (design decisions, terminology, anti-patterns from diffs)
 
 ### Visualization
 
@@ -504,6 +506,8 @@ See `_common/INTERACTION.md` for details.
 | DOCS/architecture | Architecture diagrams | Canvas |
 | DOCS/convert | Format conversion | Morph |
 | DOCS/report | PR report | Harvest > Morph |
+| DOCS/learning | Change-based learning doc | Tome |
+| DOCS/onboarding | Onboarding material from changes | Rewind > Tome |
 
 #### Demo & Recording
 
@@ -746,6 +750,7 @@ skills/
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
+├── tome/SKILL.md       # Change-to-learning documentation
 ├── tone/SKILL.md       # Game audio generation
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
@@ -1304,6 +1309,17 @@ Cover normal cases, error cases, and boundary values comprehensively.
 **Scribe vs Quill responsibilities**:
 - **Scribe**: Project documentation (specifications, design docs, checklists)
 - **Quill**: Code documentation (JSDoc, README, type definitions)
+
+---
+
+##### Learning Document Generation (Tome)
+
+```
+/Tome
+Explain the changes in this PR as a learning document for intermediate developers.
+```
+
+**Output**: Learning document with glossary, before/after comparisons, design decision records, and anti-pattern warnings
 
 ---
 

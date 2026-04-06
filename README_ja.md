@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-102-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-103-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **102種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **103種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする102種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする103種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -176,12 +176,14 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
 | **Morph** | _"A document is timeless. Its format is temporary."_ - ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeの仕様書やHarvestのレポートを各種フォーマットに変換 | 変換済みドキュメント |
 | **Prism** | _"One source, many lights."_ - NotebookLMのステアリングプロンプト設計コンサルタント。ソース準備の助言と最適な出力フォーマット（Audio/Video/Slide/Infographic/Mind Map）の選定 | ステアリングプロンプト |
+| **Tome** | _"Changes are forgotten. Knowledge endures."_ - リポジトリの変更内容を詳細な学習ドキュメントに変換。用語・フロー・設計判断・アンチパターンを教育的に解説 | 学習ドキュメント |
 
-**Scribe vs Quill vs Morph vs Prism の役割分担**:
+**Scribe vs Quill vs Morph vs Prism vs Tome の役割分担**:
 - **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
 - **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
 - **Morph**: フォーマット変換（Markdown→PDF/Word/HTML等）
 - **Prism**: NotebookLMコンテンツ最適化（Audio/Video/Slide向けステアリングプロンプト）
+- **Tome**: 変更ベース学習教材（diffから設計判断・用語・アンチパターンを教材化）
 
 ### 可視化
 
@@ -503,6 +505,8 @@ questions:
 | DOCS/architecture | アーキテクチャ図 | Canvas |
 | DOCS/convert | フォーマット変換 | Morph |
 | DOCS/report | PR報告書 | Harvest → Morph |
+| DOCS/learning | 変更ベース学習資料 | Tome |
+| DOCS/onboarding | オンボーディング教材 | Rewind → Tome |
 
 #### デモ・録画
 
@@ -735,6 +739,7 @@ skills/
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括
+├── tome/SKILL.md       # 変更→学習ドキュメント変換
 ├── tone/SKILL.md       # ゲームオーディオ生成
 ├── trace/SKILL.md      # セッションリプレイ分析
 ├── triage/SKILL.md     # 障害対応
@@ -1306,6 +1311,17 @@ Stripe連携、サブスクリプション対応が必要です。
 **Scribe vs Quill の役割分担**:
 - **Scribe**: プロジェクトドキュメント（仕様書、設計書、チェックリスト）
 - **Quill**: コードドキュメント（JSDoc、README、型定義）
+
+---
+
+##### 学習ドキュメント生成（Tome）
+
+```
+/Tome
+このPRの変更内容を中級者向けの学習ドキュメントとして解説してください。
+```
+
+**出力**: 用語集、Before/After比較、設計判断記録、アンチパターン警告を含む学習ドキュメント
 
 ---
 
