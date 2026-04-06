@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Skills — 103の専門AIエージェントが、あなたの開発チームになる</title>
-  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する103の専門エージェント。">
+  <title>Agent Skills — 106の専門AIエージェントが、あなたの開発チームになる</title>
+  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する106の専門エージェント。">
   <meta property="og:title" content="Agent Skills — AI Agent Ecosystem">
-  <meta property="og:description" content="103の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
+  <meta property="og:description" content="106の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://simota.github.io/agent-skills/">
   <meta name="twitter:card" content="summary_large_image">
@@ -586,7 +586,7 @@ a:hover { color: #79c0ff; }
       <span class="dot"></span>
       Open Source — MIT License
     </div>
-    <h1 data-i18n="hero.title"><span class="accent">103</span>の専門AIエージェントが、<br>あなたの開発チームになる</h1>
+    <h1 data-i18n="hero.title"><span class="accent">106</span>の専門AIエージェントが、<br>あなたの開発チームになる</h1>
     <p data-i18n="hero.desc">バグ調査、セキュリティ監査、UI/UX、リリース管理まで — 開発のあらゆる領域を専門エージェントがカバー。Claude Code・Codex CLI・Gemini CLI で今日から使えるオープンソースエコシステム。</p>
     <div class="hero-cta">
       <a href="#install" class="btn btn-primary" data-i18n="hero.cta">インストールする</a>
@@ -596,7 +596,7 @@ a:hover { color: #79c0ff; }
       </a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-value" data-count="103">0</div><div class="stat-label">Agents</div></div>
+      <div class="stat"><div class="stat-value" data-count="106">0</div><div class="stat-label">Agents</div></div>
       <div class="stat"><div class="stat-value" data-count="14">0</div><div class="stat-label">Categories</div></div>
       <div class="stat"><div class="stat-value" data-count="50" data-suffix="+">0</div><div class="stat-label">Chains</div></div>
       <div class="stat"><div class="stat-value" data-text="MIT">MIT</div><div class="stat-label">License</div></div>
@@ -719,7 +719,7 @@ a:hover { color: #79c0ff; }
     <div class="section-header fade-in">
       <div class="section-label">Agent Catalog</div>
       <h2 class="section-title" data-i18n="catalog.title">エージェントを探す</h2>
-      <p class="section-desc" data-i18n="catalog.desc">103の専門エージェントをカテゴリやキーワードで絞り込めます</p>
+      <p class="section-desc" data-i18n="catalog.desc">106の専門エージェントをカテゴリやキーワードで絞り込めます</p>
     </div>
     <div class="catalog-controls fade-in">
       <div class="catalog-search-row">
@@ -914,12 +914,15 @@ const AGENTS = [
   { name: 'Specter', motto: "The bugs you can't see are the ones that haunt you.", description: '並行性・非同期処理の「見えない」問題を狩る幽霊ハンター', category: 'quality' },
   { name: 'Siege', motto: 'Break it before users do. Fix it before they notice.', description: '負荷テスト・契約テスト・カオスエンジニアリング', category: 'quality' },
   { name: 'Void', motto: 'The best code is the code that was never written.', description: 'YAGNI検証・スコープカット・複雑性削減提案', category: 'quality' },
+  { name: 'Mint', motto: 'Good tests need good data. Generate it by design.', description: 'テストデータ＆フィクスチャ生成。ファクトリパターン設計、境界値データ生成、合成データ生成、シードデータ管理', category: 'quality' },
+  { name: 'Comply', motto: 'Compliance is not a checkbox. It is a culture.', description: '規制コンプライアンス＆監査。SOC2/PCI-DSS/HIPAA/ISO 27001等のコントロール実装', category: 'quality' },
 
   // Implementation (4)
   { name: 'Builder', motto: 'Types are contracts. Code is a promise.', description: '型安全かつプロダクションレディな実装職人。TDD・CQRS対応', category: 'implementation' },
   { name: 'Artisan', motto: 'Prototypes promise. Production delivers.', description: 'React/Vue/Svelteの本番フロントエンド実装職人', category: 'implementation' },
   { name: 'Forge', motto: 'Done is better than perfect. Ship it, learn, iterate.', description: 'プロトタイプ作成。完璧より動くものを優先', category: 'implementation' },
   { name: 'Arena', motto: 'Arena is the judge, not a player.', description: 'codex/gemini CLIを直接操り並列実装・評価・採用', category: 'implementation' },
+  { name: 'Native', motto: 'One codebase, every platform. Mobile done right.', description: 'モバイル開発スペシャリスト。React Native/Flutter/SwiftUI/Jetpack Composeのベストプラクティス実装', category: 'implementation' },
 
   // Performance (2)
   { name: 'Bolt', motto: "Speed is a feature. Slowness is a bug you haven't fixed yet.", description: 'フロント・バック両面のパフォーマンス改善', category: 'performance' },
@@ -942,6 +945,8 @@ const AGENTS = [
   { name: 'Gateway', motto: 'APIs are promises to the future. Design them like contracts.', description: 'API設計・OpenAPI仕様生成・バージョニング戦略', category: 'architecture' },
   { name: 'Grove', motto: 'A well-structured repository is a well-structured mind.', description: 'リポジトリ構造の設計・最適化・監査', category: 'architecture' },
   { name: 'Stratum', motto: 'Architecture without visualization is architecture without communication.', description: 'C4モデルによるアーキテクチャモデリング・Structurizr DSL', category: 'architecture' },
+  { name: 'Weave', motto: 'State is the memory of a system. Design it with intention.', description: 'ワークフロー＆ステートマシン設計。状態遷移設計、Sagaパターン、承認フロー設計', category: 'architecture' },
+  { name: 'Seek', motto: 'Find what matters. Surface it in milliseconds.', description: '検索エンジン・ベクトルDB設計。全文検索/ベクトル検索/ハイブリッド検索の設計', category: 'architecture' },
 
   // DevOps (9)
   { name: 'Anvil', motto: 'The terminal is the first interface. Make it unforgettable.', description: 'Terminal UI構築・CLI開発支援・開発ツール統合', category: 'devops' },
@@ -953,6 +958,7 @@ const AGENTS = [
   { name: 'Pipe', motto: 'Workflows are pipelines. Pipelines are promises.', description: 'GitHub Actionsワークフローの専門家。Reusable Workflow設計', category: 'devops' },
   { name: 'Triage', motto: 'In chaos, clarity is the first act of healing.', description: '障害対応・影響範囲特定・復旧手順策定・ポストモーテム', category: 'devops' },
   { name: 'Mend', motto: 'Known failures deserve known fixes.', description: '既知障害パターンの自動修復。runbook実行・段階的検証', category: 'devops' },
+  { name: 'Ledger', motto: 'Every dollar in the cloud has a reason. Find it.', description: 'FinOps／クラウドコスト最適化。IaCコスト推定、right-sizing提案、RI/SP推奨', category: 'devops' },
 
   // Data (2)
   { name: 'Schema', motto: 'A schema is a contract with the future.', description: 'DBスキーマ設計・マイグレーション作成・ER図設計', category: 'data' },
@@ -1001,7 +1007,7 @@ let currentLang = localStorage.getItem('lang') || 'ja';
 
 const TRANSLATIONS = {
   en: {
-    'hero.title': '<span class="accent">103</span> Expert AI Agents<br>Become Your Dev Team',
+    'hero.title': '<span class="accent">106</span> Expert AI Agents<br>Become Your Dev Team',
     'hero.desc': 'From bug investigation and security audits to UI/UX and release management — specialist agents cover every area of development. An open-source ecosystem for Claude Code, Codex CLI, and Gemini CLI.',
     'hero.cta': 'Get Started',
     'hero.github': 'View on GitHub',
@@ -1023,7 +1029,7 @@ const TRANSLATIONS = {
     'workflow.step3.desc': 'Each agent applies specialized skills. Investigation → Implementation → Testing runs automatically.',
     'workflow.chains': 'Example Chains',
     'catalog.title': 'Find an Agent',
-    'catalog.desc': 'Filter 103 specialist agents by category or keyword',
+    'catalog.desc': 'Filter 106 specialist agents by category or keyword',
     'catalog.search': 'Search agents... (name, description, motto)',
     'catalog.empty': 'No matching agents found',
     'platforms.title': 'Multi-Platform Support',
@@ -1149,6 +1155,12 @@ const AGENT_DESC_EN = {
   'Aether': 'AITuber full-stack orchestrator. Streaming pipeline construction',
   'Breach': 'Red team engineering. Attack scenarios and threat modeling',
   'Vigil': 'Detection engineering. Sigma/YARA rules and threat hunting',
+  'Native': 'Mobile development specialist. Best-practice implementation for React Native/Flutter/SwiftUI/Jetpack Compose',
+  'Mint': 'Test data and fixture generation. Factory pattern design, boundary value data, synthetic data, and seed data management',
+  'Comply': 'Regulatory compliance and auditing. SOC2/PCI-DSS/HIPAA/ISO 27001 control implementation',
+  'Weave': 'Workflow and state machine design. State transition design, Saga pattern, and approval flow design',
+  'Seek': 'Search engine and vector DB design. Full-text/vector/hybrid search architecture',
+  'Ledger': 'FinOps and cloud cost optimization. IaC cost estimation, right-sizing proposals, and RI/SP recommendations',
 };
 
 function setLanguage(lang) {
@@ -1192,15 +1204,15 @@ function setLanguage(lang) {
   const ogTitleEl = document.querySelector('meta[property="og:title"]');
   const ogDescEl = document.querySelector('meta[property="og:description"]');
   if (lang === 'en') {
-    titleEl.textContent = 'Agent Skills — 103 Expert AI Agents Become Your Dev Team';
-    descEl.content = 'An open-source AI agent ecosystem for Claude Code, Codex CLI, and Gemini CLI. 103 specialist agents covering bug investigation, testing, security, UI/UX, AI/ML, and infrastructure.';
+    titleEl.textContent = 'Agent Skills — 106 Expert AI Agents Become Your Dev Team';
+    descEl.content = 'An open-source AI agent ecosystem for Claude Code, Codex CLI, and Gemini CLI. 106 specialist agents covering bug investigation, testing, security, UI/UX, AI/ML, and infrastructure.';
     ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
-    ogDescEl.content = '103 expert AI agents become your dev team. An open-source agent ecosystem.';
+    ogDescEl.content = '106 expert AI agents become your dev team. An open-source agent ecosystem.';
   } else {
-    titleEl.textContent = 'Agent Skills — 103の専門AIエージェントが、あなたの開発チームになる';
-    descEl.content = 'Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する103の専門エージェント。';
+    titleEl.textContent = 'Agent Skills — 106の専門AIエージェントが、あなたの開発チームになる';
+    descEl.content = 'Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する106の専門エージェント。';
     ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
-    ogDescEl.content = '103の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。';
+    ogDescEl.content = '106の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。';
   }
 
   // Re-render dynamic content
