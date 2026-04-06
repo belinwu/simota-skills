@@ -205,6 +205,122 @@ Step-by-step reproducible walkthrough:
 
 ---
 
+## Learning Series Template (Batch Mode)
+
+Serialized episodes across multiple PRs/commits:
+
+```markdown
+# [Series Title] — Learning Series
+
+## Series Overview
+| Field | Value |
+|-------|-------|
+| Scope | [PR #1, #2, #3 / branch / sprint] |
+| Episodes | [count] |
+| Date range | YYYY-MM-DD — YYYY-MM-DD |
+| Audience | [beginner / intermediate / advanced] |
+| Theme | [What ties these changes together] |
+
+## Series Map
+| Episode | Target | Title | Key Concept |
+|---------|--------|-------|-------------|
+| 1 | PR #XX | [Title] | [Core concept] |
+| 2 | PR #YY | [Title] | [Core concept] |
+
+---
+
+## Episode 1: [Title]
+**Target:** [commit/PR ref]
+**Prerequisite episodes:** None
+
+[Standard learning document sections: Overview, Glossary, etc.]
+
+### Connection to Series
+- **Builds on:** [previous episode concepts, if any]
+- **Leads to:** [what the next episode will cover]
+
+---
+
+## Episode 2: [Title]
+[Repeat structure]
+
+---
+
+## Series Summary
+### Concept Progression
+[How understanding builds across episodes]
+
+### Knowledge Graph
+[Concept relationships across all episodes — hand off to Canvas for visualization]
+```
+
+---
+
+## Incremental Update Template
+
+Delta-only document comparing against a previous learning document:
+
+```markdown
+# [Component/Feature] — Incremental Update
+
+## Meta
+| Field | Value |
+|-------|-------|
+| Previous doc | [path/ref to previous learning doc] |
+| Previous target | [original commit/PR] |
+| Current target | [new commit/PR] |
+| Date | YYYY-MM-DD |
+| Audience | [level] |
+
+---
+
+## What Changed Since Last Document
+
+### Added Knowledge
+[New concepts, patterns, or decisions not present in previous doc]
+
+### Changed Decisions
+| Decision | Previous | Current | Reason for Change |
+|----------|----------|---------|-------------------|
+| [Decision] | [Old approach] | [New approach] | [Why it changed] |
+
+### Deprecated Patterns
+[Patterns from previous doc that are no longer valid]
+
+### Unchanged (Reference)
+[Brief pointer to previous doc sections that remain valid]
+
+---
+
+## Updated Glossary
+[Only new or changed terms — reference previous doc for unchanged terms]
+
+## Quality Scorecard
+[Standard scorecard]
+```
+
+---
+
+## Quality Scorecard Template
+
+Attach at the end of every deliverable:
+
+```markdown
+## Quality Scorecard
+
+| Axis | Score | Evidence |
+|------|-------|----------|
+| Fact/Inference Ratio | [A/B/C] | [X inferences labeled out of Y total claims] |
+| Term Coverage | [A/B/C] | [X/Y first-occurrence terms defined] |
+| Before/After Pairs | [A/B/C] | [N code comparison pairs included] |
+| Why Not Depth | [A/B/C] | [N alternatives with rejection reasons] |
+| Audience Fit | [A/B/C] | [Audience: level, detection: method, confidence: H/M/L] |
+
+**Overall:** [PASS if no C scores / REVISION NEEDED if any C]
+```
+
+---
+
 ## Depth Adjustment Guidelines
 
 ### Beginner additions

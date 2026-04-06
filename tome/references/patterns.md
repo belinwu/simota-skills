@@ -187,19 +187,4 @@ SECURITY_ANALYSIS:
 
 ## Combining Patterns
 
-When a single change matches multiple patterns:
-
-1. Select one primary pattern (based on the main intent of the change)
-2. Add secondary patterns as supplements
-3. Connect patterns via "Learning Points"
-
-```yaml
-COMBINED_EXAMPLE:
-  primary: Feature Addition
-  secondary: [Security Hardening, Performance Optimization]
-  connection: |
-    Security and performance considerations were addressed simultaneously
-    with the new feature. This is a good example of shift-left: building
-    security and performance into the initial implementation is cheaper
-    than retrofitting them later.
-```
+When a change matches multiple patterns, select one primary pattern (based on main intent) and add secondary patterns as supplements. Connect them via Learning Points that explain how the patterns interact.

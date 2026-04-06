@@ -15,69 +15,31 @@ USER_TO_TOME:
     type: "[commit | pr | branch | file_range]"
     ref: "[specific reference]"
   audience:
-    level: "[beginner | intermediate | advanced]"
+    level: "[beginner | intermediate | advanced | auto]"
   output:
-    format: "[learning_doc | glossary | decision_record | tutorial]"
+    format: "[learning_doc | glossary | decision_record | tutorial | learning_series | incremental_doc]"
+  mode: "[standard | incremental | batch]"
+  prev_doc: "[path to previous learning doc, if incremental]"
   notes: "[additional requests or focus areas]"
 ```
 
-### From Rewind (Git Investigation Results)
+### From Agent (Generic Handoff)
+
+Used by Rewind, Harvest, Lens, Scout, and any other upstream agent.
 
 ```yaml
-REWIND_TO_TOME_HANDOFF:
+AGENT_TO_TOME_HANDOFF:
+  source_agent: "[Rewind | Harvest | Lens | Scout | ...]"
   investigation:
     target: "[investigation subject]"
-    commits: "[key commit list]"
-    root_cause: "[root cause]"
-    timeline: "[change timeline]"
+    findings: "[key findings or data]"
+    commits: "[key commit list, if applicable]"
+    root_cause: "[root cause, if applicable]"
+    timeline: "[change timeline, if applicable]"
   request:
     focus: "[documentation focus]"
-    audience: "[target audience]"
+    audience: "[target audience level or auto]"
     format: "[output format]"
-```
-
-### From Harvest (PR Information)
-
-```yaml
-HARVEST_TO_TOME_HANDOFF:
-  pr_data:
-    number: "[PR number]"
-    title: "[PR title]"
-    description: "[PR description]"
-    files_changed: "[changed file list]"
-    commits: "[commit list]"
-    reviews: "[review comments]"
-  request:
-    focus: "[documentation focus]"
-    audience: "[target audience]"
-```
-
-### From Lens (Codebase Investigation)
-
-```yaml
-LENS_TO_TOME_HANDOFF:
-  investigation:
-    scope: "[investigation scope]"
-    findings: "[findings]"
-    architecture: "[related architecture]"
-    data_flow: "[data flow]"
-  request:
-    focus: "[explanation focus]"
-    audience: "[target audience]"
-```
-
-### From Scout (Bug Investigation)
-
-```yaml
-SCOUT_TO_TOME_HANDOFF:
-  investigation:
-    bug: "[bug summary]"
-    root_cause: "[root cause]"
-    reproduction: "[reproduction steps]"
-    fix_location: "[fix location]"
-  request:
-    focus: "[learning doc for bug fix]"
-    audience: "[target audience]"
 ```
 
 ---
@@ -114,17 +76,18 @@ TOME_TO_SCRIBE_HANDOFF:
         rationale: "[why it should become a spec]"
 ```
 
-### To Canvas (Visualization)
+### To Canvas (Visualization + Knowledge Graph)
 
 ```yaml
 TOME_TO_CANVAS_HANDOFF:
   source:
     learning_doc: "[path to generated learning document]"
     flows: "[flows to visualize]"
+    knowledge_graph: "[concept relationships as structured data]"
   request:
     action: "[Mermaid/ASCII diagram generation]"
     diagram_types:
-      - type: "[sequence | flowchart | state | class]"
+      - type: "[sequence | flowchart | state | class | concept_map]"
         scope: "[diagram scope]"
         highlight: "[change portion highlight instructions]"
 ```
@@ -136,10 +99,39 @@ TOME_TO_LORE_HANDOFF:
   source:
     learning_doc: "[path to generated learning document]"
     patterns: "[extracted general patterns]"
+    quality_scorecard: "[A/B/C per axis]"
   request:
     action: "[knowledge catalog registration]"
     insights:
       - pattern: "[pattern name]"
         description: "[pattern description]"
         applicability: "[applicability scope]"
+```
+
+### To Prism (Audio Learning via NotebookLM)
+
+```yaml
+TOME_TO_PRISM_HANDOFF:
+  source:
+    learning_doc: "[path to generated learning document]"
+    audience_level: "[beginner | intermediate | advanced]"
+  request:
+    action: "[NotebookLM steering prompt generation]"
+    focus: "[key topics for audio overview]"
+    tone: "[educational | conversational | technical]"
+```
+
+### To Director (Demo Narration Scripts)
+
+```yaml
+TOME_TO_DIRECTOR_HANDOFF:
+  source:
+    learning_doc: "[path to generated learning document]"
+    change_walkthrough: "[step-by-step change flow]"
+  request:
+    action: "[demo narration script generation]"
+    scenes:
+      - scene: "[scene description]"
+        screen_capture: "[what to show on screen]"
+        narration_focus: "[key teaching point]"
 ```
