@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Skills — 106の専門AIエージェントが、あなたの開発チームになる</title>
-  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する106の専門エージェント。">
+  <title>Agent Skills — 107の専門AIエージェントが、あなたの開発チームになる</title>
+  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する107の専門エージェント。">
   <meta property="og:title" content="Agent Skills — AI Agent Ecosystem">
-  <meta property="og:description" content="106の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
+  <meta property="og:description" content="107の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://simota.github.io/agent-skills/">
   <meta name="twitter:card" content="summary_large_image">
@@ -719,7 +719,7 @@ a:hover { color: #79c0ff; }
     <div class="section-header fade-in">
       <div class="section-label">Agent Catalog</div>
       <h2 class="section-title" data-i18n="catalog.title">エージェントを探す</h2>
-      <p class="section-desc" data-i18n="catalog.desc">106の専門エージェントをカテゴリやキーワードで絞り込めます</p>
+      <p class="section-desc" data-i18n="catalog.desc">107の専門エージェントをカテゴリやキーワードで絞り込めます</p>
     </div>
     <div class="catalog-controls fade-in">
       <div class="catalog-search-row">
@@ -971,9 +971,10 @@ const AGENTS = [
   { name: 'Tome', motto: 'Changes are forgotten. Knowledge endures.', description: '変更内容を学習ドキュメントに変換（用語・設計判断・アンチパターン解説）', category: 'docs' },
   { name: 'Prism', motto: 'One source, many lights.', description: 'NotebookLMステアリングプロンプト設計コンサルタント', category: 'docs' },
 
-  // Growth (4)
+  // Growth (5)
   { name: 'Growth', motto: 'Traffic without conversion is just expensive vanity.', description: 'SEO/SMO/CRO。meta/OGP/JSON-LD・CTA改善', category: 'growth' },
   { name: 'Retain', motto: 'Acquisition is expensive. Retention is profitable.', description: 'リテンション施策・再エンゲージメント・チャーン予防', category: 'growth' },
+  { name: 'Funnel', motto: 'Above the fold is your one shot. Make every pixel convert.', description: 'LP構造設計・コンバージョン戦略・CTA最適化・レスポンシブ設計', category: 'growth' },
   { name: 'Pulse', motto: 'What gets measured gets managed.', description: 'KPI定義・トラッキングイベント設計・ダッシュボード仕様', category: 'growth' },
   { name: 'Experiment', motto: 'Every hypothesis deserves a fair trial.', description: 'A/Bテスト設計・サンプルサイズ計算・フィーチャーフラグ', category: 'growth' },
 
@@ -1134,6 +1135,7 @@ const AGENT_DESC_EN = {
   'Tome': 'Transforms changes into learning docs (terminology, design decisions, anti-patterns)',
   'Prism': 'NotebookLM steering prompt design consultant',
   'Growth': 'SEO/SMO/CRO. meta/OGP/JSON-LD and CTA optimization',
+  'Funnel': 'LP structure design, conversion strategy, and CTA optimization',
   'Retain': 'Retention strategies, re-engagement, and churn prevention',
   'Pulse': 'KPI definition, tracking event design, and dashboard specs',
   'Experiment': 'A/B test design, sample size calculation, and feature flags',
@@ -1209,10 +1211,10 @@ function setLanguage(lang) {
     ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
     ogDescEl.content = '106 expert AI agents become your dev team. An open-source agent ecosystem.';
   } else {
-    titleEl.textContent = 'Agent Skills — 106の専門AIエージェントが、あなたの開発チームになる';
-    descEl.content = 'Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する106の専門エージェント。';
+    titleEl.textContent = 'Agent Skills — 107の専門AIエージェントが、あなたの開発チームになる';
+    descEl.content = 'Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する107の専門エージェント。';
     ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
-    ogDescEl.content = '106の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。';
+    ogDescEl.content = '107の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。';
   }
 
   // Re-render dynamic content

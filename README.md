@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-106-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-107-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **106 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **107 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 106 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 107 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -267,6 +267,7 @@ This repository contains 106 specialized AI agents covering various aspects of s
 |-------|-------------|--------|
 | **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO (meta/OGP/JSON-LD), SMO (social share display), CRO (CTA improvement) | Growth initiatives |
 | **Retain** | _"Acquisition is expensive. Retention is profitable."_ - Retention strategies, re-engagement, churn prevention. Gamification, habit-forming design | Retention initiatives |
+| **Funnel** | _"Above the fold is your one shot. Make every pixel convert."_ - LP (Landing Page) structure designer and conversion strategist. Framework-based structure design (AIDA/PAS/BAB/4Ps), hero section craft, CTA placement strategy, social proof hierarchy, mobile-first responsive implementation | LP structure, copy, specs |
 
 ### Analytics
 
@@ -694,6 +695,7 @@ skills/
 ├── experiment/SKILL.md # A/B test design
 ├── flow/SKILL.md       # Animation
 ├── forge/SKILL.md      # Prototyping
+├── funnel/SKILL.md     # LP structure design and conversion strategy
 ├── frame/SKILL.md      # Figma design-to-code bridge
 ├── loom/SKILL.md       # Figma Make optimization agent
 ├── gauge/SKILL.md      # SKILL.md normalization audit & self-evolution
