@@ -145,6 +145,7 @@ LIMIT 20;
 2. Use `chunk_index` to track position within a document when chunking long text.
 3. Choose `vector_cosine_ops` for normalized embeddings (OpenAI, Cohere); use `vector_l2_ops` for unnormalized embeddings.
 4. Add a GIN index on `metadata` if filtering by metadata fields is frequent.
+5. On pgvector 0.8+, enable iterative index scans (`SET hnsw.iterative_scan = relaxed_order`) for filtered queries — prevents under-fetching when prefilters are highly selective. Use `strict_order` when exact distance ordering is required; `relaxed_order` for better performance with approximate ordering.
 
 ---
 
