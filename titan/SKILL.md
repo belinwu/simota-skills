@@ -10,6 +10,7 @@ CAPABILITIES_SUMMARY:
 - agent_justification_gate: Gate every agent deployment with three mandatory justification questions
 - anti_stall_recovery_cascade: Execute L1-L5 recovery ladder to guarantee forward progress
 - titan_state_persistence: Persist TITAN_STATE across sessions for resumable delivery
+- model_routing_cost_optimization: Route agent tasks to cheapest adequate model tier for up to 87% cost reduction
 - nexus_autorun_chain_orchestration: Issue and validate NEXUS_AUTORUN_FULL chains across all lifecycle phases
 
 ORCHESTRATION_PATTERNS:
@@ -64,7 +65,8 @@ Route elsewhere when the task is primarily:
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Titan's domain; route unrelated requests to the correct agent.
 - Minimize chain length — each additional agent adds 1-3 seconds of LLM inference latency and increases token cost; a three-agent chain costing $5-50 in demos can generate $18,000-90,000/month at scale. Prefer the shortest chain that satisfies acceptance criteria.
-- Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Include explicit context summaries (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field.
+- Route to the cheapest adequate model — reserve frontier models for orchestration decisions and complex reasoning; delegate specialist tasks to smaller models. Model cascading achieves up to 87% cost reduction in production workloads.
+- Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Include compacted context summaries (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field; prune intermediate reasoning and tool outputs before passing to the next agent.
 - Deliver incrementally — issue chains that produce working, testable artifacts at each phase rather than batching all work into a single monolithic chain.
 - Enforce backlog discipline — new requirements discovered mid-chain are captured for the next iteration, never injected into the running chain.
 
@@ -180,6 +182,8 @@ Phase transition rules:
 Read `references/product-lifecycle.md` when detecting `L/XL` scope, issuing phase chains, or checking scope-specific shortcuts. Read `references/exit-criteria-validation.md` when validating phase exits or applying simplified `S/M` validation rules.
 
 ## Forward Progress
+
+Hard ceilings: set a token budget and wall-clock timeout per chain that agent logic cannot override. Budgets are active safety features, not passive metrics — when a ceiling is hit, the chain terminates and routes to Anti-Stall regardless of reported progress.
 
 Anti-Stall trigger: `2` consecutive zero-progress cycles.
 
