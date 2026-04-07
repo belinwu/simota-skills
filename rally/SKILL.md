@@ -43,6 +43,7 @@ Use Rally when:
 - Task explicitly requests parallel or concurrent execution
 - Estimated serial time exceeds 2× the coordination overhead (rule of thumb: ≥ 3 independent units)
 - Teammates need to share findings, challenge approaches, or self-coordinate → Agent Teams over subagents
+- Cost justification exists: Agent Teams cost `3-4×` tokens vs single session; only use when parallel speedup ≥ `1.5×` compensates
 
 Route elsewhere when:
 - Only one task or all writable work hits the same files → Nexus or single specialist
@@ -65,19 +66,21 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 
 ## Core Contract
 
-- Start with the smallest viable team. Preferred size is `3-5` teammates — empirically the sweet spot (benchmarks: 5 agents ≈ 18 tasks/hr optimal vs 8 agents ≈ 16 tasks/hr declining). Never exceed `8` without explicit justification.
+- Start with the smallest viable team. Preferred size is `3-5` teammates — research shows accuracy gains saturate beyond the 4-agent threshold without structured topology, and unstructured coordination amplifies errors up to 17× while centralized hub-spoke contains this to ~4×. Never exceed `8` without explicit justification.
 - Target `5-6` tasks per teammate to keep each productive without excessive context switching.
 - Use Rally only for true multi-session parallel work. Investigation-only, single-agent, or purely sequential work should stay with Nexus, Sherpa, or a direct specialist.
 - Complete `ownership_map` before spawning. Every writable file needs one owner and `exclusive_write` must never overlap. The file-ownership invariant is the single most critical safety guarantee — violations cause silent merge corruption.
 - **Reconciliation before merge**: after fan-in, validate each teammate's output against the original task specification — not just whether it compiled, but whether it answered what was asked. Silent drift (agent output subtly diverging from intent without errors) is the #1 production failure mode in multi-agent pipelines.
 - Keep the hub-spoke model as the recommended pattern. Rally is the primary communication hub. The API allows peer DM between teammates (summaries appear in idle notifications), but teammates should not initiate peer DMs unless explicitly instructed.
+- **Delegate mode**: for teams of `3+`, activate delegate mode (Shift+Tab) so the lead focuses on coordination only and does not compete with teammates for file access. This consistently produces better results than a lead that both coordinates and implements.
 - Create the team before teammates. Send `shutdown_request` before `TeamDelete`.
 - Treat `idle` as waiting, not completion. Confirm status through `TaskList` and `TaskUpdate`.
 - Every teammate prompt must include team name and role, task, file ownership, constraints, context, completion criteria, and reporting instructions.
 - Verify build, tests, lint or type checks, and ownership compliance before reporting results.
 - Run lightweight HARMONIZE after every team session and record user overrides in the journal.
 - **Fan-in timeout**: set explicit deadlines per teammate task. If a teammate exceeds 2× the expected duration, escalate or replace rather than waiting indefinitely.
-- **Budget guardrails**: set a maximum API cost per session. If collective teammate API calls hit the limit, gracefully degrade (complete in-flight work, skip remaining, report partial results) rather than allowing unbounded spend.
+- **Budget guardrails**: set a maximum API cost per session. Agent Teams cost `3-4×` the tokens of a single session; subagents cost `1.5-2×`. If parallel speedup does not justify the multiplier, prefer subagents or sequential execution. If collective teammate API calls hit the limit, gracefully degrade (complete in-flight work, skip remaining, report partial results) rather than allowing unbounded spend.
+- **Model mixing**: assign Sonnet to teammate roles that do not require Opus-level reasoning (boilerplate implementation, test writing, formatting) to reduce per-session cost while keeping Opus for complex architectural decisions.
 
 ## Boundaries
 
@@ -100,7 +103,7 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 ### Never
 - Spawn without declared ownership — causes silent merge corruption and undetectable conflicts
 - Call `TeamDelete` before all shutdown confirmations — risks data loss from in-flight work
-- Spawn `10+` teammates — empirically causes coordination collapse; with N agents, N(N-1)/2 potential concurrent interactions create race condition opportunities that grow quadratically
+- Spawn `10+` teammates — coordination collapse: with N agents, N(N-1)/2 potential interactions grow quadratically; research shows unstructured groups amplify errors 17× vs 4× with centralized control
 - Write implementation code directly — Rally is an orchestrator, not a builder
 - Adapt defaults with fewer than `3` data points — insufficient signal for pattern changes
 - Skip `SAFEGUARD` when modifying learning defaults
@@ -200,6 +203,7 @@ Routing rules:
 - Always read relevant `references/` files before producing output.
 - When estimated parallel speedup is < 1.5× over serial, prefer sequential execution.
 - If coordination overhead exceeds 40% of total execution time, reduce team size or simplify task decomposition.
+- When merging teammate outputs, merge sequentially (one at a time, rebasing each onto the updated base) — not simultaneously — to give each merge full context of prior changes.
 
 ## Output Requirements
 
