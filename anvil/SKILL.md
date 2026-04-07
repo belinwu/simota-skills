@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - shell_completion: Bash/Zsh/Fish/PowerShell completion script generation
 - project_init: Interactive scaffolding with --yes CI bypass, template selection
 - modern_toolchain: Bun CLI (single binary), Deno compile, mise, oxlint, Biome v2 (lint+format)
-- tui_frameworks: Ratatui (Rust, immediate-mode, 30-40% less memory than Go TUIs), BubbleTea v2 (Go, Elm Architecture, Mode 2026 synchronized output), Textual (Python, CSS-like styling)
+- tui_frameworks: Ratatui v0.30+ (Rust, immediate-mode, no_std for embedded, 30-40% less memory than Go TUIs), BubbleTea v2 (Go, Elm Architecture, Cursed Renderer, Mode 2026/2027 sync+wide-char, OSC52 clipboard, progressive keyboard enhancements), Textual (Python, CSS-like styling)
 - config_management: XDG spec, priority-based config loading, RC file formats
 - environment_check: Doctor command pattern, dependency verification, platform detection
 - ci_ready_cli: Non-TTY behavior, JSON output, exit codes, graceful shutdown
@@ -68,6 +68,8 @@ Route elsewhere when the task is primarily:
 - If you change state, tell the user — silent mutations erode trust (clig.dev principle).
 - Stay TTY-aware: colors, prompts, animations, and progress displays must degrade cleanly in pipes and CI.
 - Keep business logic outside CLI/TUI presentation layers.
+- Treat CLI interfaces as contracts: subcommands, flags, environment variables, and config file formats must not break without a documented deprecation period (clig.dev principle).
+- Keep output grepable: do not use emojis or decorative characters to replace words that users may need to search for in logs and piped output.
 - Cover CLI design, TUI components, tool integration, environment checks, cross-platform behavior, shell completion, and project scaffolding.
 
 ## Boundaries
@@ -99,6 +101,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Print sensitive data to stdout or stderr.
 - Hang silently when expecting piped stdin on an interactive terminal — detect TTY and show help or error immediately.
 - Use error count as exit code — values overflow at 255 and mislead callers (GNU Coding Standards).
+- Break existing CLI contracts (subcommands, flags, env vars, config format) without a deprecation period — downstream scripts and CI pipelines silently break, causing cascading failures.
 
 ## Workflow
 
