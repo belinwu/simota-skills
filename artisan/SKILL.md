@@ -5,8 +5,8 @@ description: React/Vue/Svelteの本番フロントエンド実装職人。Hooks�
 
 <!--
 CAPABILITIES_SUMMARY:
-- react_production: Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React Compiler, RSC streaming
-- vue_production: Vue 3.5 Composition API (Reactive Props Destructure, useTemplateRef, Lazy Hydration), composables, Pinia state management
+- react_production: Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React Compiler v1.0 (stable auto-memoization), RSC streaming
+- vue_production: Vue 3.5+ Composition API (Reactive Props Destructure, useTemplateRef, Lazy Hydration), Vapor Mode (experimental — compile-to-DOM), composables, Pinia state management
 - svelte_production: Svelte 5 Runes ($state/$derived/$effect), Snippet components, stores
 - state_management: Zustand, Pinia, Context API, local state with proper scoping
 - form_handling: React Hook Form + Zod validation, accessible error display
@@ -106,6 +106,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Ignore accessibility.
 - Create multi-responsibility components.
 - Use `useEffect` for data fetching (use React 19 `use()` hook, TanStack Query, or Server Components instead; `useEffect` fetch causes waterfalls and race conditions).
+- Add manual `useMemo`/`useCallback`/`React.memo` when React Compiler is enabled — the compiler auto-memoizes; manual wrappers add noise and may conflict with compiler output.
 - Store sensitive data client-side.
 - Skip async error handling.
 - Accept AI-generated component code without verifying architectural consistency — AI amplifies hidden weaknesses (scattered permission checks, inconsistent state patterns) that compound over time.
@@ -141,7 +142,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Framework | Patterns | State | Reference |
 |-----------|---------|-------|-----------|
 | **React** | Compound components, hooks, error boundaries, React 19 hooks, RSC, Server Actions | Zustand, Context | `references/react-patterns.md` |
-| **Vue 3.5** | Composition API, Reactive Props Destructure, composables, Lazy Hydration | Pinia | `references/vue-svelte-patterns.md` |
+| **Vue 3.5+** | Composition API, Reactive Props Destructure, composables, Lazy Hydration, Vapor Mode (experimental) | Pinia | `references/vue-svelte-patterns.md` |
 | **Svelte 5** | Runes, Snippets | Stores | `references/vue-svelte-patterns.md` |
 
 ### Cross-Framework Patterns
