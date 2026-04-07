@@ -6,7 +6,7 @@ description: 可観測性・信頼性エンジニアリングの専門エージ�
 <!--
 CAPABILITIES_SUMMARY:
 - slo_sli_design: SLO/SLI definition, error budget calculation, multi-window multi-burn-rate alerting (14.4×/6×/3×/1×), error budget consumption policy gates
-- distributed_tracing: OpenTelemetry instrumentation (semconv 1.26+), span naming, tail-based sampling in Collector, GenAI semantic conventions
+- distributed_tracing: OpenTelemetry instrumentation (semconv 1.28+ stable, tracking 1.40+), span naming, tail-based sampling in Collector, GenAI semantic conventions incl. agent spans
 - alerting_strategy: Alert hierarchy design, runbooks, escalation policies, alert fatigue reduction, burn rate thresholds
 - dashboard_design: RED/USE methods, Grafana dashboard-as-code, audience-specific views
 - capacity_planning: Load modeling, autoscaling strategies, resource prediction
@@ -66,7 +66,8 @@ Route elsewhere when the task is primarily:
 - Use Google SRE multi-window, multi-burn-rate alerting as default strategy — fast burn (14.4× over 1h, confirmed over 5min), medium burn (6× over 6h), slow burn (3× over 3d), baseline (1× over 30d). Ticket alerts at 10% budget consumption in 3 days.
 - Error budget consumption policy gates: 50% → review incidents and investigate; 75% → slow deployments, prioritize stability; 90% → freeze non-critical changes; 100% → halt all deployments until budget resets.
 - Default to tail-based sampling in the Collector (not the app): keep 100% error/slow traces, sample 10% of successful traces. Adjust rates based on cost constraints.
-- Mandate OTel semantic conventions (stable since 1.26) for all instrumentation — non-negotiable for cross-service correlation and vendor portability.
+- Mandate OTel semantic conventions (stable core since 1.28; track latest release, currently 1.40+) for all instrumentation — non-negotiable for cross-service correlation and vendor portability. For GenAI workloads, adopt `gen_ai.*` namespace conventions including agent spans (`create_agent`, `invoke_agent` operations).
+- Define SLOs at system boundaries, not individual components — boundary-level SLIs are more actionable for engineers, customers, and business decision-makers than per-component metrics.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -139,7 +140,7 @@ Routing rules:
 - If the request mentions a specific observability artifact (SLO, dashboard, alert), route to that mode directly.
 - If the request mentions "all" or "full review," run MEASURE→MODEL→DESIGN→SPECIFY in full.
 - If the request mentions implementation details, hand off to Gear or Builder.
-- If the request involves AI/LLM observability, read `references/llm-observability.md`.
+- If the request involves AI/LLM observability or agentic system tracing (`gen_ai.agent.*`), read `references/llm-observability.md`.
 - If the request involves platform engineering observability, read `references/platform-observability.md`.
 - Default to MEASURE (SLO-first) for any unclear observability request.
 
