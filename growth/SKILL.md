@@ -9,7 +9,7 @@ CAPABILITIES_SUMMARY:
 - ogp_twitter_cards: Open Graph Protocol and Twitter Card meta for social sharing
 - json_ld_structured_data: Schema.org structured data (Article, Product, FAQ, Organization) with stacked schema for AI citation
 - heading_hierarchy_audit: H1-H6 structure validation and fix
-- core_web_vitals: LCP ≤2.5s, INP <200ms, CLS <0.1 identification and improvement; VSI tracking for session-long stability
+- core_web_vitals: LCP ≤2.5s, INP <200ms, CLS <0.1 identification and improvement at p75; VSI tracking for session-long stability when available
 - geo_optimization: Generative Engine Optimization for AI Overviews/ChatGPT/Perplexity/Copilot citation with platform-specific tactics
 - eeat_signals: Experience, Expertise, Authoritativeness, Trustworthiness markup and content structure
 - cro_cta_optimization: CTA copy, placement, color, urgency improvements with hypothesis-driven testing
@@ -45,7 +45,7 @@ Data-driven growth hacker: implement ONE high-impact change for SEO ranking, Soc
 3. **Speed is a feature** — Performance is UX and SEO; 1s delay = 7% conversion loss (Deloitte); meet Google's official CWV thresholds (LCP ≤2.5s, INP <200ms, CLS <0.1)
 4. **Honest growth** — Dark patterns yield short-term gains but long-term losses; Google core updates aggressively demote manipulative UX
 5. **Mobile first** — Google indexes mobile-first; design for thumbs, not mice
-6. **Structured for machines AND humans** — Triple schema stack (Article + ItemList + FAQPage) achieves 1.8× more AI citations than Article alone (Princeton GEO research); schema markup boosts AI summary appearance by 36%+
+6. **Structured for machines AND humans** — In 2026, JSON-LD's primary value is AI visibility, not rich snippets; ChatGPT, Perplexity, Gemini, and AI agents parse structured data directly when browsing, citing, or evaluating pages. Triple schema stack (Article + ItemList + FAQPage) achieves 1.8× more AI citations than Article alone (Princeton GEO research). Schema must match visible page content — AI engines verify consistency and penalize mismatches
 
 ## Trigger Guidance
 
@@ -80,10 +80,10 @@ Route elsewhere when the task is primarily:
 - Scale to scope: element (<50 lines), page (<200 lines), site-wide (phased rollout).
 - Avoid black hat SEO and dark patterns.
 - Include verification steps (Lighthouse, social preview debugger, CLS check).
-- Target Core Web Vitals thresholds at 75th percentile: LCP ≤2.5s, INP <200ms, CLS <0.1 (Google official); track VSI for session-long visual stability (CWV 2.0, 2026).
+- Target Core Web Vitals thresholds at 75th percentile: LCP ≤2.5s, INP <200ms, CLS <0.1 (Google official); track VSI for session-long visual stability when available.
 - Implement stacked JSON-LD schema (minimum: Organization + BreadcrumbList + WebSite; for GEO: Article + ItemList + FAQPage triple stack) for AI search eligibility.
-- Validate structured data with Google Rich Results Test before delivery.
-- GEO content requires 3–5 inline citations from authoritative sources per article; pages not updated quarterly are 3× more likely to lose AI citations.
+- Validate structured data with Google Rich Results Test before delivery; verify schema-content consistency (every JSON-LD claim must match visible page content).
+- GEO content requires 3–5 inline citations from authoritative sources per article; pages not updated quarterly are 3× more likely to lose AI citations. Use `@id` references to connect entities into a coherent knowledge graph that AI systems can traverse.
 - CRO changes require a documented hypothesis — never test without one.
 - CRO must distinguish conversion quality from quantity — adding friction (e.g., qualification questions) can increase revenue by filtering unqualified leads.
 - Ensure minimum statistical significance (95% confidence, ≥1000 conversions per variant) before declaring test winners.
@@ -113,6 +113,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Declare A/B test winners with <1000 conversions per variant or <14 days runtime — false positives cost more than no test.
 - Change 3+ variables simultaneously in a CRO test — results become unattributable.
 - Force budget/timeline form fields before demonstrating value — suppresses 40-60% of legitimate demand (B2B anti-pattern).
+- Hide shipping, tax, or fees until final checkout — hidden costs cause 48% of cart abandonment (Baymard Institute); surface total cost by cart or product page.
+- Treat CRO as a landing-page-only problem — conversion failures occur at every funnel stage (ad copy → checkout → post-purchase); full-funnel audit is required.
+- Deploy JSON-LD schema that contradicts visible page content — AI engines verify schema-content consistency and ignore or penalize mismatches.
 - Break accessibility.
 - Modify backend logic.
 
@@ -135,7 +138,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `heading`, `h1`, `h2`, `hierarchy` | Heading audit | Heading structure fix | `references/seo-detailed-checklist.md` |
 | `OG`, `Open Graph`, `Twitter Card`, `social` | Social sharing | OGP/Twitter Card meta | `references/ogp-twitter-card-guide.md` |
 | `JSON-LD`, `structured data`, `Schema.org` | Structured data | JSON-LD implementation | `references/json-ld-templates.md` |
-| `LCP`, `INP`, `CLS`, `Core Web Vitals`, `performance` | Core Web Vitals | Performance fix + measurement (INP <200ms, LCP ≤2.5s, CLS <0.1); VSI for session stability | `references/core-web-vitals.md` |
+| `LCP`, `INP`, `CLS`, `Core Web Vitals`, `performance` | Core Web Vitals | Performance fix + measurement at p75 (INP <200ms, LCP ≤2.5s, CLS <0.1); VSI for session stability when available | `references/core-web-vitals.md` |
 | `AI Overviews`, `GEO`, `AI search`, `citation` | Generative Engine Optimization | Triple schema stack + E-E-A-T + inline citations + platform-specific optimization (ChatGPT/Perplexity/Gemini/Copilot) | `references/json-ld-templates.md` |
 | `E-E-A-T`, `author`, `expertise`, `trust` | E-E-A-T signals | Author markup, credential schema, experience indicators | `references/seo-checklist.md` |
 | `CTA`, `conversion`, `signup`, `checkout` | CRO optimization | CTA/form improvement | `references/cro-patterns.md` |
