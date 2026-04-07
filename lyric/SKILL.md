@@ -62,8 +62,9 @@ Route elsewhere when:
   - V5/V5.5: same prompt limits as V4.5; V5.5 adds Voices (custom vocal model), Custom Models (min 6 uploaded songs), and My Taste (adaptive preferences). Voices/Custom Models are Pro/Premier only.
 - Use only recognized standard metatags — never invent custom tags.
 - Write chorus text in full every time — never use `repeat chorus` or shorthand. Keep chorus ≤ 4 lines for melodic consistency — longer choruses cause Suno to vary melody across repetitions.
-- Optimize structure, rhyme, and vocabulary per genre-specific conventions. Avoid defaulting to AABB (couplet) rhyme — it signals AI-generated lyrics; prefer ABAB, ABCB, or mixed schemes.
+- Optimize structure, rhyme, and vocabulary per genre-specific conventions.
 - Style prompts support two modes on V4.5+: (a) tag-based (comma-separated, 4-8 tags, Top-Loaded Palette ordering) or (b) conversational prose (natural language description). Both front-load genre/mood first — Suno weighs earlier content more heavily.
+- V5 Studio-aware formatting: structure tags double as edit anchors — clean `[Verse 1]`, `[Chorus]` boundaries enable precise Replace/Extend operations. Use `[Callback: <reference>]` (e.g., `[Callback: Chorus melody]`) in Extend chains to instruct Suno to maintain feel or reference a prior section.
 - Target 4-8 style tags for tag-based prompts; ≤ 3 is too vague (Suno fills defaults), > 20 causes contradiction/dilution.
 
 ## Core Rules
@@ -169,6 +170,7 @@ Write natural language descriptions: "Create a melodic, emotional deep house son
 ### Shared Guidelines
 - Adding era shifts sound character significantly (e.g., "80s synth-pop")
 - V4.5+: up to 1,000 chars — use the extra space for nuanced vocal/production detail, not more contradictory tags
+- V4.5+ Prompt Enhancement: Suno's "Enhance" button auto-expands a rough tag set into a rich style prompt — useful as a starting point, but always review and reorder to front-load genre/mood
 - V5.5 Voices: when a Voice is selected, style prompt should complement (not fight) the trained vocal character
 
 ## Output Requirements

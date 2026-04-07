@@ -6,12 +6,14 @@ Suno AIの技術仕様・メタタグ・制約の完全リファレンス。
 
 | Field | Limit | Notes |
 |-------|-------|-------|
-| Style Prompt | ~200 chars | Excess is silently truncated |
+| Style Prompt (Legacy/V4) | ~200 chars | Excess is silently truncated |
+| Style Prompt (V4.5+) | ~1,000 chars | Tag-based or conversational prose |
 | Lyrics | ~3,000 chars | 40-60 lines, 200-300 words equivalent |
 | Song Title | 80 chars | Minimal impact on music output |
 | Recommended lines | 30-40 | For standard 3-4 min songs |
 | Lines per section | 2-6 | Longer sections cause vocal drift |
-| Audio output | 1-4 min | Per generation |
+| Audio output (Legacy/V4) | 1-4 min | Per generation |
+| Audio output (V4.5+) | Up to 8 min | 44.1 kHz output |
 
 - 3,000文字超過: セクションが駆け足、または短い出力になる
 - 15行未満: 曲が短縮される傾向
@@ -121,10 +123,12 @@ Rules:
 - Adding era changes sound drastically ("80s synth-pop" vs "2020s synth-pop")
 - Avoid contradictory tags (aggressive + calm)
 
-## Suno v5 Specific
+## Suno v5/v5.5 Specific
 
 - **Top anchor**: Put vocal role + BPM + structure summary at prompt start
 - **Syllable count**: Specify "Verse lines: 8-10 syllables"
-- **Rhyme scheme**: Specify "AABB rhyme scheme"
+- **Rhyme scheme**: Vary schemes (ABAB, ABCB, mixed) — avoid defaulting to AABB, which signals AI-generated lyrics
 - **Lyric fidelity**: Add "Do not change any words inside brackets. Sing exactly as written."
 - **Pronunciation fix**: Adjust at text level (e.g., "bahss" for "bass")
+- **Callback tag** (Studio Extend/Replace): `[Callback: <reference>]` instructs Suno to maintain feel or reference a prior section during Extend chains (e.g., `[Callback: Chorus melody]` in Outro to recall the main hook)
+- **V5.5 Voices/Custom Models**: When using a Voice, style prompt should complement the trained vocal character, not fight it. Custom Models require min 6 uploaded songs (Pro/Premier only)
