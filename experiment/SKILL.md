@@ -8,15 +8,15 @@ CAPABILITIES_SUMMARY:
 - hypothesis_document_creation: Structure hypotheses with PICOT framework (Population, Intervention, Control, Outcome, Time)
 - ab_test_design: Define variants, sample size, duration, randomization, and targeting
 - sample_size_calculation: Power analysis with baseline rate, MDE, significance level, power
-- feature_flag_implementation: LaunchDarkly, Unleash, Statsig, GrowthBook, custom flag patterns for gradual rollout
+- feature_flag_implementation: LaunchDarkly, Unleash, Statsig, GrowthBook, Datadog (Eppo), custom flag patterns for gradual rollout
 - statistical_significance_analysis: Z-test, chi-square, Bayesian analysis for experiment results
 - experiment_report_generation: Results summary with confidence intervals, recommendations, learnings
 - sequential_testing: Alpha spending functions for valid early stopping (O'Brien-Fleming, Pocock)
 - multivariate_testing: Factorial design for testing multiple variables simultaneously
-- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment to multiply effective traffic (~50% variance reduction achievable)
+- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment (~50% variance reduction achievable); CUPED + trimmed means for heavy-tailed metrics
 - srm_detection: Sample Ratio Mismatch diagnosis via chi-squared test with segment-level root cause analysis
 - switchback_experimentation: Time-based treatment alternation for marketplace/network-effect scenarios
-- warehouse_native_guidance: Platform architecture guidance (warehouse-native vs hosted) for experimentation infrastructure selection
+- warehouse_native_guidance: Platform architecture guidance (warehouse-native vs hosted) for experimentation infrastructure selection; covers Statsig (dual-mode), Datadog Experiments (Eppo-powered), GrowthBook (open-source)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Metrics-to-Test (Pulse → Experiment)
@@ -81,10 +81,11 @@ Route elsewhere when the task is primarily:
 - Document all parameters (baseline, MDE, duration, variants) before launch.
 - Apply sequential testing (alpha spending) when early stopping is needed; sequential tests excel at detecting losers early but are not designed for declaring winners ahead of schedule.
 - Run SRM check (chi-squared, p < 0.01) before analyzing results; halt and investigate if SRM detected.
-- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data.
+- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data. For heavy-tailed metrics (revenue, session duration), combine CUPED with trimmed means for additional sensitivity gains.
 - Use switchback designs when network effects or interference make user-level randomization invalid (marketplaces, pricing, logistics).
-- Apply multiple comparison correction (Bonferroni/Holm-Bonferroni) when testing multiple variants or metrics.
+- Apply multiple comparison correction when testing multiple variants or metrics: use Benjamini-Hochberg FDR for exploratory analysis with many metrics (controls false discovery proportion); use Bonferroni/Holm-Bonferroni for confirmatory tests with few primary metrics (controls family-wise error rate).
 - Deliver experiment reports with confidence intervals, effect sizes, and actionable recommendations.
+- Filter bot and invalid traffic before analysis; unfiltered bot traffic (5–30% of web traffic) creates phantom wins and distorts metric calculations.
 - Flag guardrail violations immediately.
 
 ## Boundaries
@@ -121,7 +122,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - HARKing — formulate or adjust hypotheses after observing results; this invalidates the statistical methodology.
 - Use feature-level metrics (e.g., CTR) as primary when business-outcome metrics are available.
 - Ship results from experiments with detected SRM without investigation and resolution.
-- Test multiple variants without multiple comparison correction (5 variants without correction → 23% chance of at least one false positive).
+- Test multiple variants without multiple comparison correction (5 variants without correction → 23% chance of at least one false positive; 20 metrics without correction → 64% chance).
+- Analyze results without filtering bot/invalid traffic — bot contamination produces phantom lifts and irreproducible results.
 - Use treatment-influenced covariates in CUPED — covariates must be measured strictly before experiment exposure to avoid bias.
 
 ## Workflow
