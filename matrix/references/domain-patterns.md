@@ -11,6 +11,7 @@ Purpose: Use this file when the domain is known and you need default axes, commo
 - Risk
 - Experiment
 - Compatibility
+- AI/ML
 - Custom
 
 ## Test
@@ -153,6 +154,38 @@ Typical axes:
 | feature | core, experimental, deprecated | medium |
 
 Suggested next agent: `Horizon` or `Builder`.
+
+## AI/ML
+
+Typical axes:
+
+| Axis | Common values | Priority |
+|---|---|---|
+| model_type | classification, regression, generative, recommendation | high |
+| input_dimension | text, image, tabular, multimodal | high |
+| fairness_group | gender, age, ethnicity, disability | high |
+| dataset_split | train, validation, test, out-of-distribution | medium |
+| hyperparameter | learning_rate, batch_size, epochs, dropout | medium |
+| deployment_target | edge, cloud, on-premise | low |
+
+Common constraints:
+
+```yaml
+constraints:
+  conditional:
+    - if: {input_dimension: multimodal}
+      then: {model_type: generative}
+  exclude:
+    - {deployment_target: edge, model_type: generative}
+```
+
+Notes:
+
+- Use NIST CT for AI-Enabled Systems guidance for input space modeling.
+- Fairness axes require at least 3-way strength to cover intersectional bias (e.g., gender × age × ethnicity).
+- Dataset coverage uses combinatorial coverage difference (NIST CSWP 19) to compare train vs. test distribution.
+
+Suggested next agent: `Oracle`, `Radar`, or `Experiment`.
 
 ## Custom
 
