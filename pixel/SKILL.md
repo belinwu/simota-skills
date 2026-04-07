@@ -49,7 +49,7 @@ Use Pixel when the task needs:
 - responsive conversion of a static mockup
 - fidelity verification of existing implementation against design mockup (Playwright + Visual AI comparison)
 - hand-drawn wireframe or sketch to structured HTML/CSS scaffold
-- design-to-code fidelity benchmarking (Scooby, Applitools Eyes for design-vs-production comparison)
+- design-to-code fidelity benchmarking (Playwright visual diff, Applitools Eyes, or academic metrics like CW-SSIM/SSIM for design-vs-production comparison)
 
 Route elsewhere when the task is primarily:
 - Figma file extraction with MCP: `Frame`
@@ -71,7 +71,7 @@ Route elsewhere when the task is primarily:
 - Structure-first reproduction order: semantic HTML structure → CSS variables & layout → asset polish & micro-details.
 - Target fidelity score ≥90% overall; flag any section below 80% for manual review. Note: AI design-to-code tools typically achieve 75-80% fidelity; ≥90% requires iterative refinement.
 - Require high-resolution source images (≥2x) when available; warn when input is lossy-compressed or sub-720p as fidelity ceiling drops to ~70-80%.
-- VERIFY phase prerequisites: disable CSS animations/transitions via injected stylesheet before screenshot capture; run in a consistent environment (same OS, browser version, viewport) to avoid false diffs.
+- VERIFY phase prerequisites: use Playwright's built-in `animations: 'disabled'` option in `toHaveScreenshot()` instead of manual CSS injection; mask dynamic content (timestamps, ads, live data) with `mask: [locator]`; run in a consistent environment (same OS, browser version, viewport) to avoid false diffs.
 
 ## Boundaries
 
@@ -85,7 +85,8 @@ Interaction triggers → `_common/INTERACTION.md`
 - Attach confidence levels to estimated values (HIGH ≥90%, MEDIUM 70-89%, LOW <70%).
 - Use semantic HTML and accessibility attributes.
 - Generate responsive code (mobile-first).
-- Verify output with Playwright screenshot comparison; inject animation-disabling stylesheet (`animation: none !important; transition: none !important`) before capture.
+- Verify output with Playwright screenshot comparison; use `animations: 'disabled'` option in `toHaveScreenshot()` rather than manual CSS injection.
+- Mask dynamic content (timestamps, ads, counters) with Playwright's `mask` option to prevent false positive diffs.
 - Use a sensible `maxDiffPixelRatio` threshold (0.01-0.02) to avoid false failures from sub-pixel rendering; 0 tolerance is too brittle for production use.
 - Keep changes <50 lines per modification pass.
 - Check/log to `.agents/PROJECT.md`.
@@ -155,7 +156,8 @@ questions:
 - Assume font families from visual appearance alone — document as LOW confidence; font rendering differs across OS (Windows ClearType vs macOS Core Text vs Linux FreeType), causing false matches.
 - Treat a low-resolution or JPEG-compressed screenshot as a reliable color source — compression artifacts shift hues by up to 5-10 ΔE, producing incorrect HEX values.
 - Compare screenshots across different OS/browser environments without normalization — font rendering, scrollbar styles, and sub-pixel anti-aliasing vary by platform, producing false positive diffs.
-- Run Playwright screenshot comparison without first disabling CSS animations and transitions — non-deterministic capture timing causes flaky diffs.
+- Run Playwright screenshot comparison without disabling animations — use `animations: 'disabled'` in `toHaveScreenshot()`; manual CSS injection is fragile and may miss JS-driven animations.
+- Compare screenshots without masking dynamic content (timestamps, ads, live counters) — these produce false positive diffs on every run.
 
 ## Workflow
 
@@ -176,7 +178,7 @@ questions:
 | `SCAN` | Read mockup image; identify sections, layout patterns, visual hierarchy | Understand the whole before parts | `references/lp-section-patterns.md` |
 | `EXTRACT` | Build Design Spec Sheet: element-by-element extraction of 7 properties (font-size, font-weight, color, line-height, margin, padding, background) | Every value gets a confidence level; all values become CSS variables | `references/precision-spec.md`, `references/design-extraction.md` |
 | `COMPOSE` | Generate CSS variables from Spec Sheet → HTML/CSS code with zero magic numbers | No hardcoded values; all values reference CSS custom properties | `references/lp-section-patterns.md` |
-| `VERIFY` | Inject animation-disabling stylesheet → Playwright screenshot + per-property verification against Spec Sheet | Check every property individually; use `maxDiffPixelRatio: 0.01-0.02`; ensure consistent capture environment | `references/visual-verification.md`, `references/precision-spec.md` |
+| `VERIFY` | Playwright screenshot with `animations: 'disabled'` + `mask` for dynamic content + per-property verification against Spec Sheet | Check every property individually; use `maxDiffPixelRatio: 0.01-0.02`; ensure consistent capture environment | `references/visual-verification.md`, `references/precision-spec.md` |
 | `REFINE` | Fix CSS variable values only (not inline styles) → re-verify (max 3 iterations) | Modify `:root` variables; one change fixes all references | `references/precision-spec.md` |
 
 ## Output Routing
