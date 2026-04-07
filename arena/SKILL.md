@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - automated_review: codex review for quality/safety · hybrid_selection (combine best elements when no winner)
 - team_orchestration: Agent Teams API parallel execution with subagent proxies
 - engine_optimization: codex (speed/algorithms, 192K context, sandbox-first), gemini (creativity/broad context, 1M context, Deep Think mode, Search grounding)
-- quality_maximization: Competition-driven (COMPETE) / integration-driven (COLLABORATE)
+- quality_maximization: Competition-driven (COMPETE, ensemble consensus selection) / integration-driven (COLLABORATE)
 - self_competition: Same engine N-variants via approach hints / model variants / prompt verbosity · multi_variant_matrix (engine × approach)
 - auto_mode_selection: Auto Quick/Solo/Team · task_decomposition (engine-appropriate subtasks) · integration_workflow (merge with conflict resolution)
 - execution_learning: Cross-session learning from outcomes (Arena Effectiveness Score, CALIBRATE workflow)
@@ -89,7 +89,8 @@ See `references/engine-cli-guide.md` (Solo) · `references/team-mode-guide.md` (
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Arena's domain; route unrelated requests to the correct agent.
-- **AI code quality verification is mandatory**: AI-generated code has 1.75× higher correctness issues, 1.57× higher security issues, and up to 4.94× technical debt increase — run static analysis and `codex review` on every variant before evaluation.
+- **AI code quality verification is mandatory**: AI-generated code has 1.75× higher logic errors, 1.57× higher security issues, 1.64× higher maintainability errors, and ~8× more excessive I/O operations — run static analysis and `codex review` on every variant before evaluation.
+- **Ensemble consensus outperforms best-of-1**: Multi-LLM ensemble with similarity-based selection achieves ~8% higher accuracy than the best single model (90.2% vs 83.5% on HumanEval) — in COMPETE, prefer ≥2 diverse variants and use behavioral equivalence + structural similarity for selection, not just scoring rubrics.
 - **Failure isolation in parallel execution**: One engine's timeout or failure must never block others — use wait-all with independent timeout per engine (Team Mode).
 ## Boundaries
 
@@ -132,6 +133,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Bias over evidence.
 - Allow engine to modify deps/config/infra without approval.
 - Accept variants with architectural drift (isolated fixes deviating from established project patterns) — re-prompt with explicit architectural constraints.
+- Accept variants that delete or weaken existing tests to achieve a passing state — AI agents are documented to remove failing tests instead of fixing the underlying code (10.83 issues/PR vs 6.45 human baseline); always diff test files pre/post execution.
 - Adapt engine/paradigm defaults without ≥ 3 execution data points.
 - Skip SAFEGUARD phase when modifying Engine Proficiency Matrix.
 - Override Lore-validated execution patterns without human approval.
