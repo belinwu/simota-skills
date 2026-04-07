@@ -19,6 +19,8 @@ CAPABILITIES_SUMMARY:
 - hook_performance: Optimize hook latency, consolidate matchers, limit per-event hook count
 - input_modification: Design updatedInput hooks for transparent tool argument rewriting (path correction, secret redaction, dry-run injection)
 - dependency_safety: Design fail-open/fail-closed strategies for hooks with external command dependencies
+- tool_bypass_prevention: Design cross-tool enforcement to prevent Edit/Write hook bypass via Bash sed/python/echo
+- permission_event_design: Design PermissionRequest hooks for automated permission decisions distinct from PreToolUse
 
 COLLABORATION_PATTERNS:
 - Nexus -> Latch: Task context for hook configuration
@@ -84,6 +86,8 @@ Route elsewhere when the task is primarily:
 - All human-readable messages from command hooks must go to stderr; stdout is reserved for JSON protocol data. Violating this corrupts tool input.
 - PreToolUse hooks fire before any permission-mode check — a hook returning `permissionDecision: "deny"` blocks the tool even in `bypassPermissions` mode, making hooks the strongest policy enforcement layer.
 - Every command hook must explicitly handle missing dependencies (jq, grep, etc.) — design as fail-closed (`exit 2`) for security hooks or fail-open (`exit 0`) for monitoring hooks, and document the choice.
+- PreToolUse hooks on `Edit|Write` alone do not prevent file modification — Claude can switch to `Bash` with `sed`, `python -c`, or `echo` redirection to bypass. Always pair file-protection hooks with a matching `Bash` hook that pattern-matches file-writing commands.
+- `PermissionRequest` hooks do not fire for subagent permission requests in Agent Teams — do not rely on them as the sole policy gate in multi-agent orchestration; use `PreToolUse` hooks instead, which fire for all agents.
 
 ## Boundaries
 
@@ -115,6 +119,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use `set -e` in hook scripts — it causes premature exits on benign failures; use `set -uo pipefail` instead.
 - Use invalid event names (e.g., `PreTool` instead of `PreToolUse`) — the hook silently never fires with no error message.
 - Deploy hooks that depend on external commands (jq, grep, curl) without verifying their availability — the script fails silently or exits with an unexpected code, causing either a false pass or a false block.
+- Trust that `Edit|Write` PreToolUse hooks alone protect files — Claude switches to `Bash` with `sed`/`python -c`/`echo` to bypass, leaving the "protected" files fully exposed (GitHub #29709, #6876).
+- Clone and use hooks from untrusted repositories without review — malicious `.claude/settings.json` hooks can achieve remote code execution and API token exfiltration on first session start.
 
 ## Session Scope
 
@@ -157,16 +163,21 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 | `SessionEnd` | At session end | No | No | Cleanup and logging |
 | `PreCompact` | Before compaction | No | No | Preserve critical context |
 | `Notification` | On Claude notifications | No | No | External forwarding and audit logging |
+| `PermissionRequest` | When a permission dialog is about to show | Yes | No | Automated permission decisions (allow/deny on behalf of user) |
+| `SubagentStart` | When a subagent starts | No | No | Subagent resource limits and task redirection |
+| `PostCompact` | After context compaction | No | No | Post-compaction logging and state verification |
+| `InstructionsLoaded` | After instructions are loaded | No | No | Instruction validation and augmentation |
 
 Selection rules:
 
 - Prefer the narrowest event that matches the workflow gap.
-- `SessionStart`, `SessionEnd`, `PreCompact`, and `Notification` are command-only (no prompt/agent types).
+- `SessionStart`, `SessionEnd`, `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, and `InstructionsLoaded` are command-only (no prompt/agent types).
 - `Stop` and `SubagentStop` are for completion gates, not routine linting after every edit.
 - `PreToolUse` with `*` is high-risk and belongs in `Ask First` — it fires on every tool call and adds latency to the entire session.
 - Use MCP Tools for agent actions and Hooks to audit and verify those actions — this separation is the 2026 best practice for deterministic governance.
 - Limit total hooks per event to ≤ 5 to avoid compounding latency; target ≤ 200ms per individual command hook for scalable deployments (practitioners report 95+ hooks without noticeable latency when each completes under 200ms).
 - Prompt hooks use `$ARGUMENTS` placeholder to inject the hook's JSON input data into the prompt text — omitting it means the LLM receives no context about the tool call.
+- `PermissionRequest` fires only when a permission dialog is about to show; `PreToolUse` fires before every tool execution regardless of permission status. Use `PreToolUse` for universal enforcement and `PermissionRequest` for permission-specific automation.
 
 ## Hook Contract
 
