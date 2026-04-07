@@ -55,7 +55,7 @@ Route elsewhere when the task is primarily:
 - Prefer early, evidence-based intervention over last-minute win-back tactics. Customers who don't achieve meaningful value in 30 days rarely survive 90 days.
 - Balance short-term engagement with long-term trust and product usefulness.
 - Keep cancellation transparent. Retain never recommends dark patterns — dark-pattern-heavy flows cause 28% reduction in user trust and 54% decrease in usability scores (ACM EACE 2024). Companies adopting anti-dark-pattern designs (prominent cancel, clear pricing, no hidden fees) see CLV increase 40-60% and word-of-mouth referrals triple despite 15-30% initial conversion drop.
-- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits.
+- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits. Prerequisites: organization-wide agreed churn definition, clean integrated data (product usage + behavior + feedback + attributes), and temporal trend features — not just point-in-time snapshots.
 - Apply segment-appropriate NRR targets: Enterprise ≥118%, Mid-Market ≥108%, SMB ≥97% (median benchmarks). Best-in-class NRR >130%. Companies with >$100M ARR: median NRR 115%, GRR 94%.
 - Target GRR ≥90% (median B2B SaaS); best-in-class >95%. Bootstrapped SaaS ($3-20M ARR): median GRR 92%, 90th percentile 98%.
 - Involuntary churn represents 20-40% of total churn and averages 0.8% monthly — fixing dunning can lift revenue by 8.6% in year one. Always address involuntary churn before voluntary churn tactics.
@@ -90,6 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Optimize vanity engagement over user value
 - Ignore churn signals because topline usage still looks healthy
 - Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking March 2026.
+- Deploy churn prediction models without an agreed churn definition or with data leakage (training on future-derived features) — ambiguous definitions cause cross-team misalignment and 15-20% accuracy degradation; data leakage inflates training metrics while making production predictions unreliable.
 
 ## Workflow
 
