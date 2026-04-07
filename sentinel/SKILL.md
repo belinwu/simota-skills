@@ -52,6 +52,7 @@ Use Sentinel when the user needs:
 - API security flaw detection (BOLA, BFLA, SSRF)
 - AI-generated code risk assessment (vibe coding audit — AI code contains 2.74× more vulnerabilities per Veracode 2025)
 - supply-chain hardening (lockfile integrity, provenance verification, SBOM validation with SPDX/CycloneDX + VEX)
+- MCP configuration secret scanning (24,008 unique secrets found in MCP configs — GitGuardian 2026)
 - OWASP Top 10:2025 compliance auditing (including new A03 Supply Chain Failures, A10 Exceptional Conditions)
 
 Route elsewhere when the task is primarily:
@@ -73,7 +74,8 @@ Route elsewhere when the task is primarily:
 - Apply OWASP Top 10:2025 mapping (not 2021). Key 2025 changes: Security Misconfiguration rose to #2; SSRF consolidated into A01 Broken Access Control; new A03 Software Supply Chain Failures; new A10 Mishandling of Exceptional Conditions.
 - For AI-generated code, apply heightened scrutiny: CWE-80 (XSS) 86% failure rate, CWE-117 (Log Injection) 88% failure rate, Java 72% overall failure rate (Veracode Spring 2026). Prioritize CWE-918 (SSRF), CWE-798 (hardcoded credentials), CWE-22 (path traversal). Check integration points — AI generates correct components but frequently fails to wire auth middleware into subsequent components.
 - Run multi-scanner when feasible: 78% of confirmed vulnerabilities are caught by only one tool (Veracode 2026).
-- For secret detection, use hybrid approach: regex patterns + entropy-based analysis + context-aware validation. Scan at pre-commit hooks and CI/CD pipeline as dual checkpoints.
+- For secret detection, use hybrid approach: regex patterns + entropy-based analysis + context-aware validation. Scan at pre-commit hooks and CI/CD pipeline as dual checkpoints. Include MCP configuration files (`.cursor/mcp.json`, `claude_desktop_config.json`, `.env` for MCP servers) as explicit scan targets.
+- Verify secret remediation status: 64% of valid secrets from 2022 remain unrevoked in 2026 (GitGuardian 2026). After detection, confirm revocation — not just file deletion — since secrets persist in git history.
 
 ## Boundaries
 
@@ -98,7 +100,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ### Never
 
-- Commit secrets or API keys — once committed, secrets persist in git history even after file deletion; the average enterprise codebase contains 5.5 hardcoded secrets per developer per year (GitGuardian 2026).
+- Commit secrets or API keys — once committed, secrets persist in git history even after file deletion; 29 million hardcoded secrets were pushed to public GitHub in 2025 alone (+34% YoY), with AI-service secrets surging 81% to 1.28 million (GitGuardian 2026).
 - Expose vulnerability details publicly — premature disclosure enables exploit weaponization before patches deploy.
 - Fix LOW before CRITICAL/HIGH.
 - Disable security controls for build convenience.
@@ -150,7 +152,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `CVE`, `dependency`, `SBOM`, `supply chain` | Dependency / supply-chain scan | CVE report + upgrade path | `references/supply-chain-security.md` |
 | `header`, `CSP`, `CORS`, `HSTS` | Security header audit | Header gap report + config snippet | `references/defensive-controls.md` |
 | `auth`, `JWT`, `OAuth`, `rate limit` | Auth and access control review | Auth gap finding + remediation | `references/api-security.md` |
-| `AI-generated`, `LLM`, `MCP`, `prompt injection`, `vibe coding`, `Copilot` | AI code security review — heightened scrutiny for CWE-918/798/22/78; 45% flaw rate baseline | AI risk finding + mitigation | `references/ai-code-security.md` |
+| `AI-generated`, `LLM`, `MCP`, `prompt injection`, `vibe coding`, `Copilot` | AI code security review — heightened scrutiny for CWE-918/798/22/78; 45% flaw rate baseline. For MCP: scan config files for leaked secrets, validate tool descriptions for injection payloads | AI risk finding + mitigation | `references/ai-code-security.md` |
 | `supply chain`, `dependency confusion`, `typosquatting`, `slopsquatting`, `lockfile` | Supply-chain attack surface audit — verify provenance, lockfile integrity, namespace squatting | Supply-chain risk report + remediation | `references/supply-chain-security.md` |
 | `SARIF`, `machine-readable` | SARIF output mode | SARIF-compatible JSON report | `references/defensive-controls.md` |
 | `multi-engine` | Multi-engine consensus scan | Merged finding set with confidence boost | `references/vulnerability-patterns.md` |
