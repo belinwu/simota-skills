@@ -21,7 +21,7 @@ Verified baseline:
 
 | SDK version | Config pattern | Notes |
 | --- | --- | --- |
-| `v1.38+` | `GenerateContentConfig(response_modalities=["IMAGE"])` | simple config only; control ratio/style in the prompt |
+| `v1.38+` | `GenerateContentConfig(response_modalities=["TEXT", "IMAGE"])` | simple config only; control ratio/style in the prompt |
 | `v1.50+` | `GenerateContentConfig(image_generation_config=ImageGenerationConfig(...))` | supports `aspect_ratio` and `person_generation` as parameters |
 
 Default guidance:
@@ -59,12 +59,19 @@ GEMINI_API_KEY=your-api-key-here
 
 | Model | ID | API type | Speed | Cost | Use |
 | --- | --- | --- | --- | --- | --- |
-| Flash | `gemini-2.5-flash-image` | Google AI API | fast | low | default |
-| Imagen 3.0 | `imagen-3.0-*` | Vertex AI only | medium | higher | Vertex-only paths |
+| Nano Banana (Flash) | `gemini-2.5-flash-image` | Google AI API | fast | ~$0.039/img | default |
+| Nano Banana 2 | `gemini-3.1-flash-image-preview` | Google AI API | fast | ~$0.045/img (1K) | 4K output, improved quality |
+| Nano Banana Pro | `gemini-3-pro-image-preview` | Google AI API | medium | ~$0.134/img | highest Gemini-native quality |
+| Imagen 4 Fast | `imagen-4-fast` | Google AI API | fast | $0.02/img | cheapest text-to-image only |
+| Imagen 4 Standard | `imagen-4-standard` | Google AI API | medium | $0.04/img | better quality text-to-image |
+| Imagen 4 Ultra | `imagen-4-ultra` | Google AI API | slower | $0.06/img | best quality text-to-image, 2K |
+| Imagen 3.0 | `imagen-3.0-*` | Vertex AI only | medium | higher | Vertex-only — returns 404 on Google AI API |
 
-Rule:
-- on Google AI API, use `gemini-2.5-flash-image`
+Rules:
+- on Google AI API, default to `gemini-2.5-flash-image`
 - `imagen-3.0-*` on Google AI API will return `404`
+- Imagen 4 models are text-to-image only — cannot edit existing images
+- for image editing or style transfer, use Gemini-native models (Nano Banana / Nano Banana 2)
 
 ## Request Patterns
 
@@ -86,7 +93,9 @@ Use `response_modalities=["TEXT", "IMAGE"]` when the text explanation matters.
 
 ### Reference-based editing
 
-Pass the reference image with `types.Part.from_bytes(...)` plus the edit instruction.
+Pass the reference image with `types.Part.from_bytes(...)` (Base64 inlineData) plus the edit instruction.
+
+**Important:** Do not use the Files API (`fileData`) for reference/source images in editing workflows — it causes silent failures where the model returns text instead of an edited image. Always use `inlineData` (Base64-encoded).
 
 ### Iterative editing
 
@@ -102,8 +111,8 @@ Pass multiple reference images plus the transformation instruction.
 
 | Value | Behavior | Use |
 | --- | --- | --- |
-| `["IMAGE"]` | image only | standard generation |
-| `["TEXT", "IMAGE"]` | text and image | explanations or edit commentary |
+| `["TEXT", "IMAGE"]` | text and image | **default — always use this** |
+| `["IMAGE"]` | image only | **avoid — causes silent failure (HTTP 200, empty parts) on most models** |
 
 ### Prompt-based controls for `v1.38+`
 

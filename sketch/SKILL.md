@@ -114,6 +114,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Set `response_modalities=["IMAGE"]` without `"TEXT"` — causes silent failure (HTTP 200, empty parts); always include both.
 - Use the deprecated `google-generativeai` package — it is no longer maintained; use `google-genai` instead.
 - Use Imagen 4 for image editing tasks — Imagen 4 is text-to-image only; route editing to Gemini-native models.
+- Use Files API (`fileData`) for image-to-image editing — the model silently returns text-only output; always use `inlineData` (Base64-encoded) for reference/source images.
+- Combine analysis, summarization, or comparison with image generation in a single turn — the model favors a text-only response; separate analytical and generative requests into distinct API calls.
 
 ## Critical Constraints
 
@@ -136,7 +138,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Reference images | Maximum `14` images/request; keep each under `4MB` when possible; use for style consistency across series |
 | Aspect ratios | Supported: 1:1, 3:2, 2:3, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9; Nano Banana 2 adds 1:4, 4:1, 1:8, 8:1 |
 | Person generation param | In `v1.50+`, prefer `DONT_ALLOW` by default and `ALLOW_ADULT` only on explicit request |
-| Silent failure handling | Diagnose in order: (1) `response_modalities` includes `"TEXT"`, (2) `/v1beta/` endpoint, (3) billing enabled, then (4) retry with explicit "Generate an image of…" prefix |
+| Silent failure handling | Diagnose in order: (1) `response_modalities` includes `"TEXT"`, (2) `/v1beta/` endpoint, (3) billing enabled (HTTP 400 `FAILED_PRECONDITION` = billing not active), (4) reference images use `inlineData` not `fileData`, then (5) retry with explicit "Generate an image of…" prefix |
 | Reproducibility | Always include `seed` parameter; document seed in `metadata.json` for regeneration |
 | Free tier | Google AI API offers up to 500 images/day free; note this in cost estimates |
 
