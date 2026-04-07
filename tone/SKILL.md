@@ -14,7 +14,7 @@ CAPABILITIES_SUMMARY:
 - middleware_integration: Generate FMOD/Wwise/engine audio integration code
 - adaptive_audio: Generate code for gameplay-responsive dynamic audio systems
 - format_optimization: Platform-specific format conversion and size optimization with budget enforcement
-- local_model_setup: Setup scripts for local AudioCraft/Bark/ffmpeg installations
+- local_model_setup: Setup scripts for local AudioCraft/Bark/Stable Audio Open Small/ffmpeg installations
 
 COLLABORATION_PATTERNS:
 - Vision -> Tone: Audio direction, mood boards, sonic identity
@@ -50,7 +50,7 @@ Use Tone when the user needs:
 - audio normalization / format conversion scripts (ffmpeg)
 - game engine or middleware audio integration (FMOD, Wwise, Unity, UE5, Godot, Phaser)
 - adaptive / dynamic audio system code (gameplay-responsive music, intensity layers)
-- local audio model setup scripts (AudioCraft, Bark)
+- local audio model setup scripts (AudioCraft, Bark, Stable Audio Open Small)
 - platform-specific audio budget optimization (mobile ≤ 10% build size, console streaming)
 
 Route elsewhere when the task is primarily:
@@ -68,7 +68,7 @@ Route elsewhere when the task is primarily:
 - Default stacks: Python (`requests`/`httpx`), JavaScript/TypeScript (JSFXR, Web Audio API), Shell (ffmpeg).
 - Read API keys from environment variables only.
 - Estimate API costs before generation runs (ElevenLabs TTS ~$0.12/1K chars, ElevenLabs Music ~$0.80/min, MiniMax Music ~$0.035/generation).
-- Include LUFS normalization in every workflow: -24 LUFS for home console (ASWG-R001), -18 LUFS for portable/handheld (ASWG-R001), -16 LUFS for mobile, -23 LUFS as general game default. Allow ±2 LU tolerance. Nintendo Switch: docked follows home spec (-24), handheld follows portable spec (-18).
+- Include LUFS normalization in every workflow: -24 LUFS for home console (ASWG-R001), -18 LUFS for portable/handheld (ASWG-R001), -16 LUFS for mobile, -24 LUFS as general game default (ASWG-R001 rev.). Allow ±2 LU tolerance. Nintendo Switch: docked follows home spec (-24), handheld follows portable spec (-18).
 - Keep true peak below -1.0 dBTP to prevent clipping when multiple sources stack.
 - Flag licensing status of every audio source.
 - Enforce platform audio budgets: mobile audio ≤ 10% of build size (~20 MB for a 200 MB build), max 32 simultaneous voices.
@@ -125,7 +125,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `fmod`, `wwise`, `middleware` | Engine integration | `.cs` / `.cpp` | `references/middleware-integration.md` |
 | `unity`, `unreal`, `godot`, `phaser` | Native engine audio | `.cs` / `.gd` / `.js` | `references/middleware-integration.md` |
 | `web audio`, `howler`, `three.js audio` | Web Audio API | `.js` / `.ts` | `references/middleware-integration.md` |
-| `setup`, `install`, `local model` | Setup scripts | `.sh` / `.py` | `references/model-setup.md` |
+| `setup`, `install`, `local model` | Setup scripts (AudioCraft, Bark, Stable Audio Open Small) | `.sh` / `.py` | `references/model-setup.md` |
 | unclear request | ElevenLabs SFX V2 API | `.py` | `references/api-integration.md` |
 
 Routing rules:
@@ -234,7 +234,7 @@ _STEP_COMPLETE:
       audio_category: "[SFX | BGM | Voice | Ambient | UI]"
       target_platform: "[Desktop | Mobile | Web | Console]"
       quality_tier: "[Prototype | Indie | Production]"
-      lufs_target: "-23"
+      lufs_target: "-24"
     cost_estimate: "[estimated cost]"
     output_files: ["[file paths]"]
   Validations:
@@ -262,7 +262,7 @@ When input contains `## NEXUS_ROUTING`, do not call other agents directly. Retur
   - Category: [SFX / BGM / Voice / Ambient / UI]
   - Platform: [Desktop / Mobile / Web / Console]
   - Quality tier: [Prototype / Indie / Production]
-  - LUFS target: [-23]
+  - LUFS target: [-24]
 - Artifacts: [script paths]
 - Risks: [audio quality, cost impact, license concerns]
 - Suggested next agent: [Builder | Artisan | Forge | Realm] (reason)
