@@ -75,6 +75,7 @@ Route elsewhere when the task is primarily:
 - Prevent diagram drift: update diagrams in the same PR as the code change they depict.
 - Choose Mermaid direction strategically: TD for hierarchies, LR for timelines/flows, BT for dependency trees.
 - Always provide alt-text or ASCII fallback for accessibility (WCAG 2.1 compliance).
+- Ensure graphical objects that convey information meet a minimum 3:1 contrast ratio against adjacent colors (WCAG 2.1 SC 1.4.11).
 
 ## Boundaries
 
@@ -100,6 +101,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Modify code.
 - Diagram non-existent structures.
 - Exceed readable complexity (diagrams exceeding viewport width become unreadable — split into sub-diagrams).
+- Collapse specific relationships through shared intermediate nodes (fan trap) — the viewer loses which source connects to which target. Split or label edges explicitly.
 - Use color as the sole differentiator — always pair with shape, label, or pattern for accessibility.
 - Cross into another agent's implementation domain.
 
@@ -146,7 +148,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Rule | Requirement |
 |------|-------------|
-| Diagram count | Keep each delivered diagram at `<=20` nodes; split at `>30` nodes unconditionally |
+| Diagram count | Keep each delivered diagram at `<=20` nodes; split at `>30` nodes unconditionally. For dense graphs (edge/node ratio >0.3), lower the split threshold to `<=15` nodes |
+| Subgraph structure | 20 nodes in 4 clear subgroups > 7 unstructured nodes — always organize with subgraphs before reducing node count |
 | Primary elements | Limit primary focal elements to `7±2` per diagram (Miller's Law) |
 | Sequence density | Keep one sequence diagram at `<=15-20` messages |
 | DFD density | Keep one DFD at `3-9` processes |
