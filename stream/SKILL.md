@@ -6,7 +6,7 @@ description: ETL/ELTパイプライン設計、データフロー可視化、バ
 <!--
 CAPABILITIES_SUMMARY:
 - pipeline_architecture: ETL/ELT design, batch vs streaming vs hybrid selection, medallion architecture (Bronze/Silver/Gold)
-- orchestration_design: Airflow 3.0 (event-driven scheduling), Dagster, Kafka, CDC, dbt, Flink 2.x workflow planning
+- orchestration_design: Airflow 3.x (event-driven scheduling, Kafka/SQS sources), Dagster, Kafka, CDC, dbt, Flink 2.x (native AI/ML SQL) workflow planning
 - data_quality: Quality gates at source/transform/sink, schema evolution, data contracts, schema drift detection
 - idempotency_design: At-least-once + idempotent sink, safe replay, backfill planning
 - lineage_tracking: Data lineage documentation, dependency mapping, impact analysis
@@ -43,7 +43,7 @@ Stream designs resilient batch, streaming, and hybrid data pipelines. Default to
 Use Stream when the task involves:
 - ETL or ELT pipeline design, review, or migration
 - batch vs streaming vs hybrid selection
-- Airflow 3.0, Dagster, Kafka, CDC, dbt, Flink, warehouse modeling, or lineage planning
+- Airflow 3.x, Dagster, Kafka, CDC, dbt, Flink, warehouse modeling, or lineage planning
 - backfill, replay, observability, data quality, or data contract design
 - medallion architecture (Bronze/Silver/Gold) layer design
 - pipeline SLA/SLO definition, freshness monitoring strategy
@@ -69,7 +69,7 @@ Route elsewhere when the task is primarily:
 - Document lineage, schema evolution, backfill procedures, and alerting hooks.
 - Include monitoring, ownership, and recovery notes in every deliverable.
 - Classify pipeline availability tier: Tier 1 Critical (99.9%, max 43.8 min downtime/month), Tier 2 Important (99.5%, max 3.6 hr/month), or Tier 3 Standard (99.0%, max 7.2 hr/month).
-- Set freshness monitoring cadence at ≥2× the SLA frequency (e.g., 1-hour SLA → check every 30 min). Use p99 latency for critical pipelines. Alert when TSLU (Time Since Last Update) exceeds 1.5× the expected interval as an early warning before SLA breach.
+- Set freshness monitoring cadence at ≥2× the SLA frequency (e.g., 1-hour SLA → check every 30 min). Use p99 latency for critical pipelines. Alert when TSLU (Time Since Last Update) exceeds 1.5× the expected interval as an early warning before SLA breach. For resource utilization alerts, set warning at 80% of capacity and critical at 95% to balance noise reduction with timely response.
 - Include schema drift detection — production incidents increase 27% for every percentage point rise in schema drift frequency.
 - Never design a pipeline without idempotency or quality gates.
 - Never process PII without an explicit handling strategy.
@@ -80,14 +80,14 @@ Route elsewhere when the task is primarily:
 
 | Mode | Choose when | Default shape |
 |------|-------------|---------------|
-| `BATCH` | `latency >= 1 minute`, scheduled analytics, complex warehouse transforms | Airflow/Dagster + dbt/SQL |
+| `BATCH` | `latency >= 1 minute`, scheduled analytics, complex warehouse transforms | Airflow 3.x/Dagster + dbt/SQL |
 | `STREAMING` | `latency < 1 minute`, continuous events, operational projections | Kafka + Flink 2.x/Spark/consumer apps |
 | `HYBRID` | both real-time outputs and warehouse-grade history are required | CDC/stream hot path + batch/dbt cold path |
 
 Decision rules:
 - `latency < 1 minute` is a streaming candidate.
-- `volume > 10K events/sec` with low latency favors Kafka + Flink 2.x/Spark. Flink 2.0+ removed the DataSet API entirely — use Table API or DataStream API only.
-- daily or weekly reporting defaults to batch. Airflow 3.0 event-driven scheduling enables event-triggered batch pipelines without polling.
+- `volume > 10K events/sec` with low latency favors Kafka + Flink 2.x/Spark. Flink 2.0+ removed the DataSet API entirely — use Table API or DataStream API only. Flink 2.2+ adds native AI/ML SQL functions (ML_PREDICT, ML_FORECAST, ML_DETECT_ANOMALIES) — evaluate for in-stream inference before adding external ML services.
+- daily or weekly reporting defaults to batch. Airflow 3.x event-driven scheduling enables event-triggered batch pipelines without polling — supports Kafka and Amazon SQS as message queue sources via AssetWatcher.
 - cloud warehouses with strong compute usually favor ELT — 68% of cloud-first enterprises use medallion architecture (Bronze/Silver/Gold), reducing pipeline dev time by 40%.
 - constrained or transactional source systems often favor ETL before load.
 - dbt + Flink convergence enables unified batch/streaming SQL workflows (materializations: `view`, `streaming_table`, `streaming_source`).
@@ -152,6 +152,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use hardcoded configurations — environment-specific values must be parameterized (common root cause of cross-environment failures).
 - Build monolithic pipeline architectures — component failures kill entire workflows; prefer modular, independently deployable stages.
 - Skip schema drift detection — 27% incident increase per percentage point of unmonitored drift frequency.
+- Discard raw source data before loading — when transformation logic is wrong, raw data enables reprocessing; without it, recovery is impossible.
 
 ## Critical Constraints
 
