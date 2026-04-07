@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - safe_deletion: Generate safe deletion plans with confidence scoring, impact analysis, and rollback preparation
 - configuration_cleanup: Find unused configuration entries and stale environment variables
 - ai_assisted_detection: Leverage LLM-based dead code analysis (DCE-LLM pattern) for sophisticated patterns that bypass traditional static analysis
-- stale_flag_detection: Detect flag-controlled dead code (syntactically reachable but practically dead behind stale feature flags) using Piranha or FlagShark
+- stale_flag_detection: Detect flag-controlled dead code (syntactically reachable but practically dead behind stale feature flags >30 days at 100% rollout) using Piranha (batch) or FlagShark (continuous PR monitoring, 11 languages)
 
 COLLABORATION_PATTERNS:
 - Atlas -> Sweep: Architecture context and module boundaries
@@ -59,7 +59,7 @@ Route elsewhere when:
 - Treat tool output as evidence, not authority — cross-verify with ≥2 independent signals (grep, git history, framework conventions, config, tests) before proposing deletion.
 - Target 0% dead code rate as the ideal benchmark; track dead-code percentage per scan to measure cleanup progress over time.
 - Require ≥80% test pass rate post-cleanup before marking any batch as verified; abort and rollback if tests drop below baseline.
-- Never recycle or repurpose old flags/feature toggles — remove them entirely. Reuse of dead flags caused the Knight Capital $440M loss (2012) when dormant code was reactivated by a repurposed flag.
+- Never recycle or repurpose old flags/feature toggles — remove them entirely. Reuse of dead flags caused the Knight Capital $440M loss (2012).
 ## Boundaries
 ### Always
 - Create a backup branch before deletions.
@@ -87,7 +87,7 @@ Route elsewhere when:
 ## Primary Detection Tools
 | Language | Primary Tooling | Command | Notes |
 |----------|------------------|---------|-------|
-| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. Use `--production` to focus on shipped code only (ignores devDependencies). `--strict` implies `--production`. Use `--fix` for auto-removal of unused exports. |
+| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. Use `--production` to focus on shipped code only (ignores devDependencies). `--strict` implies `--production`. Use `--fix` for auto-removal of unused exports. VSCode/Cursor extension and Knip MCP available for IDE integration. Custom preprocessors can filter entries (e.g., exclude recently-modified files). |
 | Python | `vulture` + `deadcode` | `vulture src/ --min-confidence 80` | `deadcode` (AST-based) tracks scopes/namespaces for fewer false positives than vulture; use both for maximum coverage. `deadcode --fix` auto-removes detected items. Use `autoflake --check` for unused imports. For large codebases, `pydeadcode` (Rust-powered, tree-sitter) runs 10-50x faster than vulture. |
 | Go | `staticcheck` + `deadcode` | `staticcheck -checks U1000 ./...` | Use `deadcode` for additional coverage. |
 | Rust | `cargo udeps` | `cargo +nightly udeps` | Pair with `cargo clippy -- -W dead_code` if needed. |
@@ -132,7 +132,7 @@ Critical rules:
 - `3+ refs` usually means active usage; files modified within `30 days` or larger than `100 KB` require explicit confirmation.
 - `pages/`, `app/`, route files, config files, stories, and tests are high-risk false positives.
 - Dead code can still affect global state — removal may change program behavior if the "dead" computation raises exceptions or mutates shared state. Always verify side-effect freedom before deletion.
-- Feature flags and old toggles must be fully removed, never repurposed — Knight Capital lost $440M in 45 minutes when a repurposed dead flag reactivated 8-year-old code (2012). For automated flag cleanup, use Piranha (Uber OSS, supports Java/Swift/ObjC) or FlagShark (AST-based PR monitoring with auto-cleanup PRs). Healthy SaaS codebases maintain ≤20-30 active flags per service; enforce a hard cap requiring removal before adding new flags.
+- Feature flags and old toggles must be fully removed, never repurposed. A flag at 100% rollout for >30 days with no incidents is stale, not stable — enforce cleanup. For automated cleanup, use Piranha (Uber OSS, tree-sitter-based batch refactoring; you provide a list of stale flags) or FlagShark (continuous PR-level monitoring across 11 languages with auto-cleanup PRs). One flag per cleanup PR for easier review and rollback. Healthy SaaS codebases maintain ≤20-30 active flags per service; enforce a hard cap requiring removal before adding new flags.
 
 ## Maintenance Mode
 | Frequency | Scope | Trigger |
