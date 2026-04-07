@@ -136,6 +136,7 @@ Use it to log scope choice, section usage, alignment, revisions, adoption, and r
 | BDD specificity | `Given/When/Then` must contain concrete, testable outcomes; one scenario covers one user action; use business domain language, never implementation details |
 | BDD scale | Cap at `~12` scenarios per feature and `<10` steps per scenario; exceeding these signals over-specification — defer exhaustive paths to unit tests |
 | BDD collaboration | `L3` scenarios require Three Amigos review (product + dev + QA perspectives) before finalization |
+| BDD discovery | Use Example Mapping (rules → examples → questions → stories) to structure Three Amigos sessions; time-box to `25 min` per story to prevent scope drift |
 | Traceability minimum | `Full >= 95%`, `Standard >= 85%`, `Lite >= 70%` completeness |
 | L2 ownership | `L2-Biz`, `L2-Dev`, and `L2-Design` may be drafted by Accord, but decisions or artifacts outside Accord boundaries must be delegated |
 | Scope escalation | Promotion to a larger scope is allowed; demotion is avoided once detail exists |

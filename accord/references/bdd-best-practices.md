@@ -26,6 +26,7 @@ Purpose: Use this file when `L3` scenarios are vague, too technical, or not agre
 | `BDD-10` | Uniform template everywhere | format becomes ceremony | adapt while keeping the principles |
 | `BDD-11` | No coverage measurement | blind spots remain hidden | track scenario coverage |
 | `BDD-12` | AC/DoD confusion | functional criteria and team-wide quality get mixed | keep AC feature-specific |
+| `BDD-13` | Scenario Outline overuse | combinatorial explosion slows test suite | use outlines only for true data-driven variants; cap rows at `~8` per outline |
 
 ## Three Amigos
 
@@ -35,13 +36,14 @@ Purpose: Use this file when `L3` scenarios are vague, too technical, or not agre
 | development | `L2-Dev` voice | explain technical constraints and feasibility |
 | test | `L3` voice | challenge edge cases and observability |
 
-Suggested session flow:
+Suggested session flow (Example Mapping):
 
-1. explain the story context
-2. draft `Given / When / Then` together
-3. add edge cases
-4. confirm technical constraints
-5. agree before implementation starts
+1. place the story on a yellow card
+2. capture business rules on blue cards
+3. add concrete examples on green cards (each maps to a future scenario)
+4. note questions and assumptions on red cards
+5. time-box to `25 min`; if red cards dominate, the story needs splitting
+6. convert green cards into `Given / When / Then` scenarios after the session
 
 ## Quality Checklist
 
