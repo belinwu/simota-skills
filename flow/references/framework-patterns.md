@@ -12,11 +12,11 @@ Purpose: Use this file when Flow work must match a specific frontend framework o
 | Framework | Preferred Approach | Use JS When | Reduced Motion Hook |
 |-----------|--------------------|-------------|---------------------|
 | Tailwind | `transition-*`, `animate-*`, custom keyframes | Gesture physics, orchestration, shared layout | `motion-safe:` / `motion-reduce:` |
-| React | CSS first, then Framer Motion / React Spring | Gesture, layout transitions, drag, sequencing | `useReducedMotion()` or media query |
+| React | CSS first, then Motion (`motion/react`) | Gesture, layout transitions, drag, sequencing | `useReducedMotion()` from `motion/react` |
 | Vue | `<Transition>` / `<TransitionGroup>` | JS hooks or WAAPI when CSS is insufficient | media query or app-level flag |
 | Svelte | `transition:` / `in:` / `out:` / `animate:flip` | Custom gesture or timeline logic | media query or store-driven flag |
 | Vanilla JS | CSS transitions or `element.animate()` | WAAPI control, imperative sequencing | `matchMedia('(prefers-reduced-motion: reduce)')` |
-| Next.js | CSS or Framer Motion; View Transitions if available | Shared layout, page choreography | same as React |
+| Next.js | CSS or Motion; View Transitions if available | Shared layout, page choreography | same as React |
 | Astro | CSS first, `<ViewTransitions />` when supported | Cross-page progressive enhancement | media query |
 
 ## Motion v12 (formerly Framer Motion)
@@ -88,7 +88,7 @@ Motion v12 automatically switches between requestAnimationFrame and Web Animatio
 ## Reduced Motion Example
 
 ```tsx
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "motion/react";
 
 const shouldReduceMotion = useReducedMotion();
 

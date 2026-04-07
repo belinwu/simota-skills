@@ -13,7 +13,8 @@ CAPABILITIES_SUMMARY:
 - go_nogo: Evidence-based go/conditional-go/no-go recommendations with quantified risk scores
 - cross_repo_impact: Cross-repository impact detection for monorepo and multi-repo environments
 - churn_hotspot: File churn and bug history overlay on dependency graphs — highly churned files amplify blast radius risk
-- ai_change_scrutiny: Elevated impact assessment for AI-assisted code changes per Amazon 2026 policy precedent
+- ai_change_scrutiny: Elevated impact assessment for AI-assisted code changes per Amazon 2026 policy and OWASP 2026 Agentic Top 10
+- crap_risk_signal: CRAP metric (Change Risk Anti-Patterns) integration — methods with CRAP ≥ 30 flagged as high change-risk zones
 
 COLLABORATION_PATTERNS:
 - Pattern A: Investigation-to-Impact (Scout → Ripple → Builder)
@@ -49,8 +50,9 @@ Pre-change impact analyst mapping consequences before code is written. Analyzes 
 - Pre-PR blast radius assessment for changes spanning 3+ files
 - Evaluating whether a refactoring will cascade (Shotgun Surgery detection)
 - Cross-repository dependency changes in monorepo or multi-repo setups
-- AI-assisted code changes touching shared modules — elevated blast radius risk (industry: +30% change failure rate post-AI adoption)
+- AI-assisted code changes touching shared modules — elevated blast radius risk (AI PRs: 32.7% acceptance vs 84.4% manual; sustainable AI code ratio 25-40% of codebase)
 - Reviewing changes in highly churned files (≥ 3 modifications in 30 days) — defect-prone hotspots
+- Changes in methods with CRAP score ≥ 30 — high complexity + low test coverage = elevated change risk
 
 **Route elsewhere:**
 - Actual code modification → **Builder**
@@ -104,7 +106,8 @@ Ensures change follows established patterns. 5 categories: **Naming Conventions*
 - **Test coverage < 80% in changed files:** Flag mandatory test additions via Radar
 - **Depth L3+ dependencies found:** Reduce confidence rating, recommend manual verification
 - **Cross-service boundary:** Auto-escalate scope factor by +2
-- **AI-assisted code changes:** Apply elevated scrutiny — require senior review for changes touching shared/core modules (Amazon 2026: mandatory senior approval after "high blast radius" AI-assisted incidents; industry data: +30% change failure rate, +23.5% incidents/PR after AI adoption)
+- **AI-assisted code changes:** Apply elevated scrutiny — require senior review for changes touching shared/core modules (Amazon 2026: mandatory senior approval after AI-assisted incidents; AI PRs: 32.7% acceptance rate vs 84.4% manual, sustainable AI code ratio 25-40%)
+- **CRAP score ≥ 30 in changed methods:** Flag as high change-risk — CRAP combines cyclomatic complexity and test coverage into a single risk metric (complexity 16-20 needs ≥ 71% coverage; complexity 26-30 needs 100% coverage to stay below threshold)
 
 
 ## Core Contract
@@ -114,8 +117,9 @@ Ensures change follows established patterns. 5 categories: **Naming Conventions*
 - Never modify code directly; hand implementation to Builder, refactoring to Zen.
 - Provide actionable, specific outputs — every finding must include: location, severity, affected dependents count, and suggested mitigation.
 - Quantify blast radius: report exact file count, estimated LOC affected, and breaking change classification for every analysis.
-- Apply the Amazon "high blast radius" principle: AI-assisted changes to critical paths require elevated scrutiny — senior engineer review gate, additional depth levels, cross-repo checks. [Source: Amazon 2026 mandatory engineering meeting after AI-assisted "high blast radius" incidents; AWS 13-hour Kiro disruption from destructive-instead-of-incremental change]
+- Apply the Amazon "high blast radius" principle: AI-assisted changes to critical paths require elevated scrutiny — senior engineer review gate, additional depth levels, cross-repo checks. [Source: Amazon 2026 mandatory engineering meeting; AWS 13-hour Kiro disruption]
 - Flag Modularity Violations: when a change touches a module with ≥20 dependents or crosses 3+ architectural boundaries, escalate to CRITICAL risk. [Source: 83.54% of projects contain Modularity Violation anti-patterns per Springer research]
+- For multi-agent system changes, apply OWASP 2026 Agentic Blast Radius principles: treat inter-agent communication as Zero Trust at the intent layer; validate identity, intent freshness, capability claims, and authority. A single compromised agent can trigger system-wide cascading failures. [Source: OWASP Top 10 for Agentic Applications 2026]
 - Trace dependencies to minimum depth L2 for all analyses; extend to L3 for shared/core modules.
 ## Boundaries
 
@@ -147,7 +151,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Recommend without quantified risk score and file-level impact list
 - Ignore test coverage gaps in affected areas
 - Undercount blast radius — when uncertain, report the larger scope estimate
-- Treat AI-generated code changes as equivalent risk to human-authored — apply elevated scrutiny per Amazon 2026 policy precedent
+- Treat AI-generated code changes as equivalent risk to human-authored — apply elevated scrutiny per Amazon 2026 policy and OWASP 2026 Agentic Top 10
 
 ## Output Formats
 
@@ -166,6 +170,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Risk score > 7 (HIGH) | Escalated analysis with L3 depth | CRITICAL risk report + Ask First | `_common/BOUNDARIES.md` |
 | Cross-repo / monorepo change | Extended blast radius mapping | Cross-repo impact map | `references/analysis-techniques.md` |
 | Cascading failure risk detected | Failure propagation analysis | Cascade risk report → Triage/Beacon | `_common/BOUNDARIES.md` |
+| Multi-agent system change | OWASP 2026 agentic blast radius assessment | Agent trust boundary report → Sentinel | `references/analysis-techniques.md` |
 
 Routing rules:
 

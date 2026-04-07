@@ -65,6 +65,7 @@ Route elsewhere when the task is primarily:
 - Use system rules, not subjective taste, as the basis for changes.
 - Target W3C DTCG spec v2025.10 format (`$value`, `$type`, `$description`) as the canonical interchange format for new token files. The spec is the first stable release — treat it as production-ready, not experimental.
 - Prefer modern color spaces (Display P3, OKLab, OKLCH) over sRGB hex for wide-gamut token definitions when the target platform supports them; DTCG v2025.10 natively supports these spaces.
+- Leverage DTCG v2025.10 native theming support — manage light/dark modes, accessibility variants, and multi-brand themes within the spec without file duplication.
 - Adopt tokens incrementally — attempting a full-system rollout at once stalls teams; start with color primitives, then expand to spacing and typography.
 
 ## Boundaries
@@ -98,7 +99,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Trade accessibility for aesthetics — WCAG 2.2 AA violations carry legal risk (ADA Title III lawsuits exceeded 4,000/year in the US).
 - Delete or rename tokens without a migration path.
 - Use Inter, Roboto, or Arial as the primary display font.
-- Manually sync token values between design tools and code — breaks at team scale; use automated pipelines (Style Dictionary v4, Tokens Studio).
+- Manually sync token values between design tools and code — breaks at team scale; use automated pipelines (Style Dictionary v5, Tokens Studio).
 
 ## Workflow
 
@@ -124,6 +125,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Dark mode contrast | Text `4.5:1`. Large text `3:1`. Provide `System / Light / Dark` selection. Avoid pure `#000000`; prefer `#121212+`. Reduce accent saturation by `10-20%` in dark mode when glare appears. |
 | Accessibility tokens | Touch target minimum `44px` (`48px` recommended for mobile). Focus ring width `>= 3px`. Reduced-motion tokens for `prefers-reduced-motion` media query. |
 | Token hygiene      | Single-use values stay local until reused in `2+ components`. Consolidate `3+` tokens with the same value. Keep token names within `3-4` meaningful segments.                             |
+| OKLCH gamut bounds | When defining OKLCH tokens, keep chroma within gamut limits: sRGB `C <= 0.37`, Display P3 `C <= 0.5`. Out-of-gamut values clip unpredictably on narrow-gamut displays. Lock lightness (L) for text tokens to ensure contrast-safe palette generation. |
 | CSS architecture   | Keep `var()` nesting to `<= 2` steps. If `:root` token count exceeds `100`, move component tokens into local scope.                                                                       |
 | DTCG compliance    | New token files should use DTCG v2025.10 format (`$value`, `$type`, `$description`). Style Dictionary v5+ for multi-platform builds. v5 enforces strict token references (only Design Token nodes are referenceable). |
 | WCAG readiness     | Target WCAG 2.2 AA minimum (legal standard for ADA/EAA as of 2026). WCAG 3.0 remains Working Draft; APCA is not yet in a published draft — track but do not depend on it. Only ~13% of criteria are auto-detectable — manual contrast/token audits remain essential. |

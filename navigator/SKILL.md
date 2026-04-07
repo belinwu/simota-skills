@@ -90,7 +90,7 @@ Route elsewhere when the task is primarily:
 - Respect rate limits: insert jittered delays (base + random 20-50%) between requests; pure exponential backoff is detectable by sophisticated anti-bot systems.
 - Check for public API availability before resorting to scraping — API access is always more reliable and maintainable.
 - Respect robots.txt and machine-readable opt-out signals — EU AI Act (full enforcement August 2026) requires respecting content owner signals for AI data usage.
-- Be aware of token cost: Playwright MCP consumes ~4x more tokens per session than Playwright CLI. For simple, non-iterative tasks, prefer CLI-based automation when available.
+- Choose MCP vs CLI by agent capability: use Playwright CLI (4x fewer tokens — ~27K vs ~114K per session) when the agent has filesystem access (Claude Code, Copilot, Cursor); use MCP when the agent lacks filesystem access or needs iterative reasoning with persistent browser state.
 
 ---
 
@@ -113,6 +113,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Insert jittered delays between repeated requests (not fixed intervals).
 - Fall back to vision mode when accessibility snapshots miss elements (shadow DOM, canvas).
 - Check robots.txt and machine-readable opt-out signals before scraping.
+- Use a separate browser profile for AI automation when the target session involves sensitive data (banking, admin panels, internal tools) — never allow AI agents to interact with production credentials in a shared profile.
 
 ### Ask First
 
@@ -199,7 +200,9 @@ Playwright MCP operates on **structured accessibility snapshots** (not pixel-bas
 
 **Shadow DOM limitation:** Modern design systems (Shoelace, Lit, corporate component libraries) nest elements inside shadow roots invisible to accessibility snapshots. When clicks hit "nothing", switch to vision mode or use `playwright_evaluate` to pierce shadow roots.
 
-**Token cost awareness:** Playwright MCP consumes ~4x more tokens per session than Playwright CLI (~114K vs ~27K tokens for equivalent tasks). MCP is preferred for iterative reasoning, persistent state, and rich introspection; CLI is more efficient for simple, non-iterative tasks.
+**MCP vs CLI decision:** Playwright MCP consumes ~4x more tokens per session than Playwright CLI (~114K vs ~27K tokens for equivalent tasks). Microsoft recommends CLI for coding agents with filesystem access (Claude Code, Copilot, Cursor) — CLI saves accessibility snapshots and screenshots to disk as files instead of streaming into the LLM context. MCP is preferred when the agent lacks filesystem access, or needs iterative reasoning with persistent browser state and rich introspection.
+
+**Session lifecycle:** Sessions are either running or gone (no intermediate "stopped" state). Browser profiles are ephemeral by default (in-memory, no leftover state). Use `--persistent` or `--profile=<path>` when cookies or auth state must survive between sessions.
 
 | Operation | MCP Tool | Description |
 |-----------|----------|-------------|

@@ -13,6 +13,7 @@ CAPABILITIES_SUMMARY:
 - code_connect_management: Audit, create, sync, and maintain Code Connect mappings between Figma components and codebase
 - design_system_rules: Derive and package design system conventions from Figma file evidence via create_design_system_rules
 - figjam_extraction: Extract FigJam content preserving relationships, sections, and connectors
+- design_system_search: Discover reusable components, variables, and styles across connected libraries via search_design_system (rate-exempt, broad synonym search recommended)
 - design_generation: Generate new Figma designs via generate_figma_design (ask-first, rate-exempt)
 - rate_limit_budget: Track per-plan rate budgets (Starter 6/mo, Pro 200/day, Org 200/day, Enterprise 600/day) with 10% reserve
 - handoff_packaging: Assemble consumer-specific handoff packages with source URL, version, timestamp, gaps, and next-agent recommendation
@@ -75,6 +76,7 @@ Route elsewhere when the task is primarily:
 - Check existing Code Connect mappings before handing off reusable components — Code Connect elevates MCP output from useful to essential by providing actual component imports and prop interfaces.
 - Flag incomplete extractions explicitly — never present partial data as complete; downstream agents generate incorrect code from partial context.
 - Scope extraction to the smallest unit that satisfies the downstream consumer; for large files, use `get_metadata` first and extract incrementally by page or node.
+- Use `search_design_system` to discover existing library components and variables before extraction — search broadly with synonyms (e.g., "pill", "nav", "tab" for navigation elements). This tool is rate-exempt.
 - Validate naming consistency, token coverage, and Code Connect inclusion before delivery.
 - When Code Connect mappings are older than 30 days, flag them as stale — design-code drift can accumulate 280+ differences silently.
 
@@ -177,8 +179,8 @@ Every deliverable must include:
 
 | Task | Primary tools | Rules | Read |
 |------|---------------|-------|------|
-| Component or frame extraction | `whoami` -> `get_metadata` -> `get_design_context` -> `get_screenshot` | screenshots supplement structure, not replace it | `references/prompt-strategy.md`, `references/execution-templates.md` |
-| Variable or token extraction | `whoami` -> `get_variable_defs` | map raw values to variables where available | `references/handoff-formats.md`, `references/design-to-code-anti-patterns.md` |
+| Component or frame extraction | `whoami` -> `get_metadata` -> `search_design_system` -> `get_design_context` -> `get_screenshot` | discover library components first; screenshots supplement structure, not replace it | `references/prompt-strategy.md`, `references/execution-templates.md` |
+| Variable or token extraction | `whoami` -> `search_design_system` (includeVariables) -> `get_variable_defs` | discover library variables first; map raw values to variables where available | `references/handoff-formats.md`, `references/design-to-code-anti-patterns.md` |
 | Code Connect audit/update | `get_code_connect_map` -> `get_code_connect_suggestions` -> `add_code_connect_map` -> `send_code_connect_mappings` | audit before map; confirm bulk syncs; recommend CLI with co-located files for deep integration, UI for quick language-agnostic linking | `references/code-connect-guide.md` |
 | Design system rules | `create_design_system_rules` | validate results against file evidence | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
 | FigJam extraction or diagram packaging | `get_figjam`, `generate_diagram` | preserve relationships, sections, and connectors | `references/handoff-formats.md` |
@@ -195,7 +197,7 @@ Every deliverable must include:
 
 Per-minute limits for paid plans (Dev/Full seat) follow Figma REST API Tier 1.
 
-Rate-exempt tools: `whoami`, `add_code_connect_map`, `generate_figma_design`
+Rate-exempt tools: `whoami`, `add_code_connect_map`, `generate_figma_design`, `search_design_system`
 
 Rules:
 
@@ -208,11 +210,13 @@ Rules:
 - `generate_figma_design` is ask-first work even though it is rate-exempt.
 - `whoami` and `generate_figma_design` are remote-only in GA.
 - Desktop plugin mode may require an alternative connection check when `whoami` is unavailable.
+- For write-to-Figma workflows, ensure the MCP client has Figma's official skills installed — these skills guide tool sequencing and improve write reliability.
 - Claude Code may fail above `25,000` tokens; use `MAX_MCP_OUTPUT_TOKENS=50000` or higher when needed.
 
 ## Quality Guardrails
 
 - Use `get_design_context` as the primary structural source; screenshots are supplementary.
+- Run `search_design_system` early in the workflow to discover reusable library components and variables — search with synonyms and partial terms, as naming varies across libraries.
 - Check existing Code Connect mappings before handing off reusable components.
 - Prefer Figma Variables over raw values.
 - For Code Connect CLI, co-locate mapping files alongside components (e.g., `Button.connect.ts` next to `Button.tsx`) to prevent drift. Use Code Connect UI for language-agnostic quick setup without repo changes.

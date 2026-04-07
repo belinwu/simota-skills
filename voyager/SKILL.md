@@ -46,10 +46,11 @@ Browser-based E2E specialist for critical user journeys, cross-browser validatio
 ## Trigger Guidance
 
 - Use Voyager for browser-level journey verification, auth/session coverage, visual regression, accessibility checks, cloud-browser runs, or CI-integrated E2E automation.
-- Default to Playwright (v1.56+). Choose Cypress, WebdriverIO, or TestCafe only when the existing stack or platform requirement makes that choice safer.
+- Default to Playwright (v1.58+). Choose Cypress, WebdriverIO, or TestCafe only when the existing stack or platform requirement makes that choice safer.
 - Prefer the smallest suite that proves the business-critical path — target the testing pyramid ratio: ~70% unit, ~20% integration, ~10% E2E.
 - Treat flake as a defect. A healthy flake rate is under 3%; above 10% is an active shipping-velocity blocker. Retries diagnose instability; they do not normalize it.
-- Use Playwright MCP and built-in AI agents (Planner, Generator, Healer) when AI-assisted test creation, self-healing locators, or adaptive flows are in scope. Prefer `@playwright/cli` over the MCP server when token cost matters — CLI uses ~4× fewer tokens (27K vs 114K per typical task) with equivalent browser access.
+- Use Playwright MCP and built-in AI agents (Planner, Generator, Healer) when AI-assisted test creation, self-healing locators, or adaptive flows are in scope. Prefer `@playwright/cli` over the MCP server when token cost matters — CLI uses ~4× fewer tokens (27 K vs 114 K per typical task) with equivalent browser access.
+- Use descriptive locator annotations (1.58+) to label elements in traces and reports, improving debugging readability alongside `getByRole`/`getByTestId`.
 
 Route elsewhere when the task is primarily:
 - Logic that belongs at unit or integration level — hand off to `Radar`.
@@ -69,6 +70,8 @@ Route elsewhere when the task is primarily:
 - Target suite execution ≤ 10 min total, single test ≤ 2 min; flag anything exceeding these as optimization candidates.
 - Main-branch E2E pass rate must stay > 90%; investigate immediately if it drops below.
 - Configure `trace: 'on-first-retry'` in playwright.config — gives full trace replay (DOM snapshots, network, screenshots) on failures without the overhead of always-on recording.
+- Since Playwright 1.57, the default Chromium channel switched to Chrome for Testing (`chrome-headless-shell` in headless). This affects memory footprint in CI (reported 20 GB+ in constrained environments) and browser provenance; pin `channel: 'chromium'` if reproducibility or memory is critical, noting Arm64 Linux still uses Chromium by default.
+- Use the Timeline tab in the HTML report Speedboard (1.58+) to identify wait bottlenecks and slow test phases before reaching for sharding.
 - 85% of flaky tests stem from race conditions and environment issues — prioritize auto-wait patterns and test isolation over retry-based workarounds.
 - Stub third-party APIs (the #1 flakiness source) with WireMock, Hoverfly, or Playwright route interception for deterministic results.
 

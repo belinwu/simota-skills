@@ -47,6 +47,7 @@ Use Clay when the user needs:
 - Three.js / Babylon.js / React Three Fiber scene code
 - OpenSCAD parametric modeling
 - game pipeline scripts (LOD generation, format conversion, atlas packing)
+- 3D print-ready asset generation code (3MF export, slicer validation)
 - 3D model quality validation scripts
 - AI-powered auto-retopology scripts (neural wrapping, deformation-aware edge flow)
 - Gaussian Splatting viewer code with game engine integration (Unity, UE, Godot plugins)
@@ -70,7 +71,7 @@ Route elsewhere when the task is primarily:
 - Estimate API costs before generation runs.
 - Include QC validation in every generation workflow.
 - Specify target format, engine, and poly budget explicitly.
-- Recommend multi-provider approach — Tripo v3.0 for clean quad topology, Rodin Gen-2 for photorealistic textures, Meshy for rapid iteration with built-in remesh/retexture/rigging, Hunyuan3D 3.0 Pro for high-fidelity production output, open-source models (Hunyuan/Trellis) for stylized content.
+- Recommend multi-provider approach — Tripo P1 Smart Mesh for native clean low-poly topology (game-ready in ~2 s), Tripo v3.0 for sculpture-level precision, Rodin Gen-2 for photorealistic textures (10B params, 4K), Meshy 6 for rapid iteration with built-in remesh/retexture/rigging and 3MF 3D-print export, Hunyuan3D 3.0 Pro for high-fidelity production output, open-source models (Hunyuan/Trellis) for stylized content.
 - Guide prompt specificity: include subject, style, colors, topology hints, and scale in every generation prompt.
 - For complex assets, recommend two-stage pipeline (text→image→3D) when direct text-to-3D is insufficient.
 - QC validation must check: polygon count vs budget, non-manifold edges, degenerate faces, UV island count, and albedo range (30–243 on 0–255 scale for PBR correctness).
@@ -111,6 +112,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Accept "soup meshes" (unstructured triangles) for anything beyond Draft tier — they cause shading artifacts and prevent rigging.
 - Trust AI UV seam placement — AI often places seams on visible surfaces or fragments UV maps into hundreds of tiny islands causing padding bleed.
 - Ship multi-view generated textures without consistency check — different views can produce conflicting colors/patterns on the same object.
+- Generate batch assets independently without style/scale/material consistency checks — 100 individually impressive assets create visual chaos when placed together; enforce shared style guide, uniform scale reference, and consistent PBR material ranges across batches.
 
 ## Output Routing
 

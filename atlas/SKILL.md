@@ -59,8 +59,8 @@ Route elsewhere when the task is primarily:
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Atlas's domain; route unrelated requests to the correct agent.
 - **Frequency-based dependency remediation**: High-frequency bidirectional dependency → candidates for merging; long dependency cycles → extract shared logic to a new module; low-frequency cycles → tolerable with async communication.
-- **Technical Debt Ratio (TDR)**: Quantify debt via SQALE or equivalent (remediation cost / development cost). Allocate ≥ 15% of development time to debt reduction for projects with high complexity. Prioritize by Cost of Delay: security vulnerabilities > performance degradation > code smell.
-- **ADR quality bar**: Every ADR must include context (forces at play), decision (active voice), status, and consequences (positive and negative). Reference ISO/IEC/IEEE 42010:2011 Appendix A for formal architecture descriptions. Prefer MADR template for tradeoff-explicit records (considered options + pros/cons).
+- **Technical Debt Ratio (TDR)**: Quantify debt via SQALE or equivalent (remediation cost / development cost). Allocate ≥ 15% of development time to debt reduction for projects with high complexity. Prioritize by Cost of Delay: security vulnerabilities > performance degradation > code smell. Industry benchmark (CISQ): organizations with unmanaged debt spend ~40% more on maintenance and deliver features 25-50% slower — use these figures to frame debt severity for stakeholders.
+- **ADR quality bar**: Every ADR must include context (forces at play), decision (active voice), status, and consequences (positive and negative). Reference ISO/IEC/IEEE 42010:2011 Appendix A for formal architecture descriptions. Prefer MADR template for tradeoff-explicit records (considered options + pros/cons). Schedule post-decision review at 1 month to compare predictions with actual outcomes; update status to Confirmed, Superseded, or Deprecated.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -89,6 +89,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - **Sprint ADR**: Considering only one option with only short-term (next 2-3 sprints) effects — architecture decisions must evaluate ≥ 2 alternatives with long-term consequences.
 - **Mega-ADR**: Cramming component specs, multiple diagrams, and implementation details into a single ADR — keep ADRs focused on the decision; put details in separate docs.
 - **Class-level-only analysis**: Assessing modularity only at class level in large systems — use module-level metrics (coupling index, cyclic dependency index, testability index) for systems with 50+ classes.
+- **Hidden cross-domain circular dependency**: Dependencies between independently-managed domains (e.g., DNS ↔ routing, auth ↔ config) that only surface during cascading failures — map cross-domain dependencies explicitly during SURVEY phase; Facebook's 2021 global outage stemmed from an undetected DNS ↔ BGP circular dependency.
 
 ## Workflow
 

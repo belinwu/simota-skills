@@ -9,7 +9,8 @@ CAPABILITIES_SUMMARY:
 - webhook_handler_design: HMAC-SHA256 signature verification over raw bytes, timing-safe comparison, timestamp window (≤5 min), idempotency keys (Redis TTL 7-30 days), async processing (return 2xx within 3s), payload size limit (≤100KB), TLS-only enforcement, DLQ with full context preservation
 - websocket_server_design: Connection lifecycle, heartbeat/reconnect, room management, horizontal scaling with externalized session state (Redis), KEDA/HPA autoscaling, Prometheus metrics
 - bot_framework_design: Command parser, slash commands, conversation state machine, middleware chain, LLM-native runner integration (Dify/n8n/Langflow), unified bot SDK (Vercel Chat SDK)
-- event_routing_design: Discriminated union event schema, routing matrix, fan-out/fan-in patterns, choreography pattern (agent-to-agent event reaction)
+- event_routing_design: Discriminated union event schema, CloudEvents envelope format (CNCF graduated), AsyncAPI spec documentation, routing matrix, fan-out/fan-in patterns, choreography pattern (agent-to-agent event reaction)
+- webhook_standards_awareness: Standard Webhooks spec (webhook-id/webhook-timestamp/webhook-signature headers), provider-specific signature formats (Stripe Stripe-Signature, GitHub x-hub-signature-256, Slack x-slack-signature)
 - unified_message_format: Platform-agnostic message normalization and outbound adaptation via adapter rendering
 - realtime_communication: SSE, WebSocket, WebTransport (~75% browser coverage as of 2026, production-ready ~2027), long polling selection and implementation
 - message_queue_integration: Redis Pub/Sub, BullMQ, RabbitMQ, Kafka/Redpanda for reliable delivery and event streaming
@@ -49,6 +50,8 @@ Use Relay when the user needs:
 - bot command framework (slash commands, conversation state machines, middleware)
 - write-once-deploy-everywhere bot architecture (Vercel Chat SDK `npm i chat`, LangBot, Bottender patterns)
 - event routing with discriminated union schemas and routing matrices
+- CloudEvents envelope format for cross-system event interoperability (CNCF graduated standard)
+- AsyncAPI spec for documenting webhook/event-driven API contracts
 - unified message format design (platform-agnostic normalization)
 - real-time communication transport selection (WebSocket vs SSE vs WebTransport vs long polling)
 - message queue integration for reliable delivery (Redis Pub/Sub, BullMQ, RabbitMQ, Kafka)
@@ -74,7 +77,9 @@ Route elsewhere when the task is primarily:
 - Enforce payload size limit (≤ 100 KB) on webhook endpoints to prevent resource exhaustion.
 - Implement idempotency keys for all inbound webhook processing — check-and-store the event ID as the **first** database operation before any business logic. Use Redis or indexed DB column with TTL (7–30 days). Deduplicate at both HTTP acceptor and worker levels.
 - Return HTTP 2xx within 3 seconds of webhook receipt; queue payload for async background processing. Never perform heavy work in the webhook receiver.
-- Define unified message format with discriminated union event types.
+- Define unified message format with discriminated union event types. For cross-system interoperability, recommend CloudEvents envelope format (CNCF graduated standard) — provides vendor-neutral metadata (`source`, `type`, `specversion`, `id`, `time`) that complements domain-specific payloads.
+- For webhook producers, align with Standard Webhooks spec headers (`webhook-id`, `webhook-timestamp`, `webhook-signature`) when no provider-specific format is required. For webhook consumers, implement provider-specific verification (Stripe `Stripe-Signature`, GitHub `x-hub-signature-256`, Slack `x-slack-signature`).
+- Recommend AsyncAPI spec for documenting webhook and event-driven API contracts — generates client SDKs, mock servers, and validation schemas from a single source of truth.
 - Design adapter interfaces that normalize inbound and adapt outbound per platform (write-once, render-per-platform pattern).
 - Include connection lifecycle management for all real-time transports.
 - Provide DLQ fallback strategy for every message handler — preserve full context (original payload, all delivery attempts with timestamps/responses, endpoint config, metadata).
@@ -141,7 +146,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `webhook`, `hmac`, `signature`, `idempotency` | Webhook handler design | Handler spec + verification flow | `references/webhook-patterns.md` |
 | `websocket`, `sse`, `webtransport`, `realtime`, `long polling`, `socket` | Real-time transport architecture | Server architecture + connection lifecycle | `references/realtime-architecture.md` |
 | `bot`, `command`, `slash`, `conversation`, `chatbot` | Bot framework design | Command parser + state machine + middleware | `references/bot-framework.md` |
-| `event`, `routing`, `fan-out`, `fan-in`, `schema` | Event routing design | Event schema + routing matrix | `references/event-routing.md` |
+| `event`, `routing`, `fan-out`, `fan-in`, `schema`, `cloudevents`, `asyncapi` | Event routing design | Event schema (CloudEvents envelope) + routing matrix + AsyncAPI spec | `references/event-routing.md` |
 | `queue`, `pubsub`, `redis`, `bullmq`, `rabbitmq`, `kafka` | Message queue integration | Queue topology + delivery guarantees | `references/realtime-architecture.md` |
 | `circuit breaker`, `retry`, `backoff`, `dlq`, `resilience` | Resilience pattern design | Circuit breaker config + retry strategy + DLQ design | `references/webhook-patterns.md` |
 | `langbot`, `n8n`, `dify`, `ai bot`, `llm bot` | LLM-native bot integration | AI runner integration + adapter wiring | `references/bot-framework.md` |

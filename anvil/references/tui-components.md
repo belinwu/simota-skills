@@ -17,8 +17,22 @@
 |----------|---------------------|-------------|----------|
 | **Node.js** | inquirer, prompts | chalk, ora, cli-table3 | ink, blessed |
 | **Python** | click, questionary | rich, colorama | textual, urwid |
-| **Go** | survey, promptui | color, tablewriter | bubbletea, tview |
+| **Go** | survey, promptui | color, tablewriter | bubbletea v2, tview |
 | **Rust** | dialoguer, inquire | colored, prettytable | ratatui, crossterm |
+
+## Full TUI Framework Selection
+
+| Factor | Ratatui (Rust) | BubbleTea v2 (Go) | Textual (Python) |
+|--------|---------------|-------------------|-----------------|
+| **Architecture** | Immediate-mode rendering | Elm Architecture (Model-Update-View) | Widget tree (CSS-like styling) |
+| **Performance** | 30-40% less memory, 15% lower CPU vs Go; no_std for embedded (v0.30+) | Cursed Renderer (ncurses-based, 10x faster vs v1), Mode 2026 sync output | Adequate for standard tools |
+| **Best for** | High-frequency dashboards, log monitors, editors, embedded TUIs | Standard CLI tools, rapid development | Data science tools, prototyping |
+| **Sync output** | Backend-dependent (crossterm) | Built-in Mode 2026 (flicker-free) + Mode 2027 (wide Unicode/emoji layout) | Not applicable |
+| **Extras** | Modularized architecture (v0.30+) | OSC52 clipboard (copy/paste over SSH), progressive keyboard enhancements (shift+enter, key release detection), pure Lip Gloss v2 | Built-in CSS-like theming |
+
+> **Mode 2026 (Synchronized Output):** Terminal standard (`CSI ? 2026 h/l`) that batches render updates atomically, eliminating screen tearing. Supported by Ghostty, Alacritty, and others. BubbleTea v2 enables this by default. Import path: `charm.land/bubbletea/v2`.
+>
+> **Mode 2027 (Wide Character Handling):** BubbleTea v2 auto-enables mode 2027 on supported terminals, allowing proper rendering of wide Unicode characters and emojis without breaking layout.
 
 ---
 

@@ -8,7 +8,7 @@ CAPABILITIES_SUMMARY:
 - terminal_recording: VHS (.tape DSL) for reproducible, CI-friendly terminal recordings
 - gif_video_generation: GIF/MP4/WebM/SVG output from declarative scripts with size targets (≤5MB GIF, 10-15 FPS)
 - interactive_capture: terminalizer for interactive session capture with YAML post-editing
-- web_embeddable: asciinema v3.0 (.cast) files with web player, local/remote live streaming, delta-timed v3 format, and format conversion
+- web_embeddable: asciinema v3.0 (.cast) files with web player, local/remote live streaming, simultaneous record+stream (session command), marker/chapter navigation, delta-timed v3 format, and format conversion
 - output_optimization: gifsicle/gifski lossy compression, palette reduction (128 colors), ffmpeg encoding, frame deduplication
 - ci_integration: charmbracelet/vhs-action for automated demo regeneration in GitHub Actions
 - golden_file_testing: VHS .txt/.ascii output for integration test diffing across runs
@@ -53,6 +53,8 @@ Use Reel when the user needs:
 - recording output optimization (compression, format selection, palette reduction)
 - CI/CD integration for automated demo regeneration (charmbracelet/vhs-action)
 - before/after comparison recordings
+- simultaneous recording + live streaming via asciinema `session` command
+- marker-based chapter navigation and playback automation in .cast recordings
 - integration testing via VHS golden files (.txt/.ascii output diffing across runs)
 
 Route elsewhere when the task is primarily:
@@ -86,6 +88,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Optimize output for target context (README/docs/marketing).
 - Verify recording quality before delivery.
 - Design for repeatability and CI-friendliness.
+- Use VHS `Hide`/`Show` to wrap setup and cleanup commands that should not appear in the final recording.
 
 ### Ask First
 
@@ -116,7 +119,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Recording Tools
 
-**VHS** (primary, v0.11.0): Declarative .tape DSL for reproducible, CI-friendly recordings. Requires ttyd + ffmpeg. Supports golden file testing (.txt/.ascii output for diffing). v0.11.0 adds `ScrollUp`/`ScrollDown` viewport commands and `Ctrl+Arrow` key support. Official GitHub Action: `charmbracelet/vhs-action`. **terminalizer**: Interactive session capture with YAML post-editing. Use `--step N` on render to skip frames and reduce GIF size. **asciinema** (v3.0, Sep 2025): Rust rewrite — static binary, faster startup. Live streaming in two modes: local (built-in HTTP server for LAN) and remote (via asciinema.org or self-hosted server with shareable URL). Asciicast v3 format uses delta-based interval timing (easier to edit than v2 absolute timestamps) and adds exit status events. `convert` command for format migration (v1/v2 → v3) and plain text/raw export. **gifski** (alternative encoder): Highest-quality GIF encoding using pngquant's color quantization; produces smaller files than gifsicle at equivalent quality. **t-rec** (alternative): Rust-based, fast GIF generation with automatic frame deduplication.
+**VHS** (primary, v0.11.0): Declarative .tape DSL for reproducible, CI-friendly recordings. Requires ttyd + ffmpeg. Supports golden file testing (.txt/.ascii output for diffing). v0.11.0 adds `ScrollUp`/`ScrollDown` viewport commands and `Ctrl+Arrow` key support. `Hide`/`Show` commands pause/resume frame capture — use for setup/cleanup that should not appear in output. Official GitHub Action: `charmbracelet/vhs-action`. **terminalizer**: Interactive session capture with YAML post-editing. Use `--step N` on render to skip frames and reduce GIF size. **asciinema** (v3.0, Sep 2025): Rust rewrite — static binary, faster startup. Live streaming in two modes: local (built-in HTTP server for LAN) and remote (via asciinema.org or self-hosted server with shareable URL). `session` command records to file and streams simultaneously. Marker events (`"m"`) enable breakpoints, chapter navigation, and playback automation. `--return` flag propagates session exit status (useful for CI gating). Asciicast v3 format uses delta-based interval timing (easier to edit than v2 absolute timestamps) and adds exit status events. `convert` command for format migration (v1/v2 → v3) and plain text/raw export. **gifski** (alternative encoder): Highest-quality GIF encoding using pngquant's color quantization; produces smaller files than gifsicle at equivalent quality. **t-rec** (alternative): Rust-based, fast GIF generation with automatic frame deduplication.
 
 Full workflows, .tape structure, commands/settings/timing/theme references, optimization, quality checklists → `references/recording-workflows.md`
 
@@ -131,6 +134,8 @@ Full workflows, .tape structure, commands/settings/timing/theme references, opti
 | `CI`, `automated`, `regeneration` | CI/CD integration setup via charmbracelet/vhs-action | GitHub Actions workflow | `references/ci-integration.md` |
 | `golden file`, `integration test`, `diff` | VHS .txt/.ascii output for regression testing | Golden file + diff workflow | `references/recording-workflows.md` |
 | `live stream`, `LAN demo`, `remote stream` | asciinema v3.0 live streaming (local HTTP or remote via asciinema.org) | Streaming config + shareable URL | `references/recording-workflows.md` |
+| `record + stream`, `session` | asciinema `session` command (simultaneous recording + streaming) | .cast file + live stream URL | `references/recording-workflows.md` |
+| `markers`, `chapters`, `breakpoints` | asciinema marker events for navigation/automation | .cast file with `"m"` events | `references/recording-workflows.md` |
 | `optimize`, `compress`, `format` | Output optimization (gifsicle lossy + palette reduction) | Compressed/optimized output | `references/output-optimization.md` |
 | unclear request | Clarify recording target and format | Scoped recording plan | `references/recording-workflows.md` |
 

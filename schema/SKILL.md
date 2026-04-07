@@ -68,7 +68,7 @@ Route elsewhere when the task is primarily:
 - Set `lock_timeout` (e.g., 5–10 s) and `statement_timeout` before any DDL in production — a single long-running query can block an `ALTER TABLE`, and while it waits every new query queues behind it, cascading into a full outage.
 - Up to 70 % of database performance issues stem from design flaws, not hardware — invest time in modeling before scaling infrastructure.
 - For multi-tenant schemas, include `tenant_id` in every tenant-scoped table **and** in composite foreign keys to prevent cross-tenant data leakage.
-- On PostgreSQL 18+, prefer `gen_random_uuidv7()` for new primary keys — UUIDv7 embeds a millisecond timestamp, preserving global uniqueness while enabling B-tree-friendly chronological ordering (eliminates the random-write amplification of UUIDv4).
+- On PostgreSQL 18, prefer `uuidv7()` for new primary keys — UUIDv7 embeds a millisecond timestamp, preserving global uniqueness while enabling B-tree-friendly chronological ordering (eliminates the random-write amplification of UUIDv4).
 
 ## Boundaries
 
@@ -132,13 +132,13 @@ Route elsewhere when the task is primarily:
 
 - Use `CREATE INDEX CONCURRENTLY` on PostgreSQL for production index creation.
 - Treat `DROP COLUMN` and `DROP TABLE` as backup-required.
-- Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation. Consider pgroll for automated expand-contract with versioned schemas and data backfills.
+- Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation. Consider pgroll for automated expand-contract with versioned schemas and data backfills. On PostgreSQL 18, use `RETURNING OLD.*` / `RETURNING NEW.*` in UPDATE/DELETE statements to verify data correctness during dual-write and backfill phases without separate SELECT queries.
 - On PostgreSQL 18, leverage `ALTER TABLE ... ADD COLUMN ... NOT NULL NOT VALID` directly to simplify the expand phase for new non-nullable columns.
 - On PostgreSQL 18, use virtual generated columns (now the default) for derived values — they compute on read without storing, avoiding table rewrites during schema evolution.
 - On PostgreSQL 18, use temporal constraints (`PRIMARY KEY ... WITHOUT OVERLAPS`, `FOREIGN KEY ... PERIOD`) for scheduling, booking, and bitemporal schemas instead of application-level overlap checks.
 - Prefer DB-native data types over generic `VARCHAR` or `TEXT` for dates, money, booleans, UUIDs, JSON, and status fields.
 - Support Prisma, TypeORM, and Drizzle when framework output is requested, but keep SQL semantics authoritative.
-- For vector/AI workloads, prefer pgvector within PostgreSQL for ACID compliance and hybrid search (benchmarked at 50 M+ vectors with pgvectorscale). Use HNSW index (`m=16`, `ef_construction=64`; raise `ef_construction` to 256 for recall-critical workloads) for recall-performance balance; use IVFFlat only when index build time is the bottleneck. Use `halfvec` (float16) to halve memory with near-identical accuracy. Combine vector KNN with structured prefilters (e.g., `tenant_id`, `language`) for order-of-magnitude speedups over vector-only scans. Monitor P99 search latency; alert on > 2× baseline.
+- For vector/AI workloads, prefer pgvector within PostgreSQL for ACID compliance and hybrid search (benchmarked at 50 M+ vectors with pgvectorscale). Use HNSW index (`m=16`, `ef_construction=64`; raise `ef_construction` to 256 for recall-critical workloads) for recall-performance balance; use IVFFlat only when index build time is the bottleneck. Use `halfvec` (float16) to halve memory with near-identical accuracy. Combine vector KNN with structured prefilters (e.g., `tenant_id`, `language`) for order-of-magnitude speedups over vector-only scans. On pgvector 0.8+, enable `SET hnsw.iterative_scan = relaxed_order` for filtered queries to prevent under-fetching when prefilters are selective — this iteratively widens the search until enough post-filter results are found. Monitor P99 search latency; alert on > 2× baseline.
 - For multi-tenant schemas, place `tenant_id` as the leading column in composite primary keys and create a B-tree index on `tenant_id`. Use PostgreSQL RLS as a safety net alongside application-level filtering. For large tenants, consider declarative list or hash partitioning by `tenant_id`.
 
 ## Routing And Handoffs

@@ -77,6 +77,7 @@ Route elsewhere when the task is primarily:
 - Validate every narrative against the AP-1 through AP-8 anti-pattern checklist before delivery.
 - Narrative length targets: Use Case Story 300-800 chars, Product Narrative 500-1500 chars, Pitch Story 200-500 chars, Customer Success 800-2000 chars, Onboarding Flow 150 chars/step.
 - Adapt narratives for micro-narrative formats (short, interconnected, platform-tailored stories) when the target channel is social media or episodic content.
+- For product-level narratives, define a "Controlling Idea" (StoryBrand 2.0) — a single statement capturing the brand's promised transformation that unifies all messaging touchpoints. Every narrative, tagline, and CTA should trace back to this one idea.
 - For strategic positioning and fundraising, consider the Promised Land framework (Andy Raskin): define a compelling future state the product commits to bringing about — this aligns customers, product teams, and sales around a single purpose without corporate jargon.
 - When the audience can participate (community, beta, co-creation contexts), design narratives that invite audience contribution — participatory storytelling drives deeper engagement than passive consumption.
 - State all unverified premises in a dedicated "Assumptions" section — narrative bias (distorting facts to fit story) is a critical anti-pattern.
@@ -185,7 +186,7 @@ questions:
 
 | Framework | Best For | Structure | Detail |
 |-----------|----------|-----------|--------|
-| **StoryBrand SB7** | Product messaging, LPs, pitches | Hero→Problem→Guide→Plan→CTA→Failure→Success | `references/frameworks.md` |
+| **StoryBrand SB7** | Product messaging, LPs, pitches | Controlling Idea→Hero→Problem→Guide→Plan→CTA→Failure→Success | `references/frameworks.md` |
 | **Pixar Story Spine** | Short scenarios, internal sharing, elevator pitches | Once upon a time→Every day→Until one day→Because of that→Until finally | `references/frameworks.md` |
 | **Hero's Journey** | Large transformation stories, case studies | Ordinary World→Call→Threshold→Trials→Transformation→Return | `references/frameworks.md` |
 | **JTBD Job Story** | Feature-level use cases, dev team audience | When [situation], I want to [motivation], so I can [outcome] | `references/frameworks.md` |
@@ -199,7 +200,7 @@ questions:
 ```
 INPUT
   │
-  ├─ Product-level positioning?           → StoryBrand SB7
+  ├─ Product-level positioning?           → StoryBrand SB7 (define Controlling Idea first)
   ├─ Strategic positioning / fundraise?   → Promised Land (Andy Raskin)
   ├─ Short overview / elevator pitch?     → Pixar Story Spine
   ├─ Large customer transformation?       → Hero's Journey

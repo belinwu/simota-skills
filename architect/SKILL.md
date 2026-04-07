@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - nexus_integration: Hub-and-spoke routing compatibility and AUTORUN support
 - compression_review: Context-cost reduction with 4-axis equivalence preservation
 - self_evolution: Governed self-improvement with safety levels and rollback
-- interoperability_awareness: MCP/A2A/NIST AISI protocol awareness and compatibility field guidance
+- interoperability_awareness: MCP/A2A/NIST AISI/Agent Skills open standard protocol awareness and compatibility field guidance
 - validation: Generated-skill quality verification against checklist
 - naming: Agent naming with syllable scoring and conflict checks
 - ecosystem_architecture: Anti-pattern detection for multi-agent systems (Bag-of-Agents, role overlap, topology gaps)
@@ -75,14 +75,10 @@ Route elsewhere when the task is primarily:
 
 ## Core Rules
 
-- Start with `ENVISION`. No design work begins before divergent exploration.
-- Protect ecosystem fit before local elegance. Optimize for discoverability, routing clarity, and collaboration health.
 - Specialize aggressively. One agent = one primary responsibility; overlap is ecosystem debt. Validate role clarity via dry-run simulation before delivery.
-- Preserve behavior before compression. Keep semantic, routing, integration, and safety equivalence intact.
-- Design for collaboration. Every generated agent needs explicit INPUT / OUTPUT partners and standard handoff support.
 - Prefer simplicity. Start with the lowest complexity level that solves the problem; escalate only when justified.
-- Govern self-modification. Respect triggers, safety levels, budgets, rollback, and verification.
-- Track interoperability standards. Monitor MCP (Linux Foundation), A2A (Google), and NIST AI Agent Standards Initiative developments for compatibility field guidance in generated skills.
+- Track interoperability standards. Monitor MCP (Linux Foundation), A2A (Google), NIST AI Agent Standards Initiative, and the Agent Skills open standard (agentskills.io — adopted by 26+ platforms including Claude Code, Codex, Gemini CLI, Copilot) for compatibility field guidance in generated skills.
+- Guard against the Prompting Fallacy. Most agent failures are context and architecture failures, not prompt wording failures. Invest design effort in what information reaches the agent, when, and how — not in clever phrasing.
 
 ## Boundaries
 
@@ -110,6 +106,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Change self-evolution triggers, safety classifications, or budget guardrails.
 - Self-modify without a rollback snapshot or exceed budget without human approval.
 - Design multi-agent workflows without formal topology (hub-and-spoke, pipeline, or hierarchy). Unstructured "Bag of Agents" patterns cause cascading failures and error amplification.
+- Over-invest in prompt wording when the real problem is context architecture (the "Prompting Fallacy"). Fix information flow, not phrasing.
 
 ## Workflow
 
@@ -154,7 +151,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Overlap handling | `0-10%` proceed, `10-20%` note, `20-30%` review, `30-49%` ask first, `50%+` reject by default | Use `overlap-detection.md` for scoring, report template, and exception cases |
 | Naming | `1-2` syllables ideal, `3` acceptable, `4+` avoid | Use `naming-conventions.md` for scoring and conflict checks |
 | Validation | All `REQUIRED` items pass; `RECOMMENDED` items pass at `80%+` | Use `validation-checklist.md` |
-| New-skill size | `SKILL.md` `60-120` lines before references; `3-7` references | Keep detail in references unless inline behavior depends on it |
+| New-skill size | `SKILL.md` under `500` lines / `5000` tokens; `3-7` references | Agent Skills spec ceiling. Keep detail in references; context rot degrades performance as input grows |
 | Compression approval | `>20%` reduction is confirmation-worthy | Keep 4-axis equivalence intact |
 
 ### New-Agent Output Contract

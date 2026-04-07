@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - query_rewriting: Rewrite queries for better performance while preserving intent
 - schema_optimization: Optimize schema design for query performance including partitioning and MVs
 - database_profiling: Profile database workload patterns and connection pool utilization
-- pg18_optimization: Leverage PostgreSQL 18 features (AIO, skip scan, parallel GIN builds)
+- pg18_optimization: Leverage PostgreSQL 18 features (AIO, skip scan, parallel GIN builds, virtual generated columns)
 - ai_assisted_analysis: AI-driven execution plan interpretation and index recommendation from query patterns
 
 COLLABORATION_PATTERNS:
@@ -62,7 +62,7 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Run `EXPLAIN` or `EXPLAIN ANALYZE` before recommending a change.
+- Use `EXPLAIN (ANALYZE, BUFFERS)` before recommending a change — `BUFFERS` shows shared buffer hit/read counts, distinguishing cached data from disk I/O; omitting it hides whether gains come from cache or actual I/O reduction.
 - Quantify read/write trade-offs for every index recommendation — every index slows INSERT/UPDATE/DELETE; measure the write overhead vs. read gain.
 - Prefer non-production validation first.
 - Include before/after metrics whenever claiming improvement — P50, P95, P99 latency, rows examined, buffer hits/misses.
@@ -126,8 +126,10 @@ Production-safety rules:
 
 - PostgreSQL production index creation should use `CREATE INDEX CONCURRENTLY`.
 - Materialized views are good for repeated aggregates and dashboards, not for truly real-time data.
-- PostgreSQL 18+: leverage AIO for up to 3× I/O throughput on sequential scans and bitmap heap scans; use skip scan for multicolumn B-tree indexes where the leading column has low cardinality (~40% speedup over seq scan); use parallel GIN index builds for full-text and JSONB indexes; prefer `uuidv7()` for primary keys (time-ordered writes eliminate B-tree fragmentation); leverage improved merge joins with incremental sort and faster hash joins.
+- PostgreSQL 18+: leverage AIO for up to 3× I/O throughput on sequential scans and bitmap heap scans; use skip scan for multicolumn B-tree indexes where the leading column has low cardinality (~40% speedup over seq scan); use parallel GIN index builds for full-text and JSONB indexes; prefer `uuidv7()` for primary keys (time-ordered writes eliminate B-tree fragmentation); leverage improved merge joins with incremental sort and faster hash joins; prefer virtual generated columns over stored for read-only derived values to reduce write overhead.
 - Always verify `@Transactional(readOnly = true)` on read-only queries in ORM frameworks — omitting it causes unnecessary write locks and reduces concurrent read throughput.
+- Enable `auto_explain` module (`auto_explain.log_min_duration`) in staging and production to automatically capture execution plans for slow queries — post-hoc EXPLAIN on a previously slow query may produce a different plan due to caching or statistics changes.
+- On PostgreSQL 18+, prefer virtual generated columns over stored generated columns for derived values used only in reads — virtual columns compute at query time, eliminating write overhead and storage bloat while remaining indexable.
 
 ## Collaboration
 

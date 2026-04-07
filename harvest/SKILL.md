@@ -14,7 +14,7 @@ CAPABILITIES_SUMMARY:
 - retrospective_voice: Add narrative commentary to sprint or release reports
 - pr_size_analysis: Classify PRs by size thresholds (200/400/1000 LOC) and flag review efficiency risks
 - dora_metrics: Collect throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) from PR/release data per DORA 2024
-- review_cycle_analysis: Track first-response time, review cycle time (from ready-for-review, not PR creation), comment resolution rate, and rubber-stamping detection
+- review_cycle_analysis: Track first-response time, review cycle time (from ready-for-review, not PR creation) with 4-phase breakdown (Coding→Pickup→Review→Merge), comment resolution rate, and rubber-stamping detection
 
 COLLABORATION_PATTERNS:
 - Guardian -> Harvest: Release prep
@@ -50,7 +50,7 @@ Use Harvest when you need any of the following:
 - Narrative retrospectives or release commentary based on PR history
 - PR size distribution analysis (200 LOC target, 400 LOC ceiling benchmarks)
 - DORA metric collection: throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) per DORA 2024 reorganization
-- Review cycle time reporting — measure from "ready for review" timestamp, not PR creation (draft PRs inflate cycle time otherwise)
+- Review cycle time reporting — measure from "ready for review" timestamp, not PR creation (draft PRs inflate cycle time otherwise). Break down into 4 phases: Coding (before PR), Pickup (PR created → first reviewer assigned), Review (first review action → approval), Merge (approval → merge). Phase-level breakdown pinpoints bottlenecks that aggregate cycle time hides
 - Rubber-stamping detection: flag when review lead time is low and uncorrelated with PR size
 
 Route elsewhere when the task is primarily:
@@ -74,7 +74,7 @@ Route elsewhere when the task is primarily:
 - First-response-time benchmark: flag when median first review response exceeds 1 business day (Google's standard).
 - Cycle time accuracy: measure review cycle time from the "ready for review" timestamp (not PR creation), because draft PRs inflate the metric.
 - Rubber-stamping detection: when median review lead time is low and uncorrelated with PR size, flag potential rubber-stamping — reviewers may not be actually reviewing code.
-- AI-inflated metrics caveat: AI coding assistants can inflate individual PR counts (+98% more PRs merged per DORA 2025) while organizational delivery metrics stay flat. Reports must note this context when comparing pre/post-AI periods.
+- AI-inflated metrics caveat: AI coding assistants can inflate individual PR counts (+98% more PRs merged per DORA 2025) while organizational delivery metrics stay flat. AI also tempts developers to abandon small-batch principles — generating larger, riskier PRs that take longer to review and have higher failure rates. Reports must note this context when comparing pre/post-AI periods and flag batch-size regression.
 
 ## Boundaries
 
@@ -102,7 +102,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Present LOC, commits, or PR count as direct productivity rankings — Goodhart's Law: when a measure becomes a target, it ceases to be a good measure. Teams will game PR count by splitting trivially, inflating lines with formatting, or cherry-picking easy fixes
 - Report individual developer "scores" or stack-rank contributors — causes mass-gaming and attrition (McKinsey developer productivity controversy, 2023)
 - Use DORA metrics in isolation without SPACE context — leads to the "Velocity Trap" where teams optimize delivery speed at the cost of burnout and collaboration quality
-- Compare pre-AI and post-AI period metrics without noting AI tooling adoption — AI inflates individual output metrics while organizational throughput stays flat (DORA 2025), making direct comparison misleading
+- Compare pre-AI and post-AI period metrics without noting AI tooling adoption — AI inflates individual output metrics while organizational throughput stays flat (DORA 2025), making direct comparison misleading. AI also erodes small-batch discipline by enabling larger PRs, compounding the distortion
 
 ## Report Modes
 
@@ -138,7 +138,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Work-hour calculation | Start with the implemented baseline formula, then apply optional refinement layers only when the audience needs them. Always output as ranges (e.g., 2-4h), never as single precise values |
 | PR size classification | Small: ≤200 LOC, Medium: 201-400 LOC, Large: 401-1000 LOC, Oversized: >1000 LOC. Flag oversized PRs with 70% lower defect detection rate warning |
 | First response time | Flag when median exceeds 1 business day. Google benchmark: max 1 business day for first review response |
-| Cycle time measurement | Use "ready for review" timestamp as start, not PR creation. Draft PRs distort cycle time if measured from creation |
+| Cycle time measurement | Use "ready for review" timestamp as start, not PR creation. Draft PRs distort cycle time if measured from creation. Report 4-phase breakdown (Coding→Pickup→Review→Merge) to expose where time is lost |
+| Pickup time benchmark | Elite teams: <6h pickup; strong teams: <13h. Flag when median pickup exceeds 1 business day |
 | Rubber-stamping | Flag when median review lead time is low and uncorrelated with PR size — indicates reviewers may not be reading code |
 | Release notes | Use Keep a Changelog categories and highlight breaking or deprecated changes. Automate via conventional commit type mapping (feat→Added, fix→Fixed, etc.). User-focused: explain what users gain, not raw commit messages |
 | Quality metrics | Include context and actions; avoid vanity metrics and rankings. Combine DORA throughput (deployment frequency, lead time, rework rate) and instability (change failure rate, failed deployment recovery time) with SPACE satisfaction/well-being signals |

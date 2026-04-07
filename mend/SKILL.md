@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - staged_verification: Run Health Check → Smoke Test → SLO Check → Recovery Confirmed pipeline with automatic rollback triggers
 - automatic_rollback: Trigger rollback on crash loop, error spike (>= 2% error budget burn/hour), or latency surge
 - escalation_routing: Route unmatched or T4 patterns to Builder, Gear, or human operator with full incident context
-- slo_recovery_tracking: Monitor error budget burn rate via multi-window multi-burn-rate alerting (5%/1h fast-burn, 10%/3d slow-burn, 20%/4w escalation) and SLI recovery post-remediation
+- slo_recovery_tracking: Monitor error budget burn rate via multi-window multi-burn-rate alerting (2%/1h page 14.4x, 5%/6h page 6x, 10%/3d ticket 1x, >20%/4w escalation) and SLI recovery post-remediation
 - remediation_rate_limiting: Cap remediation attempts at 3 per pattern per incident with exponential backoff to prevent retry storms
 - runbook_freshness_validation: Validate runbook last-reviewed timestamp (< 90 days) before automated execution
 - pattern_learning: Convert postmortem outcomes into catalog entries via learning loop with human curation gate
@@ -71,7 +71,7 @@ Route elsewhere when the task is primarily:
 - Include a rollback plan for every remediation; never execute without rollback capability. Rollback steps must be explicit, tested, and atomic.
 - Respect tier-specific approval gates (T1: auto, T2: notify, T3: approve, T4: prohibited). Critical paths (payments, auth, trading) retain T3+ approval gates regardless of confidence (Source: rootly.com — AI SRE Guide 2026).
 - Every remediation step must be idempotent — safe to run multiple times with the same result. Stateful operations must not be treated as idempotent without explicit verification (Source: sreschool.com — Runbook Automation 2026).
-- Monitor error budget burn rate post-remediation using multi-window, multi-burn-rate alerting (Source: sre.google — Alerting on SLOs). Fast-burn alert: `>= 5%` budget consumed in 1 hour (36x burn rate). Slow-burn ticket: `>= 10%` budget consumed in 3 days. If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item.
+- Monitor error budget burn rate post-remediation using multi-window, multi-burn-rate alerting (Source: sre.google — Alerting on SLOs). Fast-burn page: `>= 2%` budget consumed in 1 hour (14.4x burn rate). Secondary page: `>= 5%` budget consumed in 6 hours (6x burn rate). Slow-burn ticket: `>= 10%` budget consumed in 3 days. Short window = 1/12 of long window to confirm budget is still being consumed, reducing false positives. If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item.
 - Cap remediation attempts at 3 per pattern per incident with exponential backoff between retries. After 3 failures, stop auto-remediation and escalate to human operator to avoid masking deeper issues or causing retry storms (Source: incident.io — SRE Tools & Reliability Practices 2026).
 - Log all actions with timestamps to the incident timeline; every automated action must be auditable and explainable.
 - Learn from postmortems to update the remediation pattern catalog. Note: general-purpose LLMs struggle with emerging failure patterns in proprietary systems — human curation remains essential for pattern accuracy (Source: engineering.zalando.com — AI Postmortem Analysis).
@@ -143,7 +143,7 @@ Routing rules:
 - If confidence 70-89% or T3: GUIDED-REMEDIATE mode. Present interactive options (restart pods, clear caches) with approval gates before execution (Source: getdx.com — Incident Response Automation 2025).
 - If confidence 50-69% or suspicious input: INVESTIGATE mode. Collect diagnostic data, run dry-run, present findings before action.
 - If confidence < 50% or T4: ESCALATE mode. Route to Builder/Gear/human operator with full context.
-- If fast-burn alert fires (>= 5% budget in 1 hour, 36x burn rate): escalate severity regardless of pattern confidence.
+- If fast-burn alert fires (>= 2% budget in 1 hour, 14.4x burn rate): escalate severity regardless of pattern confidence.
 - If remediation attempt count reaches 3 for same pattern: stop auto-remediation, escalate to human operator.
 - If remediation targets a critical path (payments, auth, trading): enforce T3+ approval gate even for high-confidence patterns.
 

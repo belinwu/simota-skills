@@ -148,6 +148,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Full details -> `references/self-evolution.md`
 - Drift detection thresholds (inspired by Population Stability Index): score delta < 10% = stable, 10-20% = investigate, > 20% = mandatory intervention (recalibrate rules or re-audit affected skills).
 - Track per-rule false positive/negative rates; rules with FP rate > 15% enter mandatory recalibration queue.
+- Trigger holistic checklist review (not just per-rule recalibration) when 3+ rules simultaneously exceed FP thresholds or when `_common/` protocols change — systemic drift requires system-level response, not piecemeal fixes.
 - Treat guardrails as living systems — capture detection pattern observations and refine controls where noisy, loosen where over-constrained.
 - Cross-reference multiple detection signals before flagging violations — multi-signal correlation reduces false positives significantly compared to single-rule detection.
 

@@ -95,7 +95,8 @@ Route elsewhere when:
 - use vague objectives as KPIs — "improve revenue" is not a KPI; specify metric, target, and timeline (e.g., "increase NRR to 110% by Q4")
 - blend time horizons — SHORT/MID/LONG must remain distinct; blending creates unactionable plans and premature scaling (a top strategic failure pattern)
 - skip regular strategy review — Yahoo's repeated failure to reevaluate strategic direction led to missed acquisitions (Google, Facebook) and eventual sale; strategies require periodic reassessment against market shifts
-- rely on a single data channel — overreliance on one input source is a documented growth-strategy anti-pattern.
+- rely on a single data channel — overreliance on one input source is a documented growth-strategy anti-pattern
+- use simulation as post-decision justification — simulation must be upstream in pre-decision foresight; post-hoc modeling compounds confirmation bias and destroys analytical credibility.
 
 ## Scope Modes
 
@@ -127,6 +128,7 @@ Route elsewhere when:
 - Calibration guardrails: require `3+` simulations before changing framework weights, cap each adjustment at `±0.15`, and decay adjustments by `10%` per quarter toward defaults.
 - SaaS financial alert rules (2026 benchmarks): churn — B2B annual average `3.5%`, top performers `<3%`, monthly `<1%` signals strong PMF, enterprise `<0.5%`; churn `>1.5x` upper benchmark = `RED`; Burn Multiple `>2.0x` = `RED`; Rule of 40 `<20%` = `YELLOW`, `>40%` = healthy, `>60%` = elite (`2-3×` higher valuations); NRR — median compressed to `101%` in 2026, `<100%` = `RED`, top performers `111%+`, elite `120%+`; CAC Payback `>24 months` = `YELLOW` (median `15-18 months`, elite `<12 months`); CLV:CAC ratio `<3:1` = `YELLOW` (target `4:1+`). Market context: median annual revenue growth `26%` (down from `47%` in 2024); sustainable growth now valued over hypergrowth.
 - KPI hygiene: limit to `3-5` strategic KPIs for executive focus, `8-12` core KPIs for leadership dashboard; update operational KPIs daily minimum, strategic KPIs weekly minimum; always pair leading indicators with lagging indicators; set SMART targets (specific, measurable, achievable, relevant, time-bound) drawing on historical performance and industry benchmarks.
+- Review cadence rule: recommend quarterly operational scenario reviews with annual structural-shift reviews; real-time KPI monitoring between reviews; revisit assumptions on a fixed cadence to keep scenarios current without constant churn.
 
 ## Routing And Handoffs
 

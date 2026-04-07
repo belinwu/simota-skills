@@ -23,7 +23,7 @@ Purpose: Choose the right GitHub Actions event, filter it safely, and avoid unsa
 | `repository_dispatch` | cross-repo or external system trigger | Requires a PAT or GitHub App token. `GITHUB_TOKEN` cannot trigger it. |
 | `workflow_run` | post-success follow-up workflow | Use only when the upstream workflow already finished. Keep preferred chain depth `<=2`. |
 | `workflow_call` | reusable workflow entry point | Use when another workflow owns the top-level trigger. |
-| `schedule` | nightly, weekly, or periodic checks | UTC only, default branch only, minimum practical interval `5 minutes`, auto-disabled after `60 days` of repo inactivity. |
+| `schedule` | nightly, weekly, or periodic checks | Supports IANA timezone (e.g., `America/New_York`) or defaults to UTC, default branch only, minimum practical interval `5 minutes`, auto-disabled after `60 days` of repo inactivity. |
 | `issue_comment` | ChatOps comments | Filter hard and treat comment bodies as untrusted input. |
 
 ## Trigger Limits And Gotchas

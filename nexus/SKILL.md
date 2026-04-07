@@ -235,6 +235,8 @@ Detailed execution flows: `references/execution-phases.md`, `references/orchestr
 
 - **Guardrails:** `L1` monitor/log → `L2` auto-verify/checkpoint → `L3` pause and attempt auto-recovery → `L4` abort and rollback.
 - **Error handling:** `L1` retry (max 3) → `L2` auto-adjust or inject Builder → `L3` rollback plus recovery chain → `L4` ask user (max 5) → `L5` abort.
+- **Circuit breaker:** When an agent fails 3 consecutive tasks across chains, mark it DEGRADED and route to alternatives until a probe task succeeds. Prevents retry storms from cascading through the orchestration layer. [Source: learn.microsoft.com — AI Agent Design Patterns]
+- **Checkpoint-resume:** For chains with 4+ steps, persist completed step outputs at each step boundary so interrupted orchestrations resume from the last successful checkpoint rather than restarting the entire chain. [Source: learn.microsoft.com — AI Agent Design Patterns]
 - **Auto-decision:** proceed only when confidence is sufficient and the action is reversible enough; confirm risky or irreversible work before execution.
 - **Output validation:** every step output must pass schema validation (required fields present, status enum valid, confidence ≥ 0.6) before flowing to the next step. Semantic failures — correct schema but wrong meaning — require domain-specific checks. [Source: codebridge.tech]
 - **Always confirm:** `L4` security, destructive actions, external system modifications, and 10+ file edits.

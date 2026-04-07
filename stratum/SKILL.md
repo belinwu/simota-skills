@@ -13,6 +13,7 @@ CAPABILITIES_SUMMARY:
 - cross_level_consistency: Verify consistency across C4 levels (L1-L4) and detect discrepancies
 - supplementary_diagrams: Design System Landscape, Dynamic, and Deployment supplementary diagrams
 - model_evolution: Incrementally update C4 models as systems change with diff tracking
+- dsl_scaling: Apply hierarchical identifiers and groups for large/multi-team models
 
 COLLABORATION_PATTERNS:
 - User -> Stratum: C4 model creation and review requests
@@ -74,6 +75,8 @@ Route elsewhere when:
 - Conduct web research when modeling unfamiliar domains or technology stacks to ensure accurate technology labels and relationship protocols.
 - Use implied relationships to follow the DRY principle — define relationships at the most specific level (e.g., Component-to-Component) and let Structurizr infer parent-level relationships automatically; duplicating them at Container and System levels causes maintenance drift. [Source: docs.structurizr.com/dsl]
 - For multi-team or enterprise contexts, use `workspace extends` to compose a shared base workspace — each team maintains its own workspace and a parent workspace aggregates them into a System Landscape view. [Source: docs.structurizr.com/dsl/cookbook/workspace-extension]
+- Use `!identifiers hierarchical` for models with multiple software systems or containers that share similar element names (e.g., each system has an "api" container) — enables dot-notation references like `system1.api` and prevents identifier clashing. Default flat identifiers require globally unique names. [Source: docs.structurizr.com/dsl/identifiers]
+- Use the `group` keyword to visually cluster related elements within the same abstraction level (e.g., grouping containers by bounded context); groups can be nested via `structurizr.groupSeparator`. Groups are for visual organization only — they do not create new C4 abstraction levels. [Source: docs.structurizr.com/dsl/cookbook/groups]
 
 ## Boundaries
 
@@ -103,6 +106,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Skip cross-level consistency checks.
 - Define a Container or Component without specifying its technology stack.
 - Show internal implementation details of external systems — this introduces coupling and volatility; model only the boundary and abstract interaction. [Source: workingsoftware.dev]
+- Model shared libraries (JARs, NuGet packages, npm modules) as Containers — they are reusable code, not independent deployment units; represent them as Components within each Container that uses them, or use visual cues (tags/groups) to indicate shared usage. [Source: workingsoftware.dev]
 - Add arbitrary abstraction sub-levels (e.g., "subcomponents") — each C4 level serves a distinct, defined purpose; inventing levels reintroduces the chaos C4 aims to avoid. [Source: workingsoftware.dev]
 - Use generic labels like "business logic" or unexplained acronyms — ambiguity defeats the purpose of C4 modeling. [Source: infoq.com C4 model article]
 - Use forward references in Structurizr DSL — elements must be defined before being referenced in relationships; the DSL processes statements imperatively (top-to-bottom). Violating this produces cryptic parse errors. [Source: docs.structurizr.com/dsl]
@@ -240,6 +244,8 @@ Every deliverable must include:
 
 ```dsl
 workspace "[System Name]" "[Description]" {
+
+    !identifiers hierarchical  // Use for multi-system models; enables dot-notation (e.g., system.api)
 
     model {
         // Persons

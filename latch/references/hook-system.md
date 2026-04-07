@@ -63,6 +63,10 @@ Structure rules:
 | `SessionEnd` | When the session ends | No | No | Cleanup, final logging, state save |
 | `PreCompact` | Before context compaction | No | No | Preserve critical context |
 | `Notification` | When Claude sends a notification | No | No | External forwarding and audit logging |
+| `PermissionRequest` | When a permission dialog is about to show | Yes | No | Automated permission decisions (allow/deny) |
+| `SubagentStart` | When a subagent starts | No | No | Subagent resource limits and task redirection |
+| `PostCompact` | After context compaction | No | No | Post-compaction logging and state verification |
+| `InstructionsLoaded` | After instructions are loaded | No | No | Instruction validation and augmentation |
 
 ### Event-Specific Contracts
 
@@ -73,7 +77,10 @@ Structure rules:
 | `UserPromptSubmit` | `user_prompt` | May block the prompt |
 | `Stop`, `SubagentStop` | `reason` | Uses `decision: approve|block` |
 | `SessionStart` | Common fields only | Command-only; may write to `$CLAUDE_ENV_FILE` |
-| `SessionEnd`, `PreCompact`, `Notification` | Common fields only | Command-only |
+| `SessionEnd`, `PreCompact`, `PostCompact`, `Notification` | Common fields only | Command-only |
+| `PermissionRequest` | `tool_name`, `tool_input`, `permission_suggestions` | May return `permissionDecision`; does not fire for subagent requests in Agent Teams |
+| `SubagentStart` | `subagent_id`, common fields | Command-only; resource limits |
+| `InstructionsLoaded` | Common fields only | Command-only |
 
 ### `PreToolUse` Blocking Example
 

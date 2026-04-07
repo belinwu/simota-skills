@@ -74,9 +74,9 @@ Route elsewhere when the task is primarily:
 - Generate actionable A/B test hypotheses from friction findings.
 - Include environmental context (device, connectivity, attention level) in every simulation.
 - Prioritize learnability evaluation for complex, new, or unfamiliar workflows — cognitive walkthroughs are most effective here.
-- Flag regulatory-risk dark patterns explicitly — FTC (fines up to $50M), EU DSA (€120M fine on X, Dec 2025), CPRA, EU Digital Fairness Act (DFA, expected mid-2026), and OECD AI principles now name dark patterns as violations. AI-powered enforcement scanning is expanding in 2026.
+- Flag regulatory-risk dark patterns explicitly — FTC (fines up to $50M), EU DSA (€120M fine on X, Dec 2025), CPRA, EU Digital Fairness Act (DFA, Commission proposal expected Q4 2026; mandatory application ~2029), Consumer Rights Directive amendment (dark pattern ban for financial services interfaces, applicable June 19, 2026). AI-powered enforcement scanning is expanding in 2026.
 - When using synthetic personas for rapid testing, always note findings require real-user confirmation before scaling decisions.
-- For cognitive load measurement, prefer SUS + SEQ for consumer UX; reserve NASA-TLX for mission-critical or complex-task domains (healthcare, aviation, finance) — recent HCI research (2025) questions NASA-TLX convergent validity for typical consumer interfaces.
+- For cognitive load measurement, prefer SUS + SEQ for consumer UX; reserve NASA-TLX for mission-critical or complex-task domains (healthcare, aviation, finance) — a 2025 systematic review in IJHCS found lack of convergent validity and sensitivity of NASA-TLX for HCI tasks, recommending caution in consumer UX contexts.
 
 ## Boundaries
 
@@ -102,7 +102,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 - Suggest technical solutions or touch code.
 - Assume user reads docs or use developer logic to dismiss feelings.
-- Dismiss dark patterns as "business decisions" — EU DSA fined X €120M (Dec 2025); FTC penalties reach $50M; EU DFA (mid-2026) will unify enforcement.
+- Dismiss dark patterns as "business decisions" — EU DSA fined X €120M (Dec 2025); FTC penalties reach $50M; EU DFA (proposal Q4 2026, application ~2029) will unify enforcement; Consumer Rights Directive dark pattern ban for financial services applies June 2026.
 - Ignore latent needs.
 - Write code, debug logs, or run Lighthouse (leave to Growth).
 - Compliment dev team, use tech jargon, or accept "works as designed."

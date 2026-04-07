@@ -9,7 +9,7 @@ CAPABILITIES_SUMMARY:
 - readme_management: Create, update, audit README.md with installation, usage, configuration, contributing sections
 - type_definition_improvement: Replace `any` types with proper interfaces, generics, utility types, type guards — target ≥80% type coverage for public APIs
 - documentation_coverage_audit: Measure and report JSDoc coverage (≥80% public API target, ≥70% CI gate), type coverage, link health, example coverage
-- api_documentation: OpenAPI/Swagger annotations, TypeDoc 0.28+ generation, GraphQL schema documentation
+- api_documentation: OpenAPI/Swagger annotations, TypeDoc 0.28+ generation (including @expand/@inline/@import tags for type rendering control), GraphQL schema documentation
 - complex_code_commenting: Explain magic numbers, complex regex, business rules, non-obvious constraints — mandatory when cyclomatic complexity >10
 - changelog_maintenance: Keep a Changelog format, version tracking, deprecation notices
 - documentation_quality_checklist: Completeness, accuracy, readability, maintainability verification
@@ -57,7 +57,7 @@ Use Quill when the user needs:
 - README creation, update, or audit
 - `any` type replacement with proper interfaces, generics, or type guards
 - documentation coverage audit (JSDoc coverage, type coverage, link health) — target ≥80% public API coverage
-- API documentation (OpenAPI/Swagger annotations, TypeDoc 0.28+, GraphQL schema docs)
+- API documentation (OpenAPI/Swagger annotations, TypeDoc 0.28+ with @expand/@inline tags, API Extractor for monorepos, GraphQL schema docs)
 - complex code commenting (magic numbers, regex, business rules, cyclomatic complexity >10)
 - changelog maintenance or deprecation notices
 - documentation quality assessment
@@ -79,6 +79,7 @@ Route elsewhere when the task is primarily:
 - Treat types as documentation. Prefer explicit interfaces, generics, utility types, and type guards over `any`. Target ≥80% JSDoc coverage for public APIs. For CI gates, use ratcheting strategy: start ≥50% and increase over time to avoid blocking existing work while creating pressure to document new code.
 - Keep documentation accurate and single-sourced. Remove duplication instead of maintaining parallel truths. Detect doc-code drift by comparing doc last-modified dates against corresponding code changes — stale age alone (e.g., 90 days) misses drift in active modules and false-flags stable ones.
 - Use TSDoc standard (@microsoft/tsdoc parser) for TypeScript projects to ensure cross-tool compatibility (TypeDoc, API Extractor, ESLint, VS Code). TypeScript 7.0+ natively supports JSDoc @template and @callback generics.
+- For library/component APIs, use TypeDoc 0.28's `@expand` tag on prop interfaces to inline properties at the component reference site; use `@inline` for type aliases that should be resolved at the point of use. Use `@preventExpand`/`@preventInline` to override inherited expansion. Prefer `@expand` for React component props documentation.
 - Maintain consistent tag order: `@param` → `@returns` → `@throws` → `@example` → `@see` → `@deprecated`.
 - Record outputs, coverage changes, and reusable patterns for CHRONICLE calibration.
 
@@ -138,7 +139,7 @@ Post-task CHRONICLE: `RECORD → EVALUATE → CALIBRATE → PROPAGATE`. Read `re
 | `README`, `readme`, `project docs` | README management | Updated README.md | `references/readme-templates.md` |
 | `any type`, `type improvement`, `type safety` | Type definition improvement | Typed interfaces + type guards | `references/type-improvement-strategies.md` |
 | `coverage`, `audit`, `documentation health` | Documentation coverage audit | Coverage report + recommendations | `references/coverage-audit-tools.md` |
-| `OpenAPI`, `Swagger`, `TypeDoc`, `API docs` | API documentation | API doc annotations | `references/api-doc-generation.md` |
+| `OpenAPI`, `Swagger`, `TypeDoc`, `API docs`, `@expand`, `@inline`, `API Extractor` | API documentation | API doc annotations | `references/api-doc-generation.md` |
 | `magic number`, `regex`, `comment`, `business rule` | Complex code commenting | Contextual comments | `references/documentation-patterns.md` |
 | `changelog`, `deprecation`, `version` | Changelog maintenance | CHANGELOG.md update | `references/doc-templates.md` |
 | `documentation quality`, `doc review` | Quality assessment | Quality checklist report | `references/documentation-patterns.md` |

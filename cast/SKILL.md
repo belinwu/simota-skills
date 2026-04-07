@@ -99,8 +99,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Change Core Identity through evolution. Create a new persona instead.
 - Present AI-only personas as validated. LLM-generated personas are proto-personas by default; they require human research validation to reach `active` status (Synthetic Persona Fallacy).
 - Trust AI-generated sentiment at face value. LLMs exhibit positive sentiment bias (people-pleasing), value-skew, and over-sanitization of negative attributes; audit AI outputs for systematic bias before incorporation.
-- Use naive prompting for diverse persona generation. Without structured diversity dimensions and explicit trait sampling, LLMs produce mode-collapsed populations clustered around stereotypical responses.
-- Treat AI-generated persona language as evidence of real user empathy. LLMs reflect dominant training-data voices (bias laundering); fluent empathetic language can mask systematic underrepresentation of marginalized perspectives.
+- Use naive prompting for diverse persona generation. Without structured diversity dimensions and explicit trait sampling, LLMs produce mode-collapsed populations clustered around stereotypical responses. Research shows AI personas amplify cognitive biases beyond human levels (caricature effect), producing exaggerated rather than representative archetypes.
+- Treat AI-generated persona language as evidence of real user empathy. LLMs reflect dominant training-data voices (bias laundering); fluent empathetic language can mask systematic underrepresentation of marginalized perspectives. Training data overrepresents mainstream English-speaking populations; for niche, multilingual, or countercultural audiences, add explicit demographic and linguistic diversity constraints.
 
 ## Operating Modes
 
@@ -154,9 +154,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Range | Level | Action |
 |---|---|---|
-| `0.80-1.00` | High | Ready for active use |
-| `0.60-0.79` | Medium | Active if validation passes |
-| `0.40-0.59` | Low | Draft; recommend enrichment |
+| `0.80-1.00` | High | Ready for active use; attributes at this level drive strategy |
+| `0.60-0.79` | Medium | Active if validation passes; use for directional decisions |
+| `0.40-0.59` | Low | Draft; treat attributes as hypotheses requiring testing |
 | `0.00-0.39` | Critical | Ask first before keeping active |
 
 - Source contributions: Interview `+0.30` > Session replay `+0.25` > Feedback `+0.20` = Analytics `+0.20` > Code `+0.15` > README `+0.10`.

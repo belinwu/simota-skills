@@ -74,6 +74,7 @@ Route elsewhere when the task is primarily:
 - For automated `bisect run` scripts, enforce POSIX exit codes: 0 = good, 1-124/126-127 = bad, **125 = skip** (untestable commit). For flaky tests, run the test 3× per commit and exit 125 on mixed results.
 - Use `git bisect terms` to define custom labels (e.g., `old`/`new` instead of `good`/`bad`) for non-bug bisects such as performance regressions or behavior changes.
 - Use `git bisect log` to record session state for reproducibility; `git bisect replay` to restore a session from a log file.
+- For merge-heavy repositories (feature-branch workflow without squash-merge), prefer `git bisect start --first-parent` (Git 2.29+) to restrict bisection to mainline commits, avoiding untestable feature-branch internals. When bisect still identifies a merge commit as first bad, test each parent independently to isolate the integration conflict.
 
 ## Boundaries
 
@@ -87,6 +88,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Validate test commands before bisect (dry-run first).
 - Include rollback options in every report.
 - Warn about credential exposure when AI-assisted commits are in the history (2× baseline leak rate per GitGuardian 2026).
+- Flag non-bisectable history segments (e.g., split test + fix across commits, non-building intermediates) that degrade bisect reliability; recommend `--first-parent` or manual range restriction.
 
 ### Ask First
 
@@ -124,7 +126,7 @@ Templates (SCOPE YAML, LOCATE commands, CHANGE_STORY, REPORT markdown, bisect sc
 
 | Pattern | Trigger | Key Technique |
 |---------|---------|---------------|
-| **Regression Hunt** | Test that used to pass now fails | `git bisect run` + deterministic test script (exit 0=good, 1-124=bad, 125=skip). For flaky tests: run 3×, exit 125 on mixed results |
+| **Regression Hunt** | Test that used to pass now fails | `git bisect run` + deterministic test script (exit 0=good, 1-124=bad, 125=skip). For flaky tests: run 3×, exit 125 on mixed results. For merge-heavy repos: `--first-parent` to stay on mainline |
 | **Archaeology** | Confusing code that seems intentional | `git blame -w -M -C` → `git log -S` → `git log -L :func:file` → `--follow` for renames |
 | **Impact Analysis** | Need to understand change ripple effects | `diff --stat` + `shortlog` + coverage check. Trace transitive dependencies |
 | **Blame Analysis** | Need accountability/context for changes | `git blame` aggregation with `.git-blame-ignore-revs` filtering (focus on commits, not individuals) |

@@ -79,7 +79,7 @@ Route elsewhere when the task is primarily:
 - Prefer SVG when element count stays under ~100; switch to Canvas for dense grids (32x32+) to maintain 60 FPS rendering performance.
 - Use power-of-2 or multiples-of-8 dimensions for spritesheet textures (256, 512, 1024, 2048) to avoid GPU VRAM waste from internal padding.
 - Include 1-2px padding between frames in spritesheets to prevent texture bleeding when engines apply filtering or scaling.
-- For walk cycle animations, 4 well-timed frames outperform 8 with flat timing; apply 1px squash/stretch even at 16x16 to remove robotic stiffness.
+- For walk cycle animations, 4 well-timed frames outperform 8 with flat timing; apply 1px squash/stretch even at 16x16 to remove robotic stiffness. Use 12 FPS ("on twos") as baseline; hold impact/landing frames 100-150ms and compress wind-up frames to ~50ms for snappy feel.
 - When accessibility is relevant, provide colorblind-friendly palette variants (deuteranopia, protanopia, tritanopia) or supplement color with shape/pattern differentiation.
 
 ## Boundaries
@@ -90,7 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Define palette size and hex values before placing pixels.
 - Use integer coordinates only; no sub-pixel rendering.
-- Include pixel-perfect rendering settings in browser-facing output: `image-rendering: pixelated`, `shape-rendering="crispEdges"`, or engine-equivalent nearest filtering.
+- Include pixel-perfect rendering settings in browser-facing output: `image-rendering: pixelated`, `shape-rendering="crispEdges"`, Canvas `imageSmoothingEnabled = false`, or engine-equivalent nearest filtering (Phaser 3: `pixelArt: true` in game config).
 - Generate self-contained, runnable code.
 - Add spritesheet metadata JSON for multi-frame assets.
 
@@ -106,6 +106,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Introduce banding (regular repeating dither clusters that form visible lines) or pillow shading (shade following sprite outline instead of a consistent light source).
 - Create jaggies from inconsistent line angles; maintain uniform staircase steps on curved/diagonal lines.
 - Use solid black (#000000) for outlines or shading; prefer dark greys or desaturated hues that harmonize with the palette.
+- Use oversaturated colors across the palette; full-saturation hues cause eye fatigue and flatten depth perception. Desaturate base tones and reserve high saturation for ≤2 accent colors.
 - Make limbs thinner than 2px; single-pixel arms/legs cannot be shaded and appear flat and flimsy.
 - Mix assets at different pixel densities without clean integer multiples (e.g., 16x16 characters on 32x32 tiles is valid; 24x24 on 32x32 is not).
 - Hardcode absolute file paths.

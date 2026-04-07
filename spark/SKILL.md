@@ -63,6 +63,7 @@ Route elsewhere when the task is primarily:
 - Propose exactly `ONE` high-value feature per session unless the user explicitly asks for a package.
 - Target a specific persona. Never propose a feature for "everyone".
 - Prefer features that reuse existing data, logic, workflows, or delivery channels.
+- Name proposals by the **user problem**, not the solution — "Difficulty exporting large datasets" instead of "CSV Export Button". Discovery starts with pain points, not feature shapes. [Source: productboard.com — product discovery framework; herbig.co — product discovery guide]
 - Include business rationale, a measurable hypothesis, and realistic scope.
 - Emit a markdown proposal, normally at `docs/proposals/RFC-[name].md`.
 - Frame proposals as outcomes, not outputs — define the behavioral change or business impact, not just the feature shape. [Source: itonics-innovation.com — outcome-oriented development trend 2026]
@@ -102,6 +103,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Calculate Effort using only engineering time — always include design, testing, documentation, and maintenance costs in the estimate. [Source: monday.com — prioritization frameworks 2026]
 - Use RICE to prioritize strategic initiatives — RICE works at the feature level. For strategic decisions, route to `Magi`. [Source: pmtoolkit.ai — framework misapplication]
 - Treat RICE score as a decision-maker — it is a decision-support tool. The estimation conversation teaches more than the final number. [Source: logrocket.com — RICE framework guide]
+- Chase excessive RICE precision — RICE is a relative ranking system, not an exact science. Use rough estimates and ranges; debating whether Reach is 1,200 or 1,350 adds no signal. [Source: dovetail.com — RICE scoring model; productteacher.com — RICE guide]
 
 ## Prioritization Rules
 
@@ -122,6 +124,7 @@ Use these defaults unless the user specifies another framework:
 - **Confidence**: Default to 50% for unvalidated ideas. Only increase above 80% with quantitative evidence (analytics, experiments, large-N surveys). [Source: saasfunnellab.com]
 - **Effort**: Include design + testing + documentation + maintenance, not just engineering person-months. Always add a ≥30% buffer — things take longer than expected. [Source: monday.com; saasfunnellab.com]
 - **Scope limitation**: RICE deprioritizes tech debt and infrastructure improvements that lack direct user reach. For such items, flag the limitation and recommend a separate evaluation track or route to `Atlas`. [Source: productplan.com — RICE Scoring Model]
+- **Cross-team calibration**: When multiple teams use RICE, scores diverge without shared guidelines. If the user's context involves cross-team prioritization, recommend a calibration session with anchor examples before scoring. [Source: dovetail.com — RICE scoring model; productteacher.com — RICE guide]
 
 ## Workflow
 
@@ -139,9 +142,7 @@ Default opportunity patterns: dashboards from unused data · smart defaults from
 
 ### AI-Assisted Discovery (2026)
 
-- Use AI to accelerate ideation: automated analysis of user feedback themes, opportunity backlogs linked to user goals, and automated comparisons against prior work. [Source: storiesonboard.com — AI agents in PM 2026]
-- AI can propose realistic story map slices reflecting technical constraints and MVP viability. [Source: storiesonboard.com]
-- Encode quality gates and review steps so AI-assisted automation is helpful but never unaccountable. [Source: storiesonboard.com — governance in agentic PM]
+- Use AI to accelerate ideation: automated feedback theme analysis, opportunity backlogs linked to user goals, story map slices reflecting technical constraints, and comparisons against prior work. Encode quality gates so AI-assisted automation is helpful but never unaccountable. [Source: storiesonboard.com — AI agents in PM 2026]
 
 ## Output Routing
 

@@ -5,9 +5,9 @@ description: 依存関係管理、CI/CD最適化、Docker設定、運用オブ�
 
 <!--
 CAPABILITIES_SUMMARY:
-- dependency_management: npm/pnpm/yarn/bun audit, update, lockfile conflict resolution, version pinning, supply chain defense (postinstall blocking, cooldown periods, provenance verification)
-- ci_cd_optimization: GitHub Actions workflows, composite actions, reusable workflows, caching (hash-based keys, fallback restore), matrix testing, DORA metrics alignment
-- container_configuration: Dockerfile multi-stage builds, BuildKit, docker-compose, digest pinning, distroless/Chainguard base images, non-root USER
+- dependency_management: npm/pnpm/yarn/bun audit, update, lockfile conflict resolution, version pinning, supply chain defense (postinstall blocking via allowBuilds, trustPolicy, blockExoticSubdeps, cooldown periods, provenance verification)
+- ci_cd_optimization: GitHub Actions workflows, composite actions, reusable workflows, caching (hash-based keys, fallback restore), matrix testing, concurrency groups, SHA-pinned actions, OIDC auth, DORA metrics alignment
+- container_configuration: Dockerfile multi-stage builds, BuildKit, docker-compose, digest pinning, distroless/Chainguard/DHI base images, non-root USER, no-new-privileges, read-only rootfs
 - linter_config: ESLint, Prettier, TypeScript config, git hooks (Husky/Lefthook), Commitlint
 - environment_management: .env templates, secrets management, OIDC authentication
 - observability_setup: Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions, declarative YAML config, log-trace correlation), health checks
@@ -76,10 +76,10 @@ Route elsewhere when the task is primarily:
 - Check and log to `.agents/PROJECT.md`.
 - Diagnose before fixing — understand root cause first.
 - Prefer automation over manual processes.
-- **Supply chain defense**: Never allow untrusted postinstall scripts. pnpm v10 disables postinstall execution by default — use `pnpm.onlyBuiltDependencies` to allowlist trusted packages. For npm, set `min-release-age` (days) to block newly published versions; for pnpm, use `minimumReleaseAge` (minutes). The Mar 2026 Axios attack (North Korea-nexus actor Sapphire Sleet, 70M+ weekly downloads) injected `plain-crypto-js` via postinstall to drop a cross-platform RAT.
-- **Container hardening**: Always use non-root USER, pin base images by digest (not tag), prefer distroless/Chainguard bases. Drop all capabilities (`--cap-drop=ALL`) and add back only what's needed. Generate SBOM and provenance attestations tied to image digest for every production image. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
-- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Dependency caching reduces Node.js job times by 60–80%. Docker layer caching (`cache-from/cache-to: type=gha`) can turn a 5-min build into 30 seconds on cache hit. GitHub Actions Aug 2025 runner refresh: queue times dropped 62%, sub-second cold-start for cached runner images.
-- **DORA alignment**: Target change failure rate < 15% (elite: 0–5%), lead time in hours not days, MTTR < 30 min for high-severity incidents. Track Rework Rate (5th DORA metric, introduced 2025) — measures post-deployment fixes that indicate quality issues.
+- **Supply chain defense**: Never allow untrusted postinstall scripts. pnpm v10 disables postinstall execution by default — use `pnpm.allowBuilds` to allowlist trusted packages (renamed from `onlyBuiltDependencies`). For npm, set `min-release-age` (days) to block newly published versions; for pnpm, use `minimumReleaseAge` (minutes). Enable `trustPolicy` (pnpm 10.21+) to detect when a package's publish-time trust level drops (e.g., previously signed via Trusted Publisher, now unsigned — early signal of account compromise). Set `blockExoticSubdeps: true` to prevent transitive deps from resolving via git repos or direct tarball URLs. Supply chain attacks targeting npm packages rose 38% YoY (Snyk 2026 State of Open Source Security). The Mar 2026 Axios attack (North Korea-nexus actor Sapphire Sleet, 70M+ weekly downloads) injected `plain-crypto-js` via postinstall to drop a cross-platform RAT.
+- **Container hardening**: Always use non-root USER, pin base images by digest (not tag), prefer distroless/Chainguard/Docker Hardened Images (DHI, open-sourced May 2025 — 1,000+ pre-hardened images and Helm charts). Drop all capabilities (`--cap-drop=ALL`) and add back only what's needed. Set `--security-opt=no-new-privileges` to prevent privilege escalation. Use read-only root filesystem (`--read-only`) where possible. Generate SBOM and provenance attestations tied to image digest for every production image. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
+- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Dependency caching reduces Node.js job times by 60–80%. Docker layer caching (`cache-from/cache-to: type=gha`) can turn a 5-min build into 30 seconds on cache hit. Use `concurrency` groups to cancel stale PR runs — reduces wasted CI minutes by 30–40% for active PRs. Pin all third-party actions to full commit SHA (not mutable tags) to prevent supply chain compromise. Use OIDC (`permissions: id-token: write`) instead of static cloud credentials.
+- **DORA alignment**: Target change failure rate < 15% (elite: 0–2% per 2025 DORA benchmarks — only 8.5% of orgs achieve this), lead time in hours not days, MTTR < 1 hour (elite). Track Rework Rate (5th DORA metric, introduced 2025) — measures post-deployment fixes that indicate quality issues; elite threshold < 2%.
 
 ## Boundaries
 
@@ -111,6 +111,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Allow arbitrary postinstall scripts — the Mar 2026 Axios attack (attributed to North Korea-nexus actor) used a postinstall hook in `plain-crypto-js` to deploy a cross-platform RAT affecting 70M+ weekly downloads.
 - Cache sensitive data (secrets, API keys) in CI — use cache scoping and never store credentials in actions/cache.
 - Ship container images without SBOM or provenance attestation — unsigned images cannot be verified downstream and break supply chain trust.
+- Reference third-party GitHub Actions by mutable tag (e.g., `@v4`) — pin to full commit SHA to prevent tag-hijacking supply chain attacks.
 
 ## Workflow
 

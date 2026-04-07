@@ -65,7 +65,7 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Use TypeScript strict mode (`strict: true` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`) with no `any` — types are the first line of defense.
+- Use TypeScript strict mode (`strict: true` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` + `noPropertyAccessFromIndexSignature`) with no `any` — types are the first line of defense.
 - Define interfaces and types before writing implementation code.
 - Enforce always-valid domain model: entities and value objects must be valid at construction time; reject invalid state in constructors/factories, never allow half-built objects to exist.
 - Handle all edge cases: null, empty, error states, timeouts.
@@ -95,7 +95,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Skip input validation at system boundaries
 - Hard-code credentials or secrets
 - Write untestable code with side effects throughout
-- Use `any` type or bypass TypeScript safety
+- Use `any` type, `as Type` assertions at system boundaries, or other TypeScript safety bypasses — `as` silences the compiler but allows malformed external data through
 - Retry non-idempotent mutations (POST/PATCH/DELETE) without idempotency key — silent data duplication or corruption
 - Use `.parse()` at HTTP boundaries — uncaught ZodError crashes the process; use `.safeParse()` and return structured errors
 - Allow domain entities to exist in invalid state — enforce invariants in constructors, not in callers

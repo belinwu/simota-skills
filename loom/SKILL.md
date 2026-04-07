@@ -14,6 +14,7 @@ CAPABILITIES_SUMMARY:
 - figma_structure_analysis: Analyze Figma file structure for Auto Layout, naming, hierarchy
 - code_connect_integration: Leverage Code Connect mappings to link Figma components with codebase implementations for higher-fidelity Make output
 - credit_budget_optimization: Optimize credit allocation across model tiers (default vs Claude Opus 4.6) based on task complexity
+- make_kit_awareness: Leverage Make kit ecosystem including auto-generated guidelines from design packages as a starting point
 - design_debt_detection: Detect unnamed layers, detached instances, inconsistent naming that degrade Make output
 
 COLLABORATION_PATTERNS:
@@ -51,6 +52,7 @@ Use Loom when the task is to:
 - analyze Figma file structure for Auto Layout, naming, component hierarchy, or page organization
 - detect design debt (unnamed layers, detached instances, inconsistent naming) that degrades Make output quality
 - prepare MCP-aware Guidelines that leverage Figma Variables, design tokens, component properties, and Code Connect mappings
+- leverage Make kit auto-generated guidelines as a starting point and refine with codebase-specific rules
 - optimize credit budget across model tiers (Claude Opus 4.6 consumes significantly more credits than default models)
 
 Use `Muse` for token authority, `Frame` for Figma/MCP extraction, and `Artisan` for Make-to-production feedback.
@@ -73,6 +75,8 @@ Route elsewhere when the task is primarily:
 - Always use "Select a library" before prompting; omitting this causes Make to guess at components and generate detached, non-reusable UI.
 - Link components to the codebase via Code Connect when available — this gives Make exact code references instead of generic output.
 - Use `get_variable_defs` via MCP to extract exact token names and code syntax, eliminating ambiguity when multiple tokens share the same visual value.
+- When a Make kit is available, use its auto-generated guidelines as a starting point — refine rather than author from scratch.
+- Guidelines.md is instructional, not enforcement-based — Make follows the rules but nothing blocks non-compliant output automatically. This makes the VALIDATE phase non-optional.
 - Keep Auto Layout nesting ≤ 3 levels; deeper nesting reduces Make output reliability.
 - Limit to 1-2 screens per prompt; > 3 screens per prompt lowers generation reliability.
 - Generate ≤ 4 variants per generation step to maintain consistency.
@@ -113,6 +117,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Generate entire multi-screen flows in a single prompt — this causes consistency failures and increases cleanup cost.
 - Ignore design debt signals (unnamed layers, detached instances) — these degrade Make output quality.
 - Omit platform context from prompts — Make defaults to web patterns, producing unusable layouts for mobile or tablet targets.
+- Use hedged language in Guidelines constraints — "Use X sparingly" is unreliable; prefer explicit prohibitions like "Do not use X except for Y".
+- Keep iterating endlessly on a failing Make file — if adjustments exceed `5` rounds without convergence, start a new Make file with a refined initial prompt.
 
 ## Interaction Triggers
 
@@ -185,7 +191,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Front-load the first prompt with maximum detail (Context, Description, Platform, Visual Style, UI Components) — subsequent prompts should make small incremental changes only.
 - Expect "vanilla" output from Make — explicitly prompt for brand identity, custom typography, and unique visual style to avoid the watered-down LLM-average look.
 - Guard against code regression: when enough functionality exists, each new feature prompt risks overwriting previous behaviors. Use explicit "preserve existing" constraints.
-- Budget prompts carefully — Professional ≈ 3,000 credits/month, Enterprise ≈ 4,250 credits/month (≈ 50-70 prompts). Claude Opus 4.6 consumes significantly more credits than default models; select model tier based on task complexity. Pay-as-you-go at $0.03/credit available for overages.
+- When a prompt fails, rephrase with spatial instructions — "move this element down 20 pixels" is more effective than "vertically align these two elements".
+- Budget prompts carefully — Starter ≈ 500, Professional ≈ 3,000, Enterprise ≈ 4,250 credits/month (enforced since March 2026). Add-on packs: 5,000/$120, 7,500/$180, 10,000/$240/month, or $0.03/credit pay-as-you-go. Claude Opus 4.6 consumes significantly more credits than default models; select model tier based on task complexity.
 - Clean input frames before prompting: remove unnamed layers, ensure consistent naming, apply proper Auto Layout — dirty input degrades output quality.
 - Leverage Code Connect to link Figma components to codebase implementations — Make generates more accurate code when it can reference existing patterns.
 - Use Figma MCP Remote Access for CI/pipeline-driven Guidelines generation without requiring a desktop app.

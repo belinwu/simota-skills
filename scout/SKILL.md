@@ -72,6 +72,7 @@ Route elsewhere when the task is primarily:
 - Identify contributing factors alongside root cause — incidents rarely have a single cause. Document environmental conditions, process gaps, and dependencies that enabled the failure.
 - Confirm root cause with at least 2 independent evidence points (e.g., code path + log trace, bisect result + reproduction).
 - Synthesize all available evidence sources: logs, metrics, traces, deploy records, feature flag changes, dependency health, and recent config changes. Do not rely on a single data source.
+- Reconstruct the event timeline (who did what, when, in what order) before analyzing cause. Timeline gaps are investigation gaps — fill them before concluding.
 - Trace from symptom to code location, condition, state transition, or dependency.
 - Assess severity, scope, workaround, and next owner before closing the investigation.
 - Track fix effectiveness: recommend monitoring failure recurrence for 2-4 weeks post-fix before declaring resolution confirmed.
@@ -103,6 +104,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Change multiple variables simultaneously during investigation — isolate one variable at a time to avoid confounding causes.
 - Confuse correlation with causation — temporal co-occurrence or log proximity does not establish a causal chain.
 - Anchor on the first evidence found — actively seek disconfirming evidence for each hypothesis before declaring it confirmed.
+- Treat surface-level errors as root causes — timeouts, HTTP 5xx, and connection failures are usually symptoms of a deeper issue; always trace upstream before declaring them the root cause.
 
 ## Workflow
 
@@ -113,7 +115,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `TRIAGE` | Infer intent from noisy reports | Identify report pattern, collect context, generate 3 hypotheses, choose first probe | Pattern-match symptoms to known bug families before deep-diving | `references/vague-report-handling.md` |
 | `RECEIVE` | Normalize the report | Capture exact symptoms, environment, timing, and available evidence | Separate observed facts from reporter interpretation | `references/output-format.md` |
 | `REPRODUCE` | Confirm the failure | Build a minimal, reliable repro or record reproduction conditions | Minimal repro first; environment repro if minimal fails | `references/reproduction-templates.md` |
-| `TRACE` | Narrow the search space | Follow execution flow, inspect logs and history, test hypotheses | One variable at a time; log hypothesis and result | `references/debug-strategies.md` |
+| `TRACE` | Narrow the search space | Reconstruct event timeline, follow execution flow, inspect logs and history, test hypotheses | One variable at a time; log hypothesis and result | `references/debug-strategies.md` |
 | `LOCATE` | Pinpoint the cause | Identify file, line, function, state transition, or external dependency | Confirm with at least 2 independent evidence points | `references/bug-patterns.md` |
 | `ASSESS` | Classify impact | Evaluate severity, affected users, workaround, and follow-up urgency | Use base severity table below; escalate if scope widens | `references/advanced-reproduction-triage.md` |
 | `REPORT` | Produce handoff artifact | Write investigation report and route fixes or tests | Use canonical output format; include confidence level | `references/output-format.md` |

@@ -25,10 +25,11 @@ COLLABORATION_PATTERNS:
 - Matrix -> Experiment: A/b variants
 - Matrix -> Sentinel: Security combination plans
 - Matrix -> Breach: Attack surface combinations
+- Matrix -> Oracle: AI/ML test combination plans (input space, fairness, hyperparameter)
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Radar, Voyager, Scaffold, Ripple
-- OUTPUT: Radar, Voyager, Scaffold, Experiment, Sentinel, Breach
+- OUTPUT: Radar, Voyager, Scaffold, Experiment, Sentinel, Breach, Oracle
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
 -->
@@ -43,7 +44,7 @@ Use Matrix when any of the following are true:
 - The request has `3+` axes, or `2` axes with a very large value space.
 - Exhaustive execution is too expensive in time, cost, or operational risk.
 - A downstream specialist needs a structured execution plan.
-- The task is about test, load, deploy, UX, risk, experiment, or compatibility combinations.
+- The task is about test, load, deploy, UX, risk, experiment, compatibility, or AI/ML combinations.
 - The user wants pairwise, orthogonal array, CIT, mixed-strength, or coverage optimization.
 - Existing test results need coverage gap analysis — use Remap mode to map results back to uncovered t-tuples via tuple density and (p,t)-completeness measurement (NISTIR 7878).
 
@@ -109,7 +110,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `Balanced`      | Value counts are uniform and balanced representation matters | Prefer an orthogonal array                                     |
 | `High-Strength` | Safety-critical, regulated, or known higher-order faults     | Use `3-way+` or mixed strength; consider variable-strength for heterogeneous risk profiles |
 | `Budgeted`      | `max_combinations` or cost cap exists                        | Return the best achievable set and report achieved coverage    |
-| `Remap`         | Execution results already exist                              | Map results back to coverage holes using tuple density and (p,t)-completeness metrics (NISTIR 7878); propose follow-up cases |
+| `Remap`         | Execution results already exist                              | Map results back to coverage holes using tuple density, (p,t)-completeness (NISTIR 7878), and combinatorial coverage difference (NIST CSWP 19); propose follow-up cases |
 
 ## Workflow
 
@@ -159,6 +160,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `experiment` | `Experiment` or `Pulse`                   | Variant, segment, duration, exposure, or KPI planning                          |
 | `compat`     | `Horizon` or `Builder`                    | Runtime, dependency, OS, architecture, or feature compatibility planning       |
 | `security`   | `Sentinel`, `Breach`, or `Probe`          | Input validation, auth bypass, injection, or attack surface combination planning (combinatorial security testing) |
+| `ai/ml`      | `Oracle` or `Radar`                       | Model input space, hyperparameter tuning, fairness dimension, or dataset coverage combination planning (NIST CT for AI-Enabled Systems) |
 | `visualize`  | `Canvas`                                  | The user needs a matrix visual, heatmap, or coverage diagram                   |
 | `document`   | `Scribe`                                  | The plan must become a reusable decision artifact                              |
 
@@ -169,7 +171,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Multi-axis combination request (≥ 3 axes) | Standard Matrix workflow | Optimized coverage set + execution plan | `references/combination-methods.md` |
 | Safety-critical / regulated domain | High-Strength mode (3-way+) | Coverage set with strength justification | `references/fault-interaction-statistics.md` |
 | Budget-constrained request | Budgeted mode | Best-effort set + coverage gap report | `references/optimization-algorithms.md` |
-| Existing test results with gaps | Remap mode | Tuple density report + (p,t)-completeness score + follow-up cases | `references/coverage-measurement.md` |
+| Existing test results with gaps | Remap mode | Tuple density report + (p,t)-completeness score + coverage difference (CSWP 19) + follow-up cases | `references/coverage-measurement.md` |
 | Complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | Unclear domain or axes | Clarify scope and route | Scoped clarification questions | `references/domain-patterns.md` |
 
@@ -205,7 +207,7 @@ When results are already available (Remap mode), also include:
 ## Collaboration
 
 **Receives:** Radar (test coverage needs), Voyager (E2E matrix), Scaffold (deployment matrix), Ripple (impact dimensions)
-**Sends:** Radar (test combinations), Voyager (E2E scenarios), Scaffold (deployment configs), Experiment (A/B variants), Sentinel (security combination plans), Breach (attack surface combinations)
+**Sends:** Radar (test combinations), Voyager (E2E scenarios), Scaffold (deployment configs), Experiment (A/B variants), Sentinel (security combination plans), Breach (attack surface combinations), Oracle (AI/ML test combination plans)
 
 ## Reference Map
 

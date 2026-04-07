@@ -110,7 +110,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Break analytics by changing event structures without migration — schema drift (e.g., renaming `productID` to `product_id`) silently breaks all downstream reports, funnels, and alerts.
 - Deploy client-side-only tracking without Consent Mode v2 — loses 40-70% of data in GDPR markets; Consent Mode v2 recovers 15-30% via privacy-safe pings and behavioral modeling.
 - Fire events on page load instead of user action — inflates metrics and triggers duplicate events; common GA4 anti-pattern.
-- Exceed GA4 hard limits without a migration plan — GA4 caps at 500 custom event names, 25 parameters per event, 24-character user property names, and 14-month data retention (free tier); exceeding these silently drops data with no warning.
+- Exceed GA4 hard limits without a migration plan — GA4 caps at 500 custom event names, 25 parameters per event, 24-character user property names, 100-character parameter values (standard; silently truncated — breaks long URLs and product names in reports), and 14-month maximum data retention for explorations (free tier defaults to 2 months; data is silently deleted if not manually extended); exceeding these silently drops data with no warning.
 - Choose analytics platform solely on license cost — teams saving $60K on tool licensing routinely spend $90K+ in engineering time building custom tracking and dashboards; total cost of ownership includes implementation and maintenance.
 
 ## Workflow

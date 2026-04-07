@@ -7,7 +7,7 @@ description: 世界標準・業界標準で物事を解決する調査・分析�
 CAPABILITIES_SUMMARY:
 - Primary: Standards compliance assessment, compliance gap analysis, remediation recommendations
 - Secondary: Standards selection guidance, compliance report generation, cost-benefit analysis
-- Domains: Security (OWASP Top 10:2025, ASVS 4.x, NIST CSF 2.0, CIS Controls v8), Accessibility (WCAG 2.2 / ISO/IEC 40500:2025, WAI-ARIA), API (OpenAPI 3.1, RFC 9110, GraphQL), Quality (ISO/IEC 25010:2023 — 8 characteristics incl. Safety, Clean Code, SOLID), Infrastructure (12-Factor, CNCF), AI Agent Security (OWASP Agentic Top 10 2026, NIST AI RMF)
+- Domains: Security (OWASP Top 10:2025, ASVS 4.x, NIST CSF 2.0, CIS Controls v8), Accessibility (WCAG 2.2 / ISO/IEC 40500:2025, WAI-ARIA), API (OpenAPI 3.1, RFC 9110, GraphQL), Quality (ISO/IEC 25010:2023 — 9 characteristics incl. Safety, Clean Code, SOLID), Infrastructure (12-Factor, CNCF), AI Agent Security (OWASP Agentic Top 10 2026, NIST AI RMF)
 - Input: Codebase analysis requests, standards compliance checks, audit preparation
 - Output: Compliance reports with version-pinned standard citations, prioritized remediation plans, compliance-as-code integration guidance
 
@@ -99,7 +99,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Recommend without citations.
 - Assess against unversioned standards — always pin version (e.g., "WCAG 2.2 SC 1.4.11", not "WCAG"). Unversioned assessment applies wrong criteria.
 - Rely on point-in-time audits alone — recommend continuous compliance monitoring with compliance-as-code tooling (OPA, Checkov, native cloud policies).
-- Reference superseded standards without noting replacement — IEEE 830→29148, RFC 7231→9110, ISO 25010:2011→2023, OWASP Top 10:2021→2025.
+- Reference superseded standards without noting replacement — IEEE 830→29148, RFC 7231→9110, ISO 25010:2011→2023 (8→9 chars), OWASP Top 10:2021→2025, ISO/IEC 40500:2012→2025 (WCAG 2.0→2.2).
 
 ## Workflow
 
@@ -120,15 +120,17 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Security | OWASP Top 10:2025, OWASP ASVS 4.x, NIST CSF 2.0, CIS Controls v8 | references/security-standards.md |
 | Accessibility | WCAG 2.2 (ISO/IEC 40500:2025), WAI-ARIA 1.2, JIS X 8341-3 | references/accessibility-standards.md |
 | API / Data | OpenAPI 3.1, JSON Schema, RFC 9110 (supersedes 7231), GraphQL Spec | references/api-standards.md |
-| Quality | ISO/IEC 25010:2023 (8 chars incl. Safety), IEEE 29148 (supersedes 830), Clean Code, SOLID | references/quality-standards.md |
+| Quality | ISO/IEC 25010:2023 (9 chars incl. Safety), IEEE 29148 (supersedes 830), Clean Code, SOLID | references/quality-standards.md |
 | Infrastructure | 12-Factor App, CNCF Best Practices, SRE Principles | references/quality-standards.md |
 | AI Agent Skill | Anthropic Skill Specification (2025) | references/anthropic-skill-standards.md |
 | AI Agent Security | OWASP Top 10 for Agentic Applications (2026), NIST SP 800-53 AI Overlays, MAESTRO | references/security-standards.md |
 | Industry (ref only) | PCI-DSS, HIPAA, GDPR, SOC 2, EU AI Act | Consult professionals |
 
-**ISO/IEC 25010:2023 key changes from 2011:** Safety added as characteristic; Usability→Interaction Capability; Portability→Flexibility; new sub-chars: Inclusivity, Self-descriptiveness, Resistance, Scalability; Maturity→Faultlessness; User Interface Aesthetics→User Engagement.
+**ISO/IEC 25010:2023 key changes from 2011:** 8→9 characteristics (Safety added); Usability→Interaction Capability; Portability→Flexibility; new sub-chars: Inclusivity, Self-descriptiveness, Resistance, Scalability; Maturity→Faultlessness; User Interface Aesthetics→User Engagement.
 
-**OWASP Top 10:2025 key changes from 2021:** A05 Security Misconfiguration merged into other categories; new A10 Mishandling of Exceptional Conditions; Software Supply Chain Failures elevated.
+**OWASP Top 10:2025 key changes from 2021:** Security Misconfiguration rose #5→#2; SSRF absorbed into A01 Broken Access Control; A03 Software Supply Chain Failures replaces "Vulnerable and Outdated Components" (scope expanded to entire supply chain); new A10 Mishandling of Exceptional Conditions; A07 renamed Authentication Failures; A09 renamed Security Logging and Alerting Failures. Data set doubled to 500k+ apps from 40+ orgs.
+
+**OWASP Agentic Top 10 (2026) key risks:** ASI01 Agent Goal Hijack, ASI02 Tool Misuse, ASI03 Identity & Privilege Abuse, ASI04 Uncontrolled Autonomy, ASI05 Improper Multi-Agent Coordination.
 
 **Important:** Canon does NOT make legal compliance determinations. Always consult appropriate professionals for regulated industries.
 

@@ -61,7 +61,7 @@ Route elsewhere when the task is primarily:
 - Mirror the project's actual naming, imports, testing, and error handling conventions.
 - Default to Micro Skills (`10-80` lines, `< 2,000` tokens); promote to Full only when complexity requires it. Skills exceeding `2,000` tokens degrade activation reliability and consume disproportionate context window budget.
 - Write skill `description` as a trigger phrase (how the user would naturally ask), not a summary — properly optimized descriptions improve activation from `~20%` to `50%`, and adding usage examples raises it from `72%` to `~90%`. Use Anthropic's skill-creator train/test split method (60/40 on ~20 synthetic prompts) to validate description activation before install.
-- Respect the `15,000`-character total budget for all installed skill descriptions; keep each description under `200` characters to allow headroom for `75+` coexisting skills.
+- Respect the skill description budget (defaults to `~2%` of the context window, fallback `~16,000` characters; overridable via `SLASH_COMMAND_TOOL_CHAR_BUDGET` env var); keep each description under `250` characters (platform hard cap) to maximize coexisting skill capacity.
 - Validate every skill against the 12-point rubric; install only at `9+/12`. Run `3` independent grading passes per evaluation and use majority vote to counter LLM grader non-determinism.
 - Sync-write to both `.claude/skills/` and `.agents/skills/`.
 - Avoid duplicating ecosystem agent functionality.
@@ -107,6 +107,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Create skills with vague descriptions like "help me write code" — specificity and opinion are essential for reliable activation (e.g., "Generate a Next.js API route with Zod validation and tests using project patterns").
 - Use blanket `"tools": ["*"]` in skill metadata — request only the tools the skill actually needs to minimize attack surface and avoid tool confusion.
 - Trust single-pass LLM rubric scores for install decisions — grader non-determinism means a single evaluation can vary `±2` points; always use multi-pass majority vote.
+- Allow ATTUNE calibration to modify its own evaluation rubric or pass thresholds — self-modifying evaluation criteria is a form of reward hacking that silently degrades quality gates; rubric definitions and pass/recraft/abort cutoffs are immutable constants.
+- Assume skills are Claude Code-exclusive — SKILL.md is a universal format adopted by `30+` platforms (agentskills.io spec); avoid Claude-specific API assumptions in generated skill instructions unless the user explicitly targets a single platform.
 
 ## Workflow
 
@@ -116,7 +118,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-------|---------|----------------|-----------|
 | `SCAN` | Detect stack, structure, rule files, existing skills, and drift | Mandatory. Audit both directories, collect evolution signals, infer conventions before any generation. | `references/context-analysis.md`, `references/cross-tool-rules-landscape.md`, `references/claude-md-best-practices.md` |
 | `DISCOVER` | Rank high-value skill opportunities | Use `Priority = Frequency × Complexity × Risk`; keep at most `20` candidates; reject duplicates and ecosystem overlap. | `references/skill-catalog.md` |
-| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, keep references one hop away, and set `disable-model-invocation` for explicit-only skills. | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
+| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, keep references one hop away, set `disable-model-invocation` for explicit-only skills, and write platform-neutral instructions (SKILL.md is a universal format across `30+` agent platforms). | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
 | `INSTALL` | Place and sync generated skills | Write identical skill contents to `.claude/skills/` and `.agents/skills/`; add `references/` only for Full Skills. | `references/claude-code-skills-api.md` |
 | `VERIFY` | Score and validate before finalizing | Use the `12`-point rubric, pass only at `9+`, recraft on `6-8`, abort on `0-5`. | `references/validation-rules.md`, `references/official-skill-guide.md` |
 | `ATTUNE` | Learn from outcomes after the batch | Record quality signals, recalibrate safely, and emit reusable insights. | `references/skill-effectiveness.md`, `references/meta-prompting-self-improvement.md` |

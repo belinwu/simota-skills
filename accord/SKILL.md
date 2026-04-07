@@ -91,6 +91,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Hide scope-out items or leave acceptance undefined.
 - Write BDD scenarios with technical implementation details (DOM selectors, SQL, API endpoints) — scenarios must use business domain language.
 - Write BDD scenarios with multiple `When` clauses — each scenario tests one trigger, one behavior.
+- Confuse `Given` (precondition/state) with `When` (trigger/action) — misplacing triggers in `Given` voids the scenario structure and hides the behavior under test.
 - Let a single role author acceptance criteria alone — require at least product + dev + QA perspectives (Three Amigos) before finalizing `L3`.
 - Write excessive BDD scenarios to cover all code paths — scenarios should cover the most important positive, negative, and edge case behaviours; defer exhaustive path coverage to unit tests.
 
@@ -133,7 +134,9 @@ Use it to log scope choice, section usage, alignment, revisions, adoption, and r
 | Scope by indicators | `2+ High indicators -> Full`; else `2+ Medium indicators -> Standard`; otherwise `Lite` |
 | Must ratio | Warn when `Must` exceeds `60%` of requirements |
 | BDD specificity | `Given/When/Then` must contain concrete, testable outcomes; one scenario covers one user action; use business domain language, never implementation details |
+| BDD scale | Cap at `~12` scenarios per feature and `<10` steps per scenario; exceeding these signals over-specification — defer exhaustive paths to unit tests |
 | BDD collaboration | `L3` scenarios require Three Amigos review (product + dev + QA perspectives) before finalization |
+| BDD discovery | Use Example Mapping (rules → examples → questions → stories) to structure Three Amigos sessions; time-box to `25 min` per story to prevent scope drift |
 | Traceability minimum | `Full >= 95%`, `Standard >= 85%`, `Lite >= 70%` completeness |
 | L2 ownership | `L2-Biz`, `L2-Dev`, and `L2-Design` may be drafted by Accord, but decisions or artifacts outside Accord boundaries must be delegated |
 | Scope escalation | Promotion to a larger scope is allowed; demotion is avoided once detail exists |

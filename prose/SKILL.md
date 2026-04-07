@@ -72,7 +72,7 @@ Route elsewhere when the task is primarily:
 - Write for translation readiness (no concatenation, no embedded logic, no `aria-label` for translatable text).
 - Test copy in context (not isolation); UI placement affects meaning.
 - Use existing terminology consistently across the application.
-- For AI-generated content surfaces, apply EU AI Act disclosure taxonomy: "fully AI-generated" vs "AI-assisted" with standardized labels.
+- For AI-generated content surfaces, apply EU AI Act disclosure taxonomy: "fully AI-generated" vs "AI-assisted" with standardized labels. Dual-layer approach required: visible labels for humans + machine-readable metadata (C2PA/IPTC) for automated detection. Mandatory enforcement begins August 2, 2026 (Regulation (EU) 2024/1689).
 - Build content systems on principles and decision frameworks, not just pattern libraries — pattern samples break at scale, edge cases, and AI-generated content.
 - Before adding AI chatbots or assistants, ensure the underlying content architecture is sound; AI amplifies existing content problems (misrouting, imprecise answers).
 
@@ -133,7 +133,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **4. ONBOARD** | "onboarding", "first-run", "welcome" | Map user journey → identify guidance points → write progressive disclosure copy |
 | **5. A11Y** | "accessibility text", "screen reader", "ARIA" | Audit interactive elements → write ARIA labels (prefer aria-labelledby) → create screen reader text → verify WCAG 2.2 SC 2.5.3 |
 | **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first", "content system" | Write content wireframes before visual design → define principles and decision frameworks → apply 30% cut rule → align copy with composition |
-| **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft disclosure labels → apply EU AI Act taxonomy → verify platform compliance |
+| **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft dual-layer disclosure (visible label + C2PA/IPTC metadata) → apply EU AI Act taxonomy → verify platform compliance (mandatory Aug 2, 2026) |
 
 ## Output Routing
 
@@ -145,7 +145,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `onboarding`, `first-run`, `welcome`, `progressive disclosure` | Onboarding copy | Journey-mapped copy set | `references/onboarding-copy-patterns.md` |
 | `accessibility`, `alt text`, `ARIA`, `screen reader` | Accessibility text | ARIA labels + alt text | `references/accessibility-text-guide.md` |
 | `AI copy`, `confidence indicator`, `AI state` | AI context copy | AI-aware UI text | `references/microcopy-patterns.md` |
-| `AI disclosure`, `made with AI`, `AI label`, `transparency` | AI disclosure labeling | Disclosure labels + taxonomy (fully AI-generated / AI-assisted) | `references/microcopy-patterns.md` |
+| `AI disclosure`, `made with AI`, `AI label`, `transparency` | AI disclosure labeling | Dual-layer disclosure: visible labels + C2PA/IPTC metadata directives | `references/microcopy-patterns.md` |
 | `audit`, `consistency`, `terminology` | Content audit | Audit report with readability scores | `references/voice-tone-framework.md` |
 | `content system`, `content framework`, `string architecture`, `terminology governance` | Content system design | Principles doc + decision framework | `references/content-strategy-design.md` |
 | unclear copy request | Microcopy design (default) | UI text with context | `references/microcopy-patterns.md` |

@@ -6,6 +6,7 @@ description: NotebookLMのステアリングプロンプト設計を支援する
 <!--
 CAPABILITIES_SUMMARY:
 - steering_prompt_design: Design NotebookLM steering prompts for optimal output quality
+- custom_goals_design: Design Custom Goals personas (up to 10,000 characters) for persistent chat behavior
 - audio_optimization: Optimize NotebookLM audio overview output
 - video_optimization: Optimize NotebookLM video summary output
 - slide_optimization: Optimize NotebookLM slide deck output
@@ -36,7 +37,7 @@ Consultant for NotebookLM steering prompt design. Prism does not write code and 
 
 Use Prism when the task is about:
 
-- Designing or refining NotebookLM steering prompts
+- Designing or refining NotebookLM steering prompts or Custom Goals personas
 - Choosing the right NotebookLM output format for a target audience
 - Preparing sources or notebook composition for better NotebookLM results
 - Evaluating NotebookLM output quality and planning prompt iterations
@@ -47,7 +48,8 @@ Typical inputs:
 - Source material from `Scribe`, `Quill`, or `Researcher`
 - Audience or persona information from `Cast`
 - Audience feedback from `Voice`
-- A request to improve Audio Overview, Video Overview, Slides, Infographics, Mind Maps, Deep Research, Flashcards, Quizzes, or Reports
+- A request to improve Audio Overview, Video Overview, Slides, Infographics, Mind Maps, Deep Research, Flashcards, Quizzes, Reports, or Data Tables
+- Designing Custom Goals personas for persistent chat behavior (up to 10,000 characters)
 - Selecting infographic styles (Sketch Note, Kawaii, Professional, Scientific, Anime, Clay, Editorial, Instructional, Bento Grid, Bricks)
 - Planning use of the Join feature for interactive Audio Overviews
 - Using Discover Sources to find and incorporate web/Drive materials into notebooks
@@ -71,16 +73,18 @@ Route elsewhere when the task is primarily:
 - Record reusable outcomes through `SPECTRUM`.
 - Leverage the Three-Panel Workflow (Sources Panel → Chat Panel → Studio Panel) when guiding users through prompt design and output generation.
 - Chat-to-output conversion: users can transform chat conversations directly into Audio/Video Overviews, Reports, and other outputs — design prompts with this workflow in mind.
+- Custom Goals: NotebookLM's built-in persona system (up to 10,000 characters) persists across sessions. Treat Goals as the primary steering mechanism for chat behavior; use steering prompts for per-output customization. Design Goals to define role, expertise level, and response style.
 
 Supported output families:
 
 - Audio Overview: `Deep Dive`, `The Brief`, `The Critique`, `The Debate`, `Lecture Mode` (+ `Join` interactive mode)
-- Video Overview: `Explainer`, `Brief`, `Cinematic` (immersive deep-dive with fluid animations)
+- Video Overview: `Explainer`, `Brief`, `Cinematic` (immersive deep-dive with fluid animations; Ultra only, English only)
 - Slides: `Presenter Slides`, `Detailed Deck` (PPTX export with per-slide revision)
 - Visual formats: `Infographic` (10 styles: Sketch Note, Kawaii, Professional, Scientific, Anime, Clay, Editorial, Instructional, Bento Grid, Bricks), `Mind Map`
 - Research format: `Deep Research`
 - Study formats: `Flashcards`, `Quizzes` (progress saved across sessions)
 - Document format: `Reports` (tailored reports generated from sources)
+- Data format: `Data Tables` (structured tables exportable to Google Sheets; Pro/Ultra)
 
 ## Boundaries
 
@@ -111,6 +115,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Leave the custom prompt field empty — empty prompts bury key insights and let secondary details dominate
 - Exceed 500,000 words or 200MB per source (NotebookLM hard limit)
 - Assume tier limits without confirmation — Free/Plus/Pro/Ultra have significantly different quotas for sources, notebooks, and daily generations
+- Rely on visual content in sources — NotebookLM cannot parse charts, diagrams, or schematics embedded in PDFs; extract key data points into text before uploading
 
 ## Workflow
 
@@ -118,7 +123,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Phase      | Goal                              | Keep explicit                                            | Read when needed                                                                                       |
 | ---------- | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `SOURCE`   | Understand source, goal, audience | Source type (PDF/Docs/Slides/URLs/EPUB/YouTube), audience, purpose, tier constraints | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
+| `SOURCE`   | Understand source, goal, audience | Source type (PDF/Docs/Slides/URLs/EPUB/YouTube), audience, purpose, tier constraints, Custom Goals persona | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
 | `PREPARE`  | Improve notebook inputs           | Composition pattern, source count, tier limits, Discover Sources for gaps | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
 | `STEER`    | Pick format and prompt family     | Three-layer structure, prompt family, duration           | [prompt-catalog.md](~/.claude/skills/prism/references/prompt-catalog.md)                               |
 | `GUIDE`    | Explain how to use the prompt     | Field placement, Free/Plus differences, iteration setup  | [steering-prompt-anti-patterns.md](~/.claude/skills/prism/references/steering-prompt-anti-patterns.md) |
@@ -145,6 +150,7 @@ Full calibration rules live in [prompt-effectiveness.md](~/.claude/skills/prism/
 | Source impact                    | `70%`                               | Source quality drives most output quality                        |
 | Prompt length                    | `150 words` max                     | Steering prompts should stay concise                             |
 | Instruction count                | `8` max                             | Too many instructions degrade focus                              |
+| Custom Goals length              | `10,000` chars max                  | Built-in persona field; use for persistent chat behavior         |
 | Deep analysis source count       | `1-3`                               | Best for depth-first outputs                                     |
 | Typical recommended source count | `5-15`                              | Standard notebook range                                          |
 | Optimal focused source count     | `2-5`                               | Best for most high-quality focused outputs                       |
