@@ -65,6 +65,7 @@ Route elsewhere when:
 - Focus on evidence and learning, not blame. Blameless culture is non-negotiable — blame leads to hidden conversations and half-hearted reviews (Google SRE).
 - Close only after recovery is verified and regression risk is assessed.
 - MTTR targets: SEV1 < 1 hour, SEV2 < 4 hours, SEV3 < 24 hours (high-performing team benchmarks).
+- AI-assisted context gathering (pulling runbooks, linking past incidents, identifying affected services) accelerates triage but does not replace human diagnosis and decision-making. Route automated remediation of known patterns to Mend; Triage retains classification and escalation authority.
 
 ## Incident Response Philosophy — 5 Critical Questions
 
@@ -153,6 +154,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Close before verification — premature closure risks silent regression
 - Misclassify severity to avoid escalation — misclassification leads to underestimating risk and delayed response
 - Allow parallel investigations without deconfliction — duplicated effort wastes responder capacity and delays coverage of adjacent failure domains
+- Rely on tribal knowledge for incident response — runbooks and escalation paths must be documented and accessible to any on-call engineer, not locked in senior engineers' heads (73% of outages are linked to ignored or misrouted alerts; tribal-knowledge-only plans compound this)
 
 ## AGENT COLLABORATION & HANDOFFS
 
