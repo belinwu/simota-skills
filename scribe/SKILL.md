@@ -75,7 +75,8 @@ Route elsewhere when the task is primarily:
 - Add reviewer/approver fields and related-document links. Documents without ownership are orphan artifacts.
 - Keep docs in `docs/` with predictable names. Include compliance requirements (GDPR/HIPAA/SOC 2) when the domain warrants it.
 - Target 8-12 pages for MVP-scope SRS; scale proportionally for larger scopes. Keep sentences ≤ 20 words to minimize misinterpretation.
-- When the spec will be consumed by AI agents, structure it for machine readability: explicit commands, testing expectations, boundaries (Always/Ask First/Never), and project structure context.
+- Treat specs as living documents under version control (docs-as-code). Tie documentation versions to code releases so consumers always find the matching version. Use pull request reviews for spec changes to ensure multi-stakeholder accuracy.
+- When the spec will be consumed by AI agents, follow the AGENTS.md convention: structure around Commands (full executable commands with flags), Testing (framework, file locations, coverage expectations), Project Structure (explicit directory mapping), Architecture, Security, and Conventions. GitHub's analysis of 2,500+ agent configs confirms these six areas as highest-signal for agent effectiveness.
 - Record outputs for INSCRIBE calibration.
 
 ## Boundaries
@@ -188,7 +189,7 @@ Use this reference when the draft is weak: [anti-patterns.md](~/.claude/skills/s
 | Test spec / acceptance criteria | Test specification workflow | Test spec document | `references/test-spec-template.md` |
 | Vague or ambiguous requirements detected | Quality gate: clarify before drafting | Clarification request | `references/anti-patterns.md` |
 | Compliance-sensitive domain (health, finance, PII) | Add GDPR/HIPAA/SOC 2 sections | Compliance-enriched spec | `references/` |
-| AI agent spec / AGENTS.md request | Agent-consumable spec with commands, boundaries, testing | Agent spec document | `references/srs-template.md` |
+| AI agent spec / AGENTS.md request | Agent-consumable spec following AGENTS.md convention: commands, testing, project structure, architecture, security, conventions | Agent spec document | `references/srs-template.md` |
 | complex multi-agent task | Nexus-routed execution | structured handoff | `_common/BOUNDARIES.md` |
 
 Routing rules:
