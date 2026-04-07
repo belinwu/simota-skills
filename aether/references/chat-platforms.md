@@ -1,6 +1,6 @@
 # Chat Platforms
 
-Purpose: Read this when selecting `YouTube` / `Twitch`, implementing chat ingestion, normalizing platform events, or defining filtering and command handling.
+Purpose: Read this when selecting `YouTube` / `Twitch` / `Bilibili`, implementing chat ingestion, normalizing platform events, or defining filtering and command handling.
 
 ## Contents
 
@@ -12,18 +12,18 @@ Purpose: Read this when selecting `YouTube` / `Twitch`, implementing chat ingest
 
 ## Platform Comparison
 
-| Feature | YouTube Live | Twitch |
-|---------|-------------|--------|
-| Chat API | `liveChatMessages` (REST polling) | IRC + EventSub (WebSocket) |
-| Real-time path | Polling (`5-10s` interval) | WebSocket (near-instant) |
-| Auth | OAuth 2.0 (Google) | OAuth 2.0 (Twitch) |
-| Rate limit | `10,000` units/day (quota) | `20 msg / 30s` (moderator baseline) |
-| Paid interactions | Super Chat / Super Stickers | Bits / Cheers |
-| Commands | No native support | Native `!` commands |
-| Emotes | Limited | Extensive (`BTTV`, `FFZ`, `7TV`) |
-| Moderation | YouTube moderation APIs | AutoMod + custom bots |
+| Feature | YouTube Live | Twitch | Bilibili Live |
+|---------|-------------|--------|---------------|
+| Chat API | `liveChatMessages` (REST polling) | IRC + EventSub (WebSocket) | Danmaku WebSocket (`bililive-ws`) |
+| Real-time path | Polling (`5-10s` interval) | WebSocket (near-instant) | WebSocket (near-instant) |
+| Auth | OAuth 2.0 (Google) | OAuth 2.0 (Twitch) | Cookie / Open Live API |
+| Rate limit | `10,000` units/day (quota) | `20 msg / 30s` (moderator baseline) | Platform-managed |
+| Paid interactions | Super Chat / Super Stickers | Bits / Cheers | SC (Super Chat) / Gift |
+| Commands | No native support | Native `!` commands | No native support |
+| Emotes | Limited | Extensive (`BTTV`, `FFZ`, `7TV`) | Extensive (Bilibili emotes) |
+| Moderation | YouTube moderation APIs | AutoMod + custom bots | Platform-managed + custom |
 
-Use `YouTube` when platform reach matters more than ingestion latency. Use `Twitch` when command-driven real-time interaction matters more.
+Use `YouTube` when platform reach matters more than ingestion latency. Use `Twitch` when command-driven real-time interaction matters more. Use `Bilibili` when targeting the Chinese VTuber audience; its Danmaku WebSocket provides near-instant delivery similar to Twitch. [Source: Open-LLM-VTuber Bilibili Danmaku client]
 
 ## YouTube Live Chat API
 
