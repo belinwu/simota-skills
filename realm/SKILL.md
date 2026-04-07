@@ -54,7 +54,7 @@ Route elsewhere when the task is primarily:
 - Prefer ASCII first, Mermaid second, HTML/Phaser only when the requested artifact needs richer interaction. For Phaser projects, prefer Phaser 4 (TypeScript-native, Beam renderer, up to 16x mobile perf gain) when starting new; maintain Phaser 3 for existing templates.
 - Reuse upstream metrics exactly as provided. Realm narrates and renders; it does not re-grade the ecosystem.
 - Persist every session to `.agents/realm-state.md`.
-- **Behavior-fit before mechanics:** Every gamification element (XP, badge, quest, leaderboard) must map to a specific behavior the ecosystem wants to encourage. Never add mechanics without identifying the target behavior first — 80% of gamification projects fail from superficial "pointification" (Gartner).
+- **Behavior-fit before mechanics:** Every gamification element (XP, badge, quest, leaderboard) must map to a specific behavior the ecosystem wants to encourage. Never add mechanics without identifying the target behavior first — 80% of gamification projects fail from superficial "pointification" (Gartner). Evaluate behavior-fit through the SDT lens: does the mechanic support autonomy (meaningful choice), competence (skill progression feedback), or relatedness (social connection)? Mechanics that satisfy none of these three needs produce only short-term compliance.
 - **Narrative over numbers:** Present metrics as progress journeys (milestones, streaks, story arcs) rather than raw dashboards. Gamified dashboards that tell stories drive deeper engagement than static number displays.
 - **Leaderboard fairness:** Ensure leaderboards have tiers or brackets to prevent top-heavy domination that discourages participation (Foursquare anti-pattern). Rotate visibility windows (weekly/sprint) to keep engagement fresh.
 - **Score transparency:** Every score, rank, or XP change must have a visible cause-and-effect explanation. Opaque scoring destroys trust and engagement (Klout failure — users couldn't correlate actions to score changes, leading to abandonment).
@@ -67,9 +67,7 @@ Route elsewhere when the task is primarily:
 - Use existing EFS/RS/CES values only — Realm narrates, never re-grades.
 - Persist `.agents/realm-state.md` after every session.
 - Include a freshness timestamp (ISO 8601) in every output.
-- Tie every reward (XP, badge, rank) to a concrete upstream metric — meaningless rewards cause 80% of gamification failures (Gartner research). Never award badges that lack clear earn conditions or user-visible value.
-- Validate that leaderboard mechanics do not create perverse incentives (e.g., gaming check-ins, racing at the expense of quality) — Disney workplace gamification and Foursquare "mayor" system both failed from unchecked competition dynamics.
-- Never award badges without clear purpose and user-visible value — Google News badges failed because users gained no actionable benefit, and privacy-conscious users abandoned the product entirely.
+- Tie every reward (XP, badge, rank) to a concrete upstream metric with clear earn conditions and user-visible value. Validate that leaderboard mechanics do not create perverse incentives (e.g., gaming check-ins, racing at the expense of quality) — Disney workplace gamification and Foursquare "mayor" system both failed from unchecked competition dynamics; Google News badges failed because users gained no actionable benefit.
 
 ### Ask First
 - Before configuring Latch hooks or any always-on visualization service.
@@ -125,7 +123,8 @@ Route elsewhere when the task is primarily:
 - **Phaser performance:** Use object pooling for sprite recycling to prevent memory leaks. Add FPS counter during development. For dashboard-style views with < 50 sprites, prefer Canvas renderer over WebGL (up to 30% faster on older devices). Compress sprite assets and implement lazy loading for off-screen departments. Always destroy unused scenes — lingering event listeners, physics bodies, and GPU textures cause silent memory leaks over long sessions. Avoid anonymous event listeners that prevent cleanup.
 - **Phaser version strategy:** Existing templates use Phaser 3. For new interactive builds, evaluate Phaser 4 (RC7 as of 2026-03; TypeScript-native, Beam renderer, up to 16x mobile performance gain). API is evolutionary, not a rewrite.
 - **Gamification retention:** Avoid one-time reward spikes (GAP Inc. anti-pattern). Design reward curves that sustain engagement across sessions — use streaks, seasonal resets, and progressive difficulty scaling.
-- **Gamification effectiveness benchmarks:** Well-designed gamification targets DAU lift of 5-10%, average session duration increase of 3-5%, and churn reduction of 2-4%. D30 retention (% active after 30 days) is the strongest leading indicator of long-term engagement value.
+- **Gamification effectiveness benchmarks:** Well-designed gamification targets DAU lift of 5-10%, average session duration increase of 3-5%, and churn reduction of 2-4%. D30 retention (% active after 30 days) is the strongest leading indicator of long-term engagement value. For stickiness, DAU/MAU ratio of 20%+ indicates good habit formation; 25%+ is excellent.
+- **Phaser 3 deprecation awareness:** Phaser 3 API docs are now marked "Deprecated" upstream. Existing Realm templates remain on Phaser 3 but new builds should default to Phaser 4. When upgrading, the API is evolutionary — most Phaser 3 patterns transfer directly.
 
 ## Routing And Handoffs
 
