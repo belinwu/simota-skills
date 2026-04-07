@@ -98,10 +98,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 - Base all brand content on verifiable technical contributions and real experience.
 - Apply AP-1~AP-11 anti-pattern checks to every output before delivery.
-- Produce channel-specific content optimized for each platform's algorithm and audience. LinkedIn uses LLM-powered "Topic DNA" matching (2026); keyword repetition is penalized — align profile holistically to your niche instead.
+- Produce channel-specific content optimized for each platform's algorithm and audience. LinkedIn uses "expert knowledge scoring" (2026) to evaluate first-hand expertise; keyword repetition is penalized — align profile holistically to your niche instead. Profile completion at 100% yields ~71% more content reach; mobile About section truncates at ~275 characters — lead with your strongest value proposition.
 - Maintain positioning consistency across all channels (unified niche, tone, messaging).
 - Quantify achievements with impact metrics; reject vanity metrics as standalone evidence.
-- Preserve the engineer's authentic voice; AI assists but never replaces personality. Deep-dive case studies (including failures) outperform surface-level advice.
+- Preserve the engineer's authentic voice; AI assists but never replaces personality. Audience preference for AI-generated content collapsed from 60% to 26% (2025–2026); imperfection signals truth. Deep-dive case studies (including failures) outperform surface-level advice.
 - Include verification steps (anti-pattern audit, channel consistency check) in every deliverable.
 - Prioritize one strong community hub over scattered multi-platform presence.
 - Ensure all content passes the "sounds like you" test — lived experience over generic polish.
@@ -115,7 +115,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |--------|----------|-----------|
 | `ブランド診断`, `brand audit` | **AUDIT** — Multi-channel scoring → Brand Health Report | `references/metrics-guide.md` |
 | `ニッチ決定`, `positioning` | **POSITION** — Tech×Domain×Perspective analysis → Positioning Statement | `references/positioning-frameworks.md` |
-| `GitHub README`, `LinkedIn`, `profile` | **PROFILE** — Channel-specific optimization → Channel-optimized content (LinkedIn: align Topic DNA, pin top 3 skills, add 15-25 total skills) | `references/channel-templates.md` |
+| `GitHub README`, `LinkedIn`, `profile` | **PROFILE** — Channel-specific optimization → Channel-optimized content (LinkedIn: align expert knowledge scoring, 100% profile completion, mobile-first About ≤275 chars, pin top 3 skills) | `references/channel-templates.md` |
 | `実績まとめ`, `自己紹介`, `achievement` | **NARRATIVE** — Contribution data → Achievement narrative | `references/channel-templates.md` |
 | `ブランド戦略`, `brand strategy` | **STRATEGY** — Annual roadmap → Branding roadmap | `references/amplification-playbook.md` |
 | `ブログネタ`, `登壇テーマ`, `content ideas` | **CONTENT** — Content planning → Content plan + repurpose map | `references/amplification-playbook.md` |
@@ -146,7 +146,7 @@ DISCOVER → POSITION → CRAFT → AMPLIFY → MEASURE
 | AP-2 | **Vanity Metrics** — stars/followers without substance | Metrics without meaning? | Replace with impact-driven metrics |
 | AP-3 | **Niche Absence** — "full-stack everything" positioning | No clear specialization? | Apply Tech×Domain×Perspective framework |
 | AP-4 | **Channel Scatter** — inconsistent across platforms | Messaging mismatch? | Unify core positioning statement |
-| AP-5 | **AI Ghost** — content that sounds generated, not human | Generic/robotic tone? "Sea of sameness" with other AI-polished profiles? | Inject personal anecdotes, opinions, and rough edges; differentiate from the flood of AI-generated content |
+| AP-5 | **AI Ghost** — content that sounds generated, not human | Generic/robotic tone? "Sea of sameness" with other AI-polished profiles? Audience AI-content preference dropped 60%→26% (2025–2026) — detection bar is lower than ever | Inject personal anecdotes, opinions, and rough edges; differentiate from the flood of AI-generated content |
 | AP-6 | **Employer Leak** — confidential info in public content | NDA/proprietary content? | Generalize or remove; flag for review |
 | AP-7 | **Stagnation Mask** — hiding lack of growth behind past wins | Only old achievements? | Add learning journey and current goals |
 | AP-8 | **Productivity Theater** — unverified AI speed claims | "AIで10倍速" without data? | Show concrete before/after metrics |
