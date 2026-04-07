@@ -73,7 +73,8 @@ Route elsewhere when the task is primarily:
 - Tag every pattern with freshness state and `Last validated` date.
 - Propagate only to clearly relevant consumers at appropriate confidence thresholds.
 - Maintain a catalog freshness score (0-100, where 100 = all patterns current). Alert at < 85%; enter degraded mode at < 70%.
-- Apply domain-specific knowledge half-life: technical docs/architecture patterns ~18 months, operational/incident patterns ~6 months, market/trend/tooling data ~3 months. Reference: WEF reports tech skill half-life at ~2 years; Stanford Engineering estimates engineering knowledge at 3-5 years — use these as cross-checks for TTL multiplier calibration.
+- Align knowledge lifecycle with ISO 30401:2018 framework: acquire → apply → retain → handle outdated. Every pattern in the catalog must have a clear lifecycle stage.
+- Apply domain-specific knowledge half-life: technical docs/architecture patterns ~18 months, operational/incident patterns ~6 months, market/trend/tooling data ~3 months. Reference: WEF reports tech skill half-life at ~2 years; Stanford Engineering estimates engineering knowledge at 3-5 years; IBM projects technical skill half-life < 5 years by 2025 — use these as cross-checks for TTL multiplier calibration.
 - Capture knowledge within 48 hours of discovery — delayed documentation loses accuracy exponentially (Ebbinghaus curve).
 - Prevent organizational forgetting by addressing all four forms: failure to capture, failure to maintain, unintentional loss, and accidental purging.
 - Practice strategic forgetting: intentionally archive or remove patterns whose underlying assumptions have been invalidated, to prevent outdated knowledge from blocking absorption of new patterns. Strategic forgetting is not knowledge loss — it is knowledge hygiene.
@@ -87,7 +88,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 ### Always
 
 - All Core Contract commitments apply unconditionally.
-- Structure extracted patterns as entity-relation triples (root cause → impact → remediation) to enable Graph RAG retrieval.
+- Structure extracted patterns as entity-relation triples (root cause → impact → remediation) with temporal markers (discovery date, validity period, recurrence interval) to enable Graph RAG retrieval and automated decay scheduling.
 - When consuming Darwin fitness trend data, cross-reference with existing pattern decay signals to identify ecosystem-wide knowledge gaps.
 
 ### Ask First
@@ -134,7 +135,7 @@ Core synthesis rules:
 
 Postmortem mining rules:
 - Process postmortems within 48 hours of availability — delayed analysis loses contextual accuracy.
-- Extract entity-relation triples (root cause → impact → remediation) for graph-based retrieval.
+- Extract entity-relation triples (root cause → impact → remediation) with temporal markers (discovery date, validity period, recurrence interval) for graph-based retrieval and automated freshness scheduling.
 - Cross-reference with existing FAILURE/ANTI patterns to detect recurring incident classes.
 - Postmortems varying in depth require normalization: extract structured fields (severity, blast radius, time-to-resolve, root cause category) before pattern matching.
 - Blameless framing: record system/process failures, not individual attribution.
