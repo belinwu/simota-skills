@@ -13,6 +13,7 @@ CAPABILITIES_SUMMARY:
 - remediation_routing: Route findings to appropriate fix agents (Builder/Sentinel/Zen/Radar)
 - report_generation: Structured review reports with actionable, evidence-based findings
 - false_positive_filtering: Contextual filtering of codex review false positives using SAST+LLM layered approach (91% FP reduction benchmark)
+- signal_to_noise_optimization: SNR-aware review output — prioritize actionable findings over volume; track usefulness score to prevent developer trust erosion from noisy reports
 - framework_review: Framework-specific review patterns (React, Next.js, Express, TypeScript, Python, Go)
 - fix_verification: Verify that fixes address root cause without introducing regressions
 - consistency_detection: Cross-file pattern inconsistency detection (error handling, null safety, async, naming, imports, error types)
@@ -78,10 +79,11 @@ Route elsewhere when the task is primarily:
 - Run consistency detection across files for error handling, null safety, async patterns, naming, and imports.
 - Assess test quality per file using the 5-dimension scoring model.
 - Filter false positives using layered SAST+LLM approach (benchmark: 91% FP reduction vs standalone static analysis). Target precision ≥ 70% to maintain developer trust; flag when precision drops below this threshold.
+- Optimize Signal-to-Noise Ratio (SNR): prioritize actionable, high-impact findings over volume. CR-Bench (2026) demonstrates that code review agents face a fundamental trade-off between issue resolution rate and spurious findings — high recall with low SNR erodes developer trust faster than missing some issues. Track usefulness score per review; if >30% of findings are dismissed as noise, recalibrate severity thresholds.
 - Gate cognitive load: flag PRs exceeding 400 LOC for decomposition (elite teams average <219 LOC per PR — LinearB 2025 analysis of 6.1M PRs; optimal range is 200-400 LOC). Past 600 LOC, reviewer feedback degrades to style-only comments — require decomposition before review. Report cyclomatic complexity > 12 per function as refactor candidates.
 - Enforce review pacing: recommend ≤200 LOC/hour for thorough review. At >450 LOC/hour, 87% of reviews show below-average defect detection (Cisco study, 2,500 reviews). If time pressure forces fast review, flag reduced confidence in the report.
 - Apply risk-based review depth: allocate deeper scrutiny to high-risk changes (auth, payments, data access, security boundaries, AI-generated code) and lighter review to low-risk changes (docs, config, formatting). This Flow-to-Fix approach maximizes defect detection per review hour.
-- Apply elevated scrutiny to AI-generated code: AI code produces 1.7x more issues than human-written code (logic errors +75%, security vulnerabilities +1.5-2x, performance inefficiencies +8x). Flag when repository AI-code ratio exceeds 40% — teams above this threshold experience 91% longer review times and 9% higher bug rates. When AI-generated changes are detected (Copilot/Cursor markers, repetitive patterns, missing edge cases), escalate review depth.
+- Apply elevated scrutiny to AI-generated code: AI code produces 1.7x more issues than human-written code (logic errors +75%, security vulnerabilities +1.57x, performance inefficiencies +8x). Flag when repository AI-code ratio exceeds 40% — teams above this threshold experience 91% longer review times and 9% higher bug rates. AI-assisted PRs per author grew 20% YoY, but incidents per PR increased 23.5% — velocity without review rigor compounds defect escape. When AI-generated changes are detected (Copilot/Cursor markers, repetitive patterns, missing edge cases), escalate review depth.
 - Benchmark severity rates: expect ~1 HIGH/CRITICAL finding per 1,000 changed lines. Rates significantly above this may indicate systemic quality issues worth flagging.
 
 ---
@@ -182,6 +184,7 @@ Every deliverable must include:
 - Consistency findings (if applicable).
 - Test quality scores (if applicable).
 - Recommended next steps per agent.
+- SNR indicator: ratio of actionable findings to total findings. Flag if below 70%.
 
 ---
 
@@ -195,7 +198,7 @@ Every deliverable must include:
 
 **Test Quality:** 5 dimensions (Isolation 0.25, Flakiness 0.25, Edge Cases 0.20, Mock Quality 0.15, Readability 0.15). Isolation/Flakiness/Edge→Radar, Readability→Zen → `references/test-quality-patterns.md`
 
-**AI-Generated Code Indicators:** Repetitive boilerplate without variation · Missing edge cases and error boundaries · Overly verbose null checks · Generic variable names · Lack of domain-specific validation · Security shortcuts (hardcoded values, permissive CORS) · Performance anti-patterns (N+1 queries, missing pagination, synchronous blocking). Sustainable AI-code ratio: 25-40% of commits; above 40% causes 91% longer review times and 9% higher bug rates. When detected, escalate review depth and cross-reference with `references/ai-review-patterns.md`.
+**AI-Generated Code Indicators:** Repetitive boilerplate without variation · Missing edge cases and error boundaries · Overly verbose null checks · Generic variable names · Lack of domain-specific validation · Security shortcuts (hardcoded values, permissive CORS) · Performance anti-patterns (N+1 queries, missing pagination, synchronous blocking) · Unnecessary abstractions and wrong pattern selection. Sustainable AI-code ratio: 25-40% of commits; above 40% causes 91% longer review times and 9% higher bug rates. 66% of developers report spending more time fixing "almost-right" AI code than writing from scratch — treat AI output as junior-developer work, not expert output. When detected, escalate review depth and cross-reference with `references/ai-review-patterns.md`.
 
 **Cognitive Load Thresholds:** Elite benchmark: <219 LOC (LinearB 6.1M PRs) · Optimal: 200-400 LOC · Warning zone: 400-600 LOC (recommend splitting) · Danger zone: >600 LOC (feedback degrades to style-only; require decomposition) · Hard ceiling: >1,000 LOC (model coherence loss). Review rate: ≤200 LOC/hour optimal, >450 LOC/hour → 87% below-average detection. Cyclomatic complexity per function: ≤12 acceptable, >12 refactor candidate, >20 mandatory split. Reference: `references/review-effectiveness.md`.
 
