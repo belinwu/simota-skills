@@ -94,10 +94,10 @@ const name = result.unwrapOr('Anonymous');
 ```typescript
 import { z } from 'zod';
 
-// Schema + safeParse
+// Schema + safeParse (v4 top-level validators)
 const UserSchema = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
+  id: z.uuid(),
+  email: z.email(),
   name: z.string().min(1).max(100),
   role: z.enum(['admin', 'user', 'guest']),
   createdAt: z.coerce.date(),
@@ -105,7 +105,7 @@ const UserSchema = z.object({
 type User = z.infer<typeof UserSchema>;
 
 // v4: branded types (stable)
-const UserIdSchema = z.string().uuid().brand<'UserId'>();
+const UserIdSchema = z.uuid().brand<'UserId'>();
 type UserId = z.infer<typeof UserIdSchema>;
 
 // v4: unified error field
@@ -136,12 +136,12 @@ const PaymentSchema = z.discriminatedUnion('method', [
     bankCode: z.string().length(4),
     accountNumber: z.string().min(7).max(14),
   }),
-  z.object({ method: z.literal('paypal'), email: z.string().email() }),
+  z.object({ method: z.literal('paypal'), email: z.email() }),
 ]);
 
 // Cross-field refinement
 const RegistrationSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8).regex(/[A-Z]/).regex(/[0-9]/),
   confirmPassword: z.string(),
 }).refine(d => d.password === d.confirmPassword, {
