@@ -75,7 +75,8 @@ Route elsewhere when the task is primarily:
 - Pair detection rules with recommended response actions (SOC playbook steps).
 - Treat detection rules as living code: version-controlled, peer-reviewed, CI/CD-deployed, and continuously tuned based on production feedback.
 - Apply Detection-as-Code (DaC) principles: detection logic is testable, repeatable, and integrated with development workflows — not UI-driven manual processes.
-- Use Sigma Specification v2.0+ as the default rule format — leverage correlation rules for multi-event detection sequences and new modifiers (cidr, regex, time extraction) for precision filtering. Use pySigma/sigma-cli as the conversion and validation toolchain.
+- Use Sigma Specification v2.1+ as the default rule format — leverage correlation rules for multi-event detection sequences, new modifiers (cidr, regex, time extraction) for precision filtering, and Sigma Filters for centralized false-positive exclusion rules that apply across multiple detections. Use pySigma/sigma-cli as the conversion and validation toolchain.
+- Align detection coverage mapping with MITRE ATT&CK v18+ Detection Strategies and Analytics — the framework now provides per-technique detection guidance replacing legacy Detections/Data Sources, giving structured blueprints for what to detect and how.
 
 ---
 
@@ -187,7 +188,7 @@ questions:
 
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
-| `ASSESS` | Map current detection coverage against MITRE ATT&CK; identify gaps | Prioritize Initial Access + Execution gaps first | `references/detection-patterns.md` |
+| `ASSESS` | Map current detection coverage against MITRE ATT&CK v18+ Detection Strategies; identify gaps | Prioritize Initial Access + Execution gaps first; use per-technique Analytics as blueprints | `references/detection-patterns.md` |
 | `DESIGN` | Design detection rules for identified gaps or specific threats | Every rule must map to ATT&CK technique with sub-technique | `references/detection-patterns.md` |
 | `BUILD` | Write rules in Sigma/YARA/platform-native format | Use Sigma as default (platform-agnostic); YARA for file/memory patterns | `references/detection-patterns.md` |
 | `TEST` | Validate syntax, true positives, false positives, performance | FP rate must meet severity thresholds before deployment | `references/detection-as-code.md` |
@@ -288,6 +289,21 @@ condition:
 action: correlation
 ```
 
+**Sigma Filter example (centralized FP exclusion, v2.1+):**
+```yaml
+title: Exclude IT Admin Encoded PowerShell
+logsource:
+  product: windows
+  category: process_creation
+filter:
+  selection:
+    User|contains:
+      - 'svc_deploy'
+      - 'admin_scripts'
+    ParentImage|endswith: '\sccm.exe'
+  condition: not selection
+```
+
 Use `pySigma` + `sigma-cli` for rule validation, conversion, and pipeline integration (legacy `sigmac` is deprecated).
 
 ### 4. TEST (Validation)
@@ -344,13 +360,14 @@ HUNTING_HYPOTHESIS:
 
 | # | Anti-Pattern | Check | Fix |
 |---|-------------|-------|-----|
-| AP-1 | **Alert Fatigue Factory** — deploying noisy rules that overwhelm analysts | FP rate measured? | Tune thresholds, add exclusions, test with production data |
+| AP-1 | **Alert Fatigue Factory** — deploying noisy rules that overwhelm analysts. Each false positive is attention debt: it compounds, making the next real alert less likely to be noticed. Average SOC receives 3,800+ alerts/day; only ~25% get triaged | FP rate measured? Alert volume per analyst tracked? | Tune thresholds, add exclusions, use Sigma Filters for centralized FP management, test with production data |
 | AP-2 | **Coverage Theater** — claiming ATT&CK coverage without testing rules | Rules validated against real attacks? | Run true positive tests with Breach attack scenarios |
 | AP-3 | **Write-and-Forget** — deploying rules without lifecycle management | Rule review cadence defined? | Establish detection rule retirement and tuning schedule |
 | AP-4 | **Copy-Paste Rules** — using community rules without adaptation | Rules tuned for this environment? | Customize log sources, thresholds, and exclusions |
 | AP-5 | **Detection Silo** — building rules without attack team input | Breach findings consumed? | Establish Purple Team feedback loop |
 | AP-6 | **Endpoint Tunnel Vision** — detecting only on one telemetry layer | Multiple domains covered? | Add network, cloud, and application-layer detections |
 | AP-7 | **Static Detection Logic** — rules that never adapt to environmental context | Rules incorporate environmental baselines? | Add context-aware thresholds, user/entity baselines, and Sigma correlation rules for multi-event sequences |
+| AP-8 | **Visibility Theater** — equating data ingestion volume with security posture. Ingesting 10TB/day of logs without detection logic is an expensive data warehouse, not a security program | Detection rules exist for ingested log sources? | Ensure every ingested log source has at least one detection rule; retire unused log sources to reduce cost and noise |
 
 ---
 
