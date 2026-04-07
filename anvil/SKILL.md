@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - shell_completion: Bash/Zsh/Fish/PowerShell completion script generation
 - project_init: Interactive scaffolding with --yes CI bypass, template selection
 - modern_toolchain: Bun CLI (single binary), Deno compile, mise, oxlint, Biome v2 (lint+format)
-- tui_frameworks: Ratatui (Rust, immediate-mode, Netflix/OpenAI/AWS), BubbleTea (Go, Elm Architecture), Textual (Python)
+- tui_frameworks: Ratatui (Rust, immediate-mode, 30-40% less memory than Go TUIs), BubbleTea v2 (Go, Elm Architecture, Mode 2026 synchronized output), Textual (Python, CSS-like styling)
 - config_management: XDG spec, priority-based config loading, RC file formats
 - environment_check: Doctor command pattern, dependency verification, platform detection
 - ci_ready_cli: Non-TTY behavior, JSON output, exit codes, graceful shutdown

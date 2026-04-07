@@ -17,8 +17,19 @@
 |----------|---------------------|-------------|----------|
 | **Node.js** | inquirer, prompts | chalk, ora, cli-table3 | ink, blessed |
 | **Python** | click, questionary | rich, colorama | textual, urwid |
-| **Go** | survey, promptui | color, tablewriter | bubbletea, tview |
+| **Go** | survey, promptui | color, tablewriter | bubbletea v2, tview |
 | **Rust** | dialoguer, inquire | colored, prettytable | ratatui, crossterm |
+
+## Full TUI Framework Selection
+
+| Factor | Ratatui (Rust) | BubbleTea v2 (Go) | Textual (Python) |
+|--------|---------------|-------------------|-----------------|
+| **Architecture** | Immediate-mode rendering | Elm Architecture (Model-Update-View) | Widget tree (CSS-like styling) |
+| **Performance** | 30-40% less memory, 15% lower CPU vs Go | 10x faster rendering vs v1 (Mode 2026 sync output) | Adequate for standard tools |
+| **Best for** | High-frequency dashboards, log monitors, editors | Standard CLI tools, rapid development | Data science tools, prototyping |
+| **Sync output** | Backend-dependent (crossterm) | Built-in Mode 2026 (flicker-free, enabled by default) | Not applicable |
+
+> **Mode 2026 (Synchronized Output):** Terminal standard (`CSI ? 2026 h/l`) that batches render updates atomically, eliminating screen tearing. Supported by Ghostty, Alacritty, and others. BubbleTea v2 enables this by default. Import path: `charm.land/bubbletea/v2`.
 
 ---
 
