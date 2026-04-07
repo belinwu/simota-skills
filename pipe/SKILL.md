@@ -44,7 +44,7 @@ Use Pipe when:
 - Configuring branch protection, merge queues, or environment protection rules
 - Extracting reusable workflows, composite actions, or org workflow templates
 - Designing PR automation: labeling, assignment, checks, merge policies
-- Migrating to 2026 features: `dependencies` section (deterministic locking), egress firewall, scoped secrets, action allowlisting, centralized rulesets, artifact attestations, Actions Data Stream, immutable actions (OCI/GHCR)
+- Migrating to 2026 features: `dependencies` section (deterministic locking), egress firewall, scoped secrets, action allowlisting, centralized rulesets, artifact attestations, Actions Data Stream, immutable actions (OCI/GHCR), OIDC custom property claims, IANA cron timezone, `case` expression function, `deployment: false` for environments, runner scale set client
 - The task mentions `.github/workflows/*`, `workflow_call`, `workflow_dispatch`, `repository_dispatch`, `workflow_run`, `merge_group`, OIDC, `dorny/paths-filter`, artifact attestations, or environment protection
 - Default scope: one workflow lane at a time. Split large workflow programs into separate sessions.
 
@@ -124,7 +124,7 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 | Filtering | Use branch and tag filters at workflow level. Use workflow-level `paths` only for whole-workflow skipping. Use `dorny/paths-filter` for job-level routing. If required checks must always report, add an always-run `ci-gate` job. |
 | Permissions | Start with top-level `permissions: {}`. Grant job-level scopes only where required. `contents: read` is the normal default. |
 | Third-party actions | Pin every third-party action to a full SHA. Use Dependabot or Renovate to refresh pins. Prefer org allow-lists with SHA pinning enforcement policy (GA Aug 2025). When available, use `dependencies` section for deterministic transitive locking. For org-owned actions, consider immutable actions via OCI/GHCR when available. |
-| Cloud auth | Prefer OIDC over long-lived cloud credentials. Add `id-token: write` only to jobs that mint cloud tokens. Never store cloud credentials as repository secrets when OIDC is available. |
+| Cloud auth | Prefer OIDC over long-lived cloud credentials. Add `id-token: write` only to jobs that mint cloud tokens. Never store cloud credentials as repository secrets when OIDC is available. Use OIDC custom property claims (repo custom properties embedded in tokens) for granular trust policies — scope cloud roles to specific teams, environments, or project classifications without per-repo configuration. |
 | Egress controls | When available, enable egress firewall in monitor mode first. Build allowlists from observed traffic before switching to enforcement. Define allowed domains, IP ranges, and TLS requirements. Egress firewall operates at L7 outside the runner VM — immutable even with root access inside. |
 | Artifact provenance | Use artifact attestations (`actions/attest-build-provenance`) for release artifacts. Public repos use Sigstore public good instance; private repos use GitHub private store. Verify with `gh attestation verify`. |
 | CI/CD observability | Enable Actions Data Stream for security-critical pipelines. Telemetry correlates to workflow/job/step/command. Route to S3 or Azure Event Hub. Use centralized rulesets to enforce workflow execution policies at org level. |
@@ -133,8 +133,8 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 | Runner cost | Default to Ubuntu. Consider ARM when compatible (37% cheaper than x64, free for public repos). Use Windows or macOS only for platform-specific validation. |
 | Reuse threshold | Extract a reusable workflow after `3+` copies of the same pipeline (multi-job). Extract a composite action after `3+` copies of the same setup steps (multi-step within a job). Keep `1-2` copies inline. Don't put job orchestration logic into composite actions. Start with local `./.github/actions/`, graduate to shared repos when patterns prove cross-project value. |
 | Monorepo routing | Use `dorny/paths-filter`, `nx affected`, or `turbo --filter` to limit scope. Required checks and selective execution must be reconciled with an always-run gate job. |
-| Deployment safety | Protect deploy jobs with environments, reviewers, and concurrency. Keep deploy rollback available via `workflow_dispatch` or an equivalent controlled entry point. |
-| Self-hosted runners | Use ephemeral runners and ARC when scale or network locality justify them. Never use self-hosted runners for public repositories. |
+| Deployment safety | Protect deploy jobs with environments, reviewers, and concurrency. Use `deployment: false` on environments that gate non-deploy jobs (e.g., approval-only, secret-scoping) to avoid polluting deployment history. Keep deploy rollback available via `workflow_dispatch` or an equivalent controlled entry point. |
+| Self-hosted runners | Use ephemeral runners and ARC when scale or network locality justify them. For non-K8s environments, use the runner scale set client (standalone Go module) for custom autoscaling. Never use self-hosted runners for public repositories. |
 
 ## Routing And Handoffs
 
