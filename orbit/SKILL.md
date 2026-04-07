@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - state_recovery: Recover from state drift, corrupted evidence, or inconsistent loop artifacts
 - proactive_health_review: Pre-failure health assessment and risk reporting
 - loop_learning: Evidence-based parameter adaptation with LES scoring and safety guardrails
-- convergence_detection: Detect semantically stuck loops via action similarity and output delta analysis
+- convergence_detection: Detect semantically stuck loops via action similarity, oscillation pattern, and output delta analysis
 - deduplication_guard: Block duplicate or semantically equivalent tool calls within a sliding window
 
 COLLABORATION_PATTERNS:
@@ -117,6 +117,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Retry without exponential backoff — ties up threads, exhausts connection pools, and causes cascading failure in upstream services. [Source: medium.com/@rafaeljcamara — Downstream Resiliency Patterns]
 - Use stateless recovery for long-running workflows — state must be checkpointed to survive interruptions gracefully. [Source: spaceo.ai — Agentic AI Frameworks 2026]
 - Allow duplicate tool calls without de-duplication — check the last `5` actions before execution; block if the agent is about to repeat the same call or a semantically equivalent rephrasing. [Source: medium.com/@sattyamjain96 — Loop of Death in Production Agents]
+- Treat action oscillation (A→B→A→B alternation) as progress — oscillation produces zero net artifact change despite appearing active; classify as `OSCILLATION_LOOP` and escalate. [Source: agentpatterns.tech — Infinite Agent Loop; gantz.ai — Why Agents Get Stuck in Loops]
 - Run unmonitored loops without token budget caps — recursive agent loops have escalated from $127 to $18,400/week when cost tracking was absent. [Source: earezki.com — The $47,000 AI Agent Loop]
 - Stack retry layers across multiple abstraction levels (load balancer + service code + client library) — this doubles or triples call volume to a failing endpoint, worsening cascading failure. [Source: medium.com/@michael.hannecke — Resilience Circuit Breakers for Agentic AI]
 
@@ -252,11 +253,12 @@ Traditional circuit breakers catch error-code failures but miss semantic failure
 
 | Metric | Threshold | Action |
 |--------|-----------|--------|
-| Action similarity | `>= 85%` across `3` consecutive iterations | block and escalate |
+| Action similarity | `>= 85%` across `3` consecutive iterations | block and escalate as `CONVERGENCE_STALL` |
+| Action oscillation | `>= 3` A↔B alternation cycles in last `6` iterations | block and escalate as `OSCILLATION_LOOP` |
 | Output delta | `< 5%` net change in artifacts across `3` iterations | flag as stalled |
 | Token burn rate | `> 2x` median cost per iteration | alert and review |
 
-Detection checks run after each iteration. When triggered, emit `BLOCKED` with class `CONVERGENCE_STALL` and persist state for human review. [Source: dev.to/boucle2026 — Stuck Agent Detection from 220 Loops]
+Detection checks run after each iteration. Similarity detection catches same-action repetition; oscillation detection catches agents alternating between two contradictory actions (A produces state favoring B, B produces state favoring A) where individual actions differ but net progress is zero. [Source: dev.to/boucle2026 — Stuck Agent Detection from 220 Loops; agentpatterns.tech — Infinite Agent Loop patterns]
 
 ### 3-Tier Timeout
 
@@ -370,6 +372,7 @@ If any item is missing, return `CONTINUE`.
 | `TOOL_FAILURE` | runner or executor halt | bounded retry, then recovery or escalation |
 | `CIRCUIT_OPEN` | repeated same-signature failure | cooldown or manual reset |
 | `CONVERGENCE_STALL` | semantically equivalent actions with no progress | persist state, escalate to human |
+| `OSCILLATION_LOOP` | agent alternates between two contradictory actions (A→B→A→B) with no net progress | inject disambiguation context or restrict action space, then escalate |
 
 ### Severity Matrix
 
