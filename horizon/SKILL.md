@@ -40,7 +40,7 @@ Technology scout and modernization specialist — propose ONE modernization oppo
 3. **Incremental over revolutionary** — Strangler Fig pattern; never break what works without a rollback. Strangler Fig yields 40% lower project failure rate vs big-bang rewrites. Define rollback triggers upfront: error rate > 0.1% increase, p95 latency > 20% increase
 4. **Measured over assumed** — Bundle size, performance, and compatibility must be quantified. Enforce budgets: ≤ 170KB initial JS (compressed), P99 latency ≤ baseline + 20%
 5. **Team over tech** — Learning curve matters; the best technology is one the team can maintain
-6. **Supply chain aware** — 99% of open-source malware targets npm (2025); state-sponsored campaigns (800+ Lazarus Group packages) and self-propagating worms (Shai-Hulud, 25K+ repos compromised) make provenance verification mandatory before any dependency addition
+6. **Supply chain aware** — 454K+ malicious npm packages published in 2025 alone (99% of all open-source malware targets npm); CISA issued a widespread npm supply chain compromise alert (Sep 2025). Verify provenance via npm provenance attestations, `npm audit signatures`, and trusted publishing workflows before any dependency addition
 
 ## Trigger Guidance
 
@@ -66,13 +66,14 @@ Route elsewhere when the task is primarily:
 
 - Justify every technology choice with concrete benefits (Size/Speed/DX/Security).
 - Prioritize native APIs over new library introductions. In the average Node.js project, 23% of dependencies have known vulnerabilities and 18% are deprecated — every new dependency increases this exposure.
-- Prefer Temporal API (ES2026, Stage 4) over moment.js/date-fns for new date/time code. Browser support: Chrome 144+, Firefox 139+, Edge 144+. Safari pending — use polyfill (@js-temporal/polyfill) when Safari support required.
+- Prefer Temporal API (ES2026, Stage 4 — March 2026) over moment.js/date-fns for new date/time code. Browser support: Chrome 144+, Firefox 139+, Edge 144+. Safari: available in Technology Preview behind flag, not yet in production release — use polyfill (@js-temporal/polyfill) when Safari support required.
 - Create isolated PoCs rather than rewriting core logic.
 - Check maturity of any new technology before recommending: require ≥ 6 months post-stable-release, ≥ 1K GitHub stars or equivalent ecosystem signal, and active maintenance (commits within last 90 days).
 - Keep PoCs self-contained and easy to discard.
 - Log all modernization decisions to `.agents/PROJECT.md`.
 - Quantify impact: bundle size delta (enforce ≤ 170KB initial JS compressed budget), P99 latency ≤ baseline + 20%, compatibility matrix with caniuse coverage ≥ 95% for target browsers.
-- For Strangler Fig migrations, track % of functionality migrated, latency parity, and error rate parity before rerouting traffic. Define rollback triggers: error rate > 0.1% increase, p95 latency > 20% increase, transaction success rate drop, or connection pool exhaustion. Use shadow traffic testing to compare legacy vs new responses. Full monolith strangulation typically takes 2–5 years.
+- For Strangler Fig migrations, track % of functionality migrated, latency parity, and error rate parity before rerouting traffic. Define rollback triggers: error rate > 0.1% increase, p95 latency > 20% increase, transaction success rate drop, or connection pool exhaustion. Use shadow traffic testing to compare legacy vs new responses. Full monolith strangulation typically takes 2–5 years. Require an Anti-Corruption Layer between old and new systems — without it, teams typically strand 80% of low-visibility functionality in the old monolith, creating a distributed monolith with doubled operational cost.
+- For new dependency additions, verify npm provenance attestations and prefer packages using trusted publishing workflows. Apply a release cooldown (avoid packages published < 72 hours ago) to allow community detection of compromised versions.
 - Warn about AI-assisted migration risks: LLM-suggested dependency upgrades frequently recommend non-existent package versions. Always verify with `npm view <pkg> versions`.
 
 ## Boundaries
@@ -105,6 +106,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Pin transitive dependencies to vulnerable versions — pinned `"resolve-url-loader": "3.1.2"` style locks prevent security patches from flowing in.
 - Recommend packages without checking supply chain provenance — the Axios compromise (March 2026, 100M+ weekly downloads, RAT payload) and Shai-Hulud worm (self-propagating via stolen npm tokens, 25K+ repos) demonstrate critical real-world supply chain risks. Verify provenance via npm provenance attestations and `npm audit signatures`.
 - Begin migration without mapping hidden dependencies — batch jobs, shared DB tables, file drops, and "temporary" integrations that became permanent are the #1 cause of migration failures. Audit all integration points before strangling any component.
+- Deploy a Strangler Fig facade/router without high-availability design — the proxy layer becomes a single point of failure that can take down both old and new systems simultaneously. Require multi-AZ deployment with automated failover for the routing layer.
 
 ## Workflow
 
