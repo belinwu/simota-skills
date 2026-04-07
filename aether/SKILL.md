@@ -7,7 +7,7 @@ description: AITuber（AI VTuber）システムの企画から実装・運用ま
 CAPABILITIES_SUMMARY:
 - Real-time streaming pipeline orchestration (Chat → LLM → TTS → Avatar → OBS)
 - Live chat integration design (YouTube Live Chat API, Twitch IRC/EventSub)
-- TTS engine integration and pipeline (VOICEVOX, Style-Bert-VITS2, COEIROINK, NIJIVOICE)
+- TTS engine integration and pipeline (VOICEVOX, Style-Bert-VITS2, COEIROINK, NIJIVOICE, Fish Speech, CosyVoice2, Piper)
 - Avatar control design (Live2D Cubism SDK, VRM/@pixiv/three-vrm)
 - Lip sync and emotion-to-expression mapping (Japanese phoneme → Viseme)
 - OBS WebSocket automation and scene management
@@ -73,8 +73,9 @@ Route elsewhere when the task is primarily:
 - Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion.
 - Implement WebSocket reconnection with exponential backoff; WebSocket failures disrupt all interactive features. [Source: Open-LLM-VTuber]
 - Distinguish inference latency from production latency: a model benchmarking 100ms on dedicated GPU can deliver 800ms+ on shared cloud with network, queueing, and encoding overhead. Always measure end-to-end. [Source: inworld.ai 2026 benchmarks]
-- Use TTFA (Time to First Audio) as the primary TTS latency metric — it measures when the user hears the first syllable, not when synthesis completes. Target < 200ms; best-in-class achieves 40ms. [Source: camb.ai, deepgram.com]
-- For GPU-constrained or CPU-only deployments, consider lightweight TTS models (e.g., Kyutai Pocket TTS, 100M params, CPU real-time capable). [Source: kyutai.org]
+- Use TTFA (Time to First Audio) as the primary TTS latency metric — it measures when the user hears the first syllable, not when synthesis completes. Target < 200ms; best-in-class open-source achieves sub-150ms (Fish Speech S2 Pro on H200). [Source: camb.ai, neosophie.com]
+- Generate multiple TTS audio segments concurrently and send them sequentially — prioritize the first sentence fragment for synthesis and playback to minimize perceived latency. [Source: Open-LLM-VTuber concurrent audio generation]
+- For GPU-constrained or CPU-only deployments, consider lightweight TTS models (e.g., Piper ONNX for CPU real-time, Kyutai Pocket TTS 100M params). [Source: Open-LLM-VTuber docs, kyutai.org]
 - Define metrics, alert thresholds, and recovery behavior for every live pipeline.
 - Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly.
 - Unify the text→LLM→TTS→play→history pipeline to prevent stale audio playback. [Source: github.com/Scikous/Vtuber-AI]
@@ -201,7 +202,7 @@ Every deliverable must include:
 | Metric | Target | Alert threshold | Default action |
 |--------|--------|-----------------|----------------|
 | Chat → Speech latency | `< 3000ms` | `> 4000ms` | Log and reduce LLM token budget |
-| TTS TTFA (Time to First Audio) | `< 200ms` | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; best-in-class: Cartesia 40ms, Inworld sub-200ms TTFA [Source: inworld.ai, camb.ai] |
+| TTS TTFA (Time to First Audio) | `< 200ms` | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; best-in-class open-source: Fish Speech S2 Pro sub-150ms, CosyVoice2 150ms streaming [Source: neosophie.com, siliconflow.com] |
 | TTS queue depth | `< 5` | `> 10` | Skip or defer low-priority messages |
 | Dropped frames | `0%` | `> 1%` | Reduce OBS encoding load |
 | Avatar FPS | `30fps` | `< 20fps` | Simplify expression and rendering load |

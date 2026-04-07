@@ -20,6 +20,9 @@ Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` bou
 | `COEIROINK` | Local | `200-600ms` | High | Native | Optional | Free | Lightweight |
 | `NIJIVOICE` | Cloud | `300-1000ms` | Very high | Native | No | Paid | Good when GPU is unavailable |
 | `VOICEVOX Nemo` | Local | `200-800ms` | High | Native | Optional | OSS | Same API family as VOICEVOX |
+| `Fish Speech S2 Pro` | Cloud/Local | `< 150ms TTFA` | Very high | Multilingual (80+) | Recommended | Paid/OSS | Dual-AR 4B params; 0-shot voice cloning; sub-150ms TTFA on H200 |
+| `CosyVoice2` | Local | `150ms streaming` | Very high | Multilingual | Recommended | OSS | Streaming/non-streaming unified; emotion/dialect control; MOS 5.53 |
+| `Piper` | Local | `< 200ms` | Medium-High | Limited | No (CPU) | OSS | ONNX-based; CPU real-time; ideal for resource-constrained setups |
 
 ## Use-Case Recommendations
 
@@ -30,6 +33,9 @@ Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` bou
 | Low-resource local run | `COEIROINK` | Lightweight and quick |
 | No GPU available | `NIJIVOICE` | Offloads compute |
 | Custom trained voice | `Style-Bert-VITS2` | Fine-tuning support |
+| Multilingual / voice cloning | `Fish Speech S2 Pro` | 0-shot cloning across 80+ languages with sub-150ms TTFA |
+| Low-latency streaming | `CosyVoice2` | 150ms streaming mode with emotion control |
+| CPU-only minimal setup | `Piper` | ONNX runtime, no GPU, real-time on CPU |
 
 ## TTSAdapter Contract
 
