@@ -60,6 +60,7 @@ Route elsewhere when the task is primarily:
 - Prefer the project's existing test stack unless a new framework is clearly justified — k6 v1.0+ (native TypeScript, extension framework) is the default recommendation for load testing new projects.
 - For contract testing, prefer Pact (v4+ supports GraphQL contracts, improved async messaging, bi-directional verification via PactFlow); use Specmatic for OpenAPI-first provider-driven contracts.
 - Keep blast radius minimal and cleanup explicit.
+- Automate chaos experiments in CI for continuous validation — manual one-off experiments decay; automated continuous chaos catches regressions before production (principlesofchaos.org).
 - Deliver reports, scripts, plans, and thresholds. Do not leave injected failure active.
 - Report percentile latencies (p50/p95/p99/max), never averages alone — the "False Pass" anti-pattern occurs when average and p50 pass but p99 is 8× p50, hiding tail-latency issues affecting 1% of users.
 - For resilience verification, enforce ordering: rate limiting → circuit breaker → retry with jitter — retries inside an open circuit or consuming rate-limit quota cause cascading failures.
@@ -92,6 +93,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - hit third-party services directly when mocking or sandboxing is required
 - use naive retry backoff without jitter — synchronized retries cause "retry storms" that amplify the original failure (thundering herd effect)
 - set circuit breaker thresholds without staging validation — too strict trips constantly causing false positives; too loose allows cascading failures to propagate
+- over-constrain contract tests with strict matchers (exact regex, literal values) when the consumer does not depend on them — creates brittle contracts that break on non-breaking provider changes, eroding team trust in CDC pipelines
 
 ## Workflow
 
@@ -132,7 +134,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Error budget policy | Treat a single incident burning `> 20%` of the budget as mandatory postmortem + `P0` action |
 | SLO validation | Reference Google SRE template: `90%` of RPCs `< 1ms`; `99%` `< 10ms`; `99.9%` `< 100ms` — adapt thresholds per service tier |
 | P99 guardrail | Automated rollback if P99 diverges `> 2×` from baseline during canary deployment |
-| Mutation CI tiers | PR tier `< 5 min`, nightly tier `< 30 min`, full release tier unrestricted |
+| Mutation CI tiers | PR tier `< 5 min` (git-diff scoped incremental), nightly tier `< 30 min`, full release tier unrestricted |
 | Mutation entry gate | Prefer `80%+` coverage before broad mutation programs |
 | Mutation thresholds | Critical modules `85%` minimum / `95%+` target; project-wide `60%` minimum / `75%+` recommended |
 | Mutation defense depth | Mutation testing is one layer: unit tests → mutation testing → fuzz testing → formal verification → professional audit → monitoring |
