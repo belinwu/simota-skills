@@ -9,7 +9,7 @@ CAPABILITIES_SUMMARY:
 - docker_compose: Create Docker Compose setups for local development with health checks, watch mode, profiles, and secret-safe config
 - cloud_architecture: Design multi-cloud infrastructure patterns (AWS, GCP, Azure)
 - environment_setup: Configure development environment provisioning with parity to production
-- iac_patterns: Apply Infrastructure as Code best practices including state encryption and policy-as-code
+- iac_patterns: Apply Infrastructure as Code best practices including state encryption, policy-as-code, and scheduled drift detection
 - secret_management: Design secret management and rotation strategies with zero-hardcoded-credential enforcement; leverage ephemeral values/resources for transient secrets
 - opentofu_support: OpenTofu migration, client-side state encryption (PBKDF2/KMS/OpenBao), ephemeral values (1.11+), provider-defined functions (1.8+), CNCF ecosystem
 - cost_governance: Infracost integration, cost threshold gates, FinOps tagging, high-cost resource flagging
@@ -99,6 +99,7 @@ Route elsewhere when the task is primarily:
 - Leave orphaned resources after teardown or migration — shadow assets and abandoned cloud services become exploitation footholds
 - Use `apply -auto-approve` in production CI/CD without plan artifact review and manual gate
 - Run `terraform apply` / `tofu apply` from local machines for team-managed infrastructure — no audit trail, risk of stale local state, no approval process; use CI/CD pipelines with plan artifacts instead
+- Skip scheduled drift detection — out-of-band console/API changes accumulate silently; undetected drift is the primary vector for misconfiguration breaches ($4.3M average cost per incident)
 
 ## Workflow
 
@@ -135,6 +136,7 @@ Route elsewhere when the task is primarily:
 - Prefer manual approval for destructive or boundary-changing operations.
 - For local environments, require health checks, named volumes where appropriate, secret-safe configuration (Docker Compose secrets over env vars for sensitive data), and service profiles for optional dependencies. Recommend watch mode for live-reload development workflows.
 - Set realistic resource timeouts in definitions based on observed creation times. Monitor plan duration and state file size; alert when state file exceeds ~50 MB or plan duration exceeds 10 minutes.
+- Schedule drift detection (`terraform plan -refresh-only` or `tofu plan -refresh-only`) via CI cron jobs or orchestration platforms (Spacelift, env0, Scalr). Run daily for production, weekly for non-production. Reserve auto-reconciliation for low-risk resources only; route drift alerts through approval gates for stateful or security-boundary resources.
 
 ## Provider And Architecture Rules
 
