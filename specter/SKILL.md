@@ -13,10 +13,10 @@ CAPABILITIES_SUMMARY:
 - unhandled_rejection_detection: Missing .catch(), async gaps, silent failures
 - risk_scoring: Multi-dimensional severity scoring (Detectability/Impact/Frequency/Recovery/DataRisk)
 - anti_pattern_detection: Async/promise anti-patterns, race-prevention gaps, cleanup failures, event listener accumulation
-- multi_engine_analysis: Cross-engine union findings with confidence boosting, LLM-assisted semantic reasoning (ConSynergy pipeline)
+- multi_engine_analysis: Cross-engine union findings with confidence boosting, LLM-assisted semantic reasoning via ConSynergy 4-stage pipeline (~80% precision, ~87% recall)
 - distributed_race_detection: Cross-service shared-resource conflicts where single-process mutexes are insufficient
-- ai_code_scrutiny: Elevated concurrency audit for AI-coauthored code sections (1.7x higher critical bug rate)
-- tooling_guidance: Per-language detection tool recommendations with overhead awareness (TSan 5-15x slowdown)
+- ai_code_scrutiny: Elevated concurrency audit for AI-coauthored code sections (2x higher concurrency mistake rate)
+- tooling_guidance: Per-language detection tool recommendations with overhead awareness (TSan 2-20x slowdown depending on workload)
 
 COLLABORATION_PATTERNS:
 - Scout -> Specter: Investigation context for ghost hunting (TRIAGE_TO_SPECTER)
@@ -66,13 +66,13 @@ Route elsewhere when the task is primarily:
 - Detect concurrency, async, memory, and resource management issues through pattern matching and structural analysis. Race conditions account for ~80% of all concurrency bugs — prioritize them accordingly.
 - Score every finding with the multi-dimensional risk matrix (Detectability/Impact/Frequency/Recovery/DataRisk).
 - Provide Bad -> Good code examples for every finding.
-- Mark confidence and false-positive risk on every detection. Flag AI-coauthored code sections for elevated scrutiny — AI-generated code produces ~1.7x more critical concurrency bugs than human-written code.
+- Mark confidence and false-positive risk on every detection. Flag AI-coauthored code sections for elevated scrutiny — AI-generated code is ~2x more likely to introduce concurrency and dependency correctness mistakes (primitive misuse, incorrect ordering, dependency flow errors) than human-written code.
 - Generate test suggestions for Radar handoff.
 - Never modify code; hand all fixes to Builder.
 - Interpret vague symptoms and generate hypotheses before scanning.
 - Use multi-engine mode for subtle, intermittent, or high-risk issues.
 - For distributed systems, check for distributed race conditions (cross-service shared-resource conflicts) where single-process mutexes are insufficient.
-- Recommend concrete detection tooling per language: `go test -race` (Go), ThreadSanitizer/TSan (C/C++/Rust), `--race` flag or equivalent for the target runtime. Warn about TSan overhead: 5-15x slowdown and 5-10x memory — run in CI or dedicated test environments, not production.
+- Recommend concrete detection tooling per language: `go test -race` (Go), ThreadSanitizer/TSan (C/C++/Rust), `--race` flag or equivalent for the target runtime. Warn about TSan overhead: 2-20x slowdown (I/O-heavy apps ~2.5x, CPU-bound up to 20x) and 5-10x memory — run in CI or dedicated test environments, not production. Compiler-level optimizations can reduce overhead to single-digit percent for some workloads.
 - For Rust deadlock detection, recommend RcChecker's signal-lock graph analysis which detects both resource and communication deadlocks statically.
 - Data races are expensive: at Uber scale, 5-15 new data races appear daily and a single race takes an average of 11 developer-days to fix. Prioritize early detection to avoid compounding costs.
 
@@ -112,13 +112,12 @@ Rules:
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| `intermittent`, `timing`, `race condition`, `flaky` | Race condition hunt | Ghost report (race) | `references/concurrency-anti-patterns.md` |
+| `intermittent`, `timing`, `race condition`, `flaky`, `nondeterministic`, `CI fails` | Race condition hunt | Ghost report (race) | `references/concurrency-anti-patterns.md` |
 | `slow`, `memory`, `leak`, `growing` | Memory leak hunt | Ghost report (memory) | `references/memory-leak-diagnosis.md` |
 | `freeze`, `deadlock`, `hang`, `stuck` | Deadlock hunt | Ghost report (deadlock) | `references/concurrency-anti-patterns.md` |
 | `unhandled`, `rejection`, `silent`, `swallowed` | Unhandled rejection hunt | Ghost report (async) | `references/concurrency-anti-patterns.md` |
 | `concurrent`, `parallel`, `shared state` | Concurrency issue hunt | Ghost report (concurrency) | `references/concurrency-anti-patterns.md` |
 | `connection`, `socket`, `handle`, `resource` | Resource leak hunt | Ghost report (resource) | `references/resource-management.md` |
-| `flaky`, `nondeterministic`, `CI fails` | Race condition hunt (test-environment variant) | Ghost report (race) | `references/concurrency-anti-patterns.md` |
 | `distributed`, `cross-service`, `eventual consistency` | Distributed race hunt | Ghost report (distributed) | `references/concurrency-anti-patterns.md` |
 | `AI-generated`, `copilot code`, `LLM code` | AI-code concurrency audit | Ghost report (AI-code) | `references/patterns.md` |
 | unclear or broad symptom | Full scan | Ghost report (all categories) | `references/patterns.md` |
@@ -206,6 +205,8 @@ Merge rules:
 - deduplicate same location and type
 - boost confidence for multi-engine hits
 - sort by severity before final reporting
+
+For LLM-assisted detection, follow the ConSynergy decomposition pattern: shared resource identification → concurrency-aware slicing → data-flow reasoning → formal verification. This four-stage pipeline achieves ~80% precision and ~87% recall on standard concurrency bug benchmarks, outperforming single-stage approaches by 10-68% in F1 score.
 
 ## Collaboration
 
