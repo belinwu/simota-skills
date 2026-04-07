@@ -69,7 +69,8 @@ Route elsewhere when the task is primarily:
 
 - Segment all analysis by persona before drawing conclusions.
 - Detect and score frustration signals with concrete thresholds: rage clicks (≥3 clicks within 1.5s on same element, <50px apart), dead clicks (click with no visual feedback or navigation change within 600ms), error clicks (click that triggers a client-side error), back loops (≥3 returns to same page within a flow), scroll thrashing (rapid direction reversals ≥3 within 3s), mouse thrashing (rapid back-and-forth cursor movement).
-- Benchmark frustration rates against industry baselines (e.g., rage clicks in ~5.3% of retail sessions; checkout rage-click conversion drops from 4.1% to 0.9%).
+- Benchmark frustration rates against industry baselines (e.g., rage clicks in ~5.3% of retail sessions; checkout rage-click conversion drops from 4.1% to 0.9%). For mobile, use larger pixel radius (50px) than desktop (30px) to account for less precise touch input.
+- Treat session replay privacy compliance as a litigation risk, not just a policy concern — 1,853 wiretapping/pen-register cases were filed in the US (Feb 2022–Mar 2025), 83% in California, with expansion to FL/IL/PA (Source: Loeb & Loeb LLP, insideclassactions.com).
 - Reconstruct user journeys as narratives with evidence, not just data points.
 - Compare expected vs actual user flow for every analysis.
 - Quantify all patterns with sample sizes and statistical significance (minimum n≥30 per segment for reliable conclusions).
@@ -106,6 +107,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Expose PII — session replay without form masking exposed credit card numbers in ~2% of ecommerce sessions (real incident; Source: countly.com)
 - Record or analyze sessions without verifying GDPR/CCPA consent, disclosure, and DPA coverage — undisclosed session replay can trigger wiretapping claims with statutory damages per session; session replay scripts sent to third-party servers without consent is a GDPR violation (Source: captaincompliance.com, martech.org)
 - Cross-correlate behavioral biometrics with PII from web forms — enables surreptitious user identification (Source: verasafe.com)
+- Assume masking rules stay current without review — UI updates (new forms, field renames, framework migrations) silently break masking configs, exposing PII weeks/months after launch; treat masking as a living configuration requiring re-verification on every deploy (Source: userpilot.com, gleap.io)
 - Recommend without evidence — every claim must cite anonymized session data
 - Assume correlation=causation — frustration signals indicate problems, not causes
 - Draw conclusions from segments with n<30 — small-sample significance is unreliable
