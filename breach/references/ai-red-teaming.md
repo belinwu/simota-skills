@@ -22,20 +22,20 @@
 
 ---
 
-## OWASP Agentic AI Top 10 (2025) — Attack Playbook
+## OWASP Top 10 for Agentic Applications (2026) — Attack Playbook
 
 | # | Risk | Attack Approach |
 |---|------|-----------------|
-| AA01 | **Agent Goal Hijack** | Inject goals that redirect agent behavior toward attacker objectives |
-| AA02 | **Tool Misuse** | Manipulate agents into using tools in unintended or unsafe ways |
-| AA03 | **Unexpected Code Execution** | Exploit code generation/execution to achieve RCE or data exfiltration |
-| AA04 | **Memory Poisoning** | Corrupt persistent memory to influence future agent decisions |
-| AA05 | **Identity Spoofing** | Impersonate users or other agents in multi-agent systems |
-| AA06 | **Cascading Hallucinations** | Trigger hallucinations that propagate through agent chains |
-| AA07 | **Resource Abuse** | Exploit agent autonomy for cryptomining, spam, or API abuse |
-| AA08 | **Insufficient Oversight** | Bypass human-in-the-loop controls or approval mechanisms |
-| AA09 | **Data Boundary Violations** | Cross data isolation boundaries in multi-tenant agent systems |
-| AA10 | **Workflow Manipulation** | Alter agent workflow logic to skip steps or reorder operations |
+| ASI01 | **Agent Goal Hijack** | Inject goals that redirect agent behavior toward attacker objectives via manipulated instructions, tool outputs, or external content |
+| ASI02 | **Tool Misuse** | Manipulate agents into using tools in unintended or unsafe ways; exploit over-permissioned tool access |
+| ASI03 | **Identity & Privilege Abuse** | Exploit delegated trust boundaries; impersonate users or agents; escalate privileges in multi-agent systems |
+| ASI04 | **Agentic Supply Chain Vulnerabilities** | Compromise agent dependencies, MCP servers, plugins, or third-party tool integrations |
+| ASI05 | **Unexpected Code Execution** | Exploit code generation/execution to achieve RCE or data exfiltration |
+| ASI06 | **Memory & Context Poisoning** | Corrupt persistent memory or context to influence future agent decisions and behavior |
+| ASI07 | **Insecure Inter-Agent Communication** | Exploit unvalidated message passing between agents; inject malicious payloads via agent-to-agent channels |
+| ASI08 | **Cascading Failures** | Trigger hallucinations or errors that propagate through agent chains, amplifying impact |
+| ASI09 | **Human-Agent Trust Exploitation** | Bypass human-in-the-loop controls; exploit user trust in agent authority |
+| ASI10 | **Rogue Agents** | Compromised or misaligned agents diverging from intended behavior; persistent unauthorized actions |
 
 ---
 
@@ -50,6 +50,7 @@
 | Defense Evasion | Adversarial perturbation, input transformation | Can attacks bypass input filters? |
 | Exfiltration | Model extraction, training data extraction | Can model internals or data be stolen? |
 | Impact | Denial of ML service, evasion, manipulation | Can model outputs be degraded or controlled? |
+| Agentic Execution | Publish poisoned AI agent tool, escape to host, MCP server compromise | Can agent tooling or MCP channels be weaponized? |
 
 ---
 
