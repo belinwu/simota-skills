@@ -27,6 +27,7 @@ Purpose: Use this file when `L3` scenarios are vague, too technical, or not agre
 | `BDD-11` | No coverage measurement | blind spots remain hidden | track scenario coverage |
 | `BDD-12` | AC/DoD confusion | functional criteria and team-wide quality get mixed | keep AC feature-specific |
 | `BDD-13` | Scenario Outline overuse | combinatorial explosion slows test suite | use outlines only for true data-driven variants; cap rows at `~8` per outline |
+| `BDD-14` | Imperative scenario style | step-by-step UI interaction sequences couple scenarios to interaction flow; break on any UI change even when business logic is unchanged | write declarative scenarios describing business outcomes, not interaction steps |
 
 ## Three Amigos
 
