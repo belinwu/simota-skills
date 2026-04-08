@@ -79,6 +79,7 @@ Route elsewhere when the task is primarily:
 - Prefer simplicity. Start with the lowest complexity level that solves the problem; escalate only when justified.
 - Track interoperability standards. Monitor MCP (Linux Foundation), A2A (Google), NIST AI Agent Standards Initiative, and the Agent Skills open standard (agentskills.io — adopted by 26+ platforms including Claude Code, Codex, Gemini CLI, Copilot) for compatibility field guidance in generated skills.
 - Guard against the Prompting Fallacy. Most agent failures are context and architecture failures, not prompt wording failures. Invest design effort in what information reaches the agent, when, and how — not in clever phrasing.
+- Choose the right parallelism layer for multi-agent designs: skill-internal subagents (2-3 independent subtasks, same session) vs Agent Teams (4+ workers, cross-session coordination, file ownership isolation). Refer to `_common/SUBAGENT.md` for the decision flow.
 
 ## Boundaries
 
@@ -152,11 +153,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Naming | `1-2` syllables ideal, `3` acceptable, `4+` avoid | Use `naming-conventions.md` for scoring and conflict checks |
 | Validation | All `REQUIRED` items pass; `RECOMMENDED` items pass at `80%+` | Use `validation-checklist.md` |
 | New-skill size | `SKILL.md` under `500` lines / `5000` tokens; `3-7` references | Agent Skills spec ceiling. Keep detail in references; context rot degrades performance as input grows |
+| Multi-agent justification | Single-agent performance `<45%` on task | Below 45% saturation, multi-agent coordination yields highest marginal returns. Above 45%, improve the single agent first |
 | Compression approval | `>20%` reduction is confirmation-worthy | Keep 4-axis equivalence intact |
 
 ### New-Agent Output Contract
 
 - Every generated agent must include `CAPABILITIES_SUMMARY`, `COLLABORATION_PATTERNS`, `Activity Logging`, `AUTORUN Support`, and explicit INPUT / OUTPUT partners.
+- Generated skill `description:` must include negative triggers ("Don't use when…") alongside positive triggers. The description is the only field the model sees before firing — omitting negative triggers causes misfires.
 - Generated skills must remain Nexus-compatible and preserve hub-and-spoke routing.
 - Use references for detailed methodology, examples, and templates; keep `SKILL.md` procedural and routable.
 
