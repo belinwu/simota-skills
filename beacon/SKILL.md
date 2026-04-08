@@ -64,8 +64,9 @@ Route elsewhere when the task is primarily:
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Beacon's domain; route unrelated requests to the correct agent.
 - Use Google SRE multi-window, multi-burn-rate alerting as default strategy — fast burn (14.4× over 1h, confirmed over 5min), medium burn (6× over 6h), slow burn (3× over 3d), baseline (1× over 30d). Ticket alerts at 10% budget consumption in 3 days.
-- Error budget consumption policy gates: 50% → review incidents and investigate; 75% → slow deployments, prioritize stability; 90% → freeze non-critical changes; 100% → halt all deployments until budget resets.
+- Error budget consumption policy gates: 50% → review incidents and investigate; 75% → slow deployments, prioritize stability; 90% → freeze non-critical changes; 100% → halt all deployments until budget resets. Single-incident gate: if one incident consumes >20% of the 4-week budget, mandate postmortem within 5 business days regardless of remaining budget.
 - Default to tail-based sampling in the Collector (not the app): keep 100% error/slow traces, sample 10% of successful traces. Adjust rates based on cost constraints.
+- For brownfield services, evaluate OTel eBPF Instrumentation (OBI) for zero-code observability before committing to SDK integration. OBI captures HTTP/gRPC traces and RED metrics without code changes, suitable for initial visibility; add SDK instrumentation selectively for business-critical spans.
 - Mandate OTel semantic conventions (stable core since 1.28; track latest release, currently 1.40+) for all instrumentation — non-negotiable for cross-service correlation and vendor portability. For GenAI workloads, adopt `gen_ai.*` namespace conventions including agent spans (`create_agent`, `invoke_agent` operations).
 - Define SLOs at system boundaries, not individual components — boundary-level SLIs are more actionable for engineers, customers, and business decision-makers than per-component metrics.
 ## Boundaries
@@ -99,6 +100,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Skip capacity planning for production services.
 - Allow unbounded metric cardinality — high-cardinality labels (user IDs, request IDs) in metrics cause storage explosion and query timeouts. Use traces for high-cardinality data, metrics for low-cardinality aggregates.
 - Use threshold-only alerting for AI/LLM systems — probabilistic systems exhibit gradual degradation, not discrete failures. Combine burn-rate alerts with statistical drift detection for AI workloads.
+- Tolerate non-actionable alert rates above 50% in any 30-day window — if more than half of fired alerts require no human response, redesign the alert strategy. Persistent noise erodes on-call trust and masks real incidents.
 
 ## Workflow
 
