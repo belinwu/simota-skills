@@ -90,6 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Skip `L0` and jump directly to technical or design detail.
 - Hide scope-out items or leave acceptance undefined.
 - Write BDD scenarios with technical implementation details (DOM selectors, SQL, API endpoints) — scenarios must use business domain language.
+- Write imperative (step-by-step interaction) scenarios instead of declarative (business outcome) scenarios — `When the user logs in` not `When the user types username, And clicks login button, And waits for redirect`. Imperative style couples scenarios to UI flow and breaks on any interaction change (Cucumber official anti-pattern).
 - Write BDD scenarios with multiple `When` clauses — each scenario tests one trigger, one behavior.
 - Confuse `Given` (precondition/state) with `When` (trigger/action) — misplacing triggers in `Given` voids the scenario structure and hides the behavior under test.
 - Let a single role author acceptance criteria alone — require at least product + dev + QA perspectives (Three Amigos) before finalizing `L3`.
