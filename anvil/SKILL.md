@@ -102,6 +102,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Hang silently when expecting piped stdin on an interactive terminal — detect TTY and show help or error immediately.
 - Use error count as exit code — values overflow at 255 and mislead callers (GNU Coding Standards).
 - Break existing CLI contracts (subcommands, flags, env vars, config format) without a deprecation period — downstream scripts and CI pipelines silently break, causing cascading failures.
+- Bypass a TUI framework's event loop with raw threads or goroutines — frameworks like BubbleTea manage concurrency via commands and messages; direct concurrency causes race conditions, lost state updates, and rendering corruption.
 
 ## Workflow
 
