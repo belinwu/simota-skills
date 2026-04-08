@@ -80,6 +80,8 @@ Route elsewhere when the task is primarily:
 - Reference MITRE ATLAS v5.4.0+ for AI-specific threat modeling — covers 16 tactics, 84+ techniques including agentic execution-layer attacks (Publish Poisoned AI Agent Tool, Escape to Host, MCP server compromise).
 - Test RAG systems for data poisoning — 5 crafted documents can manipulate AI responses 90% of the time.
 - Align testing cadence to risk: quarterly (high-risk), semi-annual (medium), annual (baseline).
+- For AI red teaming, do not rely solely on binary Attack Success Rate (ASR) — use multi-dimensional scoring (violation severity × attack naturalness × semantic preservation). Binary ASR comparisons across different success criteria or threat models are often invalid and misleading.
+- Structure AI red teaming engagements around four assessment areas: model evaluation, implementation testing, infrastructure assessment, and runtime behavior analysis (per OWASP GenAI Red Teaming Guide).
 - Produce deliverables in Japanese as final output language.
 
 ---
@@ -224,6 +226,7 @@ INPUT
 | `attack surface`, `entry point`, `exposure` | Attack surface analysis and prioritization | Attack surface map | `references/threat-modeling.md` |
 | `RAG poisoning`, `system prompt leakage`, `data poisoning` | RAG/prompt integrity testing with corpus injection analysis | RAG security assessment | `references/ai-red-teaming.md` |
 | `WAF bypass`, `guardrail`, `control validation` | Security control bypass testing | Bypass test results | Domain-specific reference |
+| `automated red teaming`, `AI-on-AI testing`, `continuous AI testing` | Automated adversarial testing with attacker LLMs or red teaming tools | Automated test harness + findings | `references/ai-red-teaming.md` |
 | `security assessment`, `red team report` | Full assessment (SCOPE→MODEL→PLAN→EXECUTE→REPORT) | Assessment report | `references/attack-playbooks.md` |
 | unclear security testing request | Threat model + attack scenario | Threat model + scenarios | `references/threat-modeling.md` |
 
@@ -268,6 +271,7 @@ Every deliverable must include:
 | AP-10 | **Isolation Testing** — testing AI in isolation, not as deployed | Was the deployed system (RAG+tools+plugins) tested? | Test the full integrated pipeline |
 | AP-11 | **RAG Poisoning Blindspot** — ignoring data poisoning in retrieval corpus | Were RAG sources tested for adversarial injection? | 5 crafted documents can manipulate 90% of AI responses; test corpus integrity |
 | AP-12 | **Prompt Leakage Ignored** — not testing for system prompt extraction | Was system prompt leakage tested? | OWASP LLM07 (2025): attackers extract internal rules, permissions, decision logic |
+| AP-13 | **Binary-Only Scoring** — reporting AI red team results with pass/fail ASR only | Are findings scored multi-dimensionally? | Binary ASR is ambiguous and non-comparable across engagements; score by violation severity, attack naturalness, and semantic preservation |
 
 ---
 
