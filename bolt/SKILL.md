@@ -64,8 +64,8 @@ Route elsewhere when the task is primarily:
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Bolt's domain; route unrelated requests to the correct agent.
 - **Measure → Identify → Optimize → Verify**: Never optimize without a baseline metric. Profile first, then target the single largest bottleneck.
-- **React Compiler awareness**: React Compiler v1.0 (stable Oct 2025; opt-in React 19+, default Next.js 16+) auto-memoizes components and hooks at build time. Do not add manual `memo`/`useMemo`/`useCallback` unless: (1) expensive synchronous computation, (2) stable reference for non-React consumer (e.g., `useEffect` dep, third-party lib), or (3) project does not use React Compiler. Verify compiler status (`react-compiler` babel plugin or Next.js config) before recommending manual memoization.
-- **INP is the #1 failed CWV** (43% of sites fail 200ms threshold). For any frontend optimization, check INP impact: break long tasks > 50ms, yield to main thread via `scheduler.yield()` or `setTimeout(0)`, minimize DOM size (< 1,400 nodes recommended), audit third-party scripts (analytics, chat widgets, ads) as the leading real-world INP degrader.
+- **React Compiler awareness**: React Compiler v1.0 (stable Oct 2025; opt-in React 19+, default Next.js 16+) auto-memoizes components and hooks at build time. Measured impact: 12% faster initial loads, interactions up to 2.5× faster, 30–60% reduction in unnecessary re-renders (react.dev benchmarks). Do not add manual `memo`/`useMemo`/`useCallback` unless: (1) expensive synchronous computation, (2) stable reference for non-React consumer (e.g., `useEffect` dep, third-party lib), or (3) project does not use React Compiler. Verify compiler status (`react-compiler` babel plugin or Next.js config) before recommending manual memoization.
+- **INP is the #1 failed CWV** (43% of sites fail 200ms threshold). For any frontend optimization, check INP impact: break long tasks > 50ms, yield to main thread via `scheduler.yield()` or `setTimeout(0)`, minimize DOM size (< 1,400 nodes recommended), audit third-party scripts (analytics, chat widgets, ads) as the leading real-world INP degrader. **Highest-leverage INP fix**: removing 5–10 unnecessary third-party scripts often outperforms any advanced optimization. SPA re-renders of large component trees cause high presentation delay — split or virtualize.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -126,11 +126,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |-------|-------------|
 | **Frontend** | Re-renders · Bundle size · Lazy loading · Virtualization |
 | **Backend** | N+1 queries · Caching · Connection pooling · Async processing · Event loop lag (≤100ms) |
-| **Network** | Compression · CDN · HTTP caching · Payload reduction |
+| **Network** | Compression · CDN · HTTP/3 · Edge computing · HTTP caching · Payload reduction |
 | **Infrastructure** | Resource utilization · Scaling bottlenecks |
 
 **React patterns** (memo/useMemo/useCallback/context splitting/lazy/virtualization/debounce) → `references/react-performance.md`
-**React Compiler note**: React Compiler v1.0 (stable Oct 2025; opt-in React 19+, default Next.js 16+) auto-applies memoization at build time. Manual `memo`/`useMemo`/`useCallback` still needed for: expensive sync computations, stable refs for non-React consumers, projects without Compiler. Check `react-compiler` babel plugin or framework config before recommending manual memoization.
+**React Compiler note**: React Compiler v1.0 (stable Oct 2025; opt-in React 19+, default Next.js 16+) auto-applies memoization at build time (12% faster loads, up to 2.5× faster interactions). Manual `memo`/`useMemo`/`useCallback` still needed for: expensive sync computations, stable refs for non-React consumers, projects without Compiler. Check `react-compiler` babel plugin or framework config before recommending manual memoization.
 
 ## Database Query Optimization
 
