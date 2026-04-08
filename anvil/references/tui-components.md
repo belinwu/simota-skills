@@ -34,6 +34,8 @@
 >
 > **Mode 2027 (Wide Character Handling):** BubbleTea v2 auto-enables mode 2027 on supported terminals, allowing proper rendering of wide Unicode characters and emojis without breaking layout.
 
+> **BubbleTea v2 Breaking API Changes (Feb 2026):** `View()` now returns a `tea.View` struct instead of `string`, enabling declarative rendering. All imperative commands (e.g., window title, cursor control) are replaced with declarative fields on the View struct. Import path changed to `charm.land/bubbletea/v2`. Keyboard and mouse APIs were restructured. Existing v1 code requires migration — do not mix v1 patterns with the v2 import.
+
 ---
 
 ## Progress Indicators
