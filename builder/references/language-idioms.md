@@ -2,13 +2,14 @@
 
 > Per-language idiomatic patterns, project structure, type safety, error handling, and testing
 
-## 1. TypeScript (5.8+)
+## 1. TypeScript (5.8–6.0+)
 
 ### Idioms
 
 - `satisfies` operator: validates type conformance while preserving inferred type
 - `as const` assertions: preserve literal types, replace runtime enums
 - Template literal types for combinatorial string unions
+- `using` / `await using` declarations (Explicit Resource Management) for deterministic cleanup of DB connections, file handles, HTTP clients
 - ESM-first; barrel exports via `index.ts`
 
 ```typescript
@@ -48,7 +49,7 @@ Branded types with Zod v4 (stable):
 
 ```typescript
 // Zod v4: branded types
-const UserIdSchema = z.string().uuid().brand<'UserId'>();
+const UserIdSchema = z.uuid().brand<'UserId'>();  // v4: top-level z.uuid()
 type UserId = z.infer<typeof UserIdSchema>;
 
 // Zod v4: @zod/mini for tree-shaking
