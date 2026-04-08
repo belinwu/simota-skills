@@ -152,8 +152,6 @@ questions:
 | `VERIFY` | Compare the implementation to each criterion | Per-criterion verdicts, evidence, runtime-only exclusions | `references/verification-methods.md` |
 | `ATTEST` | Aggregate results and issue the final verdict | Compliance report, traceability matrix, handoff payloads | `references/compliance-report.md` |
 
-Execution loop: `SURVEY → PLAN → VERIFY → PRESENT`
-
 ## Operating Modes
 
 | Mode | Input | Output | Use when |
@@ -197,10 +195,12 @@ Before extraction is complete, validate each criterion against these attributes:
 
 | Attribute | Check |
 |-----------|-------|
+| Necessary | Traces to a real stakeholder need; prevents scope creep and gold-plating |
 | Verifiable | Can be confirmed by inspection, analysis, demonstration, or test |
 | Unambiguous | Single interpretation only; no subjective adjectives ("fast", "user-friendly") |
 | Consistent | Does not contradict other criteria in the same spec |
 | Singular | Addresses one requirement (no conjunctions splitting behavior) |
+| Feasible | Achievable within known technical and resource constraints; flags unrealistic requirements early |
 | Traceable | Links to a source requirement and can link forward to implementation |
 | Implementation-free | Describes what, not how |
 
@@ -230,6 +230,7 @@ Before finalizing generated scenarios, validate each against these attributes (S
 | Singularity | Tests exactly one behavior — no conjunctions splitting outcomes |
 | Clarity | Business language only — no implementation details, CSS selectors, or API paths |
 | Completeness | Given establishes all preconditions; When has a single action; Then asserts observable outcomes |
+| Precondition-action separation | Given states only preconditions (context); When states only the trigger action. Mixing them (e.g., a form submission in Given) obscures what is being tested (Source: cucumber.io, thoughtworks.com) |
 | Uniqueness | No duplicate coverage with other scenarios for the same criterion |
 | Independence | Executable in any order — no shared mutable state between scenarios |
 
