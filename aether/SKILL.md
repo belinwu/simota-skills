@@ -75,12 +75,13 @@ Route elsewhere when the task is primarily:
 - Keep fallback paths for TTS, avatar rendering, OBS connection, and chat ingestion.
 - Implement WebSocket reconnection with exponential backoff; WebSocket failures disrupt all interactive features. [Source: Open-LLM-VTuber]
 - Distinguish inference latency from production latency: a model benchmarking 100ms on dedicated GPU can deliver 800ms+ on shared cloud with network, queueing, and encoding overhead. Always measure end-to-end. [Source: inworld.ai 2026 benchmarks]
-- Use TTFA (Time to First Audio) as the primary TTS latency metric — it measures when the user hears the first syllable, not when synthesis completes. Open-source target: < 200ms (best-in-class: Fish Speech S2 Pro sub-150ms on H200). Commercial API target: < 100ms (best-in-class: Cartesia Sonic Turbo 40ms TTFA via SSM architecture). [Source: camb.ai, neosophie.com, cartesia.ai, inworld.ai 2026 benchmarks]
+- Use TTFA (Time to First Audio) as the primary TTS latency metric — it measures when the user hears the first syllable, not when synthesis completes. Open-source target: < 200ms (best-in-class: Fish Speech S2 Pro ~100ms). Commercial API target: < 100ms (best-in-class: Cartesia Sonic 3 40ms TTFA via SSM architecture). [Source: camb.ai, neosophie.com, cartesia.ai, inworld.ai 2026 benchmarks, Fish Audio]
 - Generate multiple TTS audio segments concurrently and send them sequentially — prioritize the first sentence fragment for synthesis and playback to minimize perceived latency. [Source: Open-LLM-VTuber concurrent audio generation]
 - For GPU-constrained or CPU-only deployments, consider lightweight TTS models (e.g., Piper ONNX for CPU real-time, Kyutai Pocket TTS 100M params). [Source: Open-LLM-VTuber docs, kyutai.org]
 - Define metrics, alert thresholds, and recovery behavior for every live pipeline.
 - Treat Cast as the canonical persona owner. Use `Cast[EVOLVE]` for persona changes; never edit Cast files directly.
 - Unify the text→LLM→TTS→play→history pipeline to prevent stale audio playback. [Source: github.com/Scikous/Vtuber-AI]
+- Design for voice interruption (barge-in): when a viewer speaks or a new high-priority chat arrives mid-response, the pipeline must cancel in-progress TTS playback, flush the audio queue, and re-enter the LLM with updated context. Use VAD with 10–20ms audio frame intervals for interruption detection. [Source: Open-LLM-VTuber, LiveKit adaptive interruption handling]
 - Final outputs, designs, reports, configurations, and comments are in Japanese.
 
 ## Boundaries
@@ -113,6 +114,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Modify Cast persona files directly.
 - Use blocking (non-streaming) TTS synthesis in live pipelines; always use sentence-level streaming.
 - Maintain separate, unsynchronized audio and history pipelines (leads to stale playback).
+- Deploy a conversational AITuber without barge-in / voice interruption handling; overlapping speech degrades viewer experience and breaks conversational flow.
 
 ## Operating Modes
 
@@ -204,7 +206,7 @@ Every deliverable must include:
 | Metric | Target | Alert threshold | Default action |
 |--------|--------|-----------------|----------------|
 | Chat → Speech latency | `< 3000ms` | `> 4000ms` | Log and reduce LLM token budget |
-| TTS TTFA (Time to First Audio) | `< 200ms` (self-hosted) / `< 100ms` (commercial API) | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; open-source best: Fish Speech S2 Pro sub-150ms, CosyVoice2 150ms; commercial best: Cartesia Sonic Turbo 40ms [Source: neosophie.com, siliconflow.com, cartesia.ai] |
+| TTS TTFA (Time to First Audio) | `< 200ms` (self-hosted) / `< 100ms` (commercial API) | `> 500ms` | Switch to lower-latency TTS engine or reduce quality; open-source best: Fish Speech S2 Pro ~100ms, CosyVoice2 150ms; commercial best: Cartesia Sonic 3 40ms [Source: neosophie.com, siliconflow.com, cartesia.ai, Fish Audio] |
 | TTS queue depth | `< 5` | `> 10` | Skip or defer low-priority messages |
 | Dropped frames | `0%` | `> 1%` | Reduce OBS encoding load |
 | Avatar FPS | `30fps` | `< 20fps` | Simplify expression and rendering load |
