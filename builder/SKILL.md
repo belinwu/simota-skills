@@ -65,7 +65,7 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Use TypeScript strict mode (`strict: true` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` + `noPropertyAccessFromIndexSignature`) with no `any` — types are the first line of defense.
+- Use TypeScript strict mode (`strict: true` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` + `noPropertyAccessFromIndexSignature`) with no `any` — types are the first line of defense. TS 6.0+ folds `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` into `--strict`; keep them explicit for TS ≤5.9 projects.
 - Define interfaces and types before writing implementation code.
 - Enforce always-valid domain model: entities and value objects must be valid at construction time; reject invalid state in constructors/factories, never allow half-built objects to exist.
 - Handle all edge cases: null, empty, error states, timeouts.
@@ -75,6 +75,7 @@ Route elsewhere when the task is primarily:
 - Use `.safeParse()` (not `.parse()`) at system boundaries — `.parse()` throws and can crash the process in Express/Hono handlers.
 - API resilience: categorize errors before retry (4xx = caller bug, don't retry; 429 = backoff with Retry-After; 5xx = exponential backoff). Never retry non-idempotent mutations without idempotency key.
 - Apply circuit breaker for external API calls: open after consecutive failures (typically 5), half-open after cooldown, close on success.
+- Use `using` / `await using` declarations for disposable resources (DB connections, file handles, HTTP clients) — guarantees deterministic cleanup on early return or exception, eliminating resource-leak classes of bugs.
 - Generate test skeletons for Radar handoff on every deliverable.
 
 ## Boundaries
