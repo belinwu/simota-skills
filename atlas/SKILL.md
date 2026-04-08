@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - rfc_creation: Request for Comments documents for significant architectural changes
 - technical_debt_assessment: Quantify debt via SQALE/TDR (remediation cost / dev cost), prioritize by Cost of Delay, recommend ≥ 15% dev time allocation for high-complexity projects
 - module_boundary_design: Define clean module interfaces and boundaries
+- fitness_function_design: Recommend CI-integrated architectural fitness functions for coupling, complexity, and layer violation guardrails
 
 COLLABORATION_PATTERNS:
 - Pattern A: Analysis-to-Design (Atlas → Architect)
@@ -61,6 +62,7 @@ Route elsewhere when the task is primarily:
 - **Frequency-based dependency remediation**: High-frequency bidirectional dependency → candidates for merging; long dependency cycles → extract shared logic to a new module; low-frequency cycles → tolerable with async communication.
 - **Technical Debt Ratio (TDR)**: Quantify debt via SQALE or equivalent (remediation cost / development cost). Allocate ≥ 15% of development time to debt reduction for projects with high complexity. Prioritize by Cost of Delay: security vulnerabilities > performance degradation > code smell. Industry benchmark (CISQ): organizations with unmanaged debt spend ~40% more on maintenance and deliver features 25-50% slower — use these figures to frame debt severity for stakeholders.
 - **ADR quality bar**: Every ADR must include context (forces at play), decision (active voice), status, and consequences (positive and negative). Reference ISO/IEC/IEEE 42010:2011 Appendix A for formal architecture descriptions. Prefer MADR template for tradeoff-explicit records (considered options + pros/cons). Schedule post-decision review at 1 month to compare predictions with actual outcomes; update status to Confirmed, Superseded, or Deprecated.
+- **Architecture fitness functions**: Recommend automated fitness functions — CI-integrated tests that objectively assess architectural characteristics (coupling thresholds, complexity limits, layer violation rules). Use targets from `references/architecture-health-metrics.md` as concrete thresholds. Fitness functions are guardrails that enable guided, incremental architecture evolution; without them, architectural drift goes undetected until it causes cascading failures.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
@@ -88,6 +90,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - **Fairy Tale ADR**: Listing only pros with no cons or trade-offs — tautological justifications ("We chose X because X is good") produce zero decision value.
 - **Sprint ADR**: Considering only one option with only short-term (next 2-3 sprints) effects — architecture decisions must evaluate ≥ 2 alternatives with long-term consequences.
 - **Mega-ADR**: Cramming component specs, multiple diagrams, and implementation details into a single ADR — keep ADRs focused on the decision; put details in separate docs.
+- **Tunnel Vision ADR**: Considering only local/isolated context (e.g., API provider benefits without client experience) — operations and maintenance consequences neglected. Architecture decisions must evaluate cross-cutting concerns including downstream consumers, operational burden, and long-term maintainability.
 - **Class-level-only analysis**: Assessing modularity only at class level in large systems — use module-level metrics (coupling index, cyclic dependency index, testability index) for systems with 50+ classes.
 - **Hidden cross-domain circular dependency**: Dependencies between independently-managed domains (e.g., DNS ↔ routing, auth ↔ config) that only surface during cascading failures — map cross-domain dependencies explicitly during SURVEY phase; Facebook's 2021 global outage stemmed from an undetected DNS ↔ BGP circular dependency.
 
@@ -99,7 +102,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 |-------|-----------------|----------|------|
 | `SURVEY` | Map dependency analysis, structural integrity, scalability risks | Map territory before proposing changes | `references/dependency-analysis-patterns.md` |
 | `PLAN` | Draft RFC/ADR, current vs desired state, migration strategy | Draw blueprint with rollback plan | `references/adr-rfc-templates.md` |
-| `VERIFY` | YAGNI check, Least Surprise test, team maintainability review | Stress test the proposal | `references/architecture-health-metrics.md` |
+| `VERIFY` | YAGNI check, Least Surprise test, team maintainability review, fitness function feasibility | Stress test the proposal; recommend CI-integrated fitness functions for key thresholds | `references/architecture-health-metrics.md` |
 | `PRESENT` | PR with proposal + motivation + plan + trade-offs | Roll out the map | `references/canvas-integration.md` |
 
 Detailed checklists: `references/daily-process-checklists.md`
@@ -115,6 +118,7 @@ Detailed checklists: `references/daily-process-checklists.md`
 | `technical debt`, `debt inventory` | Debt assessment | Debt inventory + repayment plan | `references/technical-debt-scoring.md` |
 | `module boundary`, `restructure` | Module boundary design | Restructuring proposal | `references/architecture-patterns.md` |
 | `architecture health`, `metrics` | Health assessment | Health score card | `references/architecture-health-metrics.md` |
+| `fitness function`, `evolutionary`, `guardrail` | Fitness function design | Fitness function spec + CI integration guide | `references/architecture-health-metrics.md` |
 | unclear architecture request | Dependency analysis + ADR | Analysis report + ADR | `references/dependency-analysis-patterns.md` |
 
 ## Output Requirements
