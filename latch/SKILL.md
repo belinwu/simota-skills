@@ -8,7 +8,7 @@ CAPABILITIES_SUMMARY:
 - hook_design: Propose hook sets with event, matcher, type, and justification
 - hook_configuration: Configure settings.json hook entries with backup and validation
 - hook_debugging: Diagnose and fix hook failures, timing issues, and misfires
-- event_selection: Choose optimal events from lifecycle events
+- event_selection: Choose optimal events from 26 lifecycle events including tool, permission, task, config, file, worktree, compaction, and elicitation events
 - matcher_design: Pattern matching for tool names with exact, OR, wildcard, and regex
 - blocking_hook_management: Justify and configure exit-2 / permissionDecision deny hooks
 - command_hook_scripting: Shell script hooks with stdin parsing, PID-scoped temp files, timeouts
@@ -21,6 +21,9 @@ CAPABILITIES_SUMMARY:
 - dependency_safety: Design fail-open/fail-closed strategies for hooks with external command dependencies
 - tool_bypass_prevention: Design cross-tool enforcement to prevent Edit/Write hook bypass via Bash sed/python/echo
 - permission_event_design: Design PermissionRequest hooks for automated permission decisions distinct from PreToolUse
+- task_lifecycle_hooks: Design TaskCreated/TaskCompleted hooks for task naming and completion enforcement in Agent Teams
+- config_governance: Design ConfigChange hooks to audit or block runtime configuration changes
+- elicitation_governance: Design Elicitation/ElicitationResult hooks to govern MCP server user-input requests
 
 COLLABORATION_PATTERNS:
 - Nexus -> Latch: Task context for hook configuration
@@ -60,7 +63,11 @@ Use Latch when the user needs:
 - HTTP webhook hooks for external audit logging or CI integration
 - agent-type hooks for multi-turn verification with tool access
 - MCP tool governance via hooks (audit and verify MCP actions)
+- MCP elicitation governance via Elicitation/ElicitationResult hooks
 - transparent input modification via `updatedInput` (path correction, secret redaction, dry-run injection)
+- task lifecycle enforcement via TaskCreated/TaskCompleted hooks in Agent Teams
+- configuration change governance via ConfigChange hooks
+- file-change reactive automation via FileChanged hooks
 - hook performance optimization (latency reduction, matcher consolidation)
 
 Route elsewhere when the task is primarily:
@@ -81,13 +88,14 @@ Route elsewhere when the task is primarily:
 - Stay within Latch's domain; route unrelated requests to the correct agent.
 - Hooks are hard constraints, not suggestions — treat every hook as a deterministic enforcement point, not advisory guidance.
 - Never allow more than one PreToolUse hook to modify the same tool's `updatedInput` — hooks run in parallel with non-deterministic ordering, so the last writer wins unpredictably.
-- When using `updatedInput` to modify tool arguments, always pair it with `permissionDecision: "allow"` — omitting this causes the rewritten operation to still prompt for permission, defeating transparent modification.
+- When using `updatedInput` to modify tool arguments, always pair it with `permissionDecision: "allow"` — `updatedInput` is only applied when permission is explicitly granted. You cannot modify input while preserving the normal permission flow (`ask`/`defer`).
+- `PreToolUse` supports four permission decisions: `allow` (proceed), `deny` (block), `ask` (show dialog), `defer` (fall through). Use `deny` for enforcement, `ask` for human-in-the-loop, `defer` when the hook cannot determine the action.
 - Every security-critical PreToolUse hook must use `exit 2` to block; `exit 1` only logs a warning and provides no enforcement.
 - All human-readable messages from command hooks must go to stderr; stdout is reserved for JSON protocol data. Violating this corrupts tool input.
 - PreToolUse hooks fire before any permission-mode check — a hook returning `permissionDecision: "deny"` blocks the tool even in `bypassPermissions` mode, making hooks the strongest policy enforcement layer.
 - Every command hook must explicitly handle missing dependencies (jq, grep, etc.) — design as fail-closed (`exit 2`) for security hooks or fail-open (`exit 0`) for monitoring hooks, and document the choice.
 - PreToolUse hooks on `Edit|Write` alone do not prevent file modification — Claude can switch to `Bash` with `sed`, `python -c`, or `echo` redirection to bypass. Always pair file-protection hooks with a matching `Bash` hook that pattern-matches file-writing commands.
-- `PermissionRequest` hooks do not fire for subagent permission requests in Agent Teams — do not rely on them as the sole policy gate in multi-agent orchestration; use `PreToolUse` hooks instead, which fire for all agents.
+- `PermissionRequest` hooks fire only when a permission dialog is about to show the user — they do not fire when permissions are auto-resolved. In Agent Teams, prefer `PreToolUse` hooks for universal enforcement across all agents and permission modes.
 
 ## Boundaries
 
@@ -152,32 +160,48 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 
 ## Hook Event Selection
 
-| Event | Timing | Block? | Prompt? | Primary use |
-|-------|--------|--------|---------|-------------|
-| `PreToolUse` | Before tool execution | Yes | Yes | Approval, denial, or input modification |
-| `PostToolUse` | After tool completion | No | Yes | Feedback, logging, post-action automation |
-| `UserPromptSubmit` | On user prompt submission | Yes | Yes | Prompt validation or context injection |
+| Event | Timing | Block? | All types? | Primary use |
+|-------|--------|--------|------------|-------------|
+| `PreToolUse` | Before tool execution | Yes | Yes | Approval, denial, input modification, or defer to permission system |
+| `PostToolUse` | After tool completion | No | No | Feedback, logging, post-action automation |
+| `PostToolUseFailure` | After tool failure | No | No | Failure context injection and retry guidance |
+| `UserPromptSubmit` | On user prompt submission | Yes | No | Prompt validation or context injection |
+| `PermissionRequest` | When a permission dialog is about to show | Yes | Yes | Automated permission decisions (allow/deny/updatedPermissions) |
+| `PermissionDenied` | When classifier denies a tool (auto mode) | No | Yes | Signal model it may retry the denied tool call |
 | `Stop` | Before the main agent stops | Yes | Yes | Completion and quality gates |
+| `StopFailure` | When turn ends due to API error | No | No | Error logging (rate_limit, auth, billing, server_error) |
+| `SubagentStart` | When a subagent starts | No | Yes | Subagent context injection and resource limits |
 | `SubagentStop` | Before a subagent stops | Yes | Yes | Subagent completion checks |
-| `SessionStart` | At session start | No | No | Context loading and environment setup |
+| `TaskCreated` | When a task is created | Yes | Yes | Enforce naming/description conventions |
+| `TaskCompleted` | When a task is marked complete | Yes | Yes | Enforce completion criteria (tests, lint) |
+| `TeammateIdle` | When a teammate is about to go idle | Yes | No | Prevent teammate from going idle prematurely |
+| `SessionStart` | At session start | No | No | Context loading and environment setup via `CLAUDE_ENV_FILE` |
 | `SessionEnd` | At session end | No | No | Cleanup and logging |
-| `PreCompact` | Before compaction | No | No | Preserve critical context |
 | `Notification` | On Claude notifications | No | No | External forwarding and audit logging |
-| `PermissionRequest` | When a permission dialog is about to show | Yes | No | Automated permission decisions (allow/deny on behalf of user) |
-| `SubagentStart` | When a subagent starts | No | No | Subagent resource limits and task redirection |
+| `InstructionsLoaded` | After CLAUDE.md/rules loaded | No | No | Audit logging and compliance tracking |
+| `ConfigChange` | When config changes during session | Yes | No | Block or audit configuration changes |
+| `CwdChanged` | When working directory changes | No | No | Environment management (direnv) via `CLAUDE_ENV_FILE` |
+| `FileChanged` | When a watched file changes on disk | No | No | Reactive automation (.envrc, .env, lockfiles) |
+| `WorktreeCreate` | When git worktree is created | Yes | No | Replace default worktree behavior, return custom path |
+| `WorktreeRemove` | When git worktree is removed | No | No | Worktree cleanup automation |
+| `PreCompact` | Before compaction | No | No | Pre-compaction logging and context preservation |
 | `PostCompact` | After context compaction | No | No | Post-compaction logging and state verification |
-| `InstructionsLoaded` | After instructions are loaded | No | No | Instruction validation and augmentation |
+| `Elicitation` | When MCP server requests user input | Yes | No | Accept/decline/cancel MCP input requests |
+| `ElicitationResult` | When user responds to MCP elicitation | Yes | No | Modify/override user response before sending to MCP |
 
 Selection rules:
 
 - Prefer the narrowest event that matches the workflow gap.
-- `SessionStart`, `SessionEnd`, `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, and `InstructionsLoaded` are command-only (no prompt/agent types).
+- "All types?" = Yes means command, prompt, http, and agent hook types are all supported. "No" means command/http only.
 - `Stop` and `SubagentStop` are for completion gates, not routine linting after every edit.
 - `PreToolUse` with `*` is high-risk and belongs in `Ask First` — it fires on every tool call and adds latency to the entire session.
+- `PreToolUse` supports four permission decisions: `allow` (proceed), `deny` (block with reason), `ask` (show permission dialog), `defer` (fall through to next hook or default behavior). Use `defer` when a hook cannot determine the correct action.
 - Use MCP Tools for agent actions and Hooks to audit and verify those actions — this separation is the 2026 best practice for deterministic governance.
 - Limit total hooks per event to ≤ 5 to avoid compounding latency; target ≤ 200ms per individual command hook for scalable deployments (practitioners report 95+ hooks without noticeable latency when each completes under 200ms).
 - Prompt hooks use `$ARGUMENTS` placeholder to inject the hook's JSON input data into the prompt text — omitting it means the LLM receives no context about the tool call.
 - `PermissionRequest` fires only when a permission dialog is about to show; `PreToolUse` fires before every tool execution regardless of permission status. Use `PreToolUse` for universal enforcement and `PermissionRequest` for permission-specific automation.
+- `TaskCreated`/`TaskCompleted` hooks enforce task lifecycle conventions in Agent Teams — use them for naming standards and completion gates (tests, lint) across teammates.
+- `Elicitation`/`ElicitationResult` hooks govern MCP server user-input requests — use them to auto-accept trusted servers or block untrusted elicitations.
 
 ## Hook Contract
 
@@ -186,9 +210,9 @@ Selection rules:
 | Type | Best for | Default timeout | Supported events |
 |------|----------|-----------------|-----------------|
 | `command` | Fast deterministic checks, scripts, and external tools | `60s` | All events |
-| `prompt` | Context-aware or policy-heavy decisions | `30s` | `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, `SubagentStop` |
+| `prompt` | Context-aware or policy-heavy decisions | `30s` | Events with "All types? Yes" in Event Selection table |
 | `http` | External service integration, audit logging to remote endpoints | `30s` | All events |
-| `agent` | Multi-turn verification requiring tool access and deep reasoning | `120s` | `PreToolUse`, `PostToolUse`, `Stop`, `SubagentStop` |
+| `agent` | Multi-turn verification requiring tool access and deep reasoning | `120s` | Events with "All types? Yes" in Event Selection table |
 
 Selection guidance: Start with `command` hooks for formatting and linting, graduate to `prompt` hooks for security and policy decisions, use `agent` hooks only for deep verification requiring tool access. Prefer `command` for latency-sensitive paths (target ≤ 200ms per hook). Use `http` for external audit trails and webhook integrations. Command hooks do not consume token quota; prompt/agent hooks trigger model invocations that consume quota — reserve them for high-value decisions.
 
@@ -252,6 +276,11 @@ Structure rules:
 | `mcp governance`, `mcp audit` | MCP tool governance | Audit hooks for MCP tool actions | `references/hook-system.md` |
 | `hook performance`, `hook slow`, `latency` | Performance optimization | Matcher consolidation and hook count reduction plan | `references/debugging-guide.md` |
 | `updatedInput`, `modify input`, `rewrite`, `redact` | Input modification | PreToolUse hook with updatedInput + permissionDecision design | `references/hook-system.md` |
+| `task hook`, `task naming`, `completion gate` | Task lifecycle enforcement | TaskCreated/TaskCompleted hooks for Agent Teams | `references/hook-system.md` |
+| `config change`, `settings guard` | Config governance | ConfigChange hook to audit or block runtime config changes | `references/hook-system.md` |
+| `file watch`, `env change`, `reactive` | File-change automation | FileChanged/CwdChanged hooks for reactive workflows | `references/hook-system.md` |
+| `elicitation`, `mcp input`, `mcp prompt` | MCP elicitation governance | Elicitation/ElicitationResult hooks for MCP input control | `references/hook-system.md` |
+| `worktree`, `git worktree` | Worktree management | WorktreeCreate/WorktreeRemove hooks for custom worktree behavior | `references/hook-system.md` |
 | unclear hook request | PROPOSE focus | Hook-set design | `references/hook-system.md` |
 
 Routing rules:
