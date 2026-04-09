@@ -17,7 +17,7 @@ CAPABILITIES_SUMMARY:
 - architecture_as_code: DSL-in-Git workflow for diagram source management
 - drawio_mcp: Programmatic draw.io manipulation via MCP server when available
 - ci_diagram_validation: Architecture-as-Code CI pipeline integration for .mmd/.d2 files
-- accessibility_compliance: WCAG 2.1 alt-text, color-blind-safe palettes, ASCII fallback
+- accessibility_compliance: WCAG 2.2 alt-text, color-blind-safe palettes, target size, ASCII fallback
 
 COLLABORATION_PATTERNS:
 - Atlas -> Canvas: Architecture, dependency, or system-structure visualization
@@ -74,8 +74,9 @@ Route elsewhere when the task is primarily:
 - Clarify the information source. Do not invent missing structure.
 - Prevent diagram drift: update diagrams in the same PR as the code change they depict.
 - Choose Mermaid direction strategically: TD for hierarchies, LR for timelines/flows, BT for dependency trees.
-- Always provide alt-text or ASCII fallback for accessibility (WCAG 2.1 compliance).
-- Ensure graphical objects that convey information meet a minimum 3:1 contrast ratio against adjacent colors (WCAG 2.1 SC 1.4.11).
+- Always provide alt-text or ASCII fallback for accessibility (WCAG 2.2 compliance).
+- Ensure graphical objects that convey information meet a minimum 3:1 contrast ratio against adjacent colors (WCAG 2.2 SC 1.4.11).
+- For interactive diagram elements (draw.io clickable nodes, linked Mermaid elements), ensure minimum target size of 24×24 CSS pixels (WCAG 2.2 SC 2.5.8).
 
 ## Boundaries
 
