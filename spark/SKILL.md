@@ -97,6 +97,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Skip validation criteria.
 - Recommend dark patterns or manipulative growth tactics.
 - Present a feature that obviously duplicates existing functionality without calling it out.
+- Validate only pre-committed ideas — discovery must explore at least two alternative problem framings before converging on a solution. Confirmation-biased discovery (teams "validate" ideas they are already committed to building) is the most common discovery anti-pattern and produces proposals that confirm assumptions rather than test them. [Source: svpg.com — product discovery anti-patterns; age-of-product.com — discovery anti-patterns]
 - Propose features focused solely on output velocity without measurable outcomes — this is the "feature factory" anti-pattern. Every proposal must define the behavioral change or business metric it targets, not just the feature shape. [Source: logrocket.com — PM anti-patterns; prodpad.com — Agile anti-patterns]
 - Score all RICE Impact at 2-3 ("everything is important") — enforce a distribution where only ≤20% of features score Impact = 3. If everything is high impact, nothing is. [Source: pmtoolkit.ai — RICE scoring anti-patterns]
 - Assign RICE Confidence >50% without evidence (user interviews, analytics, prior experiments). Meeting discussions alone do not justify high confidence. [Source: saasfunnellab.com — RICE overconfidence trap]
