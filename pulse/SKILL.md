@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - analytics_platform_integration: GA4, Amplitude, Mixpanel, PostHog implementation with React hooks; server-side tracking and Consent Mode v2; auto-capture vs manual instrumentation tradeoff
 - privacy_consent_management: Consent-aware tracking, PII removal, GDPR/Consent Mode v2, server-side first-party tracking
 - data_quality_monitoring: Schema validation, schema drift detection, freshness monitoring, volume tracking, completeness checks
-- revenue_analytics: MRR/ARR/ARPU/LTV/CAC/NRR tracking and movement analysis; CAC:LTV ≥ 1:3 health / ≥ 1:5 top-tier; NRR >100% healthy / >120% top-tier; monthly churn 3-7% SMB / <1% enterprise; CAC payback 12-15mo excellent
+- revenue_analytics: MRR/ARR/ARPU/LTV/CAC/NRR tracking and movement analysis; CAC:LTV ≥ 1:3 health / ≥ 1:5 top-tier; NRR >100% healthy / >110% top-tier (2025 median: 101%); monthly churn 3-7% SMB / <1% enterprise; CAC payback 12-15mo excellent
 - alerts_anomaly_detection: Z-score anomaly detection, threshold alerts (≥20% conversion drop, ≥30% velocity spike), trend monitoring
 - activation_rate_design: Define activation milestones, measure time-to-value, self-serve target 50-70%; segment by acquisition channel
 
@@ -108,7 +108,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use vanity metrics as primary KPIs — total signups always grow; they tell you nothing about product health.
 - Implement tracking without retention policies — unbounded data storage creates compliance liability and storage cost drift.
 - Break analytics by changing event structures without migration — schema drift (e.g., renaming `productID` to `product_id`) silently breaks all downstream reports, funnels, and alerts.
-- Deploy client-side-only tracking without Consent Mode v2 — loses 40-70% of data in GDPR markets; Consent Mode v2 recovers 15-30% via privacy-safe pings and behavioral modeling.
+- Deploy client-side-only tracking without Consent Mode v2 — loses 40-70% of data in GDPR markets (90-95% after Google's July 2025 EEA/UK enforcement); Advanced Mode recovers ~70% of lost conversions via cookieless pings and behavioral modeling (requires ≥1,000 daily denied events for 7 days to activate).
 - Fire events on page load instead of user action — inflates metrics and triggers duplicate events; common GA4 anti-pattern.
 - Exceed GA4 hard limits without a migration plan — GA4 caps at 500 custom event names, 25 parameters per event, 24-character user property names, 100-character parameter values (standard; silently truncated — breaks long URLs and product names in reports), and 14-month maximum data retention for explorations (free tier defaults to 2 months; data is silently deleted if not manually extended); exceeding these silently drops data with no warning.
 - Choose analytics platform solely on license cost — teams saving $60K on tool licensing routinely spend $90K+ in engineering time building custom tracking and dashboards; total cost of ownership includes implementation and maintenance.
@@ -161,7 +161,7 @@ Every deliverable must include:
 - Privacy review (consent requirements, PII check, Consent Mode v2 plan, server-side tracking recommendation).
 - Implementation guidance (platform-specific code or configuration).
 - Data quality plan (schema validation, schema drift detection, freshness monitoring, completeness).
-- Industry benchmarks where applicable (e.g., visitor-to-lead 1.5-2.5%, free-to-paid 2-5%, self-serve activation 50-70%, B2B SaaS month-1 retention 46.9%, monthly churn 3-7% SMB / <1% enterprise, NRR >100% healthy / >120% top-tier, CAC:LTV ≥ 1:3, CAC payback 12-15 months excellent).
+- Industry benchmarks where applicable (e.g., visitor-to-lead 1.5-2.5%, free-to-paid 2-5%, self-serve activation 50-70%, B2B SaaS month-1 retention 46.9%, monthly churn 3-7% SMB / <1% enterprise, NRR >100% healthy / >110% top-tier, CAC:LTV ≥ 1:3, CAC payback 12-15 months excellent).
 - Alert thresholds (conversion drop ≥20% from baseline, velocity spike ≥30%).
 - Dashboard or visualization specification where applicable.
 - Next steps (A/B test, growth optimization, monitoring).
