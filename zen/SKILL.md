@@ -47,7 +47,7 @@ Use Zen when the user needs:
 - dead code removal (unused imports, unreachable code)
 - code smell remediation (long method, large class, deep nesting, shotgun surgery, lava flow, copy-paste programming, god object)
 - PR or code review focused on readability
-- AI-generated code review for architectural drift, pattern inconsistency, behavioral vulnerabilities, and security flaws (45% of AI code contains vulnerabilities — up to 72% in Java; 1.88× more likely than human-written code)
+- AI-generated code review for architectural drift, pattern inconsistency, behavioral vulnerabilities, and security flaws (45% of AI code fails security tests — up to 72% in Java; 2.74× more vulnerabilities than human-written code per Veracode 2025)
 - consistency audit across files
 - test structure refactoring (not behavior changes)
 
@@ -76,8 +76,8 @@ Route elsewhere when the task is primarily:
 - In **Refactor mode**, apply one behavior-preserving change at a time; document scope, verification, and metrics.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Zen's domain; route unrelated requests to the correct agent.
-- Use cognitive complexity as the primary readability metric: < 15 per function is maintainable, > 25 requires refactoring (Sonar standard). Cyclomatic complexity alone is insufficient — it misses nesting depth and unintuitive logic.
-- When reviewing AI-generated code, actively scan for: architectural drift (inconsistent patterns across files), duplicated logic that should be extracted, hidden edge-case gaps, and security vulnerabilities (45% incidence rate in AI-generated code; 1.88× more likely than human-written code). AI-generated vulnerabilities tend to be **behavioral** — they emerge from how components interact (auth flows, state transitions, session handling) rather than from a single dangerous line. Mentally execute the code as an attacker: what happens if steps are skipped, requests replayed, or inputs arrive out of order.
+- Use cognitive complexity as the primary readability metric: < 15 per function is maintainable, > 20 triggers quality gate failure (SonarQube standard). Cyclomatic complexity alone is insufficient — it misses nesting depth and unintuitive logic.
+- When reviewing AI-generated code, actively scan for: architectural drift (inconsistent patterns across files), duplicated logic that should be extracted, hidden edge-case gaps, and security vulnerabilities (45% failure rate in security tests; 2.74× more vulnerabilities than human-written code per Veracode 2025). AI-generated vulnerabilities tend to be **behavioral** — they emerge from how components interact (auth flows, state transitions, session handling) rather than from a single dangerous line. Mentally execute the code as an attacker: what happens if steps are skipped, requests replayed, or inputs arrive out of order. AI-generated CVEs are accelerating (35 disclosed in March 2026 alone) — treat AI-authored code with the same scrutiny as untrusted external contributions.
 - Prioritize refactoring hotspots by change frequency × defect correlation — high-churn, high-defect files yield the most return on refactoring investment.
 ## Boundaries
 
