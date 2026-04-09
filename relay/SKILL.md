@@ -7,7 +7,7 @@ description: メッセージング統合・Bot開発・リアルタイム通信�
 CAPABILITIES_SUMMARY:
 - channel_adapter_design: Platform-agnostic adapter pattern for Slack/Discord/Telegram/WhatsApp/LINE with write-once-deploy-everywhere approach (Vercel Chat SDK, LangBot, Bottender patterns)
 - webhook_handler_design: HMAC-SHA256 signature verification over raw bytes, timing-safe comparison, timestamp window (≤5 min), idempotency keys (Redis TTL 7-30 days), async processing (return 2xx within 3s), payload size limit (≤100KB), TLS-only enforcement, DLQ with full context preservation
-- websocket_server_design: Connection lifecycle, heartbeat/reconnect, room management, horizontal scaling with externalized session state (Redis), KEDA/HPA autoscaling, Prometheus metrics
+- websocket_server_design: Connection lifecycle, heartbeat/reconnect, room management, horizontal scaling with externalized session state (Redis), KEDA/HPA autoscaling, Prometheus metrics, WebSocketStream API for backpressure
 - bot_framework_design: Command parser, slash commands, conversation state machine, middleware chain, LLM-native runner integration (Dify/n8n/Langflow), unified bot SDK (Vercel Chat SDK)
 - event_routing_design: Discriminated union event schema, CloudEvents envelope format (CNCF graduated), AsyncAPI spec documentation, routing matrix, fan-out/fan-in patterns, choreography pattern (agent-to-agent event reaction)
 - webhook_standards_awareness: Standard Webhooks spec (webhook-id/webhook-timestamp/webhook-signature headers), provider-specific signature formats (Stripe Stripe-Signature, GitHub x-hub-signature-256, Slack x-slack-signature)
@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - realtime_communication: SSE, WebSocket, WebTransport (~75% browser coverage as of 2026, production-ready ~2027), long polling selection and implementation
 - message_queue_integration: Redis Pub/Sub, BullMQ, RabbitMQ, Kafka/Redpanda for reliable delivery and event streaming
 - circuit_breaker_design: Failure rate threshold (≥50% over 1 min or 5/10 failures), auto-open with DLQ routing, non-retriable 4xx (except 429) immediate DLQ, Retry-After header honoring
+- platform_rate_limit_awareness: Slack non-Marketplace restrictions (1 req/min conversations.history/replies, max 15 objects), Discord 50 req/s global + per-route X-RateLimit-Bucket, platform-specific caching strategies
 
 COLLABORATION_PATTERNS:
 - Pattern A: API-to-Messaging (Gateway → Relay) — webhook API spec to handler design
@@ -90,7 +91,9 @@ Route elsewhere when the task is primarily:
 - Include middleware chain order (auth → validate → rate-limit → route → handle) in handler designs.
 - Flag platform-specific quirks and limitations in adapter designs.
 - For WebSocket scaling, require externalized session state (Redis/equivalent) — never rely on in-process sticky sessions alone. Monitor: active connections, message latency, error rates, pub/sub lag.
-- For webhook observability, track: delivery success % by provider/endpoint, end-to-end latency (p50/p95/p99), queue depth and time-to-drain, dedup/idempotency hit rate, error class distribution (auth/signature, rate-limit, schema, destination).
+- For modern WebSocket implementations, prefer WebSocketStream API (Streams-based, Promise-based) when available — provides automatic backpressure handling that prevents slow consumers from causing memory pressure.
+- Monitor platform-specific rate limit tiers and design accordingly. Slack (May 2025+) restricts non-Marketplace apps to 1 req/min for `conversations.history`/`conversations.replies` with max 15 objects per response — design bots to cache aggressively or pursue Marketplace approval. Discord enforces 50 req/s global with per-route limits via `X-RateLimit-Bucket` headers.
+- For webhook observability, track: delivery success % by provider/endpoint, end-to-end latency (p50/p95/p99), queue depth and time-to-drain, dedup/idempotency hit rate, error class distribution (auth/signature, rate-limit, schema, destination). Target SLO: ≥ 99.5% delivery success within 30 seconds.
 
 ## Boundaries
 
@@ -127,6 +130,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Store credentials or webhook secrets in code — use environment variables or secret managers
 - Send unvalidated user input to external platforms — injection risk across Slack/Discord markdown parsers
 - Use round-robin load balancing for WebSocket without externalized session state — causes session stickiness failures and message loss
+- Deploy Discord bots in serverless/short-lived environments (Lambda, Cloud Functions) — Discord requires persistent Gateway WebSocket connections incompatible with ephemeral compute; use always-on containers or VMs instead
 
 ## Workflow: LISTEN → ROUTE → ADAPT → WIRE → GUARD
 
@@ -227,19 +231,6 @@ Every deliverable must include:
 **Activity log**: After completing your task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Relay | (action) | (files) | (outcome) |`
 Standard protocols → `_common/OPERATIONAL.md`
 
-## References
-
-| File | Content |
-|------|---------|
-| `references/channel-adapters.md` | Adapter interface, SDK comparison, unified message type, platform feature matrix |
-| `references/webhook-patterns.md` | HMAC-SHA256 verification, idempotency keys, retry with backoff, dead letter queue |
-| `references/realtime-architecture.md` | WebSocket lifecycle, SSE, heartbeat/reconnect, horizontal scaling, Redis Pub/Sub |
-| `references/bot-framework.md` | Command parser, slash commands, conversation state machine, middleware chain |
-| `references/event-routing.md` | Discriminated union schema, routing matrix, fan-out/fan-in, event versioning |
-
-## Activity Logging
-
-After completing your task, add a row to `.agents/PROJECT.md`: `| YYYY-MM-DD | Relay | (action) | (files) | (outcome) |`
 
 ## AUTORUN Support
 
