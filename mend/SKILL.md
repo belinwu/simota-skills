@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - escalation_routing: Route unmatched or T4 patterns to Builder, Gear, or human operator with full incident context
 - slo_recovery_tracking: Monitor error budget burn rate via multi-window multi-burn-rate alerting (2%/1h page 14.4x, 5%/6h page 6x, 10%/3d ticket 1x, >20%/4w escalation) and SLI recovery post-remediation
 - remediation_rate_limiting: Cap remediation attempts at 3 per pattern per incident with exponential backoff to prevent retry storms
-- runbook_freshness_validation: Validate runbook last-reviewed timestamp (< 90 days) before automated execution
+- runbook_freshness_validation: Validate runbook last-reviewed timestamp (< 90 days) and infrastructure drift (platform upgrades, permission changes, deprecated APIs) before automated execution
 - pattern_learning: Convert postmortem outcomes into catalog entries via learning loop with human curation gate
 - circuit_breaker_management: Activate, monitor, and reset circuit breakers for cascading failure containment
 - k8s_self_healing: Kubernetes pod restart, CrashLoopBackOff recovery, liveness/readiness probe failure remediation
@@ -71,11 +71,11 @@ Route elsewhere when the task is primarily:
 - Include a rollback plan for every remediation; never execute without rollback capability. Rollback steps must be explicit, tested, and atomic.
 - Respect tier-specific approval gates (T1: auto, T2: notify, T3: approve, T4: prohibited). Critical paths (payments, auth, trading) retain T3+ approval gates regardless of confidence (Source: rootly.com — AI SRE Guide 2026).
 - Every remediation step must be idempotent — safe to run multiple times with the same result. Stateful operations must not be treated as idempotent without explicit verification (Source: sreschool.com — Runbook Automation 2026).
-- Monitor error budget burn rate post-remediation using multi-window, multi-burn-rate alerting (Source: sre.google — Alerting on SLOs). Fast-burn page: `>= 2%` budget consumed in 1 hour (14.4x burn rate). Secondary page: `>= 5%` budget consumed in 6 hours (6x burn rate). Slow-burn ticket: `>= 10%` budget consumed in 3 days. Short window = 1/12 of long window to confirm budget is still being consumed, reducing false positives. If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item.
+- Monitor error budget burn rate post-remediation using multi-window, multi-burn-rate alerting (Source: sre.google — Alerting on SLOs). Fast-burn page: `>= 2%` budget consumed in 1 hour (14.4x burn rate). Secondary page: `>= 5%` budget consumed in 6 hours (6x burn rate). Slow-burn ticket: `>= 10%` budget consumed in 3 days. Short window = 1/12 of long window to confirm budget is still being consumed, reducing false positives. If a single incident consumes `> 20%` of 4-week error budget, escalate for mandatory postmortem with P0 action item. **Low-traffic caveat**: multi-window burn-rate alerting produces unreliable signals for services with low request rates or natural low-traffic periods; fall back to count-based or event-based alerting for these services (Source: sre.google — Alerting on SLOs).
 - Cap remediation attempts at 3 per pattern per incident with exponential backoff between retries. After 3 failures, stop auto-remediation and escalate to human operator to avoid masking deeper issues or causing retry storms (Source: incident.io — SRE Tools & Reliability Practices 2026).
 - Log all actions with timestamps to the incident timeline; every automated action must be auditable and explainable.
 - Learn from postmortems to update the remediation pattern catalog. Note: general-purpose LLMs struggle with emerging failure patterns in proprietary systems — human curation remains essential for pattern accuracy (Source: engineering.zalando.com — AI Postmortem Analysis).
-- Validate runbook freshness before automated execution: runbooks unreviewed for > 90 days must trigger a freshness warning. A single outdated command can destroy trust and cause secondary incidents (Source: incident.io — Automated Runbook Guide).
+- Validate runbook freshness before automated execution: runbooks unreviewed for > 90 days must trigger a freshness warning. A single outdated command can destroy trust and cause secondary incidents (Source: incident.io — Automated Runbook Guide). Beyond time-based freshness, detect infrastructure drift — platform upgrades, permission changes, deprecated APIs, or schema migrations since last review invalidate runbooks even within the 90-day window (Source: ilert.com — Runbooks Are History; incident.io — Automated Runbook Guide).
 
 ## Boundaries
 
@@ -91,7 +91,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Respect tier-specific approval gates.
 - Include a rollback plan for every remediation.
 - Cap remediation attempts at 3 per pattern per incident; escalate after exhaustion.
-- Validate runbook freshness (< 90 days since last review) before automated execution.
+- Validate runbook freshness (< 90 days since last review) and infrastructure drift before automated execution.
 
 ### Ask First
 
@@ -111,7 +111,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Treat stateful operations (database writes, queue drains, cache invalidation) as idempotent without explicit verification — this is a common pitfall in runbook automation (Source: sreschool.com — Runbook Automation 2026).
 - Auto-remediate with a general-purpose LLM recommendation on proprietary/novel failure patterns without human curation — LLMs hallucinate on unseen patterns (Source: engineering.zalando.com — AI Postmortem Analysis).
 - Retry remediation indefinitely without backoff or attempt cap — retry storms amplify incidents, turning minor degradation into major outages by overwhelming already-stressed systems (Source: incident.io — SRE Tools & Reliability Practices 2026).
-- Execute runbooks unreviewed for > 90 days without freshness validation — stale commands (wrong flags, deprecated APIs, changed schemas) cause secondary incidents (Source: incident.io — Automated Runbook Guide).
+- Execute runbooks unreviewed for > 90 days or invalidated by infrastructure drift (platform upgrades, permission changes, deprecated APIs, schema migrations) without freshness validation — stale commands cause secondary incidents (Source: incident.io — Automated Runbook Guide; ilert.com — Runbooks Are History).
 
 ## Workflow
 
