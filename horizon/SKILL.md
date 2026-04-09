@@ -40,7 +40,7 @@ Technology scout and modernization specialist — propose ONE modernization oppo
 3. **Incremental over revolutionary** — Strangler Fig pattern; never break what works without a rollback. Strangler Fig yields 40% lower project failure rate vs big-bang rewrites. Define rollback triggers upfront: error rate > 0.1% increase, p95 latency > 20% increase
 4. **Measured over assumed** — Bundle size, performance, and compatibility must be quantified. Enforce budgets: ≤ 170KB initial JS (compressed), P99 latency ≤ baseline + 20%
 5. **Team over tech** — Learning curve matters; the best technology is one the team can maintain
-6. **Supply chain aware** — 454K+ malicious npm packages published in 2025 alone (99% of all open-source malware targets npm); CISA issued a widespread npm supply chain compromise alert (Sep 2025). Verify provenance via npm provenance attestations, `npm audit signatures`, and trusted publishing workflows before any dependency addition
+6. **Supply chain aware** — 454K+ malicious npm packages published in 2025 alone (99% of all open-source malware targets npm); CISA issued a widespread npm supply chain compromise alert (Sep 2025). npm revoked all classic tokens (Dec 2025) and defaults to session-based auth; prefer OIDC Trusted Publishing for CI/CD to eliminate stored secrets. pnpm v10 blocks postinstall scripts by default — adopt allowBuilds-only model. Verify provenance via npm provenance attestations, `npm audit signatures`, and trusted publishing workflows before any dependency addition
 
 ## Trigger Guidance
 
@@ -73,7 +73,8 @@ Route elsewhere when the task is primarily:
 - Log all modernization decisions to `.agents/PROJECT.md`.
 - Quantify impact: bundle size delta (enforce ≤ 170KB initial JS compressed budget), P99 latency ≤ baseline + 20%, compatibility matrix with caniuse coverage ≥ 95% for target browsers.
 - For Strangler Fig migrations, track % of functionality migrated, latency parity, and error rate parity before rerouting traffic. Define rollback triggers: error rate > 0.1% increase, p95 latency > 20% increase, transaction success rate drop, or connection pool exhaustion. Use shadow traffic testing to compare legacy vs new responses. Full monolith strangulation typically takes 2–5 years. Require an Anti-Corruption Layer between old and new systems — without it, teams typically strand 80% of low-visibility functionality in the old monolith, creating a distributed monolith with doubled operational cost.
-- For new dependency additions, verify npm provenance attestations and prefer packages using trusted publishing workflows. Apply a release cooldown (avoid packages published < 72 hours ago) to allow community detection of compromised versions.
+- For new dependency additions, verify npm provenance attestations and prefer packages using trusted publishing workflows. For CI/CD publishing, use OIDC Trusted Publishing (short-lived, per-run credentials) instead of stored tokens — npm revoked all classic tokens (Dec 2025) and granular tokens max 90 days. Apply release cooldowns: for new versions of existing packages, avoid versions published < 72 hours ago; for entirely new packages, prefer packages > 60 days old per CIS Supply Chain Security Benchmark.
+- For package managers with lifecycle script controls (pnpm v10+), enforce allowBuilds-only model — postinstall scripts are disabled by default. Explicitly list trusted packages that require build scripts; block all others. This eliminates the primary vector for supply chain malware execution.
 - Warn about AI-assisted migration risks: LLM-suggested dependency upgrades frequently recommend non-existent package versions. Always verify with `npm view <pkg> versions`.
 
 ## Boundaries
@@ -107,6 +108,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Recommend packages without checking supply chain provenance — the Axios compromise (March 2026, 100M+ weekly downloads, RAT payload) and Shai-Hulud worm (self-propagating via stolen npm tokens, 25K+ repos) demonstrate critical real-world supply chain risks. Verify provenance via npm provenance attestations and `npm audit signatures`.
 - Begin migration without mapping hidden dependencies — batch jobs, shared DB tables, file drops, and "temporary" integrations that became permanent are the #1 cause of migration failures. Audit all integration points before strangling any component.
 - Deploy a Strangler Fig facade/router without high-availability design — the proxy layer becomes a single point of failure that can take down both old and new systems simultaneously. Require multi-AZ deployment with automated failover for the routing layer.
+- Allow new features to keep landing in the legacy system during migration — the monolith keeps growing and migration never converges. Enforce a "freeze and strangle" rule: all new functionality goes to the new system from day one of migration.
+- Treat temporary data synchronization layers as permanent — dual-write bridges between old and new systems accumulate logic, become load-bearing infrastructure nobody dares remove, and create consistency bugs. Set explicit sunset dates and migration milestones for every sync layer.
 
 ## Workflow
 
