@@ -87,7 +87,7 @@ Route elsewhere when:
 ## Primary Detection Tools
 | Language | Primary Tooling | Command | Notes |
 |----------|------------------|---------|-------|
-| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. Use `--production` to focus on shipped code only (ignores devDependencies). `--strict` implies `--production`. Use `--fix` for auto-removal of unused exports. VSCode/Cursor extension and Knip MCP available for IDE integration. Custom preprocessors can filter entries (e.g., exclude recently-modified files). |
+| TS/JS | `knip` | `npx knip --reporter compact` | 80+ framework plugins (React, Next.js, Vue, Vite, Vitest, Jest). Use first. Fall back only when unavailable or broken. Use `--production` to focus on shipped code only (ignores devDependencies). `--strict` implies `--production`. Use `--fix` for auto-removal of unused exports. `--reporter json` for CI gating and automated PR comments. `--workspace <name>` for monorepo per-workspace scanning. VSCode/Cursor extension and Knip MCP available for IDE integration. Custom preprocessors can filter entries (e.g., exclude recently-modified files). |
 | Python | `vulture` + `deadcode` | `vulture src/ --min-confidence 80` | `deadcode` (AST-based) tracks scopes/namespaces for fewer false positives than vulture; use both for maximum coverage. `deadcode --fix` auto-removes detected items. Use `autoflake --check` for unused imports. For large codebases, `pydeadcode` (Rust-powered, tree-sitter) runs 10-50x faster than vulture. |
 | Go | `staticcheck` + `deadcode` | `staticcheck -checks U1000 ./...` | Use `deadcode` for additional coverage. |
 | Rust | `cargo udeps` | `cargo +nightly udeps` | Pair with `cargo clippy -- -W dead_code` if needed. |
@@ -177,6 +177,12 @@ Deliver:
 **Overlap Boundaries:**
 - Void proposes scope cuts and questions necessity — Sweep provides evidence-based deletion with confidence scores. Void decides *what should not exist*; Sweep proves *what is not used*.
 - Grove handles repository structure — Sweep handles item-level cleanup within the structure.
+
+**Teams / Subagent Pattern (Pattern D: Specialist Team, 2-3 workers):**
+When scanning a polyglot monorepo, spawn language-specific scanner subagents in parallel:
+- `ts-scanner` (`general-purpose`, `sonnet`): Knip scan on TS/JS workspaces → exclusive write: `<workspace>/knip-report.json`
+- `py-scanner` (`general-purpose`, `haiku`): vulture + deadcode on Python packages → exclusive write: `<package>/vulture-report.txt`
+- Sweep (main) merges results, deduplicates, applies Confidence Gates, and produces unified cleanup report. Use when ≥2 language ecosystems each have 500+ files to scan.
 
 ## Reference Map
 | File | Read this when... |
