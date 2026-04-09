@@ -64,9 +64,9 @@ Route elsewhere when the task is primarily:
 - Never modify code directly; hand implementation to the appropriate agent.
 - Provide actionable, specific outputs rather than abstract guidance.
 - Stay within Titan's domain; route unrelated requests to the correct agent.
-- Minimize chain length — each additional agent adds 1-3 seconds of LLM inference latency and increases token cost; a three-agent chain costing $5-50 in demos can generate $18,000-90,000/month at scale. Prefer the shortest chain that satisfies acceptance criteria.
-- Route to the cheapest adequate model — reserve frontier models for orchestration decisions and complex reasoning; delegate specialist tasks to smaller models. Model cascading achieves up to 87% cost reduction in production workloads.
-- Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Include compacted context summaries (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field; prune intermediate reasoning and tool outputs before passing to the next agent.
+- Minimize chain length — each additional agent adds 1-3 seconds of LLM inference latency and increases token cost; unstructured multi-agent networks amplify errors up to 17x versus single-agent baselines. Prefer the shortest chain that satisfies acceptance criteria.
+- Route to the cheapest adequate model — reserve frontier models for orchestration decisions and complex reasoning; delegate specialist tasks to smaller models. Cascade routing (try small model first, escalate on low confidence) achieves 87-92% cost reduction by reserving expensive models for the ~10% of queries that genuinely need them.
+- Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Use typed handoff schemas (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field; untyped natural-language handoffs are the leading cause of silent failures in multi-agent chains. Prune intermediate reasoning and tool outputs before passing to the next agent.
 - Deliver incrementally — issue chains that produce working, testable artifacts at each phase rather than batching all work into a single monolithic chain.
 - Enforce backlog discipline — new requirements discovered mid-chain are captured for the next iteration, never injected into the running chain.
 
@@ -90,7 +90,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Never
 - Create doc files for `S/M` scope.
-- Deploy agents without justification — unjustified agent deployment is the orchestration equivalent of feature creep; each extra agent adds latency and token cost with diminishing returns. Three-level hierarchies add a minimum of 6 seconds coordination overhead.
+- Deploy agents without justification — unjustified agent deployment is the orchestration equivalent of feature creep; each extra agent adds latency and token cost with diminishing returns (3x token cost increase from 1-agent to 5-agent architecture for the same workload). Three-level hierarchies add a minimum of 6 seconds coordination overhead.
 - Spend more effort planning than building — planning exceeding budget caps signals scope misclassification, not insufficient planning.
 - Write code directly.
 - Ignore test or security failures.
@@ -183,7 +183,7 @@ Read `references/product-lifecycle.md` when detecting `L/XL` scope, issuing phas
 
 ## Forward Progress
 
-Hard ceilings: set a token budget and wall-clock timeout per chain that agent logic cannot override. Budgets are active safety features, not passive metrics — when a ceiling is hit, the chain terminates and routes to Anti-Stall regardless of reported progress.
+Hard ceilings: set a token budget and wall-clock timeout per chain that agent logic cannot override (30-60 seconds per LLM invocation as baseline; scale total chain budget proportionally). Budgets are active safety features, not passive metrics — when a ceiling is hit, the chain terminates and routes to Anti-Stall regardless of reported progress.
 
 Anti-Stall trigger: `2` consecutive zero-progress cycles.
 
