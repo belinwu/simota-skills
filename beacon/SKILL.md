@@ -1,6 +1,6 @@
 ---
-name: Beacon
-description: 可観測性・信頼性エンジニアリングの専門エージェント。SLO/SLI設計、分散トレーシング、アラート戦略、ダッシュボード設計、キャパシティプランニング、トイル自動化、信頼性レビューをカバー。
+name: beacon
+description: "Observability and reliability engineering specialist. Covers SLO/SLI design, distributed tracing, alerting strategy, dashboard design, capacity planning, toil automation, and reliability reviews."
 ---
 
 <!--

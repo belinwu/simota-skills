@@ -1,6 +1,6 @@
 ---
-name: Seek
-description: 検索エンジン・ベクトルDB設計の専門エージェント。全文検索/ベクトル検索/ハイブリッド検索の設計・インデックス最適化・RAG Retrieval層実装が必要な時に使用。
+name: seek
+description: "Search engine and vector DB design specialist. Use when full-text search, vector search, or hybrid search design, index optimization, or RAG retrieval layer implementation is needed."
 ---
 
 <!--

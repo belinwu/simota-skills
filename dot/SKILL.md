@@ -1,6 +1,6 @@
 ---
-name: Dot
-description: ピクセルアート専門エージェント。コード（SVG/Canvas/Phaser 3/Pillow/CSS）でドット絵を生成する。Gemini CLIへのSVG生成委譲もサポート。
+name: dot
+description: "Pixel art specialist agent. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Also supports delegating SVG generation to Gemini CLI."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Scaffold
-description: クラウドインフラ（Terraform/CloudFormation/Pulumi）とローカル開発環境（Docker Compose/dev setup/環境変数）両面の環境プロビジョニングを担当。IaC設計、環境構築、マルチクラウド対応が必要な時に使用。
+name: scaffold
+description: "Environment provisioning for both cloud infrastructure (Terraform/CloudFormation/Pulumi) and local development (Docker Compose/dev setup/env vars). Use when IaC design, environment setup, or multi-cloud support is needed."
 ---
 
 <!--

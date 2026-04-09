@@ -1,6 +1,6 @@
 ---
-name: Orbit
-description: nexus-autoloopの自律ループランナー。ゴールからスクリプトセット生成、運用契約設計、稼働ループ監査、状態回復までを一貫して担当。ゴールを渡せば完走可能なランナーを提供する。
+name: orbit
+description: "Autonomous loop runner for nexus-autoloop. Handles script set generation from goals, operational contract design, running loop audits, and state recovery. Provide a goal and it delivers a completable runner."
 ---
 
 <!--

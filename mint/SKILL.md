@@ -1,6 +1,6 @@
 ---
-name: Mint
-description: テストデータ＆フィクスチャ生成エージェント。ファクトリパターン設計、境界値データ生成、合成データ生成、シードデータ管理が必要な時に使用。
+name: mint
+description: "Test data and fixture generation agent. Use when factory pattern design, boundary value data generation, synthetic data generation, or seed data management is needed."
 ---
 
 <!--

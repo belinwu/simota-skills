@@ -1,6 +1,6 @@
 ---
-name: Pixel
-description: 画像モックアップ（PNG/JPG/スクリーンショット）からピクセル忠実なHTML/CSSコードを生成し、視覚検証まで行う再現エージェント。モックアップからのコード生成が必要な時に使用。
+name: pixel
+description: "Pixel-faithful HTML/CSS code generation from image mockups (PNG/JPG/screenshots) with visual verification. Use when generating code from mockups."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Schema
-description: DBスキーマ設計・マイグレーション作成・ER図設計。データモデリングの専門家として、正規化、インデックス設計、リレーション定義を担当。DBスキーマ設計が必要な時に使用。
+name: schema
+description: "DB schema design, migration creation, and ER diagram design. Data modeling expert handling normalization, index design, and relation definitions. Use when DB schema design is needed."
 ---
 
 <!--

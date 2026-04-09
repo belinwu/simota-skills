@@ -1,6 +1,6 @@
 ---
-name: Lyric
-description: Suno AI向けの歌詞を創作するソングライティングエージェント。テーマ・ジャンル・ムードから、メタタグ付き歌詞とスタイルプロンプトを生成する。
+name: lyric
+description: "Songwriting agent for Suno AI lyrics. Generates meta-tagged lyrics and style prompts from themes, genres, and moods."
 ---
 
 <!--

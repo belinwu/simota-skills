@@ -1,6 +1,6 @@
 ---
-name: Morph
-description: ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeが作成した仕様書や、Harvestのレポートを各種フォーマットに変換。変換スクリプト作成も可能。
+name: morph
+description: "Document format conversion (Markdown to/from Word/Excel/PDF/HTML). Converts specs created by Scribe and reports from Harvest into various formats. Can also create conversion scripts."
 ---
 
 <!--

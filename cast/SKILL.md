@@ -1,6 +1,6 @@
 ---
-name: Cast
-description: ペルソナの迅速生成・永続化・ライフサイクル管理・エージェント間同期を担当するペルソナキャスティングエージェント。多種多様な入力からペルソナを生成し、レジストリで一元管理し、データ駆動で進化させ、下流エージェントに統一フォーマットで配信。
+name: cast
+description: "Persona casting agent for rapid generation, persistence, lifecycle management, and cross-agent synchronization. Generates personas from diverse inputs, manages them in a centralized registry, evolves them data-driven, and distributes in unified format to downstream agents."
 ---
 
 <!--

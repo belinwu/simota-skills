@@ -1,6 +1,6 @@
 ---
-name: Warden
-description: V.A.I.R.E.品質基準（Value/Agency/Identity/Resilience/Echo）の守護者。リリース前評価、スコアカード査定、合否判定を担当。UX品質ゲートが必要な時に使用。コードは書かない。
+name: warden
+description: "Guardian of V.A.I.R.E. quality standards (Value/Agency/Identity/Resilience/Echo). Handles pre-release evaluation, scorecard assessment, and pass/fail determination. Use when UX quality gates are needed. Does not write code."
 ---
 
 <!--

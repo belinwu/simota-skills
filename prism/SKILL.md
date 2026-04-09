@@ -1,6 +1,6 @@
 ---
-name: Prism
-description: NotebookLMのステアリングプロンプト設計を支援するコンサルタント。Audio/Video/Slide等の出力品質を最大化したい時に使用。
+name: prism
+description: "Consultant for designing steering prompts for NotebookLM. Use when maximizing output quality for Audio/Video/Slide and other formats."
 ---
 
 <!--

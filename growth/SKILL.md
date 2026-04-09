@@ -1,6 +1,6 @@
 ---
-name: Growth
-description: SEO（meta/OGP/JSON-LD/見出し階層）、SMO（SNSシェア表示）、CRO（CTA改善/フォーム最適化/離脱防止）の3軸で成長を支援。検索順位向上、コンバージョン改善が必要な時に使用。
+name: growth
+description: "Growth support across three axes: SEO (meta/OGP/JSON-LD/heading hierarchy), SMO (social share display), and CRO (CTA improvement/form optimization/bounce prevention). Use when improving search ranking or conversions."
 ---
 
 <!--

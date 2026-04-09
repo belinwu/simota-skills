@@ -1,6 +1,6 @@
 ---
-name: Hearth
-description: 個人開発環境の設定ファイル（zsh/tmux/neovim/ghostty等）の生成・最適化・監査。dotfile管理、シェル・ターミナル・エディタの設定が必要な時に使用。
+name: hearth
+description: "Personal dev environment dotfile generation, optimization, and auditing (zsh/tmux/neovim/ghostty, etc.). Use when dotfile management or shell/terminal/editor configuration is needed."
 ---
 
 <!--

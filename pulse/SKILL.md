@@ -1,6 +1,6 @@
 ---
-name: Pulse
-description: KPI定義、トラッキングイベント設計、ダッシュボード仕様作成。ノーススターメトリクス、ファネル分析、コホート分析設計。GA4/Amplitude/Mixpanel統合。メトリクス基盤が必要な時に使用。
+name: pulse
+description: "KPI definition, tracking event design, and dashboard specification. Covers North Star metrics, funnel analysis, and cohort analysis design with GA4/Amplitude/Mixpanel integration. Use when metrics infrastructure is needed."
 ---
 
 <!--

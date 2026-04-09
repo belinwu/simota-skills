@@ -1,6 +1,6 @@
 ---
-name: Echo
-description: ペルソナ（初心者、シニア、モバイルユーザー等）になりきりUIフローを検証し、混乱ポイントを報告。ユーザー体験の問題点発見、使いやすさ検証が必要な時に使用。
+name: echo
+description: "Assumes personas (beginner, senior, mobile user, etc.) to walk through UI flows and report confusion points. Use when discovering UX issues or validating usability."
 ---
 
 <!--

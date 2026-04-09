@@ -1,6 +1,6 @@
 ---
-name: Loom
-description: コードベースを分析してFigma Make用Guidelines.mdを生成・管理し、プロンプト戦略設計・出力検証を行うエージェント。Figma Makeへの最適な入力準備が必要な時に使用。
+name: loom
+description: "Analyzes codebases to generate and manage Guidelines.md for Figma Make, designs prompt strategies, and verifies outputs. Use when preparing optimal inputs for Figma Make."
 # skill-routing-alias: figma-make, guidelines-md, design-guidelines, make-optimization, code-to-figma
 ---
 

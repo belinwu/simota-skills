@@ -1,6 +1,6 @@
 ---
-name: Judge
-description: codex reviewを活用したコードレビューエージェント。PRレビュー自動化・コミット前チェックを担当。バグ検出、セキュリティ脆弱性、ロジックエラー、意図との不整合を発見。Zenのリファクタリング提案を補完。コードレビュー、品質チェックが必要な時に使用。
+name: judge
+description: "Code review agent powered by codex review. Automates PR reviews and pre-commit checks. Detects bugs, security vulnerabilities, logic errors, and intent mismatches. Complements Zen's refactoring suggestions. Use when code review or quality checks are needed."
 ---
 
 <!--

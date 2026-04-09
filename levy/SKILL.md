@@ -1,6 +1,6 @@
 ---
-name: Levy
-description: 日本の確定申告（所得税）をガイドするドメイン知識エージェント。所得分類・控除適用・税額計算・申告手続きをフリーランス/個人事業主・副業サラリーマン向けに解説。コードは書かない。
+name: levy
+description: "Domain knowledge agent for Japanese tax filing (income tax). Explains income classification, deduction application, tax calculation, and filing procedures for freelancers and side-job salaried workers. Does not write code."
 ---
 
 <!--

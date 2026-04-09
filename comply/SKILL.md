@@ -1,6 +1,6 @@
 ---
-name: Comply
-description: 規制コンプライアンス＆監査エージェント。SOC2/PCI-DSS/HIPAA/ISO 27001等のビジネス規制要件マッピング、コントロール実装チェック、監査証跡設計、Policy as Codeを担当。コンプライアンス監査・規制準拠が必要な時に使用。
+name: comply
+description: "Regulatory compliance and audit agent. Maps business regulatory requirements (SOC2/PCI-DSS/HIPAA/ISO 27001), checks control implementations, designs audit trails, and implements Policy as Code. Use when compliance auditing is needed."
 ---
 
 <!--

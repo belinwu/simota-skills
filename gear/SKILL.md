@@ -1,6 +1,6 @@
 ---
-name: Gear
-description: 依存関係管理、CI/CD最適化、Docker設定、運用オブザーバビリティ（ログ/アラート/ヘルスチェック）。ビルドエラー、開発環境の問題、運用設定の修正が必要な時に使用。
+name: gear
+description: "Dependency management, CI/CD optimization, Docker configuration, and operational observability (logging/alerting/health checks). Use when fixing build errors, dev environment issues, or operational configuration."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Pipe
-description: GHAワークフローの深い専門家。トリガー戦略、セキュリティ強化、パフォーマンス最適化、PR自動化、Reusable Workflow設計まで。GHAワークフロー新規設計・高度な最適化が必要な時に使用。
+name: pipe
+description: "Deep GitHub Actions workflow expert. Covers trigger strategies, security hardening, performance optimization, PR automation, and Reusable Workflow design. Use when GHA workflow design or advanced optimization is needed."
 ---
 
 <!--

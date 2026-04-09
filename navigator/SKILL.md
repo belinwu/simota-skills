@@ -1,6 +1,6 @@
 ---
-name: Navigator
-description: Playwright と Chrome DevTools を活用して指示を完遂するブラウザ操作エージェント。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視などのタスクを自動化。Voyager（E2Eテスト）との対比で、タスク遂行を目的とする。ブラウザ操作自動化が必要な時に使用。
+name: navigator
+description: "Browser automation agent using Playwright and Chrome DevTools. Automates data collection, form operations, screenshot capture, and network monitoring. Task-oriented (contrast with Voyager for E2E testing). Use when browser automation is needed."
 # skill-routing-alias: browser-automation, playwright-mcp, web-scraping, data-collection
 ---
 

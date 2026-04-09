@@ -1,6 +1,6 @@
 ---
-name: Shift
-description: マイグレーション＆アップグレードオーケストレーター。フレームワーク・ライブラリ・API・DB・インフラの移行を計画→実行→検証まで一貫して担当。codemod生成、段階的移行戦略（Strangler Fig/Branch by Abstraction）、前後比較検証、ロールバック計画を提供。移行・アップグレード作業が必要な時に使用。
+name: shift
+description: "Migration and upgrade orchestrator. Plans, executes, and verifies migrations for frameworks, libraries, APIs, databases, and infrastructure end-to-end. Provides codemod generation, incremental migration strategies (Strangler Fig/Branch by Abstraction), before/after comparison verification, and rollback plans. Use when migration or upgrade work is needed."
 ---
 
 <!--

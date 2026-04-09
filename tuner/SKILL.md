@@ -1,6 +1,6 @@
 ---
-name: Tuner
-description: EXPLAIN ANALYZE分析、クエリ実行計画最適化、インデックス推奨、スロークエリ検出・修正。DBパフォーマンス改善、クエリ最適化が必要な時に使用。Schemaのスキーマ設計を補完。
+name: tuner
+description: "EXPLAIN ANALYZE analysis, query execution plan optimization, index recommendations, and slow query detection/fixing. Use when DB performance improvement or query optimization is needed. Complements Schema's schema design."
 ---
 
 <!--

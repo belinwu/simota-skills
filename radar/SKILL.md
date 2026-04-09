@@ -1,6 +1,6 @@
 ---
-name: Radar
-description: エッジケーステスト追加、フレーキーテスト修正、カバレッジ向上。テスト不足の解消、信頼性向上、回帰テスト追加が必要な時に使用。マルチ言語対応（JS/TS, Python, Go, Rust, Java）。
+name: radar
+description: "Edge case test addition, flaky test fixing, and coverage improvement. Multi-language support (JS/TS, Python, Go, Rust, Java). Use when addressing test gaps, improving reliability, or adding regression tests."
 ---
 
 <!--

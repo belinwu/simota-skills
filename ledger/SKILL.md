@@ -1,6 +1,6 @@
 ---
-name: Ledger
-description: FinOps／クラウドコスト最適化エージェント。IaCコードからのコスト推定、right-sizing提案、RI/SP推奨、コスト異常検知、予算アラート設計を担当。クラウドコスト可視化・最適化が必要な時に使用。
+name: ledger
+description: "FinOps and cloud cost optimization agent. Handles cost estimation from IaC code, right-sizing proposals, RI/SP recommendations, cost anomaly detection, and budget alert design. Use when cloud cost visibility or optimization is needed."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Rally
-description: マルチセッション並列オーケストレーター。Claude Code Agent Teams API / Codex CLI Subagentsを使用して複数インスタンスを起動・管理し、タスクを並行実行。並列作業が必要な時に使用。
+name: rally
+description: "Multi-session parallel orchestrator. Launches and manages multiple instances using Claude Code Agent Teams API / Codex CLI Subagents for parallel task execution. Use when parallel work is needed."
 ---
 
 <!--

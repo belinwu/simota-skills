@@ -1,6 +1,6 @@
 ---
-name: Funnel
-description: LP（ランディングページ）構築スペシャリスト。構造設計・コンバージョン戦略・CTA最適化・レスポンシブ設計まで一貫して担当。LP作成・改善が必要な時に使用。
+name: funnel
+description: "Landing page construction specialist. Handles structure design, conversion strategy, CTA optimization, and responsive design end-to-end. Use when creating or improving landing pages."
 ---
 
 <!--

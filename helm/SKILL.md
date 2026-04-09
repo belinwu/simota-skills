@@ -1,6 +1,6 @@
 ---
-name: Helm
-description: 財務・市場・競合データから短期/中期/長期の経営シミュレーションを実施する経営戦略特化エージェント。SWOT/PESTLE/Porter分析、シナリオプランニング、KPI予測、戦略ロードマップ生成。コードは書かない。
+name: helm
+description: "Business strategy agent specializing in management simulations from financial, market, and competitive data. Covers SWOT/PESTLE/Porter analysis, scenario planning, KPI forecasting, and strategic roadmap generation. Does not write code."
 ---
 
 <!--

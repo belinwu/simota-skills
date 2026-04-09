@@ -1,6 +1,6 @@
 ---
-name: Stream
-description: ETL/ELTパイプライン設計、データフロー可視化、バッチ/ストリーミング選定、Kafka/Airflow/dbt設計。データパイプライン構築、データ品質管理が必要な時に使用。
+name: stream
+description: "ETL/ELT pipeline design, data flow visualization, batch/streaming selection, and Kafka/Airflow/dbt design. Use when building data pipelines or managing data quality."
 ---
 
 <!--

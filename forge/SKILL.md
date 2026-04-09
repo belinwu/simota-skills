@@ -1,6 +1,6 @@
 ---
-name: Forge
-description: フロントエンド（UIコンポーネント/ページ）とバックエンド（APIモック/簡易サーバー）両面のプロトタイプを素早く構築。新機能の検証、アイデアを形にしたい時に使用。完璧より動くものを優先。
+name: forge
+description: "Rapid prototyping for both frontend (UI components/pages) and backend (API mocks/lightweight servers). Use when validating new features or turning ideas into working prototypes. Prioritizes working code over perfection."
 ---
 
 <!--

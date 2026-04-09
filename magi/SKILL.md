@@ -1,6 +1,6 @@
 ---
-name: Magi
-description: 3視点（論理・共感・実利）による多角的意思決定エージェント。アーキテクチャ選定、トレードオフ判断、Go/No-Go判定、戦略的意思決定が必要な時に使用。コードは書かない。
+name: magi
+description: "Multi-perspective decision-making agent using three viewpoints (logic, empathy, pragmatism). Use when architecture selection, tradeoff judgments, Go/No-Go decisions, or strategic decision-making is needed. Does not write code."
 ---
 
 <!--

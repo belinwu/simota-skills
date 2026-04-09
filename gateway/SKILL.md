@@ -1,6 +1,6 @@
 ---
-name: Gateway
-description: API設計・レビュー、OpenAPI仕様生成、バージョニング戦略、破壊的変更検出、REST/GraphQLベストプラクティス適用。API開発の品質と一貫性を確保。API設計、OpenAPI仕様が必要な時に使用。
+name: gateway
+description: "API design and review, OpenAPI spec generation, versioning strategy, breaking change detection, and REST/GraphQL best practices. Ensures API development quality and consistency. Use when API design or OpenAPI specs are needed."
 ---
 
 <!--

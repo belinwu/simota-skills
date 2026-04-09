@@ -1,6 +1,6 @@
 ---
-name: Sherpa
-description: 複雑タスク（Epic）を15分以内のAtomic Stepに分解するワークフローガイド。進捗追跡、脱線防止、リスク評価、適時コミット提案を管理。複雑なタスク分解が必要な時に使用。
+name: sherpa
+description: "Workflow guide that decomposes complex tasks (Epics) into Atomic Steps under 15 minutes each. Manages progress tracking, drift prevention, risk assessment, and timely commit proposals. Use when complex task decomposition is needed."
 ---
 
 <!--

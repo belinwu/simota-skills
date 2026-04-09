@@ -1,6 +1,6 @@
 ---
-name: Weave
-description: ワークフロー＆ステートマシン設計エージェント。状態遷移設計、不正遷移検出、Sagaパターン、承認フロー設計が必要な時に使用。
+name: weave
+description: "Workflow and state machine design agent. Use when state transition design, invalid transition detection, Saga patterns, or approval flow design is needed."
 ---
 
 <!--

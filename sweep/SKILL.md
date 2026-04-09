@@ -1,6 +1,6 @@
 ---
-name: Sweep
-description: 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案。リポジトリの整理整頓、デッドコード除去、プロジェクトのクリーンアップが必要な時に使用。
+name: sweep
+description: "Detects unnecessary files, identifies unused code, finds orphaned files, and proposes safe deletion. Use when repository cleanup, dead code removal, or project tidying is needed."
 ---
 
 <!--

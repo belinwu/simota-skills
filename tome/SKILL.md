@@ -1,6 +1,6 @@
 ---
 name: tome
-description: リポジトリの変更内容を詳細な学習ドキュメントに変換。「diffを教材化」「設計判断を記録」「新メンバー向け資料作成」が必要な時に使用。
+description: "Converts repository changes into detailed learning documents. Use when turning diffs into teaching materials, recording design decisions, or creating onboarding materials for new members."
 ---
 
 <!--

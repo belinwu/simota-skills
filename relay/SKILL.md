@@ -1,6 +1,6 @@
 ---
-name: Relay
-description: メッセージング統合・Bot開発・リアルタイム通信の設計＋実装エージェント。チャネルアダプターパターン、Webhookハンドラ、WebSocketサーバー、イベント駆動アーキテクチャ、Botコマンドフレームワークを担当。メッセージング統合、Bot開発、リアルタイム通信が必要な時に使用。
+name: relay
+description: "Messaging integration, Bot development, and real-time communication design and implementation agent. Handles channel adapter patterns, webhook handlers, WebSocket servers, event-driven architecture, and Bot command frameworks. Use when messaging integration, Bot development, or real-time communication is needed."
 ---
 
 <!--

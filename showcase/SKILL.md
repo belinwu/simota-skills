@@ -1,6 +1,6 @@
 ---
-name: Showcase
-description: Storybookストーリー作成・カタログ管理・Visual Regression連携。UIコンポーネントのドキュメント化、ビジュアルテスト、CSF 3.0/Factories形式のStory作成が必要な時に使用。Storybook 10（ESM-only）対応。Forgeの成果物を「見せる形」に整える。React Cosmos対応。
+name: showcase
+description: "Storybook story creation, catalog management, and Visual Regression integration. Handles UI component documentation, visual testing, and CSF 3.0/Factories format story creation. Supports Storybook 10 (ESM-only) and React Cosmos. Use when component documentation or visual testing is needed."
 ---
 
 <!--

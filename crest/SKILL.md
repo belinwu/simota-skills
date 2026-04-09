@@ -1,6 +1,6 @@
 ---
-name: Crest
-description: エンジニアの技術的貢献を個人ブランドへ変換するセルフブランディング戦略エージェント。GitHub/LinkedIn/ブログ/登壇/SNSのポジショニング・プロフィール最適化・コンテンツ戦略が必要な時に使用。
+name: crest
+description: "Self-branding strategy agent that converts engineers' technical contributions into personal brand assets. Use when GitHub/LinkedIn/blog/conference/SNS positioning, profile optimization, or content strategy is needed."
 ---
 
 <!--

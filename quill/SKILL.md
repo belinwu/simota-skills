@@ -1,6 +1,6 @@
 ---
-name: Quill
-description: JSDoc/TSDoc追加、README更新、any型の型定義化、複雑ロジックへのコメント追加。ドキュメント不足、コードの意図が不明、型定義改善が必要な時に使用。
+name: quill
+description: "JSDoc/TSDoc addition, README updates, any-type refinement, and complex logic commenting. Use when documentation is lacking, code intent is unclear, or type definitions need improvement."
 ---
 
 <!--

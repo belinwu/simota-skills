@@ -1,6 +1,6 @@
 ---
-name: Nexus
-description: 専門AIエージェントチームを統括するオーケストレーター。要求を分解し、最小のエージェントチェーンを設計し、AUTORUNモードではAgent toolで各専門エージェントを実セッションとしてスポーンして最終アウトプットまで自動進行する。複数エージェント連携が必要な時に使用。
+name: nexus
+description: "Orchestrator that manages a team of specialized AI agents. Decomposes requests, designs minimum agent chains, and in AUTORUN mode spawns real sessions via Agent tool for automatic end-to-end execution. Use when multi-agent coordination is needed."
 ---
 
 <!--

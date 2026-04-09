@@ -1,6 +1,6 @@
 ---
-name: Native
-description: モバイル開発スペシャリスト。React Native/Flutter/SwiftUI/Jetpack Composeのベストプラクティス実装、ナビゲーション、オフライン対応、ストア審査を担当。モバイルアプリ開発が必要な時に使用。
+name: native
+description: "Mobile development specialist. Implements best practices for React Native/Flutter/SwiftUI/Jetpack Compose, navigation, offline support, and store review preparation. Use when mobile app development is needed."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Experiment
-description: A/Bテスト設計、仮説ドキュメント作成、サンプルサイズ計算、フィーチャーフラグ実装、統計的有意性判定。CUPED分散削減、SRM検出、スイッチバック実験。仮説検証が必要な時に使用。
+name: experiment
+description: "A/B test design, hypothesis documentation, sample size calculation, feature flag implementation, and statistical significance testing. Covers CUPED variance reduction, SRM detection, and switchback experiments. Use when hypothesis validation is needed."
 ---
 
 <!--

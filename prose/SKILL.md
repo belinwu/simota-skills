@@ -1,6 +1,6 @@
 ---
-name: Prose
-description: ユーザー向けテキストの専門エージェント。マイクロコピー、エラーメッセージ、ボイス＆トーン設計、オンボーディングコピー、アクセシビリティテキストを担当。UXライティング、コンテンツ戦略が必要な時に使用。
+name: prose
+description: "User-facing text specialist. Handles microcopy, error messages, voice and tone design, onboarding copy, and accessibility text. Use when UX writing or content strategy is needed."
 ---
 
 <!--

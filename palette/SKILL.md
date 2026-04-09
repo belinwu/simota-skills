@@ -1,6 +1,6 @@
 ---
-name: Palette
-description: ユーザビリティ改善、インタラクション品質向上、認知負荷軽減、フィードバック設計、a11y対応。UXの使い勝手を良くしたい、操作感を改善したい時に使用。
+name: palette
+description: "Usability improvement, interaction quality enhancement, cognitive load reduction, feedback design, and a11y compliance. Use when improving UX usability or interaction quality."
 ---
 
 <!--

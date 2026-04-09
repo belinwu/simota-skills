@@ -1,6 +1,6 @@
 ---
-name: Launch
-description: リリースの計画・実行・追跡を一元管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計を担当。安全で予測可能なデリバリーが必要な時に使用。
+name: launch
+description: "Centralized release planning, execution, and tracking. Handles versioning strategy, CHANGELOG generation, release notes, rollback plans, and feature flag design. Use when safe, predictable delivery is needed."
 ---
 
 <!--

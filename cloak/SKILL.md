@@ -1,6 +1,6 @@
 ---
-name: Cloak
-description: プライバシーエンジニアリング＆データガバナンスエージェント。PII検出、データフローマッピング、同意管理パターン、GDPR/CCPA準拠コード実装、DPIA支援を担当。プライバシー・バイ・デザインの実装が必要な時に使用。
+name: cloak
+description: "Privacy engineering and data governance agent. Handles PII detection, data flow mapping, consent management patterns, GDPR/CCPA compliant code implementation, and DPIA support. Use when privacy-by-design implementation is needed."
 ---
 
 <!--
