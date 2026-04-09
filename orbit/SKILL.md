@@ -1,6 +1,6 @@
 ---
-name: Orbit
-description: nexus-autoloopの自律ループランナー。ゴールからスクリプトセット生成、運用契約設計、稼働ループ監査、状態回復までを一貫して担当。ゴールを渡せば完走可能なランナーを提供する。
+name: orbit
+description: Autonomous loop runner for nexus-autoloop. Generates script sets from goals, designs operation contracts, audits live loops, and recovers state — delivering end-to-end runners that complete reliably.
 ---
 
 <!--
@@ -77,9 +77,11 @@ Route elsewhere when the task is primarily:
 - Implement bounded autonomy: define clear operational limits, escalation paths, and audit trails for every loop. [Source: machinelearningmastery.com — Agentic AI Trends 2026]
 - Combine retry + timeout + circuit breaker as a unified resilience trio; never use retries without circuit breaker protection. [Source: dasroot.net — Building Resilient Systems 2026]
 - Require idempotency keys for every effectful tool invocation; retries without idempotency risk double-execution of side effects. [Source: fast.io — AI Agent State Checkpointing]
-- Separate task state (workflow checkpoints, artifacts) from system state (policies, budgets, permissions) in checkpoint design; mixing them causes agents to "remember" the wrong things. [Source: fast.io — AI Agent State Checkpointing]
+- Separate task state (workflow checkpoints, artifacts) from system state (policies, budgets, permissions) in checkpoint design; mixing them causes agents to "remember" the wrong things. Long-running agent tasks fail 15-30% of the time (API timeouts, rate limits, network blips); proper checkpointing cuts wasted reprocessing by >= 60%. [Source: fast.io — AI Agent State Checkpointing]
 - Require context-aware output handling in generated loop scripts: tool outputs exceeding `1KB` must be stored externally and passed as short references (memory pointer pattern); context window overflow from large tool returns is the most common agent failure mode, reducing from 200KB+ to under 100 bytes per call. [Source: arxiv.org/abs/2511.22729 — Solving Context Window Overflow in AI Agents; dev.to/aws — Why AI Agents Fail: 3 Failure Modes]
 - Require clear terminal states (`SUCCESS` / `FAILED`) in every tool response schema for generated loops; ambiguous tool feedback (e.g., "more results may be available") is the root cause of same-tool retry loops — clear states reduced tool calls from 14 to 2 in production. [Source: dev.to/aws — Why AI Agents Fail: 3 Failure Modes]
+- Apply the external enforcement principle: generated loop scripts must enforce termination externally (iteration caps, timeouts, budget limits) rather than relying on the agent's self-assessment to stop. An agent stuck in a reasoning loop cannot reliably break itself out. [Source: agentpatterns.tech — Infinite Agent Loop; getmaxim.ai — Troubleshooting Agent Loops]
+- Recommend OpenTelemetry GenAI semantic conventions (`gen_ai.*` attributes) for loop telemetry when `STRUCTURED_LOG=true`; standardized spans enable cross-tool observability integration. [Source: opentelemetry.io — AI Agent Observability]
 
 ## Boundaries
 
@@ -120,6 +122,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Create independent circuit breakers per service instance rather than per service — this misses systemic failures and leads to cascading outages. [Source: oneuptime.com — Circuit Breaker Patterns 2026]
 - Retry without exponential backoff — ties up threads, exhausts connection pools, and causes cascading failure in upstream services. [Source: medium.com/@rafaeljcamara — Downstream Resiliency Patterns]
 - Use stateless recovery for long-running workflows — state must be checkpointed to survive interruptions gracefully. [Source: spaceo.ai — Agentic AI Frameworks 2026]
+- Rely on the agent itself to guarantee loop termination — the external system running the agent (runner script, orchestrator) must enforce termination; an agent stuck in a reasoning loop cannot reliably break itself out. [Source: agentpatterns.tech — Infinite Agent Loop; getmaxim.ai — Troubleshooting Agent Loops]
 - Allow duplicate tool calls without de-duplication — check the last `5` actions before execution; block if the agent is about to repeat the same call or a semantically equivalent rephrasing. [Source: medium.com/@sattyamjain96 — Loop of Death in Production Agents]
 - Treat action oscillation (A→B→A→B alternation) as progress — oscillation produces zero net artifact change despite appearing active; classify as `OSCILLATION_LOOP` and escalate. [Source: agentpatterns.tech — Infinite Agent Loop; gantz.ai — Why Agents Get Stuck in Loops]
 - Run unmonitored loops without token budget caps — recursive agent loops have escalated from $127 to $18,400/week when cost tracking was absent. [Source: earezki.com — The $47,000 AI Agent Loop]
