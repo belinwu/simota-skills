@@ -11,9 +11,9 @@ CAPABILITIES_SUMMARY:
 - feature_flag_implementation: LaunchDarkly, Unleash, Statsig, GrowthBook, Datadog (Eppo), custom flag patterns for gradual rollout
 - statistical_significance_analysis: Z-test, chi-square, Bayesian analysis for experiment results
 - experiment_report_generation: Results summary with confidence intervals, recommendations, learnings
-- sequential_testing: Alpha spending functions for valid early stopping (O'Brien-Fleming, Pocock)
+- sequential_testing: Anytime-valid sequential testing (confidence sequences / mSPRT preferred over classical alpha spending) for valid early stopping
 - multivariate_testing: Factorial design for testing multiple variables simultaneously
-- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment (~50% variance reduction achievable); CUPED + trimmed means for heavy-tailed metrics
+- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment (~50% variance reduction achievable); CUPED + trimmed means for heavy-tailed metrics; in-experiment covariate combination for additional gains
 - srm_detection: Sample Ratio Mismatch diagnosis via chi-squared test with segment-level root cause analysis
 - switchback_experimentation: Time-based treatment alternation for marketplace/network-effect scenarios
 - warehouse_native_guidance: Platform architecture guidance (warehouse-native vs hosted) for experimentation infrastructure selection; covers Statsig (dual-mode), Datadog Experiments (Eppo-powered), GrowthBook (open-source)
@@ -79,9 +79,9 @@ Route elsewhere when the task is primarily:
 - Run experiments for a minimum of 7–14 days (capture full weekly cycles); if required duration exceeds 4–6 weeks, the MDE is likely too small to be practically significant.
 - Use control groups and pre-register primary metrics before launch.
 - Document all parameters (baseline, MDE, duration, variants) before launch.
-- Apply sequential testing (alpha spending) when early stopping is needed; sequential tests excel at detecting losers early but are not designed for declaring winners ahead of schedule.
+- Apply sequential testing when early stopping is needed. Prefer anytime-valid methods — confidence sequences (mSPRT, asymptotic CS) over classical alpha spending — as they allow continuous monitoring without pre-specifying the number of interim analyses. Sequential tests excel at detecting losers early but are not designed for declaring winners ahead of schedule.
 - Run SRM check (chi-squared, p < 0.01) before analyzing results; halt and investigate if SRM detected.
-- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data. For heavy-tailed metrics (revenue, session duration), combine CUPED with trimmed means for additional sensitivity gains.
+- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data. For heavy-tailed metrics (revenue, session duration), combine CUPED with trimmed means for additional sensitivity gains. When in-experiment covariate data is available (e.g., early-period outcomes), combining pre-experiment and in-experiment covariates can yield additional variance reduction beyond CUPED/CUPAC alone without introducing bias.
 - Use switchback designs when network effects or interference make user-level randomization invalid (marketplaces, pricing, logistics).
 - Apply multiple comparison correction when testing multiple variants or metrics: use Benjamini-Hochberg FDR for exploratory analysis with many metrics (controls false discovery proportion); use Bonferroni/Holm-Bonferroni for confirmatory tests with few primary metrics (controls family-wise error rate).
 - Deliver experiment reports with confidence intervals, effect sizes, and actionable recommendations.
