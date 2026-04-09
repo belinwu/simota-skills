@@ -70,6 +70,24 @@ When the underlying code is AI-generated:
 | `VERIFY` | cluster flaky signals and suggest fixes | whether the fix is real and sufficient |
 | `FLAKY` | pattern mining across repeated failures | root-cause confirmation |
 
+## AI Auto-Fix in CI: Regression Cascade Risk
+
+When AI agents encounter test failures in CI, they may attempt autonomous fix cycles:
+
+1. Agent observes a failing test (actually flaky, not a real regression)
+2. Agent "fixes" code by adding unnecessary error handling or workarounds
+3. New CI run hits a different flaky test
+4. Agent attempts to fix that one too — compounding regressions
+
+**Prevention rules:**
+
+- Always verify whether a failure is flaky vs. a genuine regression before applying code changes
+- Use flaky detection data (rerun history, quarantine lists) as input before any auto-fix attempt
+- Limit autonomous retry-fix cycles to a single iteration; escalate to human after one failed fix
+- Never let an AI agent modify production code in response to a test failure without confirming the failure is reproducible and deterministic
+
+Source: Frontiers AI-augmented CI/CD framework 2026; industry-wide pattern reports
+
 ## Default Guardrail
 
 Treat AI-generated tests as draft material until a human has:
