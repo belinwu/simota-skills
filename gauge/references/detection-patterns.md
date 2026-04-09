@@ -12,8 +12,12 @@
 2. Scan for closing `---` (second occurrence)
 3. Between delimiters, check for `name:` field (non-empty)
 4. Between delimiters, check for `description:` field (non-empty)
+5. Validate `name:` value is kebab-case: regex `^[a-z0-9]+(-[a-z0-9]+)*$` (no spaces, no capitals, no underscores — per official Agent Skills spec)
+6. Validate `name:` value does not use reserved prefixes (`claude`, `anthropic`)
+7. Check `description:` does not contain XML angle brackets (`<`, `>`) — frontmatter appears in system prompt; prevents injection
 
-**PARTIAL trigger:** Delimiters present but `name:` or `description:` missing/empty.
+**PARTIAL trigger:** Delimiters present but `name:` or `description:` missing/empty, OR `name:` not in kebab-case.
+**Note:** For the internal ecosystem, existing PascalCase names (e.g., `Gauge`) may be grandfathered; flag as PARTIAL with migration recommendation rather than FAIL.
 
 ---
 

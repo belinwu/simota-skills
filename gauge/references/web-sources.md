@@ -33,6 +33,9 @@
 Anthropic "multi-agent" skill design
 "claude code" "skill file" structure
 site:docs.anthropic.com agent skill
+site:platform.claude.com agent skills best practices
+"skill authoring best practices" SKILL.md progressive disclosure
+Anthropic "agent skills" specification open standard
 ```
 
 ### MCP Specification and Patterns
@@ -116,14 +119,21 @@ When performing web research during EVOLVE phase:
 | Source | URL pattern | Last verified | Notes |
 |--------|-------------|---------------|-------|
 | Anthropic Docs | docs.anthropic.com | Initial | Claude Code documentation |
+| Claude API Docs | platform.claude.com/docs | 2026-04 | Agent Skills spec, best practices, enterprise governance |
 | MCP Specification | modelcontextprotocol.io | Initial | Protocol definition |
+| Agent Skills Spec | github.com/anthropics/skills/blob/main/spec/agent-skills-spec.md | 2026-04 | Open standard spec (kebab-case name, description constraints, security rules) |
+| Anthropic Compliance API | platform.claude.com (Compliance API) | 2026-04 | Enterprise audit logs for skill activity tracking (launched 2026-03) |
+| Skill Authoring Best Practices | platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices | 2026-04 | Progressive disclosure, ~50 line body recommendation, trigger testing |
 
 ### T2: Official Secondary
 
 | Source | URL pattern | Last verified | Notes |
 |--------|-------------|---------------|-------|
 | Anthropic Blog | anthropic.com/blog | Initial | Feature announcements, best practices |
+| Anthropic Engineering Blog | anthropic.com/engineering | 2026-04 | "Equipping agents for the real world with Agent Skills" |
 | Claude Code GitHub | github.com/anthropics/claude-code | Initial | Examples, issues, discussions |
+| agentskills.io | agentskills.io | 2026-04 | Cross-platform Agent Skills standard (file format, capability discovery, execution semantics planes) |
+| Anthropic Skills Repo | github.com/anthropics/skills | 2026-04 | Official skill examples and spec |
 
 ### T3: Community
 
@@ -131,6 +141,7 @@ When performing web research during EVOLVE phase:
 |--------|-------------|---------------|-------|
 | r/ClaudeAI | reddit.com/r/ClaudeAI | Initial | Community practices, tips |
 | Developer blogs | Various | Initial | Practitioner experiences |
+| SkillsMP Marketplace | skillsmp.com | 2026-04 | Community skill distribution, quality patterns |
 
 ### T4: Academic
 
@@ -138,3 +149,5 @@ When performing web research during EVOLVE phase:
 |--------|-------------|---------------|-------|
 | Multi-agent papers | arxiv.org | Initial | Theoretical foundations |
 | Prompt engineering research | Various | Initial | Design pattern research |
+| "Noisy but Valid" (ICLR 2026) | arxiv.org/abs/2601.20913 | 2026-04 | TPR/FPR estimation with variance-corrected thresholds for imperfect judges — directly applicable to Gauge's rule calibration |
+| Noise-Response Calibration | arxiv.org/abs/2603.17172 | 2026-04 | Causal intervention protocol for LLM-as-judge calibration via controlled perturbations |
