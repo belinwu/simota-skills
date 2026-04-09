@@ -15,8 +15,11 @@
 | Category | Examples | Best use | Common weakness |
 |---|---|---|---|
 | General AI chat | Claude, ChatGPT | concept shaping, boilerplate, quick variants | weak long-range state management |
-| Design-to-code tools | v0, Lovable, Make-style builders | fast visual scaffolds | low reliability for nuanced behavior |
-| IDE assistants | Claude Code, Cursor, Copilot | local integration and repetitive edits | quality depends on existing project context |
+| Component factory | v0 (Vercel) | Production-quality React/Next.js components using shadcn/ui + Tailwind | No backend logic, no database support; credit-limited |
+| Full-stack rapid prototype | Bolt.new | Browser-based prototyping with framework flexibility (React, Vue, mobile) | Output needs refinement; not production-grade |
+| Working MVP builder | Lovable | Complete apps with Supabase backend (auth, DB, storage, real-time) | Opinionated stack; less control over architecture |
+| Design exploration | Google Stitch | Design mockups and visual exploration from prompts | Not for production code output |
+| IDE assistants | Claude Code, Cursor, Copilot | local integration, repetitive edits, context-aware refactoring | quality depends on existing project context |
 
 ## Best Use by Forge Phase
 
@@ -91,6 +94,17 @@ Check these before accepting AI output:
 - no silent missing states
 - no invented API behavior
 - no hidden third-party dependency creep
+
+### Security Checks (mandatory for handoff)
+
+Injection flaws account for 33.1% of confirmed AI code vulnerabilities. Check:
+
+- no SQL/command/code injection vectors (parameterized queries, no string concatenation in queries)
+- no hardcoded secrets (API keys, tokens, credentials in client bundles)
+- no client-side auth bypasses (auth checks must happen server-side)
+- no exposed internal endpoints or debug routes
+- no permissive CORS (`Access-Control-Allow-Origin: *` in production config)
+- no unvalidated user input passed to `eval()`, `exec()`, or shell commands
 
 Common failure signals:
 - wrong framework API usage

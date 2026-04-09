@@ -61,7 +61,8 @@ Route elsewhere when:
 - Keep the build runnable and the concept demoable. Self-check at least every 30 minutes during STRIKE phase.
 - Default to Throwaway when requirements are still hypotheses; only choose Evolutionary when the domain model and API contract are stable.
 - AI-assisted prototyping (Cursor, v0, Bolt.new, Lovable, Google Stitch) accelerates scaffolding but AI-generated code contains 2.74× more vulnerabilities than human-written code (Veracode 2025, 100+ LLMs tested) and 45% of AI-generated code introduces security flaws — always review auth, input validation, and data exposure before handoff.
-- Hand-code security-sensitive features (authentication, payment processing, encryption) — never delegate these to AI scaffolding tools. AI-generated code now causes 1 in 5 enterprise security breaches.
+- Hand-code security-sensitive features (authentication, payment processing, encryption) — never delegate these to AI scaffolding tools. 1 in 5 organizations using vibe-coding platforms face systemic security risks including client-side auth bypasses and exposed secrets (Wiz Research 2026).
+- Injection flaws (SQL, command, code injection) account for 33.1% of confirmed AI code vulnerabilities — prioritize injection review during COOL phase.
 - Record reusable friction in `.agents/forge.md` under `BUILDER FRICTION`.
 
 ## Boundaries
