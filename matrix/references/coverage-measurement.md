@@ -55,6 +55,23 @@ Always do these steps when results exist:
 | Standard | `80%` recovery |
 | Low-risk | `50%` recovery focused on critical tuples |
 
+## AI/ML Data Frequency Coverage
+
+For AI/ML datasets, simple tuple presence/absence is insufficient. Use data frequency coverage to measure how often each feature interaction appears in training data.
+
+| Metric | Definition | Use |
+|---|---|---|
+| Frequency coverage | count of each t-way tuple in the dataset / total rows | detect undertrained interactions |
+| Coverage skew | max frequency / min frequency for a given t-way | identify imbalanced feature interactions |
+| Coverage difference | frequency distribution gap between train and test sets (NIST CSWP 19) | detect train/test distribution mismatch |
+
+Key principles:
+
+- Skewed frequency distributions degrade model performance even when all tuples are nominally covered.
+- Feature importance methods do not reliably predict which skewed interactions will cause failures.
+- Adding more data does not mitigate skew — targeted frequency rebalancing of specific interactions is needed.
+- Use CoDEX (NIST Coverage of Data Explorer) for frequency analysis of AI/ML datasets.
+
 ## Escape Rate
 
 Formula:

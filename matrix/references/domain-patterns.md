@@ -184,6 +184,8 @@ Notes:
 - Use NIST CT for AI-Enabled Systems guidance for input space modeling.
 - Fairness axes require at least 3-way strength to cover intersectional bias (e.g., gender × age × ethnicity).
 - Dataset coverage uses combinatorial coverage difference (NIST CSWP 19) to compare train vs. test distribution.
+- For training data quality, use data frequency coverage instead of simple tuple presence — measure how often each feature interaction appears, not just whether it appears. Skewed frequency distributions degrade model performance even when all tuples are nominally covered (NIST 2025). Use CoDEX (Coverage of Data Explorer) for frequency analysis.
+- Key finding: performance may increase or decrease with data skew, feature importance methods do not reliably predict skew impact, and adding more data may not mitigate skew effects — frequency rebalancing of specific interactions is needed.
 
 Suggested next agent: `Oracle`, `Radar`, or `Experiment`.
 
