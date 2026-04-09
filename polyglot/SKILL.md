@@ -14,7 +14,7 @@ CAPABILITIES_SUMMARY:
 - glossary_management: Domain term standardization and translator context comments
 - pseudo_localization: Pseudo-locale generation, CI integration, layout clipping detection
 - coverage_tracking: Translation coverage metrics, unused key detection, CI quality gates
-- continuous_localization: TMS integration via MCP, OTA edge delivery, AI-powered translation pipeline design
+- continuous_localization: TMS integration via MCP, OTA edge delivery, edge localization (CDN-level locale routing), AI-powered translation pipeline design
 
 COLLABORATION_PATTERNS:
 - Pattern A: Feature i18n (Builder → Polyglot → Radar)
@@ -51,8 +51,9 @@ Use Polyglot when the user needs:
 - glossary management and translator context comments
 - i18n audit of existing codebase
 - pseudo-localization setup for automated i18n testing in CI
-- continuous localization pipeline design (TMS integration via MCP, OTA edge delivery)
+- continuous localization pipeline design (TMS integration via MCP, OTA edge delivery, edge localization)
 - AI-powered translation pipeline evaluation and glossary-aware machine translation setup
+- edge localization architecture (CDN-level locale detection and locale-specific content serving)
 - translation coverage tracking and CI quality gates
 - scaling strategy for large projects (500+ keys, 6+ locales)
 
@@ -77,6 +78,7 @@ Route elsewhere when the task is primarily:
 - Scale changes to scope: component < 50 lines, feature < 200 lines, app-wide = plan + phased. At 500+ keys with 6+ locales, mandate TMS integration and automated unused key detection to prevent merge conflicts and key drift.
 - Run pseudo-localization (accented characters + 35% padding + bracket wrapping) in dev/CI to catch hardcoded strings and layout clipping before human translation.
 - For AI-powered translation: require glossary lock (domain terms must match approved glossary), human review for legal/safety-critical strings, and context metadata (UI location + max length) per string.
+- Standardize on BCP 47 (RFC 5646) for all locale identifiers — use language-region subtags (e.g., `en-US`, `zh-Hans-CN`) consistently across code, file names, API headers (`Accept-Language`), and TMS configuration. Never invent non-standard locale codes.
 
 ## Boundaries
 
@@ -134,6 +136,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `pseudo-localization`, `pseudo-locale`, `i18n testing` | Pseudo-localization setup | Pseudo-locale config + CI integration | `references/library-setup.md` |
 | `translation coverage`, `missing keys`, `unused keys` | Coverage tracking and cleanup | Coverage report + dead key removal | `references/library-setup.md` |
 | `continuous localization`, `TMS`, `OTA` | Pipeline design | TMS integration config + OTA edge delivery setup | `references/library-setup.md` |
+| `edge localization`, `CDN locale`, `region routing` | Edge localization architecture | CDN locale detection config + edge-served locale bundles | `references/library-setup.md` |
 | `AI translation`, `machine translation`, `glossary` | AI-powered translation pipeline | Glossary-locked MT config + human review workflow | `references/library-setup.md` |
 | `scaling`, `500+ keys`, `merge conflicts` | Large-project i18n strategy | TMS integration + namespace splitting + unused key detection | `references/library-setup.md` |
 | unclear i18n request | String extraction (default) | Extracted translation files | `references/library-setup.md` |
@@ -197,7 +200,7 @@ Every deliverable must include:
 | SelectOrdinal | `{n, selectordinal, one {#st} two {#nd} ...}` | Ordinal numbers |
 | Nested | `{count, plural, =0 {Empty} other {{name} and # others}}` | Complex messages |
 
-> **MessageFormat 2.0 (MF2):** Finalized spec (approved March 2025, CLDR 46.1); LDML 48 (Oct 2025) refinements. Adds `.match`, `.local`, `.input` declarations and custom function registry. JS: `messageformat` 4.0; React: `mf2react`; i18next: `i18next-mf2` plugin. ICU4J/ICU4C have Tech Preview implementations. **Recommend MF2 for new projects**; MF1 remains standard for existing codebases.
+> **MessageFormat 2.0 (MF2):** Finalized spec (approved March 2025, CLDR 46.1); LDML 48 (Oct 2025) refinements. Adds `.match`, `.local`, `.input` declarations and custom function registry. JS: `messageformat` 4.0; React: `mf2react`; i18next: `i18next-mf2` plugin. ICU4J/ICU4C have Tech Preview implementations. **Recommend MF2 for new projects**; MF1 remains standard for existing codebases. Note: TC39 `Intl.MessageFormat` proposal (native browser MF2) is Stage 1 and unlikely to advance near-term — use library implementations.
 
 > **Detail**: See `references/icu-message-format.md` for full patterns and key naming conventions.
 
