@@ -2,14 +2,24 @@
 
 ## Multi-Layer Search Architecture
 
-Lens uses a 4-layer search approach. Execute from the top layer down, drilling deeper as needed.
+Lens uses a 5-layer search approach. Execute from the top layer down, drilling deeper as needed. When LSP is available, Layer 3a is preferred over Layer 3b.
 
 ```
-Layer 1: Structure Search ──── Fastest, broadest (directories, file names)
-Layer 2: Keyword Search ────── Targeted narrowing (domain, technical terms)
-Layer 3: Reference Search ──── Relationship tracking (import/export/calls)
-Layer 4: Contextual Read ───── Deep understanding (file content analysis)
+Layer 1:  Structure Search ──── Fastest, broadest (directories, file names)
+Layer 2:  Keyword Search ────── Targeted narrowing (domain, technical terms)
+Layer 3a: LSP Navigation ────── Type-aware symbol lookup (go-to-definition, find-references)
+Layer 3b: Reference Search ──── Grep-based relationship tracking (import/export/calls)
+Layer 4:  Contextual Read ───── Deep understanding (file content analysis)
 ```
+
+### LSP vs Grep Decision
+
+| Situation | Preferred Layer |
+|-----------|----------------|
+| LSP available + typed language | Layer 3a (zero false positives) |
+| LSP available + dynamic language | Layer 3a first, Layer 3b to catch dynamic dispatch |
+| No LSP / LSP errors | Layer 3b (grep fallback) |
+| Cross-repo / monorepo boundary | Layer 3b (LSP may not span repos) |
 
 ---
 
@@ -118,7 +128,37 @@ Grep "(get|post|put|delete|patch|resources|resource)\s"
 
 ---
 
-## Layer 3: Reference Search
+## Layer 3a: LSP Navigation
+
+### Purpose
+Type-aware, AST-accurate symbol navigation. Zero false positives for typed languages.
+
+### Methods
+
+| Operation | What It Reveals | When to Use |
+|-----------|----------------|-------------|
+| Go-to-definition | Where a symbol is defined | Tracing imports, finding source of truth |
+| Find-references | All usage sites of a symbol | Understanding impact, dependency mapping |
+| Workspace symbol search | Symbols matching a query across the project | Feature discovery by type/function name |
+| Hover / type info | Type signatures, documentation | Quick understanding without reading full file |
+
+### Advantages Over Grep
+
+- **No false positives**: `User` in grep matches comments, strings, variable names; LSP only finds the actual type
+- **Rename-safe**: Tracks the semantic symbol, not the string
+- **Cross-file resolution**: Follows re-exports, barrel files, and aliased imports automatically
+- **Dynamic language caveat**: LSP in Python/JS/Ruby may miss dynamically dispatched calls; supplement with Layer 3b grep
+
+### When to Fall Back to Layer 3b
+
+- LSP is not configured or returns errors
+- Investigating string-based dispatch (event names, route strings, DI tokens)
+- Cross-repository boundaries in monorepos
+- Searching for patterns rather than specific symbols (e.g., "all functions that call `db.query`")
+
+---
+
+## Layer 3b: Reference Search
 
 ### Purpose
 Track inter-module dependencies and call chains.
