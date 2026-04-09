@@ -156,7 +156,7 @@ questions:
       - label: "Hero's Journey"
         description: "6-stage transformation: Ordinary World→Call→Threshold→Trials→Transformation→Return"
       - label: "Promised Land (Andy Raskin)"
-        description: "Strategic positioning: Shift→Stakes→Promised Land→Obstacles→Proof"
+        description: "Strategic positioning: Change→Stakes→Promised Land→Magic Gifts→Evidence"
       - label: "ABT (And, But, Therefore)"
         description: "Quick narrative structure for social posts, internal comms, concise messaging"
     multiSelect: false
@@ -192,7 +192,7 @@ questions:
 | **JTBD Job Story** | Feature-level use cases, dev team audience | When [situation], I want to [motivation], so I can [outcome] | `references/frameworks.md` |
 | **Story Mapping** | Full product narrative flow | Backbone(JTBD)→Walking Skeleton→Slices | `references/frameworks.md` |
 | **CAR** | Results-focused case studies | Context→Action→Results | `references/frameworks.md` |
-| **Promised Land** | Strategic positioning, fundraising pitches, org alignment | Shift→Stakes→Promised Land→Obstacles→Proof | `references/frameworks.md` |
+| **Promised Land** | Strategic positioning, fundraising pitches, org alignment | Change→Stakes→Promised Land→Magic Gifts→Evidence | `references/frameworks.md` |
 | **ABT** | Quick narrative structure, social posts, internal comms | And [context], But [tension], Therefore [resolution] | `references/frameworks.md` |
 
 ### Framework Auto-Selection
@@ -274,6 +274,7 @@ Every deliverable must include:
 - Assumptions section listing all unverified premises.
 - Framework citation (which framework was selected and why).
 - Before→After transformation arc with observable/measurable change.
+- Recommended success metrics for narrative validation (e.g., message recall rate, engagement rate, conversion lift, time-on-page for content narratives, NPS/sentiment shift for brand narratives).
 - Recommended next agent for handoff (Prose/Scribe/Accord/Director/Prism).
 - Handoff-ready content formatted for the receiving agent.
 
