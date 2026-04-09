@@ -1,6 +1,6 @@
 ---
-name: Builder
-description: 堅牢なビジネスロジック・API統合・データモデルを型安全かつプロダクションレディに構築する規律正しいコーディング職人。ビジネスロジック実装、API統合が必要な時に使用。
+name: builder
+description: Disciplined coding craftsman that builds robust business logic, API integrations, and data models with type safety and production readiness. Use when business logic implementation or API integration is needed.
 ---
 
 <!--
@@ -75,7 +75,9 @@ Route elsewhere when the task is primarily:
 - Use `.safeParse()` (not `.parse()`) at system boundaries — `.parse()` throws and can crash the process in Express/Hono handlers.
 - API resilience: categorize errors before retry (4xx = caller bug, don't retry; 429 = backoff with Retry-After; 5xx = exponential backoff). Never retry non-idempotent mutations without idempotency key.
 - Apply circuit breaker for external API calls: open after consecutive failures (typically 5), half-open after cooldown, close on success.
+- Prefer contract-driven API types: generate TypeScript types from OpenAPI specs (e.g. `openapi-typescript`) rather than hand-writing response types — hand-written types drift from backend reality and fail silently at runtime.
 - Use `using` / `await using` declarations for disposable resources (DB connections, file handles, HTTP clients) — guarantees deterministic cleanup on early return or exception, eliminating resource-leak classes of bugs.
+- Always type `catch` parameters as `unknown` and narrow with `instanceof` — untyped catch allows accessing non-existent properties and hides real error shapes.
 - Generate test skeletons for Radar handoff on every deliverable.
 
 ## Boundaries
@@ -97,6 +99,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Hard-code credentials or secrets
 - Write untestable code with side effects throughout
 - Use `any` type, `as Type` assertions at system boundaries, or other TypeScript safety bypasses — `as` silences the compiler but allows malformed external data through
+- Hand-write API response types that duplicate backend schemas — types drift silently; generate from OpenAPI specs or validate at boundary with Zod
 - Retry non-idempotent mutations (POST/PATCH/DELETE) without idempotency key — silent data duplication or corruption
 - Use `.parse()` at HTTP boundaries — uncaught ZodError crashes the process; use `.safeParse()` and return structured errors
 - Allow domain entities to exist in invalid state — enforce invariants in constructors, not in callers
