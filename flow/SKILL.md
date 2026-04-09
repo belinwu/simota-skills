@@ -1,6 +1,6 @@
 ---
-name: Flow
-description: ホバー効果、ローディング状態、モーダル遷移などのCSS/JSアニメーションを実装。UIに動きを付けたい、インタラクションを滑らかにしたい時に使用。
+name: flow
+description: CSS/JS animation implementation for hover effects, loading states, modal transitions, and gesture interactions. Use when adding meaningful motion, improving interaction feedback, or implementing performance-safe animations.
 ---
 
 <!--
@@ -9,7 +9,7 @@ CAPABILITIES_SUMMARY:
 - page_transition: Route changes, modal/panel transitions, staged content entry
 - gesture_animation: Drag, swipe, snap, long press, touch feedback
 - motion_system_design: Motion tokens, scale design, cataloging, audits
-- modern_css_animation: View Transitions API (same-doc Baseline Oct 2025, cross-doc Chrome 126+/Edge 126+/Safari 18.2+/Firefox 146+ partial), @starting-style, scroll-driven animations (animation-timeline scroll()/view()), @property
+- modern_css_animation: View Transitions API (same-doc Baseline Oct 2025 — Chrome 111+/Edge 111+/Safari 18+/Firefox 144+, cross-doc Chrome 126+/Edge 126+/Safari 18.2+ — Firefox not yet supported), @starting-style, scroll-driven animations (animation-timeline scroll()/view()), @property
 - reduced_motion: prefers-reduced-motion support and accessible motion paths
 - performance_optimization: 60fps targeting, GPU-safe properties (transform/opacity/filter/clip-path), will-change budget (≤2 elements/page), CWV guard (CLS < 0.1, INP < 200ms)
 - library_guidance: Motion v12 (React/Vue/vanilla JS, MIT, hardware-accelerated scroll, oklch/oklab color animation, axis-locked layout="x"|"y"), GSAP (framework-agnostic, timeline, all plugins free since Webflow acquisition 2024 — license only restricts Webflow-competing visual animation builders), Tailwind CSS Motion (5KB CSS-only)
@@ -42,7 +42,7 @@ Use Flow when work needs:
 - Motion token design or motion cleanup
 - `prefers-reduced-motion` support
 - Performance-safe motion implementation
-- Modern CSS animation APIs: View Transitions API (same-document Baseline Oct 2025; cross-document Chrome 126+/Edge 126+/Safari 18.2+/Firefox 146+ partial), scroll-driven animations (`animation-timeline: scroll()`/`view()` — cross-browser Baseline 2025), `@starting-style` for entry animations
+- Modern CSS animation APIs: View Transitions API (same-document Baseline Oct 2025 — Chrome 111+/Edge 111+/Safari 18+/Firefox 144+; cross-document Chrome 126+/Edge 126+/Safari 18.2+ — Firefox not yet supported), scroll-driven animations (`animation-timeline: scroll()`/`view()` — cross-browser Baseline 2025), `@starting-style` for entry animations
 - Framework-specific motion patterns (Motion v12/React, GSAP/vanilla, Tailwind CSS Motion)
 - Core Web Vitals remediation for animation-induced CLS or INP failures
 
@@ -81,6 +81,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use canonical easing curves from `references/easing-guide.md`.
 - Define a reduced-motion path. The European Accessibility Act (EAA), enforced since June 2025, requires WCAG 2.1 AA compliance (including motion control) for digital products serving EU users.
 - Measure or reason about performance impact before shipping.
+- Set a hard cap of 30 seconds on any animation duration. Add an independent safety timer for state-driven animations (e.g., skeleton loaders) to prevent infinite loops when app logic breaks.
 
 ### Ask First
 
