@@ -13,7 +13,7 @@ Comprehensive reference for crafting Suno AI prompts optimized for game backgrou
 | **Pricing** | Credit-based (~10 credits/generation, plans from free tier to $30/mo) |
 | **Output** | MP3/WAV (stereo, 48kHz) |
 | **Duration** | Up to 4 minutes per generation |
-| **Latest Model** | Suno v4 / v5 |
+| **Latest Model** | Suno v5.5 (March 2026) |
 
 ### When to Choose Suno AI over Other Providers
 

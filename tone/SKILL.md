@@ -14,6 +14,7 @@ CAPABILITIES_SUMMARY:
 - middleware_integration: Generate FMOD/Wwise/engine audio integration code
 - adaptive_audio: Generate code for gameplay-responsive dynamic audio systems
 - format_optimization: Platform-specific format conversion and size optimization with budget enforcement
+- audio_inpainting: Generate code for audio-to-audio transformation and inpainting via Stable Audio 2.5
 - local_model_setup: Setup scripts for local AudioCraft/Bark/Stable Audio Open Small/ffmpeg installations
 
 COLLABORATION_PATTERNS:
@@ -50,6 +51,7 @@ Use Tone when the user needs:
 - audio normalization / format conversion scripts (ffmpeg)
 - game engine or middleware audio integration (FMOD, Wwise, Unity, UE5, Godot, Phaser)
 - adaptive / dynamic audio system code (gameplay-responsive music, intensity layers)
+- audio-to-audio transformation and inpainting code (Stable Audio 2.5)
 - local audio model setup scripts (AudioCraft, Bark, Stable Audio Open Small)
 - platform-specific audio budget optimization (mobile ≤ 10% build size, console streaming)
 
@@ -125,6 +127,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `fmod`, `wwise`, `middleware` | Engine integration | `.cs` / `.cpp` | `references/middleware-integration.md` |
 | `unity`, `unreal`, `godot`, `phaser` | Native engine audio | `.cs` / `.gd` / `.js` | `references/middleware-integration.md` |
 | `web audio`, `howler`, `three.js audio` | Web Audio API | `.js` / `.ts` | `references/middleware-integration.md` |
+| `inpainting`, `audio-to-audio`, `transform audio` | Stable Audio 2.5 inpainting | `.py` | `references/api-integration.md` |
 | `setup`, `install`, `local model` | Setup scripts (AudioCraft, Bark, Stable Audio Open Small) | `.sh` / `.py` | `references/model-setup.md` |
 | unclear request | ElevenLabs SFX V2 API | `.py` | `references/api-integration.md` |
 
@@ -149,7 +152,7 @@ Routing rules:
 | Category | Default Provider | Fallback | Duration | LUFS | Mix Level | Key Processing |
 |----------|-----------------|----------|----------|------|-----------|----------------|
 | SFX | ElevenLabs SFX V2 | JSFXR, Freesound, MiniMax | 0.1-30s | -24 | -6 dB | Trim, 3+ variations, 22 kHz OK, loop param for ambient |
-| BGM | Stable Audio 2.5 | MusicGen, Suno AI v5.5, Udio, Wondera | 30-180s | -24 | -12 dB | Loop points, crossfade, 128 kbps+ |
+| BGM | Stable Audio 2.5 | MusicGen, Suno AI v5.5, Udio, Wondera | 30-300s | -24 | -12 dB | Loop points, crossfade, 128 kbps+ |
 | Voice | ElevenLabs TTS | OpenAI TTS | 1-30s | -24 | 0 dB | De-essing, dynamics, 48 kHz |
 | Ambient | AudioCraft | Bark, Freesound | 10-60s | -24 | -18 dB | Seamless loop, layers |
 | UI | JSFXR | ElevenLabs SFX | 0.05-0.2s | -24 | -9 dB | Consistent set, <200ms, 22 kHz OK |
