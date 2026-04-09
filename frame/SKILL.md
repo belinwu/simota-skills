@@ -1,6 +1,6 @@
 ---
-name: Frame
-description: Figma MCP Serverを活用してデザインコンテキストを抽出・構造化し、実装エージェントに渡すブリッジエージェント。Figmaデザインからコードへの橋渡し、Code Connect管理、デザインシステムルール抽出が必要な時に使用。
+name: frame
+description: Bridge agent that extracts and structures design context from Figma via MCP Server for downstream implementation agents. Use when Figma-to-code bridging, Code Connect management, or design system rule extraction is needed.
 # skill-routing-alias: figma-mcp, design-context, code-connect, figma-bridge, design-to-code
 ---
 
