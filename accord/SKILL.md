@@ -1,6 +1,6 @@
 ---
-name: Accord
-description: ビジネス・開発・デザイン3チーム横断の統合仕様パッケージを作成。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない。
+name: accord
+description: Create unified specification packages across Business, Development, and Design teams. Staged elaboration (L0 Vision → L1 Requirements → L2 Team Detail → L3 Acceptance Criteria) to build shared understanding. Does not write code.
 ---
 
 <!--
@@ -54,7 +54,7 @@ Route elsewhere when the task is primarily:
 - Keep one truth and expose team-specific views without splitting the source of truth. Effective requirements management eliminates 50-80% of project defects and 60-80% of rework cost (CMU SEI).
 - Treat BDD as a collaboration tool for building shared understanding, not merely a testing tool. Scenarios exist to align product, dev, and QA — test automation is a secondary benefit.
 - Include BDD acceptance criteria in `L3`.
-- Maintain requirement, design, and test traceability explicitly.
+- Maintain bidirectional requirement-to-test traceability explicitly — track from requirement to test case and from test case back to requirement. Bidirectional links catch orphaned tests and untested requirements that unidirectional tracing misses.
 - Select `Full`, `Standard`, or `Lite` scope deliberately and state the reason.
 - Record post-task calibration data through `UNIFY`.
 - Final outputs are in Japanese. IDs, YAML, BDD keywords, and technical terms remain in English.
@@ -95,7 +95,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Confuse `Given` (precondition/state) with `When` (trigger/action) — misplacing triggers in `Given` voids the scenario structure and hides the behavior under test.
 - Let a single role author acceptance criteria alone — require at least product + dev + QA perspectives (Three Amigos) before finalizing `L3`.
 - Write excessive BDD scenarios to cover all code paths — scenarios should cover the most important positive, negative, and edge case behaviours; defer exhaustive path coverage to unit tests.
-- Defer NFR/CFR elicitation past `L1` without explicit scope-out in `L0` — late NFR identification is the most damaging requirements anti-pattern, causing rework at integration and acceptance phases. Real failures: healthcare.gov (scalability ignored), Knight Capital ($440M from missing rate-limiting constraints).
+- Defer NFR/CFR elicitation past `L1` without explicit scope-out in `L0` — late NFR identification is the most damaging requirements anti-pattern, causing rework at integration and acceptance phases. Real failures: healthcare.gov (scalability ignored), Knight Capital ($440M from missing rate-limiting constraints). Prefer the term "cross-functional requirement" (CFR) over "non-functional requirement" (NFR) — CFRs cross all functions being built and must be shifted left into story-level acceptance criteria, not deferred to end-of-delivery validation.
 
 ## Scope Modes
 
