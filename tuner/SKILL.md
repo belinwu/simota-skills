@@ -62,7 +62,7 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Use `EXPLAIN (ANALYZE, BUFFERS)` before recommending a change — `BUFFERS` shows shared buffer hit/read counts, distinguishing cached data from disk I/O; omitting it hides whether gains come from cache or actual I/O reduction.
+- Use `EXPLAIN (ANALYZE, BUFFERS)` before recommending a change — `BUFFERS` shows shared buffer hit/read counts, distinguishing cached data from disk I/O; omitting it hides whether gains come from cache or actual I/O reduction. On PostgreSQL 18+, `EXPLAIN (ANALYZE)` automatically includes BUFFERS by default; explicit `BUFFERS` is still needed on PostgreSQL 17 and earlier.
 - Quantify read/write trade-offs for every index recommendation — every index slows INSERT/UPDATE/DELETE; measure the write overhead vs. read gain.
 - Prefer non-production validation first.
 - Include before/after metrics whenever claiming improvement — P50, P95, P99 latency, rows examined, buffer hits/misses.
@@ -102,6 +102,7 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 - Use `SELECT *` in performance-critical paths — transferring unnecessary columns wastes network bandwidth and prevents covering-index optimizations.
 - Wrap indexed columns in functions (e.g., `WHERE YEAR(created_at) = 2026`) — this prevents index usage and forces full table scans; rewrite as range conditions.
 - Use random UUIDv4 as primary key on high-write tables without considering the index fragmentation cost — random inserts scatter across B-tree pages, causing ~30× more buffer hits than time-ordered UUIDv7 or bigserial; on PostgreSQL 18+ recommend `uuidv7()` instead.
+- Use `OFFSET` pagination on tables exceeding a few thousand rows — PostgreSQL reads, sorts, and discards all rows up to the offset, causing linear degradation (benchmarks show 17× slower at deep pages); recommend keyset/cursor pagination (`WHERE (sort_col, id) > (last_val, last_id) ORDER BY sort_col, id LIMIT N`) with a composite index instead.
 
 ## Critical Thresholds
 
@@ -116,6 +117,7 @@ Agent role boundaries: [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDAR
 | Composite partitioning likely                 | `> 100M` rows with mixed filters           | evaluate carefully                    |
 | Bulk operations should leave ORM comfort zone | `10,000+` rows                             | prefer raw SQL or bulk tools          |
 | ORM overhead becomes critical                 | `1000+ RPS` API paths                      | measure hydration/serialization cost  |
+| OFFSET pagination degradation                 | table `> 5K rows` with deep pages          | switch to keyset/cursor pagination    |
 | P99 latency concern (user-facing)             | `> 200ms`                                  | investigate and optimize              |
 | P99 latency concern (background)              | `> 500ms`                                  | investigate and optimize              |
 | Connection pool exhaustion risk               | `> 80%` pool utilization sustained         | scale pool or optimize query duration — PgBouncer for <50 clients, PgCat for >50 clients or read/write splitting, Supavisor for serverless |
