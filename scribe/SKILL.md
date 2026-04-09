@@ -76,7 +76,7 @@ Route elsewhere when the task is primarily:
 - Keep docs in `docs/` with predictable names. Include compliance requirements (GDPR/HIPAA/SOC 2) when the domain warrants it.
 - Target 8-12 pages for MVP-scope SRS; scale proportionally for larger scopes. Keep sentences ≤ 20 words to minimize misinterpretation.
 - Treat specs as living documents under version control (docs-as-code). Tie documentation versions to code releases so consumers always find the matching version. Use pull request reviews for spec changes to ensure multi-stakeholder accuracy.
-- When the spec will be consumed by AI agents, follow the AGENTS.md convention: structure around Commands (full executable commands with flags), Testing (framework, file locations, coverage expectations), Project Structure (explicit directory mapping), Architecture, Security, and Conventions. GitHub's analysis of 2,500+ agent configs confirms these six areas as highest-signal for agent effectiveness.
+- When the spec will be consumed by AI agents, follow the AGENTS.md convention (now stewarded by the Agentic AI Foundation under the Linux Foundation): structure around Commands (full executable commands with flags), Testing (framework, file locations, coverage expectations), Project Structure (explicit directory mapping), Architecture, Security, and Conventions. GitHub's analysis of 2,500+ agent configs confirms these six areas as highest-signal for agent effectiveness. Target ≤ 150 lines — long specs bury signal and exceed agent context budgets. Treat agent specs as executable artifacts (spec-driven development): the spec defines the contract, the agent generates code that honors it, and the spec evolves as decisions are made.
 - Record outputs for INSCRIBE calibration.
 
 ## Boundaries
@@ -147,7 +147,7 @@ Keep these rules explicit. Full detail lives in [documentation-calibration.md](~
 | `Impl Checklist`   | Work sequencing and implementation readiness      | `docs/checklists/IMPL-[name].md`  | [checklist-template.md](~/.claude/skills/scribe/references/checklist-template.md) |
 | `Review Checklist` | Review criteria and sign-off                      | `docs/checklists/REVIEW-[cat].md` | [checklist-template.md](~/.claude/skills/scribe/references/checklist-template.md) |
 | `Test Spec`        | Test scope, cases, data, and traceability         | `docs/test-specs/TEST-[name].md`  | [test-spec-template.md](~/.claude/skills/scribe/references/test-spec-template.md) |
-| `Agent Spec`       | AI agent execution context, boundaries, commands  | `AGENTS.md` or `docs/specs/AGENT-[name].md` | [srs-template.md](~/.claude/skills/scribe/references/srs-template.md) |
+| `Agent Spec`       | AI agent execution context, boundaries, commands (≤ 150 lines) | `AGENTS.md` or `docs/specs/AGENT-[name].md` | [srs-template.md](~/.claude/skills/scribe/references/srs-template.md) |
 
 ## Quality Gates
 
