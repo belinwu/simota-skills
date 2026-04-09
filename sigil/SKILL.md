@@ -61,7 +61,8 @@ Route elsewhere when the task is primarily:
 - Mirror the project's actual naming, imports, testing, and error handling conventions.
 - Default to Micro Skills (`10-80` lines, `< 2,000` tokens); promote to Full only when complexity requires it. Skills exceeding `2,000` tokens degrade activation reliability and consume disproportionate context window budget.
 - Write skill `description` as a trigger phrase (how the user would naturally ask), not a summary — properly optimized descriptions improve activation from `~20%` to `50%`, and adding usage examples raises it from `72%` to `~90%`. Use Anthropic's skill-creator train/test split method (60/40 on ~20 synthetic prompts) to validate description activation before install.
-- Respect the skill description budget (defaults to `~2%` of the context window, fallback `~16,000` characters; overridable via `SLASH_COMMAND_TOOL_CHAR_BUDGET` env var); keep each description under `250` characters (platform hard cap) to maximize coexisting skill capacity.
+- Respect the skill description budget (defaults to `~2%` of the context window, fallback `~16,000` characters; overridable via `SLASH_COMMAND_TOOL_CHAR_BUDGET` env var); keep each description under `1,024` characters (agentskills.io spec hard cap) to maximize coexisting skill capacity. Shorter is better — aim for `< 250` characters when possible.
+- Validate skill `name` against agentskills.io spec: kebab-case only, max `64` characters, must not start/end with hyphen, no consecutive hyphens, must not contain `"claude"` or `"anthropic"` (reserved words).
 - Validate every skill against the 12-point rubric; install only at `9+/12`. Run `3` independent grading passes per evaluation and use majority vote to counter LLM grader non-determinism.
 - Sync-write to both `.claude/skills/` and `.agents/skills/`.
 - Avoid duplicating ecosystem agent functionality.
@@ -118,7 +119,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-------|---------|----------------|-----------|
 | `SCAN` | Detect stack, structure, rule files, existing skills, and drift | Mandatory. Audit both directories, collect evolution signals, infer conventions before any generation. | `references/context-analysis.md`, `references/cross-tool-rules-landscape.md`, `references/claude-md-best-practices.md` |
 | `DISCOVER` | Rank high-value skill opportunities | Use `Priority = Frequency × Complexity × Risk`; keep at most `20` candidates; reject duplicates and ecosystem overlap. | `references/skill-catalog.md` |
-| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, keep references one hop away, set `disable-model-invocation` for explicit-only skills, and write platform-neutral instructions (SKILL.md is a universal format across `30+` agent platforms). | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
+| `CRAFT` | Choose type and author the skill | Mirror project conventions, substitute detected variables, keep references one hop away, set `disable-model-invocation` for explicit-only skills, decide inline vs `context: fork` per the decision table, and write platform-neutral instructions (SKILL.md is a universal format across `30+` agent platforms). | `references/skill-templates.md`, `references/advanced-patterns.md`, `references/claude-code-skills-api.md`, `references/official-skill-guide.md` |
 | `INSTALL` | Place and sync generated skills | Write identical skill contents to `.claude/skills/` and `.agents/skills/`; add `references/` only for Full Skills. | `references/claude-code-skills-api.md` |
 | `VERIFY` | Score and validate before finalizing | Use the `12`-point rubric, pass only at `9+`, recraft on `6-8`, abort on `0-5`. | `references/validation-rules.md`, `references/official-skill-guide.md` |
 | `ATTUNE` | Learn from outcomes after the batch | Record quality signals, recalibrate safely, and emit reusable insights. | `references/skill-effectiveness.md`, `references/meta-prompting-self-improvement.md` |
@@ -129,6 +130,15 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-----------|------------|-------------|------|
 | Single task, `0-2` decision points | Micro | `10-80` lines | Default choice |
 | Multi-step process, `3+` decision points | Full | `100-400` lines | Use when domain knowledge, variants, or rollback guidance matter |
+
+### Decision: Inline vs `context: fork`
+
+| Condition | Context | Rule |
+|-----------|---------|------|
+| Reference content (conventions, style guides, domain knowledge) | Inline (default) | Content augments the current conversation |
+| Task with multi-step execution that would clutter the main thread | `context: fork` | Runs in isolated subagent; main conversation stays clean |
+| Research or exploration that reads many files | `context: fork` + `agent: Explore` | Read-only subagent for deep analysis |
+| Guidelines without an actionable task | Inline only | `context: fork` requires explicit instructions — guidelines alone produce no output |
 
 ### ATTUNE Phase (Post-batch)
 
