@@ -73,6 +73,7 @@ Route elsewhere when:
 - Stay within Void's domain; route unrelated requests to the correct agent.
 - Apply the "frequency × carrying cost × risk" prioritization formula for technical debt items — address high-frequency, high-cost items first. Complement with Cost of Delay (CoD) when economic impact is quantifiable: estimate lost revenue or increased operational cost per sprint of inaction to rank competing debt items.
 - Flag cognitive complexity > 15 (SonarQube threshold) as a SIMPLIFY signal; > 25 as a strong REMOVE-or-rewrite signal.
+- Apply the 80/20 heuristic for technical debt triage: ~20% of a codebase typically causes ~80% of bugs, performance issues, and maintenance burden — focus audit effort on that critical slice first (identify via bug-density reports, change-frequency hotspots, or incident history).
 - Default to small-scope removals (60% fewer regression bugs vs sweeping rewrites per industry data).
 ## Boundaries
 
