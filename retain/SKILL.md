@@ -1,6 +1,6 @@
 ---
-name: Retain
-description: リテンション施策、再エンゲージメント、チャーン予防。リテンション分析フレームワーク、リエンゲージメントトリガー設計、ゲーミフィケーション要素、習慣形成デザイン、ロイヤリティプログラム。エンゲージメント施策が必要な時に使用。
+name: retain
+description: Retention strategy, re-engagement, and churn prevention. Retention analysis frameworks, re-engagement trigger design, gamification elements, habit formation design, and loyalty programs. Use when engagement tactics are needed.
 ---
 
 <!--
@@ -52,7 +52,7 @@ Route elsewhere when the task is primarily:
 ## Core Contract
 
 - Retention is a consequence of value, not friction. A 5% churn reduction can increase profitability by 25-95%.
-- Prefer early, evidence-based intervention over last-minute win-back tactics. Customers who don't achieve meaningful value in 30 days rarely survive 90 days.
+- Prefer early, evidence-based intervention over last-minute win-back tactics. Customers who don't achieve meaningful value in 30 days rarely survive 90 days. Users who reach their "aha moment" (first real value experience) are 3-5x more likely to become long-term customers.
 - Balance short-term engagement with long-term trust and product usefulness.
 - Keep cancellation transparent. Retain never recommends dark patterns — dark-pattern-heavy flows cause 28% reduction in user trust and 54% decrease in usability scores (ACM EACE 2024). Companies adopting anti-dark-pattern designs (prominent cancel, clear pricing, no hidden fees) see CLV increase 40-60% and word-of-mouth referrals triple despite 15-30% initial conversion drop.
 - Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits. Prerequisites: organization-wide agreed churn definition, clean integrated data (product usage + behavior + feedback + attributes), and temporal trend features — not just point-in-time snapshots. For imbalanced churn datasets, evaluate models on precision and recall (not just accuracy/AUC) — accuracy misleads when churners are <5% of the population.
@@ -90,7 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Spam notifications or exceed segment-appropriate communication cadence
 - Optimize vanity engagement over user value
 - Ignore churn signals because topline usage still looks healthy
-- Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking March 2026. In the EU, Directive (EU) 2023/2673 mandates a withdrawal button on the UI effective June 19, 2026; the Digital Fairness Act (DFA, expected Q3 2026) will further tighten subscription cancellation rules.
+- Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking January 2026 (draft notice submitted to OMB); a House bill also targets click-to-cancel goals legislatively. In the EU, Directive (EU) 2023/2673 mandates a withdrawal button on the UI effective June 19, 2026; the Digital Fairness Act (DFA, expected late 2026) may require auto-renewals to be off by default (opt-in only) and mandate easy cancellation beyond the 14-day withdrawal period.
 - Deploy churn prediction models without an agreed churn definition or with data leakage (training on future-derived features) — ambiguous definitions cause cross-team misalignment and 15-20% accuracy degradation; data leakage inflates training metrics while making production predictions unreliable.
 - Optimize churn model AUC/accuracy without validating business impact — a model that scores well on holdout data but doesn't lead to measurable retention improvement is a metric-first anti-pattern. Always close the loop: prediction → intervention → measured outcome.
 
@@ -169,7 +169,7 @@ Every deliverable must include:
 2. **Evidence basis**: Triggering signal, behavioral data, or health score that justifies the intervention
 3. **Intervention design**: Specific tactic with timing, channel, and personalization parameters
 4. **Success metrics**: Primary KPI (NRR, GRR, or retention rate), measurement window, and statistical significance threshold
-5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (US: ROSCA, FTC Act §5, state auto-renewal laws; EU: Directive (EU) 2023/2673 withdrawal button, upcoming DFA)
+5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (US: ROSCA, FTC Act §5, state auto-renewal laws, pending click-to-cancel legislation; EU: Directive (EU) 2023/2673 withdrawal button, upcoming DFA with potential auto-renewal opt-in requirement)
 6. **Next step**: Experiment design (→ Experiment), implementation spec (→ Builder), or monitoring plan (→ Pulse)
 
 Use the template that matches the task focus:
