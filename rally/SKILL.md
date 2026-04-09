@@ -5,11 +5,12 @@ description: マルチセッション並列オーケストレーター。Claude 
 
 <!--
 CAPABILITIES_SUMMARY:
-- parallel_orchestration: Launch and manage multiple Claude Code sessions (3-5 optimal) concurrently via Agent Teams API or Codex CLI subagents
+- parallel_orchestration: Launch and manage multiple Claude Code sessions (3-5 optimal) concurrently via Agent Teams API or Codex CLI subagents, with per-teammate worktree isolation for physical file safety
 - task_distribution: Distribute independent tasks across parallel sessions with dependency wiring via addBlockedBy
 - result_aggregation: Fan-in collection with reconciliation layer validating outputs against original task spec to prevent silent drift
 - conflict_resolution: Detect and resolve file ownership conflicts from concurrent edits via ON_RESULT_CONFLICT protocol
 - session_monitoring: Monitor parallel session health, progress, and timeouts with escalation/replacement strategies
+- convergence_detection: Identify when all agents converge on the same blocker and diversify task targets to restore parallel gains
 - anti_pattern_detection: Identify premature parallelization, hidden dependencies, and coordination overhead that exceeds parallel gains
 
 COLLABORATION_PATTERNS:
@@ -42,6 +43,7 @@ Use Rally when:
 - Nexus chain contains parallel implementation across 4+ files in separate modules
 - Task explicitly requests parallel or concurrent execution
 - Estimated serial time exceeds 2× the coordination overhead (rule of thumb: ≥ 3 independent units)
+- Task has many independent failure points (separate test failures, different compilation targets, distinct modules) — strong parallelization signal
 - Teammates need to share findings, challenge approaches, or self-coordinate → Agent Teams over subagents
 - Cost justification exists: Agent Teams cost `3-4×` tokens vs single session; only use when parallel speedup ≥ `1.5×` compensates
 
@@ -70,6 +72,7 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 - Target `5-6` tasks per teammate to keep each productive without excessive context switching.
 - Use Rally only for true multi-session parallel work. Investigation-only, single-agent, or purely sequential work should stay with Nexus, Sherpa, or a direct specialist.
 - Complete `ownership_map` before spawning. Every writable file needs one owner and `exclusive_write` must never overlap. The file-ownership invariant is the single most critical safety guarantee — violations cause silent merge corruption.
+- **Worktree isolation**: Agent Teams assign each teammate its own git worktree — a separate working directory and branch sharing the same repository history. This provides physical file safety: teammates can edit overlapping files without interference. The `ownership_map` remains the logical constraint (who is responsible for what); worktree isolation is the execution mechanism (how conflicts are prevented). TaskCreate, SendMessage, and worktree isolation are the three core coordination primitives.
 - **Reconciliation before merge**: after fan-in, validate each teammate's output against the original task specification — not just whether it compiled, but whether it answered what was asked. Silent drift (agent output subtly diverging from intent without errors) is the #1 production failure mode in multi-agent pipelines.
 - Keep the hub-spoke model as the recommended pattern. Rally is the primary communication hub. The API allows peer DM between teammates (summaries appear in idle notifications), but teammates should not initiate peer DMs unless explicitly instructed.
 - **Delegate mode**: for teams of `3+`, activate delegate mode (Shift+Tab) so the lead focuses on coordination only and does not compete with teammates for file access. This consistently produces better results than a lead that both coordinates and implements.
@@ -78,6 +81,8 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 - Every teammate prompt must include team name and role, task, file ownership, constraints, context, completion criteria, and reporting instructions.
 - Verify build, tests, lint or type checks, and ownership compliance before reporting results.
 - Run lightweight HARMONIZE after every team session and record user overrides in the journal.
+- **Convergence detection**: when all teammates hit the same blocker (e.g., same bug, same failing dependency), parallelism collapses — N agents attempting the same fix produces N conflicting patches. Detect convergence early and diversify task targets (assign different test suites, different compilation targets, or use an oracle/reference implementation to partition the problem space). Anthropic's 16-agent C compiler project demonstrated this: agents compiling the Linux kernel all hit the same bug and overwrote each other until the team diversified targets using GCC as an oracle.
+- **Specialization over duplication**: assign teammates distinct specialist roles (e.g., implementation, quality review, performance optimization, deduplication, documentation) rather than having all teammates do the same type of work. Specialization through parallelism consistently outperforms duplication at scale.
 - **Fan-in timeout**: set explicit deadlines per teammate task. If a teammate exceeds 2× the expected duration, escalate or replace rather than waiting indefinitely.
 - **Budget guardrails**: set a maximum API cost per session. Agent Teams cost `3-4×` the tokens of a single session; subagents cost `1.5-2×`. If parallel speedup does not justify the multiplier, prefer subagents or sequential execution. If collective teammate API calls hit the limit, gracefully degrade (complete in-flight work, skip remaining, report partial results) rather than allowing unbounded spend.
 - **Model mixing**: assign Sonnet to teammate roles that do not require Opus-level reasoning (boilerplate implementation, test writing, formatting) to reduce per-session cost while keeping Opus for complex architectural decisions.
@@ -109,6 +114,7 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 - Skip `SAFEGUARD` when modifying learning defaults
 - Override Lore-validated parallel patterns without human approval
 - Parallelize tasks with hidden dependencies (shared state, read-after-write) — produces race conditions that are extremely hard to debug
+- Assign all teammates the same task or same blocker — N agents fixing the same bug produces N conflicting patches with zero net parallelism; diversify targets instead
 - Allow handoff loops (Agent A → Agent B → Agent A) — guard with cycle detection; if the same task context returns to a previously visited agent, break the loop and escalate
 
 Shared policies: `_common/BOUNDARIES.md`, `_common/OPERATIONAL.md`
@@ -195,6 +201,7 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 | Nexus chain with parallel segments | Nexus-routed execution | structured RALLY_TO_NEXUS_HANDOFF | `references/integration-patterns.md` |
 | Ownership conflict detected during SYNTHESIZE | ON_RESULT_CONFLICT resolution | conflict report with resolution strategy | `references/file-ownership-protocol.md` |
 | Teammate failure or timeout | Resilience protocol (retry/replace/degrade) | degraded result with failure analysis | `references/resilience-cost-optimization.md` |
+| All teammates converging on same blocker | Convergence protocol: diversify targets or introduce oracle | redistributed task assignments with diversified targets | `references/anti-patterns-failure-modes.md` |
 | Single task or sequential-only work | Route to Nexus or specialist | routing recommendation | `_common/BOUNDARIES.md` |
 
 Routing rules:
