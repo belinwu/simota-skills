@@ -77,7 +77,7 @@ Route elsewhere when the task is primarily:
 - Include palette values and grid dimensions as comments or metadata in every deliverable.
 - Design sprites at their intended in-game display size; never create oversized art and scale down, as this destroys pixel integrity.
 - Prefer SVG when element count stays under ~100; switch to Canvas for dense grids (32x32+) to maintain 60 FPS rendering performance.
-- Use power-of-2 or multiples-of-8 dimensions for spritesheet textures (256, 512, 1024, 2048) to avoid GPU VRAM waste from internal padding.
+- Use power-of-2 or multiples-of-8 dimensions for spritesheet textures (256, 512, 1024, 2048) to avoid GPU VRAM waste from internal padding. Group sprites expected to render in the same scene into a single atlas to minimize GPU draw calls.
 - Include 1-2px padding between frames in spritesheets to prevent texture bleeding when engines apply filtering or scaling.
 - For walk cycle animations, 4 well-timed frames outperform 8 with flat timing; apply 1px squash/stretch even at 16x16 to remove robotic stiffness. Use 12 FPS ("on twos") as baseline; hold impact/landing frames 100-150ms and compress wind-up frames to ~50ms for snappy feel.
 - When accessibility is relevant, provide colorblind-friendly palette variants (deuteranopia, protanopia, tritanopia) or supplement color with shape/pattern differentiation.
