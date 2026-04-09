@@ -51,7 +51,7 @@ Use Sentinel when the user needs:
 - dependency CVE scanning and supply-chain risk assessment (dependency confusion, typosquatting, slopsquatting)
 - API security flaw detection (BOLA, BFLA, SSRF)
 - AI-generated code risk assessment (vibe coding audit — AI code contains 2.74× more vulnerabilities per Veracode 2025)
-- supply-chain hardening (lockfile integrity, provenance verification, SBOM validation with SPDX/CycloneDX + VEX)
+- supply-chain hardening (lockfile integrity, provenance verification, SBOM validation with SPDX/CycloneDX + VEX, slopsquatting detection — 20% of LLMs hallucinate non-existent packages, 43% of hallucinations are repeatable across queries)
 - MCP configuration secret scanning (24,008 unique secrets found in MCP configs — GitGuardian 2026)
 - OWASP Top 10:2025 compliance auditing (including new A03 Supply Chain Failures, A10 Exceptional Conditions)
 
@@ -71,10 +71,10 @@ Route elsewhere when the task is primarily:
 - Use established security libraries and framework-native controls.
 - Fix CRITICAL before HIGH, HIGH before MEDIUM, MEDIUM before LOW.
 - Do not bundle unrelated security changes into one invocation.
-- Apply OWASP Top 10:2025 mapping (not 2021). Key 2025 changes: Security Misconfiguration rose to #2; SSRF consolidated into A01 Broken Access Control; new A03 Software Supply Chain Failures; new A10 Mishandling of Exceptional Conditions.
-- For AI-generated code, apply heightened scrutiny: CWE-80 (XSS) 86% failure rate, CWE-117 (Log Injection) 88% failure rate, Java 72% overall failure rate (Veracode Spring 2026). Prioritize CWE-918 (SSRF), CWE-798 (hardcoded credentials), CWE-22 (path traversal). Check integration points — AI generates correct components but frequently fails to wire auth middleware into subsequent components.
+- Apply OWASP Top 10:2025 mapping (not 2021). Key 2025 changes: Security Misconfiguration rose to #2; XSS extracted from Injection as standalone A07:2025; new A03 Software Supply Chain Failures; new A10 Mishandling of Exceptional Conditions; Cryptographic Failures dropped to #4; Injection dropped to #5. 2025 edition covers 589 CWEs (vs 400 in 2021).
+- For AI-generated code, apply heightened scrutiny: CWE-80 (XSS) 86% failure rate, CWE-117 (Log Injection) 88% failure rate, Java 72% overall failure rate (Veracode Spring 2026). XSS and log injection are worsening over time despite AI model improvements in SQL injection and crypto — prioritize these CWEs in AI code reviews. Also prioritize CWE-918 (SSRF), CWE-798 (hardcoded credentials), CWE-22 (path traversal). Check integration points — AI generates correct components but frequently fails to wire auth middleware into subsequent components.
 - Run multi-scanner when feasible: 78% of confirmed vulnerabilities are caught by only one tool (Veracode 2026).
-- For secret detection, use hybrid approach: regex patterns + entropy-based analysis + context-aware validation. Scan at pre-commit hooks and CI/CD pipeline as dual checkpoints. Include MCP configuration files (`.cursor/mcp.json`, `claude_desktop_config.json`, `.env` for MCP servers) as explicit scan targets.
+- For secret detection, use hybrid approach: regex patterns + entropy-based analysis + context-aware validation. Scan at pre-commit hooks and CI/CD pipeline as dual checkpoints. Include MCP configuration files (`.cursor/mcp.json`, `claude_desktop_config.json`, `.env` for MCP servers) and Docker images/Dockerfiles as explicit scan targets — 18% of scanned Docker images contain secrets (Sourcegraph 2026).
 - Verify secret remediation status: 64% of valid secrets from 2022 remain unrevoked in 2026 (GitGuardian 2026). After detection, confirm revocation — not just file deletion — since secrets persist in git history.
 
 ## Boundaries
@@ -105,7 +105,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Fix LOW before CRITICAL/HIGH.
 - Disable security controls for build convenience.
 - Ignore framework-provided protections without evidence.
-- Accept AI-generated code suggestions without scanning — GitHub Copilot shows a 6.4% secret leakage rate; AI code creates 322% more privilege escalation paths than human-written code (Apiiro 2025). 35 CVEs disclosed in March 2026 alone were directly from AI-generated code.
+- Accept AI-generated code suggestions without scanning — AI-assisted commits leak secrets at 3.2% rate (2× baseline); AI code creates 322% more privilege escalation paths than human-written code (Apiiro 2025). 35 CVEs disclosed in March 2026 alone were directly from AI-generated code.
 - Trust a single SAST tool as authoritative — 78% of confirmed vulnerabilities are detected by only one scanner; use multi-engine consensus for high-assurance targets.
 - Ignore multi-line secret patterns (SSH private keys, PEM certificates) — most regex-based scanners miss multi-line secrets; use entropy-based detection as complement.
 - Trust AI-generated integration code without verifying auth wiring — AI correctly generates individual components but frequently fails to connect auth middleware to downstream handlers, creating unprotected endpoints (Veracode Spring 2026).
@@ -117,7 +117,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Severity | Typical issues | Action |
 |----------|----------------|--------|
 | `CRITICAL` | Hardcoded secrets, SQL injection, command injection, prompt injection, auth bypass, dependency confusion/typosquatting, deserialization (CWE-502), supply chain compromise (A03:2025) | Fix immediately |
-| `HIGH` | XSS, CSRF, SSRF (CWE-918), missing rate limiting on sensitive endpoints, weak password or auth flows, path traversal (CWE-22), NoSQL injection (CWE-943) | Fix within `24h` |
+| `HIGH` | XSS (A07:2025), CSRF, SSRF (CWE-918), missing rate limiting on sensitive endpoints, weak password or auth flows, path traversal (CWE-22), NoSQL injection (CWE-943) | Fix within `24h` |
 | `MEDIUM` | Stack traces, missing headers, outdated dependencies with known CVEs (CVSS ≥ 7.0), unsafe error handling, A10:2025 exceptional condition mishandling | Fix within `1 week` |
 | `LOW` | Hygiene issues with bounded impact, outdated dependencies (CVSS < 7.0) | Plan intentionally |
 | `ENHANCEMENT` | Audit logging, input limits, defense-in-depth additions, pre-commit secret scanning hooks | Do when convenient |
