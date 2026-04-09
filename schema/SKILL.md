@@ -1,6 +1,6 @@
 ---
 name: schema
-description: "DB schema design, migration creation, and ER diagram design. Data modeling expert handling normalization, index design, and relation definitions. Use when DB schema design is needed."
+description: Database schema design, migration planning, and ER diagram specialist. Handles normalization, index strategies, and relation definitions. Use when DB schema design is needed.
 ---
 
 <!--
@@ -78,6 +78,7 @@ Route elsewhere when the task is primarily:
 - Index frequently queried columns and validate index choice against query patterns.
 - Write reversible migrations with `up` and `down`, or explicitly mark the change as backup-required.
 - Consider data growth, lock impact, and framework compatibility.
+- Use a migration linter (e.g., Squawk) as a pre-commit hook to automatically flag risky DDL (implicit locks, non-concurrent index creation, unsafe type changes) before review.
 
 ### Ask First
 - Denormalization for performance
@@ -133,9 +134,10 @@ Route elsewhere when the task is primarily:
 - Use `CREATE INDEX CONCURRENTLY` on PostgreSQL for production index creation.
 - Treat `DROP COLUMN` and `DROP TABLE` as backup-required.
 - Use expand-contract for risky rename/type-change flows, populated `NOT NULL`, and phased deprecation. Consider pgroll for automated expand-contract with versioned schemas and data backfills. On PostgreSQL 18, use `RETURNING OLD.*` / `RETURNING NEW.*` in UPDATE/DELETE statements to verify data correctness during dual-write and backfill phases without separate SELECT queries.
-- On PostgreSQL 18, leverage `ALTER TABLE ... ADD COLUMN ... NOT NULL NOT VALID` directly to simplify the expand phase for new non-nullable columns.
+- On PostgreSQL 18, use `NOT VALID` when adding CHECK, FK, or NOT NULL constraints to skip immediate validation of existing rows — validate separately with `VALIDATE CONSTRAINT` after the transaction commits to avoid long-held `ACCESS EXCLUSIVE` locks during migrations.
 - On PostgreSQL 18, use virtual generated columns (now the default) for derived values — they compute on read without storing, avoiding table rewrites during schema evolution.
 - On PostgreSQL 18, use temporal constraints (`PRIMARY KEY ... WITHOUT OVERLAPS`, `FOREIGN KEY ... PERIOD`) for scheduling, booking, and bitemporal schemas instead of application-level overlap checks.
+- On PostgreSQL 18, use `UNIQUE NULLS DISTINCT` for unique constraints on nullable columns — this treats each NULL as a distinct value, eliminating partial-index workarounds for optional-but-unique fields (e.g., email, external_id).
 - Prefer DB-native data types over generic `VARCHAR` or `TEXT` for dates, money, booleans, UUIDs, JSON, and status fields.
 - Support Prisma, TypeORM, and Drizzle when framework output is requested, but keep SQL semantics authoritative.
 - On PostgreSQL 18, leverage DDL replication in logical replication to automatically propagate schema changes (`CREATE`/`ALTER`/`DROP TABLE`) to subscribers — eliminates manual schema sync across environments and reduces drift between staging and production.

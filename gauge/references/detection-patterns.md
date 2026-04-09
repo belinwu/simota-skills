@@ -17,14 +17,14 @@
 7. Check `description:` does not contain XML angle brackets (`<`, `>`) — frontmatter appears in system prompt; prevents injection
 
 **PARTIAL trigger:** Delimiters present but `name:` or `description:` missing/empty, OR `name:` not in kebab-case.
-**Note:** For the internal ecosystem, existing PascalCase names (e.g., `Gauge`) may be grandfathered; flag as PARTIAL with migration recommendation rather than FAIL.
+**Note:** All names must be kebab-case matching the directory name. PascalCase grandfathering is no longer in effect (migration completed in Generation 2).
 
 ---
 
 ## L1: Language Compliance
 
 **Detection:**
-1. Extract `description:` value from frontmatter → check for Japanese characters (hiragana: `\u3040-\u309F`, katakana: `\u30A0-\u30FF`, kanji: `\u4E00-\u9FFF`)
+1. Extract `description:` value from frontmatter → verify it is English (no Japanese characters: hiragana `\u3040-\u309F`, katakana `\u30A0-\u30FF`, kanji `\u4E00-\u9FFF`)
 2. Extract body text (everything after frontmatter closing `---`)
 3. Scan body for Japanese character ranges (same as above)
 4. Apply whitelist exclusions:
@@ -34,7 +34,7 @@
 5. Scan `references/` files for Japanese characters (none allowed)
 
 **PARTIAL trigger:** 1-3 Japanese character instances in body after whitelist filtering.
-**FAIL trigger:** 4+ instances in body, OR `description:` is English-only, OR `references/` files contain Japanese.
+**FAIL trigger:** `description:` contains Japanese characters, OR 4+ instances in body, OR `references/` files contain Japanese.
 
 ---
 

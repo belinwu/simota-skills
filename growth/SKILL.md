@@ -1,6 +1,6 @@
 ---
 name: growth
-description: "Growth support across three axes: SEO (meta/OGP/JSON-LD/heading hierarchy), SMO (social share display), and CRO (CTA improvement/form optimization/bounce prevention). Use when improving search ranking or conversions."
+description: SEO (meta/OGP/JSON-LD/heading hierarchy), SMO (social sharing), CRO (CTA/form/exit-intent), and GEO (AI citation optimization) across four pillars. Use when search ranking, conversion, or AI visibility improvement is needed.
 ---
 
 <!--
@@ -46,7 +46,8 @@ Data-driven growth hacker: implement ONE high-impact change for SEO ranking, Soc
 4. **Honest growth** — Dark patterns yield short-term gains but long-term losses; Google core updates aggressively demote manipulative UX
 5. **Mobile first** — Google indexes mobile-first; design for thumbs, not mice
 6. **Structured for machines AND humans** — In 2026, JSON-LD's primary value is AI visibility, not rich snippets; ChatGPT, Perplexity, Gemini, and AI agents parse structured data directly when browsing, citing, or evaluating pages. Triple schema stack (Article + ItemList + FAQPage) achieves 1.8× more AI citations than Article alone (Princeton GEO research). Schema must match visible page content — AI engines verify consistency and penalize mismatches. Always use the most specific schema type available (BlogPosting over Article, LocalBusiness over Organization) — specific types give search engines and AI systems clearer signals
-7. **Answer first, elaborate second** — 74.2% of AI citations come from structured "Top N" list content; the first 200 words of any page should directly and completely answer the primary query. AI engines extract from the opening, not the conclusion
+7. **Answer first, elaborate second** — 44.2% of all LLM citations come from the first 30% of text; the first 200 words of any page should directly and completely answer the primary query. Use 120–180 words between headings for optimal AI citation (+70% more ChatGPT citations vs sections under 50 words). AI engines extract from the opening, not the conclusion
+8. **AI Overviews reshape CTR** — Organic CTR drops 61% on searches triggering AI Overviews (1.76% → 0.61%), but cited pages earn 35% more organic clicks; structured data markup alone gives +73% AI Overview selection rate — GEO is not optional, it is survival
 
 ## Trigger Guidance
 
@@ -81,7 +82,7 @@ Route elsewhere when the task is primarily:
 - Scale to scope: element (<50 lines), page (<200 lines), site-wide (phased rollout).
 - Avoid black hat SEO and dark patterns.
 - Include verification steps (Lighthouse, social preview debugger, CLS check).
-- Target Core Web Vitals thresholds at 75th percentile: LCP ≤2.5s, INP <200ms, CLS <0.1 (Google official); track VSI for session-long visual stability when available.
+- Target Core Web Vitals thresholds at 75th percentile: LCP ≤2.5s, INP <200ms, CLS <0.1 (Google official); track VSI for session-long visual stability when available. INP is the most commonly failed CWV (43% of sites fail the 200ms threshold) — prioritize INP diagnosis first.
 - Implement stacked JSON-LD schema (minimum: Organization + BreadcrumbList + WebSite; for GEO: Article + ItemList + FAQPage triple stack) for AI search eligibility.
 - Validate structured data with Google Rich Results Test before delivery; verify schema-content consistency (every JSON-LD claim must match visible page content).
 - GEO content requires 3–5 inline citations from authoritative sources per article; pages not updated quarterly are 3× more likely to lose AI citations. Use `@id` references to connect entities into a coherent knowledge graph that AI systems can traverse.
@@ -121,6 +122,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Treat CRO as a landing-page-only problem — conversion failures occur at every funnel stage (ad copy → checkout → post-purchase); full-funnel audit is required.
 - Deploy JSON-LD schema that contradicts visible page content — AI engines verify schema-content consistency and ignore or penalize mismatches.
 - Use generic (non-specific) schema types when a more specific one exists (e.g., Article when BlogPosting applies, Organization when LocalBusiness applies) — specificity is a ranking and AI-citation signal.
+- Optimize GEO exclusively for one AI platform (e.g., ChatGPT only) while ignoring Perplexity, Gemini, Claude, and Copilot — each platform has different source sets, citation patterns, and retrieval mechanisms; single-platform optimization creates blind spots that competitors exploit.
 - Break accessibility.
 - Modify backend logic.
 

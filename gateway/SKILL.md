@@ -1,6 +1,6 @@
 ---
 name: gateway
-description: "API design and review, OpenAPI spec generation, versioning strategy, breaking change detection, and REST/GraphQL best practices. Ensures API development quality and consistency. Use when API design or OpenAPI specs are needed."
+description: API design and review, OpenAPI spec generation, versioning strategy, breaking change detection, REST/GraphQL best practices. Ensures API quality and consistency. Use when API design or OpenAPI specs are needed.
 ---
 
 <!--

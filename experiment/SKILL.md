@@ -1,6 +1,6 @@
 ---
 name: experiment
-description: "A/B test design, hypothesis documentation, sample size calculation, feature flag implementation, and statistical significance testing. Covers CUPED variance reduction, SRM detection, and switchback experiments. Use when hypothesis validation is needed."
+description: A/B test design, hypothesis documentation, sample size calculation, feature flag implementation, and statistical significance analysis. CUPED variance reduction, SRM detection, switchback experiments. Use when hypothesis validation is needed.
 ---
 
 <!--
@@ -8,15 +8,15 @@ CAPABILITIES_SUMMARY:
 - hypothesis_document_creation: Structure hypotheses with PICOT framework (Population, Intervention, Control, Outcome, Time)
 - ab_test_design: Define variants, sample size, duration, randomization, and targeting
 - sample_size_calculation: Power analysis with baseline rate, MDE, significance level, power
-- feature_flag_implementation: LaunchDarkly, Unleash, Statsig, GrowthBook, Datadog (Eppo), custom flag patterns for gradual rollout
+- feature_flag_implementation: LaunchDarkly, Unleash, Statsig, GrowthBook, Datadog Experiments (Eppo-powered, GA April 2026), custom flag patterns for gradual rollout
 - statistical_significance_analysis: Z-test, chi-square, Bayesian analysis for experiment results
 - experiment_report_generation: Results summary with confidence intervals, recommendations, learnings
 - sequential_testing: Anytime-valid sequential testing (confidence sequences / mSPRT preferred over classical alpha spending) for valid early stopping
 - multivariate_testing: Factorial design for testing multiple variables simultaneously
-- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment (~50% variance reduction achievable); CUPED + trimmed means for heavy-tailed metrics; in-experiment covariate combination for additional gains
+- variance_reduction: CUPED/CUPAC pre-experiment covariate adjustment (~50% variance reduction achievable); CUPED++ (Eppo/Datadog) and full regression adjustment (Negi & Wooldridge 2021, used by Spotify Confidence) for improved precision; CUPED + trimmed means for heavy-tailed metrics; in-experiment covariate combination for additional gains
 - srm_detection: Sample Ratio Mismatch diagnosis via chi-squared test with segment-level root cause analysis
 - switchback_experimentation: Time-based treatment alternation for marketplace/network-effect scenarios
-- warehouse_native_guidance: Platform architecture guidance (warehouse-native vs hosted) for experimentation infrastructure selection; covers Statsig (dual-mode), Datadog Experiments (Eppo-powered), GrowthBook (open-source)
+- warehouse_native_guidance: Platform architecture guidance (warehouse-native vs hosted) for experimentation infrastructure selection; covers Statsig (dual-mode cloud/warehouse-native), Datadog Experiments (Eppo-powered, observability-native with statistical canary testing, GA April 2026), GrowthBook (open-source warehouse-native first)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Metrics-to-Test (Pulse → Experiment)
@@ -44,7 +44,7 @@ Rigorous scientist — designs and analyzes experiments to validate product hypo
 1. **Correlation ≠ causation** — Only proper experiments prove causality
 2. **Learn, not win** — Null results save you from bad decisions
 3. **Pre-register before test** — Define success criteria upfront to prevent p-hacking
-4. **Practical significance** — A 0.1% lift isn't worth shipping
+4. **Practical significance** — A 0.1% lift isn't worth shipping; industry data shows only ~12% of design changes produce positive outcomes, so most tests should expect null results
 5. **No peeking without alpha spending** — Early stopping inflates false positives (daily peeking can inflate FPR from 5% to 30%+)
 6. **No HARKing** — Never formulate hypotheses after seeing results; pre-register before exposure begins
 7. **Business outcomes over feature metrics** — High CTR doesn't mean higher revenue; use business-outcome metrics as primary
@@ -81,7 +81,7 @@ Route elsewhere when the task is primarily:
 - Document all parameters (baseline, MDE, duration, variants) before launch.
 - Apply sequential testing when early stopping is needed. Prefer anytime-valid methods — confidence sequences (mSPRT, asymptotic CS) over classical alpha spending — as they allow continuous monitoring without pre-specifying the number of interim analyses. Sequential tests excel at detecting losers early but are not designed for declaring winners ahead of schedule.
 - Run SRM check (chi-squared, p < 0.01) before analyzing results; halt and investigate if SRM detected.
-- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data. For heavy-tailed metrics (revenue, session duration), combine CUPED with trimmed means for additional sensitivity gains. When in-experiment covariate data is available (e.g., early-period outcomes), combining pre-experiment and in-experiment covariates can yield additional variance reduction beyond CUPED/CUPAC alone without introducing bias.
+- Recommend CUPED/CUPAC variance reduction when pre-experiment covariate data is available — achieves ~50% variance reduction (Bing benchmark), effectively halving required sample size. Use a 7-day pre-exposure window. Not effective for new users without historical data. For heavy-tailed metrics (revenue, session duration), combine CUPED with trimmed means for additional sensitivity gains. When in-experiment covariate data is available (e.g., early-period outcomes), combining pre-experiment and in-experiment covariates can yield additional variance reduction beyond CUPED/CUPAC alone without introducing bias. Modern platforms offer evolved variants: CUPED++ (Eppo/Datadog) and full regression adjustment (Negi & Wooldridge 2021, Spotify Confidence) provide improved precision over classical CUPED.
 - Use switchback designs when network effects or interference make user-level randomization invalid (marketplaces, pricing, logistics).
 - Apply multiple comparison correction when testing multiple variants or metrics: use Benjamini-Hochberg FDR for exploratory analysis with many metrics (controls false discovery proportion); use Bonferroni/Holm-Bonferroni for confirmatory tests with few primary metrics (controls family-wise error rate).
 - Deliver experiment reports with confidence intervals, effect sizes, and actionable recommendations.
@@ -125,6 +125,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Test multiple variants without multiple comparison correction (5 variants without correction → 23% chance of at least one false positive; 20 metrics without correction → 64% chance).
 - Analyze results without filtering bot/invalid traffic — bot contamination produces phantom lifts and irreproducible results.
 - Use treatment-influenced covariates in CUPED — covariates must be measured strictly before experiment exposure to avoid bias.
+- Rely on proxy metrics without validating correlation to business outcomes — Etsy's infinite scroll increased page views but decreased search engagement and conversions; always verify proxy-to-outcome alignment before using proxy as primary metric.
 
 ## Workflow
 
@@ -153,6 +154,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `CUPED`, `variance reduction`, `sensitivity` | CUPED/CUPAC variance reduction design | Variance reduction plan | `references/statistical-methods.md` |
 | `SRM`, `sample ratio`, `broken split` | SRM diagnosis and root cause analysis | SRM diagnosis report | `references/common-pitfalls.md` |
 | `switchback`, `marketplace test`, `network effect` | Switchback experiment design | Switchback test plan | `references/common-pitfalls.md` |
+| `canary`, `observability`, `experiment diagnostics` | Observability-native experiment diagnostics | Canary test plan with guardrail integration | `references/feature-flag-patterns.md` |
 
 Routing rules:
 

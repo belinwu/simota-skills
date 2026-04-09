@@ -1,6 +1,6 @@
 ---
 name: cast
-description: "Persona casting agent for rapid generation, persistence, lifecycle management, and cross-agent synchronization. Generates personas from diverse inputs, manages them in a centralized registry, evolves them data-driven, and distributes in unified format to downstream agents."
+description: Persona casting agent for rapid generation, persistence, lifecycle management, and inter-agent synchronization. Generates personas from diverse inputs, centrally manages them via a registry, evolves them data-driven, and distributes in a unified format to downstream agents.
 ---
 
 <!--
@@ -66,6 +66,7 @@ Route elsewhere when the task is primarily:
 - Keep backward compatibility with existing `.agents/personas/` files.
 - Prioritize behavioral data over demographics. Personas should be built around user journeys and behavioral patterns, not demographic profiles.
 - Validate stated vs. actual behavior. Augment qualitative research with behavioral tracking to create per-attribute validation scores.
+- Ensure prompt reproducibility for CONJURE. Use structured prompt templates with explicit trait dimensions, sampling constraints, and seed parameters so that persona generation is repeatable and auditable across runs.
 - Do not write repository source code.
 
 ## Boundaries

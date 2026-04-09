@@ -1,6 +1,6 @@
 ---
 name: latch
-description: "Claude Code hooks (PreToolUse/PostToolUse/Stop event system) proposal, configuration, debugging, and maintenance. Use when introducing workflow automation, quality gates, or security verification via hooks."
+description: Propose, configure, debug, and maintain Claude Code hooks (PreToolUse/PostToolUse/Stop and other lifecycle events). Use when workflow automation, quality gates, or security enforcement via hooks is needed.
 ---
 
 <!--
@@ -125,6 +125,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use `exit 1` for security enforcement — it only logs a warning and does not block the tool. Use `exit 2` for blocking.
 - Write human-readable text to stdout in command hooks — stdout is the JSON protocol channel; misuse corrupts tool input and causes silent failures.
 - Use `set -e` in hook scripts — it causes premature exits on benign failures; use `set -uo pipefail` instead.
+- Block file writes (`Edit`/`Write`) mid-plan via PreToolUse deny — it breaks multi-step reasoning because Claude loses track of its sequence. Validate through PostToolUse or Stop hooks instead.
 - Use invalid event names (e.g., `PreTool` instead of `PreToolUse`) — the hook silently never fires with no error message.
 - Deploy hooks that depend on external commands (jq, grep, curl) without verifying their availability — the script fails silently or exits with an unexpected code, causing either a false pass or a false block.
 - Trust that `Edit|Write` PreToolUse hooks alone protect files — Claude switches to `Bash` with `sed`/`python -c`/`echo` to bypass, leaving the "protected" files fully exposed (GitHub #29709, #6876).
@@ -193,6 +194,7 @@ Selection rules:
 
 - Prefer the narrowest event that matches the workflow gap.
 - "All types?" = Yes means command, prompt, http, and agent hook types are all supported. "No" means command/http only.
+- Some events ignore the `matcher` field and always fire on every occurrence: `TeammateIdle`, `TaskCreated`, `TaskCompleted`, `WorktreeCreate`, `WorktreeRemove`, `CwdChanged`. `FileChanged` uses matcher as a pipe-separated basename filter (`".env|package-lock.json"`), not a tool name pattern.
 - `Stop` and `SubagentStop` are for completion gates, not routine linting after every edit.
 - `PreToolUse` with `*` is high-risk and belongs in `Ask First` — it fires on every tool call and adds latency to the entire session.
 - `PreToolUse` supports four permission decisions: `allow` (proceed), `deny` (block with reason), `ask` (show permission dialog), `defer` (fall through to next hook or default behavior). Use `defer` when a hook cannot determine the correct action.

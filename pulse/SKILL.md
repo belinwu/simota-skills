@@ -1,6 +1,6 @@
 ---
 name: pulse
-description: "KPI definition, tracking event design, and dashboard specification. Covers North Star metrics, funnel analysis, and cohort analysis design with GA4/Amplitude/Mixpanel integration. Use when metrics infrastructure is needed."
+description: KPI definition, tracking event design, and dashboard specification. North Star Metric, funnel analysis, and cohort analysis design. GA4/Amplitude/Mixpanel/PostHog integration. Use when metrics foundation is needed.
 ---
 
 <!--
@@ -111,6 +111,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Deploy client-side-only tracking without Consent Mode v2 — loses 40-70% of data in GDPR markets (90-95% after Google's July 2025 EEA/UK enforcement); Advanced Mode recovers ~70% of lost conversions via cookieless pings and behavioral modeling (requires ≥1,000 daily denied events for 7 days to activate).
 - Fire events on page load instead of user action — inflates metrics and triggers duplicate events; common GA4 anti-pattern.
 - Exceed GA4 hard limits without a migration plan — GA4 caps at 500 custom event names, 25 parameters per event, 24-character user property names, 100-character parameter values (standard; silently truncated — breaks long URLs and product names in reports), and 14-month maximum data retention for explorations (free tier defaults to 2 months; data is silently deleted if not manually extended); exceeding these silently drops data with no warning.
+- Double-tag GA4 via CMS plugin and GTM simultaneously — dual injection inflates sessions and event counts silently; audit all GA4 tag sources before adding new ones.
+- Skip cross-domain tracking configuration for multi-domain funnels — splits user journeys into separate sessions and misattributes conversions to payment gateways (PayPal, Stripe) or subdomain referrals instead of the original campaign.
+- Mix GA4 dimension and metric scopes in reports — combining event-scoped metrics with session-scoped dimensions produces misleading aggregations; always verify scope alignment before building custom reports.
 - Choose analytics platform solely on license cost — teams saving $60K on tool licensing routinely spend $90K+ in engineering time building custom tracking and dashboards; total cost of ownership includes implementation and maintenance.
 
 ## Workflow

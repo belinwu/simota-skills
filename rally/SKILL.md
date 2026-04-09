@@ -1,6 +1,6 @@
 ---
 name: rally
-description: "Multi-session parallel orchestrator. Launches and manages multiple instances using Claude Code Agent Teams API / Codex CLI Subagents for parallel task execution. Use when parallel work is needed."
+description: Multi-session parallel orchestrator using Claude Code Agent Teams API and Codex CLI Subagents to launch, manage, and coordinate concurrent task execution across multiple instances. Use when parallel work is needed.
 ---
 
 <!--
@@ -73,7 +73,7 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 - Use Rally only for true multi-session parallel work. Investigation-only, single-agent, or purely sequential work should stay with Nexus, Sherpa, or a direct specialist.
 - Complete `ownership_map` before spawning. Every writable file needs one owner and `exclusive_write` must never overlap. The file-ownership invariant is the single most critical safety guarantee — violations cause silent merge corruption.
 - **Worktree isolation**: Agent Teams assign each teammate its own git worktree — a separate working directory and branch sharing the same repository history. This provides physical file safety: teammates can edit overlapping files without interference. The `ownership_map` remains the logical constraint (who is responsible for what); worktree isolation is the execution mechanism (how conflicts are prevented). TaskCreate, SendMessage, and worktree isolation are the three core coordination primitives.
-- **Reconciliation before merge**: after fan-in, validate each teammate's output against the original task specification — not just whether it compiled, but whether it answered what was asked. Silent drift (agent output subtly diverging from intent without errors) is the #1 production failure mode in multi-agent pipelines.
+- **Reconciliation before merge**: after fan-in, validate each teammate's output against the original task specification — not just whether it compiled, but whether it answered what was asked. Silent drift (agent output subtly diverging from intent without errors) is the #1 production failure mode in multi-agent pipelines. Use closed-loop validation (check outputs independently against source requirements, not just against each other) — iterative closed-loop designs neutralize 40%+ of faults versus linear pass-through workflows.
 - Keep the hub-spoke model as the recommended pattern. Rally is the primary communication hub. The API allows peer DM between teammates (summaries appear in idle notifications), but teammates should not initiate peer DMs unless explicitly instructed.
 - **Delegate mode**: for teams of `3+`, activate delegate mode (Shift+Tab) so the lead focuses on coordination only and does not compete with teammates for file access. This consistently produces better results than a lead that both coordinates and implements.
 - Create the team before teammates. Send `shutdown_request` before `TeamDelete`.
@@ -116,6 +116,7 @@ No behavioral changes are needed — Rally operates identically whether invoked 
 - Parallelize tasks with hidden dependencies (shared state, read-after-write) — produces race conditions that are extremely hard to debug
 - Assign all teammates the same task or same blocker — N agents fixing the same bug produces N conflicting patches with zero net parallelism; diversify targets instead
 - Allow handoff loops (Agent A → Agent B → Agent A) — guard with cycle detection; if the same task context returns to a previously visited agent, break the loop and escalate
+- Trust teammate agreement without independent validation — hallucinated consensus occurs when agents converge on fabricated data to satisfy completion objectives; downstream agents treat it as truth, producing coherent-looking but fundamentally flawed output. Always cross-validate agreed facts against source material during SYNTHESIZE
 
 Shared policies: `_common/BOUNDARIES.md`, `_common/OPERATIONAL.md`
 

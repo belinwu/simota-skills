@@ -20,11 +20,11 @@
 
 | Status | Criteria |
 |--------|----------|
-| PASS | `description:` is in Japanese; body (headings, text, tables, bullets) is in English; `references/` files are English only |
+| PASS | `description:` is in English; body (headings, text, tables, bullets) is in English; `references/` files are English only |
 | PARTIAL | Body contains minimal Japanese (1-3 instances) outside technical terms/proper nouns |
-| FAIL | Body contains significant Japanese text (4+ instances) or `description:` is in English |
+| FAIL | `description:` contains Japanese characters, or body contains significant Japanese text (4+ instances) |
 
-**Detection:** Scan body for hiragana/katakana/kanji characters. Whitelist: agent names, tool names, technical terms, proper nouns.
+**Detection:** Scan `description:` for Japanese characters (hiragana/katakana/kanji) — must be absent. Scan body for hiragana/katakana/kanji characters. Whitelist: agent names, tool names, technical terms, proper nouns.
 
 ### H1: CAPABILITIES_SUMMARY
 
@@ -164,8 +164,8 @@ Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When genera
 
 | Item | Quest Section Reference |
 |------|------------------------|
-| F1 | Lines 1-4 (YAML frontmatter) |
-| L1 | Full file (Japanese description, English body) |
+| F1 | Lines 1-4 (YAML frontmatter, kebab-case name) |
+| L1 | Full file (English description, English body) |
 | H1 | Lines 6-17 (CAPABILITIES_SUMMARY) |
 | H2 | Lines 19-32 (COLLABORATION_PATTERNS) |
 | H3 | Lines 38 (PROJECT_AFFINITY) |

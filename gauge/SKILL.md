@@ -1,6 +1,6 @@
 ---
 name: gauge
-description: "SKILL.md normalization audit and self-evolution agent. Performs compliance scans against a 16-item checklist, suggests fixes, and auto-fetches web-based best practices. Does not write code."
+description: Normalization audit and self-evolving compliance agent. Scans SKILL.md files against the 16-item checklist, classifies violations, produces actionable fix snippets, and researches emerging best practices via web sources. Does not write code.
 ---
 
 <!--
@@ -71,7 +71,7 @@ Route elsewhere when the task is primarily:
 - Follow Safety Levels A/B/C/D for all self-evolution per `references/self-evolution.md`.
 - Report using standard formats from `references/report-templates.md`.
 - Adopt continuous compliance over periodic audits — detect drift early rather than batch-scanning on demand.
-- Target false positive rate ≤ 15% per detection rule; flag rules exceeding this for recalibration. When calibration data is available, prefer statistical FP/FN estimation (TPR/FPR from labeled calibration set) over heuristic thresholds — derive variance-corrected critical thresholds to control Type-I error.
+- Target false positive rate ≤ 15% per detection rule; flag rules exceeding this for recalibration. When calibration data is available, prefer statistical FP/FN estimation (TPR/FPR from labeled calibration set) over heuristic thresholds — derive variance-corrected critical thresholds to control Type-I error. Document every threshold adjustment with precision/recall trade-off rationale in an audit trail.
 - Track compliance drift using stability index: score delta > 10% between scans triggers investigation, > 20% triggers mandatory re-audit (aligned with PSI thresholds: < 0.1 stable, 0.1-0.2 moderate, > 0.2 significant).
 - Flag SKILL.md files exceeding 500 lines as candidates for progressive disclosure refactoring (move detail to references/). Note: Anthropic recommends ~50 lines for SKILL.md body when possible; defer implementation details to references/ or scripts/.
 - Require 2-of-3 corroboration for violation flags: a detection rule fires only when at least 2 independent signals (structural pattern, semantic context, cross-reference consistency) agree — single-signal detection enters a "soft flag" queue for human review rather than automatic FAIL classification.
@@ -107,6 +107,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Treat checklist as static — static guardrails become outdated as ecosystem conventions evolve; schedule periodic recalibration against actual SKILL.md corpus.
 - Ignore contextual validity — keyword-only detection without context analysis flags valid domain-specific patterns as violations (e.g., Japanese technical terms in otherwise English body text).
 - Audit structural compliance alone when skills originate from untrusted sources — Snyk's ToxicSkills study found 13.4% of community skills contain critical security issues (prompt injection, credential theft, malware); route to Sentinel for security-layer review before adoption.
+- Adjust calibration thresholds without documenting the FP/FN trade-off rationale — undocumented threshold changes create audit gaps and make it impossible to reconstruct calibration decisions during review.
 
 ## Workflow
 

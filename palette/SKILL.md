@@ -1,6 +1,6 @@
 ---
 name: palette
-description: "Usability improvement, interaction quality enhancement, cognitive load reduction, feedback design, and a11y compliance. Use when improving UX usability or interaction quality."
+description: Usability improvement, interaction quality enhancement, cognitive load reduction, feedback design, and a11y compliance. Use when improving UX usability or interaction feel.
 ---
 
 <!--
@@ -57,7 +57,7 @@ Route elsewhere when the task is primarily:
 - Evaluate through all three lenses before choosing a change.
 - Target SUS ≥ 80 (industry average is 68); task success rate ≥ 78%; SEQ ≥ 5.5/7 per task.
 - Fix accessibility at the design-system component level, not per-instance — 45% of 2025 federal ADA filings targeted previously-sued companies (UsableNet 2026), showing instance-level patches fail to prevent recurrence. Inaccessible buttons, modals, or form controls in a shared component propagate failures across every consuming page.
-- Enforce WCAG 2.2 Level AA as the accessibility floor — nine new success criteria target mobile, authentication, and cognitive load (W3C 2023). Legal context: US ADA Title II compliance deadline is April 24, 2026 for entities serving 50,000+ people; EU European Accessibility Act (EAA) enforced since June 28, 2025 with fines up to €3M and market removal (EN 301 549 references WCAG 2.1, updating to 2.2). Litigation is accelerating — 5,000+ digital accessibility lawsuits filed in 2025 (~20% increase over 2024), with demand letter settlements $1K–$25K and court judgments averaging $75K (UsableNet 2026).
+- Enforce WCAG 2.2 Level AA as the accessibility floor — nine new success criteria target mobile, authentication, and cognitive load (W3C 2023; ratified as ISO/IEC 40500:2025). Legal context: US ADA Title II compliance deadline is April 24, 2026 for entities serving 50,000+ people; EU European Accessibility Act (EAA) enforced since June 28, 2025 with fines up to €3M and market removal (EN 301 549 references WCAG 2.1, updating to 2.2). Litigation is accelerating — 5,000+ digital accessibility lawsuits filed in 2025 (~20% increase over 2024), with demand letter settlements $1K–$25K and court judgments averaging $75K (UsableNet 2026).
 
 ## Boundaries
 

@@ -1,6 +1,6 @@
 ---
 name: beacon
-description: "Observability and reliability engineering specialist. Covers SLO/SLI design, distributed tracing, alerting strategy, dashboard design, capacity planning, toil automation, and reliability reviews."
+description: Observability and reliability engineering specialist. Covers SLO/SLI design, distributed tracing, alerting strategy, dashboard design, capacity planning, toil automation, and reliability review.
 ---
 
 <!--
@@ -66,8 +66,10 @@ Route elsewhere when the task is primarily:
 - Use Google SRE multi-window, multi-burn-rate alerting as default strategy — fast burn (14.4× over 1h, confirmed over 5min), medium burn (6× over 6h), slow burn (3× over 3d), baseline (1× over 30d). Ticket alerts at 10% budget consumption in 3 days.
 - Error budget consumption policy gates: 50% → review incidents and investigate; 75% → slow deployments, prioritize stability; 90% → freeze non-critical changes; 100% → halt all deployments until budget resets. Single-incident gate: if one incident consumes >20% of the 4-week budget, mandate postmortem within 5 business days regardless of remaining budget.
 - Default to tail-based sampling in the Collector (not the app): keep 100% error/slow traces, sample 10% of successful traces. Adjust rates based on cost constraints.
-- For brownfield services, evaluate OTel eBPF Instrumentation (OBI) for zero-code observability before committing to SDK integration. OBI captures HTTP/gRPC traces and RED metrics without code changes, suitable for initial visibility; add SDK instrumentation selectively for business-critical spans.
+- For brownfield services, evaluate OTel eBPF Instrumentation (OBI) for zero-code observability before committing to SDK integration. OBI captures HTTP/gRPC traces and RED metrics without code changes, suitable for initial visibility; add SDK instrumentation selectively for business-critical spans. OBI is targeting a stable 1.0 release in 2026, making it production-ready for initial rollout.
 - Mandate OTel semantic conventions (stable core since 1.28; track latest release, currently 1.40+) for all instrumentation — non-negotiable for cross-service correlation and vendor portability. For GenAI workloads, adopt `gen_ai.*` namespace conventions including agent spans (`create_agent`, `invoke_agent` operations).
+- Prefer OTel Declarative Configuration (YAML-based SDK config) over code-based setup where available — approaching stabilization in Java, Go, PHP, JS, and C++. Reduces instrumentation drift across services and enables configuration-as-code alongside SLOs-as-code.
+- Treat SLO definitions as code (e.g., OpenSLO YAML specs versioned in Git) — enables automated deployment gating, burn-rate alert generation, and cross-service SLO standardization without manual configuration per service.
 - Define SLOs at system boundaries, not individual components — boundary-level SLIs are more actionable for engineers, customers, and business decision-makers than per-component metrics.
 ## Boundaries
 
@@ -184,16 +186,16 @@ Beacon receives reliability and performance context from upstream agents, and se
 
 | Direction | Handoff | Purpose |
 |-----------|---------|---------|
-| Triage → Beacon | `TRIAGE_TO_BEACON` | インシデントポストモーテムと監視改善要求 |
-| Pulse → Beacon | `PULSE_TO_BEACON` | ビジネスメトリクスとSLOアラインメント |
-| Bolt → Beacon | `BOLT_TO_BEACON` | パフォーマンスデータと相関分析 |
-| Scaffold → Beacon | `SCAFFOLD_TO_BEACON` | インフラコンテキストとキャパシティ情報 |
-| Tuner → Beacon | `TUNER_TO_BEACON` | DBモニタリングクエリ |
-| Beacon → Gear | `BEACON_TO_GEAR` | 可観測性実装仕様 |
-| Beacon → Builder | `BEACON_TO_BUILDER` | 計装実装仕様 |
-| Beacon → Triage | `BEACON_TO_TRIAGE` | 監視改善とアラート設計 |
-| Beacon → Scaffold | `BEACON_TO_SCAFFOLD` | キャパシティ推奨 |
-| Beacon → Mend | `BEACON_TO_MEND` | 自動修復用モニタリングフック |
+| Triage → Beacon | `TRIAGE_TO_BEACON` | Incident postmortems and monitoring improvement requests |
+| Pulse → Beacon | `PULSE_TO_BEACON` | Business metrics and SLO alignment |
+| Bolt → Beacon | `BOLT_TO_BEACON` | Performance data and correlation analysis |
+| Scaffold → Beacon | `SCAFFOLD_TO_BEACON` | Infrastructure context and capacity information |
+| Tuner → Beacon | `TUNER_TO_BEACON` | DB monitoring queries |
+| Beacon → Gear | `BEACON_TO_GEAR` | Observability implementation specs |
+| Beacon → Builder | `BEACON_TO_BUILDER` | Instrumentation implementation specs |
+| Beacon → Triage | `BEACON_TO_TRIAGE` | Monitoring improvements and alert design |
+| Beacon → Scaffold | `BEACON_TO_SCAFFOLD` | Capacity recommendations |
+| Beacon → Mend | `BEACON_TO_MEND` | Auto-remediation monitoring hooks |
 
 ### Overlap Boundaries
 

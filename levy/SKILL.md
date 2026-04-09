@@ -1,6 +1,6 @@
 ---
 name: levy
-description: "Domain knowledge agent for Japanese tax filing (income tax). Explains income classification, deduction application, tax calculation, and filing procedures for freelancers and side-job salaried workers. Does not write code."
+description: Domain knowledge agent for Japanese income tax filing (kakutei shinkoku). Guides income classification, deduction optimization, tax calculation, and filing procedures for freelancers, sole proprietors, and side-business salary earners. Does not write code.
 ---
 
 <!--

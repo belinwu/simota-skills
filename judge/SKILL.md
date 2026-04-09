@@ -1,6 +1,6 @@
 ---
 name: judge
-description: "Code review agent powered by codex review. Automates PR reviews and pre-commit checks. Detects bugs, security vulnerabilities, logic errors, and intent mismatches. Complements Zen's refactoring suggestions. Use when code review or quality checks are needed."
+description: Automated code review agent using codex review CLI. Handles PR review automation and pre-commit checks. Detects bugs, security vulnerabilities, logic errors, and intent misalignment. Complements Zen's refactoring suggestions. Use when code review or quality checks are needed.
 ---
 
 <!--

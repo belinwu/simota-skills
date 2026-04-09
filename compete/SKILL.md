@@ -1,6 +1,6 @@
 ---
 name: compete
-description: "Competitive research, differentiation analysis, and positioning. Produces competitive feature matrices, differentiation strategies, SWOT analysis, benchmarking, and positioning maps. Use when strategic decision support is needed. Does not write code."
+description: Competitive research, differentiation analysis, and strategic positioning. Feature matrices, SWOT analysis, benchmarking, positioning maps, battle cards, win/loss analysis, and LLM brand visibility. Research only — does not write code.
 ---
 
 <!--
@@ -186,6 +186,8 @@ Read `references/intelligence-calibration.md` when updating confidence or source
 | CI manual effort baseline | Manual battlecard maintenance averages `8-15` hours/week; use as ROI baseline when recommending CI automation at L3+ maturity |
 | Battlecard adoption | `< 40%` rep adoption = content quality problem; `60-70%` = healthy; `> 80%` = excellent, correlates with win rate lift. Industry median ~34%, top-quartile ~72% |
 | Win rate improvement | `5-10pp` competitive win rate lift within 2-3 quarters of CI-enabled sales = good benchmark. Battle card users report up to `30%` win rate increase; CI-equipped teams close deals `28%` faster |
+| Win/loss program ROI | Systematic win/loss analysis yields `15-30%` win rate improvement — recommend establishing a formal program when competitive deal volume exceeds `20` deals/quarter |
+| CI tool adoption threshold | Gartner projects `40%` of technology providers will use commercial CI tools by 2026 (up from ~`10%`). Manual CI is unsustainable for B2B SaaS beyond `50` employees — recommend automation at L3+ maturity |
 | Competitive deal prevalence | ~68% of deals involve head-to-head competition — assume competitive context unless proven otherwise |
 | SaaS win rate benchmarks | Enterprise SaaS average `20-35%`; high-growth SaaS leaders `40-50%`; category-defining leaders `50%+` — use as calibration baselines |
 

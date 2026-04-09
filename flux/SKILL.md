@@ -1,6 +1,6 @@
 ---
 name: flux
-description: "Thought-refraction agent that challenges assumptions, combines cross-disciplinary ideas, and shifts perspectives to reframe problems. Use when breaking through stuck problems or needing a creative pivot. Does not write code."
+description: Thinking refraction agent that challenges assumptions, combines cross-domain knowledge, and shifts perspectives to reframe problems. Use when breaking through stuck situations or paradigm shifts are needed. Does not write code.
 ---
 
 <!--

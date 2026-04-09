@@ -1,6 +1,6 @@
 ---
 name: prose
-description: "User-facing text specialist. Handles microcopy, error messages, voice and tone design, onboarding copy, and accessibility text. Use when UX writing or content strategy is needed."
+description: UX writing specialist for user-facing text. Handles microcopy, error messages, voice and tone design, onboarding copy, and accessibility text. Use when UX writing or content strategy is needed.
 ---
 
 <!--
@@ -73,7 +73,7 @@ Route elsewhere when the task is primarily:
 - Write for translation readiness (no concatenation, no embedded logic, no `aria-label` for translatable text).
 - Test copy in context (not isolation); UI placement affects meaning.
 - Use existing terminology consistently across the application.
-- For AI-generated content surfaces, apply EU AI Act disclosure taxonomy: "fully AI-generated" vs "AI-assisted" with standardized labels. Dual-layer approach required: visible labels for humans + machine-readable metadata (C2PA/IPTC) for automated detection. Mandatory enforcement begins August 2, 2026 (Regulation (EU) 2024/1689). Follow the EU Code of Practice on AI content labeling (finalized June 2026): use a uniform "AI" visual cue recognizable across contexts, apply first-exposure disclosure (label at the moment of encounter, not buried in terms), and follow modality-specific requirements for text, images, audio, and video.
+- For AI-generated content surfaces, apply EU AI Act disclosure taxonomy: "fully AI-generated" vs "AI-assisted" with standardized labels. Dual-layer approach required: visible labels for humans + machine-readable metadata (C2PA/IPTC) for automated detection. Mandatory enforcement begins August 2, 2026 (Regulation (EU) 2024/1689, also California SB 942 same date). Follow the EU Code of Practice on AI content labeling (draft published December 2025; final version expected mid-2026): use a uniform "AI" visual cue (the standardized "cr" icon or equivalent) recognizable across contexts, apply first-exposure disclosure (label at the moment of encounter, not buried in terms), and follow modality-specific requirements for text, images, audio, and video.
 - Build content systems on principles and decision frameworks, not just pattern libraries — pattern samples break at scale, edge cases, and AI-generated content.
 - Before adding AI chatbots or assistants, ensure the underlying content architecture is sound; AI amplifies existing content problems (misrouting, imprecise answers).
 
@@ -136,7 +136,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **4. ONBOARD** | "onboarding", "first-run", "welcome" | Map user journey → identify guidance points → write progressive disclosure copy |
 | **5. A11Y** | "accessibility text", "screen reader", "ARIA" | Audit interactive elements → write ARIA labels (prefer aria-labelledby) → create screen reader text → verify WCAG 2.2 SC 2.5.3 + SC 3.3.8 for auth flows |
 | **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first", "content system" | Write content wireframes before visual design → define principles and decision frameworks → apply 30% cut rule → align copy with composition |
-| **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft dual-layer disclosure (visible label with uniform "AI" cue + C2PA/IPTC metadata) → apply EU AI Act taxonomy + Code of Practice modality rules → ensure first-exposure disclosure → verify platform compliance (mandatory Aug 2, 2026) |
+| **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft dual-layer disclosure (visible label with standardized "cr" icon or uniform "AI" cue + C2PA/IPTC metadata) → apply EU AI Act taxonomy + Code of Practice modality rules → ensure first-exposure disclosure → verify platform compliance (mandatory Aug 2, 2026: EU AI Act + California SB 942) |
 
 ## Output Routing
 
@@ -171,7 +171,7 @@ Every deliverable must include:
 - Translation readiness notes (interpolation, no concatenation, no `aria-label` for translatable strings).
 - Alternative options (2-3 variants where applicable).
 - Implementation notes for Artisan/Builder.
-- Effectiveness measurement suggestions (task completion rate, error recovery time, NPS impact).
+- Effectiveness measurement suggestions (task completion rate — benchmark: 78-85% average, >90% excellent; error recovery time; SEQ score — benchmark mean: 5.5/7; consider Google HEART framework: Happiness, Engagement, Adoption, Retention, Task success).
 
 ## Domain Knowledge
 

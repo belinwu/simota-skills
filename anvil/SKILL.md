@@ -1,6 +1,6 @@
 ---
 name: anvil
-description: "CLI/TUI implementation specialist for terminal UI construction, command-line tool development, and dev tool integration (linters, test runners, build tools). Supports Node.js, Python, Go, and Rust. Use when designing CLI command structures with flags and subcommands, building interactive TUI components (spinners, progress bars, selection menus), wiring linter/formatter/test-runner toolchains, generating shell completions, or creating cross-platform doctor commands."
+description: Terminal UI construction, CLI development, and dev-tool integration (linter/test-runner/build-tool wiring). Use when CLI/TUI design or implementation is needed. Language-agnostic — supports Node.js, Python, Go, and Rust.
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: hearth
-description: "Personal dev environment dotfile generation, optimization, and auditing (zsh/tmux/neovim/ghostty, etc.). Use when dotfile management or shell/terminal/editor configuration is needed."
+description: Generate, optimize, and audit personal development environment config files (zsh/tmux/neovim/ghostty). Use when dotfile management, shell, terminal, or editor configuration is needed.
 ---
 
 <!--
@@ -72,7 +72,7 @@ Route elsewhere when the task is primarily:
 - Benchmark shell startup before and after shell-related changes; escalate if delta exceeds profile target by > 50%. Always use `zprof` or `zsh -xv` to profile before guessing — intuition about startup bottlenecks is frequently wrong.
 - On macOS, avoid running `brew shellenv` directly in shell startup; it spawns a Ruby process adding 50-100ms. Inline its output as static exports instead.
 - Default to `Standard` profile unless the user requests otherwise.
-- Never commit secrets to dotfile repos — 73.6% of public dotfiles leak sensitive data (email, SSH keys, API tokens), and GitHub reported 39 million leaked secrets across repositories in 2024 alone. Use `.local` file separation and recommend pre-commit secret scanning (Gitleaks or TruffleHog).
+- Never commit secrets to dotfile repos — GitHub reported 39 million leaked secrets in 2024, and GitGuardian's 2026 report found 29 million new secrets on public GitHub in 2025 (34% YoY increase). AI-assisted commits leak secrets at 3.2% vs 1.6% baseline. Additionally, 24,000+ secrets were found exposed in MCP configuration files, making AI agent configs a new attack surface. Use `.local` file separation, recommend pre-commit secret scanning (Gitleaks or TruffleHog), and audit MCP/AI-agent config files for leaked API keys.
 - Bootstrap scripts must be idempotent — re-running should not duplicate installations or break existing state.
 
 ## Supported Tools
@@ -108,7 +108,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Ask First
 
 - Overwriting, heavily merging, or replacing an existing config file.
-- Installing a plugin manager such as `sheldon`, `zinit`, `tpm`, or `lazy.nvim`, or migrating to Neovim's builtin `vim.pack` (still WIP with potential breaking changes).
+- Installing a plugin manager such as `sheldon`, `zinit`, `tpm`, or `lazy.nvim`, or migrating to Neovim's builtin `vim.pack` (released in 0.12 but ecosystem adoption is still early — some plugins may not yet support it).
 - Changing macOS settings such as `defaults write` or `Karabiner`.
 - Changing the default shell with `chsh`.
 - Installing large frameworks or opinionated distros such as `oh-my-zsh`, `SpaceVim`, `NvChad`, or `LunarVim`.
@@ -118,7 +118,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Never
 
 - Overwrite existing configs without backup.
-- Write secrets, tokens, passwords, or API keys into tracked config files — 73.6% of public dotfiles repos leak sensitive data (MPG academic study), and GitHub reported 39M leaked secrets in 2024. Even deleted secrets persist in git history. Always use `.local` file separation with gitignore.
+- Write secrets, tokens, passwords, or API keys into tracked config files — GitHub reported 39M leaked secrets in 2024; GitGuardian found 29M more in 2025 with AI-assisted code leaking at 2x the baseline rate. Even deleted secrets persist in git history; 70% of leaked credentials remain valid two years later. Always use `.local` file separation with gitignore. Include MCP and AI-agent config files (e.g., `.claude/`, `.codex/`) in secret scanning scope.
 - Change the default shell without explicit confirmation.
 - Run `sudo` or root-level operations without confirmation.
 - Delete existing configs or dotfile repositories as part of routine optimization.

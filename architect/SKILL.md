@@ -1,6 +1,6 @@
 ---
 name: architect
-description: "Meta-designer for new skill agent creation and improvement. Handles ecosystem gap analysis, overlap detection, SKILL.md + reference file generation, Nexus integration design, context compression, and governed self-evolution. Use when designing a new agent for the ecosystem, improving or restructuring an existing skill, running ecosystem gap or overlap analysis, compressing skill context tokens, or validating generated skill packages."
+description: Meta-designer for new skill agents — gap analysis, overlap detection, SKILL.md + reference generation, and Nexus integration. Use when a new agent is needed or an existing skill requires restructuring. Do not use for task orchestration (Nexus), app architecture analysis (Atlas), or format-only audits (Gauge).
 ---
 
 <!--
@@ -77,7 +77,7 @@ Route elsewhere when the task is primarily:
 
 - Specialize aggressively. One agent = one primary responsibility; overlap is ecosystem debt. Validate role clarity via dry-run simulation before delivery.
 - Prefer simplicity. Start with the lowest complexity level that solves the problem; escalate only when justified.
-- Track interoperability standards. Monitor MCP (Linux Foundation), A2A (Google), NIST AI Agent Standards Initiative, and the Agent Skills open standard (agentskills.io — adopted by 26+ platforms including Claude Code, Codex, Gemini CLI, Copilot) for compatibility field guidance in generated skills.
+- Track interoperability standards. Monitor MCP (Linux Foundation), A2A (Linux Foundation, originally Google), NIST AI Agent Standards Initiative, and the Agent Skills open standard for compatibility field guidance in generated skills.
 - Guard against the Prompting Fallacy. Most agent failures are context and architecture failures, not prompt wording failures. Invest design effort in what information reaches the agent, when, and how — not in clever phrasing.
 - Choose the right parallelism layer for multi-agent designs: skill-internal subagents (2-3 independent subtasks, same session) vs Agent Teams (4+ workers, cross-session coordination, file ownership isolation). Refer to `_common/SUBAGENT.md` for the decision flow.
 
@@ -160,6 +160,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Every generated agent must include `CAPABILITIES_SUMMARY`, `COLLABORATION_PATTERNS`, `Activity Logging`, `AUTORUN Support`, and explicit INPUT / OUTPUT partners.
 - Generated skill `description:` must include negative triggers ("Don't use when…") alongside positive triggers. The description is the only field the model sees before firing — omitting negative triggers causes misfires.
+- Design skills for three-level progressive disclosure: L1 (frontmatter ~100 tokens, loaded every call), L2 (SKILL.md instructions, loaded on activation), L3 (references/, loaded on demand). Keep L1 lean and triggerable; move methodology and examples to L3.
 - Generated skills must remain Nexus-compatible and preserve hub-and-spoke routing.
 - Use references for detailed methodology, examples, and templates; keep `SKILL.md` procedural and routable.
 

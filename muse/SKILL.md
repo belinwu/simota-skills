@@ -1,6 +1,6 @@
 ---
 name: muse
-description: "Design token definition, management, and application to existing code. Builds Design Systems covering token hierarchy, spacing/color/typography unification, and dark mode support. Use when design token design or UI consistency is needed."
+description: Define and manage design tokens, apply token systems to existing codebases, and build design system foundations. Covers token architecture for spacing, color, typography, dark mode, and cross-platform output. Use when design token design or UI consistency is needed.
 ---
 
 <!--
@@ -127,7 +127,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Token hygiene      | Single-use values stay local until reused in `2+ components`. Consolidate `3+` tokens with the same value. Keep token names within `3-4` meaningful segments.                             |
 | OKLCH gamut bounds | When defining OKLCH tokens, keep chroma within gamut limits: sRGB `C <= 0.37`, Display P3 `C <= 0.5`. Out-of-gamut values clip unpredictably on narrow-gamut displays. Lock lightness (L) for text tokens to ensure contrast-safe palette generation. Browser support: Chrome 111+, Safari 15.4+, Firefox 113+. |
 | CSS architecture   | Keep `var()` nesting to `<= 2` steps. If `:root` token count exceeds `100`, move component tokens into local scope.                                                                       |
-| DTCG compliance    | New token files should use DTCG v2025.10 format (`$value`, `$type`, `$description`) with `.tokens` or `.tokens.json` extension. Use `.resolver.json` for theming contexts (light/dark/brand). Style Dictionary v5+ for multi-platform builds; v5 DTCG 2025.10 support is partial and evolving — verify feature coverage before relying on new spec features like resolver merging. |
+| DTCG compliance    | New token files should use DTCG v2025.10 format (`$value`, `$type`, `$description`) with `.tokens` or `.tokens.json` extension. Use `.resolver.json` for theming contexts (light/dark/brand). Style Dictionary v5+ for multi-platform builds; v5 supports DTCG 2025.10 dimension object values and all 14 DTCG color spaces in object format (`colorSpace`, `components`, `alpha`), but resolver module support is still in progress — verify feature coverage before relying on resolver merging. |
 | WCAG readiness     | Target WCAG 2.2 AA minimum (legal standard for ADA/EAA as of 2026). WCAG 3.0 remains Working Draft; APCA is not yet in a published draft — track but do not depend on it. Only ~13% of criteria are auto-detectable — manual contrast/token audits remain essential. |
 
 ## Output Routing

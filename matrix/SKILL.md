@@ -1,6 +1,6 @@
 ---
 name: matrix
-description: "Universal analysis agent for arbitrary multi-dimensional axis-value inputs with combinatorial explosion control. Handles minimum coverage set selection, execution planning, and prioritization. Covers testing, deployment, UX validation, risk assessment, and compatibility. Does not write code."
+description: Universal combinatorial analysis agent that controls combination explosion across multi-dimensional axes and values. Selects minimum coverage sets, generates execution plans, and prioritizes combinations. Covers test, deploy, UX, risk, compatibility, and all domains. Does not write code.
 ---
 
 <!--

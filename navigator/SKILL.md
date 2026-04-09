@@ -1,6 +1,6 @@
 ---
 name: navigator
-description: "Browser automation agent using Playwright and Chrome DevTools. Automates data collection, form operations, screenshot capture, and network monitoring. Task-oriented (contrast with Voyager for E2E testing). Use when browser automation is needed."
+description: Browser automation agent using Playwright and Chrome DevTools to complete tasks. Automates data collection, form interaction, screenshot capture, and network monitoring. Task completion focus (vs Voyager for E2E testing). Use when browser automation is needed.
 # skill-routing-alias: browser-automation, playwright-mcp, web-scraping, data-collection
 ---
 
@@ -202,7 +202,7 @@ Playwright MCP operates on **structured accessibility snapshots** (not pixel-bas
 
 **MCP vs CLI decision:** Playwright MCP consumes ~4–10x more tokens per session than Playwright CLI (~114K vs ~27K tokens for equivalent tasks, scaling with interaction count). Microsoft recommends CLI for coding agents with filesystem access (Claude Code, Copilot, Cursor) — CLI saves accessibility snapshots and screenshots to disk as files instead of streaming into the LLM context. For multi-step tasks (>10 sequential interactions), strongly prefer CLI — token accumulation compounds with each step, causing progressive slowdown via quadratic attention cost. MCP is preferred when the agent lacks filesystem access, or needs iterative reasoning with persistent browser state and rich introspection.
 
-**Session lifecycle:** Sessions are either running or gone (no intermediate "stopped" state). Browser profiles are ephemeral by default (in-memory, no leftover state). Use `--persistent` or `--profile=<path>` when cookies or auth state must survive between sessions.
+**Session lifecycle:** Sessions are either running or gone (no intermediate "stopped" state). Browser profiles are **persistent by default** — login state and cookies are preserved between sessions, with profiles stored in the platform's cache directory. Use `--no-persistent` for ephemeral sessions when you need a clean slate (e.g., testing login flows, avoiding session leakage between unrelated tasks). Always use ephemeral mode when automating tasks involving sensitive data to prevent credential persistence.
 
 | Operation | MCP Tool | Description |
 |-----------|----------|-------------|
@@ -213,6 +213,7 @@ Playwright MCP operates on **structured accessibility snapshots** (not pixel-bas
 | Snapshot | `playwright_snapshot` | Get accessibility tree snapshot for structured DOM analysis |
 | Evaluate | `playwright_evaluate` | Execute JavaScript (also for piercing shadow DOM) |
 | Wait | `playwright_wait` | Wait for element/condition |
+| Run Code | `browser_run_code` | Execute Playwright scripts directly for complex multi-step interactions beyond individual tool calls |
 
 **Selector priority:** `getByRole` / `getByLabel` > `data-testid` > CSS selectors. Role-based selectors survive layout shifts and class renames because they rely on the accessibility tree, not DOM structure.
 

@@ -1,6 +1,6 @@
 ---
 name: reel
-description: "Terminal recording and CLI demo video generation. Creates declarative CLI demo GIFs/videos using VHS/terminalizer/asciinema. Use when recording terminal sessions, creating CLI demos, or making README GIFs."
+description: Terminal recording and CLI demo video generation. Declarative CLI demo GIF/video creation using VHS, terminalizer, and asciinema. Use when terminal session recording, CLI demos, or README GIF generation is needed.
 ---
 
 <!--
@@ -72,7 +72,7 @@ Route elsewhere when the task is primarily:
 - Follow the workflow phases in order for every task.
 - Design .tape scripts and recording configurations; generate implementation code for VHS/terminalizer/asciinema workflows.
 - Keep recordings focused on one concept per session; target 10–30 seconds duration per recording.
-- GIF output must be ≤ 5 MB for README embedding; ≤ 2 MB preferred. Apply lossy compression + palette reduction (128 colors) via gifsicle or gifski. Lossy compression typically saves 35–55% file size while maintaining 85–90% perceived quality.
+- GIF output must be ≤ 5 MB for README embedding; ≤ 2 MB preferred. Apply gifsicle (`-O3 --lossy=80 --colors 128`) for 40–50% size reduction, or gifski for highest quality (produces ~35% smaller files than gifsicle at equivalent perceptual quality).
 - Frame rate: 10–15 FPS for terminal recordings (typing animations). Higher FPS wastes bytes on static frames with minimal visual benefit. Platform limits: GitHub README ≤ 10 MB, Twitter ≤ 15 MB, mobile-optimized ≤ 3 MB.
 - All .tape file `Require` and `Set` commands must appear before any action commands — VHS ignores settings applied after the first non-setting command.
 - Design for repeatability and CI-friendliness; treat recordings as code (version-controlled .tape files, CI-regenerated output).

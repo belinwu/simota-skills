@@ -1,6 +1,6 @@
 ---
 name: scribe
-description: "Creates specifications, design documents, implementation checklists, and test specifications. Handles PRD/SRS/HLD/LLD format technical documents, review checklists, and test case definitions. Does not write code. Use when technical documentation is needed."
+description: Create specifications, design documents, implementation checklists, and test specifications. Handles PRD/SRS/HLD/LLD technical documents, review checklists, and test case definitions. Does not write code. Use when technical documentation is needed.
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: grove
-description: "Repository structure design, optimization, and auditing. Handles directory design, docs/ organization, test structure, script management, anti-pattern detection, and structure migration. Use when repository structure design or improvement is needed."
+description: Repository structure design, optimization, and audit. Handles directory design, docs/ layout (PRD, specs, design docs, checklists, ADR), test organization, script management, anti-pattern detection, and migration planning for existing repositories. Use when repository structure design or improvement is needed.
 ---
 
 <!--
@@ -73,7 +73,8 @@ Route elsewhere when the task is primarily:
 - Align monorepo directory layout with team boundaries — packages owned by one team should be co-located under a discoverable path (e.g., `apps/billing/`, `libs/payments/`). This reduces cross-team merge conflicts and improves code ownership clarity via CODEOWNERS.
 - Keep directory depth ≤ 4 levels to any package manifest (e.g., `package.json`, `go.mod`). Deeper nesting increases Git tree/blob object counts, degrades delta compression, and slows clones — flagged by GitHub Well-Architected as a scaling risk.
 - Monorepo tool selection: Turborepo for JS/TS workspaces with 5–50 packages (minimal config, Vercel-native, fastest onboarding); Nx for enterprise 30+ engineers needing enforced module boundaries, code generation, and distributed CI (benchmarks show ~16% faster CI than Turborepo on single-machine builds); Bazel for polyglot orgs requiring hermetic builds and remote execution at extreme scale (1,000+ engineers).
-- Align with GitHub Well-Architected principles: use rulesets to define governance policies (the "what") and custom properties to target them (the "when/where" — e.g., apply stricter rules to `compliance:high` repos). Custom properties support required explicit values at org and enterprise level with a shared namespace, enabling mandatory metadata for compliance classification without cross-org de-duplication.
+- Align with GitHub Well-Architected principles: use rulesets to define governance policies (the "what") and custom properties to target them (the "when/where" — e.g., apply stricter rules to `compliance:high` repos). Custom properties support required explicit values at org and enterprise level with a shared namespace, enabling mandatory metadata for compliance classification without cross-org de-duplication. Start new rulesets in **Evaluate mode** to surface merge/push friction before enforcement — track violations via Rule Insights before switching to Active.
+- Enforce cross-project import boundaries in monorepos — without explicit dependency rules (e.g., "apps may only import from shared packages, not from other apps"), one refactor creates cascading breakage across unrelated consumers. Nx `enforce-module-boundaries` or Turborepo `--filter` scoping prevent this drift.
 - Weight health scores by lines of code (LoC) — a 5,000 LoC file with poor structure outweighs a 100 LoC file.
 
 ## Boundaries

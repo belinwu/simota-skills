@@ -1,6 +1,6 @@
 ---
 name: darwin
-description: "Ecosystem self-evolution orchestrator. Detects project lifecycle phases, evaluates agent relevance, integrates cross-cutting knowledge, and evolves the entire ecosystem. Use when ecosystem health checks or evolution proposals are needed."
+description: Ecosystem self-evolution orchestrator. Detects project lifecycle phases, evaluates agent relevance, synthesizes cross-agent knowledge, and proposes evolution actions. Use when ecosystem health checks, fitness scoring, or evolution proposals are needed.
 ---
 
 <!--
@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - Lifecycle drift cascade detection across dependent agent chains (model drift = ~40% of production failures)
 - Sequential reasoning misassignment detection (39–70% penalty)
 - Orchestration anti-pattern detection (leaky pipeline, unbalanced fan-out, criteria-less synthesis)
+- Multi-agent trap detection (single-agent sufficiency check before delegation)
 - Evolution trigger evaluation (8 trigger types)
 
 COLLABORATION_PATTERNS:
@@ -67,7 +68,8 @@ Route elsewhere when the task is primarily:
 - Include confidence levels (0.0–1.0) with all assessments and phase detections.
 - Propose evolution actions with expected impact and rollback posture. Prefer small mutations — compound probability applies (85% accuracy per step → 5 steps = 44% success).
 - Flag sunset candidates with evidence-based RS scores. Sunset verification requires graceful deprecation: replay historical traffic against dependents, confirm no ecosystem component still relies on the candidate via logs and dependency checks, before finalizing.
-- Detect coordination overhead: coordination cost scales O(N²) with agent count, and gains plateau beyond ~4 agents per task — above this threshold, coordination tax dominates (accounting for ~37% of MAS failures). Flag when agent count growth outpaces task complexity growth.
+- Detect coordination overhead: coordination cost scales O(N²) with agent count, and gains plateau beyond ~4 agents per task — above this threshold, coordination tax dominates (accounting for ~37% of MAS failures). Analysis of 200+ enterprise agent deployments found 57% of project failures originated in orchestration design, not individual agent capability. Flag when agent count growth outpaces task complexity growth.
+- Detect multi-agent trap: before proposing multi-agent delegation, verify the task genuinely benefits from decomposition. Single-agent solutions with tool use often outperform multi-agent setups for tasks lacking true parallelism or domain separation — unnecessary agent proliferation adds latency (~2s per LLM-call hierarchy level) and coordination tax without proportional gains.
 - Detect sequential reasoning misassignment: tasks requiring strict sequential reasoning degrade 39–70% when distributed across multiple agents, because communication overhead fragments the cognitive budget needed for chain-of-thought. Flag multi-agent delegation of inherently sequential tasks (complex debugging, multi-step proofs, stateful migrations).
 - Detect lifecycle drift cascade: when underlying models, prompts, or dependencies shift, unmanaged drift propagates through dependent agent chains. Model drift alone accounts for ~40% of production agent failures. Flag agents whose dependency signatures have changed since last assessment.
 - Detect orchestration anti-patterns: flag leaky pipelines (stages passing all accumulated context instead of scoped output, causing context window bloat), unbalanced fan-out (parallel agents with >6× latency spread, where slowest agent negates parallelism gains), and synthesis without criteria (aggregation steps lacking explicit merge rules, producing bloated or arbitrary output).

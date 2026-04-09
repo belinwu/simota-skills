@@ -1,6 +1,6 @@
 ---
 name: horizon
-description: "Detects deprecated libraries, proposes native API replacements, and creates PoCs for new technologies. Use when tech stack modernization or legacy code updates are needed."
+description: Detect deprecated libraries, suggest native API replacements, and create PoCs for technology migrations. Use for stack modernization, legacy code updates, and technology refresh.
 ---
 
 <!--
@@ -66,15 +66,15 @@ Route elsewhere when the task is primarily:
 
 - Justify every technology choice with concrete benefits (Size/Speed/DX/Security).
 - Prioritize native APIs over new library introductions. In the average Node.js project, 23% of dependencies have known vulnerabilities and 18% are deprecated — every new dependency increases this exposure.
-- Prefer Temporal API (ES2026, Stage 4 — March 2026) over moment.js/date-fns for new date/time code. Browser support: Chrome 144+, Firefox 139+, Edge 144+. Safari: available in Technology Preview behind flag, not yet in production release — use polyfill (@js-temporal/polyfill) when Safari support required.
+- Prefer Temporal API (ES2026, Stage 4 — March 2026) over moment.js/date-fns for new date/time code. Browser support: Chrome 144+, Firefox 139+, Edge 144+. Safari: available in Technology Preview behind flag, not yet in production release — use polyfill (@js-temporal/polyfill) when Safari support required. TypeScript 6.0+ (March 2026) ships built-in Temporal types via `--target esnext` or `"lib": ["esnext"]`.
 - Create isolated PoCs rather than rewriting core logic.
 - Check maturity of any new technology before recommending: require ≥ 6 months post-stable-release, ≥ 1K GitHub stars or equivalent ecosystem signal, and active maintenance (commits within last 90 days).
 - Keep PoCs self-contained and easy to discard.
 - Log all modernization decisions to `.agents/PROJECT.md`.
 - Quantify impact: bundle size delta (enforce ≤ 170KB initial JS compressed budget), P99 latency ≤ baseline + 20%, compatibility matrix with caniuse coverage ≥ 95% for target browsers.
 - For Strangler Fig migrations, track % of functionality migrated, latency parity, and error rate parity before rerouting traffic. Define rollback triggers: error rate > 0.1% increase, p95 latency > 20% increase, transaction success rate drop, or connection pool exhaustion. Use shadow traffic testing to compare legacy vs new responses. Full monolith strangulation typically takes 2–5 years. Require an Anti-Corruption Layer between old and new systems — without it, teams typically strand 80% of low-visibility functionality in the old monolith, creating a distributed monolith with doubled operational cost.
-- For new dependency additions, verify npm provenance attestations and prefer packages using trusted publishing workflows. For CI/CD publishing, use OIDC Trusted Publishing (short-lived, per-run credentials) instead of stored tokens — npm revoked all classic tokens (Dec 2025) and granular tokens max 90 days. Apply release cooldowns: for new versions of existing packages, avoid versions published < 72 hours ago; for entirely new packages, prefer packages > 60 days old per CIS Supply Chain Security Benchmark.
-- For package managers with lifecycle script controls (pnpm v10+), enforce allowBuilds-only model — postinstall scripts are disabled by default. Explicitly list trusted packages that require build scripts; block all others. This eliminates the primary vector for supply chain malware execution.
+- For new dependency additions, verify npm provenance attestations and prefer packages using trusted publishing workflows. For CI/CD publishing, use OIDC Trusted Publishing (short-lived, per-run credentials) instead of stored tokens — npm revoked all classic tokens (Dec 2025) and granular tokens max 90 days. Trusted publishing requires npm CLI ≥ 11.5.1 and Node ≥ 22.14.0; supports GitHub Actions, GitLab CI/CD, and CircleCI (April 2026). Use `npm trust` for bulk configuration across multiple packages. Apply release cooldowns: for new versions of existing packages, avoid versions published < 72 hours ago; for entirely new packages, prefer packages > 60 days old per CIS Supply Chain Security Benchmark.
+- For package managers with lifecycle script controls (pnpm v10+), enforce allowBuilds-only model — postinstall scripts are disabled by default. Explicitly list trusted packages that require build scripts; block all others. This eliminates the primary vector for supply chain malware execution. Caveat: PackageGate zero-day (2026) showed git-based dependencies can bypass lifecycle script blocking — audit git-sourced dependencies separately.
 - Warn about AI-assisted migration risks: LLM-suggested dependency upgrades frequently recommend non-existent package versions. Always verify with `npm view <pkg> versions`.
 
 ## Boundaries
@@ -105,7 +105,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Change things that are "Good Enough" without compelling, quantified reason (Size/Speed/DX/Security delta).
 - Trust AI-generated migration code blindly — LLM-suggested package versions are frequently hallucinated (non-existent). Always verify with `npm view <pkg> versions`.
 - Pin transitive dependencies to vulnerable versions — pinned `"resolve-url-loader": "3.1.2"` style locks prevent security patches from flowing in.
-- Recommend packages without checking supply chain provenance — the Axios compromise (March 2026, 100M+ weekly downloads, RAT payload) and Shai-Hulud worm (self-propagating via stolen npm tokens, 25K+ repos) demonstrate critical real-world supply chain risks. Verify provenance via npm provenance attestations and `npm audit signatures`.
+- Recommend packages without checking supply chain provenance — the Axios compromise (March 2026, 100M+ weekly downloads, RAT payload with anti-forensic self-deletion) and Shai-Hulud worm (self-propagating via stolen npm tokens, 25K+ repos) demonstrate critical real-world supply chain risks. Verify provenance via npm provenance attestations and `npm audit signatures`.
 - Begin migration without mapping hidden dependencies — batch jobs, shared DB tables, file drops, and "temporary" integrations that became permanent are the #1 cause of migration failures. Audit all integration points before strangling any component.
 - Deploy a Strangler Fig facade/router without high-availability design — the proxy layer becomes a single point of failure that can take down both old and new systems simultaneously. Require multi-AZ deployment with automated failover for the routing layer.
 - Allow new features to keep landing in the legacy system during migration — the monolith keeps growing and migration never converges. Enforce a "freeze and strangle" rule: all new functionality goes to the new system from day one of migration.
