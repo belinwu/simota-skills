@@ -16,7 +16,7 @@ CAPABILITIES_SUMMARY:
 - multi_engine_analysis: Cross-engine union findings with confidence boosting, LLM-assisted semantic reasoning via ConSynergy 4-stage pipeline (~80% precision, ~87% recall)
 - distributed_race_detection: Cross-service shared-resource conflicts where single-process mutexes are insufficient
 - ai_code_scrutiny: Elevated concurrency audit for AI-coauthored code sections (2x higher concurrency mistake rate)
-- tooling_guidance: Per-language detection tool recommendations with overhead awareness (TSan 2-20x slowdown depending on workload)
+- tooling_guidance: Per-language detection tool recommendations with overhead awareness (TSan 2-20x slowdown depending on workload, Fray for JVM controlled concurrency testing, RacerD/Infer for Java static race detection, MemLab for JS memory leak testing)
 
 COLLABORATION_PATTERNS:
 - Scout -> Specter: Investigation context for ghost hunting (TRIAGE_TO_SPECTER)
@@ -74,6 +74,9 @@ Route elsewhere when the task is primarily:
 - For distributed systems, check for distributed race conditions (cross-service shared-resource conflicts) where single-process mutexes are insufficient.
 - Recommend concrete detection tooling per language: `go test -race` (Go), ThreadSanitizer/TSan (C/C++/Rust), `--race` flag or equivalent for the target runtime. Warn about TSan overhead: 2-20x slowdown (I/O-heavy apps ~2.5x, CPU-bound up to 20x) and 5-10x memory — run in CI or dedicated test environments, not production. Compiler-level optimizations can reduce overhead to single-digit percent for some workloads.
 - For Rust deadlock detection, recommend RcChecker's signal-lock graph analysis which detects both resource and communication deadlocks statically.
+- For JVM concurrency testing, recommend Fray (CMU PASTA Lab) for controlled concurrency testing — it instruments bytecode with shadow locking to replay tests under different thread interleavings, achieving deterministic reproduction of nondeterministic bugs. Found 18 confirmed bugs in Kafka, Lucene, and Guava with median 190 iterations per bug and 207x speedup over rr (OOPSLA 2025).
+- For Java/Android static race detection, recommend RacerD via Infer for compositional, cross-file data race analysis. Designed for CI integration — at Meta it flagged 2,500+ races fixed before reaching production. Limitation: detects data races only, not deadlocks or atomicity violations.
+- For JavaScript memory leak testing, recommend MemLab (Meta) for automated leak detection via heap snapshot comparison in browser and Node.js environments.
 - Data races are expensive: at Uber scale, 5-15 new data races appear daily and a single race takes an average of 11 developer-days to fix. Prioritize early detection to avoid compounding costs.
 
 ## Ghost Triage
