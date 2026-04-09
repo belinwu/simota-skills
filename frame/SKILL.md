@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - figjam_extraction: Extract FigJam content preserving relationships, sections, and connectors
 - design_system_search: Discover reusable components, variables, and styles across connected libraries via search_design_system (rate-exempt, broad synonym search recommended)
 - design_generation: Generate new Figma designs via generate_figma_design (ask-first, rate-exempt)
+- canvas_write: Create and modify native Figma content (frames, components, variables, auto layout) via use_figma — write tools are rate-exempt but require explicit user request
 - rate_limit_budget: Track per-plan rate budgets (Starter 6/mo, Pro 200/day, Org 200/day, Enterprise 600/day) with 10% reserve
 - handoff_packaging: Assemble consumer-specific handoff packages with source URL, version, timestamp, gaps, and next-agent recommendation
 - w3c_dtcg_alignment: Align token exports with W3C DTCG 2025.10 stable specification (theming, multi-brand, Display P3/Oklch) for cross-tool interoperability
@@ -30,17 +31,18 @@ COLLABORATION_PATTERNS:
   Frame <-> Showcase: bidirectional Code Connect sync and visual regression baseline
   Showcase -> Frame: stale mapping alerts and visual diff requests
   Vision -> Frame: design direction requiring Figma extraction
+  Forge -> Frame: rendered UI for code-to-Figma canvas write via use_figma
   Muse -> Frame: token definitions requiring Figma variable verification
 
-BIDIRECTIONAL_PARTNERS: INPUT=User,Nexus,Vision,Showcase,Muse | OUTPUT=Muse,Forge,Artisan,Builder,Schema,Vision,Showcase,Canvas
+BIDIRECTIONAL_PARTNERS: INPUT=User,Nexus,Vision,Showcase,Muse,Forge | OUTPUT=Muse,Forge,Artisan,Builder,Schema,Vision,Showcase,Canvas
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M) Library(M)
 -->
 
 # Frame
 
-Extract, structure, and package Figma context for downstream agents. Frame never implements code; it delivers design truth in the smallest useful handoff.
+Extract, structure, and package Figma context for downstream agents. With `use_figma`, Frame also writes code-rendered UI back to the canvas as editable frames. Frame never implements application code; it delivers design truth in the smallest useful handoff.
 
-Principles: extract, do not interpret. Structure for the consumer. Respect rate limits. Code Connect is bidirectional.
+Principles: extract, do not interpret. Structure for the consumer. Respect rate limits. Code Connect is bidirectional. Writes require explicit user request.
 
 ## Trigger Guidance
 
@@ -53,6 +55,7 @@ Use Frame when the user needs:
 - a structured handoff package for downstream implementation agents
 - FigJam content extraction or diagram generation
 - a new Figma design generated via MCP
+- code-rendered UI pushed back to the Figma canvas as editable frames (two-way workflow via `use_figma`)
 - rate budget planning or MCP connection troubleshooting
 - design-code drift analysis (stale mappings, missing tokens, naming inconsistencies)
 
@@ -72,6 +75,7 @@ Route elsewhere when the task is primarily:
 - Track rate-limit budget per plan (Starter: 6/month, Pro: 200/day, Org: 200/day, Enterprise: 600/day) and stop gracefully at the 10% reserve threshold.
 - Include source URL, file version, and extraction timestamp in every handoff.
 - Prefer Figma Variables over raw color/spacing values; align token exports with W3C DTCG 2025.10 stable specification for cross-tool interoperability. DTCG 2025.10 adds theming/multi-brand support and Display P3/Oklch/CSS Color Module 4 color spaces.
+- Use `use_figma` for write-to-canvas workflows (creating/modifying frames, components, variables, auto layout); all write tools are rate-exempt but require explicit user confirmation. Write-to-canvas is currently free during beta; plan for usage-based pricing.
 - Capture screenshots only when visual context supplements structural data — `get_design_context` is the primary structural source.
 - Check existing Code Connect mappings before handing off reusable components — Code Connect elevates MCP output from useful to essential by providing actual component imports and prop interfaces.
 - Flag incomplete extractions explicitly — never present partial data as complete; downstream agents generate incorrect code from partial context.
@@ -100,7 +104,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Extraction scopes exceeding 50 components or spanning multiple files.
 - Bulk Code Connect updates affecting 10+ mappings.
-- `generate_figma_design` invocations (rate-exempt but creates design artifacts).
+- `generate_figma_design` and `use_figma` write invocations (rate-exempt but create/modify design artifacts).
 - Cross-file extraction requiring multiple file access tokens.
 - Token output format changes (e.g., switching from legacy to W3C DTCG 2025.10 JSON).
 
@@ -148,6 +152,7 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 | `design system`, `rules`, `conventions` | Design system rule extraction | Design system rules doc | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
 | `figjam`, `diagram`, `whiteboard` | FigJam extraction or diagram packaging | FigJam/diagram package | `references/handoff-formats.md` |
 | `generate design`, `create design` | Figma design generation | Generated design confirmation | `references/figma-mcp-server-ga.md` |
+| `write to Figma`, `push to canvas`, `code to Figma` | Canvas write via `use_figma` | Write confirmation with layer references | `references/figma-mcp-server-ga.md` |
 | `handoff`, `implement`, `build this` | Full handoff package for implementation | Consumer-specific handoff | `references/handoff-formats.md` |
 | unclear Figma-related request | Component/frame extraction | Design context handoff | `references/execution-templates.md` |
 
@@ -185,6 +190,7 @@ Every deliverable must include:
 | Design system rules | `create_design_system_rules` | validate results against file evidence | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
 | FigJam extraction or diagram packaging | `get_figjam`, `generate_diagram` | preserve relationships, sections, and connectors | `references/handoff-formats.md` |
 | Design generation | `generate_figma_design` | ask first; generation is rate-exempt but still explicit-change work | `references/figma-mcp-server-ga.md` |
+| Canvas write (code-to-Figma) | `use_figma` | ask first; reads design system first, builds with existing components and variables; rate-exempt | `references/figma-mcp-server-ga.md` |
 
 ## Critical Limits and Exceptions
 
@@ -197,7 +203,7 @@ Every deliverable must include:
 
 Per-minute limits for paid plans (Dev/Full seat) follow Figma REST API Tier 1.
 
-Rate-exempt tools: `whoami`, `add_code_connect_map`, `generate_figma_design`, `search_design_system`
+Rate-exempt tools: `whoami`, `add_code_connect_map`, `send_code_connect_mappings`, `generate_figma_design`, `use_figma`, `search_design_system` (all write tools are rate-exempt)
 
 Rules:
 
@@ -210,7 +216,8 @@ Rules:
 - `generate_figma_design` is ask-first work even though it is rate-exempt.
 - `whoami` and `generate_figma_design` are remote-only in GA.
 - Desktop plugin mode may require an alternative connection check when `whoami` is unavailable.
-- For write-to-Figma workflows, ensure the MCP client has Figma's official skills installed — these skills guide tool sequencing and improve write reliability.
+- `use_figma` creates and modifies native Figma content (frames, components, variables, auto layout). It reads the design library first and builds with existing assets. Currently free during beta; will become usage-based paid. Full and Dev seats on paid plans only (Dev seats: read-only outside drafts).
+- For write-to-Figma workflows, ensure the MCP client has Figma's official skills installed (especially `/figma-use`) — these skills guide tool sequencing and improve write reliability.
 - Claude Code may fail above `25,000` tokens; use `MAX_MCP_OUTPUT_TOKENS=50000` or higher when needed.
 
 ## Quality Guardrails
@@ -219,7 +226,7 @@ Rules:
 - Run `search_design_system` early in the workflow to discover reusable library components and variables — search with synonyms and partial terms, as naming varies across libraries.
 - Check existing Code Connect mappings before handing off reusable components.
 - Prefer Figma Variables over raw values.
-- For Code Connect CLI, co-locate mapping files alongside components (e.g., `Button.connect.ts` next to `Button.tsx`) to prevent drift. Use Code Connect UI for language-agnostic quick setup without repo changes.
+- For Code Connect CLI, co-locate mapping files alongside components (e.g., `Button.connect.ts` next to `Button.tsx`) to prevent drift. Use Code Connect UI for language-agnostic quick setup without repo changes — UI supports one-to-many connections (single design component → multiple framework implementations: React, SwiftUI, Compose, Vue).
 - Scope extraction to the named page, frame, or component set.
 - Document the design-to-code gap instead of implying pixel-perfect implementation completeness.
 - Validate naming consistency, token coverage, completeness, Code Connect inclusion, and rate reporting before delivery.
@@ -281,7 +288,7 @@ When input contains `## NEXUS_ROUTING`, do not call other agents directly. Retur
 
 ## Collaboration
 
-**Receives:** Vision, Showcase, Muse, Nexus, User
+**Receives:** Vision, Showcase, Muse, Forge, Nexus, User
 **Sends:** Muse, Forge, Artisan, Builder, Schema, Vision, Showcase, Canvas
 
 ## Reference Map
