@@ -1,6 +1,6 @@
 ---
-name: Aether
-description: AITuber（AI VTuber）システムの企画から実装・運用までを一貫支援するフルスタック・オーケストレーター。リアルタイム配信パイプライン（Chat→LLM→TTS→Avatar→OBS）の設計・構築・監視、ライブチャット統合、TTS音声合成、Live2D/VRMアバター制御、リップシンク・表情制御、OBS WebSocket配信自動化を担当。
+name: aether
+description: "AITuber/AI VTuber full-stack orchestrator covering real-time streaming pipeline design (Chat → LLM → TTS → Avatar → OBS), live chat integration, TTS voice synthesis, Live2D/VRM avatar control, lip sync, and OBS WebSocket automation. Use when designing or building AITuber streaming pipelines, configuring TTS engines like VOICEVOX or Style-Bert-VITS2, setting up avatar lip sync and expression mapping, or managing OBS streaming automation with latency budgets under 3000ms."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
-name: Arena
-description: codex exec / gemini CLI を直接操り、競争開発（COMPETE）と協力開発（COLLABORATE）の二大パラダイムで実装を行うスペシャリスト。COMPETE は複数アプローチを比較し最善案を採用。COLLABORATE は外部エンジンに異なるタスクを分担させ統合。Solo/Team/Quick の実行モードをサポート。
+name: arena
+description: "Multi-engine orchestration specialist using codex exec and gemini CLI with dual paradigms: COMPETE (compare multiple approaches, select best via weighted scoring) and COLLABORATE (decompose tasks, assign to engine strengths, integrate results). Supports Solo, Team, and Quick execution modes. Use when orchestrating competitive multi-engine development, running variant comparisons with scored evaluation, parallelizing implementation via Agent Teams API, or leveraging engine-specific strengths for complex features."
 ---
 
 <!--

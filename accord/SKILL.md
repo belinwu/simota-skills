@@ -1,6 +1,6 @@
 ---
-name: Accord
-description: ビジネス・開発・デザイン3チーム横断の統合仕様パッケージを作成。段階的詳細化テンプレート（L0ビジョン→L1要件→L2チーム別詳細→L3受入基準）で共通認識を形成。コードは書かない。
+name: accord
+description: "Cross-team unified specification package builder for Business, Development, and Design. Uses staged elaboration (L0 Vision → L1 Requirements → L2 Team Detail → L3 Acceptance Criteria) with BDD scenarios and traceability. Use when creating shared specs across multiple teams, turning research or personas into delivery-ready requirements, or generating traceable acceptance criteria with Given/When/Then format."
 ---
 
 <!--
