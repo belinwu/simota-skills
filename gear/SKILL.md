@@ -6,15 +6,15 @@ description: 依存関係管理、CI/CD最適化、Docker設定、運用オブ�
 <!--
 CAPABILITIES_SUMMARY:
 - dependency_management: npm/pnpm/yarn/bun audit, update, lockfile conflict resolution, version pinning, supply chain defense (postinstall blocking via allowBuilds, trustPolicy, blockExoticSubdeps, cooldown periods, provenance verification)
-- ci_cd_optimization: GitHub Actions workflows, composite actions, reusable workflows, caching (hash-based keys, fallback restore), matrix testing, concurrency groups, SHA-pinned actions, OIDC auth, DORA metrics alignment
+- ci_cd_optimization: GitHub Actions workflows, composite actions, reusable workflows, caching (hash-based keys, fallback restore), matrix testing, concurrency groups, SHA-pinned actions, OIDC auth, DORA metrics alignment, GHA egress firewall awareness, workflow dependency locking
 - container_configuration: Dockerfile multi-stage builds, BuildKit, docker-compose, digest pinning, distroless/Chainguard/DHI base images, non-root USER, no-new-privileges, read-only rootfs
 - linter_config: ESLint, Prettier, TypeScript config, git hooks (Husky/Lefthook), Commitlint
 - environment_management: .env templates, secrets management, OIDC authentication
-- observability_setup: Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions, declarative YAML config, log-trace correlation), health checks
+- observability_setup: Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions including GenAI/AI agent, declarative YAML config, log-trace correlation), health checks
 - monorepo_maintenance: pnpm workspaces, Turborepo pipeline optimization, shared package configs
 - multi_language_support: Node.js, Python (uv), Go, Rust dependency and CI patterns
 - build_troubleshooting: Common error diagnosis, cache debugging, Docker layer analysis
-- security_scanning: Gitleaks, Trivy, Docker Scout, Snyk Container, dependency audit, Renovate/Dependabot cooldown config, SBOM/provenance attestation, npm min-release-age / pnpm minimumReleaseAge
+- security_scanning: Gitleaks, Trivy, Docker Scout, Snyk Container, dependency audit, Renovate/Dependabot cooldown config, SBOM/provenance attestation (Docker Engine 25+ auto-provenance, EU CRA compliance), npm min-release-age / pnpm minimumReleaseAge
 
 COLLABORATION_PATTERNS:
 - Pattern A: Provision-to-Optimize (Scaffold -> Gear)
@@ -77,8 +77,8 @@ Route elsewhere when the task is primarily:
 - Diagnose before fixing — understand root cause first.
 - Prefer automation over manual processes.
 - **Supply chain defense**: Never allow untrusted postinstall scripts. pnpm v10 disables postinstall execution by default — use `pnpm.allowBuilds` to allowlist trusted packages (renamed from `onlyBuiltDependencies`). For npm, set `min-release-age` (days) to block newly published versions; for pnpm, use `minimumReleaseAge` (minutes). Enable `trustPolicy` (pnpm 10.21+) to detect when a package's publish-time trust level drops (e.g., previously signed via Trusted Publisher, now unsigned — early signal of account compromise). Set `blockExoticSubdeps: true` to prevent transitive deps from resolving via git repos or direct tarball URLs. Supply chain attacks targeting npm packages rose 38% YoY (Snyk 2026 State of Open Source Security). The Mar 2026 Axios attack (North Korea-nexus actor Sapphire Sleet, 70M+ weekly downloads) injected `plain-crypto-js` via postinstall to drop a cross-platform RAT.
-- **Container hardening**: Always use non-root USER, pin base images by digest (not tag), prefer distroless/Chainguard/Docker Hardened Images (DHI, open-sourced May 2025 — 1,000+ pre-hardened images and Helm charts). Drop all capabilities (`--cap-drop=ALL`) and add back only what's needed. Set `--security-opt=no-new-privileges` to prevent privilege escalation. Use read-only root filesystem (`--read-only`) where possible. Generate SBOM and provenance attestations tied to image digest for every production image. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
-- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Dependency caching reduces Node.js job times by 60–80%. Docker layer caching (`cache-from/cache-to: type=gha`) can turn a 5-min build into 30 seconds on cache hit. Use `concurrency` groups to cancel stale PR runs — reduces wasted CI minutes by 30–40% for active PRs. Pin all third-party actions to full commit SHA (not mutable tags) to prevent supply chain compromise. Use OIDC (`permissions: id-token: write`) instead of static cloud credentials.
+- **Container hardening**: Always use non-root USER, pin base images by digest (not tag), prefer distroless/Chainguard/Docker Hardened Images (DHI, open-sourced May 2025 — 1,000+ pre-hardened images and Helm charts). Drop all capabilities (`--cap-drop=ALL`) and add back only what's needed. Set `--security-opt=no-new-privileges` to prevent privilege escalation. Use read-only root filesystem (`--read-only`) where possible. Generate SBOM and provenance attestations tied to image digest for every production image — Docker Engine 25+ automatically generates provenance attestations (`mode=min`) on every `docker buildx build`; add `--sbom=true` for a full software bill of materials. **EU Cyber Resilience Act (CRA) mandates SBOM for all software sold in the EU market from September 2026** — treat SBOM generation as a compliance requirement, not optional. In 2025, container security incidents rose 47% YoY — 32% from vulnerable base images, 28% from running as root.
+- **CI performance targets**: Aim for cache hit rate ≥ 80%, CI build time ≤ 5 min for incremental builds. Dependency caching reduces Node.js job times by 60–80%. Docker layer caching (`cache-from/cache-to: type=gha`) can turn a 5-min build into 30 seconds on cache hit. Use `concurrency` groups to cancel stale PR runs — reduces wasted CI minutes by 30–40% for active PRs. Pin all third-party actions to full commit SHA (not mutable tags) to prevent supply chain compromise. Use OIDC (`permissions: id-token: write`) instead of static cloud credentials. **GHA 2026 security roadmap**: a native egress firewall for GitHub-hosted runners operates at Layer 7 outside the runner VM (immutable even with root access inside) — enables organizations to enforce allowlisted-only outbound traffic per workflow. A `dependencies:` section in workflow YAML (like Go's `go.sum`) will lock all direct and transitive action dependencies by SHA for deterministic reproducibility.
 - **DORA alignment**: Target change failure rate < 15% (elite: 0–2% per 2025 DORA benchmarks — only 8.5% of orgs achieve this), lead time in hours not days, MTTR < 1 hour (elite). Track Rework Rate (5th DORA metric, introduced 2025) — measures post-deployment fixes that indicate quality issues; elite threshold < 2%.
 
 ## Boundaries
@@ -110,7 +110,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use unpinned base image tags (e.g., `node:latest`) — pin by digest to prevent silent image replacement.
 - Allow arbitrary postinstall scripts — the Mar 2026 Axios attack (attributed to North Korea-nexus actor) used a postinstall hook in `plain-crypto-js` to deploy a cross-platform RAT affecting 70M+ weekly downloads.
 - Cache sensitive data (secrets, API keys) in CI — use cache scoping and never store credentials in actions/cache.
-- Ship container images without SBOM or provenance attestation — unsigned images cannot be verified downstream and break supply chain trust.
+- Ship container images without SBOM or provenance attestation — unsigned images cannot be verified downstream and break supply chain trust. EU CRA (September 2026) makes SBOM mandatory for EU-market software.
 - Reference third-party GitHub Actions by mutable tag (e.g., `@v4`) — pin to full commit SHA to prevent tag-hijacking supply chain attacks.
 
 ## Workflow
@@ -134,7 +134,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `Docker`, `container`, `BuildKit`, `compose` | Container configuration | Dockerfile/compose + scan results | `references/docker-patterns.md` |
 | `ESLint`, `Prettier`, `Husky`, `lint`, `format` | Linter config | Config files + hook setup | `references/troubleshooting.md` |
 | `env`, `secrets`, `OIDC`, `environment` | Environment management | Template + secrets config | `references/github-actions.md` |
-| `logging`, `metrics`, `health check`, `observability`, `OpenTelemetry` | Observability setup | OTel Collector config (batch processor, memory limiter, tail sampling) + semantic conventions + declarative YAML config + log-trace correlation | `references/observability.md` |
+| `logging`, `metrics`, `health check`, `observability`, `OpenTelemetry` | Observability setup | OTel Collector config (batch processor, memory limiter, tail sampling) + semantic conventions (including GenAI/AI agent conventions) + declarative YAML config + log-trace correlation | `references/observability.md` |
 | `monorepo`, `workspace`, `Turborepo` | Monorepo maintenance | Workspace config + pipeline | `references/monorepo-guide.md` |
 | `build error`, `cache`, `troubleshoot` | Build troubleshooting | Fix + root cause analysis | `references/troubleshooting.md` |
 | `supply chain`, `postinstall`, `provenance`, `cooldown` | Supply chain defense | pnpm onlyBuiltDependencies + Dependabot cooldown config + provenance verification | `references/dependency-management.md` |
