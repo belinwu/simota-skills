@@ -1,6 +1,6 @@
 ---
-name: Launch
-description: リリースの計画・実行・追跡を一元管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計を担当。安全で予測可能なデリバリーが必要な時に使用。
+name: launch
+description: Unified release planning, execution, and tracking. Covers versioning strategy, CHANGELOG generation, release notes, rollback plans, and feature flag design for safe, predictable delivery.
 ---
 
 <!--
@@ -62,7 +62,7 @@ Route elsewhere when the task is primarily:
 
 - Plan releases. Do not deploy code yourself.
 - Every release must be reversible before go-live. No deployment without a tested rollback path. Conduct rollback drills before major releases — an untested rollback plan is not a real plan.
-- Prefer explicit versioning, explicit communication, and small batches. Big Bang deployments are an anti-pattern — stagger through wave, one-box, or rolling deployments.
+- Prefer explicit versioning, explicit communication, and small batches. Big Bang deployments are an anti-pattern — stagger through wave, one-box, rolling, or cell-based deployments (AWS Well-Architected: cell-based architectures isolate blast radius by deploying to independent cells sequentially).
 - Keep CHANGELOG and release notes aligned with the shipped scope. Use Conventional Commits as the foundation for automated CHANGELOG generation.
 - Define measurable Go/No-Go criteria before release — not vague "ensure good performance" but specific thresholds (e.g., "load test at ≥ 2× expected peak traffic with < 5% error rate").
 - Progressive delivery over abrupt feature releases: ring-based rollout (Internal → Canary 1-5% → Beta 10-25% → GA 100%) with stability checks at each ring.
@@ -118,7 +118,7 @@ Route elsewhere when the task is primarily:
 |------|------|
 | Versioning | Use SemVer by default: breaking → `MAJOR`, backwards-compatible feature → `MINOR`, fix/security → `PATCH`. Recommend `CalVer` or automated numbering when CD makes strict SemVer low-signal. Enforce via Conventional Commits + commitlint/Husky. |
 | Stability window | If `0.x.y` lasts more than `6 months`, recommend `1.0.0`. If `alpha` or `beta` lasts more than `1 month`, recommend stabilize or cancel. Keep `rc` windows under `2 weeks`. |
-| Go/No-Go | Use a scored checklist (each criterion 1.0 = met, 0.5 = partial, 0 = unmet; threshold ≥ 80%). Required criteria: tests green, security scan clean (`Sentinel`), staging verification, rollback plan tested, CHANGELOG generated, load test at ≥ 2× expected peak with < 5% error rate, SLO baselines captured (`Beacon`), and stakeholder approval when needed. Code coverage above `80%` unless the project has a stronger local standard. Track DORA metrics as release health indicators: target Change Failure Rate < 15%, Failed Deployment Recovery Time (FDRT) < 1 hour, and Rework Rate (unplanned fix deployments / total deployments) < 15%. When a release includes significant AI-generated code, add explicit verification gates — DORA 2025 research shows AI adoption improves throughput but increases delivery instability. |
+| Go/No-Go | Use a scored checklist (each criterion 1.0 = met, 0.5 = partial, 0 = unmet; threshold ≥ 80%). Required criteria: tests green, security scan clean (`Sentinel`), staging verification, rollback plan tested, CHANGELOG generated, load test at ≥ 2× expected peak with < 5% error rate, SLO baselines captured (`Beacon`), and stakeholder approval when needed. Code coverage above `80%` unless the project has a stronger local standard. Track DORA metrics as release health indicators: target Change Failure Rate < 15% (elite benchmark per DORA 2025: 0-2%, achieved by ~8.5% of teams), Failed Deployment Recovery Time (FDRT) < 1 hour, and Rework Rate (unplanned fix deployments / total deployments) < 15%. When a release includes significant AI-generated code, add explicit verification gates — DORA 2025 research shows AI adoption improves throughput but increases delivery instability. |
 | Rollback | Define automated rollback triggers before deploy — manual undoing is an anti-pattern. Baseline trigger: `error_rate > 5% for 5 min` OR `P99 latency > baseline + 50% for 5 min`. Preferred methods: flag disable `< 1 min`, deployment rollback `2-5 min`, DB rollback `5-15 min`, data restore `15-60 min`. Always include DB rollback scripts or forward-compatible migration patterns. For Kubernetes, use Argo Rollouts or Flagger for automated progressive delivery with metric-driven rollback. Conduct rollback drills quarterly or before major releases. |
 | Feature flags | Ring-based rollout: Internal team (5-20 people, 24-48h) → Canary `1-5%` (error rate < 0.1%) → Beta `10-25%` (user feedback) → GA `100%` (7-day stability). Minimum canary duration `24 hours`. Nesting depth `1`. Approval if active flags exceed `50`. Stale release flag cleanup after `60 days`. Define success metrics before enabling each flag. Use sticky sessions during progressive delivery so users consistently see either the stable or canary version — session switching causes confusing UX and corrupts canary metrics. For AI-driven canary analysis, tools like Argo Rollouts and Harness can dynamically adjust rollout pace based on real-time error/latency signals. |
 | Release timing | Prefer Tuesday to Thursday. Avoid Friday or low-staff windows unless approved. Run postmortem within `48 hours` after a significant release failure and define a forward-fix plan within `24 hours` after rollback. |
