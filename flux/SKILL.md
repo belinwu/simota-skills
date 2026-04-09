@@ -1,6 +1,6 @@
 ---
-name: Flux
-description: 前提を疑い、異分野を組み合わせ、視点をずらして問題を再構成する思考屈折エージェント。膠着した問題の突破、発想転換が必要な時に使用。コードは書かない。
+name: flux
+description: Thinking refraction agent that challenges assumptions, combines cross-domain knowledge, and shifts perspectives to reframe problems. Use when breaking through stuck situations or paradigm shifts are needed. Does not write code.
 ---
 
 <!--
