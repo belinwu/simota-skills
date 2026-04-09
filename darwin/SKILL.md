@@ -12,7 +12,9 @@ CAPABILITIES_SUMMARY:
 - Dynamic affinity override based on lifecycle phase
 - Discovery propagation between related agents
 - Staleness detection and sunset candidate identification
-- Lifecycle drift cascade detection across dependent agent chains
+- Lifecycle drift cascade detection across dependent agent chains (model drift = ~40% of production failures)
+- Sequential reasoning misassignment detection (39–70% penalty)
+- Orchestration anti-pattern detection (leaky pipeline, unbalanced fan-out, criteria-less synthesis)
 - Evolution trigger evaluation (8 trigger types)
 
 COLLABORATION_PATTERNS:
@@ -66,7 +68,9 @@ Route elsewhere when the task is primarily:
 - Propose evolution actions with expected impact and rollback posture. Prefer small mutations — compound probability applies (85% accuracy per step → 5 steps = 44% success).
 - Flag sunset candidates with evidence-based RS scores. Sunset verification requires graceful deprecation: replay historical traffic against dependents, confirm no ecosystem component still relies on the candidate via logs and dependency checks, before finalizing.
 - Detect coordination overhead: coordination cost scales O(N²) with agent count, and gains plateau beyond ~4 agents per task — above this threshold, coordination tax dominates (accounting for ~37% of MAS failures). Flag when agent count growth outpaces task complexity growth.
-- Detect lifecycle drift cascade: when underlying models, prompts, or dependencies shift, unmanaged drift propagates through dependent agent chains. Flag agents whose dependency signatures have changed since last assessment.
+- Detect sequential reasoning misassignment: tasks requiring strict sequential reasoning degrade 39–70% when distributed across multiple agents, because communication overhead fragments the cognitive budget needed for chain-of-thought. Flag multi-agent delegation of inherently sequential tasks (complex debugging, multi-step proofs, stateful migrations).
+- Detect lifecycle drift cascade: when underlying models, prompts, or dependencies shift, unmanaged drift propagates through dependent agent chains. Model drift alone accounts for ~40% of production agent failures. Flag agents whose dependency signatures have changed since last assessment.
+- Detect orchestration anti-patterns: flag leaky pipelines (stages passing all accumulated context instead of scoped output, causing context window bloat), unbalanced fan-out (parallel agents with >6× latency spread, where slowest agent negates parallelism gains), and synthesis without criteria (aggregation steps lacking explicit merge rules, producing bloated or arbitrary output).
 - Respect existing agent boundaries — propose improvements, never redesign directly.
 
 ## Boundaries
@@ -104,7 +108,7 @@ Agent role boundaries → `_common/BOUNDARIES.md` (Meta-Orchestration section)
 | `SENSE` | Collect signals from git, files, activity logs, journals, existing scores. Detect agent sprawl (agent count growing without proportional task complexity increase) and coordination overhead symptoms (duplicate processing, handoff failures). | Confidence ≥0.60 for single phase; below → report as mixed | `references/signal-collection.md` |
 | `ASSESS` | Calculate EFS across 5 dimensions; evaluate RS per agent; calculate OSC | Grade: S(95+) A(85+) B(70+) C(55+) D(40+) F(<40) | `references/assessment-models.md`, `references/official-fitness-criteria.md` |
 | `EVOLVE` | Execute actions on triggers (8 trigger types) | Propose, never force; small mutations over big rewrites | `references/evolution-actions.md` |
-| `VERIFY` | Confirm EFS does not decrease; RS changes correlate with usage | If EFS drops >5 points within 7 days → flag for review | `references/verification-metrics.md` |
+| `VERIFY` | Confirm EFS does not decrease; RS changes correlate with usage | If EFS drops >5 points within 7 days → flag for review. Coordination quality plateaus at ~7 evolution iterations and degrades sharply at 10+ — cap remediation cycles accordingly | `references/verification-metrics.md` |
 | `PERSIST` | Write lifecycle phase, EFS, RS table, discoveries, evolution history to `.agents/ECOSYSTEM.md` | Always persist after every check | `references/subsystems.md` |
 
 ## Output Routing
