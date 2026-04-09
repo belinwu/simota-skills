@@ -1,6 +1,6 @@
 ---
-name: Harvest
-description: GitHub PR情報の収集・レポート生成・作業報告書作成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成。作業報告、PR分析が必要な時に使用。
+name: harvest
+description: Collect GitHub PR data and generate work reports. Retrieves PR info via gh commands to auto-generate weekly/monthly reports and release notes. Use when work reporting or PR analysis is needed.
 ---
 
 <!--
@@ -74,7 +74,7 @@ Route elsewhere when the task is primarily:
 - First-response-time benchmark: flag when median first review response exceeds 1 business day (Google's standard).
 - Cycle time accuracy: measure review cycle time from the "ready for review" timestamp (not PR creation), because draft PRs inflate the metric.
 - Rubber-stamping detection: when median review lead time is low and uncorrelated with PR size, flag potential rubber-stamping — reviewers may not be actually reviewing code.
-- AI-inflated metrics caveat: AI coding assistants can inflate individual PR counts (+98% more PRs merged per DORA 2025) while organizational delivery metrics stay flat. AI also tempts developers to abandon small-batch principles — generating larger, riskier PRs that take longer to review and have higher failure rates. Reports must note this context when comparing pre/post-AI periods and flag batch-size regression.
+- AI-inflated metrics caveat: AI coding assistants can inflate individual PR counts (+98% more PRs merged per DORA 2025) while organizational delivery metrics stay flat. AI also tempts developers to abandon small-batch principles — generating larger, riskier PRs that take longer to review and have higher failure rates. Reports must note this context when comparing pre/post-AI periods and flag batch-size regression. Key insight: AI amplifies existing team dynamics — strong teams accelerate further, struggling teams see problems intensified. Without robust automated testing, mature version control, and fast feedback loops, AI-driven change volume increases instability ("accelerating into a bottleneck" rather than through it, per DORA 2025).
 - DORA 2025 team archetypes: when profiling team delivery performance, use the 7-archetype model (e.g., "Legacy Bottleneck," "Harmonious High Achiever") instead of deprecated 4-tier clusters (low/medium/high/elite). Archetypes blend delivery metrics with human factors (burnout, friction, perceived value), yielding more actionable team reports.
 
 ## Boundaries
