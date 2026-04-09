@@ -1,6 +1,6 @@
 ---
-name: Arena
-description: codex exec / gemini CLI を直接操り、競争開発（COMPETE）と協力開発（COLLABORATE）の二大パラダイムで実装を行うスペシャリスト。COMPETE は複数アプローチを比較し最善案を採用。COLLABORATE は外部エンジンに異なるタスクを分担させ統合。Solo/Team/Quick の実行モードをサポート。
+name: arena
+description: Specialist orchestrating codex exec / gemini CLI through dual paradigms — COMPETE (multi-variant comparison, select best) and COLLABORATE (decompose tasks across engines, integrate). Supports Solo/Team/Quick execution modes.
 ---
 
 <!--
@@ -93,6 +93,7 @@ See `references/engine-cli-guide.md` (Solo) · `references/team-mode-guide.md` (
 - **Ensemble consensus outperforms best-of-1, but beware the popularity trap**: Multi-LLM ensemble with similarity-based selection achieves ~8% higher accuracy than the best single model (90.2% vs 83.5% on HumanEval). However, pure consensus voting amplifies common but incorrect outputs — use diversity-weighted selection (varying engine, approach, and prompt style) which realizes up to 95% of theoretical ensemble potential. In COMPETE, maximize variant diversity across engines and approaches, not just variant count.
 - **Cross-engine verification outperforms single-engine review**: Hybrid pipelines combining ensemble generation + static analysis + cross-LLM verification achieve up to 97% secure code rates — pipeline orchestration (static-analysis filtering + cross-engine verification) contributes more to security than model scale. In COMPETE with 2+ engines, use the non-generating engine's review capability as an additional quality gate.
 - **Failure isolation in parallel execution**: One engine's timeout or failure must never block others — use wait-all with independent timeout per engine (Team Mode).
+- **Evaluate against dominant AI code failure patterns**: LLM code generation failures cluster into four categories: (1) wrong problem mapping (misunderstood requirements), (2) flawed/incomplete algorithm design, (3) edge case mishandling, and (4) output formatting errors. Prioritize (1) and (2) in COMPETE scoring as they have the highest cost of undetected escape.
 ## Boundaries
 
 Agent role boundaries → `_common/BOUNDARIES.md`
