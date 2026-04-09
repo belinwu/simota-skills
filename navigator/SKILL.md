@@ -90,7 +90,7 @@ Route elsewhere when the task is primarily:
 - Respect rate limits: insert jittered delays (base + random 20-50%) between requests; pure exponential backoff is detectable by sophisticated anti-bot systems.
 - Check for public API availability before resorting to scraping — API access is always more reliable and maintainable.
 - Respect robots.txt and machine-readable opt-out signals — EU AI Act (full enforcement August 2026) requires respecting content owner signals for AI data usage.
-- Choose MCP vs CLI by agent capability: use Playwright CLI (4x fewer tokens — ~27K vs ~114K per session) when the agent has filesystem access (Claude Code, Copilot, Cursor); use MCP when the agent lacks filesystem access or needs iterative reasoning with persistent browser state.
+- Choose MCP vs CLI by agent capability: use Playwright CLI (4–10x fewer tokens — ~27K vs ~114K per session, scaling with step count) when the agent has filesystem access (Claude Code, Copilot, Cursor); for multi-step tasks (>10 sequential interactions), strongly prefer CLI — token accumulation compounds per step causing progressive slowdown; use MCP when the agent lacks filesystem access or needs iterative reasoning with persistent browser state.
 
 ---
 
@@ -135,7 +135,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Collect PII without authorization — GDPR Art. 83 fines up to €20M or 4% of global turnover.
 - Store secrets in plain text.
 - Ignore rate limiting — aggressive scraping triggers IP bans, legal notices, and service degradation for other users.
-- Ignore robots.txt or machine-readable opt-out signals — EU AI Act (full enforcement August 2026) mandates compliance; violations risk regulatory penalties.
+- Ignore robots.txt or machine-readable opt-out signals — EU AI Act (full enforcement August 2026) mandates compliance; GPAI-related violations face penalties up to €15M or 3% of global revenue (Art. 101).
 - Navigate outside authorized domains.
 - Use deeply chained CSS selectors (e.g., `div > div > span.class`) — these break instantly when component libraries add wrapper nodes for spacing or accessibility.
 - Use fixed-interval delays for repeated requests — deterministic patterns are fingerprinted by Cloudflare, Akamai, and AWS Shield anti-bot systems via TLS fingerprinting, behavioral analysis, and bot reputation scoring.
@@ -200,7 +200,7 @@ Playwright MCP operates on **structured accessibility snapshots** (not pixel-bas
 
 **Shadow DOM limitation:** Modern design systems (Shoelace, Lit, corporate component libraries) nest elements inside shadow roots invisible to accessibility snapshots. When clicks hit "nothing", switch to vision mode or use `playwright_evaluate` to pierce shadow roots.
 
-**MCP vs CLI decision:** Playwright MCP consumes ~4x more tokens per session than Playwright CLI (~114K vs ~27K tokens for equivalent tasks). Microsoft recommends CLI for coding agents with filesystem access (Claude Code, Copilot, Cursor) — CLI saves accessibility snapshots and screenshots to disk as files instead of streaming into the LLM context. MCP is preferred when the agent lacks filesystem access, or needs iterative reasoning with persistent browser state and rich introspection.
+**MCP vs CLI decision:** Playwright MCP consumes ~4–10x more tokens per session than Playwright CLI (~114K vs ~27K tokens for equivalent tasks, scaling with interaction count). Microsoft recommends CLI for coding agents with filesystem access (Claude Code, Copilot, Cursor) — CLI saves accessibility snapshots and screenshots to disk as files instead of streaming into the LLM context. For multi-step tasks (>10 sequential interactions), strongly prefer CLI — token accumulation compounds with each step, causing progressive slowdown via quadratic attention cost. MCP is preferred when the agent lacks filesystem access, or needs iterative reasoning with persistent browser state and rich introspection.
 
 **Session lifecycle:** Sessions are either running or gone (no intermediate "stopped" state). Browser profiles are ephemeral by default (in-memory, no leftover state). Use `--persistent` or `--profile=<path>` when cookies or auth state must survive between sessions.
 
