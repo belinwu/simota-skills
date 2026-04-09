@@ -13,7 +13,8 @@ CAPABILITIES_SUMMARY:
 - cross_level_consistency: Verify consistency across C4 levels (L1-L4) and detect discrepancies
 - supplementary_diagrams: Design System Landscape, Dynamic, and Deployment supplementary diagrams
 - model_evolution: Incrementally update C4 models as systems change with diff tracking
-- dsl_scaling: Apply hierarchical identifiers and groups for large/multi-team models
+- dsl_scaling: Apply hierarchical identifiers, groups, and archetypes for large/multi-team models
+- adr_docs_embedding: Integrate ADRs and documentation into Structurizr workspaces via !adrs/!docs
 
 COLLABORATION_PATTERNS:
 - User -> Stratum: C4 model creation and review requests
@@ -77,6 +78,8 @@ Route elsewhere when:
 - For multi-team or enterprise contexts, use `workspace extends` to compose a shared base workspace — each team maintains its own workspace and a parent workspace aggregates them into a System Landscape view. [Source: docs.structurizr.com/dsl/cookbook/workspace-extension]
 - Use `!identifiers hierarchical` for models with multiple software systems or containers that share similar element names (e.g., each system has an "api" container) — enables dot-notation references like `system1.api` and prevents identifier clashing. Default flat identifiers require globally unique names. [Source: docs.structurizr.com/dsl/identifiers]
 - Use the `group` keyword to visually cluster related elements within the same abstraction level (e.g., grouping containers by bounded context); groups can be nested via `structurizr.groupSeparator`. Groups are for visual organization only — they do not create new C4 abstraction levels. [Source: docs.structurizr.com/dsl/cookbook/groups]
+- Use `archetypes` to define reusable custom types (e.g., `application = container`, `datastore = container`) with preset defaults for technology, tags, and properties — reduces duplication, enforces consistency, and lets teams build domain-specific vocabulary on top of C4 abstractions. Archetypes can extend other archetypes. [Source: docs.structurizr.com/dsl/archetypes]
+- Use `!adrs` to embed Architecture Decision Records (supports adrtools, MADR, log4brains importers) and `!docs` to attach Markdown/AsciiDoc documentation directly in the workspace — keeps diagrams, decisions, and prose in a single navigable artifact. [Source: docs.structurizr.com/dsl/adrs]
 
 ## Boundaries
 
@@ -193,11 +196,13 @@ Validate model consistency and quality.
 - [ ] External System boundaries are clear
 - [ ] Each element has a description (responsibility statement)
 
-**Notation check (per C4 official Notation rules):**
-- [ ] Each diagram has a title
-- [ ] A key/legend is included
-- [ ] Element types (Person/System/Container/Component) are stated
-- [ ] Relationship lines are unidirectional with specific labels
+**Notation check (per C4 official diagram review checklist — c4model.com/diagrams/checklist):**
+- [ ] Each diagram has a title, identifiable type, and clear scope
+- [ ] A key/legend is included explaining shapes, colours, border styles, and line styles
+- [ ] Element types (Person/System/Container/Component) are stated with name, description, and technology
+- [ ] All acronyms and abbreviations are understandable without external context
+- [ ] Every relationship line has a label describing intent, matching the arrow direction
+- [ ] Relationship technology choices (protocols) are specified where applicable
 
 #### 4. EXPORT
 
@@ -238,6 +243,7 @@ Every deliverable must include:
 - Protocol/technology labels for every relationship.
 - Title, key/legend, and element type labels in every diagram view.
 - Modeling decisions and rationale for boundary choices.
+- `!adrs` / `!docs` integration guidance when the project maintains ADRs or architecture documentation.
 - Recommended next agent for handoff (Canvas for rendering, Scribe for documentation).
 
 ## Structurizr DSL Template
@@ -246,6 +252,18 @@ Every deliverable must include:
 workspace "[System Name]" "[Description]" {
 
     !identifiers hierarchical  // Use for multi-system models; enables dot-notation (e.g., system.api)
+    !adrs adrs                 // Embed ADRs from ./adrs directory (adrtools/MADR/log4brains)
+    !docs docs                 // Attach Markdown/AsciiDoc documentation from ./docs
+
+    // Define reusable custom types to reduce duplication and enforce consistency
+    archetypes {
+        application = container {
+            technology "Java 21"
+        }
+        datastore = container {
+            tags "Database"
+        }
+    }
 
     model {
         // Persons
