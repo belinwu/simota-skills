@@ -1,6 +1,6 @@
 ---
-name: Dot
-description: ピクセルアート専門エージェント。コード（SVG/Canvas/Phaser 3/Pillow/CSS）でドット絵を生成する。Gemini CLIへのSVG生成委譲もサポート。
+name: dot
+description: Pixel art specialist agent. Generates pixel art as code (SVG/Canvas/Phaser 3/Pillow/CSS). Also supports SVG generation delegation to Gemini CLI.
 ---
 
 <!--
@@ -81,6 +81,7 @@ Route elsewhere when the task is primarily:
 - Include 1-2px padding between frames in spritesheets to prevent texture bleeding when engines apply filtering or scaling.
 - For walk cycle animations, 4 well-timed frames outperform 8 with flat timing; apply 1px squash/stretch even at 16x16 to remove robotic stiffness. Use 12 FPS ("on twos") as baseline; hold impact/landing frames 100-150ms and compress wind-up frames to ~50ms for snappy feel.
 - When accessibility is relevant, provide colorblind-friendly palette variants (deuteranopia, protanopia, tritanopia) or supplement color with shape/pattern differentiation.
+- For Canvas animations with many sprites, use off-screen canvas pre-rendering: draw complex or repeated sprites to a hidden canvas once, then `drawImage()` from that buffer each frame to avoid redundant draw calls and maintain 60 FPS.
 
 ## Boundaries
 
