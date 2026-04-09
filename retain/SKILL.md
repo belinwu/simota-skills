@@ -55,8 +55,9 @@ Route elsewhere when the task is primarily:
 - Prefer early, evidence-based intervention over last-minute win-back tactics. Customers who don't achieve meaningful value in 30 days rarely survive 90 days.
 - Balance short-term engagement with long-term trust and product usefulness.
 - Keep cancellation transparent. Retain never recommends dark patterns — dark-pattern-heavy flows cause 28% reduction in user trust and 54% decrease in usability scores (ACM EACE 2024). Companies adopting anti-dark-pattern designs (prominent cancel, clear pricing, no hidden fees) see CLV increase 40-60% and word-of-mouth referrals triple despite 15-30% initial conversion drop.
-- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits. Prerequisites: organization-wide agreed churn definition, clean integrated data (product usage + behavior + feedback + attributes), and temporal trend features — not just point-in-time snapshots.
-- Apply segment-appropriate NRR targets: Enterprise ≥118%, Mid-Market ≥108%, SMB ≥97% (median benchmarks). Best-in-class NRR >130%. Companies with >$100M ARR: median NRR 115%, GRR 94%.
+- Use behavioral evidence, segment differences, and lifecycle stage before proposing an intervention. Prefer AI/ML-powered predictive health scores (ensemble models achieve 91-95% accuracy) over static rule-based scoring when data volume permits. Prerequisites: organization-wide agreed churn definition, clean integrated data (product usage + behavior + feedback + attributes), and temporal trend features — not just point-in-time snapshots. For imbalanced churn datasets, evaluate models on precision and recall (not just accuracy/AUC) — accuracy misleads when churners are <5% of the population.
+- Guard against concept drift in churn models: the relationship between features and churn changes as the product evolves (e.g., a feature adoption metric loses predictive power after a UX redesign). Retrain monthly or quarterly depending on behavioral volatility; monitor prediction-to-outcome alignment continuously.
+- Apply segment-appropriate NRR targets: Enterprise ≥118%, Mid-Market ≥108%, SMB ≥97% (median benchmarks). Overall SaaS median NRR 106%; best-in-class NRR >130%. Companies with >$100M ARR: median NRR 115%, GRR 94%.
 - Target GRR ≥90% (median B2B SaaS); best-in-class >95%. Bootstrapped SaaS ($3-20M ARR): median GRR 92%, 90th percentile 98%.
 - Involuntary churn represents 20-40% of total churn and averages 0.8% monthly — fixing dunning can lift revenue by 8.6% in year one. Always address involuntary churn before voluntary churn tactics.
 
@@ -89,8 +90,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Spam notifications or exceed segment-appropriate communication cadence
 - Optimize vanity engagement over user value
 - Ignore churn signals because topline usage still looks healthy
-- Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking March 2026.
+- Design cancellation flows with >3 steps or requiring phone/chat to complete — FTC click-to-cancel rule was vacated (8th Circuit, July 2025) but enforcement continues under ROSCA, FTC Act §5, and state auto-renewal laws (CA, NY, CO, DC). FTC restarted rulemaking March 2026. In the EU, Directive (EU) 2023/2673 mandates a withdrawal button on the UI effective June 19, 2026; the Digital Fairness Act (DFA, expected Q3 2026) will further tighten subscription cancellation rules.
 - Deploy churn prediction models without an agreed churn definition or with data leakage (training on future-derived features) — ambiguous definitions cause cross-team misalignment and 15-20% accuracy degradation; data leakage inflates training metrics while making production predictions unreliable.
+- Optimize churn model AUC/accuracy without validating business impact — a model that scores well on holdout data but doesn't lead to measurable retention improvement is a metric-first anti-pattern. Always close the loop: prediction → intervention → measured outcome.
 
 ## Workflow
 
@@ -126,7 +128,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | NRR (by ARR) | `>$100M: 115%` / `$1-10M: 98%` | Size-adjusted median | Bootstrapped $3-20M median 104% |
 | GRR | `≥90%` (median) / `≥95%` (best-in-class) | Revenue retention floor | Below 85% is critical |
 | Involuntary churn | `>1%` monthly (20-40% of total) | Payment failure ceiling | Prioritize dunning optimization — fixing can lift revenue 8.6% Y1 |
-| Predictive model | AUC `≥0.85` / accuracy `≥90%` | ML churn model quality floor | Below threshold: retrain or add features; use SHAP for explainability |
+| Predictive model | AUC `≥0.85` / precision+recall `≥80%` | ML churn model quality floor | Below threshold: retrain or add features; use SHAP for explainability |
+| Concept drift | Prediction-outcome gap `>10%` over 30d | Model staleness signal | Trigger retraining; review feature relevance against recent product changes |
 
 ## Routing
 
@@ -166,7 +169,7 @@ Every deliverable must include:
 2. **Evidence basis**: Triggering signal, behavioral data, or health score that justifies the intervention
 3. **Intervention design**: Specific tactic with timing, channel, and personalization parameters
 4. **Success metrics**: Primary KPI (NRR, GRR, or retention rate), measurement window, and statistical significance threshold
-5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (ROSCA, FTC Act §5, state auto-renewal laws)
+5. **Risk assessment**: Consent concerns, dark pattern audit (ensure <3 steps to cancel), messaging fatigue risk, and regulatory compliance (US: ROSCA, FTC Act §5, state auto-renewal laws; EU: Directive (EU) 2023/2673 withdrawal button, upcoming DFA)
 6. **Next step**: Experiment design (→ Experiment), implementation spec (→ Builder), or monitoring plan (→ Pulse)
 
 Use the template that matches the task focus:
