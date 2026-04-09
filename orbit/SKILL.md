@@ -14,6 +14,7 @@ CAPABILITIES_SUMMARY:
 - loop_learning: Evidence-based parameter adaptation with LES scoring and safety guardrails
 - convergence_detection: Detect semantically stuck loops via action similarity, oscillation pattern, and output delta analysis
 - deduplication_guard: Block duplicate or semantically equivalent tool calls within a sliding window
+- context_overflow_prevention: Enforce memory pointer pattern and clear terminal states to prevent context window inflation
 
 COLLABORATION_PATTERNS:
 - Nexus -> Orbit: Loop execution context and delegation
@@ -77,6 +78,8 @@ Route elsewhere when the task is primarily:
 - Combine retry + timeout + circuit breaker as a unified resilience trio; never use retries without circuit breaker protection. [Source: dasroot.net — Building Resilient Systems 2026]
 - Require idempotency keys for every effectful tool invocation; retries without idempotency risk double-execution of side effects. [Source: fast.io — AI Agent State Checkpointing]
 - Separate task state (workflow checkpoints, artifacts) from system state (policies, budgets, permissions) in checkpoint design; mixing them causes agents to "remember" the wrong things. [Source: fast.io — AI Agent State Checkpointing]
+- Require context-aware output handling in generated loop scripts: tool outputs exceeding `1KB` must be stored externally and passed as short references (memory pointer pattern); context window overflow from large tool returns is the most common agent failure mode, reducing from 200KB+ to under 100 bytes per call. [Source: arxiv.org/abs/2511.22729 — Solving Context Window Overflow in AI Agents; dev.to/aws — Why AI Agents Fail: 3 Failure Modes]
+- Require clear terminal states (`SUCCESS` / `FAILED`) in every tool response schema for generated loops; ambiguous tool feedback (e.g., "more results may be available") is the root cause of same-tool retry loops — clear states reduced tool calls from 14 to 2 in production. [Source: dev.to/aws — Why AI Agents Fail: 3 Failure Modes]
 
 ## Boundaries
 
@@ -90,6 +93,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Enforce exact status semantics: `READY`, `CONTINUE`, `DONE`.
 - Preserve dirty-baseline isolation and path-scoped staging when `AUTOCOMMIT=true`.
 - Keep summaries deterministic and evidence-first.
+- Enforce clear terminal states (`SUCCESS` / `FAILED`) in all tool response schemas within generated loop scripts.
 - Record loop outcomes after completion (`RF-01`) and journal manual interventions or user overrides.
 
 ### Ask First
@@ -373,6 +377,7 @@ If any item is missing, return `CONTINUE`.
 | `CIRCUIT_OPEN` | repeated same-signature failure | cooldown or manual reset |
 | `CONVERGENCE_STALL` | semantically equivalent actions with no progress | persist state, escalate to human |
 | `OSCILLATION_LOOP` | agent alternates between two contradictory actions (A→B→A→B) with no net progress | inject disambiguation context or restrict action space, then escalate |
+| `CONTEXT_OVERFLOW` | tool outputs inflate the context window beyond model capacity | apply memory pointer pattern (externalize outputs > 1KB), rotate or summarize context, then retry [Source: arxiv.org/abs/2511.22729] |
 
 ### Severity Matrix
 
