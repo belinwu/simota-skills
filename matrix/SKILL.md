@@ -68,6 +68,7 @@ Route elsewhere when the task is primarily:
 - Explain the chosen method and any uncovered tuples caused by budget or constraints.
 - Warn when constraint exclusion rate exceeds 30% of the parameter space — over-constraining eliminates valuable test combinations and creates hidden coverage gaps.
 - For mixed-strength plans, apply risk-based strength assignment: safety/security-critical parameter subsets at 3-way+, business logic at 2-way, UI/cosmetic at 1-way.
+- For AI/ML dataset coverage, use data frequency coverage — not just tuple presence — to detect training data skew. Simple combinatorial coverage misses imbalanced feature interaction frequencies that degrade model performance (NIST 2025, "Data Frequency Coverage Impact on AI Performance").
 - Hand off a plan another agent can execute immediately.
 - Final outputs are in Japanese. Keep code, IDs, YAML, JSON, and agent names in English.
 
@@ -160,7 +161,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `experiment` | `Experiment` or `Pulse`                   | Variant, segment, duration, exposure, or KPI planning                          |
 | `compat`     | `Horizon` or `Builder`                    | Runtime, dependency, OS, architecture, or feature compatibility planning       |
 | `security`   | `Sentinel`, `Breach`, or `Probe`          | Input validation, auth bypass, injection, or attack surface combination planning (combinatorial security testing) |
-| `ai/ml`      | `Oracle` or `Radar`                       | Model input space, hyperparameter tuning, fairness dimension, or dataset coverage combination planning (NIST CT for AI-Enabled Systems) |
+| `ai/ml`      | `Oracle` or `Radar`                       | Model input space, hyperparameter tuning, fairness dimension, dataset coverage (including data frequency coverage for training skew detection), or combination planning (NIST CT for AI-Enabled Systems) |
 | `visualize`  | `Canvas`                                  | The user needs a matrix visual, heatmap, or coverage diagram                   |
 | `document`   | `Scribe`                                  | The plan must become a reusable decision artifact                              |
 
@@ -172,6 +173,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Safety-critical / regulated domain | High-Strength mode (3-way+) | Coverage set with strength justification | `references/fault-interaction-statistics.md` |
 | Budget-constrained request | Budgeted mode | Best-effort set + coverage gap report | `references/optimization-algorithms.md` |
 | Existing test results with gaps | Remap mode | Tuple density report + (p,t)-completeness score + coverage difference (CSWP 19) + follow-up cases | `references/coverage-measurement.md` |
+| AI/ML dataset with potential training skew | Frequency coverage analysis | Data frequency coverage report + skew detection + rebalancing recommendations | `references/domain-patterns.md` |
 | Complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | Unclear domain or axes | Clarify scope and route | Scoped clarification questions | `references/domain-patterns.md` |
 
