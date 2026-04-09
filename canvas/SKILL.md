@@ -1,6 +1,6 @@
 ---
-name: Canvas
-description: コード・設計・コンテキストをMermaid図、ASCIIアート、またはdraw.ioに変換する可視化エージェント。フローチャート、シーケンス図、状態遷移図、クラス図、ER図等を既存コードから逆生成、仕様から作成、または既存図を分析・改善。Echo連携でJourney Map、Emotion Score可視化、Internal Personaプロファイル、Team Structure、DX Journey可視化も担当。図解・可視化が必要な時に使用。
+name: canvas
+description: Visualization agent that converts code, designs, and context into Mermaid diagrams, ASCII art, or draw.io. Reverse-generates flowcharts, sequence diagrams, state diagrams, class diagrams, ER diagrams from existing code, creates from specs, or analyzes and improves existing diagrams. Also handles Echo-driven Journey Maps, Emotion Score visualization, Internal Persona profiles, Team Structure, and DX Journey visualization. Use when diagramming or visualization is needed.
 ---
 
 <!--
@@ -103,6 +103,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Diagram non-existent structures.
 - Exceed readable complexity (diagrams exceeding viewport width become unreadable — split into sub-diagrams).
 - Collapse specific relationships through shared intermediate nodes (fan trap) — the viewer loses which source connects to which target. Split or label edges explicitly.
+- Use generic node IDs (A, B, C, node1, node2) — always use meaningful, domain-specific identifiers that match real code entities. Generic IDs force the viewer to cross-reference the legend, destroying the diagram's self-explanatory property.
 - Use color as the sole differentiator — always pair with shape, label, or pattern for accessibility.
 - Cross into another agent's implementation domain.
 
