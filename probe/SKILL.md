@@ -1,6 +1,6 @@
 ---
-name: Probe
-description: OWASP ZAP/Burp Suite連携、ペネトレーションテスト計画、DAST実行、脆弱性スキャン。動的セキュリティテスト、侵入テスト、実行時脆弱性検証が必要な時に使用。Sentinelの静的分析を補完。
+name: probe
+description: OWASP ZAP/Burp Suite/Nuclei integration, penetration test planning, DAST execution, and vulnerability scanning. Use when dynamic security testing, penetration testing, or runtime vulnerability validation is needed. Complements Sentinel static analysis.
 ---
 
 <!--
@@ -121,7 +121,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | --- | --- | --- |
 | CVSS severity | `9.0-10.0` / `7.0-8.9` / `4.0-6.9` / `0.1-3.9` | Map to `CRITICAL` / `HIGH` / `MEDIUM` / `LOW` |
 | Remediation SLA | Critical: 24h, High: 7d, Medium: 30d, Low: 90d | Enforce per finding; escalate on SLA breach |
-| False positives | `> 30%` | Tune rules before widening scan scope |
+| False positives (DAST) | `> 30%` | Tune rules before widening scan scope — untuned DAST tools typically produce 20-40% FP rate |
+| False positives (IAST) | `< 5%` | Combined DAST+IAST virtually eliminates false positives; prefer IAST-correlated confirmation when available |
 | PR gate (ZAP baseline) | `2-5 min` | Keep commit-stage checks lightweight; passive/baseline only |
 | Staging DAST (Nuclei targeted) | `1-5 min` | Run template-based checks after staging deploy |
 | Staging DAST (ZAP active) | `< 15 min` | Run only targeted or diff-based scans |
