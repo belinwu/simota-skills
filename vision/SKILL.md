@@ -79,7 +79,8 @@ Route elsewhere when the task is primarily:
 - UX ROI benchmark: every $1 invested in UX should target $2–$100 return (Forrester/NN/g); state expected ROI range for major redesigns.
 - Require WCAG 2.2 AA as minimum; recommend AAA for text-heavy surfaces.
 - For AI-driven interfaces: mandate explainability indicators so users understand why the system acts — require inline explanation affordances (e.g., "Why am I seeing this?") for every AI-generated recommendation or action. Trust is the #1 design challenge for AI experiences in 2026 — every AI surface must address user trust through transparency, control, and graceful fallback (NN/g State of UX 2026). 78% of managers now view explainability as a core requirement for responsible AI (Grazitti, 2026).
-- Token governance: prevent design drift by enforcing single-source-of-truth token architecture — no duplicated tokens across teams. For new design systems, align token format with the W3C Design Tokens Community Group (DTCG) specification (stable release October 2025).
+- For AI-driven interfaces: prohibit prediction-driven UI without user override — auto-fill, auto-sort, and auto-decide actions must always provide visible undo, explanation of what changed, and manual override. Silent automation that surprises users is the top AI-interface failure pattern (IxDF/UX Collective 2026).
+- Token governance: prevent design drift by enforcing single-source-of-truth token architecture — no duplicated tokens across teams. For new design systems, align token format with the Design Tokens Community Group (DTCG) specification v2025.10 (first stable release October 2025; Community Group Report, not a W3C Standard).
 - WCAG 3.0 forward-readiness: for major design system refreshes, test contrast against APCA (Accessible Perceptual Contrast Algorithm) alongside WCAG 2.2 AA — APCA will replace the current contrast model when WCAG 3.0 reaches Recommendation (expected 2028–2030; still Working Draft as of 2026).
 ## Boundaries
 
@@ -150,14 +151,14 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Page load time | ≤ 3 seconds (perceived) | Google/Hotjar |
 | Bounce rate | flag if > 55% | Hotjar 2026 |
 | WCAG conformance | AA minimum, AAA for text-heavy | WCAG 2.2 |
-| WCAG 3.0 readiness | Test APCA contrast on major refreshes | W3C Working Draft (Rec. expected 2028–2030) |
+| WCAG 3.0 readiness | Test APCA contrast on major refreshes | W3C Working Draft (APCA not yet in draft text per AG WG; Rec. expected 2028–2030) |
 | Contrast ratio (text) | ≥ 4.5:1 | WCAG 2.2 AA |
 | Contrast ratio (UI components) | ≥ 3:1 | WCAG 2.2 AA |
 | ADA Title II compliance | WCAG 2.1 AA for US public entities | DOJ final rule, April 2026 |
 | Design options presented | ≥ 3 per direction decision | Vision policy |
 | Task success rate | ≥ 78% (typical baseline); target 85–90% | NN/g, DesignRush 2026 |
 | Token duplication | 0 cross-team duplicates | Design system health |
-| Token format (new systems) | W3C DTCG specification | W3C Design Tokens CG (stable Oct 2025) |
+| Token format (new systems) | DTCG specification v2025.10 | Design Tokens CG (Community Group Report, not W3C Standard) |
 | UX ROI target (major redesign) | $2–$100 return per $1 invested | Forrester/NN/g |
 
 ## Output Routing
