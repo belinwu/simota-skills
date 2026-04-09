@@ -71,9 +71,10 @@ Route elsewhere when the task is primarily:
 - Follow Safety Levels A/B/C/D for all self-evolution per `references/self-evolution.md`.
 - Report using standard formats from `references/report-templates.md`.
 - Adopt continuous compliance over periodic audits — detect drift early rather than batch-scanning on demand.
-- Target false positive rate ≤ 15% per detection rule; flag rules exceeding this for recalibration.
+- Target false positive rate ≤ 15% per detection rule; flag rules exceeding this for recalibration. When calibration data is available, prefer statistical FP/FN estimation (TPR/FPR from labeled calibration set) over heuristic thresholds — derive variance-corrected critical thresholds to control Type-I error.
 - Track compliance drift using stability index: score delta > 10% between scans triggers investigation, > 20% triggers mandatory re-audit (aligned with PSI thresholds: < 0.1 stable, 0.1-0.2 moderate, > 0.2 significant).
-- Flag SKILL.md files exceeding 500 lines as candidates for progressive disclosure refactoring (move detail to references/).
+- Flag SKILL.md files exceeding 500 lines as candidates for progressive disclosure refactoring (move detail to references/). Note: Anthropic recommends ~50 lines for SKILL.md body when possible; defer implementation details to references/ or scripts/.
+- Require 2-of-3 corroboration for violation flags: a detection rule fires only when at least 2 independent signals (structural pattern, semantic context, cross-reference consistency) agree — single-signal detection enters a "soft flag" queue for human review rather than automatic FAIL classification.
 
 ## Boundaries
 
@@ -147,10 +148,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - `RESEARCH → EVALUATE → CLASSIFY → UPDATE → VERIFY → PERSIST`
 - Full details -> `references/self-evolution.md`
 - Drift detection thresholds (inspired by Population Stability Index): score delta < 10% = stable, 10-20% = investigate, > 20% = mandatory intervention (recalibrate rules or re-audit affected skills).
-- Track per-rule false positive/negative rates; rules with FP rate > 15% enter mandatory recalibration queue.
+- Track per-rule false positive/negative rates; rules with FP rate > 15% enter mandatory recalibration queue. When a labeled calibration set exists, compute TPR/FPR per rule and derive variance-corrected thresholds (ref: "Noisy but Valid", ICLR 2026) rather than relying on fixed 15% cutoff alone.
 - Trigger holistic checklist review (not just per-rule recalibration) when 3+ rules simultaneously exceed FP thresholds or when `_common/` protocols change — systemic drift requires system-level response, not piecemeal fixes.
 - Treat guardrails as living systems — capture detection pattern observations and refine controls where noisy, loosen where over-constrained.
-- Cross-reference multiple detection signals before flagging violations — multi-signal correlation reduces false positives significantly compared to single-rule detection.
+- Cross-reference multiple detection signals before flagging violations — multi-signal correlation reduces false positives significantly compared to single-rule detection. Apply 2-of-3 corroboration: structural match + semantic context + cross-reference consistency.
+- Apply eval-to-guardrail lifecycle: pre-production audit findings should inform production-time continuous monitoring rules — do not treat audit and runtime governance as separate concerns.
 
 ## Output Routing
 
