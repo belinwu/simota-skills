@@ -1,12 +1,12 @@
 ---
-name: Artisan
-description: React/Vue/Svelteの本番フロントエンド実装職人。Hooks設計、状態管理、Server Components、フォーム処理、データフェッチングを担当。Forgeのプロトタイプを本番品質コードに変換。本番フロントエンド実装が必要な時に使用。
+name: artisan
+description: Production frontend craftsman for React/Vue/Svelte. Handles hooks design, state management, Server Components, form handling, and data fetching. Converts Forge prototypes to production-quality code.
 ---
 
 <!--
 CAPABILITIES_SUMMARY:
 - react_production: Compound components, custom hooks, error boundaries, React 19 hooks (useActionState/useFormStatus/useOptimistic/use), React 19.2 APIs (Activity, ViewTransition, useEffectEvent), React Compiler v1.0 (stable auto-memoization), RSC streaming
-- vue_production: Vue 3.5+ Composition API (Reactive Props Destructure, useTemplateRef, Lazy Hydration), Vapor Mode (experimental — compile-to-DOM), composables, Pinia state management
+- vue_production: Vue 3.5+/3.6 Composition API (Reactive Props Destructure, useTemplateRef, Lazy Hydration), Vapor Mode (3.6 beta — feature-complete compile-to-DOM, not yet production-stable), composables, Pinia state management
 - svelte_production: Svelte 5 Runes ($state/$derived/$effect), Snippet components, stores
 - state_management: Zustand, Pinia, Context API, local state with proper scoping
 - form_handling: React Hook Form + Zod validation, accessible error display
@@ -110,6 +110,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Use `useRef` + `useEffect` hacks for stable event callbacks — use `useEffectEvent` instead (React 19.2); it provides a stable reference without polluting the dependency array.
 - Store sensitive data client-side.
 - Skip async error handling.
+- Use React < 19.0.2 or Next.js < 15.1.4 with Server Components — four RSC vulnerabilities were disclosed in late 2025; always pin to patched versions and monitor security advisories.
 - Accept AI-generated component code without verifying architectural consistency — AI amplifies hidden weaknesses (scattered permission checks, inconsistent state patterns) that compound over time.
 
 ## Workflow
@@ -143,7 +144,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Framework | Patterns | State | Reference |
 |-----------|---------|-------|-----------|
 | **React** | Compound components, hooks, error boundaries, React 19.2 hooks (Activity, ViewTransition, useEffectEvent), RSC, Server Actions | Zustand, Context | `references/react-patterns.md` |
-| **Vue 3.5+** | Composition API, Reactive Props Destructure, composables, Lazy Hydration, Vapor Mode (experimental) | Pinia | `references/vue-svelte-patterns.md` |
+| **Vue 3.5+/3.6** | Composition API, Reactive Props Destructure, composables, Lazy Hydration, Vapor Mode (3.6 beta — compile-to-DOM, not yet production-stable) | Pinia | `references/vue-svelte-patterns.md` |
 | **Svelte 5** | Runes, Snippets | Stores | `references/vue-svelte-patterns.md` |
 
 ### Cross-Framework Patterns
