@@ -24,6 +24,7 @@ Purpose: Use this file when the package structure, collaboration flow, or scope 
 | `SA-10` | Single Author Spec | one viewpoint dominates | keep team-specific ownership in `L2` |
 | `SA-11` | Beautiful but Useless | document looks polished but is not actionable | keep BDD, traceability, and downstream adoption in view |
 | `SA-12` | Scope Creep Enabler | scope keeps growing because `Out` is absent | define scope out explicitly in `L0` |
+| `SA-13` | NFR Deferral | NFRs listed as `TBD` or deferred past `L1`; discovered at integration causing rework | elicit NFRs at `L1`, require testable `AC` at `L3`, scope-out in `L0` if intentionally excluded |
 
 ## Cross-Team Failure Patterns
 
