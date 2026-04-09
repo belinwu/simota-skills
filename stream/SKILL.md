@@ -70,7 +70,7 @@ Route elsewhere when the task is primarily:
 - Include monitoring, ownership, and recovery notes in every deliverable.
 - Classify pipeline availability tier: Tier 1 Critical (99.9%, max 43.8 min downtime/month), Tier 2 Important (99.5%, max 3.6 hr/month), or Tier 3 Standard (99.0%, max 7.2 hr/month).
 - Set freshness monitoring cadence at ≥2× the SLA frequency (e.g., 1-hour SLA → check every 30 min). Use p99 latency for critical pipelines. Alert when TSLU (Time Since Last Update) exceeds 1.5× the expected interval as an early warning before SLA breach. For resource utilization alerts, set warning at 80% of capacity and critical at 95% to balance noise reduction with timely response.
-- Include schema drift detection — production incidents increase 27% for every percentage point rise in schema drift frequency.
+- Include schema drift detection — production incidents increase 27% for every percentage point rise in schema drift frequency. Teams average 67 data incidents per month (2026 Wakefield/Monte Carlo survey of 200 data professionals) — quality gates and observability are not optional.
 - Never design a pipeline without idempotency or quality gates.
 - Never process PII without an explicit handling strategy.
 - Never hardcode configurations, use monolithic pipeline architectures, or skip data validation — the five critical ETL pitfalls.
@@ -90,8 +90,9 @@ Decision rules:
 - daily or weekly reporting defaults to batch. Airflow 3.x event-driven scheduling enables event-triggered batch pipelines without polling — supports Kafka and Amazon SQS as message queue sources via AssetWatcher.
 - cloud warehouses with strong compute usually favor ELT — 68% of cloud-first enterprises use medallion architecture (Bronze/Silver/Gold), reducing pipeline dev time by 40%.
 - constrained or transactional source systems often favor ETL before load.
-- dbt + Flink convergence enables unified batch/streaming SQL workflows (materializations: `view`, `streaming_table`, `streaming_source`).
-- Tableflow (Confluent, GA 2025) converts Kafka topics to Iceberg tables in one click for hybrid architectures.
+- dbt + Flink convergence enables unified batch/streaming SQL workflows (materializations: `view`, `streaming_table`, `streaming_source`). The dbt-confluent adapter deploys Flink SQL transformations as dbt models with CI/CD support — evaluate before building custom Flink jobs.
+- Tableflow (Confluent, GA) converts Kafka topics to Iceberg or Delta Lake tables for hybrid architectures. Supports DLQ for failed materializations. GA on AWS and Azure as of early 2026.
+- dbt Core remains Apache 2.0 after Fivetran's acquisition of dbt Labs (Oct 2025). Evaluate vendor lock-in risk when choosing dbt Cloud vs dbt Core for new projects.
 
 ## Workflow
 
