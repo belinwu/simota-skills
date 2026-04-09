@@ -108,7 +108,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Ignore contradictory evidence.
 - Treat synthetic user output as equivalent to real-user research — synthetic participants lack emotional nuance, cultural context, and genuine surprise reactions.
 - Deploy AI-moderated interviews without human review — AI achieves 80–85% agreement with expert human coders on theme extraction; the remaining 15–20% gap requires researcher judgment for nuance, context, and cultural sensitivity.
-- Democratize research without guardrails — unstructured self-service research without training, templates, and oversight leads to inconsistent methods, weak data, and poor decisions. Minimum governance: researcher review of study design (adopted by 73% of orgs), standardized templates (65%), and data governance/privacy protocols (42%).
+- Democratize research without guardrails — unstructured self-service research without training, templates, and oversight leads to inconsistent methods, weak data, and poor decisions. PMs (39%), market researchers (35%), and marketers (23%) now run their own studies (Maze 2026), while systems and standards lag behind. Minimum governance: researcher review of study design (adopted by 73% of orgs), standardized templates (65%), and data governance/privacy protocols (42%).
 - Use homogeneous participant pools — excluding diverse users embeds bias into products (e.g., real-name policies discriminating against transgender and non-European-name users; voice interfaces failing non-native speakers).
 - Write production implementation code.
 
@@ -132,6 +132,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Interview duration | `45-60 min` | Standard moderated session | Keep guides scoped to fit |
 | Usability sample (qualitative) | `5-8` users | Uncovers ~85% of frequent issues | Do not over-recruit before first findings |
 | Usability sample (quantitative) | `≥30` users | Statistical validity for benchmarks | Required for SUS/NPS/task-completion benchmarking |
+| Benchmark precision (±20%) | `20` users | Rough directional benchmark | Acceptable for early-stage internal comparison |
+| Benchmark precision (±10%) | `~80` users | Reliable benchmark comparison | Recommended for cross-release or competitor benchmarking |
+| Benchmark precision (±5%) | `~320` users | High-precision benchmark | Required for published reports or regulatory claims |
 | Usability-only sample | `5-6` users | Small focused tests | Use for fast evaluative studies |
 | Focus group | `6-8 per group` | Discussion balance | Avoid larger groups |
 | Diary study | `10-15` participants | Longitudinal signal | Use only when behavior unfolds over time |
@@ -142,7 +145,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | NPS (consumer software) | `>21%` (industry avg) | Loyalty benchmark | Context-dependent; compare within vertical |
 | AI transcription accuracy | `95–98%` (clear audio) | Automated transcription reliability | Verify against source for accented/noisy audio; drops below 90% for non-native speakers |
 | AI theme extraction agreement | `80–85%` vs expert coders | First-pass coding reliability | Always human-review the 15–20% gap; AI misses context-dependent nuance |
-| AI synthesis time reduction | `70–80%` | Qualitative coding acceleration | AI handles transcription/initial coding; researcher owns interpretation and synthesis |
+| AI researcher adoption | `80%` of researchers | AI is baseline in research workflows (Maze 2026) | Design for AI-augmented workflows; ensure human judgment on interpretation |
+| AI synthesis time reduction | `up to 80%` | Qualitative coding acceleration | AI handles transcription/initial coding; researcher owns interpretation and synthesis |
 | Synthetic-real split | `80/20` | Rapid hypothesis via synthetic, deep insight via human | Use synthetic for iterations/screening/hypothesis; reserve human interviews for emotional depth, edge cases, cultural nuance |
 | CASTLE (workplace UX) | 6 dimensions | Cognitive load, Advanced feature usage, Satisfaction, Task efficiency, Learnability, Errors | Use instead of SUS/HEART for compulsory workplace software where users cannot choose the product |
 | Calibration | `3+ studies` | Minimum evidence to adjust method weights | Do not recalibrate before this |
