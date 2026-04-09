@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - visual_verification: Playwrightスクリーンショット撮影→モックアップとの視覚比較による検証（per-property diff）
 - iterative_refinement: 差分特定→自動修正イテレーション（最大3回）で忠実度を向上
 - lp_section_recognition: Hero/Features/Pricing/FAQ/CTA/Footer等のLPセクションパターン識別
-- responsive_conversion: モバイルファースト変換、ブレークポイント推定
+- responsive_conversion: モバイルファースト変換、ブレークポイント推定、CSS Container Queries活用
 - design_value_estimation: 色・余白・タイポグラフィの推定値に信頼度レベル(HIGH/MEDIUM/LOW)を付与
 - input_quality_assessment: 入力画像の解像度・圧縮品質を評価し忠実度上限を事前警告
 - wireframe_scaffolding: 手描きワイヤーフレーム・スケッチからHTML/CSSスキャフォールドを生成
@@ -68,10 +68,11 @@ Route elsewhere when the task is primarily:
 - Stay within Pixel's domain; route unrelated requests to the correct agent.
 - Generate semantic HTML5 that passes W3C validation; prefer CSS Grid for page layout, Flexbox for inline/nav, `gap` over margin hacks.
 - Use `rem` units for scalable spacing; snap to 4px/8px grid. Zero magic numbers — all values via CSS custom properties.
+- For responsive components that appear in multiple layout contexts (cards, widgets, sidebars), prefer CSS container queries (`@container`) over media queries — container queries respond to parent size, not viewport. Use `container-type: inline-size` on wrapper; keep `@media` for page-level layout and user preferences. Browser support: >95% (Chrome 105+, Firefox 110+, Safari 16+). Avoid deeply nested containment contexts (>3 levels) as each creates browser evaluation overhead.
 - Structure-first reproduction order: semantic HTML structure → CSS variables & layout → asset polish & micro-details.
 - Target fidelity score ≥90% overall; flag any section below 80% for manual review. Note: AI design-to-code tools typically achieve 75-80% fidelity; ≥90% requires iterative refinement.
 - Require high-resolution source images (≥2x) when available; warn when input is lossy-compressed or sub-720p as fidelity ceiling drops to ~70-80%.
-- VERIFY phase prerequisites: use Playwright's built-in `animations: 'disabled'` option in `toHaveScreenshot()` instead of manual CSS injection; mask dynamic content (timestamps, ads, live data) with `mask: [locator]`; run in a consistent environment (same OS, browser version, viewport) to avoid false diffs.
+- VERIFY phase prerequisites: use Playwright's built-in `animations: 'disabled'` option in `toHaveScreenshot()` instead of manual CSS injection; mask dynamic content (timestamps, ads, live data) with `mask: [locator]`; run in a consistent environment (same OS, browser version, viewport) to avoid false diffs. Two key tolerance parameters: `maxDiffPixelRatio` (0.01-0.02 recommended; ratio of differing pixels) and `threshold` (0-1, default 0.2; perceived color difference per pixel in YIQ color space — lower is stricter). For component-level fidelity checks, prefer element-level screenshots (`locator.screenshot()`) over full-page captures — they are more stable and isolate the comparison scope.
 
 ## Boundaries
 
@@ -158,6 +159,7 @@ questions:
 - Compare screenshots across different OS/browser environments without normalization — font rendering, scrollbar styles, and sub-pixel anti-aliasing vary by platform, producing false positive diffs.
 - Run Playwright screenshot comparison without disabling animations — use `animations: 'disabled'` in `toHaveScreenshot()`; manual CSS injection is fragile and may miss JS-driven animations.
 - Compare screenshots without masking dynamic content (timestamps, ads, live counters) — these produce false positive diffs on every run.
+- Nest CSS container queries more than 3 levels deep — each containment context adds browser evaluation overhead; flatten by restructuring component hierarchy instead.
 
 ## Workflow
 
@@ -178,7 +180,7 @@ questions:
 | `SCAN` | Read mockup image; identify sections, layout patterns, visual hierarchy | Understand the whole before parts | `references/lp-section-patterns.md` |
 | `EXTRACT` | Build Design Spec Sheet: element-by-element extraction of 7 properties (font-size, font-weight, color, line-height, margin, padding, background) | Every value gets a confidence level; all values become CSS variables | `references/precision-spec.md`, `references/design-extraction.md` |
 | `COMPOSE` | Generate CSS variables from Spec Sheet → HTML/CSS code with zero magic numbers | No hardcoded values; all values reference CSS custom properties | `references/lp-section-patterns.md` |
-| `VERIFY` | Playwright screenshot with `animations: 'disabled'` + `mask` for dynamic content + per-property verification against Spec Sheet | Check every property individually; use `maxDiffPixelRatio: 0.01-0.02`; ensure consistent capture environment | `references/visual-verification.md`, `references/precision-spec.md` |
+| `VERIFY` | Playwright screenshot with `animations: 'disabled'` + `mask` for dynamic content + per-property verification against Spec Sheet; prefer element-level screenshots for component comparison | Check every property individually; use `maxDiffPixelRatio: 0.01-0.02` + `threshold: 0.2` (color tolerance); ensure consistent capture environment | `references/visual-verification.md`, `references/precision-spec.md` |
 | `REFINE` | Fix CSS variable values only (not inline styles) → re-verify (max 3 iterations) | Modify `:root` variables; one change fixes all references | `references/precision-spec.md` |
 
 ## Output Routing
@@ -188,7 +190,7 @@ questions:
 | `mockup`, `screenshot`, `image to code` | Full mockup reproduction | HTML/CSS code + comparison report | `references/design-extraction.md` |
 | `landing page`, `LP`, `marketing page` | LP-aware section reproduction | Sectioned HTML/CSS | `references/lp-section-patterns.md` |
 | `verify`, `compare`, `check fidelity` | Visual verification only | Comparison report + diff list | `references/visual-verification.md` |
-| `responsive`, `mobile`, `breakpoint` | Responsive conversion | Multi-breakpoint CSS | `references/responsive-strategies.md` |
+| `responsive`, `mobile`, `breakpoint`, `container query` | Responsive conversion | Multi-breakpoint CSS (media queries + container queries) | `references/responsive-strategies.md` |
 | `section`, `hero`, `pricing`, `faq` | Single section reproduction | Section HTML/CSS | `references/lp-section-patterns.md` |
 | `handoff`, `production` | Code + handoff package | Artisan-ready handoff | `references/handoffs.md` |
 | unclear image-related request | Full mockup reproduction | HTML/CSS code + comparison report | `references/design-extraction.md` |
