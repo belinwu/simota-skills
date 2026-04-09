@@ -38,7 +38,7 @@ Probe is the dynamic security testing specialist. Use it to prove exploitability
 
 Use Probe when the task involves:
 
-- ZAP (maintained by Checkmarx, Apache 2.0), Burp Suite, Nuclei, DAST, penetration testing, or runtime exploit verification
+- ZAP (maintained by Checkmarx, Apache 2.0), Burp Suite, Nuclei, DAST, penetration testing, or runtime exploit verification — ZAP PTK add-on (v0.3.0+) enables combined DAST+IAST+SCA in a single authenticated browser session with 142 client-side alert types
 - Validating whether a static finding is actually exploitable in a running environment
 - Testing authentication, authorization, session handling, rate limiting, GraphQL, OAuth, or SSRF in a running app
 - Designing scan strategy, security gates, SARIF export, or CI-integrated security testing
@@ -102,6 +102,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Share vulnerability details before remediation window closes (responsible disclosure)
 - Apply generic scan profiles across different environments — tailor to each target's technology stack
 - Run unverified Nuclei community templates without review — CVE-2024-43405 (CVSS 7.4) demonstrated signature bypass allowing code execution in Nuclei > 3.0.0; always pin template versions and verify sources
+- Deploy AI-generated Nuclei templates without manual review — Nuclei's AI template generation creates YAML checks from natural language but may produce overly broad matchers or miss edge cases; treat as draft requiring human validation
 
 ## Workflow
 
@@ -127,6 +128,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Full pipeline DAST | `> 30 min` | Move to nightly or weekly full scan |
 | API priority | `BOLA` ≈ `40%` of API attacks (Wallarm Q2 2025) | Always include API1/BOLA checks when API scope exists |
 | Nuclei templates | `12,000+` community templates available (incl. cloud config: GCP/Azure/K8s) | Use targeted subsets; full template scan for nightly only; pin versions and verify sources (CVE-2024-43405) |
+| Nuclei rate limit | Default `150 req/sec`; configurable via `-rl` flag | Reduce for production-adjacent targets (e.g., 30-50 req/sec); increase for isolated staging only |
 | Proof requirement | No safe proof = no confirmed finding | Mark as `Needs Review` or `Unconfirmed`, not confirmed |
 | Testing frequency | Only 8% of orgs test continuously (2025 State of Pentesting) | Recommend continuous DAST over one-off assessments |
 
@@ -139,6 +141,7 @@ Per OWASP Top 10 2025 and API Security Top 10:
 | Web app | Broken Access Control (#1, includes SSRF), Security Misconfiguration (#2), Software Supply Chain Failures (#3), Injection (#5), Mishandling of Exceptional Conditions (#10) |
 | REST API | `BOLA` (API1, ~40% of attacks), `BFLA` (API5), mass assignment (API6), JWT validation, rate limiting — API traffic is now 71% of web interactions, making API-first testing essential |
 | GraphQL | Introspection exposure, depth/alias/batch abuse, field-level auth, variable injection |
+| Multi-protocol | Nuclei scans HTTP, DNS, TCP, SSL, WebSocket, and headless browser protocols — use protocol-specific templates for non-HTTP services (e.g., DNS zone transfer, SSL misconfiguration, exposed TCP services) |
 | OAuth 2.0 | Redirect URI validation, PKCE enforcement, state/CSRF, code replay, scope escalation |
 | SPA/Modern frontend | AJAX spider limitations — ZAP struggles with React/Vue; supplement with manual endpoint enumeration |
 | Pipeline | SARIF export, risk-based security gates, scan cadence (PR/staging/nightly), false-positive triage |
