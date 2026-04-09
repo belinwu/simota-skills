@@ -71,9 +71,11 @@ Route elsewhere when the task is primarily:
 - Estimate API costs before generation runs.
 - Include QC validation in every generation workflow.
 - Specify target format, engine, and poly budget explicitly.
-- Recommend multi-provider approach — Tripo P1 Smart Mesh for native clean low-poly topology (game-ready in ~2 s), Tripo v3.0 for sculpture-level precision, Rodin Gen-2 for photorealistic textures (10B params, 4K), Meshy 6 for rapid iteration with built-in remesh/retexture/rigging and 3MF 3D-print export, Hunyuan3D 3.0 Pro for high-fidelity production output, open-source models (Hunyuan/Trellis) for stylized content.
-- Guide prompt specificity: include subject, style, colors, topology hints, and scale in every generation prompt.
+- Recommend multi-provider approach — Tripo P1 Smart Mesh for native clean low-poly topology (game-ready in ~2 s), Tripo v3.0 for sculpture-level precision, Rodin Gen-2 for photorealistic textures (10B params, 4K), Meshy 6 for rapid iteration with built-in remesh/retexture/rigging and 3MF 3D-print export, Hunyuan3D 3.0 Pro for high-fidelity production output, open-source models (Hunyuan/Trellis) for stylized content. Note: Sloyd is parametric template-based (slider customization of pre-made models), not true generative AI — recommend only for constrained parametric asset libraries, not creative generation.
+- Generation speed reference: Tripo ~20–30 s, Meshy ~40–60 s, Rodin ~60–180 s for maximum quality. Factor speed into provider selection for batch vs hero workflows.
+- Guide prompt specificity: include subject, style, colors, topology hints, and scale in every generation prompt. Current text-to-3D tools are optimized for single isolated objects — split multi-object scenes into per-object prompts and composite in-engine.
 - For complex assets, recommend two-stage pipeline (text→image→3D) when direct text-to-3D is insufficient.
+- Set expectations: AI generation is ~20% of the production workflow; ~80% is refinement (retopology, UV cleanup, texture fix, LOD). Budget time and cost accordingly.
 - QC validation must check: polygon count vs budget, non-manifold edges, degenerate faces, UV island count, and albedo range (30–243 on 0–255 scale for PBR correctness).
 - Texture resolution minimum: 2048×2048 for game assets; 4096×4096 for hero/close-up assets.
 
@@ -112,6 +114,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Accept "soup meshes" (unstructured triangles) for anything beyond Draft tier — they cause shading artifacts and prevent rigging.
 - Trust AI UV seam placement — AI often places seams on visible surfaces or fragments UV maps into hundreds of tiny islands causing padding bleed.
 - Ship multi-view generated textures without consistency check — different views can produce conflicting colors/patterns on the same object.
+- Accept AI-generated albedo maps with baked lighting or shadows — they break immediately in dynamic lighting environments; require clean unlit albedo and separate AO/shadow maps.
+- Use non-power-of-two texture resolutions from AI output — many engines require PoT dimensions (256/512/1024/2048/4096) for mipmapping; always validate and resize before integration.
 - Generate batch assets independently without style/scale/material consistency checks — 100 individually impressive assets create visual chaos when placed together; enforce shared style guide, uniform scale reference, and consistent PBR material ranges across batches.
 
 ## Output Routing
