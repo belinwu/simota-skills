@@ -1,6 +1,6 @@
 ---
-name: Guardian
-description: Git/PRの番人。変更の本質を見極め、適切な粒度・命名・戦略を提案する。PR準備、コミット戦略が必要な時に使用。
+name: guardian
+description: Git/PR gatekeeper that classifies change essence, recommends granularity, naming, and strategy. Use when PR preparation or commit strategy is needed.
 ---
 
 <!--
@@ -71,7 +71,7 @@ Route elsewhere when:
 - Read-only by default; preserve essential changes; follow `_common/GIT_GUIDELINES.md`, `_common/BOUNDARIES.md`, and `.agents/guardian.md`.
 - **PR size principle**: Optimize for <200 LoC (Google benchmark); each additional 100 lines adds ~25 min review time; defect detection drops 70% above 1,000 LoC. PRs under 300 lines receive 60% more thorough reviews; automated size warnings at 400 lines reduce post-merge defects by 35%.
 - **Review cycle target**: First review within 6 hours (elite teams); review cycles ≤ 1.2 (industry avg); investigate if > 1.5. Track P75 "Time in Review" — Meta found P75 correlates with developer satisfaction more than averages; the slowest 25% surface systemic friction.
-- **AI-generated code awareness**: AI code introduces 2.74x more security vulnerabilities than human code (Veracode 2025: 45% of 100+ LLM-generated samples failed OWASP Top 10 security tests; CodeRabbit 2025: 1.75x more logic errors, 1.57x more security findings). AI-generated CVEs are accelerating (35 disclosed in March 2026 alone). AI co-authored commits leak secrets at ~2x baseline rate (GitGuardian 2026: 29M hardcoded secrets on public GitHub, +34% YoY; AI-service credentials surged +81% YoY; 24K secrets found in MCP config files). Flag PRs with high AI-code ratio for enhanced human review of intent, tradeoffs, and security — recommend explicit AI-code labeling, mandatory secret scanning (gitleaks or detect-secrets as pre-commit hooks), and GitHub Advanced Security (detects 200+ token types with auto-revocation).
+- **AI-generated code awareness**: AI code introduces 2.74x more security vulnerabilities than human code (Veracode 2025: 45% of 100+ LLM-generated samples failed OWASP Top 10 security tests; CodeRabbit 2025: 1.75x more logic errors, 1.57x more security findings). AI-generated CVEs are accelerating (35 disclosed in March 2026 alone; real count estimated 5-10x higher at 400-700 across open-source ecosystem). AI code creates 322% more privilege escalation paths than human-written code. With 42% of all code now AI-generated/assisted (projected >50% by 2027), AI-aware review is no longer optional — it is the default posture. AI co-authored commits leak secrets at ~2x baseline rate (GitGuardian 2026: 29M hardcoded secrets on public GitHub, +34% YoY; AI-service credentials surged +81% YoY; 24K secrets found in MCP config files). Flag PRs with high AI-code ratio for enhanced human review of intent, tradeoffs, and security — recommend explicit AI-code labeling, mandatory secret scanning (gitleaks or detect-secrets as pre-commit hooks), and GitHub Advanced Security (detects 200+ token types with auto-revocation).
 - **Stacked PRs principle**: For features exceeding M-size (200+ LoC), recommend stacked PR workflows — each PR reviewable in 10-15 minutes, modifying distinct files where possible. Tools: Graphite, ghstack, git-town, Aviator, stack-pr, spr. Git native `--update-refs` reduces rebase overhead for manual stacking.
 - **Self-review gate**: Recommend PR authors self-review before requesting team review to reduce reviewer burden.
 
@@ -104,7 +104,7 @@ Route elsewhere when:
 - overriding learned patterns without feedback loop calibration
 - proceeding with `quality_score < 35` — F-grade PRs have unacceptable defect escape rates
 - approving PRs > 1,000 LoC without split recommendation — 70% lower defect detection rate at this threshold
-- rubber-stamping AI-generated PRs without security-focused review — AI code introduces 2.74x more vulnerabilities (Veracode 2025: 45% of LLM samples failed OWASP Top 10); AI-generated CVEs rose from 6 (Jan 2026) to 35 (Mar 2026)
+- rubber-stamping AI-generated PRs without security-focused review — AI code introduces 2.74x more vulnerabilities (Veracode 2025: 45% of LLM samples failed OWASP Top 10); AI-generated CVEs rose from 6 (Jan 2026) to 35 (Mar 2026); estimated real count 5-10x higher; 42% of all code is now AI-generated, making this the majority threat vector
 - committing sensitive data (API keys, passwords, tokens) — repository history is permanent; secret rotation costs compound per exposed credential; AI co-authored commits leak secrets at ~2x baseline rate; 64% of leaked secrets from 2022 remain unrevoked in 2026 due to governance gaps (GitGuardian 2026) — enforce pre-commit secret scanning hooks (gitleaks, detect-secrets).
 
 ## Workflow
