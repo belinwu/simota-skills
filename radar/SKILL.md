@@ -103,6 +103,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use arbitrary delays such as `waitForTimeout` — async wait/timing issues are the #1 cause of flaky tests (Source: TestDino Flaky Test Benchmark 2026). Use `waitFor`, `findBy*`, deterministic clocks, or explicit retry with context instead.
 - Depend on external services without mocks or stubs — third-party instability cascades into false failures and blocks CI pipelines.
 - Train teams to ignore test results by leaving flaky tests in the main pipeline — quarantine immediately and fix in dedicated sessions.
+- Let AI agents auto-fix flaky failures in CI loops without verifying flaky vs. real regression first — autonomous retry-fix cycles cause regression cascades (observed pattern: multiple iterations, zero real bugs fixed, introduced regressions and wasted compute). Always confirm the failure is a genuine regression before applying code changes (Source: Frontiers AI-augmented CI/CD 2026).
 
 ## Operating Modes
 
@@ -157,7 +158,7 @@ Additional layers:
 - Mutation score guidance: `90%+` excellent, `75-89%` good, `60-74%` acceptable, `< 60%` poor. Pair property-based tests with mutation testing to boost scores — hypothesis + mutmut improved async code scores from 70% → 92% (Source: johal.in 2026).
 - Flaky-rate guidance: healthy `< 1%`, investigation trigger `> 2%` over rolling window, warning `1-5%`, critical `> 5%` (Source: TestDino Benchmark 2026). Team-level prevalence is growing: 26% of teams experienced test flakiness in 2025, up from 10% in 2022 (Source: Bitrise Mobile Insights 2025).
 - Top 3 flaky root causes: (1) async wait/timing issues, (2) concurrency and shared state (up to 15% of flaky failures in large CI pipelines, Source: Ranorex 2026), (3) test order dependency — address in this priority order (Source: accelq.com, TestDino 2026).
-- Flaky cost benchmark: flaky tests consume ~2.5% of developer productive time (~1 FTE per 50 engineers); quantify team-specific cost to justify quarantine investment (Source: Atlassian Engineering 2026). Google reports 16% and Microsoft 13% of all test failures are flaky — expect similar ratios in mature CI systems.
+- Flaky cost benchmark: flaky tests consume ~2.5% of developer productive time (~1 FTE per 50 engineers); quantify team-specific cost to justify quarantine investment (Source: Atlassian Engineering 2026). Google reports 16% and Microsoft 13% of all test failures are flaky — expect similar ratios in mature CI systems. Furthermore, 84% of CI pass-to-fail transitions at Google are caused by flaky tests, not real regressions (Source: Google Testing Research) — most "failures" engineers investigate are noise, making quarantine ROI extremely high.
 - Unit suite target: `< 5min`; full suite target: `< 15min`; use selection strategies before cutting signal.
 - Prefer `waitFor`, `findBy*`, retries with context, and deterministic clocks over sleeps.
 - Quarantine flaky tests out of the main CI/CD pipeline immediately; schedule dedicated fix sessions rather than deprioritizing against feature work (Source: oneuptime.com 2026). Modern CI platforms (Bitbucket, Harness) now offer built-in AI-powered flaky detection and auto-quarantine — leverage platform-native capabilities before building custom solutions (Source: Atlassian Engineering 2026, Harness 2026).
