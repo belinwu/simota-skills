@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - health_scoring: Repository health grade (A-F) with 5-dimension scoring (weighted by LoC)
 - monorepo_audit: Five-axis monorepo health score and package boundary validation
 - convention_profiling: Cultural DNA detection and drift monitoring
-- monorepo_tool_advisory: Nx/Turborepo/Bazel selection guidance based on team size, package count, language mix, and 2026 benchmarks
+- monorepo_tool_advisory: Nx/Turborepo/Bazel selection guidance based on team size, package count, language mix, CI benchmarks, and DX trade-offs
 - scaling_assessment: GitHub Well-Architected alignment check with rulesets + custom properties governance
 
 COLLABORATION_PATTERNS:
@@ -70,9 +70,10 @@ Route elsewhere when the task is primarily:
 - Prefer incremental migrations. Plan one module or one concern per PR. Maximum 50 files changed per migration PR to keep reviews tractable.
 - Audit structure before proposing high-risk moves. Health score must not decrease after migration.
 - For monorepo vs polyrepo decisions, default to monorepo for teams ≤ 30 engineers; evaluate split only when CI times exceed 15 minutes or team autonomy requires independent release cycles.
+- Align monorepo directory layout with team boundaries — packages owned by one team should be co-located under a discoverable path (e.g., `apps/billing/`, `libs/payments/`). This reduces cross-team merge conflicts and improves code ownership clarity via CODEOWNERS.
 - Keep directory depth ≤ 4 levels to any package manifest (e.g., `package.json`, `go.mod`). Deeper nesting increases Git tree/blob object counts, degrades delta compression, and slows clones — flagged by GitHub Well-Architected as a scaling risk.
-- Monorepo tool selection: Turborepo for JS/TS workspaces with 5–50 packages (Rust-based engine, minimal config, Vercel-native); Nx for enterprise 30+ engineers needing enforced module boundaries, code generation, and distributed CI; Bazel for polyglot orgs requiring hermetic builds and remote execution at extreme scale (1,000+ engineers).
-- Align with GitHub Well-Architected principles: use rulesets to define governance policies (the "what") and custom properties to target them (the "when/where" — e.g., apply stricter rules to `compliance:high` repos). Custom properties now support required explicit values at org and enterprise level, enabling mandatory metadata for compliance classification.
+- Monorepo tool selection: Turborepo for JS/TS workspaces with 5–50 packages (minimal config, Vercel-native, fastest onboarding); Nx for enterprise 30+ engineers needing enforced module boundaries, code generation, and distributed CI (benchmarks show ~16% faster CI than Turborepo on single-machine builds); Bazel for polyglot orgs requiring hermetic builds and remote execution at extreme scale (1,000+ engineers).
+- Align with GitHub Well-Architected principles: use rulesets to define governance policies (the "what") and custom properties to target them (the "when/where" — e.g., apply stricter rules to `compliance:high` repos). Custom properties support required explicit values at org and enterprise level with a shared namespace, enabling mandatory metadata for compliance classification without cross-org de-duplication.
 - Weight health scores by lines of code (LoC) — a 5,000 LoC file with poor structure outweighs a 100 LoC file.
 
 ## Boundaries
@@ -138,7 +139,7 @@ Every Grove deliverable should include:
 - Score: health score and grade (weighted by LoC per file; RAG status with ≥ 0.1 decline threshold for alerts).
 - Target structure: recommended layout or migration level.
 - Migration plan: ordered steps, risk notes, rollback posture. Each step must produce a CI-green commit. Max 50 files per PR.
-- Monorepo tool recommendation (when applicable): Turborepo (JS/TS 5–50 packages, Rust engine, minimal config), Nx (enterprise 30+ engineers with enforced boundaries and distributed CI), or Bazel (polyglot, hermetic builds, remote execution for 1,000+ engineer orgs).
+- Monorepo tool recommendation (when applicable): Turborepo (JS/TS 5–50 packages, minimal config, fastest onboarding), Nx (enterprise 30+ engineers with enforced boundaries and distributed CI — ~16% faster single-machine CI than Turborepo), or Bazel (polyglot, hermetic builds, remote execution for 1,000+ engineer orgs).
 - Handoffs: next agent and required artifacts when relevant.
 
 ## Collaboration
