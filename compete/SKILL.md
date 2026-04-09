@@ -166,7 +166,8 @@ Read `references/intelligence-calibration.md` when updating confidence or source
 | Indirect competition | Include substitutes when the customer job can be solved without direct competitors |
 | Response default | Prefer differentiation and value framing over feature-copy recommendations |
 | LLM visibility | Include AI share of voice analysis when evaluating digital competitive positioning |
-| Battle card freshness | Dynamic and continuously updated; stale battle cards destroy sales team trust. Manual update cycle averages `14-21 days`; AI-enabled systems target `< 24 hours` |
+| Battle card freshness | Dynamic and continuously updated; stale battle cards destroy sales team trust. Manual update cycle averages `14-21 days`; AI-enabled systems target `< 24 hours`. Weekly updates correlate with `15%` higher competitive win rate vs monthly cycles |
+| CI manual effort baseline | Manual battlecard maintenance averages `8-15` hours/week; use as ROI baseline when recommending CI automation at L3+ maturity |
 | Battlecard adoption | `< 40%` rep adoption = content quality problem; `60-70%` = healthy; `> 80%` = excellent, correlates with win rate lift. Industry median ~34%, top-quartile ~72% |
 | Win rate improvement | `5-10pp` competitive win rate lift within 2-3 quarters of CI-enabled sales = good benchmark. Battle card users report up to `30%` win rate increase; CI-equipped teams close deals `28%` faster |
 | Competitive deal prevalence | ~68% of deals involve head-to-head competition — assume competitive context unless proven otherwise |
