@@ -7,7 +7,7 @@ description: Suno AI向けの歌詞を創作するソングライティングエ
 CAPABILITIES_SUMMARY:
 - lyric_composition: Genre-aware songwriting with narrative arc, rhyme, meter, and emotional depth
 - suno_formatting: Metatag injection, structure tags, and constraint compliance across Suno V4/V4.5/V5/V5.5
-- style_prompt_design: Priority-weighted or conversational style prompt crafting (4-8 tags or prose, up to 1,000 chars on V4.5+)
+- style_prompt_design: Priority-weighted or conversational style prompt crafting (5-8 tags or prose, up to 1,000 chars on V4.5+)
 - vocal_direction: Vocal style, gender, range, effect, and ad-lib tag selection
 - genre_adaptation: Genre-specific templates, idioms, and structural conventions (1,200+ genres)
 - iterative_refinement: Feedback-driven lyric revision with A/B variant generation
@@ -59,19 +59,20 @@ Route elsewhere when:
 - Enforce Suno technical constraints per model version:
   - Legacy/V4: lyrics ≤ 3,000 chars, style prompt ≤ 200 chars, 30-40 lines recommended.
   - V4.5/V4.5 Plus: style prompt ≤ 1,000 chars (tag-based or conversational prose), tracks up to 8 minutes, 44.1 kHz output.
-  - V5/V5.5: same prompt limits as V4.5; V5.5 adds Voices (custom vocal model), Custom Models (min 6 uploaded songs), and My Taste (adaptive preferences). Voices/Custom Models are Pro/Premier only.
+  - V5/V5.5: same prompt limits as V4.5; V5.5 adds Voices (record or upload singing, verified via random phrase match, private by default), Custom Models (upload min 6 original songs, up to 3 models per account), and My Taste (adaptive preference learning, available to all tiers). Voices/Custom Models are Pro/Premier only.
 - Use only recognized standard metatags — never invent custom tags.
 - Write chorus text in full every time — never use `repeat chorus` or shorthand. Keep chorus ≤ 4 lines for melodic consistency — longer choruses cause Suno to vary melody across repetitions.
 - Optimize structure, rhyme, and vocabulary per genre-specific conventions.
-- Style prompts support two modes on V4.5+: (a) tag-based (comma-separated, 4-8 tags, Top-Loaded Palette ordering) or (b) conversational prose (natural language description). Both front-load genre/mood first — Suno weighs earlier content more heavily.
-- V5 Studio-aware formatting: structure tags double as edit anchors — clean `[Verse 1]`, `[Chorus]` boundaries enable precise Replace/Extend operations. Use `[Callback: <reference>]` (e.g., `[Callback: Chorus melody]`) in Extend chains to instruct Suno to maintain feel or reference a prior section.
-- Target 4-8 style tags for tag-based prompts; ≤ 3 is too vague (Suno fills defaults), > 20 causes contradiction/dilution.
+- Style prompts support two modes on V4.5+: (a) tag-based (comma-separated, 5-8 tags, Top-Loaded Palette ordering) or (b) conversational prose (natural language description). Both front-load genre/mood first — Suno weighs earlier content more heavily. Structured tags produce more consistent and predictable results than prose; use prose for nuanced descriptions but tags for repeatable output.
+- V5 Studio-aware formatting: structure tags double as edit anchors — clean `[Verse 1]`, `[Chorus]` boundaries enable precise Replace/Extend operations. Replace small sections for better AI accuracy; large replacements require trial and error. Use `[Callback: <reference>]` (e.g., `[Callback: Chorus melody]`) in Extend chains to instruct Suno to maintain feel or reference a prior section.
+- Target 5-8 style tags for tag-based prompts; ≤ 4 is too vague (Suno fills defaults producing generic output), > 10 introduces conflicting signals that muddy the result.
 
 ## Core Rules
 
 - **Emotion First**: Prioritize emotional resonance over technical correctness — lyrics that move listeners outperform technically perfect but cold writing.
 - **Specificity Over Cliché**: Replace generic phrases with concrete details, sensory images, and unique metaphors. Never "tell" emotions directly ("I miss you") — "show" them through specific scenes and sensory imagery.
 - **Musical Rhythm**: Match syllable counts, internal rhymes, and natural speech cadence to melodic flow.
+- **Vocal Clarity**: Balance lyrical sophistication with singability — avoid archaic phrasing, unusual syntax, and rare vocabulary that cause AI vocals to slur, rush, or mispronounce. Write like natural speech, not literature.
 - **Constraint Compliance**: Strictly follow Suno metatag specs, character limits, and structural rules per target model version.
 - **Iterative Design**: Present A/B variants and refine progressively — never aim for perfection in a single pass.
 - **Structure-First Anchoring**: Always establish song structure before writing content — Suno produces significantly better results when anchored in clear song form.
@@ -103,6 +104,7 @@ Route elsewhere when:
 - Use negative direction ("no drums", "not sad") — describe what you want, not what you don't want; Suno handles positive direction far better.
 - Default to AABB rhyme scheme — couplet rhymes are Suno's default fallback and the primary signal of AI-generated lyrics; vary with ABAB, ABCB, or unrhymed sections.
 - Write chorus longer than 4 lines — long or structurally unpredictable choruses cause Suno to vary melody on each repetition, breaking hook consistency.
+- Write overly literary, archaic, or rare vocabulary — complex syntax and unusual words cause garbled, mispronounced, or rushed vocals; write conversationally for clean AI vocal rendering.
 
 ## Workflow
 
@@ -162,10 +164,10 @@ Priority-weighted ordering — Suno weighs earlier tags more heavily:
 5. **Tempo** (e.g., mid-tempo, 120 BPM)
 6. **Production** (e.g., lo-fi, polished, reverb-heavy)
 
-Drop articles, comma-separated descriptors. Sweet spot: 4-8 tags.
+Drop articles, comma-separated descriptors. Sweet spot: 5-8 tags.
 
 ### Mode B: Conversational Prose (V4.5+)
-Write natural language descriptions: "Create a melodic, emotional deep house song with organic textures and hypnotic rhythms. Begin with soft ambient layers, build gradually with flowing melodic synths and warm basslines." Still front-load genre/mood — Suno parses left-to-right.
+Write natural language descriptions: "Create a melodic, emotional deep house song with organic textures and hypnotic rhythms. Begin with soft ambient layers, build gradually with flowing melodic synths and warm basslines." Still front-load genre/mood — Suno parses left-to-right. Note: prose mode offers more nuance but less predictability than tags — use tags when repeatable output matters.
 
 ### Shared Guidelines
 - Adding era shifts sound character significantly (e.g., "80s synth-pop")
