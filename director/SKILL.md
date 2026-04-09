@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - video_output: Produce .webm baseline with optional MP4/GIF conversion
 - persona_aware_recording: Record persona-tuned demos via Echo integration
 - trace_to_demo: Convert Playwright Trace Viewer captures into presentable demo recordings
+- agentic_video_receipts: Produce visual proof of automated agent/CI work using screencast API for task verification and audit trails
 - platform_adapted_output: Generate platform-specific variants (social media, website, docs) with appropriate pacing
 
 COLLABORATION_PATTERNS:
@@ -42,6 +43,7 @@ Use Director when the user needs:
 - before/after comparison recordings for design or feature changes
 - persona-aware demo recording with tailored pacing and behavior
 - conversion of a Playwright Trace Viewer capture into a polished demo
+- visual proof of automated agent or CI work (agentic video receipts)
 - platform-adapted demo variants (social media short-form, website detailed, docs inline)
 
 Route elsewhere when the task is primarily:
@@ -120,6 +122,7 @@ Rule: tests verify functionality; demos tell stories.
 | `persona demo`, `user journey recording` | Persona-aware recording with Echo integration | Persona-tuned demo video | `references/implementation-patterns.md` |
 | `E2E to demo`, `test flow demo` | Convert existing test to presentation recording | Repackaged demo video | `references/playwright-config.md`, `references/scenario-guidelines.md` |
 | `trace to demo`, `trace viewer demo` | Convert Playwright Trace capture to polished recording | Narrative demo from trace | `references/playwright-config.md` |
+| `agentic receipt`, `visual proof`, `agent recording` | Record automated agent/CI work as visual evidence | Screencast receipt video | `references/playwright-config.md`, `references/implementation-patterns.md` |
 | `GIF`, `inline demo`, `README embed` | Short-form recording with format conversion | GIF or short MP4 | `references/playwright-config.md` |
 | `social media demo`, `platform-specific` | Platform-adapted recording (pacing, captions, aspect ratio) | Platform-variant video set | `references/scenario-guidelines.md` |
 | `quality check`, `demo review` | Post-recording validation | Checklist report + reshoot recommendation | `references/checklist.md` |
@@ -134,7 +137,7 @@ Routing rules:
 
 ## Critical Constraints
 
-- Recording API: use `recordVideo` context option for full-session capture; use `page.screencast` API for precise start/stop control over specific flow segments. Key methods: `screencast.start({ path })` / `screencast.stop()` for recording, `screencast.showChapter(title, { description })` for chapter titles, `screencast.showOverlay(html)` / `screencast.hideOverlays()` for custom HTML overlays, and `onFrame` callback for real-time JPEG frame streaming (thumbnails, live previews, AI vision).
+- Recording API: use `recordVideo` context option for full-session capture (one page per context only — multi-page flows need separate contexts or per-page `page.screencast`); use `page.screencast` API for precise start/stop control over specific flow segments. Key methods: `screencast.start({ path })` / `screencast.stop()` for recording, `screencast.showChapter(title, { description })` for chapter titles, `screencast.showOverlay(html)` / `screencast.hideOverlays()` for custom HTML overlays, and `onFrame` callback for real-time JPEG frame streaming (thumbnails, live previews, AI vision).
 - `slowMo`: use `300-1500ms`; common anchors are `300` quick demo, `500` standard, `600-700` form-heavy, `800-1000` presentation pace.
 - Wait strategy: use locator-based waits for state changes; use `waitForTimeout()` only for deliberate pacing pauses.
 - Action annotations: `screencast.showActions()` highlights interacted elements and displays action titles. Configure `position` ('top-left', 'top', etc.), `duration`, and `fontSize`. Use `screencast.hideActions()` to stop. Prefer built-in action annotations before building custom overlays.
