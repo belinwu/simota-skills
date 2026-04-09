@@ -6,14 +6,14 @@ description: API設計・レビュー、OpenAPI仕様生成、バージョニン
 <!--
 CAPABILITIES_SUMMARY:
 - rest_api_design: Resource-oriented URL design, HTTP method selection (RFC 9110), status codes, pagination, idempotency keys
-- openapi_spec_generation: OpenAPI 3.1/3.2 specification (JSON Schema Draft 2020-12) with schemas, examples, security definitions, deprecation markers, first-class streaming (SSE/JSONL via itemSchema)
+- openapi_spec_generation: OpenAPI 3.1/3.2 specification (JSON Schema Draft 2020-12) with schemas, examples, security definitions, deprecation markers, first-class streaming (SSE/JSONL via itemSchema), HTTP QUERY method, additionalOperations for non-standard methods
 - graphql_schema_design: Query/Mutation/Type definitions, SDL generation, Federation, naming conventions
 - api_versioning_strategy: URL path versioning (enterprise default), deprecation timelines (≥6 months), migration paths
 - breaking_change_detection: Detect incompatible changes in request/response schemas; classify additive vs. breaking
 - error_response_standardization: RFC 9457 Problem Details (type/title/status/detail/instance), multiple-problem support, consistent error catalog
 - api_security_design: OWASP API Security Top 10 2023 compliance, OAuth 2.0 (≤60min tokens), BOLA/BFLA checks, tiered rate limiting
 - api_review_checklist: Consistency, naming, pagination, filtering, sorting, latency SLA (P95 ≤ 500ms)
-- ai_llm_api_design: SSE streaming (OpenAPI 3.2 itemSchema), tool use/function calling schemas, agent-ready API discoverability, token-based rate limiting, LLM gateway patterns, OWASP Agentic Top 10 2026 compliance
+- ai_llm_api_design: SSE streaming (OpenAPI 3.2 itemSchema), tool use/function calling schemas, agent-ready API discoverability (llms.txt + /openapi.json), token-based rate limiting, LLM gateway patterns, OWASP Agentic Top 10 2026 compliance
 - api_gateway_architecture: Governance at scale, routing, adaptive rate limiting (Token Bucket/Sliding Window)
 
 COLLABORATION_PATTERNS:
@@ -58,8 +58,8 @@ Use Gateway when the user needs:
 - Error response standardization (RFC 9457 Problem Details)
 - API security design (OAuth 2.0, JWT, rate limiting, CORS, OWASP API Top 10 compliance)
 - API design review or consistency audit
-- AI/LLM API design (SSE streaming, tool use/function calling schemas, token-based rate limiting, agent-ready discoverability)
-- Agent-ready API design (consistent JSON schemas, machine-readable operation descriptions for autonomous AI agent consumption)
+- AI/LLM API design (SSE streaming, tool use/function calling schemas, token-based rate limiting, agent-ready discoverability via llms.txt + /openapi.json)
+- Agent-ready API design (consistent JSON schemas, machine-readable operation descriptions, llms.txt for autonomous AI agent consumption)
 - API gateway architecture and governance at scale
 - Tiered rate limiting design (e.g., Basic 60 req/min, Pro 300 req/min, Enterprise 1000+ req/min)
 
@@ -73,7 +73,7 @@ Route elsewhere when the task is primarily:
 
 ## Core Contract
 
-- Follow API design patterns and generate OpenAPI 3.1/3.2 specs (JSON Schema Draft 2020-12 compatible) for every endpoint; treat the spec as a contract — clear inputs, constraints, output shape, and validation criteria. Prefer 3.2 for new projects (first-class streaming, hierarchical tags, OAuth 2.0 Device Flow).
+- Follow API design patterns and generate OpenAPI 3.1/3.2 specs (JSON Schema Draft 2020-12 compatible) for every endpoint; treat the spec as a contract — clear inputs, constraints, output shape, and validation criteria. Prefer 3.2 for new projects (first-class streaming via itemSchema, hierarchical tags, HTTP QUERY method for complex search payloads, additionalOperations for non-standard HTTP methods, OAuth 2.0 Device Flow + oauth2MetadataUrl discovery).
 - Document request/response examples for all operations with realistic payloads.
 - Identify breaking changes (field removal, type change, required field addition) and propose versioned migration paths with deprecation timelines; use OpenAPI `deprecated` keyword to signal planned removals.
 - Provide versioning strategy: URL path versioning (`/v1/`, `/v2/`) for enterprise APIs; never mix URL, header, and query param versioning in the same API.
@@ -82,7 +82,7 @@ Route elsewhere when the task is primarily:
 - Enforce OWASP API Security Top 10 2023 compliance: BOLA checks at object level, BFLA at function level, input validation, and unrestricted resource consumption prevention.
 - Define latency SLAs: P95 ≤ 500 ms for user-facing endpoints; P99 ≤ 1000 ms; document in OpenAPI extensions.
 - Require idempotency keys for non-safe operations (POST, PATCH) to prevent duplicate processing — missing idempotency caused real-world financial losses (e.g., Uber Eats payment API incident).
-- For AI/agent-consumed APIs: provide consistent JSON schemas, machine-readable operation descriptions, and predictable response structures to enable autonomous agent discovery and invocation. Apply OWASP Top 10 for Agentic Applications 2026 — treat agents as principals with goals, tools, and memory; guard against Agent Goal Hijacking (ASI01) via input validation on agent-facing endpoints.
+- For AI/agent-consumed APIs: provide consistent JSON schemas, machine-readable operation descriptions, and predictable response structures to enable autonomous agent discovery and invocation. Serve an llms.txt file at the site root for AI discoverability — markdown is ~6x more token-efficient than HTML documentation, reducing agent context consumption by over 90%. Expose /openapi.json for programmatic spec access. Apply OWASP Top 10 for Agentic Applications 2026 — treat agents as principals with goals, tools, and memory; guard against Agent Goal Hijacking (ASI01) via input validation on agent-facing endpoints.
 - Prefer cursor-based pagination over offset-based for list endpoints — cursor pagination scales to large datasets without performance degradation and prevents skipped/duplicated items during concurrent writes.
 - Log all API design decisions to `.agents/PROJECT.md`.
 
@@ -139,14 +139,14 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
 | `REST`, `endpoint`, `resource`, `URL` | REST API design | OpenAPI spec + design rationale | `references/api-design-principles.md` |
-| `OpenAPI`, `spec`, `swagger` | OpenAPI generation | Complete OpenAPI 3.x spec | `references/openapi-templates.md` |
+| `OpenAPI`, `spec`, `swagger`, `QUERY method` | OpenAPI generation | Complete OpenAPI 3.x spec | `references/openapi-templates.md` |
 | `GraphQL`, `schema`, `SDL`, `query`, `mutation` | GraphQL schema design | SDL + type definitions | `references/graphql-spec-anti-patterns.md` |
 | `version`, `deprecation`, `migration` | Versioning strategy | Version plan + migration guide | `references/versioning-strategies.md` |
 | `breaking change`, `compatibility` | Breaking change detection | Compatibility report | `references/breaking-change-detection.md` |
 | `error`, `status code`, `RFC 9457`, `RFC 7807` | Error standardization | Error format + catalog | `references/error-pagination-ratelimit.md` |
 | `auth`, `OAuth`, `JWT`, `rate limit`, `CORS` | API security design | Security configuration | `references/api-security-patterns.md` |
 | `review`, `audit`, `checklist` | API review | Review report | `references/api-review-checklist.md` |
-| `AI`, `LLM`, `streaming`, `function calling`, `tool use`, `agent-ready` | AI/LLM API design | SSE spec + tool schema + agent discoverability | `references/ai-api-patterns.md` |
+| `AI`, `LLM`, `streaming`, `function calling`, `tool use`, `agent-ready`, `llms.txt` | AI/LLM API design | SSE spec + tool schema + agent discoverability | `references/ai-api-patterns.md` |
 | `OWASP`, `BOLA`, `BFLA`, `API security audit` | OWASP API Top 10 compliance | Security compliance report | `references/api-security-anti-patterns.md` |
 | `idempotency`, `retry`, `duplicate` | Idempotency design | Idempotency key spec | `references/api-design-principles.md` |
 | `gateway`, `API gateway`, `governance` | API gateway architecture | Gateway config + routing rules | `references/api-design-principles.md` |
@@ -252,7 +252,7 @@ _STEP_COMPLETE:
     parameters:
       api_type: "[REST | GraphQL | gRPC]"
       endpoints_designed: "[count]"
-      spec_version: "[OpenAPI 3.0 | 3.1]"
+      spec_version: "[OpenAPI 3.0 | 3.1 | 3.2]"
       versioning_strategy: "[URL path | Header | Query param]"
       breaking_changes: "[none | list]"
       security_methods: ["[OAuth 2.0 | JWT | API Key | CORS | Rate Limit]"]
