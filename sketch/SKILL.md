@@ -11,6 +11,7 @@ CAPABILITIES_SUMMARY:
 - batch_generation: Generate multiple image variations efficiently
 - style_transfer: Apply artistic styles to image generation
 - asset_pipeline: Generate game/web assets with consistent style
+- grounded_generation: Generate images grounded with Google Image Search (Nano Banana 2)
 
 COLLABORATION_PATTERNS:
 - Vision -> Sketch: Art direction and mood boards
@@ -47,6 +48,7 @@ Use Sketch when the user needs:
 - batch image-generation scripts with metadata, cost awareness, and seed-based reproducibility
 - multi-model cost comparison or model-selection guidance (Nano Banana / Nano Banana 2 / Nano Banana Pro / Imagen 4)
 - text-rendering images where extended thinking improves accuracy
+- grounded image generation using Google Image Search references (Nano Banana 2)
 
 Route elsewhere when the task is primarily:
 - creative direction or visual concepting before code: `Vision`
@@ -71,6 +73,7 @@ Model routing within Sketch:
 - Prompt structure: `Subject + Style + Composition + Technical`; target 50-200 words; use photographic/cinematic language (lens, angle, lighting) for realism. Avoid prompt stuffing — conflicting keywords degrade quality.
 - Set `response_modalities=["TEXT", "IMAGE"]` — omitting `"TEXT"` causes a silent failure (HTTP 200 with empty `parts`).
 - Enable `thinking_level: high` for complex scenes, text-heavy images, or multi-element compositions.
+- For multi-turn editing with Nano Banana 2, rely on Thought Signatures — the model preserves visual context between turns automatically; do not re-send the full image each turn unless changing the base.
 - Parse response by iterating over `parts` and checking for `inline_data` attribute — do not assume a fixed index, as the model may return both text and image parts.
 - Save outputs with timestamped filenames and `metadata.json` including seed, model, prompt, and cost.
 - Estimate cost and rate impact before large runs; recommend Batch API (50% discount, 24h delivery) for ≥50 images.
@@ -85,7 +88,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Read the API key from `os.environ["GEMINI_API_KEY"]`; never inline credentials.
 - Include comprehensive error handling for network failures, quota (429), content-policy blocks (`IMAGE_SAFETY`, `blockReason: OTHER`), silent failures (model returns text instead of image), and 503 service errors.
-- Handle silent failures with a diagnostic sequence: (1) verify `response_modalities` includes both `"TEXT"` and `"IMAGE"`, (2) confirm `/v1beta/` endpoint, (3) check billing is enabled, then (4) retry with an explicit instruction prefix such as "Generate a photorealistic image of…".
+- Classify silent failures into four states before diagnosing: (1) prompt-side blocking (safety filter rejects the input), (2) output-side image blocking (`IMAGE_SAFETY` or `blockReason`), (3) no image produced (text-only response), (4) non-policy failures (ambiguous prompt, request-shape mistake). For state 3, run the diagnostic sequence: verify `response_modalities` includes both `"TEXT"` and `"IMAGE"`, confirm `/v1beta/` endpoint, check billing is enabled (`FAILED_PRECONDITION` = billing inactive), verify reference images use `inlineData` not `fileData`, then retry with explicit "Generate an image of…" prefix.
 - Document SynthID watermarking (invisible, non-removable, embedded via Tournament Sampling during generation).
 - Add `.env` and `.gitignore` guidance to protect API keys.
 - Add `# Content policy:` comments when the prompt is policy-sensitive.
@@ -114,6 +117,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Set `response_modalities=["IMAGE"]` without `"TEXT"` — causes silent failure (HTTP 200, empty parts); always include both.
 - Use the deprecated `google-generativeai` package — it is no longer maintained; use `google-genai` instead.
 - Use Imagen 4 for image editing tasks — Imagen 4 is text-to-image only; route editing to Gemini-native models.
+- Copy-paste model names from tutorials or blog posts without verifying against official docs — Google's naming convention is inconsistent across documentation (e.g., `gemini-flash-image`, `gemini-3.1-flash-preview-image` are wrong); always use the exact IDs from the Model Rules table.
 - Use Files API (`fileData`) for image-to-image editing — the model silently returns text-only output; always use `inlineData` (Base64-encoded) for reference/source images.
 - Combine analysis, summarization, or comparison with image generation in a single turn — the model favors a text-only response; separate analytical and generative requests into distinct API calls.
 
@@ -138,7 +142,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Reference images | Maximum `14` images/request; keep each under `4MB` when possible; use for style consistency across series |
 | Aspect ratios | Supported: 1:1, 3:2, 2:3, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9; Nano Banana 2 adds 1:4, 4:1, 1:8, 8:1 |
 | Person generation param | In `v1.50+`, prefer `DONT_ALLOW` by default and `ALLOW_ADULT` only on explicit request |
-| Silent failure handling | Diagnose in order: (1) `response_modalities` includes `"TEXT"`, (2) `/v1beta/` endpoint, (3) billing enabled (HTTP 400 `FAILED_PRECONDITION` = billing not active), (4) reference images use `inlineData` not `fileData`, then (5) retry with explicit "Generate an image of…" prefix |
+| Silent failure handling | Classify into 4 states: prompt-side blocking, output-side blocking (`IMAGE_SAFETY`), no image (text-only response), non-policy failure. For no-image: (1) `response_modalities` includes `"TEXT"`, (2) `/v1beta/` endpoint, (3) billing enabled (`FAILED_PRECONDITION` = not active), (4) `inlineData` not `fileData`, (5) retry with explicit prefix |
+| Thought Signatures | Nano Banana 2 multi-turn editing preserves visual context via Thought Signatures — do not re-send the full image each turn unless changing the base image |
+| Grounding | Nano Banana 2 supports grounding with Google Image Search for reference-aware generation; enable via `google_search` tool config |
 | Reproducibility | Always include `seed` parameter; document seed in `metadata.json` for regeneration |
 | Free tier | Google AI API offers up to 500 images/day free; note this in cost estimates |
 

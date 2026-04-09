@@ -101,6 +101,12 @@ Pass the reference image with `types.Part.from_bytes(...)` (Base64 inlineData) p
 
 Use `client.chats.create(...)` for multi-turn image refinement.
 
+With Nano Banana 2, the model uses **Thought Signatures** to preserve visual context between conversation turns. This means you do not need to re-send the full image each turn — the model retains the visual state. Only re-send the base image if you are changing it entirely.
+
+### Grounding with Google Image Search
+
+Available for Nano Banana 2 (`gemini-3.1-flash-image-preview`). Enable via `google_search` tool config to allow the model to reference real-world images during generation, improving accuracy for specific objects, styles, or scenes.
+
 ### Style transfer
 
 Pass multiple reference images plus the transformation instruction.
@@ -181,6 +187,7 @@ Common pitfalls:
 | `ImageGenerationConfig` missing | `AttributeError` | on `< v1.50`, use simple config |
 | `imagen-3.0-*` on Google AI API | `NotFound` | Vertex AI only |
 | wrong Gemini model name | `NotFound` | keep the `-image` suffix |
+| copy-pasted model names from tutorials | `NotFound` or unexpected behavior | Google naming is inconsistent across docs — always verify against Model Rules table. Common wrong names: `gemini-flash-image`, `gemini-3.1-flash-preview-image`, `gemini-pro-image` |
 
 ## Rate Limits And Cost
 
