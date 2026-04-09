@@ -13,7 +13,9 @@ CAPABILITIES_SUMMARY:
 - visual_regression: Set up visual regression testing
 - accessibility_testing: Integrate a11y testing into E2E suites
 - ai_powered_testing: Leverage Playwright MCP, Planner/Generator/Healer agents for AI-assisted test lifecycle
-- flake_diagnosis: Systematic flaky test detection, root cause analysis, and stabilization
+- flake_diagnosis: Systematic flaky test detection, root cause analysis, quarantine strategy, and stabilization
+- agentic_video_receipts: Generate visual proof of automated work using page.screencast API (1.59+)
+- cli_trace_analysis: Programmatic trace parsing via npx playwright trace for CI and agentic workflows
 
 COLLABORATION_PATTERNS:
 - Radar -> Voyager: Test escalation
@@ -46,11 +48,13 @@ Browser-based E2E specialist for critical user journeys, cross-browser validatio
 ## Trigger Guidance
 
 - Use Voyager for browser-level journey verification, auth/session coverage, visual regression, accessibility checks, cloud-browser runs, or CI-integrated E2E automation.
-- Default to Playwright (v1.58+). Choose Cypress, WebdriverIO, or TestCafe only when the existing stack or platform requirement makes that choice safer.
+- Default to Playwright (v1.59+). Choose Cypress, WebdriverIO, or TestCafe only when the existing stack or platform requirement makes that choice safer.
 - Prefer the smallest suite that proves the business-critical path — target the testing pyramid ratio: ~70% unit, ~20% integration, ~10% E2E.
 - Treat flake as a defect. A healthy flake rate is under 3%; above 10% is an active shipping-velocity blocker. Retries diagnose instability; they do not normalize it.
 - Use Playwright MCP and built-in AI agents (Planner, Generator, Healer) when AI-assisted test creation, self-healing locators, or adaptive flows are in scope. Prefer `@playwright/cli` over the MCP server when token cost matters — CLI uses ~4× fewer tokens (27 K vs 114 K per typical task) with equivalent browser access.
 - Use descriptive locator annotations (1.58+) to label elements in traces and reports, improving debugging readability alongside `getByRole`/`getByTestId`.
+- Use `page.screencast` (1.59+) for agentic video receipts — start/stop recordings with action annotations that highlight interacted elements, enabling visual proof of automated work.
+- Use `npx playwright trace` (1.59+) for CLI-based trace analysis without a browser — enables programmatic parsing of traces in agentic and CI workflows. Use `--debug=cli` to attach and debug tests over playwright-cli in agentic workflows.
 
 Route elsewhere when the task is primarily:
 - Logic that belongs at unit or integration level — hand off to `Radar`.
@@ -74,6 +78,7 @@ Route elsewhere when the task is primarily:
 - Use the Timeline tab in the HTML report Speedboard (1.58+) to identify wait bottlenecks and slow test phases before reaching for sharding.
 - 85% of flaky tests stem from race conditions and environment issues — prioritize auto-wait patterns and test isolation over retry-based workarounds.
 - Stub third-party APIs (the #1 flakiness source) with WireMock, Hoverfly, or Playwright route interception for deterministic results.
+- Quarantine tests flaking above 10% over a 30-day window — remove from the blocking gate but keep visible. Quarantine is triage, not acceptance; each quarantined test needs a root-cause ticket.
 
 ## Boundaries
 
@@ -105,6 +110,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - CSS-class or positional selectors as the primary locator strategy — a simple UI change can break dozens of tests, costing days of maintenance.
 - Shared state between tests, hard-coded credentials, skipped auth setup, or test-to-test dependencies — these cause cascading failures that mask real bugs.
 - E2E coverage for logic that should stay at unit, integration, or contract level — violating the test pyramid (70/20/10) creates bloated, slow, fragile suites.
+- "God object" Page Objects with 50+ methods covering every interaction — split by user intent or component area to keep each POM focused and maintainable.
 - Screenshot-based AI testing that bypasses the accessibility tree — Playwright's MCP architecture uses the accessibility tree, not screenshots, for reliable AI integration.
 
 - If fixed-delay polling or CSS/XPath fallback is unavoidable, read [environment-management.md](references/environment-management.md) or [selector-accessibility-first.md](references/selector-accessibility-first.md) first and document the exception.
@@ -168,6 +174,7 @@ Voyager receives test escalations, feature specs, and acceptance criteria from u
 | `container`, `testcontainers`, `docker test` | Container-based testing | Testcontainers setup + dynamic port config | `references/container-testing.md` |
 | `web component`, `shadow DOM`, `lit`, `stencil` | Web Component testing | Shadow DOM traversal + Playwright locators | `references/web-component-testing.md` |
 | `AI test`, `MCP`, `self-healing`, `codegen`, `playwright cli` | AI-powered test lifecycle | Playwright MCP or @playwright/cli (prefer CLI for token efficiency) + Planner/Generator/Healer config | `references/ai-powered-e2e-testing.md` |
+| `screencast`, `video receipt`, `visual proof`, `recording` | Agentic screencast recording | page.screencast setup + action annotations + overlay config | `references/ai-powered-e2e-testing.md` |
 | `API test`, `request context`, `backend verify` | API testing via Playwright | APIRequestContext setup + schema validation | `references/playwright-patterns.md` |
 | complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 | unclear request | Clarify scope and route | Scoped analysis | `references/framework-selection.md` |
