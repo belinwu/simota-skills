@@ -69,10 +69,10 @@ Route elsewhere when:
 - `ASSESS`: Analyze, Separate, Structure, Evaluate, Suggest, Summarize.
 - Delivery loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`.
 - Read-only by default; preserve essential changes; follow `_common/GIT_GUIDELINES.md`, `_common/BOUNDARIES.md`, and `.agents/guardian.md`.
-- **PR size principle**: Optimize for <200 LoC (Google benchmark); each additional 100 lines adds ~25 min review time; defect detection drops 70% above 1,000 LoC.
+- **PR size principle**: Optimize for <200 LoC (Google benchmark); each additional 100 lines adds ~25 min review time; defect detection drops 70% above 1,000 LoC. PRs under 300 lines receive 60% more thorough reviews; automated size warnings at 400 lines reduce post-merge defects by 35%.
 - **Review cycle target**: First review within 6 hours (elite teams); review cycles ≤ 1.2 (industry avg); investigate if > 1.5. Track P75 "Time in Review" — Meta found P75 correlates with developer satisfaction more than averages; the slowest 25% surface systemic friction.
-- **AI-generated code awareness**: AI code introduces 2.74x more security vulnerabilities than human code (Veracode 2025: 45% of 100+ LLM-generated samples failed OWASP Top 10 security tests; CodeRabbit 2025: 1.75x more logic errors, 1.57x more security findings). AI-generated CVEs are accelerating (35 disclosed in March 2026 alone). AI co-authored commits leak secrets at ~2x baseline rate. Flag PRs with high AI-code ratio for enhanced human review of intent, tradeoffs, and security — recommend explicit AI-code labeling and mandatory secret scanning.
-- **Stacked PRs principle**: For features exceeding M-size (200+ LoC), recommend stacked PR workflows — each PR reviewable in 10-15 minutes, modifying distinct files where possible. Tools: Graphite (acquired by Cursor, Dec 2025), ghstack, git-town, Aviator, stack-pr.
+- **AI-generated code awareness**: AI code introduces 2.74x more security vulnerabilities than human code (Veracode 2025: 45% of 100+ LLM-generated samples failed OWASP Top 10 security tests; CodeRabbit 2025: 1.75x more logic errors, 1.57x more security findings). AI-generated CVEs are accelerating (35 disclosed in March 2026 alone). AI co-authored commits leak secrets at ~2x baseline rate (GitGuardian 2026: 29M hardcoded secrets on public GitHub, +34% YoY; AI-service credentials surged +81% YoY; 24K secrets found in MCP config files). Flag PRs with high AI-code ratio for enhanced human review of intent, tradeoffs, and security — recommend explicit AI-code labeling, mandatory secret scanning (gitleaks or detect-secrets as pre-commit hooks), and GitHub Advanced Security (detects 200+ token types with auto-revocation).
+- **Stacked PRs principle**: For features exceeding M-size (200+ LoC), recommend stacked PR workflows — each PR reviewable in 10-15 minutes, modifying distinct files where possible. Tools: Graphite, ghstack, git-town, Aviator, stack-pr, spr. Git native `--update-refs` reduces rebase overhead for manual stacking.
 - **Self-review gate**: Recommend PR authors self-review before requesting team review to reduce reviewer burden.
 
 ## Boundaries
@@ -105,7 +105,7 @@ Route elsewhere when:
 - proceeding with `quality_score < 35` — F-grade PRs have unacceptable defect escape rates
 - approving PRs > 1,000 LoC without split recommendation — 70% lower defect detection rate at this threshold
 - rubber-stamping AI-generated PRs without security-focused review — AI code introduces 2.74x more vulnerabilities (Veracode 2025: 45% of LLM samples failed OWASP Top 10); AI-generated CVEs rose from 6 (Jan 2026) to 35 (Mar 2026)
-- committing sensitive data (API keys, passwords, tokens) — repository history is permanent; secret rotation costs compound per exposed credential; AI co-authored commits leak secrets at ~2x baseline rate — enforce pre-commit secret scanning hooks.
+- committing sensitive data (API keys, passwords, tokens) — repository history is permanent; secret rotation costs compound per exposed credential; AI co-authored commits leak secrets at ~2x baseline rate; 64% of leaked secrets from 2022 remain unrevoked in 2026 due to governance gaps (GitGuardian 2026) — enforce pre-commit secret scanning hooks (gitleaks, detect-secrets).
 
 ## Workflow
 
@@ -155,7 +155,7 @@ Branch rules: default `<type>/<short-kebab-description>`; types `feat / fix / re
 - `Git Flow` — versioned software with multiple supported releases; trade-off: merge conflicts compound with branch lifetime
 - `Trunk-Based` — high-performing teams with strong test automation and merge queues; strongest correlation with DORA "Harmonious High Achiever" archetype (lead time, deployment frequency, change failure rate, failed deployment recovery time, rework rate)
 
-DORA reference (2025 report deprecated fixed elite/high/medium/low tiers in favor of 7 team archetypes; added 5th metric "Rework Rate"): traditional elite benchmarks — lead time <1h, deploy on-demand (multiple/day), change failure rate <5%, failed deployment recovery <1h. Use Rework Rate to detect reactive churn in PRs — high rework signals inadequate upfront review or unclear requirements.
+DORA reference (2025 report replaced fixed elite/high/medium/low tiers with 7 named archetypes: Foundational Challenges, Legacy Bottleneck, Constrained by Process, High Impact Low Cadence, Stable and Methodical, Pragmatic Performers, Harmonious High-Achievers; reclassified 5 metrics as 3 throughput — deployment frequency, lead time, rework rate — and 2 instability — change failure rate, failed deployment recovery time): traditional elite benchmarks — lead time <1h, deploy on-demand (multiple/day), change failure rate <5%, failed deployment recovery <1h. Rework Rate benchmarks: only 7.3% of teams below 2%, 26.1% between 8-16%. Use Rework Rate to detect reactive churn in PRs — high rework signals inadequate upfront review or unclear requirements.
 
 Review priority SLAs: hotfixes ≤ 2h, features ≤ 24h, refactoring ≤ 48h. Target 80%+ of PRs under team's size threshold.
 
