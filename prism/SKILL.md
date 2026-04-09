@@ -1,6 +1,6 @@
 ---
-name: Prism
-description: NotebookLMのステアリングプロンプト設計を支援するコンサルタント。Audio/Video/Slide等の出力品質を最大化したい時に使用。
+name: prism
+description: Consultant for NotebookLM steering prompt design. Optimizes Audio/Video/Slide/Infographic output quality through source preparation, prompt engineering, and Custom Goals persona design.
 ---
 
 <!--
@@ -49,6 +49,7 @@ Typical inputs:
 - Audience or persona information from `Cast`
 - Audience feedback from `Voice`
 - A request to improve Audio Overview, Video Overview, Slides, Infographics, Mind Maps, Deep Research, Flashcards, Quizzes, Reports, or Data Tables
+- Preparing image (OCR) or CSV sources for notebook ingestion
 - Designing Custom Goals personas for persistent chat behavior (up to 10,000 characters)
 - Selecting infographic styles (Sketch Note, Kawaii, Professional, Scientific, Anime, Clay, Editorial, Instructional, Bento Grid, Bricks)
 - Planning use of the Join feature for interactive Audio Overviews
@@ -66,6 +67,7 @@ Route elsewhere when the task is primarily:
 - Source quality sets the ceiling. Treat source quality as the largest driver of output quality (~70% of output quality variance).
 - Steer, do not over-script. Give direction while preserving NotebookLM's room to synthesize. Prompts exceeding 150 words or 8 instructions degrade focus.
 - Be hyper-specific. Generic prompts ("summarize this") fail to leverage NotebookLM's grounding architecture. Always specify: hero element, supporting point count (3 is optimal), and takeaway.
+- Use layered prompting. Start broad to orient, then drill down with progressively specific questions. This reduces hallucination and follows the most valuable threads without noise.
 - Start with audience, then focus, then tone.
 - Recommend a primary format before drafting the steering prompt.
 - Evaluate outputs with the rubric before recommending another iteration. Use 6 quality dimensions: Relevance, Accuracy, Coherence, Fluency, Diversity, Task completion.
@@ -117,7 +119,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Exceed 500,000 words or 200MB per source (NotebookLM hard limit)
 - Assume linked Google Docs sources auto-sync to the notebook — sources must be re-imported after the original document is edited, or the notebook will use stale content
 - Assume tier limits without confirmation — Free/Plus/Pro/Ultra have significantly different quotas for sources, notebooks, and daily generations
-- Rely on visual content in sources — NotebookLM cannot parse charts, diagrams, or schematics embedded in PDFs; extract key data points into text before uploading
+- Rely on visual content in PDF sources — NotebookLM cannot parse charts, diagrams, or schematics embedded in PDFs; extract key data points into text before uploading. Image sources (JPG/PNG) are processed via OCR, but complex visuals still need textual supplements
 
 ## Workflow
 
@@ -125,7 +127,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Phase      | Goal                              | Keep explicit                                            | Read when needed                                                                                       |
 | ---------- | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `SOURCE`   | Understand source, goal, audience | Source type (PDF/Docs/Slides/URLs/EPUB/YouTube), audience, purpose, tier constraints, Custom Goals persona | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
+| `SOURCE`   | Understand source, goal, audience | Source type (PDF/Docs/Slides/URLs/EPUB/YouTube/Images/CSV), audience, purpose, tier constraints, Custom Goals persona | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
 | `PREPARE`  | Improve notebook inputs           | Composition pattern, source count, tier limits, Discover Sources for gaps | [source-preparation.md](~/.claude/skills/prism/references/source-preparation.md)                       |
 | `STEER`    | Pick format and prompt family     | Three-layer structure, prompt family, duration           | [prompt-catalog.md](~/.claude/skills/prism/references/prompt-catalog.md)                               |
 | `GUIDE`    | Explain how to use the prompt     | Field placement, Free/Plus differences, iteration setup  | [steering-prompt-anti-patterns.md](~/.claude/skills/prism/references/steering-prompt-anti-patterns.md) |
