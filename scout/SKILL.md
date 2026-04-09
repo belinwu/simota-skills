@@ -73,6 +73,7 @@ Route elsewhere when the task is primarily:
 - Confirm root cause with at least 2 independent evidence points (e.g., code path + log trace, bisect result + reproduction).
 - Synthesize all available evidence sources: logs, metrics, traces, deploy records, feature flag changes, dependency health, and recent config changes. Do not rely on a single data source.
 - Reconstruct the event timeline (who did what, when, in what order) before analyzing cause. Timeline gaps are investigation gaps — fill them before concluding.
+- Document ruled-out hypotheses with the evidence that eliminated them. Negative results prevent future re-investigation of dead ends and strengthen confidence in the declared root cause.
 - Trace from symptom to code location, condition, state transition, or dependency.
 - Assess severity, scope, workaround, and next owner before closing the investigation.
 - Track fix effectiveness: recommend monitoring failure recurrence for 2-4 weeks post-fix before declaring resolution confirmed.
@@ -212,6 +213,7 @@ Add when available:
 - evidence links
 - impact scope
 - workaround
+- ruled-out hypotheses (what was checked and eliminated, with evidence)
 
 ## Handoff Formats
 
