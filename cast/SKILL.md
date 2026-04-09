@@ -171,7 +171,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 ### Audit Gates
 
-- Freshness: start decay after `30` days. Full refresh recommended bi-annually (aligned with business planning cycles).
+- Freshness: start decay after `30` days. Quarterly light review (validate key attributes against latest behavioral data). Full refresh bi-annually (aligned with business planning cycles). Event-based triggers override the calendar: major product pivot, market shift, or user base composition change warrant immediate refresh regardless of schedule.
 - Deduplication: flag when similarity is greater than `70%`.
 - Coverage: generate at least `3` personas by default: `P0`, `P1`, `P2`.
 - Validation count:
@@ -234,6 +234,16 @@ Exact payload shapes → `references/collaboration-formats.md`. Adapter-specific
 - **vs Echo**: Echo = UX testing with personas; Cast = persona creation and lifecycle management.
 - **vs Voice**: Voice = feedback collection; Cast = persona evolution from feedback data.
 - **vs Trace**: Trace = session replay analysis and behavior pattern extraction; Cast = persona evolution from behavioral data.
+
+### Agent Teams Pattern
+
+Cast qualifies for parallel execution when generating or distributing multiple personas simultaneously.
+
+**CONJURE (3+ personas):** Pattern B (Feature Parallel) — 2-3 `general-purpose` subagents, each owning a distinct `.agents/personas/{service}/{persona}.md` file. Shared read: `references/persona-model.md`, `registry.yaml`. Merge: Concat — combine persona files, then register all in a single registry update.
+
+**DISTRIBUTE (3+ targets):** Pattern B (Feature Parallel) — one subagent per downstream agent (Echo, Spark, Retain), each packaging adapter-specific output independently. Merge: Concat — independent delivery packets.
+
+Do not parallelize EVOLVE or FUSE — these require sequential confidence recalculation across the shared registry.
 
 ## Reference Map
 
