@@ -67,7 +67,9 @@ Route elsewhere when the task is primarily:
 ## Core Contract
 
 - Start from the codebase, not from Make output. Codebase is the source of truth.
-- Default to a multi-file Guidelines package rooted at `Guidelines.md`.
+- Default to a multi-file Guidelines package rooted at `Guidelines.md`. Make always reads `Guidelines.md` first; define explicit reading order for all other files within it.
+- Prefer many short guidelines files over few large ones — progressive disclosure keeps each file within context window limits and lets Make load only what it needs.
+- Front-load format-level details (code syntax, import conventions, file structure) at the top of `Guidelines.md` before token or component specifics — wrong format-level assumptions propagate to every generated line.
 - Treat `Muse` as token authority. Report drift; do not override token definitions.
 - Treat `Frame` as the Figma/MCP bridge. Do not call Figma MCP tools directly.
 - Prefer staged prompt sequences over large one-shot prompts. Front-load the first prompt with Context, Description, Platform, Visual Style, and UI Components to minimize follow-up exchanges.
@@ -75,7 +77,7 @@ Route elsewhere when the task is primarily:
 - Always use "Select a library" before prompting; omitting this causes Make to guess at components and generate detached, non-reusable UI.
 - Link components to the codebase via Code Connect when available — this gives Make exact code references instead of generic output.
 - Use `get_variable_defs` via MCP to extract exact token names and code syntax, eliminating ambiguity when multiple tokens share the same visual value.
-- When a Make kit is available, use its auto-generated guidelines as a starting point — refine rather than author from scratch.
+- When a Make kit is available, use its auto-generated guidelines as a starting point — let Make analyze the npm package first, then review and refine rather than authoring from scratch.
 - Guidelines.md is instructional, not enforcement-based — Make follows the rules but nothing blocks non-compliant output automatically. This makes the VALIDATE phase non-optional.
 - Keep Auto Layout nesting ≤ 3 levels; deeper nesting reduces Make output reliability.
 - Limit to 1-2 screens per prompt; > 3 screens per prompt lowers generation reliability.
@@ -147,9 +149,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 - Default output is a package rooted at `Guidelines.md`.
 - Add supporting files only when they reduce prompt ambiguity or context cost.
-- Keep file roles stable:
-  - `Guidelines.md`: entry point, scope, reading order, hard rules
-  - token file: token naming and usage
+- Keep file roles stable (Make reads `Guidelines.md` first; it has no default order for other files, so define reading order explicitly):
+  - `Guidelines.md`: entry point, scope, reading order, format-level details, hard rules
+  - token file: token naming, usage patterns, and cross-token composition examples
   - component file: variants, composition, prohibitions
   - layout file: Auto Layout, sizing, responsiveness
   - pattern file: reusable screen or flow rules
@@ -192,7 +194,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Expect "vanilla" output from Make — explicitly prompt for brand identity, custom typography, and unique visual style to avoid the watered-down LLM-average look.
 - Guard against code regression: when enough functionality exists, each new feature prompt risks overwriting previous behaviors. Use explicit "preserve existing" constraints.
 - When a prompt fails, rephrase with spatial instructions — "move this element down 20 pixels" is more effective than "vertically align these two elements".
-- Budget prompts carefully — Starter ≈ 500, Professional ≈ 3,000, Enterprise ≈ 4,250 credits/month (enforced since March 2026). Add-on packs: 5,000/$120, 7,500/$180, 10,000/$240/month, or $0.03/credit pay-as-you-go. Claude Opus 4.6 consumes significantly more credits than default models; select model tier based on task complexity.
+- Budget prompts carefully — Professional ≈ 3,000, Organization ≈ 3,500, Enterprise ≈ 4,250 credits/seat/month (enforced since March 2026). Add-on packs: 5,000/$120, 7,500/$180, 10,000/$240/month. Pay-as-you-go ($0.03/credit) available from May 2026. Claude Opus 4.6 consumes significantly more credits than default models; select model tier based on task complexity.
 - Clean input frames before prompting: remove unnamed layers, ensure consistent naming, apply proper Auto Layout — dirty input degrades output quality.
 - Leverage Code Connect to link Figma components to codebase implementations — Make generates more accurate code when it can reference existing patterns.
 - Use Figma MCP Remote Access for CI/pipeline-driven Guidelines generation without requiring a desktop app.
