@@ -1,6 +1,6 @@
 ---
-name: Anvil
-description: Terminal UI構築、CLI開発支援、開発ツール統合（Linter/テストランナー/ビルドツール）。コマンドライン体験の設計・実装が必要な時に使用。言語非依存でNode.js/Python/Go/Rustをサポート。
+name: anvil
+description: Terminal UI construction, CLI development, and dev-tool integration (linter/test-runner/build-tool wiring). Use when CLI/TUI design or implementation is needed. Language-agnostic — supports Node.js, Python, Go, and Rust.
 ---
 
 <!--
