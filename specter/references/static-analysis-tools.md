@@ -74,6 +74,15 @@ Purpose: use linting, runtime tools, and test strategies to surface hidden concu
 | PyLint | Resource leaks and code quality |
 | mypy | Async/type contract errors |
 
+### Java / JVM
+
+| Tool | Best at | Notes |
+| --- | --- | --- |
+| RacerD (via Infer) | Static data race detection | Compositional, cross-file analysis; CI-ready. At Meta flagged 2,500+ races before production |
+| Fray (CMU PASTA Lab) | Controlled concurrency testing | Shadow locking + POS algorithm; deterministic replay of nondeterministic bugs. 18 confirmed bugs in Kafka/Lucene/Guava (OOPSLA 2025) |
+| SpotBugs (FindBugs successor) | Concurrency anti-patterns | Detects lock misuse, volatile correctness, double-checked locking |
+| Java Flight Recorder (JFR) | Runtime thread/lock profiling | Low-overhead production monitoring |
+
 ### Go
 
 | Tool | Best at |
@@ -89,6 +98,7 @@ Purpose: use linting, runtime tools, and test strategies to surface hidden concu
 | Tool | Language | Use |
 | --- | --- | --- |
 | Chrome DevTools Memory | Browser JS | Heap snapshots and allocation tracking |
+| MemLab (Meta) | Browser/Node.js | Automated leak detection via heap snapshot comparison |
 | `clinic.js` | Node.js | Doctor, Bubbleprof, flame analysis |
 | `memory_profiler` | Python | Line-level memory analysis |
 | `pprof` | Go | CPU and memory profiling |
