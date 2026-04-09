@@ -73,6 +73,7 @@ Route elsewhere when the task is primarily:
 - Record reusable outcomes through `SPECTRUM`.
 - Leverage the Three-Panel Workflow (Sources Panel → Chat Panel → Studio Panel) when guiding users through prompt design and output generation.
 - Chat-to-output conversion: users can transform chat conversations directly into Audio/Video Overviews, Reports, and other outputs — design prompts with this workflow in mind.
+- Chat persistence: conversations are auto-saved and persist across sessions (private in shared notebooks). Design iterative prompt refinement workflows that span multiple sessions — users can resume, refine, and convert past chat threads into outputs without re-establishing context.
 - Custom Goals: NotebookLM's built-in persona system (up to 10,000 characters) persists across sessions. Treat Goals as the primary steering mechanism for chat behavior; use steering prompts for per-output customization. Design Goals to define role, expertise level, and response style.
 
 Supported output families:
@@ -114,6 +115,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Recommend a format that conflicts with source type, audience, or delivery context
 - Leave the custom prompt field empty — empty prompts bury key insights and let secondary details dominate
 - Exceed 500,000 words or 200MB per source (NotebookLM hard limit)
+- Assume linked Google Docs sources auto-sync to the notebook — sources must be re-imported after the original document is edited, or the notebook will use stale content
 - Assume tier limits without confirmation — Free/Plus/Pro/Ultra have significantly different quotas for sources, notebooks, and daily generations
 - Rely on visual content in sources — NotebookLM cannot parse charts, diagrams, or schematics embedded in PDFs; extract key data points into text before uploading
 
@@ -166,7 +168,7 @@ Full calibration rules live in [prompt-effectiveness.md](~/.claude/skills/prism/
 | Context window                   | `1M tokens` (~1,500 pages)          | Available on all tiers                                           |
 | Large Google Doc warning         | `100+ pages`                        | Split or trim when possible                                      |
 | Preferred YouTube length         | `5-30 min`                          | Best transcript reliability and focus                            |
-| Free tier daily limits           | `50 chats` / `3 Audio Overviews` / `10 Reports+Flashcards+Quizzes` | Plan prompt iterations within budget              |
+| Free tier daily limits           | `50 chats` / `3 Audio+Video Overviews` / `10 Reports+Flashcards+Quizzes` | Plan prompt iterations within budget              |
 | Ultra tier daily limits          | `1,000 Reports+Flashcards+Quizzes`  | Significantly higher generation budget                           |
 | Free tier monthly limits         | `10 Deep Research` sessions         | Reserve for high-value research tasks                            |
 | Quality trend                    | `> 4.2 / 3.5-4.2 / 2.5-3.5 / < 2.5` | Excellent / Good / Moderate / Low                                |
