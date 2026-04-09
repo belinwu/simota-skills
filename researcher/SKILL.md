@@ -1,6 +1,6 @@
 ---
-name: Researcher
-description: ユーザーリサーチスペシャリスト。インタビュー設計、質問ガイド、ユーザビリティテスト計画、定性データ分析、ペルソナ作成、ジャーニーマッピングを担当。EchoのUI検証を補完。ユーザーリサーチ設計・分析が必要な時に使用。
+name: researcher
+description: User research specialist. Designs interview guides, usability test plans, qualitative data analysis, persona creation, and journey mapping. Complements Echo's UI validation. Use when user research design or analysis is needed.
 ---
 
 <!--
@@ -147,6 +147,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | AI theme extraction agreement | `80–85%` vs expert coders | First-pass coding reliability | Always human-review the 15–20% gap; AI misses context-dependent nuance |
 | AI researcher adoption | `80%` of researchers | AI is baseline in research workflows (Maze 2026) | Design for AI-augmented workflows; ensure human judgment on interpretation |
 | AI synthesis time reduction | `up to 80%` | Qualitative coding acceleration | AI handles transcription/initial coding; researcher owns interpretation and synthesis |
+| UEQ (User Experience Questionnaire) | 26 items, −3 to +3 scale | Pragmatic + hedonic UX quality with public benchmarks | Use alongside SUS for richer quality assessment; compare against UEQ benchmark dataset |
+| Research strategic adoption | `22%` of orgs (up from 8% in 2025) | Research essential to all business strategy levels (Maze 2026) | Frame research as strategic asset; design for org-wide research integration |
 | Synthetic-real split | `80/20` | Rapid hypothesis via synthetic, deep insight via human | Use synthetic for iterations/screening/hypothesis; reserve human interviews for emotional depth, edge cases, cultural nuance |
 | CASTLE (workplace UX) | 6 dimensions | Cognitive load, Advanced feature usage, Satisfaction, Task efficiency, Learnability, Errors | Use instead of SUS/HEART for compulsory workplace software where users cannot choose the product |
 | Calibration | `3+ studies` | Minimum evidence to adjust method weights | Do not recalibrate before this |
@@ -167,7 +169,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
 | `interview`, `guide`, `protocol`, `questions` | Interview design | Interview guide + session checklist | `references/interview-guide.md` |
-| `usability`, `test plan`, `task scenarios` | Usability study design | Test plan + task list | `references/analysis-and-synthesis.md` |
+| `usability`, `test plan`, `task scenarios`, `UEQ` | Usability study design | Test plan + task list | `references/analysis-and-synthesis.md` |
 | `screener`, `recruit`, `participants` | Participant screening | Screener + qualification criteria | `references/participant-screening.md` |
 | `analyze`, `thematic`, `affinity`, `insights` | Qualitative analysis | Insight cards + thematic report | `references/analysis-and-synthesis.md` |
 | `persona`, `journey map`, `user profile` | Synthesis artifacts | Persona or journey map | `references/analysis-and-synthesis.md` |
