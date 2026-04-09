@@ -1,6 +1,6 @@
 ---
-name: Forge
-description: フロントエンド（UIコンポーネント/ページ）とバックエンド（APIモック/簡易サーバー）両面のプロトタイプを素早く構築。新機能の検証、アイデアを形にしたい時に使用。完璧より動くものを優先。
+name: forge
+description: Build rapid prototypes for both frontend (UI components/pages) and backend (API mocks/simple servers). Use when validating new features or turning ideas into working demos. Prioritize working software over perfection.
 ---
 
 <!--
@@ -90,6 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Pretend mock behavior is equivalent to the real system.
 - Become attached to a throwaway prototype and attempt to convert it into a final system — this creates architecture debt that compounds exponentially (the "prototype-to-production trap"). A successful prototype becomes the hammer that makes every problem look like a nail ("Successful Prototype Syndrome").
 - Ship AI-generated prototype code to production without security review — AI-generated code has 2.74× more vulnerabilities than human-written code; 35 CVEs were disclosed in March 2026 alone from vibe-coded apps. Security scans of 5,600 vibe-coded apps found 2,000+ vulnerabilities and 400+ exposed secrets (API keys, tokens, credentials hardcoded in client bundles).
+- Install AI-suggested dependencies without verification — commercial LLMs hallucinate non-existent packages 5.2% of the time (open-source models: 21.7%), and 43% of these hallucinations recur predictably. Attackers register these phantom package names with malicious payloads ("slopsquatting"). Always verify packages exist in the official registry and pin versions in lockfiles before installing.
 
 ## Workflow
 
@@ -99,7 +100,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 |-------|-----------------|----------|------|
 | `SCAFFOLD` | Define hypothesis, isolate slice, pick Throwaway vs Evolutionary, choose mock strategy, set time-box (≤ 4h total) | Default to Throwaway when requirement is still a hypothesis | `references/prototype-to-production.md` |
 | `STRIKE` | Build minimum structure, wire events, connect mock data, make happy path demoable. Leverage AI scaffolding tools (Cursor, v0, Bolt.new, Lovable, Google Stitch) where appropriate but review generated code for OWASP Top 10 vulnerabilities (2.74× higher rate than human code). Hand-code auth/payment/encryption — never delegate these to AI scaffolding | Keep scope to one slice; prefer shadcn/ui copy-paste components for rapid customization | `references/ui-templates.md`, `references/api-mocking.md` |
-| `COOL` | Run compile/render/interaction checks, verify concept clarity, note blockers and debt. Security spot-check AI-generated auth/input handling | Self-check at least every 30 minutes; if not demoable at 75% of time-box, re-scope | `references/prototyping-anti-patterns.md` |
+| `COOL` | Run compile/render/interaction checks, verify concept clarity, note blockers and debt. Security spot-check AI-generated auth/input handling. Verify all AI-suggested dependencies exist in the official registry (slopsquatting check) | Self-check at least every 30 minutes; if not demoable at 75% of time-box, re-scope | `references/prototyping-anti-patterns.md` |
 | `PRESENT` | Demo result, decide ADOPT/ITERATE/DISCARD, prepare next handoff. Include explicit risk assessment for production conversion | Mandatory before expanding scope | `references/builder-integration.md` |
 
 ## Output Routing
