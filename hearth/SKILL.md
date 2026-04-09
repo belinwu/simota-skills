@@ -10,7 +10,7 @@ CAPABILITIES_SUMMARY:
 - editor_configuration: neovim 0.12+ builtin LSP config, auto-completion, and vim.pack plugin manager; vim/Zed plugin layout, treesitter, and DAP setup
 - multiplexer_prompt: tmux and starship/powerlevel10k configuration
 - dotfile_management: stow/chezmoi/yadm/bare Git dotfile strategy and migration
-- package_management: Homebrew/mise/asdf reproducible version and package management
+- package_management: Homebrew/mise/asdf reproducible version management, environment variables, and task running
 - xdg_compliance: XDG Base Directory migration and compliance auditing
 - startup_benchmarking: Shell startup time measurement and optimization
 - config_auditing: Anti-pattern detection for shell, editor, terminal, and dotfile configs
@@ -69,7 +69,8 @@ Route elsewhere when the task is primarily:
 - Verify permissions: `600` for sensitive files (SSH keys, tokens), `644` for normal tracked config.
 - Use idiomatic patterns for each tool; do not apply cross-tool assumptions (e.g., zsh syntax to bash, vim keymaps to tmux).
 - Run syntax or health checks after every config change.
-- Benchmark shell startup before and after shell-related changes; escalate if delta exceeds profile target by > 50%.
+- Benchmark shell startup before and after shell-related changes; escalate if delta exceeds profile target by > 50%. Always use `zprof` or `zsh -xv` to profile before guessing — intuition about startup bottlenecks is frequently wrong.
+- On macOS, avoid running `brew shellenv` directly in shell startup; it spawns a Ruby process adding 50-100ms. Inline its output as static exports instead.
 - Default to `Standard` profile unless the user requests otherwise.
 - Never commit secrets to dotfile repos — 73.6% of public dotfiles leak sensitive data (email, SSH keys, API tokens), and GitHub reported 39 million leaked secrets across repositories in 2024 alone. Use `.local` file separation and recommend pre-commit secret scanning (Gitleaks or TruffleHog).
 - Bootstrap scripts must be idempotent — re-running should not duplicate installations or break existing state.
@@ -80,11 +81,11 @@ Route elsewhere when the task is primarily:
 |----------|-----------------|-------------------|-------|
 | Shell | `zsh`, `fish`, `bash` | `zsh` | Prefer modular layouts and tool-specific idioms |
 | Shell plugins | `zinit` (turbo mode), `antidote`, `sheldon` | `zinit` | Turbo mode achieves 50-80% startup reduction; avoid oh-my-zsh for performance |
-| Terminal | `ghostty 1.3+`, `alacritty`, `kitty`, `wezterm` | `ghostty 1.3+` | Zig-based, GPU-accelerated (Metal on macOS), Kitty graphics protocol, scrollback search, key tables for modal keybindings |
-| Editor | `neovim 0.12+`, `vim`, `Zed` | `neovim 0.12+` | 0.12 adds vim.pack (builtin plugin manager), expanded native LSP (inline completion, document colors, code lens), and builtin insert-mode auto-completion; lazy.nvim + Mason + Tree-sitter still recommended for advanced setups |
+| Terminal | `ghostty 1.3+`, `alacritty`, `kitty`, `wezterm` | `ghostty 1.3+` | Zig-based, GPU-accelerated (Metal on macOS), Kitty graphics protocol, scrollback search, key tables for modal keybindings, command completion notifications, chained keybindings, AppleScript automation (macOS) |
+| Editor | `neovim 0.12+`, `vim`, `Zed` | `neovim 0.12+` | 0.12 adds vim.pack (builtin plugin manager), expanded native LSP (inlineCompletion, selectionRange, linkedEditingRange, documentLink, document colors, code lens), builtin insert-mode auto-completion with `nearest` completeopt, and `:lsp` command; lazy.nvim + Mason + Tree-sitter still recommended for advanced setups |
 | Multiplexer / Prompt | `tmux`, `starship`, `powerlevel10k` | `tmux` + `starship` | Keep prompt cost proportional to startup targets |
 | Dotfile management | `stow`, `chezmoi`, `yadm`, bare Git | `stow` (single machine), `chezmoi` (multi-machine) | chezmoi has native templates + secret manager integration; stow harder to migrate away from |
-| Package / versions | `Homebrew`, `mise`, `asdf` | `mise` | Prefer reproducible package and version management |
+| Package / versions / tasks | `Homebrew`, `mise`, `asdf` | `mise` | mise covers version management, environment variables (direnv replacement), and task running; prefer it as unified dev tool manager |
 | Secret scanning | `gitleaks`, `trufflehog`, `detect-secrets` | `gitleaks` | Pre-commit hook integration for dotfile repos |
 | Personal Git | `~/.gitconfig`, global ignores, diff tools | `delta` for diffs | Keep secrets out of tracked config |
 | Font | Nerd Font variants | `JetBrains Mono Nerd Font` | Best readability for terminal/editor use |
@@ -125,6 +126,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Hard-code OS-specific paths without detection logic.
 - Skip syntax or health validation after config changes.
 - Use `git config credential.helper store` — stores passwords in plaintext on disk with only filesystem permissions as protection.
+- Call `compinit` more than once during shell init — each call rescans fpath and adds 30-80ms; ensure frameworks and custom config invoke it exactly once.
+- Run `brew shellenv` or similar dynamic evaluation in shell startup when static exports achieve the same result with zero overhead.
 
 ## Workflow
 
@@ -142,7 +145,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Tool | Syntax / health check | Functional check |
 |------|------------------------|------------------|
-| `zsh` | `zsh -n ~/.zshrc` | `time zsh -i -c exit` |
+| `zsh` | `zsh -n ~/.zshrc` | `time zsh -i -c exit`; `zprof` (add `zmodload zsh/zprof` at top of `.zshrc`) |
 | `bash` | `bash -n ~/.bashrc` | `time bash -i -c exit` |
 | `fish` | `fish -n ~/.config/fish/config.fish` | `fish -i -c exit` |
 | `neovim` | `nvim --headless +qa 2>&1` | `nvim --headless "+checkhealth" +qa`; `:lsp` command for LSP status (0.12+) |
