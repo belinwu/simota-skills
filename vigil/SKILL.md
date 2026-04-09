@@ -74,7 +74,7 @@ Route elsewhere when the task is primarily:
 - Provide detection coverage metrics as percentage of applicable ATT&CK techniques covered, with gap prioritization.
 - Pair detection rules with recommended response actions (SOC playbook steps).
 - Treat detection rules as living code: version-controlled, peer-reviewed, CI/CD-deployed, and continuously tuned based on production feedback.
-- Apply Detection-as-Code (DaC) principles: detection logic is testable, repeatable, and integrated with development workflows — not UI-driven manual processes.
+- Apply Detection-as-Code (DaC) principles: detection logic is testable, repeatable, and integrated with development workflows — not UI-driven manual processes. Align DaC pipelines with NIST SP 800-204D for DevSecOps integration and OWASP CI/CD Top 10 for pipeline security hardening.
 - Use Sigma Specification v2.1+ as the default rule format — leverage correlation rules for multi-event detection sequences, new modifiers (cidr, regex, time extraction) for precision filtering, and Sigma Filters for centralized false-positive exclusion rules that apply across multiple detections. Use pySigma/sigma-cli as the conversion and validation toolchain.
 - Align detection coverage mapping with MITRE ATT&CK v18+ Detection Strategies and Analytics — the framework now provides per-technique detection guidance replacing legacy Detections/Data Sources, giving structured blueprints for what to detect and how.
 
@@ -101,7 +101,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ### Never
 - Deploy detection rules directly to production without testing — poorly tuned automated rules have quarantined entire departments and taken down business-critical applications, with recovery measured in hours and business impact in hundreds of thousands of dollars.
-- Write overly broad rules that generate alert fatigue — fewer than 5% of rules generate most noise; 60%+ of SOC teams encounter false positives frequently (SANS 2025 survey), and 82.3% of organizations that suffered significant incidents cited alert fatigue as a contributing factor.
+- Write overly broad rules that generate alert fatigue — fewer than 5% of rules generate most noise; 83% of SOC analysts report most alerts are false positives, 67% of daily alerts go unaddressed (ACM Computing Surveys 2025), and alert fatigue remains a top contributing factor in significant security incidents.
 - Skip MITRE ATT&CK mapping for any detection rule — unmapped rules create invisible coverage gaps and prevent meaningful maturity measurement.
 - Write implementation code beyond detection rule syntax (delegate to Builder/Gear).
 - Ignore false positive rates when recommending rules.
@@ -360,7 +360,7 @@ HUNTING_HYPOTHESIS:
 
 | # | Anti-Pattern | Check | Fix |
 |---|-------------|-------|-----|
-| AP-1 | **Alert Fatigue Factory** — deploying noisy rules that overwhelm analysts. Each false positive is attention debt: it compounds, making the next real alert less likely to be noticed. Average SOC receives 3,800+ alerts/day; only ~25% get triaged | FP rate measured? Alert volume per analyst tracked? | Tune thresholds, add exclusions, use Sigma Filters for centralized FP management, test with production data |
+| AP-1 | **Alert Fatigue Factory** — deploying noisy rules that overwhelm analysts. Each false positive is attention debt: it compounds, making the next real alert less likely to be noticed. Average SOC receives 4,484+ alerts/day; 67% go unaddressed, and 83% of analysts report most alerts are false positives (ACM Computing Surveys 2025) | FP rate measured? Alert volume per analyst tracked? | Tune thresholds, add exclusions, use Sigma Filters for centralized FP management, test with production data |
 | AP-2 | **Coverage Theater** — claiming ATT&CK coverage without testing rules | Rules validated against real attacks? | Run true positive tests with Breach attack scenarios |
 | AP-3 | **Write-and-Forget** — deploying rules without lifecycle management | Rule review cadence defined? | Establish detection rule retirement and tuning schedule |
 | AP-4 | **Copy-Paste Rules** — using community rules without adaptation | Rules tuned for this environment? | Customize log sources, thresholds, and exclusions |
