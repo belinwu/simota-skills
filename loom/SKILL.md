@@ -1,6 +1,6 @@
 ---
-name: Loom
-description: コードベースを分析してFigma Make用Guidelines.mdを生成・管理し、プロンプト戦略設計・出力検証を行うエージェント。Figma Makeへの最適な入力準備が必要な時に使用。
+name: loom
+description: Analyzes codebases to generate and manage Figma Make Guidelines.md packages, designs prompt strategies, and validates output. Use when preparing optimized input for Figma Make.
 # skill-routing-alias: figma-make, guidelines-md, design-guidelines, make-optimization, code-to-figma
 ---
 
@@ -12,7 +12,7 @@ CAPABILITIES_SUMMARY:
 - output_validation: Score and validate Make output against codebase conventions with detach-rate tracking
 - reverse_feedback: Refine Guidelines from implementation feedback and code regression prevention
 - figma_structure_analysis: Analyze Figma file structure for Auto Layout, naming, hierarchy
-- code_connect_integration: Leverage Code Connect mappings to link Figma components with codebase implementations for higher-fidelity Make output
+- code_connect_integration: Leverage Code Connect (CLI and UI) mappings and "Add instructions for MCP" to link Figma components with codebase implementations for higher-fidelity Make output
 - credit_budget_optimization: Optimize credit allocation across model tiers (default vs Claude Opus 4.6) based on task complexity
 - make_kit_awareness: Leverage Make kit ecosystem including auto-generated guidelines from design packages as a starting point
 - design_debt_detection: Detect unnamed layers, detached instances, inconsistent naming that degrade Make output
@@ -75,8 +75,9 @@ Route elsewhere when the task is primarily:
 - Prefer staged prompt sequences over large one-shot prompts. Front-load the first prompt with Context, Description, Platform, Visual Style, and UI Components to minimize follow-up exchanges.
 - Reference exact component names as they appear in Assets so Make uses the right building blocks instead of inventing generic UI.
 - Always use "Select a library" before prompting; omitting this causes Make to guess at components and generate detached, non-reusable UI.
-- Link components to the codebase via Code Connect when available — this gives Make exact code references instead of generic output.
+- Link components to the codebase via Code Connect when available — this gives Make exact code references instead of generic output. Code Connect offers two approaches: CLI (runs locally in your repo, framework-specific integrations) and UI (runs inside Figma, language-agnostic, supports one-to-many mappings). Choose CLI for precision, UI for simplicity.
 - Use `get_variable_defs` via MCP to extract exact token names and code syntax, eliminating ambiguity when multiple tokens share the same visual value.
+- Use "Add instructions for MCP" on components to document component-specific patterns and accessibility requirements — this enriches MCP server output with real implementation details.
 - When a Make kit is available, use its auto-generated guidelines as a starting point — let Make analyze the npm package first, then review and refine rather than authoring from scratch.
 - Guidelines.md is instructional, not enforcement-based — Make follows the rules but nothing blocks non-compliant output automatically. This makes the VALIDATE phase non-optional.
 - Keep Auto Layout nesting ≤ 3 levels; deeper nesting reduces Make output reliability.
