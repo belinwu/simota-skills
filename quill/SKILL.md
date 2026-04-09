@@ -1,6 +1,6 @@
 ---
-name: Quill
-description: JSDoc/TSDoc追加、README更新、any型の型定義化、複雑ロジックへのコメント追加。ドキュメント不足、コードの意図が不明、型定義改善が必要な時に使用。
+name: quill
+description: Add JSDoc/TSDoc, update READMEs, replace any types with proper definitions, and add high-value comments to complex logic. Use when documentation gaps, unclear intent, or type safety improvements are needed.
 ---
 
 <!--
@@ -9,7 +9,7 @@ CAPABILITIES_SUMMARY:
 - readme_management: Create, update, audit README.md with installation, usage, configuration, contributing sections
 - type_definition_improvement: Replace `any` types with proper interfaces, generics, utility types, type guards — target ≥80% type coverage for public APIs
 - documentation_coverage_audit: Measure and report JSDoc coverage (≥80% public API target, ≥70% CI gate), type coverage, link health, example coverage
-- api_documentation: OpenAPI/Swagger annotations, TypeDoc 0.28+ generation (including @expand/@inline/@import tags for type rendering control), GraphQL schema documentation
+- api_documentation: OpenAPI/Swagger annotations, TypeDoc 0.28+/0.29 generation (including @expand/@inline/@import tags for type rendering control, destructured parameter renaming, constructor type parameter inheritance), GraphQL schema documentation
 - complex_code_commenting: Explain magic numbers, complex regex, business rules, non-obvious constraints — mandatory when cyclomatic complexity >10
 - changelog_maintenance: Keep a Changelog format, version tracking, deprecation notices
 - documentation_quality_checklist: Completeness, accuracy, readability, maintainability verification
@@ -78,8 +78,8 @@ Route elsewhere when the task is primarily:
 - Document `Why`, constraints, business rules, and maintenance context. Do not narrate obvious code — avoid over-annotation (only add JSDoc where it provides real value beyond type signatures).
 - Treat types as documentation. Prefer explicit interfaces, generics, utility types, and type guards over `any`. Target ≥80% JSDoc coverage for public APIs. For CI gates, use ratcheting strategy: start ≥50% and increase over time to avoid blocking existing work while creating pressure to document new code.
 - Keep documentation accurate and single-sourced. Remove duplication instead of maintaining parallel truths. Detect doc-code drift by comparing doc last-modified dates against corresponding code changes — stale age alone (e.g., 90 days) misses drift in active modules and false-flags stable ones. For procedural docs (setup guides, tutorials), prefer executable validation ("Docs as Tests") over timestamp heuristics — run documented steps against real environments in CI to catch silent drift.
-- Use TSDoc standard (@microsoft/tsdoc parser) for TypeScript projects to ensure cross-tool compatibility (TypeDoc, API Extractor, ESLint, VS Code). Note: TypeScript 7 ("Corsa", Go-based native compiler targeting mid-2026) focuses on compile speed; verify JSDoc feature support against the actual release notes before assuming parity with TS 6.0.
-- For library/component APIs, use TypeDoc 0.28's `@expand` tag on prop interfaces to inline properties at the component reference site; use `@inline` for type aliases that should be resolved at the point of use. Use `@preventExpand`/`@preventInline` to override inherited expansion. Prefer `@expand` for React component props documentation.
+- Use TSDoc standard (@microsoft/tsdoc parser) for TypeScript projects to ensure cross-tool compatibility (TypeDoc, API Extractor, ESLint, VS Code). Note: TypeScript 7 ("Corsa", Go-based native compiler) drops JSDoc `@enum` and `@constructor` support, no longer auto-converts `Object` to `any` or `String` to `string`, and no longer treats certain parameters as implicitly optional. `@template` and `@callback` now support generics natively. Audit existing JSDoc comments before upgrading — JavaScript codebases will likely see new errors.
+- For library/component APIs, use TypeDoc 0.28+'s `@expand` tag on prop interfaces to inline properties at the component reference site; use `@inline` for type aliases that should be resolved at the point of use. Use `@preventExpand`/`@preventInline` to override inherited expansion. Prefer `@expand` for React component props documentation. TypeDoc 0.29 adds improved destructured parameter detection/renaming and automatic constructor type parameter inheritance from class docs.
 - Maintain consistent tag order: `@param` → `@returns` → `@throws` → `@example` → `@see` → `@deprecated`.
 - Record outputs, coverage changes, and reusable patterns for CHRONICLE calibration.
 
