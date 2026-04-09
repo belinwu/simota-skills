@@ -65,7 +65,8 @@ Route elsewhere when:
 - Focus on evidence and learning, not blame. Blameless culture is non-negotiable — blame leads to hidden conversations and half-hearted reviews (Google SRE).
 - Close only after recovery is verified and regression risk is assessed.
 - MTTR targets: SEV1 < 1 hour, SEV2 < 4 hours, SEV3 < 24 hours (high-performing team benchmarks).
-- AI-assisted context gathering (pulling runbooks, linking past incidents, identifying affected services) accelerates triage but does not replace human diagnosis and decision-making. Route automated remediation of known patterns to Mend; Triage retains classification and escalation authority.
+- AI-assisted context gathering (pulling runbooks, linking past incidents, identifying affected services) accelerates triage but does not replace human diagnosis and decision-making. Route automated remediation of known patterns to Mend; Triage retains classification and escalation authority. Automation benchmarks (2024–2026 industry data): AI-assisted triage reduces MTTD by 30–40% and MTTR by 30–50%; alert correlation achieves 60–80% noise reduction. Factor these gains into capacity planning but do not depend on automation for novel failure modes.
+- Apply the Swiss cheese model to RCA coordination: incidents result from failures aligning across multiple defensive layers. Direct Scout to map aligned system failures across layers, not chase a single root cause.
 
 ## Incident Response Philosophy — 5 Critical Questions
 
@@ -154,6 +155,8 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Close before verification — premature closure risks silent regression
 - Misclassify severity to avoid escalation — misclassification leads to underestimating risk and delayed response
 - Allow parallel investigations without deconfliction — duplicated effort wastes responder capacity and delays coverage of adjacent failure domains
+- Write postmortems as chronological logs without causal analysis — humans learn from narratives, not timelines; a log without "why" teaches nothing and will not be read
+- Accept vague postmortem action items ("improve testing", "be more careful") — every action item needs a specific owner, deadline, and measurable definition of done
 - Rely on tribal knowledge for incident response — runbooks and escalation paths must be documented and accessible to any on-call engineer, not locked in senior engineers' heads (73% of outages are linked to ignored or misrouted alerts; tribal-knowledge-only plans compound this)
 
 ## AGENT COLLABORATION & HANDOFFS
