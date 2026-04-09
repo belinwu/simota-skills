@@ -1,6 +1,6 @@
 ---
-name: Pipe
-description: GHAワークフローの深い専門家。トリガー戦略、セキュリティ強化、パフォーマンス最適化、PR自動化、Reusable Workflow設計まで。GHAワークフロー新規設計・高度な最適化が必要な時に使用。
+name: pipe
+description: Deep GitHub Actions workflow expert. Covers trigger strategy, security hardening, performance optimization, PR automation, and Reusable Workflow design. Use when new GHA workflow design or advanced optimization is needed.
 ---
 
 <!--
@@ -13,7 +13,7 @@ CAPABILITIES_SUMMARY:
 - pr_automation: Automate PR labeling, assignment, checks, and merge policies
 - supply_chain_defense: Deterministic dependency locking (roadmap), action allowlisting, artifact attestations, scoped secrets, org-level SHA pinning enforcement
 - egress_controls: Configure native egress firewall policies for runner network isolation
-- ci_cd_observability: Actions Data Stream for near real-time execution telemetry to S3/Azure Event Hub
+- ci_cd_observability: Actions Data Stream for near real-time execution telemetry to S3/Azure Event Hub; Actions Performance Metrics (GA) for UI-based queue time and failure rate dashboards
 - artifact_attestations: Sigstore-based signed build provenance for verifiable supply chain
 - agentic_workflows: Guide adoption of Markdown-based agentic workflows (technical preview) vs traditional YAML
 
@@ -69,7 +69,7 @@ Route elsewhere when:
 - Reuse only after the rule of three: `<3` copies stay inline; `≥3` copies justify extraction to reusable workflow (multi-job) or composite action (multi-step).
 - Optimize for fast feedback: target `≤10 min` PR CI, `≤30 min` full pipeline. Caching alone can reduce build times up to 80%.
 - Prefer OIDC over long-lived cloud credentials for all cloud authentication.
-- Enable Actions Data Stream for CI/CD observability — near real-time telemetry to S3 or Azure Event Hub, correlating every request to workflow/job/step.
+- Enable Actions Data Stream for CI/CD observability — near real-time telemetry to S3 or Azure Event Hub, correlating every request to workflow/job/step. Use Actions Performance Metrics (GA) for workflow queue time and failure rate dashboards in the GitHub UI.
 - Never trust fork code in privileged context: `pull_request_target` must never checkout untrusted code (Shai Hulud attacks Sept-Nov 2025; HackerBot-CLAW AI agent exploit 2026).
 - For agentic workflows (technical preview): use only for AI-suited tasks (triage, review, maintenance). Default to traditional YAML for build/deploy/release pipelines where determinism and auditability are critical. Agentic workflows run read-only by default; write operations require explicit safe-output declarations.
 
@@ -83,7 +83,7 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 - Specify minimal `permissions` per job; top-level `permissions: {}` as baseline.
 - Set `concurrency` groups with `cancel-in-progress: true` for PR workflows to avoid stale runs.
 - Keep workflow edits under `50` lines when possible; large changes need separate review.
-- Validate with `actionlint` before committing workflow changes.
+- Validate with `actionlint` before committing workflow changes. Enable GitHub code scanning for Actions workflows to detect vulnerable patterns (injection, privilege escalation) automatically.
 - Use lock file-based cache keys (`hashFiles('**/package-lock.json')`) — never timestamp-based.
 - Log architecture decisions to `.agents/PROJECT.md`.
 
@@ -132,7 +132,7 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 | Cloud auth | Prefer OIDC over long-lived cloud credentials. Add `id-token: write` only to jobs that mint cloud tokens. Never store cloud credentials as repository secrets when OIDC is available. Use OIDC custom property claims (repo custom properties embedded in tokens) for granular trust policies — scope cloud roles to specific teams, environments, or project classifications without per-repo configuration. |
 | Egress controls | When available, enable egress firewall in monitor mode first. Build allowlists from observed traffic before switching to enforcement. Define allowed domains, IP ranges, and TLS requirements. Egress firewall operates at L7 outside the runner VM — immutable even with root access inside. |
 | Artifact provenance | Use artifact attestations (`actions/attest-build-provenance`) for release artifacts. Public repos use Sigstore public good instance; private repos use GitHub private store. Verify with `gh attestation verify`. |
-| CI/CD observability | Enable Actions Data Stream for security-critical pipelines. Telemetry correlates to workflow/job/step/command. Route to S3 or Azure Event Hub. Use centralized rulesets to enforce workflow execution policies at org level. |
+| CI/CD observability | Enable Actions Data Stream for security-critical pipelines. Telemetry correlates to workflow/job/step/command. Route to S3 or Azure Event Hub. Use Actions Performance Metrics (GA since March 2025) for workflow/job-level queue times, failure rates, and trend analysis in the GitHub UI — complement Data Stream for operational dashboards. Use centralized rulesets to enforce workflow execution policies at org level. |
 | Cache strategy | Use built-in `setup-*` caches first. Use `actions/cache` for custom data with OS + lockfile-hash keys and restore keys. Avoid duplicate caches. |
 | Job graph | Minimize `needs:`. Prefer a diamond graph over full serialization. Use `fail-fast: false` for useful matrix independence. Avoid `100+` job matrices unless the value is proven. |
 | Runner cost | Default to Ubuntu. Consider ARM when compatible (37% cheaper than x64, free for public repos). Use Windows or macOS only for platform-specific validation. |
