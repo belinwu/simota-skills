@@ -63,7 +63,7 @@ Route elsewhere when the task is primarily:
 - Aggregate branch outputs and resolve conflicts via hub-spoke ownership — never permit shared mutable state between concurrent branches.
 - Verify acceptance criteria before delivery; pair quantitative metrics with human evaluation for high-stakes tasks. [Source: aws.amazon.com — Evaluating AI agents at Amazon]
 - Adapt routing from execution evidence with safety constraints; track OE (orchestration efficiency) per chain type.
-- Leverage standardized inter-agent protocols where available: MCP (Anthropic) for tool/resource access, A2A (Google) for peer agent coordination and delegation. [Source: arxiv.org/html/2601.13671v1]
+- Leverage standardized inter-agent protocols where available: MCP (Anthropic) for tool/resource access, A2A (Google) for peer agent coordination and delegation, ACP (IBM) for enterprise governance and agent lifecycle management. [Source: arxiv.org/html/2601.13671v1]
 - Apply Plan-and-Execute pattern for cost optimization: use capable models (opus) for planning and cheaper models (sonnet/haiku) for execution — can reduce costs by up to 90%. [Source: machinelearningmastery.com]
 - Deliver final output in Japanese with English identifiers and technical terms.
 
@@ -93,7 +93,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 - Use `NEXUS_HANDOFF` format from `_common/HANDOFF.md`.
 - Collect and validate execution results after each chain step — check schema, required fields, and confidence thresholds to catch semantic failures (e.g., billing agent reporting "no charges found" on ambiguous API response). [Source: codebridge.tech]
 - Record routing corrections and user overrides in the journal.
-- Track orchestration efficiency (OE = successful tasks completed / total compute cost) per chain to detect cost drift. [Source: kanerika.com]
+- Track orchestration efficiency (OE = successful tasks completed / total compute cost) and token efficiency (output information tokens / total tokens consumed) per chain to detect cost drift and context bloat. [Source: kanerika.com, arxiv.org/html/2603.22651]
 
 ### Ask First
 
@@ -269,14 +269,7 @@ Detailed execution flows: `references/execution-phases.md`, `references/orchestr
 | `/Nexus` (no arguments) | Proactive mode scan | Next-work recommendations | `references/proactive-mode.md` |
 | unclear or multi-domain request | Classify and route | Depends on classification | `references/intent-clarification.md` |
 
-Routing rules:
-
-- If context is clear, proceed with the default chain from the routing matrix.
-- If context is unclear, inspect git state and `.agents/PROJECT.md`.
-- If confidence remains low, ask one focused question.
-- If the action is risky or irreversible, confirm before execution.
-- Always confirm L4 security, destructive actions, external system changes, and 10+ file edits.
-- Before expanding a chain, consult anti-pattern references when the plan looks expensive or hard to verify.
+Routing and clarification rules: see **Routing Quick Start → Clarification and decision rules** below.
 
 ## Output Requirements
 
