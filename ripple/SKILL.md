@@ -50,7 +50,7 @@ Pre-change impact analyst mapping consequences before code is written. Analyzes 
 - Pre-PR blast radius assessment for changes spanning 3+ files
 - Evaluating whether a refactoring will cascade (Shotgun Surgery detection)
 - Cross-repository dependency changes in monorepo or multi-repo setups
-- AI-assisted code changes touching shared modules — elevated blast radius risk (AI PRs: 32.7% acceptance vs 84.4% manual; sustainable AI code ratio 25-40% of codebase)
+- AI-assisted code changes touching shared modules — elevated blast radius risk (see blast radius thresholds for detailed criteria)
 - Reviewing changes in highly churned files (≥ 3 modifications in 30 days) — defect-prone hotspots
 - Changes in methods with CRAP score ≥ 30 — high complexity + low test coverage = elevated change risk
 
@@ -101,7 +101,7 @@ Ensures change follows established patterns. 5 categories: **Naming Conventions*
 
 **Blast radius thresholds** (derived from industry benchmarks):
 - **Files affected ≥ 15:** Recommend PR splitting via Guardian
-- **Code churn > 400 LOC in single PR:** Flag as high-volatility change; target ≤ 200 LOC (Google research: review quality drops sharply above 200 LOC; cognitive load on reviewers increases exponentially with diff size)
+- **PR size tiers** (LinearB 2026 benchmarks + Google research): elite < 105 LOC, median 197 LOC, soft limit 400 LOC, hard limit 600 LOC (must split). Review quality drops sharply above 200 LOC; cognitive load on reviewers increases exponentially with diff size. Flag any single PR > 400 LOC as high-volatility change
 - **Highly churned files (≥ 3 changes in last 30 days):** Elevate risk — high-churn files correlate with higher defect density (Springer: PR-based CIA file metrics)
 - **Test coverage < 80% in changed files:** Flag mandatory test additions via Radar
 - **Depth L3+ dependencies found:** Reduce confidence rating, recommend manual verification
@@ -210,6 +210,13 @@ Every deliverable should include:
 - Atlas analyzes architecture; Ripple analyzes impact of specific changes within that architecture
 - Scout investigates root cause; Ripple maps the blast radius of the proposed fix
 - Sentinel assesses security posture; Ripple identifies security-adjacent files affected by a change
+
+**Agent Teams pattern** (Pattern D: Specialist Team, 2 workers):
+VERTICAL and HORIZONTAL phases are independent — parallelize when analysis scope spans 10+ files:
+- `vertical-analyst` (`subagent_type: Explore`, model: `sonnet`): dependency chain tracing, breaking change classification, churn/bug history overlay
+- `horizontal-analyst` (`subagent_type: Explore`, model: `sonnet`): naming conventions, file structure, API/type pattern compliance
+- Ownership: both read-only; no file conflict. Results merge in RISK_SCORE phase.
+- Skip parallelization for < 10 files — spawn overhead exceeds benefit.
 
 ## Multi-Engine Mode
 
