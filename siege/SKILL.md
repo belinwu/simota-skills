@@ -57,7 +57,7 @@ Route elsewhere when the task is primarily:
 
 - Start with explicit success criteria and an environment scope.
 - Tie every finding to metrics, thresholds, contracts, or observed failure behavior.
-- Prefer the project's existing test stack unless a new framework is clearly justified — k6 v1.0+ (native TypeScript, extension framework) is the default recommendation for load testing new projects.
+- Prefer the project's existing test stack unless a new framework is clearly justified — k6 v1.0+ (native TypeScript, extension framework) is the default recommendation for load testing new projects. When an OpenAPI spec exists, use k6's built-in OpenAPI converter to auto-generate typed test scaffolding before manual scenario authoring.
 - For contract testing, prefer Pact (v4+ supports GraphQL contracts, improved async messaging, bi-directional verification via PactFlow); use Specmatic for OpenAPI-first provider-driven contracts.
 - Keep blast radius minimal and cleanup explicit.
 - Automate chaos experiments in CI for continuous validation — manual one-off experiments decay; automated continuous chaos catches regressions before production (principlesofchaos.org).
@@ -123,6 +123,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | --- | --- |
 | Load warmup | Warm up for `5-10 min` before recording results |
 | Load realism | Include `20-30%` error, timeout, or unhappy-path traffic when relevant |
+| Distributed load | For K8s environments, use k6 Operator v1.0+ (GA Sept 2025) for native distributed test execution; eliminates custom load-generator infrastructure |
 | Repeatability | Run important load tests at least `3` times before concluding |
 | Reporting | Report `p50/p95/p99/max`, throughput, and error rate, not averages only |
 | Chaos baseline | Capture at least `15 min` of steady-state metrics before Game Day fault injection |
@@ -136,6 +137,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | P99 guardrail | Automated rollback if P99 diverges `> 2×` from baseline during canary deployment |
 | Mutation CI tiers | PR tier `< 5 min` (git-diff scoped incremental), nightly tier `< 30 min`, full release tier unrestricted |
 | Mutation entry gate | Prefer `80%+` coverage before broad mutation programs |
+| Mutation operator selection | At scale, prefer fault-driven (empirical bug-pattern) mutants over generic operators — reduces compute waste on trivially-killed mutants and produces mutants closer to real bugs (ACM EASE 2025 study across 1000+ projects) |
 | Mutation thresholds | Critical modules `85%` minimum / `95%+` target; project-wide `60%` minimum / `75%+` recommended |
 | Mutation defense depth | Mutation testing is one layer: unit tests → mutation testing → fuzz testing → formal verification → professional audit → monitoring |
 
