@@ -1,6 +1,6 @@
 ---
-name: Director
-description: Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供。プロダクトデモ、機能紹介動画、オンボーディング素材の作成が必要な時に使用。
+name: director
+description: Automated feature demo video production using Playwright E2E tests. Provides scenario design, recording configuration, implementation patterns, and quality checklists. Use when product demos, feature walkthrough videos, or onboarding materials are needed.
 ---
 
 <!--
@@ -79,6 +79,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Verify the video plays cleanly before delivery.
 - Log activity to `.agents/PROJECT.md`.
 - Use locator-based waits for state changes (not arbitrary timeouts).
+- Clean up recording artifacts after each session — Playwright generates temporary video files in the `test-results/` directory that accumulate quickly (high-resolution `.webm` files are 2-5 MB per minute). Remove or archive completed recordings to prevent disk exhaustion in CI and local environments.
 
 ### Ask First
 
@@ -137,7 +138,8 @@ Routing rules:
 
 ## Critical Constraints
 
-- Recording API: use `recordVideo` context option for full-session capture (one page per context only — multi-page flows need separate contexts or per-page `page.screencast`); use `page.screencast` API for precise start/stop control over specific flow segments. Key methods: `screencast.start({ path })` / `screencast.stop()` for recording, `screencast.showChapter(title, { description })` for chapter titles, `screencast.showOverlay(html)` / `screencast.hideOverlays()` for custom HTML overlays, and `onFrame` callback for real-time JPEG frame streaming (thumbnails, live previews, AI vision).
+- Recording API: use `recordVideo` context option for full-session capture (one page per context only — multi-page flows need separate contexts or per-page `page.screencast`); use `page.screencast` API for precise start/stop control over specific flow segments. Key methods: `screencast.start({ path })` / `screencast.stop()` for recording, `screencast.showChapter(title, { description })` for chapter titles, `screencast.showOverlay(html)` / `screencast.hideOverlays()` for custom HTML overlays, and `onFrame` callback for real-time JPEG frame streaming (thumbnails, live previews, AI vision). Overlay visibility can be toggled via `screencast.showOverlays()` / `screencast.hideOverlays()` without removing overlay content.
+- Playwright MCP integration: since Playwright MCP (v1.59+, 2025), AI agents can drive browsers via Model Context Protocol. For agentic video receipts, this enables agent-orchestrated recording where the agent both performs the task and captures the screencast proof — useful for CI verification and audit trails without manual scripting.
 - `slowMo`: use `300-1500ms`; common anchors are `300` quick demo, `500` standard, `600-700` form-heavy, `800-1000` presentation pace.
 - Wait strategy: use locator-based waits for state changes; use `waitForTimeout()` only for deliberate pacing pauses.
 - Action annotations: `screencast.showActions()` highlights interacted elements and displays action titles. Configure `position` ('top-left', 'top', etc.), `duration`, and `fontSize`. Use `screencast.hideActions()` to stop. Prefer built-in action annotations before building custom overlays.
