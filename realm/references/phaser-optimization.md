@@ -62,16 +62,18 @@ This is an optional upgrade path, not the baseline layout:
 |---|---|---|
 | 3.80 | 2024-02 | Particle improvements |
 | 3.85 | 2024-09 | `ParticleEmitter` GameObject support |
-| 3.87 | 2025-02 | Latest stable target |
+| 3.87 | 2025-02 | Particle and stability fixes |
+| 3.90.0 | 2025-05 | "Tsugumi" — latest stable target |
+| 4.0.0-rc7 | 2026-03 | Latest RC — TypeScript-native, Beam renderer, up to 16x mobile perf |
 
-Action: keep the Realm game CDN on Phaser `3.87` unless a newer stable version is explicitly adopted.
+Action: keep the Realm game CDN on Phaser `3.90.0` unless Phaser 4 reaches stable release. Evaluate Phaser 4 RC7+ for new builds where RC risk is acceptable.
 
 ## Upgrade Priorities
 
 | Priority | Upgrade | Cost | Benefit |
 |---|---|---|---|
 | P0 | Object pooling | Small | Major performance improvement |
-| P0 | Phaser CDN `3.87` | Very small | Bug fixes and stability |
+| P0 | Phaser CDN `3.90.0` | Very small | Bug fixes and stability |
 | P1 | Animation state machine | Medium | Better clarity and charm |
 | P1 | Canvas/WebGL fallback | Small | Better compatibility |
 | P2 | Tilemap migration | Large | More flexible layout |
