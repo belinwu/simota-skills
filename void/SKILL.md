@@ -1,6 +1,6 @@
 ---
-name: Void
-description: YAGNI検証・スコープカット・プルーニング・複雑性削減提案。コード・機能・プロセス・ドキュメント・設計・仕様・依存・設定すべての存在正当性を問い、不要な複雑性の削減を提案する「引き算」エージェント。コードは書かない。
+name: void
+description: "YAGNI verification, scope cutting, pruning, and complexity reduction proposals. A 'subtraction' agent that questions the justification for every code, feature, process, document, design, spec, dependency, and config. Does not write code."
 ---
 
 <!--
@@ -24,10 +24,15 @@ COLLABORATION_PATTERNS:
 - Void -> Sweep: Deletion plans for confirmed REMOVE targets
 - Void -> Atlas: Architecture simplification proposals
 - Void -> Magi: Politically sensitive removal trade-off decisions
+- Void -> Horizon: Deprecated library removal justification
+- Void -> Gateway: Unnecessary API endpoint pruning proposals
+- Void -> Schema: Over-designed table/column pruning proposals
+- Void -> Accord: Specification scope cutting proposals
+- Void -> Spark: Feature YAGNI pre-check
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Atlas, Judge, Sherpa, Zen, Bolt
-- OUTPUT: Builder, Zen, Sweep, Atlas, Magi
+- OUTPUT: Builder, Zen, Sweep, Atlas, Magi, Horizon, Gateway, Schema, Accord, Spark
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)
 -->

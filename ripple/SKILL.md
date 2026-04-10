@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - churn_hotspot: File churn and bug history overlay on dependency graphs — highly churned files amplify blast radius risk
 - ai_change_scrutiny: Elevated impact assessment for AI-assisted code changes per Amazon 2026 policy and OWASP 2026 Agentic Top 10
 - crap_risk_signal: CRAP metric (Change Risk Anti-Patterns) integration — methods with CRAP ≥ 30 flagged as high change-risk zones
+- cascade_analysis: Second-order and emergent effect detection — feedback loops, cascading failures, and system-level behavioral shifts beyond direct dependency chains
 
 COLLABORATION_PATTERNS:
 - Pattern A: Investigation-to-Impact (Scout → Ripple → Builder)
@@ -24,9 +25,10 @@ COLLABORATION_PATTERNS:
 - Pattern E: Refactoring Scope (Ripple → Zen)
 - Pattern F: Test Coverage Impact (Ripple → Radar)
 - Pattern G: Blast Radius Review (Ripple → Sentinel → Probe)
+- Matrix -> Ripple: Impact dimension combinatorial coverage
 
 BIDIRECTIONAL PARTNERS:
-- INPUT: Scout (bug investigation), Atlas (architecture), Spark (feature proposals), Sherpa (task breakdown)
+- INPUT: Scout (bug investigation), Atlas (architecture), Spark (feature proposals), Sherpa (task breakdown), Matrix (combinatorial coverage)
 - OUTPUT: Builder (implementation), Guardian (PR strategy), Zen (refactoring), Radar (test requirements), Sentinel (security impact)
 
 PROJECT_AFFINITY: universal
@@ -69,7 +71,7 @@ Pre-change impact analyst mapping consequences before code is written. Analyzes 
 | Phase | Focus | Key Actions | Output |
 |-------|-------|-------------|--------|
 | SCOPE | Define change boundaries | Identify target files, parse change description, determine depth limit | Change scope document |
-| VERTICAL | Dependency chain tracing | Trace imports/exports L0→L3, classify breaking changes (7 types), map transitive deps | Affected files list with confidence levels |
+| VERTICAL | Dependency chain tracing | Trace imports/exports L0→L3, classify breaking changes (7 types), map transitive deps; activate cascade analysis when triggered | Affected files list with confidence levels + cascade risk map |
 | HORIZONTAL | Pattern consistency | Check naming conventions, file structure, API patterns, type patterns | Deviation report with severity |
 | RISK_SCORE | Quantified risk assessment | Apply weighted formula (scope 30%, breaking 25%, pattern 20%, coverage 15%, reversibility 10%) | Risk score 1-10 with breakdown |
 | RECOMMEND | Go/No-Go decision | Synthesize findings, generate recommendations, identify required mitigations | Impact analysis report |
@@ -85,6 +87,24 @@ Traces dependency chain to identify all affected areas. 5 categories: **Direct D
 Ensures change follows established patterns. 5 categories: **Naming Conventions** · **File Structure** · **Code Patterns** · **API Patterns** · **Type Patterns**.
 
 → Details: `references/analysis-techniques.md` (naming checks, pattern compliance matrix, discovery commands)
+
+## Cascade Analysis
+
+Beyond direct dependency tracing, detect second-order effects that emerge from change propagation.
+
+| Effect Type | Description | Detection Method |
+|-------------|-------------|-----------------|
+| Feedback Loop | Change A affects B, B's response amplifies A | Bidirectional dependency scan |
+| Cascading Failure | Sequential failure propagation across service boundaries | Cross-boundary L3+ trace with failure mode overlay |
+| Emergent Behavior | Combined changes produce unexpected system-level properties | Pattern interaction analysis across horizontal scope |
+| Resource Contention | Multiple affected components compete for shared resources | Shared resource mapping (DB connections, memory, queues) |
+| Temporal Cascade | Effects that manifest only under specific timing/ordering | Async dependency and event-ordering analysis |
+
+**Trigger:** Activate cascade analysis when any of: change touches ≥ 3 service boundaries, bidirectional dependencies detected, shared resources accessed by ≥ 3 affected components, or risk score ≥ 7.
+
+**Output:** Cascade Risk Map — append to standard impact report with second-order effects highlighted, feedback loops diagrammed, and emergent risk scenarios enumerated.
+
+→ Details: `references/cascade-analysis.md`
 
 ## Risk Scoring Matrix
 
@@ -242,6 +262,7 @@ Standard protocols → `_common/OPERATIONAL.md`
 | `references/impact-report-template.md` | Vertical impact report template |
 | `references/consistency-report-template.md` | Horizontal consistency report template |
 | `references/analysis-techniques.md` | Commands, categories, quality standards |
+| `references/cascade-analysis.md` | Cascade/second-order effect detection methodology |
 
 ## AUTORUN Support
 

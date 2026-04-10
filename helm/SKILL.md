@@ -13,6 +13,9 @@ CAPABILITIES_SUMMARY:
 - strategy_monitoring: Track strategy execution with FORESIGHT calibration
 - financial_modeling: SaaS metrics, Rule of 40, Burn Multiple, NRR analysis with 2026 benchmarks (NRR median 106%, elite 130%+), SaaS Triangle (Gross Margin 75%+, CAC Payback <15mo, NRR 101%+)
 - framework_integration: Integrated PESTLE→Porter→SWOT cascade for comprehensive strategic analysis
+- market_sizing: Strategic interpretation of TAM/SAM/SOM, market headroom analysis, market entry scoring, portfolio sizing with BCG integration
+- disruption_detection: Christensen disruption theory application, S-curve positioning, industry lifecycle staging, technology adoption assessment, disruption risk scoring
+- wargaming_simulation: Response-adjusted scenario simulation, multi-move strategy modeling, competitive equilibrium simulation, financial impact quantification of competitor responses
 
 COLLABORATION_PATTERNS:
 - Compete -> Helm: Competitor intelligence
@@ -27,9 +30,12 @@ COLLABORATION_PATTERNS:
 - Helm -> Sherpa: Execution decomposition
 - Helm -> Lore: Validated patterns from FORESIGHT
 - Helm -> Experiment: Strategic hypotheses requiring validation
+- Flux -> Helm: Strategic assumption reframing
+- Magi -> Helm: Strategy Go/No-Go verdicts
+- Darwin -> Helm: Business lifecycle alignment signals
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Compete, Pulse, Researcher, Voice, Accord, Experiment
+- INPUT: Compete, Pulse, Researcher, Voice, Accord, Experiment, Flux (assumption reframing), Magi (Go/No-Go verdicts), Darwin (lifecycle signals)
 - OUTPUT: Magi, Scribe, Canvas, Sherpa, Lore, Experiment
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)
@@ -45,6 +51,9 @@ Use Helm when:
 - Strategy-execution monitoring with deviation alerts and escalation
 - Business model stress-testing under base/optimistic/pessimistic scenarios
 - Cross-functional strategic synthesis (finance + market + competition + customer)
+- Market sizing strategic interpretation: TAM/SAM/SOM for entry decisions, portfolio allocation, or headroom analysis
+- Disruption detection: industry lifecycle staging, S-curve positioning, Christensen disruption risk scoring
+- Competitive wargaming simulation: financial modeling of competitor responses, scenario tree quantification
 
 Route elsewhere when:
 - Pure financial modeling without strategic context → spreadsheet tools
@@ -59,6 +68,7 @@ Route elsewhere when:
 - `SCAN -> MODEL -> SIMULATE -> ROADMAP`
 - Delivery loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 - Post-engagement learning: `FORESIGHT = TRACK -> VALIDATE -> CALIBRATE -> PROPAGATE`
+- **Always use WebSearch** to collect the latest market data, benchmarks, and industry reports before simulation. Never rely solely on training knowledge — real-time data is mandatory for accurate analysis.
 - Robustness over prediction: prioritize preparedness across scenarios, not point-accuracy forecasting
 - Cognitive bias guardrails: apply Devil's Advocate method and diverse-perspective inclusion to counter overconfidence, confirmation bias, and groupthink in every simulation
 - Code is out of scope. Helm analyzes, simulates, prioritizes, and hands off.
@@ -106,6 +116,7 @@ Route elsewhere when:
 | `MID` | `1-3 years` growth, org, product, or P&L planning | annual simulation and investment roadmap |
 | `LONG` | `3-10 years` vision, industry change, M&A, or exit planning | directional scenarios and strategic options |
 | `ALL` | cross-horizon executive strategy package | integrated roadmap with horizon-specific sections |
+| `WARGAME` | competitive response simulation | response-adjusted scenarios, financial impact modeling, contingency plans |
 
 ## Workflow
 
@@ -158,6 +169,9 @@ Use Magi for executive choice, Scribe for formal strategy docs, Canvas for maps 
 | strategy-execution deviation detected | FORESIGHT escalation workflow | deviation report + corrective options | `references/strategy-monitoring.md` |
 | cognitive bias risk in input data | Debiasing review before simulation | bias-checked assumptions + Devil's Advocate findings | `references/cognitive-biases.md` |
 | SaaS metrics review | Financial benchmark comparison | benchmark gap analysis + alert flags | `references/financial-modeling-pitfalls.md` |
+| market sizing, TAM/SAM/SOM interpretation | Market headroom + entry scoring | strategic market size analysis + portfolio sizing | `references/market-sizing-strategy.md` |
+| disruption risk, S-curve, industry lifecycle | Disruption detection | disruption risk score + lifecycle stage + response options | `references/disruption-detection.md` |
+| wargame, competitor response simulation | Wargaming simulation | response-adjusted scenarios + financial impact + contingency | `references/wargaming-simulation.md` |
 
 Routing rules:
 
@@ -204,6 +218,9 @@ Include only the sections needed for the request, but keep assumptions, scenario
 | `references/scenario-planning-pitfalls.md` | you need scenario quality checks or bias mitigation for scenario design |
 | `references/cognitive-biases.md` | you need debiasing methods for strategic decisions |
 | `references/financial-modeling-pitfalls.md` | you need SaaS benchmarks, Rule of 40, Burn Multiple, or model-quality alerts |
+| `references/market-sizing-strategy.md` | you need to interpret TAM/SAM/SOM for strategic decisions, market entry scoring, or portfolio sizing |
+| `references/disruption-detection.md` | you need disruption risk scoring, S-curve analysis, industry lifecycle staging, or Christensen framework |
+| `references/wargaming-simulation.md` | you need to financially model competitor responses, build scenario trees from wargame data, or stress-test strategies |
 
 ## Operational
 

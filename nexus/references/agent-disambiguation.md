@@ -316,6 +316,85 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Fossil vs Lens vs Shift (Legacy / Migration)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Extract business rules from legacy code" | **Fossil** | Rule archaeology |
+| "How does this module work?" | **Lens** | Code comprehension |
+| "Migrate from framework A to B" | **Shift** | Migration execution |
+| "What are the hidden rules before we migrate?" | **Fossil** → Shift | Archaeology then migration |
+| "Modernize tech stack" | **Horizon** | Stack-level refresh |
+
+**Rule of thumb**: "What rules are buried?" → Fossil. "How does it work?" → Lens. "Migrate it" → Shift. "Refresh the stack" → Horizon.
+
+---
+
+### Cloak vs Comply vs Crypt (Privacy / Compliance / Crypto)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Find PII exposure", "GDPR audit" | **Cloak** | Privacy-focused |
+| "SOC2 readiness", "HIPAA controls" | **Comply** | Framework compliance |
+| "Encryption design", "key management" | **Crypt** | Cryptographic architecture |
+| "Security audit" (broad) | **Sentinel** first | Start with static analysis |
+
+**Rule of thumb**: PII/consent/privacy → Cloak. Regulatory frameworks → Comply. Crypto algorithms/keys → Crypt.
+
+---
+
+### Seek vs Oracle (Search / AI)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Design search index", "Elasticsearch mapping" | **Seek** | Search infrastructure |
+| "RAG retrieval layer" | **Seek** (retrieval) + Oracle (LLM) | Split by concern |
+| "Prompt engineering", "LLM evaluation" | **Oracle** | AI/ML design |
+| "Vector DB selection" | **Seek** | Search engine expertise |
+
+**Rule of thumb**: Search infra → Seek. AI/LLM patterns → Oracle. RAG spans both.
+
+---
+
+### Shard vs Schema (Multi-tenant / DB Design)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Tenant isolation strategy" | **Shard** | Multi-tenant architecture |
+| "Database normalization", "ER diagram" | **Schema** | Schema design |
+| "RLS policies for tenants" | **Shard** | Tenant-specific policies |
+| "Add a new table/column" | **Schema** | Regular schema change |
+
+**Rule of thumb**: Multi-tenant concerns → Shard. General DB design → Schema.
+
+---
+
+### Funnel vs Growth vs Artisan (Landing Page / Marketing)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Design high-converting landing page" | **Funnel** | LP structure & conversion |
+| "Improve SEO/CRO across site" | **Growth** | Site-wide optimization |
+| "Build React component for LP" | **Artisan** | Frontend implementation |
+| "A/B test LP variants" | **Funnel** (design) + Experiment (test) | Split by concern |
+
+**Rule of thumb**: LP structure/conversion → Funnel. SEO/CRO tactics → Growth. Frontend code → Artisan.
+
+---
+
+### Weave vs Builder (Workflow / Implementation)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Design state machine", "workflow transitions" | **Weave** | Architecture design |
+| "Implement the workflow in code" | **Builder** | Code implementation |
+| "Saga pattern for distributed transactions" | **Weave** | Pattern design |
+| "Temporal/Step Functions setup" | **Weave** (design) + Builder (impl) | Split by phase |
+
+**Rule of thumb**: "Design the workflow" → Weave. "Build it" → Builder.
+
+---
+
 ## Small Project Optimization
 
 For S/M scope projects, skip agents that add overhead without proportional value:

@@ -18,9 +18,13 @@ COLLABORATION_PATTERNS:
 - Pattern B: Analysis-to-Refactor (Atlas → Zen)
 - Pattern C: ADR-to-Docs (Atlas → Quill)
 - Pattern D: Debt-to-Plan (Atlas → Sherpa)
+- Flux -> Atlas: Architecture assumption reframing
+- Magi -> Atlas: Architecture trade-off verdicts
+- Void -> Atlas: Architecture simplification proposals
+- Darwin -> Atlas: Architecture fitness evaluation
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus (architecture analysis requests), Any Agent (dependency concerns)
+- INPUT: Nexus (architecture analysis requests), Any Agent (dependency concerns), Flux (assumption reframing), Magi (trade-off verdicts), Void (simplification proposals), Darwin (fitness evaluation)
 - OUTPUT: Architect (ecosystem analysis), Zen (refactoring targets), Quill (ADR documentation), Sherpa (debt remediation plans)
 
 PROJECT_AFFINITY: universal

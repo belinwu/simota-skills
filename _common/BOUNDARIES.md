@@ -38,12 +38,14 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Ripple** | Pre-change impact analysis | "What happens if we change X?" | Never |
 | **Atlas** | Architecture analysis & ADR creation | "What IS the architecture?" | Never |
 | **Sweep** | Dead code & unused file detection | "What can we remove?" | Never |
+| **Fossil** | Legacy code archaeology | Business rule extraction, migration risk | Never |
 
 **Key distinctions:**
 - Broken behavior → Scout. Understanding behavior → Lens. Git history → Rewind
 - Current architecture → Atlas. Change impact → Ripple
 - Incident diagnosis → Triage. Known-pattern auto-fix → Mend. Unknown fix → Builder
 - Bug root cause → Scout. Incident severity → Triage
+- Legacy system rule extraction → Fossil. Migration execution → Shift
 
 ## Security
 
@@ -52,9 +54,16 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Sentinel** | Static security analysis | Code scan, CVE check, secret detection | Fixes only |
 | **Probe** | Dynamic security testing | OWASP ZAP, penetration testing | Never |
 | **Specter** | Concurrency & resource issue detection | Race conditions, memory/resource leaks | Never |
+| **Breach** | Red team engineering & threat modeling | STRIDE/PASTA/MITRE ATT&CK, attack simulation | Never |
+| **Vigil** | Detection engineering | Sigma/YARA rules, threat hunting, MITRE coverage | Never |
+| **Cloak** | Privacy engineering | PII detection, GDPR/CCPA, consent, DPIA | Yes (privacy patterns) |
+| **Comply** | Regulatory compliance audit | SOC2/PCI-DSS/HIPAA/ISO 27001, policy-as-code | Yes (OPA policies) |
+| **Crypt** | Cryptographic architecture | Algorithm selection, key management, E2EE, post-quantum | Never |
 
 **Key distinctions:**
 - Static code scan → Sentinel. Running app test → Probe. Concurrency → Specter
+- Attack simulation → Breach. Detection rules → Vigil. Purple team → Breach → Vigil
+- PII/privacy → Cloak. Regulatory frameworks → Comply. Crypto design → Crypt
 
 ## Implementation
 
@@ -66,15 +75,18 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Schema** | Database schema design & migration | Data modeling, normalization | Yes |
 | **Anvil** | CLI/TUI development | Terminal interfaces, dev tools | Yes |
 | **Arena** | Multi-engine competitive/collaborative development | Codex/Gemini comparison | Yes |
+| **Pixel** | Mockup-to-code faithful reproduction | Image→HTML/CSS with visual verification | Yes |
 
 **Key distinctions:**
 - Backend logic → Builder. Frontend → Artisan. Prototyping → Forge → then Artisan/Builder
 - Clear requirements → Artisan directly. Exploration needed → Forge first
+- Image mockup → Pixel. Figma design → Frame → Artisan. Spec → Artisan directly
 
 ## Testing & Quality
 
 | Agent | Primary Role | Scope | Writes Code |
 |-------|-------------|-------|-------------|
+| **Mint** | Test data & fixture generation | Factory patterns, seed data, PII masking | Yes |
 | **Radar** | Unit/integration tests, edge cases, coverage | Test code | Yes |
 | **Voyager** | E2E test specialist (Playwright/Cypress) | E2E test infrastructure | Yes |
 | **Siege** | Load testing, chaos engineering, resilience | Non-functional testing | Yes |
@@ -109,8 +121,14 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Morph** | Format conversion | Markdown ↔ Word/Excel/PDF/HTML | Yes (scripts) |
 | **Prism** | NotebookLM steering | Audio/Video quality prompts | Never |
 
+| **Saga** | Narrative design & product storytelling | SB7/Pixar/Hero's Journey/JTBD frameworks | Never |
+| **Cue** | Video script & storyboard design | Demo/explainer/tutorial scripts, narration | Never |
+| **Tome** | Learning document generation from changes | Diffs→teaching materials, decision records | Never |
+| **Stage** | Presentation slide generation | Marp/reveal.js/Slidev, speaker notes | Yes (slide markdown) |
+
 **Key distinctions:**
 - Code docs (JSDoc, README) → Quill. Spec docs (PRD, SRS) → Scribe. Cross-team specs → Accord. Diagrams → Canvas
+- Product narratives/stories → Saga. Video scripts → Cue. Learning docs from code → Tome. Slides → Stage
 
 ## Architecture & Structure
 
@@ -121,6 +139,8 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Scaffold** | Infrastructure provisioning | Terraform, Docker, IaC | Yes |
 | **Grove** | Repository structure design | Directory layout, conventions | Never |
 | **Horizon** | Modernization & tech stack refresh | Deprecated library detection, native API replacement | Yes |
+| **Stratum** | Architecture modeling (C4) | Structurizr DSL, context/container/component | Never |
+| **Shift** | Migration & upgrade orchestration | Codemod generation, framework/DB/API migration | Yes |
 
 ## UX & Design
 
@@ -138,6 +158,8 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Reel** | Terminal recording | CLI demo GIF/video | Yes |
 | **Frame** | Figma MCP design context extraction | Figma→code bridge, Code Connect | Never |
 | **Loom** | Figma Make optimization | Guidelines.md generation, prompt strategy, output validation | Never |
+| **Ink** | SVG icon & illustration generation | Grid systems, sprite symbols, a11y | Yes (SVG) |
+| **Funnel** | Landing page structure & conversion | AIDA/PAS, CTA, form optimization | Yes |
 
 **Key distinctions:**
 - Design direction → Vision. Tokens → Muse. Usability → Palette. Animation → Flow
@@ -145,6 +167,8 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 - Figma data extraction → Frame. Token definition → Muse. Frame extracts, Muse defines
 - Figma Make optimization → Loom. Figma extraction → Frame. Token management → Muse
 - Code Connect mapping → Frame + Showcase. Frame manages Figma side, Showcase manages code side
+- SVG icons/illustrations → Ink. Pixel art → Dot. AI images → Sketch
+- Landing page design/conversion → Funnel. SEO/CRO tactics → Growth
 
 ## User Research & Personas
 
@@ -172,17 +196,23 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Helm** | Business strategy simulation | SWOT/PESTLE, scenario planning | Never |
 | **Levy** | Tax filing guidance (Japan) | Income tax, deductions, e-Tax | Never |
 | **Crest** | Engineer self-branding strategy | GitHub/blog/LinkedIn/talk positioning | Never |
+| **Ledger** | Cloud FinOps & cost optimization | IaC cost estimation, right-sizing, RI/SP | Yes (policies) |
 
 **Key distinctions:**
 - Competitive intel → Compete. Business simulation → Helm. Compete feeds into Helm
 - Feature ideas → Spark. Growth tactics → Growth. Metrics → Pulse
 - Tax filing guidance → Levy. Levy advises on tax law; Builder implements calculation logic
+- Cloud cost → Ledger. IaC provisioning → Scaffold. Monitoring → Beacon
 
 ## Decision & Intent
 
 | Agent | Primary Role | Focus | Writes Code |
 |-------|-------------|-------|-------------|
 | **Magi** | Multi-perspective decision making | Logic/Empathy/Pragmatism triad | Never |
+| **Flux** | Thinking refraction & perspective shift | Cynefin, TRIZ, lateral thinking, assumption surfacing | Never |
+
+**Key distinctions:**
+- "Which option?" → Magi. "Are we asking the right question?" → Flux. Flux reframes; Magi decides
 
 ## DevOps & Release
 
@@ -234,3 +264,6 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
 | **Quest** | Game planning & production | GDD, game balance, narrative, economy design | Never |
 | **Realm** | Ecosystem gamification visualization | Phaser 3 office sim, XP/rank, interactive HTML map | Yes |
+| **Seek** | Search & vector DB architecture | Full-text/vector/hybrid search, RAG retrieval | Partial (mappings) |
+| **Shard** | Multi-tenant architecture design | Tenant isolation, RLS, routing, noisy-neighbor | Partial (specs) |
+| **Weave** | Workflow & state machine design | FSM/Statechart, Saga patterns, approval flows | Partial (YAML/specs) |

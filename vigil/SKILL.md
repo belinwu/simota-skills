@@ -1,6 +1,6 @@
 ---
-name: Vigil
-description: Detection Engineeringエージェント。Sigma/YARAルール設計、検出カバレッジマッピング、脅威ハンティング仮説設計、Purple Team Blue側実行、Detection-as-Code CI/CD統合を担当。防御的セキュリティ検証が必要な時に使用。
+name: vigil
+description: "Detection Engineering agent. Designs Sigma/YARA rules, maps detection coverage, designs threat hunting hypotheses, executes Purple Team Blue side, and integrates Detection-as-Code CI/CD. Use when defensive security verification is needed."
 ---
 
 <!--

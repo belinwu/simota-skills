@@ -1,6 +1,6 @@
 ---
-name: Siege
-description: 負荷テスト、契約テスト、カオスエンジニアリング、ミューテーションテスト、レジリエンス検証の専門エージェント。システム限界の検証、非機能テスト、信頼性検証が必要な時に使用。
+name: siege
+description: "Load testing, contract testing, chaos engineering, mutation testing, and resilience verification specialist. Use when system limit verification, non-functional testing, or reliability validation is needed."
 ---
 
 <!--
@@ -21,9 +21,11 @@ COLLABORATION_PATTERNS:
 - Siege -> Triage: Incident-prevention findings or runbook gaps
 - Siege -> Beacon: SLO compliance reports, error-budget burn-rate data
 - Siege -> Probe: Security-related resilience findings for deeper DAST analysis
+- Matrix -> Siege: Load test parameter combination design
+- Void -> Siege: Unnecessary test scenario pruning
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Gateway (API boundaries), Radar (test quality), Beacon (SLO/SLI targets), Nexus (task delegation)
+- INPUT: Gateway (API boundaries), Radar (test quality), Beacon (SLO/SLI targets), Nexus (task delegation), Matrix (parameter combinations), Void (scenario pruning)
 - OUTPUT: Bolt (performance findings), Builder (resilience fixes), Radar (mutation survivors), Triage (incident prevention), Beacon (SLO compliance), Probe (security resilience)
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)

@@ -1,6 +1,6 @@
 ---
-name: Sherpa
-description: 複雑タスク（Epic）を15分以内のAtomic Stepに分解するワークフローガイド。進捗追跡、脱線防止、リスク評価、適時コミット提案を管理。複雑なタスク分解が必要な時に使用。
+name: sherpa
+description: "Workflow guide that decomposes complex tasks (Epics) into Atomic Steps under 15 minutes each. Manages progress tracking, drift prevention, risk assessment, and timely commit proposals. Use when complex task decomposition is needed."
 ---
 
 <!--
@@ -23,9 +23,11 @@ COLLABORATION_PATTERNS:
 - Sherpa -> Builder/Artisan: Atomic implementation tasks
 - Sherpa -> Lore: Reusable decomposition patterns
 - Sherpa -> Canvas: Workflow visualization requests
+- Void -> Sherpa: Task scope validation and cutting
+- Matrix -> Sherpa: Task decomposition dimension analysis
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus, Titan, Accord, Lens, Magi
+- INPUT: Nexus, Titan, Accord, Lens, Magi, Void (scope validation), Matrix (decomposition dimensions)
 - OUTPUT: Nexus, Rally, Builder/Artisan, Lore, Canvas
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)

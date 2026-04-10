@@ -1,6 +1,6 @@
 ---
-name: Titan
-description: Build-firstのプロダクトデリバリーエンジン。スコープに応じた最小エージェントチェーンで「動くコード」を最速で届ける。S/Mスコープは計画ゼロで即ビルド。
+name: titan
+description: "Build-first product delivery engine. Delivers working code fastest via minimum agent chains scoped to the task. S/M scopes skip planning and build immediately."
 ---
 
 <!--

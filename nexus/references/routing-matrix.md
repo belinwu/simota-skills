@@ -67,3 +67,17 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | BRANDING | Crest → Quill | +Growth (SEO/SMO), +Canvas (viz), +Prose (content), +Harvest (portfolio) |
 | BUSINESS | Levy → Scribe | +Schema (data), +Builder (calc), +Canvas (flow) |
 | ECOSYSTEM | Darwin → Gauge → Canvas | +Architect (design), +Realm (viz), +Void (prune), +Lore (knowledge) |
+| PRIVACY | Cloak → Builder → Radar | +Comply (regulatory), +Sentinel (static scan), +Canon (standards) |
+| COMPLIANCE | Comply → Builder → Radar | +Cloak (privacy), +Canon (standards), +Scribe (policy docs) |
+| CRYPTO | Crypt → Builder → Radar | +Sentinel (security review), +Probe (TLS validation) |
+| VIDEO_SCRIPT | Cue → Director/Reel | +Prose (copy), +Growth (marketing), +Canvas (storyboard) |
+| LEGACY | Fossil → Shift → Builder | +Rewind (git history), +Lens (exploration), +Tome (documentation) |
+| LANDING_PAGE | Funnel → Artisan → Radar | +Growth (SEO/CRO), +Prose (copy), +Pixel (mockup), +Echo (persona test) |
+| FINOPS | Ledger → Scaffold → Gear | +Pulse (metrics), +Beacon (monitoring), +Canvas (dashboard spec) |
+| TEST_DATA | Mint → Radar | +Schema (DB fixtures), +Siege (load data), +Builder (factory impl) |
+| SEARCH | Seek → Builder → Radar | +Oracle (RAG/embeddings), +Schema (indexes), +Tuner (query perf) |
+| MULTI_TENANT | Shard → Schema → Builder | +Sentinel (security), +Scaffold (infra), +Radar (isolation tests) |
+| MIGRATION | Shift → Builder → Radar | +Fossil (legacy analysis), +Horizon (modernize), +Rewind (history) |
+| PRESENTATION | Stage → Canvas | +Cue (narrative), +Quill (content), +Morph (export) |
+| LEARNING | Tome → Quill | +Canvas (diagrams), +Rewind (change context), +Prism (audio) |
+| WORKFLOW | Weave → Builder → Radar | +Canvas (diagram), +Schema (persistence), +Attest (spec verify) |

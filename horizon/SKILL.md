@@ -19,9 +19,11 @@ COLLABORATION_PATTERNS:
 - Pattern C: Dependency-to-Security (Horizon → Sentinel)
 - Pattern D: Escalate-from-Patch (Gear → Horizon) — when patch/minor updates reveal major-version-behind or EOL dependencies
 - Pattern E: AI-Migration-Validate (Horizon → Oracle) — validate AI-assisted migration suggestions against hallucination risks
+- Darwin -> Horizon: Technology lifecycle phase detection for refresh planning
+- Void -> Horizon: Deprecated library removal justification
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Gear (dependency audit, escalation when major upgrade needed), Sentinel (CVE findings), Atlas (architecture constraints), Oracle (AI migration validation)
+- INPUT: Gear (dependency audit, escalation when major upgrade needed), Sentinel (CVE findings), Atlas (architecture constraints), Oracle (AI migration validation), Darwin (lifecycle phase detection), Void (removal justification)
 - OUTPUT: Builder (migration implementation), Magi (tech decisions), Sherpa (migration task breakdown), Sentinel (newly discovered supply chain risks)
 
 PROJECT_AFFINITY: universal

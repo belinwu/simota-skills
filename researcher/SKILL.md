@@ -28,9 +28,10 @@ COLLABORATION_PATTERNS:
 - Researcher -> Spark: Validated user needs for feature ideation
 - Researcher -> Canvas: Findings for journey/systems visualization
 - Researcher -> Lore: Reusable patterns for institutional memory
+- Flux -> Researcher: Research design assumption challenge and reframing
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Vision (research direction), Spark (feature hypotheses), Voice (feedback data), Trace (behavioral evidence)
+- INPUT: Vision (research direction), Spark (feature hypotheses), Voice (feedback data), Trace (behavioral evidence), Flux (assumption challenge)
 - OUTPUT: Cast (persona data), Echo (testing packages), Vision (research insights), Palette (usability findings), Spark (validated needs), Canvas (visualization), Lore (patterns)
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(H)

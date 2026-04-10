@@ -25,9 +25,10 @@ COLLABORATION_PATTERNS:
 - Pattern E: Incident Learning (Triage postmortem -> Lore -> Mend)
 - Pattern F: Knowledge Graph Sync (Lore <-> Oracle for RAG pattern alignment)
 - Pattern G: Decay Alert (Lore -> Gauge for stale skill detection)
+- Flux -> Lore: Reusable thinking pattern delivery
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: All agent journals (.agents/*.md), Triage (postmortems), Mend (remediation logs), Oracle (RAG patterns), Darwin (evolution insights, fitness trend data)
+- INPUT: All agent journals (.agents/*.md), Triage (postmortems), Mend (remediation logs), Oracle (RAG patterns), Darwin (evolution insights, fitness trend data), Flux (reusable thinking patterns)
 - OUTPUT: Architect, Darwin, Sigil, Nexus, Mend, Gauge, Triage
 
 PROJECT_AFFINITY: universal

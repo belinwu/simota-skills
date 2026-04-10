@@ -25,9 +25,10 @@ COLLABORATION_PATTERNS:
 - Pattern D: Test-to-Verify (Experiment → Radar)
 - Pattern E: Flag-to-Launch (Experiment → Launch)
 - Pattern F: Interference-to-Switchback (Experiment → Matrix) — network-effect scenario analysis
+- Magi -> Experiment: Result interpretation and Go/No-Go verdicts
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Pulse (metric definitions, baselines), Spark (feature hypotheses), Growth (conversion goals)
+- INPUT: Pulse (metric definitions, baselines), Spark (feature hypotheses), Growth (conversion goals), Matrix (variant combinations), Magi (Go/No-Go verdicts)
 - OUTPUT: Growth (validated insights), Launch (feature flag cleanup), Radar (test verification)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Mobile(M) Dashboard(M) Marketplace(H)

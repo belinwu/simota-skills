@@ -13,6 +13,10 @@ CAPABILITIES_SUMMARY:
 - market_intelligence: Moat evaluation, category design, PLG competition, pricing posture, DX advantage
 - llm_visibility: LLM brand presence monitoring, AI share of voice, GEO metrics analysis
 - calibration: Prediction validation, source confidence tracking, intelligence quality improvement
+- deep_osint: Job posting signal analysis, patent/IP tracking, SEC narrative analysis, GitHub/OSS intelligence, app store review mining, technology trajectory analysis, multi-layer signal triangulation
+- market_sizing: TAM/SAM/SOM/PAM estimation, top-down and bottom-up cross-verification, adjacent market sizing, market share estimation
+- ecosystem_mapping: Platform ecosystem analysis, network effect classification, partnership landscape mapping, cross-market subsidization detection, adjacency threat identification
+- wargaming: Red/blue team competitive simulation, competitor response prediction, pre-mortem analysis, scenario tree construction, multi-move strategy planning
 
 COLLABORATION_PATTERNS:
 - Voice -> Compete: Customer feedback compared against competitors
@@ -23,9 +27,10 @@ COLLABORATION_PATTERNS:
 - Compete -> Helm: Strategic simulation or scenario planning
 - Compete -> Lore: Validated recurring patterns become shared knowledge
 - Compete -> Oracle: LLM brand visibility analysis needs AI/ML expertise
+- Flux -> Compete: Market assumption reframing and differentiation axis discovery
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Voice (customer feedback), Pulse (product metrics), Nexus (task routing)
+- INPUT: Voice (customer feedback), Pulse (product metrics), Nexus (task routing), Flux (market assumption reframing)
 - OUTPUT: Spark (feature ideas), Growth (positioning/SEO), Canvas (visual maps), Helm (strategic simulation), Lore (validated patterns), Oracle (LLM visibility)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(M) Mobile(M) Dashboard(L)
@@ -46,6 +51,10 @@ Use Compete when the task needs:
 - win/loss analysis tied to product, sales, or market strategy
 - moat, category, PLG, pricing, or DX-based market interpretation
 - LLM brand visibility, AI share of voice, or GEO metrics analysis
+- deep OSINT: job posting signals, patent/IP tracking, SEC filing narrative analysis, GitHub/OSS intelligence
+- market sizing: TAM/SAM/SOM/PAM estimation and competitive market share
+- ecosystem mapping: platform dynamics, network effects, partnership landscape, adjacent market threats
+- competitive wargaming: red/blue team simulation, competitor response prediction, pre-mortem analysis
 
 Route elsewhere when the task is primarily:
 - general product feature proposal (not competition-driven): `Spark`
@@ -126,6 +135,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Strategy | Define moats, positioning, category moves, or pricing posture | `references/competitive-moats-category-design.md` |
 | Calibration | Validate predictions and tune source confidence | `references/intelligence-calibration.md` |
 | LLM Visibility | Analyze how AI models reference and recommend brands in the competitive set | `references/intelligence-gathering.md` |
+| Deep Dive | Extract strategic intent from structured public data (jobs, patents, SEC, GitHub, reviews) | `references/deep-osint-signals.md` |
+| Market Sizing | Estimate TAM/SAM/SOM/PAM with top-down and bottom-up cross-verification | `references/market-sizing.md` |
+| Ecosystem | Map platform ecosystems, network effects, partnerships, and adjacent market threats | `references/ecosystem-mapping.md` |
+| Wargame | Simulate competitor responses to strategic moves via red/blue team exercises | `references/competitive-wargaming.md` |
 
 ## Output Routing
 
@@ -139,6 +152,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `moat`, `category`, `PLG`, `DX advantage` | Market interpretation | Strategic assessment | `references/competitive-moats-category-design.md` |
 | `calibrate`, `prediction`, `source confidence` | Calibration | Calibration report | `references/intelligence-calibration.md` |
 | `LLM visibility`, `AI share of voice`, `GEO metrics`, `AI brand monitoring` | LLM visibility analysis | Brand presence report + competitive AI share of voice | `references/intelligence-gathering.md` |
+| `deep dive`, `OSINT`, `job postings`, `patents`, `SEC filings`, `hiring signals` | Deep OSINT analysis | Multi-layer signal triangulation report | `references/deep-osint-signals.md` |
+| `TAM`, `SAM`, `SOM`, `market size`, `market share`, `addressable market` | Market sizing | TAM/SAM/SOM estimate + competitive market share | `references/market-sizing.md` |
+| `ecosystem`, `platform`, `network effects`, `partnerships`, `integrations`, `adjacent market` | Ecosystem mapping | Ecosystem map + network effect assessment + adjacency analysis | `references/ecosystem-mapping.md` |
+| `wargame`, `war game`, `red team`, `blue team`, `competitor response`, `pre-mortem`, `what if we` | Competitive wargaming | Wargame debrief + scenario tree + contingency plans | `references/competitive-wargaming.md` |
 | unclear competitive request | Landscape analysis | Competitor map + tiering | `references/intelligence-gathering.md` |
 
 ## SHARPEN Post-Analysis
@@ -226,6 +243,10 @@ Source citation format: `[N]` inline reference → `## Sources` section at the e
 | `references/ai-powered-ci-platforms.md` | The task needs CI maturity, tooling, automation, or real-time monitoring strategy. |
 | `references/modern-win-loss-analysis.md` | You are analyzing why deals were won or lost and feeding that back into strategy. |
 | `references/competitive-moats-category-design.md` | You are evaluating moats, category design, PLG competition, pricing posture, or DX advantage. |
+| `references/deep-osint-signals.md` | You need to extract strategic intent from job postings, patents, SEC filings, GitHub repos, or app store reviews. |
+| `references/market-sizing.md` | You need to estimate TAM/SAM/SOM/PAM, competitive market share, or adjacent market size. |
+| `references/ecosystem-mapping.md` | You need to analyze platform ecosystems, network effects, partnerships, or adjacent market threats. |
+| `references/competitive-wargaming.md` | You need to simulate competitor responses, run red/blue team exercises, or conduct pre-mortem analysis. |
 
 ## Operational
 

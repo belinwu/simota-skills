@@ -15,6 +15,7 @@ CAPABILITIES_SUMMARY:
 - blind_spot_detection: Surface cognitive biases (incl. bias blind spot — tendency to see biases in others but not oneself) and hidden constraints
 - anti_pattern_guard: Detect superficial reframing, framework abuse, false insights, and assumption padding
 - collaboration_bridging: Package thinking breakthroughs for Magi/Spark/Helm/Atlas/Oracle handoff
+- cognitive_bias_audit: Dedicated mode to detect and surface cognitive biases in decision-making processes — anchoring, sunk cost, confirmation bias, groupthink, IKEA effect, and 15+ patterns with debiasing recommendations
 - contradiction_resolution: Apply TRIZ contradiction matrix to systematically resolve technical and physical contradictions — classical Altshuller matrix (39 parameters × 40 principles), updated Matrix 2003 (48 parameters, 150K+ patents 1985-2003), or Matrix 2022; leverage LLM-assisted TRIZ tools (AutoTRIZ 4-module pipeline, TRIZ Contradiction Solver) for automated contradiction detection and inventive principle retrieval when available
 
 COLLABORATION_PATTERNS:
@@ -23,10 +24,15 @@ COLLABORATION_PATTERNS:
 - Pattern C: Strategic Reframe (Accord → Flux → Helm) — stakeholder conflict → reframe → scenario planning
 - Pattern D: Architecture Rethink (Atlas → Flux → Atlas) — stuck design → reframe → new architecture options
 - Pattern E: Bias-Aware Reframing (Flux → Oracle → Flux) — reframing output validated against AI/cognitive bias detection before delivery
+- Pattern F: Market Reframe (Flux → Compete) — market assumption reframing for differentiation axis discovery
+- Flux -> Researcher: Research design assumption challenge
+- Flux -> Breach: Attacker perspective reframing
+- Flux -> Shift: Migration approach reframing
+- Flux -> Accord: Requirement assumption challenge
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (problem descriptions, constraints), Nexus (complex problem routing), Magi (deadlocked deliberations), Accord (stakeholder conflicts), Oracle (AI-assisted bias detection feedback)
-- OUTPUT: Magi (reframed problems + insight maps → decision), Spark (idea candidates → feature proposals), Helm (strategic reframes → scenario analysis), Atlas (architecture reconceptions → design review), Lore (reusable thinking patterns → knowledge curation), Oracle (reframing assumptions for AI evaluation pipeline validation)
+- OUTPUT: Magi (reframed problems + insight maps → decision), Spark (idea candidates → feature proposals), Helm (strategic reframes → scenario analysis), Atlas (architecture reconceptions → design review), Lore (reusable thinking patterns → knowledge curation), Oracle (reframing assumptions for AI evaluation pipeline validation), Compete (market assumption reframing), Researcher (research design reframing), Breach (attacker perspective reframing), Shift (migration approach reframing), Accord (requirement assumption challenge)
 
 PROJECT_AFFINITY: universal
 -->
@@ -192,8 +198,34 @@ questions:
 | **DEEP** | Complex problems requiring thorough transformation | All 5 phases, full pipeline |
 | **RAPID** | Quick perspective switch or unblocking | CLASSIFY → (CHALLENGE or SHIFT) → CRYSTALLIZE |
 | **LENS** | Apply a specific framework only | Specified framework → CRYSTALLIZE |
+| **AUDIT** | Detect biases in a decision or plan | CLASSIFY → BIAS_SCAN → DEBIASING → CRYSTALLIZE |
 
 Default: **DEEP** unless the user specifies otherwise or the problem is clearly simple.
+
+---
+
+## Bias Audit Mode
+
+Dedicated mode for detecting cognitive biases in decision-making processes, independent of reframing.
+
+| Bias Category | Examples | Detection Signal |
+|--------------|----------|-----------------|
+| Anchoring | First number dominates, insufficient adjustment | Decision heavily influenced by initial data point |
+| Confirmation | Selective evidence gathering | Only supporting evidence cited, disconfirming data absent |
+| Sunk Cost | "We've already invested X" justification | Past investment used to justify future spending |
+| Groupthink | Unanimous agreement without debate | No dissent recorded, pressure to conform |
+| IKEA Effect | Overvaluing self-built solutions | NIH syndrome, rejecting better external options |
+| Survivorship | Learning only from successes | No failure case analysis in the decision basis |
+| Planning Fallacy | Underestimating time/cost/complexity | Historical estimates consistently exceeded |
+| Status Quo | Resistance to change despite evidence | "It's always been this way" reasoning |
+| Availability | Recent/vivid events overweighted | Last incident dominates risk assessment |
+| Dunning-Kruger | Confidence-competence mismatch | High confidence in unfamiliar domain |
+
+**Workflow:** CLASSIFY (problem domain) → BIAS_SCAN (systematic checklist against decision/plan) → DEBIASING (specific countermeasures per detected bias) → CRYSTALLIZE (Bias Audit Report + debiased decision framing)
+
+**Output:** Bias Audit Report — detected biases with evidence, confidence level, debiasing recommendations, and alternative decision framings.
+
+→ Details: `references/bias-catalog.md`
 
 ---
 
@@ -219,6 +251,7 @@ Default: **DEEP** unless the user specifies otherwise or the problem is clearly 
 | `contradiction`, `trade-off`, `improving X breaks Y` | LENS (TRIZ) | Contradiction resolution + inventive principles | Builder or User |
 | `pre-mortem`, `what could go wrong`, `blind spots` | RAPID | Assumption vulnerability report + Blind Spot Report | Magi or User |
 | `complexity paralysis`, `too many options`, `overwhelmed` | DEEP | Cynefin classification + prioritized reframing set | Sherpa or User |
+| `bias check`, `are we biased`, `decision audit` | AUDIT | Bias Audit Report + debiased framing | Magi or User |
 
 ---
 
@@ -262,6 +295,7 @@ Every deliverable must include:
 | `references/output-formats.md` | You need output templates (Assumption Map, Insight Matrix, Blind Spot Report). |
 | `references/anti-patterns.md` | You need to guard against superficial reframing, framework abuse, or false insights. |
 | `references/collaboration-packets.md` | You need handoff formats for partner agents. |
+| `references/bias-catalog.md` | You need the full bias taxonomy, detection signals, and debiasing techniques for AUDIT mode. |
 
 ---
 

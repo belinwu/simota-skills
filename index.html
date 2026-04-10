@@ -3,16 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Skills — 102の専門AIエージェントが、あなたの開発チームになる</title>
-  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する102の専門エージェント。">
-  <meta property="og:title" content="Agent Skills — AI Agent Ecosystem">
-  <meta property="og:description" content="102の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。">
+  <title>Agent Skills — 100超の専門AIエージェントが、あなたの開発チームになる</title>
+  <meta name="description" content="Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する100超の専門エージェント。">
+  <meta property="og:title" content="Agent Skills — 100超の専門AIエージェントが、あなたの開発チームになる">
+  <meta property="og:description" content="100超の専門AIエージェントが、あなたの開発チームになる。Claude Code / Codex CLI / Gemini CLI 対応のオープンソースエコシステム。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://simota.github.io/agent-skills/">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="Agent Skills">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent Skills — 100超の専門AIエージェントが、あなたの開発チームになる">
+  <meta name="twitter:description" content="バグ調査、セキュリティ、UI/UX、リリース管理まで。オープンソースのAIエージェントエコシステム。">
+  <meta property="og:image" content="https://simota.github.io/agent-skills/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://simota.github.io/agent-skills/og-image.png">
+  <link rel="canonical" href="https://simota.github.io/agent-skills/">
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Agent Skills",
+      "description": "Open-source AI agent ecosystem for Claude Code, Codex CLI, and Gemini CLI. 100+ specialist agents covering investigation, implementation, testing, security, UI/UX, AI/ML, and infrastructure.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux, Windows",
+      "url": "https://simota.github.io/agent-skills/",
+      "license": "https://opensource.org/licenses/MIT",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "codeRepository": "https://github.com/simota/agent-skills",
+      "author": { "@type": "Person", "name": "simota", "url": "https://github.com/simota" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Agent Skills",
+      "url": "https://simota.github.io/agent-skills/"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "AI Agent Catalog",
+      "description": "100+ specialist AI agents for software development",
+      "numberOfItems": 106,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Nexus", "description": "Team orchestrator that decomposes requests and auto-designs optimal agent chains" },
+        { "@type": "ListItem", "position": 2, "name": "Scout", "description": "Bug investigation, root cause analysis (RCA), and reproduction step identification" },
+        { "@type": "ListItem", "position": 3, "name": "Builder", "description": "Type-safe, production-ready implementation craftsman with TDD and CQRS support" },
+        { "@type": "ListItem", "position": 4, "name": "Sentinel", "description": "Security static analysis (SAST) and vulnerability pattern detection" },
+        { "@type": "ListItem", "position": 5, "name": "Vision", "description": "Creative direction and Design System construction" }
+      ]
+    }
+  ]
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
 /* ==========================================
    CSS Custom Properties
@@ -27,7 +73,7 @@
   --border-hover: #58a6ff;
   --text-primary: #e6edf3;
   --text-secondary: #8b949e;
-  --text-muted: #484f58;
+  --text-muted: #6e7681;
   --accent: #58a6ff;
   --accent-glow: rgba(88, 166, 255, 0.15);
   --glow-purple: rgba(188, 140, 255, 0.12);
@@ -106,7 +152,7 @@ a:hover { color: #79c0ff; }
   height: 64px;
 }
 .nav-logo {
-  font-weight: 800; font-size: 1.15rem; color: var(--text-primary);
+  font-weight: 700; font-size: 1.15rem; color: var(--text-primary);
   display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em;
 }
 .nav-logo .logo-icon {
@@ -117,18 +163,18 @@ a:hover { color: #79c0ff; }
 }
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
-  color: var(--text-secondary); font-size: 0.875rem; font-weight: 500;
+  color: var(--text-secondary); font-size: 0.875rem; font-weight: 400;
   transition: color var(--duration-fast) var(--ease-out);
 }
 .nav-links a:hover { color: var(--text-primary); }
 
 .nav-github {
   display: flex; align-items: center; gap: 6px; color: var(--text-secondary);
-  font-size: 0.875rem; font-weight: 500; padding: 6px 14px;
+  font-size: 0.875rem; font-weight: 400; padding: 6px 14px;
   border: 1px solid var(--border); border-radius: 6px;
-  transition: all var(--transition);
+  transition: color var(--transition), border-color var(--transition);
 }
-.nav-github:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+.nav-github:hover { color: var(--text-primary); border-color: var(--text-muted); }
 .nav-github svg { width: 18px; height: 18px; fill: currentColor; }
 
 .nav-mobile-btn {
@@ -185,13 +231,13 @@ a:hover { color: #79c0ff; }
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 16px; border-radius: 50px;
   background: rgba(88, 166, 255, 0.08); border: 1px solid rgba(88, 166, 255, 0.2);
-  font-size: 0.8rem; color: var(--accent); margin-bottom: 24px; font-weight: 500;
+  font-size: 0.8rem; color: var(--accent); margin-bottom: 24px; font-weight: 400;
 }
 .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #3fb950; animation: blink 2s ease-in-out infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 .hero h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700;
   line-height: 1.25; letter-spacing: -0.03em;
   margin-bottom: 20px; color: var(--text-primary);
 }
@@ -203,7 +249,7 @@ a:hover { color: #79c0ff; }
 .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border-radius: 8px; font-weight: 600;
+  padding: 12px 28px; border-radius: 8px; font-weight: 700;
   font-size: 0.95rem; transition: all var(--transition); cursor: pointer;
   border: none; font-family: var(--font-sans);
 }
@@ -225,7 +271,7 @@ a:hover { color: #79c0ff; }
 }
 .stat { text-align: center; }
 .stat-value {
-  font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800;
+  font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700;
   font-variant-numeric: tabular-nums; color: var(--text-primary);
 }
 .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
@@ -237,10 +283,10 @@ a:hover { color: #79c0ff; }
 .section-header { text-align: center; margin-bottom: 64px; }
 .section-label {
   font-size: 0.75rem; color: var(--accent); text-transform: uppercase;
-  letter-spacing: 0.12em; font-weight: 600; margin-bottom: 12px;
+  letter-spacing: 0.12em; font-weight: 700; margin-bottom: 12px;
 }
 .section-title {
-  font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 800;
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 700;
   letter-spacing: -0.02em; line-height: 1.3;
 }
 .section-desc { color: var(--text-secondary); max-width: 560px; margin: 16px auto 0; font-size: 1rem; }
@@ -252,10 +298,11 @@ a:hover { color: #79c0ff; }
 /* Hero staged entrance */
 .hero-content > * { opacity: 0; transform: translateY(20px); animation: heroEntrance var(--duration-entrance) var(--ease-out) forwards; }
 .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
-.hero-content > *:nth-child(2) { animation-delay: 0.25s; }
-.hero-content > *:nth-child(3) { animation-delay: 0.4s; }
-.hero-content > *:nth-child(4) { animation-delay: 0.55s; }
-.hero-content > *:nth-child(5) { animation-delay: 0.75s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.4s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.5s; }
+.hero-content > *:nth-child(6) { animation-delay: 0.6s; }
 @keyframes heroEntrance { to { opacity: 1; transform: translateY(0); } }
 
 /* Staggered chain pulse */
@@ -302,7 +349,7 @@ a:hover { color: #79c0ff; }
   width: 48px; height: 48px; border-radius: 50%;
   background: linear-gradient(135deg, var(--c-orchestration), var(--accent));
   display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.1rem; margin: 0 auto 16px; color: #fff;
+  font-weight: 700; font-size: 1.1rem; margin: 0 auto 16px; color: #fff;
 }
 .workflow-step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
 .workflow-step p { color: var(--text-secondary); font-size: 0.85rem; }
@@ -315,7 +362,7 @@ a:hover { color: #79c0ff; }
 .chains-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .chain-card {
   background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 24px; transition: all var(--transition);
+  border-radius: var(--radius-sm); padding: 24px; transition: border-color var(--transition);
 }
 .chain-card:hover { border-color: rgba(88,166,255,0.3); }
 .chain-label {
@@ -326,7 +373,7 @@ a:hover { color: #79c0ff; }
 .chain-nodes { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .chain-node {
   padding: 6px 14px; border-radius: 6px;
-  font-weight: 600; font-size: 0.8rem; white-space: nowrap;
+  font-weight: 700; font-size: 0.8rem; white-space: nowrap;
   border: 1px solid; position: relative;
 }
 .chain-arrow { color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; }
@@ -370,8 +417,8 @@ a:hover { color: #79c0ff; }
 .filter-btn {
   padding: 6px 14px; border-radius: 50px;
   background: transparent; border: 1px solid var(--border);
-  color: var(--text-secondary); font-size: 0.78rem; font-weight: 500;
-  cursor: pointer; transition: all var(--transition); font-family: var(--font-sans);
+  color: var(--text-secondary); font-size: 0.78rem; font-weight: 400;
+  cursor: pointer; transition: color var(--transition), border-color var(--transition), background var(--transition); font-family: var(--font-sans);
   white-space: nowrap;
 }
 .filter-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
@@ -398,7 +445,7 @@ a:hover { color: #79c0ff; }
 .agent-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
 .agent-badge {
   display: inline-block; font-size: 0.7rem; padding: 2px 10px;
-  border-radius: 50px; font-weight: 600; letter-spacing: 0.02em;
+  border-radius: 50px; font-weight: 700; letter-spacing: 0.02em;
 }
 
 .catalog-empty {
@@ -413,7 +460,7 @@ a:hover { color: #79c0ff; }
 .platform-card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 36px 28px; text-align: center;
-  transition: all var(--transition);
+  transition: border-color var(--transition), transform var(--duration-normal) var(--ease-spring);
 }
 .platform-card:hover { border-color: rgba(88,166,255,0.3); transform: translateY(-4px); }
 .platform-icon {
@@ -439,7 +486,7 @@ a:hover { color: #79c0ff; }
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
-.install-header span { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+.install-header span { font-size: 0.8rem; color: var(--text-secondary); font-weight: 400; }
 .copy-btn {
   background: transparent; border: 1px solid var(--border);
   color: var(--text-secondary); padding: 4px 12px; border-radius: 4px;
@@ -459,7 +506,7 @@ a:hover { color: #79c0ff; }
 .example-card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--radius-sm); padding: 16px 20px;
-  transition: all var(--transition);
+  transition: border-color var(--transition);
 }
 .example-card:hover { border-color: rgba(88,166,255,0.2); }
 .example-cmd { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
@@ -501,7 +548,7 @@ a:hover { color: #79c0ff; }
   .features-grid, .platforms-grid { grid-template-columns: 1fr; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .workflow-steps { flex-direction: column; align-items: center; }
-  .step-arrow { transform: rotate(90deg); padding: 0; }
+  .step-arrow { transform: none; padding: 8px 0; font-size: 1.2rem; }
   .examples-grid { grid-template-columns: 1fr; }
   .footer-inner { flex-direction: column; }
   .catalog-search-row { flex-direction: column; }
@@ -523,6 +570,166 @@ a:hover { color: #79c0ff; }
   .particle { display: none; }
   html { scroll-behavior: auto; }
 }
+
+/* ==========================================
+   Focus Visible (A11y)
+   ========================================== */
+a:focus-visible, .btn:focus-visible, .filter-btn:focus-visible, .lang-btn:focus-visible, .copy-btn:focus-visible, .nav-mobile-btn:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   Hero Terminal Demo
+   ========================================== */
+.hero-terminal {
+  max-width: 600px; margin: 0 auto;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  text-align: left; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.hero-terminal-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; background: rgba(88,166,255,0.05);
+  border-bottom: 1px solid var(--border);
+}
+.hero-terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.hero-terminal-dot:nth-child(1) { background: #f85149; }
+.hero-terminal-dot:nth-child(2) { background: #d29922; }
+.hero-terminal-dot:nth-child(3) { background: #3fb950; }
+.hero-terminal-bar span { flex: 1; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+.hero-terminal-body {
+  padding: 20px; font-family: var(--font-mono); font-size: 0.85rem;
+  line-height: 1.8; color: var(--text-primary);
+}
+.hero-terminal-body .prompt { color: #3fb950; }
+.hero-terminal-body .cmd-text { color: #79c0ff; }
+.hero-terminal-body .output { color: var(--text-secondary); }
+.hero-terminal-body .agent-highlight { color: var(--c-orchestration); font-weight: 700; }
+.hero-terminal-body .arrow-highlight { color: var(--text-muted); }
+
+/* Terminal typing animation */
+.hero-terminal-body .cmd-text {
+  display: inline-block; overflow: hidden; white-space: nowrap;
+  border-right: 2px solid #79c0ff;
+  width: 0; animation: typing 1.5s var(--ease-out) 1s forwards, blink-cursor 0.7s step-end 1s 4;
+}
+@keyframes typing { from { width: 0; } to { width: 31ch; } }
+@keyframes blink-cursor { 50% { border-color: transparent; } }
+
+/* Copy button pulse feedback */
+@keyframes copyPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.copy-btn.copied, .hero-copy-btn.copied {
+  animation: copyPulse 250ms var(--ease-spring);
+}
+
+/* ==========================================
+   Hero Stats (moved below hero)
+   ========================================== */
+.stats-bar {
+  display: flex; justify-content: center; gap: 48px;
+  padding: 32px 0; border-bottom: 1px solid var(--border);
+  background: var(--bg-section);
+}
+.stats-bar .stat { text-align: center; }
+.stats-bar .stat-value {
+  font-size: 1.8rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--text-primary);
+}
+.stats-bar .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+@media (max-width: 768px) {
+  .stats-bar { gap: 24px; flex-wrap: wrap; padding: 24px 16px; }
+  .stats-bar .stat-value { font-size: 1.4rem; }
+}
+
+/* ==========================================
+   Hero Inline CTA
+   ========================================== */
+.hero-copy-cmd {
+  max-width: 520px; margin: 0 auto 40px;
+  display: flex; align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color var(--transition);
+}
+.hero-copy-cmd:hover { border-color: rgba(88,166,255,0.4); }
+.hero-copy-cmd code {
+  flex: 1; padding: 12px 16px;
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: #79c0ff; white-space: nowrap; overflow-x: auto;
+}
+.hero-copy-btn {
+  padding: 12px 20px; background: var(--accent); color: #0a0e17;
+  border: none; font-weight: 700; font-size: 0.85rem;
+  cursor: pointer; font-family: var(--font-sans);
+  transition: background var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.hero-copy-btn:hover { background: #79c0ff; }
+.hero-copy-btn.copied { background: #3fb950; }
+
+/* ==========================================
+   Social Proof Bar
+   ========================================== */
+.social-proof {
+  padding: 48px 0; background: var(--bg-section);
+  border-bottom: 1px solid var(--border);
+}
+.social-proof-inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px; flex-wrap: wrap;
+}
+.social-proof-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 50px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.85rem; font-weight: 400;
+  transition: border-color var(--transition);
+}
+.social-proof-badge:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.social-proof-badge svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* ==========================================
+   Catalog Show More
+   ========================================== */
+.catalog-show-more {
+  grid-column: 1 / -1; text-align: center; padding: 24px;
+}
+.show-more-btn {
+  padding: 10px 32px; border-radius: 8px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; font-family: var(--font-sans);
+  transition: all var(--transition);
+}
+.show-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ==========================================
+   Language Toggle
+   ========================================== */
+.lang-toggle {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px; margin-right: 8px;
+}
+.lang-btn {
+  padding: 4px 10px; border-radius: 4px; border: none;
+  background: transparent; color: var(--text-muted);
+  font-size: 0.75rem; font-weight: 700; cursor: pointer;
+  font-family: var(--font-sans); transition: all var(--duration-fast) var(--ease-out);
+  letter-spacing: 0.02em;
+}
+.lang-btn:hover { color: var(--text-secondary); }
+.lang-btn.active { background: var(--accent); color: #0a0e17; }
+
+@media (max-width: 768px) {
+  .lang-toggle { margin-right: 0; order: -1; }
+}
   </style>
 </head>
 <body>
@@ -539,6 +746,10 @@ a:hover { color: #79c0ff; }
       <a href="#workflow">Workflow</a>
       <a href="#agents">Agents</a>
       <a href="#install">Install</a>
+    </div>
+    <div class="lang-toggle" id="langToggle">
+      <button class="lang-btn active" data-lang="ja">JA</button>
+      <button class="lang-btn" data-lang="en">EN</button>
     </div>
     <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener" class="nav-github">
       <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -560,47 +771,89 @@ a:hover { color: #79c0ff; }
       <span class="dot"></span>
       Open Source — MIT License
     </div>
-    <h1><span class="accent">102</span>の専門AIエージェントが、<br>あなたの開発チームになる</h1>
-    <p>バグ調査、セキュリティ監査、UI/UX、リリース管理まで — 開発のあらゆる領域を専門エージェントがカバー。Claude Code・Codex CLI・Gemini CLI で今日から使えるオープンソースエコシステム。</p>
+    <h1 data-i18n="hero.title"><span class="accent">100+</span>の専門AIエージェントが、<br>あなたの開発チームになる</h1>
+    <p data-i18n="hero.desc">バグ調査、セキュリティ監査、UI/UX、リリース管理まで — 開発のあらゆる領域を専門エージェントがカバー。Claude Code・Codex CLI・Gemini CLI で今日から使えるオープンソースエコシステム。</p>
+    <div class="hero-copy-cmd">
+      <code>git clone https://github.com/simota/agent-skills.git ~/.claude/skills</code>
+      <button class="hero-copy-btn" id="heroCopyBtn" aria-label="コマンドをコピー">Copy</button>
+    </div>
     <div class="hero-cta">
-      <a href="#install" class="btn btn-primary">インストールする</a>
+      <a href="#install" class="btn btn-primary" data-i18n="hero.cta">使い方を見る</a>
       <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener" class="btn btn-secondary">
         <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-        GitHub で見る
+        <span data-i18n="hero.github">GitHub で見る</span>
       </a>
     </div>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-value" data-count="102">0</div><div class="stat-label">Agents</div></div>
-      <div class="stat"><div class="stat-value" data-count="14">0</div><div class="stat-label">Categories</div></div>
-      <div class="stat"><div class="stat-value" data-count="50" data-suffix="+">0</div><div class="stat-label">Chains</div></div>
-      <div class="stat"><div class="stat-value" data-text="MIT">MIT</div><div class="stat-label">License</div></div>
+    <div class="hero-terminal">
+      <div class="hero-terminal-bar">
+        <div class="hero-terminal-dot"></div>
+        <div class="hero-terminal-dot"></div>
+        <div class="hero-terminal-dot"></div>
+        <span>Terminal</span>
+      </div>
+      <div class="hero-terminal-body">
+        <span class="prompt">$</span> <span class="cmd-text" data-i18n="terminal.cmd">/Nexus ログイン機能のバグを修正して</span><br>
+        <br>
+        <span class="output" data-i18n="terminal.analyzing">Analyzing task...</span><br>
+        <span class="output" data-i18n="terminal.chain">Chain designed:</span> <span class="agent-highlight">Scout</span> <span class="arrow-highlight">→</span> <span class="agent-highlight">Builder</span> <span class="arrow-highlight">→</span> <span class="agent-highlight">Radar</span><br>
+        <span class="output" data-i18n="terminal.executing">Executing 3 agents...</span> <span style="color:#3fb950;">Done</span>
+      </div>
     </div>
   </div>
 </section>
+
+<main id="main-content">
+
+<!-- ========== STATS BAR ========== -->
+<div class="stats-bar" id="statsBar">
+  <div class="stat"><div class="stat-value" data-count="100" data-suffix="+">0</div><div class="stat-label">Agents</div></div>
+  <div class="stat"><div class="stat-value" data-count="14">0</div><div class="stat-label">Categories</div></div>
+  <div class="stat"><div class="stat-value" data-count="50" data-suffix="+">0</div><div class="stat-label">Chains</div></div>
+  <div class="stat"><div class="stat-value" data-text="MIT">MIT</div><div class="stat-label">License</div></div>
+</div>
+
+<!-- ========== SOCIAL PROOF ========== -->
+<div class="social-proof">
+  <div class="container">
+    <div class="social-proof-inner">
+      <a href="https://github.com/simota/agent-skills" target="_blank" rel="noopener" class="social-proof-badge">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span data-i18n="social.star">GitHub Star</span>
+      </a>
+      <a href="https://github.com/simota/agent-skills/blob/main/LICENSE" target="_blank" rel="noopener" class="social-proof-badge">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1L2 4v4c0 3.3 2.6 6.4 6 7 3.4-.6 6-3.7 6-7V4L8 1z"/></svg>
+        MIT License
+      </a>
+      <span class="social-proof-badge" data-i18n="social.platform">
+        Claude Code / Codex CLI / Gemini CLI 対応
+      </span>
+    </div>
+  </div>
+</div>
 
 <!-- ========== FEATURES ========== -->
 <section class="section" id="features">
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-label">Features</div>
-      <h2 class="section-title">なぜ Agent Skills なのか</h2>
-      <p class="section-desc">git clone ひとつで、専門エージェントチームがあなたのCLIに加わります</p>
+      <h2 class="section-title" data-i18n="features.title">なぜ Agent Skills なのか</h2>
+      <p class="section-desc" data-i18n="features.desc">git clone ひとつで、専門エージェントチームがあなたのCLIに加わります</p>
     </div>
     <div class="features-grid">
       <div class="feature-card fade-in">
         <div class="feature-icon" style="background: rgba(188,140,255,0.12); color: var(--c-orchestration);">/N</div>
-        <h3>Nexus オーケストレーター</h3>
-        <p>「バグを直して」と伝えるだけで Scout → Builder → Radar を自動設計。タスクの種類と複雑度を判断し、最適なエージェントチェーンを即座に組み立てます。</p>
+        <h3 data-i18n="features.nexus.title">Nexus オーケストレーター</h3>
+        <p data-i18n="features.nexus.desc">「バグを直して」と伝えるだけで Scout → Builder → Radar を自動設計。タスクの種類と複雑度を判断し、最適なエージェントチェーンを即座に組み立てます。</p>
       </div>
       <div class="feature-card fade-in">
         <div class="feature-icon" style="background: rgba(88,166,255,0.12); color: var(--c-investigation);">14</div>
-        <h3>14領域をカバーする専門チーム</h3>
-        <p>調査・実装・テスト・セキュリティ・UI/UX・AI/ML・インフラ・ドキュメントなど14カテゴリ。それぞれのドメインに深い知識を持つエージェントが、あなたに代わって専門的な判断を下します。</p>
+        <h3 data-i18n="features.team.title">14領域をカバーする専門チーム</h3>
+        <p data-i18n="features.team.desc">調査・実装・テスト・セキュリティ・UI/UX・AI/ML・インフラ・ドキュメントなど14カテゴリ。それぞれのドメインに深い知識を持つエージェントが、あなたに代わって専門的な判断を下します。</p>
       </div>
       <div class="feature-card fade-in">
         <div class="feature-icon" style="background: rgba(63,185,80,0.12); color: var(--c-implementation);">D+</div>
-        <h3>自己進化エコシステム</h3>
-        <p>Darwin がフィットネスを監視し、Lore が横断知識を伝播。エージェント間で学びが循環し、プロジェクトを重ねるほど連携が洗練されていきます。</p>
+        <h3 data-i18n="features.evolve.title">自己進化エコシステム</h3>
+        <p data-i18n="features.evolve.desc">Darwin がフィットネスを監視し、Lore が横断知識を伝播。エージェント間で学びが循環し、プロジェクトを重ねるほど連携が洗練されていきます。</p>
       </div>
     </div>
   </div>
@@ -611,34 +864,34 @@ a:hover { color: #79c0ff; }
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-label">How It Works</div>
-      <h2 class="section-title">伝えるだけで、チームが動く</h2>
-      <p class="section-desc">自然言語でタスクを記述するだけ。残りは Nexus が判断します。</p>
+      <h2 class="section-title" data-i18n="workflow.title">伝えるだけで、チームが動く</h2>
+      <p class="section-desc" data-i18n="workflow.desc">自然言語でタスクを記述するだけ。残りは Nexus が判断します。</p>
     </div>
 
     <div class="workflow-steps fade-in">
       <div class="workflow-step">
         <div class="step-number">1</div>
-        <h4>タスクを伝える</h4>
-        <p>/Nexus に自然言語でタスクを記述。「ログイン機能のバグを修正して」のように。</p>
+        <h4 data-i18n="workflow.step1.title">タスクを伝える</h4>
+        <p data-i18n="workflow.step1.desc">/Nexus に自然言語でタスクを記述。「ログイン機能のバグを修正して」のように。</p>
       </div>
       <div class="step-arrow">→</div>
       <div class="workflow-step">
         <div class="step-number">2</div>
-        <h4>Nexus が分析・設計</h4>
-        <p>タスクを分類し、最適なエージェントチェーンを自動で設計。複雑度に応じてモードを選択。</p>
+        <h4 data-i18n="workflow.step2.title">Nexus が分析・設計</h4>
+        <p data-i18n="workflow.step2.desc">タスクを分類し、最適なエージェントチェーンを自動で設計。複雑度に応じてモードを選択。</p>
       </div>
       <div class="step-arrow">→</div>
       <div class="workflow-step">
         <div class="step-number">3</div>
-        <h4>エージェントが連携</h4>
-        <p>各エージェントが専門スキルを発揮。調査 → 実装 → テストの一連の流れを自動実行。</p>
+        <h4 data-i18n="workflow.step3.title">エージェントが連携</h4>
+        <p data-i18n="workflow.step3.desc">各エージェントが専門スキルを発揮。調査 → 実装 → テストの一連の流れを自動実行。</p>
       </div>
     </div>
 
-    <h3 style="text-align:center; font-size:1.1rem; margin-bottom:24px; color:var(--text-secondary);" class="fade-in">代表的なチェーン例</h3>
+    <h3 style="text-align:center; font-size:1.1rem; margin-bottom:24px; color:var(--text-secondary);" class="fade-in" data-i18n="workflow.chains">代表的なチェーン例</h3>
     <div class="chains-grid fade-in">
       <div class="chain-card">
-        <div class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">BUG FIX</div>
+        <h4 class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">BUG FIX</h4>
         <div class="chain-nodes">
           <span class="chain-node" style="border-color: rgba(88,166,255,0.4); color: var(--c-investigation); background: rgba(88,166,255,0.08);">Scout</span>
           <span class="chain-arrow chain-pulse">→</span>
@@ -648,7 +901,7 @@ a:hover { color: #79c0ff; }
         </div>
       </div>
       <div class="chain-card">
-        <div class="chain-label" style="background:rgba(63,185,80,0.12); color:#3fb950;">FEATURE</div>
+        <h4 class="chain-label" style="background:rgba(63,185,80,0.12); color:#3fb950;">FEATURE</h4>
         <div class="chain-nodes">
           <span class="chain-node" style="border-color: rgba(188,140,255,0.4); color: var(--c-orchestration); background: rgba(188,140,255,0.08);">Sherpa</span>
           <span class="chain-arrow chain-pulse">→</span>
@@ -660,7 +913,7 @@ a:hover { color: #79c0ff; }
         </div>
       </div>
       <div class="chain-card">
-        <div class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">SECURITY</div>
+        <h4 class="chain-label" style="background:rgba(248,81,73,0.12); color:#f85149;">SECURITY</h4>
         <div class="chain-nodes">
           <span class="chain-node" style="border-color: rgba(248,81,73,0.4); color: var(--c-quality); background: rgba(248,81,73,0.08);">Sentinel</span>
           <span class="chain-arrow chain-pulse">→</span>
@@ -672,7 +925,7 @@ a:hover { color: #79c0ff; }
         </div>
       </div>
       <div class="chain-card">
-        <div class="chain-label" style="background:rgba(255,110,180,0.12); color:#ff6eb4;">UI/UX</div>
+        <h4 class="chain-label" style="background:rgba(255,110,180,0.12); color:#ff6eb4;">UI/UX</h4>
         <div class="chain-nodes">
           <span class="chain-node" style="border-color: rgba(255,110,180,0.4); color: var(--c-uiux); background: rgba(255,110,180,0.08);">Vision</span>
           <span class="chain-arrow chain-pulse">→</span>
@@ -692,14 +945,14 @@ a:hover { color: #79c0ff; }
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-label">Agent Catalog</div>
-      <h2 class="section-title">エージェントを探す</h2>
-      <p class="section-desc">102の専門エージェントをカテゴリやキーワードで絞り込めます</p>
+      <h2 class="section-title" data-i18n="catalog.title">エージェントを探す</h2>
+      <p class="section-desc" data-i18n="catalog.desc">100超の専門エージェントをカテゴリやキーワードで絞り込めます</p>
     </div>
     <div class="catalog-controls fade-in">
       <div class="catalog-search-row">
         <div class="search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="エージェントを検索...（名前・説明・モットー）">
+          <input type="text" id="searchInput" data-i18n-placeholder="catalog.search" placeholder="エージェントを検索...（名前・説明・モットー）">
         </div>
         <div class="catalog-count" id="catalogCount"></div>
       </div>
@@ -714,27 +967,27 @@ a:hover { color: #79c0ff; }
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-label">Platforms</div>
-      <h2 class="section-title">マルチプラットフォーム対応</h2>
-      <p class="section-desc">Markdown 形式のスキルファイルで、あらゆるAI CLIに対応</p>
+      <h2 class="section-title" data-i18n="platforms.title">マルチプラットフォーム対応</h2>
+      <p class="section-desc" data-i18n="platforms.desc">Markdown 形式のスキルファイルで、あらゆるAI CLIに対応</p>
     </div>
     <div class="platforms-grid fade-in">
       <div class="platform-card">
         <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-orchestration);">~/.claude</span>
         <h3>Claude Code</h3>
-        <p>~/.claude/skills/ にクローンすれば準備完了。/Scout や /Nexus のようにスラッシュコマンドでエージェントを即座に呼び出せます。</p>
+        <p data-i18n="platforms.claude.desc">~/.claude/skills/ にクローンすれば準備完了。/Scout や /Nexus のようにスラッシュコマンドでエージェントを即座に呼び出せます。</p>
       </div>
       <div class="platform-card">
         <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-investigation);">AGENTS</span>
         <h3>Codex CLI</h3>
-        <p>AGENTS.md にスキルパスを記述して統合。Arena エージェントとの連携で codex exec 並列実行もサポートします。</p>
+        <p data-i18n="platforms.codex.desc">AGENTS.md にスキルパスを記述して統合。Arena エージェントとの連携で codex exec 並列実行もサポートします。</p>
       </div>
       <div class="platform-card">
         <span class="platform-icon" style="font-family:var(--font-mono); font-size:1.2rem; color:var(--c-implementation);">GEMINI</span>
         <h3>Gemini CLI</h3>
-        <p>GEMINI.md にスキルパスを設定して統合。Sketch や Dot エージェントと組み合わせれば Gemini API 画像生成も活用できます。</p>
+        <p data-i18n="platforms.gemini.desc">GEMINI.md にスキルパスを設定して統合。Sketch や Dot エージェントと組み合わせれば Gemini API 画像生成も活用できます。</p>
       </div>
     </div>
-    <div class="platform-note fade-in">
+    <div class="platform-note fade-in" data-i18n="platforms.note">
       各スキルは標準的な Markdown（SKILL.md）で記述されており、任意のAI CLIツールで活用できます
     </div>
   </div>
@@ -745,8 +998,8 @@ a:hover { color: #79c0ff; }
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-label">Quick Start</div>
-      <h2 class="section-title">今すぐ始める</h2>
-      <p class="section-desc">1コマンドでインストール完了</p>
+      <h2 class="section-title" data-i18n="install.title">今すぐ始める</h2>
+      <p class="section-desc" data-i18n="install.desc">1コマンドでインストール完了</p>
     </div>
 
     <div class="install-block fade-in">
@@ -754,34 +1007,36 @@ a:hover { color: #79c0ff; }
         <span>Terminal</span>
         <button class="copy-btn" id="copyBtn" data-copy="git clone https://github.com/simota/agent-skills.git ~/.claude/skills">Copy</button>
       </div>
-      <div class="install-code">
-        <span class="comment"># Claude Code の場合</span><br>
+      <div class="install-code" id="installCode">
+        <span class="comment" data-i18n="install.comment1"># Claude Code の場合</span><br>
         <span class="cmd">git clone https://github.com/simota/agent-skills.git ~/.claude/skills</span><br><br>
-        <span class="comment"># その他のプラットフォーム</span><br>
+        <span class="comment" data-i18n="install.comment2"># その他のプラットフォーム</span><br>
         <span class="cmd">git clone https://github.com/simota/agent-skills.git /path/to/your/skills</span>
       </div>
     </div>
 
-    <div class="examples-grid fade-in">
+    <div class="examples-grid fade-in" id="examplesGrid">
       <div class="example-card">
-        <div class="example-cmd">/Nexus ログイン機能を実装したい</div>
-        <div class="example-desc">Nexusがタスクを分析し、最適なエージェントチェーンを自動設計</div>
+        <div class="example-cmd" data-i18n="install.ex1.cmd">/Nexus ログイン機能を実装したい</div>
+        <div class="example-desc" data-i18n="install.ex1.desc">Nexusがタスクを分析し、最適なエージェントチェーンを自動設計</div>
       </div>
       <div class="example-card">
-        <div class="example-cmd">/Scout このバグの原因を調査して</div>
-        <div class="example-desc">根本原因分析（RCA）で再現手順と修正箇所を特定</div>
+        <div class="example-cmd" data-i18n="install.ex2.cmd">/Scout このバグの原因を調査して</div>
+        <div class="example-desc" data-i18n="install.ex2.desc">根本原因分析（RCA）で再現手順と修正箇所を特定</div>
       </div>
       <div class="example-card">
-        <div class="example-cmd">/Vision ダッシュボードをリデザイン</div>
-        <div class="example-desc">クリエイティブディレクションから実装まで自動連携</div>
+        <div class="example-cmd" data-i18n="install.ex3.cmd">/Vision ダッシュボードをリデザイン</div>
+        <div class="example-desc" data-i18n="install.ex3.desc">クリエイティブディレクションから実装まで自動連携</div>
       </div>
       <div class="example-card">
-        <div class="example-cmd">/Sentinel セキュリティ監査を実行</div>
-        <div class="example-desc">SAST/DAST両面からの脆弱性検出と修正コード生成</div>
+        <div class="example-cmd" data-i18n="install.ex4.cmd">/Sentinel セキュリティ監査を実行</div>
+        <div class="example-desc" data-i18n="install.ex4.desc">SAST/DAST両面からの脆弱性検出と修正コード生成</div>
       </div>
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ========== FOOTER ========== -->
 <footer class="footer">
@@ -809,6 +1064,9 @@ a:hover { color: #79c0ff; }
         </div>
       </div>
     </div>
+    <div style="text-align:center; margin-top:32px; padding-top:24px;">
+      <a href="#install" class="btn btn-primary" style="font-size:0.9rem;" data-i18n="footer.cta">100超のエージェントで開発を始める</a>
+    </div>
     <div class="footer-bottom">
       MIT License &copy; simota
     </div>
@@ -820,21 +1078,21 @@ a:hover { color: #79c0ff; }
    Agent Data
    ========================================== */
 const CATEGORIES = [
-  { id: 'all', name: 'すべて', color: '#58a6ff' },
-  { id: 'orchestration', name: 'オーケストレーション', color: '#bc8cff' },
-  { id: 'investigation', name: '調査・企画', color: '#58a6ff' },
-  { id: 'git', name: 'Git/PR管理', color: '#a371f7' },
-  { id: 'quality', name: '品質保証', color: '#f85149' },
-  { id: 'implementation', name: '実装', color: '#3fb950' },
-  { id: 'performance', name: 'パフォーマンス', color: '#39d2c0' },
-  { id: 'uiux', name: 'UI/UX', color: '#ff6eb4' },
-  { id: 'architecture', name: 'アーキテクチャ', color: '#d29922' },
-  { id: 'devops', name: 'DevOps・運用', color: '#7ee787' },
-  { id: 'data', name: 'データ', color: '#79c0ff' },
-  { id: 'docs', name: 'ドキュメント', color: '#a5d6ff' },
-  { id: 'growth', name: 'グロース・分析', color: '#e3b341' },
-  { id: 'creative', name: 'クリエイティブ', color: '#db6d28' },
-  { id: 'specialized', name: '特化ドメイン', color: '#6e40c9' },
+  { id: 'all', name: 'すべて', name_en: 'All', color: '#58a6ff' },
+  { id: 'orchestration', name: 'オーケストレーション', name_en: 'Orchestration', color: '#bc8cff' },
+  { id: 'investigation', name: '調査・企画', name_en: 'Investigation', color: '#58a6ff' },
+  { id: 'git', name: 'Git/PR管理', name_en: 'Git/PR', color: '#a371f7' },
+  { id: 'quality', name: '品質保証', name_en: 'Quality', color: '#f85149' },
+  { id: 'implementation', name: '実装', name_en: 'Implementation', color: '#3fb950' },
+  { id: 'performance', name: 'パフォーマンス', name_en: 'Performance', color: '#39d2c0' },
+  { id: 'uiux', name: 'UI/UX', name_en: 'UI/UX', color: '#ff6eb4' },
+  { id: 'architecture', name: 'アーキテクチャ', name_en: 'Architecture', color: '#d29922' },
+  { id: 'devops', name: 'DevOps・運用', name_en: 'DevOps', color: '#7ee787' },
+  { id: 'data', name: 'データ', name_en: 'Data', color: '#79c0ff' },
+  { id: 'docs', name: 'ドキュメント', name_en: 'Documentation', color: '#a5d6ff' },
+  { id: 'growth', name: 'グロース・分析', name_en: 'Growth', color: '#e3b341' },
+  { id: 'creative', name: 'クリエイティブ', name_en: 'Creative', color: '#db6d28' },
+  { id: 'specialized', name: '特化ドメイン', name_en: 'Specialized', color: '#6e40c9' },
 ];
 
 const AGENTS = [
@@ -888,12 +1146,15 @@ const AGENTS = [
   { name: 'Specter', motto: "The bugs you can't see are the ones that haunt you.", description: '並行性・非同期処理の「見えない」問題を狩る幽霊ハンター', category: 'quality' },
   { name: 'Siege', motto: 'Break it before users do. Fix it before they notice.', description: '負荷テスト・契約テスト・カオスエンジニアリング', category: 'quality' },
   { name: 'Void', motto: 'The best code is the code that was never written.', description: 'YAGNI検証・スコープカット・複雑性削減提案', category: 'quality' },
+  { name: 'Mint', motto: 'Good tests need good data. Generate it by design.', description: 'テストデータ＆フィクスチャ生成。ファクトリパターン設計、境界値データ生成、合成データ生成、シードデータ管理', category: 'quality' },
+  { name: 'Comply', motto: 'Compliance is not a checkbox. It is a culture.', description: '規制コンプライアンス＆監査。SOC2/PCI-DSS/HIPAA/ISO 27001等のコントロール実装', category: 'quality' },
 
   // Implementation (4)
   { name: 'Builder', motto: 'Types are contracts. Code is a promise.', description: '型安全かつプロダクションレディな実装職人。TDD・CQRS対応', category: 'implementation' },
   { name: 'Artisan', motto: 'Prototypes promise. Production delivers.', description: 'React/Vue/Svelteの本番フロントエンド実装職人', category: 'implementation' },
   { name: 'Forge', motto: 'Done is better than perfect. Ship it, learn, iterate.', description: 'プロトタイプ作成。完璧より動くものを優先', category: 'implementation' },
   { name: 'Arena', motto: 'Arena is the judge, not a player.', description: 'codex/gemini CLIを直接操り並列実装・評価・採用', category: 'implementation' },
+  { name: 'Native', motto: 'One codebase, every platform. Mobile done right.', description: 'モバイル開発スペシャリスト。React Native/Flutter/SwiftUI/Jetpack Composeのベストプラクティス実装', category: 'implementation' },
 
   // Performance (2)
   { name: 'Bolt', motto: "Speed is a feature. Slowness is a bug you haven't fixed yet.", description: 'フロント・バック両面のパフォーマンス改善', category: 'performance' },
@@ -916,6 +1177,8 @@ const AGENTS = [
   { name: 'Gateway', motto: 'APIs are promises to the future. Design them like contracts.', description: 'API設計・OpenAPI仕様生成・バージョニング戦略', category: 'architecture' },
   { name: 'Grove', motto: 'A well-structured repository is a well-structured mind.', description: 'リポジトリ構造の設計・最適化・監査', category: 'architecture' },
   { name: 'Stratum', motto: 'Architecture without visualization is architecture without communication.', description: 'C4モデルによるアーキテクチャモデリング・Structurizr DSL', category: 'architecture' },
+  { name: 'Weave', motto: 'State is the memory of a system. Design it with intention.', description: 'ワークフロー＆ステートマシン設計。状態遷移設計、Sagaパターン、承認フロー設計', category: 'architecture' },
+  { name: 'Seek', motto: 'Find what matters. Surface it in milliseconds.', description: '検索エンジン・ベクトルDB設計。全文検索/ベクトル検索/ハイブリッド検索の設計', category: 'architecture' },
 
   // DevOps (9)
   { name: 'Anvil', motto: 'The terminal is the first interface. Make it unforgettable.', description: 'Terminal UI構築・CLI開発支援・開発ツール統合', category: 'devops' },
@@ -927,6 +1190,7 @@ const AGENTS = [
   { name: 'Pipe', motto: 'Workflows are pipelines. Pipelines are promises.', description: 'GitHub Actionsワークフローの専門家。Reusable Workflow設計', category: 'devops' },
   { name: 'Triage', motto: 'In chaos, clarity is the first act of healing.', description: '障害対応・影響範囲特定・復旧手順策定・ポストモーテム', category: 'devops' },
   { name: 'Mend', motto: 'Known failures deserve known fixes.', description: '既知障害パターンの自動修復。runbook実行・段階的検証', category: 'devops' },
+  { name: 'Ledger', motto: 'Every dollar in the cloud has a reason. Find it.', description: 'FinOps／クラウドコスト最適化。IaCコスト推定、right-sizing提案、RI/SP推奨', category: 'devops' },
 
   // Data (2)
   { name: 'Schema', motto: 'A schema is a contract with the future.', description: 'DBスキーマ設計・マイグレーション作成・ER図設計', category: 'data' },
@@ -936,11 +1200,13 @@ const AGENTS = [
   { name: 'Scribe', motto: 'A specification is a contract between vision and reality.', description: 'PRD/SRS/設計書・実装チェックリスト・テスト仕様書を作成', category: 'docs' },
   { name: 'Quill', motto: 'Code tells computers what to do. Documentation tells humans why.', description: 'JSDoc/TSDoc追加・README更新・型定義改善', category: 'docs' },
   { name: 'Morph', motto: 'A document is timeless. Its format is temporary.', description: 'ドキュメントフォーマット変換（Markdown↔Word/PDF/HTML）', category: 'docs' },
+  { name: 'Tome', motto: 'Changes are forgotten. Knowledge endures.', description: '変更内容を学習ドキュメントに変換（用語・設計判断・アンチパターン解説）', category: 'docs' },
   { name: 'Prism', motto: 'One source, many lights.', description: 'NotebookLMステアリングプロンプト設計コンサルタント', category: 'docs' },
 
-  // Growth (4)
+  // Growth (5)
   { name: 'Growth', motto: 'Traffic without conversion is just expensive vanity.', description: 'SEO/SMO/CRO。meta/OGP/JSON-LD・CTA改善', category: 'growth' },
   { name: 'Retain', motto: 'Acquisition is expensive. Retention is profitable.', description: 'リテンション施策・再エンゲージメント・チャーン予防', category: 'growth' },
+  { name: 'Funnel', motto: 'Above the fold is your one shot. Make every pixel convert.', description: 'LP構造設計・コンバージョン戦略・CTA最適化・レスポンシブ設計', category: 'growth' },
   { name: 'Pulse', motto: 'What gets measured gets managed.', description: 'KPI定義・トラッキングイベント設計・ダッシュボード仕様', category: 'growth' },
   { name: 'Experiment', motto: 'Every hypothesis deserves a fair trial.', description: 'A/Bテスト設計・サンプルサイズ計算・フィーチャーフラグ', category: 'growth' },
 
@@ -968,6 +1234,241 @@ const AGENTS = [
 ];
 
 /* ==========================================
+   i18n — Translation System
+   ========================================== */
+let currentLang = localStorage.getItem('lang') || 'ja';
+
+const TRANSLATIONS = {
+  en: {
+    'hero.title': '<span class="accent">100+</span> Expert AI Agents<br>Become Your Dev Team',
+    'hero.desc': 'From bug investigation and security audits to UI/UX and release management — specialist agents cover every area of development. An open-source ecosystem for Claude Code, Codex CLI, and Gemini CLI.',
+    'hero.cta': 'Get Started',
+    'hero.github': 'View on GitHub',
+    'features.title': 'Why Agent Skills',
+    'features.desc': 'One git clone adds a team of specialist agents to your CLI',
+    'features.nexus.title': 'Nexus Orchestrator',
+    'features.nexus.desc': 'Just say "fix this bug" and it auto-designs Scout → Builder → Radar. Analyzes task type and complexity to instantly assemble the optimal agent chain.',
+    'features.team.title': 'Expert Team Across 14 Domains',
+    'features.team.desc': '14 categories covering investigation, implementation, testing, security, UI/UX, AI/ML, infrastructure, and documentation. Each agent brings deep domain expertise to make expert decisions on your behalf.',
+    'features.evolve.title': 'Self-Evolving Ecosystem',
+    'features.evolve.desc': 'Darwin monitors fitness while Lore propagates cross-cutting knowledge. Learning circulates between agents, refining collaboration with every project.',
+    'workflow.title': 'Just Tell It. The Team Moves.',
+    'workflow.desc': 'Describe your task in natural language. Nexus handles the rest.',
+    'workflow.step1.title': 'Describe Your Task',
+    'workflow.step1.desc': 'Write your task in natural language to /Nexus. Like "fix the login bug".',
+    'workflow.step2.title': 'Nexus Analyzes & Designs',
+    'workflow.step2.desc': 'Classifies the task, auto-designs the optimal agent chain, and selects the mode based on complexity.',
+    'workflow.step3.title': 'Agents Collaborate',
+    'workflow.step3.desc': 'Each agent applies specialized skills. Investigation → Implementation → Testing runs automatically.',
+    'workflow.chains': 'Example Chains',
+    'catalog.title': 'Find an Agent',
+    'catalog.desc': 'Filter 100+ specialist agents by category or keyword',
+    'catalog.search': 'Search agents... (name, description, motto)',
+    'catalog.empty': 'No matching agents found',
+    'platforms.title': 'Multi-Platform Support',
+    'platforms.desc': 'Markdown-based skill files work with any AI CLI',
+    'platforms.claude.desc': 'Clone to ~/.claude/skills/ and you\'re ready. Invoke agents instantly with slash commands like /Scout or /Nexus.',
+    'platforms.codex.desc': 'Integrate by adding skill paths to AGENTS.md. Supports parallel execution via codex exec with the Arena agent.',
+    'platforms.gemini.desc': 'Integrate by setting skill paths in GEMINI.md. Combine with Sketch or Dot agents to leverage Gemini API image generation.',
+    'platforms.note': 'All skills are written in standard Markdown (SKILL.md) and work with any AI CLI tool',
+    'install.title': 'Get Started Now',
+    'install.desc': 'Install with a single command',
+    'install.comment1': '# For Claude Code',
+    'install.comment2': '# For other platforms',
+    'install.ex1.cmd': '/Nexus I want to implement a login feature',
+    'install.ex1.desc': 'Nexus analyzes the task and auto-designs the optimal agent chain',
+    'install.ex2.cmd': '/Scout Investigate the cause of this bug',
+    'install.ex2.desc': 'Root cause analysis (RCA) to identify reproduction steps and fix locations',
+    'install.ex3.cmd': '/Vision Redesign the dashboard',
+    'install.ex3.desc': 'Auto-coordination from creative direction to implementation',
+    'install.ex4.cmd': '/Sentinel Run a security audit',
+    'install.ex4.desc': 'Vulnerability detection and fix code generation from both SAST and DAST',
+    'hero.cta': 'Learn How',
+    'social.star': 'GitHub Star',
+    'social.platform': 'Works with Claude Code / Codex CLI / Gemini CLI',
+    'footer.cta': 'Start building with 100+ agents',
+    'terminal.cmd': '/Nexus Fix the login bug',
+    'terminal.analyzing': 'Analyzing task...',
+    'terminal.chain': 'Chain designed:',
+    'terminal.executing': 'Executing 3 agents...',
+  }
+};
+
+const AGENT_DESC_EN = {
+  'Nexus': 'Team orchestrator. Decomposes requests and auto-designs optimal agent chains',
+  'Sherpa': 'Task decomposition guide. Breaks complex tasks into atomic steps under 15 min',
+  'Architect': 'Meta-designer that creates and generates new skill agents',
+  'Rally': 'Parallel orchestrator running multiple Claude instances via Agent Teams API',
+  'Titan': 'Product lifecycle manager. Guides products through 9 phases to completion',
+  'Sigil': 'Dynamically generates Claude Code skills from project analysis',
+  'Gauge': 'SKILL.md normalization auditor and self-evolving agent',
+  'Orbit': 'Autonomous loop runner script generation and operation contract design',
+  'Darwin': 'Ecosystem self-evolution orchestrator',
+  'Lore': 'Cross-ecosystem knowledge synthesis, pattern extraction, and propagation',
+  'Scout': 'Bug investigation, root cause analysis (RCA), and reproduction step identification',
+  'Ripple': 'Pre-change impact analysis. Risk assessment from vertical and horizontal perspectives',
+  'Spark': 'Feature proposals leveraging existing data and logic, delivered as Markdown',
+  'Compete': 'Competitive research, differentiation analysis, and positioning',
+  'Voice': 'User feedback collection, NPS survey design, and sentiment analysis',
+  'Researcher': 'User research design, persona and journey map creation',
+  'Trace': 'Session replay analysis, behavior pattern extraction, and UX issue storytelling',
+  'Canon': 'Compliance assessment against OWASP/WCAG/OpenAPI/ISO standards',
+  'Lens': 'Codebase comprehension and investigation specialist',
+  'Magi': 'Multi-perspective decision-making from 3 viewpoints (logic, empathy, pragmatism)',
+  'Flux': 'Thought refraction engine: question assumptions, combine cross-domain ideas, shift perspectives',
+  'Cast': 'Persona casting, registry management, and cross-agent synchronization',
+  'Helm': 'Business simulation. SWOT/PESTLE/Porter analysis',
+  'Levy': 'Japan tax return guidance agent',
+  'Accord': 'Unified spec package across Business, Dev, and Design teams',
+  'Matrix': 'Universal analysis controlling combinatorial explosion across multiple dimensions',
+  'Quest': 'Game design, GDD structuring, balance math, and economy design',
+  'Guardian': 'Git/PR guardian. Change analysis, commit granularity optimization, PR strategy',
+  'Harvest': 'PR data collection and auto-generation of weekly/monthly reports and release notes',
+  'Launch': 'Release management. Versioning, CHANGELOG, and Feature Flags',
+  'Rewind': 'Git history investigation, regression root cause analysis, and code archaeology',
+  'Radar': 'Unit/integration test creation, flaky test fixes, and coverage improvement',
+  'Voyager': 'E2E test specialist. Playwright/Cypress/Page Object design',
+  'Sentinel': 'Security static analysis (SAST) and vulnerability pattern detection',
+  'Probe': 'Security dynamic testing (DAST) and penetration testing',
+  'Judge': 'Automated code review and PR review via codex review',
+  'Zen': 'Refactoring and code quality improvement (behavior-preserving)',
+  'Sweep': 'Dead file detection, unused code identification, and safe removal proposals',
+  'Warden': 'V.A.I.R.E. quality standards guardian. Pre-release evaluation and scorecard',
+  'Attest': 'Spec conformance verification. BDD scenario generation and adversarial testing',
+  'Specter': 'Ghost hunter for concurrency and async "invisible" issues',
+  'Siege': 'Load testing, contract testing, and chaos engineering',
+  'Void': 'YAGNI verification, scope cutting, and complexity reduction proposals',
+  'Builder': 'Type-safe, production-ready implementation craftsman. TDD and CQRS support',
+  'Artisan': 'Production frontend implementation craftsman for React/Vue/Svelte',
+  'Forge': 'Prototype creation. Prioritizes working software over perfection',
+  'Arena': 'Direct codex/gemini CLI orchestration for parallel implementation and evaluation',
+  'Bolt': 'Frontend and backend performance improvement',
+  'Tuner': 'DB performance optimization. EXPLAIN ANALYZE and index recommendations',
+  'Vision': 'Creative direction and Design System construction',
+  'Palette': 'Usability improvement, cognitive load reduction, and a11y compliance',
+  'Muse': 'Design token management. Spacing, border-radius, and shadow unification',
+  'Flow': 'UI animation, hover effects, and modal transitions',
+  'Echo': 'Persona-based testing. Reports UI confusion points from the user\'s perspective',
+  'Showcase': 'Storybook story creation, catalog management, and Visual Regression',
+  'Prose': 'UX writing. Microcopy, error messages, and voice & tone',
+  'Frame': 'Figma MCP design context extraction and structuring',
+  'Loom': 'Figma Make optimization. Guidelines.md generation and prompt strategy',
+  'Atlas': 'Dependency analysis, circular reference detection, and ADR/RFC creation',
+  'Horizon': 'Deprecated library detection, native API replacement, and migration planning',
+  'Gateway': 'API design, OpenAPI spec generation, and versioning strategy',
+  'Grove': 'Repository structure design, optimization, and auditing',
+  'Stratum': 'C4 model architecture modeling with Structurizr DSL',
+  'Anvil': 'Terminal UI construction, CLI development support, and dev tool integration',
+  'Gear': 'Dependency management, CI/CD optimization, Docker config, and operational monitoring',
+  'Scaffold': 'Cloud infrastructure (Terraform/Pulumi) and Docker Compose',
+  'Hearth': 'Personal dev environment craftsman. zsh/tmux/neovim/ghostty config',
+  'Hone': 'AI CLI config auditing and optimization (Claude Code/Codex/Gemini)',
+  'Latch': 'Claude Code hook management. Workflow automation and quality gates',
+  'Pipe': 'GitHub Actions workflow specialist. Reusable Workflow design',
+  'Triage': 'Incident response, impact assessment, recovery procedures, and postmortems',
+  'Mend': 'Auto-repair of known failure patterns. Runbook execution and staged verification',
+  'Schema': 'DB schema design, migration creation, and ER diagram design',
+  'Stream': 'ETL/ELT pipeline design. Kafka/Airflow/dbt support',
+  'Scribe': 'PRD/SRS/design docs, implementation checklists, and test specs',
+  'Quill': 'JSDoc/TSDoc additions, README updates, and type definition improvements',
+  'Morph': 'Document format conversion (Markdown ↔ Word/PDF/HTML)',
+  'Tome': 'Transforms changes into learning docs (terminology, design decisions, anti-patterns)',
+  'Prism': 'NotebookLM steering prompt design consultant',
+  'Growth': 'SEO/SMO/CRO. meta/OGP/JSON-LD and CTA optimization',
+  'Funnel': 'LP structure design, conversion strategy, and CTA optimization',
+  'Retain': 'Retention strategies, re-engagement, and churn prevention',
+  'Pulse': 'KPI definition, tracking event design, and dashboard specs',
+  'Experiment': 'A/B test design, sample size calculation, and feature flags',
+  'Canvas': 'Code and design visualization with Mermaid diagrams, ASCII art, and draw.io',
+  'Sketch': 'AI image generation code using Gemini API',
+  'Realm': 'Gamification to visualize the agent ecosystem',
+  'Dot': 'Pixel art specialist. Generation via SVG/Canvas/Phaser 3/CSS',
+  'Clay': 'AI 3D model generation. Meshy/Tripo/Hunyuan3D support',
+  'Tone': 'Game audio generation. SFX, BGM, Voice, and Ambient',
+  'Director': 'Automated feature demo video capture using Playwright E2E',
+  'Reel': 'Terminal recording and CLI demo video generation (VHS/asciinema)',
+  'Saga': 'Narrative design. Customer experience storytelling and scenario narratives',
+  'Lyric': 'Songwriting for Suno AI. Lyrics generation with meta tags',
+  'Oracle': 'AI/ML design and evaluation. Prompt/RAG/LLM apps and safety guardrails',
+  'Beacon': 'Observability and SRE. SLO/SLI design, distributed tracing, and alerting',
+  'Relay': 'Messaging integration, Bot development, and real-time communication',
+  'Polyglot': 'Internationalization (i18n) and localization. Intl API and translation key management',
+  'Navigator': 'Browser automation via Playwright/Chrome DevTools',
+  'Aether': 'AITuber full-stack orchestrator. Streaming pipeline construction',
+  'Breach': 'Red team engineering. Attack scenarios and threat modeling',
+  'Vigil': 'Detection engineering. Sigma/YARA rules and threat hunting',
+  'Native': 'Mobile development specialist. Best-practice implementation for React Native/Flutter/SwiftUI/Jetpack Compose',
+  'Mint': 'Test data and fixture generation. Factory pattern design, boundary value data, synthetic data, and seed data management',
+  'Comply': 'Regulatory compliance and auditing. SOC2/PCI-DSS/HIPAA/ISO 27001 control implementation',
+  'Weave': 'Workflow and state machine design. State transition design, Saga pattern, and approval flow design',
+  'Seek': 'Search engine and vector DB design. Full-text/vector/hybrid search architecture',
+  'Ledger': 'FinOps and cloud cost optimization. IaC cost estimation, right-sizing proposals, and RI/SP recommendations',
+};
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+
+  // Update toggle buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+
+  // Update static text via data-i18n
+  if (lang === 'ja') {
+    // Restore original Japanese (stored in data-i18n-ja)
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (el.dataset.i18nJa) el.innerHTML = el.dataset.i18nJa;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      if (el.dataset.i18nPlaceholderJa) el.placeholder = el.dataset.i18nPlaceholderJa;
+    });
+  } else {
+    const t = TRANSLATIONS[lang];
+    if (!t) return;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      // Store original Japanese on first switch
+      if (!el.dataset.i18nJa) el.dataset.i18nJa = el.innerHTML;
+      if (t[key]) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      if (!el.dataset.i18nPlaceholderJa) el.dataset.i18nPlaceholderJa = el.placeholder;
+      if (t[key]) el.placeholder = t[key];
+    });
+  }
+
+  // Update OG meta
+  const titleEl = document.querySelector('title');
+  const descEl = document.querySelector('meta[name="description"]');
+  const ogTitleEl = document.querySelector('meta[property="og:title"]');
+  const ogDescEl = document.querySelector('meta[property="og:description"]');
+  if (lang === 'en') {
+    titleEl.textContent = 'Agent Skills — 100+ Expert AI Agents Become Your Dev Team';
+    descEl.content = 'An open-source AI agent ecosystem for Claude Code, Codex CLI, and Gemini CLI. 100+ specialist agents covering bug investigation, testing, security, UI/UX, AI/ML, and infrastructure.';
+    ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
+    ogDescEl.content = '100+ expert AI agents become your dev team. An open-source agent ecosystem.';
+  } else {
+    titleEl.textContent = 'Agent Skills — 100超の専門AIエージェントが、あなたの開発チームになる';
+    descEl.content = 'Claude Code / Codex CLI / Gemini CLI で動作するオープンソースのAIエージェントエコシステム。バグ調査、テスト、セキュリティ、UI/UX、AI/ML、インフラまで網羅する100超の専門エージェント。';
+    ogTitleEl.content = 'Agent Skills — AI Agent Ecosystem';
+    ogDescEl.content = '100超の専門AIエージェントが、あなたの開発チームになる。オープンソースのエージェントエコシステム。';
+  }
+
+  // Re-render dynamic content
+  renderFilterBar();
+  renderCatalog();
+}
+
+// Language toggle event
+document.getElementById('langToggle').addEventListener('click', (e) => {
+  const btn = e.target.closest('.lang-btn');
+  if (btn) setLanguage(btn.dataset.lang);
+});
+
+/* ==========================================
    Utility
    ========================================== */
 function getCategoryColor(catId) {
@@ -976,7 +1477,12 @@ function getCategoryColor(catId) {
 }
 function getCategoryName(catId) {
   const cat = CATEGORIES.find(c => c.id === catId);
-  return cat ? cat.name : catId;
+  if (!cat) return catId;
+  return currentLang === 'en' ? cat.name_en : cat.name;
+}
+function getAgentDesc(agent) {
+  if (currentLang === 'en' && AGENT_DESC_EN[agent.name]) return AGENT_DESC_EN[agent.name];
+  return agent.description;
 }
 function escapeHtml(s) {
   const d = document.createElement('div');
@@ -1060,16 +1566,16 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-// Also observe hero for count-up
-const heroSection = document.querySelector('.hero');
-if (heroSection) {
-  const heroObs = new IntersectionObserver((entries) => {
+// Observe stats bar for count-up
+const statsBar = document.getElementById('statsBar');
+if (statsBar) {
+  const statsObs = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !countAnimated) {
       countAnimated = true;
       animateCountUp();
     }
   }, { threshold: 0.3 });
-  heroObs.observe(heroSection);
+  statsObs.observe(statsBar);
 }
 
 /* ==========================================
@@ -1078,6 +1584,8 @@ if (heroSection) {
 let activeCategory = 'all';
 let searchQuery = '';
 let debounceTimer = null;
+let showAll = false;
+const INITIAL_DISPLAY_COUNT = 12;
 
 function renderFilterBar() {
   const bar = document.getElementById('filterBar');
@@ -1089,7 +1597,7 @@ function renderFilterBar() {
       style="${activeCategory === cat.id
         ? `background:${color}; color:#fff; border-color:${color};`
         : ''}">
-      ${cat.name}${!isAll ? ` <span style="opacity:0.7">${AGENTS.filter(a => a.category === cat.id).length}</span>` : ''}
+      ${currentLang === 'en' ? cat.name_en : cat.name}${!isAll ? ` <span style="opacity:0.7">${AGENTS.filter(a => a.category === cat.id).length}</span>` : ''}
     </button>`;
   }).join('');
   bar.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1106,27 +1614,39 @@ function renderCatalog() {
   const q = searchQuery.toLowerCase();
   const filtered = AGENTS.filter(a => {
     const catMatch = activeCategory === 'all' || a.category === activeCategory;
-    const textMatch = !q || a.name.toLowerCase().includes(q) || a.description.toLowerCase().includes(q) || a.motto.toLowerCase().includes(q);
+    const desc = getAgentDesc(a);
+    const textMatch = !q || a.name.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || a.motto.toLowerCase().includes(q) || a.description.toLowerCase().includes(q);
     return catMatch && textMatch;
   });
 
   document.getElementById('catalogCount').textContent = `${filtered.length} / ${AGENTS.length} agents`;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="catalog-empty">該当するエージェントが見つかりません</div>';
+    const emptyMsg = currentLang === 'en' ? 'No matching agents found' : '該当するエージェントが見つかりません';
+    grid.innerHTML = `<div class="catalog-empty">${emptyMsg}</div>`;
     return;
   }
 
-  grid.innerHTML = filtered.map(a => {
+  const hasSearch = searchQuery.length > 0 || activeCategory !== 'all';
+  const displayList = (hasSearch || showAll) ? filtered : filtered.slice(0, INITIAL_DISPLAY_COUNT);
+  const remaining = filtered.length - displayList.length;
+
+  grid.innerHTML = displayList.map(a => {
     const color = getCategoryColor(a.category);
     return `<div class="agent-card" style="--card-color:${color}">
       <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:${color};border-radius:3px 0 0 3px;"></div>
       <div class="agent-name">${escapeHtml(a.name)}</div>
       <div class="agent-motto">"${escapeHtml(a.motto)}"</div>
-      <div class="agent-desc">${escapeHtml(a.description)}</div>
+      <div class="agent-desc">${escapeHtml(getAgentDesc(a))}</div>
       <span class="agent-badge" style="background:${color}18; color:${color}; border:1px solid ${color}33;">${getCategoryName(a.category)}</span>
     </div>`;
   }).join('');
+
+  if (remaining > 0) {
+    const moreLabel = currentLang === 'en' ? `Show all ${filtered.length} agents` : `すべて ${filtered.length} 件を表示`;
+    grid.innerHTML += `<div class="catalog-show-more"><button class="show-more-btn" id="showMoreBtn">${moreLabel}</button></div>`;
+    document.getElementById('showMoreBtn').addEventListener('click', () => { showAll = true; renderCatalog(); });
+  }
 }
 
 document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1140,11 +1660,29 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 renderFilterBar();
 renderCatalog();
 
+// Apply saved language on load
+if (currentLang !== 'ja') setLanguage(currentLang);
+
 /* ==========================================
    Copy Button
    ========================================== */
 document.getElementById('copyBtn').addEventListener('click', function() {
   const text = this.dataset.copy;
+  navigator.clipboard.writeText(text).then(() => {
+    this.textContent = 'Copied!';
+    this.classList.add('copied');
+    setTimeout(() => {
+      this.textContent = 'Copy';
+      this.classList.remove('copied');
+    }, 2000);
+  });
+});
+
+/* ==========================================
+   Hero Copy Button
+   ========================================== */
+document.getElementById('heroCopyBtn').addEventListener('click', function() {
+  const text = 'git clone https://github.com/simota/agent-skills.git ~/.claude/skills';
   navigator.clipboard.writeText(text).then(() => {
     this.textContent = 'Copied!';
     this.classList.add('copied');

@@ -24,6 +24,13 @@ COLLABORATION_PATTERNS:
 - Accord -> Canvas: Diagrams or flows rendered visually
 - Accord -> Scribe: Formal PRD/SRS/HLD/LLD or polished document needed
 - Accord -> Lore: Reusable specification patterns validated
+- Flux -> Accord: Requirement assumption challenge
+- Magi -> Accord: Stakeholder trade-off verdicts
+- Void -> Accord: Specification scope cutting proposals
+
+BIDIRECTIONAL_PARTNERS:
+- INPUT: Researcher (user research), Cast (personas), Voice (stakeholder feedback), Flux (assumption challenge), Magi (trade-off verdicts), Void (scope cutting)
+- OUTPUT: Sherpa (decomposition), Builder (implementation), Radar (test cases), Voyager (E2E scenarios), Canvas (diagrams), Scribe (formal docs), Lore (patterns)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(M) Library(M)
 -->

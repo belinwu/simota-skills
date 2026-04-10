@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-102-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-100+-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **102 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **100+ Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 102 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 100+ specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -47,7 +47,7 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - Task decomposition guide. Breaks complex tasks into atomic steps completable within 15 minutes | Checklists |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - Meta-designer that creates new skill agents. Ecosystem gap analysis, duplication detection, SKILL.md generation | SKILL.md, references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - Multi-session parallel orchestrator. Spawns and manages multiple Claude instances via Claude Code Agent Teams API for concurrent task execution | Team management, parallel execution |
-| **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all 102 agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
+| **Titan** | _"Give me a dream. I'll give you the product."_ - Product lifecycle meta-orchestrator. Coordinates all agents across 9 phases (DISCOVER→BUILD→LAUNCH→EVOLVE) to deliver complete products from ambiguous goals | Product delivery |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - Dynamic skill generator. Analyzes project codebases, discovers patterns and conventions, and generates optimized Claude Code skills for the project's `.claude/skills/` directory | Project-specific skills |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop completion specialist. Generates completion scripts, operation contracts, and audits for autonomous loop execution | Runner scripts, contracts |
 | **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - Ecosystem self-evolution orchestrator. Detects project lifecycle phase, evaluates agent relevance, integrates cross-cutting knowledge, and evolves the entire ecosystem | Ecosystem Fitness Score, evolution proposals |
@@ -116,6 +116,8 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Specter** | _"The bugs you can't see are the ones that haunt you."_ - Ghost hunter for "invisible" issues in concurrency, async processing, and resource management. Detects and analyzes Race Conditions, Memory Leaks, Resource Leaks, and Deadlocks | Detection report |
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - Advanced testing specialist. Load testing (k6/Locust/Artillery), contract testing (Pact CDC), chaos engineering, mutation testing, resilience pattern verification | Test results, resilience reports |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI enforcement, scope cutting, complexity reduction proposals. Challenges existence of every feature/abstraction with 5 questions and Cost-of-Keeping Score | Subtraction proposals |
+| **Mint** | _"Good tests deserve great data."_ - Test data and fixture generation specialist. Factory patterns, boundary value generation, synthetic data, seed management | Test data, fixtures |
+| **Comply** | _"Trust is earned. Compliance is proven."_ - Regulatory compliance and audit agent. SOC2/PCI-DSS/HIPAA/ISO 27001 control mapping, audit trail design, Policy as Code | Reports, checklists |
 
 ### Implementation
 
@@ -125,6 +127,7 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Artisan** | _"Prototypes promise. Production delivers."_ - Production frontend implementation craftsman. React/Vue/Svelte, Hooks design, state management, Server Components, form handling, data fetching | Frontend code |
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - Prototyping. Prioritizes working software over perfection. Outputs types.ts, errors.ts, forge-insights.md for Builder handoff | MVP/PoC |
 | **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / gemini CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
+| **Native** | _"Every pixel ships. Every platform matters."_ - Mobile development specialist. Implements production-quality features across React Native, Flutter, SwiftUI, and Jetpack Compose | Code |
 
 ### AI/ML
 
@@ -178,12 +181,14 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc additions, README updates, typing `any` to proper type definitions | Documentation |
 | **Morph** | _"A document is timeless. Its format is temporary."_ - Document format conversion (Markdown <> Word/Excel/PDF/HTML). Converts Scribe specs and Harvest reports to various formats | Converted documents |
 | **Prism** | _"One source, many lights."_ - NotebookLM steering prompt design consultant. Advises on source preparation and optimal output format selection (Audio/Video/Slide/Infographic/Mind Map) | Steering prompts |
+| **Tome** | _"Changes are forgotten. Knowledge endures."_ - Transforms repository changes into detailed learning documentation. Explains terminology, flows, design decisions, and anti-patterns | Learning docs |
 
-**Scribe vs Quill vs Morph vs Prism responsibilities**:
+**Scribe vs Quill vs Morph vs Prism vs Tome responsibilities**:
 - **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
 - **Quill**: Code documentation (JSDoc/TSDoc, README, type definitions)
 - **Morph**: Format conversion (Markdown > PDF/Word/HTML, etc.)
 - **Prism**: NotebookLM content optimization (steering prompts for Audio/Video/Slide)
+- **Tome**: Change-based learning materials (design decisions, terminology, anti-patterns from diffs)
 
 ### Visualization
 
@@ -208,6 +213,8 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - Modernization. Deprecated library detection, native API replacement, PoC creation | Migration plans |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API design, review, OpenAPI spec generation, versioning strategy, breaking change detection | API specifications |
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - Repository structure design, optimization, and auditing. Directory design, docs/ organization, test structure, anti-pattern detection | Structure design, audit reports |
+| **Weave** | _"Every state tells a story. Every transition is a contract."_ - Workflow and state machine design specialist. State transition design, invalid transition detection, Saga patterns, approval flows | Designs, diagrams |
+| **Seek** | _"The right result at the right time in the right order."_ - Search engine and vector DB design specialist. Full-text search, vector search, hybrid search, RAG retrieval layer | Code, configs |
 
 ### Communication
 
@@ -238,6 +245,7 @@ This repository contains 102 specialized AI agents covering various aspects of s
 | **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Gemini CLI / Claude Code). Collects official best practices via web, audits config.toml/settings.json/CLAUDE.md/GEMINI.md/AGENTS.md/permissions/commands/hooks/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
+| **Ledger** | _"Every dollar has a story. Make it a short one."_ - FinOps and cloud cost optimization. IaC cost estimation, right-sizing, RI/SP recommendations, cost anomaly detection | Reports, configs |
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
@@ -259,6 +267,7 @@ This repository contains 102 specialized AI agents covering various aspects of s
 |-------|-------------|--------|
 | **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO (meta/OGP/JSON-LD), SMO (social share display), CRO (CTA improvement) | Growth initiatives |
 | **Retain** | _"Acquisition is expensive. Retention is profitable."_ - Retention strategies, re-engagement, churn prevention. Gamification, habit-forming design | Retention initiatives |
+| **Funnel** | _"Above the fold is your one shot. Make every pixel convert."_ - LP (Landing Page) structure designer and conversion strategist. Framework-based structure design (AIDA/PAS/BAB/4Ps), hero section craft, CTA placement strategy, social proof hierarchy, mobile-first responsive implementation | LP structure, copy, specs |
 
 ### Analytics
 
@@ -504,6 +513,8 @@ See `_common/INTERACTION.md` for details.
 | DOCS/architecture | Architecture diagrams | Canvas |
 | DOCS/convert | Format conversion | Morph |
 | DOCS/report | PR report | Harvest > Morph |
+| DOCS/learning | Change-based learning doc | Tome |
+| DOCS/onboarding | Onboarding material from changes | Rewind > Tome |
 
 #### Demo & Recording
 
@@ -684,6 +695,7 @@ skills/
 ├── experiment/SKILL.md # A/B test design
 ├── flow/SKILL.md       # Animation
 ├── forge/SKILL.md      # Prototyping
+├── funnel/SKILL.md     # LP structure design and conversion strategy
 ├── frame/SKILL.md      # Figma design-to-code bridge
 ├── loom/SKILL.md       # Figma Make optimization agent
 ├── gauge/SKILL.md      # SKILL.md normalization audit & self-evolution
@@ -746,6 +758,7 @@ skills/
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
+├── tome/SKILL.md       # Change-to-learning documentation
 ├── tone/SKILL.md       # Game audio generation
 ├── trace/SKILL.md      # Session replay analysis
 ├── triage/SKILL.md     # Incident response
@@ -1304,6 +1317,17 @@ Cover normal cases, error cases, and boundary values comprehensively.
 **Scribe vs Quill responsibilities**:
 - **Scribe**: Project documentation (specifications, design docs, checklists)
 - **Quill**: Code documentation (JSDoc, README, type definitions)
+
+---
+
+##### Learning Document Generation (Tome)
+
+```
+/Tome
+Explain the changes in this PR as a learning document for intermediate developers.
+```
+
+**Output**: Learning document with glossary, before/after comparisons, design decision records, and anti-pattern warnings
 
 ---
 

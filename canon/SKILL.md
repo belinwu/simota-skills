@@ -140,6 +140,12 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **ISO/IEC 42001:2023 (AI Management System):** First international AIMS standard. Voluntary but increasingly expected — EU AI Act high-risk obligations effective Aug 2, 2026; GPAI providers must comply from Aug 2, 2025. Recommend ISO 42001 alignment when assessing AI systems, especially those targeting EU markets.
 
+**WCAG 3.0 awareness (Working Draft, CR targeted Q4 2027):** WCAG 3.0 shifts from binary pass/fail to outcome-based scoring (0–4) with Bronze/Silver/Gold conformance tiers. It does NOT replace WCAG 2.2 — assess against WCAG 2.2 for current compliance, but note WCAG 3.0 trajectory when advising long-term accessibility strategy.
+
+**Automated accessibility tool ceiling:** Automated scanners detect ~40% of WCAG 2.2 issues. Always recommend manual expert audit alongside automated checks for any compliance assessment rated Partial or higher.
+
+**ISO/IEC 42001:2023 (AI Management System):** First international AIMS standard. Voluntary but increasingly expected — EU AI Act high-risk obligations effective Aug 2, 2026; GPAI providers must comply from Aug 2, 2025. Recommend ISO 42001 alignment when assessing AI systems, especially those targeting EU markets.
+
 **Important:** Canon does NOT make legal compliance determinations. Always consult appropriate professionals for regulated industries.
 
 ## Output Routing

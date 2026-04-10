@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-102-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-107-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **102種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **107種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする102種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする107種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -47,7 +47,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Sherpa** | _"The mountain doesn't care about your deadline. Plan accordingly."_ - タスク分解ガイド。複雑なタスクを15分以内のAtomic Stepに分解 | チェックリスト |
 | **Architect** | _"Every agent is a possibility. Every SKILL.md is a birth certificate."_ - 新しいスキルエージェントを設計・生成するメタデザイナー。エコシステムギャップ分析、重複検出、SKILL.md生成 | SKILL.md、references |
 | **Rally** | _"One task, many hands. Parallel by design."_ - マルチセッション並列オーケストレーター。Claude Code Agent Teams APIで複数Claudeインスタンスを生成・管理し、並行タスク実行を実現 | チーム管理、並列実行 |
-| **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全102エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
+| **Titan** | _"Give me a dream. I'll give you the product."_ - プロダクトライフサイクル統括メタオーケストレーター。曖昧なゴールから全105エージェントを9フェーズ（DISCOVER→BUILD→LAUNCH→EVOLVE）で指揮し、プロダクトを完走まで導く | プロダクトデリバリー |
 | **Sigil** | _"Every project has patterns waiting to become power."_ - 動的スキル生成エージェント。プロジェクトのコードベースを分析し、パターン・規約を発見し、最適化されたClaude Codeスキルをプロジェクトの`.claude/skills/`に生成 | プロジェクト固有スキル |
 | **Gauge** | _"What gets measured gets managed. What gets audited gets normalized."_ - SKILL.md正規化監査・自己進化エージェント。16項目チェックリストに基づくコンプライアンススキャン、修正提案、Webベースのベストプラクティス自動取得 | コンプライアンスレポート、修正プラン |
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
@@ -114,6 +114,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
 | **Vigil** | _"Detection is the first line of defense. Engineering is the last."_ - Detection Engineeringエージェント。Sigma/YARAルール設計、検出カバレッジマッピング、脅威ハンティング仮説設計、Detection-as-Code CI/CD統合 | 検出ルール、カバレッジマップ |
+| **Mint** | _"Good tests deserve great data."_ - テストデータ＆フィクスチャ生成エージェント。ファクトリパターン設計、境界値データ生成、合成データ生成、シードデータ管理 | コード |
+| **Comply** | _"Trust is earned. Compliance is proven."_ - 規制コンプライアンス＆監査エージェント。SOC2/PCI-DSS/HIPAA/ISO 27001のコントロールマッピング、監査証跡設計、Policy as Code | レポート、チェックリスト |
 
 ### 実装
 
@@ -123,6 +125,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Artisan** | _"Prototypes promise. Production delivers."_ - フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
 | **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - codex exec / gemini CLI を直接操り並列実装・評価・採用。Solo Mode（逐次）と Team Mode（Agent Teams 並列）をサポート | 比較実装・評価 |
+| **Native** | _"Every pixel ships. Every platform matters."_ - モバイル開発スペシャリスト。React Native/Flutter/SwiftUI/Jetpack Composeでのクロスプラットフォーム・ネイティブアプリ実装 | コード |
 
 ### AI/ML
 
@@ -176,12 +179,14 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Quill** | _"Code tells computers what to do. Documentation tells humans why."_ - JSDoc/TSDoc追加・README更新・any型の型定義化 | ドキュメント |
 | **Morph** | _"A document is timeless. Its format is temporary."_ - ドキュメントフォーマット変換（Markdown↔Word/Excel/PDF/HTML）。Scribeの仕様書やHarvestのレポートを各種フォーマットに変換 | 変換済みドキュメント |
 | **Prism** | _"One source, many lights."_ - NotebookLMのステアリングプロンプト設計コンサルタント。ソース準備の助言と最適な出力フォーマット（Audio/Video/Slide/Infographic/Mind Map）の選定 | ステアリングプロンプト |
+| **Tome** | _"Changes are forgotten. Knowledge endures."_ - リポジトリの変更内容を詳細な学習ドキュメントに変換。用語・フロー・設計判断・アンチパターンを教育的に解説 | 学習ドキュメント |
 
-**Scribe vs Quill vs Morph vs Prism の役割分担**:
+**Scribe vs Quill vs Morph vs Prism vs Tome の役割分担**:
 - **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
 - **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
 - **Morph**: フォーマット変換（Markdown→PDF/Word/HTML等）
 - **Prism**: NotebookLMコンテンツ最適化（Audio/Video/Slide向けステアリングプロンプト）
+- **Tome**: 変更ベース学習教材（diffから設計判断・用語・アンチパターンを教材化）
 
 ### 可視化
 
@@ -207,6 +212,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - リポジトリ構造の設計・最適化・監査。ディレクトリ設計、docs/構成、テスト構成、アンチパターン検出 | 構造設計・監査レポート |
+| **Weave** | _"Every state tells a story. Every transition is a contract."_ - ワークフロー＆ステートマシン設計エージェント。状態遷移設計、不正遷移検出、Sagaパターン、承認フロー設計 | 設計、図 |
+| **Seek** | _"The right result at the right time in the right order."_ - 検索エンジン・ベクトルDB設計エージェント。全文検索/ベクトル検索/ハイブリッド検索の設計・インデックス最適化・RAG Retrieval層実装 | コード、設定 |
 
 ### コミュニケーション
 
@@ -237,6 +244,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI設定の監査・最適化エージェント（Codex CLI / Gemini CLI / Claude Code）。公式ベストプラクティスをWeb収集し、config.toml/settings.json/CLAUDE.md/GEMINI.md/AGENTS.md/permissions/commands/hooks/rules/MCP/extensionsを分析、Before/After diff形式で改善提案。設定は直接編集しない | 監査レポート、改善提案 |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Codeフック専門。PreToolUse/PostToolUse/Stop/SessionStart等のイベントフックの提案・設定・デバッグ・保守。ワークフロー自動化、品質ゲート、セキュリティ検証 | フック設定 |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actionsワークフローの深い専門家。トリガー戦略、セキュリティ強化、パフォーマンス最適化、PR自動化、Reusable Workflow設計 | GHAワークフロー |
+| **Ledger** | _"Every dollar has a story. Make it a short one."_ - FinOps／クラウドコスト最適化エージェント。IaCコードからのコスト推定、right-sizing提案、RI/SP推奨、コスト異常検知 | レポート、設定 |
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe の役割分担**:
 - **Hearth**: 個人環境（dotfiles、シェル、エディタ、ターミナル）
@@ -258,6 +266,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 |------------|------|------|
 | **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO（meta/OGP/JSON-LD）・SMO（SNSシェア表示）・CRO（CTA改善） | 成長施策 |
 | **Retain** | _"Acquisition is expensive. Retention is profitable."_ - リテンション施策・再エンゲージメント・チャーン予防。ゲーミフィケーション、習慣形成デザイン | リテンション施策 |
+| **Funnel** | _"Above the fold is your one shot. Make every pixel convert."_ - LP（ランディングページ）構造設計・コンバージョン戦略スペシャリスト。フレームワーク（AIDA/PAS/BAB/4Ps）に基づく構造設計、ヒーローセクション、CTA配置戦略、Social Proof階層、モバイルファーストのレスポンシブ実装 | LP構造、コピー、仕様 |
 
 ### 分析
 
@@ -503,6 +512,8 @@ questions:
 | DOCS/architecture | アーキテクチャ図 | Canvas |
 | DOCS/convert | フォーマット変換 | Morph |
 | DOCS/report | PR報告書 | Harvest → Morph |
+| DOCS/learning | 変更ベース学習資料 | Tome |
+| DOCS/onboarding | オンボーディング教材 | Rewind → Tome |
 
 #### デモ・録画
 
@@ -673,6 +684,7 @@ skills/
 ├── experiment/SKILL.md # A/Bテスト設計
 ├── flow/SKILL.md       # アニメーション
 ├── forge/SKILL.md      # プロトタイプ
+├── funnel/SKILL.md     # LP構造設計・コンバージョン戦略
 ├── frame/SKILL.md      # Figmaデザイン・コード変換ブリッジ
 ├── loom/SKILL.md       # Figma Make最適化エージェント
 ├── gauge/SKILL.md      # SKILL.md正規化監査・自己進化
@@ -735,6 +747,7 @@ skills/
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括
+├── tome/SKILL.md       # 変更→学習ドキュメント変換
 ├── tone/SKILL.md       # ゲームオーディオ生成
 ├── trace/SKILL.md      # セッションリプレイ分析
 ├── triage/SKILL.md     # 障害対応
@@ -1306,6 +1319,17 @@ Stripe連携、サブスクリプション対応が必要です。
 **Scribe vs Quill の役割分担**:
 - **Scribe**: プロジェクトドキュメント（仕様書、設計書、チェックリスト）
 - **Quill**: コードドキュメント（JSDoc、README、型定義）
+
+---
+
+##### 学習ドキュメント生成（Tome）
+
+```
+/Tome
+このPRの変更内容を中級者向けの学習ドキュメントとして解説してください。
+```
+
+**出力**: 用語集、Before/After比較、設計判断記録、アンチパターン警告を含む学習ドキュメント
 
 ---
 

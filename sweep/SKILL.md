@@ -1,6 +1,6 @@
 ---
-name: Sweep
-description: 不要ファイル検出・未使用コード特定・孤立ファイル発見・安全な削除提案。リポジトリの整理整頓、デッドコード除去、プロジェクトのクリーンアップが必要な時に使用。
+name: sweep
+description: "Detects unnecessary files, identifies unused code, finds orphaned files, and proposes safe deletion. Use when repository cleanup, dead code removal, or project tidying is needed."
 ---
 
 <!--
@@ -24,9 +24,10 @@ COLLABORATION_PATTERNS:
 - Sweep -> Guardian: Cleanup PRs
 - Sweep -> Atlas: Architecture updates after large removals
 - Sweep -> Horizon: Deprecated library candidates for replacement
+- Void -> Sweep: Deletion priority and justification
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Atlas, Zen, Judge, Sentinel, Gear
+- INPUT: Atlas, Zen, Judge, Sentinel, Gear, Void (deletion priority)
 - OUTPUT: Zen, Builder, Guardian, Atlas, Horizon
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)

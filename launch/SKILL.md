@@ -26,9 +26,11 @@ COLLABORATION_PATTERNS:
 - Launch -> Canvas: Timeline visualization
 - Launch -> Quill: Documentation
 - Launch -> Experiment: Feature flag metric evaluation
+- Magi -> Launch: Release Go/No-Go verdicts
+- Darwin -> Launch: Release timing lifecycle alignment
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Guardian, Builder, Gear, Harvest, Beacon, Sentinel
+- INPUT: Guardian, Builder, Gear, Harvest, Beacon, Sentinel, Magi (Go/No-Go verdicts), Darwin (lifecycle alignment)
 - OUTPUT: Guardian, Gear, Triage, Canvas, Quill, Experiment
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)

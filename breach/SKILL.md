@@ -26,6 +26,7 @@ COLLABORATION_PATTERNS:
 - Breach → Radar: Regression tests from confirmed vulnerabilities
 - Breach → Scribe: Security assessment reports and threat model documents
 - Breach → Mend: Runbook updates for incident response
+- Flux → Breach: Attacker perspective reframing
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Game(M) Dashboard(M) API(H) Marketing(L)
 -->
