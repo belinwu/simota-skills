@@ -16,6 +16,7 @@ Purpose: Read this when Mermaid is not sufficient and you need to choose another
 | D2 | Layout-heavy text diagrams | Extra toolchain |
 | PlantUML | UML-heavy diagrams | Less native in modern docs flows |
 | Structurizr | C4 at scale | Stronger setup dependency |
+| Kroki | Unified rendering API for 25+ formats (Mermaid, D2, PlantUML, BPMN, etc.) | External service dependency |
 | ASCII | Terminal/comments/accessibility fallback | Low visual density |
 
 ## Selection Rules
@@ -35,13 +36,16 @@ Purpose: Read this when Mermaid is not sufficient and you need to choose another
 | Tooltips | Hover-triggered detail panels | Dense diagrams where detail-on-demand helps |
 | Code snippets | Embedded syntax-highlighted code blocks | Architecture diagrams that reference implementation |
 | LaTeX | Mathematical notation in labels | Algorithm or data-science diagrams |
+| Layers | Abstraction-level separation within a single file (e.g., Context → Container → Code) | Multi-perspective architecture views |
+| Scenarios | Behavioral variants overlaid on the same base diagram (e.g., normal vs error) | System behavior under different conditions |
 | Vars & imports | Variables, reusable components, multi-file composition | Large diagram sets with shared elements |
 
 ### When to consider D2 over Mermaid
 
-- `100+` nodes where layout quality matters — D2 with ELK/TALA handles dense graphs better.
+- `100+` nodes where layout quality matters — D2 with ELK/TALA handles dense graphs better. TALA is optimized for architecture diagrams; ELK for port-heavy node-link diagrams.
 - Layout control is the primary concern (precise positioning, edge routing).
 - Multi-file composition is needed (imports, variables, reusable components).
+- Multi-perspective views are needed — D2 layers separate abstraction levels in one file; scenarios overlay behavioral variants.
 - **Stay with Mermaid** when: GitHub/GitLab native rendering matters, team familiarity is higher, or the diagram is `<50` nodes.
 
 ## Architecture-as-Code Pattern
@@ -78,3 +82,4 @@ docs/diagrams/
 | D2 CLI | `d2 input.d2 output.svg` rendering |
 | Mermaid CLI | `mmdc -i input.mmd -o output.svg` rendering |
 | GitHub Actions | `mermaid-js/mermaid-cli` action for CI rendering |
+| Kroki | Unified rendering API — single endpoint for Mermaid, D2, PlantUML, BPMN, and 20+ formats |
