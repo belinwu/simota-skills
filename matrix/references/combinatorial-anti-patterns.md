@@ -52,6 +52,7 @@ Do not rely on pairwise alone when:
 | ID | Anti-pattern | Why it fails | Corrective action |
 |---|---|---|---|
 | `CT-12` | Manual maintenance | generated cases drift from reality | regenerate instead of patching manually |
+| `CT-13` | Multiple invalid values per case | input masking — the first detected invalid value prevents testing of subsequent invalid values, hiding real defects | generate separate negative test cases with only one invalid value each (NIST SP 800-142; Microsoft pairwise testing guidance) |
 
 Quality gates:
 
