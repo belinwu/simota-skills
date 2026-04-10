@@ -47,6 +47,7 @@ Examples:
 --quiet, -q     # Suppress non-essential output
 --no-color      # Disable colored output
 --json          # Output in JSON format (for scripting)
+--no-prompt     # Disable all interactive prompts (for AI agents and automation)
 ```
 
 ---
