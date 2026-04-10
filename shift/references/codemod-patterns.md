@@ -4,12 +4,13 @@
 
 | Language | Tool | AST Library | Use for |
 |----------|------|-------------|---------|
-| JavaScript/TypeScript | jscodeshift | recast + ast-types | React migrations, API transforms |
+| JavaScript/TypeScript | jscodeshift | recast + ast-types | React migrations, API transforms (deep AST control) |
+| JavaScript/TypeScript | jssg (ast-grep JS) | ast-grep + Tree-sitter | Modern jscodeshift successor — faster, polyglot, typed DX |
 | TypeScript | ts-morph | TypeScript Compiler API | Type-aware transforms, import rewriting |
 | Python | LibCST | libcst | Concrete syntax tree preserving formatting |
 | Go | go/ast + golang.org/x/tools | go/ast | Go API migrations |
 | Rust | syn + quote | syn | Macro-based transforms |
-| Multi-language | ast-grep | Tree-sitter | Pattern matching across languages |
+| Multi-language | ast-grep | Tree-sitter | Pattern matching across languages, repo-scale scanning |
 
 ## jscodeshift Patterns
 
