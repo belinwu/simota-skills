@@ -40,13 +40,14 @@ interface FeatureFlag {
 
 ## Platform Comparison Matrix
 
-| Feature | Statsig | Eppo | GrowthBook | LaunchDarkly |
-|---------|---------|------|------------|--------------|
-| **Statistical engine** | Sequential testing, CUPED built-in | Frequentist + Bayesian, CUPED | Frequentist (Bayesian optional) | Basic frequentist |
-| **Feature flags** | Full (targeting, rollout, kill switch) | Limited (experiment-focused) | Full | Industry-leading |
-| **Warehouse-native** | Yes (Snowflake, BigQuery, Redshift) | Yes (primary focus) | Yes | No (event streaming only) |
+| Feature | Statsig | Datadog Experiments | GrowthBook | LaunchDarkly |
+|---------|---------|---------------------|------------|--------------|
+| **Statistical engine** | Sequential testing, CUPED built-in | Frequentist + Bayesian, CUPED, always-valid sequential (Eppo-powered) | Frequentist (Bayesian optional) | Basic frequentist |
+| **Feature flags** | Full (targeting, rollout, kill switch) | Via Datadog Feature Flags | Full | Industry-leading |
+| **Warehouse-native** | Yes (Snowflake, BigQuery, Redshift, Databricks, Athena) | Yes (primary focus, Eppo-powered) | Yes | No (event streaming only) |
+| **Observability integration** | Limited | Native (RUM, APM, logs, traces) | No | No |
 | **Metrics catalog** | Yes | Yes | Yes | No |
-| **Auto-rollback** | Yes | No | No | Yes (via monitoring) |
+| **Auto-rollback** | Yes | Via observability guardrails | No | Yes (via monitoring) |
 | **Open source** | No | No | Yes (self-host) | No |
 | **Pricing model** | Per event or flat | Per experiment | Free OSS / paid cloud | Per seat |
 | **Best for** | Growth teams with high experiment velocity | Data warehouse-centric orgs | Cost-sensitive teams, OSS preference | Enterprise feature management |
