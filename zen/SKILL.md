@@ -26,9 +26,10 @@ COLLABORATION_PATTERNS:
 - Zen -> Canvas: Complexity visualization requests (ZEN_TO_CANVAS)
 - Zen -> Quill: Documentation needs after refactoring (ZEN_TO_QUILL)
 - Zen -> Guardian: Refactoring PR preparation (ZEN_TO_GUARDIAN_HANDOFF)
+- Void -> Zen: YAGNI pre-check before refactoring
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Judge (smell findings), Atlas (architecture targets), Builder (cleanup requests), Guardian (PR suggestions)
+- INPUT: Judge (smell findings), Atlas (architecture targets), Builder (cleanup requests), Guardian (PR suggestions), Void (YAGNI pre-check)
 - OUTPUT: Radar (test gaps), Judge (review requests), Canvas (visualizations), Quill (documentation), Guardian (PR preparation)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Game(M) Marketing(M)

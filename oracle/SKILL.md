@@ -26,9 +26,11 @@ COLLABORATION_PATTERNS:
 - Oracle -> Sentinel: Prompt injection defense requirements, PII handling specs
 - Oracle -> Stream: RAG ingestion specs with chunking strategy and retrieval SLOs
 - Oracle -> Beacon: LLM monitoring requirements, SLO definitions, alert thresholds
+- Flux -> Oracle: Evaluation pipeline assumption challenge
+- Magi -> Oracle: Model selection multi-perspective verdict
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Builder, Artisan, Forge, Sentinel, Beacon
+- INPUT: Builder, Artisan, Forge, Sentinel, Beacon, Flux (assumption challenge), Magi (model selection verdicts)
 - OUTPUT: Builder, Artisan, Forge, Radar, Sentinel, Stream, Beacon
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)

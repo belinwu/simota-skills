@@ -30,9 +30,12 @@ COLLABORATION_PATTERNS:
 - Helm -> Sherpa: Execution decomposition
 - Helm -> Lore: Validated patterns from FORESIGHT
 - Helm -> Experiment: Strategic hypotheses requiring validation
+- Flux -> Helm: Strategic assumption reframing
+- Magi -> Helm: Strategy Go/No-Go verdicts
+- Darwin -> Helm: Business lifecycle alignment signals
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Compete, Pulse, Researcher, Voice, Accord, Experiment
+- INPUT: Compete, Pulse, Researcher, Voice, Accord, Experiment, Flux (assumption reframing), Magi (Go/No-Go verdicts), Darwin (lifecycle signals)
 - OUTPUT: Magi, Scribe, Canvas, Sherpa, Lore, Experiment
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)

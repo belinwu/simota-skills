@@ -27,9 +27,10 @@ COLLABORATION_PATTERNS:
 - Compete -> Helm: Strategic simulation or scenario planning
 - Compete -> Lore: Validated recurring patterns become shared knowledge
 - Compete -> Oracle: LLM brand visibility analysis needs AI/ML expertise
+- Flux -> Compete: Market assumption reframing and differentiation axis discovery
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Voice (customer feedback), Pulse (product metrics), Nexus (task routing)
+- INPUT: Voice (customer feedback), Pulse (product metrics), Nexus (task routing), Flux (market assumption reframing)
 - OUTPUT: Spark (feature ideas), Growth (positioning/SEO), Canvas (visual maps), Helm (strategic simulation), Lore (validated patterns), Oracle (LLM visibility)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) API(M) Mobile(M) Dashboard(L)

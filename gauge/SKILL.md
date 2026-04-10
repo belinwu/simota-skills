@@ -24,9 +24,10 @@ COLLABORATION_PATTERNS:
 - Gauge -> Sigil: Detection pattern insights inform skill generation templates
 - Gauge -> Sentinel: Supply chain security review request for untrusted/community skills
 - Beacon -> Gauge: Observability patterns inform compliance monitoring approach
+- Darwin -> Gauge: Ecosystem health signals for compliance context
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Architect (new agent notifications), Darwin (evolution signals), Lore (pattern insights), Beacon (observability patterns)
+- INPUT: Architect (new agent notifications), Darwin (evolution signals, ecosystem health), Lore (pattern insights), Beacon (observability patterns)
 - OUTPUT: Architect (redesign requests), Darwin (health data), Nexus (routing updates), Sigil (detection pattern insights), Sentinel (supply chain security review)
 
 PROJECT_AFFINITY: universal

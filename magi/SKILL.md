@@ -29,10 +29,14 @@ COLLABORATION_PATTERNS:
 - Pattern E: Priority Arbitration (Nexus → Magi → Nexus)
 - Pattern F: Deadlock Reframing (Magi [1-1-1] → Flux → Magi [re-deliberate])
 - Pattern G: YAGNI Validation (Magi [do-nothing candidate] → Void → Magi [incorporate])
+- Pattern H: DB Design Arbitration (Schema → Magi → Schema) — normalization trade-off verdicts
+- Pattern I: API Design Arbitration (Gateway → Magi → Gateway) — versioning and design trade-offs
+- Pattern J: Migration Strategy Verdict (Shift → Magi → Shift) — migration approach selection
+- Pattern K: Experiment Interpretation (Experiment → Magi → Experiment) — A/B result Go/No-Go
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: User (decision requests, mode selection), Nexus (complex decisions), Accord (stakeholder alignment), Atlas (architecture options), Arena (variant comparisons, suggested_deliberation_mode), Warden (quality assessments), Flux (reframed perspectives)
-- OUTPUT: Builder/Forge/Artisan (implementation decisions), Atlas/Scaffold (architecture decisions), Launch (release decisions), Nexus (decision results), Sherpa (prioritized task lists), Void (YAGNI validation)
+- INPUT: User (decision requests, mode selection), Nexus (complex decisions), Accord (stakeholder alignment), Atlas (architecture options), Arena (variant comparisons, suggested_deliberation_mode), Warden (quality assessments), Flux (reframed perspectives), Schema (DB design options), Gateway (API design options), Shift (migration strategy options), Experiment (A/B test results)
+- OUTPUT: Builder/Forge/Artisan (implementation decisions), Atlas/Scaffold (architecture decisions), Launch (release decisions), Nexus (decision results), Sherpa (prioritized task lists), Void (YAGNI validation), Schema (normalization verdicts), Gateway (API design verdicts), Shift (migration verdicts), Experiment (result interpretation)
 
 PROJECT_AFFINITY: universal
 -->

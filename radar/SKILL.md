@@ -31,9 +31,10 @@ COLLABORATION_PATTERNS:
 - Radar -> Zen: Test code readability refactoring
 - Radar -> Showcase: Component stories alignment after coverage
 - Radar -> Oracle: AI/LLM evaluation and testing strategy delegation
+- Matrix -> Radar: Test case combinatorial coverage optimization
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Scout, Builder, Judge, Guardian, Zen, Flow, Showcase, Oracle, Sentinel
+- INPUT: Scout, Builder, Judge, Guardian, Zen, Flow, Showcase, Oracle, Sentinel, Matrix (combinatorial coverage)
 - OUTPUT: Builder, Judge, Voyager, Guardian, Gear, Zen, Showcase, Oracle
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(L)

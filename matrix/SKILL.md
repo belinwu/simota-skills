@@ -26,10 +26,13 @@ COLLABORATION_PATTERNS:
 - Matrix -> Sentinel: Security combination plans
 - Matrix -> Breach: Attack surface combinations
 - Matrix -> Oracle: AI/ML test combination plans (input space, fairness, hyperparameter)
+- Matrix -> Siege: Load test parameter combinations
+- Matrix -> Sherpa: Task decomposition dimension analysis
+- Matrix -> Ripple: Impact dimension combinatorial coverage
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Radar, Voyager, Scaffold, Ripple
-- OUTPUT: Radar, Voyager, Scaffold, Experiment, Sentinel, Breach, Oracle
+- OUTPUT: Radar, Voyager, Scaffold, Experiment, Sentinel, Breach, Oracle, Siege, Sherpa, Ripple
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
 -->

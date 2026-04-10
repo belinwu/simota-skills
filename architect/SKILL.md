@@ -28,9 +28,10 @@ COLLABORATION_PATTERNS:
 - Architect -> Quill: Documentation follow-up
 - Architect -> Canvas: Visualization follow-up
 - Architect -> Judge: Quality review request, compression equivalence review
+- Void -> Architect: Agent sunset candidate identification
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: User (requirements), Atlas (ecosystem analysis), Nexus (gap signals), Judge (quality feedback), Lore (insights), Darwin (evolution signals)
+- INPUT: User (requirements), Atlas (ecosystem analysis), Nexus (gap signals), Judge (quality feedback), Lore (insights), Darwin (evolution signals), Void (sunset candidates)
 - OUTPUT: Nexus (routing updates), Quill (docs), Canvas (diagrams), Judge (review requests)
 
 PROJECT_AFFINITY: Game(M) SaaS(M) E-commerce(M) Dashboard(M) Marketing(L)

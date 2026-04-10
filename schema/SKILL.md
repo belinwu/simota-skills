@@ -26,9 +26,11 @@ COLLABORATION_PATTERNS:
 - Schema -> Canvas: Er diagrams
 - Schema -> Quill: Schema documentation
 - Schema -> Radar: Migration regression test cases
+- Magi -> Schema: Normalization trade-off verdicts
+- Void -> Schema: Over-designed table/column pruning proposals
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Builder, Atlas, Gateway, Lens, Sentinel
+- INPUT: Builder, Atlas, Gateway, Lens, Sentinel, Magi (trade-off verdicts), Void (pruning proposals)
 - OUTPUT: Builder, Tuner, Canvas, Quill, Radar
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(H) Marketing(L)

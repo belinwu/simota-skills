@@ -23,9 +23,11 @@ COLLABORATION_PATTERNS:
 - Sherpa -> Builder/Artisan: Atomic implementation tasks
 - Sherpa -> Lore: Reusable decomposition patterns
 - Sherpa -> Canvas: Workflow visualization requests
+- Void -> Sherpa: Task scope validation and cutting
+- Matrix -> Sherpa: Task decomposition dimension analysis
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus, Titan, Accord, Lens, Magi
+- INPUT: Nexus, Titan, Accord, Lens, Magi, Void (scope validation), Matrix (decomposition dimensions)
 - OUTPUT: Nexus, Rally, Builder/Artisan, Lore, Canvas
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)

@@ -24,9 +24,11 @@ COLLABORATION_PATTERNS:
 - Pattern E: API-to-Test (Gateway → Voyager)
 - Pattern F: API-to-LoadTest (Gateway → Siege) — rate limit validation, latency SLA verification
 - Pattern G: API-to-Beacon (Gateway → Beacon) — SLO/SLI definition for API latency/error rate
+- Magi -> Gateway: API versioning and design trade-off verdicts
+- Void -> Gateway: Unnecessary endpoint pruning proposals
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Schema (data models), Builder (implementation needs), Sentinel (security requirements)
+- INPUT: Schema (data models), Builder (implementation needs), Sentinel (security requirements), Magi (design trade-off verdicts), Void (endpoint pruning proposals)
 - OUTPUT: Builder (API implementation), Quill (API documentation), Voyager (API E2E tests), Sentinel (security review)
 
 PROJECT_AFFINITY: API(H) SaaS(H) E-commerce(M) Dashboard(M) Mobile(M) Library(M)

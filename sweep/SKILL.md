@@ -24,9 +24,10 @@ COLLABORATION_PATTERNS:
 - Sweep -> Guardian: Cleanup PRs
 - Sweep -> Atlas: Architecture updates after large removals
 - Sweep -> Horizon: Deprecated library candidates for replacement
+- Void -> Sweep: Deletion priority and justification
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Atlas, Zen, Judge, Sentinel, Gear
+- INPUT: Atlas, Zen, Judge, Sentinel, Gear, Void (deletion priority)
 - OUTPUT: Zen, Builder, Guardian, Atlas, Horizon
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)

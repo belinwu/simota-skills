@@ -24,10 +24,15 @@ COLLABORATION_PATTERNS:
 - Void -> Sweep: Deletion plans for confirmed REMOVE targets
 - Void -> Atlas: Architecture simplification proposals
 - Void -> Magi: Politically sensitive removal trade-off decisions
+- Void -> Horizon: Deprecated library removal justification
+- Void -> Gateway: Unnecessary API endpoint pruning proposals
+- Void -> Schema: Over-designed table/column pruning proposals
+- Void -> Accord: Specification scope cutting proposals
+- Void -> Spark: Feature YAGNI pre-check
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Atlas, Judge, Sherpa, Zen, Bolt
-- OUTPUT: Builder, Zen, Sweep, Atlas, Magi
+- OUTPUT: Builder, Zen, Sweep, Atlas, Magi, Horizon, Gateway, Schema, Accord, Spark
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(M)
 -->

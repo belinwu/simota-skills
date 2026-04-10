@@ -24,9 +24,11 @@ COLLABORATION_PATTERNS:
 - Shift -> Schema: Database migration coordination
 - Shift -> Launch: Migration release coordination and feature flags
 - Shift -> Gear: CI/CD pipeline updates for migration
+- Magi -> Shift: Migration strategy trade-off verdicts
+- Flux -> Shift: Migration approach reframing
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Horizon (deprecated libraries), Ripple (impact analysis), Atlas (architecture), Lens (codebase exploration)
+- INPUT: Horizon (deprecated libraries), Ripple (impact analysis), Atlas (architecture), Lens (codebase exploration), Magi (strategy verdicts), Flux (approach reframing)
 - OUTPUT: Builder (implementation), Radar (tests), Schema (DB migration), Launch (release), Gear (CI/CD)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Legacy(H) Monolith(H) API(H) Static(L)

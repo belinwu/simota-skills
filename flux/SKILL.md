@@ -23,10 +23,15 @@ COLLABORATION_PATTERNS:
 - Pattern C: Strategic Reframe (Accord → Flux → Helm) — stakeholder conflict → reframe → scenario planning
 - Pattern D: Architecture Rethink (Atlas → Flux → Atlas) — stuck design → reframe → new architecture options
 - Pattern E: Bias-Aware Reframing (Flux → Oracle → Flux) — reframing output validated against AI/cognitive bias detection before delivery
+- Pattern F: Market Reframe (Flux → Compete) — market assumption reframing for differentiation axis discovery
+- Flux -> Researcher: Research design assumption challenge
+- Flux -> Breach: Attacker perspective reframing
+- Flux -> Shift: Migration approach reframing
+- Flux -> Accord: Requirement assumption challenge
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (problem descriptions, constraints), Nexus (complex problem routing), Magi (deadlocked deliberations), Accord (stakeholder conflicts), Oracle (AI-assisted bias detection feedback)
-- OUTPUT: Magi (reframed problems + insight maps → decision), Spark (idea candidates → feature proposals), Helm (strategic reframes → scenario analysis), Atlas (architecture reconceptions → design review), Lore (reusable thinking patterns → knowledge curation), Oracle (reframing assumptions for AI evaluation pipeline validation)
+- OUTPUT: Magi (reframed problems + insight maps → decision), Spark (idea candidates → feature proposals), Helm (strategic reframes → scenario analysis), Atlas (architecture reconceptions → design review), Lore (reusable thinking patterns → knowledge curation), Oracle (reframing assumptions for AI evaluation pipeline validation), Compete (market assumption reframing), Researcher (research design reframing), Breach (attacker perspective reframing), Shift (migration approach reframing), Accord (requirement assumption challenge)
 
 PROJECT_AFFINITY: universal
 -->
