@@ -99,6 +99,29 @@ const safeHtml = DOMPurify.sanitize(aiGeneratedHtml, {
 });
 ```
 
+## Agentic AI Patterns
+
+When AI acts autonomously on behalf of the user (booking, purchasing, filing, editing):
+
+| Pattern | Purpose | Implementation |
+|---------|---------|----------------|
+| Intent Preview | Pre-action consent — show what the agent plans to do | "I'm about to [action]. Proceed / Edit / Handle it myself" |
+| Explainable Rationale | Transparency during action | Show why the agent chose this path, with source references |
+| Confidence Signal | Calibrated uncertainty display | High/Medium/Low tiers; never false precision |
+| Action Audit & Undo | Post-action safety net | Timestamped log of all agent actions; one-click undo within window |
+| Escalation Pathway | Human fallback | Clear route to human support when agent confidence is low or stakes are high |
+
+Rules:
+
+- Never perform irreversible actions without explicit Intent Preview and user confirmation
+- Log every autonomous action to an audit trail accessible to the user
+- Provide undo for all reversible agent actions within a reasonable time window
+- Display a persistent indicator when an agent is acting autonomously (not just a one-time notification)
+- Announce agent state changes via `aria-live` for screen reader users
+- When confidence is below threshold, escalate to user rather than proceeding
+
+Trust calibration: users arrive with skepticism from consumer AI failures (NN/g 2026). Earn trust incrementally — start with low-stakes actions, demonstrate reliability, then offer higher autonomy levels.
+
 ## Core Principles
 
 1. **Transparency**: always make AI involvement visible to the user.
