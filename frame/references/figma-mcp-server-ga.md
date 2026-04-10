@@ -44,6 +44,12 @@ Source: https://developers.figma.com/docs/figma-mcp-server/
 | `get_figjam` | FigJam content to XML + screenshot | Structured board data | Sticky notes, connectors, sections |
 | `generate_diagram` | Mermaid syntax → FigJam diagram | Generated diagram | Flowchart, Gantt, state, sequence |
 
+### File Management Tools
+
+| Tool | Function | Output | Notes |
+|------|----------|--------|-------|
+| `create_new_file` | Create new blank Figma Design or FigJam file | File URL and metadata | Rate-exempt |
+
 ---
 
 ## Code Connect Integration
@@ -67,7 +73,7 @@ When Code Connect is configured, `get_design_context` output includes `<CodeConn
 
 | Feature | Status | Impact on Frame |
 |---------|--------|-----------------|
-| **Code Connect UI** | GA | AI-suggested mappings directly in Figma; supplements CLI approach |
+| **Code Connect UI** | GA (Org/Enterprise) | AI-suggested mappings directly in Figma with GitHub integration (component mapping suggestions, AI-generated snippets); supplements CLI approach |
 | **Slots** (Open Beta) | Beta | Placeholder containers in components; new prop type to map |
 | **Extended Collections** | Enterprise | Multi-brand design systems with child collection inheritance |
 | **Check Designs** | Early Access | Audit designs against design system; detects hardcoded values |
