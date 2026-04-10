@@ -77,6 +77,24 @@ find . -type d -mindepth 6 -not -path '*/target/*'
 find docs -name '*.md' 2>/dev/null | wc -l
 ```
 
+### Cross-Language: Repository Size Analysis
+
+```bash
+# git-sizer: GitHub-maintained tool for detecting repo scaling risks
+# Install: brew install git-sizer (macOS) or go install github.com/github/git-sizer@latest
+git-sizer --verbose
+
+# Key metrics and concern thresholds (from git-sizer defaults):
+#   Overall repository size: >250 MiB packed → concern
+#   Maximum blob size: >10 MiB → concern (large files belong in Git LFS)
+#   Maximum tree entries: >2,500 → concern (God Directory signal)
+#   Maximum path depth: >10 → concern (Nested Abyss signal)
+#   Maximum path length: >200 chars → concern (CI path issues on Windows)
+
+# Quick check without install: count objects and packed size
+git count-objects -vH
+```
+
 ---
 
 ## Health Score Calculation
