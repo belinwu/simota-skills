@@ -86,6 +86,16 @@ module.exports = {
 };
 ```
 
+## Dependency Structure Matrix (DSM)
+
+Use DSM to visualize and analyze component dependencies at scale. The matrix provides a compact, systematic mapping of all inter-module dependencies — more navigable than graph diagrams for systems with 30+ modules.
+
+**When to use:** Large-scale dependency audits, circular dependency triage, change impact analysis, and module boundary validation.
+
+**Tools:** NDepend (DSM view), Lattix Architect, IntelliJ IDEA (DSM analysis), dependency-cruiser (matrix output).
+
+**Reading the matrix:** Non-zero cells above the diagonal indicate feedforward dependencies; cells below the diagonal indicate feedback (potential cycles). Clustered non-zero cells reveal tightly coupled module groups — candidates for merging or explicit API boundary extraction.
+
 ## Coupling Metrics
 
 ```bash
