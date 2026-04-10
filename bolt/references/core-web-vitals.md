@@ -11,6 +11,19 @@ Fix:
 <link rel="preload" as="image" href="/hero.webp" fetchpriority="high">
 ```
 
+### Issue: Unoptimized image format
+Fix:
+- Serve AVIF with WebP and JPEG fallback via `<picture>` — AVIF is ~40–60% smaller than JPEG (~95% browser support, 2026)
+- Caution: AVIF decode is CPU-heavy; on low-end mobile devices, WebP may yield better LCP due to faster decode
+```html
+<picture>
+  <source srcset="/hero.avif" type="image/avif">
+  <source srcset="/hero.webp" type="image/webp">
+  <img src="/hero.jpg" alt="..." width="1200" height="630"
+       loading="eager" fetchpriority="high">
+</picture>
+```
+
 ### Issue: Render-blocking CSS/JS
 Fix:
 - Inline critical CSS
