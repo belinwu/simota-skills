@@ -94,6 +94,87 @@ Before applying any trend:
 - [ ] Performance cost is acceptable
 - [ ] The pattern should age well for `2-3 years`
 
+## Design Paradigm Knowledge Base
+
+### Spatial Computing UX (visionOS / XR)
+
+Design principles for immersive interfaces:
+
+| Principle | Description |
+|-----------|-------------|
+| Z-Axis Layering | Content organized in depth layers (near/mid/far). Primary actions in near field, context in far field |
+| Gaze-Based Interaction | Eyes select, hands confirm. Highlight on gaze hover, commit on pinch. Never require sustained gaze >2s |
+| Ergonomic Zones | Comfortable interaction zone: 1-2m distance, ±30° vertical, ±60° horizontal from center |
+| Spatial Audio Feedback | Sound localized to UI element position. Provides confirmation without visual attention |
+| Window Management | Windows float in space. Users arrange spatially. Respect user's spatial memory |
+| Passthrough Integration | Blend digital and physical. Respect real-world lighting and shadows |
+
+**Design rule**: Start with 2D flat design, add depth only where it communicates hierarchy. Spatial design is not 3D decoration — it is information architecture in the z-axis.
+
+### AI-Native Interface Design Philosophy
+
+The spectrum from tool to agent:
+
+| Level | Pattern | User Control | Example |
+|-------|---------|-------------|---------|
+| L1 Autocomplete | Inline suggestion | Full | GitHub Copilot ghost text |
+| L2 Copilot | Side-panel assistant | High | ChatGPT sidebar |
+| L3 Agent | Proposal → approve | Medium | Devin, Cursor Agent |
+| L4 Autopilot | Autonomous with guardrails | Low | Self-driving CI/CD |
+
+**Key design tensions**:
+- **Confidence visualization**: Show AI certainty (progress bars, probability badges, "I'm not sure" indicators). Never present uncertain output as certain.
+- **Intent Preview**: Before any autonomous action, show what will happen and let user approve/edit/cancel.
+- **Graceful degradation**: When AI fails, fall back to manual workflow seamlessly. Never dead-end.
+- **Explanation affordance**: Every AI output should have a "why?" path available (not mandatory, but accessible).
+
+### Emotional Design & Neuroaesthetics
+
+| Layer | Mechanism | Application |
+|-------|-----------|-------------|
+| Visceral | First-impression aesthetics (color, shape, motion) | Hero section, onboarding, packaging |
+| Behavioral | Usability pleasure (efficiency, predictability, control) | Core workflows, repeated actions |
+| Reflective | Identity, meaning, social signaling | Profile, sharing, achievement |
+
+**Ethical dopamine design**: Use reward mechanisms to reinforce user goals (progress toward their objective), not platform goals (engagement metrics). Celebration animations on task completion, not on infinite scroll consumption.
+
+### Anti-Design & Neo-Brutalism 2.0
+
+Not chaos — intentional rule-breaking with purpose:
+
+| Element | Convention | Neo-Brutalism |
+|---------|-----------|---------------|
+| Typography | System fonts, 16px body | Monospace, oversized, mixed weights |
+| Color | Brand palette, 60-30-10 | Harsh contrast, neon accents, black borders |
+| Layout | Symmetric grid, consistent spacing | Asymmetric, overlapping, visible grid lines |
+| Imagery | Polished photos, illustrations | Raw screenshots, brutalist photography, ASCII art |
+| Borders | Subtle or none | Thick (2-4px) black borders on everything |
+
+**When to use**: Developer tools, creative agencies, counter-cultural brands, personal portfolios. **Never**: Healthcare, finance, government, accessibility-critical products.
+
+### Sustainability in Digital Design
+
+| Practice | Impact | Implementation |
+|----------|--------|----------------|
+| Dark mode default | OLED: 42% energy reduction (Purdue University study) | `prefers-color-scheme: dark` as default, light as option |
+| Image optimization | WebP/AVIF: 25-50% smaller than JPEG | `<picture>` with format fallback chain |
+| Reduced motion | Less GPU computation, less battery | `prefers-reduced-motion: reduce` as non-optional |
+| System fonts | Zero font transfer cost | Font stack: `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif` |
+| Lightweight design | Every KB costs CO₂ (avg page: 2.3MB, ideal: <500KB) | Performance budget as sustainability metric |
+
+**Carbon-aware color**: Darker colors on OLED = less energy. Design tokens should include an "eco" mode with maximum dark, minimum animation.
+
+### Generative Design Systems
+
+Design tokens that generate themselves through rules rather than static values:
+
+| Concept | Mechanism | Example |
+|---------|-----------|---------|
+| Parametric typography | Base size × scale ratio × level = all sizes | `clamp(1rem, 0.5rem + 1.5vw, 1.5rem)` with Major Third (1.25) scale |
+| Algorithmic color | Base hue × rotation × lightness rules = full palette | OKLCH hue rotation: `oklch(0.7 0.15 calc(var(--base-hue) + 120))` |
+| Proportional spacing | Base unit × fibonacci-like multiplier = spacing scale | 4px → 8 → 12 → 16 → 24 → 32 → 48 → 64 |
+| Noise-based variation | Perlin noise applied to decorative properties | SVG `feTurbulence` for organic texture generation |
+
 ## AI Tool Guardrails
 
 | Tool | Best For | Guardrail |

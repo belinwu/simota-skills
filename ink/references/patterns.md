@@ -219,6 +219,83 @@ Derive icon states from semantic tokens without extra token definitions:
 }
 ```
 
+## Mesh Gradients & Noise Textures (SVG)
+
+Generate organic textures using SVG filters — no image assets needed:
+
+```html
+<svg width="0" height="0">
+  <filter id="grain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+</svg>
+```
+
+```css
+.grainy-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+.grainy-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  filter: url(#grain);
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+}
+```
+
+**Tooling**: fffuel.co (gggrain/nnnoise) for Figma/SVG export. Adds analog/print-like texture to flat digital gradients.
+
+## Aurora / Holographic SVG Effects
+
+Iridescent color shifts using layered OKLCH gradients:
+
+```css
+.holo-card {
+  background: linear-gradient(125deg,
+    oklch(0.8 0.2 0) 0%, oklch(0.7 0.2 90) 25%,
+    oklch(0.8 0.2 180) 50%, oklch(0.7 0.2 270) 75%,
+    oklch(0.8 0.2 360) 100%);
+  background-size: 200% 200%;
+  animation: holo-shift 6s ease infinite;
+}
+@keyframes holo-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+```
+
+**Use**: Premium card effects, NFT displays, portfolio hero backgrounds. Combine with `mix-blend-mode: screen` for light refraction.
+
+## CSS Paint API (Generative Patterns)
+
+Houdini Paint Worklets for procedural SVG-like patterns — no assets, CSS-customizable:
+
+```js
+// register: CSS.paintWorklet.addModule('dots.js')
+class Dots {
+  static get inputProperties() { return ['--dot-color', '--dot-count']; }
+  paint(ctx, geom, props) {
+    ctx.fillStyle = props.get('--dot-color').toString();
+    for (let i = 0; i < parseInt(props.get('--dot-count')); i++) {
+      ctx.beginPath();
+      ctx.arc(Math.random() * geom.width, Math.random() * geom.height, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+registerPaint('dots', Dots);
+```
+
+```css
+.generative-bg { --dot-color: #6366f1; --dot-count: 50; background: paint(dots); }
+```
+
+**Rule**: Chromium-only. Progressive enhancement — fallback to static gradient. Ideal for decorative backgrounds.
+
 ## React Component Pattern
 
 ```tsx

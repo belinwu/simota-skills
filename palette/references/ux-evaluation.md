@@ -4,6 +4,40 @@ Purpose: Provide the canonical heuristic, SUS, and before/after report formats f
 
 ## Contents
 
+Note: See also `wcag22-inclusive-design.md` for WCAG 3.0 preview, Popover API patterns, and Calm UI evaluation.
+
+### Inclusive Design Beyond WCAG
+
+| Dimension | Need | Design Response |
+|-----------|------|----------------|
+| Neurodivergent (ADHD) | Focus fragmentation, executive function load | Reduce parallel stimuli, single-task flows, clear next-action indicators |
+| Neurodivergent (Autism) | Sensory overwhelm, routine disruption | Predictable layouts, muted palettes, explicit state changes (not implied) |
+| Aging (65+) | Reduced contrast sensitivity, motor precision | 48px+ touch targets, high contrast, larger body text (18px+), simple navigation |
+| Low Literacy | Reading difficulty | Icon-led UI, short sentences (grade 6 reading level), progressive disclosure |
+| Cultural | Left-to-right assumption, color meaning variance | RTL-ready, culturally neutral color choices (red ≠ danger everywhere) |
+| Situational | Bright sunlight, one-handed, noisy environment | High contrast mode, large touch areas, visual + haptic feedback |
+
+### Dynamic Island UX Pattern (Contextual Persistent UI)
+
+| State | Form | Use |
+|-------|------|-----|
+| Compact | Pill-shaped ambient indicator | Timer, delivery tracking, playing media |
+| Expanded | Tap to reveal controls | Player controls, navigation ETA, order status |
+| Glanceable | <1 second readable | No interaction required for status |
+
+**Rule**: Non-intrusive notifications should use compact→expanded pattern. Never require full attention for status updates.
+
+### Ethical Gamification Evaluation
+
+| Pattern | Ethical | Manipulative |
+|---------|---------|-------------|
+| Progress | Toward user's goal completion | Toward platform engagement metrics |
+| Rewards | Skill mastery, knowledge gained | Streaks that punish absence |
+| Social | Collaboration, shared achievement | Shame-based leaderboards |
+| Urgency | Real deadlines (sale ends) | Fabricated scarcity ("only 2 left!") |
+
+**Rule**: Gamification should reinforce user goals, not platform goals. Ask: "Would the user thank us for this mechanic?"
+
 - Heuristic report template
 - Score definitions
 - UX metrics

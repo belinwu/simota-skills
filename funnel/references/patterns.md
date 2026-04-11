@@ -138,6 +138,52 @@
 
 ---
 
+## Bento Grid LP Layout
+
+Use asymmetric Bento Grid for feature showcase sections as an alternative to card grids:
+
+```css
+.features-bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-areas: "main side1 side1" "main side2 side3";
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .features-bento { grid-template-columns: 1fr; grid-template-areas: "main" "side1" "side2" "side3"; }
+}
+```
+
+**Rule**: Largest cell = primary feature. CTR improves when visual hierarchy matches content priority. 67% of top SaaS sites now use Bento Grid.
+
+## Scroll-Driven Storytelling for LP
+
+Narrative-style LPs using CSS scroll-driven animations:
+
+```css
+/* Data-journalism style: number counter on scroll */
+.stat-number {
+  animation: count-up linear both;
+  animation-timeline: view();
+  animation-range: entry 20% cover 60%;
+}
+
+/* Sequential section reveal */
+.story-section {
+  animation: fade-slide-up linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 80%;
+}
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+```
+
+**Rule**: Scrollytelling converts 23% better than static LPs for complex products (data-heavy, multi-step). Keep each "scene" to 1 viewport height. Provide non-scroll fallback.
+
+---
+
 ## Section-Level Patterns
 
 ### Pain Section

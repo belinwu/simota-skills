@@ -443,6 +443,56 @@ Conditional token resolution based on custom properties:
 
 **Rule**: Progressive enhancement only. Always provide a non-`if()` fallback via `@supports`.
 
+## Variable Everything: Unified Responsive Token System
+
+The convergence of Variable Fonts + Relative Color Syntax + `clamp()` + `@property` eliminates breakpoint-based design steps:
+
+### `@property` for Animatable Custom Properties
+
+```css
+@property --hue {
+  syntax: '<angle>';
+  initial-value: 240deg;
+  inherits: true;
+}
+:root {
+  --brand: oklch(0.65 0.2 var(--hue));
+  --brand-light: oklch(from var(--brand) calc(l + 0.2) c h);
+  --space-unit: clamp(0.5rem, 1vw, 1rem);
+}
+```
+
+- `@property` makes custom properties animatable (gradients, hues, positions).
+- Combined with `clamp()`, spacing and typography become continuous rather than stepped.
+- **Rule**: Define `@property` for any token that needs animation or interpolation.
+
+### Generative Token Architecture
+
+Tokens that derive themselves through rules rather than static definitions:
+
+| Strategy | Formula | Example |
+|----------|---------|---------|
+| Typographic scale | `base × ratio^level` | 1rem × 1.25^3 = 1.953rem |
+| Color palette | `base hue + rotation` | `oklch(0.7 0.15 calc(var(--hue) + 120))` |
+| Spacing scale | `base × fibonacci` | 4 → 8 → 12 → 16 → 24 → 32 → 48 |
+| Shadow depth | `elevation × multiplier` | `calc(var(--elevation) * 4px) blur, calc(var(--elevation) * 0.05) opacity` |
+
+**Rule**: Prefer generative formulas over exhaustive static token lists. One formula replaces dozens of static values.
+
+### Sustainability-Aware Token Mode
+
+```json
+{
+  "mode": "eco",
+  "rules": {
+    "background": "prefer darkest variant (OLED 42% energy reduction)",
+    "animation": "prefers-reduced-motion: reduce",
+    "images": "WebP/AVIF only, max 200KB",
+    "fonts": "system font stack, zero transfer cost"
+  }
+}
+```
+
 ## Multi-Brand Token Architecture
 
 | Dimension | Examples |

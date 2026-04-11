@@ -4,6 +4,34 @@
 
 ## Contents
 
+### Quick-Start Visual Patterns
+
+**Bento Grid** — Asymmetric grid for feature showcases and dashboards:
+```css
+.bento { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-areas: "hero side1 side1" "hero side2 side3"; gap: 1rem; }
+```
+
+**Glassmorphism Card** — Frosted glass overlay:
+```css
+.glass { background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; }
+```
+
+**Claymorphism Card** — Soft 3D for playful/educational UI:
+```css
+.clay { background: #f0e6ff; border-radius: 24px; box-shadow: inset 4px 4px 6px rgba(255,255,255,0.6), inset -4px -4px 6px rgba(130,100,180,0.25), 8px 8px 20px rgba(130,100,180,0.3); }
+```
+
+**Skeleton Shimmer** — Content-aware loading:
+```css
+.skeleton { background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%); background-size: 200% 100%; animation: shimmer 1.8s ease-in-out infinite; }
+```
+
+**Magnetic Button** — Cursor-attracted interaction:
+```css
+.magnetic-wrapper { padding: 40px; display: inline-block; }
+.magnetic-wrapper:hover .btn { transform: translate(var(--x,0), var(--y,0)); transition: transform 0.3s cubic-bezier(0.33,1,0.68,1); }
+```
+
 - Basic form
 - List with search and pagination
 - Modal / dialog

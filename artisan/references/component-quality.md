@@ -354,6 +354,79 @@ p { text-wrap: pretty; }            /* Prevents orphaned last words */
 
 ---
 
+## 5c. UI Pattern Knowledge Base
+
+### Bento Grid Layout
+
+Asymmetric grid inspired by Japanese bento boxes. Apple product pages popularized it.
+
+```css
+.bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-areas:
+    "hero  side1 side1"
+    "hero  side2 side3";
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .bento { grid-template-columns: 1fr; grid-template-areas: "hero" "side1" "side2" "side3"; }
+}
+```
+
+**Rule**: Bento grids are for feature showcases, dashboards, and portfolios. Not for content-heavy pages. Visual hierarchy comes from cell size — largest cell = highest priority.
+
+### Glassmorphism → Liquid Glass
+
+Evolution: Glassmorphism (2020) → Acrylic/Fluent (Microsoft) → **Liquid Glass** (Apple WWDC25, physics-based refraction):
+
+```css
+/* Glassmorphism base */
+.glass { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; }
+```
+
+**Rule**: `backdrop-filter: blur()` is Baseline (97% support). Keep blur 8-15px (GPU cost scales exponentially). Liquid Glass uses SVG `feDisplacementMap` for refraction — progressive enhancement only.
+
+### Command Palette (⌘K Pattern)
+
+Keyboard-driven universal search/action interface (VSCode, Linear, Slack, Notion):
+
+```tsx
+<Command>
+  <Command.Input placeholder="Type a command or search..." />
+  <Command.List>
+    <Command.Group heading="Navigation">
+      <Command.Item onSelect={() => navigate('/dashboard')}>Go to Dashboard</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command>
+```
+
+**Rule**: Use `cmdk` (pacocoursey) or shadcn/ui `<Command />`. Combine fuzzy search + section grouping + keyboard-first navigation. Benefits both power users (O(1) access) and beginners (discoverable).
+
+### Notification Hierarchy
+
+| Level | Component | Auto-dismiss | Action | Use For |
+|-------|-----------|-------------|--------|---------|
+| Ambient | Status bar | No | View | Ongoing state (uploading, syncing) |
+| Informational | Toast | 3-5s | None | Success confirmation |
+| Actionable | Snackbar | 5-10s | Undo/Retry | Reversible actions |
+| Critical | Dialog/Banner | No | Acknowledge | Errors, destructive confirmations |
+
+**Rule**: `role="status"` + `aria-live="polite"` for toast/snackbar. Never stack >3 notifications. Error toasts: never auto-dismiss.
+
+### Claymorphism
+
+Soft 3D aesthetic using dual inner shadows:
+
+```css
+.clay { background: #f0e6ff; border-radius: 24px; box-shadow: inset 4px 4px 6px rgba(255,255,255,0.6), inset -4px -4px 6px rgba(130,100,180,0.25), 8px 8px 20px rgba(130,100,180,0.3); }
+```
+
+**Rule**: Suitable for playful/educational contexts. Avoid for data-heavy or professional tools (contrast issues). Always verify WCAG contrast.
+
+---
+
 ## 6. Layout Restraint Rules
 
 When building page-level components or landing pages, enforce these composition constraints to avoid generic AI-generated layouts.
