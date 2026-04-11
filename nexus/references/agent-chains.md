@@ -153,6 +153,9 @@ Complete chain templates and dynamic adjustment rules.
 | DESIGN | figma-handoff | Frame → Forge → Builder → Radar |
 | DESIGN | token-sync | Frame → Muse → Loom → Artisan |
 | DESIGN_SYSTEM | figma-driven | Frame → Vision → Muse → Showcase → Quill |
+| DESIGN_SYSTEM_DOCS | quick | Muse → Showcase → Quill |
+| DESIGN_SYSTEM_DOCS | standard | Muse → Showcase + Canvas → Quill |
+| DESIGN_SYSTEM_DOCS | full | Vision → Muse → Showcase + Canvas → Artisan → Quill |
 | DECISION | deadlock | Magi → Flux → Magi → Builder |
 | FEATURE | innovation | Researcher → Flux → Spark → Builder → Radar |
 | STRATEGY | reframe | Accord → Flux → Helm → Scribe |
