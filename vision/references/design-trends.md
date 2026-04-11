@@ -205,6 +205,49 @@ Design tokens that generate themselves through rules rather than static values:
 | Proportional spacing | Base unit × fibonacci-like multiplier = spacing scale | 4px → 8 → 12 → 16 → 24 → 32 → 48 → 64 |
 | Noise-based variation | Perlin noise applied to decorative properties | SVG `feTurbulence` for organic texture generation |
 
+## Visual Aesthetic Direction (2025-2026)
+
+### Dark Mode as Default
+
+82% of mobile users now use dark mode (NNG). Design dark-first, not as an afterthought.
+
+| Style | BG | Accent | Text | Muted |
+|-------|------|--------|------|-------|
+| Professional | `#0C1120` | `#3A82FF` | `#F8FAFC` | `#8895A7` |
+| Warm luxury | `#1C1917` | `#D4A574` | `#FAFAF9` | `#A8A29E` |
+| Gradient dark | `#0F172A→#020617` | `#22D3EE` | `#F1F5F9` | `#64748B` |
+
+**Rule**: Never use pure `#000000` (use `#0A0A0A+`). Reduce saturation of accents for dark backgrounds. 4.5:1 contrast minimum for body text.
+
+### Rounded Everything (Pill UI)
+
+`border-radius: 999px` on buttons, `16-24px` on cards. Neurologically soothing — eyes flow naturally around curves. Products: iOS, Material You, Arc, Linear, Spotify.
+
+### Large Typography, Minimal Chrome
+
+```css
+.hero { font-size: clamp(3rem, 8vw, 8rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; }
+```
+
+37% higher reading completion on LPs with bold typography. Pair oversized display with readable body font. Use negative letter-spacing for headlines.
+
+### Monochrome + One Accent
+
+Single accent color against grayscale palette. Forces clear visual hierarchy — the accent becomes an unmistakable action signal. Products: Linear (blue), Vercel (white), Stripe (purple).
+
+### Floating Tab Bar (Mobile)
+
+```css
+.tab-bar { position: fixed; bottom: 16px; left: 16px; right: 16px; border-radius: 24px;
+  background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+```
+
+40% faster task completion vs hamburger menu. ≤5 tabs. Products: Apple Maps (iOS 26), Airbnb, Instagram.
+
+### Bottom Sheet as Primary Mobile Surface
+
+Draggable panel with snap points (25%/50%/90%). Replaces modals, filters, details on mobile. Products: Apple Maps, Google Maps, Uber, Spotify.
+
 ## AI Tool Guardrails
 
 | Tool | Best For | Guardrail |

@@ -138,6 +138,53 @@
 
 ---
 
+## Hero Section Visual Patterns (2025-2026)
+
+### Gradient Mesh Hero Background
+
+```css
+.hero-bg {
+  background:
+    radial-gradient(at 40% 20%, hsla(228,100%,74%,1) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(355,85%,63%,1) 0px, transparent 50%);
+  animation: meshMove 20s ease-in-out infinite alternate;
+}
+```
+
+**Rule**: Hero only — never on repeated components. Slow animation (15-30s). Ensure text contrast with semi-transparent overlay. Products: Stripe, Vercel, Linear.
+
+### Large Typography Hero
+
+```css
+.hero-headline {
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+```
+
+Text-only hero (no image) with oversized headline. 37% higher reading completion. Pair with `text-wrap: balance` for clean line breaks.
+
+### Dark Mode LP Default
+
+Design LP dark-first: `#0C1120` background, single bright accent for CTAs, muted text for descriptions. 82% of mobile users prefer dark mode. Reduce visual fatigue, increase perceived premium quality.
+
+### Pill Button CTA
+
+```css
+.cta-pill {
+  border-radius: 999px;
+  padding: 12px 32px;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+```
+
+---
+
 ## Bento Grid LP Layout
 
 Use asymmetric Bento Grid for feature showcase sections as an alternative to card grids:

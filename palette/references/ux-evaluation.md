@@ -38,6 +38,72 @@ Note: See also `wcag22-inclusive-design.md` for WCAG 3.0 preview, Popover API pa
 
 **Rule**: Gamification should reinforce user goals, not platform goals. Ask: "Would the user thank us for this mechanic?"
 
+### Form Validation Best Practices (2025)
+
+| Timing | When | Example |
+|--------|------|---------|
+| On blur | Most fields | Email format, required fields |
+| Real-time (debounced) | Critical uniqueness checks | Username availability (400-700ms debounce) |
+| On submit | Fallback for all | Show all errors at once as safety net |
+
+**Rules**:
+- Never validate empty required fields before user types (premature validation causes 22% more errors — Baymard)
+- Never disable the submit button — keep active, show errors on submit
+- Use `aria-invalid`, `aria-describedby`, `aria-live="polite"` for accessibility
+- Debounce: 300-500ms for format, 400-700ms for network
+
+### Empty States That Guide Action
+
+```
+┌─────────────────────────┐
+│        [Icon]           │
+│  "No projects yet"      │  ← Concise headline
+│  Create your first      │  ← Supporting description
+│  project to get started │
+│  [Create Project]       │  ← Primary CTA (1-2 options max)
+└─────────────────────────┘
+```
+
+**Rule**: Never blame the user. Use encouraging tone. Match visual style of populated state. 1-2 actions max (Hick's Law). Products: Slack, GitHub, Notion, Linear.
+
+### Error Recovery Pattern
+
+Every error message needs 3 elements:
+1. **What happened** — plain language ("Your changes couldn't be saved")
+2. **Why** — brief cause ("The server is temporarily unavailable")
+3. **What to do** — actionable buttons: Retry / Save Draft / Undo
+
+**Rules**: Auto-save to localStorage/IndexedDB always. Persistent banner for connection issues (not modal). 2-3 recovery options. Never "Error 500" with no guidance.
+
+### Undo Toast Pattern
+
+```
+┌────────────────────────────────────────┐
+│  Message deleted          [Undo]       │  ← 5-6 second timer
+└────────────────────────────────────────┘
+```
+
+**Rule**: Defer actual deletion until toast expires. `aria-live="polite"`. Stack vertically. Place bottom-center. 5-6s for actionable, 3s for informational. Products: Gmail, Slack, Notion.
+
+### Infinite Scroll vs Pagination Decision
+
+| Pattern | Use When |
+|---------|----------|
+| Infinite scroll | Content discovery, social feeds, entertainment |
+| Pagination | Goal-oriented search, data tables, SEO-critical pages |
+| Load More button | Hybrid — user-controlled, reachable footer |
+
+**Rule**: Infinite scroll requires virtual scrolling (`@tanstack/virtual`) for >100 items, "Back to top" button, scroll position preservation on back navigation. Never hide the footer.
+
+### Expandable Cards vs Modal Decision
+
+| Pattern | Use When |
+|---------|----------|
+| Expand in-place | Quick detail view, retains list context |
+| Side panel (peek) | Detailed view + list visible simultaneously |
+| Modal/dialog | Focused task, form submission, confirmation |
+| Full page | Complex content, SEO-important pages |
+
 - Heuristic report template
 - Score definitions
 - UX metrics

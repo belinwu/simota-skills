@@ -354,7 +354,172 @@ p { text-wrap: pretty; }            /* Prevents orphaned last words */
 
 ---
 
-## 5c. UI Pattern Knowledge Base
+## 5c. Production UI Patterns (2025-2026)
+
+### Split-View / Three-Panel Layout
+
+The dominant SaaS navigation pattern (Linear, Notion, Slack, VS Code):
+
+```css
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(300px, 1fr) minmax(400px, 2fr);
+  height: 100dvh;
+}
+```
+
+**Rule**: Use `react-resizable-panels` for drag-to-resize. Persist widths in localStorage. Collapse sidebar to 56px icons-only mode on narrow viewports. Keyboard shortcut `[`/`]` to toggle panels.
+
+### Inline Editing (Click-to-Edit)
+
+```tsx
+function InlineEdit({ value, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  if (!editing) return (
+    <span onClick={() => setEditing(true)} className="cursor-pointer hover:bg-muted px-1 rounded">{value}</span>
+  );
+  return (
+    <input autoFocus value={draft} onChange={e => setDraft(e.target.value)}
+      onBlur={() => { onSave(draft); setEditing(false); }}
+      onKeyDown={e => {
+        if (e.key === 'Enter') { onSave(draft); setEditing(false); }
+        if (e.key === 'Escape') { setDraft(value); setEditing(false); }
+      }} />
+  );
+}
+```
+
+**Rule**: Show hover indicator (background change). Use `contentEditable` for rich text. Validate on blur. Products: Notion, Jira, Asana, Airtable.
+
+### Optimistic UI (React 19)
+
+```tsx
+const [optimisticItems, addOptimistic] = useOptimistic(items,
+  (state, newItem) => [...state, { ...newItem, pending: true }]
+);
+```
+
+**Rule**: Show subtle visual distinction for pending items (lower opacity). Always implement rollback. Only for high-confidence ops (>99% success). Never for payments or destructive actions.
+
+### Drag-and-Drop (2025 Libraries)
+
+| Library | Best For | Size |
+|---------|----------|------|
+| `@dnd-kit/react` | Flexible, accessible, customizable | ~10KB |
+| `pragmatic-drag-and-drop` (Atlassian) | Headless, HTML5 DnD API | ~5KB |
+| `@hello-pangea/dnd` | Drop-in react-beautiful-dnd replacement | ~30KB |
+
+**Rule**: Always support keyboard DnD (Space to pick up, arrows to move). Show clear drop indicators. Animate shifting items.
+
+### Context Menu (Right-Click)
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>{children}</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Copy <ContextMenuShortcut>⌘C</ContextMenuShortcut></ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem className="text-destructive">Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+**Rule**: Use Radix `ContextMenu` or shadcn/ui. Group with separators. Show shortcuts. Destructive actions last, in red. ≤10 items per level.
+
+### Multi-Select & Bulk Actions
+
+```tsx
+function handleClick(index, event) {
+  if (event.shiftKey && lastSelected !== null) {
+    // Shift+click selects range
+    const [min, max] = [Math.min(lastSelected, index), Math.max(lastSelected, index)];
+    setSelected(prev => { const next = new Set(prev); for (let i = min; i <= max; i++) next.add(i); return next; });
+  } else {
+    // Toggle individual
+    setSelected(prev => { const next = new Set(prev); next.has(index) ? next.delete(index) : next.add(index); return next; });
+  }
+}
+```
+
+**Rule**: Floating action bar with count ("3 selected") + bulk actions. Support "Select all". Confirm destructive bulk ops.
+
+### AI Streaming Text
+
+```tsx
+import { useChat } from 'ai/react'; // Vercel AI SDK
+const { messages, input, handleInputChange, handleSubmit } = useChat();
+```
+
+**Rule**: Show typing indicator for first token. Render at consistent ~200 chars/sec regardless of chunk size. Allow scroll during streaming. Support stop generation. Products: ChatGPT, Claude, Gemini.
+
+### AI Prompt Input
+
+```tsx
+<div className="border rounded-2xl p-3 flex flex-col gap-2">
+  <div className="flex flex-wrap gap-1">
+    {attachments.map(a => <Chip key={a.id} label={a.name} onRemove={() => remove(a.id)} />)}
+  </div>
+  <textarea rows={1} className="resize-none"
+    onInput={e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+    style={{ maxHeight: '200px' }} />
+  <div className="flex justify-between">
+    <div className="flex gap-2"><IconButton icon={<Paperclip />} /><IconButton icon={<Image />} /></div>
+    <button className="bg-primary rounded-full p-2"><ArrowUp /></button>
+  </div>
+</div>
+```
+
+**Rule**: Auto-expand to max height then scroll. Submit with Enter, newline with Shift+Enter. Support paste for images. Products: ChatGPT, Claude.
+
+### AI Response Actions
+
+```tsx
+<div className="group relative">
+  <div className="prose">{content}</div>
+  <div className="opacity-0 group-hover:opacity-100 flex gap-1 mt-2">
+    <IconButton icon={<Copy />} tooltip="Copy" />
+    <IconButton icon={<RefreshCw />} tooltip="Regenerate" />
+    <IconButton icon={<Edit />} tooltip="Edit" />
+    <IconButton icon={<GitBranch />} tooltip="Branch" />
+    <IconButton icon={<ThumbsUp />} tooltip="Good" />
+  </div>
+</div>
+```
+
+**Rule**: Copy shows "Copied!" briefly. Regenerate creates branch, not overwrite. Show loading during regeneration.
+
+### Content Preview on Hover
+
+```tsx
+<HoverCard openDelay={300} closeDelay={100}>
+  <HoverCardTrigger asChild><a href={url}>{text}</a></HoverCardTrigger>
+  <HoverCardContent className="w-80 p-4 rounded-lg shadow-lg">
+    <img src={ogImage} /><h3>{title}</h3><p>{desc}</p>
+  </HoverCardContent>
+</HoverCard>
+```
+
+**Rule**: 300ms open delay, 100ms close grace period. Fetch OG metadata server-side, cache aggressively. Products: Wikipedia, GitHub, Slack, Notion.
+
+### Key Library Map (2025-2026)
+
+| Category | Library |
+|----------|---------|
+| Command Palette | `cmdk` |
+| Drag & Drop | `@dnd-kit/react` |
+| Context Menu | Radix `ContextMenu` |
+| Hover Cards | Radix `HoverCard` |
+| Bottom Sheet (web) | `vaul` |
+| AI Chat | Vercel AI SDK (`ai`) |
+| Virtual Lists | `@tanstack/virtual` |
+| Resizable Panels | `react-resizable-panels` |
+| Toast | `sonner` |
+| Forms | React Hook Form + Zod |
+
+---
+
+## 5d. Visual UI Pattern Knowledge Base
 
 ### Bento Grid Layout
 
