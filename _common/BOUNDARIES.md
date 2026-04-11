@@ -65,6 +65,11 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 - Attack simulation → Breach. Detection rules → Vigil. Purple team → Breach → Vigil
 - PII/privacy → Cloak. Regulatory frameworks → Comply. Crypto design → Crypt
 
+**Credential Isolation Principle** (Source: Anthropic Managed Agents):
+Tokens and secrets must never be reachable from the execution environment where agent-generated code runs. Two patterns:
+- **Resource-Bundled Auth**: Use credentials during environment setup (e.g., git clone), then remove access before agent code executes
+- **Vault + Proxy**: Store credentials in an external vault; agent calls tools via a proxy that injects credentials — the agent itself never handles tokens
+
 ## Implementation
 
 | Agent | Primary Role | Focus | Writes Code |

@@ -4,9 +4,30 @@ Systematic re-evaluation of orchestration scaffolding as model capabilities impr
 
 ---
 
-## Principle
+## Principles
 
 > Every piece of scaffolding encodes an assumption about model limitations. As models improve, assumptions must be re-tested and scaffolding simplified or removed when no longer needed.
+
+### Stale Assumptions (Managed Agents Pattern)
+
+Harnesses encode assumptions about model limitations that become outdated as capabilities improve. Workarounds for earlier models (e.g., context anxiety mitigations, verbose chain decomposition) become "dead weight" for stronger models. Treat every scaffolding component as a hypothesis with an expiration date.
+
+**Application:** Each HE component below tests whether its underlying assumption still holds. When the assumption expires, simplify or remove the scaffolding.
+
+### Interface Stability over Implementation
+
+> "Opinionated about interfaces, unopinionated about implementations."
+
+Design stable contracts (handoff formats, `_STEP_COMPLETE` schema, `NEXUS_HANDOFF` structure) that outlast specific model capabilities. Implementations behind the interface (chain selection, agent internals, recovery strategies) can evolve freely without breaking the contract. When evolving scaffolding, change the implementation — not the interface — unless the interface itself is the bottleneck.
+
+### Stateless Orchestrator (Cattle, not Pets)
+
+Orchestrators (Nexus, Rally) should be stateless and replaceable. Session state (handoff context, checkpoint data, execution logs) must live outside the orchestrator so that:
+- Orchestrator interruption does not lose progress
+- Any orchestrator instance can resume from the last checkpoint
+- Debugging does not require access to the orchestrator's internal state
+
+**Current implementation:** `.agents/PROJECT.md` activity log + `_STEP_COMPLETE` handoff chain + journal files serve as the external session log. Checkpoint-resume in AUTORUN (4+ step chains) provides crash recovery.
 
 ---
 

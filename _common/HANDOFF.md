@@ -86,3 +86,33 @@ Standard format for `## NEXUS_HANDOFF` output. Designed for flexibility: include
 3. **Be specific in Next** — include what the next agent should do, not just who
 4. **Findings should be actionable** — include file paths, line numbers, evidence
 5. **Risks should be concrete** — "might break X" is better than "there are risks"
+
+---
+
+## Session Durability Principle
+
+> Handoff data is the session log. It must survive orchestrator interruption.
+
+Based on the Managed Agents virtualization pattern (Anthropic), session state (the append-only record of what happened) must live outside the orchestrator so that:
+
+- **Crash recovery**: If the orchestrator (Nexus/Rally) is interrupted mid-chain, the last `_STEP_COMPLETE` + `NEXUS_HANDOFF` in `.agents/PROJECT.md` and agent journals enables any new orchestrator instance to resume from the last successful step.
+- **Debuggability**: All handoff data is inspectable in persistent files (`.agents/*.md`), not trapped in a transient context window.
+- **Checkpoint-resume**: For chains with 4+ steps, each `_STEP_COMPLETE` acts as a durable checkpoint. A `wake(sessionId)` equivalent is: read `.agents/PROJECT.md` → find last completed step → reconstruct handoff context → spawn next agent.
+
+### Practical Implications
+
+| Situation | Action |
+|-----------|--------|
+| Chain interrupted mid-step | Read `.agents/PROJECT.md` for last `_STEP_COMPLETE`; resume from that point |
+| Handoff context too large for prompt | Store in `.agents/{agent}.md` journal; pass file path reference instead |
+| Need to replay or debug a chain | All steps are traceable via `PROJECT.md` activity log + individual journals |
+
+### What to Persist vs. What to Pass Inline
+
+| Data | Persist (journal/PROJECT.md) | Pass inline (prompt) |
+|------|------------------------------|---------------------|
+| Step completion status | Always | Always |
+| File paths modified | Always | Always |
+| Detailed investigation notes | Always | Summary only |
+| Full error traces | Always | Key error + file:line only |
+| Acceptance criteria | Always (at chain start) | Reference only |
