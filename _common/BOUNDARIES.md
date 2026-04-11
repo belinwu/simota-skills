@@ -274,6 +274,7 @@ Tokens and secrets must never be reachable from the execution environment where 
 | **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
 | **Quest** | Game planning & production | GDD, game balance, narrative, economy design | Never |
 | **Realm** | Ecosystem gamification visualization | Phaser 3 office sim, XP/rank, interactive HTML map | Yes |
+| **Omen** | Pre-mortem analysis & failure mode enumeration | FMEA, fault tree, Swiss Cheese, Murphy audit | Never |
 | **Seek** | Search & vector DB architecture | Full-text/vector/hybrid search, RAG retrieval | Partial (mappings) |
 | **Shard** | Multi-tenant architecture design | Tenant isolation, RLS, routing, noisy-neighbor | Partial (specs) |
 | **Weave** | Workflow & state machine design | FSM/Statechart, Saga patterns, approval flows | Partial (YAML/specs) |
@@ -285,3 +286,4 @@ Tokens and secrets must never be reachable from the execution environment where 
 - Mobile app development → Native. Mobile-responsive frontend → Artisan
 - Songwriting/lyrics → Lyric. Audio generation code → Tone
 - Priority scoring → Rank. Multi-perspective decisions → Magi
+- Pre-mortem / failure analysis → Omen. Change impact → Ripple. Incident response → Triage

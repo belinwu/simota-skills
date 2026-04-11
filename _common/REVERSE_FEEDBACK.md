@@ -192,7 +192,7 @@ ON_REVERSE_FEEDBACK:
 
 ### With GUARDRAIL.md
 
-- High priority reverse feedback triggers **L2 checkpoint** (auto-fix attempt)
+- High priority reverse feedback triggers **L2 checkpoint** (auto-fix attempt per `GUARDRAIL.md`)
 - Systemic issues (3+ feedback items on same pattern) trigger **L3 pause**
 
 ### With AUTORUN.md
@@ -213,4 +213,4 @@ To fully support reverse feedback, agents should have:
 4. **Daily process**: Include "Check for pending reverse feedback" step
 5. **COLLABORATION_PATTERNS**: List reverse feedback flows with `(reverse feedback)` annotation
 
-Agents that already implement this pattern: **Muse**, **Architect**
+Agents that reference this pattern: **Architect**, **Muse** (adoption is limited; protocol is available for all agents to use via standard handoff flows)

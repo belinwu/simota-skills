@@ -359,6 +359,7 @@ Read only the files that match the current decision point.
 | `references/error-handling.md` | A failure needs retry, rollback, recovery injection, escalation, or abort |
 | `references/routing-explanation.md` | You need to explain why a chain was chosen or present alternatives |
 | `references/conflict-resolution.md` | Parallel branches touch overlapping files or logic |
+| `_common/PARALLEL.md` | You need parallel branch definitions, file ownership, merge strategies, or rollback protocols |
 | `references/handoff-validation.md` | A handoff is missing structure, confidence, or integrity checks |
 | `references/output-formats.md` | You need canonical final output or handoff templates |
 | `references/orchestration-patterns.md` | You need a concrete execution pattern such as sequential, parallel, evaluator-loop, or verification-gated flow |

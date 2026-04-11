@@ -31,6 +31,18 @@ Orchestrators (Nexus, Rally) should be stateless and replaceable. Session state 
 
 ---
 
+## Metrics Definitions
+
+| Metric | Full Name | Formula | Purpose |
+|--------|-----------|---------|---------|
+| **CES** | Chain Effectiveness Score | `Success_Rate(0.35) + Recovery_Efficiency(0.20) + Step_Economy(0.20) + User_Satisfaction(0.25)` | Overall chain quality (defined in Nexus SKILL.md) |
+| **TES** | Token Efficiency Score | `output_information_tokens / total_tokens_consumed` | Cost efficiency — detects context bloat and unnecessary verbosity |
+| **UQS** | User Quality Score | User satisfaction rating (1-5) averaged over chain deliverables | Subjective quality — captures what metrics miss |
+
+**Grading:** A (>= 0.85), B (>= 0.70), C (>= 0.55), D (< 0.55)
+
+---
+
 ## Evaluation Components
 
 | ID | Component | Assumption | Simplification Condition | Measurement |
