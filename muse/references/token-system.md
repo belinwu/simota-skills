@@ -443,6 +443,43 @@ Conditional token resolution based on custom properties:
 
 **Rule**: Progressive enhancement only. Always provide a non-`if()` fallback via `@supports`.
 
+## AI-Readable Token Architecture
+
+Tokens evolve from storing **values** to storing **intent** — enabling AI agents to generate, adapt, and validate UI:
+
+```json
+{
+  "$type": "color",
+  "$value": "#3B82F6",
+  "$intent": "trust-building action color",
+  "$usage": ["primary CTA", "navigation highlights"],
+  "$constraints": {
+    "contrast": "WCAG AA on white",
+    "never-on": ["warning surfaces", "destructive actions"]
+  }
+}
+```
+
+**Rule**: Add `$intent`, `$usage`, `$constraints` fields to semantic tokens. AI tools (Figma Make, v0, Stitch) consume these to generate design-system-compliant output. Keep primitive tokens value-only.
+
+## COLRv1 Color Fonts
+
+Modern color font format with gradients, compositing, and variable font axis compatibility:
+
+```css
+.brand-heading {
+  font-family: 'Plakato Color', sans-serif;
+  font-palette: --brand-palette;
+}
+@font-palette-values --brand-palette {
+  font-family: 'Plakato Color';
+  override-colors: 0 var(--color-primary), 1 var(--color-secondary);
+}
+```
+
+- **Rule**: Use `font-palette` for runtime color switching. Token-driven palette overrides via `override-colors`.
+- Supported in all major browsers. Compact and crisp vs SVG-in-OpenType.
+
 ## Variable Everything: Unified Responsive Token System
 
 The convergence of Variable Fonts + Relative Color Syntax + `clamp()` + `@property` eliminates breakpoint-based design steps:

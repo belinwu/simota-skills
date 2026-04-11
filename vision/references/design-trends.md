@@ -113,6 +113,21 @@ Design principles for immersive interfaces:
 
 ### AI-Native Interface Design Philosophy
 
+2026 is the year "interfaces become agents." Shift from GUI paradigm (click/tap guidance) to **intent-centric design** where UI is a medium, not a message.
+
+**New UI Patterns replacing traditional paradigms**:
+
+| Old Pattern | New Pattern | What Changes |
+|-------------|-------------|--------------|
+| Forms | **Intent Canvas** | Accept messy input, deliver structured interpretation |
+| Confirmation Dialog | **Negotiation** | Human and agent co-create the plan |
+| Progress Indicator | **Narrative** | System explains what it's doing as a story |
+| Hard Failure | **Graceful Escalation** | Soften boundaries, provide escalation paths |
+
+**Autonomy Dial**: Meta-control allowing users to dynamically adjust agent autonomy level. Not a binary copilot/autopilot — a continuous slider.
+
+**"Nudge, don't nag"**: The meta-principle — prompt helpfully without being intrusive.
+
 The spectrum from tool to agent:
 
 | Level | Pattern | User Control | Example |
@@ -165,6 +180,21 @@ Not chaos — intentional rule-breaking with purpose:
 **Carbon-aware color**: Darker colors on OLED = less energy. Design tokens should include an "eco" mode with maximum dark, minimum animation.
 
 ### Generative Design Systems
+
+**AI-readable design tokens** — the most leveraged evolution point. Tokens shift from storing values to storing **intent**:
+
+```json
+{
+  "color-primary": {
+    "value": "#3B82F6",
+    "intent": "trust-building action color",
+    "usage": "primary CTA, navigation highlights",
+    "constraints": "WCAG AA contrast on white, never on warning surfaces"
+  }
+}
+```
+
+Gartner predicts 30% of new apps will use AI-driven adaptive interfaces by 2026. CopilotKit and Google A2UI (Open-JSON-UI) lead open-source Generative UI frameworks.
 
 Design tokens that generate themselves through rules rather than static values:
 
