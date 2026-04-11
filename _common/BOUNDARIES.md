@@ -141,6 +141,11 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Horizon** | Modernization & tech stack refresh | Deprecated library detection, native API replacement | Yes |
 | **Stratum** | Architecture modeling (C4) | Structurizr DSL, context/container/component | Never |
 | **Shift** | Migration & upgrade orchestration | Codemod generation, framework/DB/API migration | Yes |
+| **Spider** | Crawl system architecture design | URL frontier, distributed crawl, politeness policy, compliance | Never |
+
+**Key distinctions:**
+- Crawl system architecture → Spider. Single-session scraping execution → Navigator
+- Crawl output pipeline → Stream. Crawl infrastructure provisioning → Scaffold
 
 ## UX & Design
 
