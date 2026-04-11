@@ -277,3 +277,11 @@ Tokens and secrets must never be reachable from the execution environment where 
 | **Seek** | Search & vector DB architecture | Full-text/vector/hybrid search, RAG retrieval | Partial (mappings) |
 | **Shard** | Multi-tenant architecture design | Tenant isolation, RLS, routing, noisy-neighbor | Partial (specs) |
 | **Weave** | Workflow & state machine design | FSM/Statechart, Saga patterns, approval flows | Partial (YAML/specs) |
+| **Lyric** | Songwriting for Suno AI | Lyrics with metatags, style prompts | Never |
+| **Native** | Mobile development | React Native/Flutter/SwiftUI/Jetpack Compose | Yes |
+| **Rank** | Priority quantification | ICE/RICE/WSJF/MoSCoW/Kano scoring | Never |
+
+**Key distinctions:**
+- Mobile app development → Native. Mobile-responsive frontend → Artisan
+- Songwriting/lyrics → Lyric. Audio generation code → Tone
+- Priority scoring → Rank. Multi-perspective decisions → Magi
