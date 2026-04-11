@@ -384,6 +384,65 @@ Container size queries enable responsive token switching at the component level:
 
 Browser support (2025): size queries fully supported; style queries in progress.
 
+## CSS Functions for Token Systems
+
+Modern CSS functions enable runtime token derivation — reducing static token definitions.
+
+### `color-mix()` (Baseline 2023)
+
+Derive hover, active, and disabled states from a single primitive:
+
+```css
+:root {
+  --color-primary: oklch(0.55 0.2 260);
+  --color-primary-hover: color-mix(in oklch, var(--color-primary), white 15%);
+  --color-primary-active: color-mix(in oklch, var(--color-primary), black 10%);
+  --color-primary-disabled: color-mix(in oklch, var(--color-primary), transparent 50%);
+}
+```
+
+**Rule**: Define 1 primitive → derive states via `color-mix()`. Eliminates `*-hover`, `*-active`, `*-disabled` token bloat.
+
+### `light-dark()` (Baseline 2024)
+
+Single-line dark mode token switching:
+
+```css
+:root { color-scheme: light dark; }
+:root {
+  --text-primary: light-dark(oklch(0.2 0.01 260), oklch(0.9 0.01 260));
+  --bg-surface: light-dark(oklch(0.98 0.005 260), oklch(0.15 0.005 260));
+}
+```
+
+**Rule**: Use for simple light/dark pairs. For multi-theme (brand/density), stick with DTCG modes.
+
+### Relative Color Syntax
+
+Generate entire palettes from a single base:
+
+```css
+:root {
+  --base: oklch(0.55 0.2 260);
+  --lightest: oklch(from var(--base) 0.95 calc(c * 0.3) h);
+  --light: oklch(from var(--base) 0.8 calc(c * 0.5) h);
+  --dark: oklch(from var(--base) 0.35 calc(c * 0.8) h);
+}
+```
+
+### CSS `if()` (Emerging — Chrome Canary)
+
+Conditional token resolution based on custom properties:
+
+```css
+.component {
+  padding: if(style(--density: compact): 4px 8px; else: 8px 16px);
+  font-size: if(style(--density: compact): 0.8125rem; else: 1rem);
+}
+```
+
+**Rule**: Progressive enhancement only. Always provide a non-`if()` fallback via `@supports`.
+
 ## Multi-Brand Token Architecture
 
 | Dimension | Examples |

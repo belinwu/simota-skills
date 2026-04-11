@@ -75,6 +75,69 @@
 
 ---
 
+## Calm UI Landing Page Design
+
+### Principles
+
+| Principle | Do | Don't |
+|-----------|-----|-------|
+| Cognitive Clarity | Clear value proposition, generous whitespace, typographic hierarchy | Competing CTAs, information overload, visual noise |
+| Trust Through Calm | Real testimonials, transparent pricing, honest copy | Fake urgency timers, "only 3 left" fabrications, hidden fees |
+| Functional Minimalism | 1 primary CTA per viewport, restrained color palette | Rainbow gradients, auto-playing video, notification pop-ups |
+| Progressive Information | Reveal detail on demand, scannable sections | Wall-of-text hero, collapsible FAQ hiding critical info |
+
+### Calm UI vs Traditional LP
+
+| Element | Traditional | Calm UI |
+|---------|------------|---------|
+| Hero CTA | "BUY NOW — 50% OFF ENDS TODAY!" | "Start your free trial" |
+| Social proof | Animated counter, pop-up notifications | Static testimonials with names and roles |
+| Urgency | Countdown timer, scarcity badges | "Join 2,000+ teams" — factual, not pressured |
+| Form | 8+ fields with asterisks | 2-3 fields, progressive disclosure |
+
+## View Transitions for LP Navigation
+
+```css
+/* Multi-step form transitions */
+::view-transition-old(form-step) { animation: slide-out-left 0.3s ease; }
+::view-transition-new(form-step) { animation: slide-in-right 0.3s ease; }
+
+/* Section-to-section smooth scroll */
+.lp-section { view-transition-name: lp-section; }
+```
+
+## Scroll-Driven LP Effects (CSS-Only)
+
+```css
+/* Reading progress bar */
+.progress-bar {
+  animation: grow-width linear both;
+  animation-timeline: scroll(root);
+}
+@keyframes grow-width { from { width: 0; } to { width: 100%; } }
+
+/* Section fade-in on scroll */
+.reveal-section {
+  animation: fade-up linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+@keyframes fade-up { from { opacity: 0; translate: 0 30px; } }
+```
+
+**Rule**: CSS scroll-driven effects improve INP vs JS scroll listeners. Always provide `@supports` fallback.
+
+## Modern CSS for LP
+
+| Feature | LP Use Case |
+|---------|-------------|
+| `text-wrap: balance` | Headline auto-balancing (≤6 lines) |
+| `color-mix()` | Button hover/active states from single color token |
+| Popover API | FAQ expandable answers, feature tooltips |
+| `@scope` | Section-isolated styles preventing bleed |
+
+---
+
 ## Section-Level Patterns
 
 ### Pain Section

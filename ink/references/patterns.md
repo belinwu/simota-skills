@@ -142,6 +142,83 @@ npx svgo input.svg -o output.svg --config='{"plugins":["preset-default",{"name":
 | Color contrast | 3:1 minimum against background |
 | Touch target | 44x44px minimum for interactive icons |
 
+## Variable Font Icons
+
+Use Variable Fonts (e.g., Google Material Symbols) for responsive, themeable icons:
+
+```css
+.icon {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings:
+    'FILL' 0,    /* 0=outlined, 1=filled */
+    'wght' 400,  /* 100-700 */
+    'GRAD' 0,    /* -25 to 200 */
+    'opsz' 24;   /* 20, 24, 40, 48 */
+  font-size: 1.5em; /* Scales with text */
+}
+
+/* Responsive: heavier weight at small sizes */
+@container (max-width: 320px) {
+  .icon { font-variation-settings: 'wght' 500, 'opsz' 20; }
+}
+```
+
+**Rule**: Prefer Variable Font icons for UI icon systems where dynamic weight/size is needed. Prefer custom SVG for brand-specific or illustrative icons.
+
+## `color-mix()` Icon Theming
+
+Derive icon states from semantic tokens without extra token definitions:
+
+```css
+.icon-button {
+  color: var(--icon-primary);
+}
+.icon-button:hover {
+  color: color-mix(in oklch, var(--icon-primary), white 20%);
+}
+.icon-button:disabled {
+  color: color-mix(in oklch, var(--icon-primary), transparent 50%);
+}
+```
+
+## SVG × Modern CSS Animation Integration
+
+### View Transitions for Icon State Changes
+
+```css
+.icon-toggle {
+  view-transition-name: icon-state;
+}
+::view-transition-old(icon-state) { animation: fade-out 0.2s; }
+::view-transition-new(icon-state) { animation: fade-in 0.2s; }
+```
+
+### Scroll-Driven SVG Animation
+
+```css
+.hero-illustration path {
+  animation: draw-path linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 50%;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+@keyframes draw-path { to { stroke-dashoffset: 0; } }
+```
+
+### `@starting-style` for SVG Enter Animation
+
+```css
+.icon-appear {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s, transform 0.3s;
+}
+@starting-style {
+  .icon-appear { opacity: 0; transform: scale(0.8); }
+}
+```
+
 ## React Component Pattern
 
 ```tsx

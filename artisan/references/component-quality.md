@@ -269,6 +269,91 @@ const Button = ({ variant = 'primary', size = 'md', className, children }: Butto
 
 ---
 
+## 5b. Modern CSS Features (2025-2026)
+
+### CSS `@scope` — Native Style Scoping
+
+```css
+@scope (.card) to (.card__content) {
+  h2 { font-size: 1.25rem; }
+  p { color: var(--text-secondary); }
+}
+```
+
+- Replaces CSS Modules / CSS-in-JS for component-level scoping.
+- `to` clause creates a "donut scope" — styles apply within `.card` but stop at `.card__content`.
+- **Rule**: Prefer `@scope` for new components when project targets modern browsers.
+
+### Anchor Positioning
+
+```css
+.tooltip {
+  position: fixed;
+  position-anchor: --trigger;
+  position-area: top;
+  position-try-fallbacks: bottom, right, left;
+}
+
+.trigger {
+  anchor-name: --trigger;
+}
+```
+
+- Declarative tooltip/dropdown/popover placement — no JS positioning libraries.
+- Combine with **Popover API** for complete accessible overlay patterns.
+
+### Popover API
+
+```html
+<button popovertarget="menu">Open</button>
+<div id="menu" popover>
+  <!-- Top layer, light dismiss, focus management built-in -->
+</div>
+```
+
+- Replaces custom modal/dropdown implementations with native behavior.
+- **Rule**: Use `popover` for non-modal overlays. Use `<dialog>` for modal overlays.
+
+### Text Wrapping
+
+```css
+h1, h2, h3 { text-wrap: balance; }  /* Balanced line lengths — max 6 lines */
+p { text-wrap: pretty; }            /* Prevents orphaned last words */
+```
+
+### CSS `if()` (Emerging)
+
+```css
+.component {
+  gap: if(style(--density: compact): 4px; else: 8px);
+}
+```
+
+- Chrome Canary only. Always provide `@supports` fallback.
+
+### Grid Lanes (CSS Masonry)
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-rows: masonry;
+}
+```
+
+- WebKit implementation in progress. Use JS fallback (Masonry.js) with `@supports` check.
+
+### `sibling-index()` / `sibling-count()`
+
+```css
+.item {
+  animation-delay: calc(sibling-index() * 50ms);  /* Staggered entrance */
+  opacity: calc(1 - (sibling-index() / sibling-count()) * 0.3);  /* Fade gradient */
+}
+```
+
+---
+
 ## 6. Layout Restraint Rules
 
 When building page-level components or landing pages, enforce these composition constraints to avoid generic AI-generated layouts.

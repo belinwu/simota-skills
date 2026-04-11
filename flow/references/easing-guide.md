@@ -59,6 +59,38 @@ Purpose: Use this file when you need to choose easing curves or spring presets t
 />
 ```
 
+## Spring-Based Physics Animations
+
+The industry is shifting from fixed `cubic-bezier` to spring-based motion for more natural, responsive interaction feedback.
+
+### CSS `linear()` Spring Approximation
+
+```css
+/* Underdamped spring — natural button press */
+.spring-press {
+  transition: transform 0.5s linear(
+    0, 0.009, 0.035, 0.078, 0.141, 0.222, 0.324, 0.446,
+    0.591, 0.757, 0.946, 1.069, 1.115, 1.097, 1.033,
+    0.957, 0.9, 0.879, 0.899, 0.951, 1.009, 1.042, 1.032,
+    0.999, 0.976, 0.98, 1.001, 1.007, 1
+  );
+}
+```
+
+### Library Spring Presets
+
+| Library | API | Best For |
+|---------|-----|----------|
+| Motion v12 | `transition={{ type: "spring", stiffness: 300, damping: 20 }}` | React/Vue production |
+| React Spring | `useSpring({ config: config.gentle })` | Complex orchestrated spring |
+| CSS `linear()` | Pure CSS spring curve approximation | Simple transitions, no JS |
+
+### Selection Rule
+
+- Single transition → CSS `linear()` spring (zero JS)
+- Orchestrated multi-element → Motion v12 spring presets
+- Complex physics simulation → React Spring / GSAP
+
 ## Scroll-Driven Animation Easing
 
 Scroll-driven animations should use `linear` as the base timing function to maintain 1:1 correspondence between scroll position and animation progress.

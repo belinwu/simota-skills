@@ -328,6 +328,70 @@ WCAG 2.2 AA requires minimum 24x24 CSS px; 44x44px is recommended for mobile:
 
 ---
 
+## Modern CSS for Faithful Reproduction (2025-2026)
+
+### CSS Subgrid — Card Content Alignment
+
+Reproduce mockups where card titles, descriptions, and CTAs align across rows:
+
+```css
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3; /* title + description + CTA */
+}
+```
+
+**Rule**: Use subgrid when mockup shows horizontally-aligned card content. Eliminates fixed-height hacks.
+
+### Anchor Positioning — Tooltip/Dropdown Reproduction
+
+```css
+.tooltip-trigger { anchor-name: --tip; }
+.tooltip {
+  position: fixed;
+  position-anchor: --tip;
+  position-area: top;
+  position-try-fallbacks: bottom, right, left;
+}
+```
+
+**Rule**: Use for mockups showing positioned overlays. Falls back to `position: absolute` with JS.
+
+### `@scope` — Section Style Isolation
+
+```css
+@scope (.hero-section) {
+  h1 { font-size: 3rem; }
+  p { font-size: 1.25rem; }
+}
+@scope (.features-section) {
+  h2 { font-size: 2rem; }
+  p { font-size: 1rem; }
+}
+```
+
+**Rule**: Use when mockup sections have different typography scales. Prevents style bleed.
+
+### Grid Lanes (CSS Masonry) — Pinterest Layout
+
+```css
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-rows: masonry;
+}
+```
+
+**Rule**: WebKit only (Safari 17+). Use Masonry.js fallback with `@supports` for cross-browser.
+
+---
+
 ## Modern CSS for Responsive Design (2025)
 
 ### Container Queries

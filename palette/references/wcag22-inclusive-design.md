@@ -89,3 +89,54 @@ Conformance model change:
 - Gold: highest standard
 
 Current legal baseline remains WCAG 2.2 AA. Do not design for WCAG 3.0 compliance yet — treat it as a strategic signal only.
+
+### WCAG 3.0 Scoring System Preview
+
+WCAG 3.0 replaces binary Pass/Fail with a 0-4 scale per outcome:
+
+| Score | Meaning |
+|-------|---------|
+| 0 | Very poor — critical barriers |
+| 1 | Poor — significant barriers |
+| 2 | Fair — noticeable barriers |
+| 3 | Good — minor barriers |
+| 4 | Excellent — no detectable barriers |
+
+**Tier definitions**:
+- **Bronze**: Minimum scores across all critical outcomes (≈ current AA). Required for legal compliance.
+- **Silver**: Higher minimum scores + usability testing with disabled users. Expands cognitive disability coverage.
+- **Gold**: Highest scores + comprehensive user testing. Covers non-literal language, complex interaction patterns.
+
+**Design implications**:
+- Cognitive accessibility becomes a first-class requirement (not optional AAA).
+- Scoring incentivizes incremental improvement over binary compliance.
+- Plan for Silver-readiness in new designs — Bronze will be the bare minimum.
+
+### Popover API Accessibility Patterns
+
+The native Popover API eliminates most manual ARIA for non-modal overlays:
+
+```html
+<button popovertarget="info">More info</button>
+<div id="info" popover>
+  <!-- Auto: light dismiss, focus management, top layer, ESC to close -->
+</div>
+```
+
+- **Replaces**: Custom `aria-expanded`, `aria-controls`, focus trap, click-outside handlers.
+- **Rule**: Use `popover` for non-modal content (tooltips, menus, info panels). Use `<dialog>` for modal content.
+- **Focus**: Browser handles focus return to trigger on close. No manual `focus()` needed.
+
+### Calm UI Evaluation Framework
+
+Evaluate interfaces for cognitive clarity using these axes:
+
+| Axis | Metric | Target |
+|------|--------|--------|
+| Information Density | Content elements per viewport | ≤7 primary items (Miller's Law) |
+| Visual Noise | Decorative vs functional elements ratio | ≥80% functional |
+| Operation Steps | Clicks/taps to complete primary task | ≤3 for core flows |
+| Attention Load | Competing CTAs per viewport | 1 primary, ≤1 secondary |
+| Animation Load | Simultaneous motion elements | ≤2 per viewport |
+
+**Red flags**: Auto-playing carousels, notification badges on >3 items, competing urgency signals, decorative parallax on mobile.

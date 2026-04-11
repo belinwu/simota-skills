@@ -31,6 +31,23 @@ Contents:
 | Neo-Brutalism 2.0 | High | Counter-trend to AI-smooth aesthetics; creative/disruptive brands only |
 | Agentic UX | Low | AI-first products with autonomous task delegation |
 
+## 2026 Design Direction Trends
+
+| Trend | Risk | Application |
+|-------|------|-------------|
+| Calm UI / Cognitive Clarity | Low | Prioritize cognitive clarity over sensory richness. Functional minimalism: large typography, soft radius, generous spacing, high contrast. Replace decorative elements with purposeful whitespace |
+| Adaptive Design Systems | Low | UI complexity adjusts dynamically based on user behavior, expertise level, and context. Progressive disclosure evolution — expert/beginner modes, context-aware density |
+| Figma Make / AI-Driven Design | Low | Text prompt → design-system-compliant UI generation. Concept-to-prototype time reduced ~38%. Designer role shifts from "how" to "what/why". Review AI output against brand guidelines |
+| Multi-modal Input Direction | Medium | Design for seamless touch/voice/keyboard/gesture switching. Invisible interactions (voice commands, gesture recognition, presence detection). Requires input-mode-agnostic component design |
+| Dynamic Typography | Low | Variable Fonts for responsive weight/width/slant. CSS `text-wrap: balance` (headings ≤6 lines) and `text-wrap: pretty` (orphan prevention). Typography adapts to device and context |
+
+### Calm UI Design Principles
+
+1. **Cognitive Clarity > Sensory Richness**: Every visual element must serve comprehension, not decoration
+2. **Functional Minimalism**: Distinct from decorative minimalism — restrained palette, clear primary action, generous whitespace
+3. **Trust Through Calm**: Users arrive with calibrated skepticism from AI failures (NN/g State of UX 2026) — earn trust through clarity, not urgency
+4. **Quiet Interfaces**: Reduce notification noise, minimize competing CTAs, let content hierarchy guide attention
+
 ## AI Interface Patterns
 
 | Pattern | Use |
