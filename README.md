@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-100+-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-122-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **100+ Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **122 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 100+ specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 122 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -76,6 +76,9 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Matrix** | _"Infinite combinations, finite resources. Matrix finds the minimum that covers the maximum."_ - Universal multi-dimensional analysis agent. Controls combinatorial explosion from arbitrary axis×value inputs. Minimum coverage set selection, execution planning, and prioritization across all domains (testing, deployment, UX validation, risk assessment, compatibility). No code written | Matrix analysis, coverage optimization plan |
 | **Quest** | _"Every great game starts with a question the player cannot resist answering."_ - Game planning & production agent. GDD authoring, balance math (DPS/TTK/Elo), narrative design, economy modeling, systems design, player psychology frameworks, production planning, game market research. No code written | GDD, balance sheets, economy models, system specs, game research briefs |
 | **Saga** | _"Every product has a story. Every story has a hero. Make the customer the hero."_ - Narrative design agent. Structures product and feature use cases as customer-centric stories. StoryBrand SB7, Pixar Story Spine, Hero's Journey, JTBD frameworks, pitch narratives, onboarding stories, transformation arcs. No code written | Narrative document |
+| **Fossil** | _"The past writes the rules. I dig them up."_ - Legacy code archaeology. Extracts implicit business rules from undocumented code and assesses migration risk | Investigation report |
+| **Omen** | _"Plan for the worst. Build for the best."_ - Pre-mortem analysis and failure mode enumeration. Systematically identifies failure scenarios, scores with RPN/AP. No code written | Pre-mortem report |
+| **Rank** | _"Every priority tells a story of trade-offs."_ - Priority quantification. Scores and orders competing items using ICE/RICE/WSJF/MoSCoW/Kano frameworks. No code written | Priority report |
 
 **Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
 **Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
@@ -118,6 +121,8 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Void** | _"The best code is the code that was never written."_ - YAGNI enforcement, scope cutting, complexity reduction proposals. Challenges existence of every feature/abstraction with 5 questions and Cost-of-Keeping Score | Subtraction proposals |
 | **Mint** | _"Good tests deserve great data."_ - Test data and fixture generation specialist. Factory patterns, boundary value generation, synthetic data, seed management | Test data, fixtures |
 | **Comply** | _"Trust is earned. Compliance is proven."_ - Regulatory compliance and audit agent. SOC2/PCI-DSS/HIPAA/ISO 27001 control mapping, audit trail design, Policy as Code | Reports, checklists |
+| **Breach** | _"Think like an attacker. Defend like an engineer."_ - Red team engineering. Attack scenario design, threat modeling, MITRE ATT&CK/OWASP frameworks, Purple Team exercises, AI/LLM red teaming | Security assessment |
+| **Cloak** | _"Privacy is not a feature. It's a right."_ - Privacy engineering and data governance. PII detection, data flow mapping, consent management, GDPR/CCPA-compliant code implementation | Privacy assessment |
 
 ### Implementation
 
@@ -128,6 +133,7 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - Prototyping. Prioritizes working software over perfection. Outputs types.ts, errors.ts, forge-insights.md for Builder handoff | MVP/PoC |
 | **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / gemini CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
 | **Native** | _"Every pixel ships. Every platform matters."_ - Mobile development specialist. Implements production-quality features across React Native, Flutter, SwiftUI, and Jetpack Compose | Code |
+| **Pixel** | _"Every pixel matters. Fidelity is non-negotiable."_ - Faithful reproduction agent. Generates pixel-accurate HTML/CSS from image mockups (PNG/JPG/screenshots) and performs visual verification | HTML/CSS code |
 
 ### AI/ML
 
@@ -168,6 +174,7 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Prose** | _"Words are the smallest unit of design. Get them wrong, and nothing else matters."_ - User-facing text specialist. Microcopy, error messages, voice & tone framework, onboarding copy, accessibility text | Copy guidelines, content specs |
 | **Frame** | _"Design speaks in pixels. I translate it to code."_ - Figma MCP Server bridge agent. Extracts and structures design context from Figma for implementation agents. Design-to-code bridging, Code Connect management, design system rule extraction. No code written | Structured design context, design system rules |
 | **Loom** | _"Design intent deserves preparation. Every thread of context I weave makes creation more precise."_ - Figma Make optimization agent. Analyzes codebase to generate Guidelines.md, designs prompt strategies, validates Make output against design system conventions. No code written | Guidelines.md, prompt sequences, validation reports |
+| **Ink** | _"Every stroke serves a purpose."_ - SVG icon/illustration generation, icon system design, and sprite symbol construction | SVG assets |
 
 **Frame vs Loom responsibilities**:
 - **Frame**: Figma → Code direction (extracts design context from Figma via MCP)
@@ -182,6 +189,7 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Morph** | _"A document is timeless. Its format is temporary."_ - Document format conversion (Markdown <> Word/Excel/PDF/HTML). Converts Scribe specs and Harvest reports to various formats | Converted documents |
 | **Prism** | _"One source, many lights."_ - NotebookLM steering prompt design consultant. Advises on source preparation and optimal output format selection (Audio/Video/Slide/Infographic/Mind Map) | Steering prompts |
 | **Tome** | _"Changes are forgotten. Knowledge endures."_ - Transforms repository changes into detailed learning documentation. Explains terminology, flows, design decisions, and anti-patterns | Learning docs |
+| **Clause** | _"Every clause carries weight. Every omission carries risk."_ - Legal document review for Terms of Service, Privacy Policy, and Tokushoho compliance. Clause gap detection and risk flagging | Legal review report |
 
 **Scribe vs Quill vs Morph vs Prism vs Tome responsibilities**:
 - **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
@@ -200,6 +208,9 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Gemini CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
 | **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3D model generation agent. Produces code (Python/JS/OpenSCAD) for text-to-3D and image-to-3D via Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability APIs. Game pipeline: LOD, retopology, UV, texture baking, QC validation | 3D pipeline code (Python/JS/SCAD) |
 | **Tone** | _"Sound is the invisible architecture of emotion."_ - Game audio generation agent. Produces code (Python/JS/TS/Shell) for SFX, BGM, voice, ambient, and UI sounds via ElevenLabs, Stable Audio, MusicGen, OpenAI TTS, JSFXR. LUFS normalization, format optimization, middleware integration | Audio pipeline code (Python/JS/Shell) |
+| **Cue** | _"Every frame tells a story."_ - Video script, storyboard, and narration design for product videos, explainer videos, and onboarding content | Video scripts, storyboards |
+| **Stage** | _"Every slide is a stage."_ - Marp/reveal.js/Slidev slide generation, story composition design, conference talk optimization | Slide decks |
+| **Lyric** | _"From theme to anthem, verse by verse."_ - Songwriting agent for Suno AI. Composes lyrics with metatags and style prompts from theme, genre, and mood | Lyrics with metatags |
 
 **Vision > Dot > Forge chain**: Vision (art direction) > Dot (pixel art code) > Forge (prototype integration)
 **Dot > Realm chain**: Dot (Phaser 3 textures) > Realm (ecosystem visualization)
@@ -215,6 +226,10 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - Repository structure design, optimization, and auditing. Directory design, docs/ organization, test structure, anti-pattern detection | Structure design, audit reports |
 | **Weave** | _"Every state tells a story. Every transition is a contract."_ - Workflow and state machine design specialist. State transition design, invalid transition detection, Saga patterns, approval flows | Designs, diagrams |
 | **Seek** | _"The right result at the right time in the right order."_ - Search engine and vector DB design specialist. Full-text search, vector search, hybrid search, RAG retrieval layer | Code, configs |
+| **Stratum** | _"Architecture without visualization is architecture without communication."_ - C4 model-based software architecture modeling, evaluation, and Structurizr DSL generation | Architecture diagrams, DSL |
+| **Crypt** | _"Trust no channel. Verify every key."_ - Cryptographic architecture design: algorithm selection, key management, E2E encryption, KMS integration, TLS configuration | Crypto design specs |
+| **Shard** | _"Isolation is the foundation of trust in multi-tenancy."_ - Multi-tenant architecture design. Tenant isolation strategies, RLS, routing, and scale design for SaaS | Architecture design |
+| **Spider** | _"Design the web that catches the web."_ - Crawl system architecture design. Distributed crawler design, URL frontier management, politeness policies, legal compliance | Architecture specs |
 
 ### Communication
 
@@ -246,6 +261,7 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
 | **Ledger** | _"Every dollar has a story. Make it a short one."_ - FinOps and cloud cost optimization. IaC cost estimation, right-sizing, RI/SP recommendations, cost anomaly detection | Reports, configs |
+| **Shift** | _"Migration is not moving. It's transforming."_ - Migration and upgrade orchestrator. Framework, library, API, database, and infrastructure migrations end-to-end with codemod generation and incremental strategies | Migration plans |
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
@@ -268,6 +284,7 @@ This repository contains 100+ specialized AI agents covering various aspects of 
 | **Growth** | _"Traffic without conversion is just expensive vanity."_ - SEO (meta/OGP/JSON-LD), SMO (social share display), CRO (CTA improvement) | Growth initiatives |
 | **Retain** | _"Acquisition is expensive. Retention is profitable."_ - Retention strategies, re-engagement, churn prevention. Gamification, habit-forming design | Retention initiatives |
 | **Funnel** | _"Above the fold is your one shot. Make every pixel convert."_ - LP (Landing Page) structure designer and conversion strategist. Framework-based structure design (AIDA/PAS/BAB/4Ps), hero section craft, CTA placement strategy, social proof hierarchy, mobile-first responsive implementation | LP structure, copy, specs |
+| **Crest** | _"Your brand is what people say when you're not in the room."_ - Engineer self-branding strategist. GitHub/LinkedIn/blog/conference/SNS positioning, profile optimization, content strategy | Branding strategy |
 
 ### Analytics
 
@@ -775,7 +792,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 89 agents.
+> Category-by-category examples for all 122 agents.
 
 #### Orchestration
 
