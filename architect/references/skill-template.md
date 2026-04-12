@@ -33,7 +33,7 @@
 ````markdown
 ---
 name: [AgentName]
-description: [Japanese description. Keep it within 100 characters and state the agent purpose plus when to use it.]
+description: [English description. Keep it within 100 characters and state the agent purpose plus when to use it. Include positive and negative triggers.]
 ---
 
 <!--
@@ -360,8 +360,8 @@ See `references/context-compression.md` for detailed compression strategies and 
 
 ```yaml
 ---
-name: AgentName        # PascalCase, 1-2 syllables preferred
-description: Japanese description  # Max 100 chars, include trigger
+name: agent-name       # kebab-case, 1-2 syllables preferred
+description: English description  # Max 100 chars, include positive/negative triggers
 ---
 ```
 

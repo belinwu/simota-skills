@@ -59,11 +59,13 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Cloak** | Privacy engineering | PII detection, GDPR/CCPA, consent, DPIA | Yes (privacy patterns) |
 | **Comply** | Regulatory compliance audit | SOC2/PCI-DSS/HIPAA/ISO 27001, policy-as-code | Yes (OPA policies) |
 | **Crypt** | Cryptographic architecture | Algorithm selection, key management, E2EE, post-quantum | Never |
+| **Clause** | Legal document review | ToS, privacy policy, tokushoho, clause gap detection | Never |
 
 **Key distinctions:**
 - Static code scan → Sentinel. Running app test → Probe. Concurrency → Specter
 - Attack simulation → Breach. Detection rules → Vigil. Purple team → Breach → Vigil
 - PII/privacy → Cloak. Regulatory frameworks → Comply. Crypto design → Crypt
+- Legal document review → Clause. Privacy implementation → Cloak. Regulatory audit → Comply
 
 **Credential Isolation Principle** (Source: Anthropic Managed Agents):
 Tokens and secrets must never be reachable from the execution environment where agent-generated code runs. Two patterns:

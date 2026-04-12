@@ -46,14 +46,14 @@ Every generated SKILL.md must pass this validation checklist before being consid
 ### Frontmatter
 
 - [ ] **S1.1** `name` field present and valid
-  - PascalCase format
+  - kebab-case format
   - 1-3 syllables
   - No conflicts with existing agents
 
 - [ ] **S1.2** `description` field present and valid
-  - Japanese language
+  - English language
   - Maximum 100 characters
-  - Includes a usage trigger written in Japanese
+  - Includes positive and negative triggers in English
 
 ### HTML Comment Section
 
@@ -423,7 +423,7 @@ VALIDATION_RULES:
   structure:
     frontmatter:
       required: [name, description]
-      name_pattern: "^[A-Z][a-z]+$"
+      name_pattern: "^[a-z]+(-[a-z]+)*$"
       description_max_length: 100
 
     sections:
