@@ -18,7 +18,8 @@
 | Component factory | v0 (Vercel) | Production-quality React/Next.js components using shadcn/ui + Tailwind | No backend logic, no database support; credit-limited |
 | Full-stack rapid prototype | Bolt.new | Browser-based prototyping with framework flexibility (React, Vue, mobile) | Output needs refinement; not production-grade |
 | Working MVP builder | Lovable | Complete apps with Supabase backend (auth, DB, storage, real-time) | Opinionated stack; less control over architecture |
-| Design exploration | Google Stitch | Design mockups and visual exploration from prompts | Not for production code output |
+| Design-to-prototype | Figma Make | Design-system-compliant UI generation from text prompts; concept→prototype ~38% faster | Requires existing design system; review output against brand guidelines |
+| Multimodal prototyping | Google Stitch | Gemini-based: text/image/wireframe → UI + frontend code generation | Early stage; output quality varies; not production-grade |
 | IDE assistants | Claude Code, Cursor, Copilot | local integration, repetitive edits, context-aware refactoring | quality depends on existing project context |
 
 ## Best Use by Forge Phase

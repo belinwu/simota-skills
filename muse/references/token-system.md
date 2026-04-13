@@ -384,6 +384,152 @@ Container size queries enable responsive token switching at the component level:
 
 Browser support (2025): size queries fully supported; style queries in progress.
 
+## CSS Functions for Token Systems
+
+Modern CSS functions enable runtime token derivation — reducing static token definitions.
+
+### `color-mix()` (Baseline 2023)
+
+Derive hover, active, and disabled states from a single primitive:
+
+```css
+:root {
+  --color-primary: oklch(0.55 0.2 260);
+  --color-primary-hover: color-mix(in oklch, var(--color-primary), white 15%);
+  --color-primary-active: color-mix(in oklch, var(--color-primary), black 10%);
+  --color-primary-disabled: color-mix(in oklch, var(--color-primary), transparent 50%);
+}
+```
+
+**Rule**: Define 1 primitive → derive states via `color-mix()`. Eliminates `*-hover`, `*-active`, `*-disabled` token bloat.
+
+### `light-dark()` (Baseline 2024)
+
+Single-line dark mode token switching:
+
+```css
+:root { color-scheme: light dark; }
+:root {
+  --text-primary: light-dark(oklch(0.2 0.01 260), oklch(0.9 0.01 260));
+  --bg-surface: light-dark(oklch(0.98 0.005 260), oklch(0.15 0.005 260));
+}
+```
+
+**Rule**: Use for simple light/dark pairs. For multi-theme (brand/density), stick with DTCG modes.
+
+### Relative Color Syntax
+
+Generate entire palettes from a single base:
+
+```css
+:root {
+  --base: oklch(0.55 0.2 260);
+  --lightest: oklch(from var(--base) 0.95 calc(c * 0.3) h);
+  --light: oklch(from var(--base) 0.8 calc(c * 0.5) h);
+  --dark: oklch(from var(--base) 0.35 calc(c * 0.8) h);
+}
+```
+
+### CSS `if()` (Emerging — Chrome Canary)
+
+Conditional token resolution based on custom properties:
+
+```css
+.component {
+  padding: if(style(--density: compact): 4px 8px; else: 8px 16px);
+  font-size: if(style(--density: compact): 0.8125rem; else: 1rem);
+}
+```
+
+**Rule**: Progressive enhancement only. Always provide a non-`if()` fallback via `@supports`.
+
+## AI-Readable Token Architecture
+
+Tokens evolve from storing **values** to storing **intent** — enabling AI agents to generate, adapt, and validate UI:
+
+```json
+{
+  "$type": "color",
+  "$value": "#3B82F6",
+  "$intent": "trust-building action color",
+  "$usage": ["primary CTA", "navigation highlights"],
+  "$constraints": {
+    "contrast": "WCAG AA on white",
+    "never-on": ["warning surfaces", "destructive actions"]
+  }
+}
+```
+
+**Rule**: Add `$intent`, `$usage`, `$constraints` fields to semantic tokens. AI tools (Figma Make, v0, Stitch) consume these to generate design-system-compliant output. Keep primitive tokens value-only.
+
+## COLRv1 Color Fonts
+
+Modern color font format with gradients, compositing, and variable font axis compatibility:
+
+```css
+.brand-heading {
+  font-family: 'Plakato Color', sans-serif;
+  font-palette: --brand-palette;
+}
+@font-palette-values --brand-palette {
+  font-family: 'Plakato Color';
+  override-colors: 0 var(--color-primary), 1 var(--color-secondary);
+}
+```
+
+- **Rule**: Use `font-palette` for runtime color switching. Token-driven palette overrides via `override-colors`.
+- Supported in all major browsers. Compact and crisp vs SVG-in-OpenType.
+
+## Variable Everything: Unified Responsive Token System
+
+The convergence of Variable Fonts + Relative Color Syntax + `clamp()` + `@property` eliminates breakpoint-based design steps:
+
+### `@property` for Animatable Custom Properties
+
+```css
+@property --hue {
+  syntax: '<angle>';
+  initial-value: 240deg;
+  inherits: true;
+}
+:root {
+  --brand: oklch(0.65 0.2 var(--hue));
+  --brand-light: oklch(from var(--brand) calc(l + 0.2) c h);
+  --space-unit: clamp(0.5rem, 1vw, 1rem);
+}
+```
+
+- `@property` makes custom properties animatable (gradients, hues, positions).
+- Combined with `clamp()`, spacing and typography become continuous rather than stepped.
+- **Rule**: Define `@property` for any token that needs animation or interpolation.
+
+### Generative Token Architecture
+
+Tokens that derive themselves through rules rather than static definitions:
+
+| Strategy | Formula | Example |
+|----------|---------|---------|
+| Typographic scale | `base × ratio^level` | 1rem × 1.25^3 = 1.953rem |
+| Color palette | `base hue + rotation` | `oklch(0.7 0.15 calc(var(--hue) + 120))` |
+| Spacing scale | `base × fibonacci` | 4 → 8 → 12 → 16 → 24 → 32 → 48 |
+| Shadow depth | `elevation × multiplier` | `calc(var(--elevation) * 4px) blur, calc(var(--elevation) * 0.05) opacity` |
+
+**Rule**: Prefer generative formulas over exhaustive static token lists. One formula replaces dozens of static values.
+
+### Sustainability-Aware Token Mode
+
+```json
+{
+  "mode": "eco",
+  "rules": {
+    "background": "prefer darkest variant (OLED 42% energy reduction)",
+    "animation": "prefers-reduced-motion: reduce",
+    "images": "WebP/AVIF only, max 200KB",
+    "fonts": "system font stack, zero transfer cost"
+  }
+}
+```
+
 ## Multi-Brand Token Architecture
 
 | Dimension | Examples |

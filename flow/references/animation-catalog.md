@@ -103,6 +103,11 @@ Rule: exits are usually `60-80%` of entry duration.
 | Scroll-driven reveal | continuous | linear | ViewTimeline usage | `animation-range: entry 0% entry 60%` |
 | Popover/dialog entry (pure CSS) | `150-200ms` | ease-out | `@starting-style` + `allow-discrete` | No JS required |
 | Gradient hover transition | `300ms` | ease-out | `@property` gradient animation | Chrome/Safari only |
+| Magnetic cursor pull | `300ms` | `cubic-bezier(0.33, 1, 0.68, 1)` | Creative/portfolio button hover | Wrapper padding creates detection zone |
+| Aurora/holographic shift | `4-8s` | ease infinite | Premium card effects, hero backgrounds | `background-size: 200% 200%`, OKLCH gradient layers |
+| Skeleton shimmer | `1.5-2s` | ease-in-out infinite | Content loading states | `background-size: 200% 100%`, linear-gradient animation |
+| Liquid glass refraction | continuous | N/A | Overlay cards, iOS-style surfaces | SVG `feDisplacementMap` + `backdrop-filter: blur()` |
+| Scroll-state sticky shadow | instant | N/A | Header shadow on stick | `@container scroll-state(stuck: top)`, CSS-only |
 ```
 
 ```tsx

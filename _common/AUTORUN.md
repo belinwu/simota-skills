@@ -339,6 +339,45 @@ Chain: [Executed chain]
 
 ---
 
+## Design Principles
+
+### Context Externalization
+
+> Context is an external interrogable object, not embedded state. [Source: Anthropic Managed Agents]
+
+Do not embed the full chain history into each agent's prompt. Instead, treat the session as an append-only event log that agents can query:
+
+| Anti-pattern | Pattern |
+|---|---|
+| Paste all prior step outputs into prompt | Store in `.agents/PROJECT.md`; pass summary + file path reference |
+| Irreversible context trimming (discard tokens permanently) | Keep full log external; selectively retrieve what the current step needs |
+| Growing prompt with every step | Pass only the state delta from the previous step |
+
+**Practical implementation:**
+- `_STEP_COMPLETE` outputs serve as the event log entries
+- Each agent receives: task description + previous step's key output + file references
+- Full history is always recoverable from `.agents/PROJECT.md` + agent journals
+- When a step needs earlier context, it reads the journal file — not the prompt
+
+### Lazy Provisioning (TTFT Optimization)
+
+> Provision execution environments only when the brain actually needs them. [Source: Anthropic Managed Agents]
+
+Delay agent spawning until the orchestrator has decided what to spawn:
+
+```
+CLASSIFY → CHAIN_SELECT → (first inference starts immediately)
+                          → (agent spawn happens just-in-time for EXECUTE)
+```
+
+| Optimization | Effect |
+|---|---|
+| Start CLASSIFY/CHAIN_SELECT without waiting for agent readiness | Reduces time-to-first-token |
+| Spawn agents only when their step is next | Avoids unnecessary resource allocation for steps that may be skipped |
+| Use `model: haiku` for investigation steps, `model: opus` for critical steps | Right-size compute per step |
+
+**In practice:** Nexus should complete CLASSIFY and CHAIN_SELECT in its own context before spawning any Agent. Do not pre-spawn agents "just in case."
+
 ## Best Practices
 
 1. **Default to AUTORUN_FULL**: For most tasks, automatic execution is preferred

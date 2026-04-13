@@ -238,6 +238,86 @@ Chrome 115+ only. Always wrap in `@supports` and provide reduced-motion fallback
 }
 ```
 
+## Container Scroll-State Queries
+
+Detect scroll-related states (`stuck`, `snapped`, `scrolled`) via CSS container queries — no JS scroll listeners needed.
+
+```css
+.sticky-header {
+  container-type: scroll-state;
+}
+
+@container scroll-state(stuck: top) {
+  .sticky-header {
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.15);
+    backdrop-filter: blur(8px);
+  }
+}
+
+@container scroll-state(snapped: x) {
+  .carousel-item { opacity: 1; }
+}
+```
+
+- **Support**: Chrome 133+, Edge 133+. Use `@supports` for progressive enhancement.
+- **Use cases**: Sticky header shadow, carousel snap indicators, "back to top" visibility.
+- **Rule**: Always provide a no-support fallback — JS `IntersectionObserver` or static styling.
+
+## Intrinsic Size Animation
+
+Animate to/from `height: auto` natively — eliminates FLIP, `ResizeObserver`, and max-height hacks.
+
+```css
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.accordion-body {
+  height: 0;
+  overflow: clip;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.accordion[open] > .accordion-body {
+  height: auto;
+}
+```
+
+- **Support**: Chrome 129+, Edge 129+. Not yet in Safari/Firefox.
+- **`calc-size()`**: For computed intrinsic values — `calc-size(auto, size - 20px)`.
+- **Fallback**: Use `max-height` with generous value or `grid-template-rows: 0fr / 1fr` trick.
+- **Rule**: Prefer `interpolate-size` global opt-in over per-element `calc-size()`.
+
+## CSS `linear()` Easing Function
+
+Define complex easing curves (bounce, elastic, spring) in pure CSS — no JS libraries.
+
+```css
+/* Bounce easing */
+.bounce {
+  transition: transform 0.6s linear(
+    0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191,
+    0.25, 0.316, 0.391, 0.472, 0.562, 0.66, 0.765, 0.878,
+    1, 0.916, 0.844, 0.784, 0.735, 0.699, 0.675, 0.663,
+    0.663, 0.675, 0.699, 0.735, 0.784, 0.844, 0.916, 1
+  );
+}
+
+/* Spring easing */
+.spring {
+  transition: transform 0.5s linear(
+    0, 0.009, 0.035, 0.078, 0.141, 0.222, 0.324, 0.446,
+    0.591, 0.757, 0.946, 1.069, 1.115, 1.097, 1.033,
+    0.957, 0.9, 0.879, 0.899, 0.951, 1.009, 1.042, 1.032,
+    0.999, 0.976, 0.98, 1.001, 1.007, 1
+  );
+}
+```
+
+- **Support**: Baseline 2024 — all major browsers.
+- **Tooling**: Use CSS `linear()` generator tools to convert spring/bounce parameters.
+- **Rule**: Prefer `linear()` over JS-based easing for transitions; keep GSAP/Motion for orchestrated sequences.
+
 ## Updated Feature Gate Table
 
 | Feature | Use For | Support |
@@ -247,4 +327,7 @@ Chrome 115+ only. Always wrap in `@supports` and provide reduced-motion fallback
 | `@starting-style` | Entry from display:none, popover/dialog | Chrome 117+, Safari 17.4+, Firefox 129+ (**Baseline**) |
 | `transition-behavior: allow-discrete` | Bidirectional display:none animation | All major browsers (**Baseline**) |
 | Scroll-driven animations | Progress bars, reveal-on-scroll | Chrome 115+ only (`@supports` required) |
+| Container Scroll-State | Sticky shadow, snap indicators | Chrome 133+ (`@supports` required) |
+| `interpolate-size` | Height:auto animation, accordion | Chrome 129+ (progressive enhancement) |
+| `linear()` easing | Bounce, elastic, spring CSS-only | All major browsers (**Baseline 2024**) |
 | `@property` | Animating custom properties, gradients | Chrome 85+, Safari 15.4+ (Firefox not yet) |

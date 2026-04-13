@@ -4,6 +4,42 @@ Purpose: Use this reference when planning motion for a page or view. Limits moti
 
 ## Contents
 
+### Reduced-Motion-First Design Philosophy
+
+The design order is inverted: **design reduced-motion first, then add full motion**.
+
+| Priority | Reduced Motion | Full Motion |
+|----------|---------------|-------------|
+| 1 (Always) | State feedback (success/error/loading) | State feedback + entrance animation |
+| 2 (Always) | Focus indicators, active states | + subtle scale/opacity transitions |
+| 3 (Optional) | Static layout changes | + slide/fade transitions |
+| 4 (Enhancement only) | None | Parallax, scroll-driven, decorative motion |
+
+**Critical rule**: Never disable ALL animation under `prefers-reduced-motion`. Functional feedback (loading spinners, error shakes, success checks) must persist. Only decorative and large-displacement motion should be removed.
+
+```css
+/* Base: reduced motion (functional feedback only) */
+.button:active { scale: 0.97; }
+.toast { opacity: 1; }
+
+/* Enhancement: full motion */
+@media (prefers-reduced-motion: no-preference) {
+  .button:active { scale: 0.97; transition: scale 0.1s ease; }
+  .toast { animation: slide-up 0.3s ease-out; }
+}
+```
+
+### Purposeful Motion Manifesto
+
+Every animation must answer ONE of these questions:
+
+1. **Where am I?** — Spatial orientation (page transitions, navigation feedback)
+2. **What changed?** — State communication (toggle, form validation, data update)
+3. **What should I do?** — Attention guidance (onboarding spotlight, CTA pulse)
+4. **What's happening?** — Process feedback (loading, progress, async operations)
+
+If an animation answers none of these, it is decorative and should be the first to go under reduced-motion or performance constraints.
+
 - The 2-3 Motion Rule
 - Motion Slot System
 - Slot Definitions

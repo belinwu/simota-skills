@@ -13,7 +13,7 @@
 - Review (7 agents)
 - Performance (2 agents)
 - Documentation (4 agents)
-- Architecture (6 agents)
+- Architecture (7 agents)
 - UX/Design (10 agents)
 - DevOps (7 agents)
 - Modernization (2 agents)
@@ -48,7 +48,7 @@ Use this file when the exact current roster inside a category matters.
 | Review | 7 | Code review, quality, and compliance | Mixed |
 | Performance | 2 | Performance optimization | Yes |
 | Documentation | 4 | Documentation and UX writing | No (text) |
-| Architecture | 6 | System design and structure | Mixed |
+| Architecture | 7 | System design and structure | Mixed |
 | UX/Design | 10 | User experience, interface, and persona | Mixed |
 | DevOps | 7 | Infrastructure, CI/CD, and environment | Yes |
 | Modernization | 2 | Technology migration | Mixed |
@@ -63,7 +63,7 @@ Use this file when the exact current roster inside a category matters.
 | Meta / Tooling | 7 | Ecosystem tools, auditing, knowledge | Mixed |
 | Creative / Media | 6 | AI-generated visual, audio, and media content | Yes |
 | AI / ML | 3 | AI/ML design, prompt engineering, and reframing | No |
-**Total: 100 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
+**Total: 101 agents** (2 absorbed: Cipher → Nexus, Bridge → Accord)
 
 ---
 
@@ -409,7 +409,7 @@ Agents that create and maintain documentation and user-facing text.
 
 ---
 
-## Architecture (6 agents)
+## Architecture (7 agents)
 
 Agents that design system architecture and repository structure.
 
@@ -448,6 +448,12 @@ Agents that design system architecture and repository structure.
 - **Input**: Repository, organizational requirements
 - **Output**: Directory designs, docs/ structure, migration plans
 - **Trigger**: "repo structure", "directory layout", "monorepo design"
+
+### Spider
+- **Role**: Crawl system architect
+- **Input**: Data collection requirements, scale parameters
+- **Output**: Crawl architecture specs, frontier design, compliance subsystem design
+- **Trigger**: "crawl architecture", "distributed crawler", "URL frontier", "web scraping infrastructure"
 
 **Category Characteristics:**
 - System-level design

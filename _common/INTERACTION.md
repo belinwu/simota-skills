@@ -62,9 +62,11 @@ Criteria for assessing task complexity and auto-selecting execution mode.
 ### Assessment Logic
 
 ```
-IF any(COMPLEX indicators) THEN
+IF mode == AUTORUN_FULL THEN
+  → Execute regardless of complexity (with guardrails per GUARDRAIL.md)
+ELSE IF any(COMPLEX indicators) THEN
   → GUIDED or INTERACTIVE required
-ELSE IF all(SIMPLE indicators) AND user specified NEXUS_AUTORUN THEN
+ELSE IF all(SIMPLE indicators) AND mode == AUTORUN THEN
   → AUTORUN allowed
 ELSE
   → GUIDED (default)
@@ -263,4 +265,6 @@ Agents with custom triggers should define YAML templates in their own `reference
 
 ## OUTPUT_LANGUAGE
 
-All question text, options, and descriptions must be output in **Japanese**.
+Follow `OPERATIONAL.md` Output Language rules:
+- Question text, options, descriptions, reports: **Japanese**
+- Code, identifiers, APIs, protocol markers: **Repository conventions** (typically English)

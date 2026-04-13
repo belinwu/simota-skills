@@ -59,11 +59,18 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Cloak** | Privacy engineering | PII detection, GDPR/CCPA, consent, DPIA | Yes (privacy patterns) |
 | **Comply** | Regulatory compliance audit | SOC2/PCI-DSS/HIPAA/ISO 27001, policy-as-code | Yes (OPA policies) |
 | **Crypt** | Cryptographic architecture | Algorithm selection, key management, E2EE, post-quantum | Never |
+| **Clause** | Legal document review | ToS, privacy policy, tokushoho, clause gap detection | Never |
 
 **Key distinctions:**
 - Static code scan → Sentinel. Running app test → Probe. Concurrency → Specter
 - Attack simulation → Breach. Detection rules → Vigil. Purple team → Breach → Vigil
 - PII/privacy → Cloak. Regulatory frameworks → Comply. Crypto design → Crypt
+- Legal document review → Clause. Privacy implementation → Cloak. Regulatory audit → Comply
+
+**Credential Isolation Principle** (Source: Anthropic Managed Agents):
+Tokens and secrets must never be reachable from the execution environment where agent-generated code runs. Two patterns:
+- **Resource-Bundled Auth**: Use credentials during environment setup (e.g., git clone), then remove access before agent code executes
+- **Vault + Proxy**: Store credentials in an external vault; agent calls tools via a proxy that injects credentials — the agent itself never handles tokens
 
 ## Implementation
 
@@ -141,6 +148,11 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Horizon** | Modernization & tech stack refresh | Deprecated library detection, native API replacement | Yes |
 | **Stratum** | Architecture modeling (C4) | Structurizr DSL, context/container/component | Never |
 | **Shift** | Migration & upgrade orchestration | Codemod generation, framework/DB/API migration | Yes |
+| **Spider** | Crawl system architecture design | URL frontier, distributed crawl, politeness policy, compliance | Never |
+
+**Key distinctions:**
+- Crawl system architecture → Spider. Single-session scraping execution → Navigator
+- Crawl output pipeline → Stream. Crawl infrastructure provisioning → Scaffold
 
 ## UX & Design
 
@@ -264,6 +276,16 @@ For disambiguation of commonly confused agent pairs, see `nexus/references/agent
 | **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
 | **Quest** | Game planning & production | GDD, game balance, narrative, economy design | Never |
 | **Realm** | Ecosystem gamification visualization | Phaser 3 office sim, XP/rank, interactive HTML map | Yes |
+| **Omen** | Pre-mortem analysis & failure mode enumeration | FMEA, fault tree, Swiss Cheese, Murphy audit | Never |
 | **Seek** | Search & vector DB architecture | Full-text/vector/hybrid search, RAG retrieval | Partial (mappings) |
 | **Shard** | Multi-tenant architecture design | Tenant isolation, RLS, routing, noisy-neighbor | Partial (specs) |
 | **Weave** | Workflow & state machine design | FSM/Statechart, Saga patterns, approval flows | Partial (YAML/specs) |
+| **Lyric** | Songwriting for Suno AI | Lyrics with metatags, style prompts | Never |
+| **Native** | Mobile development | React Native/Flutter/SwiftUI/Jetpack Compose | Yes |
+| **Rank** | Priority quantification | ICE/RICE/WSJF/MoSCoW/Kano scoring | Never |
+
+**Key distinctions:**
+- Mobile app development → Native. Mobile-responsive frontend → Artisan
+- Songwriting/lyrics → Lyric. Audio generation code → Tone
+- Priority scoring → Rank. Multi-perspective decisions → Magi
+- Pre-mortem / failure analysis → Omen. Change impact → Ripple. Incident response → Triage

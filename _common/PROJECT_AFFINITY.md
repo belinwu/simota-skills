@@ -60,6 +60,15 @@ These agents provide value regardless of project type. Nexus should always consi
 | Architect | Agent design | Meta-level, project-agnostic |
 | Void | YAGNI enforcement | Challenges feature existence everywhere |
 | Darwin | Ecosystem evolution | Monitors and evolves the agent ecosystem |
+| Titan | Product delivery | Build-first delivery for any scope |
+| Sigil | Project skill generation | Project-specific lightweight skills |
+| Lore | Knowledge synthesis | Cross-agent pattern extraction |
+| Gauge | SKILL.md audit | Format compliance checking |
+| Flux | Perspective shift | Reframing and assumption challenge |
+| Rank | Priority scoring | ICE/RICE/WSJF quantification |
+| Fossil | Legacy archaeology | Business rule extraction |
+| Omen | Pre-mortem analysis | Failure mode enumeration |
+| Matrix | Combinatorial analysis | Multi-dimensional coverage |
 
 ### Frontend / UX Agents
 
@@ -74,6 +83,11 @@ These agents provide value regardless of project type. Nexus should always consi
 | Echo | H | H | H | M | — | — | H | — | — |
 | Showcase | H | H | H | — | H | — | M | — | — |
 | Frame | H | H | H | — | M | — | H | M | — |
+| Loom | H | H | H | — | M | — | H | M | — |
+| Ink | H | H | H | — | H | — | H | M | — |
+| Prose | H | H | H | M | — | — | H | M | — |
+| Funnel | M | H | — | — | — | — | M | H | — |
+| Pixel | H | H | H | — | — | — | H | M | — |
 
 ### Growth / Product Agents
 
@@ -89,6 +103,11 @@ These agents provide value regardless of project type. Nexus should always consi
 | Compete | H | H | — | — | — | — | M | — | — |
 | Trace | H | H | M | — | — | — | H | — | — |
 | Director | H | H | M | — | — | — | M | — | — |
+| Cast | H | H | M | — | — | — | H | — | — |
+| Saga | H | H | M | — | — | — | M | — | — |
+| Crest | M | — | — | M | H | — | — | — | — |
+| Helm | H | M | — | — | — | — | M | — | — |
+| Levy | — | — | — | — | — | — | — | — | — |
 
 ### Backend / Infrastructure Agents
 
@@ -100,27 +119,49 @@ These agents provide value regardless of project type. Nexus should always consi
 | Scaffold | H | M | M | — | — | H | — | — | H |
 | Stream | M | M | M | — | — | M | — | — | H |
 | Bolt | H | H | H | — | — | H | M | — | M |
+| Shard | H | — | M | — | — | H | — | — | — |
+| Seek | H | H | M | — | — | H | — | — | H |
+| Spider | — | M | — | — | — | M | — | — | H |
+| Relay | H | M | — | — | — | H | H | — | — |
 
-### Testing / Security Agents
+### Testing / Quality Agents
 
 | Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
 |-------|------|-------|------|-----|-----|-----|--------|--------|------|
 | Voyager | H | H | H | — | — | — | M | — | — |
+| Mint | H | H | H | — | M | H | — | — | H |
+| Siege | H | H | M | — | — | H | — | — | M |
+| Warden | H | H | M | — | — | — | H | M | — |
+| Attest | H | H | M | — | H | H | — | — | — |
+
+### Security Agents
+
+| Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
+|-------|------|-------|------|-----|-----|-----|--------|--------|------|
 | Sentinel | H | H | M | — | M | H | M | — | — |
 | Probe | H | H | M | — | — | H | — | — | — |
 | Canon | H | M | M | — | H | H | — | — | — |
 | Specter | H | M | M | — | — | H | — | — | H |
-| Warden | H | H | M | — | — | — | H | M | — |
+| Breach | H | H | M | — | — | H | M | — | — |
+| Vigil | H | M | M | — | — | H | — | — | — |
+| Cloak | H | H | M | — | — | H | M | — | H |
+| Comply | H | H | M | — | — | H | — | — | H |
+| Crypt | H | H | M | — | M | H | M | — | — |
 
-### Documentation / Release Agents
+### Documentation / Content Agents
 
 | Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
 |-------|------|-------|------|-----|-----|-----|--------|--------|------|
 | Quill | M | — | M | M | H | H | — | — | — |
 | Scribe | H | M | M | M | H | H | — | — | — |
+| Accord | H | M | M | — | H | H | — | — | — |
 | Morph | M | — | M | — | M | — | — | M | — |
 | Harvest | M | — | — | — | M | M | — | — | — |
 | Launch | H | M | — | M | H | H | — | — | — |
+| Tome | H | M | M | — | H | H | — | — | — |
+| Stage | H | M | M | — | M | — | — | M | — |
+| Cue | H | H | M | — | — | — | M | — | — |
+| Prism | M | — | M | — | — | — | — | — | M |
 
 ### CLI / Tool Agents
 
@@ -128,6 +169,32 @@ These agents provide value regardless of project type. Nexus should always consi
 |-------|------|-------|------|-----|-----|-----|--------|--------|------|
 | Anvil | — | — | — | H | H | M | — | — | — |
 | Reel | — | — | — | H | H | — | — | — | — |
+
+### DevOps / Release Agents
+
+| Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
+|-------|------|-------|------|-----|-----|-----|--------|--------|------|
+| Pipe | H | M | M | M | H | H | — | — | M |
+| Latch | H | M | M | M | M | H | — | — | — |
+| Hearth | M | — | M | H | H | M | — | — | M |
+| Hone | M | — | M | H | H | M | — | — | — |
+| Mend | H | H | M | — | — | H | — | — | M |
+| Beacon | H | H | M | — | — | H | — | — | H |
+| Ledger | H | M | M | — | — | H | — | — | H |
+
+### Architecture Agents
+
+| Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
+|-------|------|-------|------|-----|-----|-----|--------|--------|------|
+| Stratum | H | M | M | — | M | H | — | — | — |
+| Shift | H | M | M | M | H | H | M | — | M |
+| Weave | H | M | M | — | — | H | — | — | M |
+
+### Mobile Agents
+
+| Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
+|-------|------|-------|------|-----|-----|-----|--------|--------|------|
+| Native | M | M | — | — | — | — | H | — | — |
 
 ### Specialized Agents
 
@@ -137,7 +204,17 @@ These agents provide value regardless of project type. Nexus should always consi
 | Navigator | H | H | H | — | — | — | — | M | — |
 | Triage | H | H | M | — | — | H | — | — | — |
 | Arena | H | M | — | M | M | H | — | — | — |
-| Helm | H | M | — | — | — | — | M | — | — |
+| Oracle | H | M | M | — | M | H | — | — | H |
+| Aether | — | — | — | — | — | — | — | — | — |
+| Orbit | H | M | M | — | — | H | — | — | M |
+| Void | H | M | M | M | H | H | — | — | — |
+| Sketch | M | M | M | — | — | — | M | M | — |
+| Dot | — | — | — | — | — | — | — | — | — |
+| Clay | — | — | — | — | — | — | — | — | — |
+| Tone | — | — | — | — | — | — | — | — | — |
+| Quest | — | — | — | — | — | — | — | — | — |
+| Realm | — | — | — | — | — | — | — | — | — |
+| Lyric | — | — | — | — | — | — | — | — | — |
 
 ---
 

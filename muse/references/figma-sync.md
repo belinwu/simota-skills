@@ -187,6 +187,31 @@ npx codemod styledictionary/4/migration-recipe
 
 Note: v4 has partial DTCG support. Full support is planned for v5.
 
+## Figma Variables Engine (2025-2026 Enhancements)
+
+### Mode, Scope, and Cross-File Reference Improvements
+
+- **Enhanced Modes**: Variables support unlimited modes per collection (previously 4 for non-Enterprise). Enables density, brand, and a11y modes simultaneously.
+- **Scoping**: Variables can be scoped to specific properties (fill, stroke, spacing, etc.) to prevent misuse.
+- **Cross-File References**: Variables from published libraries can be referenced and overridden in consuming files without breaking the chain.
+
+### Figma Native Git Integration
+
+Figma files can now be branched, committed, and merged directly with GitHub/GitLab:
+
+- **Branch**: Create a Figma branch linked to a git branch
+- **Commit**: Token changes generate diffs reviewable in PR
+- **Merge**: Design token updates flow bidirectionally between Figma and code
+- **Impact**: Eliminates manual token export → commit → push workflow
+
+### AI-Generated Design Tokens
+
+Figma Make can analyze designs and generate token definitions:
+
+- Extracts color, spacing, typography patterns into structured tokens
+- Outputs to DTCG-compatible format
+- **Rule**: Always review AI-generated tokens against existing token architecture. Auto-generated tokens often create duplicates or miss semantic intent.
+
 ## Figma Extended Collections (Enterprise, November 2025+)
 
 Create brand/theme variants derived from existing collections:

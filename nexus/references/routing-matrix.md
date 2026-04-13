@@ -47,6 +47,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | PRERELEASE | Warden → Guardian → Launch | +Sentinel (security gate), +Radar (test gate) |
 | REQUIREMENTS | Accord → Scribe → Sherpa | +Canvas (diagram), +Magi (decision), +Saga (narrative), +Cast (persona) |
 | DESIGN_SYSTEM | Vision → Muse → Showcase → Quill | +Palette (tokens), +Artisan (impl) |
+| DESIGN_SYSTEM_DOCS | Muse → Showcase + Canvas → Quill | +Vision (direction), +Artisan (live examples) |
 | CONTENT | Prose → Echo → Artisan | +Polyglot (i18n), +Researcher (insights) |
 | DEV_EXPERIENCE | Hearth → Gear → Latch | +Anvil (CLI), +Sigil (project skills), +Hone (CLI audit) |
 | LOAD_TEST | Siege → Bolt → Builder | +Beacon (SLO), +Triage (resilience), +Matrix (scenario combos) |

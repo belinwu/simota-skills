@@ -85,6 +85,30 @@ Motion v12 automatically switches between requestAnimationFrame and Web Animatio
 - Vanilla: prefer WAAPI over ad hoc `setTimeout` choreography.
 - Next.js and Astro: use View Transitions as progressive enhancement, not a hard dependency.
 
+## Motion One (WAAPI-Based Lightweight Alternative)
+
+Motion One uses the Web Animations API natively — smaller bundle, browser-level performance.
+
+```js
+import { animate } from "motion";
+
+animate(".box", { transform: "translateX(100px)" }, { duration: 0.5, easing: "ease-out" });
+```
+
+| Aspect | Motion One | Motion v12 | GSAP |
+|--------|-----------|------------|------|
+| Bundle | ~3.8KB | ~18KB | ~28KB |
+| Engine | WAAPI native | JS-driven | JS-driven |
+| React integration | Vanilla / adapters | First-class | Plugin |
+| Spring physics | Via `linear()` CSS | Built-in | CustomEase |
+| Best for | Lightweight vanilla JS | React/Vue production | Complex timelines |
+
+### Selection Rule
+
+- Vanilla JS project, simple animations → Motion One
+- React/Vue project, spring physics → Motion v12
+- Complex timeline, scroll-triggered sequences → GSAP (all plugins free since Webflow acquisition 2024)
+
 ## Reduced Motion Example
 
 ```tsx

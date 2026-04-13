@@ -223,6 +223,44 @@ When using **Accessibility User** persona, run this WCAG 2.1 simplified checklis
 
 ---
 
+## WCAG 3.0 Tier Simulation
+
+When evaluating accessibility, supplement WCAG 2.2 pass/fail with WCAG 3.0 tier scoring:
+
+| Tier | Scope | Echo Action |
+|------|-------|-------------|
+| **Bronze** | Core barriers (≈ AA) | Run Accessibility User persona — flag score 0-1 items |
+| **Silver** | + cognitive barriers, usability testing | Run Senior, Low Vision, Cognitive Load personas — flag score 0-2 items |
+| **Gold** | + comprehensive user testing | Run all personas including cultural context variations — flag score 0-3 items |
+
+Report format: append `WCAG 3.0 Tier Estimate: Bronze/Silver/Gold` to accessibility findings.
+
+## Multi-Modal Input Evaluation
+
+For each persona, evaluate input mode transitions:
+
+| Transition | Check |
+|-----------|-------|
+| Touch → Voice | Can user switch mid-task without losing context? |
+| Keyboard → Touch | Is focus state preserved across mode switch? |
+| Gesture → Keyboard | Are gesture shortcuts discoverable via keyboard? |
+| Voice → Visual | Does voice feedback have visual confirmation? |
+
+**Invisible interaction evaluation**: Assess voice commands, gesture recognition, and presence detection for discoverability, error recovery, and feedback clarity.
+
+## AI-Generated UI Cognitive Evaluation
+
+When evaluating AI-generated interfaces (Figma Make, v0, Stitch output):
+
+| Pattern | Risk | Check |
+|---------|------|-------|
+| Excessive symmetry | Medium | Real layouts have intentional hierarchy breaks |
+| Generic placeholder feel | High | Stock-like imagery, templated copy, uniform card grids |
+| Context-awareness gap | High | AI may not understand user's mental model or domain |
+| Dark pattern leakage | Medium | AI training data may include manipulative patterns |
+
+**Rule**: AI-generated UI requires mandatory cognitive walkthrough before production use.
+
 ## Competitor Comparison Mode
 
 When using **Competitor Migrant** persona, evaluate: Expectation Gap, Muscle Memory Conflict, Feature Parity, Terminology Mismatch.

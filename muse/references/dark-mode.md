@@ -155,6 +155,29 @@ Use it only if the selected mode is `system`.
 - Recommendation:
 ```
 
+## `light-dark()` for Dark Mode Tokens
+
+The CSS `light-dark()` function (Baseline 2024) simplifies dark mode token definitions to a single declaration:
+
+```css
+:root {
+  color-scheme: light dark;
+
+  --bg-surface: light-dark(oklch(0.98 0.005 260), oklch(0.15 0.005 260));
+  --bg-elevated: light-dark(oklch(1.0 0 0), oklch(0.2 0.005 260));
+  --text-primary: light-dark(oklch(0.2 0.01 260), oklch(0.9 0.01 260));
+  --text-secondary: light-dark(oklch(0.4 0.01 260), oklch(0.7 0.01 260));
+  --border-default: light-dark(oklch(0.85 0.005 260), oklch(0.3 0.005 260));
+}
+```
+
+### Rules
+
+- Requires `color-scheme: light dark` on `:root` — without it, `light-dark()` always returns the light value.
+- Use for **simple light/dark pairs**. For multi-theme systems (3+ themes, brand variants), use DTCG modes with `.resolver.json`.
+- Combine with `color-mix()` for derived states: `color-mix(in oklch, light-dark(#333, #ccc), transparent 50%)`.
+- **Migration path**: Replace `@media (prefers-color-scheme: dark)` duplication with `light-dark()` when supporting only light/dark.
+
 ## oklch Semantic Tokens for Dark Mode
 
 oklch provides perceptually uniform lightness, making light/dark mode token pairs more predictable:

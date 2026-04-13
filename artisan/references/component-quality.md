@@ -269,6 +269,329 @@ const Button = ({ variant = 'primary', size = 'md', className, children }: Butto
 
 ---
 
+## 5b. Modern CSS Features (2025-2026)
+
+### CSS `@scope` — Native Style Scoping
+
+```css
+@scope (.card) to (.card__content) {
+  h2 { font-size: 1.25rem; }
+  p { color: var(--text-secondary); }
+}
+```
+
+- Replaces CSS Modules / CSS-in-JS for component-level scoping.
+- `to` clause creates a "donut scope" — styles apply within `.card` but stop at `.card__content`.
+- **Rule**: Prefer `@scope` for new components when project targets modern browsers.
+
+### Anchor Positioning
+
+```css
+.tooltip {
+  position: fixed;
+  position-anchor: --trigger;
+  position-area: top;
+  position-try-fallbacks: bottom, right, left;
+}
+
+.trigger {
+  anchor-name: --trigger;
+}
+```
+
+- Declarative tooltip/dropdown/popover placement — no JS positioning libraries.
+- Combine with **Popover API** for complete accessible overlay patterns.
+
+### Popover API
+
+```html
+<button popovertarget="menu">Open</button>
+<div id="menu" popover>
+  <!-- Top layer, light dismiss, focus management built-in -->
+</div>
+```
+
+- Replaces custom modal/dropdown implementations with native behavior.
+- **Rule**: Use `popover` for non-modal overlays. Use `<dialog>` for modal overlays.
+
+### Text Wrapping
+
+```css
+h1, h2, h3 { text-wrap: balance; }  /* Balanced line lengths — max 6 lines */
+p { text-wrap: pretty; }            /* Prevents orphaned last words */
+```
+
+### CSS `if()` (Emerging)
+
+```css
+.component {
+  gap: if(style(--density: compact): 4px; else: 8px);
+}
+```
+
+- Chrome Canary only. Always provide `@supports` fallback.
+
+### Grid Lanes (CSS Masonry)
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-rows: masonry;
+}
+```
+
+- WebKit implementation in progress. Use JS fallback (Masonry.js) with `@supports` check.
+
+### `sibling-index()` / `sibling-count()`
+
+```css
+.item {
+  animation-delay: calc(sibling-index() * 50ms);  /* Staggered entrance */
+  opacity: calc(1 - (sibling-index() / sibling-count()) * 0.3);  /* Fade gradient */
+}
+```
+
+---
+
+## 5c. Production UI Patterns (2025-2026)
+
+### Split-View / Three-Panel Layout
+
+The dominant SaaS navigation pattern (Linear, Notion, Slack, VS Code):
+
+```css
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(300px, 1fr) minmax(400px, 2fr);
+  height: 100dvh;
+}
+```
+
+**Rule**: Use `react-resizable-panels` for drag-to-resize. Persist widths in localStorage. Collapse sidebar to 56px icons-only mode on narrow viewports. Keyboard shortcut `[`/`]` to toggle panels.
+
+### Inline Editing (Click-to-Edit)
+
+```tsx
+function InlineEdit({ value, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  if (!editing) return (
+    <span onClick={() => setEditing(true)} className="cursor-pointer hover:bg-muted px-1 rounded">{value}</span>
+  );
+  return (
+    <input autoFocus value={draft} onChange={e => setDraft(e.target.value)}
+      onBlur={() => { onSave(draft); setEditing(false); }}
+      onKeyDown={e => {
+        if (e.key === 'Enter') { onSave(draft); setEditing(false); }
+        if (e.key === 'Escape') { setDraft(value); setEditing(false); }
+      }} />
+  );
+}
+```
+
+**Rule**: Show hover indicator (background change). Use `contentEditable` for rich text. Validate on blur. Products: Notion, Jira, Asana, Airtable.
+
+### Optimistic UI (React 19)
+
+```tsx
+const [optimisticItems, addOptimistic] = useOptimistic(items,
+  (state, newItem) => [...state, { ...newItem, pending: true }]
+);
+```
+
+**Rule**: Show subtle visual distinction for pending items (lower opacity). Always implement rollback. Only for high-confidence ops (>99% success). Never for payments or destructive actions.
+
+### Drag-and-Drop (2025 Libraries)
+
+| Library | Best For | Size |
+|---------|----------|------|
+| `@dnd-kit/react` | Flexible, accessible, customizable | ~10KB |
+| `pragmatic-drag-and-drop` (Atlassian) | Headless, HTML5 DnD API | ~5KB |
+| `@hello-pangea/dnd` | Drop-in react-beautiful-dnd replacement | ~30KB |
+
+**Rule**: Always support keyboard DnD (Space to pick up, arrows to move). Show clear drop indicators. Animate shifting items.
+
+### Context Menu (Right-Click)
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>{children}</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Copy <ContextMenuShortcut>⌘C</ContextMenuShortcut></ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem className="text-destructive">Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+**Rule**: Use Radix `ContextMenu` or shadcn/ui. Group with separators. Show shortcuts. Destructive actions last, in red. ≤10 items per level.
+
+### Multi-Select & Bulk Actions
+
+```tsx
+function handleClick(index, event) {
+  if (event.shiftKey && lastSelected !== null) {
+    // Shift+click selects range
+    const [min, max] = [Math.min(lastSelected, index), Math.max(lastSelected, index)];
+    setSelected(prev => { const next = new Set(prev); for (let i = min; i <= max; i++) next.add(i); return next; });
+  } else {
+    // Toggle individual
+    setSelected(prev => { const next = new Set(prev); next.has(index) ? next.delete(index) : next.add(index); return next; });
+  }
+}
+```
+
+**Rule**: Floating action bar with count ("3 selected") + bulk actions. Support "Select all". Confirm destructive bulk ops.
+
+### AI Streaming Text
+
+```tsx
+import { useChat } from 'ai/react'; // Vercel AI SDK
+const { messages, input, handleInputChange, handleSubmit } = useChat();
+```
+
+**Rule**: Show typing indicator for first token. Render at consistent ~200 chars/sec regardless of chunk size. Allow scroll during streaming. Support stop generation. Products: ChatGPT, Claude, Gemini.
+
+### AI Prompt Input
+
+```tsx
+<div className="border rounded-2xl p-3 flex flex-col gap-2">
+  <div className="flex flex-wrap gap-1">
+    {attachments.map(a => <Chip key={a.id} label={a.name} onRemove={() => remove(a.id)} />)}
+  </div>
+  <textarea rows={1} className="resize-none"
+    onInput={e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
+    style={{ maxHeight: '200px' }} />
+  <div className="flex justify-between">
+    <div className="flex gap-2"><IconButton icon={<Paperclip />} /><IconButton icon={<Image />} /></div>
+    <button className="bg-primary rounded-full p-2"><ArrowUp /></button>
+  </div>
+</div>
+```
+
+**Rule**: Auto-expand to max height then scroll. Submit with Enter, newline with Shift+Enter. Support paste for images. Products: ChatGPT, Claude.
+
+### AI Response Actions
+
+```tsx
+<div className="group relative">
+  <div className="prose">{content}</div>
+  <div className="opacity-0 group-hover:opacity-100 flex gap-1 mt-2">
+    <IconButton icon={<Copy />} tooltip="Copy" />
+    <IconButton icon={<RefreshCw />} tooltip="Regenerate" />
+    <IconButton icon={<Edit />} tooltip="Edit" />
+    <IconButton icon={<GitBranch />} tooltip="Branch" />
+    <IconButton icon={<ThumbsUp />} tooltip="Good" />
+  </div>
+</div>
+```
+
+**Rule**: Copy shows "Copied!" briefly. Regenerate creates branch, not overwrite. Show loading during regeneration.
+
+### Content Preview on Hover
+
+```tsx
+<HoverCard openDelay={300} closeDelay={100}>
+  <HoverCardTrigger asChild><a href={url}>{text}</a></HoverCardTrigger>
+  <HoverCardContent className="w-80 p-4 rounded-lg shadow-lg">
+    <img src={ogImage} /><h3>{title}</h3><p>{desc}</p>
+  </HoverCardContent>
+</HoverCard>
+```
+
+**Rule**: 300ms open delay, 100ms close grace period. Fetch OG metadata server-side, cache aggressively. Products: Wikipedia, GitHub, Slack, Notion.
+
+### Key Library Map (2025-2026)
+
+| Category | Library |
+|----------|---------|
+| Command Palette | `cmdk` |
+| Drag & Drop | `@dnd-kit/react` |
+| Context Menu | Radix `ContextMenu` |
+| Hover Cards | Radix `HoverCard` |
+| Bottom Sheet (web) | `vaul` |
+| AI Chat | Vercel AI SDK (`ai`) |
+| Virtual Lists | `@tanstack/virtual` |
+| Resizable Panels | `react-resizable-panels` |
+| Toast | `sonner` |
+| Forms | React Hook Form + Zod |
+
+---
+
+## 5d. Visual UI Pattern Knowledge Base
+
+### Bento Grid Layout
+
+Asymmetric grid inspired by Japanese bento boxes. Apple product pages popularized it.
+
+```css
+.bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-areas:
+    "hero  side1 side1"
+    "hero  side2 side3";
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .bento { grid-template-columns: 1fr; grid-template-areas: "hero" "side1" "side2" "side3"; }
+}
+```
+
+**Rule**: Bento grids are for feature showcases, dashboards, and portfolios. Not for content-heavy pages. Visual hierarchy comes from cell size — largest cell = highest priority.
+
+### Glassmorphism → Liquid Glass
+
+Evolution: Glassmorphism (2020) → Acrylic/Fluent (Microsoft) → **Liquid Glass** (Apple WWDC25, physics-based refraction):
+
+```css
+/* Glassmorphism base */
+.glass { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; }
+```
+
+**Rule**: `backdrop-filter: blur()` is Baseline (97% support). Keep blur 8-15px (GPU cost scales exponentially). Liquid Glass uses SVG `feDisplacementMap` for refraction — progressive enhancement only.
+
+### Command Palette (⌘K Pattern)
+
+Keyboard-driven universal search/action interface (VSCode, Linear, Slack, Notion):
+
+```tsx
+<Command>
+  <Command.Input placeholder="Type a command or search..." />
+  <Command.List>
+    <Command.Group heading="Navigation">
+      <Command.Item onSelect={() => navigate('/dashboard')}>Go to Dashboard</Command.Item>
+    </Command.Group>
+  </Command.List>
+</Command>
+```
+
+**Rule**: Use `cmdk` (pacocoursey) or shadcn/ui `<Command />`. Combine fuzzy search + section grouping + keyboard-first navigation. Benefits both power users (O(1) access) and beginners (discoverable).
+
+### Notification Hierarchy
+
+| Level | Component | Auto-dismiss | Action | Use For |
+|-------|-----------|-------------|--------|---------|
+| Ambient | Status bar | No | View | Ongoing state (uploading, syncing) |
+| Informational | Toast | 3-5s | None | Success confirmation |
+| Actionable | Snackbar | 5-10s | Undo/Retry | Reversible actions |
+| Critical | Dialog/Banner | No | Acknowledge | Errors, destructive confirmations |
+
+**Rule**: `role="status"` + `aria-live="polite"` for toast/snackbar. Never stack >3 notifications. Error toasts: never auto-dismiss.
+
+### Claymorphism
+
+Soft 3D aesthetic using dual inner shadows:
+
+```css
+.clay { background: #f0e6ff; border-radius: 24px; box-shadow: inset 4px 4px 6px rgba(255,255,255,0.6), inset -4px -4px 6px rgba(130,100,180,0.25), 8px 8px 20px rgba(130,100,180,0.3); }
+```
+
+**Rule**: Suitable for playful/educational contexts. Avoid for data-heavy or professional tools (contrast issues). Always verify WCAG contrast.
+
+---
+
 ## 6. Layout Restraint Rules
 
 When building page-level components or landing pages, enforce these composition constraints to avoid generic AI-generated layouts.
