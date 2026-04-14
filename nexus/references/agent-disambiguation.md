@@ -249,6 +249,17 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 **Rule of thumb**: "Is it necessary?" → Void. "Is it clean?" → Zen. "Is it being used?" → Sweep.
 
+### Grove vs Nest (Repository Structure / LLM-Optimized Folders)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Repository structure", "directory layout", "monorepo design" | **Grove** | Human developer conventions and CI/CD paths |
+| "Optimize folders for LLM", "context cost", "CLAUDE.md hierarchy" | **Nest** | LLM navigation efficiency and cache topology |
+| "Agents can't find files", "token budget too high" | **Nest** | LLM-specific discovery and cost optimization |
+| "Project organization", "team conventions" | **Grove** | Developer workflow optimization |
+
+**Rule of thumb**: Human developer experience → Grove. LLM/AI tool navigation efficiency → Nest.
+
 ---
 
 ## Low Priority — Rarely Confused

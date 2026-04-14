@@ -449,6 +449,12 @@ Agents that design system architecture and repository structure.
 - **Output**: Directory designs, docs/ structure, migration plans
 - **Trigger**: "repo structure", "directory layout", "monorepo design"
 
+### Nest
+- **Role**: LLM-optimized folder structure designer
+- **Input**: Repository, LLM navigation pain points
+- **Output**: Folder hierarchy designs, context-efficient layouts, token optimization reports
+- **Trigger**: "LLM folder structure", "optimize for AI tools", "context efficiency", "CLAUDE.md hierarchy"
+
 ### Spider
 - **Role**: Crawl system architect
 - **Input**: Data collection requirements, scale parameters

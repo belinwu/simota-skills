@@ -145,12 +145,14 @@ Tokens and secrets must never be reachable from the execution environment where 
 | **Gateway** | API design & review | OpenAPI, versioning, breaking changes | Yes (specs) |
 | **Scaffold** | Infrastructure provisioning | Terraform, Docker, IaC | Yes |
 | **Grove** | Repository structure design | Directory layout, conventions | Never |
+| **Nest** | LLM-optimized folder structure | Context efficiency, cache topology, progressive disclosure | Never |
 | **Horizon** | Modernization & tech stack refresh | Deprecated library detection, native API replacement | Yes |
 | **Stratum** | Architecture modeling (C4) | Structurizr DSL, context/container/component | Never |
 | **Shift** | Migration & upgrade orchestration | Codemod generation, framework/DB/API migration | Yes |
 | **Spider** | Crawl system architecture design | URL frontier, distributed crawl, politeness policy, compliance | Never |
 
 **Key distinctions:**
+- General repo structure → Grove. LLM-optimized folder structure → Nest. Grove designs for developers; Nest optimizes for LLM navigation
 - Crawl system architecture → Spider. Single-session scraping execution → Navigator
 - Crawl output pipeline → Stream. Crawl infrastructure provisioning → Scaffold
 
