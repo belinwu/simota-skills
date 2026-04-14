@@ -323,6 +323,34 @@ This rhythm prevents attention fatigue and aids information retention.
 | Critical info in middle | Important constraints get lower attention | Move to Zone 1 or Zone 4 |
 | Redundant closings | Multiple "remember you are X" statements | Single strong closing in Zone 4 |
 
+### Cache-Aware Ordering
+
+The Ma layout naturally supports prompt caching efficiency. Cached tokens cost **10% of base input tokens** (as of 2025), making static-first ordering economically significant.
+
+| Content Type | Placement | Cache Behavior |
+|-------------|-----------|---------------|
+| System prompt, tool definitions | First (stable across turns) | Cached — 90% cost reduction |
+| Skill instructions (SKILL.md) | Second (stable within session) | Cached after first load |
+| Conversation history, user input | Last (changes each turn) | Not cached — full cost |
+
+**ToolSearch pattern**: For dynamic tool discovery, use ToolSearch (deferred tool loading) rather than pre-loading all tool schemas. This keeps the static tool definition block small and stable, preserving the cache prefix across turns.
+
+---
+
+## Persistence Strategy Selection
+
+When designing agents that manage information across context boundaries, choose the persistence strategy based on task horizon and target model capability.
+
+| Strategy | Mechanism | Best When | Evidence (as of 2025) |
+|----------|-----------|-----------|----------------------|
+| **Compaction** | Summarize and compress context in-place | Session-scoped tasks, cost-sensitive, Sonnet-class models | Standard context management |
+| **Memory folders** | Write findings to files, read back on demand | Multi-session research, complex investigation, Opus-class models | BrowseComp: 84% (Opus 4.6) vs 43% flat (Sonnet 4.5) |
+| **Hybrid** | Compaction for working memory + files for durable findings | Long-horizon tasks with both immediate and archival needs | Combines benefits of both approaches |
+
+**Model-dependent effectiveness**: Memory folder strategies show strong model dependence. Opus-class models organize file-based memory tactically and benefit significantly; Sonnet-class models may not show improvement. Design persistence strategies with the target model tier in mind.
+
+**Design implication for skills**: When a skill involves multi-step research or investigation (e.g., Scout, Lens, Rewind), consider designing explicit file-based memory checkpoints rather than relying solely on context accumulation.
+
 ---
 
 ## Equivalence Verification

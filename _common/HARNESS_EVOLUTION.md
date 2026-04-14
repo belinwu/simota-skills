@@ -14,6 +14,22 @@ Harnesses encode assumptions about model limitations that become outdated as cap
 
 **Application:** Each HE component below tests whether its underlying assumption still holds. When the assumption expires, simplify or remove the scaffolding.
 
+### Systematic Scaffold Audit ("What Can I Stop Doing?")
+
+> Source: Anthropic "Harnessing Claude's Intelligence" (2025)
+
+Periodically audit all scaffolding components using this protocol:
+
+1. **Enumerate** — List every scaffolding component (guardrails, decomposition steps, recovery chains, context management workarounds)
+2. **State the assumption** — For each component, document the model limitation it was designed to compensate for
+3. **Test the assumption** — Verify whether that limitation still holds with the current model generation. Three audit dimensions:
+   - **Orchestration**: Can the agent self-filter tool outputs via code execution instead of routing through context?
+   - **Context management**: Can the agent use progressive disclosure (skills, on-demand file reads) instead of pre-loaded instructions?
+   - **Persistence**: Can the agent use file-based memory (memory folders) instead of in-context accumulation?
+4. **Propose simplification** — If the assumption no longer holds, feed into the HE evaluation cycle (below) for measured simplification
+
+This protocol makes the implicit logic behind HE-01 through HE-06 explicit and systematic. Run it aligned with Darwin's 30-day review cycle (ET-06).
+
 ### Interface Stability over Implementation
 
 > "Opinionated about interfaces, unopinionated about implementations."

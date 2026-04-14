@@ -446,3 +446,52 @@ State management pattern for long-running agents. Structures interruption, resum
 - Limited direct applicability since the current ecosystem uses a 1-session = 1-task model.
 - However, Orbit's `state files` and Rally's `multi-session` design are partial implementations of this pattern.
 - Recorded as a reference pattern for future cross-session design.
+
+---
+
+## 10. Intelligence Harnessing Principles
+
+> Source: Anthropic "Harnessing Claude's Intelligence" (2025)
+
+Three design principles for building agent systems that adapt to evolving model capabilities. These principles complement the Simplicity-First Decision Ladder (Section 8) with empirical evidence and concrete design rules.
+
+### 10.1 General Tools Over Specialized Tools
+
+Prefer composing general-purpose tools (bash, text editor, file I/O) into patterns over building specialized single-purpose tools.
+
+| Evidence | Result |
+|----------|--------|
+| SWE-bench Verified (as of 2025) | Claude 3.5 Sonnet achieved 49% using only bash + text editor |
+
+**Design rule**: Skills, programmatic tool calling, and memory systems should build on general tool composition. Create specialized tools only when general composition is insufficient — and only when one of the four boundary conditions in Section 10.3 is met.
+
+### 10.2 "What Can I Stop Doing?" Audit
+
+Systematically question whether each piece of orchestration scaffolding is still necessary as model capabilities improve. Three audit dimensions:
+
+| Dimension | Principle | Evidence (as of 2025) | Design Implication |
+|-----------|-----------|----------------------|-------------------|
+| **Orchestration** | Let agents write code to filter tool outputs instead of routing all results through context | BrowseComp: 45.3% → 61.6% with self-filtering (Opus 4.6) | Design agents with code execution for output filtering; avoid piping all tool results through context window |
+| **Context management** | Progressive disclosure via skills instead of pre-loading all instructions | See Section 5 (Three-Level System) | Keep L1 frontmatter minimal; load L2/L3 on demand |
+| **Persistence** | Memory folders (file-based) vs compaction (in-context summarization) | BrowseComp: 84% with memory folders (Opus 4.6) vs 43% flat (Sonnet 4.5) | For Opus-class models, design for file-based persistence; for Sonnet-class, keep context in-window. Effectiveness is model-dependent |
+
+**Application**: Use `_common/HARNESS_EVOLUTION.md` Systematic Scaffold Audit protocol to evaluate each scaffolding component against these dimensions.
+
+### 10.3 Boundary-Aware Design
+
+Three sub-principles for setting effective boundaries without introducing dead weight:
+
+**Prompt caching optimization**: Structure context with stable content first (system prompts, tool definitions, skill instructions), then dynamic content (user input, conversation history, retrieved context). Cached tokens cost 10% of base input tokens. Use ToolSearch for dynamic tool discovery to avoid bloating the static tool list and breaking cache prefixes.
+
+**Declarative tool promotion criteria**: Promote an action from general tool composition to a dedicated declarative tool ONLY when it crosses one of four thresholds:
+
+| Threshold | Rationale | Example |
+|-----------|-----------|---------|
+| Security boundary | Credential isolation, input sanitization | API calls requiring auth tokens |
+| Reversibility | Destructive actions need confirmation gates | Database writes, file deletion |
+| UX presentation | Structured output for user-facing display | Rich UI rendering, formatted reports |
+| Observability | Structured logging, audit trails | Compliance-sensitive operations |
+
+If none of these thresholds apply, keep the action as a composed general-tool pattern.
+
+**Dead weight pruning**: Every safeguard encodes an assumption about model limitations. Regularly audit whether these assumptions still hold. See `_common/HARNESS_EVOLUTION.md` for the evaluation cycle and simplification conditions.
