@@ -133,6 +133,26 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Flux vs Riff vs Magi (Thinking Support Trio)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Reframe this", "shift perspective", single-shot analysis | **Flux** | One-time perspective shift |
+| "Bounce ideas", "brainstorm with me", "壁打ち", iterative dialogue | **Riff** | Multi-turn interactive exploration |
+| "Which should we pick?", "Go/No-Go", verdict needed | **Magi** | Structured decision with vote |
+| User wants to explore before knowing what to decide | **Riff** | Open-ended exploration first |
+| User is stuck and needs a new frame, not a conversation | **Flux** | Break the frame, then move on |
+| User has options and needs a verdict, not more ideas | **Magi** | Converge and decide |
+
+**Rule of thumb**: "Help me think about this" → Riff. "Help me see this differently" → Flux. "Help me decide" → Magi.
+
+**Chain patterns**:
+- Flux (reframe) → Riff (explore the new frame) → Magi (decide) → Builder (implement)
+- Riff (brainstorm) → Spark (formalize as spec) → Builder (implement)
+- Riff (brainstorm) → Void (cut scope) → Builder (implement)
+
+---
+
 ### Pixel vs Artisan vs Forge (UI Implementation)
 
 | Signal | Route to | Rationale |

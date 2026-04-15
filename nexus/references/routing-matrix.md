@@ -11,9 +11,10 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 |-----------|---------------|-----------|
 | BUG | Scout → Builder → Radar | +Sentinel (security), +Sherpa (complex) |
 | INCIDENT | Triage → Scout → Builder | +Mend (known pattern), +Radar, +Triage (postmortem), +Flux (deep postmortem), +Matrix (failure scenarios) |
-| FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux (lateral thinking) |
+| FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux (lateral thinking), +Riff (idea exploration) |
 | INVESTIGATE | Lens | +Scout (bug-related), +Canvas (viz), +Rewind (git) |
-| DECISION | Magi | +Accord (biz-tech), +Flux (reframe) |
+| BRAINSTORM | Riff | +Flux (reframe first), +Spark (spec after), +Magi (decide after), +Void (prune after) |
+| DECISION | Magi | +Accord (biz-tech), +Flux (reframe), +Riff (explore before deciding) |
 | SECURITY | Sentinel → Builder → Radar | +Probe (dynamic), +Specter (concurrency), +Breach (red-team), +Vigil (detection) |
 | REFACTOR | Zen → Radar | +Atlas (architectural), +Grove (structure) |
 | OPTIMIZE | Bolt/Tuner → Radar | +Schema (DB), +Flux (first-principles), +Matrix (target combos) |

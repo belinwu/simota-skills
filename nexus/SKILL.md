@@ -267,6 +267,7 @@ Detailed execution flows: `references/execution-phases.md`, `references/orchestr
 | `optimize`, `slow`, `performance` | Performance optimization chain | Performance improvement | `references/routing-matrix.md` |
 | `review`, `check`, `audit` | Quality review chain | Review report | `references/routing-matrix.md` |
 | `design system docs`, `token docs`, `component catalog` | Design system documentation chain | Token + catalog + diagrams + API docs | `references/routing-matrix.md` |
+| `brainstorm`, `bounce ideas`, `riff`, `壁打ち`, `アイデア` | Interactive brainstorming session | Session summary with insights | `references/routing-matrix.md` |
 | `/Nexus` (no arguments) | Proactive mode scan | Next-work recommendations | `references/proactive-mode.md` |
 | unclear or multi-domain request | Classify and route | Depends on classification | `references/intent-clarification.md` |
 
