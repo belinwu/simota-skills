@@ -9,9 +9,9 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 
 | Task Type | Primary Chain | Additions |
 |-----------|---------------|-----------|
-| BUG | Scout → Builder → Radar | +Sentinel (security), +Sherpa (complex) |
+| BUG | Scout → **Sherpa** → Builder → Radar | +Sentinel (security). Skip Sherpa only when single-file atomic fix |
 | INCIDENT | Triage → Scout → Builder | +Mend (known pattern), +Radar, +Triage (postmortem), +Flux (deep postmortem), +Matrix (failure scenarios) |
-| FEATURE | Forge → Builder → Radar | +Sherpa (complex), +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux (lateral thinking), +Riff (idea exploration) |
+| FEATURE | **Sherpa** → Forge → Builder → Radar | +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux (lateral thinking), +Riff (idea exploration). Skip Sherpa only when single-file atomic change |
 | INVESTIGATE | Lens | +Scout (bug-related), +Canvas (viz), +Rewind (git) |
 | BRAINSTORM | Riff | +Flux (reframe first), +Spark (spec after), +Magi (decide after), +Void (prune after) |
 | DECISION | Magi | +Accord (biz-tech), +Flux (reframe), +Riff (explore before deciding) |
