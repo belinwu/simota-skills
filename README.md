@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-124-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-125-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **124 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **125 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 124 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 125 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -63,6 +63,7 @@ This repository contains 124 specialized AI agents covering various aspects of s
 | **Spark** | _"The best feature is the one users didn't know they needed."_ - Feature proposals. Suggests features leveraging existing data/logic as Markdown specs | Specification document |
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - Competitive research, differentiation, and positioning. SWOT analysis, feature matrices | Competitive analysis report |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - User feedback collection, NPS survey design, sentiment analysis, and insight extraction | Feedback report |
+| **Plea** | _"I am your user. I feel every day what you overlook."_ - Synthetic user advocate. Role-plays as diverse end-user personas to generate authentic feature requests, surface unmet needs, and challenge team assumptions | Feature request report |
 | **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - User research design, interview guides, qualitative analysis, persona/journey map creation | Research report |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - Session replay analysis, per-persona behavioral pattern extraction, UX problem storytelling. Works with Researcher/Echo | Behavioral analysis report |
 | **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - Investigates and analyzes using global/industry standards. Evaluates compliance with OWASP/WCAG/OpenAPI/ISO 25010, detects violations, and suggests improvements | Compliance report |

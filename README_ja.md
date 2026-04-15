@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-124-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-125-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **124種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **125種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする124種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする125種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -63,6 +63,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Spark** | _"The best feature is the one users didn't know they needed."_ - 新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案 | 仕様書 |
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
+| **Plea** | _"I am your user. I feel every day what you overlook."_ - 合成ユーザー代弁者。多様なエンドユーザーペルソナになりきり、本物のような機能要望を生成し、未充足ニーズを発掘し、チームの思い込みに挑戦する | 機能要望レポート |
 | **Researcher** | _"Users don't lie. They just don't know what they want yet."_ - ユーザーリサーチ設計・インタビューガイド作成・定性分析・ペルソナ/ジャーニーマップ作成 | リサーチレポート |
 | **Trace** | _"Every click tells a story. I read between the actions."_ - セッションリプレイ分析・ペルソナ別行動パターン抽出・UX問題の物語化。Researcher/Echoと連携 | 行動分析レポート |
 | **Canon** | _"Standards are the accumulated wisdom of the industry. Apply them, don't reinvent them."_ - 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案 | 準拠度レポート |
