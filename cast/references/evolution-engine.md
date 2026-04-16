@@ -97,6 +97,32 @@ Append one row per accepted evolution:
 | `Changes` | Concise summary |
 | `Confidence Delta` | Signed change in confidence |
 
+## Cross-Agent Confidence Feedback
+
+Downstream agents feed findings back to Cast to close the persona lifecycle loop.
+
+| Source Agent | Signal | Cast Action | Confidence Effect |
+|-------------|--------|-------------|-------------------|
+| **Echo** | Walkthrough friction findings for a persona | FUSE — adjust persona pain points and emotion triggers | +0.05 if findings align with persona; flag drift if misaligned |
+| **Echo** | Synthetic persona walkthrough result | FUSE — validate or challenge proto-persona attributes | Positive validation: +0.10 toward promotion; Negative: flag for review |
+| **Plea** | Demand calibration report (`[validated]`/`[supported]`/`[hypothesis]`) | FUSE — update persona coverage gaps | `[validated]` demands: +0.05; `[hypothesis]` with no match: flag persona gap |
+| **Plea** | Persona coverage gap (demands from segments not in registry) | CONJURE — consider new persona candidate | New persona at proto tier (0.30) |
+| **Trace** | Behavioral validation data | EVOLVE — existing path (drift detection) | Per standard drift rules |
+| **Researcher** | Interview/survey validation | FUSE — promote proto → active | +0.20 (interview) / +0.15 (survey) per validation rules |
+
+### Feedback Handoff Format
+
+Downstream agents include the following in their `_STEP_COMPLETE` or handoff when persona-relevant findings exist:
+
+```yaml
+PERSONA_FEEDBACK:
+  source_agent: "[Echo | Plea | Trace | Researcher]"
+  persona_id: "[registry ID]"
+  signal_type: "[validation | drift | gap | calibration]"
+  findings: "[summary]"
+  confidence_recommendation: "[+N / -N / review]"
+```
+
 ## Confidence Decay
 
 | Age since update | Rule |

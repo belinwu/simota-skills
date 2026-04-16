@@ -88,3 +88,28 @@ Validation exists to avoid:
 | Survey validation | `+0.15` |
 | ML validation | `+0.20` |
 | Triangulation complete | `+0.10` |
+
+## Anti-Patterns
+
+Common persona failure modes to detect and avoid during creation, maintenance, and organizational rollout.
+
+| ID | Name | What goes wrong | Mitigation |
+|---|---|---|---|
+| `PA-01` | Demographics Fixation | Persona is mostly age/gender/job labels | Anchor on goals, pain points, and behaviors |
+| `PA-02` | Single Monolithic Persona | One persona tries to represent everyone | Keep at least `P0/P1/P2` by default |
+| `PA-03` | Happy Path Persona | Only ideal users are represented | Include friction-heavy or underserved users |
+| `PA-04` | Proto-Persona Ossification | Hypotheses are treated as stable truth | Keep validation status explicit |
+| `PA-05` | User-Buyer Conflation | Buyer and end user are merged | Split if goals or behaviors differ materially |
+| `PA-06` | One-Shot Creation | Persona is created once and never updated | Use `AUDIT` and `EVOLVE` regularly |
+| `PA-07` | Over-Designed Artifact | Persona looks polished but is weakly evidenced | Favor evidence density over visual polish |
+| `PA-08` | Specificity Imbalance | Too vague or too fictional | Keep roughly 80% evidence / 20% inference |
+| `PA-09` | Silo Creation | Persona is not shared or reusable | Register and distribute systematically |
+| `PA-10` | Gallery Display | Persona exists as decoration only | Tie personas to downstream agent tasks |
+
+### Persona Fatigue
+
+Causes: too many personas, stale personas, personas not used in real decisions, overly repetitive artifacts. Mitigation: keep count manageable, deprecate stale personas, track downstream use, distribute task-specific versions.
+
+### Anti-Persona
+
+Use anti-personas to define who the product should not optimize for. Identify mismatched segments, document why out-of-scope, record cost/risk, keep separate from primary personas, revisit during strategy shifts.

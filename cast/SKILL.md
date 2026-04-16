@@ -47,7 +47,7 @@ Use Cast when the task requires any of the following:
 - Adapt personas for Echo, Spark, Retain, Compete, or Accord.
 - Generate persona voice output with TTS.
 - Create proto-personas from market data or assumptions as rapid initial hypotheses.
-- Run predictive evolution analysis using leading indicators (engagement shifts, cohort trends, behavioral drift `≥ 5%`).
+- Run predictive evolution analysis using leading indicators (engagement shifts, cohort trends, behavioral drift `≥ 5%`). **[DEFERRED]** — requires established Trace data pipeline. Use standard EVOLVE mode until Trace integration is confirmed.
 
 Route elsewhere when the task is primarily:
 - user research design or interview planning: `Researcher`
@@ -90,6 +90,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Evolution would change Core Identity.
 - Generating more than `5` personas at once.
 - Archiving an active persona.
+- Retiring a persona with 3+ downstream agent dependencies (RETIRE mode).
 
 ### Never
 
@@ -115,6 +116,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `AUDIT` | `/Cast audit`, `/Cast check` | Evaluate freshness, confidence, coverage, duplicates, compatibility. | Audit report with severities |
 | `DISTRIBUTE` | `/Cast distribute`, `/Cast deliver` | Package personas for downstream agents. | Adapter-specific delivery packet |
 | `SPEAK` | `/Cast speak` | Produce persona voice text/audio. | Transcript and optional audio |
+| `RETIRE` | `/Cast retire`, `/Cast sunset` | Assess and execute persona retirement. | Retirement report + registry update + downstream notification |
 
 ## Workflow
 
@@ -128,6 +130,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `AUDIT` | `SCAN -> SCORE -> CLASSIFY -> RECOMMEND` |
 | `DISTRIBUTE` | `SELECT -> ADAPT -> PACKAGE -> DELIVER` |
 | `SPEAK` | `RESOLVE -> GENERATE -> VOICE -> RENDER -> OUTPUT` |
+| `RETIRE` | `ASSESS -> IMPACT -> APPROVE -> ARCHIVE -> NOTIFY` |
 
 | Phase | Required action | Key rule | Read |
 |-------|-----------------|----------|------|
@@ -147,8 +150,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `audit`, `check`, `freshness`, `coverage` | AUDIT mode | Audit report with severities | `references/persona-validation.md` |
 | `distribute`, `deliver`, `package`, `for echo` | DISTRIBUTE mode | Adapter-specific delivery | `references/distribution-adapters.md` |
 | `speak`, `voice`, `TTS`, `audio` | SPEAK mode | Transcript + optional audio | `references/speak-engine.md` |
+| `retire`, `sunset`, `archive persona`, `zombie` | RETIRE mode | Retirement report + registry update | `references/persona-governance.md` |
 | `proto-persona`, `hypothesis`, `assumption-based` | CONJURE mode (proto tier) | Proto-persona files capped at 0.50 confidence | `references/generation-workflows.md` |
-| `predict`, `leading indicators`, `proactive evolution` | EVOLVE mode (predictive) | Predicted drift report + recommended changes | `references/evolution-engine.md` |
+| `predict`, `leading indicators`, `proactive evolution` | EVOLVE mode (predictive) **[DEFERRED — requires Trace pipeline]** | Predicted drift report + recommended changes | `references/evolution-engine.md` |
 | unclear persona request | CONJURE mode | New persona files + registry | `references/generation-workflows.md` |
 
 ## Critical Decision Rules
@@ -272,10 +276,9 @@ Do not parallelize EVOLVE or FUSE — these require sequential confidence recalc
 | `references/collaboration-formats.md` | You need to preserve exact handoff anchors and minimum payload fields. |
 | `references/distribution-adapters.md` | You are packaging personas for downstream agents. |
 | `references/speak-engine.md` | You are using `SPEAK`, selecting engines, or handling TTS fallback. |
-| `references/persona-validation.md` | You are evaluating evidence quality, triangulation, clustering, or validation status. |
-| `references/persona-anti-patterns.md` | You are auditing persona quality and avoiding common failures. |
+| `references/persona-validation.md` | You are evaluating evidence quality, triangulation, clustering, validation status, or auditing persona quality (includes anti-patterns). |
 | `references/persona-governance.md` | You are deciding update cadence, retirement, or organizational rollout. |
-| `references/ai-persona-risks.md` | AI generation, human review, or bias/ethics risk is involved. |
+| `_common/AI_PERSONA_RISKS.md` | AI generation, human review, or bias/ethics risk is involved. |
 
 ## Operational
 
