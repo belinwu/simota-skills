@@ -1,6 +1,6 @@
 # Editor Configuration Patterns
 
-Purpose: Read this when configuring `neovim`, `vim`, or `Zed`, or when you need plugin layout, `lazy.nvim`, keymap design, `blink.cmp`, or Neovim 0.10+ guidance.
+Purpose: Read this when configuring `neovim`, `vim`, or `Zed`, or when you need plugin layout, `lazy.nvim`, `vim.pack`, keymap design, `blink.cmp`, or Neovim 0.12+ guidance.
 
 ## Contents
 
@@ -9,6 +9,7 @@ Purpose: Read this when configuring `neovim`, `vim`, or `Zed`, or when you need 
 - [Keymap design principles](#keymap-design-principles)
 - [Minimal vs full configuration](#minimal-vs-full-configuration)
 - [Neovim 0.10 plus features](#neovim-010-plus-features)
+- [Neovim 0.12 features](#neovim-012-features)
 - [blink.cmp](#blinkcmp)
 - [Zed configuration](#zed-configuration)
 
@@ -240,6 +241,66 @@ gc          toggle selected lines
 ```
 
 Neovim 0.10+ can replace dedicated comment plugins for many setups.
+
+## Neovim 0.12 Features
+
+Neovim 0.12.0 (released March 29, 2026) is a major release. Key changes:
+
+### Performance: LuaJIT 2.1
+
+Ships LuaJIT 2.1, delivering 15-20% speed boost for Lua plugins and reduced memory overhead. No configuration changes needed — all existing Lua code benefits automatically.
+
+### `vim.pack` (Builtin Plugin Manager)
+
+```lua
+-- Install a plugin from GitHub
+vim.pack.add("tpope/vim-sleuth")
+
+-- With options
+vim.pack.add({
+  "nvim-treesitter/nvim-treesitter",
+  build = ":TSUpdate",
+})
+```
+
+Stable for daily use but ecosystem adoption is still growing — some plugins may not yet provide vim.pack metadata. For advanced setups with many plugins, lazy.nvim remains recommended.
+
+### Native Auto-Completion
+
+```lua
+-- Enable native insert-mode auto-completion
+vim.opt.autocomplete = "menu,menuone,noselect"
+```
+
+Triggers completion suggestions in insert mode without a manual keypress. For complex multi-source completion, `blink.cmp` or `nvim-cmp` still offer more control.
+
+### Expanded Native LSP
+
+New capabilities added to the builtin LSP client:
+- `inlineCompletion`, `selectionRange`, `linkedEditingRange`
+- `documentLink`, document colors, code lens refresh
+- Workspace diagnostics, dynamic registration
+- `:lsp` command for LSP status inspection
+
+### New Commands and APIs
+
+| Feature | Usage |
+|---------|-------|
+| `:Undotree` | Builtin undo tree visualization (replaces `undotree` plugin for basic use) |
+| `:Diff` | Builtin diff view |
+| `:restart` | Restart Neovim core while keeping UI attached |
+| `:connect` | Connect UI to a running Neovim instance |
+| `vim.net.request()` | HTTP requests from Lua without external dependencies |
+| `vim.fs.ext()` | Extract file extension |
+| `vim.list.unique()` | Deduplicate lists |
+
+### Migration Checklist (0.10 → 0.12)
+
+1. No breaking changes for most configs — upgrade is safe
+2. Consider replacing dedicated comment/undo plugins with builtins
+3. Evaluate whether `vim.pack` suits your plugin count and complexity
+4. Test the `autocomplete` option as a lightweight completion alternative
+5. Verify existing LSP configs work with expanded native capabilities
 
 ## `blink.cmp`
 
