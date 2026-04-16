@@ -6,6 +6,7 @@ Purpose: Use this file when modern platform APIs can replace JavaScript or simpl
 - View Transitions API
 - `@starting-style`
 - Scroll-driven animations
+- Scroll-triggered animations (Chrome 145+)
 - `@property`
 - Progressive enhancement rules
 
@@ -166,7 +167,7 @@ dialog[open] {
 
 ## Scroll-Driven Animations (Practical Examples)
 
-Chrome 115+ only. Always wrap in `@supports` and provide reduced-motion fallback.
+Chrome 115+, Safari 26+ (with threaded execution on ProMotion displays). Firefox behind flag. Always wrap in `@supports` and provide reduced-motion fallback.
 
 ### ViewTimeline: Reveal on Scroll
 
@@ -318,6 +319,44 @@ Define complex easing curves (bounce, elastic, spring) in pure CSS — no JS lib
 - **Tooling**: Use CSS `linear()` generator tools to convert spring/bounce parameters.
 - **Rule**: Prefer `linear()` over JS-based easing for transitions; keep GSAP/Motion for orchestrated sequences.
 
+## Scroll-Triggered Animations (Chrome 145+)
+
+Time-based animations that fire when crossing a scroll offset — unlike scroll-driven animations which scrub with scroll progress. Replaces many `IntersectionObserver` + `element.classList.add()` patterns with declarative CSS.
+
+### Basic Usage
+
+```css
+@supports (animation-trigger: --reveal) {
+  @scroll-trigger --reveal {
+    trigger-scope: root;
+    trigger-range: entry 0% entry 50%;
+  }
+
+  .card {
+    animation: fadeUp 400ms ease-out both;
+    animation-trigger: --reveal play-forwards;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+```
+
+### Key Differences from Scroll-Driven
+
+| Aspect | Scroll-Driven | Scroll-Triggered |
+|--------|---------------|------------------|
+| Timeline | Scroll position controls progress | Time-based (plays at own pace) |
+| Reversibility | Reverses when scrolling back | Configurable via `play-backwards` |
+| Use case | Progress bars, parallax | Entrance reveals, count-ups |
+| API | `animation-timeline: scroll()/view()` | `animation-trigger` + `@scroll-trigger` |
+
+- **Support**: Chrome 145+ only. Use `@supports (animation-trigger: ...)` for progressive enhancement.
+- **Fallback**: `IntersectionObserver` + class toggle for unsupported browsers.
+- **Rule**: Prefer scroll-triggered for entrance animations; prefer scroll-driven for progress-linked motion.
+
 ## Updated Feature Gate Table
 
 | Feature | Use For | Support |
@@ -326,7 +365,8 @@ Define complex easing curves (bounce, elastic, spring) in pure CSS — no JS lib
 | View Transitions Level 2 | MPA/cross-document transitions | Chrome 126+, Safari 18.2+ (Firefox not supported) |
 | `@starting-style` | Entry from display:none, popover/dialog | Chrome 117+, Safari 17.4+, Firefox 129+ (**Baseline**) |
 | `transition-behavior: allow-discrete` | Bidirectional display:none animation | All major browsers (**Baseline**) |
-| Scroll-driven animations | Progress bars, reveal-on-scroll | Chrome 115+ only (`@supports` required) |
+| Scroll-driven animations | Progress bars, reveal-on-scroll | Chrome 115+, Safari 26+ (Firefox behind flag; `@supports` required) |
+| Scroll-triggered animations | Entrance reveals, time-based on scroll | Chrome 145+ (`@supports` required) |
 | Container Scroll-State | Sticky shadow, snap indicators | Chrome 133+ (`@supports` required) |
 | `interpolate-size` | Height:auto animation, accordion | Chrome 129+ (progressive enhancement) |
 | `linear()` easing | Bounce, elastic, spring CSS-only | All major browsers (**Baseline 2024**) |
