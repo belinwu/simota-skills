@@ -18,6 +18,9 @@ CAPABILITIES_SUMMARY:
 - lsp_aware_navigation: Prefer LSP go-to-definition and find-references over grep when available for type-aware, false-positive-free navigation
 - dynamic_dispatch_flagging: Explicitly flag event emitters, middleware chains, DI containers, and plugin systems where static analysis diverges from runtime behavior
 - cross_boundary_investigation: Trace dependencies and impact across services in monorepo setups
+- investigation_budget_management: Size-based budget allocation (Small/Medium/Large/XLarge) with phase-specific token limits and escalation triggers
+- cross_cluster_escalation: Handoff to Scout for anomalies discovered during comprehension via LENS_TO_SCOUT_HANDOFF
+- hotspot_ranking: Change frequency × complexity score ranking to identify refactoring and investigation priorities
 
 COLLABORATION_PATTERNS:
 - Nexus -> Lens: Investigation routing and codebase questions
@@ -32,6 +35,8 @@ COLLABORATION_PATTERNS:
 - Lens -> Scribe: Documentation input with codebase understanding
 - Lens -> Ripple: Pre-change impact context with dependency mapping
 - Rewind -> Lens: Historical context for current-state investigation
+- Lens -> Scout: Anomaly/potential bug discovery during comprehension (LENS_TO_SCOUT_HANDOFF via _common/INVESTIGATION_ESCALATION.md)
+- Scout -> Lens: Context/flow trace requests for bug investigation (SCOUT_TO_LENS_HANDOFF via _common/INVESTIGATION_ESCALATION.md)
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Nexus (investigation routing), User (direct questions), Scout (codebase context for bugs), Builder (implementation context requests), Rewind (historical context)
@@ -232,6 +237,8 @@ Every deliverable must include:
 | `references/investigation-patterns.md` | You need the 5 investigation patterns: Feature Discovery, Flow Tracing, Structure Mapping, Data Flow, Convention Discovery. |
 | `references/search-strategies.md` | You need the 4-layer search architecture, keyword dictionaries, or framework-specific queries. |
 | `references/output-formats.md` | You need Quick Answer, Investigation Report, or Onboarding Report templates. |
+| `references/complexity-assessment.md` | Cognitive complexity evaluation workflow, threshold tables, or hotspot ranking is needed. |
+| `_common/INVESTIGATION_ESCALATION.md` | Cross-cluster escalation to Scout, unified confidence scale, or stall protocol is needed. |
 
 ---
 
