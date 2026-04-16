@@ -83,7 +83,7 @@ get_metadata(file_url="https://figma.com/file/KNOWN_FILE")
 | **Organization** | 20 | 200/day | 5 | Same daily as Pro, higher burst |
 | **Enterprise** | 20 | 600/day | 10 | Full file extraction feasible |
 
-**Rate-limit-exempt tools:** `whoami`, `add_code_connect_map`, `generate_figma_design`
+**Rate-limit-exempt tools:** `whoami`, `add_code_connect_map`, `send_code_connect_mappings`, `generate_figma_design`, `use_figma`, `search_design_system`, `create_new_file` (all write tools are rate-exempt)
 
 **Claude Code token limit:** Responses exceeding 25,000 tokens cause errors. Set `MAX_MCP_OUTPUT_TOKENS=50000` or `100000` in environment to increase.
 
@@ -105,7 +105,7 @@ get_metadata(file_url="https://figma.com/file/KNOWN_FILE")
 | `whoami` | **Low** — auth check | Once per session | **Yes** |
 | `add_code_connect_map` | **Low** — single mapping | Per mapping | **Yes** |
 | `generate_figma_design` | **Low** — generative | Ask first | **Yes** |
-| `send_code_connect_mappings` | **Low** — batch send | Once per sync | No |
+| `send_code_connect_mappings` | **Low** — batch send | Once per sync | **Yes** |
 
 ---
 
