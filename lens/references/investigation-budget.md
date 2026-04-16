@@ -28,7 +28,7 @@
 - SURVEY: Depth 4+ (progressive disclosure)
 - TRACE: Max 8 execution chains, prioritize critical path
 - Total iterations: ≤4
-- Trigger: Ripple 併用推奨 when affected services ≥3
+- Trigger: Ripple co-use recommended when affected services ≥3
 
 ### XLarge (500K+ LOC)
 - SCOPE: Component-level decomposition required

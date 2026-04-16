@@ -1,20 +1,20 @@
 # Non-Functional Regression Investigation
 
-Git bisect と専門ツールを組み合わせた非機能リグレッションの調査手法。
+Investigation methodology for non-functional regressions combining git bisect with specialized tools.
 
 ## Performance Regression
 
 ### Benchmark-Driven Bisect
 
 ```bash
-# bisect terms で意味的な名前を使用
+# Use semantic names with bisect terms
 git bisect start --term-old=fast --term-new=slow
 
-# ベンチマークスクリプトで自動判定
+# Automate verdict with a benchmark script
 git bisect run ./scripts/perf-bisect.sh
 ```
 
-### perf-bisect.sh テンプレート
+### perf-bisect.sh Template
 
 ```bash
 #!/bin/bash
@@ -35,9 +35,9 @@ fi
 
 ### CI/CD Performance Test Integration
 
-- CI パフォーマンステスト結果の履歴グラフから回帰ポイントを特定
-- `git log --after="regression-date" --before="regression-date+1d"` で候補コミット絞り込み
-- GitHub Actions artifact からベンチマーク結果を取得: `gh run download`
+- Identify regression point from historical performance test result graphs in CI
+- Narrow candidate commits with `git log --after="regression-date" --before="regression-date+1d"`
+- Retrieve benchmark results from GitHub Actions artifacts: `gh run download`
 
 ## Memory Regression
 
@@ -64,9 +64,9 @@ fi
 
 ### Memory Leak Onset Identification
 
-1. Specter が検出したリーク箇所の blame で最終変更者を特定
-2. bisect でリーク開始コミットを特定
-3. コミット前後の heap snapshot 比較
+1. Use blame on the leak location detected by Specter to identify the last modifier
+2. Use bisect to identify the commit where the leak started
+3. Compare heap snapshots before and after the commit
 
 ## Bundle Size Regression
 
@@ -82,16 +82,16 @@ THRESHOLD=500000  # 500KB
 
 ## Startup Time Regression
 
-- Cold start / warm start の区別
-- Container 環境: `time docker run --rm app` の wall time 測定
-- Node.js: `--prof` + `--prof-process` でボトルネックモジュール特定
-- Python: `python -X importtime` でインポート時間プロファイリング
+- Distinguish cold start vs warm start
+- Container environment: measure wall time with `time docker run --rm app`
+- Node.js: identify bottleneck modules with `--prof` + `--prof-process`
+- Python: profile import time with `python -X importtime`
 
 ## Specter Escalation Criteria
 
-bisect 結果が以下に該当する場合、`REWIND_TO_SPECTER_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
+When bisect result falls into any of the following, use `REWIND_TO_SPECTER_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
 
-- 並行性制御の変更（lock, mutex, semaphore, channel）
-- リソース管理の変更（connection pool, file handle, socket）
-- 非同期処理パターンの変更（Promise chain, async/await, event listener）
-- メモリ管理の変更（cache, buffer, stream）
+- Changes to concurrency control (lock, mutex, semaphore, channel)
+- Changes to resource management (connection pool, file handle, socket)
+- Changes to async processing patterns (Promise chain, async/await, event listener)
+- Changes to memory management (cache, buffer, stream)

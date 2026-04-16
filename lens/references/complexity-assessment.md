@@ -1,6 +1,6 @@
 # Complexity Assessment Reference
 
-認知複雑度評価の具体的ワークフロー、しきい値表、ホットスポットランキング手法。
+Concrete workflow, threshold tables, and hotspot ranking methodology for cognitive complexity assessment.
 
 ## Step 1: Static Metrics Collection
 
@@ -14,21 +14,21 @@
 
 ## Step 2: Behavioral Metrics (when available)
 
-- **NRevisit** (rs=0.91-0.99 で認知負荷と強い相関) [Source: IEEE TSE]
+- **NRevisit** (rs=0.91-0.99, strong correlation with cognitive load) [Source: IEEE TSE]
   - Low risk: ≤3 revisits
   - Medium risk: 4-6 revisits
   - High risk: >6 revisits
-- **Time-to-understand 推定**: LOC × complexity_factor (0.5-2.0)
-- **Review comment density**: コメント/指摘が集中する箇所はホットスポット候補
+- **Time-to-understand estimate**: LOC × complexity_factor (0.5-2.0)
+- **Review comment density**: locations with concentrated comments/review notes are hotspot candidates
 
 ## Step 3: Hotspot Ranking
 
-1. 変更頻度の取得:
+1. Fetch change frequency:
    ```bash
    git log --format='%H' --since='6 months ago' -- {file} | wc -l
    ```
-2. ホットスポットスコア = 変更頻度 × 複雑度スコア
-3. Top 10 ホットスポットをレポート
+2. Hotspot score = change frequency × complexity score
+3. Report top 10 hotspots
 
 | Change Frequency (monthly) | Low Risk | Medium Risk | High Risk |
 |---------------------------|----------|-------------|-----------|
@@ -37,12 +37,12 @@
 
 ## Step 4: Comprehension Debt Assessment
 
-AI 生成コード比率の推定:
-- Co-authored-by trailers（Copilot, Claude 等）の存在
-- 大量行変更パターン（1コミットで 100+ 行追加）
-- パターン的コミットメッセージ
+Estimating AI-generated code ratio:
+- Presence of Co-authored-by trailers (Copilot, Claude, etc.)
+- Bulk line-change patterns (100+ lines added in a single commit)
+- Formulaic commit messages
 
-把握負債リスク判定:
+Comprehension debt risk determination:
 
 | AI Generated Rate | Review Rate | Risk Level |
 |-------------------|-------------|------------|

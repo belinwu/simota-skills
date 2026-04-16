@@ -1,6 +1,6 @@
 # Investigation Escalation Protocol
 
-調査系スキルクラスター（Scout, Lens, Rewind, Specter）間のエスカレーション標準。
+Escalation standard across the investigation skill cluster (Scout, Lens, Rewind, Specter).
 
 ## Escalation Flow
 
@@ -8,22 +8,24 @@
 [Vague Report / Unknown Issue]
     │
     ▼
-  Lens (SCOPE→SURVEY) ─── 把握で十分 ─── DONE
+  Lens (SCOPE→SURVEY) ─── comprehension sufficient ─── DONE
     │
-    ▼ 異常パターン・潜在バグ発見
-  Scout (TRIAGE→TRACE) ─── バグ特定 ─── Builder handoff
+    ▼ anomaly pattern / potential bug found
+  Scout (TRIAGE→TRACE) ─── bug identified ─── Builder handoff
     │                         │
-    │ 履歴調査必要             │ 並行性疑い
+    │ history investigation    │ concurrency suspected
+    │ needed                   │
     ▼                         ▼
   Rewind (bisect/archaeology)  Specter (SCAN→ANALYZE→SCORE)
     │                         │
-    ▼ リソース系変更発見       ▼ 開始時期特定必要
+    ▼ resource-related        ▼ onset timing needed
+      change found
     └───→ Specter             └───→ Rewind
 ```
 
 ## Ownership Rule
 
-1バグ＝1リーダースキル。他は支援ロール。リーダーは最初に TRIAGE/SCOPE を完了したスキルが担当する。
+One bug = one leader skill. Others serve as support roles. The leader is the skill that first completes TRIAGE/SCOPE.
 
 ## Unified Confidence Scale
 
@@ -82,12 +84,12 @@ SPECTER_TO_REWIND_HANDOFF:
 
 ## Stall Protocol (Cross-Cluster)
 
-1. Probe 3回 → 仮説切替
-2. 全仮説消費 → 隣接スキルにエスカレーション
-3. 2スキル間で 3+ 往復 → Nexus に昇格（Agent Tennis 防止）
+1. 3 probes without progress → switch hypothesis
+2. All hypotheses exhausted → escalate to adjacent skill
+3. 3+ round-trips between 2 skills → promote to Nexus (prevent Agent Tennis)
 
 ## Duplicate Investigation Prevention
 
-- 同一バグに対して複数スキルが同時調査を開始しない
-- エスカレーション時は Investigation_ID を引き継ぎ、重複を防止
-- リーダースキルが全エスカレーション結果を集約し、最終レポートに統合
+- Do not start parallel investigations on the same bug across multiple skills
+- Pass the Investigation_ID on escalation to prevent duplication
+- The leader skill aggregates all escalation results and integrates them into the final report
