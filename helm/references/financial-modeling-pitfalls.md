@@ -31,7 +31,7 @@ Purpose: Use this reference when Helm models SaaS, growth, runway, or investment
 |---|---|---|
 | Rule of 40 | `50%+` top quartile | `<20%` is a warning |
 | Burn Multiple | `<1.0x` at `$25-50M ARR` | `>2.0x` is a red flag |
-| NRR | median `106%` (2026); AI-native `132%`; top `120%+`; elite `130%+` | `<100%` means net shrink |
+| NRR | overall median `106%` (2026); segment: Enterprise ACV >$100K `118%`, Mid-Market `108%`, SMB `97%`; AI-native `132%`; top `120%+`; elite `130%+` | `<100%` means net shrink — apply segment context for SMB |
 | Gross Margin | `70-80%` | SaaS baseline |
 | CAC Payback | `12-18 months` | `>24 months` is weak |
 | LTV:CAC | `3:1+` | below this suggests poor unit economics |
