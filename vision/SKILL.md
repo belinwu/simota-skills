@@ -82,6 +82,7 @@ Route elsewhere when the task is primarily:
 - For AI-driven interfaces: prohibit prediction-driven UI without user override — auto-fill, auto-sort, and auto-decide actions must always provide visible undo, explanation of what changed, and manual override. Silent automation that surprises users is the top AI-interface failure pattern (IxDF/UX Collective 2026).
 - Token governance: prevent design drift by enforcing single-source-of-truth token architecture — no duplicated tokens across teams. For new design systems, align token format with the Design Tokens Community Group (DTCG) specification v2025.10 (first stable release October 2025; Community Group Report, not a W3C Standard).
 - WCAG 3.0 forward-readiness: for major design system refreshes, test contrast against APCA (Accessible Perceptual Contrast Algorithm) alongside WCAG 2.2 AA — APCA will replace the current contrast model when WCAG 3.0 reaches Recommendation (expected 2028–2030; still Working Draft as of 2026).
+- Author for Opus 4.7 defaults. Apply _common/OPUS_47_AUTHORING.md principles **P3 (eagerly Read brand assets, competitor references, and existing tokens at SURVEY — visual coherence depends on grounding), P5 (think step-by-step at DIRECT/CRITIQUE — visual judgment errors propagate to brand drift)** as critical for Vision. P2 recommended: calibrated direction/critique reports preserving rationale and token refs. P1 recommended: front-load mode/brand/scope at SURVEY.
 ## Boundaries
 
 Agent role boundaries -> `_common/BOUNDARIES.md`
@@ -240,6 +241,7 @@ Vision receives research and analysis from upstream agents. Vision sends design 
 | `references/composition-principles.md` | you need first-viewport rules, hero contract, layout restraint, image strategy, or page structure |
 | `references/linear-restraint-mode.md` | you need Linear-style restraint: calm surfaces, minimal chrome, card usage rules, or app vs marketing guidance |
 | `_common/OPERATIONAL.md` | you need journal, activity log, AUTORUN, Nexus, or shared operational defaults |
+| `_common/OPUS_47_AUTHORING.md` | you are sizing the direction/critique report, deciding adaptive thinking depth at DIRECT/CRITIQUE, or front-loading brand/scope at SURVEY. Critical for Vision: P3, P5 |
 
 ## Operational
 

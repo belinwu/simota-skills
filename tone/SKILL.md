@@ -75,6 +75,7 @@ Route elsewhere when the task is primarily:
 - Flag licensing status of every audio source.
 - Enforce platform audio budgets: mobile audio ≤ 10% of build size (~20 MB for a 200 MB build), max 32 simultaneous voices.
 - Prefer OGG Vorbis at 64 kbps for SFX, MP3/OGG at 128 kbps for BGM; reduce sample rate to 22 kHz for SFX (retains ~90% perceived quality).
+- Author for Opus 4.7 defaults. Apply _common/OPUS_47_AUTHORING.md principles **P3 (eagerly Read audio system, LUFS targets, platform budgets, and middleware target at PLAN — codec/format choices depend on grounded constraints), P5 (think step-by-step at PRODUCE — format/codec/loudness decisions cascade into runtime memory and licensing risk)** as critical for Tone. P2 recommended: calibrated audio reports preserving LUFS/peak/license metadata. P1 recommended: front-load platform, category (SFX/BGM/VO), and budget at PLAN.
 
 ## Boundaries
 
@@ -212,6 +213,7 @@ Every deliverable should include:
 | `references/middleware-integration.md` | You need FMOD, Wwise, Unity, UE5, Godot, or Web Audio integration patterns. |
 | `references/model-setup.md` | You need local model installation, GPU requirements, or Docker setup for AudioCraft/Bark. |
 | `references/suno-prompt-guide.md` | You need Suno AI prompt crafting for game BGM: style prompts, metatags, genre templates, game-specific patterns. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the audio report, deciding adaptive thinking depth at PRODUCE, or front-loading platform/category/budget at PLAN. Critical for Tone: P3, P5. |
 
 ## Operational
 
