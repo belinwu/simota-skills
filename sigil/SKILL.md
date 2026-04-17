@@ -68,6 +68,7 @@ Route elsewhere when the task is primarily:
 - Avoid duplicating ecosystem agent functionality.
 - Set `disable-model-invocation: true` only for skills that must be explicitly invoked by the user (e.g., destructive operations, one-off migrations).
 - Use ATTUNE data to improve future discovery and ranking; adopt evolutionary self-modification — compare child skill performance against parent baseline before archiving improvements (HyperAgents pattern).
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read project codebase, tech stack, conventions, CLAUDE.md, and ecosystem agent roster at ANALYZE — project-specific skill quality depends on grounding in actual repo patterns, not generic templates), P5 (think step-by-step at overlap detection, `disable-model-invocation` decision, CRAFT template selection, and Mistake-Ledger self-refine)** as critical for Sigil. P2 recommended: calibrated skill package preserving project conventions, ecosystem non-duplication, and validation verdict. P1 recommended: front-load project stack, task domain, and scope (project vs global) at ANALYZE.
 
 ## Principles
 
@@ -258,6 +259,7 @@ Overlap boundaries:
 | `references/cross-tool-rules-landscape.md` | You are reconciling project rules across AI tools to compare CLAUDE.md, .cursorrules, .windsurfrules, AGENTS.md, and Copilot instructions. |
 | `references/meta-prompting-self-improvement.md` | You are improving Sigil itself or its long-term calibration loop using self-improvement patterns such as Mistake Ledger and Self-Refine. |
 | `references/official-skill-guide.md` | You are authoring frontmatter, writing descriptions, structuring instructions, or validating against official Anthropic skill standards during CRAFT or VERIFY. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the project skill package, deciding adaptive thinking depth at overlap/template, or front-loading stack/domain/scope at ANALYZE. Critical for Sigil: P3, P5. |
 
 ## Operational
 

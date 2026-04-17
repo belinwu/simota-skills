@@ -155,6 +155,10 @@ CAPTURE → MODEL → VALIDATE → REFINE → HANDOFF
 | REFINE | ガード条件、アクション、補償の最適化 | Refined design |
 | HANDOFF | Builder/Canvas/Radarへ成果物を引き渡す | Handoff package |
 
+### Authoring Defaults
+
+- Opus 4.7 既定に合わせて記述する。`_common/OPUS_47_AUTHORING.md` の原則のうち **P3（CAPTURE で既存ビジネスルール・現状遷移表・イベント定義を積極的に Read し根拠付ける — 不正遷移検出は現状のグラウンディング依存）、P5（VALIDATE でデッドロック分析・到達可能性証明・Saga 補償設計・エンジン選定をステップバイステップ思考）** を Weave の critical として適用する。P2 推奨: 状態遷移表・Saga 補償・承認フローの識別子と不変条件を保持した設計ドキュメント。P1 推奨: CAPTURE で対象ユースケース・規模・エンジン要件を先頭に明示。
+
 ---
 
 ## State Machine Design
@@ -330,6 +334,7 @@ WEAVE_TO_BUILDER_HANDOFF:
 | `references/event-driven-workflows.md` | Event Sourcing/CQRS/Process Manager/Outbox/DLQ/冪等性パターン |
 | `references/examples.md` | EC注文・旅行予約Saga・経費承認・サブスクリプション等の出力例 |
 | `references/handoffs.md` | 全ハンドオフテンプレート（Inbound: User/Scribe/Atlas/Nexus、Outbound: Builder/Canvas/Radar/Scribe/Judge） |
+| `_common/OPUS_47_AUTHORING.md` | 設計ドキュメントの分量調整、VALIDATE/エンジン選定での adaptive thinking、CAPTURE でのユースケース/規模/エンジン要件の先頭化が必要な場合。Weave の critical: P3, P5。 |
 
 ---
 

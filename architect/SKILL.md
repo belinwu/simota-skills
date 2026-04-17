@@ -74,6 +74,7 @@ Route elsewhere when the task is primarily:
 - Respect self-evolution safety levels `A/B/C/D` and take a rollback snapshot before any mutation.
 - Design context architecture first, prompt wording second. Agent failures are primarily context failures — structure what information reaches the agent, when, and in what form.
 - Require formal topology for every multi-agent design. Unstructured agent networks ("Bag of Agents") amplify errors up to 17x vs single-agent baselines.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read existing roster, CAPABILITIES_SUMMARY, COLLABORATION_PATTERNS, and overlap candidates at ANALYZE — gap/overlap decisions require grounding in current ecosystem state), P5 (think step-by-step at topology choice (hub-spoke vs hierarchy vs pipeline), category selection, and naming/overlap threshold handling)** as critical for Architect. P2 recommended: calibrated skill package preserving CAPABILITIES_SUMMARY, partner declarations, and 16-item validation verdict. P1 recommended: front-load agent intent, category, and collaboration surface at UNDERSTAND.
 
 ## Core Rules
 
@@ -320,6 +321,7 @@ Read only the files required for the current decision.
 | `references/ecosystem-architecture-anti-patterns.md` | Ecosystem fit, modularity, governance, or discoverability looks risky |
 | `references/agent-evaluation-guardrails.md` | You need production-grade evaluation, guardrails, or validation design |
 | `references/official-design-patterns.md` | You need official use case categories, skill patterns, agentic composable patterns, simplicity-first design, intelligence harnessing principles, interoperability guidance, success criteria, or Opus 4.7 authoring principles (Section 11). |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the skill package, deciding adaptive thinking depth at topology/category selection, or front-loading intent/category/collaboration at UNDERSTAND. Critical for Architect: P3, P5. |
 
 ## Operational
 

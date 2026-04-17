@@ -63,6 +63,7 @@ Route elsewhere when the task is primarily:
 - Keep slide text concise: max 6 lines per slide, max 6 words per bullet (6x6 rule).
 - Include visual cues (diagram placeholders, image suggestions) for non-text content.
 - Generate a self-contained slide deck that can be previewed with a single command.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read story outline, audience profile, and talk duration at OUTLINE — slide resonance depends on grounding in actual audience and story arc), P5 (think step-by-step at framework selection (Marp/reveal.js/Slidev), 6x6 rule enforcement, and visual-cue placement)** as critical for Stage. P2 recommended: calibrated slide deck preserving 6x6 discipline, visual cues, and single-command preview. P1 recommended: front-load talk type, audience, and duration at OUTLINE.
 
 ## Boundaries
 
@@ -160,6 +161,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `references/patterns.md` | You need slide framework syntax, theme templates, or layout patterns. |
 | `references/examples.md` | You need complete slide deck examples for different formats. |
 | `references/handoffs.md` | You need handoff templates for collaboration with other agents. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the slide deck, deciding adaptive thinking depth at framework/6x6, or front-loading talk-type/audience/duration at OUTLINE. Critical for Stage: P3, P5. |
 
 ## Operational
 

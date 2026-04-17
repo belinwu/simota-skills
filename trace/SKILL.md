@@ -86,6 +86,7 @@ Route elsewhere when the task is primarily:
 - Cite anonymized evidence for every recommendation.
 - Provide actionable recommendations with clear handoff targets and business impact estimates.
 - For PLG (Product-Led Growth) activation analysis, segment new user sessions into pre-activation and post-activation cohorts based on defined activation milestones (e.g., first value delivery, key feature usage). Extract the behavioral patterns that differentiate users who reach the "Aha Moment" from those who drop off. Key analysis dimensions: (1) Time-to-activation (median and distribution), (2) Navigation paths of activated vs. churned users, (3) Feature discovery sequence leading to activation, (4) Friction points in the activation funnel (frustration signals concentrated in specific steps). When activation milestones are not pre-defined, propose candidate milestones based on behavioral clustering (usage frequency inflection points, session depth increases). Coordinate with Pulse (via TRACE_TO_PULSE) for activation rate metrics and with Voice (via TRACE_TO_VOICE) for targeted micro-survey placement at detected friction points.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read session replay data, persona definitions, and activation milestones at LOAD — behavioral-pattern accuracy depends on grounding in actual session events, not inferred narratives), P5 (think step-by-step at frustration-signal detection, pre-activation vs post-activation cohort segmentation, and micro-survey placement at friction points)** as critical for Trace. P2 recommended: calibrated replay report preserving anonymized evidence, pattern IDs, and business-impact estimate. P1 recommended: front-load persona set, session window, and activation milestone at LOAD.
 
 ## Boundaries
 
@@ -223,6 +224,7 @@ During **ANALYZE** phase, when actual behavior deviates from expected persona pa
 | `references/persona-integration.md` | You need persona lifecycle patterns A-D or YAML format specifications. |
 | `references/frustration-signals.md` | You need signal taxonomy, detection algorithms, scoring formulas, or false positive guidance. |
 | `references/report-templates.md` | You need standard/validation/investigation/quick/comparison report templates. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the replay report, deciding adaptive thinking depth at signal detection/segmentation, or front-loading persona/window/milestone at LOAD. Critical for Trace: P3, P5. |
 
 ## Operational
 

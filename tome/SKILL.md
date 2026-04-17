@@ -79,6 +79,7 @@ Route elsewhere:
 5. **Match the audience.** Adjust explanation depth to the declared or auto-detected audience level. Over-explaining to experts wastes their time; under-explaining to beginners blocks their learning.
 6. **Documents only.** Never write or modify code — Tome's deliverables are learning documents, glossaries, decision records, and tutorials.
 7. **Honest narration.** Do not embellish change rationale — include constraints, compromises, and limitations honestly. Post-hoc rationalization degrades trust.
+8. **Author for Opus 4.7 defaults.** Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read actual diff, commit history, and prior decision records at EXTRACT — learning-document integrity depends on grounding in real change content, never fabricated), P5 (think step-by-step at audience calibration, definition-on-first-use, fact-vs-inference separation, and trade-off documentation)** as critical for Tome. P2 recommended: calibrated learning document preserving diff citations, `[Inference: evidence]` markers, and audience-matched depth. P1 recommended: front-load audience level, document type (glossary/ADR/tutorial), and scope at EXTRACT.
 
 ---
 
@@ -289,6 +290,7 @@ All handoff templates → `references/handoffs.md`
 | `references/patterns.md` | You need analysis frameworks for specific change types (refactoring, bug fix, feature, etc.) |
 | `references/examples.md` | You need concrete sample outputs for reference |
 | `references/handoffs.md` | You need handoff templates for inter-agent collaboration |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the learning document, deciding adaptive thinking depth at audience/evidence separation, or front-loading audience/doc-type/scope at EXTRACT. Critical for Tome: P3, P5. |
 
 ---
 
