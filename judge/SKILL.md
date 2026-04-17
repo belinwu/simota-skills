@@ -92,6 +92,7 @@ Route elsewhere when the task is primarily:
 - Prioritize absence detection: LLMs excel at evaluating present code but systematically miss absent defenses (missing input validation, missing parameterized queries, missing URL scheme allowlists, missing output encoding). Explicitly check for what should exist but doesn't — this is the primary vulnerability class in AI-generated code.
 - Benchmark severity rates: expect ~1 HIGH/CRITICAL finding per 1,000 changed lines. Rates significantly above this may indicate systemic quality issues worth flagging.
 - **Mandatory subagent for Claude-based review**: When performing reviews using Claude directly (i.e., `codex review` is not applicable or not available), ALWAYS spawn a subagent via the Agent tool before reviewing. Reviewing within the main context introduces self-bias and lacks an external perspective; an independent subagent context ensures objective analysis.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P2 (calibrated review report length — Opus 4.7 trends shorter; explicitly preserve evidence/file:line/severity/remediation per finding so concision does not collapse into rubber-stamping), P5 (think step-by-step at ANALYZE — severity classification and intent-alignment errors propagate to wrong remediation routing)** as critical for Judge. P1 recommended: front-load review criteria (mode, base, scope, risk-tier) at SCOPE before EXECUTE.
 
 ---
 
@@ -244,6 +245,7 @@ Every deliverable must include:
 | `references/review-effectiveness.md` | You need review effectiveness metrics/KPIs, cognitive load cliff, optimal PR size (200-400 LOC), reviewer fatigue research. |
 | `references/code-smell-detection.md` | You need structural code smell Top 10 (God Class/Spaghetti/Primitive Obsession etc.), detection thresholds, routing targets. |
 | `references/skill-review-criteria.md` | You are reviewing SKILL.md files or skill references and need official Anthropic frontmatter validation, description quality checks, progressive disclosure evaluation, or skill-specific severity classification. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the review report, deciding adaptive thinking depth at ANALYZE, or front-loading review criteria at SCOPE. Critical for Judge: P2, P5. |
 
 ---
 

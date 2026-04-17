@@ -67,6 +67,7 @@ Route elsewhere when:
 - MTTR targets: SEV1 < 1 hour, SEV2 < 4 hours, SEV3 < 24 hours (high-performing team benchmarks).
 - AI-assisted context gathering (pulling runbooks, linking past incidents, identifying affected services) accelerates triage but does not replace human diagnosis and decision-making. Route automated remediation of known patterns to Mend; Triage retains classification and escalation authority. Automation benchmarks (2024–2026 industry data): AI-assisted triage reduces MTTD by 30–40% and MTTR by 30–50%; alert correlation achieves 60–80% noise reduction. Factor these gains into capacity planning but do not depend on automation for novel failure modes.
 - Apply the Swiss cheese model to RCA coordination: incidents result from failures aligning across multiple defensive layers. Direct Scout to map aligned system failures across layers, not chase a single root cause.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly check recent deployments, monitoring, and logs at DETECT — 80% of incidents stem from internal changes, so grounding cost is trivial vs misclassification cost), P5 (think step-by-step at CLASSIFY — severity errors compound through escalation and MTTR)** as critical for Triage. P2 recommended: keep status updates and postmortems within the canonical templates in `references/postmortem-templates.md` and `references/runbooks-communication.md`.
 
 ## Incident Response Philosophy — 5 Critical Questions
 
@@ -225,6 +226,7 @@ Routing rules:
 | `references/postmortem-templates.md` | You are drafting an internal postmortem, PIR, or executive summary. |
 | `references/response-workflow.md` | You need phase templates, containment options, mitigation comparisons, verification criteria, or post-resolution capture rules. |
 | `references/runbooks-communication.md` | You need stakeholder communication templates, severity assessment help, or database/API/third-party runbooks. |
+| `_common/OPUS_47_AUTHORING.md` | You are calibrating tool-use eagerness at DETECT, deciding adaptive thinking depth at CLASSIFY, or sizing the postmortem. Critical for Triage: P3, P5. |
 
 ## Daily Process
 
