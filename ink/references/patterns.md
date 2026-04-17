@@ -101,7 +101,9 @@ Rules:
 | Convert shapes to paths | Optionally for smaller output |
 
 ```bash
-npx svgo input.svg -o output.svg --config='{"plugins":["preset-default",{"name":"removeViewBox","active":false}]}'
+# SVGO v4+: removeViewBox and removeTitle are disabled by default.
+# Customize precision per use case: 1 for simple icons, 2-3 for complex illustrations.
+npx svgo input.svg -o output.svg --config='{"plugins":[{"name":"preset-default","params":{"overrides":{"convertPathData":{"floatPrecision":1}}}}]}'
 ```
 
 ## Animated SVG Patterns
