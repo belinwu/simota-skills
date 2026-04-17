@@ -1,7 +1,7 @@
 # Workflow Engine Selection Guide
 
-**Purpose:** ワークフローエンジンの選定ガイド。
-**Read when:** プロジェクトに適したワークフローエンジンを選定する時。
+**Purpose:** Selection guide for workflow engines.
+**Read when:** Picking the right workflow engine for a project.
 
 ---
 
@@ -22,21 +22,21 @@
 ## Selection Decision Tree
 
 ```
-ワークフローの種類は？
-├── フロントエンド状態管理
+What kind of workflow is it?
+├── Frontend state management
 │   └── XState
-├── データパイプライン / ETL
-│   ├── Python重視 → Airflow or Prefect
-│   └── Stream連携 → Kafka Streams (→ Streamエージェント参照)
-├── サーバーレス / イベント駆動
-│   ├── AWS限定 → Step Functions
-│   └── マルチクラウド → Inngest
-└── 汎用ビジネスワークフロー
-    ├── 既にAWS → Step Functions
-    ├── マルチクラウド / 高可用性
-    │   ├── マネージド希望 → Temporal Cloud
-    │   └── セルフホスト可 → Temporal OSS or Cadence
-    └── シンプルなイベント連鎖 → Inngest
+├── Data pipeline / ETL
+│   ├── Python-heavy → Airflow or Prefect
+│   └── Stream integration → Kafka Streams (see Stream agent)
+├── Serverless / event-driven
+│   ├── AWS-only → Step Functions
+│   └── Multi-cloud → Inngest
+└── General business workflow
+    ├── Already on AWS → Step Functions
+    ├── Multi-cloud / high availability
+    │   ├── Want managed service → Temporal Cloud
+    │   └── Self-hosting OK → Temporal OSS or Cadence
+    └── Simple event chain → Inngest
 ```
 
 ---
@@ -44,15 +44,15 @@
 ## Temporal
 
 ### Strengths
-- 言語ネイティブのワークフロー定義（コードがそのままワークフロー）
-- 強力な耐久性保証（replay-safe execution）
-- Signal/Query/Update でワークフロー状態の外部操作可能
-- Child Workflow、Continue-as-new で長期ワークフロー対応
+- Language-native workflow definitions (code is the workflow)
+- Strong durability guarantees (replay-safe execution)
+- Signal/Query/Update for external interaction with workflow state
+- Child Workflow and Continue-as-new support long-running workflows
 
 ### Best For
-- 長時間実行（日〜月単位）のビジネスプロセス
-- 複雑な補償・リトライロジック
-- マイクロサービス間オーケストレーション
+- Long-running business processes (days to months)
+- Complex compensation and retry logic
+- Microservice-to-microservice orchestration
 
 ### Template
 
@@ -82,15 +82,15 @@ TEMPORAL_WORKFLOW:
 ## AWS Step Functions
 
 ### Strengths
-- AWSサービスとのネイティブ統合（Lambda, SQS, DynamoDB等）
-- ASLによる宣言的ワークフロー定義
-- Express/Standard の2つの実行モード
-- Built-in error handling とリトライ
+- Native integration with AWS services (Lambda, SQS, DynamoDB, etc.)
+- Declarative workflow definitions via ASL
+- Two execution modes: Express and Standard
+- Built-in error handling and retries
 
 ### Best For
-- AWS中心のアーキテクチャ
-- サーバーレスワークフロー
-- Lambda関数のオーケストレーション
+- AWS-centric architectures
+- Serverless workflows
+- Orchestrating Lambda functions
 
 ### Template
 
@@ -123,15 +123,15 @@ TEMPORAL_WORKFLOW:
 ## Inngest
 
 ### Strengths
-- イベント駆動でシンプルなAPI
-- サーバーレスファースト（Vercel, Cloudflare等と統合）
-- Step function / Sleep / Wait-for-event が組み込み
-- ローカル開発体験が良い（Dev Server）
+- Event-driven with a simple API
+- Serverless-first (integrates with Vercel, Cloudflare, and others)
+- Built-in step functions, sleep, and wait-for-event
+- Great local development experience (Dev Server)
 
 ### Best For
-- Next.js / Vercel ベースのプロジェクト
-- イベント駆動ワークフロー
-- バックグラウンドジョブ
+- Next.js / Vercel-based projects
+- Event-driven workflows
+- Background jobs
 
 ### Template (TypeScript)
 
@@ -161,15 +161,15 @@ const workflow = inngest.createFunction(
 ## XState (v5)
 
 ### Strengths
-- TypeScript型安全
-- ブラウザ/Node.js両対応
-- Stately Studio による視覚的エディタ
-- Actor model ベースのスケーラブルな設計
+- TypeScript type safety
+- Works in both browser and Node.js
+- Visual editor via Stately Studio
+- Scalable design built on the actor model
 
 ### Best For
-- フロントエンド状態管理
-- フォームウィザード、UIフロー
-- クライアントサイドのワークフロー
+- Frontend state management
+- Form wizards and UI flows
+- Client-side workflows
 
 ### Template
 
@@ -192,15 +192,15 @@ const machine = createMachine({
 
 ## Non-Functional Requirements Checklist
 
-選定時に確認すべき非機能要件:
+Non-functional requirements to verify during selection:
 
 | Requirement | Question |
 |-------------|----------|
-| Durability | ワークフロー実行中にプロセスが落ちても再開できるか？ |
-| Scalability | 同時実行数の上限は？スケールアウト可能か？ |
-| Observability | 実行状態の可視化、ログ、メトリクスは十分か？ |
-| Cost | 実行回数・遷移数に基づくコスト試算 |
-| Latency | 各ステップ間のレイテンシ要件 |
-| Vendor lock-in | クラウドベンダーへの依存度 |
-| Team skill | チームの既存スキルセットとの親和性 |
-| Community | コミュニティの活発さ、ドキュメントの充実度 |
+| Durability | Can a workflow resume if the process crashes mid-execution? |
+| Scalability | What is the concurrency ceiling? Does it scale out? |
+| Observability | Are execution-state visibility, logs, and metrics sufficient? |
+| Cost | Cost projection based on execution count and transition count |
+| Latency | Latency requirements between steps |
+| Vendor lock-in | Degree of dependency on a specific cloud vendor |
+| Team skill | Fit with the team's existing skill set |
+| Community | Community activity and documentation quality |

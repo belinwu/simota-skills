@@ -1,7 +1,7 @@
 # State Machine Patterns
 
-**Purpose:** ステートマシン設計のパターン集とベストプラクティス。
-**Read when:** FSM/Statechart/XState設計が必要な時。
+**Purpose:** Pattern catalog and best practices for state machine design.
+**Read when:** Designing an FSM, Statechart, or XState machine.
 
 ---
 
@@ -264,8 +264,8 @@ function checkDeterminism(stateMachine):
 
 | Anti-Pattern | Problem | Solution |
 |-------------|---------|----------|
-| God State | 1つの状態から全状態へ遷移可能 | 階層化して遷移を制限 |
-| Boolean Explosion | `isLoading && !isError && isRetrying` | 明示的な状態に分割 |
-| Implicit State | コンテキスト変数で状態を表現 | 明示的な状態ノードを定義 |
-| Missing Error States | エラーハンドリングなし | すべてのinvokeにonErrorを定義 |
-| Orphan State | 到達不能な状態が存在 | Reachability checkで検出 |
+| God State | A single state can transition to every other state | Introduce hierarchy to constrain transitions |
+| Boolean Explosion | `isLoading && !isError && isRetrying` | Split into explicit states |
+| Implicit State | State encoded in context variables | Define explicit state nodes |
+| Missing Error States | No error handling | Define onError for every invoke |
+| Orphan State | Unreachable states exist | Detect via reachability check |

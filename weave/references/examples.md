@@ -1,17 +1,17 @@
 # Weave Usage Examples
 
-**Purpose:** Weaveの出力例とユースケース集。
-**Read when:** Weaveの使い方、出力フォーマットの具体例が必要な時。
+**Purpose:** Sample outputs and use cases for Weave.
+**Read when:** You need concrete examples of Weave's usage and output format.
 
 ---
 
-## Example 1: EC注文ステートマシン
+## Example 1: E-commerce Order State Machine
 
 ### Input
 
 ```
-注文の状態遷移を設計してください。
-カート→注文確定→決済→出荷→配達→完了。キャンセルと返品もサポート。
+Design the state transitions for an order.
+Cart -> confirmed -> payment -> shipped -> delivered -> completed. Support cancellations and returns.
 ```
 
 ### Output
@@ -79,7 +79,7 @@ VALIDATION_REPORT:
   reachability: PASS (all 13 states reachable from cart)
   deadlock_free: PASS (all non-final states have outgoing transitions)
   determinism: PASS (no ambiguous transitions)
-  completeness: PASS (all state×event combinations handled)
+  completeness: PASS (all state x event combinations handled)
   final_states: [refunded, cancelled, completed]
   unreachable_states: []
   potential_issues:
@@ -89,14 +89,14 @@ VALIDATION_REPORT:
 
 ---
 
-## Example 2: Saga設計（旅行予約）
+## Example 2: Saga Design (Travel Booking)
 
 ### Input
 
 ```
-旅行予約のSagaを設計してください。
-フライト→ホテル→レンタカーの順で予約。
-いずれかが失敗したら補償トランザクションで巻き戻し。
+Design a Saga for travel booking.
+Reserve flight -> hotel -> rental car in order.
+If any step fails, roll back with compensating transactions.
 ```
 
 ### Output
@@ -147,8 +147,8 @@ SAGA_ORCHESTRATION:
       on_failure: COMPENSATE
 
   compensation_order: reverse
-  # Failure at Step 3: cancel car → cancel hotel → cancel flight
-  # Failure at Step 2: cancel hotel → cancel flight
+  # Failure at Step 3: cancel car -> cancel hotel -> cancel flight
+  # Failure at Step 2: cancel hotel -> cancel flight
   # Failure at Step 1: cancel flight
 
   idempotency:
@@ -158,13 +158,13 @@ SAGA_ORCHESTRATION:
 
 ---
 
-## Example 3: 承認フロー
+## Example 3: Approval Flow
 
 ### Input
 
 ```
-経費申請の承認フローを設計してください。
-10万円未満は上長のみ、10万円以上は上長＋部長、50万円以上はさらにCFO。
+Design an approval flow for expense claims.
+Under 100,000 JPY: manager only. 100,000 JPY and above: manager + department head. 500,000 JPY and above: also CFO.
 ```
 
 ### Output
@@ -240,13 +240,13 @@ STATE_MACHINE:
 
 ---
 
-## Example 4: サブスクリプションライフサイクル
+## Example 4: Subscription Lifecycle
 
 ### Input
 
 ```
-SaaSサブスクリプションのライフサイクルを設計してください。
-トライアル→有料→更新/キャンセル/一時停止。未払い処理も含む。
+Design the lifecycle of a SaaS subscription.
+Trial -> paid -> renewal / cancellation / pause. Include dunning (past-due) handling.
 ```
 
 ### Output

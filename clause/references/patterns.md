@@ -1,43 +1,43 @@
 # Review Patterns
 
-**Purpose:** 法的文書レビューの設計パターン集。
-**Read when:** レビュー手法の選択やレポート構造の設計時。
+**Purpose:** Catalog of design patterns for legal document review.
+**Read when:** Selecting a review approach or designing a report structure.
 
 ---
 
 ## Pattern 1: Single Document Review
 
-**When to use:** 1つの法的文書を単独でレビューする場合。
+**When to use:** Reviewing a single legal document in isolation.
 
 ```
 SCOPE → SCAN → ASSESS → REPORT → SUGGEST
 ```
 
-### 手順
-1. **SCOPE**: 文書種別・法域・対象サービスを特定
-2. **SCAN**: 該当チェックリスト（`legal-checklists.md`）で条項を1つずつ確認
-3. **ASSESS**: 各条項にリスクレベルを付与、欠落条項を特定
-4. **REPORT**: 構造化レポートを生成
-5. **SUGGEST**: 改善案・追加条項案を提示
+### Steps
+1. **SCOPE**: Identify document type, jurisdiction, and target service.
+2. **SCAN**: Walk the relevant checklist (`legal-checklists.md`) clause by clause.
+3. **ASSESS**: Assign a risk level to each clause and identify missing ones.
+4. **REPORT**: Produce a structured report.
+5. **SUGGEST**: Propose concrete amendments and additional clauses.
 
 ---
 
 ## Pattern 2: Cross-Document Consistency Review
 
-**When to use:** 利用規約とプライバシーポリシー等、複数文書の整合性を確認する場合。
+**When to use:** Verifying consistency across multiple documents such as Terms of Service and Privacy Policy.
 
 ```
-SCOPE → SCAN(各文書) → CROSS-CHECK → REPORT → SUGGEST
+SCOPE → SCAN (per document) → CROSS-CHECK → REPORT → SUGGEST
 ```
 
-### チェックポイント
-- 個人情報の取扱い記述が利用規約とプライバシーポリシーで矛盾しないか
-- 免責範囲が利用規約と特商法表記で一致しているか
-- 準拠法・管轄裁判所の記載が全文書で統一されているか
-- 用語定義が文書間で統一されているか
-- サービス名称・事業者名が一致しているか
+### Check points
+- Personal-information handling described in ToS and Privacy Policy does not contradict.
+- Scope of disclaimers aligns between ToS and Tokushoho notation.
+- Governing-law and jurisdiction clauses are uniform across all documents.
+- Term definitions are consistent across documents.
+- Service name and business-operator name match.
 
-### 整合性マトリクス
+### Consistency Matrix
 
 ```markdown
 | 項目 | 利用規約 | プライバシーポリシー | 特商法表記 | 整合性 |
@@ -51,52 +51,52 @@ SCOPE → SCAN(各文書) → CROSS-CHECK → REPORT → SUGGEST
 
 ## Pattern 3: Pre-Launch Review
 
-**When to use:** 新サービスローンチ前の包括的法的文書チェック。
+**When to use:** Comprehensive legal-document check prior to launching a new service.
 
 ```
-INVENTORY → SCOPE → SCAN(全文書) → CROSS-CHECK → GAP-ANALYSIS → REPORT
+INVENTORY → SCOPE → SCAN (all documents) → CROSS-CHECK → GAP-ANALYSIS → REPORT
 ```
 
-### 文書インベントリ
-1. 利用規約 — 必須
-2. プライバシーポリシー — 必須
-3. 特定商取引法表記 — 有料サービスの場合必須
-4. Cookie ポリシー — Web サービスの場合推奨
-5. コミュニティガイドライン — UGC がある場合推奨
-6. SLA — B2B SaaS の場合推奨
-7. DPA (Data Processing Agreement) — GDPR 対応の場合必須
+### Document inventory
+1. Terms of Service — required
+2. Privacy Policy — required
+3. Tokushoho notation (特定商取引法に基づく表記) — required for paid services
+4. Cookie Policy — recommended for web services
+5. Community Guidelines — recommended when UGC is present
+6. SLA — recommended for B2B SaaS
+7. DPA (Data Processing Agreement) — required for GDPR compliance
 
 ---
 
 ## Pattern 4: Compliance Delta Review
 
-**When to use:** 法改正や新規制への対応状況を確認する場合。
+**When to use:** Assessing readiness against a legal amendment or new regulation.
 
 ```
-IDENTIFY(法改正) → MAP(影響範囲) → GAP(現行文書との差分) → SUGGEST(修正案)
+IDENTIFY (amendment) → MAP (impact scope) → GAP (delta vs. current docs) → SUGGEST (fixes)
 ```
 
-### 手順
-1. 法改正の要件を整理
-2. 現行文書の該当条項をマッピング
-3. 要件と現行文書のギャップを特定
-4. 具体的な修正案を提示
+### Steps
+1. Organize the amendment's requirements.
+2. Map the corresponding clauses in the current documents.
+3. Identify gaps between requirements and current text.
+4. Propose concrete amendments.
 
 ---
 
 ## Pattern 5: Industry-Specific Review
 
-**When to use:** 業種固有の規制が適用される場合。
+**When to use:** Industry-specific regulation applies.
 
-### 業種別追加チェック項目
+### Additional check items by industry
 
-| 業種 | 追加法令 | 重点チェック |
-|------|---------|------------|
-| 金融 | 金融商品取引法、貸金業法 | リスク説明、適合性原則 |
-| 医療 | 医薬品医療機器等法、医師法 | 医療情報の取扱い、免責 |
-| 教育 | 学校教育法 | 未成年者保護、保護者同意 |
-| 不動産 | 宅建業法 | 重要事項説明 |
-| 飲食 | 食品衛生法、景品表示法 | アレルギー表示、誇大広告 |
-| ゲーム | 景品表示法、資金決済法 | ガチャ確率表示、仮想通貨 |
+| Industry | Additional statutes | Focus areas |
+|----------|---------------------|-------------|
+| Finance | 金融商品取引法, 貸金業法 | Risk disclosure, suitability principle |
+| Healthcare | 医薬品医療機器等法, 医師法 | Handling of medical information, disclaimers |
+| Education | 学校教育法 | Protection of minors, guardian consent |
+| Real estate | 宅建業法 | Important-matters explanation |
+| Food service | 食品衛生法, 景品表示法 | Allergy labeling, exaggerated advertising |
+| Games | 景品表示法, 資金決済法 | Gacha-probability disclosure, virtual currency |
 
-レビュー時の禁止事項は SKILL.md の Boundaries > Never を参照。
+For prohibitions during review, see SKILL.md → Boundaries → Never.

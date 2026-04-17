@@ -1,7 +1,7 @@
 # Handoff Templates
 
-**Purpose:** Clause と他エージェント間のハンドオフ形式定義。
-**Read when:** 他エージェントとの連携が必要な場合。
+**Purpose:** Handoff format definitions between Clause and other agents.
+**Read when:** Coordinating with another agent.
 
 ---
 
@@ -9,7 +9,7 @@
 
 ### From Comply (COMPLY_TO_CLAUSE_HANDOFF)
 
-規制要件を法的文書に反映する必要がある場合。
+Use when regulatory requirements must be reflected into legal documents.
 
 ```yaml
 COMPLY_TO_CLAUSE_HANDOFF:
@@ -19,17 +19,17 @@ COMPLY_TO_CLAUSE_HANDOFF:
     regulatory_framework: "[SOC2 | PCI-DSS | HIPAA | ISO 27001 | ...]"
     requirements:
       - requirement_id: "[ID]"
-        description: "[要件の説明]"
-        impact_on_legal_docs: "[利用規約/プライバシーポリシーへの影響]"
+        description: "[Requirement description]"
+        impact_on_legal_docs: "[Impact on ToS / Privacy Policy]"
     target_documents:
-      - "[対象文書名]"
+      - "[Target document name]"
     priority: "[High | Medium | Low]"
-  expected_output: "法的文書への反映案と整合性レポート"
+  expected_output: "Proposed reflections into legal documents and a consistency report"
 ```
 
 ### From Cloak (CLOAK_TO_CLAUSE_HANDOFF)
 
-プライバシー実装とポリシー文書の整合を確認する場合。
+Use when verifying alignment between privacy implementation and policy documents.
 
 ```yaml
 CLOAK_TO_CLAUSE_HANDOFF:
@@ -37,20 +37,20 @@ CLOAK_TO_CLAUSE_HANDOFF:
   target: Clause
   context:
     privacy_implementation:
-      data_collected: ["[収集データ項目]"]
-      processing_purposes: ["[処理目的]"]
-      third_party_sharing: ["[第三者提供先]"]
-      retention_periods: {"[データ種別]": "[期間]"}
+      data_collected: ["[Collected data category]"]
+      processing_purposes: ["[Processing purpose]"]
+      third_party_sharing: ["[Third-party recipient]"]
+      retention_periods: {"[Data category]": "[Period]"}
     consent_mechanisms:
       - type: "[opt-in | opt-out | notice-only]"
-        scope: "[対象データ・処理]"
-    current_policy_version: "[バージョン/日付]"
-  expected_output: "ポリシー文書との差分レポートと修正案"
+        scope: "[Covered data / processing]"
+    current_policy_version: "[Version / date]"
+  expected_output: "Delta report against the policy document and a proposed fix"
 ```
 
 ### From Scribe (SCRIBE_TO_CLAUSE_HANDOFF)
 
-仕様書から法的要件を抽出してレビューする場合。
+Use when legal requirements must be extracted from a specification and reviewed.
 
 ```yaml
 SCRIBE_TO_CLAUSE_HANDOFF:
@@ -59,12 +59,12 @@ SCRIBE_TO_CLAUSE_HANDOFF:
   context:
     specification_type: "[PRD | SRS | HLD]"
     legal_relevant_sections:
-      - section: "[セクション名]"
-        content_summary: "[要約]"
-        legal_concern: "[法的懸念事項]"
-    service_description: "[サービス概要]"
-    target_jurisdictions: ["[法域]"]
-  expected_output: "法的文書要件リストとチェックリスト"
+      - section: "[Section name]"
+        content_summary: "[Summary]"
+        legal_concern: "[Legal concern]"
+    service_description: "[Service overview]"
+    target_jurisdictions: ["[Jurisdiction]"]
+  expected_output: "Legal-document requirements list and a checklist"
 ```
 
 ---
@@ -73,7 +73,7 @@ SCRIBE_TO_CLAUSE_HANDOFF:
 
 ### To Builder (CLAUSE_TO_BUILDER_HANDOFF)
 
-レビュー結果から実装が必要な項目がある場合。
+Use when the review surfaces items that need implementation.
 
 ```yaml
 CLAUSE_TO_BUILDER_HANDOFF:
@@ -83,45 +83,45 @@ CLAUSE_TO_BUILDER_HANDOFF:
     implementation_items:
       - id: "[IMPL-01]"
         type: "[consent_flow | cookie_banner | age_gate | data_export | deletion_flow | opt_out]"
-        requirement: "[法的要件の説明]"
-        reference_finding: "[レビューレポートの発見事項ID]"
-        reference_law: "[参照法令]"
+        requirement: "[Legal requirement]"
+        reference_finding: "[Finding ID in the review report]"
+        reference_law: "[Referenced statute]"
         priority: "[High | Medium | Low]"
         acceptance_criteria:
-          - "[基準1]"
-          - "[基準2]"
+          - "[Criterion 1]"
+          - "[Criterion 2]"
     technical_constraints:
-      - "[制約事項]"
-  expected_output: "実装コードと動作確認結果"
+      - "[Constraint]"
+  expected_output: "Implementation code and verification result"
 ```
 
 ### To Prose (CLAUSE_TO_PROSE_HANDOFF)
 
-法的文書の平易化・UXライティング改善が必要な場合。
+Use when the legal text needs plain-language or UX-writing improvements.
 
 ```yaml
 CLAUSE_TO_PROSE_HANDOFF:
   source: Clause
   target: Prose
   context:
-    document_type: "[利用規約 | プライバシーポリシー | ...]"
+    document_type: "[Terms of Service | Privacy Policy | ...]"
     readability_issues:
-      - location: "[該当箇所]"
-        current_text: "[現在の文面]"
-        issue: "[問題点: 専門用語過多/曖昧/冗長/...]"
-        target_audience: "[対象読者]"
+      - location: "[Location in the document]"
+        current_text: "[Current wording]"
+        issue: "[Issue: jargon-heavy / ambiguous / verbose / ...]"
+        target_audience: "[Target reader]"
     tone_requirements:
       formality: "[formal | semi-formal | casual]"
-      language_level: "[専門家向け | 一般向け | 全年齢向け]"
+      language_level: "[expert | general | all-ages]"
     constraints:
-      - "法的正確性を維持すること"
-      - "[その他制約]"
-  expected_output: "平易化された文面案"
+      - "Maintain legal accuracy"
+      - "[Other constraint]"
+  expected_output: "Proposed plain-language wording"
 ```
 
 ### To Scribe (CLAUSE_TO_SCRIBE_HANDOFF)
 
-法的要件を仕様文書として整理する場合。
+Use when legal requirements should be organized into a specification document.
 
 ```yaml
 CLAUSE_TO_SCRIBE_HANDOFF:
@@ -130,12 +130,12 @@ CLAUSE_TO_SCRIBE_HANDOFF:
   context:
     legal_requirements:
       - id: "[REQ-01]"
-        requirement: "[法的要件]"
-        source_law: "[根拠法令]"
+        requirement: "[Legal requirement]"
+        source_law: "[Source statute]"
         priority: "[High | Medium | Low]"
-        implementation_scope: "[影響範囲]"
+        implementation_scope: "[Impact scope]"
     document_request:
       type: "[PRD | checklist | test_spec]"
-      format: "[出力形式の希望]"
-  expected_output: "法的要件を反映した仕様文書"
+      format: "[Preferred output format]"
+  expected_output: "Specification document reflecting the legal requirements"
 ```

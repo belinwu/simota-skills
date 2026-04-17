@@ -1,7 +1,7 @@
 # Weave Handoff Templates
 
-**Purpose:** Weaveと他エージェント間のハンドオフテンプレート。
-**Read when:** Weaveへの入力・Weaveからの出力のフォーマットが必要な時。
+**Purpose:** Handoff templates between Weave and other agents.
+**Read when:** You need the input or output format for Weave.
 
 ---
 

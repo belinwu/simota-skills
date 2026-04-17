@@ -1,110 +1,112 @@
 # Legal Document Checklists
 
-**Purpose:** 法的文書のレビューに使用する条項チェックリスト。
-**Read when:** SCAN フェーズで条項の網羅性を確認する際。
+**Purpose:** Clause-coverage checklists for legal document review.
+**Read when:** Verifying clause coverage during the SCAN phase.
 
 ---
 
-## 利用規約 (Terms of Service) チェックリスト
+## Terms of Service (利用規約) Checklist
 
-### 必須条項
+### Required Clauses
 
-| # | 条項 | リスク(欠落時) | 参照法令(日本) |
-|---|------|-------------|-------------|
-| T-01 | サービスの定義・範囲 | Medium | - |
-| T-02 | 利用資格・年齢制限 | High | 民法5条(未成年者の法律行為) |
-| T-03 | アカウント登録・管理責任 | Medium | - |
-| T-04 | 利用料金・支払条件 | High | 特商法11条 |
-| T-05 | 禁止事項 | Medium | - |
-| T-06 | 知的財産権の帰属 | High | 著作権法 |
-| T-07 | ユーザー生成コンテンツ(UGC)の取扱い | High | 著作権法・プロバイダ責任制限法 |
-| T-08 | 免責事項・責任制限 | High | 消費者契約法8条・10条 |
-| T-09 | サービスの変更・中断・終了 | Medium | - |
-| T-10 | 規約変更の手続き | High | 民法548条の4(定型約款の変更) |
-| T-11 | 契約解除・退会 | Medium | 消費者契約法 |
-| T-12 | 準拠法 | Low | 法の適用に関する通則法 |
-| T-13 | 紛争解決(管轄裁判所/ADR) | Low | 民事訴訟法 |
-| T-14 | 反社会的勢力の排除 | Medium | 各都道府県暴排条例 |
-| T-15 | 分離可能性条項 | Low | - |
+| # | Clause | Risk (if missing) | Statute (Japan) |
+|---|--------|-------------------|-----------------|
+| T-01 | Service definition and scope | Medium | - |
+| T-02 | Eligibility and age restrictions | High | 民法 第5条 (minor's legal acts) |
+| T-03 | Account registration and management responsibility | Medium | - |
+| T-04 | Fees and payment terms | High | 特商法 第11条 |
+| T-05 | Prohibited conduct | Medium | - |
+| T-06 | Intellectual property ownership | High | 著作権法 |
+| T-07 | User-generated content (UGC) handling | High | 著作権法・プロバイダ責任制限法 |
+| T-08 | Disclaimers and limitation of liability | High | 消費者契約法 第8条・第10条 |
+| T-09 | Service change, suspension, and termination | Medium | - |
+| T-10 | Procedure for amending the terms | High | 民法 第548条の4 (amendment of standard-form contracts) |
+| T-11 | Contract termination and withdrawal | Medium | 消費者契約法 |
+| T-12 | Governing law | Low | 法の適用に関する通則法 |
+| T-13 | Dispute resolution (jurisdiction / ADR) | Low | 民事訴訟法 |
+| T-14 | Anti-social-forces exclusion clause | Medium | 各都道府県暴力団排除条例 |
+| T-15 | Severability clause | Low | - |
 
-### 推奨条項
+### Recommended Clauses
 
-| # | 条項 | 用途 |
-|---|------|------|
-| T-16 | 第三者サービスとの連携 | API/外部連携がある場合 |
-| T-17 | ベータ版・実験的機能の免責 | 新機能提供時 |
-| T-18 | データのエクスポート・ポータビリティ | SaaS/サブスクリプション |
-| T-19 | SLA(サービスレベル) | B2B SaaS |
-| T-20 | 不可抗力(Force Majeure) | 全サービス推奨 |
-
----
-
-## プライバシーポリシー チェックリスト
-
-### 日本法(個人情報保護法)準拠
-
-| # | 条項 | リスク(欠落時) | 参照法令 |
-|---|------|-------------|---------|
-| P-01 | 個人情報取扱事業者の名称・連絡先 | High | 個情法32条 |
-| P-02 | 利用目的の特定・通知 | High | 個情法17条・21条 |
-| P-03 | 取得する個人情報の項目 | High | 個情法21条 |
-| P-04 | 第三者提供の有無・条件 | High | 個情法27条 |
-| P-05 | 共同利用の範囲・目的 | Medium | 個情法27条5項3号 |
-| P-06 | 委託先への提供 | Medium | 個情法25条 |
-| P-07 | 本人からの開示等請求への対応 | High | 個情法33条 |
-| P-08 | 安全管理措置の概要 | Medium | 個情法23条 |
-| P-09 | Cookie・外部送信の利用 | High | 電気通信事業法27条の12 |
-| P-10 | 個人情報の保存期間 | Medium | - |
-| P-11 | 国際データ移転 | High | 個情法28条 |
-| P-12 | 要配慮個人情報の取扱い | High | 個情法20条2項 |
-| P-13 | 子供の個人情報 | Medium | - |
-| P-14 | ポリシー変更時の通知手続き | Medium | - |
-
-### GDPR追加要件
-
-| # | 条項 | リスク(欠落時) | 参照条項 |
-|---|------|-------------|---------|
-| G-01 | 処理の法的根拠(6条) | High | GDPR Art.6 |
-| G-02 | データ主体の権利一覧 | High | GDPR Art.12-22 |
-| G-03 | DPO(データ保護責任者)情報 | Medium | GDPR Art.37-39 |
-| G-04 | データポータビリティ権 | High | GDPR Art.20 |
-| G-05 | 忘れられる権利(消去権) | High | GDPR Art.17 |
-| G-06 | 自動意思決定・プロファイリング | Medium | GDPR Art.22 |
-| G-07 | データ侵害通知(72時間) | High | GDPR Art.33 |
-| G-08 | 国際移転の保護措置(SCC等) | High | GDPR Art.46 |
-
-### CCPA/CPRA追加要件
-
-| # | 条項 | リスク(欠落時) |
-|---|------|-------------|
-| C-01 | 「個人情報の販売」オプトアウト権 | High |
-| C-02 | 「Do Not Sell My Personal Information」リンク | High |
-| C-03 | 過去12ヶ月の情報カテゴリ開示 | Medium |
-| C-04 | 消費者の差別禁止 | Medium |
-| C-05 | 情報の「共有」と「販売」の区別 | Medium |
+| # | Clause | When applicable |
+|---|--------|-----------------|
+| T-16 | Third-party service integrations | APIs / external integrations exist |
+| T-17 | Beta / experimental-feature disclaimer | New-feature rollouts |
+| T-18 | Data export / portability | SaaS / subscription |
+| T-19 | SLA (service-level agreement) | B2B SaaS |
+| T-20 | Force Majeure | Recommended for all services |
 
 ---
 
-## 特定商取引法表記 チェックリスト
+## Privacy Policy Checklist
 
-| # | 項目 | 必須/推奨 | 参照条項 |
-|---|------|---------|---------|
-| S-01 | 事業者の名称(法人名/氏名) | 必須 | 特商法11条1号 |
-| S-02 | 代表者名または責任者名 | 必須 | 特商法11条 |
-| S-03 | 住所 | 必須 | 特商法11条2号 |
-| S-04 | 電話番号 | 必須 | 特商法11条3号 |
-| S-05 | メールアドレス | 推奨 | - |
-| S-06 | 販売価格(税込表示) | 必須 | 特商法11条4号 |
-| S-07 | 送料・手数料 | 必須 | 特商法11条4号 |
-| S-08 | 支払方法・時期 | 必須 | 特商法11条5号 |
-| S-09 | 商品の引渡/提供時期 | 必須 | 特商法11条6号 |
-| S-10 | 返品・キャンセルポリシー | 必須 | 特商法15条の3 |
-| S-11 | 申込みの撤回・解除条件 | 必須 | 特商法11条 |
-| S-12 | 動作環境(デジタルコンテンツ) | 条件付必須 | 特商法11条 |
+### Japan (Act on Protection of Personal Information / 個人情報保護法)
+
+| # | Clause | Risk (if missing) | Statute |
+|---|--------|-------------------|---------|
+| P-01 | Name and contact of the handling business operator | High | 個情法 第32条 |
+| P-02 | Specification and notice of purpose of use | High | 個情法 第17条・第21条 |
+| P-03 | Categories of personal information collected | High | 個情法 第21条 |
+| P-04 | Third-party provision: whether and under what conditions | High | 個情法 第27条 |
+| P-05 | Joint use: scope and purpose | Medium | 個情法 第27条第5項第3号 |
+| P-06 | Provision to contractors / processors | Medium | 個情法 第25条 |
+| P-07 | Handling disclosure and similar requests from data subjects | High | 個情法 第33条 |
+| P-08 | Outline of safety management measures | Medium | 個情法 第23条 |
+| P-09 | Use of cookies / external transmission | High | 電気通信事業法 第27条の12 |
+| P-10 | Retention period of personal information | Medium | - |
+| P-11 | International data transfers | High | 個情法 第28条 |
+| P-12 | Handling of sensitive personal information (要配慮個人情報) | High | 個情法 第20条第2項 |
+| P-13 | Children's personal information | Medium | - |
+| P-14 | Notice procedure for policy changes | Medium | - |
+
+### Additional GDPR Requirements
+
+| # | Clause | Risk (if missing) | Reference |
+|---|--------|-------------------|-----------|
+| G-01 | Lawful basis for processing (Art. 6) | High | GDPR Art. 6 |
+| G-02 | List of data-subject rights | High | GDPR Art. 12–22 |
+| G-03 | DPO (Data Protection Officer) information | Medium | GDPR Art. 37–39 |
+| G-04 | Right to data portability | High | GDPR Art. 20 |
+| G-05 | Right to erasure ("right to be forgotten") | High | GDPR Art. 17 |
+| G-06 | Automated decision-making and profiling | Medium | GDPR Art. 22 |
+| G-07 | Data-breach notification (within 72 hours) | High | GDPR Art. 33 |
+| G-08 | Safeguards for international transfers (SCC, etc.) | High | GDPR Art. 46 |
+
+### Additional CCPA / CPRA Requirements
+
+| # | Clause | Risk (if missing) |
+|---|--------|-------------------|
+| C-01 | Opt-out right for "sale of personal information" | High |
+| C-02 | "Do Not Sell My Personal Information" link | High |
+| C-03 | Disclosure of information categories from the last 12 months | Medium |
+| C-04 | Non-discrimination against consumers | Medium |
+| C-05 | Distinction between "sharing" and "selling" of information | Medium |
 
 ---
 
-## レビュー結果テンプレート
+## Tokushoho Notation Checklist (特定商取引法に基づく表記)
+
+| # | Item | Required / Recommended | Reference |
+|---|------|------------------------|-----------|
+| S-01 | Business operator's name (company or individual) | Required | 特商法 第11条第1号 |
+| S-02 | Name of representative or responsible person | Required | 特商法 第11条 |
+| S-03 | Address | Required | 特商法 第11条第2号 |
+| S-04 | Telephone number | Required | 特商法 第11条第3号 |
+| S-05 | Email address | Recommended | - |
+| S-06 | Selling price (tax-inclusive display) | Required | 特商法 第11条第4号 |
+| S-07 | Shipping fees and handling charges | Required | 特商法 第11条第4号 |
+| S-08 | Payment methods and timing | Required | 特商法 第11条第5号 |
+| S-09 | Product / service delivery timing | Required | 特商法 第11条第6号 |
+| S-10 | Return and cancellation policy | Required | 特商法 第15条の3 |
+| S-11 | Application withdrawal and termination conditions | Required | 特商法 第11条 |
+| S-12 | Operating environment (digital content) | Conditionally required | 特商法 第11条 |
+
+---
+
+## Review Result Template
+
+Use this Japanese template when producing the review output:
 
 ```markdown
 ## 条項網羅性チェック結果
@@ -125,15 +127,15 @@
 
 ---
 
-## 危険条項パターン
+## Dangerous Clause Patterns
 
-以下のパターンが見られた場合は High リスクとしてフラグする:
+Flag any of the following patterns as High risk:
 
-| パターン | 問題 | 改善方向 |
-|---------|------|---------|
-| 「一切の責任を負わない」 | 消費者契約法8条で無効の可能性 | 合理的な範囲での責任制限に修正 |
-| 「当社の判断で自由に変更」 | 民法548条の4に抵触の可能性 | 変更手続き・通知期間の明記 |
-| 「すべての権利を譲渡」(UGC) | 著作権法上の問題、ユーザー反発 | ライセンス許諾方式に変更 |
-| 同意なき第三者提供 | 個情法27条違反 | 同意取得または例外事由の明記 |
-| Cookie通知なし | 電気通信事業法27条の12違反 | 外部送信規律対応のバナー設置 |
-| 準拠法・管轄の記載なし | 紛争時の不確実性 | 明示的な準拠法・管轄条項の追加 |
+| Pattern (source phrase) | Problem | Recommended fix |
+|-------------------------|---------|-----------------|
+| 「一切の責任を負わない」 | Likely invalid under 消費者契約法 第8条 | Limit liability to a reasonable scope |
+| 「当社の判断で自由に変更」 | May conflict with 民法 第548条の4 | Specify amendment procedure and notice period |
+| 「すべての権利を譲渡」(UGC) | Copyright concern and user pushback | Switch to a license-grant model |
+| Third-party provision without consent | Violates 個情法 第27条 | Obtain consent or document an exempting ground |
+| No cookie notice | Violates 電気通信事業法 第27条の12 | Add a banner aligned with the external-transmission rule |
+| No governing-law / jurisdiction clause | Uncertainty in disputes | Add an explicit governing-law / jurisdiction clause |

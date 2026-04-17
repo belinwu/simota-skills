@@ -1,7 +1,7 @@
 # Approval Flow Patterns
 
-**Purpose:** 承認フロー設計のパターン集。
-**Read when:** 多段承認、エスカレーション、委任ルールの設計が必要な時。
+**Purpose:** Pattern catalog for approval flow design.
+**Read when:** Designing multi-stage approvals, escalation, or delegation rules.
 
 ---
 
@@ -9,11 +9,11 @@
 
 | Type | Description | Use Case |
 |------|-------------|----------|
-| Sequential | 順番に承認者を回る | 経費申請（上長→部長→経理） |
-| Parallel | 全承認者に同時に回す | 多部門合意（営業＋法務＋技術） |
-| Quorum | N人中M人の承認で通過 | 委員会決議（5人中3人） |
-| Conditional | 条件に応じて承認ルート分岐 | 金額別承認（10万未満→上長、10万以上→部長） |
-| Hierarchical | 組織階層に沿って段階的 | 稟議書 |
+| Sequential | Approvers reviewed in order | Expense claims (manager → dept head → finance) |
+| Parallel | All approvers notified at once | Multi-department consensus (sales + legal + engineering) |
+| Quorum | Passes once M of N approvers agree | Committee votes (3 of 5) |
+| Conditional | Routes change based on conditions | Amount-based approval (under 100k → manager, 100k+ → dept head) |
+| Hierarchical | Advances through the org hierarchy | Ringi (proposal) documents |
 
 ---
 
@@ -38,7 +38,7 @@ APPROVAL_FLOW:
       escalation_target: "level:2"
     - level: 2
       name: "Department Head"
-      condition: "amount >= 50000"  # 5万円以上のみ
+      condition: "amount >= 50000"  # 50,000 JPY and above only
       approvers:
         type: role
         value: "submitter.department_head"
@@ -48,7 +48,7 @@ APPROVAL_FLOW:
       escalation_target: "cfo"
     - level: 3
       name: "CFO"
-      condition: "amount >= 500000"  # 50万円以上のみ
+      condition: "amount >= 500000"  # 500,000 JPY and above only
       approvers:
         type: user
         value: "cfo@company.com"
@@ -199,7 +199,7 @@ AUDIT_ENTRY:
   actor:
     user_id: string
     role: string
-    acted_as: string  # delegation の場合
+    acted_as: string  # populated when acting under delegation
   action: "approve | reject | recall | delegate | escalate | timeout"
   level: number
   comment: string

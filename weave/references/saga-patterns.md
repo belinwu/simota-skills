@@ -1,13 +1,13 @@
 # Saga Patterns
 
-**Purpose:** Sagaパターン（Orchestration / Choreography）の設計ガイド。
-**Read when:** 分散トランザクション・長時間ワークフロー設計が必要な時。
+**Purpose:** Design guide for Saga patterns (Orchestration / Choreography).
+**Read when:** Designing distributed transactions or long-running workflows.
 
 ---
 
 ## Orchestration Pattern
 
-中央のオーケストレーター（Saga Coordinator）が各ステップを制御する。
+A central orchestrator (the Saga Coordinator) drives each step.
 
 ### Structure
 
@@ -64,15 +64,15 @@ SAGA_ORCHESTRATION:
 
 ### Use Cases
 
-- EC注文処理（在庫確保 → 決済 → 出荷指示）
-- ユーザー登録（アカウント作成 → メール送信 → 初期設定）
-- 旅行予約（フライト → ホテル → レンタカー）
+- E-commerce order processing (reserve inventory -> charge payment -> dispatch shipment)
+- User registration (create account -> send email -> run initial setup)
+- Travel booking (flight -> hotel -> rental car)
 
 ---
 
 ## Choreography Pattern
 
-各サービスがイベントを発行・購読し、自律的に連携する。
+Each service publishes and subscribes to events, coordinating autonomously.
 
 ### Structure
 
@@ -118,14 +118,14 @@ SAGA_CHOREOGRAPHY:
 ### 1. Semantic Undo, Not Technical Undo
 
 ```yaml
-# Good: ビジネス意味での取消
+# Good: undo in business terms
 compensation:
-  action: "cancel_reservation"  # 予約キャンセル
+  action: "cancel_reservation"  # cancel the reservation
   side_effects:
     - "send_cancellation_email"
     - "release_inventory"
 
-# Bad: DB操作の逆転
+# Bad: reverse the DB operation
 compensation:
   action: "DELETE FROM reservations WHERE id = ?"
 ```
@@ -159,24 +159,24 @@ compensation:
 ## Pattern Selection Decision Tree
 
 ```
-分散トランザクションが必要？
-├── No → 単一DBトランザクションで十分
+Need a distributed transaction?
+├── No → A single-DB transaction is enough
 └── Yes
-    ├── 参加サービス数 <= 3？
+    ├── Participating services <= 3?
     │   ├── Yes
-    │   │   ├── サービス間の結合度を低く保ちたい？
+    │   │   ├── Want loose coupling between services?
     │   │   │   ├── Yes → Choreography
-    │   │   │   └── No → Orchestration (シンプル)
+    │   │   │   └── No → Orchestration (simpler)
     │   │   └──
-    │   └── No (4+サービス)
-    │       └── Orchestration を推奨
-    ├── 全体の可視性が重要？
+    │   └── No (4+ services)
+    │       └── Prefer Orchestration
+    ├── Is end-to-end visibility important?
     │   ├── Yes → Orchestration
     │   └── No → Choreography
-    ├── デバッグ容易性が重要？
+    ├── Is ease of debugging important?
     │   ├── Yes → Orchestration
-    │   └── No → どちらでも可
-    └── 単一障害点を避けたい？
+    │   └── No → Either works
+    └── Want to avoid a single point of failure?
         ├── Yes → Choreography
         └── No → Orchestration
 ```
@@ -187,11 +187,11 @@ compensation:
 
 | Strategy | Description | When to Use |
 |----------|-------------|-------------|
-| Retry | 一時的障害を再試行で解消 | Network timeout, 429 |
-| Compensate | 成功済みステップを巻き戻し | Business logic failure |
-| Pivot | 代替フローに切り替え | Primary path unavailable |
-| Park | 保留して人手介入を待つ | Unrecoverable, needs decision |
-| Ignore | 影響が軽微なため無視 | Non-critical side effects |
+| Retry | Resolve transient failures by retrying | Network timeout, 429 |
+| Compensate | Roll back previously completed steps | Business logic failure |
+| Pivot | Switch to an alternate flow | Primary path unavailable |
+| Park | Pause and wait for human intervention | Unrecoverable, needs decision |
+| Ignore | Skip because the impact is minor | Non-critical side effects |
 
 ---
 

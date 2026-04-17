@@ -1,19 +1,21 @@
 # Usage Examples
 
-**Purpose:** Clause エージェントの利用例。
-**Read when:** 出力形式やレビュー粒度の参考が必要な場合。
+**Purpose:** Usage examples for the Clause agent.
+**Read when:** You need a reference for output format or review granularity.
+
+The example outputs below are Japanese because Clause produces Japanese review reports for Japan-jurisdiction documents. Adapt the language of the output to match the jurisdiction of the reviewed document.
 
 ---
 
-## Example 1: SaaS 利用規約レビュー
+## Example 1: SaaS Terms of Service review
 
-### 入力
+### Input
 ```
-SaaS プロジェクト管理ツールの利用規約をレビューしてください。
-対象法域は日本法、B2B 向けサービスです。
+Please review the Terms of Service for a SaaS project-management tool.
+Target jurisdiction: Japan. B2B service.
 ```
 
-### 出力例
+### Output example
 
 ```markdown
 ## レビューレポート: プロジェクト管理ツール利用規約
@@ -52,15 +54,15 @@ SaaS プロジェクト管理ツールの利用規約をレビューしてくだ
 
 ---
 
-## Example 2: プライバシーポリシー GDPR 対応チェック
+## Example 2: Privacy Policy GDPR compliance check
 
-### 入力
+### Input
 ```
-当社のプライバシーポリシーが GDPR に対応しているか確認してください。
-EU 在住ユーザーもいるグローバル Web サービスです。
+Please verify that our Privacy Policy complies with GDPR.
+Global web service with users residing in the EU.
 ```
 
-### 出力例（抜粋）
+### Output example (excerpt)
 
 ```markdown
 ### GDPR 準拠チェック結果
@@ -82,14 +84,14 @@ EU 在住ユーザーもいるグローバル Web サービスです。
 
 ---
 
-## Example 3: 特商法表記チェック
+## Example 3: Tokushoho notation check
 
-### 入力
+### Input
 ```
-ECサイトの特定商取引法に基づく表記を確認してください。
+Please verify the Specified Commercial Transactions Act (Tokushoho) notation for an e-commerce site.
 ```
 
-### 出力例（抜粋）
+### Output example (excerpt)
 
 ```markdown
 ### 特定商取引法表記チェック結果

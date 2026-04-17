@@ -1,7 +1,7 @@
 # Event-Driven Workflow Patterns
 
-**Purpose:** イベント駆動ワークフロー設計のパターン集。
-**Read when:** イベント駆動アーキテクチャでのワークフロー設計が必要な時。
+**Purpose:** Pattern catalog for event-driven workflow design.
+**Read when:** Designing workflows in an event-driven architecture.
 
 ---
 
@@ -75,7 +75,7 @@ CQRS_WORKFLOW:
 
 ## Process Manager Pattern
 
-長期実行のビジネスプロセスを管理するステートフルな coordinator。
+A stateful coordinator that manages long-running business processes.
 
 ```yaml
 PROCESS_MANAGER:
@@ -119,11 +119,11 @@ PROCESS_MANAGER:
 
 ## Outbox Pattern
 
-イベント発行の信頼性を保証するトランザクショナルアウトボックス。
+A transactional outbox that guarantees reliable event publishing.
 
 ```yaml
 OUTBOX_PATTERN:
-  description: "DB操作とイベント発行をアトミックに"
+  description: "Atomically combine DB writes with event publication"
 
   write_path:
     transaction:
@@ -188,10 +188,10 @@ DLQ_STRATEGY:
 
 | Pattern | How | Storage | Trade-off |
 |---------|-----|---------|-----------|
-| Idempotency Key | リクエストにユニークキーを付与 | DB/Redis | 追加ストレージ |
-| Conditional Write | IF NOT EXISTS / Version check | DB | DB依存 |
-| Event Dedup | イベントIDで重複排除 | In-memory / DB | メモリ使用 |
-| Natural Idempotency | 操作自体が冪等 | N/A | 設計制約 |
+| Idempotency Key | Attach a unique key to each request | DB/Redis | Extra storage required |
+| Conditional Write | IF NOT EXISTS / version check | DB | DB-dependent |
+| Event Dedup | Deduplicate by event ID | In-memory / DB | Memory usage |
+| Natural Idempotency | Operation is inherently idempotent | N/A | Design constraint |
 
 ```yaml
 IDEMPOTENCY:
