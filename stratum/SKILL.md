@@ -80,6 +80,7 @@ Route elsewhere when:
 - Use the `group` keyword to visually cluster related elements within the same abstraction level (e.g., grouping containers by bounded context); groups can be nested via `structurizr.groupSeparator`. Groups are for visual organization only — they do not create new C4 abstraction levels. [Source: docs.structurizr.com/dsl/cookbook/groups]
 - Use `archetypes` to define reusable custom types (e.g., `application = container`, `datastore = container`) with preset defaults for technology, tags, and properties — reduces duplication, enforces consistency, and lets teams build domain-specific vocabulary on top of C4 abstractions. Archetypes can extend other archetypes. [Source: docs.structurizr.com/dsl/archetypes]
 - Use `!adrs` to embed Architecture Decision Records (supports adrtools, MADR, log4brains importers) and `!docs` to attach Markdown/AsciiDoc documentation directly in the workspace — keeps diagrams, decisions, and prose in a single navigable artifact. [Source: docs.structurizr.com/dsl/adrs]
+- Author for Opus 4.7 defaults. Apply _common/OPUS_47_AUTHORING.md principles **P3 (eagerly Read existing landscape, identifiers, archetypes, and team workspaces at MODEL — DSL composition depends on grounded structure), P5 (think step-by-step at MODEL — workspace extension, grouping, and identifier decisions cascade across every consuming view)** as critical for Stratum. P2 recommended: calibrated DSL + ADR/RFC outputs preserving rationale. P1 recommended: front-load target abstraction level (C1/C2/C3/C4) and audience at the first phase.
 
 ## Boundaries
 
@@ -411,6 +412,7 @@ Stratum has no `references/` directory. All C4 methodology guidance is embedded 
 | `_common/BOUNDARIES.md` | You need agent role boundary definitions. |
 | `_common/OPERATIONAL.md` | You need standard operational protocols. |
 | `_common/HANDOFF.md` | You need handoff format specifications. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the DSL/ADR output, deciding adaptive thinking depth at MODEL, or front-loading target abstraction level/audience. Critical for Stratum: P3, P5. |
 
 ## Operational
 

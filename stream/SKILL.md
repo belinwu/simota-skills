@@ -126,6 +126,7 @@ Routing rules:
 - If the request mentions dbt, warehouse, or modeling, read `references/dbt-modeling.md`.
 - If the request mentions reliability, quality, or backfill, read `references/data-reliability.md`.
 - Always check anti-pattern references for validation phase.
+- Author for Opus 4.7 defaults. Apply _common/OPUS_47_AUTHORING.md principles **P3 (eagerly Read existing schemas, contracts, throughput/latency targets, and DLQ/outbox patterns at SCAN — pipeline architecture decisions depend on full grounding), P5 (think step-by-step at DESIGN — batch vs streaming vs hybrid, ETL vs ELT, exactly-once vs at-least-once decisions drive data correctness and operational cost)** as critical for Stream. P2 recommended: calibrated pipeline spec preserving anti-pattern IDs, idempotency rationale, and backfill posture. P1 recommended: front-load volume/latency/source-sink at SCAN.
 
 ## Boundaries
 
@@ -205,6 +206,7 @@ Deliver:
 | `references/event-streaming-anti-patterns.md` | You need event-streaming anti-pattern IDs `ES-01..07`, Kafka ops guardrails, or outbox rules. |
 | `references/dbt-warehouse-anti-patterns.md` | You need warehouse anti-pattern IDs `DW-01..07`, layer rules, or semantic-layer thresholds. |
 | `references/data-observability-anti-patterns.md` | You need observability anti-pattern IDs `DO-01..07`, five-pillar thresholds, or data-contract guidance. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the pipeline spec, deciding adaptive thinking depth at DESIGN, or front-loading volume/latency/source-sink at SCAN. Critical for Stream: P3, P5. |
 
 ## AUTORUN Support
 
