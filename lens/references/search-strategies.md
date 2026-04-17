@@ -128,6 +128,43 @@ Grep "(get|post|put|delete|patch|resources|resource)\s"
 
 ---
 
+## Semantic Search Enhancement
+
+### Purpose
+Complement keyword search with meaning-based retrieval when exact identifiers are unknown.
+
+### When to Use
+
+| Situation | Use Semantic Search? |
+|-----------|---------------------|
+| Natural language query ("where is auth handled?") | Yes — semantic search understands intent |
+| Exact symbol name known (`loginUser`) | No — grep/LSP is faster and precise |
+| Conceptual exploration ("error handling patterns") | Yes — finds related code across naming conventions |
+| Investigation stall after 2 keyword iterations | Yes — recovers results keyword search missed |
+
+### Available Tools (2026)
+
+| Tool | Approach | Integration |
+|------|----------|-------------|
+| Augment Context Engine | Semantic indexing + dependency graphs | MCP server |
+| code-graph-mcp | Tree-sitter AST + BM25/vector hybrid | MCP server (16 languages) |
+| CodeGrok MCP | AST parsing + vector embeddings | MCP server |
+| GitLab Semantic Code Search | Vector embeddings + vector DB | GitLab Duo |
+| Cursor Semantic Search | Custom embeddings from agent traces | IDE-integrated |
+
+### Performance
+
+Cursor benchmarks show semantic search achieves 12.5% higher accuracy than grep alone (range 6.5–23.5% depending on model). Hybrid approach (grep + semantic + LSP) performs best. [Source: cursor.com/blog/semsearch]
+
+### Integration with Layer Architecture
+
+Semantic search is a cross-cutting enhancement, not a replacement layer:
+- **Augments Layer 2**: Find files by meaning when keywords require guessing exact identifiers
+- **Augments Layer 3b**: Discover semantic relationships that string matching misses
+- **Does not replace Layer 3a**: LSP remains authoritative for typed symbol navigation
+
+---
+
 ## Layer 3a: LSP Navigation
 
 ### Purpose
