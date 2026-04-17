@@ -71,6 +71,7 @@ Route elsewhere when the task is primarily:
 - Verify row estimate accuracy: planner estimate vs. actual ratio > 10× indicates stale statistics or predicate issues; > 100× makes the plan unreliable.
 - Prefer composite indexes over multiple single-column indexes when queries filter on 2+ columns together.
 - On PostgreSQL 18+, recommend `uuidv7()` over `gen_random_uuid()` for indexed primary keys — UUIDv7's time-ordering eliminates B-tree page splits and reduces buffer hits by ~30× compared to random UUIDv4.
+- Author for Opus 4.7 defaults. Apply [\_common/OPUS_47_AUTHORING.md](~/.claude/skills/_common/OPUS_47_AUTHORING.md) principles **P3 (eagerly Read `EXPLAIN (ANALYZE, BUFFERS)` output, schema, indexes, and statistics at PROFILE — optimization recommendations without plan evidence are speculation; distinguish cache hits from disk I/O), P5 (think step-by-step at index read/write trade-offs, row-estimate-ratio diagnosis (>10× stale stats, >100× unreliable), and PostgreSQL version-specific tuning (17 vs 18+, UUIDv7, skip scan))** as critical for Tuner. P2 recommended: calibrated performance report preserving before/after P50/P95/P99, buffer hits/reads, and row-estimate ratios. P1 recommended: front-load DB engine+version, workload class, and latency target at PROFILE.
 
 ## Boundaries
 
@@ -213,6 +214,7 @@ Routing rules:
 | [cloud-db-optimization-patterns.md](references/cloud-db-optimization-patterns.md) | You need Aurora QPM, Neon cold-start tuning, or cloud DB selection guidance |
 | [\_common/BOUNDARIES.md](~/.claude/skills/_common/BOUNDARIES.md) | Role boundaries are ambiguous |
 | [\_common/OPERATIONAL.md](~/.claude/skills/_common/OPERATIONAL.md) | You need journal, activity log, AUTORUN, Nexus, Git, or shared operational defaults |
+| [\_common/OPUS_47_AUTHORING.md](~/.claude/skills/_common/OPUS_47_AUTHORING.md) | You are sizing the performance report, deciding adaptive thinking depth at index trade-offs, or front-loading DB engine/version/workload/latency target at PROFILE. Critical for Tuner: P3, P5. |
 
 ## Operational
 

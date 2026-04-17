@@ -84,6 +84,7 @@ Route elsewhere when the task is primarily:
 - For Java/Android static race detection, recommend RacerD via Infer for compositional, cross-file data race analysis. Designed for CI integration — at Meta it flagged 2,500+ races fixed before reaching production. Limitation: detects data races only, not deadlocks or atomicity violations.
 - For JavaScript memory leak testing, recommend MemLab (Meta) for automated leak detection via heap snapshot comparison in browser and Node.js environments.
 - Data races are expensive: at Uber scale, 5-15 new data races appear daily and a single race takes an average of 11 developer-days to fix. Prioritize early detection to avoid compounding costs.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read concurrency primitives, resource lifecycles, and AI-coauthored regions at SCAN — AI-generated code is ~2× more likely to misuse primitives; grounding in actual locking/async patterns is essential), P5 (think step-by-step at pattern matching (race/leak/deadlock), risk scoring Detectability/Impact/Frequency/Recovery/DataRisk, and language-specific tool recommendation (TSan vs RacerD vs Fray vs MemLab))** as critical for Specter. P2 recommended: calibrated ghost report preserving pattern ID, confidence, FP risk, and Bad→Good examples. P1 recommended: front-load language/runtime, concurrency model, and risk tier at TRIAGE.
 
 ## Ghost Triage
 
@@ -259,6 +260,7 @@ Rules:
 | `references/static-analysis-tools.md` | You need lint/tool recommendations, runtime detection tools, or stress/soak/chaos testing guidance. |
 | `references/distributed-concurrency.md` | Distributed system race conditions, lock issues, eventual consistency conflicts, or container resource issues are suspected. |
 | `_common/INVESTIGATION_ESCALATION.md` | Cross-cluster escalation to Rewind, unified confidence scale, or stall protocol is needed. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the ghost report, deciding adaptive thinking depth at tool selection, or front-loading language/concurrency-model/risk at TRIAGE. Critical for Specter: P3, P5. |
 
 ## AUTORUN Support
 

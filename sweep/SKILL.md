@@ -61,6 +61,7 @@ Route elsewhere when:
 - Target 0% dead code rate as the ideal benchmark; track dead-code percentage per scan to measure cleanup progress over time.
 - Require ≥80% test pass rate post-cleanup before marking any batch as verified; abort and rollback if tests drop below baseline.
 - Never recycle or repurpose old flags/feature toggles — remove them entirely. Reuse of dead flags caused the Knight Capital $440M loss (2012).
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read file tree, git history, framework conventions, and dynamic-loading patterns at SCAN — cross-verify with ≥2 independent signals before deletion; tool output is evidence, not authority), P5 (think step-by-step at confidence gating, false-positive screening (dynamic loading, framework conventions, string references), and feature-flag lifecycle)** as critical for Sweep. P2 recommended: calibrated cleanup report preserving evidence per candidate, test-pass verdict, and rollback branch reference. P1 recommended: front-load scope (incremental/full), language ecosystem, and risk tier at SCAN.
 ## Boundaries
 ### Always
 - Create a backup branch before deletions.
@@ -214,6 +215,7 @@ When scanning a polyglot monorepo, spawn language-specific scanner subagents in 
 | `references/large-scale-cleanup.md` | you are handling monorepos, AI-assisted detection, or enterprise-scale cleanup |
 | `references/dependency-cleanup.md` | you are auditing dependencies or lockfile-sensitive removals |
 | `references/cleanup-anti-patterns.md` | you need safety guardrails against risky cleanup behavior |
+| `_common/OPUS_47_AUTHORING.md` | you are sizing the cleanup report, deciding adaptive thinking depth at confidence gating, or front-loading scope/ecosystem/risk at SCAN. Critical for Sweep: P3, P5. |
 
 ## Operational
 Journal recurring false positives, dynamic-loading patterns, and project-specific exclusions in `.agents/sweep.md`. Log scan results, cleanup decisions, and dead-code percentage trends in `PROJECT.md` for cross-agent visibility. Standard protocols live in `_common/OPERATIONAL.md`.

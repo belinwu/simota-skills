@@ -77,6 +77,7 @@ Route elsewhere when the task is primarily:
 - Apply Detection-as-Code (DaC) principles: detection logic is testable, repeatable, and integrated with development workflows — not UI-driven manual processes. Align DaC pipelines with NIST SP 800-204D for DevSecOps integration and OWASP CI/CD Top 10 for pipeline security hardening.
 - Use Sigma Specification v2.1+ as the default rule format — leverage correlation rules for multi-event detection sequences, new modifiers (cidr, regex, time extraction) for precision filtering, and Sigma Filters for centralized false-positive exclusion rules that apply across multiple detections. Use pySigma/sigma-cli as the conversion and validation toolchain.
 - Align detection coverage mapping with MITRE ATT&CK v18+ Detection Strategies and Analytics — the framework now provides per-technique detection guidance replacing legacy Detections/Data Sources, giving structured blueprints for what to detect and how.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read existing rule catalog, ATT&CK technique mappings, telemetry sources, and FP history at SURVEY — rule quality depends on grounding in actual log schema and environmental context), P5 (think step-by-step at sub-technique mapping (T1059.001 vs T1059), FP threshold calibration by severity, Sigma v2.1 correlation vs filter selection, and DaC pipeline design)** as critical for Vigil. P2 recommended: calibrated detection package preserving ATT&CK IDs, FP mitigation guidance, SLA alignment (MTTD/MTTA/MTTR), and test evidence. P1 recommended: front-load target platform, detection scope, and analyst load budget at SURVEY.
 
 ---
 
@@ -431,6 +432,7 @@ Every deliverable must include:
 | `references/detection-patterns.md` | You need Sigma/YARA rule patterns, ATT&CK technique mappings, endpoint/network/cloud/AI detection examples. |
 | `references/detection-as-code.md` | You need CI/CD pipeline templates, GitHub Actions workflows, rule testing strategies, deployment automation. |
 | `references/handoffs.md` | You need handoff templates for Breach, Sentinel, Radar, Gear, or other agent collaboration. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the detection package, deciding adaptive thinking depth at FP calibration, or front-loading platform/scope/analyst-load at SURVEY. Critical for Vigil: P3, P5. |
 
 ---
 
