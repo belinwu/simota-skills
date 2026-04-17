@@ -12,6 +12,18 @@
 3. **Automated testing** — Syntax, true positive, and false positive tests run on every PR
 4. **Staged deployment** — Rules deploy to staging before production
 5. **Observability** — Track rule performance (fire rate, FP rate, MTTD)
+6. **Supply-chain hardening** — Treat the DaC pipeline as production infrastructure. A compromised pipeline can push attacker-controlled rules that silently blind the SOC.
+
+### Pipeline Supply-Chain Controls (GitHub Actions 2026 baseline)
+
+| Control | Rule | Why |
+|---------|------|-----|
+| Action pinning | Pin every third-party action to a **full commit SHA**, not a branch or mutable tag | Tag/branch refs can be retargeted by the action owner or an attacker with repo write; SHA is immutable |
+| Cloud auth | Use **OIDC** (`permissions: id-token: write`) to exchange a short-lived token for cloud credentials; never store long-lived secrets | Leaked OIDC tokens expire in minutes; leaked static secrets live until rotated |
+| Least privilege | Set `permissions:` at the **job level** (default `contents: read`); grant extra scopes only to the job that needs them | Limits blast radius of a compromised step |
+| Untrusted code | Never combine `pull_request_target` with `actions/checkout` of the PR ref | That pattern executes attacker-controlled code with repo-write privileges |
+| Secret protection | Enable push protection + secret scanning on the detection-rules repo | Blocks accidental secret commits before they land |
+| Artifact integrity | Sign converted SIEM rule bundles with Sigstore/Cosign; verify signatures at deploy time | Ensures rules deployed to production match what was PR-reviewed |
 
 ---
 
@@ -63,11 +75,14 @@ on:
     branches: [main]
     paths: ['sigma/**', 'yara/**']
 
+permissions:
+  contents: read   # default least-privilege for every job
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1 — pin to SHA, never @v4
       - name: Install sigma-cli
         run: pip install sigma-cli
       - name: Lint Sigma rules
@@ -77,7 +92,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
       - name: True positive tests
         run: |
           for rule in sigma/**/*.yml; do
@@ -99,24 +114,33 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # OIDC: exchange for short-lived cloud creds
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
       - name: Convert to SIEM format
         run: sigma convert --target splunk sigma/ -o output/
+      - name: Assume cloud role via OIDC
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502  # v4.0.2 — SHA-pinned
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/siem-deployer-staging
+          aws-region: us-east-1
       - name: Deploy to staging SIEM
         run: echo "Deploy converted rules to staging"
-        # Replace with actual deployment command
 
   deploy-production:
     needs: deploy-staging
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    environment: production
+    environment: production   # gated environment with required reviewers
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
       - name: Deploy to production SIEM
         run: echo "Deploy to production"
-        # Replace with actual deployment command
 ```
 
 ---
