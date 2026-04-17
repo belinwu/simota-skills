@@ -9,6 +9,9 @@ Contents:
 - per-backend I/O functions
 - Merge Join improvements
 - Multicolumn B-tree Skip Scan
+- Planner optimizations (Self-Join Elimination, OR-to-ANY, partitionwise, DISTINCT reorder)
+- pg_upgrade planner statistics preservation
+- EXPLAIN ANALYZE index lookup counts
 - Migration checklist
 
 ---
@@ -170,6 +173,83 @@ SELECT * FROM orders WHERE created_at > now() - interval '7 days';
 
 ---
 
+## Planner Optimizations
+
+PostgreSQL 18 adds several optimizer transformations. Each is enabled by default; use the GUC to disable during regression triage.
+
+| Transformation | What changes | GUC to disable |
+|----------------|--------------|----------------|
+| Self-Join Elimination (SJE) | Removes inner self-joins on a plain table when provably redundant (very common for ORM-generated SQL and range-table-heavy views) | `enable_self_join_elimination = off` |
+| OR-clause to array | `col = 1 OR col = 2 OR col = 3` internally becomes `col = ANY('{1,2,3}')`, enabling index scans where the OR form would have forced seq scan | (transformation, no direct GUC) |
+| `IN (VALUES ...)` → `= ANY (...)` | Better selectivity estimates for literal IN lists; the `ANY` form receives proper array statistics treatment | (transformation, no direct GUC) |
+| DISTINCT key reordering | Planner reorders `SELECT DISTINCT` keys to match available sort orders and skip an extra sort | `enable_distinct_reordering = off` |
+| Right Semi Join for semi-joins | Planner can pick Right Semi Join for `EXISTS`/`IN` semi-joins | (planner choice) |
+| Partitionwise joins expansion | Applies in more cases with reduced memory usage; improved cost estimates for partition queries | `enable_partitionwise_join = off` |
+
+### Diagnostic Tip
+
+If a query regressed after upgrading to PG18, bisect with these GUCs at session scope before assuming a data or stats issue:
+
+```sql
+SET enable_self_join_elimination = off;
+SET enable_distinct_reordering = off;
+SET enable_partitionwise_join = off;
+EXPLAIN (ANALYZE, BUFFERS) <query>;
+```
+
+---
+
+## pg_upgrade Planner Statistics Preservation
+
+PostgreSQL 18 `pg_upgrade` preserves optimizer statistics by default when upgrading from PG14, PG15, PG16, or PG17.
+
+### What is preserved
+
+- `pg_statistic` contents: `n_distinct`, null fractions, average widths, most common values (MCV lists), histograms
+
+### What is NOT preserved
+
+- **Extended statistics** created with `CREATE STATISTICS` (multivariate n_distinct, functional dependencies, multivariate MCV lists) — these must be rebuilt manually.
+
+### Post-Upgrade Sequence
+
+```bash
+# 1. Fill any gaps (including extended statistics)
+vacuumdb --all --analyze-in-stages --missing-stats-only
+# 2. Finalize full statistics
+vacuumdb --all --analyze-only
+```
+
+### Disabling (if needed)
+
+`pg_upgrade --no-statistics` — typically only for testing or when source stats are known-bad.
+
+### Diagnostic Implication
+
+Post-upgrade regression on PG18+ should **not** be attributed to "missing planner stats" as a first guess; investigate plan shape changes, GUC defaults, and extended statistics loss instead.
+
+---
+
+## EXPLAIN ANALYZE Index Lookup Counts
+
+PostgreSQL 18 adds per-index-scan-node **index lookup counts** to `EXPLAIN ANALYZE` output. This is essential for:
+
+- Verifying Skip Scan actually skips (low lookup count) vs degenerates (lookup count ≈ row count)
+- Diagnosing nested-loop inner-side work on composite indexes
+- Spotting index scans that should have been bitmap scans
+
+---
+
+## pg_aios System View
+
+`pg_aios` exposes the file handles used by the AIO subsystem — use it to confirm `io_method = io_uring` is actually dispatching async I/O (vs silently falling back to worker or sync).
+
+```sql
+SELECT * FROM pg_aios;
+```
+
+---
+
 ## Migration Checklist
 
 When upgrading from PostgreSQL 17 to 18:
@@ -180,14 +260,18 @@ When upgrading from PostgreSQL 17 to 18:
 - [ ] Review indexes on columns with low-cardinality leading keys — Skip Scan may change plan choices
 - [ ] Audit `io_method` setting for your OS/storage type
 - [ ] Benchmark `pg_stat_io` baseline on PG17 for comparison
+- [ ] Inventory extended statistics (`\dX` in psql) — these will require rebuilding post-upgrade
+- [ ] Capture baseline `EXPLAIN (ANALYZE, BUFFERS)` for top slow queries to compare with PG18 plans
 
 ### Post-Upgrade
 
 - [ ] Enable `io_uring` if running on Linux with kernel ≥ 5.19 and NVMe storage
-- [ ] Re-run `ANALYZE` on large tables to refresh planner statistics
+- [ ] Run `vacuumdb --all --analyze-in-stages --missing-stats-only` then `vacuumdb --all --analyze-only`
+- [ ] Rebuild extended statistics (`CREATE STATISTICS` objects are not preserved by pg_upgrade)
 - [ ] Monitor `pg_stat_io.read_bytes` to confirm I/O improvement
 - [ ] Check Merge Join plans for Incremental Sort adoption
 - [ ] Validate Skip Scan behavior for multicolumn indexes with low-cardinality leading columns
+- [ ] Validate new planner transforms (SJE, DISTINCT reordering, partitionwise joins) against regression list
 - [ ] Update monitoring dashboards to include `read_bytes`, `write_bytes` columns
 
 ### Incompatibilities to Watch
@@ -195,3 +279,4 @@ When upgrading from PostgreSQL 17 to 18:
 - `io_uring` requires Linux kernel ≥ 5.19; fall back to `worker` on older kernels
 - Skip Scan may change query plans — verify regressions with `EXPLAIN (ANALYZE, BUFFERS)`
 - `pg_stat_io` schema changes require monitoring query updates
+- Self-Join Elimination can surface latent bugs in queries that depended on the extra self-join for row multiplication — audit `GROUP BY` / aggregation counts in regression tests
