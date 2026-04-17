@@ -234,7 +234,7 @@ Agent(
 )
 ```
 
-> **Opus 4.7 注記**: 上記4フィールド (受入基準/出力長/ツール方針/思考方針) は省略可能ではない。Opus 4.7 は出力長を文脈で調整しツール呼び出しを控えめにするため、明示しないと過小・過剰の双方が発生する。並列 spawn が必要な場合は **Core Rule #10** と **`_common/SUBAGENT.md`** を参照し、`Agent(... run_in_background: true)` を同一ターン内で複数発行する。共通プロトコル: `_common/OPUS_47_AUTHORING.md`。
+> **Opus 4.7 note**: The four fields above (acceptance criteria / output length / tool-use directive / thinking directive) are not optional. Opus 4.7 calibrates output length to context and restrains tool calls by default, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_47_AUTHORING.md`.
 
 Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 

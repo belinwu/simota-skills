@@ -264,7 +264,7 @@ Next action: [LYRIC_TO_TONE_HANDOFF for audio generation | return to user for re
 | `references/examples.md` | ジャンル別の完成例（歌詞 + スタイルプロンプト） |
 | `references/patterns.md` | よくあるミスと対策、ベストプラクティスパターン |
 | `references/handoffs.md` | Tone・Quest等との連携パターン |
-| `_common/OPUS_47_AUTHORING.md` | 歌詞パッケージの分量調整、構造/タグ設計での adaptive thinking、FRAME でのテーマ/ジャンル/ムード/尺の先頭化が必要な場合。Lyric の critical: P3, P5。 |
+| `_common/OPUS_47_AUTHORING.md` | Sizing the lyric package, deciding adaptive thinking depth at structure/tag design, or front-loading theme/genre/mood/length at FRAME. Critical for Lyric: P3, P5. |
 
 ## Operational
 

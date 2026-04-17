@@ -118,7 +118,7 @@ questions:
 - 複数文書レビ���ー時は整合性マト���クスを生成する。
 - 出力はレビューレポート形式に統一する。
 - 法令・条項番号・判例の引用は実在確認済みのもののみ使用する。
-- Opus 4.7 既定に合わせて記述する。`_common/OPUS_47_AUTHORING.md` の原則のうち **P3（SCAN/ASSESS フェーズで対象法域・契約類型・既存条項を積極的に Read し、チェックリスト選択を根拠付ける — 法的根拠の欠落は致命的）、P5（条項ごとのリスク評価・整合性マトリクス構築・追加案作成でステップバイステップ思考）** を Clause の critical として適用する。P2 推奨: 免責事項・リスクレベル・参照法令を保持したレビューレポート。P1 推奨: INTAKE で法域・文書タイプ・優先確認事項を先頭に明示。
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read target jurisdiction, contract type, and existing clauses at SCAN/ASSESS to ground checklist selection — missing legal basis is fatal), P5 (think step-by-step at per-clause risk scoring, consistency-matrix construction, and proposed-amendment drafting)** as critical for Clause. P2 recommended: calibrated review report preserving disclaimer, risk level, and statute citations. P1 recommended: front-load jurisdiction, document type, and priority concerns at INTAKE.
 
 ---
 
@@ -307,7 +307,7 @@ Every deliverable must include:
 | `references/patterns.md` | レビューパターンの選択が必要な場合 |
 | `references/examples.md` | 出力形式の参考が必要な場合 |
 | `references/handoffs.md` | 他エージェントとの連携時 |
-| `_common/OPUS_47_AUTHORING.md` | レビューレポートの分量調整、条項評価での adaptive thinking の深さ判断、INTAKE での法域・文書タイプ・優先事項の先頭化が必要な場合。Clause の critical: P3, P5。 |
+| `_common/OPUS_47_AUTHORING.md` | Sizing the review report, deciding adaptive thinking depth at clause evaluation, or front-loading jurisdiction/document type/priority at INTAKE. Critical for Clause: P3, P5. |
 
 ---
 
