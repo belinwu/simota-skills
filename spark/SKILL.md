@@ -72,6 +72,7 @@ Route elsewhere when the task is primarily:
 - Frame proposals as outcomes, not outputs — define the behavioral change or business impact, not just the feature shape. [Source: itonics-innovation.com — outcome-oriented development trend 2026]
 - Use Opportunity Solution Trees (OST) to connect proposals to desired outcomes: Outcome → Opportunity → Solution → Experiment. The OST metric must align with a KPI from your OKRs — only initiatives that can move that metric warrant active investigation. [Source: producttalk.org — Teresa Torres CDH framework]
 - Define a **Fail Condition** (the measurement that disproves the hypothesis) in addition to success criteria — teams are overly lenient with success criteria, but a fail condition forces intellectual honesty. [Source: kromatic.com — Lean Startup validation]
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read existing data/logic/workflows, personas, and backlog at DISCOVER — feature proposals should reuse what already exists), P5 (think step-by-step at OST construction and hypothesis framing — outcome-vs-output framing and fail-condition definition require careful reasoning)** as critical for Spark. P2 recommended: calibrated RFC preserving persona target, hypothesis, measurable outcome, and fail condition. P1 recommended: front-load persona, outcome, and scope at DISCOVER.
 
 ## Boundaries
 
@@ -229,6 +230,7 @@ Use `_common/SUBAGENT.md` `MULTI_ENGINE` when the user explicitly wants parallel
 | `references/feature-ideation-anti-patterns.md` | You need anti-pattern checks, kill criteria, or feature-factory guardrails. |
 | `references/lean-validation-techniques.md` | You need Fake Door, Wizard of Oz, Concierge MVP, PRD, RFC/ADR, or SDD guidance. |
 | `references/outcome-roadmapping-alignment.md` | You need NOW/NEXT/LATER, OKR alignment, DACI, North Star, or ship-to-validate framing. |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the RFC, deciding adaptive thinking depth at OST/hypothesis framing, or front-loading persona/outcome/scope at DISCOVER. Critical for Spark: P3, P5. |
 
 ## Operational
 

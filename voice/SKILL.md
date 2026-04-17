@@ -91,6 +91,7 @@ Route elsewhere when the task is primarily:
 - For LLM-powered feedback pipelines, implement a contamination gate before downstream routing: if ≥5% of a feedback batch is flagged as synthetic, halt automated classification and alert the responsible owner. This prevents contaminated data from propagating to Compete (via VOICE_TO_COMPETE), Spark, or Retain.
 - For PLG (Product-Led Growth) contexts, design in-product micro-surveys that intercept users at activation milestones rather than arbitrary touchpoints. Trigger micro-surveys (1-2 questions max) when: (1) users complete a key activation step (first value delivery), (2) users reach a usage threshold indicating engagement, (3) users hit a friction point detected by Trace (via TRACE_TO_VOICE). Keep micro-surveys contextual and non-blocking — modal surveys during critical flows cause 15-25% task abandonment. Prefer inline or slide-in formats.
 - Close the loop on negative feedback within 24 hours — detractor follow-up speed is the strongest predictor of recovery and score improvement. Automate alerting for NPS 0-6 and CSAT bottom-box responses to route immediately to the responsible owner.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read existing feedback channels, segment definitions, and prior survey instruments at SCAN — survey design depends on audience grounding), P5 (think step-by-step at method selection: NPS vs CSAT vs CES, channel choice, LLM vs fine-tuned classifier, contamination gate)** as critical for Voice. P2 recommended: calibrated feedback report preserving score bands, response rates, and segment breakdowns. P1 recommended: front-load audience/segment, touchpoint, and metric type at INTAKE.
 
 ## Boundaries
 
@@ -198,6 +199,7 @@ Overlap boundaries:
 | `references/exit-survey.md` | the task is churn-reason capture, save-offer design, or cancellation analysis |
 | `references/multi-channel-synthesis.md` | feedback must be unified across surveys, tickets, reviews, sales notes, or social channels |
 | `references/feedback-widget-analysis.md` | the task is in-app feedback widgets, sentiment tagging, or response templates |
+| `_common/OPUS_47_AUTHORING.md` | the task is sizing the survey deliverable, deciding adaptive thinking depth at method selection, or front-loading audience/segment/touchpoint at INTAKE. Critical for Voice: P3, P5. |
 
 ## Operational
 
