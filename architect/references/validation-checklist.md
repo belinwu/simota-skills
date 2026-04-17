@@ -414,6 +414,41 @@ See `references/context-compression.md` for compression strategies and equivalen
 
 ---
 
+## 7. Opus 4.7 Readiness Validation (RECOMMENDED)
+
+Validate that generated skills align with Opus 4.7 default behaviors. See `references/official-design-patterns.md` Section 11.
+
+- [ ] **R7.1** Front-loaded context capture
+  - Trigger Guidance enumerates first-turn required inputs (target files, success criteria, constraints)
+  - INTERACTION_TRIGGERS batch related confirmations rather than serializing them
+
+- [ ] **R7.2** Calibrated response length
+  - Output sections specify length envelopes (line counts, bullet counts, table dimensions)
+  - Free-form summaries replaced with structured envelopes (`_STEP_COMPLETE`, `## NEXUS_HANDOFF`)
+
+- [ ] **R7.3** Explicit tool-use rationale
+  - Tools used by the skill have documented "when" (trigger condition) and "why" (value provided)
+  - Eager-read or think-first preferences are stated explicitly when they matter
+
+- [ ] **R7.4** Parallel subagent triggers
+  - Workflows with independent subtasks include explicit "spawn N subagents in the same turn when…" instructions
+  - References `_common/SUBAGENT.md` for parallelism-layer choice
+
+- [ ] **R7.5** Adaptive thinking hints
+  - High-stakes decision points include "Think carefully and step-by-step…" nudge
+  - Throughput-sensitive points include "Prioritize responding quickly…" nudge
+  - No hardcoded numeric thinking budgets
+
+- [ ] **R7.6** Effort-level expectations declared
+  - Default `xhigh` runtime envelope assumed
+  - Skills that require `max` effort flag this in `description` and Trigger Guidance
+
+- [ ] **R7.7** Delegation-engineer framing
+  - Workflow is self-directing for the bulk of execution
+  - User check-ins reserved for `Ask first` decisions, not micro-steps
+
+---
+
 ## Automated Validation Script
 
 For programmatic validation:

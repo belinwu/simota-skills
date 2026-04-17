@@ -495,3 +495,87 @@ Three sub-principles for setting effective boundaries without introducing dead w
 If none of these thresholds apply, keep the action as a composed general-tool pattern.
 
 **Dead weight pruning**: Every safeguard encodes an assumption about model limitations. Regularly audit whether these assumptions still hold. See `_common/HARNESS_EVOLUTION.md` for the evaluation cycle and simplification conditions.
+
+---
+
+## 11. Opus 4.7 Operating Principles for Generated Skills
+
+> Source: Anthropic "Best Practices for Using Claude Opus 4.7 with Claude Code" (2026)
+
+Opus 4.7 changes several defaults that directly affect how generated skills should be authored. Apply these when designing new agents or updating existing ones.
+
+### 11.1 Front-Loaded Task Specification
+
+Opus 4.7 rewards complete first-turn intent over progressive disclosure across multiple turns. Generated skills should bias users and orchestrators toward stating intent, constraints, acceptance criteria, and file locations up front.
+
+**Design rules**:
+- Trigger Guidance section should explicitly list what callers must provide on the first turn (target files, success criteria, constraints).
+- INTERACTION_TRIGGERS should batch multiple confirmations into a single multi-question prompt rather than serializing them across turns.
+- AUTORUN `_AGENT_CONTEXT` schemas should require all decision-affecting inputs be present before execution begins; ambiguity should resolve to safe defaults with documentation, not to a follow-up question.
+
+### 11.2 Calibrated Response Length
+
+Opus 4.7 calibrates verbosity to task complexity instead of defaulting to verbose. Skills must state expected output shape and length explicitly or risk under- or over-shooting.
+
+**Design rules**:
+- Output sections (reports, handoffs, summaries) must specify length envelopes (line counts, bullet counts, or table dimensions).
+- `_STEP_COMPLETE` and `## NEXUS_HANDOFF` blocks already provide structural envelopes — keep them; do not let agents emit free-form summaries instead.
+- For user-facing prose, state length explicitly (e.g., "1-3 sentence summary", "5-bullet checklist").
+
+### 11.3 Explicit Tool-Use Guidance
+
+Opus 4.7 reasons more and calls tools less by default. Skills that need aggressive tool execution must say so explicitly with "when" and "why" instructions.
+
+**Design rules**:
+- For each tool a skill expects to use, document the trigger condition (when) and the value the tool provides (why).
+- If a workflow benefits from eager tool use (e.g., reading multiple files to ground decisions), state it: "Read all candidate files before deciding, even if confidence seems sufficient — grounding cost is low compared to wrong-decision cost."
+- Conversely, for skills that should think before acting, state it: "Reason about the design before invoking tools; do not begin file reads until the section contract is decided."
+
+### 11.4 Explicit Parallel Subagent Triggers
+
+Opus 4.7 spawns fewer subagents by default. Skills that benefit from parallel fan-out must spell it out.
+
+**Design rules**:
+- When a skill's workflow has independent subtasks (multi-file reads, multi-target analysis, voting/consensus), include an explicit instruction: "Spawn N subagents in the same turn when fanning out across [items]."
+- Reference `_common/SUBAGENT.md` for the parallelism-layer decision (skill-internal subagents vs Agent Teams).
+- Do not assume the model will infer parallelism from workflow structure alone.
+
+### 11.5 Adaptive Thinking Hints
+
+Extended thinking with fixed budgets is no longer supported; Opus 4.7 decides per step whether deeper reasoning helps. Skills can steer this at decision points.
+
+**Design rules**:
+- At high-stakes decision points (architectural choices, irreversible actions, ambiguity resolution), include a thinking nudge: "Think carefully and step-by-step before responding; this decision affects [downstream impact]."
+- At low-stakes throughput-sensitive points (formatting, transformation, lookup), include the inverse: "Prioritize responding quickly rather than thinking deeply."
+- Do not embed numeric thinking budgets — they are no longer respected.
+
+### 11.6 Effort-Level Awareness
+
+The default effort level is now `xhigh`. Generated skills should be sized for `xhigh` as the assumed runtime envelope.
+
+| Effort | When skills should expect this |
+|--------|-------------------------------|
+| `low`/`medium` | Cost/latency-sensitive narrow scope; design lightweight skills here |
+| `high` | Concurrent sessions or budget constraints; balance intelligence and cost |
+| `xhigh` (default) | Most coding/agentic skills — design baseline |
+| `max` | Reserve for genuinely hard problems; flag in `description` if a skill expects `max` |
+
+If a skill's correctness depends on `max`-level effort, state that expectation in the `description` and Trigger Guidance so callers can opt in.
+
+### 11.7 Delegation-Engineer Framing
+
+Treat the model as a capable engineer being delegated to, not a line-by-line pair programmer. Skills should be authored to support coherent long sessions with infrequent check-ins.
+
+**Design rules**:
+- Skills must be self-directing for the bulk of their workflow; reserve user check-ins for genuine `Ask first` decisions.
+- Provide enough context inside the skill (or via references) that the model does not need to ask clarifying questions for documented decisions.
+- Avoid micro-step instructions that prevent the model from exercising judgment; prefer phase-level contracts with verification gates.
+
+### 11.8 Application in Architect Phases
+
+| Phase | Apply |
+|-------|-------|
+| `UNDERSTAND` | Confirm caller-provided context is complete (11.1); flag missing fields once, not iteratively |
+| `DESIGN` | Bake length envelopes (11.2), tool-use rationale (11.3), parallelism triggers (11.4), and thinking hints (11.5) into the section contract |
+| `GENERATE` | Verify generated SKILL.md states effort-level expectations (11.6) and delegation-engineer framing (11.7) |
+| `VALIDATE` | Add Opus 4.7 readiness checks to the validation pass — skills missing 11.1–11.5 guidance are incomplete for `xhigh`-default runtime |
