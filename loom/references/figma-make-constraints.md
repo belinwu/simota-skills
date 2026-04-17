@@ -47,6 +47,21 @@ If a package-backed design system is available:
 - focus Guidelines on composition, layout, naming, and prohibitions
 - treat package tokens and variants as the primary source of truth unless Muse reports drift
 
+## Make Attachments
+
+Make Attachments let users add files directly to prompts for one-off context. Supported types: PDF, markdown, code (TSX/JS/CSS), CSV, JSON, media (JPEG/PNG/GIF/MP4/MP3), SVG.
+
+| Use case | Mechanism | Rationale |
+|---|---|---|
+| Persistent design system rules | Guidelines.md | Reused across sessions, shared via kits |
+| One-off project context (PRD, brand guide, reference images) | Attachments | Session-specific, not part of design system |
+| Data-driven prototypes (CSV, JSON) | Attachments | Real data shapes the output, not a reusable rule |
+
+Rules:
+- Keep attachments focused — attaching too many files floods the context window
+- Name the role of each attachment in the prompt ("Use the attached CSV as the data source for the table")
+- Do not duplicate persistent rules in attachments — reference Guidelines instead
+
 ## Known Failure Cases
 
 Watch for:
@@ -55,6 +70,7 @@ Watch for:
 - too many screens in one prompt
 - too many variants in one step
 - mixed layout directions with weak constraints
+- brand-sensitive screens generating designs resembling well-known apps (design leakage)
 
 ## Guardrail Checklist
 
