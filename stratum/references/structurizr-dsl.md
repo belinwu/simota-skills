@@ -21,6 +21,10 @@ Read when: Generating or parsing DSL code.
 ```dsl
 workspace "[Name]" "[Description]" {
 
+    configuration {
+        scope softwaresystem  // softwaresystem | landscape | none (legacy)
+    }
+
     model {
         // Elements and relationships
     }
@@ -30,6 +34,18 @@ workspace "[Name]" "[Description]" {
     }
 }
 ```
+
+### Workspace Scope (built-in validation)
+
+Set `scope` inside `configuration` to trigger Structurizr's built-in workspace validation.
+
+| Value | Validation rule |
+|-------|-----------------|
+| `softwaresystem` | Containers / system-level docs / system-level decisions must exist for exactly **one** software system. |
+| `landscape` | Workspace must **not** define containers or system-level docs/decisions — overview only. |
+| `none` | Legacy mode; relaxed validation. Strict server-side validation rejects this. |
+
+Source: https://docs.structurizr.com/workspaces/scope
 
 ---
 
@@ -161,6 +177,8 @@ views {
 | Left-Right | `autolayout lr` | Flows and pipelines |
 | Bottom-Top | `autolayout bt` | Rarely used |
 | Right-Left | `autolayout rl` | Rarely used |
+
+**Renderer note (vNext, 2026):** The consolidated Structurizr vNext tooling uses **Dagre** for in-UI automatic layout and removes the Graphviz integration. Graphviz remains invokable via the separate CLI/JSON pipeline but is not wired into workspace rendering. Do not rely on Graphviz-only layout features (e.g., subgraph-aware edge routing) from DSL written for the UI. Source: https://www.patreon.com/posts/146923136
 
 ---
 
