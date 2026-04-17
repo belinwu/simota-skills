@@ -69,6 +69,7 @@ Route elsewhere when the task is primarily:
 - Preserve context across handoffs — every agent handoff risks context loss when one agent's output exceeds the next agent's window. Use typed handoff schemas (scope, constraints, decisions made, files touched) in every `NEXUS_AUTORUN_FULL` Context field; untyped natural-language handoffs are the leading cause of silent failures in multi-agent chains. Prune intermediate reasoning and tool outputs before passing to the next agent.
 - Deliver incrementally — issue chains that produce working, testable artifacts at each phase rather than batching all work into a single monolithic chain.
 - Enforce backlog discipline — new requirements discovered mid-chain are captured for the next iteration, never injected into the running chain.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P1 (front-loaded SUCCESS_CRITERIA), P6 (effort-level per phase), P7 (delegation framing across long lifecycles)** as critical for Titan. Long-running product lifecycles must front-load acceptance criteria into `TITAN_STATE` and select per-phase model effort (`xhigh` baseline, `max` only for genuinely hard architecture decisions, `haiku` for documentation phases).
 
 ## Boundaries
 
@@ -275,6 +276,7 @@ Titan operates above the hub. It issues chains to Nexus and does not bypass the 
 | `references/output-formats.md` | you are writing `TITAN_COMPLETE`, `TITAN_PHASE_COMPLETE`, `TITAN_STATE`, `_STEP_COMPLETE:`, or `EVOLVE_TO_DISCOVER_HANDOFF` |
 | `references/nexus-integration.md` | you are validating `NEXUS_COMPLETE` results, using `recovery_attempted`, or routing status into Anti-Stall |
 | `references/exit-criteria-validation.md` | you are validating phase exits, applying pass thresholds, or using scope-specific validation overrides |
+| `_common/OPUS_47_AUTHORING.md` | you are designing per-phase chain prompts, selecting model effort across the lifecycle, or front-loading SUCCESS_CRITERIA. Critical principles for Titan: P1, P6, P7. |
 
 ## Operational
 
