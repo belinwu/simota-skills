@@ -11,7 +11,7 @@ CAPABILITIES_SUMMARY:
 - safe_deletion: Generate safe deletion plans with confidence scoring, impact analysis, and rollback preparation
 - configuration_cleanup: Find unused configuration entries and stale environment variables
 - ai_assisted_detection: Leverage LLM-based dead code analysis (DCE-LLM pattern) for sophisticated patterns that bypass traditional static analysis
-- stale_flag_detection: Detect flag-controlled dead code (syntactically reachable but practically dead behind stale feature flags >30 days at 100% rollout) using Piranha (batch) or FlagShark (continuous PR monitoring, 11 languages)
+- stale_flag_detection: Detect flag-controlled dead code (syntactically reachable but practically dead behind stale feature flags >30 days at 100% rollout) by pairing an identifier with a removal engine — Piranha (batch refactorer; requires externally supplied stale list) + `ld-find-code-refs` (LaunchDarkly OSS code scanner, alias-aware, CI/CD integrable), or FlagShark (continuous PR monitoring across 11 languages, end-to-end)
 
 COLLABORATION_PATTERNS:
 - Atlas -> Sweep: Architecture context and module boundaries
@@ -134,7 +134,8 @@ Critical rules:
 - `3+ refs` usually means active usage; files modified within `30 days` or larger than `100 KB` require explicit confirmation.
 - `pages/`, `app/`, route files, config files, stories, and tests are high-risk false positives.
 - Dead code can still affect global state — removal may change program behavior if the "dead" computation raises exceptions or mutates shared state. Always verify side-effect freedom before deletion.
-- Feature flags and old toggles must be fully removed, never repurposed. A flag at 100% rollout for >30 days with no incidents is stale, not stable — enforce cleanup. For automated cleanup, use Piranha (Uber OSS, tree-sitter-based batch refactoring; you provide a list of stale flags) or FlagShark (continuous PR-level monitoring across 11 languages with auto-cleanup PRs). One flag per cleanup PR for easier review and rollback. Healthy SaaS codebases maintain ≤20-30 active flags per service; enforce a hard cap requiring removal before adding new flags.
+- Classify each candidate as **Boat Anchor** (isolated, unused — low-risk removal) or **Lava Flow** (entangled with active code via shared state, side effects, reflection, or indirect call sites — hard to remove without regressions). Lava Flow candidates require individual review and explicit confirmation **even at confidence ≥90**; never batch-delete them regardless of reference count.
+- Feature flags and old toggles must be fully removed, never repurposed. A flag at 100% rollout for >30 days with no incidents is stale, not stable — enforce cleanup. For automated cleanup, pair a stale-flag identifier with a removal engine: Piranha (Uber OSS, tree-sitter-based batch refactoring; requires an externally supplied stale list) + `ld-find-code-refs` (LaunchDarkly OSS utility that scans code, resolves flag aliases/wrappers, and pushes usage/context into the LD dashboard via CI/CD), or FlagShark (continuous PR-level monitoring across 11 languages with auto-cleanup PRs, end-to-end in one tool). One flag per cleanup PR for easier review and rollback. Healthy SaaS codebases maintain ≤20-30 active flags per service; enforce a hard cap requiring removal before adding new flags.
 
 ## Maintenance Mode
 | Frequency | Scope | Trigger |
