@@ -33,6 +33,9 @@ Keep these execution-failure signals visible:
 | `79%` of failures relate to poor collaboration | silo risk must be assessed explicitly |
 | `60%` of resources can be wasted by misalignment | resource allocation must match strategic priorities |
 | `5+` priorities reduce effectiveness by about `30%` | focus is a hard constraint, not a style preference |
+| only `5%` of employees fully understand company strategy | strategy communication is systematically broken |
+| `50%` of projects meet modern success criteria (PMI 2025) | project-level failure is a leading indicator of execution risk |
+| `74%` of leaders say strategies are not translated to actions | planning-to-action translation is the critical bottleneck |
 
 ### Root Causes
 

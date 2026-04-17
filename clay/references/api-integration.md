@@ -8,28 +8,29 @@ Provider integration patterns for AI 3D model generation APIs. Covers text-to-3D
 |----------|----------|-----------------|-------|---------------|---------------|-----------------|
 | **Meshy** | General purpose, reliable | Medium | Text, Image | Credit-based (free tier) | FBX, OBJ, glTF, USDZ, STL | 30s-5min |
 | **Tripo** | Fast, good topology, animation | Medium-High | Text, Image, Multi-view | Credit-based | FBX, OBJ, glTF, STL | 10-60s |
-| **Hunyuan3D 2.0** | Open-source, high fidelity, PBR textures | High | Text, Image | Free (self-hosted) / API | OBJ, glTF | 30s-3min |
+| **Hunyuan3D 3.0/3.5** | Open-source, 3D-DiT, auto-rigging, 8K PBR | High | Text, Image, Multi-view | Free (self-hosted) / API | FBX, OBJ, glTF | 3.5: sub-60s, 3.0: 1-3min |
 | **Rodin** | High detail, production quality | High | Text, Image, Multi-view | Credit-based | FBX, OBJ, glTF, USDZ | 1-5min |
 | **Sloyd** | Game-ready topology, parametric | High (pre-retopologized) | Text, Parameters | Subscription + usage | FBX, OBJ, glTF | 5-15s |
 | **Stability (Stable Fast 3D)** | Ultra-fast single-image | Medium | Image | API credit-based | OBJ, glTF | ~1s |
-| **Trellis (Microsoft)** | Open-source, 3DGS + mesh dual output | High | Image | Free (self-hosted) | glTF, PLY (3DGS) | 15-60s |
+| **TRELLIS.2 (Microsoft)** | Open-source MIT, 4B params, O-Voxel, PBR+opacity | High | Image | Free (self-hosted) | glTF, PLY (3DGS) | ~3s (512³), ~17s (1024³) |
 | **InstantMesh** | Open-source, multi-view LRM | Medium-High | Image | Free (self-hosted) | OBJ, glTF | 10-30s |
 | **Luma Genie** | High-quality generation, video-to-3D | Medium-High | Text, Image, Video | API credit-based | glTF, PLY (3DGS) | 30s-3min |
-| **CSM (Common Sense Machines)** | World-building, scene generation | Medium | Image, Video | Credit-based | glTF, USD | 1-5min |
+| **CSM (Common Sense Machines)** | World-building, scene generation (acquired by Google Jan 2026 — evaluate API continuity) | Medium | Image, Video | Credit-based | glTF, USD | 1-5min |
 
 ### Provider Generation Comparison
 
-| Capability | Meshy | Tripo | Hunyuan3D 2.0 | Rodin | Sloyd | Stability | Trellis | Luma |
-|-----------|-------|-------|---------------|-------|-------|-----------|---------|------|
+| Capability | Meshy 6 | Tripo | Hunyuan3D 3.0/3.5 | Rodin | Sloyd | Stability | TRELLIS.2 | Luma |
+|-----------|---------|-------|-------------------|-------|-------|-----------|-----------|------|
 | Text-to-3D | Yes | Yes | Yes | Yes | Yes | No | No | Yes |
 | Image-to-3D | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes |
-| Multi-view-to-3D | No | Yes | Yes | Yes | No | No | No | No |
+| Multi-view-to-3D | Yes | Yes | Yes (2-4 views) | Yes | No | No | No | No |
 | Video-to-3D | No | No | No | No | No | No | No | Yes |
 | Text-to-texture | Yes | No | Yes | Yes | No | No | No | No |
-| Auto-rigging | No | Yes | No | No | No | No | No | No |
-| PBR texture output | Yes | Yes | Yes | Yes | Yes | Limited | Yes | No |
+| Auto-rigging | No | Yes | Yes (3.0+) | No | No | No | No | No |
+| PBR texture output | Yes | Yes | Yes (8K in 3.5) | Yes | Yes | Limited | Yes+opacity | No |
 | 3D Gaussian output | No | No | No | No | No | No | Yes | Yes |
 | Animation output | No | Yes | No | No | No | No | No | No |
+| Low Poly Mode | Yes | Yes (Smart Mesh) | No | No | Yes | No | No | No |
 
 ## Authentication Pattern
 
@@ -58,7 +59,7 @@ Environment variable naming convention:
 | Rodin | `RODIN_API_KEY` |
 | Sloyd | `SLOYD_API_KEY` |
 | Stability | `STABILITY_API_KEY` |
-| Trellis | N/A (self-hosted) |
+| TRELLIS.2 | N/A (self-hosted) |
 | InstantMesh | N/A (self-hosted) |
 | Luma | `LUMA_API_KEY` |
 | CSM | `CSM_API_KEY` |

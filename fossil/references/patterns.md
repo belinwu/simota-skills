@@ -44,6 +44,21 @@ Rule: Orders receive 15% discount under certain conditions
 Action: Read test name, setup, and assertions to reconstruct full rule
 ```
 
+### Characterization Testing (Feathers)
+
+Write tests that document actual behavior, not intended behavior. When the specification is unavailable or differs from actual behavior, actual behavior is the authoritative source — that is what users depend on.
+
+```
+Technique:
+1. Pick a function/module with no tests and unknown spec
+2. Call it with representative inputs, observe outputs
+3. Write assertions that lock the observed behavior
+4. Repeat with boundary values and error inputs
+
+Result: A test suite that IS the specification
+Use case: Modules with LOW/SPECULATIVE confidence rules
+```
+
 ### Edge Case Mining
 
 ```

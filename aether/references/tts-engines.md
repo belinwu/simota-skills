@@ -25,6 +25,7 @@ Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` bou
 | `Piper` | Local | `< 200ms` | Medium-High | Limited | No (CPU) | OSS | ONNX-based; CPU real-time; ideal for resource-constrained setups |
 | `Cartesia Sonic Turbo` | Cloud | `40ms TTFA` | Very high | Multilingual (40+) | No | Paid | SSM architecture; fastest commercial TTFA; WebSocket streaming API; voice cloning |
 | `Cartesia Sonic 3` | Cloud | `90ms TTFA` | Very high | Multilingual (40+) | No | Paid | SSM architecture; laughter/emotion; higher quality than Turbo |
+| `Orpheus TTS` | Local | `~200ms TTFA` | Very high | English (primary) | Recommended | OSS (Apache 2.0) | Llama-3B backbone; 4 sizes (3B/1B/400M/150M); inline emotion tags (`<laugh>`, `<sigh>`, `<gasp>`); 0-shot voice cloning |
 
 ## Use-Case Recommendations
 
@@ -40,6 +41,8 @@ Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` bou
 | CPU-only minimal setup | `Piper` | ONNX runtime, no GPU, real-time on CPU |
 | Lowest TTFA (commercial) | `Cartesia Sonic Turbo` | 40ms TTFA via SSM architecture; WebSocket streaming |
 | High quality + emotion (commercial) | `Cartesia Sonic 3` | 90ms TTFA with laughter/emotion support |
+| Expressive emotion (OSS) | `Orpheus TTS (3B)` | Inline emotion tags; Apache 2.0; ~200ms streaming TTFA; English primary |
+| Lightweight emotion (local) | `Orpheus TTS (150M/400M)` | Emotion control at minimal GPU footprint; Apache 2.0 |
 
 ## TTSAdapter Contract
 

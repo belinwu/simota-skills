@@ -147,21 +147,33 @@ GET /api/v1/users?limit=10&cursor=eyJpZCI6MTIzfQ==
 
 ### Rate Limit Definition in OpenAPI
 
+> **Note:** IETF draft-ietf-httpapi-ratelimit-headers (Standards Track, draft-10 Sep 2025) defines standardized `RateLimit-Policy` and `RateLimit` header fields. Prefer these for new APIs. The `X-RateLimit-*` headers below remain widely deployed and should be supported for backward compatibility.
+
 ```yaml
 components:
   headers:
+    RateLimit-Policy:
+      description: Quota policy (IETF standard)
+      schema:
+        type: string
+        example: "1000;w=3600"
+    RateLimit:
+      description: Remaining quota for the policy (IETF standard)
+      schema:
+        type: string
+        example: "limit=1000, remaining=999, reset=60"
     X-RateLimit-Limit:
-      description: リクエスト上限（時間窓あたり）
+      description: Request limit per window (legacy)
       schema:
         type: integer
         example: 1000
     X-RateLimit-Remaining:
-      description: 残りリクエスト数
+      description: Remaining request count (legacy)
       schema:
         type: integer
         example: 999
     X-RateLimit-Reset:
-      description: リセット時刻（Unix timestamp）
+      description: Reset time in Unix timestamp (legacy)
       schema:
         type: integer
         example: 1640995200

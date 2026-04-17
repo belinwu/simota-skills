@@ -1,6 +1,8 @@
 # Security Standards Reference
 
-## OWASP Top 10 (2021)
+## OWASP Top 10:2025 (supersedes 2021)
+
+> **Note:** The checklist below still uses the 2021 category names. OWASP Top 10:2025 restructured significantly: Security Misconfiguration rose #5→#2; SSRF absorbed into A01; A03 expanded to Software Supply Chain Failures; A07 renamed Authentication Failures; A09 renamed Security Logging and Alerting Failures; new A10 Mishandling of Exceptional Conditions. Assess against 2025 categories; use 2021 details below as supplementary reference only.
 
 ### Overview
 The OWASP Top 10 represents the most critical security risks to web applications.

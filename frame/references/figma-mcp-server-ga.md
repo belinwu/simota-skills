@@ -40,9 +40,16 @@ Source: https://developers.figma.com/docs/figma-mcp-server/
 
 | Tool | Function | Output | Notes |
 |------|----------|--------|-------|
+| `search_design_system` | Search design libraries for components, variables, styles | Search results | **Rate-exempt**; broad synonym search recommended |
 | `create_design_system_rules` | Generate design system rules file | Rules document | For agent context; naming, variants, usage |
 | `get_figjam` | FigJam content to XML + screenshot | Structured board data | Sticky notes, connectors, sections |
 | `generate_diagram` | Mermaid syntax → FigJam diagram | Generated diagram | Flowchart, Gantt, state, sequence |
+
+### Canvas Write Tools
+
+| Tool | Function | Output | Notes |
+|------|----------|--------|-------|
+| `use_figma` | Execute Plugin API scripts to create/modify canvas elements | Created/mutated node IDs | **Rate-exempt**; atomic (failed scripts apply no changes); Full seat required for writes outside drafts; pass `skillNames: ["figma-use"]` |
 
 ### File Management Tools
 

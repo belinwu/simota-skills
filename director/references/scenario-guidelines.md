@@ -134,10 +134,10 @@ await page.fill('#password', 'password');
 await page.click('#submit');
 
 // Good: Appropriate granularity with locator-based waits
-await page.fill('#email', 'demo@example.com');
+await page.locator('#email').pressSequentially('demo@example.com', { delay: 80 });
 await expect(page.locator('#email')).toHaveValue('demo@example.com');
 
-await page.fill('#password', 'password');
+await page.locator('#password').pressSequentially('password', { delay: 80 });
 await page.waitForTimeout(300); // Deliberate pacing pause
 
 await page.click('#submit');

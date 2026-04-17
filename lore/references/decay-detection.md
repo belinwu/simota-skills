@@ -219,3 +219,14 @@ Lore's decay management contributes to Darwin's Ecosystem Fitness Score:
 | 70-79 | C | Fair — significant staleness, review needed |
 | 60-69 | D | Poor — many stale patterns, active curation required |
 | < 60 | F | Critical — knowledge base is unreliable, major refresh needed |
+
+### Operational Monitoring Metrics
+
+Track these alongside the Health Score to measure consumer-facing impact of decay:
+
+| Metric | Calculation | Alert Threshold |
+|--------|-------------|-----------------|
+| **Stale retrieval rate** | queries_returning_AGING_or_STALE / total_consumer_queries | > 15% |
+| **Propagation lag** | avg(consumer_notification_time − pattern_update_time) | > 24 hours |
+
+These metrics are output-oriented (measuring consumer impact) rather than structural (measuring catalog state). A healthy catalog with high propagation lag still fails consumers.

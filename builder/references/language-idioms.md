@@ -2,7 +2,7 @@
 
 > Per-language idiomatic patterns, project structure, type safety, error handling, and testing
 
-## 1. TypeScript (5.8–6.0+)
+## 1. TypeScript (6.0 / tsgo 7.0)
 
 ### Idioms
 
