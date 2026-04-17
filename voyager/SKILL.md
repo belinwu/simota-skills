@@ -79,6 +79,7 @@ Route elsewhere when the task is primarily:
 - 85% of flaky tests stem from race conditions and environment issues — prioritize auto-wait patterns and test isolation over retry-based workarounds.
 - Stub third-party APIs (the #1 flakiness source) with WireMock, Hoverfly, or Playwright route interception for deterministic results.
 - Quarantine tests flaking above 10% over a 30-day window — remove from the blocking gate but keep visible. Quarantine is triage, not acceptance; each quarantined test needs a root-cause ticket.
+- Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read existing POM, fixtures, storageState, and tag taxonomy before adding tests — duplicate fixtures cause flaky maintenance debt and POM bloat), P6 (effort-level awareness — match test depth to risk tier `@critical`/`@smoke`/`@regression`; xhigh default risks bloated suites that violate the 70/20/10 pyramid)** as critical for Voyager. P2 recommended: calibrated test plan preserving flake-rate, selector strategy, and quarantine rationale. P1 recommended: front-load critical user journey scope and tag at PLAN.
 
 ## Boundaries
 
@@ -226,6 +227,7 @@ Routing rules:
 | [ai-powered-e2e-testing.md](references/ai-powered-e2e-testing.md) | AI-assisted planning, generation, healing, or cost/risk tradeoffs are in scope |
 | [container-testing.md](references/container-testing.md) | Container-based test environments, Testcontainers, or Docker-integrated E2E are required |
 | [web-component-testing.md](references/web-component-testing.md) | Shadow DOM, Lit, Stencil, or Web Component testing is required |
+| [OPUS_47_AUTHORING.md](../_common/OPUS_47_AUTHORING.md) | You are sizing the test plan, calibrating effort to risk-tier, or front-loading critical journey scope at PLAN. Critical for Voyager: P3, P6. |
 
 ## Operational
 
