@@ -63,6 +63,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | LOOP_OPS | Orbit | +Builder (script changes), +Guardian (commit policy), +Radar (verification closure) |
 | GAME | Quest → Forge → Builder → Radar | +Tone (audio), +Dot (pixel), +Clay (3D), +Lyric (music), +Saga (narrative), +Matrix (balance) |
 | DESIGN | Frame → Artisan → Radar | +Muse (tokens), +Loom (guidelines), +Vision (direction), +Forge (prototype) |
+| DESIGN_WORKFLOW | Atelier (orchestrator) | Full design→code loop: Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas. Persists design system to `.agents/design-system/`. Use when the task spans design direction + tokens + prototype + implementation + catalog in a single pipeline |
 | ARCHITECTURE | Stratum → Canvas | +Lens (analysis), +Atlas (review), +Scribe (docs), +Ripple (impact) |
 | CREATIVE | Vision → Sketch → Artisan | +Clay (3D), +Dot (pixel), +Growth (marketing) |
 | MOCKUP | Pixel → Radar | +Frame (Figma source), +Muse (tokens), +Flow (animations), +Warden (fidelity gate) |
