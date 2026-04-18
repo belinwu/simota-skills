@@ -116,3 +116,106 @@ Based on the Managed Agents virtualization pattern (Anthropic), session state (t
 | Detailed investigation notes | Always | Summary only |
 | Full error traces | Always | Key error + file:line only |
 | Acceptance criteria | Always (at chain start) | Reference only |
+
+---
+
+## DESIGN_INTENT_HANDOFF Format
+
+**Purpose**: Specialized handoff schema for design-to-implementation pipelines (inspired by Claude Design by Anthropic Labs, 2026-04-17). Use this when atelier/Vision/Frame/Muse hand off to implementation agents (Forge/Artisan/Pixel/Showcase) or to Claude Code.
+
+**When to use**:
+- atelier orchestrating design → code loops
+- Vision passing direction to Muse/Frame/Forge
+- Forge/Pixel producing prototypes to hand off to Artisan
+- Any chain where design intent must survive handoff without lossy re-interpretation
+
+### Required Fields
+
+| Field | Description |
+|-------|-------------|
+| **Intent** | Design direction in natural language (from Vision or user). What feel, what audience, what emotional register |
+| **Tokens** | Current design-system tokens as `{color, typography, spacing, radius, shadow, motion}`. Reference to `.agents/design-system/{project}.json` when loaded |
+| **Constraints** | Platform (web/mobile/desktop), brand rules, a11y targets (WCAG level), regulatory (cookie/ADA/EU AI Act), performance budgets |
+| **Acceptance** | Measurable criteria — contrast ratio, bundle size, responsive breakpoints, browser matrix |
+
+### Recommended Fields
+
+| Field | Description |
+|-------|-------------|
+| **Assets** | References to images, icons, fonts, existing components (file paths or URLs) |
+| **References** | Inspiration sources — screenshots, competitor UIs, Figma URLs, web captures |
+| **Variants** | Parametric options if the caller wants multiple explorations (see `_common/parametric-output.md`) |
+| **Code_Instructions** | When next agent is Claude Code / Artisan / Builder: explicit "what file, what framework, what test" directives |
+
+### Optional Fields
+
+| Field | Description |
+|-------|-------------|
+| **Registry_Ref** | Path to persisted design system (e.g., `.agents/design-system/marketing-2026.json`) |
+| **Vision_Ref** | Path to Vision direction document (e.g., `.agents/vision/direction.md`) |
+| **Handoff_Bundle** | Path to structured bundle (see `_templates/handoff-bundle.template.json`) |
+| **Do_Not** | Explicit anti-patterns — colors/layouts/words that must be avoided |
+
+### Example (Minimal)
+
+```yaml
+DESIGN_INTENT_HANDOFF:
+  Intent: "Calm, trustworthy landing page for B2B fintech — reduce perceived risk"
+  Tokens: { color: "registry:marketing-2026", typography: "Inter/Fraunces", spacing: "base-8" }
+  Constraints: "Web only, WCAG 2.2 AA, LCP < 2.5s"
+  Acceptance: "Hero + 3 feature blocks + CTA; contrast ≥ 4.5:1"
+  Next: Forge (prototype)
+```
+
+### Example (Full)
+
+```yaml
+DESIGN_INTENT_HANDOFF:
+  Intent: |
+    Ship-ready dashboard for on-call engineers. Tone: calm under pressure,
+    dense but scannable. No marketing gloss. Dark-mode first.
+  Tokens:
+    color: ".agents/design-system/observability-2026.json"
+    typography: "Inter (UI) / JetBrains Mono (metrics)"
+    spacing: "dense-4"
+    radius: "sharp"
+  Constraints:
+    platform: "web + Electron"
+    a11y: "WCAG 2.2 AA, keyboard-first, screen-reader for alert states"
+    perf: "TTI < 1.5s on mid-range laptop; update cadence 2s"
+    brand: "no emojis in UI copy; no gradients; use our logo monochrome"
+  Acceptance:
+    - "Incident list + timeline + drill-down modal"
+    - "Contrast ≥ 7:1 for critical status indicators"
+    - "Keyboard shortcut overlay (?-key)"
+  Assets:
+    - "assets/icons/severity-*.svg"
+    - "fonts/Inter-Variable.woff2"
+  References:
+    - "https://linear.app/inbox"
+    - ".agents/web-capture/datadog-dashboard-2026-04.png"
+  Variants:
+    density: [compact=3 / base=4 / relaxed=6]
+    accent: [cyan=#06b6d4 / amber=#f59e0b]
+  Code_Instructions:
+    framework: "Next.js 15 / React Server Components"
+    files: ["app/dashboard/page.tsx", "components/incident-*"]
+    test: "Playwright a11y + visual regression"
+  Registry_Ref: ".agents/design-system/observability-2026.json"
+  Vision_Ref: ".agents/vision/direction-2026-04.md"
+  Handoff_Bundle: ".agents/atelier/bundle-dashboard-2026-04.json"
+  Do_Not:
+    - "Pastel colors"
+    - "Illustrations or hero images"
+    - '"Delightful" / "magical" / "powerful" in copy'
+  Next: Artisan (implement) → Showcase (catalog)
+```
+
+### Rules
+
+1. **Intent is mandatory** — a handoff without explicit design intent is a handoff that will drift
+2. **Tokens must be referenceable** — either inline or a registry path. Never free-form color names
+3. **Constraints include a11y by default** — WCAG level must be declared, not assumed
+4. **Code_Instructions are explicit when crossing the design→code boundary** — frameworks, file paths, test expectations
+5. **Do_Not is as important as Intent** — negative space prevents regression to generic outputs
+6. **Registry_Ref persists across sessions** — the design system outlives any single chain; refer to it, don't re-derive it
