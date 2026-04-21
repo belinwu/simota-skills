@@ -260,6 +260,10 @@ Complete chain templates and dynamic adjustment rules.
 | MOCKUP | figma | Frame → Pixel → Radar |
 | MOCKUP | full | Frame → Pixel → Muse → Artisan → Warden → Radar |
 | MOCKUP | responsive | Pixel → Matrix → Artisan → Radar |
+| DESIGN_AUDIT | basic | Pixel[gap-report] → Artisan |
+| DESIGN_AUDIT | a11y | Pixel[gap-report] → Canon → Artisan |
+| DESIGN_AUDIT | review | Pixel[gap-report] → Judge |
+| DESIGN_AUDIT | full | Pixel[gap-report] → Canon → Judge → Artisan → Voyager |
 | BRANDING | audit | Crest → Quill |
 | BRANDING | full | Crest → Growth → Prose → Quill → Canvas |
 | BRANDING | portfolio | Crest → Harvest → Quill |
@@ -318,6 +322,7 @@ Builder then applies:
 - Problem framing stuck → Add Flux for perspective shift
 - Figma design available → Add Frame before Artisan
 - Mockup/screenshot to code → Add Pixel (faithful reproduction from image)
+- Detailed design-to-code gap analysis / fidelity audit / design review requested → Add Pixel[gap-report]; chain to Canon for WCAG mapping when a11y is in scope, Judge for report quality review, Artisan for remediation
 - Personal branding or portfolio → Add Crest
 - Game assets needed → Add Tone/Dot/Clay as applicable
 - C4 architecture documentation needed → Add Stratum

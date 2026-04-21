@@ -67,6 +67,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | ARCHITECTURE | Stratum → Canvas | +Lens (analysis), +Atlas (review), +Scribe (docs), +Ripple (impact) |
 | CREATIVE | Vision → Sketch → Artisan | +Clay (3D), +Dot (pixel), +Growth (marketing) |
 | MOCKUP | Pixel → Radar | +Frame (Figma source), +Muse (tokens), +Flow (animations), +Warden (fidelity gate) |
+| DESIGN_AUDIT | Pixel[gap-report] → Canon/Judge | +Artisan (remediation), +Muse (token regression), +Voyager (VRT baseline). Trigger: "gap analysis", "fidelity audit", "design review". Produces 8-dim × 5-severity × 9-RC Markdown+JSON report with visual artifacts |
 | BRANDING | Crest → Quill | +Growth (SEO/SMO), +Canvas (viz), +Prose (content), +Harvest (portfolio) |
 | BUSINESS | Levy → Scribe | +Schema (data), +Builder (calc), +Canvas (flow) |
 | ECOSYSTEM | Darwin → Gauge → Canvas | +Architect (design), +Realm (viz), +Void (prune), +Lore (knowledge) |

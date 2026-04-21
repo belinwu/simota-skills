@@ -20,6 +20,8 @@
 │  Frame (exports) │          │       │          │  Growth           │
 │  Nexus (context) │          │       │          │  Flow             │
 └─────────────────┘          └───────┘          │  Voyager          │
+                                                 │  Canon (gap audit)│
+                                                 │  Judge (gap audit)│
                                                  └──────────────────┘
 ```
 
@@ -251,4 +253,60 @@ PIXEL_TO_VOYAGER_HANDOFF:
     - "Set up Playwright visual comparison tests"
     - "Use captured screenshot as baseline for regression"
     - "Monitor fidelity score in CI/CD"
+```
+
+### To Canon (Gap Analysis → Standards Mapping)
+
+When a gap analysis report has been produced and accessibility / standards mapping is needed.
+
+```yaml
+PIXEL_TO_CANON_HANDOFF:
+  source: Pixel
+  gap_report:
+    markdown_path: "[./artifacts/gap-analysis-report.md]"
+    json_path: "[./artifacts/gap-analysis-report.json]"
+    schema_version: "1.0"
+  a11y_focus:
+    blocking_items:
+      - { id: "G-001", wcag_candidate: "1.4.3", dimension: "Accessibility", delta: { contrast_ratio: -1.3 } }
+    scores:
+      accessibility_raw: "[0-100]"
+      accessibility_adjusted: "[0-100]"
+  needs:
+    - "Map BLOCKING a11y gaps to specific WCAG 2.2 success criteria"
+    - "Cross-reference against ISO 25010 usability sub-characteristics if relevant"
+    - "Produce compliance verdict (PASS / PASS_WITH_CAVEATS / FAIL) with citations"
+  artifacts:
+    side_by_side: "./artifacts/side-by-side.png"
+    heatmap: "./artifacts/heatmap.png"
+  note: "Pixel quantifies visual fidelity; Canon normatively evaluates standards conformance. No overlap — Canon's output is the authoritative WCAG verdict."
+```
+
+### To Judge (Gap Analysis → Fidelity Review)
+
+When the gap analysis report itself should be adversarially reviewed before delivery (PR artifact, design review, external stakeholder).
+
+```yaml
+PIXEL_TO_JUDGE_HANDOFF:
+  source: Pixel
+  review_target:
+    type: "Gap Analysis Report"
+    markdown_path: "[./artifacts/gap-analysis-report.md]"
+    json_path: "[./artifacts/gap-analysis-report.json]"
+  scope:
+    - "Severity classification accuracy (BLOCKING/CRITICAL/MAJOR/MINOR/COSMETIC thresholds)"
+    - "Root cause assignment reasonableness (RC-EXT vs RC-COMP vs RC-MOCKUP)"
+    - "Delta quantification correctness (ΔE, px, contrast ratio math)"
+    - "Remediation cost estimates (S/M/L) vs actual fix scope"
+    - "Expected post-fix fidelity claims"
+  context:
+    iteration: "[1-3]"
+    raw_fidelity: "[0-100]"
+    adjusted_fidelity: "[0-100]"
+    total_gaps: "[N]"
+  needs:
+    - "Flag any gap whose severity is mis-escalated or under-called"
+    - "Verify RC-EXT cluster signals (if 30%+ are RC-EXT, extraction is the bottleneck — escalate to Pixel self-improvement)"
+    - "Block delivery if BLOCKING a11y items lack WCAG citation"
+  note: "Judge reviews the report's internal consistency, not the underlying implementation. Use findings to sharpen future Pixel iterations."
 ```
