@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-125-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-130-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **125種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **130種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする125種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする130種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -190,13 +190,15 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Prism** | _"One source, many lights."_ - NotebookLMのステアリングプロンプト設計コンサルタント。ソース準備の助言と最適な出力フォーマット（Audio/Video/Slide/Infographic/Mind Map）の選定 | ステアリングプロンプト |
 | **Tome** | _"Changes are forgotten. Knowledge endures."_ - リポジトリの変更内容を詳細な学習ドキュメントに変換。用語・フロー・設計判断・アンチパターンを教育的に解説 | 学習ドキュメント |
 | **Clause** | _"Every clause carries weight. Every omission carries risk."_ - 利用規約・プライバシーポリシー・特商法の法的ドキュメントレビュー。条項ギャップ検出・リスクフラグ・規制整合性確認 | 法務レビューレポート |
+| **Zine** | _"The hook earns the second paragraph."_ - 外部公開向けテックブログ・記事連載オーサリングエージェント。note/Zenn/Qiita/dev.to向けフック設計、記事構造、プラットフォーム別チューニング、連載管理 | 公開記事、連載index |
 
-**Scribe vs Quill vs Morph vs Prism vs Tome の役割分担**:
+**Scribe vs Quill vs Morph vs Prism vs Tome vs Zine の役割分担**:
 - **Scribe**: プロジェクトドキュメント（PRD、SRS、設計書、チェックリスト、テスト仕様書）
 - **Quill**: コードドキュメント（JSDoc/TSDoc、README、型定義）
 - **Morph**: フォーマット変換（Markdown→PDF/Word/HTML等）
 - **Prism**: NotebookLMコンテンツ最適化（Audio/Video/Slide向けステアリングプロンプト）
 - **Tome**: 変更ベース学習教材（diffから設計判断・用語・アンチパターンを教材化）
+- **Zine**: 外部公開記事（note/Zenn/Qiita/dev.to）・連載管理
 
 ### 可視化
 
@@ -232,6 +234,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Crypt** | _"Trust no channel. Verify every key."_ - 暗号アーキテクチャ設計。アルゴリズム選定、鍵管理、E2E暗号化、KMS統合、TLS設定 | 暗号設計仕様 |
 | **Shard** | _"Isolation is the foundation of trust in multi-tenancy."_ - マルチテナントアーキテクチャ設計。テナント分離戦略、RLS、ルーティング、SaaS向けスケール設計 | アーキテクチャ設計 |
 | **Spider** | _"Design the web that catches the web."_ - クロールシステムアーキテクチャ設計。分散クローラー設計、URLフロンティア管理、ポライトネスポリシー、法的準拠設計 | アーキテクチャ仕様 |
+| **Tempo** | _"Time is not a scalar — it's a minefield of conventions."_ - スケジューリング・時間ロジックアーキテクト。cron表現設計、タイムゾーン/DST処理、retry/backoffポリシー、idempotencyキー、backfill戦略、営業カレンダー設計（日本の祝日、会計年度、銀行営業日） | スケジュール仕様、cron設定、retryポリシー |
+| **Grok** | _"Understand the shape before writing the parser."_ - パターン・regex・parser・DSL設計スペシャリスト。文法オーサリング（EBNF/PEG）、ReDoS-safe regex、parser-generator選定（ANTLR4/tree-sitter/Chevrotain）、内部DSLアーキテクチャ、AST変換 | 文法仕様、parser設計、DSL仕様 |
 
 ### コミュニケーション
 
@@ -785,7 +789,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全124エージェントの使用例を紹介します。
+> カテゴリ別に全130エージェントの使用例を紹介します。
 
 #### オーケストレーション
 

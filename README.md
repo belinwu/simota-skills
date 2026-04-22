@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-125-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-130-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **125 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **130 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 125 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 130 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -192,13 +192,15 @@ This repository contains 125 specialized AI agents covering various aspects of s
 | **Prism** | _"One source, many lights."_ - NotebookLM steering prompt design consultant. Advises on source preparation and optimal output format selection (Audio/Video/Slide/Infographic/Mind Map) | Steering prompts |
 | **Tome** | _"Changes are forgotten. Knowledge endures."_ - Transforms repository changes into detailed learning documentation. Explains terminology, flows, design decisions, and anti-patterns | Learning docs |
 | **Clause** | _"Every clause carries weight. Every omission carries risk."_ - Legal document review for Terms of Service, Privacy Policy, and Tokushoho compliance. Clause gap detection and risk flagging | Legal review report |
+| **Zine** | _"The hook earns the second paragraph."_ - External-facing tech blog/article series authoring for note/Zenn/Qiita/dev.to. Hook design, article structure, platform-specific tuning, multi-episode series management | Published articles, series index |
 
-**Scribe vs Quill vs Morph vs Prism vs Tome responsibilities**:
+**Scribe vs Quill vs Morph vs Prism vs Tome vs Zine responsibilities**:
 - **Scribe**: Project documentation (PRD, SRS, design docs, checklists, test specifications)
 - **Quill**: Code documentation (JSDoc/TSDoc, README, type definitions)
 - **Morph**: Format conversion (Markdown > PDF/Word/HTML, etc.)
 - **Prism**: NotebookLM content optimization (steering prompts for Audio/Video/Slide)
 - **Tome**: Change-based learning materials (design decisions, terminology, anti-patterns from diffs)
+- **Zine**: External-facing articles for public platforms (note/Zenn/Qiita/dev.to), series management
 
 ### Visualization
 
@@ -233,6 +235,8 @@ This repository contains 125 specialized AI agents covering various aspects of s
 | **Crypt** | _"Trust no channel. Verify every key."_ - Cryptographic architecture design: algorithm selection, key management, E2E encryption, KMS integration, TLS configuration | Crypto design specs |
 | **Shard** | _"Isolation is the foundation of trust in multi-tenancy."_ - Multi-tenant architecture design. Tenant isolation strategies, RLS, routing, and scale design for SaaS | Architecture design |
 | **Spider** | _"Design the web that catches the web."_ - Crawl system architecture design. Distributed crawler design, URL frontier management, politeness policies, legal compliance | Architecture specs |
+| **Tempo** | _"Time is not a scalar — it's a minefield of conventions."_ - Scheduling and time-aware logic architect. Cron expression design, timezone/DST handling, retry/backoff policies, idempotency keys, backfill strategies, and business-calendar design (JP holidays, fiscal year, banking days) | Schedule specs, cron configs, retry policies |
+| **Grok** | _"Understand the shape before writing the parser."_ - Pattern, regex, parser, and DSL design specialist. Grammar authoring (EBNF/PEG), ReDoS-safe regex, parser-generator selection (ANTLR4/tree-sitter/Chevrotain), internal DSL architecture, AST transformation | Grammar specs, parser designs, DSL specs |
 
 ### Communication
 
@@ -796,7 +800,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 124 agents.
+> Category-by-category examples for all 130 agents.
 
 #### Orchestration
 
