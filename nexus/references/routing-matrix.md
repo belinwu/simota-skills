@@ -85,3 +85,6 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | PRESENTATION | Stage → Canvas | +Cue (narrative), +Quill (content), +Morph (export) |
 | LEARNING | Tome → Quill | +Canvas (diagrams), +Rewind (change context), +Prism (audio) |
 | WORKFLOW | Weave → Builder → Radar | +Canvas (diagram), +Schema (persistence), +Attest (spec verify) |
+| ARTICLE | Zine → Growth | +Prose (microcopy polish), +Stage (slide version), +Saga (narrative reshape), +Canvas (article diagrams), +Morph (PDF/Word export), +Tome (diff → learning source). Trigger: "tech blog", "note/Zenn/Qiita/dev.to", "連載", "記事" |
+| SCHEDULE | Tempo → Builder → Gear | +Weave (retry state machine), +Beacon (schedule SLO/alerts), +Pipe (GHA cron), +Voyager (temporal test scenarios), +Judge (correctness review), +Triage (incident → replay plan). Trigger: "cron", "timezone", "DST", "retry/backoff", "backfill", "business calendar" |
+| GRAMMAR | Grok → Builder → Radar | +Sentinel (regex security audit), +Canon (grammar → standards compliance), +Atlas (parser module boundary), +Shift (codemod migration), +Judge (grammar review). Trigger: "regex", "parser", "grammar", "DSL design", "AST transform", "ReDoS" |

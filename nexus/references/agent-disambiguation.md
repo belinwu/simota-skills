@@ -426,6 +426,60 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Zine vs Scribe vs Prose vs Saga vs Tome (Writing Agents)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Tech blog post for note/Zenn/Qiita/dev.to" | **Zine** | External long-form article |
+| "PRD, spec, design document, SRS" | **Scribe** | Internal technical documentation |
+| "Error message, button label, UX microcopy" | **Prose** | User-facing short-form text |
+| "Customer story, use-case narrative for marketing" | **Saga** | Product narrative |
+| "Auto-generate learning doc from git diff" | **Tome** | Diff-driven teaching material |
+| "Tutorial / retrospective / announcement article" | **Zine** | External article regardless of topic |
+| "Internal README explaining the module" | **Quill** | Code-adjacent docs (not Zine) |
+| "Multi-episode series with index article" | **Zine** | Series management is first-class in Zine |
+| "Retrospective as a Tome learning doc vs a Zine post" | **Tome** (internal) / **Zine** (external) | Destination audience decides |
+
+**Rule of thumb**: External public article → Zine. Internal spec/doc → Scribe. UI text → Prose. Product story → Saga. Diff → learning doc → Tome.
+
+---
+
+### Tempo vs Weave vs Launch vs Orbit (Scheduling / Time / Flow)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Design cron expression", "timezone/DST handling" | **Tempo** | Temporal logic design |
+| "Retry/backoff policy", "idempotency key design" | **Tempo** | Time-related resilience |
+| "State machine with retries" | **Tempo** (policy) + Weave (FSM) | Split: Tempo owns timing, Weave owns states |
+| "Release scheduling, feature flag rollout" | **Launch** | One-time release events |
+| "Autonomous AI loop runner (nexus-autoloop)" | **Orbit** | Script-driven AI loops |
+| "Business calendar (JP holidays, fiscal year, banking days)" | **Tempo** | Calendar-as-code |
+| "GitHub Actions cron tuning" | **Tempo** (design) + Gear/Pipe (impl) | Tempo picks pattern, Gear/Pipe configures |
+| "Backfill missed runs after incident" | **Triage** → **Tempo** (replay plan) → Builder | Tempo designs idempotent replay |
+
+**Rule of thumb**: Recurring time logic → Tempo. State machine → Weave. Release event → Launch. AI agent loop → Orbit.
+
+---
+
+### Grok vs Builder vs Gateway vs Schema (Grammar / API / Data Design)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Design grammar (EBNF/ABNF/PEG)", "parser-generator choice" | **Grok** | Grammar / parser layer |
+| "ReDoS-safe regex", "catastrophic backtracking audit" | **Grok** | Regex security design |
+| "Internal DSL (fluent API, template literal, YAML-embedded)" | **Grok** | DSL architecture |
+| "AST transformation, Babel plugin, jscodeshift, codemod" | **Grok** | AST design / transform |
+| "REST/GraphQL API design, OpenAPI spec" | **Gateway** | HTTP API contract |
+| "Database schema, migration, ER diagram" | **Schema** | Persistence schema |
+| "General business logic implementation" | **Builder** | General implementation |
+| "Log parsing with grok patterns (Logstash)" | **Grok** | Pattern engine migration/design |
+| "Static security scan of shipped regex" | **Sentinel** | Post-ship audit, not design |
+| "Fuzz testing against a parser" | **Radar** | Test execution, not grammar design |
+
+**Rule of thumb**: Textual grammar/pattern/DSL → Grok. HTTP API → Gateway. DB schema → Schema. General impl → Builder. Grok designs; Sentinel audits; Radar tests.
+
+---
+
 ## Small Project Optimization
 
 For S/M scope projects, skip agents that add overhead without proportional value:
