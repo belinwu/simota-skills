@@ -242,12 +242,42 @@ await showErrorOverlay(page, 'An error occurred');
 
 ## Time Allocation Guidelines
 
+### Duration by Scope
+
 | Duration | Use Case |
 |----------|----------|
 | Under 30 seconds | Simple single operation |
 | 30-60 seconds | Standard feature demo |
 | 60-120 seconds | Complex flow |
 | Over 120 seconds | Consider splitting |
+
+### Engagement Benchmarks (2026)
+
+Use these benchmarks to calibrate the duration budget, not as hard limits.
+
+| Metric | Value | Implication |
+|--------|-------|-------------|
+| Videos under 90s repeat-view rate | ~50% | Treat 90s as the engagement ceiling for top-of-funnel demos |
+| B2B average video length (2026) | ~76s | Compressed from prior years; audiences expect shorter demos |
+| Sub-60s video completion rate | ~71% | Sub-60s is optimal for social and top-of-funnel |
+| 60-90s videos | Balance point | Best engagement/substance trade-off for feature demos |
+
+### Self-Guided Embed Step Count
+
+| Channel | Steps | Notes |
+|---------|-------|-------|
+| Email / Social | 6-8 | Short attention span, single Aha moment |
+| Website / Docs | 8-15 | Tolerates more context and exploration |
+
+### Platform-Adapted Pacing
+
+| Platform | Pacing | Captions | Aspect ratio hint |
+|----------|--------|----------|------------------|
+| LinkedIn / YouTube | Moderate | Required for mute autoplay | 16:9 |
+| X / Twitter | Fast | Required | 16:9 or 1:1 |
+| Instagram / TikTok | Fast, hook in first 2s | Required | 9:16 |
+| Website hero | Moderate, looped | Optional (muted autoplay) | 16:9 |
+| Docs inline | Slow, instructional | Optional | 16:9 |
 
 ---
 

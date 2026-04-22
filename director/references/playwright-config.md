@@ -14,6 +14,8 @@ Contents:
 - `Environment Variables`: `.env.demo` defaults
 - `CI/CD Configuration`: GitHub Actions recording flow
 - `Directory Structure`: expected demo file layout
+- `Browser Engine Notes`: Chrome for Testing (v1.57+), browser.bind (v1.59+)
+- `Playwright MCP vs CLI for Agentic Recording`: decision matrix for receipt capture
 - `Troubleshooting`: common recording failures and fixes
 
 ---
@@ -368,6 +370,65 @@ demos/
 
 ---
 
+## Browser Engine Notes
+
+### Chrome for Testing (v1.57+)
+
+Since Playwright 1.57, demos use Chrome for Testing builds instead of vanilla Chromium.
+
+| Mode | Runtime | Notes |
+|------|---------|-------|
+| Headed (standard for demos) | `chrome` | Default for visible recordings |
+| Headless | `chrome-headless-shell` | Used for CI and audio-enabled runs |
+
+Chrome for Testing may render fonts and anti-aliasing slightly differently from Chromium. When upgrading Playwright across major versions, re-check overlay text clarity, brand colors, and icon crispness on existing demos.
+
+Pin a specific channel only when reproducibility or CI memory footprint is critical:
+
+```typescript
+use: {
+  channel: 'chromium', // fall back to legacy Chromium build
+}
+```
+
+### browser.bind() for Shared Sessions (v1.59+)
+
+`browser.bind()` exposes a launched browser instance to `@playwright/cli`, `@playwright/mcp`, and other clients. Use this when the demo script and an agentic receipt client should share one browser — avoids launching duplicate Chromes and doubling memory:
+
+```typescript
+const browser = await chromium.launch({ headless: false });
+await browser.bind({ port: 9222 }); // share with CLI/MCP clients
+// demo flow runs here
+```
+
+Typical scenario: a CI job runs a feature flow and simultaneously records an agentic video receipt via the Playwright CLI attached to the same bound browser.
+
+---
+
+## Playwright MCP vs CLI for Agentic Recording
+
+When agents produce video receipts of automated work, choose the transport based on environment and workload shape.
+
+### Decision Matrix
+
+| Context | Recommended | Rationale |
+|---------|-------------|-----------|
+| Agent has filesystem access (Claude Code, Cursor, Copilot) | `@playwright/cli` | ~4x token reduction vs MCP (~27k vs ~114k per task) |
+| High-throughput receipt capture in CI | `@playwright/cli` | Lower token accumulation across steps |
+| Sandboxed environment, no filesystem | Playwright MCP | Only viable transport |
+| Exploratory / iterative browser session | Playwright MCP | Preserves persistent browser state across turns |
+| Long-running autonomous workflow needing live context | Playwright MCP | Streaming context fits agent loop |
+
+### Decision Shortcut
+
+- Agent has filesystem access → CLI.
+- Sandboxed environment → MCP.
+- Step count > 10 sequential interactions → CLI (token accumulation compounds per step in MCP).
+
+Microsoft's public guidance (early 2026) recommends CLI for coding agents and reserves MCP for exploratory / autonomous workflows.
+
+---
+
 ## Troubleshooting
 
 | Issue | Cause | Solution |
@@ -377,3 +438,6 @@ demos/
 | Video is choppy | Machine load | Use `headless: true` or reduce resolution |
 | File size too large | High resolution/duration | Lower to 720p, reduce duration |
 | WebM won't play | Player doesn't support VP8 | Convert to MP4 with FFmpeg |
+| `test-results/` disk bloat | Accumulated `.webm` files (2–5 MB / min at 720p) | Remove or archive after each session; add cleanup to CI |
+| Font rendering differs after upgrade | Chrome for Testing vs Chromium | Pin `channel: 'chromium'` or re-record baselines |
+| Duplicate browsers in CI | Demo + receipt client launching separately | Use `browser.bind()` to share one browser |
