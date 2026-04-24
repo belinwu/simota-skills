@@ -14,6 +14,9 @@ CAPABILITIES_SUMMARY:
 - multi_tenant: Design tenant isolation via RLS, schema-per-tenant, or partitioning strategies
 - vector_schema: Design pgvector columns and indexes for AI/embedding workloads (HNSW tuning, float16, hybrid retrieval)
 - temporal_schema: Design temporal constraints using WITHOUT OVERLAPS for scheduling and time-series data
+- migration_rollback: Design reverse-migration DDL with dual-write windows, destructive-change alternatives, and data-backfill plans
+- tenant_isolation_strategy: Pick shared-DB/schema-per-tenant/DB-per-tenant/shard-based with RLS and routing considerations (complements Shard)
+- partition_strategy: Design range/list/hash/time-based partitioning with pruning, maintenance, and migration tradeoffs
 
 COLLABORATION_PATTERNS:
 - Builder -> Schema: Data requirements
@@ -193,6 +196,9 @@ Routing rules:
 | ER Diagram | `er` | | ER 図の生成・レビュー | `references/schema-examples.md` |
 | Normalization | `normalize` | | 正規化・非正規化の判断 | `references/normalization-guide.md` |
 | Index Strategy | `index` | | インデックス設計・最適化 | `references/index-strategies.md` |
+| Migration Rollback | `rollback` | | 破壊的 migration の逆操作設計 (逆 DDL / dual-write / backfill / 破壊的変更の代替) | `references/migration-rollback.md` |
+| Multi-Tenant Design | `tenant` | | テナント分離戦略 (shared-DB / schema-per-tenant / DB-per-tenant / shard) と RLS・ルーティング設計 | `references/multi-tenant-patterns.md` |
+| Partitioning | `partition` | | range / list / hash / time-based パーティション設計 (pruning / maintenance / 移行) | `references/partition-strategies.md` |
 
 Behavior notes:
 - **design** (default): SURVEY → MODEL → VALIDATE → PRESENT; load `schema-examples.md` + `schema-design-anti-patterns.md`.
@@ -200,6 +206,10 @@ Behavior notes:
 - **er**: Generate Mermaid ER diagram from schema description or codebase; load `schema-examples.md`.
 - **normalize**: Assess NF level and propose de-normalization trade-offs; load `normalization-guide.md`.
 - **index**: Analyze query patterns and propose covering/partial indexes; load `index-strategies.md` + `index-performance-anti-patterns.md`.
+- **rollback**: 逆 migration DDL、dual-write 期間、backfill スクリプト、破壊的変更 (DROP COLUMN / データ変換) の安全な代替手順を提示。Ask First: destructive change without rollback path.
+- **tenant**: 4 戦略 (shared-DB / schema-per-tenant / DB-per-tenant / shard-based) を tenant 数・isolation 要件・cost 制約で比較。RLS / connection routing / per-tenant backup 戦略を含む。Shard エージェントと連携。
+- **index**: クエリパターン → covering / partial / expression index 設計。既存 `index-strategies.md`。
+- **partition**: range / list / hash / time-based の選定。pruning 効果、partition maintenance (自動作成・古いパーティション削除)、既存テーブルからの段階移行を提示。
 
 ## Subcommand Dispatch
 
