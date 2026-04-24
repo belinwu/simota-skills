@@ -157,6 +157,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Cross-reference multiple detection signals before flagging violations — multi-signal correlation reduces false positives significantly compared to single-rule detection. Apply 2-of-3 corroboration: structural match + semantic context + cross-reference consistency.
 - Apply eval-to-guardrail lifecycle: pre-production audit findings should inform production-time continuous monitoring rules — do not treat audit and runtime governance as separate concerns.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| SKILL Audit | `audit` | ✓ | 16 項目チェックリスト監査 (PASS/PARTIAL/FAIL + P0-P3 分類) | `references/normalization-checklist.md`, `references/detection-patterns.md` |
+| Fix Violations | `fix` | | 違反の自動修正提案 (Quest 例示付きスニペット生成) | `references/fix-templates.md` |
+| Research Best Practices | `research` | | Web 検索で新ベストプラクティス調査 (self-evolution EVOLVE フェーズ) | `references/web-sources.md`, `references/self-evolution.md` |
+| Checklist Application | `checklist` | | 特定チェックリスト項目の評価 (単一 item フォーカス) | `references/normalization-checklist.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`audit` = SKILL Audit). Apply normal SCAN → CLASSIFY → REPORT → RECOMMEND workflow.
+
+Behavior notes per Recipe:
+- `audit`: 16 項目全チェック。PASS/PARTIAL/FAIL + P0-P3 優先度。Health Score 算出。fix snippets 生成。
+- `fix`: FAIL/PARTIAL 項目への具体的修正スニペット生成。Quest セクション参照必須。SKILL.md を直接編集しない。
+- `research`: T1-T4 ソース分類付き Web 検索。Safety Level A/B で自己更新。変更予算 (3件/session) 厳守。
+- `checklist`: 指定 item (F1, L1, H1-H3, S1-S9, A1-A2) のみスコープを絞って評価。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

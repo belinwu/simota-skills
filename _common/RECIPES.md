@@ -19,7 +19,7 @@ Key properties:
 
 | Rule | Detail |
 |------|--------|
-| Length | 2-12 characters |
+| Length | 2-16 characters (favor brevity; extend only for unavoidable compound words) |
 | Format | kebab-case (lowercase, hyphens only) |
 | Reserved words | `default`, `auto`, `help`, `list` — forbidden as Recipe names |
 | Abstraction | Must be more specific than the skill name, less specific than a single use case |
@@ -125,7 +125,7 @@ The following rules are evaluated by **Gauge** during normalization audits.
 | Rule ID | Condition | Severity |
 |---------|-----------|---------|
 | R-REC-01 | A skill with `## Recipes` must declare exactly one `Default? = ✓` | ERROR |
-| R-REC-02 | All Subcommand values must match `^[a-z][a-z0-9-]{1,11}$` (kebab-case, 2-12 chars) | ERROR |
+| R-REC-02 | All Subcommand values must match `^[a-z][a-z0-9-]{1,15}$` (kebab-case, 2-16 chars) | ERROR |
 | R-REC-03 | Subcommand values must not be reserved words: `default`, `auto`, `help`, `list` | ERROR |
 | R-REC-04 | A skill must not define more than 7 Recipes | WARNING |
 | R-REC-05 | Presence of `## Recipes` section is RECOMMENDED for skills in Adoption Tiers 1-2, but not required | INFO |
@@ -153,4 +153,21 @@ The following rules are evaluated by **Gauge** during normalization audits.
 | **Tier 2 — Optional** | Skills invoked frequently in standalone usage (e.g., Lens, Zen, Radar) | Adopt if 3+ distinct modes exist |
 | **Tier 3 — Defer** | Specialist skills invoked rarely or always through Nexus chains (e.g., Canvas, Morph, Quill) | Omit `## Recipes`; revisit in Phase 2+ |
 
-Phase 1 scope: Scout only. Builder, Sentinel, and other Tier 1 skills adopt Recipes in Phase 2+.
+Phase 1 scope: Scout only. Builder, Sentinel, and other Tier 1 skills adopt Recipes in Phase 2+. As of Phase 2J, all 131 skills have adopted Recipes.
+
+---
+
+## Automation Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `_common/scripts/validate-recipes.py` | Validate every SKILL.md against R-REC-01〜05 + heading integrity (H-REC-01/02). Exit non-zero on ERROR. Run before commit and in CI. |
+| `_common/scripts/generate-recipes-directory.py` | Regenerate `compass/references/recipes-directory.md` from all SKILL.md `## Recipes` tables. Idempotent; run after any Recipe change. |
+
+Usage:
+
+```bash
+python3 _common/scripts/validate-recipes.py          # exit 1 on errors
+VERBOSE=1 python3 _common/scripts/validate-recipes.py  # also show INFO for skills without Recipes
+python3 _common/scripts/generate-recipes-directory.py  # refresh compass directory
+```
