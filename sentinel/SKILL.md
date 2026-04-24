@@ -144,6 +144,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `VERIFY` | Run lint/tests, confirm issue is closed, check regressions, keep CSP in report-only where needed | Confirm no regressions introduced | `references/owasp-2025-checklist.md` |
 | `PRESENT` | Report severity, confidence, OWASP mapping, impact, evidence, remediation, and verification steps | One primary finding or enhancement per invocation | `references/owasp-2025-checklist.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Full Security Scan | `scan` | ✓ | 全方位静的セキュリティスキャン (OWASP Top 10) | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
+| Secrets Audit | `secrets` | | ハードコードされた資格情報・API キー検出 | `references/vulnerability-patterns.md`, `references/defensive-controls.md` |
+| Injection Check | `injection` | | SQL/XSS/コマンドインジェクション重点 | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
+| Dependency CVE | `deps` | | 依存性脆弱性スキャン・サプライチェーンリスク | `references/supply-chain-security.md` |
+| Headers Audit | `headers` | | セキュリティヘッダー監査 (CSP/CORS/HSTS) | `references/defensive-controls.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`scan` = Full Security Scan). Apply SCAN → PRIORITIZE → FILTER → SECURE → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `scan`: OWASP Top 10:2025 全カテゴリを対象。delta scan 優先、定期的に full scan。multi-engine 推奨。
+- `secrets`: regex + entropy-based hybrid。git history も対象。revocation 確認まで完了とみなさない。
+- `injection`: SQL / XSS / command / NoSQL / prompt injection。AI 生成コードは heightened scrutiny。
+- `deps`: SCA ツール + lockfile integrity + namespace squatting チェック。SBOM を運用ワークフローで管理。
+- `headers`: CSP / CORS / HSTS / Permissions-Policy。report-only から始めて段階的に enforce。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

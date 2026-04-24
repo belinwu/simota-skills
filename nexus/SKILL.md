@@ -137,6 +137,36 @@ Agent disambiguation → `references/agent-disambiguation.md`
 - `AUTORUN_FULL`: `PLAN → PREPARE → CHAIN_SELECT → EXECUTE → AGGREGATE → VERIFY → DELIVER`
 - `AUTORUN`: `CLASSIFY → CHAIN_SELECT → EXECUTE_LOOP → VERIFY → DELIVER`
 
+## Recipes
+
+> **Nexus Recipes はタスク形状を表す。`## Modes` (AUTORUN_FULL 等) は実行制御を表す。両者は直交し、独立して組み合わせ可能。**
+
+| Recipe | Subcommand | Default? | When to Use | Chain Template |
+|--------|-----------|---------|-------------|----------------|
+| Auto Classify | `classify` | ✓ | Recipe 未指定時の自動分類 | CLASSIFY phase → CHAIN_SELECT (従来フロー) |
+| Bug Fix | `bug` | | バグ報告・修正依頼 | Scout → Sherpa → Builder → Radar |
+| Feature | `feature` | | 新機能実装 | Sherpa → Forge → Builder → Radar |
+| Security | `security` | | セキュリティ対応 | Sentinel → Builder → Radar |
+| Refactor | `refactor` | | リファクタリング | Zen → Radar |
+| Optimize | `optimize` | | 性能改善 | Bolt/Tuner → Radar |
+| Proactive | `proactive` | | /Nexus 引数なし、プロジェクト状態スキャン | Scan project → recommend |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → CLASSIFY をスキップして、その Recipe の Chain Template を CHAIN_SELECT に直接渡す。
+- `/Nexus` 引数なし → `proactive` Recipe を適用。`references/proactive-mode.md` を読んでスキャン。
+- Otherwise → default Recipe (`classify`) = 従来の CLASSIFY → CHAIN_SELECT フロー (既存挙動を完全保持)。
+
+実行制御 Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) は Recipe 選定後に適用 (直交):
+- `classify` (default): 通常の CLASSIFY で task type を判定し、routing-matrix.md から chain を選ぶ。
+- `bug`: Scout[bug] → Sherpa[epic] → Builder[fix] → Radar[regression] のチェーン。+Sentinel for security。
+- `feature`: Sherpa[epic] → Forge[ui] → Builder[api] → Radar[edge] のチェーン。+Muse for UI。
+- `security`: Sentinel[scan] → Builder[fix] → Radar[edge] のチェーン。+Probe for dynamic testing。
+- `refactor`: Zen → Radar[coverage] のチェーン。+Atlas for architectural scope。
+- `optimize`: Bolt/Tuner → Radar[edge] のチェーン。+Schema for DB-heavy work。
+- `proactive`: `references/proactive-mode.md` に従いプロジェクト状態をスキャンして次アクションを推薦。
+
 ## Workflow
 
 `CLASSIFY → CHAIN → EXECUTE → AGGREGATE → VERIFY → DELIVER` `(+ LEARN post-chain)`
@@ -217,6 +247,7 @@ Agent(
     あなたは [AgentName] エージェントです。
     まず ~/.claude/skills/[agent]/SKILL.md を読み、その指示に従ってください。
 
+    Recipe: [recipe-name or auto]               # P-REC: サブコマンド指定 / auto-triage
     タスク: [task_description]
     前ステップからのコンテキスト: [handoff_context]
     制約: [constraints]

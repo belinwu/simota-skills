@@ -180,15 +180,29 @@ Use [advanced-reproduction-triage.md](references/advanced-reproduction-triage.md
 | `MEDIUM` | Reproduction succeeds and cause is estimated (score 0.5–0.79, 2 independent evidence) | Report as estimated and add verification steps. |
 | `LOW` | Reproduction fails and only hypotheses remain (score < 0.5, ≤1 evidence) | Report as hypothesis and list missing information. |
 
-## Modes
+## Recipes
 
-| Mode | Use When | Behavior |
-|------|----------|----------|
-| `Focused Hunt` | Default single-bug investigation | Use the normal workflow and a single evidence chain. |
-| `History-Led Investigation` | Regression is likely | Prioritize `git log`, diff, and bisect. Delegate to Rewind if history analysis alone is sufficient. |
-| `Observability-Led Investigation` | Production signals or distributed failures dominate | Prioritize traces, logs, metrics, and profiling evidence. |
-| `Multi-Engine Mode` | Root cause is ambiguous and multiple independent hypotheses are valuable | Use independent engines for hypothesis generation, then merge on evidence. |
-| `Cascading Failure Mode` | Single root cause produces multiple downstream errors across services | Build causal graph from failure traces; identify propagation path; separate root cause from symptomatic failures. |
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Focused Hunt | `bug` | ✓ | Single-bug investigation with clear symptom | `references/debug-strategies.md`, `references/bug-patterns.md` |
+| History-Led | `regression` | | Regression signal present (recent deploy, version bump) | `references/git-bisect.md`, `references/modern-rca-methodology.md` |
+| Observability-Led | `prod` | | Production traces/logs/metrics dominate the signal | `references/observability-debugging.md` |
+| Multi-Engine | `consensus` | | Root cause ambiguous after 3 hypotheses exhausted | `_common/SUBAGENT.md` |
+| Cascading Failure | `cascade` | | Multi-service propagation from a single origin | `references/observability-debugging.md`, `references/modern-rca-methodology.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`bug` = Focused Hunt). Apply TRIAGE guardrails (3 hypotheses) and escalate to another Recipe if evidence warrants.
+- Auto-promotion: after 3 stalled hypotheses → promote to `consensus` Recipe (Multi-Engine Mode).
+
+Behavior notes per Recipe:
+- `bug`: normal workflow, single evidence chain.
+- `regression`: prioritize `git log` / diff / bisect. Delegate to Rewind if history alone is sufficient.
+- `prod`: prioritize traces, logs, metrics, profiling.
+- `consensus`: use independent engines for hypothesis generation, then merge on evidence. See Multi-Engine Mode section.
+- `cascade`: build causal graph from failure traces; separate root cause from symptomatic failures across services.
 
 ## Output Routing
 

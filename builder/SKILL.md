@@ -172,6 +172,29 @@ Spawn only when the deliverable touches 4+ files and post-BUILD verification wou
 | VERIFY | Quality verification | Error handling, edge case verification, memory leak prevention, retry logic | `references/process-and-examples.md` |
 | PRESENT | Deliverable presentation | PR creation (architecture, safeguards, type info), self-review | `references/process-and-examples.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Bug Fix | `fix` | ✓ | Scout handoff 後の限定修正、<50 行ターゲット | `references/process-and-examples.md` |
+| CRUD | `crud` | | Single-aggregate CRUD、不変条件なし、30-60 行 | `references/architecture-patterns.md` |
+| API Integration | `api` | | REST/GraphQL/WS クライアント/サーバ、冪等性重要 | `references/implementation-patterns.md` |
+| Domain Model | `ddd` | | 集約ルート、不変条件、ドメインイベント、multi-file | `references/domain-modeling.md` |
+| Prototype Harden | `harden` | | Forge 成果物の本番化、L0-L3 品質引き上げ | `references/process-and-examples.md`, `references/architecture-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`fix` = Bug Fix). Apply normal SURVEY → PLAN → BUILD → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `fix`: Scout handoff または単独バグ修正。<50 行ターゲット。VERIFY に回帰テストスケルトンを必ず含める。
+- `crud`: DDD vs CRUD 判定を SURVEY で行い CRUD 確定。Entity + Repository + simple service layer。
+- `api`: エラー分類 (4xx/429/5xx)、リトライ上限、冪等性キー、サーキットブレーカーを必ず含める。
+- `ddd`: Bounded Context 確認後に Aggregate / Value Object / Domain Event を設計。PLAN を重点化。
+- `harden`: Forge の L0-L3 レベルを読み、本番品質 (型安全・バリデーション・テストスケルトン) に引き上げる。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

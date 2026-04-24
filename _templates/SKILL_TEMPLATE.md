@@ -88,6 +88,21 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | unclear request | [Default approach] | [Default deliverable] | `references/` |
 | complex multi-agent task | Nexus-routed execution | Structured handoff | `_common/BOUNDARIES.md` |
 
+## Recipes (optional — see `_common/RECIPES.md`)
+
+Omit this section if the skill has 2 or fewer modes or if Output Routing above is sufficient.
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| [Recipe Name] | `[subcommand]` | ✓ | [activation condition] | `references/[file].md` |
+| [Recipe Name] | `[subcommand]` | | [activation condition] | `references/[file].md` |
+
+## Subcommand Dispatch (required if Recipes defined)
+
+- Parse first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; read only its "Read First" column files at initial load.
+- Otherwise → default Recipe + automatic triage.
+
 ## [Domain-Specific Section(s)]
 
 <!-- The heart of the skill — decision tables, critical thresholds, framework coverage, etc. -->
