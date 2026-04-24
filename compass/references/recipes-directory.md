@@ -53,7 +53,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **grok**: regex★ / parser / dsl / ast / redos
 - **grove**: audit★ / design / docs / migrate
 - **growth**: seo★ / smo / cro / geo
-- **guardian**: pr★ / commit / naming / strategy
+- **guardian**: pr★ / commit / naming / strategy / reshape
 - **harvest**: weekly★ / monthly / release / retro
 - **hearth**: zsh★ / tmux / neovim / ghostty / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast

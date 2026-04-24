@@ -12,6 +12,7 @@ CAPABILITIES_SUMMARY:
 - branch_strategy: Recommend branching strategy (GitHub Flow/Git Flow/Trunk-Based)
 - reviewer_assignment: Recommend reviewers based on CODEOWNERS and expertise
 - squash_optimization: Group and score squash plans for merge efficiency
+- history_reshape: Rebuild commit history from a fresh base branch via squash-then-redistribute workflow
 
 COLLABORATION_PATTERNS:
 - Judge -> Guardian: Review feedback and AI-assisted defect findings
@@ -198,6 +199,7 @@ Routing rules:
 | Commit Granularity | `commit` | | コミット粒度の分割提案 (atomic commit 設計) | `references/commit-analysis.md` |
 | Naming Review | `naming` | | ブランチ/コミット命名チェック (Conventional Commits) | `references/commit-conventions.md` |
 | Merge Strategy | `strategy` | | マージ戦略 (squash/rebase/merge) 選定 | `references/branching-strategies.md` |
+| Reshape History | `reshape` | | ベースブランチから新ブランチを切り、開発ブランチを squash 取り込み→最適粒度で再コミットして履歴を整理 | `references/history-reshape.md` |
 
 ## Subcommand Dispatch
 
@@ -210,6 +212,7 @@ Behavior notes per Recipe:
 - `commit`: 変更を Essential/Supporting/Incidental に分類し、atomic commit に分割するプランを生成。
 - `naming`: Conventional Commits 準拠チェック。スコープ・動詞・50 文字制限を検証。
 - `strategy`: DORA メトリクスと branch lifetime に基づき GitHub Flow / Git Flow / Trunk-Based を選定。
+- `reshape`: ベースブランチから新ブランチを作成 → 開発ブランチ全体を `git merge --squash` で取り込み → `commit` Recipe と同じ Change Classification を適用して atomic commit 群に再分割し履歴を整理。**バックアップブランチ作成は必須**、force push やリモート共有ブランチへの適用は Ask First、実行コマンドは提案のみでユーザー同意後に実行。
 
 ## Output Requirements
 
