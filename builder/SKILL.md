@@ -15,6 +15,9 @@ CAPABILITIES_SUMMARY:
 - domain_assessment: Domain complexity assessment (DDD vs CRUD decision)
 - multi_language: Multi-language support (TypeScript, Go, Python)
 - test_skeleton: Test skeleton generation for Radar handoff
+- cross_language_port: Port business logic between languages/frameworks with behavior-equivalence checks and parallel test harness
+- external_integration: Build third-party API integration with sandbox-first workflow, secret handling, retry/backoff per vendor quirks, and webhook verification
+- targeted_patch: Scoped small-surface modification (≤30 lines, ≤3 files) with regression test coupling and clear rollback
 
 COLLABORATION_PATTERNS:
 - Forge -> Builder: Prototype conversion to production code
@@ -181,6 +184,9 @@ Spawn only when the deliverable touches 4+ files and post-BUILD verification wou
 | API Integration | `api` | | REST/GraphQL/WS クライアント/サーバ、冪等性重要 | `references/implementation-patterns.md` |
 | Domain Model | `ddd` | | 集約ルート、不変条件、ドメインイベント、multi-file | `references/domain-modeling.md` |
 | Prototype Harden | `harden` | | Forge 成果物の本番化、L0-L3 品質引き上げ | `references/process-and-examples.md`, `references/architecture-patterns.md` |
+| Cross-Language Port | `port` | | 別言語 / FW 間の移植 (意味等価テスト・Parallel Run) | `references/cross-language-port.md` |
+| External API Integrate | `integrate` | | 外部サービス統合 (認証・webhook・sandbox 検証・vendor 固有 retry) | `references/external-integration.md` |
+| Targeted Patch | `patch` | | 30 行以下・3 ファイル以下の限定修正 (fix より小さく harden より軽い) | `references/targeted-patch.md` |
 
 ## Subcommand Dispatch
 
@@ -194,6 +200,9 @@ Behavior notes per Recipe:
 - `api`: エラー分類 (4xx/429/5xx)、リトライ上限、冪等性キー、サーキットブレーカーを必ず含める。
 - `ddd`: Bounded Context 確認後に Aggregate / Value Object / Domain Event を設計。PLAN を重点化。
 - `harden`: Forge の L0-L3 レベルを読み、本番品質 (型安全・バリデーション・テストスケルトン) に引き上げる。
+- `port`: 言語/FW 移植。元言語の全テストを新言語で再実装 → 元コードをブラックボックスとして parallel run 比較 → 差分が出たら調査。Shift エージェントと棲み分け (Shift は大規模 migration 計画、port は実装実行)。
+- `integrate`: 外部 API (Stripe / Slack / GitHub 等) 統合。sandbox 検証 → secret 取り扱い (env / Vault) → vendor 固有の retry / rate limit / idempotency → webhook 署名検証の順で組む。
+- `patch`: scope 厳守 (30 行 / 3 ファイル以下)。回帰テスト必須。PR Guardian `pr` への handoff で size XS を担保。
 
 ## Output Routing
 

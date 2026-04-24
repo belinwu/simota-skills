@@ -22,7 +22,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **beacon**: slo★ / tracing / alerts / dashboard / capacity
 - **bolt**: frontend★ / backend / render / async / cache
 - **breach**: scenario★ / threat-model / purple / ai-red
-- **builder**: fix★ / crud / api / ddd / harden
+- **builder**: fix★ / crud / api / ddd / harden / port / integrate / patch
 - **canon**: owasp★ / wcag / openapi / iso / gap
 - **canvas**: flow★ / sequence / er / journey / class
 - **cast**: generate★ / registry / evolve / distribute
