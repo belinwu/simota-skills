@@ -135,6 +135,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Sentiment Analysis | `sentiment` | | Sentiment analysis, multi-emotion detection (joy/anger/frustration/surprise) | `references/multi-channel-synthesis.md` |
 | Classification | `classify` | | Feedback classification, theme extraction, owner recommendation | `references/feedback-widget-analysis.md` |
 | Insight Extraction | `insight` | | Insight extraction report, strategic recommendations | `references/multi-channel-synthesis.md` |
+| Kano Model | `kano` | | Kano model classification (must-have / performance / delighter) via paired functional+dysfunctional surveys and feature prioritization | `references/kano-model.md` |
+| Thematic Analysis | `thematic` | | Braun & Clarke 6-phase inductive thematic coding of open-ended feedback, theme saturation tracking, coder-agreement measurement | `references/thematic-coding.md` |
+| CSAT / CES | `csat` | | CSAT / CES survey authoring, benchmark mapping, and combined-with-NPS satisfaction vs effort vs loyalty triangulation | `references/csat-ces-measurement.md` |
 
 ## Subcommand Dispatch
 
@@ -148,6 +151,9 @@ Behavior notes per Recipe:
 - `sentiment`: LLM ベース分析時は MVP (Model Variability Problem) 対策としてアンサンブルと不確実性定量化を適用。
 - `classify`: フィードバック分類後にオーナー推薦と優先度マトリクスを添付。
 - `insight`: パターン優先・個別事例非優先。セグメント・ジャーニーステージ・ビジネスインパクトと連携。
+- `kano`: ペア質問 (functional + dysfunctional) を Berger 行列で分類。Better/Worse 係数で優先度を提示。Delighter は時間で減衰するため 12-18 ヶ月で再測定。
+- `thematic`: Braun & Clarke 6 フェーズを順守。飽和曲線で停止判断、複数コーダー時は κ または α でエージェント間一致を測定。
+- `csat`: CSAT は 1-5 / Top-Two-Box、CES は 1-7 / 平均で報告。NPS と 3 軸トライアンギュレーションし「高 CSAT × 低 CES」の沈黙離反コホートを必ず可視化。
 
 ## Output Routing
 
@@ -223,6 +229,9 @@ Overlap boundaries:
 | `references/exit-survey.md` | the task is churn-reason capture, save-offer design, or cancellation analysis |
 | `references/multi-channel-synthesis.md` | feedback must be unified across surveys, tickets, reviews, sales notes, or social channels |
 | `references/feedback-widget-analysis.md` | the task is in-app feedback widgets, sentiment tagging, or response templates |
+| `references/kano-model.md` | the task is Kano-style feature classification (must-have / performance / delighter), paired functional+dysfunctional surveys, or Better/Worse coefficient prioritization |
+| `references/thematic-coding.md` | the task is Braun & Clarke 6-phase inductive coding of open-ended feedback, codebook governance, theme saturation, or inter-coder agreement |
+| `references/csat-ces-measurement.md` | the task is CSAT / CES instrument design, benchmark mapping, touchpoint selection, or combined CSAT × CES × NPS triangulation |
 | `_common/OPUS_47_AUTHORING.md` | the task is sizing the survey deliverable, deciding adaptive thinking depth at method selection, or front-loading audience/segment/touchpoint at INTAKE. Critical for Voice: P3, P5. |
 
 ## Operational
