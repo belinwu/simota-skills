@@ -136,10 +136,10 @@ DISCOVER → MODEL → VERIFY → EXPORT
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| New Model | `model` | ✓ | 新規 C4 モデル作成 (Context/Container/Component/Code 基本4層) | `references/c4-methodology.md` |
-| Evaluate Existing | `evaluate` | | 既存アーキテクチャ評価 (ATAM, SAAM 等) | `references/patterns.md` |
-| Structurizr DSL | `dsl` | | Structurizr DSL 生成・更新 | `references/structurizr-dsl.md` |
-| C4 Level Switch | `c4` | | C4 レベル切替 (L1-L4 の詳細度選択) | `references/c4-methodology.md` |
+| New Model | `model` | ✓ | Create a new C4 model (Context/Container/Component/Code base 4 levels) | `references/c4-methodology.md` |
+| Evaluate Existing | `evaluate` | | Evaluate existing architecture (ATAM, SAAM, etc.) | `references/patterns.md` |
+| Structurizr DSL | `dsl` | | Generate or update Structurizr DSL | `references/structurizr-dsl.md` |
+| C4 Level Switch | `c4` | | C4 level switching (select L1-L4 detail) | `references/c4-methodology.md` |
 
 ## Subcommand Dispatch
 
@@ -148,10 +148,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`model` = New Model). Apply normal DISCOVER → MODEL → VERIFY → EXPORT workflow.
 
 Behavior notes per Recipe:
-- `model`: 新規 C4 モデル作成。DISCOVER フェーズで実際のコードベースをスキャンし、L1-L2 を基本として生成。
-- `evaluate`: ATAM/SAAM 等の評価手法で既存アーキテクチャの品質特性・トレードオフを評価。
-- `dsl`: Structurizr DSL の生成または既存 DSL の更新。workspace extends、archetypes、!adrs を考慮。
-- `c4`: 指定レベル (L1/L2/L3/L4) に切替。受け手に応じた詳細度を選択し、VERIFY フェーズで一貫性確認。
+- `model`: Create a new C4 model. In the DISCOVER phase, scan the actual codebase and generate L1-L2 as the baseline.
+- `evaluate`: Evaluate the quality attributes and trade-offs of the existing architecture with methodologies such as ATAM/SAAM.
+- `dsl`: Generate Structurizr DSL or update existing DSL. Consider workspace extends, archetypes, and !adrs.
+- `c4`: Switch to the specified level (L1/L2/L3/L4). Select the detail granularity to match the audience, and verify consistency in the VERIFY phase.
 
 ### Work Modes
 

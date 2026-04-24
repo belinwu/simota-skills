@@ -172,10 +172,10 @@ CAPTURE → MODEL → VALIDATE → REFINE → HANDOFF
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| State Design | `design` | ✓ | 状態遷移設計 | `references/state-machine-patterns.md` |
-| Saga Pattern | `saga` | | Saga パターン分散トランザクション | `references/saga-patterns.md` |
-| Approval Flow | `approval` | | 承認フロー設計 | `references/approval-flow-patterns.md` |
-| Invalid Transition Detection | `detect` | | 不正遷移検出 | `references/state-machine-patterns.md` |
+| State Design | `design` | ✓ | State transition design | `references/state-machine-patterns.md` |
+| Saga Pattern | `saga` | | Saga pattern distributed transactions | `references/saga-patterns.md` |
+| Approval Flow | `approval` | | Approval flow design | `references/approval-flow-patterns.md` |
+| Invalid Transition Detection | `detect` | | Invalid transition detection | `references/state-machine-patterns.md` |
 
 ## Subcommand Dispatch
 

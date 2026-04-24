@@ -127,10 +127,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| String Extraction | `extract` | ✓ | ハードコード文字列の抽出・t() 関数への置き換え | `references/library-setup.md` |
-| Intl Formatting | `intl` | | 日付・通貨・数値の Intl API 統合 | `references/intl-api-patterns.md` |
-| Translation Keys | `keys` | | 翻訳キー構造設計・名前空間設計 | `references/icu-message-format.md` |
-| RTL Support | `rtl` | | RTL レイアウト対応・CSS logical properties 実装 | `references/rtl-support.md` |
+| String Extraction | `extract` | ✓ | Extract hardcoded strings and replace with t() calls | `references/library-setup.md` |
+| Intl Formatting | `intl` | | Intl API integration for date, currency, and number formatting | `references/intl-api-patterns.md` |
+| Translation Keys | `keys` | | Translation key structure and namespace design | `references/icu-message-format.md` |
+| RTL Support | `rtl` | | RTL layout support and CSS logical properties implementation | `references/rtl-support.md` |
 
 ## Subcommand Dispatch
 

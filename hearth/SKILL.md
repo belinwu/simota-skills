@@ -184,11 +184,11 @@ Default profile: `Standard`, unless the user asks for lighter or heavier customi
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| zsh Config | `zsh` | ✓ | zsh 設定 (プラグイン・起動時間・XDG) | `references/shell-configs.md` |
-| tmux Config | `tmux` | | tmux + starship/powerlevel10k 設定 | `references/tmux-starship.md` |
-| Neovim Config | `neovim` | | Neovim 0.12+ 設定 (LSP・vim.pack・DAP) | `references/editor-configs.md` |
-| Ghostty Config | `ghostty` | | Ghostty 1.3+ 設定 (テーマ・フォント・キーバインド) | `references/terminal-configs.md` |
-| Dotfile Audit | `audit` | | 既存 dotfile 構成の監査・アンチパターン検出 | `references/shell-config-anti-patterns.md` |
+| zsh Config | `zsh` | ✓ | zsh configuration (plugins, startup time, XDG) | `references/shell-configs.md` |
+| tmux Config | `tmux` | | tmux + starship/powerlevel10k configuration | `references/tmux-starship.md` |
+| Neovim Config | `neovim` | | Neovim 0.12+ configuration (LSP, vim.pack, DAP) | `references/editor-configs.md` |
+| Ghostty Config | `ghostty` | | Ghostty 1.3+ configuration (theme, font, keybindings) | `references/terminal-configs.md` |
+| Dotfile Audit | `audit` | | Audit existing dotfile setup, detect anti-patterns | `references/shell-config-anti-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -197,11 +197,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`zsh` = zsh Config). Apply normal SCAN → PLAN → CRAFT → APPLY → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `zsh`: OS/shell 検出 → プロファイル選択 (Minimal/Standard/Power) → 起動時間計測 → zinit turbo 設定。
-- `tmux`: tmux.conf 生成 + starship.toml または powerlevel10k 設定。エディタ統合を含める。
-- `neovim`: 0.12+ 組み込み機能 (vim.pack/autocomplete/Undotree) を優先。Mason + Tree-sitter は Advanced 向け。
-- `ghostty`: key tables・native scrollbars・click-events・copy modes を Standard プロファイルに含める。
-- `audit`: SCAN → anti-pattern refs 読込 → 所見レポート → 優先度付き修正推奨。実変更はしない。
+- `zsh`: Detect OS/shell → select profile (Minimal/Standard/Power) → measure startup time → configure zinit turbo.
+- `tmux`: Generate tmux.conf + starship.toml or powerlevel10k configuration. Include editor integration.
+- `neovim`: Prefer 0.12+ built-ins (vim.pack/autocomplete/Undotree). Mason + Tree-sitter for Advanced profiles.
+- `ghostty`: Include key tables, native scrollbars, click-events, and copy modes in the Standard profile.
+- `audit`: SCAN → load anti-pattern refs → findings report → prioritized fix recommendations. No actual changes.
 
 ## Output Routing
 

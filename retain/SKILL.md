@@ -148,11 +148,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Re-engagement | `reengagement` | ✓ | 再エンゲージメント戦略、ドーマントユーザー回復 | `references/engagement-triggers.md` |
-| Churn Prevention | `churn` | | チャーン防止、サブスクリプション保存フロー | `references/retention-analysis.md` |
-| Gamification | `gamification` | | ゲーミフィケーション設計、ポイント・バッジ・ストリーク | `references/gamification.md` |
-| Habit Formation | `habit` | | 習慣化設計、Hook モデル、ストリーク設計 | `references/habit-formation.md` |
-| Loyalty Program | `loyalty` | | ロイヤリティプログラム設計、報酬体系構築 | `references/gamification.md` |
+| Re-engagement | `reengagement` | ✓ | Re-engagement strategy and dormant user recovery | `references/engagement-triggers.md` |
+| Churn Prevention | `churn` | | Churn prevention and subscription save flows | `references/retention-analysis.md` |
+| Gamification | `gamification` | | Gamification design: points, badges, and streaks | `references/gamification.md` |
+| Habit Formation | `habit` | | Habit formation design, Hook Model, and streak design | `references/habit-formation.md` |
+| Loyalty Program | `loyalty` | | Loyalty program design and reward system construction | `references/gamification.md` |
 
 ## Subcommand Dispatch
 

@@ -124,11 +124,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Flow Chart | `flow` | ✓ | フローチャート生成 (デフォルト Mermaid) | `references/diagram-templates.md` |
-| Sequence Diagram | `sequence` | | シーケンス図 | `references/diagram-templates.md` |
-| ER Diagram | `er` | | ER 図 (Schema 連携) | `references/diagram-templates.md` |
-| Journey Map | `journey` | | ユーザージャーニーマップ (Echo 連携) | `references/echo-integration.md` |
-| Class Diagram | `class` | | クラス図 | `references/diagram-templates.md` |
+| Flow Chart | `flow` | ✓ | Flowchart generation (default Mermaid) | `references/diagram-templates.md` |
+| Sequence Diagram | `sequence` | | Sequence diagram | `references/diagram-templates.md` |
+| ER Diagram | `er` | | ER diagram (Schema integration) | `references/diagram-templates.md` |
+| Journey Map | `journey` | | User journey map (Echo integration) | `references/echo-integration.md` |
+| Class Diagram | `class` | | Class diagram | `references/diagram-templates.md` |
 
 ## Subcommand Dispatch
 
@@ -137,11 +137,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`flow` = Flow Chart). Apply normal UNDERSTAND → ANALYZE → DRAW → REVIEW workflow.
 
 Behavior notes per Recipe:
-- `flow`: フローチャート。Mermaid TD/LR 方向を目的に応じて選択。≤20 ノードを維持。
-- `sequence`: シーケンス図。≤15-20 メッセージ上限。actor/participant 宣言から始める。
-- `er`: ER 図。Schema スキルとの連携を考慮し、実在エンティティ名のみ使用。
-- `journey`: Echo データからユーザージャーニーマップを生成。感情スコアと摩擦点を可視化。
-- `class`: クラス図。継承・集約・依存関係を表現。L3 Component レベルとの整合性を確保。
+- `flow`: Flowchart. Choose Mermaid TD/LR direction based on purpose. Keep ≤20 nodes.
+- `sequence`: Sequence diagram. Cap at ≤15-20 messages. Start from actor/participant declarations.
+- `er`: ER diagram. Consider Schema skill integration and use only real entity names.
+- `journey`: Generate a user journey map from Echo data. Visualize emotion scores and friction points.
+- `class`: Class diagram. Express inheritance, aggregation, and dependencies. Ensure alignment with L3 Component level.
 
 ## Work Modes
 

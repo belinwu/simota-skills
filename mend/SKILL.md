@@ -134,10 +134,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Runbook Execute | `runbook` | ✓ | 既知パターンのランブック実行 | `references/runbook-execution.md` |
-| Diagnose | `diagnose` | | 未知障害の原因診断・パターンマッチング | `references/remediation-patterns.md` |
-| Rollback | `rollback` | | ロールバック実行 (T3 承認必須) | `references/remediation-patterns.md` |
-| Verify | `verify` | | 修復後の段階的検証 (Health→Smoke→SLO) | `references/verification-strategies.md` |
+| Runbook Execute | `runbook` | ✓ | Runbook execution for known patterns | `references/runbook-execution.md` |
+| Diagnose | `diagnose` | | Root cause diagnosis and pattern matching for unknown failures | `references/remediation-patterns.md` |
+| Rollback | `rollback` | | Rollback execution (T3 approval required) | `references/remediation-patterns.md` |
+| Verify | `verify` | | Staged post-remediation verification (Health→Smoke→SLO) | `references/verification-strategies.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.
@@ -145,10 +145,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`runbook` = Runbook Execute). Apply normal INTAKE → MATCH → EXECUTE → VERIFY → REPORT workflow.
 
 Behavior notes per Recipe:
-- `runbook`: 診断済み障害に対してランブックを順次実行。チェックポイントごとに状態を確認し、失敗時は即座にロールバック準備。
-- `diagnose`: 症状・アラートからパターンマッチングを実施。信頼度 >= 50% で remediation-patterns から対処法を提示。
-- `rollback`: T3 承認を取得後にロールバックを実行。クラッシュループ・エラースパイク・レイテンシサージで自動ロールバックをトリガー。
-- `verify`: Health Check → Smoke Test → SLO Check → Recovery Confirmed の4段階検証を実行し、復旧を確認。
+- `runbook`: Execute the runbook step-by-step against diagnosed failures. Verify state at each checkpoint and prepare for immediate rollback on failure.
+- `diagnose`: Pattern-match from symptoms and alerts. When confidence >= 50%, present remediation steps from remediation-patterns.
+- `rollback`: Execute rollback after obtaining T3 approval. Crash loop, error spike, or latency surge triggers automatic rollback.
+- `verify`: Execute the 4-stage verification Health Check → Smoke Test → SLO Check → Recovery Confirmed and confirm recovery.
 
 ## Output Routing
 

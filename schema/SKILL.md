@@ -191,14 +191,14 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Schema Design | `design` | ✓ | 新規テーブル・エンティティ設計 | `references/schema-examples.md` |
-| Migration Plan | `migration` | | スキーマ変更・マイグレーション設計 | `references/migration-patterns.md` |
-| ER Diagram | `er` | | ER 図の生成・レビュー | `references/schema-examples.md` |
-| Normalization | `normalize` | | 正規化・非正規化の判断 | `references/normalization-guide.md` |
-| Index Strategy | `index` | | インデックス設計・最適化 | `references/index-strategies.md` |
-| Migration Rollback | `rollback` | | 破壊的 migration の逆操作設計 (逆 DDL / dual-write / backfill / 破壊的変更の代替) | `references/migration-rollback.md` |
-| Multi-Tenant Design | `tenant` | | テナント分離戦略 (shared-DB / schema-per-tenant / DB-per-tenant / shard) と RLS・ルーティング設計 | `references/multi-tenant-patterns.md` |
-| Partitioning | `partition` | | range / list / hash / time-based パーティション設計 (pruning / maintenance / 移行) | `references/partition-strategies.md` |
+| Schema Design | `design` | ✓ | New table or entity design | `references/schema-examples.md` |
+| Migration Plan | `migration` | | Schema change and migration design | `references/migration-patterns.md` |
+| ER Diagram | `er` | | ER diagram generation and review | `references/schema-examples.md` |
+| Normalization | `normalize` | | Normalization vs denormalization decisions | `references/normalization-guide.md` |
+| Index Strategy | `index` | | Index design and optimization | `references/index-strategies.md` |
+| Migration Rollback | `rollback` | | Reverse-operation design for destructive migrations (reverse DDL / dual-write / backfill / alternatives to destructive changes) | `references/migration-rollback.md` |
+| Multi-Tenant Design | `tenant` | | Tenant isolation strategy (shared-DB / schema-per-tenant / DB-per-tenant / shard) with RLS and routing design | `references/multi-tenant-patterns.md` |
+| Partitioning | `partition` | | range / list / hash / time-based partition design (pruning / maintenance / migration) | `references/partition-strategies.md` |
 
 Behavior notes:
 - **design** (default): SURVEY → MODEL → VALIDATE → PRESENT; load `schema-examples.md` + `schema-design-anti-patterns.md`.
@@ -206,10 +206,10 @@ Behavior notes:
 - **er**: Generate Mermaid ER diagram from schema description or codebase; load `schema-examples.md`.
 - **normalize**: Assess NF level and propose de-normalization trade-offs; load `normalization-guide.md`.
 - **index**: Analyze query patterns and propose covering/partial indexes; load `index-strategies.md` + `index-performance-anti-patterns.md`.
-- **rollback**: 逆 migration DDL、dual-write 期間、backfill スクリプト、破壊的変更 (DROP COLUMN / データ変換) の安全な代替手順を提示。Ask First: destructive change without rollback path.
-- **tenant**: 4 戦略 (shared-DB / schema-per-tenant / DB-per-tenant / shard-based) を tenant 数・isolation 要件・cost 制約で比較。RLS / connection routing / per-tenant backup 戦略を含む。Shard エージェントと連携。
-- **index**: クエリパターン → covering / partial / expression index 設計。既存 `index-strategies.md`。
-- **partition**: range / list / hash / time-based の選定。pruning 効果、partition maintenance (自動作成・古いパーティション削除)、既存テーブルからの段階移行を提示。
+- **rollback**: Provide reverse migration DDL, dual-write windows, backfill scripts, and safe alternatives for destructive changes (DROP COLUMN / data conversion). Ask First: destructive change without rollback path.
+- **tenant**: Compare the 4 strategies (shared-DB / schema-per-tenant / DB-per-tenant / shard-based) against tenant count, isolation requirements, and cost constraints. Includes RLS / connection routing / per-tenant backup strategies. Coordinates with the Shard agent.
+- **index**: Query patterns → covering / partial / expression index design. Existing `index-strategies.md`.
+- **partition**: Select range / list / hash / time-based. Present pruning impact, partition maintenance (auto-creation, old-partition deletion), and staged migration from existing tables.
 
 ## Subcommand Dispatch
 

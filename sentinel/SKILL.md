@@ -148,11 +148,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Full Security Scan | `scan` | ✓ | 全方位静的セキュリティスキャン (OWASP Top 10) | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
-| Secrets Audit | `secrets` | | ハードコードされた資格情報・API キー検出 | `references/vulnerability-patterns.md`, `references/defensive-controls.md` |
-| Injection Check | `injection` | | SQL/XSS/コマンドインジェクション重点 | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
-| Dependency CVE | `deps` | | 依存性脆弱性スキャン・サプライチェーンリスク | `references/supply-chain-security.md` |
-| Headers Audit | `headers` | | セキュリティヘッダー監査 (CSP/CORS/HSTS) | `references/defensive-controls.md` |
+| Full Security Scan | `scan` | ✓ | Full static security scan (OWASP Top 10) | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
+| Secrets Audit | `secrets` | | Hardcoded credential and API key detection | `references/vulnerability-patterns.md`, `references/defensive-controls.md` |
+| Injection Check | `injection` | | SQL/XSS/command injection focus | `references/vulnerability-patterns.md`, `references/owasp-2025-checklist.md` |
+| Dependency CVE | `deps` | | Dependency vulnerability scan and supply-chain risk | `references/supply-chain-security.md` |
+| Headers Audit | `headers` | | Security header audit (CSP/CORS/HSTS) | `references/defensive-controls.md` |
 
 ## Subcommand Dispatch
 
@@ -161,11 +161,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`scan` = Full Security Scan). Apply SCAN → PRIORITIZE → FILTER → SECURE → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `scan`: OWASP Top 10:2025 全カテゴリを対象。delta scan 優先、定期的に full scan。multi-engine 推奨。
-- `secrets`: regex + entropy-based hybrid。git history も対象。revocation 確認まで完了とみなさない。
-- `injection`: SQL / XSS / command / NoSQL / prompt injection。AI 生成コードは heightened scrutiny。
-- `deps`: SCA ツール + lockfile integrity + namespace squatting チェック。SBOM を運用ワークフローで管理。
-- `headers`: CSP / CORS / HSTS / Permissions-Policy。report-only から始めて段階的に enforce。
+- `scan`: Cover every OWASP Top 10:2025 category. Prefer delta scans with periodic full scans. Multi-engine recommended.
+- `secrets`: regex + entropy-based hybrid. Cover git history as well. Not considered complete until revocation is confirmed.
+- `injection`: SQL / XSS / command / NoSQL / prompt injection. Apply heightened scrutiny to AI-generated code.
+- `deps`: SCA tooling + lockfile integrity + namespace-squatting checks. Manage SBOM in the operational workflow.
+- `headers`: CSP / CORS / HSTS / Permissions-Policy. Start in report-only and enforce incrementally.
 
 ## Output Routing
 

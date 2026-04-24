@@ -156,14 +156,14 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| General Refactor | `refactor` | ✓ | 一般リファクタリング (複合改善、コードスメル修正) | `references/refactoring-recipes.md` |
-| Naming Improvement | `naming` | | 変数名・関数名改善のみ | `references/refactoring-recipes.md` |
-| Extract Function | `extract` | | 長い関数の分割・抽出 | `references/refactoring-recipes.md` |
-| Magic Constants | `constants` | | マジックナンバーの名前付き定数化 | `references/refactoring-recipes.md` |
-| Dead Code Removal | `dead` | | 未使用コード除去 | `references/dead-code-detection.md` |
-| Simplify Logic | `simplify` | | 冗長な条件分岐・三項演算・不要変換を等価な簡潔形へ圧縮 | `references/logic-simplification.md` |
-| Split Function | `split` | | 長すぎる関数を責務境界で段階分割 (extract の強化版) | `references/function-splitting.md` |
-| Guard Clauses | `guard` | | ネストした `if` を早期 return / guard clause に変換 | `references/guard-clauses.md` |
+| General Refactor | `refactor` | ✓ | General refactoring (composite improvements, code smell fixes) | `references/refactoring-recipes.md` |
+| Naming Improvement | `naming` | | Variable and function name improvements only | `references/refactoring-recipes.md` |
+| Extract Function | `extract` | | Split and extract long functions | `references/refactoring-recipes.md` |
+| Magic Constants | `constants` | | Replace magic numbers with named constants | `references/refactoring-recipes.md` |
+| Dead Code Removal | `dead` | | Unused code removal | `references/dead-code-detection.md` |
+| Simplify Logic | `simplify` | | Compress redundant branches, ternaries, and unnecessary conversions into equivalent concise forms | `references/logic-simplification.md` |
+| Split Function | `split` | | Incrementally split overly long functions along responsibility boundaries (enhanced `extract`) | `references/function-splitting.md` |
+| Guard Clauses | `guard` | | Convert nested `if` to early return / guard clauses | `references/guard-clauses.md` |
 
 ## Subcommand Dispatch
 

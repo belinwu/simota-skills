@@ -109,10 +109,10 @@ Decision rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| ETL Pipeline | `etl` | ✓ | ETL パイプライン設計 (source 変換→load) | `references/pipeline-architecture.md` |
-| ELT Pipeline | `elt` | | ELT パイプライン (Warehouse 中心の変換) | `references/pipeline-architecture.md`, `references/dbt-modeling.md` |
-| Streaming | `stream` | | Kafka/Flink/Kinesis ストリーミング設計 | `references/streaming-kafka.md` |
-| dbt Project | `dbt` | | dbt プロジェクト設計・モデル構成 | `references/dbt-modeling.md` |
+| ETL Pipeline | `etl` | ✓ | ETL pipeline design (source → transform → load) | `references/pipeline-architecture.md` |
+| ELT Pipeline | `elt` | | ELT pipeline (warehouse-centric transformation) | `references/pipeline-architecture.md`, `references/dbt-modeling.md` |
+| Streaming | `stream` | | Kafka/Flink/Kinesis streaming design | `references/streaming-kafka.md` |
+| dbt Project | `dbt` | | dbt project design and model structure | `references/dbt-modeling.md` |
 
 ## Subcommand Dispatch
 
@@ -121,10 +121,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`etl` = ETL Pipeline). Apply normal FRAME → LAYOUT → OPTIMIZE → WIRE workflow.
 
 Behavior notes per Recipe:
-- `etl`: Source → transform → load 設計。PII 処理戦略・スキーマ進化・品質ゲートを必須含む。
-- `elt`: Warehouse 中心 (BigQuery/Snowflake/Redshift)。メダリオン層設計・dbt モデル命名規約を優先。
-- `stream`: Kafka/Flink/Kinesis/CDC。レイテンシ要件・べき等性シンク・DLQ 戦略を必須含む。
-- `dbt`: dbt レイヤー構造・マテリアライゼーション選択・テスト規約・Flink adapter 適合性評価を含む。
+- `etl`: Source → transform → load design. Must include PII handling strategy, schema evolution, and quality gates.
+- `elt`: Warehouse-centric (BigQuery/Snowflake/Redshift). Prioritize medallion-layer design and dbt model naming conventions.
+- `stream`: Kafka/Flink/Kinesis/CDC. Must include latency requirements, idempotent sinks, and DLQ strategy.
+- `dbt`: Includes dbt layer structure, materialization choice, test conventions, and Flink adapter suitability evaluation.
 
 ## Output Routing
 

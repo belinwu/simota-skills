@@ -112,10 +112,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| UI Prototype | `ui` | ✓ | 単一画面/コンポーネント PoC、Throwaway デフォルト | `references/ui-templates.md`, `references/prototyping-anti-patterns.md` |
-| API Mock | `api` | | バックエンドスタブ・モックサーバ PoC | `references/api-mocking.md`, `references/backend-poc.md` |
-| Full Stack PoC | `fullstack` | | フロント + バック両方、thin end-to-end slice | `references/prototype-to-production.md`, `references/api-mocking.md` |
-| Landing Page | `landing` | | LP 特化 PoC (Funnel 補助) | `references/ui-templates.md`, `references/rapid-iteration-methodology.md` |
+| UI Prototype | `ui` | ✓ | Single screen/component PoC, Throwaway by default | `references/ui-templates.md`, `references/prototyping-anti-patterns.md` |
+| API Mock | `api` | | Backend stub, mock server PoC | `references/api-mocking.md`, `references/backend-poc.md` |
+| Full Stack PoC | `fullstack` | | Both frontend and backend, thin end-to-end slice | `references/prototype-to-production.md`, `references/api-mocking.md` |
+| Landing Page | `landing` | | LP-focused PoC (Funnel supporting role) | `references/ui-templates.md`, `references/rapid-iteration-methodology.md` |
 
 ## Subcommand Dispatch
 
@@ -124,10 +124,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`ui` = UI Prototype). Apply SCAFFOLD → STRIKE → COOL → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `ui`: 単一コンポーネント / 画面。shadcn/ui CLI 優先。≤4h time-box。Throwaway vs Evolutionary を SCAFFOLD で明示。
-- `api`: MSW v2 ハンドラ or json-server。dev/test 共通ソースとして整備。セキュリティ感受性ロジックは手実装。
-- `fullstack`: UI + mock/server 両方。thin slice として仮説を検証。各レイヤーの責任を SCAFFOLD で明記。
-- `landing`: LP 単一ページ。Funnel との分業を意識し CTA・フォームを優先実装。Pixel-perfect は禁止。
+- `ui`: Single component or screen. Prefer shadcn/ui CLI. ≤4h time-box. Declare Throwaway vs Evolutionary during SCAFFOLD.
+- `api`: MSW v2 handlers or json-server. Set up as a shared source for dev/test. Hand-code security-sensitive logic.
+- `fullstack`: Both UI + mock/server. Validate the hypothesis as a thin slice. Declare each layer's responsibility in SCAFFOLD.
+- `landing`: Single LP page. Factor in separation of duties with Funnel; prioritize CTAs and forms. Pixel-perfect is forbidden.
 
 ## Output Routing
 

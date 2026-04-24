@@ -130,11 +130,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| NPS Survey | `nps` | ✓ | NPS 調査設計・スコア分析・フォローアップ | `references/nps-survey.md` |
-| Review Analysis | `review` | | レビュー・チケット・コメントの多チャネル分析 | `references/multi-channel-synthesis.md` |
-| Sentiment Analysis | `sentiment` | | 感情分析、多感情検出 (joy/anger/frustration/surprise) | `references/multi-channel-synthesis.md` |
-| Classification | `classify` | | フィードバック分類・テーマ抽出・オーナー推薦 | `references/feedback-widget-analysis.md` |
-| Insight Extraction | `insight` | | 洞察抽出レポート、戦略的提言 | `references/multi-channel-synthesis.md` |
+| NPS Survey | `nps` | ✓ | NPS survey design, score analysis, follow-up | `references/nps-survey.md` |
+| Review Analysis | `review` | | Multi-channel analysis of reviews, tickets, and comments | `references/multi-channel-synthesis.md` |
+| Sentiment Analysis | `sentiment` | | Sentiment analysis, multi-emotion detection (joy/anger/frustration/surprise) | `references/multi-channel-synthesis.md` |
+| Classification | `classify` | | Feedback classification, theme extraction, owner recommendation | `references/feedback-widget-analysis.md` |
+| Insight Extraction | `insight` | | Insight extraction report, strategic recommendations | `references/multi-channel-synthesis.md` |
 
 ## Subcommand Dispatch
 

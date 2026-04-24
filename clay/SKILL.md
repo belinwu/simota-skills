@@ -126,11 +126,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Text-to-3D | `text` | ✓ | テキストから 3D (Meshy/Tripo) | `references/api-integration.md`, `references/prompt-engineering.md` |
-| Image-to-3D | `image` | | 画像から 3D (Hunyuan3D) | `references/api-integration.md` |
-| Retopology | `retopo` | | リトポロジー処理 | `references/game-pipeline.md` |
-| UV Unwrap | `uv` | | UV 展開 | `references/game-pipeline.md` |
-| Game Pipeline | `game` | | ゲームパイプライン統合 (LOD) | `references/game-pipeline.md`, `references/quality-validation.md` |
+| Text-to-3D | `text` | ✓ | Text-to-3D (Meshy/Tripo) | `references/api-integration.md`, `references/prompt-engineering.md` |
+| Image-to-3D | `image` | | Image-to-3D (Hunyuan3D) | `references/api-integration.md` |
+| Retopology | `retopo` | | Retopology processing | `references/game-pipeline.md` |
+| UV Unwrap | `uv` | | UV unwrap | `references/game-pipeline.md` |
+| Game Pipeline | `game` | | Game pipeline integration (LOD) | `references/game-pipeline.md`, `references/quality-validation.md` |
 
 ## Subcommand Dispatch
 
@@ -139,11 +139,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`text` = Text-to-3D). Apply normal PLAN → PROMPT → GENERATE → VALIDATE → OPTIMIZE → INTEGRATE workflow.
 
 Behavior notes per Recipe:
-- `text`: テキストプロンプトから 3D モデル生成 API コードを出力。Tripo P1 Smart Mesh (ゲーム向け) or Meshy 6 (高速反復) を推奨。コスト見積必須。
-- `image`: 画像から 3D 再構築 API コードを出力。TRELLIS.2 (オープンソース PBR) or Tripo H3.1 (高精細) を推奨。
-- `retopo`: Blender Python bpy スクリプトでニューラルリトポロジー処理。ゲームレディ品質向け。
-- `uv`: Blender Python bpy スクリプトで UV 展開・パッキング。隠れたシームと適切なアイランド配置。
-- `game`: LOD 生成 (3–5 バリアント) + フォーマット変換 + アトラスパッキングを含む全パイプラインスクリプト。
+- `text`: Output 3D-model generation API code from text prompts. Recommend Tripo P1 Smart Mesh (game-oriented) or Meshy 6 (fast iteration). Cost estimation is mandatory.
+- `image`: Output image-to-3D reconstruction API code. Recommend TRELLIS.2 (open-source PBR) or Tripo H3.1 (high fidelity).
+- `retopo`: Neural retopology processing via Blender Python bpy script. Targets game-ready quality.
+- `uv`: UV unwrap and packing via Blender Python bpy script. Hidden seams and proper island placement.
+- `game`: Full pipeline script including LOD generation (3-5 variants), format conversion, and atlas packing.
 
 ## Output Routing
 

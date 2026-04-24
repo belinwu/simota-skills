@@ -168,10 +168,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| API Design | `design` | ✓ | 新規 REST/GraphQL API 設計 | `references/api-design-principles.md` |
-| OpenAPI Spec | `openapi` | | OpenAPI ドキュメント生成 | `references/openapi-templates.md` |
-| Versioning Strategy | `versioning` | | API バージョニング戦略 | `references/versioning-strategies.md` |
-| Breaking Change Check | `breaking` | | 破壊的変更検出 | `references/breaking-change-detection.md` |
+| API Design | `design` | ✓ | New REST/GraphQL API design | `references/api-design-principles.md` |
+| OpenAPI Spec | `openapi` | | OpenAPI document generation | `references/openapi-templates.md` |
+| Versioning Strategy | `versioning` | | API versioning strategy | `references/versioning-strategies.md` |
+| Breaking Change Check | `breaking` | | Breaking change detection | `references/breaking-change-detection.md` |
 
 Behavior notes:
 - **design** (default): SURVEY → DESIGN → VALIDATE → PRESENT; load `api-design-principles.md` + `api-decision-tree.md`.

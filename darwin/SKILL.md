@@ -127,10 +127,10 @@ Agent role boundaries → `_common/BOUNDARIES.md` (Meta-Orchestration section)
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Health Check | `health` | ✓ | エコシステム健康診断 | `references/assessment-models.md` |
-| Fitness Scoring | `fitness` | | agent fitness スコアリング | `references/assessment-models.md`, `references/official-fitness-criteria.md` |
-| Evolution Proposal | `evolve` | | 進化提案 | `references/evolution-actions.md` |
-| Sunset Proposal | `sunset` | | 廃止候補スキル提案 | `references/assessment-models.md` |
+| Health Check | `health` | ✓ | Ecosystem health assessment | `references/assessment-models.md` |
+| Fitness Scoring | `fitness` | | Agent fitness scoring | `references/assessment-models.md`, `references/official-fitness-criteria.md` |
+| Evolution Proposal | `evolve` | | Evolution proposal | `references/evolution-actions.md` |
+| Sunset Proposal | `sunset` | | Sunset candidate skill proposal | `references/assessment-models.md` |
 
 ## Subcommand Dispatch
 

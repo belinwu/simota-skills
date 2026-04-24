@@ -231,10 +231,10 @@ INPUT
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Attack Scenario | `scenario` | ✓ | 攻撃シナリオ設計・キルチェーン計画 | `references/attack-playbooks.md` |
-| Threat Model | `threat-model` | | 脅威モデリング (STRIDE/PASTA/Attack Trees) | `references/threat-modeling.md` |
-| Purple Team | `purple` | | Purple Team 演習・Red/Blue 協調 | `references/attack-playbooks.md` |
-| AI/LLM Red Team | `ai-red` | | AI/LLM 特化 red team (prompt injection, agentic risks) | `references/ai-red-teaming.md` |
+| Attack Scenario | `scenario` | ✓ | Attack scenario design, kill chain planning | `references/attack-playbooks.md` |
+| Threat Model | `threat-model` | | Threat modeling (STRIDE/PASTA/Attack Trees) | `references/threat-modeling.md` |
+| Purple Team | `purple` | | Purple Team exercise, Red/Blue coordination | `references/attack-playbooks.md` |
+| AI/LLM Red Team | `ai-red` | | AI/LLM-focused red team (prompt injection, agentic risks) | `references/ai-red-teaming.md` |
 
 ## Subcommand Dispatch
 

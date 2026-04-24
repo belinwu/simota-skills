@@ -192,12 +192,12 @@ For single-engine mode (user-requested or degraded), collapse to `SCOPE → EXEC
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Tri-Engine PR Review | `pr` | ✓ | 全 PR diff フルレビュー (Codex + Gemini + Claude 並列) | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
-| Security-First | `security` | | CWE/OWASP 重点、AI コード厳格化 | `references/tri-engine-review.md`, `references/codex-integration.md` |
-| Perf Focus | `perf` | | N+1 / レンダコスト / バンドルサイズ重点 | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
-| Style Readability | `style` | | 命名・構造のみ (バグ指摘禁止、Claude 単一エンジン) | `references/code-smell-detection.md`, `references/consistency-patterns.md` |
-| Quick Check | `quick` | | <50 LOC 低リスク、Claude 単一エンジン | `references/claude-review-usage.md` |
-| Intent Alignment | `intent` | | コード vs PR 本文の整合チェック重点 | `references/tri-engine-review.md`, `references/review-anti-patterns.md` |
+| Tri-Engine PR Review | `pr` | ✓ | Full diff review of an entire PR (Codex + Gemini + Claude in parallel) | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
+| Security-First | `security` | | CWE/OWASP focus, stricter checks on AI-generated code | `references/tri-engine-review.md`, `references/codex-integration.md` |
+| Perf Focus | `perf` | | Focus on N+1 / render cost / bundle size | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
+| Style Readability | `style` | | Naming and structure only (no bug flagging, Claude single engine) | `references/code-smell-detection.md`, `references/consistency-patterns.md` |
+| Quick Check | `quick` | | <50 LOC low-risk, Claude single engine | `references/claude-review-usage.md` |
+| Intent Alignment | `intent` | | Focus on alignment between code and PR body | `references/tri-engine-review.md`, `references/review-anti-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -206,12 +206,12 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`pr` = Tri-Engine PR Review). Apply full SCOPE → FAN-OUT → ... → REPORT workflow.
 
 Behavior notes per Recipe:
-- `pr`: tri-engine fan-out (Codex + Gemini + Claude Code 並列)。認知負荷ゲートと SNR 最適化を適用。
-- `security`: tri-engine fan-out + セキュリティ focus area。OWASP/CWE マッピングを全 finding に付与。AI コードは高度精査。
-- `perf`: tri-engine fan-out + パフォーマンス focus area。N+1、レンダーコスト、バンドルに集中。
-- `style`: Claude 単一エンジン (subagent)。バグ・セキュリティ指摘禁止。命名・構造・一貫性のみ。
-- `quick`: Claude 単一エンジン (subagent)。<50 LOC / 低リスク専用。全 finding は CANDIDATE として grounding 必須。
-- `intent`: PR 本文 vs コード変更の整合を中心。tri-engine で差分を精査。
+- `pr`: Tri-engine fan-out (Codex + Gemini + Claude Code in parallel). Apply cognitive-load gate and SNR optimization.
+- `security`: Tri-engine fan-out + security focus area. Attach OWASP/CWE mapping to every finding. Scrutinize AI-generated code closely.
+- `perf`: Tri-engine fan-out + performance focus area. Concentrate on N+1, render cost, and bundle size.
+- `style`: Claude single engine (subagent). No bug or security flags. Naming, structure, and consistency only.
+- `quick`: Claude single engine (subagent). For <50 LOC / low risk only. All findings require grounding as CANDIDATE.
+- `intent`: Focus on alignment between PR body and code changes. Scrutinize diffs via tri-engine.
 
 ## Output Routing
 

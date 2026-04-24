@@ -167,11 +167,11 @@ Voyager receives test escalations, feature specs, and acceptance criteria from u
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Playwright Suite | `playwright` | ✓ | Playwright E2E テストスイート作成 | `references/playwright-patterns.md` |
-| Page Object | `page-object` | | Page Object Model 設計・実装 | `references/playwright-patterns.md` |
-| Auth Flow | `auth` | | 認証フロー E2E テスト | `references/complex-scenarios.md` |
-| Accessibility | `a11y` | | アクセシビリティ自動テスト | `references/visual-a11y-testing.md` |
-| Visual Regression | `visual` | | ビジュアルリグレッションテスト | `references/visual-a11y-testing.md` |
+| Playwright Suite | `playwright` | ✓ | Playwright E2E test suite creation | `references/playwright-patterns.md` |
+| Page Object | `page-object` | | Page Object Model design and implementation | `references/playwright-patterns.md` |
+| Auth Flow | `auth` | | Authentication flow E2E tests | `references/complex-scenarios.md` |
+| Accessibility | `a11y` | | Accessibility automated testing | `references/visual-a11y-testing.md` |
+| Visual Regression | `visual` | | Visual regression testing | `references/visual-a11y-testing.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.

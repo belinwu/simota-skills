@@ -102,10 +102,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Single Icon | `icon` | ✓ | 単一アイコン生成 | `references/patterns.md` |
-| Illustration | `illustration` | | SVG イラスト | `references/patterns.md`, `references/examples.md` |
-| Icon System | `system` | | アイコンシステム設計 | `references/patterns.md` |
-| Sprite Symbols | `sprite` | | SVG sprite symbol 構築 | `references/patterns.md` |
+| Single Icon | `icon` | ✓ | Single icon generation | `references/patterns.md` |
+| Illustration | `illustration` | | SVG illustration | `references/patterns.md`, `references/examples.md` |
+| Icon System | `system` | | Icon system design | `references/patterns.md` |
+| Sprite Symbols | `sprite` | | Build SVG sprite symbols | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -114,10 +114,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`icon` = Single Icon). Apply normal SPEC → GRID → DRAW → OPTIMIZE → INTEGRATE workflow.
 
 Behavior notes per Recipe:
-- `icon`: 24×24 グリッドで単一 SVG アイコンを生成。currentColor + aria-hidden/role="img" 必須。SVGO 最適化後 ≤4KB。
-- `illustration`: hero/spot/装飾 SVG イラスト生成。viewBox + パス最適化付き。
-- `system`: グリッド・ストローク幅・命名規約を先に定義してからアイコンセットを設計。10+ アイコン時は sprite 推奨。
-- `sprite`: `<symbol>` + `<use>` パターンで SVG スプライトシートを構築。バンドルサイズ削減優先。
+- `icon`: Generate a single SVG icon on a 24x24 grid. currentColor + aria-hidden/role="img" required. <=4KB after SVGO optimization.
+- `illustration`: Generate hero/spot/decorative SVG illustrations. With viewBox and path optimization.
+- `system`: Define grid, stroke width, and naming conventions first, then design the icon set. Use sprites for 10+ icons.
+- `sprite`: Build an SVG spritesheet with the `<symbol>` + `<use>` pattern. Prioritize bundle size reduction.
 
 ## Output Routing
 

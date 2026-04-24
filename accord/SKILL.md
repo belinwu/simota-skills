@@ -181,10 +181,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Vision & Goals | `vision` | ✓ | プロジェクト概要・目標・スコープ定義 | `references/unified-template.md` |
-| Requirements | `requirements` | | 機能要件・非機能要件の詳細化 | `references/user-story-smells.md` |
-| Detailed Spec | `detail` | | L2 詳細仕様・フロー・データモデル記述 | `references/handoff-formats.md` |
-| Acceptance Criteria | `ac` | | AC の整備・BDD シナリオ生成 | `references/bdd-best-practices.md` |
+| Vision & Goals | `vision` | ✓ | Project overview, goals, scope definition | `references/unified-template.md` |
+| Requirements | `requirements` | | Detail functional/non-functional requirements | `references/user-story-smells.md` |
+| Detailed Spec | `detail` | | L2 detailed spec, flow, data model | `references/handoff-formats.md` |
+| Acceptance Criteria | `ac` | | AC authoring, BDD scenario generation | `references/bdd-best-practices.md` |
 
 Behavior notes:
 - **vision** (default): SURVEY → ALIGN → DRAFT → PRESENT; load `unified-template.md`; produce L0 Vision Block.

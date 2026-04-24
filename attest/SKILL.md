@@ -325,10 +325,10 @@ Handoff tokens:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| AC Verify | `verify` | ✓ | 実装がスペックの受入基準を満たすか FULL モード検証 | `references/compliance-report.md` |
-| BDD Scenarios | `bdd` | | スペックから Given/When/Then シナリオを生成 | `references/bdd-generation.md` |
-| Traceability Matrix | `trace` | | スペック ↔ コードのトレーサビリティマトリクス生成 | `references/traceability-advanced.md` |
-| Compliance Report | `report` | | 監査向けコンプライアンスレポート (AUDIT モード) | `references/compliance-report.md` |
+| AC Verify | `verify` | ✓ | FULL-mode verification that implementation meets spec acceptance criteria | `references/compliance-report.md` |
+| BDD Scenarios | `bdd` | | Generate Given/When/Then scenarios from spec | `references/bdd-generation.md` |
+| Traceability Matrix | `trace` | | Generate spec ↔ code traceability matrix | `references/traceability-advanced.md` |
+| Compliance Report | `report` | | Audit-oriented compliance report (AUDIT mode) | `references/compliance-report.md` |
 
 ## Subcommand Dispatch
 
@@ -337,10 +337,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`verify` = AC Verify). Apply normal INGEST → EXTRACT → GENERATE → VERIFY → ATTEST workflow.
 
 Behavior notes per Recipe:
-- `verify`: FULL モード。スペック + 実装の両方が必要。CRITICAL 基準はすべて PASS であること。CERTIFIED/CONDITIONAL/REJECTED のいずれかで verdict を出す。
-- `bdd`: EXTRACT モード。スペックのみから AC を抽出し、優先度別最低シナリオ数 (CRITICAL: 5, HIGH: 3) を生成。
-- `trace`: AUDIT モード。スペックセクション → 実装コードの双方向トレーサビリティを生成。カバレッジ ≥ 90% が CERTIFIED の条件。
-- `report`: AUDIT モード + 全セクションのコンプライアンスレポート生成。監査証跡として Warden に渡す。
+- `verify`: FULL mode. Requires both spec and implementation. All CRITICAL criteria must PASS. Issue a verdict of CERTIFIED/CONDITIONAL/REJECTED.
+- `bdd`: EXTRACT mode. Extract ACs from spec only and generate minimum scenario counts per priority (CRITICAL: 5, HIGH: 3).
+- `trace`: AUDIT mode. Generate bidirectional traceability from spec section → implementation code. Coverage ≥ 90% is the CERTIFIED condition.
+- `report`: AUDIT mode + full-section compliance report generation. Hand off to Warden as audit evidence.
 
 ## Output Routing
 

@@ -104,11 +104,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Prompt Engineering | `prompt` | ✓ | プロンプト設計・最適化 | `references/prompt-engineering.md` |
-| RAG Design | `rag` | | RAG 設計 (retrieval + generation) | `references/rag-design-anti-patterns.md` |
-| Evaluation Framework | `eval` | | 評価フレームワーク (LLM output 品質) | `references/evaluation-observability.md` |
-| AI Safety | `safety` | | ガードレール、red-team | `references/ai-safety-guardrails.md` |
-| MLOps Pipeline | `mlops` | | MLOps パイプライン設計 | `references/llm-application-patterns.md` |
+| Prompt Engineering | `prompt` | ✓ | Prompt design and optimization | `references/prompt-engineering.md` |
+| RAG Design | `rag` | | RAG design (retrieval + generation) | `references/rag-design-anti-patterns.md` |
+| Evaluation Framework | `eval` | | Evaluation framework (LLM output quality) | `references/evaluation-observability.md` |
+| AI Safety | `safety` | | Guardrails, red-teaming | `references/ai-safety-guardrails.md` |
+| MLOps Pipeline | `mlops` | | MLOps pipeline design | `references/llm-application-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -117,11 +117,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`prompt` = Prompt Engineering). Apply normal ASSESS → DESIGN → EVALUATE → SPECIFY workflow.
 
 Behavior notes per Recipe:
-- `prompt`: プロンプト設計・バージョン管理・テスト。XML タグ構造、Few-shot 例、キャッシュ戦略を含む。
-- `rag`: RAG アーキテクチャ設計。チャンキング戦略、Hybrid Search、Recall@5/Faithfulness 閾値を設定。
-- `eval`: LLM-as-judge、回帰テスト、Golden Test Set 設計。バイアス検出と TNR しきい値を含む。
-- `safety`: OWASP LLM Top 10 2025 準拠。Prompt Injection 防御、PII ハンドリング、ガードレール層設計。
-- `mlops`: MLOps パイプライン設計。モデルルーティング、カナリアロールアウト、コスト最適化を含む。
+- `prompt`: Prompt design, versioning, testing. Includes XML tag structure, few-shot examples, caching strategy.
+- `rag`: RAG architecture design. Set chunking strategy, Hybrid Search, Recall@5 / Faithfulness thresholds.
+- `eval`: LLM-as-judge, regression tests, Golden Test Set design. Includes bias detection and TNR thresholds.
+- `safety`: OWASP LLM Top 10 2025 compliance. Prompt Injection defense, PII handling, guardrail layering.
+- `mlops`: MLOps pipeline design. Includes model routing, canary rollout, and cost optimization.
 
 ## Operating Modes
 

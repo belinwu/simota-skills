@@ -381,10 +381,10 @@ HUNTING_HYPOTHESIS:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Sigma Rules | `sigma` | ✓ | Sigma v2.1+ 検知ルール設計・ATT&CK マッピング | `references/detection-patterns.md` |
-| YARA Rules | `yara` | | YARA マルウェア/IoC ファイル・メモリパターンルール | `references/detection-patterns.md` |
-| Detection Coverage | `coverage` | | MITRE ATT&CK カバレッジマッピング・ギャップ分析 | `references/detection-patterns.md` |
-| Threat Hunting | `hunt` | | 仮説駆動型スレットハンティングキャンペーン設計 | `references/detection-patterns.md` |
+| Sigma Rules | `sigma` | ✓ | Sigma v2.1+ detection rule design, ATT&CK mapping | `references/detection-patterns.md` |
+| YARA Rules | `yara` | | YARA malware/IoC file and memory pattern rules | `references/detection-patterns.md` |
+| Detection Coverage | `coverage` | | MITRE ATT&CK coverage mapping, gap analysis | `references/detection-patterns.md` |
+| Threat Hunting | `hunt` | | Hypothesis-driven threat hunting campaign design | `references/detection-patterns.md` |
 
 ## Subcommand Dispatch
 

@@ -133,11 +133,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| KPI Framework | `kpi` | ✓ | North Star Metric 定義・KPI ツリー設計・OKR 設定 | `references/metrics-frameworks.md` |
-| Funnel Analysis | `funnel` | | コンバージョンファネル分析・ドロップオフ特定 | `references/funnel-cohort-analysis.md` |
-| Cohort Analysis | `cohort` | | リテンションコホート分析・チャーン測定 | `references/funnel-cohort-analysis.md` |
-| Event Schema | `event` | | イベントスキーマ設計・アナリティクス実装 | `references/event-schema.md` |
-| Dashboard Spec | `dashboard` | | ダッシュボード仕様設計・チャート定義 | `references/dashboard-spec.md` |
+| KPI Framework | `kpi` | ✓ | North Star Metric definition, KPI tree design, and OKR setup | `references/metrics-frameworks.md` |
+| Funnel Analysis | `funnel` | | Conversion funnel analysis and drop-off identification | `references/funnel-cohort-analysis.md` |
+| Cohort Analysis | `cohort` | | Retention cohort analysis and churn measurement | `references/funnel-cohort-analysis.md` |
+| Event Schema | `event` | | Event schema design and analytics implementation | `references/event-schema.md` |
+| Dashboard Spec | `dashboard` | | Dashboard spec design and chart definition | `references/dashboard-spec.md` |
 
 ## Subcommand Dispatch
 

@@ -147,10 +147,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Generate Persona | `generate` | ✓ | ペルソナ生成 (CONJURE) — 新規ペルソナをソースから作成 | `references/generation-workflows.md` |
-| Registry | `registry` | | レジストリ管理 — ライフサイクル確認・監査・アーカイブ | `references/registry-spec.md` |
-| Evolve | `evolve` | | データ駆動進化 — Trace/Voice/Pulse からのドリフト更新 | `references/evolution-engine.md` |
-| Distribute | `distribute` | | 他エージェント向け配布パッケージング (Echo/Spark/Retain 等) | `references/distribution-adapters.md` |
+| Generate Persona | `generate` | ✓ | Persona generation (CONJURE) — create new personas from sources | `references/generation-workflows.md` |
+| Registry | `registry` | | Registry management — lifecycle check, audit, archive | `references/registry-spec.md` |
+| Evolve | `evolve` | | Data-driven evolution — drift updates from Trace/Voice/Pulse | `references/evolution-engine.md` |
+| Distribute | `distribute` | | Packaging for other agents (Echo/Spark/Retain, etc.) | `references/distribution-adapters.md` |
 
 ## Subcommand Dispatch
 
@@ -159,10 +159,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`generate` = Generate Persona). Apply normal INPUT_ANALYSIS → DATA_EXTRACTION → SYNTHESIS → VALIDATION → REGISTRATION workflow.
 
 Behavior notes per Recipe:
-- `generate`: CONJURE モード。ソース検出 → スキーマ準拠ペルソナ生成 → registry.yaml 登録。
-- `registry`: AUDIT モード。鮮度・重複・カバレッジ・Echo 互換性を評価しレポート。
-- `evolve`: EVOLVE モード。乖離 ≥5% トリガー確認 → バージョンバンプ → 進化ログ記録。
-- `distribute`: DISTRIBUTE モード。ターゲットエージェント別アダプター変換 → 配布パッケージ生成。
+- `generate`: CONJURE mode. Source detection → schema-compliant persona generation → registry.yaml registration.
+- `registry`: AUDIT mode. Evaluate and report freshness, duplication, coverage, and Echo compatibility.
+- `evolve`: EVOLVE mode. Confirm deviation ≥5% trigger → bump version → record evolution log.
+- `distribute`: DISTRIBUTE mode. Per-target-agent adapter conversion → generate delivery package.
 
 ## Output Routing
 

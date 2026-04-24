@@ -98,10 +98,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Isolation Strategy | `isolation` | ✓ | テナント分離戦略設計 (DB/スキーマ/行レベル比較) | `references/patterns.md` |
-| RLS Design | `rls` | | Row Level Security ポリシー設計・テナントコンテキスト伝播 | `references/patterns.md` |
-| Tenant Routing | `routing` | | テナントルーティング設計 (サブドメイン/ヘッダ/パス) | `references/patterns.md` |
-| Scale Design | `scale` | | ノイジーネイバー保護・リソース制限・マイグレーション計画 | `references/patterns.md` |
+| Isolation Strategy | `isolation` | ✓ | Tenant isolation strategy design (DB / schema / row-level comparison) | `references/patterns.md` |
+| RLS Design | `rls` | | Row Level Security policy design and tenant context propagation | `references/patterns.md` |
+| Tenant Routing | `routing` | | Tenant routing design (subdomain / header / path) | `references/patterns.md` |
+| Scale Design | `scale` | | Noisy-neighbor protection, resource limits, and migration planning | `references/patterns.md` |
 
 ## Subcommand Dispatch
 

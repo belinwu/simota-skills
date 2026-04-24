@@ -147,10 +147,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Session Replay | `replay` | ✓ | セッションリプレイ分析、クリック/スクロールパターン抽出 | `references/session-analysis.md` |
-| Persona Pattern | `persona` | | ペルソナベース行動パターン抽出、コホート構築 | `references/persona-integration.md` |
-| UX Story | `story` | | UX 課題ストーリーテリング、ジャーニー再構成 | `references/report-templates.md` |
-| Behavioral Archaeology | `archaeology` | | 行動考古学 — 動機・意図推定、フラストレーション根因分析 | `references/frustration-signals.md` |
+| Session Replay | `replay` | ✓ | Session replay analysis, click/scroll pattern extraction | `references/session-analysis.md` |
+| Persona Pattern | `persona` | | Persona-based behavior pattern extraction, cohort construction | `references/persona-integration.md` |
+| UX Story | `story` | | UX issue storytelling, journey reconstruction | `references/report-templates.md` |
+| Behavioral Archaeology | `archaeology` | | Behavioral archaeology — motive/intent inference, frustration root cause analysis | `references/frustration-signals.md` |
 
 ## Subcommand Dispatch
 

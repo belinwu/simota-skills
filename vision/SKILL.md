@@ -167,10 +167,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Design Direction | `direction` | ✓ | デザイン方向性決定 | `references/design-methodology.md` |
-| Full Redesign | `redesign` | | 全面リデザイン | `references/design-methodology.md` |
-| Trend Application | `trend` | | 最新トレンド適用 | `references/design-trends.md` |
-| Design System Build | `system` | | Design System 構築 (Muse/Palette/Flow/Forge オーケストレーション) | `references/agent-orchestration.md` |
+| Design Direction | `direction` | ✓ | Design direction decision | `references/design-methodology.md` |
+| Full Redesign | `redesign` | | Full redesign | `references/design-methodology.md` |
+| Trend Application | `trend` | | Latest trend application | `references/design-trends.md` |
+| Design System Build | `system` | | Design System construction (Muse/Palette/Flow/Forge orchestration) | `references/agent-orchestration.md` |
 
 ## Subcommand Dispatch
 

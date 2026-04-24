@@ -186,10 +186,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Incident Response | `respond` | ✓ | インシデント初動 (影響切り分け+初期対応+SEV 分類) | `references/response-workflow.md` |
-| Impact Scoping | `impact` | | 影響範囲特定 (ユーザー・機能・ビジネス次元の評価) | `references/runbooks-communication.md` |
-| Recovery Plan | `recover` | | 復旧手順策定 (ロールバック・フェイルオーバー手順) | `references/response-workflow.md` |
-| Postmortem | `postmortem` | | 事後分析ドキュメント作成 (5 Whys + アクションアイテム) | `references/postmortem-templates.md` |
+| Incident Response | `respond` | ✓ | Incident first response (impact isolation + initial response + SEV classification) | `references/response-workflow.md` |
+| Impact Scoping | `impact` | | Impact scope identification (user, feature, and business dimension evaluation) | `references/runbooks-communication.md` |
+| Recovery Plan | `recover` | | Recovery procedure formulation (rollback and failover procedures) | `references/response-workflow.md` |
+| Postmortem | `postmortem` | | Postmortem document creation (5 Whys + action items) | `references/postmortem-templates.md` |
 
 ## Subcommand Dispatch
 

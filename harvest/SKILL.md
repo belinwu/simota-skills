@@ -111,10 +111,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Weekly Report | `weekly` | ✓ | 週次作業レポート (PR 集計・サマリー) | `references/report-templates.md` |
-| Monthly Report | `monthly` | | 月次レポート (DORA メトリクス含む) | `references/report-templates.md` |
-| Release Notes | `release` | | リリースノート生成 (タグ間 PR 集計) | `references/changelog-best-practices.md` |
-| Sprint Retro | `retro` | | レトロスペクティブ用集計・ナラティブ | `references/retrospective-voice.md` |
+| Weekly Report | `weekly` | ✓ | Weekly work report (PR aggregation and summary) | `references/report-templates.md` |
+| Monthly Report | `monthly` | | Monthly report (includes DORA metrics) | `references/report-templates.md` |
+| Release Notes | `release` | | Release notes generation (PR aggregation between tags) | `references/changelog-best-practices.md` |
+| Sprint Retro | `retro` | | Retrospective aggregation and narrative | `references/retrospective-voice.md` |
 
 ## Subcommand Dispatch
 
@@ -123,10 +123,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`weekly` = Weekly Report). Apply normal SURVEY → COLLECT → ANALYZE → REPORT → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `weekly`: 週次 PR サマリー。PR サイズ分類・DORA スループット・PR 数を `pr-summary-YYYY-MM-DD.md` に出力。
-- `monthly`: 月次レポート。7 アーキタイプチームプロファイル・レビューサイクル4フェーズ分解を含む。
-- `release`: タグ/期間間の PR からリリースノートを生成。Keep a Changelog カテゴリマッピングを使用。
-- `retro`: スプリントレトロスペクティブ用ナラティブ集計。数値と人間的解釈を組み合わせて出力。
+- `weekly`: Weekly PR summary. Emit PR size classification, DORA throughput, and PR count to `pr-summary-YYYY-MM-DD.md`.
+- `monthly`: Monthly report. Includes 7-archetype team profile and 4-phase review cycle breakdown.
+- `release`: Generate release notes from PRs between tags/periods. Uses Keep a Changelog category mapping.
+- `retro`: Narrative aggregation for sprint retrospectives. Combine numbers and human interpretation in the output.
 
 ## Report Modes
 

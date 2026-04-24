@@ -194,11 +194,11 @@ questions:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| note Article | `note` | ✓ | note 日本語長文記事、マガジン連載エピソード執筆 | `references/platform-optimization.md` |
-| Zenn Article | `zenn` | | Zenn エンジニア向け記事、トピック・絵文字設定 | `references/platform-optimization.md` |
-| Qiita Article | `qiita` | | Qiita 技術 Tips、タグ戦略、LGTM 最適化 | `references/platform-optimization.md` |
-| dev.to Article | `devto` | | dev.to 英語グローバル向け記事、カバー画像・タグ設定 | `references/platform-optimization.md` |
-| Series Design | `series` | | 連載設計、インデックス記事・クロスリンク・回次管理 | `references/series-management.md` |
+| note Article | `note` | ✓ | note long-form Japanese articles, magazine series episode authoring | `references/platform-optimization.md` |
+| Zenn Article | `zenn` | | Zenn articles for engineers, topic and emoji configuration | `references/platform-optimization.md` |
+| Qiita Article | `qiita` | | Qiita tech tips, tag strategy, LGTM optimization | `references/platform-optimization.md` |
+| dev.to Article | `devto` | | dev.to articles for a global English audience, cover image and tag configuration | `references/platform-optimization.md` |
+| Series Design | `series` | | Series design, index articles, cross-links, and episode management | `references/series-management.md` |
 
 ## Subcommand Dispatch
 

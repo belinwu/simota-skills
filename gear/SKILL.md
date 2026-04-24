@@ -130,11 +130,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Dependency Management | `deps` | ✓ | 依存管理・アップグレード | `references/dependency-management.md` |
-| CI/CD Config | `ci` | | CI/CD パイプライン設定 | `references/github-actions.md` |
+| Dependency Management | `deps` | ✓ | Dependency management and upgrades | `references/dependency-management.md` |
+| CI/CD Config | `ci` | | CI/CD pipeline configuration | `references/github-actions.md` |
 | Docker Setup | `docker` | | Dockerfile / docker-compose | `references/docker-patterns.md` |
-| Logging Setup | `logs` | | ロギング設定 (構造化ログ等) | `references/observability.md` |
-| Health Checks | `health` | | ヘルスチェック設計 | `references/observability.md` |
+| Logging Setup | `logs` | | Logging configuration (structured logs, etc.) | `references/observability.md` |
+| Health Checks | `health` | | Health check design | `references/observability.md` |
 
 ## Subcommand Dispatch
 

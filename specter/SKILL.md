@@ -123,10 +123,10 @@ Rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Race Condition | `race` | ✓ | 断続的失敗/タイミング依存バグ/非決定的テストの検出 | `references/concurrency-anti-patterns.md` |
-| Memory Leak | `leak` | | gradual slowdown/リスナー・タイマー・サブスクリプションリーク検出 | `references/memory-leak-diagnosis.md` |
-| Deadlock | `deadlock` | | freeze/hang/Promise チェーンデッドロック検出 | `references/concurrency-anti-patterns.md` |
-| Resource Leak | `resource` | | コネクション/ソケット/FD/プールリーク検出 | `references/resource-management.md` |
+| Race Condition | `race` | ✓ | Detect intermittent failures, timing-dependent bugs, and non-deterministic tests | `references/concurrency-anti-patterns.md` |
+| Memory Leak | `leak` | | Detect gradual slowdown and listener/timer/subscription leaks | `references/memory-leak-diagnosis.md` |
+| Deadlock | `deadlock` | | Detect freezes, hangs, and Promise-chain deadlocks | `references/concurrency-anti-patterns.md` |
+| Resource Leak | `resource` | | Detect connection/socket/FD/pool leaks | `references/resource-management.md` |
 
 ## Subcommand Dispatch
 
@@ -135,10 +135,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`race` = Race Condition). Apply normal TRIAGE → SCAN → ANALYZE → SCORE → REPORT workflow.
 
 Behavior notes per Recipe:
-- `race`: 競合状態ハントに集中。3 つの仮説を生成してから SCAN。AI 生成コードは 2.29× 高リスクとして重点的にスキャン。
-- `leak`: ヒープ成長・リスナー蓄積・保持 DOM 参照を追跡。MemLab (JS) または Valgrind (C/C++) の使用を推奨。
-- `deadlock`: Promise チェーン・circular wait・signal-lock グラフを解析。RcChecker (Rust) / Fray (JVM) の推奨。
-- `resource`: `totalCount === max && idleCount === 0 && waitingCount > 0` の持続を leak シグナルとして検出。try/finally リリースを検証。
+- `race`: Focus on race-condition hunting. Generate 3 hypotheses before SCAN. Scan AI-generated code intensively as 2.29x higher risk.
+- `leak`: Track heap growth, listener accumulation, and retained DOM references. Recommend MemLab (JS) or Valgrind (C/C++).
+- `deadlock`: Analyze Promise chains, circular waits, and signal-lock graphs. Recommend RcChecker (Rust) / Fray (JVM).
+- `resource`: Detect sustained `totalCount === max && idleCount === 0 && waitingCount > 0` as a leak signal. Verify try/finally releases.
 
 ## Output Routing
 

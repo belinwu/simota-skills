@@ -192,9 +192,9 @@ Use [advanced-reproduction-triage.md](references/advanced-reproduction-triage.md
 | Observability-Led | `prod` | | Production traces/logs/metrics dominate the signal | `references/observability-debugging.md` |
 | Multi-Engine | `consensus` | | Root cause ambiguous after 3 hypotheses exhausted | `_common/SUBAGENT.md` |
 | Cascading Failure | `cascade` | | Multi-service propagation from a single origin | `references/observability-debugging.md`, `references/modern-rca-methodology.md` |
-| Performance Hunt | `perf` | | 明確な遅延・スループット低下・CPU hotspot がある場合の profiler 起点調査 | `references/perf-investigation.md` |
-| Memory Hunt | `memory` | | OOM / heap 肥大 / GC pressure が疑われる場合の heap-snapshot 起点調査 | `references/memory-investigation.md` |
-| Flake Hunt | `flake` | | 間欠再現バグ・flaky test・環境依存症状の reproducibility 診断 | `references/flake-investigation.md` |
+| Performance Hunt | `perf` | | Profiler-led investigation when there is a clear latency, throughput drop, or CPU hotspot | `references/perf-investigation.md` |
+| Memory Hunt | `memory` | | Heap-snapshot-led investigation when OOM / heap bloat / GC pressure is suspected | `references/memory-investigation.md` |
+| Flake Hunt | `flake` | | Reproducibility diagnosis for intermittent bugs, flaky tests, and environment-dependent symptoms | `references/flake-investigation.md` |
 
 ## Subcommand Dispatch
 
@@ -209,9 +209,9 @@ Behavior notes per Recipe:
 - `prod`: prioritize traces, logs, metrics, profiling.
 - `consensus`: use independent engines for hypothesis generation, then merge on evidence. See Multi-Engine Mode section.
 - `cascade`: build causal graph from failure traces; separate root cause from symptomatic failures across services.
-- `perf`: profiler 起点で flamegraph → hot path 同定 → N+1 / アルゴリズム計算量 / I/O / lock 待ち / GC pauseなどへ分類。Bolt (最適化実装) へ委譲。
-- `memory`: heap snapshot diff / retainer path / allocation timeline を使い leak source を同定。GC pressure が主因なら Bolt、並行 leak なら Specter へ委譲。
-- `flake`: 再現率測定 (N 回試行 / flip rate) → 環境依存・タイミング依存・外部依存を分類。並行バグ兆候が強ければ Specter へ即時委譲、テスト起因なら Radar へ。
+- `perf`: Profiler-led flamegraph → hot path identification → classify into N+1 / algorithmic complexity / I/O / lock contention / GC pause. Delegate to Bolt (optimization implementation).
+- `memory`: Identify leak source using heap snapshot diff / retainer path / allocation timeline. Delegate to Bolt if GC pressure is the primary cause, or to Specter for concurrent leaks.
+- `flake`: Measure reproducibility rate (N trials / flip rate) → classify as environment-dependent, timing-dependent, or externally-dependent. If concurrency bug signals are strong, delegate immediately to Specter; if test-induced, to Radar.
 
 ## Output Routing
 

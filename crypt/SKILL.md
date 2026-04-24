@@ -105,11 +105,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Algorithm Selection | `algorithm` | ✓ | 暗号アルゴリズム選択・パラメータ仕様・アンチパターン検出 | `references/patterns.md` |
-| Key Management | `kms` | | キー管理設計・KMS 統合・ローテーションスケジュール | `references/patterns.md` |
-| E2EE Design | `e2ee` | | エンドツーエンド暗号化アーキテクチャ設計 | `references/patterns.md` |
-| TLS Configuration | `tls` | | TLS/mTLS 設定・暗号スイート選択・証明書管理 | `references/patterns.md` |
-| Signature Scheme | `signature` | | デジタル署名・JWT/JWE/JWS スキーム設計 | `references/patterns.md` |
+| Algorithm Selection | `algorithm` | ✓ | Crypto algorithm selection, parameter spec, anti-pattern detection | `references/patterns.md` |
+| Key Management | `kms` | | Key management design, KMS integration, rotation schedule | `references/patterns.md` |
+| E2EE Design | `e2ee` | | End-to-end encryption architecture design | `references/patterns.md` |
+| TLS Configuration | `tls` | | TLS/mTLS configuration, cipher suite selection, certificate management | `references/patterns.md` |
+| Signature Scheme | `signature` | | Digital signature, JWT/JWE/JWS scheme design | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -118,11 +118,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`algorithm` = Algorithm Selection). Apply normal THREAT → SELECT → DESIGN → VERIFY → DOCUMENT workflow.
 
 Behavior notes per Recipe:
-- `algorithm`: ユースケース別アルゴリズム推奨 (対称・非対称・ハッシュ・KDF)。アンチパターンチェックリスト実行。量子耐性評価を含む。
-- `kms`: キーライフサイクル設計 (生成・ローテーション・導出・失効・廃棄)。KMS/HSM 統合パターン。アトミックローテーション手順。
-- `e2ee`: Signal Protocol / MLS / カスタム E2EE アーキテクチャ設計。鍵交換フロー・フォワード秘匿性・PFS 設計を含む。
-- `tls`: TLS 1.3 設定・暗号スイート優先度・mTLS 相互認証・PQC ハイブリッド KEX (X25519MLKEM768) 対応。
-- `signature`: Ed25519 / ECDSA / ML-DSA 署名スキーム設計。JWT 検証フロー・アルゴリズム固定化・タイミング安全比較を含む。
+- `algorithm`: Use-case-specific algorithm recommendations (symmetric, asymmetric, hash, KDF). Run anti-pattern checklist. Includes quantum-resistance assessment.
+- `kms`: Key lifecycle design (generation, rotation, derivation, revocation, destruction). KMS/HSM integration patterns. Atomic rotation procedures.
+- `e2ee`: Signal Protocol / MLS / custom E2EE architecture design. Includes key exchange flow, forward secrecy, and PFS design.
+- `tls`: TLS 1.3 configuration, cipher suite priority, mTLS mutual authentication, PQC hybrid KEX (X25519MLKEM768) support.
+- `signature`: Ed25519 / ECDSA / ML-DSA signature scheme design. Includes JWT verification flow, algorithm pinning, and timing-safe comparison.
 
 ## Output Routing
 

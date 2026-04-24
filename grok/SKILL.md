@@ -214,11 +214,11 @@ questions:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Regex Design | `regex` | ✓ | 正規表現設計・ReDoS 監査・エンジン選定 | `references/regex-safety.md` |
-| Parser Design | `parser` | | パーサ設計・文法クラス分類・ジェネレータ選定 | `references/parser-generators.md` |
-| DSL Design | `dsl` | | Domain Specific Language 設計 (内部/外部 DSL) | `references/dsl-design.md` |
-| AST Transform | `ast` | | AST 変換・コードモッド・ビジター設計 | `references/ast-transforms.md` |
-| ReDoS Audit | `redos` | | 既存正規表現の ReDoS 安全性監査のみ | `references/regex-safety.md` |
+| Regex Design | `regex` | ✓ | Regex design, ReDoS audit, and engine selection | `references/regex-safety.md` |
+| Parser Design | `parser` | | Parser design, grammar class classification, generator selection | `references/parser-generators.md` |
+| DSL Design | `dsl` | | Domain Specific Language design (internal/external DSL) | `references/dsl-design.md` |
+| AST Transform | `ast` | | AST transformation, codemod, visitor design | `references/ast-transforms.md` |
+| ReDoS Audit | `redos` | | ReDoS safety audit of existing regex only | `references/regex-safety.md` |
 
 ## Subcommand Dispatch
 
@@ -227,11 +227,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`regex` = Regex Design). Apply normal ANALYZE → GRAMMAR → IMPLEMENT → HARDEN → DOCUMENT workflow.
 
 Behavior notes per Recipe:
-- `regex`: エンジンターゲット特定 → ReDoS 分析 → ポンプ文字列ドキュメント化 → Unicode ポスチャー確認。
-- `parser`: 文法クラス分類 → ジェネレータ決定行列 → エラーリカバリ戦略 → Builder ハンドオフ。
-- `dsl`: 内部 vs 外部 DSL 判断 → 語彙設計 → バージョン戦略 → 進化計画。
-- `ast`: ノード型設計 → ビジターパターン選択 → ラウンドトリップ安全性 → コードモッド戦略。
-- `redos`: 既存パターンのポンプ文字列抽出 → 複雑度クラス判定 → 修正案提示のみ。
+- `regex`: Identify engine target → ReDoS analysis → document pump strings → verify Unicode posture.
+- `parser`: Grammar class classification → generator decision matrix → error recovery strategy → Builder handoff.
+- `dsl`: Decide internal vs external DSL → vocabulary design → versioning strategy → evolution plan.
+- `ast`: Node type design → visitor pattern selection → round-trip safety → codemod strategy.
+- `redos`: Extract pump strings from existing patterns → determine complexity class → propose fixes only.
 
 ## Output Routing
 

@@ -196,10 +196,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Structure Map | `map` | ✓ | 構造マッピング (全体俯瞰、モジュール境界・責務分析) | `references/investigation-patterns.md` |
-| Feature Discovery | `discover` | | 機能探索 ("does X exist?") | `references/investigation-patterns.md` |
-| Data Flow Trace | `trace` | | データフロー追跡 (origin → transformation → destination) | `references/investigation-patterns.md` |
-| Module Responsibility | `responsibility` | | モジュール責務分析 (cognitive complexity、comprehension debt 評価) | `references/complexity-assessment.md` |
+| Structure Map | `map` | ✓ | Structure mapping (overview, module boundaries and responsibility analysis) | `references/investigation-patterns.md` |
+| Feature Discovery | `discover` | | Feature discovery ("does X exist?") | `references/investigation-patterns.md` |
+| Data Flow Trace | `trace` | | Data flow trace (origin → transformation → destination) | `references/investigation-patterns.md` |
+| Module Responsibility | `responsibility` | | Module responsibility analysis (cognitive complexity, comprehension debt evaluation) | `references/complexity-assessment.md` |
 
 ## Subcommand Dispatch
 
@@ -208,10 +208,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`map` = Structure Map). Apply normal SCOPE → SURVEY → TRACE → CONNECT → REPORT workflow.
 
 Behavior notes per Recipe:
-- `map`: SCOPE で調査タイプを Structure に分類。トップダウンでモジュール境界を確定後、詳細へ。
-- `discover`: SCOPE → SURVEY → REPORT の短縮ワークフロー可。存在確認後すぐに REPORT。
-- `trace`: データ origin から destination まで追跡。動的ディスパッチ境界は明示的にフラグ。
-- `responsibility`: cognitive complexity 多信号評価 (SonarSource + nesting + naming)。comprehension debt ホットスポットを識別。
+- `map`: Classify investigation type as Structure in SCOPE. Establish module boundaries top-down before drilling into detail.
+- `discover`: Shortened SCOPE → SURVEY → REPORT workflow allowed. REPORT immediately after existence confirmation.
+- `trace`: Trace data from origin to destination. Explicitly flag dynamic-dispatch boundaries.
+- `responsibility`: Multi-signal cognitive complexity evaluation (SonarSource + nesting + naming). Identify comprehension debt hotspots.
 
 ## Output Requirements
 

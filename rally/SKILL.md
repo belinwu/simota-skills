@@ -199,10 +199,10 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Parallel Execution | `parallel` | ✓ | 独立タスクの並列実行 | `references/team-design-patterns.md` |
-| Team Design | `teams` | | チーム構成・役割設計 | `references/team-design-patterns.md` |
-| Codex Subagents | `codex-subagents` | | Codex CLI サブエージェント並列化 | `references/orchestration-patterns.md` |
-| Coordination | `coordinate` | | 進行中チームの監視・調整 | `references/lifecycle-management.md` |
+| Parallel Execution | `parallel` | ✓ | Parallel execution of independent tasks | `references/team-design-patterns.md` |
+| Team Design | `teams` | | Team composition and role design | `references/team-design-patterns.md` |
+| Codex Subagents | `codex-subagents` | | Codex CLI subagent parallelization | `references/orchestration-patterns.md` |
+| Coordination | `coordinate` | | Monitoring and coordinating in-flight teams | `references/lifecycle-management.md` |
 
 ## Subcommand Dispatch
 

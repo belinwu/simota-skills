@@ -120,11 +120,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| SVG Output | `svg` | ✓ | SVG ピクセルアート生成 | `references/code-patterns.md`, `references/pixel-craft.md` |
-| Canvas Output | `canvas` | | Canvas 描画 | `references/code-patterns.md` |
-| Phaser 3 | `phaser` | | Phaser 3 スプライト | `references/code-patterns.md`, `references/engine-integration.md` |
-| Pillow (Python) | `pillow` | | Pillow で画像出力 | `references/code-patterns.md`, `references/sprite-animation.md` |
-| CSS Pixel Art | `css` | | CSS ピクセルアート | `references/code-patterns.md` |
+| SVG Output | `svg` | ✓ | SVG pixel art generation | `references/code-patterns.md`, `references/pixel-craft.md` |
+| Canvas Output | `canvas` | | Canvas drawing | `references/code-patterns.md` |
+| Phaser 3 | `phaser` | | Phaser 3 sprites | `references/code-patterns.md`, `references/engine-integration.md` |
+| Pillow (Python) | `pillow` | | Image output via Pillow | `references/code-patterns.md`, `references/sprite-animation.md` |
+| CSS Pixel Art | `css` | | CSS pixel art | `references/code-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -133,11 +133,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`svg` = SVG Output). Apply normal PLAN → PALETTE → PIXEL → PACK → PREVIEW workflow.
 
 Behavior notes per Recipe:
-- `svg`: SVG `<rect>` グリッドでピクセルアートを生成。~500 ピクセル要素まで対応。`image-rendering: pixelated` 必須。
-- `canvas`: HTML Canvas で描画。32×32+ のスプライトや多フレームシーン向け。60fps 維持のためオフスクリーンキャンバスを活用。
-- `phaser`: Phaser 3 `generateTexture()` コードを生成。`pixelArt: true` 設定付き。Realm へのハンドオフ想定。
-- `pillow`: Python + Pillow でバッチ PNG/GIF エクスポートスクリプトを生成。スプライトシートメタデータ JSON 付き。
-- `css`: CSS `box-shadow` または CSS Grid でピクセルアートを生成。小サイズ装飾アセット向け。
+- `svg`: Generate pixel art with an SVG `<rect>` grid. Supports up to ~500 pixel elements. `image-rendering: pixelated` required.
+- `canvas`: Draw via HTML Canvas. Suited to 32x32+ sprites and multi-frame scenes. Use off-screen canvas to maintain 60fps.
+- `phaser`: Generate Phaser 3 `generateTexture()` code with `pixelArt: true`. Intended for handoff to Realm.
+- `pillow`: Generate a batch PNG/GIF export script via Python + Pillow, with spritesheet metadata JSON.
+- `css`: Generate pixel art via CSS `box-shadow` or CSS Grid. Suited to small decorative assets.
 
 ## Output Routing
 

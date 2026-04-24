@@ -275,10 +275,10 @@ Rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Full Pipeline | `pipeline` | ✓ | フル design→code ループ (Vision → Muse → Forge → Artisan → Showcase → Canvas) | `_common/HANDOFF.md`, `_common/design-system-registry.md` |
-| Design Extract | `extract` | | デザイン抽出のみ (Frame → Muse トークン正規化) | `_common/design-system-registry.md` |
-| Persist Design System | `persist` | | design system 保存 (.agents/design-system/{project}.json) | `_common/design-system-registry.md`, `_common/parametric-output.md` |
-| Asset Generation | `assets` | | 資産生成 (slides, visuals, prototypes の並列展開) | `_common/HANDOFF.md` |
+| Full Pipeline | `pipeline` | ✓ | Full design→code loop (Vision → Muse → Forge → Artisan → Showcase → Canvas) | `_common/HANDOFF.md`, `_common/design-system-registry.md` |
+| Design Extract | `extract` | | Design extraction only (Frame → Muse token normalization) | `_common/design-system-registry.md` |
+| Persist Design System | `persist` | | Persist design system (.agents/design-system/{project}.json) | `_common/design-system-registry.md`, `_common/parametric-output.md` |
+| Asset Generation | `assets` | | Asset generation (parallel rollout of slides, visuals, prototypes) | `_common/HANDOFF.md` |
 
 ## Subcommand Dispatch
 
@@ -287,10 +287,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`pipeline` = Full Pipeline). Apply normal ONBOARDING → INTAKE → PLAN → EXECUTE → HANDOFF → DELIVER workflow.
 
 Behavior notes per Recipe:
-- `pipeline`: ONBOARDING でキャッシュ確認→フル delegate fan-out。DESIGN_INTENT_HANDOFF 必須。WCAG 2.2 AA 検証。
-- `extract`: Frame (Figma あり) または Muse (コードベース) のみ起動。ONBOARDING 後に終了。
-- `persist`: .agents/design-system/{project}.json への書き込み。hash 比較でドリフト検出。parametric slider 形式で値域記録。
-- `assets`: Stage/Ink/Forge の独立並列展開 (最大 5 同時)。各 delegate に DESIGN_INTENT_HANDOFF 添付。
+- `pipeline`: Check cache at ONBOARDING → full delegate fan-out. DESIGN_INTENT_HANDOFF mandatory. WCAG 2.2 AA validation.
+- `extract`: Invoke only Frame (if Figma) or Muse (codebase). Stop after ONBOARDING.
+- `persist`: Write to .agents/design-system/{project}.json. Detect drift via hash comparison. Record value ranges in parametric slider form.
+- `assets`: Independent parallel rollout of Stage/Ink/Forge (max 5 concurrent). Attach DESIGN_INTENT_HANDOFF to each delegate.
 
 ## Output Routing
 

@@ -252,10 +252,10 @@ Legal-readability checks: are technical terms explained, are clauses concrete, a
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| ToS Review | `tos` | ✓ | 利用規約のクローズカバレッジ確認・リスクフラグ | `references/legal-checklists.md` |
-| Privacy Policy | `privacy` | | プライバシーポリシー GDPR/APPI アライメント確認 | `references/legal-checklists.md` |
-| Tokushoho | `tokushoho` | | 特定商取引法表記の必須項目チェック | `references/legal-checklists.md` |
-| Gap Analysis | `gap` | | 複数法的文書の整合性確認・欠落クローズ検出 | `references/patterns.md` |
+| ToS Review | `tos` | ✓ | Terms of Service clause coverage check and risk flagging | `references/legal-checklists.md` |
+| Privacy Policy | `privacy` | | Privacy Policy GDPR/APPI alignment check | `references/legal-checklists.md` |
+| Tokushoho | `tokushoho` | | Tokushoho (Specified Commercial Transactions Act) required-field check | `references/legal-checklists.md` |
+| Gap Analysis | `gap` | | Multi-document consistency check, missing clause detection | `references/patterns.md` |
 
 ## Subcommand Dispatch
 

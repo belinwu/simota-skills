@@ -149,10 +149,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Migration Plan | `plan` | ✓ | 移行計画策定・スコープ見積 | `references/migration-strategies.md` |
-| Codemod Generation | `codemod` | | AST 変換スクリプト生成 | `references/codemod-patterns.md` |
-| Strangler Fig | `strangler` | | Strangler Fig 戦略の設計・実装 | `references/migration-strategies.md` |
-| Verification | `verify` | | 移行前後の動作等価性検証 | `references/database-migration.md` |
+| Migration Plan | `plan` | ✓ | Migration planning and scope estimation | `references/migration-strategies.md` |
+| Codemod Generation | `codemod` | | AST transform script generation | `references/codemod-patterns.md` |
+| Strangler Fig | `strangler` | | Strangler Fig strategy design and implementation | `references/migration-strategies.md` |
+| Verification | `verify` | | Behavioral equivalence verification before and after migration | `references/database-migration.md` |
 
 ## Subcommand Dispatch
 

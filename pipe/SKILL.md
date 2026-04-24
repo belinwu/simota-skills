@@ -148,10 +148,10 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| New Workflow | `workflow` | ✓ | 新規 GHA workflow 作成 | `references/triggers-and-events.md` |
-| Reusable Workflow | `reusable` | | Reusable Workflow 設計 | `references/reusable-and-composite.md` |
-| Security Hardening | `security` | | GHA セキュリティ hardening | `references/security-hardening.md` |
-| PR Automation | `pr-automation` | | PR 自動化 (label, assign 等) | `references/automation-recipes.md` |
+| New Workflow | `workflow` | ✓ | Create a new GHA workflow | `references/triggers-and-events.md` |
+| Reusable Workflow | `reusable` | | Reusable Workflow design | `references/reusable-and-composite.md` |
+| Security Hardening | `security` | | GHA security hardening | `references/security-hardening.md` |
+| PR Automation | `pr-automation` | | PR automation (label, assign, etc.) | `references/automation-recipes.md` |
 
 ## Subcommand Dispatch
 

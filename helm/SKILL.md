@@ -165,11 +165,11 @@ Use Magi for executive choice, Scribe for formal strategy docs, Canvas for maps 
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Scenario Planning | `scenario` | ✓ | 事業シナリオ計画 (Baseline/楽観/悲観 3 シナリオ) | `references/simulation-patterns.md`, `references/data-inputs.md` |
-| SWOT Analysis | `swot` | | SWOT 分析 + PESTLE→Porter カスケード | `references/frameworks.md` |
-| PESTLE Analysis | `pestle` | | PESTLE マクロ環境分析 + TPESTRE 変種 | `references/frameworks.md`, `references/cognitive-biases.md` |
-| Porter Analysis | `porter` | | Porter 5 Forces 業界構造分析 + 参入評価 | `references/frameworks.md`, `references/market-sizing-strategy.md` |
-| Forecast | `forecast` | | KPI 予測・財務モデリング・SaaS メトリクス | `references/simulation-patterns.md`, `references/financial-modeling-pitfalls.md` |
+| Scenario Planning | `scenario` | ✓ | Business scenario planning (Baseline/Optimistic/Pessimistic 3 scenarios) | `references/simulation-patterns.md`, `references/data-inputs.md` |
+| SWOT Analysis | `swot` | | SWOT analysis + PESTLE→Porter cascade | `references/frameworks.md` |
+| PESTLE Analysis | `pestle` | | PESTLE macro-environment analysis + TPESTRE variants | `references/frameworks.md`, `references/cognitive-biases.md` |
+| Porter Analysis | `porter` | | Porter 5 Forces industry structure analysis + entry evaluation | `references/frameworks.md`, `references/market-sizing-strategy.md` |
+| Forecast | `forecast` | | KPI forecasting, financial modeling, SaaS metrics | `references/simulation-patterns.md`, `references/financial-modeling-pitfalls.md` |
 
 ## Subcommand Dispatch
 
@@ -178,11 +178,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`scenario` = Scenario Planning). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `scenario`: Baseline/Optimistic (+20〜40%)/Pessimistic (-20〜40%) 3 シナリオ必須。感度分析・FORESIGHT 記録込み。
-- `swot`: PESTLE→Porter→SWOT カスケード実行。Devil's Advocate チャレンジを必ず適用。
-- `pestle`: TPESTRE (Tech/Political/Economic/Social/Trust/Regulatory/Environmental) 変種も評価。信頼・倫理次元が重要な場合に優先。
-- `porter`: 5 Forces 定量スコアリング + BCG ポートフォリオ連携 + 市場参入スコアリング。
-- `forecast`: SaaS Triangle (Gross Margin 75%+/CAC Payback <15mo/NRR 101%+) チェック。Rule of 40・Burn Multiple アラート付き。
+- `scenario`: Baseline/Optimistic (+20-40%)/Pessimistic (-20-40%) 3 scenarios required. Include sensitivity analysis and FORESIGHT record.
+- `swot`: Execute PESTLE→Porter→SWOT cascade. Always apply Devil's Advocate challenge.
+- `pestle`: Also evaluate TPESTRE (Tech/Political/Economic/Social/Trust/Regulatory/Environmental) variant. Prefer when Trust/ethics dimensions matter.
+- `porter`: 5 Forces quantitative scoring + BCG portfolio linkage + market-entry scoring.
+- `forecast`: SaaS Triangle (Gross Margin 75%+/CAC Payback <15mo/NRR 101%+) check. Rule of 40 and Burn Multiple alerts included.
 
 ## Output Routing
 

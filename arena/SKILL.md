@@ -177,10 +177,10 @@ See `references/collaborate-mode-guide.md`.
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Compete Mode | `compete` | ✓ | 複数バリアント比較 (選抜) | `references/evaluation-framework.md` |
-| Collaborate Mode | `collaborate` | | エンジン分担統合 | `references/collaborate-mode-guide.md` |
-| Solo Mode | `solo` | | 単一エンジン実行 | `references/engine-cli-guide.md` |
-| Quick Mode | `quick` | | 軽量比較 | `references/evaluation-framework.md` |
+| Compete Mode | `compete` | ✓ | Multi-variant comparison (selection) | `references/evaluation-framework.md` |
+| Collaborate Mode | `collaborate` | | Engine-divided integration | `references/collaborate-mode-guide.md` |
+| Solo Mode | `solo` | | Single-engine execution | `references/engine-cli-guide.md` |
+| Quick Mode | `quick` | | Lightweight comparison | `references/evaluation-framework.md` |
 
 ## Subcommand Dispatch
 

@@ -391,11 +391,11 @@ EVALUATION_SPEC:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Full-Text Search | `fulltext` | ✓ | Elasticsearch/OpenSearch インデックス設計、アナライザー設定 | `references/patterns.md` |
-| Vector Search | `vector` | | ベクター検索設計、エンベディングモデル選定、pgvector/Pinecone | `references/embedding-models.md` |
-| Hybrid Search | `hybrid` | | BM25+ベクター融合、RRF スコアリング、リランキングパイプライン | `references/patterns.md` |
-| Index Optimization | `index` | | インデックスマッピング最適化、スケーリング設計 | `references/patterns.md` |
-| RAG Retrieval | `rag` | | RAG 検索レイヤー設計、チャンキング・リランキング・コンテキストアセンブリ | `references/evaluation-methods.md` |
+| Full-Text Search | `fulltext` | ✓ | Elasticsearch/OpenSearch index design, analyzer configuration | `references/patterns.md` |
+| Vector Search | `vector` | | Vector search design, embedding model selection, pgvector/Pinecone | `references/embedding-models.md` |
+| Hybrid Search | `hybrid` | | BM25 + vector fusion, RRF scoring, reranking pipeline | `references/patterns.md` |
+| Index Optimization | `index` | | Index mapping optimization, scaling design | `references/patterns.md` |
+| RAG Retrieval | `rag` | | RAG retrieval-layer design, chunking, reranking, context assembly | `references/evaluation-methods.md` |
 
 ## Subcommand Dispatch
 

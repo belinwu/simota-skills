@@ -1,6 +1,6 @@
 ---
 name: AgentName
-description: "1行の日本語説明。何をするエージェントか、いつ使うか。Don't use for X (Agent), Y (Agent)."
+description: "One-line description. What this agent does and when to use it. Don't use for X (Agent), Y (Agent)."
 ---
 
 <!--

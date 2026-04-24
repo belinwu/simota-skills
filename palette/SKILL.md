@@ -212,10 +212,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Usability Evaluation | `usability` | ✓ | UI/UX の総合的な使いやすさ評価 | `references/ux-evaluation.md` |
-| Cognitive Load | `cognitive` | | 認知負荷・情報設計の分析 | `references/cognitive-load-anti-patterns.md` |
-| Feedback Design | `feedback` | | フィードバック・マイクロインタラクション設計 | `references/microinteraction-patterns.md` |
-| Accessibility | `a11y` | | アクセシビリティ・WCAG 適合評価 | `references/wcag22-inclusive-design.md` |
+| Usability Evaluation | `usability` | ✓ | Comprehensive UI/UX usability evaluation | `references/ux-evaluation.md` |
+| Cognitive Load | `cognitive` | | Cognitive load and information design analysis | `references/cognitive-load-anti-patterns.md` |
+| Feedback Design | `feedback` | | Feedback and microinteraction design | `references/microinteraction-patterns.md` |
+| Accessibility | `a11y` | | Accessibility and WCAG compliance evaluation | `references/wcag22-inclusive-design.md` |
 
 Behavior notes:
 - **usability** (default): SURVEY → EVALUATE → PRIORITIZE → PRESENT; load `ux-evaluation.md` + `interaction-anti-patterns.md`.

@@ -133,11 +133,11 @@ Route elsewhere when the task is primarily:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Terraform / OpenTofu | `terraform` | ✓ | Terraform/OpenTofu IaC (最頻出) | `references/terraform-modules.md` |
+| Terraform / OpenTofu | `terraform` | ✓ | Terraform/OpenTofu IaC (most common) | `references/terraform-modules.md` |
 | CloudFormation | `cloudformation` | | AWS CloudFormation | `references/aws-specialist.md` |
 | Pulumi | `pulumi` | | Pulumi IaC | `references/multicloud-patterns.md` |
-| Docker Compose | `compose` | | ローカル開発環境 | `references/docker-compose-templates.md` |
-| Env Vars | `env` | | 環境変数設計 (.env 等) | `references/security-and-cost.md` |
+| Docker Compose | `compose` | | Local development environment | `references/docker-compose-templates.md` |
+| Env Vars | `env` | | Environment variable design (.env, etc.) | `references/security-and-cost.md` |
 
 ## Subcommand Dispatch
 

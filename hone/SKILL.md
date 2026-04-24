@@ -242,11 +242,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Full Audit | `audit` | ✓ | 対象 CLI 設定の包括的監査 (FETCH→AUDIT→PROPOSE) | `references/audit-checklist.md` |
-| Codex Audit | `codex` | | Codex CLI (~/.codex/) 専用監査・wire_api 廃止検出 | `references/codex-config-schema.md` |
-| Gemini Audit | `gemini` | | Gemini CLI (~/.gemini/) 専用監査・安全設定・拡張機能 | `references/gemini-config-schema.md` |
-| Claude Code Audit | `claude` | | Claude Code (~/.claude/) 専用監査・権限・MCP・フック | `references/claude-code-config-schema.md` |
-| Config Diff | `diff` | | 2 つの設定スナップショットの Before/After 差分分析 | `references/proposal-templates.md` |
+| Full Audit | `audit` | ✓ | Comprehensive audit of target CLI config (FETCH→AUDIT→PROPOSE) | `references/audit-checklist.md` |
+| Codex Audit | `codex` | | Codex CLI (~/.codex/) audit, wire_api deprecation detection | `references/codex-config-schema.md` |
+| Gemini Audit | `gemini` | | Gemini CLI (~/.gemini/) audit, safety settings, extensions | `references/gemini-config-schema.md` |
+| Claude Code Audit | `claude` | | Claude Code (~/.claude/) audit, permissions, MCP, hooks | `references/claude-code-config-schema.md` |
+| Config Diff | `diff` | | Before/After diff analysis of two config snapshots | `references/proposal-templates.md` |
 
 ## Subcommand Dispatch
 
@@ -255,11 +255,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`audit` = Full Audit). Apply normal FETCH → AUDIT → PROPOSE workflow.
 
 Behavior notes per Recipe:
-- `audit`: 対象 CLI を自動判定して包括的監査。FETCH (公式ドキュメント取得・T1-T4 ソース分類) → AUDIT (チェックリスト全項目評価) → PROPOSE (P0-P3 優先度付き Before/After Diff 生成)。
-- `codex`: Codex CLI 専用。config.toml・AGENTS.md・rules/・instructions.md を対象。wire_api = "chat" 廃止エラー (2026年2月以降) を P0 として必ず検出。
-- `gemini`: Gemini CLI 専用。settings.json・GEMINI.md・拡張機能を対象。安全設定閾値・OAuth 認証・大規模 GEMINI.md の progressive disclosure (@file.md インポート) を評価。
-- `claude`: Claude Code 専用。~/.claude/settings.json・CLAUDE.md・.claude/commands/・hooks を対象。300行超 CLAUDE.md を P0、MCP ブロードスコープ PAT を P0 で検出。RFC 8707 リソースインジケーター検証を含む。
-- `diff`: 2 つの設定スナップショット (before/after) を比較して差分を分析。設定変更のインパクト評価と安全性分類 (safe/ask-first/risky) を付与。
+- `audit`: Auto-detect the target CLI for comprehensive audit. FETCH (fetch official docs, T1-T4 source tiering) → AUDIT (evaluate all checklist items) → PROPOSE (generate Before/After diff with P0-P3 priority).
+- `codex`: Codex CLI only. Targets config.toml, AGENTS.md, rules/, instructions.md. Always flag wire_api = "chat" deprecation errors (from Feb 2026) as P0.
+- `gemini`: Gemini CLI only. Targets settings.json, GEMINI.md, extensions. Evaluate safety thresholds, OAuth authentication, and progressive disclosure (@file.md imports) for large GEMINI.md.
+- `claude`: Claude Code only. Targets ~/.claude/settings.json, CLAUDE.md, .claude/commands/, hooks. Detect CLAUDE.md over 300 lines as P0, MCP broad-scope PAT as P0. Includes RFC 8707 resource-indicator validation.
+- `diff`: Compare two config snapshots (before/after) and analyze the diff. Attach impact assessment and safety classification (safe/ask-first/risky).
 
 ## Output Routing
 

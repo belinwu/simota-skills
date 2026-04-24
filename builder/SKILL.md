@@ -179,14 +179,14 @@ Spawn only when the deliverable touches 4+ files and post-BUILD verification wou
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Bug Fix | `fix` | ✓ | Scout handoff 後の限定修正、<50 行ターゲット | `references/process-and-examples.md` |
-| CRUD | `crud` | | Single-aggregate CRUD、不変条件なし、30-60 行 | `references/architecture-patterns.md` |
-| API Integration | `api` | | REST/GraphQL/WS クライアント/サーバ、冪等性重要 | `references/implementation-patterns.md` |
-| Domain Model | `ddd` | | 集約ルート、不変条件、ドメインイベント、multi-file | `references/domain-modeling.md` |
-| Prototype Harden | `harden` | | Forge 成果物の本番化、L0-L3 品質引き上げ | `references/process-and-examples.md`, `references/architecture-patterns.md` |
-| Cross-Language Port | `port` | | 別言語 / FW 間の移植 (意味等価テスト・Parallel Run) | `references/cross-language-port.md` |
-| External API Integrate | `integrate` | | 外部サービス統合 (認証・webhook・sandbox 検証・vendor 固有 retry) | `references/external-integration.md` |
-| Targeted Patch | `patch` | | 30 行以下・3 ファイル以下の限定修正 (fix より小さく harden より軽い) | `references/targeted-patch.md` |
+| Bug Fix | `fix` | ✓ | Scoped fix after Scout handoff, target <50 lines | `references/process-and-examples.md` |
+| CRUD | `crud` | | Single-aggregate CRUD, no invariants, 30-60 lines | `references/architecture-patterns.md` |
+| API Integration | `api` | | REST/GraphQL/WS client/server, idempotency critical | `references/implementation-patterns.md` |
+| Domain Model | `ddd` | | Aggregate root, invariants, domain events, multi-file | `references/domain-modeling.md` |
+| Prototype Harden | `harden` | | Productionize Forge output, raise quality L0-L3 | `references/process-and-examples.md`, `references/architecture-patterns.md` |
+| Cross-Language Port | `port` | | Port between languages / frameworks (semantic equivalence tests, Parallel Run) | `references/cross-language-port.md` |
+| External API Integrate | `integrate` | | External service integration (auth, webhook, sandbox verification, vendor-specific retry) | `references/external-integration.md` |
+| Targeted Patch | `patch` | | Scoped fix under 30 lines / 3 files (smaller than fix, lighter than harden) | `references/targeted-patch.md` |
 
 ## Subcommand Dispatch
 
@@ -195,14 +195,14 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`fix` = Bug Fix). Apply normal SURVEY → PLAN → BUILD → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `fix`: Scout handoff または単独バグ修正。<50 行ターゲット。VERIFY に回帰テストスケルトンを必ず含める。
-- `crud`: DDD vs CRUD 判定を SURVEY で行い CRUD 確定。Entity + Repository + simple service layer。
-- `api`: エラー分類 (4xx/429/5xx)、リトライ上限、冪等性キー、サーキットブレーカーを必ず含める。
-- `ddd`: Bounded Context 確認後に Aggregate / Value Object / Domain Event を設計。PLAN を重点化。
-- `harden`: Forge の L0-L3 レベルを読み、本番品質 (型安全・バリデーション・テストスケルトン) に引き上げる。
-- `port`: 言語/FW 移植。元言語の全テストを新言語で再実装 → 元コードをブラックボックスとして parallel run 比較 → 差分が出たら調査。Shift エージェントと棲み分け (Shift は大規模 migration 計画、port は実装実行)。
-- `integrate`: 外部 API (Stripe / Slack / GitHub 等) 統合。sandbox 検証 → secret 取り扱い (env / Vault) → vendor 固有の retry / rate limit / idempotency → webhook 署名検証の順で組む。
-- `patch`: scope 厳守 (30 行 / 3 ファイル以下)。回帰テスト必須。PR Guardian `pr` への handoff で size XS を担保。
+- `fix`: Scout handoff or standalone bug fix. Target <50 lines. Always include a regression test skeleton at VERIFY.
+- `crud`: Decide DDD vs CRUD at SURVEY and confirm CRUD. Entity + Repository + simple service layer.
+- `api`: Always include error categorization (4xx/429/5xx), retry limits, idempotency keys, and circuit breakers.
+- `ddd`: Design Aggregate / Value Object / Domain Event after confirming the Bounded Context. Focus on PLAN.
+- `harden`: Read the Forge L0-L3 level and raise it to production quality (type safety, validation, test skeletons).
+- `port`: Language/framework port. Re-implement all source-language tests in the target language → parallel-run compare against source code as a black box → investigate any diff. Delineate from Shift (Shift handles large-scale migration planning; port handles implementation execution).
+- `integrate`: External API integration (Stripe / Slack / GitHub etc.). Build in order: sandbox verification → secret handling (env / Vault) → vendor-specific retry / rate limit / idempotency → webhook signature verification.
+- `patch`: Strict scope (≤30 lines / ≤3 files). Regression tests mandatory. Ensure size XS on handoff to Guardian `pr`.
 
 ## Output Routing
 

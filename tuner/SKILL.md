@@ -168,10 +168,10 @@ Tuner receives performance issues and context from upstream agents. Tuner sends 
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Explain Analyze | `explain` | ✓ | EXPLAIN ANALYZE 分析 | `references/explain-analyze-guide.md` |
-| Slow Query Hunt | `slow` | | スロークエリ検出・修正 | `references/slow-query-benchmarks.md` |
-| Index Recommendation | `index` | | インデックス推奨 | `references/query-index-anti-patterns.md` |
-| Plan Optimization | `plan` | | クエリプラン改善 | `references/optimization-patterns.md` |
+| Explain Analyze | `explain` | ✓ | EXPLAIN ANALYZE analysis | `references/explain-analyze-guide.md` |
+| Slow Query Hunt | `slow` | | Slow query detection and fix | `references/slow-query-benchmarks.md` |
+| Index Recommendation | `index` | | Index recommendation | `references/query-index-anti-patterns.md` |
+| Plan Optimization | `plan` | | Query plan improvement | `references/optimization-patterns.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.

@@ -96,22 +96,22 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Marp | `marp` | ✓ | Marp Markdown スライド生成 | `references/patterns.md` |
-| Reveal | `reveal` | | reveal.js HTML スライド生成 | `references/patterns.md` |
-| Slidev | `slidev` | | Slidev Vue スライド生成 | `references/patterns.md` |
-| Conference | `conference` | | LT/カンファレンス発表最適化 | `references/patterns.md`, `references/examples.md` |
-| Timing | `timing` | | WPM ベース尺調整・スピーカーノート | `references/patterns.md` |
+| Marp | `marp` | ✓ | Marp Markdown slide generation | `references/patterns.md` |
+| Reveal | `reveal` | | reveal.js HTML slide generation | `references/patterns.md` |
+| Slidev | `slidev` | | Slidev Vue slide generation | `references/patterns.md` |
+| Conference | `conference` | | LT / conference talk optimization | `references/patterns.md`, `references/examples.md` |
+| Timing | `timing` | | WPM-based pacing and speaker notes | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
 Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe (`marp` = Marp). Apply normal OUTLINE → ARC → DRAFT → THEME → NOTES → REVIEW workflow.
-- `marp`: Marp CLI で PDF/PPTX/HTML に変換可能な Markdown スライドを生成する。
-- `reveal`: プラグインエコシステムと高度カスタマイズを活かした reveal.js HTML スライドを生成する。
-- `slidev`: Monaco エディタ・コードハイライト・RecordRTC 録画対応の Slidev スライドを生成する。
-- `conference`: LT(5min)/レギュラー(20min)/キーノート(45min) に特化した構成・尺最適化を行う。
-- `timing`: 125 WPM ベースで尺を計算し、スピーカーノートの語数バジェットを各スライドに割り当てる。
+- `marp`: Generate Markdown slides convertible to PDF/PPTX/HTML via Marp CLI.
+- `reveal`: Generate reveal.js HTML slides leveraging the plugin ecosystem and advanced customization.
+- `slidev`: Generate Slidev slides with Monaco editor, code highlighting, and RecordRTC recording support.
+- `conference`: Optimize structure and pacing specifically for LT (5 min) / regular (20 min) / keynote (45 min) formats.
+- `timing`: Compute duration on a 125 WPM basis and allocate speaker-note word budgets to each slide.
 
 ## Output Routing
 

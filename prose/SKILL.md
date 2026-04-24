@@ -143,11 +143,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Microcopy | `microcopy` | ✓ | ボタンラベル・ツールチップ・プレースホルダー・空状態テキスト | `references/microcopy-patterns.md` |
-| Error Messages | `errors` | | What/Why/Next 構造のエラーメッセージ設計 | `references/error-message-guide.md` |
-| Onboarding Copy | `onboarding` | | 初回体験・プログレッシブ開示・機能紹介テキスト | `references/onboarding-copy-patterns.md` |
-| Accessibility Text | `a11y` | | ARIA ラベル・スクリーンリーダーテキスト・WCAG 2.2 準拠 | `references/accessibility-text-guide.md` |
-| Voice & Tone | `tone` | | ボイス/トーンフレームワーク定義・スタイルガイド作成 | `references/voice-tone-framework.md` |
+| Microcopy | `microcopy` | ✓ | Button labels, tooltips, placeholders, and empty-state text | `references/microcopy-patterns.md` |
+| Error Messages | `errors` | | Error message design with What/Why/Next structure | `references/error-message-guide.md` |
+| Onboarding Copy | `onboarding` | | First-run experience, progressive disclosure, and feature intro text | `references/onboarding-copy-patterns.md` |
+| Accessibility Text | `a11y` | | ARIA labels, screen reader text, and WCAG 2.2 compliance | `references/accessibility-text-guide.md` |
+| Voice & Tone | `tone` | | Voice/tone framework definition and style guide creation | `references/voice-tone-framework.md` |
 
 ## Subcommand Dispatch
 

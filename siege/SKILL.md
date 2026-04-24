@@ -148,10 +148,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Load Test | `load` | ✓ | 負荷/ストレス/スパイク/ソークテスト、SLO 検証 | `references/load-testing-guide.md` |
-| Contract Test | `contract` | | コントラクトテスト (Pact/Specmatic)、CDC 検証 | `references/contract-testing-patterns.md` |
-| Chaos Engineering | `chaos` | | カオスエンジニアリング、フォールトインジェクション、ゲームデー | `references/chaos-engineering-guide.md` |
-| Mutation Testing | `mutation` | | 突然変異テスト、テスト品質測定、サバイバー分析 | `references/mutation-testing-guide.md` |
+| Load Test | `load` | ✓ | Load/stress/spike/soak testing and SLO validation | `references/load-testing-guide.md` |
+| Contract Test | `contract` | | Contract testing (Pact/Specmatic), CDC verification | `references/contract-testing-patterns.md` |
+| Chaos Engineering | `chaos` | | Chaos engineering, fault injection, game days | `references/chaos-engineering-guide.md` |
+| Mutation Testing | `mutation` | | Mutation testing, test quality measurement, survivor analysis | `references/mutation-testing-guide.md` |
 
 ## Subcommand Dispatch
 
@@ -160,10 +160,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`load` = Load Test). Apply normal DEFINE → PREPARE → EXECUTE → ANALYZE → REPORT workflow.
 
 Behavior notes per Recipe:
-- `load`: LOAD モードを選択。k6/Locust/Artillery でスループット・レイテンシ・キャパシティ・スパイク・ソーク検証。p50/p95/p99/max を必ず報告。
-- `contract`: CONTRACT モードを選択。Pact v4+ または Specmatic で consumer/provider コントラクトを検証。CI ゲートに統合。
-- `chaos`: CHAOS モードを選択。定常状態を先に定義し、ブラスト半径を最小化してから障害注入。キルスイッチを必ず用意。
-- `mutation`: MUTATE モードを選択。ミュータント生成 → サバイバー分類 → カバレッジ閾値 (プロジェクト全体 60%/推奨 75%+) の評価。
+- `load`: Select LOAD mode. Verify throughput, latency, capacity, spike, and soak with k6/Locust/Artillery. Always report p50/p95/p99/max.
+- `contract`: Select CONTRACT mode. Verify consumer/provider contracts with Pact v4+ or Specmatic. Integrate into the CI gate.
+- `chaos`: Select CHAOS mode. Define steady state first, minimize blast radius, then inject faults. Always prepare a kill switch.
+- `mutation`: Select MUTATE mode. Generate mutants → classify survivors → evaluate coverage thresholds (60% project-wide / 75%+ recommended).
 
 ## Output Routing
 

@@ -168,10 +168,10 @@ Per OWASP Top 10 2025 and API Security Top 10:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| OWASP ZAP | `zap` | ✓ | OWASP ZAP スキャン | `references/zap-scanning-guide.md` |
-| Burp Suite | `burp` | | Burp Suite 活用 | `references/vulnerability-testing-patterns.md` |
-| Nuclei | `nuclei` | | Nuclei テンプレートスキャン | `references/nuclei-templates.md` |
-| Pentest Plan | `pentest` | | ペンテスト計画策定 | `references/pentest-methodology-pitfalls.md` |
+| OWASP ZAP | `zap` | ✓ | OWASP ZAP scanning | `references/zap-scanning-guide.md` |
+| Burp Suite | `burp` | | Burp Suite usage | `references/vulnerability-testing-patterns.md` |
+| Nuclei | `nuclei` | | Nuclei template scanning | `references/nuclei-templates.md` |
+| Pentest Plan | `pentest` | | Pentest planning | `references/pentest-methodology-pitfalls.md` |
 
 ## Subcommand Dispatch
 

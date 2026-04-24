@@ -98,10 +98,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Extract Rules | `extract` | ✓ | 暗黙的ビジネスルール抽出・ルールカタログ生成 | `references/patterns.md` |
-| Assess Risk | `assess` | | マイグレーションリスク評価・依存関係マップ | `references/patterns.md` |
-| Document | `document` | | ルールを仕様書に変換 (Scribe ハンドオフ準備) | `references/patterns.md`, `references/handoffs.md` |
-| Archive | `archive` | | デッドコード解析・休眠ロジック調査 | `references/patterns.md`, `references/examples.md` |
+| Extract Rules | `extract` | ✓ | Extract implicit business rules, generate rule catalog | `references/patterns.md` |
+| Assess Risk | `assess` | | Migration risk assessment, dependency map | `references/patterns.md` |
+| Document | `document` | | Convert rules to specifications (prepare Scribe handoff) | `references/patterns.md`, `references/handoffs.md` |
+| Archive | `archive` | | Dead code analysis, dormant logic investigation | `references/patterns.md`, `references/examples.md` |
 
 ## Subcommand Dispatch
 
@@ -110,10 +110,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`extract` = Extract Rules). Apply normal SCOPE → DIG → CROSS-REF → CATALOG → ASSESS workflow.
 
 Behavior notes per Recipe:
-- `extract`: 全抽出レイヤー (コード/テスト/スキーマ/コメント/履歴/インフラ) を完走。信頼スコア付きルールカタログ生成。
-- `assess`: CATALOG 済みルールからマイグレーションリスクマップを生成。未テストルール・競合ロジック・隠れ依存を優先フラグ。
-- `document`: ルールカタログを仕様書形式に変換し Scribe ハンドオフパケット準備。FOSSIL_TO_SCRIBE_HANDOFF 使用。
-- `archive`: デッドコード・廃棄済みロジックに特化。temporal_analysis で導入・変更・廃棄時期を追跡。
+- `extract`: Run through all extraction layers (code/tests/schema/comments/history/infra). Generate a rule catalog with confidence scores.
+- `assess`: Generate a migration risk map from the catalogued rules. Priority-flag untested rules, conflicting logic, and hidden dependencies.
+- `document`: Convert the rule catalog to specification format and prepare a Scribe handoff packet. Use FOSSIL_TO_SCRIBE_HANDOFF.
+- `archive`: Focused on dead code and abandoned logic. Track introduction/modification/abandonment timing via temporal_analysis.
 
 ## Output Routing
 

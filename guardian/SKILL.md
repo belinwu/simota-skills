@@ -198,14 +198,14 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| PR Preparation | `pr` | ✓ | PR 準備 (タイトル/本文/レビュー観点/リスク評価) | `references/pr-workflow-patterns.md` |
-| Commit Granularity | `commit` | | コミット粒度の分割提案 (atomic commit 設計) | `references/commit-analysis.md` |
-| Naming Review | `naming` | | ブランチ/コミット命名チェック (Conventional Commits) | `references/commit-conventions.md` |
-| Merge Strategy | `strategy` | | マージ戦略 (squash/rebase/merge) 選定 | `references/branching-strategies.md` |
-| Reshape History | `reshape` | | ベースブランチから新ブランチを切り、開発ブランチを squash 取り込み→最適粒度で再コミットして履歴を整理 | `references/history-reshape.md` |
-| Audit History | `audit` | | ブランチのコミット履歴を read-only 診断 (WIP/fixup 残存・Conventional Commits 違反・atomicity・サイズ逸脱) | `references/history-audit.md` |
-| Split into Stacked PRs | `split` | | M+ サイズのブランチを stacked PR 群に分解するプラン (依存順・ファイル境界・推定レビュー時間) | `references/pr-split-strategy.md` |
-| Branch Health | `health` | | リポジトリ全体のブランチ棚卸し (stale・diverged・merged 未削除・conflict リスク) | `references/branch-health.md` |
+| PR Preparation | `pr` | ✓ | PR preparation (title/body/review angles/risk assessment) | `references/pr-workflow-patterns.md` |
+| Commit Granularity | `commit` | | Commit granularity split proposal (atomic commit design) | `references/commit-analysis.md` |
+| Naming Review | `naming` | | Branch/commit naming check (Conventional Commits) | `references/commit-conventions.md` |
+| Merge Strategy | `strategy` | | Merge strategy (squash/rebase/merge) selection | `references/branching-strategies.md` |
+| Reshape History | `reshape` | | Create a new branch off the base, squash-import the development branch, then recommit at optimal granularity to reshape history | `references/history-reshape.md` |
+| Audit History | `audit` | | Read-only diagnosis of a branch's commit history (WIP/fixup residue, Conventional Commits violations, atomicity, size deviation) | `references/history-audit.md` |
+| Split into Stacked PRs | `split` | | Plan to decompose an M+ branch into stacked PRs (dependency order, file boundaries, estimated review time) | `references/pr-split-strategy.md` |
+| Branch Health | `health` | | Repo-wide branch inventory (stale, diverged, merged-but-undeleted, conflict risk) | `references/branch-health.md` |
 
 ## Subcommand Dispatch
 
@@ -214,14 +214,14 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`pr` = PR Preparation). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `pr`: Change Classification → Quality Score → Risk Assessment → PR タイトル/本文 → Reviewer 推薦の順に実施。
-- `commit`: 変更を Essential/Supporting/Incidental に分類し、atomic commit に分割するプランを生成。
-- `naming`: Conventional Commits 準拠チェック。スコープ・動詞・50 文字制限を検証。
-- `strategy`: DORA メトリクスと branch lifetime に基づき GitHub Flow / Git Flow / Trunk-Based を選定。
-- `reshape`: ベースブランチから新ブランチを作成 → 開発ブランチ全体を `git merge --squash` で取り込み → `commit` Recipe と同じ Change Classification を適用して atomic commit 群に再分割し履歴を整理。**バックアップブランチ作成は必須**、force push やリモート共有ブランチへの適用は Ask First、実行コマンドは提案のみでユーザー同意後に実行。
-- `audit`: 指定範囲 (`origin/main..HEAD` デフォルト) のコミット履歴を read-only 診断。WIP/fixup 残存、Conventional Commits 違反、atomicity スコア、サイズ逸脱、署名欠落を検出し、次に叩くべき Recipe (`commit` / `reshape` / `pr` / そのまま進行可) を推奨。副作用ゼロ。
-- `split`: M+ サイズのブランチを stacked PR に分解するプランを生成。各 PR を 10–15 分レビュー可能なサイズに割り、依存順 (bottom-up)・ファイル境界・推定レビュー時間・ツール選定 (Graphite / ghstack / git-town / jj) を提示。実行コマンドは提案のみ、ユーザー同意後に段階実行。
-- `health`: リポジトリ全体のローカル/リモートブランチを棚卸し。stale (30+ 日未更新)、upstream 乖離、merged 未削除、conflict 確率高のブランチを分類し、削除・rebase・archive を推奨。ブランチ削除は Ask First。
+- `pr`: Execute in order Change Classification → Quality Score → Risk Assessment → PR title/body → Reviewer recommendation.
+- `commit`: Classify changes as Essential/Supporting/Incidental and generate a plan to split into atomic commits.
+- `naming`: Conventional Commits compliance check. Validate scope, verb, and 50-character limit.
+- `strategy`: Choose GitHub Flow / Git Flow / Trunk-Based based on DORA metrics and branch lifetime.
+- `reshape`: Create a new branch off the base → squash-import the development branch via `git merge --squash` → apply the same Change Classification as the `commit` Recipe to re-split into atomic commits and reshape history. **Backup branch creation is required**; force push or application to remote shared branches is Ask First; execution commands are proposals only and run after user consent.
+- `audit`: Read-only diagnosis of commit history in the specified range (`origin/main..HEAD` by default). Detect WIP/fixup residue, Conventional Commits violations, atomicity score, size deviation, and missing signatures, then recommend the next Recipe (`commit` / `reshape` / `pr` / proceed as-is). Zero side effects.
+- `split`: Generate a plan to decompose an M+ branch into stacked PRs. Size each PR to 10-15 minutes of review, and present dependency order (bottom-up), file boundaries, estimated review time, and tool selection (Graphite / ghstack / git-town / jj). Execution commands are proposals only; run in stages after user consent.
+- `health`: Inventory the repo's local/remote branches. Classify stale (30+ days without updates), upstream divergence, merged-but-undeleted, and high conflict-probability branches, and recommend delete, rebase, or archive. Branch deletion is Ask First.
 
 ## Output Requirements
 

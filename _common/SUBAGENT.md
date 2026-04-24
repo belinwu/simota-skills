@@ -55,7 +55,7 @@ Task received
 | `claude-code-guide` | Haiku | Read-only + WebFetch/WebSearch | Questions about Claude Code features |
 | Custom (`name`) | Per definition | Per `.claude/agents/` definition | Domain-specific tasks with tailored config |
 
-**Custom Subagent Definitions:** `.claude/agents/` (project) or `~/.claude/agents/` (user) に配置したMarkdownファイルで独自のsubagent_typeを定義可能。`tools`, `disallowedTools`, `model`, `permissionMode`, `skills`, `memory`, `hooks`, `maxTurns`, `effort`, `isolation` 等を事前設定できる。
+**Custom Subagent Definitions:** Markdown files placed in `.claude/agents/` (project) or `~/.claude/agents/` (user) can define your own subagent_type. Fields such as `tools`, `disallowedTools`, `model`, `permissionMode`, `skills`, `memory`, `hooks`, `maxTurns`, `effort`, and `isolation` can be pre-configured.
 
 ### model Selection
 
@@ -66,17 +66,17 @@ Task received
 | High | `opus` | Complex reasoning, architecture decisions |
 | — | `inherit` (default) | Use parent session's model |
 
-Full model IDs (`claude-opus-4-6`, `claude-sonnet-4-6` 等) も使用可能。
+Full model IDs (`claude-opus-4-6`, `claude-sonnet-4-6`, etc.) are also supported.
 
 ### Key Frontmatter Fields (Custom Subagents)
 
 | Field | Description |
 |-------|-------------|
-| `maxTurns` | Maximum agentic turns (暴走防止・コスト管理) |
+| `maxTurns` | Maximum agentic turns (runaway prevention, cost control) |
 | `effort` | Reasoning effort: `low`/`medium`/`high`/`max` (Opus 4.6 only) |
-| `isolation` | `worktree` for git worktree isolation (並列作業時のファイル競合防止) |
-| `memory` | Persistent memory: `user`/`project`/`local` (クロスセッション学習) |
-| `skills` | Skill content to inject at startup (SKILL.md事前注入) |
+| `isolation` | `worktree` for git worktree isolation (prevents file conflicts during parallel work) |
+| `memory` | Persistent memory: `user`/`project`/`local` (cross-session learning) |
+| `skills` | Skill content to inject at startup (pre-injection of SKILL.md) |
 | `hooks` | Lifecycle hooks scoped to this subagent |
 | `background` | `true` to always run as background task |
 
@@ -243,17 +243,17 @@ Multiple subagents implement different solutions to the same problem, then the b
 | File ownership | **Exclusive** | No two subagents modify the same file |
 | Cost awareness | **Each subagent = separate Claude instance** | Only parallelize when benefit > overhead |
 | Spawn decision | **Agent's judgment** | Unless Nexus explicitly instructs `multi-engine` |
-| Nesting | **禁止** | サブエージェントは他のサブエージェントをスポーンできない |
+| Nesting | **Prohibited** | Subagents cannot spawn other subagents |
 
 ## Context Inheritance Rules
 
-サブエージェントのコンテキスト挙動を理解しておくことが重要:
+Understanding subagent context behavior is important:
 
 | Aspect | Inherits? | Notes |
 |--------|-----------|-------|
-| 親の会話履歴 | No | プロンプトで明示的に渡す必要あり |
-| 親の Skills | No | `skills` フィールドで事前注入が必要 |
-| 権限設定 | Yes | 親の権限を継承。`bypassPermissions` は上書き不可 |
-| MCP servers | Partial | `mcpServers` で明示指定。inline定義はサブエージェント専用 |
-| CLAUDE.md | Yes (teams) | Agent Teams のチームメイトは通常通り読み込む |
-| Tool access | Configurable | `tools`/`disallowedTools` で制限可能 |
+| Parent's conversation history | No | Must be passed explicitly via prompt |
+| Parent's Skills | No | Must be pre-injected via the `skills` field |
+| Permission settings | Yes | Inherits parent's permissions. `bypassPermissions` cannot be overridden |
+| MCP servers | Partial | Must be explicitly specified via `mcpServers`. Inline definitions are subagent-only |
+| CLAUDE.md | Yes (teams) | Agent Teams teammates load it normally |
+| Tool access | Configurable | Can be restricted via `tools`/`disallowedTools` |

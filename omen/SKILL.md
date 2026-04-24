@@ -136,10 +136,10 @@ Use AP when stakeholders follow AIAG-VDA methodology; use RPN when numeric ranki
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Pre-Mortem | `premortem` | ✓ | 失敗シナリオ列挙 (全フェーズ DEEP) | `references/failure-frameworks.md` |
-| RPN Scoring | `rpn` | | Risk Priority Number スコアリング | `references/scoring-methodology.md` |
-| Action Priority | `ap` | | Action Priority スコアリング (AIAG-VDA) | `references/scoring-methodology.md` |
-| Failure Mode ID | `mode` | | 失敗モード識別 (FMEA) | `references/failure-frameworks.md` |
+| Pre-Mortem | `premortem` | ✓ | Failure scenario enumeration (all-phase DEEP) | `references/failure-frameworks.md` |
+| RPN Scoring | `rpn` | | Risk Priority Number scoring | `references/scoring-methodology.md` |
+| Action Priority | `ap` | | Action Priority scoring (AIAG-VDA) | `references/scoring-methodology.md` |
+| Failure Mode ID | `mode` | | Failure mode identification (FMEA) | `references/failure-frameworks.md` |
 
 ## Subcommand Dispatch
 
@@ -148,10 +148,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`premortem` = Pre-Mortem). Apply normal SCOPE → IMAGINE → ENUMERATE → SCORE → FORTIFY workflow.
 
 Behavior notes per Recipe:
-- `premortem`: 全 5 フェーズ DEEP モード。「既に失敗した」前提でシナリオ列挙し RPN/AP スコアリング。
-- `rpn`: FMEA テーブル生成と S × O × D スコアリングに特化。ENUMERATE → SCORE フェーズ重点化。
-- `ap`: AIAG-VDA の Action Priority (H/M/L) 評価に特化。FMEA と併用。
-- `mode`: FMEA による失敗モード識別のみ。SCOPE → IMAGINE → ENUMERATE フェーズで完結。
+- `premortem`: All 5 phases in DEEP mode. Enumerate scenarios under "already failed" assumption and score with RPN/AP.
+- `rpn`: Focus on FMEA table generation and S × O × D scoring. Emphasize ENUMERATE → SCORE phases.
+- `ap`: Focus on AIAG-VDA Action Priority (H/M/L) evaluation. Use alongside FMEA.
+- `mode`: FMEA failure-mode identification only. Completes in SCOPE → IMAGINE → ENUMERATE phases.
 
 ## Output Routing
 

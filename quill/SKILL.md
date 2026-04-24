@@ -136,10 +136,10 @@ Post-task CHRONICLE: `RECORD → EVALUATE → CALIBRATE → PROPAGATE`. Read `re
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Docstrings | `docstring` | ✓ | JSDoc/TSDoc 追加 (関数/クラス単位) | `references/jsdoc-style-guide.md` |
-| README Update | `readme` | | README 更新・構成 | `references/readme-templates.md` |
-| Type Definitions | `types` | | any 型を具体型に置換 | `references/type-improvement-strategies.md` |
-| High-Value Comments | `comments` | | 複雑ロジックへの意図コメント追加 | `references/documentation-patterns.md` |
+| Docstrings | `docstring` | ✓ | Add JSDoc/TSDoc (per function/class) | `references/jsdoc-style-guide.md` |
+| README Update | `readme` | | README updates and structure | `references/readme-templates.md` |
+| Type Definitions | `types` | | Replace any types with concrete types | `references/type-improvement-strategies.md` |
+| High-Value Comments | `comments` | | Add intent comments to complex logic | `references/documentation-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -148,10 +148,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`docstring` = Docstrings). Apply normal READ → INSCRIBE → WRITE → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `docstring`: JSDoc/TSDoc を公開 API・関数・インターフェイスに追加。タグ順序 (@param→@returns→@throws→@example) を遵守。
-- `readme`: README の作成・更新・監査。インストール・使用方法・設定・貢献セクションを整備。
-- `types`: `any` 型をインターフェイス・ジェネリクス・型ガードに置換。TS6.0+ strict モードに準拠。
-- `comments`: 魔法数値・複雑な正規表現・ビジネスルールへの WHY コメントを追加。複雑度 >10 は必須。
+- `docstring`: Add JSDoc/TSDoc to public APIs, functions, and interfaces. Follow tag order (@param→@returns→@throws→@example).
+- `readme`: Create, update, and audit README. Flesh out install, usage, config, and contributing sections.
+- `types`: Replace `any` types with interfaces, generics, and type guards. Comply with TS 6.0+ strict mode.
+- `comments`: Add WHY comments to magic numbers, complex regex, and business rules. Required for complexity >10.
 
 ## Output Routing
 

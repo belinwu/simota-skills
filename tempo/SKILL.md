@@ -202,11 +202,11 @@ questions:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Cron Design | `cron` | ✓ | cron 式設計・タイムゾーン注釈・プラットフォーム設定 | `references/cron-patterns.md` |
-| Timezone Safety | `timezone` | | タイムゾーン/DST 安全性監査、ライブラリ移行 | `references/timezone-safety.md` |
-| Retry Policy | `retry` | | リトライ/バックオフポリシー設計、DLQ 設定 | `references/retry-strategies.md` |
-| Backfill Plan | `backfill` | | バックフィル・リプレイ計画、ウォーターマーク設計 | `references/retry-strategies.md` |
-| Business Calendar | `calendar` | | 日本祝日・銀行営業日・会計年度ロジック設計 | `references/business-calendar.md` |
+| Cron Design | `cron` | ✓ | Cron expression design, timezone annotation, platform configuration | `references/cron-patterns.md` |
+| Timezone Safety | `timezone` | | Timezone/DST safety audit, library migration | `references/timezone-safety.md` |
+| Retry Policy | `retry` | | Retry/backoff policy design, DLQ configuration | `references/retry-strategies.md` |
+| Backfill Plan | `backfill` | | Backfill/replay planning, watermark design | `references/retry-strategies.md` |
+| Business Calendar | `calendar` | | Japanese holiday, bank business day, and fiscal year logic design | `references/business-calendar.md` |
 
 ## Subcommand Dispatch
 

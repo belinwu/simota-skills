@@ -179,11 +179,11 @@ Full regulation details → `references/privacy-regulations.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| PII Detection | `pii` | ✓ | PII 検出・分類 | `references/pii-detection.md` |
-| Data Flow Mapping | `flow` | | データフロー可視化 | `references/pii-detection.md` |
-| Consent Management | `consent` | | 同意管理パターン実装 | `references/implementation-patterns.md` |
-| DPIA | `dpia` | | DPIA ファシリテーション | `references/privacy-regulations.md` |
-| GDPR/CCPA Code | `gdpr` | | コンプライアンス準拠コード実装 | `references/implementation-patterns.md` |
+| PII Detection | `pii` | ✓ | PII detection and classification | `references/pii-detection.md` |
+| Data Flow Mapping | `flow` | | Data flow visualization | `references/pii-detection.md` |
+| Consent Management | `consent` | | Consent management pattern implementation | `references/implementation-patterns.md` |
+| DPIA | `dpia` | | DPIA facilitation | `references/privacy-regulations.md` |
+| GDPR/CCPA Code | `gdpr` | | Compliance-ready code implementation | `references/implementation-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -192,11 +192,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`pii` = PII Detection). Apply normal DISCOVER → CLASSIFY → MAP → ASSESS → REMEDIATE → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `pii`: コードベース全体の PII スキャン・分類。DISCOVER → CLASSIFY フェーズを重点化。recall ≥95% 必須。
-- `flow`: 収集→処理→保存→共有→削除の完全データフロー可視化。MAP フェーズ重点化。
-- `consent`: 同意収集パターン・プリファレンスセンター・粒度別 opt-in/opt-out 実装。
-- `dpia`: EU AI Act FRIA + GDPR DPIA デュアルアセスメント。リスクスコアリングと緩和策。
-- `gdpr`: GDPR/CCPA/APPI 準拠コードパターン実装。DSAR ハンドラー・リテンション強制を含む。
+- `pii`: Full-codebase PII scan and classification. Focus on DISCOVER → CLASSIFY phases. Recall ≥95% is mandatory.
+- `flow`: Full data flow visualization: collection → processing → storage → sharing → deletion. Focus on the MAP phase.
+- `consent`: Implement consent-capture patterns, preference center, and granular opt-in/opt-out.
+- `dpia`: EU AI Act FRIA + GDPR DPIA dual assessment. Risk scoring and mitigation measures.
+- `gdpr`: GDPR/CCPA/APPI compliance code patterns implementation. Includes DSAR handlers and retention enforcement.
 
 ## Output Routing
 

@@ -182,11 +182,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Interview Design | `interview` | ✓ | インタビューガイド・プロトコル設計 | `references/interview-guide.md`, `references/participant-screening.md` |
-| Usability Test | `usability` | | ユーザビリティテスト計画・タスク設計 | `references/analysis-and-synthesis.md`, `references/participant-screening.md` |
-| Analysis | `analysis` | | 定性分析・アフィニティマップ・インサイト合成 | `references/analysis-and-synthesis.md`, `references/bias-checklist.md` |
-| Persona | `persona` | | ペルソナ作成・ジャーニーマップ生成 | `references/analysis-and-synthesis.md` |
-| Journey | `journey` | | ジャーニーマップ・JTBD 分析 | `references/analysis-and-synthesis.md`, `references/continuous-discovery-mixed-methods.md` |
+| Interview Design | `interview` | ✓ | Interview guide and protocol design | `references/interview-guide.md`, `references/participant-screening.md` |
+| Usability Test | `usability` | | Usability test planning and task design | `references/analysis-and-synthesis.md`, `references/participant-screening.md` |
+| Analysis | `analysis` | | Qualitative analysis, affinity mapping, and insight synthesis | `references/analysis-and-synthesis.md`, `references/bias-checklist.md` |
+| Persona | `persona` | | Persona creation and journey map generation | `references/analysis-and-synthesis.md` |
+| Journey | `journey` | | Journey mapping and JTBD analysis | `references/analysis-and-synthesis.md`, `references/continuous-discovery-mixed-methods.md` |
 
 ## Subcommand Dispatch
 
@@ -195,11 +195,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`interview` = Interview Design). Apply normal DEFINE → DESIGN → ANALYZE → SYNTHESIZE → HANDOFF workflow.
 
 Behavior notes per Recipe:
-- `interview`: 研究質問定義→ガイド作成→スクリーナー設計。AI モデレート適合性評価を含む。
-- `usability`: テスト計画・タスクシナリオ設計。SUS/SEQ/CASTLE ベンチマーク閾値を適用。
-- `analysis`: テーマ分析・コーディング・アフィニティマッピング。バイアスチェック必須。
-- `persona`: リサーチデータからペルソナ生成。WEIRD バイアス開示・Cast ハンドオフ準備。
-- `journey`: ジャーニーマップ + JTBD スイッチインタビュー分析。Plea ハンドオフ判定を含む。
+- `interview`: Define research questions → author guide → design screener. Includes AI-moderation fit evaluation.
+- `usability`: Test planning and task scenario design. Apply SUS/SEQ/CASTLE benchmark thresholds.
+- `analysis`: Thematic analysis, coding, and affinity mapping. Bias check required.
+- `persona`: Generate personas from research data. Disclose WEIRD bias and prepare Cast handoff.
+- `journey`: Journey mapping + JTBD switch interview analysis. Includes Plea handoff determination.
 
 ## Output Routing
 

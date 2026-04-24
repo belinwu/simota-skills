@@ -168,10 +168,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Regression Investigation | `regression` | ✓ | 回帰原因の特定 (git 由来の破損コミット調査) | `references/framework-templates.md` |
-| Git Bisect | `bisect` | | 二分探索で regression commit 特定 | `references/framework-templates.md` |
-| Blame Walk | `blame` | | 特定行の変更履歴追跡 | `references/git-commands.md` |
-| History Mining | `history` | | 時系列分析・アーカイブ掘削 (archaeology) | `references/patterns.md` |
+| Regression Investigation | `regression` | ✓ | Identify regression cause (investigate git-originated breaking commits) | `references/framework-templates.md` |
+| Git Bisect | `bisect` | | Identify regression commit via binary search | `references/framework-templates.md` |
+| Blame Walk | `blame` | | Trace change history for specific lines | `references/git-commands.md` |
+| History Mining | `history` | | Timeline analysis and archive archaeology | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -180,10 +180,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`regression` = Regression Investigation). Apply normal SCOPE → LOCATE → TRACE → REPORT → RECOMMEND workflow.
 
 Behavior notes per Recipe:
-- `regression`: good/bad コミットペアを SCOPE で確定。log₂(n) イテレーション予算を設定。
-- `bisect`: `git bisect run` スクリプトを生成。exit code 0/1-124/125 を厳守。merge-heavy repos は `--first-parent`。
-- `blame`: `-w -M -C` フラグ必須。`.git-blame-ignore-revs` を確認後に実施。個人ではなくコミットに着目。
-- `history`: pickaxe (`-S`/`-G`/`-L`) + `--follow` で文字列/関数の登場・消滅を追跡。CHANGE_STORY を生成。
+- `regression`: Pin down the good/bad commit pair in SCOPE. Set a log₂(n) iteration budget.
+- `bisect`: Generate a `git bisect run` script. Strictly follow exit codes 0/1-124/125. Use `--first-parent` for merge-heavy repos.
+- `blame`: `-w -M -C` flags required. Check `.git-blame-ignore-revs` before running. Focus on the commit, not the individual.
+- `history`: Use pickaxe (`-S`/`-G`/`-L`) + `--follow` to trace string/function appearance and disappearance. Generate a CHANGE_STORY.
 
 ## Output Requirements
 

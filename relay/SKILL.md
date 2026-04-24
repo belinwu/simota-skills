@@ -150,10 +150,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Webhook Handler | `webhook` | ✓ | Webhook 受信ハンドラー設計 (HMAC 検証・冪等性) | `references/webhook-patterns.md` |
-| Bot Framework | `bot` | | ボットコマンドフレームワーク・会話状態機械設計 | `references/bot-framework.md`, `references/channel-adapters.md` |
-| WebSocket Server | `websocket` | | WebSocket サーバー・リアルタイム通信設計 | `references/realtime-architecture.md` |
-| Channel Adapter | `adapter` | | チャネルアダプター (Slack/Discord/LINE 正規化) | `references/channel-adapters.md`, `references/event-routing.md` |
+| Webhook Handler | `webhook` | ✓ | Webhook receive handler design (HMAC verification, idempotency) | `references/webhook-patterns.md` |
+| Bot Framework | `bot` | | Bot command framework and conversation state machine design | `references/bot-framework.md`, `references/channel-adapters.md` |
+| WebSocket Server | `websocket` | | WebSocket server and real-time communication design | `references/realtime-architecture.md` |
+| Channel Adapter | `adapter` | | Channel adapters (Slack/Discord/LINE normalization) | `references/channel-adapters.md`, `references/event-routing.md` |
 
 ## Subcommand Dispatch
 
@@ -162,10 +162,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`webhook` = Webhook Handler). Apply normal LISTEN → ROUTE → ADAPT → WIRE → GUARD workflow.
 
 Behavior notes per Recipe:
-- `webhook`: HMAC-SHA256 (生バイト)・タイムスタンプ検証 (≤5分)・冪等キー・DLQ・Circuit Breaker を必須含む。3 秒以内に 2xx 返却。
-- `bot`: コマンドパーサー・スラッシュコマンド・会話状態機械・ミドルウェアチェーン設計。LLM-native runner 統合評価を含む。
-- `websocket`: 接続ライフサイクル・ハートビート・水平スケール (Redis 外部化セッション)・WebSocketStream API 評価。
-- `adapter`: プラットフォーム横断正規化。Normalize-in/Adapt-out パターン。CloudEvents エンベロープ・AsyncAPI スペック。
+- `webhook`: Must include HMAC-SHA256 (raw bytes), timestamp verification (≤5 min), idempotency key, DLQ, and Circuit Breaker. Return 2xx within 3 seconds.
+- `bot`: Design command parser, slash commands, conversation state machine, and middleware chain. Includes LLM-native runner integration evaluation.
+- `websocket`: Connection lifecycle, heartbeats, horizontal scaling (Redis session externalization), and WebSocketStream API evaluation.
+- `adapter`: Cross-platform normalization. Normalize-in/Adapt-out pattern. CloudEvents envelope and AsyncAPI spec.
 
 ## Output Routing
 

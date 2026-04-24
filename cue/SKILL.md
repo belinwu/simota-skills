@@ -98,20 +98,20 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Script | `script` | ✓ | 動画スクリプト全体の作成 | `references/patterns.md` |
-| Storyboard | `storyboard` | | シーン別絵コンテ・ビジュアル設計 | `references/patterns.md`, `references/examples.md` |
-| Narration | `narration` | | ナレーション文と尺・ペース設計 | `references/patterns.md` |
-| Explainer | `explainer` | | 製品説明・比較動画スクリプト | `references/patterns.md`, `references/examples.md` |
+| Script | `script` | ✓ | Full video script authoring | `references/patterns.md` |
+| Storyboard | `storyboard` | | Per-scene storyboard, visual design | `references/patterns.md`, `references/examples.md` |
+| Narration | `narration` | | Narration text with duration and pacing design | `references/patterns.md` |
+| Explainer | `explainer` | | Product explainer and comparison video scripts | `references/patterns.md`, `references/examples.md` |
 
 ## Subcommand Dispatch
 
 Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe (`script` = Script). Apply normal BRIEF → STRUCTURE → SCENE → NARRATE → REVIEW workflow.
-- `script`: 動画種別・ターゲット・尺を確定し、シーン分解付きスクリプトを出力する。
-- `storyboard`: 各シーンの画面指示・トランジション・テキストオーバーレイを設計する。
-- `narration`: ナレーション本文を wpm・プラットフォーム別ペースで執筆し、タイミングキューを付与する。
-- `explainer`: AIDA / Problem-Solution テンプレートで製品説明・比較動画スクリプトを作成する。
+- `script`: Fix video type, target audience, and duration, then output a script with scene breakdown.
+- `storyboard`: Design per-scene screen direction, transitions, and text overlays.
+- `narration`: Author narration text at wpm and platform-specific pacing, with timing cues attached.
+- `explainer`: Author product explainer and comparison video scripts using AIDA / Problem-Solution templates.
 
 ## Output Routing
 

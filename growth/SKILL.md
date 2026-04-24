@@ -147,10 +147,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| SEO | `seo` | ✓ | メタタグ・JSON-LD・heading 階層・GEO 最適化 | `references/seo-checklist.md` |
-| Social Sharing | `smo` | | OGP / Twitter Card ソーシャルシェア設定 | `references/ogp-twitter-card-guide.md` |
-| CRO | `cro` | | CTA 最適化・フォーム改善・エグジットインテント | `references/cro-patterns.md` |
-| GEO | `geo` | | AI Overview / ChatGPT / Perplexity 引用最適化 | `references/json-ld-templates.md` |
+| SEO | `seo` | ✓ | Meta tags, JSON-LD, heading hierarchy, GEO optimization | `references/seo-checklist.md` |
+| Social Sharing | `smo` | | OGP / Twitter Card social-share setup | `references/ogp-twitter-card-guide.md` |
+| CRO | `cro` | | CTA optimization, form improvements, exit intent | `references/cro-patterns.md` |
+| GEO | `geo` | | AI Overview / ChatGPT / Perplexity citation optimization | `references/json-ld-templates.md` |
 
 ## Subcommand Dispatch
 

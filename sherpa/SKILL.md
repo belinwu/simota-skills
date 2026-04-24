@@ -215,10 +215,10 @@ Use this map during `GUIDE` to assign the right agent for each step type.
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Epic Decompose | `epic` | ✓ | 複雑タスクを 15 分 Atomic Steps に分解 | `references/task-breakdown.md`, `references/task-decomposition-anti-patterns.md` |
-| Story Plan | `story` | | 単一フィーチャの計画、Story レベル分解 | `references/task-breakdown.md` |
-| Sprint Replan | `replan` | | ドリフト・スコープ変更後の再計画 | `references/anti-drift.md`, `references/estimation-planning-anti-patterns.md` |
-| Parking Lot Review | `review` | | 溜まった脱線項目の棚卸し・優先度付け | `references/anti-drift.md`, `references/scope-creep-execution-anti-patterns.md` |
+| Epic Decompose | `epic` | ✓ | Decompose complex tasks into 15-minute Atomic Steps | `references/task-breakdown.md`, `references/task-decomposition-anti-patterns.md` |
+| Story Plan | `story` | | Single-feature planning and story-level decomposition | `references/task-breakdown.md` |
+| Sprint Replan | `replan` | | Replanning after drift or scope change | `references/anti-drift.md`, `references/estimation-planning-anti-patterns.md` |
+| Parking Lot Review | `review` | | Inventory and prioritize accumulated side-track items | `references/anti-drift.md`, `references/scope-creep-execution-anti-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -227,10 +227,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`epic` = Epic Decompose). Apply full MAP → GUIDE → LOCATE → ASSESS → PACK → CALIBRATE workflow.
 
 Behavior notes per Recipe:
-- `epic`: MAP フェーズで完全な Step リストを生成。Vertical-slice 優先、15 分原子ステップへ分解。
-- `story`: 単一 Story を Task → Atomic Step に細分化。Decomposition Anti-Patterns を参照して品質チェック。
-- `replan`: 既存プランの完了率と drift 要因を LOCATE で特定し、残タスクを再順序付け。
-- `review`: Parking Lot 項目を ASSESS で重要度評価し、Base Camp 昇格 / 廃棄を決定。
+- `epic`: Generate the complete Step list in the MAP phase. Prioritize vertical slices and break down into 15-minute atomic steps.
+- `story`: Break a single Story into Task → Atomic Step. Reference Decomposition Anti-Patterns for quality checks.
+- `replan`: Identify the completion rate and drift factors of the existing plan in LOCATE, and re-order the remaining tasks.
+- `review`: Evaluate Parking Lot items for importance in ASSESS, and decide Base Camp promotion / disposal.
 
 ## Output Routing
 

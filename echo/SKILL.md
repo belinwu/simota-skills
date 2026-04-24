@@ -136,10 +136,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Walkthrough | `walkthrough` | ✓ | ペルソナ認知ウォークスルー・感情スコアリング | `references/process-workflows.md`, `references/ux-frameworks.md` |
-| Confusion Points | `confusion` | | 混乱箇所・認知負荷・メンタルモデルギャップ特定 | `references/ux-frameworks.md`, `references/output-templates.md` |
-| Emotion Map | `emotion` | | 感情マップ・摩擦スコア詳細分析 | `references/ux-frameworks.md`, `references/output-templates.md` |
-| Persona Switch | `persona` | | 複数ペルソナ比較・クロスペルソナ分析 | `references/analysis-frameworks.md`, `references/cognitive-persona-model.md` |
+| Walkthrough | `walkthrough` | ✓ | Persona cognitive walkthrough, emotion scoring | `references/process-workflows.md`, `references/ux-frameworks.md` |
+| Confusion Points | `confusion` | | Identify confusion points, cognitive load, mental model gaps | `references/ux-frameworks.md`, `references/output-templates.md` |
+| Emotion Map | `emotion` | | Emotion map, detailed friction score analysis | `references/ux-frameworks.md`, `references/output-templates.md` |
+| Persona Switch | `persona` | | Multi-persona comparison, cross-persona analysis | `references/analysis-frameworks.md`, `references/cognitive-persona-model.md` |
 
 ## Subcommand Dispatch
 
@@ -148,10 +148,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`walkthrough` = Walkthrough). Apply normal PRE-SCAN → MASK ON → WALK → SPEAK → ANALYZE → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `walkthrough`: 全ステップ実行。ペルソナ選択→感情スコア→ダークパターン検出→A/B 仮説生成まで完走。
-- `confusion`: 混乱箇所・認知負荷指数 (SUS/SEQ) に集中。WALK フェーズを深掘り。
-- `emotion`: タッチポイント別感情スコア (-3〜+3) とジャーニーパターン分析。Peak-End 則を適用。
-- `persona`: 複数ペルソナ並走。Universal/Segment/Edge Case/Non-Issue 分類マトリクスを出力。
+- `walkthrough`: Run every step. Persona selection → emotion scoring → dark pattern detection → A/B hypothesis generation end-to-end.
+- `confusion`: Focus on confusion points and cognitive load indices (SUS/SEQ). Deep-dive the WALK phase.
+- `emotion`: Per-touchpoint emotion scoring (-3 to +3) and journey pattern analysis. Apply the Peak-End rule.
+- `persona`: Run multiple personas in parallel. Output a Universal/Segment/Edge Case/Non-Issue classification matrix.
 
 ## Output Routing
 

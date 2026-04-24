@@ -150,10 +150,10 @@ Rules: record `SCAN_BASELINE` YAML in `.agents/sweep.md`. When receiving `GROVE_
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Dead Code | `dead` | ✓ | デッドコード検出 (未使用関数/クラス/変数) | `references/cleanup-targets.md` |
-| Orphan Files | `orphan` | | 孤立ファイル検出 (インポートなし/参照なし) | `references/cleanup-targets.md` |
-| Unused Exports | `unused` | | 未使用 export 検出、依存パッケージ監査 | `references/dependency-cleanup.md` |
-| Tidy Up | `tidy` | | SCAN → CATEGORIZE → PROPOSE の総合整理 | `references/cleanup-protocol.md` |
+| Dead Code | `dead` | ✓ | Dead code detection (unused functions/classes/variables) | `references/cleanup-targets.md` |
+| Orphan Files | `orphan` | | Orphan file detection (no imports/no references) | `references/cleanup-targets.md` |
+| Unused Exports | `unused` | | Unused export detection, dependency package audit | `references/dependency-cleanup.md` |
+| Tidy Up | `tidy` | | Comprehensive cleanup via SCAN → CATEGORIZE → PROPOSE | `references/cleanup-protocol.md` |
 
 ## Subcommand Dispatch
 

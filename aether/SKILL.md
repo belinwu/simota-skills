@@ -158,11 +158,11 @@ Execution loop: `SURVEY → PLAN → VERIFY → PRESENT`.
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Streaming Pipeline | `stream` | ✓ | リアルタイム配信パイプライン全体設計 (Chat → LLM → TTS → Avatar → OBS) | `references/pipeline-architecture.md` |
-| Live Chat | `chat` | | ライブチャット統合 (YouTube/Twitch/Bilibili) | `references/chat-platforms.md` |
-| Avatar Control | `avatar` | | Live2D/VRM アバター制御・lip-sync・表情マッピング | `references/avatar-control.md` |
-| TTS | `tts` | | TTS エンジン統合・選定・レイテンシ最適化 | `references/tts-engines.md` |
-| OBS Automation | `obs` | | OBS WebSocket 自動化・シーン管理・配信設定 | `references/obs-streaming.md` |
+| Streaming Pipeline | `stream` | ✓ | Full real-time streaming pipeline design (Chat → LLM → TTS → Avatar → OBS) | `references/pipeline-architecture.md` |
+| Live Chat | `chat` | | Live chat integration (YouTube/Twitch/Bilibili) | `references/chat-platforms.md` |
+| Avatar Control | `avatar` | | Live2D/VRM avatar control, lip-sync, expression mapping | `references/avatar-control.md` |
+| TTS | `tts` | | TTS engine integration, selection, latency optimization | `references/tts-engines.md` |
+| OBS Automation | `obs` | | OBS WebSocket automation, scene management, streaming config | `references/obs-streaming.md` |
 
 ## Subcommand Dispatch
 
@@ -171,11 +171,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`stream` = Streaming Pipeline). Apply normal PERSONA → PIPELINE → STAGE → STREAM → MONITOR → EVOLVE workflow.
 
 Behavior notes per Recipe:
-- `stream`: 全体パイプライン設計。PIPELINE フェーズを重点化。レイテンシバジェット必須。
-- `chat`: プラットフォーム API 統合・メッセージ正規化・安全フィルタリングを含める。
-- `avatar`: Live2D/VRM コントラクト、表情マップ、idle-motion 設計を含める。
-- `tts`: エンジン比較・TTSAdapter・TTFA 計測・フォールバック設計を含める。
-- `obs`: OBS WebSocket 制御・シーン管理・RTMP/SRT 選択・launch 自動化を含める。
+- `stream`: Full pipeline design. Focus on the PIPELINE phase. Latency budget is mandatory.
+- `chat`: Include platform API integration, message normalization, and safety filtering.
+- `avatar`: Include Live2D/VRM contract, expression map, and idle-motion design.
+- `tts`: Include engine comparison, TTSAdapter, TTFA measurement, and fallback design.
+- `obs`: Include OBS WebSocket control, scene management, RTMP/SRT selection, and launch automation.
 
 ## Output Routing
 

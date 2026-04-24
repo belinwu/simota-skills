@@ -115,11 +115,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| SFX | `sfx` | ✓ | 効果音 (JSFXR/ElevenLabs) | `references/api-integration.md`, `references/game-audio-practices.md` |
-| BGM | `bgm` | | 背景音楽 (MusicGen/Suno) | `references/api-integration.md`, `references/suno-prompt-guide.md` |
-| Voice | `voice` | | ボイス (OpenAI TTS) | `references/api-integration.md` |
-| Ambient | `ambient` | | 環境音 | `references/api-integration.md` |
-| UI Sound | `ui` | | UI 操作音 | `references/api-integration.md` |
+| SFX | `sfx` | ✓ | Sound effects (JSFXR/ElevenLabs) | `references/api-integration.md`, `references/game-audio-practices.md` |
+| BGM | `bgm` | | Background music (MusicGen/Suno) | `references/api-integration.md`, `references/suno-prompt-guide.md` |
+| Voice | `voice` | | Voice (OpenAI TTS) | `references/api-integration.md` |
+| Ambient | `ambient` | | Ambient sounds | `references/api-integration.md` |
+| UI Sound | `ui` | | UI interaction sounds | `references/api-integration.md` |
 
 ## Subcommand Dispatch
 

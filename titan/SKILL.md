@@ -230,10 +230,10 @@ Read `references/decision-matrix.md` when classifying a decision, calculating ri
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Deliver Minimum Chain | `deliver` | ✓ | 最小チェーンで即実装 (スコープ自動判定→チェーン発行) | `references/agent-deployment-matrix.md` |
-| Small Scope | `small` | | S スコープ (1-5 files、即時実装、計画省略) | `references/agent-deployment-matrix.md` |
-| Medium Scope | `medium` | | M スコープ (6-15 files、計画省略、実装優先) | `references/agent-deployment-matrix.md`, `references/product-lifecycle.md` |
-| Epic Scope | `epic` | | Epic スコープ (L/XL、チェーン構成、Nexus 連携) | `references/product-lifecycle.md`, `references/anti-stall-engine.md` |
+| Deliver Minimum Chain | `deliver` | ✓ | Immediate build with minimum chain (auto scope detection → chain issuance) | `references/agent-deployment-matrix.md` |
+| Small Scope | `small` | | S scope (1-5 files, immediate build, skip planning) | `references/agent-deployment-matrix.md` |
+| Medium Scope | `medium` | | M scope (6-15 files, skip planning, build first) | `references/agent-deployment-matrix.md`, `references/product-lifecycle.md` |
+| Epic Scope | `epic` | | Epic scope (L/XL, chain composition, Nexus integration) | `references/product-lifecycle.md`, `references/anti-stall-engine.md` |
 
 ## Subcommand Dispatch
 

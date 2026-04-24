@@ -201,11 +201,11 @@ Full calibration rules live in [prompt-effectiveness.md](~/.claude/skills/prism/
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Audio Output | `audio` | ✓ | Audio Overview 最適化 (Deep Dive/Brief/Critique/Debate) | `references/prompt-catalog.md` |
-| Video Output | `video` | | Video Overview 最適化 (Explainer/Brief/Cinematic) | `references/prompt-catalog.md` |
-| Slide Output | `slide` | | Presenter Slides / Detailed Deck 最適化 | `references/prompt-catalog.md` |
-| Infographic | `infographic` | | Infographic 出力 (10スタイル選択) | `references/prompt-catalog.md` |
-| Custom Goals Persona | `persona` | | Custom Goals persona 設計 (最大 10,000 文字) | `references/source-preparation.md` |
+| Audio Output | `audio` | ✓ | Audio Overview optimization (Deep Dive/Brief/Critique/Debate) | `references/prompt-catalog.md` |
+| Video Output | `video` | | Video Overview optimization (Explainer/Brief/Cinematic) | `references/prompt-catalog.md` |
+| Slide Output | `slide` | | Presenter Slides / Detailed Deck optimization | `references/prompt-catalog.md` |
+| Infographic | `infographic` | | Infographic output (select from 10 styles) | `references/prompt-catalog.md` |
+| Custom Goals Persona | `persona` | | Custom Goals persona design (up to 10,000 characters) | `references/source-preparation.md` |
 
 ## Subcommand Dispatch
 
@@ -214,11 +214,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`audio` = Audio Output). Apply normal SOURCE → PREPARE → STEER → GUIDE → EVALUATE → REFINE workflow.
 
 Behavior notes per Recipe:
-- `audio`: Deep Dive/Brief/Critique/Debate/Lecture Mode から選択。Join モードも考慮。ステアリングプロンプト ≤150 語。
-- `video`: Explainer/Brief/Cinematic から選択。Cinematic は Ultra 限定/英語限定を確認。
-- `slide`: PPTX エクスポートを念頭にスライド構成を設計。Detailed Deck はスライド単位の修正が可能。
-- `infographic`: 10 スタイル (Sketch Note/Kawaii/Professional/Scientific/Anime/Clay/Editorial/Instructional/Bento Grid/Bricks) を提示して選択。
-- `persona`: Custom Goals フィールド設計。役割・専門性・応答スタイルを定義。Magic Wand 自動拡張も案内。
+- `audio`: Select from Deep Dive/Brief/Critique/Debate/Lecture Mode. Consider Join mode. Steering prompt ≤150 words.
+- `video`: Select from Explainer/Brief/Cinematic. Confirm Cinematic is Ultra-only / English-only.
+- `slide`: Design slide structure with PPTX export in mind. Detailed Deck supports per-slide edits.
+- `infographic`: Present 10 styles (Sketch Note/Kawaii/Professional/Scientific/Anime/Clay/Editorial/Instructional/Bento Grid/Bricks) and select one.
+- `persona`: Design the Custom Goals field. Define role, expertise, and response style. Also guide Magic Wand auto-expansion.
 
 ## Output Routing
 

@@ -289,10 +289,10 @@ Detailed performance optimization → delegate to Growth / Bolt. LP-specific pri
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Build LP | `build` | ✓ | LP 全体設計 (AIDA/PAS/BAB/4Ps フレームワーク選択から) | `references/patterns.md` |
-| CTA Optimization | `cta` | | CTA 配置・コピー・マイクロコピー最適化 | — |
-| Conversion Audit | `conversion` | | 既存 LP のコンバージョン改善・セクション監査 | `references/patterns.md` |
-| Responsive Design | `responsive` | | モバイルファースト実装・タップターゲット・ビューポート最適化 | `references/examples.md` |
+| Build LP | `build` | ✓ | Full LP design (starting from AIDA/PAS/BAB/4Ps framework selection) | `references/patterns.md` |
+| CTA Optimization | `cta` | | CTA placement, copy, micro-copy optimization | — |
+| Conversion Audit | `conversion` | | Conversion improvement and section audit for an existing LP | `references/patterns.md` |
+| Responsive Design | `responsive` | | Mobile-first implementation, tap targets, viewport optimization | `references/examples.md` |
 
 ## Subcommand Dispatch
 

@@ -148,10 +148,10 @@ Postmortem mining rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Curate Patterns | `curate` | ✓ | METAPATTERNS.md への知見抽出・パターン登録 | `references/knowledge-synthesis.md`, `references/pattern-taxonomy.md` |
-| Decay Detection | `decay` | | 知識劣化・陳腐化検出 (freshness score 評価) | `references/decay-detection.md` |
-| Propagate | `propagate` | | ベストプラクティス伝播 (LORE_INSIGHT/LORE_ALERT 送信) | `references/propagation-protocol.md` |
-| Extract from Journals | `extract` | | エージェントジャーナルからのパターン抽出 | `references/knowledge-synthesis.md` |
+| Curate Patterns | `curate` | ✓ | Knowledge extraction and pattern registration into METAPATTERNS.md | `references/knowledge-synthesis.md`, `references/pattern-taxonomy.md` |
+| Decay Detection | `decay` | | Knowledge decay and obsolescence detection (freshness score evaluation) | `references/decay-detection.md` |
+| Propagate | `propagate` | | Best practice propagation (LORE_INSIGHT/LORE_ALERT delivery) | `references/propagation-protocol.md` |
+| Extract from Journals | `extract` | | Pattern extraction from agent journals | `references/knowledge-synthesis.md` |
 
 ## Subcommand Dispatch
 
@@ -160,10 +160,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`curate` = Curate Patterns). Apply normal HARVEST → SYNTHESIZE → CATALOG → PROPAGATE → AUDIT workflow.
 
 Behavior notes per Recipe:
-- `curate`: HARVEST → SYNTHESIZE → CATALOG フルサイクル。信頼度分類 (Anecdote/Emerging/Pattern/Established/Foundational)。METAPATTERNS.md 更新。
-- `decay`: freshness score (0-100) 評価。STALE (>180日) パターンの特定とアーカイブ判定。TTL multiplier 適用。
-- `propagate`: 信頼度 PATTERN (3+) 以上のパターンを消費エージェントへ配信。LORE_INSIGHT / LORE_ALERT 形式で送信。
-- `extract`: .agents/*.md をスキャン。HARVEST フェーズ重点化。48時間以内に処理。
+- `curate`: Full HARVEST → SYNTHESIZE → CATALOG cycle. Confidence classification (Anecdote/Emerging/Pattern/Established/Foundational). Update METAPATTERNS.md.
+- `decay`: Evaluate freshness score (0-100). Identify STALE patterns (>180 days) and decide on archival. Apply TTL multiplier.
+- `propagate`: Deliver patterns at PATTERN (3+) confidence or higher to consuming agents. Send in LORE_INSIGHT / LORE_ALERT format.
+- `extract`: Scan .agents/*.md. Focus on HARVEST phase. Process within 48 hours.
 
 ## Output Routing
 

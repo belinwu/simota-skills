@@ -118,11 +118,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| GitHub Profile | `github` | ✓ | GitHub Profile README 最適化、リポジトリピン設計 | `references/channel-templates.md` |
-| LinkedIn Profile | `linkedin` | | LinkedIn プロフィール最適化、Topic DNA アライメント | `references/channel-templates.md` |
-| Blog Strategy | `blog` | | ブログ・Qiita・Zenn コンテンツ戦略と記事計画 | `references/amplification-playbook.md` |
-| Conference CFP | `conference` | | 登壇 CFP 作成、トークテーマ設計 | `references/channel-templates.md` |
-| SNS Strategy | `sns` | | X・Bluesky・LinkedIn SNS 発信戦略、ゼロクリック設計 | `references/amplification-playbook.md` |
+| GitHub Profile | `github` | ✓ | GitHub Profile README optimization, pinned repo design | `references/channel-templates.md` |
+| LinkedIn Profile | `linkedin` | | LinkedIn profile optimization, Topic DNA alignment | `references/channel-templates.md` |
+| Blog Strategy | `blog` | | Blog, Qiita, Zenn content strategy and article planning | `references/amplification-playbook.md` |
+| Conference CFP | `conference` | | Conference CFP authoring, talk theme design | `references/channel-templates.md` |
+| SNS Strategy | `sns` | | X, Bluesky, LinkedIn SNS publishing strategy, zero-click design | `references/amplification-playbook.md` |
 
 ## Subcommand Dispatch
 

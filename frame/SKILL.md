@@ -153,10 +153,10 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Extract Context | `extract` | ✓ | Figma からデザインコンテキスト抽出 | `references/execution-templates.md`, `references/prompt-strategy.md` |
-| Code Connect | `code-connect` | | Code Connect template 管理 | `references/code-connect-guide.md` |
-| DS Rules | `rules` | | design system rule 抽出 | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
-| Figma Inspect | `inspect` | | Figma file の programmatic inspect | `references/infrastructure-constraints.md`, `references/figma-mcp-server-ga.md` |
+| Extract Context | `extract` | ✓ | Extract design context from Figma | `references/execution-templates.md`, `references/prompt-strategy.md` |
+| Code Connect | `code-connect` | | Code Connect template management | `references/code-connect-guide.md` |
+| DS Rules | `rules` | | Design system rule extraction | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
+| Figma Inspect | `inspect` | | Programmatic inspection of a Figma file | `references/infrastructure-constraints.md`, `references/figma-mcp-server-ga.md` |
 
 ## Subcommand Dispatch
 
@@ -165,10 +165,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`extract` = Extract Context). Apply normal CONNECT → SURVEY → EXTRACT → PACKAGE → DELIVER workflow.
 
 Behavior notes per Recipe:
-- `extract`: MCP 接続確認後、対象フレーム/コンポーネントのデザインコンテキストを抽出しハンドオフパッケージを生成。
-- `code-connect`: 既存 Code Connect マッピングを監査し、不足や陳腐化したマッピングを修正または追加。
-- `rules`: Figma ファイルから design system 規約を抽出し、トークンルール・命名規約ドキュメントを生成。
-- `inspect`: Figma ファイルのページ・フレーム・コンポーネントセットをメタデータレベルで調査し、抽出計画を策定。
+- `extract`: After verifying the MCP connection, extract the design context of the target frame/component and generate a handoff package.
+- `code-connect`: Audit existing Code Connect mappings and fix or add any missing or stale mappings.
+- `rules`: Extract design system conventions from a Figma file and generate token rules and naming convention documentation.
+- `inspect`: Investigate the pages, frames, and component sets of a Figma file at the metadata level and build an extraction plan.
 
 ## Output Routing
 

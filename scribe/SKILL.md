@@ -204,11 +204,11 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| PRD | `prd` | ✓ | Product Requirements Document (ビジネス目標・ユーザーニーズ・スコープ) | `references/prd-template.md` |
-| SRS | `srs` | | Software Requirements Specification (技術要件・インターフェース・NFR) | `references/srs-template.md` |
-| HLD | `hld` | | High-Level Design (システムアーキテクチャ・コンポーネント設計) | `references/design-template.md` |
-| LLD | `lld` | | Low-Level Design (モジュール詳細・データ構造・シーケンス) | `references/design-template.md` |
-| Test Spec | `testspec` | | テスト仕様書 (スコープ・ケース・データ・トレーサビリティ) | `references/test-spec-template.md` |
+| PRD | `prd` | ✓ | Product Requirements Document (business goals, user needs, scope) | `references/prd-template.md` |
+| SRS | `srs` | | Software Requirements Specification (technical requirements, interfaces, NFRs) | `references/srs-template.md` |
+| HLD | `hld` | | High-Level Design (system architecture, component design) | `references/design-template.md` |
+| LLD | `lld` | | Low-Level Design (module details, data structures, sequences) | `references/design-template.md` |
+| Test Spec | `testspec` | | Test specification (scope, cases, data, traceability) | `references/test-spec-template.md` |
 
 ## Subcommand Dispatch
 
@@ -217,11 +217,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`prd` = PRD). Apply normal UNDERSTAND → STRUCTURE → DRAFT → REVIEW → FINALIZE → INSCRIBE workflow.
 
 Behavior notes per Recipe:
-- `prd`: ビジネスコンテキストを先に確認。スコープ内/外・KPI・成功指標を明示。MVP 8-12 ページ目標。
-- `srs`: IEEE 29148 品質ゲートを適用。NFR に測定可能な閾値を付与 (P95 ≤ 200ms 等)。
-- `hld`: システム構成・デプロイ・スケーリング戦略を記述。Atlas ADR を参照リンク。
-- `lld`: モジュール設計・データ構造・シーケンス図。実装直前の詳細粒度。
-- `testspec`: Given/When/Then 形式。テストスコープ・データ・トレーサビリティマトリクスを必ず含める。
+- `prd`: Establish business context first. State in-scope/out-of-scope, KPIs, and success metrics explicitly. Target 8-12 pages for MVP.
+- `srs`: Apply the IEEE 29148 quality gate. Attach measurable thresholds to NFRs (e.g., P95 ≤ 200ms).
+- `hld`: Describe system composition, deployment, and scaling strategy. Link to Atlas ADRs for reference.
+- `lld`: Module design, data structures, and sequence diagrams. Detail granularity for immediate implementation.
+- `testspec`: Given/When/Then format. Must include test scope, data, and traceability matrix.
 
 ## Output Requirements
 

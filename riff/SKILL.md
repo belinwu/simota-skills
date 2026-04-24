@@ -162,10 +162,10 @@ At session end: produce a summary with original idea, evolution points, key insi
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Expand Idea | `expand` | ✓ | アイデア拡張モード (Double Diamond) | `references/patterns.md` |
-| Propose | `propose` | | 提案モード (Quick Riff) | `references/patterns.md` |
-| Evaluate | `evaluate` | | 評価モード (Devil's Advocate) | `references/patterns.md` |
-| Subtract | `subtract` | | 削減モード (アイデアの絞り込み) | `references/patterns.md` |
+| Expand Idea | `expand` | ✓ | Idea expansion mode (Double Diamond) | `references/patterns.md` |
+| Propose | `propose` | | Proposal mode (Quick Riff) | `references/patterns.md` |
+| Evaluate | `evaluate` | | Evaluation mode (Devil's Advocate) | `references/patterns.md` |
+| Subtract | `subtract` | | Subtraction mode (narrowing ideas) | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -174,10 +174,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`expand` = Expand Idea). Apply normal RECEIVE → EXPAND → EVALUATE → PROPOSE → SUBTRACT → SYNTHESIZE workflow.
 
 Behavior notes per Recipe:
-- `expand`: Double Diamond モード。RECEIVE → EXPAND (複数ターン) → SYNTHESIZE。発散フェーズを重点化。
-- `propose`: Quick Riff モード。RECEIVE → PROPOSE (4-5 ターン) → SYNTHESIZE。具体的提案を素早く生成。
-- `evaluate`: Devil's Advocate モード。RECEIVE → Steelman → 3角度チャレンジ → rebuild。
-- `subtract`: SUBTRACT モードを先行。過剰なアイデアを絞り込み本質を抽出。
+- `expand`: Double Diamond mode. RECEIVE → EXPAND (multiple turns) → SYNTHESIZE. Focus on the divergence phase.
+- `propose`: Quick Riff mode. RECEIVE → PROPOSE (4-5 turns) → SYNTHESIZE. Quickly generate concrete proposals.
+- `evaluate`: Devil's Advocate mode. RECEIVE → Steelman → 3-angle challenge → rebuild.
+- `subtract`: Lead with SUBTRACT mode. Narrow down excess ideas to extract the essence.
 
 ## Output Routing
 

@@ -195,10 +195,10 @@ questions:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Faithful Reproduction | `reproduce` | ✓ | モックアップから忠実な HTML/CSS 生成 | `references/design-extraction.md`, `references/precision-spec.md` |
-| Visual Verify | `verify` | | visual verification 実行 | `references/visual-verification.md` |
-| Gap Report | `gap` | | gap analysis レポート生成 | `references/gap-analysis-report.md` |
-| Design Audit | `audit` | | fidelity 監査 | `references/gap-analysis-report.md`, `references/visual-verification.md` |
+| Faithful Reproduction | `reproduce` | ✓ | Faithful HTML/CSS generation from a mockup | `references/design-extraction.md`, `references/precision-spec.md` |
+| Visual Verify | `verify` | | Execute visual verification | `references/visual-verification.md` |
+| Gap Report | `gap` | | Gap analysis report generation | `references/gap-analysis-report.md` |
+| Design Audit | `audit` | | Fidelity audit | `references/gap-analysis-report.md`, `references/visual-verification.md` |
 
 ## Subcommand Dispatch
 

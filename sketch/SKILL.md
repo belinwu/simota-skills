@@ -198,9 +198,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Generate | `generate` | ✓ | text-to-image 生成 | `references/prompt-patterns.md`, `references/api-integration.md` |
-| Edit | `edit` | | 既存画像の編集 | `references/api-integration.md` |
-| Prompt Optimization | `prompt` | | プロンプト最適化 | `references/prompt-patterns.md` |
+| Generate | `generate` | ✓ | Text-to-image generation | `references/prompt-patterns.md`, `references/api-integration.md` |
+| Edit | `edit` | | Editing existing images | `references/api-integration.md` |
+| Prompt Optimization | `prompt` | | Prompt optimization | `references/prompt-patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -209,9 +209,9 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`generate` = Generate). Apply normal INTAKE → TRANSLATE → CONFIGURE → CODE → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `generate`: SINGLE_SHOT または BATCH モードで text-to-image Python コード生成。JP → EN 翻訳、Subject + Style + Composition + Technical プロンプト構造。コスト見積 + SynthID 開示必須。
-- `edit`: Nano Banana / Nano Banana 2 (ITERATIVE or REFERENCE_BASED モード) で既存画像編集コード生成。Thought Signatures 活用。inlineData 使用必須。
-- `prompt`: 既存プロンプトを Subject + Style + Composition + Technical 構造に再設計。50-200 語ターゲット、強キーワード 3-5 個。
+- `generate`: Generate text-to-image Python code in SINGLE_SHOT or BATCH mode. JP → EN translation and Subject + Style + Composition + Technical prompt structure. Cost estimate and SynthID disclosure required.
+- `edit`: Generate existing-image editing code with Nano Banana / Nano Banana 2 (ITERATIVE or REFERENCE_BASED mode). Leverage Thought Signatures. inlineData is required.
+- `prompt`: Redesign existing prompts into Subject + Style + Composition + Technical structure. Target 50-200 words with 3-5 strong keywords.
 
 ## Output Routing
 

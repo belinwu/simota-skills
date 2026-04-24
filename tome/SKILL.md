@@ -193,10 +193,10 @@ Output format templates → `references/output-templates.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Learning Doc | `learn` | ✓ | 学習ドキュメント生成 (標準モード) | `references/output-templates.md` |
-| Diff to Teaching | `diff` | | 差分を教材化 | `references/patterns.md` |
-| Onboarding Material | `onboard` | | 新規メンバー向け資料 (beginner 深度) | `references/output-templates.md` |
-| Design Decision Record | `record` | | 設計決定記録 (ADR/Decision Record) | `references/output-templates.md` |
+| Learning Doc | `learn` | ✓ | Learning document generation (standard mode) | `references/output-templates.md` |
+| Diff to Teaching | `diff` | | Turn diffs into teaching materials | `references/patterns.md` |
+| Onboarding Material | `onboard` | | Material for new members (beginner depth) | `references/output-templates.md` |
+| Design Decision Record | `record` | | Design decision record (ADR/Decision Record) | `references/output-templates.md` |
 
 ## Subcommand Dispatch
 

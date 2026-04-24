@@ -140,10 +140,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Story Creation | `story` | ✓ | Story 作成 | `references/storybook-patterns.md` |
-| Catalog Management | `catalog` | | コンポーネントカタログ整備 | `references/storybook-patterns.md` |
-| Visual Regression | `vrt` | | Visual Regression Test 連携 | `references/visual-regression.md` |
-| CSF 3.0 Migration | `csf3` | | CSF 3.0 への変換 | `references/storybook-patterns.md` |
+| Story Creation | `story` | ✓ | Story creation | `references/storybook-patterns.md` |
+| Catalog Management | `catalog` | | Component catalog maintenance | `references/storybook-patterns.md` |
+| Visual Regression | `vrt` | | Visual Regression Test integration | `references/visual-regression.md` |
+| CSF 3.0 Migration | `csf3` | | Conversion to CSF 3.0 | `references/storybook-patterns.md` |
 
 ## Subcommand Dispatch
 

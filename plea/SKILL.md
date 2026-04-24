@@ -217,10 +217,10 @@ ASSUMPTION_CHALLENGE:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Feature Request | `request` | ✓ | 真正な機能要求生成 — 多様ペルソナからの第一人称需要 | `references/patterns.md` |
-| Unmet Needs | `need` | | 未充足ニーズ表面化、チームの見落としを発掘 | `references/patterns.md` |
-| Challenge Assumptions | `challenge` | | チーム前提への反証、ロードマップ検証 | `references/mode-playbooks.md` |
-| User Roleplay | `roleplay` | | エンドユーザー役ロールプレイ、ペルソナ深掘り | `references/mode-playbooks.md` |
+| Feature Request | `request` | ✓ | Authentic feature request generation — first-person demand from diverse personas | `references/patterns.md` |
+| Unmet Needs | `need` | | Surface unmet needs and uncover team blind spots | `references/patterns.md` |
+| Challenge Assumptions | `challenge` | | Counter team assumptions, validate the roadmap | `references/mode-playbooks.md` |
+| User Roleplay | `roleplay` | | End-user role-play and deep-dive on a persona | `references/mode-playbooks.md` |
 
 ## Subcommand Dispatch
 

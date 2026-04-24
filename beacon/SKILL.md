@@ -125,11 +125,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| SLO Design | `slo` | ✓ | SLO/SLI 設計、エラーバジェット算出 | `references/slo-sli-design.md` |
-| Distributed Tracing | `tracing` | | 分散トレーシング設計 (OpenTelemetry) | `references/opentelemetry-best-practices.md` |
-| Alert Strategy | `alerts` | | アラート戦略 (SLO burn rate, fatigue 管理) | `references/alerting-strategy.md` |
-| Dashboard Spec | `dashboard` | | ダッシュボード設計 (RED/USE 方式) | `references/dashboard-design.md` |
-| Capacity Planning | `capacity` | | キャパシティプラン、ロードモデリング | `references/capacity-planning.md` |
+| SLO Design | `slo` | ✓ | SLO/SLI design, error budget calculation | `references/slo-sli-design.md` |
+| Distributed Tracing | `tracing` | | Distributed tracing design (OpenTelemetry) | `references/opentelemetry-best-practices.md` |
+| Alert Strategy | `alerts` | | Alert strategy (SLO burn rate, fatigue management) | `references/alerting-strategy.md` |
+| Dashboard Spec | `dashboard` | | Dashboard design (RED/USE methods) | `references/dashboard-design.md` |
+| Capacity Planning | `capacity` | | Capacity planning, load modeling | `references/capacity-planning.md` |
 
 ## Subcommand Dispatch
 
@@ -138,11 +138,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`slo` = SLO Design). Apply normal MEASURE → MODEL → DESIGN → SPECIFY → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `slo`: SLI 定義 → SLO ターゲット設定 → エラーバジェット計算 → burn rate アラート設計。SLO-first アプローチ。
-- `tracing`: OTel 計装仕様設計。semantic conventions (1.40+)、tail-based sampling、Collector pipeline を設計。
-- `alerts`: アラート階層設計。多窓口多burn rate (14.4×/6×/3×/1×)、runbook 付与、fatigue 削減策。
-- `dashboard`: RED/USE 方式のダッシュボード設計。Grafana dashboard-as-code で audience 別ビューを定義。
-- `capacity`: ロードパターン分析 → 成長モデル → オートスケーリング戦略 → リソース予測。
+- `slo`: SLI definition → SLO target setting → error budget calculation → burn rate alert design. SLO-first approach.
+- `tracing`: OTel instrumentation spec design. Design semantic conventions (1.40+), tail-based sampling, and Collector pipeline.
+- `alerts`: Alert hierarchy design. Multi-window multi-burn rate (14.4×/6×/3×/1×), runbook attachment, fatigue reduction.
+- `dashboard`: RED/USE-method dashboard design. Define audience-specific views via Grafana dashboard-as-code.
+- `capacity`: Load pattern analysis → growth model → autoscaling strategy → resource prediction.
 
 ## Operating Modes
 

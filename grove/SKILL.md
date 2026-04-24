@@ -139,10 +139,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Structure Audit | `audit` | ✓ | 既存リポ構造監査、アンチパターン検出 | `references/anti-patterns.md` |
-| New Structure Design | `design` | | 新規ディレクトリ構造設計 | `references/directory-templates.md` |
-| Docs Layout | `docs` | | docs/ レイアウト (PRD, specs, ADR) | `references/docs-structure.md` |
-| Migration Plan | `migrate` | | 既存リポ構造の移行計画 | `references/migration-strategies.md` |
+| Structure Audit | `audit` | ✓ | Audit existing repo structure, detect anti-patterns | `references/anti-patterns.md` |
+| New Structure Design | `design` | | Design a new directory structure | `references/directory-templates.md` |
+| Docs Layout | `docs` | | docs/ layout (PRD, specs, ADR) | `references/docs-structure.md` |
+| Migration Plan | `migrate` | | Migration plan for existing repo structure | `references/migration-strategies.md` |
 
 ## Subcommand Dispatch
 
@@ -151,10 +151,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`audit` = Structure Audit). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `audit`: 既存リポジトリの構造健全性スコアとアンチパターン (AP-001〜AP-016) を出力。SURVEY フェーズを重点化。
-- `design`: 言語・フレームワーク検出後にネイティブ規約準拠の新規ディレクトリ構造を提案。
-- `docs`: Scribe 互換の docs/ レイアウト設計。PRD・specs・ADR ディレクトリを含める。
-- `migrate`: L1-L5 リスクレベル別の増分移行計画を生成。各ステップは CI グリーンを維持。
+- `audit`: Output structural health score and anti-patterns (AP-001 to AP-016) for an existing repo. Emphasize the SURVEY phase.
+- `design`: Detect language/framework, then propose a new directory structure that follows native conventions.
+- `docs`: Scribe-compatible docs/ layout design. Include PRD, specs, and ADR directories.
+- `migrate`: Generate an incremental migration plan by L1-L5 risk level. Every step keeps CI green.
 
 ## Output Requirements
 

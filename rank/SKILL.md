@@ -164,11 +164,11 @@ Every deliverable must include:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| ICE Score | `ice` | ✓ | ICE スコアリング (Impact × Confidence × Ease) | `references/scoring-frameworks.md` |
-| RICE Score | `rice` | | RICE スコアリング (Reach × Impact × Confidence / Effort) | `references/scoring-frameworks.md` |
+| ICE Score | `ice` | ✓ | ICE scoring (Impact × Confidence × Ease) | `references/scoring-frameworks.md` |
+| RICE Score | `rice` | | RICE scoring (Reach × Impact × Confidence / Effort) | `references/scoring-frameworks.md` |
 | WSJF | `wsjf` | | WSJF (Weighted Shortest Job First) | `references/scoring-frameworks.md` |
-| MoSCoW | `moscow` | | MoSCoW 法 (Must/Should/Could/Won't) | `references/scoring-frameworks.md` |
-| Kano Model | `kano` | | Kano モデル (顧客満足度分類) | `references/scoring-frameworks.md` |
+| MoSCoW | `moscow` | | MoSCoW method (Must/Should/Could/Won't) | `references/scoring-frameworks.md` |
+| Kano Model | `kano` | | Kano model (customer satisfaction classification) | `references/scoring-frameworks.md` |
 
 ## Subcommand Dispatch
 
@@ -177,11 +177,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`ice` = ICE Score). Apply normal COLLECT → CRITERIA → SCORE → CALIBRATE → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `ice`: Impact × Confidence × Ease (各1-10) でスコアリング。QUICK モード適用。小チーム・データ不足時に最適。
-- `rice`: Reach × Impact × Confidence / Effort でスコアリング。FULL モード。ユーザー利用データがある中規模チーム向け。
-- `wsjf`: CoD / Job Duration でスコアリング。SAFe/Lean 環境、時間的価値が明確な大規模組織向け。
-- `moscow`: Must/Should/Could/Won't に分類。ステークホルダー合意形成に最適。
-- `kano`: Must-be / Performance / Attractive に分類。UX 改善優先度付けに最適。
+- `ice`: Score by Impact × Confidence × Ease (each 1-10). Apply QUICK mode. Best for small teams or sparse data.
+- `rice`: Score by Reach × Impact × Confidence / Effort. FULL mode. Suited to mid-size teams with usage data.
+- `wsjf`: Score by CoD / Job Duration. Suited to SAFe/Lean environments and large organizations with clear time value.
+- `moscow`: Classify into Must/Should/Could/Won't. Ideal for stakeholder alignment.
+- `kano`: Classify into Must-be / Performance / Attractive. Ideal for prioritizing UX improvements.
 
 ## References
 

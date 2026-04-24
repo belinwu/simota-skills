@@ -111,11 +111,11 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Edge Cases | `edge` | ✓ | 境界値・エラー経路の不足テスト追加 | `references/testing-patterns.md` |
-| Flaky Repair | `flaky` | | 不安定テストの根本原因診断と安定化 | `references/flaky-test-guide.md` |
-| Coverage Fill | `coverage` | | カバレッジ穴埋め・優先ギャップ特定 | `references/coverage-strategy.md` |
-| Regression Suite | `regression` | | Scout handoff 由来の回帰テスト追加 | `references/testing-patterns.md`, `references/advanced-techniques.md` |
-| CI Optimize | `ci` | | テスト選択・CI スピード改善 | `references/test-selection-strategy.md` |
+| Edge Cases | `edge` | ✓ | Add missing tests for boundary values and error paths | `references/testing-patterns.md` |
+| Flaky Repair | `flaky` | | Root-cause diagnosis and stabilization of flaky tests | `references/flaky-test-guide.md` |
+| Coverage Fill | `coverage` | | Coverage gap filling and priority gap identification | `references/coverage-strategy.md` |
+| Regression Suite | `regression` | | Add regression tests from Scout handoffs | `references/testing-patterns.md`, `references/advanced-techniques.md` |
+| CI Optimize | `ci` | | Test selection and CI speed improvements | `references/test-selection-strategy.md` |
 
 ## Subcommand Dispatch
 
@@ -124,11 +124,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`edge` = Edge Cases). Apply SCAN → LOCK → PING → VERIFY workflow.
 
 Behavior notes per Recipe:
-- `edge`: 境界値・null・空・タイムアウト・エラー分岐を優先。fail-first で regression を確認。
-- `flaky`: 根本原因 (async timing / 共有状態 / 順序依存) を特定してから修正。自動リトライ禁止。
-- `coverage`: diff カバレッジ 80%+ を目標に優先ギャップをリスク評価して選択。
-- `regression`: Scout または Builder の handoff 後専用。バグ再現テストを fail-first で追加し、fix 後に green 確認。
-- `ci`: TIA または skip 条件でスイート実行時間削減。CI インフラ変更は Gear に委譲。
+- `edge`: Prioritize boundary values, null, empty, timeout, and error branches. Confirm regressions fail-first.
+- `flaky`: Identify the root cause (async timing / shared state / order dependency) before fixing. No automatic retries.
+- `coverage`: Target 80%+ diff coverage and select priority gaps by risk assessment.
+- `regression`: Only after a Scout or Builder handoff. Add bug-reproducing tests fail-first, then confirm green after the fix.
+- `ci`: Reduce suite runtime with TIA or skip conditions. Delegate CI infrastructure changes to Gear.
 
 ## Workflow
 

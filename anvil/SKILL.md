@@ -127,10 +127,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| CLI Build | `cli` | ✓ | CLI 設計・実装 (コマンド設計・フラグ・ヘルプ・終了コード) | `references/cli-design-patterns.md` |
-| TUI Build | `tui` | | TUI (Terminal UI) 設計 (スピナー・テーブル・インタラクティブ) | `references/tui-components.md` |
-| Tool Wrap | `wrap` | | 既存 CLI ツールのラッパー (linter/formatter/test-runner 統合) | `references/tool-integration.md` |
-| Dev Tool Integration | `devtool` | | linter/test-runner/build-tool 統合・doctor コマンド | `references/tool-integration.md`, `references/cross-platform.md` |
+| CLI Build | `cli` | ✓ | CLI design/implementation (command design, flags, help, exit codes) | `references/cli-design-patterns.md` |
+| TUI Build | `tui` | | TUI (Terminal UI) design (spinners, tables, interactive prompts) | `references/tui-components.md` |
+| Tool Wrap | `wrap` | | Wrapping existing CLI tools (linter/formatter/test-runner integration) | `references/tool-integration.md` |
+| Dev Tool Integration | `devtool` | | linter/test-runner/build-tool integration, doctor command | `references/tool-integration.md`, `references/cross-platform.md` |
 
 ## Subcommand Dispatch
 
@@ -139,10 +139,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`cli` = CLI Build). Apply normal BLUEPRINT → CAST → TEMPER → HARDEN → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `cli`: BLUEPRINT でコマンド contract 確定 (signature/flags/exit-codes/JSON output)。`--help` + `--version` 必須。TTY-aware 出力。
-- `tui`: TUI フレームワーク選定 (Ratatui/BubbleTea/Textual)。イベントループ尊重。non-TTY 縮退必須。
-- `wrap`: 既存ツールの CLI contract 先読み (P3)。breaking change 防止。`--no-prompt` フラグ追加。
-- `devtool`: doctor コマンドパターン。依存関係検証。CI/non-TTY 互換。Gear への handoff 準備。
+- `cli`: Lock command contract at BLUEPRINT (signature/flags/exit-codes/JSON output). `--help` + `--version` mandatory. TTY-aware output.
+- `tui`: Select TUI framework (Ratatui/BubbleTea/Textual). Respect the event loop. Non-TTY degradation is mandatory.
+- `wrap`: Read existing tool CLI contracts first (P3). Prevent breaking changes. Add `--no-prompt` flag.
+- `devtool`: Doctor command pattern. Dependency verification. CI/non-TTY compatibility. Prepare handoff to Gear.
 
 ## Output Routing
 

@@ -211,10 +211,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Prune | `prune` | ✓ | 不要要素の削減提案 (総合) | `references/evaluation-criteria.md` |
-| Scope Cut | `cut` | | スコープカット提案 | `references/subtraction-patterns.md` |
-| Question Justification | `question` | | 正当性の問い直し | `references/evaluation-criteria.md` |
-| Simplify | `simplify` | | 複雑性削減 | `references/complexity-metrics.md` |
+| Prune | `prune` | ✓ | Pruning proposals for unnecessary elements (comprehensive) | `references/evaluation-criteria.md` |
+| Scope Cut | `cut` | | Scope cut proposals | `references/subtraction-patterns.md` |
+| Question Justification | `question` | | Question the justification | `references/evaluation-criteria.md` |
+| Simplify | `simplify` | | Complexity reduction | `references/complexity-metrics.md` |
 
 ## Subcommand Dispatch
 

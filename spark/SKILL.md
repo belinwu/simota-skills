@@ -159,10 +159,10 @@ Default opportunity patterns: dashboards from unused data · smart defaults from
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Propose | `propose` | ✓ | 新機能提案 (1 件 RFC 生成) | `references/proposal-templates.md`, `references/modern-product-discovery.md` |
-| Plan | `plan` | | 優先度付け・バックログスコアリング | `references/prioritization-frameworks.md`, `references/outcome-roadmapping-alignment.md` |
-| Brainstorm | `brainstorm` | | 複数候補発散・機会マイニング | `references/modern-product-discovery.md`, `references/persona-jtbd.md` |
-| Refine | `refine` | | 既存提案の精緻化・仮説・失敗条件追加 | `references/feature-ideation-anti-patterns.md`, `references/experiment-lifecycle.md` |
+| Propose | `propose` | ✓ | New feature proposal (generate one RFC) | `references/proposal-templates.md`, `references/modern-product-discovery.md` |
+| Plan | `plan` | | Prioritization and backlog scoring | `references/prioritization-frameworks.md`, `references/outcome-roadmapping-alignment.md` |
+| Brainstorm | `brainstorm` | | Divergent candidate generation and opportunity mining | `references/modern-product-discovery.md`, `references/persona-jtbd.md` |
+| Refine | `refine` | | Refine existing proposals, add hypotheses and fail conditions | `references/feature-ideation-anti-patterns.md`, `references/experiment-lifecycle.md` |
 
 ## Subcommand Dispatch
 
@@ -171,10 +171,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`propose` = Propose). Apply normal IGNITE → SYNTHESIZE → SPECIFY → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `propose`: 1 件に絞り込み。ペルソナ・JTBD・RICE スコア・失敗条件・OST 連携を必須含む。
-- `plan`: 既存候補を RICE/MoSCoW でスコアリング。RICE ガードレール (Impact 分布・Confidence 根拠) を厳守。
-- `brainstorm`: 機会パターン探索 (未使用データ・繰り返しアクション・フリクション)。OST ノードにリンク。
-- `refine`: 既存 RFC を受け取り、仮説・失敗条件・受入基準を補強。重複チェック実施。
+- `propose`: Narrow to one proposal. Must include persona, JTBD, RICE score, fail conditions, and OST integration.
+- `plan`: Score existing candidates with RICE/MoSCoW. Strictly adhere to RICE guardrails (Impact distribution, Confidence rationale).
+- `brainstorm`: Explore opportunity patterns (unused data, repetitive actions, friction). Link to OST nodes.
+- `refine`: Take an existing RFC and reinforce hypotheses, fail conditions, and acceptance criteria. Run a duplication check.
 
 ## Output Routing
 

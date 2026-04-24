@@ -242,10 +242,10 @@ Full techniques and pipeline -> `references/anonymization.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Factory Design | `factory` | ✓ | ファクトリパターン設計・型安全なテストデータ構築 | `references/factory-patterns.md` |
-| Boundary Values | `boundary` | | 境界値・エッジケースデータセット生成 | `references/boundary-values.md` |
-| Synthetic Data | `synthetic` | | 大規模合成データ生成・負荷テスト用データセット | `references/seed-management.md` |
-| Seed Management | `seed` | | 冪等シードスクリプト設計・スナップショット管理 | `references/seed-management.md` |
+| Factory Design | `factory` | ✓ | Factory pattern design and type-safe test data construction | `references/factory-patterns.md` |
+| Boundary Values | `boundary` | | Boundary value and edge-case data set generation | `references/boundary-values.md` |
+| Synthetic Data | `synthetic` | | Large-scale synthetic data generation and load-test datasets | `references/seed-management.md` |
+| Seed Management | `seed` | | Idempotent seed script design and snapshot management | `references/seed-management.md` |
 
 ## Subcommand Dispatch
 

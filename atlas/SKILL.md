@@ -135,14 +135,14 @@ Detailed checklists: `references/daily-process-checklists.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Architecture Analysis | `analyze` | ✓ | 全体アーキテクチャ分析、依存・結合度・モジュール境界の総合評価 | `references/dependency-analysis-patterns.md` |
-| Dependency Audit | `deps` | | 依存関係グラフ、循環参照検出 | `references/dependency-analysis-patterns.md` |
-| God Class Detection | `godclass` | | God Class / 肥大化モジュール検出 | `references/zen-integration.md` |
-| ADR Authoring | `adr` | | Architecture Decision Record 作成 | `references/adr-rfc-templates.md` |
-| RFC Drafting | `rfc` | | 大規模変更の RFC ドラフト | `references/adr-rfc-templates.md` |
-| Cycle Break | `cycle` | | 循環依存 (SCC) の検出と除去戦略 (依存反転 / インターフェース抽出 / 再レイヤリング) | `references/circular-dependency-remediation.md` |
-| Coupling Assessment | `coupling` | | モジュール結合度の定量評価 (Ca/Ce/I/A/D) と改善指針 | `references/coupling-metrics.md` |
-| Boundary Evaluation | `boundary` | | Bounded Context 境界評価・越境リーク検出・anti-corruption layer 提案 | `references/module-boundary-evaluation.md` |
+| Architecture Analysis | `analyze` | ✓ | Full architecture analysis, combined evaluation of dependency/coupling/module boundaries | `references/dependency-analysis-patterns.md` |
+| Dependency Audit | `deps` | | Dependency graph, circular reference detection | `references/dependency-analysis-patterns.md` |
+| God Class Detection | `godclass` | | God Class / bloated module detection | `references/zen-integration.md` |
+| ADR Authoring | `adr` | | Author Architecture Decision Record | `references/adr-rfc-templates.md` |
+| RFC Drafting | `rfc` | | RFC draft for large-scale changes | `references/adr-rfc-templates.md` |
+| Cycle Break | `cycle` | | Circular dependency (SCC) detection and removal strategies (dependency inversion / interface extraction / re-layering) | `references/circular-dependency-remediation.md` |
+| Coupling Assessment | `coupling` | | Quantitative module coupling assessment (Ca/Ce/I/A/D) and improvement guidance | `references/coupling-metrics.md` |
+| Boundary Evaluation | `boundary` | | Bounded Context boundary evaluation, cross-boundary leak detection, anti-corruption layer proposals | `references/module-boundary-evaluation.md` |
 
 ## Subcommand Dispatch
 
@@ -151,14 +151,14 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`analyze` = Architecture Analysis). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
 
 Behavior notes per Recipe:
-- `analyze`: 全体依存グラフ+結合度メトリクス+健全性スコアを生成。SURVEY フェーズを重点化。
-- `deps`: 循環参照と高頻度双方向依存を特定。修正候補 (マージ/抽出/許容) を提示。
-- `godclass`: SRP 違反モジュールを特定し、Zen への ZEN_HANDOFF ドラフトを生成。
-- `adr`: MADR 4.0 テンプレートで ADR を作成。Considered Options + 長所/短所を必ず含める。
-- `rfc`: 大規模変更の RFC ドラフト。移行戦略とロールバック計画を含める。
-- `cycle`: SCC (strongly connected component) を検出し、各 SCC に対して除去戦略 (DIP / interface 抽出 / 再レイヤリング / merge) を優先度付きで提示。Canvas への依存グラフ視覚化を推奨。
-- `coupling`: Martin metrics (Ca/Ce/Instability/Abstractness/Distance) を算出し、Main Sequence 逸脱モジュールを特定。目標値と改善候補を提示。
-- `boundary`: Bounded Context 境界とリポジトリ構造の整合を評価。越境データ漏洩・共有カーネル過剰・anti-corruption layer 欠如を検出。
+- `analyze`: Generate full dependency graph + coupling metrics + health score. Focus on the SURVEY phase.
+- `deps`: Identify circular references and high-frequency bidirectional dependencies. Suggest fix candidates (merge/extract/tolerate).
+- `godclass`: Identify SRP-violating modules and generate a ZEN_HANDOFF draft for Zen.
+- `adr`: Author ADR using MADR 4.0 template. Always include Considered Options + pros/cons.
+- `rfc`: RFC draft for large-scale changes. Include migration strategy and rollback plan.
+- `cycle`: Detect SCCs (strongly connected components) and present prioritized removal strategies (DIP / interface extraction / re-layering / merge) per SCC. Recommend Canvas visualization of the dependency graph.
+- `coupling`: Calculate Martin metrics (Ca/Ce/Instability/Abstractness/Distance) and identify modules off the Main Sequence. Present target values and improvement candidates.
+- `boundary`: Evaluate alignment between Bounded Context boundaries and repository structure. Detect cross-boundary data leakage, excessive shared kernel, and missing anti-corruption layers.
 
 ## Output Requirements
 

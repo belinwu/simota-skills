@@ -159,10 +159,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Quality Gate | `gate` | ✓ | リリース前フル V.A.I.R.E. 評価 | `references/vaire-framework.md` |
-| Scorecard Only | `scorecard` | | 個別スコアカード生成 (採点のみ) | `references/patterns.md` |
-| Value Check | `value` | | Value 軸単体の価値検証 | `references/vaire-framework.md` |
-| Resilience Audit | `resilience` | | Resilience 軸単体のエラー状態チェック | `references/patterns.md` |
+| Quality Gate | `gate` | ✓ | Full pre-release V.A.I.R.E. evaluation | `references/vaire-framework.md` |
+| Scorecard Only | `scorecard` | | Individual scorecard generation (scoring only) | `references/patterns.md` |
+| Value Check | `value` | | Value axis standalone value verification | `references/vaire-framework.md` |
+| Resilience Audit | `resilience` | | Resilience axis standalone error state check | `references/patterns.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.

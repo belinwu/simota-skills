@@ -40,19 +40,19 @@ Agent(
   mode: bypassPermissions
   model: [sonnet|opus|haiku]
   prompt: |
-    あなたは [AgentName] エージェントです。
-    まず ~/.claude/skills/[agent-name]/SKILL.md を読み、その指示に従ってください。
+    You are the [AgentName] agent.
+    First, read ~/.claude/skills/[agent-name]/SKILL.md and follow its instructions.
 
-    タスク: [task_description]
-    前ステップからのコンテキスト: [handoff_context]
-    制約: [constraints]
+    Task: [task_description]
+    Context from previous step: [handoff_context]
+    Constraints: [constraints]
 
-    完了時、以下のフォーマットで結果を出力してください:
+    When complete, output the result in the following format:
     _STEP_COMPLETE:
       Agent: [AgentName]
       Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-      Output: [成果物]
-      Next: [推奨次エージェント or DONE]
+      Output: [deliverable]
+      Next: [recommended next agent or DONE]
 )
 ```
 
@@ -75,11 +75,11 @@ Agent(
 | **L3: Rally Delegation** | `spawn_agent` with Rally prompt | 4+ workers, complex ownership | `spawn_agent(prompt="You are Rally...")` |
 
 **Codex Subagent Tools:**
-- `spawn_agent` — 新しいサブエージェントをスポーン
-- `send_input` — 実行中のサブエージェントに追加指示を送信
-- `wait_agent` — サブエージェントの完了を待機
-- `resume_agent` — 一時停止したサブエージェントを再開
-- `close_agent` — サブエージェントのスレッドを閉じる
+- `spawn_agent` — Spawn a new subagent
+- `send_input` — Send additional instructions to a running subagent
+- `wait_agent` — Wait for a subagent to complete
+- `resume_agent` — Resume a paused subagent
+- `close_agent` — Close a subagent's thread
 
 ### Layer Selection
 
@@ -108,19 +108,19 @@ Agent tool (v2.1.63+) supports additional frontmatter fields for fine-grained co
 
 | Option | Description | When to Use |
 |--------|-------------|-------------|
-| `maxTurns` | Maximum agentic turns before stopping | コスト管理、暴走防止。調査系: 20-30、実装系: 50-80 |
-| `effort` | Reasoning effort (`low`/`medium`/`high`/`max`) | Haiku+low で超軽量タスク、Opus+max で最高精度 |
-| `isolation: worktree` | Git worktree で隔離実行 | L2並列時のファイル競合防止。各ブランチが独立コピーで作業 |
-| `resume` (agent ID) | 既存サブエージェントを再開 | 失敗リトライ、追加作業の継続。フル履歴を保持 |
-| `skills` | Skill content を事前注入 | SKILL.md を prompt 内で「読め」と言う代わりに直接注入 |
-| `memory` | Persistent memory (`user`/`project`/`local`) | ルーティング学習、パターン蓄積のクロスセッション永続化 |
+| `maxTurns` | Maximum agentic turns before stopping | Cost control and runaway prevention. Investigation: 20-30, implementation: 50-80 |
+| `effort` | Reasoning effort (`low`/`medium`/`high`/`max`) | Haiku+low for ultra-lightweight tasks, Opus+max for maximum precision |
+| `isolation: worktree` | Isolated execution via Git worktree | Prevents file conflicts during L2 parallel runs. Each branch works in its own independent copy |
+| `resume` (agent ID) | Resume an existing subagent | Retry after failure or continue additional work. Retains full history |
+| `skills` | Pre-inject Skill content | Inject SKILL.md directly instead of telling the prompt to "read" it |
+| `memory` | Persistent memory (`user`/`project`/`local`) | Cross-session persistence for routing learning and pattern accumulation |
 
 **Worktree isolation for L2:**
 ```
-# L2 並列スポーン時に worktree を使うと、ファイル競合リスクがゼロになる
+# Using worktree during L2 parallel spawn eliminates file conflict risk
 Agent(
   name: "builder-feature-a"
-  isolation: worktree          # 独立した git worktree で実行
+  isolation: worktree          # Run in an independent git worktree
   run_in_background: true
   ...
 )
@@ -130,12 +130,12 @@ Agent(
   run_in_background: true
   ...
 )
-# 両者が完了後、worktree の変更をマージ
+# After both complete, merge the worktree changes
 ```
 
 ### Custom Subagent Definitions
 
-`.claude/agents/` (project) or `~/.claude/agents/` (user) に Markdown ファイルを配置することで、カスタム subagent_type を事前定義できる。これにより spawn 時のプロンプトが簡潔になり、ツール制限・モデル選択・スキル注入が確実に効く。
+By placing a Markdown file in `.claude/agents/` (project) or `~/.claude/agents/` (user), you can pre-define a custom subagent_type. This keeps the spawn-time prompt concise and ensures tool restrictions, model selection, and skill injection are reliably applied.
 
 ```yaml
 # ~/.claude/agents/scout-agent.md
@@ -150,11 +150,11 @@ memory: project
 skills:
   - scout
 ---
-あなたは Scout エージェントです。バグの根本原因を調査し、再現手順と影響範囲を特定してください。
-コードは変更しません。完了時は _STEP_COMPLETE フォーマットで報告してください。
+You are the Scout agent. Investigate the root cause of the bug and identify reproduction steps and impact scope.
+Do not modify code. When complete, report in the _STEP_COMPLETE format.
 ```
 
-定義済みエージェントは `subagent_type: "scout-agent"` で直接参照可能。
+Predefined agents can be referenced directly via `subagent_type: "scout-agent"`.
 
 ---
 
@@ -180,19 +180,19 @@ Agent(
   mode: bypassPermissions
   model: sonnet
   prompt: |
-    あなたは Scout エージェントです。
-    まず ~/.claude/skills/scout/SKILL.md を読み、その指示に従ってください。
+    You are the Scout agent.
+    First, read ~/.claude/skills/scout/SKILL.md and follow its instructions.
 
-    タスク: ログインバグの根本原因を調査してください。
-    症状: ユーザーがログインできない
-    制約: コードは変更しない（調査のみ）
+    Task: Investigate the root cause of the login bug.
+    Symptom: Users cannot log in
+    Constraints: Do not modify code (investigation only)
 
-    完了時、以下のフォーマットで結果を出力してください:
+    When complete, output the result in the following format:
     _STEP_COMPLETE:
       Agent: Scout
       Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-      Output: [調査結果]
-      Next: [推奨次エージェント or DONE]
+      Output: [investigation result]
+      Next: [recommended next agent or DONE]
 )
 ```
 
@@ -210,14 +210,14 @@ _STEP_COMPLETE:
 # Step 1: Spawn Scout
 scout_id = spawn_agent(
   prompt: |
-    あなたは Scout エージェントです。
-    まず ~/.claude/skills/scout/SKILL.md を読み、その指示に従ってください。
+    You are the Scout agent.
+    First, read ~/.claude/skills/scout/SKILL.md and follow its instructions.
 
-    タスク: ログインバグの根本原因を調査してください。
-    症状: ユーザーがログインできない
-    制約: コードは変更しない（調査のみ）
+    Task: Investigate the root cause of the login bug.
+    Symptom: Users cannot log in
+    Constraints: Do not modify code (investigation only)
 
-    完了時、_STEP_COMPLETE フォーマットで結果を出力してください。
+    When complete, output the result in the _STEP_COMPLETE format.
 )
 
 # Step 2: Wait for completion
@@ -226,9 +226,9 @@ result = wait_agent(scout_id)
 # Step 3: Use result to spawn Builder
 builder_id = spawn_agent(
   prompt: |
-    あなたは Builder エージェントです。
-    まず ~/.claude/skills/builder/SKILL.md を読み、その指示に従ってください。
-    前ステップからのコンテキスト: {result}
+    You are the Builder agent.
+    First, read ~/.claude/skills/builder/SKILL.md and follow its instructions.
+    Context from previous step: {result}
     ...
 )
 wait_agent(builder_id)
@@ -412,21 +412,21 @@ Understanding context inheritance is critical for reliable chain execution:
 
 | Aspect | Behavior |
 |--------|----------|
-| **会話履歴** | サブエージェントは親の会話履歴を引き継がない。プロンプトで明示的に渡す |
-| **Skills** | サブエージェントは親のskillsを引き継がない。`skills` フィールドで明示注入が必要 |
-| **権限** | 親の権限設定を継承。親が `bypassPermissions` なら子も同様（上書き不可） |
-| **Auto mode** | 親が `auto` mode の場合、子の `permissionMode` は無視される |
-| **Auto-compaction** | ~95%容量で自動発動。`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` で変更可能 |
-| **トランスクリプト** | `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl` に保存 |
-| **ネスト** | サブエージェントは他のサブエージェントをスポーンできない（1階層のみ） |
+| **Conversation history** | Subagents do not inherit the parent's conversation history. Pass it explicitly via the prompt |
+| **Skills** | Subagents do not inherit the parent's skills. Explicit injection via the `skills` field is required |
+| **Permissions** | Inherits parent's permission settings. If parent is `bypassPermissions`, so is the child (cannot be overridden) |
+| **Auto mode** | When the parent is in `auto` mode, the child's `permissionMode` is ignored |
+| **Auto-compaction** | Triggers automatically at ~95% capacity. Can be changed via `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` |
+| **Transcript** | Saved to `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl` |
+| **Nesting** | Subagents cannot spawn other subagents (one level only) |
 
 ---
 
 ## Subagent Lifecycle Hooks
 
-`settings.json` でサブエージェントのライフサイクルをモニタリングできる。Latch エージェントで設計・実装を推奨。
+You can monitor subagent lifecycles via `settings.json`. Design and implementation with the Latch agent is recommended.
 
-### チェーン実行モニタリング
+### Chain Execution Monitoring
 
 ```json
 {
@@ -449,16 +449,16 @@ Understanding context inheritance is critical for reliable chain execution:
 }
 ```
 
-### Agent Teams 品質ゲート (Rally L3)
+### Agent Teams Quality Gate (Rally L3)
 
-| Hook Event | Matcher | 用途 |
+| Hook Event | Matcher | Purpose |
 |-----------|---------|------|
-| `TeammateIdle` | — | チームメイトがアイドル直前。exit 2 で作業継続を強制 |
-| `TaskCompleted` | — | タスク完了マーク時。exit 2 で完了を阻止しフィードバック送信 |
+| `TeammateIdle` | — | Just before a teammate goes idle. Use exit 2 to force continued work |
+| `TaskCompleted` | — | On task completion mark. Use exit 2 to block completion and send feedback |
 
-### サブエージェント内フック（frontmatter定義）
+### In-Subagent Hooks (frontmatter definition)
 
-サブエージェント定義ファイル内で `hooks` を定義すると、そのサブエージェント実行中のみ有効なフックが設定される。
+Defining `hooks` within a subagent definition file sets hooks that are active only during that subagent's execution.
 
 ```yaml
 ---
@@ -477,20 +477,20 @@ hooks:
 ---
 ```
 
-`Stop` フックは frontmatter 内で定義すると自動的に `SubagentStop` に変換される。
+When a `Stop` hook is defined in frontmatter, it is automatically converted to `SubagentStop`.
 
 ---
 
 ## Agent Teams Constraints (Rally L3)
 
-Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` 必要) の制限事項:
+Constraints of Agent Teams (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`):
 
-| 制限 | 影響 |
+| Constraint | Impact |
 |------|------|
-| 実験的機能 | 設定で明示的に有効化が必要 |
-| 1セッション1チーム | 複数チームの同時管理不可 |
-| ネスト不可 | チームメイトは自チームを作れない |
-| リーダー固定 | 作成セッションが永続リーダー（移譲不可） |
-| セッション再開制限 | `/resume` で in-process チームメイトは復元されない |
-| 権限はスポーン時に固定 | 全チームメイトがリーダーの権限モードを継承 |
-| Split-pane | tmux または iTerm2 が必要（VS Code Terminal 非対応） |
+| Experimental feature | Must be explicitly enabled in settings |
+| One team per session | Cannot manage multiple teams concurrently |
+| No nesting | Teammates cannot create their own teams |
+| Fixed leader | The creating session is the permanent leader (cannot be transferred) |
+| Session resume limitation | In-process teammates are not restored by `/resume` |
+| Permissions fixed at spawn time | All teammates inherit the leader's permission mode |
+| Split-pane | Requires tmux or iTerm2 (VS Code Terminal not supported) |

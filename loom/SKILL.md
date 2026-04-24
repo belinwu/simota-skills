@@ -231,20 +231,20 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Guidelines | `guidelines` | ✓ | Figma Make Guidelines.md パッケージ生成 | `references/guidelines-templates.md`, `references/prompt-patterns.md` |
-| Analyze | `analyze` | | コードベース分析・トークン整合審査 | `references/token-alignment-guide.md` |
-| Prompt | `prompt` | | Make 用ステージドプロンプト設計 | `references/prompt-patterns.md`, `references/figma-make-constraints.md` |
-| Validate | `validate` | | Make 出力のスコアリング・検証 | `references/validation-checklist.md` |
+| Guidelines | `guidelines` | ✓ | Generate Figma Make Guidelines.md packages | `references/guidelines-templates.md`, `references/prompt-patterns.md` |
+| Analyze | `analyze` | | Codebase analysis and token alignment review | `references/token-alignment-guide.md` |
+| Prompt | `prompt` | | Staged prompt design for Make | `references/prompt-patterns.md`, `references/figma-make-constraints.md` |
+| Validate | `validate` | | Scoring and validation of Make output | `references/validation-checklist.md` |
 
 ## Subcommand Dispatch
 
 Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe (`guidelines` = Guidelines). Apply normal ANALYZE → COMPOSE → PRIME → VALIDATE → REFINE workflow.
-- `guidelines`: コードベースから Guidelines.md パッケージを生成し Make 用に最適化する。
-- `analyze`: トークン・コンポーネント・レイアウトを 4 軸 (Name/Value/Semantics/Hierarchy) で審査し drift を報告する。
-- `prompt`: TC-EBC 構造でステージドプロンプトを設計し、クレジット最適化を考慮した実行計画を作成する。
-- `validate`: Make 出力を採点 (detach rate, スコア 0-100) し PASS/CONDITIONAL/REVISE/REBUILD 判定を返す。
+- `guidelines`: Generate a Guidelines.md package from the codebase, optimized for Make.
+- `analyze`: Review tokens, components, and layout across 4 axes (Name/Value/Semantics/Hierarchy) and report drift.
+- `prompt`: Design staged prompts in TC-EBC structure and build an execution plan with credit optimization in mind.
+- `validate`: Score Make output (detach rate, 0-100) and return a PASS/CONDITIONAL/REVISE/REBUILD verdict.
 
 ## Output Routing
 

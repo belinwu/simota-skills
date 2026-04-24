@@ -186,10 +186,10 @@ INTAKE -> CONTRACT -> CLASSIFY -> GENERATE_OR_AUDIT -> HANDOFF -> COMPLETE
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Generate Loop | `generate` | ✓ | ゴールから nexus-autoloop スクリプトセットを新規生成 | `references/script-templates.md` |
-| Loop Contract | `contract` | | goal.md・ACs・フッターセマンティクス設計・弱いコントラクト強化 | `references/operation-contract.md` |
-| Loop Audit | `audit` | | ライブループのステータス分類・エビデンス検証 | `references/operation-contract.md` |
-| State Recovery | `recover` | | state.env ドリフト・フッター不整合・ループアーティファクト破損からの復旧 | `references/failure-taxonomy.md` |
+| Generate Loop | `generate` | ✓ | Generate a new nexus-autoloop script set from a goal | `references/script-templates.md` |
+| Loop Contract | `contract` | | goal.md, ACs, footer semantics design, weak contract hardening | `references/operation-contract.md` |
+| Loop Audit | `audit` | | Status classification and evidence verification of live loops | `references/operation-contract.md` |
+| State Recovery | `recover` | | Recovery from state.env drift, footer mismatch, or corrupted loop artifacts | `references/failure-taxonomy.md` |
 
 ## Subcommand Dispatch
 
@@ -198,10 +198,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`generate` = Generate Loop). Apply normal INTAKE → CONTRACT → CLASSIFY → GENERATE_OR_AUDIT → HANDOFF → COMPLETE workflow.
 
 Behavior notes per Recipe:
-- `generate`: ゴール入力からスクリプトセット (run-loop.sh, bootstrap.sh, recover.sh, verify.sh) と operation contract を生成。executor エンジン・コミット規約・ブランチポリシーをカスタマイズ。
-- `contract`: goal.md の弱い AC・非測定可能 DONE 基準を強化。フッターセマンティクス (`NEXUS_LOOP_STATUS`) と再開可能ステート設計を含む。`ON_GOAL_CONTRACT_WEAK` トリガー時に優先実行。
-- `audit`: goal.md・progress.md・state.env・runner.log を解析してループステータスを証拠付きで分類。DONE ゲートを検証。
-- `recover`: STATE_DRIFT・VERIFY_GAP・CIRCUIT_OPEN などの失敗クラスを診断し、可逆的な復旧プランまたはスクリプトを生成。ダーラブル実行 (チェックポイント + リプレイ) を優先。
+- `generate`: Generate a script set (run-loop.sh, bootstrap.sh, recover.sh, verify.sh) and operation contract from goal input. Customize executor engine, commit convention, and branch policy.
+- `contract`: Strengthen weak ACs and non-measurable DONE criteria in goal.md. Includes footer semantics (`NEXUS_LOOP_STATUS`) and resumable-state design. Prioritize on `ON_GOAL_CONTRACT_WEAK` trigger.
+- `audit`: Parse goal.md, progress.md, state.env, runner.log and classify loop status with evidence. Validate DONE gates.
+- `recover`: Diagnose failure classes such as STATE_DRIFT, VERIFY_GAP, CIRCUIT_OPEN and generate a reversible recovery plan or scripts. Prefer durable execution (checkpoint + replay).
 
 ## Output Routing
 

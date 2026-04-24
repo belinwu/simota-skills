@@ -164,11 +164,11 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Token System | `tokens` | ✓ | デザイントークン定義・構造設計 | `references/token-system.md` |
-| Apply Tokens | `apply` | | 既存 UI へのトークン適用 | `references/token-lifecycle.md` |
-| Theme Design | `theme` | | ライト/ダーク テーマ設計 | `references/dark-mode.md` |
-| Typography | `typography` | | タイポグラフィ選定・スケール設計 | `references/typography-selection-guide.md` |
-| Spacing & Layout | `spacing` | | スペーシング・グリッドシステム設計 | `references/design-system-construction.md` |
+| Token System | `tokens` | ✓ | Design token definition and structural design | `references/token-system.md` |
+| Apply Tokens | `apply` | | Token application to existing UI | `references/token-lifecycle.md` |
+| Theme Design | `theme` | | Light/Dark theme design | `references/dark-mode.md` |
+| Typography | `typography` | | Typography selection and scale design | `references/typography-selection-guide.md` |
+| Spacing & Layout | `spacing` | | Spacing and grid system design | `references/design-system-construction.md` |
 
 Behavior notes:
 - **tokens** (default): SURVEY → DEFINE → VALIDATE → PRESENT; load `token-system.md` + `css-token-architecture-anti-patterns.md`.

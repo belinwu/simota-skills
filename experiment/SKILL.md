@@ -153,10 +153,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| A/B Test Design | `ab` | ✓ | A/B テスト設計・仮説文書作成・サンプルサイズ計算 | `references/experiment-templates.md` |
-| CUPED | `cuped` | | CUPED/CUPAC 分散削減・感度改善設計 | `references/statistical-methods.md` |
-| Switchback | `switchback` | | マーケットプレイス・ネットワーク効果スイッチバック実験 | `references/common-pitfalls.md` |
-| Analyze | `analyze` | | 実験結果分析・統計的有意性・信頼区間レポート | `references/statistical-methods.md` |
+| A/B Test Design | `ab` | ✓ | A/B test design, hypothesis document authoring, sample size calculation | `references/experiment-templates.md` |
+| CUPED | `cuped` | | CUPED/CUPAC variance reduction, sensitivity improvement design | `references/statistical-methods.md` |
+| Switchback | `switchback` | | Marketplace/network-effect switchback experiments | `references/common-pitfalls.md` |
+| Analyze | `analyze` | | Experiment result analysis, statistical significance, confidence interval report | `references/statistical-methods.md` |
 
 ## Subcommand Dispatch
 

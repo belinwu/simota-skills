@@ -142,10 +142,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Create New Skill | `create` | ✓ | 新規スキル生成 (gap 分析から設計まで) | `references/creative-thinking.md`, `references/skill-template.md` |
-| Improve Existing | `improve` | | 既存スキル改善 (contract/boundary 再定義) | `references/review-loop.md`, `references/enhancement-framework.md` |
-| Compress | `compress` | | スキル圧縮 (トークン削減・4軸等価性維持) | `references/context-compression.md` |
-| Evolve | `evolve` | | スキル自己進化 (lifecycle-driven 自己改善) | `references/self-evolution.md` |
+| Create New Skill | `create` | ✓ | New skill generation (from gap analysis through design) | `references/creative-thinking.md`, `references/skill-template.md` |
+| Improve Existing | `improve` | | Improve existing skill (redefine contract/boundary) | `references/review-loop.md`, `references/enhancement-framework.md` |
+| Compress | `compress` | | Skill compression (token reduction, preserve 4-axis equivalence) | `references/context-compression.md` |
+| Evolve | `evolve` | | Skill self-evolution (lifecycle-driven self-improvement) | `references/self-evolution.md` |
 
 ## Subcommand Dispatch
 
@@ -157,7 +157,7 @@ Behavior notes per Recipe:
 - `create`: ENVISION (20-30% effort) → ANALYZE (overlap scoring) → GENERATE (SKILL.md + references) → VALIDATE (16-item checklist). Read `creative-thinking.md` first.
 - `improve`: Read `review-loop.md` for Health Score. ANALYZE → SCORE → PRIORITIZE → VALIDATE workflow.
 - `compress`: Token-budget analysis before changes. Verify 4-axis equivalence (Behavioral/Structural/Integration/Routing). Confirm if reduction > 20%.
-- `evolve`: Architect 自己修正専用。Safety Level A/B/C/D を厳守。Rollback snapshot 必須。
+- `evolve`: Architect self-modification only. Strictly enforce Safety Level A/B/C/D. Rollback snapshot is mandatory.
 
 ### Phase Contract
 

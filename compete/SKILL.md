@@ -28,7 +28,7 @@ COLLABORATION_PATTERNS:
 - Compete -> Lore: Validated recurring patterns become shared knowledge
 - Compete -> Oracle: LLM brand visibility analysis needs AI/ML expertise
 - Flux -> Compete: Market assumption reframing and differentiation axis discovery
-- Compete -> Researcher: COMPETE_TO_RESEARCHER — win/loss 分析結果に基づくインタビュー設計示唆
+- Compete -> Researcher: COMPETE_TO_RESEARCHER — interview design suggestions based on win/loss analysis results
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Voice (customer feedback), Pulse (product metrics), Nexus (task routing), Flux (market assumption reframing)
@@ -146,11 +146,11 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Competitor Matrix | `matrix` | ✓ | 競合マップ・機能比較マトリクス・ティアリング | `references/analysis-templates.md` |
-| SWOT Analysis | `swot` | | SWOT・ポジショニング・差別化戦略 | `references/competitive-moats-category-design.md` |
-| Battle Card | `battle-card` | | バトルカード作成・競合アラート対応プラン | `references/playbooks.md` |
-| Positioning Map | `positioning` | | ポジショニングマップ・カテゴリー設計・モート評価 | `references/competitive-moats-category-design.md` |
-| LLM Visibility | `llm-visibility` | | LLM ブランド認知分析・AI シェアオブボイス計測 | `references/intelligence-gathering.md` |
+| Competitor Matrix | `matrix` | ✓ | Competitor map, feature comparison matrix, tiering | `references/analysis-templates.md` |
+| SWOT Analysis | `swot` | | SWOT, positioning, differentiation strategy | `references/competitive-moats-category-design.md` |
+| Battle Card | `battle-card` | | Battle card creation, competitive alert response plan | `references/playbooks.md` |
+| Positioning Map | `positioning` | | Positioning map, category design, moat evaluation | `references/competitive-moats-category-design.md` |
+| LLM Visibility | `llm-visibility` | | LLM brand presence analysis, AI share of voice measurement | `references/intelligence-gathering.md` |
 
 ## Subcommand Dispatch
 
@@ -258,7 +258,7 @@ When analyzing `5+` competitors across multiple segments, spawn 2-3 Explore suba
 | `Compete -> Helm` | `COMPETE_TO_HELM` | Strategic simulation or scenario planning is required |
 | `Compete -> Lore` | `COMPETE_TO_LORE` | Validated recurring patterns should become shared knowledge |
 | `Compete -> Oracle` | `COMPETE_TO_ORACLE` | LLM brand visibility analysis requires AI/ML domain expertise |
-| `Compete -> Researcher` | `COMPETE_TO_RESEARCHER` | win/loss 分析からのインタビュー設計示唆 |
+| `Compete -> Researcher` | `COMPETE_TO_RESEARCHER` | Interview design suggestions from win/loss analysis |
 
 ## Reference Map
 

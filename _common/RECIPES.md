@@ -84,10 +84,10 @@ Parse the first token of user input.
 
 ### Agent Spawn Template
 
-When Nexus spawns an agent with a Recipe intent, add the following optional line to the spawn prompt (between the SKILL.md instruction and `タスク:`):
+When Nexus spawns an agent with a Recipe intent, add the following optional line to the spawn prompt (between the SKILL.md instruction and `Task:`):
 
 ```
-    Recipe: [recipe-name or auto]               # P-REC: サブコマンド指定 / auto-triage
+    Recipe: [recipe-name or auto]               # P-REC: subcommand hint / auto-triage
 ```
 
 - `[recipe-name]` — the exact Subcommand token (e.g., `bug`, `regression`)

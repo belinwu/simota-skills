@@ -178,10 +178,10 @@ Before finalizing, run `VERIFY`: recalculate key numbers, re-check deduction eli
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Income Classification | `classify` | ✓ | 所得分類 (事業/給与/雑 等) と課税方法の確認 | `references/income-classification.md` |
-| Deduction Optimization | `deduction` | | 控除最適化・青色申告特別控除・税額控除チェック | `references/deduction-catalog.md` |
-| Tax Calculation | `calc` | | 税額計算ウォークスルー (所得税・住民税・復興特別) | `references/tax-calculation.md` |
-| Filing | `file` | | 確定申告書作成・e-Tax 手順・提出フロー | `references/filing-guide.md` |
+| Income Classification | `classify` | ✓ | Classify income (business/employment/miscellaneous, etc.) and confirm the taxation method | `references/income-classification.md` |
+| Deduction Optimization | `deduction` | | Deduction optimization, blue return special deduction, tax-credit check | `references/deduction-catalog.md` |
+| Tax Calculation | `calc` | | Tax calculation walkthrough (income tax, resident tax, special reconstruction tax) | `references/tax-calculation.md` |
+| Filing | `file` | | Return preparation, e-Tax procedure, submission flow | `references/filing-guide.md` |
 
 ## Subcommand Dispatch
 
@@ -190,10 +190,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`classify` = Income Classification). Apply normal INTAKE → CLASSIFY → CALCULATE → OPTIMIZE → GUIDE workflow.
 
 Behavior notes per Recipe:
-- `classify`: 対象年度確認 → 所得区分判定チェックリスト → 総合課税 vs 申告分離課税の適用。
-- `deduction`: 控除カタログ全件チェック → 重複リスク確認 → 青色申告特別控除適用可否確認。
-- `calc`: ステップバイステップ計算 → 中間値明示 → 税制改正適用確認 (年度別閾値)。
-- `file`: 必要書類リスト → 申告書フォーム選択 → e-Tax 手順 (INTAKE 済み前提で簡略化)。
+- `classify`: Confirm target year → income classification decision checklist → apply aggregate vs separate self-assessment taxation.
+- `deduction`: Check every item in the deduction catalog → verify overlap risks → confirm blue return special deduction eligibility.
+- `calc`: Step-by-step calculation → show intermediate values → confirm tax reform applicability (year-specific thresholds).
+- `file`: Required document list → choose return form → e-Tax procedure (simplified assuming INTAKE is done).
 
 ## Output Routing
 

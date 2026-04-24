@@ -162,10 +162,10 @@ Routing rules:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Go/No-Go Decision | `decide` | ✓ | 採否の最終判定 (リリース可否、機能承認、品質ゲート) | `references/decision-domains.md` |
-| Tradeoff Analysis | `tradeoff` | | トレードオフ比較分析 (X vs Y 形式) | `references/decision-domains.md` |
-| Architecture Arbitration | `arbitrate` | | 設計案の仲裁 (Logos/Pathos/Sophia) | `references/deliberation-framework.md` |
-| Strategic Direction | `strategic` | | 長期戦略・ロードマップ決定 (build vs buy 等) | `references/decision-domains.md` |
+| Go/No-Go Decision | `decide` | ✓ | Final adoption verdict (release readiness, feature approval, quality gate) | `references/decision-domains.md` |
+| Tradeoff Analysis | `tradeoff` | | Tradeoff comparison analysis (X vs Y form) | `references/decision-domains.md` |
+| Architecture Arbitration | `arbitrate` | | Design option arbitration (Logos/Pathos/Sophia) | `references/deliberation-framework.md` |
+| Strategic Direction | `strategic` | | Long-term strategy and roadmap decisions (build vs buy, etc.) | `references/decision-domains.md` |
 
 ## Subcommand Dispatch
 
@@ -174,10 +174,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`decide` = Go/No-Go Decision). Apply normal FRAME → DELIBERATE → VOTE → SYNTHESIZE → DELIVER workflow.
 
 Behavior notes per Recipe:
-- `decide`: Go/No-Go に特化。KNOWLEDGE タスク分類 → 事実証拠を FRAME で共有 → 独立投票。
-- `tradeoff`: 2 案を明示化し Logos/Pathos/Sophia が独立評価。信頼度スコアで加重集約。
-- `arbitrate`: 設計オプション 2+ を評価。Engine Mode 自動検出 (低可逆性+高影響)。
-- `strategic`: REASONING タスク分類 → 独立投票プロトコル。長期影響を Sophia が重点評価。
+- `decide`: Focus on Go/No-Go. Classify as KNOWLEDGE task → share factual evidence at FRAME → independent voting.
+- `tradeoff`: Make both options explicit and have Logos/Pathos/Sophia evaluate independently. Weighted aggregation by confidence scores.
+- `arbitrate`: Evaluate 2+ design options. Auto-detect Engine Mode (low reversibility + high impact).
+- `strategic`: Classify as REASONING task → independent voting protocol. Sophia emphasizes long-term impact.
 
 ## Output Requirements
 

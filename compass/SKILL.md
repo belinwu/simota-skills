@@ -94,10 +94,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Recommend Skill | `recommend` | ✓ | タスクに最適なスキル推奨 (default Recipe 併記) | `references/catalog.md`, `references/patterns.md`, `references/recipes-directory.md` |
-| Catalog Listing | `catalog` | | スキル全カタログ一覧 | `references/catalog.md`, `references/recipes-directory.md` |
-| Onboarding Guide | `onboard` | | 新規ユーザーへの案内 | `references/examples.md`, `references/recipes-directory.md` |
-| Recipe Directory | `recipes` | | スキル別 Recipe (Subcommand) 一覧。`/compass recipes <skill>` で特定スキルの全 Recipe を、引数なしで全 131 スキルの一覧を提示 | `references/recipes-directory.md` |
+| Recommend Skill | `recommend` | ✓ | Recommend best-fit skill for the task (includes default Recipe) | `references/catalog.md`, `references/patterns.md`, `references/recipes-directory.md` |
+| Catalog Listing | `catalog` | | Full catalog of all skills | `references/catalog.md`, `references/recipes-directory.md` |
+| Onboarding Guide | `onboard` | | Orientation for new users | `references/examples.md`, `references/recipes-directory.md` |
+| Recipe Directory | `recipes` | | Per-skill Recipe (Subcommand) listing. `/compass recipes <skill>` lists all Recipes for a specific skill; without arguments, shows all 131 skills | `references/recipes-directory.md` |
 
 ## Subcommand Dispatch
 

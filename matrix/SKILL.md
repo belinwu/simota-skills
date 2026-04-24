@@ -174,10 +174,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Combination Control | `combine` | ✓ | 組合せ爆発制御、最小カバレッジ集合選定 | `references/combination-methods.md` |
-| Min Coverage Set | `cover` | | 最小カバレッジ集合選定 (pairwise/n-wise) | `references/optimization-algorithms.md` |
-| Execution Plan | `plan` | | 優先度付き実行計画生成 | `references/output-templates.md` |
-| Prioritize | `prioritize` | | リスク・頻度・ビジネス影響による優先度付け | `references/prioritization-pitfalls.md` |
+| Combination Control | `combine` | ✓ | Combination explosion control, minimum coverage set selection | `references/combination-methods.md` |
+| Min Coverage Set | `cover` | | Minimum coverage set selection (pairwise/n-wise) | `references/optimization-algorithms.md` |
+| Execution Plan | `plan` | | Prioritized execution plan generation | `references/output-templates.md` |
+| Prioritize | `prioritize` | | Prioritization by risk, frequency, and business impact | `references/prioritization-pitfalls.md` |
 
 ## Subcommand Dispatch
 
@@ -186,10 +186,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`combine` = Combination Control). Apply normal PARSE → EXPAND → OPTIMIZE → PLAN workflow.
 
 Behavior notes per Recipe:
-- `combine`: 組合せ爆発制御の総合ワークフロー。軸・値・制約を解析し最小カバレッジ集合を生成。
-- `cover`: pairwise / OA / 高強度 (3-way+) の最適化アルゴリズム選択に特化。
-- `plan`: カバレッジ集合から実行計画 (優先度・担当エージェント) を生成。PLAN フェーズ重点化。
-- `prioritize`: Critical/High/Medium/Low 優先度付けと偏り検出に特化。
+- `combine`: End-to-end combination explosion control workflow. Parse axes/values/constraints and generate the minimum coverage set.
+- `cover`: Focus on selecting the optimization algorithm (pairwise / OA / high-strength 3-way+).
+- `plan`: Generate an execution plan (priority, assigned agents) from the coverage set. Emphasize PLAN phase.
+- `prioritize`: Focus on Critical/High/Medium/Low prioritization and bias detection.
 
 ## Output Routing
 

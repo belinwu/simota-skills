@@ -139,33 +139,33 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 ## Recipes
 
-> **Nexus Recipes はタスク形状を表す。`## Modes` (AUTORUN_FULL 等) は実行制御を表す。両者は直交し、独立して組み合わせ可能。**
+> **Nexus Recipes represent task shape. `## Modes` (AUTORUN_FULL, etc.) represent execution control. They are orthogonal and combine independently.**
 
 | Recipe | Subcommand | Default? | When to Use | Chain Template |
 |--------|-----------|---------|-------------|----------------|
-| Auto Classify | `classify` | ✓ | Recipe 未指定時の自動分類 | CLASSIFY phase → CHAIN_SELECT (従来フロー) |
-| Bug Fix | `bug` | | バグ報告・修正依頼 | Scout → Sherpa → Builder → Radar |
-| Feature | `feature` | | 新機能実装 | Sherpa → Forge → Builder → Radar |
-| Security | `security` | | セキュリティ対応 | Sentinel → Builder → Radar |
-| Refactor | `refactor` | | リファクタリング | Zen → Radar |
-| Optimize | `optimize` | | 性能改善 | Bolt/Tuner → Radar |
-| Proactive | `proactive` | | /Nexus 引数なし、プロジェクト状態スキャン | Scan project → recommend |
+| Auto Classify | `classify` | ✓ | Auto-classification when no Recipe is specified | CLASSIFY phase → CHAIN_SELECT (legacy flow) |
+| Bug Fix | `bug` | | Bug reports and fix requests | Scout → Sherpa → Builder → Radar |
+| Feature | `feature` | | New feature implementation | Sherpa → Forge → Builder → Radar |
+| Security | `security` | | Security response | Sentinel → Builder → Radar |
+| Refactor | `refactor` | | Refactoring | Zen → Radar |
+| Optimize | `optimize` | | Performance improvement | Bolt/Tuner → Radar |
+| Proactive | `proactive` | | /Nexus with no arguments, project state scan | Scan project → recommend |
 
 ## Subcommand Dispatch
 
 Parse the first token of user input.
-- If it matches a Recipe Subcommand above → CLASSIFY をスキップして、その Recipe の Chain Template を CHAIN_SELECT に直接渡す。
-- `/Nexus` 引数なし → `proactive` Recipe を適用。`references/proactive-mode.md` を読んでスキャン。
-- Otherwise → default Recipe (`classify`) = 従来の CLASSIFY → CHAIN_SELECT フロー (既存挙動を完全保持)。
+- If it matches a Recipe Subcommand above → skip CLASSIFY and pass that Recipe's Chain Template directly to CHAIN_SELECT.
+- `/Nexus` with no arguments → apply the `proactive` Recipe. Read `references/proactive-mode.md` and scan.
+- Otherwise → default Recipe (`classify`) = legacy CLASSIFY → CHAIN_SELECT flow (existing behavior fully preserved).
 
-実行制御 Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) は Recipe 選定後に適用 (直交):
-- `classify` (default): 通常の CLASSIFY で task type を判定し、routing-matrix.md から chain を選ぶ。
-- `bug`: Scout[bug] → Sherpa[epic] → Builder[fix] → Radar[regression] のチェーン。+Sentinel for security。
-- `feature`: Sherpa[epic] → Forge[ui] → Builder[api] → Radar[edge] のチェーン。+Muse for UI。
-- `security`: Sentinel[scan] → Builder[fix] → Radar[edge] のチェーン。+Probe for dynamic testing。
-- `refactor`: Zen → Radar[coverage] のチェーン。+Atlas for architectural scope。
-- `optimize`: Bolt/Tuner → Radar[edge] のチェーン。+Schema for DB-heavy work。
-- `proactive`: `references/proactive-mode.md` に従いプロジェクト状態をスキャンして次アクションを推薦。
+Execution-control Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) is applied after Recipe selection (orthogonal):
+- `classify` (default): Standard CLASSIFY determines task type and selects a chain from routing-matrix.md.
+- `bug`: Scout[bug] → Sherpa[epic] → Builder[fix] → Radar[regression] chain. +Sentinel for security.
+- `feature`: Sherpa[epic] → Forge[ui] → Builder[api] → Radar[edge] chain. +Muse for UI.
+- `security`: Sentinel[scan] → Builder[fix] → Radar[edge] chain. +Probe for dynamic testing.
+- `refactor`: Zen → Radar[coverage] chain. +Atlas for architectural scope.
+- `optimize`: Bolt/Tuner → Radar[edge] chain. +Schema for DB-heavy work.
+- `proactive`: Follow `references/proactive-mode.md` to scan project state and recommend next actions.
 
 ## Workflow
 

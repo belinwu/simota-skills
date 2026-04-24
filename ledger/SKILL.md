@@ -197,11 +197,11 @@ Details → `references/cost-anomaly-detection.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| IaC Cost Estimate | `estimate` | ✓ | IaC コスト見積もり、変更前後のコスト差分 | `references/iac-cost-estimation.md` |
-| Right-Sizing | `rightsizing` | | インスタンス適正化、CPU/メモリ利用率分析 | `references/optimization-strategies.md` |
-| RI/SP Analysis | `ri-sp` | | 予約インスタンス・Savings Plan コミットメント戦略 | `references/optimization-strategies.md` |
-| Cost Anomaly | `anomaly` | | コスト異常検知ルール設計、スパイク対応プレイブック | `references/cost-anomaly-detection.md` |
-| AI/GPU Cost | `ai-gpu` | | AI/ML ワークロードコスト分析、GPU 利用率評価 | `references/optimization-strategies.md` |
+| IaC Cost Estimate | `estimate` | ✓ | IaC cost estimation, pre/post-change cost diff | `references/iac-cost-estimation.md` |
+| Right-Sizing | `rightsizing` | | Instance right-sizing, CPU/memory utilization analysis | `references/optimization-strategies.md` |
+| RI/SP Analysis | `ri-sp` | | Reserved Instance and Savings Plan commitment strategy | `references/optimization-strategies.md` |
+| Cost Anomaly | `anomaly` | | Cost anomaly detection rule design, spike response playbook | `references/cost-anomaly-detection.md` |
+| AI/GPU Cost | `ai-gpu` | | AI/ML workload cost analysis, GPU utilization evaluation | `references/optimization-strategies.md` |
 
 ## Subcommand Dispatch
 

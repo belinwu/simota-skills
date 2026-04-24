@@ -132,10 +132,10 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Deprecated Detection | `detect` | ✓ | deprecated ライブラリ検出 | `references/deprecation-detection.md`, `references/deprecated-library-catalog.md` |
-| Native API Replace | `replace` | | ネイティブ API への置換 | `references/native-replacements.md`, `references/native-api-replacement-guide.md` |
-| Migration PoC | `poc` | | 移行 PoC 作成 | `references/migration-patterns.md` |
-| Stack Refresh | `refresh` | | スタック全体更新 | `references/migration-risk-assessment.md` |
+| Deprecated Detection | `detect` | ✓ | Detect deprecated libraries | `references/deprecation-detection.md`, `references/deprecated-library-catalog.md` |
+| Native API Replace | `replace` | | Replace with native APIs | `references/native-replacements.md`, `references/native-api-replacement-guide.md` |
+| Migration PoC | `poc` | | Create a migration PoC | `references/migration-patterns.md` |
+| Stack Refresh | `refresh` | | Refresh the full stack | `references/migration-risk-assessment.md` |
 
 ## Subcommand Dispatch
 

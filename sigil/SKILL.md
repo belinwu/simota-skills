@@ -160,10 +160,10 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Generate New Skill | `generate` | ✓ | プロジェクト特化スキル生成 | `references/context-analysis.md`, `references/skill-templates.md` |
-| Analyze Project | `analyze` | | コードベース・スタック分析 | `references/context-analysis.md` |
-| Extract Conventions | `convention` | | 規約抽出 | `references/context-analysis.md`, `references/claude-md-best-practices.md` |
-| Migrate Existing | `migrate` | | 既存スキルのプロジェクト適合 | `references/evolution-patterns.md` |
+| Generate New Skill | `generate` | ✓ | Project-specific skill generation | `references/context-analysis.md`, `references/skill-templates.md` |
+| Analyze Project | `analyze` | | Codebase and stack analysis | `references/context-analysis.md` |
+| Extract Conventions | `convention` | | Convention extraction | `references/context-analysis.md`, `references/claude-md-best-practices.md` |
+| Migrate Existing | `migrate` | | Adapt an existing skill to the project | `references/evolution-patterns.md` |
 
 ## Subcommand Dispatch
 

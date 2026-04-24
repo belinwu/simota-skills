@@ -156,11 +156,11 @@ Route elsewhere when the task is primarily:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Markdown Conversion | `md` | ✓ | Markdown → PDF/Word/HTML 変換 (Pandoc/XeLaTeX/Typst) | `references/pandoc-recipes.md` |
-| PDF Generation | `pdf` | | 高品質 PDF 生成・PDF/A アーカイブ・PDF/UA アクセシビリティ | `references/pandoc-recipes.md` |
-| Word Export | `docx` | | Word (.docx) 出力・LibreOffice 変換・スタイル保持 | `references/conversion-matrix.md` |
-| Excel Export | `xlsx` | | Excel (.xlsx) 出力・CSV/HTML 変換 | `references/conversion-matrix.md` |
-| HTML Export | `html` | | HTML 出力・CSS Paged Media・アクセシビリティ対応 | `references/pandoc-recipes.md` |
+| Markdown Conversion | `md` | ✓ | Markdown → PDF/Word/HTML conversion (Pandoc/XeLaTeX/Typst) | `references/pandoc-recipes.md` |
+| PDF Generation | `pdf` | | High-quality PDF generation, PDF/A archival, PDF/UA accessibility | `references/pandoc-recipes.md` |
+| Word Export | `docx` | | Word (.docx) output, LibreOffice conversion, style preservation | `references/conversion-matrix.md` |
+| Excel Export | `xlsx` | | Excel (.xlsx) output, CSV/HTML conversion | `references/conversion-matrix.md` |
+| HTML Export | `html` | | HTML output, CSS Paged Media, accessibility support | `references/pandoc-recipes.md` |
 
 ## Subcommand Dispatch
 
@@ -169,11 +169,11 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`md` = Markdown Conversion). Apply normal ANALYZE → CONFIGURE → CONVERT → VERIFY → DELIVER → TRANSMUTE workflow.
 
 Behavior notes per Recipe:
-- `md`: Markdown 入力を基準にした変換。ターゲット形式を解析して最適ツールを選択 (pandoc + xelatex/typst/weasyprint)。日本語文書は A4・25mm マージン・行間 1.7-1.8 をデフォルト適用。
-- `pdf`: PDF 生成特化。品質スコア (Structure 30%, Visual 25%, Content 30%, Metadata 15%) でグレード判定 (B以上=80点必須)。PDF/A・PDF/UA 準拠要否を確認してツールを選択。
-- `docx`: Word 出力。LibreOffice を優先。フォント代替・スタイルマッピングのロス予告。複雑な LaTeX 数式・ネストテーブルは事前に制約を明示。
-- `xlsx`: Excel 出力。LibreOffice 経由を優先。シート構造・数式は変換非対応のため CSV または HTML で代替検討。
-- `html`: HTML 出力。Chrome/Puppeteer (CSS Grid/Flexbox)・weasyprint (CSS Paged Media)・pagedjs-cli (Paged.js) をユースケースで使い分け。WCAG 2.1 AA 準拠を確認。
+- `md`: Conversion anchored on Markdown input. Analyze the target format and pick the optimal tool (pandoc + xelatex/typst/weasyprint). For Japanese documents, default to A4, 25mm margins, line height 1.7-1.8.
+- `pdf`: Focused on PDF generation. Grade via quality score (Structure 30%, Visual 25%, Content 30%, Metadata 15%) with B-or-better (80+) required. Confirm PDF/A and PDF/UA compliance needs before selecting a tool.
+- `docx`: Word output. Prefer LibreOffice. Warn about font substitution and style-mapping loss. Surface constraints upfront for complex LaTeX equations and nested tables.
+- `xlsx`: Excel output. Prefer LibreOffice. Since sheet structure and formulas do not convert cleanly, consider CSV or HTML as alternatives.
+- `html`: HTML output. Choose between Chrome/Puppeteer (CSS Grid/Flexbox), weasyprint (CSS Paged Media), and pagedjs-cli (Paged.js) per use case. Confirm WCAG 2.1 AA compliance.
 
 ## Output Routing
 

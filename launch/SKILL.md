@@ -152,13 +152,13 @@ Route elsewhere when the task is primarily:
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| Release Plan | `plan` | ✓ | リリース計画・戦略立案 | `references/strategies.md` |
-| Changelog | `changelog` | | CHANGELOG 生成・更新 | `references/patterns.md` |
-| Release Notes | `notes` | | リリースノート作成 (ユーザー向け) | `references/patterns.md` |
-| Rollback Plan | `rollback` | | ロールバック計画・手順書作成 | `references/rollback-anti-patterns.md` |
-| Feature Flag | `flag` | | フィーチャーフラグ管理・段階ロールアウト設計 | `references/feature-flag-pitfalls.md` |
-| Hotfix Release | `hotfix` | | 緊急パッチリリース (短縮 CI / hotfix ブランチ / 2h SLA / rollback 同梱 / main への backport) | `references/hotfix-workflow.md` |
-| Canary Rollout | `canary` | | 段階的トラフィック投入 (1%→10%→50%→100%) と自動ガードレール・中止条件の設計 | `references/canary-rollout.md` |
+| Release Plan | `plan` | ✓ | Release planning and strategy | `references/strategies.md` |
+| Changelog | `changelog` | | CHANGELOG generation and updates | `references/patterns.md` |
+| Release Notes | `notes` | | User-facing release notes | `references/patterns.md` |
+| Rollback Plan | `rollback` | | Rollback planning and runbook | `references/rollback-anti-patterns.md` |
+| Feature Flag | `flag` | | Feature flag management and staged rollout design | `references/feature-flag-pitfalls.md` |
+| Hotfix Release | `hotfix` | | Emergency patch release (shortened CI / hotfix branch / 2h SLA / rollback bundled / backport to main) | `references/hotfix-workflow.md` |
+| Canary Rollout | `canary` | | Staged traffic rollout (1%->10%->50%->100%) with automatic guardrails and abort conditions | `references/canary-rollout.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.
@@ -166,13 +166,13 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`plan` = Release Plan). Apply normal INTAKE → ANALYZE → PLAN → COORDINATE → MONITOR workflow.
 
 Behavior notes per Recipe:
-- `plan`: リリース戦略・タイムライン・リスク評価・依存関係を統合したリリース計画書を生成。
-- `changelog`: git log またはマージコミットから CHANGELOG エントリを生成。Conventional Commits 形式に準拠。
-- `notes`: エンドユーザー向けリリースノート。技術詳細を省き、変更の価値・影響を平易な言葉で表現。
-- `rollback`: ロールバック判断基準・手順・担当者・コミュニケーションテンプレートを含む rollback playbook を生成。
-- `flag`: フィーチャーフラグの設計・段階ロールアウト (カナリア/ブルーグリーン) の計画と pitfall 回避策を提示。
-- `hotfix`: 緊急パッチリリース専用。SLA 2h、短縮 CI (smoke のみ)、hotfix ブランチ、rollback 手順同梱、main への backport plan を含む緊急プレイブックを生成。本番影響・RCA・類似リグレッション防止策も含める。
-- `canary`: 段階的トラフィックシフト (例: 1% → 10% → 50% → 100%) を設計。各段階のガードレールメトリクス (error rate / p95 / SLO burn / business metric) と自動中止条件、観察窓時間を明示。
+- `plan`: Generate a release plan integrating release strategy, timeline, risk assessment, and dependencies.
+- `changelog`: Generate CHANGELOG entries from git log or merge commits. Follow Conventional Commits format.
+- `notes`: End-user release notes. Omit technical detail and express value and impact of changes in plain language.
+- `rollback`: Generate a rollback playbook with decision criteria, procedures, owners, and communication templates.
+- `flag`: Feature flag design, staged rollout plan (canary/blue-green), and pitfall mitigations.
+- `hotfix`: Emergency patch release only. Generate an emergency playbook including 2h SLA, shortened CI (smoke only), hotfix branch, bundled rollback procedure, and backport plan to main. Include production impact, RCA, and similar-regression prevention.
+- `canary`: Design staged traffic shifts (e.g., 1% -> 10% -> 50% -> 100%). Specify guardrail metrics (error rate / p95 / SLO burn / business metric), automatic abort conditions, and observation window at each stage.
 
 ## Output Routing
 
