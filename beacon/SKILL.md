@@ -14,6 +14,9 @@ CAPABILITIES_SUMMARY:
 - toil_automation: Toil identification, automation scoring, self-healing design
 - reliability_review: Production readiness checklists, FMEA, game day planning
 - incident_learning: Postmortem metrics, reliability trends, SLO violation analysis
+- logging_design: Structured JSON log schema, correlation IDs (trace_id / span_id / request_id), log level policy (DEBUG/INFO/WARN/ERROR), source-side sampling, PII scrub patterns, OpenTelemetry Logs signal integration
+- golden_signals: Golden Signals (latency / traffic / errors / saturation), RED method for request-driven services (Tom Wilkie), USE method for resource-driven components (Brendan Gregg), SLI extraction templates that precede SLO target setting
+- toil_reduction: Toil audit against Google SRE book definition, automation priority scoring (frequency × time × growth × value), toil budget enforcement, runbook → script → auto-remediation escalation path
 
 COLLABORATION_PATTERNS:
 - Pattern A: Observability Implementation (Beacon → Gear → Builder)
@@ -130,6 +133,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Alert Strategy | `alerts` | | Alert strategy (SLO burn rate, fatigue management) | `references/alerting-strategy.md` |
 | Dashboard Spec | `dashboard` | | Dashboard design (RED/USE methods) | `references/dashboard-design.md` |
 | Capacity Planning | `capacity` | | Capacity planning, load modeling | `references/capacity-planning.md` |
+| Logging Design | `log` | | Structured JSON log schema, correlation IDs, sampling policy, PII scrub, OTel Logs signal | `references/logging-design.md` |
+| Golden Signals | `golden` | | Golden Signals / RED / USE signal selection before SLO target setting | `references/golden-signals.md` |
+| Toil Reduction | `toil` | | Toil audit, automation priority scoring, runbook → script → auto-remediation escalation | `references/toil-reduction.md` |
 
 ## Subcommand Dispatch
 
@@ -143,6 +149,9 @@ Behavior notes per Recipe:
 - `alerts`: Alert hierarchy design. Multi-window multi-burn rate (14.4×/6×/3×/1×), runbook attachment, fatigue reduction.
 - `dashboard`: RED/USE-method dashboard design. Define audience-specific views via Grafana dashboard-as-code.
 - `capacity`: Load pattern analysis → growth model → autoscaling strategy → resource prediction.
+- `log`: Structured log schema design — define JSON field contract, correlation IDs (`trace_id` / `span_id` / `request_id`), level policy (DEBUG/INFO/WARN/ERROR), source-side sampling (high-volume INFO/DEBUG), and PII scrub patterns. Emit via the OpenTelemetry Logs signal so logs share resource attributes with traces/metrics. Design-only: hand off log pipeline implementation (Fluent Bit / Loki / Datadog / Vector config, log library wiring) to `Gear`. Cross-link: `golden` for which events deserve log coverage, `tracing` for correlation-ID propagation.
+- `golden`: Signal-selection method that runs BEFORE `slo`. Apply Google SRE Golden Signals (latency / traffic / errors / saturation) as the universal frame, then pick RED (Tom Wilkie — rate / errors / duration) for request-driven services and USE (Brendan Gregg — utilization / saturation / errors) for resource-driven components (CPU / memory / disk / network / thread pools). Output an SLI candidate list with measurement points and rationale; feed it into `slo` for target setting and error budget calculation. Typical flow: `golden` → `slo` → `alerts`.
+- `toil`: Toil audit against the Google SRE book definition (manual / repetitive / automatable / tactical / no-enduring-value / O(n) with service size). Score candidates by frequency × time-per-occurrence × growth-trajectory × engineering-value, compare against the ≤50% toil budget, and design the runbook → script → auto-remediation escalation path. Output: prioritized toil list. Hand off auto-remediation candidates to `Mend` (runtime execution); Beacon identifies, Mend remediates. Cross-link with `alerts` for alert-driven toil sources.
 
 ## Operating Modes
 
