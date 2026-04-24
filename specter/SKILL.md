@@ -127,6 +127,9 @@ Rules:
 | Memory Leak | `leak` | | Detect gradual slowdown and listener/timer/subscription leaks | `references/memory-leak-diagnosis.md` |
 | Deadlock | `deadlock` | | Detect freezes, hangs, and Promise-chain deadlocks | `references/concurrency-anti-patterns.md` |
 | Resource Leak | `resource` | | Detect connection/socket/FD/pool leaks | `references/resource-management.md` |
+| Flaky Test Diagnosis | `flaky` | | Categorize intermittent tests (async/ordering/state/external), design quarantine and retry-with-record, verify test isolation | `references/flaky-test-diagnosis.md` |
+| Time-Dependent Bug | `time` | | Detect TZ/DST traps, monotonic vs wall-clock misuse, clock skew, leap seconds, and unfrozen test clocks | `references/time-dependent-bugs.md` |
+| Ordering Sensitivity | `order` | | Detect unordered-iteration reliance, sort-stability assumptions, concurrent-write implicit ordering, read-your-write staleness | `references/order-sensitivity.md` |
 
 ## Subcommand Dispatch
 
@@ -139,6 +142,9 @@ Behavior notes per Recipe:
 - `leak`: Track heap growth, listener accumulation, and retained DOM references. Recommend MemLab (JS) or Valgrind (C/C++).
 - `deadlock`: Analyze Promise chains, circular waits, and signal-lock graphs. Recommend RcChecker (Rust) / Fray (JVM).
 - `resource`: Detect sustained `totalCount === max && idleCount === 0 && waitingCount > 0` as a leak signal. Verify try/finally releases.
+- `flaky`: Intermittent-test root-cause and quarantine. Categorize into async / ordering / state / external before any retry; design retry-with-record and verify isolation via random order. For perf-regression flakes (timeouts under load) use Sentinel; for type/contract issues that look flaky use Probe; for throwaway PoC flakes use Forge.
+- `time`: Time-dependent correctness. Flag TZ/DST boundaries, monotonic vs wall-clock misuse, cross-host clock skew, leap seconds, and unfrozen test clocks. For scheduler / cron / retry-policy *design*, route to Tempo; for Date-type serialization contracts caught by static analysis, route to Probe; for timeout tuning under load, route to Sentinel.
+- `order`: Ordering-sensitivity hazards. Detect unordered-iteration reliance (Object.keys, Set, Map cross-engine), sort-stability assumptions, `LIMIT` without `ORDER BY`, concurrent-write implicit ordering (Kafka/Kinesis partition keys), and read-your-write on eventually consistent replicas. For classical shared-memory races stay in `race`; for type-level ordering contracts route to Probe; for sort/index *performance* route to Sentinel.
 
 ## Output Routing
 
@@ -282,6 +288,9 @@ Rules:
 | `references/resource-management.md` | You need resource-leak categories, pool thresholds, cleanup review checklists, or resource anti-patterns. |
 | `references/static-analysis-tools.md` | You need lint/tool recommendations, runtime detection tools, or stress/soak/chaos testing guidance. |
 | `references/distributed-concurrency.md` | Distributed system race conditions, lock issues, eventual consistency conflicts, or container resource issues are suspected. |
+| `references/flaky-test-diagnosis.md` | You need to categorize an intermittent test (async/ordering/state/external), design a quarantine policy, or set up retry-with-record and test-isolation verification. |
+| `references/time-dependent-bugs.md` | You need to detect TZ/DST traps, monotonic vs wall-clock misuse, clock skew across hosts, leap-second handling, or unfrozen test clocks. |
+| `references/order-sensitivity.md` | You need to detect unordered-iteration reliance, sort-stability assumptions, missing `ORDER BY`, concurrent-write implicit ordering, or read-your-write staleness. |
 | `_common/INVESTIGATION_ESCALATION.md` | Cross-cluster escalation to Rewind, unified confidence scale, or stall protocol is needed. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the ghost report, deciding adaptive thinking depth at tool selection, or front-loading language/concurrency-model/risk at TRIAGE. Critical for Specter: P3, P5. |
 
