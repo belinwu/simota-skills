@@ -153,6 +153,29 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Spark vs Dawn (Idea Generation)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Propose a feature for our product", existing data/users/workflows in context | **Spark** | Feature proposal grounded in existing product |
+| "今日のアイデア", "週末ハック", "副業プロジェクト案", no existing product context | **Dawn** | Zero-start personal side-project idea |
+| "Add X to the app" (existing app) | **Spark** | Product feature proposal |
+| "What should I build this weekend?" | **Dawn** | Greenfield personal hack |
+| "RICE score this", "JTBD analysis", "OST" | **Spark** | Product discovery frameworks |
+| "One idea a day", "every morning give me one" | **Dawn** | Daily ritual, 1-invocation = 1-idea |
+| "Coding-agent-ready prompt for a personal project" | **Dawn** | Section 8 implementation prompt |
+| Input has product metrics, personas, feedback | **Spark** | Context-bound proposal |
+| Input is just "give me something fun to build" | **Dawn** | Context-free ideation |
+
+**Rule of thumb**: Existing product context → Spark. Zero-start personal hack → Dawn. Spark produces RFCs with RICE/JTBD; Dawn produces 8-section side-project briefs with a ready-to-paste agent prompt.
+
+**Chain patterns**:
+- Dawn (daily idea) → Forge (prototype) → Builder (production) → Radar (tests)
+- Dawn (daily idea) → Zine (article-ify for a skill/tech blog series)
+- Spark (feature proposal) → Scribe (formal spec) → Builder (implement)
+
+---
+
 ### Pixel vs Artisan vs Forge (UI Implementation)
 
 | Signal | Route to | Rationale |
