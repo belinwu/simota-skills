@@ -188,6 +188,9 @@ Default profile: `Standard`, unless the user asks for lighter or heavier customi
 | tmux Config | `tmux` | | tmux + starship/powerlevel10k configuration | `references/tmux-starship.md` |
 | Neovim Config | `neovim` | | Neovim 0.12+ configuration (LSP, vim.pack, DAP) | `references/editor-configs.md` |
 | Ghostty Config | `ghostty` | | Ghostty 1.3+ configuration (theme, font, keybindings) | `references/terminal-configs.md` |
+| VS Code / Cursor Config | `vscode` | | VS Code or Cursor settings, keybindings, extensions, Settings Sync, devcontainer | `references/vscode-editor-config.md` |
+| Personal Git Config | `git` | | `~/.gitconfig`, global ignore/attributes, commit signing, delta/absorb, personal hooks | `references/git-personal-config.md` |
+| Shell Functions and Env | `shellfn` | | Functions/aliases layout, PATH hygiene, direnv/mise/asdf/nvm, XDG, lazy completions | `references/shellfn-functions-env.md` |
 | Dotfile Audit | `audit` | | Audit existing dotfile setup, detect anti-patterns | `references/shell-config-anti-patterns.md` |
 
 ## Subcommand Dispatch
@@ -201,6 +204,9 @@ Behavior notes per Recipe:
 - `tmux`: Generate tmux.conf + starship.toml or powerlevel10k configuration. Include editor integration.
 - `neovim`: Prefer 0.12+ built-ins (vim.pack/autocomplete/Undotree). Mason + Tree-sitter for Advanced profiles.
 - `ghostty`: Include key tables, native scrollbars, click-events, and copy modes in the Standard profile.
+- `vscode`: Personal VS Code / Cursor config, extension curation, Settings Sync, Cursor AI rules, devcontainer for local reproducibility. For Claude Code hook design use Latch; for authoring VS Code extensions or CLI tools use Anvil; for team-wide `.vscode/` as a repo contract use Grove + Gear.
+- `git`: Personal `~/.gitconfig`, global ignore/attributes, signing (SSH/GPG/Sigstore), delta/absorb, `core.hooksPath`. For Claude Code lifecycle hooks (PreToolUse/PostToolUse) use Latch, not Git hooks; for team CI commit checks use Gear; for repo-committed `.gitattributes`/CODEOWNERS use Grove.
+- `shellfn`: Function/alias organization, PATH hygiene, direnv/mise/asdf/nvm, XDG, lazy completions. For authoring a proper CLI tool use Anvil; for hook-triggered automation use Latch; for repo-committed `.tool-versions`/`mise.toml` as a team contract use Gear + Grove.
 - `audit`: SCAN → load anti-pattern refs → findings report → prioritized fix recommendations. No actual changes.
 
 ## Output Routing
