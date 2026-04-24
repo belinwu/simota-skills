@@ -90,18 +90,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ## Recipes (optional — see `_common/RECIPES.md`)
 
-Omit this section if the skill has 2 or fewer modes or if Output Routing above is sufficient.
+Omit this section if the skill has 2 or fewer modes or if Output Routing above is sufficient. Keep the "When to Use" column in English — concise phrases describing the activation condition.
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| [Recipe Name] | `[subcommand]` | ✓ | [activation condition] | `references/[file].md` |
-| [Recipe Name] | `[subcommand]` | | [activation condition] | `references/[file].md` |
+| [Recipe Name] | `[subcommand]` | ✓ | [Short English phrase describing when to pick this] | `references/[file].md` |
+| [Recipe Name] | `[subcommand]` | | [Short English phrase describing when to pick this] | `references/[file].md` |
 
 ## Subcommand Dispatch (required if Recipes defined)
 
-- Parse first token of user input.
-- If it matches a Recipe Subcommand above → activate that Recipe; read only its "Read First" column files at initial load.
-- Otherwise → default Recipe + automatic triage.
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`[default-subcommand]` = [Default Recipe Name]). Apply the normal workflow.
+
+Behavior notes per Recipe (keep English — describe the step sequence and any recipe-specific rules):
+- `[subcommand]`: [One-line English description of the phase order and key constraints.]
+- `[subcommand]`: [One-line English description of the phase order and key constraints.]
 
 ## [Domain-Specific Section(s)]
 
@@ -116,7 +120,7 @@ Every deliverable must include:
 - [Required element 1]
 - [Required element 2]
 - [Required element 3]
-- Final outputs are in Japanese.
+- Final outputs to the user are in Japanese; code, identifiers, file paths, CLI commands, and technical terms remain in English. (SKILL.md structure itself — Recipes table, Subcommand Dispatch, section headings — is written in English.)
 
 ## Collaboration
 
