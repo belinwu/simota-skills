@@ -115,6 +115,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Monthly Report | `monthly` | | Monthly report (includes DORA metrics) | `references/report-templates.md` |
 | Release Notes | `release` | | Release notes generation (PR aggregation between tags) | `references/changelog-best-practices.md` |
 | Sprint Retro | `retro` | | Retrospective aggregation and narrative | `references/retrospective-voice.md` |
+| DORA Deep-Dive | `dora` | | DORA 4-key metric tier classification with SPACE complement | `references/dora-metrics.md` |
+| OKR Linkage | `okr` | | PR-to-Objective mapping and KR narrative for quarterly review | `references/okr-linkage.md` |
+| PR Stats Deep-Dive | `prstats` | | Cycle time histogram, P50/P75/P90 latency, Lorenz curve, large-PR risk | `references/pr-stats-analysis.md` |
 
 ## Subcommand Dispatch
 
@@ -127,6 +130,9 @@ Behavior notes per Recipe:
 - `monthly`: Monthly report. Includes 7-archetype team profile and 4-phase review cycle breakdown.
 - `release`: Generate release notes from PRs between tags/periods. Uses Keep a Changelog category mapping.
 - `retro`: Narrative aggregation for sprint retrospectives. Combine numbers and human interpretation in the output.
+- `dora`: DORA 4-key metric deep-dive (Deployment Frequency, Lead Time, Change Failure Rate, MTTR) with 2024-2025 Elite/High/Medium/Low tier thresholds and SPACE complement. Pair with 7-archetype profile and AI-period caveat. Emit to `dora-report-YYYY-MM-DD.md`.
+- `okr`: PR-to-Objective mapping for a quarterly window. Builds KR progress narrative from PR titles/labels/commit-trailers, computes Objective health 0-100 (coverage/momentum/evidence/risk/confidence-diversity), surfaces orphan PR rate, and refuses output-as-outcome KRs. Emit to `okr-linkage-YYYY-Q.md`.
+- `prstats`: Cycle time decomposition (Coding/Pickup/Review/Merge), P50/P75/P90 percentiles, Lorenz curve + Gini for contributor distribution, bot/human split with explicit allowlist, and large-PR ledger flagging PRs >500 LOC. Emit to `pr-stats-YYYY-MM-DD.md`.
 
 ## Report Modes
 
@@ -240,6 +246,9 @@ Routing rules:
 | `references/changelog-best-practices.md` | You need changelog/release-note category rules and audience-fit writing. |
 | `references/estimation-anti-patterns.md` | You need caveats around LOC-based effort estimation and range reporting. |
 | `references/reporting-anti-patterns.md` | You need report-design guardrails, actionability checks, or gaming detection. |
+| `references/dora-metrics.md` | You need DORA 4-key tier thresholds (2024-2025), measurement-window selection, gh/Insights integration, or SPACE complement for the `dora` recipe. |
+| `references/okr-linkage.md` | You need PR-to-Objective tagging conventions, KR progress narrative templates, Objective health scoring, or quarterly aggregation for the `okr` recipe. |
+| `references/pr-stats-analysis.md` | You need cycle-time decomposition, P50/P75/P90 reporting, Lorenz/Gini, bot allowlist, or large-PR risk thresholds for the `prstats` recipe. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the work report, deciding adaptive thinking depth at archetype/caveat handling, or front-loading window/scope/audience at COLLECT. Critical for Harvest: P3, P5. |
 
 ## Operational
