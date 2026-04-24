@@ -12,6 +12,9 @@ CAPABILITIES_SUMMARY:
 - test_specs: Create test specification documents
 - review_checklists: Create review checklists for implementations
 - agent_specs: Create AI-agent-consumable specifications (AGENTS.md-compatible)
+- adr_authoring: Author Architecture Decision Records using Nygard or MADR format with numbering, immutability, and supersede chain
+- runbook_authoring: Author operational runbooks (symptom → triage → recover → verify) consumed by Triage / Mend during incidents
+- api_documentation: Transform OpenAPI specs into human-readable API reference docs (Redoc / Stoplight / Mintlify) with samples, error catalog, and auth flows
 
 COLLABORATION_PATTERNS:
 - Accord -> Scribe: Integrated specs from cross-team alignment
@@ -209,6 +212,9 @@ Routing rules:
 | HLD | `hld` | | High-Level Design (system architecture, component design) | `references/design-template.md` |
 | LLD | `lld` | | Low-Level Design (module details, data structures, sequences) | `references/design-template.md` |
 | Test Spec | `testspec` | | Test specification (scope, cases, data, traceability) | `references/test-spec-template.md` |
+| ADR | `adr` | | Architecture Decision Record (Nygard/MADR format, ADR numbering, immutability, supersede chain) | `references/adr-writing.md` |
+| Runbook | `runbook` | | Operational runbook (symptom → triage → recover → verify, escalation, idempotency) | `references/runbook-writing.md` |
+| API Doc | `api-doc` | | Human-readable API reference from OpenAPI (code samples, error catalog, auth flow, versioning) | `references/api-documentation.md` |
 
 ## Subcommand Dispatch
 
@@ -222,6 +228,9 @@ Behavior notes per Recipe:
 - `hld`: Describe system composition, deployment, and scaling strategy. Link to Atlas ADRs for reference.
 - `lld`: Module design, data structures, and sequence diagrams. Detail granularity for immediate implementation.
 - `testspec`: Given/When/Then format. Must include test scope, data, and traceability matrix.
+- `adr`: Author Architecture Decision Records in Nygard format (Title / Status / Context / Decision / Consequences) or MADR template. Assign sequential ADR numbers (`ADR-0001`) and store under `docs/adr/`. Treat accepted ADRs as immutable — supersede via a new ADR and maintain a bidirectional supersede chain (`Supersedes ADR-0003` / `Superseded-by ADR-0012`). Use RFC 2119 keywords (MUST / SHOULD / MAY) when stating the decision. This is the GENERAL ADR-writing recipe for any agent or human; for application/module-level architecture decisions (dependency direction, layer boundary, pattern choice), hand off to `Atlas` which owns the tradeoff analysis and authors those ADRs directly.
+- `runbook`: Author the runbook document artifact itself — symptom → triage → recover → verify → root-cause link. Required sections: pre-condition, authorization (who MAY execute), idempotency note, escalation path, rollback, verification query. Runbooks authored here are CONSUMED by `Mend` during automated remediation and by `Triage` during first-response. Scribe does not diagnose (`Triage`) or execute (`Mend`) — it AUTHORS. Cross-link the upstream postmortem or incident ticket.
+- `api-doc`: Transform a Gateway-authored OpenAPI 3.1 spec into human-facing reference docs (Redoc / Stoplight Elements / Mintlify). Required sections: authentication flow, versioning policy, per-endpoint code samples in ≥2 languages (curl + one SDK language), error catalog mapped to HTTP status + domain error code, rate-limit note, changelog. Gateway `openapi` owns the spec (YAML contract); Scribe `api-doc` owns the human-facing documentation surface. Handoff direction: Gateway → Scribe.
 
 ## Output Requirements
 
