@@ -93,6 +93,9 @@ Route elsewhere when the task is primarily:
 - In play functions, prefer accessible queries (`getByRole`, `getByLabelText`, `getByText`) over `data-testid` — accessible queries validate the component's accessibility contract simultaneously and align with Testing Library best practices; fall back to `data-testid` only when no semantic query is viable.
 - For AI agent integration, recommend @storybook/addon-mcp to expose component manifests via MCP server; guide manifest optimization by excluding irrelevant stories/docs via tag removal to reduce token overhead and improve agent accuracy.
 - RSC stories require module mocking (`sb.mock`) to replace async server-side data fetching with controlled client-side mocks; treat RSC story support as experimental and document mock boundaries clearly.
+- For `interaction` recipe: import test utilities exclusively from `@storybook/test` (Storybook 8+ unified package) — never from deprecated `@storybook/jest` or `@storybook/testing-library`. Always `await` `userEvent` calls (v14+ is async), scope queries via `within(canvasElement)`, and prefer `findBy*`/`waitFor` over `waitForTimeout`. Use `step()` to group multi-stage flows for the Interactions panel. Stop play functions at the component boundary; cross-page flows hand off to Voyager.
+- For `mdx` recipe: start every component with Autodocs (`tags: ['autodocs']`); promote to hand-authored MDX only when narrative, multi-page guides, or custom JSX is required. Always bind via `<Meta of={meta} />`, embed stories with `<Canvas of={Story} />` (never re-define stories inline — Storybook 7+ deprecates `<Story name="...">` with JSX children), and register `'../src/**/*.mdx'` in `.storybook/main.ts`. Generate prop tables with `<ArgTypes>` rather than hand-written Markdown.
+- For `cosmos` recipe: recommend React Cosmos only for React-only projects valuing minimal config and fastest hot reload, where Chromatic / MCP / MDX / multi-framework support are not required. Coexistence with Storybook is permitted short-term but designate one tool as primary to avoid maintenance drift. Cosmos has no native play-function or VRT — wire Vitest browser-mode for interactions and Playwright VRT/Lost Pixel/Loki for visual diff.
 - Author for Opus 4.7 defaults. Apply _common/OPUS_47_AUTHORING.md principles **P3 (eagerly Read existing stories, components, and coverage gaps at SCAN — coverage decisions require knowing what's already documented), P5 (think step-by-step at PLAN — high-signal story selection avoids low-value variant explosion)** as critical for Showcase. P2 recommended: calibrated story plans preserving variant rationale and coverage rationale. P1 recommended: front-load target component and coverage tier at SCAN.
 ## Boundaries
 
@@ -144,6 +147,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Catalog Management | `catalog` | | Component catalog maintenance | `references/storybook-patterns.md` |
 | Visual Regression | `vrt` | | Visual Regression Test integration | `references/visual-regression.md` |
 | CSF 3.0 Migration | `csf3` | | Conversion to CSF 3.0 | `references/storybook-patterns.md` |
+| Storybook Interactions | `interaction` | | Play function authoring with `@storybook/test`, addon-vitest integration | `references/storybook-interactions.md` |
+| MDX Documentation | `mdx` | | Hand-authored MDX docs with Doc Blocks, Autodocs vs MDX trade-off | `references/mdx-docs.md` |
+| React Cosmos | `cosmos` | | React Cosmos fixture authoring, Storybook vs Cosmos decision | `references/react-cosmos.md` |
 
 ## Subcommand Dispatch
 
@@ -264,6 +270,9 @@ Showcase receives components and design context from upstream agents. Showcase s
 | `references/react-cosmos-guide.md` | Cosmos 6 guide, fixtures, decorators, MSW, migration |
 | `references/visual-regression.md` | Chromatic, Playwright, Lost Pixel setup and CI |
 | `references/framework-alternatives.md` | Histoire, Ladle, tool comparison |
+| `references/storybook-interactions.md` | Play function authoring, `@storybook/test` API, addon-vitest integration, Interactions panel debugging |
+| `references/mdx-docs.md` | MDX 3 + Storybook 10 Doc Blocks, Autodocs vs hand-authored MDX trade-off, multi-page docs structure |
+| `references/react-cosmos.md` | Cosmos 6+ fixtures, decorator chains, multi-instance props, Storybook vs Cosmos decision tree |
 | `_common/OPUS_47_AUTHORING.md` | Sizing the story plan, deciding adaptive thinking depth at PLAN, or front-loading target component/coverage tier at SCAN. Critical for Showcase: P3, P5 |
 
 ## Operational
