@@ -15,6 +15,9 @@ CAPABILITIES_SUMMARY:
 - defensive_cleanup: Unnecessary guard removal on type-guaranteed internal paths
 - multi_engine_refactoring: Cross-engine comparison for quality-critical proposals
 - ai_code_quality: AI-generated code review for architectural drift, duplicated logic, behavioral vulnerabilities, security flaws
+- logic_simplification: Collapse verbose conditionals, ternary chains, and redundant transformations into concise equivalents while preserving behavior
+- function_splitting: Break large functions along responsibility seams with step-by-step extraction and rollback checkpoints
+- guard_clause_conversion: Convert nested conditionals to early returns / guard clauses for reduced cyclomatic complexity and improved readability
 
 COLLABORATION_PATTERNS:
 - Judge -> Zen: Code smell findings for refactoring (JUDGE_TO_ZEN)
@@ -158,6 +161,9 @@ Routing rules:
 | Extract Function | `extract` | | 長い関数の分割・抽出 | `references/refactoring-recipes.md` |
 | Magic Constants | `constants` | | マジックナンバーの名前付き定数化 | `references/refactoring-recipes.md` |
 | Dead Code Removal | `dead` | | 未使用コード除去 | `references/dead-code-detection.md` |
+| Simplify Logic | `simplify` | | 冗長な条件分岐・三項演算・不要変換を等価な簡潔形へ圧縮 | `references/logic-simplification.md` |
+| Split Function | `split` | | 長すぎる関数を責務境界で段階分割 (extract の強化版) | `references/function-splitting.md` |
+| Guard Clauses | `guard` | | ネストした `if` を早期 return / guard clause に変換 | `references/guard-clauses.md` |
 
 ## Subcommand Dispatch
 
@@ -171,6 +177,9 @@ Behavior notes per Recipe:
 - `extract`: 長いメソッドを 1 関数抽出。cognitive complexity 15 超を優先。テストパスを VERIFY で確認。
 - `constants`: マジックナンバーを検索し名前付き定数化。型注釈を付与する。
 - `dead`: ローカル/private から着手。export・動的利用は確認後に実施。Sweep との境界: ファイルレベルは Sweep。
+- `simplify`: 冗長な条件・三項演算チェーン・`if/else return true/false` 等を等価圧縮。behavior-preserving 変換パターンのみ採用。ユニットテスト通過を VERIFY 必須。
+- `split`: 50 行超または cognitive complexity 20 超の関数を責務単位で段階分割。extract より構造的 (境界設計 → 段階実行 → 検証)。テストカバレッジ維持を VERIFY 必須。
+- `guard`: ネスト深度 3 以上の条件を早期 return / guard clause に変換。複雑度削減の測定可能な前後比較を添付。
 
 ## Output Requirements
 

@@ -139,7 +139,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **voyager**: playwright★ / page-object / auth / a11y / visual
 - **warden**: gate★ / scorecard / value / resilience
 - **weave**: design★ / saga / approval / detect
-- **zen**: refactor★ / naming / extract / constants / dead
+- **zen**: refactor★ / naming / extract / constants / dead / simplify / split / guard
 - **zine**: note★ / zenn / qiita / devto / series
 
 ---
