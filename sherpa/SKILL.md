@@ -219,6 +219,9 @@ Use this map during `GUIDE` to assign the right agent for each step type.
 | Story Plan | `story` | | Single-feature planning and story-level decomposition | `references/task-breakdown.md` |
 | Sprint Replan | `replan` | | Replanning after drift or scope change | `references/anti-drift.md`, `references/estimation-planning-anti-patterns.md` |
 | Parking Lot Review | `review` | | Inventory and prioritize accumulated side-track items | `references/anti-drift.md`, `references/scope-creep-execution-anti-patterns.md` |
+| Atomic Step Decomposition | `atomic` | | INVEST-checked ≤15-minute step breakdown with testable exit criteria, reversibility classification, and commit-point contract | `references/atomic-step-decomposition.md` |
+| Walking Skeleton First | `walking-skeleton` | | Alistair Cockburn Walking Skeleton — thinnest end-to-end slice that exercises architecture before broadening | `references/walking-skeleton.md` |
+| Vertical Slice Planning | `vertical-slice` | | End-to-end vertical feature slice decomposition (UI → API → DB) versus horizontal-layer decomposition trade-off | `references/vertical-slice.md` |
 
 ## Subcommand Dispatch
 
@@ -231,6 +234,9 @@ Behavior notes per Recipe:
 - `story`: Break a single Story into Task → Atomic Step. Reference Decomposition Anti-Patterns for quality checks.
 - `replan`: Identify the completion rate and drift factors of the existing plan in LOCATE, and re-order the remaining tasks.
 - `review`: Evaluate Parking Lot items for importance in ASSESS, and decide Base Camp promotion / disposal.
+- `atomic`: Deep-dive atomic-step decomposition. Apply INVEST (Independent / Negotiable / Valuable / Estimable / Small / Testable), cap at 15 minutes, classify reversibility (reversible / expand-contract / one-way), and emit an explicit commit-point contract per step.
+- `walking-skeleton`: Design the thinnest end-to-end slice (Alistair Cockburn). Exercise every architectural layer (UI → API → DB → auth → deploy) with placeholder logic before broadening any single layer. Validates integration early; defers feature depth.
+- `vertical-slice`: Decompose by end-to-end customer value, not by technical layer. Each slice ships real user-visible behavior. Explicitly rejects horizontal-layer ("build all DB first, then all API") decomposition for product work; allow horizontal only for infra/platform bottom-up.
 
 ## Output Routing
 
@@ -321,6 +327,9 @@ Use this shape:
 | `references/estimation-planning-anti-patterns.md` | you need EP/PP anti-patterns, capacity planning, or calibration guardrails |
 | `references/context-switching-anti-patterns.md` | you need WIP limits, context-switch cost, pacing modes, or flow protection rules |
 | `references/scope-creep-execution-anti-patterns.md` | you need SC anti-patterns, interruption classification, or scope-defense rules |
+| `references/atomic-step-decomposition.md` | you need INVEST checklist, ≤15-minute step contract, reversibility classification, or commit-point contract |
+| `references/walking-skeleton.md` | you need Cockburn Walking Skeleton template, layer-coverage checklist, or thinnest-slice definition |
+| `references/vertical-slice.md` | you need vertical vs horizontal decomposition trade-off, slice-quality checklist, or slice sizing rubric |
 | `_common/OPUS_47_AUTHORING.md` | you are drafting Atomic Step contracts, GUIDE-phase handoff prompts, or `SHERPA_TO_*_HANDOFF` blocks. Critical principles for Sherpa: P1 (front-loaded acceptance criteria), P2 (bounded step output), P7 (delegation framing). |
 
 
