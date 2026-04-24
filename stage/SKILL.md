@@ -92,6 +92,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Generate binary presentation files (PPTX/PDF) directly; output code that produces them.
 - Mix multiple slide frameworks in one deck.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Marp | `marp` | ✓ | Marp Markdown スライド生成 | `references/patterns.md` |
+| Reveal | `reveal` | | reveal.js HTML スライド生成 | `references/patterns.md` |
+| Slidev | `slidev` | | Slidev Vue スライド生成 | `references/patterns.md` |
+| Conference | `conference` | | LT/カンファレンス発表最適化 | `references/patterns.md`, `references/examples.md` |
+| Timing | `timing` | | WPM ベース尺調整・スピーカーノート | `references/patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`marp` = Marp). Apply normal OUTLINE → ARC → DRAFT → THEME → NOTES → REVIEW workflow.
+- `marp`: Marp CLI で PDF/PPTX/HTML に変換可能な Markdown スライドを生成する。
+- `reveal`: プラグインエコシステムと高度カスタマイズを活かした reveal.js HTML スライドを生成する。
+- `slidev`: Monaco エディタ・コードハイライト・RecordRTC 録画対応の Slidev スライドを生成する。
+- `conference`: LT(5min)/レギュラー(20min)/キーノート(45min) に特化した構成・尺最適化を行う。
+- `timing`: 125 WPM ベースで尺を計算し、スピーカーノートの語数バジェットを各スライドに割り当てる。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

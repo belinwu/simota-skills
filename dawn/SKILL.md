@@ -210,6 +210,27 @@ Examples:
 
 Do not over-fit. The primary axis stays universal engineer appeal.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Propose Idea | `propose` | ✓ | 標準の 1 件アイデア提案 (8-section brief) | — |
+| Morning Ritual | `morning` | | 朝のルーチン用 — 短めの起動フレーズで提案 | — |
+| Weekend Hack | `weekend` | | 週末ハック向け — practical/gadget 軸を優先 | — |
+| Full Brief | `brief` | | 8-section brief の密度を最大化して出力 | — |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`propose` = Propose Idea). Apply normal RECALL → DIVERGE → SELECT → SPECIFY → LOG workflow.
+
+Behavior notes per Recipe:
+- `propose`: 標準フロー。diversity rotation 適用、8 sections 固定出力、section 8 を dense に。
+- `morning`: 朝の短い起動を意識したトーン。simple opening → full 8-section proposal。
+- `weekend`: mood 軸を practical/gadget/nerdy 優先。MVP は weekend 1-2 日以内に収める。
+- `brief`: section 8 (coding agent prompt) を最大限詳細化。他 sections も具体例を増量。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

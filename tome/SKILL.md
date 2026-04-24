@@ -189,6 +189,27 @@ Output format templates → `references/output-templates.md`
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Learning Doc | `learn` | ✓ | 学習ドキュメント生成 (標準モード) | `references/output-templates.md` |
+| Diff to Teaching | `diff` | | 差分を教材化 | `references/patterns.md` |
+| Onboarding Material | `onboard` | | 新規メンバー向け資料 (beginner 深度) | `references/output-templates.md` |
+| Design Decision Record | `record` | | 設計決定記録 (ADR/Decision Record) | `references/output-templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`learn` = Learning Doc). Apply normal SCOPE → EXTRACT → ANALYZE → COMPOSE → REVIEW workflow.
+
+Behavior notes per Recipe:
+- `learn`: 標準 learning_doc。5W1H+WhyNot フレームワークで変更の背景・理由・代替案を文書化。
+- `diff`: diff/commit/PR を直接受け取り教材化。EXTRACT フェーズを重点化し before/after 比較必須。
+- `onboard`: beginner 深度で用語定義を徹底。新規メンバーが独立して読める資料を生成。
+- `record`: Nygard テンプレートで decision_record 生成。一決定一レコードを厳守。
+
 ## Output Routing
 
 | Signal | Format | Approach | Read next |

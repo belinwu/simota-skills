@@ -246,6 +246,27 @@ INPUT
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Customer Story | `story` | ✓ | 顧客中心ストーリー — ユースケース・変革アーク | `references/templates.md` |
+| Scenario Story | `scenario` | | ペルソナベースシナリオストーリー | `references/templates.md` |
+| Product Narrative | `narrative` | | プロダクトレベルポジショニングナラティブ | `references/frameworks.md` |
+| Customer Journey | `customer` | | カスタマー体験記述、Before→After 変革アーク | `references/templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`story` = Customer Story). Apply normal DISCOVER → FRAME → CRAFT → REFINE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `story`: JTBD または StoryBrand SB7 を適用。顧客が主人公、製品がガイド。AP-1〜AP-9 チェック必須。
+- `scenario`: Cast ペルソナ定義を先に読み込み。ペルソナ固有シナリオ (400-1000字/ペルソナ) を生成。
+- `narrative`: Controlling Idea を最初に定義。Promised Land または StoryBrand SB7 を選択。ピッチ/LP 向け。
+- `customer`: Before→After 変革アーク中心。観察可能/測定可能な変化を明示。Hero's Journey も検討。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

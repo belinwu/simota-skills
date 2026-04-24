@@ -155,6 +155,26 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERDICT` | Issue judgment (min >= 2 -> PASS -> Launch; any <= 1 -> FAIL -> fix request) | Binary PASS/FAIL only | `references/vaire-framework.md` |
 | `HANDOFF` | Direct next action (PASS -> Launch; FAIL -> Palette/Builder/Sentinel/Radar) | Include remediation path for FAIL | `references/ux-agent-matrix.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Quality Gate | `gate` | ✓ | リリース前フル V.A.I.R.E. 評価 | `references/vaire-framework.md` |
+| Scorecard Only | `scorecard` | | 個別スコアカード生成 (採点のみ) | `references/patterns.md` |
+| Value Check | `value` | | Value 軸単体の価値検証 | `references/vaire-framework.md` |
+| Resilience Audit | `resilience` | | Resilience 軸単体のエラー状態チェック | `references/patterns.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`gate` = Quality Gate). Apply normal INGEST → AUDIT → SYNTHESIZE → VERDICT → HANDOFF workflow.
+
+Behavior notes per Recipe:
+- `gate`: V.A.I.R.E. 全5軸 (Value/Accessible/Intuitive/Reliable/Ethical) を評価し、PASS/FAIL ベルディクトと修正パスを出力。
+- `scorecard`: 採点フェーズのみ実行。各軸 0-3 スコアと blocking 課題を表形式で出力。ベルディクトは出力しない。
+- `value`: Value 軸のみに集中。ユーザー価値・ビジネス価値・差別化要素を評価し、スコアと改善提案を提示。
+- `resilience`: Resilience 軸のみに集中。エラー状態・ローディング・オフラインシナリオの完全性を評価。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

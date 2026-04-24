@@ -126,6 +126,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERIFY` | Test: app starts? CI passes? Linter happy? | Build must pass | `references/troubleshooting.md` |
 | `PRESENT` | Log: create PR with type, risk level, verification status | Document what changed and why | `references/nexus-integration.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Dependency Management | `deps` | ✓ | 依存管理・アップグレード | `references/dependency-management.md` |
+| CI/CD Config | `ci` | | CI/CD パイプライン設定 | `references/github-actions.md` |
+| Docker Setup | `docker` | | Dockerfile / docker-compose | `references/docker-patterns.md` |
+| Logging Setup | `logs` | | ロギング設定 (構造化ログ等) | `references/observability.md` |
+| Health Checks | `health` | | ヘルスチェック設計 | `references/observability.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`deps` = Dependency Management). Apply normal TUNE → TIGHTEN → GREASE → VERIFY → PRESENT workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

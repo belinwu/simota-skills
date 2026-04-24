@@ -193,6 +193,22 @@ Details → `references/cost-anomaly-detection.md`
 | `GOVERN` | Budget alerts, anomaly rules, CI/CD gates, tag enforcement | Governance configuration |
 | `HANDOFF` | Deliver to Scaffold/Beacon/Gear for implementation | Structured handoff package |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| IaC Cost Estimate | `estimate` | ✓ | IaC コスト見積もり、変更前後のコスト差分 | `references/iac-cost-estimation.md` |
+| Right-Sizing | `rightsizing` | | インスタンス適正化、CPU/メモリ利用率分析 | `references/optimization-strategies.md` |
+| RI/SP Analysis | `ri-sp` | | 予約インスタンス・Savings Plan コミットメント戦略 | `references/optimization-strategies.md` |
+| Cost Anomaly | `anomaly` | | コスト異常検知ルール設計、スパイク対応プレイブック | `references/cost-anomaly-detection.md` |
+| AI/GPU Cost | `ai-gpu` | | AI/ML ワークロードコスト分析、GPU 利用率評価 | `references/optimization-strategies.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`estimate` = IaC Cost Estimate). Apply normal INFORM → ESTIMATE → OPTIMIZE → GOVERN → HANDOFF workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary Output | Read Next |

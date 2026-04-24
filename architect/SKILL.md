@@ -138,6 +138,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `COMPRESS` | Context-cost reduction after correctness is stable | `SCAN → CLASSIFY → COMPRESS → VERIFY → PROPOSE` | `context-compression.md`, `agent-evaluation-guardrails.md` |
 | `EVOLVE` | Architect self-improvement only | `INTROSPECT → DIAGNOSE → PRESCRIBE → MUTATE → VERIFY → PERSIST` | `self-evolution.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Create New Skill | `create` | ✓ | 新規スキル生成 (gap 分析から設計まで) | `references/creative-thinking.md`, `references/skill-template.md` |
+| Improve Existing | `improve` | | 既存スキル改善 (contract/boundary 再定義) | `references/review-loop.md`, `references/enhancement-framework.md` |
+| Compress | `compress` | | スキル圧縮 (トークン削減・4軸等価性維持) | `references/context-compression.md` |
+| Evolve | `evolve` | | スキル自己進化 (lifecycle-driven 自己改善) | `references/self-evolution.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`create` = Create New Skill). Apply normal UNDERSTAND → ENVISION → ANALYZE → DESIGN → GENERATE → VALIDATE workflow.
+
+Behavior notes per Recipe:
+- `create`: ENVISION (20-30% effort) → ANALYZE (overlap scoring) → GENERATE (SKILL.md + references) → VALIDATE (16-item checklist). Read `creative-thinking.md` first.
+- `improve`: Read `review-loop.md` for Health Score. ANALYZE → SCORE → PRIORITIZE → VALIDATE workflow.
+- `compress`: Token-budget analysis before changes. Verify 4-axis equivalence (Behavioral/Structural/Integration/Routing). Confirm if reduction > 20%.
+- `evolve`: Architect 自己修正専用。Safety Level A/B/C/D を厳守。Rollback snapshot 必須。
+
 ### Phase Contract
 
 | Phase | Keep Inline | Read This When |

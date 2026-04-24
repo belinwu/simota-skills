@@ -377,6 +377,27 @@ HUNTING_HYPOTHESIS:
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Sigma Rules | `sigma` | ✓ | Sigma v2.1+ 検知ルール設計・ATT&CK マッピング | `references/detection-patterns.md` |
+| YARA Rules | `yara` | | YARA マルウェア/IoC ファイル・メモリパターンルール | `references/detection-patterns.md` |
+| Detection Coverage | `coverage` | | MITRE ATT&CK カバレッジマッピング・ギャップ分析 | `references/detection-patterns.md` |
+| Threat Hunting | `hunt` | | 仮説駆動型スレットハンティングキャンペーン設計 | `references/detection-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`sigma` = Sigma Rules). Apply normal ASSESS → DESIGN → BUILD → TEST → DEPLOY → HUNT workflow.
+
+Behavior notes per Recipe:
+- `sigma`: Sigma v2.1+ で ATT&CK サブテクニック精度 (T1059.001 など) までマッピング。FP 率は Critical < 25%、High < 50% を維持。pySigma/sigma-cli で検証。
+- `yara`: ファイル/メモリパターンマッチング。ATT&CK マッピング必須。YARA compile で構文検証後に TP/FP テスト。
+- `coverage`: ATT&CK v18+ Detection Strategies でカバレッジを評価。Initial Access + Execution のギャップを優先。カバレッジスコア (X/Y techniques, Z%) を報告。
+- `hunt`: テスタブルな ATT&CK マッピング済み仮説を起点に。成功基準と outcome (CONFIRMED/INCONCLUSIVE/NEGATIVE) を定義。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

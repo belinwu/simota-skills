@@ -127,6 +127,25 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 Full workflows, .tape structure, commands/settings/timing/theme references, optimization, quality checklists → `references/recording-workflows.md`
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| VHS | `vhs` | ✓ | VHS 宣言的 CLI デモ (.tape DSL) | `references/vhs-tape-patterns.md`, `references/tape-templates.md` |
+| Terminalizer | `terminalizer` | | terminalizer インタラクティブ録画 | `references/recording-workflows.md` |
+| Asciinema | `asciinema` | | asciinema 録画・ライブストリーミング | `references/recording-workflows.md` |
+| README GIF | `readme` | | README 用 GIF 生成・最適化 | `references/output-optimization.md`, `references/vhs-tape-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`vhs` = VHS). Apply normal SCRIPT → SET → RECORD → DELIVER workflow.
+- `vhs`: .tape DSL で宣言的 CLI デモを生成・実行する。
+- `terminalizer`: YAML config で対話型セッションを録画し、post-edit して出力。
+- `asciinema`: v3.0 Rust CLI でセッション録画・ライブストリーミング・.cast 変換を行う。
+- `readme`: 圧縮最適化 GIF (≤5MB) を生成し README 埋め込みコードを提供する。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

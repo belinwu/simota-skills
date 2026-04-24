@@ -143,6 +143,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `VALIDATION` | Verify confidence, completeness, and consistency | No unsupported claims | `references/persona-validation.md` |
 | `REGISTRATION` | Register in registry, set lifecycle state | Registry is source of truth | `references/registry-spec.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Generate Persona | `generate` | ✓ | ペルソナ生成 (CONJURE) — 新規ペルソナをソースから作成 | `references/generation-workflows.md` |
+| Registry | `registry` | | レジストリ管理 — ライフサイクル確認・監査・アーカイブ | `references/registry-spec.md` |
+| Evolve | `evolve` | | データ駆動進化 — Trace/Voice/Pulse からのドリフト更新 | `references/evolution-engine.md` |
+| Distribute | `distribute` | | 他エージェント向け配布パッケージング (Echo/Spark/Retain 等) | `references/distribution-adapters.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`generate` = Generate Persona). Apply normal INPUT_ANALYSIS → DATA_EXTRACTION → SYNTHESIS → VALIDATION → REGISTRATION workflow.
+
+Behavior notes per Recipe:
+- `generate`: CONJURE モード。ソース検出 → スキーマ準拠ペルソナ生成 → registry.yaml 登録。
+- `registry`: AUDIT モード。鮮度・重複・カバレッジ・Echo 互換性を評価しレポート。
+- `evolve`: EVOLVE モード。乖離 ≥5% トリガー確認 → バージョンバンプ → 進化ログ記録。
+- `distribute`: DISTRIBUTE モード。ターゲットエージェント別アダプター変換 → 配布パッケージ生成。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -168,6 +168,21 @@ CAPTURE → MODEL → VALIDATE → REFINE → HANDOFF
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| State Design | `design` | ✓ | 状態遷移設計 | `references/state-machine-patterns.md` |
+| Saga Pattern | `saga` | | Saga パターン分散トランザクション | `references/saga-patterns.md` |
+| Approval Flow | `approval` | | 承認フロー設計 | `references/approval-flow-patterns.md` |
+| Invalid Transition Detection | `detect` | | 不正遷移検出 | `references/state-machine-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`design` = State Design). Apply normal CAPTURE → MODEL → VALIDATE → REFINE → HANDOFF workflow.
+
 ## Output Routing
 
 | Signal | Approach | Read Next |

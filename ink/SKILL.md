@@ -98,6 +98,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Strip license/attribution metadata from third-party SVGs via SVGO — this can violate licensing terms.
 - Use `<img src="icon.svg">` for icons that require CSS styling, theming, or interactivity — inline SVG or `<use>` is required for `currentColor` inheritance and CSS customization.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Single Icon | `icon` | ✓ | 単一アイコン生成 | `references/patterns.md` |
+| Illustration | `illustration` | | SVG イラスト | `references/patterns.md`, `references/examples.md` |
+| Icon System | `system` | | アイコンシステム設計 | `references/patterns.md` |
+| Sprite Symbols | `sprite` | | SVG sprite symbol 構築 | `references/patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`icon` = Single Icon). Apply normal SPEC → GRID → DRAW → OPTIMIZE → INTEGRATE workflow.
+
+Behavior notes per Recipe:
+- `icon`: 24×24 グリッドで単一 SVG アイコンを生成。currentColor + aria-hidden/role="img" 必須。SVGO 最適化後 ≤4KB。
+- `illustration`: hero/spot/装飾 SVG イラスト生成。viewBox + パス最適化付き。
+- `system`: グリッド・ストローク幅・命名規約を先に定義してからアイコンセットを設計。10+ アイコン時は sprite 推奨。
+- `sprite`: `<symbol>` + `<use>` パターンで SVG スプライトシートを構築。バンドルサイズ削減優先。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

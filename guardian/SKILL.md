@@ -190,6 +190,27 @@ Routing rules:
 - If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
 - Always read relevant `references/` files before producing output.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| PR Preparation | `pr` | ✓ | PR 準備 (タイトル/本文/レビュー観点/リスク評価) | `references/pr-workflow-patterns.md` |
+| Commit Granularity | `commit` | | コミット粒度の分割提案 (atomic commit 設計) | `references/commit-analysis.md` |
+| Naming Review | `naming` | | ブランチ/コミット命名チェック (Conventional Commits) | `references/commit-conventions.md` |
+| Merge Strategy | `strategy` | | マージ戦略 (squash/rebase/merge) 選定 | `references/branching-strategies.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`pr` = PR Preparation). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `pr`: Change Classification → Quality Score → Risk Assessment → PR タイトル/本文 → Reviewer 推薦の順に実施。
+- `commit`: 変更を Essential/Supporting/Incidental に分類し、atomic commit に分割するプランを生成。
+- `naming`: Conventional Commits 準拠チェック。スコープ・動詞・50 文字制限を検証。
+- `strategy`: DORA メトリクスと branch lifetime に基づき GitHub Flow / Git Flow / Trunk-Based を選定。
+
 ## Output Requirements
 
 Every deliverable MUST include:

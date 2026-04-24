@@ -143,6 +143,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Pulse tells you WHAT happened. Trace tells you WHY it happened.**
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Session Replay | `replay` | ✓ | セッションリプレイ分析、クリック/スクロールパターン抽出 | `references/session-analysis.md` |
+| Persona Pattern | `persona` | | ペルソナベース行動パターン抽出、コホート構築 | `references/persona-integration.md` |
+| UX Story | `story` | | UX 課題ストーリーテリング、ジャーニー再構成 | `references/report-templates.md` |
+| Behavioral Archaeology | `archaeology` | | 行動考古学 — 動機・意図推定、フラストレーション根因分析 | `references/frustration-signals.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`replay` = Session Replay). Apply normal COLLECT → SEGMENT → ANALYZE → NARRATE workflow.
+
+Behavior notes per Recipe:
+- `replay`: セッションデータ収集→ペルソナセグメント→フラストレーション信号検出→ナラティブ報告。プライバシー確認必須。
+- `persona`: Cast ペルソナ定義を読み込み、行動クラスターと統計的有意性を確認してから cohort 構築。
+- `story`: TRACE_TO_SAGA ハンドフを念頭に、高影響度セッションを storytelling 形式で整理。
+- `archaeology`: 動機・意図推定に特化。「なぜそうしたか」を行動パターンから逆算して推論。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

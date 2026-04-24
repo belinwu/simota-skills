@@ -180,3 +180,23 @@ Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When genera
 | S9 | "Operational" section |
 | A1 | "AUTORUN Support" section (_STEP_COMPLETE YAML) |
 | A2 | "Nexus Hub Mode" section (NEXUS_HANDOFF block) |
+
+---
+
+## R1: Recipes / Subcommand Dispatch (optional, RECOMMENDED for Tier 1-2)
+
+| Status | Criteria |
+|--------|----------|
+| PASS | `## Recipes` table present AND `## Subcommand Dispatch` section present (bare heading, no parenthetical suffix) AND exactly one row marked `✓` in Default? column AND every Subcommand matches `^[a-z][a-z0-9-]{1,15}$` AND no reserved words (default/auto/help/list) AND ≤ 7 recipes |
+| PARTIAL | Recipes section present but with warnings only (>7 recipes) OR minor formatting drift recoverable by `python3 _common/scripts/validate-recipes.py` |
+| FAIL | Any of: `## Recipes` exists without `## Subcommand Dispatch`; decorated heading `## Subcommand Dispatch (default: xxx)`; multiple or zero ✓ defaults; reserved word used as subcommand; kebab-case violation; duplicate subcommands within the skill |
+| SKIP | Skill intentionally omits Recipes (Tier 3 or <3 distinct modes) — record as INFO, not FAIL |
+
+**Detection:** Run `python3 _common/scripts/validate-recipes.py`. Parse its ERROR/WARN/INFO output per skill. Canonical protocol: `_common/RECIPES.md`.
+
+**Priority:** P2 (quality hygiene). Heading integrity (H-REC-01/02) and Default count (R-REC-01) uplift to **P1** because they break the Subcommand Dispatch contract end-users rely on.
+
+**Fix hints:**
+- Missing `## Subcommand Dispatch` → append a standard dispatch block (see `_common/RECIPES.md` §SKILL.md Structure)
+- Decorated heading → `sed -i '' 's/^## Subcommand Dispatch (default: [a-z0-9-]*)$/## Subcommand Dispatch/'`
+- `compass/references/recipes-directory.md` stale → `python3 _common/scripts/generate-recipes-directory.py`

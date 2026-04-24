@@ -188,6 +188,31 @@ Default tri-engine flow: `SCOPE → FAN-OUT → NORMALIZE → CLUSTER → SCORE 
 
 For single-engine mode (user-requested or degraded), collapse to `SCOPE → EXECUTE → ANALYZE → REPORT → ROUTE` using the named engine's usage reference. All findings are treated as CANDIDATE and require grounding before shipping.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Tri-Engine PR Review | `pr` | ✓ | 全 PR diff フルレビュー (Codex + Gemini + Claude 並列) | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
+| Security-First | `security` | | CWE/OWASP 重点、AI コード厳格化 | `references/tri-engine-review.md`, `references/codex-integration.md` |
+| Perf Focus | `perf` | | N+1 / レンダコスト / バンドルサイズ重点 | `references/tri-engine-review.md`, `references/review-effectiveness.md` |
+| Style Readability | `style` | | 命名・構造のみ (バグ指摘禁止、Claude 単一エンジン) | `references/code-smell-detection.md`, `references/consistency-patterns.md` |
+| Quick Check | `quick` | | <50 LOC 低リスク、Claude 単一エンジン | `references/claude-review-usage.md` |
+| Intent Alignment | `intent` | | コード vs PR 本文の整合チェック重点 | `references/tri-engine-review.md`, `references/review-anti-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`pr` = Tri-Engine PR Review). Apply full SCOPE → FAN-OUT → ... → REPORT workflow.
+
+Behavior notes per Recipe:
+- `pr`: tri-engine fan-out (Codex + Gemini + Claude Code 並列)。認知負荷ゲートと SNR 最適化を適用。
+- `security`: tri-engine fan-out + セキュリティ focus area。OWASP/CWE マッピングを全 finding に付与。AI コードは高度精査。
+- `perf`: tri-engine fan-out + パフォーマンス focus area。N+1、レンダーコスト、バンドルに集中。
+- `style`: Claude 単一エンジン (subagent)。バグ・セキュリティ指摘禁止。命名・構造・一貫性のみ。
+- `quick`: Claude 単一エンジン (subagent)。<50 LOC / 低リスク専用。全 finding は CANDIDATE として grounding 必須。
+- `intent`: PR 本文 vs コード変更の整合を中心。tri-engine で差分を精査。
+
 ## Output Routing
 
 Default routing is tri-engine fan-out (Codex + Gemini + Claude Code subagents in one message) per `references/tri-engine-review.md`. Single-engine rows apply only when the user explicitly names one engine, when two engines are unavailable, or for trivial scope (<50 LOC low-risk).

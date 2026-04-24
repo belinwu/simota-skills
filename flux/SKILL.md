@@ -240,6 +240,27 @@ Dedicated mode for detecting cognitive biases in decision-making processes, inde
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Reframe | `reframe` | ✓ | 前提の再フレーミング (全フェーズ DEEP) | `references/thinking-frameworks.md` |
+| Perspective Shift | `shift` | | 視点シフト (RAPID) | `references/thinking-frameworks.md` |
+| Cross-Domain | `cross` | | 他領域知識融合 (LENS COMBINE) | `references/combination-engine.md` |
+| Challenge Assumption | `challenge` | | 思い込み挑戦 (LENS CHALLENGE) | `references/thinking-frameworks.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`reframe` = Reframe). Apply normal CLASSIFY → CHALLENGE → COMBINE → SHIFT → CRYSTALLIZE workflow.
+
+Behavior notes per Recipe:
+- `reframe`: 全 5 フェーズ DEEP モード。Cynefin 分類→前提洗い出し→Serendipity 注入→CRYSTALLIZE。
+- `shift`: CLASSIFY → SHIFT → CRYSTALLIZE の RAPID モード。視点回転と Oblique Strategies に特化。
+- `cross`: CLASSIFY → COMBINE → CRYSTALLIZE の LENS モード。他領域 Bisociation と SCAMPER に特化。
+- `challenge`: CLASSIFY → CHALLENGE → CRYSTALLIZE の LENS モード。First Principles と Assumption Reversal に特化。
+
 ## Output Routing
 
 | Signal | Mode | Primary Output | Next |

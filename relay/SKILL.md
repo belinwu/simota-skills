@@ -146,6 +146,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **WIRE** | Transport implementation | Server architecture (WebSocket rooms/webhook endpoints) · Middleware chain (auth→validate→rate-limit→route→handle) · Connection lifecycle · Retry with backoff · Queue integration  `references/` |
 | **GUARD** | Security & reliability | HMAC-SHA256 verification · Token rotation · Rate limiting (per-user/channel/global) · Idempotency keys · Health checks · Alert thresholds  `references/` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Webhook Handler | `webhook` | ✓ | Webhook 受信ハンドラー設計 (HMAC 検証・冪等性) | `references/webhook-patterns.md` |
+| Bot Framework | `bot` | | ボットコマンドフレームワーク・会話状態機械設計 | `references/bot-framework.md`, `references/channel-adapters.md` |
+| WebSocket Server | `websocket` | | WebSocket サーバー・リアルタイム通信設計 | `references/realtime-architecture.md` |
+| Channel Adapter | `adapter` | | チャネルアダプター (Slack/Discord/LINE 正規化) | `references/channel-adapters.md`, `references/event-routing.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`webhook` = Webhook Handler). Apply normal LISTEN → ROUTE → ADAPT → WIRE → GUARD workflow.
+
+Behavior notes per Recipe:
+- `webhook`: HMAC-SHA256 (生バイト)・タイムスタンプ検証 (≤5分)・冪等キー・DLQ・Circuit Breaker を必須含む。3 秒以内に 2xx 返却。
+- `bot`: コマンドパーサー・スラッシュコマンド・会話状態機械・ミドルウェアチェーン設計。LLM-native runner 統合評価を含む。
+- `websocket`: 接続ライフサイクル・ハートビート・水平スケール (Redis 外部化セッション)・WebSocketStream API 評価。
+- `adapter`: プラットフォーム横断正規化。Normalize-in/Adapt-out パターン。CloudEvents エンベロープ・AsyncAPI スペック。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

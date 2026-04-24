@@ -123,6 +123,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `HARDEN` | Validate failure paths: input errors, exit codes, `CTRL+C`, platform quirks, non-interactive environments | Test every non-happy path | `references/cross-platform.md`, `references/cli-design-anti-patterns.md` |
 | `PRESENT` | Deliver the interface, usage examples, integration notes, and the next operational handoff | Mandatory before expanding scope | `references/cli-design-patterns.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| CLI Build | `cli` | ✓ | CLI 設計・実装 (コマンド設計・フラグ・ヘルプ・終了コード) | `references/cli-design-patterns.md` |
+| TUI Build | `tui` | | TUI (Terminal UI) 設計 (スピナー・テーブル・インタラクティブ) | `references/tui-components.md` |
+| Tool Wrap | `wrap` | | 既存 CLI ツールのラッパー (linter/formatter/test-runner 統合) | `references/tool-integration.md` |
+| Dev Tool Integration | `devtool` | | linter/test-runner/build-tool 統合・doctor コマンド | `references/tool-integration.md`, `references/cross-platform.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`cli` = CLI Build). Apply normal BLUEPRINT → CAST → TEMPER → HARDEN → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `cli`: BLUEPRINT でコマンド contract 確定 (signature/flags/exit-codes/JSON output)。`--help` + `--version` 必須。TTY-aware 出力。
+- `tui`: TUI フレームワーク選定 (Ratatui/BubbleTea/Textual)。イベントループ尊重。non-TTY 縮退必須。
+- `wrap`: 既存ツールの CLI contract 先読み (P3)。breaking change 防止。`--no-prompt` フラグ追加。
+- `devtool`: doctor コマンドパターン。依存関係検証。CI/non-TTY 互換。Gear への handoff 準備。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

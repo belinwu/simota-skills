@@ -198,6 +198,22 @@ questions:
 | `VERIFY` | Simulate next N fires across a DST boundary, across end-of-month, across Feb-29 if relevant; use croniter / cron-parser | Numerical sanity check before handoff | `references/cron-patterns.md` |
 | `HARDEN` | Attach retry policy, DLQ target, backfill strategy, rate-limit if applicable; document failure modes | The unhappy path is half the design | `references/retry-strategies.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Cron Design | `cron` | ✓ | cron 式設計・タイムゾーン注釈・プラットフォーム設定 | `references/cron-patterns.md` |
+| Timezone Safety | `timezone` | | タイムゾーン/DST 安全性監査、ライブラリ移行 | `references/timezone-safety.md` |
+| Retry Policy | `retry` | | リトライ/バックオフポリシー設計、DLQ 設定 | `references/retry-strategies.md` |
+| Backfill Plan | `backfill` | | バックフィル・リプレイ計画、ウォーターマーク設計 | `references/retry-strategies.md` |
+| Business Calendar | `calendar` | | 日本祝日・銀行営業日・会計年度ロジック設計 | `references/business-calendar.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`cron` = Cron Design). Apply normal ANALYZE → MODEL → SPECIFY → VERIFY → HARDEN workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

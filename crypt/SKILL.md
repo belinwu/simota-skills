@@ -101,6 +101,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Store or log cryptographic keys in plaintext.
 - Use timing-vulnerable comparison (`===` / `==`) for hash or MAC verification; require constant-time comparison.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Algorithm Selection | `algorithm` | ✓ | 暗号アルゴリズム選択・パラメータ仕様・アンチパターン検出 | `references/patterns.md` |
+| Key Management | `kms` | | キー管理設計・KMS 統合・ローテーションスケジュール | `references/patterns.md` |
+| E2EE Design | `e2ee` | | エンドツーエンド暗号化アーキテクチャ設計 | `references/patterns.md` |
+| TLS Configuration | `tls` | | TLS/mTLS 設定・暗号スイート選択・証明書管理 | `references/patterns.md` |
+| Signature Scheme | `signature` | | デジタル署名・JWT/JWE/JWS スキーム設計 | `references/patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`algorithm` = Algorithm Selection). Apply normal THREAT → SELECT → DESIGN → VERIFY → DOCUMENT workflow.
+
+Behavior notes per Recipe:
+- `algorithm`: ユースケース別アルゴリズム推奨 (対称・非対称・ハッシュ・KDF)。アンチパターンチェックリスト実行。量子耐性評価を含む。
+- `kms`: キーライフサイクル設計 (生成・ローテーション・導出・失効・廃棄)。KMS/HSM 統合パターン。アトミックローテーション手順。
+- `e2ee`: Signal Protocol / MLS / カスタム E2EE アーキテクチャ設計。鍵交換フロー・フォワード秘匿性・PFS 設計を含む。
+- `tls`: TLS 1.3 設定・暗号スイート優先度・mTLS 相互認証・PQC ハイブリッド KEX (X25519MLKEM768) 対応。
+- `signature`: Ed25519 / ECDSA / ML-DSA 署名スキーム設計。JWT 検証フロー・アルゴリズム固定化・タイミング安全比較を含む。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

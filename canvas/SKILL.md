@@ -120,6 +120,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `DRAW` | Apply the right template and format (Mermaid / draw.io / ASCII) | Syntax correctness | `references/diagram-templates.md` |
 | `REVIEW` | Check accuracy, readability, syntax, accessibility, and complexity | ≤20 nodes per diagram | `references/accessibility.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Flow Chart | `flow` | ✓ | フローチャート生成 (デフォルト Mermaid) | `references/diagram-templates.md` |
+| Sequence Diagram | `sequence` | | シーケンス図 | `references/diagram-templates.md` |
+| ER Diagram | `er` | | ER 図 (Schema 連携) | `references/diagram-templates.md` |
+| Journey Map | `journey` | | ユーザージャーニーマップ (Echo 連携) | `references/echo-integration.md` |
+| Class Diagram | `class` | | クラス図 | `references/diagram-templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`flow` = Flow Chart). Apply normal UNDERSTAND → ANALYZE → DRAW → REVIEW workflow.
+
+Behavior notes per Recipe:
+- `flow`: フローチャート。Mermaid TD/LR 方向を目的に応じて選択。≤20 ノードを維持。
+- `sequence`: シーケンス図。≤15-20 メッセージ上限。actor/participant 宣言から始める。
+- `er`: ER 図。Schema スキルとの連携を考慮し、実在エンティティ名のみ使用。
+- `journey`: Echo データからユーザージャーニーマップを生成。感情スコアと摩擦点を可視化。
+- `class`: クラス図。継承・集約・依存関係を表現。L3 Component レベルとの整合性を確保。
+
 ## Work Modes
 
 | Mode | Use When | Primary Reference |

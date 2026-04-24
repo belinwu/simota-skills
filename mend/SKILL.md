@@ -130,6 +130,26 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERIFY` | Staged verification: Health Check → Smoke Test → SLO Check → Recovery Confirmed | Automatic rollback on crash loop, error spike, or latency surge | `references/verification-strategies.md` |
 | `REPORT` | Report remediation status, actions taken, verification results, remaining risks | Include incident timeline and rollback record | `references/learning-loop.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Runbook Execute | `runbook` | ✓ | 既知パターンのランブック実行 | `references/runbook-execution.md` |
+| Diagnose | `diagnose` | | 未知障害の原因診断・パターンマッチング | `references/remediation-patterns.md` |
+| Rollback | `rollback` | | ロールバック実行 (T3 承認必須) | `references/remediation-patterns.md` |
+| Verify | `verify` | | 修復後の段階的検証 (Health→Smoke→SLO) | `references/verification-strategies.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`runbook` = Runbook Execute). Apply normal INTAKE → MATCH → EXECUTE → VERIFY → REPORT workflow.
+
+Behavior notes per Recipe:
+- `runbook`: 診断済み障害に対してランブックを順次実行。チェックポイントごとに状態を確認し、失敗時は即座にロールバック準備。
+- `diagnose`: 症状・アラートからパターンマッチングを実施。信頼度 >= 50% で remediation-patterns から対処法を提示。
+- `rollback`: T3 承認を取得後にロールバックを実行。クラッシュループ・エラースパイク・レイテンシサージで自動ロールバックをトリガー。
+- `verify`: Health Check → Smoke Test → SLO Check → Recovery Confirmed の4段階検証を実行し、復旧を確認。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

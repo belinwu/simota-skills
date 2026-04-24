@@ -158,6 +158,26 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `COLLECT` | Extract data, capture screenshots, record HAR/console, validate formats | Validate data format before saving | `references/data-extraction.md` |
 | `REPORT` | Summarize status, list evidence, provide verification steps | Evidence backs every finding | `references/execution-templates.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Data Collect | `collect` | ✓ | ページからデータ収集・スクレイピング | `references/data-extraction.md` |
+| Form Fill | `form` | | フォーム入力・送信自動化 | `references/execution-templates.md` |
+| Screenshot | `screenshot` | | スクリーンショット取得・マイルストーン記録 | `references/playwright-cdp.md` |
+| Network Capture | `network` | | HAR/ネットワークリクエスト記録・分析 | `references/playwright-cdp.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`collect` = Data Collect). Apply normal PLAN → EXECUTE → COLLECT → REPORT workflow.
+
+Behavior notes per Recipe:
+- `collect`: セレクタでデータ抽出し JSON/CSV で保存。フォーマット検証とエラーリトライを含む。
+- `form`: フォームフィールドへの入力・送信・アップロードを順次実行。送信前後のスクリーンショットで証跡を残す。
+- `screenshot`: 指定 URL またはインタラクション後のスクリーンショットをマイルストーンごとに撮影。ファイル名にタイムスタンプを付与。
+- `network`: CDP 経由で HAR ファイル記録、コンソールログ収集、ネットワークリクエスト/レスポンスを解析・レポート。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

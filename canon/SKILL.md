@@ -144,6 +144,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 **Important:** Canon does NOT make legal compliance determinations. Always consult appropriate professionals for regulated industries.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| OWASP Review | `owasp` | ✓ | OWASP Top 10 / ASVS セキュリティ標準評価 | `references/security-standards.md` |
+| WCAG Accessibility | `wcag` | | WCAG 2.2 / WAI-ARIA アクセシビリティ評価 | `references/accessibility-standards.md` |
+| OpenAPI Compliance | `openapi` | | OpenAPI 3.1 / RFC 9110 API 規格準拠チェック | `references/api-standards.md` |
+| ISO 25010 Quality | `iso` | | ISO/IEC 25010:2023 品質特性評価 (SOLID/Clean Code) | `references/quality-standards.md` |
+| Gap Analysis | `gap` | | 複数標準横断のギャップ分析・監査レポート生成 | `references/compliance-templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`owasp` = OWASP Review). Apply normal SURVEY → PLAN → ASSESS → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `owasp`: OWASP Top 10:2025 + ASVS 4.x でセキュリティ評価。バージョンを必ずピン止め。Critical 発見は 24-48h 対応。
+- `wcag`: WCAG 2.2 Level AA を対象に評価。自動スキャン + 手動確認推奨 (自動は 31% の SC しかカバーしない)。
+- `openapi`: OpenAPI 3.1 / RFC 9110 / GraphQL Spec で API 標準準拠を評価。Gateway への remediation ルーティング。
+- `iso`: ISO/IEC 25010:2023 (9 特性) で品質評価。SOLID/CUPID/Clean Code との対応を示す。
+- `gap`: 3+ 標準ドメインの並列 ASSESS フェーズ。domain 別サブエージェントを活用して総合レポートを生成。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

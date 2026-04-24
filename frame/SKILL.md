@@ -149,6 +149,27 @@ Execution loop: `SURVEY -> PLAN -> VERIFY -> PRESENT`
 | `PACKAGE` | convert raw data into consumer-specific handoffs | select the handoff template before formatting | `references/handoff-formats.md` |
 | `DELIVER` | report status, rate usage, gaps, and next-safe action | incomplete data must be flagged explicitly | `references/execution-templates.md`, `references/design-to-code-anti-patterns.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Extract Context | `extract` | ✓ | Figma からデザインコンテキスト抽出 | `references/execution-templates.md`, `references/prompt-strategy.md` |
+| Code Connect | `code-connect` | | Code Connect template 管理 | `references/code-connect-guide.md` |
+| DS Rules | `rules` | | design system rule 抽出 | `references/prompt-strategy.md`, `references/figma-mcp-server-ga.md` |
+| Figma Inspect | `inspect` | | Figma file の programmatic inspect | `references/infrastructure-constraints.md`, `references/figma-mcp-server-ga.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`extract` = Extract Context). Apply normal CONNECT → SURVEY → EXTRACT → PACKAGE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `extract`: MCP 接続確認後、対象フレーム/コンポーネントのデザインコンテキストを抽出しハンドオフパッケージを生成。
+- `code-connect`: 既存 Code Connect マッピングを監査し、不足や陳腐化したマッピングを修正または追加。
+- `rules`: Figma ファイルから design system 規約を抽出し、トークンルール・命名規約ドキュメントを生成。
+- `inspect`: Figma ファイルのページ・フレーム・コンポーネントセットをメタデータレベルで調査し、抽出計画を策定。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

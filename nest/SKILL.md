@@ -97,6 +97,27 @@ Route elsewhere when:
 | `APPLY` | Execute restructuring | `git mv` file moves, CLAUDE.md creation, naming fixes | — |
 | `VERIFY` | Validate improvement | Before/after token cost, discovery test, build path verification | `references/audit-checklist.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Structure Audit | `audit` | ✓ | 既存フォルダ構造の LLM ナビゲーション効率監査 | `references/audit-checklist.md` |
+| Restructure | `restructure` | | LLM 最適化のための再構造化 (git mv 実行含む) | `references/layout-patterns.md` |
+| Progressive Disclosure | `progressive` | | L1/L2/L3 progressive disclosure 階層設計 | `references/layout-patterns.md` |
+| Prompt Cache | `cache` | | prompt cache トポロジー最適化・静的ファイル優先配置 | `references/audit-checklist.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`audit` = Structure Audit). Apply normal AUDIT → DIAGNOSE → DESIGN → APPLY → VERIFY workflow.
+
+Behavior notes per Recipe:
+- `audit`: AUDIT + DIAGNOSE フェーズのみ。スコア (discovery/token_budget/cache_topology/naming) を報告。変更はしない。
+- `restructure`: 完全 AUDIT → DESIGN → APPLY → VERIFY。git mv バッチ実行。ビルドパス保持確認必須。
+- `progressive`: L1 (always-loaded) / L2 (on-demand) / L3 (deep reference) の 3 層設計と CLAUDE.md 階層計画。
+- `cache`: 変更頻度によるファイルグルーピング → 静的コンテンツ優先配置 → キャッシュプレフィックス安定化。
+
 ## Output Routing
 
 | Signal | Approach | Primary Output | Read next |

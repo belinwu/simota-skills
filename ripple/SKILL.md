@@ -180,6 +180,26 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - **Impact Only** (vertical): Dependency/scope focus → `references/impact-report-template.md`
 - **Consistency Only** (horizontal): Pattern compliance → `references/consistency-report-template.md`
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Impact Analysis | `impact` | ✓ | 変更の影響範囲フル分析 (縦・横両方向) | `references/ripple-analysis-template.md` |
+| Vertical Only | `vertical` | | 依存関係・呼び出し連鎖の縦方向影響のみ | `references/impact-report-template.md` |
+| Horizontal Only | `horizontal` | | パターン一貫性・横断的影響のみ | `references/consistency-report-template.md` |
+| Naming Change | `naming` | | シンボル・API 名変更の影響分析 | `references/cascade-analysis.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`impact` = Impact Analysis). Apply normal INGEST → MAP → ANALYZE → ASSESS → REPORT workflow.
+
+Behavior notes per Recipe:
+- `impact`: 縦 (依存グラフ) と横 (パターン一貫性) の両方向を分析し、breaking change・副作用・リスクを統合レポートで出力。
+- `vertical`: 変更対象から呼び出し元・依存先を上下にたどり、スコープと破壊的変更を特定。一貫性チェックは省略。
+- `horizontal`: 同パターンを持つ他ファイル・モジュールへの影響を横断的にチェック。依存グラフは省略。
+- `naming`: シンボル名・エクスポート名変更を対象に、参照箇所と移行パスを特定。cascade-analysis テンプレートで出力。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

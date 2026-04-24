@@ -177,6 +177,27 @@ Routing rules:
 - If the request involves scope selection, read `references/template-selection.md`.
 - Always read `references/specification-anti-patterns.md` for validation phase.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Vision & Goals | `vision` | ✓ | プロジェクト概要・目標・スコープ定義 | `references/unified-template.md` |
+| Requirements | `requirements` | | 機能要件・非機能要件の詳細化 | `references/user-story-smells.md` |
+| Detailed Spec | `detail` | | L2 詳細仕様・フロー・データモデル記述 | `references/handoff-formats.md` |
+| Acceptance Criteria | `ac` | | AC の整備・BDD シナリオ生成 | `references/bdd-best-practices.md` |
+
+Behavior notes:
+- **vision** (default): SURVEY → ALIGN → DRAFT → PRESENT; load `unified-template.md`; produce L0 Vision Block.
+- **requirements**: Expand feature list into L1 requirements; load `user-story-smells.md`; flag smell patterns.
+- **detail**: Author L2 detailed spec with flow, data model, edge cases; load `handoff-formats.md`.
+- **ac**: Write AC in Given/When/Then; load `bdd-best-practices.md`; validate count within scope-mode limit.
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column file at the initial step.
+- Otherwise → fall through to default Recipe (`vision` = Vision & Goals).
+
 ## Output Requirements
 
 - Every deliverable is in Japanese. IDs, YAML, BDD keywords, and technical terms remain in English.

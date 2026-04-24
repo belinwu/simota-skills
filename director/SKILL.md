@@ -119,6 +119,25 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `Shoot` | Record the demo | Playwright demo code and video output (`.webm` baseline) | Locator-based waits for state, `waitForTimeout()` only for pacing |
 | `Deliver` | Validate and package | Playback check, checklist results, optional `MP4/GIF`, next handoff | Quality gate: `/65` scorecard, `< 30` = reshoot |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Demo | `demo` | ✓ | 機能デモ動画の記録・制作 | `references/scenario-guidelines.md`, `references/playwright-config.md` |
+| Scenario | `scenario` | | シナリオ設計・ストーリーボード | `references/scenario-guidelines.md` |
+| Record | `record` | | Playwright 録画設定・実行 | `references/playwright-config.md`, `references/implementation-patterns.md` |
+| Onboard | `onboard` | | オンボーディング・チュートリアル録画 | `references/scenario-guidelines.md`, `references/implementation-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`demo` = Demo). Apply normal Script → Stage → Shoot → Deliver workflow.
+- `demo`: 機能デモ動画を Playwright でシナリオ設計から録画まで一貫制作する。
+- `scenario`: ペルソナ・Aha モーメント・尺を先行設計し、シナリオ文書を出力する。
+- `record`: Playwright 設定 (slowMo / viewport / codec) を確定し録画を実行する。
+- `onboard`: ユーザー初回体験フローを丁寧なペースで録画し onboarding クリップを生成する。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

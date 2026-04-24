@@ -141,6 +141,29 @@ Route elsewhere when the task is primarily:
 | Output    | Darwin | Return anomaly or morale observations derived from Realm metrics.                  |
 | Output    | Nexus  | Return realm status summaries for proactive orchestration.                         |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Phaser Office | `phaser` | ✓ | Phaser 2D オフィスシム — エージェント生態系のゲーム可視化 | `references/phaser-optimization.md` |
+| Interactive Map | `map` | | インタラクティブ HTML マップ — エージェント関係図 | `references/map-layout.md` |
+| Character Sheet | `character` | | RPG キャラクターシート — エージェント個別ステータス | `references/class-system.md` |
+| Quest Board | `quest` | | クエストボード — アクティブタスクとクエスト完了追跡 | `references/quest-mapping.md` |
+| Badge System | `badge` | | バッジシステム — 実績・報酬・ランキング設計 | `references/badge-catalog.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`phaser` = Phaser Office). Apply normal SURVEY → MAP → RENDER → NARRATE → PERSIST → CALIBRATE workflow.
+
+Behavior notes per Recipe:
+- `phaser`: Phaser 3 テンプレート使用。object pooling 必須。新規ビルドは Phaser 4 RC7 を評価。
+- `map`: HTML + `{{REALM_DATA_JSON}}` テンプレート。`templates/realm-map.html` を使用。
+- `character`: クラス・ステータス・XP・ランク・バッジを RPG シート形式で出力。
+- `quest`: クエスト難易度・パーティ構成・報酬ルールを quest-mapping.md 準拠で設計。
+- `badge`: 行動フィット確認必須。SDT (自律・有能・関係) レンズで mechanics を評価。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

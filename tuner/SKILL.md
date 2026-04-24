@@ -164,6 +164,26 @@ Tuner receives performance issues and context from upstream agents. Tuner sends 
 | Scout | Optimization recommendations after bottleneck identified | Root cause investigation, unknown performance regression |
 | Beacon | DB monitoring query authoring (pg_stat_*, slow query logs) | Alert routing, dashboard visualization, SLO management |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Explain Analyze | `explain` | ✓ | EXPLAIN ANALYZE 分析 | `references/explain-analyze-guide.md` |
+| Slow Query Hunt | `slow` | | スロークエリ検出・修正 | `references/slow-query-benchmarks.md` |
+| Index Recommendation | `index` | | インデックス推奨 | `references/query-index-anti-patterns.md` |
+| Plan Optimization | `plan` | | クエリプラン改善 | `references/optimization-patterns.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`explain` = Explain Analyze). Apply normal INTAKE → ANALYZE → RECOMMEND → VALIDATE workflow.
+
+Behavior notes per Recipe:
+- `explain`: EXPLAIN ANALYZE 出力を受け取り、実行計画の各ノードを注釈付きで分解・解説。ボトルネックノードを特定して改善提案。
+- `slow`: スロークエリログや pg_stat_statements から高コストクエリを抽出し、リライト案を提示。
+- `index`: アクセスパターンを分析し、カバリングインデックス・部分インデックス・複合インデックスの DDL を推奨。
+- `plan`: クエリプランナー統計・設定パラメータ (work_mem, enable_seqscan 等) を調整し、最適な実行計画に誘導。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

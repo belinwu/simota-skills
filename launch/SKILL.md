@@ -146,6 +146,28 @@ Route elsewhere when the task is primarily:
 | Output | `Quill` | CHANGELOG, README, or docs need downstream publication. |
 | Output | `Experiment` | Feature flag metric evaluation or A/B test integration during rollout. |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Release Plan | `plan` | ✓ | リリース計画・戦略立案 | `references/strategies.md` |
+| Changelog | `changelog` | | CHANGELOG 生成・更新 | `references/patterns.md` |
+| Release Notes | `notes` | | リリースノート作成 (ユーザー向け) | `references/patterns.md` |
+| Rollback Plan | `rollback` | | ロールバック計画・手順書作成 | `references/rollback-anti-patterns.md` |
+| Feature Flag | `flag` | | フィーチャーフラグ管理・段階ロールアウト設計 | `references/feature-flag-pitfalls.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`plan` = Release Plan). Apply normal INTAKE → ANALYZE → PLAN → COORDINATE → MONITOR workflow.
+
+Behavior notes per Recipe:
+- `plan`: リリース戦略・タイムライン・リスク評価・依存関係を統合したリリース計画書を生成。
+- `changelog`: git log またはマージコミットから CHANGELOG エントリを生成。Conventional Commits 形式に準拠。
+- `notes`: エンドユーザー向けリリースノート。技術詳細を省き、変更の価値・影響を平易な言葉で表現。
+- `rollback`: ロールバック判断基準・手順・担当者・コミュニケーションテンプレートを含む rollback playbook を生成。
+- `flag`: フィーチャーフラグの設計・段階ロールアウト (カナリア/ブルーグリーン) の計画と pitfall 回避策を提示。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

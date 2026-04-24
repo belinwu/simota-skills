@@ -160,6 +160,29 @@ Every deliverable must include:
 - **vs Magi**: Magi = multi-perspective decision-making. Rank = quantitative score-based ordering.
 - **vs Matrix**: Matrix = multi-dimensional combinatorial analysis. Rank = single-dimension priority ordering.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| ICE Score | `ice` | ✓ | ICE スコアリング (Impact × Confidence × Ease) | `references/scoring-frameworks.md` |
+| RICE Score | `rice` | | RICE スコアリング (Reach × Impact × Confidence / Effort) | `references/scoring-frameworks.md` |
+| WSJF | `wsjf` | | WSJF (Weighted Shortest Job First) | `references/scoring-frameworks.md` |
+| MoSCoW | `moscow` | | MoSCoW 法 (Must/Should/Could/Won't) | `references/scoring-frameworks.md` |
+| Kano Model | `kano` | | Kano モデル (顧客満足度分類) | `references/scoring-frameworks.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`ice` = ICE Score). Apply normal COLLECT → CRITERIA → SCORE → CALIBRATE → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `ice`: Impact × Confidence × Ease (各1-10) でスコアリング。QUICK モード適用。小チーム・データ不足時に最適。
+- `rice`: Reach × Impact × Confidence / Effort でスコアリング。FULL モード。ユーザー利用データがある中規模チーム向け。
+- `wsjf`: CoD / Job Duration でスコアリング。SAFe/Lean 環境、時間的価値が明確な大規模組織向け。
+- `moscow`: Must/Should/Could/Won't に分類。ステークホルダー合意形成に最適。
+- `kano`: Must-be / Performance / Attractive に分類。UX 改善優先度付けに最適。
+
 ## References
 
 | File | Content |

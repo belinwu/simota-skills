@@ -114,6 +114,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| GitHub Profile | `github` | ✓ | GitHub Profile README 最適化、リポジトリピン設計 | `references/channel-templates.md` |
+| LinkedIn Profile | `linkedin` | | LinkedIn プロフィール最適化、Topic DNA アライメント | `references/channel-templates.md` |
+| Blog Strategy | `blog` | | ブログ・Qiita・Zenn コンテンツ戦略と記事計画 | `references/amplification-playbook.md` |
+| Conference CFP | `conference` | | 登壇 CFP 作成、トークテーマ設計 | `references/channel-templates.md` |
+| SNS Strategy | `sns` | | X・Bluesky・LinkedIn SNS 発信戦略、ゼロクリック設計 | `references/amplification-playbook.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`github` = GitHub Profile). Apply normal DISCOVER → POSITION → CRAFT → AMPLIFY → MEASURE workflow.
+
 ## Output Routing
 
 | Signal | Approach | Read next |

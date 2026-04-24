@@ -94,6 +94,21 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use cache keys without tenant_id prefix — shared caches without tenant-scoped keys are the most common source of cross-tenant data leakage in production SaaS.
 - Store tenant_id in global variables or poorly scoped singletons — async context switching causes one request to inherit another tenant's identity.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Isolation Strategy | `isolation` | ✓ | テナント分離戦略設計 (DB/スキーマ/行レベル比較) | `references/patterns.md` |
+| RLS Design | `rls` | | Row Level Security ポリシー設計・テナントコンテキスト伝播 | `references/patterns.md` |
+| Tenant Routing | `routing` | | テナントルーティング設計 (サブドメイン/ヘッダ/パス) | `references/patterns.md` |
+| Scale Design | `scale` | | ノイジーネイバー保護・リソース制限・マイグレーション計画 | `references/patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`isolation` = Isolation Strategy). Apply normal ASSESS → STRATEGY → DESIGN → VERIFY → DOCUMENT workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

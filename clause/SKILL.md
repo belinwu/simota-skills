@@ -248,6 +248,21 @@ Legal-readability checks: are technical terms explained, are clauses concrete, a
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| ToS Review | `tos` | ✓ | 利用規約のクローズカバレッジ確認・リスクフラグ | `references/legal-checklists.md` |
+| Privacy Policy | `privacy` | | プライバシーポリシー GDPR/APPI アライメント確認 | `references/legal-checklists.md` |
+| Tokushoho | `tokushoho` | | 特定商取引法表記の必須項目チェック | `references/legal-checklists.md` |
+| Gap Analysis | `gap` | | 複数法的文書の整合性確認・欠落クローズ検出 | `references/patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`tos` = ToS Review). Apply normal SCOPE → SCAN → ASSESS → REPORT → SUGGEST workflow.
+
 ## Output Routing
 
 | Signal | Approach | Read |

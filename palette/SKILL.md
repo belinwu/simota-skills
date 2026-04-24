@@ -208,6 +208,27 @@ Routing rules:
 - If the request involves AI-assisted UI, read `references/ai-assist-patterns.md`.
 - If anti-pattern detection is needed, read `references/interaction-anti-patterns.md` and `references/cognitive-load-anti-patterns.md`.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Usability Evaluation | `usability` | ✓ | UI/UX の総合的な使いやすさ評価 | `references/ux-evaluation.md` |
+| Cognitive Load | `cognitive` | | 認知負荷・情報設計の分析 | `references/cognitive-load-anti-patterns.md` |
+| Feedback Design | `feedback` | | フィードバック・マイクロインタラクション設計 | `references/microinteraction-patterns.md` |
+| Accessibility | `a11y` | | アクセシビリティ・WCAG 適合評価 | `references/wcag22-inclusive-design.md` |
+
+Behavior notes:
+- **usability** (default): SURVEY → EVALUATE → PRIORITIZE → PRESENT; load `ux-evaluation.md` + `interaction-anti-patterns.md`.
+- **cognitive**: Analyze information density and hierarchy; load `cognitive-load-anti-patterns.md`; output redesign proposals.
+- **feedback**: Review or design system feedback states; load `microinteraction-patterns.md`; include animation timing notes.
+- **a11y**: Audit against WCAG 2.2 criteria; load `wcag22-inclusive-design.md` + `accessibility-patterns.md`; classify by level (A/AA/AAA).
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column file at the initial step.
+- Otherwise → fall through to default Recipe (`usability` = Usability Evaluation).
+
 ## Output Requirements
 
 - All outputs in Japanese. Technical terms and code stay in English.

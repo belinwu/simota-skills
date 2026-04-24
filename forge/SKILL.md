@@ -108,6 +108,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `COOL` | Run compile/render/interaction checks, verify concept clarity, note blockers and debt. Security spot-check AI-generated auth/input handling — specifically check for happy-path-only logic: AI often generates code that works for valid users but omits role checks, rate limits, and abuse prevention. Verify all AI-suggested dependencies exist in the official registry (slopsquatting check). Scan AI-generated files for hardcoded secrets/API keys/tokens (3.2% leak rate) | Self-check at least every 30 minutes; if not demoable at 75% of time-box, re-scope | `references/prototyping-anti-patterns.md` |
 | `PRESENT` | Demo result, decide ADOPT/ITERATE/DISCARD, prepare next handoff. Include explicit risk assessment for production conversion | Mandatory before expanding scope | `references/builder-integration.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| UI Prototype | `ui` | ✓ | 単一画面/コンポーネント PoC、Throwaway デフォルト | `references/ui-templates.md`, `references/prototyping-anti-patterns.md` |
+| API Mock | `api` | | バックエンドスタブ・モックサーバ PoC | `references/api-mocking.md`, `references/backend-poc.md` |
+| Full Stack PoC | `fullstack` | | フロント + バック両方、thin end-to-end slice | `references/prototype-to-production.md`, `references/api-mocking.md` |
+| Landing Page | `landing` | | LP 特化 PoC (Funnel 補助) | `references/ui-templates.md`, `references/rapid-iteration-methodology.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`ui` = UI Prototype). Apply SCAFFOLD → STRIKE → COOL → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `ui`: 単一コンポーネント / 画面。shadcn/ui CLI 優先。≤4h time-box。Throwaway vs Evolutionary を SCAFFOLD で明示。
+- `api`: MSW v2 ハンドラ or json-server。dev/test 共通ソースとして整備。セキュリティ感受性ロジックは手実装。
+- `fullstack`: UI + mock/server 両方。thin slice として仮説を検証。各レイヤーの責任を SCAFFOLD で明記。
+- `landing`: LP 単一ページ。Funnel との分業を意識し CTA・フォームを優先実装。Pixel-perfect は禁止。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

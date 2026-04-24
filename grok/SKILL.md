@@ -210,6 +210,29 @@ questions:
 | `HARDEN` | Produce worst-case inputs, property-based tests, fuzz corpus; annotate ReDoS complexity | Every regex has a documented complexity class | `references/regex-safety.md` |
 | `DOCUMENT` | Package grammar + tests + error-recovery notes + evolution plan for downstream agents | Grammar is a contract; downstream must know how to extend it | `references/handoffs.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Regex Design | `regex` | ✓ | 正規表現設計・ReDoS 監査・エンジン選定 | `references/regex-safety.md` |
+| Parser Design | `parser` | | パーサ設計・文法クラス分類・ジェネレータ選定 | `references/parser-generators.md` |
+| DSL Design | `dsl` | | Domain Specific Language 設計 (内部/外部 DSL) | `references/dsl-design.md` |
+| AST Transform | `ast` | | AST 変換・コードモッド・ビジター設計 | `references/ast-transforms.md` |
+| ReDoS Audit | `redos` | | 既存正規表現の ReDoS 安全性監査のみ | `references/regex-safety.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`regex` = Regex Design). Apply normal ANALYZE → GRAMMAR → IMPLEMENT → HARDEN → DOCUMENT workflow.
+
+Behavior notes per Recipe:
+- `regex`: エンジンターゲット特定 → ReDoS 分析 → ポンプ文字列ドキュメント化 → Unicode ポスチャー確認。
+- `parser`: 文法クラス分類 → ジェネレータ決定行列 → エラーリカバリ戦略 → Builder ハンドオフ。
+- `dsl`: 内部 vs 外部 DSL 判断 → 語彙設計 → バージョン戦略 → 進化計画。
+- `ast`: ノード型設計 → ビジターパターン選択 → ラウンドトリップ安全性 → コードモッド戦略。
+- `redos`: 既存パターンのポンプ文字列抽出 → 複雑度クラス判定 → 修正案提示のみ。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

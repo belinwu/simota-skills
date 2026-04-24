@@ -107,14 +107,28 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Train teams to ignore test results by leaving flaky tests in the main pipeline — quarantine immediately and fix in dedicated sessions.
 - Let AI agents auto-fix flaky failures in CI loops without verifying flaky vs. real regression first — autonomous retry-fix cycles cause regression cascades (observed pattern: multiple iterations, zero real bugs fixed, introduced regressions and wasted compute). Always confirm the failure is a genuine regression before applying code changes (Source: Frontiers AI-augmented CI/CD 2026).
 
-## Operating Modes
+## Recipes
 
-| Mode | Trigger Keywords | Primary Goal | Read This |
-|------|------------------|--------------|-----------|
-| `Default` | default | Add or tighten missing tests for risky behavior | `references/testing-patterns.md` |
-| `FLAKY` | `flaky test`, `intermittent failure` | Diagnose and stabilize nondeterministic tests | `references/flaky-test-guide.md` |
-| `AUDIT` | `coverage`, `coverage gaps` | Produce coverage gaps and prioritized next steps | `references/coverage-strategy.md` |
-| `SELECT` | `test selection`, `CI speed` | Reduce CI time while preserving confidence | `references/test-selection-strategy.md` |
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Edge Cases | `edge` | ✓ | 境界値・エラー経路の不足テスト追加 | `references/testing-patterns.md` |
+| Flaky Repair | `flaky` | | 不安定テストの根本原因診断と安定化 | `references/flaky-test-guide.md` |
+| Coverage Fill | `coverage` | | カバレッジ穴埋め・優先ギャップ特定 | `references/coverage-strategy.md` |
+| Regression Suite | `regression` | | Scout handoff 由来の回帰テスト追加 | `references/testing-patterns.md`, `references/advanced-techniques.md` |
+| CI Optimize | `ci` | | テスト選択・CI スピード改善 | `references/test-selection-strategy.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`edge` = Edge Cases). Apply SCAN → LOCK → PING → VERIFY workflow.
+
+Behavior notes per Recipe:
+- `edge`: 境界値・null・空・タイムアウト・エラー分岐を優先。fail-first で regression を確認。
+- `flaky`: 根本原因 (async timing / 共有状態 / 順序依存) を特定してから修正。自動リトライ禁止。
+- `coverage`: diff カバレッジ 80%+ を目標に優先ギャップをリスク評価して選択。
+- `regression`: Scout または Builder の handoff 後専用。バグ再現テストを fail-first で追加し、fix 後に green 確認。
+- `ci`: TIA または skip 条件でスイート実行時間削減。CI インフラ変更は Gear に委譲。
 
 ## Workflow
 

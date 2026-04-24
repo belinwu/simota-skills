@@ -110,6 +110,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERIFY` | Run lint+test, measure impact, ensure no regression | Impact documented | `references/profiling-tools.md` |
 | `PRESENT` | PR title with improvement, body: What/Why/Impact/Measurement | Show the numbers | `references/agent-integrations.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Frontend Perf | `frontend` | ✓ | フロントエンド最適化 (再レンダ削減、メモ化、遅延読込) | `references/react-performance.md` |
+| Backend Perf | `backend` | | バックエンド最適化 (N+1、キャッシュ、非同期) | `references/database-optimization.md` |
+| Render Reduction | `render` | | React/Vue の再レンダ削減のみ | `references/react-performance.md` |
+| Async Refactor | `async` | | 同期処理の非同期化 (waterfall 解消) | `references/optimization-anti-patterns.md` |
+| Cache Strategy | `cache` | | キャッシュ戦略設計 (memo, Redis, CDN) | `references/caching-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`frontend` = Frontend Perf). Apply normal PROFILE → SELECT → OPTIMIZE → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `frontend`: React Compiler 有効化確認。LCP/INP/CLS 計測 → 最大ボトルネック1点を最適化。
+- `backend`: N+1/キャッシュ/接続プールを対象。Bolt→Tuner のハンドオフ基準 (深い SQL 分析) を遵守。
+- `render`: React 再レンダ削減に特化。React Compiler 非使用時のみ手動 memo を検討。
+- `async`: sequential await を Promise.all に変換。async waterfall が最大の性能根本原因 (Vercel 調査)。
+- `cache`: LRU/Redis/HTTP キャッシュ。必ず TTL を設定。stampede 対策 (lock/lease) を含める。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

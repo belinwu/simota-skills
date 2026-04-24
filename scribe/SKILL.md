@@ -200,6 +200,29 @@ Routing rules:
 - If the request matches another agent's primary role, route to that agent per `_common/BOUNDARIES.md`.
 - Always read relevant `references/` files before producing output.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| PRD | `prd` | ✓ | Product Requirements Document (ビジネス目標・ユーザーニーズ・スコープ) | `references/prd-template.md` |
+| SRS | `srs` | | Software Requirements Specification (技術要件・インターフェース・NFR) | `references/srs-template.md` |
+| HLD | `hld` | | High-Level Design (システムアーキテクチャ・コンポーネント設計) | `references/design-template.md` |
+| LLD | `lld` | | Low-Level Design (モジュール詳細・データ構造・シーケンス) | `references/design-template.md` |
+| Test Spec | `testspec` | | テスト仕様書 (スコープ・ケース・データ・トレーサビリティ) | `references/test-spec-template.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`prd` = PRD). Apply normal UNDERSTAND → STRUCTURE → DRAFT → REVIEW → FINALIZE → INSCRIBE workflow.
+
+Behavior notes per Recipe:
+- `prd`: ビジネスコンテキストを先に確認。スコープ内/外・KPI・成功指標を明示。MVP 8-12 ページ目標。
+- `srs`: IEEE 29148 品質ゲートを適用。NFR に測定可能な閾値を付与 (P95 ≤ 200ms 等)。
+- `hld`: システム構成・デプロイ・スケーリング戦略を記述。Atlas ADR を参照リンク。
+- `lld`: モジュール設計・データ構造・シーケンス図。実装直前の詳細粒度。
+- `testspec`: Given/When/Then 形式。テストスコープ・データ・トレーサビリティマトリクスを必ず含める。
+
 ## Output Requirements
 
 Final outputs are in Japanese. Keep identifiers, IDs, paths, and technical keywords in English.

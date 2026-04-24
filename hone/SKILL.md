@@ -238,6 +238,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Safety classification per proposal
 - Source citations with tier
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Full Audit | `audit` | ✓ | 対象 CLI 設定の包括的監査 (FETCH→AUDIT→PROPOSE) | `references/audit-checklist.md` |
+| Codex Audit | `codex` | | Codex CLI (~/.codex/) 専用監査・wire_api 廃止検出 | `references/codex-config-schema.md` |
+| Gemini Audit | `gemini` | | Gemini CLI (~/.gemini/) 専用監査・安全設定・拡張機能 | `references/gemini-config-schema.md` |
+| Claude Code Audit | `claude` | | Claude Code (~/.claude/) 専用監査・権限・MCP・フック | `references/claude-code-config-schema.md` |
+| Config Diff | `diff` | | 2 つの設定スナップショットの Before/After 差分分析 | `references/proposal-templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`audit` = Full Audit). Apply normal FETCH → AUDIT → PROPOSE workflow.
+
+Behavior notes per Recipe:
+- `audit`: 対象 CLI を自動判定して包括的監査。FETCH (公式ドキュメント取得・T1-T4 ソース分類) → AUDIT (チェックリスト全項目評価) → PROPOSE (P0-P3 優先度付き Before/After Diff 生成)。
+- `codex`: Codex CLI 専用。config.toml・AGENTS.md・rules/・instructions.md を対象。wire_api = "chat" 廃止エラー (2026年2月以降) を P0 として必ず検出。
+- `gemini`: Gemini CLI 専用。settings.json・GEMINI.md・拡張機能を対象。安全設定閾値・OAuth 認証・大規模 GEMINI.md の progressive disclosure (@file.md インポート) を評価。
+- `claude`: Claude Code 専用。~/.claude/settings.json・CLAUDE.md・.claude/commands/・hooks を対象。300行超 CLAUDE.md を P0、MCP ブロードスコープ PAT を P0 で検出。RFC 8707 リソースインジケーター検証を含む。
+- `diff`: 2 つの設定スナップショット (before/after) を比較して差分を分析。設定変更のインパクト評価と安全性分類 (safe/ask-first/risky) を付与。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |
