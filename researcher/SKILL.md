@@ -187,6 +187,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Analysis | `analysis` | | Qualitative analysis, affinity mapping, and insight synthesis | `references/analysis-and-synthesis.md`, `references/bias-checklist.md` |
 | Persona | `persona` | | Persona creation and journey map generation | `references/analysis-and-synthesis.md` |
 | Journey | `journey` | | Journey mapping and JTBD analysis | `references/analysis-and-synthesis.md`, `references/continuous-discovery-mixed-methods.md` |
+| Survey | `survey` | | Quantitative survey design (Likert / MaxDiff / Conjoint), sample-size math, order-bias control | `references/survey-quantitative-design.md`, `references/participant-screening.md` |
+| Diary | `diary` | | Diary / longitudinal behavioral study design with ESM scheduling and fatigue management | `references/diary-longitudinal-study.md`, `references/participant-screening.md` |
+| Cards | `cards` | | Information architecture validation via card sort, tree test, and first-click testing | `references/cards-ia-validation.md`, `references/participant-screening.md` |
 
 ## Subcommand Dispatch
 
@@ -200,6 +203,9 @@ Behavior notes per Recipe:
 - `analysis`: Thematic analysis, coding, and affinity mapping. Bias check required.
 - `persona`: Generate personas from research data. Disclose WEIRD bias and prepare Cast handoff.
 - `journey`: Journey mapping + JTBD switch interview analysis. Includes Plea handoff determination.
+- `survey`: Quantitative survey design — item authoring, scale selection, sample-size calculation, order-bias control, Cronbach's α validation. For usability cognitive walkthrough use Echo; for production KPI tracking events use Pulse; for operational NPS/CSAT feedback pipelines use Voice.
+- `diary`: Longitudinal behavioral study — study length, ESM prompt frequency, self-report bias mitigation, fatigue management, media capture. For passive in-product telemetry use Pulse; for single-session cognitive walkthrough use Echo; for retrospective feedback mining use Voice.
+- `cards`: IA validation — open / closed / hybrid card sort, tree testing, first-click testing, dendrogram and similarity-matrix analysis. For UI comprehension walkthrough use Echo; for post-launch navigation analytics use Pulse; for post-launch findability complaints use Voice.
 
 ## Output Routing
 
@@ -280,6 +286,9 @@ Researcher receives research direction and data from upstream agents, conducts s
 | `references/research-ops-democratization.md` | The task is ResearchOps, repository design, democratization, or self-service research governance. |
 | `references/research-anti-patterns-impact.md` | You need anti-pattern prevention, ROI framing, or stakeholder alignment. |
 | `references/continuous-discovery-mixed-methods.md` | You need continuous discovery cadence, mixed-methods design, triangulation, or always-on research. |
+| `references/survey-quantitative-design.md` | You need quantitative survey design, scale selection, sample-size math, order-bias control, or reliability checks. |
+| `references/diary-longitudinal-study.md` | You need diary / longitudinal study design, ESM scheduling, fatigue management, or media-capture guidance. |
+| `references/cards-ia-validation.md` | You need card sort, tree testing, first-click testing, or IA validation analysis. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the research report, deciding adaptive thinking depth at method selection, or front-loading research question/scope/participants at INTAKE. Critical for Researcher: P3, P5. |
 
 ## Operational
