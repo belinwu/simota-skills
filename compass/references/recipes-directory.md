@@ -62,7 +62,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **ink**: icon★ / illustration / system / sprite
 - **judge**: pr★ / security / perf / style / quick / intent
 - **latch**: configure★ / debug / pretool / posttool
-- **launch**: plan★ / changelog / notes / rollback / flag
+- **launch**: plan★ / changelog / notes / rollback / flag / hotfix / canary
 - **ledger**: estimate★ / rightsizing / ri-sp / anomaly / ai-gpu
 - **lens**: map★ / discover / trace / responsibility
 - **levy**: classify★ / deduction / calc / file

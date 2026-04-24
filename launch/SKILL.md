@@ -12,6 +12,8 @@ CAPABILITIES_SUMMARY:
 - rollback_design: Create rollback plans with triggers and methods
 - feature_flag_management: Design flag rollout, cleanup, and retirement policies
 - go_nogo_gates: Define release criteria and Go/No-Go decision frameworks
+- hotfix_fast_path: Emergency patch release workflow with shortened CI gates, mandatory rollback readiness, and post-incident backport plan
+- canary_orchestration: Progressive traffic-shifting (1% → 10% → 50% → 100%) with automatic guardrail monitoring and halt triggers
 
 COLLABORATION_PATTERNS:
 - Guardian -> Launch: Release commit/tag strategy
@@ -155,6 +157,8 @@ Route elsewhere when the task is primarily:
 | Release Notes | `notes` | | リリースノート作成 (ユーザー向け) | `references/patterns.md` |
 | Rollback Plan | `rollback` | | ロールバック計画・手順書作成 | `references/rollback-anti-patterns.md` |
 | Feature Flag | `flag` | | フィーチャーフラグ管理・段階ロールアウト設計 | `references/feature-flag-pitfalls.md` |
+| Hotfix Release | `hotfix` | | 緊急パッチリリース (短縮 CI / hotfix ブランチ / 2h SLA / rollback 同梱 / main への backport) | `references/hotfix-workflow.md` |
+| Canary Rollout | `canary` | | 段階的トラフィック投入 (1%→10%→50%→100%) と自動ガードレール・中止条件の設計 | `references/canary-rollout.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.
@@ -167,6 +171,8 @@ Behavior notes per Recipe:
 - `notes`: エンドユーザー向けリリースノート。技術詳細を省き、変更の価値・影響を平易な言葉で表現。
 - `rollback`: ロールバック判断基準・手順・担当者・コミュニケーションテンプレートを含む rollback playbook を生成。
 - `flag`: フィーチャーフラグの設計・段階ロールアウト (カナリア/ブルーグリーン) の計画と pitfall 回避策を提示。
+- `hotfix`: 緊急パッチリリース専用。SLA 2h、短縮 CI (smoke のみ)、hotfix ブランチ、rollback 手順同梱、main への backport plan を含む緊急プレイブックを生成。本番影響・RCA・類似リグレッション防止策も含める。
+- `canary`: 段階的トラフィックシフト (例: 1% → 10% → 50% → 100%) を設計。各段階のガードレールメトリクス (error rate / p95 / SLO burn / business metric) と自動中止条件、観察窓時間を明示。
 
 ## Output Routing
 
