@@ -154,6 +154,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Bot Framework | `bot` | | Bot command framework and conversation state machine design | `references/bot-framework.md`, `references/channel-adapters.md` |
 | WebSocket Server | `websocket` | | WebSocket server and real-time communication design | `references/realtime-architecture.md` |
 | Channel Adapter | `adapter` | | Channel adapters (Slack/Discord/LINE normalization) | `references/channel-adapters.md`, `references/event-routing.md` |
+| SSE Streaming | `sse` | | Server-Sent Events design with Last-Event-ID resume, heartbeat, and proxy-safe headers | `references/sse-streaming.md` |
+| Queue Integration | `queue` | | Message-queue producer/consumer wiring (SQS/SNS/RabbitMQ/Kafka/NATS) with DLQ and idempotent consumers | `references/queue-integration.md` |
+| Rate Limiting | `rate` | | Rate limiting and backpressure for messaging (token/leaky bucket, 429/Retry-After, per-tenant quotas) | `references/rate-limiting.md` |
 
 ## Subcommand Dispatch
 
@@ -166,6 +169,9 @@ Behavior notes per Recipe:
 - `bot`: Design command parser, slash commands, conversation state machine, and middleware chain. Includes LLM-native runner integration evaluation.
 - `websocket`: Connection lifecycle, heartbeats, horizontal scaling (Redis session externalization), and WebSocketStream API evaluation.
 - `adapter`: Cross-platform normalization. Normalize-in/Adapt-out pattern. CloudEvents envelope and AsyncAPI spec.
+- `sse`: Unidirectional server-push with `Last-Event-ID` resume, heartbeat cadence tuned to proxy/LB idle timeouts, proxy/CDN buffering disabled, and long-polling fallback. For bidirectional low-latency use `websocket`; for HTTP request/response API use Gateway.
+- `queue`: Message-queue producer/consumer wiring (envelope, DLQ, visibility timeout, partition/group keys, idempotent consumer). For streaming ETL pipeline design use Stream; for retry/backoff policy use Tempo; for queue-depth SLO/alerting use Beacon.
+- `rate`: Transport-level rate limiting and backpressure for messaging surfaces (token bucket / leaky bucket / sliding window, 429 + `Retry-After`, cost-based quotas, per-tenant isolation). For public REST/GraphQL rate limits use Gateway; for retry schedule design use Tempo.
 
 ## Output Routing
 
