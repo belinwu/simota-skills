@@ -151,6 +151,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Persona Pattern | `persona` | | Persona-based behavior pattern extraction, cohort construction | `references/persona-integration.md` |
 | UX Story | `story` | | UX issue storytelling, journey reconstruction | `references/report-templates.md` |
 | Behavioral Archaeology | `archaeology` | | Behavioral archaeology — motive/intent inference, frustration root cause analysis | `references/frustration-signals.md` |
+| Rage-Click Detection | `rageclick` | | Rage-click / dead-click detection, error-shake and u-turn frustration surfacing | `references/rageclick-detection.md`, `references/frustration-signals.md` |
+| Funnel Drop-Off | `funnel` | | Funnel step-level drop-off analysis, cohort-sliced conversion decomposition | `references/funnel-dropoff.md`, `references/session-analysis.md` |
+| Heatmap Synthesis | `heatmap` | | Click / scroll / move heatmap synthesis, hotspot extraction, dead-zone surfacing | `references/heatmap-synthesis.md` |
 
 ## Subcommand Dispatch
 
@@ -163,6 +166,9 @@ Behavior notes per Recipe:
 - `persona`: Cast ペルソナ定義を読み込み、行動クラスターと統計的有意性を確認してから cohort 構築。
 - `story`: TRACE_TO_SAGA ハンドフを念頭に、高影響度セッションを storytelling 形式で整理。
 - `archaeology`: 動機・意図推定に特化。「なぜそうしたか」を行動パターンから逆算して推論。
+- `rageclick`: Apply industry-standard thresholds (>=3 clicks/1s, <50px on mobile / <30px on desktop), filter false positives (intentional double-click, slow INP, drag intent), then link each flagged signal to anonymized replay for qualitative confirmation. Hand off to Palette/Bolt based on rage-vs-dead distinction.
+- `funnel`: Decompose conversion into step-level drop-offs with cohort slicing (new/returning, device, referrer, locale); rank by friction score (drop-off % × downstream value) and surface the single highest-leverage step. Emit `TRACE_TO_EXPERIMENT` when Hypothesis Readiness Score >=7.
+- `heatmap`: Choose heatmap type by question (click/move/scroll/attention), normalize coordinates per breakpoint bucket, apply KDE or grid density, then extract hotspots via DBSCAN. Always mask form fields at capture and disclose session count on every overlay.
 
 ## Output Routing
 
@@ -248,6 +254,9 @@ During **ANALYZE** phase, when actual behavior deviates from expected persona pa
 | `references/persona-integration.md` | You need persona lifecycle patterns A-D or YAML format specifications. |
 | `references/frustration-signals.md` | You need signal taxonomy, detection algorithms, scoring formulas, or false positive guidance. |
 | `references/report-templates.md` | You need standard/validation/investigation/quick/comparison report templates. |
+| `references/rageclick-detection.md` | You need rage/dead/shake/thrash thresholds, false-positive filters, rage-vs-dead distinction, or session-replay tool comparison. |
+| `references/funnel-dropoff.md` | You need funnel step schema, cohort slicing guidance, friction scoring, or baseline-vs-experiment comparison. |
+| `references/heatmap-synthesis.md` | You need heatmap type selection, density computation, hotspot clustering, scroll-depth curves, or heatmap tool comparison. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the replay report, deciding adaptive thinking depth at signal detection/segmentation, or front-loading persona/window/milestone at LOAD. Critical for Trace: P3, P5. |
 
 ## Operational
