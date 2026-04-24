@@ -13,6 +13,9 @@ CAPABILITIES_SUMMARY:
 - reviewer_assignment: Recommend reviewers based on CODEOWNERS and expertise
 - squash_optimization: Group and score squash plans for merge efficiency
 - history_reshape: Rebuild commit history from a fresh base branch via squash-then-redistribute workflow
+- history_audit: Read-only audit of commit history quality (WIP/fixup residue, Conventional Commits violations, atomicity, size excess)
+- pr_split_planning: Decompose oversized branches into stacked PRs with dependency order and per-PR review time estimates
+- branch_health_diagnosis: Repository-wide branch inventory — stale, diverged, merged-but-undeleted, high-conflict-risk
 
 COLLABORATION_PATTERNS:
 - Judge -> Guardian: Review feedback and AI-assisted defect findings
@@ -200,6 +203,9 @@ Routing rules:
 | Naming Review | `naming` | | ブランチ/コミット命名チェック (Conventional Commits) | `references/commit-conventions.md` |
 | Merge Strategy | `strategy` | | マージ戦略 (squash/rebase/merge) 選定 | `references/branching-strategies.md` |
 | Reshape History | `reshape` | | ベースブランチから新ブランチを切り、開発ブランチを squash 取り込み→最適粒度で再コミットして履歴を整理 | `references/history-reshape.md` |
+| Audit History | `audit` | | ブランチのコミット履歴を read-only 診断 (WIP/fixup 残存・Conventional Commits 違反・atomicity・サイズ逸脱) | `references/history-audit.md` |
+| Split into Stacked PRs | `split` | | M+ サイズのブランチを stacked PR 群に分解するプラン (依存順・ファイル境界・推定レビュー時間) | `references/pr-split-strategy.md` |
+| Branch Health | `health` | | リポジトリ全体のブランチ棚卸し (stale・diverged・merged 未削除・conflict リスク) | `references/branch-health.md` |
 
 ## Subcommand Dispatch
 
@@ -213,6 +219,9 @@ Behavior notes per Recipe:
 - `naming`: Conventional Commits 準拠チェック。スコープ・動詞・50 文字制限を検証。
 - `strategy`: DORA メトリクスと branch lifetime に基づき GitHub Flow / Git Flow / Trunk-Based を選定。
 - `reshape`: ベースブランチから新ブランチを作成 → 開発ブランチ全体を `git merge --squash` で取り込み → `commit` Recipe と同じ Change Classification を適用して atomic commit 群に再分割し履歴を整理。**バックアップブランチ作成は必須**、force push やリモート共有ブランチへの適用は Ask First、実行コマンドは提案のみでユーザー同意後に実行。
+- `audit`: 指定範囲 (`origin/main..HEAD` デフォルト) のコミット履歴を read-only 診断。WIP/fixup 残存、Conventional Commits 違反、atomicity スコア、サイズ逸脱、署名欠落を検出し、次に叩くべき Recipe (`commit` / `reshape` / `pr` / そのまま進行可) を推奨。副作用ゼロ。
+- `split`: M+ サイズのブランチを stacked PR に分解するプランを生成。各 PR を 10–15 分レビュー可能なサイズに割り、依存順 (bottom-up)・ファイル境界・推定レビュー時間・ツール選定 (Graphite / ghstack / git-town / jj) を提示。実行コマンドは提案のみ、ユーザー同意後に段階実行。
+- `health`: リポジトリ全体のローカル/リモートブランチを棚卸し。stale (30+ 日未更新)、upstream 乖離、merged 未削除、conflict 確率高のブランチを分類し、削除・rebase・archive を推奨。ブランチ削除は Ask First。
 
 ## Output Requirements
 
