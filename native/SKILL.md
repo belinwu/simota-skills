@@ -237,6 +237,9 @@ Check status → Already granted? → Proceed
 | SwiftUI | `swiftui` | | SwiftUI + Swift 6 iOS native implementation | `references/modern-stack.md` |
 | Jetpack Compose | `compose` | | Jetpack Compose + Material 3 Android native implementation | `references/modern-stack.md` |
 | Offline Support | `offline` | | Offline-first architecture design (T0-T3 tiers) | `references/patterns.md` |
+| Push Notifications | `push` | | Production push wiring (APNs/FCM/Web Push), token lifecycle, permission UX, payload and delivery analytics | `references/push-notifications.md` |
+| Deep Links | `deeplink` | | Universal Links (AASA), Android App Links (assetlinks.json), deferred deep links, routing, attribution | `references/deeplink-routing.md` |
+| Background Tasks | `bg` | | iOS BGTaskScheduler / Android WorkManager / RN Headless JS, Doze/battery constraints, execution budgeting | `references/bg-execution.md` |
 
 ## Subcommand Dispatch
 
@@ -250,6 +253,9 @@ Behavior notes per Recipe:
 - `swiftui`: Swift 6 strict concurrency, Apple HIG compliance, minimum bundle size optimization.
 - `compose`: Material 3, Kotlin-first. Confirm whether KMP shared logic applies during DETECT.
 - `offline`: Determine T0-T3 tier → select local DB → design write queue → conflict-resolution strategy.
+- `push`: Production push-notification wiring — APNs/FCM/Web Push, token registration/rotation/revocation, permission pre-prompt UX, alert/silent/data payloads, delivery-receipt analytics, rate and quota budgeting. For prototyping push UX with stubbed tokens use Forge `mobile`; for the server-side delivery API and token registry use Gateway.
+- `deeplink`: Universal Links (AASA) and Android App Links (assetlinks.json) as primary, custom URL scheme as fallback, deferred deep links via Install Referrer / attribution SDK, centralized URL-to-Route resolver, auth-gated replay, allow-listed attribution parameters. For server-side short-link resolution or attribution endpoints use Gateway; for security audits of intent filters use Sentinel.
+- `bg`: Background execution on iOS BGTaskScheduler (BGAppRefreshTask / BGProcessingTask), Android WorkManager / JobScheduler, and React Native Headless JS / Expo Background Tasks. Budget execution to ~80% of OS window, checkpoint progress, plan for Doze / App Standby / Low Power Mode, and test with forced-run commands. For server endpoints called from background tasks use Gateway; for wake-up cost, battery-drain, and throttling audits use Sentinel.
 
 ## Output Routing
 
@@ -341,6 +347,9 @@ NATIVE_TO_LAUNCH_HANDOFF:
 | `references/mobile-ci-cd.md` | EAS Build / Fastlane / Xcode Cloud / GitHub Actions pipeline design |
 | `references/platform-permissions.md` | iOS/Android permission handling, pre-prompt UX, graceful degradation |
 | `references/modern-stack.md` | React Native New Architecture, Expo SDK 52+, Swift 6, KMP, Compose Multiplatform |
+| `references/push-notifications.md` | APNs/FCM/Web Push wiring, token lifecycle, permission UX, payload shape, delivery analytics, quota budgeting |
+| `references/deeplink-routing.md` | Universal Links (AASA), Android App Links (assetlinks.json), deferred deep links, routing architecture, attribution parameters |
+| `references/bg-execution.md` | iOS BGTaskScheduler, Android WorkManager, RN Headless JS / Expo Background Tasks, Doze/App Standby, execution-time budgeting, testing |
 | `_common/OPUS_47_AUTHORING.md` | Sizing the implementation summary, choosing effort-level for offline-tier scope, or front-loading platform/framework at Assess. Critical for Native: P3, P6. |
 
 ---
