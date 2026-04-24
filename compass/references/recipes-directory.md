@@ -17,7 +17,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **arena**: compete★ / collaborate / solo / quick
 - **artisan**: component★ / state / form / fetch / rsc
 - **atelier**: pipeline★ / extract / persist / assets
-- **atlas**: analyze★ / deps / godclass / adr / rfc
+- **atlas**: analyze★ / deps / godclass / adr / rfc / cycle / coupling / boundary
 - **attest**: verify★ / bdd / trace / report
 - **beacon**: slo★ / tracing / alerts / dashboard / capacity
 - **bolt**: frontend★ / backend / render / async / cache

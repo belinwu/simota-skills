@@ -12,6 +12,9 @@ CAPABILITIES_SUMMARY:
 - technical_debt_assessment: Quantify debt via SQALE/TDR (remediation cost / dev cost), prioritize by Cost of Delay, recommend ≥ 15% dev time allocation for high-complexity projects
 - module_boundary_design: Define clean module interfaces and boundaries
 - fitness_function_design: Recommend CI-integrated architectural fitness functions for coupling, complexity, and layer violation guardrails
+- circular_dependency_remediation: Targeted SCC detection and break strategies (dependency inversion, interface extraction, module re-layering) for cyclic import graphs
+- coupling_metric_assessment: Afferent/efferent coupling, instability (I), abstractness (A), distance-from-main-sequence (D) scoring per module with actionable targets
+- module_boundary_evaluation: Bounded-context fit analysis, cross-boundary leak detection, and anti-corruption layer recommendations
 
 COLLABORATION_PATTERNS:
 - Pattern A: Analysis-to-Design (Atlas → Architect)
@@ -137,6 +140,9 @@ Detailed checklists: `references/daily-process-checklists.md`
 | God Class Detection | `godclass` | | God Class / 肥大化モジュール検出 | `references/zen-integration.md` |
 | ADR Authoring | `adr` | | Architecture Decision Record 作成 | `references/adr-rfc-templates.md` |
 | RFC Drafting | `rfc` | | 大規模変更の RFC ドラフト | `references/adr-rfc-templates.md` |
+| Cycle Break | `cycle` | | 循環依存 (SCC) の検出と除去戦略 (依存反転 / インターフェース抽出 / 再レイヤリング) | `references/circular-dependency-remediation.md` |
+| Coupling Assessment | `coupling` | | モジュール結合度の定量評価 (Ca/Ce/I/A/D) と改善指針 | `references/coupling-metrics.md` |
+| Boundary Evaluation | `boundary` | | Bounded Context 境界評価・越境リーク検出・anti-corruption layer 提案 | `references/module-boundary-evaluation.md` |
 
 ## Subcommand Dispatch
 
@@ -150,6 +156,9 @@ Behavior notes per Recipe:
 - `godclass`: SRP 違反モジュールを特定し、Zen への ZEN_HANDOFF ドラフトを生成。
 - `adr`: MADR 4.0 テンプレートで ADR を作成。Considered Options + 長所/短所を必ず含める。
 - `rfc`: 大規模変更の RFC ドラフト。移行戦略とロールバック計画を含める。
+- `cycle`: SCC (strongly connected component) を検出し、各 SCC に対して除去戦略 (DIP / interface 抽出 / 再レイヤリング / merge) を優先度付きで提示。Canvas への依存グラフ視覚化を推奨。
+- `coupling`: Martin metrics (Ca/Ce/Instability/Abstractness/Distance) を算出し、Main Sequence 逸脱モジュールを特定。目標値と改善候補を提示。
+- `boundary`: Bounded Context 境界とリポジトリ構造の整合を評価。越境データ漏洩・共有カーネル過剰・anti-corruption layer 欠如を検出。
 
 ## Output Requirements
 
