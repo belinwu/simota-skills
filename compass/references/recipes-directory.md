@@ -107,7 +107,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **saga**: story★ / scenario / narrative / customer
 - **scaffold**: terraform★ / cloudformation / pulumi / compose / env
 - **schema**: design★ / migration / er / normalize / index
-- **scout**: bug★ / regression / prod / consensus / cascade
+- **scout**: bug★ / regression / prod / consensus / cascade / perf / memory / flake
 - **scribe**: prd★ / srs / hld / lld / testspec
 - **seek**: fulltext★ / vector / hybrid / index / rag
 - **sentinel**: scan★ / secrets / injection / deps / headers

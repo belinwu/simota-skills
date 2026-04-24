@@ -17,6 +17,9 @@ CAPABILITIES_SUMMARY:
 - ai_generated_code_investigation: Investigate bugs in AI-generated code with awareness of common AI code failure patterns (boundary conditions, error handling gaps, dependency misunderstanding)
 - frontend_bug_investigation: Browser DevTools-driven investigation of React/Vue/CSS layout bugs, hydration mismatches, and state management issues
 - unified_confidence_scoring: Numeric confidence scale (0.0-1.0) with evidence thresholds aligned to cluster-wide Investigation Escalation Protocol
+- performance_bug_investigation: Profiler-driven root cause analysis for latency, CPU, or throughput regressions with flamegraph and hot-path isolation
+- memory_issue_investigation: Heap-snapshot-driven diagnosis of memory leaks, OOM, and GC pressure with retention-path analysis
+- intermittent_bug_investigation: Reproducibility-score-driven triage of flaky tests, race symptoms, and environment-dependent bugs with Specter handoff criteria
 
 COLLABORATION_PATTERNS:
 - Triage -> Scout: Incident reports requiring RCA
@@ -189,6 +192,9 @@ Use [advanced-reproduction-triage.md](references/advanced-reproduction-triage.md
 | Observability-Led | `prod` | | Production traces/logs/metrics dominate the signal | `references/observability-debugging.md` |
 | Multi-Engine | `consensus` | | Root cause ambiguous after 3 hypotheses exhausted | `_common/SUBAGENT.md` |
 | Cascading Failure | `cascade` | | Multi-service propagation from a single origin | `references/observability-debugging.md`, `references/modern-rca-methodology.md` |
+| Performance Hunt | `perf` | | 明確な遅延・スループット低下・CPU hotspot がある場合の profiler 起点調査 | `references/perf-investigation.md` |
+| Memory Hunt | `memory` | | OOM / heap 肥大 / GC pressure が疑われる場合の heap-snapshot 起点調査 | `references/memory-investigation.md` |
+| Flake Hunt | `flake` | | 間欠再現バグ・flaky test・環境依存症状の reproducibility 診断 | `references/flake-investigation.md` |
 
 ## Subcommand Dispatch
 
@@ -203,6 +209,9 @@ Behavior notes per Recipe:
 - `prod`: prioritize traces, logs, metrics, profiling.
 - `consensus`: use independent engines for hypothesis generation, then merge on evidence. See Multi-Engine Mode section.
 - `cascade`: build causal graph from failure traces; separate root cause from symptomatic failures across services.
+- `perf`: profiler 起点で flamegraph → hot path 同定 → N+1 / アルゴリズム計算量 / I/O / lock 待ち / GC pauseなどへ分類。Bolt (最適化実装) へ委譲。
+- `memory`: heap snapshot diff / retainer path / allocation timeline を使い leak source を同定。GC pressure が主因なら Bolt、並行 leak なら Specter へ委譲。
+- `flake`: 再現率測定 (N 回試行 / flip rate) → 環境依存・タイミング依存・外部依存を分類。並行バグ兆候が強ければ Specter へ即時委譲、テスト起因なら Radar へ。
 
 ## Output Routing
 
