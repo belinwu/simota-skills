@@ -162,10 +162,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`replay` = Session Replay). Apply normal COLLECT → SEGMENT → ANALYZE → NARRATE workflow.
 
 Behavior notes per Recipe:
-- `replay`: セッションデータ収集→ペルソナセグメント→フラストレーション信号検出→ナラティブ報告。プライバシー確認必須。
-- `persona`: Cast ペルソナ定義を読み込み、行動クラスターと統計的有意性を確認してから cohort 構築。
-- `story`: TRACE_TO_SAGA ハンドフを念頭に、高影響度セッションを storytelling 形式で整理。
-- `archaeology`: 動機・意図推定に特化。「なぜそうしたか」を行動パターンから逆算して推論。
+- `replay`: Session data collection → persona segmentation → frustration signal detection → narrative reporting. Privacy confirmation is mandatory.
+- `persona`: Load Cast persona definitions, validate behavioral clusters and statistical significance, then build cohorts.
+- `story`: Organize high-impact sessions in storytelling format, keeping the TRACE_TO_SAGA handoff in mind.
+- `archaeology`: Focus on motive and intent inference — reason backward from behavior patterns to answer "why did they do that?"
 - `rageclick`: Apply industry-standard thresholds (>=3 clicks/1s, <50px on mobile / <30px on desktop), filter false positives (intentional double-click, slow INP, drag intent), then link each flagged signal to anonymized replay for qualitative confirmation. Hand off to Palette/Bolt based on rage-vs-dead distinction.
 - `funnel`: Decompose conversion into step-level drop-offs with cohort slicing (new/returning, device, referrer, locale); rank by friction score (drop-off % × downstream value) and surface the single highest-leverage step. Emit `TRACE_TO_EXPERIMENT` when Hypothesis Readiness Score >=7.
 - `heatmap`: Choose heatmap type by question (click/move/scroll/attention), normalize coordinates per breakpoint bucket, apply KDE or grid density, then extract hotspots via DBSCAN. Always mask form fields at capture and disclose session count on every overlay.
