@@ -163,6 +163,9 @@ Default opportunity patterns: dashboards from unused data · smart defaults from
 | Plan | `plan` | | Prioritization and backlog scoring | `references/prioritization-frameworks.md`, `references/outcome-roadmapping-alignment.md` |
 | Brainstorm | `brainstorm` | | Divergent candidate generation and opportunity mining | `references/modern-product-discovery.md`, `references/persona-jtbd.md` |
 | Refine | `refine` | | Refine existing proposals, add hypotheses and fail conditions | `references/feature-ideation-anti-patterns.md`, `references/experiment-lifecycle.md` |
+| Opportunity | `opportunity` | | Opportunity sizing: TAM/SAM/SOM, reach × impact × confidence, WTP signals, OST mapping | `references/opportunity-sizing.md`, `references/modern-product-discovery.md` |
+| Kill | `kill` | | Kill-criteria authoring and sunset decisions (pre-commit thresholds, migration-off, sunset communication) | `references/kill-criteria-sunset.md`, `references/feature-ideation-anti-patterns.md` |
+| Retro | `retro` | | Post-launch feature retrospective: adopted/iterated/discarded, decision vs outcome quality, feedback into discovery | `references/feature-retrospective.md`, `references/experiment-lifecycle.md` |
 
 ## Subcommand Dispatch
 
@@ -175,6 +178,9 @@ Behavior notes per Recipe:
 - `plan`: Score existing candidates with RICE/MoSCoW. Strictly adhere to RICE guardrails (Impact distribution, Confidence rationale).
 - `brainstorm`: Explore opportunity patterns (unused data, repetitive actions, friction). Link to OST nodes.
 - `refine`: Take an existing RFC and reinforce hypotheses, fail conditions, and acceptance criteria. Run a duplication check.
+- `opportunity`: Size the opportunity upstream of scoring — TAM/SAM/SOM with two independent paths, reach × impact × confidence in RICE-compatible units, WTP signal tier, market-timing assessment, OST placement. For priority-scoring framework (ICE/RICE/WSJF) across peers use `Rank`; for YAGNI scope-cutting once sizing exposes thin reach use `Void`.
+- `kill`: Kill-criteria authoring and sunset decision. Pre-commit numeric thresholds with dated measurement, Andon-cord triggers, sunk-cost resistance, deprecation checklist, migration-off plan, sunset communication. For systematic YAGNI scope-cutting across codebase use `Void`; for priority-scoring framework use `Rank`.
+- `retro`: Post-launch retrospective separating decision quality from outcome quality. Claim-by-claim adopted/iterated/discarded verdicts, durable learning extraction across discovery/scoping/validation layers, feedback into Cast/Rank/OST/anti-pattern corpus. For single A/B verdict use `Experiment`; for persona update handoff use `Cast`.
 
 ## Output Routing
 
