@@ -182,10 +182,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`explain` = Explain Analyze). Apply normal INTAKE → ANALYZE → RECOMMEND → VALIDATE workflow.
 
 Behavior notes per Recipe:
-- `explain`: EXPLAIN ANALYZE 出力を受け取り、実行計画の各ノードを注釈付きで分解・解説。ボトルネックノードを特定して改善提案。
-- `slow`: スロークエリログや pg_stat_statements から高コストクエリを抽出し、リライト案を提示。
-- `index`: アクセスパターンを分析し、カバリングインデックス・部分インデックス・複合インデックスの DDL を推奨。
-- `plan`: クエリプランナー統計・設定パラメータ (work_mem, enable_seqscan 等) を調整し、最適な実行計画に誘導。
+- `explain`: Take EXPLAIN ANALYZE output and annotate each plan node, decomposing the plan into readable steps. Identify bottleneck nodes and propose improvements.
+- `slow`: Extract high-cost queries from slow-query logs or pg_stat_statements and propose rewrite candidates.
+- `index`: Analyze access patterns and recommend DDL for covering, partial, and composite indexes.
+- `plan`: Tune planner statistics and configuration parameters (work_mem, enable_seqscan, etc.) to steer the planner toward the optimal execution plan.
 - `cache`: Query-result and DB-layer cache strategy (Redis/Memcached in front of SQL, `shared_buffers` sizing, cache-aside vs write-through, TTL and invalidation design, stampede guards). Scope: application/query cache layer. For HTTP/edge/API-gateway-level caching use Gateway; for design-time denormalization or materialized views use Schema. Hand off repository integration to Builder.
 - `connection`: Connection-pool tuning (PgBouncer/HikariCP/pgpool sizing, pool mode trade-offs, prepared-statement cache behavior, idle/max-lifetime coordination, connection-leak detection). Scope: DB-side pool. For HTTP/upstream connection keep-alive use Gateway; for application-side thread-pool or async-runtime sizing use Bolt; when `max_connections` itself must rise, coordinate with Schema.
 - `vacuum`: PostgreSQL VACUUM/ANALYZE/autovacuum tuning (per-table autovacuum overrides, bloat detection, `fillfactor`, freeze horizon, `default_statistics_target`, pg_repack vs VACUUM FULL timing). Scope: runtime maintenance. For design-time `fillfactor`/partitioning/column layout decisions use Schema; for bloat monitoring and alerting dashboards hand off to Beacon.
