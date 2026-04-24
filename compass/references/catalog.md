@@ -13,7 +13,7 @@
 
 ---
 
-## Orchestration (5)
+## Orchestration (6)
 
 タスクの分解・調整・並列実行を担当。
 
@@ -24,6 +24,7 @@
 | **Titan** | プロダクトデリバリー | 最速でコード納品、計画より実装優先 | No |
 | **Rally** | 並列オーケストレータ | 複数セッション並列実行 | No |
 | **Aether** | AITuberオーケストレータ | AI VTuberシステム構築 | No |
+| **Atelier** | デザイン→実装パイプライン | Vision→Muse/Frame→Forge→Artisan→Showcase→Canvas を統合 | No |
 
 ## Investigation (9)
 
@@ -98,9 +99,9 @@
 | **Bolt** | フロント/バック最適化 | 再レンダリング削減、N+1修正、キャッシュ | Yes |
 | **Tuner** | DB最適化 | EXPLAIN ANALYZE、インデックス推奨、スロークエリ | Yes |
 
-## Documentation (4)
+## Documentation (6)
 
-ドキュメント作成を担当。
+ドキュメント作成・可視化・記事執筆を担当。
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
@@ -108,8 +109,10 @@
 | **Quill** | コードドキュメント | JSDoc追加、README更新、any型修正 | Mixed |
 | **Prose** | UXライティング | マイクロコピー、エラーメッセージ、トーン設計 | No |
 | **Tome** | 学習教材 | diff→教材変換、設計判断記録 | No |
+| **Canvas** | 図解・可視化 | Mermaid/ASCII/draw.io でフロー・シーケンス・ER 図生成 | Mixed |
+| **Zine** | 技術ブログ連載 | note/Zenn/Qiita/dev.to 向け記事執筆 | No |
 
-## Architecture (7)
+## Architecture (8)
 
 システム設計・構造を担当。
 
@@ -122,8 +125,9 @@
 | **Grove** | リポジトリ構造 | ディレクトリ設計、docs/レイアウト | Mixed |
 | **Nest** | LLM最適化フォルダ構造 | エージェント向けディレクトリ最適化 | Mixed |
 | **Shard** | マルチテナント設計 | テナント分離、RLS、スケール設計 | Mixed |
+| **Grok** | 文法/パーサ/DSL設計 | Regex、PEG/ANTLR、ReDoS-safe な文法設計 | Mixed |
 
-## UX/Design (10)
+## UX/Design (11)
 
 UI/UX設計・改善を担当。
 
@@ -139,6 +143,7 @@ UI/UX設計・改善を担当。
 | **Trace** | セッションリプレイ分析 | 行動パターン抽出、UX問題発見 | No |
 | **Cast** | ペルソナキャスティング | ペルソナ生成・管理・同期 | No |
 | **Funnel** | LP構築 | ランディングページ設計・最適化 | Mixed |
+| **Voice** | ユーザーフィードバック分析 | NPS 設計、レビュー分析、センチメント分析 | No |
 
 ## DevOps (7)
 
@@ -163,14 +168,15 @@ UI/UX設計・改善を担当。
 | **Shift** | 移行オーケストレータ | フレームワーク/ライブラリ/DB移行 | Mixed |
 | **Horizon** | 技術更新 | 非推奨ライブラリ検出、ネイティブAPI置換 | Mixed |
 
-## Growth (2)
+## Growth (3)
 
-成長施策を担当。
+成長施策・ブランディングを担当。
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
 | **Growth** | SEO/CRO/GEO | メタ/OGP/JSON-LD、CTA最適化 | Mixed |
 | **Retain** | リテンション | 再エンゲージメント、チャーン防止 | Mixed |
+| **Crest** | エンジニアブランディング | GitHub/LinkedIn/ブログ/登壇ポジショニング | No |
 
 ## Analytics (3)
 
@@ -238,7 +244,7 @@ UI/UX設計・改善を担当。
 | **Relay** | メッセージング統合 | ボット開発、Webhook、WebSocket | Mixed |
 | **Accord** | 仕様整合 | Business/Dev/Design横断仕様 | No |
 
-## Meta / Tooling (7)
+## Meta / Tooling (8)
 
 エコシステム自体の管理・進化を担当。
 
@@ -251,6 +257,7 @@ UI/UX設計・改善を担当。
 | **Hone** | AI CLI設定最適化 | Claude Code/Gemini CLI設定監査 | No |
 | **Realm** | エコシステム可視化 | ゲーミフィケーション、インタラクティブマップ | Yes |
 | **Compass** | スキルナビゲーター | スキル案内、オンボーディング | No |
+| **Latch** | Claude Code Hooks 設計 | PreToolUse/PostToolUse/Stop 等のライフサイクルフック設定 | Mixed |
 
 ## Creative / Media (6)
 
@@ -302,3 +309,5 @@ AI設計・思考支援を担当。
 | **Arena** | マルチAI比較 | Codex/Gemini CLIの競合/協調実行 | Mixed |
 | **Hearth** | dotfile管理 | zsh/tmux/neovim/ghostty設定 | Mixed |
 | **Mint** | テストデータ生成 | Factory、境界値、シード管理 | Mixed |
+| **Tempo** | スケジュール設計 | cron、タイムゾーン/DST、リトライ/バックオフ、業務カレンダー | Mixed |
+| **Dawn** | 毎日1つのアイデア提案 | 朝/日次/週末ハックの個人プロジェクト案を8セクションで提案 | No |
