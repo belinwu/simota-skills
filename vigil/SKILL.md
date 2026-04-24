@@ -385,6 +385,9 @@ HUNTING_HYPOTHESIS:
 | YARA Rules | `yara` | | YARA malware/IoC file and memory pattern rules | `references/detection-patterns.md` |
 | Detection Coverage | `coverage` | | MITRE ATT&CK coverage mapping, gap analysis | `references/detection-patterns.md` |
 | Threat Hunting | `hunt` | | Hypothesis-driven threat hunting campaign design | `references/detection-patterns.md` |
+| Snort / Suricata Rules | `snort` | | Network-layer detection rule authoring (flow/dns/tls/file keywords, EVE JSON, ET Open management) | `references/snort-network-detection.md` |
+| SOC Playbook | `playbook` | | IR runbook authoring for phishing/credential/ransomware/BEC with SOAR + D3FEND mapping | `references/playbook-incident-response.md` |
+| IoC / Threat Intel | `ioc` | | STIX 2.1 / TAXII 2.1 / MISP indicator lifecycle, feed dedup, and FP handling | `references/ioc-threat-intel.md` |
 
 ## Subcommand Dispatch
 
@@ -397,6 +400,9 @@ Behavior notes per Recipe:
 - `yara`: ファイル/メモリパターンマッチング。ATT&CK マッピング必須。YARA compile で構文検証後に TP/FP テスト。
 - `coverage`: ATT&CK v18+ Detection Strategies でカバレッジを評価。Initial Access + Execution のギャップを優先。カバレッジスコア (X/Y techniques, Z%) を報告。
 - `hunt`: テスタブルな ATT&CK マッピング済み仮説を起点に。成功基準と outcome (CONFIRMED/INCONCLUSIVE/NEGATIVE) を定義。
+- `snort`: Network-layer detection rule authoring (Snort 3 / Suricata). Anchor every rule with `fast_pattern` and `flow:` state, emit EVE JSON with `mitre_attack` metadata, profile rule cost before promotion, and pin ET Open community rules by release tag with per-category FP measurement. For host-process detection use `sigma`; for file/memory patterns use `yara`; for incident first response use Triage.
+- `playbook`: SOC incident-response runbook authoring. Template per incident class (phishing / credential compromise / ransomware / BEC), severity-triage gate, SOAR automation hooks (Tines / Cortex XSOAR / Splunk SOAR) with human-gated destructive actions, and MITRE D3FEND defensive-action mapping. Vigil *authors* the playbook; Triage *executes* it during live incidents; Mend owns the automatable subset under safety-tier controls.
+- `ioc`: Threat-intelligence lifecycle management. STIX 2.1 indicator / relationship objects with mandatory `valid_until`, TAXII 2.1 pull with pinned collections, MISP integration respecting TLP, observe → validate → enrich → distribute → expire lifecycle, dedup key normalization, and allowlist / FP-history scrub. Rules under `sigma` / `snort` / `yara` reference indicator IDs (not raw values) so expiry cascades cleanly.
 
 ## Output Routing
 
@@ -457,6 +463,9 @@ Every deliverable must include:
 |-----------|----------------|
 | `references/detection-patterns.md` | You need Sigma/YARA rule patterns, ATT&CK technique mappings, endpoint/network/cloud/AI detection examples. |
 | `references/detection-as-code.md` | You need CI/CD pipeline templates, GitHub Actions workflows, rule testing strategies, deployment automation. |
+| `references/snort-network-detection.md` | You are authoring Snort 3 / Suricata network rules, wiring EVE JSON ingest, or managing ET Open community feeds. |
+| `references/playbook-incident-response.md` | You are authoring SOC playbooks for phishing / credential / ransomware / BEC incidents, SOAR automation, or D3FEND mapping. |
+| `references/ioc-threat-intel.md` | You are managing IoC lifecycle (STIX 2.1 / TAXII 2.1 / MISP), feed deduplication, indicator expiry, or FP dispositioning. |
 | `references/handoffs.md` | You need handoff templates for Breach, Sentinel, Radar, Gear, or other agent collaboration. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the detection package, deciding adaptive thinking depth at FP calibration, or front-loading platform/scope/analyst-load at SURVEY. Critical for Vigil: P3, P5. |
 
