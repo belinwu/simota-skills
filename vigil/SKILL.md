@@ -396,10 +396,10 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`sigma` = Sigma Rules). Apply normal ASSESS → DESIGN → BUILD → TEST → DEPLOY → HUNT workflow.
 
 Behavior notes per Recipe:
-- `sigma`: Sigma v2.1+ で ATT&CK サブテクニック精度 (T1059.001 など) までマッピング。FP 率は Critical < 25%、High < 50% を維持。pySigma/sigma-cli で検証。
-- `yara`: ファイル/メモリパターンマッチング。ATT&CK マッピング必須。YARA compile で構文検証後に TP/FP テスト。
-- `coverage`: ATT&CK v18+ Detection Strategies でカバレッジを評価。Initial Access + Execution のギャップを優先。カバレッジスコア (X/Y techniques, Z%) を報告。
-- `hunt`: テスタブルな ATT&CK マッピング済み仮説を起点に。成功基準と outcome (CONFIRMED/INCONCLUSIVE/NEGATIVE) を定義。
+- `sigma`: Sigma v2.1+ with ATT&CK sub-technique-level mapping (e.g. T1059.001). Keep FP rate at Critical < 25% and High < 50%. Validate with pySigma / sigma-cli.
+- `yara`: File / memory pattern matching. ATT&CK mapping required. Run YARA compile for syntax validation, then TP/FP test.
+- `coverage`: Evaluate coverage against ATT&CK v18+ Detection Strategies. Prioritize Initial Access + Execution gaps. Report coverage score (X/Y techniques, Z%).
+- `hunt`: Start from a testable, ATT&CK-mapped hypothesis. Define success criteria and outcome (CONFIRMED / INCONCLUSIVE / NEGATIVE).
 - `snort`: Network-layer detection rule authoring (Snort 3 / Suricata). Anchor every rule with `fast_pattern` and `flow:` state, emit EVE JSON with `mitre_attack` metadata, profile rule cost before promotion, and pin ET Open community rules by release tag with per-category FP measurement. For host-process detection use `sigma`; for file/memory patterns use `yara`; for incident first response use Triage.
 - `playbook`: SOC incident-response runbook authoring. Template per incident class (phishing / credential compromise / ransomware / BEC), severity-triage gate, SOAR automation hooks (Tines / Cortex XSOAR / Splunk SOAR) with human-gated destructive actions, and MITRE D3FEND defensive-action mapping. Vigil *authors* the playbook; Triage *executes* it during live incidents; Mend owns the automatable subset under safety-tier controls.
 - `ioc`: Threat-intelligence lifecycle management. STIX 2.1 indicator / relationship objects with mandatory `valid_until`, TAXII 2.1 pull with pinned collections, MISP integration respecting TLP, observe → validate → enrich → distribute → expire lifecycle, dedup key normalization, and allowlist / FP-history scrub. Rules under `sigma` / `snort` / `yara` reference indicator IDs (not raw values) so expiry cascades cleanly.
