@@ -163,6 +163,9 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Scorecard Only | `scorecard` | | Individual scorecard generation (scoring only) | `references/patterns.md` |
 | Value Check | `value` | | Value axis standalone value verification | `references/vaire-framework.md` |
 | Resilience Audit | `resilience` | | Resilience axis standalone error state check | `references/patterns.md` |
+| Agency Audit | `agency` | | Agency axis standalone user-control and consent audit | `references/agency-user-control.md` |
+| Identity Audit | `identity` | | Identity axis standalone brand-voice consistency audit | `references/identity-brand-voice.md` |
+| Experience Audit | `experience` | | Experience axis standalone emotional-quality audit | `references/experience-emotional-quality.md` |
 
 ## Subcommand Dispatch
 Parse the first token of user input.
@@ -170,10 +173,13 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`gate` = Quality Gate). Apply normal INGEST → AUDIT → SYNTHESIZE → VERDICT → HANDOFF workflow.
 
 Behavior notes per Recipe:
-- `gate`: V.A.I.R.E. 全5軸 (Value/Accessible/Intuitive/Reliable/Ethical) を評価し、PASS/FAIL ベルディクトと修正パスを出力。
-- `scorecard`: 採点フェーズのみ実行。各軸 0-3 スコアと blocking 課題を表形式で出力。ベルディクトは出力しない。
-- `value`: Value 軸のみに集中。ユーザー価値・ビジネス価値・差別化要素を評価し、スコアと改善提案を提示。
-- `resilience`: Resilience 軸のみに集中。エラー状態・ローディング・オフラインシナリオの完全性を評価。
+- `gate`: Evaluate all 5 V.A.I.R.E. axes (Value/Agency/Identity/Resilience/Echo) and output a PASS/FAIL verdict with remediation path.
+- `scorecard`: Run the scoring phase only. Output 0-3 scores per axis and blocking issues as a table. Do not issue a verdict.
+- `value`: Focus on the Value axis only. Evaluate user value, business value, and differentiators, then present scores and improvement suggestions.
+- `resilience`: Focus on the Resilience axis only. Evaluate completeness of error, loading, and offline scenarios.
+- `agency`: A-axis standalone audit of user control and consent (undo/redo, cancel/abort, destructive-action confirmation, exit affordances, consent granularity, opt-out visibility, no dark-pattern nudging). For usability-friction evaluation use Palette; for cognitive walkthrough with personas use Echo; for WCAG/standards compliance use Canon.
+- `identity`: I-axis standalone audit of brand-voice consistency (personality alignment, tone-of-voice adherence, visual identity fidelity, distinctiveness vs competitors, trust-signal presence, icon/illustration style consistency). For authoring the voice/tone itself use Prose; for creative direction use Vision; for competitor benchmarking use Compete.
+- `experience`: E-axis standalone audit of emotional quality (onboarding joy, achievement signals, flow-state affordances, delight moments, friction-vs-meaning trade-offs, emotional arc across the journey). For persona cognitive walkthrough use Echo; for motion/interaction craft use Flow/Palette; for journey mapping use Researcher/Canvas.
 
 ## Output Routing
 
