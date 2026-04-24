@@ -15,6 +15,9 @@ CAPABILITIES_SUMMARY:
 - recovery_design: Failure recovery, rollback notes, replay steps, backfill procedures
 - cost_optimization: Compute/storage cost analysis, incrementality, partitioning strategy
 - sla_design: Pipeline availability tiers (99.9%/99.5%/99.0%), freshness SLAs, p99 latency targets
+- cdc_replication: Change Data Capture design (Debezium, Postgres logical replication via pgoutput/wal2json, MySQL binlog, SQL Server CDC) with Kafka Connect sink and snapshot-to-incremental handoff
+- reverse_etl: Warehouse-to-SaaS activation (Census / Hightouch / Workato) pushing DWH models into Salesforce / HubSpot / Zendesk with field mapping, dedup by primary key, and sync scheduling
+- data_quality_checks: Data contract and runtime quality checks (Great Expectations / Soda / Elementary) covering freshness, completeness, uniqueness, validity, and distribution, with OpenLineage-based lineage and contract-violation alerting
 
 COLLABORATION_PATTERNS:
 - Schema -> Stream: Source/target model contracts for pipeline design
@@ -113,6 +116,9 @@ Decision rules:
 | ELT Pipeline | `elt` | | ELT pipeline (warehouse-centric transformation) | `references/pipeline-architecture.md`, `references/dbt-modeling.md` |
 | Streaming | `stream` | | Kafka/Flink/Kinesis streaming design | `references/streaming-kafka.md` |
 | dbt Project | `dbt` | | dbt project design and model structure | `references/dbt-modeling.md` |
+| Change Data Capture | `cdc` | | Debezium / logical replication / binlog / SQL Server CDC → Kafka Connect sink with snapshot + incremental handoff | `references/change-data-capture.md` |
+| Reverse ETL | `reverse` | | DWH → operational SaaS (Salesforce / HubSpot / Zendesk) activation via Census / Hightouch / Workato | `references/reverse-etl.md` |
+| Data Quality | `quality` | | Great Expectations / Soda / Elementary checks (freshness / completeness / uniqueness / validity / distribution) with OpenLineage and contract-violation alerting | `references/data-quality.md` |
 
 ## Subcommand Dispatch
 
@@ -125,6 +131,9 @@ Behavior notes per Recipe:
 - `elt`: Warehouse-centric (BigQuery/Snowflake/Redshift). Prioritize medallion-layer design and dbt model naming conventions.
 - `stream`: Kafka/Flink/Kinesis/CDC. Must include latency requirements, idempotent sinks, and DLQ strategy.
 - `dbt`: Includes dbt layer structure, materialization choice, test conventions, and Flink adapter suitability evaluation.
+- `cdc`: Capture-side replication design (Debezium connectors, Postgres logical replication via `pgoutput` or `wal2json`, MySQL binlog in ROW format, SQL Server CDC). Must specify snapshot mode (initial / initial_only / never / schema_only), publication + replication slot naming, `REPLICA IDENTITY FULL` for UPDATE/DELETE completeness, Kafka Connect sink topology, and snapshot→incremental handoff so no events are lost at cutover. Source-DB modeling stays with `Schema`; `cdc` only designs the replication pipeline off it.
+- `reverse`: Warehouse → operational SaaS activation (Census / Hightouch / Workato driving Salesforce / HubSpot / Zendesk / Marketo). Must define the warehouse source model (dbt mart), primary-key dedup strategy, field mapping (including enum/picklist mapping), sync cadence (batch vs near-real-time), failure-handling (row-level reject vs full-sync halt), and destination API rate limits. Pairs with `etl` / `elt` which move data INTO the warehouse — `reverse` moves it OUT.
+- `quality`: Runtime data-correctness design (Great Expectations suites, Soda checks, Elementary dbt tests). Must specify the five check families (freshness, completeness, uniqueness, validity, distribution), the contract-violation alert channel, OpenLineage event emission, and the handoff to `Mend` / `Triage` when a check fails in production. Scope is the data contract and the check — NOT application code (`Radar`) or load behavior (`Siege`).
 
 ## Output Routing
 
