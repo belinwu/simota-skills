@@ -173,6 +173,21 @@ See `references/engine-cli-guide.md` · `references/team-mode-guide.md` · `refe
 Validate spec → Split into non-overlapping subtasks by engine strength → Lock per-subtask scopes → Run on `arena/task-{id}` branches → Quality gate per subtask → Merge all in dependency order (Arena resolves conflicts) → Full verification (build+tests+`codex review`+interface check).
 See `references/collaborate-mode-guide.md`.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Compete Mode | `compete` | ✓ | 複数バリアント比較 (選抜) | `references/evaluation-framework.md` |
+| Collaborate Mode | `collaborate` | | エンジン分担統合 | `references/collaborate-mode-guide.md` |
+| Solo Mode | `solo` | | 単一エンジン実行 | `references/engine-cli-guide.md` |
+| Quick Mode | `quick` | | 軽量比較 | `references/evaluation-framework.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`compete` = Compete Mode). Apply normal SPEC → SCOPE LOCK → EXECUTE → REVIEW → EVALUATE → ADOPT → VERIFY workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

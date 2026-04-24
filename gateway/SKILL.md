@@ -164,6 +164,27 @@ Routing rules:
 - If the request involves auth, OAuth, JWT, rate limiting, or CORS, read `references/api-security-patterns.md`.
 - If the request involves AI/LLM APIs, streaming, or function calling, read `references/ai-api-patterns.md`.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| API Design | `design` | ✓ | 新規 REST/GraphQL API 設計 | `references/api-design-principles.md` |
+| OpenAPI Spec | `openapi` | | OpenAPI ドキュメント生成 | `references/openapi-templates.md` |
+| Versioning Strategy | `versioning` | | API バージョニング戦略 | `references/versioning-strategies.md` |
+| Breaking Change Check | `breaking` | | 破壊的変更検出 | `references/breaking-change-detection.md` |
+
+Behavior notes:
+- **design** (default): SURVEY → DESIGN → VALIDATE → PRESENT; load `api-design-principles.md` + `api-decision-tree.md`.
+- **openapi**: Generate or update OpenAPI 3.1/3.2 YAML; load `openapi-templates.md`; output spec block only.
+- **versioning**: Evaluate versioning scheme and governance; load `versioning-strategies.md`; highlight deprecation timeline.
+- **breaking**: Diff old vs new surface; load `breaking-change-detection.md`; classify each change as breaking/non-breaking.
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column file at the initial step.
+- Otherwise → fall through to default Recipe (`design` = API Design).
+
 ## Output Requirements
 
 Every deliverable must include:

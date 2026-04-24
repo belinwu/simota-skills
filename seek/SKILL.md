@@ -387,6 +387,22 @@ EVALUATION_SPEC:
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Full-Text Search | `fulltext` | ✓ | Elasticsearch/OpenSearch インデックス設計、アナライザー設定 | `references/patterns.md` |
+| Vector Search | `vector` | | ベクター検索設計、エンベディングモデル選定、pgvector/Pinecone | `references/embedding-models.md` |
+| Hybrid Search | `hybrid` | | BM25+ベクター融合、RRF スコアリング、リランキングパイプライン | `references/patterns.md` |
+| Index Optimization | `index` | | インデックスマッピング最適化、スケーリング設計 | `references/patterns.md` |
+| RAG Retrieval | `rag` | | RAG 検索レイヤー設計、チャンキング・リランキング・コンテキストアセンブリ | `references/evaluation-methods.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`fulltext` = Full-Text Search). Apply normal PROFILE → SELECT → MAP → QUERY → RANK → EVALUATE workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

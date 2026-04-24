@@ -149,6 +149,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `EXECUTE` | Set up feature flags, monitoring, exposure tracking; configure SRM alerting | No parameter changes mid-flight; SRM monitoring active | `references/feature-flag-patterns.md` |
 | `ANALYZE` | SRM check → statistical analysis → confidence intervals → recommendations | SRM before results; sequential testing for early stopping | `references/statistical-methods.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| A/B Test Design | `ab` | ✓ | A/B テスト設計・仮説文書作成・サンプルサイズ計算 | `references/experiment-templates.md` |
+| CUPED | `cuped` | | CUPED/CUPAC 分散削減・感度改善設計 | `references/statistical-methods.md` |
+| Switchback | `switchback` | | マーケットプレイス・ネットワーク効果スイッチバック実験 | `references/common-pitfalls.md` |
+| Analyze | `analyze` | | 実験結果分析・統計的有意性・信頼区間レポート | `references/statistical-methods.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `ab` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `ab` | A/B Test Design |
+| `cuped` | CUPED |
+| `switchback` | Switchback |
+| `analyze` | Analyze |
+| _(no match)_ | A/B Test Design (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

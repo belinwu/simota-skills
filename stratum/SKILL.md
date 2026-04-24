@@ -132,6 +132,27 @@ DISCOVER → MODEL → VERIFY → EXPORT
 | `VERIFY` | Validate cross-level consistency and notation compliance | All 8 consistency checks + 4 notation checks must pass | Consistency checklist below |
 | `EXPORT` | Output verified model in requested format | Structurizr DSL is primary; Mermaid/PlantUML secondary | Structurizr DSL template below |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| New Model | `model` | ✓ | 新規 C4 モデル作成 (Context/Container/Component/Code 基本4層) | `references/c4-methodology.md` |
+| Evaluate Existing | `evaluate` | | 既存アーキテクチャ評価 (ATAM, SAAM 等) | `references/patterns.md` |
+| Structurizr DSL | `dsl` | | Structurizr DSL 生成・更新 | `references/structurizr-dsl.md` |
+| C4 Level Switch | `c4` | | C4 レベル切替 (L1-L4 の詳細度選択) | `references/c4-methodology.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`model` = New Model). Apply normal DISCOVER → MODEL → VERIFY → EXPORT workflow.
+
+Behavior notes per Recipe:
+- `model`: 新規 C4 モデル作成。DISCOVER フェーズで実際のコードベースをスキャンし、L1-L2 を基本として生成。
+- `evaluate`: ATAM/SAAM 等の評価手法で既存アーキテクチャの品質特性・トレードオフを評価。
+- `dsl`: Structurizr DSL の生成または既存 DSL の更新。workspace extends、archetypes、!adrs を考慮。
+- `c4`: 指定レベル (L1/L2/L3/L4) に切替。受け手に応じた詳細度を選択し、VERIFY フェーズで一貫性確認。
+
 ### Work Modes
 
 | Mode | When | Flow | Output |

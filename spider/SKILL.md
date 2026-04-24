@@ -223,6 +223,27 @@ Design detection avoidance at the infrastructure level. **Ethical framing requir
 
 Full anti-detection patterns → `references/anti-detection-architecture.md`
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Distributed Topology | `topology` | ✓ | 分散クローラトポロジー全体設計 (Coordinator/Worker/Frontier) | `references/distributed-architecture.md` |
+| URL Frontier | `frontier` | | URL frontier 設計 (重複排除・優先キュー・再クロールスケジューリング) | `references/frontier-design.md` |
+| Politeness Control | `politeness` | | politeness (rate limit) 制御・Crawl-Delay・アダプティブバックオフ | `references/compliance-architecture.md` |
+| Compliance | `compliance` | | robots.txt / 法令コンプライアンス・AI Act 対応・管轄リスク | `references/compliance-architecture.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`topology` = Distributed Topology). Apply normal DISCOVER → CLASSIFY → DESIGN → COMPLY → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `topology`: スケールティア分類 → Coordinator/Worker 分割 → フォールトトレランス → チェックポイント設計。
+- `frontier`: Bloom/Cuckoo/Redis/RocksDB 選定 → 優先キュー設計 → URL 正規化 → 永続化設計。
+- `politeness`: トークンバケット設計 → robots.txt キャッシュ → 429/5xx アダプティブバックオフ → フリートの同時接続上限。
+- `compliance`: opt-out シグナル全種確認 (robots.txt/ai.txt/TDM/meta/HTTP headers) → 管轄別リスクテーブル → GDPR DPIA 要否。
+
 ## Output Routing
 
 | Signal | Approach | Primary Output | Handoff | Read next |

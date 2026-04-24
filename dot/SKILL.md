@@ -116,6 +116,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Hardcode absolute file paths.
 - Deliver raster binaries directly; output code that produces them.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| SVG Output | `svg` | ✓ | SVG ピクセルアート生成 | `references/code-patterns.md`, `references/pixel-craft.md` |
+| Canvas Output | `canvas` | | Canvas 描画 | `references/code-patterns.md` |
+| Phaser 3 | `phaser` | | Phaser 3 スプライト | `references/code-patterns.md`, `references/engine-integration.md` |
+| Pillow (Python) | `pillow` | | Pillow で画像出力 | `references/code-patterns.md`, `references/sprite-animation.md` |
+| CSS Pixel Art | `css` | | CSS ピクセルアート | `references/code-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`svg` = SVG Output). Apply normal PLAN → PALETTE → PIXEL → PACK → PREVIEW workflow.
+
+Behavior notes per Recipe:
+- `svg`: SVG `<rect>` グリッドでピクセルアートを生成。~500 ピクセル要素まで対応。`image-rendering: pixelated` 必須。
+- `canvas`: HTML Canvas で描画。32×32+ のスプライトや多フレームシーン向け。60fps 維持のためオフスクリーンキャンバスを活用。
+- `phaser`: Phaser 3 `generateTexture()` コードを生成。`pixelArt: true` 設定付き。Realm へのハンドオフ想定。
+- `pillow`: Python + Pillow でバッチ PNG/GIF エクスポートスクリプトを生成。スプライトシートメタデータ JSON 付き。
+- `css`: CSS `box-shadow` または CSS Grid でピクセルアートを生成。小サイズ装飾アセット向け。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

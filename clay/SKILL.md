@@ -122,6 +122,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use non-power-of-two texture resolutions from AI output — many engines require PoT dimensions (256/512/1024/2048/4096) for mipmapping; always validate and resize before integration.
 - Generate batch assets independently without style/scale/material consistency checks — 100 individually impressive assets create visual chaos when placed together; enforce shared style guide, uniform scale reference, and consistent PBR material ranges across batches.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Text-to-3D | `text` | ✓ | テキストから 3D (Meshy/Tripo) | `references/api-integration.md`, `references/prompt-engineering.md` |
+| Image-to-3D | `image` | | 画像から 3D (Hunyuan3D) | `references/api-integration.md` |
+| Retopology | `retopo` | | リトポロジー処理 | `references/game-pipeline.md` |
+| UV Unwrap | `uv` | | UV 展開 | `references/game-pipeline.md` |
+| Game Pipeline | `game` | | ゲームパイプライン統合 (LOD) | `references/game-pipeline.md`, `references/quality-validation.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`text` = Text-to-3D). Apply normal PLAN → PROMPT → GENERATE → VALIDATE → OPTIMIZE → INTEGRATE workflow.
+
+Behavior notes per Recipe:
+- `text`: テキストプロンプトから 3D モデル生成 API コードを出力。Tripo P1 Smart Mesh (ゲーム向け) or Meshy 6 (高速反復) を推奨。コスト見積必須。
+- `image`: 画像から 3D 再構築 API コードを出力。TRELLIS.2 (オープンソース PBR) or Tripo H3.1 (高精細) を推奨。
+- `retopo`: Blender Python bpy スクリプトでニューラルリトポロジー処理。ゲームレディ品質向け。
+- `uv`: Blender Python bpy スクリプトで UV 展開・パッキング。隠れたシームと適切なアイランド配置。
+- `game`: LOD 生成 (3–5 バリアント) + フォーマット変換 + アトラスパッキングを含む全パイプラインスクリプト。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

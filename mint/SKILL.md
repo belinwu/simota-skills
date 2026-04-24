@@ -238,6 +238,29 @@ Full techniques and pipeline -> `references/anonymization.md`
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Factory Design | `factory` | ✓ | ファクトリパターン設計・型安全なテストデータ構築 | `references/factory-patterns.md` |
+| Boundary Values | `boundary` | | 境界値・エッジケースデータセット生成 | `references/boundary-values.md` |
+| Synthetic Data | `synthetic` | | 大規模合成データ生成・負荷テスト用データセット | `references/seed-management.md` |
+| Seed Management | `seed` | | 冪等シードスクリプト設計・スナップショット管理 | `references/seed-management.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `factory` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `factory` | Factory Design |
+| `boundary` | Boundary Values |
+| `synthetic` | Synthetic Data |
+| `seed` | Seed Management |
+| _(no match)_ | Factory Design (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach / Output | Read next |

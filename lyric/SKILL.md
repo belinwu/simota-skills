@@ -120,6 +120,27 @@ Route elsewhere when:
 | STYLE | Design style prompt using Top-Loaded Palette ordering (4-8 tags) | Style prompt |
 | DELIVER | Pair lyrics + style prompt with metadata (char count, structure map) | Final output |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Compose | `compose` | ✓ | 歌詞作成 (default) | `references/suno-format-guide.md`, `references/genre-templates.md` |
+| Metatags | `metatags` | | Suno メタタグ生成 | `references/suno-format-guide.md` |
+| Style Prompt | `style` | | style prompt 設計 | `references/suno-format-guide.md` |
+| Refine | `refine` | | 既存歌詞の精緻化 | `references/lyric-craft.md`, `references/suno-format-guide.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`compose` = Compose). Apply normal HEAR → COMPOSE → FORMAT → STYLE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `compose`: テーマ・ジャンル・ムードを確認後、構造タグ付き歌詞 + スタイルプロンプトをペアで生成。
+- `metatags`: 既存歌詞に Suno メタタグを付与。構造タグを各セクションの直前に配置。char limit チェック必須。
+- `style`: スタイルプロンプトのみ設計。Top-Loaded Palette 順序 (ジャンル→ムード→ボーカル→楽器→テンポ)。5-8 タグ厳守。
+- `refine`: 既存歌詞のフィードバック反映・A/Bバリアント生成・リライト。感情共鳴とメロディフィット改善を重点化。
+
 ## Output Routing
 
 | Signal | Approach | Read next |

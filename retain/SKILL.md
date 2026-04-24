@@ -144,6 +144,22 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Lifecycle campaign execution or channel operations | `Growth` |
 | Cross-agent orchestration or AUTORUN routing | `Nexus` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Re-engagement | `reengagement` | ✓ | 再エンゲージメント戦略、ドーマントユーザー回復 | `references/engagement-triggers.md` |
+| Churn Prevention | `churn` | | チャーン防止、サブスクリプション保存フロー | `references/retention-analysis.md` |
+| Gamification | `gamification` | | ゲーミフィケーション設計、ポイント・バッジ・ストリーク | `references/gamification.md` |
+| Habit Formation | `habit` | | 習慣化設計、Hook モデル、ストリーク設計 | `references/habit-formation.md` |
+| Loyalty Program | `loyalty` | | ロイヤリティプログラム設計、報酬体系構築 | `references/gamification.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`reengagement` = Re-engagement). Apply normal MONITOR → IDENTIFY → INTERVENE → MEASURE workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

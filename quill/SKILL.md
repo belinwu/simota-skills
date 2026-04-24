@@ -132,6 +132,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 Post-task CHRONICLE: `RECORD → EVALUATE → CALIBRATE → PROPAGATE`. Read `references/documentation-effectiveness.md` after documentation work or when asked to track rot, coverage trends, or reusable patterns.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Docstrings | `docstring` | ✓ | JSDoc/TSDoc 追加 (関数/クラス単位) | `references/jsdoc-style-guide.md` |
+| README Update | `readme` | | README 更新・構成 | `references/readme-templates.md` |
+| Type Definitions | `types` | | any 型を具体型に置換 | `references/type-improvement-strategies.md` |
+| High-Value Comments | `comments` | | 複雑ロジックへの意図コメント追加 | `references/documentation-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`docstring` = Docstrings). Apply normal READ → INSCRIBE → WRITE → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `docstring`: JSDoc/TSDoc を公開 API・関数・インターフェイスに追加。タグ順序 (@param→@returns→@throws→@example) を遵守。
+- `readme`: README の作成・更新・監査。インストール・使用方法・設定・貢献セクションを整備。
+- `types`: `any` 型をインターフェイス・ジェネリクス・型ガードに置換。TS6.0+ strict モードに準拠。
+- `comments`: 魔法数値・複雑な正規表現・ビジネスルールへの WHY コメントを追加。複雑度 >10 は必須。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -160,6 +160,29 @@ Routing rules:
 - If the request involves token lifecycle changes, read `references/token-lifecycle.md`.
 - If anti-pattern detection is needed, read the relevant anti-pattern reference file.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Token System | `tokens` | ✓ | デザイントークン定義・構造設計 | `references/token-system.md` |
+| Apply Tokens | `apply` | | 既存 UI へのトークン適用 | `references/token-lifecycle.md` |
+| Theme Design | `theme` | | ライト/ダーク テーマ設計 | `references/dark-mode.md` |
+| Typography | `typography` | | タイポグラフィ選定・スケール設計 | `references/typography-selection-guide.md` |
+| Spacing & Layout | `spacing` | | スペーシング・グリッドシステム設計 | `references/design-system-construction.md` |
+
+Behavior notes:
+- **tokens** (default): SURVEY → DEFINE → VALIDATE → PRESENT; load `token-system.md` + `css-token-architecture-anti-patterns.md`.
+- **apply**: Map existing design values to token variables; load `token-lifecycle.md`; output token diff.
+- **theme**: Design color palette with dark mode; load `dark-mode.md` + `color-dark-mode-anti-patterns.md`.
+- **typography**: Select type scale and font pairing; load `typography-selection-guide.md`.
+- **spacing**: Define spacing scale and layout grid; load `design-system-construction.md`.
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column file at the initial step.
+- Otherwise → fall through to default Recipe (`tokens` = Token System).
+
 ## Output Requirements
 
 All final outputs are in Japanese.

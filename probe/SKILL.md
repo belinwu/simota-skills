@@ -164,6 +164,21 @@ Per OWASP Top 10 2025 and API Security Top 10:
 | `Probe -> Vigil` | Confirmed exploit patterns should become detection/alerting rules |
 | `Probe -> Triage` | Critical (CVSS ≥ 9.0) vulnerability requires immediate incident response |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| OWASP ZAP | `zap` | ✓ | OWASP ZAP スキャン | `references/zap-scanning-guide.md` |
+| Burp Suite | `burp` | | Burp Suite 活用 | `references/vulnerability-testing-patterns.md` |
+| Nuclei | `nuclei` | | Nuclei テンプレートスキャン | `references/nuclei-templates.md` |
+| Pentest Plan | `pentest` | | ペンテスト計画策定 | `references/pentest-methodology-pitfalls.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`zap` = OWASP ZAP). Apply normal PLAN → SCAN → VALIDATE → REPORT workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

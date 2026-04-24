@@ -94,6 +94,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Delete or recommend deletion of code without full analysis.
 - Recommend big-bang rewrites without documenting the hidden-rule inventory first (Standish Group Chaos Report: over 70% of large-scale rewrites fail to meet original goals; undocumented rules and hidden dependencies are the primary cause — e.g., FBI Sentinel: 4 years late, $405M over budget).
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Extract Rules | `extract` | ✓ | 暗黙的ビジネスルール抽出・ルールカタログ生成 | `references/patterns.md` |
+| Assess Risk | `assess` | | マイグレーションリスク評価・依存関係マップ | `references/patterns.md` |
+| Document | `document` | | ルールを仕様書に変換 (Scribe ハンドオフ準備) | `references/patterns.md`, `references/handoffs.md` |
+| Archive | `archive` | | デッドコード解析・休眠ロジック調査 | `references/patterns.md`, `references/examples.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`extract` = Extract Rules). Apply normal SCOPE → DIG → CROSS-REF → CATALOG → ASSESS workflow.
+
+Behavior notes per Recipe:
+- `extract`: 全抽出レイヤー (コード/テスト/スキーマ/コメント/履歴/インフラ) を完走。信頼スコア付きルールカタログ生成。
+- `assess`: CATALOG 済みルールからマイグレーションリスクマップを生成。未テストルール・競合ロジック・隠れ依存を優先フラグ。
+- `document`: ルールカタログを仕様書形式に変換し Scribe ハンドオフパケット準備。FOSSIL_TO_SCRIBE_HANDOFF 使用。
+- `archive`: デッドコード・廃棄済みロジックに特化。temporal_analysis で導入・変更・廃棄時期を追跡。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -155,6 +155,27 @@ Default opportunity patterns: dashboards from unused data · smart defaults from
 - **Methodology-first, not prompt-first**: AI output quality depends on structured inputs (explicit OST node, persona, hypothesis, fail condition), not prompt cleverness. 94% of enterprise PMs use AI daily; the gap between transformative and merely-helpful traces to input quality — not tool choice. Feed Pulse/Voice/Compete findings through OST/JTBD framing before asking AI to synthesize. [Source: productboard.com — AI product discovery; ainna.ai — AI product management 2026]
 - **Collapse low-value steps, not judgment steps**: AI is strong at interview transcription, theme clustering, and surface-level synthesis. Keep persona selection, fail-condition definition, and cross-opportunity trade-off reasoning human-led — AI-generated versions of these anchor to training-data averages, not the current customer. [Source: producttalk.org — 2026 roadmap / AI-powered discovery]
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Propose | `propose` | ✓ | 新機能提案 (1 件 RFC 生成) | `references/proposal-templates.md`, `references/modern-product-discovery.md` |
+| Plan | `plan` | | 優先度付け・バックログスコアリング | `references/prioritization-frameworks.md`, `references/outcome-roadmapping-alignment.md` |
+| Brainstorm | `brainstorm` | | 複数候補発散・機会マイニング | `references/modern-product-discovery.md`, `references/persona-jtbd.md` |
+| Refine | `refine` | | 既存提案の精緻化・仮説・失敗条件追加 | `references/feature-ideation-anti-patterns.md`, `references/experiment-lifecycle.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`propose` = Propose). Apply normal IGNITE → SYNTHESIZE → SPECIFY → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `propose`: 1 件に絞り込み。ペルソナ・JTBD・RICE スコア・失敗条件・OST 連携を必須含む。
+- `plan`: 既存候補を RICE/MoSCoW でスコアリング。RICE ガードレール (Impact 分布・Confidence 根拠) を厳守。
+- `brainstorm`: 機会パターン探索 (未使用データ・繰り返しアクション・フリクション)。OST ノードにリンク。
+- `refine`: 既存 RFC を受け取り、仮説・失敗条件・受入基準を補強。重複チェック実施。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

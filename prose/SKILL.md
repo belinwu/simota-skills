@@ -139,6 +139,31 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **6. DESIGN** | "content strategy", "landing page copy", "hero copy", "copy-first", "content system" | Write content wireframes before visual design → define principles and decision frameworks → apply 30% cut rule → align copy with composition |
 | **7. DISCLOSE** | "AI disclosure", "AI label", "made with AI", "transparency" | Classify content (fully AI-generated / AI-assisted) → draft dual-layer disclosure (visible label with standardized "AI" cue + C2PA/IPTC metadata) → use EU Code of Practice standard phrases ("Generated with AI" / "Manipulated with AI") adapted per modality → ensure first-exposure disclosure → verify platform compliance (mandatory Aug 2, 2026: EU AI Act + California SB 942; Code of Practice final expected June 2026) |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Microcopy | `microcopy` | ✓ | ボタンラベル・ツールチップ・プレースホルダー・空状態テキスト | `references/microcopy-patterns.md` |
+| Error Messages | `errors` | | What/Why/Next 構造のエラーメッセージ設計 | `references/error-message-guide.md` |
+| Onboarding Copy | `onboarding` | | 初回体験・プログレッシブ開示・機能紹介テキスト | `references/onboarding-copy-patterns.md` |
+| Accessibility Text | `a11y` | | ARIA ラベル・スクリーンリーダーテキスト・WCAG 2.2 準拠 | `references/accessibility-text-guide.md` |
+| Voice & Tone | `tone` | | ボイス/トーンフレームワーク定義・スタイルガイド作成 | `references/voice-tone-framework.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `microcopy` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `microcopy` | Microcopy |
+| `errors` | Error Messages |
+| `onboarding` | Onboarding Copy |
+| `a11y` | Accessibility Text |
+| `tone` | Voice & Tone |
+| _(no match)_ | Microcopy (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -144,6 +144,27 @@ Postmortem mining rules:
 - Postmortems varying in depth require normalization: extract structured fields (severity, blast radius, time-to-resolve, root cause category) before pattern matching.
 - Blameless framing: record system/process failures, not individual attribution.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Curate Patterns | `curate` | ✓ | METAPATTERNS.md への知見抽出・パターン登録 | `references/knowledge-synthesis.md`, `references/pattern-taxonomy.md` |
+| Decay Detection | `decay` | | 知識劣化・陳腐化検出 (freshness score 評価) | `references/decay-detection.md` |
+| Propagate | `propagate` | | ベストプラクティス伝播 (LORE_INSIGHT/LORE_ALERT 送信) | `references/propagation-protocol.md` |
+| Extract from Journals | `extract` | | エージェントジャーナルからのパターン抽出 | `references/knowledge-synthesis.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`curate` = Curate Patterns). Apply normal HARVEST → SYNTHESIZE → CATALOG → PROPAGATE → AUDIT workflow.
+
+Behavior notes per Recipe:
+- `curate`: HARVEST → SYNTHESIZE → CATALOG フルサイクル。信頼度分類 (Anecdote/Emerging/Pattern/Established/Foundational)。METAPATTERNS.md 更新。
+- `decay`: freshness score (0-100) 評価。STALE (>180日) パターンの特定とアーカイブ判定。TTL multiplier 適用。
+- `propagate`: 信頼度 PATTERN (3+) 以上のパターンを消費エージェントへ配信。LORE_INSIGHT / LORE_ALERT 形式で送信。
+- `extract`: .agents/*.md をスキャン。HARVEST フェーズ重点化。48時間以内に処理。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

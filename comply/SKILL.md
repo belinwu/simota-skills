@@ -181,6 +181,29 @@ Full framework details -> `references/regulatory-frameworks.md`
 | `REMEDIATE` | Provide implementation patterns for gaps: audit logging, access controls, encryption, monitoring | Actionable patterns, delegate to Builder | `references/policy-as-code.md` |
 | `REPORT` | Generate compliance matrix, gap summary, risk rating, remediation roadmap | Structured deliverable | `references/compliance-reporting.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| SOC2 Assessment | `soc2` | ✓ | SOC2 Type I/II 準備・Trust Service Criteria マッピング | `references/regulatory-frameworks.md` |
+| PCI-DSS Assessment | `pci` | | PCI-DSS v4.0.1 要件検証・CDE スコープ定義 | `references/regulatory-frameworks.md` |
+| HIPAA Assessment | `hipaa` | | HIPAA 技術・管理・物理的保護手段評価 | `references/regulatory-frameworks.md` |
+| ISO 27001 Assessment | `iso` | | ISO 27001:2022 Annex A 統制マッピング・SoA 生成 | `references/regulatory-frameworks.md` |
+| Policy as Code | `policy` | | OPA/Rego・Kyverno ポリシー実装・CI/CD コンプライアンスゲート | `references/policy-as-code.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`soc2` = SOC2 Assessment). Apply normal SCOPE → MAP → ASSESS → EVIDENCE → REMEDIATE → REPORT workflow.
+
+Behavior notes per Recipe:
+- `soc2`: SOC2 Type I (設計有効性) / Type II (運用有効性) 評価。5 つの Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) を全 CC コントロールにマッピング。
+- `pci`: PCI-DSS v4.0.1 全 12 要件・CDE スコープ定義・SAQ/ROC 準備支援。51 の future-dated 要件 (2025年3月以降必須) を含む最新版で評価。
+- `hipaa`: 技術・管理・物理的保護手段の評価 + ePHI ハンドリングパターン + BAA 要件確認。2026年 Security Rule NPRM 対応 (全保護手段義務化・暗号化必須・24h 報告) も考慮。
+- `iso`: ISO 27001:2022 Annex A 93 統制 (4 テーマ) マッピング + SoA 草案生成。2013年版は無効 (2025年10月以降) のため必ず 2022 版で評価。
+- `policy`: OPA/Rego ポリシー作成・Kyverno YAML ポリシー・CI/CD コンプライアンスゲート統合。実装はすべて Builder に委任。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

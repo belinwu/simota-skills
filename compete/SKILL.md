@@ -142,6 +142,22 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Ecosystem | Map platform ecosystems, network effects, partnerships, and adjacent market threats | `references/ecosystem-mapping.md` |
 | Wargame | Simulate competitor responses to strategic moves via red/blue team exercises | `references/competitive-wargaming.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Competitor Matrix | `matrix` | ✓ | 競合マップ・機能比較マトリクス・ティアリング | `references/analysis-templates.md` |
+| SWOT Analysis | `swot` | | SWOT・ポジショニング・差別化戦略 | `references/competitive-moats-category-design.md` |
+| Battle Card | `battle-card` | | バトルカード作成・競合アラート対応プラン | `references/playbooks.md` |
+| Positioning Map | `positioning` | | ポジショニングマップ・カテゴリー設計・モート評価 | `references/competitive-moats-category-design.md` |
+| LLM Visibility | `llm-visibility` | | LLM ブランド認知分析・AI シェアオブボイス計測 | `references/intelligence-gathering.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`matrix` = Competitor Matrix). Apply normal MAP → ANALYZE → DIFFERENTIATE workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

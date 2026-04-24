@@ -227,6 +227,29 @@ INPUT
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Attack Scenario | `scenario` | ✓ | 攻撃シナリオ設計・キルチェーン計画 | `references/attack-playbooks.md` |
+| Threat Model | `threat-model` | | 脅威モデリング (STRIDE/PASTA/Attack Trees) | `references/threat-modeling.md` |
+| Purple Team | `purple` | | Purple Team 演習・Red/Blue 協調 | `references/attack-playbooks.md` |
+| AI/LLM Red Team | `ai-red` | | AI/LLM 特化 red team (prompt injection, agentic risks) | `references/ai-red-teaming.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `scenario` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `scenario` | Attack Scenario |
+| `threat-model` | Threat Model |
+| `purple` | Purple Team |
+| `ai-red` | AI/LLM Red Team |
+| _(no match)_ | Attack Scenario (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

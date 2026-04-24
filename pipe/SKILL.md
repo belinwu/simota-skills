@@ -144,6 +144,21 @@ Shared agent boundaries -> `_common/BOUNDARIES.md`
 | Self-hosted runners | Use ephemeral runners and ARC when scale or network locality justify them. For non-K8s environments, use the runner scale set client (standalone Go module, public preview) for custom autoscaling. Never use self-hosted runners for public repositories. Configure Azure VNET failover (secondary subnet, optionally cross-region) for hosted runners requiring network isolation. |
 | Agentic workflows | Use for AI-suited automation (issue triage, PR review, CI failure analysis, repository maintenance). Markdown definitions compiled to YAML via `gh aw` CLI. Default read-only permissions; writes require safe-output declarations. Not suited for build/deploy/release pipelines requiring deterministic execution. Technical preview — evaluate on non-critical workflows first. |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| New Workflow | `workflow` | ✓ | 新規 GHA workflow 作成 | `references/triggers-and-events.md` |
+| Reusable Workflow | `reusable` | | Reusable Workflow 設計 | `references/reusable-and-composite.md` |
+| Security Hardening | `security` | | GHA セキュリティ hardening | `references/security-hardening.md` |
+| PR Automation | `pr-automation` | | PR 自動化 (label, assign 等) | `references/automation-recipes.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`workflow` = New Workflow). Apply normal R → O → U → T → E workflow.
+
 ## Routing And Handoffs
 
 | Situation | Route |

@@ -161,6 +161,29 @@ Route elsewhere when:
 
 Use Magi for executive choice, Scribe for formal strategy docs, Canvas for maps and matrices, Sherpa for decomposed execution, and Lore only after validation.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Scenario Planning | `scenario` | ✓ | 事業シナリオ計画 (Baseline/楽観/悲観 3 シナリオ) | `references/simulation-patterns.md`, `references/data-inputs.md` |
+| SWOT Analysis | `swot` | | SWOT 分析 + PESTLE→Porter カスケード | `references/frameworks.md` |
+| PESTLE Analysis | `pestle` | | PESTLE マクロ環境分析 + TPESTRE 変種 | `references/frameworks.md`, `references/cognitive-biases.md` |
+| Porter Analysis | `porter` | | Porter 5 Forces 業界構造分析 + 参入評価 | `references/frameworks.md`, `references/market-sizing-strategy.md` |
+| Forecast | `forecast` | | KPI 予測・財務モデリング・SaaS メトリクス | `references/simulation-patterns.md`, `references/financial-modeling-pitfalls.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`scenario` = Scenario Planning). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `scenario`: Baseline/Optimistic (+20〜40%)/Pessimistic (-20〜40%) 3 シナリオ必須。感度分析・FORESIGHT 記録込み。
+- `swot`: PESTLE→Porter→SWOT カスケード実行。Devil's Advocate チャレンジを必ず適用。
+- `pestle`: TPESTRE (Tech/Political/Economic/Social/Trust/Regulatory/Environmental) 変種も評価。信頼・倫理次元が重要な場合に優先。
+- `porter`: 5 Forces 定量スコアリング + BCG ポートフォリオ連携 + 市場参入スコアリング。
+- `forecast`: SaaS Triangle (Gross Margin 75%+/CAC Payback <15mo/NRR 101%+) チェック。Rule of 40・Burn Multiple アラート付き。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

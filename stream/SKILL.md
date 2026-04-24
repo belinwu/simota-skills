@@ -105,6 +105,27 @@ Decision rules:
 | `OPTIMIZE` | Idempotency, incrementality, cost, failure recovery, and observability plan | Prefer "effectively once" (at-least-once + idempotent sink) | `references/data-reliability.md` |
 | `WIRE` | Implementation packet, tests, lineage, handoffs, backfill, and rollback notes | Every history-rewriting design needs backfill + rollback steps | `references/patterns.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| ETL Pipeline | `etl` | ✓ | ETL パイプライン設計 (source 変換→load) | `references/pipeline-architecture.md` |
+| ELT Pipeline | `elt` | | ELT パイプライン (Warehouse 中心の変換) | `references/pipeline-architecture.md`, `references/dbt-modeling.md` |
+| Streaming | `stream` | | Kafka/Flink/Kinesis ストリーミング設計 | `references/streaming-kafka.md` |
+| dbt Project | `dbt` | | dbt プロジェクト設計・モデル構成 | `references/dbt-modeling.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`etl` = ETL Pipeline). Apply normal FRAME → LAYOUT → OPTIMIZE → WIRE workflow.
+
+Behavior notes per Recipe:
+- `etl`: Source → transform → load 設計。PII 処理戦略・スキーマ進化・品質ゲートを必須含む。
+- `elt`: Warehouse 中心 (BigQuery/Snowflake/Redshift)。メダリオン層設計・dbt モデル命名規約を優先。
+- `stream`: Kafka/Flink/Kinesis/CDC。レイテンシ要件・べき等性シンク・DLQ 戦略を必須含む。
+- `dbt`: dbt レイヤー構造・マテリアライゼーション選択・テスト規約・Flink adapter 適合性評価を含む。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

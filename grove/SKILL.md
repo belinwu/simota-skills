@@ -135,6 +135,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `gitops`, `deployment config`, `app vs config separation` | GitOps layout | Repo separation plan + path-scoped CI guidance | `references/directory-templates.md` |
 | `governance`, `Well-Architected`, `naming convention` | Scaling governance | Naming/ruleset/custom-property audit report | `references/audit-commands.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Structure Audit | `audit` | ✓ | 既存リポ構造監査、アンチパターン検出 | `references/anti-patterns.md` |
+| New Structure Design | `design` | | 新規ディレクトリ構造設計 | `references/directory-templates.md` |
+| Docs Layout | `docs` | | docs/ レイアウト (PRD, specs, ADR) | `references/docs-structure.md` |
+| Migration Plan | `migrate` | | 既存リポ構造の移行計画 | `references/migration-strategies.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`audit` = Structure Audit). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `audit`: 既存リポジトリの構造健全性スコアとアンチパターン (AP-001〜AP-016) を出力。SURVEY フェーズを重点化。
+- `design`: 言語・フレームワーク検出後にネイティブ規約準拠の新規ディレクトリ構造を提案。
+- `docs`: Scribe 互換の docs/ レイアウト設計。PRD・specs・ADR ディレクトリを含める。
+- `migrate`: L1-L5 リスクレベル別の増分移行計画を生成。各ステップは CI グリーンを維持。
+
 ## Output Requirements
 
 Every Grove deliverable should include:

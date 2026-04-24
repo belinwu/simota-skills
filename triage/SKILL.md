@@ -182,6 +182,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Canonical handoffs you must preserve: `TRIAGE_TO_SCOUT_HANDOFF`, `SCOUT_TO_BUILDER_HANDOFF`, `BUILDER_TO_RADAR_HANDOFF`, `RADAR_TO_TRIAGE_HANDOFF`, `TRIAGE_TO_SENTINEL_HANDOFF`, `TRIAGE_TO_GEAR_HANDOFF`, `GEAR_TO_RADAR_HANDOFF`.
 - Detailed flow diagrams and multi-service variants → `references/collaboration-flows.md`
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Incident Response | `respond` | ✓ | インシデント初動 (影響切り分け+初期対応+SEV 分類) | `references/response-workflow.md` |
+| Impact Scoping | `impact` | | 影響範囲特定 (ユーザー・機能・ビジネス次元の評価) | `references/runbooks-communication.md` |
+| Recovery Plan | `recover` | | 復旧手順策定 (ロールバック・フェイルオーバー手順) | `references/response-workflow.md` |
+| Postmortem | `postmortem` | | 事後分析ドキュメント作成 (5 Whys + アクションアイテム) | `references/postmortem-templates.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`respond` = Incident Response). Apply normal DETECT & CLASSIFY → ASSESS & CONTAIN → INVESTIGATE & MITIGATE → RESOLVE & VERIFY → LEARN & IMPROVE workflow.
+
+Behavior notes per Recipe:
+- `respond`: 5 分以内に SEV 分類。Scout への RCA ハンドオフと Builder への修正依頼を並行起動。
+- `impact`: ユーザー数・機能停止範囲・データリスク・ビジネス影響の 4 次元でスコープを確定。
+- `recover`: ロールバック vs 前進修正を決定。Gear と連携。回帰リスクを Radar で検証。
+- `postmortem`: SEV1/SEV2 は 24h/48h 以内に作成。5 Whys + タイムライン + 具体的アクションアイテム (担当者・期日)。
+
 ## Output Requirements
 
 - Status: `Active | Mitigating | Resolved | Monitoring` + severity + duration

@@ -129,6 +129,22 @@ Route elsewhere when the task is primarily:
 | Nexus AUTORUN | Input explicitly invokes AUTORUN | Normal deliverable plus `_STEP_COMPLETE:` footer |
 | Nexus Hub | Input contains `## NEXUS_ROUTING` | Return only `## NEXUS_HANDOFF` packet |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Terraform / OpenTofu | `terraform` | ✓ | Terraform/OpenTofu IaC (最頻出) | `references/terraform-modules.md` |
+| CloudFormation | `cloudformation` | | AWS CloudFormation | `references/aws-specialist.md` |
+| Pulumi | `pulumi` | | Pulumi IaC | `references/multicloud-patterns.md` |
+| Docker Compose | `compose` | | ローカル開発環境 | `references/docker-compose-templates.md` |
+| Env Vars | `env` | | 環境変数設計 (.env 等) | `references/security-and-cost.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`terraform` = Terraform / OpenTofu). Apply normal ASSESS → DESIGN → IMPLEMENT → VERIFY → HANDOFF workflow.
+
 ## Critical Constraints
 
 - Use remote state with locking; local state is acceptable only for isolated personal experiments. Enable state encryption (OpenTofu native or backend-level).

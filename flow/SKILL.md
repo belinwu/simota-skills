@@ -122,6 +122,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `VERIFY` | Check accessibility, performance, browser support | Reduced-motion and perf validation | `references/motion-accessibility-anti-patterns.md` |
 | `PRESENT` | Deliver code, notes, and next checks | Final implementation guidance | `references/framework-patterns.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Hover Effects | `hover` | ✓ | hover エフェクト実装 | `references/animation-catalog.md`, `references/easing-guide.md` |
+| Loading States | `loading` | | ローディング状態アニメーション | `references/animation-catalog.md` |
+| Modal Transitions | `transition` | | モーダル遷移アニメーション | `references/animation-catalog.md`, `references/modern-css-animations.md` |
+| Gesture Interaction | `gesture` | | gesture インタラクション | `references/animation-catalog.md`, `references/framework-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`hover` = Hover Effects). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `hover`: hover/press/toggle などのマイクロアニメーション。transform/opacity を優先し、60fps ターゲットで実装。
+- `loading`: skeleton/spinner/progress などのローディング状態アニメーション。infinite loop は安全タイマー付きで実装。
+- `transition`: モーダル/パネル/ルート遷移。View Transitions API または CSS @starting-style を優先検討。
+- `gesture`: drag/swipe/snap などのジェスチャーインタラクション。reduced-motion 対応必須。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

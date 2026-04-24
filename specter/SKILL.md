@@ -119,6 +119,27 @@ Rules:
 | `SCORE` | Apply risk matrix and assign severity | Mark false-positive risk explicitly | Risk Scoring section |
 | `REPORT` | Emit structured findings, Bad -> Good examples, confidence, and test suggestions | Every finding needs evidence and confidence label | `references/examples.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Race Condition | `race` | ✓ | 断続的失敗/タイミング依存バグ/非決定的テストの検出 | `references/concurrency-anti-patterns.md` |
+| Memory Leak | `leak` | | gradual slowdown/リスナー・タイマー・サブスクリプションリーク検出 | `references/memory-leak-diagnosis.md` |
+| Deadlock | `deadlock` | | freeze/hang/Promise チェーンデッドロック検出 | `references/concurrency-anti-patterns.md` |
+| Resource Leak | `resource` | | コネクション/ソケット/FD/プールリーク検出 | `references/resource-management.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`race` = Race Condition). Apply normal TRIAGE → SCAN → ANALYZE → SCORE → REPORT workflow.
+
+Behavior notes per Recipe:
+- `race`: 競合状態ハントに集中。3 つの仮説を生成してから SCAN。AI 生成コードは 2.29× 高リスクとして重点的にスキャン。
+- `leak`: ヒープ成長・リスナー蓄積・保持 DOM 参照を追跡。MemLab (JS) または Valgrind (C/C++) の使用を推奨。
+- `deadlock`: Promise チェーン・circular wait・signal-lock グラフを解析。RcChecker (Rust) / Fray (JVM) の推奨。
+- `resource`: `totalCount === max && idleCount === 0 && waitingCount > 0` の持続を leak シグナルとして検出。try/finally リリースを検証。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

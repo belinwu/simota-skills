@@ -136,6 +136,21 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | **MAINTAIN** | ストーリー更新, Storybook修正, CSF3移行, fixture更新, Storybook 9→10移行 | Analyze existing → Identify issues → Migrate CSF 2→3 → Migrate CJS→ESM (v10) → Migrate test-runner→addon-vitest → Add missing variants → Update interactions → Verify baselines | Updated files + migration report |
 | **AUDIT** | Storybook監査, カバレッジ確認, story audit | Scan components → Compare against stories → Coverage by category → Score quality → Prioritize improvements | Health report + action items |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Story Creation | `story` | ✓ | Story 作成 | `references/storybook-patterns.md` |
+| Catalog Management | `catalog` | | コンポーネントカタログ整備 | `references/storybook-patterns.md` |
+| Visual Regression | `vrt` | | Visual Regression Test 連携 | `references/visual-regression.md` |
+| CSF 3.0 Migration | `csf3` | | CSF 3.0 への変換 | `references/storybook-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`story` = Story Creation). Apply normal SURVEY → PLAN → VERIFY → PRESENT workflow.
+
 See `references/storybook-patterns.md` for CSF 3.0 templates, Storybook 8.5+ features, and audit report format.
 
 ## Tool Support

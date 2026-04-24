@@ -178,6 +178,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Workplace UX evaluation | You need usability metrics for compulsory/B2B workplace software | Use CASTLE framework (NNGroup) instead of SUS/HEART |
 | Calibration & impact | You need to measure research quality or organizational value | `research-calibration.md`, `research-anti-patterns-impact.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Interview Design | `interview` | ✓ | インタビューガイド・プロトコル設計 | `references/interview-guide.md`, `references/participant-screening.md` |
+| Usability Test | `usability` | | ユーザビリティテスト計画・タスク設計 | `references/analysis-and-synthesis.md`, `references/participant-screening.md` |
+| Analysis | `analysis` | | 定性分析・アフィニティマップ・インサイト合成 | `references/analysis-and-synthesis.md`, `references/bias-checklist.md` |
+| Persona | `persona` | | ペルソナ作成・ジャーニーマップ生成 | `references/analysis-and-synthesis.md` |
+| Journey | `journey` | | ジャーニーマップ・JTBD 分析 | `references/analysis-and-synthesis.md`, `references/continuous-discovery-mixed-methods.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`interview` = Interview Design). Apply normal DEFINE → DESIGN → ANALYZE → SYNTHESIZE → HANDOFF workflow.
+
+Behavior notes per Recipe:
+- `interview`: 研究質問定義→ガイド作成→スクリーナー設計。AI モデレート適合性評価を含む。
+- `usability`: テスト計画・タスクシナリオ設計。SUS/SEQ/CASTLE ベンチマーク閾値を適用。
+- `analysis`: テーマ分析・コーディング・アフィニティマッピング。バイアスチェック必須。
+- `persona`: リサーチデータからペルソナ生成。WEIRD バイアス開示・Cast ハンドオフ準備。
+- `journey`: ジャーニーマップ + JTBD スイッチインタビュー分析。Plea ハンドオフ判定を含む。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -128,6 +128,21 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `EXPERIMENT` | Build PoC: isolated file/branch, side-by-side with old, measure difference | Self-contained and easy to discard | `references/migration-patterns.md` |
 | `PRESENT` | Document Trend/Legacy/Comparison/Demo, create PR/Issue | Include bundle size, compatibility, rollback plan | `references/code-standards.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Deprecated Detection | `detect` | ✓ | deprecated ライブラリ検出 | `references/deprecation-detection.md`, `references/deprecated-library-catalog.md` |
+| Native API Replace | `replace` | | ネイティブ API への置換 | `references/native-replacements.md`, `references/native-api-replacement-guide.md` |
+| Migration PoC | `poc` | | 移行 PoC 作成 | `references/migration-patterns.md` |
+| Stack Refresh | `refresh` | | スタック全体更新 | `references/migration-risk-assessment.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`detect` = Deprecated Detection). Apply normal SCOUT → LAB → EXPERIMENT → PRESENT workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

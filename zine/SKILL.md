@@ -190,6 +190,22 @@ questions:
 | `POLISH` | Restore author voice, cut throat-clearing phrases, tighten sentences. Remove ChatGPT-residue ("本記事では", "最近〜が話題", "本記事を通じて〜"). | Polish, don't sanitize. Keep the author's personality. | `references/hook-design.md` (anti-patterns section) |
 | `PUBLISH` | Add platform-specific metadata (tags, emoji, cover image, topics), compose CTA, update series index if applicable, prepare Growth handoff if SEO packaging requested. | Metadata mismatch = platform algorithm penalty. | `references/platform-optimization.md`, `references/series-management.md`, `references/handoffs.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| note Article | `note` | ✓ | note 日本語長文記事、マガジン連載エピソード執筆 | `references/platform-optimization.md` |
+| Zenn Article | `zenn` | | Zenn エンジニア向け記事、トピック・絵文字設定 | `references/platform-optimization.md` |
+| Qiita Article | `qiita` | | Qiita 技術 Tips、タグ戦略、LGTM 最適化 | `references/platform-optimization.md` |
+| dev.to Article | `devto` | | dev.to 英語グローバル向け記事、カバー画像・タグ設定 | `references/platform-optimization.md` |
+| Series Design | `series` | | 連載設計、インデックス記事・クロスリンク・回次管理 | `references/series-management.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`note` = note Article). Apply normal FRAME → DRAFT → STRUCTURE → POLISH → PUBLISH workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

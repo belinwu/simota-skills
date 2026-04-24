@@ -139,6 +139,29 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `VALIDATE` | Anti-pattern check, ethical review, scope realism assessment | Check `references/anti-patterns.md` | `references/anti-patterns.md` |
 | `DELIVER` | Format output, generate asset briefs, recommend next agent | Include handoff-ready briefs | `references/production-workflow.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| GDD Structure | `gdd` | ✓ | Game Design Document 構造化・セクション設計 | `references/production-workflow.md` |
+| Balance Math | `balance` | | ゲームバランス数理 (DPS/TTK・難易度曲線・Elo) | `references/balance-frameworks.md` |
+| Narrative Design | `narrative` | | ナラティブデザイン・分岐ストーリー・クエストツリー | `references/narrative-design.md` |
+| Economy Design | `economy` | | エコノミー設計 (通貨・タップ&シンク・インフレ制御) | `references/economy-design.md` |
+| Player Psychology | `psychology` | | プレイヤー心理・動機設計 (フロー・Bartle・Octalysis) | `references/player-psychology.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`gdd` = GDD Structure). Apply normal DISCOVER → FRAME → DESIGN → VALIDATE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `gdd`: ジャンル・ターゲットペルソナ・コアループを DISCOVER で確認。モジュール型セクション構成。
+- `balance`: 全バランス数値に公式を付与。モンテカルロ根拠または曲線グラフを含める。
+- `narrative`: MDA フレームワーク → 分岐タイプ選択 → クエストツリー設計。決定ノード 10 以上は確認。
+- `economy`: フォーセット&シンク設計 → 90 日インフレシミュレーション → Sink Coverage 95-105% 目標。
+- `psychology`: Bartle 分類 → フロー理論 → Hook Model → エンゲージメントループ設計。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

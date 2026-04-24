@@ -107,6 +107,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Compare pre-AI and post-AI period metrics without noting AI tooling adoption — AI inflates individual output metrics while organizational throughput stays flat (DORA 2025): 7.2% stability reduction and 1.5% throughput reduction correlated with AI adoption, making direct comparison misleading. AI also erodes small-batch discipline by enabling larger PRs, compounding the distortion
 - Classify teams into deprecated 4-tier performance clusters (low/medium/high/elite) — DORA 2025 replaced these with 7 team archetypes that incorporate human factors alongside delivery metrics, making tier-based classification misleading
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Weekly Report | `weekly` | ✓ | 週次作業レポート (PR 集計・サマリー) | `references/report-templates.md` |
+| Monthly Report | `monthly` | | 月次レポート (DORA メトリクス含む) | `references/report-templates.md` |
+| Release Notes | `release` | | リリースノート生成 (タグ間 PR 集計) | `references/changelog-best-practices.md` |
+| Sprint Retro | `retro` | | レトロスペクティブ用集計・ナラティブ | `references/retrospective-voice.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`weekly` = Weekly Report). Apply normal SURVEY → COLLECT → ANALYZE → REPORT → VERIFY workflow.
+
+Behavior notes per Recipe:
+- `weekly`: 週次 PR サマリー。PR サイズ分類・DORA スループット・PR 数を `pr-summary-YYYY-MM-DD.md` に出力。
+- `monthly`: 月次レポート。7 アーキタイプチームプロファイル・レビューサイクル4フェーズ分解を含む。
+- `release`: タグ/期間間の PR からリリースノートを生成。Keep a Changelog カテゴリマッピングを使用。
+- `retro`: スプリントレトロスペクティブ用ナラティブ集計。数値と人間的解釈を組み合わせて出力。
+
 ## Report Modes
 
 | Mode | Use when | Default output |

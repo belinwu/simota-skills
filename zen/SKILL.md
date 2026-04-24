@@ -149,6 +149,29 @@ Routing rules:
 - If the request is a PR review, read `references/review-report-templates.md`.
 - If coverage is < 80%, hand off to Radar first before refactoring.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| General Refactor | `refactor` | ✓ | 一般リファクタリング (複合改善、コードスメル修正) | `references/refactoring-recipes.md` |
+| Naming Improvement | `naming` | | 変数名・関数名改善のみ | `references/refactoring-recipes.md` |
+| Extract Function | `extract` | | 長い関数の分割・抽出 | `references/refactoring-recipes.md` |
+| Magic Constants | `constants` | | マジックナンバーの名前付き定数化 | `references/refactoring-recipes.md` |
+| Dead Code Removal | `dead` | | 未使用コード除去 | `references/dead-code-detection.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`refactor` = General Refactor). Apply normal SURVEY → PLAN → APPLY → VERIFY → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `refactor`: 複合的なコードスメルを対象。SURVEY でホットスポット特定後、最優先 1 件に絞って適用。
+- `naming`: 命名のみに限定。スコープ Focused 固定。public API 変更は Ask First。
+- `extract`: 長いメソッドを 1 関数抽出。cognitive complexity 15 超を優先。テストパスを VERIFY で確認。
+- `constants`: マジックナンバーを検索し名前付き定数化。型注釈を付与する。
+- `dead`: ローカル/private から着手。export・動的利用は確認後に実施。Sweep との境界: ファイルレベルは Sweep。
+
 ## Output Requirements
 
 Every deliverable must include:

@@ -123,6 +123,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERIFY` | Check display and interpolation, validate key naming clarity, sort JSON alphabetically, add translator context comments | Test in context, not isolation | `references/rtl-support.md` |
 | `PRESENT` | Create PR with i18n scope and impact summary, document extracted count and namespaces | Include extraction count and namespace map | `references/library-setup.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| String Extraction | `extract` | ✓ | ハードコード文字列の抽出・t() 関数への置き換え | `references/library-setup.md` |
+| Intl Formatting | `intl` | | 日付・通貨・数値の Intl API 統合 | `references/intl-api-patterns.md` |
+| Translation Keys | `keys` | | 翻訳キー構造設計・名前空間設計 | `references/icu-message-format.md` |
+| RTL Support | `rtl` | | RTL レイアウト対応・CSS logical properties 実装 | `references/rtl-support.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `extract` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `extract` | String Extraction |
+| `intl` | Intl Formatting |
+| `keys` | Translation Keys |
+| `rtl` | RTL Support |
+| _(no match)_ | String Extraction (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

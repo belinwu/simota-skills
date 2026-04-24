@@ -145,6 +145,21 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `VERIFY` | Run before/after comparison, regression tests, performance benchmarks, behavioral checks | Both old and new must pass | `references/database-migration.md` |
 | `COMPLETE` | Remove compatibility layers, clean up feature flags, update docs, archive old code | Don't leave scaffolding | — |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Migration Plan | `plan` | ✓ | 移行計画策定・スコープ見積 | `references/migration-strategies.md` |
+| Codemod Generation | `codemod` | | AST 変換スクリプト生成 | `references/codemod-patterns.md` |
+| Strangler Fig | `strangler` | | Strangler Fig 戦略の設計・実装 | `references/migration-strategies.md` |
+| Verification | `verify` | | 移行前後の動作等価性検証 | `references/database-migration.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`plan` = Migration Plan). Apply normal ASSESS → PLAN → PREPARE → EXECUTE → VERIFY → COMPLETE workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -100,6 +100,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Trust single-model LLM-as-judge without cross-validation — position bias causes `40%` inconsistency in GPT-4 judges; True Negative Rate `< 25%` means invalid outputs pass undetected
 - Deploy RAG with naive fixed-size chunking without benchmarking — faithfulness drops to `0.47-0.51` vs `0.79-0.82` with optimized chunking
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Prompt Engineering | `prompt` | ✓ | プロンプト設計・最適化 | `references/prompt-engineering.md` |
+| RAG Design | `rag` | | RAG 設計 (retrieval + generation) | `references/rag-design-anti-patterns.md` |
+| Evaluation Framework | `eval` | | 評価フレームワーク (LLM output 品質) | `references/evaluation-observability.md` |
+| AI Safety | `safety` | | ガードレール、red-team | `references/ai-safety-guardrails.md` |
+| MLOps Pipeline | `mlops` | | MLOps パイプライン設計 | `references/llm-application-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`prompt` = Prompt Engineering). Apply normal ASSESS → DESIGN → EVALUATE → SPECIFY workflow.
+
+Behavior notes per Recipe:
+- `prompt`: プロンプト設計・バージョン管理・テスト。XML タグ構造、Few-shot 例、キャッシュ戦略を含む。
+- `rag`: RAG アーキテクチャ設計。チャンキング戦略、Hybrid Search、Recall@5/Faithfulness 閾値を設定。
+- `eval`: LLM-as-judge、回帰テスト、Golden Test Set 設計。バイアス検出と TNR しきい値を含む。
+- `safety`: OWASP LLM Top 10 2025 準拠。Prompt Injection 防御、PII ハンドリング、ガードレール層設計。
+- `mlops`: MLOps パイプライン設計。モデルルーティング、カナリアロールアウト、コスト最適化を含む。
+
 ## Operating Modes
 
 | Mode       | Trigger                                        | Deliverable                                                   |

@@ -126,6 +126,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Send surveys from individual account managers or CSMs — personal relationships bias scores upward, masking systemic issues; use a neutral sender identity for unbiased collection.
 - Silently exclude flagged synthetic-feedback responses based solely on automated AI-text detector output — LLM-text detectors misclassify up to ~61% of responses from non-native English speakers as AI-generated, so automatic exclusion systematically silences specific demographic segments and distorts the feedback loop. Quarantine and human-review flagged segments instead, and combine detector output with structural signals (lexical uniformity, timestamp clustering, straight-lining) before exclusion.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| NPS Survey | `nps` | ✓ | NPS 調査設計・スコア分析・フォローアップ | `references/nps-survey.md` |
+| Review Analysis | `review` | | レビュー・チケット・コメントの多チャネル分析 | `references/multi-channel-synthesis.md` |
+| Sentiment Analysis | `sentiment` | | 感情分析、多感情検出 (joy/anger/frustration/surprise) | `references/multi-channel-synthesis.md` |
+| Classification | `classify` | | フィードバック分類・テーマ抽出・オーナー推薦 | `references/feedback-widget-analysis.md` |
+| Insight Extraction | `insight` | | 洞察抽出レポート、戦略的提言 | `references/multi-channel-synthesis.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`nps` = NPS Survey). Apply normal COLLECT → ANALYZE → AMPLIFY workflow.
+
+Behavior notes per Recipe:
+- `nps`: スコアバンド (0-6/7-8/9-10) を厳守。関係 NPS は四半期、トランザクション NPS はマイルストーン直後に実施。
+- `review`: 2 チャネル以上の入力を Multi-Channel Synthesis で統合。コンタミネーションゲート必須。
+- `sentiment`: LLM ベース分析時は MVP (Model Variability Problem) 対策としてアンサンブルと不確実性定量化を適用。
+- `classify`: フィードバック分類後にオーナー推薦と優先度マトリクスを添付。
+- `insight`: パターン優先・個別事例非優先。セグメント・ジャーニーステージ・ビジネスインパクトと連携。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

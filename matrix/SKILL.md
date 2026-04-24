@@ -170,6 +170,27 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `visualize`  | `Canvas`                                  | The user needs a matrix visual, heatmap, or coverage diagram                   |
 | `document`   | `Scribe`                                  | The plan must become a reusable decision artifact                              |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Combination Control | `combine` | ✓ | 組合せ爆発制御、最小カバレッジ集合選定 | `references/combination-methods.md` |
+| Min Coverage Set | `cover` | | 最小カバレッジ集合選定 (pairwise/n-wise) | `references/optimization-algorithms.md` |
+| Execution Plan | `plan` | | 優先度付き実行計画生成 | `references/output-templates.md` |
+| Prioritize | `prioritize` | | リスク・頻度・ビジネス影響による優先度付け | `references/prioritization-pitfalls.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`combine` = Combination Control). Apply normal PARSE → EXPAND → OPTIMIZE → PLAN workflow.
+
+Behavior notes per Recipe:
+- `combine`: 組合せ爆発制御の総合ワークフロー。軸・値・制約を解析し最小カバレッジ集合を生成。
+- `cover`: pairwise / OA / 高強度 (3-way+) の最適化アルゴリズム選択に特化。
+- `plan`: カバレッジ集合から実行計画 (優先度・担当エージェント) を生成。PLAN フェーズ重点化。
+- `prioritize`: Critical/High/Medium/Low 優先度付けと偏り検出に特化。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

@@ -129,6 +129,31 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `ANALYZE` | Design funnels, cohorts, dashboards, anomaly detection, and data quality checks | Leading indicators predict; lagging indicators confirm | `references/funnel-cohort-analysis.md`, `references/dashboard-spec.md` |
 | `DELIVER` | Present metrics framework, implementation code, dashboard specs, and alert rules | Include privacy review and data quality plan | `references/privacy-consent.md`, `references/data-quality.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| KPI Framework | `kpi` | ✓ | North Star Metric 定義・KPI ツリー設計・OKR 設定 | `references/metrics-frameworks.md` |
+| Funnel Analysis | `funnel` | | コンバージョンファネル分析・ドロップオフ特定 | `references/funnel-cohort-analysis.md` |
+| Cohort Analysis | `cohort` | | リテンションコホート分析・チャーン測定 | `references/funnel-cohort-analysis.md` |
+| Event Schema | `event` | | イベントスキーマ設計・アナリティクス実装 | `references/event-schema.md` |
+| Dashboard Spec | `dashboard` | | ダッシュボード仕様設計・チャート定義 | `references/dashboard-spec.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `kpi` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `kpi` | KPI Framework |
+| `funnel` | Funnel Analysis |
+| `cohort` | Cohort Analysis |
+| `event` | Event Schema |
+| `dashboard` | Dashboard Spec |
+| _(no match)_ | KPI Framework (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

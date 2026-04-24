@@ -164,6 +164,29 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | State management decision guide | `references/state-management.md` |
 | Performance & testing strategies | `references/performance-testing.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Component Build | `component` | ✓ | UI コンポーネント実装 (props/events/slots) | `references/react-patterns.md` |
+| State Management | `state` | | 状態管理設計 (Context, Zustand, Redux, Pinia 等) | `references/state-management.md` |
+| Form Handling | `form` | | フォーム実装 (バリデーション、送信、エラー) | `references/component-quality.md` |
+| Data Fetching | `fetch` | | データ取得レイヤー (SWR, TanStack Query, Server Actions) | `references/state-management.md` |
+| Server Components | `rsc` | | React Server Components / Nuxt server routes | `references/react-patterns.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`component` = Component Build). Apply normal ANALYZE → DESIGN → IMPLEMENT → VERIFY → HANDOFF workflow.
+
+Behavior notes per Recipe:
+- `component`: 単一コンポーネント実装。型安全・a11y・エラー/ローディング状態を必ず含める。<50 行ターゲット。
+- `state`: 状態分類 (Remote/URL/Local/Shared) を DESIGN で確定し、最適なライブラリを選定。
+- `form`: RHF + Zod バリデーション。エラー表示・送信状態・アクセシビリティを含める。
+- `fetch`: TanStack Query v5 または SWR。キャッシュ戦略・エラー/ローディング状態を設計。
+- `rsc`: Server/Client 境界を DESIGN で確定。選択的ハイドレーションとストリーミングを考慮。
+
 ## Output Requirements
 
 Every deliverable must include:

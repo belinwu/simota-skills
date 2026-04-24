@@ -184,6 +184,29 @@ Routing rules:
 - If the request involves event sourcing, CQRS, pgvector, or bitemporal design, read `references/advanced-patterns.md`.
 - Always read relevant `references/` files before producing output.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Schema Design | `design` | ✓ | 新規テーブル・エンティティ設計 | `references/schema-examples.md` |
+| Migration Plan | `migration` | | スキーマ変更・マイグレーション設計 | `references/migration-patterns.md` |
+| ER Diagram | `er` | | ER 図の生成・レビュー | `references/schema-examples.md` |
+| Normalization | `normalize` | | 正規化・非正規化の判断 | `references/normalization-guide.md` |
+| Index Strategy | `index` | | インデックス設計・最適化 | `references/index-strategies.md` |
+
+Behavior notes:
+- **design** (default): SURVEY → MODEL → VALIDATE → PRESENT; load `schema-examples.md` + `schema-design-anti-patterns.md`.
+- **migration**: Draft step-by-step migration DDL with rollback; load `migration-patterns.md`; flag zero-downtime risks.
+- **er**: Generate Mermaid ER diagram from schema description or codebase; load `schema-examples.md`.
+- **normalize**: Assess NF level and propose de-normalization trade-offs; load `normalization-guide.md`.
+- **index**: Analyze query patterns and propose covering/partial indexes; load `index-strategies.md` + `index-performance-anti-patterns.md`.
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column file at the initial step.
+- Otherwise → fall through to default Recipe (`design` = Schema Design).
+
 ## Output Requirements
 
 Provide:

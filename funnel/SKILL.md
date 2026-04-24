@@ -285,6 +285,29 @@ Detailed performance optimization → delegate to Growth / Bolt. LP-specific pri
 | `OPTIMIZE` | Optimization | Performance, accessibility, variant design | — |
 | `DELIVER` | Delivery | Handoff to Artisan/Growth, improvement proposals | `references/handoffs.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Build LP | `build` | ✓ | LP 全体設計 (AIDA/PAS/BAB/4Ps フレームワーク選択から) | `references/patterns.md` |
+| CTA Optimization | `cta` | | CTA 配置・コピー・マイクロコピー最適化 | — |
+| Conversion Audit | `conversion` | | 既存 LP のコンバージョン改善・セクション監査 | `references/patterns.md` |
+| Responsive Design | `responsive` | | モバイルファースト実装・タップターゲット・ビューポート最適化 | `references/examples.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input and activate the matching Recipe. If the token matches no subcommand, activate `build` (default).
+
+| First Token | Recipe Activated |
+|------------|-----------------|
+| `build` | Build LP |
+| `cta` | CTA Optimization |
+| `conversion` | Conversion Audit |
+| `responsive` | Responsive Design |
+| _(no match)_ | Build LP (default) |
+
+---
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

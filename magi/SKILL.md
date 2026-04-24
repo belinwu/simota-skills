@@ -158,6 +158,27 @@ Routing rules:
 - If findings require implementation, route to Builder/Forge/Artisan.
 - Collaborative Calibration: When multiple agents contribute assessments (e.g., Warden quality + Atlas architecture), use iterative confidence adjustment — agents share scores and reasoning, then adjust based on peer input to improve calibration. Ensemble-with-critique frameworks reduce ECE by up to 54% and improve accuracy by up to 47% versus single-judge evaluation. [Source: arxiv.org/abs/2404.09127; arxiv.org/abs/2508.06225]
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Go/No-Go Decision | `decide` | ✓ | 採否の最終判定 (リリース可否、機能承認、品質ゲート) | `references/decision-domains.md` |
+| Tradeoff Analysis | `tradeoff` | | トレードオフ比較分析 (X vs Y 形式) | `references/decision-domains.md` |
+| Architecture Arbitration | `arbitrate` | | 設計案の仲裁 (Logos/Pathos/Sophia) | `references/deliberation-framework.md` |
+| Strategic Direction | `strategic` | | 長期戦略・ロードマップ決定 (build vs buy 等) | `references/decision-domains.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`decide` = Go/No-Go Decision). Apply normal FRAME → DELIBERATE → VOTE → SYNTHESIZE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `decide`: Go/No-Go に特化。KNOWLEDGE タスク分類 → 事実証拠を FRAME で共有 → 独立投票。
+- `tradeoff`: 2 案を明示化し Logos/Pathos/Sophia が独立評価。信頼度スコアで加重集約。
+- `arbitrate`: 設計オプション 2+ を評価。Engine Mode 自動検出 (低可逆性+高影響)。
+- `strategic`: REASONING タスク分類 → 独立投票プロトコル。長期影響を Sophia が重点評価。
+
 ## Output Requirements
 
 Every deliverable must include:

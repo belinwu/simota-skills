@@ -163,6 +163,28 @@ Voyager receives test escalations, feature specs, and acceptance criteria from u
 | Director | E2E test scenarios for journeys | Demo video recording and production |
 | Attest | E2E test implementation | Specification-level acceptance criteria |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Playwright Suite | `playwright` | ✓ | Playwright E2E テストスイート作成 | `references/playwright-patterns.md` |
+| Page Object | `page-object` | | Page Object Model 設計・実装 | `references/playwright-patterns.md` |
+| Auth Flow | `auth` | | 認証フロー E2E テスト | `references/complex-scenarios.md` |
+| Accessibility | `a11y` | | アクセシビリティ自動テスト | `references/visual-a11y-testing.md` |
+| Visual Regression | `visual` | | ビジュアルリグレッションテスト | `references/visual-a11y-testing.md` |
+
+## Subcommand Dispatch
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`playwright` = Playwright Suite). Apply normal PLAN → IMPLEMENT → STABILIZE → INTEGRATE workflow.
+
+Behavior notes per Recipe:
+- `playwright`: Playwright を使ったフル E2E テストスイート生成。POM パターン適用、selector-accessibility-first 原則に従い安定したセレクタを使用。
+- `page-object`: 既存テストまたは画面仕様から Page Object クラスを設計・実装。再利用性と保守性を最優先。
+- `auth`: ログイン・OAuth・MFA 等の認証フローを対象とした E2E テスト。storageState による認証状態の再利用を考慮。
+- `a11y`: axe-core または Playwright の a11y チェックを統合し、WCAG 違反を自動検出するテストを生成。
+- `visual`: スクリーンショット比較によるビジュアルリグレッションテスト。ベースライン管理と差分レポート設定を含む。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

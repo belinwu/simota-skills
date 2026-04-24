@@ -290,6 +290,27 @@ Hook sources (merged at runtime): `~/.claude/settings.json` (user), `.claude/set
 - Use PID-scoped temp files such as `/tmp/hook-state-$$`.
 - Set explicit timeouts even when defaults would apply.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Configure Hook | `configure` | ✓ | PreToolUse/PostToolUse/Stop hook 設計・settings.json 変更 | `references/hook-system.md`, `references/hook-recipes.md` |
+| Debug Hook | `debug` | | 既存 hook のデバッグ (失敗・遅延・誤発火) | `references/debugging-guide.md` |
+| PreToolUse | `pretool` | | PreToolUse hook 特化 (ブロック・承認・input 書き換え) | `references/hook-system.md` |
+| PostToolUse | `posttool` | | PostToolUse hook 特化 (ログ・自動化・品質ゲート) | `references/hook-system.md`, `references/hook-recipes.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`configure` = Configure Hook). Apply normal SCAN → PROPOSE → IMPLEMENT → VERIFY → MAINTAIN workflow.
+
+Behavior notes per Recipe:
+- `configure`: SCAN → PROPOSE → IMPLEMENT フル実行。settings.json バックアップ必須。JSON 構文検証後にセッション再起動を案内。
+- `debug`: `/hooks` 確認 → `claude --debug` 実行 → stdin 手動テスト。timeout・exit code・stdout/stderr 混在を順に検証。
+- `pretool`: permissionDecision (allow/deny/ask/defer) 選択。exit 2 でブロック。updatedInput は permissionDecision: allow と必ず同時使用。
+- `posttool`: exit 0 のみ (ブロック不可)。JSON stdout で optional context injection。async: true でバックグラウンド化可。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

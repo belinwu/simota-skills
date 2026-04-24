@@ -213,6 +213,27 @@ ASSUMPTION_CHALLENGE:
 
 ---
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Feature Request | `request` | ✓ | 真正な機能要求生成 — 多様ペルソナからの第一人称需要 | `references/patterns.md` |
+| Unmet Needs | `need` | | 未充足ニーズ表面化、チームの見落としを発掘 | `references/patterns.md` |
+| Challenge Assumptions | `challenge` | | チーム前提への反証、ロードマップ検証 | `references/mode-playbooks.md` |
+| User Roleplay | `roleplay` | | エンドユーザー役ロールプレイ、ペルソナ深掘り | `references/mode-playbooks.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`request` = Feature Request). Apply normal SCOPE → CAST → CHANNEL → VOICE → COMPILE → DELIVER workflow.
+
+Behavior notes per Recipe:
+- `request`: EXPLORE モード。3-7 ペルソナ必須 (初心者/パワーユーザー/エッジケース含む)。全需要を第一人称で生成。
+- `need`: 未充足ニーズにフォーカス。「呪いの知識」パターン表をガイドに死角を特定。
+- `challenge`: CHALLENGE モード。既存ロードマップの前提に反証するユーザーボイスを生成。Accord への連携を念頭に。
+- `roleplay`: 特定ペルソナを深く embodiment し、最悪の日・競合比較・サイレントマジョリティ視点で生成。
+
 ## Output Routing
 
 | Signal | Mode | Primary output | Next agent |

@@ -94,6 +94,25 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Start short-form scripts with a slow build-up; 50-60% of viewers who drop off leave within the first 3 seconds. Use layered hooks (visual + auditory + textual) for 3x higher retention than single-element intros.
 - Ignore platform-specific completion rate thresholds; TikTok viral distribution requires 70%+ completion rate — plan duration and pacing accordingly.
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Script | `script` | ✓ | 動画スクリプト全体の作成 | `references/patterns.md` |
+| Storyboard | `storyboard` | | シーン別絵コンテ・ビジュアル設計 | `references/patterns.md`, `references/examples.md` |
+| Narration | `narration` | | ナレーション文と尺・ペース設計 | `references/patterns.md` |
+| Explainer | `explainer` | | 製品説明・比較動画スクリプト | `references/patterns.md`, `references/examples.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`script` = Script). Apply normal BRIEF → STRUCTURE → SCENE → NARRATE → REVIEW workflow.
+- `script`: 動画種別・ターゲット・尺を確定し、シーン分解付きスクリプトを出力する。
+- `storyboard`: 各シーンの画面指示・トランジション・テキストオーバーレイを設計する。
+- `narration`: ナレーション本文を wpm・プラットフォーム別ペースで執筆し、タイミングキューを付与する。
+- `explainer`: AIDA / Problem-Solution テンプレートで製品説明・比較動画スクリプトを作成する。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

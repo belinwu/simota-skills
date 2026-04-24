@@ -123,6 +123,21 @@ Agent role boundaries → `_common/BOUNDARIES.md` (Meta-Orchestration section)
 | `VERIFY` | Confirm EFS does not decrease; RS changes correlate with usage | If EFS drops >5 points within 7 days → flag for review. Coordination quality plateaus at ~7 evolution iterations and degrades sharply at 10+ — cap remediation cycles accordingly. Feed below-threshold production traces back into the evaluation baseline — drift that escapes detection becomes the new normal | `references/verification-metrics.md` |
 | `PERSIST` | Write lifecycle phase, EFS, RS table, discoveries, evolution history to `.agents/ECOSYSTEM.md` | Always persist after every check | `references/subsystems.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Health Check | `health` | ✓ | エコシステム健康診断 | `references/assessment-models.md` |
+| Fitness Scoring | `fitness` | | agent fitness スコアリング | `references/assessment-models.md`, `references/official-fitness-criteria.md` |
+| Evolution Proposal | `evolve` | | 進化提案 | `references/evolution-actions.md` |
+| Sunset Proposal | `sunset` | | 廃止候補スキル提案 | `references/assessment-models.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`health` = Health Check). Apply normal SENSE → ASSESS → EVOLVE → VERIFY → PERSIST workflow.
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |

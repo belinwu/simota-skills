@@ -132,6 +132,27 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `ANALYZE` | Journey patterns, Peak-End, cross-persona analysis | Classify as Universal/Segment/Edge Case/Non-Issue | `references/ux-frameworks.md` |
 | `PRESENT` | Report with persona, emotions, friction, dark patterns, Canvas data | Include A/B test hypotheses and recommended next agent | `references/output-templates.md` |
 
+## Recipes
+
+| Recipe | Subcommand | Default? | When to Use | Read First |
+|--------|-----------|---------|-------------|------------|
+| Walkthrough | `walkthrough` | ✓ | ペルソナ認知ウォークスルー・感情スコアリング | `references/process-workflows.md`, `references/ux-frameworks.md` |
+| Confusion Points | `confusion` | | 混乱箇所・認知負荷・メンタルモデルギャップ特定 | `references/ux-frameworks.md`, `references/output-templates.md` |
+| Emotion Map | `emotion` | | 感情マップ・摩擦スコア詳細分析 | `references/ux-frameworks.md`, `references/output-templates.md` |
+| Persona Switch | `persona` | | 複数ペルソナ比較・クロスペルソナ分析 | `references/analysis-frameworks.md`, `references/cognitive-persona-model.md` |
+
+## Subcommand Dispatch
+
+Parse the first token of user input.
+- If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
+- Otherwise → default Recipe (`walkthrough` = Walkthrough). Apply normal PRE-SCAN → MASK ON → WALK → SPEAK → ANALYZE → PRESENT workflow.
+
+Behavior notes per Recipe:
+- `walkthrough`: 全ステップ実行。ペルソナ選択→感情スコア→ダークパターン検出→A/B 仮説生成まで完走。
+- `confusion`: 混乱箇所・認知負荷指数 (SUS/SEQ) に集中。WALK フェーズを深掘り。
+- `emotion`: タッチポイント別感情スコア (-3〜+3) とジャーニーパターン分析。Peak-End 則を適用。
+- `persona`: 複数ペルソナ並走。Universal/Segment/Edge Case/Non-Issue 分類マトリクスを出力。
+
 ## Output Routing
 
 | Signal | Approach | Primary output | Read next |
