@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-130-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-131-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **130 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **131 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 130 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 131 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -53,6 +53,8 @@ This repository contains 130 specialized AI agents covering various aspects of s
 | **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - Ecosystem self-evolution orchestrator. Detects project lifecycle phase, evaluates agent relevance, integrates cross-cutting knowledge, and evolves the entire ecosystem | Ecosystem Fitness Score, evolution proposals |
 | **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - Memory curator for cross-ecosystem knowledge integration. Discovers common patterns from agent journals, catalogs them, and distributes to relevant agents. Knowledge decay detection and best practice propagation | METAPATTERNS.md, knowledge insights |
 | **Gauge** | _"What gets measured gets managed. What gets audited gets normalized."_ - SKILL.md normalization auditor and self-evolving compliance agent. Scans all skills against the 16-item checklist, classifies violations with P0-P3 priority, generates concrete fix snippets, and evolves detection patterns via web research. No code written | Compliance reports, fix plans, dashboards |
+| **Atelier** | _"Design decided upstream. Assets produced downstream. atelier is the studio floor in between."_ - Design-to-implementation pipeline orchestrator for the code-to-visual-to-code closed loop. Coordinates Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas to deliver design extraction, prototypes, visual assets, slides, and production together while persisting a project design system across downstream agents | Design system package, integrated deliverables |
+| **Compass** | _"When in doubt, ask Compass. It finds the right skill for you among 130+."_ - Skill ecosystem navigator and onboarding guide. Lists agents, recommends best fit for tasks, and helps newcomers discover the right specialist | Recommendations, agent maps |
 
 ### Investigation & Planning (Non-coding)
 
@@ -61,6 +63,7 @@ This repository contains 130 specialized AI agents covering various aspects of s
 | **Scout** | _"Every bug has a story. I read the ending first."_ - Bug investigation and root cause analysis (RCA). Identifies reproduction steps and fix locations | Investigation report |
 | **Ripple** | _"Every change sends ripples. Know where they land before you leap."_ - Pre-change impact analysis. Evaluates risk from both vertical (dependencies, affected files) and horizontal (pattern consistency, naming conventions) perspectives | Impact analysis report |
 | **Spark** | _"The best feature is the one users didn't know they needed."_ - Feature proposals. Suggests features leveraging existing data/logic as Markdown specs | Specification document |
+| **Dawn** | _"One idea a day. Something that makes you smile when it runs, something you'll want to talk about tomorrow."_ - Personal side-project idea proposer. Outputs exactly one 1-3 day MVP idea per invocation across CLI, automation, LLM, DX, productivity, and data-viz angles. Includes ready-to-paste coding-agent prompt | Side-project brief |
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - Competitive research, differentiation, and positioning. SWOT analysis, feature matrices | Competitive analysis report |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - User feedback collection, NPS survey design, sentiment analysis, and insight extraction | Feedback report |
 | **Plea** | _"I am your user. I feel every day what you overlook."_ - Synthetic user advocate. Role-plays as diverse end-user personas to generate authentic feature requests, surface unmet needs, and challenge team assumptions | Feature request report |
@@ -702,6 +705,7 @@ skills/
 ├── anvil/SKILL.md      # CLI/TUI construction
 ├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
 ├── artisan/SKILL.md    # Frontend implementation
+├── atelier/SKILL.md    # Design-to-implementation pipeline orchestrator
 ├── atlas/SKILL.md      # Architecture
 ├── attest/SKILL.md     # Specification compliance verification
 ├── beacon/SKILL.md     # Observability/SRE
@@ -711,8 +715,10 @@ skills/
 ├── canvas/SKILL.md     # Visualization
 ├── cast/SKILL.md       # Persona casting & registry management
 ├── clay/SKILL.md       # AI 3D model generation
+├── compass/SKILL.md    # Skill ecosystem navigator and onboarding guide
 ├── compete/SKILL.md    # Competitive research
 ├── darwin/SKILL.md     # Ecosystem self-evolution orchestrator
+├── dawn/SKILL.md       # Personal side-project idea proposer
 ├── director/SKILL.md   # Demo video recording
 ├── dot/SKILL.md        # Pixel art generation (SVG/Canvas/Phaser 3)
 ├── echo/SKILL.md       # Persona validation
@@ -800,7 +806,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 130 agents.
+> Category-by-category examples for all 131 agents.
 
 #### Orchestration
 

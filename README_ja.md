@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-130-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-131-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🤖 専門AIエージェントチームによる協調開発を実現するスキルコレクション
+🤖 131種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **130種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **131種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする130種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする131種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -53,6 +53,8 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Orbit** | _"Give me a goal. I'll give you a runner that finishes."_ - Nexus-autoloop完走スペシャリスト。自律ループの完走スクリプト生成・運用契約設計・監査を担当。ゴールを渡せば完走できるランナー一式を生成 | ランナースクリプト、契約 |
 | **Darwin** | _"Ecosystems that cannot sense themselves cannot evolve themselves."_ - エコシステム自己進化オーケストレーター。プロジェクトライフサイクルを検出し、エージェントの関連性を評価し、横断的知識を統合してエコシステム全体を進化させる | エコシステムフィットネススコア、進化提案 |
 | **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - エコシステム横断の知識統合・パターン抽出・伝播を担うメモリキュレーター。エージェントjournalから共通パターンを発見し、カタログ化して関連エージェントへ配信。知識の腐敗検出・ベストプラクティス伝播により制度的記憶を維持 | METAPATTERNS.md、知識インサイト |
+| **Atelier** | _"Design decided upstream. Assets produced downstream. atelier is the studio floor in between."_ - デザインから実装までを閉ループで繋ぐパイプラインオーケストレーター。Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas を統括し、デザイン抽出・プロトタイプ・ビジュアルアセット・スライド・本番実装をプロジェクトデザインシステムを永続化しながら一気通貫で提供 | デザインシステムパッケージ、統合成果物 |
+| **Compass** | _"When in doubt, ask Compass. It finds the right skill for you among 130+."_ - スキルエコシステムのナビゲーター・オンボーディングガイド。エージェントを一覧化し、タスクに最適な担当を推薦し、初心者が適切なスペシャリストを発見できるよう支援 | レコメンド、エージェントマップ |
 
 ### 調査・企画（コードを書かない）
 
@@ -61,6 +63,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Scout** | _"Every bug has a story. I read the ending first."_ - バグ調査・根本原因分析（RCA）。再現手順と修正箇所を特定 | 調査レポート |
 | **Ripple** | _"Every change sends ripples. Know where they land before you leap."_ - 変更前の影響分析。縦（依存関係・影響ファイル）と横（パターン一貫性・命名規則）の両面からリスク評価 | 影響分析レポート |
 | **Spark** | _"The best feature is the one users didn't know they needed."_ - 新機能提案。既存データ/ロジックを活用した機能をMarkdownで提案 | 仕様書 |
+| **Dawn** | _"One idea a day. Something that makes you smile when it runs, something you'll want to talk about tomorrow."_ - 個人サイドプロジェクトのアイデア提案エージェント。1呼び出しあたり1-3日でMVPが完成する1つのアイデアを提案。CLI・自動化・LLM・DX・生産性・データ可視化の角度をカバーし、コーディングエージェントへすぐ貼れるプロンプトも同梱 | サイドプロジェクトブリーフ |
 | **Compete** | _"Know your enemy. Know the market. Know yourself."_ - 競合調査・差別化ポイント特定・ポジショニング。SWOT分析、機能マトリクス | 競合分析レポート |
 | **Voice** | _"Feedback is a gift. Analysis is unwrapping it."_ - ユーザーフィードバック収集・NPS調査設計・感情分析・インサイト抽出 | フィードバックレポート |
 | **Plea** | _"I am your user. I feel every day what you overlook."_ - 合成ユーザー代弁者。多様なエンドユーザーペルソナになりきり、本物のような機能要望を生成し、未充足ニーズを発掘し、チームの思い込みに挑戦する | 機能要望レポート |
@@ -691,6 +694,7 @@ skills/
 ├── anvil/SKILL.md      # CLI/TUI構築
 ├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
+├── atelier/SKILL.md    # デザイン-実装パイプラインオーケストレーター
 ├── atlas/SKILL.md      # アーキテクチャ
 ├── attest/SKILL.md     # 仕様適合検証
 ├── beacon/SKILL.md     # 可観測性/SRE
@@ -700,8 +704,10 @@ skills/
 ├── canon/SKILL.md      # 世界標準・業界標準準拠検証
 ├── cast/SKILL.md       # ペルソナキャスティング＆レジストリ管理
 ├── clay/SKILL.md       # AI 3Dモデル生成
+├── compass/SKILL.md    # スキルエコシステムナビゲーター・オンボーディングガイド
 ├── compete/SKILL.md    # 競合調査
 ├── darwin/SKILL.md     # エコシステム自己進化オーケストレーター
+├── dawn/SKILL.md       # 個人サイドプロジェクトのアイデア提案
 ├── director/SKILL.md   # デモ動画撮影
 ├── dot/SKILL.md        # ピクセルアート生成（SVG/Canvas/Phaser 3）
 ├── echo/SKILL.md       # ペルソナ検証
@@ -789,7 +795,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全130エージェントの使用例を紹介します。
+> カテゴリ別に全131エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
