@@ -10,7 +10,7 @@ Gemini is one of the three engines in Judge's default tri-engine parallel review
 
 | Item | Requirement | Notes |
 |------|-------------|-------|
-| Binary | `gemini` on `$PATH` | `gemini --version` must succeed. The `code-review` extension runs on current `0.38.x` CLI builds; upgrade to the latest release (`npm i -g @google/gemini-cli@latest`) if `gemini extensions install` returns "unknown command" |
+| Binary | `gemini` on `$PATH` **or** at a known fallback path | `gemini --version` must succeed. See **Robust availability detection** below — never declare unavailable based on a single `command -v` miss. The `code-review` extension runs on current `0.38.x` CLI builds; upgrade to the latest release (`npm i -g @google/gemini-cli@latest`) if `gemini extensions install` returns "unknown command" |
 | Authentication | Google account login (OAuth browser flow) | Subscription-backed login; **do not** set `GEMINI_API_KEY`, `GOOGLE_API_KEY`, or Vertex env vars for this flow |
 | Model | Default (no `-m` / `--model` flag) | Always rely on the CLI default — never override |
 | Extension | `code-review` extension installed | `gemini extensions install https://github.com/gemini-cli-extensions/code-review` |
@@ -18,6 +18,25 @@ Gemini is one of the three engines in Judge's default tri-engine parallel review
 | Approval mode | `--yolo` for headless runs | Required for non-interactive automation; use `--approval-mode plan` for read-only reasoning |
 
 **Never** pass `-m`, `--model`, set `GEMINI_API_KEY`, `GOOGLE_API_KEY`, `GOOGLE_CLOUD_PROJECT`, or `GOOGLE_CLOUD_LOCATION` for this flow. Authentication is managed by the user's Google subscription login.
+
+### Robust availability detection
+
+`gemini` is commonly installed under `~/.bun/bin/gemini` (Bun), `~/.local/bin/gemini`, `/usr/local/bin/gemini`, `/opt/homebrew/bin/gemini`, or via npm/pnpm/yarn global. A subagent's inherited `$PATH` is often narrower than the user's interactive shell — `command -v gemini` failing inside a subagent does **not** mean the binary is missing. Always probe fallback paths before declaring unavailability:
+
+```bash
+if command -v gemini >/dev/null 2>&1; then
+  GEMINI_BIN="$(command -v gemini)"
+else
+  for p in "$HOME/.bun/bin/gemini" "$HOME/.local/bin/gemini" "/usr/local/bin/gemini" "/opt/homebrew/bin/gemini" "$HOME/.npm-global/bin/gemini"; do
+    [ -x "$p" ] && GEMINI_BIN="$p" && break
+  done
+fi
+[ -n "$GEMINI_BIN" ] && "$GEMINI_BIN" --version || echo "gemini: not found in any known location"
+```
+
+When invoking via the resolved absolute path, substitute `"$GEMINI_BIN"` for `gemini` in every subsequent command in this guide.
+
+**Do not classify these as "unavailable":** auth-expired errors, OAuth re-login prompts, missing `code-review` extension (install it instead — runtime fixable), transient network failures, quota errors. These are runtime failures — surface the real error rather than silently dropping gemini from the engine roster.
 
 Verify the extension once:
 
@@ -272,7 +291,8 @@ Always pair the prompt with `--yolo -e code-review` for headless runs unless the
 
 | Symptom | Likely cause | Action |
 |---------|--------------|--------|
-| `command not found: gemini` | CLI not installed or not on `$PATH` | Ask the user to install/fix `$PATH`; fall back to Codex |
+| `command not found: gemini` | CLI not on `$PATH` of current shell — but the binary may exist | First try fallback paths (`~/.bun/bin/gemini`, `~/.local/bin/gemini`, `/usr/local/bin/gemini`, `/opt/homebrew/bin/gemini`); only ask the user to install if none are executable. Subagents see a narrower PATH than interactive shells |
+| Subagent reports "gemini unavailable" but user confirms it works | Subagent PATH narrower than interactive shell | Re-run preflight in main Judge context; pass the absolute binary path into the subagent prompt |
 | Authentication prompt or failure | Google login session expired | Instruct the user to run `gemini` once interactively to re-login; do not supply API keys |
 | Extension missing | `code-review` not installed | Run `gemini extensions install https://github.com/gemini-cli-extensions/code-review` and retry |
 | Hang with no output | Missing `--yolo` in headless mode | Re-run with `--yolo`; tool approvals were blocking |

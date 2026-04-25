@@ -8,13 +8,32 @@ Operational reference for invoking `codex review`. This file is the single sourc
 
 | Item | Requirement | Notes |
 |------|-------------|-------|
-| Binary | `codex` on `$PATH` | `codex --version` must succeed |
+| Binary | `codex` on `$PATH` **or** at a known fallback path | `codex --version` must succeed. See **Robust availability detection** below — never declare unavailable based on a single `command -v` miss |
 | Subcommand | `codex review` | Non-interactive code review mode |
 | Authentication | Subscription login (`codex login`) | No API key / `OPENAI_API_KEY` required; do not set or pass API keys |
 | Model | Default (no `-m` / `--model` flag) | Always rely on the CLI default — never override the model |
 | Working directory | Git repository root | Commands operate on the current git worktree |
 
 **Never** pass `-m`, `--model`, `-c model=...`, or set `OPENAI_API_KEY`. Authentication and model selection are managed by the user's subscription login.
+
+### Robust availability detection
+
+`codex` is commonly installed under `~/.bun/bin/codex` (Bun), `~/.local/bin/codex`, `/usr/local/bin/codex`, `/opt/homebrew/bin/codex`, or via npm/pnpm/yarn global. A subagent's inherited `$PATH` may be narrower than the user's interactive shell — `command -v codex` failing inside a subagent does **not** mean the binary is missing. Always probe fallback paths before declaring unavailability:
+
+```bash
+if command -v codex >/dev/null 2>&1; then
+  CODEX_BIN="$(command -v codex)"
+else
+  for p in "$HOME/.bun/bin/codex" "$HOME/.local/bin/codex" "/usr/local/bin/codex" "/opt/homebrew/bin/codex" "$HOME/.npm-global/bin/codex"; do
+    [ -x "$p" ] && CODEX_BIN="$p" && break
+  done
+fi
+[ -n "$CODEX_BIN" ] && "$CODEX_BIN" --version || echo "codex: not found in any known location"
+```
+
+When invoking via the resolved absolute path, substitute `"$CODEX_BIN"` for `codex` in every subsequent command in this guide.
+
+**Do not classify these as "unavailable":** auth-expired errors, transient network failures, quota errors, slow first-token latency. These are runtime failures — surface the real error rather than silently dropping codex from the engine roster.
 
 If a review-specific model override is ever required, the canonical location is the `review_model` key in `~/.codex/config.toml` — **not** the CLI `-m` flag (Codex CLI official docs, 2026). Per current project policy, leave `review_model` unset and use the session default.
 
@@ -313,7 +332,8 @@ Always pair the mode flag with a focus prompt — bare invocations produce lower
 
 | Symptom | Likely cause | Action |
 |---------|--------------|--------|
-| `command not found: codex` | CLI not installed or not on `$PATH` | Ask the user to install/fix `$PATH`; abort review |
+| `command not found: codex` | CLI not on `$PATH` of current shell — but the binary may exist | First try fallback paths (`~/.bun/bin/codex`, `~/.local/bin/codex`, `/usr/local/bin/codex`, `/opt/homebrew/bin/codex`); only ask the user to install if none are executable. Subagents see a narrower PATH than interactive shells |
+| Subagent reports "codex unavailable" but user confirms it works | Subagent PATH narrower than interactive shell | Re-run preflight in main Judge context; pass the absolute binary path into the subagent prompt |
 | Authentication error | `codex login` session expired | Instruct the user to run `codex login`; do not supply API keys |
 | Empty or truncated output | Prompt too vague or diff too large | Add a sharper focus prompt; for >1000 LOC diffs, recommend decomposition before retrying |
 | "No changes to review" | Clean working tree or unrelated branch | Verify mode: switch to `--base` or `--commit` as appropriate |

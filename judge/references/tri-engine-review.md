@@ -9,7 +9,7 @@ Default flow for `/judge`. Run Codex, Gemini, and Claude Code reviews in paralle
 ## Flow
 
 ```
-SCOPE → FAN-OUT (3 parallel subagents) → NORMALIZE → CLUSTER → SCORE → GROUND → ARBITRATE → FILTER → REPORT
+SCOPE → PREFLIGHT → FAN-OUT (parallel subagents for available engines) → NORMALIZE → CLUSTER → SCORE → GROUND → ARBITRATE → FILTER → REPORT
 ```
 
 ### 1. SCOPE
@@ -21,7 +21,58 @@ Define the review target once. All three subagents share the same scope:
 - Focus areas (security / intent / framework / AI-code)
 - Project guidelines (REVIEW.md / AGENTS.md / CLAUDE.md content)
 
-### 2. FAN-OUT — parallel subagents
+### 2. PREFLIGHT — engine availability detection (Judge main context, never delegated)
+
+Detect engine availability **once in the main Judge context** before spawning subagents. Subagents must not perform their own availability detection — their inherited PATH may be narrower than the user's interactive shell, leading to false-negative "unavailable" verdicts when the binary actually exists in a non-standard location (`~/.bun/bin`, `~/.local/bin`, npm/pnpm/yarn global, mise/asdf shims).
+
+**Robust detection — try in order, accept first success:**
+
+```bash
+# 1. Standard PATH lookup
+command -v codex && codex --version
+
+# 2. Explicit fallback to known install locations (run if step 1 fails)
+for p in "$HOME/.bun/bin/codex" "$HOME/.local/bin/codex" "/usr/local/bin/codex" "/opt/homebrew/bin/codex" "$HOME/.npm-global/bin/codex"; do
+  [ -x "$p" ] && "$p" --version && export CODEX_BIN="$p" && break
+done
+```
+
+Apply the same loop for `gemini` and `claude`. The user's actual install paths today: `~/.bun/bin/codex`, `~/.bun/bin/gemini`, `~/.local/bin/claude` — these MUST be probed before declaring any engine unavailable.
+
+**Single combined preflight command (recommended):**
+
+```bash
+for cli in codex gemini claude; do
+  if command -v "$cli" >/dev/null 2>&1; then
+    echo "$cli: $(command -v $cli) ($($cli --version 2>&1 | head -1))"
+  else
+    for p in "$HOME/.bun/bin/$cli" "$HOME/.local/bin/$cli" "/usr/local/bin/$cli" "/opt/homebrew/bin/$cli"; do
+      if [ -x "$p" ]; then echo "$cli: $p ($($p --version 2>&1 | head -1))"; break; fi
+    done || echo "$cli: NOT FOUND"
+  fi
+done
+```
+
+**Availability verdict — strict criteria:**
+
+| Outcome | Treatment |
+|---------|-----------|
+| Binary found AND `--version` returns | `AVAILABLE` — pass absolute path to the subagent if the standard PATH probe failed |
+| Binary not found in any probed location | `UNAVAILABLE (binary missing)` — skip this engine, record reason |
+| Binary found but `--version` exits non-zero | `AVAILABLE-WITH-WARNING` — still attempt review; surface warning in report |
+| Auth error during version check | `AVAILABLE` — auth errors at review time are runtime failures, not unavailability. Pass through to subagent for diagnosis |
+| Timeout / network failure during version check | `AVAILABLE` — transient failures are not unavailability. Pass through |
+
+**Never declare an engine unavailable based on:**
+
+- Single CLI run failure (transient network / auth / quota issues)
+- A subagent's prior session error from a different invocation
+- Assumption from absence in the standard `$PATH` only — always probe fallback paths
+- The user's most recent successful invocation pattern (e.g., "they only ran Claude last time")
+
+When passing an absolute binary path to a subagent (because the standard PATH probe failed), tell the subagent to invoke that exact path verbatim instead of the bare command name.
+
+### 3. FAN-OUT — parallel subagents
 
 Spawn **three Agent calls in a single message** so they run concurrently. Each subagent has an independent context window (no self-bias) and runs one engine.
 
@@ -52,7 +103,7 @@ Each subagent prompt must require structured JSON output so integration is deter
 }
 ```
 
-If an engine is unavailable (binary missing, auth expired), record the failure and proceed with the remaining two. Below two engines, downgrade to single-engine output and flag reduced confidence.
+If an engine is genuinely unavailable per the PREFLIGHT criteria (binary missing in all probed locations), record the failure and proceed with the remaining engines. Auth-expired, network, and quota errors are runtime failures — surface the actual error in the report rather than dropping the engine. Below two engines, downgrade to single-engine output and flag reduced confidence.
 
 ### 3. NORMALIZE
 
