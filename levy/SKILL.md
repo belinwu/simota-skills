@@ -182,7 +182,7 @@ Before finalizing, run `VERIFY`: recalculate key numbers, re-check deduction eli
 | Deduction Optimization | `deduction` | | Deduction optimization, blue return special deduction, tax-credit check | `references/deduction-catalog.md` |
 | Tax Calculation | `calc` | | Tax calculation walkthrough (income tax, resident tax, special reconstruction tax) | `references/tax-calculation.md` |
 | Filing | `file` | | Return preparation, e-Tax procedure, submission flow | `references/filing-guide.md` |
-| Invoice | `invoice` | | Invoice system (適格請求書) compliance — registration decision, transitional deduction schedule (80%/70%/50%/30%/0%), 2割特例/3割特例, ¥100M exclusion threshold, simplified taxation interaction | `references/invoice-system.md` |
+| Invoice | `invoice` | | Invoice system (qualified-invoice / tekikaku-seikyusho) compliance — registration decision, transitional deduction schedule (80%/70%/50%/30%/0%), 20%/30% special exemptions, ¥100M exclusion threshold, simplified taxation interaction | `references/invoice-system.md` |
 | Crypto | `crypto` | | Crypto asset taxation — current comprehensive (max 55%) vs future separate (20.315%), 3-year loss carryforward eligibility, mining/staking/airdrop/lending classification, NFT/DeFi gray zones, FIFO/moving-average cost basis | `references/crypto-tax.md` |
 | Foreign | `foreign` | | Foreign income and overseas assets — residency classification (居住者/非永住者/非居住者), worldwide vs source-only taxation, foreign tax credit, 国外財産調書 (¥50M threshold), CFC rules, OECD CRS automatic exchange | `references/foreign-income.md` |
 
