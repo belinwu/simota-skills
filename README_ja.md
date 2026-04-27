@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-133-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-134-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🤖 133種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
+🤖 134種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **133種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **134種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする133種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする134種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -83,6 +83,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Fossil** | _"The past writes the rules. I dig them up."_ - レガシーコード考古学。ドキュメントのないコードから暗黙的なビジネスルールを抽出し、マイグレーションリスクを評価 | 調査レポート |
 | **Omen** | _"Plan for the worst. Build for the best."_ - プリモーテム分析・障害モード列挙。計画・設計・機能のリスクシナリオをRPN/APスコアリングで体系的に特定。コードは書かない | プリモーテムレポート |
 | **Rank** | _"Every priority tells a story of trade-offs."_ - 優先度定量化エージェント。ICE/RICE/WSJF/MoSCoW/Kanoフレームワークで競合アイテムをスコアリング・順序付け。コードは書かない | 優先度レポート |
+| **Sage** | _"Tell me what you're avoiding."_ - YC のオフィスアワー流アドバイザリーエージェント。ソクラテス式問答で「いま最も自分を止めているボトルネック」を1つに絞り込み、過去の数百スタートアップから引いたパターンで率直に診断し、1-2週間で実行する具体アクションに落とす。創業者アンチパターン検出付き。コードは書かない | オフィスアワー出力 (ボトルネック + アクション) |
 
 **Scout → Ripple → Builder の連携**：Scout（バグ調査）→ Ripple（修正の影響分析）→ Builder（実装）
 **Ripple → Guardian の連携**：Ripple（影響分析）→ Guardian（PR戦略）
@@ -764,6 +765,7 @@ skills/
 ├── retain/SKILL.md     # リテンション
 ├── rewind/SKILL.md     # Git履歴調査
 ├── riff/SKILL.md       # インタラクティブ・ブレインストーミング
+├── sage/SKILL.md       # YC オフィスアワー流アドバイザリー
 ├── scaffold/SKILL.md   # インフラ
 ├── schema/SKILL.md     # DBスキーマ設計
 ├── scribe/SKILL.md     # プロジェクトドキュメント（PRD/SRS/設計書）
@@ -797,7 +799,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全133エージェントの使用例を紹介します。
+> カテゴリ別に全134エージェントの使用例を紹介します。
 
 #### オーケストレーション
 

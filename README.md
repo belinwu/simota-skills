@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-133-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-134-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **133 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **134 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 133 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 134 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
@@ -84,6 +84,7 @@ This repository contains 133 specialized AI agents covering various aspects of s
 | **Fossil** | _"The past writes the rules. I dig them up."_ - Legacy code archaeology. Extracts implicit business rules from undocumented code and assesses migration risk | Investigation report |
 | **Omen** | _"Plan for the worst. Build for the best."_ - Pre-mortem analysis and failure mode enumeration. Systematically identifies failure scenarios, scores with RPN/AP. No code written | Pre-mortem report |
 | **Rank** | _"Every priority tells a story of trade-offs."_ - Priority quantification. Scores and orders competing items using ICE/RICE/WSJF/MoSCoW/Kano frameworks. No code written | Priority report |
+| **Sage** | _"Tell me what you're avoiding."_ - YC-style office hours advisory. Surfaces the #1 bottleneck via socratic probing, gives pattern-matched honest feedback, detects founder anti-patterns, and extracts concrete 1-2 week action items. No code written | Office hours session output (bottleneck + actions) |
 
 **Scout > Ripple > Builder chain**: Scout (bug investigation) > Ripple (fix impact analysis) > Builder (implementation)
 **Ripple > Guardian chain**: Ripple (impact analysis) > Guardian (PR strategy)
@@ -512,6 +513,8 @@ See `_common/INTERACTION.md` for details.
 |------|-------------|-------|
 | DECISION/arch | Architecture selection | Magi > Builder/Zen |
 | DECISION/strategy | Strategic decisions | Magi > Spark |
+| DECISION/office-hours | Founder office hours advisory | Sage > Builder/Plea/Sherpa |
+| DECISION/retro | Postmortem on a recent decision/outcome | Sage |
 
 #### Analysis
 
@@ -775,6 +778,7 @@ skills/
 ├── retain/SKILL.md     # Retention
 ├── rewind/SKILL.md     # Git history investigation
 ├── riff/SKILL.md       # Interactive brainstorming partner
+├── sage/SKILL.md       # YC-style office hours advisory
 ├── scaffold/SKILL.md   # Infrastructure
 ├── schema/SKILL.md     # DB schema design
 ├── siege/SKILL.md      # Advanced testing (load/contract/chaos/mutation)
@@ -808,7 +812,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 133 agents.
+> Category-by-category examples for all 134 agents.
 
 #### Orchestration
 
