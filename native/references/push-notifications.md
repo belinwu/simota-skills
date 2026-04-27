@@ -1,15 +1,17 @@
-# Push Notifications Reference
+# Push Notifications Reference (Pure-Native)
 
-Purpose: Wire production-grade push notifications across APNs (iOS), FCM (Android / cross-platform), and Web Push. Cover the full token lifecycle, permission UX, payload shape, delivery-receipt analytics, and rate/quota limits. The goal is notifications that reach the right device, at the right time, without triggering opt-out.
+Purpose: Wire production-grade push notifications across APNs (iOS) and FCM (Android). Covers the full token lifecycle, soft pre-prompt permission UX, payload shape, Live Activities (iOS), Notification Channels (Android), delivery-receipt analytics, and rate/quota limits. Goal: notifications that reach the right device, at the right time, without triggering opt-out.
 
 ## Scope Boundary
 
-- **Native `push`**: production push pipeline on the client — token registration/rotation/revocation, permission UX, payload handlers, silent push, analytics, quota discipline.
+- **Native `push`**: production push pipeline on the client — token registration/rotation/revocation, permission UX, payload handlers, silent push, Live Activities, Notification Channels, analytics, quota discipline.
 - **Forge `mobile`**: prototyping push UX. Tokens are faked, permissions are stubbed, no real APNs/FCM wiring.
 - **Sentinel**: audits push for exposed API keys, insecure token storage, and payload-based injection. Native consumes Sentinel findings but does not perform the audit.
 - **Gateway**: server-side push delivery API — APNs p8 key handling, FCM v1 HTTP, token registry schema, fan-out, batching, retries. Native calls Gateway; Native does not design the server endpoint.
 
 Rule of thumb: if the concern is "does the device handle the payload correctly?" → `push`. If it is "does the server deliver correctly?" → Gateway.
+
+> Out of scope: React Native push, Flutter push, Web Push. Pure-native APNs / FCM only.
 
 ## Token Lifecycle
 
@@ -80,7 +82,8 @@ Wire a `NotificationServiceExtension` on iOS to log `delivered` before the banne
 |----------|-------|-------------------|
 | APNs | Per-connection HTTP/2 streams, soft throttle on silent push | ~1 user-visible per 10 min feels safe; >3/day triggers opt-out |
 | FCM | 240 messages / minute / device (data), user-visible unthrottled but policy-limited | Batch with `topic` fan-out instead of per-device loops |
-| Web Push | VAPID signed, 4KB payload | Keep payload tiny, rely on server-side fetch for detail |
+| iOS Live Activities | ActivityKit, 8h active + 4h stale, ~4KB payload, `apns-priority` 5 | No advertising/marketing copy permitted |
+| Android Notification Channels | Per-channel user controls, channel created at first use | Mandatory since Android 8 (API 26); audit channels regularly |
 
 Enforce a client-side de-dup key (hash of `campaignId + contentHash`) to drop duplicates from re-delivery retries.
 
@@ -111,22 +114,6 @@ class AppMessagingService : FirebaseMessagingService() {
         analytics.log("delivered", msg.data["campaignId"])
         if (msg.notification == null) backgroundSync.handle(msg.data)
     }
-}
-```
-
-```ts
-// React Native (Expo Notifications): permission + token
-import * as Notifications from 'expo-notifications';
-
-export async function registerForPush(): Promise<string | null> {
-  const current = await Notifications.getPermissionsAsync();
-  const granted =
-    current.granted ||
-    (await Notifications.requestPermissionsAsync()).granted;
-  if (!granted) return null;
-  const { data: token } = await Notifications.getExpoPushTokenAsync();
-  await fetch('/devices', { method: 'POST', body: JSON.stringify({ token }) });
-  return token;
 }
 ```
 

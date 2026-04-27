@@ -1,7 +1,7 @@
 # Store Compliance Guide
 
-**Purpose:** App Store / Google Play のガイドライン準拠チェックリストと対応パターン。
-**Read when:** ストア提出準備、IAP 実装、プライバシー対応が必要な時。
+**Purpose:** Compliance checklists and implementation patterns for App Store / Google Play guidelines.
+**Read when:** Preparing for store submission, implementing IAP, or addressing privacy requirements.
 
 ---
 
@@ -12,20 +12,20 @@
 | Requirement | Implementation |
 |-------------|----------------|
 | PrivacyInfo.xcprivacy | Required API reason declarations |
-| Purpose strings | NSCameraUsageDescription, NSLocationWhenInUseUsageDescription 等 |
-| App Tracking Transparency | IDFA 使用時は ATTrackingManager 必須 |
-| Privacy nutrition labels | App Store Connect で正確に申告 |
-| Data minimization | 必要最小限のデータのみ収集 |
+| Purpose strings | NSCameraUsageDescription, NSLocationWhenInUseUsageDescription, etc. |
+| App Tracking Transparency | ATTrackingManager required when using IDFA |
+| Privacy nutrition labels | Declare accurately in App Store Connect |
+| Data minimization | Collect only the minimum data necessary |
 
 ### In-App Purchase (Section 3.1)
 
 | Rule | Detail |
 |------|--------|
-| Digital goods via Apple IAP only | 外部決済リンク禁止（Reader App 例外あり） |
-| Restore purchases | 復元ボタンを設定画面等に配置 |
-| Subscription terms | 購入前に期間・価格・自動更新を明示 |
-| Free trial | トライアル終了後の課金を事前に明示 |
-| Price display | ローカル通貨で表示（ProductResponse から取得） |
+| Digital goods via Apple IAP only | External payment links are forbidden (Reader App exception applies) |
+| Restore purchases | Place a Restore button on the Settings screen or similar |
+| Subscription terms | Disclose duration, price, and auto-renewal before purchase |
+| Free trial | Disclose post-trial billing in advance |
+| Price display | Show in local currency (obtained from ProductResponse) |
 
 ### StoreKit 2 Implementation Pattern
 
@@ -75,12 +75,13 @@ class SubscriptionManager {
 
 | Reason | Prevention |
 |--------|------------|
-| 2.1 Performance - crashes | テスト全デバイスサイズで実行 |
-| 2.3 Accurate metadata | スクリーンショットが実際の UI と一致 |
-| 3.1.1 IAP required | デジタルコンテンツは Apple IAP 経由 |
-| 4.0 Design - HIG violation | SF Symbols 使用、Dynamic Type 対応 |
-| 5.1.1 Data collection | PrivacyInfo.xcprivacy 正確に記述 |
-| 5.1.2 Data use | 目的外利用なし |
+| 2.1 Performance - crashes | Test on every supported device size |
+| 2.3 Accurate metadata | Screenshots match the actual UI |
+| 3.1.1 IAP required | Digital content goes through Apple IAP |
+| 4.0 Design - HIG violation | Use SF Symbols, support Dynamic Type |
+| 5.1.1 Data collection | Describe PrivacyInfo.xcprivacy accurately |
+| 5.1.2 Data use | No use beyond declared purpose |
+| 5.1.2(i) third-party AI disclosure | **All three required**: name the AI provider (e.g. "OpenAI GPT-4", not "service providers"); explain the purpose (e.g. "to generate a summary of your message"); obtain explicit user consent before any personal data is sent. Triggered by sending prompts, documents, voice, or behavior data to external LLMs / transcription / moderation services |
 
 ---
 
@@ -90,19 +91,19 @@ class SubscriptionManager {
 
 | Requirement | Implementation |
 |-------------|----------------|
-| Data safety form | Play Console で正確に申告 |
-| Encryption in transit | HTTPS 必須 |
-| Data deletion option | アカウント削除機能の提供 |
-| Families policy | 子供向けアプリは追加制限あり |
+| Data safety form | Declare accurately in Play Console |
+| Encryption in transit | HTTPS required |
+| Data deletion option | Provide an account deletion feature |
+| Families policy | Apps for children carry additional restrictions |
 
 ### Google Play Billing
 
 | Rule | Detail |
 |------|--------|
-| Digital goods via Play Billing | デジタルコンテンツは Google Play Billing 経由 |
-| Subscription transparency | 価格・期間・自動更新を購入前に表示 |
-| Grace period | 支払い失敗時の猶予期間を設定推奨 |
-| Account hold | 一時停止状態のハンドリング |
+| Digital goods via Play Billing | Digital content goes through Google Play Billing |
+| Subscription transparency | Show price, duration, and auto-renewal before purchase |
+| Grace period | Configure a grace period on payment failure (recommended) |
+| Account hold | Handle the account-hold state |
 
 ### Billing Implementation Pattern (Kotlin)
 

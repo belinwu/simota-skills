@@ -1,143 +1,165 @@
 # Usage Examples
 
-**Purpose:** Native エージェントの代表的なユースケースと出力例。
-**Read when:** タスクの進め方や出力フォーマットの参考が必要な時。
+**Purpose:** Representative use cases and output samples for the Native agent.
+**Read when:** You need a reference for how to approach a task or shape the output.
 
 ---
 
-## Example 1: React Native Expo プロジェクト初期セットアップ
+## Example 1: Bootstrap a SwiftUI iOS app (Swift 6.2 / iOS 17+)
 
-### Input
-```
-React Native (Expo) で EC アプリを作りたい。Tab ナビゲーションで Home / Cart / Profile の3タブ構成。
-```
+### User Request
+
+Start a new iOS shopping app on Swift 6.2 with tab navigation (Home / Cart / Profile).
 
 ### Output Summary
-- Expo Router によるファイルベースルーティング設定
-- 3タブレイアウト（Home / Cart / Profile）
-- TypeScript strict mode 設定
-- 基本的な状態管理（Zustand + MMKV）
-- オフラインキャッシュ基盤（TanStack Query + NetInfo）
 
-### Key Files Generated
+- Xcode 26 project on iOS 17 deployment target
+- SwiftUI `TabView` with three tabs (Home / Cart / Profile)
+- `@Observable` ViewModel per feature
+- `NavigationStack` + Coordinator per tab
+- Swift Concurrency (`async`/`await`) for networking, default MainActor isolation
+- Persistence via SwiftData (iOS 17+)
+
+### Key Files
+
 ```
-app/
-├── (tabs)/
-│   ├── _layout.tsx      # Tab navigator configuration
-│   ├── index.tsx         # Home tab
-│   ├── cart.tsx          # Cart tab
-│   └── profile.tsx       # Profile tab
-├── _layout.tsx           # Root layout with providers
-└── +not-found.tsx        # 404 screen
-src/
-├── stores/
-│   └── cart-store.ts     # Zustand + MMKV persistence
-├── hooks/
-│   └── use-network.ts   # Network status hook
-└── lib/
-    └── query-client.ts   # TanStack Query configuration
+Sources/
+├── App/
+│   └── ShopApp.swift           # @main + TabView root
+├── Features/
+│   ├── Home/                   # HomeView, HomeViewModel, HomeCoordinator
+│   ├── Cart/
+│   └── Profile/
+├── Core/
+│   ├── Networking/             # APIClient (URLSession + async)
+│   ├── Persistence/            # SwiftData ModelContainer
+│   └── DesignSystem/           # Tokens, Buttons, etc.
+└── PrivacyInfo.xcprivacy       # Required Reasons API declarations
+```
+
+### Handoff to Builder
+
+```yaml
+NATIVE_TO_BUILDER_HANDOFF:
+  task: "Implement Home / Cart / Profile screens with @Observable ViewModels"
+  pattern: "MV (View → @Observable ViewModel) + NavigationStack per tab"
+  acceptance:
+    - "Three tabs render and persist selection across cold launches"
+    - "Cart count updates reactively when an item is added"
+    - "All async work runs on MainActor by default"
 ```
 
 ---
 
-## Example 2: プッシュ通知統合
+## Example 2: Add Push Notifications (APNs + iOS 17+)
 
-### Input
-```
-既存の Expo アプリにプッシュ通知を追加。バックエンドは Firebase。
-```
+### User Request
+
+Add push notifications to an existing SwiftUI app. Backend sends via APNs over HTTP/2.
 
 ### Output Summary
-- expo-notifications 設定
-- FCM トークン取得・登録フロー
-- 通知権限リクエスト（pre-prompt 付き）
-- フォアグラウンド・バックグラウンドハンドリング
-- ディープリンク連携
 
-### Permission Pre-prompt Pattern
-```typescript
-async function requestNotificationPermission(): Promise<boolean> {
-  const { status: existing } = await Notifications.getPermissionsAsync();
-  if (existing === 'granted') return true;
+- `UNUserNotificationCenter.requestAuthorization` with a soft pre-prompt
+- `application(_:didRegisterForRemoteNotificationsWithDeviceToken:)` handler
+- Token registration / rotation against the `/devices` endpoint
+- Foreground / background / terminated routing
+- Deep link integration into the existing `NavigationStack`
+- `NotificationServiceExtension` to log `delivered`
 
-  // Pre-prompt: show custom UI before system dialog
-  const userConsent = await showPrePromptDialog({
-    title: '通知を受け取りますか？',
-    message: '注文状況やセール情報をお知らせします。設定からいつでも変更できます。',
-    acceptLabel: '通知を許可',
-    declineLabel: '後で',
-  });
+### Pre-Prompt Copy (English)
 
-  if (!userConsent) return false;
-
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
-}
 ```
+Title:    Stay updated on your orders
+Message:  We'll send notifications about order status and delivery updates.
+          You can change this anytime in Settings.
+Allow:    Turn on notifications
+Decline:  Not now
+```
+
+### Handoff to Gateway
+
+- Token registry contract (`POST /devices`, `PATCH /devices/:id`, `DELETE /devices/:id`)
+- Payload schema with mandatory `campaignId`
+- Delivery / open analytics endpoints
 
 ---
 
-## Example 3: Flutter オフラインファーストアプリ
+## Example 3: Offline-First Field App (Android Kotlin / Jetpack Compose)
 
-### Input
-```
-Flutter でフィールドワーク記録アプリ。電波の届かない場所でも使える必要がある。
-```
+### User Request
+
+Field-work logging app for Android. Must keep working in areas without cell coverage.
 
 ### Output Summary
-- Drift (SQLite) によるローカルデータベース
-- Write queue + 自動同期
-- 画像のローカルキャッシュ
-- 同期状態インジケーター UI
-- コンフリクト解決戦略（Last-Write-Wins + ユーザー確認）
+
+- Single-source-of-truth `Repository` backed by Room 2.7
+- Write queue persisted to Room, drained by `WorkManager` periodic + network-restore one-time work
+- Image cache via Coil 3 disk cache
+- Sync indicator UI driven by a `StateFlow<SyncState>` (idle / syncing / pending / error)
+- Conflict resolution: Last-Write-Wins with explicit user confirmation
+
+### Handoff to Builder
+
+```yaml
+NATIVE_TO_BUILDER_HANDOFF:
+  task: "Implement field log Repository with offline write queue"
+  pattern: "Repository → WorkManager + Room"
+  acceptance:
+    - "App works fully offline; no error toasts on no-network"
+    - "Pending writes flush within 10 seconds of network restore"
+    - "Conflicts surface a confirm dialog before overwriting"
+```
 
 ---
 
-## Example 4: SwiftUI アプリ内課金
+## Example 4: SwiftUI In-App Purchase (StoreKit 2)
 
-### Input
-```
-SwiftUI アプリに月額サブスクリプションを追加。StoreKit 2 で実装。
-```
+### User Request
+
+Add a monthly subscription to a SwiftUI app using StoreKit 2.
 
 ### Output Summary
-- StoreKit 2 Product / Transaction API
-- サブスクリプションライフサイクル管理
-- トライアル期間ハンドリング
-- 課金状態の永続化と復元
-- App Store Server Notifications v2 連携ポイント
+
+- `Product.products(for:)` to load offerings
+- `Product.purchase()` flow with `VerificationResult` handling
+- Subscription lifecycle management (active / grace / expired)
+- Trial period handling with explicit pre-purchase disclosure
+- Persistence and restore via `Transaction.currentEntitlements`
+- Integration point for App Store Server Notifications v2
+
+### Compliance Checks
+
+- Restore button placed on Settings screen
+- Auto-renewal disclosed before purchase
+- Local currency from `Product.displayPrice`
+- Privacy Manifest declares purchase data category
 
 ---
 
-## Example 5: ストア審査対応レビュー
+## Example 5: Pre-Submission Compliance Review (App Store)
 
-### Input
-```
-App Store に提出する前にガイドライン準拠をチェックしてほしい。
-```
+### User Request
 
-### Output Summary（チェックリスト形式）
-```markdown
-## App Store Review Checklist
+Run a guideline compliance check before submitting to the App Store.
 
-### Privacy (Section 5.1)
-- [ ] NSPrivacyAccessedAPITypes in PrivacyInfo.xcprivacy
-- [ ] Purpose strings for all permission requests
-- [ ] App Tracking Transparency if IDFA used
-- [ ] Privacy nutrition labels match actual data collection
+### Output Summary (checklist form)
 
-### In-App Purchase (Section 3.1)
-- [ ] All digital content uses Apple IAP (no external payment links)
-- [ ] Restore purchases button accessible
-- [ ] Subscription terms displayed before purchase
+| Item | Status | Note |
+|------|--------|------|
+| PrivacyInfo.xcprivacy present | OK | Required Reasons API declared |
+| Privacy Nutrition Labels match implementation | OK | Verified in App Store Connect |
+| ATT prompt before IDFA usage | N/A | App does not use IDFA |
+| StoreKit 2 IAP only (no external payment links) | OK | StoreKit 2 + Restore button |
+| Subscription terms shown pre-purchase | OK | Term, price, auto-renewal disclosed |
+| Age rating questionnaire complete | OK | 5-tier (2026-01-31 update) |
+| 5.1.2(i) AI disclosure (if applicable) | OK | Foundation Models disclosed |
+| Crash-free sessions baseline | OK | 99.92% on TestFlight External |
+| Cold-start P95 | WARN | 2.4s on iPhone 12 mini — investigate |
+| Built with Xcode 26 + iOS 26 SDK | OK | Required from 2026-04-28 |
 
-### Performance (Section 2.1)
-- [ ] App launches within reasonable time
-- [ ] No crashes on supported OS versions
-- [ ] Memory usage within limits
+### Handoff to Launch
 
-### Design (Section 4.0)
-- [ ] SF Symbols used for system icons
-- [ ] Dynamic Type supported
-- [ ] Safe area respected on all device sizes
-```
+- CHANGELOG draft attached
+- Phased Release plan: 1% → 100% over 7 days
+- Feature flags: `new_checkout` (default OFF), `live_activities` (default OFF)
+- Rollback plan: Halt + flag OFF + Hotfix

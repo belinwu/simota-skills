@@ -1,7 +1,7 @@
 # Handoff Templates
 
-**Purpose:** Native エージェントの入出力ハンドオフテンプレート。
-**Read when:** 他エージェントとの連携時にハンドオフフォーマットが必要な時。
+**Purpose:** Input / output handoff templates for the Native agent.
+**Read when:** A handoff format is required for collaboration with another agent.
 
 ---
 
@@ -131,9 +131,9 @@ NATIVE_TO_LAUNCH_HANDOFF:
       - "Age rating: 4+ (no user-generated content)"
   release_notes:
     ja: |
-      - カート機能のオフライン対応
-      - プッシュ通知の追加
-      - パフォーマンス改善
+      - <JA translation: offline cart support>
+      - <JA translation: push notification integration>
+      - <JA translation: performance improvements>
     en: |
       - Offline cart support
       - Push notification integration

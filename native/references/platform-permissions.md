@@ -1,7 +1,7 @@
 # Platform Permissions Guide
 
-**Purpose:** iOS / Android のパーミッション管理パターンとベストプラクティス。
-**Read when:** カメラ、位置情報、通知等のパーミッションリクエストを実装する時。
+**Purpose:** Permission management patterns and best practices for pure-native iOS / Android.
+**Read when:** Implementing camera, location, notification, or other permission requests.
 
 ---
 
@@ -11,59 +11,49 @@
 
 | Permission | Key | Example Description |
 |------------|-----|---------------------|
-| Camera | NSCameraUsageDescription | 商品写真の撮影に使用します |
-| Photo Library | NSPhotoLibraryUsageDescription | プロフィール画像の選択に使用します |
-| Location (使用中) | NSLocationWhenInUseUsageDescription | 近くの店舗を検索するために使用します |
-| Location (常時) | NSLocationAlwaysUsageDescription | 配達状況の追跡に使用します |
-| Notifications | (runtime request) | expo-notifications で動的にリクエスト |
-| Contacts | NSContactsUsageDescription | 友達招待機能に使用します |
-| Microphone | NSMicrophoneUsageDescription | ボイスメッセージの録音に使用します |
-| Face ID | NSFaceIDUsageDescription | セキュアログインに使用します |
-| Tracking | NSUserTrackingUsageDescription | 広告のパーソナライズに使用します |
+| Camera | NSCameraUsageDescription | Used to take product photos. |
+| Photo Library | NSPhotoLibraryUsageDescription | Used to choose a profile picture. |
+| Location (in use) | NSLocationWhenInUseUsageDescription | Used to find nearby stores. |
+| Location (always) | NSLocationAlwaysUsageDescription | Used to track delivery progress. |
+| Notifications | (runtime request) | Requested at runtime via UNUserNotificationCenter |
+| Contacts | NSContactsUsageDescription | Used by the friend invite feature. |
+| Microphone | NSMicrophoneUsageDescription | Used to record voice messages. |
+| Face ID | NSFaceIDUsageDescription | Used for secure sign-in. |
+| Tracking | NSUserTrackingUsageDescription | Used to personalize ads. |
 
-### iOS Permission Flow (React Native)
+### iOS Permission Flow (Swift / SwiftUI)
 
-```typescript
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+```swift
+import AVFoundation
 
-type PermissionResult = 'granted' | 'denied' | 'blocked' | 'unavailable';
+@MainActor
+final class CameraPermissionCoordinator {
+    enum Result { case granted, denied, blocked }
 
-async function requestCameraPermission(): Promise<PermissionResult> {
-  // Step 1: Check current status
-  const status = await check(PERMISSIONS.IOS.CAMERA);
+    func requestCamera() async -> Result {
+        // 1. Check current status
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            return .granted
+        case .denied, .restricted:
+            // 4. Guide to Settings (blocked path)
+            return .blocked
+        case .notDetermined:
+            // 2. Soft pre-prompt (custom UI)
+            guard await showPrePromptUI() else { return .denied }
+            // 3. System prompt
+            let granted = await AVCaptureDevice.requestAccess(for: .video)
+            return granted ? .granted : .denied
+        @unknown default:
+            return .denied
+        }
+    }
 
-  switch (status) {
-    case RESULTS.GRANTED:
-      return 'granted';
-
-    case RESULTS.DENIED:
-      // Step 2: Show pre-prompt (custom UI)
-      const userAccepted = await showPrePrompt({
-        title: 'カメラへのアクセス',
-        message: '商品の写真を撮影するためにカメラを使用します。',
-        icon: 'camera',
-      });
-
-      if (!userAccepted) return 'denied';
-
-      // Step 3: Request system permission
-      const result = await request(PERMISSIONS.IOS.CAMERA);
-      return result === RESULTS.GRANTED ? 'granted' : 'denied';
-
-    case RESULTS.BLOCKED:
-      // Step 4: Guide to Settings
-      showSettingsPrompt({
-        title: 'カメラが無効です',
-        message: '設定アプリからカメラへのアクセスを許可してください。',
-      });
-      return 'blocked';
-
-    case RESULTS.UNAVAILABLE:
-      return 'unavailable';
-
-    default:
-      return 'denied';
-  }
+    private func showPrePromptUI() async -> Bool {
+        // Render a custom modal explaining why camera access is needed
+        // Return true if the user taps Continue
+        true
+    }
 }
 ```
 
@@ -108,17 +98,17 @@ fun CameraFeature() {
         cameraPermissionState.status.shouldShowRationale -> {
             // Pre-prompt with rationale
             RationaleDialog(
-                title = "カメラへのアクセス",
-                message = "商品の写真を撮影するためにカメラを使用します。",
+                title = "Camera access",
+                message = "We use the camera to take product photos.",
                 onConfirm = { cameraPermissionState.launchPermissionRequest() },
-                onDismiss = { /* Show degraded UI */ }
+                onDismiss = { /* Show degraded UI */ },
             )
         }
         else -> {
             // First request or permanently denied
             PermissionRequestButton(
-                text = "カメラを有効にする",
-                onClick = { cameraPermissionState.launchPermissionRequest() }
+                text = "Enable camera",
+                onClick = { cameraPermissionState.launchPermissionRequest() },
             )
         }
     }
@@ -131,35 +121,35 @@ fun CameraFeature() {
 
 ### Do
 
-- 機能を使う直前にリクエスト（アプリ起動時にまとめてリクエストしない）
-- なぜ必要かを具体的に説明（「写真を撮影するため」等）
-- 拒否した場合の代替手段を提供
-- 設定画面への導線を用意（blocked 状態の場合）
+- Request immediately before the user uses the feature (do not bulk-request at app launch).
+- Explain *why* concretely ("to take product photos", not "to improve the app").
+- Provide a graceful fallback when the user declines.
+- Provide a deep link to Settings when the permission is blocked.
 
 ### Don't
 
-- アプリ起動直後に全パーミッションを一括リクエスト
-- 曖昧な理由（「アプリの機能向上のため」）
-- 拒否後に繰り返しリクエスト
-- パーミッションなしで機能が使えないことを伝えずにエラー
+- Request all permissions in a batch at app launch.
+- Use vague reasons ("to improve the app experience").
+- Re-prompt repeatedly after denial.
+- Show errors without explaining that the feature requires the permission.
 
 ### Pre-Prompt UI Pattern
 
 ```
 ┌────────────────────────────────┐
-│  📷 カメラへのアクセス          │
+│  Camera access                 │
 │                                │
-│  商品の写真を撮影するために     │
-│  カメラを使用します。           │
+│  We use the camera to take     │
+│  product photos.               │
 │                                │
-│  [許可しない]  [許可する]       │
+│  [Not now]   [Continue]        │
 └────────────────────────────────┘
-        ↓ 「許可する」タップ
+        ↓ tap Continue
 ┌────────────────────────────────┐
-│  "MyApp"がカメラへのアクセスを   │
-│  求めています                   │
+│  "MyApp" Would Like to         │
+│  Access the Camera             │
 │                                │
-│  [許可しない]  [OK]             │  ← システムダイアログ
+│  [Don't Allow]   [OK]          │  ← system dialog
 └────────────────────────────────┘
 ```
 
@@ -169,9 +159,9 @@ fun CameraFeature() {
 
 | Check | iOS | Android |
 |-------|-----|---------|
-| 必要なパーミッションのみ宣言 | Info.plist review | Manifest review |
-| Usage Description が具体的 | ✅ Required | N/A (rationale in code) |
-| Pre-prompt UI 実装 | ✅ Recommended | ✅ shouldShowRationale |
-| Denied 時の graceful degradation | ✅ Required | ✅ Required |
-| Settings 誘導 | ✅ Blocked 時 | ✅ Permanently denied 時 |
-| Android 13+ 通知権限対応 | N/A | POST_NOTIFICATIONS |
+| Declare only required permissions | Info.plist review | Manifest review |
+| Usage Description is concrete | Required | N/A (rationale in code) |
+| Pre-prompt UI implemented | Recommended | shouldShowRationale |
+| Graceful degradation on denial | Required | Required |
+| Settings entry on blocked / permanently denied | Required | Required |
+| Android 13+ notification permission | N/A | POST_NOTIFICATIONS |

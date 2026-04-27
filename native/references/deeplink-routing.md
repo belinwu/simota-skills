@@ -1,6 +1,8 @@
-# Deep Link and Universal Link Reference
+# Deep Link and Universal Link Reference (Pure-Native)
 
 Purpose: Design a production deep-link layer that routes external URLs (web links, push payloads, ad clicks, QR codes) into the right in-app destination. Covers iOS Universal Links (AASA), Android App Links (assetlinks.json), custom URL scheme fallback, deferred deep links for post-install attribution, routing architecture, and attribution parameter handling.
+
+> Pure-native only. React Native / Flutter are out of scope. Firebase Dynamic Links was retired in 2025 — run AASA / assetlinks.json directly. For attribution, adopt a Mobile Measurement Partner (Branch / AppsFlyer / Adjust).
 
 ## Scope Boundary
 
@@ -61,27 +63,6 @@ Gotchas:
 ## Routing Architecture
 
 Treat the deep-link handler as a pure function: `(url, session) -> Route | RequireAuth | NotFound`. Keep side effects (navigation, analytics) at the boundary.
-
-```ts
-// Cross-platform router (React Native example)
-type Route =
-  | { name: 'Order';   params: { orderId: string } }
-  | { name: 'Promo';   params: { code: string; ref?: string } }
-  | { name: 'NotFound' };
-
-export function resolveDeepLink(url: URL, session: Session): Route {
-  const [, head, id] = url.pathname.split('/');
-  switch (head) {
-    case 'order':
-      if (!session.authed) throw new RequireAuth(url.href);
-      return { name: 'Order', params: { orderId: id } };
-    case 'promo':
-      return { name: 'Promo', params: { code: id, ref: url.searchParams.get('ref') ?? undefined } };
-    default:
-      return { name: 'NotFound' };
-  }
-}
-```
 
 ```swift
 // iOS: NavigationStack + continueUserActivity

@@ -1,7 +1,7 @@
 # Mobile CI/CD
 
-**Purpose:** Fastlane / EAS Build / Xcode Cloud を使ったモバイル CI/CD パイプライン設計。
-**Read when:** ビルド自動化、テスト実行、ストアデプロイの設定が必要な時。
+**Purpose:** Mobile CI/CD pipeline design using Fastlane / Xcode Cloud / GitHub Actions for pure-native iOS Swift / Android Kotlin.
+**Read when:** Configuring build automation, test execution, or store deployment.
 
 ---
 

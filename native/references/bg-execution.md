@@ -1,6 +1,8 @@
-# Background Tasks and Execution Reference
+# Background Tasks and Execution Reference (Pure-Native)
 
-Purpose: Design background work that actually runs on modern iOS and Android under battery-saver, Doze, App Standby, and App-Refresh throttling. Covers iOS `BGTaskScheduler` (`BGAppRefreshTask` / `BGProcessingTask`), Android `WorkManager` / `JobScheduler`, React Native Headless JS, Expo Background Tasks, execution-time budgeting, and testing strategies. The goal is work that completes reliably within OS budgets, without draining battery or triggering kill-on-wake behavior.
+Purpose: Design background work that actually runs on modern iOS and Android under battery-saver, Doze, App Standby, and App-Refresh throttling. Covers iOS `BGTaskScheduler` (`BGAppRefreshTask` / `BGProcessingTask`), Android `WorkManager` / `JobScheduler`, Foreground Service Types (Android 14+), execution-time budgeting, and testing strategies. Goal: work that completes reliably within OS budgets, without draining battery or triggering kill-on-wake behavior.
+
+> Pure-native only. React Native Headless JS / Expo Background Tasks are out of scope.
 
 ## Scope Boundary
 
@@ -20,8 +22,7 @@ Rule of thumb: if the concern is "will this code wake up, run, and finish under 
 | iOS | `URLSession` background upload/download | Until completion, OS managed | Ideal for large transfers; survives app termination |
 | Android | `WorkManager` (expedited) | ≤10 min wall, Doze-aware | Quota enforced; falls back to regular work if exceeded |
 | Android | `WorkManager` (periodic) | Min 15 min interval | Batched with other jobs, Doze-deferred |
-| Android | Foreground service | Unbounded, but mandatory user-visible notification | Android 14+ requires declared `foregroundServiceType` |
-| RN | Headless JS (Android) / Expo Background Tasks | Wraps native APIs; 30 s task budget typical | Inherits platform constraints — do not assume "runs forever" |
+| Android | Foreground service | Unbounded, but mandatory user-visible notification | Android 14+ requires declared `foregroundServiceType`; Android 15+ caps `dataSync` / `mediaProcessing` to 6h / 24h |
 
 Never assume a background task runs on schedule. Assume it runs sometime within a window, possibly not at all that day.
 
@@ -79,25 +80,6 @@ WorkManager.getInstance(context).enqueueUniquePeriodicWork(
 )
 ```
 
-```ts
-// Expo Background Tasks (wraps BGTaskScheduler / WorkManager)
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
-
-TaskManager.defineTask('inbox-sync', async () => {
-  try {
-    const newItems = await syncInbox();
-    return newItems > 0
-      ? BackgroundTask.BackgroundTaskResult.Success
-      : BackgroundTask.BackgroundTaskResult.NoData;
-  } catch {
-    return BackgroundTask.BackgroundTaskResult.Failed;
-  }
-});
-
-await BackgroundTask.registerTaskAsync('inbox-sync', { minimumInterval: 15 * 60 });
-```
-
 ## Execution-Time Budgeting
 
 Every background handler must:
@@ -143,7 +125,6 @@ Do not ship without running at least one forced-run under simulated low-power on
 - ❌ Using a foreground service without a user-visible reason — Android 14+ will throw `ForegroundServiceTypeException`.
 - ❌ Doing full-table sync on every background wake — budget-busts and causes OS to demote the app.
 - ❌ Forgetting to chain the next `BGTaskScheduler` request from the handler — task silently stops running.
-- ❌ Writing long-running work in Headless JS without checkpoints — the JS task will be killed mid-flight with no resume path.
 - ❌ Logging background execution only on success — throttling is diagnosed from the `failed`/`timeout`/`missing` cases.
 
 ## Handoff / Next Steps

@@ -1,256 +1,373 @@
-# Mobile Design Patterns
+# Pure-Native Mobile Patterns (iOS Swift / Android Kotlin)
 
-**Purpose:** モバイル開発のデザインパターンと実装テンプレート集。
-**Read when:** Navigation、状態管理、オフライン、プラットフォーム固有パターンの実装時。
+**Purpose:** Pure-native navigation, state management, offline, and platform adaptation patterns.
+**Read when:** Adopting standard SwiftUI / Compose patterns.
 
 ---
 
 ## Navigation Patterns
 
-### React Native (React Navigation v7)
-
-```typescript
-// Stack Navigator with typed routes
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-type RootStackParamList = {
-  Home: undefined;
-  Profile: { userId: string };
-  Settings: undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-function RootNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-    </Stack.Navigator>
-  );
-}
-```
-
-### Flutter (GoRouter)
-
-```dart
-final router = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-      routes: [
-        GoRoute(
-          path: 'profile/:userId',
-          builder: (context, state) {
-            final userId = state.pathParameters['userId']!;
-            return ProfileScreen(userId: userId);
-          },
-        ),
-      ],
-    ),
-  ],
-);
-```
-
-### SwiftUI (NavigationStack)
+### iOS — `NavigationStack` + Coordinator
 
 ```swift
+@Observable
+final class HomeCoordinator {
+    var path = NavigationPath()
+    func openProfile(_ userId: String) { path.append(Route.profile(userId)) }
+    func openSettings() { path.append(Route.settings) }
+}
+
+enum Route: Hashable {
+    case profile(String)
+    case settings
+}
+
 struct ContentView: View {
-    @State private var path = NavigationPath()
+    @State private var coordinator = HomeCoordinator()
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack(path: $coordinator.path) {
             HomeView()
-                .navigationDestination(for: UserID.self) { userId in
-                    ProfileView(userId: userId)
+                .navigationDestination(for: Route.self) { route in
+                    switch route {
+                    case .profile(let id): ProfileView(userId: id)
+                    case .settings: SettingsView()
+                    }
                 }
         }
+        .environment(coordinator)
     }
 }
 ```
 
-### Jetpack Compose (Navigation)
+On iPad / large screens, place `NavigationSplitView` at the top. Do not nest `NavigationSplitView` inside a `NavigationStack` (regression bug still known on iOS 18).
+
+### Android — Navigation Compose 2.8+ (type-safe)
 
 ```kotlin
+@Serializable data object Home
+@Serializable data class Profile(val userId: String)
+@Serializable data object Settings
+
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
-        composable("profile/{userId}") { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId")
-            ProfileScreen(userId = userId)
+    NavHost(navController = navController, startDestination = Home) {
+        composable<Home> {
+            HomeScreen(
+                onProfileClick = { navController.navigate(Profile(it)) },
+                onSettingsClick = { navController.navigate(Settings) },
+            )
         }
+        composable<Profile> { backStack ->
+            val args: Profile = backStack.toRoute()
+            ProfileScreen(args.userId)
+        }
+        composable<Settings> { SettingsScreen() }
     }
 }
 ```
+
+Hand-written string routes (`"home"`) are legacy. Use `@Serializable` data class / data object for compile-time type checks.
 
 ---
 
 ## Deep Link Configuration
 
-### React Native (Expo)
+### iOS — Universal Links (AASA)
+
+Add `applinks:example.com` under `Signing & Capabilities → Associated Domains`. Host `https://example.com/.well-known/apple-app-site-association` on the server:
 
 ```json
-// app.json
 {
-  "expo": {
-    "scheme": "myapp",
-    "ios": {
-      "associatedDomains": ["applinks:example.com"]
-    },
-    "android": {
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [{ "scheme": "https", "host": "example.com", "pathPrefix": "/app" }],
-          "category": ["BROWSABLE", "DEFAULT"]
-        }
-      ]
-    }
+  "applinks": {
+    "details": [{
+      "appIDs": ["TEAM_ID.com.example.app"],
+      "components": [{ "/": "/profile/*" }, { "/": "/settings" }]
+    }]
   }
 }
 ```
 
-### Linking Configuration
+```swift
+struct ContentView: View {
+    @State private var coordinator = HomeCoordinator()
 
-```typescript
-const linking = {
-  prefixes: ['myapp://', 'https://example.com'],
-  config: {
-    screens: {
-      Home: '',
-      Profile: 'profile/:userId',
-      Settings: 'settings',
-    },
-  },
-};
+    var body: some View {
+        NavigationStack(path: $coordinator.path) { ... }
+            .onOpenURL { url in coordinator.handle(url) }
+    }
+}
+
+extension HomeCoordinator {
+    func handle(_ url: URL) {
+        // /profile/123 → path.append(.profile("123"))
+    }
+}
 ```
+
+Custom schemes (`myapp://`) are fallback only. Make Universal Links the primary path.
+
+### Android — App Links (assetlinks.json)
+
+`AndroidManifest.xml`:
+
+```xml
+<activity android:name=".MainActivity">
+    <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="https" android:host="example.com" />
+    </intent-filter>
+</activity>
+```
+
+Host `https://example.com/.well-known/assetlinks.json` on the server:
+
+```json
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.example.app",
+    "sha256_cert_fingerprints": ["SHA256:..."]
+  }
+}]
+```
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent?.data?.let { handleDeepLink(it) }
+        setContent { /* ... */ }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.data?.let { handleDeepLink(it) }
+    }
+}
+```
+
+> **Firebase Dynamic Links was retired in 2025**. Operate AASA / assetlinks.json directly. If attribution is required, adopt Branch / AppsFlyer / Adjust as your MMP.
 
 ---
 
 ## State Management Patterns
 
-### React Native (Zustand + MMKV)
+### iOS — `@Observable` + per-feature ViewModel
 
-```typescript
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { MMKV } from 'react-native-mmkv';
+```swift
+@Observable
+@MainActor
+final class CartViewModel {
+    private(set) var items: [CartItem] = []
+    private(set) var isLoading = false
+    private(set) var error: Error?
 
-const storage = new MMKV();
+    private let repository: CartRepository
 
-const zustandStorage = createJSONStorage(() => ({
-  getItem: (name: string) => storage.getString(name) ?? null,
-  setItem: (name: string, value: string) => storage.set(name, value),
-  removeItem: (name: string) => storage.delete(name),
-}));
+    init(repository: CartRepository) { self.repository = repository }
 
-interface CartStore {
-  items: CartItem[];
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
+    func load() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            items = try await repository.fetchCart()
+        } catch {
+            self.error = error
+        }
+    }
+
+    func add(_ item: CartItem) async {
+        items.append(item)  // optimistic
+        do {
+            try await repository.addItem(item)
+        } catch {
+            items.removeAll { $0.id == item.id }  // rollback
+            self.error = error
+        }
+    }
 }
 
-export const useCartStore = create<CartStore>()(
-  persist(
-    (set) => ({
-      items: [],
-      addItem: (item) => set((state) => ({ items: [...state.items, item] })),
-      removeItem: (id) => set((state) => ({ items: state.items.filter(i => i.id !== id) })),
-    }),
-    { name: 'cart-storage', storage: zustandStorage }
-  )
-);
-```
+struct CartView: View {
+    @State private var viewModel: CartViewModel
 
-### Flutter (Riverpod)
+    init(repository: CartRepository) {
+        _viewModel = State(initialValue: CartViewModel(repository: repository))
+    }
 
-```dart
-@riverpod
-class CartNotifier extends _$CartNotifier {
-  @override
-  List<CartItem> build() => [];
-
-  void addItem(CartItem item) {
-    state = [...state, item];
-  }
-
-  void removeItem(String id) {
-    state = state.where((item) => item.id != id).toList();
-  }
+    var body: some View {
+        List(viewModel.items) { item in CartItemRow(item: item) }
+            .task { await viewModel.load() }
+    }
 }
 ```
+
+Cross-cutting state (auth, theme, network) goes through `@Environment` or a DI container. Do not pile 10+ slices into a global store.
+
+### Android — `StateFlow<UiState>` + ViewModel
+
+```kotlin
+@Immutable
+data class CartUiState(
+    val items: ImmutableList<CartItem> = persistentListOf(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
+)
+
+@HiltViewModel
+class CartViewModel @Inject constructor(
+    private val repository: CartRepository,
+) : ViewModel() {
+    private val _ui = MutableStateFlow(CartUiState())
+    val ui: StateFlow<CartUiState> = _ui.asStateFlow()
+
+    fun load() {
+        viewModelScope.launch {
+            _ui.update { it.copy(isLoading = true) }
+            repository.fetchCart().fold(
+                onSuccess = { items ->
+                    _ui.update { it.copy(items = items.toImmutableList(), isLoading = false) }
+                },
+                onFailure = { e ->
+                    _ui.update { it.copy(error = e.message, isLoading = false) }
+                },
+            )
+        }
+    }
+
+    fun add(item: CartItem) {
+        viewModelScope.launch {
+            // optimistic
+            val previous = _ui.value.items
+            _ui.update { it.copy(items = (previous + item).toImmutableList()) }
+            repository.addItem(item).onFailure {
+                _ui.update { it.copy(items = previous, error = it.error?.message) }
+            }
+        }
+    }
+}
+
+@Composable
+fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
+    val ui by viewModel.ui.collectAsStateWithLifecycle()  // mandatory
+    LaunchedEffect(Unit) { viewModel.load() }
+
+    LazyColumn {
+        items(ui.items, key = { it.id }) { item ->  // key is mandatory
+            CartItemRow(item)
+        }
+    }
+}
+```
+
+`collectAsStateWithLifecycle()` is mandatory (`collectAsState()` keeps collecting in the background across Lifecycle changes).
 
 ---
 
 ## Offline-First Patterns
 
-### Write Queue Pattern (React Native)
+### iOS — Repository + write queue
 
-```typescript
-interface QueuedWrite {
-  id: string;
-  endpoint: string;
-  method: 'POST' | 'PUT' | 'DELETE';
-  body: unknown;
-  createdAt: number;
-  retryCount: number;
-}
+```swift
+actor WriteQueue {
+    private var pending: [PendingWrite] = []
+    private let storage: WriteQueueStorage
 
-class OfflineWriteQueue {
-  private queue: QueuedWrite[] = [];
-
-  async enqueue(write: Omit<QueuedWrite, 'id' | 'createdAt' | 'retryCount'>) {
-    const entry: QueuedWrite = {
-      ...write,
-      id: uuid(),
-      createdAt: Date.now(),
-      retryCount: 0,
-    };
-    this.queue.push(entry);
-    await this.persistQueue();
-  }
-
-  async flush() {
-    const pending = [...this.queue];
-    for (const write of pending) {
-      try {
-        await fetch(write.endpoint, { method: write.method, body: JSON.stringify(write.body) });
-        this.queue = this.queue.filter(w => w.id !== write.id);
-      } catch {
-        write.retryCount++;
-        if (write.retryCount > 5) {
-          // Move to dead letter queue
-          this.queue = this.queue.filter(w => w.id !== write.id);
-        }
-      }
+    init(storage: WriteQueueStorage) {
+        self.storage = storage
+        Task { pending = await storage.load() }
     }
-    await this.persistQueue();
-  }
+
+    func enqueue(_ write: PendingWrite) async {
+        pending.append(write)
+        await storage.persist(pending)
+    }
+
+    func flush(client: APIClient) async {
+        for write in pending {
+            do {
+                try await client.send(write)
+                pending.removeAll { $0.id == write.id }
+            } catch {
+                if write.retryCount > 5 { pending.removeAll { $0.id == write.id } }
+                else { /* keep, increment retry */ }
+            }
+        }
+        await storage.persist(pending)
+    }
 }
 ```
 
-### Network Status Hook
+Flush on network restore:
 
-```typescript
-import NetInfo from '@react-native-community/netinfo';
-import { useEffect, useState } from 'react';
+```swift
+import Network
 
-export function useNetworkStatus() {
-  const [isConnected, setIsConnected] = useState(true);
+@Observable
+final class NetworkMonitor {
+    private(set) var isConnected = true
+    private let monitor = NWPathMonitor()
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected ?? false);
-    });
-    return unsubscribe;
-  }, []);
+    init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            Task { @MainActor in self?.isConnected = path.status == .satisfied }
+        }
+        monitor.start(queue: DispatchQueue.global(qos: .background))
+    }
+}
+```
 
-  return { isConnected };
+### Android — Repository + WorkManager
+
+```kotlin
+class WriteQueueWorker(
+    appContext: Context,
+    params: WorkerParameters,
+) : CoroutineWorker(appContext, params) {
+    override suspend fun doWork(): Result {
+        val pending = pendingWriteDao.getAll()
+        for (write in pending) {
+            runCatching { apiClient.send(write) }
+                .onSuccess { pendingWriteDao.delete(write.id) }
+                .onFailure {
+                    if (write.retryCount > 5) pendingWriteDao.delete(write.id)
+                    else pendingWriteDao.incrementRetry(write.id)
+                }
+        }
+        return if (pendingWriteDao.getAll().isEmpty()) Result.success() else Result.retry()
+    }
+}
+
+// Enqueue on launch / network restore
+val request = OneTimeWorkRequestBuilder<WriteQueueWorker>()
+    .setConstraints(Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build())
+    .build()
+WorkManager.getInstance(context).enqueueUniqueWork(
+    "write-queue",
+    ExistingWorkPolicy.KEEP,
+    request,
+)
+```
+
+Network monitoring:
+
+```kotlin
+class NetworkMonitor(context: Context) {
+    private val cm = context.getSystemService(ConnectivityManager::class.java)
+    val isConnected: Flow<Boolean> = callbackFlow {
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) { trySend(true) }
+            override fun onLost(network: Network) { trySend(false) }
+        }
+        cm.registerDefaultNetworkCallback(callback)
+        awaitClose { cm.unregisterNetworkCallback(callback) }
+    }.distinctUntilChanged()
 }
 ```
 
@@ -258,28 +375,198 @@ export function useNetworkStatus() {
 
 ## Platform Adaptation Pattern
 
-```typescript
-import { Platform } from 'react-native';
+iOS / Android live in **separate codebases**. Follow each language's idioms. Where commonality is required, align the API contract / Design Tokens at a higher layer.
 
-// Component-level branching (preferred)
-const SearchBar = Platform.select({
-  ios: () => <IOSSearchBar />,
-  android: () => <AndroidSearchBar />,
-  default: () => <DefaultSearchBar />,
-})!;
+### iOS 26 Liquid Glass
 
-// Style-level branching
-const styles = StyleSheet.create({
-  shadow: Platform.select({
-    ios: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    android: {
-      elevation: 4,
-    },
-  }),
-});
+```swift
+// iOS 26 ships the dedicated glassEffect() modifier
+struct MyView: View {
+    var body: some View {
+        VStack { Text("Hello") }
+            .padding()
+            .glassEffect()  // Liquid Glass material
+    }
+}
+
+// Group multiple glass elements for coordinated animations
+GlassEffectContainer {
+    HeaderCard()
+    ActionRow()
+}
 ```
+
+Recompiling with Xcode 26 auto-applies Liquid Glass to standard `TabView`, `NavigationStack`, and toolbar surfaces. Provide **light / dark / tinted / clear** icon variants in the Asset Catalog / Icon Composer. The opt-out for the previous design **is removed in iOS 27** — plan migration before that cycle.
+
+### Android Material 3 Expressive
+
+```kotlin
+@Composable
+fun MyScreen() {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = { Text("Home") })
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /* ... */ }) {
+                Icon(Icons.Default.Add, null)
+            }
+        },
+        bottomBar = {
+            FloatingToolbar(  // BottomAppBar is deprecated
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                content = { /* actions */ },
+            )
+        },
+    ) { paddings ->
+        // ...
+    }
+}
+```
+
+Replace `CircularProgressIndicator` (indeterminate) with `LoadingIndicator` (M3 Expressive, shape morphing).
+
+### Edge-to-edge (enforced at API 36)
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+        setContent {
+            MyTheme {
+                MyApp(modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars))
+            }
+        }
+    }
+}
+```
+
+`R.attr#windowOptOutEdgeToEdgeEnforcement` is deprecated and inert at API 36.
+
+### Predictive back (default ON at API 36)
+
+```kotlin
+@Composable
+fun MyScreen(onBack: () -> Unit) {
+    BackHandler(enabled = true) { onBack() }
+}
+```
+
+`onBackPressed()` is no longer dispatched.
+
+---
+
+## Performance Patterns
+
+### iOS — debugging body re-evaluation
+
+```swift
+struct MyView: View {
+    let value: Int
+    var body: some View {
+        let _ = Self._printChanges()  // debug only — remove before shipping
+        Text("\(value)")
+    }
+}
+```
+
+Performance tips:
+- For large datasets use `List` (UICollectionView-backed, cell recycling). `LazyVStack` retains cells and is 10×+ slower at the 1,000-item scale.
+- `AsyncImage` has no cache. Use Kingfisher / Nuke / SDWebImageSwiftUI.
+- Move heavy work off the main actor with `@concurrent`.
+
+### Android — controlling Compose recomposition
+
+```kotlin
+// Unstable lambda problem (LazyListScope is not composable scope)
+LazyColumn {
+    items(list, key = { it.id }) { item ->
+        val onClick = remember(item.id) { { /* ... */ } }  // stabilize via remember
+        ItemRow(item = item, onClick = onClick)
+    }
+}
+
+// derivedStateOf — discretize scroll state
+val showButton by remember {
+    derivedStateOf { listState.firstVisibleItemIndex > 0 }
+}
+```
+
+Performance tips:
+- Always pass `key = { it.id }` to `LazyColumn` `items`.
+- Use `@Immutable` annotation or `kotlinx.collections.immutable` for stable types.
+- For images, use Coil 3 `AsyncImage` (Compose-optimized).
+- Baseline Profile / Startup Profile cuts startup time by 40-50%.
+
+---
+
+## Permission Flow Pattern (soft pre-prompt)
+
+### iOS
+
+```swift
+@MainActor
+final class PermissionCoordinator {
+    func requestNotifications() async -> Bool {
+        // 1. status check
+        let center = UNUserNotificationCenter.current()
+        let settings = await center.notificationSettings()
+        if settings.authorizationStatus == .authorized { return true }
+        if settings.authorizationStatus == .denied {
+            // graceful degradation: show "open Settings" UI
+            return false
+        }
+
+        // 2. soft pre-prompt UI (custom view)
+        guard await showSoftPrePromptUI() else { return false }
+
+        // 3. system request
+        return (try? await center.requestAuthorization(options: [.alert, .badge, .sound])) ?? false
+    }
+}
+```
+
+### Android (API 33+)
+
+```kotlin
+@Composable
+fun NotificationPermissionRequester(onResult: (Boolean) -> Unit) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = onResult,
+    )
+    var showSoftPrePrompt by remember { mutableStateOf(false) }
+
+    if (showSoftPrePrompt) {
+        SoftPrePromptDialog(
+            onConfirm = {
+                showSoftPrePrompt = false
+                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            },
+            onDismiss = { showSoftPrePrompt = false },
+        )
+    }
+
+    Button(onClick = { showSoftPrePrompt = true }) {
+        Text("Enable notifications")
+    }
+}
+```
+
+---
+
+## Testing Patterns (briefly)
+
+| Use | iOS | Android |
+|-----|-----|---------|
+| Unit test | XCTest / Swift Testing | JUnit 5 + MockK + Turbine (Flow) |
+| UI test | XCUITest | Espresso / Compose UI Test / Maestro |
+| Snapshot | swift-snapshot-testing | Paparazzi / Roborazzi |
+| E2E | Maestro | Maestro / Espresso |
+
+Detail is owned by the handoff to `Radar` / `Voyager`.
+
+---
+
+> Two codebases, two languages, one product bar. Stay faithful to each platform's idioms.
