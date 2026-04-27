@@ -1,4 +1,4 @@
-# Rewind Framework Templates
+# Trail Framework Templates
 
 ## SCOPE Phase Template
 
@@ -101,7 +101,7 @@ CHANGE_STORY:
 ## REPORT Phase Template
 
 ```markdown
-## Rewind Investigation Report
+## Trail Investigation Report
 
 ### Summary
 - **Symptom:** [What's broken]
@@ -155,16 +155,16 @@ The caching layer introduced a race condition where...
 
 ```bash
 #!/bin/bash
-# rewind_bisect.sh - Automated bisect runner
+# trail_bisect.sh - Automated bisect runner
 
-# Configuration (filled by Rewind)
+# Configuration (filled by Trail)
 GOOD_COMMIT="$1"
 BAD_COMMIT="$2"
 TEST_COMMAND="$3"
 
 # Safety checks
 if [ -z "$GOOD_COMMIT" ] || [ -z "$BAD_COMMIT" ] || [ -z "$TEST_COMMAND" ]; then
-    echo "Usage: rewind_bisect.sh <good_commit> <bad_commit> <test_command>"
+    echo "Usage: trail_bisect.sh <good_commit> <bad_commit> <test_command>"
     exit 1
 fi
 

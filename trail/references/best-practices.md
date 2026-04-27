@@ -1,4 +1,4 @@
-# Rewind Best Practices
+# Trail Best Practices
 
 ## Investigation Principles
 
@@ -391,7 +391,7 @@ GOOD:
 git bisect log > bisect_$(date +%Y%m%d_%H%M).log
 
 # Record investigation results in Markdown
-# Add to .agents/rewind.md
+# Add to .agents/trail.md
 ```
 
 ### 3. Parallel Investigation

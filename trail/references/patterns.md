@@ -1,4 +1,4 @@
-# Rewind Investigation Patterns
+# Trail Investigation Patterns
 
 ## Pattern Catalog
 

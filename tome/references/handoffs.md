@@ -25,11 +25,11 @@ USER_TO_TOME:
 
 ### From Agent (Generic Handoff)
 
-Used by Rewind, Harvest, Lens, Scout, and any other upstream agent.
+Used by Trail, Harvest, Lens, Scout, and any other upstream agent.
 
 ```yaml
 AGENT_TO_TOME_HANDOFF:
-  source_agent: "[Rewind | Harvest | Lens | Scout | ...]"
+  source_agent: "[Trail | Harvest | Lens | Scout | ...]"
   investigation:
     target: "[investigation subject]"
     findings: "[key findings or data]"

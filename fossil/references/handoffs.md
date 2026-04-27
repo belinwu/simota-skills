@@ -2,11 +2,11 @@
 
 ## Receiving Handoffs
 
-### From Rewind (Git History Context)
+### From Trail (Git History Context)
 
 ```yaml
-REWIND_TO_FOSSIL_HANDOFF:
-  source: Rewind
+TRAIL_TO_FOSSIL_HANDOFF:
+  source: Trail
   content:
     investigation_target: "[module or file path]"
     key_commits: ["[commit hashes with summaries]"]

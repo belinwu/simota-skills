@@ -26,7 +26,7 @@ Purpose: Profiler-driven RCA for latency, throughput, and CPU-hotspot bugs. Prod
 
 | Signal | First action | Expected artifact |
 |--------|--------------|-------------------|
-| latency regression | bisect via `rewind` then profile old vs new | flamegraph diff |
+| latency regression | bisect via `trail` then profile old vs new | flamegraph diff |
 | steady-state slow | capture production profile (60s minimum) | flamegraph + top-N hot functions |
 | spike / burst | capture sampling during event | timeline trace |
 | cold-start slow | separate cold vs warm profile | two flamegraphs |

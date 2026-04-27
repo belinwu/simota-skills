@@ -39,7 +39,7 @@ Contents:
 | Class | Members | Company role | Passive ability | Bonus | Flavor |
 |---|---|---|---|---|---|
 | Commander | Nexus, Sherpa, Titan | Command Center leadership | Rally | +10% CHA on chain coordination | A commander directs many swords at once. |
-| Ranger | Scout, Spark, Compete, Voice, Researcher, Triage, Rewind | Intelligence and scouting | Track | +10% INT on investigation tasks | Rangers find what others miss. |
+| Ranger | Scout, Spark, Compete, Voice, Researcher, Triage, Trail | Intelligence and scouting | Track | +10% INT on investigation tasks | Rangers find what others miss. |
 | Artisan | Builder, Forge, Artisan, Schema, Arena, Architect | Craft and production | Forge | +10% STR on code generation tasks | Every artifact is a deliberate strike. |
 | Guardian | Radar, Voyager | Quality defense | Shield Wall | +10% CON on test tasks | Guardians keep the wall intact. |
 | Paladin | Sentinel, Probe | Security order | Purify | +10% INT on security tasks | Paladins reveal hidden corruption. |

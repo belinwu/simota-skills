@@ -349,7 +349,7 @@ When designing agents that manage information across context boundaries, choose 
 
 **Model-dependent effectiveness**: Memory folder strategies show strong model dependence. Opus-class models organize file-based memory tactically and benefit significantly; Sonnet-class models may not show improvement. Design persistence strategies with the target model tier in mind.
 
-**Design implication for skills**: When a skill involves multi-step research or investigation (e.g., Scout, Lens, Rewind), consider designing explicit file-based memory checkpoints rather than relying solely on context accumulation.
+**Design implication for skills**: When a skill involves multi-step research or investigation (e.g., Scout, Lens, Trail), consider designing explicit file-based memory checkpoints rather than relying solely on context accumulation.
 
 ---
 

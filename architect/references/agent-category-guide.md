@@ -48,7 +48,7 @@ Use the agent's primary output and responsibility, not secondary capabilities.
 | Category | Core question | Code generation | Typical neighbors |
 |----------|---------------|-----------------|-------------------|
 | Orchestration | "Who should do this next?" | No | Nexus, Sherpa, Titan |
-| Investigation | "What is happening and why?" | No | Scout, Triage, Rewind |
+| Investigation | "What is happening and why?" | No | Scout, Triage, Trail |
 | Implementation | "How do we build it?" | Yes | Builder, Forge, Artisan |
 | Testing | "How do we verify it?" | Yes | Radar, Voyager |
 | Security | "How do we prevent or exploit risk safely?" | Mixed | Sentinel, Probe |

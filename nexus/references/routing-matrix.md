@@ -12,7 +12,7 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | BUG | Scout → **Sherpa** → Builder → Radar | Scout[bug], Sherpa[epic], Builder[fix], Radar[regression] | +Sentinel (security). Skip Sherpa only when single-file atomic fix |
 | INCIDENT | Triage → Scout → Builder | Triage[respond], Scout[bug], Builder[fix] | +Mend (known pattern), +Radar, +Triage (postmortem), +Flux (deep postmortem), +Matrix[combine] (failure scenarios) |
 | FEATURE | **Sherpa** → Forge → Builder → Radar | Sherpa[epic], Forge[ui], Builder[api], Radar[edge] | +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux[reframe] (lateral thinking), +Riff[expand] (idea exploration). Skip Sherpa only when single-file atomic change |
-| INVESTIGATE | Lens | Lens[map] | +Scout (bug-related), +Canvas (viz), +Rewind[bisect] (git) |
+| INVESTIGATE | Lens | Lens[map] | +Scout (bug-related), +Canvas (viz), +Trail[bisect] (git) |
 | BRAINSTORM | Riff | Riff[expand] | +Flux (reframe first), +Spark (spec after), +Magi (decide after), +Void (prune after) |
 | DECISION | Magi | Magi[decide] | +Accord[vision] (biz-tech), +Flux (reframe), +Riff (explore before deciding) |
 | SECURITY | Sentinel → Builder → Radar | Sentinel[scan], Builder[fix], Radar[edge], Breach[scenario], Vigil[sigma], Specter[race] | +Probe[zap] (dynamic), +Specter (concurrency), +Breach (red-team), +Vigil (detection) |
@@ -75,15 +75,15 @@ Complete task type → agent chain mapping. The SKILL.md contains the top 5 most
 | COMPLIANCE | Comply → Builder → Radar | Comply[soc2], Builder[fix], Radar[coverage] | +Cloak (privacy), +Canon (standards), +Scribe (policy docs) |
 | CRYPTO | Crypt → Builder → Radar | Crypt[algorithm], Builder[fix], Radar[edge] | +Sentinel (security review), +Probe (TLS validation) |
 | VIDEO_SCRIPT | Cue → Director/Reel | Cue[script], Cue[storyboard], Director[demo], Reel[vhs] | +Cue[narration] (narration), +Cue[explainer] (explainer), +Director[scenario] (scenario design), +Director[record] (Playwright recording), +Reel[readme] (README GIF), +Prose (copy), +Growth (marketing) |
-| LEGACY | Fossil → Shift → Builder | Fossil[extract], Builder[harden], Radar[coverage] | +Shift[plan] (migration), +Rewind[history] (git history), +Lens[discover] (exploration), +Tome (documentation) |
+| LEGACY | Fossil → Shift → Builder | Fossil[extract], Builder[harden], Radar[coverage] | +Shift[plan] (migration), +Trail[history] (git history), +Lens[discover] (exploration), +Tome (documentation) |
 | LANDING_PAGE | Funnel → Artisan → Radar | Funnel[build], Funnel[cta], Forge[landing], Radar[edge], Sketch[generate], Flow[hover] | +Growth (SEO/CRO), +Prose (copy), +Pixel[reproduce] (mockup), +Ink[icon] (icons), +Flow[transition] (transitions), +Echo (persona test) |
 | FINOPS | Ledger → Scaffold → Gear | Ledger[estimate], Ledger[rightsizing], Ledger[ri-sp], Ledger[anomaly], Ledger[ai-gpu] | +Pulse (metrics), +Beacon (monitoring), +Canvas (dashboard spec) |
 | TEST_DATA | Mint → Radar | Mint[factory], Mint[boundary], Radar[coverage] | +Schema (DB fixtures), +Siege (load data), +Builder (factory impl) |
 | SEARCH | Seek → Builder → Radar | Seek[fulltext], Seek[vector], Seek[hybrid], Seek[index], Seek[rag], Builder[api], Radar[edge] | +Oracle[rag] (RAG/embeddings), +Schema (indexes), +Tuner[explain] (query perf), +Spider[topology] (crawl source) |
 | MULTI_TENANT | Shard → Schema → Builder | Shard[isolation], Shard[rls], Shard[routing], Shard[scale], Builder[ddd], Radar[edge] | +Sentinel (security), +Scaffold (infra), +Radar (isolation tests) |
-| MIGRATION | Shift → Builder → Radar | Shift[plan], Builder[harden], Radar[regression] | +Fossil (legacy analysis), +Horizon (modernize), +Rewind (history) |
+| MIGRATION | Shift → Builder → Radar | Shift[plan], Builder[harden], Radar[regression] | +Fossil (legacy analysis), +Horizon (modernize), +Trail (history) |
 | PRESENTATION | Stage → Canvas | Stage[marp], Stage[conference], Stage[timing] | +Stage[reveal] (reveal.js), +Stage[slidev] (Slidev/Vue), +Cue[script] (narrative), +Quill (content), +Morph (export) |
-| LEARNING | Tome → Quill | Tome[learn] | +Canvas (diagrams), +Rewind (change context), +Prism (audio) |
+| LEARNING | Tome → Quill | Tome[learn] | +Canvas (diagrams), +Trail (change context), +Prism (audio) |
 | WORKFLOW | Weave → Builder → Radar | Weave[design], Builder[api], Radar[edge] | +Canvas (diagram), +Schema (persistence), +Attest (spec verify) |
 | ARTICLE | Zine → Growth | Zine[note], Zine[zenn], Zine[qiita], Zine[devto], Zine[series] | +Prose (microcopy polish), +Stage (slide version), +Saga (narrative reshape), +Canvas (article diagrams), +Morph (PDF/Word export), +Tome (diff → learning source). Trigger: "tech blog", "note/Zenn/Qiita/dev.to", "連載", "記事" |
 | SCHEDULE | Tempo → Builder → Gear | Tempo[cron], Tempo[timezone], Tempo[retry], Tempo[backfill], Tempo[calendar], Builder[api], Radar[edge] | +Weave (retry state machine), +Beacon[alerts] (schedule SLO/alerts), +Pipe (GHA cron), +Voyager[playwright] (temporal test scenarios), +Judge (correctness review), +Triage (incident → replay plan). Trigger: "cron", "timezone", "DST", "retry/backoff", "backfill", "business calendar" |

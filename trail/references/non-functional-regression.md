@@ -89,7 +89,7 @@ THRESHOLD=500000  # 500KB
 
 ## Specter Escalation Criteria
 
-When bisect result falls into any of the following, use `REWIND_TO_SPECTER_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
+When bisect result falls into any of the following, use `TRAIL_TO_SPECTER_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
 
 - Changes to concurrency control (lock, mutex, semaphore, channel)
 - Changes to resource management (connection pool, file handle, socket)

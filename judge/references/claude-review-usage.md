@@ -257,7 +257,7 @@ Inside an active `claude` session:
 |---------|-------|
 | `/review` | Built-in PR review skill (reviews pending changes) |
 | `/security-review` | Built-in security review skill (security-focused) |
-| `/rewind` (or `Esc` `Esc`) | Rewind conversation/code to an earlier checkpoint — useful when review correction loops pollute context |
+| `/trail` (or `Esc` `Esc`) | Trail conversation/code to an earlier checkpoint — useful when review correction loops pollute context |
 | `/clear` | Reset context entirely between unrelated review tasks |
 | `/compact <instructions>` | Targeted compaction (e.g., `/compact Focus on review findings`) |
 

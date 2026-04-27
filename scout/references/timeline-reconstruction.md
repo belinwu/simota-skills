@@ -7,7 +7,7 @@ Purpose: Build a precise, second-by-second event timeline interleaving user acti
 - **scout `timeline`**: Event sequence reconstruction (this document).
 - **scout `5whys` / `fishbone` (elsewhere)**: Cause analysis after timeline is built.
 - **Triage (elsewhere)**: Owns full incident report; consumes timeline.
-- **Rewind (elsewhere)**: Git history. Timeline integrates code-deploy events from Rewind.
+- **Trail (elsewhere)**: Git history. Timeline integrates code-deploy events from Trail.
 - **Beacon (elsewhere)**: Trace/log/metric source.
 
 ## Timeline Structure
@@ -101,7 +101,7 @@ HANDOFF     →  Triage: full incident report
             →  scout `5whys` / `fishbone`: drill the identified cause
             →  Beacon: detection upgrade per gap
             →  Mend: runbook upgrade per gap
-            →  Rewind: deeper code archaeology if cause is a deploy
+            →  Trail: deeper code archaeology if cause is a deploy
 ```
 
 ## Output Template
@@ -154,7 +154,7 @@ deploy v2.4.1 — drill via `5whys` or `fishbone` next.
 ### Handoffs
 - Triage: full post-mortem report
 - scout `5whys`: drill cause
-- Rewind: code archaeology on v2.4.1
+- Trail: code archaeology on v2.4.1
 - Beacon: detection upgrade
 - Mend: runbook upgrade
 ```

@@ -1,4 +1,4 @@
-# Rewind Git Command Reference
+# Trail Git Command Reference
 
 ## Safety Classification
 
@@ -155,7 +155,7 @@ git checkout <branch>          # Return to branch
 
 ```bash
 # Temporarily save work
-git stash push -m "Rewind investigation"
+git stash push -m "Trail investigation"
 git stash list
 git stash show -p stash@{0}
 
@@ -168,7 +168,7 @@ git stash apply                # Apply only (don't delete)
 
 ### 🔴 Forbidden Commands (Never Run)
 
-These commands are NEVER executed by Rewind.
+These commands are NEVER executed by Trail.
 
 ```bash
 # Destructive reset
@@ -185,7 +185,7 @@ git commit --amend            # ❌ Commit changes
 git filter-branch             # ❌ History changes
 
 # Remote operations
-git push                      # ❌ Outside Rewind's scope
+git push                      # ❌ Outside Trail's scope
 git push --force              # ❌ Especially dangerous
 ```
 

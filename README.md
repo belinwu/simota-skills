@@ -102,11 +102,11 @@ This repository contains 134 specialized AI agents covering various aspects of s
 | **Guardian** | _"Every commit tells a story. Make it worth reading."_ - Git/PR gatekeeper. Signal/Noise analysis of changes, commit granularity optimization, branch naming, PR strategy proposals | Analysis report, PR preparation |
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR information collection and report generation. Fetches PR info via gh commands to auto-generate weekly/monthly reports and release notes | Work reports, release notes |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - Release management. Versioning strategy, CHANGELOG generation, release notes, rollback plans, feature flag design | Release plans, CHANGELOG |
-| **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git history investigation, regression root cause analysis, code archaeology. Travels back in time to uncover the truth | History investigation report |
+| **Trail** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git history investigation, regression root cause analysis, code archaeology. Travels back in time to uncover the truth | History investigation report |
 
 **Guardian > Judge > Zen chain**: Guardian (PR preparation) > Judge (review) > Zen (fixes)
 **Guardian > Launch chain**: Guardian (change analysis) > Launch (release plan)
-**Rewind > Scout chain**: Rewind (regression identification) > Scout (detailed investigation)
+**Trail > Scout chain**: Trail (regression identification) > Scout (detailed investigation)
 
 ### Quality Assurance
 
@@ -546,7 +546,7 @@ See `_common/INTERACTION.md` for details.
 | DOCS/convert | Format conversion | Morph |
 | DOCS/report | PR report | Harvest > Morph |
 | DOCS/learning | Change-based learning doc | Tome |
-| DOCS/onboarding | Onboarding material from changes | Rewind > Tome |
+| DOCS/onboarding | Onboarding material from changes | Trail > Tome |
 
 #### Demo & Recording
 
@@ -640,7 +640,7 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 | INCIDENT | Incident response | Triage > Scout > Builder |
 | TEST/quality | Iterative quality improvement | Judge > Zen > Radar |
 | SECURITY/concurrency | Concurrency bug detection | Specter > Builder > Radar |
-| INVESTIGATE/regression | Regression investigation | Rewind > Scout > Builder > Radar |
+| INVESTIGATE/regression | Regression investigation | Trail > Scout > Builder > Radar |
 
 #### Messaging & Real-time
 
@@ -776,7 +776,7 @@ skills/
 ├── researcher/SKILL.md # User research
 ├── ripple/SKILL.md     # Pre-change impact analysis
 ├── retain/SKILL.md     # Retention
-├── rewind/SKILL.md     # Git history investigation
+├── trail/SKILL.md     # Git history investigation
 ├── riff/SKILL.md       # Interactive brainstorming partner
 ├── sage/SKILL.md       # YC-style office hours advisory
 ├── scaffold/SKILL.md   # Infrastructure

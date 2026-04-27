@@ -1,6 +1,6 @@
 # Investigation Escalation Protocol
 
-Escalation standard across the investigation skill cluster (Scout, Lens, Rewind, Specter).
+Escalation standard across the investigation skill cluster (Scout, Lens, Trail, Specter).
 
 ## Escalation Flow
 
@@ -16,11 +16,11 @@ Escalation standard across the investigation skill cluster (Scout, Lens, Rewind,
     │ history investigation    │ concurrency suspected
     │ needed                   │
     ▼                         ▼
-  Rewind (bisect/archaeology)  Specter (SCAN→ANALYZE→SCORE)
+  Trail (bisect/archaeology)  Specter (SCAN→ANALYZE→SCORE)
     │                         │
     ▼ resource-related        ▼ onset timing needed
       change found
-    └───→ Specter             └───→ Rewind
+    └───→ Specter             └───→ Trail
 ```
 
 ## Ownership Rule
@@ -60,10 +60,10 @@ SCOUT_TO_LENS_HANDOFF:
   scope_hint: "[files/modules to focus on]"
 ```
 
-### REWIND_TO_SPECTER_HANDOFF
+### TRAIL_TO_SPECTER_HANDOFF
 
 ```yaml
-REWIND_TO_SPECTER_HANDOFF:
+TRAIL_TO_SPECTER_HANDOFF:
   investigation_id: "[unique-id]"
   bisect_result: "[commit hash and change summary]"
   change_type: "[resource_management | concurrency_modification | lock_change | async_pattern_change]"
@@ -71,10 +71,10 @@ REWIND_TO_SPECTER_HANDOFF:
   suggested_scan_focus: "[race_condition | memory_leak | resource_leak | deadlock]"
 ```
 
-### SPECTER_TO_REWIND_HANDOFF
+### SPECTER_TO_TRAIL_HANDOFF
 
 ```yaml
-SPECTER_TO_REWIND_HANDOFF:
+SPECTER_TO_TRAIL_HANDOFF:
   investigation_id: "[unique-id]"
   issue_type: "[race_condition | memory_leak | resource_leak | deadlock]"
   request: "[onset_identification | change_history | blame_analysis]"

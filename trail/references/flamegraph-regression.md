@@ -4,9 +4,9 @@ Purpose: CPU/memory hotspot regression diagnosis using Brendan Gregg's flamegrap
 
 ## Scope Boundary
 
-- **rewind `flame`**: flamegraph-driven regression localization. Produces hotspot diff + suspect commit set, hands the offending function to bisect for commit pinpointing.
-- **rewind `regression` / `bisect` (elsewhere)**: assume the regression is binary (test passes / fails). `flame` adds quantitative hotspot evidence when the symptom is "slower" not "broken".
-- **rewind `blame` / `history` (elsewhere)**: post-flame archaeology — once the offending function is identified, `blame` answers *who/when/why*.
+- **trail `flame`**: flamegraph-driven regression localization. Produces hotspot diff + suspect commit set, hands the offending function to bisect for commit pinpointing.
+- **trail `regression` / `bisect` (elsewhere)**: assume the regression is binary (test passes / fails). `flame` adds quantitative hotspot evidence when the symptom is "slower" not "broken".
+- **trail `blame` / `history` (elsewhere)**: post-flame archaeology — once the offending function is identified, `blame` answers *who/when/why*.
 - **Scout (elsewhere)**: current-state RCA without git-history axis. Use Scout when the regression is unrelated to a recent commit.
 - **Bolt (elsewhere)**: forward optimization. `flame` localizes a regression; Bolt optimizes the result. Do not use `flame` to greenfield-optimize hotspots that were always slow.
 - **Triage (elsewhere)**: incident response. `flame` is post-incident root cause; Triage is during-incident containment.
@@ -103,6 +103,6 @@ Treat allocation-site frames the same as CPU frames in the diff.
 - **To `bisect`**: offending frame + threshold script → narrows to single commit.
 - **To Bolt**: confirmed hotspot frame + diff SVG + suspect commit → forward optimization. Bolt owns the rewrite.
 - **To Builder**: suspect commit SHA + recommended action (revert vs. patch) → implementation.
-- **To Specter**: if the diff implicates lock/contention frames or async/await stacks → escalate via REWIND_TO_SPECTER_HANDOFF (`_common/INVESTIGATION_ESCALATION.md`).
+- **To Specter**: if the diff implicates lock/contention frames or async/await stacks → escalate via TRAIL_TO_SPECTER_HANDOFF (`_common/INVESTIGATION_ESCALATION.md`).
 - **To Radar**: if no perf regression test existed → request benchmark coverage so this regression class is caught next time.
 - **To Scout**: if the diff is flat but the symptom persists → Scout investigates non-history-bound causes (config drift, env var, data shape).

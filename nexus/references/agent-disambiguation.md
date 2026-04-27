@@ -229,7 +229,7 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 |--------|----------|-----------|
 | "Why is X broken?", "find the bug" | **Scout** | Bug-driven investigation |
 | "How does X work?", "explain this module" | **Lens** | Comprehension-driven exploration |
-| "What caused this regression?" | **Rewind** → Scout | Git history then RCA |
+| "What caused this regression?" | **Trail** → Scout | Git history then RCA |
 | "Does feature X exist?", "where is X implemented?" | **Lens** | Code exploration |
 | "Reproduce this error" | **Scout** | Bug reproduction |
 | "Map the data flow for X" | **Lens** → Canvas | Understanding then visualization |

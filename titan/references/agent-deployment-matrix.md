@@ -38,7 +38,7 @@ Complete mapping of all 65 agents across 9 product lifecycle phases.
 | Guardian | Git/PR | — | — | — | — | — | — | P | — | — |
 | Harvest | Git/PR | — | — | — | — | — | — | S | — | S |
 | Launch | Git/PR | — | — | — | — | — | — | P | — | — |
-| Rewind | Investigation | — | — | — | — | — | — | — | — | P |
+| Trail | Investigation | — | — | — | — | — | — | — | — | P |
 | Radar | Testing | — | — | — | S | S | P | — | — | — |
 | Voyager | Testing | — | — | — | — | — | P | — | — | — |
 | Sentinel | Security | — | — | — | — | P | — | — | — | — |

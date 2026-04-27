@@ -101,7 +101,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **relay**: webhook★ / bot / websocket / adapter
 - **researcher**: interview★ / usability / analysis / persona / journey
 - **retain**: reengagement★ / churn / gamification / habit / loyalty
-- **rewind**: regression★ / bisect / blame / history
+- **trail**: regression★ / bisect / blame / history
 - **riff**: expand★ / propose / evaluate / subtract
 - **ripple**: impact★ / vertical / horizontal / naming
 - **saga**: story★ / scenario / narrative / customer

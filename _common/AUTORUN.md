@@ -93,7 +93,7 @@ Steps <= 4 AND sequential?     → L1: Direct Spawn (foreground / spawn_agent)
 
 | Agent Role | model | Context Strategy | Rationale |
 |-----------|-------|-----------------|-----------|
-| Investigation / read-only (Scout, Lens, Rewind) | sonnet | reset | Cost-efficient; focused context |
+| Investigation / read-only (Scout, Lens, Trail) | sonnet | reset | Cost-efficient; focused context |
 | Standard implementation (Builder, Artisan, Radar) | sonnet | hybrid | Balanced; receives handoff context |
 | High-complexity design (Sentinel, Atlas) | opus | continuous | Precision-critical; deep reasoning |
 | Lightweight tasks (Quill, Morph) | haiku | reset | Minimal cost; fresh context |

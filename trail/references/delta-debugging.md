@@ -4,9 +4,9 @@ Purpose: Automated minimization of failure-inducing inputs via Zeller & Hildebra
 
 ## Scope Boundary
 
-- **rewind `delta`**: input/state minimization via ddmin. Produces 1-minimal failing input + reproduction script.
-- **rewind `regression` / `bisect` (elsewhere)**: minimize the *commit* axis. `delta` minimizes the *input* axis. Often run sequentially: bisect to find the commit, ddmin to find the smallest input that exposes the bug introduced by that commit.
-- **rewind `flame` (elsewhere)**: localizes performance regressions; `delta` localizes correctness/flakiness regressions.
+- **trail `delta`**: input/state minimization via ddmin. Produces 1-minimal failing input + reproduction script.
+- **trail `regression` / `bisect` (elsewhere)**: minimize the *commit* axis. `delta` minimizes the *input* axis. Often run sequentially: bisect to find the commit, ddmin to find the smallest input that exposes the bug introduced by that commit.
+- **trail `flame` (elsewhere)**: localizes performance regressions; `delta` localizes correctness/flakiness regressions.
 - **Scout (elsewhere)**: current-state RCA on a known reproducer. `delta` runs *before* Scout to obtain a small reproducer.
 - **Radar (elsewhere)**: writes new tests including the minimized case; `delta` produces the input, Radar formalizes it.
 - **Builder (elsewhere)**: implements the fix using the minimized reproducer.
@@ -124,5 +124,5 @@ Property-based testing tools (Hypothesis, fast-check, QuickCheck) ship their own
 - **To Builder**: minimized reproducer + oracle script + suspect commit → fix implementation.
 - **To Radar**: 1-minimal input → formalize as regression test (deterministic, fast, scoped).
 - **To Scout**: minimized reproducer for current-state RCA when no breaking commit exists (`delta` only).
-- **To Specter**: if minimization implicates timing/ordering (race-only-with-event-sequence-X) → escalate via REWIND_TO_SPECTER_HANDOFF.
+- **To Specter**: if minimization implicates timing/ordering (race-only-with-event-sequence-X) → escalate via TRAIL_TO_SPECTER_HANDOFF.
 - **To Triage**: minimized input as the post-incident artifact for the postmortem.

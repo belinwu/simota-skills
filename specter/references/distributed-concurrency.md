@@ -63,7 +63,7 @@ Concurrency issue pattern catalog specific to distributed systems.
 - Symptom: Pod repeatedly restarting
 - Cause: misconfigured memory limit or memory leak
 - Detection: `kubectl get events --field-selector reason=OOMKilling`
-- Investigation: time-series `kubectl top pod` + change identification via Rewind
+- Investigation: time-series `kubectl top pod` + change identification via Trail
 
 ### Pattern: CPU Throttling Latency
 - Symptom: periodic P99 latency spikes
@@ -87,9 +87,9 @@ Concurrency issue pattern catalog specific to distributed systems.
 - Cause: concurrent connection limit in edge runtime (typically 6-10)
 - Detection: spikes in 429 responses, connection pool exhaustion logs
 
-## Rewind Escalation Criteria
+## Trail Escalation Criteria
 
-When the following conditions apply, use `SPECTER_TO_REWIND_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
+When the following conditions apply, use `SPECTER_TO_TRAIL_HANDOFF` (`_common/INVESTIGATION_ESCALATION.md`):
 
 - Leak or race found but onset timing is unknown
 - Evidence that the issue surfaced after a specific deployment

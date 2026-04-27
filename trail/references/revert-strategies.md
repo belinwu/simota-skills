@@ -4,10 +4,10 @@ Purpose: Decision framework for undoing changes safely. Covers `git revert` (his
 
 ## Scope Boundary
 
-- **rewind `revert`**: choose and document the revert strategy. Produces a revert plan + verification checklist + comms template. Does not push to remote unilaterally.
-- **rewind `regression` / `bisect` (elsewhere)**: identify *what* to revert. `revert` decides *how* to undo it.
-- **rewind `blame` / `history` (elsewhere)**: post-revert archaeology — confirm the revert didn't reintroduce older bugs.
-- **Triage (elsewhere)**: live incident command. `revert` is the technique Triage may invoke; routing depends on whether incident is open (Triage owns) or resolved (Rewind owns).
+- **trail `revert`**: choose and document the revert strategy. Produces a revert plan + verification checklist + comms template. Does not push to remote unilaterally.
+- **trail `regression` / `bisect` (elsewhere)**: identify *what* to revert. `revert` decides *how* to undo it.
+- **trail `blame` / `history` (elsewhere)**: post-revert archaeology — confirm the revert didn't reintroduce older bugs.
+- **Triage (elsewhere)**: live incident command. `revert` is the technique Triage may invoke; routing depends on whether incident is open (Triage owns) or resolved (Trail owns).
 - **Builder (elsewhere)**: executes the fix-forward path when revert is rejected or high-risk.
 - **Guardian (elsewhere)**: PR strategy for reintroducing reverted work (revert-of-revert split into smaller PRs).
 - **Scout (elsewhere)**: post-revert RCA if the original bug's root cause is still unclear.

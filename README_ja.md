@@ -101,10 +101,10 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Guardian** | _"Every commit tells a story. Make it worth reading."_ - Git/PRの番人。変更のSignal/Noise分析、コミット粒度最適化、ブランチ命名、PR戦略提案 | 分析レポート、PR準備 |
 | **Harvest** | _"Code writes history. I harvest its meaning."_ - PR情報収集・レポート生成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成 | 作業報告書、リリースノート |
 | **Launch** | _"Shipping is not the end. It's the beginning of accountability."_ - リリース管理。バージョニング戦略、CHANGELOG生成、リリースノート作成、ロールバック計画、Feature Flag設計 | リリース計画、CHANGELOG |
-| **Rewind** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
+| **Trail** | _"Every bug has a birthday. Every regression has a parent commit. Find them."_ - Git履歴調査・リグレッション原因分析・コード考古学。時間を遡って真相を解明 | 履歴調査レポート |
 **Guardian → Judge → Zen の連携**：Guardian（PR準備）→ Judge（レビュー）→ Zen（修正）
 **Guardian → Launch の連携**：Guardian（変更分析）→ Launch（リリース計画）
-**Rewind → Scout の連携**：Rewind（リグレッション特定）→ Scout（詳細調査）
+**Trail → Scout の連携**：Trail（リグレッション特定）→ Scout（詳細調査）
 
 ### 品質保証
 
@@ -543,7 +543,7 @@ questions:
 | DOCS/convert | フォーマット変換 | Morph |
 | DOCS/report | PR報告書 | Harvest → Morph |
 | DOCS/learning | 変更ベース学習資料 | Tome |
-| DOCS/onboarding | オンボーディング教材 | Rewind → Tome |
+| DOCS/onboarding | オンボーディング教材 | Trail → Tome |
 
 #### デモ・録画
 
@@ -627,7 +627,7 @@ questions:
 | INCIDENT | 障害対応 | Triage → Scout → Builder |
 | TEST/quality | 品質反復改善 | Judge → Zen → Radar |
 | SECURITY/concurrency | 並行性バグ検出 | Specter → Builder → Radar |
-| INVESTIGATE/regression | リグレッション調査 | Rewind → Scout → Builder → Radar |
+| INVESTIGATE/regression | リグレッション調査 | Trail → Scout → Builder → Radar |
 
 #### メッセージング・リアルタイム
 
@@ -763,7 +763,7 @@ skills/
 ├── researcher/SKILL.md # ユーザーリサーチ
 ├── ripple/SKILL.md     # 変更前影響分析
 ├── retain/SKILL.md     # リテンション
-├── rewind/SKILL.md     # Git履歴調査
+├── trail/SKILL.md     # Git履歴調査
 ├── riff/SKILL.md       # インタラクティブ・ブレインストーミング
 ├── sage/SKILL.md       # YC オフィスアワー流アドバイザリー
 ├── scaffold/SKILL.md   # インフラ

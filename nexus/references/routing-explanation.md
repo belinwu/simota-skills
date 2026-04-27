@@ -169,7 +169,7 @@ Select a number or provide more specific instructions.
 
 **Additional considerations:**
 - Bug-related investigation → Scout (RCA-focused)
-- Git history investigation → Rewind (commit archaeology)
+- Git history investigation → Trail (commit archaeology)
 - Incident impact scoping → Triage (first response)
 - Visualization of findings → +Canvas
 - Implementation after investigation → +Builder
@@ -218,7 +218,7 @@ Select a number or provide more specific instructions.
 | "How does X flow work?" | clear | Lens (flow tracing) |
 | "Understand this codebase" | clear | Lens (full onboarding) |
 | "Why is X broken?" | clear | Scout (RCA), not Lens |
-| "When did X regress?" | clear | Rewind (git history) |
+| "When did X regress?" | clear | Trail (git history) |
 
 ---
 

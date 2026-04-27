@@ -1,4 +1,4 @@
-# Rewind Usage Examples
+# Trail Usage Examples
 
 ## Example 1: Basic Regression Investigation
 
@@ -12,7 +12,7 @@ Login functionality suddenly stopped working. It was working as of last week's r
 User: I can't log in anymore. The error is "Invalid token format"
 ```
 
-**Step 2: Rewind's Response**
+**Step 2: Trail's Response**
 ```markdown
 ## Starting Investigation
 
@@ -39,7 +39,7 @@ npm test -- --grep "login"
 
 **Step 3: Execute Bisect**
 ```bash
-# Executed by Rewind
+# Executed by Trail
 git bisect start
 git bisect bad HEAD
 git bisect good v2.3.0

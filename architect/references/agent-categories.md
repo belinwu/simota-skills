@@ -151,7 +151,7 @@ Agents that research, analyze, and propose without writing code.
 - **Output**: Impact assessment, recovery steps
 - **Trigger**: "incident", "outage", "recovery"
 
-### Rewind
+### Trail
 - **Role**: Git history investigator
 - **Input**: Regression reports
 - **Output**: Root cause from commit history

@@ -79,7 +79,7 @@ Complete chain templates and dynamic adjustment rules.
 | FEATURE | frontend | Forge → Artisan → Radar |
 | FEATURE | cli | Anvil → Radar |
 | TEST | quality | Judge → Zen → Radar (iterative PDCA via Nexus) |
-| INVESTIGATE | regression | Rewind → Scout → Builder → Radar |
+| INVESTIGATE | regression | Trail → Scout → Builder → Radar |
 | SECURITY | concurrency | Specter → Builder → Radar |
 | DOCS | convert | Morph |
 | DOCS | report | Harvest → Morph |
@@ -367,7 +367,7 @@ Builder then applies:
 
 ### Rally Non-Escalation (Keep Sequential)
 
-- Investigation-only chains (Lens, Scout, Rewind) → No Rally
+- Investigation-only chains (Lens, Scout, Trail) → No Rally
 - Single-agent chains (Quill, Morph) → No Rally
 - Changes under 10 lines total → No Rally
 - High-risk security changes → Prefer sequential with checkpoints

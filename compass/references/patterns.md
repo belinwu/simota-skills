@@ -48,7 +48,7 @@
   │
   ├─ 調査・分析してほしい
   │   ├─ コード理解 → Lens
-  │   ├─ Git履歴調査 → Rewind
+  │   ├─ Git履歴調査 → Trail
   │   ├─ レガシーコード解析 → Fossil
   │   ├─ 影響範囲分析 → Ripple
   │   └─ 競合調査 → Compete
@@ -83,7 +83,7 @@
 | 状況 | 推薦 | 理由 |
 |------|------|------|
 | 原因不明のバグ | Scout → Builder | Scout で原因特定、Builder で修正 |
-| リグレッション | Rewind → Scout → Builder | Rewind で原因コミット特定 |
+| リグレッション | Trail → Scout → Builder | Trail で原因コミット特定 |
 | パフォーマンス劣化 | Bolt | パフォーマンス専門 |
 | セキュリティ脆弱性 | Sentinel → Builder | Sentinel で検出、Builder で修正 |
 

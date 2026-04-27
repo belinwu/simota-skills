@@ -14,7 +14,7 @@ Contents:
 |---|---|---|---|---|---|
 | Command Center | `⚔` | Orchestration | Nexus, Sherpa, Titan | Strategic coordination | Grand Strategy |
 | Frontline | `🔨` | Implementation | Builder, Forge, Artisan, Schema, Arena, Architect | Production and construction | Mass Production |
-| Intelligence Corps | `🔍` | Investigation | Scout, Spark, Compete, Voice, Researcher, Triage, Rewind | Analysis and threat assessment | Deep Analysis |
+| Intelligence Corps | `🔍` | Investigation | Scout, Spark, Compete, Voice, Researcher, Triage, Trail | Analysis and threat assessment | Deep Analysis |
 | Defense | `🛡` | Security + Testing | Sentinel, Probe, Radar, Voyager | Threat and defect defense | Shield Wall |
 | Academy | `📚` | Review | Judge, Zen, Sweep, Warden | Quality control and standards | Peer Review |
 | Council | `🏛` | Architecture + Strategy | Atlas, Gateway, Scaffold, Ripple, Helm, Levy | Structural planning and governance | Blueprint |

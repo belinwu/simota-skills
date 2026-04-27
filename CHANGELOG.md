@@ -104,7 +104,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 | Orchestration | 8 | Nexus, Sherpa, Architect, Rally, Titan, Sigil, Orbit, Darwin |
 | Research & Planning | 10 | Scout, Ripple, Spark, Compete, Voice, Researcher, Trace, Canon, Lens, Cast |
 | Decision & Strategy | 4 | Magi, Helm, Levy, Accord |
-| Git/PR Management | 4 | Guardian, Harvest, Launch, Rewind |
+| Git/PR Management | 4 | Guardian, Harvest, Launch, Trail |
 | Quality Assurance | 12 | Radar, Voyager, Sentinel, Probe, Judge, Zen, Sweep, Warden, Specter, Siege, Void, Attest |
 | Implementation | 4 | Builder, Artisan, Forge, Arena |
 | AI/ML | 1 | Oracle |

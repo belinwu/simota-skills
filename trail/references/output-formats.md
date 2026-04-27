@@ -1,9 +1,9 @@
-# Rewind Output Formats
+# Trail Output Formats
 
 ## Timeline Visualization
 
 ```
-                    REWIND TIMELINE
+                    TRAIL TIMELINE
     ════════════════════════════════════════════
 
     ✓ GOOD: v2.0.0 (abc1234) 2024-01-01
@@ -35,7 +35,7 @@
 ## Investigation Summary
 
 ```markdown
-## Rewind Investigation Summary
+## Trail Investigation Summary
 
 | Property | Value |
 |----------|-------|
