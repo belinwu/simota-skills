@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-131-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-133-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🤖 131種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
+🤖 133種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **131種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **133種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Gemini CLI等で動作
 
@@ -35,7 +35,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## 📚 概要
 
-このリポジトリには、ソフトウェア開発の様々な側面を専門とする131種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
+このリポジトリには、ソフトウェア開発の様々な側面を専門とする133種類のAIエージェントが含まれています。各エージェントは特定のドメインに特化しており、**Nexus**オーケストレーターによって統括・連携されます。
 
 ## エージェント一覧
 
@@ -135,7 +135,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Artisan** | _"Prototypes promise. Production delivers."_ - フロントエンド本番実装の職人。React/Vue/Svelte、Hooks設計、状態管理、Server Components、フォーム処理、データフェッチング | フロントエンドコード |
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - プロトタイプ作成。完璧より動くものを優先。Builder連携用にtypes.ts, errors.ts, forge-insights.mdを出力 | MVP/PoC |
 | **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - codex exec / gemini CLI を直接操り並列実装・評価・採用。Solo Mode（逐次）と Team Mode（Agent Teams 並列）をサポート | 比較実装・評価 |
-| **Native** | _"Every pixel ships. Every platform matters."_ - モバイル開発スペシャリスト。React Native/Flutter/SwiftUI/Jetpack Composeでのクロスプラットフォーム・ネイティブアプリ実装 | コード |
+| **Native** | _"Every pixel ships. Every platform matters."_ - Pure-nativeモバイル実装スペシャリスト。iOS（Swift 6.2 + SwiftUI + Liquid Glass）と Android（Kotlin 2.x + Jetpack Compose + Material 3 Expressive）。@Observable/Swift Concurrency、Compose Strong Skipping + Type-safe Navigation、SwiftData/Room、Credential Manager + Passkey、Privacy Manifest、edge-to-edge、predictive back、Live Activities、App Intents、Foundation Models / Gemini Nano、ストア準拠、ステージドロールアウト。React Native / Flutter / KMP / CMP は対象外 | コード |
 | **Pixel** | _"Every pixel matters. Fidelity is non-negotiable."_ - 画像モックアップ（PNG/JPG/スクリーンショット）からピクセルパーフェクトなHTML/CSSを生成し、視覚的検証を行う忠実再現エージェント | HTML/CSSコード |
 
 ### AI/ML
@@ -227,6 +227,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - 依存関係分析・循環参照検出・ADR/RFC作成 | 設計文書 |
+| **Port** | _"From web to native. Translate the experience, not just the code."_ - WebアプリからiOS Swift / Android Kotlin pure-nativeへのポーティング設計スペシャリスト（2026仕様：Liquid Glass / Material 3 Expressive / Swift 6.2 / targetSdk 36 / Privacy Manifest / 5.1.2(i) AI開示対応）。機能パリティマトリクス、ネイティブアーキテクチャマップ、規制コンプライアンス計画、Strangler-Fig段階的ロードマップを生成。Pure-Native UI + KMP共有ロジックのハイブリッドパスも提案可 | ポーティング設計、パリティマトリクス、ロードマップ |
 | **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - モダナイゼーション。非推奨ライブラリ検出・ネイティブAPI置換・PoC作成 | 移行計画 |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API設計・レビュー・OpenAPI仕様生成・バージョニング戦略・破壊的変更検出 | API仕様書 |
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - リポジトリ構造の設計・最適化・監査。ディレクトリ設計、docs/構成、テスト構成、アンチパターン検出 | 構造設計・監査レポート |
@@ -316,6 +317,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | エージェント | 説明 | 出力 |
 |------------|------|------|
 | **Navigator** | _"The browser is a stage. Every click is a scene."_ - Playwright/Chrome DevToolsによるブラウザ操作自動化。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視 | 自動化スクリプト |
+| **Haul** | _"The right image at the right resolution. Provenance you can stand behind."_ - 商品画像探索・高精度ダウンロードスペシャリスト。ECサイトAPI/画像検索/ブランドサイトのマルチソース集約、SKU/JAN/UPCマッチング、知覚ハッシュによる重複排除、ライセンスを意識したキュレーション | 画像マニフェスト・正規化された素材 |
 | **Director** | _"A demo that moves hearts moves products."_ - Playwright E2Eテストを活用した機能デモ動画の自動撮影。シナリオ設計、撮影設定、実装パターン、品質チェックリストを提供 | デモ動画(.webm) |
 | **Reel** | _"The terminal is a stage. Every keystroke is a performance."_ - VHS/terminalizer/asciinemaを使用したターミナル録画・CLIデモ動画生成。宣言的な.tapeファイルでGIF/MP4/WebMを作成 | GIF/動画(.gif/.mp4) |
 
@@ -795,7 +797,7 @@ skills/
 
 ### 単一エージェントの使用
 
-> カテゴリ別に全131エージェントの使用例を紹介します。
+> カテゴリ別に全133エージェントの使用例を紹介します。
 
 #### オーケストレーション
 
