@@ -3,6 +3,14 @@
 **Purpose:** Coverage math, risk weighting, and gap detection rules.
 **Read when:** You are at MAP/ANNOTATE phase computing coverage metrics or detecting gaps.
 
+> **2025-2026 Update — Three shifts to apply:**
+>
+> 1. **Diff coverage > total coverage as PR gate.** Russ Cox (research.swtch.com/diffcover), `diff-cover`, Codacy, and Codecov 2025 standardize "lines you touched should be covered" — typically ≥80% diff coverage — over chasing total coverage. Demote total coverage to a trend sparkline.
+> 2. **Mutation overlay catches vanity coverage.** Stryker incremental mode runs PR-time mutation in 1-5 minutes. Meta's ACH (FSE 2025) uses LLMs for fault-class mutants and equivalent-mutant detection. AI-generated code shows 15-25% lower mutation kill rates at equal line coverage. Vista flags `100% line / <60% mutation` as `LINE-NOT-MUTATION` vanity zones.
+> 3. **MC/DC is leaving avionics.** GCC 14 added masking MC/DC; arXiv 2501.02133 extends to Rust. ISO 26262 ASIL D, EN 50128, IEC 62304, NASA still require MC/DC, but more mainstream tooling now supports it. Surface MC/DC view when criticality=high.
+>
+> **Risk-weighted coverage** (Lighthouse pattern, blog 2025-09-02): blend `(1 - branch_pct) × git_churn × incident_count` to produce HIGH/MED/LOW per file. This replaces flat coverage thresholds with operational risk.
+
 ## Contents
 - Coverage Type Definitions
 - Per-File Aggregation
@@ -199,11 +207,14 @@ Surface in `Findings` when matched:
 | ID | Signal | Diagnosis |
 |----|--------|-----------|
 | `LINE-NOT-BRANCH` | line_pct − branch_pct ≥ 30 percentage points | Tests touch lines but skip branches. Mutation testing recommended. |
+| `LINE-NOT-MUTATION` (2025) | 100% line coverage AND mutation kill rate < 60% | Vanity zone — code runs but assertions don't catch regressions. Use Stryker incremental to verify. |
+| `COVERAGE-FEVER` (Goodhart 2025) | ≥3 files at exactly 80.0-80.5% (threshold gaming) AND assertion-density mean < 1 | Coverage Fever: chasing numbers. Recommend cutting threshold gates and relying on mutation + diff coverage. |
 | `COVERAGE-DESERT` | ≥10 contiguous untested files in critical dir | Entire feature area untested. |
 | `STALE-COVERAGE` | global branch_pct unchanged ±1pp over 90 days | Tests not evolving with code. |
 | `ASSERT-DESERT` | files at 80%+ line coverage but mutation score <20% (when available) | Tests execute code but assert nothing. |
 | `THRESHOLD-GAMING` | many files at exactly the threshold (e.g., 80.1%) | Coverage gating without quality intent. |
 | `SETUP-PADDING` | beforeAll/setUp lines counted in coverage but no assertion in tests | Inflated numbers. |
+| `MC-DC-MISSING` (2025) | criticality=high AND MC/DC unavailable while branch coverage flagged green | Safety-critical or regulated code (DO-178C / ISO 26262 ASIL D / IEC 62304) needs MC/DC; flat branch coverage misleads. |
 
 ---
 

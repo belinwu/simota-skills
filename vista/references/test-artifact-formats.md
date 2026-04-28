@@ -3,6 +3,8 @@
 **Purpose:** Format-specific parser selection and schema notes for ingesting raw test artifacts.
 **Read when:** You are at INGEST or PARSE phase and need to choose the right parser or know format-specific quirks.
 
+> **2025-2026 Update:** **CTRF** (Common Test Report Format) has emerged as the de facto unifier across Jest, Playwright, JUnit5 and other runners. Allure has shipped the **Allure 3** TypeScript rewrite with a plugin system and `watch` real-time mode. **OpenTelemetry test traces** are gaining adoption for trace-based testing (Tracetest, OTel Demo). Treat CTRF as the preferred ingest path when present, and OTel spans as a supplemental signal for the `otel` Recipe.
+
 ## Contents
 - Format Discovery
 - Parser Selection Matrix
@@ -55,6 +57,9 @@ If no artifacts are discoverable, **stop and refuse**. Do not synthesize a repor
 | Go test | `go test -json` output | `go-test-json` | Stream of events; reduce to per-test outcome |
 | pytest | `--junitxml=...` | `junit-xml-v5` | Use junit parser |
 | Cypress | `cypress/results/*.json` (mochawesome) | `mochawesome-7.x` | Convert to junit-equivalent shape |
+| **CTRF** (Common Test Report Format) | `ctrf-report.json` (or any path containing CTRF schema) | `ctrf-1.x` | Preferred unified format; many runners now emit CTRF directly. Schema: `results.tool`, `results.summary`, `results.tests[]`, `results.environment`. |
+| **Allure 3** | `allure-results/` with `meta.json` indicating v3 | `allure-3.x` | TS-rewrite, plugin system, `watch` mode; schema is similar to 2.x but with stricter typing and project-wide quality gates. |
+| **OpenTelemetry test spans** | `otel-traces.json` or OTLP endpoint | `otel-test-1.x` | Trace-based testing pattern (Tracetest, OTel Demo). One span per test step. Used by the `otel` Recipe. |
 
 Always **declare the parser ID and version** in the output Source block. Consumers must be able to reproduce the parse.
 

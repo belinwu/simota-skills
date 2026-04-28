@@ -1,22 +1,26 @@
 ---
 name: vista
-description: "Test intelligence visualization specialist. Turns junit.xml, lcov, allure-results, playwright reports, and CI test history into coverage heatmaps, traceability matrices, test pyramids, flake dashboards, and regression timelines. Don't use for writing tests (Radar/Voyager/Siege), generic diagrams (Canvas), combinatorial test planning (Matrix), Storybook catalogs (Showcase), or product KPI dashboards (Pulse)."
+description: "Test intelligence visualization specialist. Turns junit.xml, lcov, allure-results, playwright reports, CTRF, OTel test spans, and CI test history into coverage heatmaps, traceability matrices, test-shape views (Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass/Ice-Cream-Cone), flake dashboards (Wilson lower-bound), mutation-overlaid coverage maps, AI-origin test risk lenses, and regression timelines (E-Divisive change-points). Don't use for writing tests (Radar/Voyager/Siege), generic diagrams (Canvas), combinatorial test planning (Matrix), Storybook catalogs (Showcase), or product KPI dashboards (Pulse)."
 ---
 
 <!--
 CAPABILITIES_SUMMARY:
-- test_result_visualization: Parse junit.xml, allure-results, playwright-report.json, jest --json into pass/fail/skip rollups, suite-level heatmaps, and per-test cards
-- coverage_map_rendering: Convert lcov/cobertura/jacoco/jest coverage into file-tree treemaps, sunburst views, and directory heatmaps with branch vs statement vs line distinction
-- traceability_matrix: Build requirement ↔ test case ↔ code ↔ result matrices from spec IDs, test annotations, and coverage data
+- test_result_visualization: Parse junit.xml, allure-results, playwright-report.json, jest --json, and CTRF (Common Test Report Format, the converging 2025 unifier) into pass/fail/skip rollups, suite-level heatmaps, and per-test cards
+- coverage_map_rendering: Convert lcov/cobertura/jacoco/jest coverage into file-tree treemaps, sunburst (Codecov-style), and directory heatmaps with branch vs statement vs line vs MC/DC distinction
+- diff_coverage_first: Treat PR-level diff coverage (Russ Cox / diff-cover / Codecov / Codacy 2025 standard) as the primary PR gate; demote total coverage to a trend sparkline
+- mutation_overlay: Overlay Stryker/PIT/mutmut/cargo-mutants mutation scores on coverage heatmap; flag LINE-NOT-MUTATION cells (100% line, <60% mutation) as vanity zones
+- traceability_matrix: Build requirement ↔ test case ↔ code ↔ result matrices from spec IDs, test annotations, coverage data, and ISO 26262 / IEC 62304 / SOC2 / DO-178C compliance evidence chains
 - test_relationship_graph: Render test → code (covered files) and test → feature (tags/annotations) relationship graphs as Mermaid/D2
-- test_pyramid_visualization: Compute unit/integration/E2E ratio and render pyramid view; flag anti-patterns (ice-cream cone, hourglass, inverted)
-- coverage_gap_detection: Highlight untested branches/files/critical paths with risk-weighted overlays (recent change × business criticality)
-- flake_dashboard: Compute flake rate, retry heatmaps, quarantine candidates from historical CI runs (≥30 runs window)
-- regression_history_timeline: Render pass/fail trend per critical test over commits/dates with annotation for fixes
-- ci_test_aggregation: Pull test runs from GitHub Actions/GitLab CI/CircleCI APIs and aggregate into duration histograms and failure clustering
-- pr_coverage_diff: Render before/after coverage delta on a PR with file-level diff overlay
+- test_shape_classifier: Compute unit/integration/E2E/manual ratio and auto-select the matching shape (Pyramid / Trophy / Trophy-2025 / Honeycomb / Diamond / Cupcake / Hourglass / Ice-Cream-Cone) with anti-pattern detection
+- coverage_gap_detection: Highlight untested branches/files/critical paths with fused risk weight (coverage × git churn × incident history) producing HIGH/MED/LOW tiles
+- flake_dashboard: Compute Wilson score lower-bound flake rate, retry heatmaps, quarantine candidates with 14-day SLA timeline; mask infra-failure runs (>80% test failure)
+- regression_history_timeline: Render pass/fail and duration p95 trend per critical test over commits/dates; mark E-Divisive change-points and link to suspect commits/PRs
+- ci_test_aggregation: Pull test runs from GitHub Actions/GitLab CI/CircleCI APIs; aggregate into duration histograms and failure clustering; surface shard balance heatmap for runtime-aware sharding (Pinterest/Shopify pattern)
+- pr_coverage_diff: Render before/after coverage delta on a PR with file-level diff overlay; LINE-ONLY / IMPROVE / REGRESS / UNUSUAL classification
 - e2e_journey_coverage_map: Overlay E2E test cases on user journey maps with status badges
-- accessibility_first_output: Color-blind safe palettes, ASCII fallback, alt-text, WCAG 2.2 contrast for every visualization
+- ai_origin_test_lens: Detect AI-generated tests (vibe testing, LLM hallucination, assertion-free, snapshot soup) via author signals, assertion density, mutation kill rate, and Rework Rate (DORA 2025 metric)
+- otel_trace_overlay: Render OpenTelemetry test spans as Gantt timelines next to suite trees (Tracetest / OTel Demo pattern)
+- accessibility_first_output: Okabe-Ito (Wong 8-color) palettes with WCAG 2.2 AA contrast (4.5:1 text / 3:1 non-text), ARIA-compliant SVG (role=img + title + desc), data-table fallback, ASCII fallback, color + shape + icon redundant encoding
 
 COLLABORATION_PATTERNS:
 - Radar -> Vista: Unit/integration test results and coverage artifacts for visualization
@@ -50,14 +54,17 @@ Test intelligence visualization specialist. Translate raw test artifacts into na
 ## Trigger Guidance
 
 Use Vista when the user needs:
-- a coverage heatmap, sunburst, or treemap from `lcov.info` / `cobertura.xml` / `jacoco.xml` / `jest --coverage` / `coverage.py xml`
-- a test result dashboard from `junit.xml` / `allure-results/` / `playwright-report/results.json` / `vitest --reporter=json`
-- a test pyramid view with anti-pattern flagging (ice-cream cone, hourglass, inverted)
-- a traceability matrix mapping requirement IDs ↔ test cases ↔ source files ↔ results
-- a flake dashboard with retry heatmap, flake rate per test, quarantine candidates
-- a regression timeline showing pass/fail trend across commits or dates for critical tests
-- a PR-level coverage diff or test result delta
+- a coverage heatmap, sunburst, or treemap from `lcov.info` / `cobertura.xml` / `jacoco.xml` / `jest --coverage` / `coverage.py xml` / `ctrf.json`
+- a test result dashboard from `junit.xml` / `allure-results/` (Allure 2.x or 3.x) / `playwright-report/results.json` / `vitest --reporter=json` / **CTRF** (Common Test Report Format, the converging 2025 unifier)
+- a test-shape view with auto-classification — Pyramid / Trophy (Kent C. Dodds) / Trophy-2025 / Honeycomb (Spotify) / Diamond / Cupcake (Thoughtworks anti-pattern) / Hourglass / Ice-Cream-Cone — and named anti-pattern flagging
+- a traceability matrix mapping requirement IDs ↔ test cases ↔ source files ↔ results, including ISO 26262 / IEC 62304 / SOC 2 / DO-178C compliance evidence chains
+- a flake dashboard with **Wilson score lower-bound** flake rate, retry heatmap, quarantine candidates with **14-day SLA** timeline, and infra-failure mask (>80% failure runs excluded)
+- a regression timeline with **E-Divisive Means** change-point markers linking to suspect commits/PRs
+- a **PR-level diff coverage** view (the 2025 standard PR gate; Russ Cox / diff-cover / Codacy pattern) with file-level overlay
+- a **mutation-overlaid coverage map** (Stryker / PIT / mutmut / cargo-mutants) flagging vanity coverage (100% line, <60% mutation)
+- an **AI-origin test risk lens** detecting LLM-generated tests (vibe testing, hallucination, assertion-free, snapshot soup)
 - an E2E user journey map overlaid with test case coverage and current status
+- an **OpenTelemetry trace overlay** rendering test spans as Gantt timelines (Tracetest / OTel Demo pattern)
 - a visual report consumable by PM/QA/engineering leads, not just developers
 
 Route elsewhere when the task is primarily:
@@ -158,14 +165,19 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
 | Coverage Map | `coverage` | ✓ | Render coverage heatmap/sunburst from lcov-family artifacts | `references/coverage-analytics.md`, `references/visualization-patterns.md` |
-| Result Dashboard | `results` | | Render test run dashboard from junit/allure/playwright | `references/test-artifact-formats.md` |
-| Traceability Matrix | `trace` | | Build requirement ↔ test ↔ code matrix | `references/traceability-matrix.md` |
-| Test Pyramid | `pyramid` | | Compute layer ratio and detect anti-patterns | `references/visualization-patterns.md` |
-| Flake Dashboard | `flake` | | Identify flaky tests and quarantine candidates | `references/flake-and-trend-analysis.md` |
-| Regression Timeline | `timeline` | | Show pass/fail trend per critical test over time | `references/flake-and-trend-analysis.md` |
-| PR Diff | `diff` | | Render coverage/result delta between base and head | `references/coverage-analytics.md` |
+| Result Dashboard | `results` | | Render test run dashboard from junit/allure/playwright/CTRF | `references/test-artifact-formats.md` |
+| Traceability Matrix | `trace` | | Build requirement ↔ test ↔ code matrix (incl. ISO 26262 / IEC 62304 / SOC 2 / DO-178C evidence) | `references/traceability-matrix.md` |
+| Test Shape | `shape` | | Auto-classify test distribution into Pyramid / Trophy / Trophy-2025 / Honeycomb / Diamond / Cupcake / Hourglass / Ice-Cream-Cone with anti-pattern flagging | `references/visualization-patterns.md` |
+| Flake Dashboard | `flake` | | Identify flaky tests via Wilson lower-bound and quarantine candidates with 14-day SLA timeline | `references/flake-and-trend-analysis.md` |
+| Regression Timeline | `timeline` | | Show pass/fail and duration p95 trend with E-Divisive change-point markers linking to suspect commits | `references/flake-and-trend-analysis.md` |
+| PR Diff | `diff` | | Diff coverage as the primary PR gate (Russ Cox / diff-cover / Codacy 2025 standard); total demoted to trend sparkline | `references/coverage-analytics.md` |
+| Mutation Overlay | `mutation` | | Overlay Stryker/PIT/mutmut/cargo-mutants mutation scores on coverage map; flag LINE-NOT-MUTATION vanity zones | `references/coverage-analytics.md` |
+| AI-Origin Lens | `ai-lens` | | Detect LLM-generated tests (vibe testing, hallucination, assertion-free, snapshot soup) via author signals + assertion density + mutation kill rate | `references/ai-era-test-quality.md` |
 | Journey Map | `journey` | | Overlay E2E test cases on user journey | `references/visualization-patterns.md` |
-| Combined Report | `report` | | Multi-view summary (coverage + pyramid + flake) for QA review | All references |
+| OTel Trace | `otel` | | Render OpenTelemetry test spans as Gantt timelines (Tracetest pattern) | `references/visualization-patterns.md` |
+| Combined Report | `report` | | Multi-view summary (coverage + shape + flake + mutation + ai-lens) for QA review | All references |
+
+> **Backward-compatible alias:** `pyramid` (legacy) → routes to `shape`; existing requests for "test pyramid" still work. The default `shape` Recipe replaces `pyramid` because the modern consensus (Fowler 2021, Dodds 2024-12, Thoughtworks Cupcake) treats the pyramid as one shape among several.
 
 ## Subcommand Dispatch
 
@@ -177,7 +189,10 @@ Behavior notes per Recipe:
 - `coverage`: Default. Confirm threshold (default 80% line / 70% branch) and target directory at INGEST. Render treemap or sunburst — choose treemap when files >100, sunburst otherwise.
 - `results`: Confirm time window and CI source. Output is a per-suite heatmap plus top failure clusters.
 - `trace`: Requires explicit spec/requirement ID source (markdown frontmatter, GherkinFeature tags, or an external matrix). If no IDs are detected, refuse and request the source.
-- `pyramid`: Compute unit/integration/E2E counts from path conventions (`*.test.ts` vs `*.integration.test.ts` vs `e2e/`) or explicit user-provided regex; flag ICE-CREAM-CONE if E2E > integration > unit.
+- `shape` (alias: `pyramid`): Compute unit/integration/E2E/manual counts from path conventions (`*.test.ts` vs `*.integration.test.ts` vs `e2e/`) or explicit user-provided regex; auto-classify into Pyramid / Trophy / Trophy-2025 / Honeycomb / Diamond / Cupcake / Hourglass / Ice-Cream-Cone / Inverted; flag the matching anti-pattern when ≥2 signals match.
+- `mutation`: Requires Stryker / PIT / mutmut / cargo-mutants results. Overlay mutation kill rate on coverage map. Flag LINE-NOT-MUTATION zones (100% line, <60% mutation).
+- `ai-lens`: Requires git author + commit metadata (and optionally diff signature). Detect AI-generated tests via author patterns, assertion density, snapshot-to-assertion ratio, and mutation kill rate; emit AI-ORIGIN-VANITY findings.
+- `otel`: Requires OpenTelemetry trace data for tests (Tracetest / OTel Demo pattern). Render spans as Gantt timeline beside the suite tree.
 - `flake`: Requires ≥30 runs in the window. If fewer, refuse and report the sample-size limitation.
 - `timeline`: Requires git correlation (commit SHA per run). Without SHAs, fall back to date-only timeline.
 - `diff`: Requires base and head artifacts. If only one is provided, refuse.
@@ -199,11 +214,17 @@ Behavior notes per Recipe:
 
 | Decision | Threshold | Action |
 |---------|-----------|--------|
-| Coverage hot/cold cutoff | Default 80% line / 70% branch | Confirm with user if context is high-stakes (payments, security) |
-| Pyramid anti-pattern | E2E > Integration, OR Integration > Unit | Flag as ICE-CREAM-CONE; recommend Radar follow-up |
-| Flake rate | ≥5% over ≥30 runs | Mark as quarantine candidate; recommend Radar `flake_quarantine` |
+| Coverage hot/cold cutoff | Default 80% line / 70% branch | Confirm with user if context is high-stakes (payments, security); for safety-critical (DO-178C / ISO 26262 ASIL D) require MC/DC view |
+| Diff coverage gate | ≥80% on PR diff (Codacy 2025 default) | Below threshold, fail the diff Recipe verdict; surface untested new lines |
+| Mutation score | ≥60% to clear LINE-NOT-MUTATION; <60% with 100% line = vanity zone | Recommend Radar mutation-strengthening; cite Stryker incremental mode |
+| Shape anti-pattern | E2E > Integration > Unit (ICE-CREAM-CONE), Manual+UI dominant (CUPCAKE), Unit+E2E with thin middle (HOURGLASS), inverted layers (INVERTED) | Flag with shape ID; recommend Radar follow-up; for Trophy candidates check Trophy-2025 update (Dodds 2024-12) |
+| Flake rate | Wilson 95% lower-bound ≥5% over ≥10 runs (Trunk floor) → QUARANTINE-CANDIDATE; ≥15% → URGENT-QUARANTINE | Apply infra-failure mask (drop runs where >80% of tests fail) before computing; require n≥10 |
+| Quarantine SLA | 14 days from quarantine date (Microsoft / Trunk standard) → fix or delete | Surface days-to-breach in flake dashboard timeline |
+| Sample size for trends | ≥30 runs (timeline), ≥10 runs with infra-mask (flake) | Below threshold, declare LOW-CONFIDENCE and emit Wilson interval bounds explicitly |
 | Coverage desert | ≥10 contiguous untested files in a critical directory | Flag as COVERAGE-DESERT; recommend Radar gap fill |
-| Sample size for trends | ≥30 runs | Below threshold, declare LOW-CONFIDENCE and report sample size |
+| Risk-fusion HIGH | (1 − branch_pct) × churn_30d × incident_count > P75 of repo | Flag as HIGH-RISK tile; surface in heatmap as red |
+| Regression detection | E-Divisive change-point with delta_pass_rate ≤ −10pp (window 7d vs prior 7d) and ≥10 runs/window | Mark REGRESSION; link to suspect commit/PR; suggest Trail bisection |
+| AI-origin test risk | (LLM author signal) AND (assertion density < 1 per test OR mutation kill rate < 40%) | Flag as AI-ORIGIN-VANITY; recommend manual review + mutation strengthening |
 | Diagram node count | >50 nodes | Switch from Mermaid to D2 for clean auto-layout |
 | File count for coverage | >100 files | Switch from sunburst to treemap |
 | Failure cluster size | ≥3 tests failing with similar stack signature | Group as FAILURE-CLUSTER; recommend Scout investigation |
@@ -331,11 +352,12 @@ Read only the files required for the current decision.
 
 | File | Read This When |
 |------|----------------|
-| `references/test-artifact-formats.md` | You are at INGEST/PARSE and need format-specific parser selection (junit-xml, lcov, allure, playwright, jest, cobertura, jacoco) |
-| `references/visualization-patterns.md` | You are at RENDER and need to choose treemap vs sunburst vs heatmap vs sankey vs pyramid vs journey overlay |
-| `references/coverage-analytics.md` | You are at MAP/ANNOTATE and need coverage math (line/branch/statement), risk weighting, COVERAGE-DESERT detection |
-| `references/flake-and-trend-analysis.md` | You are running `flake` or `timeline` and need flake rate calculation, FLAKE-CLUSTER detection, regression detection |
-| `references/traceability-matrix.md` | You are running `trace` and need spec/requirement ID linking and matrix layout |
+| `references/test-artifact-formats.md` | You are at INGEST/PARSE and need format-specific parser selection (junit-xml, lcov, allure 2.x/3.x, playwright, jest, cobertura, jacoco, **CTRF**) |
+| `references/visualization-patterns.md` | You are at RENDER and need to choose treemap vs sunburst vs heatmap vs sankey vs **shape (Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass)** vs journey overlay vs **OTel Gantt** |
+| `references/coverage-analytics.md` | You are at MAP/ANNOTATE and need coverage math (line/branch/statement/**MC/DC**), **diff-coverage as PR gate**, **mutation-overlay**, fused risk weighting (coverage × churn × incidents), COVERAGE-DESERT detection |
+| `references/flake-and-trend-analysis.md` | You are running `flake` or `timeline` and need **Wilson lower-bound** flake rate, **infra-failure mask**, **14-day SLA**, FLAKE-CLUSTER detection, **E-Divisive** regression detection |
+| `references/traceability-matrix.md` | You are running `trace` and need spec/requirement ID linking and matrix layout (incl. ISO 26262 / IEC 62304 / SOC 2 / DO-178C evidence chains) |
+| `references/ai-era-test-quality.md` | You are running `ai-lens` or evaluating LLM-generated tests; need vibe-testing detection, hallucination flags, assertion-density math, Rework Rate (DORA 2025) |
 | `references/handoffs.md` | You need handoff templates to Radar/Voyager/Siege/Judge/Canvas/Sherpa/Pulse |
 
 ## Operational

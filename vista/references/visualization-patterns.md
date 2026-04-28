@@ -128,9 +128,37 @@ Legend: `✅ pass`, `❌ fail`, `🔁 flake (passed on retry)`, `⏭ skipped`, `
 
 ---
 
-## Test Pyramid
+## Test Shape (Pyramid / Trophy / Honeycomb / Diamond / Cupcake / Hourglass)
 
-Standard distribution: Unit > Integration > E2E.
+> **2025-2026 update:** The Pyramid is now one shape among several. Consensus has shifted from "the right shape" to "the right shape for this context, well-named":
+> - **Trophy** (Kent C. Dodds): integration-heavy; favored for React/Next.js apps. Dodds 2024-12 update notes that **SSR + Playwright + Vitest Browser Mode** has lowered E2E cost, prompting a Trophy-2025 reconsideration where E2E grows.
+> - **Honeycomb** (Spotify): minimal unit + thick integration; suited to microservices.
+> - **Diamond** / **Vase** (WireMock 2025): thick mid-layer (API integration), narrow top and bottom; argued as superior economic model.
+> - **Cupcake** (Thoughtworks anti-pattern): low unit + heavy manual/UI; explicit anti-pattern.
+> - **Hourglass**: unit + E2E, missing integration; legacy code anti-pattern.
+> - **Ice-Cream-Cone / Inverted**: classic anti-pattern.
+> - **Pyramid**: still valid for many monolithic apps.
+
+### Auto-classification rule
+
+```yaml
+SHAPE_CLASSIFIER:
+  inputs: {unit: U, integration: I, e2e: E, manual: M}
+  ratios: {u_pct=U/(U+I+E+M), ...}
+  rules_in_order:
+    - if u_pct >= 0.6 and i_pct ~ 0.25 and e_pct ~ 0.10  → Pyramid
+    - if i_pct >= 0.45 and u_pct >= 0.25 and e_pct >= 0.10  → Trophy
+    - if i_pct >= 0.45 and e_pct >= 0.20  → Trophy-2025
+    - if i_pct >= 0.55 and u_pct < 0.30  → Honeycomb
+    - if i_pct >= 0.45 and u_pct < 0.30 and e_pct < 0.20  → Diamond
+    - if m_pct >= 0.30 and u_pct < 0.30  → Cupcake (anti-pattern)
+    - if u_pct >= 0.40 and e_pct >= 0.30 and i_pct < 0.20  → Hourglass (anti-pattern)
+    - if e_pct > i_pct > u_pct  → Ice-Cream-Cone (anti-pattern)
+    - if e_pct > u_pct  → Inverted (severe anti-pattern)
+    - else → Mixed (no clear shape)
+```
+
+Standard pyramid distribution: Unit > Integration > E2E.
 
 ### ASCII
 
@@ -160,6 +188,8 @@ pie title Test Pyramid (550 total)
 | `HOURGLASS` | Many Unit + many E2E, few Integration | Missing integration layer; gaps in seam testing |
 | `INVERTED` | E2E > Unit | Severe; recommend Radar to add unit tests |
 | `MONOLITHIC` | One layer >95% of tests | Layer specialization missing |
+| `CUPCAKE` (Thoughtworks 2025) | Manual + UI tests dominate; unit < 30% | Heavy manual + low automation; recommend Radar to add unit/integration |
+| `COVERAGE-FEVER` (Goodhart) | Threshold gaming: many files at exactly threshold (e.g. 80.1%); high LOC but low mutation kill | Quality theater; recommend mutation overlay |
 
 Always cite the pattern by ID in `Findings`.
 

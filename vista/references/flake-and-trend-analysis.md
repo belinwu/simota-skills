@@ -3,6 +3,18 @@
 **Purpose:** Flake rate computation, FLAKE-CLUSTER detection, and regression timeline analytics.
 **Read when:** You are running the `flake` or `timeline` Recipes.
 
+> **2025-2026 Update — Five rules to apply:**
+>
+> 1. **Wilson score lower-bound** is the consensus statistical method for flake rate (Wilson 95% CI lower bound). Use the lower bound, not the raw rate, to avoid over-quarantining at small `n`.
+> 2. **Confidence floor: ≥10 historical runs/test** (Trunk 2025). Below floor, declare LOW-CONFIDENCE — do not classify.
+> 3. **Infra-failure mask:** drop runs where >80% of tests failed in that run (likely infra/DNS/auth incident, not test flake). Trunk 2025 standard pre-processing step.
+> 4. **Quarantine SLA: 14 days** (Microsoft policy → 18% flakiness reduction in 6 months). Past SLA → disable or delete. Quarantine without SLA = debt accumulator.
+> 5. **E-Divisive Means** is the de-facto change-point algorithm for CI perf and pass-rate regression (MongoDB-origin, ICPE). PELT and BOCPD are also widely cited.
+>
+> **Tag taxonomy** (Datadog 2025 standard): `is_flaky`, `is_new_flaky`, `is_known_flaky` — adopt these labels in Vista output for cross-platform compatibility.
+>
+> **AI-assisted flake fix:** Datadog Bits AI Dev Agent and FlakyGuard (ASE 2025; 47.6% repair rate, 51.8% accepted) auto-PR fixes for flaky tests. Vista can hand off quarantine candidates to such agents (but Vista itself does not write fixes).
+
 ## Contents
 - Flake Rate Definition
 - Sample Size Requirements
@@ -29,14 +41,37 @@ Where:
 - `failed_runs_followed_by_pass`: same test, same SHA, ran multiple times — failed at least once and passed at least once.
 - `passed_runs_after_retry`: Playwright/Cypress retry counted (status=passed, retry>0).
 
-### Threshold
+### Threshold (apply to **Wilson 95% lower-bound**, not raw rate)
 
-| Flake rate | Classification | Action |
+| Flake rate (Wilson lower) | Classification | Action |
 |------------|---------------|--------|
 | <1% | STABLE | none |
 | 1-5% | WATCH | monitor; no action |
 | 5-15% | QUARANTINE-CANDIDATE | recommend Radar `flake_quarantine` |
 | ≥15% | URGENT-QUARANTINE | recommend immediate Radar action; mark blocking |
+
+### Wilson 95% lower-bound formula
+
+For `k` failures in `n` runs (with `p = k/n`, `z = 1.96`):
+
+```
+Wilson_lower = (p + z²/(2n) − z·sqrt(p(1−p)/n + z²/(4n²))) / (1 + z²/n)
+```
+
+Use `Wilson_lower` for classification; print both raw `p` and Wilson interval in the dashboard so reviewers can see the confidence band.
+
+### Pre-processing (Trunk 2025)
+
+Before computing per-test flake rate:
+1. Load runs in time window.
+2. **Drop runs where `(failed_tests / total_tests_in_run) > 0.80`** — these are likely infra incidents, not test flakes.
+3. Require `n ≥ 10` per test post-mask. Below floor → emit `LOW-CONFIDENCE` and skip classification.
+
+### Quarantine SLA
+
+- Standard SLA: **14 days** from quarantine date (Microsoft 2024 standard, Trunk 2025 default).
+- Past SLA without fix → recommend disable or delete.
+- Surface `days_in_quarantine` and `days_to_breach` in flake dashboard timeline.
 
 ---
 
