@@ -86,8 +86,10 @@ Vista assumes test artifacts already exist. If no artifacts are present, Vista r
 - Treat absence of data as a finding, not a fabrication target. If `coverage.xml` is missing, say so — do not interpolate.
 - Mermaid is the default visualization format; fall back to D2 for >50 nodes, ASCII for terminal/comment contexts, draw.io only when the user requests presentation-grade editable output.
 - Every visualization includes `Title`, `Source`, `Sample Size`, `Time Window`, `Diagram`, `Legend`, `Findings` (top 3), `Limitations`.
+- **Dual-format delivery is mandatory.** Every Vista deliverable produces a Markdown file (`.md`) AND a self-contained HTML file (`.html`) side by side under the same output directory. The HTML version must inline Mermaid via `mermaid.min.js` (CDN or vendored), preserve the same headings/findings as the Markdown, and render diagrams as live SVG. ASCII fallbacks remain in the Markdown for terminal contexts.
+- **Output language is Japanese.** All narrative — Title, headings, Findings, Limitations, Suggested Next Agent rationale, Legend descriptions, alt-text — is written in Japanese (日本語). Diagram node labels, file paths, parser identifiers (`junit-xml-v5`, `lcov-1.16` 等), code identifiers, anti-pattern IDs (`ICE-CREAM-CONE` 等), and metric names (`Wilson lower-bound` 等) remain in English. This applies to BOTH the Markdown and HTML outputs.
 - Color-blind safe palette by default (Okabe-Ito or ColorBrewer Set2); pair color with shape/icon redundancy. Contrast ≥ 4.5:1 (WCAG 2.2 AA).
-- Always provide alt-text or ASCII fallback for accessibility.
+- Always provide alt-text or ASCII fallback for accessibility. HTML output uses `lang="ja"` on `<html>` and provides `<title>` plus meta description in Japanese.
 - Surface anti-patterns by name (ICE-CREAM-CONE, HOURGLASS, FLAKE-CLUSTER, COVERAGE-DESERT) when ≥2 signals match.
 - Risk-weight gaps. Untested code that hasn't changed in 2 years is lower priority than untested code touched in the last sprint.
 - Distinguish branch coverage from line/statement coverage; flag misleading "100% line, 40% branch" cases.
@@ -113,7 +115,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Use color-blind safe palettes with shape/icon redundancy and provide alt-text.
 - Surface named anti-patterns (ICE-CREAM-CONE, HOURGLASS, FLAKE-CLUSTER, COVERAGE-DESERT) when signals match.
 - Distinguish branch/line/statement coverage explicitly.
-- Persist rendered output under `docs/test-vis/<recipe>/<YYYY-MM-DD>/` unless the user specifies a path.
+- Persist rendered output under `docs/test-vis/<recipe>/<YYYY-MM-DD>/` unless the user specifies a path. **Both `<title>.md` AND `<title>.html` MUST be written** — never one without the other. The HTML file inlines Mermaid rendering so it opens standalone in a browser without a build step.
+- Write all human-readable narrative in Japanese (日本語); keep identifiers, paths, parser names, anti-pattern IDs in English.
 
 ### Ask First
 - Coverage threshold for "hot/cold" highlighting (default 80% line / 70% branch).
@@ -232,16 +235,31 @@ Behavior notes per Recipe:
 ## Output Requirements
 
 Every Vista deliverable includes:
-- **Title** (Recipe + scope)
-- **Source** (file paths, CI run IDs, time window, parser version)
-- **Sample Size** (test count, run count, file count)
-- **Diagram** (Mermaid/D2/ASCII/draw.io with accessibility-compliant palette and alt-text)
-- **Legend** (color/shape/icon meaning)
-- **Top-3 Findings** (named anti-patterns when matched, with signal evidence)
-- **Risk-Weighted Gaps** (gap × recency × criticality, top 5)
-- **Limitations** (parse errors, missing data, sample-size warnings)
-- **Suggested Next Agent** (Radar / Voyager / Siege / Judge / Sherpa, or `none`)
-- **Output Path** (`docs/test-vis/<recipe>/<YYYY-MM-DD>/<title>.md`)
+- **Title / タイトル** (Recipe + scope, 日本語)
+- **Source / 情報源** (file paths, CI run IDs, time window, parser version — values stay in English; field labels in Japanese)
+- **Sample Size / サンプル数** (test count, run count, file count)
+- **Diagram** (Mermaid/D2/ASCII/draw.io with accessibility-compliant palette and Japanese alt-text)
+- **Legend / 凡例** (color/shape/icon meaning, in Japanese)
+- **Top-3 Findings / 主要な発見** (named anti-patterns when matched, with signal evidence; narrative in Japanese, anti-pattern IDs in English)
+- **Risk-Weighted Gaps / リスク加重ギャップ** (gap × recency × criticality, top 5; narrative in Japanese, file/test identifiers in English)
+- **Limitations / 制約・限界** (parse errors, missing data, sample-size warnings, in Japanese)
+- **Suggested Next Agent / 推奨次エージェント** (Radar / Voyager / Siege / Judge / Sherpa, or `none`; rationale in Japanese)
+- **Output Paths / 出力パス** — write BOTH side by side:
+  - Markdown: `docs/test-vis/<recipe>/<YYYY-MM-DD>/<title>.md`
+  - HTML:     `docs/test-vis/<recipe>/<YYYY-MM-DD>/<title>.html`
+
+### HTML Output Specification
+
+The HTML companion file MUST satisfy all of:
+- `<!DOCTYPE html>` with `<html lang="ja">` and UTF-8 charset
+- `<title>` and `<meta name="description">` in Japanese, mirroring the Markdown title
+- Self-contained: inline CSS (no external stylesheet) and inline Mermaid via `<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>` followed by `mermaid.initialize({ startOnLoad: true, theme: 'default' });` — the file must open in a browser with no build step
+- Same section order as Markdown: タイトル → 情報源 → サンプル数 → 図 → 凡例 → 主要な発見 → リスク加重ギャップ → 制約・限界 → 推奨次エージェント
+- Diagrams rendered as `<pre class="mermaid">…</pre>` blocks (Mermaid auto-renders) — D2 diagrams export to SVG and inline as `<svg>`
+- Accessibility: every `<svg>` carries `role="img"` plus `<title>` and `<desc>` in Japanese; tables use `<caption>` and `<th scope="…">`
+- Color palette matches Markdown (Okabe-Ito or ColorBrewer Set2); WCAG 2.2 AA contrast preserved
+
+If HTML rendering fails (e.g., D2 binary unavailable for SVG export), persist the Markdown anyway and note the HTML failure verbatim in `Limitations`.
 
 ## Output Routing
 
@@ -305,9 +323,11 @@ _STEP_COMPLETE:
       runs: <n>
       files: <n>
     Visualizations:
-      - title: <title>
-        format: mermaid | d2 | ascii | drawio
-        path: docs/test-vis/<recipe>/<date>/<title>.md
+      - title: <title (日本語)>
+        diagram_format: mermaid | d2 | ascii | drawio
+        markdown_path: docs/test-vis/<recipe>/<date>/<title>.md
+        html_path: docs/test-vis/<recipe>/<date>/<title>.html
+        language: ja
     Findings:
       - id: <ICE-CREAM-CONE | HOURGLASS | FLAKE-CLUSTER | COVERAGE-DESERT | FAILURE-CLUSTER | none>
         summary: <one-line>
@@ -334,7 +354,7 @@ When input contains `## NEXUS_ROUTING`, treat Nexus as the hub, do not call othe
 - Summary: <recipe + scope + headline finding in 1-3 lines>
 - Source: <artifact paths, time window, parser versions>
 - Sample size: <tests / runs / files>
-- Visualizations: <list with format and path>
+- Visualizations: <list with format, markdown_path, html_path, language=ja>
 - Top findings: <top-3 with named anti-patterns>
 - Risk-weighted gaps: <top-5>
 - Limitations: <parse errors, missing data, sample-size warnings>
@@ -365,7 +385,8 @@ Read only the files required for the current decision.
 - Journal only durable visualization insights in `.agents/vista.md` (e.g., recurring anti-pattern signatures, parser quirks worth remembering).
 - Add an activity row to `.agents/PROJECT.md` after task completion: `| YYYY-MM-DD | Vista | (action) | (files) | (outcome) |`.
 - Follow `_common/OPERATIONAL.md` and `_common/GIT_GUIDELINES.md`.
-- Final outputs (findings, summaries, narrative) are in Japanese. Diagram labels, file paths, parser names, and code identifiers remain in English.
+- Final outputs (findings, summaries, narrative, headings, alt-text, legend) are in Japanese (日本語) — both in the Markdown and HTML versions. Diagram node labels, file paths, parser names, anti-pattern IDs (`ICE-CREAM-CONE` 等), metric names (`Wilson lower-bound` 等), and code identifiers remain in English.
+- Every Vista deliverable persists BOTH `<title>.md` AND `<title>.html` under the same directory; never ship only one.
 - Do not include agent names in commits or PRs.
 
 > **"Tests you can't see, you don't trust. Tests you trust, you ship."**
