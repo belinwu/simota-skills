@@ -7,307 +7,310 @@
 
 ## How to Use This Catalog
 
-- カテゴリ別にエージェントを探す場合はカテゴリセクションを参照
-- タスクからエージェントを探す場合は `references/patterns.md` を参照
-- 最新の正確なエージェント数やカテゴリは、リポジトリのディレクトリ構造から確認すること
+- To find agents by category, browse the category sections below.
+- To find agents by task, see `references/patterns.md`.
+- For the most accurate, up-to-date agent count and categories, verify against the repository directory structure.
 
 ---
 
 ## Orchestration (6)
 
-タスクの分解・調整・並列実行を担当。
+Decomposes, coordinates, and parallelizes tasks.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Nexus** | チームオーケストレータ | 複数エージェント連携が必要な複雑タスク | No |
-| **Sherpa** | タスク分解ガイド | 15分以内のアトミックステップに分解 | No |
-| **Titan** | プロダクトデリバリー | 最速でコード納品、計画より実装優先 | No |
-| **Rally** | 並列オーケストレータ | 複数セッション並列実行 | No |
-| **Aether** | AITuberオーケストレータ | AI VTuberシステム構築 | No |
-| **Atelier** | デザイン→実装パイプライン | Vision→Muse/Frame→Forge→Artisan→Showcase→Canvas を統合 | No |
+| **Nexus** | Team orchestrator | Complex tasks requiring multi-agent coordination | No |
+| **Sherpa** | Task decomposition guide | Break work into atomic steps under 15 minutes | No |
+| **Titan** | Product delivery | Ship code fastest, prefer build over plan | No |
+| **Rally** | Parallel orchestrator | Multi-session parallel execution | No |
+| **Aether** | AITuber orchestrator | Building AI VTuber systems | No |
+| **Atelier** | Design → implementation pipeline | Integrates Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas | No |
 
 ## Investigation (9)
 
-調査・分析・根本原因特定を担当。コードは書かない。
+Investigation, analysis, and root-cause identification. Does not write code.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Scout** | バグ調査・RCA | バグの原因調査、再現手順作成 | No |
-| **Lens** | コード理解 | コード構造マッピング、機能発見、データフロー追跡 | No |
-| **Trail** | Git履歴調査 | リグレッション分析、コミット考古学 | No |
-| **Fossil** | レガシーコード解析 | 暗黙のビジネスルール抽出、移行リスク評価 | No |
-| **Ripple** | 影響範囲分析 | 変更前のリスク評価、blast radius 算出 | No |
-| **Specter** | 並行性問題検出 | Race condition、メモリリーク、デッドロック | No |
-| **Sweep** | 不要コード検出 | 未使用ファイル・デッドコード・孤立ファイル特定 | No |
-| **Spark** | 新機能提案 | 既存データ/ロジックを活かした機能アイデア | No |
-| **Void** | YAGNI検証 | スコープカット、複雑性削減提案 | No |
+| **Scout** | Bug investigation / RCA | Diagnose bug causes, build reproduction steps | No |
+| **Lens** | Codebase comprehension | Structure mapping, feature discovery, data-flow tracing | No |
+| **Trail** | Git history investigation | Regression analysis, commit archaeology | No |
+| **Fossil** | Legacy code archaeology | Extract implicit business rules, assess migration risk | No |
+| **Ripple** | Impact analysis | Pre-change risk evaluation, blast-radius estimation | No |
+| **Specter** | Concurrency issue detection | Race conditions, memory leaks, deadlocks | No |
+| **Sweep** | Dead-code detection | Unused files, dead code, orphaned files | No |
+| **Spark** | New feature proposals | Feature ideas leveraging existing data/logic | No |
+| **Void** | YAGNI verification | Scope cuts, complexity reduction proposals | No |
 
 ## Implementation (6)
 
-コード実装を担当。
+Code implementation.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Builder** | ビジネスロジック実装 | 堅牢なAPI統合、データモデル | Yes |
-| **Artisan** | フロントエンド実装 | React/Vue/Svelte本格実装 | Yes |
-| **Forge** | プロトタイプ | フロント/バック両方の高速プロトタイプ | Yes |
-| **Anvil** | CLI/TUI構築 | ターミナルUI、CLIツール | Yes |
-| **Native** | モバイル開発 | React Native/Flutter/SwiftUI/Compose | Yes |
-| **Pixel** | モックアップ→コード | 画像からピクセル精度のHTML/CSS生成 | Yes |
+| **Builder** | Business-logic implementation | Robust API integrations, data models | Yes |
+| **Artisan** | Frontend implementation | Production React/Vue/Svelte | Yes |
+| **Forge** | Prototyping | Fast prototypes for both frontend and backend | Yes |
+| **Anvil** | CLI/TUI construction | Terminal UIs and CLI tools | Yes |
+| **Native** | Pure-native mobile implementation | iOS Swift 6.2 + SwiftUI / Android Kotlin 2.x + Jetpack Compose (RN/Flutter/KMP/CMP out of scope) | Yes |
+| **Pixel** | Mockup → code | Pixel-accurate HTML/CSS from images | Yes |
 
 ## Testing (3)
 
-テスト作成・検証を担当。
+Test authoring and verification.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Radar** | ユニットテスト | エッジケース追加、flakyテスト修正、カバレッジ向上 | Yes |
-| **Voyager** | E2Eテスト | Playwright/Cypress設定、Page Object設計 | Yes |
-| **Siege** | 負荷・耐障害テスト | 負荷テスト、契約テスト、カオスエンジニアリング | Yes |
+| **Radar** | Unit tests | Edge-case additions, flaky-test repair, coverage improvement | Yes |
+| **Voyager** | E2E tests | Playwright/Cypress configuration, Page Object design | Yes |
+| **Siege** | Load and resilience testing | Load tests, contract tests, chaos engineering | Yes |
 
 ## Security (4)
 
-セキュリティ分析・テストを担当。
+Security analysis and testing.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Sentinel** | 静的セキュリティ分析 | ハードコード秘密検出、SQLi防止、依存脆弱性 | Mixed |
-| **Breach** | レッドチーム | 攻撃シナリオ設計、MITRE ATT&CK | No |
-| **Probe** | 動的セキュリティテスト | OWASP ZAP/Burp Suite、ペネトレーションテスト | Mixed |
-| **Crypt** | 暗号アーキテクチャ | アルゴリズム選定、鍵管理、E2EE、TLS設定 | Mixed |
+| **Sentinel** | Static security analysis | Hardcoded-secret detection, SQLi prevention, dependency CVEs | Mixed |
+| **Breach** | Red team | Attack-scenario design, MITRE ATT&CK | No |
+| **Probe** | Dynamic security testing | OWASP ZAP / Burp Suite, penetration testing | Mixed |
+| **Crypt** | Cryptographic architecture | Algorithm selection, key management, E2EE, TLS configuration | Mixed |
 
 ## Review (7)
 
-コードレビュー・品質チェックを担当。
+Code review and quality checks.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Judge** | 自動コードレビュー | PRレビュー自動化、バグ検出 | Mixed |
-| **Zen** | リファクタリング | 変数名改善、関数抽出、デッドコード除去 | Mixed |
-| **Canon** | 規格準拠チェック | OWASP/WCAG/OpenAPI準拠評価 | No |
-| **Gauge** | SKILL.md監査 | 16項目チェックリスト準拠確認 | No |
-| **Attest** | 仕様準拠検証 | 受入基準抽出、BDDシナリオ生成 | No |
-| **Warden** | UX品質ゲート | V.A.I.R.E.評価、スコアカード | No |
-| **Cloak** | プライバシーエンジニアリング | PII検出、GDPR/CCPA準拠 | Mixed |
+| **Judge** | Automated code review | PR review automation, bug detection | Mixed |
+| **Zen** | Refactoring | Variable renaming, function extraction, dead-code removal | Mixed |
+| **Canon** | Standards-compliance check | OWASP / WCAG / OpenAPI conformance evaluation | No |
+| **Gauge** | SKILL.md audit | 16-item checklist conformance | No |
+| **Attest** | Spec-compliance verification | Acceptance-criteria extraction, BDD scenario generation | No |
+| **Warden** | UX quality gate | V.A.I.R.E. evaluation, scorecard | No |
+| **Cloak** | Privacy engineering | PII detection, GDPR / CCPA compliance | Mixed |
 
 ## Performance (2)
 
-パフォーマンス最適化を担当。
+Performance optimization.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Bolt** | フロント/バック最適化 | 再レンダリング削減、N+1修正、キャッシュ | Yes |
-| **Tuner** | DB最適化 | EXPLAIN ANALYZE、インデックス推奨、スロークエリ | Yes |
+| **Bolt** | Frontend / backend optimization | Re-render reduction, N+1 fixes, caching | Yes |
+| **Tuner** | DB optimization | EXPLAIN ANALYZE, index recommendations, slow queries | Yes |
 
 ## Documentation (6)
 
-ドキュメント作成・可視化・記事執筆を担当。
+Documentation authoring, visualization, and article writing.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Scribe** | 技術仕様書 | PRD/SRS/HLD/LLD作成 | No |
-| **Quill** | コードドキュメント | JSDoc追加、README更新、any型修正 | Mixed |
-| **Prose** | UXライティング | マイクロコピー、エラーメッセージ、トーン設計 | No |
-| **Tome** | 学習教材 | diff→教材変換、設計判断記録 | No |
-| **Canvas** | 図解・可視化 | Mermaid/ASCII/draw.io でフロー・シーケンス・ER 図生成 | Mixed |
-| **Zine** | 技術ブログ連載 | note/Zenn/Qiita/dev.to 向け記事執筆 | No |
+| **Scribe** | Technical specifications | PRD / SRS / HLD / LLD authoring | No |
+| **Quill** | Code documentation | JSDoc additions, README updates, fixing `any` types | Mixed |
+| **Prose** | UX writing | Microcopy, error messages, voice and tone | No |
+| **Tome** | Learning material | Diff → tutorial conversion, design-decision records | No |
+| **Canvas** | Diagramming and visualization | Mermaid / ASCII / draw.io for flow, sequence, ER diagrams | Mixed |
+| **Zine** | Tech blog series | Articles for note / Zenn / Qiita / dev.to | No |
 
 ## Architecture (8)
 
-システム設計・構造を担当。
+System design and structure.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Atlas** | アーキテクチャ分析 | 依存関係分析、ADR/RFC作成 | Mixed |
-| **Schema** | DB設計 | 正規化、インデックス戦略、ER図 | Mixed |
-| **Gateway** | API設計 | OpenAPI生成、バージョニング | Mixed |
-| **Stratum** | C4モデル | Structurizr DSL生成 | Mixed |
-| **Grove** | リポジトリ構造 | ディレクトリ設計、docs/レイアウト | Mixed |
-| **Nest** | LLM最適化フォルダ構造 | エージェント向けディレクトリ最適化 | Mixed |
-| **Shard** | マルチテナント設計 | テナント分離、RLS、スケール設計 | Mixed |
-| **Grok** | 文法/パーサ/DSL設計 | Regex、PEG/ANTLR、ReDoS-safe な文法設計 | Mixed |
+| **Atlas** | Architecture analysis | Dependency analysis, ADR / RFC authoring | Mixed |
+| **Schema** | DB design | Normalization, indexing strategy, ER diagrams | Mixed |
+| **Gateway** | API design | OpenAPI generation, versioning | Mixed |
+| **Stratum** | C4 modeling | Structurizr DSL generation | Mixed |
+| **Grove** | Repository structure | Directory design, docs/ layout | Mixed |
+| **Nest** | LLM-optimized folder structure | Agent-friendly directory optimization | Mixed |
+| **Shard** | Multi-tenant design | Tenant isolation, RLS, scale design | Mixed |
+| **Grok** | Grammar / parser / DSL design | Regex, PEG / ANTLR, ReDoS-safe grammar design | Mixed |
 
 ## UX/Design (11)
 
-UI/UX設計・改善を担当。
+UI/UX design and improvement.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Vision** | クリエイティブディレクション | UI/UXの方向性決定 | No |
-| **Palette** | ユーザビリティ改善 | 認知負荷削減、a11y準拠 | Mixed |
-| **Echo** | ペルソナ認知ウォークスルー | ユーザビリティ評価、混乱点発見 | No |
-| **Flow** | アニメーション実装 | CSS/JSアニメーション、トランジション | Yes |
-| **Muse** | デザイントークン | トークンアーキテクチャ、ダークモード | Mixed |
-| **Showcase** | Storybook | ストーリー作成、Visual Regression | Mixed |
-| **Researcher** | ユーザーリサーチ | インタビュー設計、ペルソナ作成 | No |
-| **Trace** | セッションリプレイ分析 | 行動パターン抽出、UX問題発見 | No |
-| **Cast** | ペルソナキャスティング | ペルソナ生成・管理・同期 | No |
-| **Funnel** | LP構築 | ランディングページ設計・最適化 | Mixed |
-| **Voice** | ユーザーフィードバック分析 | NPS 設計、レビュー分析、センチメント分析 | No |
+| **Vision** | Creative direction | UI/UX direction decisions | No |
+| **Palette** | Usability improvement | Cognitive-load reduction, a11y compliance | Mixed |
+| **Echo** | Persona cognitive walkthrough | Usability evaluation, confusion-point discovery | No |
+| **Flow** | Animation implementation | CSS / JS animation, transitions | Yes |
+| **Muse** | Design tokens | Token architecture, dark mode | Mixed |
+| **Showcase** | Storybook | Story authoring, Visual Regression | Mixed |
+| **Researcher** | User research | Interview design, persona creation | No |
+| **Trace** | Session-replay analysis | Behavioral pattern extraction, UX issue discovery | No |
+| **Cast** | Persona casting | Persona generation, management, sync | No |
+| **Funnel** | Landing-page construction | LP design and optimization | Mixed |
+| **Voice** | User-feedback analysis | NPS design, review analysis, sentiment analysis | No |
 
 ## DevOps (7)
 
-インフラ・CI/CD・運用を担当。
+Infrastructure, CI/CD, and operations.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Gear** | 依存管理・CI/CD | ビルドエラー、dev環境問題 | Yes |
-| **Scaffold** | インフラ構築 | Terraform/Docker Compose設計 | Yes |
-| **Pipe** | GitHub Actions | ワークフロー設計、セキュリティ強化 | Yes |
-| **Beacon** | 監視・信頼性 | SLO/SLI設計、アラート戦略 | Mixed |
-| **Launch** | リリース管理 | バージョニング、CHANGELOG、ロールバック | Mixed |
-| **Comply** | コンプライアンス | SOC2/PCI-DSS/HIPAA準拠チェック | Mixed |
-| **Ledger** | FinOps | クラウドコスト最適化、RI/SP推奨 | No |
+| **Gear** | Dependency management / CI/CD | Build errors, dev-environment issues | Yes |
+| **Scaffold** | Infrastructure provisioning | Terraform / Docker Compose design | Yes |
+| **Pipe** | GitHub Actions | Workflow design, security hardening | Yes |
+| **Beacon** | Observability and reliability | SLO / SLI design, alert strategy | Mixed |
+| **Launch** | Release management | Versioning, CHANGELOG, rollback | Mixed |
+| **Comply** | Compliance | SOC2 / PCI-DSS / HIPAA conformance checks | Mixed |
+| **Ledger** | FinOps | Cloud cost optimization, RI / SP recommendations | No |
 
-## Modernization (2)
+## Modernization (3)
 
-移行・近代化を担当。
+Migration and modernization.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Shift** | 移行オーケストレータ | フレームワーク/ライブラリ/DB移行 | Mixed |
-| **Horizon** | 技術更新 | 非推奨ライブラリ検出、ネイティブAPI置換 | Mixed |
+| **Shift** | Migration orchestrator | Framework / library / DB migration | Mixed |
+| **Horizon** | Tech-stack refresh | Deprecated-library detection, native-API replacement | Mixed |
+| **Port** | Web → Native porting design | Blueprint from Web SPA / SSR / PWA to iOS Swift/SwiftUI + Android Kotlin/Compose pure-native (parity matrix, phased roadmap) | No |
 
 ## Growth (3)
 
-成長施策・ブランディングを担当。
+Growth tactics and branding.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Growth** | SEO/CRO/GEO | メタ/OGP/JSON-LD、CTA最適化 | Mixed |
-| **Retain** | リテンション | 再エンゲージメント、チャーン防止 | Mixed |
-| **Crest** | エンジニアブランディング | GitHub/LinkedIn/ブログ/登壇ポジショニング | No |
+| **Growth** | SEO / CRO / GEO | Meta / OGP / JSON-LD, CTA optimization | Mixed |
+| **Retain** | Retention | Re-engagement, churn prevention | Mixed |
+| **Crest** | Engineer branding | GitHub / LinkedIn / blog / conference positioning | No |
 
 ## Analytics (3)
 
-指標・実験・組み合わせ分析を担当。
+Metrics, experimentation, and combinatorial analysis.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Pulse** | KPI設計 | North Star Metric、ファネル分析 | Mixed |
-| **Experiment** | A/Bテスト設計 | 仮説文書化、サンプルサイズ計算 | Mixed |
-| **Matrix** | 組み合わせ分析 | 組み合わせ爆発制御、最小カバレッジ | No |
+| **Pulse** | KPI design | North Star Metric, funnel analysis | Mixed |
+| **Experiment** | A/B test design | Hypothesis documentation, sample-size calculation | Mixed |
+| **Matrix** | Combinatorial analysis | Combination-explosion control, minimum coverage | No |
 
 ## Git/PR (2)
 
-バージョン管理ワークフローを担当。
+Version-control workflow.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Guardian** | PR管理 | 変更分類、粒度推奨、戦略提案 | No |
-| **Harvest** | PR収集・レポート | 週次/月次レポート、リリースノート | No |
+| **Guardian** | PR management | Change classification, granularity recommendations, strategy | No |
+| **Harvest** | PR data collection / reporting | Weekly / monthly reports, release notes | No |
 
-## Browser (2)
+## Browser (3)
 
-ブラウザ操作を担当。
+Browser automation and asset acquisition.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Navigator** | ブラウザ自動化 | Playwright/DevToolsでタスク完了 | Yes |
-| **Spider** | クロール設計 | 分散クローラー、ポライトネス設計 | No |
+| **Navigator** | Browser automation | Task completion via Playwright / DevTools | Yes |
+| **Spider** | Crawl architecture | Distributed crawler, politeness design | No |
+| **Haul** | Product image acquisition | SKU / JAN / UPC matching, multi-source aggregation, perceptual-hash dedup, license verification | Yes |
 
 ## Data (2)
 
-データパイプライン・変換を担当。
+Data pipelines and conversion.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Stream** | ETL/ELTパイプライン | Kafka/Airflow/dbt設計 | Mixed |
-| **Morph** | ドキュメント変換 | Markdown/Word/Excel/PDF/HTML変換 | Mixed |
+| **Stream** | ETL / ELT pipelines | Kafka / Airflow / dbt design | Mixed |
+| **Morph** | Document conversion | Markdown / Word / Excel / PDF / HTML conversion | Mixed |
 
-## Strategy (4)
+## Strategy (5)
 
-ビジネス戦略・意思決定を担当。コードは書かない。
+Business strategy and decision-making. Does not write code.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Helm** | ビジネス戦略 | SWOT/PESTLE/Porter分析 | No |
-| **Compete** | 競合調査 | 機能マトリクス、ポジショニング | No |
-| **Rank** | 優先順位付け | ICE/RICE/WSJF/MoSCoWスコアリング | No |
-| **Levy** | 確定申告ガイド | 所得分類、控除最適化、申告手順 | No |
+| **Helm** | Business strategy | SWOT / PESTLE / Porter analysis | No |
+| **Compete** | Competitive research | Feature matrices, positioning | No |
+| **Rank** | Prioritization | ICE / RICE / WSJF / MoSCoW scoring | No |
+| **Levy** | Japanese tax-filing guide | Income classification, deduction optimization, filing procedure | No |
+| **Sage** | YC-style office-hours advisory | "Tell me what you're avoiding." Single-bottleneck extraction, founder anti-pattern detection, 1-2 week SMART action extraction | No |
 
 ## Incident (2)
 
-インシデント対応を担当。
+Incident response.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Triage** | インシデント初動 | 影響特定、復旧手順、ポストモーテム | No |
-| **Mend** | 自動修復 | ランブック実行、段階検証、ロールバック | Mixed |
+| **Triage** | Incident first response | Impact identification, recovery procedure, postmortem | No |
+| **Mend** | Automated remediation | Runbook execution, staged verification, rollback | Mixed |
 
 ## Communication (2)
 
-連携・コミュニケーションを担当。
+Coordination and communication.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Relay** | メッセージング統合 | ボット開発、Webhook、WebSocket | Mixed |
-| **Accord** | 仕様整合 | Business/Dev/Design横断仕様 | No |
+| **Relay** | Messaging integration | Bot development, webhooks, WebSocket | Mixed |
+| **Accord** | Spec alignment | Cross-team Business / Dev / Design specifications | No |
 
 ## Meta / Tooling (8)
 
-エコシステム自体の管理・進化を担当。
+Manages and evolves the ecosystem itself.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Architect** | スキル設計 | 新エージェント設計、ギャップ分析 | No |
-| **Sigil** | プロジェクト固有スキル生成 | コードベース分析→最適スキル生成 | No |
-| **Lore** | 知識キュレーション | パターン抽出、知識劣化検出 | No |
-| **Darwin** | エコシステム進化 | ライフサイクル検出、適応度評価 | No |
-| **Hone** | AI CLI設定最適化 | Claude Code/Gemini CLI設定監査 | No |
-| **Realm** | エコシステム可視化 | ゲーミフィケーション、インタラクティブマップ | Yes |
-| **Compass** | スキルナビゲーター | スキル案内、オンボーディング | No |
-| **Latch** | Claude Code Hooks 設計 | PreToolUse/PostToolUse/Stop 等のライフサイクルフック設定 | Mixed |
+| **Architect** | Skill design | New agent design, gap analysis | No |
+| **Sigil** | Project-specific skill generation | Codebase analysis → tailored skill generation | No |
+| **Lore** | Knowledge curation | Pattern extraction, knowledge-decay detection | No |
+| **Darwin** | Ecosystem evolution | Lifecycle detection, fitness evaluation | No |
+| **Hone** | AI CLI configuration optimization | Claude Code / Gemini CLI configuration audit | No |
+| **Realm** | Ecosystem visualization | Gamification, interactive maps | Yes |
+| **Compass** | Skill navigator | Skill guidance, onboarding | No |
+| **Latch** | Claude Code Hooks design | PreToolUse / PostToolUse / Stop and other lifecycle hooks | Mixed |
 
 ## Creative / Media (6)
 
-メディア・クリエイティブ生成を担当。
+Media and creative generation.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Dot** | ピクセルアート | SVG/Canvas/Phaser 3でピクセルアート | Yes |
-| **Ink** | SVGアイコン | アイコンシステム、スプライト構築 | Yes |
-| **Tone** | ゲーム音声 | SFX/BGM/Voice/Ambient | Yes |
-| **Sketch** | AI画像生成 | Gemini APIでテキスト→画像 | Yes |
-| **Clay** | AI 3D生成 | テキスト/画像→3Dモデル | Yes |
-| **Lyric** | 作詞 | Suno AI向け歌詞・メタタグ作成 | No |
+| **Dot** | Pixel art | SVG / Canvas / Phaser 3 pixel art | Yes |
+| **Ink** | SVG icons | Icon systems, sprite construction | Yes |
+| **Tone** | Game audio | SFX / BGM / voice / ambient | Yes |
+| **Sketch** | AI image generation | Text → image via Gemini API | Yes |
+| **Clay** | AI 3D generation | Text / image → 3D model | Yes |
+| **Lyric** | Lyric writing | Lyrics and metatags for Suno AI | No |
 
 ## AI / ML (3)
 
-AI設計・思考支援を担当。
+AI design and thinking support.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Oracle** | AI/ML設計 | プロンプト工学、RAG設計、評価 | No |
-| **Flux** | 思考屈折 | 前提チャレンジ、視点転換 | No |
-| **Prism** | NotebookLM最適化 | ステアリングプロンプト設計 | No |
+| **Oracle** | AI / ML design | Prompt engineering, RAG design, evaluation | No |
+| **Flux** | Thinking refraction | Assumption challenges, perspective shifts | No |
+| **Prism** | NotebookLM optimization | Steering-prompt design | No |
 
 ## Other Specialists
 
-上記カテゴリに収まりきらない専門スキル。
+Specialized skills that don't fit the categories above.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Riff** | ブレインストーミング | 対話的アイデア深掘り | No |
-| **Plea** | 合成ユーザー代弁 | 架空ユーザーとして機能要求生成 | No |
-| **Polyglot** | i18n/l10n | 多言語対応、RTLサポート | Mixed |
-| **Weave** | ワークフロー設計 | 状態遷移、Sagaパターン | Mixed |
-| **Omen** | プレモーテム分析 | 失敗シナリオ列挙、RPN評価 | No |
-| **Seek** | 検索エンジン設計 | 全文検索、ベクトル検索、RAG | Mixed |
-| **Vigil** | 検出エンジニアリング | Sigma/YARAルール設計 | Mixed |
-| **Magi** | 多視点審議 | アーキテクチャ仲裁、Go/No-Go | No |
-| **Saga** | ナラティブデザイン | 顧客体験ストーリーテリング | No |
-| **Cue** | 動画脚本 | プロダクト動画、ストーリーボード | No |
-| **Director** | デモ動画制作 | Playwright E2Eからデモ生成 | Mixed |
-| **Reel** | ターミナル録画 | CLI デモGIF/動画生成 | Mixed |
-| **Stage** | スライド生成 | Marp/reveal.js/Slidev | Mixed |
-| **Loom** | Figma Make準備 | Figma Make Guidelines.md生成 | No |
-| **Frame** | Figma→コード橋渡し | デザインコンテキスト抽出 | No |
-| **Clause** | 法務文書レビュー | 利用規約、プライバシーポリシー | No |
-| **Quest** | ゲーム企画 | GDD、バランス設計、経済設計 | No |
-| **Orbit** | 自律ループ設計 | nexus-autoloopのスクリプト生成 | Mixed |
-| **Arena** | マルチAI比較 | Codex/Gemini CLIの競合/協調実行 | Mixed |
-| **Hearth** | dotfile管理 | zsh/tmux/neovim/ghostty設定 | Mixed |
-| **Mint** | テストデータ生成 | Factory、境界値、シード管理 | Mixed |
-| **Tempo** | スケジュール設計 | cron、タイムゾーン/DST、リトライ/バックオフ、業務カレンダー | Mixed |
-| **Dawn** | 毎日1つのアイデア提案 | 朝/日次/週末ハックの個人プロジェクト案を8セクションで提案 | No |
+| **Riff** | Brainstorming | Iterative idea deepening through dialogue | No |
+| **Plea** | Synthetic-user advocate | Generates feature requests as a fictional user | No |
+| **Polyglot** | i18n / l10n | Multilingual support, RTL handling | Mixed |
+| **Weave** | Workflow design | State machines, Saga patterns | Mixed |
+| **Omen** | Pre-mortem analysis | Failure-scenario enumeration, RPN scoring | No |
+| **Seek** | Search-engine design | Full-text search, vector search, RAG | Mixed |
+| **Vigil** | Detection engineering | Sigma / YARA rule design | Mixed |
+| **Magi** | Multi-perspective deliberation | Architecture arbitration, Go / No-Go | No |
+| **Saga** | Narrative design | Customer-experience storytelling | No |
+| **Cue** | Video script | Product videos, storyboards | No |
+| **Director** | Demo-video production | Demos generated from Playwright E2E | Mixed |
+| **Reel** | Terminal recording | CLI demo GIFs / videos | Mixed |
+| **Stage** | Slide generation | Marp / reveal.js / Slidev | Mixed |
+| **Loom** | Figma Make preparation | Figma Make Guidelines.md generation | No |
+| **Frame** | Figma → code bridge | Design context extraction | No |
+| **Clause** | Legal-document review | Terms of service, privacy policy | No |
+| **Quest** | Game planning | GDD, balance design, economy design | No |
+| **Orbit** | Autonomous-loop design | Script generation for nexus-autoloop | Mixed |
+| **Arena** | Multi-AI comparison | Codex / Gemini CLI compete or collaborate | Mixed |
+| **Hearth** | Dotfile management | zsh / tmux / neovim / ghostty configuration | Mixed |
+| **Mint** | Test-data generation | Factories, boundary values, seed management | Mixed |
+| **Tempo** | Schedule design | cron, timezone / DST, retry / backoff, business calendars | Mixed |
+| **Dawn** | Daily idea proposal | One personal-project idea per invocation as an 8-section brief for morning / daily / weekend hacks | No |

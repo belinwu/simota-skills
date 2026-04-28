@@ -17,7 +17,7 @@ Reference for `init`, `refresh`, and the auto-prompt flow that maintains `.claud
 | `WRITE` | Generate cache file per `cache-format.md` § 2 to `.claude/compass-cache.md` | cache file |
 | `REPORT` | Print 5-line summary (§ 9) | terminal output |
 
-If `.claude/compass-cache.md` already exists, ask "上書きしますか?" before overwriting. Confirmed yes → route to refresh flow.
+If `.claude/compass-cache.md` already exists, ask "Overwrite the existing cache?" before overwriting. Confirmed yes → route to refresh flow.
 
 ---
 
@@ -44,11 +44,11 @@ Use cases:
 When `recommend` is invoked and `.claude/compass-cache.md` is missing:
 
 ```
-このリポジトリ用の Compass cache がありません。
-生成すると次回以降の /compass recommend が context を ~95% 削減できます。
-今 cache を作成しますか? (Y/n)
-  Y → init flow を実行 → そのまま recommend に進む
-  n → 今回は full catalog で recommend → cache 未作成のまま
+No Compass cache found for this repository.
+Generating one reduces context cost on later /compass recommend by ~95%.
+Create the cache now? (Y/n)
+  Y → run init flow → continue with the original recommend request
+  n → recommend with the full catalog this time → cache stays absent
 ```
 
 If `Y`: run `init` inline (SCAN → SIZE → SCORE → PICK → WRITE), then continue with the user's original recommend request using the freshly written cache.
@@ -179,7 +179,10 @@ Apply the following rules. A skill may be triggered by multiple signals; combine
 |---------|------------|------------|
 | LP / Marketing pages | funnel, growth, prose | palette |
 | i18n (next-intl, i18next, react-intl) | polyglot | prose |
-| Mobile (RN, Flutter, SwiftUI, Compose) | native | flow |
+| Mobile (iOS Swift / SwiftUI, Android Kotlin / Compose) | native | flow, port |
+| Web → Native porting (React / Vue / Svelte / Angular SPA → iOS + Android) | port | native, scaffold |
+| Product image acquisition (SKU / JAN / UPC / catalog images) | haul | navigator, cloak |
+| Founder office hours / startup advisory / "what should I focus on" | sage | sherpa, plea |
 | Game (Phaser, Three.js, Unity, Godot) | quest, dot, tone | clay |
 | 3D (Three.js, Babylon, R3F) | clay | flow |
 | AITuber / VTuber / OBS | aether | tone, lyric |
@@ -257,25 +260,25 @@ If a universal skill *also* has signal-driven justification (e.g., `builder` str
 
 ## 9. REPORT Format
 
-After cache write, print 5 lines (Japanese):
+After cache write, print 5 lines:
 
 ```
-✓ Compass cache を生成しました: .claude/compass-cache.md
-  - 検出: <primary_language> + <frameworks joined by, max 3>
-  - 規模: <repo_size> ({file_count} files) → top_n = <N>
-  - 収録: <N> + universal 12 = <total> 件
-  - 次回以降: /compass recommend は cache のみで完結 (~95% context 削減)
-  - 更新: /compass refresh / TTL: <ttl_days> 日
+✓ Compass cache generated: .claude/compass-cache.md
+  - Detected: <primary_language> + <frameworks joined by, max 3>
+  - Size: <repo_size> ({file_count} files) → top_n = <N>
+  - Cached: <N> + universal 12 = <total> entries
+  - Next runs: /compass recommend works from cache only (~95% context reduction)
+  - Refresh: /compass refresh / TTL: <ttl_days> days
 ```
 
 For `refresh`, prepend the diff:
 
 ```
-↻ Compass cache を更新しました: .claude/compass-cache.md
-  - 追加: <skill_a>, <skill_b> (<reason>)
-  - 削除: <skill_c> (<reason>)
-  - 変更: <skill_d>: M → H (<reason>)
-  ...以降は init と同形式
+↻ Compass cache refreshed: .claude/compass-cache.md
+  - Added: <skill_a>, <skill_b> (<reason>)
+  - Removed: <skill_c> (<reason>)
+  - Changed: <skill_d>: M → H (<reason>)
+  ...followed by the same lines as init
 ```
 
 ---

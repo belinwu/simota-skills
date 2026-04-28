@@ -170,6 +170,10 @@ Select a number or provide more specific instructions.
 **Additional considerations:**
 - Bug-related investigation → Scout (RCA-focused)
 - Git history investigation → Trail (commit archaeology)
+- Web → mobile native porting design → Port (blueprint, parity matrix, roadmap)
+- Pure-native mobile implementation (iOS Swift/SwiftUI, Android Kotlin/Compose) → Native
+- Product image acquisition with provenance / license → Haul
+- Founder office-hours advisory → Sage (bottleneck + 1-2 week action)
 - Incident impact scoping → Triage (first response)
 - Visualization of findings → +Canvas
 - Implementation after investigation → +Builder
@@ -219,6 +223,14 @@ Select a number or provide more specific instructions.
 | "Understand this codebase" | clear | Lens (full onboarding) |
 | "Why is X broken?" | clear | Scout (RCA), not Lens |
 | "When did X regress?" | clear | Trail (git history) |
+| "Web から iOS / Android にネイティブ移植したい" | clear | Port (porting blueprint) |
+| "iOS Swift / Android Kotlin で実装したい" | clear | Native (pure-native impl) |
+| "React Native / Flutter で実装したい" | clear | out of scope; Forge for prototype |
+| "商品画像を SKU で集めたい" | clear | Haul (product image acquisition) |
+| "ログイン必要なサイトから商品画像" | clear | Navigator → Haul (auth handoff) |
+| "office hours 受けたい / 何にフォーカスすべきか" | clear | Sage (founder advisory) |
+| "創業者として stuck している" | clear | Sage triage recipe |
+| "ピッチ資料をレビューしてほしい" | clear | Sage pitch recipe |
 
 ---
 

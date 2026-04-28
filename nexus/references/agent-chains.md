@@ -281,6 +281,41 @@ Complete chain templates and dynamic adjustment rules.
 | STRATEGY | ab-matrix | Matrix → Experiment → Builder → Radar |
 | SPEC_VERIFY | matrix | Matrix → Attest → Scribe → Radar |
 | KNOWLEDGE | first-principles | Flux → Researcher → Scribe → Prism |
+| PORTING | survey-only | Lens → Atlas → Port[survey] |
+| PORTING | parity | Port[parity] |
+| PORTING | blueprint | Lens → Atlas → Port[blueprint] |
+| PORTING | full | Lens → Atlas → Researcher → Port[blueprint] → Native → Voyager → Launch |
+| PORTING | regulatory | Port[regulatory] → Cloak → Crypt → Scribe |
+| PORTING | xplat-decision | Port[xplat] → Magi |
+| MOBILE_NATIVE | ios | Native[swiftui] → Radar |
+| MOBILE_NATIVE | android | Native[compose] → Radar |
+| MOBILE_NATIVE | both | Native[swiftui] + Native[compose] → Radar → Showcase |
+| MOBILE_NATIVE | offline | Native[offline] → Schema → Radar |
+| MOBILE_NATIVE | passkey | Native[passkey] → Crypt → Radar |
+| MOBILE_NATIVE | privacy | Native[privacy] → Cloak → Radar |
+| MOBILE_NATIVE | rollout | Native[rollout] → Launch |
+| MOBILE_NATIVE | full | Port[blueprint] → Native[swiftui] + Native[compose] → Radar → Voyager → Cloak → Launch |
+| ASSET_IMAGE | catalog | Haul[catalog] → Cloak |
+| ASSET_IMAGE | lookup | Haul[lookup] |
+| ASSET_IMAGE | refresh | Haul[refresh] |
+| ASSET_IMAGE | reverse | Haul[reverse] → Cloak |
+| ASSET_IMAGE | brand | Haul[brand] → Cloak |
+| ASSET_IMAGE | audit | Haul[audit] |
+| ASSET_IMAGE | for-storybook | Haul[catalog] → Cloak → Showcase |
+| ASSET_IMAGE | for-lp | Haul[catalog] → Cloak → Funnel |
+| ASSET_IMAGE | for-mockup | Haul[catalog] → Cloak → Pixel |
+| ASSET_IMAGE | for-atelier | Haul[catalog] → Cloak → Atelier |
+| ASSET_IMAGE | protected-source | Navigator → Haul → Cloak |
+| ADVISORY | 1on1 | Sage[1on1] |
+| ADVISORY | group | Sage[group] |
+| ADVISORY | triage | Sage[triage] |
+| ADVISORY | retro | Sage[retro] |
+| ADVISORY | pitch | Sage[pitch] |
+| ADVISORY | advise-then-build | Sage → Sherpa → Builder |
+| ADVISORY | advise-then-validate | Sage → Plea |
+| ADVISORY | strategy-handoff | Helm → Sage → Sherpa |
+| ADVISORY | feature-reality-check | Spark → Sage |
+| ADVISORY | research-to-action | Researcher → Sage → Sherpa → Builder |
 
 ---
 
@@ -368,6 +403,7 @@ Builder then applies:
 ### Rally Non-Escalation (Keep Sequential)
 
 - Investigation-only chains (Lens, Scout, Trail) → No Rally
+- Advisory-only chains (Sage 1on1/triage/retro/pitch) → No Rally; Sage is single-session by contract
 - Single-agent chains (Quill, Morph) → No Rally
 - Changes under 10 lines total → No Rally
 - High-risk security changes → Prefer sequential with checkpoints
@@ -430,5 +466,18 @@ When Rally is activated for parallel execution, standard chains transform into p
 | Base Chain | Rally Parallel Chain | Team Pattern |
 |------------|---------------------|--------------|
 | MODERNIZE/stack | Lens → Horizon → Sherpa → Rally(Builder×N) → Radar | Feature Parallel |
+
+### MOBILE_NATIVE Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| MOBILE_NATIVE/both | Rally(Native[swiftui], Native[compose]) → Radar → Showcase | Platform Split (iOS / Android) |
+| MOBILE_NATIVE/full | Port[blueprint] → Rally(Native[swiftui], Native[compose]) → Radar → Voyager → Cloak → Launch | Platform Split |
+
+### ASSET_IMAGE Parallel Chains
+
+| Base Chain | Rally Parallel Chain | Team Pattern |
+|------------|---------------------|--------------|
+| ASSET_IMAGE/catalog (≥ 50 products, ≥ 3 sources) | Haul (skill-internal subagents per source) → Cloak | Skill-internal subagents (intra-Haul) — see haul SKILL.md Parallel Sourcing |
 
 See `rally/references/integration-patterns.md` for detailed team composition and handoff formats.

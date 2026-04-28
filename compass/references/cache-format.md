@@ -107,8 +107,8 @@ The warnings are non-blocking. Compass continues with the stale cache and lets t
 
 | State | Behavior |
 |-------|----------|
-| Only TTL expired | Use cache, prepend single-line warning: `⚠ cache の生成から N 日経過。/compass refresh で更新可。` |
-| Only catalog hash mismatch | Use cache, prepend warning: `⚠ catalog.md が更新されています。/compass refresh で再同期。` |
+| Only TTL expired | Use cache, prepend single-line warning: `⚠ Cache is N days old. Run /compass refresh to update.` |
+| Only catalog hash mismatch | Use cache, prepend warning: `⚠ catalog.md has changed. Run /compass refresh to re-sync.` |
 | Both stale | Use cache, stronger warning combining both messages |
 | Catalog drift detected mid-flow (newly missing skill referenced in cache) | Drop that skill from candidates silently, proceed |
 

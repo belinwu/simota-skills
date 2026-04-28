@@ -503,6 +503,71 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Port vs Native vs Shift vs Horizon (Mobile Migration & Implementation)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Web app を iOS / Android にネイティブ移植したい" | **Port** | Web → pure-native blueprint |
+| "feature parity matrix between web and mobile" | **Port** | Parity verdicts (Full/Adapted/Deferred/Dropped) |
+| "ネイティブアーキテクチャ設計（SwiftUI / Compose）" | **Port** | Per-platform architecture mapping |
+| "Strangler Fig phased migration roadmap (web → mobile)" | **Port** | Phased rollout & store-submission timeline |
+| "Pure-native vs KMP vs CMP vs RN vs Flutter trade-off" | **Port** | Cross-platform decision support |
+| "iOS Swift / SwiftUI を実装したい" | **Native** | Pure-native iOS implementation |
+| "Android Kotlin / Jetpack Compose を実装したい" | **Native** | Pure-native Android implementation |
+| "Liquid Glass / Material 3 Expressive 採用" | **Native** | iOS 26 / Android 16 modern surfaces |
+| "Privacy Manifest / Data Safety を仕上げたい" | **Native** → Cloak | Implementation then privacy review |
+| "Passkey / Credential Manager を組み込みたい" | **Native** → Crypt | Implementation then crypto review |
+| "TestFlight phased release / Play staged rollout" | **Native** → Launch | Implementation then release planning |
+| "React Native / Flutter / KMP / CMP で実装したい" | **out of scope** | Native は対象外。Forge でプロトタイプ可、本番は外部実装 |
+| "framework / library / DB の version migration（同一言語内）" | **Shift** | Same-language migration orchestrator |
+| "deprecated library 検出と native API 置換" | **Horizon** | Modernization scan |
+| "legacy web business rule 抽出（移植前）" | **Fossil** | Read-only archaeology |
+
+**Rule of thumb**: Web→Native の **設計図** → Port。**実装** → Native。同一言語の移行 → Shift。非推奨検出 → Horizon。Native は React Native / Flutter / KMP / CMP は受けない。
+
+---
+
+### Haul vs Navigator vs Spider vs Sketch (Image / Asset Acquisition)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "商品画像を SKU / JAN / UPC で集めたい" | **Haul** | Identifier-driven product image acquisition |
+| "EC サイト / ブランドサイトから商品画像取得" | **Haul** | Multi-source product imagery aggregation |
+| "catalog images with provenance & license" | **Haul** | License-aware curation |
+| "perceptual hash で重複排除した画像セット" | **Haul** | Cross-source pHash dedup |
+| "reverse image search → canonical product URL" | **Haul** (reverse recipe) | Sample image → product canonical |
+| "license / provenance audit (no new fetch)" | **Haul** (audit recipe) | Audit-only mode |
+| "ログインが必要な保護サイトから画像取得" | **Navigator** → **Haul** | Auth handoff then download |
+| "1K+ URL/day, 100+ ドメインのフリート規模クロール設計" | **Spider** | Architecture only |
+| "汎用ブラウザ自動化、フォーム入力、スクショ取得" | **Navigator** | Generic browser tasks |
+| "テキストから画像を生成したい (text-to-image)" | **Sketch** | AI image generation |
+| "モックアップから HTML/CSS を再現したい" | **Pixel** | Mockup-to-code |
+| "アイコン / SVG イラスト" | **Ink** | Vector asset generation |
+
+**Rule of thumb**: 商品画像の取得 → Haul。汎用ブラウザ → Navigator。フリート規模アーキ → Spider。AI 生成 → Sketch。Haul は license_class 必須、unknown は配信不可。
+
+---
+
+### Sage vs Riff vs Magi vs Helm vs Spark vs Flux (Founder Decisions & Ideation)
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "office hours" / "I'm stuck" / "what should I focus on" | **Sage** | YC 流アドバイザリー、ボトルネック1点抽出 |
+| "founder advisory" / "creative direction reality check" | **Sage** | パターンマッチ + 創業者アンチパターン検出 |
+| "review my pitch" / "Demo Day deck" / "投資家向け Q&A 練習" | **Sage** (pitch recipe) | STRUCTURE → CLARITY → TENSION → RESONANCE → REVISE |
+| "we just shipped X / hired Y / pivoted Z, postmortem" | **Sage** (retro recipe) | 直近の意思決定/結果の振り返り |
+| "we're stuck right now, need to unblock" | **Sage** (triage recipe) | 5 ターン以内の緊急アンブロック |
+| "アイデアを出したい、発散したい" | **Riff** | Iterative divergent ideation (4 modes) |
+| "新機能を提案して、Markdown spec で" | **Spark** | Feature proposals from existing data/logic |
+| "GO / NO-GO の意思決定、複数の選択肢から選びたい" | **Magi** | 三項審議 (Logos/Pathos/Sophia) |
+| "四半期 / 年次のシナリオシミュレーション、KPI forecast" | **Helm** | Long-term strategy simulation |
+| "前提を疑いたい、視点をずらしたい" | **Flux** | Single-shot reframing |
+| "1-3 日で作れる個人プロジェクト案" | **Dawn** | Daily personal idea ritual |
+
+**Rule of thumb**: 1 週間で動かす1つのアクションが欲しい → Sage。発散 → Riff。三項審議 → Magi。長期シナリオ → Helm。機能仕様 → Spark。前提反転 → Flux。Sage は idea を **作らず**、創業者が "避けていること" を言わせる。
+
+---
+
 ## Small Project Optimization
 
 For S/M scope projects, skip agents that add overhead without proportional value:
