@@ -1,11 +1,22 @@
 # Mobile Native Testing
 
-Purpose: Use this file when Voyager must decide between browser emulation and native mobile automation.
+Purpose: Use this file for **concrete WebdriverIO + Appium configuration patterns**, real-device session capabilities, Playwright mobile-emulation alternatives, and mobile-specific test recipes (rotation, push notification, airplane mode).
 
 Contents:
 - Agent boundary and emulation-vs-native decision rules
 - Playwright mobile emulation patterns
-- WebdriverIO/Appium and real-device execution
+- WebdriverIO/Appium configuration and real-device execution (BrowserStack / Sauce Labs)
+- Mobile-specific test patterns (orientation, push, network condition)
+
+## Cross-Reference
+
+| You need | Read |
+|----------|------|
+| Framework selection across Detox / Maestro / Appium / XCUITest / Espresso, mobile Page Object design, two-axis flake taxonomy (logic vs device), device-farm tier matrix (PR / nightly / release gate) | `mobile-e2e-testing.md` (start there for shipped-app E2E) |
+| Cloud session control (tunnels, parallel session caps, credential management, cost-tier strategy) and provider integration tables | `cloud-testing.md` |
+| Concrete WebdriverIO/Appium config snippets, Playwright mobile emulation, mobile-specific test recipes | this file |
+
+> When the artifact is a shipping `.ipa`/`.apk`/`.aab` (or RN bundle), start at `mobile-e2e-testing.md` — it routes you back here once framework selection lands on Appium.
 
 ---
 
@@ -309,3 +320,73 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BROWSERSTACK_APP_URL: ${{ secrets.BROWSERSTACK_APP_URL }}
 ```
+
+---
+
+## 2025-2026 Spec Update
+
+### Appium 3.x capability handling (released 2025-08-07)
+
+Appium 3.x makes the `appium:` capability prefix mandatory and drops JSONWP entirely (W3C-only). Existing 2.x configs will fail at session creation if non-standard caps are not prefixed. Decoupled drivers/plugins mean the CI runner only installs what is needed; Inspector can now be hosted in-process via `appium plugin install inspector`. Sensitive headers are masked with `X-Appium-Is-Sensitive`. Source: <https://appium.io/docs/en/3.1/blog/2025/08/07/-appium-3/> · <https://appium.io/docs/en/3.1/guides/migrating-2-to-3/>
+
+```typescript
+// Appium 3.x: every non-W3C cap MUST carry the appium: prefix
+capabilities: [{
+  // W3C standard caps (no prefix)
+  platformName: 'Android',
+  // Appium-specific (prefix mandatory)
+  'appium:deviceName': 'Pixel 7',
+  'appium:platformVersion': '14',
+  'appium:automationName': 'UiAutomator2',
+  'appium:app': './app/build/outputs/apk/debug/app-debug.apk',
+}]
+```
+
+CI prerequisites for Appium 3.x: Node.js >= 20.19.0, npm >= 10. Install only the drivers and plugins you need:
+
+```bash
+appium driver install uiautomator2
+appium driver install xcuitest
+appium plugin install images          # only if used
+appium --use-drivers=uiautomator2,xcuitest --use-plugins=images
+```
+
+### Swift Testing (Xcode 26 / Swift 6.2) vs XCUITest
+
+Swift Testing (`@Test`, `#expect`, parameterized arguments, exit tests, ranged confirmations, scoping traits) is the modern unit-test framework for new code. **It does not yet have a UI automation story** — XCUITest is still the only native iOS UI driver as of 2026-04, and XCTest remains fully supported for legacy and UI tests. Mix Swift Testing for logic tests with XCUITest for UI flows in the same target. Source: <https://developer.apple.com/xcode/swift-testing/> · <https://forums.swift.org/t/whats-new-in-testing-swift-6-2-xcode-26/80688>
+
+### Compose UI Test ↔ Espresso interop & Robolectric 4.16
+
+Espresso reaches Compose nodes through the Compose semantics tree by enabling `testTagsAsResourceId = true` on a composable subtree (Compose 1.2.0-alpha08+). For JVM tests targeting Android 16 / SDK 36 (Baklava), upgrade to **Robolectric 4.16** (released 2025-Q3) on **JDK 21**; older 4.14/4.15 do not support Baklava. Robolectric 4.16 introduces `ResourcesMode.NATIVE` (SDK 36 only). Source: <https://github.com/robolectric/robolectric/releases/tag/robolectric-4.16> · <https://developer.android.com/develop/ui/compose/testing/interoperability>
+
+```kotlin
+// Compose composable: opt the subtree into resource-id semantics for Espresso
+Box(
+  Modifier.semantics { testTagsAsResourceId = true }.testTag("checkout-submit")
+) { /* ... */ }
+```
+
+### Foldable / window-size-class testing patterns
+
+```kotlin
+// Drive layout under each WindowSizeClass breakpoint and verify the right pane appears.
+@RunWith(AndroidJUnit4::class)
+class AdaptiveLayoutTest {
+  @Test fun showsListDetailOnExpanded() {
+    composeTestRule.setContent {
+      val widthSize = WindowWidthSizeClass.Expanded
+      // ...assert dual-pane visible
+    }
+  }
+}
+```
+
+For real-device fold/unfold posture coverage, target Galaxy Z Fold (incl. expected wide-form Z Fold 8 in 2026-07), Pixel 10 Pro Fold (IP68), and large-screen iPad Pro with Stage Manager. Add at least one fold ↔ unfold posture transition test to the release-gate tier — state-loss bugs across hinge events are foldable-specific. Source: <https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes> · <https://9to5google.com/2026/04/26/samsung-galaxy-z-fold-8-wide-leak/>
+
+### WebDriver BiDi for mobile (status as of 2026-04)
+
+WebDriver BiDi remains a W3C **Editor's Draft** — a living standard with continuous additions. Appium 3.2 docs include a BiDi reference, and Selenium 4 / WebdriverIO surface BiDi via the `webSocketUrl` session field. A formal **mobile profile** has not been ratified as of 2026-04. Treat BiDi-on-mobile as exploratory; keep production gates on classic WebDriver until a stable mobile profile lands. Source: <https://w3c.github.io/webdriver-bidi/> · <https://appium.io/docs/en/3.2/reference/api/bidi/>
+
+### Privacy Manifest awareness in tests
+
+Apple enforces Privacy Manifest declarations for new submissions since 2024-05-01, and for new privacy-impacting third-party SDKs since 2025-02-12. Required-reason API categories include disk space, active keyboard, user defaults, file timestamp, and system boot time. Test scaffolding (XCUITest helpers, mock SDKs, Appium helper apps) must declare `PrivacyInfo.xcprivacy` independently — App Store Connect aggregates app + SDK manifests. Add a CI step that diffs the merged manifest before TestFlight. Source: <https://developer.apple.com/documentation/bundleresources/privacy-manifest-files> · <https://developer.apple.com/news/?id=3d8a9yyh>

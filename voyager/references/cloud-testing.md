@@ -1,11 +1,51 @@
 # Cloud Testing Services
 
-Purpose: Use this file when Voyager must run browser suites on BrowserStack, Sauce Labs, LambdaTest, or a similar cloud matrix.
+Purpose: Use this file when Voyager must run browser **or native mobile** suites on BrowserStack, Sauce Labs, LambdaTest, AWS Device Farm, Firebase Test Lab, or a similar cloud matrix.
 
 Contents:
 - Agent boundary and cloud vs local decision rules
-- Provider integration templates and CI usage
+- Provider integration templates (web browsers + native mobile App Automate / Real Device Cloud)
 - Cost, security, and troubleshooting rules
+
+## Cross-Reference
+
+| You need | Read |
+|----------|------|
+| Native mobile E2E framework selection (Detox / Maestro / Appium / XCUITest / Espresso) and device-farm tier matrix (PR / nightly / release) | `mobile-e2e-testing.md` (start there) |
+| Concrete WebdriverIO + Appium configuration for cloud sessions, mobile-specific patterns (rotation, push, airplane mode) | `mobile-native-testing.md` |
+| Web browser cloud session config, tunnels, parallel session caps, cost-tier strategy | this file |
+
+## Native Mobile Cloud Sessions (App Automate / Real Device Cloud)
+
+For native mobile cloud orchestration, use the App Automate / Real Device Cloud variants of the providers below:
+
+| Farm | Native mobile entry point | Strength | Watch for |
+|------|--------------------------|----------|-----------|
+| **BrowserStack App Automate** | Appium / Detox / XCUITest / Espresso, real-device parallel sessions; **App Percy** bundled visual AI | Broadest real-device matrix, tight CI integrations | Per-minute cost scales fast; prune matrix before enabling |
+| **Sauce Labs Real Device Cloud** | Strong Appium support, enterprise SSO | Detailed device logs, reliable iOS pool | iOS pool capacity fluctuates at release time |
+| **AWS Device Farm** | Pay-per-minute, integrates with CodeBuild/CodePipeline | Cheapest steady-state for AWS-native shops | Slower session acquisition than BS/SL |
+| **Firebase Test Lab** | Android-only, Robo-crawler included | Cheapest Android matrix, virtual + physical devices | iOS unsupported — pair with BS/SL for full coverage |
+| **LambdaTest HyperExecute** | Real-device + KaneAI test generation; rebranded **TestMu AI** as of 2026-01 | Modular per-product billing (Live, Automation, HyperExecute, SmartUI, KaneAI, TestManager) | Combined-product seat cost can exceed $650/month — confirm scope before enabling |
+
+Concrete WebdriverIO + Appium capability examples for App Automate / Real Device Cloud live in `mobile-native-testing.md` (BrowserStack and Sauce Labs sections). The web Playwright capability examples below remain unchanged for browser-only matrices.
+
+### Firebase Test Lab — 2025-2026 lifecycle status
+
+As of 2026-04, **Firebase Test Lab is actively maintained** with no published deprecation or sunset notice. Recent updates include refreshed iOS default devices and additions to the device catalog. It continues to support Robo tests, instrumentation tests, Game Loop tests, and XCTest. Source (official docs, last updated 2026-04-23): <https://firebase.google.com/docs/test-lab>
+
+**Do not confuse with Firebase Studio**, a separate Firebase product (cloud IDE) that **is** being shut down: shutdown phase begins 2026-03-19, full shutdown 2027-03-22, with new workspace creation disabled 2026-06-22. Firebase Test Lab is unaffected. Source: <https://farhanabhatt.com/firebase-studio-shutdown-announced-google-reveals-next-move/>
+
+Also note **Firebase Dynamic Links** was deprecated with final shutdown 2025-08-25 — also unrelated to Test Lab. Source: <https://firebase.google.com/support/dynamic-links-faq>
+
+### Selecting a device farm (2026 selection criteria)
+
+| Choose | When |
+|--------|------|
+| **BrowserStack App Automate** | Need broadest real-device matrix on PR-blocking smoke; want App Percy visual AI bundled; iOS + Android parity required |
+| **Sauce Labs Real Device Cloud** | Enterprise SSO / SAML required; need deep device logs; already on Sauce for web |
+| **AWS Device Farm** | AWS-native shop with CodeBuild / CodePipeline; cost-sensitive steady-state regression; can tolerate slower session acquisition |
+| **Firebase Test Lab** | Android-only product or Android-heavy matrix; want Robo crawler for exploratory smoke; cost is the primary driver |
+| **LambdaTest HyperExecute / TestMu AI** | Need modular billing per capability (esp. Live + Automation only); want KaneAI generative test authoring; cross-browser web + mobile in one vendor |
 
 ---
 

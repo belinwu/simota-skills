@@ -168,3 +168,34 @@ Track:
 - Flaky rate and false-positive rate
 
 Sources: [Currents: State of Playwright AI Ecosystem 2026](https://currents.dev/posts/state-of-playwright-ai-ecosystem-in-2026) · [Bug0: Playwright MCP Servers](https://bug0.com/blog/playwright-mcp-servers-ai-testing) · [TestLeaf: Playwright MCP Explained](https://www.testleaf.com/blog/playwright-mcp-ai-test-automation-2026/) · [Awesome Testing: Playwright CLI & Skills](https://www.awesome-testing.com/2026/03/playwright-cli-skills-and-isolated-agentic-testing) · [BrowserStack: Playwright AI Test Generator](https://www.browserstack.com/guide/playwright-ai-test-generator)
+
+---
+
+## Native Mobile AI Testing (2025-2026)
+
+The visual-AI / self-healing tooling that grew up around web E2E now ships native-mobile coverage. Use this section when the artifact is `.ipa`/`.apk`/`.aab` and AI assistance is in scope.
+
+### Tool selection
+
+| Tool | Native mobile coverage | What it does | Watch for | Source |
+|------|-----------------------|--------------|-----------|--------|
+| **Applitools Eyes 10.22** (2026-01) | iOS + Android native via SDKs; Storybook addon and Figma plugin shipped 2026-01 | Visual AI ignores sub-pixel / anti-aliasing / font-rendering noise; "would a human notice" matching modes (strict / layout / content) | Per-checkpoint cost; needs deterministic data to be valuable | <https://percy.io/blog/visual-regression-testing-tools> · <https://aitestingguide.com/applitools-vs-percy/> |
+| **App Percy** (BrowserStack) | iOS + Android real-device visual regression; bundled with App Automate | Runs visual checks on thousands of real devices via the same farm; 2026 added the **Visual Review Agent** that summarises diffs in natural language | Lock-in to BrowserStack; fewer match modes than Applitools | <https://percy.io/blog/app-visual-testing> · <https://aitestingguide.com/applitools-vs-percy/> |
+| **testRigor** | iOS + Android native + hybrid; plain-English specs | Vision AI + NLP identifies elements the way a human does (look + meaning), not via DOM/locators — survives full framework migrations | Generative test bloat if not tagged/pruned; verify business assertions, not just rendering | <https://testrigor.com/> · <https://testrigor.com/alternative/mabl/> |
+| **Mabl** | Mobile web + native via SDK | Probabilistic learning model accumulates execution history per app; locator self-heal updates without fixed rules | Self-heal can mask regressions if review gate is weak | <https://www.mabl.com/> · <https://www.virtuosoqa.com/post/best-ai-testing-tools> |
+| **MaestroGPT / Maestro AI test analysis** | Mobile only (Maestro flows) | LLM-powered failure summary that goes beyond pass/fail; AI-assisted command synthesis inside Maestro Studio | Cloud-only; LLM hallucination on root-cause requires human validation | <https://docs.maestro.dev/maestro-flows/workspace-management/ai-test-analysis> |
+
+### When to choose what
+
+- **Visual regression on a real-device matrix** → App Percy if you are already on BrowserStack; Applitools Eyes when you need richer match modes or design-side Figma comparison.
+- **Plain-English authoring on iOS + Android by non-engineers** → testRigor; verify business assertions during review.
+- **Self-healing with low ceremony on existing native suites** → Mabl.
+- **AI assistance inside an existing Maestro flow set** → MaestroGPT / Maestro AI test analysis. Lowest authoring friction when Maestro is already adopted.
+
+### Review gate for native AI tests
+
+Same as the web review checklist above, plus mobile-specific:
+- [ ] Locator strategy is `accessibilityIdentifier` / `testID` / `contentDescription` — not text on a localized screen.
+- [ ] Visual diffs mask **dynamic regions** (timestamps, signal bars, battery, push banners) before adjusting numeric thresholds.
+- [ ] Self-heal events are surfaced in the report so silent regressions cannot ride along.
+- [ ] AI-suggested tests respect the two-axis flake taxonomy (logic vs device) — see `mobile-e2e-testing.md`.
