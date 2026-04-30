@@ -187,3 +187,5 @@ Validate the emit helper and end-to-end consistency:
 - `EVENTS.md` — schema written by emits
 - `GENERATION.md` — generation prompt invoked by auto-spawn
 - `DESIGN.md §3` — overall architecture
+- `POSTMORTEM.md` — postmortem generation triggered by `run_end`
+- `_common/scripts/apex-emit.sh` — reference helper implementation
