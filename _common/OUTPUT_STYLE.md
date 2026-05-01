@@ -173,6 +173,32 @@ Specific skills may add domain-banned phrases in their `Output Contract`. Exampl
 
 ---
 
+## Subagent Completion Pattern (universal ban)
+
+Reports returned from the `Agent` tool (any `subagent_type`, including `general-purpose`) MUST NOT open with completion-announcement preamble. The fact that the subagent finished is **implicit** in the act of returning text — stating it adds zero signal.
+
+**Banned openers (do not emit):**
+
+```
+✗ "All work is complete. Here's the summary report."
+✗ "X が完了しました。最終レポートを返します。"
+✗ "十分な調査が完了しました。350語以下で構造化されたレポートをまとめます。"
+✗ "Successfully completed the task. Below is the summary."
+✗ "全ての変更を適用しました。以下に結果をまとめます。"
+```
+
+**Open instead with the first deliverable line:**
+- a `## ` section header that names the deliverable
+- a table header
+- the lead finding ("V4 のバックスラッシュエスケープは 0 件。`_common` リンクもクリーン。")
+- a `_STEP_COMPLETE` / handoff envelope directly (no prose preamble before it)
+
+**Why this matters:** Subagent reports are read in batch by an orchestrator (Architect, Nexus, the user). Completion preamble is filler that orchestrators ignore — but it costs tokens and pushes the actual deliverable below the attention fold.
+
+This rule applies even when the skill's `Output Contract` does not explicitly mention it; subagent invocations inherit OUTPUT_STYLE universally.
+
+---
+
 ## Interaction with Existing Protocols
 
 | Protocol | Relationship |

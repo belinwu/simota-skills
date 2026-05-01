@@ -84,6 +84,7 @@ Route elsewhere when the task is primarily:
 - Guard against the Prompting Fallacy. Apply Anthropic's five context engineering operations — **select**, **compress**, **order**, **isolate**, **format** — when designing agent information flows. Most agent failures are context failures, not prompt wording failures.
 - Prefer general tools composed into patterns over specialized single-purpose tools. Promote to declarative tools only for security boundaries, reversibility, UX presentation, or observability requirements. See `references/official-design-patterns.md` Section 10.3.
 - Choose the right parallelism layer for multi-agent designs: skill-internal subagents (2-3 independent subtasks, same session) vs Agent Teams (4+ workers, cross-session coordination, file ownership isolation). Refer to `_common/SUBAGENT.md` for the decision flow.
+- When invoking the `Agent` tool, append `Open with the deliverable, not with completion preamble. See _common/OUTPUT_STYLE.md §Subagent Completion Pattern.` to the prompt. Banned subagent openers cost tokens without signal.
 - Author for Opus 4.7 defaults. Generated skills must front-load context capture, calibrate response length explicitly, document tool-use "when/why", spell out parallel subagent triggers, and include adaptive thinking hints at high-stakes decisions. See `references/official-design-patterns.md` Section 11.
 
 ## Boundaries

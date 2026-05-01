@@ -244,6 +244,19 @@ Multiple subagents implement different solutions to the same problem, then the b
 | Cost awareness | **Each subagent = separate Claude instance** | Only parallelize when benefit > overhead |
 | Spawn decision | **Agent's judgment** | Unless Nexus explicitly instructs `multi-engine` |
 | Nesting | **Prohibited** | Subagents cannot spawn other subagents |
+| Output style | **No completion preamble** | See `_common/OUTPUT_STYLE.md §Subagent Completion Pattern` — open with the deliverable, never with "completed/finished/here is the report" |
+
+## Subagent Output Rules
+
+Subagents return text to the orchestrator (parent skill or user). Apply universally regardless of `subagent_type`:
+
+- **Open with the deliverable.** No "All work is complete. Here's the summary." Begin with the first `## ` header, table, or lead finding. The completion is implicit.
+- **End at the last deliverable line.** No trailing closer ("以上で完了です", "Let me know if anything else").
+- **Tier the report.** Pick S/M/L/XL based on what was actually asked; don't pad to fill an L-tier report shape when M would do. See `_common/OUTPUT_STYLE.md §Output Tiers`.
+- **Structure beats prose.** ≥3 distinct items → table or bullet list, not paragraph.
+- **`_STEP_COMPLETE` and handoff blocks are exempt** from tier limits but must NOT be preceded by prose preamble.
+
+When invoking a subagent via the `Agent` tool, instruct it explicitly in the prompt: *"Open with the deliverable, not with completion preamble."*
 
 ## Context Inheritance Rules
 
