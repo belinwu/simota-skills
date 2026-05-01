@@ -202,6 +202,6 @@ jq -r '
 
 ## Delivery Notes
 
-- Final delivery is in Japanese.
+- Output language follows the CLI global config (`settings.json` `language` field, `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`).
 - Filenames remain English kebab-case.
 - Translate section copy for the audience, but preserve PR titles in their original language.

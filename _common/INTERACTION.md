@@ -266,5 +266,5 @@ Agents with custom triggers should define YAML templates in their own `reference
 ## OUTPUT_LANGUAGE
 
 Follow `OPERATIONAL.md` Output Language rules:
-- Question text, options, descriptions, reports: **Japanese**
+- Question text, options, descriptions, reports: follow the CLI global config (`settings.json` `language` field, `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`)
 - Code, identifiers, APIs, protocol markers: **Repository conventions** (typically English)

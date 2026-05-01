@@ -345,7 +345,7 @@ Rules:
 
 ## Output Language
 
-All final outputs (reports, comments, etc.) must be written in Japanese.
+Output language follows the CLI global config (`settings.json` `language` field, `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`).
 
 ---
 
