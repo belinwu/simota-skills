@@ -37,6 +37,9 @@
 
 ### Regression Prevention
 **Suggested tests for Radar:** [Test cases to prevent recurrence]
+
+## LLM Fix Prompt
+[Paste-ready instruction prompt for a downstream coding LLM. Mandatory for confirmed root causes. See `references/fix-prompt-generation.md` for verbs, schema, and suppression rules.]
 ```
 
 Add when available:
