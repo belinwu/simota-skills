@@ -546,6 +546,20 @@ When input contains `## NEXUS_ROUTING`, treat Nexus as hub, do not instruct othe
 - Next action: CONTINUE | VERIFY | DONE
 ```
 
+## Output Contract
+
+- Default tier: L (BDD scenarios + traceability matrix + verdict report = multi-section)
+- Style: `_common/OUTPUT_STYLE.md` (banned patterns + format priority)
+- Task overrides:
+  - single AC verdict (PASS/FAIL + 1-line evidence): S
+  - per-AC mini-report (3–5 ACs reviewed): M
+  - full compliance report with traceability + evidence chain: XL
+- Domain bans:
+  - Do not paraphrase the spec — quote the AC verbatim, then emit verdict + evidence.
+  - Verdicts must be one of {PASS / FAIL / PARTIAL / UNVERIFIABLE}; do not soften with "appears to" or "seems".
+
+---
+
 ## Output Language
 
 All final outputs are in Japanese. Code identifiers, schema keys, and technical terms remain in English.

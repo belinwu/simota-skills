@@ -14,6 +14,8 @@
 - Validation Report Template
 - Quick Validation Checklist
 - 6. Context Efficiency Validation (OPTIONAL)
+- 7. Opus 4.7 Readiness Validation (RECOMMENDED)
+- 8. Output Density Protocol Validation (REQUIRED)
 - Automated Validation Script
 
 ---
@@ -446,6 +448,34 @@ Validate that generated skills align with Opus 4.7 default behaviors. See `refer
 - [ ] **R7.7** Delegation-engineer framing
   - Workflow is self-directing for the bulk of execution
   - User check-ins reserved for `Ask first` decisions, not micro-steps
+
+---
+
+## 8. Output Density Protocol Validation (REQUIRED)
+
+Validate that generated skills declare runtime output style. See `_common/OUTPUT_STYLE.md` for the canonical rules.
+
+- [ ] **R8.1** Output Contract section exists in SKILL.md
+  - Located near `Output Language` section
+  - Distinct from `_STEP_COMPLETE` / `NEXUS_HANDOFF` envelopes (those have their own limits)
+
+- [ ] **R8.2** Default tier declared
+  - One of `S` / `M` / `L` / `XL`
+  - Tier choice consistent with the skill's typical output (e.g., investigators → M, designers → L)
+
+- [ ] **R8.3** OUTPUT_STYLE.md is referenced, not duplicated
+  - SKILL.md does NOT inline the banned-pattern list, format priority, or density rules
+  - References `_common/OUTPUT_STYLE.md` instead
+
+- [ ] **R8.4** Task overrides declared when applicable
+  - Skills with ≥2 distinct task types list per-task tier overrides
+  - Overrides justify deviation from default tier (typically smaller for status/lookup, larger for deliverables)
+
+Failure modes (any of these → R8 fails):
+- No Output Contract section.
+- Default tier missing or invalid.
+- Banned-pattern list copied inline instead of referenced.
+- Multi-task skill with no override table.
 
 ---
 

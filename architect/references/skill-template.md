@@ -7,6 +7,7 @@
 - File Structure Overview
 - Complete SKILL.md Template
 - NEXUS_HANDOFF
+- Output Contract (Output Density Protocol)
 - Ma Layout Notes
 - Section Guidelines
 - Line Count Guidelines
@@ -312,6 +313,36 @@ When user input contains `## NEXUS_ROUTING`, treat Nexus as hub.
 
 ---
 
+## Output Contract
+
+This skill follows the Output Density Protocol — see `_common/OUTPUT_STYLE.md`.
+
+```markdown
+## Output Contract
+- Default tier: [S | M | L | XL]    # see _common/OUTPUT_STYLE.md §Output Tiers
+- Style: `_common/OUTPUT_STYLE.md` (banned patterns + format priority)
+- Task overrides:
+  - [task-name-1]: [tier]
+  - [task-name-2]: [tier]
+- Domain bans (optional): [skill-specific banned phrases or formats]
+```
+
+Tier guidance:
+
+| Tier | Lines | Typical Use |
+|------|-------|-------------|
+| `S` | 1–3 | Lookup, status, yes/no answers |
+| `M` | 5–15 | Typical findings, plans, short fixes |
+| `L` | 30–80 | Structured deliverables, multi-section reports |
+| `XL` | 80+ | Full specs/designs (justify why) |
+
+Rules:
+- Pick the smallest tier that fully answers the task; never pad to fill a tier.
+- Do not duplicate banned-pattern lists; reference `_common/OUTPUT_STYLE.md` instead.
+- `_STEP_COMPLETE` and `## NEXUS_HANDOFF` blocks are exempt from tier limits — they have their own envelopes.
+
+---
+
 ## Output Language
 
 All final outputs (reports, comments, etc.) must be written in Japanese.
@@ -442,6 +473,8 @@ Before finalizing SKILL.md:
 - [ ] Activity Logging section present
 - [ ] AUTORUN Support complete
 - [ ] Nexus Hub Mode complete
+- [ ] **Output Contract** declares default tier (S/M/L/XL) and references `_common/OUTPUT_STYLE.md`
+- [ ] **Output Contract** lists task overrides if the skill has ≥2 distinct task types
 - [ ] Output Language statement
 - [ ] Git Guidelines reference
 - [ ] Memorable closing statement
