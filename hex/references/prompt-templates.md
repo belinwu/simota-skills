@@ -72,40 +72,6 @@ The image prompt should be readable as a piece of dark fantasy art with no clear
 | Retro slide deck | Default 2:3 portrait |
 | README banner | Request 16:9 from Sketch; pad with environmental haze; figure on left third |
 | Onboarding doc inline | 1:1 square; tighten crop to mid-thigh up |
-| Evolution diptych (`evolve` Recipe) | Two 2:3 portraits side-by-side, same lighting and seed family |
-
-## ASCII Fallback
-
-If Sketch is unavailable or the user requests text-only output, render the same character as ASCII art with a structured trait list. Keep the silhouette family and tone — the textual character should still feel mythic.
-
-```
-       .--""--.
-      /  ___   \
-     | / · _\ · |    ← faceless: documentation gap
-     |  \_____/  |
-     |  /     \  |    ← third arm: cyclomatic complexity
-     |~~~~~~~~~~~|
-     |  RUSTED   |    ← outdated dependencies
-     |   ARMOR   |
-     |~~~~~~~~~~~|
-     |  >toxic<  |    ← security debt
-     |   ~aura~  |
-     '-_______-'
-
-Tier:        T3 — Wraith   (Score 4.7)
-Dominant:    Security debt
-Traits:      Toxic aura · Rusted armor · Third arm · Translucent hand
-             · Parchment seals · Faceless mouth
-```
-
-## Reproducibility (`evolve` Recipe)
-
-For evolution snapshots:
-
-1. Compute a stable seed hash: `hash(repo_url + ISO_date)`.
-2. Use the same seed family across the diptych (left = old, right = new).
-3. Hold style anchors and silhouette family identical; only let trait surfaces and tier change.
-4. Note the seed in the report so future runs can reproduce the comparison.
 
 ## Sketch Handoff Packet
 

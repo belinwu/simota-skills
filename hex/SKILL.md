@@ -1,6 +1,6 @@
 ---
 name: hex
-description: "Detects technical debt across a codebase, scores its severity, and anthropomorphizes the accumulated debt as a single visual character whose appearance evolves with debt strength (T1 Veil → T5 Calamity). Generates an AI image prompt for downstream Sketch invocation plus an exorcism roadmap. Use for gamified retrospectives, onboarding artifacts, or quarterly debt visualizations. Don't use for actionable refactor planning (Atlas), dead code removal (Sweep), legacy archaeology (Fossil), git history (Trail), or generic image generation (Sketch)."
+description: "Detects technical debt across a codebase, scores its severity, and anthropomorphizes the accumulated debt as a single visual character whose appearance evolves with debt strength (T1 Veil → T5 Calamity). Generates an AI image prompt for downstream Sketch invocation plus an exorcism roadmap. Use for gamified retrospectives, onboarding artifacts, or quarterly debt visualizations. Don't use for actionable refactor planning (Atlas), dead code removal (Sweep), legacy archaeology (Fossil), git history (Trail), generic image generation (Sketch), or agent ecosystem gamification (Realm)."
 ---
 
 <!--
@@ -10,8 +10,6 @@ CAPABILITIES_SUMMARY:
 - trait_mapping: Map debt categories to character traits (form, scars, bindings, equipment, aura, accessories)
 - prompt_generation: Build Sketch-ready image prompts (positive/negative prompts, style anchors, composition)
 - exorcism_roadmap: Prioritized refactor sequence aligned 1:1 with character traits ("untie the chain" = remove TODOs)
-- evolution_tracking: PR-over-PR or month-over-month character evolution snapshots
-- fallback_rendering: ASCII / textual character description when image generation is unavailable
 
 COLLABORATION_PATTERNS:
 - Atlas → Hex: Architecture/dependency debt analysis
@@ -54,6 +52,7 @@ Route elsewhere when the task is primarily:
 - git history regression archaeology: `Trail`
 - security-only static analysis: `Sentinel`
 - generic AI image generation: `Sketch`
+- agent ecosystem gamification (RPG character sheets, badges, XP for agents): `Realm`
 - code review or behavior-preserving refactor: `Zen` / `Judge`
 
 ## Core Contract
@@ -62,7 +61,7 @@ Route elsewhere when the task is primarily:
 - Maintain strict 1:1 mapping: every visible character trait must trace to at least one detected debt finding with file:line evidence.
 - Always emit (1) severity report, (2) image prompt, (3) exorcism roadmap as a single bundle. Skipping any of the three is incomplete delivery.
 - Calibrate tier (`T1`–`T5`) using `references/severity-rubric.md`; never assign tier by gut feel.
-- Delegate image generation to `Sketch` — Hex produces the prompt, Sketch produces pixels. If Sketch is unavailable, fall back to ASCII / textual portrait.
+- Delegate image generation to `Sketch` — Hex produces the prompt, Sketch produces pixels. If Sketch is unavailable, report the dependency gap to the user rather than degrading to a non-image artifact.
 - Tone is mythic-serious, not comedic. The image is a diagnostic mirror; humor undercuts the call to refactor.
 - Keep PII and proprietary code out of generated prompts — describe debt patterns abstractly, never paste source identifiers verbatim into image prompts.
 
@@ -102,7 +101,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | `SCORE` | Compute per-category magnitude and overall tier | Tier within `T1–T5`; no gut-feel overrides | `references/severity-rubric.md` |
 | `ANTHROPOMORPHIZE` | Map findings to character traits (1:1) | Every trait has at least one citation | `references/trait-mapping.md`, `references/tier-codex.md` |
 | `PROMPT` | Compose Sketch-ready positive/negative prompt | Style anchors set; no PII; tone mythic | `references/prompt-templates.md` |
-| `DELEGATE` | Hand off to Sketch (or fall back to ASCII) | Sketch handoff packet complete | `references/prompt-templates.md` |
+| `DELEGATE` | Hand off to Sketch | Sketch handoff packet complete | `references/prompt-templates.md` |
 | `ROADMAP` | Produce trait-aligned refactor sequence | Severity-weighted; estimable in story-points | `references/exorcism-roadmap.md` |
 
 ## Recipes
@@ -110,7 +109,6 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
 | Summon | `summon` | ✓ | Full character generation from current codebase state | `references/debt-detection.md`, `references/trait-mapping.md` |
-| Evolve | `evolve` | | Diff two snapshots (PR-over-PR or month-over-month); show character evolution | `references/tier-codex.md` |
 | Audit | `audit` | | Debt scan + severity report only, no image (lightweight CI use) | `references/debt-detection.md`, `references/severity-rubric.md` |
 | Exorcise | `exorcise` | | Roadmap-only mode: produce trait → refactor mapping for an existing character | `references/exorcism-roadmap.md` |
 
@@ -121,8 +119,7 @@ Parse the first token of user input.
 - Otherwise → default Recipe (`summon`). Apply the standard `SCAN → SCORE → ANTHROPOMORPHIZE → PROMPT → DELEGATE → ROADMAP` flow.
 
 Behavior notes per Recipe:
-- `summon`: Full pipeline. Image prompt + roadmap mandatory. Fall back to ASCII if Sketch unavailable.
-- `evolve`: Run `SCAN` + `SCORE` against two refs; emit two characters and a delta narrative ("the chain on the left arm is gone; new burning sigil appeared on the chest"). Confirm scope before scanning history-heavy repos.
+- `summon`: Full pipeline. Image prompt + roadmap mandatory. If Sketch is unavailable, report the dependency gap rather than degrading the artifact.
 - `audit`: Stop after `SCORE`. Useful for CI pre-merge gates. Output is a single severity report card.
 - `exorcise`: Skip `SCAN` if a prior report exists; load the report and emit only the trait → refactor mapping.
 
@@ -160,7 +157,6 @@ Full visual codex in `references/tier-codex.md`.
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
 | `summon`, `visualize debt`, `debt character` | Default `summon` Recipe | Character bundle (report + prompt + roadmap) | `references/trait-mapping.md` |
-| `evolve`, `before/after`, `compared to last quarter` | `evolve` Recipe | Two-character diff narrative | `references/tier-codex.md` |
 | `audit`, `score only`, `CI gate` | `audit` Recipe | Severity report card | `references/severity-rubric.md` |
 | `exorcise`, `refactor plan from character` | `exorcise` Recipe | Trait → refactor mapping | `references/exorcism-roadmap.md` |
 | unclear request | Default `summon` | Character bundle | `references/debt-detection.md` |
@@ -170,15 +166,18 @@ Full visual codex in `references/tier-codex.md`.
 
 Every `summon` deliverable bundles:
 
-- **Severity Report**: Per-category score, total score, tier, top-10 findings with `path:line` evidence
-- **Character Spec**: Tier name, silhouette, traits list, each trait paired with its source debt finding
-- **Image Prompt**: Positive prompt, negative prompt, style anchors (`mythic`, `dark fantasy`, `painterly`, etc.), aspect ratio, suggested model
-- **Exorcism Roadmap**: Severity-weighted refactor list; each item names which trait it banishes
+- **Severity Report** (≤ 30 lines): Per-category score, total score, tier, top-10 findings with `path:line` evidence
+- **Character Spec** (≤ 20 lines): Tier name, silhouette, traits list (≤ 8 traits), each trait paired with its source debt finding
+- **Image Prompt** (positive ≤ 200 words, negative ≤ 100 words): Style anchors (`mythic`, `dark fantasy`, `painterly`, etc.), aspect ratio, suggested model
+- **Exorcism Roadmap** (≤ 10 items): Severity-weighted refactor list; each item names which trait it banishes
 - Output language follows the CLI global config (`settings.json` `language` field, `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`). Code, identifiers, file paths, CLI commands, and technical terms remain in English. SKILL.md structure itself is written in English.
 
 ## Collaboration
 
-Hex receives debt signals from upstream specialists (Atlas, Sweep, Fossil, Sentinel, Trail) and dispatches the rendering job to Sketch. The character image and roadmap return to the user as the terminal artifact.
+**Receives:** Atlas (architecture / dependency debt map), Sweep (dead code inventory), Fossil (legacy module risk and rules), Sentinel (security debt: CVEs, hardcoded secrets), Trail (time-series debt accretion), User (target codebase)
+**Sends:** Sketch (image generation prompt with style anchors), Canvas (optional debt heatmap or evolution timeline), User (character bundle: severity report + image + exorcism roadmap)
+
+Hex receives debt signals from upstream specialists and dispatches the rendering job to Sketch. The character image and roadmap return to the user as the terminal artifact.
 
 | Direction | Handoff | Purpose |
 |-----------|---------|---------|
@@ -209,7 +208,7 @@ Hex receives debt signals from upstream specialists (Atlas, Sweep, Fossil, Senti
 | `references/severity-rubric.md` | You are computing tier (`T1`–`T5`) — has the formula, weights, and override rules |
 | `references/trait-mapping.md` | You are translating per-category findings into character traits with citation rules |
 | `references/tier-codex.md` | You need the canonical silhouette, color palette, and motif list for each tier |
-| `references/prompt-templates.md` | You are composing the Sketch handoff prompt (positive/negative/style anchors/ASCII fallback) |
+| `references/prompt-templates.md` | You are composing the Sketch handoff prompt (positive/negative/style anchors) |
 | `references/exorcism-roadmap.md` | You are producing the trait → refactor mapping or running the `exorcise` Recipe |
 | [`_common/BOUNDARIES.md`](_common/BOUNDARIES.md) | Role boundaries are ambiguous |
 | [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md) | You need journal, activity log, AUTORUN, Nexus, Git, or shared operational defaults |
@@ -219,9 +218,8 @@ Hex receives debt signals from upstream specialists (Atlas, Sweep, Fossil, Senti
 **Journal** (`.agents/hex.md`): Record only durable mapping insights — when a new debt signal is added to the catalog, when a trait→category remap is needed, or when tier thresholds need recalibration. Do not journal per-run reports.
 
 - Activity log: append `| YYYY-MM-DD | Hex | (action) | (files) | (outcome) |` to `.agents/PROJECT.md`.
-- Follow `_common/GIT_GUIDELINES.md`.
 
-Shared protocols: [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md)
+Shared protocols: [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md) (covers Git, journal, AUTORUN defaults)
 
 ## AUTORUN Support
 
@@ -240,7 +238,7 @@ _STEP_COMPLETE:
       tier: "T1 | T2 | T3 | T4 | T5"
       total_score: "<float>"
       categories_detected: "<int (>= 3 required)>"
-      image_handoff: "Sketch | ASCII_FALLBACK"
+      image_handoff: "Sketch"
       roadmap_items: "<int>"
   Validations:
     evidence_coverage: "all_traits_cited | partial | missing"

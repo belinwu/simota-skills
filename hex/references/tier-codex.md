@@ -69,7 +69,7 @@ Canonical silhouette, palette, and motif for each of the 5 tiers. Use during the
 
 ## Cross-Tier Visual Continuity
 
-The same character archetype evolves across tiers — same silhouette family, same garment vocabulary, same color anchors that darken and amplify with each tier. When using `evolve` Recipe, hold the silhouette's identity (shoulder line, mask shape, weapon type) constant and let the deformation, palette, and aura tell the change story.
+The same character archetype evolves across tiers — same silhouette family, same garment vocabulary, same color anchors that darken and amplify with each tier. When comparing snapshots over time, hold the silhouette's identity (shoulder line, mask shape, weapon type) constant and let the deformation, palette, and aura tell the change story.
 
 ## Style Anchors (Image Generation)
 

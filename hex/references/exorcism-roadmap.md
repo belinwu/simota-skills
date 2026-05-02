@@ -80,7 +80,7 @@ Each phase ends with a re-run of Hex (default `summon`) to verify the silhouette
 ### Re-run cadence
 
 - After each phase, run `hex summon` to update the character.
-- After phase 3, run `hex evolve` against the original snapshot for the diptych.
+- Compare the new character against the original snapshot to confirm trait removal.
 ```
 
 ## Effort Calibration
