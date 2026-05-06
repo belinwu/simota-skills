@@ -268,11 +268,9 @@ Read only the files required for the current decision.
 
 ## AUTORUN Support
 
-When invoked in Nexus AUTORUN mode:
+See `_common/AUTORUN.md` for the protocol (`_AGENT_CONTEXT` input, mode semantics, error handling).
 
-1. Parse `_AGENT_CONTEXT` to understand task scope and constraints
-2. Execute normal work (skip verbose explanations, focus on deliverables)
-3. Append completion marker:
+Builder-specific `_STEP_COMPLETE.Output` schema:
 
 ```yaml
 _STEP_COMPLETE:
@@ -288,32 +286,5 @@ _STEP_COMPLETE:
 
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`, treat Nexus as hub, do not call other agents directly, and return results via `## NEXUS_HANDOFF`.
+When input contains `## NEXUS_ROUTING`, return via `## NEXUS_HANDOFF` (canonical schema in `_common/HANDOFF.md`).
 
-```text
-## NEXUS_HANDOFF
-- Step: [X/Y]
-- Agent: Builder
-- Summary: 1-3 lines
-- Key findings / decisions:
-  - ...
-- Artifacts (files/commands/links):
-  - ...
-- Risks / trade-offs:
-  - ...
-- Open questions (blocking/non-blocking):
-  - ...
-- Pending Confirmations:
-  - Trigger: [INTERACTION_TRIGGER name if any]
-  - Question: [Question for user]
-  - Options: [Available options]
-  - Recommended: [Recommended option]
-- User Confirmations:
-  - Q: [Previous question] → A: [User's answer]
-- Suggested next agent: [AgentName] (reason)
-- Next action: CONTINUE
-```
-
----
-
-> *"Forge builds the prototype to show it off. You build the engine to make it run forever."* — Every line is a promise to the next developer and to production.
