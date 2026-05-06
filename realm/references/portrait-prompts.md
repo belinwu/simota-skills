@@ -25,6 +25,54 @@ Each visible trait in the prompt MUST cite at least one input attribute. No inve
 4. **Badge density follows rarity tier, not visual real estate.** Common badges = subtle pin / brooch. Rare = visible emblem. Legendary = central focal element. Never fill the canvas with badges to "look impressive."
 5. **Class wins ties.** When two attributes suggest conflicting visual cues (e.g., heavy-armor class + low STR tier), class anchors the silhouette; stat tier modulates posture and weight inside that silhouette.
 
+## Department Palette
+
+Each `class` carries its own pastel palette so that, side-by-side in the directory, **departments are recognisable by hue while sharing the same paper-craft tone**. Style variants govern the rendering technique; department palette governs the colour register.
+
+### Palette table
+
+| Class | Palette key | Primary | Accent | Highlight | Prompt fragment(replace `[DEPT_PALETTE]` with this) |
+|-------|------------|---------|--------|-----------|------------------------------------------------------|
+| Commander | `gold-amber` | warm gold | amber | cream | `soft warm gold and amber pastel with cream highlights` |
+| Ranger | `sage-leaf` | sage green | soft leaf | cream | `soft sage green and soft leaf pastel with cream highlights` |
+| Artisan | `terracotta-peach` | terracotta | peach | cream | `soft terracotta and peach pastel with cream highlights` |
+| Guardian | `steel-slate` | steel blue | slate gray | pearl | `soft steel blue and slate gray pastel with pearl highlights` |
+| Paladin | `silver-platinum` | silver | platinum | ivory | `soft silver and platinum pastel with ivory highlights` |
+| Sage | `indigo-wisteria` | indigo | wisteria | cream | `soft indigo and wisteria pastel with cream highlights` |
+| Alchemist | `mint-turquoise` | mint | turquoise | cream | `soft mint and turquoise pastel with cream highlights` |
+| Scribe | `parchment-sepia` | parchment | sepia | cream | `soft parchment and sepia pastel with cream highlights` |
+| Architect | `blueprint-azure` | blueprint blue | azure | cream | `soft blueprint blue and azure pastel with cream highlights` |
+| **Enchanter** | `lilac-rose` | lilac | rose | cream | `soft lilac and rose pastel with cream highlights` |
+| Engineer | `copper-bronze` | copper | bronze | cream | `soft copper and bronze pastel with cream highlights` |
+| Merchant | `marigold-coral` | marigold | coral | cream | `soft marigold and coral pastel with cream highlights` |
+| Oracle | `aurora-periwinkle` | aurora violet | periwinkle | cream | `soft aurora violet and periwinkle pastel with cream highlights` |
+| Herald | `dawn-coral` | dawn pink | coral | cream | `soft dawn pink and coral pastel with cream highlights` |
+| Demiurge | `nebula-cosmic` | nebula purple | cosmic blue | starlight | `soft nebula purple and cosmic blue pastel with starlight highlights` |
+| Strategist | `midnight-navy` | midnight blue | navy | silver | `soft midnight blue and navy pastel with silver highlights` |
+| Diplomat | `dove-cream` | dove gray | warm cream | ivory | `soft dove gray and warm cream pastel with ivory highlights` |
+| Pioneer | `sky-cyan` | sky blue | cyan | cream | `soft sky blue and cyan pastel with cream highlights` |
+| Navigator | `forest-teal` | forest green | teal | cream | `soft forest green and teal pastel with cream highlights` |
+| Transmuter | `molten-copper` | molten orange | copper | cream | `soft molten orange and copper pastel with cream highlights` |
+| Watcher | `dusk-violet` | dusk violet | muted plum | moonlight | `soft dusk violet and muted plum pastel with moonlight highlights` |
+
+### Palette rules
+
+- **Palette is determined by `class`**, not per agent. Same-class agents share the palette (e.g. all 6 Enchanters use `lilac-rose`); lineup recognisability is intentional.
+- **Tone stays uniform across all palettes**: pastel, paper-craft, soft inner glow, layered paper-cut shapes, light angular polygon faceting. Only the hue family changes.
+- **Caption block band**: cream is the default for warm/neutral palettes; use ivory for `silver-platinum`/`dove-cream`, pearl for `steel-slate`, silver for `strategist`, moonlight for `dusk-violet`, starlight for `nebula-cosmic`. Pick whichever the palette's "Highlight" column lists.
+- **Affinity icons** keep their **own product colours** from the directory token system (SaaS / E-commerce / Mobile / Dashboard / Marketing / Game), **not** the dept palette. Icons stay comparable across departments.
+- **Cross-dept harmony**: highlight tones (cream / ivory / pearl / starlight / moonlight / silver) act as the unifying neutral that lets two-dept compositions compose without clashing.
+
+### Resolving `[DEPT_PALETTE]` in variant snippets
+
+When generating a portrait prompt, replace the variant snippet's palette clause with the row's "Prompt fragment". Example:
+
+- Enchanter (default fragment, already embedded): `soft lilac and rose pastel ... with cream highlights`
+- Sage: replace with `soft indigo and wisteria pastel ... with cream highlights`
+- Alchemist: replace with `soft mint and turquoise pastel ... with cream highlights`
+
+All other clauses(chibi proportions, paper-cut shapes, polygon faceting, motion-line trim, caption block layout)stay identical. Specialty motif(wand / mirror / codex / vial / scroll / etc.)remains agent-specific and is composed on top of the dept palette.
+
 ## Style Variants
 
 Default variant: **`personality-archetype-chibi-paper-poly`**. Override via the `style_variant` field in the handoff packet, or whenever the user requests a specific aesthetic.
@@ -142,18 +190,84 @@ Beyond the core caption block (`name` / `role · category`), three optional elem
 
 | Supplement | Source | Include when | Visualization |
 |-----------|--------|-------------|---------------|
-| `tagline` | `class-system.md` Flavor column (e.g. "Enchanters make complexity feel effortless.") | Always available; include when ≤ 60 chars | Single italic line, smaller than secondary caption, placed directly under the caption block |
+| `tagline` | **Agent's own `tagline` field (preferred)** from agent directory data; **fall back to `class-system.md` Flavor column** when agent tagline is missing or > 60 chars | Always available; include when ≤ 60 chars | Single italic line, smaller than secondary caption, placed directly under the caption block |
 | `rank_pill` | `rank-xp-system.md` Title column (e.g. `Apprentice`, `Veteran`, `Champion`) | Rank is **not** cold-start | Small color-coded pill/badge tucked below or beside the caption block; pill color = rank `Badge Color` from `rank-xp-system.md` (Veteran=Purple, Elite=Gold, Champion=Orange, Legend=Red, etc.) |
 | `affinity_icons` | Agent's `PROJECT_AFFINITY` from its SKILL.md frontmatter | Always available; show only entries marked `(H)` High; max 3 icons | Small abstract icon strip in a corner (no text labels). Standard symbols: SaaS=stacked cards, E-commerce=shopping bag, Mobile=smartphone, Dashboard=gauge, Marketing=megaphone, Game=controller |
 
 #### Supplement rules
 
 - **No text bloat.** Never write `PROJECT_AFFINITY: SaaS(H) E-commerce(H)` as text — render as icons only. `tagline` is the only additional text element.
-- **Tagline**: short single-line italic. Never use the agent's full SKILL.md description, marketing copy, or invented quotes. Use `class-system.md` Flavor column verbatim; if it exceeds 60 chars, drop the leading subject (e.g. "Enchanters make complexity feel effortless." → "Make complexity feel effortless.") or omit.
+- **Tagline source priority** (preserves individuality within same-class lineups where palette / archetype / category are uniform):
+  1. **Agent's own `tagline` field** from its directory data (e.g., agent JSON `tagline`). Use verbatim when ≤ 60 chars.
+  2. **Fall back to `class-system.md` Flavor column** when the agent tagline is missing, empty, or > 60 chars and cannot be shortened cleanly.
+  3. Never use the agent's full SKILL.md description, marketing copy, or invented quotes.
+  4. If a class flavor is used and exceeds 60 chars, drop the leading subject (e.g. "Enchanters make complexity feel effortless." → "Make complexity feel effortless.") or omit.
+- **Tagline format**: single-line italic, smaller than the secondary caption line. No trailing punctuation modification — preserve the source quote verbatim including period.
 - **Rank pill**: title only (no XP numbers, no level numbers, no `??`). Omit entirely under cold-start rather than rendering `??`.
 - **Affinity icons**: abstract symbols only — never product logos, never company brands. Max 3 icons; if more than 3 entries are `(H)`, pick the 3 most thematically aligned with the agent's class.
 - **Cold-start handling**: `rank_pill` is omitted. `tagline` and `affinity_icons` remain available because they trace to static SKILL.md / class-system.md data, not to runtime activity.
 - **Negative prompt addition** (when supplements are used): add `extra paragraphs, full descriptions, marketing copy, brand logos, version numbers, statistics text` to the variant negative additions to prevent diffusion overflow.
+
+## Per-Agent Individuality Layer
+
+The class palette + archetype + category caption are intentionally uniform within a class to support directory recognisability. To prevent same-class agents from looking interchangeable, agents MAY declare four optional micro-trait dimensions on top of the class baseline. All four are independent — include or omit each per portrait.
+
+| Trait | Purpose | Source rule |
+|-------|---------|-------------|
+| `hair` | Differentiate silhouette top via short hair-style descriptor | Designer-chosen, must remain within the chosen `style_variant` register |
+| `accessory` | Single small worn item (not held in hand) hinting at the agent's role | Max 1 per portrait. Must NOT be a brand or trademark cue |
+| `expression` | Micro pose / gaze cue (no aggressive / dejected / anxious) | Must remain dignified and approachable |
+| `floor_motif` | Paper-cut platform pattern beneath the character hinting at the agent's specialty domain | Class baseline + per-agent variation; uses the class palette `Highlight` + `Accent` only (no new hue) |
+
+### Hair examples (chibi variants)
+
+`wavy intellectual`, `tidy short balanced`, `messy practical`, `calm flowing`, `neat side-parted`, `soft braided`, `curly buoyant`, `sleek long`, `fluffy round`, `spiky dynamic`.
+
+### Accessory examples
+
+`small round glasses`, `slim scarf`, `headband`, `forehead bandana`, `rolled cuffs`, `single ear stud (geometric, abstract)`, `paper-cut visor`, `small brooch (paper-cut polygon)`, `slim necklace with paper-cut tag`.
+
+### Expression cue examples
+
+`slight upward gaze (visionary)`, `calm forward (composed)`, `focused forward (working)`, `slight head tilt (curious)`, `gentle smile with closed eyes (peaceful)`, `looking at one held item (concentrating)`, `slight three-quarter turn (alert but not hostile)`.
+
+### Floor motif catalog
+
+Each class has a baseline platform pattern; per-agent variation adds a thin secondary motif using the class `Accent` + `Highlight` tones only.
+
+| Class | Baseline platform | Per-agent variation source |
+|-------|------------------|----------------------------|
+| Enchanter | octagonal paper-cut platform with soft sparkle dots | specialty motif (e.g. flow=motion-lines, echo=mirrored arc, muse=token grid) |
+| Artisan | octagonal paper-cut platform with subtle craft-paper grain | specialty motif (e.g. architect=blueprint grid, arena=balance-line, builder=brick / factory tile, schema=ER nodes) |
+| Commander | hexagonal paper-cut platform with light radial guides | specialty motif (e.g. nexus=hub-and-spoke, sherpa=staircase, titan=pillar) |
+| Ranger | rounded paper-cut platform with leaf-edge accents | specialty motif (e.g. scout=footprint, trail=branching path, voice=waveform) |
+| Guardian | shield-edged paper-cut platform | specialty motif (e.g. radar=test-grid, voyager=coverage map) |
+| Paladin | star-tip paper-cut platform | specialty motif (e.g. sentinel=lock-shield, probe=scan-arc) |
+| Sage | open-book paper-cut platform | specialty motif (e.g. judge=verdict-scale, lore=pattern-network) |
+| Alchemist | beaker-edged paper-cut platform | specialty motif (e.g. tone=waveform, dot=pixel-grid) |
+| Scribe | scroll-edge paper-cut platform | specialty motif (e.g. quill=sentence-line, scribe=spec-tree) |
+| Architect | drafting-grid paper-cut platform | specialty motif (rare class, varies per agent) |
+| Engineer | gear-tooth paper-cut platform | specialty motif (e.g. gear=cog, scaffold=modular grid) |
+| Merchant | coin-edge paper-cut platform | specialty motif (e.g. ledger=balance-sheet, rank=priority-stack) |
+| Oracle | crescent paper-cut platform | specialty motif (e.g. oracle=eye-glyph, omen=warning-arc) |
+| Herald | flag-edge paper-cut platform | specialty motif (e.g. growth=funnel, launch=trajectory-arc) |
+| Demiurge | nebula-edge paper-cut platform | specialty motif (e.g. realm=map-grid, darwin=evolution-tree) |
+| Strategist | board-grid paper-cut platform | specialty motif (e.g. magi=triadic, helm=horizon-line) |
+| Diplomat | dove-feather paper-cut platform | specialty motif (e.g. accord=handshake, plea=speech-bubble) |
+| Pioneer | path-edge paper-cut platform | specialty motif (e.g. spark=flame-tip, dawn=sun-rise) |
+| Navigator | compass-edge paper-cut platform | specialty motif (e.g. compass=cardinal, navigator=routing-line) |
+| Transmuter | molten-edge paper-cut platform | specialty motif (e.g. shift=metamorph-arrow, port=double-circle) |
+| Watcher | dusk-edge paper-cut platform | specialty motif (e.g. lens=iris, beacon=signal-pulse) |
+
+### Rules
+
+- All four traits are optional. Defaults: standard tidy hair, no accessory, calm forward expression, plain class-baseline platform.
+- Hair / accessory / expression must remain within the chosen `style_variant` register (no painterly adult features in chibi; no chibi simplifications in heroic-fantasy).
+- Floor motif uses the agent's class palette `Highlight` + `Accent` only — never introduces a new hue.
+- Accessory must NOT carry brand / trademark cues (e.g., specific glasses brands, real watches, named pins).
+- Expression must remain dignified and approachable — never aggressive, dejected, or anxious. Cold-start agents default to `calm forward`.
+- When the agent's class is the same as another already-portrayed agent, individuality traits SHOULD differ at least on hair OR accessory OR floor variation, so the directory remains scannable.
+- Negative prompt addition (when individuality traits are used): add `identical twins, repeated faces, brand pins, real glasses brand, trademark accessory, anxious face, sad face, angry face, aggressive stance` to prevent diffusion overflow into wrong registers.
 
 ## Shared Negative Base
 
@@ -189,6 +303,12 @@ REALM_TO_SKETCH_PORTRAIT:
   style_anchors: [<variant style_anchors>]
   aspect_ratio: "<variant default or override>"
   suggested_model_anchor: "<variant suggested_model_anchor>"
+  palette:
+    key: "<class palette key from Department Palette table, e.g., lilac-rose>"
+    primary: "<primary hue, e.g., lilac>"
+    accent: "<accent hue, e.g., rose>"
+    highlight: "<highlight tone, e.g., cream>"
+    source: "class={class} → portrait-prompts.md Department Palette table"
   nameplate:
     name: "<agent name verbatim, e.g., flow>"
     role: "<archetype from class-system.md Archetype column, e.g., Illusionist; falls back to class when archetype > 16 chars>"
@@ -200,14 +320,19 @@ REALM_TO_SKETCH_PORTRAIT:
     background: "<soft pastel band | scroll motif | none | low-poly banner>"
     supplements:
       tagline:
-        text: "<class flavor verbatim or shortened, ≤ 60 chars; null to omit>"
-        source: "class-system.md Flavor column"
+        text: "<verbatim string, ≤ 60 chars; null to omit>"
+        source: "agent.tagline (preferred) | class-system.md Flavor column (fallback when agent tagline missing or > 60 chars)"
       rank_pill:
         title: "<rank title from rank-xp-system.md; null under cold-start>"
         color: "<rank Badge Color, e.g., Purple, Gold, Orange>"
       affinity_icons:
         items: ["<abstract symbol descriptor>", "..."]   # max 3, e.g. ["stacked cards (SaaS)", "shopping bag (E-commerce)", "smartphone (Mobile)"]
         position: "top-right | bottom-right | top-left | bottom-left"
+  individuality:
+    hair: "<short hair-style descriptor, e.g., 'tidy short balanced'; null to use class default>"
+    accessory: "<single small worn item, e.g., 'small round glasses'; null to use class default>"
+    expression: "<micro pose / gaze cue, e.g., 'slight upward gaze (visionary)'; null to use class default>"
+    floor_motif: "<class baseline + per-agent variation, e.g., 'Artisan octagonal platform with brick / factory tile pattern in cream and peach'; null to use class baseline only>"
   trait_citations:
     - trait: "<visible trait>"
       source: "<attribute citation>"
@@ -223,6 +348,8 @@ REALM_TO_SKETCH_PORTRAIT:
 Before emitting the handoff packet, verify:
 
 - [ ] `style_variant` is set explicitly.
+- [ ] `palette.key` is set from the Department Palette table based on the agent's `class`. Same-class agents share the palette.
+- [ ] Caption block band tone matches the palette's `Highlight` column (cream / ivory / pearl / silver / moonlight / starlight).
 - [ ] All visible traits in the prompt cite a Realm-tracked attribute (class / stat tier / rank / badge / department / active quest).
 - [ ] Cold-start attributes listed in `cold_start_attributes` are not visualized — declared, not invented.
 - [ ] No mythic-curse, eldritch, or grotesque-distortion imagery is present in any variant.
@@ -238,7 +365,12 @@ Before emitting the handoff packet, verify:
 - [ ] Long-token fallback applied: `name` > 8 → `position: top` + smaller size; `role` (archetype) > 16 → fall back to class; `category` > 12 → abbreviate or drop; both problematic → drop secondary line, keep `name` only.
 - [ ] `class` value retained in handoff packet for silhouette mapping even when the displayed `role` is the archetype.
 - [ ] Optional supplements respected: `tagline` ≤ 60 chars (or null); `rank_pill` set only when rank is not cold-start (otherwise null, never `??`); `affinity_icons` are abstract symbols only (no brand logos), max 3.
+- [ ] Tagline source priority applied: agent's own `tagline` field is preferred; class flavor is fallback only when agent tagline is missing or > 60 chars.
 - [ ] No supplement contains: SKILL.md description, marketing copy, XP numbers, levels, version strings, or product brand references.
+- [ ] Individuality layer respected: when same-class agents are already portrayed, the new agent differs on at least one of `hair` / `accessory` / `floor_motif` so the directory stays scannable.
+- [ ] Individuality traits stay within the variant register (no painterly adult features in chibi; no chibi simplification in heroic-fantasy).
+- [ ] Floor motif uses the class palette `Highlight` + `Accent` only (no new hue introduced).
+- [ ] Accessory is brand-free; expression remains dignified and approachable (no aggressive / dejected / anxious cues).
 - [ ] Tone matches the selected variant; no cross-variant bleed (e.g., heroic-fantasy painterly mixed into chibi-flat).
 
 ## Boundary Notes
