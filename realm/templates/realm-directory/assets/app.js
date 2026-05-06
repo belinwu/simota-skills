@@ -774,34 +774,16 @@
       </div>`;
 
     const overviewEl = document.querySelector('[data-tab-panel="overview"]');
-    overviewEl.innerHTML = `
-      <p>${escapeHtml(agent.description || '')}</p>
-      ${cls ? `
-        <div class="cap-list" style="margin-top: var(--realm-spacing-md);">
-          <li>
-            <div class="cap-list__key">Class flavor</div>
-            <div>${escapeHtml(cls.archetype)} — ${escapeHtml(cls.passive)} (${escapeHtml(cls.bonus)})</div>
-          </li>
-        </div>` : ''}`;
+    overviewEl.innerHTML = renderOverviewPanel(agent, cls, cat);
 
     const capsEl = document.querySelector('[data-tab-panel="capabilities"]');
-    capsEl.innerHTML = `
-      <ul class="cap-list">
-        ${(agent.capabilities || []).map(c => `
-          <li>
-            <div class="cap-list__key">${escapeHtml(c.key)}</div>
-            <div>${escapeHtml(c.summary)}</div>
-          </li>`).join('')}
-      </ul>`;
+    capsEl.innerHTML = renderCapabilitiesPanel(agent);
 
     const collabPanel = document.querySelector('[data-tab-panel="collaboration"]');
-    collabPanel.innerHTML = `
-      <div class="collab-graph">
-        ${detailCollabSvg(agent, idx.agents || [])}
-      </div>`;
+    collabPanel.innerHTML = renderCollaborationPanel(agent, idx.agents || []);
 
     const examplesEl = document.querySelector('[data-tab-panel="examples"]');
-    examplesEl.innerHTML = exampleVignettes(agent);
+    examplesEl.innerHTML = renderExamplesPanel(agent, idx.agents || []);
 
     // Related strips
     const sameClass = (idx.agents || []).filter(a => a.class === agent.class && a.name !== agent.name).slice(0, 6);
@@ -902,19 +884,248 @@
       </svg>`;
   }
 
-  function exampleVignettes(agent) {
-    const caps = (agent.capabilities || []).slice(0, 3);
-    if (!caps.length) {
-      return `<p>Ask <strong>${escapeHtml(agent.name)}</strong> when you need ${escapeHtml(agent.archetype || 'specialist')} work.</p>`;
+  /* ---------- Detail tab renderers (Overview / Capabilities / Collaboration / Examples) ---------- */
+
+  /** Build the affinity matrix: all 6 project types with level dots (H=3, M=2, L=1, none=0) */
+  function affinityMatrixHtml(affinity) {
+    const ALL_AFFINITIES = ['saas', 'ecommerce', 'mobile', 'dashboard', 'marketing', 'game'];
+    const affinityMap = new Map((affinity || []).map(a => [a.project, a.level]));
+    const dotCount = { H: 3, M: 2, L: 1 };
+    return `<div class="detail-affinity-matrix" aria-label="Project affinity breakdown">
+      ${ALL_AFFINITIES.map(id => {
+        const tx = TAXONOMY.affinities[id];
+        if (!tx) return '';
+        const level = affinityMap.get(id) || null;
+        const count = level ? (dotCount[level] || 0) : 0;
+        const isNone = !level;
+        const dots = [1,2,3].map(i =>
+          `<span class="detail-affinity-matrix__dot${i <= count ? ' detail-affinity-matrix__dot--filled' : ''}" aria-hidden="true">●</span>`
+        ).join('');
+        return `<div class="detail-affinity-matrix__cell${isNone ? ' detail-affinity-matrix__cell--none' : ''}"
+                     title="${escapeHtml(tx.label)}: ${escapeHtml(level || 'None')}">
+          <span class="detail-affinity-matrix__icon">${affinityIconSvg(tx.symbol)}</span>
+          <span class="detail-affinity-matrix__label">${escapeHtml(tx.label)}</span>
+          <span class="detail-affinity-matrix__dots" aria-label="${escapeHtml(tx.label)} affinity ${escapeHtml(level || 'None')}">${dots}</span>
+          <span class="detail-affinity-matrix__level">${escapeHtml(level || '—')}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  function renderOverviewPanel(agent, cls, cat) {
+    const parts = [];
+
+    // 1. Tagline quote
+    if (agent.tagline) {
+      parts.push(`<blockquote class="detail-quote">${escapeHtml(agent.tagline)}</blockquote>`);
     }
-    return `
-      <ul class="cap-list">
-        ${caps.map(c => `
-          <li>
-            <div class="cap-list__key">ask ${escapeHtml(agent.name)} when…</div>
-            <div>${escapeHtml(c.summary)}</div>
-          </li>`).join('')}
-      </ul>`;
+
+    // 2. Lede paragraph
+    if (agent.description) {
+      parts.push(`<p>${escapeHtml(agent.description)}</p>`);
+    }
+
+    // 3. Class flavor card
+    if (cls) {
+      const catTrait = cat ? cat.trait : '';
+      const deptLine = agent.department
+        ? `<p class="detail-flavor__meta">${escapeHtml(agent.department)}${catTrait ? ` · ${escapeHtml(catTrait)}` : ''}</p>`
+        : (catTrait ? `<p class="detail-flavor__meta">${escapeHtml(catTrait)}</p>` : '');
+      parts.push(`<div class="detail-flavor">
+        <p class="detail-flavor__label">Class Flavor · ${escapeHtml(cls.label)}</p>
+        <p class="detail-flavor__archetype">${escapeHtml(cls.archetype)}</p>
+        <p class="detail-flavor__passive">Passive: <strong>${escapeHtml(cls.passive)}</strong> — ${escapeHtml(cls.bonus)}</p>
+        ${deptLine}
+      </div>`);
+    }
+
+    // 4. Project affinity full breakdown
+    parts.push(`<section aria-labelledby="ov-affinity-head">
+      <header class="section-head" style="margin-block: var(--realm-spacing-md) var(--realm-spacing-sm);">
+        <h3 class="section-head__title" id="ov-affinity-head">Project Affinity</h3>
+      </header>
+      ${affinityMatrixHtml(agent.affinity)}
+    </section>`);
+
+    // 5. Recipes preview
+    const recipes = agent.recipes || [];
+    if (recipes.length) {
+      const MAX_RECIPES = 6;
+      const shown = recipes.slice(0, MAX_RECIPES);
+      const extra = recipes.length - shown.length;
+      const chips = shown.map(r =>
+        `<code class="chip" style="font-family: var(--core-font-family-mono);">/skill ${escapeHtml(agent.name)} ${escapeHtml(r)}</code>`
+      ).join('');
+      const morePart = extra > 0 ? `<span class="chip chip--muted">+${extra} more</span>` : '';
+      parts.push(`<section aria-labelledby="ov-recipes-head">
+        <header class="section-head" style="margin-block: var(--realm-spacing-md) var(--realm-spacing-sm);">
+          <h3 class="section-head__title" id="ov-recipes-head">Recipes</h3>
+        </header>
+        <div class="chip-group recipes-chips" role="list">${chips}${morePart}</div>
+      </section>`);
+    }
+
+    // 6. Quick stats footer
+    const capCount = (agent.capabilities || []).length;
+    const inputCount = (agent.collaboration?.input || []).length;
+    const outputCount = (agent.collaboration?.output || []).length;
+    const tierLabel = agent.rank?.tier || '—';
+    parts.push(`<p class="detail-stats">
+      ${capCount} ${capCount === 1 ? 'capability' : 'capabilities'} ·
+      ${inputCount} input partner${inputCount === 1 ? '' : 's'} ·
+      ${outputCount} output partner${outputCount === 1 ? '' : 's'} ·
+      rank ${escapeHtml(tierLabel)}
+    </p>`);
+
+    // 7. Badges
+    const badges = agent.badges || [];
+    if (badges.length) {
+      const badgeChips = badges.map(b =>
+        `<span class="chip">${escapeHtml(b)}</span>`
+      ).join('');
+      parts.push(`<div class="chip-group" role="list" aria-label="Badges" style="margin-top: var(--realm-spacing-sm);">${badgeChips}</div>`);
+    }
+
+    return parts.join('\n');
+  }
+
+  function renderCapabilitiesPanel(agent) {
+    const caps = agent.capabilities || [];
+    const header = `<header class="section-head" style="margin-bottom: var(--realm-spacing-md);">
+      <h3 class="section-head__title">${caps.length} ${caps.length === 1 ? 'capability' : 'capabilities'}</h3>
+    </header>`;
+    if (!caps.length) {
+      return header + `<div class="empty-note">No capabilities defined yet.</div>`;
+    }
+    return header + `<ul class="cap-list">
+      ${caps.map(c => `
+        <li>
+          <div class="cap-list__key">${escapeHtml(c.key)}</div>
+          <div>${escapeHtml(c.summary)}</div>
+        </li>`).join('')}
+    </ul>`;
+  }
+
+  function renderCollaborationPanel(agent, allAgents) {
+    const byName = new Map(allAgents.map(a => [a.name, a]));
+    const inputs  = (agent.collaboration?.input  || []);
+    const outputs = (agent.collaboration?.output || []);
+
+    if (!inputs.length && !outputs.length) {
+      return `<div class="collab-graph">${detailCollabSvg(agent, allAgents)}</div>
+        <p class="empty-note">No collaboration partners declared.</p>`;
+    }
+
+    const MAX_SHOWN = 6;
+
+    function partnerListHtml(names, labelPrefix) {
+      const shown = names.slice(0, MAX_SHOWN);
+      const extra = names.length - shown.length;
+      const items = shown.map(n => {
+        const partner = byName.get(n);
+        const pcls = partner ? TAXONOMY.classes[partner.class] : null;
+        const role = pcls ? escapeHtml(pcls.archetype) : (partner ? escapeHtml(partner.archetype || partner.category || '') : '');
+        const href = `detail.html?name=${encodeURIComponent(n)}`;
+        return `<li class="partner-list__item">
+          <a class="partner-list__link" href="${escapeHtml(href)}">${escapeHtml(n)}</a>
+          ${role ? `<span class="partner-list__role">${role}</span>` : ''}
+        </li>`;
+      }).join('');
+      const moreLine = extra > 0 ? `<li class="partner-list__item partner-list__more">+${extra} more</li>` : '';
+      return `<ul class="partner-list">${items}${moreLine}</ul>`;
+    }
+
+    return `<div class="collab-graph">${detailCollabSvg(agent, allAgents)}</div>
+      <div class="collab-detail-grid">
+        <section aria-labelledby="collab-in-head">
+          <header class="section-head">
+            <h3 class="section-head__title" id="collab-in-head">Receives work from · ${inputs.length}</h3>
+          </header>
+          ${inputs.length ? partnerListHtml(inputs) : '<p class="empty-note">No input partners.</p>'}
+        </section>
+        <section aria-labelledby="collab-out-head">
+          <header class="section-head">
+            <h3 class="section-head__title" id="collab-out-head">Sends work to · ${outputs.length}</h3>
+          </header>
+          ${outputs.length ? partnerListHtml(outputs) : '<p class="empty-note">No output partners.</p>'}
+        </section>
+      </div>`;
+  }
+
+  function renderExamplesPanel(agent, allAgents) {
+    const byName = new Map(allAgents.map(a => [a.name, a]));
+    const parts = [];
+
+    // 1. Invocation patterns
+    const recipes = agent.recipes || [];
+    const recipeChips = recipes.length
+      ? recipes.map(r => {
+          const invText = `/skill ${agent.name} ${r}`;
+          return `<div class="invocation-block invocation-block--sm">
+            <code class="invocation-block__code">${escapeHtml(invText)}</code>
+            <button class="btn btn--ghost" data-copy="${escapeHtml(invText)}" style="font-size: var(--core-font-size-12); padding: 4px 8px; min-height: 32px;">Copy</button>
+          </div>`;
+        }).join('')
+      : '';
+
+    parts.push(`<section aria-labelledby="ex-invoke-head">
+      <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
+        <h3 class="section-head__title" id="ex-invoke-head">Invocation</h3>
+      </header>
+      <div class="invocation-block">
+        <code class="invocation-block__code">@${escapeHtml(agent.name)}</code>
+        <button class="btn btn--primary" data-copy="@${escapeHtml(agent.name)}">Copy</button>
+      </div>
+      ${recipeChips ? `<div class="recipes-chips" style="margin-top: var(--realm-spacing-sm);">${recipeChips}</div>` : ''}
+    </section>`);
+
+    // 2. Sample prompts from capabilities
+    const caps = agent.capabilities || [];
+    let sampleItems = '';
+    if (caps.length) {
+      const shown = caps.slice(0, 3);
+      const lcFirst = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+      sampleItems = shown.map(c => `
+        <li>
+          <div class="cap-list__key">Sample prompt</div>
+          <div>Use <strong>${escapeHtml(agent.name)}</strong> when you need to ${escapeHtml(lcFirst(c.summary))}.</div>
+        </li>`).join('');
+    } else {
+      const archLabel = agent.archetype || (TAXONOMY.classes[agent.class]?.archetype) || 'specialist';
+      sampleItems = `<li>
+        <div class="cap-list__key">Sample prompt</div>
+        <div>Ask <strong>${escapeHtml(agent.name)}</strong> when you need ${escapeHtml(archLabel)} work.</div>
+      </li>`;
+    }
+    parts.push(`<section aria-labelledby="ex-samples-head" style="margin-top: var(--realm-spacing-lg);">
+      <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
+        <h3 class="section-head__title" id="ex-samples-head">Sample Prompts</h3>
+      </header>
+      <ul class="cap-list">${sampleItems}</ul>
+    </section>`);
+
+    // 3. Pairs well with (collaboration.output top 3)
+    const outputs = (agent.collaboration?.output || []).slice(0, 3);
+    if (outputs.length) {
+      const pairItems = outputs.map(n => {
+        const partner = byName.get(n);
+        const pcls = partner ? TAXONOMY.classes[partner.class] : null;
+        const role = pcls ? escapeHtml(pcls.archetype) : (partner ? escapeHtml(partner.archetype || partner.class || '') : '');
+        const href = `detail.html?name=${encodeURIComponent(n)}`;
+        return `<li class="partner-list__item">
+          <a class="partner-list__link" href="${escapeHtml(href)}">${escapeHtml(n)}</a>
+          ${role ? `<span class="partner-list__role">${role}</span>` : ''}
+        </li>`;
+      }).join('');
+      parts.push(`<section aria-labelledby="ex-pairs-head" style="margin-top: var(--realm-spacing-lg);">
+        <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
+          <h3 class="section-head__title" id="ex-pairs-head">Pairs Well With</h3>
+        </header>
+        <ul class="partner-list">${pairItems}</ul>
+      </section>`);
+    }
+
+    return parts.join('\n');
   }
 
   async function bootSearch() {

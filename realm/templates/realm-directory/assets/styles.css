@@ -1058,3 +1058,222 @@ a:focus-visible {
   outline: 3px solid var(--realm-color-border-focus);
   outline-offset: 2px;
 }
+
+/* ---------- 4. detail.html — enriched tab panels ---------- */
+
+/* Tagline blockquote */
+.detail-quote {
+  margin: 0 0 var(--realm-spacing-md);
+  padding-inline-start: var(--realm-spacing-md);
+  border-inline-start: 3px solid var(--realm-color-brand-primary-strong);
+  font-style: italic;
+  font-size: var(--core-font-size-18, 18px);
+  color: var(--realm-color-ink-soft);
+  quotes: none;
+}
+
+/* Class flavor card */
+.detail-flavor {
+  background: var(--realm-color-surface-card);
+  border: 1px solid var(--realm-color-border-subtle);
+  border-radius: var(--realm-radius-md);
+  padding: var(--realm-spacing-md);
+  margin-block: var(--realm-spacing-md);
+}
+
+.detail-flavor__label {
+  font-family: var(--core-font-family-mono);
+  font-size: var(--core-font-size-12);
+  color: var(--realm-color-brand-primary-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--core-letter-spacing-wide);
+  margin: 0 0 var(--realm-spacing-xs);
+}
+
+.detail-flavor__archetype {
+  font-size: var(--core-font-size-18, 18px);
+  font-weight: var(--core-font-weight-semibold);
+  margin: 0 0 var(--realm-spacing-xs);
+  color: var(--realm-color-ink-strong);
+}
+
+.detail-flavor__passive {
+  font-size: var(--core-font-size-14);
+  color: var(--realm-color-ink-soft);
+  margin: 0 0 var(--realm-spacing-xs);
+}
+
+.detail-flavor__meta {
+  font-size: var(--core-font-size-12);
+  color: var(--realm-color-ink-subtle, var(--realm-color-ink-soft));
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: var(--core-letter-spacing-wide);
+}
+
+/* Affinity matrix grid */
+.detail-affinity-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--realm-spacing-sm);
+  margin-block: var(--realm-spacing-sm);
+}
+
+.detail-affinity-matrix__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--realm-spacing-sm);
+  background: var(--realm-color-surface-card);
+  border: 1px solid var(--realm-color-border-subtle);
+  border-radius: var(--realm-radius-md);
+  text-align: center;
+}
+
+.detail-affinity-matrix__cell--none {
+  opacity: 0.4;
+}
+
+.detail-affinity-matrix__icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--realm-color-brand-primary-strong);
+}
+
+.detail-affinity-matrix__label {
+  font-size: var(--core-font-size-12);
+  font-weight: var(--core-font-weight-semibold);
+  color: var(--realm-color-ink-strong);
+}
+
+.detail-affinity-matrix__dots {
+  font-size: var(--core-font-size-12);
+  color: var(--realm-color-border-default);
+  letter-spacing: 2px;
+}
+
+.detail-affinity-matrix__dot--filled {
+  color: var(--realm-color-brand-primary-strong);
+}
+
+.detail-affinity-matrix__level {
+  font-family: var(--core-font-family-mono);
+  font-size: var(--core-font-size-12);
+  font-weight: var(--core-font-weight-semibold);
+  color: var(--realm-color-ink-soft);
+}
+
+/* Quick stats footer */
+.detail-stats {
+  font-size: var(--core-font-size-14);
+  color: var(--realm-color-ink-soft);
+  margin: var(--realm-spacing-md) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--realm-spacing-xs);
+}
+
+/* Recipes chips wrapper */
+.recipes-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--realm-spacing-xs);
+}
+
+/* Partner list (collab / examples) */
+.partner-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--realm-spacing-xs);
+}
+
+.partner-list__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--realm-spacing-sm);
+  padding: var(--realm-spacing-sm) var(--realm-spacing-md);
+  background: var(--realm-color-surface-card);
+  border: 1px solid var(--realm-color-border-subtle);
+  border-radius: var(--realm-radius-md);
+}
+
+.partner-list__link {
+  font-weight: var(--core-font-weight-semibold);
+  color: var(--realm-color-brand-primary-strong);
+  text-decoration: none;
+}
+
+.partner-list__link:hover {
+  text-decoration: underline;
+}
+
+.partner-list__role {
+  font-size: var(--core-font-size-12);
+  color: var(--realm-color-ink-soft);
+}
+
+.partner-list__more {
+  font-size: var(--core-font-size-12);
+  color: var(--realm-color-ink-soft);
+  font-style: italic;
+}
+
+/* Collab panel 2-column layout */
+.collab-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--realm-spacing-lg);
+  margin-top: var(--realm-spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .collab-detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Invocation block */
+.invocation-block {
+  display: flex;
+  align-items: center;
+  gap: var(--realm-spacing-sm);
+  padding: var(--realm-spacing-md);
+  background: var(--realm-color-surface-card);
+  border: 1px solid var(--realm-color-border-subtle);
+  border-radius: var(--realm-radius-md);
+  flex-wrap: wrap;
+}
+
+.invocation-block--sm {
+  padding: var(--realm-spacing-xs) var(--realm-spacing-sm);
+}
+
+.invocation-block__code {
+  font-family: var(--core-font-family-mono);
+  font-size: var(--core-font-size-18, 18px);
+  color: var(--realm-color-ink-strong);
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+}
+
+.invocation-block--sm .invocation-block__code {
+  font-size: var(--core-font-size-14);
+}
+
+/* Empty note (tab-level inline empty state) */
+.empty-note {
+  color: var(--realm-color-ink-soft);
+  font-size: var(--core-font-size-14);
+  font-style: italic;
+  padding: var(--realm-spacing-sm) 0;
+}
+
+/* chip--muted modifier */
+.chip--muted {
+  opacity: 0.6;
+  font-style: italic;
+}
