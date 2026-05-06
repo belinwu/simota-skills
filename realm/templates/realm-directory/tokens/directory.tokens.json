@@ -1,0 +1,107 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/tokens.schema.json",
+  "$description": "Directory layer — product / component-level tokens. References realm.* (and core.* for raw dimensions). Never re-defines color values. Components: agent-card, filter-chip, hero, nav, search, badge, tooltip.",
+  "directory": {
+    "agentCard": {
+      "$description": "Agent card — 1:1 aspect tile presenting portrait + nameplate + role/category + rank pill + affinity icons.",
+      "background":      { "$value": "{realm.color.surface.card}",      "$type": "color" },
+      "background-hover":{ "$value": "{realm.color.surface.raised}",    "$type": "color" },
+      "border":          { "$value": "{realm.color.border.subtle}",     "$type": "color" },
+      "border-hover":    { "$value": "{realm.color.brand.primary-soft}","$type": "color" },
+      "title":           { "$value": "{realm.color.ink.strong}",        "$type": "color" },
+      "subtitle":        { "$value": "{realm.color.ink.soft}",          "$type": "color" },
+      "radius":          { "$value": "{realm.radius.lg}",               "$type": "dimension", "$description": "16px — friendly card corner." },
+      "padding":         { "$value": "{realm.spacing.lg}",              "$type": "dimension", "$description": "24px inner padding." },
+      "gap":             { "$value": "{realm.spacing.md}",              "$type": "dimension" },
+      "shadow":          { "$value": "{realm.shadow.card-rest}",        "$type": "shadow" },
+      "shadow-hover":    { "$value": "{realm.shadow.card-hover}",       "$type": "shadow", "$description": "Lilac glow on hover." },
+      "transition-duration":{ "$value": "{realm.motion.duration.hover}","$type": "duration" },
+      "transition-easing":  { "$value": "{realm.motion.easing.default}","$type": "cubicBezier" }
+    },
+    "filterChip": {
+      "$description": "Filter chip — rounded pill for category / affinity / rank filters.",
+      "background":         { "$value": "{realm.color.surface.card}",      "$type": "color" },
+      "background-hover":   { "$value": "{realm.color.brand.primary-soft}","$type": "color" },
+      "background-selected":{ "$value": "{realm.color.brand.primary-strong}","$type": "color", "$description": "Selected chip uses primary-strong (lilac-600) so ink-inverse text hits 5.51:1." },
+      "label":              { "$value": "{realm.color.ink.strong}",        "$type": "color" },
+      "label-selected":     { "$value": "{realm.color.ink.inverse}",       "$type": "color" },
+      "border":             { "$value": "{realm.color.border.default}",    "$type": "color" },
+      "border-selected":    { "$value": "{realm.color.brand.primary-strong}","$type": "color" },
+      "radius":             { "$value": "{realm.radius.pill}",             "$type": "dimension" },
+      "padding-x":          { "$value": "{realm.spacing.md}",              "$type": "dimension" },
+      "padding-y":          { "$value": "{realm.spacing.sm}",              "$type": "dimension" },
+      "gap":                { "$value": "{realm.spacing.xs}",              "$type": "dimension", "$description": "4px icon-to-text tight pairing." },
+      "min-height":         { "$value": { "value": 44, "unit": "px" },     "$type": "dimension", "$description": "Touch target >= 44px." }
+    },
+    "hero": {
+      "$description": "Top hero band — directory landing zone.",
+      "background":      { "$value": "{realm.color.surface.subtle}",   "$type": "color", "$description": "Soft lilac wash band." },
+      "title":           { "$value": "{realm.color.ink.strong}",       "$type": "color" },
+      "subtitle":        { "$value": "{realm.color.ink.soft}",         "$type": "color" },
+      "accent":          { "$value": "{realm.color.brand.primary-strong}","$type": "color" },
+      "radius":          { "$value": "{realm.radius.xl}",              "$type": "dimension", "$description": "24px — generous hero corner." },
+      "padding-y":       { "$value": "{realm.spacing.3xl}",            "$type": "dimension" },
+      "padding-x":       { "$value": "{realm.spacing.xl}",             "$type": "dimension" }
+    },
+    "nav": {
+      "background":         { "$value": "{realm.color.surface.card}",     "$type": "color" },
+      "background-scrolled":{ "$value": "{realm.color.surface.card}",     "$type": "color" },
+      "border":             { "$value": "{realm.color.border.subtle}",    "$type": "color" },
+      "label":              { "$value": "{realm.color.ink.strong}",       "$type": "color" },
+      "label-active":       { "$value": "{realm.color.brand.primary-strong}","$type": "color" },
+      "height":             { "$value": { "value": 64, "unit": "px" },    "$type": "dimension" },
+      "z":                  { "$value": "{core.zIndex.sticky}",           "$type": "number" }
+    },
+    "search": {
+      "background":      { "$value": "{realm.color.surface.card}",   "$type": "color" },
+      "border":          { "$value": "{realm.color.border.default}", "$type": "color" },
+      "border-focus":    { "$value": "{realm.color.border.focus}",   "$type": "color" },
+      "placeholder":     { "$value": "{realm.color.ink.muted}",      "$type": "color" },
+      "text":            { "$value": "{realm.color.ink.strong}",     "$type": "color" },
+      "radius":          { "$value": "{realm.radius.md}",            "$type": "dimension" },
+      "padding-x":       { "$value": "{realm.spacing.md}",           "$type": "dimension" },
+      "padding-y":       { "$value": "{realm.spacing.sm}",           "$type": "dimension" },
+      "min-height":      { "$value": { "value": 44, "unit": "px" },  "$type": "dimension" },
+      "focus-ring":      { "$value": "{realm.shadow.focus-ring}",    "$type": "shadow" }
+    },
+    "rankBadge": {
+      "$description": "Rank pill rendered on agent card. Color resolves by rank key (recruit..legend) → realm.color.rank.<key>.fill / .on.",
+      "radius":       { "$value": "{realm.radius.pill}", "$type": "dimension" },
+      "padding-x":    { "$value": "{realm.spacing.sm}",  "$type": "dimension" },
+      "padding-y":    { "$value": "{core.dimension.4}",  "$type": "dimension" },
+      "fontFamily":   { "$value": "{core.fontFamily.rounded-sans}", "$type": "fontFamily" },
+      "fontSize":     { "$value": "{core.fontSize.12}",  "$type": "dimension" },
+      "fontWeight":   { "$value": "{core.fontWeight.bold}", "$type": "fontWeight" },
+      "letterSpacing":{ "$value": "{core.letterSpacing.wide}", "$type": "dimension" }
+    },
+    "affinityIcon": {
+      "$description": "Affinity icon strip on card — abstract symbols, tinted via realm.color.affinity.<key>.",
+      "size":      { "$value": { "value": 16, "unit": "px" }, "$type": "dimension" },
+      "gap":       { "$value": "{realm.spacing.xs}",          "$type": "dimension" },
+      "background":{ "$value": "{realm.color.surface.subtle}","$type": "color" },
+      "padding":   { "$value": { "value": 4, "unit": "px" },  "$type": "dimension" },
+      "radius":    { "$value": "{realm.radius.sm}",           "$type": "dimension" }
+    },
+    "tooltip": {
+      "background": { "$value": "{realm.color.ink.strong}",   "$type": "color" },
+      "text":       { "$value": "{realm.color.ink.inverse}",  "$type": "color" },
+      "radius":     { "$value": "{realm.radius.md}",          "$type": "dimension" },
+      "padding-x":  { "$value": "{realm.spacing.sm}",         "$type": "dimension" },
+      "padding-y":  { "$value": "{core.dimension.4}",         "$type": "dimension" },
+      "z":          { "$value": "{core.zIndex.tooltip}",      "$type": "number" }
+    },
+    "grid": {
+      "$description": "Responsive grid: 12-col desktop / 8-col tablet / 4-col mobile.",
+      "columns-desktop": { "$value": 12, "$type": "number" },
+      "columns-tablet":  { "$value": 8,  "$type": "number" },
+      "columns-mobile":  { "$value": 4,  "$type": "number" },
+      "gutter":          { "$value": "{realm.spacing.lg}", "$type": "dimension", "$description": "24px gutter." },
+      "max-width":       { "$value": { "value": 1200, "unit": "px" }, "$type": "dimension" }
+    },
+    "motion": {
+      "card-hover":      { "$value": "{realm.motion.duration.hover}",          "$type": "duration" },
+      "page-transition": { "$value": "{realm.motion.duration.page-transition}","$type": "duration" },
+      "easing":          { "$value": "{realm.motion.easing.default}",          "$type": "cubicBezier" }
+    }
+  }
+}

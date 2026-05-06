@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Realm Directory · Agent Detail</title>
+  <meta name="description" content="Detailed agent profile — capabilities, collaboration map, and example invocations." />
+  <link rel="stylesheet" href="assets/tokens.css" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-page="detail">
+  <a class="sr-only" href="#main">Skip to main content</a>
+
+  <header class="app-nav" role="banner">
+    <div class="container app-nav__inner">
+      <a href="index.html" class="app-nav__brand" aria-label="Realm directory home">
+        <span class="app-nav__brand-mark" aria-hidden="true">R</span>
+        <span>Realm</span>
+      </a>
+      <nav class="app-nav__links" aria-label="Primary">
+        <a class="app-nav__link" href="index.html">Directory</a>
+        <a class="app-nav__link" href="map.html">Map</a>
+        <a class="app-nav__link" href="category.html?slug=ux-design">Categories</a>
+        <a class="app-nav__link" href="search.html">Search</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"
+                aria-label="Toggle light or dark theme">
+          <span aria-hidden="true">◐</span>
+          <span data-theme-label>Light</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container" data-detail>
+    <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+
+    <section class="detail-hero" data-detail-hero></section>
+
+    <div class="tabs" role="tablist" data-tabset aria-label="Agent sections">
+      <button class="tabs__item" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+      <button class="tabs__item" role="tab" data-tab="capabilities" aria-selected="false">Capabilities</button>
+      <button class="tabs__item" role="tab" data-tab="collaboration" aria-selected="false">Collaboration</button>
+      <button class="tabs__item" role="tab" data-tab="examples" aria-selected="false">Examples</button>
+    </div>
+
+    <section class="tab-panel" data-tab-panel="overview"></section>
+    <section class="tab-panel" data-tab-panel="capabilities" hidden></section>
+    <section class="tab-panel" data-tab-panel="collaboration" hidden></section>
+    <section class="tab-panel" data-tab-panel="examples" hidden></section>
+
+    <section data-related-class style="margin-top: var(--realm-spacing-2xl);"></section>
+    <section data-related-aff   style="margin-top: var(--realm-spacing-xl);"></section>
+  </main>
+
+  <noscript>
+    <p style="padding: 2rem;">This page needs JavaScript. The data is in <code>assets/data/agents/{name}.json</code>.</p>
+  </noscript>
+
+  <script type="application/json" id="agents-index-fallback">{}</script>
+  <script>
+    (function () {
+      var el = document.getElementById('agents-index-fallback');
+      if (!el || !window.location || window.location.protocol !== 'file:') return;
+      var x = new XMLHttpRequest();
+      try {
+        x.open('GET', 'assets/data/agents.index.json', false);
+        x.send(null);
+        if (x.status === 0 || x.status === 200) el.textContent = x.responseText || '{}';
+      } catch (e) {}
+    })();
+  </script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
