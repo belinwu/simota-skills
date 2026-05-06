@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "compete",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "investigation",
+  "department": "Intelligence and scouting",
+  "description": "Competitive research, differentiation analysis, and strategic positioning. Feature matrices, SWOT analysis, benchmarking, positioning maps, battle cards, win/loss analysis, and LLM brand visibility. Research only — does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "competitor_research",
+      "summary": "Discovery, profiling, tiering of direct/indirect competitors and substitutes"
+    },
+    {
+      "key": "feature_comparison",
+      "summary": "Feature matrices, pricing comparison, UX benchmarks, tech-stack analysis, SEO comparison"
+    },
+    {
+      "key": "strategic_analysis",
+      "summary": "SWOT, positioning maps, benchmarking, differentiation strategy"
+    },
+    {
+      "key": "competitive_alerts",
+      "summary": "Alert triage, battle cards, response planning, competitive moves tracking"
+    },
+    {
+      "key": "win_loss_analysis",
+      "summary": "Deal analysis tied to product, sales, or market strategy"
+    },
+    {
+      "key": "market_intelligence",
+      "summary": "Moat evaluation, category design, PLG competition, pricing posture, DX advantage"
+    },
+    {
+      "key": "llm_visibility",
+      "summary": "LLM brand presence monitoring, AI share of voice, GEO metrics analysis"
+    },
+    {
+      "key": "calibration",
+      "summary": "Prediction validation, source confidence tracking, intelligence quality improvement"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "voice",
+      "pulse",
+      "nexus",
+      "flux",
+      "growth",
+      "canvas",
+      "helm",
+      "lore"
+    ],
+    "output": [
+      "spark",
+      "growth",
+      "canvas",
+      "helm",
+      "lore",
+      "oracle",
+      "researcher"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/compete.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "matrix",
+    "swot",
+    "battle-card",
+    "positioning",
+    "llm-visibility",
+    "battle",
+    "winloss",
+    "moat"
+  ]
+}

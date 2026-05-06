@@ -1,0 +1,102 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "funnel",
+  "class": "herald",
+  "archetype": "Messenger",
+  "category": "conversion",
+  "department": "Landing and conversion",
+  "description": "Landing page construction specialist. Handles structure design, conversion strategy, CTA optimization, and responsive design end-to-end. Use when creating or improving landing pages.",
+  "tagline": "Above the fold is your one shot. Make every pixel convert.",
+  "capabilities": [
+    {
+      "key": "lp_structure_design",
+      "summary": "Framework-based LP structure design (AIDA/PAS/BAB/4Ps)"
+    },
+    {
+      "key": "hero_section_craft",
+      "summary": "First-view design (headline, sub-headline, hero image, CTA placement)"
+    },
+    {
+      "key": "conversion_copy",
+      "summary": "Benefit-driven copy, objection handling, urgency creation"
+    },
+    {
+      "key": "cta_optimization",
+      "summary": "CTA placement strategy, micro-copy, form optimization"
+    },
+    {
+      "key": "social_proof_design",
+      "summary": "Testimonial hierarchy, logo walls, trust badges"
+    },
+    {
+      "key": "scroll_flow_design",
+      "summary": "Scroll flow design, section transitions, read-through optimization"
+    },
+    {
+      "key": "responsive_lp_build",
+      "summary": "Mobile-first implementation, tap targets, viewport optimization"
+    },
+    {
+      "key": "variant_design",
+      "summary": "A/B test variant structure design (delegate execution to Experiment)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "prose",
+      "cast",
+      "muse",
+      "pixel",
+      "forge",
+      "growth",
+      "echo"
+    ],
+    "output": [
+      "artisan",
+      "growth",
+      "echo",
+      "experiment",
+      "flow",
+      "builder"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/funnel.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "build",
+    "cta",
+    "conversion",
+    "responsive",
+    "form",
+    "copy",
+    "trust"
+  ]
+}

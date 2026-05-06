@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "lore",
+  "class": "demiurge",
+  "archetype": "World shaper",
+  "category": "meta-tooling",
+  "department": "Ecosystem meta layer",
+  "description": "Cross-agent knowledge curator and institutional memory guardian. Extracts patterns into METAPATTERNS.md, detects decay, propagates best practices, prevents organizational forgetting.",
+  "tagline": "Memory that survives the team.",
+  "capabilities": [
+    { "key": "cross_agent_synthesis", "summary": "Extract and correlate patterns across journals and postmortems" },
+    { "key": "pattern_extraction", "summary": "Cluster insights by similarity (>=80% merge, 50-79% variant)" },
+    { "key": "knowledge_catalog", "summary": "Maintain METAPATTERNS.md with confidence and freshness" },
+    { "key": "decay_detection", "summary": "Track half-life and schedule revalidation via validity windows" },
+    { "key": "knowledge_propagation", "summary": "Deliver LORE_INSIGHT/LORE_ALERT at confidence thresholds" },
+    { "key": "contradiction_detection", "summary": "Identify and resolve conflicting learnings between agents" },
+    { "key": "strategic_pruning", "summary": "Intentionally archive invalidated patterns" }
+  ],
+  "collaboration": {
+    "input": ["triage", "mend", "oracle", "darwin", "flux"],
+    "output": ["architect", "darwin", "sigil", "nexus", "mend", "gauge", "triage"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "M" },
+    { "project": "ecommerce", "level": "M" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/lore.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["harvest", "decay", "propagate", "prune"]
+}

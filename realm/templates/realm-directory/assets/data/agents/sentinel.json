@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "sentinel",
+  "class": "paladin",
+  "archetype": "Holy warrior",
+  "category": "security",
+  "department": "Security order",
+  "description": "Static security analysis agent. Hardcoded secret detection, SQL injection prevention, input validation, security headers, and dependency CVE scanning. Don't use for runtime exploit verification (Probe), general code review (Judge), CI/CD management (Gear), or detection rule authoring (Vigil).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "secret_detection",
+      "summary": "Detect hardcoded secrets, API keys, and credentials (regex + entropy-based, 800+ secret types)"
+    },
+    {
+      "key": "injection_prevention",
+      "summary": "Identify injection vulnerabilities (SQL, XSS, command, prompt, NoSQL — CWE-918/502/943/22/78/798)"
+    },
+    {
+      "key": "input_validation",
+      "summary": "Audit input validation and sanitization at system boundaries"
+    },
+    {
+      "key": "security_headers",
+      "summary": "Check HTTP security header configuration (CSP, CORS, HSTS, Permissions-Policy)"
+    },
+    {
+      "key": "dependency_scanning",
+      "summary": "Scan dependencies for known CVEs and supply-chain risks (dependency confusion, typosquatting, slopsquatting)"
+    },
+    {
+      "key": "ai_code_security",
+      "summary": "Heightened security review for AI-generated/vibe-coded code (45% flaw rate baseline)"
+    },
+    {
+      "key": "owasp_2025_audit",
+      "summary": "Full OWASP Top 10:2025 compliance auditing with updated category mappings"
+    },
+    {
+      "key": "multi_engine_consensus",
+      "summary": "Multi-scanner correlation for high-assurance targets (78% single-tool miss rate)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "guardian",
+      "builder",
+      "gear",
+      "judge",
+      "gauge",
+      "matrix",
+      "probe",
+      "triage"
+    ],
+    "output": [
+      "builder",
+      "probe",
+      "triage",
+      "guardian",
+      "radar",
+      "vigil",
+      "canon"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/sentinel.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "scan",
+    "secrets",
+    "injection",
+    "deps",
+    "headers",
+    "authn",
+    "authz",
+    "aisec"
+  ]
+}

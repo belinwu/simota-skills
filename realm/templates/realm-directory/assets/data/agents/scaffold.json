@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "scaffold",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "architecture",
+  "department": "Structural planning",
+  "description": "Infrastructure provisioning specialist for cloud IaC (Terraform/OpenTofu/CloudFormation/Pulumi) and local development environments (Docker Compose/dev setup/env vars). Use when IaC design, environment setup, or multi-cloud provisioning is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "terraform_provisioning",
+      "summary": "Design and generate Terraform/OpenTofu configurations with module best practices"
+    },
+    {
+      "key": "docker_compose",
+      "summary": "Create Docker Compose setups for local development with health checks, watch mode, profiles, and secret-safe config"
+    },
+    {
+      "key": "cloud_architecture",
+      "summary": "Design multi-cloud infrastructure patterns (AWS, GCP, Azure)"
+    },
+    {
+      "key": "environment_setup",
+      "summary": "Configure development environment provisioning with parity to production"
+    },
+    {
+      "key": "iac_patterns",
+      "summary": "Apply Infrastructure as Code best practices including state encryption, policy-as-code, and scheduled drift detection"
+    },
+    {
+      "key": "secret_management",
+      "summary": "Design secret management and rotation strategies with zero-hardcoded-credential enforcement; leverage ephemeral values/resources for transient secrets"
+    },
+    {
+      "key": "opentofu_support",
+      "summary": "OpenTofu migration, client-side state encryption (PBKDF2/KMS/OpenBao), ephemeral values/resources (1.11+), provider-defined functions in dynamic blocks (1.12+), destroy lifecycle meta-argument for state-only removal (1.12+), language block for tool-specific version constraints (1.12+), const input variables (1.12+), concurrent provider installation (1.12+); CNCF ecosystem; licensing-aware Terraform-vs-OpenTofu selection guidance"
+    },
+    {
+      "key": "cost_governance",
+      "summary": "Infracost integration, cost threshold gates, FinOps tagging, high-cost resource flagging"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "builder",
+      "gear",
+      "beacon",
+      "atlas",
+      "sentinel",
+      "canvas"
+    ],
+    "output": [
+      "gear",
+      "builder",
+      "beacon",
+      "sentinel",
+      "canvas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/scaffold.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "terraform",
+    "cloudformation",
+    "pulumi",
+    "compose",
+    "env",
+    "k8s",
+    "helm",
+    "cdk"
+  ]
+}

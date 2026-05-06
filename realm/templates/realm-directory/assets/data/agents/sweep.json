@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "sweep",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "Detects unnecessary files, unused code, orphaned files, and proposes safe deletion. For repo cleanup, dead code removal, or tidying.",
+  "tagline": "Evidence over intuition.",
+  "capabilities": [
+    { "key": "dead_code_detection", "summary": "Detect unused functions, classes, variables via static analysis" },
+    { "key": "unused_file_detection", "summary": "Find orphaned files via AST and graph-based analysis" },
+    { "key": "dependency_cleanup", "summary": "Identify unused package dependencies with lockfile awareness" },
+    { "key": "safe_deletion", "summary": "Generate safe deletion plans with confidence and rollback" },
+    { "key": "configuration_cleanup", "summary": "Find unused configuration entries and stale env vars" },
+    { "key": "ai_assisted_detection", "summary": "DCE-LLM pattern for sophisticated dead code" },
+    { "key": "stale_flag_detection", "summary": "Detect flag-controlled dead code via Piranha and ld-find-code-refs" }
+  ],
+  "collaboration": {
+    "input": ["atlas", "zen", "judge", "sentinel", "gear", "void"],
+    "output": ["zen", "builder", "guardian", "atlas", "horizon"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "L" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/sweep.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["scan", "deps", "files", "flags"]
+}

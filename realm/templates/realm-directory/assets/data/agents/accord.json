@@ -1,0 +1,91 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "accord",
+  "class": "diplomat",
+  "archetype": "Ambassador",
+  "category": "communication",
+  "department": "External bridge",
+  "description": "Create unified specification packages across Business, Development, and Design teams. Staged elaboration (L0 Vision → L1 Requirements → L2 Team Detail → L3 Acceptance Criteria) to build shared understanding. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "cross_team_spec",
+      "summary": "Unified specification packages for Business, Development, and Design teams"
+    },
+    {
+      "key": "staged_elaboration",
+      "summary": "L0 Vision → L1 Requirements → L2 Team Detail → L3 Acceptance Criteria"
+    },
+    {
+      "key": "scope_management",
+      "summary": "Full / Standard / Lite scope modes based on complexity and requirement count"
+    },
+    {
+      "key": "bdd_scenarios",
+      "summary": "Given/When/Then acceptance criteria with testable outcomes"
+    },
+    {
+      "key": "traceability",
+      "summary": "US/REQ to AC traceability with completeness metrics (Full ≥95%, Standard ≥85%, Lite ≥70%)"
+    },
+    {
+      "key": "audience_writing",
+      "summary": "Business = why, Development = how, Design = who/flow"
+    },
+    {
+      "key": "calibration",
+      "summary": "UNIFY post-task workflow for scope heuristics and pattern extraction"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "researcher",
+      "cast",
+      "voice",
+      "flux",
+      "magi",
+      "void",
+      "builder",
+      "radar"
+    ],
+    "output": [
+      "sherpa",
+      "builder",
+      "radar",
+      "voyager",
+      "canvas",
+      "scribe",
+      "lore"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/accord.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "vision",
+    "requirements",
+    "detail",
+    "ac",
+    "story-map",
+    "stakeholder",
+    "raci"
+  ]
+}

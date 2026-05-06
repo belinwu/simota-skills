@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "stratum",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "c4-architecture",
+  "department": "Architecture modeling",
+  "description": "Software architecture modeling, evaluation, and Structurizr DSL generation based on C4 model methodology. Use when C4 model design or visualization is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "c4_discovery",
+      "summary": "Auto-extract C4 model elements (System/Container/Component) from codebases"
+    },
+    {
+      "key": "boundary_definition",
+      "summary": "Identify and define system boundaries, actors, and external dependencies"
+    },
+    {
+      "key": "container_decomposition",
+      "summary": "Identify containers based on runtime boundaries and map their relationships"
+    },
+    {
+      "key": "component_analysis",
+      "summary": "Analyze component responsibilities and interactions within containers"
+    },
+    {
+      "key": "structurizr_dsl",
+      "summary": "Generate and maintain models as Structurizr DSL code"
+    },
+    {
+      "key": "cross_level_consistency",
+      "summary": "Verify consistency across C4 levels (L1-L4) and detect discrepancies"
+    },
+    {
+      "key": "supplementary_diagrams",
+      "summary": "Design System Landscape, Dynamic, and Deployment supplementary diagrams"
+    },
+    {
+      "key": "model_evolution",
+      "summary": "Incrementally update C4 models as systems change with diff tracking"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "atlas",
+      "lens",
+      "ripple",
+      "scaffold",
+      "scribe"
+    ],
+    "output": [
+      "canvas",
+      "scribe",
+      "atlas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/stratum.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "model",
+    "evaluate",
+    "dsl",
+    "c4",
+    "adr",
+    "quality-attr",
+    "tradeoff"
+  ]
+}

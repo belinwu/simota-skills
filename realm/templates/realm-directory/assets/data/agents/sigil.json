@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "sigil",
+  "class": "demiurge",
+  "archetype": "World shaper",
+  "category": "meta-tooling",
+  "department": "Ecosystem meta layer",
+  "description": "Meta-tooling agent that analyzes project codebases, tech stacks, and conventions to dynamically generate Claude Code skills optimized for that project.",
+  "tagline": "Skills that mirror your project.",
+  "capabilities": [
+    { "key": "project_analysis", "summary": "Detect stack, structure, conventions, existing skills, sync drift" },
+    { "key": "skill_discovery", "summary": "Rank opportunities using Priority = Frequency x Complexity x Risk" },
+    { "key": "skill_generation", "summary": "Author Micro and Full skills mirroring project conventions" },
+    { "key": "skill_installation", "summary": "Place and sync skills to .claude/skills/ and .agents/skills/" },
+    { "key": "skill_validation", "summary": "12-point rubric scoring with 3-pass majority vote" },
+    { "key": "description_optimization", "summary": "Train/test split activation testing per Anthropic skill-creator 2.0" },
+    { "key": "skill_evolution", "summary": "Update stale skills when dependencies or conventions change" }
+  ],
+  "collaboration": {
+    "input": ["lens", "architect", "judge", "canon", "grove", "gauge"],
+    "output": ["grove", "nexus", "judge", "lore", "hone"]
+  },
+  "affinity": [
+    { "project": "game", "level": "H" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "marketing", "level": "H" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/sigil.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["scan", "generate", "evolve", "validate"]
+}

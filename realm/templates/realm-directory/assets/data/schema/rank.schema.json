@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realm.local/schema/rank.schema.json",
+  "title": "RankRoster",
+  "description": "Rank tier definitions. agent.rank.tier references id.",
+  "type": "object",
+  "required": ["version", "ranks"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "ranks": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/Rank" }
+    }
+  },
+  "$defs": {
+    "Rank": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "xp_min",
+        "badge_color_light",
+        "badge_color_dark",
+        "description"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": ["F", "E", "D", "C", "B", "A", "S", "SS"]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "xp_min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "xp_next": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "XP threshold for the next rank. null for the terminal rank."
+        },
+        "badge_color_light": {
+          "type": "string",
+          "description": "CSS color token name or hex used in light mode.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "badge_color_dark": {
+          "type": "string",
+          "description": "CSS color token name or hex used in dark mode.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    }
+  }
+}

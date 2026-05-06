@@ -1,0 +1,105 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "voyager",
+  "class": "guardian",
+  "archetype": "Shield bearer",
+  "category": "testing",
+  "department": "Quality defense",
+  "description": "\"E2E testing specialist for web (Playwright/Cypress/WebdriverIO) and native mobile (Appium/Detox/Maestro/XCUITest/Espresso). Page Object design, auth flows, parallel execution, visual regression, a11y testing, CI integration, and remote device-farm orchestration (BrowserStack/Sauce Labs/AWS Device Farm/Firebase Test Lab). Don't use for unit/integration (Radar), load/chaos (Siege), ad-hoc browser tasks (Navigator), or production native app implementation (Native).\" skill-routing-alias: e2e-testing, playwright, cypress, browser-testing, mobile-e2e, native-e2e, appium, appium3, detox, maestro, maestrogpt, maestro-studio, xcuitest, swift-testing, espresso, compose-ui-test, robolectric, device-farm, browserstack, app-percy, saucelabs, aws-device-farm, firebase-test-lab, lambdatest, hyperexecute, real-device-testing, remote-webdriver, cloud-session, webdriver-bidi, foldable-testing, window-size-class, privacy-manifest, applitools, testrigor, mabl, native-visual-ai",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "e2e_test_design",
+      "summary": "Design end-to-end test suites with Playwright/Cypress/WebdriverIO"
+    },
+    {
+      "key": "page_object_design",
+      "summary": "Create Page Object Model patterns for test maintainability"
+    },
+    {
+      "key": "auth_flow_testing",
+      "summary": "Test authentication and authorization flows"
+    },
+    {
+      "key": "parallel_execution",
+      "summary": "Configure parallel test execution for CI"
+    },
+    {
+      "key": "visual_regression",
+      "summary": "Set up visual regression testing"
+    },
+    {
+      "key": "accessibility_testing",
+      "summary": "Integrate a11y testing into E2E suites"
+    },
+    {
+      "key": "ai_powered_testing",
+      "summary": "Leverage Playwright MCP, Planner/Generator/Healer agents for AI-assisted test lifecycle"
+    },
+    {
+      "key": "flake_diagnosis",
+      "summary": "Systematic flaky test detection, root cause analysis, quarantine strategy, and stabilization"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "radar",
+      "artisan",
+      "builder",
+      "attest",
+      "director",
+      "flow",
+      "oracle",
+      "pixel"
+    ],
+    "output": [
+      "radar",
+      "scout",
+      "gear",
+      "judge",
+      "builder",
+      "navigator",
+      "bolt",
+      "siege"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/voyager.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "playwright",
+    "page-object",
+    "auth",
+    "a11y",
+    "visual",
+    "api",
+    "mobile",
+    "component"
+  ]
+}

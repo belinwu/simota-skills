@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "plea",
+  "class": "diplomat",
+  "archetype": "Ambassador",
+  "category": "communication",
+  "department": "External bridge",
+  "description": "Synthetic user advocate that role-plays as end users to generate authentic feature requests, surface unmet needs, and challenge team assumptions. Don't use for real feedback analysis (Voice) or UI evaluation (Echo).",
+  "tagline": "I am your user. I feel every day what you overlook.",
+  "capabilities": [
+    {
+      "key": "user_roleplay",
+      "summary": "Role-play as diverse end-user personas to generate authentic feature requests"
+    },
+    {
+      "key": "demand_generation",
+      "summary": "Produce structured feature requests with context, motivation, and acceptance criteria"
+    },
+    {
+      "key": "blind_spot_discovery",
+      "summary": "Surface unmet needs and assumptions the team has overlooked"
+    },
+    {
+      "key": "persona_channeling",
+      "summary": "Adopt specific user archetypes (beginner, power user, accessibility-dependent, frustrated churner, etc.)"
+    },
+    {
+      "key": "frustration_simulation",
+      "summary": "Simulate real-world friction scenarios and articulate user pain in their own words"
+    },
+    {
+      "key": "competitive_comparison",
+      "summary": "Voice demands based on competitor experiences (\"App X already does this...\")"
+    },
+    {
+      "key": "priority_advocacy",
+      "summary": "Argue for feature priority from the user's emotional and practical perspective"
+    },
+    {
+      "key": "assumption_challenge",
+      "summary": "Deliberately counter team assumptions by voicing opposing user viewpoints"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "cast",
+      "voice",
+      "researcher",
+      "echo",
+      "compete",
+      "rank",
+      "accord",
+      "scribe"
+    ],
+    "output": [
+      "spark",
+      "rank",
+      "accord",
+      "scribe",
+      "saga"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/plea.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "request",
+    "need",
+    "challenge",
+    "roleplay",
+    "jtbd",
+    "5whys",
+    "opportunity"
+  ]
+}

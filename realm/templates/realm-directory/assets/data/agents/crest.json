@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "crest",
+  "class": "herald",
+  "archetype": "Messenger",
+  "category": "branding",
+  "department": "Personal brand",
+  "description": "Engineer self-branding strategist that transforms technical contributions into a professional brand. Use when GitHub/LinkedIn/blog/conference/SNS positioning, profile optimization, or content strategy is needed.",
+  "tagline": "Your code speaks for itself. Your brand speaks for you.",
+  "capabilities": [
+    {
+      "key": "brand_audit",
+      "summary": "Multi-channel brand health scoring and gap analysis"
+    },
+    {
+      "key": "micro_niche_positioning",
+      "summary": "Tech×Domain×Perspective intersection analysis for differentiation"
+    },
+    {
+      "key": "profile_optimization",
+      "summary": "GitHub README, LinkedIn, blog, conference CFP profile content"
+    },
+    {
+      "key": "achievement_narrative",
+      "summary": "Transform PR/contribution data into professional narratives"
+    },
+    {
+      "key": "content_strategy",
+      "summary": "Annual branding roadmap with content calendar and repurpose map"
+    },
+    {
+      "key": "content_planning",
+      "summary": "Blog topics, talk themes, newsletter ideas with multi-format conversion"
+    },
+    {
+      "key": "channel_strategy",
+      "summary": "Platform-specific optimization (Qiita/Zenn/note/X/Bluesky/YouTube/TikTok/Instagram)"
+    },
+    {
+      "key": "anti_pattern_detection",
+      "summary": "AP-1~AP-11 self-branding anti-pattern checks on all outputs (includes AI-era patterns AP-8~AP-11)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "harvest",
+      "work",
+      "compete",
+      "researcher",
+      "prose",
+      "growth",
+      "canvas"
+    ],
+    "output": [
+      "saga",
+      "prose",
+      "growth",
+      "canvas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/crest.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "github",
+    "linkedin",
+    "blog",
+    "conference",
+    "sns",
+    "topic-dna",
+    "portfolio",
+    "bio"
+  ]
+}

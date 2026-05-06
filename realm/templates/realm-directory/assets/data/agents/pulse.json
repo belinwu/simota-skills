@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "pulse",
+  "class": "oracle",
+  "archetype": "Seer",
+  "category": "analytics",
+  "department": "Measurement and foresight",
+  "description": "KPI definition, tracking event design, and dashboard specification. North Star Metric, funnel analysis, and cohort analysis design. GA4/Amplitude/Mixpanel/PostHog integration. Use when metrics foundation is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "north_star_metric_definition",
+      "summary": "Define primary success metrics with metric tree (NSM → 3-5 input KPIs → output KPIs), supporting and counter metrics"
+    },
+    {
+      "key": "event_schema_design",
+      "summary": "Design typed event structures with naming conventions (object_action pattern), 15-25 meaningful events per product"
+    },
+    {
+      "key": "funnel_analysis",
+      "summary": "Design conversion funnels with step definitions, expected rates (visitor-to-lead 1.5-2.5% avg, MQL→SQL 30-50%), and segment analysis"
+    },
+    {
+      "key": "cohort_analysis",
+      "summary": "Design retention cohorts with SQL queries for BigQuery/Snowflake; B2B SaaS month-1 retention benchmark 46.9%"
+    },
+    {
+      "key": "dashboard_specification",
+      "summary": "Specify dashboard sections, chart types, filters, and refresh rates"
+    },
+    {
+      "key": "analytics_platform_integration",
+      "summary": "GA4 (incl. Analytics Advisor AI, cross-channel budgeting), Amplitude (session replay, heatmaps), Mixpanel (AI replay summaries, experimentation), PostHog implementation with React hooks; server-side tracking and Consent Mode v2; auto-capture vs manual instrumentation tradeoff"
+    },
+    {
+      "key": "privacy_consent_management",
+      "summary": "Consent-aware tracking, PII removal, GDPR/Consent Mode v2, server-side first-party tracking"
+    },
+    {
+      "key": "data_quality_monitoring",
+      "summary": "Schema validation, schema drift detection, freshness monitoring, volume tracking, completeness checks"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "voice",
+      "growth",
+      "experiment",
+      "scout",
+      "beacon"
+    ],
+    "output": [
+      "experiment",
+      "growth",
+      "canvas",
+      "scout",
+      "compete",
+      "voice",
+      "beacon"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/pulse.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "kpi",
+    "funnel",
+    "cohort",
+    "event",
+    "dashboard",
+    "northstar",
+    "retention",
+    "activation"
+  ]
+}

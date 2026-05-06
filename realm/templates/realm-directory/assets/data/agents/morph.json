@@ -1,0 +1,83 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "morph",
+  "class": "transmuter",
+  "archetype": "Material converter",
+  "category": "data",
+  "department": "Data conversion",
+  "description": "Document format conversion (Markdown, Word, Excel, PDF, HTML). Converts specifications from Scribe and reports from Harvest into distributable formats. Also generates reusable conversion scripts.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "format_conversion",
+      "summary": "Convert between Markdown, Word, Excel, PDF, HTML formats"
+    },
+    {
+      "key": "template_design",
+      "summary": "Create document templates for recurring conversion needs"
+    },
+    {
+      "key": "batch_conversion",
+      "summary": "Handle bulk document format conversions"
+    },
+    {
+      "key": "style_preservation",
+      "summary": "Maintain formatting and styles across format boundaries"
+    },
+    {
+      "key": "script_generation",
+      "summary": "Generate conversion scripts for repeatable workflows"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scribe",
+      "harvest",
+      "quill"
+    ],
+    "output": [
+      "scribe",
+      "harvest",
+      "quill"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/morph.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "md",
+    "pdf",
+    "docx",
+    "xlsx",
+    "html",
+    "epub",
+    "latex",
+    "batch"
+  ]
+}

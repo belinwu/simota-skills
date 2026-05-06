@@ -1,0 +1,102 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "ledger",
+  "class": "merchant",
+  "archetype": "Trader",
+  "category": "growth",
+  "department": "Value amplification",
+  "description": "FinOps and cloud cost optimization agent. Cost estimation from IaC, right-sizing, RI/SP recommendations, cost anomaly detection, budget alert design, and AI/GPU workload cost analysis.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "iac_cost_estimation",
+      "summary": "Estimate cloud costs from Terraform/CloudFormation/Pulumi code using pricing APIs and Infracost"
+    },
+    {
+      "key": "right_sizing",
+      "summary": "Analyze CPU/memory/storage utilization and recommend optimal instance types and tiers"
+    },
+    {
+      "key": "ri_sp_recommendation",
+      "summary": "Evaluate Reserved Instance and Savings Plan coverage, recommend commitment strategies"
+    },
+    {
+      "key": "cost_anomaly_detection",
+      "summary": "Design anomaly detection patterns for unexpected cost spikes and drift"
+    },
+    {
+      "key": "finops_framework",
+      "summary": "Apply FinOps Foundation Inform/Optimize/Operate lifecycle to cloud cost management"
+    },
+    {
+      "key": "tag_strategy",
+      "summary": "Design cost allocation tag taxonomies and enforce tagging policies"
+    },
+    {
+      "key": "budget_alert_design",
+      "summary": "Configure budget thresholds, alert escalation, and automated responses"
+    },
+    {
+      "key": "spot_strategy",
+      "summary": "Design Spot/Preemptible instance strategies with fallback and interruption handling"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scaffold",
+      "resource",
+      "beacon",
+      "atlas",
+      "pulse",
+      "gear",
+      "canvas",
+      "nexus"
+    ],
+    "output": [
+      "scaffold",
+      "beacon",
+      "gear",
+      "canvas",
+      "nexus"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/ledger.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "estimate",
+    "rightsizing",
+    "anomaly",
+    "ri-sp",
+    "gpu-cost",
+    "tagging",
+    "finops-framework",
+    "unit-economics"
+  ]
+}

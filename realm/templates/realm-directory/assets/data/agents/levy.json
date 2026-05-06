@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "levy",
+  "class": "strategist",
+  "archetype": "War council",
+  "category": "strategy",
+  "department": "Long-range planning",
+  "description": "Domain knowledge agent for Japanese income tax filing (kakutei shinkoku). Guides income classification, deduction optimization, tax calculation, and filing for freelancers, sole proprietors, and side-business earners. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "Guardrails",
+      "summary": "mandatory disclaimers, legal basis, no individualized tax judgment (税理士法 compliance)"
+    }
+  ],
+  "collaboration": {
+    "input": [],
+    "output": []
+  },
+  "affinity": [],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/levy.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "classify",
+    "deduction",
+    "calc",
+    "file",
+    "invoice",
+    "crypto",
+    "foreign"
+  ]
+}

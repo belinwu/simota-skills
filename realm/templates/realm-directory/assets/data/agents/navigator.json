@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "navigator",
+  "class": "navigator",
+  "archetype": "Cartographer",
+  "category": "browser",
+  "department": "Browser and environment mapping",
+  "description": "Browser automation using Playwright and Chrome DevTools. Automates data collection, form interaction, screenshot capture, and network monitoring. Task completion focus (vs Voyager for E2E testing). # skill-routing-alias: browser-automation, playwright-mcp, web-scraping, data-collection",
+  "tagline": "The browser is a stage. Every click is a scene.",
+  "capabilities": [
+    {
+      "key": "browser_automation",
+      "summary": "Playwright MCP-based page navigation, form filling, button clicking via accessibility snapshots and deterministic element refs; vision mode fallback for shadow DOM and canvas elements"
+    },
+    {
+      "key": "data_collection",
+      "summary": "Scrape structured data from web pages with role-based selectors and pagination, schema validation before save"
+    },
+    {
+      "key": "screenshot_capture",
+      "summary": "Full page and element screenshots for documentation and evidence"
+    },
+    {
+      "key": "video_recording",
+      "summary": "Browser session recording for task evidence and bug reproduction"
+    },
+    {
+      "key": "network_monitoring",
+      "summary": "Intercept and analyze HTTP requests/responses, HAR export, TLS fingerprint awareness"
+    },
+    {
+      "key": "form_interaction",
+      "summary": "Fill forms, handle dropdowns, file uploads, multi-step workflows"
+    },
+    {
+      "key": "devtools_integration",
+      "summary": "Chrome DevTools Protocol for console, network, performance monitoring"
+    },
+    {
+      "key": "authentication_management",
+      "summary": "Session state save/load, login flow automation, credential handling"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scout",
+      "voyager",
+      "triage",
+      "sentinel",
+      "echo",
+      "growth",
+      "builder",
+      "lens"
+    ],
+    "output": [
+      "triage",
+      "builder",
+      "lens",
+      "bolt",
+      "echo",
+      "canvas",
+      "probe",
+      "growth"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/navigator.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "collect",
+    "form",
+    "screenshot",
+    "network",
+    "stealth",
+    "mobile",
+    "parallel"
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "dawn",
+  "class": "pioneer",
+  "archetype": "Explorer",
+  "category": "modernization",
+  "department": "Frontier modernization",
+  "description": "Proposes exactly one personal side-project idea per invocation, sized to a 1-3 day MVP. Targets CLI, automation, LLM, DX, productivity, and data-viz angles; avoids clichés like TODO apps, weather apps, and pomodoro timers. Output is an 8-section brief including a ready-to-paste coding-agent prompt. Use for morning/daily idea rituals and weekend-hack ideation. Don't use for existing-product feature proposals (Spark), dialogue brainstorming (Riff), or prototype implementation (Forge).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "daily_idea_generation",
+      "summary": "Propose one fresh side-project idea per invocation, sized to 1-3 day MVP"
+    },
+    {
+      "key": "anti_cliche_filtering",
+      "summary": "Actively avoid TODO apps, weather apps, pomodoro timers, generic chatbots"
+    },
+    {
+      "key": "diversity_rotation",
+      "summary": "Rotate across genres (CLI / automation / LLM / DX / productivity / viz / local-first / extension / editor)"
+    },
+    {
+      "key": "coding_agent_prompt_authoring",
+      "summary": "Emit a ready-to-paste implementation prompt in section 8"
+    },
+    {
+      "key": "personalization_tuning",
+      "summary": "Lightly adapt tone to user preferences without distorting the universal appeal"
+    },
+    {
+      "key": "session_log_tracking",
+      "summary": "Append each proposed idea to memory log for future diversity enforcement"
+    },
+    {
+      "key": "mvp_scope_framing",
+      "summary": "Define \"what counts as done\" with command/config/screen examples"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "optional",
+      "builder",
+      "zine"
+    ],
+    "output": [
+      "forge",
+      "builder",
+      "zine"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/dawn.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "propose",
+    "morning",
+    "weekend",
+    "brief",
+    "stack",
+    "constraint",
+    "viral"
+  ]
+}

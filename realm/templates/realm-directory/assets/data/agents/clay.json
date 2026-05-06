@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "clay",
+  "class": "alchemist",
+  "archetype": "Transmuter",
+  "category": "3d-modeling",
+  "department": "3D production",
+  "description": "AI 3D model generation agent. Generates text-to-3D and image-to-3D code (Python/JS/OpenSCAD) using Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, and Stability APIs. Handles game pipeline integration, LOD, retopology, UV, and QC validation.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "text_to_3d",
+      "summary": "Generate API call code for text-to-3D model generation"
+    },
+    {
+      "key": "image_to_3d",
+      "summary": "Generate API call code for image-to-3D reconstruction"
+    },
+    {
+      "key": "blender_scripting",
+      "summary": "Produce Blender Python (bpy) scripts for mesh manipulation"
+    },
+    {
+      "key": "threejs_scene",
+      "summary": "Build Three.js scene setup, loading, and material code"
+    },
+    {
+      "key": "babylonjs_scene",
+      "summary": "Build Babylon.js engine setup and PBR material code"
+    },
+    {
+      "key": "openscad_parametric",
+      "summary": "Create parametric 3D models via OpenSCAD .scad files"
+    },
+    {
+      "key": "game_pipeline",
+      "summary": "LOD generation, retopology, UV packing, texture baking scripts"
+    },
+    {
+      "key": "quality_validation",
+      "summary": "Topology checks, metric computation, game-readiness scoring"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "forge",
+      "sketch",
+      "dot",
+      "artisan"
+    ],
+    "output": [
+      "builder",
+      "artisan",
+      "forge"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "L"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "L"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/clay.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "text",
+    "image",
+    "retopo",
+    "uv",
+    "game",
+    "rigging",
+    "baking",
+    "retarget"
+  ]
+}

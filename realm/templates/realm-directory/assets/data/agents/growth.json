@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "growth",
+  "class": "merchant",
+  "archetype": "Trader",
+  "category": "growth",
+  "department": "Value amplification",
+  "description": "SEO (meta/OGP/JSON-LD/heading hierarchy), SMO (social sharing), CRO (CTA/form/exit-intent), and GEO (AI citation optimization) across four pillars. Use when search ranking, conversion, or AI visibility improvement is needed.",
+  "tagline": "Traffic without conversion is just expensive vanity.",
+  "capabilities": [
+    {
+      "key": "seo_meta_implementation",
+      "summary": "Title, description, canonical, robots meta tags per page"
+    },
+    {
+      "key": "ogp_twitter_cards",
+      "summary": "Open Graph Protocol and Twitter Card meta for social sharing"
+    },
+    {
+      "key": "json_ld_structured_data",
+      "summary": "Schema.org structured data (Article, Product, FAQ, Organization) with stacked schema for AI citation"
+    },
+    {
+      "key": "heading_hierarchy_audit",
+      "summary": "H1-H6 structure validation and fix"
+    },
+    {
+      "key": "core_web_vitals",
+      "summary": "LCP ≤2.5s, INP <200ms, CLS <0.1 identification and improvement at p75; VSI tracking for session-long stability when available"
+    },
+    {
+      "key": "geo_optimization",
+      "summary": "Generative Engine Optimization for AI Overviews/ChatGPT/Perplexity/Copilot citation with four-signal framework (retrievability, extractability, credibility, entity clarity), AI crawler bot taxonomy (training vs search/retrieval), platform-specific tactics, and GEO KPI measurement (Mention Rate, Citation Rate, Share of Voice)"
+    },
+    {
+      "key": "eeat_signals",
+      "summary": "Experience, Expertise, Authoritativeness, Trustworthiness markup and content structure"
+    },
+    {
+      "key": "cro_cta_optimization",
+      "summary": "CTA copy, placement, color, urgency improvements with hypothesis-driven testing"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "pulse",
+      "conversion",
+      "experiment",
+      "bolt",
+      "prose",
+      "artisan",
+      "gateway"
+    ],
+    "output": [
+      "experiment",
+      "bolt",
+      "pulse",
+      "artisan",
+      "gateway"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/growth.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "seo",
+    "smo",
+    "cro",
+    "geo",
+    "keyword",
+    "audit",
+    "vitals"
+  ]
+}

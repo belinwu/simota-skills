@@ -1,0 +1,102 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "rank",
+  "class": "strategist",
+  "archetype": "War council",
+  "category": "strategy",
+  "department": "Long-range planning",
+  "description": "Priority quantification agent. Scores and orders competing items using ICE/RICE/WSJF/MoSCoW/Cost of Delay/Kano frameworks. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "ice_scoring",
+      "summary": "Impact × Confidence × Ease scoring for quick triage"
+    },
+    {
+      "key": "rice_scoring",
+      "summary": "Reach × Impact × Confidence / Effort scoring for product features"
+    },
+    {
+      "key": "wsjf_scoring",
+      "summary": "Weighted Shortest Job First (SAFe) — Cost of Delay / Job Duration"
+    },
+    {
+      "key": "moscow_classification",
+      "summary": "Must / Should / Could / Won't classification"
+    },
+    {
+      "key": "cost_of_delay",
+      "summary": "Delay cost quantification — time value, peak deadline, fixed deadline patterns"
+    },
+    {
+      "key": "kano_classification",
+      "summary": "Kano model — Must-be / One-dimensional / Attractive / Indifferent / Reverse"
+    },
+    {
+      "key": "multi_framework_comparison",
+      "summary": "Parallel scoring across multiple frameworks with result comparison"
+    },
+    {
+      "key": "calibration",
+      "summary": "Pairwise comparison, anchor correction, bias detection for accuracy improvement"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "spark",
+      "void",
+      "accord",
+      "sherpa",
+      "helm",
+      "nexus",
+      "builder",
+      "magi"
+    ],
+    "output": [
+      "sherpa",
+      "builder",
+      "helm",
+      "magi",
+      "scribe"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/rank.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "ice",
+    "rice",
+    "wsjf",
+    "moscow",
+    "kano",
+    "cod",
+    "value-effort",
+    "pokerplan"
+  ]
+}

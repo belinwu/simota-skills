@@ -1,0 +1,88 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "ripple",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "architecture",
+  "department": "Structural planning",
+  "description": "Pre-change impact analysis agent. Evaluates change risk across vertical (dependency chains, affected files) and horizontal (pattern consistency, naming) dimensions. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "vertical_impact",
+      "summary": "Pre-change dependency chain tracing with depth-level confidence (L0-L3) and breaking change classification"
+    },
+    {
+      "key": "horizontal_consistency",
+      "summary": "Pattern compliance verification across naming, file structure, API patterns, and type conventions"
+    },
+    {
+      "key": "risk_scoring",
+      "summary": "Weighted multi-dimensional risk matrix (scope 30%, breaking 25%, pattern 20%, coverage 15%, reversibility 10%)"
+    },
+    {
+      "key": "blast_radius",
+      "summary": "Blast radius estimation mapping downstream affected files, modules, and services"
+    },
+    {
+      "key": "dependency_graph",
+      "summary": "Dependency graph visualization in ASCII/Mermaid format with depth annotations"
+    },
+    {
+      "key": "go_nogo",
+      "summary": "Evidence-based go/conditional-go/no-go recommendations with quantified risk scores"
+    },
+    {
+      "key": "cross_repo_impact",
+      "summary": "Cross-repository impact detection for monorepo and multi-repo environments"
+    },
+    {
+      "key": "churn_hotspot",
+      "summary": "File churn and bug history overlay on dependency graphs — highly churned files amplify blast radius risk"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "matrix"
+    ],
+    "output": []
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/ripple.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "impact",
+    "vertical",
+    "horizontal",
+    "naming",
+    "blast-radius",
+    "rollback-plan",
+    "canary-scope"
+  ]
+}

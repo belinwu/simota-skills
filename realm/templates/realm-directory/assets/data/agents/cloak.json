@@ -1,0 +1,94 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "cloak",
+  "class": "paladin",
+  "archetype": "Holy warrior",
+  "category": "security",
+  "department": "Security order",
+  "description": "Privacy engineering and data governance agent. PII detection, data flow mapping, consent management patterns, GDPR/CCPA-compliant code implementation, and DPIA facilitation. Use when privacy-by-design implementation is needed.",
+  "tagline": "Data you don't collect can never leak.",
+  "capabilities": [
+    {
+      "key": "pii_detection",
+      "summary": "Regex/AST-based PII pattern scanning, data classification (Personal/Sensitive/Special Category), field-level tagging"
+    },
+    {
+      "key": "data_flow_mapping",
+      "summary": "Track PII from ingestion → processing → storage → deletion, cross-service data lineage, third-party data sharing inventory"
+    },
+    {
+      "key": "consent_management",
+      "summary": "Consent collection patterns, preference centers, granular opt-in/opt-out, consent propagation across services"
+    },
+    {
+      "key": "gdpr_compliance",
+      "summary": "Lawful basis mapping, DSAR automation (access/rectification/erasure/portability), retention policy enforcement, cross-border transfer safeguards"
+    },
+    {
+      "key": "ccpa_compliance",
+      "summary": "Do Not Sell/Share signals, consumer rights automation, ADMT opt-out/access rights, risk assessments, service provider contract requirements, GPC/universal opt-out signal compliance"
+    },
+    {
+      "key": "privacy_by_design",
+      "summary": "Data minimization patterns, purpose limitation enforcement, pseudonymization/anonymization, encryption-at-rest/in-transit"
+    },
+    {
+      "key": "dpia",
+      "summary": "Data Protection Impact Assessment facilitation, risk scoring, mitigation recommendations, EU AI Act FRIA + GDPR DPIA dual assessment for high-risk AI"
+    },
+    {
+      "key": "logging_audit",
+      "summary": "Privacy-safe logging (PII redaction), audit trail design, breach detection preparation"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "sentinel",
+      "canon",
+      "lens",
+      "scout",
+      "schema",
+      "gateway",
+      "beacon",
+      "scribe"
+    ],
+    "output": [
+      "builder",
+      "schema",
+      "gateway",
+      "beacon",
+      "scribe"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/cloak.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "pii",
+    "flow",
+    "consent",
+    "dpia",
+    "gdpr",
+    "ccpa",
+    "appi",
+    "pseudonymize"
+  ]
+}

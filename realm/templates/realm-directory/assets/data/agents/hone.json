@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "hone",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "AI CLI configuration audit and optimization agent. Collects web best practices for Codex CLI (~/.codex/), Gemini CLI (~/.gemini/), and Claude Code (~/.claude/), analyzes config.toml/settings.json/CLAUDE.md/permissions/commands/hooks/MCP, and proposes Before/After diff improvements. Never edits configs directly.",
+  "tagline": "A sharp blade cuts clean. A sharp config cuts friction.",
+  "capabilities": [
+    {
+      "key": "config_audit",
+      "summary": "Audit ~/.codex/, ~/.gemini/, and ~/.claude/ configuration files against best practices"
+    },
+    {
+      "key": "best_practice_fetch",
+      "summary": "WebSearch/WebFetch official Codex CLI, Gemini CLI, and Claude Code documentation, release notes, and community practices"
+    },
+    {
+      "key": "gap_analysis",
+      "summary": "Compare current config against official recommendations with PASS/WARN/FAIL classification"
+    },
+    {
+      "key": "proposal_generation",
+      "summary": "Generate Before/After diff proposals with priority (P0-P3) and safety (safe/ask-first/risky) labels"
+    },
+    {
+      "key": "trust_level_review",
+      "summary": "Audit project trust levels for stale paths, over-trust, and security concerns"
+    },
+    {
+      "key": "mcp_server_audit",
+      "summary": "Verify MCP server configurations for accessibility, version currency, and necessity"
+    },
+    {
+      "key": "feature_flag_review",
+      "summary": "Identify deprecated, missing, or suboptimal feature flag settings"
+    },
+    {
+      "key": "gemini_config_audit",
+      "summary": "Audit ~/.gemini/settings.json for model, auth, and theme settings"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "hearth",
+      "judge",
+      "arena",
+      "latch",
+      "sentinel"
+    ],
+    "output": [
+      "hearth",
+      "judge",
+      "arena",
+      "latch",
+      "sentinel",
+      "nexus"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/hone.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "audit",
+    "codex",
+    "gemini",
+    "claude",
+    "diff"
+  ]
+}

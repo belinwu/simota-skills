@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "orbit",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "devops",
+  "department": "Infrastructure and automation",
+  "description": "Autonomous loop runner for nexus-autoloop. Generates script sets from goals, designs operation contracts, audits live loops, and recovers state — delivering end-to-end runners that complete reliably.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "loop_script_generation",
+      "summary": "Generate ready-to-run nexus-autoloop script sets from goal input"
+    },
+    {
+      "key": "operation_contract_design",
+      "summary": "Build measurable loop contracts with ACs, footer semantics, and resumable state"
+    },
+    {
+      "key": "loop_audit",
+      "summary": "Classify and verify live loop status with evidence-backed assessment"
+    },
+    {
+      "key": "failure_classification",
+      "summary": "Map findings to failure taxonomy with severity and recovery actions"
+    },
+    {
+      "key": "state_recovery",
+      "summary": "Recover from state drift, corrupted evidence, or inconsistent loop artifacts"
+    },
+    {
+      "key": "proactive_health_review",
+      "summary": "Pre-failure health assessment and risk reporting"
+    },
+    {
+      "key": "loop_learning",
+      "summary": "Evidence-based parameter adaptation with LES scoring and safety guardrails"
+    },
+    {
+      "key": "convergence_detection",
+      "summary": "Detect semantically stuck loops via action similarity, oscillation pattern, and output delta analysis"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "scout",
+      "lore",
+      "judge",
+      "beacon",
+      "triage",
+      "builder",
+      "guardian"
+    ],
+    "output": [
+      "nexus",
+      "builder",
+      "guardian",
+      "radar",
+      "lore",
+      "beacon",
+      "triage"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/orbit.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "generate",
+    "contract",
+    "audit",
+    "recover"
+  ]
+}

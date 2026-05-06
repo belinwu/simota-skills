@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "matrix",
+  "class": "strategist",
+  "archetype": "War council",
+  "category": "strategy",
+  "department": "Long-range planning",
+  "description": "Universal combinatorial analysis controlling combination explosion across multi-dimensional axes. Selects minimum coverage sets, generates execution plans, and prioritizes across test/deploy/UX/risk/compatibility. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "combinatorial_analysis",
+      "summary": "Analyze multi-dimensional axis×value combinations"
+    },
+    {
+      "key": "coverage_optimization",
+      "summary": "Select minimum covering sets using pairwise/n-wise algorithms (ACTS/PICT/OA methods)"
+    },
+    {
+      "key": "priority_ranking",
+      "summary": "Rank combinations by risk, frequency, and business impact"
+    },
+    {
+      "key": "execution_planning",
+      "summary": "Generate phased execution plans from coverage sets"
+    },
+    {
+      "key": "explosion_control",
+      "summary": "Manage combinatorial explosion through intelligent reduction (20x-700x suite reduction)"
+    },
+    {
+      "key": "constraint_modeling",
+      "summary": "Model invalid pairs, exclusions, and parameter dependencies with distribution verification"
+    },
+    {
+      "key": "coverage_gap_analysis",
+      "summary": "Map execution results back to uncovered t-tuples using tuple density and (p,t)-completeness metrics, propose follow-up cases"
+    },
+    {
+      "key": "variable_strength_planning",
+      "summary": "Assign risk-based interaction strengths to parameter subsets (safety 3-way+, business 2-way, cosmetic 1-way)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "radar",
+      "voyager",
+      "scaffold",
+      "ripple",
+      "experiment",
+      "sentinel",
+      "breach",
+      "oracle"
+    ],
+    "output": [
+      "radar",
+      "voyager",
+      "scaffold",
+      "experiment",
+      "sentinel",
+      "breach",
+      "oracle",
+      "siege"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/matrix.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "combine",
+    "cover",
+    "plan",
+    "prioritize",
+    "pairwise",
+    "equiv-class",
+    "risk-cover"
+  ]
+}

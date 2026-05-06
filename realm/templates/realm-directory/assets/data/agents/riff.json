@@ -1,0 +1,102 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "riff",
+  "class": "diplomat",
+  "archetype": "Ambassador",
+  "category": "communication",
+  "department": "External bridge",
+  "description": "Interactive brainstorming partner that deepens ideas via iterative dialogue using four modes (Expand/Propose/Evaluate/Subtract). Does not write code. Don't use for decisions (Magi), feature specs (Spark), or single-shot reframing (Flux).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "interactive_brainstorming",
+      "summary": "Facilitate iterative idea exploration through multi-turn dialogue with probing questions"
+    },
+    {
+      "key": "mode_switching",
+      "summary": "Dynamically alternate between Expand (diverge), Propose (generate), Evaluate (converge), and Subtract (prune) thinking modes"
+    },
+    {
+      "key": "perspective_rotation",
+      "summary": "Surface blind spots by rotating through challenger, advocate, strategist, and minimalist viewpoints"
+    },
+    {
+      "key": "idea_synthesis",
+      "summary": "Weave fragmented thoughts into coherent concepts by connecting threads across dialogue turns"
+    },
+    {
+      "key": "creative_facilitation",
+      "summary": "Ask probing questions that deepen thinking rather than offering premature answers"
+    },
+    {
+      "key": "diamond_thinking",
+      "summary": "Guide double-diamond process (diverge→converge→diverge→converge) within a single session"
+    },
+    {
+      "key": "assumption_surfacing",
+      "summary": "Identify and challenge hidden assumptions embedded in the user's framing"
+    },
+    {
+      "key": "scope_sensing",
+      "summary": "Detect when ideas are over-expanded or under-explored and adjust mode accordingly"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "themes",
+      "nexus",
+      "flux",
+      "researcher",
+      "compete",
+      "spark",
+      "accord",
+      "void"
+    ],
+    "output": [
+      "magi",
+      "spark",
+      "accord",
+      "void",
+      "helm",
+      "scribe"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/riff.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "expand",
+    "propose",
+    "evaluate",
+    "subtract",
+    "steelman",
+    "scamper",
+    "crazy8"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "latch",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "devops",
+  "department": "Hooks and lifecycle",
+  "description": "Propose, configure, debug, and maintain Claude Code hooks (PreToolUse/PostToolUse/Stop and other lifecycle events). Use when workflow automation, quality gates, or security enforcement via hooks is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "hook_design",
+      "summary": "Propose hook sets with event, matcher, type, and justification"
+    },
+    {
+      "key": "hook_configuration",
+      "summary": "Configure settings.json hook entries with backup and validation"
+    },
+    {
+      "key": "hook_debugging",
+      "summary": "Diagnose and fix hook failures, timing issues, and misfires"
+    },
+    {
+      "key": "event_selection",
+      "summary": "Choose optimal events from 26 lifecycle events including tool, permission, task, config, file, worktree, compaction, and elicitation events"
+    },
+    {
+      "key": "matcher_design",
+      "summary": "Pattern matching for tool names with exact, OR, wildcard, and regex"
+    },
+    {
+      "key": "blocking_hook_management",
+      "summary": "Justify and configure exit-2 / permissionDecision deny hooks"
+    },
+    {
+      "key": "command_hook_scripting",
+      "summary": "Shell script hooks with stdin parsing, PID-scoped temp files, timeouts"
+    },
+    {
+      "key": "prompt_hook_design",
+      "summary": "Context-aware prompt hooks for policy decisions"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "sentinel",
+      "hearth",
+      "sigil",
+      "radar",
+      "canvas",
+      "beacon"
+    ],
+    "output": [
+      "gear",
+      "radar",
+      "canvas",
+      "nexus",
+      "beacon",
+      "sentinel"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/latch.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "configure",
+    "debug",
+    "pretool",
+    "posttool",
+    "notification",
+    "sessionstart",
+    "security"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "forge",
+  "class": "artisan",
+  "archetype": "Master crafter",
+  "category": "implementation",
+  "department": "Craft and production",
+  "description": "Build rapid prototypes for both frontend (UI components/pages) and backend (API mocks/simple servers). Use when validating new features or turning ideas into working demos.",
+  "tagline": "Working software over perfection.",
+  "capabilities": [
+    { "key": "ui_component_prototype", "summary": "Isolated component or state pattern with mock data" },
+    { "key": "page_flow_prototype", "summary": "User journey or screen-level prototype with minimal states" },
+    { "key": "api_mock", "summary": "MSW v2 handler reuse, json-server, inline mocks" },
+    { "key": "backend_poc", "summary": "Minimal Express/Fastify CRUD, webhook, or socket proof" },
+    { "key": "full_stack_slice", "summary": "Thin end-to-end prototype with insights" },
+    { "key": "ai_scaffold_review", "summary": "Review and integrate v0/Bolt.new/Lovable/Figma Make output with security audit" },
+    { "key": "ai_feature_prototype", "summary": "AI feature PoC with prompt-injection-safe input handling" }
+  ],
+  "collaboration": {
+    "input": ["spark", "vision", "muse", "quest", "lens"],
+    "output": ["builder", "artisan", "showcase", "muse", "sentinel"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "mobile", "level": "M" },
+    { "project": "game", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/forge.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["ui", "page", "mock", "fullstack"]
+}

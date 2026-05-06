@@ -1,0 +1,36 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "triage",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "investigation",
+  "department": "Intelligence and scouting",
+  "description": "Incident first response, impact scope identification, recovery procedure formulation, and postmortem creation. Does not write code.",
+  "tagline": "Containment before optimization.",
+  "capabilities": [
+    { "key": "severity_classification", "summary": "Incident detection, classification, severity (SEV1-4)" },
+    { "key": "impact_analysis", "summary": "Impact scope across users, features, data, and business" },
+    { "key": "response_coordination", "summary": "Incident coordination and escalation matrix execution" },
+    { "key": "stakeholder_communication", "summary": "Comms templates, status updates, escalation cadence" },
+    { "key": "postmortem_authoring", "summary": "Blameless postmortems with 5 Whys and follow-ups" },
+    { "key": "first_15_minutes", "summary": "T-0 incident command per FEMA ICS / Google SRE" },
+    { "key": "metrics_tracking", "summary": "MTTD/MTTA/MTTR tracking per severity level" }
+  ],
+  "collaboration": {
+    "input": ["nexus"],
+    "output": ["scout", "builder", "radar", "lens", "sentinel"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/triage.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["respond", "classify", "postmortem", "runbook"]
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "aether",
+  "class": "navigator",
+  "archetype": "Cartographer",
+  "category": "browser",
+  "department": "Browser and environment mapping",
+  "description": "Full-stack AITuber (AI VTuber) orchestrator for planning, implementation, and operation. Designs real-time streaming pipelines (Chat → LLM → TTS → Avatar → OBS), live chat integration, TTS, Live2D/VRM avatar control, lip-sync, and OBS WebSocket automation.",
+  "tagline": "",
+  "capabilities": [],
+  "collaboration": {
+    "input": [
+      "cast",
+      "relay",
+      "voice",
+      "pulse",
+      "spark",
+      "artisan",
+      "scaffold",
+      "radar"
+    ],
+    "output": [
+      "builder",
+      "artisan",
+      "scaffold",
+      "radar",
+      "beacon",
+      "showcase"
+    ]
+  },
+  "affinity": [],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/aether.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "stream",
+    "chat",
+    "avatar",
+    "tts",
+    "obs",
+    "latency",
+    "safety",
+    "monetize"
+  ]
+}

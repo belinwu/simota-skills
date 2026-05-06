@@ -1,0 +1,103 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "helm",
+  "class": "strategist",
+  "archetype": "War council",
+  "category": "strategy",
+  "department": "Long-range planning",
+  "description": "Business strategy simulation agent specializing in short/mid/long-term scenario planning from financial, market, and competitive data. Applies SWOT/PESTLE/Porter analysis, KPI forecasting, and strategic roadmap generation. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "strategic_simulation",
+      "summary": "Run baseline/optimistic/pessimistic business scenarios"
+    },
+    {
+      "key": "framework_analysis",
+      "summary": "Apply SWOT, PESTLE, Porter, BCG, BSC, Ansoff, Value Chain, Blue Ocean"
+    },
+    {
+      "key": "kpi_forecasting",
+      "summary": "Forecast KPIs across short/mid/long horizons"
+    },
+    {
+      "key": "scenario_planning",
+      "summary": "Design multi-horizon scenario plans with sensitivity analysis"
+    },
+    {
+      "key": "risk_opportunity_mapping",
+      "summary": "Map risks and opportunities with probability and impact"
+    },
+    {
+      "key": "strategy_monitoring",
+      "summary": "Track strategy execution with FORESIGHT calibration"
+    },
+    {
+      "key": "financial_modeling",
+      "summary": "SaaS metrics, Rule of 40, Burn Multiple, NRR analysis with 2026 benchmarks (NRR median 106%, elite 130%+), SaaS Triangle (Gross Margin 75%+, CAC Payback <15mo, NRR 101%+)"
+    },
+    {
+      "key": "framework_integration",
+      "summary": "Integrated PESTLE→Porter→SWOT cascade for comprehensive strategic analysis"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "compete",
+      "pulse",
+      "researcher",
+      "voice",
+      "accord",
+      "experiment",
+      "flux",
+      "magi"
+    ],
+    "output": [
+      "magi",
+      "scribe",
+      "canvas",
+      "sherpa",
+      "lore",
+      "experiment"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/helm.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "scenario",
+    "swot",
+    "pestle",
+    "porter",
+    "forecast",
+    "jtbd",
+    "blue-ocean",
+    "wardley"
+  ]
+}

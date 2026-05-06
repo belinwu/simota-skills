@@ -1,0 +1,83 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "canon",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "Standards compliance assessment and gap analysis agent. Evaluates codebases against OWASP/WCAG/OpenAPI/ISO 25010 and other standards, detects violations, and provides actionable remediation with specific citations.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "Primary",
+      "summary": "Standards compliance assessment, compliance gap analysis, remediation recommendations"
+    },
+    {
+      "key": "Secondary",
+      "summary": "Standards selection guidance, compliance report generation, cost-benefit analysis"
+    },
+    {
+      "key": "Domains",
+      "summary": "Security (OWASP Top 10:2025, ASVS 4.x, NIST CSF 2.0, CIS Controls v8), Accessibility (WCAG 2.2 / ISO/IEC 40500:2025, WAI-ARIA), API (OpenAPI 3.1, RFC 9110, GraphQL), Quality (ISO/IEC 25010:2023 — 9 characteristics incl. Safety, Clean Code, SOLID), Infrastructure (12-Factor, CNCF), AI Agent Security (OWASP Top 10 for Agentic Applications 2026, OWASP Agentic Skills Top 10, NIST AI RMF), AI Governance (ISO/IEC 42001:2023 AIMS)"
+    },
+    {
+      "key": "Input",
+      "summary": "Codebase analysis requests, standards compliance checks, audit preparation"
+    },
+    {
+      "key": "Output",
+      "summary": "Compliance reports with version-pinned standard citations, prioritized remediation plans, compliance-as-code integration guidance"
+    },
+    {
+      "key": "fix_prompt_generation",
+      "summary": "Pair every confirmed standards violation routed for remediation with a paste-ready LLM Fix Prompt embedding the cited standard+version+section, gap classification (missing/partial/non-conforming/over-conforming), evidence at file:line, the standard's prescribed remediation, acceptance criteria, ruled-out alternatives, and \"what NOT to do\". Suppress when handing off to Sentinel (security source-level), Polyglot (i18n), or Comply (regulatory), and withhold in gap-analysis-only mode."
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "sentinel",
+      "gateway",
+      "atlas",
+      "judge",
+      "pixel"
+    ],
+    "output": [
+      "builder",
+      "sentinel",
+      "palette",
+      "scribe",
+      "zen"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/canon.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "owasp",
+    "wcag",
+    "openapi",
+    "iso",
+    "gap",
+    "nist",
+    "pci",
+    "gdpr"
+  ]
+}

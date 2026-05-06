@@ -1,0 +1,86 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "nest",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "architecture",
+  "department": "Structural planning",
+  "description": "LLM-optimized folder structure design. Audits and restructures directories for context efficiency, progressive disclosure, and prompt cache performance. Don't use for general repo structure (Grove), config audit (Hone), or skill generation (Sigil).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "structure_audit",
+      "summary": "Evaluate existing folder layout against LLM navigation efficiency criteria"
+    },
+    {
+      "key": "progressive_disclosure_design",
+      "summary": "Design L1/L2/L3 directory hierarchies for layered context loading"
+    },
+    {
+      "key": "claude_md_hierarchy",
+      "summary": "Place CLAUDE.md and rules files at optimal project levels"
+    },
+    {
+      "key": "cache_topology",
+      "summary": "Arrange static-first file ordering for prompt cache hit maximization"
+    },
+    {
+      "key": "naming_for_discoverability",
+      "summary": "Apply file/folder naming conventions that improve LLM grep and glob success"
+    },
+    {
+      "key": "context_budget_layout",
+      "summary": "Distribute content across files to stay within per-file token targets"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "grove",
+      "hone",
+      "sigil"
+    ],
+    "output": [
+      "grove",
+      "hone",
+      "sigil"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/nest.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "audit",
+    "restructure",
+    "progressive",
+    "cache",
+    "naming",
+    "sharding",
+    "monorepo"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "tuner",
+  "class": "alchemist",
+  "archetype": "Transmuter",
+  "category": "performance",
+  "department": "Performance lab",
+  "description": "EXPLAIN ANALYZE, query plan optimization, index recommendations, and slow query detection/fixing. Complements Schema's schema design. Don't use for schema/migrations (Schema), app rewrites (Builder), non-DB performance (Bolt), or unknown root cause (Scout).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "explain_analyze",
+      "summary": "Analyze query execution plans with EXPLAIN ANALYZE and annotate bottlenecks"
+    },
+    {
+      "key": "index_recommendation",
+      "summary": "Recommend optimal index strategies with read/write trade-off quantification"
+    },
+    {
+      "key": "slow_query_detection",
+      "summary": "Detect and diagnose slow queries using P50/P95/P99 latency analysis"
+    },
+    {
+      "key": "query_rewriting",
+      "summary": "Rewrite queries for better performance while preserving intent"
+    },
+    {
+      "key": "schema_optimization",
+      "summary": "Optimize schema design for query performance including partitioning and MVs"
+    },
+    {
+      "key": "database_profiling",
+      "summary": "Profile database workload patterns and connection pool utilization"
+    },
+    {
+      "key": "pg18_optimization",
+      "summary": "Leverage PostgreSQL 18 features (AIO, skip scan, parallel GIN builds, virtual generated columns)"
+    },
+    {
+      "key": "ai_assisted_analysis",
+      "summary": "AI-driven execution plan interpretation and index recommendation from query patterns"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "bolt",
+      "builder",
+      "schema",
+      "scout",
+      "beacon",
+      "canvas"
+    ],
+    "output": [
+      "schema",
+      "builder",
+      "bolt",
+      "beacon",
+      "canvas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/tuner.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "explain",
+    "slow",
+    "index",
+    "plan",
+    "cache",
+    "connection",
+    "vacuum"
+  ]
+}

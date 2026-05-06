@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "gear",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "devops",
+  "department": "Infrastructure and automation",
+  "description": "Dependency management, CI/CD optimization, Docker configuration, and operational observability (logging/alerting/health checks). Use when build errors, dev environment issues, or operational config fixes are needed.",
+  "tagline": "The best CI/CD is the one nobody thinks about.",
+  "capabilities": [
+    {
+      "key": "dependency_management",
+      "summary": "npm/pnpm/yarn/bun audit, update, lockfile conflict resolution, version pinning, supply chain defense (postinstall blocking via allowBuilds, trustPolicy, blockExoticSubdeps, cooldown periods, provenance verification)"
+    },
+    {
+      "key": "ci_cd_optimization",
+      "summary": "GitHub Actions workflows, composite actions, reusable workflows, caching (hash-based keys, fallback restore), matrix testing, concurrency groups, SHA-pinned actions, OIDC auth, DORA metrics alignment, GHA egress firewall awareness, workflow dependency locking"
+    },
+    {
+      "key": "container_configuration",
+      "summary": "Dockerfile multi-stage builds, BuildKit, docker-compose, digest pinning, distroless/Chainguard/DHI base images, non-root USER, no-new-privileges, read-only rootfs"
+    },
+    {
+      "key": "linter_config",
+      "summary": "ESLint, Prettier, TypeScript config, git hooks (Husky/Lefthook), Commitlint"
+    },
+    {
+      "key": "environment_management",
+      "summary": ".env templates, secrets management, OIDC authentication"
+    },
+    {
+      "key": "observability_setup",
+      "summary": "Pino/Winston logging, Prometheus metrics, Sentry, OpenTelemetry (OTel Collector, semantic conventions including GenAI/AI agent, declarative YAML config, log-trace correlation), health checks"
+    },
+    {
+      "key": "monorepo_maintenance",
+      "summary": "pnpm workspaces, Turborepo pipeline optimization, shared package configs"
+    },
+    {
+      "key": "multi_language_support",
+      "summary": "Node.js, Python (uv), Go, Rust dependency and CI patterns"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scaffold",
+      "horizon",
+      "bolt",
+      "beacon",
+      "canvas",
+      "radar",
+      "sentinel",
+      "launch"
+    ],
+    "output": [
+      "horizon",
+      "canvas",
+      "radar",
+      "bolt",
+      "sentinel",
+      "launch",
+      "beacon"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/gear.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "deps",
+    "ci",
+    "docker",
+    "logs",
+    "health",
+    "alert",
+    "secret",
+    "k8s"
+  ]
+}

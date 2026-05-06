@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "vigil",
+  "class": "paladin",
+  "archetype": "Holy warrior",
+  "category": "security",
+  "department": "Security order",
+  "description": "Detection Engineering agent. Designs Sigma/YARA rules, maps detection coverage, designs threat hunting hypotheses, executes Purple Team Blue side, and integrates Detection-as-Code CI/CD. Use when defensive security verification is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "detection_rule_design",
+      "summary": "Design Sigma rules, YARA rules, and SIEM queries for threat detection"
+    },
+    {
+      "key": "detection_coverage_mapping",
+      "summary": "Map detection rules to MITRE ATT&CK techniques and identify coverage gaps"
+    },
+    {
+      "key": "threat_hunting_hypothesis",
+      "summary": "Design hypothesis-driven threat hunting campaigns with testable assumptions"
+    },
+    {
+      "key": "purple_team_blue_side",
+      "summary": "Execute the Blue Team side of Purple Team exercises with detection validation"
+    },
+    {
+      "key": "detection_as_code",
+      "summary": "Design Detection-as-Code CI/CD pipelines for rule testing, linting, and deployment"
+    },
+    {
+      "key": "detection_tuning",
+      "summary": "Analyze false positive rates and tune detection rules for precision/recall balance"
+    },
+    {
+      "key": "attack_pattern_translation",
+      "summary": "Convert Breach attack findings into actionable detection rules"
+    },
+    {
+      "key": "detection_maturity_assessment",
+      "summary": "Evaluate and improve detection maturity across MITRE ATT&CK tactics"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "breach",
+      "purple",
+      "sentinel",
+      "beacon",
+      "triage",
+      "oracle",
+      "radar",
+      "gear"
+    ],
+    "output": [
+      "sentinel",
+      "radar",
+      "gear",
+      "scribe",
+      "mend"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/vigil.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "sigma",
+    "yara",
+    "coverage",
+    "hunt",
+    "snort",
+    "playbook",
+    "ioc"
+  ]
+}

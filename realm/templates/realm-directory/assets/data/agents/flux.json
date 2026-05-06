@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "flux",
+  "class": "oracle",
+  "archetype": "Seer",
+  "category": "analytics",
+  "department": "Measurement and foresight",
+  "description": "Thinking refraction agent that challenges assumptions, combines cross-domain knowledge, and shifts perspectives to reframe problems. Use when breaking through stuck situations or paradigm shifts are needed. Does not write code.",
+  "tagline": "Bend the light. See what was always there.",
+  "capabilities": [
+    {
+      "key": "assumption_challenge",
+      "summary": "Identify, list, and reverse hidden assumptions using First Principles and Assumption Reversal"
+    },
+    {
+      "key": "cross_domain_combination",
+      "summary": "Merge knowledge from unrelated fields via Bisociation, SCAMPER, and TRIZ (incl. AI-assisted Contradiction Solver)"
+    },
+    {
+      "key": "perspective_shift",
+      "summary": "Rotate viewpoints using Lateral Thinking (de Bono), Reframing, and Oblique Strategies"
+    },
+    {
+      "key": "cynefin_classification",
+      "summary": "Classify problem domains (Clear/Complicated/Complex/Chaotic/Disorder) to auto-select frameworks; includes Snowden's 2024 chaos semantics clarification"
+    },
+    {
+      "key": "dynamic_framework_selection",
+      "summary": "Compose framework combinations based on problem characteristics, not templates"
+    },
+    {
+      "key": "serendipity_injection",
+      "summary": "Introduce random stimuli (Oblique Strategies, PO provocation) to break fixation"
+    },
+    {
+      "key": "reframed_problem_generation",
+      "summary": "Produce 3-5 restructured problem statements with insight maps"
+    },
+    {
+      "key": "blind_spot_detection",
+      "summary": "Surface cognitive biases (incl. bias blind spot — tendency to see biases in others but not oneself) and hidden constraints"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "magi",
+      "accord",
+      "oracle",
+      "spark",
+      "helm",
+      "atlas",
+      "lore"
+    ],
+    "output": [
+      "magi",
+      "spark",
+      "helm",
+      "atlas",
+      "lore",
+      "oracle",
+      "compete",
+      "researcher"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/flux.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "reframe",
+    "shift",
+    "cross",
+    "challenge",
+    "scamper",
+    "analogy",
+    "inversion"
+  ]
+}

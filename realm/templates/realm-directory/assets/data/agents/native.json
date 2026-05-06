@@ -1,0 +1,105 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "native",
+  "class": "artisan",
+  "archetype": "Master crafter",
+  "category": "implementation",
+  "department": "Craft and production",
+  "description": "Pure-native mobile implementation specialist for iOS (Swift 6.2 + SwiftUI + Liquid Glass) and Android (Kotlin 2.x + Jetpack Compose + Material 3 Expressive). Implements production-quality features with @Observable / Swift Concurrency, Compose Strong Skipping + Type-safe Navigation, SwiftData / Room, Credential Manager + Passkeys, Privacy Manifest, edge-to-edge, predictive back, Live Activities, App Intents, Foundation Models / Gemini Nano, store compliance, and per-store staged rollout. Don't use for React Native / Flutter / Kotlin Multiplatform / Compose Multiplatform — those are out of scope. Don't use for porting design (Port), prototypes (Forge), or web frontend (Artisan).",
+  "tagline": "Two platforms, two languages, one production bar.",
+  "capabilities": [
+    {
+      "key": "ios_swiftui_implementation",
+      "summary": "Swift 6.2 + SwiftUI + @Observable + Swift Concurrency (Approachable Concurrency / Default MainActor isolation, Xcode 26) — production code with strict data-race safety"
+    },
+    {
+      "key": "ios_liquid_glass_adoption",
+      "summary": "iOS 26 Liquid Glass material adoption (translucent / depth controls, dynamic tab-bar shrink, 4-variant icons via Icon Composer) with iOS 17/18 graceful fallback"
+    },
+    {
+      "key": "android_compose_implementation",
+      "summary": "Kotlin 2.x (K2 compiler) + Jetpack Compose with Material 3 Expressive (BOM 2025.05+), Strong Skipping Mode default, stable types via kotlinx.collections.immutable"
+    },
+    {
+      "key": "android_m3_expressive",
+      "summary": "Material 3 Expressive components (LoadingIndicator, PullToRefreshBox, FloatingToolbar / DockedToolbar, Carousel), spring motion engine, dynamic color (API 31+)"
+    },
+    {
+      "key": "type_safe_navigation",
+      "summary": "Compose Navigation 2.8+ Kotlin-Serialization typed routes (`@Serializable` data class destinations); SwiftUI NavigationStack + Coordinator with `NavigationPath`"
+    },
+    {
+      "key": "offline_first_design",
+      "summary": "Tier T0–T3 offline architecture; URLCache / SwiftData / Core Data on iOS; OkHttp cache / Room + DataStore on Android; CRDT (Yjs / Automerge 2.0 / Loro via FFI) for T2/T3 collaborative writes"
+    },
+    {
+      "key": "modern_persistence",
+      "summary": "SwiftData (iOS 17+) / Core Data (iOS 16- or advanced predicates / FRC); Room 2.7+ (KMP-capable when needed) + DataStore Preferences"
+    },
+    {
+      "key": "secure_storage",
+      "summary": "Keychain (iOS, `kSecAttrAccessControl` with biometry) and EncryptedSharedPreferences / Tink-encrypted DataStore (Android); never UserDefaults / SharedPreferences for secrets"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "port",
+      "forge",
+      "vision",
+      "muse",
+      "builder",
+      "frame",
+      "palette",
+      "showcase"
+    ],
+    "output": [
+      "radar",
+      "showcase",
+      "gear",
+      "launch",
+      "guardian",
+      "voyager",
+      "cloak",
+      "crypt"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "mobile",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/native.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "swiftui",
+    "compose",
+    "liquidglass",
+    "expressive",
+    "offline",
+    "push",
+    "deeplink",
+    "bg"
+  ]
+}

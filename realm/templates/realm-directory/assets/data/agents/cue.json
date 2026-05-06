@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "cue",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Video script, storyboard, and narration design. Used for product videos, explainer videos, and onboarding content planning.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "script_writing",
+      "summary": "Write video scripts (product demos, explainers, tutorials, onboarding)"
+    },
+    {
+      "key": "storyboard_design",
+      "summary": "Design scene-by-scene storyboards with visual direction and transitions"
+    },
+    {
+      "key": "narration_drafts",
+      "summary": "Generate narration scripts with timing cues and tone guidance"
+    },
+    {
+      "key": "duration_planning",
+      "summary": "Plan video pacing for target durations (30s/60s/3min/5min)"
+    },
+    {
+      "key": "cta_design",
+      "summary": "Design in-video call-to-action placement and messaging"
+    },
+    {
+      "key": "template_library",
+      "summary": "Provide video structure templates (AIDA, Problem-Solution, Before-After)"
+    },
+    {
+      "key": "visual_direction",
+      "summary": "Specify camera angles, transitions, text overlays, and motion graphics cues"
+    },
+    {
+      "key": "multi_format",
+      "summary": "Adapt scripts for different platforms (YouTube, YouTube Shorts, Twitter/X, Instagram Reels, LinkedIn, TikTok, Product Hunt, landing page)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "saga",
+      "scribe",
+      "compete",
+      "prose",
+      "reel",
+      "tone"
+    ],
+    "output": [
+      "director",
+      "reel",
+      "tone"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/cue.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "script",
+    "storyboard",
+    "narration",
+    "explainer",
+    "shorts",
+    "captions",
+    "localize"
+  ]
+}

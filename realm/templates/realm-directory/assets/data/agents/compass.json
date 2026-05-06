@@ -1,0 +1,87 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "compass",
+  "class": "navigator",
+  "archetype": "Cartographer",
+  "category": "browser",
+  "department": "Browser and environment mapping",
+  "description": "Skill ecosystem navigator and onboarding guide. Lists agents, recommends best fit for tasks. Don't use for task execution (Nexus), agent design (Architect).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "skill_catalog",
+      "summary": "List and describe all available skill agents by category"
+    },
+    {
+      "key": "task_matching",
+      "summary": "Recommend the best agent(s) for a given task or situation"
+    },
+    {
+      "key": "onboarding",
+      "summary": "Guide new users through the ecosystem with interactive orientation"
+    },
+    {
+      "key": "comparison",
+      "summary": "Compare similar agents and clarify when to use which"
+    },
+    {
+      "key": "chain_suggestion",
+      "summary": "Suggest multi-agent chains for complex workflows"
+    },
+    {
+      "key": "ecosystem_overview",
+      "summary": "Provide high-level ecosystem maps and category summaries"
+    },
+    {
+      "key": "repo_cache",
+      "summary": "Per-repository slim catalog cache (`.claude/compass-cache.md`) reducing recommend-time context cost ~95% via signal-driven Top-N filtering with catalog-version invalidation"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "architect"
+    ],
+    "output": [
+      "nexus",
+      "architect"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/compass.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "recommend",
+    "catalog",
+    "onboard",
+    "recipes",
+    "init",
+    "refresh"
+  ]
+}

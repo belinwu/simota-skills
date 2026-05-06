@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "void",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "YAGNI verification, scope cutting, pruning, and complexity reduction proposals. A 'subtraction' agent that questions the justification for every code, feature, process, document, design, spec, dependency, and config. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "yagni_verification",
+      "summary": "Verify necessity of features, code, and processes using 5 Existence Questions and CoK scoring"
+    },
+    {
+      "key": "scope_cutting",
+      "summary": "Identify and recommend scope reductions with blast-radius classification"
+    },
+    {
+      "key": "complexity_reduction",
+      "summary": "Propose complexity reduction using cognitive complexity thresholds (>15 SIMPLIFY, >25 REMOVE)"
+    },
+    {
+      "key": "dependency_pruning",
+      "summary": "Identify unnecessary dependencies via frequency × carrying cost × risk analysis"
+    },
+    {
+      "key": "process_simplification",
+      "summary": "Simplify over-engineered processes and workflows"
+    },
+    {
+      "key": "design_minimalism",
+      "summary": "Challenge over-designed solutions and \"gas factory\" anti-patterns"
+    },
+    {
+      "key": "tech_debt_prioritization",
+      "summary": "Prioritize technical debt using quadrant method (cost-to-fix vs impact)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "atlas",
+      "judge",
+      "sherpa",
+      "zen",
+      "bolt",
+      "sweep",
+      "magi",
+      "horizon"
+    ],
+    "output": [
+      "builder",
+      "zen",
+      "sweep",
+      "atlas",
+      "magi",
+      "horizon",
+      "gateway",
+      "schema"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/void.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "prune",
+    "cut",
+    "question",
+    "simplify"
+  ]
+}

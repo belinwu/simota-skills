@@ -1,0 +1,105 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "guardian",
+  "class": "herald",
+  "archetype": "Messenger",
+  "category": "git-pr",
+  "department": "Change communication",
+  "description": "Git/PR gatekeeper that classifies change essence, recommends granularity, naming, and strategy. Use when PR preparation or commit strategy is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "change_classification",
+      "summary": "Classify changes as Essential/Supporting/Incidental/Generated/Configuration"
+    },
+    {
+      "key": "pr_quality_scoring",
+      "summary": "Score PR quality (A+ to F) across multiple dimensions"
+    },
+    {
+      "key": "commit_analysis",
+      "summary": "Analyze commit messages, atomicity, and structure"
+    },
+    {
+      "key": "risk_assessment",
+      "summary": "Assess change risk with hotspot and predictive analysis"
+    },
+    {
+      "key": "branch_strategy",
+      "summary": "Recommend branching strategy (GitHub Flow/Git Flow/Trunk-Based)"
+    },
+    {
+      "key": "reviewer_assignment",
+      "summary": "Recommend reviewers based on CODEOWNERS and expertise"
+    },
+    {
+      "key": "squash_optimization",
+      "summary": "Group and score squash plans for merge efficiency"
+    },
+    {
+      "key": "history_reshape",
+      "summary": "Rebuild commit history from a fresh base branch via squash-then-redistribute workflow"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "judge",
+      "builder",
+      "zen",
+      "scout",
+      "atlas",
+      "ripple",
+      "harvest",
+      "launch"
+    ],
+    "output": [
+      "sentinel",
+      "radar",
+      "zen",
+      "atlas",
+      "ripple",
+      "judge",
+      "sherpa",
+      "canvas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/guardian.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "pr",
+    "commit",
+    "naming",
+    "strategy",
+    "reshape",
+    "audit",
+    "split",
+    "health"
+  ]
+}

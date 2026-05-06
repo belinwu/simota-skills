@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "vista",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Test intelligence visualization specialist. Turns junit.xml, lcov, allure-results, playwright reports, CTRF, OTel test spans, and CI test history into coverage heatmaps, traceability matrices, test-shape views (Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass/Ice-Cream-Cone), flake dashboards (Wilson lower-bound), mutation-overlaid coverage maps, AI-origin test risk lenses, and regression timelines (E-Divisive change-points). Don't use for writing tests (Radar/Voyager/Siege), generic diagrams (Canvas), combinatorial test planning (Matrix), Storybook catalogs (Showcase), or product KPI dashboards (Pulse).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "test_result_visualization",
+      "summary": "Parse junit.xml, allure-results, playwright-report.json, jest --json, and CTRF (Common Test Report Format, the converging 2025 unifier) into pass/fail/skip rollups, suite-level heatmaps, and per-test cards"
+    },
+    {
+      "key": "coverage_map_rendering",
+      "summary": "Convert lcov/cobertura/jacoco/jest coverage into file-tree treemaps, sunburst (Codecov-style), and directory heatmaps with branch vs statement vs line vs MC/DC distinction"
+    },
+    {
+      "key": "diff_coverage_first",
+      "summary": "Treat PR-level diff coverage (Russ Cox / diff-cover / Codecov / Codacy 2025 standard) as the primary PR gate; demote total coverage to a trend sparkline"
+    },
+    {
+      "key": "mutation_overlay",
+      "summary": "Overlay Stryker/PIT/mutmut/cargo-mutants mutation scores on coverage heatmap; flag LINE-NOT-MUTATION cells (100% line, <60% mutation) as vanity zones"
+    },
+    {
+      "key": "traceability_matrix",
+      "summary": "Build requirement ↔ test case ↔ code ↔ result matrices from spec IDs, test annotations, coverage data, and ISO 26262 / IEC 62304 / SOC2 / DO-178C compliance evidence chains"
+    },
+    {
+      "key": "test_relationship_graph",
+      "summary": "Render test → code (covered files) and test → feature (tags/annotations) relationship graphs as Mermaid/D2"
+    },
+    {
+      "key": "test_shape_classifier",
+      "summary": "Compute unit/integration/E2E/manual ratio and auto-select the matching shape (Pyramid / Trophy / Trophy-2025 / Honeycomb / Diamond / Cupcake / Hourglass / Ice-Cream-Cone) with anti-pattern detection"
+    },
+    {
+      "key": "coverage_gap_detection",
+      "summary": "Highlight untested branches/files/critical paths with fused risk weight (coverage × git churn × incident history) producing HIGH/MED/LOW tiles"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "radar",
+      "voyager",
+      "siege",
+      "judge",
+      "guardian",
+      "attest",
+      "scout",
+      "matrix"
+    ],
+    "output": [
+      "canvas",
+      "pulse",
+      "quill",
+      "judge",
+      "radar",
+      "voyager",
+      "sherpa"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/vista.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "coverage",
+    "results",
+    "trace",
+    "shape",
+    "flake",
+    "timeline",
+    "diff",
+    "mutation"
+  ]
+}

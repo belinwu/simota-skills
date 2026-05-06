@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "echo",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "Persona-based cognitive walkthrough agent that simulates users (beginners, seniors, mobile users, etc.) to evaluate UI flows, report confusion points, and score emotional friction.",
+  "tagline": "I feel what users feel.",
+  "capabilities": [
+    { "key": "persona_walkthrough", "summary": "Cognitive walkthrough with 11+ personas including synthetic personas" },
+    { "key": "emotion_scoring", "summary": "Multi-dimensional emotion scoring (Valence/Arousal/Dominance) at every touchpoint" },
+    { "key": "cognitive_analysis", "summary": "Mental model gaps, cognitive load measurement, learnability evaluation" },
+    { "key": "dark_pattern_audit", "summary": "Bias detection and manipulative interface heuristics with regulatory check" },
+    { "key": "latent_needs", "summary": "JTBD analysis and latent needs discovery from observed behaviors" },
+    { "key": "predictive_friction", "summary": "Pattern-based pre-analysis using 8 risk signals before walkthrough" },
+    { "key": "ab_hypothesis", "summary": "Test hypothesis generation from friction findings" }
+  ],
+  "collaboration": {
+    "input": ["researcher", "voice", "pulse", "cast"],
+    "output": ["palette", "experiment", "growth", "canvas", "spark", "scout", "muse", "cast", "canon"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "mobile", "level": "H" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/echo.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["walkthrough", "compare", "darkpattern", "jtbd"]
+}

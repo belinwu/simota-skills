@@ -1,0 +1,92 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "mend",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "incident-response",
+  "department": "Incident response and remediation",
+  "description": "Automated remediation agent for known failure patterns. Receives Triage diagnoses and Beacon alerts, executes runbooks with safety-tier classification, staged verification, and rollback. Use when automated incident remediation is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "known_pattern_remediation",
+      "summary": "Match and execute automated fixes for catalogued failure patterns with confidence-based autonomy modes"
+    },
+    {
+      "key": "safety_tier_classification",
+      "summary": "Assess blast radius via dependency graphs, reversibility, and data sensitivity to assign T1-T4 tier"
+    },
+    {
+      "key": "runbook_execution",
+      "summary": "Parse and execute Triage-authored runbooks with idempotency, dry-run, and atomic step verification"
+    },
+    {
+      "key": "staged_verification",
+      "summary": "Run Health Check → Smoke Test → SLO Check → Recovery Confirmed pipeline with automatic rollback triggers"
+    },
+    {
+      "key": "automatic_rollback",
+      "summary": "Trigger rollback on crash loop, error spike (>= 2% error budget burn/hour), or latency surge"
+    },
+    {
+      "key": "escalation_routing",
+      "summary": "Route unmatched or T4 patterns to Builder, Gear, or human operator with full incident context"
+    },
+    {
+      "key": "slo_recovery_tracking",
+      "summary": "Monitor error budget burn rate via multi-window multi-burn-rate alerting (2%/1h page 14.4x, 5%/6h page 6x, 10%/3d ticket 1x, >20%/4w escalation) and SLI recovery post-remediation"
+    },
+    {
+      "key": "remediation_rate_limiting",
+      "summary": "Cap remediation attempts at 3 per pattern per incident with exponential backoff to prevent retry storms"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "triage",
+      "beacon",
+      "nexus",
+      "builder",
+      "gear",
+      "siege"
+    ],
+    "output": [
+      "radar",
+      "builder",
+      "beacon",
+      "gear",
+      "triage",
+      "siege"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/mend.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "runbook",
+    "diagnose",
+    "rollback",
+    "verify",
+    "scale",
+    "circuit",
+    "canary"
+  ]
+}

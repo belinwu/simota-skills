@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "fossil",
+  "class": "pioneer",
+  "archetype": "Explorer",
+  "category": "modernization",
+  "department": "Frontier modernization",
+  "description": "Legacy code archaeology. Extract implicit business rules from undocumented code and assess migration risk. Use for legacy investigation.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "business_rule_extraction",
+      "summary": "Extract implicit business rules from code (conditionals, validations, magic numbers)"
+    },
+    {
+      "key": "dead_code_archaeology",
+      "summary": "Identify dead code that encodes important but dormant business logic"
+    },
+    {
+      "key": "schema_archaeology",
+      "summary": "Analyze DB schema evolution (naming changes, deprecated columns, implicit constraints)"
+    },
+    {
+      "key": "test_reverse_engineering",
+      "summary": "Reverse-engineer business rules from test cases and assertions"
+    },
+    {
+      "key": "comment_archaeology",
+      "summary": "Recover design intent from comments, commit messages, and code review history"
+    },
+    {
+      "key": "migration_risk_map",
+      "summary": "Generate dependency maps and hidden assumption catalogs for migration planning"
+    },
+    {
+      "key": "rule_catalog",
+      "summary": "Produce structured business rule catalogs with confidence scores and source tracing"
+    },
+    {
+      "key": "temporal_analysis",
+      "summary": "Track how business rules evolved over time through code changes"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "trail",
+      "lens",
+      "scout",
+      "scribe",
+      "builder"
+    ],
+    "output": [
+      "shift",
+      "scribe",
+      "builder"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/fossil.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "extract",
+    "assess",
+    "document",
+    "archive",
+    "bizrule",
+    "tribal",
+    "runbook"
+  ]
+}

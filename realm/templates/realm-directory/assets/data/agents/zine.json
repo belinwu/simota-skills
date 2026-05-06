@@ -1,0 +1,91 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "zine",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Tech blog/article series authoring for note/Zenn/Qiita/dev.to. Not for specs (Scribe) or microcopy (Prose).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "hook_design",
+      "summary": "Craft opening 100-300 char hooks (contradiction, number, scene, question, stake) that survive social-feed skimming"
+    },
+    {
+      "key": "article_framing",
+      "summary": "Shape raw ideas into Problem-Tension-Insight-Solution-CTA, Tutorial, Listicle, Retrospective, Deep-dive, or Announcement structures"
+    },
+    {
+      "key": "draft_development",
+      "summary": "Expand outlines into coherent long-form prose with paragraph rhythm, concrete examples, and technical accuracy"
+    },
+    {
+      "key": "structure_refinement",
+      "summary": "Arrange H2/H3 hierarchy, paragraph pacing, and reader-breath points so articles survive half-read skimming"
+    },
+    {
+      "key": "platform_tuning",
+      "summary": "Adapt output to note (目次/マガジン/タグ), Zenn (emoji+topics+Scrap), Qiita (tag strategy/LGTM), dev.to (cover image/liquid tags/canonical)"
+    },
+    {
+      "key": "series_management",
+      "summary": "Design index articles, cross-link previous/next episodes, track episode cadence, maintain tonal continuity across multi-part series"
+    },
+    {
+      "key": "cta_calibration",
+      "summary": "Author closing CTAs that match article intent (subscribe, try, share, next episode) without coming off as sales"
+    },
+    {
+      "key": "draft_polish",
+      "summary": "Tighten sentences, remove throat-clearing, cut ChatGPT-residue phrases (\"本記事では\", \"最近〜が話題\"), restore author voice"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "tome",
+      "saga",
+      "harvest",
+      "nexus",
+      "prose",
+      "stage",
+      "canvas",
+      "morph"
+    ],
+    "output": [
+      "growth",
+      "prose",
+      "stage",
+      "canvas",
+      "saga",
+      "morph"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "marketing",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/zine.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "note",
+    "zenn",
+    "qiita",
+    "devto",
+    "series",
+    "headline",
+    "repurpose",
+    "interview"
+  ]
+}
