@@ -124,6 +124,31 @@
   --core-easing-ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
   --core-easing-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
+  /* ---------- Core · Blur ---------- */
+  --core-blur-sm: 8px;
+  --core-blur-md: 16px;
+  --core-blur-lg: 24px;
+
+  /* ---------- Core · Elevation Shadow (5-step Z-depth ladder; ink base) ----------
+   * Light: rgba(31,26,46, α) — dark overrides swap to rgba(0,0,0, α) in [data-theme].
+   * Each step raises spread/opacity to express increasing Z-axis depth.
+   * ---------------------------------------------------------------- */
+  --core-elevation-shadow-1:
+    0 1px 3px 0   rgba(31, 26, 46, 0.10),
+    0 1px 2px 0   rgba(31, 26, 46, 0.06);
+  --core-elevation-shadow-2:
+    0 2px 6px 0   rgba(31, 26, 46, 0.12),
+    0 4px 8px 0   rgba(31, 26, 46, 0.08);
+  --core-elevation-shadow-3:
+    0 4px 12px -2px rgba(31, 26, 46, 0.16),
+    0 8px 16px -4px rgba(31, 26, 46, 0.10);
+  --core-elevation-shadow-4:
+    0 8px 24px -4px rgba(31, 26, 46, 0.20),
+    0 16px 32px -8px rgba(31, 26, 46, 0.12);
+  --core-elevation-shadow-5:
+    0 16px 40px -8px rgba(31, 26, 46, 0.28),
+    0 24px 48px -12px rgba(31, 26, 46, 0.16);
+
   /* ---------- Core · Z-index ---------- */
   --core-z-base:     0;
   --core-z-raised:   10;
@@ -158,6 +183,12 @@
   --realm-color-surface-card:   var(--core-color-white);
   --realm-color-surface-raised: var(--core-color-lilac-100);
   --realm-color-surface-subtle: var(--core-color-lilac-100);
+  /* Glass surface: off-white 72% alpha on ink-50 base.
+   * AA pre-flight (light): rgba(#FDFAFE,0.72) on #F4EFF7 → effective #FAFBFC,
+   *   contrast vs ink-800 (#1F1A2E): 16.23:1 PASS (AA 4.5:1 req)
+   * AA pre-flight (dark): rgba(#16121F,0.62) on #1F1A2E → effective #191525,
+   *   contrast vs ink-50 (#F4EFF7): 16.34:1 PASS (AA 4.5:1 req) */
+  --realm-color-surface-glass: rgba(253, 250, 254, 0.72);
 
   /* Border (theme-aware) */
   --realm-color-border-subtle:  var(--core-color-ink-100);  /* decorative hairline */
@@ -225,6 +256,16 @@
   --realm-shadow-focus-ring:
     0 0 0 3px rgba(111, 77, 176, 0.40);
 
+  /* Elevation (semantic; references core elevation shadow ladder) */
+  --realm-elevation-1: var(--core-elevation-shadow-1);
+  --realm-elevation-2: var(--core-elevation-shadow-2);
+  --realm-elevation-3: var(--core-elevation-shadow-3);
+  --realm-elevation-4: var(--core-elevation-shadow-4);
+  --realm-elevation-5: var(--core-elevation-shadow-5);
+
+  /* Blur (semantic) */
+  --realm-blur-surface: var(--core-blur-md);
+
   /* Motion */
   --realm-motion-duration-page-transition: var(--core-duration-fast);
   --realm-motion-duration-hover:           var(--core-duration-base);
@@ -234,7 +275,7 @@
 
   /* Typography composite (helper bundles) */
   --realm-typography-display-font:   var(--core-font-family-rounded-sans);
-  --realm-typography-display-size:   var(--core-font-size-39);
+  --realm-typography-display-size:   var(--core-font-size-31); /* tightened from font-size-39; Direction D type scale */
   --realm-typography-display-weight: var(--core-font-weight-extrabold);
   --realm-typography-display-lh:     var(--core-line-height-tight);
   --realm-typography-display-ls:     var(--core-letter-spacing-tight);
@@ -356,6 +397,35 @@
   --directory-motion-card-hover:      var(--realm-motion-duration-hover);
   --directory-motion-page-transition: var(--realm-motion-duration-page-transition);
   --directory-motion-easing:          var(--realm-motion-easing-default);
+
+  /* ============================================================
+   * Direction D — Refined Grimoire with Foil Moments
+   * All tokens below are additive; existing tokens are untouched.
+   * ============================================================ */
+
+  /* Hero mesh */
+  --directory-hero-mesh-opacity: 0.6;
+
+  /* Card watermark */
+  --directory-card-watermark-opacity-rest:  0;
+  --directory-card-watermark-opacity-hover: 0.08;
+
+  /* Card foil effect */
+  --directory-card-foil-gradient: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  --directory-card-foil-duration: 800ms; /* C1: motion token — collapsed to 0ms under reduced-motion */
+
+  /* Detail hero watermark */
+  --directory-detail-hero-watermark-size:    240px;
+  --directory-detail-hero-watermark-opacity: 0.06;
+
+  /* Tab active underline */
+  --directory-tab-active-underline-thickness: 2px;
+
+  /* Motion tokens (C1: all keyframe durations must be token-bound) */
+  --directory-motion-foil-duration:      var(--directory-card-foil-duration); /* alias for keyframe binding */
+  --directory-motion-mesh-duration:      12s;   /* 4-stop mesh breath animation */
+  --directory-motion-watermark-fade-duration: 240ms;
+  --directory-motion-float-duration:     4s;    /* hero floats; replaces hard-coded 4s in styles.css */
 }
 
 /* ============================================================
@@ -382,8 +452,11 @@
   --realm-color-border-focus:   var(--core-color-lilac-300);
 
   /* Brand: nudge toward lighter lilac/rose to fight glare (saturation -10..-20%) */
+  /* --realm-color-brand-primary-strong dark re-evaluation:
+   * lilac-400 (#B594DD) on ink-900 (#16121F): contrast 7.52:1 PASS (req 4.5:1) → adopted.
+   * lilac-300 (#CFB6EA) on ink-900: contrast 10.55:1 PASS (prev value, also valid). */
   --realm-color-brand-primary:          var(--core-color-lilac-400);
-  --realm-color-brand-primary-strong:   var(--core-color-lilac-300);
+  --realm-color-brand-primary-strong:   var(--core-color-lilac-400); /* re-evaluated: 7.52:1 vs ink-900 PASS */
   --realm-color-brand-primary-soft:     var(--core-color-ink-700);
   --realm-color-brand-secondary:        var(--core-color-rose-400);
   --realm-color-brand-secondary-strong: var(--core-color-rose-300);
@@ -402,6 +475,26 @@
   /* Rank palette: novice (white) needs an ink swap on dark surfaces */
   --realm-color-rank-novice-fill: var(--core-color-ink-50);
   --realm-color-rank-novice-on:   var(--core-color-ink-800);
+
+  /* Direction D: dark-theme glass surface override */
+  --realm-color-surface-glass: rgba(22, 18, 31, 0.62); /* ink-900 62% alpha */
+
+  /* Direction D: dark-theme elevation shadows (deeper black base) */
+  --core-elevation-shadow-1:
+    0 1px 3px 0    rgba(0, 0, 0, 0.28),
+    0 1px 2px 0    rgba(0, 0, 0, 0.20);
+  --core-elevation-shadow-2:
+    0 2px 6px 0    rgba(0, 0, 0, 0.32),
+    0 4px 8px 0    rgba(0, 0, 0, 0.24);
+  --core-elevation-shadow-3:
+    0 4px 12px -2px rgba(0, 0, 0, 0.40),
+    0 8px 16px -4px rgba(0, 0, 0, 0.28);
+  --core-elevation-shadow-4:
+    0 8px 24px -4px rgba(0, 0, 0, 0.48),
+    0 16px 32px -8px rgba(0, 0, 0, 0.32);
+  --core-elevation-shadow-5:
+    0 16px 40px -8px  rgba(0, 0, 0, 0.60),
+    0 24px 48px -12px rgba(0, 0, 0, 0.40);
 }
 
 /* ============================================================
@@ -415,6 +508,24 @@
     --directory-motion-card-hover:           var(--core-duration-instant);
     --directory-motion-page-transition:      var(--core-duration-instant);
     --directory-agent-card-transition-duration: var(--core-duration-instant);
+    /* Direction D: collapse all foil / mesh / watermark / float animations */
+    --directory-card-foil-duration:              var(--core-duration-instant);
+    --directory-motion-foil-duration:            var(--core-duration-instant);
+    --directory-motion-mesh-duration:            var(--core-duration-instant);
+    --directory-motion-watermark-fade-duration:  var(--core-duration-instant);
+    --directory-motion-float-duration:           var(--core-duration-instant);
+  }
+}
+
+/* ============================================================
+ * Reduced transparency — fallback glass / blur to opaque values.
+ * Applies on top of any active color scheme so a single :root
+ * override covers light, dark, and OS-dark simultaneously.
+ * ============================================================ */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --realm-color-surface-glass: var(--realm-color-surface-card);
+    --realm-blur-surface: 0px;
   }
 }
 
@@ -439,7 +550,7 @@
     --realm-color-border-focus:   var(--core-color-lilac-300);
 
     --realm-color-brand-primary:          var(--core-color-lilac-400);
-    --realm-color-brand-primary-strong:   var(--core-color-lilac-300);
+    --realm-color-brand-primary-strong:   var(--core-color-lilac-400); /* re-evaluated: 7.52:1 vs ink-900 PASS */
     --realm-color-brand-primary-soft:     var(--core-color-ink-700);
     --realm-color-brand-secondary:        var(--core-color-rose-400);
     --realm-color-brand-secondary-strong: var(--core-color-rose-300);
@@ -456,5 +567,25 @@
 
     --realm-color-rank-novice-fill: var(--core-color-ink-50);
     --realm-color-rank-novice-on:   var(--core-color-ink-800);
+
+    /* Direction D: OS-dark glass surface override */
+    --realm-color-surface-glass: rgba(22, 18, 31, 0.62);
+
+    /* Direction D: OS-dark elevation shadow overrides */
+    --core-elevation-shadow-1:
+      0 1px 3px 0    rgba(0, 0, 0, 0.28),
+      0 1px 2px 0    rgba(0, 0, 0, 0.20);
+    --core-elevation-shadow-2:
+      0 2px 6px 0    rgba(0, 0, 0, 0.32),
+      0 4px 8px 0    rgba(0, 0, 0, 0.24);
+    --core-elevation-shadow-3:
+      0 4px 12px -2px rgba(0, 0, 0, 0.40),
+      0 8px 16px -4px rgba(0, 0, 0, 0.28);
+    --core-elevation-shadow-4:
+      0 8px 24px -4px rgba(0, 0, 0, 0.48),
+      0 16px 32px -8px rgba(0, 0, 0, 0.32);
+    --core-elevation-shadow-5:
+      0 16px 40px -8px  rgba(0, 0, 0, 0.60),
+      0 24px 48px -12px rgba(0, 0, 0, 0.40);
   }
 }

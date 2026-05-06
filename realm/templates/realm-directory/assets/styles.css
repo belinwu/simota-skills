@@ -143,6 +143,15 @@ a:focus-visible {
   font-weight: var(--core-font-weight-medium);
   padding: var(--realm-spacing-xs) var(--realm-spacing-sm);
   border-radius: var(--realm-radius-md);
+  transition:
+    color var(--core-duration-fast) var(--core-easing-ease-out),
+    background var(--core-duration-fast) var(--core-easing-ease-out);
+}
+
+/* Direction D: subtle hover bg + color shift for nav affordance */
+.app-nav__link:hover:not([aria-current="page"]) {
+  color: var(--realm-color-brand-primary-strong);
+  background: var(--realm-color-brand-primary-soft);
 }
 
 .app-nav__link[aria-current="page"] {
@@ -173,13 +182,23 @@ a:focus-visible {
 .hero {
   padding: var(--directory-hero-padding-y) var(--directory-hero-padding-x);
   border-radius: var(--directory-hero-radius);
+  /* Direction D: single 4-stop mesh gradient replaces dual radial-gradients.
+   * --directory-hero-mesh-opacity (0.6) applied via color-mix to soften the blend. */
   background:
-    radial-gradient(120% 80% at 0% 0%, var(--realm-color-brand-primary-soft) 0%, transparent 60%),
-    radial-gradient(120% 80% at 100% 100%, var(--realm-color-brand-secondary-soft) 0%, transparent 60%),
-    var(--directory-hero-bg);
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--realm-color-brand-primary-soft) calc(var(--directory-hero-mesh-opacity) * 100%), transparent) 0%,
+      var(--directory-hero-bg) 35%,
+      var(--directory-hero-bg) 65%,
+      color-mix(in srgb, var(--realm-color-brand-secondary-soft) calc(var(--directory-hero-mesh-opacity) * 100%), transparent) 100%
+    );
   position: relative;
   overflow: hidden;
   margin-block: var(--realm-spacing-xl);
+  /* M2: meshBreath — gradient mesh slowly drifts ±5% to give the hero surface a subtle pulse.
+   * background-size 200% 200% gives position room to travel without visible seam. */
+  background-size: 200% 200%;
+  animation: meshBreath var(--directory-motion-mesh-duration, 12s) var(--realm-motion-easing-emphasis, ease-in-out) infinite alternate;
 }
 
 .hero__title {
@@ -216,15 +235,46 @@ a:focus-visible {
   box-shadow: var(--realm-shadow-card-rest);
   background: var(--realm-color-surface-card);
   transform: translateY(0);
-  animation: floatY 4s var(--core-easing-ease-in-out) infinite alternate;
+  /* C1: hard-coded 4s replaced with token reference for Flow's keyframe binding */
+  animation: floatY var(--directory-motion-float-duration) var(--core-easing-ease-in-out) infinite alternate;
 }
 
-.hero__float:nth-child(2) { animation-delay: 0.4s; }
-.hero__float:nth-child(3) { animation-delay: 0.9s; }
+/* Direction D: floats reduced to 1 card for visual restraint.
+ * 2nd and 3rd float siblings should be removed from HTML by Artisan.
+ * These nth-child rules are kept so no flash occurs if HTML still has 3. */
+.hero__float:nth-child(2) { display: none; }
+.hero__float:nth-child(3) { display: none; }
 
 @keyframes floatY {
   from { transform: translateY(0); }
   to   { transform: translateY(-8px); }
+}
+
+/* ---------- Motion: foilShimmer (M1) ----------
+ * C4 compliance: iteration-count = 1 (single sweep, stops after 1 pass).
+ * WCAG 2.2.2: hover-only trigger. WCAG 2.3.1: no flash (opacity sweep only).
+ * Sweeps background-position from offscreen-left to offscreen-right across
+ * the card surface via the linear-gradient defined in --directory-card-foil-gradient. */
+@keyframes foilShimmer {
+  from { background-position: -100% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* ---------- Motion: meshBreath (M2) ----------
+ * Gently drifts the hero gradient mesh position ±5% over 12 s (infinite alternate).
+ * Vibration amplitude kept small to avoid vestibular disturbance (WCAG 2.3.3 / EAA).
+ * Uses transform-safe background-position — compositor-safe for background-attachment: scroll. */
+@keyframes meshBreath {
+  from { background-position: 45% 45%; }
+  to   { background-position: 55% 55%; }
+}
+
+/* ---------- Motion: watermarkFade (M3) ----------
+ * Fades the card watermark from rest opacity to hover opacity.
+ * Opacity is the only animated property — compositor-safe, no layout cost. */
+@keyframes watermarkFade {
+  from { opacity: var(--directory-card-watermark-opacity-rest, 0.03); }
+  to   { opacity: var(--directory-card-watermark-opacity-hover, 0.08); }
 }
 
 @media (max-width: 768px) {
@@ -253,6 +303,12 @@ a:focus-visible {
 .search__icon {
   color: var(--realm-color-ink-muted);
   flex: 0 0 auto;
+  transition: color var(--core-duration-fast) var(--core-easing-ease-out);
+}
+
+/* Direction D: icon brightens to brand-primary when search is focused */
+.search:focus-within .search__icon {
+  color: var(--realm-color-brand-primary);
 }
 
 .search__input {
@@ -302,6 +358,13 @@ a:focus-visible {
   border-color: var(--realm-color-brand-primary);
 }
 
+/* Direction D: focus-visible ring for keyboard navigation (WCAG 2.2 SC 2.4.11/2.4.13) */
+.chip:focus-visible {
+  outline: 3px solid var(--realm-color-border-focus);
+  outline-offset: 2px;
+  box-shadow: var(--realm-shadow-focus-ring);
+}
+
 .chip[aria-pressed="true"],
 .chip.is-active {
   background: var(--directory-chip-bg-selected);
@@ -347,6 +410,29 @@ a:focus-visible {
   color: var(--rank-on, var(--core-color-ink-50));
 }
 
+/* Direction D: high-rank gem — static inset glow for motion-off rank identification (C4 redundant cue).
+ * Triggered via .rank--veteran / .rank--elite / .rank--champion / .rank--legend class on .rank-pill,
+ * or data-rank-tier="veteran|elite|champion|legend" attribute. Both patterns supported. */
+.rank-pill.rank--veteran,
+.rank-pill[data-rank-tier="veteran"] {
+  box-shadow: inset 0 0 0 1.5px rgba(109, 40, 217, 0.55), 0 0 6px 1px rgba(109, 40, 217, 0.20);
+}
+
+.rank-pill.rank--elite,
+.rank-pill[data-rank-tier="elite"] {
+  box-shadow: inset 0 0 0 1.5px rgba(212, 160, 23, 0.65), 0 0 6px 1px rgba(212, 160, 23, 0.28);
+}
+
+.rank-pill.rank--champion,
+.rank-pill[data-rank-tier="champion"] {
+  box-shadow: inset 0 0 0 1.5px rgba(234, 115, 23, 0.65), 0 0 6px 1px rgba(234, 115, 23, 0.28);
+}
+
+.rank-pill.rank--legend,
+.rank-pill[data-rank-tier="legend"] {
+  box-shadow: inset 0 0 0 2px rgba(185, 28, 28, 0.70), 0 0 8px 2px rgba(185, 28, 28, 0.30);
+}
+
 /* ---------- 3. Affinity icons ---------- */
 .affinity-strip {
   display: inline-flex;
@@ -370,9 +456,12 @@ a:focus-visible {
   height: var(--directory-affinity-icon-size);
 }
 
-.affinity[data-level="H"] { box-shadow: inset 0 0 0 2px var(--affinity-color); }
-.affinity[data-level="M"] { box-shadow: inset 0 0 0 1px var(--affinity-color); opacity: 0.85; }
-.affinity[data-level="L"] { opacity: 0.55; }
+/* Direction D: affinity level expressed via stroke weight + opacity combination.
+ * Avoids color-only differentiation (WCAG 1.4.1). Aligns with detail page
+ * .detail-affinity-matrix__dots which uses filled/unfilled dots for the same levels. */
+.affinity[data-level="H"] { box-shadow: inset 0 0 0 2px var(--affinity-color); opacity: 1; }
+.affinity[data-level="M"] { box-shadow: inset 0 0 0 1.5px var(--affinity-color); opacity: 0.85; }
+.affinity[data-level="L"] { box-shadow: inset 0 0 0 1px var(--affinity-color); opacity: 0.55; }
 
 /* ---------- 3. Agent card ---------- */
 .agent-card {
@@ -383,7 +472,8 @@ a:focus-visible {
   background: var(--directory-agent-card-bg);
   border: 1px solid var(--directory-agent-card-border);
   border-radius: var(--directory-agent-card-radius);
-  box-shadow: var(--directory-agent-card-shadow);
+  /* Direction D: rest shadow uses elevation-1 (subtler than card-rest) for chrome restraint */
+  box-shadow: var(--realm-elevation-1);
   color: var(--directory-agent-card-title);
   transition:
     background var(--directory-agent-card-transition-duration) var(--directory-agent-card-transition-easing),
@@ -400,7 +490,81 @@ a:focus-visible {
   background: var(--directory-agent-card-bg-hover);
   border-color: var(--directory-agent-card-border-hover);
   box-shadow: var(--directory-agent-card-shadow-hover);
-  transform: translateY(-2px);
+  /* Direction D: 4px lift (up from 2px) for clearer hover affordance */
+  transform: translateY(-4px);
+}
+
+/* ---------- M1: Foil overlay — ::before (z-index layer 1) ----------
+ * Applies to veteran / elite / champion / legend rank tiers only.
+ * Base state: invisible, positioned ready for the shimmer sweep.
+ * C4: animation-iteration-count 1 — single pass and stops (WCAG 2.2.2 / 2.3.3).
+ * HTML requirement: add data-rank-tier="veteran|elite|champion|legend" to .agent-card (Artisan).
+ * z-index stack within .agent-card (isolation:isolate context):
+ *   ::after (watermark) = z-index 0
+ *   ::before (foil)     = z-index 1
+ *   content (text/img)  = z-index 2  ← see .agent-card > * rule below */
+.agent-card[data-rank-tier="veteran"]::before,
+.agent-card[data-rank-tier="elite"]::before,
+.agent-card[data-rank-tier="champion"]::before,
+.agent-card[data-rank-tier="legend"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--directory-card-foil-gradient, linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%));
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--core-easing-ease-out, ease-out);
+  z-index: 1;
+}
+
+.agent-card[data-rank-tier="veteran"]:hover::before,
+.agent-card[data-rank-tier="veteran"]:focus-visible::before,
+.agent-card[data-rank-tier="elite"]:hover::before,
+.agent-card[data-rank-tier="elite"]:focus-visible::before,
+.agent-card[data-rank-tier="champion"]:hover::before,
+.agent-card[data-rank-tier="champion"]:focus-visible::before,
+.agent-card[data-rank-tier="legend"]:hover::before,
+.agent-card[data-rank-tier="legend"]:focus-visible::before {
+  opacity: 1;
+  /* C4: iteration-count 1 — single sweep, halts. No infinite loop. */
+  animation: foilShimmer var(--directory-motion-foil-duration, 800ms) var(--core-easing-ease-in-out, ease-in-out) 1;
+}
+
+/* ---------- M3: Watermark overlay — ::after (z-index layer 0) ----------
+ * Renders the class symbol glyph at bottom-right of the card.
+ * HTML requirement: Artisan injects the watermark image URL via
+ * style="--directory-card-watermark-image: url('...')" on each .agent-card.
+ * Opacity transitions from rest (0.03) to hover (0.08) via CSS transition.
+ * watermarkFade keyframe is defined above for reference / JS-driven entry. */
+.agent-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--directory-card-watermark-image, none);
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-size: 60px 60px;
+  opacity: var(--directory-card-watermark-opacity-rest, 0.03);
+  transition: opacity var(--directory-motion-watermark-fade-duration, 240ms) var(--core-easing-ease-out, ease-out);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.agent-card:hover::after,
+.agent-card:focus-visible::after {
+  opacity: var(--directory-card-watermark-opacity-hover, 0.08);
+}
+
+/* ---------- z-index layer 2: card content above foil + watermark ----------
+ * All direct children of .agent-card stack above pseudo-element overlays.
+ * position: relative is required to participate in the stacking order. */
+.agent-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 .agent-card__portrait {
@@ -617,8 +781,18 @@ a:focus-visible {
   border-radius: var(--realm-radius-md) var(--realm-radius-md) 0 0;
   color: var(--realm-color-ink-soft);
   font-weight: var(--core-font-weight-medium);
-  border-bottom: 2px solid transparent;
+  /* Direction D: underline thickness now token-bound via --directory-tab-active-underline-thickness (2px) */
+  border-bottom: var(--directory-tab-active-underline-thickness) solid transparent;
   margin-bottom: -1px;
+  transition:
+    color var(--core-duration-fast) var(--core-easing-ease-out),
+    border-bottom-color var(--core-duration-fast) var(--core-easing-ease-out),
+    background var(--core-duration-fast) var(--core-easing-ease-out);
+}
+
+.tabs__item:hover:not([aria-selected="true"]) {
+  color: var(--realm-color-ink-strong);
+  background: var(--realm-color-surface-subtle);
 }
 
 .tabs__item[aria-selected="true"] {
@@ -634,12 +808,38 @@ a:focus-visible {
   grid-template-columns: 1fr;
   gap: var(--realm-spacing-xl);
   margin-block: var(--realm-spacing-lg);
+  /* Direction D: stacking context for .detail-hero__watermark pseudo-layer */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 @media (min-width: 768px) {
   .detail-hero {
     grid-template-columns: minmax(220px, 320px) 1fr;
   }
+}
+
+/* Direction D: class watermark — decorative backdrop glyph.
+ * HTML element (<span class="detail-hero__watermark" aria-hidden="true">) added by Artisan.
+ * Position is absolute; stacks behind content via z-index: -1 within .detail-hero context. */
+.detail-hero__watermark {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--realm-spacing-xl);
+  transform: translateY(-50%);
+  z-index: -1;
+  width: var(--directory-detail-hero-watermark-size);
+  height: var(--directory-detail-hero-watermark-size);
+  opacity: var(--directory-detail-hero-watermark-opacity);
+  color: var(--realm-color-brand-primary-soft);
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--realm-typography-display-font);
+  font-size: var(--directory-detail-hero-watermark-size);
+  font-weight: var(--core-font-weight-extrabold);
+  line-height: 1;
+  overflow: hidden;
 }
 
 .detail-hero__portrait {
@@ -1276,4 +1476,75 @@ a:focus-visible {
 .chip--muted {
   opacity: 0.6;
   font-style: italic;
+}
+
+/* ---------- M4/M5: reduced-motion safety net (C1 — Warden compliance) ----------
+ * Token-side 0ms fallback (tokens.css) is the primary guard.
+ * This block is the secondary CSS-layer override, ensuring animation and transition
+ * are completely suppressed even if tokens.css fails to load or is overridden.
+ * !important is deliberate: this is an a11y override, not a specificity hack.
+ * Covers: floatY (M4), foilShimmer (M1), meshBreath (M2), watermarkFade (M3). */
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .hero__float {
+    animation: none !important;
+  }
+
+  .agent-card[data-rank-tier="veteran"]::before,
+  .agent-card[data-rank-tier="elite"]::before,
+  .agent-card[data-rank-tier="champion"]::before,
+  .agent-card[data-rank-tier="legend"]::before,
+  .agent-card[data-rank-tier="veteran"]:hover::before,
+  .agent-card[data-rank-tier="veteran"]:focus-visible::before,
+  .agent-card[data-rank-tier="elite"]:hover::before,
+  .agent-card[data-rank-tier="elite"]:focus-visible::before,
+  .agent-card[data-rank-tier="champion"]:hover::before,
+  .agent-card[data-rank-tier="champion"]:focus-visible::before,
+  .agent-card[data-rank-tier="legend"]:hover::before,
+  .agent-card[data-rank-tier="legend"]:focus-visible::before {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .agent-card::after,
+  .agent-card:hover::after,
+  .agent-card:focus-visible::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Z-index ladder: content sits above foil(1) and watermark(0) ----------
+ * Flow z-index contract: ::after watermark=0, ::before foil=1, content=2.
+ * Applying position:relative + z-index:2 to direct children ensures content
+ * is never hidden behind the pseudo-element overlays. */
+.agent-card > .agent-card__portrait,
+.agent-card > .agent-card__meta,
+.agent-card > .agent-card__archetype,
+.agent-card > .agent-card__tagline,
+.agent-card > .agent-card__footer,
+.agent-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Warden C5: @supports backdrop-filter fallback ----------
+ * Browsers that lack backdrop-filter (Firefox < 103 without flag, older
+ * Chromium-based, some WebViews) will render glass surfaces as transparent.
+ * Fall back to a fully opaque card surface so contrast remains WCAG AA. */
+@supports not (backdrop-filter: blur(1px)) {
+  .detail-hero {
+    background: var(--realm-color-surface-card) !important;
+    /* Remove any residual transparency from glass token */
+    backdrop-filter: none;
+  }
+
+  /* Any other glass surfaces get the same solid fallback */
+  .agent-card {
+    background: var(--realm-color-surface-card) !important;
+  }
 }

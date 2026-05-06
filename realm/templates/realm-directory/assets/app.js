@@ -270,7 +270,9 @@
     const tx = TAXONOMY.ranks[rank.tier];
     const fill = `var(--realm-color-rank-${slugRank(rank.tier)}-fill)`;
     const on   = `var(--realm-color-rank-${slugRank(rank.tier)}-on)`;
-    return `<span class="rank-pill" style="--rank-fill:${fill}; --rank-on:${on};"
+    const tierClass = { B: 'rank--veteran', A: 'rank--elite', S: 'rank--champion', SS: 'rank--legend' }[rank.tier] || '';
+    const classAttr = tierClass ? `rank-pill ${tierClass}` : 'rank-pill';
+    return `<span class="${classAttr}" style="--rank-fill:${fill}; --rank-on:${on};"
                  aria-label="rank ${escapeHtml(rank.tier)} ${escapeHtml(tx ? tx.title : '')}">
       ${escapeHtml(rank.tier)} · ${escapeHtml(tx ? tx.title : rank.tier)}
     </span>`;
@@ -301,15 +303,48 @@
     </span>`;
   }
 
+  /* Build a safe SVG data URI for use in CSS custom properties.
+   * Encodes the minimum set of characters that would break url('...') or
+   * cause XSS: #  <  >  "  (single-quotes are safe inside double-quoted url).
+   * We do NOT percent-encode the entire string — that balloons size and
+   * triggers double-encoding bugs with CSS parsers. */
+  function svgToDataUri(svgInner) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="currentColor" aria-hidden="true">${svgInner}</svg>`;
+    // Encode only the chars that break url('') or allow injection
+    const encoded = svg
+      .replace(/%/g, '%25')   // % must come first
+      .replace(/"/g, '%22')
+      .replace(/#/g, '%23')
+      .replace(/</g, '%3C')
+      .replace(/>/g, '%3E');
+    return `data:image/svg+xml;charset=utf-8,${encoded}`;
+  }
+
+  /* Map rank tier string to foil tier label (B/A/S/SS only). */
+  function rankTierAttr(rank) {
+    const map = { B: 'veteran', A: 'elite', S: 'champion', SS: 'legend' };
+    return rank && rank.tier ? (map[rank.tier] || null) : null;
+  }
+
   function agentCardHtml(agent) {
     const cls = TAXONOMY.classes[agent.class];
     const cat = TAXONOMY.categories[agent.category];
     const clsLabel = cls ? cls.label : (agent.class || 'Unclassified');
     const catLabel = cat ? cat.label : (agent.category || 'Uncategorized');
+
+    // rank-tier attribute (foilShimmer trigger — veteran/elite/champion/legend only)
+    const tierAttr = rankTierAttr(agent.rank);
+    const tierAttrStr = tierAttr ? ` data-rank-tier="${tierAttr}"` : '';
+
+    // watermark image: class symbol SVG as data URI injected via CSS variable
+    const symPath = classSymbol(agent.class);
+    const watermarkUri = svgToDataUri(symPath);
+    const styleAttr = ` style="--directory-card-watermark-image: url('${watermarkUri}')"`;
+
     return `
       <a class="agent-card" href="detail.html?name=${encodeURIComponent(agent.name)}"
          data-name="${escapeHtml(agent.name)}"
-         aria-label="${escapeHtml(agent.name)}, ${escapeHtml(clsLabel)} class, ${escapeHtml(catLabel)} category">
+         aria-label="${escapeHtml(agent.name)}, ${escapeHtml(clsLabel)} class, ${escapeHtml(catLabel)} category"${tierAttrStr}${styleAttr}>
         <div class="agent-card__portrait">${portraitSvg(agent, { showCaption: true })}</div>
         <div class="agent-card__meta">
           <span class="agent-card__class">${escapeHtml(clsLabel)}</span>
@@ -681,15 +716,49 @@
 
   function bindTabs() {
     document.querySelectorAll('[data-tabset]').forEach(set => {
-      const items = set.querySelectorAll('.tabs__item');
+      const items = Array.from(set.querySelectorAll('.tabs__item'));
       const panels = document.querySelectorAll('.tab-panel');
-      items.forEach(it => {
-        it.addEventListener('click', () => {
-          items.forEach(i => i.setAttribute('aria-selected', 'false'));
-          it.setAttribute('aria-selected', 'true');
-          panels.forEach(p => {
-            p.hidden = p.dataset.tabPanel !== it.dataset.tab;
-          });
+
+      function activate(tab) {
+        items.forEach(i => {
+          i.setAttribute('aria-selected', 'false');
+          i.setAttribute('tabindex', '-1');
+        });
+        tab.setAttribute('aria-selected', 'true');
+        tab.setAttribute('tabindex', '0');
+        panels.forEach(p => {
+          p.hidden = p.dataset.tabPanel !== tab.dataset.tab;
+        });
+        tab.focus();
+      }
+
+      // Initialize roving tabindex: active tab gets 0, others -1
+      items.forEach((it, idx) => {
+        const isSelected = it.getAttribute('aria-selected') === 'true';
+        it.setAttribute('tabindex', isSelected ? '0' : '-1');
+
+        it.addEventListener('click', () => activate(it));
+
+        it.addEventListener('keydown', (e) => {
+          let target = null;
+          switch (e.key) {
+            case 'ArrowLeft':
+              target = items[(idx - 1 + items.length) % items.length];
+              break;
+            case 'ArrowRight':
+              target = items[(idx + 1) % items.length];
+              break;
+            case 'Home':
+              target = items[0];
+              break;
+            case 'End':
+              target = items[items.length - 1];
+              break;
+          }
+          if (target) {
+            e.preventDefault();
+            activate(target);
+          }
         });
       });
     });
@@ -753,7 +822,11 @@
     }
 
     const heroEl = document.querySelector('[data-detail-hero]');
+    // Build watermark: large class symbol SVG for detail-hero background
+    const heroSymPath = classSymbol(agent.class);
+    const heroWatermarkSvg = `<svg viewBox="0 0 100 100" width="240" height="240" fill="currentColor" aria-hidden="true">${heroSymPath}</svg>`;
     heroEl.innerHTML = `
+      <div class="detail-hero__watermark" aria-hidden="true">${heroWatermarkSvg}</div>
       <div class="detail-hero__portrait">${portraitSvg(agent, { showCaption: false })}</div>
       <div>
         <h1 class="detail-hero__name">${escapeHtml(agent.name)}</h1>
