@@ -3,8 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
   <title>Realm Directory · Agent Detail</title>
   <meta name="description" content="Detailed agent profile — capabilities, collaboration map, and example invocations." />
+  <meta property="og:title" content="Realm Directory · Agent Detail" />
+  <meta property="og:description" content="Detailed agent profile — capabilities, collaboration map, and example invocations." />
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="Realm Directory" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('realm-theme'); } catch (e) {}
+      if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <link rel="stylesheet" href="assets/tokens.css" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
@@ -34,30 +49,36 @@
   <main id="main" class="container" data-detail>
     <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
 
-    <section class="detail-hero" data-detail-hero></section>
+    <section class="detail-hero" aria-label="Agent profile" data-detail-hero></section>
 
     <div class="tabs" role="tablist" data-tabset aria-label="Agent sections">
-      <button class="tabs__item" role="tab" data-tab="overview" aria-selected="true">Overview</button>
-      <button class="tabs__item" role="tab" data-tab="capabilities" aria-selected="false">Capabilities</button>
-      <button class="tabs__item" role="tab" data-tab="collaboration" aria-selected="false">Collaboration</button>
-      <button class="tabs__item" role="tab" data-tab="examples" aria-selected="false">Examples</button>
+      <button class="tabs__item" role="tab" id="tab-overview" aria-controls="panel-overview" data-tab="overview" aria-selected="true" tabindex="0">Overview</button>
+      <button class="tabs__item" role="tab" id="tab-capabilities" aria-controls="panel-capabilities" data-tab="capabilities" aria-selected="false" tabindex="-1">Capabilities</button>
+      <button class="tabs__item" role="tab" id="tab-collaboration" aria-controls="panel-collaboration" data-tab="collaboration" aria-selected="false" tabindex="-1">Collaboration</button>
+      <button class="tabs__item" role="tab" id="tab-examples" aria-controls="panel-examples" data-tab="examples" aria-selected="false" tabindex="-1">Examples</button>
     </div>
 
-    <section class="tab-panel" data-tab-panel="overview"></section>
-    <section class="tab-panel" data-tab-panel="capabilities" hidden></section>
-    <section class="tab-panel" data-tab-panel="collaboration" hidden></section>
-    <section class="tab-panel" data-tab-panel="examples" hidden></section>
+    <section class="tab-panel" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-tab-panel="overview"></section>
+    <section class="tab-panel" role="tabpanel" id="panel-capabilities" aria-labelledby="tab-capabilities" data-tab-panel="capabilities" hidden></section>
+    <section class="tab-panel" role="tabpanel" id="panel-collaboration" aria-labelledby="tab-collaboration" data-tab-panel="collaboration" hidden></section>
+    <section class="tab-panel" role="tabpanel" id="panel-examples" aria-labelledby="tab-examples" data-tab-panel="examples" hidden></section>
 
-    <section data-related-class style="margin-top: var(--realm-spacing-2xl);"></section>
-    <section data-related-aff   style="margin-top: var(--realm-spacing-xl);"></section>
+    <section aria-label="Related agents — same class" data-related-class style="margin-top: var(--realm-spacing-2xl);"></section>
+    <section aria-label="Related agents — same project affinity" data-related-aff style="margin-top: var(--realm-spacing-xl);"></section>
   </main>
 
   <noscript>
-    <p style="padding: 2rem;">This page needs JavaScript. The data is in <code>assets/data/agents/{name}.json</code>.</p>
+    <div style="padding: 2rem;">
+      <p>This page requires JavaScript to render agent profiles dynamically from JSON data.</p>
+      <p>Return to the <a href="index.html">Realm Directory</a>, or browse the raw agent data in
+        <code>assets/data/agents/{name}.json</code> (replace <code>{name}</code> with the agent slug).</p>
+    </div>
   </noscript>
 
+  <!-- Inline fallback for file:// protocol when fetch is blocked -->
   <script type="application/json" id="agents-index-fallback">{}</script>
   <script>
+    // Inline fallback for file:// protocol when fetch is blocked
     (function () {
       var el = document.getElementById('agents-index-fallback');
       if (!el || !window.location || window.location.protocol !== 'file:') return;
@@ -69,6 +90,6 @@
       } catch (e) {}
     })();
   </script>
-  <script src="assets/app.js"></script>
+  <script src="assets/app.js" defer></script>
 </body>
 </html>
