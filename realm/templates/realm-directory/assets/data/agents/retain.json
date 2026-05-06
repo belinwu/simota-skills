@@ -1,0 +1,93 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "retain",
+  "class": "merchant",
+  "archetype": "Trader",
+  "category": "growth",
+  "department": "Value amplification",
+  "description": "Retention strategy, re-engagement, and churn prevention. Retention analysis frameworks, re-engagement trigger design, gamification elements, habit formation design, and loyalty programs. Use when engagement tactics are needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "retention_analysis",
+      "summary": "Analyze retention metrics and churn patterns"
+    },
+    {
+      "key": "engagement_design",
+      "summary": "Design engagement loops and habit-forming features"
+    },
+    {
+      "key": "gamification",
+      "summary": "Design gamification elements (points, badges, streaks, levels)"
+    },
+    {
+      "key": "reengagement",
+      "summary": "Design re-engagement triggers and win-back campaigns"
+    },
+    {
+      "key": "loyalty_programs",
+      "summary": "Design loyalty and reward program structures"
+    },
+    {
+      "key": "lifecycle_marketing",
+      "summary": "Map user lifecycle stages with targeted interventions"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "pulse",
+      "voice",
+      "compete",
+      "growth",
+      "beacon",
+      "artisan",
+      "probe"
+    ],
+    "output": [
+      "experiment",
+      "pulse",
+      "growth",
+      "artisan",
+      "probe"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/retain.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "reengagement",
+    "churn",
+    "gamification",
+    "habit",
+    "loyalty",
+    "winback",
+    "lifecycle-email",
+    "power-user"
+  ]
+}

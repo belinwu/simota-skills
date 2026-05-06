@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "voice",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "investigation",
+  "department": "Intelligence and scouting",
+  "description": "User feedback collection, NPS survey design, review analysis, sentiment analysis, feedback classification, and insight extraction reports.",
+  "tagline": "Listen to what users actually say.",
+  "capabilities": [
+    { "key": "feedback_collection", "summary": "NPS, CSAT, CES, exit surveys, reviews" },
+    { "key": "sentiment_analysis", "summary": "Multi-emotion detection across joy, anger, frustration, surprise" },
+    { "key": "feedback_classification", "summary": "Classify by category, priority, theme, and segment" },
+    { "key": "insight_extraction", "summary": "Actionable insights with owner recommendations" },
+    { "key": "trend_detection", "summary": "Detect trends and patterns in feedback over time" },
+    { "key": "bias_detection", "summary": "Nonresponse, selection bias, sentiment tool asymmetries" },
+    { "key": "synthetic_feedback_detection", "summary": "Detect AI-generated reviews and bot responses" }
+  ],
+  "collaboration": {
+    "input": ["pulse", "researcher", "growth", "beacon", "trace"],
+    "output": ["researcher", "spark", "retain", "compete", "helm", "echo", "scout"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "H" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/voice.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["nps", "sentiment", "classify", "insight"]
+}

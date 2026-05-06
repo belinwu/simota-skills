@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "shard",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "multi-tenant-architecture",
+  "department": "Multi-tenant architecture",
+  "description": "Multi-tenant architecture design. Tenant isolation strategies, RLS, routing, and scale design for SaaS.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "isolation_strategy",
+      "summary": "Design tenant isolation (database-per-tenant, schema-per-tenant, row-level)"
+    },
+    {
+      "key": "rls_design",
+      "summary": "Design Row Level Security policies and tenant context propagation"
+    },
+    {
+      "key": "tenant_routing",
+      "summary": "Design tenant routing (subdomain, header, path, JWT claim)"
+    },
+    {
+      "key": "noisy_neighbor",
+      "summary": "Design resource limits, rate limiting, and fair scheduling per tenant"
+    },
+    {
+      "key": "onboarding_flow",
+      "summary": "Design tenant provisioning and onboarding automation"
+    },
+    {
+      "key": "migration_strategy",
+      "summary": "Plan single-tenant to multi-tenant migration paths"
+    },
+    {
+      "key": "billing_metering",
+      "summary": "Design tenant usage metering and billing integration points"
+    },
+    {
+      "key": "data_leak_assessment",
+      "summary": "Evaluate cross-tenant data leakage risks and design guardrails"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "schema",
+      "gateway",
+      "atlas",
+      "scaffold",
+      "builder",
+      "sentinel"
+    ],
+    "output": [
+      "schema",
+      "scaffold",
+      "builder",
+      "sentinel"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/shard.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "isolation",
+    "rls",
+    "routing",
+    "scale",
+    "migration",
+    "provisioning",
+    "quota"
+  ]
+}

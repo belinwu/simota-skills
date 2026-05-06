@@ -1,0 +1,105 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "radar",
+  "class": "guardian",
+  "archetype": "Shield bearer",
+  "category": "testing",
+  "department": "Quality defense",
+  "description": "Edge-case test addition, flaky test repair, and coverage improvement. Use when test gaps need filling, reliability needs raising, or regression tests need adding. Multi-language support (JS/TS, Python, Go, Rust, Java).",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "edge_case_testing",
+      "summary": "Identify and test boundary conditions and edge cases"
+    },
+    {
+      "key": "flaky_test_repair",
+      "summary": "Diagnose and fix intermittent test failures with root cause analysis and quarantine strategies"
+    },
+    {
+      "key": "coverage_improvement",
+      "summary": "Increase test coverage with risk-informed targeted test additions"
+    },
+    {
+      "key": "regression_testing",
+      "summary": "Add regression tests for bug fixes"
+    },
+    {
+      "key": "multi_language_testing",
+      "summary": "Support JS/TS, Python, Go, Rust, Java test frameworks"
+    },
+    {
+      "key": "mutation_testing",
+      "summary": "Evaluate and improve test strength via mutation score analysis and assertion hardening"
+    },
+    {
+      "key": "flaky_quarantine",
+      "summary": "Quarantine nondeterministic tests from CI pipeline and schedule stabilization"
+    },
+    {
+      "key": "unit_test_design",
+      "summary": "Design unit test architecture with AAA structure, test-double selection (fake/stub/mock/spy), boundary isolation, and deterministic setup across Jest/Vitest, pytest, Go testing, and cargo-test"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scout",
+      "builder",
+      "judge",
+      "guardian",
+      "zen",
+      "flow",
+      "showcase",
+      "oracle"
+    ],
+    "output": [
+      "builder",
+      "judge",
+      "voyager",
+      "guardian",
+      "gear",
+      "zen",
+      "showcase",
+      "oracle"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/radar.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "edge",
+    "flaky",
+    "coverage",
+    "regression",
+    "ci",
+    "unit",
+    "integration",
+    "mutation"
+  ]
+}

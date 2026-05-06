@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realm.local/schema/class.schema.json",
+  "title": "ClassRoster",
+  "description": "Roster of RPG classes mapped from ecosystem categories. Source of truth for class display labels and member lists.",
+  "type": "object",
+  "required": ["version", "classes"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Class" }
+    }
+  },
+  "$defs": {
+    "Class": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "archetype",
+        "category",
+        "department",
+        "flavor",
+        "passive",
+        "bonus",
+        "members"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Slug; FK target for agent.class.",
+          "pattern": "^[a-z][a-z0-9-]{1,30}$"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display name (e.g. 'Enchanter').",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "archetype": {
+          "type": "string",
+          "description": "Archetype string (e.g. 'Illusionist').",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "category": {
+          "type": "string",
+          "description": "FK -> taxonomy/categories.json id (the category this class is mapped from).",
+          "pattern": "^[a-z][a-z0-9-]{1,30}$"
+        },
+        "department": {
+          "type": "string",
+          "description": "Department / company role label.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "flavor": {
+          "type": "string",
+          "description": "One-line flavor text from class-system.md.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "passive": {
+          "type": "string",
+          "description": "Passive ability name.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "bonus": {
+          "type": "string",
+          "description": "Signature bonus string (e.g. '+10% CHA on UX tasks').",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "members": {
+          "type": "array",
+          "description": "Slugs of agent members. Bidirectional with category.classes[].",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,30}$"
+          },
+          "uniqueItems": true
+        },
+        "synergies": {
+          "type": "array",
+          "description": "Optional class synergies referenced from class-system.md.",
+          "items": {
+            "type": "object",
+            "required": ["partner", "name", "bonus"],
+            "additionalProperties": false,
+            "properties": {
+              "partner": {
+                "type": "string",
+                "description": "FK -> classes[].id",
+                "pattern": "^[a-z][a-z0-9-]{1,30}$"
+              },
+              "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+              "bonus": { "type": "string", "minLength": 1, "maxLength": 80 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

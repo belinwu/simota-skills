@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "gateway",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "architecture",
+  "department": "Structural planning",
+  "description": "API design and review, OpenAPI spec generation, versioning strategy, breaking change detection, REST/GraphQL best practices. Ensures API quality and consistency. Use when API design or OpenAPI specs are needed.",
+  "tagline": "APIs are promises to the future. Design them like contracts.",
+  "capabilities": [
+    {
+      "key": "rest_api_design",
+      "summary": "Resource-oriented URL design, HTTP method selection (RFC 9110), status codes, pagination, idempotency keys"
+    },
+    {
+      "key": "openapi_spec_generation",
+      "summary": "OpenAPI 3.1/3.2 specification (JSON Schema Draft 2020-12) with schemas, examples, security definitions, deprecation markers, first-class streaming (SSE/JSONL via itemSchema), HTTP QUERY method, additionalOperations for non-standard methods"
+    },
+    {
+      "key": "graphql_schema_design",
+      "summary": "Query/Mutation/Type definitions, SDL generation, Federation, naming conventions"
+    },
+    {
+      "key": "api_versioning_strategy",
+      "summary": "URL path versioning (enterprise default), deprecation timelines (≥6 months), migration paths"
+    },
+    {
+      "key": "breaking_change_detection",
+      "summary": "Detect incompatible changes in request/response schemas; classify additive vs. breaking"
+    },
+    {
+      "key": "error_response_standardization",
+      "summary": "RFC 9457 Problem Details (type/title/status/detail/instance), multiple-problem support, consistent error catalog"
+    },
+    {
+      "key": "api_security_design",
+      "summary": "OWASP API Security Top 10 2023 compliance, OAuth 2.0 (≤60min tokens), BOLA/BFLA checks, tiered rate limiting"
+    },
+    {
+      "key": "api_review_checklist",
+      "summary": "Consistency, naming, pagination, filtering, sorting, latency SLA (P95 ≤ 500ms)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "schema",
+      "builder",
+      "sentinel",
+      "magi",
+      "void",
+      "quill",
+      "voyager"
+    ],
+    "output": [
+      "builder",
+      "quill",
+      "voyager",
+      "sentinel"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/gateway.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "design",
+    "openapi",
+    "versioning",
+    "breaking",
+    "rest",
+    "graphql",
+    "webhook",
+    "auth"
+  ]
+}

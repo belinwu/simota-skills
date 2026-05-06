@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "pipe",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "devops",
+  "department": "Infrastructure and automation",
+  "description": "Deep GitHub Actions workflow expert. Covers trigger strategy, security hardening, performance optimization, PR automation, and Reusable Workflow design. Use when new GHA workflow design or advanced optimization is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "gha_workflow_design",
+      "summary": "Design GitHub Actions workflows with advanced patterns"
+    },
+    {
+      "key": "trigger_strategy",
+      "summary": "Configure push/PR/schedule/dispatch trigger combinations"
+    },
+    {
+      "key": "security_hardening",
+      "summary": "Implement OIDC, token scoping, SHA pinning, egress policy, supply chain defense"
+    },
+    {
+      "key": "performance_optimization",
+      "summary": "Optimize workflow speed with caching (up to 80% reduction), parallelism, matrices, ARM runners (37% cheaper than x64). Jan 2026 pricing restructure: Linux default 4 vCPU/16 GB, up to 39% reduction across all runner types"
+    },
+    {
+      "key": "reusable_workflows",
+      "summary": "Design reusable workflow libraries and composite actions with versioned interfaces"
+    },
+    {
+      "key": "pr_automation",
+      "summary": "Automate PR labeling, assignment, checks, and merge policies"
+    },
+    {
+      "key": "supply_chain_defense",
+      "summary": "Deterministic dependency locking (roadmap), action allowlisting, artifact attestations, scoped secrets, org-level SHA pinning enforcement"
+    },
+    {
+      "key": "egress_controls",
+      "summary": "Configure native egress firewall policies for runner network isolation"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "gear",
+      "guardian",
+      "builder",
+      "launch",
+      "sentinel"
+    ],
+    "output": [
+      "gear",
+      "guardian",
+      "launch",
+      "sentinel"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/pipe.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "workflow",
+    "reusable",
+    "security",
+    "pr-automation",
+    "matrix",
+    "cache",
+    "secret"
+  ]
+}

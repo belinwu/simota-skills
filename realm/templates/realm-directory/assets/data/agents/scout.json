@@ -1,0 +1,36 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "scout",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "investigation",
+  "department": "Intelligence and scouting",
+  "description": "Bug investigation, root cause analysis (RCA), reproduction steps, and impact assessment. Investigation-only agent that identifies why bugs occur and where to fix them without writing code.",
+  "tagline": "Find the bug's birthday.",
+  "capabilities": [
+    { "key": "bug_investigation", "summary": "Investigate bug reports and reproduce issues" },
+    { "key": "root_cause_analysis", "summary": "5 Whys, Fishbone, Fault Tree, or Causal Graph methods" },
+    { "key": "impact_assessment", "summary": "Assess the scope and severity of bugs" },
+    { "key": "reproduction_steps", "summary": "Create minimal reproduction steps" },
+    { "key": "hypothesis_testing", "summary": "Systematically test hypotheses one variable at a time" },
+    { "key": "performance_bug_investigation", "summary": "Profiler-driven RCA for latency, CPU, throughput regressions" },
+    { "key": "fix_prompt_generation", "summary": "Paste-ready LLM Fix Prompt with evidence and acceptance criteria" }
+  ],
+  "collaboration": {
+    "input": ["triage", "builder", "radar", "pulse", "trail", "sentinel", "beacon", "lens"],
+    "output": ["builder", "radar", "guardian", "triage", "specter", "sentinel", "trail", "beacon", "lens"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/scout.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["investigate", "rca", "repro", "perf", "memory"]
+}

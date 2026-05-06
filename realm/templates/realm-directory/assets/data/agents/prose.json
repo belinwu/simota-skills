@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "prose",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "UX writing specialist for user-facing text. Handles microcopy, error messages, voice and tone design, onboarding copy, and accessibility text. Use when UX writing or content strategy is needed.",
+  "tagline": "Clarity beats cleverness. Every time.",
+  "capabilities": [
+    {
+      "key": "microcopy_design",
+      "summary": "Button labels (verb+object pattern), tooltips, placeholders, empty states, confirmation dialogs, scanning-optimized copy"
+    },
+    {
+      "key": "error_message_design",
+      "summary": "What/Why/Next structure, severity-based templates, inline validation, recovery guidance, anti-pattern detection"
+    },
+    {
+      "key": "voice_tone_framework",
+      "summary": "Voice attribute definition, tone spectrum, word choice guidelines, style guide, tone measurement via readability scores"
+    },
+    {
+      "key": "onboarding_copy",
+      "summary": "Progressive disclosure templates, first-run experience text, feature introduction"
+    },
+    {
+      "key": "accessibility_text",
+      "summary": "Alt text rules, ARIA label patterns (aria-labelledby preferred), screen reader text, live region announcements, WCAG 2.2 SC 2.5.3 compliance, SC 3.3.8 (AA) / SC 3.3.9 (AAA) accessible authentication copy"
+    },
+    {
+      "key": "ai_context_copy",
+      "summary": "AI output framing, confidence indicators, anti-anthropomorphism, AI state text, AI disclosure labels (EU AI Act compliance)"
+    },
+    {
+      "key": "content_system_design",
+      "summary": "Content principles and decision frameworks over pattern libraries, string file architecture, terminology governance at scale"
+    },
+    {
+      "key": "content_audit",
+      "summary": "Existing copy analysis, consistency scoring, terminology standardization, Flesch-Kincaid readability metrics, tone alignment measurement"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "echo",
+      "vision",
+      "palette",
+      "researcher",
+      "polyglot",
+      "artisan"
+    ],
+    "output": [
+      "echo",
+      "polyglot",
+      "artisan",
+      "palette"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/prose.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "microcopy",
+    "errors",
+    "onboarding",
+    "a11y",
+    "tone",
+    "empty-state",
+    "notification",
+    "status"
+  ]
+}

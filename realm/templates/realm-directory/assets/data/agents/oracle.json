@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "oracle",
+  "class": "oracle",
+  "archetype": "Seer",
+  "category": "ai-ml",
+  "department": "AI and ML",
+  "description": "AI/ML design and evaluation specialist covering prompt engineering, RAG design, LLM application patterns, AI safety, evaluation frameworks, MLOps, and cost optimization.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "prompt_engineering",
+      "summary": "Design, optimize, and evaluate LLM prompts"
+    },
+    {
+      "key": "rag_design",
+      "summary": "Design RAG architectures (chunking, retrieval, reranking)"
+    },
+    {
+      "key": "llm_application_patterns",
+      "summary": "Design LLM integration patterns (agents, chains, tools)"
+    },
+    {
+      "key": "ai_safety",
+      "summary": "Evaluate AI safety, bias, and alignment concerns"
+    },
+    {
+      "key": "evaluation_frameworks",
+      "summary": "Design eval suites for LLM outputs"
+    },
+    {
+      "key": "mlops",
+      "summary": "Design ML pipeline, monitoring, and deployment patterns"
+    },
+    {
+      "key": "cost_optimization",
+      "summary": "Optimize LLM usage costs (model selection, caching, batching)"
+    },
+    {
+      "key": "agent_system_design",
+      "summary": "Design application-level LLM agents (tool-use loops, tool-call schemas, context/memory, subagent delegation, termination conditions, failure modes)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "builder",
+      "artisan",
+      "forge",
+      "sentinel",
+      "beacon",
+      "flux",
+      "magi",
+      "radar"
+    ],
+    "output": [
+      "builder",
+      "artisan",
+      "forge",
+      "radar",
+      "sentinel",
+      "stream",
+      "beacon"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/oracle.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "prompt",
+    "rag",
+    "eval",
+    "safety",
+    "mlops",
+    "agent",
+    "cost",
+    "embed"
+  ]
+}

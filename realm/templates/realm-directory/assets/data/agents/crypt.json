@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "crypt",
+  "class": "paladin",
+  "archetype": "Holy warrior",
+  "category": "security",
+  "department": "Security order",
+  "description": "Cryptographic architecture design: algorithm selection, key management, E2EE, KMS integration, signature verification, and TLS configuration.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "algorithm_selection",
+      "summary": "Recommend cryptographic algorithms by use case (encryption, signing, hashing, KDF)"
+    },
+    {
+      "key": "key_management",
+      "summary": "Design key lifecycle (generation, rotation, derivation, revocation, destruction)"
+    },
+    {
+      "key": "e2ee_design",
+      "summary": "Design end-to-end encryption architectures (Signal Protocol, MLS, custom)"
+    },
+    {
+      "key": "signature_verification",
+      "summary": "Design digital signature and JWT/JWE/JWS schemes"
+    },
+    {
+      "key": "password_storage",
+      "summary": "Design password hashing strategy (Argon2/bcrypt/scrypt selection and tuning)"
+    },
+    {
+      "key": "tls_configuration",
+      "summary": "Design TLS/mTLS configurations with cipher suite selection"
+    },
+    {
+      "key": "anti_pattern_detection",
+      "summary": "Detect cryptographic anti-patterns (ECB mode, fixed IV, weak RNG, custom crypto)"
+    },
+    {
+      "key": "pqc_guidance",
+      "summary": "Provide post-quantum cryptography migration guidance (NIST FIPS 203/204/205, hybrid schemes, IR 8547 timeline, CNSA 2.0 compliance, hybrid TLS KEX)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "sentinel",
+      "comply",
+      "gateway",
+      "cloak",
+      "scaffold"
+    ],
+    "output": [
+      "builder",
+      "sentinel",
+      "cloak",
+      "scaffold"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/crypt.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "algorithm",
+    "key",
+    "e2ee",
+    "tls",
+    "signature",
+    "password",
+    "kms",
+    "pqc"
+  ]
+}

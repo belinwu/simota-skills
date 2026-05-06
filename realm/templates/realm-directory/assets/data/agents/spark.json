@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "spark",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "investigation",
+  "department": "Intelligence and scouting",
+  "description": "Proposes new features leveraging existing data/logic as Markdown specifications. Use when brainstorming new features, product planning, or feature proposals are needed. Does not write code.",
+  "tagline": "Features hide in your data.",
+  "capabilities": [
+    { "key": "feature_ideation", "summary": "Generate feature proposals from existing data and logic" },
+    { "key": "opportunity_analysis", "summary": "Identify feature opportunities from usage patterns" },
+    { "key": "proposal_writing", "summary": "Write structured feature specification documents" },
+    { "key": "feasibility_assessment", "summary": "Assess technical and business feasibility" },
+    { "key": "prioritization", "summary": "MoSCoW/RICE frameworks with anti-pattern guardrails" },
+    { "key": "outcome_framing", "summary": "Frame proposals as outcomes using Opportunity Solution Trees" },
+    { "key": "fail_condition_design", "summary": "Define kill criteria and fail conditions for hypothesis-driven validation" }
+  ],
+  "collaboration": {
+    "input": ["pulse", "voice", "compete", "retain", "cast", "lens", "flux", "void", "magi"],
+    "output": ["scribe", "builder", "artisan", "accord", "quest", "forge", "magi"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "H" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/spark.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["propose", "opportunity", "prioritize", "frame"]
+}

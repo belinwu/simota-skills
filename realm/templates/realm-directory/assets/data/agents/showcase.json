@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "showcase",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "Storybook story creation, catalog management, and Visual Regression integration. UI component docs, visual testing, and CSF 3.0/Factories story creation. Supports Storybook 10 and React Cosmos.",
+  "tagline": "Every state counts.",
+  "capabilities": [
+    { "key": "storybook_authoring", "summary": "Storybook story creation (CSF 3.0, factories, MDX 3, autodocs, play functions)" },
+    { "key": "react_cosmos", "summary": "React Cosmos fixture creation (Cosmos 6+, useFixtureInput, decorators)" },
+    { "key": "story_coverage_audit", "summary": "Variant/state/a11y/interaction scoring with quantitative thresholds" },
+    { "key": "visual_regression", "summary": "Chromatic, Playwright VRT, Lost Pixel, Applitools Eyes integration" },
+    { "key": "a11y_testing", "summary": "axe-core rules and WCAG 2.2 AA verification" },
+    { "key": "portable_stories", "summary": "Reuse stories in unit/Vitest tests via composeStories" },
+    { "key": "design_system_metrics", "summary": "Component reuse rate and design-code alignment tracking" }
+  ],
+  "collaboration": {
+    "input": ["forge", "artisan", "flow", "vision", "director", "palette"],
+    "output": ["muse", "radar", "voyager", "vision", "quill", "flow", "canon"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "mobile", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/showcase.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["story", "audit", "vrt", "catalog"]
+}

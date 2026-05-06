@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "cast",
+  "class": "demiurge",
+  "archetype": "World shaper",
+  "category": "meta-tooling",
+  "department": "Ecosystem meta layer",
+  "description": "Persona casting agent for rapid generation, persistence, lifecycle management, and inter-agent sync. Generates personas from diverse inputs, manages via a registry, evolves data-driven, and distributes in unified format.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "persona_generation",
+      "summary": "Generate personas from README, docs, code, tests, analytics, feedback, or agent handoffs"
+    },
+    {
+      "key": "persona_registry",
+      "summary": "Centralized registry management at .agents/personas/registry.yaml with lifecycle states"
+    },
+    {
+      "key": "persona_evolution",
+      "summary": "Data-driven persona updates from Trace, Voice, Pulse, Researcher evidence"
+    },
+    {
+      "key": "persona_audit",
+      "summary": "Freshness, duplication, coverage, and Echo compatibility evaluation"
+    },
+    {
+      "key": "persona_distribution",
+      "summary": "Adapter-specific packaging for downstream agents (Echo, Spark, Retain, Compete, Accord)"
+    },
+    {
+      "key": "persona_voice",
+      "summary": "TTS-based persona voice generation with engine selection and fallback"
+    },
+    {
+      "key": "confidence_scoring",
+      "summary": "Evidence-based confidence with source weights, validation tiers, and decay rules"
+    },
+    {
+      "key": "behavioral_validation",
+      "summary": "Stated-vs-actual behavior comparison with per-attribute validation scores"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "researcher",
+      "trace",
+      "voice",
+      "spark",
+      "retain",
+      "compete",
+      "accord"
+    ],
+    "output": [
+      "echo",
+      "spark",
+      "retain",
+      "compete",
+      "accord"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/cast.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "generate",
+    "registry",
+    "evolve",
+    "distribute",
+    "archetype",
+    "segment",
+    "bias-audit"
+  ]
+}

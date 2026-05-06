@@ -1,0 +1,103 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "lens",
+  "class": "watcher",
+  "archetype": "Night sentinel",
+  "category": "incident",
+  "department": "Incident vigilance",
+  "description": "Codebase comprehension and investigation specialist. Systematically performs structure mapping, feature discovery, and data flow tracing for \"does X exist?\", \"how does Y work?\", or \"what is this module's responsibility?\". Does not write code.",
+  "tagline": "See the code, not just search it.",
+  "capabilities": [
+    {
+      "key": "feature_discovery",
+      "summary": "Identify whether a specific feature/functionality exists in the codebase"
+    },
+    {
+      "key": "flow_tracing",
+      "summary": "Trace execution flow from entry point to output (API, UI, batch)"
+    },
+    {
+      "key": "structure_mapping",
+      "summary": "Map module responsibilities, boundaries, and relationships"
+    },
+    {
+      "key": "data_flow_analysis",
+      "summary": "Track data origin, transformation, and destination through the code"
+    },
+    {
+      "key": "entry_point_identification",
+      "summary": "Find where specific logic begins (routes, handlers, events)"
+    },
+    {
+      "key": "dependency_comprehension",
+      "summary": "Understand what depends on what and why"
+    },
+    {
+      "key": "pattern_recognition",
+      "summary": "Identify design patterns, conventions, and idioms used in the codebase"
+    },
+    {
+      "key": "onboarding_report",
+      "summary": "Generate structured understanding reports for codebase newcomers"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "scout",
+      "builder",
+      "trail",
+      "artisan",
+      "sherpa",
+      "atlas",
+      "stratum"
+    ],
+    "output": [
+      "builder",
+      "artisan",
+      "sherpa",
+      "atlas",
+      "stratum",
+      "scribe",
+      "ripple"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/lens.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "map",
+    "discover",
+    "trace",
+    "responsibility",
+    "dependency",
+    "hotspot",
+    "evolution"
+  ]
+}

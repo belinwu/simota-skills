@@ -1,0 +1,105 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "quest",
+  "class": "strategist",
+  "archetype": "War council",
+  "category": "game-design",
+  "department": "Game design hall",
+  "description": "Game planning and production agent. GDD structuring, game balance math, narrative design, economy design, systems design, player psychology, and production management. Does not write code.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "gdd_authoring",
+      "summary": "Game Design Document structure, sections, and management"
+    },
+    {
+      "key": "game_balance",
+      "summary": "Mathematical frameworks for difficulty curves, DPS/TTK, Elo matching"
+    },
+    {
+      "key": "narrative_design",
+      "summary": "Branching narratives, quest trees, world-building, dialogue systems"
+    },
+    {
+      "key": "economy_design",
+      "summary": "Currency modeling, taps & sinks, inflation control, monetization ethics"
+    },
+    {
+      "key": "systems_design",
+      "summary": "Progression systems, loot tables, crafting, combat balance"
+    },
+    {
+      "key": "player_psychology",
+      "summary": "Flow theory, Bartle taxonomy, SDT, Octalysis, engagement loops"
+    },
+    {
+      "key": "production_planning",
+      "summary": "Milestones, sprints, MoSCoW/RICE prioritization, risk matrices"
+    },
+    {
+      "key": "anti_pattern_detection",
+      "summary": "Zileas anti-fun patterns, dark pattern flagging, P2W audits"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "spark",
+      "cast",
+      "researcher",
+      "forge",
+      "tone",
+      "dot",
+      "clay"
+    ],
+    "output": [
+      "builder",
+      "forge",
+      "tone",
+      "dot",
+      "clay",
+      "schema",
+      "radar",
+      "accord"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "L"
+    },
+    {
+      "project": "ecommerce",
+      "level": "L"
+    },
+    {
+      "project": "dashboard",
+      "level": "L"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/quest.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "gdd",
+    "balance",
+    "narrative",
+    "economy",
+    "psychology",
+    "gameplay-loop",
+    "level-design",
+    "monetization"
+  ]
+}

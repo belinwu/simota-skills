@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "director",
+  "class": "navigator",
+  "archetype": "Cartographer",
+  "category": "browser",
+  "department": "Browser and environment mapping",
+  "description": "Automated feature demo video production using Playwright E2E tests. Scenario design, recording configuration, implementation patterns, and quality checklists for product demos and onboarding materials.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "demo_video_production",
+      "summary": "Record feature demos with Playwright using storytelling pacing, one-Aha-moment framing, and reproducible settings"
+    },
+    {
+      "key": "scenario_design",
+      "summary": "Audience-aware pacing, pain-first narrative, and Aha-moment focus with pre-recording scenario templates"
+    },
+    {
+      "key": "recording_configuration",
+      "summary": "slowMo, viewport, codecs, device profiles, browser.bind shared-session, and Chrome-for-Testing-aware config"
+    },
+    {
+      "key": "screencast_authoring",
+      "summary": "page.screencast start/stop, showActions, showChapter, showOverlay, hideOverlays, and onFrame streaming for narrative overlays and annotations"
+    },
+    {
+      "key": "multi_device_recording",
+      "summary": "Desktop, mobile, and tablet variants with viewport-specific settings and device presets"
+    },
+    {
+      "key": "test_data_preparation",
+      "summary": "Realistic demo data plus storageState-based auth skipping for clean recordings"
+    },
+    {
+      "key": "persona_aware_recording",
+      "summary": "Echo-driven persona timing, typing cadence, and hesitation modeling"
+    },
+    {
+      "key": "trace_to_demo",
+      "summary": "Convert Playwright Trace Viewer captures into presentable narrative recordings"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "forge",
+      "voyager",
+      "vision",
+      "echo",
+      "builder",
+      "quill",
+      "growth",
+      "palette"
+    ],
+    "output": [
+      "showcase",
+      "quill",
+      "growth",
+      "echo",
+      "palette"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/director.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "demo",
+    "scenario",
+    "record",
+    "onboard",
+    "voiceover",
+    "captions",
+    "thumbnail"
+  ]
+}

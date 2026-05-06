@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "architect",
+  "class": "artisan",
+  "archetype": "Master crafter",
+  "category": "implementation",
+  "department": "Craft and production",
+  "description": "Meta-designer for new skill agents — gap analysis, overlap detection, SKILL.md + reference generation, and Nexus integration.",
+  "tagline": "Design the agent that designs.",
+  "capabilities": [
+    { "key": "gap_analysis", "summary": "Ecosystem gap detection and new-agent opportunity identification" },
+    { "key": "overlap_detection", "summary": "Cross-agent responsibility overlap scoring and resolution" },
+    { "key": "skill_package_design", "summary": "SKILL.md and reference file generation for new agents" },
+    { "key": "nexus_integration", "summary": "Hub-and-spoke routing compatibility and AUTORUN support" },
+    { "key": "compression_review", "summary": "Context-cost reduction with 4-axis equivalence preservation" },
+    { "key": "self_evolution", "summary": "Governed self-improvement with safety levels and rollback" },
+    { "key": "context_engineering", "summary": "Information-architecture-first agent design" }
+  ],
+  "collaboration": {
+    "input": ["user", "atlas", "nexus", "judge", "lore", "darwin", "void"],
+    "output": ["nexus", "quill", "canvas", "judge"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "M" },
+    { "project": "ecommerce", "level": "M" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "L" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/architect.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["new-agent", "improve", "compress", "validate"]
+}

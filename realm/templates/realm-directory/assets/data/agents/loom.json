@@ -1,0 +1,103 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "loom",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "Analyzes codebases to generate and manage Figma Make Guidelines.md packages, designs prompt strategies, and validates output. Use when preparing optimized input for Figma Make. # skill-routing-alias: figma-make, guidelines-md, design-guidelines, make-optimization, code-to-figma",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "guidelines_generation",
+      "summary": "Generate Figma Make Guidelines.md packages from codebase analysis using TC-EBC structure"
+    },
+    {
+      "key": "prompt_strategy",
+      "summary": "Design staged prompt sequences for complex UI generation with front-loaded first prompts"
+    },
+    {
+      "key": "token_alignment",
+      "summary": "Audit code tokens against Figma Variables across 4 axes (Name, Value, Semantics, Hierarchy)"
+    },
+    {
+      "key": "output_validation",
+      "summary": "Score and validate Make output against codebase conventions with detach-rate tracking"
+    },
+    {
+      "key": "reverse_feedback",
+      "summary": "Refine Guidelines from implementation feedback and code regression prevention"
+    },
+    {
+      "key": "figma_structure_analysis",
+      "summary": "Analyze Figma file structure for Auto Layout, naming, hierarchy"
+    },
+    {
+      "key": "code_connect_integration",
+      "summary": "Leverage Code Connect (CLI and UI) mappings and \"Add instructions for MCP\" to link Figma components with codebase implementations for higher-fidelity Make output"
+    },
+    {
+      "key": "credit_budget_optimization",
+      "summary": "Optimize credit allocation across model tiers (default vs Claude Opus 4.6) based on task complexity"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "muse",
+      "frame",
+      "artisan",
+      "vision",
+      "showcase",
+      "canon",
+      "warden",
+      "pixel"
+    ],
+    "output": [
+      "frame",
+      "muse",
+      "artisan",
+      "showcase",
+      "canon",
+      "warden",
+      "pixel"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/loom.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "guidelines",
+    "analyze",
+    "prompt",
+    "validate",
+    "variants",
+    "motion",
+    "rtl"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "atlas",
+  "class": "architect-class",
+  "archetype": "Master builder",
+  "category": "architecture",
+  "department": "Structural planning",
+  "description": "Analyze dependencies, circular references, and God Classes; author ADRs/RFCs. Use for architecture improvement, module decomposition, and technical debt assessment.",
+  "tagline": "Dependencies are destiny. Map them before they map you.",
+  "capabilities": [
+    {
+      "key": "dependency_analysis",
+      "summary": "Module dependency graph, circular reference detection, coupling metrics, frequency-based remediation (merge/extract/tolerate)"
+    },
+    {
+      "key": "god_class_detection",
+      "summary": "Identify oversized modules violating single responsibility principle"
+    },
+    {
+      "key": "adr_creation",
+      "summary": "Architecture Decision Records per ISO/IEC/IEEE 42010:2011; MADR template with tradeoff analysis (considered options + pros/cons)"
+    },
+    {
+      "key": "rfc_creation",
+      "summary": "Request for Comments documents for significant architectural changes"
+    },
+    {
+      "key": "technical_debt_assessment",
+      "summary": "Quantify debt via SQALE/TDR (remediation cost / dev cost), prioritize by Cost of Delay, recommend ≥ 15% dev time allocation for high-complexity projects"
+    },
+    {
+      "key": "module_boundary_design",
+      "summary": "Define clean module interfaces and boundaries"
+    },
+    {
+      "key": "fitness_function_design",
+      "summary": "Recommend CI-integrated architectural fitness functions for coupling, complexity, and layer violation guardrails"
+    },
+    {
+      "key": "circular_dependency_remediation",
+      "summary": "Targeted SCC detection and break strategies (dependency inversion, interface extraction, module re-layering) for cyclic import graphs"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "flux",
+      "magi",
+      "void",
+      "darwin",
+      "zen",
+      "quill",
+      "sherpa"
+    ],
+    "output": [
+      "architect",
+      "zen",
+      "quill",
+      "sherpa"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/atlas.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "analyze",
+    "deps",
+    "godclass",
+    "adr",
+    "rfc",
+    "cycle",
+    "coupling",
+    "boundary"
+  ]
+}

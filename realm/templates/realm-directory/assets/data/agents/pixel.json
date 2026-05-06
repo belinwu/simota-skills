@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "pixel",
+  "class": "artisan",
+  "archetype": "Master crafter",
+  "category": "implementation",
+  "department": "Mockup reproduction",
+  "description": "Faithful reproduction agent that generates pixel-accurate HTML/CSS code from image mockups (PNG/JPG/screenshots) and performs visual verification. Use when mockup-to-code generation is needed.",
+  "tagline": "Every pixel is a promise to the designer.",
+  "capabilities": [
+    {
+      "key": "mockup_analysis",
+      "summary": "Section partitioning and layout pattern identification from mockup images via Claude Vision"
+    },
+    {
+      "key": "design_extraction",
+      "summary": "Extract color (HEX), font-size/weight, spacing (px/rem), and layout (grid/flex) from images"
+    },
+    {
+      "key": "faithful_code_generation",
+      "summary": "Generate mockup-faithful semantic HTML5/CSS (CSS variable-based, zero magic numbers)"
+    },
+    {
+      "key": "visual_verification",
+      "summary": "Playwright screenshot capture + visual comparison against mockup (per-property diff)"
+    },
+    {
+      "key": "iterative_refinement",
+      "summary": "Diff identification + automated fix iteration (max 3) to improve fidelity"
+    },
+    {
+      "key": "lp_section_recognition",
+      "summary": "Identify LP section patterns (Hero/Features/Pricing/FAQ/CTA/Footer, etc.)"
+    },
+    {
+      "key": "responsive_conversion",
+      "summary": "Mobile-first conversion, breakpoint estimation, CSS Container Queries"
+    },
+    {
+      "key": "modern_css_reproduction",
+      "summary": "CSS Subgrid (card content alignment via parent track inheritance), Anchor Positioning (declarative tooltip/dropdown placement), @scope (component-boundary style isolation), Grid Lanes/CSS Masonry (native Pinterest-style layout without JS)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "frame",
+      "nexus",
+      "muse",
+      "growth",
+      "flow",
+      "voyager",
+      "canon"
+    ],
+    "output": [
+      "artisan",
+      "muse",
+      "growth",
+      "flow",
+      "voyager",
+      "canon",
+      "judge"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/pixel.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "reproduce",
+    "verify",
+    "gap",
+    "audit",
+    "responsive",
+    "dark",
+    "animation"
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "breach",
+  "class": "paladin",
+  "archetype": "Holy warrior",
+  "category": "security",
+  "department": "Security order",
+  "description": "Red team engineering agent. Designs attack scenarios, builds threat models, applies MITRE ATT&CK/OWASP frameworks, runs Purple Team exercises, and performs AI/LLM red teaming. Use when adversarial security validation is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "threat_modeling",
+      "summary": "Design threat models using STRIDE, PASTA, Attack Trees, and MITRE ATT&CK mapping"
+    },
+    {
+      "key": "attack_scenario_design",
+      "summary": "Create structured attack scenarios with kill chains and exploitation paths"
+    },
+    {
+      "key": "ai_red_teaming",
+      "summary": "Test AI/LLM systems for prompt injection, jailbreak, data poisoning, RAG poisoning, system prompt leakage, MCP server compromise, agent skill supply chain poisoning, and agentic risks (OWASP LLM Top 10 2025 + Top 10 for Agentic Applications 2026 [ASI01-ASI10] + Agentic Skills Top 10 [AST01-AST10])"
+    },
+    {
+      "key": "purple_team_exercise",
+      "summary": "Design collaborative Red/Blue team exercises with detection validation"
+    },
+    {
+      "key": "attack_surface_analysis",
+      "summary": "Map and prioritize attack surfaces across application, infrastructure, and AI layers"
+    },
+    {
+      "key": "security_control_validation",
+      "summary": "Verify WAF/IDS/EDR/guardrail effectiveness through simulated bypass attempts"
+    },
+    {
+      "key": "owasp_attack_testing",
+      "summary": "Apply OWASP Top 10, LLM Top 10 (2025), and Agentic Top 10 (2026) as attack playbooks"
+    },
+    {
+      "key": "adversarial_report",
+      "summary": "Generate structured findings with CVSS 4.0 severity (Base+Threat+Environmental+Supplemental), exploitability, and remediation guidance"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "sentinel",
+      "probe",
+      "canon",
+      "oracle",
+      "stratum",
+      "matrix",
+      "flux"
+    ],
+    "output": [
+      "builder",
+      "sentinel",
+      "radar",
+      "scribe",
+      "mend"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/breach.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "scenario",
+    "threat-model",
+    "purple",
+    "ai-red",
+    "phishing",
+    "supply",
+    "social"
+  ]
+}

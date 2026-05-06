@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "prism",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Consultant for NotebookLM steering prompt design. Optimizes Audio/Video/Slide/Infographic output quality through source preparation, prompt engineering, and Custom Goals persona design.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "steering_prompt_design",
+      "summary": "Design NotebookLM steering prompts for optimal output quality"
+    },
+    {
+      "key": "custom_goals_design",
+      "summary": "Design Custom Goals personas (up to 10,000 characters) for persistent chat behavior"
+    },
+    {
+      "key": "audio_optimization",
+      "summary": "Optimize NotebookLM audio overview output"
+    },
+    {
+      "key": "video_optimization",
+      "summary": "Optimize NotebookLM video summary output"
+    },
+    {
+      "key": "slide_optimization",
+      "summary": "Optimize NotebookLM slide deck output"
+    },
+    {
+      "key": "source_preparation",
+      "summary": "Prepare and structure source materials for NotebookLM ingestion"
+    },
+    {
+      "key": "output_evaluation",
+      "summary": "Evaluate and iterate on NotebookLM output quality"
+    },
+    {
+      "key": "tier_aware_guidance",
+      "summary": "Advise on Free/Plus/Pro/Ultra tier constraints and feature availability"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "scribe",
+      "quill",
+      "morph",
+      "vision"
+    ],
+    "output": [
+      "scribe",
+      "quill",
+      "vision"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "L"
+    },
+    {
+      "project": "dashboard",
+      "level": "L"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/prism.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "audio",
+    "video",
+    "slide",
+    "infographic",
+    "persona",
+    "sources",
+    "multilingual",
+    "mindmap"
+  ]
+}

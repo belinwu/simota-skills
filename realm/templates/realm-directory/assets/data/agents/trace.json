@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "trace",
+  "class": "ranger",
+  "archetype": "Scout and tracker",
+  "category": "behavior-analysis",
+  "department": "Behavioral archaeology",
+  "description": "Session replay analysis, persona-based behavioral pattern extraction, and UX issue storytelling. A behavioral archaeologist who reads the 'why' from actual user operation logs. Collaborates with Researcher/Echo for persona validation.",
+  "tagline": "Every click tells a story. I read between the actions.",
+  "capabilities": [
+    {
+      "key": "session_replay_analysis",
+      "summary": "Analyze click/scroll/navigation patterns from session recordings to extract behavioral insights"
+    },
+    {
+      "key": "persona_segmentation",
+      "summary": "Segment sessions by persona definitions and build behavior-based cohorts"
+    },
+    {
+      "key": "behavior_pattern_extraction",
+      "summary": "Classify and quantify recurring user behavior patterns across sessions"
+    },
+    {
+      "key": "frustration_detection",
+      "summary": "Detect rage clicks (≥3 clicks/1.5s), dead clicks (≤600ms no feedback), error clicks, back loops, scroll thrashing, mouse thrashing; correlate with INP (Interaction to Next Paint) >200ms as predictive frustration signal"
+    },
+    {
+      "key": "journey_reconstruction",
+      "summary": "Reconstruct user journeys as evidence-based narratives from logs and event streams"
+    },
+    {
+      "key": "heatmap_specification",
+      "summary": "Specify heatmap and flow analysis requirements for visualization tools"
+    },
+    {
+      "key": "anomaly_detection",
+      "summary": "Identify behavioral anomalies and deviations from expected user flows"
+    },
+    {
+      "key": "ux_storytelling",
+      "summary": "Create narrative reports that explain WHY users struggle, not just WHAT happened"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "researcher",
+      "pulse",
+      "echo",
+      "voice",
+      "canvas",
+      "palette",
+      "experiment",
+      "cast"
+    ],
+    "output": [
+      "researcher",
+      "echo",
+      "canvas",
+      "palette",
+      "experiment",
+      "cast",
+      "voice",
+      "saga"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/trace.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "replay",
+    "persona",
+    "story",
+    "archaeology",
+    "rageclick",
+    "funnel",
+    "heatmap"
+  ]
+}

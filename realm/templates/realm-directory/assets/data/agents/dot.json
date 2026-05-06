@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "dot",
+  "class": "alchemist",
+  "archetype": "Transmuter",
+  "category": "pixel-art",
+  "department": "Pixel art production",
+  "description": "Pixel art specialist agent. Generates pixel art as code (SVG/Canvas/Phaser 3/Pillow/CSS). Also supports SVG generation delegation to Gemini CLI.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "pixel_sprite",
+      "summary": "Generate sprite code via SVG/Canvas/Phaser 3"
+    },
+    {
+      "key": "palette_design",
+      "summary": "Design constrained palettes (2/4/8/16/32 colors)"
+    },
+    {
+      "key": "spritesheet",
+      "summary": "Generate spritesheets plus metadata JSON"
+    },
+    {
+      "key": "tileset",
+      "summary": "Design tilesets with auto-tiling support"
+    },
+    {
+      "key": "animation",
+      "summary": "Build frame animation (walk/idle/attack/etc.)"
+    },
+    {
+      "key": "batch_export",
+      "summary": "Generate batch PNG/GIF export scripts via Pillow"
+    },
+    {
+      "key": "engine_integration",
+      "summary": "Produce texture code for Phaser 3/Godot/Unity"
+    },
+    {
+      "key": "gemini_delegation",
+      "summary": "Delegate single-SVG generation to Gemini CLI in text mode"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "forge",
+      "sketch",
+      "realm",
+      "muse",
+      "canon",
+      "artisan"
+    ],
+    "output": [
+      "realm",
+      "forge",
+      "artisan"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "L"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/dot.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "svg",
+    "canvas",
+    "phaser",
+    "pillow",
+    "css",
+    "animation",
+    "palette",
+    "tilesheet"
+  ]
+}

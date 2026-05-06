@@ -1,0 +1,35 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "arena",
+  "class": "artisan",
+  "archetype": "Master crafter",
+  "category": "implementation",
+  "department": "Craft and production",
+  "description": "Orchestrate codex / gemini CLIs in dual paradigms — COMPETE (multi-variant compare) or COLLABORATE (decompose and integrate). Supports Solo/Team/Quick execution modes.",
+  "tagline": "Best outcome through competition or collaboration.",
+  "capabilities": [
+    { "key": "dual_paradigm", "summary": "COMPETE multi-variant or COLLABORATE decompose-and-integrate" },
+    { "key": "execution_modes", "summary": "Solo sequential, Team parallel via Agent Teams API, Quick lightweight" },
+    { "key": "variant_management", "summary": "Git branch isolation and weighted comparative evaluation" },
+    { "key": "automated_review", "summary": "codex review for quality/safety, hybrid selection" },
+    { "key": "engine_optimization", "summary": "codex (192K, sandbox) and gemini (1M, Deep Think, Search grounding)" },
+    { "key": "auto_mode_selection", "summary": "Auto Quick/Solo/Team task decomposition" },
+    { "key": "execution_learning", "summary": "Cross-session learning via Arena Effectiveness Score" }
+  ],
+  "collaboration": {
+    "input": ["sherpa", "scout", "spark"],
+    "output": ["guardian", "radar", "judge", "sentinel"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/arena.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["compete", "collaborate", "quick", "solo", "team"]
+}

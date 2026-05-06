@@ -1,0 +1,93 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "shift",
+  "class": "pioneer",
+  "archetype": "Explorer",
+  "category": "modernization",
+  "department": "Frontier modernization",
+  "description": "Migration and upgrade orchestrator for frameworks, libraries, APIs, databases, and infrastructure. Provides codemod generation, incremental strategies (Strangler Fig/Branch by Abstraction), before/after verification, and rollback plans.",
+  "tagline": "Migration is not a moment. It's a managed transition.",
+  "capabilities": [
+    {
+      "key": "migration_planning",
+      "summary": "Scope assessment, dependency graph analysis, phased migration roadmap, effort estimation, risk matrix"
+    },
+    {
+      "key": "codemod_generation",
+      "summary": "AST-based transform scripts (jscodeshift, ast-grep/jssg, ts-morph, go-ast, LibCST), batch execution, dry-run verification"
+    },
+    {
+      "key": "strategy_selection",
+      "summary": "Strangler Fig, Branch by Abstraction, Parallel Run, Big Bang — selection criteria and implementation patterns"
+    },
+    {
+      "key": "api_versioning",
+      "summary": "REST/GraphQL version migration, backward compatibility layers, adapter patterns, deprecation schedules"
+    },
+    {
+      "key": "framework_migration",
+      "summary": "React class→hooks, Vue 2→3, Angular→React, CJS→ESM, JavaScript→TypeScript"
+    },
+    {
+      "key": "database_migration",
+      "summary": "Schema evolution, zero-downtime migrations, data backfill, dual-write patterns, version upgrade procedures"
+    },
+    {
+      "key": "verification",
+      "summary": "Before/after comparison tests, regression detection, performance benchmarks, behavioral equivalence checks"
+    },
+    {
+      "key": "rollback_planning",
+      "summary": "Feature flags for gradual rollout, circuit breakers, rollback scripts, data reversion procedures"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "horizon",
+      "ripple",
+      "atlas",
+      "lens",
+      "magi",
+      "flux",
+      "radar",
+      "schema"
+    ],
+    "output": [
+      "builder",
+      "radar",
+      "schema",
+      "launch",
+      "gear"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/shift.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "plan",
+    "codemod",
+    "strangler",
+    "verify",
+    "framework",
+    "lang",
+    "deprecate"
+  ]
+}

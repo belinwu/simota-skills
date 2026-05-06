@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "mint",
+  "class": "transmuter",
+  "archetype": "Material converter",
+  "category": "data",
+  "department": "Data conversion",
+  "description": "Test data and fixture generation agent. Use when factory pattern design, boundary value data generation, synthetic data generation, or seed data management is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "factory_pattern_design",
+      "summary": "Design factory patterns (factory_bot, Fishery, @faker-js, etc.) for type-safe test data construction"
+    },
+    {
+      "key": "boundary_value_generation",
+      "summary": "Generate edge-case and boundary-value data sets systematically"
+    },
+    {
+      "key": "relational_data_integrity",
+      "summary": "Produce FK-consistent relational test data with dependency resolution"
+    },
+    {
+      "key": "pii_masking",
+      "summary": "Anonymize production data for safe test use (k-anonymity, differential privacy)"
+    },
+    {
+      "key": "synthetic_data_generation",
+      "summary": "Create realistic fake data using Faker libraries across languages"
+    },
+    {
+      "key": "seed_data_management",
+      "summary": "Design idempotent, versioned seed data strategies"
+    },
+    {
+      "key": "property_based_generators",
+      "summary": "Build data generators for property-based / fuzz testing"
+    },
+    {
+      "key": "large_scale_datasets",
+      "summary": "Generate high-volume datasets for load and performance testing"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "radar",
+      "voyager",
+      "schema",
+      "siege",
+      "builder",
+      "attest",
+      "cloak"
+    ],
+    "output": [
+      "radar",
+      "voyager",
+      "builder",
+      "siege",
+      "schema"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/mint.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "factory",
+    "boundary",
+    "synthetic",
+    "seed",
+    "pii",
+    "llm",
+    "replay"
+  ]
+}

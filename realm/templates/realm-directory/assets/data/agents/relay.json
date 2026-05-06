@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "relay",
+  "class": "diplomat",
+  "archetype": "Ambassador",
+  "category": "communication",
+  "department": "External bridge",
+  "description": "Messaging integration, bot development, and real-time communication design+implementation. Channel adapter patterns, webhook handlers, WebSocket servers, event-driven architecture, and bot command frameworks.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "channel_adapter_design",
+      "summary": "Platform-agnostic adapter pattern for Slack/Discord/Telegram/WhatsApp/LINE with write-once-deploy-everywhere approach (Vercel Chat SDK, LangBot, Bottender patterns)"
+    },
+    {
+      "key": "webhook_handler_design",
+      "summary": "HMAC-SHA256 signature verification over raw bytes, timing-safe comparison, timestamp window (≤5 min), idempotency keys (Redis TTL 7-30 days), async processing (return 2xx within 3s), payload size limit (≤100KB), TLS-only enforcement, DLQ with full context preservation"
+    },
+    {
+      "key": "websocket_server_design",
+      "summary": "Connection lifecycle, heartbeat/reconnect, room management, horizontal scaling with externalized session state (Redis), KEDA/HPA autoscaling, Prometheus metrics, WebSocketStream API for backpressure"
+    },
+    {
+      "key": "bot_framework_design",
+      "summary": "Command parser, slash commands, conversation state machine, middleware chain, LLM-native runner integration (Dify/n8n/Langflow), unified bot SDK (Vercel Chat SDK)"
+    },
+    {
+      "key": "event_routing_design",
+      "summary": "Discriminated union event schema, CloudEvents envelope format (CNCF graduated), AsyncAPI spec documentation, routing matrix, fan-out/fan-in patterns, choreography pattern (agent-to-agent event reaction)"
+    },
+    {
+      "key": "webhook_standards_awareness",
+      "summary": "Standard Webhooks spec (webhook-id/webhook-timestamp/webhook-signature headers), provider-specific signature formats (Stripe Stripe-Signature, GitHub x-hub-signature-256, Slack x-slack-signature)"
+    },
+    {
+      "key": "unified_message_format",
+      "summary": "Platform-agnostic message normalization and outbound adaptation via adapter rendering"
+    },
+    {
+      "key": "realtime_communication",
+      "summary": "SSE, WebSocket, WebTransport (~75% browser coverage as of 2026, production-ready ~2027), long polling selection and implementation"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "gateway",
+      "builder",
+      "forge",
+      "scaffold",
+      "beacon",
+      "radar",
+      "sentinel",
+      "canvas"
+    ],
+    "output": [
+      "builder",
+      "radar",
+      "sentinel",
+      "scaffold",
+      "canvas",
+      "beacon",
+      "failure"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/relay.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "webhook",
+    "bot",
+    "websocket",
+    "adapter",
+    "sse",
+    "queue",
+    "rate"
+  ]
+}

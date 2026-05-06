@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "saga",
+  "class": "herald",
+  "archetype": "Messenger",
+  "category": "narrative-design",
+  "department": "Narrative storytelling",
+  "description": "Narrative design agent that tells product and feature use cases as customer-centric stories. Use when customer experience storytelling, scenario stories, or product narratives are needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "use_case_narrative",
+      "summary": "Structure and write use cases as customer-centric stories"
+    },
+    {
+      "key": "product_narrative",
+      "summary": "Design product-level positioning narratives"
+    },
+    {
+      "key": "scenario_storytelling",
+      "summary": "Visualize persona-based scenarios in story format"
+    },
+    {
+      "key": "framework_application",
+      "summary": "Apply StoryBrand SB7/Pixar Story Spine/Hero's Journey/JTBD/Promised Land/ABT and other frameworks"
+    },
+    {
+      "key": "narrative_audit",
+      "summary": "Detect anti-patterns in existing narratives and propose improvements"
+    },
+    {
+      "key": "pitch_narrative",
+      "summary": "Design pitch stories for stakeholders and investors"
+    },
+    {
+      "key": "onboarding_story",
+      "summary": "Design narrative flows for first-time user experiences"
+    },
+    {
+      "key": "transformation_arc",
+      "summary": "Design customer Before→After transformation arcs"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "cast",
+      "researcher",
+      "research",
+      "voice",
+      "spark",
+      "compete",
+      "wargame",
+      "trace"
+    ],
+    "output": [
+      "prose",
+      "scribe",
+      "accord",
+      "director",
+      "prism"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/saga.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "story",
+    "scenario",
+    "narrative",
+    "customer",
+    "hero-journey",
+    "bab",
+    "pyramid"
+  ]
+}

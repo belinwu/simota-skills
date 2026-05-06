@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Realm Directory · Category</title>
+  <meta name="description" content="A category of Realm agents grouped by archetype and class bonus." />
+  <link rel="stylesheet" href="assets/tokens.css" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-page="category">
+  <a class="sr-only" href="#main">Skip to main content</a>
+
+  <header class="app-nav" role="banner">
+    <div class="container app-nav__inner">
+      <a href="index.html" class="app-nav__brand" aria-label="Realm directory home">
+        <span class="app-nav__brand-mark" aria-hidden="true">R</span>
+        <span>Realm</span>
+      </a>
+      <nav class="app-nav__links" aria-label="Primary">
+        <a class="app-nav__link" href="index.html">Directory</a>
+        <a class="app-nav__link" href="map.html">Map</a>
+        <a class="app-nav__link" href="category.html?slug=ux-design" aria-current="page">Categories</a>
+        <a class="app-nav__link" href="search.html">Search</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"
+                aria-label="Toggle light or dark theme">
+          <span aria-hidden="true">◐</span>
+          <span data-theme-label>Light</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+
+    <section class="category-hero" data-cat-hero aria-live="polite"></section>
+
+    <div class="tabs" role="tablist" data-tabset aria-label="Category sections">
+      <button class="tabs__item" role="tab" data-tab="roster" aria-selected="true">Roster</button>
+      <button class="tabs__item" role="tab" data-tab="collab" aria-selected="false">How they collaborate</button>
+      <button class="tabs__item" role="tab" data-tab="when" aria-selected="false">When to call</button>
+    </div>
+
+    <section class="tab-panel" data-tab-panel="roster" data-roster></section>
+
+    <section class="tab-panel" data-tab-panel="collab" hidden>
+      <div class="collab-graph" data-collab></div>
+      <p class="empty-state__hint" style="margin-top: var(--realm-spacing-md); color: var(--realm-color-ink-soft);">
+        Hub and spokes show how agents in this category typically chain. The center node is the most-connected
+        agent in the category.
+      </p>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="when" hidden>
+      <div class="cap-list" style="display: grid;">
+        <li>
+          <div class="cap-list__key">Pattern</div>
+          <div>Reach for this category when the user need maps to the category's <em>signature trait</em>.</div>
+        </li>
+        <li>
+          <div class="cap-list__key">Hand-off</div>
+          <div>The class bonus is realized when chained with the agents listed in the collaboration tab.</div>
+        </li>
+        <li>
+          <div class="cap-list__key">Avoid when</div>
+          <div>Production hardening / shared-core refactors → route to <code>builder</code> or <code>artisan</code>.</div>
+        </li>
+      </div>
+    </section>
+
+    <section style="margin-top: var(--realm-spacing-2xl);">
+      <header class="section-head">
+        <h2 class="section-head__title">Adjacent categories</h2>
+      </header>
+      <div class="cluster" data-adjacent></div>
+    </section>
+  </main>
+
+  <noscript>
+    <p style="padding: 2rem;">This page needs JavaScript. See <code>assets/data/taxonomy/categories.json</code>.</p>
+  </noscript>
+
+  <script type="application/json" id="agents-index-fallback">{}</script>
+  <script>
+    (function () {
+      var el = document.getElementById('agents-index-fallback');
+      if (!el || !window.location || window.location.protocol !== 'file:') return;
+      var x = new XMLHttpRequest();
+      try {
+        x.open('GET', 'assets/data/agents.index.json', false);
+        x.send(null);
+        if (x.status === 0 || x.status === 200) el.textContent = x.responseText || '{}';
+      } catch (e) {}
+    })();
+  </script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

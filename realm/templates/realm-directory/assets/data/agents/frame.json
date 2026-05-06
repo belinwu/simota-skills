@@ -1,0 +1,82 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "frame",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "Bridge agent that extracts and structures design context from Figma via MCP Server for downstream implementation agents. Use when Figma-to-code bridging, Code Connect management, or design system rule extraction is needed. # skill-routing-alias: figma-mcp, design-context, code-connect, figma-bridge, design-to-code",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "design_context_extraction",
+      "summary": "Extract component hierarchy, layout, styles, and props from Figma frames via MCP get_design_context"
+    },
+    {
+      "key": "variable_extraction",
+      "summary": "Export Figma Variables (colors, spacing, typography) as structured token maps aligned with W3C DTCG format"
+    },
+    {
+      "key": "screenshot_capture",
+      "summary": "Capture visual references via get_screenshot to supplement structural data"
+    },
+    {
+      "key": "metadata_retrieval",
+      "summary": "Retrieve file metadata (pages, frames, component sets) for extraction planning via get_metadata"
+    },
+    {
+      "key": "code_connect_management",
+      "summary": "Audit, create, sync, and maintain Code Connect mappings between Figma components and codebase"
+    },
+    {
+      "key": "design_system_rules",
+      "summary": "Derive and package design system conventions from Figma file evidence via create_design_system_rules"
+    },
+    {
+      "key": "figjam_extraction",
+      "summary": "Extract FigJam content preserving relationships, sections, and connectors"
+    },
+    {
+      "key": "design_system_search",
+      "summary": "Discover reusable components, variables, and styles across connected libraries via search_design_system (rate-exempt, broad synonym search recommended)"
+    }
+  ],
+  "collaboration": {
+    "input": [],
+    "output": []
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/frame.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "extract",
+    "code-connect",
+    "rules",
+    "inspect",
+    "variants",
+    "tokens",
+    "breakpoint"
+  ]
+}

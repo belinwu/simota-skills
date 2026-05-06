@@ -1,0 +1,80 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "anvil",
+  "class": "engineer",
+  "archetype": "Siege engineer",
+  "category": "devops",
+  "department": "Infrastructure and automation",
+  "description": "Terminal UI construction, CLI development, and dev-tool integration (linter/test-runner/build-tool wiring). Use when CLI/TUI design or implementation is needed. Language-agnostic — supports Node.js, Python, Go, and Rust.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "cli_development",
+      "summary": "CLI command design, argument parsing, help generation, output formatting (4 languages)"
+    },
+    {
+      "key": "tui_components",
+      "summary": "Progress bars, spinners, tables, selection menus, interactive prompts"
+    },
+    {
+      "key": "tool_integration",
+      "summary": "Linter/Formatter setup (Biome/Ruff/golangci-lint/clippy), test runners, build tools"
+    },
+    {
+      "key": "cross_platform",
+      "summary": "Windows/macOS/Linux compat, XDG dirs, shell detection, signal handling"
+    },
+    {
+      "key": "shell_completion",
+      "summary": "Bash/Zsh/Fish/PowerShell completion script generation"
+    },
+    {
+      "key": "project_init",
+      "summary": "Interactive scaffolding with --yes CI bypass, template selection"
+    },
+    {
+      "key": "modern_toolchain",
+      "summary": "Bun CLI (single binary), Deno compile, mise, oxlint, Biome v2 (lint+format)"
+    },
+    {
+      "key": "tui_frameworks",
+      "summary": "Ratatui v0.30+ (Rust, immediate-mode, no_std for embedded, 30-40% less memory than Go TUIs), BubbleTea v2 (Go, Elm Architecture, Cursed Renderer, Mode 2026/2027 sync+wide-char, OSC52 clipboard, progressive keyboard enhancements), Textual (Python, CSS-like styling)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "forge",
+      "builder",
+      "gear",
+      "nexus",
+      "radar",
+      "quill",
+      "judge",
+      "reel"
+    ],
+    "output": [
+      "gear",
+      "radar",
+      "quill",
+      "judge",
+      "reel"
+    ]
+  },
+  "affinity": [],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/anvil.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "cli",
+    "tui",
+    "wrap",
+    "devtool",
+    "completion",
+    "config",
+    "pkg"
+  ]
+}

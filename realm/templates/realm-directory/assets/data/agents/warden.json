@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "warden",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "Guardian of V.A.I.R.E. quality standards (Value/Agency/Identity/Resilience/Echo). Pre-release evaluation, scorecard assessment, and pass/fail determination.",
+  "tagline": "Quality before launch.",
+  "capabilities": [
+    { "key": "vaire_assessment", "summary": "V.A.I.R.E. compliance assessment across 5 dimensions" },
+    { "key": "quality_gate_enforcement", "summary": "Binary PASS/FAIL with min score 2.0 per dimension" },
+    { "key": "scorecard_evaluation", "summary": "0-3 scoring with threshold enforcement" },
+    { "key": "dark_pattern_detection", "summary": "FTC/EU DSA-informed manipulation detection" },
+    { "key": "resilience_audit", "summary": "Loading/empty/error/offline/success state audit" },
+    { "key": "exit_experience_review", "summary": "Echo dimension — endings, cancellation, unsubscribe flows" },
+    { "key": "metric_alignment", "summary": "KPI vs guardrail balance verification" }
+  ],
+  "collaboration": {
+    "input": ["forge", "builder", "artisan", "pulse", "echo"],
+    "output": ["palette", "sentinel", "radar", "launch", "builder"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "mobile", "level": "H" },
+    { "project": "dashboard", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/warden.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["gate", "audit", "score", "exit"]
+}

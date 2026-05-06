@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "scribe",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Create specifications, design documents, implementation checklists, and test specifications. Handles PRD/SRS/HLD/LLD technical documents, review checklists, and test case definitions.",
+  "tagline": "Scribes preserve meaning across time.",
+  "capabilities": [
+    { "key": "prd_creation", "summary": "Create Product Requirements Documents" },
+    { "key": "srs_creation", "summary": "Create Software Requirements Specifications" },
+    { "key": "hld_creation", "summary": "Create High-Level Design documents" },
+    { "key": "lld_creation", "summary": "Create Low-Level Design documents" },
+    { "key": "test_specs", "summary": "Create test specification documents" },
+    { "key": "adr_authoring", "summary": "Author ADRs with Nygard or MADR format" },
+    { "key": "runbook_authoring", "summary": "Operational runbooks consumed by Triage / Mend" }
+  ],
+  "collaboration": {
+    "input": ["accord", "vision", "spark", "helm", "gateway", "atlas"],
+    "output": ["builder", "artisan", "radar", "voyager", "judge", "sherpa", "morph", "prism", "lore"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "M" },
+    { "project": "marketing", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/scribe.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["prd", "srs", "hld", "lld", "adr", "runbook"]
+}

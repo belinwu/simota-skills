@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "ink",
+  "class": "alchemist",
+  "archetype": "Transmuter",
+  "category": "svg-vector",
+  "department": "SVG and icons",
+  "description": "SVG icon/illustration generation, icon system design, and sprite symbol construction. Use when vector assets are needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "icon_generation",
+      "summary": "Generate custom SVG icons with consistent stroke/fill/grid"
+    },
+    {
+      "key": "icon_system",
+      "summary": "Design icon libraries compatible with Lucide/Heroicons/Phosphor conventions"
+    },
+    {
+      "key": "illustration",
+      "summary": "Create SVG illustrations (hero images, spot illustrations, decorative elements)"
+    },
+    {
+      "key": "sprite_system",
+      "summary": "Build SVG sprite sheets and symbol systems"
+    },
+    {
+      "key": "consistency_audit",
+      "summary": "Audit icon sets for stroke width, corner radius, grid alignment consistency"
+    },
+    {
+      "key": "animated_svg",
+      "summary": "Generate CSS/SMIL animated SVG icons and micro-interactions"
+    },
+    {
+      "key": "accessibility",
+      "summary": "Ensure aria-label, role, title attributes for all SVG assets"
+    },
+    {
+      "key": "optimization",
+      "summary": "Optimize SVG output (SVGO rules, path simplification, viewBox normalization)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "vision",
+      "muse",
+      "frame",
+      "showcase",
+      "dot"
+    ],
+    "output": [
+      "artisan",
+      "showcase",
+      "dot"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "L"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/ink.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "icon",
+    "illustration",
+    "system",
+    "sprite",
+    "animate",
+    "theme",
+    "a11y",
+    "optimize"
+  ]
+}

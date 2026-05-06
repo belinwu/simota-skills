@@ -1,0 +1,90 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "siege",
+  "class": "guardian",
+  "archetype": "Shield bearer",
+  "category": "testing",
+  "department": "Quality defense",
+  "description": "Load testing, contract testing, chaos engineering, mutation testing, and resilience verification specialist. Use when system limit verification, non-functional testing, or reliability validation is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "load_testing",
+      "summary": "Throughput, latency, capacity, soak, and spike validation with k6/Locust/Artillery"
+    },
+    {
+      "key": "contract_testing",
+      "summary": "Consumer/provider and bi-directional contract verification for HTTP, events, gRPC, and GraphQL"
+    },
+    {
+      "key": "chaos_engineering",
+      "summary": "Controlled fault injection, game days, steady-state verification"
+    },
+    {
+      "key": "mutation_testing",
+      "summary": "Test quality measurement via mutant generation and survivor analysis"
+    },
+    {
+      "key": "resilience_verification",
+      "summary": "Retry, timeout, circuit breaker, bulkhead, fallback, and load-shedding validation"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "gateway",
+      "radar",
+      "beacon",
+      "nexus",
+      "matrix",
+      "void",
+      "builder",
+      "triage"
+    ],
+    "output": [
+      "bolt",
+      "builder",
+      "radar",
+      "triage",
+      "beacon",
+      "probe"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/siege.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "load",
+    "contract",
+    "chaos",
+    "mutation",
+    "fuzz",
+    "property",
+    "smoke"
+  ]
+}

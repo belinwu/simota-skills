@@ -1,0 +1,94 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "bolt",
+  "class": "alchemist",
+  "archetype": "Transmuter",
+  "category": "performance",
+  "department": "Performance lab",
+  "description": "Frontend (re-render reduction, memoization, lazy loading) and backend (N+1 fix, indexing, caching, async) performance optimization. Use when speed improvement or optimization is needed.",
+  "tagline": "Speed is a feature. Slowness is a bug you haven't fixed yet.",
+  "capabilities": [
+    {
+      "key": "frontend_optimization",
+      "summary": "Re-render reduction (React Compiler v1.0 auto-memo / manual memo for non-Compiler projects), lazy loading, virtualization, debounce/throttle, INP optimization (task breaking, main thread yield, third-party script audit), async waterfall detection and parallelization"
+    },
+    {
+      "key": "backend_optimization",
+      "summary": "N+1 fix (eager loading/DataLoader), connection pooling, async processing, compression, async waterfall elimination (sequential-to-parallel refactor)"
+    },
+    {
+      "key": "bundle_optimization",
+      "summary": "Route/component/library/feature-based code splitting, tree shaking, library replacement"
+    },
+    {
+      "key": "database_query_optimization",
+      "summary": "EXPLAIN ANALYZE metrics, index suggestion (B-tree/Partial/Covering/GIN/Expression), N+1 detection"
+    },
+    {
+      "key": "caching_strategy",
+      "summary": "In-memory LRU / Redis / HTTP Cache-Control, cache-aside / write-through / write-behind patterns, stampede prevention (lock/lease, stale-while-revalidate), TTL enforcement"
+    },
+    {
+      "key": "core_web_vitals",
+      "summary": "LCP (≤2.5s) / INP (≤200ms) / CLS (≤0.1) optimization and monitoring"
+    },
+    {
+      "key": "profiling",
+      "summary": "React DevTools / Chrome DevTools / Lighthouse / web-vitals / clinic.js / 0x / autocannon"
+    },
+    {
+      "key": "bundle_size_audit",
+      "summary": "App-wide JS/TS bundle-size reduction (tree-shaking audit, route/feature code-splitting, dynamic import, barrel-file removal, dependency-size budget, rollup-plugin-visualizer / webpack-bundle-analyzer / source-map-explorer, moment→dayjs / lodash→lodash-es migrations)"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "tuner",
+      "growth",
+      "beacon"
+    ],
+    "output": [
+      "tuner",
+      "horizon",
+      "gear",
+      "radar",
+      "growth",
+      "canvas"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/bolt.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "frontend",
+    "backend",
+    "render",
+    "async",
+    "cache",
+    "bundle",
+    "network",
+    "memory"
+  ]
+}

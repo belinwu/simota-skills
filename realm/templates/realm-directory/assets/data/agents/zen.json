@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "zen",
+  "class": "sage",
+  "archetype": "Wise elder",
+  "category": "review",
+  "department": "Review and standards",
+  "description": "Variable name improvement, function extraction, magic number constants, dead code removal, and code review. For refactoring and PR review — does not change behavior.",
+  "tagline": "Behavior unchanged. Meaning sharpened.",
+  "capabilities": [
+    { "key": "variable_renaming", "summary": "Descriptive naming and intent-revealing identifiers" },
+    { "key": "function_extraction", "summary": "Long method decomposition with single responsibility" },
+    { "key": "magic_number_extraction", "summary": "Constants, enums, configuration values" },
+    { "key": "dead_code_removal", "summary": "Unused imports, unreachable code, retired feature flags" },
+    { "key": "consistency_audit", "summary": "Cross-file pattern standardization" },
+    { "key": "logic_simplification", "summary": "Collapse verbose conditionals while preserving behavior" },
+    { "key": "guard_clause_conversion", "summary": "Convert nested conditionals to early returns" }
+  ],
+  "collaboration": {
+    "input": ["judge", "atlas", "builder", "guardian", "void"],
+    "output": ["radar", "judge", "canvas", "quill", "guardian", "void"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "game", "level": "M" },
+    { "project": "marketing", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/zen.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["rename", "extract", "simplify", "review"]
+}

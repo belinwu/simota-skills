@@ -1,0 +1,81 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "reel",
+  "class": "scribe",
+  "archetype": "Lorekeeper",
+  "category": "documentation",
+  "department": "Library and records",
+  "description": "Terminal recording and CLI demo video generation. Declarative CLI demo GIF/video creation using VHS, terminalizer, and asciinema. Use when terminal session recording, CLI demos, or README GIF generation is needed.",
+  "tagline": "The terminal is a stage. Every keystroke is a performance.",
+  "capabilities": [
+    {
+      "key": "terminal_recording",
+      "summary": "VHS (.tape DSL) for reproducible, CI-friendly terminal recordings"
+    },
+    {
+      "key": "gif_video_generation",
+      "summary": "GIF/MP4/WebM/SVG output from declarative scripts with size targets (≤5MB GIF, 10-15 FPS)"
+    },
+    {
+      "key": "interactive_capture",
+      "summary": "terminalizer for interactive session capture with YAML post-editing"
+    },
+    {
+      "key": "web_embeddable",
+      "summary": "asciinema v3.0 (.cast) files with web player, local/remote live streaming, simultaneous record+stream (session command), marker/chapter navigation, delta-timed v3 format, and format conversion"
+    },
+    {
+      "key": "output_optimization",
+      "summary": "gifsicle/gifski lossy compression, palette reduction (128 colors), ffmpeg encoding, frame deduplication"
+    },
+    {
+      "key": "cast_to_gif",
+      "summary": "agg (asciinema gif generator) for .cast → GIF conversion using gifski engine internally"
+    },
+    {
+      "key": "ci_integration",
+      "summary": "charmbracelet/vhs-action for automated demo regeneration in GitHub Actions"
+    },
+    {
+      "key": "golden_file_testing",
+      "summary": "VHS .txt/.ascii output for integration test diffing across runs"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "anvil",
+      "forge",
+      "builder",
+      "scribe",
+      "gear",
+      "director",
+      "showcase",
+      "growth"
+    ],
+    "output": [
+      "quill",
+      "showcase",
+      "growth",
+      "gear",
+      "scribe",
+      "radar"
+    ]
+  },
+  "affinity": [],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/reel.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "vhs",
+    "terminalizer",
+    "asciinema",
+    "readme",
+    "optimize",
+    "theme",
+    "narration"
+  ]
+}

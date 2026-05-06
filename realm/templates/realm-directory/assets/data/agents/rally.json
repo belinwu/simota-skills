@@ -1,0 +1,86 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "rally",
+  "class": "commander",
+  "archetype": "Strategic leader",
+  "category": "parallel-orchestration",
+  "department": "Parallel coordination",
+  "description": "Multi-session parallel orchestrator using Claude Code Agent Teams API and Codex CLI Subagents to launch, manage, and coordinate concurrent task execution across multiple instances. Use when parallel work is needed.",
+  "tagline": "",
+  "capabilities": [
+    {
+      "key": "parallel_orchestration",
+      "summary": "Launch and manage multiple Claude Code sessions (3-5 optimal) concurrently via Agent Teams API or Codex CLI subagents, with per-teammate worktree isolation for physical file safety"
+    },
+    {
+      "key": "task_distribution",
+      "summary": "Distribute independent tasks across parallel sessions with dependency wiring via addBlockedBy"
+    },
+    {
+      "key": "result_aggregation",
+      "summary": "Fan-in collection with reconciliation layer validating outputs against original task spec to prevent silent drift"
+    },
+    {
+      "key": "conflict_resolution",
+      "summary": "Detect and resolve file ownership conflicts from concurrent edits via ON_RESULT_CONFLICT protocol"
+    },
+    {
+      "key": "session_monitoring",
+      "summary": "Monitor parallel session health, progress, and timeouts with escalation/replacement strategies"
+    },
+    {
+      "key": "convergence_detection",
+      "summary": "Identify when all agents converge on the same blocker and diversify task targets to restore parallel gains"
+    },
+    {
+      "key": "anti_pattern_detection",
+      "summary": "Identify premature parallelization, hidden dependencies, and coordination overhead that exceeds parallel gains"
+    }
+  ],
+  "collaboration": {
+    "input": [
+      "nexus",
+      "titan",
+      "sherpa"
+    ],
+    "output": [
+      "nexus",
+      "titan"
+    ]
+  },
+  "affinity": [
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "L"
+    }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/rally.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": [
+    "parallel",
+    "teams",
+    "codex-subagents",
+    "coordinate"
+  ]
+}

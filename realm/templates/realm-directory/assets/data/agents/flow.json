@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "flow",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "CSS/JS animation implementation for hover, loading, modal transitions, and gesture interactions. Use for meaningful motion, interaction feedback, or performance-safe animations.",
+  "tagline": "One clear motion improvement per task.",
+  "capabilities": [
+    { "key": "micro_animation", "summary": "Hover, press, toggle, validation, toast, feedback animations" },
+    { "key": "page_transition", "summary": "Route changes, modal/panel transitions, staged content entry" },
+    { "key": "gesture_animation", "summary": "Drag, swipe, snap, long press, touch feedback" },
+    { "key": "modern_css_animation", "summary": "View Transitions API, scroll-driven animations, @starting-style" },
+    { "key": "reduced_motion", "summary": "prefers-reduced-motion support and accessible motion paths" },
+    { "key": "performance_optimization", "summary": "60fps targeting, GPU-safe properties, CWV guard" },
+    { "key": "spring_physics", "summary": "Spring-based physics animations via linear() easing approximation" }
+  ],
+  "collaboration": {
+    "input": ["palette", "vision", "forge", "artisan", "muse"],
+    "output": ["radar", "canvas", "showcase", "palette", "bolt"]
+  },
+  "affinity": [
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "mobile", "level": "H" },
+    { "project": "dashboard", "level": "M" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/flow.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["micro", "page", "gesture", "tokens"]
+}

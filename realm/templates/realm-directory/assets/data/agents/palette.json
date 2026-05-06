@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/agent.schema.json",
+  "name": "palette",
+  "class": "enchanter",
+  "archetype": "Illusionist",
+  "category": "ux-design",
+  "department": "UX and design court",
+  "description": "Usability improvement, interaction quality enhancement, cognitive load reduction, feedback design, and a11y compliance. Use when improving UX usability or interaction feel.",
+  "tagline": "Reduce friction. Raise clarity.",
+  "capabilities": [
+    { "key": "usability_improvement", "summary": "Reduce cognitive load and improve interaction quality" },
+    { "key": "accessibility_audit", "summary": "WCAG 2.2 Level AA compliance review and remediation" },
+    { "key": "interaction_design", "summary": "Improve feedback, affordance, and discoverability" },
+    { "key": "form_optimization", "summary": "Simplify forms with validation and progressive disclosure" },
+    { "key": "error_handling_ux", "summary": "Design user-friendly error states and recovery flows" },
+    { "key": "ai_interface_ux", "summary": "Review AI-powered UI elements for trust and accessibility" },
+    { "key": "calm_ui_evaluation", "summary": "Calm UI / Cognitive Clarity evaluation framework" }
+  ],
+  "collaboration": {
+    "input": ["vision", "echo", "researcher", "warden"],
+    "output": ["artisan", "flow", "muse", "prose", "canon", "voyager"]
+  },
+  "affinity": [
+    { "project": "game", "level": "M" },
+    { "project": "saas", "level": "H" },
+    { "project": "ecommerce", "level": "H" },
+    { "project": "dashboard", "level": "H" },
+    { "project": "marketing", "level": "H" }
+  ],
+  "rank": null,
+  "badges": [],
+  "portrait": {
+    "src": "../portraits/palette.png",
+    "variant": "personality-archetype-chibi-paper-poly",
+    "status": "generated"
+  },
+  "recipes": ["audit", "form", "error", "a11y"]
+}
