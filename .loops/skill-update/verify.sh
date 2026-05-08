@@ -103,18 +103,33 @@ check_improvements() {
   ok "AC6 improvements has ${sections} sections"
 }
 
+check_injection_annotations() {
+  # AC7: every URL appearing in a Sources block must carry an injection-check tag.
+  [[ -f "${REPORTS_DIR}/audit.md" ]] || { ok "AC7 skipped (audit.md missing)"; return 0; }
+  local urls_total urls_annotated missing
+  # URLs are listed under "Sources:" lines as "  - <url> — injection-check: ..."
+  urls_total=$(grep -E '^[[:space:]]*-[[:space:]]+https?://' "${REPORTS_DIR}/audit.md" | wc -l | tr -d ' ')
+  urls_annotated=$(grep -E '^[[:space:]]*-[[:space:]]+https?://.+injection-check:' "${REPORTS_DIR}/audit.md" | wc -l | tr -d ' ')
+  missing=$(( urls_total - urls_annotated ))
+  printf 'AC7 injection annotations: %d/%d urls annotated\n' "${urls_annotated}" "${urls_total}"
+  (( missing == 0 )) || fail "AC7: ${missing} urls missing injection-check"
+  ok "AC7 every URL has injection-check annotation"
+}
+
 case "${1:-all}" in
-  check-common-refs)   check_common_refs ;;
-  check-reference-map) check_reference_map ;;
-  check-bidir-refs)    check_bidir_refs ;;
-  check-audit-coverage) check_audit_coverage ;;
-  check-improvements)  check_improvements ;;
+  check-common-refs)             check_common_refs ;;
+  check-reference-map)           check_reference_map ;;
+  check-bidir-refs)              check_bidir_refs ;;
+  check-audit-coverage)          check_audit_coverage ;;
+  check-improvements)            check_improvements ;;
+  check-injection-annotations)   check_injection_annotations ;;
   all)
     check_common_refs
     check_reference_map
     check_bidir_refs
     check_audit_coverage
     check_improvements
+    check_injection_annotations
     printf '\n[verify] ALL ACs PASS\n'
     ;;
   *) printf 'unknown: %s\n' "$1" >&2; exit 64 ;;

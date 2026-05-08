@@ -1,6 +1,10 @@
-# skill-update — nexus-autoloop runner
+# skill-update — automated `architect improve` loop
 
-136 個のスキルエージェントを巡回監査し、改善提案を蓄積するループ runner。Executor は Claude Code CLI(`claude --print` headless mode)。SKILL.md / references/ は **読み取り専用** で扱い、提案は `reports/improvements.md` に集約します(自動編集なし)。
+136 個のスキルエージェントに対し **architect の IMPROVE recipe**(`UNDERSTAND -> ANALYZE -> SCORE -> RESEARCH -> PRIORITIZE -> APPLY -> VALIDATE`)を一括適用する nexus-autoloop runner。Executor は Claude Code CLI(`claude --print` headless mode)。
+
+**read-write モード** で動作し、HIGH 重大度の改善は SKILL.md / references/*.md に直接適用、MID/LOW は `reports/improvements.md` に提案として集約します。**WebFetch / WebSearch** で各スキルの最新情報・トレンドを取り込み、取得コンテンツには `_common/WEB_FETCH_SAFETY.md` のプロンプトインジェクション検査を適用します(strong indicator 検出時はそのソースを破棄)。
+
+各イテレーション後に AC1/AC2/AC4 dead count 回帰ガードが走り、悪化したら `git checkout HEAD --` でバッチ編集をロールバックします。
 
 ## ファイル構成
 
@@ -70,7 +74,7 @@ bash verify.sh all
 | 変数 | 既定 | 用途 |
 |---|---|---|
 | `BATCH_SIZE` | `5` | 1 イテレーションで処理するスキル数 |
-| `EXEC_TIMEOUT` | `1200` | claude 1 回呼び出しのタイムアウト(秒) |
+| `EXEC_TIMEOUT` | `1800` | claude 1 回呼び出しのタイムアウト(秒、web research + edit を見越して 30 分) |
 | `MAX_ITERATIONS` | `50` | 全体イテレーション上限(Marathon tier) |
 | `RETRY_LIMIT` | `3` | 1 イテレーション内の再試行回数 |
 | `RETRY_BACKOFF` | `exponential` | バックオフ戦略 |
@@ -92,12 +96,15 @@ export CLAUDE_FLAGS="--print --dangerously-skip-permissions --output-format text
 
 ## 設計上の制約
 
-- **読み取り専用**: claude executor へのプロンプトに `Edit/Write/NotebookEdit を呼ぶな` と明示。生成スクリプトは差分を SKILL.md に書き込まない。
+- **read-write スコープ限定**: 編集できるのはバッチに含まれるスキルディレクトリ配下の `SKILL.md` と既存の `references/*.md` のみ。`_common/` / `_templates/` / `.agents/` / `.loops/` / 他バッチのスキルは編集禁止(プロンプトで明示+回帰ガードで検出)。
+- **新規ファイル作成・既存削除は禁止**(プロンプトで明示)。
+- **WebFetch safety**: 取得コンテンツに `_common/WEB_FETCH_SAFETY.md` のプロンプトインジェクション検査を適用。strong indicator 検出時はソースを破棄。`audit.md` の Sources 行に `injection-check: PASS / SOFT / STRONG-rejected` を必ず記録(AC7)。
+- **回帰ガード**: 各イテレーションの前後で AC1/AC2/AC4 dead count を計測。悪化したらバッチ編集をすべて `git checkout HEAD --` でロールバックして `BLOCKED` に。
 - **Atomic state writes**: state.env / state.env.sha256 はすべて `temp -> mv` で更新。中断耐性あり。
 - **Memory pointer pattern**: 巨大な claude 出力は `batches/iter-N.out` に外出しし、reports/ には抽出済みセクションのみ追記。
 - **Externally enforced termination**: MAX_ITERATIONS / EXEC_TIMEOUT / pending=0 のいずれかで必ず停止。executor の自己判断には依存しない。
 - **Circuit breaker**: 同一署名の連続失敗 3 回で OPEN し 300 秒クールダウン。
-- **Bisect-safe**: SKILL.md には触れないので、ループ実行中もメインリポジトリを手動編集して問題ない(ただし `state/skills-pending.txt` には触れない)。
+- **Branch isolation**: `feat/skill-update-loop` ブランチで運用すること。`AUTOCOMMIT=false` のままなので diff が uncommitted で蓄積し、ユーザーが `git diff` でレビューしてからコミット粒度を決める運用。
 
 ## 注意
 
