@@ -63,7 +63,7 @@ Criteria for assessing task complexity and auto-selecting execution mode.
 
 ```
 IF mode == AUTORUN_FULL THEN
-  → Execute regardless of complexity (with guardrails per GUARDRAIL.md)
+  → Execute regardless of complexity (with guardrails per `_common/AUTORUN.md` § Guardrail Protocol)
 ELSE IF any(COMPLEX indicators) THEN
   → GUIDED or INTERACTIVE required
 ELSE IF all(SIMPLE indicators) AND mode == AUTORUN THEN

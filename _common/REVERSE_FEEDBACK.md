@@ -190,12 +190,12 @@ ON_REVERSE_FEEDBACK:
         multiSelect: false
 ```
 
-### With GUARDRAIL.md
+### With AUTORUN.md (Guardrail Protocol)
 
-- High priority reverse feedback triggers **L2 checkpoint** (auto-fix attempt per `GUARDRAIL.md`)
+- High priority reverse feedback triggers **L2 checkpoint** (auto-fix attempt per the Guardrail Protocol section in `_common/AUTORUN.md`)
 - Systemic issues (3+ feedback items on same pattern) trigger **L3 pause**
 
-### With AUTORUN.md
+### With AUTORUN.md (Execution Modes)
 
 - In **AUTORUN_FULL** mode: high priority feedback is auto-processed
 - In **GUIDED** mode: user confirms feedback handling approach

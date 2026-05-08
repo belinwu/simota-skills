@@ -136,6 +136,6 @@ Action:
 ## Cross-references
 
 - Tool-use logging and journal: `_common/OPERATIONAL.md`
-- Guardrail levels (this document's escalations map to L3/L4): `_common/GUARDRAIL.md`
+- Guardrail levels (this document's escalations map to L3/L4): `_common/AUTORUN.md` § Guardrail Protocol
 - Subagent prompt isolation when passing fetched content downstream: `_common/SUBAGENT.md`
 - Security agents that should be invoked when injections target the codebase: `sentinel/SKILL.md`, `vigil/SKILL.md`
