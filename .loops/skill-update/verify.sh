@@ -48,6 +48,10 @@ check_common_refs() {
 }
 
 check_reference_map() {
+  # Extract `references/foo.md` references for each skill, but exclude:
+  #   - cross-skill refs    (e.g. `rally/references/foo.md` — owned by rally, not us)
+  #   - optional markers    (line contains "(if present)")
+  #   - activity-log rows   (lines starting with `| YYYY-MM-DD ` — these cite PROJECT.md examples)
   local skill skill_md ref_path missing=0 total=0
   while IFS= read -r skill; do
     skill_md="${SKILLS_ROOT}/${skill}/SKILL.md"
@@ -58,7 +62,28 @@ check_reference_map() {
         printf '  MISS: %s -> %s\n' "${skill}" "${ref_path}" >&2
         missing=$((missing + 1))
       fi
-    done < <(grep -oE 'references/[A-Za-z0-9_.-]+\.md' "${skill_md}" | sort -u)
+    done < <(
+      awk '
+        # Drop activity-log example rows
+        /^[[:space:]]*\| [0-9]{4}-[0-9]{2}-[0-9]{2}/ { next }
+        # Drop lines marked optional
+        /\(if present\)/ { next }
+        {
+          s = $0
+          while (match(s, /references\/[A-Za-z0-9_.-]+\.md/)) {
+            start = RSTART
+            len   = RLENGTH
+            prev  = (start > 1) ? substr(s, start - 1, 1) : " "
+            # Ignore matches preceded by alnum / underscore / dash / slash
+            # (which means another path segment owns the references/ — a cross-skill ref).
+            if (prev !~ /[A-Za-z0-9_-]/ && prev != "/") {
+              print substr(s, start, len)
+            }
+            s = substr(s, start + len)
+          }
+        }
+      ' "${skill_md}" | sort -u
+    )
   done < <(list_skills)
   printf 'AC2 reference map: %d checked, %d missing\n' "${total}" "${missing}"
   (( missing == 0 )) || fail "AC2: ${missing} dead references/ refs"
