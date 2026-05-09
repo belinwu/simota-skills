@@ -225,6 +225,9 @@ Anvil receives CLI/TUI requests from upstream agents, builds terminal interfaces
 | `references/tui-ux-anti-patterns.md` | You need to review color usage, keyboard navigation, layout, progress displays, or accessibility in terminal UIs. |
 | `references/tool-integration-anti-patterns.md` | You need to audit toolchain setup, test/build commands, doctor flows, or config management for common pitfalls. |
 | `references/distribution-packaging-anti-patterns.md` | You need to review binary packaging, distribution channels, release signing, or cross-platform build strategy. |
+| `references/completion-shell-scripts.md` | You chose `completion` recipe. Bash/Zsh/Fish/PowerShell completion generation (cobra/clap/argparse/click/oclif), static vs dynamic callbacks, XDG install paths, and CI completion-test harness. |
+| `references/config-file-design.md` | You chose `config` recipe. Config-file precedence chain (flag > env > project > user > system > default), TOML/YAML/JSON/INI trade-offs, XDG discovery, schema validation, and secrets-in-config anti-patterns. |
+| `references/pkg-distribution.md` | You chose `pkg` recipe. Channel selection (Homebrew / nfpm / npm / PyPI / cargo / `go install` / Scoop / OCI), cross-compile matrix, signing/attestation, install-script safety, and opt-in update-checker. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the CLI/TUI report, calibrating effort to scaffold/feature/refactor scope, or front-loading language/contract at BLUEPRINT. Critical for Anvil: P3, P6. |
 
 ## Operational

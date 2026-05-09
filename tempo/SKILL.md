@@ -337,7 +337,7 @@ Brief matrix; details in `references/cron-patterns.md` and `references/retry-str
 |----------|------------|----------|-------|-----|-------------|
 | **GitHub Actions** | 5-field Unix | UTC only | Manual in workflow | None native — log + issue | Manual |
 | **AWS EventBridge** | 6-field `cron(...)` | UTC or local via rule | Lambda retry (2 default) + async DLQ | SQS DLQ | Request-ID based |
-| **K8s CronJob** | 5-field Unix | UTC (cluster) or spec.timeZone (v1.25+ beta) | `backoffLimit` | Failed-job history + external | Manual |
+| **K8s CronJob** | 5-field Unix | UTC (cluster) or spec.timeZone (stable since v1.27; embedded Go tzdata fallback) | `backoffLimit` | Failed-job history + external | Manual |
 | **Cloud Scheduler** (GCP) | 5-field Unix + `timeZone` | Any IANA | Retry config on Job | Pub/Sub DLQ | Manual |
 | **Sidekiq** (Ruby) | cron-parser via sidekiq-cron | Any IANA | Built-in exp backoff (25 retries) | Morgue queue | `sidekiq_options lock: :until_executed` |
 | **BullMQ** (Node) | cron via repeat option | Any IANA | `attempts` + `backoff: exponential` | `failed` list | Custom via job ID |

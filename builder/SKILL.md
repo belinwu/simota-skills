@@ -271,6 +271,9 @@ Read only the files required for the current decision.
 | `references/architecture-patterns.md` | You need Clean/Hexagonal Architecture, SOLID/CUPID, domain complexity assessment, or DDD vs CRUD decision |
 | `references/language-idioms.md` | You are working with Go 1.22+ or Python 3.12+ (TypeScript is default) |
 | `references/process-and-examples.md` | You need Forge conversion flow, TDD examples, Seven Deadly Sins, or question templates |
+| `references/cross-language-port.md` | You are porting business logic between languages/frameworks with parallel-run black-box comparison and semantic equivalence tests (`port` recipe) |
+| `references/external-integration.md` | You are integrating an external API (Stripe/Slack/GitHub etc.) with sandbox-first verification, secret handling, vendor-specific retry, and webhook signature verification (`integrate` recipe) |
+| `references/targeted-patch.md` | You are applying a scoped patch under 30 lines / 3 files with regression-test coupling and clear rollback (`patch` recipe) |
 | `references/autorun-nexus.md` | You need exact AUTORUN or Nexus Hub mode compatibility details |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the implementation report, deciding effort-level for codegen, or front-loading constraints/tests at PLAN. Critical for Builder: P3, P6. |
 

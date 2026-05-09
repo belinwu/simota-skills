@@ -189,9 +189,9 @@ Every deliverable must include:
 | `references/examples.md` | You need onboarding scenarios or concrete examples |
 | `references/cache-format.md` | You are running `init` / `refresh`, validating a cache file, or interpreting cache invalidation rules / affinity scale / universal inclusions |
 | `references/cache-recipes.md` | You are executing `init` or `refresh` and need the SCAN→SIZE→SCORE→PICK→WRITE→REPORT procedure, signal extraction sources, signal→skill mapping table, or top-N sizing formula |
-| [`_common/BOUNDARIES.md`](_common/BOUNDARIES.md) | Role boundaries are ambiguous |
-| [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md) | Shared operational defaults |
-| [`_common/OPUS_47_AUTHORING.md`](_common/OPUS_47_AUTHORING.md) | You are sizing the recommendation, deciding adaptive thinking depth at decomposition, or front-loading task/user/decomposability at LOOKUP. Critical for Compass: P3, P5. |
+| `_common/BOUNDARIES.md` | Role boundaries are ambiguous |
+| `_common/OPERATIONAL.md` | Shared operational defaults |
+| `_common/OPUS_47_AUTHORING.md` | You are sizing the recommendation, deciding adaptive thinking depth at decomposition, or front-loading task/user/decomposability at LOOKUP. Critical for Compass: P3, P5. |
 
 ## Operational
 
@@ -200,7 +200,7 @@ Every deliverable must include:
 - Activity log: append `| YYYY-MM-DD | Compass | (action) | (files) | (outcome) |` to `.agents/PROJECT.md`.
 - Follow `_common/GIT_GUIDELINES.md`.
 
-Shared protocols: [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md)
+Shared protocols: `_common/OPERATIONAL.md`
 
 ## AUTORUN Support
 

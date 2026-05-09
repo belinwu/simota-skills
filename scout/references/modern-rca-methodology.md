@@ -3,6 +3,8 @@
 **Purpose:** Evidence-driven RCA guidance for multi-factor failures and incident reviews.
 **Read when:** Simple single-cause RCA is too shallow and you need contributing-factor analysis.
 
+[Source: Google SRE — Site Reliability Engineering, Ch.15 "Postmortem Culture: Learning from Failure" (Lunney & Lueder, 2017) https://sre.google/sre-book/postmortem-culture/]
+
 ## Contents
 
 - Contributing factors

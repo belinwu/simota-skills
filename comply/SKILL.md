@@ -14,6 +14,9 @@ CAPABILITIES_SUMMARY:
 - compliance_reporting: Control matrix generation, gap analysis reports, evidence collection guidance
 - risk_assessment: Risk scoring frameworks, control effectiveness rating, residual risk calculation
 - continuous_monitoring: Compliance drift detection within 48h (SOC 2 CC4.1-CC4.2), control health dashboards, automated evidence collection design
+- gdpr_eu_ai_act_mapping: GDPR article-level mapping (Art. 5/6/7/13/14/15-22/25/32/33/34), DPIA triggers, ROPA template, lawful-basis selection, SCC/BCR cross-border transfer, DSAR workflow, EU AI Act risk tiering (prohibited/high-risk/limited/minimal)
+- audit_readiness: Evidence tier model, evidence-room structure with chain-of-custody, AICPA-aligned sampling strategy, auditor interview prep, findings remediation tracking, 48-hour drift flagging for continuous audit
+- vendor_risk_assessment: Vendor inventory and tier classification, DPA/BAA/SCC contract gating, SIG/CAIQ questionnaire handling, SOC 2 report review (scope/period/CUECs/exceptions/subservice orgs), tier-driven monitoring cadence, subprocessor chain visibility
 
 COLLABORATION_PATTERNS:
 - Sentinel -> Comply: Security control findings for compliance mapping

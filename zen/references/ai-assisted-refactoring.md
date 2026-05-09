@@ -52,6 +52,8 @@ Check these explicitly after any AI-generated proposal:
 | **Behavioral modification** | Tests pass but domain semantics or error handling changed |
 | **Context loss** | Historical comments removed or legacy constraints ignored |
 
+AI-authored CVEs are accelerating: 35 newly disclosed in March 2026, up from 6 in January and 15 in February (Vibe Security Radar tracking; 27 of the 35 March CVEs traced to Claude Code by commit signature) [Source: Infosecurity Magazine — "Security Researchers Sound the Alarm on Vulnerabilities in AI-Generated Code" (2026-03-26), https://www.infosecurity-magazine.com/news/ai-generated-code-vulnerabilities/].
+
 ## Zen Guardrails
 
 ### Multi-Engine mitigation

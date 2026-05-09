@@ -247,6 +247,9 @@ For Echo output, state the visualization type and the scoring or friction legend
 | `references/ascii-templates.md` | You need a plain-text or comment-safe diagram. |
 | `references/reverse-engineering.md` | You are deriving a diagram from code or schema. |
 | `references/c4-model.md` | You need a C4 Context/Container/Component/Code view. |
+| `references/c4-diagrams.md` | You are rendering Mermaid C4 diagrams (C4Context / C4Container / C4Component) for the `c4` recipe, deriving from a Stratum DSL or ad-hoc input. |
+| `references/architecture-diagrams.md` | You are sketching informal architecture diagrams (layered / hexagonal / microservice / event-driven) using Mermaid flowchart + subgraph for the `architecture` recipe. |
+| `references/gantt-diagrams.md` | You are rendering Mermaid gantt for timelines, release roadmaps, or quarterly roadmap views with milestones, dependencies, and critical-path markers (`gantt` recipe). |
 | `references/diff-visualization.md` | You need before/after, schema, or architecture diff views. |
 | `references/echo-integration.md` | You are visualizing Echo journey, persona, team, or friction data. |
 | `references/accessibility.md` | You need accessible colors, alt text, or ASCII fallback. |

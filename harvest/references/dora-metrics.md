@@ -1,10 +1,10 @@
-# DORA 4-Key Metrics Deep-Dive Reference
+# DORA 5-Key Metrics Deep-Dive Reference
 
-Purpose: Structured deep-dive on the four DORA key metrics (Deployment Frequency, Lead Time for Changes, Change Failure Rate, Mean Time to Restore) plus their SPACE complement, anchored to the 2024-2025 DORA report benchmarks. Produces tier-classified delivery diagnostics with measurement-window and data-source caveats explicit.
+Purpose: Structured deep-dive on the five DORA key metrics — three throughput (Deployment Frequency, Lead Time for Changes, Rework Rate) and two stability (Change Failure Rate, Failed Deployment Recovery Time) per DORA 2025 — plus their SPACE complement and 7-archetype team mapping. Produces archetype-mapped delivery diagnostics with measurement-window and data-source caveats explicit. Per-metric tier thresholds (Elite/High/Medium/Low) remain valid for individual-metric framing; team-level classification uses the 7 archetypes.
 
 ## Scope Boundary
 
-- **harvest `dora`**: focused 4-key metric report with tier classification, trend, and SPACE complement. Anchored to gh PR/release data plus deploy/incident sources.
+- **harvest `dora`**: focused 5-key metric report with per-metric thresholds, 7-archetype team mapping, trend, and SPACE complement. Anchored to gh PR/release data plus deploy/incident sources.
 - **harvest `weekly` / `monthly` (elsewhere)**: PR aggregation reports. Surface DORA throughput as one section but do not deep-dive tiers.
 - **harvest `release` (elsewhere)**: changelog and release-note generation, not delivery-performance diagnostics.
 - **harvest `retro` (elsewhere)**: narrative voice over a sprint window, not metric tier classification.
@@ -37,18 +37,20 @@ COMPLEMENT→  pair with SPACE: satisfaction, performance, activity, comm, effic
 REPORT    →  tier table + trend + SPACE notes + AI-period caveat + next actions
 ```
 
-## 2024-2025 Tier Thresholds
+## Per-Metric Thresholds (DORA 2024-2025 benchmarks)
 
 | Metric | Elite | High | Medium | Low |
 |--------|-------|------|--------|-----|
-| Deployment Frequency | On-demand (multiple/day) | 1/day - 1/week | 1/week - 1/month | < 1/month |
-| Lead Time for Changes | < 1 hour | 1 day - 1 week | 1 week - 1 month | > 1 month |
-| Change Failure Rate | 0-5% | 5-10% | 10-15% | > 15% |
-| Mean Time to Restore | < 1 hour | < 1 day | 1 day - 1 week | > 1 week |
+| Deployment Frequency (throughput) | On-demand (multiple/day) | 1/day - 1/week | 1/week - 1/month | < 1/month |
+| Lead Time for Changes (throughput) | < 1 hour | 1 day - 1 week | 1 week - 1 month | > 1 month |
+| Rework Rate (throughput, DORA 2025) | < 2% | 2-8% | 8-16% | > 16% |
+| Change Failure Rate (stability) | 0-5% | 5-10% | 10-15% | > 15% |
+| Failed Deployment Recovery Time (stability) | < 1 hour | < 1 day | 1 day - 1 week | > 1 week |
 
 Notes:
-- DORA 2025 deprecated the 4-tier cluster classification at the team level — these per-metric thresholds remain valid for individual metric framing, but team profiling should use the 7 archetypes.
-- Failed deployment recovery time (a 5th key in DORA 2024) is reported separately when distinct from incident MTTR.
+- DORA 2025 deprecated the 4-tier cluster classification at the team level — these per-metric thresholds remain valid for individual-metric framing, but team profiling MUST use the 7 archetypes (Foundational Challenges / Legacy Bottleneck / Constrained by Process / High Impact Low Cadence / Stable and Methodical / Pragmatic Performers / Harmonious High-Achievers).
+- Rework Rate (added DORA 2025) measures unplanned deployments fixing user-facing defects ÷ total deployments. Only ~7.3% of teams achieve <2%.
+- Failed Deployment Recovery Time supersedes the older MTTR framing for delivery-pipeline failure recovery; incident MTTR (production user-facing outage) is reported separately and routed to Beacon.
 
 ## Measurement Window Selection
 

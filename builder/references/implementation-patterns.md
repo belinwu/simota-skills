@@ -112,6 +112,7 @@ type UserId = z.infer<typeof UserIdSchema>;
 const NameSchema = z.string({ error: 'Name is required' }).min(1);
 
 // v4: built-in JSON Schema export
+// [Source: Zod — JSON Schema (zod.dev/json-schema)](https://zod.dev/json-schema)
 const jsonSchema = UserSchema.toJSONSchema();
 
 // v4: @zod/mini (tree-shakable)
