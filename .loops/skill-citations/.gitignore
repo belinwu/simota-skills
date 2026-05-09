@@ -1,0 +1,8 @@
+state/
+batches/
+reports/
+runner.log*
+runner.jsonl*
+progress.md
+.run-loop.lock/
+archive-*/
