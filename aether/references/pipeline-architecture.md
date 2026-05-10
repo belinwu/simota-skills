@@ -43,6 +43,7 @@ Keep the path asynchronous or streaming. A synchronous end-to-end chain is for d
 | Local WebSocket | `5-20ms` | Medium | Cross-language components |
 | gRPC | `1-5ms` | High | Typed service boundaries |
 | Durable queue | `10-50ms` | High | Persistence and retry heavy workflows |
+| MCP server (stdio / HTTP+SSE) | `5-50ms` | Medium | Exposing AITuber capabilities (chat-router, memory, persona switch) to external AI assistants — Linux Foundation Agentic AI Foundation (AAIF) anchor protocol since 2025-12-09; track AAIF for upstream protocol governance changes [Source: Linux Foundation — Announcing the AAIF (2025-12-09)](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation) |
 
 ## Latency Budget
 

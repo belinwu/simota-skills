@@ -203,7 +203,7 @@ Behavior notes per Recipe:
 | FIPS 204 (ML-DSA) | CRYSTALS-Dilithium | Digital signatures (general) | Recommended — finalized Aug 2024 |
 | FIPS 205 (SLH-DSA) | SPHINCS+ | Digital signatures (conservative, hash-based) | Recommended — finalized Aug 2024 |
 | FIPS 206 (FN-DSA) | FALCON | Digital signatures (compact) | In development |
-| HQC | HQC | Key encapsulation (code-based backup for ML-KEM) | Selected March 2025; draft standard 2026, final expected 2027 |
+| HQC | HQC | Key encapsulation (code-based backup for ML-KEM, code-based math distinct from lattice) | Selected 2025-03-11 from NIST's fourth round; draft standard expected early 2026 with 90-day public comment, final standard targeted 2027 [Source: NIST — Selects HQC as Fifth Algorithm for Post-Quantum Encryption](https://www.nist.gov/news-events/news/2025/03/nist-selects-hqc-fifth-algorithm-post-quantum-encryption) |
 
 **Migration timeline (NIST IR 8547):** Deprecate quantum-vulnerable algorithms by 2030; disallow by 2035. High-risk systems should transition now. Use hybrid schemes (classical + PQC) during transition.
 
