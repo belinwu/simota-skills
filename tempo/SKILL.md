@@ -271,7 +271,7 @@ Read `references/timezone-safety.md` for the full discipline.
 
 | Library | State | Recommendation |
 |---------|-------|----------------|
-| **Temporal API** (`ZonedDateTime`, `Instant`) | ECMAScript Stage 3; polyfill `@js-temporal/polyfill` | New TS/JS code — preferred long-term |
+| **Temporal API** (`ZonedDateTime`, `Instant`) | ECMAScript **Stage 4** (advanced 2026-03, in ES2026 spec); shipping in Firefox 139 / Chrome 144 / Node 26; polyfill `@js-temporal/polyfill` for older runtimes [Source: Socket — TC39 Advances Temporal to Stage 4](https://socket.dev/blog/tc39-advances-temporal-to-stage-4) | New TS/JS code — preferred long-term |
 | **Luxon** (`DateTime.setZone`, `.toUTC`) | Mature, IANA-aware | Excellent for current production JS/TS |
 | **date-fns-tz** (`formatInTimeZone`, `zonedTimeToUtc`) | Function-based companion to date-fns | Good when already on date-fns |
 | **Moment.js** | Maintenance mode since 2020 | Do NOT use in new code; migrate to Luxon |
