@@ -126,7 +126,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 ### Phase Details
 
 **SCAN** collects:
-- YAML frontmatter presence and content (F1)
+- YAML frontmatter presence and content (F1) — also reject any key outside `name:` / `description:`, and check the body for an explicit capability declaration; escalate `permissions:` / `trust:` / `capabilities:` style custom keys to `chain` as P0 supply-chain risk
 - Language distribution in body vs description (L1)
 - HTML comment blocks: CAPABILITIES_SUMMARY, COLLABORATION_PATTERNS, PROJECT_AFFINITY (H1-H3)
 - Section headings and their content completeness (S1-S9)

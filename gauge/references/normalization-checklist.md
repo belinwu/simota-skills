@@ -12,9 +12,13 @@
 
 | Status | Criteria |
 |--------|----------|
-| PASS | `---` delimiters present, contains `name:` and `description:` fields |
-| PARTIAL | Delimiters present but missing `name:` or `description:` |
-| FAIL | No YAML frontmatter block |
+| PASS | `---` delimiters present, contains **exactly** `name:` and `description:` (no custom keys); body contains an explicit capability declaration line (e.g. "Tools used:" or equivalent prose stating the tools/MCP/network surface the skill touches) |
+| PARTIAL | Delimiters present and `name:` + `description:` exist, but the body lacks an explicit capability declaration |
+| FAIL | No YAML frontmatter block, OR frontmatter contains keys outside `name:` and `description:` (e.g. `tools:`, `capabilities:`, `required_tools:`, `permissions:`, `trust:`) |
+
+**Detection — custom-key rejection:** the official Anthropic Agent Skills spec defines the frontmatter as `name` + `description` only. Any other key indicates either format drift (forward-compatibility risk) or a smuggling attempt. Treat any custom frontmatter key as `FAIL`, classify as **P0** when the key looks security-sensitive (`permissions:`, `trust:`, `capabilities:` with elevated scopes), **P1** otherwise. Escalate `P0` cases to `chain` for full intake audit. [Source: platform.claude.com — Agent Skills Overview; `_common/SECURITY.md`]
+
+**Detection — body capability declaration:** scan the SKILL.md body (after frontmatter) for an explicit declaration of the tools / MCP servers / network hosts the skill expects to use. Acceptable formats include a `Tools used: Read, Edit, Bash` line, a "Network allowlist:" line, or a short paragraph naming the touchpoints. Absence of any such declaration is `PARTIAL` (not `FAIL`) because capability mismatch is detected at runtime by `chain` audits; the declaration here is an authoring expectation, not a hard runtime gate.
 
 ### L1: Language Compliance
 
