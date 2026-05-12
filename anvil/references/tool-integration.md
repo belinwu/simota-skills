@@ -283,9 +283,14 @@ async function runDoctorChecks(): Promise<CheckResult[]> {
   const majorVersion = parseInt(process.version.slice(1).split('.')[0]);
   checks.push({
     name: 'Node.js',
-    status: majorVersion >= 18 ? 'ok' : 'error',
+    status: majorVersion >= 22 ? 'ok' : majorVersion >= 20 ? 'warn' : 'error',
     message: `Node.js ${process.version}`,
-    fix: majorVersion < 18 ? 'Upgrade to Node.js 18+' : undefined,
+    fix:
+      majorVersion < 20
+        ? 'Upgrade to Node.js 22 LTS (Node 18 reached EOL 2025-04, Node 20 LTS active through 2026-04)'
+        : majorVersion < 22
+          ? 'Node 20 LTS is still supported but Node 22 LTS is recommended for new projects'
+          : undefined,
   });
 
   // Package manager

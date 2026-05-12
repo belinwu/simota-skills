@@ -296,7 +296,7 @@ Behavior notes per Recipe:
 
 | Signal | Approach | Primary output | Read next |
 |--------|----------|----------------|-----------|
-| `landing page`, `LP`, `one page site` | LP pipeline (Frame/Muse → Forge → Artisan → Showcase) | Production LP code + stories + tokens | `references/onboarding.md` (if present) |
+| `landing page`, `LP`, `one page site` | LP pipeline (Frame/Muse → Forge → Artisan → Showcase) | Production LP code + stories + tokens | — |
 | `extract tokens`, `codebase design system` | ONBOARDING + Muse normalization | Persisted design system + token report | — |
 | `pitch deck + assets + 1-pager` | Parallel Stage/Ink/Morph bundle | Deck + assets + 1-pager export | — |
 | `Figma to code`, `design to implementation` | Frame → Muse → Artisan → Showcase | Production code + catalog | — |
