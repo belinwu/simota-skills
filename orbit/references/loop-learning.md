@@ -11,6 +11,7 @@ Purpose: load this when Orbit analyzes completed loops, adapts defaults, or sync
 5. Safety guardrails
 6. Integration points
 7. Templates
+8. Regression eval harvest
 
 ## REFINE Workflow
 
@@ -247,3 +248,35 @@ ORBIT_TO_LORE_PATTERN:
 - LES after 3 executions: <score>
 - Rollback needed: YES / NO
 ```
+
+
+## Regression Eval Harvest
+
+Use this when a loop fires `RECOVER`, `CIRCUIT_OPEN`, `CONVERGENCE_STALL`, `OSCILLATION_LOOP`, `VALIDATOR_GAP`, `REWARD_HACK`, `GOAL_DRIFT`, `BURN_RATE_ANOMALY`, or `PERMISSION_HIJACK`. The failed trace is more valuable than any synthetic test.
+
+Steps:
+
+1. **Snapshot the trace** — capture the failing iteration's `progress.md` entry, `state.env`, last `EXEC_TIMEOUT` worth of `runner.log`, and any `decisions.md` delta.
+2. **Distil to a single behavioural assertion** — rewrite the failure as a one-line claim the next runner must satisfy. Example: `loop must abort within 30s when tests/ file mtime changes during an iteration` (AP-13 regression).
+3. **Append to `.agents/orbit-eval.md`** under a section keyed by failure class. This file is append-only; never edit historical entries.
+4. **Wire into next GENERATE** — when generating a new loop in the same project, read `.agents/orbit-eval.md` and inject the relevant behavioural assertions into the generated `verify.sh` as additional checks.
+5. **Trajectory-level eval, not final-output eval** — record the *sequence of actions* that led to the failure, not just the final state. Final-output checks miss `OSCILLATION_LOOP` and `BURN_RATE_ANOMALY`, which are sequence-shaped failures. [Source: augmentcode.com — Best AI Agent Evaluation Tools; augmentcode.com — Agent Observability for AI Coding]
+
+Eval entry format:
+
+```markdown
+### <failure-class> | <ISO8601 first observed> | severity <P0|P1|P2>
+
+**Trigger conditions:** <what state of the loop produced this failure>
+**Behavioural assertion:** <one-line claim the next runner must satisfy>
+**Verify check (bash one-liner or test name):** <executable check>
+**Source incident:** loop-dir `<path>`, iter `<id>`
+**Mitigation status:** active | retired (date) | superseded by <other entry>
+```
+
+Lifecycle:
+- Each entry stays *active* until 3 consecutive future loops in the same project pass the assertion without intervention.
+- After 3 clean passes, mark *retired* and date-stamp; do not delete (kept for audit).
+- If a later incident matches a retired entry, reactivate and append a delta entry referencing the original.
+
+Connect to `RF-02`: when `RF-02` fires (same tier blocked 3+ times), the eval harvest is the first step of the full REFINE cycle.
