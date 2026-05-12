@@ -1,6 +1,6 @@
 # Gherkin Authoring Reference
 
-Purpose: Author production-quality Gherkin `.feature` files with framework-aware step-definition mapping. Cover Cucumber-JVM, Cucumber-JS, SpecFlow (.NET), Behave (Python), pytest-bdd, Godog (Go), and Reqnroll. Translate ACs into executable BDD specifications.
+Purpose: Author production-quality Gherkin `.feature` files with framework-aware step-definition mapping. Cover Cucumber-JVM, Cucumber-JS, Reqnroll (.NET, the active fork of SpecFlow), Behave (Python), pytest-bdd, and Godog (Go). Translate ACs into executable BDD specifications.
 
 ## Scope Boundary
 
@@ -131,7 +131,7 @@ public class RefundSteps {
 }
 ```
 
-Note: Reqnroll is the maintained successor to SpecFlow as of 2024.
+Note: Reqnroll is the maintained successor to SpecFlow. SpecFlow has been stagnant since 2022; new .NET BDD projects should adopt Reqnroll directly. Existing SpecFlow projects can migrate via Reqnroll's compatibility shim — Gherkin syntax is preserved, and step-definition method signatures map 1:1.
 
 ### Behave (Python)
 
@@ -291,7 +291,7 @@ HANDOFF     →  Builder: step body implementation
 [full .feature content]
 
 ### Step Definition Stubs
-- **Framework**: [Cucumber-JS / Cucumber-JVM / SpecFlow / Behave / pytest-bdd / Godog]
+- **Framework**: [Cucumber-JS / Cucumber-JVM / Reqnroll (.NET) / Behave / pytest-bdd / Godog]
 - **File**: [path]
 - [code stubs]
 

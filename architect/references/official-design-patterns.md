@@ -461,7 +461,7 @@ Prefer composing general-purpose tools (bash, text editor, file I/O) into patter
 
 | Evidence | Result |
 |----------|--------|
-| SWE-bench Verified (as of 2025) | Claude 3.5 Sonnet achieved 49% using only bash + text editor |
+| SWE-bench Verified (2025-Q1 historical reference) | Claude 3.5 Sonnet achieved 49% using only bash + text editor. Current Claude 4.x results have surpassed this number; the historical figure is preserved here to anchor the design rule that simple tools + good models often beat custom-tool architectures. |
 
 **Design rule**: Skills, programmatic tool calling, and memory systems should build on general tool composition. Create specialized tools only when general composition is insufficient — and only when one of the four boundary conditions in Section 10.3 is met.
 

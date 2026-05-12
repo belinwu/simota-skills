@@ -17,7 +17,7 @@ If the question is "does the top-K contain the right answer?" → `rerank`. If i
 | Cross-encoder | BGE Reranker v2-m3, Cohere Rerank 3, jina-reranker-v2 | Highest NDCG — joint query-doc attention | O(N) inference; 30-100ms for N=50 |
 | Late interaction | ColBERTv2, jina-colbert-v2 | Precomputable doc vectors, token-level match | Storage cost — multi-vector per doc |
 | Learning to Rank | LambdaMART (LightGBM LTR, XGBoost `rank:pairwise`) | Uses handcrafted features + click signals | Requires labeled / click data |
-| LLM-as-reranker | GPT-4 / Claude with listwise prompt | Zero-shot, explainable | Cost + latency — rarely production-viable |
+| LLM-as-reranker | Frontier LLM (Claude Opus/Sonnet, GPT-5, Gemini 2.x) with listwise prompt | Zero-shot, explainable | Cost + latency — rarely production-viable |
 | Cohere Rerank API | Managed | No infra | Vendor dependency, per-call cost |
 
 Default picks:
