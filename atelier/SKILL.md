@@ -367,6 +367,7 @@ Every atelier deliverable must include:
 | `_common/design-system-registry.md` | You need the registry contract for `.agents/design-system/{project}.json` persistence |
 | `_common/parametric-output.md` | You need the parametric-slider output convention downstream agents parse |
 | `_common/GIT_GUIDELINES.md` | You are authoring commits or PRs touching atelier pipeline artifacts |
+| `_common/UX_TRENDS_2026.md` | You need cross-domain 2025-2026 evidence to orchestrate Vision / Muse / Frame / Forge / Artisan / Showcase / Echo handoffs. Covers tokens (DTCG, OKLCH/P3), motion (`linear()`, View Transitions), IA (agentic UX, NN/g), and frontend (RSC, Tailwind v4, INP) in one file. Read all three sections. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing delegate prompts, deciding per-delegate model effort, or front-loading acceptance criteria |
 
 ## Operational

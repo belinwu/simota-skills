@@ -202,6 +202,7 @@ Forge receives concepts and direction from upstream agents, builds rapid prototy
 | `references/mobile-prototyping.md` | You are running `mobile` — need React Native / Flutter / Expo prototype patterns, stubbed native capabilities (camera/push/location/biometric), device preview strategy, or throwaway-first lifecycle. |
 | `references/dashboard-prototyping.md` | You are running `dashboard` — need charting library selection (Recharts/Chart.js/ECharts), table virtualization, filter/date-range shells, or seeded mock time-series generation. |
 | `references/ai-feature-prototyping.md` | You are running `ai` — need chat UI / streaming response shell / RAG demo / agent UI patterns with prompt-injection-safe input handling and token-cost budget awareness. |
+| `_common/UX_TRENDS_2026.md` | You need 2025-2026 frontend stack defaults — React 19.2 RSC, Svelte 5 Runes, Vue 3.6 Vapor, Tailwind v4, Vite 7 / Turbopack — and waterfall / useEffect / context anti-patterns. Read §3 Frontend. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the demo summary, deciding effort-level for the time-box, or front-loading hypothesis/L-tier at the first phase. Critical for Forge: P3, P6. |
 
 ## Operational
