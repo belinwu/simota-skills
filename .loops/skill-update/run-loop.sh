@@ -79,6 +79,27 @@ atomic_write() {
 }
 
 # ============================================================================
+# Portable SHA-256 hash (BSD/GNU compatible)
+# ============================================================================
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$@"
+  else
+    echo "[ERROR] sha256sum/shasum not found" >&2
+    return 1
+  fi
+}
+
+# ============================================================================
+# Portable file mtime epoch (BSD/GNU compatible)
+# ============================================================================
+file_mtime() {
+  stat -f %m "$1" 2>/dev/null || stat -c %Y "$1" 2>/dev/null || echo 0
+}
+
+# ============================================================================
 # Portable timeout helper (macOS BSD lacks `timeout`; falls back to perl alarm).
 # Exit codes: 124 on timeout, otherwise the child's exit code.
 # ============================================================================
@@ -156,7 +177,7 @@ preflight() {
   # State integrity
   if [[ -f "${STATE_ENV}" && -f "${STATE_SHA}" ]]; then
     local got want
-    got=$(shasum -a 256 "${STATE_ENV}" | awk '{print $1}')
+    got=$(sha256_hash "${STATE_ENV}" | awk '{print $1}')
     want=$(cat "${STATE_SHA}")
     if [[ "${got}" != "${want}" ]]; then
       log_err "[PREFLIGHT:FAIL] state.env checksum mismatch (run recover.sh)"
@@ -222,7 +243,7 @@ circuit_check() {
   [[ "${CIRCUIT_BREAKER}" != "true" ]] && return 0
   if [[ "$(circuit_state)" == "OPEN" ]]; then
     local age
-    age=$(( $(date +%s) - $(stat -f %m "${CIRCUIT_FILE}" 2>/dev/null || echo 0) ))
+    age=$(( $(date +%s) - $(file_mtime "${CIRCUIT_FILE}") ))
     if (( age < CIRCUIT_COOLDOWN )); then
       log_err "circuit OPEN; cooldown ${age}/${CIRCUIT_COOLDOWN}s"
       LAST_STATUS=BLOCKED
@@ -255,7 +276,7 @@ BATCH_SIZE=${BATCH_SIZE}
 EOF
 )
   atomic_write "${STATE_ENV}" "${content}"$'\n'
-  shasum -a 256 "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
+  sha256_hash "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
   mv -- "${STATE_SHA}.tmp" "${STATE_SHA}"
 }
 

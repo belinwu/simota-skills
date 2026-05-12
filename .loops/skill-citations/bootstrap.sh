@@ -12,6 +12,18 @@ TODO_FILE="${LOOP_DIR}/citations-todo.md"
 
 mkdir -p "${STATE_DIR}" "${REPORTS_DIR}" "${BATCHES_DIR}"
 
+# Portable SHA-256 hash (BSD/GNU compatible)
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$@"
+  else
+    echo "[ERROR] sha256sum/shasum not found" >&2
+    return 1
+  fi
+}
+
 reset_mode=false
 for arg in "$@"; do
   case "${arg}" in
@@ -50,7 +62,7 @@ EOF
   mv -- "${STATE_ENV}.tmp" "${STATE_ENV}"
 fi
 
-shasum -a 256 "${STATE_ENV}" | awk '{print $1}' > "${STATE_DIR}/state.env.sha256.tmp"
+sha256_hash "${STATE_ENV}" | awk '{print $1}' > "${STATE_DIR}/state.env.sha256.tmp"
 mv -- "${STATE_DIR}/state.env.sha256.tmp" "${STATE_DIR}/state.env.sha256"
 
 # --- 3. Initialize progress.md and reports ----------------------------------

@@ -23,6 +23,23 @@ CIRCUIT_FILE="${STATE_DIR}/.circuit-state"
 ts()   { date -u +%Y-%m-%dT%H:%M:%SZ; }
 info() { printf '[recover %s] %s\n' "$(ts)" "$1" >&2; }
 
+# Portable SHA-256 hash (BSD/GNU compatible)
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$@"
+  else
+    echo "[ERROR] sha256sum/shasum not found" >&2
+    return 1
+  fi
+}
+
+# Portable file mtime epoch (BSD/GNU compatible)
+file_mtime() {
+  stat -f %m "$1" 2>/dev/null || stat -c %Y "$1" 2>/dev/null || echo 0
+}
+
 usage() {
   awk '/^# recover\.sh/,/^$/' "$0" | sed 's/^# //'
   exit 64
@@ -70,14 +87,14 @@ SKILLS_TOTAL=${total}
 BATCH_SIZE=5
 EOF
   mv -- "${STATE_ENV}.tmp" "${STATE_ENV}"
-  shasum -a 256 "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
+  sha256_hash "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
   mv -- "${STATE_SHA}.tmp" "${STATE_SHA}"
   info "rebuilt state.env (remaining=${remaining}, total=${total})"
 }
 
 action_rehash() {
   [[ ! -f "${STATE_ENV}" ]] && { info "ERROR: state.env missing"; exit 65; }
-  shasum -a 256 "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
+  sha256_hash "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
   mv -- "${STATE_SHA}.tmp" "${STATE_SHA}"
   info "rehashed state.env"
 }
@@ -92,7 +109,7 @@ action_diagnose() {
   printf 'circuit    : %s\n' "$([[ -f "${CIRCUIT_FILE}" ]] && cat "${CIRCUIT_FILE}" || echo CLOSED)"
   if [[ -f "${STATE_ENV}" && -f "${STATE_SHA}" ]]; then
     local got want
-    got=$(shasum -a 256 "${STATE_ENV}" | awk '{print $1}')
+    got=$(sha256_hash "${STATE_ENV}" | awk '{print $1}')
     want=$(cat "${STATE_SHA}")
     if [[ "${got}" == "${want}" ]]; then
       printf 'state hash : OK\n'

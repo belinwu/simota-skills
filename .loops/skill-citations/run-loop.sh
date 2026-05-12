@@ -63,6 +63,23 @@ atomic_write() {
   mv -- "${tmp}" "${target}"
 }
 
+# Portable SHA-256 hash (BSD/GNU compatible)
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$@"
+  else
+    echo "[ERROR] sha256sum/shasum not found" >&2
+    return 1
+  fi
+}
+
+# Portable file mtime epoch (BSD/GNU compatible)
+file_mtime() {
+  stat -f %m "$1" 2>/dev/null || stat -c %Y "$1" 2>/dev/null || echo 0
+}
+
 run_with_timeout() {
   local sec="$1"; shift
   if command -v timeout >/dev/null 2>&1; then
@@ -117,7 +134,7 @@ preflight() {
   (( disk_kb >= MIN_DISK_START_KB )) || { log_err "[PREFLIGHT:FAIL] disk ${disk_kb}KB"; return 1; }
   if [[ -f "${STATE_ENV}" && -f "${STATE_SHA}" ]]; then
     local got want
-    got=$(shasum -a 256 "${STATE_ENV}" | awk '{print $1}')
+    got=$(sha256_hash "${STATE_ENV}" | awk '{print $1}')
     want=$(cat "${STATE_SHA}")
     [[ "${got}" == "${want}" ]] || { log_err "[PREFLIGHT:FAIL] state.env checksum mismatch"; return 1; }
   fi
@@ -146,7 +163,7 @@ circuit_record_success() { rm -f "${CIRCUIT_FILE}.fails" "${CIRCUIT_FILE}"; }
 circuit_check() {
   [[ "${CIRCUIT_BREAKER}" != "true" ]] && return 0
   if [[ "$(circuit_state)" == "OPEN" ]]; then
-    local age; age=$(( $(date +%s) - $(stat -f %m "${CIRCUIT_FILE}" 2>/dev/null || echo 0) ))
+    local age; age=$(( $(date +%s) - $(file_mtime "${CIRCUIT_FILE}") ))
     if (( age < CIRCUIT_COOLDOWN )); then
       LAST_STATUS=BLOCKED
       LAST_SUMMARY="circuit OPEN (cooldown ${age}/${CIRCUIT_COOLDOWN}s)"; exit 69
@@ -173,7 +190,7 @@ BATCH_SIZE=${BATCH_SIZE}
 EOF
 )
   atomic_write "${STATE_ENV}" "${content}"$'\n'
-  shasum -a 256 "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
+  sha256_hash "${STATE_ENV}" | awk '{print $1}' > "${STATE_SHA}.tmp"
   mv -- "${STATE_SHA}.tmp" "${STATE_SHA}"
 }
 
