@@ -270,6 +270,7 @@ Use mode-specific reporting:
 | `references/smoke-deployment-gates.md` | You need post-deploy smoke suite design, the canary/smoke/regression hierarchy, synthetic-check topology, or ≤3-min deploy-gate time-budget discipline. |
 | `references/resilience-patterns.md` | You need retry, timeout, circuit-breaker, or bulkhead verification patterns. |
 | `references/resilience-anti-patterns.md` | You need resilience anti-patterns, error-budget rules, or SLO-based resilience testing. |
+| `references/test-strategy-2026.md` | You need the consolidated 2026 picture across the seven test layers (unit+PBT / mutation / metamorphic / integration+contract / trace-based / E2E+visual+a11y / load+chaos+replay), shape selection (pyramid / diamond / trophy), coverage-floor + mutation-ceiling thresholds, or the skill-to-layer mapping. Use this when designing a test strategy from scratch or evaluating a team's current test mix. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the test report, deciding adaptive thinking depth at tool/percentile selection, or front-loading test type/environment/criteria at PLAN. Critical for Siege: P3, P5. |
 
 
