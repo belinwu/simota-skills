@@ -99,6 +99,8 @@ Follow `_common/GIT_GUIDELINES.md`:
 
 When agents emit, document, or execute shell commands (in SKILL.md examples, references, generated scripts, or Bash tool calls), assume the user runs **macOS (Darwin)** with **zsh** unless the repository or user states otherwise.
 
+For cross-platform portability (macOS BSD ↔ Linux GNU), use the approved helper functions defined in **`_common/PORTABILITY.md`** (`sha256_hash`, `file_mtime`, `run_with_timeout`, `find_dirs_with_file`, `pcre_search`).
+
 **Rules:**
 - Default to BSD-compatible syntax. macOS ships BSD coreutils, not GNU. Commands written for Linux often fail silently or with cryptic errors on macOS.
 - When BSD/GNU divergence matters, prefer portable POSIX syntax. If GNU-only flags are required, document the dependency (`brew install coreutils gnu-sed`) and use `g`-prefixed binaries (`gsed`, `gdate`, `gfind`, `gstat`).
