@@ -301,6 +301,7 @@ Hook sources (merged at runtime): `~/.claude/settings.json` (user), `.claude/set
 | Notification | `notification` | | Notification event hook — desktop / Slack / Discord push, sound on permission requests, idle/long-running task alerts, mute rules per project, deduplication | `references/notification-hook.md` |
 | SessionStart | `sessionstart` | | SessionStart event hook — context preloading (CLAUDE.md auto-summary, recent PR list, branch/CI status injection), env validation gates, per-project warm-up scripts | `references/sessionstart-hook.md` |
 | Security | `security` | | PreToolUse security guard — PII / secret regex denial, dangerous Bash command interception (`rm -rf /`, `git push --force` to main), env var leakage block, MCP tool ACL | `references/security-guard-hook.md` |
+| Skill Quarantine | `quarantine` | | SessionStart drift / unaudited-skill detection + PreToolUse plugin-install gate + MCP tool description rug-pull check (works with `chain` audit) | `references/skill-quarantine-hook.md` |
 
 ## Subcommand Dispatch
 
@@ -316,6 +317,7 @@ Behavior notes per Recipe:
 - `notification`: Read `references/notification-hook.md` first. Notification イベントは「permission 要求」「idle 警告 (60s+)」「sub-agent 完了」等で発火。matcher に message regex (`waiting for your approval`, `idle for`) を指定して条件分岐、出力先 (terminal-notifier / Slack incoming-webhook / Discord webhook / desktop notification) を選択。dedup logic で同一 message の連続発火を抑制 (例: 5min 同一 dedupe)。`async: true` で非ブロッキング推奨。session 開始時刻を記録して "深夜は mute" 等の時間帯ルールを実装可能。
 - `sessionstart`: Read `references/sessionstart-hook.md` first. SessionStart イベントは Claude セッション開始 / `/clear` / `/compact` 後に発火。stdout に出力した内容は次のターンの context に注入される (max ~10K tokens 推奨)。よくある用途: 直近 N PRs の gh API 取得、CLAUDE.md 自動要約、現在 branch + CI status + uncommitted file count、env validation (Node.js version mismatch なら exit 2 で startup block)。重い処理は事前 cron で `~/.cache/` に書き出し、hook 内では `cat` のみで lazy load。
 - `security`: Read `references/security-guard-hook.md` first. PreToolUse の `permissionDecision: deny` で危険操作を遮断。代表パターン: (a) Bash 内の `rm -rf /`, `chmod -R 777`, `git push --force` to `main/master` → 即 deny、(b) Write/Edit 対象が `.env`, `id_rsa`, `*.pem`, `secrets.json` → deny、(c) tool input 内の secret regex (`AKIA[0-9A-Z]{16}`, `sk-[A-Za-z0-9]{40+}`, JWT pattern) 検出 → updatedInput で redact + 警告、(d) MCP tool ACL: 特定の `mcp__*` tool を環境変数 `LATCH_BLOCKED_MCP_TOOLS` 経由で deny。CI 環境 (`CI=true`) では interactive deny を全て auto-deny に昇格。
+- `quarantine`: Read `references/skill-quarantine-hook.md` first. Skill / plugin / MCP-server **配布物のサプライチェーン側** をガードする hook 設計(`security` recipe は runtime tool call 側を担当)。SessionStart で `.chain-manifest.json` との sha256 ドリフト検出 + 未監査 skill 警告、PreToolUse(`Bash` matcher) で `claudemarketplaces.com` 系 plugin install を `CLAUDE_PLUGIN_INSTALL_ACK=1` なしには deny、SessionStart で MCP tool description の sha256 を pin して rug-pull を検知。`chain` agent (`/chain intake`, `/chain audit`, `/chain mcp`) と連携。SkillJect / Unicode Tag / Shai-Hulud 系の install-time 攻撃に対する最終防衛線。
 
 ## Output Routing
 
@@ -372,6 +374,7 @@ Every deliverable must include:
 | `references/notification-hook.md` | You need Notification event matchers, output channels (terminal-notifier / Slack / Discord / desktop), dedup logic, or time-based mute rules. |
 | `references/sessionstart-hook.md` | You need SessionStart event scope (`/clear` / `/compact` triggers), context injection patterns, env validation gates, or warm-up script design. |
 | `references/security-guard-hook.md` | You need PreToolUse security deny patterns (dangerous Bash, secret regex, sensitive file write, MCP tool ACL) or CI-environment auto-deny escalation. |
+| `references/skill-quarantine-hook.md` | You need SessionStart skill-manifest drift detection, PreToolUse plugin-install gate, or MCP tool description rug-pull verification. Pairs with the `chain` audit agent and `_common/SECURITY.md`. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the hook spec, deciding adaptive thinking depth at event/permission selection, or front-loading scope/tools/intent at PROFILE. Critical for Latch: P3, P5. |
 
 ## Collaboration
