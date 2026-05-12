@@ -264,7 +264,7 @@ if command -v gemini >/dev/null 2>&1 && [[ "${COMMIT_HASH}" != "no-commit" ]]; t
   else
     PROMPT="Summarize this commit diff in 1-2 natural sentences:\n${DIFF_SUMMARY}"
   fi
-  NOTIFY_TEXT=$(echo -e "${PROMPT}" | gemini 2>/dev/null || true)
+  NOTIFY_TEXT=$(printf '%b\n' "${PROMPT}" | gemini 2>/dev/null || true)
 fi
 
 # Fallback text when Gemini is unavailable or fails

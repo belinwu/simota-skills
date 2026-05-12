@@ -179,6 +179,9 @@ Skip re-recording when neither the tape file nor the CLI binary has changed.
 ```yaml
       - name: Compute source hash
         id: source-hash
+        # Note: GitHub Actions runners are Linux (GNU); sha256sum is available.
+        # For macOS runners use: shasum -a 256 | cut -d' ' -f1
+        # For cross-platform portability see _common/PORTABILITY.md sha256_hash() helper.
         run: |
           hash=$(cat demos/*.tape src/cli/**/*.ts | sha256sum | cut -d' ' -f1)
           echo "hash=$hash" >> "$GITHUB_OUTPUT"

@@ -247,6 +247,13 @@ ENTRYPOINT ["make"]
 # scripts/manifest.sh: emit JSON manifest with input/output checksums
 set -euo pipefail
 
+# Portable SHA-256 hash (BSD/GNU compatible). See _common/PORTABILITY.md.
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"
+  else echo "[ERROR] sha256sum/shasum not found" >&2; return 1; fi
+}
+
 cat <<EOF
 {
   "generated_at": "$(date -u +%FT%TZ)",
@@ -267,9 +274,9 @@ for src in docs/*.md; do
     cat <<JSON
     {
       "source": "$src",
-      "source_sha": "$(sha256sum "$src" | cut -d' ' -f1)",
+      "source_sha": "$(sha256_hash "$src" | cut -d' ' -f1)",
       "target": "$out",
-      "target_sha": "$(sha256sum "$out" | cut -d' ' -f1)"
+      "target_sha": "$(sha256_hash "$out" | cut -d' ' -f1)"
     }
 JSON
   done

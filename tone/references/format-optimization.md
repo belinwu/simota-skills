@@ -601,8 +601,8 @@ done
 
 JSON+="\n  }\n}"
 
-# Write concat file
-echo -e "$CONCAT_LIST" > concat_list.txt
+# Write concat file (printf '%b' for portable escape interpretation; echo -e is unreliable)
+printf '%b' "$CONCAT_LIST" > concat_list.txt
 
 # Concatenate all files
 ffmpeg -y -f concat -safe 0 -i concat_list.txt -c:a pcm_s16le "${OUTPUT_NAME}.wav"
@@ -611,8 +611,8 @@ ffmpeg -y -f concat -safe 0 -i concat_list.txt -c:a pcm_s16le "${OUTPUT_NAME}.wa
 ffmpeg -y -i "${OUTPUT_NAME}.wav" -c:a libvorbis -q:a 6 "${OUTPUT_NAME}.ogg"
 ffmpeg -y -i "${OUTPUT_NAME}.wav" -c:a libmp3lame -q:a 2 "${OUTPUT_NAME}.mp3"
 
-# Write sprite map JSON
-echo -e "$JSON" > "${OUTPUT_NAME}.json"
+# Write sprite map JSON (printf '%b' for portable escape interpretation)
+printf '%b\n' "$JSON" > "${OUTPUT_NAME}.json"
 
 # Cleanup
 rm -f gap.wav concat_list.txt

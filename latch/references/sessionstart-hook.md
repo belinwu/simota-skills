@@ -58,7 +58,9 @@ gh run list --limit 3 --json status,conclusion,name \
 
 ### CLAUDE.md auto-summary (cached)
 ```bash
-CACHE=~/.cache/claude/$(pwd | shasum | cut -c1-8)-claude-md-summary.txt
+# Portable SHA-256 hash (BSD/GNU compatible). See _common/PORTABILITY.md.
+_sha256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum; elif command -v shasum >/dev/null 2>&1; then shasum -a 256; fi; }
+CACHE=~/.cache/claude/$(pwd | _sha256 | cut -c1-8)-claude-md-summary.txt
 
 if [ ! -f "$CACHE" ] || [ "$(find CLAUDE.md -newer "$CACHE" 2>/dev/null)" ]; then
   # Refresh cache (run separately by cron, or skip if too slow)
@@ -186,7 +188,7 @@ Each `_inject-*.sh` is independently maintainable.
 | Output exceeds 10K tokens → context wasted | Truncate; head -N or wc-bounded |
 | Sensitive data leaked into context (env vars) | Filter explicitly; never `env` dump |
 | Running on every `/clear` is unwanted | Trigger-filter for `startup` only |
-| Network call hangs | `timeout 3 gh pr list ...` |
+| Network call hangs | `command -v timeout >/dev/null 2>&1 && timeout 3 gh pr list ... \|\| gh pr list ...` (portable: `timeout` is GNU only; use `gtimeout` or the `run_with_timeout` helper from `_common/PORTABILITY.md` on macOS) |
 | jq missing | Use sed/awk fallback or document install |
 | Output goes to stderr → not captured | Use stdout for context, stderr only for errors |
 | Block exits 2 always → session unusable | Validate before deploying; test exit codes |

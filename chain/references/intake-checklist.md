@@ -53,14 +53,24 @@ See `references/unicode-tag-scan.md` for the full codepoint policy.
 Quick check (any non-zero exit = `REJECT`):
 
 ```bash
+# Portable Unicode scan: perl instead of grep -P (BSD grep has no PCRE).
+# Compatible with macOS (BSD) and Linux (GNU). See _common/PORTABILITY.md.
+
+scan_unicode() {
+  local pat="$1" label="$2"; shift 2
+  find "$@" -type f | while IFS= read -r f; do
+    LC_ALL=C perl -ne "print \"\$ARGV\n\" and last if /$pat/" "$f" 2>/dev/null || true
+  done | sort -u | while IFS= read -r hit; do echo "${label}: ${hit}"; done
+}
+
 # Unicode Tag block U+E0000–U+E007F
-LC_ALL=C grep -rPl '[\xf3\xa0\x80-\x9f][\x80-\xbf]{2}' <skill> && echo "TAG_FOUND"
+scan_unicode '\xf3\xa0[\x80\x81][\x80-\xbf]' "TAG_FOUND" <skill>
 
 # Bidi overrides U+202A–U+202E, U+2066–U+2069
-LC_ALL=C grep -rPl '\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]' <skill> && echo "BIDI_FOUND"
+scan_unicode '\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]' "BIDI_FOUND" <skill>
 
 # Zero-width chars in instruction positions
-LC_ALL=C grep -rPl '\xe2\x80\x8b|\xe2\x80\x8c|\xe2\x80\x8d|\xef\xbb\xbf' <skill> && echo "ZWSP_FOUND"
+scan_unicode '\xe2\x80[\x8b-\x8d]|\xef\xbb\xbf' "ZWSP_FOUND" <skill>
 ```
 
 Any positive hit → `REJECT` with `P0: invisible_chars` and quarantine.

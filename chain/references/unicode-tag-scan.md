@@ -25,13 +25,30 @@ Hidden-instruction channels in Markdown / SKILL.md / bundled scripts are the can
 
 ## Scanner Commands
 
+> **Portability note:** `grep -P` (PCRE) is not available on macOS BSD grep. All scan commands below use `perl` as a portable PCRE engine compatible with both macOS and Linux. See `_common/PORTABILITY.md`.
+
+### Portable scan helper
+
+```bash
+# scan_unicode_tags() — portable Unicode/Bidi/ZW scanner (BSD/GNU compatible)
+# Usage: scan_unicode_tags <skill-dir>
+# Returns: files with hits on stdout, one per line
+scan_unicode_tags() {
+  local target="$1" pattern="$2"
+  # Use perl as PCRE engine (available on both macOS and Linux)
+  find "${target}" -type f | while IFS= read -r f; do
+    LC_ALL=C perl -ne "print \"${f}\n\" and last if /${pattern}/" "$f" 2>/dev/null || true
+  done | sort -u
+}
+```
+
 ### Unicode Tag (P0 reject)
 
 The Unicode Tag block in UTF-8 is encoded as `F3 A0 80 80` through `F3 A0 81 BF`.
 
 ```bash
-# Detect any byte sequence in the Tag range
-LC_ALL=C grep -rPl '\xf3\xa0[\x80\x81][\x80-\xbf]' <skill-dir>
+# Detect any byte sequence in the Tag range (portable: perl instead of grep -P)
+scan_unicode_tags <skill-dir> '\xf3\xa0[\x80\x81][\x80-\xbf]'
 ```
 
 Any hit → return file path and offset → `REJECT + QUARANTINE` with severity `P0`.
@@ -41,7 +58,10 @@ Any hit → return file path and offset → `REJECT + QUARANTINE` with severity 
 ```bash
 # LRE/RLE/PDF/LRO/RLO: U+202A–U+202E → E2 80 AA–AE
 # LRI/RLI/FSI/PDI:     U+2066–U+2069 → E2 81 A6–A9
-LC_ALL=C grep -rPnE $'\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]' <skill-dir>
+# Portable: perl instead of grep -P
+find <skill-dir> -type f | while IFS= read -r f; do
+  LC_ALL=C perl -ne 'print "$ARGV:$.\t$_" if /\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]/' "$f"
+done
 ```
 
 For each hit, check the surrounding 50 chars for an `<!-- i18n: bidi -->` marker on the same line or immediately preceding line. No marker → `P0 REJECT`.
@@ -50,9 +70,10 @@ For each hit, check the surrounding 50 chars for an `<!-- i18n: bidi -->` marker
 
 ```bash
 # ZWSP/ZWNJ/ZWJ → E2 80 8B/8C/8D; BOM → EF BB BF
-LC_ALL=C grep -rPnE $'\xe2\x80[\x8b-\x8d]|\xef\xbb\xbf' <skill-dir> \
-  | grep -v '```' \
-  | grep -vE '<!-- (zwsp|i18n): '
+# Portable: perl instead of grep -P
+find <skill-dir> -type f | while IFS= read -r f; do
+  LC_ALL=C perl -ne 'print "$ARGV:$.\t$_" if /\xe2\x80[\x8b-\x8d]|\xef\xbb\xbf/' "$f"
+done | grep -v '```' | grep -vE '<!-- (zwsp|i18n): '
 ```
 
 Hits outside allowlist → `P1 REJECT`. BOM mid-file → `P1 FLAG`.
@@ -62,28 +83,42 @@ Hits outside allowlist → `P1 REJECT`. BOM mid-file → `P1 FLAG`.
 ```bash
 #!/bin/bash
 # chain/scripts/unicode-scan.sh — usage: unicode-scan.sh <skill-dir>
+# Portable: BSD (macOS) and GNU (Linux) compatible — uses perl instead of grep -P
 set -euo pipefail
 target="$1"
 status=0
 
+# Helper: find files matching a perl regex pattern, print their paths
+scan_files() {
+  local pat="$1"; shift
+  find "$@" -type f | while IFS= read -r f; do
+    LC_ALL=C perl -ne "print \"\$ARGV\n\" and last if /$pat/" "$f" 2>/dev/null || true
+  done | sort -u
+}
+
 echo "== Unicode Tag block (U+E0000-U+E007F) =="
-if LC_ALL=C grep -rPln '\xf3\xa0[\x80\x81][\x80-\xbf]' "$target"; then
+hits=$(scan_files '\xf3\xa0[\x80\x81][\x80-\xbf]' "${target}")
+if [[ -n "${hits}" ]]; then
+  echo "${hits}"
   echo "P0: Unicode Tag detected — REJECT"
   status=2
 fi
 
 echo "== Bidi overrides (U+202A-U+202E, U+2066-U+2069) =="
-hits=$(LC_ALL=C grep -rPln $'\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]' "$target" || true)
-for line in $hits; do
-  if ! grep -B1 -F "$line" "$target" | grep -q '<!-- i18n: bidi -->'; then
-    echo "P0: Bidi override (no allowlist marker) — $line"
+bidi_hits=$(scan_files '\xe2\x80[\xaa-\xae]|\xe2\x81[\xa6-\xa9]' "${target}")
+for f in ${bidi_hits}; do
+  if ! grep -q '<!-- i18n: bidi -->' "$f" 2>/dev/null; then
+    echo "P0: Bidi override (no allowlist marker) — $f"
     status=2
   fi
 done
 
 echo "== Zero-width chars =="
-LC_ALL=C grep -rPln $'\xe2\x80[\x8b-\x8d]' "$target" | grep -v '```' | \
-  grep -vE '<!-- (zwsp|i18n): ' && status=1 || true
+zw_hits=$(scan_files '\xe2\x80[\x8b-\x8d]' "${target}" | grep -v '```' | grep -vE '<!-- (zwsp|i18n): ' || true)
+if [[ -n "${zw_hits}" ]]; then
+  echo "${zw_hits}"
+  status=1
+fi
 
 exit $status
 ```

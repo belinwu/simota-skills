@@ -52,12 +52,20 @@ project_skills="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/skills"
 manifest_cache="${HOME}/.cache/claude/skill-manifests.tsv"
 mkdir -p "$(dirname "$manifest_cache")"
 
+# Portable SHA-256 hash (BSD/GNU compatible)
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"
+  else echo "[ERROR] sha256sum/shasum not found" >&2; return 1; fi
+}
+
 drift_count=0
 unaudited_count=0
 
 for root in "$skills_root" "$project_skills"; do
   [[ -d "$root" ]] || continue
-  while IFS= read -r -d '' skill_dir; do
+  # Portable alternative to find -printf '%h\0' (GNU only)
+  while IFS= read -r skill_dir; do
     name=$(basename "$skill_dir")
     manifest="${skill_dir}/.chain-manifest.json"
     if [[ ! -f "$manifest" ]]; then
@@ -66,13 +74,13 @@ for root in "$skills_root" "$project_skills"; do
       continue
     fi
     # compute current sha of SKILL.md and compare with manifest
-    cur=$(sha256sum "${skill_dir}/SKILL.md" | cut -d' ' -f1)
+    cur=$(sha256_hash "${skill_dir}/SKILL.md" | cut -d' ' -f1)
     pinned=$(jq -r '.files["SKILL.md"]' "$manifest" | sed 's|^sha256:||')
     if [[ "$cur" != "$pinned" ]]; then
       echo "[skill-drift] HASH_MISMATCH: $name (expected $pinned, got $cur)" >&2
       ((drift_count++))
     fi
-  done < <(find "$root" -maxdepth 2 -name SKILL.md -printf '%h\0')
+  done < <(find "$root" -maxdepth 2 -name SKILL.md -type f | while IFS= read -r f; do dirname "$f"; done | sort -u)
 done
 
 if [[ $drift_count -gt 0 ]]; then
@@ -148,12 +156,20 @@ mcp_dir="${HOME}/.claude/mcp"
 pin_file="${HOME}/.cache/claude/mcp-tool-pins.tsv"
 mkdir -p "$(dirname "$pin_file")"
 
+# Portable SHA-256 hash (BSD/GNU compatible)
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"
+  else echo "[ERROR] sha256sum/shasum not found" >&2; return 1; fi
+}
+
 mismatch=0
 for tool_json in "$mcp_dir"/*/tools.json; do
   [[ -f "$tool_json" ]] || continue
   server=$(basename "$(dirname "$tool_json")")
-  cur=$(sha256sum "$tool_json" | cut -d' ' -f1)
-  pinned=$(grep -P "^${server}\t" "$pin_file" 2>/dev/null | cut -f2)
+  cur=$(sha256_hash "$tool_json" | cut -d' ' -f1)
+  # Portable tab-prefixed grep: perl instead of grep -P (unavailable on macOS BSD grep)
+  pinned=$(perl -ne "print (split /\t/, \$_)[1] if /^\Q${server}\E\t/" "$pin_file" 2>/dev/null || true)
   if [[ -z "$pinned" ]]; then
     echo "[mcp-pinning] PINNING $server: $cur" >&2
     printf '%s\t%s\n' "$server" "$cur" >> "$pin_file"

@@ -174,7 +174,12 @@ if command -v eza &>/dev/null; then
   alias ll='eza -la --icons --git'
   alias lt='eza --tree --level=2 --icons'
 else
-  alias ls='ls --color=auto'
+  # Portable ls color: GNU uses --color=auto, BSD (macOS) uses -G
+  if ls --color=auto / >/dev/null 2>&1; then
+    alias ls='ls --color=auto'
+  else
+    alias ls='ls -G'
+  fi
   alias ll='ls -lah'
 fi
 ```

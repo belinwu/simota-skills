@@ -123,9 +123,17 @@ Avoid notification spam (same message firing repeatedly):
 ```bash
 #!/bin/bash
 # ~/.claude/scripts/notify-dedupe.sh
+
+# Portable SHA-256 hash (BSD/GNU compatible). See _common/PORTABILITY.md.
+sha256_hash() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"
+  else echo "[ERROR] sha256sum/shasum not found" >&2; return 1; fi
+}
+
 PAYLOAD=$(cat)
 MESSAGE=$(echo "$PAYLOAD" | jq -r .message)
-HASH=$(echo "$MESSAGE" | shasum | cut -c1-8)
+HASH=$(echo "$MESSAGE" | sha256_hash | cut -c1-8)
 
 CACHE="${TMPDIR:-/tmp}/claude-notify-${HASH}"
 NOW=$(date +%s)
