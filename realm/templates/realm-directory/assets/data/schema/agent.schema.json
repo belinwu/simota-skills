@@ -200,10 +200,30 @@
     },
     "recipes": {
       "type": "array",
-      "description": "Public subcommand slugs the agent exposes.",
+      "description": "Recipes the agent exposes. Each entry includes the subcommand slug, human label, default flag, and the 'When to Use' description sourced from the agent's SKILL.md Recipes table.",
       "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9-]{0,40}$"
+        "type": "object",
+        "required": ["subcommand", "label", "default", "when"],
+        "additionalProperties": false,
+        "properties": {
+          "subcommand": {
+            "type": "string",
+            "description": "Public subcommand slug invoked as '/<agent> <subcommand>'.",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable Recipe name from the SKILL.md table."
+          },
+          "default": {
+            "type": "boolean",
+            "description": "True when this Recipe is the default fallback for the agent."
+          },
+          "when": {
+            "type": "string",
+            "description": "Short description of when to invoke this Recipe (from SKILL.md 'When to Use' column)."
+          }
+        }
       },
       "uniqueItems": true
     }

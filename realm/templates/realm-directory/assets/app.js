@@ -205,6 +205,24 @@
     }[c]));
   }
 
+  // Recipes data may be either the legacy string[] form or the structured
+  // object form { subcommand, label, default, when }. Normalize both so UI
+  // code can rely on consistent shape.
+  function normalizeRecipes(recipes) {
+    if (!Array.isArray(recipes)) return [];
+    return recipes.map(r => {
+      if (typeof r === 'string') {
+        return { subcommand: r, label: r, default: false, when: '' };
+      }
+      return {
+        subcommand: r.subcommand || '',
+        label: r.label || r.subcommand || '',
+        default: Boolean(r.default),
+        when: r.when || ''
+      };
+    }).filter(r => r.subcommand);
+  }
+
   function portraitSvg(agent, opts = {}) {
     const cls = TAXONOMY.classes[agent.class];
     const cat = TAXONOMY.categories[agent.category];
@@ -839,7 +857,7 @@
           ${affinityStripHtml(agent.affinity)}
         </div>
         <div class="detail-hero__cta">
-          <button class="btn btn--primary" data-copy="@${escapeHtml(agent.name)}">
+          <button class="btn btn--primary" data-copy="/${escapeHtml(agent.name)}">
             Copy invocation
           </button>
           <a class="btn btn--ghost" href="map.html#${encodeURIComponent(agent.name)}">See in map</a>
@@ -848,6 +866,9 @@
 
     const overviewEl = document.querySelector('[data-tab-panel="overview"]');
     overviewEl.innerHTML = renderOverviewPanel(agent, cls, cat);
+
+    const recipesEl = document.querySelector('[data-tab-panel="recipes"]');
+    if (recipesEl) recipesEl.innerHTML = renderRecipesPanel(agent);
 
     const capsEl = document.querySelector('[data-tab-panel="capabilities"]');
     capsEl.innerHTML = renderCapabilitiesPanel(agent);
@@ -1020,19 +1041,21 @@
       ${affinityMatrixHtml(agent.affinity)}
     </section>`);
 
-    // 5. Recipes preview
-    const recipes = agent.recipes || [];
+    // 5. Recipes preview (chips with subcommand only; full descriptions in Examples tab)
+    const recipes = normalizeRecipes(agent.recipes);
     if (recipes.length) {
       const MAX_RECIPES = 6;
       const shown = recipes.slice(0, MAX_RECIPES);
       const extra = recipes.length - shown.length;
-      const chips = shown.map(r =>
-        `<code class="chip" style="font-family: var(--core-font-family-mono);">/skill ${escapeHtml(agent.name)} ${escapeHtml(r)}</code>`
-      ).join('');
-      const morePart = extra > 0 ? `<span class="chip chip--muted">+${extra} more</span>` : '';
+      const chips = shown.map(r => {
+        const inv = `/${agent.name} ${r.subcommand}`;
+        const defMark = r.default ? ' <span aria-label="default recipe" title="Default recipe">★</span>' : '';
+        return `<code class="chip" style="font-family: var(--core-font-family-mono);" title="${escapeHtml(r.when || r.label || '')}">${escapeHtml(inv)}${defMark}</code>`;
+      }).join('');
+      const morePart = extra > 0 ? `<span class="chip chip--muted">+${extra} more (see Examples)</span>` : '';
       parts.push(`<section aria-labelledby="ov-recipes-head">
         <header class="section-head" style="margin-block: var(--realm-spacing-md) var(--realm-spacing-sm);">
-          <h3 class="section-head__title" id="ov-recipes-head">Recipes</h3>
+          <h3 class="section-head__title" id="ov-recipes-head">Recipes · ${recipes.length}</h3>
         </header>
         <div class="chip-group recipes-chips" role="list">${chips}${morePart}</div>
       </section>`);
@@ -1060,6 +1083,39 @@
     }
 
     return parts.join('\n');
+  }
+
+  function renderRecipesPanel(agent) {
+    const recipes = normalizeRecipes(agent.recipes);
+    const header = `<header class="section-head" style="margin-bottom: var(--realm-spacing-md);">
+      <h3 class="section-head__title">${recipes.length} ${recipes.length === 1 ? 'recipe' : 'recipes'}</h3>
+      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">Invoke a Recipe with <code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code>. The default Recipe runs when no subcommand is specified.</p>
+    </header>`;
+    if (!recipes.length) {
+      return header + `<div class="empty-note">No recipes declared. Use <code>/${escapeHtml(agent.name)}</code> to invoke with a natural-language prompt.</div>`;
+    }
+    const rows = recipes.map(r => {
+      const inv = `/${agent.name} ${r.subcommand}`;
+      const defBadge = r.default
+        ? `<span class="chip" style="background: var(--core-color-accent-soft); margin-left: var(--realm-spacing-xs);">default</span>`
+        : '';
+      const labelExtra = r.label && r.label.toLowerCase() !== r.subcommand.toLowerCase()
+        ? `<span style="margin-left: var(--realm-spacing-xs); color: var(--core-color-text-muted);">— ${escapeHtml(r.label)}</span>`
+        : '';
+      return `<li>
+        <div class="cap-list__key">
+          <code style="font-family: var(--core-font-family-mono);">${escapeHtml(r.subcommand)}</code>
+          ${labelExtra}
+          ${defBadge}
+        </div>
+        <div>${escapeHtml(r.when || '')}</div>
+        <div class="invocation-block invocation-block--sm" style="margin-top: var(--realm-spacing-xs);">
+          <code class="invocation-block__code">${escapeHtml(inv)}</code>
+          <button class="btn btn--ghost" data-copy="${escapeHtml(inv)}" style="font-size: var(--core-font-size-12); padding: 4px 8px; min-height: 32px;">Copy</button>
+        </div>
+      </li>`;
+    }).join('');
+    return header + `<ul class="cap-list">${rows}</ul>`;
   }
 
   function renderCapabilitiesPanel(agent) {
@@ -1129,27 +1185,19 @@
     const byName = new Map(allAgents.map(a => [a.name, a]));
     const parts = [];
 
-    // 1. Invocation patterns
-    const recipes = agent.recipes || [];
-    const recipeChips = recipes.length
-      ? recipes.map(r => {
-          const invText = `/skill ${agent.name} ${r}`;
-          return `<div class="invocation-block invocation-block--sm">
-            <code class="invocation-block__code">${escapeHtml(invText)}</code>
-            <button class="btn btn--ghost" data-copy="${escapeHtml(invText)}" style="font-size: var(--core-font-size-12); padding: 4px 8px; min-height: 32px;">Copy</button>
-          </div>`;
-        }).join('')
-      : '';
-
+    // 1. Invocation — base agent invocation
+    const recipeCount = normalizeRecipes(agent.recipes).length;
     parts.push(`<section aria-labelledby="ex-invoke-head">
       <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
         <h3 class="section-head__title" id="ex-invoke-head">Invocation</h3>
       </header>
       <div class="invocation-block">
-        <code class="invocation-block__code">@${escapeHtml(agent.name)}</code>
-        <button class="btn btn--primary" data-copy="@${escapeHtml(agent.name)}">Copy</button>
+        <code class="invocation-block__code">/${escapeHtml(agent.name)}</code>
+        <button class="btn btn--primary" data-copy="/${escapeHtml(agent.name)}">Copy</button>
       </div>
-      ${recipeChips ? `<div class="recipes-chips" style="margin-top: var(--realm-spacing-sm);">${recipeChips}</div>` : ''}
+      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">
+        Invoke the agent's default Recipe with the natural-language prompt above${recipeCount ? `, or pick one of ${recipeCount} Recipes via <code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code> — see the <strong>Recipes</strong> tab.` : '.'}
+      </p>
     </section>`);
 
     // 2. Sample prompts from capabilities
