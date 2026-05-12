@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-i18n-title="category.title">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,23 +9,27 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body data-page="category">
-  <a class="sr-only" href="#main">Skip to main content</a>
+  <a class="sr-only" href="#main" data-i18n="common.skip_to_main">Skip to main content</a>
 
   <header class="app-nav" role="banner">
     <div class="container app-nav__inner">
-      <a href="index.html" class="app-nav__brand" aria-label="Realm directory home">
+      <a href="index.html" class="app-nav__brand" data-i18n-attr="aria-label:common.nav_brand_aria">
         <span class="app-nav__brand-mark" aria-hidden="true">R</span>
         <span>Realm</span>
       </a>
-      <nav class="app-nav__links" aria-label="Primary">
-        <a class="app-nav__link" href="index.html">Directory</a>
-        <a class="app-nav__link" href="map.html">Map</a>
-        <a class="app-nav__link" href="category.html?slug=ux-design" aria-current="page">Categories</a>
-        <a class="app-nav__link" href="search.html">Search</a>
+      <nav class="app-nav__links" data-i18n-attr="aria-label:common.nav_primary">
+        <a class="app-nav__link" href="index.html" data-i18n="common.nav_directory">Directory</a>
+        <a class="app-nav__link" href="map.html" data-i18n="common.nav_map">Map</a>
+        <a class="app-nav__link" href="category.html?slug=ux-design" aria-current="page" data-i18n="common.nav_categories">Categories</a>
+        <a class="app-nav__link" href="search.html" data-i18n="common.nav_search">Search</a>
         <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"
-                aria-label="Toggle light or dark theme">
+                data-i18n-attr="aria-label:common.theme_toggle_aria">
           <span aria-hidden="true">◐</span>
           <span data-theme-label>Light</span>
+        </button>
+        <button class="theme-toggle" type="button" data-lang-toggle aria-pressed="false">
+          <span aria-hidden="true">⌘</span>
+          <span data-lang-label>EN</span>
         </button>
       </nav>
     </div>
@@ -36,17 +40,17 @@
 
     <section class="category-hero" data-cat-hero aria-live="polite"></section>
 
-    <div class="tabs" role="tablist" data-tabset aria-label="Category sections">
-      <button class="tabs__item" role="tab" data-tab="roster" aria-selected="true">Roster</button>
-      <button class="tabs__item" role="tab" data-tab="collab" aria-selected="false">How they collaborate</button>
-      <button class="tabs__item" role="tab" data-tab="when" aria-selected="false">When to call</button>
+    <div class="tabs" role="tablist" data-tabset data-i18n-attr="aria-label:category.tabs_aria">
+      <button class="tabs__item" role="tab" data-tab="roster" aria-selected="true" data-i18n="category.tab_roster">Roster</button>
+      <button class="tabs__item" role="tab" data-tab="collab" aria-selected="false" data-i18n="category.tab_collab">How they collaborate</button>
+      <button class="tabs__item" role="tab" data-tab="when" aria-selected="false" data-i18n="category.tab_when">When to call</button>
     </div>
 
     <section class="tab-panel" data-tab-panel="roster" data-roster></section>
 
     <section class="tab-panel" data-tab-panel="collab" hidden>
       <div class="collab-graph" data-collab></div>
-      <p class="empty-state__hint" style="margin-top: var(--realm-spacing-md); color: var(--realm-color-ink-soft);">
+      <p class="empty-state__hint" style="margin-top: var(--realm-spacing-md); color: var(--realm-color-ink-soft);" data-i18n="category.collab_hint">
         Hub and spokes show how agents in this category typically chain. The center node is the most-connected
         agent in the category.
       </p>
@@ -55,23 +59,23 @@
     <section class="tab-panel" data-tab-panel="when" hidden>
       <div class="cap-list" style="display: grid;">
         <li>
-          <div class="cap-list__key">Pattern</div>
-          <div>Reach for this category when the user need maps to the category's <em>signature trait</em>.</div>
+          <div class="cap-list__key" data-i18n="category.when_pattern_key">Pattern</div>
+          <div data-i18n="category.when_pattern_text">Reach for this category when the user need maps to the category's signature trait.</div>
         </li>
         <li>
-          <div class="cap-list__key">Hand-off</div>
-          <div>The class bonus is realized when chained with the agents listed in the collaboration tab.</div>
+          <div class="cap-list__key" data-i18n="category.when_handoff_key">Hand-off</div>
+          <div data-i18n="category.when_handoff_text">The class bonus is realized when chained with the agents listed in the collaboration tab.</div>
         </li>
         <li>
-          <div class="cap-list__key">Avoid when</div>
-          <div>Production hardening / shared-core refactors → route to <code>builder</code> or <code>artisan</code>.</div>
+          <div class="cap-list__key" data-i18n="category.when_avoid_key">Avoid when</div>
+          <div data-i18n-html="category.when_avoid_text" data-i18n-params='{"builder":"<code>builder</code>","artisan":"<code>artisan</code>"}'>Production hardening / shared-core refactors → route to <code>builder</code> or <code>artisan</code>.</div>
         </li>
       </div>
     </section>
 
     <section style="margin-top: var(--realm-spacing-2xl);">
       <header class="section-head">
-        <h2 class="section-head__title">Adjacent categories</h2>
+        <h2 class="section-head__title" data-i18n="category.adjacent_title">Adjacent categories</h2>
       </header>
       <div class="cluster" data-adjacent></div>
     </section>

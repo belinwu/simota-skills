@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-i18n-title="detail.title">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,23 +24,27 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body data-page="detail">
-  <a class="sr-only" href="#main">Skip to main content</a>
+  <a class="sr-only" href="#main" data-i18n="common.skip_to_main">Skip to main content</a>
 
   <header class="app-nav" role="banner">
     <div class="container app-nav__inner">
-      <a href="index.html" class="app-nav__brand" aria-label="Realm directory home">
+      <a href="index.html" class="app-nav__brand" data-i18n-attr="aria-label:common.nav_brand_aria">
         <span class="app-nav__brand-mark" aria-hidden="true">R</span>
         <span>Realm</span>
       </a>
-      <nav class="app-nav__links" aria-label="Primary">
-        <a class="app-nav__link" href="index.html">Directory</a>
-        <a class="app-nav__link" href="map.html">Map</a>
-        <a class="app-nav__link" href="category.html?slug=ux-design">Categories</a>
-        <a class="app-nav__link" href="search.html">Search</a>
+      <nav class="app-nav__links" data-i18n-attr="aria-label:common.nav_primary">
+        <a class="app-nav__link" href="index.html" data-i18n="common.nav_directory">Directory</a>
+        <a class="app-nav__link" href="map.html" data-i18n="common.nav_map">Map</a>
+        <a class="app-nav__link" href="category.html?slug=ux-design" data-i18n="common.nav_categories">Categories</a>
+        <a class="app-nav__link" href="search.html" data-i18n="common.nav_search">Search</a>
         <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"
-                aria-label="Toggle light or dark theme">
+                data-i18n-attr="aria-label:common.theme_toggle_aria">
           <span aria-hidden="true">◐</span>
           <span data-theme-label>Light</span>
+        </button>
+        <button class="theme-toggle" type="button" data-lang-toggle aria-pressed="false">
+          <span aria-hidden="true">⌘</span>
+          <span data-lang-label>EN</span>
         </button>
       </nav>
     </div>
@@ -51,12 +55,12 @@
 
     <section class="detail-hero" aria-label="Agent profile" data-detail-hero></section>
 
-    <div class="tabs" role="tablist" data-tabset aria-label="Agent sections">
-      <button class="tabs__item" role="tab" id="tab-overview" aria-controls="panel-overview" data-tab="overview" aria-selected="true" tabindex="0">Overview</button>
-      <button class="tabs__item" role="tab" id="tab-recipes" aria-controls="panel-recipes" data-tab="recipes" aria-selected="false" tabindex="-1">Recipes</button>
-      <button class="tabs__item" role="tab" id="tab-capabilities" aria-controls="panel-capabilities" data-tab="capabilities" aria-selected="false" tabindex="-1">Capabilities</button>
-      <button class="tabs__item" role="tab" id="tab-collaboration" aria-controls="panel-collaboration" data-tab="collaboration" aria-selected="false" tabindex="-1">Collaboration</button>
-      <button class="tabs__item" role="tab" id="tab-examples" aria-controls="panel-examples" data-tab="examples" aria-selected="false" tabindex="-1">Examples</button>
+    <div class="tabs" role="tablist" data-tabset data-i18n-attr="aria-label:detail.tabs_aria">
+      <button class="tabs__item" role="tab" id="tab-overview" aria-controls="panel-overview" data-tab="overview" aria-selected="true" tabindex="0" data-i18n="detail.tab_overview">Overview</button>
+      <button class="tabs__item" role="tab" id="tab-recipes" aria-controls="panel-recipes" data-tab="recipes" aria-selected="false" tabindex="-1" data-i18n="detail.tab_recipes">Recipes</button>
+      <button class="tabs__item" role="tab" id="tab-capabilities" aria-controls="panel-capabilities" data-tab="capabilities" aria-selected="false" tabindex="-1" data-i18n="detail.tab_capabilities">Capabilities</button>
+      <button class="tabs__item" role="tab" id="tab-collaboration" aria-controls="panel-collaboration" data-tab="collaboration" aria-selected="false" tabindex="-1" data-i18n="detail.tab_collaboration">Collaboration</button>
+      <button class="tabs__item" role="tab" id="tab-examples" aria-controls="panel-examples" data-tab="examples" aria-selected="false" tabindex="-1" data-i18n="detail.tab_examples">Examples</button>
     </div>
 
     <section class="tab-panel" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-tab-panel="overview"></section>
@@ -65,8 +69,8 @@
     <section class="tab-panel" role="tabpanel" id="panel-collaboration" aria-labelledby="tab-collaboration" data-tab-panel="collaboration" hidden></section>
     <section class="tab-panel" role="tabpanel" id="panel-examples" aria-labelledby="tab-examples" data-tab-panel="examples" hidden></section>
 
-    <section aria-label="Related agents — same class" data-related-class style="margin-top: var(--realm-spacing-2xl);"></section>
-    <section aria-label="Related agents — same project affinity" data-related-aff style="margin-top: var(--realm-spacing-xl);"></section>
+    <section data-related-class style="margin-top: var(--realm-spacing-2xl);" data-i18n-attr="aria-label:detail.related_class_aria"></section>
+    <section data-related-aff style="margin-top: var(--realm-spacing-xl);" data-i18n-attr="aria-label:detail.related_affinity_aria"></section>
   </main>
 
   <noscript>

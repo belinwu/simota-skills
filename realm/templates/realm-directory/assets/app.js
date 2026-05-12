@@ -41,7 +41,117 @@
     updateBtn(btn) {
       const t = document.documentElement.getAttribute('data-theme');
       btn.setAttribute('aria-pressed', t === 'dark');
-      btn.querySelector('[data-theme-label]').textContent = t === 'dark' ? 'Dark' : 'Light';
+      const labelEl = btn.querySelector('[data-theme-label]');
+      if (labelEl) labelEl.textContent = t === 'dark' ? I18n.t('common.theme_dark') : I18n.t('common.theme_light');
+    }
+  };
+
+  /* ---------- 1b. i18n ---------- */
+  const I18n = {
+    KEY: 'realm-lang',
+    SUPPORTED: ['en', 'ja'],
+    DEFAULT: 'en',
+    lang: 'en',
+    dict: {},
+    listeners: new Set(),
+    detect() {
+      const saved = (() => { try { return localStorage.getItem(this.KEY); } catch (e) { return null; } })();
+      if (saved && this.SUPPORTED.includes(saved)) return saved;
+      const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+      if (nav.startsWith('ja')) return 'ja';
+      return this.DEFAULT;
+    },
+    async load(lang) {
+      try {
+        const res = await fetch(`assets/i18n/${lang}.json`, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        this.dict = await res.json();
+      } catch (err) {
+        // Inline fallback embedded in HTML (for file:// runs)
+        const inline = document.getElementById(`i18n-${lang}-fallback`);
+        if (inline) {
+          try { this.dict = JSON.parse(inline.textContent || '{}'); }
+          catch (e) { console.error(`i18n inline ${lang} parse failed`, e); this.dict = {}; }
+        } else {
+          console.warn(`i18n ${lang} fetch failed; no inline fallback`, err);
+          this.dict = {};
+        }
+      }
+      this.lang = lang;
+      document.documentElement.lang = lang;
+      try { localStorage.setItem(this.KEY, lang); } catch (e) {}
+    },
+    async init() {
+      const lang = this.detect();
+      await this.load(lang);
+      this.applyDom(document);
+      this.bindToggle();
+    },
+    async setLang(lang) {
+      if (!this.SUPPORTED.includes(lang)) return;
+      await this.load(lang);
+      this.applyDom(document);
+      this.listeners.forEach(fn => { try { fn(lang); } catch (e) { console.error(e); } });
+    },
+    onChange(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); },
+    t(key, params) {
+      const parts = String(key || '').split('.');
+      let cur = this.dict;
+      for (const p of parts) {
+        if (cur && typeof cur === 'object' && p in cur) cur = cur[p];
+        else { cur = null; break; }
+      }
+      if (cur == null) return key;
+      let out = String(cur);
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          out = out.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+        }
+      }
+      return out;
+    },
+    applyDom(root) {
+      root.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const params = this.parseParams(el.getAttribute('data-i18n-params'));
+        el.textContent = this.t(key, params);
+      });
+      root.querySelectorAll('[data-i18n-attr]').forEach(el => {
+        const spec = el.getAttribute('data-i18n-attr');
+        // format: "attrName:key.path,attr2:key.path"
+        spec.split(',').forEach(pair => {
+          const [attr, k] = pair.split(':').map(s => s && s.trim());
+          if (!attr || !k) return;
+          el.setAttribute(attr, this.t(k));
+        });
+      });
+      root.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        const params = this.parseParams(el.getAttribute('data-i18n-params'));
+        el.innerHTML = this.t(key, params);
+      });
+      // Update <title>
+      const titleKey = document.documentElement.getAttribute('data-i18n-title');
+      if (titleKey) document.title = this.t(titleKey);
+    },
+    parseParams(raw) {
+      if (!raw) return undefined;
+      try { return JSON.parse(raw); } catch (e) { return undefined; }
+    },
+    bindToggle() {
+      const btn = document.querySelector('[data-lang-toggle]');
+      if (!btn) return;
+      const update = () => {
+        btn.setAttribute('aria-label', this.t('common.lang_toggle_aria'));
+        const labelEl = btn.querySelector('[data-lang-label]');
+        if (labelEl) labelEl.textContent = this.lang === 'ja' ? this.t('common.lang_ja') : this.t('common.lang_en');
+      };
+      update();
+      btn.addEventListener('click', async () => {
+        const next = this.lang === 'ja' ? 'en' : 'ja';
+        await this.setLang(next);
+        update();
+      });
     }
   };
 
@@ -858,9 +968,9 @@
         </div>
         <div class="detail-hero__cta">
           <button class="btn btn--primary" data-copy="/${escapeHtml(agent.name)}">
-            Copy invocation
+            ${escapeHtml(I18n.t('detail.copy_invocation'))}
           </button>
-          <a class="btn btn--ghost" href="map.html#${encodeURIComponent(agent.name)}">See in map</a>
+          <a class="btn btn--ghost" href="map.html#${encodeURIComponent(agent.name)}">${escapeHtml(I18n.t('detail.see_in_map'))}</a>
         </div>
       </div>`;
 
@@ -889,14 +999,14 @@
 
     document.querySelector('[data-related-class]').innerHTML = sameClass.length
       ? `<header class="section-head">
-           <h2 class="section-head__title">Same class · ${escapeHtml(cls ? cls.label : agent.class)}</h2>
+           <h2 class="section-head__title">${escapeHtml(I18n.t('detail.related_same_class', { label: cls ? cls.label : agent.class }))}</h2>
          </header>
          <div class="grid-cards" role="grid">${sameClass.map(agentCardHtml).join('')}</div>`
       : '';
 
     document.querySelector('[data-related-aff]').innerHTML = sameAff.length
       ? `<header class="section-head">
-           <h2 class="section-head__title">Shared project affinity</h2>
+           <h2 class="section-head__title">${escapeHtml(I18n.t('detail.related_shared_affinity'))}</h2>
          </header>
          <div class="grid-cards" role="grid">${sameAff.map(agentCardHtml).join('')}</div>`
       : '';
@@ -1026,9 +1136,9 @@
         ? `<p class="detail-flavor__meta">${escapeHtml(agent.department)}${catTrait ? ` · ${escapeHtml(catTrait)}` : ''}</p>`
         : (catTrait ? `<p class="detail-flavor__meta">${escapeHtml(catTrait)}</p>` : '');
       parts.push(`<div class="detail-flavor">
-        <p class="detail-flavor__label">Class Flavor · ${escapeHtml(cls.label)}</p>
+        <p class="detail-flavor__label">${escapeHtml(I18n.t('detail.class_flavor_label', { label: cls.label }))}</p>
         <p class="detail-flavor__archetype">${escapeHtml(cls.archetype)}</p>
-        <p class="detail-flavor__passive">Passive: <strong>${escapeHtml(cls.passive)}</strong> — ${escapeHtml(cls.bonus)}</p>
+        <p class="detail-flavor__passive">${escapeHtml(I18n.t('detail.passive_prefix'))} <strong>${escapeHtml(cls.passive)}</strong> — ${escapeHtml(cls.bonus)}</p>
         ${deptLine}
       </div>`);
     }
@@ -1036,7 +1146,7 @@
     // 4. Project affinity full breakdown
     parts.push(`<section aria-labelledby="ov-affinity-head">
       <header class="section-head" style="margin-block: var(--realm-spacing-md) var(--realm-spacing-sm);">
-        <h3 class="section-head__title" id="ov-affinity-head">Project Affinity</h3>
+        <h3 class="section-head__title" id="ov-affinity-head">${escapeHtml(I18n.t('detail.project_affinity'))}</h3>
       </header>
       ${affinityMatrixHtml(agent.affinity)}
     </section>`);
@@ -1049,13 +1159,13 @@
       const extra = recipes.length - shown.length;
       const chips = shown.map(r => {
         const inv = `/${agent.name} ${r.subcommand}`;
-        const defMark = r.default ? ' <span aria-label="default recipe" title="Default recipe">★</span>' : '';
+        const defMark = r.default ? ` <span aria-label="${escapeHtml(I18n.t('detail.recipe_default_badge'))}" title="${escapeHtml(I18n.t('detail.recipe_default_badge'))}">★</span>` : '';
         return `<code class="chip" style="font-family: var(--core-font-family-mono);" title="${escapeHtml(r.when || r.label || '')}">${escapeHtml(inv)}${defMark}</code>`;
       }).join('');
-      const morePart = extra > 0 ? `<span class="chip chip--muted">+${extra} more (see Examples)</span>` : '';
+      const morePart = extra > 0 ? `<span class="chip chip--muted">${escapeHtml(I18n.t('common.more_see_examples', { count: extra }))}</span>` : '';
       parts.push(`<section aria-labelledby="ov-recipes-head">
         <header class="section-head" style="margin-block: var(--realm-spacing-md) var(--realm-spacing-sm);">
-          <h3 class="section-head__title" id="ov-recipes-head">Recipes · ${recipes.length}</h3>
+          <h3 class="section-head__title" id="ov-recipes-head">${escapeHtml(I18n.t('detail.recipes_count', { count: recipes.length }))}</h3>
         </header>
         <div class="chip-group recipes-chips" role="list">${chips}${morePart}</div>
       </section>`);
@@ -1066,12 +1176,11 @@
     const inputCount = (agent.collaboration?.input || []).length;
     const outputCount = (agent.collaboration?.output || []).length;
     const tierLabel = agent.rank?.tier || '—';
-    parts.push(`<p class="detail-stats">
-      ${capCount} ${capCount === 1 ? 'capability' : 'capabilities'} ·
-      ${inputCount} input partner${inputCount === 1 ? '' : 's'} ·
-      ${outputCount} output partner${outputCount === 1 ? '' : 's'} ·
-      rank ${escapeHtml(tierLabel)}
-    </p>`);
+    const capStat = capCount === 1 ? I18n.t('detail.stats_count_one', { n: capCount }) : I18n.t('detail.stats_count_many', { n: capCount });
+    const inStat = inputCount === 1 ? I18n.t('detail.stats_input_one') : I18n.t('detail.stats_input_many', { n: inputCount });
+    const outStat = outputCount === 1 ? I18n.t('detail.stats_output_one') : I18n.t('detail.stats_output_many', { n: outputCount });
+    const rankStat = I18n.t('detail.stats_rank', { tier: tierLabel });
+    parts.push(`<p class="detail-stats">${escapeHtml(capStat)} · ${escapeHtml(inStat)} · ${escapeHtml(outStat)} · ${escapeHtml(rankStat)}</p>`);
 
     // 7. Badges
     const badges = agent.badges || [];
@@ -1087,17 +1196,22 @@
 
   function renderRecipesPanel(agent) {
     const recipes = normalizeRecipes(agent.recipes);
+    const countLabel = recipes.length === 1
+      ? I18n.t('detail.recipes_count_unit_one')
+      : I18n.t('detail.recipes_count_unit_many', { count: recipes.length });
+    const codeInv = `<code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code>`;
+    const codePlain = `<code>/${escapeHtml(agent.name)}</code>`;
     const header = `<header class="section-head" style="margin-bottom: var(--realm-spacing-md);">
-      <h3 class="section-head__title">${recipes.length} ${recipes.length === 1 ? 'recipe' : 'recipes'}</h3>
-      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">Invoke a Recipe with <code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code>. The default Recipe runs when no subcommand is specified.</p>
+      <h3 class="section-head__title">${escapeHtml(countLabel)}</h3>
+      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">${I18n.t('detail.recipes_intro', { code: codeInv })}</p>
     </header>`;
     if (!recipes.length) {
-      return header + `<div class="empty-note">No recipes declared. Use <code>/${escapeHtml(agent.name)}</code> to invoke with a natural-language prompt.</div>`;
+      return header + `<div class="empty-note">${I18n.t('detail.recipes_empty', { code: codePlain })}</div>`;
     }
     const rows = recipes.map(r => {
       const inv = `/${agent.name} ${r.subcommand}`;
       const defBadge = r.default
-        ? `<span class="chip" style="background: var(--core-color-accent-soft); margin-left: var(--realm-spacing-xs);">default</span>`
+        ? `<span class="chip" style="background: var(--core-color-accent-soft); margin-left: var(--realm-spacing-xs);">${escapeHtml(I18n.t('detail.recipe_default_badge'))}</span>`
         : '';
       const labelExtra = r.label && r.label.toLowerCase() !== r.subcommand.toLowerCase()
         ? `<span style="margin-left: var(--realm-spacing-xs); color: var(--core-color-text-muted);">— ${escapeHtml(r.label)}</span>`
@@ -1111,7 +1225,7 @@
         <div>${escapeHtml(r.when || '')}</div>
         <div class="invocation-block invocation-block--sm" style="margin-top: var(--realm-spacing-xs);">
           <code class="invocation-block__code">${escapeHtml(inv)}</code>
-          <button class="btn btn--ghost" data-copy="${escapeHtml(inv)}" style="font-size: var(--core-font-size-12); padding: 4px 8px; min-height: 32px;">Copy</button>
+          <button class="btn btn--ghost" data-copy="${escapeHtml(inv)}" style="font-size: var(--core-font-size-12); padding: 4px 8px; min-height: 32px;">${escapeHtml(I18n.t('common.copy'))}</button>
         </div>
       </li>`;
     }).join('');
@@ -1120,11 +1234,14 @@
 
   function renderCapabilitiesPanel(agent) {
     const caps = agent.capabilities || [];
+    const countLabel = caps.length === 1
+      ? I18n.t('detail.capabilities_count_one')
+      : I18n.t('detail.capabilities_count_many', { count: caps.length });
     const header = `<header class="section-head" style="margin-bottom: var(--realm-spacing-md);">
-      <h3 class="section-head__title">${caps.length} ${caps.length === 1 ? 'capability' : 'capabilities'}</h3>
+      <h3 class="section-head__title">${escapeHtml(countLabel)}</h3>
     </header>`;
     if (!caps.length) {
-      return header + `<div class="empty-note">No capabilities defined yet.</div>`;
+      return header + `<div class="empty-note">${escapeHtml(I18n.t('detail.capabilities_empty'))}</div>`;
     }
     return header + `<ul class="cap-list">
       ${caps.map(c => `
@@ -1142,7 +1259,7 @@
 
     if (!inputs.length && !outputs.length) {
       return `<div class="collab-graph">${detailCollabSvg(agent, allAgents)}</div>
-        <p class="empty-note">No collaboration partners declared.</p>`;
+        <p class="empty-note">${escapeHtml(I18n.t('detail.collab_empty'))}</p>`;
     }
 
     const MAX_SHOWN = 6;
@@ -1160,7 +1277,7 @@
           ${role ? `<span class="partner-list__role">${role}</span>` : ''}
         </li>`;
       }).join('');
-      const moreLine = extra > 0 ? `<li class="partner-list__item partner-list__more">+${extra} more</li>` : '';
+      const moreLine = extra > 0 ? `<li class="partner-list__item partner-list__more">${escapeHtml(I18n.t('common.more_count', { count: extra }))}</li>` : '';
       return `<ul class="partner-list">${items}${moreLine}</ul>`;
     }
 
@@ -1168,15 +1285,15 @@
       <div class="collab-detail-grid">
         <section aria-labelledby="collab-in-head">
           <header class="section-head">
-            <h3 class="section-head__title" id="collab-in-head">Receives work from · ${inputs.length}</h3>
+            <h3 class="section-head__title" id="collab-in-head">${escapeHtml(I18n.t('detail.collab_receives', { count: inputs.length }))}</h3>
           </header>
-          ${inputs.length ? partnerListHtml(inputs) : '<p class="empty-note">No input partners.</p>'}
+          ${inputs.length ? partnerListHtml(inputs) : `<p class="empty-note">${escapeHtml(I18n.t('detail.collab_no_inputs'))}</p>`}
         </section>
         <section aria-labelledby="collab-out-head">
           <header class="section-head">
-            <h3 class="section-head__title" id="collab-out-head">Sends work to · ${outputs.length}</h3>
+            <h3 class="section-head__title" id="collab-out-head">${escapeHtml(I18n.t('detail.collab_sends', { count: outputs.length }))}</h3>
           </header>
-          ${outputs.length ? partnerListHtml(outputs) : '<p class="empty-note">No output partners.</p>'}
+          ${outputs.length ? partnerListHtml(outputs) : `<p class="empty-note">${escapeHtml(I18n.t('detail.collab_no_outputs'))}</p>`}
         </section>
       </div>`;
   }
@@ -1187,17 +1304,20 @@
 
     // 1. Invocation — base agent invocation
     const recipeCount = normalizeRecipes(agent.recipes).length;
+    const recipesTabLabel = `<strong>${escapeHtml(I18n.t('detail.tab_recipes'))}</strong>`;
+    const invocCode = `<code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code>`;
+    const invocHelp = recipeCount
+      ? I18n.t('detail.invocation_help_with_recipes', { count: recipeCount, code: invocCode, recipes_tab: recipesTabLabel })
+      : I18n.t('detail.invocation_help_no_recipes');
     parts.push(`<section aria-labelledby="ex-invoke-head">
       <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
-        <h3 class="section-head__title" id="ex-invoke-head">Invocation</h3>
+        <h3 class="section-head__title" id="ex-invoke-head">${escapeHtml(I18n.t('detail.invocation_heading'))}</h3>
       </header>
       <div class="invocation-block">
         <code class="invocation-block__code">/${escapeHtml(agent.name)}</code>
-        <button class="btn btn--primary" data-copy="/${escapeHtml(agent.name)}">Copy</button>
+        <button class="btn btn--primary" data-copy="/${escapeHtml(agent.name)}">${escapeHtml(I18n.t('common.copy'))}</button>
       </div>
-      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">
-        Invoke the agent's default Recipe with the natural-language prompt above${recipeCount ? `, or pick one of ${recipeCount} Recipes via <code>/${escapeHtml(agent.name)} &lt;subcommand&gt;</code> — see the <strong>Recipes</strong> tab.` : '.'}
-      </p>
+      <p class="empty-note" style="margin-top: var(--realm-spacing-xs);">${invocHelp}</p>
     </section>`);
 
     // 2. Sample prompts from capabilities
@@ -1208,19 +1328,19 @@
       const lcFirst = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
       sampleItems = shown.map(c => `
         <li>
-          <div class="cap-list__key">Sample prompt</div>
-          <div>Use <strong>${escapeHtml(agent.name)}</strong> when you need to ${escapeHtml(lcFirst(c.summary))}.</div>
+          <div class="cap-list__key">${escapeHtml(I18n.t('detail.sample_prompt_key'))}</div>
+          <div>${I18n.t('detail.sample_use_when', { agent: `<strong>${escapeHtml(agent.name)}</strong>`, need: escapeHtml(lcFirst(c.summary)) })}</div>
         </li>`).join('');
     } else {
       const archLabel = agent.archetype || (TAXONOMY.classes[agent.class]?.archetype) || 'specialist';
       sampleItems = `<li>
-        <div class="cap-list__key">Sample prompt</div>
-        <div>Ask <strong>${escapeHtml(agent.name)}</strong> when you need ${escapeHtml(archLabel)} work.</div>
+        <div class="cap-list__key">${escapeHtml(I18n.t('detail.sample_prompt_key'))}</div>
+        <div>${I18n.t('detail.sample_use_archetype', { agent: `<strong>${escapeHtml(agent.name)}</strong>`, archetype: escapeHtml(archLabel) })}</div>
       </li>`;
     }
     parts.push(`<section aria-labelledby="ex-samples-head" style="margin-top: var(--realm-spacing-lg);">
       <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
-        <h3 class="section-head__title" id="ex-samples-head">Sample Prompts</h3>
+        <h3 class="section-head__title" id="ex-samples-head">${escapeHtml(I18n.t('detail.sample_prompts'))}</h3>
       </header>
       <ul class="cap-list">${sampleItems}</ul>
     </section>`);
@@ -1240,7 +1360,7 @@
       }).join('');
       parts.push(`<section aria-labelledby="ex-pairs-head" style="margin-top: var(--realm-spacing-lg);">
         <header class="section-head" style="margin-bottom: var(--realm-spacing-sm);">
-          <h3 class="section-head__title" id="ex-pairs-head">Pairs Well With</h3>
+          <h3 class="section-head__title" id="ex-pairs-head">${escapeHtml(I18n.t('detail.pairs_well_with'))}</h3>
         </header>
         <ul class="partner-list">${pairItems}</ul>
       </section>`);
@@ -1528,10 +1648,19 @@
   }
 
   /* ---------- Boot dispatch ---------- */
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    // i18n must load before Theme so the theme label resolves to the right language.
+    await I18n.init();
     Theme.init();
     const page = document.body.dataset.page;
     const router = { index: bootIndex, category: bootCategory, detail: bootDetail, search: bootSearch, map: bootMap };
+    // Re-render dynamic page content when language changes.
+    I18n.onChange(() => {
+      if (router[page]) router[page]().catch(err => console.error('Re-render failed', err));
+      // Refresh theme toggle label (depends on i18n)
+      const themeBtn = document.querySelector('[data-theme-toggle]');
+      if (themeBtn) Theme.updateBtn(themeBtn);
+    });
     if (router[page]) router[page]().catch(err => {
       console.error('Page boot failed', err);
       const root = document.querySelector('[data-results], [data-detail], [data-roster]');

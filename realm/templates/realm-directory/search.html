@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-i18n-title="search.title">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,23 +9,27 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body data-page="search">
-  <a class="sr-only" href="#main">Skip to main content</a>
+  <a class="sr-only" href="#main" data-i18n="common.skip_to_main">Skip to main content</a>
 
   <header class="app-nav" role="banner">
     <div class="container app-nav__inner">
-      <a href="index.html" class="app-nav__brand" aria-label="Realm directory home">
+      <a href="index.html" class="app-nav__brand" data-i18n-attr="aria-label:common.nav_brand_aria">
         <span class="app-nav__brand-mark" aria-hidden="true">R</span>
         <span>Realm</span>
       </a>
-      <nav class="app-nav__links" aria-label="Primary">
-        <a class="app-nav__link" href="index.html">Directory</a>
-        <a class="app-nav__link" href="map.html">Map</a>
-        <a class="app-nav__link" href="category.html?slug=ux-design">Categories</a>
-        <a class="app-nav__link" href="search.html" aria-current="page">Search</a>
+      <nav class="app-nav__links" data-i18n-attr="aria-label:common.nav_primary">
+        <a class="app-nav__link" href="index.html" data-i18n="common.nav_directory">Directory</a>
+        <a class="app-nav__link" href="map.html" data-i18n="common.nav_map">Map</a>
+        <a class="app-nav__link" href="category.html?slug=ux-design" data-i18n="common.nav_categories">Categories</a>
+        <a class="app-nav__link" href="search.html" aria-current="page" data-i18n="common.nav_search">Search</a>
         <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false"
-                aria-label="Toggle light or dark theme">
+                data-i18n-attr="aria-label:common.theme_toggle_aria">
           <span aria-hidden="true">◐</span>
           <span data-theme-label>Light</span>
+        </button>
+        <button class="theme-toggle" type="button" data-lang-toggle aria-pressed="false">
+          <span aria-hidden="true">⌘</span>
+          <span data-lang-label>EN</span>
         </button>
       </nav>
     </div>
@@ -35,7 +39,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="index.html">Realm</a>
       <span class="breadcrumb__sep" aria-hidden="true">›</span>
-      <span class="breadcrumb__current" aria-current="page">Search</span>
+      <span class="breadcrumb__current" aria-current="page" data-i18n="search.breadcrumb_current">Search</span>
     </nav>
 
     <section style="position: sticky; top: var(--directory-nav-height);
@@ -50,11 +54,12 @@
         </svg>
         <input class="search__input" data-search-input type="search"
                placeholder="Search by name, capability, archetype…"
-               aria-label="Search agents" autofocus />
-        <kbd class="search__shortcut" title="Press / to focus">/</kbd>
+               aria-label="Search agents" autofocus
+               data-i18n-attr="placeholder:common.search_placeholder_full,aria-label:common.search_aria" />
+        <kbd class="search__shortcut" data-i18n-attr="title:common.search_shortcut_title">/</kbd>
       </label>
       <div class="cluster" style="margin-top: var(--realm-spacing-sm);">
-        <span class="chip-group__legend" style="margin: 0;">Active filters</span>
+        <span class="chip-group__legend" style="margin: 0;" data-i18n="search.active_filters">Active filters</span>
         <span class="cluster" data-active-filters></span>
         <span style="margin-left: auto; color: var(--realm-color-ink-soft); font-size: var(--core-font-size-14);"
               data-count aria-live="polite">— of 136</span>
