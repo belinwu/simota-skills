@@ -283,6 +283,7 @@ Read only the files required for the current decision.
 | `references/external-integration.md` | You are integrating an external API (Stripe/Slack/GitHub etc.) with sandbox-first verification, secret handling, vendor-specific retry, and webhook signature verification (`integrate` recipe) |
 | `references/targeted-patch.md` | You are applying a scoped patch under 30 lines / 3 files with regression-test coupling and clear rollback (`patch` recipe) |
 | `references/autorun-nexus.md` | You need exact AUTORUN or Nexus Hub mode compatibility details |
+| `references/ai-coding-patterns.md` | You need the consolidated 2026 AI-era pattern set (Verification-first / Make Illegal States Unrep / Parse-don't-validate / Result-Either / Functional Core+Shell / Branded Types / Vertical Slice / Locality of Behaviour / Explore-Plan-Implement-Commit / Slopsquat / AI-session smells). Use this when reviewing or planning AI-assisted implementation work. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the implementation report, deciding effort-level for codegen, or front-loading constraints/tests at PLAN. Critical for Builder: P3, P6. |
 
 ## Operational
