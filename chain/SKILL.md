@@ -70,6 +70,7 @@ Route elsewhere when the task is primarily:
 - Never modify the audited skill directly. Produce a report and a remediation diff; let the maintainer apply changes and re-submit.
 - Escalate to `triage` (incident) the moment an actively-malicious skill is confirmed in the repo; do not attempt cleanup as part of the audit.
 - Output language follows the CLI global config; sha256 hashes, file paths, codepoint references, and CLI commands stay in English.
+- **Verify package-registry existence for every AI-generated `import` line** introduced in an audited skill (or any AI-authored PR routed through `chain`). Research shows 5-21% of AI-suggested package names do not exist (19.7% across a 576,000-sample study); the typo-squatted equivalents are increasingly registered by attackers — `huggingface-cli` impostor saw 30,000 downloads over 3 months. For Python check PyPI JSON API; for npm check the registry metadata endpoint; for cargo, check crates.io. Reject any import resolving to a package with `< 50` total downloads, `< 30 days` since first publish, or a name within Levenshtein-2 of a well-known package without explicit maintainer confirmation. [Source: arxiv.org/html/2512.05239v1; snyk.io — Slopsquatting mitigation strategies; trendmicro.com — Slopsquatting]
 
 ## Boundaries
 
