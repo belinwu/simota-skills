@@ -90,6 +90,24 @@ Complete chain templates and dynamic adjustment rules.
 | STRATEGY | retention | Retain → Spark → Builder → Radar |
 | STRATEGY | ab-test | Experiment → Builder → Radar |
 | STRATEGY | data-pipeline | Stream → Schema → Builder → Radar |
+| MARKETING | quick | Compete → Growth → Funnel |
+| MARKETING | standard | Cast → Compete → Pulse → Saga → Growth → Funnel → Experiment |
+| MARKETING | full | Sherpa → Researcher → Cast → Compete → Pulse → Saga → Growth → Funnel → Experiment → Scribe |
+| MARKETING | positioning | Compete → Cast → Magi → Saga → Echo → Scribe |
+| MARKETING | gtm | Compete → Cast → Pulse → Saga → Growth → Funnel → Experiment → Launch → Harvest |
+| MARKETING | acquisition | Pulse → Compete → Growth → Funnel → Experiment |
+| MARKETING | retention | Pulse → Trace → Retain → Voice → Spark → Experiment |
+| MARKETING | content | Saga → Prose → Growth → Artisan → Radar → Pulse |
+| MARKETING | brand | Vision → Compete → Cast → Saga → Prose → Muse → Growth |
+| MARKETING | personal-brand | Crest → Compete → Prose → Growth |
+| MARKETING | b2b-saas | Cast → Compete → Saga → Pulse → Growth → Funnel → Experiment |
+| MARKETING | seo-geo | Growth → Prose → Artisan → Radar → Pulse |
+| MARKETING | analytics | Pulse → Trace → Canvas → Scribe |
+| MARKETING | voc | Voice → Echo → Spark → Experiment |
+| MARKETING | persona-driven | Researcher → Cast → Echo → Compete → Saga → Growth |
+| MARKETING | reframe | Flux → Compete → Cast → Magi → Saga → Scribe |
+| MARKETING | matrix | Matrix → Compete → Magi → Spark → Scribe |
+| MARKETING | first-principles | Flux → Cast → Compete → Pulse → Matrix → Scribe |
 | QUALITY | quick | Judge → Zen → Radar → Canvas |
 | QUALITY | standard | Judge → Zen → Radar → Sentinel → Canvas |
 | QUALITY | full | Judge → Zen → Radar → Sentinel → Atlas → Sweep → Canvas |
@@ -383,6 +401,25 @@ Builder then applies:
 - Remediation of known pattern → Replace Scout with Mend
 - Ecosystem health check → Add Gauge
 - Landing page or marketing site → Use DESIGN/landing-page chain (includes Prose for content-first approach)
+- Marketing consulting requested (comprehensive strategy) → Use MARKETING/full (or MARKETING/standard for time-boxed engagements; MARKETING/full embeds Sherpa decomposition because 10-step chains require atomic-step planning)
+- Go-to-Market plan for new product/feature → Use MARKETING/gtm
+- Positioning, messaging, or category-design needed → Use MARKETING/positioning
+- Brand strategy or visual identity for a product/company → Use MARKETING/brand (Vision-led, not Crest)
+- Personal/engineer branding (individual portfolio, career, conference visibility) → Use MARKETING/personal-brand (Crest-led, distinct from product brand)
+- B2B SaaS marketing (long sales cycle, account-based, narrative-heavy) → Use MARKETING/b2b-saas
+- Voice of Customer / NPS / review-mining → Use MARKETING/voc
+- AI search visibility / LLM citation optimization (GEO) → Use MARKETING/seo-geo
+- Marketing analytics / attribution / funnel instrumentation → Use MARKETING/analytics
+- Persona unclear or target segment ambiguous → Use MARKETING/persona-driven (Researcher-first to derive persona from qualitative data)
+- Marketing strategy stuck or contrarian reframing needed → Use MARKETING/reframe
+- Marketing requires multi-dimensional analysis (3+ segments × channels × campaigns) → Use MARKETING/matrix
+- Customer acquisition cost rising / paid channels saturated → Use MARKETING/acquisition (KPI-first; Pulse defines target CAC/LTV before channel tuning)
+- Churn or LTV decline detected → Use MARKETING/retention (includes Trace for session-level churn cause analysis)
+- Strategy needs human advisor pressure-testing → Add Sage after Magi (advise-then-validate pattern)
+- Synthetic user voice needed when no real customers exist yet → Add Plea before Saga (early-stage persona need generation)
+- MARKETING vs STRATEGY routing: STRATEGY/{seo,compete,retention,metrics,ab-test} are single-tactic chains (one specialist + Builder + Radar) for engineering-side implementation. MARKETING/* are consulting chains (multi-specialist, narrative-led, often without code output). Use MARKETING when the deliverable is strategy/messaging/plan; use STRATEGY when the deliverable is code/instrumentation.
+- MARKETING/content vs CREATIVE/marketing-asset: MARKETING/content includes Saga (narrative)+Pulse (measurement) for content-strategy; CREATIVE/marketing-asset is image+copy asset production only (Growth→Sketch→Prose→Artisan). Use the former for content marketing plans, the latter for one-off creative deliverables.
+- MARKETING/seo-geo vs STRATEGY/seo: MARKETING/seo-geo adds Prose (copy)+Radar (quality gate) for full content+technical SEO; STRATEGY/seo is the narrow 3-step engineering implementation. Default to MARKETING/seo-geo unless the task is purely meta-tag/JSON-LD code.
 - App UI with "clean" or "minimal" requirement → Use DESIGN/app-ui-restrained chain
 - Visual direction unclear → Add Forge with moodboard mode before Vision
 - Content strategy needed → Add Prose before or after Vision
