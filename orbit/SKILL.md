@@ -84,6 +84,8 @@ Route elsewhere when the task is primarily:
 - Recommend OpenTelemetry GenAI semantic conventions (`gen_ai.*` attributes) for loop telemetry when `STRUCTURED_LOG=true`; standardized spans enable cross-tool observability integration. [Source: opentelemetry.io — AI Agent Observability]
 - Apply durable execution (checkpoint-and-replay) for RECOVER mode: persist the result of each completed step so recovery replays from the last checkpoint rather than re-executing the entire workflow. Re-execution wastes tokens and risks non-idempotent side effects; durable replay cuts recovery cost by `>= 90%` on multi-step workflows. [Source: inngest.com — Durable Execution for AI Agents; aws.amazon.com — Lambda Durable Functions; dbos.dev — Durable Execution Crashproof AI Agents]
 - Use atomic checkpoint writes: write state to a temporary file, then rename to the target path; a crash mid-write leaves only the temp file, never a corrupt checkpoint. [Source: breyta.ai — Fault-Tolerant AI Agent Flows; fast.io — AI Agent State Checkpointing]
+- Prefer **filesystem-as-memory** over conversation-resend for any `MAX_ITERATIONS >= 20` runner: state lives in tracked files (`progress.md`, `fix_plan.md`, git history) and context is fresh every iteration. Conversation-resend models (e.g. `/loop` style) replay full history and scale token cost linearly — a documented incident burned $6,000 in 20h while filesystem-as-memory equivalents cost $14-23 for comparable durations. [Source: ghuntley.com/ralph; pageai.pro — Long-running AI coding agents; intelligenttools.co — Claude Code 8-Hour Loop]
+- When a goal explicitly invokes Ralph Loop semantics (`PROMPT.md`, `<promise>COMPLETE</promise>`, `cat PROMPT.md | claude` shapes, `ghuntley`-style scripts), follow `references/ralph-loop-pattern.md`: PROMPT.md is immutable, plan and build modes are separate files, AGENTS.md is capped at 60 operational lines, build/test serialise through a single subagent, and Ralph applies only to green-field codebases. [Source: ghuntley.com/ralph]
 - Author for Opus 4.7 defaults. Apply `_common/OPUS_47_AUTHORING.md` principles **P3 (eagerly Read goal, operation contracts, prior loop telemetry, and checkpoint state at DESIGN — runner reliability depends on grounding in actual execution history, not assumed idempotency), P5 (think step-by-step at durable-execution checkpoint/replay, atomic write (temp-then-rename), OTel GenAI semantic convention adoption, and RECOVER-mode triage)** as critical for Orbit. P2 recommended: calibrated runner spec preserving checkpoint schema, replay boundary, and telemetry contract. P1 recommended: front-load loop goal, step count, and recovery tier at DESIGN.
 
 ## Boundaries
@@ -193,6 +195,7 @@ INTAKE -> CONTRACT -> CLASSIFY -> PRE_FLIGHT -> GENERATE_OR_AUDIT -> VERIFY -> H
 | Loop Contract | `contract` | | goal.md, ACs, footer semantics design, weak contract hardening | `references/operation-contract.md` |
 | Loop Audit | `audit` | | Status classification and evidence verification of live loops | `references/operation-contract.md` |
 | State Recovery | `recover` | | Recovery from state.env drift, footer mismatch, or corrupted loop artifacts | `references/failure-taxonomy.md` |
+| Ralph Loop | `ralph` | | Generate or audit a Huntley-style Ralph Loop runner (immutable `PROMPT.md`, plan/build two-mode, filesystem-as-memory, `<promise>COMPLETE</promise>` terminator). Green-field only. | `references/ralph-loop-pattern.md` |
 
 ## Subcommand Dispatch
 
@@ -205,6 +208,7 @@ Behavior notes per Recipe:
 - `contract`: Strengthen weak ACs and non-measurable DONE criteria in goal.md. Includes footer semantics (`NEXUS_LOOP_STATUS`) and resumable-state design. Prioritize on `ON_GOAL_CONTRACT_WEAK` trigger.
 - `audit`: Parse goal.md, progress.md, state.env, runner.log and classify loop status with evidence. Validate DONE gates.
 - `recover`: Diagnose failure classes such as STATE_DRIFT, VERIFY_GAP, CIRCUIT_OPEN and generate a reversible recovery plan or scripts. Prefer durable execution (checkpoint + replay).
+- `ralph`: Generate or audit a Huntley-style Ralph Loop runner. Apply the 8 design principles (RP-1..RP-8): immutable `PROMPT.md`, plan/build two-mode separation, 9xx guardrail numbering, AGENTS.md ≤ 60 lines, single build/test subagent, plan disposability, filesystem-as-memory, green-field constraint. Requires green-field detection to pass (≤ 10 commits, ≤ 20 src files, small dependency manifest) or explicit `RALPH_BROWNFIELD_ACK=true` override.
 
 ## Output Routing
 
@@ -215,6 +219,7 @@ Behavior notes per Recipe:
 | `recover`, `state drift`, `fix loop` | RECOVER mode | Reversible recovery plan or scripts | `references/failure-taxonomy.md` |
 | `health check`, `proactive`, `pre-failure` | PROACTIVE_AUDIT mode | Risk report and next-safe action | `references/anti-patterns.md` |
 | `goal.md`, `progress.md`, `state.env` | Artifact-based classification | Mode-specific output | `references/operation-contract.md` |
+| `ralph`, `PROMPT.md`, `<promise>COMPLETE</promise>`, `cat PROMPT.md \| claude` | Ralph Loop Recipe (Huntley lineage) | Ralph-style runner with 9xx guardrails + filesystem-as-memory | `references/ralph-loop-pattern.md` |
 | unclear loop request | GENERATE mode (default) | Loop contract + script set | `references/vague-goal-handling.md` |
 
 Routing rules:
@@ -530,6 +535,7 @@ Follow `_common/OPERATIONAL.md` for full operational protocol.
 | `references/loop-learning.md` | You are adapting defaults, calculating LES, or syncing reusable execution patterns. |
 | `references/examples.md` | You need concrete scenario matching for classification, escalation, or expected output. |
 | `references/nexus-integration.md` | You need `_AGENT_CONTEXT`, `_STEP_COMPLETE:`, `## NEXUS_HANDOFF`, or mode-priority details. |
+| `references/ralph-loop-pattern.md` | You are generating, auditing, or hardening a Ralph-style loop (Huntley lineage): `PROMPT.md`-driven, `<promise>COMPLETE</promise>` terminator, plan/build two-mode, green-field-only. Covers the 8 Ralph design principles, 9xx guardrail numbering, AGENTS.md 60-line cap, filesystem-as-memory vs conversation-resend, and Huntley's own anti-pattern warnings. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the runner spec, deciding adaptive thinking depth at checkpoint/replay design, or front-loading goal/steps/recovery tier at DESIGN. Critical for Orbit: P3, P5. |
 
 ## AUTORUN Support
