@@ -90,12 +90,47 @@
     "status": "generated"
   },
   "recipes": [
-    "request",
-    "need",
-    "challenge",
-    "roleplay",
-    "jtbd",
-    "5whys",
-    "opportunity"
+    {
+      "subcommand": "request",
+      "label": "Feature Request",
+      "default": true,
+      "when": "Authentic feature request generation — first-person demand from diverse personas"
+    },
+    {
+      "subcommand": "need",
+      "label": "Unmet Needs",
+      "default": false,
+      "when": "Surface unmet needs and uncover team blind spots"
+    },
+    {
+      "subcommand": "challenge",
+      "label": "Challenge Assumptions",
+      "default": false,
+      "when": "Counter team assumptions, validate the roadmap"
+    },
+    {
+      "subcommand": "roleplay",
+      "label": "User Roleplay",
+      "default": false,
+      "when": "End-user role-play and deep-dive on a persona"
+    },
+    {
+      "subcommand": "jtbd",
+      "label": "Jobs-to-be-Done",
+      "default": false,
+      "when": "Switch interview, four-forces table, Job Map for the progress users hire the product to make"
+    },
+    {
+      "subcommand": "5whys",
+      "label": "5 Whys Root Cause",
+      "default": false,
+      "when": "Iterative why-chain that drives a surface request to its root unmet need"
+    },
+    {
+      "subcommand": "opportunity",
+      "label": "Opportunity Solution Tree",
+      "default": false,
+      "when": "Outcome → Opportunity → Solution → Experiment hierarchy for continuous discovery"
+    }
   ]
 }

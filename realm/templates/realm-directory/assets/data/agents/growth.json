@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "seo",
-    "smo",
-    "cro",
-    "geo",
-    "keyword",
-    "audit",
-    "vitals"
+    {
+      "subcommand": "seo",
+      "label": "SEO",
+      "default": true,
+      "when": "Meta tags, JSON-LD, heading hierarchy, GEO optimization"
+    },
+    {
+      "subcommand": "smo",
+      "label": "Social Sharing",
+      "default": false,
+      "when": "OGP / Twitter Card social-share setup"
+    },
+    {
+      "subcommand": "cro",
+      "label": "CRO",
+      "default": false,
+      "when": "CTA optimization, form improvements, exit intent"
+    },
+    {
+      "subcommand": "geo",
+      "label": "GEO",
+      "default": false,
+      "when": "AI Overview / ChatGPT / Perplexity citation optimization"
+    },
+    {
+      "subcommand": "keyword",
+      "label": "Keyword",
+      "default": false,
+      "when": "Keyword research methodology — search intent classification, query clustering, SERP feature analysis, AI prompt mining"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Audit",
+      "default": false,
+      "when": "Full-site SEO audit — crawlability, indexability, content gap, internal linking, log-file analysis"
+    },
+    {
+      "subcommand": "vitals",
+      "label": "Vitals",
+      "default": false,
+      "when": "Core Web Vitals deep optimization — LCP/INP/CLS root-cause and targeted fix patterns at p75"
+    }
   ]
 }

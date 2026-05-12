@@ -84,13 +84,53 @@
     "status": "generated"
   },
   "recipes": [
-    "marp",
-    "reveal",
-    "slidev",
-    "conference",
-    "timing",
-    "narrative",
-    "visual",
-    "rehearsal"
+    {
+      "subcommand": "marp",
+      "label": "Marp",
+      "default": true,
+      "when": "Marp Markdown slide generation"
+    },
+    {
+      "subcommand": "reveal",
+      "label": "Reveal",
+      "default": false,
+      "when": "reveal.js HTML slide generation"
+    },
+    {
+      "subcommand": "slidev",
+      "label": "Slidev",
+      "default": false,
+      "when": "Slidev Vue slide generation"
+    },
+    {
+      "subcommand": "conference",
+      "label": "Conference",
+      "default": false,
+      "when": "LT / conference talk optimization"
+    },
+    {
+      "subcommand": "timing",
+      "label": "Timing",
+      "default": false,
+      "when": "WPM-based pacing and speaker notes"
+    },
+    {
+      "subcommand": "narrative",
+      "label": "Narrative",
+      "default": false,
+      "when": "Narrative arc design — Pixar formula, Hero's Journey for talks, Problem-Solution-Benefit, Minto Pyramid"
+    },
+    {
+      "subcommand": "visual",
+      "label": "Visual",
+      "default": false,
+      "when": "Slide visual design — typography hierarchy, color/contrast (WCAG AA), image use, alignment grid"
+    },
+    {
+      "subcommand": "rehearsal",
+      "label": "Rehearsal",
+      "default": false,
+      "when": "Rehearsal and delivery — breathing, pacing, pause discipline, eye contact, Q&A handling"
+    }
   ]
 }

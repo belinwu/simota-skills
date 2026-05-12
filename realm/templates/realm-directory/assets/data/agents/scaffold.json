@@ -88,13 +88,53 @@
     "status": "generated"
   },
   "recipes": [
-    "terraform",
-    "cloudformation",
-    "pulumi",
-    "compose",
-    "env",
-    "k8s",
-    "helm",
-    "cdk"
+    {
+      "subcommand": "terraform",
+      "label": "Terraform / OpenTofu",
+      "default": true,
+      "when": "Terraform/OpenTofu IaC (most common)"
+    },
+    {
+      "subcommand": "cloudformation",
+      "label": "CloudFormation",
+      "default": false,
+      "when": "AWS CloudFormation"
+    },
+    {
+      "subcommand": "pulumi",
+      "label": "Pulumi",
+      "default": false,
+      "when": "Pulumi IaC"
+    },
+    {
+      "subcommand": "compose",
+      "label": "Docker Compose",
+      "default": false,
+      "when": "Local development environment"
+    },
+    {
+      "subcommand": "env",
+      "label": "Env Vars",
+      "default": false,
+      "when": "Environment variable design (.env, etc.)"
+    },
+    {
+      "subcommand": "k8s",
+      "label": "Kubernetes Manifests",
+      "default": false,
+      "when": "Raw Kubernetes manifest authoring (Deployment/Service/Ingress/ConfigMap/Secret, kustomize overlays)"
+    },
+    {
+      "subcommand": "helm",
+      "label": "Helm Chart",
+      "default": false,
+      "when": "Helm chart authoring (Chart.yaml, values schema, templates, subcharts, release lifecycle)"
+    },
+    {
+      "subcommand": "cdk",
+      "label": "AWS CDK",
+      "default": false,
+      "when": "AWS CDK (TypeScript/Python) construct + stack scaffolding with multi-env pattern"
+    }
   ]
 }

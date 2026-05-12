@@ -93,13 +93,77 @@
     "status": "generated"
   },
   "recipes": [
-    "swiftui",
-    "compose",
-    "liquidglass",
-    "expressive",
-    "offline",
-    "push",
-    "deeplink",
-    "bg"
+    {
+      "subcommand": "swiftui",
+      "label": "SwiftUI (iOS)",
+      "default": true,
+      "when": "iOS implementation with Swift 6.2 + SwiftUI + `@Observable`"
+    },
+    {
+      "subcommand": "compose",
+      "label": "Compose (Android)",
+      "default": true,
+      "when": "Android implementation with Kotlin 2.x + Jetpack Compose + Material 3 Expressive"
+    },
+    {
+      "subcommand": "liquidglass",
+      "label": "Liquid Glass",
+      "default": false,
+      "when": "iOS 26 Liquid Glass adoption (translucent / depth controls, dynamic tab-bar shrink, 4-variant icons)"
+    },
+    {
+      "subcommand": "expressive",
+      "label": "M3 Expressive",
+      "default": false,
+      "when": "Material 3 Expressive adoption (LoadingIndicator, PullToRefreshBox, FloatingToolbar / DockedToolbar, Carousel, spring motion)"
+    },
+    {
+      "subcommand": "offline",
+      "label": "Offline-First",
+      "default": false,
+      "when": "T0–T3 offline architecture (SwiftData / Room / CRDT selection)"
+    },
+    {
+      "subcommand": "push",
+      "label": "Push Notifications",
+      "default": false,
+      "when": "APNs (Live Activities) and FCM (Channels) wiring, soft pre-prompt UX"
+    },
+    {
+      "subcommand": "deeplink",
+      "label": "Deep Links",
+      "default": false,
+      "when": "Universal Links (AASA) and App Links (assetlinks.json), Coordinator / NavController routing"
+    },
+    {
+      "subcommand": "bg",
+      "label": "Background Tasks",
+      "default": false,
+      "when": "iOS BGTaskScheduler / Android WorkManager, Doze / battery constraints, execution-time budgeting"
+    },
+    {
+      "subcommand": "passkey",
+      "label": "Passkey / Credential Manager",
+      "default": false,
+      "when": "Passkey (FIDO2 / WebAuthn) sign-in via ASAuthorizationController (iOS) / Credential Manager (Android)"
+    },
+    {
+      "subcommand": "privacy",
+      "label": "Privacy Manifest",
+      "default": false,
+      "when": "Apple Privacy Manifest declarations + Google Data Safety form"
+    },
+    {
+      "subcommand": "rollout",
+      "label": "Staged Rollout",
+      "default": false,
+      "when": "TestFlight phased release / Play staged rollout, server-driven feature flags, halt + hotfix"
+    },
+    {
+      "subcommand": "store",
+      "label": "Store Compliance",
+      "default": false,
+      "when": "App Store / Play submission preparation, full compliance audit"
+    }
   ]
 }

@@ -84,13 +84,65 @@
     "status": "generated"
   },
   "recipes": [
-    "design",
-    "openapi",
-    "versioning",
-    "breaking",
-    "rest",
-    "graphql",
-    "webhook",
-    "auth"
+    {
+      "subcommand": "design",
+      "label": "API Design",
+      "default": true,
+      "when": "New REST/GraphQL API design"
+    },
+    {
+      "subcommand": "openapi",
+      "label": "OpenAPI Spec",
+      "default": false,
+      "when": "OpenAPI document generation"
+    },
+    {
+      "subcommand": "versioning",
+      "label": "Versioning Strategy",
+      "default": false,
+      "when": "API versioning strategy"
+    },
+    {
+      "subcommand": "breaking",
+      "label": "Breaking Change Check",
+      "default": false,
+      "when": "Breaking change detection"
+    },
+    {
+      "subcommand": "rest",
+      "label": "REST Semantics",
+      "default": false,
+      "when": "REST resource/URI design, status taxonomy, conditional requests, pagination, RMM, RFC 7807/9457"
+    },
+    {
+      "subcommand": "graphql",
+      "label": "GraphQL Schema",
+      "default": false,
+      "when": "GraphQL schema-first/code-first, DataLoader, persisted queries, Federation/Relay, subscriptions"
+    },
+    {
+      "subcommand": "webhook",
+      "label": "Webhook Provider",
+      "default": false,
+      "when": "Emit-side webhook contract: HMAC signature, idempotency, retry/DLQ, ordering, Sunset/Deprecation"
+    },
+    {
+      "subcommand": "auth",
+      "label": "API Auth",
+      "default": false,
+      "when": "OAuth 2.1 / OIDC / JWT / mTLS / API key contract — token shape, scope design, key rotation, IdP integration"
+    },
+    {
+      "subcommand": "rate-limit",
+      "label": "Rate Limiting",
+      "default": false,
+      "when": "Token bucket / leaky bucket / sliding window / fixed window — per-key / per-tenant / per-route, RFC 9331 / RateLimit headers"
+    },
+    {
+      "subcommand": "deprecation",
+      "label": "Deprecation",
+      "default": false,
+      "when": "RFC 8594 Sunset / RFC 9745 Deprecation headers, deprecation policy, client SDK migration timeline, removal cutover"
+    }
   ]
 }

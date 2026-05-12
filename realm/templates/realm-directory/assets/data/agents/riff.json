@@ -91,12 +91,47 @@
     "status": "generated"
   },
   "recipes": [
-    "expand",
-    "propose",
-    "evaluate",
-    "subtract",
-    "steelman",
-    "scamper",
-    "crazy8"
+    {
+      "subcommand": "expand",
+      "label": "Expand Idea",
+      "default": true,
+      "when": "Idea expansion mode (Double Diamond)"
+    },
+    {
+      "subcommand": "propose",
+      "label": "Propose",
+      "default": false,
+      "when": "Proposal mode (Quick Riff)"
+    },
+    {
+      "subcommand": "evaluate",
+      "label": "Evaluate",
+      "default": false,
+      "when": "Evaluation mode (Devil's Advocate)"
+    },
+    {
+      "subcommand": "subtract",
+      "label": "Subtract",
+      "default": false,
+      "when": "Subtraction mode (narrowing ideas)"
+    },
+    {
+      "subcommand": "steelman",
+      "label": "Steelman",
+      "default": false,
+      "when": "Steel-manning protocol — build the strongest case FOR and AGAINST in sequence, surface the decisive question, hand back a soft verdict. Use for hard-to-reverse decisions, asymmetric stakes, or split teams"
+    },
+    {
+      "subcommand": "scamper",
+      "label": "SCAMPER",
+      "default": false,
+      "when": "Structured 7-lens transformation — Substitute / Combine / Adapt / Modify / Put-to-other-use / Eliminate / Reverse — each lens producing 1-3 concrete variations of the same idea"
+    },
+    {
+      "subcommand": "crazy8",
+      "label": "Crazy 8s",
+      "default": false,
+      "when": "Time-boxed rapid divergence — 8 distinct one-sentence variations along one declared axis, generated under time pressure to bypass self-censorship and break out of single-shape thinking"
+    }
   ]
 }

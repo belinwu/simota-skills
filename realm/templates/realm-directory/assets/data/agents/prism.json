@@ -84,13 +84,53 @@
     "status": "generated"
   },
   "recipes": [
-    "audio",
-    "video",
-    "slide",
-    "infographic",
-    "persona",
-    "sources",
-    "multilingual",
-    "mindmap"
+    {
+      "subcommand": "audio",
+      "label": "Audio Output",
+      "default": true,
+      "when": "Audio Overview optimization (Deep Dive/Brief/Critique/Debate)"
+    },
+    {
+      "subcommand": "video",
+      "label": "Video Output",
+      "default": false,
+      "when": "Video Overview optimization (Explainer/Brief/Cinematic)"
+    },
+    {
+      "subcommand": "slide",
+      "label": "Slide Output",
+      "default": false,
+      "when": "Presenter Slides / Detailed Deck optimization"
+    },
+    {
+      "subcommand": "infographic",
+      "label": "Infographic",
+      "default": false,
+      "when": "Infographic output (select from 10 styles)"
+    },
+    {
+      "subcommand": "persona",
+      "label": "Custom Goals Persona",
+      "default": false,
+      "when": "Custom Goals persona design (up to 10,000 characters)"
+    },
+    {
+      "subcommand": "sources",
+      "label": "Source Curation",
+      "default": false,
+      "when": "Source-set design and curation — PDF/Docs/Slides/URLs/EPUB/YouTube/Image/CSV mix strategy, Discover Sources for gap-fill, deduplication, source-quality scoring (~70% of output quality), 2-5 focused vs 5-15 broad set sizing, tier-aware source-cap planning"
+    },
+    {
+      "subcommand": "multilingual",
+      "label": "Multilingual",
+      "default": false,
+      "when": "Cross-lingual source handling — language detection per source, translate-before-ingest vs let-NotebookLM-translate decision, output language steering (Audio Overview language pinning), terminology glossary as a dedicated source, code-switching prompt pattern"
+    },
+    {
+      "subcommand": "mindmap",
+      "label": "Mind Map",
+      "default": false,
+      "when": "Mind Map output design — branch hierarchy steering (3 / 5 / 7 top-level branches), terminology consistency across nodes, visual density vs depth trade-off, integration with Slides / Infographic for downstream visual handoff, refinement via chat-to-output"
+    }
   ]
 }

@@ -85,13 +85,65 @@
     "status": "generated"
   },
   "recipes": [
-    "icon",
-    "illustration",
-    "system",
-    "sprite",
-    "animate",
-    "theme",
-    "a11y",
-    "optimize"
+    {
+      "subcommand": "icon",
+      "label": "Single Icon",
+      "default": true,
+      "when": "Single icon generation"
+    },
+    {
+      "subcommand": "illustration",
+      "label": "Illustration",
+      "default": false,
+      "when": "SVG illustration"
+    },
+    {
+      "subcommand": "system",
+      "label": "Icon System",
+      "default": false,
+      "when": "Icon system design"
+    },
+    {
+      "subcommand": "sprite",
+      "label": "Sprite Symbols",
+      "default": false,
+      "when": "Build SVG sprite symbols"
+    },
+    {
+      "subcommand": "animate",
+      "label": "Animated SVG",
+      "default": false,
+      "when": "SMIL/CSS animation authoring for icons and microinteractions"
+    },
+    {
+      "subcommand": "theme",
+      "label": "Themed SVG",
+      "default": false,
+      "when": "`currentColor` / CSS custom property theming, dark-mode variants"
+    },
+    {
+      "subcommand": "a11y",
+      "label": "Accessible SVG",
+      "default": false,
+      "when": "ARIA, `<title>`/`<desc>`, decorative vs informative annotation"
+    },
+    {
+      "subcommand": "optimize",
+      "label": "Optimize",
+      "default": false,
+      "when": "SVGO config, path simplification, decimal precision, transform flatten, sprite vs inline trade-off"
+    },
+    {
+      "subcommand": "pictogram",
+      "label": "Pictogram",
+      "default": false,
+      "when": "ISO 7001 wayfinding, AIGA symbols, safety / accessibility pictograms with cross-cultural recognition"
+    },
+    {
+      "subcommand": "logo",
+      "label": "Logo / Wordmark",
+      "default": false,
+      "when": "Wordmark / monogram / lockup construction with typographic design and licensing-aware delivery"
+    }
   ]
 }

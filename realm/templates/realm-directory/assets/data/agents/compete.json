@@ -88,13 +88,53 @@
     "status": "generated"
   },
   "recipes": [
-    "matrix",
-    "swot",
-    "battle-card",
-    "positioning",
-    "llm-visibility",
-    "battle",
-    "winloss",
-    "moat"
+    {
+      "subcommand": "matrix",
+      "label": "Competitor Matrix",
+      "default": true,
+      "when": "Competitor map, feature comparison matrix, tiering"
+    },
+    {
+      "subcommand": "swot",
+      "label": "SWOT Analysis",
+      "default": false,
+      "when": "SWOT, positioning, differentiation strategy"
+    },
+    {
+      "subcommand": "battle-card",
+      "label": "Battle Card",
+      "default": false,
+      "when": "Battle card creation, competitive alert response plan"
+    },
+    {
+      "subcommand": "positioning",
+      "label": "Positioning Map",
+      "default": false,
+      "when": "Positioning map, category design, moat evaluation"
+    },
+    {
+      "subcommand": "llm-visibility",
+      "label": "LLM Visibility",
+      "default": false,
+      "when": "LLM brand presence analysis, AI share of voice measurement"
+    },
+    {
+      "subcommand": "battle",
+      "label": "Battle Card",
+      "default": false,
+      "when": "One-pager sales-enablement design, objection handling pairs, freshness governance, GTM distribution"
+    },
+    {
+      "subcommand": "winloss",
+      "label": "Win/Loss Analysis",
+      "default": false,
+      "when": "Post-decision interviews, segmentation, theme extraction, cadence design, CRM integration"
+    },
+    {
+      "subcommand": "moat",
+      "label": "Moat (7 Powers)",
+      "default": false,
+      "when": "Helmer 7 Powers assessment, durability scoring, anti-moat detection, statics vs dynamics"
+    }
   ]
 }

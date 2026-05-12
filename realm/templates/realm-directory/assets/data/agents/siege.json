@@ -79,12 +79,47 @@
     "status": "generated"
   },
   "recipes": [
-    "load",
-    "contract",
-    "chaos",
-    "mutation",
-    "fuzz",
-    "property",
-    "smoke"
+    {
+      "subcommand": "load",
+      "label": "Load Test",
+      "default": true,
+      "when": "Load/stress/spike/soak testing and SLO validation"
+    },
+    {
+      "subcommand": "contract",
+      "label": "Contract Test",
+      "default": false,
+      "when": "Contract testing (Pact/Specmatic), CDC verification"
+    },
+    {
+      "subcommand": "chaos",
+      "label": "Chaos Engineering",
+      "default": false,
+      "when": "Chaos engineering, fault injection, game days"
+    },
+    {
+      "subcommand": "mutation",
+      "label": "Mutation Testing",
+      "default": false,
+      "when": "Mutation testing, test quality measurement, survivor analysis"
+    },
+    {
+      "subcommand": "fuzz",
+      "label": "Fuzz Testing",
+      "default": false,
+      "when": "Coverage-guided fuzzing (AFL++/libFuzzer/go-fuzz/cargo-fuzz/Jazzer), corpus management, sanitizer integration"
+    },
+    {
+      "subcommand": "property",
+      "label": "Property Testing",
+      "default": false,
+      "when": "Property-based testing (fast-check/Hypothesis/jqwik/PropEr), generator design, stateful/model-based properties"
+    },
+    {
+      "subcommand": "smoke",
+      "label": "Smoke Test",
+      "default": false,
+      "when": "Post-deploy smoke / sanity gates, synthetic checks, ≤3-min deploy-verification suite"
+    }
   ]
 }

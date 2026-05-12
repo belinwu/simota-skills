@@ -93,13 +93,53 @@
     "status": "generated"
   },
   "recipes": [
-    "playwright",
-    "page-object",
-    "auth",
-    "a11y",
-    "visual",
-    "api",
-    "mobile",
-    "component"
+    {
+      "subcommand": "playwright",
+      "label": "Playwright Suite",
+      "default": true,
+      "when": "Playwright E2E test suite creation"
+    },
+    {
+      "subcommand": "page-object",
+      "label": "Page Object",
+      "default": false,
+      "when": "Page Object Model design and implementation"
+    },
+    {
+      "subcommand": "auth",
+      "label": "Auth Flow",
+      "default": false,
+      "when": "Authentication flow E2E tests"
+    },
+    {
+      "subcommand": "a11y",
+      "label": "Accessibility",
+      "default": false,
+      "when": "Accessibility automated testing"
+    },
+    {
+      "subcommand": "visual",
+      "label": "Visual Regression",
+      "default": false,
+      "when": "Visual regression testing"
+    },
+    {
+      "subcommand": "api",
+      "label": "API E2E",
+      "default": false,
+      "when": "User-journey E2E through an API-only interface (no UI): HTTP call → backend state → downstream API validation chain"
+    },
+    {
+      "subcommand": "mobile",
+      "label": "Mobile E2E",
+      "default": false,
+      "when": "E2E testing for shipped mobile apps (Detox / Maestro / Appium / device farm)"
+    },
+    {
+      "subcommand": "component",
+      "label": "Component Test",
+      "default": false,
+      "when": "Component tests executed in a real browser (Playwright CT / Cypress CT / Storybook Interactions)"
+    }
   ]
 }

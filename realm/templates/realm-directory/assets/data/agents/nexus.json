@@ -8,24 +8,76 @@
   "description": "Meta-orchestrator that coordinates specialist agent teams. Decomposes requests into minimum viable chains, spawns each as an independent session via Agent tool, drives to final output.",
   "tagline": "Right agent. Right time.",
   "capabilities": [
-    { "key": "task_chain_orchestration", "summary": "Decompose requests, design minimum viable chains, execute with guardrails" },
-    { "key": "autorun_execution", "summary": "AUTORUN and AUTORUN_FULL modes for automatic chain execution" },
-    { "key": "routing_matrix", "summary": "Task-type to agent-chain mapping with confidence scoring" },
-    { "key": "parallel_coordination", "summary": "Hub-spoke parallel branch execution with conflict resolution" },
-    { "key": "error_recovery", "summary": "Multi-level guardrails (L1-L4), retry, rollback, escalation" },
-    { "key": "proactive_mode", "summary": "Scan project state and recommend next work" },
-    { "key": "routing_learning", "summary": "Evidence-based routing adaptation with CES scoring" }
+    {
+      "key": "task_chain_orchestration",
+      "summary": "Decompose requests, design minimum viable chains, execute with guardrails"
+    },
+    {
+      "key": "autorun_execution",
+      "summary": "AUTORUN and AUTORUN_FULL modes for automatic chain execution"
+    },
+    {
+      "key": "routing_matrix",
+      "summary": "Task-type to agent-chain mapping with confidence scoring"
+    },
+    {
+      "key": "parallel_coordination",
+      "summary": "Hub-spoke parallel branch execution with conflict resolution"
+    },
+    {
+      "key": "error_recovery",
+      "summary": "Multi-level guardrails (L1-L4), retry, rollback, escalation"
+    },
+    {
+      "key": "proactive_mode",
+      "summary": "Scan project state and recommend next work"
+    },
+    {
+      "key": "routing_learning",
+      "summary": "Evidence-based routing adaptation with CES scoring"
+    }
   ],
   "collaboration": {
-    "input": ["titan", "sherpa", "rally", "architect", "lore", "judge", "darwin", "user"],
-    "output": ["scout", "builder", "judge", "radar", "guardian", "user"]
+    "input": [
+      "titan",
+      "sherpa",
+      "rally",
+      "architect",
+      "lore",
+      "judge",
+      "darwin",
+      "user"
+    ],
+    "output": [
+      "scout",
+      "builder",
+      "judge",
+      "radar",
+      "guardian",
+      "user"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "H" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "marketing", "level": "H" }
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +86,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["autorun", "guided", "interactive", "proactive"]
+  "recipes": [
+    {
+      "subcommand": "classify",
+      "label": "Auto Classify",
+      "default": true,
+      "when": "Auto-classification when no Recipe is specified"
+    },
+    {
+      "subcommand": "bug",
+      "label": "Bug Fix",
+      "default": false,
+      "when": "Bug reports and fix requests"
+    },
+    {
+      "subcommand": "feature",
+      "label": "Feature",
+      "default": false,
+      "when": "New feature implementation"
+    },
+    {
+      "subcommand": "security",
+      "label": "Security",
+      "default": false,
+      "when": "Security response"
+    },
+    {
+      "subcommand": "refactor",
+      "label": "Refactor",
+      "default": false,
+      "when": "Refactoring"
+    },
+    {
+      "subcommand": "optimize",
+      "label": "Optimize",
+      "default": false,
+      "when": "Performance improvement"
+    },
+    {
+      "subcommand": "proactive",
+      "label": "Proactive",
+      "default": false,
+      "when": "/Nexus with no arguments, project state scan"
+    },
+    {
+      "subcommand": "apex",
+      "label": "Apex",
+      "default": false,
+      "when": "Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → ship. With no-args, also runs Phase 0 to **autonomously discover the goal** before Phase 1. For high-stakes new features with cross-team impact."
+    }
+  ]
 }

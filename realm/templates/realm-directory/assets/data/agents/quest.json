@@ -93,13 +93,53 @@
     "status": "generated"
   },
   "recipes": [
-    "gdd",
-    "balance",
-    "narrative",
-    "economy",
-    "psychology",
-    "gameplay-loop",
-    "level-design",
-    "monetization"
+    {
+      "subcommand": "gdd",
+      "label": "GDD Structure",
+      "default": true,
+      "when": "Game Design Document structuring and section design"
+    },
+    {
+      "subcommand": "balance",
+      "label": "Balance Math",
+      "default": false,
+      "when": "Game balance math (DPS/TTK, difficulty curves, Elo)"
+    },
+    {
+      "subcommand": "narrative",
+      "label": "Narrative Design",
+      "default": false,
+      "when": "Narrative design, branching stories, and quest trees"
+    },
+    {
+      "subcommand": "economy",
+      "label": "Economy Design",
+      "default": false,
+      "when": "Economy design (currencies, taps & sinks, inflation control)"
+    },
+    {
+      "subcommand": "psychology",
+      "label": "Player Psychology",
+      "default": false,
+      "when": "Player psychology and motivation design (Flow, Bartle, Octalysis)"
+    },
+    {
+      "subcommand": "gameplay-loop",
+      "label": "Gameplay Loop",
+      "default": false,
+      "when": "Core / mid / meta loop design — 5-second / 5-minute / 5-hour rhythms, compulsion-loop ethics"
+    },
+    {
+      "subcommand": "level-design",
+      "label": "Level Design",
+      "default": false,
+      "when": "Level / dungeon / mission design — pacing, signposting, critical-path vs branching, encounter density"
+    },
+    {
+      "subcommand": "monetization",
+      "label": "Monetization",
+      "default": false,
+      "when": "F2P monetization design — battle pass, gacha math (pity systems, probability disclosure), regulatory ethics"
+    }
   ]
 }

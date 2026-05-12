@@ -90,12 +90,53 @@
     "status": "generated"
   },
   "recipes": [
-    "configure",
-    "debug",
-    "pretool",
-    "posttool",
-    "notification",
-    "sessionstart",
-    "security"
+    {
+      "subcommand": "configure",
+      "label": "Configure Hook",
+      "default": true,
+      "when": "PreToolUse/PostToolUse/Stop hook design, settings.json changes"
+    },
+    {
+      "subcommand": "debug",
+      "label": "Debug Hook",
+      "default": false,
+      "when": "Debug existing hooks (failure, latency, misfire)"
+    },
+    {
+      "subcommand": "pretool",
+      "label": "PreToolUse",
+      "default": false,
+      "when": "PreToolUse hook specialization (block, approve, input rewrite)"
+    },
+    {
+      "subcommand": "posttool",
+      "label": "PostToolUse",
+      "default": false,
+      "when": "PostToolUse hook specialization (logging, automation, quality gate)"
+    },
+    {
+      "subcommand": "notification",
+      "label": "Notification",
+      "default": false,
+      "when": "Notification event hook — desktop / Slack / Discord push, sound on permission requests, idle/long-running task alerts, mute rules per project, deduplication"
+    },
+    {
+      "subcommand": "sessionstart",
+      "label": "SessionStart",
+      "default": false,
+      "when": "SessionStart event hook — context preloading (CLAUDE.md auto-summary, recent PR list, branch/CI status injection), env validation gates, per-project warm-up scripts"
+    },
+    {
+      "subcommand": "security",
+      "label": "Security",
+      "default": false,
+      "when": "PreToolUse security guard — PII / secret regex denial, dangerous Bash command interception (`rm -rf /`, `git push --force` to main), env var leakage block, MCP tool ACL"
+    },
+    {
+      "subcommand": "quarantine",
+      "label": "Skill Quarantine",
+      "default": false,
+      "when": "SessionStart drift / unaudited-skill detection + PreToolUse plugin-install gate + MCP tool description rug-pull check (works with `chain` audit)"
+    }
   ]
 }

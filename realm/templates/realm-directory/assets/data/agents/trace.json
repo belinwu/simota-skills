@@ -89,12 +89,47 @@
     "status": "generated"
   },
   "recipes": [
-    "replay",
-    "persona",
-    "story",
-    "archaeology",
-    "rageclick",
-    "funnel",
-    "heatmap"
+    {
+      "subcommand": "replay",
+      "label": "Session Replay",
+      "default": true,
+      "when": "Session replay analysis, click/scroll pattern extraction"
+    },
+    {
+      "subcommand": "persona",
+      "label": "Persona Pattern",
+      "default": false,
+      "when": "Persona-based behavior pattern extraction, cohort construction"
+    },
+    {
+      "subcommand": "story",
+      "label": "UX Story",
+      "default": false,
+      "when": "UX issue storytelling, journey reconstruction"
+    },
+    {
+      "subcommand": "archaeology",
+      "label": "Behavioral Archaeology",
+      "default": false,
+      "when": "Behavioral archaeology — motive/intent inference, frustration root cause analysis"
+    },
+    {
+      "subcommand": "rageclick",
+      "label": "Rage-Click Detection",
+      "default": false,
+      "when": "Rage-click / dead-click detection, error-shake and u-turn frustration surfacing"
+    },
+    {
+      "subcommand": "funnel",
+      "label": "Funnel Drop-Off",
+      "default": false,
+      "when": "Funnel step-level drop-off analysis, cohort-sliced conversion decomposition"
+    },
+    {
+      "subcommand": "heatmap",
+      "label": "Heatmap Synthesis",
+      "default": false,
+      "when": "Click / scroll / move heatmap synthesis, hotspot extraction, dead-zone surfacing"
+    }
   ]
 }

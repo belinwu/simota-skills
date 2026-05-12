@@ -80,13 +80,53 @@
     "status": "generated"
   },
   "recipes": [
-    "cron",
-    "timezone",
-    "retry",
-    "backfill",
-    "calendar",
-    "deadline",
-    "window",
-    "idempotent"
+    {
+      "subcommand": "cron",
+      "label": "Cron Design",
+      "default": true,
+      "when": "Cron expression design, timezone annotation, platform configuration"
+    },
+    {
+      "subcommand": "timezone",
+      "label": "Timezone Safety",
+      "default": false,
+      "when": "Timezone/DST safety audit, library migration"
+    },
+    {
+      "subcommand": "retry",
+      "label": "Retry Policy",
+      "default": false,
+      "when": "Retry/backoff policy design, DLQ configuration"
+    },
+    {
+      "subcommand": "backfill",
+      "label": "Backfill Plan",
+      "default": false,
+      "when": "Backfill/replay planning, watermark design"
+    },
+    {
+      "subcommand": "calendar",
+      "label": "Business Calendar",
+      "default": false,
+      "when": "Japanese holiday, bank business day, and fiscal year logic design"
+    },
+    {
+      "subcommand": "deadline",
+      "label": "Deadline Propagation",
+      "default": false,
+      "when": "Context deadline propagation across async boundaries, budget chain, partial-progress return"
+    },
+    {
+      "subcommand": "window",
+      "label": "Time Window",
+      "default": false,
+      "when": "Tumbling/sliding/session window semantics, watermark design, late-arrival handling, window-join math"
+    },
+    {
+      "subcommand": "idempotent",
+      "label": "Idempotency Key",
+      "default": false,
+      "when": "Idempotency-key design, dedup window, effectively-once semantics, Stripe/Square-style patterns"
+    }
   ]
 }

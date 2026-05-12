@@ -71,12 +71,47 @@
     "status": "generated"
   },
   "recipes": [
-    "extract",
-    "code-connect",
-    "rules",
-    "inspect",
-    "variants",
-    "tokens",
-    "breakpoint"
+    {
+      "subcommand": "extract",
+      "label": "Extract Context",
+      "default": true,
+      "when": "Extract design context from Figma"
+    },
+    {
+      "subcommand": "code-connect",
+      "label": "Code Connect",
+      "default": false,
+      "when": "Code Connect template management"
+    },
+    {
+      "subcommand": "rules",
+      "label": "DS Rules",
+      "default": false,
+      "when": "Design system rule extraction"
+    },
+    {
+      "subcommand": "inspect",
+      "label": "Figma Inspect",
+      "default": false,
+      "when": "Programmatic inspection of a Figma file"
+    },
+    {
+      "subcommand": "variants",
+      "label": "Variants",
+      "default": false,
+      "when": "Component variant extraction — Component Set discovery, prop/state matrix flattening, naming convention (kebab-case property=value), boolean vs enum prop typing, default-variant identification, missing-state detection"
+    },
+    {
+      "subcommand": "tokens",
+      "label": "Tokens",
+      "default": false,
+      "when": "Token mapping — Figma Variables → W3C DTCG (2025.10) format, primitive/semantic/component layer mapping, mode/theme support (light/dark/brand), alias chain resolution, Display P3/Oklch color preservation"
+    },
+    {
+      "subcommand": "breakpoint",
+      "label": "Breakpoint",
+      "default": false,
+      "when": "Responsive breakpoint extraction — multi-frame variant analysis, layout-grid extraction (column count + gutter + margin), constraint inheritance from parent frame, container-query candidate identification"
+    }
   ]
 }

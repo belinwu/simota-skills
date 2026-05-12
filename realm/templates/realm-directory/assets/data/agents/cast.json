@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "generate",
-    "registry",
-    "evolve",
-    "distribute",
-    "archetype",
-    "segment",
-    "bias-audit"
+    {
+      "subcommand": "generate",
+      "label": "Generate Persona",
+      "default": true,
+      "when": "Persona generation (CONJURE) — create new personas from sources"
+    },
+    {
+      "subcommand": "registry",
+      "label": "Registry",
+      "default": false,
+      "when": "Registry management — lifecycle check, audit, archive"
+    },
+    {
+      "subcommand": "evolve",
+      "label": "Evolve",
+      "default": false,
+      "when": "Data-driven evolution — drift updates from Trace/Voice/Pulse"
+    },
+    {
+      "subcommand": "distribute",
+      "label": "Distribute",
+      "default": false,
+      "when": "Packaging for other agents (Echo/Spark/Retain, etc.)"
+    },
+    {
+      "subcommand": "archetype",
+      "label": "Archetype Mapping",
+      "default": false,
+      "when": "Map personas to Jung 12 brand archetypes + Jobs-To-Be-Done archetype model"
+    },
+    {
+      "subcommand": "segment",
+      "label": "Segmentation",
+      "default": false,
+      "when": "RFM scoring, behavioral cohort, psychographic clustering for evidence-grounded personas"
+    },
+    {
+      "subcommand": "bias-audit",
+      "label": "Bias Audit",
+      "default": false,
+      "when": "Representation bias detection, intersectionality coverage, ethical-persona checklist"
+    }
   ]
 }

@@ -83,12 +83,47 @@
     "status": "generated"
   },
   "recipes": [
-    "verify",
-    "bdd",
-    "trace",
-    "report",
-    "gherkin",
-    "property",
-    "oracle"
+    {
+      "subcommand": "verify",
+      "label": "AC Verify",
+      "default": true,
+      "when": "FULL-mode verification that implementation meets spec acceptance criteria"
+    },
+    {
+      "subcommand": "bdd",
+      "label": "BDD Scenarios",
+      "default": false,
+      "when": "Generate Given/When/Then scenarios from spec"
+    },
+    {
+      "subcommand": "trace",
+      "label": "Traceability Matrix",
+      "default": false,
+      "when": "Generate spec ↔ code traceability matrix"
+    },
+    {
+      "subcommand": "report",
+      "label": "Compliance Report",
+      "default": false,
+      "when": "Audit-oriented compliance report (AUDIT mode)"
+    },
+    {
+      "subcommand": "gherkin",
+      "label": "Gherkin Authoring",
+      "default": false,
+      "when": "Gherkin/Cucumber/SpecFlow/Behave feature files with step-definition mapping"
+    },
+    {
+      "subcommand": "property",
+      "label": "Property-Based",
+      "default": false,
+      "when": "Property-based test design from spec invariants (Hypothesis / fast-check / jqwik / ScalaCheck / proptest)"
+    },
+    {
+      "subcommand": "oracle",
+      "label": "Test Oracle",
+      "default": false,
+      "when": "Test oracle design — golden master, metamorphic, differential, model-based"
+    }
   ]
 }

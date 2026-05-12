@@ -8,23 +8,68 @@
   "description": "Guardian of V.A.I.R.E. quality standards (Value/Agency/Identity/Resilience/Echo). Pre-release evaluation, scorecard assessment, and pass/fail determination.",
   "tagline": "Quality before launch.",
   "capabilities": [
-    { "key": "vaire_assessment", "summary": "V.A.I.R.E. compliance assessment across 5 dimensions" },
-    { "key": "quality_gate_enforcement", "summary": "Binary PASS/FAIL with min score 2.0 per dimension" },
-    { "key": "scorecard_evaluation", "summary": "0-3 scoring with threshold enforcement" },
-    { "key": "dark_pattern_detection", "summary": "FTC/EU DSA-informed manipulation detection" },
-    { "key": "resilience_audit", "summary": "Loading/empty/error/offline/success state audit" },
-    { "key": "exit_experience_review", "summary": "Echo dimension — endings, cancellation, unsubscribe flows" },
-    { "key": "metric_alignment", "summary": "KPI vs guardrail balance verification" }
+    {
+      "key": "vaire_assessment",
+      "summary": "V.A.I.R.E. compliance assessment across 5 dimensions"
+    },
+    {
+      "key": "quality_gate_enforcement",
+      "summary": "Binary PASS/FAIL with min score 2.0 per dimension"
+    },
+    {
+      "key": "scorecard_evaluation",
+      "summary": "0-3 scoring with threshold enforcement"
+    },
+    {
+      "key": "dark_pattern_detection",
+      "summary": "FTC/EU DSA-informed manipulation detection"
+    },
+    {
+      "key": "resilience_audit",
+      "summary": "Loading/empty/error/offline/success state audit"
+    },
+    {
+      "key": "exit_experience_review",
+      "summary": "Echo dimension — endings, cancellation, unsubscribe flows"
+    },
+    {
+      "key": "metric_alignment",
+      "summary": "KPI vs guardrail balance verification"
+    }
   ],
   "collaboration": {
-    "input": ["forge", "builder", "artisan", "pulse", "echo"],
-    "output": ["palette", "sentinel", "radar", "launch", "builder"]
+    "input": [
+      "forge",
+      "builder",
+      "artisan",
+      "pulse",
+      "echo"
+    ],
+    "output": [
+      "palette",
+      "sentinel",
+      "radar",
+      "launch",
+      "builder"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "mobile", "level": "H" },
-    { "project": "dashboard", "level": "M" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -33,5 +78,48 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["gate", "audit", "score", "exit"]
+  "recipes": [
+    {
+      "subcommand": "gate",
+      "label": "Quality Gate",
+      "default": true,
+      "when": "Full pre-release V.A.I.R.E. evaluation"
+    },
+    {
+      "subcommand": "scorecard",
+      "label": "Scorecard Only",
+      "default": false,
+      "when": "Individual scorecard generation (scoring only)"
+    },
+    {
+      "subcommand": "value",
+      "label": "Value Check",
+      "default": false,
+      "when": "Value axis standalone value verification"
+    },
+    {
+      "subcommand": "resilience",
+      "label": "Resilience Audit",
+      "default": false,
+      "when": "Resilience axis standalone error state check"
+    },
+    {
+      "subcommand": "agency",
+      "label": "Agency Audit",
+      "default": false,
+      "when": "Agency axis standalone user-control and consent audit"
+    },
+    {
+      "subcommand": "identity",
+      "label": "Identity Audit",
+      "default": false,
+      "when": "Identity axis standalone brand-voice consistency audit"
+    },
+    {
+      "subcommand": "experience",
+      "label": "Experience Audit",
+      "default": false,
+      "when": "Experience axis standalone emotional-quality audit"
+    }
+  ]
 }

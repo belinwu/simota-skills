@@ -87,13 +87,53 @@
     "status": "generated"
   },
   "recipes": [
-    "svg",
-    "canvas",
-    "phaser",
-    "pillow",
-    "css",
-    "animation",
-    "palette",
-    "tilesheet"
+    {
+      "subcommand": "svg",
+      "label": "SVG Output",
+      "default": true,
+      "when": "SVG pixel art generation"
+    },
+    {
+      "subcommand": "canvas",
+      "label": "Canvas Output",
+      "default": false,
+      "when": "Canvas drawing"
+    },
+    {
+      "subcommand": "phaser",
+      "label": "Phaser 3",
+      "default": false,
+      "when": "Phaser 3 sprites"
+    },
+    {
+      "subcommand": "pillow",
+      "label": "Pillow (Python)",
+      "default": false,
+      "when": "Image output via Pillow"
+    },
+    {
+      "subcommand": "css",
+      "label": "CSS Pixel Art",
+      "default": false,
+      "when": "CSS pixel art"
+    },
+    {
+      "subcommand": "animation",
+      "label": "Animation Cycle",
+      "default": false,
+      "when": "Sprite animation cycles (idle / walk / run / attack / hit / death) with frame timing"
+    },
+    {
+      "subcommand": "palette",
+      "label": "Limited Palette",
+      "default": false,
+      "when": "Limited-palette pixel art (NES / Game Boy / PICO-8 / CGA / Pico-Pix) with color-cycling"
+    },
+    {
+      "subcommand": "tilesheet",
+      "label": "Tilesheet Design",
+      "default": false,
+      "when": "Tile-based sheet design for Tiled / LDtk / Phaser tilemap (autotiles, terrain, atlas pack)"
+    }
   ]
 }

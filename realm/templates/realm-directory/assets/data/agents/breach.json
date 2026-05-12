@@ -89,12 +89,47 @@
     "status": "generated"
   },
   "recipes": [
-    "scenario",
-    "threat-model",
-    "purple",
-    "ai-red",
-    "phishing",
-    "supply",
-    "social"
+    {
+      "subcommand": "scenario",
+      "label": "Attack Scenario",
+      "default": true,
+      "when": "Attack scenario design, kill chain planning"
+    },
+    {
+      "subcommand": "threat-model",
+      "label": "Threat Model",
+      "default": false,
+      "when": "Threat modeling (STRIDE/PASTA/Attack Trees)"
+    },
+    {
+      "subcommand": "purple",
+      "label": "Purple Team",
+      "default": false,
+      "when": "Purple Team exercise, Red/Blue coordination"
+    },
+    {
+      "subcommand": "ai-red",
+      "label": "AI/LLM Red Team",
+      "default": false,
+      "when": "AI/LLM-focused red team (prompt injection, agentic risks)"
+    },
+    {
+      "subcommand": "phishing",
+      "label": "Phishing Campaign",
+      "default": false,
+      "when": "Authorized phishing campaign design with pretexting, landing-page clones, MFA-fatigue, quishing, OAuth consent-phishing, and SPF/DKIM/DMARC evasion"
+    },
+    {
+      "subcommand": "supply",
+      "label": "Supply Chain Attack",
+      "default": false,
+      "when": "Supply chain attack scenarios: dependency confusion, typosquatting, build-tool compromise, SBOM analysis, SLSA provenance, in-toto attestation"
+    },
+    {
+      "subcommand": "social",
+      "label": "Social Engineering",
+      "default": false,
+      "when": "Social engineering scenarios: vishing, smishing, tailgating, OSINT pretexting, insider-threat, BEC, deepfake voice/video"
+    }
   ]
 }

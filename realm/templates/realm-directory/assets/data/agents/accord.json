@@ -80,12 +80,47 @@
     "status": "generated"
   },
   "recipes": [
-    "vision",
-    "requirements",
-    "detail",
-    "ac",
-    "story-map",
-    "stakeholder",
-    "raci"
+    {
+      "subcommand": "vision",
+      "label": "Vision & Goals",
+      "default": true,
+      "when": "Project overview, goals, scope definition"
+    },
+    {
+      "subcommand": "requirements",
+      "label": "Requirements",
+      "default": false,
+      "when": "Detail functional/non-functional requirements"
+    },
+    {
+      "subcommand": "detail",
+      "label": "Detailed Spec",
+      "default": false,
+      "when": "L2 detailed spec, flow, data model"
+    },
+    {
+      "subcommand": "ac",
+      "label": "Acceptance Criteria",
+      "default": false,
+      "when": "AC authoring, BDD scenario generation"
+    },
+    {
+      "subcommand": "story-map",
+      "label": "User Story Mapping",
+      "default": false,
+      "when": "Jeff Patton user story map — backbone + walking skeleton + release slices"
+    },
+    {
+      "subcommand": "stakeholder",
+      "label": "Stakeholder Map",
+      "default": false,
+      "when": "Influence × Interest grid, engagement strategy, role-based information flow"
+    },
+    {
+      "subcommand": "raci",
+      "label": "RACI Matrix",
+      "default": false,
+      "when": "Responsibility assignment (RACI / DACI / RAPID) across spec items and decisions"
+    }
   ]
 }

@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "model",
-    "evaluate",
-    "dsl",
-    "c4",
-    "adr",
-    "quality-attr",
-    "tradeoff"
+    {
+      "subcommand": "model",
+      "label": "New Model",
+      "default": true,
+      "when": "Create a new C4 model (Context/Container/Component/Code base 4 levels)"
+    },
+    {
+      "subcommand": "evaluate",
+      "label": "Evaluate Existing",
+      "default": false,
+      "when": "Evaluate existing architecture (ATAM, SAAM, etc.)"
+    },
+    {
+      "subcommand": "dsl",
+      "label": "Structurizr DSL",
+      "default": false,
+      "when": "Generate or update Structurizr DSL"
+    },
+    {
+      "subcommand": "c4",
+      "label": "C4 Level Switch",
+      "default": false,
+      "when": "C4 level switching (select L1-L4 detail)"
+    },
+    {
+      "subcommand": "adr",
+      "label": "ADR Authoring",
+      "default": false,
+      "when": "Author Architecture Decision Records (Nygard/MADR) with status lifecycle and indexing"
+    },
+    {
+      "subcommand": "quality-attr",
+      "label": "Quality Attribute Scenarios",
+      "default": false,
+      "when": "Elicit and structure SEI 6-part scenarios; build utility tree; QAW facilitation"
+    },
+    {
+      "subcommand": "tradeoff",
+      "label": "Tradeoff Analysis",
+      "default": false,
+      "when": "ATAM sensitivity/tradeoff/risk identification, optional CBAM cost-benefit extension"
+    }
   ]
 }

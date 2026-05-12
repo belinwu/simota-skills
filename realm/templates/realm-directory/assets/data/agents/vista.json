@@ -92,13 +92,77 @@
     "status": "generated"
   },
   "recipes": [
-    "coverage",
-    "results",
-    "trace",
-    "shape",
-    "flake",
-    "timeline",
-    "diff",
-    "mutation"
+    {
+      "subcommand": "coverage",
+      "label": "Coverage Map",
+      "default": true,
+      "when": "Render coverage heatmap/sunburst from lcov-family artifacts"
+    },
+    {
+      "subcommand": "results",
+      "label": "Result Dashboard",
+      "default": false,
+      "when": "Render test run dashboard from junit/allure/playwright/CTRF"
+    },
+    {
+      "subcommand": "trace",
+      "label": "Traceability Matrix",
+      "default": false,
+      "when": "Build requirement ↔ test ↔ code matrix (incl. ISO 26262 / IEC 62304 / SOC 2 / DO-178C evidence)"
+    },
+    {
+      "subcommand": "shape",
+      "label": "Test Shape",
+      "default": false,
+      "when": "Auto-classify test distribution into Pyramid / Trophy / Trophy-2025 / Honeycomb / Diamond / Cupcake / Hourglass / Ice-Cream-Cone with anti-pattern flagging"
+    },
+    {
+      "subcommand": "flake",
+      "label": "Flake Dashboard",
+      "default": false,
+      "when": "Identify flaky tests via Wilson lower-bound and quarantine candidates with 14-day SLA timeline"
+    },
+    {
+      "subcommand": "timeline",
+      "label": "Regression Timeline",
+      "default": false,
+      "when": "Show pass/fail and duration p95 trend with E-Divisive change-point markers linking to suspect commits"
+    },
+    {
+      "subcommand": "diff",
+      "label": "PR Diff",
+      "default": false,
+      "when": "Diff coverage as the primary PR gate (Russ Cox / diff-cover / Codacy 2025 standard); total demoted to trend sparkline"
+    },
+    {
+      "subcommand": "mutation",
+      "label": "Mutation Overlay",
+      "default": false,
+      "when": "Overlay Stryker/PIT/mutmut/cargo-mutants mutation scores on coverage map; flag LINE-NOT-MUTATION vanity zones"
+    },
+    {
+      "subcommand": "ai-lens",
+      "label": "AI-Origin Lens",
+      "default": false,
+      "when": "Detect LLM-generated tests (vibe testing, hallucination, assertion-free, snapshot soup) via author signals + assertion density + mutation kill rate"
+    },
+    {
+      "subcommand": "journey",
+      "label": "Journey Map",
+      "default": false,
+      "when": "Overlay E2E test cases on user journey"
+    },
+    {
+      "subcommand": "otel",
+      "label": "OTel Trace",
+      "default": false,
+      "when": "Render OpenTelemetry test spans as Gantt timelines (Tracetest pattern)"
+    },
+    {
+      "subcommand": "report",
+      "label": "Combined Report",
+      "default": false,
+      "when": "Multi-view summary (coverage + shape + flake + mutation + ai-lens) for QA review"
+    }
   ]
 }

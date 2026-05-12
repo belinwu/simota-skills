@@ -69,12 +69,47 @@
     "status": "generated"
   },
   "recipes": [
-    "cli",
-    "tui",
-    "wrap",
-    "devtool",
-    "completion",
-    "config",
-    "pkg"
+    {
+      "subcommand": "cli",
+      "label": "CLI Build",
+      "default": true,
+      "when": "CLI design/implementation (command design, flags, help, exit codes)"
+    },
+    {
+      "subcommand": "tui",
+      "label": "TUI Build",
+      "default": false,
+      "when": "TUI (Terminal UI) design (spinners, tables, interactive prompts)"
+    },
+    {
+      "subcommand": "wrap",
+      "label": "Tool Wrap",
+      "default": false,
+      "when": "Wrapping existing CLI tools (linter/formatter/test-runner integration)"
+    },
+    {
+      "subcommand": "devtool",
+      "label": "Dev Tool Integration",
+      "default": false,
+      "when": "linter/test-runner/build-tool integration, doctor command"
+    },
+    {
+      "subcommand": "completion",
+      "label": "Shell Completion",
+      "default": false,
+      "when": "Bash/Zsh/Fish/PowerShell completion generation, cobra/clap/argparse/oclif integration, static vs dynamic completion, install-path conventions"
+    },
+    {
+      "subcommand": "config",
+      "label": "Config File Design",
+      "default": false,
+      "when": "CLI config-file design, precedence chain (flag > env > file > default), YAML/TOML/JSON/INI trade-offs, XDG Base Directory, schema validation, secrets hygiene"
+    },
+    {
+      "subcommand": "pkg",
+      "label": "Packaging & Distribution",
+      "default": false,
+      "when": "Homebrew formula, deb/rpm via nfpm, npm/PyPI/cargo/go install, cross-compile (goreleaser/cross/napi-rs), signing/attestation, update-checker, install script"
+    }
   ]
 }

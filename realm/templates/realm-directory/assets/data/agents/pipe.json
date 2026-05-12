@@ -86,12 +86,47 @@
     "status": "generated"
   },
   "recipes": [
-    "workflow",
-    "reusable",
-    "security",
-    "pr-automation",
-    "matrix",
-    "cache",
-    "secret"
+    {
+      "subcommand": "workflow",
+      "label": "New Workflow",
+      "default": true,
+      "when": "Create a new GHA workflow"
+    },
+    {
+      "subcommand": "reusable",
+      "label": "Reusable Workflow",
+      "default": false,
+      "when": "Reusable Workflow design"
+    },
+    {
+      "subcommand": "security",
+      "label": "Security Hardening",
+      "default": false,
+      "when": "GHA security hardening"
+    },
+    {
+      "subcommand": "pr-automation",
+      "label": "PR Automation",
+      "default": false,
+      "when": "PR automation (label, assign, etc.)"
+    },
+    {
+      "subcommand": "matrix",
+      "label": "Matrix Strategy",
+      "default": false,
+      "when": "Multi-axis matrix build design (OS x runtime x arch), `include` / `exclude`, dynamic `fromJSON` matrices, sparse coverage"
+    },
+    {
+      "subcommand": "cache",
+      "label": "Cache Design",
+      "default": false,
+      "when": "`actions/cache` key/`restore-keys` design, monorepo multi-cache, cross-OS keys, 10 GB eviction awareness"
+    },
+    {
+      "subcommand": "secret",
+      "label": "GHA Secret Architecture",
+      "default": false,
+      "when": "OIDC federation, env vs repo secrets, `vars` vs `secrets`, fork-PR secret isolation"
+    }
   ]
 }

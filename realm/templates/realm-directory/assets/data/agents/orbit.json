@@ -92,9 +92,35 @@
     "status": "generated"
   },
   "recipes": [
-    "generate",
-    "contract",
-    "audit",
-    "recover"
+    {
+      "subcommand": "generate",
+      "label": "Generate Loop",
+      "default": true,
+      "when": "Generate a new nexus-autoloop script set from a goal"
+    },
+    {
+      "subcommand": "contract",
+      "label": "Loop Contract",
+      "default": false,
+      "when": "goal.md, ACs, footer semantics design, weak contract hardening"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Loop Audit",
+      "default": false,
+      "when": "Status classification and evidence verification of live loops"
+    },
+    {
+      "subcommand": "recover",
+      "label": "State Recovery",
+      "default": false,
+      "when": "Recovery from state.env drift, footer mismatch, or corrupted loop artifacts"
+    },
+    {
+      "subcommand": "ralph",
+      "label": "Ralph Loop",
+      "default": false,
+      "when": "Generate or audit a Huntley-style Ralph Loop runner (immutable `PROMPT.md`, plan/build two-mode, filesystem-as-memory, `<promise>COMPLETE</promise>` terminator). Green-field only."
+    }
   ]
 }

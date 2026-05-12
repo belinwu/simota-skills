@@ -81,12 +81,47 @@
     "status": "generated"
   },
   "recipes": [
-    "epic",
-    "story",
-    "replan",
-    "review",
-    "atomic",
-    "walking-skeleton",
-    "vertical-slice"
+    {
+      "subcommand": "epic",
+      "label": "Epic Decompose",
+      "default": true,
+      "when": "Decompose complex tasks into 15-minute Atomic Steps"
+    },
+    {
+      "subcommand": "story",
+      "label": "Story Plan",
+      "default": false,
+      "when": "Single-feature planning and story-level decomposition"
+    },
+    {
+      "subcommand": "replan",
+      "label": "Sprint Replan",
+      "default": false,
+      "when": "Replanning after drift or scope change"
+    },
+    {
+      "subcommand": "review",
+      "label": "Parking Lot Review",
+      "default": false,
+      "when": "Inventory and prioritize accumulated side-track items"
+    },
+    {
+      "subcommand": "atomic",
+      "label": "Atomic Step Decomposition",
+      "default": false,
+      "when": "INVEST-checked ≤15-minute step breakdown with testable exit criteria, reversibility classification, and commit-point contract"
+    },
+    {
+      "subcommand": "walking-skeleton",
+      "label": "Walking Skeleton First",
+      "default": false,
+      "when": "Alistair Cockburn Walking Skeleton — thinnest end-to-end slice that exercises architecture before broadening"
+    },
+    {
+      "subcommand": "vertical-slice",
+      "label": "Vertical Slice Planning",
+      "default": false,
+      "when": "End-to-end vertical feature slice decomposition (UI → API → DB) versus horizontal-layer decomposition trade-off"
+    }
   ]
 }

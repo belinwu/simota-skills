@@ -91,13 +91,53 @@
     "status": "generated"
   },
   "recipes": [
-    "scenario",
-    "swot",
-    "pestle",
-    "porter",
-    "forecast",
-    "jtbd",
-    "blue-ocean",
-    "wardley"
+    {
+      "subcommand": "scenario",
+      "label": "Scenario Planning",
+      "default": true,
+      "when": "Business scenario planning (Baseline/Optimistic/Pessimistic 3 scenarios)"
+    },
+    {
+      "subcommand": "swot",
+      "label": "SWOT Analysis",
+      "default": false,
+      "when": "SWOT analysis + PESTLE→Porter cascade"
+    },
+    {
+      "subcommand": "pestle",
+      "label": "PESTLE Analysis",
+      "default": false,
+      "when": "PESTLE macro-environment analysis + TPESTRE variants"
+    },
+    {
+      "subcommand": "porter",
+      "label": "Porter Analysis",
+      "default": false,
+      "when": "Porter 5 Forces industry structure analysis + entry evaluation"
+    },
+    {
+      "subcommand": "forecast",
+      "label": "Forecast",
+      "default": false,
+      "when": "KPI forecasting, financial modeling, SaaS metrics"
+    },
+    {
+      "subcommand": "jtbd",
+      "label": "Jobs-to-be-Done",
+      "default": false,
+      "when": "Christensen JTBD framework — job statement, forces of progress (push/pull/anxiety/habit), competitive set by job not product"
+    },
+    {
+      "subcommand": "blue-ocean",
+      "label": "Blue Ocean Strategy",
+      "default": false,
+      "when": "Kim & Mauborgne Blue Ocean — Value Curve, ERRC grid (Eliminate/Reduce/Raise/Create), Four Actions, non-customer tiers"
+    },
+    {
+      "subcommand": "wardley",
+      "label": "Wardley Mapping",
+      "default": false,
+      "when": "Simon Wardley value-chain mapping — user-need anchor, visibility axis, evolution axis (Genesis→Custom→Product→Commodity), doctrine and climatic patterns"
+    }
   ]
 }

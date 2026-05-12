@@ -82,9 +82,29 @@
     "status": "generated"
   },
   "recipes": [
-    "deliver",
-    "small",
-    "medium",
-    "epic"
+    {
+      "subcommand": "deliver",
+      "label": "Deliver Minimum Chain",
+      "default": true,
+      "when": "Immediate build with minimum chain (auto scope detection → chain issuance)"
+    },
+    {
+      "subcommand": "small",
+      "label": "Small Scope",
+      "default": false,
+      "when": "S scope (1-5 files, immediate build, skip planning)"
+    },
+    {
+      "subcommand": "medium",
+      "label": "Medium Scope",
+      "default": false,
+      "when": "M scope (6-15 files, skip planning, build first)"
+    },
+    {
+      "subcommand": "epic",
+      "label": "Epic Scope",
+      "default": false,
+      "when": "Epic scope (L/XL, chain composition, Nexus integration)"
+    }
   ]
 }

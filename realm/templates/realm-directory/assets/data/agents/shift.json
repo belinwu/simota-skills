@@ -82,12 +82,47 @@
     "status": "generated"
   },
   "recipes": [
-    "plan",
-    "codemod",
-    "strangler",
-    "verify",
-    "framework",
-    "lang",
-    "deprecate"
+    {
+      "subcommand": "plan",
+      "label": "Migration Plan",
+      "default": true,
+      "when": "Migration planning and scope estimation"
+    },
+    {
+      "subcommand": "codemod",
+      "label": "Codemod Generation",
+      "default": false,
+      "when": "AST transform script generation"
+    },
+    {
+      "subcommand": "strangler",
+      "label": "Strangler Fig",
+      "default": false,
+      "when": "Strangler Fig strategy design and implementation"
+    },
+    {
+      "subcommand": "verify",
+      "label": "Verification",
+      "default": false,
+      "when": "Behavioral equivalence verification before and after migration"
+    },
+    {
+      "subcommand": "framework",
+      "label": "Framework Migration",
+      "default": false,
+      "when": "Framework major-version jump (Vue 2→3, React CRA→Next.js, Angular major, Rails major, Spring Boot 2→3, Express→Fastify/Hono) with feature-parity checklist and dual-run"
+    },
+    {
+      "subcommand": "lang",
+      "label": "Language Migration",
+      "default": false,
+      "when": "Language / runtime migration (JS→TS, TS `strict` staged enablement, Python 2→3 residual, Node LTS bumps, Go toolchain, Java 8→17/21)"
+    },
+    {
+      "subcommand": "deprecate",
+      "label": "Deprecation Sunset",
+      "default": false,
+      "when": "Feature / API sunset with telemetry, Sunset header, migration docs, and staged removal playbook"
+    }
   ]
 }

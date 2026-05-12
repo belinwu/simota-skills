@@ -89,13 +89,53 @@
     "status": "generated"
   },
   "recipes": [
-    "analyze",
-    "deps",
-    "godclass",
-    "adr",
-    "rfc",
-    "cycle",
-    "coupling",
-    "boundary"
+    {
+      "subcommand": "analyze",
+      "label": "Architecture Analysis",
+      "default": true,
+      "when": "Full architecture analysis, combined evaluation of dependency/coupling/module boundaries"
+    },
+    {
+      "subcommand": "deps",
+      "label": "Dependency Audit",
+      "default": false,
+      "when": "Dependency graph, circular reference detection"
+    },
+    {
+      "subcommand": "godclass",
+      "label": "God Class Detection",
+      "default": false,
+      "when": "God Class / bloated module detection"
+    },
+    {
+      "subcommand": "adr",
+      "label": "ADR Authoring",
+      "default": false,
+      "when": "Author Architecture Decision Record"
+    },
+    {
+      "subcommand": "rfc",
+      "label": "RFC Drafting",
+      "default": false,
+      "when": "RFC draft for large-scale changes"
+    },
+    {
+      "subcommand": "cycle",
+      "label": "Cycle Break",
+      "default": false,
+      "when": "Circular dependency (SCC) detection and removal strategies (dependency inversion / interface extraction / re-layering)"
+    },
+    {
+      "subcommand": "coupling",
+      "label": "Coupling Assessment",
+      "default": false,
+      "when": "Quantitative module coupling assessment (Ca/Ce/I/A/D) and improvement guidance"
+    },
+    {
+      "subcommand": "boundary",
+      "label": "Boundary Evaluation",
+      "default": false,
+      "when": "Bounded Context boundary evaluation, cross-boundary leak detection, anti-corruption layer proposals"
+    }
   ]
 }

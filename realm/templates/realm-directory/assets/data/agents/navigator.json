@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "collect",
-    "form",
-    "screenshot",
-    "network",
-    "stealth",
-    "mobile",
-    "parallel"
+    {
+      "subcommand": "collect",
+      "label": "Data Collect",
+      "default": true,
+      "when": "Data collection and scraping from pages"
+    },
+    {
+      "subcommand": "form",
+      "label": "Form Fill",
+      "default": false,
+      "when": "Form input and submission automation"
+    },
+    {
+      "subcommand": "screenshot",
+      "label": "Screenshot",
+      "default": false,
+      "when": "Screenshot capture and milestone recording"
+    },
+    {
+      "subcommand": "network",
+      "label": "Network Capture",
+      "default": false,
+      "when": "HAR and network request recording and analysis"
+    },
+    {
+      "subcommand": "stealth",
+      "label": "Stealth",
+      "default": false,
+      "when": "Anti-bot evasion within ToS-compliant boundaries — TLS / JA3 / JA4 fingerprinting awareness, behavioral humanization, residential proxy rotation, Cloudflare/Akamai/PerimeterX handling"
+    },
+    {
+      "subcommand": "mobile",
+      "label": "Mobile",
+      "default": false,
+      "when": "Mobile device emulation — viewport, user-agent, touch gestures, network throttling (3G/4G), iOS Safari / Android Chrome divergence, hover/active state nuances"
+    },
+    {
+      "subcommand": "parallel",
+      "label": "Parallel",
+      "default": false,
+      "when": "Parallel browser sessions — context isolation, worker pool sizing, shared auth state, per-session storage, throughput vs detection trade-off, queue management for 100+ task batches"
+    }
   ]
 }

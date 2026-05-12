@@ -77,12 +77,47 @@
     "status": "generated"
   },
   "recipes": [
-    "impact",
-    "vertical",
-    "horizontal",
-    "naming",
-    "blast-radius",
-    "rollback-plan",
-    "canary-scope"
+    {
+      "subcommand": "impact",
+      "label": "Impact Analysis",
+      "default": true,
+      "when": "Full impact analysis of changes (both vertical and horizontal)"
+    },
+    {
+      "subcommand": "vertical",
+      "label": "Vertical Only",
+      "default": false,
+      "when": "Vertical impact only: dependencies and call chains"
+    },
+    {
+      "subcommand": "horizontal",
+      "label": "Horizontal Only",
+      "default": false,
+      "when": "Horizontal impact only: pattern consistency"
+    },
+    {
+      "subcommand": "naming",
+      "label": "Naming Change",
+      "default": false,
+      "when": "Impact analysis for symbol and API name changes"
+    },
+    {
+      "subcommand": "blast-radius",
+      "label": "Blast Radius Quant",
+      "default": false,
+      "when": "Quantify production-side blast radius — customer count, SLO burn, revenue, region/AZ scope, multi-tenant fan-out, data classification"
+    },
+    {
+      "subcommand": "rollback-plan",
+      "label": "Rollback Plan Design",
+      "default": false,
+      "when": "Forward-compat / dual-write / backfill / reverse-migration plan for a change with a documented abort criteria"
+    },
+    {
+      "subcommand": "canary-scope",
+      "label": "Canary Scope Design",
+      "default": false,
+      "when": "Canary cohort selection, metric gates, promotion/abort thresholds, and observation window design"
+    }
   ]
 }

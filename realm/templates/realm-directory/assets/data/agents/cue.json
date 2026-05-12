@@ -86,12 +86,47 @@
     "status": "generated"
   },
   "recipes": [
-    "script",
-    "storyboard",
-    "narration",
-    "explainer",
-    "shorts",
-    "captions",
-    "localize"
+    {
+      "subcommand": "script",
+      "label": "Script",
+      "default": true,
+      "when": "Full video script authoring"
+    },
+    {
+      "subcommand": "storyboard",
+      "label": "Storyboard",
+      "default": false,
+      "when": "Per-scene storyboard, visual design"
+    },
+    {
+      "subcommand": "narration",
+      "label": "Narration",
+      "default": false,
+      "when": "Narration text with duration and pacing design"
+    },
+    {
+      "subcommand": "explainer",
+      "label": "Explainer",
+      "default": false,
+      "when": "Product explainer and comparison video scripts"
+    },
+    {
+      "subcommand": "shorts",
+      "label": "Shorts",
+      "default": false,
+      "when": "Vertical short-form script for TikTok / Reels / YouTube Shorts"
+    },
+    {
+      "subcommand": "captions",
+      "label": "Captions",
+      "default": false,
+      "when": "SRT / VTT / ASS subtitle and SDH authoring with timing"
+    },
+    {
+      "subcommand": "localize",
+      "label": "Localize",
+      "default": false,
+      "when": "Multi-language narration / voice-over adaptation with duration budgeting"
+    }
   ]
 }

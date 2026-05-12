@@ -8,24 +8,70 @@
   "description": "Visualization agent that converts code, designs, and context into Mermaid, ASCII, or draw.io diagrams. Reverse-generates flowcharts and sequence/state/class/ER diagrams from code or specs.",
   "tagline": "One clear diagram beats ten paragraphs.",
   "capabilities": [
-    { "key": "standard_diagrams", "summary": "Flowchart, sequence, state, class, ER, Gantt, journey, kanban, sankey, radar" },
-    { "key": "reverse_engineering", "summary": "Code-to-diagram from app, API, schema, tests, auth flow" },
-    { "key": "c4_model", "summary": "Context, Container, Component, Code views for architecture" },
-    { "key": "echo_integration", "summary": "Journey maps, friction visualization, persona profiles" },
-    { "key": "ascii_art", "summary": "Plain-text diagrams for terminals and accessibility fallback" },
-    { "key": "drawio_output", "summary": "Editable presentation-grade diagrams with draw.io XML" },
-    { "key": "ci_diagram_validation", "summary": "Architecture-as-Code CI integration for .mmd/.d2 files" }
+    {
+      "key": "standard_diagrams",
+      "summary": "Flowchart, sequence, state, class, ER, Gantt, journey, kanban, sankey, radar"
+    },
+    {
+      "key": "reverse_engineering",
+      "summary": "Code-to-diagram from app, API, schema, tests, auth flow"
+    },
+    {
+      "key": "c4_model",
+      "summary": "Context, Container, Component, Code views for architecture"
+    },
+    {
+      "key": "echo_integration",
+      "summary": "Journey maps, friction visualization, persona profiles"
+    },
+    {
+      "key": "ascii_art",
+      "summary": "Plain-text diagrams for terminals and accessibility fallback"
+    },
+    {
+      "key": "drawio_output",
+      "summary": "Editable presentation-grade diagrams with draw.io XML"
+    },
+    {
+      "key": "ci_diagram_validation",
+      "summary": "Architecture-as-Code CI integration for .mmd/.d2 files"
+    }
   ],
   "collaboration": {
-    "input": ["atlas", "sherpa", "scout", "spark", "echo", "bolt", "stratum"],
-    "output": ["quill"]
+    "input": [
+      "atlas",
+      "sherpa",
+      "scout",
+      "spark",
+      "echo",
+      "bolt",
+      "stratum"
+    ],
+    "output": [
+      "quill"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "M" },
-    { "project": "ecommerce", "level": "M" },
-    { "project": "dashboard", "level": "M" },
-    { "project": "marketing", "level": "M" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +80,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["flow", "sequence", "er", "c4", "journey", "ascii"]
+  "recipes": [
+    {
+      "subcommand": "flow",
+      "label": "Flow Chart",
+      "default": true,
+      "when": "Flowchart generation (default Mermaid)"
+    },
+    {
+      "subcommand": "sequence",
+      "label": "Sequence Diagram",
+      "default": false,
+      "when": "Sequence diagram"
+    },
+    {
+      "subcommand": "er",
+      "label": "ER Diagram",
+      "default": false,
+      "when": "ER diagram (Schema integration)"
+    },
+    {
+      "subcommand": "journey",
+      "label": "Journey Map",
+      "default": false,
+      "when": "User journey map (Echo integration)"
+    },
+    {
+      "subcommand": "class",
+      "label": "Class Diagram",
+      "default": false,
+      "when": "Class diagram"
+    },
+    {
+      "subcommand": "c4",
+      "label": "C4 Diagram",
+      "default": false,
+      "when": "C4 model rendering (Context / Container / Component / Code) in Mermaid C4 syntax"
+    },
+    {
+      "subcommand": "architecture",
+      "label": "Architecture Diagram",
+      "default": false,
+      "when": "Informal system architecture sketch (layered / hexagonal / microservice / event-driven) with flowchart + subgraph"
+    },
+    {
+      "subcommand": "gantt",
+      "label": "Gantt / Roadmap",
+      "default": false,
+      "when": "Gantt, roadmap, or timeline with milestones, dependencies, critical path"
+    }
+  ]
 }

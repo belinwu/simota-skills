@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "detect",
-    "replace",
-    "poc",
-    "refresh",
-    "codemod",
-    "strangler",
-    "sunset"
+    {
+      "subcommand": "detect",
+      "label": "Deprecated Detection",
+      "default": true,
+      "when": "Detect deprecated libraries"
+    },
+    {
+      "subcommand": "replace",
+      "label": "Native API Replace",
+      "default": false,
+      "when": "Replace with native APIs"
+    },
+    {
+      "subcommand": "poc",
+      "label": "Migration PoC",
+      "default": false,
+      "when": "Create a migration PoC"
+    },
+    {
+      "subcommand": "refresh",
+      "label": "Stack Refresh",
+      "default": false,
+      "when": "Refresh the full stack"
+    },
+    {
+      "subcommand": "codemod",
+      "label": "Codemod Transformation",
+      "default": false,
+      "when": "AST-based automated code transformation (jscodeshift / ast-grep / ts-morph / comby) with safety checks and dry-run"
+    },
+    {
+      "subcommand": "strangler",
+      "label": "Strangler Fig Migration",
+      "default": false,
+      "when": "Incremental replacement of legacy system via Strangler Fig façade routing, parallel-run validation, ramp-up"
+    },
+    {
+      "subcommand": "sunset",
+      "label": "Deprecation Lifecycle",
+      "default": false,
+      "when": "warn → deprecate → sunset → remove timeline, communication plan, compatibility windows, breaking-change policy"
+    }
   ]
 }

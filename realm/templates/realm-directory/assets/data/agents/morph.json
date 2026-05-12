@@ -71,13 +71,53 @@
     "status": "generated"
   },
   "recipes": [
-    "md",
-    "pdf",
-    "docx",
-    "xlsx",
-    "html",
-    "epub",
-    "latex",
-    "batch"
+    {
+      "subcommand": "md",
+      "label": "Markdown Conversion",
+      "default": true,
+      "when": "Markdown → PDF/Word/HTML conversion (Pandoc/XeLaTeX/Typst)"
+    },
+    {
+      "subcommand": "pdf",
+      "label": "PDF Generation",
+      "default": false,
+      "when": "High-quality PDF generation, PDF/A archival, PDF/UA accessibility"
+    },
+    {
+      "subcommand": "docx",
+      "label": "Word Export",
+      "default": false,
+      "when": "Word (.docx) output, LibreOffice conversion, style preservation"
+    },
+    {
+      "subcommand": "xlsx",
+      "label": "Excel Export",
+      "default": false,
+      "when": "Excel (.xlsx) output, CSV/HTML conversion"
+    },
+    {
+      "subcommand": "html",
+      "label": "HTML Export",
+      "default": false,
+      "when": "HTML output, CSS Paged Media, accessibility support"
+    },
+    {
+      "subcommand": "epub",
+      "label": "EPUB Generation",
+      "default": false,
+      "when": "EPUB 3 generation, KF8/MOBI export, reflowable layout, EPUB Accessibility 1.1"
+    },
+    {
+      "subcommand": "latex",
+      "label": "LaTeX Typesetting",
+      "default": false,
+      "when": "LaTeX/XeLaTeX/Typst academic typesetting (papers, theses, books, BibTeX/biblatex)"
+    },
+    {
+      "subcommand": "batch",
+      "label": "Batch Pipeline",
+      "default": false,
+      "when": "Pandoc batch pipeline with Lua filters, Makefile/CI orchestration, parallel conversion"
+    }
   ]
 }

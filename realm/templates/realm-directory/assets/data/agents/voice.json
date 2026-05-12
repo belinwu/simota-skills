@@ -8,24 +8,74 @@
   "description": "User feedback collection, NPS survey design, review analysis, sentiment analysis, feedback classification, and insight extraction reports.",
   "tagline": "Listen to what users actually say.",
   "capabilities": [
-    { "key": "feedback_collection", "summary": "NPS, CSAT, CES, exit surveys, reviews" },
-    { "key": "sentiment_analysis", "summary": "Multi-emotion detection across joy, anger, frustration, surprise" },
-    { "key": "feedback_classification", "summary": "Classify by category, priority, theme, and segment" },
-    { "key": "insight_extraction", "summary": "Actionable insights with owner recommendations" },
-    { "key": "trend_detection", "summary": "Detect trends and patterns in feedback over time" },
-    { "key": "bias_detection", "summary": "Nonresponse, selection bias, sentiment tool asymmetries" },
-    { "key": "synthetic_feedback_detection", "summary": "Detect AI-generated reviews and bot responses" }
+    {
+      "key": "feedback_collection",
+      "summary": "NPS, CSAT, CES, exit surveys, reviews"
+    },
+    {
+      "key": "sentiment_analysis",
+      "summary": "Multi-emotion detection across joy, anger, frustration, surprise"
+    },
+    {
+      "key": "feedback_classification",
+      "summary": "Classify by category, priority, theme, and segment"
+    },
+    {
+      "key": "insight_extraction",
+      "summary": "Actionable insights with owner recommendations"
+    },
+    {
+      "key": "trend_detection",
+      "summary": "Detect trends and patterns in feedback over time"
+    },
+    {
+      "key": "bias_detection",
+      "summary": "Nonresponse, selection bias, sentiment tool asymmetries"
+    },
+    {
+      "key": "synthetic_feedback_detection",
+      "summary": "Detect AI-generated reviews and bot responses"
+    }
   ],
   "collaboration": {
-    "input": ["pulse", "researcher", "growth", "beacon", "trace"],
-    "output": ["researcher", "spark", "retain", "compete", "helm", "echo", "scout"]
+    "input": [
+      "pulse",
+      "researcher",
+      "growth",
+      "beacon",
+      "trace"
+    ],
+    "output": [
+      "researcher",
+      "spark",
+      "retain",
+      "compete",
+      "helm",
+      "echo",
+      "scout"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "M" },
-    { "project": "marketing", "level": "H" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +84,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["nps", "sentiment", "classify", "insight"]
+  "recipes": [
+    {
+      "subcommand": "nps",
+      "label": "NPS Survey",
+      "default": true,
+      "when": "NPS survey design, score analysis, follow-up"
+    },
+    {
+      "subcommand": "review",
+      "label": "Review Analysis",
+      "default": false,
+      "when": "Multi-channel analysis of reviews, tickets, and comments"
+    },
+    {
+      "subcommand": "sentiment",
+      "label": "Sentiment Analysis",
+      "default": false,
+      "when": "Sentiment analysis, multi-emotion detection (joy/anger/frustration/surprise)"
+    },
+    {
+      "subcommand": "classify",
+      "label": "Classification",
+      "default": false,
+      "when": "Feedback classification, theme extraction, owner recommendation"
+    },
+    {
+      "subcommand": "insight",
+      "label": "Insight Extraction",
+      "default": false,
+      "when": "Insight extraction report, strategic recommendations"
+    },
+    {
+      "subcommand": "kano",
+      "label": "Kano Model",
+      "default": false,
+      "when": "Kano model classification (must-have / performance / delighter) via paired functional+dysfunctional surveys and feature prioritization"
+    },
+    {
+      "subcommand": "thematic",
+      "label": "Thematic Analysis",
+      "default": false,
+      "when": "Braun & Clarke 6-phase inductive thematic coding of open-ended feedback, theme saturation tracking, coder-agreement measurement"
+    },
+    {
+      "subcommand": "csat",
+      "label": "CSAT / CES",
+      "default": false,
+      "when": "CSAT / CES survey authoring, benchmark mapping, and combined-with-NPS satisfaction vs effort vs loyalty triangulation"
+    }
+  ]
 }

@@ -93,13 +93,53 @@
     "status": "generated"
   },
   "recipes": [
-    "edge",
-    "flaky",
-    "coverage",
-    "regression",
-    "ci",
-    "unit",
-    "integration",
-    "mutation"
+    {
+      "subcommand": "edge",
+      "label": "Edge Cases",
+      "default": true,
+      "when": "Add missing tests for boundary values and error paths"
+    },
+    {
+      "subcommand": "flaky",
+      "label": "Flaky Repair",
+      "default": false,
+      "when": "Root-cause diagnosis and stabilization of flaky tests"
+    },
+    {
+      "subcommand": "coverage",
+      "label": "Coverage Fill",
+      "default": false,
+      "when": "Coverage gap filling and priority gap identification"
+    },
+    {
+      "subcommand": "regression",
+      "label": "Regression Suite",
+      "default": false,
+      "when": "Add regression tests from Scout handoffs"
+    },
+    {
+      "subcommand": "ci",
+      "label": "CI Optimize",
+      "default": false,
+      "when": "Test selection and CI speed improvements"
+    },
+    {
+      "subcommand": "unit",
+      "label": "Unit Test Design",
+      "default": false,
+      "when": "Design unit test architecture from scratch (AAA, test doubles, boundary isolation) across Jest/Vitest, pytest, Go testing, cargo-test"
+    },
+    {
+      "subcommand": "integration",
+      "label": "Integration Test Design",
+      "default": false,
+      "when": "Design backend-integration test architecture with Testcontainers, WireMock/MSW, DB fixture strategy"
+    },
+    {
+      "subcommand": "mutation",
+      "label": "Mutation Testing",
+      "default": false,
+      "when": "Run Stryker/PIT/mutmut/cargo-mutants, analyze survivors, triage equivalent mutants, enforce CI mutation-score threshold"
+    }
   ]
 }

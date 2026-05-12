@@ -85,13 +85,53 @@
     "status": "generated"
   },
   "recipes": [
-    "text",
-    "image",
-    "retopo",
-    "uv",
-    "game",
-    "rigging",
-    "baking",
-    "retarget"
+    {
+      "subcommand": "text",
+      "label": "Text-to-3D",
+      "default": true,
+      "when": "Text-to-3D (Meshy/Tripo)"
+    },
+    {
+      "subcommand": "image",
+      "label": "Image-to-3D",
+      "default": false,
+      "when": "Image-to-3D (Hunyuan3D)"
+    },
+    {
+      "subcommand": "retopo",
+      "label": "Retopology",
+      "default": false,
+      "when": "Retopology processing"
+    },
+    {
+      "subcommand": "uv",
+      "label": "UV Unwrap",
+      "default": false,
+      "when": "UV unwrap"
+    },
+    {
+      "subcommand": "game",
+      "label": "Game Pipeline",
+      "default": false,
+      "when": "Game pipeline integration (LOD)"
+    },
+    {
+      "subcommand": "rigging",
+      "label": "Auto-Rigging",
+      "default": false,
+      "when": "Auto-rig via Mixamo / Rodin / Meshy / Anything-World, skeleton + skin weight"
+    },
+    {
+      "subcommand": "baking",
+      "label": "Texture Baking",
+      "default": false,
+      "when": "PBR baking (normal / AO / metallic / roughness / curvature / height) high→low poly"
+    },
+    {
+      "subcommand": "retarget",
+      "label": "Animation Retarget",
+      "default": false,
+      "when": "Mocap / animation retargeting across rigs (Mixamo→custom, BVH/FBX, root-motion handling)"
+    }
   ]
 }

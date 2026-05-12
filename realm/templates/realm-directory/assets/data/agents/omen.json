@@ -91,12 +91,47 @@
     "status": "generated"
   },
   "recipes": [
-    "premortem",
-    "rpn",
-    "ap",
-    "mode",
-    "faulttree",
-    "bowtie",
-    "hazop"
+    {
+      "subcommand": "premortem",
+      "label": "Pre-Mortem",
+      "default": true,
+      "when": "Failure scenario enumeration (all-phase DEEP)"
+    },
+    {
+      "subcommand": "rpn",
+      "label": "RPN Scoring",
+      "default": false,
+      "when": "Risk Priority Number scoring"
+    },
+    {
+      "subcommand": "ap",
+      "label": "Action Priority",
+      "default": false,
+      "when": "Action Priority scoring (AIAG-VDA)"
+    },
+    {
+      "subcommand": "mode",
+      "label": "Failure Mode ID",
+      "default": false,
+      "when": "Failure mode identification (FMEA)"
+    },
+    {
+      "subcommand": "faulttree",
+      "label": "Fault Tree Analysis",
+      "default": false,
+      "when": "Top-down deductive analysis from one undesired top event, cut-set computation, optional probability roll-up"
+    },
+    {
+      "subcommand": "bowtie",
+      "label": "Bowtie Diagram",
+      "default": false,
+      "when": "Threat × top event × consequence map with preventive and mitigative barriers for stakeholder communication"
+    },
+    {
+      "subcommand": "hazop",
+      "label": "HAZOP Study",
+      "default": false,
+      "when": "Parameter × guideword deviation study at process / pipeline / integration nodes"
+    }
   ]
 }

@@ -90,13 +90,59 @@
     "status": "generated"
   },
   "recipes": [
-    "estimate",
-    "rightsizing",
-    "anomaly",
-    "ri-sp",
-    "gpu-cost",
-    "tagging",
-    "finops-framework",
-    "unit-economics"
+    {
+      "subcommand": "estimate",
+      "label": "IaC Cost Estimate",
+      "default": true,
+      "when": "IaC cost estimation, pre/post-change cost diff"
+    },
+    {
+      "subcommand": "rightsizing",
+      "label": "Right-Sizing",
+      "default": false,
+      "when": "Instance right-sizing, CPU/memory utilization analysis"
+    },
+    {
+      "subcommand": "anomaly",
+      "label": "Cost Anomaly",
+      "default": false,
+      "when": "Cost anomaly detection rule design, spike response playbook"
+    },
+    {
+      "subcommand": "ri-sp",
+      "label": "RI / SP / CUD",
+      "default": false,
+      "when": "Reserved Instances, Savings Plans, GCP CUD, Azure RI commitment strategy with break-even and ladder design"
+    },
+    {
+      "subcommand": "gpu-cost",
+      "label": "AI / GPU Cost",
+      "default": false,
+      "when": "AI/ML and GPU workload cost — H100/H200/A100/L40S/T4 SKU economics, training vs inference split, spot strategy, quantization impact"
+    },
+    {
+      "subcommand": "tagging",
+      "label": "Cost-Allocation Tagging",
+      "default": false,
+      "when": "Mandatory tag taxonomy, AWS/GCP/Azure enforcement (SCP/Org Policy/Azure Policy), showback / chargeback design"
+    },
+    {
+      "subcommand": "finops-framework",
+      "label": "FinOps Framework",
+      "default": false,
+      "when": "FinOps Foundation Framework — Crawl/Walk/Run maturity across 22 capabilities, persona map, phase-appropriate tooling"
+    },
+    {
+      "subcommand": "unit-economics",
+      "label": "Unit Economics",
+      "default": false,
+      "when": "Per-customer / per-transaction / per-feature cost attribution, COGS decomposition, margin + contribution analysis"
+    },
+    {
+      "subcommand": "greenops",
+      "label": "GreenOps / Sustainability",
+      "default": false,
+      "when": "Carbon-aware scheduling, embodied+operational CO2e accounting, SCI (ISO/IEC 21031), region-carbon choice, FinOps×GreenOps trade-off"
+    }
   ]
 }

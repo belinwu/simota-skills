@@ -82,13 +82,53 @@
     "status": "generated"
   },
   "recipes": [
-    "pii",
-    "flow",
-    "consent",
-    "dpia",
-    "gdpr",
-    "ccpa",
-    "appi",
-    "pseudonymize"
+    {
+      "subcommand": "pii",
+      "label": "PII Detection",
+      "default": true,
+      "when": "PII detection and classification"
+    },
+    {
+      "subcommand": "flow",
+      "label": "Data Flow Mapping",
+      "default": false,
+      "when": "Data flow visualization"
+    },
+    {
+      "subcommand": "consent",
+      "label": "Consent Management",
+      "default": false,
+      "when": "Consent management pattern implementation"
+    },
+    {
+      "subcommand": "dpia",
+      "label": "DPIA",
+      "default": false,
+      "when": "DPIA facilitation"
+    },
+    {
+      "subcommand": "gdpr",
+      "label": "GDPR/CCPA Code",
+      "default": false,
+      "when": "Compliance-ready code implementation"
+    },
+    {
+      "subcommand": "ccpa",
+      "label": "CCPA / CPRA",
+      "default": false,
+      "when": "California consumer rights, GPC, SPI limit-use, service-provider contracts"
+    },
+    {
+      "subcommand": "appi",
+      "label": "APPI (Japan)",
+      "default": false,
+      "when": "Japanese APPI implementation: three-tier data taxonomy, Art. 24/23, PPC reporting, special-care personal info"
+    },
+    {
+      "subcommand": "pseudonymize",
+      "label": "Pseudonymization",
+      "default": false,
+      "when": "k-anonymity / l-diversity / DP / tokenization / FPE technique selection"
+    }
   ]
 }

@@ -81,13 +81,53 @@
     "status": "generated"
   },
   "recipes": [
-    "reengagement",
-    "churn",
-    "gamification",
-    "habit",
-    "loyalty",
-    "winback",
-    "lifecycle-email",
-    "power-user"
+    {
+      "subcommand": "reengagement",
+      "label": "Re-engagement",
+      "default": true,
+      "when": "Re-engagement strategy and dormant user recovery"
+    },
+    {
+      "subcommand": "churn",
+      "label": "Churn Prevention",
+      "default": false,
+      "when": "Churn prevention and subscription save flows"
+    },
+    {
+      "subcommand": "gamification",
+      "label": "Gamification",
+      "default": false,
+      "when": "Gamification design: points, badges, and streaks"
+    },
+    {
+      "subcommand": "habit",
+      "label": "Habit Formation",
+      "default": false,
+      "when": "Habit formation design, Hook Model, and streak design"
+    },
+    {
+      "subcommand": "loyalty",
+      "label": "Loyalty Program",
+      "default": false,
+      "when": "Loyalty program design and reward system construction"
+    },
+    {
+      "subcommand": "winback",
+      "label": "Win-Back Campaign",
+      "default": false,
+      "when": "Dormant / cancelled-user recovery campaign with recency-weighted offers, multi-touch cadence, and reactivation metric"
+    },
+    {
+      "subcommand": "lifecycle-email",
+      "label": "Lifecycle Email Drip",
+      "default": false,
+      "when": "30/60/90 onboarding + lifecycle email drip design: trigger-based, behavior-branched, deliverability and suppression rules"
+    },
+    {
+      "subcommand": "power-user",
+      "label": "Power User Advocacy",
+      "default": false,
+      "when": "Power-user identification via L21+ MAU + NPS promoter overlap, advocacy ladder, community/referral program activation"
+    }
   ]
 }

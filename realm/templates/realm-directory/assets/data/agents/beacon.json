@@ -78,13 +78,53 @@
     "status": "generated"
   },
   "recipes": [
-    "slo",
-    "tracing",
-    "alerts",
-    "dashboard",
-    "capacity",
-    "log",
-    "golden",
-    "toil"
+    {
+      "subcommand": "slo",
+      "label": "SLO Design",
+      "default": true,
+      "when": "SLO/SLI design, error budget calculation"
+    },
+    {
+      "subcommand": "tracing",
+      "label": "Distributed Tracing",
+      "default": false,
+      "when": "Distributed tracing design (OpenTelemetry)"
+    },
+    {
+      "subcommand": "alerts",
+      "label": "Alert Strategy",
+      "default": false,
+      "when": "Alert strategy (SLO burn rate, fatigue management)"
+    },
+    {
+      "subcommand": "dashboard",
+      "label": "Dashboard Spec",
+      "default": false,
+      "when": "Dashboard design (RED/USE methods)"
+    },
+    {
+      "subcommand": "capacity",
+      "label": "Capacity Planning",
+      "default": false,
+      "when": "Capacity planning, load modeling"
+    },
+    {
+      "subcommand": "log",
+      "label": "Logging Design",
+      "default": false,
+      "when": "Structured JSON log schema, correlation IDs, sampling policy, PII scrub, OTel Logs signal"
+    },
+    {
+      "subcommand": "golden",
+      "label": "Golden Signals",
+      "default": false,
+      "when": "Golden Signals / RED / USE signal selection before SLO target setting"
+    },
+    {
+      "subcommand": "toil",
+      "label": "Toil Reduction",
+      "default": false,
+      "when": "Toil audit, automation priority scoring, runbook → script → auto-remediation escalation"
+    }
   ]
 }

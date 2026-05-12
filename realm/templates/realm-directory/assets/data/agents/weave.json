@@ -86,12 +86,47 @@
     "status": "generated"
   },
   "recipes": [
-    "design",
-    "saga",
-    "approval",
-    "detect",
-    "retry",
-    "timeout",
-    "compensation"
+    {
+      "subcommand": "design",
+      "label": "State Design",
+      "default": true,
+      "when": "State transition design"
+    },
+    {
+      "subcommand": "saga",
+      "label": "Saga Pattern",
+      "default": false,
+      "when": "Saga pattern distributed transactions"
+    },
+    {
+      "subcommand": "approval",
+      "label": "Approval Flow",
+      "default": false,
+      "when": "Approval flow design"
+    },
+    {
+      "subcommand": "detect",
+      "label": "Invalid Transition Detection",
+      "default": false,
+      "when": "Invalid transition detection"
+    },
+    {
+      "subcommand": "retry",
+      "label": "Retry State Machine",
+      "default": false,
+      "when": "Exponential backoff, jitter, max-attempt cap, DLQ terminal state, idempotency contract"
+    },
+    {
+      "subcommand": "timeout",
+      "label": "Timeout / TTL / Deadline",
+      "default": false,
+      "when": "TTL state design, deadline propagation, grace-period transitions, stuck-state recovery"
+    },
+    {
+      "subcommand": "compensation",
+      "label": "Compensation Transactions",
+      "default": false,
+      "when": "Saga compensation per forward step, idempotency keys, compensation-of-compensation, ordering"
+    }
   ]
 }

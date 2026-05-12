@@ -88,12 +88,47 @@
     "status": "generated"
   },
   "recipes": [
-    "explain",
-    "slow",
-    "index",
-    "plan",
-    "cache",
-    "connection",
-    "vacuum"
+    {
+      "subcommand": "explain",
+      "label": "Explain Analyze",
+      "default": true,
+      "when": "EXPLAIN ANALYZE analysis"
+    },
+    {
+      "subcommand": "slow",
+      "label": "Slow Query Hunt",
+      "default": false,
+      "when": "Slow query detection and fix"
+    },
+    {
+      "subcommand": "index",
+      "label": "Index Recommendation",
+      "default": false,
+      "when": "Index recommendation"
+    },
+    {
+      "subcommand": "plan",
+      "label": "Plan Optimization",
+      "default": false,
+      "when": "Query plan improvement"
+    },
+    {
+      "subcommand": "cache",
+      "label": "Cache Strategy",
+      "default": false,
+      "when": "Query/DB cache layer tuning (Redis, Memcached, shared_buffers)"
+    },
+    {
+      "subcommand": "connection",
+      "label": "Connection Pool Tuning",
+      "default": false,
+      "when": "Pool sizing, lifetime, prepared-statement cache, leak detection"
+    },
+    {
+      "subcommand": "vacuum",
+      "label": "VACUUM & Autovacuum",
+      "default": false,
+      "when": "Bloat, autovacuum thresholds, freeze horizon, statistics target"
+    }
   ]
 }

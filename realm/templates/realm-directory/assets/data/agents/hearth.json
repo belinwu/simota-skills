@@ -86,13 +86,53 @@
     "status": "generated"
   },
   "recipes": [
-    "zsh",
-    "tmux",
-    "neovim",
-    "ghostty",
-    "vscode",
-    "git",
-    "shellfn",
-    "audit"
+    {
+      "subcommand": "zsh",
+      "label": "zsh Config",
+      "default": true,
+      "when": "zsh configuration (plugins, startup time, XDG)"
+    },
+    {
+      "subcommand": "tmux",
+      "label": "tmux Config",
+      "default": false,
+      "when": "tmux + starship/powerlevel10k configuration"
+    },
+    {
+      "subcommand": "neovim",
+      "label": "Neovim Config",
+      "default": false,
+      "when": "Neovim 0.12+ configuration (LSP, vim.pack, DAP)"
+    },
+    {
+      "subcommand": "ghostty",
+      "label": "Ghostty Config",
+      "default": false,
+      "when": "Ghostty 1.3+ configuration (theme, font, keybindings)"
+    },
+    {
+      "subcommand": "vscode",
+      "label": "VS Code / Cursor Config",
+      "default": false,
+      "when": "VS Code or Cursor settings, keybindings, extensions, Settings Sync, devcontainer"
+    },
+    {
+      "subcommand": "git",
+      "label": "Personal Git Config",
+      "default": false,
+      "when": "`~/.gitconfig`, global ignore/attributes, commit signing, delta/absorb, personal hooks"
+    },
+    {
+      "subcommand": "shellfn",
+      "label": "Shell Functions and Env",
+      "default": false,
+      "when": "Functions/aliases layout, PATH hygiene, direnv/mise/asdf/nvm, XDG, lazy completions"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Dotfile Audit",
+      "default": false,
+      "when": "Audit existing dotfile setup, detect anti-patterns"
+    }
   ]
 }

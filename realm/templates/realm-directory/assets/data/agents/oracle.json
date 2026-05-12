@@ -92,13 +92,53 @@
     "status": "generated"
   },
   "recipes": [
-    "prompt",
-    "rag",
-    "eval",
-    "safety",
-    "mlops",
-    "agent",
-    "cost",
-    "embed"
+    {
+      "subcommand": "prompt",
+      "label": "Prompt Engineering",
+      "default": true,
+      "when": "Prompt design and optimization"
+    },
+    {
+      "subcommand": "rag",
+      "label": "RAG Design",
+      "default": false,
+      "when": "RAG design (retrieval + generation)"
+    },
+    {
+      "subcommand": "eval",
+      "label": "Evaluation Framework",
+      "default": false,
+      "when": "Evaluation framework (LLM output quality)"
+    },
+    {
+      "subcommand": "safety",
+      "label": "AI Safety",
+      "default": false,
+      "when": "Guardrails, red-teaming"
+    },
+    {
+      "subcommand": "mlops",
+      "label": "MLOps Pipeline",
+      "default": false,
+      "when": "MLOps pipeline design"
+    },
+    {
+      "subcommand": "agent",
+      "label": "Agent System Design",
+      "default": false,
+      "when": "Application-level LLM agent design (tool-use loops, tool schemas, memory, subagent delegation, termination)"
+    },
+    {
+      "subcommand": "cost",
+      "label": "LLM Cost Optimization",
+      "default": false,
+      "when": "LLM-API cost tuning (token budget, prompt caching, model tier routing, batch vs streaming, context compression)"
+    },
+    {
+      "subcommand": "embed",
+      "label": "Embedding Strategy",
+      "default": false,
+      "when": "RAG embedding pipeline deep dive (chunking, embedding model, vector index, re-ranking, hybrid BM25+vector)"
+    }
   ]
 }

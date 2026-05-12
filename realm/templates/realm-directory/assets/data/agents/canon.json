@@ -71,13 +71,53 @@
     "status": "generated"
   },
   "recipes": [
-    "owasp",
-    "wcag",
-    "openapi",
-    "iso",
-    "gap",
-    "nist",
-    "pci",
-    "gdpr"
+    {
+      "subcommand": "owasp",
+      "label": "OWASP Review",
+      "default": true,
+      "when": "OWASP Top 10 / ASVS security standards assessment"
+    },
+    {
+      "subcommand": "wcag",
+      "label": "WCAG Accessibility",
+      "default": false,
+      "when": "WCAG 2.2 / WAI-ARIA accessibility assessment"
+    },
+    {
+      "subcommand": "openapi",
+      "label": "OpenAPI Compliance",
+      "default": false,
+      "when": "OpenAPI 3.1 / RFC 9110 API standards compliance check"
+    },
+    {
+      "subcommand": "iso",
+      "label": "ISO 25010 Quality",
+      "default": false,
+      "when": "ISO/IEC 25010:2023 quality characteristics assessment (SOLID/Clean Code)"
+    },
+    {
+      "subcommand": "gap",
+      "label": "Gap Analysis",
+      "default": false,
+      "when": "Multi-standard gap analysis, audit report generation"
+    },
+    {
+      "subcommand": "nist",
+      "label": "NIST CSF",
+      "default": false,
+      "when": "NIST CSF 2.0 (Govern/Identify/Protect/Detect/Respond/Recover) Tier and Profile assessment"
+    },
+    {
+      "subcommand": "pci",
+      "label": "PCI-DSS",
+      "default": false,
+      "when": "PCI-DSS v4.0.1 12-Requirement compliance, CDE scoping, SAQ/ROC selection"
+    },
+    {
+      "subcommand": "gdpr",
+      "label": "GDPR",
+      "default": false,
+      "when": "GDPR (Reg. (EU) 2016/679) Articles 5/6/7/13/17/25/30/32/33/35 data-protection assessment"
+    }
   ]
 }

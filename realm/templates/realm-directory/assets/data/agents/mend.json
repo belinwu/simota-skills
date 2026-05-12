@@ -81,12 +81,47 @@
     "status": "generated"
   },
   "recipes": [
-    "runbook",
-    "diagnose",
-    "rollback",
-    "verify",
-    "scale",
-    "circuit",
-    "canary"
+    {
+      "subcommand": "runbook",
+      "label": "Runbook Execute",
+      "default": true,
+      "when": "Runbook execution for known patterns"
+    },
+    {
+      "subcommand": "diagnose",
+      "label": "Diagnose",
+      "default": false,
+      "when": "Root cause diagnosis and pattern matching for unknown failures"
+    },
+    {
+      "subcommand": "rollback",
+      "label": "Rollback",
+      "default": false,
+      "when": "Rollback execution (T3 approval required)"
+    },
+    {
+      "subcommand": "verify",
+      "label": "Verify",
+      "default": false,
+      "when": "Staged post-remediation verification (Health→Smoke→SLO)"
+    },
+    {
+      "subcommand": "scale",
+      "label": "Scale",
+      "default": false,
+      "when": "Incident-time horizontal / vertical scaling, HPA/KEDA tuning, pre-warm for expected load, stateful scaling with drain/stickiness guards"
+    },
+    {
+      "subcommand": "circuit",
+      "label": "Circuit",
+      "default": false,
+      "when": "Trip / tune circuit breakers and rate limits, queue-based load shedding, bulkhead isolation, graceful degradation"
+    },
+    {
+      "subcommand": "canary",
+      "label": "Canary",
+      "default": false,
+      "when": "Progressive rollout control (1/5/25/100%), promotion gates, auto-rollback triggers, cohort and flag coordination"
+    }
   ]
 }

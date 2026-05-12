@@ -8,21 +8,63 @@
   "description": "Add JSDoc/TSDoc, update READMEs, replace any types with proper definitions, and add high-value comments to complex logic.",
   "tagline": "Documentation as a load-bearing surface.",
   "capabilities": [
-    { "key": "jsdoc_tsdoc", "summary": "JSDoc/TSDoc with @param, @returns, @throws, @example tags" },
-    { "key": "readme_management", "summary": "Create, update, audit README.md sections" },
-    { "key": "type_definition_improvement", "summary": "Replace any with proper interfaces, generics, type guards" },
-    { "key": "documentation_coverage_audit", "summary": "≥80% public API JSDoc coverage with CI gate" },
-    { "key": "api_documentation", "summary": "OpenAPI/Swagger annotations and TypeDoc 0.28+ generation" },
-    { "key": "complex_code_commenting", "summary": "Magic numbers, complex regex, business rules" },
-    { "key": "documentation_rot_detection", "summary": "Doc-code drift detection via Vale and link checkers" }
+    {
+      "key": "jsdoc_tsdoc",
+      "summary": "JSDoc/TSDoc with @param, @returns, @throws, @example tags"
+    },
+    {
+      "key": "readme_management",
+      "summary": "Create, update, audit README.md sections"
+    },
+    {
+      "key": "type_definition_improvement",
+      "summary": "Replace any with proper interfaces, generics, type guards"
+    },
+    {
+      "key": "documentation_coverage_audit",
+      "summary": "≥80% public API JSDoc coverage with CI gate"
+    },
+    {
+      "key": "api_documentation",
+      "summary": "OpenAPI/Swagger annotations and TypeDoc 0.28+ generation"
+    },
+    {
+      "key": "complex_code_commenting",
+      "summary": "Magic numbers, complex regex, business rules"
+    },
+    {
+      "key": "documentation_rot_detection",
+      "summary": "Doc-code drift detection via Vale and link checkers"
+    }
   ],
   "collaboration": {
-    "input": ["zen", "gateway", "atlas", "architect", "builder", "scribe", "horizon", "gear"],
-    "output": ["canvas", "atlas", "gateway", "lore", "gear"]
+    "input": [
+      "zen",
+      "gateway",
+      "atlas",
+      "architect",
+      "builder",
+      "scribe",
+      "horizon",
+      "gear"
+    ],
+    "output": [
+      "canvas",
+      "atlas",
+      "gateway",
+      "lore",
+      "gear"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "dashboard", "level": "M" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -31,5 +73,48 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["jsdoc", "readme", "types", "audit"]
+  "recipes": [
+    {
+      "subcommand": "docstring",
+      "label": "Docstrings",
+      "default": true,
+      "when": "Add JSDoc/TSDoc (per function/class)"
+    },
+    {
+      "subcommand": "readme",
+      "label": "README Update",
+      "default": false,
+      "when": "README updates and structure"
+    },
+    {
+      "subcommand": "types",
+      "label": "Type Definitions",
+      "default": false,
+      "when": "Replace any types with concrete types"
+    },
+    {
+      "subcommand": "comments",
+      "label": "High-Value Comments",
+      "default": false,
+      "when": "Add intent comments to complex logic"
+    },
+    {
+      "subcommand": "adr",
+      "label": "ADR Authoring",
+      "default": false,
+      "when": "Record an architectural decision (Nygard / MADR) with context, alternatives, consequences, and supersession lifecycle"
+    },
+    {
+      "subcommand": "migrate",
+      "label": "Migration Guide",
+      "default": false,
+      "when": "Author version-jump upgrade guides with breaking-change notation, codemod steps, rollback, and verification"
+    },
+    {
+      "subcommand": "tutorial",
+      "label": "Tutorial / How-To",
+      "default": false,
+      "when": "Write Diátaxis-aligned tutorials and how-to guides with prerequisites, executable snippets, and validation checkpoints"
+    }
+  ]
 }

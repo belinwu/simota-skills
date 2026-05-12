@@ -88,13 +88,59 @@
     "status": "generated"
   },
   "recipes": [
-    "generate",
-    "edit",
-    "prompt",
-    "batch",
-    "style",
-    "upscale",
-    "cinematic",
-    "provenance"
+    {
+      "subcommand": "generate",
+      "label": "Generate",
+      "default": true,
+      "when": "Text-to-image generation"
+    },
+    {
+      "subcommand": "edit",
+      "label": "Edit",
+      "default": false,
+      "when": "Editing existing images"
+    },
+    {
+      "subcommand": "prompt",
+      "label": "Prompt Optimization",
+      "default": false,
+      "when": "Prompt optimization"
+    },
+    {
+      "subcommand": "batch",
+      "label": "Batch",
+      "default": false,
+      "when": "Generate many variants with consistent seed and style (cards, hero sets, character sheets)"
+    },
+    {
+      "subcommand": "style",
+      "label": "Style",
+      "default": false,
+      "when": "Match an existing brand or reference style, or anchor cross-asset cohesion"
+    },
+    {
+      "subcommand": "upscale",
+      "label": "Upscale",
+      "default": false,
+      "when": "Post-process: upscale, masked inpaint, or outpaint a base render"
+    },
+    {
+      "subcommand": "cinematic",
+      "label": "Cinematic",
+      "default": false,
+      "when": "Photographic / cinematographic prompt construction — camera, lens, lighting, depth of field, film stock, composition rules"
+    },
+    {
+      "subcommand": "provenance",
+      "label": "Provenance",
+      "default": false,
+      "when": "C2PA + SynthID + EXIF AI-disclosure metadata, watermarking, takedown response, and platform compliance"
+    },
+    {
+      "subcommand": "policy",
+      "label": "Policy",
+      "default": false,
+      "when": "Content-policy + brand-safety guardrails, NSFW filter, deepfake / likeness rules, regulatory compliance"
+    }
   ]
 }

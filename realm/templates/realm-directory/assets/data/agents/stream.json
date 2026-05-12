@@ -91,12 +91,47 @@
     "status": "generated"
   },
   "recipes": [
-    "etl",
-    "elt",
-    "stream",
-    "dbt",
-    "cdc",
-    "reverse",
-    "quality"
+    {
+      "subcommand": "etl",
+      "label": "ETL Pipeline",
+      "default": true,
+      "when": "ETL pipeline design (source → transform → load)"
+    },
+    {
+      "subcommand": "elt",
+      "label": "ELT Pipeline",
+      "default": false,
+      "when": "ELT pipeline (warehouse-centric transformation)"
+    },
+    {
+      "subcommand": "stream",
+      "label": "Streaming",
+      "default": false,
+      "when": "Kafka/Flink/Kinesis streaming design"
+    },
+    {
+      "subcommand": "dbt",
+      "label": "dbt Project",
+      "default": false,
+      "when": "dbt project design and model structure"
+    },
+    {
+      "subcommand": "cdc",
+      "label": "Change Data Capture",
+      "default": false,
+      "when": "Debezium / logical replication / binlog / SQL Server CDC → Kafka Connect sink with snapshot + incremental handoff"
+    },
+    {
+      "subcommand": "reverse",
+      "label": "Reverse ETL",
+      "default": false,
+      "when": "DWH → operational SaaS (Salesforce / HubSpot / Zendesk) activation via Census / Hightouch / Workato"
+    },
+    {
+      "subcommand": "quality",
+      "label": "Data Quality",
+      "default": false,
+      "when": "Great Expectations / Soda / Elementary checks (freshness / completeness / uniqueness / validity / distribution) with OpenLineage and contract-violation alerting"
+    }
   ]
 }

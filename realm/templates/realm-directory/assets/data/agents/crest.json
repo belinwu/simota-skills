@@ -88,13 +88,53 @@
     "status": "generated"
   },
   "recipes": [
-    "github",
-    "linkedin",
-    "blog",
-    "conference",
-    "sns",
-    "topic-dna",
-    "portfolio",
-    "bio"
+    {
+      "subcommand": "github",
+      "label": "GitHub Profile",
+      "default": true,
+      "when": "GitHub Profile README optimization, pinned repo design"
+    },
+    {
+      "subcommand": "linkedin",
+      "label": "LinkedIn Profile",
+      "default": false,
+      "when": "LinkedIn profile optimization, Topic DNA alignment"
+    },
+    {
+      "subcommand": "blog",
+      "label": "Blog Strategy",
+      "default": false,
+      "when": "Blog, Qiita, Zenn content strategy and article planning"
+    },
+    {
+      "subcommand": "conference",
+      "label": "Conference CFP",
+      "default": false,
+      "when": "Conference CFP authoring, talk theme design"
+    },
+    {
+      "subcommand": "sns",
+      "label": "SNS Strategy",
+      "default": false,
+      "when": "X, Bluesky, LinkedIn SNS publishing strategy, zero-click design"
+    },
+    {
+      "subcommand": "topic-dna",
+      "label": "Topic DNA",
+      "default": false,
+      "when": "Topic DNA / niche positioning — define what the engineer is known for; tech × domain × perspective triangulation"
+    },
+    {
+      "subcommand": "portfolio",
+      "label": "Portfolio",
+      "default": false,
+      "when": "Personal portfolio site / homepage architecture — projects, case studies, contact, hire-readiness"
+    },
+    {
+      "subcommand": "bio",
+      "label": "Bio",
+      "default": false,
+      "when": "Multi-platform bio writing — GitHub one-line, LinkedIn About ≤275 chars, X 160-char, conference 50-word, long 200-word variants"
+    }
   ]
 }

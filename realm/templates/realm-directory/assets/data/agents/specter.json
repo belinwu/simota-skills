@@ -91,12 +91,47 @@
     "status": "generated"
   },
   "recipes": [
-    "race",
-    "leak",
-    "deadlock",
-    "resource",
-    "flaky",
-    "time",
-    "order"
+    {
+      "subcommand": "race",
+      "label": "Race Condition",
+      "default": true,
+      "when": "Detect intermittent failures, timing-dependent bugs, and non-deterministic tests"
+    },
+    {
+      "subcommand": "leak",
+      "label": "Memory Leak",
+      "default": false,
+      "when": "Detect gradual slowdown and listener/timer/subscription leaks"
+    },
+    {
+      "subcommand": "deadlock",
+      "label": "Deadlock",
+      "default": false,
+      "when": "Detect freezes, hangs, and Promise-chain deadlocks"
+    },
+    {
+      "subcommand": "resource",
+      "label": "Resource Leak",
+      "default": false,
+      "when": "Detect connection/socket/FD/pool leaks"
+    },
+    {
+      "subcommand": "flaky",
+      "label": "Flaky Test Diagnosis",
+      "default": false,
+      "when": "Categorize intermittent tests (async/ordering/state/external), design quarantine and retry-with-record, verify test isolation"
+    },
+    {
+      "subcommand": "time",
+      "label": "Time-Dependent Bug",
+      "default": false,
+      "when": "Detect TZ/DST traps, monotonic vs wall-clock misuse, clock skew, leap seconds, and unfrozen test clocks"
+    },
+    {
+      "subcommand": "order",
+      "label": "Ordering Sensitivity",
+      "default": false,
+      "when": "Detect unordered-iteration reliance, sort-stability assumptions, concurrent-write implicit ordering, read-your-write staleness"
+    }
   ]
 }

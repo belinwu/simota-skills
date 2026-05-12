@@ -83,13 +83,59 @@
     "status": "generated"
   },
   "recipes": [
-    "ab",
-    "cuped",
-    "switchback",
-    "analyze",
-    "guardrail",
-    "ff",
-    "srm",
-    "sequential"
+    {
+      "subcommand": "ab",
+      "label": "A/B Test Design",
+      "default": true,
+      "when": "A/B test design, hypothesis document authoring, sample size calculation"
+    },
+    {
+      "subcommand": "cuped",
+      "label": "CUPED",
+      "default": false,
+      "when": "CUPED/CUPAC variance reduction, sensitivity improvement design"
+    },
+    {
+      "subcommand": "switchback",
+      "label": "Switchback",
+      "default": false,
+      "when": "Marketplace/network-effect switchback experiments with rotation-window, carryover, and block-randomization design"
+    },
+    {
+      "subcommand": "analyze",
+      "label": "Analyze",
+      "default": false,
+      "when": "Experiment result analysis, statistical significance, confidence interval report"
+    },
+    {
+      "subcommand": "guardrail",
+      "label": "Guardrail",
+      "default": false,
+      "when": "Per-experiment metric portfolio — primary/secondary/counter/guardrail with non-inferiority margins and stop/ship triggers"
+    },
+    {
+      "subcommand": "ff",
+      "label": "Feature Flag",
+      "default": false,
+      "when": "Flag-driven experiment assignment, staged ramp (1/5/25/50/100%), kill-switch design, decommission handoff"
+    },
+    {
+      "subcommand": "srm",
+      "label": "SRM Detection",
+      "default": false,
+      "when": "Sample Ratio Mismatch diagnosis via chi-squared + segment root-cause decomposition"
+    },
+    {
+      "subcommand": "sequential",
+      "label": "Sequential Testing",
+      "default": false,
+      "when": "Anytime-valid sequential testing (mSPRT / confidence sequences / group sequential α-spending)"
+    },
+    {
+      "subcommand": "bayesian",
+      "label": "Bayesian A/B",
+      "default": false,
+      "when": "Bayesian A/B with priors, posterior inference, credible intervals, ROPE, probability-to-beat"
+    }
   ]
 }

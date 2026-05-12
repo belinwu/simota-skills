@@ -76,13 +76,53 @@
     "status": "generated"
   },
   "recipes": [
-    "regex",
-    "parser",
-    "dsl",
-    "ast",
-    "redos",
-    "lexer",
-    "error",
-    "incremental"
+    {
+      "subcommand": "regex",
+      "label": "Regex Design",
+      "default": true,
+      "when": "Regex design, ReDoS audit, and engine selection"
+    },
+    {
+      "subcommand": "parser",
+      "label": "Parser Design",
+      "default": false,
+      "when": "Parser design, grammar class classification, generator selection"
+    },
+    {
+      "subcommand": "dsl",
+      "label": "DSL Design",
+      "default": false,
+      "when": "Domain Specific Language design (internal/external DSL)"
+    },
+    {
+      "subcommand": "ast",
+      "label": "AST Transform",
+      "default": false,
+      "when": "AST transformation, codemod, visitor design"
+    },
+    {
+      "subcommand": "redos",
+      "label": "ReDoS Audit",
+      "default": false,
+      "when": "ReDoS safety audit of existing regex only"
+    },
+    {
+      "subcommand": "lexer",
+      "label": "Lexer Design",
+      "default": false,
+      "when": "Standalone tokenizer/lexer design — justify separation, handle off-side rule, context-sensitive tokens, trivia"
+    },
+    {
+      "subcommand": "error",
+      "label": "Error Recovery Design",
+      "default": false,
+      "when": "Parser error-recovery and diagnostic-message design (panic-mode, phrase-level, error productions, multi-span)"
+    },
+    {
+      "subcommand": "incremental",
+      "label": "Incremental Parser Design",
+      "default": false,
+      "when": "Incremental reparse design for IDE/LSP — edit-aware state, dirty-subtree tracking, tree-sitter-style"
+    }
   ]
 }

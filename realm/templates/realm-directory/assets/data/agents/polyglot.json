@@ -86,12 +86,47 @@
     "status": "generated"
   },
   "recipes": [
-    "extract",
-    "intl",
-    "keys",
-    "rtl",
-    "pluralize",
-    "locale",
-    "translate"
+    {
+      "subcommand": "extract",
+      "label": "String Extraction",
+      "default": true,
+      "when": "Extract hardcoded strings and replace with t() calls"
+    },
+    {
+      "subcommand": "intl",
+      "label": "Intl Formatting",
+      "default": false,
+      "when": "Intl API integration for date, currency, and number formatting"
+    },
+    {
+      "subcommand": "keys",
+      "label": "Translation Keys",
+      "default": false,
+      "when": "Translation key structure and namespace design"
+    },
+    {
+      "subcommand": "rtl",
+      "label": "RTL Support",
+      "default": false,
+      "when": "RTL layout support and CSS logical properties implementation"
+    },
+    {
+      "subcommand": "pluralize",
+      "label": "Pluralization",
+      "default": false,
+      "when": "CLDR plural categories, ICU plural/selectordinal branches, per-locale category coverage, plural-branch testing"
+    },
+    {
+      "subcommand": "locale",
+      "label": "Locale Negotiation",
+      "default": false,
+      "when": "BCP 47 parsing, Accept-Language negotiation, fallback chain, user-override persistence, geolocation defaults"
+    },
+    {
+      "subcommand": "translate",
+      "label": "Translation Workflow",
+      "default": false,
+      "when": "TMS integration (Lokalise/Crowdin/Phrase/Smartling), translation memory, translator briefing, placeholder/HTML QA, release workflow"
+    }
   ]
 }

@@ -80,12 +80,47 @@
     "status": "generated"
   },
   "recipes": [
-    "tos",
-    "privacy",
-    "tokushoho",
-    "gap",
-    "dpa",
-    "eula",
-    "cookie"
+    {
+      "subcommand": "tos",
+      "label": "ToS Review",
+      "default": true,
+      "when": "Terms of Service clause coverage check and risk flagging"
+    },
+    {
+      "subcommand": "privacy",
+      "label": "Privacy Policy",
+      "default": false,
+      "when": "Privacy Policy GDPR/APPI alignment check"
+    },
+    {
+      "subcommand": "tokushoho",
+      "label": "Tokushoho",
+      "default": false,
+      "when": "Tokushoho (Specified Commercial Transactions Act) required-field check"
+    },
+    {
+      "subcommand": "gap",
+      "label": "Gap Analysis",
+      "default": false,
+      "when": "Multi-document consistency check, missing clause detection"
+    },
+    {
+      "subcommand": "dpa",
+      "label": "DPA Review",
+      "default": false,
+      "when": "Data Processing Agreement review (GDPR Art. 28, sub-processor chain, SCC, Schrems II TIA)"
+    },
+    {
+      "subcommand": "eula",
+      "label": "EULA Review",
+      "default": false,
+      "when": "End User License Agreement review (license type, IP, warranty/indemnity, jurisdiction overrides)"
+    },
+    {
+      "subcommand": "cookie",
+      "label": "Cookie Consent",
+      "default": false,
+      "when": "Cookie banner and cookie policy review (ePrivacy, GDPR consent, IAB TCF v2.2, categorization)"
+    }
   ]
 }

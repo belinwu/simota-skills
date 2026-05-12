@@ -93,12 +93,47 @@
     "status": "generated"
   },
   "recipes": [
-    "combine",
-    "cover",
-    "plan",
-    "prioritize",
-    "pairwise",
-    "equiv-class",
-    "risk-cover"
+    {
+      "subcommand": "combine",
+      "label": "Combination Control",
+      "default": true,
+      "when": "Combination explosion control, minimum coverage set selection"
+    },
+    {
+      "subcommand": "cover",
+      "label": "Min Coverage Set",
+      "default": false,
+      "when": "Minimum coverage set selection (pairwise/n-wise)"
+    },
+    {
+      "subcommand": "plan",
+      "label": "Execution Plan",
+      "default": false,
+      "when": "Prioritized execution plan generation"
+    },
+    {
+      "subcommand": "prioritize",
+      "label": "Prioritize",
+      "default": false,
+      "when": "Prioritization by risk, frequency, and business impact"
+    },
+    {
+      "subcommand": "pairwise",
+      "label": "Pairwise / All-Pairs",
+      "default": false,
+      "when": "IPOG algorithm, Orthogonal-Array-based test selection, 2-way 100% coverage with minimum size"
+    },
+    {
+      "subcommand": "equiv-class",
+      "label": "Equivalence Class + BVA",
+      "default": false,
+      "when": "Myers equivalence partitioning + boundary value analysis (ON/OFF/IN/OUT points) for input-domain reduction"
+    },
+    {
+      "subcommand": "risk-cover",
+      "label": "Risk-Weighted Coverage",
+      "default": false,
+      "when": "RPN (Severity × Occurrence × Detection) weighted coverage, FMEA-linked prioritization, risk-based test selection"
+    }
   ]
 }

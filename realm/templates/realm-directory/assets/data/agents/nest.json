@@ -75,12 +75,47 @@
     "status": "generated"
   },
   "recipes": [
-    "audit",
-    "restructure",
-    "progressive",
-    "cache",
-    "naming",
-    "sharding",
-    "monorepo"
+    {
+      "subcommand": "audit",
+      "label": "Structure Audit",
+      "default": true,
+      "when": "LLM navigation efficiency audit of existing folder structure"
+    },
+    {
+      "subcommand": "restructure",
+      "label": "Restructure",
+      "default": false,
+      "when": "Restructuring for LLM optimization (includes git mv execution)"
+    },
+    {
+      "subcommand": "progressive",
+      "label": "Progressive Disclosure",
+      "default": false,
+      "when": "L1/L2/L3 progressive disclosure hierarchy design"
+    },
+    {
+      "subcommand": "cache",
+      "label": "Prompt Cache",
+      "default": false,
+      "when": "Prompt cache topology optimization and static-file-first ordering"
+    },
+    {
+      "subcommand": "naming",
+      "label": "Naming",
+      "default": false,
+      "when": "File and folder naming audit for LLM grep/glob discoverability — bias-correction for generic names (utils, helpers), domain-vs-type grouping, suffix conventions (.config, .test, .spec), case strategy (kebab/camel/Pascal), rename-impact analysis"
+    },
+    {
+      "subcommand": "sharding",
+      "label": "Sharding",
+      "default": false,
+      "when": "Large file sharding strategy — split CLAUDE.md / reference docs via @import, choose split axis (by domain / by phase / by frequency), preserve cache prefixes, design include manifest, validate cycle-free imports"
+    },
+    {
+      "subcommand": "monorepo",
+      "label": "Monorepo",
+      "default": false,
+      "when": "Monorepo workspace topology for LLM efficiency — package boundaries (apps/, packages/, libs/), per-workspace CLAUDE.md cascade, turborepo / nx / pnpm-workspace path optimization, shared rule deduplication"
+    }
   ]
 }

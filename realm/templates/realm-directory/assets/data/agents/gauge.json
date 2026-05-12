@@ -90,9 +90,35 @@
     "status": "generated"
   },
   "recipes": [
-    "audit",
-    "fix",
-    "research",
-    "checklist"
+    {
+      "subcommand": "audit",
+      "label": "SKILL Audit",
+      "default": true,
+      "when": "16-item checklist audit (PASS/PARTIAL/FAIL + P0-P3 classification)"
+    },
+    {
+      "subcommand": "fix",
+      "label": "Fix Violations",
+      "default": false,
+      "when": "Automated fix proposals for violations (Quest-exemplar snippet generation)"
+    },
+    {
+      "subcommand": "research",
+      "label": "Research Best Practices",
+      "default": false,
+      "when": "Research emerging best practices via web search (self-evolution EVOLVE phase)"
+    },
+    {
+      "subcommand": "checklist",
+      "label": "Checklist Application",
+      "default": false,
+      "when": "Evaluate a specific checklist item (single-item focus)"
+    },
+    {
+      "subcommand": "staleness",
+      "label": "Staleness Audit",
+      "default": false,
+      "when": "Detect outdated references in claude-skills itself (archived OSS / EOL runtimes / superseded versions / broken internal links / unannotated benchmarks / cross-skill drift). Different scope from `audit` — `audit` checks SKILL.md format; `staleness` checks whether the *facts cited* are still current."
+    }
   ]
 }

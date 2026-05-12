@@ -70,12 +70,47 @@
     "status": "generated"
   },
   "recipes": [
-    "vhs",
-    "terminalizer",
-    "asciinema",
-    "readme",
-    "optimize",
-    "theme",
-    "narration"
+    {
+      "subcommand": "vhs",
+      "label": "VHS",
+      "default": true,
+      "when": "VHS declarative CLI demo (.tape DSL)"
+    },
+    {
+      "subcommand": "terminalizer",
+      "label": "Terminalizer",
+      "default": false,
+      "when": "terminalizer interactive recording"
+    },
+    {
+      "subcommand": "asciinema",
+      "label": "Asciinema",
+      "default": false,
+      "when": "asciinema recording and live streaming"
+    },
+    {
+      "subcommand": "readme",
+      "label": "README GIF",
+      "default": false,
+      "when": "README GIF generation and optimization"
+    },
+    {
+      "subcommand": "optimize",
+      "label": "Optimize",
+      "default": false,
+      "when": "GIF / video size optimization — gifsicle palette + Bayer dither + lossy + frame-drop, ffmpeg 2-pass"
+    },
+    {
+      "subcommand": "theme",
+      "label": "Theme",
+      "default": false,
+      "when": "Terminal theme design for demos — font (JetBrains Mono / FiraCode), size scaling, color contrast, Dracula / Solarized / custom"
+    },
+    {
+      "subcommand": "narration",
+      "label": "Narration",
+      "default": false,
+      "when": "Audio narration overlay — TTS overlay on terminal recording, ffmpeg keystroke ducking, LUFS match"
+    }
   ]
 }

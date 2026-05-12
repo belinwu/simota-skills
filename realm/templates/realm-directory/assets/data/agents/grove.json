@@ -90,12 +90,47 @@
     "status": "generated"
   },
   "recipes": [
-    "audit",
-    "design",
-    "docs",
-    "migrate",
-    "monorepo",
-    "tests",
-    "scripts"
+    {
+      "subcommand": "audit",
+      "label": "Structure Audit",
+      "default": true,
+      "when": "Audit existing repo structure, detect anti-patterns"
+    },
+    {
+      "subcommand": "design",
+      "label": "New Structure Design",
+      "default": false,
+      "when": "Design a new directory structure"
+    },
+    {
+      "subcommand": "docs",
+      "label": "Docs Layout",
+      "default": false,
+      "when": "docs/ layout (PRD, specs, ADR)"
+    },
+    {
+      "subcommand": "migrate",
+      "label": "Migration Plan",
+      "default": false,
+      "when": "Migration plan for existing repo structure"
+    },
+    {
+      "subcommand": "monorepo",
+      "label": "Monorepo Structure",
+      "default": false,
+      "when": "Monorepo layout, tool selection (Nx/Turborepo/pnpm/Bazel/Lerna), package boundaries, polyrepo→monorepo migration"
+    },
+    {
+      "subcommand": "tests",
+      "label": "Tests Layout",
+      "default": false,
+      "when": "Tests/ directory layout (unit/integration/e2e split, mirror vs co-locate, fixtures/factories/helpers)"
+    },
+    {
+      "subcommand": "scripts",
+      "label": "Scripts Organization",
+      "default": false,
+      "when": "scripts/ directory layout (language-pick rubric, setup/build/release/dev split, naming, shebangs)"
+    }
   ]
 }

@@ -92,12 +92,47 @@
     "status": "generated"
   },
   "recipes": [
-    "guidelines",
-    "analyze",
-    "prompt",
-    "validate",
-    "variants",
-    "motion",
-    "rtl"
+    {
+      "subcommand": "guidelines",
+      "label": "Guidelines",
+      "default": true,
+      "when": "Generate Figma Make Guidelines.md packages"
+    },
+    {
+      "subcommand": "analyze",
+      "label": "Analyze",
+      "default": false,
+      "when": "Codebase analysis and token alignment review"
+    },
+    {
+      "subcommand": "prompt",
+      "label": "Prompt",
+      "default": false,
+      "when": "Staged prompt design for Make"
+    },
+    {
+      "subcommand": "validate",
+      "label": "Validate",
+      "default": false,
+      "when": "Scoring and validation of Make output"
+    },
+    {
+      "subcommand": "variants",
+      "label": "Variants",
+      "default": false,
+      "when": "Component variant specification for Make — variant matrix (size × state × color), Figma Variant property naming alignment, default variant designation, variant API in Guidelines.md, Make's \"1 variant per screen\" constraint workaround"
+    },
+    {
+      "subcommand": "motion",
+      "label": "Motion",
+      "default": false,
+      "when": "Motion specification for Make — Make's animation limitations, Framer Motion handoff strategy, transition-only fallback, micro-interaction documentation, prefers-reduced-motion respect"
+    },
+    {
+      "subcommand": "rtl",
+      "label": "RTL",
+      "default": false,
+      "when": "RTL / i18n design specification for Make — logical CSS properties (margin-inline, padding-block), text-direction handling, locale-aware formatting (Intl), font-fallback for non-Latin scripts, Guidelines.md i18n section template"
+    }
   ]
 }

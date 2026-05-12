@@ -8,24 +8,72 @@
   "description": "Usability improvement, interaction quality enhancement, cognitive load reduction, feedback design, and a11y compliance. Use when improving UX usability or interaction feel.",
   "tagline": "Reduce friction. Raise clarity.",
   "capabilities": [
-    { "key": "usability_improvement", "summary": "Reduce cognitive load and improve interaction quality" },
-    { "key": "accessibility_audit", "summary": "WCAG 2.2 Level AA compliance review and remediation" },
-    { "key": "interaction_design", "summary": "Improve feedback, affordance, and discoverability" },
-    { "key": "form_optimization", "summary": "Simplify forms with validation and progressive disclosure" },
-    { "key": "error_handling_ux", "summary": "Design user-friendly error states and recovery flows" },
-    { "key": "ai_interface_ux", "summary": "Review AI-powered UI elements for trust and accessibility" },
-    { "key": "calm_ui_evaluation", "summary": "Calm UI / Cognitive Clarity evaluation framework" }
+    {
+      "key": "usability_improvement",
+      "summary": "Reduce cognitive load and improve interaction quality"
+    },
+    {
+      "key": "accessibility_audit",
+      "summary": "WCAG 2.2 Level AA compliance review and remediation"
+    },
+    {
+      "key": "interaction_design",
+      "summary": "Improve feedback, affordance, and discoverability"
+    },
+    {
+      "key": "form_optimization",
+      "summary": "Simplify forms with validation and progressive disclosure"
+    },
+    {
+      "key": "error_handling_ux",
+      "summary": "Design user-friendly error states and recovery flows"
+    },
+    {
+      "key": "ai_interface_ux",
+      "summary": "Review AI-powered UI elements for trust and accessibility"
+    },
+    {
+      "key": "calm_ui_evaluation",
+      "summary": "Calm UI / Cognitive Clarity evaluation framework"
+    }
   ],
   "collaboration": {
-    "input": ["vision", "echo", "researcher", "warden"],
-    "output": ["artisan", "flow", "muse", "prose", "canon", "voyager"]
+    "input": [
+      "vision",
+      "echo",
+      "researcher",
+      "warden"
+    ],
+    "output": [
+      "artisan",
+      "flow",
+      "muse",
+      "prose",
+      "canon",
+      "voyager"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "marketing", "level": "H" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +82,66 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["audit", "form", "error", "a11y"]
+  "recipes": [
+    {
+      "subcommand": "usability",
+      "label": "Usability Evaluation",
+      "default": true,
+      "when": "Comprehensive UI/UX usability evaluation"
+    },
+    {
+      "subcommand": "cognitive",
+      "label": "Cognitive Load",
+      "default": false,
+      "when": "Cognitive load and information design analysis"
+    },
+    {
+      "subcommand": "feedback",
+      "label": "Feedback Design",
+      "default": false,
+      "when": "Feedback and microinteraction design"
+    },
+    {
+      "subcommand": "a11y",
+      "label": "Accessibility",
+      "default": false,
+      "when": "Accessibility and WCAG compliance evaluation"
+    },
+    {
+      "subcommand": "keyboard",
+      "label": "Keyboard Navigation",
+      "default": false,
+      "when": "Tab order, focus management, shortcut systems, roving tabindex, focus trap"
+    },
+    {
+      "subcommand": "mobile",
+      "label": "Mobile Touch",
+      "default": false,
+      "when": "Thumb zone, tap targets, gestures, haptics, safe area, keyboard avoidance"
+    },
+    {
+      "subcommand": "forms",
+      "label": "Forms UX",
+      "default": false,
+      "when": "Field order, validation timing, error voice, multi-step, autofill cooperation"
+    },
+    {
+      "subcommand": "error",
+      "label": "Error States",
+      "default": false,
+      "when": "Error state UX — message hierarchy, recovery paths, inline vs toast vs page, retry/undo, server-error handling"
+    },
+    {
+      "subcommand": "empty",
+      "label": "Empty States",
+      "default": false,
+      "when": "Empty state design — first-use, zero-results, post-clear, post-error variants with onboarding cues and templates"
+    },
+    {
+      "subcommand": "loading",
+      "label": "Loading States",
+      "default": false,
+      "when": "Loading state UX — skeleton, spinner, progressive, optimistic UI, perceived-speed strategy by latency band"
+    }
+  ]
 }

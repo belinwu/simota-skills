@@ -86,13 +86,53 @@
     "status": "generated"
   },
   "recipes": [
-    "algorithm",
-    "key",
-    "e2ee",
-    "tls",
-    "signature",
-    "password",
-    "kms",
-    "pqc"
+    {
+      "subcommand": "algorithm",
+      "label": "Algorithm Selection",
+      "default": true,
+      "when": "Crypto algorithm selection, parameter spec, anti-pattern detection"
+    },
+    {
+      "subcommand": "key",
+      "label": "Key Management",
+      "default": false,
+      "when": "General key-management strategy (hierarchy, rotation policy, ceremony, derivation, revocation, destruction)"
+    },
+    {
+      "subcommand": "e2ee",
+      "label": "E2EE Design",
+      "default": false,
+      "when": "End-to-end encryption architecture design"
+    },
+    {
+      "subcommand": "tls",
+      "label": "TLS Configuration",
+      "default": false,
+      "when": "TLS/mTLS configuration, cipher suite selection, certificate management"
+    },
+    {
+      "subcommand": "signature",
+      "label": "Signature Scheme",
+      "default": false,
+      "when": "Digital signature, JWT/JWE/JWS scheme design"
+    },
+    {
+      "subcommand": "password",
+      "label": "Password Hashing",
+      "default": false,
+      "when": "Password-hashing scheme design (Argon2id / bcrypt / scrypt selection, OWASP 2024 parameters, pepper, bcrypt→Argon2id migration)"
+    },
+    {
+      "subcommand": "kms",
+      "label": "KMS Integration",
+      "default": false,
+      "when": "KMS-service integration pattern (AWS KMS / GCP KMS / Azure Key Vault / Vault Transit), envelope encryption, data-key caching, HSM-backed CMK"
+    },
+    {
+      "subcommand": "pqc",
+      "label": "PQC Migration",
+      "default": false,
+      "when": "Classical-to-post-quantum migration plan, hybrid schemes (X25519+ML-KEM), FIPS 203/204/205 target selection, harvest-now-decrypt-later response"
+    }
   ]
 }

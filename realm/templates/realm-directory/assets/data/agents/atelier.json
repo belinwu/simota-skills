@@ -97,9 +97,29 @@
     "status": "generated"
   },
   "recipes": [
-    "pipeline",
-    "extract",
-    "persist",
-    "assets"
+    {
+      "subcommand": "pipeline",
+      "label": "Full Pipeline",
+      "default": true,
+      "when": "Full design→code loop (Vision → Muse → Forge → Artisan → Showcase → Canvas)"
+    },
+    {
+      "subcommand": "extract",
+      "label": "Design Extract",
+      "default": false,
+      "when": "Design extraction only (Frame → Muse token normalization)"
+    },
+    {
+      "subcommand": "persist",
+      "label": "Persist Design System",
+      "default": false,
+      "when": "Persist design system (.agents/design-system/{project}.json)"
+    },
+    {
+      "subcommand": "assets",
+      "label": "Asset Generation",
+      "default": false,
+      "when": "Asset generation (parallel rollout of slides, visuals, prototypes)"
+    }
   ]
 }

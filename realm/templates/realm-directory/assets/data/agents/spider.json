@@ -93,12 +93,47 @@
     "status": "generated"
   },
   "recipes": [
-    "topology",
-    "frontier",
-    "politeness",
-    "compliance",
-    "extraction",
-    "dedup",
-    "monitoring"
+    {
+      "subcommand": "topology",
+      "label": "Distributed Topology",
+      "default": true,
+      "when": "End-to-end distributed crawler topology design (Coordinator/Worker/Frontier)"
+    },
+    {
+      "subcommand": "frontier",
+      "label": "URL Frontier",
+      "default": false,
+      "when": "URL frontier design (deduplication, priority queue, re-crawl scheduling)"
+    },
+    {
+      "subcommand": "politeness",
+      "label": "Politeness Control",
+      "default": false,
+      "when": "Politeness (rate limit) control, Crawl-Delay, adaptive backoff"
+    },
+    {
+      "subcommand": "compliance",
+      "label": "Compliance",
+      "default": false,
+      "when": "robots.txt / legal compliance, AI Act conformance, jurisdictional risk"
+    },
+    {
+      "subcommand": "extraction",
+      "label": "Extraction Pipeline",
+      "default": false,
+      "when": "HTML/JS rendering choice, parser strategy (DOM / XPath / CSS / LLM), structured extraction, near-dup (SimHash/MinHash)"
+    },
+    {
+      "subcommand": "dedup",
+      "label": "Deduplication Strategy",
+      "default": false,
+      "when": "URL canonicalization, Bloom/Cuckoo/HyperLogLog, content-hash dedup, near-dup clustering"
+    },
+    {
+      "subcommand": "monitoring",
+      "label": "Crawl Monitoring",
+      "default": false,
+      "when": "Crawl observability — fetch-rate, frontier depth, fetch-error taxonomy, cost-per-URL, graceful shutdown/resume"
+    }
   ]
 }

@@ -89,9 +89,29 @@
     "status": "generated"
   },
   "recipes": [
-    "prune",
-    "cut",
-    "question",
-    "simplify"
+    {
+      "subcommand": "prune",
+      "label": "Prune",
+      "default": true,
+      "when": "Pruning proposals for unnecessary elements (comprehensive)"
+    },
+    {
+      "subcommand": "cut",
+      "label": "Scope Cut",
+      "default": false,
+      "when": "Scope cut proposals"
+    },
+    {
+      "subcommand": "question",
+      "label": "Question Justification",
+      "default": false,
+      "when": "Question the justification"
+    },
+    {
+      "subcommand": "simplify",
+      "label": "Simplify",
+      "default": false,
+      "when": "Complexity reduction"
+    }
   ]
 }

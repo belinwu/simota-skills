@@ -87,12 +87,47 @@
     "status": "generated"
   },
   "recipes": [
-    "isolation",
-    "rls",
-    "routing",
-    "scale",
-    "migration",
-    "provisioning",
-    "quota"
+    {
+      "subcommand": "isolation",
+      "label": "Isolation Strategy",
+      "default": true,
+      "when": "Tenant isolation strategy design (DB / schema / row-level comparison)"
+    },
+    {
+      "subcommand": "rls",
+      "label": "RLS Design",
+      "default": false,
+      "when": "Row Level Security policy design and tenant context propagation"
+    },
+    {
+      "subcommand": "routing",
+      "label": "Tenant Routing",
+      "default": false,
+      "when": "Tenant routing design (subdomain / header / path)"
+    },
+    {
+      "subcommand": "scale",
+      "label": "Scale Design",
+      "default": false,
+      "when": "Noisy-neighbor protection, resource limits, and migration planning"
+    },
+    {
+      "subcommand": "migration",
+      "label": "Tenant Migration",
+      "default": false,
+      "when": "Cross-shard rebalancing, isolation-level upgrade, zero-downtime tenant moves"
+    },
+    {
+      "subcommand": "provisioning",
+      "label": "Tenant Provisioning",
+      "default": false,
+      "when": "Tenant lifecycle, IaC-driven onboarding, idempotent re-provisioning, deprovisioning + retention"
+    },
+    {
+      "subcommand": "quota",
+      "label": "Tenant Quota",
+      "default": false,
+      "when": "Per-tenant rate limits, fair-share scheduling, soft/hard quota, burst budgets, overage handoff"
+    }
   ]
 }

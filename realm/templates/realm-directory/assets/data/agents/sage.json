@@ -86,10 +86,35 @@
     "status": "generated"
   },
   "recipes": [
-    "1on1",
-    "group",
-    "triage",
-    "retro",
-    "pitch"
+    {
+      "subcommand": "1on1",
+      "label": "Single Session",
+      "default": true,
+      "when": "One founder, one session"
+    },
+    {
+      "subcommand": "group",
+      "label": "Group Session",
+      "default": false,
+      "when": "Simulate multi-founder group office hours"
+    },
+    {
+      "subcommand": "triage",
+      "label": "Emergency Triage",
+      "default": false,
+      "when": "Fast unblock when founder is stuck (≤5 exchanges)"
+    },
+    {
+      "subcommand": "retro",
+      "label": "Retrospective",
+      "default": false,
+      "when": "Postmortem on a recent decision or outcome"
+    },
+    {
+      "subcommand": "pitch",
+      "label": "Pitch Critique",
+      "default": false,
+      "when": "Critique elevator / Demo Day / investor Q&A pitch material"
+    }
   ]
 }

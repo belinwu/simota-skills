@@ -8,24 +8,71 @@
   "description": "Define and manage design tokens, apply token systems to existing codebases, and build design system foundations. Covers spacing, color, typography, dark mode, cross-platform output.",
   "tagline": "Stable semantics over one-off styling.",
   "capabilities": [
-    { "key": "token_definition", "summary": "Define and manage design tokens (color, spacing, typography, shadow)" },
-    { "key": "token_application", "summary": "Apply token systems to existing codebases" },
-    { "key": "design_system_foundation", "summary": "Build foundational design system token architecture" },
-    { "key": "dark_mode", "summary": "Design and implement dark mode token strategies" },
-    { "key": "dtcg_compliance", "summary": "Validate and convert tokens to W3C DTCG spec format" },
-    { "key": "wide_gamut_color", "summary": "Define tokens in Display P3, OKLab, OKLCH for wide-gamut displays" },
-    { "key": "css_color_functions", "summary": "color-mix, light-dark, relative color syntax for runtime token derivation" }
+    {
+      "key": "token_definition",
+      "summary": "Define and manage design tokens (color, spacing, typography, shadow)"
+    },
+    {
+      "key": "token_application",
+      "summary": "Apply token systems to existing codebases"
+    },
+    {
+      "key": "design_system_foundation",
+      "summary": "Build foundational design system token architecture"
+    },
+    {
+      "key": "dark_mode",
+      "summary": "Design and implement dark mode token strategies"
+    },
+    {
+      "key": "dtcg_compliance",
+      "summary": "Validate and convert tokens to W3C DTCG spec format"
+    },
+    {
+      "key": "wide_gamut_color",
+      "summary": "Define tokens in Display P3, OKLab, OKLCH for wide-gamut displays"
+    },
+    {
+      "key": "css_color_functions",
+      "summary": "color-mix, light-dark, relative color syntax for runtime token derivation"
+    }
   ],
   "collaboration": {
-    "input": ["vision", "frame", "palette", "pixel"],
-    "output": ["artisan", "loom", "flow", "showcase", "polyglot"]
+    "input": [
+      "vision",
+      "frame",
+      "palette",
+      "pixel"
+    ],
+    "output": [
+      "artisan",
+      "loom",
+      "flow",
+      "showcase",
+      "polyglot"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "marketing", "level": "M" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +81,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["define", "apply", "dark", "audit"]
+  "recipes": [
+    {
+      "subcommand": "tokens",
+      "label": "Token System",
+      "default": true,
+      "when": "Design token definition and structural design"
+    },
+    {
+      "subcommand": "apply",
+      "label": "Apply Tokens",
+      "default": false,
+      "when": "Token application to existing UI"
+    },
+    {
+      "subcommand": "theme",
+      "label": "Theme Design",
+      "default": false,
+      "when": "Light/Dark theme design"
+    },
+    {
+      "subcommand": "typography",
+      "label": "Typography",
+      "default": false,
+      "when": "Typography selection and scale design"
+    },
+    {
+      "subcommand": "spacing",
+      "label": "Spacing & Layout",
+      "default": false,
+      "when": "Spacing and grid system design"
+    },
+    {
+      "subcommand": "motion",
+      "label": "Motion Tokens",
+      "default": false,
+      "when": "Duration, easing, spring tokens with reduced-motion fallback"
+    },
+    {
+      "subcommand": "elevation",
+      "label": "Elevation Tokens",
+      "default": false,
+      "when": "Elevation/shadow tokens with dark-mode inversion and semantic surface tiers"
+    },
+    {
+      "subcommand": "radius",
+      "label": "Radius Tokens",
+      "default": false,
+      "when": "Border-radius scale, corner-set tokens, and brand-personality spectrum"
+    }
+  ]
 }

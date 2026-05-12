@@ -90,12 +90,47 @@
     "status": "generated"
   },
   "recipes": [
-    "sigma",
-    "yara",
-    "coverage",
-    "hunt",
-    "snort",
-    "playbook",
-    "ioc"
+    {
+      "subcommand": "sigma",
+      "label": "Sigma Rules",
+      "default": true,
+      "when": "Sigma v2.1+ detection rule design, ATT&CK mapping"
+    },
+    {
+      "subcommand": "yara",
+      "label": "YARA Rules",
+      "default": false,
+      "when": "YARA malware/IoC file and memory pattern rules"
+    },
+    {
+      "subcommand": "coverage",
+      "label": "Detection Coverage",
+      "default": false,
+      "when": "MITRE ATT&CK coverage mapping, gap analysis"
+    },
+    {
+      "subcommand": "hunt",
+      "label": "Threat Hunting",
+      "default": false,
+      "when": "Hypothesis-driven threat hunting campaign design"
+    },
+    {
+      "subcommand": "snort",
+      "label": "Snort / Suricata Rules",
+      "default": false,
+      "when": "Network-layer detection rule authoring (flow/dns/tls/file keywords, EVE JSON, ET Open management)"
+    },
+    {
+      "subcommand": "playbook",
+      "label": "SOC Playbook",
+      "default": false,
+      "when": "IR runbook authoring for phishing/credential/ransomware/BEC with SOAR + D3FEND mapping"
+    },
+    {
+      "subcommand": "ioc",
+      "label": "IoC / Threat Intel",
+      "default": false,
+      "when": "STIX 2.1 / TAXII 2.1 / MISP indicator lifecycle, feed dedup, and FP handling"
+    }
   ]
 }

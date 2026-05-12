@@ -8,23 +8,68 @@
   "description": "Production frontend craftsman for React/Vue/Svelte. Handles hooks design, state management, Server Components, form handling, and data fetching. Converts Forge prototypes to production-quality code.",
   "tagline": "Prototypes promise. Production delivers.",
   "capabilities": [
-    { "key": "react_production", "summary": "React 19 hooks, RSC streaming, React Compiler v1.0 auto-memoization" },
-    { "key": "vue_production", "summary": "Vue 3.5/3.6 Composition API, Vapor Mode, Pinia state management" },
-    { "key": "svelte_production", "summary": "Svelte 5 Runes ($state/$derived/$effect), Snippets, stores" },
-    { "key": "form_handling", "summary": "React Hook Form + Zod with accessible error display" },
-    { "key": "data_fetching", "summary": "TanStack Query, SWR, server-side fetching with caching" },
-    { "key": "modern_css", "summary": "@scope, Anchor Positioning, Popover API, text-wrap balance/pretty" },
-    { "key": "ui_performance", "summary": "Memoization, list virtualization, dynamic import code-splitting" }
+    {
+      "key": "react_production",
+      "summary": "React 19 hooks, RSC streaming, React Compiler v1.0 auto-memoization"
+    },
+    {
+      "key": "vue_production",
+      "summary": "Vue 3.5/3.6 Composition API, Vapor Mode, Pinia state management"
+    },
+    {
+      "key": "svelte_production",
+      "summary": "Svelte 5 Runes ($state/$derived/$effect), Snippets, stores"
+    },
+    {
+      "key": "form_handling",
+      "summary": "React Hook Form + Zod with accessible error display"
+    },
+    {
+      "key": "data_fetching",
+      "summary": "TanStack Query, SWR, server-side fetching with caching"
+    },
+    {
+      "key": "modern_css",
+      "summary": "@scope, Anchor Positioning, Popover API, text-wrap balance/pretty"
+    },
+    {
+      "key": "ui_performance",
+      "summary": "Memoization, list virtualization, dynamic import code-splitting"
+    }
   ],
   "collaboration": {
-    "input": ["forge", "vision", "muse", "palette", "lens"],
-    "output": ["builder", "showcase", "radar", "flow", "quill"]
+    "input": [
+      "forge",
+      "vision",
+      "muse",
+      "palette",
+      "lens"
+    ],
+    "output": [
+      "builder",
+      "showcase",
+      "radar",
+      "flow",
+      "quill"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "mobile", "level": "H" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -33,5 +78,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["component", "form", "fetch", "rsc"]
+  "recipes": [
+    {
+      "subcommand": "component",
+      "label": "Component Build",
+      "default": true,
+      "when": "UI component implementation (props/events/slots)"
+    },
+    {
+      "subcommand": "state",
+      "label": "State Management",
+      "default": false,
+      "when": "State management design (Context, Zustand, Redux, Pinia, etc.)"
+    },
+    {
+      "subcommand": "form",
+      "label": "Form Handling",
+      "default": false,
+      "when": "Form implementation (validation, submission, errors)"
+    },
+    {
+      "subcommand": "fetch",
+      "label": "Data Fetching",
+      "default": false,
+      "when": "Data fetching layer (SWR, TanStack Query, Server Actions)"
+    },
+    {
+      "subcommand": "rsc",
+      "label": "Server Components",
+      "default": false,
+      "when": "React Server Components / Nuxt server routes"
+    },
+    {
+      "subcommand": "a11y",
+      "label": "Accessibility Hardening",
+      "default": false,
+      "when": "WCAG 2.2 AA hardening for an existing component/page (ARIA, keyboard, focus, SR)"
+    },
+    {
+      "subcommand": "i18n",
+      "label": "Internationalization",
+      "default": false,
+      "when": "Component-level i18n wiring (t(), ICU, Intl, RTL) in a production frontend file"
+    },
+    {
+      "subcommand": "perf",
+      "label": "UI Performance",
+      "default": false,
+      "when": "Frontend-component tuning (memoization, virtualization, dynamic import, bundle audit)"
+    }
+  ]
 }

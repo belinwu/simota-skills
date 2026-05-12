@@ -79,13 +79,53 @@
     "status": "generated"
   },
   "recipes": [
-    "note",
-    "zenn",
-    "qiita",
-    "devto",
-    "series",
-    "headline",
-    "repurpose",
-    "interview"
+    {
+      "subcommand": "note",
+      "label": "note Article",
+      "default": true,
+      "when": "note long-form Japanese articles, magazine series episode authoring"
+    },
+    {
+      "subcommand": "zenn",
+      "label": "Zenn Article",
+      "default": false,
+      "when": "Zenn articles for engineers, topic and emoji configuration"
+    },
+    {
+      "subcommand": "qiita",
+      "label": "Qiita Article",
+      "default": false,
+      "when": "Qiita tech tips, tag strategy, LGTM optimization"
+    },
+    {
+      "subcommand": "devto",
+      "label": "dev.to Article",
+      "default": false,
+      "when": "dev.to articles for a global English audience, cover image and tag configuration"
+    },
+    {
+      "subcommand": "series",
+      "label": "Series Design",
+      "default": false,
+      "when": "Series design, index articles, cross-links, and episode management"
+    },
+    {
+      "subcommand": "headline",
+      "label": "Headline",
+      "default": false,
+      "when": "Title and headline patterns — CTR-tested formulas, number/curiosity/promise/contrarian variants, platform-specific length tuning"
+    },
+    {
+      "subcommand": "repurpose",
+      "label": "Repurpose",
+      "default": false,
+      "when": "Cross-platform content repurposing — canonical → note/Zenn/Qiita/dev.to/X-thread/LinkedIn variants, atomic asset extraction"
+    },
+    {
+      "subcommand": "interview",
+      "label": "Interview",
+      "default": false,
+      "when": "Interview-format article authoring — Q&A reshape from raw transcripts, podcast-to-article adaptation, lightning-talk to long-form"
+    }
   ]
 }

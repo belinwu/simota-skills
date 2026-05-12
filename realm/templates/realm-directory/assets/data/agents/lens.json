@@ -92,12 +92,47 @@
     "status": "generated"
   },
   "recipes": [
-    "map",
-    "discover",
-    "trace",
-    "responsibility",
-    "dependency",
-    "hotspot",
-    "evolution"
+    {
+      "subcommand": "map",
+      "label": "Structure Map",
+      "default": true,
+      "when": "Structure mapping (overview, module boundaries and responsibility analysis)"
+    },
+    {
+      "subcommand": "discover",
+      "label": "Feature Discovery",
+      "default": false,
+      "when": "Feature discovery (\"does X exist?\")"
+    },
+    {
+      "subcommand": "trace",
+      "label": "Data Flow Trace",
+      "default": false,
+      "when": "Data flow trace (origin → transformation → destination)"
+    },
+    {
+      "subcommand": "responsibility",
+      "label": "Module Responsibility",
+      "default": false,
+      "when": "Module responsibility analysis (cognitive complexity, comprehension debt evaluation)"
+    },
+    {
+      "subcommand": "dependency",
+      "label": "Dependency",
+      "default": false,
+      "when": "Deep dependency graph analysis — fan-in/fan-out per module, transitive closure, circular dependencies, dependency direction violations (UI → DB), package-boundary leakage detection"
+    },
+    {
+      "subcommand": "hotspot",
+      "label": "Hotspot",
+      "default": false,
+      "when": "Change-frequency hotspot identification — git log churn × cognitive complexity heatmap, coupling between churn and bug reports, \"hot+complex\" risk ranking for refactor prioritization"
+    },
+    {
+      "subcommand": "evolution",
+      "label": "Evolution",
+      "default": false,
+      "when": "Code evolution tracing via git history — file lifespan, author concentration (bus factor), abstraction churn, conceptual drift between commits, growth/decay trajectory of modules"
+    }
   ]
 }

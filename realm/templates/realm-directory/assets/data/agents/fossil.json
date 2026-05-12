@@ -85,12 +85,47 @@
     "status": "generated"
   },
   "recipes": [
-    "extract",
-    "assess",
-    "document",
-    "archive",
-    "bizrule",
-    "tribal",
-    "runbook"
+    {
+      "subcommand": "extract",
+      "label": "Extract Rules",
+      "default": true,
+      "when": "Extract implicit business rules, generate rule catalog"
+    },
+    {
+      "subcommand": "assess",
+      "label": "Assess Risk",
+      "default": false,
+      "when": "Migration risk assessment, dependency map"
+    },
+    {
+      "subcommand": "document",
+      "label": "Document",
+      "default": false,
+      "when": "Convert rules to specifications (prepare Scribe handoff)"
+    },
+    {
+      "subcommand": "archive",
+      "label": "Archive",
+      "default": false,
+      "when": "Dead code analysis, dormant logic investigation"
+    },
+    {
+      "subcommand": "bizrule",
+      "label": "Business Rule Mining",
+      "default": false,
+      "when": "DRBM: condition/action/exception triple extraction, decision-table-ready rule registry"
+    },
+    {
+      "subcommand": "tribal",
+      "label": "Tribal Knowledge Interview",
+      "default": false,
+      "when": "Capture \"why this exists\" from original implementers and retired engineers; Chesterton's fence application"
+    },
+    {
+      "subcommand": "runbook",
+      "label": "Runbook Codification",
+      "default": false,
+      "when": "Convert undocumented operational logic into versioned runbooks with freshness metrics"
+    }
   ]
 }

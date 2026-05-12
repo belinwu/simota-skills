@@ -84,12 +84,47 @@
     "status": "generated"
   },
   "recipes": [
-    "webhook",
-    "bot",
-    "websocket",
-    "adapter",
-    "sse",
-    "queue",
-    "rate"
+    {
+      "subcommand": "webhook",
+      "label": "Webhook Handler",
+      "default": true,
+      "when": "Webhook receive handler design (HMAC verification, idempotency)"
+    },
+    {
+      "subcommand": "bot",
+      "label": "Bot Framework",
+      "default": false,
+      "when": "Bot command framework and conversation state machine design"
+    },
+    {
+      "subcommand": "websocket",
+      "label": "WebSocket Server",
+      "default": false,
+      "when": "WebSocket server and real-time communication design"
+    },
+    {
+      "subcommand": "adapter",
+      "label": "Channel Adapter",
+      "default": false,
+      "when": "Channel adapters (Slack/Discord/LINE normalization)"
+    },
+    {
+      "subcommand": "sse",
+      "label": "SSE Streaming",
+      "default": false,
+      "when": "Server-Sent Events design with Last-Event-ID resume, heartbeat, and proxy-safe headers"
+    },
+    {
+      "subcommand": "queue",
+      "label": "Queue Integration",
+      "default": false,
+      "when": "Message-queue producer/consumer wiring (SQS/SNS/RabbitMQ/Kafka/NATS) with DLQ and idempotent consumers"
+    },
+    {
+      "subcommand": "rate",
+      "label": "Rate Limiting",
+      "default": false,
+      "when": "Rate limiting and backpressure for messaging (token/leaky bucket, 429/Retry-After, per-tenant quotas)"
+    }
   ]
 }

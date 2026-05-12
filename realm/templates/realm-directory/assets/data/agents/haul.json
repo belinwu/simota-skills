@@ -93,11 +93,41 @@
     "status": "generated"
   },
   "recipes": [
-    "catalog",
-    "lookup",
-    "refresh",
-    "reverse",
-    "brand",
-    "audit"
+    {
+      "subcommand": "catalog",
+      "label": "Catalog",
+      "default": true,
+      "when": "Bulk product image collection from a SKU / JAN / name list"
+    },
+    {
+      "subcommand": "lookup",
+      "label": "Single Lookup",
+      "default": false,
+      "when": "One-off product image fetch by identifier or URL"
+    },
+    {
+      "subcommand": "refresh",
+      "label": "Refresh",
+      "default": false,
+      "when": "Re-fetch existing catalog images that fail quality / staleness gates"
+    },
+    {
+      "subcommand": "reverse",
+      "label": "Reverse",
+      "default": false,
+      "when": "Reverse image search starting from a sample image to find the product canonical source"
+    },
+    {
+      "subcommand": "brand",
+      "label": "Brand Site",
+      "default": false,
+      "when": "Direct manufacturer / brand site collection (canonical-source preferred path)"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Audit",
+      "default": false,
+      "when": "License / provenance audit of an existing image set without new fetches"
+    }
   ]
 }

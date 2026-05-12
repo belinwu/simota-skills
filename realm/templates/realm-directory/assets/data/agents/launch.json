@@ -91,12 +91,47 @@
     "status": "generated"
   },
   "recipes": [
-    "plan",
-    "changelog",
-    "notes",
-    "rollback",
-    "flag",
-    "hotfix",
-    "canary"
+    {
+      "subcommand": "plan",
+      "label": "Release Plan",
+      "default": true,
+      "when": "Release planning and strategy"
+    },
+    {
+      "subcommand": "changelog",
+      "label": "Changelog",
+      "default": false,
+      "when": "CHANGELOG generation and updates"
+    },
+    {
+      "subcommand": "notes",
+      "label": "Release Notes",
+      "default": false,
+      "when": "User-facing release notes"
+    },
+    {
+      "subcommand": "rollback",
+      "label": "Rollback Plan",
+      "default": false,
+      "when": "Rollback planning and runbook"
+    },
+    {
+      "subcommand": "flag",
+      "label": "Feature Flag",
+      "default": false,
+      "when": "Feature flag management and staged rollout design"
+    },
+    {
+      "subcommand": "hotfix",
+      "label": "Hotfix Release",
+      "default": false,
+      "when": "Emergency patch release (shortened CI / hotfix branch / 2h SLA / rollback bundled / backport to main)"
+    },
+    {
+      "subcommand": "canary",
+      "label": "Canary Rollout",
+      "default": false,
+      "when": "Staged traffic rollout (1%->10%->50%->100%) with automatic guardrails and abort conditions"
+    }
   ]
 }

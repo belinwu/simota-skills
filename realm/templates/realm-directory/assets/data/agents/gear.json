@@ -92,13 +92,53 @@
     "status": "generated"
   },
   "recipes": [
-    "deps",
-    "ci",
-    "docker",
-    "logs",
-    "health",
-    "alert",
-    "secret",
-    "k8s"
+    {
+      "subcommand": "deps",
+      "label": "Dependency Management",
+      "default": true,
+      "when": "Dependency management and upgrades"
+    },
+    {
+      "subcommand": "ci",
+      "label": "CI/CD Config",
+      "default": false,
+      "when": "CI/CD pipeline configuration"
+    },
+    {
+      "subcommand": "docker",
+      "label": "Docker Setup",
+      "default": false,
+      "when": "Dockerfile / docker-compose"
+    },
+    {
+      "subcommand": "logs",
+      "label": "Logging Setup",
+      "default": false,
+      "when": "Logging configuration (structured logs, etc.)"
+    },
+    {
+      "subcommand": "health",
+      "label": "Health Checks",
+      "default": false,
+      "when": "Health check design"
+    },
+    {
+      "subcommand": "alert",
+      "label": "Alert Configuration",
+      "default": false,
+      "when": "Alertmanager rules, PagerDuty / Opsgenie routing, severity taxonomy, alert-fatigue mitigation"
+    },
+    {
+      "subcommand": "secret",
+      "label": "Secrets Management",
+      "default": false,
+      "when": "Vault / AWS Secrets Manager / Doppler, .env separation, rotation, leak prevention, Kubernetes sealed/external-secrets"
+    },
+    {
+      "subcommand": "k8s",
+      "label": "Kubernetes Config",
+      "default": false,
+      "when": "Deployment / Service / Ingress, Helm, Kustomize, HPA/VPA, PDB, NetworkPolicy, requests/limits tuning"
+    }
   ]
 }

@@ -79,12 +79,47 @@
     "status": "generated"
   },
   "recipes": [
-    "propose",
-    "morning",
-    "weekend",
-    "brief",
-    "stack",
-    "constraint",
-    "viral"
+    {
+      "subcommand": "propose",
+      "label": "Propose Idea",
+      "default": true,
+      "when": "Standard single-idea proposal (8-section brief)"
+    },
+    {
+      "subcommand": "morning",
+      "label": "Morning Ritual",
+      "default": false,
+      "when": "Morning routine use — short kickoff phrasing"
+    },
+    {
+      "subcommand": "weekend",
+      "label": "Weekend Hack",
+      "default": false,
+      "when": "Weekend hacks — prioritize practical/gadget axes"
+    },
+    {
+      "subcommand": "brief",
+      "label": "Full Brief",
+      "default": false,
+      "when": "Output the 8-section brief at maximum density"
+    },
+    {
+      "subcommand": "stack",
+      "label": "Stack Rotation",
+      "default": false,
+      "when": "Tech-stack-driven idea — pick an underused language / runtime / paradigm (Rust / Bun / WebGPU / DuckDB / Tauri etc.) and shape an idea that exercises its unique strength"
+    },
+    {
+      "subcommand": "constraint",
+      "label": "Constraint Mode",
+      "default": false,
+      "when": "Constraint-driven idea — single-file / no-deps / offline-only / single-binary / 100-LOC / keyboard-only — the constraint is the headline and shapes the engineering aesthetic"
+    },
+    {
+      "subcommand": "viral",
+      "label": "Viral Artifact",
+      "default": false,
+      "when": "Shareability-first idea — first-run produces a screenshot / GIF / repo README graphic / tweet-line worth posting; the demo asset is part of the spec"
+    }
   ]
 }

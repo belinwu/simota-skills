@@ -8,24 +8,78 @@
   "description": "Proposes new features leveraging existing data/logic as Markdown specifications. Use when brainstorming new features, product planning, or feature proposals are needed. Does not write code.",
   "tagline": "Features hide in your data.",
   "capabilities": [
-    { "key": "feature_ideation", "summary": "Generate feature proposals from existing data and logic" },
-    { "key": "opportunity_analysis", "summary": "Identify feature opportunities from usage patterns" },
-    { "key": "proposal_writing", "summary": "Write structured feature specification documents" },
-    { "key": "feasibility_assessment", "summary": "Assess technical and business feasibility" },
-    { "key": "prioritization", "summary": "MoSCoW/RICE frameworks with anti-pattern guardrails" },
-    { "key": "outcome_framing", "summary": "Frame proposals as outcomes using Opportunity Solution Trees" },
-    { "key": "fail_condition_design", "summary": "Define kill criteria and fail conditions for hypothesis-driven validation" }
+    {
+      "key": "feature_ideation",
+      "summary": "Generate feature proposals from existing data and logic"
+    },
+    {
+      "key": "opportunity_analysis",
+      "summary": "Identify feature opportunities from usage patterns"
+    },
+    {
+      "key": "proposal_writing",
+      "summary": "Write structured feature specification documents"
+    },
+    {
+      "key": "feasibility_assessment",
+      "summary": "Assess technical and business feasibility"
+    },
+    {
+      "key": "prioritization",
+      "summary": "MoSCoW/RICE frameworks with anti-pattern guardrails"
+    },
+    {
+      "key": "outcome_framing",
+      "summary": "Frame proposals as outcomes using Opportunity Solution Trees"
+    },
+    {
+      "key": "fail_condition_design",
+      "summary": "Define kill criteria and fail conditions for hypothesis-driven validation"
+    }
   ],
   "collaboration": {
-    "input": ["pulse", "voice", "compete", "retain", "cast", "lens", "flux", "void", "magi"],
-    "output": ["scribe", "builder", "artisan", "accord", "quest", "forge", "magi"]
+    "input": [
+      "pulse",
+      "voice",
+      "compete",
+      "retain",
+      "cast",
+      "lens",
+      "flux",
+      "void",
+      "magi"
+    ],
+    "output": [
+      "scribe",
+      "builder",
+      "artisan",
+      "accord",
+      "quest",
+      "forge",
+      "magi"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "M" },
-    { "project": "marketing", "level": "H" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +88,48 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["propose", "opportunity", "prioritize", "frame"]
+  "recipes": [
+    {
+      "subcommand": "propose",
+      "label": "Propose",
+      "default": true,
+      "when": "New feature proposal (generate one RFC)"
+    },
+    {
+      "subcommand": "plan",
+      "label": "Plan",
+      "default": false,
+      "when": "Prioritization and backlog scoring"
+    },
+    {
+      "subcommand": "brainstorm",
+      "label": "Brainstorm",
+      "default": false,
+      "when": "Divergent candidate generation and opportunity mining"
+    },
+    {
+      "subcommand": "refine",
+      "label": "Refine",
+      "default": false,
+      "when": "Refine existing proposals, add hypotheses and fail conditions"
+    },
+    {
+      "subcommand": "opportunity",
+      "label": "Opportunity",
+      "default": false,
+      "when": "Opportunity sizing: TAM/SAM/SOM, reach × impact × confidence, WTP signals, OST mapping"
+    },
+    {
+      "subcommand": "kill",
+      "label": "Kill",
+      "default": false,
+      "when": "Kill-criteria authoring and sunset decisions (pre-commit thresholds, migration-off, sunset communication)"
+    },
+    {
+      "subcommand": "retro",
+      "label": "Retro",
+      "default": false,
+      "when": "Post-launch feature retrospective: adopted/iterated/discarded, decision vs outcome quality, feedback into discovery"
+    }
+  ]
 }

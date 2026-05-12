@@ -8,24 +8,73 @@
   "description": "Variable name improvement, function extraction, magic number constants, dead code removal, and code review. For refactoring and PR review — does not change behavior.",
   "tagline": "Behavior unchanged. Meaning sharpened.",
   "capabilities": [
-    { "key": "variable_renaming", "summary": "Descriptive naming and intent-revealing identifiers" },
-    { "key": "function_extraction", "summary": "Long method decomposition with single responsibility" },
-    { "key": "magic_number_extraction", "summary": "Constants, enums, configuration values" },
-    { "key": "dead_code_removal", "summary": "Unused imports, unreachable code, retired feature flags" },
-    { "key": "consistency_audit", "summary": "Cross-file pattern standardization" },
-    { "key": "logic_simplification", "summary": "Collapse verbose conditionals while preserving behavior" },
-    { "key": "guard_clause_conversion", "summary": "Convert nested conditionals to early returns" }
+    {
+      "key": "variable_renaming",
+      "summary": "Descriptive naming and intent-revealing identifiers"
+    },
+    {
+      "key": "function_extraction",
+      "summary": "Long method decomposition with single responsibility"
+    },
+    {
+      "key": "magic_number_extraction",
+      "summary": "Constants, enums, configuration values"
+    },
+    {
+      "key": "dead_code_removal",
+      "summary": "Unused imports, unreachable code, retired feature flags"
+    },
+    {
+      "key": "consistency_audit",
+      "summary": "Cross-file pattern standardization"
+    },
+    {
+      "key": "logic_simplification",
+      "summary": "Collapse verbose conditionals while preserving behavior"
+    },
+    {
+      "key": "guard_clause_conversion",
+      "summary": "Convert nested conditionals to early returns"
+    }
   ],
   "collaboration": {
-    "input": ["judge", "atlas", "builder", "guardian", "void"],
-    "output": ["radar", "judge", "canvas", "quill", "guardian", "void"]
+    "input": [
+      "judge",
+      "atlas",
+      "builder",
+      "guardian",
+      "void"
+    ],
+    "output": [
+      "radar",
+      "judge",
+      "canvas",
+      "quill",
+      "guardian",
+      "void"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "game", "level": "M" },
-    { "project": "marketing", "level": "M" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +83,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["rename", "extract", "simplify", "review"]
+  "recipes": [
+    {
+      "subcommand": "refactor",
+      "label": "General Refactor",
+      "default": true,
+      "when": "General refactoring (composite improvements, code smell fixes)"
+    },
+    {
+      "subcommand": "naming",
+      "label": "Naming Improvement",
+      "default": false,
+      "when": "Variable and function name improvements only"
+    },
+    {
+      "subcommand": "extract",
+      "label": "Extract Function",
+      "default": false,
+      "when": "Split and extract long functions"
+    },
+    {
+      "subcommand": "constants",
+      "label": "Magic Constants",
+      "default": false,
+      "when": "Replace magic numbers with named constants"
+    },
+    {
+      "subcommand": "dead",
+      "label": "Dead Code Removal",
+      "default": false,
+      "when": "Unused code removal"
+    },
+    {
+      "subcommand": "simplify",
+      "label": "Simplify Logic",
+      "default": false,
+      "when": "Compress redundant branches, ternaries, and unnecessary conversions into equivalent concise forms"
+    },
+    {
+      "subcommand": "split",
+      "label": "Split Function",
+      "default": false,
+      "when": "Incrementally split overly long functions along responsibility boundaries (enhanced `extract`)"
+    },
+    {
+      "subcommand": "guard",
+      "label": "Guard Clauses",
+      "default": false,
+      "when": "Convert nested `if` to early return / guard clauses"
+    }
+  ]
 }

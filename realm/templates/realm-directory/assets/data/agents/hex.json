@@ -73,8 +73,23 @@
     "status": "generated"
   },
   "recipes": [
-    "summon",
-    "audit",
-    "exorcise"
+    {
+      "subcommand": "summon",
+      "label": "Summon",
+      "default": true,
+      "when": "Full character generation from current codebase state"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Audit",
+      "default": false,
+      "when": "Debt scan + severity report only, no image (lightweight CI use)"
+    },
+    {
+      "subcommand": "exorcise",
+      "label": "Exorcise",
+      "default": false,
+      "when": "Roadmap-only mode: produce trait → refactor mapping for an existing character"
+    }
   ]
 }

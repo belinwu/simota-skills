@@ -8,24 +8,74 @@
   "description": "Git history investigation, regression root cause analysis, and code archaeology specialist. Time-travels through commit history to uncover truth.",
   "tagline": "Every regression has a parent commit.",
   "capabilities": [
-    { "key": "git_bisect_automation", "summary": "Automated regression detection via git bisect with test verification" },
-    { "key": "regression_root_cause_analysis", "summary": "Pinpoint breaking commits with context and timeline" },
-    { "key": "code_archaeology", "summary": "Trace evolution of code decisions via blame, log, and follow" },
-    { "key": "blame_analysis", "summary": "Understand who changed what and why (focus on commits)" },
-    { "key": "historical_pattern_detection", "summary": "Find recurring issues and failure patterns in git history" },
-    { "key": "non_functional_regression_investigation", "summary": "Benchmark-driven bisect for perf, memory, bundle size" },
-    { "key": "fix_prompt_generation", "summary": "Paste-ready LLM Fix Prompt with bisect evidence and rollback safety" }
+    {
+      "key": "git_bisect_automation",
+      "summary": "Automated regression detection via git bisect with test verification"
+    },
+    {
+      "key": "regression_root_cause_analysis",
+      "summary": "Pinpoint breaking commits with context and timeline"
+    },
+    {
+      "key": "code_archaeology",
+      "summary": "Trace evolution of code decisions via blame, log, and follow"
+    },
+    {
+      "key": "blame_analysis",
+      "summary": "Understand who changed what and why (focus on commits)"
+    },
+    {
+      "key": "historical_pattern_detection",
+      "summary": "Find recurring issues and failure patterns in git history"
+    },
+    {
+      "key": "non_functional_regression_investigation",
+      "summary": "Benchmark-driven bisect for perf, memory, bundle size"
+    },
+    {
+      "key": "fix_prompt_generation",
+      "summary": "Paste-ready LLM Fix Prompt with bisect evidence and rollback safety"
+    }
   ],
   "collaboration": {
-    "input": ["scout", "triage", "atlas", "judge", "specter"],
-    "output": ["scout", "builder", "canvas", "guardian", "radar", "sentinel", "specter"]
+    "input": [
+      "scout",
+      "triage",
+      "atlas",
+      "judge",
+      "specter"
+    ],
+    "output": [
+      "scout",
+      "builder",
+      "canvas",
+      "guardian",
+      "radar",
+      "sentinel",
+      "specter"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "H" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "marketing", "level": "H" }
+    {
+      "project": "game",
+      "level": "H"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "marketing",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +84,48 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["bisect", "blame", "archaeology", "timeline"]
+  "recipes": [
+    {
+      "subcommand": "regression",
+      "label": "Regression Investigation",
+      "default": true,
+      "when": "Identify regression cause (investigate git-originated breaking commits)"
+    },
+    {
+      "subcommand": "bisect",
+      "label": "Git Bisect",
+      "default": false,
+      "when": "Identify regression commit via binary search"
+    },
+    {
+      "subcommand": "blame",
+      "label": "Blame Walk",
+      "default": false,
+      "when": "Trace change history for specific lines"
+    },
+    {
+      "subcommand": "history",
+      "label": "History Mining",
+      "default": false,
+      "when": "Timeline analysis and archive archaeology"
+    },
+    {
+      "subcommand": "flame",
+      "label": "Flamegraph Regression",
+      "default": false,
+      "when": "Diagnose CPU/memory regressions via differential flamegraph + bisect narrowing"
+    },
+    {
+      "subcommand": "delta",
+      "label": "Delta Debugging",
+      "default": false,
+      "when": "Minimize failing input/state via ddmin (flaky tests, large reproducers, config)"
+    },
+    {
+      "subcommand": "revert",
+      "label": "Revert Strategy",
+      "default": false,
+      "when": "Choose revert vs reset, handle merge `-m`, partial revert, post-revert verification"
+    }
+  ]
 }

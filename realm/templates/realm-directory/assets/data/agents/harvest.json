@@ -92,12 +92,47 @@
     "status": "generated"
   },
   "recipes": [
-    "weekly",
-    "monthly",
-    "release",
-    "retro",
-    "dora",
-    "okr",
-    "prstats"
+    {
+      "subcommand": "weekly",
+      "label": "Weekly Report",
+      "default": true,
+      "when": "Weekly work report (PR aggregation and summary)"
+    },
+    {
+      "subcommand": "monthly",
+      "label": "Monthly Report",
+      "default": false,
+      "when": "Monthly report (includes DORA metrics)"
+    },
+    {
+      "subcommand": "release",
+      "label": "Release Notes",
+      "default": false,
+      "when": "Release notes generation (PR aggregation between tags)"
+    },
+    {
+      "subcommand": "retro",
+      "label": "Sprint Retro",
+      "default": false,
+      "when": "Retrospective aggregation and narrative"
+    },
+    {
+      "subcommand": "dora",
+      "label": "DORA Deep-Dive",
+      "default": false,
+      "when": "DORA 5-key metric profile (throughput + stability) with 7-archetype team mapping and SPACE complement"
+    },
+    {
+      "subcommand": "okr",
+      "label": "OKR Linkage",
+      "default": false,
+      "when": "PR-to-Objective mapping and KR narrative for quarterly review"
+    },
+    {
+      "subcommand": "prstats",
+      "label": "PR Stats Deep-Dive",
+      "default": false,
+      "when": "Cycle time histogram, P50/P75/P90 latency, Lorenz curve, large-PR risk"
+    }
   ]
 }

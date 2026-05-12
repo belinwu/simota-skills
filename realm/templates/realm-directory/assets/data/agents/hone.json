@@ -89,10 +89,35 @@
     "status": "generated"
   },
   "recipes": [
-    "audit",
-    "codex",
-    "gemini",
-    "claude",
-    "diff"
+    {
+      "subcommand": "audit",
+      "label": "Full Audit",
+      "default": true,
+      "when": "Comprehensive audit of target CLI config (FETCH→AUDIT→PROPOSE)"
+    },
+    {
+      "subcommand": "codex",
+      "label": "Codex Audit",
+      "default": false,
+      "when": "Codex CLI (~/.codex/) audit, wire_api deprecation detection"
+    },
+    {
+      "subcommand": "gemini",
+      "label": "Gemini Audit",
+      "default": false,
+      "when": "Gemini CLI (~/.gemini/) audit, safety settings, extensions"
+    },
+    {
+      "subcommand": "claude",
+      "label": "Claude Code Audit",
+      "default": false,
+      "when": "Claude Code (~/.claude/) audit, permissions, MCP, hooks"
+    },
+    {
+      "subcommand": "diff",
+      "label": "Config Diff",
+      "default": false,
+      "when": "Before/After diff analysis of two config snapshots"
+    }
   ]
 }

@@ -8,23 +8,71 @@
   "description": "Storybook story creation, catalog management, and Visual Regression integration. UI component docs, visual testing, and CSF 3.0/Factories story creation. Supports Storybook 10 and React Cosmos.",
   "tagline": "Every state counts.",
   "capabilities": [
-    { "key": "storybook_authoring", "summary": "Storybook story creation (CSF 3.0, factories, MDX 3, autodocs, play functions)" },
-    { "key": "react_cosmos", "summary": "React Cosmos fixture creation (Cosmos 6+, useFixtureInput, decorators)" },
-    { "key": "story_coverage_audit", "summary": "Variant/state/a11y/interaction scoring with quantitative thresholds" },
-    { "key": "visual_regression", "summary": "Chromatic, Playwright VRT, Lost Pixel, Applitools Eyes integration" },
-    { "key": "a11y_testing", "summary": "axe-core rules and WCAG 2.2 AA verification" },
-    { "key": "portable_stories", "summary": "Reuse stories in unit/Vitest tests via composeStories" },
-    { "key": "design_system_metrics", "summary": "Component reuse rate and design-code alignment tracking" }
+    {
+      "key": "storybook_authoring",
+      "summary": "Storybook story creation (CSF 3.0, factories, MDX 3, autodocs, play functions)"
+    },
+    {
+      "key": "react_cosmos",
+      "summary": "React Cosmos fixture creation (Cosmos 6+, useFixtureInput, decorators)"
+    },
+    {
+      "key": "story_coverage_audit",
+      "summary": "Variant/state/a11y/interaction scoring with quantitative thresholds"
+    },
+    {
+      "key": "visual_regression",
+      "summary": "Chromatic, Playwright VRT, Lost Pixel, Applitools Eyes integration"
+    },
+    {
+      "key": "a11y_testing",
+      "summary": "axe-core rules and WCAG 2.2 AA verification"
+    },
+    {
+      "key": "portable_stories",
+      "summary": "Reuse stories in unit/Vitest tests via composeStories"
+    },
+    {
+      "key": "design_system_metrics",
+      "summary": "Component reuse rate and design-code alignment tracking"
+    }
   ],
   "collaboration": {
-    "input": ["forge", "artisan", "flow", "vision", "director", "palette"],
-    "output": ["muse", "radar", "voyager", "vision", "quill", "flow", "canon"]
+    "input": [
+      "forge",
+      "artisan",
+      "flow",
+      "vision",
+      "director",
+      "palette"
+    ],
+    "output": [
+      "muse",
+      "radar",
+      "voyager",
+      "vision",
+      "quill",
+      "flow",
+      "canon"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" },
-    { "project": "mobile", "level": "M" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    },
+    {
+      "project": "mobile",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -33,5 +81,66 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["story", "audit", "vrt", "catalog"]
+  "recipes": [
+    {
+      "subcommand": "story",
+      "label": "Story Creation",
+      "default": true,
+      "when": "Story creation"
+    },
+    {
+      "subcommand": "catalog",
+      "label": "Catalog Management",
+      "default": false,
+      "when": "Component catalog maintenance"
+    },
+    {
+      "subcommand": "vrt",
+      "label": "Visual Regression",
+      "default": false,
+      "when": "Visual Regression Test integration"
+    },
+    {
+      "subcommand": "csf3",
+      "label": "CSF 3.0 Migration",
+      "default": false,
+      "when": "Conversion to CSF 3.0"
+    },
+    {
+      "subcommand": "interaction",
+      "label": "Storybook Interactions",
+      "default": false,
+      "when": "Play function authoring with `@storybook/test`, addon-vitest integration"
+    },
+    {
+      "subcommand": "mdx",
+      "label": "MDX Documentation",
+      "default": false,
+      "when": "Hand-authored MDX docs with Doc Blocks, Autodocs vs MDX trade-off"
+    },
+    {
+      "subcommand": "cosmos",
+      "label": "React Cosmos",
+      "default": false,
+      "when": "React Cosmos fixture authoring, Storybook vs Cosmos decision"
+    },
+    {
+      "subcommand": "a11y",
+      "label": "Accessibility Addon",
+      "default": false,
+      "when": "Storybook addon-a11y wiring (axe-core), per-story rules, CI failure thresholds, role-aware keyboard testing"
+    },
+    {
+      "subcommand": "chromatic",
+      "label": "Chromatic",
+      "default": false,
+      "when": "Chromatic-specific visual review — Tokens of Trust, branch comparison, TurboSnap, baseline approval flow, monorepo project routing"
+    },
+    {
+      "subcommand": "coverage",
+      "label": "Coverage",
+      "default": false,
+      "when": "Story coverage tracking — which components have stories, addon-coverage / addon-test, gap reporting, CI gate"
+    }
+  ]
 }

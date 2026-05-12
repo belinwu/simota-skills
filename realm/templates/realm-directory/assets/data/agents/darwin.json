@@ -8,24 +8,75 @@
   "description": "Ecosystem self-evolution orchestrator. Detects project lifecycle phases, evaluates agent relevance, synthesizes cross-agent knowledge, and proposes evolution actions.",
   "tagline": "Ecosystems that sense themselves can evolve.",
   "capabilities": [
-    { "key": "lifecycle_detection", "summary": "Detect project lifecycle phases from git/file/activity signals" },
-    { "key": "fitness_scoring", "summary": "Ecosystem Fitness Score across 5 dimensions" },
-    { "key": "relevance_score", "summary": "Agent Relevance Score evaluation for all agents" },
-    { "key": "journal_synthesis", "summary": "Cross-agent journal synthesis and pattern extraction" },
-    { "key": "affinity_override", "summary": "Dynamic affinity override based on lifecycle phase" },
-    { "key": "anti_pattern_detection", "summary": "Orchestration anti-patterns and multi-agent trap detection" },
-    { "key": "evolution_triggers", "summary": "Evolution trigger evaluation across 8 trigger types" }
+    {
+      "key": "lifecycle_detection",
+      "summary": "Detect project lifecycle phases from git/file/activity signals"
+    },
+    {
+      "key": "fitness_scoring",
+      "summary": "Ecosystem Fitness Score across 5 dimensions"
+    },
+    {
+      "key": "relevance_score",
+      "summary": "Agent Relevance Score evaluation for all agents"
+    },
+    {
+      "key": "journal_synthesis",
+      "summary": "Cross-agent journal synthesis and pattern extraction"
+    },
+    {
+      "key": "affinity_override",
+      "summary": "Dynamic affinity override based on lifecycle phase"
+    },
+    {
+      "key": "anti_pattern_detection",
+      "summary": "Orchestration anti-patterns and multi-agent trap detection"
+    },
+    {
+      "key": "evolution_triggers",
+      "summary": "Evolution trigger evaluation across 8 trigger types"
+    }
   ],
   "collaboration": {
-    "input": ["architect", "judge", "helm", "grove", "lore"],
-    "output": ["architect", "nexus", "void", "canvas", "lore", "gauge", "horizon", "launch"]
+    "input": [
+      "architect",
+      "judge",
+      "helm",
+      "grove",
+      "lore"
+    ],
+    "output": [
+      "architect",
+      "nexus",
+      "void",
+      "canvas",
+      "lore",
+      "gauge",
+      "horizon",
+      "launch"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "M" },
-    { "project": "ecommerce", "level": "M" },
-    { "project": "dashboard", "level": "M" },
-    { "project": "marketing", "level": "M" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "M"
+    },
+    {
+      "project": "ecommerce",
+      "level": "M"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +85,30 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["health", "evolve", "lifecycle", "sunset"]
+  "recipes": [
+    {
+      "subcommand": "health",
+      "label": "Health Check",
+      "default": true,
+      "when": "Ecosystem health assessment"
+    },
+    {
+      "subcommand": "fitness",
+      "label": "Fitness Scoring",
+      "default": false,
+      "when": "Agent fitness scoring"
+    },
+    {
+      "subcommand": "evolve",
+      "label": "Evolution Proposal",
+      "default": false,
+      "when": "Evolution proposal"
+    },
+    {
+      "subcommand": "sunset",
+      "label": "Sunset Proposal",
+      "default": false,
+      "when": "Sunset candidate skill proposal"
+    }
+  ]
 }

@@ -8,22 +8,71 @@
   "description": "Bug investigation, root cause analysis (RCA), reproduction steps, and impact assessment. Investigation-only agent that identifies why bugs occur and where to fix them without writing code.",
   "tagline": "Find the bug's birthday.",
   "capabilities": [
-    { "key": "bug_investigation", "summary": "Investigate bug reports and reproduce issues" },
-    { "key": "root_cause_analysis", "summary": "5 Whys, Fishbone, Fault Tree, or Causal Graph methods" },
-    { "key": "impact_assessment", "summary": "Assess the scope and severity of bugs" },
-    { "key": "reproduction_steps", "summary": "Create minimal reproduction steps" },
-    { "key": "hypothesis_testing", "summary": "Systematically test hypotheses one variable at a time" },
-    { "key": "performance_bug_investigation", "summary": "Profiler-driven RCA for latency, CPU, throughput regressions" },
-    { "key": "fix_prompt_generation", "summary": "Paste-ready LLM Fix Prompt with evidence and acceptance criteria" }
+    {
+      "key": "bug_investigation",
+      "summary": "Investigate bug reports and reproduce issues"
+    },
+    {
+      "key": "root_cause_analysis",
+      "summary": "5 Whys, Fishbone, Fault Tree, or Causal Graph methods"
+    },
+    {
+      "key": "impact_assessment",
+      "summary": "Assess the scope and severity of bugs"
+    },
+    {
+      "key": "reproduction_steps",
+      "summary": "Create minimal reproduction steps"
+    },
+    {
+      "key": "hypothesis_testing",
+      "summary": "Systematically test hypotheses one variable at a time"
+    },
+    {
+      "key": "performance_bug_investigation",
+      "summary": "Profiler-driven RCA for latency, CPU, throughput regressions"
+    },
+    {
+      "key": "fix_prompt_generation",
+      "summary": "Paste-ready LLM Fix Prompt with evidence and acceptance criteria"
+    }
   ],
   "collaboration": {
-    "input": ["triage", "builder", "radar", "pulse", "trail", "sentinel", "beacon", "lens"],
-    "output": ["builder", "radar", "guardian", "triage", "specter", "sentinel", "trail", "beacon", "lens"]
+    "input": [
+      "triage",
+      "builder",
+      "radar",
+      "pulse",
+      "trail",
+      "sentinel",
+      "beacon",
+      "lens"
+    ],
+    "output": [
+      "builder",
+      "radar",
+      "guardian",
+      "triage",
+      "specter",
+      "sentinel",
+      "trail",
+      "beacon",
+      "lens"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "M" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -32,5 +81,78 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["investigate", "rca", "repro", "perf", "memory"]
+  "recipes": [
+    {
+      "subcommand": "bug",
+      "label": "Focused Hunt",
+      "default": true,
+      "when": "Single-bug investigation with clear symptom"
+    },
+    {
+      "subcommand": "regression",
+      "label": "History-Led",
+      "default": false,
+      "when": "Regression signal present (recent deploy, version bump)"
+    },
+    {
+      "subcommand": "prod",
+      "label": "Observability-Led",
+      "default": false,
+      "when": "Production traces/logs/metrics dominate the signal"
+    },
+    {
+      "subcommand": "consensus",
+      "label": "Multi-Engine",
+      "default": false,
+      "when": "Root cause ambiguous after 3 hypotheses exhausted"
+    },
+    {
+      "subcommand": "cascade",
+      "label": "Cascading Failure",
+      "default": false,
+      "when": "Multi-service propagation from a single origin"
+    },
+    {
+      "subcommand": "perf",
+      "label": "Performance Hunt",
+      "default": false,
+      "when": "Profiler-led investigation when there is a clear latency, throughput drop, or CPU hotspot"
+    },
+    {
+      "subcommand": "memory",
+      "label": "Memory Hunt",
+      "default": false,
+      "when": "Heap-snapshot-led investigation when OOM / heap bloat / GC pressure is suspected"
+    },
+    {
+      "subcommand": "flake",
+      "label": "Flake Hunt",
+      "default": false,
+      "when": "Reproducibility diagnosis for intermittent bugs, flaky tests, and environment-dependent symptoms"
+    },
+    {
+      "subcommand": "5whys",
+      "label": "5 Whys",
+      "default": false,
+      "when": "Iterative root-cause chain (Toyota TPS) — drive from symptom to systemic cause with explicit why-chain"
+    },
+    {
+      "subcommand": "fishbone",
+      "label": "Fishbone / Ishikawa",
+      "default": false,
+      "when": "Categorical RCA across 6M (Machine/Method/Material/Measurement/Mother-nature/Manpower) for multi-factor failures"
+    },
+    {
+      "subcommand": "timeline",
+      "label": "Timeline Reconstruction",
+      "default": false,
+      "when": "Incident timeline reconstruction — second-by-second event sequence, detection/response gap analysis"
+    },
+    {
+      "subcommand": "video",
+      "label": "Video Bug Report",
+      "default": false,
+      "when": "Screen-recording bug report — extract motion-driven key frames locally, analyze via Codex CLI, normalize into Scout report"
+    }
+  ]
 }

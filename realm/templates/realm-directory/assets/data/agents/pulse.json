@@ -85,13 +85,53 @@
     "status": "generated"
   },
   "recipes": [
-    "kpi",
-    "funnel",
-    "cohort",
-    "event",
-    "dashboard",
-    "northstar",
-    "retention",
-    "activation"
+    {
+      "subcommand": "kpi",
+      "label": "KPI Framework",
+      "default": true,
+      "when": "North Star Metric definition, KPI tree design, and OKR setup"
+    },
+    {
+      "subcommand": "funnel",
+      "label": "Funnel Analysis",
+      "default": false,
+      "when": "Conversion funnel analysis and drop-off identification"
+    },
+    {
+      "subcommand": "cohort",
+      "label": "Cohort Analysis",
+      "default": false,
+      "when": "Retention cohort analysis and churn measurement"
+    },
+    {
+      "subcommand": "event",
+      "label": "Event Schema",
+      "default": false,
+      "when": "Event schema design and analytics implementation"
+    },
+    {
+      "subcommand": "dashboard",
+      "label": "Dashboard Spec",
+      "default": false,
+      "when": "Dashboard spec design and chart definition"
+    },
+    {
+      "subcommand": "northstar",
+      "label": "North Star Deep-Dive",
+      "default": false,
+      "when": "NSM selection rubric, input-metric decomposition, counter/guardrail pairing, NSM stability contract"
+    },
+    {
+      "subcommand": "retention",
+      "label": "Retention Curve Analysis",
+      "default": false,
+      "when": "D1/D7/D30 curve shape classification (L/smile/flat), power-user band detection, Quick Ratio / DAU-over-MAU"
+    },
+    {
+      "subcommand": "activation",
+      "label": "Activation Rate Design",
+      "default": false,
+      "when": "Aha-moment discovery, Magic Number identification, time-to-value (TTV) measurement, activation milestone contract"
+    }
   ]
 }

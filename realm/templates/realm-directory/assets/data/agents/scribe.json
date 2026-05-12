@@ -8,24 +8,77 @@
   "description": "Create specifications, design documents, implementation checklists, and test specifications. Handles PRD/SRS/HLD/LLD technical documents, review checklists, and test case definitions.",
   "tagline": "Scribes preserve meaning across time.",
   "capabilities": [
-    { "key": "prd_creation", "summary": "Create Product Requirements Documents" },
-    { "key": "srs_creation", "summary": "Create Software Requirements Specifications" },
-    { "key": "hld_creation", "summary": "Create High-Level Design documents" },
-    { "key": "lld_creation", "summary": "Create Low-Level Design documents" },
-    { "key": "test_specs", "summary": "Create test specification documents" },
-    { "key": "adr_authoring", "summary": "Author ADRs with Nygard or MADR format" },
-    { "key": "runbook_authoring", "summary": "Operational runbooks consumed by Triage / Mend" }
+    {
+      "key": "prd_creation",
+      "summary": "Create Product Requirements Documents"
+    },
+    {
+      "key": "srs_creation",
+      "summary": "Create Software Requirements Specifications"
+    },
+    {
+      "key": "hld_creation",
+      "summary": "Create High-Level Design documents"
+    },
+    {
+      "key": "lld_creation",
+      "summary": "Create Low-Level Design documents"
+    },
+    {
+      "key": "test_specs",
+      "summary": "Create test specification documents"
+    },
+    {
+      "key": "adr_authoring",
+      "summary": "Author ADRs with Nygard or MADR format"
+    },
+    {
+      "key": "runbook_authoring",
+      "summary": "Operational runbooks consumed by Triage / Mend"
+    }
   ],
   "collaboration": {
-    "input": ["accord", "vision", "spark", "helm", "gateway", "atlas"],
-    "output": ["builder", "artisan", "radar", "voyager", "judge", "sherpa", "morph", "prism", "lore"]
+    "input": [
+      "accord",
+      "vision",
+      "spark",
+      "helm",
+      "gateway",
+      "atlas"
+    ],
+    "output": [
+      "builder",
+      "artisan",
+      "radar",
+      "voyager",
+      "judge",
+      "sherpa",
+      "morph",
+      "prism",
+      "lore"
+    ]
   },
   "affinity": [
-    { "project": "game", "level": "M" },
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "M" },
-    { "project": "marketing", "level": "M" }
+    {
+      "project": "game",
+      "level": "M"
+    },
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "M"
+    },
+    {
+      "project": "marketing",
+      "level": "M"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -34,5 +87,54 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["prd", "srs", "hld", "lld", "adr", "runbook"]
+  "recipes": [
+    {
+      "subcommand": "prd",
+      "label": "PRD",
+      "default": true,
+      "when": "Product Requirements Document (business goals, user needs, scope)"
+    },
+    {
+      "subcommand": "srs",
+      "label": "SRS",
+      "default": false,
+      "when": "Software Requirements Specification (technical requirements, interfaces, NFRs)"
+    },
+    {
+      "subcommand": "hld",
+      "label": "HLD",
+      "default": false,
+      "when": "High-Level Design (system architecture, component design)"
+    },
+    {
+      "subcommand": "lld",
+      "label": "LLD",
+      "default": false,
+      "when": "Low-Level Design (module details, data structures, sequences)"
+    },
+    {
+      "subcommand": "testspec",
+      "label": "Test Spec",
+      "default": false,
+      "when": "Test specification (scope, cases, data, traceability)"
+    },
+    {
+      "subcommand": "adr",
+      "label": "ADR",
+      "default": false,
+      "when": "Architecture Decision Record (Nygard/MADR format, ADR numbering, immutability, supersede chain)"
+    },
+    {
+      "subcommand": "runbook",
+      "label": "Runbook",
+      "default": false,
+      "when": "Operational runbook (symptom → triage → recover → verify, escalation, idempotency)"
+    },
+    {
+      "subcommand": "api-doc",
+      "label": "API Doc",
+      "default": false,
+      "when": "Human-readable API reference from OpenAPI (code samples, error catalog, auth flow, versioning)"
+    }
+  ]
 }

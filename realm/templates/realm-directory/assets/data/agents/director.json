@@ -86,12 +86,47 @@
     "status": "generated"
   },
   "recipes": [
-    "demo",
-    "scenario",
-    "record",
-    "onboard",
-    "voiceover",
-    "captions",
-    "thumbnail"
+    {
+      "subcommand": "demo",
+      "label": "Demo",
+      "default": true,
+      "when": "Feature demo video recording and production"
+    },
+    {
+      "subcommand": "scenario",
+      "label": "Scenario",
+      "default": false,
+      "when": "Scenario design, storyboard"
+    },
+    {
+      "subcommand": "record",
+      "label": "Record",
+      "default": false,
+      "when": "Playwright recording configuration and execution"
+    },
+    {
+      "subcommand": "onboard",
+      "label": "Onboard",
+      "default": false,
+      "when": "Onboarding and tutorial recording"
+    },
+    {
+      "subcommand": "voiceover",
+      "label": "Voiceover",
+      "default": false,
+      "when": "TTS narration design — SSML pacing, voice selection, LUFS normalization, breathing pauses"
+    },
+    {
+      "subcommand": "captions",
+      "label": "Captions",
+      "default": false,
+      "when": "Caption authoring — SRT / WebVTT, WCAG 1.2.2 timing, forced / closed / open variants"
+    },
+    {
+      "subcommand": "thumbnail",
+      "label": "Thumbnail",
+      "default": false,
+      "when": "Per-platform thumbnail design (YouTube 1280×720, LinkedIn, X, Product Hunt) + A/B variants"
+    }
   ]
 }

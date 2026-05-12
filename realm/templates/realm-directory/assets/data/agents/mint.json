@@ -89,12 +89,47 @@
     "status": "generated"
   },
   "recipes": [
-    "factory",
-    "boundary",
-    "synthetic",
-    "seed",
-    "pii",
-    "llm",
-    "replay"
+    {
+      "subcommand": "factory",
+      "label": "Factory Design",
+      "default": true,
+      "when": "Factory pattern design and type-safe test data construction"
+    },
+    {
+      "subcommand": "boundary",
+      "label": "Boundary Values",
+      "default": false,
+      "when": "Boundary value and edge-case data set generation"
+    },
+    {
+      "subcommand": "synthetic",
+      "label": "Synthetic Data",
+      "default": false,
+      "when": "Large-scale synthetic data generation and load-test datasets"
+    },
+    {
+      "subcommand": "seed",
+      "label": "Seed Management",
+      "default": false,
+      "when": "Idempotent seed script design and snapshot management"
+    },
+    {
+      "subcommand": "pii",
+      "label": "PII Masking",
+      "default": false,
+      "when": "Test-data masking / de-identification (tokenization, FPE, k-anon / l-div / t-close, DP)"
+    },
+    {
+      "subcommand": "llm",
+      "label": "LLM Fixtures",
+      "default": false,
+      "when": "LLM-generated fixtures with schema validation, bias audit, deterministic caching, cost cap"
+    },
+    {
+      "subcommand": "replay",
+      "label": "Replay Scrub",
+      "default": false,
+      "when": "Production-log replay set: capture -> PII scrub -> time shift -> id remap -> retention"
+    }
   ]
 }

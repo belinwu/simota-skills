@@ -93,13 +93,53 @@
     "status": "generated"
   },
   "recipes": [
-    "blueprint",
-    "survey",
-    "parity",
-    "map",
-    "roadmap",
-    "risk",
-    "regulatory",
-    "xplat"
+    {
+      "subcommand": "blueprint",
+      "label": "Full Blueprint",
+      "default": true,
+      "when": "Complete web-to-native porting design (all phases)"
+    },
+    {
+      "subcommand": "survey",
+      "label": "Web Survey",
+      "default": false,
+      "when": "Web app audit only — produces a porting feasibility report"
+    },
+    {
+      "subcommand": "parity",
+      "label": "Parity Matrix",
+      "default": false,
+      "when": "Feature parity matrix only (web feature × iOS × Android × verdict × regulatory × offline tier)"
+    },
+    {
+      "subcommand": "map",
+      "label": "Architecture Map",
+      "default": false,
+      "when": "Per-screen architecture mapping (web → SwiftUI + Compose)"
+    },
+    {
+      "subcommand": "roadmap",
+      "label": "Roadmap",
+      "default": false,
+      "when": "Strangler-Fig phased migration roadmap with policy gates, rollout, store, rollback"
+    },
+    {
+      "subcommand": "risk",
+      "label": "Risk Assessment",
+      "default": false,
+      "when": "Risk-only output: web-only gaps, SDK / 16KB / Privacy Sandbox, store policy, perf, regulatory"
+    },
+    {
+      "subcommand": "regulatory",
+      "label": "Regulatory Compliance",
+      "default": false,
+      "when": "Regulatory-only sweep: Privacy Manifest / Data Safety / DMA / EAA / AI disclosure / Children / Fintech"
+    },
+    {
+      "subcommand": "xplat",
+      "label": "Cross-Platform Decision",
+      "default": false,
+      "when": "Pure-native vs KMP-shared-logic vs CMP vs RN vs Flutter trade-off and recommendation"
+    }
   ]
 }

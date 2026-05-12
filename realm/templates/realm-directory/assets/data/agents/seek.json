@@ -90,13 +90,53 @@
     "status": "generated"
   },
   "recipes": [
-    "fulltext",
-    "vector",
-    "hybrid",
-    "index",
-    "rag",
-    "rerank",
-    "suggest",
-    "eval"
+    {
+      "subcommand": "fulltext",
+      "label": "Full-Text Search",
+      "default": true,
+      "when": "Elasticsearch/OpenSearch index design, analyzer configuration"
+    },
+    {
+      "subcommand": "vector",
+      "label": "Vector Search",
+      "default": false,
+      "when": "Vector search design, embedding model selection, pgvector/Pinecone"
+    },
+    {
+      "subcommand": "hybrid",
+      "label": "Hybrid Search",
+      "default": false,
+      "when": "BM25 + vector fusion, RRF scoring, reranking pipeline"
+    },
+    {
+      "subcommand": "index",
+      "label": "Index Optimization",
+      "default": false,
+      "when": "Index mapping optimization, scaling design"
+    },
+    {
+      "subcommand": "rag",
+      "label": "RAG Retrieval",
+      "default": false,
+      "when": "RAG retrieval-layer design, chunking, reranking, context assembly"
+    },
+    {
+      "subcommand": "rerank",
+      "label": "Re-ranking",
+      "default": false,
+      "when": "Second-stage re-ranking pipeline — cross-encoder (BGE / Cohere Rerank 3), LTR (LambdaMART / LightGBM), latency budget, click-feedback loop"
+    },
+    {
+      "subcommand": "suggest",
+      "label": "Autocomplete / Suggest",
+      "default": false,
+      "when": "Search-as-you-type / suggestion subsystem — edge n-gram, prefix query, typo tolerance (Levenshtein / symspell), sub-50ms latency"
+    },
+    {
+      "subcommand": "eval",
+      "label": "Search Evaluation",
+      "default": false,
+      "when": "Search quality evaluation program — offline metrics (nDCG / MRR / MAP), online signals (CTR / position bias), golden set, A/B design"
+    }
   ]
 }

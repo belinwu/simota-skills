@@ -93,12 +93,47 @@
     "status": "generated"
   },
   "recipes": [
-    "reframe",
-    "shift",
-    "cross",
-    "challenge",
-    "scamper",
-    "analogy",
-    "inversion"
+    {
+      "subcommand": "reframe",
+      "label": "Reframe",
+      "default": true,
+      "when": "Reframing of assumptions (full DEEP pipeline)"
+    },
+    {
+      "subcommand": "shift",
+      "label": "Perspective Shift",
+      "default": false,
+      "when": "Perspective shift (RAPID)"
+    },
+    {
+      "subcommand": "cross",
+      "label": "Cross-Domain",
+      "default": false,
+      "when": "Cross-domain knowledge fusion (LENS COMBINE)"
+    },
+    {
+      "subcommand": "challenge",
+      "label": "Challenge Assumption",
+      "default": false,
+      "when": "Challenge preconceptions (LENS CHALLENGE)"
+    },
+    {
+      "subcommand": "scamper",
+      "label": "SCAMPER",
+      "default": false,
+      "when": "7-lens artifact transformation (Substitute/Combine/Adapt/Modify/Put-to-other-use/Eliminate/Reverse)"
+    },
+    {
+      "subcommand": "analogy",
+      "label": "Analogy",
+      "default": false,
+      "when": "Structural mapping from a source domain (Gentner; biomimicry; cross-industry)"
+    },
+    {
+      "subcommand": "inversion",
+      "label": "Inversion",
+      "default": false,
+      "when": "Munger inversion — invert the goal, enumerate failure-guarantees, derive avoid-list"
+    }
   ]
 }

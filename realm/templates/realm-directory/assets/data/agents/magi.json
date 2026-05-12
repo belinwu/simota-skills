@@ -93,12 +93,47 @@
     "status": "generated"
   },
   "recipes": [
-    "decide",
-    "tradeoff",
-    "arbitrate",
-    "strategic",
-    "sixhat",
-    "devil",
-    "delphi"
+    {
+      "subcommand": "decide",
+      "label": "Go/No-Go Decision",
+      "default": true,
+      "when": "Final adoption verdict (release readiness, feature approval, quality gate)"
+    },
+    {
+      "subcommand": "tradeoff",
+      "label": "Tradeoff Analysis",
+      "default": false,
+      "when": "Tradeoff comparison analysis (X vs Y form)"
+    },
+    {
+      "subcommand": "arbitrate",
+      "label": "Architecture Arbitration",
+      "default": false,
+      "when": "Design option arbitration (Logos/Pathos/Sophia)"
+    },
+    {
+      "subcommand": "strategic",
+      "label": "Strategic Direction",
+      "default": false,
+      "when": "Long-term strategy and roadmap decisions (build vs buy, etc.)"
+    },
+    {
+      "subcommand": "sixhat",
+      "label": "Six Thinking Hats",
+      "default": false,
+      "when": "Parallel-thinking surfacing across White/Red/Black/Yellow/Green/Blue modes before voting"
+    },
+    {
+      "subcommand": "devil",
+      "label": "Devil's Advocate",
+      "default": false,
+      "when": "Formal red-team stress test on high-stakes irreversible proposals"
+    },
+    {
+      "subcommand": "delphi",
+      "label": "Delphi Method",
+      "default": false,
+      "when": "Anonymous multi-round expert convergence for forecasts and uncertain estimates"
+    }
   ]
 }

@@ -82,13 +82,53 @@
     "status": "generated"
   },
   "recipes": [
-    "frontend",
-    "backend",
-    "render",
-    "async",
-    "cache",
-    "bundle",
-    "network",
-    "memory"
+    {
+      "subcommand": "frontend",
+      "label": "Frontend Perf",
+      "default": true,
+      "when": "Frontend optimization (re-render reduction, memoization, lazy loading)"
+    },
+    {
+      "subcommand": "backend",
+      "label": "Backend Perf",
+      "default": false,
+      "when": "Backend optimization (N+1, caching, async)"
+    },
+    {
+      "subcommand": "render",
+      "label": "Render Reduction",
+      "default": false,
+      "when": "React/Vue re-render reduction only"
+    },
+    {
+      "subcommand": "async",
+      "label": "Async Refactor",
+      "default": false,
+      "when": "Convert sync to async (waterfall elimination)"
+    },
+    {
+      "subcommand": "cache",
+      "label": "Cache Strategy",
+      "default": false,
+      "when": "Caching strategy design (memo, Redis, CDN)"
+    },
+    {
+      "subcommand": "bundle",
+      "label": "Bundle Audit",
+      "default": false,
+      "when": "App-wide JS/TS bundle-size reduction (tree-shake, split, dynamic import, analyzer, library swaps)"
+    },
+    {
+      "subcommand": "network",
+      "label": "Network Delivery",
+      "default": false,
+      "when": "Client/server delivery tuning (HTTP/2-3, Early Hints, resource hints, SW cache, CDN cache-control, Brotli)"
+    },
+    {
+      "subcommand": "memory",
+      "label": "Memory Footprint",
+      "default": false,
+      "when": "App-process memory reduction (heap snapshot diffing, leak detection, WeakMap/WeakRef, baseline trending)"
+    }
   ]
 }

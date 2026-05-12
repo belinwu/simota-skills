@@ -88,12 +88,47 @@
     "status": "generated"
   },
   "recipes": [
-    "reproduce",
-    "verify",
-    "gap",
-    "audit",
-    "responsive",
-    "dark",
-    "animation"
+    {
+      "subcommand": "reproduce",
+      "label": "Faithful Reproduction",
+      "default": true,
+      "when": "Faithful HTML/CSS generation from a mockup"
+    },
+    {
+      "subcommand": "verify",
+      "label": "Visual Verify",
+      "default": false,
+      "when": "Execute visual verification"
+    },
+    {
+      "subcommand": "gap",
+      "label": "Gap Report",
+      "default": false,
+      "when": "Gap analysis report generation"
+    },
+    {
+      "subcommand": "audit",
+      "label": "Design Audit",
+      "default": false,
+      "when": "Fidelity audit"
+    },
+    {
+      "subcommand": "responsive",
+      "label": "Responsive",
+      "default": false,
+      "when": "Derive responsive breakpoints from a single-viewport mockup — fluid typography (clamp), container queries vs media queries, mobile-first reflow, common-breakpoint priority (320/768/1024/1440), aspect-ratio handling"
+    },
+    {
+      "subcommand": "dark",
+      "label": "Dark Mode",
+      "default": false,
+      "when": "Derive a dark-mode variant from a light-mode mockup — semantic token mapping, contrast preservation (WCAG AA/AAA), elevation/depth via brightness (not solid black), `prefers-color-scheme`, system-mode toggle pattern"
+    },
+    {
+      "subcommand": "animation",
+      "label": "Animation",
+      "default": false,
+      "when": "Extract micro-interactions from mockup signals (motion blur, ghost frames, multiple keyframes) — hover/focus/active states, transition tokens, easing curves, reduced-motion fallback, performance budget (transform/opacity only)"
+    }
   ]
 }

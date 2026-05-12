@@ -78,9 +78,29 @@
     "status": "generated"
   },
   "recipes": [
-    "parallel",
-    "teams",
-    "codex-subagents",
-    "coordinate"
+    {
+      "subcommand": "parallel",
+      "label": "Parallel Execution",
+      "default": true,
+      "when": "Parallel execution of independent tasks"
+    },
+    {
+      "subcommand": "teams",
+      "label": "Team Design",
+      "default": false,
+      "when": "Team composition and role design"
+    },
+    {
+      "subcommand": "codex-subagents",
+      "label": "Codex Subagents",
+      "default": false,
+      "when": "Codex CLI subagent parallelization"
+    },
+    {
+      "subcommand": "coordinate",
+      "label": "Coordination",
+      "default": false,
+      "when": "Monitoring and coordinating in-flight teams"
+    }
   ]
 }

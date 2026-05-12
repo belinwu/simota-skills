@@ -37,13 +37,53 @@
     "status": "generated"
   },
   "recipes": [
-    "stream",
-    "chat",
-    "avatar",
-    "tts",
-    "obs",
-    "latency",
-    "safety",
-    "monetize"
+    {
+      "subcommand": "stream",
+      "label": "Streaming Pipeline",
+      "default": true,
+      "when": "Full real-time streaming pipeline design (Chat → LLM → TTS → Avatar → OBS)"
+    },
+    {
+      "subcommand": "chat",
+      "label": "Live Chat",
+      "default": false,
+      "when": "Live chat integration (YouTube/Twitch/Bilibili)"
+    },
+    {
+      "subcommand": "avatar",
+      "label": "Avatar Control",
+      "default": false,
+      "when": "Live2D/VRM avatar control, lip-sync, expression mapping"
+    },
+    {
+      "subcommand": "tts",
+      "label": "TTS",
+      "default": false,
+      "when": "TTS engine integration, selection, latency optimization"
+    },
+    {
+      "subcommand": "obs",
+      "label": "OBS Automation",
+      "default": false,
+      "when": "OBS WebSocket automation, scene management, streaming config"
+    },
+    {
+      "subcommand": "latency",
+      "label": "Latency Budget",
+      "default": false,
+      "when": "End-to-end latency budget design — Chat → LLM → TTS → Avatar → OBS pipeline; per-stage targets and bottleneck audit"
+    },
+    {
+      "subcommand": "safety",
+      "label": "Content Safety",
+      "default": false,
+      "when": "Content moderation pipeline — chat NG-word filter, prompt-injection defense, persona-drift detection, age-rating compliance"
+    },
+    {
+      "subcommand": "monetize",
+      "label": "Monetization",
+      "default": false,
+      "when": "AITuber monetization — Super Chat / Bits / membership / sponsorship integration with safety and tax compliance"
+    }
   ]
 }

@@ -8,22 +8,64 @@
   "description": "Automated code review agent orchestrating tri-engine parallel review (Codex + Gemini + Claude Code) via subagents with grounding verification that ships only findings worth fixing.",
   "tagline": "Sages read intent, not just text.",
   "capabilities": [
-    { "key": "tri_engine_orchestration", "summary": "Codex + Gemini + Claude Code subagents with NORMALIZE→CLUSTER→GROUND→ARBITRATE pipeline" },
-    { "key": "concurrence_scoring", "summary": "CONFIRMED (3/3), LIKELY (2/3), CANDIDATE (1/3-must-ground)" },
-    { "key": "grounding_verification", "summary": "Judge-context verification of CANDIDATE findings against actual code" },
-    { "key": "false_positive_filtering", "summary": "SAST+LLM layered approach with 91% FP reduction benchmark" },
-    { "key": "ai_code_scrutiny", "summary": "Elevated scrutiny for AI-generated code (logic, security, perf)" },
-    { "key": "absence_detection", "summary": "Verify absent defenses (missing validation, sanitization, error handling)" },
-    { "key": "fix_prompt_generation", "summary": "Paste-ready LLM Fix Prompt for consensus-level findings" }
+    {
+      "key": "tri_engine_orchestration",
+      "summary": "Codex + Gemini + Claude Code subagents with NORMALIZE→CLUSTER→GROUND→ARBITRATE pipeline"
+    },
+    {
+      "key": "concurrence_scoring",
+      "summary": "CONFIRMED (3/3), LIKELY (2/3), CANDIDATE (1/3-must-ground)"
+    },
+    {
+      "key": "grounding_verification",
+      "summary": "Judge-context verification of CANDIDATE findings against actual code"
+    },
+    {
+      "key": "false_positive_filtering",
+      "summary": "SAST+LLM layered approach with 91% FP reduction benchmark"
+    },
+    {
+      "key": "ai_code_scrutiny",
+      "summary": "Elevated scrutiny for AI-generated code (logic, security, perf)"
+    },
+    {
+      "key": "absence_detection",
+      "summary": "Verify absent defenses (missing validation, sanitization, error handling)"
+    },
+    {
+      "key": "fix_prompt_generation",
+      "summary": "Paste-ready LLM Fix Prompt for consensus-level findings"
+    }
   ],
   "collaboration": {
-    "input": ["builder", "guardian", "scout", "pixel"],
-    "output": ["builder", "sentinel", "zen", "radar", "atlas", "warden"]
+    "input": [
+      "builder",
+      "guardian",
+      "scout",
+      "pixel"
+    ],
+    "output": [
+      "builder",
+      "sentinel",
+      "zen",
+      "radar",
+      "atlas",
+      "warden"
+    ]
   },
   "affinity": [
-    { "project": "saas", "level": "H" },
-    { "project": "ecommerce", "level": "H" },
-    { "project": "dashboard", "level": "H" }
+    {
+      "project": "saas",
+      "level": "H"
+    },
+    {
+      "project": "ecommerce",
+      "level": "H"
+    },
+    {
+      "project": "dashboard",
+      "level": "H"
+    }
   ],
   "rank": null,
   "badges": [],
@@ -32,5 +74,42 @@
     "variant": "personality-archetype-chibi-paper-poly",
     "status": "generated"
   },
-  "recipes": ["review", "pr", "from-pr", "precommit"]
+  "recipes": [
+    {
+      "subcommand": "pr",
+      "label": "Tri-Engine PR Review",
+      "default": true,
+      "when": "Full diff review of an entire PR (Codex + Gemini + Claude in parallel)"
+    },
+    {
+      "subcommand": "security",
+      "label": "Security-First",
+      "default": false,
+      "when": "CWE/OWASP focus, stricter checks on AI-generated code"
+    },
+    {
+      "subcommand": "perf",
+      "label": "Perf Focus",
+      "default": false,
+      "when": "Focus on N+1 / render cost / bundle size"
+    },
+    {
+      "subcommand": "style",
+      "label": "Style Readability",
+      "default": false,
+      "when": "Naming and structure only (no bug flagging, Claude single engine)"
+    },
+    {
+      "subcommand": "quick",
+      "label": "Quick Check",
+      "default": false,
+      "when": "<50 LOC low-risk, Claude single engine"
+    },
+    {
+      "subcommand": "intent",
+      "label": "Intent Alignment",
+      "default": false,
+      "when": "Focus on alignment between code and PR body"
+    }
+  ]
 }

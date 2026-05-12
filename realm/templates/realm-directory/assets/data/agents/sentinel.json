@@ -92,13 +92,53 @@
     "status": "generated"
   },
   "recipes": [
-    "scan",
-    "secrets",
-    "injection",
-    "deps",
-    "headers",
-    "authn",
-    "authz",
-    "aisec"
+    {
+      "subcommand": "scan",
+      "label": "Full Security Scan",
+      "default": true,
+      "when": "Full static security scan (OWASP Top 10)"
+    },
+    {
+      "subcommand": "secrets",
+      "label": "Secrets Audit",
+      "default": false,
+      "when": "Hardcoded credential and API key detection"
+    },
+    {
+      "subcommand": "injection",
+      "label": "Injection Check",
+      "default": false,
+      "when": "SQL/XSS/command injection focus"
+    },
+    {
+      "subcommand": "deps",
+      "label": "Dependency CVE",
+      "default": false,
+      "when": "Dependency vulnerability scan and supply-chain risk"
+    },
+    {
+      "subcommand": "headers",
+      "label": "Headers Audit",
+      "default": false,
+      "when": "Security header audit (CSP/CORS/HSTS)"
+    },
+    {
+      "subcommand": "authn",
+      "label": "Authentication Audit",
+      "default": false,
+      "when": "Session / JWT / OAuth-OIDC / MFA / password-storage review (OWASP A07:2025)"
+    },
+    {
+      "subcommand": "authz",
+      "label": "Authorization Audit",
+      "default": false,
+      "when": "RBAC / ABAC correctness, IDOR, BOLA/BFLA, privilege-escalation review (OWASP A01:2025)"
+    },
+    {
+      "subcommand": "aisec",
+      "label": "AI Security Audit",
+      "default": false,
+      "when": "LLM integration static review — prompt injection, PII leakage, unsafe tool-use (OWASP LLM Top 10 2025)"
+    }
   ]
 }
