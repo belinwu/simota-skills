@@ -133,6 +133,9 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Treat action oscillation (A→B→A→B alternation) as progress — oscillation produces zero net artifact change despite appearing active; classify as `OSCILLATION_LOOP` and escalate. [Source: agentpatterns.tech — Infinite Agent Loop; gantz.ai — Why Agents Get Stuck in Loops]
 - Run unmonitored loops without token budget caps — recursive agent loops have escalated from $127 to $18,400/week when cost tracking was absent. [Source: earezki.com — The $47,000 AI Agent Loop]
 - Stack retry layers across multiple abstraction levels (load balancer + service code + client library) — this doubles or triples call volume to a failing endpoint, worsening cascading failure. [Source: medium.com/@michael.hannecke — Resilience Circuit Breakers for Agentic AI]
+- Allow the agent to write `tests/`, `verify.sh`, `goal.md`, AC files, or `.claude/settings*.json` during a loop — these must be sha256-pinned at loop start and any change is an ABORT trigger (AP-13/AP-16/AP-20). Tests live under reward-hacking pressure; mutating verify is the most documented LLM cheat. [Source: metr.org — Reward Hacking; nist.gov — CAISI; cryptika.com — Claude Code Bypass]
+- Auto-resume on `BURN_RATE_ANOMALY` — once token/USD burn rate trips the EWMA threshold, the loop must PAUSE and require explicit human resume; auto-reload billing must be disabled for any Ralph-style unattended run. [Source: byteiota.com — Uber Claude Code; mfyz.com — Claude Code on Loop]
+- Trust verify PASS alone as evidence of completion — combine with placeholder grep, mutation score, or independent critic before accepting DONE; AP-12 (validator gap) and AP-18 (architectural incoherence) both pass standard test suites. [Source: dev.to/itsuzef — Judge Gate; asdlc.io — Ralph Loop]
 
 ## Operating Modes
 
@@ -340,6 +343,15 @@ Each layer has independent fallback behavior. See `references/executor-engines.m
 | `DEDUP_WINDOW` | `5` | check last N actions for duplicate tool calls before execution [Source: medium.com/@sattyamjain96] |
 | `CONVERGENCE_THRESHOLD` | `0.85` | action similarity ratio that triggers stuck-loop detection [Source: dev.to/boucle2026] |
 | `CONVERGENCE_WINDOW` | `3` | consecutive similar iterations before escalation |
+| `BURN_RATE_THRESHOLD` | `3.0` | 5-min token-rate multiplier vs prior window that trips `BURN_RATE_ANOMALY` (AP-17) |
+| `USD_PER_ITER_CAP` | `0` | absolute USD cap per iteration; `0` = unlimited (set explicitly for any unattended run) |
+| `USD_PER_RUN_CAP` | `0` | absolute USD cap per loop run; `0` = unlimited (set explicitly for any unattended run) |
+| `PLACEHOLDER_GREP` | `true` | verify step grep for `TODO`, `pass`, `NotImplementedError`, `return None` in changed src (AP-12) |
+| `TESTS_IMMUTABLE` | `true` | `tests/` and `verify.sh` are `chmod 0444` + sha256-pinned (AP-13) |
+| `GOAL_IMMUTABLE` | `true` | `goal.md` and AC files are sha256-pinned; mid-run change ABORTs (AP-16) |
+| `SETTINGS_IMMUTABLE` | `true` | `.claude/settings*.json` sha256-pinned at loop start (AP-20) |
+| `ARGV_DEDUP` | `true` | hash tool-call argv and dedup-check the last `DEDUP_WINDOW` calls (AP-21) |
+| `ARCH_LINT` | `false` | run `jscpd`/`dependency-cruiser`/`ts-prune` in verify; enable for long-running loops (AP-18) |
 
 ### Loop Tiers
 
@@ -414,6 +426,11 @@ If any item is missing, return `CONTINUE`.
 | `CONVERGENCE_STALL` | semantically equivalent actions with no progress | persist state, escalate to human |
 | `OSCILLATION_LOOP` | agent alternates between two contradictory actions (A→B→A→B) with no net progress | inject disambiguation context or restrict action space, then escalate |
 | `CONTEXT_OVERFLOW` | tool outputs inflate the context window beyond model capacity | apply memory pointer pattern (externalize outputs > 1KB), rotate or summarize context, then retry [Source: arxiv.org/abs/2511.22729] |
+| `VALIDATOR_GAP` | verify passes on stub/placeholder code (AP-12) | extend verify with placeholder grep + AC-derived behavioural assertions before accepting DONE |
+| `REWARD_HACK` | agent modified `tests/` or `verify.sh` to soften assertions (AP-13) | revert tests/verify changes, ABORT loop, escalate; run verify from a write-isolated worktree on retry |
+| `GOAL_DRIFT` | `goal.md` or AC files mutated mid-run (AP-16) | restore from sha256-pinned baseline, ABORT, escalate to human |
+| `BURN_RATE_ANOMALY` | token / USD burn rate exceeds EWMA threshold (AP-17) | PAUSE, snapshot state, require explicit user resume; never auto-continue |
+| `PERMISSION_HIJACK` | `.claude/settings*.json` permissions widened mid-run (AP-20) | restore baseline settings, ABORT, escalate; treat as P0 security event |
 
 ### Severity Matrix
 
