@@ -39,7 +39,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## エージェント一覧
 
-> 🏰 **[Realm Directory を探訪する](https://simota.github.io/agent-skills/realm-directory/)** — 全 136 エージェントのキャラクターポートレート、クラス・カテゴリ別フィルター、関係性マップが揃ったインタラクティブサイト。
+> 🏰 **[Realm Directory を探訪する](https://simota.github.io/agent-skills/realm-directory/)** — 全 137 エージェントのキャラクターポートレート、クラス・カテゴリ別フィルター、関係性マップが揃ったインタラクティブサイト。
 
 ### オーケストレーション
 
@@ -125,6 +125,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Siege** | _"Break it before users do. Fix it before they notice."_ - 高度テストスペシャリスト。負荷テスト（k6/Locust/Artillery）、契約テスト（Pact CDC）、カオスエンジニアリング、ミューテーションテスト、レジリエンスパターン検証 | テスト結果、レジリエンスレポート |
 | **Void** | _"The best code is the code that was never written."_ - YAGNI検証・スコープカット・機能プルーニング・複雑性削減提案。5つの存在検証問とCost-of-Keeping Scoreで不要な複雑性を特定 | 削減提案 |
 | **Vigil** | _"Detection is the first line of defense. Engineering is the last."_ - Detection Engineeringエージェント。Sigma/YARAルール設計、検出カバレッジマッピング、脅威ハンティング仮説設計、Detection-as-Code CI/CD統合 | 検出ルール、カバレッジマップ |
+| **Husk** | _"The worm leaves a husk. Find it before it sheds again."_ - サプライチェーンマルウェア感染スキャナ。npm/PyPI ワーム型攻撃（Mini Shai-Hulud、S1ngularity、lottie-player）を IoC ベースでローカル環境スキャン。OS 永続化（LaunchAgent/systemd）、IDE フック実装、lockfile pin、既知 C2/exfil トレースを検出。`rm -rf ~/` リテリエーションを発動させないよう永続化先停止、ローテーションは除染検証後に gate | 感染レポート、除染ランブック |
 | **Vista** | _"Tests you can't see, you don't trust. Tests you trust, you ship."_ - テスト知見の可視化スペシャリスト。junit.xml/lcov/allure/playwright/CTRF/OTelからカバレッジヒートマップ、トレーサビリティマトリクス、Test-Shape（Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass/Ice-Cream-Cone）、フレーキーテストダッシュボード（Wilson下限）、ミューテーション重畳カバレッジ、AI起点テストリスクレンズ、リグレッションタイムライン（E-Divisive変化点）を生成。Markdown + HTML 二重出力 | カバレッジヒートマップ、Test-Shape、フレーキーダッシュボード |
 | **Mint** | _"Good tests deserve great data."_ - テストデータ＆フィクスチャ生成エージェント。ファクトリパターン設計、境界値データ生成、合成データ生成、シードデータ管理 | コード |
 | **Comply** | _"Trust is earned. Compliance is proven."_ - 規制コンプライアンス＆監査エージェント。SOC2/PCI-DSS/HIPAA/ISO 27001のコントロールマッピング、監査証跡設計、Policy as Code | レポート、チェックリスト |

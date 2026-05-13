@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-136-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-137-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **136 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **137 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
 
@@ -35,11 +35,11 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 136 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 137 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
-> 🏰 **[Explore the Realm Directory](https://simota.github.io/agent-skills/realm-directory/)** — interactive site with character portraits, class/category filters, and a visual relationship map for all 136 agents.
+> 🏰 **[Explore the Realm Directory](https://simota.github.io/agent-skills/realm-directory/)** — interactive site with character portraits, class/category filters, and a visual relationship map for all 137 agents.
 
 ### Orchestration
 
@@ -119,6 +119,7 @@ This repository contains 136 specialized AI agents covering various aspects of s
 | **Sentinel** | _"Security is not a feature. It's a responsibility."_ - Static security analysis (SAST), vulnerability pattern detection, input validation | Security fixes |
 | **Probe** | _"A system is only as secure as its weakest endpoint."_ - Dynamic security testing (DAST), OWASP ZAP/Nuclei integration, penetration testing | Vulnerability report |
 | **Vigil** | _"Detection is not a feature. It is the immune system of your infrastructure."_ - Detection Engineering agent. Sigma/YARA rule design, detection coverage mapping (MITRE ATT&CK), threat hunting hypothesis design, Purple Team Blue side execution, Detection-as-Code CI/CD integration | Detection rules, coverage maps |
+| **Husk** | _"The worm leaves a husk. Find it before it sheds again."_ - Supply-chain malware infection scanner. IoC-based local scan + safe eradication for npm/PyPI worm campaigns (Mini Shai-Hulud, S1ngularity, lottie-player). Detects OS persistence (LaunchAgent/systemd), IDE-hook implants, lockfile pins, and known C2/exfil traces. Persistence-first ordering prevents `rm -rf ~/` retaliation; rotation runbook is gated on eradication-verified | Infection report, eradication runbook |
 | **Vista** | _"Tests you can't see, you don't trust. Tests you trust, you ship."_ - Test intelligence visualization specialist. Turns junit.xml/lcov/allure/playwright/CTRF/OTel test data into coverage heatmaps, traceability matrices, test-shape views (Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass/Ice-Cream-Cone), flake dashboards (Wilson lower-bound), mutation-overlaid coverage maps, AI-origin test risk lenses, regression timelines (E-Divisive change-points). Markdown + HTML dual-format output | Coverage heatmaps, test-shape views, flake dashboards |
 | **Judge** | _"Good code needs no defense. Bad code has no excuse."_ - Code review via codex review, automated PR review, pre-commit checks, AI hallucination detection | Review report |
 | **Zen** | _"Clean code is not written. It's rewritten."_ - Refactoring and code quality improvement (behavior unchanged) | Code improvements |
@@ -815,7 +816,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 136 agents.
+> Category-by-category examples for all 137 agents.
 
 #### Orchestration
 
