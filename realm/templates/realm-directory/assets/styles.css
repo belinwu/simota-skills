@@ -1548,3 +1548,172 @@ a:focus-visible {
     background: var(--realm-color-surface-card) !important;
   }
 }
+
+/* ============================================================
+ * Mobile responsiveness — tablet (≤768px) and phone (≤480px)
+ *
+ * Goals:
+ *   1. Prevent overflow in the top nav (brand + 4 links + 2 toggles).
+ *   2. Scale display typography down so the hero fits the viewport.
+ *   3. Convert the 5-tab detail strip from wrap to a horizontal-scroll row.
+ *   4. Let .section-head titles + counts stack instead of squeezing.
+ *   5. Ensure touch targets meet the WCAG 2.1 AA 24×24 px minimum (44 px ideal).
+ *   6. Respect the iOS notch / Android gesture-bar safe areas.
+ * ============================================================ */
+
+@media (max-width: 768px) {
+  /* Container: tighter side padding so the agent grid doesn't get pinched. */
+  .container {
+    padding-inline: var(--realm-spacing-md);
+  }
+
+  /* ---- Top nav ---- */
+  .app-nav__inner {
+    gap: var(--realm-spacing-sm);
+  }
+  .app-nav__links {
+    gap: var(--realm-spacing-xs);
+    /* Allow the link row to scroll horizontally rather than wrap to 2 lines. */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .app-nav__links::-webkit-scrollbar { display: none; }
+  .app-nav__link {
+    padding: var(--realm-spacing-xs) var(--realm-spacing-sm);
+    font-size: var(--core-font-size-14);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .app-nav__brand {
+    font-size: var(--core-font-size-16);
+    flex-shrink: 0;
+  }
+  .theme-toggle {
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: var(--realm-spacing-sm);
+    flex-shrink: 0;
+  }
+
+  /* ---- Hero typography ---- */
+  .hero__title {
+    font-size: clamp(36px, 9vw, 56px);
+    line-height: 1.1;
+  }
+  .hero__tagline,
+  .hero__lead {
+    font-size: var(--core-font-size-16);
+  }
+  .hero {
+    padding-block: var(--realm-spacing-lg);
+  }
+  /* Stack the search input and count below it on narrow widths. */
+  .hero .cluster {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero .cluster > .search {
+    width: 100%;
+  }
+
+  /* ---- Tabs ---- */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar { height: 4px; }
+  .tabs__item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 44px;
+  }
+
+  /* ---- Section heads ---- */
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--realm-spacing-xs);
+    margin: var(--realm-spacing-lg) 0 var(--realm-spacing-md);
+  }
+
+  /* ---- Detail hero CTAs ---- */
+  .detail-hero__cta {
+    flex-wrap: wrap;
+    gap: var(--realm-spacing-sm);
+  }
+  .detail-hero__cta .btn {
+    flex: 1 1 auto;
+    min-height: 44px;
+  }
+
+  /* ---- Invocation block ---- */
+  /* On phones, put the Copy button on its own line so the code can wrap freely. */
+  .invocation-block {
+    flex-wrap: wrap;
+  }
+  .invocation-block__code {
+    flex-basis: 100%;
+    word-break: break-all;
+  }
+  .invocation-block .btn,
+  .invocation-block button {
+    min-height: 44px;
+  }
+
+  /* ---- Map graph scroll affordance ---- */
+  .map-graph-wrapper {
+    /* Reduce vertical space so the user can see content under it. */
+    max-height: 60vh;
+  }
+
+  /* ---- Detail stats line: allow natural wrap with comfortable line height. */
+  .detail-stats {
+    line-height: 1.7;
+  }
+
+  /* ---- Breadcrumb: tighter on mobile ---- */
+  .breadcrumb {
+    margin: var(--realm-spacing-sm) 0;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Side padding shrinks further on small phones. */
+  .container {
+    padding-inline: var(--realm-spacing-sm);
+  }
+
+  /* Hide the brand wordmark; the gradient mark "R" is enough. */
+  .app-nav__brand > span:last-child {
+    display: none;
+  }
+
+  /* Trim aggressive display sizing so it fits a 360-375px viewport. */
+  .hero__title {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+
+  /* Detail hero CTAs full width on small phones. */
+  .detail-hero__cta .btn {
+    width: 100%;
+  }
+
+  /* Filter rail: trim its internal padding on tiny screens. */
+  .filter-rail {
+    padding: var(--realm-spacing-sm);
+  }
+}
+
+/* ---- Safe-area insets (iOS notch, Android gesture bar) ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .app-nav {
+    padding-top: env(safe-area-inset-top);
+  }
+}
