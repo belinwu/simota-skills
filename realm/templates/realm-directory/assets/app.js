@@ -118,11 +118,12 @@
       });
       root.querySelectorAll('[data-i18n-attr]').forEach(el => {
         const spec = el.getAttribute('data-i18n-attr');
+        const params = this.parseParams(el.getAttribute('data-i18n-params'));
         // format: "attrName:key.path,attr2:key.path"
         spec.split(',').forEach(pair => {
           const [attr, k] = pair.split(':').map(s => s && s.trim());
           if (!attr || !k) return;
-          el.setAttribute(attr, this.t(k));
+          el.setAttribute(attr, this.t(k, params));
         });
       });
       root.querySelectorAll('[data-i18n-html]').forEach(el => {
