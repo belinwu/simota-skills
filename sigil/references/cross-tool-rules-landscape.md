@@ -8,7 +8,74 @@ Purpose: load this during `SCAN` when the project uses multiple AI rule systems 
 2. Shared rule shapes
 3. Interoperability strategies
 4. Path-based scoping
-5. Sigil implications
+5. Canonical rule file patterns (SCAN detection set)
+6. Sigil implications
+
+## Canonical Rule File Patterns
+
+When running `SCAN`, detect convention sources by matching these glob patterns. Presence of any pattern in this set should trigger ingestion during the SCAN phase (the file's content informs naming/import/testing/error-handling conventions).
+
+### AI-tool rule files
+
+| Pattern | Origin tool |
+|---------|-------------|
+| `CLAUDE.md`, `CLAUDE.local.md`, `**/CLAUDE.md` | Claude Code |
+| `AGENTS.md`, `**/AGENTS.md` | Cline / Roo / Codex CLI |
+| `.cursorrules`, `.cursor/rules/**/*.mdc` | Cursor |
+| `.windsurfrules` | Windsurf |
+| `.github/copilot-instructions.md` | GitHub Copilot |
+| `GEMINI.md` | Gemini CLI |
+
+### JavaScript / TypeScript
+
+| Pattern | Purpose |
+|---------|---------|
+| `.eslintrc*`, `eslint.config.{js,mjs,cjs,ts}` | Lint rules → coding conventions |
+| `tsconfig*.json` | Path aliases, strictness, target |
+| `.prettierrc*`, `prettier.config.{js,cjs,mjs}` | Formatting policy |
+| `jest.config.*`, `vitest.config.*`, `playwright.config.*` | Test framework + location convention |
+| `next.config.{js,mjs,ts}`, `vite.config.*`, `webpack.config.*` | Framework-specific build rules |
+| `package.json` (`scripts`, `engines`, `workspaces` fields) | Toolchain, command surface, monorepo layout |
+
+### Python
+
+| Pattern | Purpose |
+|---------|---------|
+| `pyproject.toml` | Build, deps, linter, formatter (Ruff/Black) config |
+| `setup.cfg`, `setup.py` | Legacy build/lint config |
+| `pytest.ini`, `tox.ini`, `conftest.py` | Test discovery + fixtures |
+| `mypy.ini`, `.mypy.ini` | Type-check strictness |
+| `requirements*.txt`, `Pipfile`, `poetry.lock`, `uv.lock` | Dependency lock |
+
+### Go
+
+| Pattern | Purpose |
+|---------|---------|
+| `go.mod`, `go.sum`, `go.work` | Module/workspace structure |
+| `.golangci.yml`, `.golangci.yaml` | Lint policy |
+| `Makefile` (target naming) | Build/test entry conventions |
+
+### Rust
+
+| Pattern | Purpose |
+|---------|---------|
+| `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml` | Crate, deps, toolchain pin |
+| `clippy.toml`, `rustfmt.toml` | Lint + formatting policy |
+
+### General (cross-language)
+
+| Pattern | Purpose |
+|---------|---------|
+| `.editorconfig` | Indentation, line endings |
+| `.gitignore`, `.gitattributes` | What is/isn't source |
+| `.env*` (read names only — never values) | Required runtime config keys |
+| `.pre-commit-config.yaml`, `lefthook.yml`, `.husky/**` | Git hooks → quality gates |
+| `Dockerfile`, `compose.{yml,yaml}`, `.devcontainer/**` | Runtime environment |
+| `.github/workflows/**/*.{yml,yaml}`, `.gitlab-ci.yml`, `.circleci/config.yml` | CI policy → automation surface |
+| `LICENSE`, `LICENSE.md` | License constraint on generated artifacts |
+| `README.md`, `docs/**/*.md` | Implicit conventions and onboarding |
+
+**SCAN policy**: read these files with **path + selective excerpt** strategy. Do not full-read everything — sample first 100 lines and grep for keys that match Sigil's detection patterns (e.g., `paths` in tsconfig, `[tool.ruff]` in pyproject, `lint:` in eslint config). Heavy reads are reserved for files with confirmed convention payload.
 
 ## Tool Comparison
 

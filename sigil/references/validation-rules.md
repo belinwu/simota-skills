@@ -9,6 +9,24 @@ Purpose: load this during `VERIFY` to apply format checks, content checks, the `
 3. Quality rubric
 4. Failure patterns
 5. Report template
+6. Relationship to Gauge
+
+## Relationship to Gauge
+
+Sigil's `12`-point rubric and Gauge's `16`-item normalization checklist serve **different decision surfaces** and are not interchangeable:
+
+| Aspect | Sigil 12-point rubric | Gauge 16-item checklist |
+|--------|----------------------|--------------------------|
+| Purpose | Real-time install gate during CRAFT/VERIFY | Ecosystem-wide format compliance audit |
+| Granularity | 4 axes × 0-3 (Format/Relevance/Completeness/Actionability) | 16 binary items (F1/L1/H1-3/S1-9/A1-2/R1) |
+| Pass threshold | `9+/12` install, `6-8` recraft, `0-5` abort | Health score percentage with PASS/PARTIAL/FAIL per item |
+| Scope | Project-local generated skill | Any SKILL.md including ecosystem agents |
+| Frequency | Every install, every refresh | On audit request, after structural change, scheduled |
+| Source of truth | This file | `gauge/references/normalization-checklist.md` |
+
+**Routing rule**: when a generated skill has `ecosystem impact` (PROJECT_AFFINITY: universal or multi-project scope, or it is being promoted into `~/.claude/skills/`), forward the artifact to Gauge for full 16-item validation **after** Sigil's own 9+/12 install gate passes. Gauge is a stricter, format-focused superset; passing Sigil does not imply passing Gauge.
+
+Treat Gauge's checklist as a **read-only input signal** during DISCOVER and CRAFT — use it to inform template choices, but do not let it replace this rubric's quantitative scoring during VERIFY.
 
 ## Format Checks
 
@@ -18,7 +36,7 @@ Purpose: load this during `VERIFY` to apply format checks, content checks, the `
 |------|-------|----------|
 | YAML block present | File starts with `---` | FAIL |
 | `name` field | Non-empty, kebab-case, usually `2-4` words | FAIL |
-| `description` field | Non-empty, one Japanese sentence | FAIL |
+| `description` field | Non-empty, third-person trigger phrase ("Use when…" / "Analyzes…"), ≤ 1,024 chars (target < 250), no first/second person, no XML angle brackets | FAIL |
 | Extra fields | Only keep fields the runtime actually needs | WARN |
 
 ### Section Structure

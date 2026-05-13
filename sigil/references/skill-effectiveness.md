@@ -85,6 +85,21 @@ Rules:
 3. Decay adjustments `10%` per month toward defaults.
 4. Explicit user priority overrides calibration.
 
+### Rationale for Calibration Constants
+
+The three numerical guardrails (3-point minimum, ±0.3 per-batch cap, 10%/month decay) are deliberately conservative. They derive from the following constraints — when these change, revisit the constants and journal the update.
+
+| Constant | Origin | Why this value |
+|----------|--------|----------------|
+| `3+` data points minimum | Standard small-sample statistical guard | One or two batches can be project-idiosyncratic; three is the smallest sample where a directional signal is more likely than noise. Higher minima (e.g., 5+) slow adaptation too much for project-local skills. |
+| `±0.3` per-batch cap | Bounded gradient analogue | Caps single-batch influence so a single anomalous project cannot flip the ranking. Aligned with reinforcement-learning trust-region intuition (limit step size relative to the parameter's natural scale of ~1.0). |
+| `10%/month` decay | Exponential half-life ≈ 6.6 months | Forces weights to re-earn their position over a quarter+; prevents stale calibration from a long-past stack (e.g., abandoned framework) keeping outsized influence. Half-life chosen so a quarterly review cycle naturally revalidates active learnings. |
+| `< 50%` activation flag | Anthropic skill-creator guidance | Per Anthropic skill-creator 2.0 (60/40 train/test split), descriptions with held-out activation under 50% are typically misclassified — flag for description refinement rather than weight change. See [`references/official-skill-guide.md`](official-skill-guide.md) for the train/test methodology. |
+
+**Self-modification guard**: ATTUNE **cannot** modify these constants or its own pass thresholds (`9+/12`, `6-8`, `0-5`). Doing so would be reward hacking — the calibration system rewriting its own evaluator. If the constants appear to be wrong, surface that as an `EVOLUTION_SIGNAL` to Lore and let a human review the change. See [`references/meta-prompting-self-improvement.md`](meta-prompting-self-improvement.md) for the immutable-evaluator rule.
+
+**Cross-reference**: when a reusable pattern emerges (`reusable: true` in ATTUNE output), forward to Lore for baseline propagation across projects. Lore maintains the cross-project performance baselines that justify per-project deviations from defaults.
+
 ### Template Calibration
 
 Track which template shape scores better in each context:
