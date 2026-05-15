@@ -5,38 +5,121 @@ Principles, templates, and best practices for demo video scenario design.
 Purpose: Read this when Director must design a story arc, tune pacing, select overlay timing, adapt the demo to an audience, or review scenario quality before recording.
 
 Contents:
-- `Storytelling Structure`: problem → solution → result framing
+- `3-Second Layered Hook`: hook design rules for 70% drop-off prevention
+- `Storytelling Structure`: hook → pain → solution → result framing
+- `Show Don't Tell Techniques`: B-roll, before/after split, caption-aware overlay
 - `Scenario Templates`: full and quick planning templates
 - `Operation Granularity Design`: step sizing rules for viewer comprehension
 - `Wait Strategy`: explicit waits vs pacing pauses
 - `Overlay Display Patterns`: overlay timing and style rules
 - `Audience-Specific Adjustments`: new user, existing user, investor, developer variants
-- `Time Allocation Guidelines`: duration guidance by scope
+- `Time Allocation Guidelines`: duration guidance by scope (including 2-min engagement cliff)
+- `Platform Length Targets (2026)`: per-platform optimal lengths
+- `Director vs AI Video Generators`: when to record vs when to generate
 - `Scenario Anti-Patterns`: must-avoid pacing and structure mistakes
 - `Test Data Realism`: realism and privacy rules
 - `Scenario Review Checklist`: pre-recording quality review
 
 ---
 
+## 3-Second Layered Hook
+
+TikTok / Reels / Shorts drop **~70% of viewers** in the first 3 seconds. LinkedIn / YouTube are kinder but the principle holds: the first 3 seconds decide whether the demo gets watched at all. A **layered hook** (visual + textual + optional audio simultaneously) holds attention **~3× longer** than a single-channel opening.
+
+### Hook Composition
+
+| Channel | Bad | Good |
+|---------|-----|------|
+| Visual | Generic landing page, brand splash | Concrete problem state (overflowing inbox, broken dashboard, stuck deployment) |
+| Text overlay | "Welcome to Acme" | "Excel breaks at 50k rows. Watch this." (3–5 words, bold, big) |
+| Audio (optional) | Silence + corporate stinger | Quick whoosh / typewriter / heartbeat aligned with text reveal |
+| Motion | Static screenshot | Zoom-in on broken element, jump-cut, or speed-ramp |
+
+### Hook Templates
+
+| Template | Pattern | Example |
+|----------|---------|---------|
+| **Problem-Shock** | "Show the broken state first" | Visual: red error toast. Text: "Your CI just failed for the 4th time today." |
+| **Outcome-First** | "Show the future first, then reveal how" | Visual: green ✅ in 8s. Text: "Ship in 8 seconds." |
+| **Question-Hook** | "Pose the question viewers ask" | Text: "Why does deploy take 20 minutes?" |
+| **Numeric-Hook** | "Concrete number that contradicts expectations" | Text: "5,000 rows → 5 milliseconds." |
+| **Reaction-Hook** | "Show a real person's expression of relief / surprise" | Used for stakeholder / investor demos with founder-led VO |
+
+### Hook Anti-Patterns
+
+| Anti-Pattern | Why bad | Fix |
+|--------------|---------|-----|
+| Open on logo / splash | Wastes the first 1–2 sec | Cut the splash; logo can appear at the end |
+| Generic landing-page opener | No pain context, low retention | Skip to the broken state or the outcome |
+| Voiceover before visual | Audio plays before viewer's eye locks on screen | Visual + text first; voice can come at 1.5s |
+| "Hi everyone, today we'll be..." | Talking-head opener; instant drop on social | Cut all greetings; start in-action |
+| One-channel hook (text only OR visual only) | Lower 3-sec retention | Layer two channels minimum |
+
+---
+
+## Show Don't Tell Techniques
+
+Demos communicate value when viewers **see** the outcome — not when narration **describes** it. Director patterns for 2026:
+
+### B-roll Overlay (70–85% opacity, 3–7s clips)
+
+Cut to supporting footage (real product UI, data, mobile capture) at 70–85% opacity over a stable base scene. Holds visual interest while extending narration.
+
+```
+0:00–0:08  Base scene: dashboard (full opacity)
+0:08–0:15  B-roll overlay: mobile capture of same data (75% opacity)
+0:15–0:22  Base scene returns; B-roll dissolves out
+```
+
+### Before / After Split-Screen
+
+Legacy flow on left, new flow on right, synced timeline. Use for redesigns, migrations, AI-vs-manual comparisons.
+
+- Sync points: shared start, shared end ("both reach the same outcome — one in 30s, one in 4 minutes").
+- Letterbox the right side as the "after" loads to emphasize speed delta.
+
+### Caption-Aware B-roll Positioning
+
+Open captions occupy bottom 15% of the frame. B-roll and overlays must avoid this band. CapCut / Descript auto-detect captions; if hand-authoring, reserve the bottom strip.
+
+### Speed Ramping
+
+Boring middle sections (data loading, API roundtrips) get 2–4× speed-up. Critical reveals stay real-time. ffmpeg: `setpts=0.5*PTS` for 2× speed.
+
+### Cursor as Storyteller
+
+The cursor is the camera. Move it deliberately:
+- Hover before clicking (200–400ms) — signals intent.
+- Slow approach to the Aha button.
+- Cursor halo / pulse on key interactive elements (`implementation-patterns.md` → Cursor helpers).
+
+---
+
+---
+
 ## Storytelling Structure
 
-Design demos as **stories**, not operation sequences. Follow the Problem > Solution > Result arc.
+Design demos as **stories**, not operation sequences. Follow the **Hook → Pain → Solution → Result → CTA** arc.
 
 ```
-Problem (Setup)      Solution (Action)     Result (Resolution)
------------------    -----------------     -----------------
-Explain context      Address task          Achieve goal
-5-10 sec             20-40 sec             5-10 sec
+Hook (0–3s)    Pain (3–10s)    Solution (10–40s)    Result (40–55s)    CTA (55–60s)
+-----------    --------------  -------------------- -----------------  -------------
+Layered hook   Show the broken Demonstrate the      Show the outcome   Single next
+visual+text    workflow / cost / new way              & emotion          step
+hook
 ```
 
-### Four-Act Application
+### Five-Act Application (60s default)
 
-| Phase | Purpose | Example (Login Feature) |
-|-------|---------|------------------------|
-| **Setup** | Set context | "Let's log in to the service" |
-| **Rising** | Execute action | Form input, submission |
-| **Climax** | Highlight | Loading, auth success |
-| **Resolution** | Result & satisfaction | Dashboard display |
+| Phase | Duration | Purpose | Example (Migration tool) |
+|-------|----------|---------|--------------------------|
+| **Hook** | 0–3s | Lock attention | Visual: SQL error toast. Text: "Schema drift broke prod." |
+| **Pain** | 3–10s | Establish stakes | Show manual diff process across 3 environments |
+| **Solution** | 10–40s | Show the new way | One-click migration plan + preview + apply |
+| **Result** | 40–55s | Emotional payoff | Green checkmarks across all envs, founder's reaction |
+| **CTA** | 55–60s | Single next step | "Try it free → acme.dev/migrate" |
+
+Skip phases as the archetype dictates (`storytelling-archetypes.md`): a 30s social hook collapses Pain into Hook; a 180s walkthrough expands Solution into multiple chapters.
 
 ---
 
@@ -244,12 +327,13 @@ await showErrorOverlay(page, 'An error occurred');
 
 ### Duration by Scope
 
-| Duration | Use Case |
-|----------|----------|
-| Under 30 seconds | Simple single operation |
-| 30-60 seconds | Standard feature demo |
-| 60-120 seconds | Complex flow |
-| Over 120 seconds | Consider splitting |
+| Duration | Use Case | Notes |
+|----------|----------|-------|
+| Under 30 seconds | Social hook, ads, looped hero | TikTok-friendly 21–34s |
+| 30-60 seconds | Standard feature demo, Product Hunt gallery | Best completion rate (~71%) |
+| 60-90 seconds | LinkedIn / YouTube optimal | Balance of substance + engagement |
+| 90-120 seconds | Complex flows, presentation | Approaching the cliff — chapterize |
+| **Over 120 seconds — HARD CAP** | **HARD CAP — split or chapterize** | Engagement drops ~40% past 2 minutes |
 
 ### Engagement Benchmarks (2026)
 
@@ -257,10 +341,15 @@ Use these benchmarks to calibrate the duration budget, not as hard limits.
 
 | Metric | Value | Implication |
 |--------|-------|-------------|
+| First-3-sec drop-off (TikTok/Reels) | ~70% | Layered hook is non-negotiable |
 | Videos under 90s repeat-view rate | ~50% | Treat 90s as the engagement ceiling for top-of-funnel demos |
 | B2B average video length (2026) | ~76s | Compressed from prior years; audiences expect shorter demos |
-| Sub-60s video completion rate | ~71% | Sub-60s is optimal for social and top-of-funnel |
-| 60-90s videos | Balance point | Best engagement/substance trade-off for feature demos |
+| Sub-60s video completion rate | ~71% (mobile) | Sub-60s is optimal for social and top-of-funnel |
+| 60-90s completion rate | ~60% | Best engagement/substance trade-off for feature demos |
+| 120s+ engagement loss | ~40% drop | **Hard cap; switch to chaptered or series format** |
+| 9:16 mobile completion rate | ~76% | Vertical wins on mobile vs 54% for 16:9 |
+| 9:16 ad viewability | ~90% vs 14% (16:9) | Vertical massively outperforms for paid placement |
+| Interactive demo engagement | ~2× vs walkthrough | Hand off to Supademo / Arcade when interactivity wins |
 
 ### Self-Guided Embed Step Count
 
@@ -268,16 +357,44 @@ Use these benchmarks to calibrate the duration budget, not as hard limits.
 |---------|-------|-------|
 | Email / Social | 6-8 | Short attention span, single Aha moment |
 | Website / Docs | 8-15 | Tolerates more context and exploration |
+| Interactive (Supademo / Arcade) | 10-25 | User self-paces — different medium, different rules |
 
-### Platform-Adapted Pacing
+### Platform-Adapted Pacing (2026)
 
-| Platform | Pacing | Captions | Aspect ratio hint |
-|----------|--------|----------|------------------|
-| LinkedIn / YouTube | Moderate | Required for mute autoplay | 16:9 |
-| X / Twitter | Fast | Required | 16:9 or 1:1 |
-| Instagram / TikTok | Fast, hook in first 2s | Required | 9:16 |
-| Website hero | Moderate, looped | Optional (muted autoplay) | 16:9 |
-| Docs inline | Slow, instructional | Optional | 16:9 |
+| Platform | Pacing | Optimal Length | Captions | Aspect Ratio |
+|----------|--------|----------------|----------|--------------|
+| YouTube (long) | Moderate | 60–180s | Required for mute autoplay | 16:9 (1920×1080) |
+| YouTube Shorts | Fast, hook in 3s | 30–60s | Required (open) | 9:16 (1080×1920) |
+| LinkedIn feed | Moderate | 15–60s B2B | Required | **4:5 (1080×1350) — 2026 default** |
+| LinkedIn (16:9) | Moderate | 60–90s | Required | 16:9 fallback |
+| X / Twitter | Fast | ≤60s free / longer with Premium+ | Required | 16:9 or 1:1 |
+| Instagram Reels | Fast, hook in 2s | <90s | Required (open) | 9:16 |
+| TikTok | Fast, hook in 3s | **21–34s** (Explore-friendly) | Required (open) | 9:16 |
+| Product Hunt | Moderate | 45–60s gallery, 60–120s demo | Required + YouTube hosting | 1:1 or 16:9 |
+| Website hero | Moderate, looped | 15–30s loop | Optional (muted autoplay) | 16:9 |
+| Docs inline | Slow, instructional | 30–90s | Optional | 16:9 |
+
+### Talking-Head Bias (B2B / Dev Tools)
+
+For dev-tool and B2B Product Hunt launches, **talking-head openers are a demerit**. The 2026 industry-Top pattern (Cursor, Linear, Notion, Vercel) is "dashboard → workflow → after-state" without a presenter face. Use talking-head only for stakeholder/investor demos with founder-led VO where trust is the asset.
+
+---
+
+## Director vs AI Video Generators
+
+Director records **real product UI**. AI video generators (Sora 2, Veo 3.1, Runway Gen-4.5) generate footage from prompts. They are complementary, not competitive — pick the right tool per scene.
+
+| Scene | Use | Why |
+|-------|-----|-----|
+| Real product workflow | **Director (Playwright)** | Reproducible, accurate, on-brand UI |
+| Hero opener / abstract metaphor (e.g., "data flowing through pipes") | AI generator | Director can't film abstract concepts |
+| B-roll for non-UI moments (office, hands typing) | AI generator | No need to shoot live action |
+| Future UI / not-yet-built feature | AI generator | Director needs real DOM |
+| Investor / vision film | AI generator + Director cuts | Mix aspirational + concrete |
+| Onboarding walkthrough | **Director (Playwright)** | Must match the actual UX |
+| Comparison vs competitor (their UI) | **Director** + recorded competitor session (with permission) | Visual proof must be authentic |
+
+When the request mixes both, Director records the real-UI segments; route the AI segments to an AI-video brief (out of Director scope).
 
 ---
 

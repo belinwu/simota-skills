@@ -112,19 +112,37 @@ Closed is preferred when platform supports toggle. Open for social media autopla
 
 Sound-effect descriptions and non-dialog audio cues are required per WCAG 1.2.2.
 
-## Auto-Generation
+## Auto-Generation (2026)
 
-| Tool | Accuracy | Speed | Best for |
-|------|----------|-------|----------|
-| **OpenAI Whisper (large-v3)** | High (multilingual) | Medium | Offline, privacy, batch |
-| **Deepgram Nova-3** | High | Fast (< realtime) | Production pipelines |
-| **Azure Speech-to-Text** | High (enterprise) | Fast | Azure stacks |
-| **Google Cloud STT v2** | High | Fast | Multilingual global |
-| **Rev.ai** | Very high (human-assisted) | Slow | High-stakes content |
-| **Descript** | High + UI polish | Interactive | Podcast / interview workflow |
-| **YouTube auto-captions** | Mid | Instant | Quick-and-dirty only; always QC |
+| Tool | WER (approx) | Speed | Best for |
+|------|--------------|-------|----------|
+| **GPT-4o-Transcribe** | **~4.1%** (2026 leader) | Fast | Primary pipeline; multilingual, low WER |
+| **OpenAI Whisper large-v3** | ~5.3% | Medium | Offline, privacy, batch; baseline fallback |
+| **Deepgram Nova-3** | high | Fast (< realtime) | Production pipelines, streaming |
+| **Azure Speech-to-Text** | high (enterprise) | Fast | Azure stacks |
+| **Google Cloud STT v2** | high | Fast | Multilingual global |
+| **Rev.ai** | very high (human-assisted) | Slow | High-stakes / regulated content |
+| **Descript** | high + UI polish | Interactive | Podcast / interview workflow |
+| **Loom AI** | high | Instant | Loom-hosted demos; auto-chapters + 50+ langs |
+| **YouTube auto-captions** | mid | Instant | Quick-and-dirty only; always QC |
 
-Always QC auto-generated captions — homophones (to/too/two), product-name typos, punctuation errors.
+> Whisper v4 is **not** publicly released as of 2026-05. Use GPT-4o-Transcribe as the 2026 default; Whisper large-v3 remains the open-source fallback. Always QC auto-generated captions — homophones (to/too/two), product-name typos, punctuation errors.
+
+### Recommended Pipeline (2026)
+
+```
+audio.wav
+   ↓
+GPT-4o-Transcribe   →   raw .vtt
+   ↓
+human QC pass       →   fix homophones, product names, punctuation
+   ↓
+   ├──→ closed-caption .vtt (for accessibility / search)
+   ├──→ open / burned-in (ffmpeg `subtitles` filter for muted-autoplay)
+   └──→ DeepL / GPT-4o translation  →  per-locale .vtt  →  human review
+```
+
+For multilingual: GPT-4o (source-aware translation) outperforms DeepL on demo-context idioms, but DeepL is faster for bulk locale fan-out. Always human-review **product names** in target languages.
 
 ## FFmpeg Auto-Caption Pipeline
 

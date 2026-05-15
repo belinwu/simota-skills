@@ -5,6 +5,11 @@ Playwright implementation patterns for demo video recording.
 Purpose: Read this when Director needs concrete Playwright implementation patterns for scenes, auth, overlays, interaction effects, performance demos, comparison layouts, narration, persona-aware flows, or ARIA validation.
 
 Contents:
+- `page.screencast Patterns (2026 PRIMARY)`: 1.59 Stable API recipes
+- `3-Second Layered Hook Implementation`: opening pattern that holds the first 3 seconds
+- `Vision-Stream (onFrame)`: JPEG streaming to Vision Models for agentic loops
+- `Multi-Aspect Recording`: orchestrating 16:9 / 9:16 / 4:5 / 1:1 from one scenario
+- `B-roll Overlay Pattern`: 70–85% opacity overlay with caption-safe positioning
 - `Basic Test Structure`: scene organization with `test.step()`
 - `Authentication Patterns`: API login, localStorage, and storage-state setup
 - `File Upload Pattern` / `Smooth Scroll Pattern`: common demo interactions
@@ -19,6 +24,252 @@ Contents:
 - `Persona-Aware Demo Recording`: Echo-driven persona timing patterns
 - `ARIA Snapshot Validation`: accessibility validation during demos
 - `Complete Demo Example`: integrated reference pattern
+
+---
+
+## page.screencast Patterns (2026 PRIMARY)
+
+`page.screencast` is the **primary** recording API since Playwright 1.59 (2026-04). It supports precise start/stop, chapters, auto-action annotations, custom overlays, and a JPEG-frame callback (`onFrame`) — all of which Director relies on for narrative video production.
+
+### Chaptered Demo (replaces single-shot `recordVideo`)
+
+```typescript
+// demos/specs/checkout-chaptered.spec.ts
+import { test } from '@playwright/test';
+
+test('checkout — chaptered demo', async ({ page }) => {
+  const sc = await page.screencast.start({
+    path: 'demos/output/checkout_complete_16x9_20260515.webm',
+    size: { width: 1920, height: 1080 },
+    quality: 90,
+  });
+
+  // Auto-annotate clicks/fills/navigations
+  await sc.showActions({ position: 'top-right', duration: 600, fontSize: 22 });
+
+  await sc.showChapter({
+    title: 'Chapter 1 — Add to cart',
+    description: 'Pick a product and add it to the cart.',
+    duration: 2000,
+  });
+  await page.goto('/products/awesome');
+  await page.getByRole('button', { name: 'Add to cart' }).click();
+
+  await sc.showChapter({
+    title: 'Chapter 2 — Checkout',
+    description: 'Frictionless single-screen checkout.',
+  });
+  await page.goto('/checkout');
+  await page.getByLabel('Email').pressSequentially('demo@acme.test', { delay: 80 });
+  await page.getByRole('button', { name: 'Pay $39.80' }).click();
+
+  await sc.showOverlay({
+    html: `<div class="aha">⚡ Done in 8 seconds</div>`,
+    duration: 2500,
+  });
+
+  await sc.stop();
+});
+```
+
+### Replacing Custom Overlay Helpers
+
+Prefer `screencast.showActions()` over hand-rolled cursor / click highlighters when:
+- The demo's visual emphasis is "what did the user just click?"
+- The recording is for a developer / power-user audience.
+
+Use custom overlays (`showOverlay({ html })`) when:
+- You need brand-styled callouts.
+- You need a chart, code block, or animated metric on screen.
+- The narrative beat is "the result" (callout the number / outcome).
+
+---
+
+## 3-Second Layered Hook Implementation
+
+Goal: by 3 seconds in, the viewer has seen a visual change, read a 3–5 word hook, and (optionally) heard a sound cue.
+
+```typescript
+test('hook — schema-drift problem', async ({ page }) => {
+  const sc = await page.screencast.start({
+    path: 'demos/output/migrate_hook_16x9_20260515.webm',
+    size: { width: 1920, height: 1080 },
+  });
+
+  // T+0.0s: Visual — broken state on screen immediately
+  await page.goto('/playground?seed=broken-migration');
+
+  // T+0.3s: Text hook overlay (3-5 words, big bold)
+  await sc.showOverlay({
+    html: `
+      <div style="
+        position:fixed; inset:0;
+        display:flex; align-items:flex-end; justify-content:center;
+        padding-bottom:48px; pointer-events:none;">
+        <div style="
+          background:#E11D48; color:white;
+          padding:20px 36px; border-radius:14px;
+          font:800 56px/1.1 Inter, sans-serif;
+          letter-spacing:-0.02em;">
+          Schema drift broke prod.
+        </div>
+      </div>`,
+    duration: 2400,
+  });
+
+  // T+0.5s: Optional audio cue via SFX overlay (HTML5 audio injected into page)
+  await page.evaluate(() => {
+    const a = new Audio('/assets/whoosh.mp3');
+    a.volume = 0.4; a.play();
+  });
+
+  // T+3.0s: Continue into Pain → Solution
+  await page.waitForTimeout(2400);
+  await sc.showChapter({ title: 'The pain', duration: 1500 });
+  // ...
+  await sc.stop();
+});
+```
+
+**Anti-pattern**: starting on a logo splash or a clean landing page. The viewer's eye lands on nothing and they bounce.
+
+---
+
+## Vision-Stream (onFrame)
+
+`onFrame` streams JPEG frames to a callback. Use it to feed a Vision Model (GPT-4o vision, Claude vision) for live narration, agentic feedback loops, or visual QA.
+
+```typescript
+import { test } from '@playwright/test';
+
+let lastSent = 0;
+const FPS_LIMIT = 2;  // 2 fps to a Vision API is plenty for narrative agents
+
+test('agent watches the screen', async ({ page }) => {
+  const sc = await page.screencast.start({
+    path: 'demos/output/agent_session_20260515.webm',
+    size: { width: 1280, height: 720 },
+    quality: 80,
+    onFrame: async (jpegBuffer, tsMs) => {
+      if (tsMs - lastSent < 1000 / FPS_LIMIT) return;
+      lastSent = tsMs;
+      // Pseudocode — replace with your Vision client
+      await visionClient.observe({
+        image: jpegBuffer.toString('base64'),
+        prompt: 'Describe the user-visible state. Flag anomalies.',
+      });
+    },
+  });
+
+  // Agent / demo workflow runs as normal Playwright code
+  await page.goto('/dashboard');
+  // ...
+
+  await sc.stop();
+});
+```
+
+> **Cost guard**: throttle to 1–4 fps. Without throttling, a 60s demo sends ~1,800 frames to the Vision API.
+
+---
+
+## Multi-Aspect Recording
+
+Drive a single scenario through multiple aspect-tuned viewports. Each aspect gets its own `page.screencast` recording.
+
+```typescript
+// demos/specs/checkout-multi-aspect.spec.ts
+import { test } from '@playwright/test';
+
+const ASPECTS = [
+  { name: '16x9', viewport: { width: 1920, height: 1080 } },
+  { name: '9x16', viewport: { width: 1080, height: 1920 } },
+  { name: '4x5',  viewport: { width: 1080, height: 1350 } },
+  { name: '1x1',  viewport: { width: 1080, height: 1080 } },
+];
+
+for (const aspect of ASPECTS) {
+  test.describe(`Aspect: ${aspect.name}`, () => {
+    test.use({ viewport: aspect.viewport });
+
+    test(`checkout — ${aspect.name}`, async ({ page }) => {
+      const sc = await page.screencast.start({
+        path: `demos/output/checkout_complete_${aspect.name}_20260515.webm`,
+        size: aspect.viewport,
+        quality: 90,
+      });
+      await sc.showActions();
+
+      // Aspect-aware re-framing (inject layout overrides for 9:16 / 4:5)
+      if (aspect.name === '9x16' || aspect.name === '4x5') {
+        await page.addStyleTag({
+          content: `
+            .sidebar { display: none !important; }
+            .hero { font-size: 3rem !important; }
+          `,
+        });
+      }
+
+      await page.goto('/products/awesome');
+      await page.getByRole('button', { name: 'Add to cart' }).click();
+      // ...
+
+      await sc.stop();
+    });
+  });
+}
+```
+
+Or via `playwright.config.demo.ts` `projects` matrix — see `playwright-config.md → Aspect Ratio Presets`.
+
+---
+
+## B-roll Overlay Pattern
+
+B-roll at 70–85% opacity over a stable base scene extends narration without losing visual interest. Position B-roll to avoid the bottom 15% (caption-safe band).
+
+```typescript
+async function showBRoll(
+  page: Page,
+  imageUrl: string,
+  opts: { duration: number; opacity?: number; position?: 'top' | 'center' }
+) {
+  const opacity = opts.opacity ?? 0.78;
+  const top = opts.position === 'top' ? '5%' : '20%';
+
+  await page.evaluate(
+    ({ url, op, top, dur }) => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.cssText = `
+        position:fixed; top:${top}; left:50%; transform:translateX(-50%);
+        max-width:60vw; max-height:55vh;
+        opacity:${op};
+        z-index:9998;
+        border-radius:12px;
+        box-shadow:0 12px 48px rgba(0,0,0,0.4);
+        transition:opacity 400ms ease;
+      `;
+      img.dataset.broll = 'true';
+      document.body.appendChild(img);
+      setTimeout(() => {
+        img.style.opacity = '0';
+        setTimeout(() => img.remove(), 400);
+      }, dur - 400);
+    },
+    { url: imageUrl, op: opacity, top, dur: opts.duration }
+  );
+}
+
+// Usage
+await showBRoll(page, '/demo-assets/mobile-capture.png', {
+  duration: 4000,
+  opacity: 0.8,
+  position: 'top',
+});
+```
+
+---
 
 ---
 

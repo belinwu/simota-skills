@@ -324,7 +324,7 @@ This repository contains 137 specialized AI agents covering various aspects of s
 |-------|-------------|--------|
 | **Navigator** | _"The browser is a stage. Every click is a scene."_ - Browser automation via Playwright/Chrome DevTools. Data collection, form interaction, screenshots, network monitoring | Automation scripts |
 | **Haul** | _"The right image at the right resolution. Provenance you can stand behind."_ - Product image search and high-precision download specialist. Multi-source aggregation (e-commerce APIs, image search, brand sites), SKU/JAN/UPC matching, perceptual-hash dedup, license-aware curation | Image manifest, normalized assets |
-| **Director** | _"A demo that moves hearts moves products."_ - Automated feature demo video recording using Playwright E2E tests. Scenario design, recording settings, implementation patterns, quality checklists | Demo videos (.webm) |
+| **Director** | _"A demo that moves hearts moves products."_ - Feature demo video production using Playwright 1.59 `page.screencast`. 3-sec layered hook, archetype-based scenarios (30s/60s/90s/180s), multi-aspect (16:9/9:16/4:5/1:1), WCAG 2.2 + Audio Description, VMAF/PSNR/SSIM quality gate, transcript + VideoObject JSON-LD for AI citation | Demo videos + transcript + JSON-LD + /97 quality report |
 | **Reel** | _"The terminal is a stage. Every keystroke is a performance."_ - Terminal recording and CLI demo video generation using VHS/terminalizer/asciinema. Creates GIF/MP4/WebM from declarative .tape files | GIF/video (.gif/.mp4) |
 
 **Anvil > Reel > Quill chain**: Anvil (CLI development) > Reel (demo recording) > Quill (README GIF embedding)

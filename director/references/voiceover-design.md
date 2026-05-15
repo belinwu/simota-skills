@@ -20,19 +20,38 @@ Purpose: Design TTS narration for product demo videos. Cover voice selection (El
 - YouTube / LinkedIn product announcements
 - Internal training materials
 
-## Provider Comparison (2025-current)
+## Provider Comparison (2026 — current benchmark)
 
-| Provider | Voices | Latency | Quality | Cost | Best for |
-|----------|--------|---------|---------|------|----------|
-| **ElevenLabs v3** | 10+ base + clones | 200-800ms | Highest (cloning + multilingual) | $5-$330/mo | Brand voice, multilingual |
-| **OpenAI TTS (tts-1-hd)** | 6 voices | 300ms | High | $30/1M chars | Quick iteration |
-| **Azure Neural TTS** | 400+ multilingual | 200ms | High (enterprise) | $16/1M chars | Enterprise / accessibility |
-| **Google Cloud TTS (Studio)** | 220+ voices | 300ms | High | $16/1M chars | Global locales |
-| **Amazon Polly Neural** | 60+ voices | 200ms | High | $16/1M chars | AWS pipelines |
-| **Coqui / local XTTS** | Open-source clone | varies | Mid | Free (compute) | Offline / privacy |
-| **Descript Overdub** | Clone-based | interactive | High | Subscription | Podcast workflows |
+Ranked by Inworld TTS Arena 2026 Elo + qualitative fit.
 
-Default: **OpenAI TTS tts-1-hd** for iteration speed, **ElevenLabs** for brand / multilingual / cloning.
+| Provider | TTS Arena Elo | TTFA (first-audio) | Voices | Strength | Best for |
+|----------|---------------|--------------------|--------|----------|----------|
+| **Inworld Realtime TTS 1.5-Max** | **1,236 (#1)** | low | curated set + cloning | overall quality leader 2026 | high-stakes demos, investor / hero |
+| **ElevenLabs v3** | 1,179 (#2) | ~150ms | 70+ languages, cloning, **Audio Tags** | emotional control, multilingual | brand voice, multilingual, expressive |
+| **OpenAI Realtime TTS** | 1,106 (#4) | ~200ms | curated set | API simplicity, latency | quick iteration, dev workflows |
+| **Cartesia Sonic-3** | 1,054 (#10) | **90ms** (Turbo: 40ms) | curated set | lowest latency in class | live narration, agentic loops |
+| **OpenAI TTS (tts-1-hd)** | n/a | ~300ms | 6 voices | predecessor of Realtime | legacy / fixed-script narration |
+| **Azure Neural TTS** | n/a | ~200ms | 400+ multilingual | enterprise, accessibility | regulated / public-sector |
+| **Google Cloud TTS (Studio)** | n/a | ~300ms | 220+ voices | global locales | i18n-heavy decks |
+| **Amazon Polly Neural** | n/a | ~200ms | 60+ voices | AWS pipelines | AWS-native stacks |
+| **Coqui / local XTTS** | n/a | varies | open-source clone | offline / privacy | air-gapped, regulated |
+| **Descript Overdub** | n/a | interactive | clone-based | podcast UX | iterative editing |
+
+**Defaults (2026)**:
+- **Quality-first**: Inworld Realtime TTS 1.5-Max (highest Elo).
+- **Brand voice + emotion**: ElevenLabs v3 with Audio Tags.
+- **Lowest latency / live agentic loops**: Cartesia Sonic-3 (40–90ms TTFA).
+- **Founder-led / personal trust**: real human voice. AI TTS is now indistinguishable from human in blind tests for short narration — pick by brand consistency, not quality.
+
+### ElevenLabs v3 Audio Tags
+
+v3 introduces inline bracketed tags that control emotion / delivery without SSML. Tags are append-friendly to plain text:
+
+```
+"Schema drift broke production. [whispers] Again. [sighs] Most teams still diff three environments by hand. [shouts] Stop. [pauses] There's a better way."
+```
+
+Common tags: `[whispers]`, `[shouts]`, `[laughs]`, `[sighs]`, `[pauses]`, `[excited]`, `[sad]`, `[calm]`. Combine with SSML for finer pacing. Test sparingly — overusing tags reads as theatrical, not authentic.
 
 ## Voice Selection Matrix
 
@@ -149,13 +168,15 @@ ffmpeg -i demo.webm -i narration_normalized.wav \
 
 | Platform | Target LUFS | True Peak |
 |----------|-------------|-----------|
-| YouTube | -14 | -1 dBTP |
+| YouTube | **-14** | -1 dBTP |
+| LinkedIn | **-14** (updated 2026) | -1 dBTP |
 | Vimeo | -16 to -23 | -1 dBTP |
-| LinkedIn | -16 | -1 dBTP |
+| Web / self-host | -16 | -1 dBTP |
 | Broadcast TV (EBU R128) | -23 | -1 dBTP |
 | Podcast | -16 | -1 dBTP |
+| TikTok / Reels / Shorts | -14 to -16 | -1 dBTP |
 
-Default: -16 LUFS for web demo videos. Hand off to **tone `lufs`** for deeper loudness analysis.
+**Default**: -14 LUFS for YouTube + LinkedIn (the two primary demo destinations in 2026). -16 LUFS for self-host / Vimeo / docs. Verify True Peak ≤ -1 dBTP to prevent clipping on transcode. Hand off to **tone `lufs`** for deeper loudness analysis; perceptual quality verification via `references/quality-metrics.md`.
 
 ## De-essing
 

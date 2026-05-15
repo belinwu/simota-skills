@@ -206,16 +206,24 @@ Focus: inline documentation embedding and written walkthrough.
 
 ```markdown
 ### Demo Package
-- **Video**: [path]
+- **Video (master)**: [path to 1920×1080 .webm]
+- **Aspect variants**: [16:9 path], [9:16 path or N/A], [4:5 path or N/A]
 - **Duration**: [seconds]
+- **Archetype**: [60s producthunt / 90s linkedin / 180s walkthrough / 3x45s series]
 - **GIF (if README)**: [path]
 
 ### Narrative Summary
 - **Objective**: [1 sentence]
 - **Audience**: [new user / existing user / developer]
+- **3-sec hook**: [hook copy used in the first 3 seconds]
 - **Aha moment**: [1 sentence]
 
-### Step Transcript
+### Transcript (for inline doc embed)
+- **WebVTT**: [path]
+- **Plaintext**: [path]
+- **Languages**: [en, ja, ...]
+
+### Chapter Cue Map
 | Time | Scene | Narration hint |
 |------|-------|----------------|
 | 0:00 | [scene] | [what to describe in prose] |
@@ -229,6 +237,7 @@ Focus: inline documentation embedding and written walkthrough.
 ### Quill Guidance
 - Doc tone: [tutorial / reference / changelog]
 - Caption language: [en / ja / both]
+- Inline transcript: include verbatim plaintext below the embed for AI citation
 - Link back to: [scenario file for reproducibility]
 ```
 
@@ -236,30 +245,58 @@ Focus: inline documentation embedding and written walkthrough.
 
 ## Director → Growth (Demo-to-Marketing)
 
-Focus: platform-adapted variants for marketing and distribution.
+Focus: platform-adapted variants and AI-citation packaging for marketing distribution.
 
 ```markdown
 ### Source Demo
-- **Master video**: [path to 1080p or 720p master]
+- **Master video**: [path to 1920×1080 master]
 - **Master duration**: [seconds]
+- **Archetype**: [30s social / 60s producthunt / 60s linkedin / 90s hero / 180s walkthrough / 3x45s]
+- **3-sec hook**: [hook copy]
 - **Aha moment timestamp**: [MM:SS]
+
+### Aspect Variants Produced
+| Aspect | Path | Channel(s) |
+|--------|------|-----------|
+| 16:9 (1920×1080) | [path] | YouTube, Web hero, Vimeo |
+| 9:16 (1080×1920) | [path or N/A] | TikTok, Reels, Shorts |
+| 4:5 (1080×1350) | [path or N/A] | LinkedIn (2026 default) |
+| 1:1 (1080×1080) | [path or N/A] | Product Hunt, Slack preview |
 
 ### Platform Variants Requested
 | Platform | Aspect | Duration target | Captions |
 |----------|--------|-----------------|----------|
-| LinkedIn | 16:9 | 60-90s | required |
+| YouTube long | 16:9 | 60-180s | required |
+| LinkedIn | 4:5 (2026) | 15-60s | required (open + closed) |
 | X / Twitter | 16:9 or 1:1 | ≤ 60s | required |
-| Instagram Reels | 9:16 | ≤ 60s | required |
-| YouTube Shorts | 9:16 | ≤ 60s | optional |
-| Website hero | 16:9 | 30-60s | optional (muted) |
+| TikTok | 9:16 | 21-34s | required (open) |
+| Instagram Reels | 9:16 | ≤ 60s | required (open) |
+| YouTube Shorts | 9:16 | ≤ 60s | required (open) |
+| Product Hunt gallery | 1:1 | 45-60s | required (open + YouTube hosting) |
+| Website hero | 16:9 | 15-30s loop | optional (muted) |
+
+### GEO / AI-Citation Package
+- **Transcript (`.vtt`)**: [path]
+- **Transcript (plaintext)**: [path]
+- **VideoObject JSON-LD**: [path]
+- **Chapter cue map (YouTube description format)**: [paste-ready text]
+- **Languages**: [en, ja, ...]
 
 ### Brand Overlays
 - **Logo position**: [corner, timing]
 - **CTA overlay**: [text, timing]
 - **Legal / attribution**: [footer text, timing]
 
+### Quality Verdict
+- **`/97` scorecard**: [score]
+- **VMAF / PSNR / SSIM**: [≥90 / ≥40 / ≥0.95]
+- **LUFS**: [-14 / -16] / TP [≤-1 dBTP]
+- **WCAG 2.2**: 1.2.2 ✓ / 1.2.4 [n/a or ✓] / 1.2.5 [n/a or ✓]
+- **Verdict**: [ship / ship-with-fixes / reshoot]
+
 ### Growth Guidance
-- A/B variant plan: [two thumbnails / two opening hooks]
+- A/B variant plan: [two thumbnails — face-first vs product-first; for B2B/dev-tool default product-first]
+- Multi-channel distribution: cross-post YouTube + LinkedIn + blog for up to +325% AI citation
 - UTM tagging needed on: [embed pages]
 - Analytics event: [play_start / completion / CTA_click]
 ```
