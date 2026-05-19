@@ -6,7 +6,7 @@ Standard operational protocols shared by all agents. Each agent's Operational se
 
 ## Journal
 
-Each agent maintains a personal journal at `.agents/{agent-name}.md`.
+Each agent **MUST** maintain a personal journal at `.agents/{agent-name}.md`.
 
 **Format:**
 ```markdown
@@ -17,16 +17,17 @@ Each agent maintains a personal journal at `.agents/{agent-name}.md`.
 ```
 
 **Rules:**
-- Create the file if missing on first use
-- Record only genuinely reusable insights — not task logs
-- Each agent defines its own topic focus (e.g., Scout: investigation patterns, Bolt: bottleneck learnings)
-- Also read `.agents/PROJECT.md` for cross-agent context before starting work
+- **Before starting work** (mandatory): Read `.agents/{agent-name}.md` and `.agents/PROJECT.md` to load prior context and avoid repeating past mistakes. Create files if missing.
+- **During work**: Capture genuinely reusable insights as they emerge — not task logs, not narrative diaries.
+- **Before declaring task complete**: Append at least one entry to `.agents/{agent-name}.md` if any reusable insight was generated. If the task produced no novel insight, state this explicitly in the activity log and skip the journal write.
+- Each agent defines its own topic focus (e.g., Scout: investigation patterns, Bolt: bottleneck learnings).
+- The journal is the single durable artefact of the agent's expertise — treat it as load-bearing.
 
 ---
 
 ## Activity Log
 
-All agents log activity to `.agents/PROJECT.md` (shared cross-agent log).
+All agents **MUST** log activity to `.agents/PROJECT.md` (shared cross-agent log).
 
 **Format:**
 ```
@@ -34,9 +35,24 @@ All agents log activity to `.agents/PROJECT.md` (shared cross-agent log).
 ```
 
 **Rules:**
-- Add one row per task completion
-- Before starting work: check PROJECT.md exists and read recent entries for context
-- When orchestrating: ensure downstream agents also log their activity
+- **Before starting work** (mandatory): Verify `.agents/PROJECT.md` exists (create if missing with header row) and read the last 10–20 entries to understand recent cross-agent activity.
+- **After task completion** (mandatory): Append exactly one row per logical task. This is a hard gate — see *Pre-Handoff Checklist* below.
+- **When orchestrating**: Verify downstream agents have appended their own activity rows before accepting `_STEP_COMPLETE`. If missing, reject and reroute.
+- **Failure protocol**: If you cannot write `.agents/PROJECT.md` (permission denied, filesystem error), surface this immediately as a `BLOCKED` status — do not silently skip.
+
+---
+
+## Pre-Handoff Checklist (Hard Gate)
+
+Before emitting `## NEXUS_HANDOFF`, `_STEP_COMPLETE`, or `## NEXUS_COMPLETE`, every agent **MUST** verify:
+
+- [ ] `.agents/PROJECT.md` activity row appended for this task
+- [ ] `.agents/{agent-name}.md` journal entry added (or explicit "no novel insight" note recorded in the activity log)
+- [ ] Both files referenced (file paths only, not content dumps) in the handoff's `Artifacts` field when applicable
+
+**Rationale:** Handoff data is the session log (see `_common/HANDOFF.md` → *Session Durability Principle*). Without the journal/activity-log write, crash recovery, debuggability, and routing learning all degrade.
+
+**Enforcement:** Nexus and Rally treat a handoff that lacks evidence of `.agents/` writes as `PARTIAL` and reroute the agent to complete the logging step before chain progression.
 
 ---
 
