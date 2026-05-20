@@ -163,7 +163,7 @@ Every proposal must include:
 
 ---
 
-## Template: Gemini Safety Settings Change
+## Template: Antigravity Safety Settings Change
 
 ````markdown
 ### HONE-GS{NUM}: {Summary}
@@ -206,7 +206,7 @@ Every proposal must include:
 # AI CLI Configuration Audit Report
 
 **Date:** YYYY-MM-DD
-**Target CLI:** {Codex CLI | Gemini CLI | Claude Code | All}
+**Target CLI:** {Codex CLI | Antigravity CLI | Claude Code | All}
 **CLI version:** {version}
 **Config path:** {~/.codex/ | ~/.gemini/ | both}
 

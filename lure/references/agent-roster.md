@@ -101,7 +101,7 @@ Parallel fan-out: Growth + Bolt in parallel, then Experiment when first variant 
 
 | Agent | Role in chain | Returns | Overlap watch |
 |-------|---------------|---------|---------------|
-| **judge** | Tri-engine code review (Codex + Gemini + Claude) on production code | P1/P2/P3 findings with grounding | Judge is the gate; don't ship under unresolved P1/P2 |
+| **judge** | Tri-engine code review (Codex + Antigravity + Claude) on production code | P1/P2/P3 findings with grounding | Judge is the gate; don't ship under unresolved P1/P2 |
 | **voyager** | E2E tests (happy path + form / CTA flows, visual regression, a11y test) | Test suite + green run | Voyager covers E2E; Radar covers unit/integration if needed |
 | **attest** | Spec compliance — BDD scenarios, traceability matrix vs. structure spec | Compliance verdict ≥ 95% AC coverage | Attest is evidence-based; reject hand-waving |
 | **sentinel** | Static security scan — secrets, input validation, headers, CVE | Security verdict | Form-driven LPs especially must pass Sentinel |

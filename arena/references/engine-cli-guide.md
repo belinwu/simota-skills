@@ -1,6 +1,6 @@
 # Engine CLI Guide
 
-Direct CLI reference for external AI engines used by Arena. Arena calls `codex exec` and `gemini` directly — no abstraction layer.
+Direct CLI reference for external AI engines used by Arena. Arena calls `codex exec` and `agy` directly — no abstraction layer.
 
 ---
 
@@ -10,7 +10,7 @@ Arena directly invokes external AI engine CLIs to generate implementation varian
 
 ### Key Principles
 
-- **No abstraction layer** — Arena calls `codex exec` and `gemini` directly via Bash
+- **No abstraction layer** — Arena calls `codex exec` and `agy` directly via Bash
 - **Git branch isolation** — Each variant lives in its own `arena/variant-{engine}` branch (COMPETE) or `arena/task-{subtask_id}` branch (COLLABORATE)
 - **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
 - **Dual paradigm** — Same CLI commands for both COMPETE (compare variants) and COLLABORATE (integrate subtasks). See `collaborate-mode-guide.md` for COLLABORATE-specific prompt templates.
@@ -25,8 +25,8 @@ Before starting any Arena session, verify available engines:
 # Check codex availability
 which codex && echo "codex: available" || echo "codex: not found"
 
-# Check gemini availability
-which gemini && echo "gemini: available" || echo "gemini: not found"
+# Check agy availability
+which agy && echo "agy: available" || echo "agy: not found"
 ```
 
 **Minimum requirement:** At least 1 engine must be available. With 2+ engines, Arena runs cross-engine competition (default). With 1 engine, Arena switches to Self-Competition mode. With 0 engines, Arena aborts with a user notification.
@@ -64,7 +64,7 @@ codex exec --full-auto "Implement the following specification.
 - `arena/variant-codex-iterative`
 - `arena/variant-codex-functional`
 - `arena/variant-codex-oop`
-- `arena/variant-gemini-modular`
+- `arena/variant-agy-modular`
 
 ### Strategy 2: Model Variant Divergence
 
@@ -150,28 +150,28 @@ codex exec --full-auto -m o4-mini "implement the following: {spec_prompt}"
 - Changes are made directly to the filesystem (not sandboxed)
 - Always run on a dedicated branch to isolate changes
 
-### gemini CLI
+### Antigravity CLI
 
-Execute implementation tasks via Google Gemini CLI.
+Execute implementation tasks via Google Antigravity CLI.
 
 ```bash
 # Basic execution (YOLO mode, no confirmation prompts)
-gemini -p "implement the following: {spec_prompt}" --yolo
+agy -p "implement the following: {spec_prompt}" --dangerously-skip-permissions
 
 # Sandbox mode (for safer execution)
-gemini -p "implement the following: {spec_prompt}" --sandbox
+agy -p "implement the following: {spec_prompt}" --sandbox
 ```
 
 **Key flags:**
 | Flag | Description |
 |------|-------------|
 | `-p "<prompt>"` | Non-interactive prompt mode |
-| `--yolo` | No confirmation prompts — required for Arena automation |
+| `--dangerously-skip-permissions` | No confirmation prompts — required for Arena automation |
 | `--sandbox` | Run in sandboxed environment (safer but limited) |
 
 **Notes:**
-- `gemini` operates on the current working directory
-- `--yolo` allows file writes without confirmation
+- `agy` operates on the current working directory
+- `--dangerously-skip-permissions` allows file writes without confirmation
 - Always run on a dedicated branch to isolate changes
 
 ### codex review (Automated Review)
@@ -199,7 +199,7 @@ Arena uses Git branches to isolate each engine's implementation, enabling clean 
 ### Branch Naming Convention
 
 ```
-arena/variant-{engine}     # e.g., arena/variant-codex, arena/variant-gemini
+arena/variant-{engine}     # e.g., arena/variant-codex, arena/variant-agy
 arena/variant-{engine}-{n} # For multi-approach: arena/variant-codex-1, arena/variant-codex-2
 ```
 
@@ -224,8 +224,8 @@ BASE_COMMIT=$(git rev-parse HEAD)
 # Create codex variant branch from base
 git checkout -b arena/variant-codex $BASE_COMMIT
 
-# Create gemini variant branch from base (after codex is done)
-git checkout -b arena/variant-gemini $BASE_COMMIT
+# Create agy variant branch from base (after codex is done)
+git checkout -b arena/variant-agy $BASE_COMMIT
 ```
 
 #### 3. Execute Engine on Each Branch (Sequential)
@@ -237,20 +237,20 @@ codex exec --full-auto "{spec_prompt}"
 git add -A && git commit -m "arena: variant-codex implementation"
 
 # --- Gemini variant (runs AFTER codex is done) ---
-git checkout arena/variant-gemini
-gemini -p "{spec_prompt}" --yolo
-git add -A && git commit -m "arena: variant-gemini implementation"
+git checkout arena/variant-agy
+agy -p "{spec_prompt}" --dangerously-skip-permissions
+git add -A && git commit -m "arena: variant-agy implementation"
 ```
 
 #### 4. Compare Variants
 
 ```bash
 # Diff between variants
-git diff arena/variant-codex..arena/variant-gemini
+git diff arena/variant-codex..arena/variant-agy
 
 # Diff each variant against base
 git diff $BASE_COMMIT..arena/variant-codex
-git diff $BASE_COMMIT..arena/variant-gemini
+git diff $BASE_COMMIT..arena/variant-agy
 
 # Read specific files for detailed review
 # Use Read tool on files of interest in each branch
@@ -265,7 +265,7 @@ git checkout $BASE_BRANCH
 # Merge the winning variant
 git merge arena/variant-codex -m "arena: adopt variant-codex"
 # or
-git merge arena/variant-gemini -m "arena: adopt variant-gemini"
+git merge arena/variant-agy -m "arena: adopt variant-agy"
 ```
 
 #### 6. Cleanup
@@ -273,7 +273,7 @@ git merge arena/variant-gemini -m "arena: adopt variant-gemini"
 ```bash
 # Delete variant branches
 git branch -D arena/variant-codex
-git branch -D arena/variant-gemini
+git branch -D arena/variant-agy
 
 # Restore stashed work if any
 git stash pop
@@ -305,7 +305,7 @@ project/                          # Main working directory (Arena leader stays h
 ├── src/...                           # Independent copy of files
 └── ...
 
-/tmp/arena-{session}/variant-gemini/  # Worktree for gemini (subagent works here)
+/tmp/arena-{session}/variant-agy/  # Worktree for agy (subagent works here)
 ├── src/...                           # Independent copy of files
 └── ...
 ```
@@ -330,11 +330,11 @@ mkdir -p /tmp/$SESSION_ID
 ```bash
 # Create variant branches from base commit
 git branch arena/variant-codex $BASE_COMMIT
-git branch arena/variant-gemini $BASE_COMMIT
+git branch arena/variant-agy $BASE_COMMIT
 
 # Create isolated worktrees for each variant
 git worktree add /tmp/$SESSION_ID/variant-codex arena/variant-codex
-git worktree add /tmp/$SESSION_ID/variant-gemini arena/variant-gemini
+git worktree add /tmp/$SESSION_ID/variant-agy arena/variant-agy
 ```
 
 **IMPORTANT:** Arena leader creates ALL branches and worktrees BEFORE spawning any subagent. Subagents receive the worktree path and work within it — they do NOT create branches or worktrees themselves.
@@ -343,7 +343,7 @@ git worktree add /tmp/$SESSION_ID/variant-gemini arena/variant-gemini
 
 Each subagent receives its dedicated worktree path:
 - variant-codex gets `/tmp/$SESSION_ID/variant-codex`
-- variant-gemini gets `/tmp/$SESSION_ID/variant-gemini`
+- variant-agy gets `/tmp/$SESSION_ID/variant-agy`
 
 Subagents `cd` into their worktree and execute the engine there. No branch checkout needed — the worktree is already on the correct branch.
 
@@ -355,11 +355,11 @@ cd /tmp/$SESSION_ID/variant-codex
 codex exec --full-auto "{spec_prompt}"
 git add -A && git commit -m "arena: variant-codex implementation"
 
-# --- variant-gemini subagent (in /tmp/$SESSION_ID/variant-gemini) ---
+# --- variant-agy subagent (in /tmp/$SESSION_ID/variant-agy) ---
 # (runs SIMULTANEOUSLY — no conflicts)
-cd /tmp/$SESSION_ID/variant-gemini
-gemini -p "{spec_prompt}" --yolo
-git add -A && git commit -m "arena: variant-gemini implementation"
+cd /tmp/$SESSION_ID/variant-agy
+agy -p "{spec_prompt}" --dangerously-skip-permissions
+git add -A && git commit -m "arena: variant-agy implementation"
 ```
 
 Each subagent's `git add -A` only sees files in its own worktree directory — no cross-contamination is possible.
@@ -368,11 +368,11 @@ Each subagent's `git add -A` only sees files in its own worktree directory — n
 
 ```bash
 # Diff between variants (same as Solo Mode — branches work normally)
-git diff arena/variant-codex..arena/variant-gemini
+git diff arena/variant-codex..arena/variant-agy
 
 # Diff each variant against base
 git diff $BASE_COMMIT..arena/variant-codex
-git diff $BASE_COMMIT..arena/variant-gemini
+git diff $BASE_COMMIT..arena/variant-agy
 ```
 
 #### 6. Adopt Winner (Arena Leader)
@@ -390,14 +390,14 @@ git merge arena/variant-codex -m "arena: adopt variant-codex"
 ```bash
 # Remove worktrees FIRST (must be done before deleting branches)
 git worktree remove /tmp/$SESSION_ID/variant-codex
-git worktree remove /tmp/$SESSION_ID/variant-gemini
+git worktree remove /tmp/$SESSION_ID/variant-agy
 
 # Clean up temp directory
 rm -rf /tmp/$SESSION_ID
 
 # Delete variant branches
 git branch -D arena/variant-codex
-git branch -D arena/variant-gemini
+git branch -D arena/variant-agy
 
 # Restore stashed work if any
 git stash pop
@@ -412,7 +412,7 @@ git stash pop
 | Engine | Strengths | Best For |
 |--------|-----------|----------|
 | **codex** | Fast iteration, code-focused, algorithmic strength | Refactoring, algorithmic tasks, pure code generation |
-| **gemini** | Creative approaches, broad context window, novel solutions | New architecture, exploratory tasks, design-heavy work |
+| **agy** | Creative approaches, broad context window, novel solutions | New architecture, exploratory tasks, design-heavy work |
 
 ### Selection Decision Matrix
 
@@ -420,11 +420,11 @@ git stash pop
 |--------------------|--------------------|
 | Algorithm / data structure | codex |
 | Refactoring / migration | codex |
-| New feature with clear spec | codex + gemini (compare) |
-| Creative / exploratory solution | gemini |
-| Broad codebase understanding needed | gemini |
+| New feature with clear spec | codex + agy (compare) |
+| Creative / exploratory solution | agy |
+| Broad codebase understanding needed | agy |
 | Performance-critical optimization | codex |
-| Default (when unsure) | codex + gemini (compare both) |
+| Default (when unsure) | codex + agy (compare both) |
 
 ---
 
@@ -486,7 +486,7 @@ Implement the following specification.
 ...
 ```
 
-### gemini Prompt Template
+### agy Prompt Template
 
 ```
 Implement the following specification.
@@ -551,7 +551,7 @@ If an engine modified files outside the allowed scope:
 ### Prompt Construction Notes
 
 - **codex** works best with focused, directive prompts — keep specs concise, list exact files
-- **gemini** benefits from broader context — include tech stack, patterns, and reference files
+- **agy** benefits from broader context — include tech stack, patterns, and reference files
 - **Both** require explicit "DO NOT" constraints — engines will optimize broadly without them
 - **Acceptance criteria** prevent engines from doing "too much" or "too little"
 - **Allowed files list** is the single most important constraint for parallel safety
@@ -577,7 +577,7 @@ Use this checklist to verify every engine prompt before invocation. Missing fiel
 | # | Field | When Required | Status |
 |---|-------|---------------|--------|
 | 6 | **Approach Directive** | Multi-variant / Self-Competition | ☐ |
-| 7 | **Codebase Context** | gemini prompts | ☐ |
+| 7 | **Codebase Context** | agy prompts | ☐ |
 | 8 | **Scope Boundary** | COLLABORATE subtasks | ☐ |
 
 ### Pre-Flight Validation Rules
@@ -611,7 +611,7 @@ Arena tracks costs via provider dashboards. In-session tracking is approximate:
 | Engine | Cost Factor | Tracking Method |
 |--------|------------|-----------------|
 | codex | Per-token via OpenAI API | Check OpenAI dashboard or API usage page |
-| gemini | Per-token via Google AI | Check Google AI Studio usage |
+| agy | Per-token via Google AI | Check Google AI Studio usage |
 
 ### Pre-Execution Cost Estimate
 
@@ -667,19 +667,19 @@ codex excels with focused, directive prompts:
 3. Success criteria
 4. Minimal context (only if needed)
 
-### gemini Optimization
+### agy Optimization
 
-gemini benefits from richer context and exploratory prompts:
+agy benefits from richer context and exploratory prompts:
 
 | Principle | Guidance |
 |-----------|----------|
-| **Provide business context** | Explain WHY the feature exists — gemini uses context for better design decisions |
-| **Include related files** | List reference files (read-only) so gemini understands the broader architecture |
-| **Describe patterns** | Explain existing code patterns — gemini adapts well to established conventions |
+| **Provide business context** | Explain WHY the feature exists — agy uses context for better design decisions |
+| **Include related files** | List reference files (read-only) so agy understands the broader architecture |
+| **Describe patterns** | Explain existing code patterns — agy adapts well to established conventions |
 | **Encourage alternatives** | "Consider multiple approaches before implementing" can yield creative solutions |
 | **Use the Codebase Context section** | Fill in tech_stack, patterns_summary, and reference_files thoroughly |
 
-**gemini prompt structure priority:**
+**agy prompt structure priority:**
 1. Business context and rationale (why this change)
 2. Specification (functional requirements)
 3. Codebase context (tech stack, patterns, related files)
@@ -700,7 +700,7 @@ Implement JWT authentication.
 ## Success Criteria: Tests pass. Function handles expired, malformed, and valid tokens.
 ```
 
-**gemini version (contextual, exploratory):**
+**agy version (contextual, exploratory):**
 ```
 Implement JWT authentication for our Express API.
 ## Codebase Context
@@ -721,7 +721,7 @@ Implement JWT authentication for our Express API.
 | Issue | Resolution |
 |-------|------------|
 | `codex: command not found` | Install: `npm install -g @openai/codex` |
-| `gemini: command not found` | Install: `npm install -g @google/gemini-cli` or check Google AI docs |
+| `agy: command not found` | Install: `npm install -g @google/gemini-cli` or check Google AI docs |
 | Engine hangs / no output | Check API key validity; try with smaller prompt |
 | Branch conflict on checkout | `git stash` first, or commit current changes |
 | Variant branch already exists | `git branch -D arena/variant-{engine}` then recreate |

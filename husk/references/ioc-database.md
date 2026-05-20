@@ -191,7 +191,7 @@ When scanning a system that may have been hit by 1st wave, the absence of OS-lev
 **Reported:** 2024-08-26
 **Targets:** Nx-related packages.
 **Cross-wave indicators:**
-- AI-CLI invocation harvesting (`claude`, `gemini`, `q` CLI used to enumerate repos / credentials)
+- AI-CLI invocation harvesting (`claude`, `agy`, `q` CLI used to enumerate repos / credentials)
 - GitHub repo `s1ngularity-repository-*` pattern
 - Cryptocurrency wallet exfil (Electrum, Ethereum keystore)
 

@@ -7,7 +7,7 @@
 | # | アンチパターン | 症状 | Arena での影響 | 対策 |
 |---|-------------|------|---------------|------|
 | **MO-01** | **暗黙の状態仮定** | エンジン間で状態・順序・バリデーションの前提がずれる | COLLABORATE で subtask A の出力を subtask B が前提にするが型が不一致 | 明示的インターフェース定義 · shared_read で型を先に合意 |
-| **MO-02** | **データ形式ドリフト** | エンジン間でフィールド名・型・フォーマットが微妙にずれる | codex が `userId` を使い gemini が `user_id` を使う → 統合時にランタイムエラー | Scope Lock で型定義ファイルを shared_read に含め、命名規則を明記 |
+| **MO-02** | **データ形式ドリフト** | エンジン間でフィールド名・型・フォーマットが微妙にずれる | codex が `userId` を使い agy が `user_id` を使う → 統合時にランタイムエラー | Scope Lock で型定義ファイルを shared_read に含め、命名規則を明記 |
 | **MO-03** | **曖昧な仕様渡し** | 「分析して適切に対応」のような指示 → 各エンジンが異なる解釈 | COMPETE で variant 間の比較が無意味に（異なる機能を実装） | Spec フェーズで受入基準を必ず列挙 · Success Criteria 必須 |
 | **MO-04** | **スコープ侵犯の放置** | エンジンが forbidden_files を変更しても検出・修復しない | package.json が変更されてビルド環境が壊れる | Post-Execution Scope Validation を必ず実行 · revert 自動化 |
 | **MO-05** | **単一障害点のオーケストレーター** | Arena リーダーがボトルネック化 → 全 variant/subtask がブロック | Team Mode で worktree 準備が遅れ全 subagent が待機 | 準備作業（branch/worktree）を全て事前に完了してから spawn |
@@ -28,7 +28,7 @@
   — GitHub Blog, Multi-Agent Workflows (2025)
 
 Arena のエンジン呼び出しは分散システムの RPC と同等:
-  - 各エンジンは独立したプロセス（codex exec / gemini CLI）
+  - 各エンジンは独立したプロセス（codex exec / Antigravity CLI）
   - 通信はプロンプト（入力）とファイル変更（出力）
   - 障害モード: タイムアウト、スコープ違反、不正出力、API エラー
 

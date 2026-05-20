@@ -31,7 +31,7 @@ Security of AI-generated code has not improved despite functional accuracy impro
 
 ### IDEsaster (December 2025)
 
-- 30+ CVEs across GitHub Copilot, Cursor, Windsurf, Zed, Roo Code, Claude Code, Gemini CLI, and others
+- 30+ CVEs across GitHub Copilot, Cursor, Windsurf, Zed, Roo Code, Claude Code, Antigravity CLI, and others
 - Three-stage attack chain: prompt injection → auto-approved tool calls → IDE feature abuse (data exfiltration, RCE)
 - Example: CVE-2025-54135 (CurXecute) — RCE via Cursor
 - **Defense:** Minimize auto-approval scope, sandbox AI agents, patch IDEs immediately

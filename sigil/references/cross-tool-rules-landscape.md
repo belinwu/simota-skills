@@ -24,7 +24,7 @@ When running `SCAN`, detect convention sources by matching these glob patterns. 
 | `.cursorrules`, `.cursor/rules/**/*.mdc` | Cursor |
 | `.windsurfrules` | Windsurf |
 | `.github/copilot-instructions.md` | GitHub Copilot |
-| `GEMINI.md` | Gemini CLI |
+| `GEMINI.md` | Antigravity CLI (`agy`) |
 
 ### JavaScript / TypeScript
 

@@ -92,7 +92,7 @@ EXEC_CMD='codex exec --full-auto "Read goal.md and complete the task described i
 | Engine | Base command | Non-interactive flag | Auto-approve flag | Model override | Output format |
 |--------|--------------|----------------------|-------------------|----------------|---------------|
 | Codex | `codex exec` | default | `--full-auto` | `-m <model>` (default: auto) | `--json` |
-| Gemini | `gemini` | `-p "prompt"` | `--yolo` | `-m <model>` (default: auto) | `--output-format json` |
+| Antigravity | `agy` | `-p "prompt"` | `--dangerously-skip-permissions` | not supported (always default) | not supported (pin schema in prompt) |
 | Claude Code | `claude` | `-p "prompt"` | `--dangerously-skip-permissions` | `--model <model>` (default: auto) | `--output-format json` |
 
 All engines use their default model when no model flag is specified. Do not specify a model unless there is a specific reason to override the default.
@@ -118,7 +118,7 @@ EXEC_CMD='codex exec --full-auto "Read goal.md and complete the task described i
 | `--skip-git-repo-check` | No | allow non-git directories |
 | `--ephemeral` | No | skip disk persistence |
 
-Note: `--yolo` (`--dangerously-bypass-approvals-and-sandbox`) disables all safety checks including sandboxing. Use `--full-auto` for Orbit loops.
+Note: `--dangerously-skip-permissions` (`--dangerously-bypass-approvals-and-sandbox`) disables all safety checks including sandboxing. Use `--full-auto` for Orbit loops.
 
 Model is not specified by default — Codex uses its own default model. Override with `-m <model>` only when needed.
 
@@ -129,34 +129,35 @@ codex cloud "Read goal.md and complete the task described in it" --attempts 2
 codex apply <TASK_ID>
 ```
 
-## Gemini
+## Antigravity (`agy`)
 
 ### Recommended command
 
 ```bash
-EXEC_CMD='gemini -p "Read goal.md and complete the task described in it" --yolo'
+EXEC_CMD='agy -p "Read goal.md and complete the task described in it" --dangerously-skip-permissions'
 ```
 
-### Key flags
+### Key flags (verified against `agy --help` v1.0.0)
 
 | Flag | Required | Meaning |
 |------|----------|---------|
-| `-p "prompt"` | Yes | pass prompt non-interactively |
-| `--yolo` | Yes | auto-approve all tool calls (enables sandbox automatically) |
-| `--sandbox` | No | Docker/Podman sandbox (`GEMINI_SANDBOX=true\|docker\|podman`) |
-| `--sandbox-image <uri>` | No | custom sandbox container image |
-| `--approval-mode <mode>` | No | `default` / `auto_edit` / `yolo` |
-| `--allowed-tools <tools>` | No | comma-separated whitelist of auto-approved tools |
-| `--output-format <fmt>` | No | `text` / `json` / `stream-json` |
-| `-a, --all-files` | No | recursively include directory contents as context |
-| `--include-directories <dirs>` | No | add up to 5 extra directories (comma-separated) |
-| `--checkpointing` | No | enable session recovery checkpoints |
+| `-p, --print, --prompt "<str>"` | Yes | Run a single prompt non-interactively and print the response |
+| `--dangerously-skip-permissions` | Yes | Auto-approve all tool permission requests (Gemini CLI's `--yolo` is renamed to this) |
+| `--sandbox` | No | Run in a sandbox with terminal restrictions enabled |
+| `--add-dir <path>` | No | Add a directory to the workspace (repeatable) |
+| `-c, --continue` | No | Continue the most recent conversation |
+| `--conversation <id>` | No | Resume a previous conversation by ID |
+| `-i, --prompt-interactive "<str>"` | No | Run an initial prompt interactively and continue the session |
+| `--print-timeout <duration>` | No | Timeout for print mode wait (default 5m0s) |
+| `--log-file <path>` | No | Override CLI log file path |
 
-Model is not specified by default — Gemini uses its own default model. Override with `-m <model>` or `GEMINI_MODEL` env var only when needed.
+Subcommands: `changelog`, `help`, `install` (configure environment paths), `plugin` / `plugins` (list/install/uninstall/enable/disable/import/validate/link), `update`.
 
-Environment variables: `GEMINI_API_KEY`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_GENAI_USE_VERTEXAI=true` (Vertex AI), `GEMINI_MODEL` (default model override).
+**Not supported in Antigravity CLI** (vs Gemini CLI): `--yolo` (renamed to `--dangerously-skip-permissions`), `-e`/`--extensions` (use `agy plugin install` instead), `-o`/`--output-format` (pin output schema in the prompt), `--approval-mode`, `-m`/`--model`, `--include-directories` (use `--add-dir`), `--all-files`, `--allowed-tools`, `--checkpointing`.
 
-Context file: `GEMINI.md` in project root for persistent instructions.
+Authentication: resolved from the Google login session (interactive `agy` launch). No `agy auth login/logout/status` subcommands — manage via the IDE/CLI launch flow.
+
+Context file: `GEMINI.md` in project root for persistent instructions (Antigravity CLI continues to read this file).
 
 ## Claude Code
 

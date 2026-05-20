@@ -11,7 +11,7 @@
 | **G**oal | 目的と成功基準 | Specification セクション |
 | **O**utput | 出力形式・ファイル構造 | Allowed Files リスト |
 | **L**imits | スコープ・制約・禁止事項 | Forbidden Files + Constraints |
-| **D**ata | コンテキスト・例・参照 | Codebase Context (gemini) |
+| **D**ata | コンテキスト・例・参照 | Codebase Context (agy) |
 | **E**valuation | 受入基準・検証方法 | Success Criteria |
 
 ### Role-Task-Constraints パターン
@@ -21,7 +21,7 @@
 
 Layer 1 — Role（役割設定）
   codex: 不要（コード生成に特化しているため）
-  gemini: 有効（"Act as a senior TypeScript engineer" で品質向上）
+  agy: 有効（"Act as a senior TypeScript engineer" で品質向上）
 
 Layer 2 — Task（タスク定義）
   両エンジン共通: 具体的・命令的な実装指示
@@ -50,7 +50,7 @@ Layer 3 — Constraints（制約）
 | **命令形** | "Create function X that does Y" > "Consider implementing..." | 出力の具体性向上 |
 | **導入コード** | `import` や `SELECT` のリードワードで出力パターンを誘導 | 正しいフォーマットの誘導 |
 
-### gemini 最適化原則
+### agy 最適化原則
 
 | 原則 | 詳細 | 効果 |
 |------|------|------|
@@ -216,13 +216,13 @@ Arena での活用:
   2. SCOPE LOCK で PE-01〜10 のチェックリスト検証
   3. Self-Competition で Parallel Alternative Generation を活用
   4. REFINE で Edge Case Prompting を組み込み
-  5. エンジン別最適化原則で codex/gemini プロンプトを差別化
+  5. エンジン別最適化原則で codex/agy プロンプトを差別化
 
 品質ゲート:
   - Examples (I/O) 未記載 → 警告（PE-09 防止）
   - Constraints がプロンプト末尾 → 先行配置を推奨（PE-08 防止）
   - 単一プロンプトで複数機能 → 分割を要求（PE-02 防止）
-  - 技術スタック未記載 → codex はパス、gemini は必須追加（PE-04 防止）
+  - 技術スタック未記載 → codex はパス、agy は必須追加（PE-04 防止）
 ```
 
 **Source:** [Addy Osmani: Prompt Engineering Playbook for Programmers](https://addyo.substack.com/p/the-prompt-engineering-playbook-for) · [OpenAI: Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering) · [CodeSignal: Prompt Engineering Best Practices 2025](https://codesignal.com/blog/prompt-engineering-best-practices-2025/) · [DigitalOcean: Prompt Engineering Best Practices](https://www.digitalocean.com/resources/articles/prompt-engineering-best-practices)

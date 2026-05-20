@@ -1,6 +1,6 @@
 # Web Sources
 
-**Purpose:** Information source tier classification, search query templates, and freshness management for Codex CLI, Gemini CLI, and Claude Code best practices.
+**Purpose:** Information source tier classification, search query templates, and freshness management for Codex CLI, Antigravity CLI, and Claude Code best practices.
 **Read when:** Entering the FETCH phase or when web research is required.
 
 ---
@@ -9,7 +9,7 @@
 
 | Tier | Description | Trust | Examples | Usage |
 |------|-------------|-------|---------|-------|
-| **T1** | Official documentation | Highest | Codex CLI docs, OpenAI platform docs, Gemini CLI docs, Google AI docs, Claude Code docs, Anthropic docs | Accept directly; cite as authoritative |
+| **T1** | Official documentation | Highest | Codex CLI docs, OpenAI platform docs, Antigravity CLI docs, Google AI docs, Claude Code docs, Anthropic docs | Accept directly; cite as authoritative |
 | **T2** | Official repo & maintainer | High | openai/codex GitHub, google-gemini/gemini-cli GitHub, anthropics/claude-code GitHub, OpenAI blog, Google AI blog, Anthropic blog, maintainer statements | Accept with verification; cross-reference with T1 |
 | **T3** | Community knowledge | Medium | Reddit, developer blogs, X/Twitter, YouTube tutorials | Signals only; require T1/T2 corroboration |
 | **T4** | Indirect/academic | Variable | AI agent papers, general CLI best practices | Theoretical grounding; never sole basis for recommendations |
@@ -69,42 +69,42 @@ site:reddit.com "codex cli" config tips
 "codex cli" productivity setup
 ```
 
-### Gemini CLI Official
+### Antigravity CLI Official
 
 ```
-"gemini cli" settings.json configuration
-"gemini cli" configuration best practices
+"Antigravity CLI" settings.json configuration
+"Antigravity CLI" configuration best practices
 site:github.com/google-gemini/gemini-cli config
-"gemini cli" safety settings configuration
-"gemini cli" extensions setup
+"Antigravity CLI" safety settings configuration
+"Antigravity CLI" extensions setup
 ```
 
-### Gemini CLI Setup & Optimization
+### Antigravity CLI Setup & Optimization
 
 ```
-"gemini cli" setup guide 2026
-"gemini cli" GEMINI.md best practices
-"gemini cli" extension configuration
-"gemini cli" sandbox mode
-"gemini cli" yolo mode safety
+"Antigravity CLI" setup guide 2026
+"Antigravity CLI" GEMINI.md best practices
+"Antigravity CLI" extension configuration
+"Antigravity CLI" sandbox mode
+"Antigravity CLI" yolo mode safety
 ```
 
-### Gemini Model & Auth Configuration
+### Antigravity Model & Auth Configuration
 
 ```
-"gemini cli" model selection
-"gemini cli" selectedModel settings
-google gemini latest models "gemini cli"
-"gemini cli" oauth vs api key
+"Antigravity CLI" model selection
+"Antigravity CLI" selectedModel settings
+"Antigravity CLI" agy latest version
+"Antigravity CLI" oauth vs api key
 "GEMINI_API_KEY" best practices
 ```
 
-### Gemini Release & Changelog
+### Antigravity Release & Changelog
 
 ```
 site:github.com/google-gemini/gemini-cli releases
-"gemini cli" changelog new features
-"gemini cli" breaking changes migration
+"Antigravity CLI" changelog new features
+"Antigravity CLI" breaking changes migration
 ```
 
 ### Claude Code Official
@@ -206,7 +206,7 @@ site:github.com/anthropics/claude-code releases
 
 | Source | URL pattern | Last verified | Notes |
 |--------|-------------|---------------|-------|
-| Gemini CLI Docs | ai.google.dev/gemini-cli | Initial | Primary reference |
+| Antigravity CLI Docs | ai.google.dev/gemini-cli | Initial | Primary reference |
 | Google AI Docs | ai.google.dev | Initial | Model availability, API |
 
 ### T2: Official Secondary (Gemini)

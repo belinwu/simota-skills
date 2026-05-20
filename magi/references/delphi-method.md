@@ -102,7 +102,7 @@ If criteria 1-3 hold but expert distribution remains bimodal, **declare stable d
   - **Pathos** consumes dissent rationales (why outliers held position)
   - **Sophia** consumes implication of distribution shape (bimodal = strategic disagreement; tight = high confidence)
 - Delphi can replace one perspective when expertise is heavily external (e.g., regulatory forecast where in-house judgment is weak). In that case, Logos = Delphi distribution, Pathos and Sophia remain.
-- For Engine Mode: Delphi-style anonymous rounds across Claude/Codex/Gemini are conceptually possible, but engines lack independent training contexts in the way human experts do — treat as a calibration ensemble, not a true Delphi.
+- For Engine Mode: Delphi-style anonymous rounds across Claude/Codex/Antigravity are conceptually possible, but engines lack independent training contexts in the way human experts do — treat as a calibration ensemble, not a true Delphi.
 
 ## Anti-Patterns
 

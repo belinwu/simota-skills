@@ -224,7 +224,7 @@ The script receives `agent-turn-complete` and similar events as JSON on stdin.
 claude -p \
   --permission-mode auto \
   --max-turns 20 \
-  --output-format json \
+  \
   --max-budget-usd 5 \
   "/goal all tests in tests/ pass and lint is clean"
 ```

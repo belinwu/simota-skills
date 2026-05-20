@@ -29,7 +29,7 @@ COLLABORATE: Decomposed spec → Engine per subtask → Integrate ALL → Unifie
 
 **COLLABORATE is best when:**
 - A feature has distinct components (e.g., core algorithm + API layer + UI integration)
-- codex and gemini each excel at different subtasks
+- codex and agy each excel at different subtasks
 - The goal is a complete implementation, not a quality comparison
 - External engines (not Claude Code) are needed for cooperative development
 
@@ -45,7 +45,7 @@ COLLABORATE: Decomposed spec → Engine per subtask → Integrate ALL → Unifie
 
 | Aspect | Arena COLLABORATE | Rally |
 |--------|-------------------|-------|
-| **Execution engines** | External (codex, gemini) | Claude Code instances |
+| **Execution engines** | External (codex, agy) | Claude Code instances |
 | **Task splitting** | By engine strengths | By file/module ownership |
 | **Isolation** | Git worktrees + branches | Agent Teams API sessions |
 | **Integration** | Git merge in dependency order | Rally's own merge protocol |
@@ -104,10 +104,10 @@ decomposition:
 | Algorithm / data structure | codex | Fast, focused, code-centric |
 | Refactoring / migration | codex | Strong at systematic code transformation |
 | Performance optimization | codex | Precise, benchmarkable changes |
-| API design / endpoint | gemini | Broader context understanding |
-| Architecture / integration | gemini | Creative design, wide context window |
-| New module from scratch | gemini | Handles broad specification well |
-| Test generation | Either | Both capable; codex for unit, gemini for integration |
+| API design / endpoint | agy | Broader context understanding |
+| Architecture / integration | agy | Creative design, wide context window |
+| New module from scratch | agy | Handles broad specification well |
+| Test generation | Either | Both capable; codex for unit, agy for integration |
 
 **When only 1 engine is available:**
 COLLABORATE still works with a single engine — assign different subtasks to the same engine. The value comes from task decomposition and scope isolation, not engine diversity. Branch naming uses `arena/task-{subtask_id}` (not engine names).
@@ -154,9 +154,9 @@ git diff --name-only                      # Validate scope
 git checkout -- {any_forbidden_files}     # Revert unauthorized changes
 git add -A && git commit -m "arena: task-core-logic implementation"
 
-# Subtask 2: api-integration (gemini)
+# Subtask 2: api-integration (agy)
 git checkout -b arena/task-api-integration $BASE_COMMIT
-gemini -p "{subtask_2_prompt}" --yolo
+agy -p "{subtask_2_prompt}" --dangerously-skip-permissions
 git diff --name-only                      # Validate scope
 git checkout -- {any_forbidden_files}     # Revert unauthorized changes
 # ...
@@ -299,7 +299,7 @@ All criteria must be met. If any criterion is exceeded, escalate to standard Sol
 | Step | Standard COLLABORATE (Solo) | Quick Collaborate |
 |------|----------------------------|-------------------|
 | Worktree setup | 1 worktree per subtask | 1 worktree per subtask (same) |
-| Subtask execution | Sequential `codex exec` / `gemini` | Sequential `codex exec` / `gemini` (same) |
+| Subtask execution | Sequential `codex exec` / `agy` | Sequential `codex exec` / `agy` (same) |
 | Integration | Full merge + verification script | Simplified merge + inline verification |
 | Evaluation | Per-subtask + integrated scoring | Integrated scoring only (skip per-subtask) |
 | REFINE eligibility | Yes | No — escalate to standard if score < 3.0 |
@@ -313,7 +313,7 @@ Arena (Quick Collaborate)
 ├── Worktree: git worktree add arena/task-1
 ├── Bash: codex exec "subtask 1 prompt" (in arena/task-1)
 ├── Worktree: git worktree add arena/task-2
-├── Bash: gemini -p "subtask 2 prompt" (in arena/task-2)
+├── Bash: agy -p "subtask 2 prompt" (in arena/task-2)
 ├── Integrate: git merge arena/task-1 + arena/task-2 into working branch
 ├── Verify: build + lint + type-check (inline, no separate script)
 └── EVALUATE → ADOPT (no per-subtask scoring)
@@ -393,10 +393,10 @@ Include: files changed, scope violations, errors, completeness assessment.
 {subtask_engine_prompt}
 ```
 
-### task-{subtask_id} (gemini)
+### task-{subtask_id} (agy)
 
 Same structure as the codex template above, with these differences:
-- Engine command: `gemini -p "{subtask_engine_prompt}" --yolo`
+- Engine command: `agy -p "{subtask_engine_prompt}" --dangerously-skip-permissions`
 - Branch: `arena/task-{subtask_id}`
 - Worktree path: `{worktree_path}`
 
@@ -417,7 +417,7 @@ After COLLABORATE completes, produce this report:
 | Subtask ID | Engine | Branch | Status | Files Changed |
 |------------|--------|--------|--------|---------------|
 | core-logic | codex | arena/task-core-logic | PASS | 2 |
-| api-integration | gemini | arena/task-api-integration | PASS | 3 |
+| api-integration | agy | arena/task-api-integration | PASS | 3 |
 
 **Integration Order:** core-logic → api-integration
 **Merge Conflicts:** None (clean merge)
@@ -434,7 +434,7 @@ For Nexus autonomous mode:
 ```markdown
 ## Arena COLLABORATE Result
 - Session: [session_id] | Mode: [Solo/Team] | Subtasks: [N]
-- Engines: codex ([subtask_ids]), gemini ([subtask_ids])
+- Engines: codex ([subtask_ids]), agy ([subtask_ids])
 - Integration: [CLEAN / CONFLICTS_RESOLVED]
 - Files: [list]
 - Build: PASS | Tests: PASS

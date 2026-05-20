@@ -31,7 +31,7 @@ COMPETE のパターン分解:
     │                    │
     Spec ──┤                    ├── EVALUATE → ADOPT
     │                    │
-    └── gemini variant ──┘
+    └── agy variant ──┘
 
   + Generator-Critic（品質ゲート）:
     EXECUTE（Generator）→ REVIEW（Critic）→ EVALUATE → [REFINE] → ADOPT
@@ -48,7 +48,7 @@ COLLABORATE のパターン分解:
   Hierarchical Decomposition（タスク分割）:
     Full Spec
     ├── Subtask A (codex) → arena/task-a
-    └── Subtask B (gemini) → arena/task-b
+    └── Subtask B (agy) → arena/task-b
 
   + Pipeline（依存順統合）:
     Subtask A → INTEGRATE → Subtask B → VERIFY
@@ -71,7 +71,7 @@ COLLABORATE のパターン分解:
 
 多様性を生む 4 軸:
 
-  1. エンジン多様性: codex vs gemini（最大の多様性）
+  1. エンジン多様性: codex vs agy（最大の多様性）
   2. アプローチ多様性: iterative vs functional vs OOP
   3. モデル多様性: o4-mini vs o3（同一エンジン内）
   4. プロンプト多様性: concise vs detailed
@@ -81,7 +81,7 @@ Multi-Variant Matrix（最大多様性）:
   │          │ iterative │ functional│
   ├──────────┼───────────┼───────────┤
   │ codex    │ variant-1 │ variant-2 │
-  │ gemini   │ variant-3 │ variant-4 │
+  │ agy   │ variant-3 │ variant-4 │
   └──────────┴───────────┴───────────┘
   → 4 variant で engine × approach の完全マトリクス
 

@@ -10,7 +10,7 @@ A skill collection that enables collaborative development with a team of special
 
 - **137 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
-- **Platform Agnostic** - Works with Claude Code, Codex CLI, Gemini CLI, and others
+- **Platform Agnostic** - Works with Claude Code, Codex CLI, Antigravity CLI, and others
 
 ## Quick Start
 
@@ -142,7 +142,7 @@ This repository contains 137 specialized AI agents covering various aspects of s
 | **Builder** | _"Types are contracts. Code is a promise."_ - Production implementation. Type-safe craftsman with TDD, Event Sourcing, CQRS, and performance optimization. Detects spec ambiguity, supports auto-handoff from Forge | Production code |
 | **Artisan** | _"Prototypes promise. Production delivers."_ - Production frontend implementation craftsman. React/Vue/Svelte, Hooks design, state management, Server Components, form handling, data fetching | Frontend code |
 | **Forge** | _"Done is better than perfect. Ship it, learn, iterate."_ - Prototyping. Prioritizes working software over perfection. Outputs types.ts, errors.ts, forge-insights.md for Builder handoff | MVP/PoC |
-| **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / gemini CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
+| **Arena** | _"Arena is the judge, not a player. External engines compete; the best solution wins."_ - Drives codex exec / Antigravity CLI directly for parallel implementation, evaluation, and adoption. Supports Solo Mode (sequential) and Team Mode (Agent Teams parallel) | Comparative implementation and evaluation |
 | **Native** | _"Every pixel ships. Every platform matters."_ - Pure-native mobile implementation specialist for iOS (Swift 6.2 + SwiftUI + Liquid Glass) and Android (Kotlin 2.x + Jetpack Compose + Material 3 Expressive). Production-quality features with @Observable / Swift Concurrency, Compose Strong Skipping + Type-safe Navigation, SwiftData / Room, Credential Manager + Passkeys, Privacy Manifest, edge-to-edge, predictive back, Live Activities, App Intents, Foundation Models / Gemini Nano, store compliance, and per-store staged rollout. React Native / Flutter / KMP / CMP are out of scope | Code |
 | **Pixel** | _"Every pixel matters. Fidelity is non-negotiable."_ - Faithful reproduction agent. Generates pixel-accurate HTML/CSS from image mockups (PNG/JPG/screenshots) and performs visual verification | HTML/CSS code |
 
@@ -218,7 +218,7 @@ This repository contains 137 specialized AI agents covering various aspects of s
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
 | **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
-| **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Gemini CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
+| **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Antigravity CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
 | **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3D model generation agent. Produces code (Python/JS/OpenSCAD) for text-to-3D and image-to-3D via Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability APIs. Game pipeline: LOD, retopology, UV, texture baking, QC validation | 3D pipeline code (Python/JS/SCAD) |
 | **Tone** | _"Sound is the invisible architecture of emotion."_ - Game audio generation agent. Produces code (Python/JS/TS/Shell) for SFX, BGM, voice, ambient, and UI sounds via ElevenLabs, Stable Audio, MusicGen, OpenAI TTS, JSFXR. LUFS normalization, format optimization, middleware integration | Audio pipeline code (Python/JS/Shell) |
 | **Cue** | _"Every frame tells a story."_ - Video script, storyboard, and narration design for product videos, explainer videos, and onboarding content | Video scripts, storyboards |
@@ -274,7 +274,7 @@ This repository contains 137 specialized AI agents covering various aspects of s
 | **Gear** | _"The best CI/CD is the one nobody thinks about."_ - Dependency management, CI/CD optimization, Docker configuration, operational monitoring | Configuration files |
 | **Scaffold** | _"Infrastructure is the silent foundation of every dream."_ - Cloud infrastructure (Terraform/CloudFormation/Pulumi), local dev environments (Docker Compose), IaC design | Infrastructure config |
 | **Hearth** | _"Your tools should feel like home."_ - Personal dev environment craftsman. Generates, optimizes, and audits config files (zsh/tmux/neovim/ghostty), dotfile management, shell/terminal/editor setup | Config files |
-| **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Gemini CLI / Claude Code). Collects official best practices via web, audits config.toml/settings.json/CLAUDE.md/GEMINI.md/AGENTS.md/permissions/commands/hooks/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
+| **Hone** | _"A sharp blade cuts clean. A sharp config cuts friction."_ - AI CLI configuration auditor (Codex CLI / Antigravity CLI / Claude Code). Collects official best practices via web, audits config.toml/settings.json/CLAUDE.md/GEMINI.md/AGENTS.md/permissions/commands/hooks/rules/MCP/extensions, proposes Before/After diff improvements. Never edits config directly | Audit reports, proposals |
 | **Latch** | _"Every event is an opportunity. Hook it before it slips away."_ - Claude Code hook specialist. Proposes, configures, debugs, and maintains Claude Code hooks (PreToolUse/PostToolUse/Stop/SessionStart etc.) for workflow automation, quality gates, and security validation | Hook configurations |
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actions workflow expert. Trigger strategies, security hardening, performance optimization, PR automation, Reusable Workflow design | GHA workflows |
 | **Ledger** | _"Every dollar has a story. Make it a short one."_ - FinOps and cloud cost optimization. IaC cost estimation, right-sizing, RI/SP recommendations, cost anomaly detection | Reports, configs |
@@ -282,7 +282,7 @@ This repository contains 137 specialized AI agents covering various aspects of s
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
-- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Antigravity CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)
@@ -1592,7 +1592,7 @@ Create Terraform configuration for building a staging environment on AWS.
 Audit my Codex CLI configuration and suggest optimizations based on latest best practices.
 
 /Hone
-Audit my Gemini CLI settings.json and safety settings for best practice alignment.
+Audit my Antigravity CLI settings.json and safety settings for best practice alignment.
 
 /Hone
 Audit my Claude Code permissions and MCP server configuration for security best practices.
@@ -1624,7 +1624,7 @@ Set up my neovim configuration with LSP support and lazy.nvim plugin management.
 
 **Hearth vs Hone vs Gear vs Scaffold responsibilities**:
 - **Hearth**: Personal environment (dotfiles, shell, editor, terminal)
-- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Gemini CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
+- **Hone**: AI CLI tool config audit (Codex CLI `~/.codex/`, Antigravity CLI `~/.gemini/`, Claude Code `~/.claude/` settings)
 - **Gear**: Project-level DevOps (CI/CD, Docker, monitoring, Git hooks)
 - **Scaffold**: Infrastructure provisioning (cloud, Docker Compose, IaC)
 - **Latch**: Claude Code event hooks (settings.json hooks for workflow automation)

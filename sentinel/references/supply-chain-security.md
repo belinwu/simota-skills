@@ -116,7 +116,7 @@ Prioritization factors: CVSS + EPSS + runtime reachability + exploit maturity + 
 ### Generation Commands
 
 ```bash
-npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json    # CycloneDX (npm)
+npx @cyclonedx/cyclonedx-npm > sbom.json    # CycloneDX (npm)
 syft dir:. -o cyclonedx-json > sbom.json                          # Syft
 trivy fs . --format cyclonedx --output sbom.json                  # Trivy
 ```
@@ -178,7 +178,7 @@ jobs:
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       - run: npm audit --audit-level=high
-      - run: npx @cyclonedx/cyclonedx-npm --output-format json > sbom.json
+      - run: npx @cyclonedx/cyclonedx-npm > sbom.json
       - run: npm ci --ignore-scripts
       - run: npx license-checker --failOn "GPL-3.0;AGPL-3.0"
 ```

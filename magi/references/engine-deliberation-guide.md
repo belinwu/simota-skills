@@ -10,14 +10,14 @@ Before starting Engine Mode deliberation, verify external engine availability:
 
 ```bash
 which codex && echo "codex: available" || echo "codex: not found"
-which gemini && echo "gemini: available" || echo "gemini: not found"
+which agy && echo "agy: available" || echo "agy: not found"
 ```
 
 | Engine | Command | Role |
 |--------|---------|------|
 | **Claude** | (internal) | Primary deliberator, orchestrator |
 | **Codex** | `codex exec --full-auto "{prompt}"` | Independent external deliberator |
-| **Gemini** | `gemini -p "{prompt}" --yolo` | Independent external deliberator |
+| **Gemini** | `agy -p "{prompt}" --dangerously-skip-permissions` | Independent external deliberator |
 
 ---
 
@@ -69,12 +69,12 @@ Be direct. State your position clearly. Do not hedge."
 
 ## Deliberation Prompt Template (Gemini)
 
-Gemini is invoked via `gemini -p` with `--yolo` flag for non-interactive execution. Gemini benefits from additional context due to its larger context window.
+Gemini is invoked via `agy -p` with `--dangerously-skip-permissions` flag for non-interactive execution. Gemini benefits from additional context due to its larger context window.
 
 ### Prompt Structure
 
 ```text
-gemini -p "You are a decision analyst. Evaluate the following decision independently.
+agy -p "You are a decision analyst. Evaluate the following decision independently.
 
 ## Background
 {extended_context}
@@ -103,14 +103,14 @@ conditions:
 dissent_note: "Key concern if this decision goes the other way"
 \`\`\`
 
-Be direct. State your position clearly. Do not hedge." --yolo
+Be direct. State your position clearly. Do not hedge." --dangerously-skip-permissions
 ```
 
 ### Gemini Optimization Notes
 
 - Include a `## Background` section with extended context (leverages larger context window)
 - Same YAML output format as Codex for consistent parsing
-- `--yolo` flag enables non-interactive execution
+- `--dangerously-skip-permissions` flag enables non-interactive execution
 
 ---
 
@@ -204,7 +204,7 @@ Engine Mode adapts based on available engines:
 
 | Available Engines | Mode | Behavior |
 |---|---|---|
-| 3 (Claude + Codex + Gemini) | **Full Engine Mode** | 3 engines deliberate independently |
+| 3 (Claude + Codex + Antigravity) | **Full Engine Mode** | 3 engines deliberate independently |
 | 2 (Claude + 1 external) | **2-Engine Mode** | 2 engines, consensus patterns: 2-0 / 1-1 / 0-2 |
 | 1 (Claude only) | **Auto-fallback** | Automatic switch to Simple Mode, notify user |
 
@@ -254,7 +254,7 @@ engine_error:
 
 ```
 1. AVAILABILITY CHECK
-   └─ Verify codex/gemini CLI availability
+   └─ Verify codex/Antigravity CLI availability
    └─ Determine mode (Full / 2-Engine / Auto-fallback)
 
 2. CLAUDE ANALYSIS (FIRST — contamination prevention)
@@ -263,7 +263,7 @@ engine_error:
 
 3. EXTERNAL ENGINE CALLS (PARALLEL)
    └─ codex exec --full-auto "{prompt}"
-   └─ gemini -p "{prompt}" --yolo
+   └─ agy -p "{prompt}" --dangerously-skip-permissions
 
 4. OUTPUT PARSING
    └─ Parse each engine's YAML output

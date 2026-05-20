@@ -6,13 +6,13 @@ Guide for running Arena in Team Mode using the Agent Teams API for true parallel
 
 ## Core Concept
 
-In Team Mode, Arena acts as the **team leader** and spawns subagents (Claude Code `general-purpose` agents) that serve as **proxies** for external AI engines. Each subagent's sole job is to invoke an external CLI (`codex exec` or `gemini`) via the Bash tool — the subagent does NOT implement code itself.
+In Team Mode, Arena acts as the **team leader** and spawns subagents (Claude Code `general-purpose` agents) that serve as **proxies** for external AI engines. Each subagent's sole job is to invoke an external CLI (`codex exec` or `agy`) via the Bash tool — the subagent does NOT implement code itself.
 
 ```
 Arena (Team Leader)
 ├── variant-codex (subagent) → Bash: codex exec ...
-├── variant-gemini (subagent) → Bash: gemini -p ...
-└── [optional: variant-codex-2, variant-gemini-2, ...]
+├── variant-agy (subagent) → Bash: agy -p ...
+└── [optional: variant-codex-2, variant-agy-2, ...]
 ```
 
 **Key principle:** Subagents are remote hands, not brains. They delegate all implementation work to external engines.
@@ -25,10 +25,10 @@ Arena (Team Leader)
 |--------|--------------------------|-------------------------------|-------|
 | **Purpose** | Competition — same spec, different engines | Cooperation — different subtasks, external engines | Cooperation — different tasks, Claude Code only |
 | **Subagent tasks** | All do the SAME task differently | Each does a DIFFERENT subtask | Each does a DIFFERENT task |
-| **External engines** | codex, gemini | codex, gemini | None (Claude Code only) |
+| **External engines** | codex, agy | codex, agy | None (Claude Code only) |
 | **Result handling** | Compare → select best → discard rest | Merge ALL in dependency order | Collect all → integrate all |
 | **Branch naming** | `arena/variant-{engine}` | `arena/task-{subtask_id}` | N/A (Rally's own protocol) |
-| **Typical use** | "Which engine produces better auth code?" | "codex handles algorithm, gemini handles API" | "Build frontend + backend + tests in parallel" |
+| **Typical use** | "Which engine produces better auth code?" | "codex handles algorithm, agy handles API" | "Build frontend + backend + tests in parallel" |
 | **Evaluation** | 5-criteria scoring, winner selection | Per-subtask review, integration verification | Completeness check, integration validation |
 
 **This guide covers COMPETE Team Mode.** For COLLABORATE Team Mode (parallel subtask execution with worktrees), see `collaborate-mode-guide.md` — the same worktree isolation mechanism is reused.
@@ -43,7 +43,7 @@ Arena (Team Leader)
 | Parallelism | Sequential | True parallel |
 | Cost | Low (single session) | Higher (N sessions) |
 | Complexity | Low-Medium | High |
-| Best for | codex vs gemini 2-way comparison | Multi-approach, engine mixing |
+| Best for | codex vs agy 2-way comparison | Multi-approach, engine mixing |
 
 **Default to Solo Mode.** Use Team Mode when:
 - 3+ variants are needed
@@ -61,7 +61,7 @@ Two subagents, each using a different engine to implement the same spec.
 ```
 Arena Leader
 ├── variant-codex  → codex exec "{spec}"
-└── variant-gemini → gemini -p "{spec}"
+└── variant-agy → agy -p "{spec}"
 ```
 
 ### Pattern 2: Multi-Approach
@@ -72,7 +72,7 @@ Multiple subagents using the same or different engines with different approach h
 Arena Leader
 ├── variant-codex-iterative → codex exec "{spec} Use an iterative approach"
 ├── variant-codex-recursive → codex exec "{spec} Use a recursive approach"
-└── variant-gemini-novel    → gemini -p "{spec} Propose a novel approach"
+└── variant-agy-novel    → agy -p "{spec} Propose a novel approach"
 ```
 
 ### Pattern 3: Engine + Review
@@ -82,7 +82,7 @@ Combine implementation and automated review in parallel.
 ```
 Arena Leader
 ├── variant-codex  → codex exec "{spec}" → git commit
-├── variant-gemini → gemini -p "{spec}" → git commit
+├── variant-agy → agy -p "{spec}" → git commit
 └── reviewer       → (waits for completion) → codex review on both branches
 ```
 
@@ -123,8 +123,8 @@ Combine cross-engine and same-engine variants for maximum diversity.
 Arena Leader
 ├── variant-codex-imperative → codex exec "{spec} Prefer imperative style"
 ├── variant-codex-functional → codex exec "{spec} Prefer functional style"
-├── variant-gemini-standard  → gemini -p "{spec}" --yolo
-└── variant-gemini-sandbox   → gemini -p "{spec}" --sandbox
+├── variant-agy-standard  → agy -p "{spec}" --dangerously-skip-permissions
+└── variant-agy-sandbox   → agy -p "{spec}" --sandbox
 ```
 
 ---
@@ -160,9 +160,9 @@ Arena leader creates **isolated working directories** via `git worktree` BEFORE 
 
 # 2. Create branches and worktrees
 # git branch arena/variant-codex $BASE_COMMIT
-# git branch arena/variant-gemini $BASE_COMMIT
+# git branch arena/variant-agy $BASE_COMMIT
 # git worktree add /tmp/$SESSION_ID/variant-codex arena/variant-codex
-# git worktree add /tmp/$SESSION_ID/variant-gemini arena/variant-gemini
+# git worktree add /tmp/$SESSION_ID/variant-agy arena/variant-agy
 
 # 3. Create team
 TeamCreate(team_name="arena-{task_id}")
@@ -238,18 +238,18 @@ Arena leader merges winning branch into base branch.
 ```python
 # 1. Shutdown subagents
 SendMessage(type="shutdown_request", recipient="variant-codex", ...)
-SendMessage(type="shutdown_request", recipient="variant-gemini", ...)
+SendMessage(type="shutdown_request", recipient="variant-agy", ...)
 
 # 2. Delete team
 TeamDelete()
 
 # 3. Remove worktrees (MUST be done before branch deletion)
 # git worktree remove /tmp/$SESSION_ID/variant-codex
-# git worktree remove /tmp/$SESSION_ID/variant-gemini
+# git worktree remove /tmp/$SESSION_ID/variant-agy
 # rm -rf /tmp/$SESSION_ID
 
 # 4. Clean up branches
-# git branch -D arena/variant-codex arena/variant-gemini
+# git branch -D arena/variant-codex arena/variant-agy
 
 # ...
 ```
@@ -325,14 +325,14 @@ Send a message with:
 ...
 ```
 
-### variant-gemini
+### variant-agy
 
 ```
-You are variant-gemini on the arena-{task_id} team.
+You are variant-agy on the arena-{task_id} team.
 
 ## Your Role
-You are a PROXY for the gemini CLI tool. You do NOT implement code yourself.
-Your sole job is to invoke `gemini` via the Bash tool in your assigned worktree directory.
+You are a PROXY for the Antigravity CLI tool. You do NOT implement code yourself.
+Your sole job is to invoke `agy` via the Bash tool in your assigned worktree directory.
 
 ## ABSOLUTE PROHIBITIONS
 - NEVER write, edit, or generate implementation code yourself
@@ -350,12 +350,12 @@ cd {worktree_path}
 Verify you are on the correct branch:
 ```bash
 git branch --show-current
-# Expected output: arena/variant-gemini
+# Expected output: arena/variant-agy
 ```
 
-### 2. Run gemini with the EXACT prompt below (do not modify it)
+### 2. Run agy with the EXACT prompt below (do not modify it)
 ```bash
-gemini -p "{engine_prompt}" --yolo
+agy -p "{engine_prompt}" --dangerously-skip-permissions
 ```
 
 ### 3. Validate scope — check which files were changed
@@ -370,14 +370,14 @@ git checkout -- {unauthorized_file}
 
 ### 4. Commit only authorized changes
 ```bash
-git add -A && git commit -m "arena: variant-gemini implementation"
+git add -A && git commit -m "arena: variant-agy implementation"
 ```
 
 ### 5. Report to team leader
 Send a message with:
 - Files changed: `git diff --stat HEAD~1`
 - Scope violations: list any files that were reverted
-- Engine errors/warnings: any output issues from gemini
+- Engine errors/warnings: any output issues from agy
 - Completeness assessment: does the diff cover the spec?
 
 ### 6. Mark task as completed via TaskUpdate
@@ -402,7 +402,7 @@ You are a PROXY for the {engine} CLI tool. You do NOT implement code yourself.
 Your sole job is to invoke `{engine_command}` via the Bash tool in your assigned worktree directory.
 
 ## ABSOLUTE PROHIBITIONS
-[Same as standard engine template — see variant-codex/variant-gemini templates above]
+[Same as standard engine template — see variant-codex/variant-agy templates above]
 
 ## ALLOWED ACTIONS (exhaustive list)
 [Same as standard engine template]
@@ -497,7 +497,7 @@ Cleanup MUST succeed even if individual steps fail. Use `|| true` to ensure all 
 ```bash
 # Step 1: Remove worktrees (force removal — tolerates dirty state)
 git worktree remove --force /tmp/$SESSION_ID/variant-codex 2>/dev/null || true
-git worktree remove --force /tmp/$SESSION_ID/variant-gemini 2>/dev/null || true
+git worktree remove --force /tmp/$SESSION_ID/variant-agy 2>/dev/null || true
 # Repeat for all variant worktrees...
 
 # Step 2: Prune stale worktree references
@@ -508,7 +508,7 @@ rm -rf /tmp/$SESSION_ID || true
 
 # Step 4: Delete variant branches
 git branch -D arena/variant-codex 2>/dev/null || true
-git branch -D arena/variant-gemini 2>/dev/null || true
+git branch -D arena/variant-agy 2>/dev/null || true
 # Repeat for all variant branches...
 # ...
 ```
@@ -617,9 +617,9 @@ git branch -D arena/variant-codex 2>/dev/null || true
 
 # === CREATE BRANCHES & WORKTREES (Arena leader via Bash) ===
 # git branch arena/variant-codex $BASE_COMMIT
-# git branch arena/variant-gemini $BASE_COMMIT
+# git branch arena/variant-agy $BASE_COMMIT
 # git worktree add /tmp/$SESSION_ID/variant-codex arena/variant-codex
-# git worktree add /tmp/$SESSION_ID/variant-gemini arena/variant-gemini
+# git worktree add /tmp/$SESSION_ID/variant-agy arena/variant-agy
 
 # === SETUP TEAM ===
 TeamCreate(team_name="arena-auth-refactor")

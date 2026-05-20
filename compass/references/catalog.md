@@ -257,7 +257,7 @@ Manages and evolves the ecosystem itself.
 | **Sigil** | Project-specific skill generation | Codebase analysis → tailored skill generation | No |
 | **Lore** | Knowledge curation | Pattern extraction, knowledge-decay detection | No |
 | **Darwin** | Ecosystem evolution | Lifecycle detection, fitness evaluation | No |
-| **Hone** | AI CLI configuration optimization | Claude Code / Gemini CLI configuration audit | No |
+| **Hone** | AI CLI configuration optimization | Claude Code / Antigravity CLI configuration audit | No |
 | **Realm** | Ecosystem visualization | Gamification, interactive maps | Yes |
 | **Compass** | Skill navigator | Skill guidance, onboarding | No |
 | **Latch** | Claude Code Hooks design | PreToolUse / PostToolUse / Stop and other lifecycle hooks | Mixed |
@@ -309,7 +309,7 @@ Specialized skills that don't fit the categories above.
 | **Clause** | Legal-document review | Terms of service, privacy policy | No |
 | **Quest** | Game planning | GDD, balance design, economy design | No |
 | **Orbit** | Autonomous-loop design | Script generation for nexus-autoloop | Mixed |
-| **Arena** | Multi-AI comparison | Codex / Gemini CLI compete or collaborate | Mixed |
+| **Arena** | Multi-AI comparison | Codex / Antigravity CLI compete or collaborate | Mixed |
 | **Hearth** | Dotfile management | zsh / tmux / neovim / ghostty configuration | Mixed |
 | **Mint** | Test-data generation | Factories, boundary values, seed management | Mixed |
 | **Tempo** | Schedule design | cron, timezone / DST, retry / backoff, business calendars | Mixed |
