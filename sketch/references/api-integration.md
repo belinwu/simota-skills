@@ -187,7 +187,7 @@ Common pitfalls:
 | `ImageGenerationConfig` missing | `AttributeError` | on `< v1.50`, use simple config |
 | `imagen-3.0-*` on Google AI API | `NotFound` | Vertex AI only |
 | wrong Gemini model name | `NotFound` | keep the `-image` suffix |
-| copy-pasted model names from tutorials | `NotFound` or unexpected behavior | Google naming is inconsistent across docs — always verify against Model Rules table. Common wrong names: `gemini-flash-image`, `gemini-3.1-flash-preview-image`, `gemini-pro-image` |
+| copy-pasted model names from tutorials | `NotFound` or unexpected behavior | Google naming is inconsistent across docs — always verify against Model Rules table. Common wrong names: `gemini-flash-image`, `gemini-3.1-flash-preview-image`, `agy-pro-image` |
 
 ## Rate Limits And Cost
 

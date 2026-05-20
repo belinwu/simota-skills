@@ -114,7 +114,7 @@ Three AI engines each play a different user persona to validate UI flows (**Pers
 | Engine | Persona | Command | Fallback |
 |--------|---------|---------|----------|
 | Codex | Senior Engineer | `codex exec --full-auto` | Claude subagent |
-| Gemini | Beginner User | `gemini -p --yolo` | Claude subagent |
+| Gemini | Beginner User | `agy -p --dangerously-skip-permissions` | Claude subagent |
 | Claude | Accessibility User | Claude subagent (Task) | — |
 
 > Persona assignments are not fixed. Echo may choose the optimal combination for the target UI.

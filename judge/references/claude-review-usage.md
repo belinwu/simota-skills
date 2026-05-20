@@ -1,8 +1,8 @@
 # Claude Code CLI Review Usage
 
-Operational reference for using Anthropic's Claude Code CLI as a review engine. This file is the authoritative "how to run a Claude Code review" guide. For Codex CLI see `codex-review-usage.md`; for Gemini CLI see `gemini-review-usage.md`. For output interpretation (severity, false-positives) see `codex-integration.md` — those rules apply across engines.
+Operational reference for using Anthropic's Claude Code CLI as a review engine. This file is the authoritative "how to run a Claude Code review" guide. For Codex CLI see `codex-review-usage.md`; for Antigravity CLI see `antigravity-review-usage.md`. For output interpretation (severity, false-positives) see `codex-integration.md` — those rules apply across engines.
 
-Claude Code is one of the three engines in Judge's default tri-engine parallel review (Codex + Gemini + Claude Code subagents, fanned out in a single `Agent` tool message — see `tri-engine-review.md`). This file is consumed by the `review-claude` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly asks for a Claude-only review, two of the three engines are unavailable, or cross-verification against an already-run engine is needed. The mandatory subagent pattern below still applies in any Claude-based review path to eliminate self-bias.
+Claude Code is one of the three engines in Judge's default tri-engine parallel review (Codex + Antigravity + Claude Code subagents, fanned out in a single `Agent` tool message — see `tri-engine-review.md`). This file is consumed by the `review-claude` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly asks for a Claude-only review, two of the three engines are unavailable, or cross-verification against an already-run engine is needed. The mandatory subagent pattern below still applies in any Claude-based review path to eliminate self-bias.
 
 ---
 
@@ -80,11 +80,11 @@ Omit `--model`. Authentication and model selection are resolved from the subscri
 claude -p "Review the diff between HEAD and its upstream base. Report bugs, security issues, logic errors, and intent misalignment by severity. Use a fresh perspective — do not assume any prior context." --permission-mode plan
 
 # Headless with JSON output for CI
-claude -p "Review the current branch diff. Return findings as JSON." --permission-mode plan --output-format json
+claude -p "Review the current branch diff. Return findings as JSON." --permission-mode plan
 
 # Strict-schema JSON for deterministic ingestion
 claude -p "Review the current branch diff and return findings matching the provided schema." \
-  --permission-mode plan --output-format json \
+  --permission-mode plan \
   --json-schema '{"type":"object","properties":{"findings":{"type":"array","items":{"type":"object","properties":{"severity":{"type":"string","enum":["CRITICAL","HIGH","MEDIUM","LOW","INFO"]},"file":{"type":"string"},"line":{"type":"integer"},"issue":{"type":"string"},"evidence":{"type":"string"},"suggested_fix":{"type":"string"}},"required":["severity","file","issue"]}}},"required":["findings"]}'
 
 # With a custom reviewer agent declared inline
@@ -207,11 +207,11 @@ cat REVIEW.md | claude -p "Apply the review guidelines from stdin to the current
 
 ### 13. Three-Engine Cross-Verification
 
-For maximum confidence, run Codex + Gemini + Claude and cross-reference findings via `codex-integration.md` multi-agent verification rules.
+For maximum confidence, run Codex + Antigravity + Claude and cross-reference findings via `codex-integration.md` multi-agent verification rules.
 
 ```bash
 codex review --base main "Focus on correctness, security, and logic errors." > review-codex.md
-gemini -p "Activate the code review skill. Review the current branch diff and write findings to review-gemini.md." --yolo -e code-review
+agy -p "Activate the code review skill. Review the current branch diff and write findings to review-agy.md." --dangerously-skip-permissions
 claude -p "Review the current branch diff. Output: review-claude.md — include severity, file:line, evidence, suggested fix." --permission-mode plan > review-claude.md
 ```
 
@@ -224,7 +224,7 @@ For large diffs where per-file depth matters, parallelize with `-p`:
 ```bash
 for file in $(git diff --name-only origin/main...HEAD); do
   claude -p "Review $file for bugs, security, logic errors, and consistency with surrounding code. Severity-rank findings. File: $file" \
-    --permission-mode plan --output-format json \
+    --permission-mode plan \
     --allowedTools "Read,Grep,Glob" \
     > "review-$(echo $file | tr '/' '_').json"
 done
@@ -332,7 +332,7 @@ Default headless runs pair with `--permission-mode plan`. For fully unattended C
 ## Cross-References
 
 - Codex CLI review (default engine): `codex-review-usage.md`.
-- Gemini CLI review (alternative engine): `gemini-review-usage.md`.
+- Antigravity CLI review (alternative engine): `antigravity-review-usage.md`.
 - Output interpretation, severity mapping, override rules, false-positive filtering (engine-agnostic): `codex-integration.md`.
 - Framework-specific review prompts: `framework-reviews.md`.
 - AI-generated code review depth and hallucination checks: `ai-review-patterns.md`.

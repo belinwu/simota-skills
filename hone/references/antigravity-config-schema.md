@@ -1,6 +1,6 @@
 # Gemini Config Schema
 
-**Purpose:** Comprehensive reference for all Gemini CLI configuration keys, default values, and recommended settings.
+**Purpose:** Comprehensive reference for all Antigravity CLI configuration keys, default values, and recommended settings.
 **Read when:** Auditing `~/.gemini/` or proposing configuration changes.
 
 ---
@@ -93,7 +93,7 @@ Primary: `~/.gemini/settings.json`
 
 | File | Scope | Purpose | Audit focus |
 |------|-------|---------|-------------|
-| `~/.gemini/GEMINI.md` | Global | Global instructions for Gemini CLI | Non-empty, clear, up-to-date |
+| `~/.gemini/GEMINI.md` | Global | Global instructions for Antigravity CLI | Non-empty, clear, up-to-date |
 | `<project>/GEMINI.md` | Project | Project-level instructions | Relevant to project, no contradictions with global |
 
 ## Authentication
@@ -116,12 +116,12 @@ Primary: `~/.gemini/settings.json`
 | Flag | Description | Recommendation |
 |------|-------------|----------------|
 | `-p` | Non-interactive single prompt mode | Use for scripted/automated queries |
-| `--yolo` | Skip all confirmation prompts | Development only; never in production scripts |
+| `--dangerously-skip-permissions` | Skip all confirmation prompts | Development only; never in production scripts |
 | `--sandbox` | Run in sandboxed environment | Recommended for untrusted code execution |
 
 ### CLI Flag Audit Criteria
 
-- **`--yolo` usage**: Flag should not appear in shared scripts or CI pipelines
+- **`--dangerously-skip-permissions` usage**: Flag should not appear in shared scripts or CI pipelines
 - **`--sandbox` adoption**: Recommended for projects handling untrusted input
 
 ---
@@ -130,6 +130,6 @@ Primary: `~/.gemini/settings.json`
 
 | Date | Change | Source |
 |------|--------|--------|
-| Initial | Schema documented from Gemini CLI v1.0 | T2: google-gemini/gemini-cli GitHub |
+| Initial | Schema documented from Antigravity CLI v1.0 | T2: google-gemini/gemini-cli GitHub |
 
-> This schema should be refreshed when major Gemini CLI versions are released. Check `references/web-sources.md` for staleness thresholds.
+> This schema should be refreshed when major Antigravity CLI versions are released. Check `references/web-sources.md` for staleness thresholds.

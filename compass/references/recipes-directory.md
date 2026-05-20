@@ -58,7 +58,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **haul**: catalog★ / lookup / refresh / reverse / brand / audit
 - **hearth**: zsh★ / tmux / neovim / ghostty / vscode / git / shellfn / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast / jtbd / blue-ocean / wardley
-- **hone**: audit★ / codex / gemini / claude / diff
+- **hone**: audit★ / codex / agy / claude / diff
 - **horizon**: detect★ / replace / poc / refresh / codemod / strangler / sunset
 - **ink**: icon★ / illustration / system / sprite / animate / theme / a11y / optimize / pictogram / logo
 - **judge**: pr★ / security / perf / style / quick / intent

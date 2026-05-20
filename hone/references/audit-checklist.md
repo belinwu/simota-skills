@@ -1,6 +1,6 @@
 # Audit Checklist
 
-**Purpose:** Category-based audit checklist with PASS/WARN/FAIL criteria for Codex CLI, Gemini CLI, and Claude Code configuration.
+**Purpose:** Category-based audit checklist with PASS/WARN/FAIL criteria for Codex CLI, Antigravity CLI, and Claude Code configuration.
 **Read when:** Running the AUDIT phase on `~/.codex/` or `~/.gemini/` configuration files.
 
 ---
@@ -128,37 +128,37 @@
 
 ---
 
-## Gemini CLI Checklist
+## Antigravity CLI Checklist
 
 | ID | Category | Check | Priority |
 |----|----------|-------|----------|
-| GM1 | Gemini Model | `selectedModel` is current and available | P0 |
-| GM2 | Gemini Model | Model is compatible with API tier | P1 |
-| GM3 | Gemini Model | Model supports required capabilities (code, multimodal) | P2 |
-| GS1 | Gemini Safety | Safety settings are not overly permissive | P0 |
-| GS2 | Gemini Safety | Safety settings are not overly restrictive for dev use | P2 |
-| GE1 | Gemini Extensions | Extension paths/binaries are valid | P0 |
-| GE2 | Gemini Extensions | No unused extensions detected | P1 |
-| GE3 | Gemini Extensions | No plaintext secrets in extension config | P0 |
-| GE4 | Gemini Extensions | Extension versions are current | P2 |
-| GI1 | Gemini Instructions | `GEMINI.md` exists and is non-empty | P1 |
-| GI2 | Gemini Instructions | Content is current and actionable | P2 |
-| GA1 | Gemini Auth | Authentication method is configured | P0 |
-| GA2 | Gemini Auth | `GEMINI_API_KEY` is not hardcoded in files | P0 |
+| GM1 | Antigravity Model | `selectedModel` is current and available | P0 |
+| GM2 | Antigravity Model | Model is compatible with API tier | P1 |
+| GM3 | Antigravity Model | Model supports required capabilities (code, multimodal) | P2 |
+| GS1 | Antigravity Safety | Safety settings are not overly permissive | P0 |
+| GS2 | Antigravity Safety | Safety settings are not overly restrictive for dev use | P2 |
+| GE1 | Antigravity Extensions | Extension paths/binaries are valid | P0 |
+| GE2 | Antigravity Extensions | No unused extensions detected | P1 |
+| GE3 | Antigravity Extensions | No plaintext secrets in extension config | P0 |
+| GE4 | Antigravity Extensions | Extension versions are current | P2 |
+| GI1 | Antigravity Instructions | `GEMINI.md` exists and is non-empty | P1 |
+| GI2 | Antigravity Instructions | Content is current and actionable | P2 |
+| GA1 | Antigravity Auth | Authentication method is configured | P0 |
+| GA2 | Antigravity Auth | `GEMINI_API_KEY` is not hardcoded in files | P0 |
 
 ---
 
 ## Gemini Category-Specific Audit Procedures
 
-### Gemini Model Audit (GM1-GM3)
+### Antigravity Model Audit (GM1-GM3)
 
 1. Read `selectedModel` value from settings.json
-2. WebSearch for latest Gemini CLI supported models
+2. WebSearch for latest Antigravity CLI supported models
 3. Compare and classify (PASS if current, WARN if one version behind, FAIL if deprecated)
 4. Check model compatibility with the user's API tier (free vs paid)
 5. Verify model supports required capabilities (code generation, multimodal input)
 
-### Gemini Safety Audit (GS1-GS2)
+### Antigravity Safety Audit (GS1-GS2)
 
 1. Read `safetySettings` array from settings.json
 2. Check for `BLOCK_NONE` on all categories without justification (GS1: FAIL)
@@ -166,7 +166,7 @@
 4. Verify all harm categories are configured (missing categories inherit defaults)
 5. Assess consistency of threshold levels across categories
 
-### Gemini Extensions Audit (GE1-GE4)
+### Antigravity Extensions Audit (GE1-GE4)
 
 1. Extract extension configs from settings.json
 2. Check each binary path exists and is executable (GE1)
@@ -174,14 +174,14 @@
 4. Scan for plaintext secrets in args/env (GE3)
 5. Check extension versions against latest (GE4)
 
-### Gemini Instructions Audit (GI1-GI2)
+### Antigravity Instructions Audit (GI1-GI2)
 
 1. Check `~/.gemini/GEMINI.md` exists and is non-empty (GI1)
 2. Check project-level `GEMINI.md` if applicable
 3. Review content for relevance and actionability (GI2)
 4. Check for contradictions between global and project-level instructions
 
-### Gemini Auth Audit (GA1-GA2)
+### Antigravity Auth Audit (GA1-GA2)
 
 1. Check that `selectedAuthType` is configured or `GEMINI_API_KEY` env var is set (GA1)
 2. Scan project files and shell configs for hardcoded `GEMINI_API_KEY` values (GA2)

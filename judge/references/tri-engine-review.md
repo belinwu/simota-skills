@@ -1,6 +1,6 @@
 # Tri-Engine Parallel Review
 
-Default flow for `/judge`. Run Codex, Gemini, and Claude Code reviews in parallel via subagents, integrate results, verify findings, and return **only findings that warrant fixing**.
+Default flow for `/judge`. Run Codex, Antigravity, and Claude Code reviews in parallel via subagents, integrate results, verify findings, and return **only findings that warrant fixing**.
 
 **Why three engines:** Each LLM family misses different defect classes. Single-engine review delivers ~45% defect detection; multi-engine concurrence + grounding raises precision above 90% while collapsing noise. Independent subagent contexts also eliminate self-bias — especially critical when Claude is one of the engines.
 
@@ -37,12 +37,12 @@ for p in "$HOME/.bun/bin/codex" "$HOME/.local/bin/codex" "/usr/local/bin/codex" 
 done
 ```
 
-Apply the same loop for `gemini` and `claude`. The user's actual install paths today: `~/.bun/bin/codex`, `~/.bun/bin/gemini`, `~/.local/bin/claude` — these MUST be probed before declaring any engine unavailable.
+Apply the same loop for `agy` and `claude`. The user's actual install paths today: `~/.bun/bin/codex`, `~/.bun/bin/agy`, `~/.local/bin/claude` — these MUST be probed before declaring any engine unavailable.
 
 **Single combined preflight command (recommended):**
 
 ```bash
-for cli in codex gemini claude; do
+for cli in codex agy claude; do
   if command -v "$cli" >/dev/null 2>&1; then
     echo "$cli: $(command -v $cli) ($($cli --version 2>&1 | head -1))"
   else
@@ -79,14 +79,14 @@ Spawn **three Agent calls in a single message** so they run concurrently. Each s
 | Subagent | Engine | Reference | Baseline command |
 |----------|--------|-----------|------------------|
 | `review-codex` | Codex CLI | `codex-review-usage.md` | `codex review --base <branch> "<focused prompt>"` |
-| `review-gemini` | Gemini CLI | `gemini-review-usage.md` | `gemini -p "<focused prompt>" --yolo -e code-review` |
+| `review-agy` | Antigravity CLI | `antigravity-review-usage.md` | `agy -p "<focused prompt>" --dangerously-skip-permissions` |
 | `review-claude` | Claude Code CLI | `claude-review-usage.md` | `claude -p "<focused prompt>" --permission-mode plan` |
 
 Each subagent prompt must require structured JSON output so integration is deterministic:
 
 ```json
 {
-  "engine": "codex|gemini|claude",
+  "engine": "codex|agy|claude",
   "findings": [
     {
       "severity": "CRITICAL|HIGH|MEDIUM|LOW|INFO",
@@ -165,7 +165,7 @@ Structure the final report around the filtered set only. Include:
 
 - Summary table: total findings per severity after filtering, engine concurrence stats (e.g., `3/3: 2, 2/3: 5, 1/3-verified: 3`).
 - Engine status: which of the three ran successfully; note any unavailability.
-- Findings list, each with: ID, file:line, severity, issue, evidence, suggested fix, engine concurrence (e.g., `[codex+gemini+claude]` or `[claude-verified]`), remediation agent.
+- Findings list, each with: ID, file:line, severity, issue, evidence, suggested fix, engine concurrence (e.g., `[codex+agy+claude]` or `[claude-verified]`), remediation agent.
 - Intent-alignment verdict (if requested).
 - Rejections ledger (optional, condensed): count and categories of findings that were dropped during grounding — this preserves SNR transparency without re-introducing noise.
 - Overall verdict: `APPROVE` / `REQUEST CHANGES` / `BLOCK`.
@@ -229,7 +229,7 @@ Do not modify any files. Do not emit commentary outside the JSON.
 ## Cross-References
 
 - `codex-review-usage.md` — how `review-codex` subagent invokes Codex
-- `gemini-review-usage.md` — how `review-gemini` subagent invokes Gemini
+- `antigravity-review-usage.md` — how `review-agy` subagent invokes Gemini
 - `claude-review-usage.md` — how `review-claude` subagent invokes Claude
 - `codex-integration.md` — severity override rules, report template, multi-agent verification rationale
 - `review-anti-patterns.md` — why filtering noise matters more than maximizing recall

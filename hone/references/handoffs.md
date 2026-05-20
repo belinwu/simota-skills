@@ -11,7 +11,7 @@
 
 ```yaml
 HONE_AUDIT_REQUEST:
-  target_cli: codex | gemini | claude-code | all  # default: all
+  target_cli: codex | agy | antigravity | claude-code | all  # default: all
   scope: full | model | trust | features | mcp | rules | agents | instructions | safety | extensions | permissions | commands | hooks
   config_path: "~/.codex/ | ~/.gemini/ | ~/.claude/"  # default: based on target_cli
   focus: ""  # optional specific concern
@@ -44,7 +44,7 @@ HEARTH_TO_HONE_HANDOFF:
     shell: [zsh/fish/bash]
     codex_version: [version]
     config_path: [path]
-  target_cli: [codex | gemini | claude-code | all]
+  target_cli: [codex | agy | antigravity | claude-code | all]
   context: "Environment setup complete, AI CLI config needs optimization"
   findings: [relevant Hearth findings about CLI tools]
 ```

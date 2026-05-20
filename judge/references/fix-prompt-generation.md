@@ -102,7 +102,7 @@ In all suppression cases, write the one-line note in the report. Silent omission
 
 Judge adds these Judge-specific blocks on top of the universal skeleton:
 
-- `Engine consensus` — which of {Codex, Gemini, Claude Code} flagged this; consensus level (3/3, 2/3, 1/3-grounded)
+- `Engine consensus` — which of {Codex, Antigravity, Claude Code} flagged this; consensus level (3/3, 2/3, 1/3-grounded)
 - `Grounding evidence` — file:line references that ground the finding in actual code (Judge requires grounded findings)
 - `PR context` — PR title/branch + diff hunks where the finding lives
 - `Severity` — `bug-blocking | bug-non-blocking | smell | style` (Judge's behavioral severity, separate from CRITICAL/HIGH/MEDIUM/LOW classification)
@@ -143,7 +143,7 @@ Why this is a defect:
 
 Engine outputs (for traceability — do NOT re-litigate):
 - Codex: [summary of codex finding, if any]
-- Gemini: [summary of gemini finding, if any]
+- Gemini: [summary of agy finding, if any]
 - Claude Code: [summary of claude finding, if any]
 
 # Recommended action
@@ -230,7 +230,7 @@ APPLY-FIX the review finding described below.
 - Title: Off-by-one in pagination loop drops the last item on the final page
 - Severity: bug-blocking
 - Classification: HIGH
-- Engine consensus: 2/3 LIKELY (Codex + Gemini flagged; Claude Code missed)
+- Engine consensus: 2/3 LIKELY (Codex + Antigravity flagged; Claude Code missed)
 - PR: feat(search): add cursor-based pagination to /api/products
 - Diff hunk: src/api/products/paginate.ts:18-46
 
@@ -301,7 +301,7 @@ Constraints:
 # What NOT to do
 - Do not silence the symptom by changing the test expectation to `pageSize - 1`
 - Do not expand scope to refactor unrelated pagination call sites in this PR
-- Do not re-litigate the Codex/Gemini findings above — Judge has grounded them
+- Do not re-litigate the Codex/Antigravity findings above — Judge has grounded them
 - Do not bundle copy edits or unrelated refactors into the same PR
 ```
 ````

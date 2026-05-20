@@ -112,7 +112,7 @@ Multiple Explore agents investigate different areas in parallel.
 
 ### MULTI_ENGINE
 
-Three AI engines (Codex, Gemini, Claude) independently work on the same task, leveraging diverse knowledge bases.
+Three AI engines (Codex, Antigravity, Claude) independently work on the same task, leveraging diverse knowledge bases.
 
 **When:** Quality-critical tasks where diverse perspectives catch blind spots (security scans, bug hunts, edge-case tests, refactoring proposals).
 
@@ -121,12 +121,12 @@ Three AI engines (Codex, Gemini, Claude) independently work on the same task, le
 | Engine | Command | Fallback (when `which` fails) |
 |--------|---------|-------------------------------|
 | Codex | `codex exec --full-auto` | Claude subagent (Task) |
-| Gemini | `gemini -p --yolo` | Claude subagent (Task) |
+| Gemini | `agy -p --dangerously-skip-permissions` | Claude subagent (Task) |
 | Claude | Claude subagent (Task) | — |
 
 #### Loose Prompt Rules
 
-External engines (Codex, Gemini) must receive **minimal, unbiased prompts** to maximize independent perspective:
+External engines (Codex, Antigravity) must receive **minimal, unbiased prompts** to maximize independent perspective:
 
 **Pass only:**
 1. **Role** — one line describing the task persona
@@ -142,7 +142,7 @@ External engines (Codex, Gemini) must receive **minimal, unbiased prompts** to m
 codex exec --full-auto "$(cat /tmp/prompt.md)"
 
 # Gemini
-gemini -p "$(cat /tmp/prompt.md)" --yolo
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions
 ```
 
 ```yaml

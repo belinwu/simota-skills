@@ -121,7 +121,7 @@ Use at the end of a COLLABORATE session.
 
 **Engine Effectiveness:**
 - codex ([subtask_ids]): [Brief assessment]
-- gemini ([subtask_ids]): [Brief assessment]
+- agy ([subtask_ids]): [Brief assessment]
 
 **Key Learnings:**
 - [Learning 1 - e.g., decomposition strategy insight]
@@ -151,7 +151,7 @@ Abbreviated format for Nexus autonomous mode. Omit verbose explanations.
 ```markdown
 ## Arena COLLABORATE Result
 - Session: [session_id] | Mode: [Solo/Team] | Subtasks: [N]
-- Engines: codex ([subtask_ids]), gemini ([subtask_ids])
+- Engines: codex ([subtask_ids]), agy ([subtask_ids])
 - Integration: [CLEAN / CONFLICTS_RESOLVED]
 - Files: [list]
 - Build: [PASS/FAIL] | Tests: [PASS/FAIL]
@@ -213,14 +213,14 @@ git checkout $BASE_BRANCH
 git merge arena/variant-codex -m "arena: hybrid base from variant-codex"
 
 # 2. Cherry-pick specific files from the other variant
-git checkout arena/variant-gemini -- src/module/file-to-take.ts
-git checkout arena/variant-gemini -- src/module/file-to-take.test.ts
+git checkout arena/variant-agy -- src/module/file-to-take.ts
+git checkout arena/variant-agy -- src/module/file-to-take.test.ts
 
 # 3. Stage the cherry-picked files
 git add src/module/file-to-take.ts src/module/file-to-take.test.ts
 
 # 4. Commit the hybrid result
-git commit -m "arena: hybrid adoption (base: codex, cherry-picked: gemini files)"
+git commit -m "arena: hybrid adoption (base: codex, cherry-picked: agy files)"
 ```
 
 #### Alternative: Partial Function-Level Cherry-Pick
@@ -233,14 +233,14 @@ git checkout $BASE_BRANCH
 git merge arena/variant-codex -m "arena: hybrid base from variant-codex"
 
 # 2. Show the specific function from the other variant
-git show arena/variant-gemini:src/module/file.ts
+git show arena/variant-agy:src/module/file.ts
 # Manually identify the function/section to adopt
 
 # 3. Use Edit tool to replace the specific function
 # (Arena leader performs the surgical edit using Read + Edit tools)
 
 # 4. Commit the hybrid result
-git add -A && git commit -m "arena: hybrid adoption (base: codex, function-level: gemini)"
+git add -A && git commit -m "arena: hybrid adoption (base: codex, function-level: agy)"
 ```
 
 ### Post-Hybrid Verification (MANDATORY)

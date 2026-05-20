@@ -93,7 +93,7 @@ Arena leader runs the checklist **after all subagents complete and report back**
 cd /tmp/$SESSION_ID/variant-codex  # or: git checkout arena/variant-codex
 
 # Run the same 5-step checklist
-# Repeat for variant-gemini
+# Repeat for variant-agy
 ```
 
 ### Review Result Template
@@ -103,7 +103,7 @@ Record results for each variant using this structure:
 ```yaml
 review_result:
   variant: "arena/variant-{engine}"
-  engine: "{codex | gemini}"
+  engine: "{codex | agy}"
   checks:
     scope:
       status: PASS | FAIL
@@ -207,7 +207,7 @@ Arena collects evaluation data directly from Git and file reading — no externa
 
 ```bash
 # Diff between two variant branches
-git diff arena/variant-codex..arena/variant-gemini
+git diff arena/variant-codex..arena/variant-agy
 
 # Diff a variant against the base commit
 git diff $BASE_COMMIT..arena/variant-codex
@@ -227,7 +227,7 @@ For detailed review, checkout each branch and read files directly:
 git checkout arena/variant-codex
 # Use Read tool to inspect implementation files
 
-git checkout arena/variant-gemini
+git checkout arena/variant-agy
 # Use Read tool to inspect implementation files
 ```
 
@@ -275,15 +275,15 @@ Beyond basic `git diff`, use these techniques for deeper variant comparison.
 ```bash
 # File-level change statistics per variant
 git diff --stat $BASE_COMMIT..arena/variant-codex
-git diff --stat $BASE_COMMIT..arena/variant-gemini
+git diff --stat $BASE_COMMIT..arena/variant-agy
 
 # Compact summary (insertions/deletions only)
 git diff --shortstat $BASE_COMMIT..arena/variant-codex
-git diff --shortstat $BASE_COMMIT..arena/variant-gemini
+git diff --shortstat $BASE_COMMIT..arena/variant-agy
 
 # Side-by-side file change comparison
 echo "=== Variant A (codex) ===" && git diff --stat $BASE_COMMIT..arena/variant-codex
-echo "=== Variant B (gemini) ===" && git diff --stat $BASE_COMMIT..arena/variant-gemini
+echo "=== Variant B (agy) ===" && git diff --stat $BASE_COMMIT..arena/variant-agy
 ```
 
 ### Function/Symbol-Level Diff Detection
@@ -296,8 +296,8 @@ git diff --diff-filter=M -p $BASE_COMMIT..arena/variant-codex | grep -E '^\+.*fu
 
 # Compare function signatures between variants
 git show arena/variant-codex:src/module.ts | grep -E 'export (function|class|const|interface)' > /tmp/codex-exports.txt
-git show arena/variant-gemini:src/module.ts | grep -E 'export (function|class|const|interface)' > /tmp/gemini-exports.txt
-diff /tmp/codex-exports.txt /tmp/gemini-exports.txt
+git show arena/variant-agy:src/module.ts | grep -E 'export (function|class|const|interface)' > /tmp/agy-exports.txt
+diff /tmp/codex-exports.txt /tmp/agy-exports.txt
 ```
 
 ### Parallel Test Result Comparison
@@ -310,15 +310,15 @@ git checkout arena/variant-codex
 npm test 2>&1 | tee /tmp/test-result-codex.txt
 TEST_EXIT_CODEX=$?
 
-git checkout arena/variant-gemini
-npm test 2>&1 | tee /tmp/test-result-gemini.txt
+git checkout arena/variant-agy
+npm test 2>&1 | tee /tmp/test-result-agy.txt
 TEST_EXIT_GEMINI=$?
 
 # Quick comparison
 echo "=== Test Results Comparison ==="
 echo "Codex: exit=$TEST_EXIT_CODEX"
 echo "Gemini: exit=$TEST_EXIT_GEMINI"
-diff /tmp/test-result-codex.txt /tmp/test-result-gemini.txt || true
+diff /tmp/test-result-codex.txt /tmp/test-result-agy.txt || true
 ```
 
 ### Complexity Metrics
@@ -329,16 +329,16 @@ Approximate code complexity comparison:
 # Line count comparison
 echo "=== Lines of Code ==="
 git diff --stat $BASE_COMMIT..arena/variant-codex | tail -1
-git diff --stat $BASE_COMMIT..arena/variant-gemini | tail -1
+git diff --stat $BASE_COMMIT..arena/variant-agy | tail -1
 
 # File count comparison
 echo "=== Files Changed ==="
 git diff --name-only $BASE_COMMIT..arena/variant-codex | wc -l
-git diff --name-only $BASE_COMMIT..arena/variant-gemini | wc -l
+git diff --name-only $BASE_COMMIT..arena/variant-agy | wc -l
 
 # New vs modified files
 echo "=== New Files (codex) ===" && git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-codex
-echo "=== New Files (gemini) ===" && git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-gemini
+echo "=== New Files (agy) ===" && git diff --diff-filter=A --name-only $BASE_COMMIT..arena/variant-agy
 ```
 
 ### Comparison Summary Template
@@ -497,7 +497,7 @@ session_metrics:
   engines_used:
     - engine: "codex"
       model: "o4-mini"  # if specified
-    - engine: "gemini"
+    - engine: "agy"
   variant_count: 2
   self_competition: false  # true if same engine used for multiple variants
   self_competition_strategy: "approach_hint | model_variant | prompt_verbosity | null"

@@ -45,7 +45,7 @@ EXECUTION_DATA:
   paradigm: <COMPETE | COLLABORATE>
   mode: <Quick | Solo | Team>
   engines_used:
-    - engine: <codex | gemini>
+    - engine: <codex | agy>
       model: <model variant if specified>
       role: <variant | subtask>
   variant_count: <int>
@@ -186,7 +186,7 @@ Track cumulative engine effectiveness by task type. Each cell represents a grade
 ```
              | feature | bugfix | refactor | optimization | migration |
 codex        |    —    |   —    |    —     |      —       |     —     |
-gemini       |    —    |   —    |    —     |      —       |     —     |
+agy       |    —    |   —    |    —     |      —       |     —     |
 ```
 
 `—` = `INSUFFICIENT_DATA` (fewer than 3 data points). Default grade is B until sufficient data.
@@ -203,7 +203,7 @@ gemini       |    —    |   —    |    —     |      —       |     —     
 
 - When selecting engines for a task, consult the matrix for task-type column
 - Prefer engines with higher grades for the given task type
-- If all engines show `INSUFFICIENT_DATA`, use default selection heuristics (codex for speed/algorithms, gemini for creativity/broad context)
+- If all engines show `INSUFFICIENT_DATA`, use default selection heuristics (codex for speed/algorithms, agy for creativity/broad context)
 
 ---
 

@@ -601,10 +601,10 @@ ${DIFF_STAT}
 
     SQUASH_MSG=""
 
-    # Engine fallback: gemini -> claude -> codex -> heuristic
-    if [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "gemini" ]]; then
-      if command -v gemini >/dev/null 2>&1; then
-        SQUASH_MSG=$(echo "${SQUASH_PROMPT}" | gemini 2>/dev/null || true)
+    # Engine fallback: agy -> claude -> codex -> heuristic
+    if [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "agy" ]]; then
+      if command -v agy >/dev/null 2>&1; then
+        SQUASH_MSG=$(echo "${SQUASH_PROMPT}" | agy 2>/dev/null || true)
       fi
     fi
     if [[ -z "${SQUASH_MSG}" ]] && [[ "${SQUASH_MSG_ENGINE}" == "auto" || "${SQUASH_MSG_ENGINE}" == "claude" ]]; then

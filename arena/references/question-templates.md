@@ -41,11 +41,11 @@ questions:
   - question: "Which AI engine(s) should be used?"
     header: "Engines"
     options:
-      - label: "codex + gemini (Recommended)"
+      - label: "codex + agy (Recommended)"
         description: "Compare both engines for best result"
       - label: "codex only"
         description: "Fast iteration, algorithmic tasks"
-      - label: "gemini only"
+      - label: "agy only"
         description: "Creative approaches, broad context"
     multiSelect: true
 ```

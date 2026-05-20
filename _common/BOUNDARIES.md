@@ -81,7 +81,7 @@ Tokens and secrets must never be reachable from the execution environment where 
 | **Forge** | Rapid prototyping (full-stack) | Speed over quality, PoC | Yes |
 | **Schema** | Database schema design & migration | Data modeling, normalization | Yes |
 | **Anvil** | CLI/TUI development | Terminal interfaces, dev tools | Yes |
-| **Arena** | Multi-engine competitive/collaborative development | Codex/Gemini comparison | Yes |
+| **Arena** | Multi-engine competitive/collaborative development | Codex/Antigravity CLI comparison | Yes |
 | **Pixel** | Mockup-to-code faithful reproduction | Image→HTML/CSS with visual verification | Yes |
 
 **Key distinctions:**
@@ -246,7 +246,7 @@ Tokens and secrets must never be reachable from the execution environment where 
 - Existing CI maintenance → Gear. New GHA design → Pipe
 - PR strategy → Guardian. Release execution → Launch. PR reports → Harvest
 - Operational config → Gear. Runtime remediation → Mend
-- AI CLI config audit (Codex, Gemini, Claude Code) → Hone. Claude Code hooks design → Latch. Personal dev env (dotfiles) → Hearth
+- AI CLI config audit (Codex, Antigravity (`agy`), Claude Code) → Hone. Claude Code hooks design → Latch. Personal dev env (dotfiles) → Hearth
 
 ## Communication & Content
 
@@ -273,7 +273,7 @@ Tokens and secrets must never be reachable from the execution environment where 
 | **Matrix** | Combinatorial analysis | Multi-dimensional coverage optimization | Never |
 | **Void** | YAGNI verification | Scope cutting, complexity reduction | Never |
 | **Sketch** | AI image generation | Gemini API image creation | Yes |
-| **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes + Gemini CLI delegation | Yes |
+| **Dot** | Pixel art code generation | SVG/Canvas/Phaser 3/Pillow/CSS sprites, tilesets, palettes + Antigravity CLI delegation | Yes |
 | **Clay** | AI 3D model generation | Text-to-3D/Image-to-3D API code, Blender Python, Three.js, OpenSCAD, game pipeline (LOD/retopo/UV/QC) | Yes |
 | **Tone** | Game audio generation | SFX/BGM/Voice/Ambient/UI audio generation code, LUFS normalization, ffmpeg processing, FMOD/Wwise/engine integration | Yes |
 | **Quest** | Game planning & production | GDD, game balance, narrative, economy design | Never |

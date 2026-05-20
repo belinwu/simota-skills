@@ -344,7 +344,7 @@ Always pair the mode flag with a focus prompt — bare invocations produce lower
 
 ## Cross-References
 
-- Gemini CLI review (alternative engine, cross-engine verification): `gemini-review-usage.md`.
+- Antigravity CLI review (alternative engine, cross-engine verification): `antigravity-review-usage.md`.
 - Claude Code CLI review (alternative engine, subagent/plan-mode required): `claude-review-usage.md`.
 - Output interpretation, severity mapping, override rules, false-positive filtering (engine-agnostic): `codex-integration.md`.
 - Framework-specific review prompts and expected findings: `framework-reviews.md`.
