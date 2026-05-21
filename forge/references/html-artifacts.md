@@ -82,9 +82,7 @@ Required hygiene:
 
 ### 3. Annotated Review Artifact
 
-Out of scope for Forge (belongs to Judge / Scout / Lens), but Forge prototypes occasionally need to ship with reviewer notes inline. Use a sidebar or margin-note pattern: main column shows the prototype, side column shows reviewer questions and call-outs anchored to specific elements.
-
-Reference: see `judge/` for code-review HTML artifact patterns.
+Out of scope for Forge (Judge owns code-review artifact UX). Forge prototypes occasionally ship with reviewer notes inline — when they do, use a sidebar or margin-note pattern: main column shows the prototype, side column shows reviewer questions and call-outs anchored to specific elements. Defer richer review-artifact patterns to a Judge handoff rather than implementing them inside Forge.
 
 ### 4. Dashboard / Report Artifact
 
@@ -130,22 +128,29 @@ Closed-loop artifacts shorten the Forge → Builder handoff because the spec the
 HTML artifacts in Forge must be **single-file by default** unless the user explicitly requests otherwise:
 
 - All CSS inline in `<style>` (no external stylesheets)
-- All JS inline in `<script>` (no module imports, no bundlers)
+- All JS inline in `<script>` (no ES module imports, no bundlers) — classic `<script src="...">` is governed by the CDN exception below, not by this rule
 - No external image dependencies — use SVG inline or data-URIs
 - No CDN dependencies for hypothesis-stage prototypes — they break offline and create build/version drift
 
-Exception: lightweight CDN libraries (e.g., a single `<script src="https://unpkg.com/...">` for D3 / Chart.js) are acceptable when the prototype hypothesis depends on charting capability the team cannot reasonably hand-author. Document the dependency in the BUILDER FRICTION pointer so production migration accounts for it.
+Exception: lightweight CDN libraries (e.g., a single `<script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js">` for D3 / Chart.js) are acceptable when the prototype hypothesis depends on charting capability the team cannot reasonably hand-author. When invoking this exception:
+
+- **Pin the version explicitly** (`@7.8.5`, never `@latest` or omitted). Floating versions break reproducibility and expose the prototype to upstream breaking changes mid-iteration.
+- **Add Subresource Integrity (SRI) hash** via `integrity="sha384-..."` and `crossorigin="anonymous"` on the `<script>` tag. Without SRI a CDN compromise silently injects code into the prototype.
+- **Verify the package exists on the upstream registry before adopting**. AI-generated CDN URLs hallucinate plausible-looking package names at non-trivial rates (slopsquatting risk) — see `forge/SKILL.md` slopsquatting note. Copy-paste the URL into a browser before committing.
+- **Document the dependency in the BUILDER FRICTION pointer** so production migration accounts for it.
 
 ---
 
 ## Anti-Patterns
 
-- **Single-page-app prototype**: Spinning up Vite + React just to render a prototype that could be a single HTML file. Adds 5-30 minutes of scaffolding overhead per prototype and breaks the ≤ 4h time-box.
-- **Hidden state across cells**: In a grid of N approaches, allowing one cell to mutate state observed by another cell. Each cell must be evaluable independently — shared state defeats the comparison purpose.
-- **Pixel-perfect HTML prototypes**: Treating the HTML artifact as the final deliverable. HTML prototypes are still subject to the 80% rule (`prototyping-anti-patterns.md`) — 20% time budget for styling.
-- **Persistent server-side state**: Adding localStorage / sessionStorage / IndexedDB for "stateful" prototypes. Throwaway-first lifecycle forbids this; if the prototype needs persistence to demonstrate its hypothesis, the hypothesis itself probably needs splitting.
-- **Markdown-with-HTML embedding**: Authoring a Markdown file with `<div style="...">` blocks instead of a clean HTML file. Loses the browser-native rendering benefit and creates the worst of both formats.
-- **Skipping the closed-loop button**: Producing an interactive prototype with no way to capture the user's chosen parameters. Forces the human to re-describe the chosen state verbally to the next agent.
+HTML-specific anti-patterns. The general prototyping anti-pattern catalog lives in `prototyping-anti-patterns.md` (`FP-01..10`); the items below are HTML-format derivatives and cross-reference the relevant `FP-NN` entry.
+
+- **Single-page-app prototype** (extends `FP-02 Scope creep` + `FP-03 Perfection trap`): Spinning up Vite + React just to render a prototype that could be a single HTML file. Adds 5-30 minutes of scaffolding overhead per prototype and breaks the ≤ 4h time-box.
+- **Hidden state across cells** (extends `FP-09 God prototype`): In a grid of N approaches, allowing one cell to mutate state observed by another cell. Each cell must be evaluable independently — shared state defeats the comparison purpose and conflates multiple hypotheses into one ungovernable artifact.
+- **Pixel-perfect HTML prototypes** (extends `FP-03 Perfection trap`): Treating the HTML artifact as the final deliverable. HTML prototypes are still subject to the 80% rule (`prototyping-anti-patterns.md` §3) — 20% time budget for styling.
+- **Persistent client-side state** (extends `FP-01 Lava Flow`): Adding localStorage / sessionStorage / IndexedDB for "stateful" prototypes. Throwaway-first lifecycle forbids this; if the prototype needs persistence to demonstrate its hypothesis, the hypothesis itself probably needs splitting.
+- **Markdown-with-HTML embedding** (HTML-format specific, no `FP-NN` counterpart): Authoring a Markdown file with `<div style="...">` blocks instead of a clean HTML file. Loses the browser-native rendering benefit and creates the worst of both formats.
+- **Skipping the closed-loop button** (extends `FP-10 No handoff package`): Producing an interactive prototype with no way to capture the user's chosen parameters. Forces the human to re-describe the chosen state verbally to the next agent, breaking the Forge → Builder handoff fidelity.
 
 ---
 
