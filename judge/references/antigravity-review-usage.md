@@ -296,9 +296,34 @@ Always pair the prompt with `--dangerously-skip-permissions` for headless runs u
 | Authentication prompt or failure | Google login session expired | Instruct the user to run `agy` once interactively to re-login; do not supply API keys |
 | Extension missing | `code-review` not installed | Run `agy plugin install https://github.com/gemini-cli-extensions/code-review` and retry |
 | Hang with no output | Missing `--dangerously-skip-permissions` in headless mode | Re-run with `--dangerously-skip-permissions`; tool approvals were blocking |
+| **Exit 0 with empty stdout (silent failure)** | **agy CLI v1.0.0 does not surface server-side errors (`RESOURCE_EXHAUSTED` 429 quota / OAuth token revoked / upstream agent executor error) to stdout — it writes them only to the CLI log and exits 0** | **Always invoke with `--log-file <path>` (see "Silent Failure Detection" below). On empty stdout, grep the log for `RESOURCE_EXHAUSTED`, `429`, `Resets in`, `error getting token`, `agent executor error`. Quota → wait for `Resets in NhNm` window or request overage. Auth → run `agy` interactively once to refresh login. Treat as `RUNTIME-BROKEN`, not `UNAVAILABLE`** |
+| `mcp_config.json` parse error | `~/.gemini/config/mcp_config.json` is missing or empty (0-byte file or truncated JSON) | Initialize with `printf '{}\n' > ~/.gemini/config/mcp_config.json`. The CLI logs `Failed to load JSON config file ... unexpected end of JSON input` and continues, but MCP-backed flows (e.g., `/pr-code-review`) will fail downstream |
 | `/pr-code-review` fails | GitHub MCP server not configured | Fall back to recipe 1 after checking out the PR branch locally |
-| Empty or shallow findings | Prompt too vague or no GEMINI.md context | Structure prompt with goal/context/constraints/done-when; add a `GEMINI.md` or `AGENTS.md` if missing |
+| Empty or shallow findings | Prompt too vague or no GEMINI.md context | Structure prompt with goal/context/constraints/done-when; add a `GEMINI.md` or `AGENTS.md` if missing. **Note**: distinguish from "Exit 0 with empty stdout" above — shallow ≠ zero |
 | JSON output malformed | Prompt did not specify strict schema | Restate the exact JSON schema in the prompt and retry |
+
+### Silent Failure Detection
+
+`agy` v1.0.0 silently swallows several runtime-fatal errors to its log file while exiting 0 with empty stdout. The most common cause is **quota exhaustion** on the Google Antigravity subscription (`RESOURCE_EXHAUSTED` code 429 with a `Resets in NhNm` window). Other observed causes: OAuth token expiry mid-session, upstream model unavailability, and corrupt `mcp_config.json`.
+
+**Mandatory pattern for headless invocations:**
+
+```bash
+LOG="$(mktemp -t agy_review.XXXXXX)"
+OUT="$(mktemp -t agy_review_out.XXXXXX)"
+trap 'rm -f "$LOG" "$OUT"' EXIT
+agy -p "<prompt>" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+RC=$?
+OUT_BYTES=$(wc -c < "$OUT")
+
+if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
+  # Silent failure — surface the real cause
+  grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON input" "$LOG" | head -5
+  echo "VERDICT: agy ran but produced no output. Treat as RUNTIME-BROKEN (not UNAVAILABLE). Skip this engine for this review and surface the log excerpt in the integration report."
+fi
+```
+
+Engine concurrence tags (`[codex+agy+claude]`) must not be emitted when `review-agy` returned empty output — record `agy: RUNTIME-BROKEN (reason: <quota|auth|mcp_corrupt>)` in the rejections ledger instead.
 
 ---
 

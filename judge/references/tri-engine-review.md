@@ -79,7 +79,7 @@ Spawn **three Agent calls in a single message** so they run concurrently. Each s
 | Subagent | Engine | Reference | Baseline command |
 |----------|--------|-----------|------------------|
 | `review-codex` | Codex CLI | `codex-review-usage.md` | `codex review --base <branch> "<focused prompt>"` |
-| `review-agy` | Antigravity CLI | `antigravity-review-usage.md` | `agy -p "<focused prompt>" --dangerously-skip-permissions` |
+| `review-agy` | Antigravity CLI | `antigravity-review-usage.md` | `agy -p "<focused prompt>" --dangerously-skip-permissions --log-file <tmp>` (silent-failure detection per `antigravity-review-usage.md` § Silent Failure Detection) |
 | `review-claude` | Claude Code CLI | `claude-review-usage.md` | `claude -p "<focused prompt>" --permission-mode plan` |
 
 Each subagent prompt must require structured JSON output so integration is deterministic:
@@ -104,6 +104,8 @@ Each subagent prompt must require structured JSON output so integration is deter
 ```
 
 If an engine is genuinely unavailable per the PREFLIGHT criteria (binary missing in all probed locations), record the failure and proceed with the remaining engines. Auth-expired, network, and quota errors are runtime failures — surface the actual error in the report rather than dropping the engine. Below two engines, downgrade to single-engine output and flag reduced confidence.
+
+**Silent-failure detection (agy in particular):** A subagent must always pass `--log-file <tmp>` and check stdout. If `agy` (or any engine) exits 0 with empty stdout, grep the log for `RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON input` and report the engine as `RUNTIME-BROKEN` (with the matched line as evidence) rather than emitting empty findings. Do NOT include such an engine in concurrence tags. Record the reason (`quota`/`auth`/`mcp_corrupt`/`upstream`) in the rejections ledger. See `antigravity-review-usage.md` § Silent Failure Detection.
 
 ### 3. NORMALIZE
 
