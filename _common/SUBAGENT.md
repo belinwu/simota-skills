@@ -121,7 +121,7 @@ Three AI engines (Codex, Antigravity, Claude) independently work on the same tas
 | Engine | Command | Fallback (when `which` fails) |
 |--------|---------|-------------------------------|
 | Codex | `codex exec --full-auto` | Claude subagent (Task) |
-| Gemini | `agy -p --dangerously-skip-permissions` | Claude subagent (Task) |
+| Antigravity | `agy -p --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection`) | Claude subagent (Task) |
 | Claude | Claude subagent (Task) | — |
 
 #### Loose Prompt Rules
@@ -141,8 +141,18 @@ External engines (Codex, Antigravity) must receive **minimal, unbiased prompts**
 # Codex
 codex exec --full-auto "$(cat /tmp/prompt.md)"
 
-# Gemini
-agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions
+# Antigravity — silent-failure detection MANDATORY
+# (agy v1.0.0 returns exit 0 + empty stdout on quota / auth / MCP / executor errors)
+LOG="$(mktemp -t agy_run.XXXXXX)"
+OUT="$(mktemp -t agy_run_out.XXXXXX)"
+trap 'rm -f "$LOG" "$OUT"' EXIT
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+RC=$?; OUT_BYTES=$(wc -c < "$OUT")
+if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
+  grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON" "$LOG" | head -5
+  echo "VERDICT: agy RUNTIME-BROKEN — record in rejection ledger, exclude from aggregation"
+fi
+# Full pattern + rationale: _common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection
 ```
 
 ```yaml

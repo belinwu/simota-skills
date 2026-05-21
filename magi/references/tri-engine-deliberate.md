@@ -44,7 +44,7 @@ Spawn **three Agent calls in a single message**. Each subagent runs one engine a
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `deliberate-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `deliberate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions` |
+| `deliberate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
 | `deliberate-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 **Loose prompt rule** (per `_common/SUBAGENT.md` MULTI_ENGINE): pass Role + Target + Output format only. Do NOT pass:

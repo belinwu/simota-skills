@@ -49,7 +49,7 @@ Spawn three Agent calls in a single message. Each subagent runs one engine and p
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `investigate-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `investigate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions` |
+| `investigate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
 | `investigate-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 **Loose prompt rule**: pass Role + Symptom evidence + Reproduction state + Ruled-out hypotheses + Output format only. Do NOT pass: 5-Whys templates, Fishbone categories, Causal Graph rules, RCA verb lists, or Scout's confidence rubric. Let each engine apply its own RCA priors.

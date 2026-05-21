@@ -127,7 +127,7 @@ Spawn **three Agent calls in a single message** for genuine parallel execution. 
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `{verb}-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `{verb}-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions` |
+| `{verb}-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see §Engine Runtime Failure Detection below) |
 | `{verb}-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 `{verb}` is skill-specific: `propose` (Spark), `demand` (Plea), `failure` (Omen), `deliberate` (Magi), etc.
@@ -145,6 +145,41 @@ Spawn **three Agent calls in a single message** for genuine parallel execution. 
 ```
 
 If an engine returns free-form Markdown, ask its subagent to re-emit as JSON before integrating.
+
+### 3.5. Engine Runtime Failure Detection (mandatory)
+
+Some CLIs report runtime failures (quota exhaustion, auth expiry, executor errors, MCP-config corruption) only to a log file, exiting `0` with empty stdout. A subagent that reads only stdout will misclassify the silent failure as "engine returned no findings", polluting CLUSTER / SCORE and producing fake divergence. Each engine has an explicit runtime-failure-detection rule.
+
+| Engine | Failure mode | Detection contract (subagent MUST follow) |
+|--------|--------------|--------------------------------------------|
+| `agy` v1.0.0 | `exit 0` + empty stdout on `RESOURCE_EXHAUSTED` 429 / OAuth revoked / `agent executor error` / corrupt `~/.gemini/config/mcp_config.json` | Invoke with `--log-file <path>`; on `RC=0 && stdout==0 bytes`, `grep -E "RESOURCE_EXHAUSTED\|Resets in\|error getting token\|agent executor error\|unexpected end of JSON"` against the log; report as `RUNTIME-BROKEN` with the matched log excerpt |
+| `codex` | non-zero exit code on most failures | Standard `RC != 0` check; capture stderr |
+| Claude subagent | structured Agent-tool errors | Surface verbatim |
+
+**Canonical agy headless pattern** (`_common/SUBAGENT.md` Dispatch Examples carries the same snippet — keep them in sync):
+
+```bash
+LOG="$(mktemp -t agy_run.XXXXXX)"
+OUT="$(mktemp -t agy_run_out.XXXXXX)"
+trap 'rm -f "$LOG" "$OUT"' EXIT
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+RC=$?; OUT_BYTES=$(wc -c < "$OUT")
+if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
+  REASON=$(grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON" "$LOG" | head -5)
+  echo "VERDICT: agy RUNTIME-BROKEN"
+  echo "REASON: ${REASON:-unknown — inspect full log}"
+  exit 42   # caller treats non-0 as RUNTIME-BROKEN; do not silently aggregate
+fi
+```
+
+**Integration rules** (main context):
+
+- A `RUNTIME-BROKEN` engine is recorded in the rejection ledger (`engine: RUNTIME-BROKEN (reason: <quota|auth|mcp_corrupt|executor>)`) and excluded from CLUSTER / SCORE.
+- Never emit concurrence tags including a `RUNTIME-BROKEN` engine. `[codex+agy+claude]` requires all three engines to have produced real output.
+- If `agy` is `RUNTIME-BROKEN` on quota (`RESOURCE_EXHAUSTED`), the reset window is in the log (`Resets in NhNm`). Surface it in the rejection ledger so the user knows when to retry.
+- If 2+ engines are `RUNTIME-BROKEN`, fall through to the Degraded Modes table below.
+
+This contract is shared by every `multi` Recipe; do not re-derive it per skill.
 
 ### 4. NORMALIZE
 
@@ -227,8 +262,16 @@ Engine-specific invocation:
 # Codex (subagent runs this)
 codex exec --full-auto "$(cat /tmp/prompt.md)"
 
-# Antigravity (subagent runs this)
-agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions
+# Antigravity (subagent runs this) — silent-failure detection MANDATORY
+LOG="$(mktemp -t agy_run.XXXXXX)"
+OUT="$(mktemp -t agy_run_out.XXXXXX)"
+trap 'rm -f "$LOG" "$OUT"' EXIT
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+RC=$?; OUT_BYTES=$(wc -c < "$OUT")
+if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
+  grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON" "$LOG" | head -5
+  echo "VERDICT: agy RUNTIME-BROKEN — see §Engine Runtime Failure Detection"
+fi
 ```
 
 For the Claude subagent, use the Agent tool with `subagent_type: general-purpose` and the prompt above.
@@ -246,7 +289,7 @@ For the Claude subagent, use the Agent tool with `subagent_type: general-purpose
 | All 3 fail | Abort multi mode; degrade to the skill's default Recipe |
 | User explicitly requests single engine | Skip fan-out; use default Recipe |
 | Trivial scope | Optionally skip multi; recommend default Recipe |
-| Auth/quota error during execution | Surface the actual error in the report; do not silently degrade |
+| Auth/quota error during execution | Apply §3.5 Engine Runtime Failure Detection; mark engine `RUNTIME-BROKEN`, exclude from aggregation, surface the matched log excerpt in the rejection ledger; do not silently degrade |
 
 ---
 

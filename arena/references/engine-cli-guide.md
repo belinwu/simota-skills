@@ -15,6 +15,10 @@ Arena directly invokes external AI engine CLIs to generate implementation varian
 - **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
 - **Dual paradigm** — Same CLI commands for both COMPETE (compare variants) and COLLABORATE (integrate subtasks). See `collaborate-mode-guide.md` for COLLABORATE-specific prompt templates.
 
+> **Important — agy v1.0.0 silent-failure detection (mandatory).** Every `agy -p ... --dangerously-skip-permissions` invocation in this guide must add `--log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection` for the canonical pattern. Without this guard, agy failures are silently misread as "variant produced nothing", corrupting branch comparison and integration.
+>
+> **Note:** Antigravity CLI v1.0.0 does NOT support `--sandbox`. Any example below using `agy ... --sandbox` is a transcription bug from the Codex CLI feature set and should be ignored.
+
 ---
 
 ## Engine Availability Check

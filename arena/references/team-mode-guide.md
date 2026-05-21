@@ -17,6 +17,8 @@ Arena (Team Leader)
 
 **Key principle:** Subagents are remote hands, not brains. They delegate all implementation work to external engines.
 
+> **Important — agy v1.0.0 silent-failure detection (mandatory).** Every subagent invoking `agy -p ...` must pass `--log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`. Subagent-level silent failures pollute variant comparison and integration.
+
 ---
 
 ## Arena Paradigms and Rally: Competition vs Cooperation

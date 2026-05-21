@@ -41,7 +41,7 @@ Spawn **three Agent calls in a single message**.
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `reframe-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `reframe-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions` |
+| `reframe-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
 | `reframe-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 **Loose prompt rule**: pass only Role + Target + Output format. Do NOT pass Cynefin classification rules, framework taxonomies, or ASN-test criteria — those apply at SYNTHESIZE. Each engine should freely produce reframes from its own implicit priors.

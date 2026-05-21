@@ -39,7 +39,7 @@ Spawn **three Agent calls in a single message** so they run concurrently. Each s
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `architect-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `architect-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions` |
+| `architect-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
 | `architect-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 **Loose prompt rule (per `_common/MULTI_ENGINE_RECIPE.md`):** pass only Role + Target + Output format. Do NOT pass MADR templates, ISO/IEC/IEEE 42010 framing, Vertical-Slice/Modular-Monolith defaults, or fitness-function lists — those defaults are Atlas-main-context conventions and applied at SYNTHESIZE. Letting each engine reach for its own architectural-style prior is the entire point of the recipe.

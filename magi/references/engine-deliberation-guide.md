@@ -17,7 +17,7 @@ which agy && echo "agy: available" || echo "agy: not found"
 |--------|---------|------|
 | **Claude** | (internal) | Primary deliberator, orchestrator |
 | **Codex** | `codex exec --full-auto "{prompt}"` | Independent external deliberator |
-| **Gemini** | `agy -p "{prompt}" --dangerously-skip-permissions` | Independent external deliberator |
+| **Antigravity** | `agy -p "{prompt}" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) | Independent external deliberator |
 
 ---
 
@@ -69,7 +69,7 @@ Be direct. State your position clearly. Do not hedge."
 
 ## Deliberation Prompt Template (Gemini)
 
-Gemini is invoked via `agy -p` with `--dangerously-skip-permissions` flag for non-interactive execution. Gemini benefits from additional context due to its larger context window.
+Antigravity CLI (`agy`) is invoked via `agy -p` with `--dangerously-skip-permissions` plus `--log-file <path>` for non-interactive execution. Antigravity benefits from additional context due to its larger context window. **agy v1.0.0 silent-failure detection is mandatory** — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection` for the canonical headless pattern (mktemp log file, empty-stdout grep, `RUNTIME-BROKEN` ledger).
 
 ### Prompt Structure
 

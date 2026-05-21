@@ -15,6 +15,8 @@ COLLABORATE: Decomposed spec → Engine per subtask → Integrate ALL → Unifie
 
 **Key principle:** Every engine's output is valuable and gets merged. COLLABORATE is cooperative, not competitive.
 
+> **Important — agy v1.0.0 silent-failure detection (mandatory).** Every `agy -p ... --dangerously-skip-permissions` invocation must add `--log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`. A silently-failed subtask produces an empty branch, corrupting downstream integration.
+
 ---
 
 ## When to Use COLLABORATE
