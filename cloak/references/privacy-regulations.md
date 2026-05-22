@@ -1,5 +1,13 @@
 # Privacy Regulations Reference
 
+## 2026 Enforcement Snapshot
+
+The 2026 privacy landscape compresses three trends into a single operating reality:
+
+- **EU AI Act** — high-risk obligations (Annex III) bind on **2 Aug 2026**; the GDPR penalty regime applies *concurrently*. New penalty ceiling adds `€35M / 7%` of global turnover for prohibited practices, `€15M / 3%` for high-risk non-compliance. See `comply/references/gdpr-eu-ai-act.md` for the full timeline.
+- **US state laws fragmenting** — `19+` US states have comprehensive privacy laws in effect by Jan 2026 (Indiana, Kentucky, Rhode Island added in Jan 2026; Texas Responsible AI Governance Act and Colorado AI Act follow). Treat "is this a CCPA-only project?" as obsolete framing; any consumer-facing US product needs a state-by-state applicability matrix.
+- **GDPR fines hit €7.1B cumulative** — the regulators are *enforcing*, not warning. Treat 72-hour breach notification and DPIA-before-launch as hard deadlines, not aspirational ones.
+
 ## GDPR (EU General Data Protection Regulation)
 
 ### Lawful Basis Decision Tree
@@ -125,16 +133,28 @@ CCPA applies if the business:
 - **Breach notification** to PPC became mandatory.
 - **Individual rights** expanded (deletion, usage cessation).
 
+### 2026 APPI Amendment (in progress)
+
+The Japanese Cabinet approved a fresh APPI amendment bill on **2026-04-07** and submitted it to the Diet. Expected to take full effect by **2028** if passed during 2026. Key practical impacts:
+
+- **Cross-border transfer monitoring** — when relying on the "receiving country's protection system" basis, the controller must now monitor the receiving party's protection regime at least **once per year** (the previous rule was open-ended).
+- **Cross-border consent disclosure** — when relying on data-subject consent for an overseas transfer, the controller MUST disclose (i) the destination country name, (ii) that country's data protection regime, and (iii) the receiving party's specific protective measures *before* obtaining consent.
+- **Tighter alignment with GDPR / China PIPL / Korea PIPA** — the amendment is explicitly framed as continuing the trajectory toward global-standard parity.
+
+Plan APPI projects against this trajectory even before the effective date; the cross-border monitoring requirement is the most operationally disruptive change for SaaS providers serving Japan from outside Japan.
+
 ## Regulation Comparison Matrix
 
-| Feature | GDPR | CCPA/CPRA | APPI |
-|---------|------|-----------|------|
-| Opt-in vs Opt-out | Opt-in (consent first) | Opt-out (collect, allow opt-out) | Opt-in (consent for sensitive) |
-| Territorial scope | EU residents (worldwide) | CA residents (revenue threshold) | Japan residents + Japan-based operators |
-| Max penalty | €20M or 4% global revenue | $7,500 per intentional violation | ¥100M or criminal penalties |
-| DPO required | Certain organizations | No | No (recommended) |
-| Children's age | <16 (member states may lower to 13) | <16 (COPPA <13) | No specific age threshold |
-| Breach notification | 72h to DPA | No fixed timeline (AG action) | Promptly to PPC |
+| Feature | GDPR | CCPA/CPRA | APPI | EU AI Act (2026-08+) |
+|---------|------|-----------|------|----------------------|
+| Opt-in vs Opt-out | Opt-in (consent first) | Opt-out (collect, allow opt-out) | Opt-in (consent for sensitive) | N/A — risk-tier based |
+| Territorial scope | EU residents (worldwide) | CA residents (revenue threshold) | Japan residents + Japan-based operators | EU users (worldwide) |
+| Max penalty | €20M or 4% global revenue | $7,500 per intentional violation | ¥100M or criminal penalties | **€35M / 7%** (prohibited), **€15M / 3%** (high-risk) |
+| DPO required | Certain organizations | No | No (recommended) | Conformity assessor for high-risk |
+| Children's age | <16 (member states may lower to 13) | <16 (COPPA <13) | No specific age threshold | N/A |
+| Breach notification | 72h to DPA | No fixed timeline (AG action) | Promptly to PPC | High-risk system serious-incident reporting |
+
+When a project triggers more than one regime, **penalties apply concurrently** — GDPR + EU AI Act on the same EU-user data flow can produce two ceilings, not one. Plan to the strictest applicable rule per regime.
 
 ## DPIA Template Structure
 
