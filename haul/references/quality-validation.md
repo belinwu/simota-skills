@@ -166,14 +166,28 @@ hash = bits where top8x8 > median
 | Resilient to | Slight crop / scaling |
 | Sensitive to | Brightness shifts, gamma changes |
 
+### DinoHash (DINOv2-derived perceptual hash, 2025+)
+
+| Property | Value |
+|----------|-------|
+| Hash length | Variable (DINOv2 feature-derived) |
+| Resilient to | Filters, JPEG compression, cropping, adversarial perturbations, **AI-style transfer / GenAI variants** |
+| Reported gains | +12% average bit accuracy vs SOTA watermarking/perceptual hashing; +25% classification accuracy on AI-generated images vs existing perceptual hashes |
+| When to use | Source set may include AI-altered listings (auto-edited backgrounds, removed watermarks via inpainting, GenAI marketing variants); adversarial environments |
+| Trade-off | Higher inference cost than pHash/dHash; route through a single batch-level pass rather than per-pair scoring |
+
+[Source: arxiv.org/abs/2503.11195 — Provenance Detection for AI-Generated Images]
+
 ### When to Use Which
 
 | Scenario | Recommended hash |
 |----------|------------------|
-| Cross-source dedup | pHash |
-| Cropped variant detection | ORB / CLIP (pHash unreliable) |
+| Cross-source dedup (default) | pHash |
+| Cropped variant detection | ORB / SigLIP 2 embedding (pHash unreliable) |
 | Same source, different size | pHash |
-| Different angle / lighting | CLIP embedding |
+| Different angle / lighting | SigLIP 2 embedding (default) or CLIP fallback |
+| Source set may contain AI-altered variants | DinoHash |
+| Adversarial / watermark-stripped suspicion | DinoHash + DINOv3 keypoint matching |
 
 ---
 

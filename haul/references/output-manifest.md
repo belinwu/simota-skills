@@ -19,7 +19,7 @@
 
 ```
 .haul/
-└── {batch-id}/                          # e.g., haul-20260427-1432
+└── {batch-id}/                          # e.g., haul-20260522-1432
     ├── manifest.json                    # Primary deliverable: per-image metadata
     ├── batch-config.json                # Run parameters (sources, thresholds, recipe)
     ├── images/                          # Final delivered images
@@ -53,19 +53,21 @@
 ```json
 {
   "$schema": "https://example.com/haul/manifest-v1.json",
-  "batch_id": "haul-20260427-1432",
+  "batch_id": "haul-20260522-1432",
   "recipe": "catalog",
-  "started_at": "2026-04-27T05:32:00Z",
-  "finished_at": "2026-04-27T05:48:12Z",
+  "started_at": "2026-05-22T05:32:00Z",
+  "finished_at": "2026-05-22T05:48:12Z",
   "config": {
-    "sources_allowlist": ["amazon-paapi", "rakuten-ichiba", "manufacturer-canonical"],
+    "sources_allowlist": ["amazon-creators-api", "rakuten-ichiba-openapi", "manufacturer-canonical", "brave-search-image"],
     "resolution_floor": 800,
     "blur_threshold": 100,
     "match_floor_auto_accept": 0.85,
     "match_floor_review": 0.70,
     "phash_dedup_distance": 5,
+    "embedding_model": "siglip2",
     "license_scope": "marketplace-licensed",
-    "use_case": "internal_catalog"
+    "use_case": "internal_catalog",
+    "regulatory_baseline": "eu-ai-act-pre-enforcement-2026-05"
   },
   "summary": {
     "products_requested": 120,
@@ -108,8 +110,8 @@
           "file_path": "images/B0XXXXXXX/primary.jpg",
           "source_url": "https://m.media-amazon.com/images/I/61abcdef.jpg",
           "source_tier": "T1",
-          "source_id": "amazon-paapi",
-          "fetch_timestamp": "2026-04-27T05:33:14Z",
+          "source_id": "amazon-creators-api",
+          "fetch_timestamp": "2026-05-22T05:33:14Z",
           "dimensions": { "width": 2000, "height": 2000 },
           "file_size_bytes": 412338,
           "format": "jpeg",
@@ -135,7 +137,7 @@
           },
           "license": {
             "class": "marketplace-licensed",
-            "evidence": "Amazon PA-API Operating Agreement §3.4",
+            "evidence": "Amazon Creators API Operating Agreement (PA-API 5.0 retired 2026-05-15)",
             "tos_snapshot_path": "tos/amazon.com.html",
             "optout_signals": {
               "robots_txt": null,
@@ -162,16 +164,16 @@
           "file_path": "images/B0XXXXXXX/alt-1.jpg",
           "source_url": "https://m.media-amazon.com/images/I/61abcdef-side.jpg",
           "source_tier": "T1",
-          "source_id": "amazon-paapi",
-          "fetch_timestamp": "2026-04-27T05:33:18Z",
+          "source_id": "amazon-creators-api",
+          "fetch_timestamp": "2026-05-22T05:33:18Z",
           "dimensions": { "width": 2000, "height": 2000 },
           "match": { "score": 0.89, "basis": "visual+text", "verdict": "auto_accepted" },
           "quality": { "verdict": "passed" },
-          "license": { "class": "marketplace-licensed", "evidence": "Amazon PA-API Operating Agreement §3.4" }
+          "license": { "class": "marketplace-licensed", "evidence": "Amazon Creators API Operating Agreement" }
         }
       ],
       "status": "delivered",
-      "notes": "Primary and 2 alternates from PA-API. Sony canonical CDN serves byte-identical primary."
+      "notes": "Primary and 2 alternates from Creators API (post-PA-API-retirement). Sony canonical CDN serves byte-identical primary."
     }
   ]
 }
@@ -311,11 +313,13 @@ See `quality-validation.md` for the full schema. Summary template:
 
 | Source | ToS retrieved at | Path |
 |--------|------------------|------|
-| amazon.com | 2026-04-27T05:32Z | tos/amazon.com.html |
-| rakuten.co.jp | 2026-04-27T05:32Z | tos/rakuten.co.jp.html |
-| sony.jp | 2026-04-27T05:32Z | tos/sony.jp.html |
+| amazon.com | 2026-05-22T05:32Z | tos/amazon.com.html |
+| rakuten.co.jp | 2026-05-22T05:32Z | tos/rakuten.co.jp.html |
+| sony.jp | 2026-05-22T05:32Z | tos/sony.jp.html |
 
 ## Opt-Out Signal Surface
+
+Re-evaluated at every batch start (6h cache TTL; aligns with EU AI Act 2026-08-02 enforcement readiness).
 
 | Source | robots.txt | ai.txt | TDM-rep | meta-robots | X-Robots-Tag |
 |--------|------------|--------|---------|-------------|--------------|

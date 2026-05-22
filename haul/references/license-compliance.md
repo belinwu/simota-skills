@@ -58,16 +58,17 @@ Before any fetch from a non-API source, evaluate the opt-out signal surface.
 
 | Signal | Source | Honor |
 |--------|--------|-------|
-| `robots.txt` | `/robots.txt` at origin | User-agent and path directives; `Crawl-Delay` |
-| `ai.txt` | `/ai.txt` at origin (proposed standard) | AI training opt-out signals |
-| TDM Reservation Protocol | HTTP header `tdm-reservation`, `tdm-policy` | EU-recognized opt-out for text and data mining |
+| `robots.txt` | `/robots.txt` at origin | User-agent and path directives; `Crawl-Delay`. EU Commission's GPAI Code of Practice explicitly commits to honoring `robots.txt` and IETF successor standards. [Source: digital-strategy.ec.europa.eu — Code of Practice] |
+| `ai.txt` | `/ai.txt` at origin | **De-facto purpose-based standard in 2026.** Tags: `No-Training`, `No-Inference`, `Allow-RAG`. Authoritative for AI-purpose opt-out where robots.txt is silent. [Source: cookie-script.com/guides/beyond-robots-txt] |
+| TDM Reservation Protocol | HTTP header `tdm-reservation`, `tdm-policy` | EU-recognized opt-out for text and data mining. Subject of EU Commission consultation on protocols for reserving TDM rights under AI Act / GPAI Code (consultation launched 2025; ongoing through 2026). [Source: digital-strategy.ec.europa.eu/en/consultations] |
 | HTML meta tags | `<meta name="robots" content="noai, noimageai">`, `<meta name="ChatGPT-User" content="nofollow">` | Page-level signals |
 | HTTP headers | `X-Robots-Tag: noai`, `X-Robots-Tag: noimageai` | Origin-level signals |
 | W3C TDM Rep | TDM Reservation as a W3C Working Draft format | When present |
+| `llms.txt` | `/llms.txt` at origin | **Informational only — not enforced.** As of Q1 2026, **zero** major AI providers (OpenAI / Google / Anthropic / Meta / Mistral) honor `llms.txt` in production; the format has no W3C/IETF backing. Surface its presence in manifest but do NOT treat as legal opt-out. [Source: aeoengine.ai/blog/llms-txt-zero-usage-ai-bots-ignore, presenc.ai/research/state-of-llms-txt-2026] |
 
-**Aggregation rule:** Honor any positive opt-out signal. If any of the above forbids the planned use, do not fetch. The most restrictive wins.
+**Aggregation rule:** Honor any positive opt-out signal. If any of the above (except `llms.txt`) forbids the planned use, do not fetch. The most restrictive wins.
 
-**Caching:** Cache opt-out signals per origin with a `24h` TTL. Re-fetch on TTL expiry. Record signal version in manifest.
+**Caching:** Cache opt-out signals per origin with a `6h` TTL (reduced from 24h to align with EU AI Act 2026-08-02 enforcement window). Re-fetch at every batch start regardless of TTL. Record signal version in manifest. [F03 mitigation]
 
 ---
 
@@ -75,11 +76,12 @@ Before any fetch from a non-API source, evaluate the opt-out signal surface.
 
 ### EU AI Act (Regulation 2024/1689)
 
-- Full enforcement of GPAI provisions: 2026-08-02.
+- GPAI obligations live since 2025-08-02; **EU Commission supervision and enforcement powers (information requests, evaluations, fines, market restriction / recall / withdrawal orders) activate 2026-08-02 — 10 weeks from this baseline.** GPAI models placed on the market before 2025-08-02 have a separate 2027-08-02 compliance deadline. [Source: artificialintelligenceact.eu/enforcement-of-chapter-v-under-the-eu-ai-act, digital-strategy.ec.europa.eu]
 - Article 53 requires GPAI providers to implement a copyright policy aligned with EU law and respect rights reservations expressed under the Copyright DSM Directive Article 4.
 - Article 101 penalties for GPAI violations: up to €15M or 3% of global revenue.
-- The EU Commission's GPAI Code of Practice (signatories include leading AI providers) explicitly commits to honoring `robots.txt`, IETF successor protocols, TDM Reservation Protocol, and other machine-readable opt-out signals.
-- For Haul: when collecting product imagery for any AI training corpus or AI-feature use case (including embedding generation, retrieval-augmented systems with persistence, training data curation), opt-out compliance is structural. Refuse fetches from sources expressing reservation.
+- The EU Commission's GPAI Code of Practice (signatories: leading AI providers) explicitly commits to honoring `robots.txt`, IETF successor protocols, TDM Reservation Protocol, and other machine-readable opt-out signals. Signatories must "ensure that data collected via web crawling is lawfully accessible, respect machine-readable rights signals like robots.txt, and avoid accessing websites flagged for copyright infringement."
+- AI Act transparency rules (Chapter V) come into effect 2026-08.
+- For Haul: when collecting product imagery for any AI training corpus or AI-feature use case (including embedding generation, retrieval-augmented systems with persistence, training data curation), opt-out compliance is structural. Refuse fetches from sources expressing reservation. The 2026-08-02 deadline means batches running after that date are subject to enforcement, not just guidance.
 
 ### EU Copyright DSM Directive (2019/790)
 
@@ -106,6 +108,12 @@ Before any fetch from a non-API source, evaluate the opt-out signal surface.
 
 - Article 30-4 of the Copyright Act of Japan permits use of copyrighted works for "non-enjoyment" purposes including data analysis and machine learning, with broad scope but with limits when the use unreasonably prejudices the interests of the rights holder.
 - For commercial product display (the primary Haul use case), Article 30-4 does not authorize redistribution; treat as `marketplace-licensed` or `canonical` based on source.
+
+### Japan AUPMR (Premium / Misleading Representation Act) — stealth marketing
+
+- The Act against Unjustifiable Premiums and Misleading Representations (景品表示法 / AUPMR) prohibits stealth marketing since **2023-10-01**. Concealed-advertising representations carry corrective orders + up to 2 years imprisonment / JPY 5M fine for the responsible individuals. [Source: dlapiper.com/en/insights/publications/2023/07, monolith.law]
+- Active enforcement: the Consumer Affairs Agency has issued 10+ orders since 2023-10, including a high-profile **RIZAP order on 2024-08-09** for influencer Instagram content re-presented as third-party reviews on the company's own site. [Source: practiceguides.chambers.com/Japan, lexology.com]
+- Implication for Haul: when delivering imagery for Japan-targeted marketing or LP use, any image that originates as influencer-generated content but is presented as editorial / customer / third-party content on a downstream destination is a stealth-marketing exposure. Always preserve `attribution_required` + `attribution_text` in the manifest; flag downstream consumers (Funnel / Saga / Stage) that imagery sourced from a commercial relationship cannot be silently rebranded as user content.
 
 ### CFAA (Computer Fraud and Abuse Act, US)
 
@@ -179,7 +187,7 @@ Every delivered image must record:
 | `tos_snapshot_path` | Path to cached ToS at fetch time |
 | `optout_signals` | Object with `robots.txt`, `ai.txt`, TDM, meta-tag, HTTP-header values at fetch time |
 | `license_class` | One of the License Classes |
-| `license_evidence` | Free-text citing the basis (e.g., "Amazon PA-API Operating Agreement §X.Y") |
+| `license_evidence` | Free-text citing the basis (e.g., "Amazon Creators API Operating Agreement §X.Y" post-2026-05-15; legacy "Amazon PA-API 5.0 Operating Agreement" only valid for fetches before 2026-05-15) |
 | `attribution_required` | Boolean |
 | `attribution_text` | If required, the canonical attribution string |
 

@@ -143,22 +143,29 @@ Visual matching verifies — it does not anchor. Use to resolve ambiguous text m
 
 ### Methods
 
-| Method | Speed | Use case | Threshold (similar) |
-|--------|-------|----------|---------------------|
-| pHash (perceptual hash) | Fast | Near-duplicate detection across sources | Hamming distance `≤ 5` |
-| dHash | Fast | Cropped / scaled variants | Hamming distance `≤ 8` |
-| ORB feature matching | Medium | Different crops / angles of same product | `≥ 30` matched keypoints |
-| CLIP embedding cosine | Slow | Semantic similarity (same product class, possibly different SKU) | `cosine ≥ 0.85` |
-| Domain-specific reference | Variable | Compare to known canonical T0 image | Per-method threshold |
+| Method | Speed | Use case | Threshold (similar) | Notes |
+|--------|-------|----------|---------------------|-------|
+| pHash (perceptual hash) | Fast | Near-duplicate detection across sources | Hamming distance `≤ 5` | Python: `ImageHash` (PyPI) — DCT-based, 64-bit |
+| dHash | Fast | Cropped / scaled variants | Hamming distance `≤ 8` | `ImageHash` library |
+| ORB feature matching | Medium | Different crops / angles of same product | `≥ 30` matched keypoints | OpenCV |
+| SigLIP 2 embedding cosine | Slow | Semantic similarity (default for new e-commerce pipelines) | `cosine ≥ 0.85` | **2026 default for e-commerce retrieval** — outperforms CLIP on 5/6 standard product-image datasets (Product-10k, SOP, ABO, etc.). Released 2025-02; sigmoid loss + multilingual encoder. [Source: arxiv.org/abs/2502.14786, mixpeek.com curated lists 2026, leboncoin.tech] |
+| CLIP embedding cosine (legacy) | Slow | Semantic similarity baseline | `cosine ≥ 0.85` | Use only when SigLIP 2 unavailable. Apple CLIP still leads on `rp2k` only. |
+| DINOv3 features | Slow | Low-level visual attributes (color, pattern, fine-grained texture) | Per-method | Released 2025-08; +6.7 pts over DINOv2 on keypoint matching via Gram anchoring. Better than CLIP/SigLIP for visual-only attributes (apparel pattern, cosmetics shade). [Source: arxiv.org/abs/2508.10104] |
+| DinoHash (perceptual hash on DINOv2) | Medium | Adversarially-robust dedup; AI-generated image detection | Per-method | +12% avg bit accuracy vs SOTA perceptual hashing; +25% classification accuracy on AI-generated images. Use when feed may contain GenAI-mutated variants. [Source: arxiv.org/abs/2503.11195] |
+| Domain-specific reference | Variable | Compare to known canonical T0 image | Per-method threshold | |
+
+**Default selection (2026-05):** SigLIP 2 for cross-modal text+image matching; DINOv3 features when the requested SKU differs only by visual attribute (color, pattern) and identifier-based matching is exhausted; DinoHash when source set is suspected to include AI-altered imagery.
 
 ### Visual Score
 
 ```
-visual_score = 1.0 if pHash_distance ≤ 3 OR (clip_cosine ≥ 0.92 AND orb_match ≥ 50)
-              = 0.7 if pHash_distance ≤ 5 OR clip_cosine ≥ 0.85
-              = 0.4 if clip_cosine ≥ 0.75
+visual_score = 1.0 if pHash_distance ≤ 3 OR (siglip2_cosine ≥ 0.92 AND orb_match ≥ 50)
+              = 0.7 if pHash_distance ≤ 5 OR siglip2_cosine ≥ 0.85
+              = 0.4 if siglip2_cosine ≥ 0.75
               = 0.0 otherwise
 ```
+
+Fallback: substitute `clip_cosine` for `siglip2_cosine` only when SigLIP 2 inference is unavailable. Record substitution in `manifest.json` `match_config.embedding_model` field.
 
 ### Reference Anchor
 
