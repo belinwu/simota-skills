@@ -28,6 +28,16 @@ If the hypothesis is "server pushes read-only updates to many browser clients" �
 
 Pick SSE for: notifications, dashboards, progress updates, chat read receipts from server, token-streaming LLM output, log tailing. Pick WebSocket for: chat send, collaborative editing, multiplayer games, trading clients.
 
+### 2026 AI Streaming Decision Path
+
+The 2026 LLM streaming ecosystem made the SSE / WebSocket split sharper:
+
+- **Plain token streaming** (OpenAI Chat Completions / Anthropic Messages with `stream: true`, Vercel AI SDK, LangChain streaming) is **SSE-first** and remains so. Every major LLM provider ships an SSE stream as the canonical wire format for `delta` tokens.
+- **Agentic AI workloads** — tool use approval, mid-stream user interrupts, multi-turn agent dialog, multi-agent coordination, human-in-the-loop checkpoints — outgrow SSE. The 2026 published pattern is "start with SSE, migrate to WebSocket when you need any of: human-in-the-loop approval, cross-device continuity, connection resilience that survives a brief redeploy, or multi-agent coordination".
+- **MCP transport, 2026**: the Model Context Protocol **deprecated its standalone SSE transport** in favor of **Streamable HTTP** — `HTTP POST` for client-to-server requests, `SSE` for server-to-client streaming on the same endpoint. New MCP servers should adopt Streamable HTTP by default; legacy SSE-only MCP servers still work but will be migrated in their next major version.
+
+Practical 2026 rule: if the surface is a chat or LLM output stream and the user only watches, SSE remains correct. If the user can interrupt, approve tool calls, or hand off between agents, plan for WebSocket from the start — adding bidirectional control on top of SSE later is a rewrite, not a delta.
+
 ## Event Stream Framing
 
 Wire format is `text/event-stream`, UTF-8, line-delimited, terminated by a blank line.

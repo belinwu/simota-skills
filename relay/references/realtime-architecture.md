@@ -7,24 +7,40 @@
 | WebSocket | Bidirectional real-time | < 50ms | Complex (sticky sessions) | ✅ |
 | SSE | Server → Client push | < 100ms | Simple (stateless) | ✅ (no IE) |
 | Long Polling | Fallback | 100-500ms | Simple | ✅ |
-| WebTransport | Next-gen bidirectional | < 50ms | Complex | Chrome 97+ |
+| WebTransport | Next-gen bidirectional, datagrams + streams over HTTP/3 | < 50ms | Complex | Chrome / Edge / Firefox stable in 2026 |
+| Streamable HTTP (MCP, 2026) | Agent ↔ server with `POST` for requests + `SSE` for responses on the same endpoint | < 100ms | Simple | Server-driven; native HTTP, no special browser API |
 
 ### Decision Tree
 
 ```
-Need bidirectional communication?
-├── Yes
-│   ├── High message volume? (>100 msg/sec)
-│   │   ├── Yes → WebSocket + message queue
-│   │   └── No → WebSocket (standalone)
-│   └── Need UDP-like unreliable delivery?
-│       └── Yes → WebTransport (if browser supports)
-└── No (server push only)
-    ├── Need event stream?
-    │   └── Yes → SSE (Server-Sent Events)
-    └── Legacy browser support required?
-        └── Yes → Long Polling
+Is this an MCP / AI-agent transport?
+├── Yes → Streamable HTTP (MCP 2026 standard)
+│         POST for requests, SSE for streaming responses on the same endpoint
+└── No
+    │
+    Need bidirectional communication?
+    ├── Yes
+    │   ├── High message volume? (>100 msg/sec)
+    │   │   ├── Yes → WebSocket + message queue
+    │   │   └── No → WebSocket (standalone)
+    │   └── Need UDP-like unreliable delivery?
+    │       └── Yes → WebTransport (HTTP/3 datagrams + streams)
+    └── No (server push only)
+        ├── Token-stream LLM output, dashboard, progress, notifications?
+        │   └── SSE (Server-Sent Events) — default
+        └── Legacy browser support required?
+            └── Yes → Long Polling
 ```
+
+### 2026 LLM / Agent Surface Cheatsheet
+
+| Workload | Transport |
+|----------|-----------|
+| Plain LLM token streaming (OpenAI / Anthropic / Vercel AI SDK / LangChain delta stream) | SSE |
+| Agent with tool-use approval, mid-stream interrupts, multi-turn dialog, multi-agent coordination | WebSocket |
+| MCP server | Streamable HTTP (legacy SSE-only MCP servers still work; migrate at next major version) |
+
+Rule: if the user can interrupt, approve, or hand off during the stream, plan for WebSocket from the start — retrofitting bidirectional control onto an SSE pipeline is a rewrite.
 
 ## WebSocket Server Design
 

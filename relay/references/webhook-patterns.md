@@ -1,5 +1,7 @@
 # Webhook Patterns
 
+> **2026 note: webhook is the back-channel of choice for agentic / long-running AI work.** Anthropic's Managed Agents and the broader 2026 "agentic SaaS" stack ship **completion webhooks** as the canonical way to notify external systems that an unattended multi-day run finished, an Evaluator Loop rubric passed, or a remediation action completed. Pair the patterns in this file with the receivers documented in `mend/references/safety-model.md` and the incident-postmortem hooks in `beacon/references/incident-learning-postmortem.md`. Treat agentic completion webhooks under the same signing / replay-protection / idempotency discipline as any other production webhook — the AI agent author does not get a discount on supply-chain hygiene.
+
 ## HMAC-SHA256 Signature Verification
 
 ```typescript
