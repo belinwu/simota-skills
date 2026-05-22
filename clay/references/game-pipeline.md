@@ -273,7 +273,7 @@ def generate_lod_chain(obj_name: str, output_dir: str,
 
 ### Nanite-Aware Strategy (UE5)
 
-UE5 Nanite virtualizes geometry and eliminates the need for manual LOD chains for static meshes. When targeting UE5:
+UE5 Nanite virtualizes geometry and eliminates the need for manual LOD chains for static meshes. **UE 5.5 (Nov 2024) extended Nanite to Skeletal Meshes** (Nanite Skeletal Mesh shown at Unreal Fest 2024) — animated characters now also get cluster-level virtualization, dynamically adjusting LOD based on camera distance for crowd performance. When targeting UE5:
 
 ```python
 def prepare_for_nanite(obj_name: str, output_path: str):
@@ -920,7 +920,7 @@ Key advantages:
 
 ## MaterialX / OpenPBR
 
-For interchange between DCC tools and engines, use MaterialX with OpenPBR:
+For interchange between DCC tools and engines, use MaterialX with OpenPBR. Latest: **MaterialX 1.39.3** (Mar 2025) improved OpenUSD alignment + OSL v1.14 / MDL v1.10 support; **MaterialX 1.39.4** (Sep 2025) added WebGPU Shading Language, hex-tiled and lat-long images, NanoColor spaces, 2D fractals, and animated materials. OpenPBR is now a MaterialX subproject. Industry uptake: Maya 2025.3+ ships OpenPBR by default, 3ds Max 2026 makes OpenPBR the default surface shader, and Octane 2026, NVIDIA Omniverse, and Autodesk products all ship MaterialX/OpenPBR implementations.
 
 ```xml
 <?xml version="1.0"?>
@@ -935,7 +935,15 @@ For interchange between DCC tools and engines, use MaterialX with OpenPBR:
 </materialx>
 ```
 
-MaterialX is supported by: USD, Blender 4.x, Maya, Substance, UE5, Karma.
+MaterialX is supported by: USD, Blender 4.x/5.0, Maya, Substance, UE5, Karma, Omniverse, Octane 2026.
+
+## OpenUSD 26.03 + Gaussian Splatting
+
+OpenUSD 26.03 (released Mar 2026) introduced first-class 3D Gaussian Splatting via the new `UsdVolParticleField` schema family — specifically `UsdVolParticleField3DGaussianSplat` — for representing 3DGS data as a USD prim type. A reference renderer (`hdParticleField`) visualizes 3DGS data within USD files (analogous to hdStorm for conventional geometry), and AOUSD released a PLY→USD conversion script for the common 3DGS exchange format. OpenUSD 26.03 also added WebAssembly compilation, experimental rigged/skinned character support, and stage load-time optimizations.
+
+## glTF KHR_gaussian_splatting
+
+Khronos announced a **release candidate for `KHR_gaussian_splatting`** in Feb 2026, with ratification expected Q2 2026. The extension extends the glTF 2.0 mesh primitive to represent 3DGS datasets — compatible renderers reinterpret primitives as Gaussian-splat data, enabling import/export through existing glTF tooling. Compression sub-extensions for **Niantic Spatial SPZ** and **Qualcomm L-GSC** have been proposed on top.
 
 ## Platform Budgets
 

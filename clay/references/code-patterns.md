@@ -2,7 +2,9 @@
 
 Templates and conventions for 3D modeling code across Blender Python, Three.js (WebGL/WebGPU), Babylon.js, React Three Fiber, OpenSCAD, SDF, USD, and Gaussian Splatting viewers.
 
-## Blender Python (bpy) - Blender 4.x
+## Blender Python (bpy) — Blender 4.5 LTS / 5.0
+
+Targets: Blender **4.5 LTS** (full Vulkan support, faster startup + EEVEE shader compilation, supported until July 2027) and **Blender 5.0** (released 2025-11-18 — full ACES pipeline support, improved color management + HDR, Volumes + SDF nodes in Geometry Nodes, Grease Pencil motion blur, Adaptive Subdivision no longer experimental). Both retain the same bpy 4.x API surface used below.
 
 ### Scene Setup
 
@@ -1074,12 +1076,12 @@ pipeline/
   "name": "rpg_prop_crate_wood",
   "version": "1.2.0",
   "provider": "meshy",
-  "provider_model": "meshy-4",
+  "provider_model": "meshy-6",
   "task_id": "task_abc123",
-  "created": "2026-01-15T10:30:00Z",
+  "created": "2026-05-22T10:30:00Z",
   "prompt": "Medieval wooden crate with iron reinforcements",
   "quality_tier": "game-ready",
-  "target_engine": "unity",
+  "target_engine": "unity-6.3-lts",
   "pipeline_version": "2.0",
   "lod_levels": [
     {"level": 0, "tris": 2400, "file": "crate_wood_lod0.glb"},

@@ -91,9 +91,9 @@ Solution: IK foot lock at runtime. The animation provides the *intent*; engine c
 
 | Engine | Foot IK |
 |--------|---------|
-| Unity | Avatar IK Pass + AnimatorIK script |
-| UE5 | Control Rig + IK Rig + Foot Placement |
-| Godot 4 | SkeletonModification3DLookAt + custom IK |
+| Unity (6 LTS / 6.3 LTS Dec 2025) | Avatar IK Pass + AnimatorIK script |
+| UE5 (5.5+ Nov 2024 — Nanite Skeletal Mesh added) | Control Rig + IK Rig + Foot Placement; Nanite Skeletal Mesh dynamically LOD-adjusts per camera distance for animated character crowds |
+| Godot 4.4 / 4.5 (Mar 2025 / Sep 2025) | SkeletonModification3DLookAt + custom IK; 4.4 added LookAtModifier3D + integrated VRMSpringBone; 4.4 supports KHR_animation_pointer glTF extension for animations targeting custom properties |
 
 Also useful: hand IK (drinking, weapons), look-at IK (head/eyes follow target).
 
@@ -178,7 +178,7 @@ Cleanup passes:
 - **Pose constraints**: Knee must stay between hip + ankle
 - **Hand constraints**: Wrist follows arm chain
 
-Cascadeur, Maya AnimLayer, Blender Graph Editor for manual cleanup.
+Cascadeur (2026.1 Feb 2026 added Filament Rendering Engine integration, Unreal Engine Live Link, AI Root Motion Tool for motion-style transfer/generation, Collision Penetration Cleaning, Constraints in AutoPhysics, improved Quadruped AutoPosing), Maya AnimLayer, Blender Graph Editor for manual cleanup. Cascadeur 2025.1–2025.2 added the AI Inbetweening tool with motion styles (walk/run/crawl/jump/fall/acrobatic/combat) up to 120 frames.
 
 ## Workflow
 
@@ -316,12 +316,15 @@ When `retarget` completes, emit:
 
 ## References
 
-- Mixamo — mixamo.com
-- Unreal IK Retargeter — docs.unrealengine.com
-- Unity Humanoid Animation Retargeting — docs.unity3d.com
-- Blender Auto Rig Pro — blendermarket.com
-- Maya HumanIK — autodesk.com
-- Cascadeur — cascadeur.com (physics-based polish + retarget)
+- Mixamo — mixamo.com (animation library; backend auth/download broken intermittently since 2025-06-16)
+- VRMC_vrm_animation-1.0 — github.com/vrm-c/vrm-specification (glTF extension for humanoid animation reuse across VRM avatars; supports humanoid bones + expressions + eye gaze)
+- Unreal IK Retargeter — docs.unrealengine.com (UE 5.5 Nanite Skeletal Mesh Nov 2024)
+- Unity Humanoid Animation Retargeting — docs.unity3d.com (Unity 6 LTS Oct 2024 / 6.3 LTS Dec 2025)
+- Godot 4.4/4.5 animation — godotengine.org (KHR_animation_pointer + VRMSpringBone integrated)
+- Blender Auto Rig Pro — blendermarket.com (Blender 4.5 LTS supported until July 2027; Blender 5.0 released 2025-11-18)
+- Maya HumanIK — autodesk.com (Maya 2025.3+ ships OpenPBR by default)
+- Autodesk Flow Studio (Wonder Studio rebrand 2025-03) — autodesk.com/products/flow-studio (AI Rigging + Neural Layer 2026-04-28)
+- Cascadeur — cascadeur.com (physics-based polish + retarget; 2026.1 Feb 2026 added Filament engine + UE Live Link + AI Root Motion)
 - Rokoko Studio — rokoko.com (mocap + retarget)
 - iClone (Reallusion) — reallusion.com
 - BVH format — research.cs.wisc.edu (origin: Biovision)

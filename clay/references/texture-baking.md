@@ -74,6 +74,8 @@ Supports: Normal (tangent + object), AO, Cavity, Convexity, Heightmap, Vertex Co
 
 ## Substance Painter (commercial; texture authoring)
 
+Latest: **Substance 3D Painter 12.0** (unveiled at GDC 2026, Mar 2026). 2025 added an experimental fully-automatic cage generation option for high-poly bake. 12.1 Beta adds Mesh-Map Bakers sync across Texture Sets (link icon), copy/paste baker settings across Texture Sets, in-context "jump to setting" error messages from the Baking Log, and split of Mesh Map vs Common Baking settings.
+
 ```
 1. New project: bake mesh maps from high-poly
 2. Mesh Maps panel: Normal, AO, Curvature, Position, Thickness, ID
@@ -84,6 +86,10 @@ Supports: Normal (tangent + object), AO, Cavity, Convexity, Heightmap, Vertex Co
 ## Marmoset Toolbag
 
 Highest-quality tangent normals; real-time interactive bake preview. Standard for AAA character pipelines.
+
+Latest releases:
+- **Toolbag 5.0** (official release 2024-10) — introduced interactive baking with real-time preview of bake output, plus UDIM workflow support for create / bake / render of UDIM-laid materials.
+- **Toolbag 5.01** (2024-12-16) and **Toolbag 5.02** (2025-08-14) — Toolbag 5.02 added **low-to-low baking** (bake textures directly from a low-poly mesh — useful for baking down bevel-shader data without duplicating the low mesh into the High slot).
 
 ```
 1. New Baker
@@ -313,10 +319,12 @@ When `baking` completes, emit:
 ## References
 
 - xNormal — xnormal.net (Santiago Orgaz; free)
-- Substance Painter — adobe.com/products/substance3d-painter
-- Marmoset Toolbag — marmoset.co/toolbag
-- Blender Cycles bake — docs.blender.org/manual
+- Substance Painter — adobe.com/products/substance3d-painter (12.0 unveiled GDC 2026; 2025 added experimental auto cage; 12.1 Beta added Mesh-Map Bakers sync across Texture Sets)
+- Marmoset Toolbag — marmoset.co/toolbag (5.0 official Oct 2024 — interactive baking + UDIM; 5.02 Aug 2025 — low-to-low baking)
+- Polycam 2D Texture Generator — poly.cam (Stable-Diffusion-driven seamless tileable PBR — albedo/displacement/normal/roughness — royalty-free commercial license, 768/1024/1536 px)
+- Blender Cycles bake — docs.blender.org/manual (Blender 4.5 LTS supported until July 2027; Blender 5.0 released 2025-11-18 with ACES, HDR, Volumes + SDF Geometry Nodes)
 - Substance Automation Toolkit (SAT) — adobe.com/products/substance3d-sat
+- MaterialX 1.39.4 (Sep 2025) — materialx.org (OpenPBR support; WebGPU Shading Language; hex-tiled + lat-long images; NanoColor; animated materials). Maya 2025.3+ ships OpenPBR by default; 3ds Max 2026 makes OpenPBR the default surface shader.
 - MikkTSpace — github.com/mmikk/MikkTSpace (Morten Mikkelsen)
 - "Mikkelsen Tangent Space" — original paper
 - *Real-Time Rendering* (4th ed.) — Akenine-Möller, Haines, Hoffman

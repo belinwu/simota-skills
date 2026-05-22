@@ -46,72 +46,100 @@ Rules:
 
 ## Provider-Specific Tips
 
-### Meshy
+### Meshy (Meshy 6, GA 2026-01-18)
 
 - Supports `art_style` parameter: `realistic`, `sculpture`, `cartoon`, `low-poly`, `pbr`.
 - Set style via parameter rather than prompt text when possible.
+- Prompts accept up to **800 characters** in any language.
 - Works well with detailed material descriptions ("weathered bronze", "polished marble").
 - `topology: "quad"` parameter produces cleaner results for game assets.
-- Preview mode (~30s): use for iteration. Refine mode (~2-5min): production quality.
+- Dedicated **Low Poly Mode** generates game-ready wireframes; Standard Mode for high-detail PBR.
+- Preview mode (~30s): use for iteration. Refine mode (~60s typical for full Model+Texture): production quality.
 - Text-to-texture: can re-skin existing models with new prompts.
 - Newer models support negative prompts via `negative_prompt` parameter.
+- API exposes Text-to-3D, Image-to-3D, Multi-Image-to-3D, AI Texturing, Remesh, and Rigging endpoints; Python + Node.js SDKs available.
+- Full Text/Image-to-3D = 20 credits (Model + Texture); 100 credits/month free tier; $20-60/mo paid plans unlock API + private assets.
+- Meshy Creative Lab (CES 2026) and Form Now integration (2026-04-08) close the loop from text/image → 3D → physical print/manufacture.
 
-### Tripo
+### Tripo (P1.0 + H3.1, 2026)
 
 - Excels at organic shapes (characters, creatures, plants).
 - Shorter prompts (20-40 words) often outperform long ones.
 - Supports multi-view input for image-to-3D; provide front + side views.
 - Model version significantly affects output; always specify `model_version`.
-- v2.5 produces significantly better topology than v1.x.
-- Built-in auto-rigging and animation for humanoid characters.
+- **Tripo P1.0 Smart Mesh** (GDC 2026) — production-grade native 3D diffusion: vertices/edges/polygon faces modeled in a unified spatial probabilistic field rather than sequential token prediction → engine-ready quad-dominant low-poly in ~2s.
+- **Tripo H3.1** (Mar 2026, "high-fidelity") — improved input alignment, geometry accuracy, texture quality, and generation speed for production hero assets.
+- Tripo Studio enterprise edition integrates text-to-3D + image-to-3D + AI retopology + AI Rigging.
+- Tripo Game Hub: experimental layer for turning generated assets into interactive projects.
 - Supports style transfer via reference images.
 
-### Hunyuan3D 2.0
+### Hunyuan3D (3.0 / 3.1, intl. launch 2025-11)
 
-- Open-source with commercial license (Tencent).
-- Generates PBR textures natively (albedo, normal, roughness).
+- Open-source via `Tencent-Hunyuan/Hunyuan3D-2.1` (commercial-friendly Tencent license).
+- Generates PBR textures natively: **Albedo, Metallic, Roughness, Normal, AO at up to 4K** out-of-the-box.
+- 3D-DiT architecture; mesh at **1536³ resolution** (Hunyuan3D 3.0), **3.4× the geometric density** of v2.5 (which capped at 1024³).
+- Hunyuan3D 3.1 international API available in Pro + Rapid editions.
+- **Auto-Rig** option in Hunyuan3D Studio: skeletal rig with joints for arms/legs/spine, optimized for T/A-pose input, exportable to Mixamo / UE / Unity.
 - Benefits from explicit geometric terms ("smooth surface", "sharp edges", "beveled corners").
 - Self-hosted: adjust inference steps for quality vs speed (30 steps=fast, 75 steps=quality).
 - For image-to-3D: single clean image with white background produces best results.
 - Supports both text-to-3D and image-to-3D in a single model.
 - Uses multi-view diffusion internally, largely immune to Janus problem.
 
-### Rodin
+### Rodin (Gen-2, Oct 2025 by Deemos Tech)
 
 - Best for high-detail assets (characters, organic forms, complex props).
+- **10B parameters, BANG architecture, recursive part-based generation** that divides and subdivides complex objects for intricate models with high fidelity.
+- Generates **clean quad-based meshes** with fine surface details, **baked normals** to display high-poly detail on low-poly, **HD textures** ready for production pipelines.
+- **Partial-redo** lets you regenerate only a specific part while keeping the rest untouched — strong for iterative refinement.
 - Accepts multi-view condition images alongside text prompts.
-- Higher cost but consistently better topology quality.
+- Higher cost but consistently better topology quality (4× improvement claimed over Gen-1).
 - Responds well to artistic style references ("in the style of Pixar", "Ghibli aesthetic").
-- Supports condition image + text prompt combined input.
-- Geometry detail level can be controlled via API parameters.
+- Subscription from $12/mo (Creator) on hyper3d.ai.
 
-### Sloyd
+### Sloyd (2.0, Apr 2026)
 
-- Parametric approach: works differently from pure AI generation.
+- Hybrid AI + parametric approach: slider/toggle customization of templates + AI workflows.
 - Best for: architectural elements, furniture, simple props, modular pieces.
 - Outputs pre-retopologized meshes (already game-ready topology).
+- **Sloyd 2.0** added image-to-3D upload, the Visual WACK widget for identifying parametric components, render images + lighting/background controls, and unlimited generation on paid plans.
 - Prompt as a specification rather than a description.
 - Supports parameter-based variation (adjust dimensions, style).
 - Fastest generation time (~5-15s) among all providers.
+- Future roadmap: text-to-3D via G-splatting, watertightness QC, print-topology optimization.
 
-### Stability (Stable Fast 3D)
+### Stability (SPAR3D — Stable Point Aware 3D, CES 2025)
 
 - Single-image-to-3D specialist (no text-to-3D).
-- Ultra-fast inference (~1s per model).
-- Input image quality directly determines output quality.
-- White or transparent background strongly recommended.
-- Best for: rapid prototyping, concept validation.
-- Supports remesh parameter for controlling output topology.
-- Returns model synchronously (no polling needed).
+- **0.7 s inference**; succeeds the earlier Stable Fast 3D.
+- Two-stage architecture: lightweight point-cloud diffusion → regressive mesh prediction using both the sampled point cloud and the input image.
+- **Real-time point-cloud editing**: delete, duplicate, stretch, add features, or recolor points before mesh extraction.
+- Predicts complete 360° structure including hidden back faces.
+- Input image quality directly determines output quality; white/transparent background recommended.
+- Released under **Stability AI Community License — free for commercial + non-commercial use**; weights on Hugging Face, code on GitHub, API on Stability AI Developer Platform.
 
-### Trellis (Microsoft)
+### TRELLIS.2 (Microsoft, Dec 2025)
 
-- Open-source, self-hosted.
-- Dual output: 3D Gaussian Splatting + extracted mesh.
+- Open-source MIT, self-hosted, **4B parameters**.
 - Image-to-3D only (no text-to-3D).
-- Best for: photorealistic reconstructions, objects with complex materials.
-- Uses SLAT (Structured LATent) representation internally.
-- Mesh quality depends on `mesh_simplify` parameter.
+- O-Voxel "field-free" sparse voxel architecture for arbitrary topology / sharp features / non-manifold geometry; native 3D VAE with 16× spatial compression.
+- Dual output: 3D Gaussian Splatting **+** extracted mesh.
+- Models PBR: Base Color, Roughness, Metallic, **and Opacity/Alpha** — but exported `.glb` defaults to OPAQUE; you must connect the texture's alpha to material opacity manually in the target DCC.
+- Generation: ~3 s at 512³ / ~17 s at 1024³ / ~60 s at 1536³ on NVIDIA H100.
+- Best for: photorealistic reconstructions, objects with complex materials or transparency.
+
+### PartCrafter (NeurIPS 2025, open-source)
+
+- First **structured** 3D generative model: jointly synthesizes multiple semantically meaningful + geometrically distinct meshes from a single RGB image.
+- Built on a pretrained 3D mesh diffusion transformer (DiT) — adds compositional latent space (per-part disentangled tokens) + hierarchical attention (within-part + cross-part).
+- Generates parts that are not directly visible in the input image (e.g., back of an object, occluded internals).
+- Ideal for assets needing per-part editing, animation, 3D printing with separate components, or scene-level multi-object reconstruction.
+
+### Meta AssetGen 2.0 (announced May 2025)
+
+- Meta's text + image → 3D foundation model with **3D diffusion** for geometry estimation, plus PBR materials.
+- Currently used internally for Meta Horizon worlds; rolling out to Horizon creators 2025+.
+- Not a general public API as of 2026-05.
 
 ### Luma Genie
 
@@ -439,14 +467,14 @@ Result OK? -> Accept and proceed to pipeline
   Scale wrong -> Add explicit dimensions in meters/cm
 ```
 
-## Provider Prompt Compatibility Matrix
+## Provider Prompt Compatibility Matrix (2026)
 
-| Prompt Feature | Meshy | Tripo | Hunyuan3D | Rodin | Sloyd | Stability |
-|---------------|-------|-------|-----------|-------|-------|-----------|
-| Detailed descriptions | Good | Medium | Good | Excellent | Poor | N/A |
+| Prompt Feature | Meshy 6 | Tripo P1/H3.1 | Hunyuan3D 3.0/3.1 | Rodin Gen-2 | Sloyd 2.0 | SPAR3D / TRELLIS.2 |
+|---------------|---------|---------------|-------------------|-------------|-----------|--------------------|
+| Detailed descriptions | Good (≤800 chars) | Medium | Good | Excellent | Poor | N/A (image-only) |
 | Style keywords | Excellent | Good | Good | Excellent | Medium | N/A |
-| Material descriptions | Excellent | Good | Good | Good | Poor | N/A |
-| Topology instructions | Good | Medium | Medium | Medium | Excellent | N/A |
+| Material descriptions | Excellent | Good | Good (4K PBR) | Good | Poor | N/A |
+| Topology instructions | Good (Low Poly Mode) | Medium (P1.0 quad-dom.) | Medium | Medium (quad) | Excellent | N/A |
 | Size/scale in prompt | Medium | Medium | Medium | Good | Good | N/A |
 | Negative prompts | Good | Poor | Medium | Medium | Poor | N/A |
 | Reference style | Medium | Good | Medium | Excellent | Poor | N/A |

@@ -6,31 +6,34 @@ Provider integration patterns for AI 3D model generation APIs. Covers text-to-3D
 
 | Provider | Strength | Topology Quality | Input | Pricing Model | Format Output | Generation Time |
 |----------|----------|-----------------|-------|---------------|---------------|-----------------|
-| **Meshy** | General purpose, reliable | Medium | Text, Image | Credit-based (free tier) | FBX, OBJ, glTF, USDZ, STL | 30s-5min |
-| **Tripo** | Fast, good topology, animation | Medium-High | Text, Image, Multi-view | Credit-based | FBX, OBJ, glTF, STL | 10-60s |
-| **Hunyuan3D 3.0/3.5** | Open-source, 3D-DiT, auto-rigging, 8K PBR | High | Text, Image, Multi-view | Free (self-hosted) / API | FBX, OBJ, glTF | 3.5: sub-60s, 3.0: 1-3min |
-| **Rodin** | High detail, production quality | High | Text, Image, Multi-view | Credit-based | FBX, OBJ, glTF, USDZ | 1-5min |
-| **Sloyd** | Game-ready topology, parametric | High (pre-retopologized) | Text, Parameters | Subscription + usage | FBX, OBJ, glTF | 5-15s |
-| **Stability (Stable Fast 3D)** | Ultra-fast single-image | Medium | Image | API credit-based | OBJ, glTF | ~1s |
-| **TRELLIS.2 (Microsoft)** | Open-source MIT, 4B params, O-Voxel, PBR+opacity | High | Image | Free (self-hosted) | glTF, PLY (3DGS) | ~3s (512³), ~17s (1024³) |
+| **Meshy 6** (2026-01-18 GA) | Cleaner geometry, dedicated Low Poly Mode, multi-color 3D print, expanded API (text/image endpoints) | Medium-High | Text (≤800 chars), Image | Credit-based — 20 cr per full Text/Image-to-3D (Model+Texture); paid plans $20-60/mo from Pro | FBX, OBJ, glTF, USDZ, STL, 3MF | ~60s (typical) |
+| **Tripo P1.0 / H3.1** (GDC 2026 / Mar 2026) | P1.0 native 3D diffusion engine-ready; H3.1 high-fidelity geometry+texture | Medium-High to High | Text, Image, Multi-view | Credit-based | FBX, OBJ, glTF, STL | P1.0 ~2s low-poly; H3.1 ~20-30s |
+| **Hunyuan3D 3.0 / 3.1** (intl. launch 2025-11) | 3D-DiT, 1536³ mesh resolution (3.4× v2.5), PBR (Albedo/Metallic/Roughness/Normal/AO up to 4K), auto-rigging in Studio | High | Text, Image, Multi-view | Free (self-hosted) / API (Pro+Rapid) | FBX, OBJ, glTF | 3.5: sub-60s, 3.0: 1-3min |
+| **Rodin Gen-2** (Oct 2025 by Deemos) | BANG architecture 10B params, recursive part-based, quad-based meshes, baked normals, partial-redo | High | Text, Image, Multi-view | Credit-based ($12/mo Creator) | FBX, OBJ, glTF, USDZ | 1-5min |
+| **Sloyd 2.0** (Apr 2026) | Parametric+AI hybrid, unlimited generation on paid plans, image-to-3D, Visual WACK widget | High (pre-retopologized) | Text, Image, Parameters | Subscription + usage | FBX, OBJ, glTF | 5-15s |
+| **Stability SPAR3D** (CES 2025, w/ NVIDIA) | Point-cloud diffusion + regressive mesh, single-image, real-time edit (delete/duplicate/stretch points) | Medium | Image | Community License free for commercial; API on Stability Developer Platform | OBJ, glTF | 0.7s |
+| **TRELLIS.2** (Microsoft, Dec 2025) | 4B params, O-Voxel sparse voxel, MIT license, PBR + alpha/opacity, up to 1536³ | High | Image | Free (self-hosted) | glTF, PLY (3DGS) | ~3s (512³), ~17s (1024³), ~60s (1536³) on H100 |
 | **InstantMesh** | Open-source, multi-view LRM | Medium-High | Image | Free (self-hosted) | OBJ, glTF | 10-30s |
 | **Luma Genie** | High-quality generation, video-to-3D | Medium-High | Text, Image, Video | API credit-based | glTF, PLY (3DGS) | 30s-3min |
-| **CSM (Common Sense Machines)** | World-building, scene generation (acquired by Google Jan 2026 — evaluate API continuity) | Medium | Image, Video | Credit-based | glTF, USD | 1-5min |
+| **Meta AssetGen 2.0** (2025) | Internal Meta foundation model, 3D diffusion geometry, PBR; rolling to Horizon creators 2025+ | High | Text, Image | Internal / Horizon | glTF | ~1min |
+| **PartCrafter** (NeurIPS 2025, open-source) | Structured 3D — multiple semantically meaningful meshes from single image via compositional DiT | High | Image | Free (self-hosted) | glTF | ~34s on H20 |
+| **CSM (Common Sense Machines)** | World-building, scene generation — **acquired by Google/Alphabet 2026-01-24, team moved into DeepMind; evaluate API continuity** | Medium | Image, Video | Credit-based (uncertain future) | glTF, USD | 1-5min |
 
 ### Provider Generation Comparison
 
-| Capability | Meshy 6 | Tripo | Hunyuan3D 3.0/3.5 | Rodin | Sloyd | Stability | TRELLIS.2 | Luma |
-|-----------|---------|-------|-------------------|-------|-------|-----------|-----------|------|
+| Capability | Meshy 6 | Tripo P1/H3.1 | Hunyuan3D 3.0/3.1 | Rodin Gen-2 | Sloyd 2.0 | Stability SPAR3D | TRELLIS.2 | Luma |
+|-----------|---------|---------------|-------------------|-------------|-----------|------------------|-----------|------|
 | Text-to-3D | Yes | Yes | Yes | Yes | Yes | No | No | Yes |
-| Image-to-3D | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes |
+| Image-to-3D | Yes | Yes | Yes | Yes | Yes (2.0) | Yes | Yes | Yes |
 | Multi-view-to-3D | Yes | Yes | Yes (2-4 views) | Yes | No | No | No | No |
 | Video-to-3D | No | No | No | No | No | No | No | Yes |
-| Text-to-texture | Yes | No | Yes | Yes | No | No | No | No |
-| Auto-rigging | No | Yes | Yes (3.0+) | No | No | No | No | No |
-| PBR texture output | Yes | Yes | Yes (8K in 3.5) | Yes | Yes | Limited | Yes+opacity | No |
+| Text-to-texture | Yes | Yes (Studio) | Yes | Yes | No | No | No | No |
+| Auto-rigging | Yes (API) | Yes (Studio AI Rigging) | Yes (Studio) | No (Rodin 1 had; verify Gen-2) | No | No | No | No |
+| PBR texture output | Yes | Yes | Yes (up to 4K) | Yes (HD) | Yes | Limited | Yes+opacity | No |
 | 3D Gaussian output | No | No | No | No | No | No | Yes | Yes |
 | Animation output | No | Yes | No | No | No | No | No | No |
-| Low Poly Mode | Yes | Yes (Smart Mesh) | No | No | Yes | No | No | No |
+| Low Poly Mode | Yes (dedicated) | Yes (P1.0 Smart Mesh) | No | No | Yes | No | No | No |
+| 3D Printing direct | Yes (Form Now, Apr 2026) | No | No | No | Yes (STL) | No | No | No |
 
 ## Authentication Pattern
 
@@ -382,11 +385,18 @@ class RodinProvider(ModelProvider):
         )
 ```
 
-### Stability (Stable Fast 3D)
+### Stability (SPAR3D — Stable Point Aware 3D, CES 2025, free for commercial use under Stability AI Community License)
 
 ```python
 class StabilityProvider(ModelProvider):
-    """Stability AI - Stable Fast 3D (sub-second image-to-3D)."""
+    """Stability AI — SPAR3D (Stable Point Aware 3D), CES 2025, ~0.7s image-to-3D.
+
+    Two-stage architecture: lightweight point-cloud diffusion → regressive mesh.
+    Supports real-time point-cloud edit (delete/duplicate/stretch/recolor points)
+    before mesh extraction. Released under Stability AI Community License — free
+    for commercial + non-commercial use. Weights on Hugging Face, code on GitHub,
+    API endpoint via Stability AI Developer Platform.
+    """
 
     provider_name = "stability"
 
@@ -399,15 +409,15 @@ class StabilityProvider(ModelProvider):
         raise NotImplementedError("Stability only supports image-to-3D")
 
     def image_to_3d(self, config: GenerationConfig) -> str:
-        """Synchronous image-to-3D (returns immediately with model)."""
+        """Synchronous image-to-3D via SPAR3D (returns immediately with model)."""
         from pathlib import Path
         image_path = config.image_paths[0] if config.image_paths else None
         if not image_path:
-            raise ValueError("Stability requires a local image file")
+            raise ValueError("SPAR3D requires a local image file")
 
         with open(image_path, "rb") as f:
             resp = httpx.post(
-                f"{self.base_url}/stable-fast-3d",
+                f"{self.base_url}/stable-point-aware-3d",  # SPAR3D endpoint (verify in current Stability docs)
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 files={"image": f},
                 data={
@@ -436,22 +446,27 @@ class StabilityProvider(ModelProvider):
 
 ## Self-Hosted Provider Setup
 
-### Hunyuan3D 2.0
+### Hunyuan3D 3.0 / 3.1 (intl. launch 2025-11)
 
 ```python
-# Hunyuan3D 2.0 - self-hosted via Gradio API or direct inference
+# Hunyuan3D 3.0 / 3.1 — self-hosted via Gradio API or direct inference;
+# also available as hosted API in Pro + Rapid editions on 3D AI Studio.
+# Repo: github.com/Tencent-Hunyuan/Hunyuan3D-2.1 (2.1 + 3.0 weights)
 # pip install gradio_client  (for Gradio-hosted instances)
-# GPU requirement: NVIDIA A100 40GB+ recommended
+# GPU requirement: NVIDIA A100 40GB+ recommended for 3.0 (1536³ resolution).
+# 3.0 features: 3D-DiT, mesh at 1536³ (3.4× v2.5 density), PBR up to 4K
+# (Albedo / Metallic / Roughness / Normal / AO), Auto-Rig in Studio
+# (joints for arms / legs / spine, T/A-pose optimized).
 
 from gradio_client import Client
 
 def hunyuan3d_generate(image_path: str, server_url: str = "http://localhost:7860"):
-    """Generate 3D model via self-hosted Hunyuan3D 2.0 Gradio server."""
+    """Generate 3D model via self-hosted Hunyuan3D 3.0 Gradio server."""
     client = Client(server_url)
     result = client.predict(
         image_path,           # Input image
         "high",               # Quality: "low" | "medium" | "high"
-        True,                 # Generate PBR textures
+        True,                 # Generate PBR textures (albedo/metallic/roughness/normal/AO up to 4K)
         api_name="/generate"
     )
     # result contains paths to generated .glb and texture files
@@ -459,24 +474,26 @@ def hunyuan3d_generate(image_path: str, server_url: str = "http://localhost:7860
 
 # Direct inference (requires torch + hunyuan3d package)
 # from hunyuan3d import Hunyuan3DPipeline
-# pipe = Hunyuan3DPipeline.from_pretrained("tencent/Hunyuan3D-2")
-# mesh = pipe(image="input.png", num_inference_steps=50)
+# pipe = Hunyuan3DPipeline.from_pretrained("tencent/Hunyuan3D-3")
+# mesh = pipe(image="input.png", num_inference_steps=50, resolution=1536)
 # mesh.export("output.glb")
 ```
 
-### Trellis (Microsoft)
+### TRELLIS.2 (Microsoft, Dec 2025)
 
 ```python
-# Trellis - open-source, dual output (3D Gaussian Splatting + mesh)
-# pip install trellis-3d
-# GPU requirement: NVIDIA RTX 3090+ (24GB VRAM)
-
-# Trellis produces both 3D Gaussian Splatting and extracted mesh
-# The 3DGS output can be used for real-time rendering
-# The mesh output goes through standard game pipeline
+# TRELLIS.2 — open-source MIT, 4B params, O-Voxel sparse-voxel arch.
+# Repo: github.com/microsoft/TRELLIS.2 ; weights: huggingface.co/microsoft/TRELLIS.2-4B
+# Dual output (mesh + 3D Gaussian Splatting), PBR + opacity (alpha/transparency).
+# Generation on H100: ~3s @ 512³ / ~17s @ 1024³ / ~60s @ 1536³.
+# GPU requirement: NVIDIA H100 recommended for 1024³+; RTX 3090/4090 (24GB) for 512³.
+#
+# Note: .glb is exported in OPAQUE mode by default; the alpha channel IS preserved
+# inside the texture map but inactive. To enable transparency post-import, wire the
+# texture's alpha channel into the material's Opacity/Alpha input in the target DCC.
 
 def trellis_generate(image_path: str, server_url: str = "http://localhost:7861"):
-    """Generate via self-hosted Trellis server."""
+    """Generate via self-hosted TRELLIS.2 server."""
     from gradio_client import Client
     client = Client(server_url)
     result = client.predict(
@@ -493,6 +510,24 @@ def trellis_generate(image_path: str, server_url: str = "http://localhost:7861")
     )
     # Returns: (3DGS .ply path, mesh .glb path, video preview path)
     return {"gaussian": result[0], "mesh": result[1], "preview": result[2]}
+```
+
+### PartCrafter (NeurIPS 2025)
+
+```python
+# PartCrafter — structured 3D mesh generation via compositional latent DiT.
+# Repo: github.com/wgsxm/PartCrafter ; paper: arxiv.org/abs/2506.05573
+# Produces multiple semantically meaningful + geometrically distinct meshes from
+# a single RGB image; can predict parts not directly visible (occluded back of
+# object). ~34s on H20 GPU.
+
+def partcrafter_generate(image_path: str, server_url: str = "http://localhost:7862"):
+    """Generate structured part-decomposed mesh via self-hosted PartCrafter."""
+    from gradio_client import Client
+    client = Client(server_url)
+    result = client.predict(image_path, api_name="/generate")
+    # Returns list of per-part .glb files (one mesh per semantic part)
+    return result
 ```
 
 ### InstantMesh (Large Reconstruction Model)

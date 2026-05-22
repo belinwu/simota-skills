@@ -21,16 +21,20 @@ Purpose: Generate rig (skeleton + skin weights) for 3D models automatically. Cov
 
 | Provider | Rig type | Best for | Cost |
 |----------|----------|----------|------|
-| **Mixamo (Adobe)** | Humanoid (65 bones) | Bipeds; standard skeleton | Free with Adobe ID |
+| **Mixamo (Adobe)** | Humanoid (65 bones) | Bipeds; standard skeleton | Free with Adobe ID — **backend SSL/auth broke 2025-06-16, intermittent "Too many requests" errors, no official ETA from Adobe as of 2026-05; community-maintained Mixanimo Blender addon (Mixamo Rig 2025) is the working fallback** |
+| **Autodesk Flow Studio AI Rigging** (formerly Wonder Studio, rebrand 2025-03; AI Rigging launched 2026-04-28) | Humanoid + neural | AI-driven character rigging in cloud, free + paid tiers | Free tier preview / paid tiers for Live Action + export |
+| **Meshy 6 Rigging API** | Humanoid | Quick humanoid via API endpoint | Subscription credits |
+| **Tripo Studio AI Rigging** | Humanoid (enterprise) | Production game characters | Enterprise plan |
+| **Hunyuan3D Studio Auto-Rig** | Humanoid (T/A-pose) | Joints for arms/legs/spine, exported to Mixamo/UE/Unity | Hunyuan3D 3.0+ |
 | **Rodin Auto-Rig** | Humanoid + custom | Stylized + realistic humanoids | Per-rig credit |
-| **Meshy 5 Rigging** | Humanoid (lite) | Quick humanoid + AAA-style | Subscription |
 | **Anything-World** | Game-genre (humanoid + quadruped + bird + reptile) | Diverse creatures | Per-rig |
 | **DeepMotion Animate 3D** | Humanoid + auto-anim | Mocap-style anim from video | Per-second |
 | **Maya HumanIK** | Humanoid | Pro studio pipelines | Maya license |
 | **Blender Rigify** | Humanoid + meta-rig | Open-source artists | Free |
 | **AccuRig (Reallusion)** | Humanoid | Game characters | Free |
+| **Cascadeur Quick Rigging** (2025.3+) | Humanoid + Quadruped (Alpha 2025.3) | Physics-aware char animation | Subscription |
 
-For most AI-generated characters, default to **Mixamo** for free standard rigs, escalate to **Rodin** or **Anything-World** for non-human or stylized.
+For most AI-generated characters, default to **Hunyuan3D Studio Auto-Rig** or **Autodesk Flow Studio AI Rigging** for AI-pipeline integration, fall back to **Tripo Studio / Meshy API / Rodin** for hosted service, escalate to **Anything-World** for non-human or stylized. **Mixamo is currently unreliable for production due to the 2025-06 backend break** — use the community-maintained Mixanimo Blender plugin if you need the classic Mixamo skeleton.
 
 ## Skeleton Standards
 
@@ -94,7 +98,7 @@ Auto-rig services typically apply default voxel + heat. Manual touch-up for shou
    - Unreal: IK Retargeter to UE5 Mannequin
 ```
 
-CLI / API: Mixamo doesn't have public API as of 2025. Workflow is web-based.
+CLI / API: Mixamo has never had a public API. Workflow is web-based — **and as of 2025-06-16 the backend auto-rig + animation download flow has been broken for many users with "Too many requests" or auth errors and no Adobe ETA** (Adobe community thread "Mixamo Is Not End of Life — It's Broken, and Fixable"). For production pipelines today prefer Hunyuan3D Studio Auto-Rig, Tripo Studio AI Rigging, or Autodesk Flow Studio AI Rigging (cloud); fall back to the community-maintained **Mixanimo** Blender addon (Mixamo Rig 2025, originally Adobe-open-sourced GPL auto-rig now maintained on Gumroad) for offline.
 
 ## Rodin Auto-Rig
 
@@ -299,16 +303,21 @@ When `rigging` completes, emit:
 
 ## References
 
-- Mixamo — mixamo.com (Adobe; free auto-rig + animation library)
-- Rodin Auto-Rig — hyperhuman.com / rodin.io
-- Meshy 5 Rigging — meshy.ai
+- Mixamo — mixamo.com (Adobe; auto-rig + animation library; **backend broken since 2025-06-16**, no official Adobe ETA)
+- Mixanimo (Mixamo Rig 2025) — mixanimo.gumroad.com/l/mixamorig (community-maintained Blender 3.x/4.x port of Adobe's GPL Mixamo auto-rig add-on)
+- Autodesk Flow Studio (formerly Wonder Studio) — autodesk.com/products/flow-studio (AI Rigging + Neural Layer launched 2026-04-28, available on free + paid tiers)
+- Hunyuan3D Studio — github.com/Tencent-Hunyuan/Hunyuan3D-2.1 (3.0+ auto-rig system, T/A-pose joints arms/legs/spine, export to Mixamo/UE/Unity)
+- Tripo Studio AI Rigging — tripo3d.ai (enterprise plan; integrated with text-to-3D + image-to-3D + AI retopology)
+- Meshy 6 Rigging API — meshy.ai/api (asynchronous task endpoint)
+- Rodin Auto-Rig — hyper3d.ai (Deemos Tech; Rodin Gen-2 Oct 2025)
+- Cascadeur Quick Rigging — cascadeur.com (humanoid + quadruped Alpha as of 2025.3, Nov 2025)
 - Anything-World — anything.world
 - DeepMotion Animate 3D — deepmotion.com
 - AccuRig (Reallusion) — reallusion.com/auto-rig
 - Blender Rigify — docs.blender.org/manual/en/latest/addons/rigging/rigify
 - Maya HumanIK — autodesk.com
-- Unity Humanoid Avatar — docs.unity3d.com (Animation > Avatar)
-- Unreal IK Retargeter — docs.unrealengine.com
+- Unity Humanoid Avatar — docs.unity3d.com (Animation > Avatar; Unity 6 LTS Oct 2024, Unity 6.3 LTS Dec 2025)
+- Unreal IK Retargeter — docs.unrealengine.com (UE 5.5 added Nanite Skeletal Mesh)
 - MetaHuman Creator — unrealengine.com/metahuman
 - SMPL body model — smpl.is.tue.mpg.de
 - *3D Modeling and Animation* — Lammers, Wallinger

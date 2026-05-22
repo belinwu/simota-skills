@@ -108,12 +108,12 @@ if uv_report["texel_density_variance"] > 0.3:
 - "Totem pole" effect with repeated patterns around the model.
 
 **Fix**:
-1. Use providers that employ multi-view diffusion (MVDream, Zero123++). Hunyuan3D 2.0, Trellis, and newer Tripo/Meshy models have largely solved this.
+1. Use providers that employ multi-view diffusion (MVDream, Zero123++) or native 3D diffusion. Hunyuan3D 3.0 (3D-DiT, multi-view input), TRELLIS.2 (O-Voxel sparse voxel + PBR/opacity), Tripo P1.0 (native 3D diffusion in unified spatial probabilistic field, GDC 2026), and Meshy 6 have largely solved this.
 2. Prefer FlexiCubes mesh extraction over naive marching cubes.
 3. Provide multi-view reference images to constrain generation.
 4. Add negative constraints: "single face, consistent appearance from all angles".
 5. Validate by rendering 4+ views before accepting the model.
-6. When possible, prefer image-to-3D over text-to-3D (image provides consistent reference).
+6. When possible, prefer image-to-3D over text-to-3D (image provides consistent reference). SPAR3D (Stability, CES 2025) explicitly predicts complete 360° structure including hidden back faces via its point-cloud-first stage.
 
 ## Batch Without Preview
 
@@ -295,19 +295,21 @@ else:
 # WRONG: Use latest version implicitly
 resp = httpx.post(f"{BASE_URL}/task", json={"prompt": prompt})
 
-# RIGHT: Pin model version explicitly
+# RIGHT: Pin model version explicitly (Tripo P1.0 Smart Mesh debuted GDC 2026,
+# Tripo H3.1 in Mar 2026 — pin to a specific version string from the dashboard
+# rather than "latest" so regen is deterministic across team + time)
 resp = httpx.post(f"{BASE_URL}/task", json={
     "prompt": prompt,
-    "model_version": "v2.5-20250123",  # Pin specific version
-    "api_version": "2024-12-01",        # Pin API version if supported
+    "model_version": "P1.0-2026XXXX",   # Pin specific version (Smart Mesh)
+    "api_version": "2026-XX-XX",         # Pin API version if supported
 })
 
 # Document in metadata
 metadata = {
     "provider": "tripo",
-    "model_version": "v2.5-20250123",
-    "api_version": "2024-12-01",
-    "generation_date": "2026-01-15",
+    "model_version": "P1.0-2026XXXX",
+    "api_version": "2026-XX-XX",
+    "generation_date": "2026-05-22",
     "prompt": prompt,
 }
 ```
