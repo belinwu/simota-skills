@@ -41,12 +41,12 @@ For wordmarks / monograms, type choice is the logo:
 | Apertures | Tighten / open per legibility test |
 | Diacritics | Verify support if international |
 
-Common license traps:
+Common license traps (verify current EULAs as of 2026-05):
 
-- Many free fonts (Google Fonts, etc.) **prohibit** logo use.
-- Adobe Fonts: not licensed for logo / trademark.
-- MyFonts / Fontspring: read the EULA — desktop license covers some uses, "extended" or "logo" license required for trademark filing.
-- Custom commission: ~$5K–$50K but resolves licensing forever.
+- Many free fonts (Google Fonts / OFL, etc.) actually **permit** logo use under OFL — but the OFL **prohibits selling the font itself**. Verify the specific font's RFN (Reserved Font Name) clause. Some Google Fonts ship under Apache 2.0 (no logo restriction).
+- Adobe Fonts: not licensed for logo / trademark use even on commercial subscriptions; explicit prohibition in current EULA.
+- MyFonts / Fontspring / Monotype: read the EULA — desktop license covers some uses, "extended" or "logo" license required for trademark filing.
+- Custom commission: ~$5K–$50K but resolves licensing forever; AI-typeface tools (e.g., Monotype Font Studio) blur authorship/licensing — confirm explicit grant of rights for trademark use.
 
 ### The Logo Grid
 
@@ -146,7 +146,7 @@ Modern favicon best practices:
 <link rel="manifest" href="/site.webmanifest" />
 ```
 
-SVG favicon is the modern default; PNG fallbacks for older browsers.
+SVG favicon is the modern default — supported in Chrome 80+ / Firefox 41+ / Safari 16.4+ (2023-03). PNG fallbacks for older browsers and email clients. Modern SVG favicons can use `prefers-color-scheme` inside `<style>` so a single file adapts to light/dark browser chrome.
 
 ### Type Outlining
 

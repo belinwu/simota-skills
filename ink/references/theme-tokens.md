@@ -11,6 +11,13 @@ Purpose: Ship a single SVG asset that re-colors for light, dark, and brand theme
 
 If the question is "what color value does `--icon-primary` resolve to?" → Muse. If it is "how does this SVG consume it?" → `theme`.
 
+## Token-System Landscape (2026-05)
+
+- **DTCG Design Tokens Format Module 2025.10** — first stable spec, published **2025-10-28** by the W3C Design Tokens Community Group. Vendor-neutral JSON, MIME `application/design-tokens+json`, extensions `.tokens` or `.tokens.json`. Supports color (with modern color spaces), dimension, duration, motion, gradient, border, shadow, typography token types and a new resolver module. Adopted by Figma, Penpot, Sketch, Framer, Knapsack, Supernova, zeroheight; reference impls in Style Dictionary, Tokens Studio, Terrazzo.
+- **Style Dictionary v5** — DTCG 2025.10 alignment in progress (color/border/shadow done, gradient in progress; dimension token type accepts object value while remaining string-compatible).
+- **Tokens Studio for Figma** — 2025 updates: auto-sync of scoping/syntax to Figma Variables, server-side token resolution for OAuth projects, gradient export as Figma styles.
+- **CSS `color-mix()` + OKLCH** — Chrome 111+, Edge 111+, Firefox 113+, Safari 15.4+; ~95% global support per caniuse (2025-Q3). Safe to use as the default `color-mix` interpolation space in 2026.
+
 ## `currentColor` vs Hardcoded Fill
 
 | Need | Approach |
@@ -136,7 +143,7 @@ Avoid `fill="currentColor"` inside a `<symbol>` if the surrounding context toggl
 
 ## Handoff
 
-**From Muse:** token names, semantic meaning, light/dark/high-contrast values, contrast-ratio target per pairing.
-**To Artisan:** which CSS variables the component must set, default fallbacks, theme switching contract (class or `data-*`).
+**From Muse:** token names, semantic meaning, light/dark/high-contrast values, contrast-ratio target per pairing. Prefer **DTCG 2025.10** JSON format (`*.tokens.json`) for cross-tool exchange.
+**To Artisan:** which CSS variables the component must set, default fallbacks, theme switching contract (class or `data-*`). Note Style Dictionary v5 + Tokens Studio output paths.
 **To Palette:** color-pairing list for WCAG 1.4.11 non-text-contrast audit (≥ 3:1 for meaningful icons).
 **To Showcase:** light + dark + high-contrast story variants per icon so visual regression catches theme drift.

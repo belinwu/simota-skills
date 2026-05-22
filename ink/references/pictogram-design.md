@@ -273,9 +273,9 @@ A pictogram package is complete when:
 
 ## References
 
-- ISO 7001:2007 — Public information symbols.
-- ISO 7010:2019 — Safety signs.
-- ISO 9186 — Comprehension testing methodology.
+- ISO 7001:2023 — Graphical symbols — Public information symbols (latest revision 2023; supersedes 2007 edition).
+- ISO 7010:2019/Amd 6:2024 — Graphical symbols — Safety colours and safety signs (registered signs base, periodically amended).
+- ISO 9186-1:2014, ISO 9186-2:2008, ISO 9186-3:2014 — Pictogram comprehension and legibility testing methodology.
 - ISO 22727 — Pictogram development principles.
 - AIGA / DOT Symbol Signs (1974) — public-domain transit pictograms.
 - Henry Dreyfuss, *Symbol Sourcebook* (1972) — foundational reference.
@@ -286,6 +286,6 @@ A pictogram package is complete when:
 - Society for Experiential Graphic Design (SEGD) — wayfinding-design standards.
 - Don Norman, *The Design of Everyday Things* — affordance and signifier theory.
 - Edward Tufte, *Envisioning Information* — visual-encoding principles.
-- W3C WCAG 2.2 — Section 1.4.1 use of color, 1.4.3 contrast.
+- W3C WCAG 2.2 (W3C Recommendation 2023-10-05) — SC 1.4.1 use of color, 1.4.3 contrast, 1.4.11 non-text contrast, 2.5.8 target size.
 - ADA Standards for Accessible Design (2010) — pictogram requirements for public accommodations.
 - Architectural Graphic Standards — physical signage scale and placement.

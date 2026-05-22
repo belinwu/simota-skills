@@ -11,6 +11,18 @@ Purpose: Author animated SVG assets (loaders, status transitions, microinteracti
 
 If the hypothesis is "does this icon itself animate?" → `animate`. If it is "does this page transition feel right?" → Flow.
 
+## Beyond Hand-Authored SVG: When to Hand Off (2026)
+
+| Tool | Format | Use case | Status (2026-05) |
+|------|--------|----------|------------------|
+| **Motion** (formerly Framer Motion) | JS animation library | React app-level icon orchestration | renamed to **Motion** in 2025, package `motion` on npm, import `motion/react`, v12.x; layout animations + hardware-accelerated scroll + native `oklch`/`oklab`/`color-mix` animation |
+| **GSAP** | JS animation library | Complex SVG path morphs, timeline scrubbing | 3.13+; now free for commercial use under standard MIT-style terms after Webflow acquisition (2024) |
+| **Lottie / dotLottie** | After Effects → JSON / ZIP | Designer-authored complex motion | **dotLottie v2** (2025) adds theming, state machines, audio; `.lottie` is up to 10× smaller than `.json`; MIME `application/zip+dotlottie` |
+| **Rive** | proprietary `.riv` + open runtimes | Interactive state-machine animations, mascots | Rive Flutter 0.14.0 (2025-12) GA; Vector Feathering (2025-02); GPU-accelerated open-source Rive Renderer @ 120 fps |
+| **CSS / SMIL** (this reference) | inline SVG | Icon-level micro motion | always first choice for icon-scoped motion |
+
+Rule: keep micro-motion (≤ 600 B added, single icon) in SVG; escalate to Lottie/Rive only when a designer brings complex After Effects timing curves.
+
 ## SMIL vs CSS Decision Matrix
 
 | Concern | SMIL | CSS | Hybrid |
@@ -113,9 +125,11 @@ For SMIL (no media query), inline a `<script>` guard or author two asset variant
 - No `prefers-reduced-motion` fallback — WCAG 2.3.3 / vestibular accessibility failure.
 - Animating `cx` / `cy` / `r` / `width` at 60 fps — paint-bound and janky on mobile.
 - Using SMIL inside inline SVG that already has CSS available — mixes paradigms without reason.
-- Running SVGO with default config on SMIL markup — default plugins strip `<animate>` elements. Use safe-only plugins and visually verify.
+- Running SVGO v3 default config on SMIL markup — default plugins strip `<animate>` elements. In SVGO v4 `removeTitle` is no longer default but `removeUselessDefs` still runs; use safe-only plugins and visually verify.
 - Stacking 20+ animated spinners on one screen — GPU memory and compositor pressure.
 - Embedding motion in a decorative icon marked `aria-hidden="true"` without considering that assistive-tech users still see it flicker visually if they disable AT temporarily.
+- Importing the entire `motion` (formerly framer-motion) library for a single icon spin — use `motion/react` named imports and tree-shake, or stay in CSS.
+- Shipping a Lottie JSON when a dotLottie equivalent exists — dotLottie v2 ZIP is up to 10× smaller and includes state machines.
 
 ## Handoff
 

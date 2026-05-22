@@ -13,21 +13,25 @@ Hand-authored or design-tool-exported SVG often weighs 10–50× more than neces
 
 ### SVGO Default Plugins (2026)
 
-SVGO 4+ ships with a "preset-default" that runs ~30 plugins. Useful overrides:
+SVGO 4.x ships with a "preset-default" that runs ~30 plugins. **Key change in v4.0.0**: `removeViewBox` and `removeTitle` are no longer part of `preset-default` — they were removed to preserve scalability and accessibility by default. SVGO v4 also requires Node.js >= 16, introduces `removeDeprecatedAttrs` (disabled by default), and adds case-conversion options to `convertColors`. Useful overrides:
 
-| Plugin | Default | Recommended override |
-|--------|---------|---------------------|
-| removeViewBox | enabled | **disable** — viewBox needed for responsive sizing |
+| Plugin | Default in v4 | Recommended override |
+|--------|---------------|---------------------|
+| removeViewBox | **disabled** (since v4.0.0) | keep disabled — viewBox needed for responsive sizing |
+| removeTitle | **disabled** (since v4.0.0) | keep disabled — preserves a11y `<title>` |
 | cleanupIds | enabled | enable for inline; minify only when sprite |
 | inlineStyles | enabled | enable for icons (style → attributes) |
-| convertColors | enabled | enable; converts to shorter form |
+| convertColors | enabled | enable; supports `currentColor` and case override |
 | convertPathData | enabled | enable with floatPrecision: 2 |
 | mergePaths | enabled | enable; combines compatible paths |
 | removeUnknownsAndDefaults | enabled | enable |
 | sortAttrs | enabled | enable for diff-friendly output |
 | removeAttrs | disabled | enable for stripping editor metadata (`data-*`, `inkscape:*`) |
+| removeDeprecatedAttrs | disabled (new in v4) | optional; strips deprecated SVG 1.1 attributes |
 
-### Recommended svgo.config.js
+### Recommended svgo.config.js (v4)
+
+In SVGO v4, `removeViewBox` and `removeTitle` are already disabled in `preset-default`, so explicit overrides are no longer required for those two. Keep the override block for forward-compat with mixed v3/v4 environments.
 
 ```js
 export default {
@@ -38,7 +42,9 @@ export default {
       name: 'preset-default',
       params: {
         overrides: {
+          // v4: already disabled by default; explicit for v3 compat
           removeViewBox: false,
+          removeTitle: false,
           cleanupIds: { minify: true, prefix: 'ink-' },
         },
       },
@@ -212,15 +218,19 @@ Outputs single file with `<symbol>` per icon, optimized.
 | Sprite gets re-downloaded | Missing cache headers; or no version-hash |
 | Bloated JSX bundle | Treeshaking broken; configure tree-shake or use icon-CDN approach |
 
-### Icon CDN vs Self-Hosted
+### Icon CDN vs Self-Hosted (2026 landscape)
 
-| Source | Pro | Con |
-|--------|-----|-----|
-| Self-hosted SVGO'd | Full control; no external dep | Requires build pipeline |
-| Lucide / Feather (treeshake) | Small per-icon; large library | Per-icon import bloat if not treeshaken |
-| Iconify | 100+ libraries via API | External dep; runtime loading |
-| Heroicons | Tailwind-aligned | Not tree-shaken in some setups |
-| Font-icons (FontAwesome) | Single network request | Larger overall; a11y issues |
+| Source | 2026 status | Pro | Con |
+|--------|-------------|-----|-----|
+| Self-hosted SVGO'd | always works | Full control; no external dep | Requires build pipeline |
+| Lucide / Feather (treeshake) | Lucide 1.16.x (2026-05), 1600+ icons | Small per-icon; large library; React/Vue/Svelte/Solid/Preact/Angular/Flutter wrappers | Per-icon import bloat if not treeshaken |
+| Iconify | ~300k icons, 200+ icon sets (2026) | Unified API for FA / Material / Phosphor / Lucide / Tabler etc. | External dep; runtime loading |
+| Heroicons | v2.2.0 (2024-11), 4 styles: Outline (24px 1.5px stroke), Solid (24px), Mini (20px), Micro (16px) | Tailwind-aligned; React 19 support | Not tree-shaken in some setups |
+| Phosphor Icons | 2.1 (+268 icons), 6 weights | 6 visual weights (thin/light/regular/bold/fill/duotone) | Larger set; per-weight import discipline |
+| Tabler Icons | v3.44 (2026-05), 6,146 icons | MIT-licensed; matched outline + filled | Stroke-based — same caveats as Lucide |
+| Material Symbols | Variable Font 4 axes (FILL 0-100, wght 100-700, GRAD -50 to 200, opsz 20-48) | Single font file; per-character axis control | Font-based; not pure SVG |
+| Font Awesome 7 | 2025-07 release, 4,500+ new icons, Icon Wizard | Largest commercial set; Pro+ tiers ($75-$750/y) | Pro license required for full set; larger payload |
+| Font-icons (legacy FA, glyphicons) | declining in 2026 | Single network request | a11y issues; modern alt: SVG sprite |
 
 ## Workflow
 
@@ -301,14 +311,19 @@ An SVG optimization plan is complete when:
 
 ## References
 
-- SVGO documentation — github.com/svg/svgo (4.0+ in 2026).
+- SVGO documentation — github.com/svg/svgo. v4.0.0 dropped `removeViewBox` / `removeTitle` from `preset-default` and requires Node.js >= 16. See `svgo.dev/docs/migrations/migration-from-v3-to-v4/`.
+- W3C SVG 2 — Candidate Recommendation; latest Editor's Draft 2025-09-14, working toward Proposed Recommendation (`svgwg.org/svg2-draft/`).
 - Sara Soueidan, *Practical SVG* (2016) and updated blog series.
 - Jake Archibald, *SVG icons FTW* — sprite vs inline trade-off classic.
 - Chris Coyier, *CSS-Tricks* — SVG optimization series.
-- Lucide / Feather / Heroicons — modern icon library implementations.
+- Lucide (1.16.x, 2026-05, 1600+ icons) — `lucide.dev` / `github.com/lucide-icons/lucide`.
+- Heroicons (v2.2.0, 2024-11) — `heroicons.com` / `github.com/tailwindlabs/heroicons`.
+- Phosphor Icons (2.1) — `phosphoricons.com` / `github.com/phosphor-icons/core`.
+- Tabler Icons (v3.44, 2026-05, 6,146 icons) — `tabler.io/icons`.
+- Font Awesome 7 (2025-07) — `fontawesome.com`.
+- Material Symbols (Variable Font, 4 axes) — `developers.google.com/fonts/docs/material_symbols`.
+- Iconify (~300k icons, 200+ sets) — `iconify.design`.
 - web.dev *Image Performance* — image-format guidance.
-- Smashing Magazine, *SVG Best Practices* (2023–2024).
-- W3C SVG 2 Recommendation.
+- Smashing Magazine, *SVG Best Practices* (2023–2025).
 - svgstore + vite-plugin-svgo / rollup-plugin-svgo / svgo-loader documentation.
-- Iconify documentation — runtime icon loading.
 - web.dev *Variable fonts* — analogous tree-shake / subset strategy.

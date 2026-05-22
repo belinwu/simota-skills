@@ -2,6 +2,14 @@
 
 Purpose: Annotate SVG assets so assistive technology exposes the right amount of information — and hides the rest. Distinguish decorative from informative icons, pick the correct ARIA pattern, and verify with real screen readers before handoff.
 
+## Standards Baseline (2026-05)
+
+- **WCAG 2.2** — W3C Recommendation since **2023-10-05**. Adds 9 new success criteria (focus appearance, dragging movements, target size 2.4.11, consistent help, redundant entry, accessible authentication). Note: **SC 4.1.1 Parsing is obsolete in WCAG 2.2** (modern browsers no longer require valid HTML for AT). Meeting 2.2 AA also satisfies 2.1 AA.
+- **WAI-ARIA 1.2** — W3C Recommendation since **2023-06-06**; current stable target.
+- **WAI-ARIA 1.3** — First Public Working Draft **2024-01-23**, still in Working Draft. New: `aria-description`, `aria-braillelabel`, `aria-brailleroledescription`, `suggestion` / `comment` / `mark` roles, multi-IDref `aria-details`. Do not depend on 1.3-only features in production until Candidate Recommendation.
+- **SC 1.4.11 Non-text Contrast** — meaningful icons require ≥ 3:1 against adjacent colors.
+- **SC 2.5.8 Target Size (Minimum)** — interactive icon targets ≥ 24×24 CSS px (AA); 44×44 (AAA, SC 2.5.5).
+
 ## Scope Boundary
 
 - **ink `a11y`**: ARIA attributes on SVG elements, `<title>` / `<desc>` authoring, decorative-vs-informative decision, focus management for interactive SVG controls, screen-reader verification notes.
@@ -140,6 +148,6 @@ Minimum before handoff: **NVDA + Firefox** and **VoiceOver + Safari**. Confirm t
 ## Handoff
 
 **To Prose:** the set of label strings per icon, in all supported locales.
-**To Artisan:** which ARIA attributes belong on the SVG vs on the wrapping component, keyboard activation contract for interactive SVG.
-**To Palette:** a11y audit checklist — announced names, focus order, keyboard operability, contrast for meaningful icons (≥ 3:1 WCAG 1.4.11).
+**To Artisan:** which ARIA attributes belong on the SVG vs on the wrapping component, keyboard activation contract for interactive SVG, WCAG 2.2 target-size (SC 2.5.8 ≥ 24×24 CSS px) and focus-appearance (SC 2.4.11) compliance.
+**To Palette:** a11y audit checklist — announced names, focus order, keyboard operability, contrast for meaningful icons (≥ 3:1 WCAG 1.4.11), target-size (WCAG 2.5.8).
 **To Showcase:** accessibility story per icon (decorative vs informative variants) plus axe-core snapshot for visual regression.

@@ -1,5 +1,20 @@
 # Ink Design Patterns
 
+## Icon Library Landscape (2026-05)
+
+| Library | Version (2026-05) | Style | Grid | Stroke | License | Notes |
+|---------|-------------------|-------|------|--------|---------|-------|
+| Lucide | 1.16.x | outline | 24×24 | 2px | ISC | 1600+ icons, Feather fork, official React/Vue/Svelte/Solid/Preact/Angular/Flutter wrappers |
+| Heroicons | 2.2.0 (2024-11) | outline / solid / mini / micro | 24/24/20/**16** | 1.5px outline | MIT | 4 styles incl. **Micro 16×16** (v2.1); React 19 support |
+| Phosphor Icons | 2.1 | thin/light/regular/bold/fill/duotone | 256×256 | tunable | MIT | 6 weights; +268 icons in 2.1 |
+| Tabler Icons | 3.44.x | outline + filled | 24×24 | 2px (1.5/1 variants) | MIT | 6,146 icons (2026-05) |
+| Material Symbols | Variable Font | outlined/rounded/sharp × FILL/wght/GRAD/opsz | 20-48 | axis-controlled | Apache 2.0 | 4 axes (FILL 0-100, wght 100-700, GRAD -50 to 200, opsz 20-48) |
+| Font Awesome | 7 (2025-07) | classic/sharp/duotone/sharp-duotone + new Jelly/Whiteboard/Notdog | 16×16 base | tunable | Free MIT + Pro | 4,500+ new icons in v7; Icon Wizard mix-and-match |
+| Iconify | aggregator | unified API | varies | varies | per-source | ~300k icons, 200+ icon sets |
+| Remix Icon | 4.x | outline + filled | 24×24 | 2px | Apache 2.0 | 3,000+ icons |
+
+**Rule**: prefer Lucide or Heroicons for stroke consistency in product UI; Material Symbols Variable Font for axis-controlled responsive icons; Iconify for cross-library aggregation in dashboards.
+
 ## SVG Icon Construction
 
 ### Basic Icon Template (24x24)
@@ -101,7 +116,8 @@ Rules:
 | Convert shapes to paths | Optionally for smaller output |
 
 ```bash
-# SVGO v4+: removeViewBox and removeTitle are disabled by default.
+# SVGO v4 (2024+): removeViewBox and removeTitle are disabled by default for
+# scalability and accessibility. Node.js >= 16 required.
 # Customize precision per use case: 1 for simple icons, 2-3 for complex illustrations.
 npx svgo input.svg -o output.svg --config='{"plugins":[{"name":"preset-default","params":{"overrides":{"convertPathData":{"floatPrecision":1}}}}]}'
 ```

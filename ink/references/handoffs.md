@@ -11,7 +11,9 @@ VISION_TO_INK_HANDOFF:
     style_direction: "[modern | playful | corporate | minimal]"
     mood: "[description]"
     color_palette: ["#hex1", "#hex2"]
-    reference_libraries: ["[Lucide | Heroicons | Phosphor | custom]"]
+    # 2026-05 typical reference libraries
+    reference_libraries:
+      - "[Lucide 1.16.x | Heroicons 2.2 | Phosphor 2.1 | Tabler 3.44 | Material Symbols VF | Font Awesome 7 | Iconify | custom]"
   request: "Create icon set matching this direction"
 ```
 
@@ -21,11 +23,14 @@ VISION_TO_INK_HANDOFF:
 MUSE_TO_INK_HANDOFF:
   source: Muse
   content:
+    # Prefer DTCG Design Tokens Format Module 2025.10 (W3C CG first stable, 2025-10-28).
+    # MIME application/design-tokens+json, files *.tokens.json.
+    token_format: "DTCG 2025.10"
     tokens:
-      color_primary: "[hex]"
-      color_secondary: "[hex]"
-      spacing_unit: "[px]"
-      border_radius: "[px]"
+      color_primary: "[hex | oklch]"
+      color_secondary: "[hex | oklch]"
+      spacing_unit: "[dimension token]"
+      border_radius: "[dimension token]"
     icon_context: "[where icons will be used]"
   request: "Align icon design with token system"
 ```
