@@ -163,3 +163,24 @@ Every remediation action must record:
 | `post_state` | System state after action |
 | `rollback_available` | Whether rollback is possible |
 | `verification_result` | Outcome of verification loop |
+| `investigation_source` | When the action originated from an autonomous investigation (Bits AI SRE, Azure SRE Agent, Wiz Green Agent, GitHub Copilot SRE flow), record agent name + investigation ID |
+
+---
+
+## Autonomous Investigation, Governed Remediation (2026 pattern)
+
+By 2026 the dominant industry pattern is **autonomous investigation + governed remediation**: AI agents are allowed to investigate, correlate, and *propose* fixes freely, but any state change still passes through the safety tiers above and — for code changes — through a pull request that humans approve.
+
+| External system | What it owns | What Mend owns |
+|------------------|--------------|------------------|
+| Datadog **Bits AI SRE** | Multi-signal investigation across metrics / logs / traces / RUM / Database Monitoring / Network Path / Continuous Profiler; correlation with recent changes and code | Translating the conclusion into a tier-classified action |
+| Datadog **Bits AI Dev** | Generating the code fix and opening the PR | Treating the PR as a T3 gate — the PR is *the* approval boundary |
+| **Azure SRE Agent** + GitHub Copilot | Self-healing pipeline orchestration (alert → investigate → propose → PR) | Executing reversible runtime actions (T1 / T2) that the agent recommends; deferring code changes through the PR gate |
+| **Wiz Green Agent** | Root-cause investigation for security risks; "Triage and Investigation agent" — millions of alerts reduced from ~30 min → ~60 s | Executing only what Wiz proposes; never auto-rotating credentials / IAM (always T4) |
+
+### Operating Rules
+
+1. **PR-as-safety-gate is non-negotiable.** Any agent-proposed code change passes through a pull request reviewed by a human before merge. The PR is the final tier control for the code path, regardless of the runtime tier of the runtime action.
+2. **Toil is removed from the loop; humans are not.** Mend's contribution is *removing friction* on tier-classified actions, not replacing approval on irreversible ones.
+3. **Investigation handoffs must carry: incident ID, the failing signal, the candidate root cause with confidence, and the proposed remediation tier-classified.** Reject any handoff missing one of those four fields — confidence without a tier prevents safety-gate routing.
+4. **Time-to-investigation, not time-to-fix, is the metric to optimise.** Wiz's published 30 min → 60 s number is a *triage* speedup; the remediation tier still gates the action.

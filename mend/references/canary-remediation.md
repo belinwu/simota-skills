@@ -105,6 +105,27 @@ Never canary with a cohort that cannot be reverted (anonymous users with no flag
 - Treating feature-flag flip as a substitute for canary traffic control, or vice-versa. They complement, not replace.
 - Auto-promoting on a T3 action. Promotion is always approval-gated; automation presents the decision, a human confirms.
 
+## Tooling Landscape (2026-05)
+
+| Tool | Pairs with | What Mend reads / writes |
+|------|------------|---------------------------|
+| **Argo Rollouts** | ArgoCD GitOps | Reads `AnalysisRun` results to know whether a gate failed; writes promotion or abort via the Rollout CRD; relies on `AnalysisTemplate` for the per-stage metric checks |
+| **Flagger** | FluxCD GitOps + service mesh (Istio / Linkerd / App Mesh / NGINX) | Reads canary state + metric provider results; writes hold / promote / rollback via the `Canary` CR; relies on `MetricTemplate` for promotion gates |
+| **Cloud-native progressive deploy** (GKE Cloud Deploy, AWS App Runner deployment policies, Azure Container Apps revisions) | Cloud-native CI/CD | Reads the platform's analysis output; writes promote / rollback through the platform API |
+
+Real-world calibration: Intuit's published Argo Rollouts setup uses an `AnalysisTemplate` that compares the canary against ~`47` metrics and requires three consecutive successful analysis windows before automatic promotion. Treat that as the upper bound for "robust gate"; the lower bound is the multi-SLI gate already specified above. Tooling cannot fix a single-metric gate.
+
+### Self-Healing Pipeline Alignment
+
+The 2026 self-healing-pipeline pattern (Datadog Bits AI SRE, Azure SRE Agent, Wiz Green Agent, GitHub Copilot SRE flows) externalises this loop:
+
+1. Incident or canary metric breaches a gate.
+2. An investigation agent autonomously gathers traces, logs, code-change context, and dependency health.
+3. The agent proposes a remediation — most often a **traffic-shift rollback** plus a candidate PR for the code fix.
+4. A human approves the rollback (or auto-approves under the T2 envelope above) and reviews the PR before merging.
+
+Mend `canary` is the executor of step 3 inside this loop: it does not invent the rollback strategy, but it must accept investigation handoffs that include cohort, gate that failed, and proposed action. Reject handoffs that omit any of the three.
+
 ## Handoff
 
 - **Triage ← Mend `canary`**: if the rollback signal is ambiguous (metric noise vs real regression), Triage adjudicates before Mend rolls back.

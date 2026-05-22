@@ -308,3 +308,75 @@ When multiple patterns match:
 2. Check for pattern dependencies (e.g., INFRA-001 may cause APP-001)
 3. Address root cause pattern first
 4. If equal confidence: address highest safety tier first (safer = first)
+
+---
+
+## 2026 Pattern Extensions
+
+The catalog above covers durable production incidents. The patterns below were added in 2026 as workload shapes shifted toward LLM-backed services, edge-resident compute, and AI-assisted investigation.
+
+### INFRA-005: LLM Provider Rate-Limit / Quota Breach
+
+| Field | Value |
+|-------|-------|
+| **Symptoms** | `429` / `529` from the model provider, p95 latency spikes only on LLM-call paths, retry-storm warnings in logs |
+| **Root Cause** | Tenant quota exceeded, regional capacity throttle, prompt-cache hit-rate collapse from a deploy that invalidated the cache prefix |
+| **Safety Tier** | T1 (failover to cheaper model) / T2 (route to fallback provider) |
+| **Confidence Factors** | +`30%` if provider status page reports throttling, +`20%` if cache hit-rate dropped >`30%` within `30` min, -`15%` if isolated to a single tenant |
+
+**Remediation Steps:**
+1. Check provider status + per-tenant quota dashboard.
+2. If quota: route low-priority traffic to a smaller model (`opus` → `sonnet`, `sonnet` → `haiku`) via the gateway flag (T1).
+3. If regional throttle: failover to the configured secondary provider (T2); update gateway routing.
+4. If cache-hit collapse: restore prefix prompt to the version pre-deploy, then bring the new prefix back gradually (T2).
+
+**Verification:** LLM error rate < `1%`, p95 latency back within `1.2x` baseline, prompt-cache hit-rate within `10%` of baseline.
+
+### APP-004: Retrieval / Vector-Index Stale or Corrupted
+
+| Field | Value |
+|-------|-------|
+| **Symptoms** | RAG answer-faithfulness drops (eval harness alerts), `Recall@5` < threshold, missing-citation count spikes |
+| **Root Cause** | Index rebuild failed mid-write, embedding model version drift, corpus update did not propagate to all replicas |
+| **Safety Tier** | T2 (reindex from last-known-good) / T3 (model version pin) |
+| **Confidence Factors** | +`30%` if `Recall@5` dropped > `20%` within an hour of a corpus job, +`20%` if embedding model version mismatch between read/write paths |
+
+**Remediation Steps:**
+1. Snapshot current index for forensics (T1).
+2. Pin embedding model to last-known-good version across read + write paths (T2).
+3. Trigger reindex from the latest validated corpus snapshot (T2).
+4. Hold canary on the new model version until eval harness re-passes (T2 — see `canary-remediation.md`).
+
+**Verification:** `Recall@5 ≥ 0.8`, `Faithfulness ≥ 0.8`, no missing-citation regressions for `30` min.
+
+### DEPLOY-004: Edge Worker Cold-Start Storm
+
+| Field | Value |
+|-------|-------|
+| **Symptoms** | Edge runtime p95 spikes at the top of every minute, increase in `522` / `523` from CDN, cache-miss rate jumps |
+| **Root Cause** | New worker version invalidated the V8 isolate pool, regional rollout pushed all workers cold at once |
+| **Safety Tier** | T2 (traffic-shift partial rollback) |
+| **Confidence Factors** | +`30%` if cold-start counter correlates with deploy timestamp, +`20%` if isolate count dropped to zero before recovering |
+
+**Remediation Steps:**
+1. Confirm cold-start counter spike vs deploy timestamp.
+2. Shift traffic back to the prior worker version regionally (T2 — see `canary-remediation.md`).
+3. Re-deploy with `0.5%` → `5%` → `25%` cohort ramp instead of a flat regional push (T2).
+
+**Verification:** Edge p95 within `1.2x` baseline, `522` / `523` rate back to baseline.
+
+### PROCESS-001: AI Investigation Handoff Incomplete
+
+| Field | Value |
+|-------|-------|
+| **Symptoms** | An autonomous investigation agent (Bits AI SRE, Azure SRE Agent, Wiz Green Agent) requested a remediation but the handoff omitted required fields |
+| **Root Cause** | Investigation agent did not classify the proposed action against the safety tier, or omitted the failing signal / cohort / candidate root cause |
+| **Safety Tier** | n/a — this is a **gate**, not a remediation |
+| **Confidence Factors** | n/a |
+
+**Remediation Steps:**
+1. Reject the handoff. Do not act.
+2. Reply with the missing fields explicitly (`safety_tier`, `failing_signal`, `cohort`, `candidate_root_cause_with_confidence`).
+3. Log the rejection so Lore can pattern-match repeated incompleteness from the same investigation source.
+
+**Verification:** Subsequent handoff carries all four required fields. See `safety-model.md` § "Autonomous Investigation, Governed Remediation".
