@@ -16,7 +16,7 @@ If the request is "package this workload for reuse" → `helm`. If it is "ship t
 
 | Resource | Required? | Notes |
 |----------|-----------|-------|
-| `Namespace` | ✓ | One namespace per team or per bounded context; never deploy to `default`. |
+| `Namespace` | ✓ | One namespace per team or per bounded context; never deploy to `default`. Label the namespace with `pod-security.kubernetes.io/enforce=restricted` (see Pod Security Standards below). |
 | `Deployment` | ✓ | `replicas: 2` minimum for anything fronted by a Service; single-replica only for non-HA jobs. |
 | `Service` | ✓ | `ClusterIP` by default; `LoadBalancer` only when ingress controller is absent. |
 | `Ingress` | conditional | Required when HTTP(S) is exposed outside the cluster. |
@@ -24,6 +24,46 @@ If the request is "package this workload for reuse" → `helm`. If it is "ship t
 | `Secret` | conditional | Prefer `ExternalSecrets` / CSI driver over raw `Secret` objects. |
 | `PodDisruptionBudget` | ✓ for HA | `minAvailable: 1` minimum for multi-replica workloads. |
 | `HorizontalPodAutoscaler` | conditional | Only after resource requests are realistic (see defaults below). |
+| `NetworkPolicy` | ✓ for prod | Default-deny ingress + explicit egress allowlist per namespace; required on any cluster running untrusted or multi-tenant workloads. |
+
+## Pod Security Standards (2026 baseline)
+
+By 2026, **Pod Security Admission (PSA) enforcing the `restricted` policy** is the default posture for new namespaces. Label every namespace explicitly — relying on the cluster-wide default has bitten too many teams:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payments
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+```
+
+The `restricted` policy in 2026 requires every Pod spec to set:
+
+```yaml
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: [ALL]
+```
+
+When the workload legitimately needs an escape (`hostNetwork`, `privileged`, write-able root FS), drop the namespace to `baseline` only with a written exception — never silently exempt workloads.
+
+For stronger admission-time validation (custom policies, image-signature requirements), wire **Kyverno** (or OPA Gatekeeper) at the cluster level — PSA covers the standard cases, Kyverno covers the rest.
 
 ## Label & Annotation Convention
 

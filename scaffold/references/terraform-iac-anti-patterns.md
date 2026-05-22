@@ -54,3 +54,12 @@ Contents:
 | `CI-02` | Console drift | scheduled drift detection |
 | `CI-03` | No policy gates | tfsec / Checkov / OPA / Sentinel in CI |
 | `CI-04` | `apply -auto-approve` in prod | manual approval in prod |
+
+## 2026 Engine / Feature Gaps
+
+| ID | Anti-pattern | Safer pattern |
+|----|--------------|---------------|
+| `ENG-01` | Mixing Terraform 1.14 and OpenTofu 1.9 in the same state path on the same project | Pick one engine per project; cross-engine state migrations require a clean `init` + verified diff, never an in-place switch |
+| `ENG-02` | Plaintext state on object storage (`encrypt = true` on the S3 backend only protects at-rest server-side, not against the bucket reader) | OpenTofu native client-side state encryption (AES-GCM + AWS KMS / GCP KMS); see `terraform-modules.md` |
+| `ENG-03` | Hardcoding sensitive values that should be `ephemeral` (Terraform 1.14+) — token bursts, just-in-time credentials, write-only secret material | Use Terraform `ephemeral` blocks so secrets never land in state; OpenTofu equivalent: `write-only` arguments where supported |
+| `ENG-04` | Hand-rolling helper logic in HCL that a provider-defined function could express | OpenTofu provider-defined functions; reuse community-published ones before authoring custom |
