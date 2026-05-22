@@ -9,7 +9,9 @@ Purpose: Transform a machine-readable OpenAPI specification into a human-readabl
 
 If the question is "should this field be required and what is its schema?" → `Gateway`. If the question is "the spec is finalized, now publish developer docs" → Scribe `api-doc`.
 
-Handoff direction: **Gateway → Scribe**. The OpenAPI 3.1 file is the source of truth; this reference documents what Gateway specified without re-deciding it.
+Handoff direction: **Gateway → Scribe**. The OpenAPI 3.x file is the source of truth; this reference documents what Gateway specified without re-deciding it.
+
+> **Spec version, 2026-05.** OpenAPI `3.2` is the current shipped version (released late 2025); the OpenAPI Initiative is working on `3.3` with explicit improvements to Security Schemes and tighter integration with MCP / AI protocols. Default to `3.2` for new projects; stay on `3.1` only when tooling has not caught up. AsyncAPI `3.1` is the equivalent baseline for event-driven and message-broker APIs.
 
 ## Renderer Selection
 
@@ -94,9 +96,41 @@ Every endpoint MUST ship with samples in **at least two languages**: `curl` plus
 - Shipping a changelog named `v2` with no date and no scope. Every entry MUST include the version, date, and Added / Changed / Deprecated / Removed bucket.
 - Inventing fields not in the spec. The spec is the source of truth; if a field is missing from the spec, fix the spec via Gateway, not the doc.
 
+## MCP Server Generation from the Spec (2026 baseline)
+
+As of 2026, the dominant integration pattern for an API that AI agents are expected to call is to generate an **MCP server** directly from the OpenAPI spec, then publish the agent-facing reference alongside the human-facing reference. MCP is supported across Claude, ChatGPT, GitHub Copilot, Cursor, VS Code, Windsurf, LangChain / LangGraph, CrewAI, and AutoGen, so a single MCP wrapper covers nearly the entire agent landscape.
+
+### Tooling Snapshot
+
+| Tool | Input | What you get | Use it when |
+|------|-------|--------------|-------------|
+| **Speakeasy** | OpenAPI 3.x | Typed MCP server + typed SDK + tool-design polish | Production-grade MCP from OpenAPI; you want LLM-friendly tool descriptions, not raw operation IDs |
+| **Stainless** | OpenAPI 3.x | Managed MCP server + multi-language SDKs | One spec, multiple distribution channels (MCP + SDKs) |
+| **FastMCP** | OpenAPI 3.x | Python MCP server | You already ship a Python backend; add MCP next to the existing FastAPI app |
+| **openapi-mcp-generator** (TS / Node) | OpenAPI 3.x | TypeScript MCP server with Zod validation, stdio + HTTP transports | Node-first stack; want to keep MCP server in the same repo as the API |
+| **DigitalAPI** | OpenAPI 3.x | One-click hosted MCP server | Need an MCP server fast without writing code |
+
+### Documentation Responsibilities Split
+
+| Surface | Audience | What it covers |
+|---------|----------|----------------|
+| Human API reference (Redoc / Mintlify / Scalar) | Developers | Per-endpoint detail, curl + SDK samples, error catalog, auth flow |
+| MCP tool reference | AI agents and their human reviewers | One *tool description* per MCP tool — name, when-to-call, parameter schema, expected output, idempotency, side-effect class |
+| Auth & permissions doc | Both | Same source of truth; reference from both sides |
+
+The MCP tool reference is **not optional** for an agent-callable API in 2026. Treat it as a first-class deliverable from Scribe `api-doc` — written in the same workflow, published alongside the human reference, regenerated on every spec change.
+
+### Tool-Description Discipline
+
+Pulled from Speakeasy / FastMCP best practice (2026):
+
+- Each MCP tool description must explain **when the agent should call this tool**, not just what the endpoint does.
+- Operations that are read-only must be tagged so the agent can call them under read-only auth without confirmation; write operations must declare their side-effect class (`creates`, `updates`, `deletes`, `external-effect`) so the agent's safety policy can gate them.
+- Auto-generation from OpenAPI is the starting point — review every tool description by hand. Raw `operationId` text is rarely a good tool name.
+
 ## Handoff
 
-- From `Gateway`: OpenAPI 3.1 spec finalized for a version → Scribe renders the reference.
+- From `Gateway`: OpenAPI 3.2 spec finalized for a version → Scribe renders the reference.
 - From `Scribe` SRS: SRS API sections reference the published doc by URL rather than restating endpoints.
 - To `Prose`: error message copy and onboarding text handed off for UX writing review.
 - To `Growth`: developer-portal landing page and SEO for public API docs.
@@ -104,7 +138,9 @@ Every endpoint MUST ship with samples in **at least two languages**: `curl` plus
 
 ## Citations
 
-- OpenAPI 3.1 Specification — https://spec.openapis.org/oas/v3.1.0
+- OpenAPI 3.2 Specification (2025-Q4 release) — https://spec.openapis.org/
+- AsyncAPI 3.1 Specification — https://www.asyncapi.com/docs/reference/specification/v3.1.0
+- Model Context Protocol (Anthropic) — https://modelcontextprotocol.io/
 - RFC 2119 — MUST / SHOULD / MAY for capability and error-handling language.
 - RFC 7807 — Problem Details for HTTP APIs (error response shape).
 - RFC 6749 / OAuth 2.1 draft — auth flow reference for OAuth-based APIs.

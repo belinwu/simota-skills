@@ -96,9 +96,28 @@ Chains longer than 3 deep on the same topic are a signal to write a `topic overv
 - To `Scribe` HLD/LLD: HLDs reference relevant ADRs by number rather than restating the decision.
 - To `Sherpa`: if the ADR triggers implementation work, decompose downstream tasks.
 
+## ADRs in the SDD Era (2026)
+
+When the codebase ships a Spec-Driven Development harness (Spec-Kit, cc-sdd, BMAD, Tessl, Kiro, OpenSpec) the ADR's role narrows: it documents the **architectural decision**, not the **project constitution**. The two are different artefacts and must not be conflated.
+
+| Artefact | Mutability | Scope | Read by |
+|----------|------------|-------|---------|
+| **ADR** | Immutable once Accepted; superseded by a new ADR | One named decision | Humans during code review; agents when the decision is cited by a PRD or HLD |
+| **`CLAUDE.md` / `AGENTS.md` (project constitution)** | Living document; PRs welcome | Org-wide / repo-wide conventions, testing policy, file layout, code-style non-negotiables | Every AI coding agent on every turn |
+| **PRD spec** | Versioned; usually replaced for the next iteration | One feature | Agent during `/specify`, `/plan`, `/tasks` |
+
+Rules of thumb:
+
+- A decision that affects *every* future PR (e.g., "this repo uses Postgres, not MySQL") belongs in **both**: an ADR that records the *decision* and a `CLAUDE.md` / `AGENTS.md` line that operationalises it for agents. The ADR explains *why*, the constitution tells the agent *what*.
+- A decision that affects only one feature (e.g., "for this onboarding flow we use a state machine") stays in the PRD or HLD, not in an ADR.
+- If you find yourself editing an Accepted ADR to keep `CLAUDE.md` in sync, you have miscategorised the change. Add a new ADR for the new decision, then bump `CLAUDE.md`.
+
+When a new ADR supersedes an old one, **also update the constitution line** that referenced the old decision — otherwise agents continue applying the obsolete rule until someone notices the drift in code review.
+
 ## Citations
 
 - Michael Nygard, *Documenting Architecture Decisions* (2011) — original Nygard format.
 - MADR 3.0 — https://adr.github.io/madr/
 - RFC 2119 — MUST / SHOULD / MAY keyword definitions.
 - ISO/IEC/IEEE 42010:2022 — architecture description practices, including rationale capture.
+- GitHub Spec-Kit (2026) and the cc-sdd / Kiro / BMAD ecosystems — for the constitution vs ADR vs spec separation summarised above.
