@@ -9,6 +9,16 @@ Purpose: canonical dbt layer structure, naming, materialization defaults, and te
 3. Materialization defaults
 4. Minimal templates
 5. Core tests
+6. 2026 engine baseline (dbt Fusion + Semantic Layer)
+
+## 2026 Engine Baseline
+
+- **dbt Fusion engine** (Rust-based, true SQL compiler) is now the recommended engine for new projects. Published benchmarks show it parses a `10,000`-model project up to `~30x` faster than dbt Core. Use it whenever the project is greenfield or the team is already migrating; stay on dbt Core only when third-party adapters have not been ported yet.
+- **Semantic Layer (new YAML spec)** embeds semantic-model definitions inside the corresponding model YAML — no more parallel `*.yml` directory for semantics. Measures are now expressed as simple metrics; deeply nested option blocks have been flattened into top-level keys.
+- **Data contracts** are first-class: a contract on a model enforces column names, data types, and constraints at build time, and Fusion blocks PRs that would break a contracted column without an explicit versioned migration.
+- **Model versions** pair with contracts to evolve schemas without breaking downstream — define `v1`, `v2` and let consumers migrate on their own cadence.
+
+These four pieces together — Fusion, embedded Semantic Layer YAML, contracts, model versions — are the 2026 production baseline. Greenfield projects should adopt all four from day one; legacy projects should migrate in the order: contracts on critical marts → model versions on changing tables → Semantic Layer flatten → Fusion engine.
 
 ## Layer Structure
 

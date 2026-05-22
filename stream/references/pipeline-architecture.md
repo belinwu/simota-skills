@@ -44,6 +44,19 @@ Use for lakehouse-style pipelines with progressive refinement:
 - `Silver`: cleaned and standardized
 - `Gold`: business-ready outputs
 
+### Open Lakehouse on Apache Iceberg (2026 default for new lakehouses)
+
+By 2026 the lakehouse table format conversation has converged on **Apache Iceberg**. Greenfield lakehouse projects should default to Iceberg unless a downstream engine forces Delta or Hudi. Snowflake, BigQuery, Databricks (via Uniform), Trino, Spark, Flink, ClickHouse, and DuckDB all read or write Iceberg in 2026, so the format is no longer a vendor-lock decision.
+
+Two adjacent 2026 shifts that pair with Iceberg-on-medallion:
+
+- **Kafka Iceberg Topics** (see `streaming-kafka.md`) expose closed Kafka segments as an Iceberg table on object storage, removing a copy-job step between Bronze and Silver for log-style data.
+- **dbt Fusion + Semantic Layer** (see `dbt-modeling.md`) sit above Gold to produce the metric-level contract surface, replacing one-off BI SQL.
+
+### Streaming Lakehouse (Iceberg + Flink) vs Kappa
+
+When the workload mixes long-history batch with short-history streaming, the 2026 pattern is **streaming lakehouse**: Iceberg is the system of record, Flink is the real-time processor, the same Iceberg tables are queried by Spark / Trino for batch. This is a *generalisation* of Kappa, not a replacement — use it when the team is willing to operate Iceberg + Flink and the question "what was the state at time T?" must be answerable from one place.
+
 ## ETL vs ELT
 
 | Aspect | ETL | ELT |

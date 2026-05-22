@@ -97,3 +97,19 @@ Operational guards:
 - use manual commit after successful processing
 - send poison pills to a DLT/DLQ
 - track consumer lag, throughput, error rate, rebalance frequency, disk usage, and under-replicated partitions
+
+## 2026 Platform Baseline
+
+- **KRaft mode (Zookeeper-free)** is the default for new clusters; ZooKeeper migration paths have been generally available since Kafka `3.9`. Dynamic KRaft quorums (Kafka `3.9+`) make controller-quorum changes operational rather than disruptive. Treat any new cluster on ZooKeeper in 2026 as a migration target.
+- **Tiered Storage** is production-ready (Kafka `3.9+`): hot, recent log segments stay on broker-local disk; closed segments offload to S3 / GCS / Azure Blob / HDFS via the broker's `RemoteStorageManager`. Operational implication: extend retention to weeks / months on cold storage without paying for matching broker disk, and treat broker disk as a working-set cache, not a long-term store.
+- **Iceberg Topics / Kafka-Iceberg integration**: the 2026 trend is to surface a Kafka topic as an **Apache Iceberg** table on object storage with zero-ETL and zero-copy semantics (Aiven Iceberg Topics, AutoMQ, WarpStream Iceberg-native flows). Caveat: only **closed segments** are exposed to Iceberg consumers, so this is **not** sub-second real-time — for that, keep a Flink / Kafka Streams consumer next to the broker. Use Iceberg-topic exposure when downstream is Spark / Trino / Flink batch and you want to skip a copy job.
+- **Flink as the real-time processor** is the 2026 default when the workload is more than stateless transforms. Kafka Streams remains appropriate for JVM-only, tightly-coupled topologies; Flink wins for cross-language and stateful workflows with strong watermark semantics.
+
+### When To Reach For Each Storage Tier
+
+| Need | 2026 default |
+|------|---------------|
+| Replay last `7 d` for incident recovery | Broker-local retention; standard Kafka |
+| Replay last `90 d+` for backfills | Tiered Storage with closed-segment offload to S3 / GCS / Azure Blob |
+| Run Spark / Trino / Flink batch on the same data without re-publishing | Iceberg Topics on object storage |
+| Sub-second stream-stream join over hours of state | Flink with RocksDB state backend (or Kafka Streams equivalent) — not Iceberg |
