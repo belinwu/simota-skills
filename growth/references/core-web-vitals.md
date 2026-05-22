@@ -1,5 +1,7 @@
 # Core Web Vitals Optimization Guide
 
+> **2026 baseline (CrUX):** Only ~48% of mobile origins pass all three Core Web Vitals; ~43% of sites still fail the INP < 200ms threshold at p75, making INP the most commonly failed CWV. LCP mobile pass rate sits around 52–62%; CLS has the highest pass rate. INP replaced FID as a Core Web Vital on 2024-03-12. Always treat CrUX/RUM as authoritative — Lighthouse-passing + CrUX-failing is the most common Growth blind spot. [Source: corewebvitals.io 2026 guide, https://www.corewebvitals.io/core-web-vitals; web.dev/articles/inp]
+
 ## LCP (Largest Contentful Paint) - Target: < 2.5s
 
 ### Optimize Hero Images
@@ -65,17 +67,44 @@ INP measures the worst interaction latency, decomposed into 3 phases:
 
 ### Reduce Input Delay: Break Up Long Tasks
 
+> **scheduler.yield() browser support (2026-05):** Chrome 129+ (stable since 2024-10), Firefox (since 2025-08), Edge 129+. **Safari has not implemented it** — ship a `setTimeout(0)` / MessageChannel polyfill for Safari users. Not yet Baseline. [Source: caniuse.com — Scheduler API: yield, https://caniuse.com/mdn-api_scheduler_yield]
+
 ```typescript
-// Use scheduler.yield() to yield to main thread between tasks
+// Use scheduler.yield() with a safe fallback for Safari and older browsers
+async function yieldToMain(): Promise<void> {
+  if ('scheduler' in window && 'yield' in (window as any).scheduler) {
+    return (window as any).scheduler.yield();
+  }
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
+
 async function processLargeDataset(items: string[]): Promise<void> {
   for (let i = 0; i < items.length; i++) {
     processItem(items[i]);
     // Yield every 50 items to keep input delay low
-    if (i % 50 === 0 && 'scheduler' in window) {
-      await (window as any).scheduler.yield();
-    }
+    if (i % 50 === 0) await yieldToMain();
   }
 }
+```
+
+### Diagnose with Long Animation Frames (LoAF) API
+
+LoAF shipped stable in **Chrome 123 (2024-03)** and is the recommended primary diagnostic for INP. Each LoAF entry exposes the slow rendering update's `scripts[]`, `renderStart`, `styleAndLayoutStart`, and `duration` so you can attribute INP to a specific script/source-location. Use it in production via `PerformanceObserver` (entry type `long-animation-frame`) — `longtask` is now considered legacy for INP diagnosis. [Source: Chrome for Developers — Long Animation Frames API, https://developer.chrome.com/docs/web-platform/long-animation-frames]
+
+```typescript
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries() as PerformanceLongAnimationFrameTiming[]) {
+    if (entry.duration < 50) continue;
+    const worstScript = entry.scripts.sort((a, b) => b.duration - a.duration)[0];
+    navigator.sendBeacon('/analytics', JSON.stringify({
+      loaf_duration_ms: entry.duration,
+      blocking_duration_ms: entry.blockingDuration,
+      source: worstScript?.sourceURL,
+      function: worstScript?.sourceFunctionName,
+      invoker: worstScript?.invoker,
+    }));
+  }
+}).observe({ type: 'long-animation-frame', buffered: true });
 ```
 
 ### Optimize Processing Time: Minimize Event Handlers
@@ -274,21 +303,26 @@ body {
 
 ## Performance Monitoring
 
+> **web-vitals v5 (2026-05):** Current line is **web-vitals 5.2.x** on npm. `onFID` was removed when INP officially replaced FID in 2024 — do not import it. Use `web-vitals/attribution` to ship LoAF-based INP attribution (`attribution.longAnimationFrameEntries`) for production debugging. [Source: GoogleChrome/web-vitals on npm, https://www.npmjs.com/package/web-vitals]
+
 ```typescript
-// Report Core Web Vitals
-import { onCLS, onFID, onLCP, onINP } from 'web-vitals';
+// Report Core Web Vitals — web-vitals v5+
+import { onCLS, onLCP, onINP, onTTFB, onFCP, type Metric } from 'web-vitals';
 
 function sendToAnalytics(metric: Metric) {
   const body = JSON.stringify({
     name: metric.name,
     value: metric.value,
+    rating: metric.rating, // good | needs-improvement | poor
     id: metric.id,
+    navigationType: metric.navigationType,
   });
   navigator.sendBeacon('/analytics', body);
 }
 
 onCLS(sendToAnalytics);
-onFID(sendToAnalytics);
 onLCP(sendToAnalytics);
 onINP(sendToAnalytics);
+onTTFB(sendToAnalytics);
+onFCP(sendToAnalytics);
 ```

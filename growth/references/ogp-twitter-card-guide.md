@@ -158,11 +158,24 @@ export function SEO({ title, description, image, url, type = 'website' }: SEOPro
 }
 ```
 
-## OG Image Specifications
+## OG Image Specifications (2026-05)
 
-| Platform | Card Type | Dimensions | Aspect Ratio |
-|----------|-----------|------------|--------------|
-| Facebook/LinkedIn | Standard | 1200 x 630 | 1.91:1 |
-| Twitter | summary_large_image | 1200 x 628 | 1.91:1 |
-| Twitter | summary | 144 x 144 (min) | 1:1 |
-| Slack/Discord | Standard | 1200 x 630 | 1.91:1 |
+| Platform | Card Type | Dimensions | Aspect Ratio | Notes |
+|----------|-----------|------------|--------------|-------|
+| Facebook | og:image | 1200 × 630 | 1.91:1 | ≤8MB |
+| LinkedIn | og:image | 1200 × 627 | 1.91:1 | LinkedIn caches aggressively — append `?v=` query to force refresh |
+| X (Twitter) | summary_large_image | 1200 × 675 (preferred) or 1200 × 628 | 1.91:1 | ≤5MB; JPG/PNG/GIF/WEBP. `cards-dev.twitter.com` deprecated 2022 |
+| X (Twitter) | summary | 144 × 144 (min) | 1:1 | Small thumbnail card |
+| Bluesky | og:image | 1200 × 630 | 1.91:1 | Renders summary_large_image equivalent via standard OGP |
+| Slack/Discord | og:image | 1200 × 630 | 1.91:1 | Discord truncates titles >256 chars |
+| Mastodon | og:image | 1200 × 630 | 1.91:1 | Caches via fediverse relays — expect 24-48h propagation |
+
+### Verification Tooling (2026)
+
+| Tool | Use |
+|------|-----|
+| Facebook Sharing Debugger (https://developers.facebook.com/tools/debug/) | Facebook + LinkedIn fallback verification, force re-scrape |
+| LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) | LinkedIn-specific cache flush |
+| X — post a scheduled/private tweet | Replaces deprecated Card Validator |
+| OpenGraph.xyz / opengraph.dev | Cross-platform preview |
+| Bluesky — paste URL in compose box | Manual preview check |

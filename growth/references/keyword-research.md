@@ -99,7 +99,7 @@ AI prompts are typically 12–40 words, much longer than typed search. Capture t
 
 | Factor | Weight | Notes |
 |--------|--------|-------|
-| Reach | volume × CTR-by-rank-target | Use 30% CTR for #1, 15% for #2, 10% for #3 in 2026 (post-AI-Overview adjusted) |
+| Reach | volume × CTR-by-rank-target | **2026 reality (AIO-present queries):** Seer Sept 2025 measured organic CTR collapse from 1.76% to 0.61% (-61%) on AIO queries; rebounded to 2.4% by Feb 2026. For non-AIO queries use ~30% CTR for #1, 15% for #2, 10% for #3. For AIO queries, separately model **Citation Rate** because being cited drives +35% organic clicks. [Source: Search Engine Land, https://searchengineland.com/google-ai-overviews-ctr-recovery-study-475566] |
 | Impact | $ value per visitor × intent multiplier | Transactional 5×, Commercial 3×, Informational 1× |
 | Confidence | 0.4 / 0.7 / 0.9 by difficulty | DR mismatch reduces; topical authority match increases |
 | Effort | content + linking + technical, in person-days | Conservative estimate |
@@ -178,8 +178,9 @@ A keyword research deliverable is complete when:
 
 - Google Search Quality Rater Guidelines (2024 update) — official intent definitions.
 - Andrei Broder, "A Taxonomy of Web Search" (2002) — original informational/navigational/transactional model.
-- Ahrefs Blog, *Keyword Research: A Step-by-Step Guide* (2025).
+- Ahrefs, *AI Overviews Reduce Clicks by 58%* (2025-12), https://ahrefs.com/blog/ai-overviews-reduce-clicks-update/
 - Aleyda Solis, *SEO Roadmap Methodology*.
-- Princeton GEO research (2024) — prompt patterns vs traditional queries.
-- Semrush *State of Search* (2025) — SERP feature distribution.
-- Backlinko CTR study (2024) — post-AI-Overview CTR-by-rank curves.
+- Aggarwal et al., *GEO: Generative Engine Optimization* (SIGKDD 2024 / arXiv:2311.09735) — citation patterns vs traditional queries.
+- Seer Interactive AIO CTR studies (Sept 2025, Feb 2026 update) — post-AI-Overview CTR curves.
+- Semrush AIO prevalence study 2025 — appears in ~13% of queries (Nov 2025: 15.69%).
+- Tinuiti, *AI Citations Trends Q1 2026* — Reddit as growing AI-cited source post-Google×Reddit deal (2024-02).

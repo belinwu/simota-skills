@@ -4,6 +4,11 @@
 
 Diagnose technical and structural issues that block traffic regardless of content quality. A page-level meta fix wastes effort if the site is uncrawlable, mis-indexed, or topologically incoherent. The audit produces a prioritized backlog, not a 200-row spreadsheet of findings.
 
+> **2026 audit pressure points:**
+> - **Google March 2026 Core Update** rolled out 2026-03-27 alongside a paired Spam Update (fastest spam update ever, completed in <20 hours). Both target AI-generated content lacking human editorial oversight via an upgraded SpamBrain (analysts attribute Gemini 4.0 Semantic Filter signals). 73% of top YMYL pages now display detailed author credentials, up from 58% pre-update. Audits must include AI-content authorship and E-E-A-T credential coverage. [Source: Search Engine Land / PPC.land coverage of March 2026 update, https://ppc.land/googles-march-2026-spam-update-is-live-what-changed-and-why-it-matters/]
+> - **FAQ rich results retired** (Jun 2026 — Rich Results Test support removed, Aug 2026 — Search Console API). FAQPage schema still parses for AI Overviews / ChatGPT / Perplexity citation. Audit existing FAQ markup for **schema-content consistency**, not rich-result eligibility. [Source: Search Engine Land, https://searchengineland.com/google-to-no-longer-support-faq-rich-results-476957]
+> - **Schema.org v30.0** released 2026-03-19 (823 types), expanded credential / e-commerce / supply-chain schema for AI verification. [Source: https://schema.org/docs/releases.html]
+
 ## Scope Boundary
 
 - IN scope: crawlability, indexability, site architecture, internal linking, content gap, log-file analysis (Googlebot + AI bots), schema coverage, hreflang, canonical hygiene, redirect chains.
@@ -36,7 +41,11 @@ Audit in this order. Lower layers gate upper layers; do not optimize content on 
 | Redirect chains | All chains ≤ 1 hop |
 | Soft 404 | Empty / boilerplate pages return 404, not 200 |
 
-Important AI-bot distinction: training bots (GPTBot, ClaudeBot, Google-Extended) and search/retrieval bots (OAI-SearchBot, Claude-SearchBot, ChatGPT-User, Claude-User, PerplexityBot) require different policy decisions. Blocking training bots does not affect AI-search citation. Blocking search/retrieval bots removes you from AI-search results.
+Important AI-bot distinction: training bots (GPTBot, ClaudeBot, Google-Extended, Applebot-Extended) and search/retrieval bots (OAI-SearchBot, Claude-SearchBot, ChatGPT-User, Claude-User, PerplexityBot, Perplexity-User) require different policy decisions. Blocking training bots does not affect AI-search citation. Blocking search/retrieval bots removes you from AI-search results.
+
+Anthropic publishes a **four-bot taxonomy** (confirmed 2026-05): `ClaudeBot` (training), `Claude-SearchBot` (search index/retrieval), `Claude-User` (user-initiated fetch from Claude.ai), `claude-code` (Claude Code CLI WebFetch). Control each independently. [Source: ALM Corp, https://almcorp.com/blog/anthropic-claude-bots-robots-txt-strategy/]
+
+**Do not rely on llms.txt**: SE Ranking found ~10.13% adoption across 300k domains but GPTBot, ClaudeBot, OAI-SearchBot, Claude-SearchBot, PerplexityBot, Google-Extended overwhelmingly skip `/llms.txt` and crawl HTML directly. No major AI vendor has publicly committed to honoring llms.txt as of Q1 2026. [Source: AEO Press, https://www.aeo.press/ai/the-state-of-llms-txt-in-2026]
 
 ### L2 Indexability Checks
 

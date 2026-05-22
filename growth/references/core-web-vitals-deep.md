@@ -47,7 +47,7 @@ INP = the slowest interaction's full latency: `processingStart - eventTime` + `p
 | Processing Time | Event handler too slow | Move work off main thread (Web Workers); memoize; virtualize lists |
 | Presentation Delay | Layout / paint after handler | Use `content-visibility: auto`; isolate paint with `contain` |
 
-Tooling: `PerformanceObserver` + `event` entries with `interactionId` (Event Timing API). Web Vitals JS library v3+ exposes `attribution.eventTarget` for the worst interaction.
+Tooling (2026-05): use **Long Animation Frames (LoAF) API** (stable since Chrome 123, 2024-03) as the primary INP root-cause tool — each LoAF entry exposes the offending `scripts[]` array with `sourceURL`, `sourceFunctionName`, `invokerType`, and `forcedStyleAndLayoutDuration`. Web Vitals JS **v5.x** (`web-vitals/attribution`) auto-attaches `attribution.longAnimationFrameEntries` to every INP report — this is the recommended production pathway. The older `longtask` entry type is now legacy for INP diagnosis. [Source: Chrome for Developers — Long Animation Frames API, https://developer.chrome.com/docs/web-platform/long-animation-frames]
 
 ### CLS Root Causes
 
@@ -97,7 +97,7 @@ Audit with `requestIdleCallback` deferral, async loading, facade pattern (load s
 
 #### INP
 
-- **Long tasks**: split tasks > 50 ms. Use `scheduler.yield()` (Chromium-supported) or `await new Promise(r => setTimeout(r, 0))`.
+- **Long tasks**: split tasks > 50 ms. Use `scheduler.yield()` (Chrome 129+ stable, Firefox since 2025-08; **Safari has not implemented** — polyfill with `setTimeout(0)`). Diagnose with LoAF API, not the legacy `longtask` entry type.
 - **Hydration**: progressive / partial / island hydration (Astro, Qwik, Marko, modern Next.js). Avoid full-page hydration on content sites.
 - **Re-render storms**: in React, memoize, split state, use `useDeferredValue` and `useTransition`.
 - **Heavy main-thread work**: move to Web Workers (`postMessage` JSON or `Comlink`).

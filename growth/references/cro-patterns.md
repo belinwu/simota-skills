@@ -1,5 +1,22 @@
 # CRO (Conversion Rate Optimization) Patterns
 
+## 2026 Benchmarks (CRO planning baseline)
+
+| Metric | 2026 figure | Source |
+|--------|------------|--------|
+| Average landing-page conversion (all industries) | **4.6%** (top 10% ≥ 11.5%) | searchlab.nl 2026 CRO stats |
+| E-commerce conversion | 1–4% typical, 5%+ high-performer | crobenchmark.com |
+| Cart abandonment (all e-comm) | **70–72%** (mobile 73–75%, desktop 65–68%) | Baymard 2026 |
+| Top abandonment reasons | High shipping cost **49%**, account required **24%** | Baymard |
+| Form fields → conversion | 3 fields **23.1%**, 5 fields **17.0%**, 7 fields **11.4%**, 10+ fields **6.9%** | digitalapplied.com 2026 |
+| Multi-step vs single-page form | **+14%** for multi-step | digitalapplied.com 2026 |
+
+[Source: Baymard Institute — *Cart Abandonment Rate 2026*, https://baymard.com/lists/cart-abandonment-rate]
+[Source: Searchlab — *CRO Statistics 2026*, https://searchlab.nl/en/statistics/conversion-optimization-statistics-2026]
+[Source: Digital Applied — *Form Conversion Rate Benchmarks 2026*, https://www.digitalapplied.com/blog/form-conversion-rate-benchmarks-2026-data-points]
+
+> **Tooling note (2025-09):** OpenAI acquired **Statsig for $1.1B** (all-stock) on 2025-09-02, with founder Vijaye Raji becoming OpenAI's CTO of Applications. Statsig continues to operate independently for external customers, but expect roadmap drift toward OpenAI-centric features; teams locked into Statsig should monitor pricing and Enterprise SLAs. Alternatives: GrowthBook (OSS), Optimizely Feature Experimentation, LaunchDarkly, Eppo, VWO. [Source: CNBC, https://www.cnbc.com/2025/09/02/openai-buys-statsig-for-1point1-billion-hires-ceo-as-applications-exec.html]
+
 ## CTA Best Practices
 
 | Element | Best Practice | Example |
@@ -34,11 +51,11 @@ document.addEventListener('mouseout', (e) => {
 - Testimonials: Quote with photo and name
 - Rating: "4.8/5 from 500+ reviews"
 
-## 2025 CRO Trends
+## 2026 CRO Trends
 
 ### AI-Powered Personalization
 
-Dynamically optimize content per user segment in real time (reported up to 200% conversion lift in e-commerce).
+Dynamically optimize content per user segment in real time. AI search visitors convert at ~4.4× the rate of traditional organic search traffic — segment AI-referred visitors and serve high-intent CTAs first. Reported up to 200% conversion lift in e-commerce when combined with funnel-stage personalization.
 
 ```typescript
 interface UserSegment {
