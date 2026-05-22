@@ -32,6 +32,24 @@ Not all proof is equal. Rank by strength; place strongest where skepticism is hi
 
 **Rule:** use the strongest available signal for the highest-skepticism moment (hero fold, pricing section, final CTA). Degrade gracefully only after.
 
+### GEO Signal Weight (Generative Engine Optimization, 2026)
+
+The 2026 generative engines (ChatGPT, Perplexity, Claude, Gemini, Google AI Overviews) summarise LPs to answer queries elsewhere. The trust-signal hierarchy above maps roughly to **which signals are likely to survive the summarisation** and be quoted in the AI answer:
+
+| GEO survival | Signal pattern | Reason |
+|---------------|------------------|---------|
+| Likely cited | Named testimonial with quantitative outcome (rank 1) + statistic with named source | The engine treats "[number] — [source]" as an extractable fact |
+| Often cited | Third-party review aggregation with provider name (G2 / Trustpilot / Capterra rating) | Aggregator + score is parseable structured data |
+| Rarely cited | Logo bar without context, vanity awards, anonymous testimonials | No verifiable string for the engine to lift |
+| Hurts citation | Vague superlatives ("the leading…", "best-in-class") without attribution | Marketing-tone phrases get filtered out as boilerplate |
+
+Practical rules for AI-citable trust signals:
+
+- Pair every aggregate stat with the source ("`4.7` on G2 across `450` reviews" — not "`4.7` rating").
+- Pair every customer outcome with `name + title + company + a number` so the AI engine has a verbatim citation candidate.
+- Ship trust signals as plain text + structured data (`Review`, `AggregateRating`, `Organization` schema.org JSON-LD) — the engines parse both, but JSON-LD survives layout changes better than HTML scraping. See `growth/references/...` for the schema fields.
+- 2026 reference data point: sites present on `4+` review platforms are `~2.8x` more likely to appear in ChatGPT recommendations.
+
 ## Placement Map by LP Section
 
 ```

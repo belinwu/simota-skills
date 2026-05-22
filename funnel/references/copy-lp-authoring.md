@@ -2,6 +2,11 @@
 
 Purpose: Author LP copy that converts — headline, hero body, value prop, benefit blocks, microcopy. Copy is the LP's load-bearing element; layout is scaffolding for words. This reference covers headline formulas (PAS / BAB / 4U), hero-section copy anatomy, value-prop clarity tests, microcopy patterns (button text, tooltips, helper text), readability targets, and LP-context tone and voice.
 
+> **2026 traffic mix: LPs are read by AI agents, not only humans.** A meaningful share of LP visits comes from generative engines (ChatGPT, Perplexity, Claude, Gemini, Google AI Overviews) summarising the page to answer a user query elsewhere. Published 2025–2026 retail data shows AI-driven traffic up `~693%` YoY and ChatGPT referrals converting `~31%` higher than non-branded organic. Two implications for LP copy:
+>
+> 1. **Lead with the answer.** The headline + sub-head + first benefit block must be self-contained enough to be quoted verbatim by an AI engine without context. PAS / BAB / 4U formulas still apply; the cut-off for "summarisable answer" is the first 80–120 visible words.
+> 2. **Attribute every claim.** Statistics need a named source, testimonials need a real name + title + company. Unsourced claims are silently demoted by AI summarisers and never make it into the citation. See `trust-signal-placement.md` for the source-attribution rules.
+
 ## Scope Boundary
 
 - **Funnel `copy`**: LP headline, sub-head, hero body, benefit-block copy, section-level framing, CTA label drafting, and microcopy shells authored to conversion goals.

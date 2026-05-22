@@ -2,6 +2,11 @@
 
 Purpose: Design LP-context forms that maximize completion without eroding lead quality. Every field is a conversion tax — quantify it, justify it, or cut it. This reference covers field minimization, progressive disclosure, autofill/password-manager cooperation, real-time validation, error-prevention patterns, and submit-button friction specifically for LPs (lead gen, signup, download, trial).
 
+> **2026 traffic mix: passkey + AI agent flows are baseline.** Two shifts to factor into form design:
+>
+> 1. **Passkey-first signup** is now table-stakes for consumer LPs. Offer "Sign in with passkey" alongside email + password, prefer it for first-time creation when the platform supports it (`navigator.credentials` WebAuthn). Email-only fallback remains for cross-device portability.
+> 2. **AI shopping / agent-driven flows** convert at higher rates than non-branded organic (ChatGPT referrals `~31%` higher in 2025–2026 retail data). Forms reached by an AI agent on the user's behalf must auto-fill cleanly from structured data the agent already has — that means the same machine-readable `autocomplete` + ARIA discipline as in the autofill section below, applied as a hard requirement rather than a nice-to-have.
+
 ## Scope Boundary
 
 - **Funnel `form`**: LP form spec (field count, step split, validation strategy, submit-button value prop, autofill contract).
