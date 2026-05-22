@@ -84,6 +84,16 @@ Deci & Ryan's framework identifies three innate psychological needs:
 | **Competence** | Feeling of mastery and growth | Clear progression, skill development, difficulty curve |
 | **Relatedness** | Feeling of connection | Co-op, guilds, shared experiences, narrative bonds |
 
+### 2024-2025 SDT-in-Games Research Notes
+
+Recent peer-reviewed work continues to validate SDT as the dominant motivation framework for game design:
+
+- **Serious games + intrinsic motivation (2025)**: A 2025 quasi-experimental study (PMC PMC12604561) on traditional Chinese culture education found that serious-game designs deliberately targeting autonomy (diversified learning-resource presentation + player-choice), competence (calibrated challenge curves), and relatedness (relationship-integrated narrative framing) significantly improved learners' intrinsic motivation, academic achievement, and cultural identity vs. control groups.
+- **Competition as need-frustration (2025)**: SDT-guided research (PMC PMC12412733) found that "to the extent that competition distracts attention from the game itself or frustrates basic psychological needs, it tends to undermine intrinsic motivation and well-being." Pure-competitive ranked systems risk eroding autonomy when they impose external pressure ("must climb") that overrides intrinsic enjoyment.
+- **Gamification + rigid structure (2024 Springer)**: When individuals find themselves in rigidly structured environments — e.g., daily-quest grids, mandatory login streaks — intrinsic motivation is **undermined due to diminished autonomy**. This aligns with the gameplay-loop "compulsion vs healthy engagement" boundary.
+
+**Quest design rule (2026)**: When auditing a feature against SDT, ask not only "does this satisfy autonomy / competence / relatedness?" but also **"does the feature's structure preserve these needs over a 30-day play horizon, or does it gradually convert intrinsic motivation into external compliance?"** The latter is the 2024-2025 research's main contribution to game design practice.
+
 ### SDT Application Guidelines
 
 - **Autonomy**: Offer 2-3 meaningful choices per decision point. Forced linearity undermines autonomy.

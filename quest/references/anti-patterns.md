@@ -126,6 +126,21 @@ For every Quest deliverable, verify:
 
 ### Ethics
 - [ ] Dark patterns flagged and disclosed
-- [ ] Child protection measures if applicable
+- [ ] Child protection measures if applicable (Brazil ECA Digital effective 2026-03-17 bans loot-box sale to under-18s with penalties up to R$ 50 M / 10% of Brazilian revenue, enforced by ANPD)
 - [ ] Spending limits and transparency for monetization
 - [ ] Variable-ratio rewards used responsibly with alternatives
+- [ ] Probability disclosure compliant with South Korea GIPA — December 2025 amendment authorises **immediate surcharge** up to 3% of annual sales / KRW 1 billion (~USD 700K) at moment of violation discovery; no more grace-period corrective recommendations
+- [ ] PEGI 2026-06 reform considered: any "paid random items" mechanic forces minimum PEGI 16; NFT / blockchain → automatic PEGI 18; daily-quest / login-streak return-pressure → minimum PEGI 7. ESRB has declined to follow, so EU rating may diverge from North America for the same title
+- [ ] Generative-AI content pipeline carries a human-review gate (52% of GDC 2026 SOTI respondents view generative AI as negative for the industry, up from 30% in 2025 and 18% in 2024 — "gameslop" reputational risk)
+
+---
+
+## 2026 Regulatory & Industry Anti-Patterns (added 2026-05)
+
+| Pattern | Description | Prevention |
+|---------|-------------|------------|
+| **PEGI-blind monetisation** | Designing for PEGI 3/7 audience while including paid random items, NFTs, or time-limited offers | Audit every monetisation feature against PEGI 2026-06 interactive-risk-categories table before locking the target age band |
+| **Korea grace-period assumption** | Assuming the 2024 GIPA "corrective recommendation first" approach still applies | Treat probability disclosure as zero-tolerance from go-live; budget for KRW 1 billion / 3%-of-revenue surcharge exposure in risk register |
+| **Brazil minor-access denial** | Claiming a game with loot boxes is "not aimed at minors" while it is "likely to be accessed by them" | Apply ECA Digital scope test: if the game can be reasonably accessed by under-18s in Brazil, loot-box sale is banned regardless of nominal target audience |
+| **Uncurated generative-AI content** | Shipping AI-generated assets without aesthetic / safety / coherence review | Pair every AI tool recommendation with a human curation budget; audit against the "gameslop" reputational-risk pattern surfaced at GDC 2026 SOTI |
+| **Post-Epic iOS confusion** | Treating App Store rules as unchanged for U.S. storefront after 2025-04-30 ruling | Document external-payment-link strategy and remaining IAP requirement explicitly; non-U.S. storefronts retain old commission structure |

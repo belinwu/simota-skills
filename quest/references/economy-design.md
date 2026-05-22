@@ -117,13 +117,14 @@ P(getting item by pull N) = 1 - Π(1 - rate_i) for i=1..N  # with escalating pit
 
 ### Ethical Gacha Guidelines
 
-- [ ] Display exact probabilities for all outcomes
-- [ ] Implement pity/spark system (hard pity ≤ 200 pulls recommended)
+- [ ] Display exact probabilities for all outcomes (mandatory under South Korea GIPA 2024 + December 2025 immediate-surcharge amendment; recommended by Japan METI / CESA self-regulation; required for PEGI 16 transparency from 2026-06)
+- [ ] Implement pity/spark system (hard pity ≤ 200 pulls recommended; 2026 market norms: Genshin Impact 90 / Wuthering Waves 80 for character banner)
 - [ ] Show pull history and pity counter
-- [ ] No "bait and switch" — featured items must have stated rates
+- [ ] No "bait and switch" — featured items must have stated rates (50/50 mechanic must be documented; Wuthering Waves' "no 50/50 on weapon banner + cross-banner pity carryover" is the 2026 player-favourable reference)
 - [ ] Allow earning gacha currency through gameplay (not just purchase)
-- [ ] Age-gate and spending limits for minors
+- [ ] Age-gate and spending limits for minors. **Brazil ECA Digital (Lei 15.211/25) effective 2026-03-17 bans loot-box sale to under-18s; penalties up to R$ 50 M / 10% of Brazilian revenue**
 - [ ] No limited-time-only items that create FOMO pressure
+- [ ] Apply PEGI 2026-06 reform impact: any gacha mechanic forces minimum PEGI 16, which excludes the under-16 EU audience entirely. Confirm publisher acceptance before locking the model
 
 ---
 
@@ -174,6 +175,16 @@ P(getting item by pull N) = 1 - Π(1 - rate_i) for i=1..N  # with escalating pit
 - **Problem**: Loot boxes provided gameplay advantages (P2W)
 - **Result**: Massive backlash, government investigations, legislation changes
 - **Lesson**: P2W + loot boxes = regulatory and reputational risk
+
+### Belgium Loot-Box Ban Enforcement Gap (2018–2025)
+- **Problem**: Belgium banned paid loot boxes in 2018, but 82% of top-100 iPhone games in Belgium still generated revenue via randomised monetisation (TheGamer / GameRant 2024-2025 studies). The Belgian Gaming Commission admitted in December 2024 that "this generalized ban proved difficult to enforce".
+- **Result**: The Antwerp Enterprise Court ruled in **LS v Apple** on 2025-01-16, opening platform-operator (Apple) liability for distributing loot-box games into a Belgian market. Flemish Parliament committee discussions followed in January and March 2025.
+- **Lesson**: Even where enforcement has historically been weak, court rulings can pivot platform-level liability suddenly. Don't bet a launch on lax enforcement of an existing ban — model the platform-operator-liability scenario.
+
+### Roblox 2026 Adult Pivot
+- **Problem (opportunity)**: Roblox identified the over-18 cohort as its largest untapped growth segment; only 26% of age-checked users were over 18 in early 2026, but U.S. over-18 users monetised >50% higher than under-18 users, and the 18-34 cohort grew >50% YoY.
+- **Result**: 2026-04 announcement; effective 2026-06-08, Roblox raised the Developer Exchange (DevEx) rate by **42%** for in-game spend from age-checked U.S. 18+ players (effective creator earnings 26.6% → **37.8%**). Requires R15 avatars and supports a new recurring-subscription model. In 2025 Roblox creators earned over USD 1.5 B via DevEx.
+- **Lesson**: Age-segmented monetisation can unlock significant developer revenue, but only when paired with platform-enforced age verification. Don't design adult-targeted economies without verifiable age gating.
 
 ---
 

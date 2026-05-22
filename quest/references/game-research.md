@@ -18,13 +18,14 @@ Purpose: Use this file when conducting competitive game analysis, market researc
 
 | Tier | Source type | Default reliability |
 |---|---|---:|
-| Tier 1 | official store pages (Steam, PS Store, eShop), official websites, press releases | `0.90` |
-| Tier 2 | review aggregators (Metacritic, OpenCritic), industry media (Game Developer, IGN, Eurogamer) | `0.75-0.85` |
+| Tier 1 | official store pages (Steam, PS Store, eShop), official websites, press releases, official platform-holder regulatory filings | `0.90` |
+| Tier 2 | review aggregators (Metacritic, OpenCritic), industry media (Game Developer, IGN, Eurogamer, GamesIndustry.biz, PocketGamer.biz) | `0.75-0.85` |
 | Tier 3 | community sources (Reddit r/gamedesign, Steam Community, Discord, Twitter/X) | `0.60-0.65` |
-| Tier 4 | postmortems & academic (GDC Vault, Gamasutra/Game Developer postmortems, game studies journals) | `0.80-0.90` |
+| Tier 4 | postmortems & academic (GDC Vault, GDC State of the Game Industry survey, Game Developer postmortems, game studies journals, PMC peer-reviewed) | `0.80-0.90` |
+| Tier 5 (added 2026-05) | regulator / law-firm analysis (METI, EU Commission DFA portal, GRAC, ANPD, Belgian Gaming Commission, Kim & Chang, Freshfields, Taylor Wessing, DLA Piper) | `0.90` |
 
 Rules:
-- start with Tier 1 for factual claims (release dates, platforms, features)
+- start with Tier 1 / Tier 5 for factual claims about regulation, release dates, platforms, features
 - Tier 4 carries high reliability for design insights but may be dated — note publication year
 - use Tier 3 for signal generation and sentiment, not as sole proof
 - when sources conflict, report the disagreement explicitly with tier labels
@@ -104,6 +105,9 @@ Rules:
 - [ ] Emerging subgenres or hybrid genres
 - [ ] Successful recent releases in genre
 - [ ] Steam Next Fest / showcase performance
+- [ ] Platform-shift signal (e.g., Nintendo announced 2025-11 it is shifting primary development focus to Switch 2; Switch 2 sold over 3.5 M units in the first 4 days post-2025-06-06 launch — fastest Nintendo hardware ramp; FY2026 target ~15 M units)
+- [ ] Steam scale check (peak concurrent users **42,042,778 on 2026-01-11**; MAU 147 M in 2025; 2025 revenue ~USD 16.2 B through November per SQ Magazine / SteamDB)
+- [ ] Subscription channel posture (Xbox Game Pass Ultimate dropped to EUR 20.99/month in 2026-04; Game Pass Ultimate now bundles Ubisoft Classics; Apple Arcade remains ecosystem-locked)
 ```
 
 ### Community
@@ -304,3 +308,21 @@ Web tools are not available. Please provide data for the following:
 2. [Suggested search query for market data]
 3. [Suggested search query for design references]
 ```
+
+---
+
+## 2026-05 Industry Snapshot (cite when grounding strategic discussion)
+
+| Signal | Value | Source (Tier) |
+|--------|-------|----------------|
+| GDC 2026 SOTI — generative-AI negative sentiment | **52%** of pros (up from 30% in 2025, 18% in 2024); positive sentiment fell to 7% from 13% | GDC 2026 SOTI report (T4) |
+| Layoffs (past 2 years) | 28% of all SOTI respondents, **33% of US-based**; ~45,000 jobs 2022→2025-07; 14,600 in 2024 alone | GDC 2026 SOTI + PC Gamer / Variety / GameDev Reports (T2/T4) |
+| Student concern | 74% of game-design students concerned about job prospects | GDC 2026 SOTI (T4) |
+| US union support | 82% of US-based respondents support unionisation | GDC 2026 SOTI (T4) |
+| AAA layoff prevalence | 2/3 of AAA-studio respondents reported their company conducted layoffs in the past 12 months | GDC 2026 SOTI (T4) |
+| Steam peak CCU | **42,042,778** on 2026-01-11 (previous record 41,666,455 on 2025-10-12) | SteamDB / Icon Era (T1/T2) |
+| Steam revenue 2025 | ~USD 16.2 B through November 2025; record USD 1.6 B in December alone | SQ Magazine / SteamDB (T2) |
+| Nintendo Switch 2 launch | 2025-06-06; **3.5 M+ units in first 4 days**; FY2026 target ~15 M units; primary dev focus shift announced 2025-11 | Nintendo IR / Wikipedia (T1) |
+| Roblox DevEx (18+) | +42% rate for age-checked 18+ U.S. spend effective 2026-06-08; 26.6% → 37.8% effective creator share; R15 required; new subscription model | Roblox newsroom 2026-04 (T1) |
+
+This snapshot supersedes pre-2025 figures. Re-pull annually around February (GDC SOTI typical release window).

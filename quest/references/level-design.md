@@ -151,6 +151,8 @@ Procgen ≠ random. Good procgen uses:
 
 References: *Spelunky* (Yu), *Hades* (Supergiant), *Slay the Spire* node-graph generator, *Diablo* dungeon BSP.
 
+**Generative-AI level generation (2026 caveat)**: 52% of GDC 2026 State of the Game Industry respondents view generative AI as having a negative industry impact (up from 30% in 2025, 18% in 2024); only 7% positive. Treat any AI-generated layout as an unqualified candidate that must pass the same beat-sheet, signposting, encounter-density, soft-lock, and pacing-budget audits as a handcrafted level. AI-assisted modulation of authored modules (parameter sweep, decorator pass, distribution sampling) is healthier than full-stack AI generation. Always pair AI-assisted level pipelines with explicit human curation gates and aesthetic-coherence checks to avoid the "gameslop" reputational pattern.
+
 ### Tutorial Integration
 
 Levels teach. Implicit tutorials beat tutorials-as-text:

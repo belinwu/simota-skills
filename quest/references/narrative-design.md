@@ -163,16 +163,30 @@ Hook → Context → Travel → Challenge → Twist → Resolution → Reward �
 
 ---
 
-## Narrative Design Tools
+## Narrative Design Tools (2026-05 Update)
 
-| Tool | Type | Best For |
-|------|------|----------|
-| **Twine** | Free, web-based | Prototyping branching narratives |
-| **Ink (Inkle)** | Scripting language | Unity integration, complex branching |
-| **Arcweave** | Visual editor | Team collaboration, complex stories |
-| **Articy:Draft** | Professional suite | Large-scale production, localization |
-| **Yarn Spinner** | Unity tool | C# integration, dialogue trees |
-| **Chat Mapper** | Visual editor | Cinematic dialogue, voice acting pipelines |
+| Tool | Type | Best For | 2026 Status |
+|------|------|----------|-------------|
+| **Twine** | Free, web-based | Prototyping branching narratives | 2.x line still standard for prototyping |
+| **Ink (Inkle)** | Scripting language | Unity / Unreal integration, complex branching | **AAA credibility achieved 2025**: *Vampire: The Masquerade — Bloodlines 2* shipped using Ink. The Chinese Room (developer) released **Inkpot**, an open-source C++ port of the Ink runtime for Unreal Engine. Source: McvUK / Inkle |
+| **Yarn Spinner** | Unity tool / engine-portable | C# integration, dialogue trees | **Version 3.1 shipped 2025-12** with async dialogue runner methods, option fallthrough, reworked typewriter system, and full Text Animator integration in the paid version. Notable shipped titles: *DREDGE*, *A Short Hike*, *Lost in Random* |
+| **Arcweave** | Visual editor | Team collaboration, complex stories | |
+| **Articy:Draft** | Professional suite | Large-scale production, localization | |
+| **Chat Mapper** | Visual editor | Cinematic dialogue, voice acting pipelines | |
+
+### AI NPC / Conversational AI Platforms (2026)
+
+For dynamic dialogue beyond pre-authored branching, the 2026 landscape:
+
+| Platform | Strength | Notable Adoption |
+|----------|----------|------------------|
+| **Inworld AI** | Voice AI platform + Agent Runtime for real-time apps. TTS ranked #1 on Artificial Analysis (sub-200ms latency). Clients: Google, NVIDIA, Meta, Ubisoft, Xbox. | Embedded in titles from Ubisoft, KRAFTON, NetEase via NVIDIA ACE collaboration |
+| **Convai** | Real-time conversational AI built for Unity / Unreal; scene-aware NPCs. | Smaller-studio SDK option (alongside Inworld + NVIDIA ACE) |
+| **NVIDIA ACE** | Stack-level integration for generative NPCs. | KRAFTON, Ubisoft, NetEase, Perfect World Games |
+
+**2026 hybrid approach**: Strong human-authored foundations (Ink / Yarn Spinner for skeleton branches and key beats) **enhanced by** generative layers (Inworld / Convai for incidental dialogue, ambient NPC reactions, and emergent player-character chatter). Pure-AI dialogue still struggles with consistency, lore-faithfulness, and authorial voice; pure-authored dialogue still struggles with player-input volume at modern scale. The trade-offs are cloud dependency, authoring depth, and runtime maturity. Source: PowerUp Gaming / GladeCore / Naavik 2026 coverage.
+
+Quest must include a curation gate on any AI-NPC integration spec: human-review window, safety-classifier layer, and fallback-to-authored-dialogue path.
 
 ---
 

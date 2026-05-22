@@ -174,8 +174,13 @@ EV = Σ (probability_i × value_i)
 effective_rate = base_rate + max(0, (attempts - pity_start) × escalation)
 ```
 
-**Hard pity**: Guaranteed drop at attempt N (e.g., Genshin Impact at 90 pulls).
-**Soft pity**: Increasing rate after threshold (e.g., +6% per pull after pull 75).
+**Hard pity**: Guaranteed drop at attempt N. 2026-05 market references:
+- *Genshin Impact*: 90 pulls (character banner), 80 pulls (weapon banner with Epitomized Path 1-fate guarantee)
+- *Wuthering Waves*: 80 pulls (both character and weapon banner); no 50/50 on weapon banner; pity carries over between event banners
+
+**Soft pity**: Increasing rate after threshold. Genshin: ramp begins around pull 73; Wuthering Waves: ramp begins from pull 50, so the felt pull cost is closer to 60 than 80.
+
+When designing a new gacha system in 2026, Wuthering Waves' tighter pity + cross-banner carryover + no-weapon-50/50 is the **player-favourable reference**; Genshin Impact is the **conservative-but-tolerated** baseline. Anything looser than Genshin needs a clear ethical justification.
 
 ### Weighted Random with Rarity Tiers
 
@@ -239,3 +244,16 @@ When analytic solutions are impractical (complex interactions, emergent behavior
 - **No soft caps**: One stat dominates all builds. Add diminishing returns at 2× base.
 - **Flat bonuses at high levels**: +5 damage matters at level 1, not at level 99. Use percentage bonuses.
 - **Untested edge cases**: Always check min/max level, best/worst gear, 0-stat scenarios.
+
+---
+
+## Live-Service Balance Philosophy (2026 Reference: Riot Games)
+
+For PvP and team-based live-service games, the 2026 reference patch philosophy from Riot:
+
+- **Layered communication**: Riot ships **seasonal identity, accessibility features, and systemic balance changes** through regular live patches (LoL 26.x cadence), packaging gameplay and service content together via dev updates. Meta-break signals are cumulative — dev videos + patch notes + ranked-facing tests combine into a slower but still meaningful shift.
+- **Lane / role agency**: The 2026 LoL season explicitly aimed to give laners more agency by reducing some automatic map protections — players should "enjoy the nuances of laning" without being pressured by early jungle intervention. Translation: when buffing one role, audit how it changes the moment-to-moment **decision space** for the role being buffed AND the roles around it.
+- **Decision-space framing (Valorant)**: "All of our changes are aimed at supporting the different levels of decisions you make in VALORANT. The core game needs to support … different team compositions, a variety of attacker and defender strategies, and keep a mechanically deep combat system." When proposing a balance change, articulate which level of decision (team composition, strategy, mechanical execution) it primarily targets.
+- **Ranked fairness as a balance vector**: 2026 Valorant communication framed ranked work as making the climb "feel fairer, more consistent, and more rewarding" — a player's rank should reflect real skill. Match-quality and rank-integrity belong in the balance frame, not separated as "matchmaking only".
+
+Source: Sheep Esports / Esports Insider Riot dev-update coverage 2025-12 through 2026-04. Adopt these as default patterns for any live-service balance design unless the project explicitly diverges.

@@ -66,7 +66,7 @@ Roll 3: Select modifiers/affixes (if applicable)
 | **Zone-specific** | Different tables per area | Open world, MMOs |
 | **Boss-specific** | Unique drop tables per boss | Raid content, boss farming |
 | **Smart loot** | Bias toward player's class/needs | Reducing frustration, Diablo 3 |
-| **Pity accumulation** | Increasing rare drop chance over time | Gacha, RNG-heavy systems |
+| **Pity accumulation** | Increasing rare drop chance over time | Gacha, RNG-heavy systems (2026 market refs: Genshin Impact 90-pull hard pity / Wuthering Waves 80-pull hard pity + pity carryover across event banners) |
 
 ### Drop Rate Guidelines
 
@@ -239,6 +239,8 @@ if (player_win_streak > N) → increase challenge modifier
 ```
 
 **Transparency rule**: Always disclose DDA to players (optional toggle preferred).
+
+**Regulatory note (2026)**: The EU Digital Fairness Act draft (Commission's Q4 2026 Work Programme, mandatory application ~2029) explicitly examines "addictive design" patterns; hidden DDA tuned for retention rather than fun risks classification as deceptive design. Document DDA intent and let players opt out.
 
 ### Difficulty Presets
 

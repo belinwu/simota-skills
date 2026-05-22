@@ -121,7 +121,8 @@ Sprint Goal: [One sentence describing the deliverable]
 - **Art pipeline lag**: Art tasks often take 2-3× longer than code. Start art early.
 - **Playtest cadence**: Playtest at least every 2 sprints; every sprint in Beta.
 - **Polish budget**: Reserve 20-30% of total timeline for polish (not features).
-- **Crunch prevention**: If sprint velocity drops 2 sprints in a row, cut scope, don't add hours.
+- **Crunch prevention**: If sprint velocity drops 2 sprints in a row, cut scope, don't add hours. Note: GDC 2026 SOTI shows industry-wide layoffs at 28% (33% US) — "add hours" is now also a retention risk, not only a health risk.
+- **AI-curation gate (2026)**: For sprints that touch generative-AI asset or dialogue pipelines, schedule a dedicated curation review beat in the Definition of Done. The 2026 industry sentiment toward uncurated AI content makes "ship-and-fix-later" approaches reputationally expensive.
 
 ---
 
@@ -193,9 +194,11 @@ RICE = (Reach × Impact × Confidence) / Effort
 
 #### Business Risks
 - **Market timing**: Competitor releases similar game
-- **Platform changes**: Store policies, hardware shifts
-- **Monetization**: Revenue model doesn't convert
-- **Regulatory**: Loot box legislation, age rating issues
+- **Platform changes**: Store policies, hardware shifts (e.g., Nintendo announced 2025-11 it is shifting primary development focus to Switch 2 — assume Switch 1-only roadmaps shrink fast; Epic v. Apple 2025-04 ruling + Ninth Circuit 2025-12 modification changed U.S. iOS payment routing)
+- **Monetization**: Revenue model doesn't convert; gacha / loot-box mechanics now force PEGI 16 in EU from 2026-06 reform, blocking under-16 audience
+- **Regulatory**: Loot box legislation, age rating issues. Active 2026 fronts: **Brazil ECA Digital effective 2026-03-17** (ANPD enforcement, up to R$ 50 M / 10% revenue penalty); **South Korea GIPA Article 38-2 immediate surcharge** (up to KRW 1 B / 3% of annual sales at moment of violation); EU DFA proposal in Commission's Q4 2026 Work Programme (mandatory application ~2029)
+- **Workforce / hiring**: Industry-wide layoffs continue — GDC 2026 SOTI: 28% of respondents (33% of US) laid off in past 2 years; ~14,600 jobs lost in 2024 alone; AAA studios disproportionately impacted (2/3 of AAA respondents). Plan attrition + key-person buses with this baseline
+- **AI-content reputation**: 52% of GDC 2026 SOTI respondents view generative AI as negative for the industry (up from 30% in 2025). Uncurated AI pipelines risk "gameslop" perception — schedule explicit curation gates
 
 ---
 

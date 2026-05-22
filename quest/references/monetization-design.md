@@ -6,8 +6,8 @@ Monetization is a design system, not a billing decision. The model chosen — pr
 
 ## Scope Boundary
 
-- IN scope: model selection, price-point design, battle-pass structure, gacha math (pity systems, probability disclosure), regulatory audit (EU Digital Fairness Act, EU age-rating uplift, Brazil under-18 ban, Belgium prohibition), predatory-pattern audit.
-- OUT of scope: payment-system code (delegate to `builder`), tax / GAAP revenue recognition (out of domain), App Store / Play Store policy specifics (review platform docs separately), retention strategy (`retain`), pricing-experiment statistical design (`experiment`).
+- IN scope: model selection, price-point design, battle-pass structure, gacha math (pity systems, probability disclosure), regulatory audit (EU Digital Fairness Act 2026 proposal, PEGI 2026-06 reform, Brazil ECA Digital effective 2026-03-17, Belgium prohibition + LS v Apple, South Korea GIPA immediate-surcharge regime), predatory-pattern audit, platform-payment routing (post-Epic-v-Apple external payment links on U.S. iOS).
+- OUT of scope: payment-system code (delegate to `builder`), tax / GAAP revenue recognition (out of domain), full App Store / Play Store policy specifics (review platform docs separately), retention strategy (`retain`), pricing-experiment statistical design (`experiment`).
 
 ## Core Concepts
 
@@ -89,33 +89,38 @@ Gacha = randomized reward purchase. Math:
 | Rate-up | Higher chance for specific items within banner |
 | Off-banner / off-rate | Drawing a target that isn't the featured one |
 
-Standard gacha rates (2026 market norms):
+Standard gacha rates (2026-05 market norms — cross-checked against HoYoverse Genshin Impact and Kuro Game Wuthering Waves):
 
 | Rarity | Base Rate |
 |--------|-----------|
 | Top tier (5★) | 0.6%–1.6% |
-| Rate-up specific | ~50% of top-tier draws |
-| Hard pity | 90 / 180 / 200 pulls |
-| Soft pity ramp | Starts at pull ~75, increases per pull |
+| Rate-up specific | ~50% of top-tier draws (50/50 system) |
+| Hard pity (character banner) | **Genshin Impact: 90 pulls**, **Wuthering Waves: 80 pulls** |
+| Hard pity (weapon banner) | Genshin: 80 pulls (Epitomized Path 1-fate guarantee), **Wuthering Waves: 80 pulls (no 50/50)** |
+| Soft pity ramp | Genshin: increases from pull ~73; **Wuthering Waves: starts building from pull 50** |
+| Pity carryover | **Wuthering Waves carries pity across event banners**; Genshin carries pity but 50/50 lost state persists |
 
-Probability disclosure is **mandatory** in 2026 — both for player trust and regulatory compliance (EU age-rating, Apple / Google policy, Japan METI guidelines, China NPPA disclosure rule).
+Wuthering Waves' "tighter pity + no weapon 50/50 + cross-banner pity carryover" is the 2026 reference for player-favourable gacha math. Use Genshin as the conservative-but-tolerated baseline.
 
-### Regulatory Map (2026)
+Probability disclosure is **mandatory** in 2026 — both for player trust and regulatory compliance (EU PEGI age-rating uplift 2026-06, Apple / Google policy, Japan METI / CESA guidelines, China NPPA disclosure rule, South Korea GIPA with immediate-surcharge enforcement). Source: Mobalytics / Charlie INTEL gacha system breakdowns (accessed 2026-05).
+
+### Regulatory Map (2026-05)
 
 | Region | Status |
 |--------|--------|
-| EU | Digital Fairness Act draft expected Q3 2026; enforcement ~2029. May classify aggressive F2P loops as deceptive design. Existing: PEGI age-rating uplift for loot boxes (2025). |
-| Belgium | Full prohibition on paid loot boxes since 2018. |
-| Brazil | Under-18 loot box ban effective March 2026. |
+| EU | Digital Fairness Act — Commission's 2026 Work Programme foresees DFA for Q4 2026; final adoption late 2027 / early 2028; mandatory application not before 2029. Public consultation closed 2025-10-24 (~70% of respondents want binding in-game-spending rules). Draft options include outright loot-box ban, mandatory parental consent for minors, mandatory 18+ rating for "uncertainty-based rewards", real-world currency display, and probability disclosure. Source: Freshfields Technology Quotient blog, Digital-Fairness-Act.com (accessed 2026-05). |
+| EU (PEGI) | PEGI announced major reform 2026-03-12. Effective 2026-06: any game selling "paid random items" receives minimum **PEGI 16**; time-limited / quantity-limited purchase offers → minimum **PEGI 12**; NFT / blockchain mechanics → automatic **PEGI 18**; daily-quest / login-streak return-pressure features → minimum **PEGI 7** with dedicated descriptor. EA Sports FC and other sports titles at risk of losing PEGI 3 rating. Source: PEGI / Lexology, Esports Legal News 2026-03-30. |
+| Belgium | Full prohibition on paid loot boxes since 2018. Belgian Gaming Commission admitted in December 2024 that "this generalized ban proved difficult to enforce" — 82% of top-100 iPhone games in Belgium still generate revenue via randomised monetisation per 2024-2025 research. Antwerp Enterprise Court ruled **LS v Apple** on 2025-01-16, opening the question of platform-operator (Apple) liability for distributing illegal-loot-box games. Source: Taylor Wessing 2025-03, TheGamer / GameRant studies. |
+| Brazil | **Lei 15.211/25 (ECA Digital)** signed by President Lula 2025-09-17; **effective 2026-03-17**. Prohibits loot boxes in games "directed at children and adolescents or likely to be accessed by them". Definition covers loot boxes, gacha, randomised card packs. Penalties up to **R$ 50 million** (~USD 9.6 M) or **10% of Brazilian revenue**. ANPD (National Data Protection Authority) enforces per Decree 12,880/2026. Directly impacts EA FC / Ultimate Team. Source: PC Gamer 2025-09, ASCJogos, Verifymy. |
 | Netherlands | Loot boxes with marketable items = gambling. |
 | China | NPPA disclosure rules; minor playtime caps; IP-tied identity. |
-| Japan | METI guidelines on probability disclosure; complete-gacha banned since 2012. |
-| US (federal) | No federal loot box law as of 2026; FTC investigations active. |
+| Japan | METI / CESA self-regulatory guidance; complete-gacha (kompu-gacha) banned since 2012 under Act Against Unjustifiable Premiums and Misleading Representations. CESA 2016 guideline caps the estimated price for any rare gacha item at 100× the price of a single paid pull. Source: Lexology, DLA Piper, Chambers Gaming Law 2024 Japan. |
+| US (federal) | No federal loot box law as of 2026-05; FTC investigations active. **Epic v. Apple ruling 2025-04-30** + Ninth Circuit 2025-12-11: U.S. iOS apps may include external payment links; Apple may only charge commission for "costs genuinely and reasonably necessary for coordination" (no full 27% override). Fortnite returned to U.S. App Store in 2025-05 using external payment. Source: Strategic Revenue, RevenueCat, CommLaw Group. |
 | US (states) | Various; NY, MN consider age-gating. |
-| UK | DCMS calling for industry self-regulation; ongoing review. |
-| South Korea | Probability disclosure mandatory (Game Industry Promotion Act, 2024). |
+| UK | DCMS calling for industry self-regulation; ongoing review. CMA active on F2P misleading-practice enforcement. |
+| South Korea | **Game Industry Promotion Act probability-disclosure mandate since 2024-03-22**. December 2025 amendment (Article 38-2) eliminates the corrective-recommendation grace period: surcharges up to **3% of annual sales or KRW 1 billion (~USD 700K)** apply the moment a violation is discovered. GRAC deployed 27 monitoring personnel since 2025-08; found 266 violations across 1,255 monitored games (21.2% non-compliance), foreign-developed titles = 60% of infractions. From 2025-10-23 major overseas publishers must designate a Korean domestic agent. Source: Kim & Chang, Korea Game Desk, Shin & Kim. |
 
-Quest **must** flag regional risk in every monetization design.
+Quest **must** flag regional risk in every monetization design. The 2026-06 PEGI 16 uplift for "paid random items" makes any traditional gacha/loot-box title effectively un-rateable for the under-16 EU audience — coordinate with `helm` / publisher legal before shipping.
 
 ### Predatory Pattern Audit
 
@@ -336,5 +341,10 @@ A monetization design is complete when:
 - Apple App Store Review Guidelines § 3.1.1 — IAP and loot box disclosure.
 - Google Play Developer Program Policy — Real-money gambling rules.
 - Yu-kai Chou, *Octalysis Framework* — distinguishing healthy and predatory drives.
-- ESRB, PEGI 2025 update — loot box age-rating uplift.
+- ESRB / **PEGI 2026-03-12 interactive-risk-categories reform** (effective 2026-06) — paid random items → minimum PEGI 16; NFT mechanics → PEGI 18; login-streak features → minimum PEGI 7. ESRB declined to follow.
 - Mihaly Csikszentmihalyi, *Flow* — distinguishing engagement from compulsion.
+- Epic Games v. Apple — U.S. ruling 2025-04-30, Ninth Circuit 2025-12-11. External iOS payment links allowed on U.S. storefront; Apple commission limited to coordination costs.
+- South Korea Game Industry Promotion Act (Article 38-2, December 2025 amendment) — immediate surcharge up to 3% of annual sales / KRW 1 billion at moment of violation discovery.
+- Brazil Lei 15.211/25 ECA Digital — under-18 loot-box ban effective 2026-03-17; ANPD enforcement; up to R$ 50 M / 10% of Brazilian revenue.
+- HoYoverse / Kuro Game banner probability disclosures (Genshin Impact, Wuthering Waves) — 2026 market reference for pity-system math.
+- Roblox DevEx Rate update (April 2026) — 42% rate boost for 18+ age-checked U.S. spend (effective 2026-06-08); R15 avatar requirement; new recurring-subscription model.

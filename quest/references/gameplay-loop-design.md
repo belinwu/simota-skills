@@ -125,12 +125,28 @@ Tie loop design to retention benchmarks (see Quest's Core Contract):
 |--------|-----------|
 | D1 < 22% | Core loop weak; players don't see value in first session |
 | D7 < 4% | Session loop weak; sessions don't feel complete |
-| D30 < 0.7% | Meta loop weak; no reason to return next week |
+| D28 < 3% | 75% of 2026 mobile games sit here; meta loop weak |
 | DAU/MAU < 10% | Session-trigger weak; players don't form habit |
 | DAU/MAU > 20% | Healthy engagement |
 | DAU/MAU > 30% | World-class (or potentially predatory — investigate) |
 
-These are global medians. Compare against genre + platform + region targets.
+These are global medians. Compare against **genre + platform + region** targets.
+
+#### 2026 GameAnalytics Mobile Benchmarks (16,000+ live games tracked)
+
+| Tier | D1 | D7 | D28-D30 |
+|------|----|----|---------|
+| Top quartile (excellence target) | 40%+ | 20%+ | 10%+ |
+| Top 25% D7 | — | 7-8% | — |
+| Median | ~22% | 3.4-3.9% | <3% (for 75% of games) |
+
+**Genre-specific D30 (2026)**: Match games 7.15%, casino/tabletop 4-5.5%, puzzle 5.35%, RPG 3.48%, strategy 2-4%.
+
+**Genre-specific D1 targets (2026)**: Casual / puzzle 40%+, mid-core 35%+, hardcore / RPG 30%+.
+
+**Regional (2026)**: North America D1 ~30.26%; Japan D30 ~6.4% (≈2× the US rate of 3.72%).
+
+Source: GameAnalytics *2026 Mobile & PC Gaming Benchmarks* / InvestGame summary 2026-01. Always cite the specific genre + platform + region rather than the global median when proposing a target.
 
 ### 5-Second / 5-Minute / 5-Hour Test
 
