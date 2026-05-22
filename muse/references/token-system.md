@@ -2,6 +2,21 @@
 
 Purpose: Use this reference when defining token categories, naming rules, typography and spacing scales, audit logic, or framework integration.
 
+## 2026 Format Baseline: DTCG Stable + AI-Consumed Tokens
+
+By 2026 the W3C **Design Tokens Community Group (DTCG) specification reached its first stable version** (announced 2025-10-28). Reference implementations now ship in **Style Dictionary**, **Tokens Studio**, **Terrazzo**, **Penpot**, **Figma**, **Sketch**, **Framer**, **Knapsack**, **Supernova**, and **zeroheight**. Two implications for new token systems:
+
+1. **Default to the DTCG JSON format** for the source of truth — `$value`, `$type`, `$description`, `$extensions` keys with the `$`-prefix discipline. Migrate legacy bespoke token JSON to DTCG when the tool chain supports it; do not invent a fourth format.
+2. **Tokens are now an AI-consumption surface.** Claude / Cursor / Copilot / Windsurf / Antigravity all write a meaningful share of frontend code in 2026, and they hallucinate brand colors / spacing / type choices unless given the token file. Treat the published token JSON as the source of truth that ships alongside `llms.txt` (see `quill/references/readme-templates.md`) for AI agents — a stale or undocumented token file is the #1 reason AI-generated UI drifts from brand.
+
+| Tool layer | Recommended in 2026 |
+|------------|----------------------|
+| Source of truth | DTCG JSON (committed to repo) |
+| Figma authoring | **Figma Variables** for simple projects, **Tokens Studio** for GitHub sync / multi-platform export / CI integration |
+| Transform pipeline | **Style Dictionary** (v4+ DTCG-native) or **Terrazzo** |
+| Platform outputs | CSS custom properties, JS / TS constants, iOS / Android resources, plus the raw DTCG JSON for AI consumers |
+| AI consumer surface | DTCG JSON + a short `tokens.md` describing intent (semantic layer naming, dark-mode mapping) for retrieval pipelines |
+
 ## Contents
 
 - Token categories

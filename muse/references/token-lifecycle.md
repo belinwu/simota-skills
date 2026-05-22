@@ -2,6 +2,8 @@
 
 Purpose: Use this reference when introducing, adopting, deprecating, or removing tokens, or when a token change may affect multiple components or teams.
 
+> **2026 lifecycle addition: AI-consumer surface stays in sync with the lifecycle.** A token's `STABLE` → `DEPRECATE` → `REMOVE` arc only completes when the **published DTCG JSON** (and any accompanying `tokens.md` / `llms.txt` reference) ships the updated value. AI coding assistants cache the token file from their last retrieval; an in-Figma deprecation that has not yet been pushed to the DTCG source-of-truth means agents keep generating UI against the obsolete token. Treat "DTCG JSON updated + AI-consumer surface refreshed" as a hard gate before `DEPRECATE → REMOVE`.
+
 ## Contents
 
 - Lifecycle state machine
