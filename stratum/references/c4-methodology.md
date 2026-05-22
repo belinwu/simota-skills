@@ -247,3 +247,14 @@ Maps software to infrastructure.
 | Conflating Docker container with C4 Container | C4 Container is a logical concept of runtime boundary |
 | Always creating all 4 levels | L1-L2 is sufficient in most cases |
 | Omitting title or legend | Required on every diagram |
+| Modeling a hosted LLM / SaaS as an internal Container | These are External Software Systems — the team does not own their deployment lifecycle |
+| Treating an Edge Worker (Cloudflare / Vercel / Deno Deploy) as a Component of the origin | Edge runtimes have an independent runtime boundary and distinct failure modes — model as a Container |
+| Re-typing the same `"Java" "Application"` literals on every container | Use Structurizr DSL `archetypes` (DSL v4.0+) to declare the type once and reuse it |
+
+---
+
+## C4 in 2026 — What Has and Has Not Changed
+
+- The five core abstractions (Person, Software System, Container, Component, Relationship) are **stable**. The C4 model itself has not introduced new levels, and existing diagrams remain valid.
+- What has changed is **tooling on top of C4**: Structurizr DSL v4.0 adds archetypes (custom element / relationship types with default tags and technology), the `structurizr.com` cloud service has reached end of life, and Structurizr vNext is the open-core successor for self-hosted use (Java 21, Bootstrap 5, Dagre layout in-UI). See `references/structurizr-dsl.md` for syntax.
+- New architecture styles — AI / LLM platforms, edge + origin splits, agent + tool orchestrators — are **modeled with the same primitives**. The pressure is to draw the trust boundary (LLM provider, sandboxed tool runtime) and the observability boundary (LLM trace store, eval harness) as first-class Containers, not to invent new levels. See `references/patterns.md` for canonical examples.

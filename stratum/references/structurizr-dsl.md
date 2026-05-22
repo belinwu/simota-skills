@@ -26,6 +26,9 @@ workspace "[Name]" "[Description]" {
     }
 
     model {
+        archetypes {
+            // (Optional) Custom element & relationship archetypes — DSL v4.0+
+        }
         // Elements and relationships
     }
 
@@ -34,6 +37,15 @@ workspace "[Name]" "[Description]" {
     }
 }
 ```
+
+### Tooling Snapshot (2026-05)
+
+| Surface | Status |
+|---------|--------|
+| Structurizr DSL | `v4.0.x` series — adds element + relationship **archetypes**, parser cleanups, and tightened workspace validation. See *Archetypes* below. |
+| Structurizr Cloud (`structurizr.com` hosted workspaces) | **End of life.** Migrate to Structurizr Lite, Structurizr On-premises, or `structurizr-cli` rendering. |
+| Structurizr vNext | Open-core relaunch: CLI, Lite, and the playground stay free and open source; on-premises ships an open core + closed enterprise extensions. Stack moves to **Java 21**, **Bootstrap 5**, **JointJS v4**. Diagram rendering switches to **Dagre** in-UI; Graphviz remains available only through the CLI/JSON pipeline. |
+| LikeC4 / Likec4 CLI | A growing alternative renderer that consumes DSL-like spec; archetypes are Structurizr's answer to LikeC4's `specification` block. |
 
 ### Workspace Scope (built-in validation)
 
@@ -356,3 +368,53 @@ For large systems, split into multiple workspace files:
 - `landscape.dsl` — System Landscape
 - `system-a.dsl` — System A details
 - `system-b.dsl` — System B details
+
+### Archetypes (DSL v4.0+, 2026)
+
+Archetypes let teams declare custom element and relationship types that extend the C4 primitives, attach default `description`, `technology`, `properties`, `perspectives`, and `tags`, and then be reused throughout the model. They are the official answer to "stop repeating `container "..." "..." "Java" "Application"` everywhere" and to LikeC4's `specification` block.
+
+#### Element Archetypes
+
+Base types that an archetype may extend: `person`, `softwareSystem`, `container`, `component`, `deploymentNode`, `infrastructureNode`, `group`, and the catch-all `element`.
+
+```dsl
+model {
+    archetypes {
+        application      = container { technology "Java"; tag "Application" }
+        springBootApplication = application { technology "Spring Boot" }     // inherits "Application" tag
+        datastore        = container { tag "Database" }                       // gets the Database styling automatically
+    }
+
+    payments = softwareSystem "Payments" {
+        web    = springBootApplication "Web"
+        api    = application "API"
+        ledger = datastore "Ledger DB"
+    }
+}
+```
+
+#### Relationship Archetypes
+
+Relationship archetypes reduce repetition on protocol-heavy edges (e.g., every internal call is HTTPS, every external call is async). Inheritance works the same way it does for element archetypes.
+
+```dsl
+model {
+    archetypes {
+        sync   = -> { tag "Synchronous" }
+        https  = --sync-> { technology "HTTPS" }
+        kafka  = -> { technology "Apache Kafka"; tag "Asynchronous" }
+    }
+
+    web --https-> api  "Calls REST endpoints"
+    api --kafka-> bus  "Publishes order.created"
+}
+```
+
+#### When to Reach for Archetypes
+
+| Signal | Use archetypes? |
+|--------|------------------|
+| `5+` containers share the same technology label | Yes — define an `application` archetype |
+| Internal vs. external relationships need different styling | Yes — pair element and relationship archetypes with a Tag style |
+| Team is mixing Structurizr DSL with LikeC4 / docs-as-code | Yes — archetypes are how you encode your "ubiquitous architecture vocabulary" |
+| One-off model with `< 6` elements | No — direct declaration is clearer |

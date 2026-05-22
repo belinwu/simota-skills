@@ -10,6 +10,9 @@ Read when: You need to confirm how to structure a C4 model for a specific archit
 - Serverless
 - Event-Driven
 - Mobile + Backend
+- AI/LLM-Backed Application (2026-era pattern)
+- Edge + Origin Split (CDN-resident compute)
+- Modeling with Archetypes (DSL v4.0+)
 - Discovery Heuristics
 
 ---
@@ -146,6 +149,95 @@ system = softwareSystem "Mobile Platform" {
 - iOS/Android are separate Containers (different runtimes)
 - With BFF (Backend for Frontend) pattern, the BFF is an independent Container
 - Push notification service is either an External System or internal Container (depends on ownership)
+
+---
+
+## Pattern 6: AI/LLM-Backed Application (2026-era pattern)
+
+### L2 Container
+
+```dsl
+system = softwareSystem "AI Assistant Platform" {
+    spa       = container "Web App" "Chat UI" "Next.js" "WebBrowser"
+    bff       = container "BFF" "Stream orchestration, auth, rate limiting" "Node.js"
+    agentSvc  = container "Agent Orchestrator" "Tool calls, planning, retries" "Python / FastAPI"
+    ragSvc    = container "Retrieval Service" "Hybrid (vector + keyword) retrieval" "Python"
+    vectorDb  = container "Vector Index" "Embedding index" "pgvector / Pinecone" "Database"
+    docDb     = container "Document Store" "Source corpus + chunk metadata" "PostgreSQL" "Database"
+    evalSvc   = container "Eval Harness" "Offline & online eval, rubrics" "Python"
+    obs       = container "Trace Store" "LLM traces, spans, metrics" "OTel + Tempo + Grafana"
+    llm       = softwareSystem "LLM Provider" "Hosted foundation model API" "Existing System"
+    sandbox   = softwareSystem "Code Sandbox" "Isolated code execution for tools" "Existing System"
+}
+```
+
+### Characteristics
+
+- The hosted LLM is an **External Software System**, not an internal Container — it has its own deployment lifecycle and is independently owned.
+- Retrieval (RAG), agent orchestration, and evaluation each get their own Container because their runtimes, scaling profiles, and failure modes differ.
+- A dedicated **Trace Store** Container is non-negotiable for production AI systems; LLM observability cannot be folded into generic APM.
+- The **Eval Harness** must be modeled even if it only runs offline — it is the system's quality contract and ADRs reference it.
+
+### Common mistakes
+
+- Treating the LLM provider as an internal Container (it isn't).
+- Modeling each LangChain / DSPy / agent SDK chain as a Container (they are Components inside `agentSvc`).
+- Omitting the **Sandbox / Tool Execution** boundary when the agent runs untrusted code or shell commands.
+
+---
+
+## Pattern 7: Edge + Origin Split (CDN-resident compute)
+
+### L2 Container
+
+```dsl
+system = softwareSystem "Globally Cached Storefront" {
+    edge     = container "Edge Runtime" "Routing, A/B, personalisation, auth at the edge" "Cloudflare Workers"
+    origin   = container "Origin App" "Authoritative business logic and templates" "Next.js on Node.js"
+    api      = container "Core API" "Business logic" "Go"
+    kv       = container "Edge KV" "Hot config + session" "Cloudflare KV" "Database"
+    db       = container "Database" "Authoritative data" "PostgreSQL" "Database"
+}
+```
+
+### Characteristics
+
+- The edge runtime is its own Container because it has a distinct runtime (V8 isolate, cold-start envelope, geo distribution).
+- Edge KV is a Database Container, not a Component of the edge runtime — its consistency model is fundamentally different from the relational origin DB and must be visible to reviewers.
+- Relationships from edge to origin and from edge to KV should carry their latency budgets in the description (e.g., "Reads cached personalisation in `< 5 ms`").
+
+### Common mistakes
+
+- Hiding the edge runtime inside the CDN external system. It belongs to the team that owns the workers.
+- Drawing edge → origin as "Uses" — name the actual cache-miss fallback flow.
+
+---
+
+## Modeling with Archetypes (DSL v4.0+)
+
+For models with `5+` containers that share a common technology stack or for relationships that fall into a few protocol families, prefer archetypes over repeating literal labels. The same model from Pattern 1 written with archetypes:
+
+```dsl
+model {
+    archetypes {
+        spaApp     = container { technology "React"; tag "WebBrowser" }
+        appServer  = container { technology "Node.js Express" }
+        datastore  = container { tag "Database" }
+        https      = -> { technology "JSON/HTTPS"; tag "Synchronous" }
+    }
+
+    system = softwareSystem "Web Application" {
+        spa    = spaApp    "SPA"            "User interface"
+        server = appServer "Application Server" "Business logic + API"
+        db     = datastore "Database"       "Persistent storage" "PostgreSQL"
+        cache  = datastore "Session Store"  "Session and cache"  "Redis"
+
+        spa    --https-> server "Calls REST endpoints"
+    }
+}
+```
+
+Archetypes pay back the most when a model is reviewed repeatedly by multiple teams (the vocabulary becomes the contract) and when styles are tag-driven (one Tag style covers every archetype instance).
 
 ---
 
