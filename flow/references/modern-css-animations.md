@@ -10,14 +10,18 @@ Purpose: Use this file when modern platform APIs can replace JavaScript or simpl
 - `@property`
 - Progressive enhancement rules
 
-## Feature Gates
+## Feature Gates (2026-05)
 
 | Feature | Use For | Support |
 |---------|---------|---------|
-| View Transitions API | SPA and page transitions, shared elements | Chrome `111+`, Safari `18+` |
-| `@starting-style` | Entry from `display: none` or popover/dialog open state | Chrome `117+`, Safari `17.5+` |
-| Scroll-driven animations | Progress bars, reveal-on-scroll, parallax-lite | Chrome `115+` |
-| `@property` | Animating custom properties | Chrome `85+`, Safari `15.4+` |
+| View Transitions API (Level 1, same-document) | SPA route transitions, shared elements within one page | Baseline Newly Available — Chrome / Edge / Safari stable; Firefox in nightly |
+| View Transitions Level 2 (MPA / cross-document) | Native MPA navigation without JS | Chrome `126+`, Safari `18.2+`, Firefox not yet — progressive enhancement only |
+| `@starting-style` | Entry from `display: none`, popover / dialog open state | Baseline Newly Available |
+| `interpolate-size` (`auto` → fixed transitions) | Animating to/from `height: auto`, `width: auto` | Chrome / Edge stable; Safari catching up — pair with `@starting-style` |
+| Scroll-driven animations (`animation-timeline: view()` / `scroll()`) | Progress bars, reveal-on-scroll, parallax-lite | Chrome / Edge stable; Safari ships fragments; Firefox behind flag — feature-gate with `@supports` |
+| `@property` | Animating custom properties, smooth gradient / shadow tweens | Baseline Widely Available |
+| **Material 3 Expressive motion-physics** (spring-based) | Native Android transitions | Android 16 / Material 3 Expressive default |
+| **Liquid Glass material** (iOS 26) | Translucent depth-aware surfaces that react to context / motion | iOS 26 SwiftUI / UIKit; CSS analogues are progressive enhancement only |
 
 ## Progressive Enhancement Rules
 

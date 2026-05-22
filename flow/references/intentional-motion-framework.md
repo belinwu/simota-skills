@@ -2,6 +2,8 @@
 
 Purpose: Use this reference when planning motion for a page or view. Limits motion to 2-3 intentional types per view to avoid the "everything animates" anti-pattern.
 
+> **2026 platform default = motion-rich.** Both **Material 3 Expressive** (Android 16, spring-based physics on every default transition) and **Apple Liquid Glass** (iOS 26, depth-aware materials reacting to context and motion) make the *platform itself* motion-rich out of the box. The 2-3 Motion Rule below now means "2-3 *team-authored* motion types on top of whatever the platform is already animating" — not "2-3 motion types total". When the platform contributes a spring on every interaction, team-authored decorative motion needs to clear a higher bar; the budget below tightens, it does not relax.
+
 ## Contents
 
 ### Reduced-Motion-First Design Philosophy

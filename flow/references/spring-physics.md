@@ -2,6 +2,11 @@
 
 Purpose: Implement spring-based motion that feels natural and responsive by tuning stiffness/damping/mass instead of duration/easing curves. Replaces tweened animations where interruption, overshoot, or velocity continuation matter — drag releases, modal pop-ins, gesture-following toggles.
 
+> **2026 platform context.** **Google Material 3 Expressive** (Android 16) ships **spring-based physics motion as the platform default** — every default transition in the system is already a spring, not a Bezier tween. **Apple Liquid Glass** (iOS 26) builds analogous depth + physics behaviour into native surfaces. Implications for spring authoring:
+>
+> - On native Android (Compose Material 3 Expressive), the platform's default spring is usually correct — additional spring layers added by the team need to clear a higher justification bar to avoid "competing physics" noise.
+> - On the web, spring physics remains opt-in: pair the library presets below with `prefers-reduced-motion` fallbacks, *and* test against platforms where the user is already on a spring-default OS (Android 16+ webview, iOS 26 Safari). Stacking another team-authored spring on top of an already-springy platform reads as motion noise, not delight.
+
 ## Scope Boundary
 
 - **flow `spring`**: physics-driven motion implementation. Tune stiffness/damping/mass; map to Motion v12 / react-spring / CSS `linear()` approximations.
