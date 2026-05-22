@@ -97,7 +97,7 @@ When analyzing colors with Claude Vision:
 
 ### Color Grouping
 
-Group extracted colors into semantic roles. Use `oklch()` for perceptual uniformity when generating derived colors:
+Group extracted colors into semantic roles. As of 2026-05, `oklch()` and `color-mix(in oklch, …)` are Baseline Widely Available, so use them by default for perceptually uniform derived colors. Reserve hard-coded HEX hover/active variants for cases where the mockup actually pins those values:
 
 ```css
 :root {
@@ -114,11 +114,25 @@ Group extracted colors into semantic roles. Use `oklch()` for perceptual uniform
   /* Accent — use color-mix() for derived states */
   --accent-primary: #2563eb; /* MEDIUM */
   --accent-hover: color-mix(in oklch, var(--accent-primary) 85%, black);  /* Derived */
+  --accent-subtle: color-mix(in oklch, var(--accent-primary) 12%, white); /* Tint for backgrounds */
 
   /* Border */
   --border-default: #e5e7eb; /* MEDIUM */
 }
 ```
+
+### Wide-Gamut Mockups (P3 / Rec2020)
+
+If the mockup is exported from a P3-aware tool (Figma export with "Preserve color space", Affinity Designer, ProPhoto RGB Photoshop), expect colors that fall outside sRGB. Annotate them and emit the wide-gamut form alongside the sRGB fallback:
+
+```css
+.cta {
+  background: #2563eb;                          /* sRGB fallback */
+  background: oklch(0.55 0.22 263);             /* P3-aware target */
+}
+```
+
+Mark wide-gamut extractions as `MEDIUM` at best — the mockup's color profile is often unclear and engines downgrade silently outside `display-p3` color contexts.
 
 ### Advanced: Role Detection (VibeMark Pattern)
 
@@ -284,6 +298,12 @@ Round extracted values to the nearest 8px multiple for consistency:
 | 4 items in a row | 4-column or 2x2 | Check if wrapping at mobile |
 | 6 items | 3x2 grid | `grid-template-columns: repeat(3, 1fr)` |
 | Uneven layout | Asymmetric | `grid-template-columns: 2fr 1fr` or similar |
+| Aligned card content across rows (title row, CTA row, etc.) | Subgrid (Baseline 2026-03) | Parent `grid-template-rows: ...`; child `grid-template-rows: subgrid` |
+| Staggered "Pinterest" layout | Treat as JS Masonry until native Masonry is Baseline | See `responsive-strategies.md` — do NOT emit `grid-template-rows: masonry` without a fallback |
+
+### Detect Subgrid Opportunities Early
+
+When extracting card grids, check whether the mockup's titles, descriptions, and CTAs sit on the **same horizontal lines across cards**. If yes, that is a Subgrid signal — emit the Subgrid pattern instead of hard-coded `min-height` workarounds. Confidence is `HIGH` when alignment is visually exact in the mockup, `MEDIUM` when it looks approximate.
 
 ---
 

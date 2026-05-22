@@ -324,6 +324,8 @@ For projects with Playwright test infrastructure, use the built-in visual compar
 
 ### Recommended Configuration
 
+The 2026-05 community guidance for `toHaveScreenshot` settles on a three-knob recipe: `threshold` for per-pixel color tolerance, `maxDiffPixelRatio` for fraction of pixels allowed to differ, and `maxDiffPixels` for an absolute cap on localised drift. Picking *one* of the latter two — not both — keeps signals interpretable.
+
 ```typescript
 // playwright.config.ts
 import { defineConfig } from '@playwright/test';
@@ -331,13 +333,37 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   expect: {
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.01,  // 1% tolerance — strict for mockup matching
-      threshold: 0.15,           // Pixel color sensitivity (0=strict, 1=lenient)
-      animations: 'disabled',   // Freeze CSS animations
+      // Pixel color sensitivity. 0.2 is the documented default;
+      // 0.15 is a slightly stricter starting point for mockup matching.
+      threshold: 0.15,
+
+      // Tolerance for anti-aliasing drift across font renderers.
+      // 0.001 (~0.1%) catches real regressions while ignoring sub-pixel noise.
+      maxDiffPixelRatio: 0.001,
+
+      // Useful as a backstop on small artifacts (logo crops, icons).
+      // Keep low (50-100) for mockup work; raise for content-heavy pages.
+      maxDiffPixels: 100,
+
+      // Freeze CSS animations and the caret so captures are deterministic.
+      animations: 'disabled',
+      caret: 'hide',
+
+      // High-DPI capture for retina-fidelity comparison.
+      scale: 'device',
     },
   },
 });
 ```
+
+### Calibration Cheatsheet
+
+| Use case | `threshold` | `maxDiffPixelRatio` | `maxDiffPixels` | Notes |
+|----------|-------------|----------------------|------------------|-------|
+| Mockup-to-code precision | `0.10–0.15` | `0.001` | `50–100` | Default for Pixel agent; expect to regenerate baselines after Subgrid / type-scale changes |
+| Marketing LP regression | `0.15–0.20` | `0.005` | `200–500` | Tolerates hero image and font-rendering drift |
+| Cross-browser smoke | `0.20–0.25` | `0.01` | `500` | Each browser stores its own baseline directory — do not share baselines across engines |
+| Data-rich dashboard | `0.20` | `0.002` | `200` (with masks) | Mask charts, timestamps, and live numbers; assert structure not content |
 
 ### Full Parameter Reference
 
@@ -371,10 +397,23 @@ await expect(page).toHaveScreenshot('hero.png', {
 ### Environment Consistency
 
 Screenshots differ across OS/browser/font rendering. Best practices:
-- Use Docker containers for CI to ensure identical rendering
-- Always capture with `deviceScaleFactor: 2` for retina quality
-- Wait for `document.fonts.ready` before capturing
-- Set consistent locale and timezone in browser context
+- Generate baselines in the **same environment** they will be compared against (the CI runner — not a local laptop). Same-environment baselining eliminates ~80% of false-positive failures.
+- Use the official Playwright Docker image (`mcr.microsoft.com/playwright`) for CI; it pins the system font stack and rendering libraries Playwright was built against.
+- Capture with `deviceScaleFactor: 2` (or rely on `scale: 'device'` in the config above) for retina-fidelity comparison.
+- Wait for `await page.evaluate(() => document.fonts.ready)` before screenshotting; webfont swap is the single largest source of layout drift.
+- Pin locale, timezone, and `prefers-reduced-motion` in `BrowserContext` options — otherwise CI vs local can disagree on number formatting, dates, and animation freezes.
+- Hide cursors and scrollbars with `stylePath` injection rather than ad-hoc CSS in the page under test.
+
+### Augmenting Programmatic VRT with AI Vision
+
+`toHaveScreenshot` reliably catches **whether** pixels drifted; it does not explain **what** changed semantically. For mockup-fidelity work, layer an AI vision pass on top once the pixelmatch / Playwright diff has flagged a regression:
+
+1. Capture mockup + current screenshot + diff PNG via the pipeline above.
+2. Feed all three to Claude Vision with the "1枚目 / 2枚目 / 3枚目" prompt template from the previous section.
+3. Ask the model to label each regression with the same CRITICAL / MODERATE / MINOR severity used in this skill.
+4. Apply targeted CSS fixes, then re-run `toHaveScreenshot` to re-baseline.
+
+This pattern — automated detection plus AI-grounded explanation — is the same hybrid loop adopted by managed VRT services (Argos, Percy, Chromatic) in 2026, and it consistently beats either layer alone for mockup-to-code reproduction.
 
 ---
 

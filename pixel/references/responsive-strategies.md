@@ -328,11 +328,27 @@ WCAG 2.2 AA requires minimum 24x24 CSS px; 44x44px is recommended for mobile:
 
 ---
 
-## Modern CSS for Faithful Reproduction (2025-2026)
+## Modern CSS for Faithful Reproduction (2025–2026)
+
+Browser-support summary (as of 2026-05):
+
+| Feature | Baseline | Ship to production? |
+|---------|----------|---------------------|
+| `subgrid` | Baseline Widely Available (2026-03-15, all stable engines) | Yes — first-class tool, no `@supports` needed |
+| `:has()` parent selector | Baseline Widely Available | Yes |
+| Container Queries (`@container`, `cqw/cqh`) | Baseline Widely Available, ~78% of production sites adopt it | Yes |
+| Dynamic Viewport Units (`dvh/svh/lvh`) | Baseline Widely Available | Yes |
+| Cascade Layers (`@layer`) | Baseline Widely Available | Yes |
+| Native Nesting | Baseline Widely Available | Yes |
+| `text-wrap: balance` / `pretty` | Baseline Widely Available | Yes |
+| Anchor Positioning (`anchor-name`, `position-anchor`, `position-try-fallbacks`) | Baseline Newly Available — Chrome/Edge stable; Safari TP and Firefox shipping behind partial support | Progressive enhancement only; require JS fallback for popover/tooltip placement |
+| `@scope` | Baseline Newly Available — Chrome/Edge stable; Safari/Firefox catching up | Progressive enhancement; treat as a nice-to-have, not a load-bearing rule |
+| Native CSS Masonry / Grid Lanes (`grid-template-rows: masonry`) | NOT Baseline — Safari TP only; Chrome team has proposed a separate `display: masonry` spec; Firefox keeps it behind a flag | Do not ship without a JS or Grid fallback |
+| `@starting-style` + `interpolate-size` (entry/exit transitions) | Baseline Newly Available — Chrome/Edge stable | Progressive enhancement for entrance animations |
 
 ### CSS Subgrid — Card Content Alignment
 
-Reproduce mockups where card titles, descriptions, and CTAs align across rows:
+Subgrid is now Baseline Widely Available. Use it as the default for any mockup that shows horizontally-aligned card content (title row / description row / CTA row across all cards).
 
 ```css
 .card-grid {
@@ -347,9 +363,9 @@ Reproduce mockups where card titles, descriptions, and CTAs align across rows:
 }
 ```
 
-**Rule**: Use subgrid when mockup shows horizontally-aligned card content. Eliminates fixed-height hacks.
+**Rule**: Eliminates fixed-height hacks and the legacy "auto-flow + min-content" workarounds. No `@supports` gate required as of 2026-05.
 
-### Anchor Positioning — Tooltip/Dropdown Reproduction
+### Anchor Positioning — Tooltip / Dropdown Reproduction
 
 ```css
 .tooltip-trigger { anchor-name: --tip; }
@@ -361,7 +377,7 @@ Reproduce mockups where card titles, descriptions, and CTAs align across rows:
 }
 ```
 
-**Rule**: Use for mockups showing positioned overlays. Falls back to `position: absolute` with JS.
+**Rule**: Use for mockups showing positioned overlays. Browser support is still uneven (Chrome/Edge stable, Safari/Firefox partial), so pair with a JS positioning fallback (Floating UI or a manual `position: absolute` strategy) when shipping cross-browser.
 
 ### `@scope` — Section Style Isolation
 
@@ -376,9 +392,9 @@ Reproduce mockups where card titles, descriptions, and CTAs align across rows:
 }
 ```
 
-**Rule**: Use when mockup sections have different typography scales. Prevents style bleed.
+**Rule**: Use when mockup sections have different typography scales. Prevents style bleed. Still progressive enhancement in 2026-05 — pair with explicit class selectors so the layout still works on engines without `@scope` support.
 
-### Grid Lanes (CSS Masonry) — Pinterest Layout
+### Native CSS Masonry — Pinterest Layout
 
 ```css
 .masonry {
@@ -388,11 +404,11 @@ Reproduce mockups where card titles, descriptions, and CTAs align across rows:
 }
 ```
 
-**Rule**: WebKit only (Safari 17+). Use Masonry.js fallback with `@supports` for cross-browser.
+**Rule**: As of 2026-05, native Masonry is NOT Baseline. Safari Technology Preview has the most complete implementation; Chrome has tabled a competing `display: masonry` proposal; Firefox keeps it behind a flag. Ship with `@supports (grid-template-rows: masonry)` and a Grid- or JS-based fallback (e.g., CSS multi-column or Masonry.js). Do not promise native masonry to designers as a faithful reproduction tool yet.
 
 ---
 
-## Modern CSS for Responsive Design (2025)
+## Modern CSS for Responsive Design (2025–2026)
 
 ### Container Queries
 
