@@ -190,32 +190,86 @@ function ThemeText({ showTheme }: { showTheme: boolean }) {
 | `ref` callbacks get cleanup | Return a cleanup function from ref callbacks |
 | Document metadata hoisting | `<title>`, `<meta>`, `<link>` in components hoist to `<head>` automatically |
 
-### React 19.2 (October 2025)
+### React 19.2 (October 2025 — stable)
 
 | Feature | Purpose |
 |---------|---------|
-| `<Activity>` | Offscreen rendering — hide/show without unmounting (replaces old `<Offscreen>`) |
-| `<ViewTransition>` | Built-in View Transitions API integration for route/state transitions |
-| `useEffectEvent` | Stable reference for event handlers used inside effects without adding to deps |
+| `<Activity mode="visible \| hidden">` | Mount-preserving offscreen rendering — `hidden` unmounts effects + defers updates while keeping component state for back-nav / prefetch |
+| `<ViewTransition>` | First-class wrapper around the View Transitions API. SSR Suspense reveals are now batched specifically to enable cross-stream transitions |
+| `useEffectEvent` | Stable, non-reactive callback for "event-like" logic inside `useEffect`. **Do not** add to the deps array — `eslint-plugin-react-hooks@6` ignores it automatically |
+| `cacheSignal()` (RSC) | `AbortSignal` tied to the lifetime of `cache()` — pass to `fetch` to cancel deduped requests when the render completes/aborts/fails |
+| Partial Pre-rendering APIs | `prerender({prelude, postponed})` → `resume()` / `resumeAndPrerender()` for static shell + dynamic resume |
+| Performance Tracks | Chrome DevTools "Scheduler ⚛" and "Components ⚛" custom tracks |
+| `useId` prefix change | Default `:r:` → `_r_` (valid `view-transition-name` / XML 1.0 name) |
+
+```tsx
+// useEffectEvent — see latest props/state without re-subscribing
+function ChatRoom({ roomId, theme }: { roomId: string; theme: string }) {
+  const onConnected = useEffectEvent(() => {
+    showNotification('Connected!', theme); // always sees latest theme
+  });
+
+  useEffect(() => {
+    const connection = createConnection(serverUrl, roomId);
+    connection.on('connected', onConnected);
+    connection.connect();
+    return () => connection.disconnect();
+  }, [roomId]); // theme intentionally omitted — onConnected captures it
+}
+
+// Activity — preserve state without rendering cost
+<Activity mode={isVisible ? 'visible' : 'hidden'}>
+  <ExpensivePage />
+</Activity>
+
+// cacheSignal — abort deduped fetch when render unwinds
+import { cache, cacheSignal } from 'react';
+const dedupedFetch = cache(fetch);
+async function Component() {
+  const res = await dedupedFetch(url, { signal: cacheSignal() });
+  // ...
+}
+```
+
+> **Security:** CVE-2025-55182 (React2Shell, CVSS 10.0) affects 19.0.0, 19.1.0–19.1.1, and 19.2.0 — unauthenticated RCE via unsafe deserialization in Server Actions. Pin to 19.0.1+, 19.1.2+, or 19.2.1+ (Next.js 15.1.4+ / 16+).
 
 ---
 
 ## 6. React Compiler (v1.0 Stable — October 2025)
 
-Auto-memoization for components and hooks. No manual `useMemo`/`useCallback`/`React.memo` needed.
+Auto-memoization for components and hooks. No manual `useMemo`/`useCallback`/`React.memo` needed. Battle-tested in Meta production (Quest Store saw +12% initial load, 2.5× faster interactions).
 
 | Before | With React Compiler |
 |--------|-------------------|
 | Manual `useMemo` / `useCallback` | **Auto-memoized** — not needed |
 | `React.memo` wrapper | Compiler decides |
-| Dependency array management | Compiler tracks |
+| Dependency array management | Compiler tracks (supports optional chains + array indices) |
+| `eslint-plugin-react-compiler` | **Merged into** `eslint-plugin-react-hooks@6` |
 
 **Rules:**
-- New code: skip `useMemo`/`useCallback` entirely
-- Existing manual memoization: safe to keep (no harm)
-- Requires Rules of React compliance (pure render, no side effects during render)
-- Opt-out directive: `"use no memo"` at file/function level
-- Next.js 16: `reactCompiler: true` in `next.config.ts`
+- New code: skip `useMemo`/`useCallback` entirely.
+- Existing manual memoization: safe to keep (no harm). Removing it may change compilation output — test before removing.
+- Requires Rules of React compliance (pure render, no side effects during render).
+- Opt-out directive: `"use no memo"` at file/function level.
+- Can memoize after conditional returns (impossible with manual hooks).
+- Pin to exact version (`--save-exact`) if test coverage is thin — memoization behavior may shift between minor versions.
+
+**Install:**
+```bash
+npm i -D --save-exact babel-plugin-react-compiler@latest
+npm i -D eslint-plugin-react-hooks@latest  # also enables compiler-powered lints
+```
+
+**New ESLint rules shipped in `react-hooks@6`:**
+- `set-state-in-render` — render-loop detection
+- `set-state-in-effect` — flags expensive effect work
+- `refs` — unsafe ref access during render
+
+**Framework integration (defaults):**
+- **Next.js 16+**: `reactCompiler: true` in `next.config.ts` (stable, opt-in; requires `babel-plugin-react-compiler`).
+- **Expo SDK 54+**: enabled by default.
+- **Vite / `create-next-app`**: compiler-enabled template available.
+- Compatible with React 17+ via `react-compiler-runtime`.
 
 ---
 
@@ -318,7 +372,7 @@ export async function createTodo(prevState: any, formData: FormData) {
 | Large file uploads | — | ✅ |
 | External service calls | — | ✅ |
 
-### Cache & Revalidation
+### Cache & Revalidation (Next.js 15)
 
 ```tsx
 const data = await fetch(url, { cache: 'force-cache' });         // static (build-time)
@@ -328,6 +382,38 @@ const data = await fetch(url, { next: { tags: ['products'] } }); // tag-based
 // After mutation:
 revalidateTag('products');
 ```
+
+### Next.js 16 — Cache Components + new cache APIs (October 2025)
+
+Next.js 16 flipped from implicit caching to **explicit, opt-in caching** via Cache Components. All dynamic code in pages/layouts/API routes runs at request time by default; cacheable surfaces are marked with `"use cache"`.
+
+```ts
+// next.config.ts
+const nextConfig = { cacheComponents: true, reactCompiler: true };
+export default nextConfig;
+```
+
+```tsx
+// File-, component-, or function-level cache directive
+"use cache";
+export default async function ProductList() {
+  const products = await db.products.findMany();
+  return <ul>{/* ... */}</ul>;
+}
+```
+
+| API | Runtime | Behavior |
+|-----|---------|----------|
+| `revalidateTag(tag, profile)` | Anywhere | SWR semantics; **profile arg is now required** (e.g. `'max'`, `'hours'`, `'days'`, or `{ expire: 3600 }`). Single-arg form is deprecated. |
+| `updateTag(tag)` | Server Actions only | Read-your-writes — invalidates and reads fresh data in the same request. Use for forms/settings where users must see their change. |
+| `refresh()` | Server Actions only | Refreshes **uncached** data only; does not touch cache. Complement to client `router.refresh()`. |
+
+Other Next.js 16 changes that affect Artisan implementations:
+- `middleware.ts` → **`proxy.ts`** (Node.js runtime; old name deprecated).
+- `params` / `searchParams` props and `cookies()` / `headers()` / `draftMode()` are now **async** — `await` is required.
+- `experimental.ppr` and `experimental.dynamicIO` flags removed; PPR is now integrated into Cache Components.
+- Turbopack is the **default bundler**; opt out with `next dev --webpack` / `next build --webpack`.
+- Min Node.js 20.9, TypeScript 5.1, Chrome 111+/Edge 111+/Firefox 111+/Safari 16.4+.
 
 ---
 
@@ -369,4 +455,4 @@ revalidateTag('products');
 | 5 | Missing `revalidate` after mutation | Stale UI | `revalidatePath`/`revalidateTag` |
 | 6 | `await` in layouts | Delays entire app | Layouts sync, data in pages |
 
-**Source:** [React 19 Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19.2 Blog](https://react.dev/blog/2025/10/07/react-19-2) · [React Compiler v1.0](https://react.dev/blog/2025/10/07/react-compiler-rc) · [RSC Mental Models 2025](https://dev.to/eva_clari_289d85ecc68da48/the-complete-guide-to-react-server-components-mental-models-for-2025-390d) · [Next.js 16](https://nextjs.org/blog/next-16) · [React Hook Form vs React 19](https://blog.logrocket.com/react-hook-form-vs-react-19/)
+**Source:** [React 19 Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19.2 Blog](https://react.dev/blog/2025/10/01/react-19-2) · [React Compiler v1.0](https://react.dev/blog/2025/10/07/react-compiler-1) · [Server Components](https://react.dev/reference/rsc/server-components) · [Next.js 16](https://nextjs.org/blog/next-16) · [Next.js 16 Upgrade Guide](https://nextjs.org/docs/app/guides/upgrading/version-16) · [`use cache` directive](https://nextjs.org/docs/app/api-reference/directives/use-cache) · [`eslint-plugin-react-hooks@6`](https://www.npmjs.com/package/eslint-plugin-react-hooks)

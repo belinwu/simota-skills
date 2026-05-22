@@ -30,16 +30,20 @@ Need state?
 
 ---
 
-## 3. Library Selection
+## 3. Library Selection (2026)
 
 | Library | Good fit | Poor fit |
 |---------|----------|----------|
-| **Zustand** | Default for shared client state. Lightweight, selective re-renders | Server data management |
-| **TanStack Query v5** | Standard for server state. Auto cache/dedup/invalidation | Pure client state |
-| **Jotai** | Fine-grained reactivity, many derived/computed values | Simple global state |
-| **Redux Toolkit** | Large enterprise, strict architecture, DevTools required | Small-to-mid apps |
-| **XState** | Complex state machines (Figma-level) | Simple on/off state |
-| **React Context** | Theme, locale, low-frequency updates | High-frequency state |
+| **Zustand v5** | Default for shared React client state. Lightweight, selective re-renders, uses native `useSyncExternalStore`. Bundle ~1KB | Server data, RSC-only trees |
+| **TanStack Query v5** | Standard for server state. Auto cache/dedup/invalidation, stable Suspense, 20% smaller than v4 | Pure client state |
+| **Jotai (v2 → v3 in 2026)** | Fine-grained atom reactivity, many derived/computed values, Suspense-friendly. **v3 will drop React <18, `atomFamily` → `jotai-family` package, possibly drop `loadable` for `unwrap`** | Simple global state, server data |
+| **Redux Toolkit + RTK Query** | Large enterprise apps, strict architecture, DevTools/time-travel required, built-in optimistic updates + websocket streaming + OpenAPI codegen | Small-to-mid apps, simple state |
+| **XState v5** | Complex state machines (auth flows, multi-step forms, video/recording, onboarding). `setup()` + `createMachine`, fully type-safe, no Redux dep | Single-axis on/off state |
+| **React Context** | Theme, locale, low-frequency updates | High-frequency state, large consumer trees |
+| **Pinia 3 (Vue)** | Default Vue 3 store. Setup or Option style. Devtools, plugins | Vue 2 (use Pinia v2.x) |
+| **Pinia Colada (Vue)** | Server state for Vue/Nuxt apps — TanStack-Query-equivalent companion to Pinia | Pure client state (use Pinia core) |
+| **nuqs v2** | URL-as-state (filters, pagination, tabs) in Next.js App Router | Non-URL local state |
+| **Signals (TC39 Stage 1)** | Cross-framework reactive primitive — Solid 2, Angular 20, Vue 3.5 (alien-signals), Svelte 5 runes, Preact Signals converge here. Future-proof mental model | Not yet a standalone runtime choice in React (use React Compiler) |
 
 ---
 
@@ -117,10 +121,13 @@ export default async function Page() {
 
 ---
 
-## 5. Zustand Patterns
+## 5. Zustand v5 Patterns
+
+Zustand v5 (released late 2024, current minor 5.0.x in 2026) dropped React <18, TS <4.5, ES5, and `use-sync-external-store` (now uses the native React 18 hook). Bundle is significantly smaller.
 
 ```tsx
 import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 // Split stores by concern
 const useUIStore = create<UIState>()((set) => ({
@@ -135,7 +142,24 @@ function Sidebar() {
   const isOpen = useUIStore((s) => s.isSidebarOpen);
   // Does not re-render when theme changes
 }
+
+// Selecting multiple values — wrap in useShallow to avoid infinite loops
+function Header() {
+  const { theme, toggleSidebar } = useUIStore(
+    useShallow((s) => ({ theme: s.theme, toggleSidebar: s.toggleSidebar }))
+  );
+}
 ```
+
+### v5 migration gotchas
+
+| Change | Impact | Fix |
+|--------|--------|-----|
+| `create((set) => …)` curry | TS inference broke for some patterns | Use `create<State>()((set) => …)` (extra `()`) |
+| Selector returning new reference | Can cause **infinite loops** under React 18's stricter equality | Wrap with `useShallow(selector)` or use `createWithEqualityFn` |
+| `setState({}, true)` (replace flag) | Used to silently accept partial state | Now type-checked — must pass a **complete** state object |
+| Custom equality function in `create` | Removed from default `create` | Import `createWithEqualityFn` from `zustand/traditional` |
+| `use-sync-external-store` | Removed as direct dep | Now a peer dep — install if you support React 17 (not recommended) |
 
 ---
 
@@ -168,7 +192,67 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
 
 ---
 
-## 7. Anti-Patterns
+## 7. Redux Toolkit + RTK Query (2026)
+
+Still the canonical choice when DevTools time-travel, large enterprise architecture, or strict review of every state mutation matters.
+
+```ts
+// src/services/products.ts
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+export const productsApi = createApi({
+  reducerPath: 'productsApi',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  tagTypes: ['Product'],
+  endpoints: (build) => ({
+    listProducts: build.query<Product[], { category?: string }>({
+      query: ({ category }) => ({ url: 'products', params: { category } }),
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: 'Product' as const, id })), 'Product']
+          : ['Product'],
+    }),
+    updateProduct: build.mutation<Product, Partial<Product> & { id: string }>({
+      query: ({ id, ...body }) => ({ url: `products/${id}`, method: 'PATCH', body }),
+      // Optimistic update
+      async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          productsApi.util.updateQueryData('listProducts', {}, (draft) => {
+            const product = draft.find((p) => p.id === id);
+            if (product) Object.assign(product, patch);
+          })
+        );
+        try { await queryFulfilled; } catch { patchResult.undo(); }
+      },
+      invalidatesTags: (_r, _e, { id }) => [{ type: 'Product', id }],
+    }),
+  }),
+});
+
+export const { useListProductsQuery, useUpdateProductMutation } = productsApi;
+```
+
+RTK Query strengths in 2026: built-in pagination/infinite scroll, streaming cache updates over WebSocket/SSE, experimental OpenAPI/GraphQL code generation, and tag-based invalidation that integrates with `useMutation` automatically.
+
+---
+
+## 8. Signals Convergence (Cross-Framework, 2026)
+
+Solid 2.x, Angular 20 signals, Vue 3.5 (alien-signals refactor) / 3.6 Vapor, Svelte 5 runes, and Preact Signals all share the same primitive model. The **TC39 Signals proposal (Stage 1)** is the lingua-franca target.
+
+| Concept | Solid | Vue 3.5+ | Svelte 5 | Preact | React (via Compiler) |
+|---------|-------|----------|----------|--------|----------------------|
+| Atomic state | `createSignal()` | `ref()` / `shallowRef()` | `$state()` | `signal()` | `useState()` (auto-memoized) |
+| Derived | `createMemo()` | `computed()` | `$derived()` | `computed()` | derived in render (auto-memoized) |
+| Effect | `createEffect()` | `watchEffect()` / `watch()` | `$effect()` | `effect()` | `useEffect()` (+ `useEffectEvent`) |
+
+When designing reactive state for code likely to outlive framework choices, model in this primitive form (atomic getter/setter, derived, effect) so migration is mechanical.
+
+> **Solid 2.0 (beta, March 2026):** first-class async (computations can return Promises), reworked Suspense with deterministic batching, self-healing error boundaries, mutable derivations, lazy memos, pull-based SSR.
+
+---
+
+## 9. Anti-Patterns
 
 | # | Anti-pattern | Problem | Fix |
 |---|-------------|---------|-----|
@@ -180,4 +264,4 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
 | 6 | Client-only data in RSC era | Ignores server-side benefits | Read in RSC, client stores for interactive parts only |
 | 7 | `onSuccess` callbacks in v5 queries | Removed API — silent failures | Move logic to `queryFn` or use `useEffect` on `data` |
 
-**Source:** [TanStack Query v5 Migration](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5) · [nuqs v2 Docs](https://nuqs.47ng.com/) · [React State Management 2025](https://www.developerway.com/posts/react-state-management-2025) · [Zustand Best Practices](https://zustand.docs.pmnd.rs/)
+**Source:** [TanStack Query v5 Migration](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5) · [`useSuspenseQuery`](https://tanstack.com/query/latest/docs/framework/react/reference/useSuspenseQuery) · [nuqs Docs](https://nuqs.47ng.com/) · [Announcing Zustand v5](https://pmnd.rs/blog/announcing-zustand-v5/) · [Zustand v5 Migration](https://zustand.docs.pmnd.rs/migrations/migrating-to-v5) · [RTK Query Overview](https://redux-toolkit.js.org/rtk-query/overview) · [Pinia v3 Migration](https://pinia.vuejs.org/cookbook/migration-v2-v3.html) · [Solid 2.0 Beta — InfoQ](https://www.infoq.com/news/2026/05/solidjs-2-async/) · [TC39 Signals Proposal](https://github.com/tc39/proposal-signals)

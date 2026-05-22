@@ -1,6 +1,6 @@
 # Vue 3 & Svelte 5 Patterns
 
-Production-quality patterns for Vue 3.5 Composition API and Svelte 5 Runes.
+Production-quality patterns for Vue 3.5+/3.6 Composition API (including Vapor Mode), Svelte 5 Runes, SvelteKit 2 remote functions, and Nuxt 4.
 
 ---
 
@@ -141,6 +141,39 @@ const CommentSection = defineAsyncComponent({
 
 ---
 
+## Vue 3.6 "Vapor Mode" (Beta — Q2 2026)
+
+Vue 3.6 is in beta (v3.6.0-beta.x as of May 2026) with a major refactor of `@vue/reactivity` based on **alien-signals**. The headline feature is **Vapor Mode** — an opt-in compile-to-DOM strategy that **eliminates the virtual DOM** for components that enable it.
+
+```vue
+<script setup vapor lang="ts">
+// Add the `vapor` attribute to <script setup> to opt into Vapor Mode
+// Component is compiled to direct DOM operations — no VDOM diff
+import { ref } from 'vue';
+
+const count = ref(0);
+</script>
+
+<template>
+  <button @click="count++">Count: {{ count }}</button>
+</template>
+```
+
+**Status & rules:**
+- **Feature-complete with VDOM mode**, but officially **unstable** — recommended for "partial usage in existing apps" or "small new apps." **Not production-stable yet.**
+- Performance: parity with Solid.js and Svelte 5 in JS-Framework-Benchmark (mounts 100k components in ~100ms).
+- `<script setup>` only — Options API is **not supported** in Vapor components.
+- Not supported in Vapor: `getCurrentInstance()`, lifecycle events you can subscribe to from outside, global properties.
+- Custom directives use a modified interface requiring reactive getters.
+- **Opt-in per-component**: mix Vapor and VDOM components freely in the same app.
+- **Roadmap (Vue team estimates):** Q3 2026 — Transition/KeepAlive compat; Q4 2026 — possible stable release; 2027 — possible default mode.
+
+### Reactivity Refactor (3.6 — applies to all components)
+
+The `@vue/reactivity` core was rewritten on top of alien-signals, delivering further memory and CPU wins across all 3.6 apps even without Vapor Mode. No code changes required — existing 3.5 code runs faster.
+
+---
+
 ## Vue Composables (Custom Hooks)
 
 ```typescript
@@ -169,11 +202,14 @@ export function useAsync<T>(asyncFn: () => Promise<T>): {
 
 ---
 
-## Pinia Store
+## Pinia Store (v3 — Vue 3 only)
+
+Pinia 3.0 (released 2025) is a "boring" major — no new features, drops legacy deprecated APIs. Object-form `defineStore({ id: ... })` is **removed**; use string-id form. Requires Vue 3 and TypeScript 5+.
 
 ```typescript
 import { defineStore } from 'pinia';
 
+// Option Store
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as User | null,
@@ -194,6 +230,59 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 });
+
+// Setup Store (composition style — preferred for new code)
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+export const useCounter = defineStore('counter', () => {
+  const count = ref(0);
+  const doubled = computed(() => count.value * 2);
+  function increment() { count.value++; }
+  return { count, doubled, increment };
+});
+```
+
+**Pinia Colada** (companion async data layer, first stable release early 2026) handles server state — fetching, dedup, cache invalidation — concerns Pinia core intentionally leaves out of scope. Treat it as Vue's parallel to TanStack Query.
+
+---
+
+## Nuxt 4 (Released 2025-07)
+
+Nuxt 4 is a stability-focused release. Most changes were already opt-in via `compatibilityVersion: 4` in Nuxt 3.
+
+### `app/` Directory (biggest structural change)
+
+```
+my-nuxt-app/
+├── app/              # NEW — all client + app code lives here
+│   ├── pages/
+│   ├── components/
+│   ├── composables/
+│   └── app.vue
+├── server/           # server-only (API routes, middleware)
+├── shared/           # code usable from both app/ and server/
+├── public/
+└── nuxt.config.ts
+```
+
+- Improves file-watcher performance (no longer watches `node_modules`/`.git`).
+- Gives IDE clearer client vs. server context.
+- Flat (Nuxt 3) structure still works if you prefer.
+
+### Other key Nuxt 4 features
+
+| Feature | Details |
+|---------|---------|
+| Smart data fetching | Multiple components calling `useFetch`/`useAsyncData` with the same key **share data automatically**; cache cleans up on unmount |
+| Per-context tsconfig | Separate TS projects auto-generated for app / server / shared / builder — better autocomplete and type isolation. Still only **one `tsconfig.json`** at the project root |
+| Faster CLI | Node.js compile caching, native file watching, socket-based CLI ↔ Vite communication |
+| `vue-router` v5 | First major upgrade since Nuxt 3 |
+
+**Breaking changes:** removed Nuxt 2 compat from `@nuxt/kit` (module-author impact), cleaned-up legacy utilities, new TS setup may surface previously hidden type issues. Nuxt 3 receives maintenance support through **July 2026**. **Nuxt 5** (Nitro v3 + h3 v2 + Vite Environment API) is the next major.
+
+```bash
+npx nuxt upgrade --dedupe   # safest upgrade path
 ```
 
 ---
@@ -327,6 +416,60 @@ export const useAuthStore = defineStore('auth', {
 </nav>
 ```
 
+### SvelteKit 2.50+ — Remote Functions (Experimental → Stabilizing 2026)
+
+Type-safe RPC between client and server, defined as functions in `.remote.ts` files. Four variants — `query` (data), `form` (progressive-enhanced submit), `command` (JS-required mutation), `prerender` (build-time static).
+
+```ts
+// src/routes/todos.remote.ts
+import { query, form, command, getRequestEvent } from '$app/server';
+import { db } from '$lib/server/db';
+import { z } from 'zod';
+
+export const getTodos = query(async () => {
+  return db.todo.findMany();
+});
+
+export const addTodo = form(
+  z.object({ title: z.string().min(1) }),
+  async ({ title }) => {
+    await db.todo.create({ data: { title } });
+    await getTodos().refresh(); // server permission required (2026 hardening)
+  }
+);
+
+export const deleteTodo = command(z.string(), async (id) => {
+  await db.todo.delete({ where: { id } });
+});
+```
+
+```svelte
+<!-- src/routes/+page.svelte -->
+<script lang="ts">
+  import { getTodos, addTodo, deleteTodo } from './todos.remote';
+
+  const todos = getTodos();
+</script>
+
+<form {...addTodo}>
+  <input name="title" {...addTodo.fields.title.as('text')} />
+  <button {...addTodo.fields.action.as('submit', 'create')}>Add</button>
+</form>
+
+{#await todos then list}
+  {#each list as t (t.id)}
+    <li>{t.title} <button onclick={() => deleteTodo(t.id)}>×</button></li>
+  {/each}
+{/await}
+```
+
+**2026 hardening (kit@2.50+):**
+- Client-requested query `refresh()` now requires explicit server permission.
+- Caching keys are sorted for stable dedup.
+- Queries restricted to render contexts (no calls from arbitrary client code).
+- `field.as(type, value)` for default values; `buttonProps` removed — use `{...form.fields.action.as('submit', 'value')}` for multi-submit forms.
+- TypeScript **6.0** supported as of May 2026.
+
 ---
 
 ## Vue Performance Hints
@@ -357,4 +500,4 @@ const editor = markRaw(new Monaco.Editor(container));
 
 Use for: map libraries, chart libraries, editor instances, immutable config objects.
 
-**Source:** [Vue 3.5 Blog](https://blog.vuejs.org/posts/vue-3-5) · [Vue Composition API](https://vuejs.org/guide/extras/composition-api-faq) · [Svelte 5 Docs](https://svelte.dev/docs/svelte) · [Svelte 5 Migration Guide](https://svelte.dev/docs/svelte/v5-migration-guide) · [SvelteKit $app/state](https://svelte.dev/docs/kit/$app-state) · [Pinia Docs](https://pinia.vuejs.org/)
+**Source:** [Vue 3.5 Blog](https://blog.vuejs.org/posts/vue-3-5) · [Vue 3.6 Beta Release](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1) · [Vue Composition API](https://vuejs.org/guide/extras/composition-api-faq) · [Svelte 5 Docs](https://svelte.dev/docs/svelte) · [Svelte 5 Migration Guide](https://svelte.dev/docs/svelte/v5-migration-guide) · [SvelteKit Remote Functions](https://svelte.dev/docs/kit/remote-functions) · [SvelteKit $app/state](https://svelte.dev/docs/kit/$app-state) · [What's new in Svelte May 2026](https://svelte.dev/blog/whats-new-in-svelte-may-2026) · [Pinia v3 Migration](https://pinia.vuejs.org/cookbook/migration-v2-v3.html) · [Nuxt 4 Release](https://nuxt.com/blog/v4)
