@@ -3,6 +3,8 @@
 **Purpose:** Design data generators for property-based and fuzz testing.
 **Read when:** Building custom arbitraries/strategies for property-based tests.
 
+> **2026 framing.** Property-based generators became more load-bearing in 2026 specifically because they survive the AI-generated test problem: a Claude Code / Cursor-authored test suite often hits 80% line coverage with assertions too weak to catch real regressions (see `radar/references/ai-assisted-testing.md`). Property tests kill whole families of mutants at once because they assert on *invariants* (idempotence, commutativity, round-trip), not on a fixed expected string the AI happened to emit. Treat property tests as the **AI-codegen safety net**, not an optional add-on, for any module touched by AI authoring.
+
 ---
 
 ## Concept

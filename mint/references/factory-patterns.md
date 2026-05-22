@@ -3,6 +3,8 @@
 **Purpose:** Detailed factory pattern implementations across languages and frameworks.
 **Read when:** Designing factory structures for a specific tech stack.
 
+> **2026 toolchain.** Factory-style fixtures remain the right tool for deterministic, schema-shaped data. The 2026 additions live next to (not inside) the factories: pair Fishery / Polyfactory / gofakeit with **MSW 2 (Mock Service Worker)** + **`@mswjs/data`** for browser-side mocking and **`msw-auto-mock` v0.19+** for AI-generated mocks from OpenAPI specs (supports OpenAI / Anthropic / Azure providers). For AI agents that drive the browser at test time, the **`msw-mcp`** MCP server lets the agent install / swap MSW handlers dynamically. The factory still owns the data shape; MSW owns the network surface.
+
 ---
 
 ## Pattern Catalog

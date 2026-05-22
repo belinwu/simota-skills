@@ -166,3 +166,22 @@ const jaUser = {
 - Test environments with real PII require same security controls as production
 - Document anonymization approach for audit compliance
 - Consider Cloak agent for full privacy engineering compliance
+
+## 2026 Posture: Synthetic + Differential Privacy is the New Baseline
+
+By 2026 the legal advice on "scrub production then ship to staging" has hardened. Multiple 2026 GDPR guidance pieces describe the old scrub-and-ship pipeline as **legally indefensible** for QA environments — pseudonymized production data still pulls in GDPR obligations, and audit trails for "we removed enough" are not credible under examination.
+
+The 2026 gold standard:
+
+1. **Synthetic data generation** (GAN-based, VAE-based, or LLM-based — see `llm-generated-fixtures.md`) becomes the source for test data; production data does not leave the production boundary.
+2. **Differential Privacy** layered on top of the generator: calibrated noise during training prevents the synthetic model from memorising a specific individual. DP-protected synthetic data is the only widely-accepted shape that earns *anonymization* treatment under GDPR.
+3. **Hold-out validation**: keep a small, locked real-data set inside the production boundary and verify that models / queries trained on synthetic produce comparable results — that is the credibility evidence for regulators.
+
+Practical rules:
+
+- For greenfield projects in 2026, **skip the production-scrub pipeline entirely** — synthesise from schema + statistics, never from real rows.
+- For projects with a legacy scrub pipeline, **add DP** as the next step rather than refining the scrub. DP-protected outputs survive a GDPR audit; better-scrubbed PII does not.
+- DP alone may qualify as pseudonymization under GDPR Articles 4(5) / 89 (still under controller obligations) — full *anonymization* requires DP-protected synthetic generation, not raw DP on production rows.
+- For LLM-generated fixtures, validate DP claims independently — running `faker` + LLM through a privacy harness (e.g., SDV / Synthcity privacy metrics) is the audit evidence.
+
+See `replay-production-scrub.md` for the migration path off scrub-and-ship pipelines and `llm-generated-fixtures.md` for the LLM-based synthesis flow.
