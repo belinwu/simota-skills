@@ -133,3 +133,9 @@ Each trait entry in the character spec must list:
 - `visual_note` (one-line description)
 
 If you cannot produce all five fields for a trait, drop the trait. Hex never renders unevidenced visuals — that is the line that separates a diagnostic from decorative AI art.
+
+## Retrospective Use (2026 facilitator notes)
+
+When the rendered character is shown in a retrospective, surface the evidence list inline with the image — do not let the visual stand alone as decoration. The current generation of retro tooling (Miro AI retrospective templates, Parabol's grouping/AI summary, Reetro/Retrium) can cluster sticky notes and surface action items, but they do not enforce evidence linkage; Hex does. Pair every trait the team reacts to with its `path:line` citation in the discussion. References: <https://miro.com/miroverse/ai-retrospective-template/>, <https://www.parabol.co/comparison/miro-alternative/>.
+
+If the codebase exhibits AI-generated-code symptoms (high Duplication, churn-within-2-weeks, low refactor ratio per GitClear 2025: copy-pasted lines 12.3% in 2024 vs 8.3% in 2021, refactored "moved" lines 9.5% vs 24.1%), call this out as a "Brood" sub-motif overlay on the dominant trait rather than introducing a new category. Source: <https://www.gitclear.com/ai_assistant_code_quality_2025_research>.

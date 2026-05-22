@@ -91,7 +91,7 @@ Avoid:
 
 - Default: `2:3` portrait (suits a single-character full-body shot)
 - For dashboards / banners: `16:9` may be requested by the user; pad with environmental haze rather than upscaling the figure
-- Resolution: 1024×1536 baseline, 2048×3072 if downstream Sketch invocation supports it
+- Resolution: 1024×1536 baseline, 2048×3072 (or native 4K when Nano Banana Pro is selected) if downstream Sketch invocation supports it. Nano Banana 2 / Pro (released 2026-02-26) advertises 4K output and improved style-consistency across up to 14 reference images — useful when comparing evolution snapshots across quarters. Source: <https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/>.
 
 ## Tier Confirmation Checklist
 

@@ -46,7 +46,7 @@ sketch_handoff:
     - three-quarter view
   aspect_ratio: "2:3"
   resolution: "1024x1536"
-  suggested_model: "gemini-2.5-flash-image (Nano Banana 2)"
+  suggested_model: "gemini-3-pro-image-preview (Nano Banana Pro) for final renders; gemini-3.1-flash-image-preview (Nano Banana 2) for fast iterations"
   seed_strategy: "deterministic per-repo (hash of repo+date) for reproducible evolution snapshots"
 ```
 
@@ -87,8 +87,21 @@ HEX_TO_SKETCH_PROMPT:
   style_anchors: [<list>]
   aspect_ratio: "2:3"
   resolution: "1024x1536"
-  suggested_model: "gemini-2.5-flash-image"
+  suggested_model: "gemini-3-pro-image-preview"
   seed: <int>
   pii_scrub_result: passed
   notes: <optional, e.g. "T5 — confirm with user before publishing">
 ```
+
+## Model Selection (2026-05)
+
+Google's image-generation family expanded in early 2026. Pick by tier and use-case:
+
+| Model | Identifier | When to use |
+|-------|------------|-------------|
+| Nano Banana Pro | `gemini-3-pro-image-preview` | Final renders for T3–T5 characters, dashboard banners, anything published outside the dev team. Supports 4K, accurate text avoidance, 14-image style references. |
+| Nano Banana 2 | `gemini-3.1-flash-image-preview` | Iteration loop while tuning the prompt; launched 2026-02-26 alongside Nano Banana Pro. Combines Pro's quality cues with Flash speed. |
+| Nano Banana (legacy) | `gemini-2.5-flash-image` | Cheap snapshots for CI evolution timelines; superseded for end-deliverable use. |
+| Imagen 4 Standard | `imagen-4.0-generate-preview` | Alternative when DeepMind painterly bias is preferred; tiered pricing Fast $0.02 / Standard $0.04 / Ultra $0.06 per image. |
+
+Sources: <https://deepmind.google/models/gemini-image/>, <https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/>, <https://ai.google.dev/gemini-api/docs/image-generation>.

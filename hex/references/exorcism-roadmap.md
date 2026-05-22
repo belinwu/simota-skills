@@ -120,6 +120,18 @@ The roadmap is shaped to be consumable by:
 
 When emitting the roadmap, list which downstream agents are relevant. The user decides who executes.
 
+## Modern Refactoring Patterns (2026 reference)
+
+Choose the pattern that matches the trait's risk and blast radius. Cite the pattern in the roadmap so reviewers know the safety profile:
+
+- **Mikado Method** (Ellnestam & Brolund, Manning): graph-of-prerequisites approach for risky, far-reaching refactors. Always commit in a green state, then undo and re-enter from a safer leaf. Best fit for Phase 2 (Bind) structural items where the dependency tree is unknown up front. Mikado diagrams attached to partial PRs remain a 2025–2026 best practice. Reference: <https://understandlegacycode.com/blog/a-process-to-do-safe-changes-in-a-complex-codebase/>.
+- **Branch by Abstraction**: insert an abstraction seam between callers and the implementation under change, migrate callers incrementally on `main`, then retire the legacy side. Best fit for Phase 3 (Restore) when the team cannot afford a long-lived branch.
+- **Strangler Fig**: route slices of traffic to the new implementation behind a facade until the legacy implementation is fully replaced. Best fit for T4–T5 Architectural Violations where a big-bang rewrite is off the table.
+- **Boy Scout Rule**: bound, opportunistic cleanups co-located with feature PRs. Best fit for Phase 1 (Banish) cosmetic Code Smells and small TODO/Documentation traits.
+- **AI-assisted refactor (2026)**: Cursor 3.0 (Agents Window, April 2026), Windsurf SWE-1.5, and Claude Code (Opus 4.7 reached 87.6% on SWE-bench Verified in April 2026, with a 1M-token model context — though the CLI default is 200K) are now viable on multi-file refactors. Pair AI execution with one of the patterns above; do not skip the pattern. Sources: <https://www.shareuhack.com/en/posts/cursor-vs-claude-code-vs-windsurf-2026>, <https://www.nxcode.io/resources/news/cursor-vs-windsurf-vs-claude-code-2026>.
+
+Stack Overflow's 2025 Developer Survey reported 84% of developers use or plan to use AI tools but only 29% trust them (down 11pp YoY), with 66% spending more time fixing "almost-right" AI output and 45% citing it as their top frustration. Treat AI-driven refactor items as `medium` risk minimum and require human review before merge. Source: <https://stackoverflow.blog/2025/12/29/developers-remain-willing-but-reluctant-to-use-ai-the-2025-developer-survey-results-are-here/>.
+
 ## Empty Roadmap (T1 Veil)
 
 If the codebase is `T1`, the roadmap is intentionally short:

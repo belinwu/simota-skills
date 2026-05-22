@@ -90,3 +90,12 @@ score:
 
 - **T1 Veil**: do not over-style. Many young codebases land here legitimately. The image is a small, hopeful spirit, not a dramatic one.
 - **T5 Calamity**: confirm with the user before publishing. The visual is alarming and may overshoot if executive stakeholders see it without context. Include a short framing note in the report.
+
+## Industry Calibration Anchors (2026-05)
+
+When justifying a tier in a stakeholder report, cite calibrated industry baselines rather than gut feel:
+
+- **CodeScene CodeHealth™**: 1–10 scale where 10 is healthy; SonarQube/CodeScene benchmarking on public maintainability datasets shows CodeHealth is roughly 6× more accurate than SonarQube's Maintainability Rating at matching expert-developer judgment. Research notes a ~60% defect-risk lift when AI generates code into already-unhealthy files. Use as cross-reference when justifying T3+. Source: <https://codescene.com/product/code-health>.
+- **SIG Sigrid (ISO 25010 Maintainability)**: TÜViT-certified model, refreshed annually (2024 iteration current); five-star scale where 4★ is industry-average maintainability. Map Sigrid 1–2★ ≈ Hex T4–T5, 3★ ≈ T3, 4★ ≈ T2, 5★ ≈ T1. Source: <https://www.softwareimprovementgroup.com/blog/maintainability-model-2024-update/>.
+- **SonarQube 10.x Maintainability Rating**: A = remediation cost ≤ 5% of development cost, B ≤ 10%, C ≤ 20%, D ≤ 50%, E > 50%. Hex tier override does not replace this rating; it is a complementary anthropomorphization layer. Source: <https://docs.sonarsource.com/sonarqube-server/10.8/user-guide/code-metrics/metrics-definition>.
+- **McKinsey tech debt baseline**: CIOs estimate tech debt at 20–40% of the value of the technology estate before depreciation; 10–20% of new-product budget is diverted to debt remediation. Use as a business-impact framing for T4–T5 reports. Source: <https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/tech-debt-reclaiming-tech-equity>.
