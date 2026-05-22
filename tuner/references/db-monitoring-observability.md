@@ -29,6 +29,20 @@ Recommended `pg_stat_statements` posture:
 - enable via `shared_preload_libraries`
 - keep `track = 'top'` unless deeper nesting is necessary
 - size `pg_stat_statements.max` to fit memory budget
+- on **PG18+**, `pg_stat_statements` exposes ≥ 45 columns including a new `wal_buffers_full` column, and `IN (...)` lists are normalised more aggressively — refresh dashboards that bucketed on `query` text (`https://www.data-bene.io/en/blog/cumulative-statistics-in-postgresql-18/`)
+
+## AI-Assisted SQL Tuning Platforms (2026-05)
+
+These platforms layer rule + ML-driven tuning on top of `pg_stat_statements` / auto_explain output. Use as recommendation engines feeding Tuner — never as a substitute for plan-evidence review.
+
+| Platform | Specialisation | 2026 capability surface |
+|----------|----------------|-------------------------|
+| **pganalyze** | PostgreSQL-only; deep root-cause analysis | Query / Index / VACUUM Advisor, auto_explain integration with per-query trace correlation (`https://pganalyze.com/comparison/pganalyze-vs-datadog`) |
+| **Datadog DBM** | Multi-engine; APM correlation | Auto-collects `EXPLAIN ANALYZE` for PostgreSQL, ingests auto_explain output, DBM Recommendations surface prioritised bottlenecks (`https://www.datadoghq.com/blog/database-monitoring-explain-analyze/`, `https://www.datadoghq.com/blog/database-monitoring-recommendations/`) |
+| **EverSQL** (Datadog integration) | Automated SQL rewrite + index recommendation | One-click rewrite of slow queries surfaced in DBM (`https://docs.datadoghq.com/integrations/eversql/`) |
+| **AWS DevOps Guru for RDS** | Aurora/RDS host-level ML | Anomaly detection on host metrics + slow query log; routes to Performance Insights |
+
+Tuner contract: AI advisors generate **candidates**, not commitments. Always re-EXPLAIN against the actual workload, quantify the write overhead, and check adjacent queries for regression before accepting an AI-recommended index DDL.
 
 ## Alert Thresholds
 

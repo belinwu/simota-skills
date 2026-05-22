@@ -28,6 +28,8 @@ EXPLAIN (COSTS, VERBOSE)
 SELECT * FROM users WHERE email = 'test@example.com';
 ```
 
+**PG18+ behavior change**: `EXPLAIN (ANALYZE)` includes `BUFFERS` by default and `EXPLAIN ANALYZE` itself reports **per-scan-node index lookup counts** — essential for diagnosing skip-scan efficiency on multicolumn B-tree indexes (see `postgresql-18-performance.md`). On PG17 and earlier, `BUFFERS` must still be requested explicitly.
+
 ### MySQL
 
 ```sql

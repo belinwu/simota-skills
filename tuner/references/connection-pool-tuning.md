@@ -40,7 +40,7 @@ Total concurrent connections across all app instances × pool_size must stay bel
 | Transaction | One transaction | Lost between txns — app cache invalidated | PgBouncer default; incompatible with server-side prepared statements unless `prepared_statements = true` (PgBouncer 1.21+) |
 | Statement | One statement | Always lost | Rarely worth the fragility |
 
-PgBouncer 1.21+ supports server-side prepared statements in transaction mode via `max_prepared_statements`. Without it, frameworks relying on prepared statements (JDBC, asyncpg, pg-protocol binary) silently degrade to re-parse on every query.
+PgBouncer 1.21+ supports server-side prepared statements in transaction mode via `max_prepared_statements`. **PgBouncer 1.24.0 (2025-01) made this the default** with `max_prepared_statements = 200` (`https://www.crunchydata.com/blog/prepared-statements-in-transaction-mode-for-pgbouncer`). On PgBouncer `<1.24`, frameworks relying on prepared statements (JDBC, asyncpg, pg-protocol binary) silently degrade to re-parse on every query — verify the installed version before assuming compatibility.
 
 ## HikariCP Tuning (JVM)
 
@@ -71,7 +71,7 @@ reserve_pool_timeout = 3          # seconds to wait before using reserve
 server_lifetime = 1800            # recycle server conn every 30min
 server_idle_timeout = 600         # close idle server conn after 10min
 max_client_conn = 1000            # client-side ceiling
-max_prepared_statements = 200     # required for prepared stmt in txn mode (1.21+)
+max_prepared_statements = 200     # default in 1.24+; required to set explicitly on 1.21-1.23 for prepared stmt in txn mode
 query_wait_timeout = 120          # client waits at most 2min for a server slot
 ```
 

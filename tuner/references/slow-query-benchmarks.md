@@ -28,6 +28,20 @@ ORDER BY total_exec_time DESC
 LIMIT 20;
 ```
 
+On **PostgreSQL 18+**, `pg_stat_statements` adds the `wal_buffers_full` column and normalises `IN (...)` lists more aggressively (`https://www.data-bene.io/en/blog/cumulative-statistics-in-postgresql-18/`). Add `wal_buffers_full` to ordering when WAL pressure is the suspected bottleneck:
+
+```sql
+-- PG18+: surface WAL-buffer-pressured statements
+SELECT query, calls, wal_buffers_full,
+       round(total_exec_time::numeric / NULLIF(calls,0), 2) AS mean_ms
+FROM pg_stat_statements
+WHERE wal_buffers_full > 0
+ORDER BY wal_buffers_full DESC
+LIMIT 20;
+```
+
+Combine with `auto_explain` for plan capture — Datadog DBM and pganalyze both consume `auto_explain` output for post-hoc bottleneck attribution (`https://www.datadoghq.com/blog/database-monitoring-explain-analyze/`).
+
 ## MySQL Slow Queries
 
 ```sql

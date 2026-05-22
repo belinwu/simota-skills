@@ -3,12 +3,33 @@
 Purpose: Use this file when optimizing pgvector queries, tuning HNSW/IVFFlat indexes, or diagnosing filtered vector search performance.
 
 Contents:
+- 2026-05 pgvector version posture
 - pgvector 0.8.0 Iterative Scan
 - HNSW vs IVFFlat comparison
 - Index parameter tuning
 - Filter optimization patterns
 - EXPLAIN ANALYZE for vector queries
 - Production recommended settings
+
+---
+
+## 2026-05 pgvector Version Posture
+
+The supported pgvector lineage as of 2026-05:
+
+| Version | Headline change | When to choose |
+|---------|-----------------|----------------|
+| `0.8.x` | HNSW iterative scan (`hnsw.iterative_scan`), parallel HNSW build | Production default if managed service supports it (Aurora `pgvector 0.8.0` available since 2025; `https://aws.amazon.com/blogs/database/supercharging-vector-search-performance-and-relevance-with-pgvector-0-8-0-on-amazon-aurora-postgresql/`) |
+| `0.9.x` (early 2026) | IVFFlat improvements, sparse vector support, further speed boosts (`https://callsphere.ai/blog/vector-database-benchmarks-2026-pgvector-qdrant-weaviate-milvus-lancedb`) | When self-managing PG and the dataset has high filter selectivity, sparse-vector use cases, or large IVFFlat indexes |
+
+Benchmarks (1M vectors, ann-benchmarks-style):
+- pgvector **HNSW @ ef_search=100**: p50 ≈ 2.1ms, p99 ≈ 4.3ms, recall@10 ≈ 0.971.
+- Qdrant default HNSW: p50 ≈ 1.8ms, p99 ≈ 3.6ms, recall@10 ≈ 0.978.
+- HNSW parallel build (PG17+ background workers) cut build time **30–50% on multi-core hosts** for 1M-vector indexes (`https://callsphere.ai/blog/vector-database-benchmarks-2026-pgvector-qdrant-weaviate-milvus-lancedb`).
+
+Trade-off rule: **stay on pgvector** when the workload is dominated by hybrid relational+vector queries inside one transaction. Move to a dedicated vector DB (Qdrant, Weaviate, Milvus, LanceDB) only when (a) raw QPS is the binding constraint, (b) the recall budget is tighter than what HNSW + iterative scan delivers, or (c) sparse + dense + lexical fusion is required.
+
+For TimescaleDB-style time-series + vector hybrid workloads, **Timescale rebranded to Tiger Data in June 2025** (`https://www.tigerdata.com/blog/timescale-becomes-tigerdata`); the vector extension is now `pgvectorscale` (Streaming DiskANN) and ships alongside Hypercore (hybrid row/columnar engine) on Tiger Cloud.
 
 ---
 

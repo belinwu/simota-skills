@@ -3,8 +3,10 @@
 Purpose: Use this file when working with PostgreSQL 18 features, planning upgrades, or leveraging new performance capabilities.
 
 Contents:
+- 2026-05 release status
 - AIO subsystem
 - pg_stat_io enhancements
+- pg_stat_statements 2026 metrics
 - WAL I/O tracking
 - per-backend I/O functions
 - Merge Join improvements
@@ -13,6 +15,24 @@ Contents:
 - pg_upgrade planner statistics preservation
 - EXPLAIN ANALYZE index lookup counts
 - Migration checklist
+
+---
+
+## 2026-05 Release Status
+
+PostgreSQL 18 GA was **2025-09-25** (`https://www.postgresql.org/about/news/postgresql-18-released-3142/`). As of 2026-05 the supported minor stream is:
+
+| Minor | Release date | Notes |
+|-------|--------------|-------|
+| `18.0` | 2025-09-25 | GA |
+| `18.1` | 2025-11-13 | First scheduled minor |
+| `18.2` | 2026-02-12 | Quarterly Feb minor |
+| `18.3` | 2026-02-26 | Out-of-cycle security release (`https://www.postgresql.org/about/news/out-of-cycle-release-scheduled-for-february-26-2026-3241/`) |
+| `18.4` | 2026-05-14 | Current as of 2026-05-22 (`https://www.postgresql.org/about/news/postgresql-184-178-1612-1516-and-1421-released-3235/`) |
+
+The PostgreSQL project ships at least one minor release per quarter on the **2nd Thursday of Feb / May / Aug / Nov** (`https://www.postgresql.org/support/versioning/`). Always pin to the latest 18.x minor (currently 18.4) in production unless a regression is documented in the release notes.
+
+PostgreSQL 19 entered **feature freeze on 2026-04-08** and **Beta 1 is scheduled for 2026-06-04** with GA targeted at **2026-09** (`https://pgpedia.info/postgresql-versions/postgresql-19.html`, `https://www.postgresql.org/message-id/3a3283b1-5f4b-4f11-bae8-56f998454a01@postgresql.org`). PG18 is the production target for new deployments in 2026-05; do **not** plan production cutovers to PG19 before its GA.
 
 ---
 
@@ -41,9 +61,19 @@ io_combine_limit = '128kB'
 
 ### Expected Impact
 
-- Sequential scan throughput: 20-40% improvement on NVMe with `io_uring`
+- Sequential scan throughput: 20-40% improvement on NVMe with `io_uring`; the project measured **up to 3× on cold-cache reads** (`https://www.postgresql.org/about/news/postgresql-18-released-3142/`).
 - Checkpoint I/O: reduced stall during heavy write workloads
 - Parallel query I/O: improved utilization of parallel workers
+
+### 2026 Production Posture for `io_method`
+
+| Method | When to use | Notes |
+|--------|-------------|-------|
+| `worker` (default) | Any OS, conservative deployments, the safe baseline | No kernel dependency; uses background I/O worker processes |
+| `io_uring` | Linux kernel ≥ 5.1 with NVMe and `--with-liburing` build | Best measured throughput; **lower syscall overhead and elimination of I/O worker processes are the recommended setting for maximizing performance on PG18** (`https://aiven.io/blog/exploring-why-postgresql-18-put-asynchronous-io-in-your-database`, `https://pganalyze.com/blog/postgres-18-async-io`). Verify the build flag: `pg_config --configure | grep liburing`. |
+| `sync` | Troubleshooting, A/B comparison vs PG17 | Disables AIO; do not use as a steady-state production setting on PG18+ |
+
+Verify the binary was actually compiled with `liburing` before recommending `io_uring`; managed services often ship without it (Aurora 16/17 compatibility mode notably does not yet expose PG18's AIO knobs). Inspect `pg_aios` to confirm dispatch is async, not silently downgraded to worker/sync.
 
 ---
 
@@ -76,6 +106,28 @@ SELECT backend_type,
        read_bytes / 1024 AS read_kb
 FROM pg_stat_io
 WHERE context = 'normal';
+```
+
+---
+
+## pg_stat_statements (PG18 2026 Posture)
+
+PG18 reworks `pg_stat_statements` and surrounding cumulative-statistics infrastructure (`https://www.data-bene.io/en/blog/cumulative-statistics-in-postgresql-18/`, `https://postgrespro.com/blog/pgsql/5972351`):
+
+- **Query grouping is more aggressive** — long `IN (1, 2, 3, ...)` lists collapse to a single normalised entry (only first and last literals are retained). Existing dashboards that bucketed on `query` text may show fewer, denser rows.
+- **`wal_buffers_full`** column added — directly maps `wal_buffers` pressure to specific statements, removing a long-standing tuning blind spot.
+- The view now exposes **≥ 45 columns** (`https://medium.com/@amareswer/postgresql-performance-tuning-with-pg-stat-statements-5f849c3d49ab`). Reuse-aware extensions (`pg_stat_monitor`, pganalyze, Datadog DBM, Aurora `aurora_stat_plans`) inherit the new columns automatically.
+- **WAL statistics moved into `pg_stat_io`** (and `pg_stat_wal` correspondingly slimmed). Update any monitoring queries that JOIN both views.
+
+```sql
+-- Top wal_buffers_full offenders (PG18+)
+SELECT query, calls,
+       wal_buffers_full,
+       round(total_exec_time::numeric / NULLIF(calls,0), 2) AS mean_ms
+FROM pg_stat_statements
+WHERE wal_buffers_full > 0
+ORDER BY wal_buffers_full DESC
+LIMIT 20;
 ```
 
 ---

@@ -32,23 +32,28 @@ SELECT wait_event_type, count(*) FROM pg_stat_activity GROUP BY 1;
 
 ---
 
-## Connection Pooler Comparison (2025)
+## Connection Pooler Comparison (2026-05)
 
 ### PgBouncer vs Supavisor vs PgCat
 
 | Feature | PgBouncer | Supavisor | PgCat |
 |---------|-----------|-----------|-------|
-| Language | C | Elixir | Rust |
+| Language | C | Elixir (OTP) | Rust |
 | Architecture | Single-process | Distributed (OTP) | Multi-process |
-| Modes | Session / Transaction / Statement | Transaction | Session / Transaction |
+| Modes | Session / Transaction / Statement | Session (port 5432) / Transaction (port 6543) | Session / Transaction |
+| Prepared statements in transaction mode | **Enabled by default since 1.24.0 (2025-01)** with `max_prepared_statements = 200` (`https://www.crunchydata.com/blog/prepared-statements-in-transaction-mode-for-pgbouncer`); originally added in 1.21 (`https://pganalyze.com/blog/5mins-postgres-pgbouncer-prepared-statements-transaction-mode`) | Named prepared statement support since Supavisor 1.0 | Supported |
 | Multi-tenant | Manual (per-database config) | Native (tenant isolation) | Native (sharding) |
 | Serverless support | Limited | Excellent (HTTP/WebSocket) | Limited |
 | HTTP connections | No | Yes | No |
 | WebSocket connections | No | Yes | No |
 | Sharding | No | No | Yes (built-in) |
-| Performance (50+ connections) | Good | Good | Best |
+| Performance (50+ connections) | Good | Good (proxies millions of client conns into a stateful native PG pool) | Best |
 | Observability | Basic metrics | Prometheus native | Prometheus native |
-| Cloud integration | Self-hosted | Supabase native | Self-hosted |
+| Cloud integration | Self-hosted | Supabase native, integrates with Prisma/Drizzle/Psycopg | Self-hosted |
+
+**2026-05 update**: `max_prepared_statements > 0` is now the **PgBouncer 1.24+ default**, which removes the historical silent re-parse penalty for JDBC/asyncpg/pg-protocol-binary clients in transaction mode. Audit any PgBouncer install on `<1.24` and either upgrade or explicitly set `max_prepared_statements = 200`.
+
+**Supavisor port convention** (Supabase, in effect since 2025-02-28): port `5432` is session mode and port `6543` is transaction mode. The legacy session-mode-on-6543 layout was deprecated. Update connection strings before assuming the historical mapping.
 
 ### When to Use Each
 

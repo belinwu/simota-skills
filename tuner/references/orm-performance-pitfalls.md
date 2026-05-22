@@ -61,18 +61,18 @@ Recommended hybrid:
 
 ---
 
-## Prisma 7 Architecture Changes (2025)
+## Prisma 7 Architecture Changes (2025-11 / 2026-05 posture)
 
-Prisma 7 replaced the Rust-based query engine with a TypeScript/WASM implementation, significantly reducing bundle size and cold-start overhead.
+Prisma 7.0.0 shipped on **2025-11-19** (`https://www.prisma.io/blog/from-rust-to-typescript-a-new-chapter-for-prisma-orm`), replacing the Rust-based query engine with a TypeScript/WASM Query Compiler. As of 2026-05, this is the production default — note that **Prisma 7.3 has a known regression vs Prisma 6** on certain workloads (`https://github.com/prisma/prisma/issues/29099`), so always benchmark on the exact 7.x patch you plan to ship.
 
 ### Performance Impact
 
-| Metric | Prisma 6 (Rust engine) | Prisma 7 (WASM) | Change |
-|--------|------------------------|-----------------|--------|
-| Bundle size | ~14MB | ~1.6MB | -89% |
-| Cold start (serverless) | ~1500ms | ~115ms | -92% |
-| Query speed (CRUD) | baseline | ~3.4x faster | +240% |
-| Memory footprint | Higher (native binary) | Lower (WASM) | Reduced |
+| Metric | Prisma 5/6 (Rust engine) | Prisma 7 (WASM) | Change | Source |
+|--------|--------------------------|-----------------|--------|--------|
+| Bundle size | ~14MB | ~1.6MB | -85 to -90% | `https://www.prisma.io/blog/prisma-orm-without-rust-latest-performance-benchmarks` |
+| Cold start (serverless, AWS Lambda Node 22) | engine init 500–1500ms + first query 600–1800ms | engine load 40–80ms + first query 80–150ms | up to ~9× faster | `https://www.prisma.io/blog/prisma-7-performance-benchmarks` |
+| `findMany` 25,000 records | 185ms | 55ms | ~3.4× faster | `https://www.prisma.io/blog/rust-to-typescript-update-boosting-prisma-orm-performance` |
+| Memory footprint | Higher (native binary) | Lower (WASM) | Reduced | — |
 
 ### Migration Notes
 
@@ -131,23 +131,29 @@ const usersWithPosts = await db.query.users.findMany({
 
 ---
 
-## ORM Selection Comparison (2025)
+## ORM Selection Comparison (2026-05)
 
 | ORM | Bundle | Cold Start | Query Speed | N+1 Safety | Type Safety | Best For |
 |-----|--------|-----------|-------------|------------|-------------|----------|
-| Drizzle | 57KB | ~75ms | Fastest (≈ raw SQL) | High (Relational API) | Excellent | Serverless, edge, performance-critical |
-| Prisma 7 | 1.6MB | ~115ms | Fast (3.4x vs Prisma 6) | Good (include) | Excellent | Full-stack, DX-focused, rapid development |
+| Drizzle | ~57KB | ~75ms | Fastest (≈ raw SQL) | High (Relational API) | Excellent | Serverless, edge, performance-critical |
+| Prisma 7 | ~1.6MB | 80–150ms first query | Fast (3.4× vs Prisma 6) | Good (include) | Excellent | Full-stack, DX-focused, rapid development |
 | TypeORM | ~5MB | ~300ms | Moderate | Poor (lazy default) | Moderate | Legacy, enterprise patterns |
 | Sequelize | ~10MB | ~400ms | Slow | Poor | Weak | Legacy Node.js projects |
+| Hibernate ORM 7.x (JVM) | n/a (JVM) | JVM warmup-dominated | Fast with FetchProfiles / `JOIN FETCH` | Good (FetchProfile, EntityGraph) | Strong (Jakarta Persistence) | Spring Boot, legacy JVM modernisation |
 
-**General performance order (2025):**
+**General performance order (2026-05):**
 
 ```text
 Drizzle ≈ raw SQL > Prisma 7 >> TypeORM > Sequelize
 ```
 
+Watch-outs:
+- **Prisma 7.3 regression** on some workloads vs Prisma 6 — pin to the latest verified patch; benchmark before shipping (`https://github.com/prisma/prisma/issues/29099`).
+- **Hibernate ORM 7.0/7.1** is the current LTS-aligned line; for new Spring Boot 3.4+ projects, Hibernate 7 ships modern JPMS support and stricter SQL bind handling. N+1 prevention still relies on explicit `@FetchProfile` / `EntityGraph` / `JOIN FETCH` — there is no automatic `Bullet`-style runtime detector in Hibernate itself; use OpenTelemetry or `hibernate.session_metrics` to surface them.
+
 **Decision guide:**
 - Serverless / edge: Drizzle (bundle size + cold start)
-- Rapid development / strong DX: Prisma 7
+- Rapid development / strong DX: Prisma 7 (verify patch version)
 - N+1-critical reporting: Drizzle Relational Queries or raw SQL
 - Legacy TypeORM migration: evaluate Prisma 7 or Drizzle
+- JVM modernisation: Hibernate 7.x with explicit FetchProfile / JOIN FETCH
