@@ -153,3 +153,26 @@ export default defineConfig({
 - If a suite is flaky and root cause is still unknown after repeated runs, collect logs and move to `FLAKY` mode.
 - If retries hide a real functional failure, remove retries and investigate immediately.
 - If the flaky rate exceeds `5%`, treat it as a release-risk issue, not a local annoyance.
+
+## 2026 Cost Anchor: Why Flakiness Is a P1, Not Toil
+
+Recent 2026 industry surveys put the cost of a flaky-test culture at **`~6–8` engineer-hours per developer per week** in lost productivity (rerun cycles, lost trust in CI, time wasted re-investigating already-known noise). That dominates the cost of most "quality" line items — treat any flaky-rate over the warning threshold above as a release-risk discussion, not a maintenance task.
+
+## Quarantine-First Policy (2026 default)
+
+Blind retries hide signal and let real regressions slip through alongside genuine flakes. The 2026 preferred posture is **quarantine first, then fix**:
+
+1. **Detect** with rerun statistics (`vitest run --repeat`, `pytest --count`, `cargo nextest --retries 0 -j 1`).
+2. **Quarantine** with an explicit `test.skip` linked to a ticket — never silently `xfail`.
+3. **Run quarantined tests in a separate CI lane** so they cannot block PRs but also cannot be forgotten — fail the build when the quarantine queue exceeds the policy threshold (default: `1%` of total tests).
+4. **Fix at root** with the table at the top of this file; do not rely on `retry: 2` as the steady state.
+
+This sequence is now built into many CI platforms (CircleCI Test Insights, BuildPulse, Datadog CI Visibility, GitHub Actions test-reporter integrations) — pick one and wire the quarantine queue into the dashboard rather than carrying it in code comments.
+
+## AI Codegen Failure Mode: Tests That Cannot Detect Regressions
+
+When the underlying test was AI-generated (Claude Code / Cursor / Copilot agents), the most common reason for "passes locally, fails in CI" is *not* a race condition — it is that the assertion only checks call-shape, not behavior, and CI exposes a difference the test was never going to detect. Before running the flaky playbook on an AI-generated test:
+
+- Verify the test fails when the relevant production code is mutated (`mutation-testing.md`).
+- Verify the test asserts on **business outcome**, not on mock-call sequence or string contents of a synthesised log line.
+- If neither passes, the test is not flaky — it is structurally insufficient; rewrite rather than stabilise.

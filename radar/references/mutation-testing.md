@@ -83,6 +83,21 @@ PR-tier mutation job: scope to git-diff changed files only; keep wall time < 5 m
 - Using mutation score as the only quality signal — it complements, not replaces, branch coverage and property-based tests.
 - Ignoring survived mutants in new code while chasing survivors in legacy code — new-code ratchet matters more.
 
+## 2026 Rationale: The AI-Generated-Code Safety Net
+
+By 2026 the empirical case for mutation testing has shifted from "nice-to-have for legacy auditing" to **"required safety net on any module touched by AI codegen"**. Independent reports from 2026 ("Mutation Testing: The Missing Safety Net for AI-Generated Code", `alexop.dev` on Vitest browser mode + AI agents, `johal.in` Stryker .NET / MutPy guide) converge on the same observation:
+
+- AI assistants produce tests that hit lines but **omit meaningful assertions** — `80%` line coverage with weak assertions catches almost nothing.
+- Branch coverage cannot distinguish "the test ran the branch" from "the test would notice if the branch's behavior changed". Mutation testing can.
+- The mutation algorithm is mechanical enough that an AI coding agent can perform it manually when no tool exists for the language (apply mutant → run test → restore → record).
+
+Operational guidance:
+
+1. **Gate AI-authored modules on mutation score, not branch coverage.** Critical modules: `≥ 85%` mutation score; standard: `≥ 60%`. Branch coverage alone passes too easily on AI-generated suites.
+2. **Run mutation testing in the same PR that introduces AI-authored code.** Deferring it to nightly lets the "passes-but-asserts-nothing" failure mode reach main.
+3. **Pair with property-based tests** (`fast-check`, Hypothesis, `proptest`) — they kill whole mutant families at once and reduce the assertion-tightening workload.
+4. **Use ML-assisted equivalent-mutant pruning** where the tooling supports it (Stryker .NET reports `~30%` noise reduction in 2026 builds) — equivalent mutants compound on AI-generated code because the model often emits semantically redundant guard clauses that are by definition equivalent.
+
 ## Pair With
 
 - **Property-based tests** (fast-check, Hypothesis, proptest): hypothesis + mutmut on async code has been reported to lift scores from 70% → 92% (johal.in 2026). Property tests kill whole classes of mutants at once.

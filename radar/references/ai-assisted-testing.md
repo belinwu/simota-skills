@@ -1,4 +1,4 @@
-# AI-Assisted Testing & Modern Trends (2025-2026)
+# AI-Assisted Testing & Modern Trends (2026-05 snapshot)
 
 Purpose: Use AI to accelerate testing without delegating judgment. Read this when Radar is asked to generate tests with AI assistance or evaluate AI-generated test suites.
 
@@ -16,6 +16,17 @@ Use these numbers as directional context, not as deployment criteria:
 - AI-assisted test creation can reduce drafting time by roughly `50-70%`
 - AI-generated tests often require substantial rewrite; assume `> 70%` may need revision
 - human review remains mandatory even when generated tests look plausible
+- A widely-cited 2026 observation: AI assistants (Claude Code, Cursor, Copilot) produce **plausible tests that pass without asserting anything meaningful** — `80%` line coverage with weak assertions catches almost nothing. Treat coverage and AI-generated test counts as inputs, not as quality signals.
+- Mutation testing is now **table stakes** for any suite touched by AI generation; see `mutation-testing.md`. Stryker (JS/TS), PIT (Java), MutPy / mutmut (Python), Stryker.NET, and `cargo-mutants` (Rust) are the 2026 production toolchains.
+
+## Tooling Snapshot (2026-05)
+
+| Layer | 2026 default | Notes |
+|-------|---------------|-------|
+| Unit / integration (JS / TS) | **Vitest** for new projects; Jest 30 for incumbent codebases | Vitest 4.x: `~5x` faster cold start, `~28x` faster watch reruns than Jest 30; native browser mode replaces JSDOM for component tests |
+| E2E (web) | **Playwright** | `~33M` weekly npm downloads, `~45%` adoption among QA pros; built-in auto-waiting and a first-party MCP server + agent-mode for natural-language test generation (TestDino, ZeroStep, Bug0 sit on top of this) |
+| Self-healing E2E | Playwright + AI rewrite tools | Use to recover from selector / locator drift only; never to reinterpret intended product behavior — see `## Self-Healing Test Boundaries` |
+| Mutation testing | Stryker / PIT / MutPy / Stryker.NET / cargo-mutants | Required companion when the underlying code is AI-generated |
 
 ## AI Test Generation Rules
 
