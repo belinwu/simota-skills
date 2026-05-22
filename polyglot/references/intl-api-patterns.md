@@ -2,6 +2,8 @@
 
 Native JavaScript `Intl` API patterns for locale-aware formatting. These work in all modern browsers and Node.js without any library.
 
+> **2026 `Intl` baseline.** The platform now ships these as Baseline Widely Available: `Intl.Segmenter` (grapheme / word / sentence segmentation — replaces `lodash.words` / manual regex), `Intl.DurationFormat`, `Intl.DisplayNames` (locale names, language names, region names, scripts, currencies), and the full set of `Intl.PluralRules` / `Intl.NumberFormat` updates from **CLDR 47** (Oct 2025). Browsers and Node 22+ bundle a current CLDR, but long-lived Docker containers may ship with an older ICU — refresh the base image on the same cadence as `tzdata`. See `polyglot/references/library-setup.md` for runtime-pinning guidance.
+
 ---
 
 ## Date Formatting (Intl.DateTimeFormat)

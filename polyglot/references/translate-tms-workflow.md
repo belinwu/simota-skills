@@ -20,11 +20,21 @@ If the ask is "wire Lokalise webhook / set translator brief / add placeholder QA
 | Phrase (Strings + TMS) | Enterprise workflow automation, branching, advanced QA | Large enterprise with review workflows |
 | Smartling | Translation memory depth, LQA tooling, best-in-class for high-volume marketing | Marketing-heavy sites, regulated industries |
 | Transifex | GitLab/GitHub native flows, resource-file-oriented | Open source, doc-heavy projects |
+| Locize | Format-preserving (writes whatever you give it — MF1 / MF2 / plain), i18next-native, CDN-served | i18next-first projects, MF2 pilot |
 
 Selection rules:
 - Project already has one → keep it. Never multi-TMS the same string set.
 - Pick based on **source format and translator pool**, not dashboard UI preferences.
-- Verify the TMS supports ICU MessageFormat (MF1 minimum, MF2 for newer projects) — breakage here is rewrite-level cost.
+- Verify the TMS supports **ICU MessageFormat 1**. MF2 support remains spotty across major TMS platforms as of 2026-05 — Crowdin's monthly release notes had no MF2 mentions through the first half of 2026, Lokalise and Phrase have not announced first-class MF2, and most format-preserving stores (Locize) simply forward the message text. Treat MF2 as a `12-24` month migration target, not a 2026 default.
+
+### LLM-Based Translation Loop (2026 supplement)
+
+A growing pattern in 2026 pairs the TMS with an **LLM translation step** as the first pass:
+
+- `i18n-actions/ai-i18n` (GitHub Action) — extracts strings from XLIFF / JSON, sends only the diff to an LLM provider (Anthropic / OpenAI / Ollama), commits results back to the repo. Drop-in alternative to Lokalise / Phrase / Crowdin for small / medium projects.
+- For larger projects: keep the TMS as the system of record, but configure its **MT engine** to use an LLM (Claude / GPT-4-class) for the pre-translation pass before human review. Reports show LLM pre-translation outperforms classical neural MT for many languages, and reduces the human-reviewer workload by ~`30-50%` on routine UI copy.
+
+Hard rule: LLM-generated translations **must pass through a human reviewer** for any user-facing copy that ships. The LLM pass is "draft", not "ship". Legal / regulatory copy (privacy notice, ToS, financial disclosures) MUST be human-translated and reviewed; never auto-ship LLM output for those surfaces.
 
 ## Source → TMS → Target Pipeline
 

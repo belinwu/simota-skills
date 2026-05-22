@@ -2,6 +2,20 @@
 
 Patterns for ICU MessageFormat syntax and translation file organization.
 
+## 2026 Format Landscape: ICU MF1 Stays the Default
+
+| Format | Status (2026-05) | Recommended for |
+|--------|-------------------|------------------|
+| **ICU MessageFormat 1** | Stable, default | Every new project in 2026; covered by every TMS (Lokalise / Crowdin / Phrase / Locize / Tolgee) and every major library (i18next, FormatJS / react-intl, next-intl, vue-i18n, LinguiJS) |
+| **MessageFormat 2** | Stable spec since 2025; refinements in CLDR 47 (Oct 2025) and CLDR 48 | Greenfield projects with MF2-aware tooling, or libraries piloting MF2 (e.g., experimental i18next adapter) — **do not migrate** an MF1 codebase to MF2 yet, the TMS / SDK ecosystem has not caught up |
+| **CLDR 47** | Current shipping release; powers `Intl.PluralRules`, `Intl.NumberFormat`, `Intl.RelativeTimeFormat` in modern runtimes | Pull in via tzdata-style OS package + JDK / browser ICU refresh |
+
+Practical posture for 2026:
+
+- **Default to ICU MessageFormat 1** for new code. Every TMS and every mainstream framework still consumes MF1; switching to MF2 today means manually patching the round-trip pipeline at every TMS boundary.
+- **Watch MessageFormat 2** as a 12-24 month migration target. Locize and a handful of next-intl experiments support it; broad TMS support (Crowdin / Lokalise / Phrase) is still pending — Crowdin's monthly 2026 release notes contained zero MF2 mentions through the first half of 2026.
+- **Refresh CLDR / ICU** on the same cadence as tzdata. CLDR 47 changes plural categories for several minority languages and rounding behaviour for several currencies; long-lived containers running on CLDR 45 or older will silently disagree with newer browsers on the same input.
+
 ---
 
 ## ICU Message Format
