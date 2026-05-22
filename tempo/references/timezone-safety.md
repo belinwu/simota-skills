@@ -69,6 +69,16 @@ Never accept user input as an abbreviation. Always normalize to IANA or reject.
 - **Container gotcha**: A long-lived container may ship with stale tzdata. Update base image or mount `/etc/timezone` + `/usr/share/zoneinfo` from host.
 - Schedule a quarterly review of tzdata version in production.
 
+### 2026 DST Policy Watch
+
+DST 2026 in the US runs **2026-03-08 (forward) → 2026-11-01 (back)**. Most of Arizona and all of Hawaii stay on standard time year-round. The **Sunshine Protection Act** has been re-introduced in every congressional term since 2018 — it passed the US Senate by unanimous consent in 2022 but expired without a House vote, and several US states have passed permanent-DST or permanent-standard-time bills contingent on federal approval that has not yet arrived.
+
+Operational rule until the law changes:
+
+- Treat permanent DST / permanent standard time as **possible future tzdata changes**, never as current truth. A scheduler that hard-codes "US/Eastern shifts twice a year" must keep doing so until the IANA `tzdata` release flips it.
+- Subscribe to the IANA `tz-announce` mailing list. Treat a tzdata release that flips a major-country DST rule as an emergency-grade update — re-deploy containers, refresh JDK `tzdb.dat`, refresh browser bundles. Do NOT wait for the next base-image refresh cycle.
+- Audit hard-coded "spring/fall" boundary checks at the application layer — these become silently wrong the moment a jurisdiction abolishes DST. The correct check is always `zoneinfo` lookup, never a hand-rolled `if month == 3`.
+
 ---
 
 ## DST Boundary Pitfalls

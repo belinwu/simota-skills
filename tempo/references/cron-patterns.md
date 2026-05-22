@@ -2,6 +2,8 @@
 
 Complete reference for cron expression design, validation, and platform-specific behavior. Read when authoring or reviewing any cron expression.
 
+> **2026 framing: is cron the right tool?** Treat cron as the right answer when the job is **stateless, idempotent, and fits comfortably in one execution window** — `nightly ETL trigger`, `cache pre-warm`, `cert-renewal poll`. Reach for a durable workflow scheduler (Temporal Schedules, Cadence, Inngest, Azure Durable Functions) when the work is long-running, must survive worker crashes, needs catch-up after operator pause, or needs first-class "wait hours / days for an external signal" semantics. Kubernetes CronJob remains the cheap default for stateless containerised jobs; Temporal Schedules become the cheaper choice once the job grows retry / pause / time-machine requirements that you would otherwise reimplement on top of cron.
+
 ---
 
 ## Field Formats: 5-field vs 6-field

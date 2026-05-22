@@ -2,6 +2,8 @@
 
 Complete reference for the unhappy-path half of scheduling. Read when designing retry policies, DLQs, idempotency keys, or rate limits.
 
+> **2026 framing: do you need to write retries by hand?** When the platform offers durable retries (Temporal Schedules, Cadence, Inngest, Azure Durable Functions, AWS Step Functions, Hatchet, Trigger.dev), prefer **declarative retry policy** + **idempotent activity / step function** over hand-rolling backoff loops in application code. Hand-rolled retries silently lose progress on worker restart; durable schedulers persist the retry state and resume from the last successful checkpoint. Keep this file's formulas as the *contract* you hand to the platform configuration, not as code you write yourself for long-running work.
+
 ---
 
 ## Backoff Formulas
