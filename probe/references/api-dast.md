@@ -2,6 +2,12 @@
 
 Purpose: Dynamically attack a running REST, GraphQL, or WebSocket API to confirm OWASP API Security Top 10 2023 flaws with reproducible evidence. Static review (source code, OpenAPI spec lint) is out of scope — cross-link to Sentinel and Gateway for those layers.
 
+> **Currency note (2026-05)**:
+> - **OWASP API Top 10 2023** is still the active list — no 2026 update yet (`owasp.org/API-Security/`). Threat-stat refresh from Wallarm *2026 API ThreatStats Report* (2026-02-17): **43% of 2025 CISA KEV additions were API-related (106 / 245)**, **97% exploitable in a single request**, **52% of disclosed API breaches were broken-auth**, and **36% of AI vulnerabilities overlap with API vulnerabilities**.
+> - **Burp AI** (PortSwigger, announced 2025-03-31): AI-generated login-sequence handling, automated issue validation with AI-generated PoCs, AI insights in Repeater. Burp Scanner natively parses OpenAPI, SOAP WSDL, Postman Collection, and GraphQL definitions.
+> - **Akto** (open-source, MIT, `github.com/akto-api-security/akto`): 1,000+ pre-built tests including BOLA / Broken Auth / SSRF / mass assignment; integrates with Burp, AWS, Postman, GCP traffic sources for low-FP discovery. Useful as a complement to Burp Autorize for CI-driven BOLA sweeps.
+> - **MCP-specific attack surface (2025-2026)**: Wallarm tracked **315 MCP-related vulnerabilities** in 2025 with 270% Q2→Q3 growth — when the API exposes an MCP server, test for tool-name shadowing, tool-description injection, and unauthenticated `tools/list` enumeration.
+
 ## Scope Boundary
 
 - **Probe `api`**: runtime attacks against a deployed API. Confirms exploitability, produces request/response evidence, CVSS v4.0 scores, and remediation SLA.
@@ -37,9 +43,12 @@ If the question is "does the spec say X?" → Gateway. "Does the code say X?" �
 | `graphql-cop` | GraphQL audit (introspection, field suggestions, batching) | Non-intrusive; run first on GraphQL |
 | `clairvoyance` | GraphQL schema recovery when introspection is off | Field-name brute force — coordinate with scope |
 | `ws-harness` / ZAP WebSocket add-on | WebSocket frame fuzzing, replay | Watch for state poisoning in pub/sub |
-| ZAP (authenticated) | Session-aware passive + active scan | Use Zest scripts for multi-step login |
-| Burp Suite (Intruder + Autorize) | BOLA/BFLA via dual-session diffing | Autorize is the standard BOLA verifier |
-| Nuclei API templates | Known-CVE checks, default-creds, exposed admin panels | Pin versions (CVE-2024-43405) |
+| ZAP (authenticated) | Session-aware passive + active scan | Use Zest scripts for multi-step login; v2.16.0 (ZAP by Checkmarx) is current |
+| Burp Suite Pro + Burp AI | BOLA/BFLA via dual-session diffing; AI login recording + auto-validation | Autorize remains the standard BOLA verifier; Burp AI adds AI-generated PoC for triage |
+| Akto (OSS) | API discovery + 1,000+ tests for OWASP API Top 10 / HackerOne Top 10 | Low-FP via traffic-pattern learning; useful for CI sweeps |
+| Nuclei API templates | Known-CVE checks, default-creds, exposed admin panels | Pin `>= 3.8.0` (CVE-2024-43405, GHSA-29rg-wmcw-hpf4, GHSA-jm34-66cf-qpvr) |
+| Garak (NVIDIA) | LLM-backed endpoint scanning (prompt injection, jailbreaks, data leakage) | v0.14.0 (2026-02) — 37+ probe modules |
+| PyRIT (Microsoft) | Multi-turn / multi-modal LLM red teaming (crescendo, TAP) | Integrates with Azure AI Foundry; pairs with Burp for hybrid API + LLM tests |
 
 ## Workflow
 

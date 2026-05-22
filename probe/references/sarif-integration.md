@@ -2,6 +2,8 @@
 
 Purpose: Use this file when Probe findings must be exported to SARIF, uploaded to GitHub Security, or enforced through machine-readable gates.
 
+> **Currency note (2026-05)**: **SARIF v2.1.0 with Errata 01** (OASIS Standards Track Work Product, 2023-08-28, `docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/`) is still the active OASIS standard — there is no v2.1.1 or v3.0 published. The Errata does not modify conformance, so any v2.1.0 emitter remains valid. GitHub Advanced Security `upload-sarif` accepts only the v2.1.0 schema; the action moniker is now `github/codeql-action/upload-sarif@v3` (the v2 tag is deprecated). CodeQL CLI continues to emit fingerprint data that survives partial path/line drift.
+
 ## Contents
 
 - SARIF minimum schema
@@ -63,7 +65,7 @@ def convert_zap_to_sarif(zap_json_path, output_path):
         "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
         "version": "2.1.0",
         "runs": [{
-            "tool": {"driver": {"name": "OWASP ZAP", "version": "2.14.0", "rules": []}},
+            "tool": {"driver": {"name": "OWASP ZAP", "version": "2.16.0", "rules": []}},
             "results": [],
         }],
     }
@@ -120,7 +122,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: security-results.sarif
           category: probe-security-scan

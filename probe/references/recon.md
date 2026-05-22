@@ -2,6 +2,8 @@
 
 Purpose: Map an organization's externally reachable attack surface using passive and lightly-active OSINT techniques — subdomain enumeration, certificate transparency, DNS, technology fingerprinting, exposed-secret search, leaked-credential lookup. Reconnaissance only — no exploitation, no auth attempts, no active vulnerability scanning.
 
+> **Currency note (2026-05)**: The ProjectDiscovery passive-recon stack (`subfinder`, `dnsx`, `httpx`, `naabu`, `nuclei`) remains the canonical OSS chain — see `projectdiscovery.io/blog/recon-series-2` for the maintained methodology. `subfinder` continues to honor 30+ passive sources (Shodan, Censys, VirusTotal, GitHub, Crt.sh) — pin a known-good tag and verify checksums after the 2026-03 ProjectDiscovery / Aqua / Trivy supply-chain incidents. `trufflehog` and `gitleaks` are still the leading public-repo secret scanners; both gained AWS / GCP / Azure verifier modules in their 2024-2025 releases.
+
 ## Scope Boundary
 
 - **Probe `recon`**: passive / low-touch recon. Output is an inventory (assets, tech, exposures, leaked secrets) — not a penetration test. No exploitation, no credential spraying, no active scanning of discovered assets without a separate scope change.

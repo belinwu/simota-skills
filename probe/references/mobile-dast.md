@@ -2,6 +2,11 @@
 
 Purpose: Dynamically test built iOS and Android apps for runtime security flaws — insecure storage, weak transport, deep-link abuse, WebView XSS, IPC exposure — using MobSF, Frida, and OWASP MASVS / MASTG as the authoritative control catalog. Source-only review is out of scope — cross-link to Sentinel.
 
+> **Currency note (2026-05)**:
+> - **MobSF v4.4.6** is the latest release (2026-03-21, `github.com/MobSF/Mobile-Security-Framework-MobSF/releases`). MobSF v4.4.1 introduced **Frida 17+ support** with a breaking change for Corellium iOS (requires `frida-server >= 17`), updated SSL/pinning-bypass scripts, and improved Frida bridges. Pin MobSF `>= 4.4.6` and Frida `>= 17.5.2`.
+> - **Frida 17.5.2** is the latest stable (released 2025-12-15, `frida.re/news/releases/`). Frida 17.4.0 (2025-10) added the new **`simmy` backend** for instrumenting Apple's CoreSimulator on iOS 18, fixed `dyld_sim` detection, and patched `Java.deoptimize*()` / `Java.backtrace()` on **Android 16**. Use `simmy` instead of bare `usbmuxd` for iOS 18 simulator instrumentation.
+> - **OWASP MAS standard stack (2026)**: MASVS v2.0 (2023) + MASVS-PRIVACY v2.1 (2024) is still the published flagship. The MAS project also ships **MASTG** (testing guide) and **MASWE** (weakness catalog). No MASVS v3 has been released as of 2026-05 — track `mas.owasp.org` for status.
+
 ## Scope Boundary
 
 - **Probe `mobile`**: dynamic + instrumentation testing of a compiled app binary (IPA / APK / AAB) on a controlled device or emulator. Confirms exploitability with evidence.
@@ -71,12 +76,15 @@ REPORT    →  per-finding: repro, evidence, CVSS, SLA, remediation
 Pinning bypass is legitimate for authorized assessment of an app you are contracted to test. It is not a license — document the technique and scope in the report.
 
 ```bash
-# Android (release APK on rooted device)
+# Android (release APK on rooted device, Frida 17.x)
 frida -U -f com.example.app -l frida-multiple-unpinning.js
 
-# iOS (jailbroken or Corellium)
+# iOS device (jailbroken or Corellium, frida-server >= 17 required by MobSF 4.4.1+)
 objection -g "Example" explore
 # ios sslpinning disable
+
+# iOS simulator (Frida 17.4.0+, simmy backend)
+frida -D simmy::booted -f com.example.app -l frida-multiple-unpinning.js
 ```
 
 If pinning bypass fails after three distinct scripts, the app likely uses Certificate Transparency-enforced pinning or native-compiled pinning — document as "pinning robust" and move to other surfaces rather than burning scope time.

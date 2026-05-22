@@ -2,6 +2,12 @@
 
 Purpose: Use this file when template-based DAST is appropriate, especially for fast checks, recurring exposures, and CI-integrated severity gates.
 
+> **Currency note (2026-05)**:
+> - **Nuclei v3.8.0** is the latest stable release (2026-04-18, `github.com/projectdiscovery/nuclei/releases`). It patches **GHSA-29rg-wmcw-hpf4** (JavaScript-protocol template could read files outside the sandbox, ignoring `-allow-local-file-access`) and **GHSA-jm34-66cf-qpvr** (expressions evaluated from non-template sources → RCE from malicious templates). Pin to `v3.8.0+` and re-verify any community / AI-generated templates pulled from registries.
+> - **CVE-2024-43405** (CVSS 7.4, signature-verification bypass for templates) remains a baseline gate — all versions `> 3.0.0` and `< 3.3.2` are vulnerable. Re-pin to `>= 3.3.2`, ideally `>= 3.8.0` for the 2026 advisories.
+> - The community template repository now exceeds **12,000+ templates** (incl. cloud configs for GCP / Azure / Kubernetes). Nuclei v3+ includes **15+ curated JavaScript modules** for stateful protocol exploits (SMB, SSH, IKEv2, MySQL, SMTP) using `goja` as the JS engine.
+> - **`Authenticated` scanning** (Nuclei v3.2+, 2024) lets you reuse a shared `auth.yaml` for multi-step login templates. Treat per-host auth state as test data — never commit production credentials.
+
 ## Contents
 
 - Template structure
@@ -153,3 +159,5 @@ jobs:
 - Prefer project-scoped templates over huge template packs in PR gates.
 - Do not interpret a template hit as confirmed exploitability without validation.
 - Pair Nuclei findings with Probe validation and, when needed, SARIF export.
+- **Pin a verified Nuclei version** (`>= 3.8.0` as of 2026-05) and pin the template-repo commit / tag. Re-pull and re-verify after each upstream advisory (`github.com/projectdiscovery/nuclei/security/advisories`).
+- **Treat AI-generated / community templates as untrusted input** until manually reviewed — CVE-2024-43405 demonstrated a YAML/CR-injection bypass of `# digest:` signatures. Run new templates against an isolated test target first.
