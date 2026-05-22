@@ -2,6 +2,8 @@
 
 Collection of evaluation patterns and best practices.
 
+> **2026 audit conditions.** Every evaluation pattern below assumes the audit is run under *realistic platform conditions* — Liquid Glass active backgrounds, Material 3 Expressive motion defaults, ambient AI surface visible *and* hidden, and accessibility settings (reduced-motion, reduced-transparency, larger text) toggled. A pattern that passes only on a static desktop screenshot of the design does not pass.
+
 ---
 
 ## Evaluation Patterns by Dimension

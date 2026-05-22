@@ -8,6 +8,17 @@ Purpose: Use this reference for quick design quality evaluation and rejection cr
 - 6 Rejection Criteria
 - V.A.I.R.E. Dimension Mapping
 - Quick Evaluation Workflow
+- 2026 Design-Language Calibration (Liquid Glass, Material 3 Expressive, Ambient AI)
+
+## 2026 Design-Language Calibration
+
+The 2026 platform aesthetics changed the rubric in three ways without changing V.A.I.R.E. itself:
+
+- **Apple Liquid Glass (iOS 26)** — translucent, depth-aware material that reacts to context, light, and motion. Litmus implication: legibility / contrast must be re-checked against the *dynamic* background, not the static screenshot. A static composition that passes question 2 may fail it the moment Liquid Glass tints behind it.
+- **Material 3 Expressive (Android, 2025–2026)** — spring-based physics motion + bigger, more emotive typography. Litmus implication: question 6 ("Is motion purposeful?") gets stricter — the platform now ships physics-based motion by default; *additional* motion the team adds has to clear a higher bar to avoid noise.
+- **Ambient AI interfaces** — AI lives inside the UI as an ambient layer, not behind a "Chat with AI" button. Litmus implication: when an AI affordance is present, audit whether it appears *only when relevant* (Score 2+) versus *always-on as a permanent chrome element* (Score 1).
+
+Treat these as adjustments to existing questions, not new rejection criteria — the rubric still passes or fails on the same six axes; the *evidence* now needs to come from running the design through realistic dynamic conditions (active background, default motion-physics, AI surface present + absent), not a single static frame.
 
 ---
 

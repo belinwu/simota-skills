@@ -2,6 +2,8 @@
 
 Complete reference for the V.A.I.R.E. framework.
 
+> **2026 platform context.** The five dimensions remain stable; the *evidence* needed to score them has shifted. Apple **Liquid Glass** (iOS 26), Google **Material 3 Expressive** (spring-based physics motion, expressive type) and the rise of **ambient AI** inside the UI all change what "Score 2 / Score 3" looks like in practice. Sections that follow flag the dimension-specific implications; the framework itself is unchanged.
+
 ---
 
 ## Framework Overview
@@ -288,6 +290,24 @@ When including AI features, add these evaluations:
 | **R** Resilience | Don't get stuck on mistakes, hallucinations, misreasoning |
 | **V** Value | Instantly understand what AI will do |
 | **E** Echo | User finishes satisfied, not dependent on AI suggestions |
+
+### Ambient AI Surfaces (2026)
+
+By 2026, AI moved from "Chat with AI" buttons to ambient surfaces that appear when relevant and recede when not. V.A.I.R.E. evidence requirements when an ambient AI surface is present:
+
+- **V (Value)** — the AI affordance appears *only when the user is doing something it can meaningfully accelerate* (Score 2+); always-on permanent chrome that adds noise without relevance = Score 1.
+- **A (Agency)** — the user can dismiss / disable the surface globally, not only per-occurrence. "Turn it off" must be reachable in `≤ 2` clicks from the surface itself.
+- **I (Identity)** — the AI does not speak in the brand's voice when it is uncertain. Confidence labels (`probably`, `not sure`) are preserved verbatim — never rewritten by the brand voice into false confidence.
+- **R (Resilience)** — when the AI cannot answer, the surface degrades gracefully into the deterministic flow the user already knew, not a dead end.
+- **E (Experience)** — the surface respects the user's flow: it does not interrupt focus mode, it does not animate into view during scroll, and its dismissal is *quiet* (no celebratory "got it!" theatre).
+
+### Liquid Glass / Material 3 Expressive Surface Audits
+
+When the design targets iOS 26+ (**Liquid Glass**) or Android (**Material 3 Expressive**):
+
+- **V (Value)** — re-test legibility against the *dynamic* background, not a static frame. Liquid Glass tinting can drop contrast below the WCAG threshold on a previously-passing screen.
+- **E (Experience)** — Material 3 Expressive's spring-based motion-physics is the *default*. Additional motion the team adds must justify itself against the platform baseline; ornamental motion is now extra noise on top of an already-physical interface.
+- **R (Resilience)** — depth-aware materials behave differently under reduced-motion / reduced-transparency accessibility settings. Score the experience under those settings, not only the default.
 
 ### Always-On UI Requirements
 
