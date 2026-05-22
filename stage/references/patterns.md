@@ -1,5 +1,28 @@
 # Stage Design Patterns
 
+## Tooling Versions (verified 2026-05)
+
+| Tool | Version | Released | Notes |
+|------|---------|----------|-------|
+| Marp CLI | 4.4.0 | 2025-05-06 | Node.js v26 support; Linux AArch64 (ARM64) standalone binary added. Built on Marpit 3.2.1 + Marp Core 4.3.0. API marked stable since 4.3.0. (https://github.com/marp-team/marp-cli/releases) |
+| reveal.js | 6.0.1 | 2026-04-11 (after 6.0.0 on 2026-03-11) | Official React wrapper `@revealjs/react`; Vite 8 build pipeline; TS 6 types bundled; new `controls: 'speaker'` option; alt tag enforcement for images/videos. (https://github.com/hakimel/reveal.js/releases) |
+| Slidev | 52.15.2 | 2025-05-10 | New versioning scheme: v0.50 (2024-12) → v51 (2025-01) → v52.x. Monaco editor enabled by default since 0.48; auto-registers Shiki languages to Monaco; v52.15 adds named animation presets, Bluesky embed, laser pointer, Mermaid renderer plugin, resizable presenter borders. (https://github.com/slidevjs/slidev/releases) |
+
+When pinning in CI, prefer the major+minor (`@marp-team/marp-cli@4.4`, `reveal.js@6.0`, `@slidev/cli@52.15`) so security patches still flow.
+
+## AI Slide Generation Landscape (2026-05)
+
+When the user requests AI-generated decks rather than Markdown-based code, route or hand off as below.
+
+| Tool | 2026 capabilities | Best for |
+|------|------------------|----------|
+| Gamma (https://gamma.app/) | "AI Agent" introduced in 2026 update for iterative refinement; Gamma Imagine (2026-03-17) generates charts/infographics; Nested Cards; subtle animations | Startups, marketing, link-shared decks |
+| Beautiful.ai | Slide-by-slide structured templates with AI design suggestions; PPTX export | Corporate decks needing PowerPoint parity |
+| Microsoft Copilot in PowerPoint | Builds decks from Word docs/outlines; image generation via DALL·E 3; narrative reorganization | Enterprise M365 environments |
+| Google Slides + Gemini | Sidebar Gemini for layouts, diagrams, theme-matched new slides via prompt; Imagen-powered image gen | Google Workspace teams |
+
+Stage itself outputs runnable Markdown (Marp/reveal/Slidev). For Gamma/Beautiful.ai/Copilot/Gemini decks, provide the narrative arc + content brief and direct the user to paste into the AI tool.
+
 ## Marp Syntax
 
 ```markdown

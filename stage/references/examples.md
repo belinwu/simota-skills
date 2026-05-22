@@ -1,5 +1,7 @@
 # Stage Examples
 
+> Preview commands assume Marp CLI 4.4.0 (`npx @marp-team/marp-cli@4.4`), reveal.js 6.0.1, and Slidev 52.15.2 as of 2026-05.
+
 ## Example 1: LT (5 min) — Product Feature Launch
 
 ```markdown

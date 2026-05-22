@@ -125,6 +125,20 @@ A narrative design is complete when:
 
 Hand off to `draft` (slide content) only after this contract passes.
 
+## Format-Specific Beat Budgets (verified 2026-05)
+
+Hard time formats override the arc framework. Validate the beat list against the format's clock before drafting.
+
+| Format | Total | Per-slide | Beats supported | Source |
+|--------|-------|-----------|-----------------|--------|
+| Pecha Kucha (20×20) | 6 min 40 s | 20 s auto-advance, 20 slides | 3–5 beats; no demo | https://en.wikipedia.org/wiki/PechaKucha |
+| Ignite (20×15) | 5 min | 15 s auto-advance, 20 slides | 3–4 beats; no Q&A | Ignite Talks format |
+| Lightning Talk | 5 min | speaker-paced | 1 arc, 1 CTA | Conference-dependent |
+| Standard conference talk | 20–30 min | ~1 slide/min | Full arc + Q&A | — |
+| TED | 18 min hard cap | speaker-paced | Single Big Idea | TED2026 program — https://conferences.ted.com/ted2026 |
+
+For 20×20 / 20×15 formats, the Hero's Journey and Strategic Narrative arcs do not fit — collapse to Problem-Solution-Benefit or What/So What/Now What.
+
 ## References
 
 - Nancy Duarte, *Resonate: Present Visual Stories that Transform Audiences* (2010).
@@ -132,4 +146,4 @@ Hand off to `draft` (slide content) only after this contract passes.
 - Barbara Minto, *The Pyramid Principle* (1987) — Minto Pyramid.
 - Christopher Vogler, *The Writer's Journey* (1992) — compressed Hero's Journey.
 - Emma Coats, "22 Story Basics" (Pixar, 2011) — Pixar Formula.
-- Chris Anderson, *TED Talks: The Official TED Guide to Public Speaking* (2016).
+- Chris Anderson, *TED Talks: The Official TED Guide to Public Speaking* (2016); TED2026 program, "All of Us" theme — https://conferences.ted.com/ted2026

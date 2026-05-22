@@ -182,12 +182,20 @@ A visual system is complete when:
 
 Hand off to `theme` (framework-specific theme generation) only after this contract passes.
 
+## Accessibility Baseline (2026-05)
+
+- **WCAG 2.2** (W3C Recommendation, published 2023-10-05) remains the active standard for presentations as of 2026-05. Body text must meet **1.4.3 Contrast (Minimum)** at ≥ 4.5:1 (or 3:1 for large text ≥ 18 pt / 14 pt bold). Non-text UI/graphics elements must meet **1.4.11 Non-text Contrast** at ≥ 3:1.
+- For projected slide rooms, target **AAA 1.4.6** at ≥ 7:1 contrast: projector gamma + ambient light routinely drop perceived contrast by 20–30%. Verify on a real projector when feasible.
+- ARIA 1.3 is in W3C Working Draft as of 2026; for presentation HTML output (reveal.js, exported Marp HTML), continue authoring against WAI-ARIA 1.2 roles and the WCAG 2.2 SCs. Do not adopt 1.3-only roles until CR.
+- **reveal.js 6.0** (2026-03-11) added enforced alt tags for images/videos in the renderer — supply `alt=""` on every slide image to satisfy WCAG 1.1.1 without warnings.
+- Marp 4.4 inherits Marpit 3.2 directives; use `<!-- _backgroundImage: ... -->` with HTML `alt` in the underlying Markdown for screen-reader compatibility.
+
 ## References
 
 - Garr Reynolds, *Presentation Zen* (3rd ed., 2019).
 - Edward Tufte, *The Visual Display of Quantitative Information* (2nd ed., 2001).
 - Robert Bringhurst, *The Elements of Typographic Style* (4th ed., 2012).
-- W3C, *Web Content Accessibility Guidelines (WCAG) 2.2*, contrast 1.4.3 / 1.4.11.
+- W3C, *Web Content Accessibility Guidelines (WCAG) 2.2* (Recommendation, 2023-10-05), SC 1.4.3 / 1.4.11 / 1.4.6 — https://www.w3.org/TR/WCAG22/
 - Refactoring UI, Adam Wathan & Steve Schoger (2018) — type scale and color role guidance.
 - Material Design 3, *Color and Typography* — semantic role pattern.
 - Apple Human Interface Guidelines — Keynote typography defaults.

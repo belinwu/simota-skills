@@ -27,11 +27,13 @@ Fewer than 7 solo passes correlates strongly with on-stage stumbles in the openi
 
 | Style | WPM | Use Case |
 |-------|-----|----------|
-| Conversational default | 125 | Most conference talks |
-| Slow / weighty | 100–115 | Keynotes, emotional moments |
-| Fast / energetic | 145–160 | Lightning talks, demo moments |
+| Slow / weighty | 110–130 | Keynotes, emotional moments, non-native audience |
+| Conversational default | 140–160 | Most conference talks (125 was the long-standing rule; modern conference recordings cluster higher) |
+| Fast / energetic | 180+ | Lightning talks, demo moments — use sparingly |
 
-Verify pace by recording yourself reading 200 words; if you finish in 96 seconds, you are at 125 WPM. Do not trust subjective feel — speakers consistently underestimate their pace under stage adrenaline.
+Verify pace by recording yourself reading 200 words; at 125 WPM you finish in 96 seconds, at 150 WPM in 80 seconds. Do not trust subjective feel — speakers consistently underestimate their pace under stage adrenaline.
+
+TED2026 (Vancouver, 2026-04-13/17, theme "All of Us") again clustered its 80+ talks around 130–150 WPM despite the 18-minute hard cap; the Apple keynote pacing remains slower (~110–125 WPM) by design to let translation tracks keep up. Match the target venue's house pace, not your office rehearsal pace.
 
 ### Breathing
 
