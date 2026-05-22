@@ -292,3 +292,37 @@ function solveLinearSystem(A: number[][], b: number[]): number[] {
 - Feature selection significantly impacts policy quality
 - Evaluation requires offline counterfactual estimation (IPW, DM, DR estimators)
 - Consider using proven libraries (Vowpal Wabbit, ML.NET, or cloud ML platforms) over custom implementation
+
+---
+
+## LLM / AI Feature Experimentation (2026-05)
+
+Generative-AI features (LLM prompts, retrieval pipelines, model selection, agentic tools) introduce experimentation patterns that diverge from classical A/B:
+
+- **High output variance**: identical inputs produce different outputs across calls; per-call cost can dominate experiment economics.
+- **No fixed ground truth**: quality is often judged pairwise (which response is better?) rather than against a labeled answer.
+- **Cold-start sparsity**: many prompt experiments run on weeks of data with thousands of samples, not millions.
+
+### Pairwise preference evaluation (LMSYS-style)
+
+The LMSYS Chatbot Arena methodology (Chiang et al., arXiv:2403.04132, "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference") fits a **Bradley-Terry (1952) model** to pairwise human preference votes and reports an Elo-like score with bootstrap confidence intervals. This is the de facto industry standard for LLM-vs-LLM evaluation in 2026 and a direct analog of `interleaving-tests.md` for the LLM domain — both reduce between-user variance by asking "which is better?" within a single user, instead of comparing rates between groups. For implementation, see also Vovk & Wang (2021) e-values, used in newer Arena methodology iterations to obtain valid stopping decisions while ranking models.
+
+### Prompt A/B testing tools (2026)
+
+| Tool | Strengths | Use when |
+|------|-----------|----------|
+| **Promptfoo** (OSS CLI/library) | Declarative YAML configs, CI/CD-friendly, model-agnostic, security/red-team scanning | Inner-loop dev, CI gating, pre-deploy sanity checks |
+| **Braintrust** | Comparison UI, AI assistant ("Loop") for prompt iteration, collaboration features | Pre-release batch eval with human sign-off |
+| **LangSmith** | Tracing, prompt management, evaluation tightly integrated with LangChain stack | LangChain-based agents/RAG |
+| **OpenAI Evals** | First-party from OpenAI; standard for OpenAI model-vs-model evaluation | Validating against OpenAI model upgrades |
+| **Helicone**, **Maxim**, **Arize Phoenix** | Production observability + evaluation | Live LLM apps needing tracing + eval together |
+
+Pattern (per Braintrust 2025 guidance and Promptfoo 2026 docs): run **Promptfoo in CI on every commit** (free, fast), then a **batch evaluation pass with Braintrust or LangSmith with human sign-off** before shipping a prompt change to production.
+
+### LLM-as-judge
+
+When pairwise human voting is infeasible, an LLM-as-judge (e.g., GPT-4-class model rating two candidate responses) is the production fallback. Validate the judge against a small human-labeled subset and report inter-rater agreement; treat the judge as a noisy oracle, not ground truth. The Arena Hard methodology and follow-up "Arena Hard Auto" line of work (LMSYS / SkyworkAI 2025 reviews) use this with calibration on Chatbot Arena votes.
+
+### Variance reduction on LLM metrics
+
+LLM outputs amplify the heavy-tail problem on cost, latency, and judge scores. Apply Winsorization at the 99th percentile on token-count and latency, and consider CUPED with the previous-week per-user prompt-success rate as covariate when running prompt A/B on repeat users.

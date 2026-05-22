@@ -254,9 +254,12 @@ When `bayesian` completes, emit:
 - Kruschke — *Doing Bayesian Data Analysis* (2nd ed, 2014) — introduces ROPE
 - Kruschke & Liddell — "Bayesian New Statistics" (2018) — ROPE + credible intervals
 - VWO — "Bayesian Testing for Online Experimentation" whitepaper
-- Statsig — expected-loss decision engine documentation
-- Eppo — Bayesian framework docs
+- Statsig (now part of OpenAI Applications post 2025-09 acquisition) — expected-loss decision engine documentation
+- Eppo by Datadog (post 2025-05 acquisition) — Bayesian framework docs
+- LaunchDarkly — *Experimentation statistical methodology for Bayesian experiments* (2025 docs) and *"Experimentation your way: Introducing Frequentist and Bayesian experiments in LaunchDarkly"* blog
+- PostHog — new experimentation engine docs (Bayesian default, Frequentist optional)
 - Chris Stucchio — "Bayesian vs Frequentist A/B Testing" (Wayfair engineering blog)
-- PyMC / Stan / Turing.jl — Bayesian inference libraries
+- PyMC / Stan / Turing.jl / CmdStanR — Bayesian inference libraries
 - Evan Miller — "Simple Sequential A/B Testing" (frequentist sequential counterpart)
 - Kohavi / Tang / Xu — *Trustworthy Online Controlled Experiments* (2020) — pragmatic Bayesian chapter
+- Spotify Engineering — *Risk-Aware Product Decisions in A/B Tests with Multiple Metrics* (Mar 2024) — expected-loss decision rules across a metric portfolio; *Beyond Win Rates: How Spotify Quantifies Learning in Product Experiments* (InfoQ 2025)

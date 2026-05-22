@@ -38,29 +38,31 @@ interface FeatureFlag {
 
 ---
 
-## Platform Comparison Matrix
+## Platform Comparison Matrix (2026-05)
 
-| Feature | Statsig | Datadog Experiments | GrowthBook | LaunchDarkly |
-|---------|---------|---------------------|------------|--------------|
-| **Statistical engine** | Sequential testing, CUPED built-in | Frequentist + Bayesian, CUPED, always-valid sequential (Eppo-powered) | Frequentist (Bayesian optional) | Basic frequentist |
-| **Feature flags** | Full (targeting, rollout, kill switch) | Via Datadog Feature Flags | Full | Industry-leading |
-| **Warehouse-native** | Yes (Snowflake, BigQuery, Redshift, Databricks, Athena) | Yes (primary focus, Eppo-powered) | Yes | No (event streaming only) |
-| **Observability integration** | Limited | Native (RUM, APM, logs, traces) | No | No |
-| **Metrics catalog** | Yes | Yes | Yes | No |
-| **Auto-rollback** | Yes | Via observability guardrails | No | Yes (via monitoring) |
-| **Open source** | No | No | Yes (self-host) | No |
-| **Pricing model** | Per event or flat | Per experiment | Free OSS / paid cloud | Per seat |
-| **Best for** | Growth teams with high experiment velocity | Data warehouse-centric orgs | Cost-sensitive teams, OSS preference | Enterprise feature management |
+| Feature | Statsig (OpenAI) | Eppo by Datadog / Datadog Experiments | GrowthBook 3.6+ | LaunchDarkly | PostHog Experiments |
+|---------|------------------|---------------------------------------|-----------------|--------------|---------------------|
+| **Ownership / 2025 events** | Acquired by OpenAI 2025-09 ($1.1B); CEO became OpenAI CTO of Applications | Eppo acquired by Datadog 2025-05 (~$220M); rebranded "Eppo by Datadog" | Independent OSS company, v3.6 released 2025-05-01 | Independent | Independent OSS |
+| **Statistical engine** | CUPED, corrected-alpha always-valid p-values (CAA), sequential, MAB | CUPED++ (works on new-user tests via assignment covariates), GAVI sequential (Howard et al. 2021), Bayesian + Frequentist | Frequentist + Bayesian; Safe Rollouts with one-sided sequential testing on guardrails (3.6) | Dual Frequentist/Bayesian engines, CUPED, sequential testing, MAB — all GA | Bayesian (default) or Frequentist; new experimentation engine with running-time calc + percentile Winsorization |
+| **Feature flags** | Full (targeting, rollout, kill switch) | Via Datadog Feature Flags | Full | Industry-leading | Full |
+| **Warehouse-native** | Dual (Snowflake, BigQuery, Redshift, Databricks, Athena) | Yes — primary focus | Yes — primary focus | No (event streaming only) | Self-hosted DB or ClickHouse Cloud |
+| **Observability integration** | Limited | Native (RUM, APM, logs, traces) | No | No | Native within PostHog |
+| **Auto-rollback / safe rollout** | Yes | Via observability guardrails | Yes (Safe Rollouts 3.6) | Yes (via monitoring) | Yes |
+| **Open source** | No | No | Yes (self-host) | No | Yes |
+| **Best for** | Teams already in OpenAI applications stack | Data warehouse-centric orgs + Datadog stack | Cost-sensitive teams, OSS preference, SQL-defined metrics | Enterprise feature management, dual-engine statistics | OSS + product analytics + flags in one tool |
 
-### Selection Guide
+### Selection Guide (2026-05)
 
 | Your situation | Recommended platform |
 |---------------|---------------------|
-| High-velocity experimentation, integrated analytics | **Statsig** |
-| All metrics live in data warehouse (Snowflake/BigQuery) | **Eppo** |
-| Budget-constrained, want full control | **GrowthBook** (self-hosted) |
-| Need mature enterprise FF + SSO + audit logs | **LaunchDarkly** |
+| Already on OpenAI applications stack, want integrated experimentation | **Statsig** (OpenAI) |
+| Metrics live in data warehouse (Snowflake/BigQuery/Databricks) + Datadog observability | **Eppo by Datadog** |
+| Warehouse-native, OSS preference, SQL-defined metrics, want safe rollouts with one-sided sequential | **GrowthBook 3.6+** |
+| Enterprise FF + SSO + audit logs + dual Frequentist/Bayesian engine | **LaunchDarkly** |
+| All-in-one OSS product analytics + flags + experiments | **PostHog** |
 | Small team, just need simple feature toggles | Custom implementation (see below) |
+
+Note: PII-sensitive workloads should evaluate the OpenAI-affiliation of Statsig vs the Datadog-affiliation of Eppo against their respective data-processing addenda — both vendor mappings changed in 2025.
 
 ---
 

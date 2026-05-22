@@ -44,8 +44,9 @@ If the treatment effect takes > 24 h to manifest (e.g., supply recruitment), swi
 The core threat: supply depleted during treatment windows is unavailable in subsequent control windows, biasing control downward (or vice versa).
 
 - **Washout / burn-in**: discard the first X minutes of each rotation from analysis — standard DoorDash practice (discard first 5 min of 30-min windows).
-- **Model-based adjustment**: Bojinov et al. 2022 ("Design and Analysis of Switchback Experiments") derive HAC-type variance estimators and optimal design under carryover.
+- **Model-based adjustment**: Bojinov, Simchi-Levi, Zhao (Management Science 2023, "Design and Analysis of Switchback Experiments") derive HAC-type variance estimators and optimal design under carryover; the follow-up Xiong-Chin-Taylor (2024, arXiv:2406.06768) framework decomposes estimation error into carryover, periodicity, serial correlation, and simultaneous-experiment interference, and learns an empirical-Bayes rotation schedule that reduces MSE by 33% on ride-sharing data.
 - **Balanced Latin squares**: ensure each treatment follows each other treatment equally often across the run — prevents autocorrelation confounding.
+- **Randomize interval start / end points** to reduce both bias and variance from simultaneous experiments running on the same fleet (Xiong-Chin-Taylor 2024).
 - **Horvitz-Thompson estimation under known assignment mechanism**: exact inference when randomization is transparent (Bojinov & Shephard 2019).
 
 ## Block Randomization
@@ -62,7 +63,7 @@ Do not use simple Bernoulli — it produces runs of consecutive treatment (or co
 - **Uber**: 1-h switchback for pricing, matching. Custom "switchback framework" with automated carryover-aware variance estimation. See Uber Engineering blog (2018, 2020).
 - **Lyft**: hourly switchback for ETAs, surge pricing. Block-randomized by day-part.
 - **Airbnb**: day-level switchback for ranking + pricing (when market-level cluster is impractical). Post-2018 shift toward market-level cluster randomization for longer-horizon treatments.
-- **Literature**: Bojinov, Simchi-Levi, Zhao (2023) "Design and Analysis of Switchback Experiments" — *Management Science*; Hu & Wager (2022) "Switchback Experiments under Geometric Mixing."
+- **Literature**: Bojinov, Simchi-Levi, Zhao (2023) *"Design and Analysis of Switchback Experiments"* — *Management Science* (HBR working paper WP21-034); Hu & Wager (2022) *"Switchback Experiments under Geometric Mixing"* (arXiv:2209.00197); Xiong, Chin, Taylor (2024) *"Data-Driven Switchback Experiments: Theoretical Tradeoffs and Empirical Bayes Designs"* (arXiv:2406.06768) — proposes an empirical-Bayes design tuned on prior switchback data from a ride-sharing platform that reduces estimator MSE by **33% vs the status quo design**; identifies the four design tensions as carryover, periodicity, serial correlation, and contamination from simultaneous experiments.
 
 ## Sample Size / Duration
 

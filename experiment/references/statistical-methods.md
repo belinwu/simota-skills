@@ -116,7 +116,7 @@ function normalCDF(x: number): number {
 
 ## CUPED — Controlled experiment Using Pre-Experiment Data
 
-CUPED reduces variance in experiment metrics by removing the component explained by pre-experiment covariates, allowing you to detect smaller effects with the same sample size.
+CUPED reduces variance in experiment metrics by removing the component explained by pre-experiment covariates, allowing you to detect smaller effects with the same sample size. Introduced by Deng, Xu, Kohavi, Walker (Microsoft, WSDM 2013).
 
 **Core formula:**
 
@@ -135,6 +135,21 @@ Where `X` is the pre-experiment covariate (e.g., last 30 days metric), `Y` is th
 - Pre-experiment data for the same metric is available (at least 2 weeks)
 - The covariate correlates with the outcome metric (|Cor| > 0.2)
 - You need to reduce experiment duration without sacrificing power
+
+### CUPED variants and ML-based extensions (2026 state of the art)
+
+The CUPED family has diverged into several production-grade variants. Pick by data availability and platform support.
+
+| Variant | Mechanism | Key paper / origin | Use when |
+|---------|-----------|--------------------|----------|
+| Classical CUPED | Single pre-experiment covariate (typically prior-period outcome) | Deng et al. (Microsoft, WSDM 2013) | Strong pre-period signal, simple metric |
+| **CUPAC** | ML model (e.g., GBM) predicts Y from pre-experiment features; prediction used as covariate | DoorDash — Jeff Li, Yixin Tang, Jared Bauman (2020 DoorDash Engineering blog) | Multiple pre-period features, non-linear relations |
+| **MLRATE** | Cross-fit ML regression-adjusted treatment effect; consistent + asymptotically normal even with weak ML | Guo, Coey, Konutgan, Li, Schoener, Goldman (NeurIPS 2021) — at Meta/Facebook, ~70% variance reduction vs diff-in-means across 48 metrics, ~19% over univariate CUPED | Heterogeneous metrics, big-ML environment |
+| **CUPED++** | Adds *assignment-time* covariates (device, region, traffic source) as additional regression terms; works even with no pre-experiment data (e.g., onboarding flows) | Eppo (now "Eppo by Datadog" after May 2025 acquisition); per Eppo: up to ~65% faster experiments | New-user experiments, when pre-period data is missing |
+| **Full regression adjustment (Negi-Wooldridge)** | Treats CUPED as a special case of regression adjustment with heterogeneous treatment effects; tighter CIs than classical CUPED | Negi & Wooldridge (2021, *Econometric Reviews*); Spotify Confidence uses this as the default estimator | Heterogeneous treatment effects across covariates |
+| **Pre + in-experiment combined** | Combines pre-experiment covariates with early-period (in-experiment) covariates while avoiding post-treatment bias | Guo et al., "Variance reduction combining pre-experiment and in-experiment data" (arXiv:2410.09027, 2024 / PMLR 2026) | When in-experiment early outcomes add precision over pre-period only |
+
+Anti-pattern: using a treatment-influenced covariate (anything measured after exposure) as a CUPED control variate introduces bias — covariates must be either strictly pre-experiment, or carefully orthogonalized as in the Guo et al. (2024) framework.
 
 **TypeScript implementation:**
 

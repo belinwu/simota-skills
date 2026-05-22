@@ -96,8 +96,20 @@ Plot point estimate + confidence sequence that tightens over time. If the sequen
 | One planned interim + final | O'Brien-Fleming 2-look |
 | 3-5 planned interims | O'Brien-Fleming (stat-heavy) or Pocock (aggressive) |
 | Unplanned continuous peeking | mSPRT or confidence sequence |
-| Experimentation platform default | mSPRT (Optimizely), CUPED + sequential (Eppo, Statsig) |
+| Experimentation platform default | mSPRT (Optimizely / Uber / Netflix / Amplitude lineage), GAVI (Eppo by Datadog — Howard et al. 2021), CAA / corrected-alpha (Statsig, now OpenAI), one-sided sequential safe-rollouts (GrowthBook 3.6) |
 | Classical academic rigor | Lan-DeMets α-spending |
+
+### Platform → method mapping (2026-05)
+
+| Platform | Sequential method |
+|----------|-------------------|
+| Optimizely | mSPRT (Johari, Pekelis, Walsh 2015 / KDD 2017) |
+| Eppo by Datadog | GAVI — generalization of always-valid inference per Howard, Ramdas, McAuliffe, Sekhon (AOS 2021) |
+| Statsig (OpenAI) | Corrected-alpha approach (CAA) + always-valid p-values |
+| LaunchDarkly | Sequential testing GA in 2025 across both Frequentist and Bayesian engines |
+| GrowthBook 3.6+ | One-sided sequential testing on guardrail metrics within "Safe Rollouts" (released 2025-05-01) |
+| Spotify Confidence | mSPRT (per Spotify Engineering, "Choosing a Sequential Testing Framework," 2023) |
+| Uber / Netflix / Amplitude | mSPRT lineage
 
 ## Power Considerations
 
@@ -219,10 +231,15 @@ When `sequential` completes, emit:
 
 - Howard, Ramdas, McAuliffe, Sekhon — *Time-uniform, nonparametric, nonasymptotic confidence sequences* (AOS 2021)
 - Waudby-Smith & Ramdas — *Estimating means of bounded random variables by betting* (JRSS B 2024)
+- Ramdas, Grünwald, Vovk, Shafer — *Game-Theoretic Statistics and Safe Anytime-Valid Inference* (Statistical Science 2023) — SAVI / e-process foundations
 - Lan & DeMets — *Discrete sequential boundaries for clinical trials* (Biometrika 1983)
 - Pocock — *Group sequential methods in the design and analysis of clinical trials* (1977)
 - O'Brien & Fleming — *A multiple testing procedure for clinical trials* (1979)
-- Johari, Koomen, Pekelis, Walsh — *Peeking at A/B Tests: Why it matters, and what to do about it* (KDD 2017, Optimizely)
+- Johari, Koomen, Pekelis, Walsh — *Peeking at A/B Tests: Why it matters, and what to do about it* (KDD 2017, Optimizely) / *Always Valid Inference: Bringing Sequential Analysis to A/B Testing* (arXiv:1512.04922)
+- Spotify Engineering — *Choosing a Sequential Testing Framework — Comparisons and Discussions* (2023)
+- GrowthBook — *Safe Rollouts: one-sided sequential guardrail monitoring* (v3.6 release notes, 2025-05-01)
+- LaunchDarkly — *Introducing sequential testing for LaunchDarkly Experimentation* (2024/2025 blog) + Bayesian methodology docs
+- Eppo by Datadog — GAVI sequential inference docs (post 2025-05 Datadog acquisition)
+- Statsig docs — corrected-alpha (CAA) always-valid p-values (now under OpenAI Applications post 2025-09)
 - Microsoft ExP — *Democratizing online controlled experiments at Booking.com, Microsoft, Spotify* — sequential inference in practice
-- Eppo / Statsig / Datadog Experiments / GrowthBook — platform docs on sequential inference
 - Ramesh Johari lectures — sequential inference for industry (YouTube)

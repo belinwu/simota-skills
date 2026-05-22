@@ -67,10 +67,11 @@ Common at Microsoft ExP, Google, Netflix.
 ## Portfolio Patterns by Company
 
 - **Netflix**: OEC = streaming hours; guardrails = playback errors, app crashes, startup latency. Counter = engagement with non-recommended content (detects recommendation gaming).
-- **Microsoft ExP (Kohavi / Tang / Xu)**: OEC = sessions per user + session quality; guardrails = page load, 4xx/5xx, crash-free. Counter = clicks-per-session vs conversion-per-session (detects click-bait regressions).
+- **Microsoft ExP (Kohavi / Tang / Xu)**: OEC = sessions per user + session quality; guardrails = page load, 4xx/5xx, crash-free. Counter = clicks-per-session vs conversion-per-session (detects click-bait regressions). Per Fabijan et al. (Microsoft, KDD 2019), **~6% of all Microsoft online controlled experiments exhibit SRM** — bake SRM into the guardrail portfolio as a non-negotiable infrastructure-level guardrail, not a per-experiment opt-in check.
 - **Airbnb**: OEC = bookings; guardrails = search-to-contact rate, host response rate, cancellation rate. Counter = refund rate (lagging, post-experiment).
 - **Booking.com (Kohavi era)**: ~10 guardrails per experiment by default; every team owns one — guardrails are org-wide infrastructure, not per-experiment decisions.
-- **Spotify Confidence**: OEC defined via full regression adjustment (Negi & Wooldridge 2021); guardrails include latency, crash rate, and content-loading success.
+- **Spotify Confidence**: OEC estimator uses Negi & Wooldridge (2021) full regression adjustment as the production default (Confidence docs, "Variance Reduction (CUPED)"); guardrails include latency, crash rate, and content-loading success. Spotify Engineering's *"Risk-Aware Product Decisions in A/B Tests with Multiple Metrics"* (Mar 2024) formalizes how expected-loss across the metric portfolio drives ship/no-ship — i.e., guardrails feed into a single decision under Bayesian utility, not independent significance tests.
+- **GrowthBook 3.6 (2025-05-01)**: codifies guardrails via **Safe Rollouts** — one-sided sequential testing on guardrail metrics continuously monitors for harmful changes during ramp without inflating false-positive rate. Effectively turns the guardrail layer into a sequential kill-switch.
 
 ## Anti-Patterns
 

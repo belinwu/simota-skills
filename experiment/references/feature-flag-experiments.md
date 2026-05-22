@@ -13,14 +13,16 @@ Overlap: both use the same flag platforms and often the same flag. Divide on int
 
 | Platform | Pick when | Skip when |
 |----------|-----------|-----------|
-| LaunchDarkly | Enterprise, mature targeting rules, SOC2 required | Cost-sensitive, need warehouse-native |
+| LaunchDarkly | Enterprise, mature targeting rules, SOC2 required; dual Frequentist/Bayesian engine, CUPED, sequential testing, MAB support GA | Cost-sensitive, need warehouse-native |
 | Flagsmith | Self-hosting required, open-source core, cost-sensitive | Need built-in experimentation stats |
-| Unleash | Self-hosted + open-source + GitOps-friendly | Need tight experimentation analytics integration |
-| Statsig | Dual-mode (cloud + warehouse-native), built-in experimentation stats, CUPED | Enterprise targeting complexity beyond Statsig's UI |
-| GrowthBook | Warehouse-native first, open-source, SQL-defined metrics | Need hosted all-in-one with low setup effort |
-| Eppo / Datadog Experiments | Warehouse-native, CUPED++, observability guardrails | Early-stage product, low scale |
+| Unleash | Self-hosted + open-source + GitOps-friendly; v7 GA 2025 with refreshed gradual-rollout / instant-rollback / experimentation tooling and deprecated-endpoint cleanup | Need tight experimentation analytics integration |
+| Statsig | Now part of OpenAI (acquired 2025-09-02, $1.1B all-stock; CEO Vijaye Raji became OpenAI CTO of Applications). Continues to operate independently under Fidji Simo's Applications org. Dual-mode (cloud + warehouse-native), built-in experimentation stats, CUPED, corrected-alpha (CAA) always-valid p-values | Wary of OpenAI-affiliated dependency for sensitive PII data flows |
+| GrowthBook | Warehouse-native first, open-source, SQL-defined metrics; v3.6 (2025-05-01) adds **Safe Rollouts** with one-sided sequential testing on guardrails + per-metric time-series view | Need hosted all-in-one with low setup effort |
+| Eppo by Datadog | Warehouse-native, CUPED++ (uses assignment-time covariates so it works on new-user / onboarding tests with no pre-period data), GAVI sequential (Howard et al. 2021), observability guardrails. Acquired by Datadog 2025-05-05 (~$220M); rebranded "Eppo by Datadog" | Early-stage product, low scale |
+| Datadog Experiments | Eppo-powered analytics fused with Datadog RUM/APM/logs for first-class observability guardrails | Standalone experimentation without need for Datadog stack |
+| PostHog Experiments | OSS + cloud product analytics with new experimentation engine — running-time calculator, percentile-based Winsorization at metric level, choice of Bayesian (default) or Frequentist engine, 50-exposure minimum gate per variant | Need enterprise SOC2 + targeting rules at LaunchDarkly's depth |
 
-Default for new experimentation program: **Statsig** or **GrowthBook** — experimentation-native, not flag-first-experiment-second.
+Default for new experimentation program: **GrowthBook** (OSS, warehouse-native) or **Eppo by Datadog** (managed, warehouse-native, CUPED++) — experimentation-native, not flag-first-experiment-second. Use **Statsig** when you already operate inside the OpenAI applications stack; use **LaunchDarkly** when feature-flag governance and enterprise targeting dominate the requirement set.
 
 ## Flag ≠ Experiment
 

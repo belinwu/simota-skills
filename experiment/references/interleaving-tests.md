@@ -274,3 +274,10 @@ interface MultileavingResult {
 - Chapelle et al., "Large-scale validation and analysis of interleaved search evaluation" (2012) — foundational TDI paper
 - Schuth et al., "Probabilistic Multileave for Online Retrieval Evaluation" (2015)
 - Airbnb Engineering: "Interleaving in Online Experiments at Airbnb"
+- Bradley & Terry, "Rank analysis of incomplete block designs: I. The method of paired comparisons" (Biometrika 1952) — paired-comparison foundation
+- Chiang et al., "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference" (arXiv:2403.04132, 2024) — applies Bradley-Terry + bootstrap CIs to pairwise human votes; same within-user variance-reduction insight as interleaving, scaled to LLM evaluation
+- Frick et al. / LMSYS — "Prompt-to-Leaderboard" (arXiv:2502.14855) — extends Arena methodology with Vovk-Wang e-values for valid early stopping in model ranking
+
+## LLM evaluation: pairwise preference as a cousin of interleaving
+
+LMSYS Chatbot Arena uses the same statistical insight as interleaving — within-user pairwise comparison removes between-user variance — applied to LLM outputs instead of ranked lists. Two LLMs answer the same prompt; a human picks the better response; preferences are aggregated under a Bradley-Terry (1952) model into Elo-like scores with bootstrap confidence intervals. The 2025 methodology layer adds Vovk & Wang (2021) e-values to obtain valid sequential stopping over the live leaderboard. When evaluating LLM features (prompt changes, model upgrades, retrieval changes), pairwise voting (manual or LLM-as-judge) is the direct LLM-domain analog of `teamDraftInterleave` for ranking systems — reach for it before reaching for between-arm A/B on aggregate quality scores. See also `references/adaptive-experimentation.md` § "LLM / AI Feature Experimentation".

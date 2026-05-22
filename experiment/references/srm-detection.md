@@ -15,6 +15,10 @@ Traffic assignment targets, say, 50/50. Actual observed split: 50.3 / 49.7. Is t
 
 SRM = the observed ratio deviates from target beyond what random chance explains, detected via chi-squared goodness-of-fit test.
 
+### Prevalence
+
+Per Fabijan et al. (Microsoft, KDD 2019, *"Diagnosing Sample Ratio Mismatch in Online Controlled Experiments: A Taxonomy and Rules of Thumb for Practitioners"*), **approximately 6% of all online controlled experiments at Microsoft exhibit an SRM** across experience built from 25+ products in four software companies. This is not a rare-edge case — it is roughly 1 in 16 experiments. Treat SRM monitoring as standard infrastructure, not as a one-off check on suspicious results.
+
 ### Why it matters
 
 If assignment is biased, the two populations are no longer exchangeable. The ATE (Average Treatment Effect) estimate is biased by whatever factor correlates with the assignment bug. Classic example: treatment bucket over-sampled iOS users → observed +5% conversion isn't from the feature, it's because iOS users convert higher anyway.
