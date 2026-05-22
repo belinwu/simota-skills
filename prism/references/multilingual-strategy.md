@@ -74,9 +74,11 @@ gloss on first mention only.
 ```
 
 ### Audio Overview language
-Audio Overview language follows the steering prompt. Test with a short prompt first — voice mismatch (e.g., asking for Japanese with an English voice model) is jarring.
+Audio Overview language follows the steering prompt. As of 2026-05, the supported set is **80+ languages**. Test with a short prompt first — voice mismatch (e.g., asking for Japanese with an English voice model) is jarring, and not every supported text language has a fully native voice model yet.
 
-Cinematic Video is **English-only** (Ultra tier). Document this constraint upfront.
+Interactive Mode follows the same language as the steering prompt; switching languages mid-conversation can confuse the hosts and break the interruption flow.
+
+Cinematic Video Overviews (Veo 3) are **English-only** and limited to Google AI Ultra (`2/day` on the 20TB plan, `20/day` on the 30TB plan). Document this constraint upfront — do not promise Cinematic for non-English projects. Route to Standard Video Overview (any of the 8 styles) instead.
 
 ---
 
@@ -106,6 +108,13 @@ for all bilingual mappings. Do not invent alternative translations.
 ```
 
 NotebookLM's grounding architecture will cite this source for terminology choices, dramatically improving consistency.
+
+When the notebook is set up for long-running multilingual work, bake the glossary contract into the **Custom Goals persona** as well (up to `10,000` chars) so it persists across every chat turn without re-pinning each prompt:
+```
+You are a JA/EN bilingual editor. Always follow the "Project Glossary — JA / EN"
+source for terminology. When a JA term has no entry, keep the JA original and
+add a parenthetical English gloss on first mention only.
+```
 
 ---
 
@@ -207,7 +216,9 @@ Verification:
 ---
 
 ## 8. References
-- NotebookLM language support documentation
+- NotebookLM Help — *Generate Audio Overview in NotebookLM* (80+ language support, voice availability)
+- Google blog — *NotebookLM adds custom goals, upgrades performance* (2025-10): 1M-token context, persistent Custom Goals up to `10,000` chars
+- Google Workspace Updates — *New ways to customize and interact with your content in NotebookLM* (2026-03): 10 infographic styles, Cinematic Video Overview tier matrix, EPUB ingest, PPTX export
 - Google Cloud Translation glossary best practices
 - W3C Internationalization — Bidirectional text
-- DeepL / GPT-4o translation comparison for technical terminology
+- DeepL / GPT-4o / Claude translation comparison for technical terminology

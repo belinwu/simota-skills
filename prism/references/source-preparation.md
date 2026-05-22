@@ -24,6 +24,7 @@ Source quality determines roughly `70%` of output quality. A strong steering pro
 | `Web URL` | Public articles and current explanations | Easy sharing, current information | Login/paywall, JS-heavy pages, navigation noise |
 | `YouTube` | Talks, explainers, interviews | Audio + transcript signal | Best at `5-30 min`; long or noisy videos degrade extraction |
 | `Audio files` | Interviews, podcasts, meeting recordings | Natural voice material | Noise, weak speaker separation, unclear transcript |
+| `EPUB` | Books, long-form structured material (2026-03 onward) | Native chapter/section hierarchy, designed for long reads | Embedded interactive content may not survive ingestion |
 | `Pasted text` | Small curated excerpts, notes, outline-first sources | Maximum control over scope | Easy to lose structure if dumped as flat text |
 
 ## Source-Specific Rules
@@ -61,6 +62,13 @@ Source quality determines roughly `70%` of output quality. A strong steering pro
 - Prefer clear speech, strong channel separation, and minimal noise.
 - Add metadata or a short context note when the source lacks structure.
 - Avoid relying on audio-only sources for visual-heavy outputs.
+
+### EPUB
+
+- Prefer EPUBs with a healthy table of contents and chapter structure.
+- Strip DRM-protected files before upload (NotebookLM does not break DRM).
+- Treat very long books as candidates for `Single Deep` notebooks rather than mixing with unrelated sources.
+- Confirm encoding (UTF-8 / valid XML) — malformed EPUBs degrade chapter detection.
 
 ### Pasted Text
 
@@ -101,17 +109,25 @@ Source quality determines roughly `70%` of output quality. A strong steering pro
 | `Mind Map` | Favor sources with clean hierarchy and named subtopics |
 | `Deep Research` | Favor high-trust, high-depth sources and clear scope boundaries |
 
-## Free vs Plus Guidance
+## Tier Guidance (Free / Plus / Pro / Ultra, 2026-05 snapshot)
 
-Capabilities change frequently. Check current official NotebookLM documentation before making hard claims.
+Capabilities change frequently. Check current official NotebookLM documentation before making hard claims. Treat the table below as the steering-time *starting hypothesis*, not the source of truth.
 
-| Capability | Free | Plus | Guidance |
-|------------|------|------|----------|
-| Notebook count | Limited | More generous / advanced support | Ask before recommending Plus as a solution |
-| Audio Overview | More limited | More feature-complete | Use Plus recommendations only when justified |
-| Video Overview | More limited | More style and capability depth | Do not assume availability |
-| Deep Research | More limited | More complete | Confirm user tier before leaning on it |
-| Interactive / advanced generation features | More limited | More available | Frame as optional, not assumed |
+| Capability | Free | Plus (Workspace add-on) | Google AI Pro | Google AI Ultra | Guidance |
+|------------|------|--------------------------|---------------|------------------|----------|
+| 1M-token chat context (Gemini engine, 2025-10 rollout) | Available | Available | Available | Available | Treat as the default across all tiers |
+| Saved chat history (private in shared notebooks) | Available | Available | Available | Available | Plan on long multi-turn sessions for every tier |
+| Custom Goals persona (up to `10,000` chars) | Available | Available | Available | Available | Steer with Goals first; reach for steering prompts only when a per-output override is needed |
+| Audio Overview (Deep Dive / Brief / Critique / Debate / Lecture) | More limited daily quota | Higher quota | Higher quota | Highest quota | Confirm tier before promising long or multiple runs |
+| Audio Interactive Mode (real-time interrupting hosts) | More limited | Available | Available | Available | Free-tier users may hit rate limits sooner |
+| Standard Video Overview (Explainer / Brief, 8 styles) | More limited daily quota | Available | Available | Available | Style availability is consistent across tiers; quota is not |
+| Cinematic Video Overview (Veo 3) | Not available | Business Standard/Plus and Enterprise Standard/Plus | Pro: not guaranteed | `2/day` (20TB plan), `20/day` (30TB plan); English only | Do not promise Cinematic to anyone whose tier you have not confirmed |
+| Infographic (10 predefined styles, 2026-03 rollout) | Available | Available | Available | Available | Style choice is tier-independent |
+| Data Tables (2025-12 rollout, Google Sheets export) | Available | Available | Available | Available | Use for comparative source sets |
+| Slide editing (prompt-based per-slide revisions, PPTX export, 2026-02 rollout) | Available | Available | Available | Available | Iterate slide-by-slide instead of regenerating the whole deck |
+| Flashcards / Quizzes with saved progress | Available | Available | Available | Available | Use for self-study or onboarding loops |
+| Deep Research | More limited | More complete | Higher quota | Highest quota | Confirm user tier before relying on it |
+| Audio language coverage | 80+ languages | 80+ languages | 80+ languages | 80+ languages | See `references/multilingual-strategy.md` |
 
 ## Universal Pre-Upload Checklist
 
