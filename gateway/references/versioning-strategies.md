@@ -77,23 +77,23 @@ Link: </api/v2/users>; rel="successor-version"
 
 ## Date-Based Versioning (Stripe Model)
 
-Stripe popularized date-based versioning where each client pins to a specific API date snapshot.
+Stripe popularized date-based versioning where each client pins to a specific API date snapshot. As of the 2024-09-30.`acacia` release Stripe shifted to a **monthly cadence with twice-yearly named breaking releases** ([Stripe versioning policy](https://docs.stripe.com/sdks/versioning)). Current GA version as of 2026-05 is `2026-04-22.dahlia`.
 
 **Rules:**
 1. Each release date represents a stable API snapshot — clients that specify a date get that behavior forever.
 2. New fields and backwards-compatible additions are transparent to all clients.
-3. Breaking changes ship as new date versions; old dates remain operational.
+3. Breaking changes ship in the twice-yearly named release (e.g., `acacia`, `dahlia`); intermediate monthly versions are additive-only. SDKs cut a new minor each month and a new major every named release.
 4. Default version (no header) = latest — only safe for internal or test clients.
 5. Store the client's pinned version server-side; return `Stripe-Version` in every response for auditability.
 
 ```http
 # Request with pinned version
 GET /v1/charges
-Stripe-Version: 2024-06-20
+Stripe-Version: 2026-04-22.dahlia
 
 # Response confirms active version
 HTTP/1.1 200 OK
-Stripe-Version: 2024-06-20
+Stripe-Version: 2026-04-22.dahlia
 ```
 
 ---

@@ -2,6 +2,8 @@
 
 Purpose: Choose and design the API authentication contract. Cover OAuth 2.1 (with PKCE), OpenID Connect (OIDC), JWT bearer, mTLS, and API keys. Define scope taxonomy, audience claims, token lifetime, refresh strategy, and IdP integration.
 
+> **2026-05 baseline**: **RFC 9700 / BCP 240** "Best Current Practice for OAuth 2.0 Security" was published **2025-01** ([datatracker](https://datatracker.ietf.org/doc/rfc9700/)) and is the floor — it is now BCP-grade (not just informational). **OAuth 2.1** itself remains an IETF draft (latest `draft-ietf-oauth-v2-1-15` as of 2025; [oauth.net/2.1](https://oauth.net/2.1/)) — it rolls in RFC 9700 + PKCE (RFC 7636) + browser-based apps guidance and removes Implicit + Resource Owner Password Credentials. For new APIs in 2026, design against OAuth 2.1 + RFC 9700 even before the final RFC ships. **Passkeys / WebAuthn L3** (FIDO Alliance, 2024) are the recommended user-facing replacement for password-based factors; FIDO2 = WebAuthn (browser API) + CTAP2 (authenticator protocol). For MCP / agent endpoints, use **OAuth 2.0 Authorization Server Metadata (RFC 8414)** for discovery — OpenAPI 3.2's `oauth2MetadataUrl` plugs straight into this.
+
 ## Scope Boundary
 
 - **gateway `auth`**: API auth contract design (this document).
@@ -25,7 +27,7 @@ Purpose: Choose and design the API authentication contract. Cover OAuth 2.1 (wit
 | Federated identity (SSO) | OIDC over OAuth 2.1 | id_token + userinfo |
 | Webhook callback signing | HMAC-SHA256 | Not auth per se; provider-side |
 
-OAuth 2.1 (IETF draft, supersedes 2.0) makes PKCE mandatory and removes implicit flow + password grant. Default to it for new APIs.
+OAuth 2.1 (IETF draft `draft-ietf-oauth-v2-1-15`, supersedes 2.0) makes PKCE mandatory and removes implicit flow + password grant. RFC 9700 / BCP 240 (2025-01) already enforces these as Best Current Practice — default to it for new APIs even while OAuth 2.1 is in draft.
 
 ## OAuth 2.1 Grants Summary
 
@@ -266,16 +268,19 @@ When `auth` completes, emit:
 
 ## References
 
-- OAuth 2.1 (IETF draft, ietf-oauth-v2-1)
+- OAuth 2.1 — `draft-ietf-oauth-v2-1-15` (2025) — [datatracker](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/)
 - OAuth 2.0 (RFC 6749, RFC 6750)
-- PKCE (RFC 7636)
+- PKCE (RFC 7636) — mandatory in OAuth 2.1 + RFC 9700
 - OpenID Connect Core 1.0
 - JWT (RFC 7519); JWS (RFC 7515); JWE (RFC 7516); JWK (RFC 7517)
-- OAuth 2.0 Security Best Current Practice (RFC 9700, 2025)
+- **OAuth 2.0 Security Best Current Practice — RFC 9700 / BCP 240 (2025-01)** — [datatracker](https://datatracker.ietf.org/doc/rfc9700/)
+- OAuth 2.0 Authorization Server Metadata (RFC 8414) — discovery for OpenAPI 3.2 `oauth2MetadataUrl`
 - Token Exchange (RFC 8693)
+- WebAuthn Level 3 + FIDO2 / Passkeys (FIDO Alliance, 2024)
 - AppAuth pattern (Mobile OAuth) — OpenID Foundation
 - BFF pattern — Phil Calçado, Thoughtworks
 - SPIFFE / SPIRE — workload identity
 - Auth0 / Okta / Cognito / Keycloak / Authentik documentation
-- OWASP API Security Top 10 (2023)
+- OWASP API Security Top 10 (2023 — still current; 2026 edition not yet released)
+- OWASP Top 10 for Agentic Applications (2026, peer-reviewed release 2025-12)
 - IETF OAuth Working Group — current drafts

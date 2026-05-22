@@ -1,6 +1,8 @@
 # REST API Design Anti-Patterns
 
 > URL設計、HTTPメソッド、レスポンス設計、エラーハンドリング、ページネーションの失敗パターン
+>
+> **2026-05 更新**: RFC 9457 Problem Details (2023-07, obsoletes RFC 7807) と OpenAPI 3.2 (2025-09-23) を前提とする。RFC 6648 で `X-` ヘッダーは2012年に正式 deprecated — Standard Webhooks も `webhook-id` / `webhook-timestamp` / `webhook-signature` のように `X-` を捨てた。新規 API ヘッダーで `X-` プレフィックスを使うのは AD-08 アンチパターン相当。
 
 ## 1. REST API設計 7 大アンチパターン
 

@@ -147,7 +147,7 @@ GET /api/v1/users?limit=10&cursor=eyJpZCI6MTIzfQ==
 
 ### Rate Limit Definition in OpenAPI
 
-> **Note:** IETF draft-ietf-httpapi-ratelimit-headers (Standards Track, draft-10 Sep 2025) defines standardized `RateLimit-Policy` and `RateLimit` header fields. Prefer these for new APIs. The `X-RateLimit-*` headers below remain widely deployed and should be supported for backward compatibility.
+> **Note (2026-05):** IETF [`draft-ietf-httpapi-ratelimit-headers-10`](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/) (Standards Track, 2025-09-24, not yet an RFC — earlier "RFC 9331" citations were wrong; that number is L4S ECN) defines standardized `RateLimit-Policy` and `RateLimit` header fields using **RFC 9651** structured-field syntax (e.g., `RateLimit-Policy: "default";q=100;w=60` and `RateLimit: "default";r=42;t=15`). Prefer these for new APIs. The `X-RateLimit-*` headers below remain widely deployed and should be supported for backward compatibility.
 
 ```yaml
 components:

@@ -1,6 +1,8 @@
 # API Security Anti-Patterns
 
 > 認証・認可、レート制限、CORS、データ露出、OWASP API Security Top 10の失敗パターン
+>
+> **2026-05 baseline**: **OWASP API Security Top 10 2023** がいまだ最新版（2025/2026 改訂は未リリース）。新たに **OWASP Top 10 for Agentic Applications 2026**（2025-12 公開、[genai.owasp.org](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)）がエージェント／LLM API を消費する側のリスクをカバー。ASI01 Agent Goal Hijacking が #1。**RFC 9700 / BCP 240**（2025-01 公開）が OAuth 2.0 セキュリティの Best Current Practice として正式化 — PKCE 必須、Implicit 廃止、redirect_uri 完全一致は BCP-grade 要件になった。
 
 ## 1. APIセキュリティ 7 大アンチパターン
 

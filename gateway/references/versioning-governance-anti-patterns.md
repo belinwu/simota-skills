@@ -1,6 +1,8 @@
 # API Versioning & Governance Anti-Patterns
 
 > バージョニング戦略、破壊的変更管理、OpenAPIスペック管理、APIガバナンスの失敗パターン
+>
+> **2026-05 baseline**: OpenAPI 3.2.0（2025-09-23 公開）が現在のターゲット。3.0/3.1 と完全後方互換のため既存仕様は無変更で valid。Stripe は 2024-09-30.`acacia` から **月次マイナー＋年2回 named major**（現行 `2026-04-22.dahlia`）の CalVer 運用に移行 — 月次は必ず additive。新規 SaaS で date-pinned versioning を採用する際は Stripe の運用ポリシーを参照する。**RFC 9745 Deprecation**（2025-03）が Standards Track として確定、構造化フィールド `Date` 型 (`Deprecation: @1727136000`) が canonical。
 
 ## 1. バージョニング 7 大アンチパターン
 

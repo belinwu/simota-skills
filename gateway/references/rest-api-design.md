@@ -2,6 +2,8 @@
 
 Purpose: Author a REST contract that is predictable, cache-friendly, and evolvable. The contract is HTTP-idiom focused — resource shape, URI design, status-code taxonomy, conditional requests, pagination, and error format. The contract typically becomes an OpenAPI 3.1/3.2 spec downstream.
 
+> **2026-05 baseline**: OpenAPI 3.2.0 shipped 2025-09-23 ([OAI announcement](https://www.openapis.org/blog/2025/09/23/announcing-openapi-v3-2)) and adds the **HTTP `QUERY` method** as a first-class operation. The QUERY method itself was approved as a Proposed Standard by the IESG on 2025-11-20 ([draft-ietf-httpbis-safe-method-w-body-14](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/)) — RFC publication pending in 2026. For new REST contracts, prefer `QUERY /v1/search` (idempotent, body-bearing, cacheable) over `POST /v1/search`. RFC 9457 (Problem Details) was published **2023-07** and obsoletes RFC 7807 — adopt the new `type`/`title`/`status`/`detail`/`instance` shape and the multi-error extension on every new endpoint.
+
 ## Scope Boundary
 
 - **Gateway `rest`**: the SPEC/CONTRACT layer. Decides resources, URIs, methods, status codes, pagination style, ETag strategy, RFC 9457 error shape.
@@ -35,12 +37,13 @@ Default target: **Level 2**. Escalate to Level 3 only when runtime discoverabili
 |--------|------|------------|---------|
 | GET | yes | yes | Read a resource or collection |
 | HEAD | yes | yes | Read headers only (existence / ETag probe) |
+| QUERY | yes | yes | Complex/large read whose criteria exceed URL length limits — body is the query, response is the result. IESG-approved 2025-11-20 (Proposed Standard pending RFC); OpenAPI 3.2 models it natively |
 | PUT | no | yes | Full replace of a known-URI resource |
 | PATCH | no | no (by default) | Partial update — require `Idempotency-Key` header |
 | POST | no | no | Create, or action that does not map to PUT/PATCH |
 | DELETE | no | yes | Remove a resource |
 
-Never use POST for reads. Never use GET for state-changing operations (CSRF risk, leaks into logs/caches).
+Never use POST for reads. Never use GET for state-changing operations (CSRF risk, leaks into logs/caches). When a search/filter payload outgrows `?q=...` (typical limit ~8 KB across proxies), reach for `QUERY` instead of `POST /search` — caches and observability tooling can now treat it as safe+idempotent.
 
 ## Status Code Taxonomy
 
@@ -82,7 +85,7 @@ Cursor is opaque (base64 of `{id, sortKey}`). Never expose raw DB offsets. Max `
 
 ## Error Format — RFC 9457 Problem Details
 
-RFC 9457 obsoletes RFC 7807. `Content-Type: application/problem+json`.
+RFC 9457 (published 2023-07, [datatracker](https://datatracker.ietf.org/doc/html/rfc9457)) obsoletes RFC 7807. `Content-Type: application/problem+json`.
 
 ```json
 {

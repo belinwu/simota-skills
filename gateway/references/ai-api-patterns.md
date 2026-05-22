@@ -1,6 +1,12 @@
 # AI/LLM API Design Patterns
 
 > Design patterns for APIs that expose AI/LLM capabilities — streaming, tool use, structured output, and safety.
+>
+> **2026-05 baseline**:
+> - **OpenAPI 3.2** (2025-09-23) gives streaming endpoints a first-class contract via `text/event-stream` + `itemSchema`, `application/jsonl`, and `application/json-seq` ([spec](https://spec.openapis.org/oas/v3.2.0.html)). Document SSE chat completions with `itemSchema` instead of prose.
+> - **OpenAI Structured Outputs** with `strict: true` (gpt-4o-2024-08-06+) guarantees exact JSON Schema conformance — 100% on complex schema-following evals vs ~40% pre-strict ([OpenAI announcement](https://openai.com/index/introducing-structured-outputs-in-the-api/)). Strict-mode constraints: `additionalProperties: false`, all properties in `required` (use `null` union for optional). Function-calling supports the same `strict` flag.
+> - **Anthropic Prompt Caching** (GA) cuts long-prompt input cost up to 90% and latency up to 85%; cache hits are 0.1× input price, 5-min TTL default (1-hour optional). Anthropic now **automatically identifies cached segments** — manual `cache_control` markers are still supported but no longer required for many cases ([Anthropic docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)).
+> - **OWASP Top 10 for Agentic Applications 2026** (released 2025-12, [genai.owasp.org](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)) — ASI01 Agent Goal Hijacking is the #1 risk for agent-facing APIs. Apply principle-of-least-agency on every tool exposed via function-calling.
 
 ---
 
@@ -91,19 +97,49 @@ Tool use allows the model to request structured data from external systems durin
 
 ## Structured Output
 
-Forces the model to produce JSON that conforms to a specified schema.
+Forces the model to produce JSON that conforms to a specified schema. As of 2024-08, OpenAI's `strict: true` mode (Structured Outputs) guarantees exact schema conformance on gpt-4o-2024-08-06+ and later — the model is constrained at decode time to emit only schema-conformant tokens.
 
-### JSON Mode
+### Strict-Mode Structured Output (OpenAI, gpt-4o-2024-08-06+)
 
 ```json
 {
-  "model": "claude-opus-4-6",
+  "model": "gpt-4o-2026-04",
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "extract_product",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "price", "sku"],
+        "properties": {
+          "name": { "type": "string" },
+          "price": { "type": "number" },
+          "sku":  { "type": ["string", "null"] }
+        }
+      }
+    }
+  },
+  "messages": [
+    { "role": "user", "content": "Extract product fields from: ..." }
+  ]
+}
+```
+
+Strict-mode constraints (enforced at request validation):
+- `additionalProperties: false` on every object.
+- All properties listed in `required`; mark optional fields by adding `null` to the type array.
+- Subset of JSON Schema 2020-12 (no `oneOf` with conflicting types, no recursive `$ref` cycles).
+
+### Legacy JSON Mode (still useful for non-OpenAI / older models)
+
+```json
+{
+  "model": "claude-opus-4-7",
   "response_format": { "type": "json_object" },
   "messages": [
-    {
-      "role": "user",
-      "content": "Extract the product name, price, and SKU from this text: ..."
-    }
+    { "role": "user", "content": "Extract product name, price, SKU from: ..." }
   ]
 }
 ```
@@ -112,8 +148,9 @@ Forces the model to produce JSON that conforms to a specified schema.
 
 | Rule | Description |
 |------|-------------|
-| Provide schema in prompt | Even with JSON mode, include the target schema in the system prompt — models need schema context to produce correct field names |
-| Validate server-side | Never trust model output as schema-valid — always parse and validate with Zod/Pydantic before passing downstream |
+| Prefer `strict: true` when available | gpt-4o-2024-08-06+ gives 100% schema-conformance vs <40% for gpt-4-0613. Anthropic tool-use approximates this via tool schemas. |
+| Provide schema in prompt | Even with strict mode, include the target schema in the system prompt — models still hallucinate field semantics without context |
+| Validate server-side | Never trust model output as schema-valid — always parse and validate with Zod/Pydantic before passing downstream (defense in depth, even with strict mode) |
 | Handle partial JSON | Streaming structured output may arrive as partial JSON; buffer and parse only on `[DONE]` |
 | Version your schemas | Include a `schema_version` field in output schemas; models may produce output with old field names after schema changes |
 

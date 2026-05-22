@@ -2,6 +2,8 @@
 
 Purpose: Design the contract for sunsetting parts of an API. Cover RFC 8594 (`Sunset` header), RFC 9745 (`Deprecation` header), deprecation timeline, client SDK migration, customer communication, and removal cutover.
 
+> **2026-05 baseline**: **RFC 9745** "The Deprecation HTTP Response Header Field" was published **2025-03** (Standards Track, [datatracker](https://datatracker.ietf.org/doc/html/rfc9745)) — earlier docs in this skill that cited a 2024 date are wrong. The header is an **Item Structured Field** whose value is a `Date` per RFC 9651 (Structured Field Values for HTTP, 2024-09). Example: `Deprecation: @1688169599`. Use RFC 8594 `Sunset` (HTTP-date format) and RFC 8288 `Link; rel="deprecation"` / `rel="successor-version"` in tandem.
+
 ## Scope Boundary
 
 - **gateway `deprecation`**: Deprecation policy + signals (this document).
@@ -29,11 +31,11 @@ ACTIVE  →  DEPRECATED  →  SUNSET (removal)
 ## RFC 9745 — `Deprecation` Header
 
 ```
-Deprecation: @1727136000           # NumericDate; deprecation announced timestamp
-Deprecation: true                   # boolean form (older drafts; some clients)
+Deprecation: @1727136000           # Date (RFC 9651 Structured Field, Unix timestamp with @ sigil)
+Deprecation: true                   # legacy boolean form (older drafts; many clients still recognize)
 ```
 
-The 2024 RFC settles on a NumericDate (Unix timestamp). Many clients still recognize the boolean form.
+RFC 9745 was published **2025-03** (Standards Track). The value is an Item Structured Field of type Date per RFC 9651. Many clients still send the legacy boolean form — accept both on the receive side but emit the Date form for new responses.
 
 ## RFC 8594 — `Sunset` Header
 
@@ -260,10 +262,11 @@ When `deprecation` completes, emit:
 
 ## References
 
-- RFC 9745 — The Deprecation HTTP Header Field (2024)
+- **RFC 9745 — The Deprecation HTTP Response Header Field (2025-03, Standards Track)** — [datatracker](https://datatracker.ietf.org/doc/html/rfc9745)
 - RFC 8594 — The Sunset HTTP Header Field (2019)
 - RFC 8288 — Web Linking (Link header + rels)
-- RFC 9457 — Problem Details for HTTP APIs
+- RFC 9651 — Structured Field Values for HTTP (2024-09; defines Date type used by Deprecation)
+- RFC 9457 — Problem Details for HTTP APIs (2023-07, obsoletes RFC 7807)
 - IETF httpbis-deprecation-header — historical drafts
 - Google Cloud — API deprecation policy
 - AWS — API deprecation patterns and brownouts

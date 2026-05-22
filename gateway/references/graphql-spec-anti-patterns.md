@@ -1,6 +1,8 @@
 # GraphQL & OpenAPI Specification Anti-Patterns
 
 > GraphQLスキーマ設計、OpenAPI仕様構造、API仕様品質の失敗パターン
+>
+> **2026-05 baseline**: GraphQL **September 2025 spec edition**（[spec.graphql.org/September2025](https://spec.graphql.org/September2025/), October 2021 以来 4 年ぶりのフル仕様改訂）が現在の参照。Schema Coordinates、@oneOf input objects、executable-document descriptions、Unicode 完全対応を追加。Apollo Federation **2.10**（2025-02）が現行最小推奨バージョン（明示的 `@link` バージョニング必須、`@connect`/`@source` Connectors の前提）。OpenAPI 側は **3.2.0**（2025-09-23）が現行ターゲット、JSON Schema Draft 2020-12 dialect 維持。
 
 ## 1. GraphQLスキーマ設計 7 大アンチパターン
 
@@ -126,17 +128,18 @@ Gateway での活用:
 
 ---
 
-## 7. Apollo Federation: v1 vs v2
+## 7. Apollo Federation: v1 vs v2 vs v2.10+
 
-| Feature | Federation v1 | Federation v2 |
-|---------|--------------|--------------|
-| Composition | `@apollo/gateway` only | `@apollo/composition` (standalone) |
-| `@key` directive | Single subgraph owns entity | Multiple subgraphs can extend entity with `@key(resolvable: false)` |
-| `@extends` | Required for entity extension | Not needed — implicit extension |
-| `@shareable` | Not available | Fields shared across subgraphs must be marked `@shareable` |
-| `@override` | Not available | One subgraph can override another's field ownership |
-| `@inaccessible` | Not available | Mark fields hidden from supergraph consumers |
-| Link import | Not available | `@link` directive for importing external definitions |
+| Feature | Federation v1 | Federation v2 | Federation v2.10+ (2025-02) |
+|---------|--------------|--------------|---------------------------|
+| Composition | `@apollo/gateway` only | `@apollo/composition` (standalone) | Rewritten composition engine — descriptive errors, composition hints for query planning |
+| `@key` directive | Single subgraph owns entity | Multiple subgraphs can extend entity with `@key(resolvable: false)` | Same; required to be stable identifiers |
+| `@extends` | Required for entity extension | Not needed — implicit extension | Not needed |
+| `@shareable` | Not available | Fields shared across subgraphs must be marked `@shareable` | Same |
+| `@override` | Not available | One subgraph can override another's field ownership | Same |
+| `@inaccessible` | Not available | Mark fields hidden from supergraph consumers | Same |
+| Link import | Not available | `@link` directive for importing external definitions | **MANDATORY** — every subgraph must declare `@link(url: "https://specs.apollo.dev/federation/v2.x")` |
+| Connectors | Not available | Not available | **`@connect` / `@source`** — wrap REST endpoints / AI tools as subgraph fields (prerequisite: Federation 2.10) |
 
 ### When to Use Federation vs REST
 

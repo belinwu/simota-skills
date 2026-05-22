@@ -1,5 +1,16 @@
 # OpenAPI Templates
 
+> **2026-05 baseline — OpenAPI 3.2.0** shipped on 2025-09-23 ([OAI announcement](https://www.openapis.org/blog/2025/09/23/announcing-openapi-v3-2), [spec](https://spec.openapis.org/oas/v3.2.0.html)). The JSON Schema dialect is now anchored at `https://spec.openapis.org/oas/3.2/dialect/2025-09-17` (still JSON Schema Draft 2020-12 underneath). 3.2 is **strictly backward-compatible with 3.0 and 3.1** — existing specs keep validating. For new APIs in 2026, default to 3.2 to unlock the streaming + QUERY + OAuth metadata features described below.
+
+| 3.2 capability | What it unlocks |
+|----------------|-----------------|
+| `itemSchema` on `text/event-stream`, `application/jsonl`, `application/json-seq`, `multipart/mixed` | First-class streaming contracts (SSE / JSON Lines / multipart feeds) without prose disclaimers |
+| `query` operation + `additionalOperations` | Native HTTP `QUERY` method (IESG-approved 2025-11-20) plus a defined slot for non-standard methods |
+| `querystring` | Whole query string as a Schema Object — clean validation when arbitrary query keys are not enumerable |
+| Hierarchical Tags (`summary`, `parent`, `kind`) | Real taxonomy; tooling can filter sections deterministically |
+| OAuth 2.0 Device Code + `oauth2MetadataUrl` | Smart-TV / CLI / kiosk flows + automatic discovery of OAuth 2.0 AS metadata (RFC 8414) |
+| Improved `multipart/form-data` per-part schema | Mixed file + JSON upload contracts without ad hoc encoding rules |
+
 ## Minimal OpenAPI 3.0 Template
 
 ```yaml
@@ -21,7 +32,7 @@ paths:
 # ...
 ```
 
-## Error Response (RFC 7807)
+## Error Response (RFC 9457 Problem Details — obsoletes RFC 7807, published 2023-07)
 
 ```yaml
 ErrorResponse:

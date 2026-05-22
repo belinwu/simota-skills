@@ -2,6 +2,8 @@
 
 Purpose: Author a GraphQL SDL that is type-safe, performant under N+1 pressure, and evolvable across federated services. The contract is the schema and its operation limits — not the resolver code.
 
+> **2026-05 baseline**: The **GraphQL September 2025 edition** of the specification ([spec.graphql.org/September2025](https://spec.graphql.org/September2025/), [announcement](https://graphql.org/blog/2025-09-08-september-edition/)) is the first full spec release since October 2021. It standardizes **Schema Coordinates** (stable IDs like `User.email` for diff/codegen/lint tooling), **OneOf input objects** (exactly-one-of input pattern via `@oneOf`), executable-document `description`s, full Unicode grammar, and clarified deprecation + execution semantics. **Apollo Federation 2.10** (2025-02, [docs](https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/reference/versions)) mandates explicit `@link` versioning and is the prerequisite for the `@connect` / `@source` Connectors spec. `@defer` / `@stream` remain opt-in via `experimentalExecuteIncrementally` in graphql-js — they are spec-track but not yet GA in the September 2025 edition.
+
 ## Scope Boundary
 
 - **Gateway `graphql`**: the SCHEMA/CONTRACT layer. Decides types, fields, nullability, Connection shape, complexity/depth limits, persisted-query policy, subscription transport, federation boundaries.
@@ -27,6 +29,8 @@ Default: **Schema-first** for public APIs and federated graphs. Code-first for i
 - `ID` scalar is opaque — do not assume UUID vs integer downstream.
 - Input types are distinct from output types. Never reuse an object type as input.
 - Use interfaces/unions for polymorphism (`SearchResult = Article | Product | User`). Clients can fragment on each.
+- For exactly-one-of input shapes (e.g., `lookupBy: { id, email, phone }` where only one is set), use the **`@oneOf`** input object pattern standardized in the September 2025 spec edition. Pre-2025 codebases emulated this with manual resolver checks — the spec'd form is now enforced at the GraphQL layer.
+- Refer to fields by **Schema Coordinates** (`User.email`, `Mutation.updateUser`, `User.email(format:)`) when emitting diffs, lint output, or registry annotations. Coordinates are now spec-stable, so tooling produces deterministic codegen and PR-comment anchors across schema versions.
 
 ## N+1 Prevention — DataLoader
 
@@ -72,9 +76,9 @@ Complexity is superior to depth alone — depth does not penalize a wide query l
 |----------|-----------|-----------|
 | Monolithic schema | Single team, single service, no cross-domain graph | Multi-team product |
 | Schema stitching (gateway merges independent schemas by name) | Legacy or quick aggregation across two existing GraphQL services | New architecture — federation is strictly superior |
-| Apollo Federation v2 (subgraphs declare ownership via `@key`/`@shareable`) | Multi-team, multi-service; each team owns a domain and its types | Single service — overhead without payoff |
+| Apollo Federation v2.10+ (subgraphs declare ownership via `@key`/`@shareable`, explicit `@link` versioning required) | Multi-team, multi-service; each team owns a domain and its types | Single service — overhead without payoff |
 
-Federation lets each subgraph own its types and extend others' types. The gateway composes a single supergraph. Boundary clarity at the `@key` directive.
+Federation lets each subgraph own its types and extend others' types. The gateway composes a single supergraph. Boundary clarity at the `@key` directive. Federation 2.10 (2025-02) is the floor for new graphs in 2026 — every subgraph SDL must declare `@link(url: "https://specs.apollo.dev/federation/v2.x", ...)`. Federation 2.10 is also the prerequisite for the `@connect` / `@source` Connectors spec (REST/AI-tool wrapping inside the graph).
 
 ## Relay Spec — Connections, Cursors, Nodes
 

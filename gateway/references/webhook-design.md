@@ -2,6 +2,8 @@
 
 Purpose: Design the contract for an API that EMITS webhooks to subscribers. The contract covers signature, idempotency, retry, ordering, payload shape, and deprecation signaling — everything a subscriber must trust to build against the emitter.
 
+> **2026-05 baseline**: For new webhook contracts, align with **[Standard Webhooks](https://www.standardwebhooks.com/)** ([spec](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md), Svix-led). Adopted by **OpenAI, Anthropic, Google Gemini, Twilio, Supabase, Vanta, Drata, Kong, PagerDuty, Etsy, TaskRabbit** and many others. Standard Webhooks pins HMAC-SHA256 over `{webhook-id}.{webhook-timestamp}.{raw-body}`, a 5-minute timestamp tolerance, and `webhook-id` for receiver-side idempotency — one verification library works across all adopters. For event-payload structure (especially in multi-system pipelines), use **CloudEvents 1.0.2** ([spec](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/http-webhook.md), CNCF) — supported natively by Amazon EventBridge, Google Eventarc, Knative. OpenAPI 3.2 (2025-09) finally has first-class `webhooks` modeling (carried forward from 3.1).
+
 ## Scope Boundary
 
 - **Gateway `webhook`**: the PROVIDER side. Designs the emit contract — what the provider promises subscribers.
@@ -15,13 +17,20 @@ If the question is "what do I promise subscribers about delivery?" → `webhook`
 
 Every outbound webhook carries a signature so subscribers can verify origin and integrity.
 
-Required headers:
-- `X-Signature: t=<unix-seconds>,v1=<hex-hmac>` — timestamp + versioned HMAC, Stripe-style.
+Two header conventions are common in 2026:
+
+**Standard Webhooks (recommended for new providers)** — note the `webhook-*` prefix instead of `X-` (RFC 6648 deprecated `X-` headers in 2012, finally being applied here):
+- `webhook-id: msg_2KWPBgLlAfxdpx2AI54pPJ85f4W` — stable event ID for idempotency.
+- `webhook-timestamp: 1674087231` — Unix seconds.
+- `webhook-signature: v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE=` — base64 HMAC-SHA256 of `{webhook-id}.{webhook-timestamp}.{raw-body}` using a versioned key.
+
+**Legacy Stripe-style (still widely deployed)**:
+- `X-Signature: t=<unix-seconds>,v1=<hex-hmac>` — timestamp + versioned HMAC.
 - `X-Event-Id: evt_01HXYZ...` — stable event ID for idempotency.
 - `X-Event-Type: order.completed` — typed event selector.
 - `X-Delivery-Attempt: 3` — current retry count.
 
-Provider signs: `hmac_sha256(secret, f"{t}.{raw_body}")`. Include the timestamp in the signing string to block replay.
+Provider signs: `hmac_sha256(secret, f"{id}.{t}.{raw_body}")` (Standard Webhooks) or `hmac_sha256(secret, f"{t}.{raw_body}")` (Stripe-style). Include the timestamp in the signing string to block replay.
 
 Subscriber-side verification rules (document these in the contract):
 1. Reject if `|now - t|` > 5 minutes → blocks replay of stolen payloads.

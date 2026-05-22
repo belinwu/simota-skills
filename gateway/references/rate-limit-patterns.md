@@ -1,6 +1,8 @@
 # Rate Limit Patterns Reference
 
-Purpose: Design rate-limiting for an API. Choose algorithm (token bucket / leaky bucket / sliding window / fixed window), scope (per-key / per-tenant / per-route / per-IP), distributed enforcement, and signaling per RFC 9331 (`RateLimit` headers) + RFC 6585 (HTTP 429).
+Purpose: Design rate-limiting for an API. Choose algorithm (token bucket / leaky bucket / sliding window / fixed window), scope (per-key / per-tenant / per-route / per-IP), distributed enforcement, and signaling per the IETF `RateLimit` header draft + RFC 6585 (HTTP 429).
+
+> **2026-05 baseline**: The IETF `RateLimit-Policy` + `RateLimit` header fields are **still an Internet-Draft** — latest `draft-ietf-httpapi-ratelimit-headers-10` (2025-09-24, Standards Track, [datatracker](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/)). **No RFC number yet** — earlier docs in this skill that cited "RFC 9331" were wrong (RFC 9331 is actually the L4S ECN spec). The draft remains stable enough to ship against — major APIs (GitHub, Stripe, Cloudflare) already emit these or a superset — but track the working group for the final RFC. The header field values follow **RFC 9651** (Structured Field Values for HTTP, 2024-09, obsoletes RFC 8941). For non-strict 429 bodies, use **RFC 9457 Problem Details (2023-07)**.
 
 ## Scope Boundary
 
@@ -67,22 +69,21 @@ Single-node counters break under horizontal scaling. Patterns:
 
 For high QPS: Redis Cluster + Lua, or local approximate + periodic flush.
 
-## RFC 9331 — `RateLimit` Headers
+## IETF `RateLimit` Headers (draft-ietf-httpapi-ratelimit-headers-10, 2025-09)
 
-The current standard (replaces older drafts).
+The IETF working-group draft (Standards Track, not yet an RFC; expires 2026-03).
 
 ```
-RateLimit: limit=100, remaining=42, reset=15
-RateLimit-Policy: 100;w=60;name="default"
+RateLimit: "default";r=42;t=15
+RateLimit-Policy: "default";q=100;w=60
 ```
 
 Where:
-- `limit` = quota for the window.
-- `remaining` = remaining in current window.
-- `reset` = seconds until reset (NOT a UTC timestamp).
-- `RateLimit-Policy` = optional policy descriptor.
+- `RateLimit-Policy` advertises one or more named quota policies — `q` is the quota, `w` is the window in seconds (RFC 9651 structured-field syntax).
+- `RateLimit` reports the **remaining** quota `r` and time-to-reset `t` (seconds, NOT a UTC timestamp) for the named policy.
+- Each policy is a named inner list — multiple policies can coexist (e.g., one for the default plan, one for a search-only sub-bucket).
 
-Older `X-RateLimit-*` (no leading X is also fine) is still common in the wild but RFC 9331 is canonical.
+Older `X-RateLimit-Limit` / `X-RateLimit-Remaining` / `X-RateLimit-Reset` triplets remain widely deployed; emit them in parallel with the IETF form for backward compatibility until the draft becomes an RFC. The values follow **RFC 9651** Structured Field Values (2024-09, obsoletes RFC 8941). Do not cite "RFC 9331" for rate limiting — that number is L4S ECN.
 
 ## 429 Response
 
@@ -90,7 +91,7 @@ Older `X-RateLimit-*` (no leading X is also fine) is still common in the wild bu
 HTTP/1.1 429 Too Many Requests
 Content-Type: application/problem+json
 Retry-After: 30
-RateLimit: limit=100, remaining=0, reset=30
+RateLimit: "default";r=0;t=30
 
 {
   "type": "https://api.example.com/errors/rate-limit-exceeded",
@@ -102,7 +103,7 @@ RateLimit: limit=100, remaining=0, reset=30
 }
 ```
 
-`Retry-After` SHOULD be present (RFC 6585). Use Problem Details (RFC 9457) for the body.
+`Retry-After` SHOULD be present (RFC 6585). Use Problem Details (**RFC 9457**, 2023-07) for the body.
 
 ## Tier / Plan Design
 
@@ -270,10 +271,11 @@ When `rate-limit` completes, emit:
 
 ## References
 
-- RFC 9331 — RateLimit Header Fields for HTTP (2025)
+- **draft-ietf-httpapi-ratelimit-headers-10** — RateLimit header fields for HTTP (2025-09-24, Standards Track, not yet RFC) — [datatracker](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/)
+- RFC 9651 — Structured Field Values for HTTP (2024-09, obsoletes RFC 8941)
 - RFC 6585 — Additional HTTP Status Codes (429)
-- RFC 9457 — Problem Details for HTTP APIs
-- IETF HTTP Working Group — rate-limit drafts
+- RFC 9457 — Problem Details for HTTP APIs (2023-07, obsoletes RFC 7807)
+- IETF HTTPAPI Working Group — current drafts
 - Stripe API rate-limit documentation
 - GitHub REST API rate-limit documentation
 - Cloudflare — distributed rate-limit patterns
