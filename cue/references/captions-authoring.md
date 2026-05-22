@@ -2,6 +2,8 @@
 
 Purpose: Author subtitle, SDH (Subtitles for the Deaf and Hard-of-hearing), and closed-caption files with correct timing, readable line breaks, accessibility compliance, and the right delivery format per platform. A caption that can't be read in time is worse than no caption at all.
 
+> **2026 baseline.** Automated transcription (Whisper-large family, AssemblyAI, Deepgram Nova-3, ElevenLabs) consistently lands the *first pass* at word-level timing accuracy under 0.5s for English. The 2026 caption-authoring workflow is **AI transcribes → human re-segments + re-times to phrase boundaries → CPS / line-length pass → ship**. AI alone reliably misses: speaker turn boundaries, music / SFX brackets for SDH, brand-name casing, and CPS budgeting under reading-speed limits. Treat the AI output as raw material, never as a deliverable.
+
 ## Scope Boundary
 
 - **cue `captions`**: SRT / VTT / ASS authoring, timing, reading-speed limits, SDH additions, burn-in vs soft-sub decisions.

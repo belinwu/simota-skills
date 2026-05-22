@@ -2,6 +2,8 @@
 
 Purpose: Author 9:16 short-form scripts (TikTok / Instagram Reels / YouTube Shorts) optimized for sound-off autoplay, thumb-scroll retention, and loopable endings. A Shorts script lives or dies in the first 3 seconds — everything else is scaffolding for that hook.
 
+> **2026 stack note.** End-to-end AI shorts pipelines (FlowShorts and similar) chain script → AI image / video gen → ElevenLabs VO → burned-in TikTok-style captions → auto-post to YouTube Shorts / TikTok / Reels. They are appropriate for **high-volume social ATL distribution** where retention metrics matter more than brand fidelity, and they are *inappropriate* for high-trust product launches or campaign hero work where every frame is reviewed. Treat this Shorts recipe as the human-authored / brand-grade path; treat the AI pipeline as the volume-channel companion. The 3-second hook rule, sound-off legibility, and pattern-interrupt cadence below apply to both — AI tooling does not loosen the retention math.
+
 ## Scope Boundary
 
 - **cue `shorts`**: hook-first 15-60s vertical script, captions-on-screen spec, loop design, platform length targeting.

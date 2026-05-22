@@ -2,6 +2,8 @@
 
 Purpose: Adapt a source-language narration / voice-over script to multiple locales with cultural fit, duration budgeting, and voice-talent-ready briefs. Localization is not translation — it is rewriting the narration for the new locale while preserving intent, timing, and lip-sync feasibility.
 
+> **2026 toolchain.** AI dubbing has reached "good enough for the first pass on internal / mid-tier external work" by 2026: **HeyGen** offers lip-sync dubbing in `40+` languages with face-aware mouth re-rendering; **ElevenLabs** ships `~5,000` voices across `32+` languages and one-click captions; **Kling 3.0 Omni** supports multi-shot sequences with a shared audio timeline and native dialogue in five languages. AI dubbing remains a *first pass*, never the shipping deliverable for brand-critical surfaces — native-speaker LQA stays mandatory. For shorts auto-publishing flows (FlowShorts and similar) the entire pipeline is AI-stitched (script + ElevenLabs VO + captions + auto-posting) — those are appropriate for high-volume social, not for the localized brand campaign work this file covers.
+
 ## Scope Boundary
 
 - **cue `localize`**: locale-adapted VO / narration script, expansion budgeting, talent brief, pronunciation guide.
