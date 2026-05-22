@@ -34,12 +34,38 @@ Breach models adversary movement across these arrows, not just the nodes.
 |---------|----------------|-------------------|-----------|
 | Dependency confusion | Internal name resolvable on public registry | Registry-resolution log shows public vs private order | CWE-1357, SLSA L2 gap |
 | Typosquatting | Cousin name (`reqeusts`, `lodahs`) installed by typo | Install event on unknown package with recent first-publish | OWASP A06 |
+| **Slopsquatting** (AI-hallucinated package name) | Coding-assistant invents a non-existent package name; attacker registers it | AI-suggested import that "almost matches" a real package | 2024–2026 emerging |
 | Compromised maintainer | Legitimate package, new malicious version | Rapid version bump with no changelog / dist-tag shuffle | ATT&CK T1195.002 |
 | Build-tool compromise (SolarWinds-style) | Injected into the build system itself | Binary / lockfile drift between branches | ATT&CK T1195.002, SLSA L3 gap |
 | Malicious postinstall | `postinstall`, `preinstall`, `gyp` scripts | Egress to unknown host at install time | CWE-506 |
 | Registry namespace takeover | Expired maintainer email re-registered | Publish from new email on dormant package | ATT&CK T1195.001 |
 | Dependency of dependency (transitive) | Deep-tree compromise invisible to direct-dep review | Lockfile delta only in transitive leaves | SLSA L2-3 gap |
 | Source-code-management backdoor | Protected-branch bypass / force-push to vendored dep | Unsigned commit in vendored subtree | SLSA source requirements |
+| **Wormable / self-replicating worm** (Mini Shai-Hulud family) | Compromised package's postinstall steals maintainer creds, publishes to *other* packages | Burst of fresh versions across unrelated maintainer accounts within hours | 2025–2026 in-the-wild |
+| **CI workflow hijack via `pull_request_target`** | PR from untrusted fork triggers privileged workflow with `id-token: write` | OIDC token minted from an untrusted branch checkout | Mini Shai-Hulud abuse, 2026 |
+| **SLSA Build Level 3 forgery** | Malicious build attached to *valid* SLSA L3 provenance signed by a hijacked workflow | Verified attestation pointing at attacker-controlled commit hash | Mini Shai-Hulud abuse, 2026 |
+
+### Mini Shai-Hulud Family (TeamPCP, May 2026)
+
+The 2025–2026 "Shai-Hulud" and "Mini Shai-Hulud" supply-chain worms are the reference case for **wormable + autonomous + cross-ecosystem** attacks:
+
+- **May 11, 2026**: TeamPCP published `~172` distinct packages with `~400` malicious versions across npm + PyPI + Composer within ~5 hours; victims included TanStack, Mistral AI, OpenSearch ecosystems.
+- **Mechanism**: GitHub Actions `pull_request_target` workflow hijack + OIDC token extraction → mint a valid publish token → publish a poisoned version with a **valid SLSA Build Level 3 provenance attestation**.
+- **Payload**: obfuscated `router_init.js` / `setup.mjs` profiles the environment, harvests credentials, and pivots to the next ecosystem.
+- **Detection difficulty**: SLSA L3 attestations are usually a "trust this" signal — so the worm's outputs sail past tooling that treats valid attestation as sufficient.
+
+Red-team scenarios MUST include:
+
+- A wormable-propagation step (compromise one package → ask "what credentials does that grant?")
+- An SLSA-provenance forgery step (`pull_request_target` + OIDC abuse) — verify the team can detect a malicious-but-validly-signed publish.
+- A cross-ecosystem hop (npm → PyPI / Composer / RubyGems): assume credentials harvested from one ecosystem propagate.
+
+Mitigation guidance the red team should expect to validate:
+
+- Remove `pull_request_target` triggers from any workflow with `id-token: write` or registry-publish secrets.
+- Enforce OIDC least-privilege: the publish role must be reachable from `main` / release branches only, never from PR branches.
+- Treat SLSA L3 attestations as necessary-but-not-sufficient: cross-check the *signer identity* and *commit hash* against an out-of-band allowlist before trusting a release.
+- Add anomaly detection on burst-publish patterns across the same maintainer / org within a short window.
 
 ## Workflow
 

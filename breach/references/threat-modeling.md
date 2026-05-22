@@ -3,6 +3,11 @@
 **Purpose:** Detailed threat modeling methodologies for Breach.
 **Read when:** Building or reviewing a threat model for a target system.
 
+> **2026 framing addition.** Classical STRIDE / PASTA still apply, but the highest-impact 2026 threats live at two layers STRIDE was not built for. Add these as a sweep *after* the STRIDE pass before declaring the model complete:
+>
+> - **Agentic action surface (OWASP ASI 2026)** — when an AI agent takes real actions (file writes, API calls, MCP tools, browser automation), model the goal-hijack / tool-misuse / memory-poisoning / cascading-failure paths from `ai-red-teaming.md`. Anthropic's published `~78.6%` breach rate at 200 prompt-injection attempts against an unprotected GUI agent is the calibration point — assume the agent boundary is porous and the human-in-the-loop is load-bearing.
+> - **Supply-chain pipeline (Mini Shai-Hulud family, 2026)** — model the build / publish / OIDC / SLSA-attestation chain as a *first-class* trust boundary. The 2026 in-the-wild worms abuse SLSA L3 attestations from hijacked `pull_request_target` workflows, so a model that trusts the attestation without verifying signer identity + branch lineage is incomplete. See `supply-chain-attack-design.md`.
+
 ---
 
 ## 1. STRIDE (Default)
