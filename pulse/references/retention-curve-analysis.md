@@ -65,10 +65,10 @@ Retention %
 | Flat Healthy | 30-60% (B2C) / 60-90% (B2B SaaS) | Working retention; stable core | Optimize expansion / upsell |
 | Smile | Rises after plateau | Excellent; resurrection + network effects | Invest in viral/referral loops |
 
-### B2B SaaS Benchmarks (2024-2025)
+### B2B SaaS Benchmarks (2025 update)
 - Month-1 logo retention: 46.9% (avg), ≥70% (healthy), ≥90% (elite)
 - Month-12 logo retention: ≥80% (healthy), ≥95% (elite enterprise)
-- NRR (Net Revenue Retention): >100% healthy, >110% strong, >120% top-tier
+- NRR (Net Revenue Retention) — 2025 reset: private-SaaS median 101-102%; top performers 104-106%; SMB segment often 90-105% (below 100% increasingly common); enterprise 115-125%; best-in-class enterprise software 120-150%; growing companies with NRR ≥100% grew ~2x faster YoY than peers below 100% in 2025. See `revenue-analytics.md` for source-cited cuts.
 
 ### B2C/Consumer Benchmarks
 - Day-1: 25-40% (avg mobile)
@@ -232,4 +232,7 @@ When `retention` completes, emit:
 - Reforge — Growth Models and retention measurement
 - Brian Balfour — "Why Retention is the Single Most Important Growth Metric"
 - Mixpanel — Retention Benchmarks Report 2024
-- OpenView — SaaS Benchmarks 2024-2025 (NRR, logo retention)
+- [High Alpha — 2025 SaaS Benchmarks](https://www.highalpha.com/saas-benchmarks)
+- [ChartMogul — The SaaS Retention Report: The New Normal](https://chartmogul.com/reports/saas-retention-the-new-normal/)
+- [RockingWeb — SaaS Metrics Benchmarks 2025 (2,000 companies synthesis)](https://www.rockingweb.com.au/saas-metrics-benchmark-report-2025/)
+- [Benchmarkit — 2025 SaaS Performance Metrics](https://www.benchmarkit.ai/2025benchmarks)

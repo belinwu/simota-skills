@@ -1,5 +1,16 @@
 # Funnel & Cohort Analysis
 
+## 2026 Note on Attribution
+
+With third-party cookies still present in Chrome (Google's **2025-04-22** cancellation of TPC deprecation) but Privacy Sandbox APIs **retired 2025-10-17** (Topics, Protected Audience, Attribution Reporting all gone), last-touch click attribution remains the practical default — but it under-credits early funnel steps for users in EEA/UK whose consent has been denied. Combine event-based funnels with one of:
+
+- **Marketing-mix modeling (MMM)** — re-emerged in 2024-2026 as the cookieless-attribution fallback ([Google's Meridian](https://developers.google.com/meridian), Robyn, PyMC-Marketing). Better suited to aggregate attribution than user-level.
+- **CausalImpact / Bayesian structural time series** — for "did the feature launch move the metric" questions.
+- **Geo / switchback experiments** — for incrementality testing where pure A/B is contaminated.
+- **Snowflake Cortex / BigQuery ML anomaly detection** — passive funnel-drift detection.
+
+Do not present funnel conversion rates without disclosing the consent-denial blind spot for EEA/UK traffic (see `privacy-consent.md` for the 2025-07-21 Consent Mode v2 enforcement context).
+
 ## Funnel Definition Template
 
 ```markdown

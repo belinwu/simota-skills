@@ -1,5 +1,20 @@
 # Alerts & Anomaly Detection
 
+## Detection Library Landscape (2026-05)
+
+| Library | Status | Use case | Note |
+|---------|--------|----------|------|
+| **Meta Prophet** | Open source; **maintenance-only mode** since 2024 (no new features, only critical bug fixes from Meta). Still usable for daily/weekly seasonality. | Baseline + trend + seasonality decomposition for daily metrics | Does **not** include built-in anomaly detection — wrap with residual + Z-score |
+| **NeuralProphet** | Active OSS successor; auto-regression + PyTorch backend; handles sub-daily data better than Prophet | Sub-daily forecasting + anomaly residuals | Drop-in API similar to Prophet |
+| **Datadog Watchdog** | Built-in ML anomaly detection (no setup) | Ops + business metrics in Datadog | Vendor-managed; opaque model |
+| **Snowflake Cortex — ANOMALY_DETECTION** | SQL function; runs in-warehouse | Anomaly checks alongside dbt models | Charges Snowflake credits |
+| **BigQuery ML — `ML.DETECT_ANOMALIES`** | SQL function with ARIMA / k-means backends | Same-warehouse alerting on GA4 BigQuery export | |
+| **AWS Lookout for Metrics** | Managed service | Multi-metric anomaly across AWS data sources | Read latest pricing — service has had reliability issues |
+| **Statsig anomaly detection** | Embedded in Statsig product analytics; **now under OpenAI** (acquisition 2025-09-02, $1.1B). Vendor-governance risk if you require independence from OpenAI. | A/B and product anomaly | [OpenAI — Statsig acquisition](https://openai.com/index/vijaye-raji-to-become-cto-of-applications-with-acquisition-of-statsig/) |
+| **PostHog anomaly detection** | Built into insights dashboards | All-in-one Posthog stack | |
+
+Pragmatic default for product/business metrics: run a simple in-warehouse Z-score (or `ML.DETECT_ANOMALIES` for seasonality-sensitive series) and route to Slack. Reach for Prophet/NeuralProphet only when seasonality decomposition is genuinely needed.
+
 ## Alert Types
 
 | Alert Type | Description | Use Case | Channels |

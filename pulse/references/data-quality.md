@@ -1,5 +1,19 @@
 # Data Quality Monitoring
 
+## 2026 Observability Landscape
+
+For analytics-pipeline quality, the 2026-relevant tools are:
+
+| Tool | Coverage | Note |
+|------|----------|------|
+| **Snowflake Cortex `ML.ANOMALY_DETECTION`** / **BigQuery ML `ML.DETECT_ANOMALIES`** | In-warehouse, SQL-native | Pair with daily completeness check |
+| **Monte Carlo / Bigeye / Soda** | Data observability vendors | Schema drift, freshness, volume, distribution |
+| **dbt tests + `dbt-expectations`** | Inline assertions on transformed tables | Default for any dbt project |
+| **dbt Semantic Layer** (GA 2024-10) | Defines metrics once → consistent across BI, no scope drift in GA4-vs-warehouse comparisons | [dbt SL docs](https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl) |
+| **RudderStack Tracking Plan as Code** | Catches event schema drift at ingest, not at query | Launched 2025 |
+
+Coordinate with Beacon for infra-level monitoring; Pulse owns the analytics-pipeline quality contract.
+
 ## Quality Dimensions
 
 | Dimension | Target | Alert | How to Monitor |

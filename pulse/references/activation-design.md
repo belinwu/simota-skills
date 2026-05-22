@@ -57,7 +57,7 @@ The Magic Number must be:
 | Zynga (FarmVille) | "I want to come back tomorrow" | Return on Day 1 | Classic D1 hook |
 | HubSpot | "I got a real contact in" | 5 contacts within 1 week | SaaS PLG benchmark |
 
-## Activation Rate Benchmarks (2024-2025)
+## Activation Rate Benchmarks (2024-2026)
 
 | Product Type | Target Activation Rate | TTV Target |
 |-------------|------------------------|-----------|
@@ -67,6 +67,9 @@ The Magic Number must be:
 | SaaS sales-assisted | 60-80% in 30 days | < 30 days (often onboarding-gated) |
 | Enterprise | N/A (use deployment milestones) | Measured in weeks post-kickoff |
 | Elite PLG | 75%+ | < 1 hour first value |
+| AI / agent product (new in 2026) | "First successful task" within first session; aim 50-70% session-1 | Sub-5-minute first usable output; if the model can't deliver value in the first try, the Magic Number must include retry/repair behavior |
+
+AI-product caveat: an activation event for an agent product should be **outcome-grounded** ("first task completed with user-confirmed success"), not "first prompt sent" (which is the AI-native equivalent of `signup_completed` — fires on intent, not on value). Pair with an offline eval score to detect activation rates inflated by users who "completed" a low-quality output.
 
 ## Event Schema
 

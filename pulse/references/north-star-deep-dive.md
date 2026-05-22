@@ -41,6 +41,18 @@ PUBLISH   →  NSM one-liner + tree diagram + owner + cadence
 
 Rejection rule: if the NSM grows while customer value does not (e.g., pageviews after re-theme), it is a vanity metric. Re-classify.
 
+### AI-native product NSM (2026 caveat)
+
+For LLM/agent products, **do not use raw token consumption as the NSM**. Token volume grows because the model is verbose, not because the product creates value. Common 2026 vanity traps to reject: tokens generated, completions returned, average prompt length, model calls per session.
+
+Better candidates (one or two, never all):
+- **Task-completion NSM** ("successful outcomes / week"): the share of agent runs where the user's intent is satisfied per a downstream eval (LLM-judge or rule-based). Pair with explicit success criteria.
+- **Decision Velocity NSM**: time from user intent → trusted decision/action delivered. Useful for analytics copilots and dev tools.
+- **Eval-aligned NSM**: an offline-eval pass rate (e.g., "% queries with grounded, cited answer") promoted as the user-facing NSM, so quality regression is visible to leadership.
+- **Retained-value NSM** ("users completing ≥N satisfying agent runs in 7 days"): use when the product is consumption-oriented.
+
+Always pair AI NSM with a **CFO-translatable lagging indicator** (revenue per task, retention lift, hours saved priced in $) — if you cannot translate the NSM to dollars within one quarter, it is still an internal dashboard, not a North Star. (Source: [Eric Weber — North star metrics for AI data products](https://ericdataproduct.substack.com/p/north-star-metrics-for-ai-data-products))
+
 ## Decomposition Formula
 
 Generic form: `NSM = Users_Active × Action_Depth × Frequency × Quality_Multiplier`
@@ -128,3 +140,5 @@ When `northstar` completes, emit:
 - Reforge — Growth Loops and NSM framework (Brian Balfour)
 - Sean Ellis — "Hacking Growth" NSM chapter
 - Reid Hoffman / LinkedIn — Engagement NSM evolution
+- Eric Weber (2026) — [North star metrics for AI data products](https://ericdataproduct.substack.com/p/north-star-metrics-for-ai-data-products) — argues against token-volume NSM for AI products
+- LeanPivot (2025) — [Finding Your Agent's "North Star" Metric](https://leanpivot.ai/blog/finding-your-agents-north-star-metric/)
