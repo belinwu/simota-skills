@@ -2,7 +2,7 @@
 
 This file is the canonical regulatory checklist for any Web→Native porting blueprint. **Treat regulatory items as blueprint-time decisions, not pre-submission afterthoughts.** Late-stage rejection cycles cost 1-4 weeks per round.
 
-The information here is a 2026-Q1 snapshot. Always verify against Apple/Google/EU primary sources before final submission.
+The information here is a **2026-05 snapshot**. Always verify against Apple/Google/EU primary sources before final submission.
 
 ---
 
@@ -65,21 +65,25 @@ Port deliverable: a UI flow that names the provider, explains the purpose, and c
 
 ### A.6 DMA (EU)
 
-- **2025-06-26:** Single entitlement + 3 fee models. IAP rate reduced 30%→20%; external payment also subject to 20% commission; **Core Technology Commission (CTC) 5%** on externally-announced IAP revenue.
-- **2026-01-01:** Core Technology Fee (CTF) is fully retired; CTC is the consolidated model.
+- **2025-06-26:** Apple's June 2025 EU update — single entitlement + 3 fee models. IAP rate reduced 30%→20%; external payment also subject to 20% commission; **Core Technology Commission (CTC) 5%** on externally-announced IAP revenue used in the app.
+- **2026-01-01:** Core Technology Fee (CTF) **fully retired**; Apple consolidated EU terms into **a single business model** with CTC as the consolidated fee on linked-out digital-goods/services sales.
 - iOS 18.6+: alternative marketplaces in EU; AltStore PAL etc. operating.
 - **Port action:** decide whether the app distributes via App Store only, alternative marketplaces, or web-direct in EU. Note CTC implications in finance handoff.
+- Sources: Apple Developer "Update on apps distributed in the European Union"; RevenueCat blog "Apple's June 2025 EU update: one entitlement, three fees, and CTF's 2026 sunset"; SEC Form 10-Q FY2026.
 
 ### A.7 EU DSA Trader Status
 
 - **Effective 2025-02-17:** All developers must declare trader status in App Store Connect — including non-EU developers and those not selling in EU. Non-compliant apps are removed from EU storefronts.
 
-### A.8 Age Rating — 5-tier (Apple, 2026-01-31 deadline)
+### A.8 Age Rating — 5-tier (Apple, 2026-01-31 deadline — **enforced**)
 
-- New tiers: **4+, 9+, 13+, 16+, 18+** (replacing the older 4-tier scheme).
-- All apps must answer the new questionnaire by **2026-01-31** to remain available in iOS 26+ devices.
+- New tiers: **4+, 9+, 13+, 16+, 18+** (replacing the older 4-tier scheme: 4+, 9+, 12+, 17+).
+- All apps must answer the new questionnaire by **2026-01-31**. **As of 2026-02 onward, App Store Connect blocks new submissions and app updates for apps that have not completed the new questionnaire.**
+- New questionnaire surfaces: in-app controls, capabilities, medical or wellness topics, violent themes, ability to manually set a higher rating to reflect minimum age requirement.
 - New API: **Declared Age Range** — apps receive only an age band (not birthday) for child-appropriate content gating.
 - Restricted accounts: apps exceeding the rating are not surfaced in Today / Games / Apps tabs.
+- Texas SB2420 (effective 2026-01-01) — any post-2026-01-01 age-rating change for apps distributed in Texas counts as a "significant change" and may trigger the consent process.
+- Sources: Apple Developer News — "Updated age ratings in App Store Connect"; Apple Developer Upcoming Requirements (id=07242025a).
 
 ### A.9 Health, Children, Sensitive Categories
 
@@ -91,8 +95,17 @@ Port deliverable: a UI flow that names the provider, explains the purpose, and c
 
 ### A.10 Xcode / iOS SDK requirement
 
-- **Xcode 26 + iOS 26 SDK required from 2026-04-28** for new submissions and updates.
+- **Xcode 26 + iOS 26 SDK required from 2026-04-28** for all App Store Connect uploads of new apps and updates. **No exceptions, no extensions.** Applies across iOS 26, iPadOS 26, tvOS 26, visionOS 26, and watchOS 26 (the latter now also requires 64-bit).
+- Building with the iOS 26 SDK does **not** change the deployment target — apps can still target iOS 17 / 18 if needed.
+- **Default Liquid Glass adoption**: apps built with the iOS 26 SDK get the new Liquid Glass design language applied to native UI components (navigation bars, tab bars, toolbars, sheets) by default. Audit visual regressions on legacy screens at adoption time.
 - Roadmap should plan Liquid Glass adoption or document an explicit defer decision (with visual fallback verified).
+- Sources: Apple Developer Upcoming Requirements; "Apple's April SDK Deadline Is Here" (DEV Community, 2026-04).
+
+### A.11 iOS 27 (WWDC 2026, expected 2026-06-08)
+
+- WWDC 2026 runs **2026-06-08 to 2026-06-12**. iOS 27 / iPadOS 27 / macOS 27 expected to be announced.
+- Public reporting: revamped Siri (Dynamic Island "Search or Ask", dedicated Siri app with Extensions, personalized features delayed from 2024), 5G satellite connectivity (iPhone 18 Pro / Ultra), user-selectable third-party AI backends (Anthropic Claude / OpenAI ChatGPT), AI editing tools in Photos (Extend / Enhance / Reframe), Calendar + Health revamps.
+- **Port action**: do **not** lock the roadmap on rumored features. Re-check this section after WWDC 2026.
 
 ---
 
@@ -102,14 +115,16 @@ Port deliverable: a UI flow that names the provider, explains the purpose, and c
 
 - **Effective 2025-08-31:** New apps and updates must target **API 35 (Android 15)** or higher (Wear OS / Auto / TV: API 34).
 - Extension request was available via Play Console up to 2025-11-01.
-- targetSdk 36 mandate is expected during 2026 — exact date is yet to be officially announced; plan for it during P1/P2.
+- **Effective 2026-08-31:** New apps and updates must target **API 36 (Android 16)** or higher. Wear OS / Android Auto / Android TV remain at API 35 minimum. Existing apps not targeting at least API 35 become invisible to new users on devices running newer OS versions.
+- Sources: Google Play Console Help — "Target API level requirements for Google Play apps"; Android Developers — "Meet Google Play's target API level requirement".
 
 ### B.2 16KB Page Size
 
 - **Effective 2025-11-01:** New releases on Google Play must support **16KB memory page size** (apps with NDK dependencies must be rebuilt against the 16KB-aligned NDK).
 - Performance benefit: ~3-30% startup speedup, ~4.5% battery improvement.
-- Extension available up to 2026-05-31 (request-based).
-- Port action: audit all NDK-using SDKs (image processing, ML Kit, maps, crypto, gaming engines). Reject any that don't yet ship 16KB-aligned binaries.
+- **Extension auto-granted via Play Console until 2026-05-31** — by 2026-05-31 you must be 16KB-compliant or you cannot publish updates. **As of 2026-05, the extension window is closing within the month.**
+- Port action: audit all NDK-using SDKs (image processing, ML Kit, maps, crypto, gaming engines). Reject any that don't yet ship 16KB-aligned binaries. Update Android Studio NDK to the latest 16KB-aligned release; legacy AGP / packaging pipelines that strip alignment from AAB→APK are a known root cause.
+- Sources: Google Play Developer Community — "Clarification on 16 KB page size extension and monitoring for issues before May 31, 2026"; Android Developers — "Support 16 KB page sizes".
 
 ### B.3 Edge-to-Edge enforcement (API 36)
 
@@ -206,6 +221,27 @@ Port deliverable: a UI flow that names the provider, explains the purpose, and c
   - Consent must be revocable in-app (Settings deep link to revoke)
   - Cross-border data transfer disclosure (esp. AI APIs hosted in US)
 
+### C.5 EU AI Act (Regulation (EU) 2024/1689)
+
+- **GPAI obligations applicable since 2025-08-02**: providers of general-purpose AI models must maintain technical documentation, publish a public summary of training content via the Commission template, and comply with EU copyright rules.
+- **Commission enforcement powers applicable from 2026-08-02**: the Commission can issue binding decisions and fines against GPAI providers. Fines up to **EUR 35M or 7% of global annual turnover** (prohibited practices) or **EUR 15M or 3%** (other obligations).
+- **2027-08-02**: GPAI models placed on the market **before** 2025-08-02 must reach compliance.
+- **Transparency obligations applicable from 2026-08-02** (Article 50): apps that interact with humans must label AI interactions, AI-generated synthetic content must be machine-readable as such, deepfakes must be disclosed.
+- **Port action**: if the app uses third-party GPAI (OpenAI, Anthropic, Google) or ships AI-generated content, plan disclosure UI flows alongside App Store 5.1.2(i) / Google Play AI Content Policy. Confirm provider's GPAI documentation status.
+- Sources: digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai; "Guidelines for providers of general-purpose AI models" (European Commission); DLA Piper — "Latest wave of obligations under the EU AI Act take effect" (2025-08).
+
+### C.6 Japan APPI Amendment Bill (2026)
+
+- **2026-04-06/07**: Japanese Cabinet approved the APPI (Act on the Protection of Personal Information) amendment bill; submitted to the Diet.
+- Key changes:
+  - **Consent exemption for statistical processing** (incl. AI training) — businesses may collect public sensitive personal data and share personal data with third parties for statistical purposes, with transparency + contractual safeguards.
+  - **Children's data**: parental consent required for under-16; enhanced deletion / suspension rights.
+  - **Biometric data**: new rules on collection and use.
+  - **Administrative fines**: introduced (previously only criminal / administrative orders).
+- **Expected effective date**: full effect by 2028 at the latest, assuming enactment in 2026.
+- **Port action**: if app targets Japanese users and collects biometric / children's / AI-training data, hand off to `Cloak` for the 2026 transition plan. The "AI training without consent" easing is conditional on transparency / safeguards — design the disclosure flow.
+- Sources: Fisher Phillips — "Japanese Cabinet Approves APPI Amendments"; Mori Hamada — "Proposed Amendments to Japan's APPI (2026)"; Baker McKenzie — "Japan: APPI Reform - Key Changes" (2026-05); One Asia Lawyers — "Overview and Key Points of the Amendments to the APPI".
+
 ---
 
 ## D. Pre-Submission Gate Checklist
@@ -227,8 +263,8 @@ Run this before any TestFlight External / Play Closed Testing build.
 
 ### Android
 
-- [ ] targetSdk = 35 (or 36 if mandated)
-- [ ] 16KB-aligned native libraries
+- [ ] targetSdk = 35 currently; **36 from 2026-08-31**
+- [ ] 16KB-aligned native libraries (hard cutoff **2026-05-31**)
 - [ ] Edge-to-edge layout (no opt-out at API 36)
 - [ ] Predictive back wired via `BackHandler` / `OnBackPressedDispatcher`
 - [ ] Foreground service types declared
@@ -236,13 +272,16 @@ Run this before any TestFlight External / Play Closed Testing build.
 - [ ] Data Safety form complete and accurate (incl. ANDROID_ID classification)
 - [ ] Credential Manager wired for sign-in
 - [ ] AI content labeled in app + listing (if applicable)
-- [ ] Adaptive layout for sw 600dp+ (if API 36 expected)
+- [ ] Adaptive layout for sw 600dp+ (mandatory at API 36)
+- [ ] Material 3 Expressive components (`material3:1.4.0+` stable; `1.5.0-alpha` if Expressive APIs needed) — replace deprecated `BottomAppBar` / indeterminate `CircularProgressIndicator`
 
 ### Cross
 
 - [ ] EAA conformance (EN 301 549 / WCAG 2.1 AA) for any EU sale
 - [ ] Per-country fintech license (if regulated)
 - [ ] Privacy policy URL valid in both stores
+- [ ] EU AI Act — if app integrates GPAI: provider's GPAI docs confirmed; **Article 50 transparency labeling** ready for 2026-08-02 enforcement
+- [ ] Japan APPI 2026 amendment — if app collects biometric / children's / AI-training data in Japan, transition plan with Cloak
 
 ---
 
@@ -328,17 +367,22 @@ Run this before any TestFlight External / Play Closed Testing build.
 
 ---
 
-## F. Sources (2026 snapshot)
+## F. Sources (2026-05 snapshot)
 
 - Apple Developer Privacy Manifest docs / Required Reasons API (TN3183)
 - Apple App Review Guidelines (5.1.2(i), DMA, IAP, Age Rating)
-- Apple Developer Upcoming Requirements (Xcode/SDK schedule, Age Rating deadline)
-- Google Play Target API Level Requirements
-- Google Play 16KB page size policy
-- Google Play Photo & Video permission policy
-- Google Play Data Safety Section help articles
-- Android Developers Blog (Credential Manager, Material 3 Expressive, edge-to-edge)
-- EU Accessibility Act (EAA / EN 301 549)
+- Apple Developer Upcoming Requirements (Xcode/SDK schedule **2026-04-28**, Age Rating deadline **2026-01-31**)
+- Apple Developer News — "Updated age ratings in App Store Connect" (id=ks775ehf)
+- Apple Developer — "Update on apps distributed in the European Union" (DMA / CTC / CTF retirement 2026-01-01)
+- RevenueCat blog — "Apple's June 2025 EU update: one entitlement, three fees, and CTF's 2026 sunset"
+- Google Play Console Help — "Target API level requirements for Google Play apps" (API 36 from **2026-08-31**)
+- Google Play Console Help — "16 KB page size extension and monitoring for issues before May 31, 2026"
+- Google Play Photo & Video permission policy (effective 2025-05-28)
+- Google Play Data Safety Section help articles (incl. 2025-04-10 ANDROID_ID classification update)
+- Android Developers Blog — Credential Manager (2025-09), Material 3 Expressive rollout (2025-09; `material3:1.4.0` stable 2025-09-24), edge-to-edge enforcement, Compose BOM 2026.05 (Compose 1.11.1), Room 3.0 (2026-03)
+- EU Accessibility Act (EAA / EN 301 549 / WCAG 2.1 AA, in force 2025-06-28)
+- EU AI Act — digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai; "Guidelines for providers of general-purpose AI models"; DLA Piper "Latest wave of obligations under the EU AI Act take effect" (2025-08); enforcement powers from **2026-08-02**
+- Japan APPI 2026 amendment — Fisher Phillips; Mori Hamada; Baker McKenzie (2026-05); One Asia Lawyers (Cabinet approval **2026-04-06/07**)
 - DMA — European Commission and Apple Developer DMA support page
 
 When using this checklist, verify each rule against the latest Apple Developer / Google Play / EU portals — regulatory pages move and dates shift. Treat this file as a *starting* checklist, not an authoritative legal source.

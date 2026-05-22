@@ -173,7 +173,9 @@ App/
 | `@MainActor` for UI-bound state | `Dispatchers.Main` (Compose enforces this for state writes) |
 | Avoid GCD (`DispatchQueue`) in new code; use Swift Concurrency | Avoid `Thread`, `AsyncTask`; use Coroutines |
 
-Swift 6 strict concurrency is the default. Annotate boundaries with `@MainActor` or `Sendable` correctly; do not silence concurrency warnings.
+Swift 6 strict concurrency is the default. **Swift 6.2 + Xcode 26** ship **Approachable Concurrency** (`SWIFT_APPROACHABLE_CONCURRENCY=YES`): new projects default to **MainActor isolation for all code** and `NonisolatedNonsendingByDefault` lets `nonisolated async` functions inherit the caller's isolation — fewer `Sendable` boundary errors. Opt into background execution with `@concurrent` / explicit `nonisolated`. Annotate boundaries with `@MainActor` or `Sendable` correctly; do not silence concurrency warnings.
+
+Kotlin 2.2.20 + K2 is the 2026 baseline. JetBrains' coming Swift export work for KMP coroutines + flows is in active development; track for downstream impact on iOS interop.
 
 ---
 

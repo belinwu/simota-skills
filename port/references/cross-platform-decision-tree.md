@@ -8,15 +8,16 @@ Port's primary remit is **pure-native iOS + Android**. KMP-shared-logic is allow
 
 ## 1. The Five Paths
 
-| Path | UI | Logic | Maturity (2026) |
+| Path | UI | Logic | Maturity (2026-05) |
 |------|----|----|------|
-| **Pure-Native** | SwiftUI + Compose | Per-platform Swift / Kotlin | Mature |
-| **KMP shared logic + Native UI** | SwiftUI + Compose | Kotlin Multiplatform shared business logic | Mature (Stable since Nov 2023) |
-| **Compose Multiplatform** | Compose for both iOS & Android | Kotlin Multiplatform | iOS Stable since 2025-05 (CMP 1.8); Web/Wasm beta |
-| **React Native (New Arch)** | RN | TypeScript | Mature (Fabric/TurboModules/JSI default since 0.76; Old Arch retired in 0.82) |
-| **Flutter (Impeller)** | Flutter | Dart | Mature (Impeller default on iOS+Android) |
+| **Pure-Native** | SwiftUI (Swift 6.2, Xcode 26) + Compose (Material 3 / Material 3 Expressive) | Per-platform Swift / Kotlin 2.x | Mature |
+| **KMP shared logic + Native UI** | SwiftUI + Compose | Kotlin Multiplatform (Kotlin 2.2.20+; K2 default; Swift export under active dev) shared business logic | Mature (Stable since Nov 2023) |
+| **Compose Multiplatform** | Compose for both iOS & Android | Kotlin Multiplatform | iOS Stable since 2025-05 (CMP 1.8); **CMP 1.11.0 (2026-05) — concurrent rendering on a dedicated render thread is default**; Web/Wasm still beta |
+| **React Native (New Arch)** | RN | TypeScript / React 19.1 | Mature. **Legacy Architecture frozen in 0.80 (2025-06); option to disable New Arch removed in 0.82; Legacy code fully removed in 0.83 + Expo SDK 55 (2026)** |
+| **Flutter (Impeller)** | Flutter | Dart 3.7+ | Mature. **Impeller default on iOS + Android (since 3.29, 2025-02); API 28- falls back to Skia from 3.29.3 / 3.32. "Great Thread Merge" enables sync FFI** |
+| **Capacitor 7 / Tauri 2 (web-shell)** | WebView (Capacitor 7) / WebView+native (Tauri 2) | TS / Rust+TS | Capacitor 7 GA (2025-04, Android 15 / iOS 18, SPM-only); Tauri 2 mobile stable (2025-01) |
 
-> Compose Multiplatform 1.8 brought iOS to Stable in 2025-05. Production users include Netflix, McDonald's, Cash App, Shopify, Forbes, Zürcher Kantonalbank. KMP adoption rose 7% (2024) → 18% (2025). Source: JetBrains release notes and KMP production surveys.
+> Compose Multiplatform 1.8 brought iOS to Stable in 2025-05; **CMP 1.11.0 (2026-05) makes off-thread render the default**. Production users include Netflix, McDonald's, Cash App, Shopify, Forbes, Zürcher Kantonalbank. KMP adoption rose 7% (2024) → 18% (2025). Source: JetBrains release notes and KMP production surveys.
 
 ---
 
@@ -159,13 +160,18 @@ This decision is journaled in `.agents/port.md` along with the date and the scor
 
 ---
 
-## 9. Sources (2026 snapshot)
+## 9. Sources (2026-05 snapshot)
 
-- JetBrains: "Compose Multiplatform 1.8.0 — iOS Stable & Production Ready" (2025-05)
-- JetBrains KMP Roadmap (2025-08)
+- JetBrains Blog — "Compose Multiplatform 1.8.0 — iOS Stable & Production Ready" (2025-05)
+- JetBrains Blog — "Compose Multiplatform 1.11.0 Is Now Available" (2026-05)
+- JetBrains KMP Roadmap and "Compatibility and versions" docs (kotlinlang.org/docs/multiplatform/compose-compatibility-and-versioning.html)
 - kmpship.app — "Is Kotlin Multiplatform production-ready in 2026?"
 - Airbnb Engineering — "Sunsetting React Native" (2018) and follow-up retrospectives
 - Discord Blog / Margelo — "Native iOS performance with React Native" (2024-2025)
-- React Native New Architecture release notes (0.76+)
-- Flutter Impeller documentation
-- Android Developers Blog — Compose / KMP updates
+- React Native release notes 0.79 (2025-04), 0.80 (2025-06 — Legacy Architecture frozen), 0.82 (2025-11/12 — New Arch disable-option removed), 0.83 (2026 — Legacy code removed)
+- reactwg/react-native-new-architecture — "Freezing the Legacy Architecture" (Discussion #290)
+- Expo Changelog — SDK 53 (2025-04, RN 0.79, New Arch default) / SDK 54 (2025-09, RN 0.81 + precompiled iOS XCFrameworks)
+- Flutter release notes 3.29 (2025-02, Impeller default on Android), 3.29.3 / 3.32 (Skia fallback for API 28-), 3.32 (web stateful hot reload experimental)
+- Ionic Blog — "Capacitor 7 has hit GA!" (2025-04)
+- Tauri Blog — "Tauri 2.0 Release Candidate" / Tauri 2 stable (2025-01)
+- Android Developers Blog — Compose / Material 3 1.4 (2025-09-24) / Material 3 Expressive rollout (2025-09) / Compose BOM 2026.05 (Compose 1.11.1)

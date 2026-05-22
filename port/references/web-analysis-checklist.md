@@ -2,6 +2,8 @@
 
 Use this checklist to audit a web codebase before producing any native architecture mapping. Every blueprint section downstream depends on the survey being concrete and grounded in the actual codebase, not assumed.
 
+> **2026-05 baseline assumptions:** React 19.1 (RN 0.80+ ships it); Next.js 15 App Router with Turbopack stable; Vue 3.5+; Svelte 5 (runes); Angular 19+; Nuxt 4. Capacitor 7 (2025-04, Android 15 / iOS 18 + SPM-only iOS) and Tauri 2 mobile (stable 2025-01) are now realistic "web-shell" web→native bridges if pure-native is not chosen.
+
 ---
 
 ## 1. Stack Detection

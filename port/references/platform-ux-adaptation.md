@@ -23,8 +23,10 @@ The **biggest visual redesign since iOS 7**, applied across iOS 26 / iPadOS 26 /
 - New SwiftUI / UIKit / AppKit APIs for materials and corner radii (hardware-aware).
 
 Port action:
+- **From 2026-04-28**, all App Store Connect uploads must be built with **Xcode 26 + iOS 26 SDK** — Liquid Glass is **applied by default** to native UI components when built with the iOS 26 SDK regardless of the deployment target. Verify navigation bars / tab bars / toolbars / sheets visually on iOS 26 *and* legacy deployment targets.
 - If targeting iOS 26 → Liquid Glass adoption is the default. Document any deviation explicitly.
-- If targeting iOS 17/18 → use standard SwiftUI; design must still work *visually* on iOS 26 devices (legible at scale; no broken assumptions about translucency).
+- If targeting iOS 17/18 → still build with the iOS 26 SDK; design must work *visually* on iOS 26 devices (legible at scale; no broken assumptions about translucency).
+- WWDC 2026 runs **2026-06-08 to 2026-06-12**; iOS 27 announcement may shift the recommended target during P2/P3 — revisit the UX adaptation plan after the conference.
 
 ### iOS — iOS 18 / iOS 26 surfaces to plan around
 
@@ -35,7 +37,7 @@ Port action:
 
 ### Android — Material 3 Expressive (Google I/O 2025)
 
-Released in May 2025 as the new design language across Compose `material3:1.4.0-alpha10+`, stabilizing through 2025-2026. Backed by 46 user studies / 18,000 participants.
+Announced at Google I/O 2025 as the new design language. Rolled out to Pixel devices via **Android 16 QPR1 (2025-09)** with refreshes to notifications, Quick Settings, lock screen, and launcher. **`androidx.compose.material3:material3:1.4.0` shipped stable on 2025-09-24** (promoting a set of previously experimental APIs); the **fully Expressive component set is currently in `1.5.0-alpha`** as of 2026-05. Backed by 46 user studies / 18,000 participants.
 
 Five core pillars: **Color · Shape · Size · Motion · Containment**.
 
@@ -49,8 +51,9 @@ New / updated components:
 
 ### Android — Material You / Dynamic Color
 
-- Compose BOM `2025.01.00+` standard for dependencies.
+- **Compose BOM `2026.05.00`** is the current stable BOM (maps to Compose 1.11.1); `2025.12.00` and earlier are still supported. Use the BOM rather than pinning individual Compose libraries.
 - Dynamic Color: API 31+. Use `dynamicLightColorScheme()` / `dynamicDarkColorScheme()` with feature detection. Hard-coded colors are forbidden — use `MaterialTheme.colorScheme.surface` and friends.
+- Pausable Composition (Compose December '25 / BOM 2025.12.00) brings scroll performance on par with classic Views — adopt when porting long lists from web.
 
 ### Android — Edge-to-Edge enforcement (API 36)
 

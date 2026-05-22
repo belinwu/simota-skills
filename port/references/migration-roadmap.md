@@ -2,6 +2,14 @@
 
 Translate the parity matrix and architecture map into a phased, shippable, reversible plan. The roadmap is the agreement between Port and the implementer agents (`Native`, `Scaffold`, `Launch`).
 
+> **2026-05 fixed-date constraints to weave into the roadmap:**
+> - Xcode 26 + iOS 26 SDK already required for App Store Connect uploads (since **2026-04-28** — no exceptions, no extensions).
+> - Apple 5-tier Age Rating questionnaire already enforced (since **2026-01-31** — App Store Connect blocks unanswered apps).
+> - Google Play 16KB-page-size compliance hard cutoff **2026-05-31** (extension window closing this month).
+> - Google Play **targetSdk 36** mandatory from **2026-08-31** for new apps and updates (Wear OS / TV / Auto stay on 35).
+> - EU AI Act GPAI enforcement powers from **2026-08-02**; Article 50 transparency labeling applicable.
+> - WWDC 2026: **2026-06-08 to 2026-06-12** — iOS 27 / iPadOS 27 / macOS 27 announcement window; may shift target OS recommendation for P2/P3.
+
 ---
 
 ## Default Phasing

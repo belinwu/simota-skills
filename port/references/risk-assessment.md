@@ -10,16 +10,18 @@ Quantified risks per blueprint. Every risk gets probability × impact × mitigat
 
 | Risk | Prob | Impact | Score | Mitigation |
 |------|------|--------|-------|------------|
-| Xcode 26 + iOS 26 SDK not adopted by **2026-04-28** | 4 | 5 | 20 | Pin Xcode 26 + iOS 26 SDK as a Phase 0 / 1 dependency; CI on Xcode 26 by Q1 2026 |
+| Xcode 26 + iOS 26 SDK not adopted by **2026-04-28** (no exceptions, no extensions) | 4 | 5 | 20 | Pin Xcode 26 + iOS 26 SDK as a Phase 0 / 1 dependency; CI on Xcode 26 by Q1 2026. **Deadline is past as of 2026-05 — all new uploads must comply** |
 | Privacy Manifest missing or incomplete (3rd-party SDK has no manifest) | 4 | 4 | 16 | Audit all SDKs at SURVEY; reject those without manifests; track manifest completeness as a P0 gate |
-| Apple 5-tier Age Rating questionnaire not filed by **2026-01-31** | 3 | 4 | 12 | Add to Phase 0 checklist; coordinate with App Store Connect ahead of time |
+| Apple 5-tier Age Rating questionnaire not filed by **2026-01-31** | 4 | 5 | 20 | **Already enforced — App Store Connect blocks new submissions and updates for unanswered apps**. Add to Phase 0 checklist; coordinate with App Store Connect ahead of time |
 | App Store 5.1.2(i) AI disclosure UI missing for third-party AI usage | 4 | 5 | 20 | Design the consent UI flow at MVP; never ship a "stub" disclosure |
 | Google Play targetSdk 35 not met (since 2025-08-31) | 2 | 5 | 10 | Targeting check pre-MVP; verify all libs support API 35 |
-| Google Play targetSdk 36 missed (expected during 2026) | 3 | 4 | 12 | Track Google Play target API requirement page; plan migration window in Phase 2 |
-| Google Play 16KB page size missed (since 2025-11-01) | 3 | 5 | 15 | Audit NDK libs at SURVEY; reject SDKs without 16KB binaries |
+| Google Play targetSdk 36 missed (mandatory **2026-08-31**) | 4 | 5 | 20 | Plan migration window in Phase 1-2; Wear OS / TV / Auto exempt (stay on 35). Existing apps below API 35 already invisible to new users on modern OS |
+| Google Play 16KB page size missed — extension hard cutoff **2026-05-31** | 4 | 5 | 20 | Audit NDK libs at SURVEY; reject SDKs without 16KB binaries; update Android Studio NDK; verify AGP packaging pipeline preserves alignment. **Deadline is this month** |
 | Google Play Photo Picker not adopted (since 2025-05-28) | 3 | 4 | 12 | Default to Photo Picker; declare media permission only when essential |
 | Google Play Data Safety form inaccurate (incl. ANDROID_ID classification) | 3 | 4 | 12 | Hand off to Cloak; align with Privacy Manifest for cross-platform consistency |
 | Firebase Dynamic Links retired (2025) — link infra not replaced | 3 | 3 | 9 | Run AASA / assetlinks.json natively; choose MMP (Branch / AppsFlyer / Adjust) |
+| EU AI Act Article 50 transparency labeling missing (enforcement **2026-08-02**) | 3 | 4 | 12 | Label AI interactions, mark synthetic content machine-readable, disclose deepfakes; align with App Store 5.1.2(i) and Play AI Content Policy |
+| Japan APPI 2026 amendment ignored for JP-targeted apps (biometric / children's / AI-training data) | 3 | 4 | 12 | Cabinet-approved 2026-04-06/07; full effect by 2028. Plan transition with Cloak — biometric rules and parental consent for under-16 are new |
 
 ### Regulatory risks (cross-cutting)
 

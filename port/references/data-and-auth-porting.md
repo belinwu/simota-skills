@@ -29,7 +29,7 @@ Port action:
 
 - iOS: **SwiftData** (iOS 17+) is the new default for object persistence in new projects when SwiftUI-centric. Use Core Data when iOS 16 support, advanced predicates, `NSFetchedResultsController`, or performance-critical paths are needed.
 - iOS: Privacy Manifest **Required Reasons API** declarations needed for `UserDefaults`, `FileTimestamp`, `SystemBootTime`, `DiskSpace`, `ActiveKeyboards` — see `regulatory-checklist-2026.md`.
-- Android: **Room 2.7+ supports Kotlin Multiplatform** — share local DB schema across iOS / Android / Desktop. Useful when KMP-shared-logic is the chosen path.
+- Android: **Room 2.7** (released 2025-04) brought stable Kotlin Multiplatform support across Android / iOS / Desktop, KSP2, and Kotlin codegen by default. **Room 3.0 (alpha 2026-03)** is a breaking next-gen rewrite: new package `androidx.room3:room3-runtime`, **Kotlin-only codegen**, coroutines-first APIs, fully backed by `androidx.sqlite` driver APIs, KMP across Android / iOS / JVM / **JavaScript / Wasm**, and KSP-required (no kapt). New projects targeting KMP should start on Room 2.7 stable until Room 3.0 GA, then plan a migration window — Room 3.0 does not auto-migrate from 2.x.
 - Android: **DataStore** (Preferences + Proto) is the standard for non-secret prefs. SharedPreferences is legacy. Sensitive data → EncryptedSharedPreferences (or Tink-encrypted DataStore).
 
 ### CRDT / sync engine choice (2026 default)
@@ -58,10 +58,10 @@ Be aware of "CRDT alone is not enough" — authorization, schema migration, and 
 
 Hand off to `Gateway` for OpenAPI / GraphQL SDL specification.
 
-### Networking client refresh (2026)
+### Networking client refresh (2026-05)
 
-- iOS: **URLSession + async/await** is the default; iOS 15+ baseline acceptable. Combine is legacy in new code.
-- Android (incl. KMP): **Ktor Client** for KMP-friendly path; Retrofit + OkHttp + Coroutines for pure-Android.
+- iOS: **URLSession + async/await** is the default; iOS 15+ baseline acceptable. Combine is legacy in new code. **Swift 6.2 Approachable Concurrency (Xcode 26)** changes the default — new projects get MainActor-by-default isolation, so async repository code should explicitly `nonisolated` / `@concurrent` to opt into background execution. `NonisolatedNonsendingByDefault` makes nonisolated async functions inherit caller's isolation, which removes a common class of `Sendable` errors.
+- Android (incl. KMP): **Ktor Client** for KMP-friendly path; Retrofit + OkHttp + Coroutines for pure-Android. **Kotlin 2.2.20 + K2 default** in 2026; JetBrains' coming Swift export work for KMP coroutines + flows is in active development — track for downstream impact on iOS interop.
 - WebSocket: `URLSessionWebSocketTask` (iOS) / OkHttp or Ktor WebSocket (Android). Heartbeat ~30-60s.
 - Apollo iOS / Apollo Kotlin for GraphQL with normalized cache (maps well to T1/T2 offline).
 

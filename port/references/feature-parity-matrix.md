@@ -2,6 +2,8 @@
 
 The parity matrix is the central decision document of the blueprint. Every web feature gets a verdict: `Full | Adapted | Deferred | Dropped`. No silent omissions.
 
+> **2026-05 grounding for verdicts:** iOS builds with Xcode 26 + iOS 26 SDK (mandatory since 2026-04-28); Liquid Glass applies by default to native UI; Android Material 3 Expressive rolled out via `material3:1.4.0` stable (2025-09) + `1.5.0-alpha` ongoing; Compose BOM 2026.05.00. Verdicts that depend on AI features must consider App Store 5.1.2(i), Google Play AI Content Policy, **and EU AI Act Article 50** (transparency labeling applicable from 2026-08-02).
+
 ---
 
 ## Verdict Definitions
