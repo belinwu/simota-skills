@@ -58,3 +58,9 @@ Typical patterns to watch:
 - Does the report include both signal and caveats?
 - Does it avoid personal ranking?
 - Does it end with next actions?
+
+## 2026 Caveat Additions
+
+- **AI period flagging**: When the report covers any window in which the team's AI-assistant adoption rate changed materially, flag the change inline. DORA 2025 reports AI now positively correlates with throughput but negatively with delivery stability — so a "throughput up" headline without the stability counter-context is misleading.
+- **DORA 2025 vocabulary**: Use percentile language ("Top 15%", "Top 15-30%") and 7 team archetypes instead of Elite/High/Medium/Low when sourcing DORA-style commentary.
+- **Copilot Code Review split**: When review-time metrics include the Copilot reviewer, separate human and AI review timestamps; otherwise rubber-stamping detection and pickup-time benchmarks misclassify automated comments as human review activity.

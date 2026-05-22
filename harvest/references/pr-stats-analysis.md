@@ -6,7 +6,7 @@ Purpose: Statistical deep-dive of PR flow — cycle time histogram with phase de
 
 - **harvest `prstats`**: distributional and risk-focused PR analytics. Histograms, percentiles, Lorenz, large-PR flags.
 - **harvest `weekly` / `monthly` (elsewhere)**: aggregate counts and category breakdowns without distribution analysis.
-- **harvest `dora` (elsewhere)**: 4-key metric tier classification. Lead Time at the DORA level; prstats decomposes into Pickup/Review/Merge phases.
+- **harvest `dora` (elsewhere)**: DORA 5-metric percentile-band classification (DORA 2025). Lead Time at the DORA level; prstats decomposes into Pickup/Review/Merge phases.
 - **harvest `okr` (elsewhere)**: outcome linkage; prstats is purely flow-statistics.
 - **Pulse (elsewhere)**: live dashboards. Pulse owns ongoing tracking; prstats produces the depth report.
 - **Beacon (elsewhere)**: reliability SLOs. Cycle time is delivery flow, not reliability.
@@ -49,7 +49,9 @@ REPORT    →  histograms + percentiles + Lorenz + large-PR ledger + actions
 | Merge (approval → merged) | < 2h | < 8h | > 1 business day |
 | Total cycle | < 26h | < 48h | > 5 business days |
 
-(LinearB 2025 benchmarks; cycle starts at "ready for review" — draft PRs distort if measured from creation.)
+(LinearB 2025 Engineering Benchmarks Report — 6.1M+ PRs across 3,000 teams; `linearb.io/blog/2025-engineering-benchmarks-insights`. Cycle starts at "ready for review" — draft PRs distort if measured from creation.)
+
+**PR Maturity (new in LinearB 2025)**: measures how well-prepared a PR is when submitted for review (description quality, linked issues, CI green, test coverage delta). Higher PR maturity correlates with faster merges and higher team velocity. When available, surface PR maturity alongside PR size — small + mature PRs are the highest-velocity profile per the 2025 benchmarks.
 
 ## P50 / P75 / P90 Reporting
 
@@ -95,7 +97,7 @@ Maintain an explicit bot allowlist (Dependabot, Renovate, github-actions, etc.).
 | 501-1000 LOC | Large | 70% lower defect-detection vs small |
 | > 1000 LOC | Oversized | Recommend Sherpa split + Guardian gate |
 
-Flag any PR > 500 LOC in the report with: review-time, reviewer count, comment count, and author. When > 30% of PRs exceed 400 LOC, recommend stacked PRs (~20% throughput gain, ~8% smaller median PR size).
+Flag any PR > 500 LOC in the report with: review-time, reviewer count, comment count, and author. When > 30% of PRs exceed 400 LOC, recommend stacked PRs — Graphite's published customer data shows up to ~36% more PRs shipped per engineer and ~17% reduction in median PR size after adopting stacked workflows (`graphite.com/customer/semgrep`, `graphite.com/blog/stacked-prs`). InfoQ reports GitHub itself shipped native stacked-PR support in 2026-04 (`infoq.com/news/2026/04/github-stacked-prs/`).
 
 ## Dashboard Recipe
 
@@ -118,7 +120,7 @@ Hand off to Pulse for live rendering; Harvest produces the spec and seed data.
 - Lorenz / Gini as performance ranking — concentration is a system property (bus-factor, role specialization), not an individual scorecard. Never use to rank.
 - Single LOC threshold for "large" — 500 LOC in a config refactor and 500 LOC in core business logic carry different risk. Flag with file-type context.
 - Rubber-stamp blind spot — if median review lead time is < 30min and uncorrelated with PR size, reviewers are likely not reading. Surface the correlation explicitly.
-- AI-period comparison without caveat — AI inflates PR counts (+98%) and shifts size distribution larger. Comparing pre-AI P90 to post-AI P90 without the caveat is misleading (DORA 2025).
+- AI-period comparison without caveat — DORA 2025 reports AI now positively correlates with throughput but negatively with delivery stability (more change failures, increased rework, longer cycle times to resolve issues). Comparing pre-AI P90 to post-AI P90 without that caveat is misleading. Also note GitHub Copilot Code Review reached GA in 2025-04 (`docs.github.com/en/copilot/concepts/agents/code-review`) — review timestamps from automated Copilot reviewers should be split from human review timestamps; rubber-stamp detection rules apply differently when the "reviewer" is an LLM.
 - Histogram with arithmetic bins on long-tail data — use log-spaced bins or hour-then-day stratification; arithmetic bins compress the interesting tail.
 - Treating P90 as an SLO target without team agreement — Harvest reports the number; the team and Beacon set targets. Reporting an unagreed target is policy creep.
 

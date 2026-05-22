@@ -76,3 +76,10 @@ Rules:
 - Label hours as estimates.
 - Do not present LOC-derived values as productivity rankings.
 - Warn when night/weekend work exceeds `10%` of activity because fatigue can distort effort signals.
+
+## AI-Assisted Coding Caveat (2026)
+
+LOC-based effort estimation breaks down when AI coding assistants are in heavy use:
+- DORA 2025 finds AI now positively correlates with throughput; LinearB 2025 separately reports that PR size distribution has shifted larger in AI-heavy teams.
+- This means equal LOC counts pre/post AI adoption represent different human effort. Always tag the report with the team's AI tooling posture (Copilot in IDE, Claude Code, Cursor, etc.) so consumers can interpret the LOC-derived hours.
+- Prefer time-based signals (review-cycle time, PR pickup time) over LOC-derived hours when AI usage is significant.

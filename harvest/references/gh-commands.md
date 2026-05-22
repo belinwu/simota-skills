@@ -2,6 +2,13 @@
 
 Purpose: Use these commands when Harvest must fetch PR data safely, filter it precisely, or aggregate it into report-ready structures.
 
+Reference version: gh CLI v2.92.0 is the current release as of 2026-04-28 (`github.com/cli/cli/releases/tag/v2.92.0`). Notable recent additions documented in upstream release notes:
+- v2.90.0 (2026-04-16): `gh skill` public-preview command group for agent-skill management; `gh extension install` no longer requires authentication.
+- v2.88.0 (2026-03-10): `--add-reviewer @copilot` flag enables GitHub Copilot Code Review on PRs.
+- v2.88-2.89: improved `gh agent-task list/view` JSON support for agent-driven workflows.
+- `gh attestation verify` / `gh attestation download` have been generally available since 2024-07 (`github.blog/security/supply-chain-security/configure-github-artifact-attestations-for-secure-cloud-native-delivery/`).
+- The official GitHub Copilot CLI extension (`gh-copilot`) remains the canonical surface for natural-language gh queries.
+
 ## Contents
 
 - Preflight checks
@@ -11,6 +18,7 @@ Purpose: Use these commands when Harvest must fetch PR data safely, filter it pr
 - Aggregation snippets
 - Release-note data
 - Rate-limit aware execution
+- Adjacent commands (attestation, skill, agent-task, Copilot review)
 
 ## Preflight Checks
 
@@ -163,4 +171,23 @@ reset="$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null)"
 | `< 100` | Warn and consider cache or smaller query |
 | `0` | Wait for reset or return a partial/blocking report |
 
+GitHub rate-limit constants (`docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api`, `docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api`):
+- Primary: 5,000 REST req/hr per user; 5,000 GraphQL points/hr per user.
+- Secondary: ≤100 concurrent requests (shared across REST + GraphQL); ≤900 REST points/min; ≤2,000 GraphQL points/min; ≤80 content-generating req/min; ≤500 content-generating req/hr.
+- Pause ≥1s between mutative requests; use exponential backoff with jitter on secondary-limit errors.
+
 For retries, backoff, health checks, and graceful degradation, read `error-handling.md`.
+
+## Adjacent Commands
+
+Read-only commands Harvest may pair with PR collection:
+
+| Command | Purpose | Availability |
+|---------|---------|--------------|
+| `gh attestation verify <artifact> --owner <org>` | Verify Sigstore-backed build provenance for a release asset | GA since 2024-07 |
+| `gh attestation download <artifact> --repo <owner/repo>` | Pull attestation JSON for archival/audit | GA since 2024-07 |
+| `gh agent-task list --json` | Inspect agent-driven task runs alongside PRs | v2.88+ JSON support |
+| `gh skill search <query>` / `gh skill preview <ref>` | Survey agent-skill assets for inventory reports (read-only) | v2.90+ public preview |
+| `gh pr view <num> --json reviews,reviewRequests` | Inspect Copilot-Code-Review comments (read but never act on) | v2.88+ with `@copilot` reviewer |
+
+Harvest must remain read-only: never run `gh attestation` write operations, `gh skill install/publish/update`, or any `gh pr edit --add-reviewer` flag — those mutate repository state.

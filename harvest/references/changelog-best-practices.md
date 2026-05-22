@@ -2,6 +2,11 @@
 
 Purpose: Use this reference when Harvest must produce release notes or changelog entries that are readable, category-accurate, and audience-fit.
 
+Spec versions:
+- Keep a Changelog 1.1.0 (`keepachangelog.com/en/1.1.0/`) remains the canonical structural spec; 1.1.1 (2023-03-05) added Arabic translation without normative changes.
+- Conventional Commits 1.0.0 (`conventionalcommits.org`) remains the canonical commit syntax.
+- Ecosystem update (2024-2026): `semantic-release` continues as the conventional-commits-driven release automation; `changesets` is the dominant alternative for monorepos requiring explicit intent files; GitHub Actions–native automation via `release-please` is now widely documented.
+
 ## Contents
 
 - Keep a Changelog principles
@@ -9,6 +14,7 @@ Purpose: Use this reference when Harvest must produce release notes or changelog
 - Audience split
 - Anti-patterns
 - Harvest quality gates
+- Automation toolchain
 
 ## Keep a Changelog Principles
 
@@ -68,3 +74,14 @@ Internal-only types (`refactor`, `docs`, `test`, `chore`, `ci`, `build`, `style`
 - If all entries fall into one category, verify classification.
 - If breaking changes exist, highlight them explicitly.
 - If the report is customer-facing, rewrite implementation detail into user-facing impact language.
+
+## Automation Toolchain (2026)
+
+| Tool | Strength | When to recommend |
+|------|----------|-------------------|
+| `semantic-release` | Fully automated from Conventional Commit history; chooses next SemVer + generates changelog | Mature single-package repos with strict commit hygiene |
+| `release-please` (Google) | GitHub Actions–native; opens a Release PR with proposed changelog and version bump | Teams that want a human checkpoint before publish |
+| `changesets` | Per-PR intent files instead of commit parsing; monorepo-native | Monorepos (Nx, pnpm workspaces, Turborepo) with independent package versioning |
+| `git-cliff` | Configurable Conventional Commits → CHANGELOG generator in Rust; fast for large histories | Self-hosted CI without Node toolchain |
+
+Harvest produces the changelog content; the actual `bump+publish` step belongs to Launch (release execution). When recommending a tool, capture commit-style adherence, monorepo posture, and whether the team prefers automation or PR-based human review.

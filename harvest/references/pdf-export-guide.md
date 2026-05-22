@@ -20,7 +20,13 @@ Use this order unless the request explicitly requires another tool:
 | 2 | `node scripts/puppeteer-pdf.js input.html output.pdf` | You have Node/Puppeteer available and need HTML -> PDF |
 | 3 | `md-to-pdf` | You only have Markdown and need a fast direct export |
 | 4 | `pandoc` | You need higher-quality typesetting or LaTeX-based control |
-| 5 | ASCII + browser print | Mermaid or CSS compatibility is poor and a safe fallback is needed |
+| 5 | `marp --pdf` (Marp CLI) | Slide-shaped report from Markdown front-matter (`marp.app`) |
+| 6 | ASCII + browser print | Mermaid or CSS compatibility is poor and a safe fallback is needed |
+
+Pandoc 3.x notes (`pandoc.org/releases.html`):
+- 3.8.3 added `asciidoc`, `pptx`, `xlsx` as input formats and `bbcode` as output.
+- 3.9 added WASM-targeted builds for in-browser conversion.
+- `--pdf-engine` accepts `groff`, `lualatex`, `xelatex`, `wkhtmltopdf`, `weasyprint`, `typst`. For Japanese reports, `lualatex` or `xelatex` with system CJK fonts remains the most reliable path; `typst` is a fast modern alternative when LaTeX is unavailable.
 
 ## Repo Scripts And Assets
 

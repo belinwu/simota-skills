@@ -46,3 +46,4 @@ Long-hours metrics need explicit caution:
 - Prefer `min / expected / max` when reporting to managers or clients.
 - Exclude auto-generated files when they materially skew effort.
 - If estimate accuracy falls below `60%`, recommend reviewing the estimation process.
+- AI-assisted coding (Copilot, Claude Code, Cursor, etc.) decouples LOC from human effort. When AI usage is high, prefer review-cycle and pickup-time signals over LOC-derived hours and document the AI posture in the report.

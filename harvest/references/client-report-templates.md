@@ -123,3 +123,4 @@ node scripts/generate-report.js --days 30 --author username --output client-repo
 - Keep the report readable for non-engineers.
 - Prefer impact, progress, and risks over raw implementation detail.
 - Do not expose private repository URLs, sensitive labels, or personal data.
+- If the team uses AI coding assistants materially during the reporting window, add a one-line disclosure (e.g., "AI-assisted development was active during this period"). DORA 2025 shows AI shifts throughput and stability in opposite directions — clients reading the LOC and hours columns should know that context.

@@ -31,11 +31,20 @@ HARVEST_TO_PULSE_HANDOFF:
   metrics:
     - name: "weekly_merged_prs"
       value: 25
-      period: "2024-01-01/2024-01-07"
+      period: "2026-05-15/2026-05-21"
     - name: "avg_merge_time_hours"
       value: 18.5
     - name: "pr_size_distribution"
       data: { xs: 10, s: 8, m: 5, l: 2 }
+    - name: "dora_2025_bands"
+      data:
+        deployment_frequency: "top_15"
+        lead_time_for_changes: "top_15_30"
+        failed_deployment_recovery_time: "mid"
+        change_failure_rate: "top_15"
+        rework_rate: "mid"
+    - name: "team_archetype"
+      value: "Pragmatic Performers"   # 7-archetype label per DORA 2025
 ```
 
 ## Harvest -> Canvas

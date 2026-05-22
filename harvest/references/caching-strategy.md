@@ -94,3 +94,11 @@ Cleanup rules:
 - Remove entries older than `7 days`.
 - Prune if total size exceeds `100 MB`.
 - Keep metrics in `meta/metrics.json` if cache-hit tracking is enabled.
+
+## Rate-Limit Backed Cache Posture (2026)
+
+GitHub's published limits make caching mandatory for any non-trivial report (`docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api`, `docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api`):
+- 5,000 REST req/hr primary; 900 REST points/min secondary; 100 concurrent (shared with GraphQL); 2,000 GraphQL points/min.
+- A monthly report covering 500 merged PRs costs ~5 paginated REST requests when `per_page=100` is honored — but adding per-PR review timelines balloons quickly. Cache review timelines (15 min TTL) before fanning out.
+- Use ETag / `If-Modified-Since` conditional requests where available; conditional 304 responses do not count against most secondary limits per GitHub's published guidance.
+- Webhooks beat polling for live data — for any near-real-time report, route through Pulse rather than tightening the Harvest cache TTL.

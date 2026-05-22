@@ -39,6 +39,7 @@ gh api rate_limit --jq '.resources.core.remaining'
 | Authentication | Stop and return `BLOCKED`; recommend `gh auth login` |
 | Rate limit low (`<100`) | Warn, prefer cache, or narrow scope |
 | Rate limit exhausted | Wait for reset if `< 3600s`; otherwise return partial/blocking output |
+| Secondary rate limit hit (403 with `retry-after`) | Exponential backoff with jitter; never poll continuously — GitHub may ban integrations that keep hammering past secondary limits (`docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api`) |
 | Network/API transient error | Retry up to `3` attempts with backoff `5s -> 10s -> 20s` |
 | Full-field fetch fails | Retry with a minimal field set |
 | Repo permission issue | Stop; do not guess repository visibility or access |

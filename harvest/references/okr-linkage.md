@@ -97,7 +97,7 @@ Aggregate at the team level. Do not roll Objective health up to individual contr
 
 ## Anti-Patterns
 
-- Vanity metrics in KRs (PR count, LOC delivered, commits authored) — these are output, not outcome. KRs measure "did the world change for users" not "did we type more". Reject KR proposals framed as developer activity counts.
+- Vanity metrics in KRs (PR count, LOC delivered, commits authored) — these are output, not outcome. KRs measure "did the world change for users" not "did we type more". Reject KR proposals framed as developer activity counts. Christina Wodtke's *Radical Focus* (2nd ed.) emphasizes that Key Results should be "challenging targets that you only have a 50/50 chance of accomplishing" — output counts have no such risk profile and inflate to 100% trivially.
 - Output-vs-outcome confusion — "ship feature X" is output. "X-driven retention up 5pp" is outcome. Harvest reports must keep the distinction visible; if the team only has output KRs, flag it explicitly.
 - Rolling Objective health up to individuals — destroys OKR psychological safety. Stack-ranking by KR contribution turns OKRs into management theater (McKinsey developer productivity controversy, 2023).
 - Tagging every PR retroactively to inflate KR coverage — gaming. The tag must be set at PR-creation/merge time, not back-applied during the quarterly review.

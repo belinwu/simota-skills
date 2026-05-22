@@ -55,3 +55,6 @@ Purpose: Use this reference when Harvest reports include DORA, SPACE, throughput
 - Add context for every key number: previous period, target, or trend.
 - Avoid team-vs-team ranking unless the user explicitly asks and understands the limitation.
 - If AI-tool productivity is discussed, note that self-report and measured throughput can diverge.
+- DORA 2025 reverses the 2024 finding: AI now positively correlates with throughput, but continues to correlate negatively with delivery stability (more change failures, increased rework, longer recovery cycles). Report both sides; do not selectively cite the throughput gain.
+- DORA 2025 retired the Elite/High/Medium/Low team labels in favor of **percentile distributions** (e.g., Top 15%, Top 15-30%) and **7 team archetypes**. Use the new vocabulary; avoid "elite" as a categorical claim.
+- SPACE framework (originally ACM Queue, 2021-02; refreshed guidance via LinearB / Atlassian State of DevEx 2025) still maps to 5 dimensions. The 2025 emphasis is on Satisfaction & Well-being (50% of developers report losing >10h/week to organizational inefficiencies per Atlassian 2025); always include this dimension in burnout-adjacent reports.
