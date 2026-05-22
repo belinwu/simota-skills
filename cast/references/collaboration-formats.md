@@ -140,3 +140,19 @@ Required fields:
 - Do not drop confidence or file references.
 - When a persona changed, state what changed and why.
 - When uncertainty remains, say so explicitly instead of implying certainty.
+
+## Inter-Agent Protocol Landscape (as of 2026-05)
+
+Cast handoffs currently live inside the Claude Code skill ecosystem (Markdown anchors + `_STEP_COMPLETE` / `NEXUS_HANDOFF`). When persona artifacts cross into broader agent infrastructure, the relevant external protocols are:
+
+| Protocol | Owner / Status | Persona-relevance |
+|---|---|---|
+| **Model Context Protocol (MCP)** | Anthropic, open standard (Nov 2024); official MCP Registry launched 2025-09-08 (preview); 6,400+ servers registered by Feb 2026; latest spec revision 2025-11-25 | Personas can be exposed as MCP **resources** so any MCP client (Claude, IDE, etc.) can attach them as context. Use stable `cast://persona/{service}/{id}` URIs when wrapping. |
+| **Agent2Agent (A2A)** | Announced 2025-04-09 at Google Cloud Next; donated to Linux Foundation 2025-06; v1.0 with Signed Agent Cards; 150+ partner orgs by 2026-04; JSON-RPC 2.0 over HTTPS; Agent Card discovery; OAuth 2.0 / OpenID Connect | When Cast delivers personas to non-Claude agents, package as A2A `Task` payloads. Echo / Spark / Retain adapters map cleanly onto A2A Message + Artifact structures. |
+| **C2PA Content Credentials 2.2** | C2PA spec dated 2025-04-22 / 2025-05-01 | If persona files include AI-generated portraits or voice clips, attach C2PA assertions documenting AI-use and edit history. |
+
+Operational notes:
+
+- Do not invent custom inter-agent protocols when MCP or A2A already covers the shape (Cast emits Markdown by default; conversion to MCP resource or A2A artifact is a downstream adapter concern).
+- For persona-registry interoperability, prefer **stable URIs** and **signed metadata** (A2A Agent Cards in v1.0 are signed; mirror that discipline in Cast's registry exports).
+- When persona artifacts cross trust boundaries, include provenance: source agent, source evidence URIs, confidence, generation model + version.

@@ -24,6 +24,10 @@ Purpose: Define TTS engine selection, auto-derivation rules, prompt patterns, ou
 | `edge-tts` | Cross-platform | High | No | Free | Network fallback |
 | `google_tts` | Cross-platform | Very High | No | Paid | Explicit opt-in only |
 
+**Engine notes (as of 2026-05):**
+- VOICEVOX continues active development; v0.24.x line (released through 2025) added new speakers and styles, and Humming function covers 29+ characters as of mid-2025. Always probe the local engine version via `GET /version` before assuming speaker IDs — speaker numbering is stable but new IDs appear over time.
+- For AI-generated voice clips bundled with personas, attach **C2PA Content Credentials 2.2** assertions (`spec.c2pa.org/specifications/specifications/2.2/`) to document AI-use provenance. Required when persona voice output is published externally.
+
 ## Engine Selection
 
 ### Explicit engine

@@ -280,6 +280,22 @@ When `bias-audit` completes, emit:
 - **Remediation list** (additions + rewrites).
 - **Handoffs**: cast generate, Cloak, Comply, downstream re-run.
 
+## Regulatory & Standards Context (as of 2026-05)
+
+Persona bias work increasingly intersects with formal AI-governance obligations. Cast bias audits should reference applicable frameworks rather than ad-hoc rules:
+
+| Framework | Status (2026-05) | Relevance to persona bias |
+|-----------|------------------|---------------------------|
+| **ISO/IEC 42001:2023** (AI Management System) | Published Dec 2023; certifiable; major vendors (SAP, Cornerstone Galaxy, etc.) certified through 2025 | Persona artifacts feeding AI systems fall under AIMS scope — Annex A controls cover bias mitigation, human oversight, lifecycle management |
+| **ISO/IEC 23894:2023** (AI Risk Management) | Published Feb 2023; companion to ISO 31000 + ISO/IEC 42001 | Adds AI-specific risk categories: algorithmic transparency, fairness/bias, robustness, human-AI interaction risks — apply to AI-generated personas |
+| **NIST AI RMF 1.0** + **AI 600-1 Generative AI Profile** | RMF Jan 2023; GenAI Profile published 2024-07-26 (NIST.AI.600-1) | Profile enumerates 12 GenAI-specific risks with 200+ suggested actions across Governance, Content Provenance, Pre-deployment Testing, Incident Disclosure |
+| **EU AI Act** (Regulation 2024/1689) | Published 2024-07; GPAI obligations + AI Office operational from 2025-08-02; GPAI penalties from 2026-08-02; pre-existing GPAI models full compliance by 2027-08-02 | Personas used to train or evaluate GPAI models become AI-Act-relevant artifacts — bias audit evidence is part of conformity assessment |
+| **IEEE 7000-2021** (Value-Based Engineering) | Published Sep 2021; technology-agnostic ethical-design methodology | Translates ethical values into measurable requirements — pair with bias audit checklist for traceability |
+| **C2PA Content Credentials 2.2** | Spec released 2025-04-22 / 2025-05-01 | If persona artifacts include AI-generated photos, attach C2PA assertions for provenance (origin, AI-use, edits) |
+| **APPI Amendment Bill (Japan)** | Cabinet-approved 2026-04-07; Diet review in progress; enforcement within 2 years of promulgation (by 2028) | New statistical-processing exemption permits AI-training use of personal data with transparency safeguards; strengthens biometric + children's-data protections; introduces administrative fines under expanded PPC powers |
+
+For AI-generated personas, Cast bias audits should at minimum align with NIST AI 600-1 actions and ISO/IEC 23894 risk categories.
+
 ## References
 
 - Kimberlé Crenshaw, "Demarginalizing the Intersection of Race and Sex" (1989)
@@ -287,13 +303,19 @@ When `bias-audit` completes, emit:
 - *Mismatch* — Kat Holmes (inclusive design at Microsoft)
 - *Technically Wrong* — Sara Wachter-Boettcher (bias in tech)
 - *Algorithms of Oppression* — Safiya Noble
-- Microsoft Inclusive Design Toolkit — inclusive.microsoft.design
-- W3C Accessible Personas — w3.org/WAI/planning/personas/
+- Microsoft Inclusive Design Toolkit — `inclusive.microsoft.design` (refreshed 2024-2025 around 10-year anniversary; Persona Spectrum concept; Fluent 2 design system)
+- W3C Accessible Personas — `w3.org/WAI/planning/personas/`
 - *Lean UX* — Gothelf + Seiden (proto-persona ethics)
 - *Just Enough Research* — Erika Hall (interview rigor)
 - POUR principles — WCAG (Perceivable, Operable, Understandable, Robust)
 - ISO 9241-220 — Human-centered design processes
-- IEEE 7000-2021 — Model Process for Addressing Ethical Concerns
+- ISO/IEC 42001:2023 — AI Management System (`iso.org/standard/42001`)
+- ISO/IEC 23894:2023 — Guidance on risk management for AI (`iso.org/standard/77304.html`)
+- NIST AI RMF 1.0 + AI 600-1 Generative AI Profile (2024-07; `doi.org/10.6028/NIST.AI.600-1`)
+- EU AI Act — Regulation (EU) 2024/1689 (`artificialintelligenceact.eu/implementation-timeline/`)
+- IEEE 7000-2021 — Model Process for Addressing Ethical Concerns During System Design
+- C2PA Content Credentials Technical Specification 2.2 (`spec.c2pa.org/specifications/specifications/2.2/`)
+- Japan APPI Amendment Bill 2026 — `ppc.go.jp` (Personal Information Protection Commission)
 - Geert Hofstede — *Cultures and Organizations* (locale dimensions)
 - *Sorting Things Out* — Bowker + Star (categorization politics)
 - Ruha Benjamin, *Race After Technology*

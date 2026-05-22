@@ -224,11 +224,13 @@ When `archetype` completes, emit:
 - *Competing Against Luck* — Clayton Christensen + Karen Dillon + David Duncan + Taddy Hall (2016) — JTBD framework
 - *Jobs to be Done* — Tony Ulwick (Outcome-Driven Innovation)
 - *Demand-Side Sales 101* — Bob Moesta + Greg Engle (JTBD interview techniques)
+- JTBD Pyramid™ — AIM Institute (2025) — addresses five common JTBD practitioner challenges
 - *Building a StoryBrand* — Donald Miller (brand archetypes for narrative)
 - *Designing Brand Identity* — Alina Wheeler
 - *About Face* — Alan Cooper (persona origins)
 - *The Persona Lifecycle* — Pruitt + Adlin
 - "Brand Archetypes: A Practical Framework" — Iconic Fox / IDEO white papers
-- Jung typology test resources (16personalities.com, MBTI ↔ archetype crosswalks)
+- Jung typology test resources (note: MBTI continues to face significant academic-validity criticism — use only as a creative prompt, not as evidence)
 - ISO 9241-210 — Human-centered design (persona context)
 - *Lean UX* — Jeff Gothelf + Josh Seiden (proto-personas)
+- Microsoft Inclusive Design — Persona Spectrum approach (`inclusive.microsoft.design`, refreshed 2024-2025) as a complementary lens to archetype tagging

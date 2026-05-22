@@ -299,6 +299,13 @@ When `segment` completes, emit:
 - **Sample size + reliability** validation.
 - **Handoffs**: Researcher, Echo, Spark, Retain, Pulse.
 
+## Framework Notes (as of 2026-05)
+
+- **VALS** (Values and Lifestyle Survey, SRI International → Strategic Business Insights): the canonical psychographic segmentation framework. Last major structural revision in 1989 (VALS2). No further structural overhaul has been released; treat VALS as a *historical psychographic baseline* and complement with behavior + JTBD data, especially for digital / online behaviors.
+- **JTBD Pyramid™** (AIM Institute, 2025): a recent JTBD extension addressing five common practitioner challenges with the classic Christensen / Ulwick / Moesta frameworks. Useful when the classic functional/emotional/social split underspecifies the job hierarchy.
+- **Outcome-Driven Innovation (ODI)** by Tony Ulwick remains the most actionable JTBD variant for quantitative segmentation; Bob Moesta's Demand-Side Sales + "Switch" interview pattern remains the canonical qualitative approach.
+- **CliftonStrengths** (Gallup): 34-theme assessment across four domains (Executing / Influencing / Relationship Building / Strategic Thinking); structure is stable through 2026. Useful for *internal* persona work but should not replace OCEAN or Schwartz for external user personas.
+
 ## References
 
 - Sherrington, "Customer Segmentation: RFM Analysis" — Direct Marketing
@@ -308,9 +315,14 @@ When `segment` completes, emit:
 - Costa + McCrae, *NEO-PI-R* / Big Five history
 - Rammstedt + John — BFI-10 (10-item Big Five short form)
 - Aldenderfer + Blashfield — *Cluster Analysis* (Sage)
-- ScikitLearn KMeans / DBSCAN / AgglomerativeClustering docs
+- scikit-learn KMeans / DBSCAN / AgglomerativeClustering docs
 - "Behavioral Segmentation" — Amplitude / Heap / Mixpanel guides
 - Customer Lifetime Value (CLV) — Fader, Hardie + Lee
 - Cooper + Reimann — *About Face* (persona origins, behavioral framing)
 - *Lean Analytics* — Croll + Yoskovitz (per-segment metric design)
 - Statistical power for clustering — Tibshirani et al., gap statistic
+- VALS framework — Strategic Business Insights / SRI International (`sri.com/hoi/vals-market-research/`)
+- JTBD Pyramid™ — AIM Institute (2025, `theaiminstitute.com/blog/introducing-the-jobs-to-be-done-pyramid/`)
+- Bob Moesta — *Demand-Side Sales 101* + Switch interview methodology
+- Tony Ulwick — Outcome-Driven Innovation / Universal Job Map
+- CliftonStrengths Technical Report — Gallup

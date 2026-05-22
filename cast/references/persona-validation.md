@@ -70,6 +70,27 @@ Validation exists to avoid:
 - Never treat them as substitutes for real user validation.
 - Keep synthetic and real-data-backed personas explicitly separated.
 
+### Algorithmic Fidelity (research baseline as of 2026-05)
+
+When LLM-generated personas are used as synthetic survey respondents or simulated users, evaluate them against the "algorithmic fidelity" concept (Argyle et al., 2023; subsequent work through 2025-2026): the extent to which LLM outputs conditioned on a sociodemographic backstory actually reproduce the beliefs / attitudes / response patterns of the target sub-population.
+
+Key 2024-2026 findings to keep visible during validation:
+
+| Finding | Source pattern | Cast implication |
+|---|---|---|
+| Persona-conditioned LLMs often produce homogeneous, mode-collapsed responses on real-world prediction tasks (elections, national surveys) | Arxiv 2602.18462 and successors; NeurIPS 2024 "Questioning the Survey Responses of LLMs" | Treat single-LLM persona panels as **biased toward training-data majority**; require human triangulation before any policy-relevant claim |
+| Of 63 peer-reviewed 2023-2025 persona-LLM studies reviewed, only ~35% discussed representativeness of their LLM personae | "Whose Personae?" (Arxiv 2512.00461) | Cast `bias-audit` must always report representativeness, not only attribute coverage |
+| Persona-instructed LLMs maintain stable self-reports but regress toward mean on multi-agent simulations | "Stable Personas" (Arxiv 2601.22812) | Stable ≠ accurate; pair stability with external-validity check |
+| Turn-by-turn persona drift of 20–40% across instruction-tuned LLMs (Gemma 2, Qwen 3, Llama 3.3) in prolonged dialogue | 2025 persona-drift studies | Multi-turn distribution packets (e.g., Echo walkthroughs) must include refresh anchors every 8–12 turns |
+| Counterfactual instruction-following is weak: even when asked to simulate low-performing personas, GPT-4-turbo only drops 4.6%, o1 ~0% | Arxiv 2504.06460 | Treat LLM persona "weakness simulation" outputs as unreliable for accessibility / novice testing |
+
+Operational rules:
+
+- Cap AI-only personas at `0.50` confidence (proto tier) regardless of LLM provider.
+- Require at least one non-LLM validation stream (interview, survey, behavioral log) before promotion to `active`.
+- Record the LLM provider, model version, system prompt, and seed in `Source Analysis` for reproducibility — minimum metadata for any synthetic persona.
+- Apply ISO/IEC 23894 risk-category framing (algorithmic transparency / fairness / robustness / human-AI interaction) when documenting synthetic-persona risk.
+
 ## Validation Statuses
 
 | Status | Meaning |
