@@ -1,13 +1,24 @@
 # Database Migration Reference
 
+## Tooling Snapshot (2026-05)
+
+| Tool | What it owns | When to reach for it |
+|------|----------------|-----------------------|
+| Flyway / Alembic / Liquibase / Knex / Prisma Migrate | versioned forward-only / up-down migration files | the steady-state migration framework — keep it as the single source of history |
+| **pgroll** (Xata) | runs PostgreSQL schema migrations as Expand/Contract automatically (creates virtual schemas, dual-writes via triggers, then contracts) | new project, or any PG project where Expand/Contract has been informal — pgroll formalises it |
+| pg_osc / pg_repack | one-off large-table changes (column type, table rewrite) | when an Expand/Contract is impractical for a single table because of size |
+| GitHub Schemio / sqlfluff / Atlas | drift detection + lint over migrations as code | CI gate; pair with the framework above, do not replace it |
+
+Pick *one* framework as the source of truth; layer pgroll / pg_osc / Atlas on top as needed. Mixing two frameworks in the same repo is a near-guaranteed history-conflict source.
+
 ## Zero-Downtime Schema Migration: Expand-Contract Pattern
 
-Every schema change follows three stages — never alter/drop in a single migration.
+Every schema change follows three stages — never alter/drop in a single migration. As of `PostgreSQL 11+`, adding a column **with a default** is instant (the default is stored in the system catalog and applied on read with no table rewrite or long lock) — earlier guidance against "add column with default" no longer applies.
 
 ### Stage 1: Expand (additive only)
-- Add new columns (nullable or with defaults)
+- Add new columns (nullable, or with a default on PG `11+`)
 - Add new tables
-- Add new indexes (CONCURRENTLY)
+- Add new indexes with `CREATE INDEX CONCURRENTLY` (and never inside an explicit transaction)
 - **Never:** rename, drop, or change types in this stage
 
 ### Stage 2: Migrate (dual-write + backfill)
@@ -92,6 +103,22 @@ Phase 2: read-new      → Write both, read new    (verify reads match)
 Phase 3: new-only      → Write new only           (old becomes archive)
 Phase 4: cleanup       → Drop old storage
 ```
+
+## Concurrent Migration Safety: Advisory Locks Are Mandatory
+
+The single most common "silent data corruption" pattern in 2026 deployments: **two CI runners (or two pods) execute the same migration concurrently** because no advisory lock is held. The migration framework's own bookkeeping is consistent, but the underlying schema operations race — partially-applied DDL, duplicated backfill rows, half-built indexes.
+
+Lock acquisition must be the **first line of every migration job**, not a wrapper around the dangerous DDL.
+
+```sql
+-- PostgreSQL: take a session-scoped advisory lock keyed on the migration version.
+-- xx_unique_key is the same integer for every runner; only one will get the lock.
+SELECT pg_advisory_lock(948751302);   -- or a hash of the migration name
+-- ... run the migration ...
+SELECT pg_advisory_unlock(948751302);
+```
+
+Most modern frameworks (Flyway, Liquibase, Knex, Prisma Migrate, Alembic with `op.execute("SELECT pg_advisory_lock(...)")`) ship advisory-lock hooks — turn them on. pgroll wraps this for you.
 
 ## PostgreSQL Major Version Upgrade
 

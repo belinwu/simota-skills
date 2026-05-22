@@ -1,16 +1,27 @@
 # Codemod Patterns Reference
 
-## Codemod Tools by Language
+## Codemod Tools by Language (2026-05 snapshot)
 
 | Language | Tool | AST Library | Use for |
 |----------|------|-------------|---------|
-| JavaScript/TypeScript | jscodeshift | recast + ast-types | React migrations, API transforms (deep AST control) |
-| JavaScript/TypeScript | jssg (ast-grep JS) | ast-grep + Tree-sitter | Modern jscodeshift successor — faster, polyglot, typed DX |
+| JavaScript/TypeScript | jscodeshift | recast + ast-types | React migrations, API transforms (deep AST control); still the default for codemods that need imperative control |
+| JavaScript/TypeScript | jssg (ast-grep JS) | ast-grep + Tree-sitter | Pattern-first rules, multi-language, typed DX; significantly faster on large repos than jscodeshift — preferred for repo-scale scans |
+| JavaScript/TypeScript | **Codemod.com Studio + Hypermod** | jssg + jscodeshift hybrid | Visual authoring + managed run service; the de facto 2026 destination for "migrate my repo across React 18 → 19 / Next.js 15 → 16" workflows |
 | TypeScript | ts-morph | TypeScript Compiler API | Type-aware transforms, import rewriting |
 | Python | LibCST | libcst | Concrete syntax tree preserving formatting |
 | Go | go/ast + golang.org/x/tools | go/ast | Go API migrations |
 | Rust | syn + quote | syn | Macro-based transforms |
 | Multi-language | ast-grep | Tree-sitter | Pattern matching across languages, repo-scale scanning |
+
+### How To Pick Between jscodeshift and ast-grep / jssg
+
+| Signal | Reach for |
+|--------|-----------|
+| Need to **mutate** the AST with imperative logic (read X, decide, build new Y) | jscodeshift / ts-morph |
+| Need to **match** a pattern across hundreds of files and rewrite a localised diff | ast-grep / jssg |
+| Need to run the same transform across **JS, TS, Python, Go** with one tool | ast-grep (Tree-sitter-based) |
+| Want a visual / managed runner so non-codemod-experts can review the diff | Codemod.com Studio + Hypermod |
+| The framework ships an **official codemod** already (`react-codemod`, `vue-codemod`, `@next/codemod`) | Use the official set first; reach for the tools above only for the residual delta |
 
 ## jscodeshift Patterns
 

@@ -16,14 +16,27 @@ If the request is "what should we move off?" → Horizon. If it is "we have chos
 
 | From → To | Mechanical (codemod-able) | Semantic (must verify manually) |
 |-----------|---------------------------|----------------------------------|
-| Vue 2 → Vue 3 | Options API skeleton, `v-model` arg rename, filters removal | Reactivity from `this.$set` → proxy, event API (`$on`/`$off` removed), Vuex → Pinia store shape |
-| React CRA → Next.js (App Router) | File moves, import path rewrites | Client/Server component boundary, `useRouter` API diff, env var prefix (`REACT_APP_` → `NEXT_PUBLIC_`), SSR hydration mismatches |
+| Vue 2 → Vue 3 | `vue-codemod` (Options API skeleton, `v-model` arg rename, filters removal) | Reactivity from `this.$set` → proxy, event API (`$on`/`$off` removed), Vuex → Pinia store shape |
+| React `18 → 19` | `react-codemod` (`Context.Provider` → `Context`, remove `forwardRef`, `React.useContext` → `use`) | Actions / `useActionState` adoption, `<Form>` semantics, Server Components migration, `ref` as prop |
+| React CRA → Next.js (App Router) | File moves, import path rewrites (Next.js ships official codemods via `npx @next/codemod`) | Client/Server component boundary, `useRouter` API diff, env var prefix (`REACT_APP_` → `NEXT_PUBLIC_`), SSR hydration mismatches |
+| Next.js `15 → 16` | Official `@next/codemod` set (App Router cache APIs, image / metadata rewrites) | Cache Components (Next.js 16) replacing implicit caching, async `params` / `searchParams`, partial pre-rendering boundaries |
 | Angular N → N+2 | `ng update` schematics, Ivy opt-in | Standalone components, zoneless change detection, RxJS major bumps, strict template types |
 | Rails N → N+1 | `rails app:update`, initializer regeneration | Zeitwerk autoloading, deprecation warnings, strong params edges, Active Record default changes |
 | Spring Boot 2 → 3 | Jakarta namespace rename (`javax.*` → `jakarta.*`) | Native image constraints, observability API (Micrometer → OTel), security filter chain changes |
 | Express → Fastify / Hono | Route registration shape | Middleware execution order, error-handling contract, async hook semantics, streaming response API |
 
 Record anything you hit that is *not* on this list in `.agents/shift.md` for future reuse.
+
+### Codemod-First Posture (2026 default)
+
+For every row above, check the framework's *official* codemod set before hand-writing a transform:
+
+- **React**: [`reactjs/react-codemod`](https://github.com/reactjs/react-codemod) (also distributed via Codemod.com migrations) — covers `Context.Provider`, `forwardRef`, `useContext → use`, and the legacy class-component path.
+- **Vue**: [`vuejs/vue-codemod`](https://github.com/vuejs/vue-codemod) — Vue 2 → 3 API rewrites, jscodeshift-based.
+- **Next.js**: `npx @next/codemod <transform> .` — version-pinned transforms shipped with the framework.
+- **Codemod.com Studio + Hypermod**: visual / managed codemod runners that sit on top of `ast-grep` (jssg) and jscodeshift; use when the official codemods do not cover the delta.
+
+A codemod cannot replace the semantic verification column above. Treat the codemod output as a starting diff and run the dual-run validation regardless.
 
 ## Workflow (overlays ASSESS → ... → COMPLETE)
 
