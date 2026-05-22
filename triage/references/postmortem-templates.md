@@ -10,6 +10,17 @@ Contents:
 - `Executive Summary Only Template`: short external or leadership-ready summary
 - `Postmortem vs PIR Comparison`: audience and tone differences
 
+## AI-Assisted Drafts (2026)
+
+By 2026 most incident platforms (incident.io AI SRE, Rootly AI SRE, Datadog Bits AI SRE, Howie / Resolve KG) generate a **first-draft postmortem** from the investigation transcript automatically. Treat the draft as a starting point, never as a final deliverable:
+
+- A named **human editor of record** signs the postmortem before publication; the agent's signature does not transfer.
+- Every numeric impact figure (users affected, dollars at risk, requests dropped) must trace to a query in the appendix — unsourced figures fail review.
+- Blamelessness remains a human judgement: the agent flags tone, a reviewer enforces it.
+- Investigation transcript IDs are required in the appendix so the chain telemetry → diagnosis → postmortem → action items is traceable end-to-end.
+
+See `beacon/references/incident-learning-postmortem.md` for the full AI-assisted postmortem operating rules.
+
 ## Internal Postmortem Template
 
 ```markdown

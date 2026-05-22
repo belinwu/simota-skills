@@ -137,6 +137,28 @@ If at T+15 the IC cannot answer SEV or initial impact, the severity is SEV1 unti
 - ❌ Jumping to a fix before SEV classification — SEV drives cadence, staffing, and escalation.
 - ❌ Inviting the entire engineering org to the war-room at T+2 — crowd noise destroys IC's ability to run the first 15 min.
 - ❌ Using threads instead of a channel — threads lose the linear timeline and make scribing impossible.
+- ❌ Letting an AI SRE agent (Bits AI SRE, Rootly AI SRE, incident.io AI SRE) take Incident Command. The agent investigates and proposes; the IC remains a named human throughout the 15-minute window.
+
+## AI SRE Co-pilot Integration (2026)
+
+By 2026 the leading platforms — Datadog **Bits AI SRE**, **Rootly AI SRE**, **incident.io AI SRE** — run an autonomous investigation loop from the moment the alert fires. Independent customer reports cite MTTR reductions of `~40-70%` and Datadog reports services restored `~90%` faster on its own dataset. The agent does not replace the IC; it accelerates the loop.
+
+Operating rules during the 15-minute window:
+
+| T | Human action | AI SRE co-pilot action |
+|---|--------------|------------------------|
+| `T+0` | Page fires | Agent ingests the alert, correlates metrics / logs / traces / recent deploys / dependency health in parallel |
+| `T+2` | IC assigned by name | Agent posts initial impact estimate + top-3 candidate root causes with confidence into the war-room |
+| `T+5` | SEV classified by the IC (not the agent) | Agent surfaces matching past incidents and runbook candidates |
+| `T+10` | Comms Lead sends holding comm | Agent drafts the holding comm; Comms Lead edits and signs before posting |
+| `T+15` | IC handoff to Phase 2 | Agent's investigation transcript is attached to the incident doc as evidence |
+
+Hard rules:
+
+- **No agent-initiated state changes during the first 15 minutes** beyond read-only investigation. Runbook execution still flows through Mend with its tier classification (`mend/references/safety-model.md`).
+- **The IC names the SEV.** The agent can recommend, but the SEV classification carries blame-line authority and stays with the IC.
+- **Confidence is preserved verbatim.** If the agent reports `medium confidence` on a candidate root cause, the IC must preserve that label when communicating downstream — never round up to "the agent found the cause".
+- **Investigation transcript is part of the audit trail.** Save the agent's reasoning alongside the timeline; it is the input to AI-assisted postmortem drafts (see `beacon/references/incident-learning-postmortem.md`).
 
 ## What `first-response` Does NOT Do
 

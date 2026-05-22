@@ -86,6 +86,25 @@ Contents:
 - Lens can capture evidence while Scout is running RCA.
 - If the cause is already clear, Builder may start remediation before Scout fully completes when Triage approves.
 
+### AI SRE Co-pilot in Phase 3 (2026)
+
+When an AI SRE co-pilot is running (Bits AI SRE, Rootly AI SRE, incident.io AI SRE), step 1 changes shape: the agent has *already* started parallel investigation from the moment of detection. Triage's job is not to wait for Scout but to **validate and route** the agent's findings.
+
+| Step | Triage action | What changes when AI SRE is on |
+|------|---------------|----------------------------------|
+| 1 | Read agent's top-3 candidate causes with confidence | Skip Scout if confidence ≥ `high` on a candidate that matches a known runbook; otherwise still escalate to Scout for human RCA |
+| 2 | Verify the agent's correlated metrics / logs / traces / deploys are real | Reject any candidate that cannot be backed by a specific query — hallucinated correlations get filtered here, not in the postmortem |
+| 3 | Route to Mend if the agent proposes a runbook match | The runbook still passes through Mend's safety-tier classification — the AI agent's confidence does not bypass T3 / T4 approval gates |
+| 4 | Route to Builder if the agent proposes a code fix | The agent's draft PR is reviewed by a human; the PR-as-safety-gate rule remains in force (see `mend/references/safety-model.md`) |
+
+Hard rules:
+
+- **Triage owns the routing decision**, not the AI agent. The agent recommends; Triage accepts, modifies, or escalates to Scout for human RCA.
+- **No autonomous remediation in SEV1 / SEV2.** Even when the agent's confidence is high, a named human owner approves every state-changing action.
+- **Investigation transcript is captured as evidence.** Same audit-trail rule as in `first-response.md` — the transcript becomes input to the AI-assisted postmortem draft.
+
+Reported gains in 2026 published case studies: MTTR reductions of `~40-70%` are typical when the AI co-pilot is wired into a mature Triage process; the same tools deliver near-zero improvement (and sometimes regressions) when the Triage process itself is loose, because the agent amplifies whatever discipline it is given.
+
 ### Mitigation Options Template
 
 ```markdown
