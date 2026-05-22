@@ -101,6 +101,27 @@ Potential polyrepo benefit:
 
 Do not decide repo strategy based on AI tooling alone. Treat it as a secondary factor after scale, coupling, and governance.
 
+### 2026 Tooling Snapshot
+
+By 2026 monorepos are **mainstream** — published industry surveys put adoption at `~63%` for organisations with `50+` developers. The 2026 tool selection has converged on three options:
+
+| Tool | 2026 fit | Notes |
+|------|----------|-------|
+| **pnpm workspaces + Turborepo** | JavaScript / TypeScript monorepos that need fast task orchestration with minimal setup | Turborepo is a task runner with intelligent caching on top of an npm / pnpm / yarn workspace; Turborepo wins on simplicity. pnpm workspaces give stricter dependency hygiene than npm / yarn. |
+| **Nx** | JS/TS monorepos at scale needing affected-detection, project-graph awareness, generators, and a deeper integrated ecosystem | Nx builds a full project graph mapping which packages depend on which; "affected" commands stay precise as the repo grows. Nx wins on scale. |
+| **Bazel** | Multi-language (`Go`, `Java`, `Python`, `C++` etc.) and very large repos (typically `1000+` engineers) demanding hermetic, remote-executable builds | High setup cost; reserve for cases where the multi-language + remote execution combination is the binding constraint. |
+
+Heuristic: start with **pnpm + Turborepo** for new JS/TS monorepos in 2026; migrate to **Nx** only after measuring that the project-graph + affected-detection investment is justified by repo size or shared-library coordination cost; reach for **Bazel** only when multi-language hermetic builds are the requirement.
+
+### AI Agent Context Files (CLAUDE.md / AGENTS.md / GEMINI.md)
+
+In 2026, every monorepo serving AI coding agents (Claude Code, Cursor, Copilot, Codex CLI, Antigravity / Gemini CLI) needs **per-package agent context files** in addition to the root project constitution:
+
+- The repo root carries `CLAUDE.md` / `AGENTS.md` (the project constitution) — testing conventions, file-layout rules, non-negotiable policies. See `scribe/references/adr-writing.md` for the constitution-vs-ADR separation.
+- Each package or app under `apps/` / `packages/` MAY carry its own scoped `AGENTS.md` with package-specific conventions (the agent reads the nearest one to the file it is editing).
+- DTCG design tokens, OpenAPI specs, and other machine-readable artefacts ship as first-class files so AI agents do not hallucinate brand values, schema fields, or token names. See `quill/references/readme-templates.md` for the `llms.txt` companion pattern.
+- Anti-pattern: leaving the root constitution stale while updating individual package READMEs — agents read the *nearest* relevant doc, so contradiction between the two paths produces silently wrong output.
+
 ## 6. Grove Integration
 
 Use this reference in Grove as follows:
