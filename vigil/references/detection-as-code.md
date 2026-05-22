@@ -13,6 +13,16 @@
 4. **Staged deployment** — Rules deploy to staging before production
 5. **Observability** — Track rule performance (fire rate, FP rate, MTTD)
 6. **Supply-chain hardening** — Treat the DaC pipeline as production infrastructure. A compromised pipeline can push attacker-controlled rules that silently blind the SOC.
+7. **Adversary-emulation tests are non-negotiable** — Every Sigma / YARA rule pairs with an **Atomic Red Team** (or equivalent) procedure that maps to the same ATT&CK technique. A rule with no emulation test is a hypothesis, not a detection.
+
+## Engine Snapshot (2026-05)
+
+| Engine | Status | Use it when |
+|--------|--------|-------------|
+| **YARA-X** (Rust rewrite, VirusTotal) | `1.0.0` stable since 2025-06; powers VirusTotal Livehunt / Retrohunt at billions-of-files scale; ~`99%` rule compatibility with classic YARA; heavy rules (large regex, deep loops) run seconds faster | New rule authoring, threat hunting pipelines, any project that can afford a one-time migration |
+| **YARA 4.x** (classic, C) | Maintenance mode — only bug fixes land here; new features go exclusively to YARA-X | Legacy pipelines that have not yet migrated; budget the YARA-X migration |
+| **Sigma** (SigmaHQ) | Active; the de-facto vendor-agnostic log-detection format. Compile to Splunk SPL / Elastic ES|QL / Sentinel KQL / Sumo / etc. via `sigma-cli` | First-class authoring for log-based detections; all rules in this repo start as Sigma |
+| **Snort 3 / Suricata 7** | Active; network-traffic detection. See `snort-network-detection.md` | Packet-level signatures, IDS / IPS rules |
 
 ### Pipeline Supply-Chain Controls (GitHub Actions 2026 baseline)
 
@@ -169,11 +179,12 @@ jobs:
 
 | Type | When | Tool | Pass Criteria |
 |------|------|------|---------------|
-| Syntax lint | Every PR | sigma-cli check | No syntax errors |
-| True positive | Every PR | sigma-cli test | Rule matches known-bad data |
-| False positive | Every PR | sigma-cli test | Rule does NOT match known-benign data |
-| Performance | Weekly | SIEM benchmark | Rule executes within time budget |
-| Coverage | Monthly | Custom script | ATT&CK coverage meets target |
+| Syntax lint | Every PR | sigma-cli check / `yara-x check` | No syntax errors |
+| True positive | Every PR | sigma-cli test / `yara-x scan` | Rule matches known-bad data |
+| False positive | Every PR | sigma-cli test / `yara-x scan` (negative) | Rule does NOT match known-benign data |
+| Adversary emulation | Every PR | Atomic Red Team (`Invoke-AtomicTest`) on a sandbox host | Rule fires on the technique's simulated execution |
+| Performance | Weekly | SIEM benchmark / `yara-x` regex-cost report | Rule executes within time budget |
+| Coverage | Monthly | Custom script + MITRE Navigator | ATT&CK coverage meets target |
 
 ---
 

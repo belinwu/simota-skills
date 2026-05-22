@@ -223,6 +223,17 @@ rule [RuleName] : [tags]
 }
 ```
 
+### Authoring Engine: YARA-X is the 2026 Default
+
+Default new YARA rules against **YARA-X 1.0.0+** (Rust rewrite, stable since 2025-06, ~`99%` rule compatibility with classic YARA). Classic YARA 4.x is in **maintenance mode** — only critical bug fixes land there; all new features ship to YARA-X exclusively. Practical implications when authoring:
+
+- Heavy rules (large regex, deep loops) run measurably faster on YARA-X — the same rule that took seconds on YARA 4 finishes in milliseconds.
+- Memory-safety is no longer a foot-gun; the Rust core eliminates the parser-side memory bugs that historically plagued YARA in long-running scanners.
+- The parser and scanner are decoupled — easier to embed in DaC pipelines and to extend with custom modules.
+- VirusTotal's Livehunt / Retrohunt pipelines have run at billions-of-files scale on YARA-X since 2025, so production readiness is no longer a question.
+
+Migration rule: if the rule does not use one of the rare `~1%` of features YARA-X does not yet support, port it to YARA-X first and keep the original as a compatibility fallback only.
+
 ---
 
 ## Coverage Mapping Template

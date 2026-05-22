@@ -28,6 +28,15 @@ ALERT → Triage Gate
 
 Severity is a function of **blast radius × confidence × reversibility**, not alert rule severity alone. Low-confidence SEV-1 indicators (e.g., `T1486 Data Encrypted for Impact` on one endpoint) still page — reversibility is near-zero.
 
+## AI SOC Co-pilot Integration (2026)
+
+By 2026 the SOC tooling stack (Wiz Green Agent, Microsoft Security Copilot, CrowdStrike Charlotte AI, Google SecOps Duet AI, autonomous-investigation agents inside Splunk / Sentinel / Datadog / Sumo) drafts a first-pass investigation per alert: enrichment, IoC pivot, similar-incident lookup, candidate root cause with confidence. Playbook authors must wire the co-pilot in *under the same rules that govern Mend remediation*:
+
+- **The co-pilot proposes; the human IR lead disposes.** Containment, eradication, and recovery steps that change state remain gated by the safety tiers in `mend/references/safety-model.md`. SEV-1 / SEV-2 actions are not auto-executed even when the agent is high-confidence.
+- **Enrichment is the high-ROI co-pilot step.** Reserve agent autonomy for the *enrichment* phase — pull IP reputation, sandbox detonate, query VT, correlate to known incidents — and keep response steps under human approval.
+- **Confidence is preserved verbatim.** When the agent reports `medium confidence` on an attribution or candidate IoC, the playbook output must carry the label unchanged into the IR doc — never round up to "confirmed".
+- **Investigation transcript is part of the audit trail.** Attach the agent transcript ID to the incident record alongside SIEM hits; downstream postmortem drafts (see `triage/references/postmortem-templates.md` and `beacon/references/incident-learning-postmortem.md`) consume it.
+
 ## Playbook Templates
 
 | Incident Class | ATT&CK Entry | D3FEND Defensive Actions | Key Containment |
