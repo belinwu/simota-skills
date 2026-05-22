@@ -1,6 +1,17 @@
 # Cookie Consent / Cookie Policy Review Reference
 
-Purpose: Structured review methodology for cookie consent banners and cookie policy documents under EU ePrivacy Directive 2002/58/EC (Art. 5(3)), GDPR consent integration (Art. 4(11), 7), IAB TCF v2.2 framework alignment, cookie categorization (strictly necessary / functional / analytics / marketing), and jurisdictional opt-in vs opt-out divergence (EU / UK / California / Japan). Surfaces banner-design and policy-text gaps that trigger DPA enforcement (CNIL, Garante, ICO) without empirical user testing.
+Purpose: Structured review methodology for cookie consent banners and cookie policy documents under EU ePrivacy Directive 2002/58/EC (Art. 5(3)), GDPR consent integration (Art. 4(11), 7), IAB TCF v2.3 framework alignment, cookie categorization (strictly necessary / functional / analytics / marketing), and jurisdictional opt-in vs opt-out divergence (EU / UK / California / Japan). Surfaces banner-design and policy-text gaps that trigger DPA enforcement (CNIL, Garante, ICO) without empirical user testing.
+
+## 2026 Cookie / Consent Regulatory Snapshot
+
+| Change | Effective | Practical impact |
+|--------|-----------|--------------------|
+| **IAB TCF v2.3 mandatory adoption** | `2026-02-28` | Participants must migrate from `v2.2`. `v2.3` removes legitimate-interest as a basis for advertising; vendors must disclose more detail; new `Disclosed Vendors` segment is required on every consent signal. Review any TCF-using project for v2.3 conformance before this date. |
+| **EDPB refreshed pay-or-consent guidance** | May 2026 | Materially restricts the binary "pay or consent" cookie wall. Tightens what counts as valid consent. Bare "accept cookies or pay" walls on news / publisher sites are presumptively non-compliant. |
+| **Apple ATT remains insufficient on its own** | Ongoing | iOS apps targeting EU need *both* ATT prompts AND a TCF v2.3 CMP — ATT alone is binary and does not satisfy GDPR granularity. |
+| **CJEU TCF ruling (2024) still binding** | Ongoing | The IAB Europe TCF was ruled to fail GDPR consent requirements; TCF v2.3 is the alignment response. Treat TCF participation as risk-reduction, not safe-harbour. |
+
+Update every banner review against this snapshot before walking the checklist below.
 
 ## Scope Boundary
 
@@ -75,19 +86,27 @@ Is the cookie strictly necessary for a service the user explicitly requested?
 | Do Not Track / GPC honoring (CA, CO) | CCPA/CPRA + 2024 GPC enforcement | GPC signal ignored | High |
 | Cookie scanner result matches policy | Accountability | Scanner finds 40 cookies; policy lists 12 | Medium |
 
-## IAB TCF v2.2 Notes
+## IAB TCF v2.3 Notes (2026 mandatory)
 
-TCF v2.2 (effective Nov 2023, mandatory replacement for v2.1 since 2024) changes:
+**TCF v2.3 adoption deadline: `2026-02-28`** — all TCF participants must complete migration from v2.2 by this date.
 
+Changes from v2.2:
+
+- **Legitimate-interest removed as a basis for advertising purposes** — vendors that previously relied on LI for ad targeting must now obtain explicit consent.
+- **Vendor disclosure expanded** — vendors must surface more detail (purpose, retention, transfer destinations) in the in-banner vendor list.
+- **Disclosed Vendors segment** is now required on every consent signal — the CMP records which vendors were actually shown to the user, enabling post-hoc audit.
+- All v2.2 rules carried forward: Purpose 1 (store/access info) is consent-only, "Reject All" required at first layer, standardized purpose language, withdraw/re-open UI required.
+
+Legacy v2.2 notes for backwards reference:
 - Purpose 1 (Store/access info on device) — separated from "legitimate interest" path; consent only.
 - Legitimate interest removed for advertising-related purposes (3, 4, 5, 6) — must rely on consent.
 - Standardized illustrations and language (no custom rewording of purpose names).
 - "Reject All" button required at first layer.
 - Withdraw / re-open consent UI required.
 
-If using TCF v2.2: register CMP with IAB; expose `tcfapi`/`__tcfapiLocator` correctly; pass TC string downstream to vendors; respect Global Vendor List (GVL) updates.
+If using TCF v2.3: register CMP with IAB; expose `tcfapi` / `__tcfapiLocator` correctly; pass TC string downstream to vendors; respect Global Vendor List (GVL) updates; emit Disclosed Vendors segment.
 
-If not using TCF: cannot rely on TCF signals to demonstrate consent to ad-tech vendors. Either join TCF or use direct contractual consent flows.
+If not using TCF: cannot rely on TCF signals to demonstrate consent to ad-tech vendors. Either join TCF or use direct contractual consent flows. Note: TCF participation is *risk-reduction*, not *safe-harbour* — the 2024 CJEU TCF ruling stands.
 
 ## Jurisdictional Differences
 
