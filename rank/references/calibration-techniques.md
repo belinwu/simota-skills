@@ -45,6 +45,8 @@ Prevent first-scored items from anchoring subsequent scores.
 | **Groupthink** | No dissent in team scoring | Independent scoring before group discussion |
 | **Availability** | Items related to recent incidents score high | Use base rates, not recent events |
 | **IKEA Effect** | Self-built features rated higher | External benchmarking |
+| **AI-anchor bias** (2026) | Team adopts the LLM-suggested score with no debate | Score independently *first*, reveal the AI proposal after, then reconcile — the AI proposal must lose at least one round to prove the group is not rubber-stamping it |
+| **"AI will figure it out"** (2026) | Impact argument depends on an undelivered model behavior | Cap `Confidence` at `≤ 50%` until validated; track separately as research, not feature work |
 
 ---
 

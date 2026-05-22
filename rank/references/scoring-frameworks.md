@@ -3,6 +3,11 @@
 **Purpose:** Detailed procedures for each prioritization framework.
 **Read when:** Executing CRITERIA or SCORE phases.
 
+> **2026 framing.** The 2026 product-management literature continues to put **RICE** and **WSJF** at the top of "frameworks teams actually use" alongside MoSCoW, Kano, and Value-vs-Effort matrices — the toolkit itself has not changed in 2026, but two operating shifts have:
+>
+> 1. **AI assistance accelerates *scoring*, not the decision.** Tools like ProductBoard / Productboard AI, Roadmunk, Linear's "AI insights", and ChatGPT / Claude can summarise tickets, surface reach data, and propose ICE / RICE values — but the inputs (impact, confidence) remain a human judgement call. Treat AI-suggested scores as *anchors* in a calibration discussion, not as the score.
+> 2. **AI feature work needs an explicit "Confidence ≤ X" guardrail.** Empirical 2026 data on AI features shows higher post-ship variance: only ~`1/3` of shipped features hit their target metric (Kohavi et al., Microsoft), and AI-authored implementations carry the additional risk surface documented in `void/references/over-engineering-anti-patterns.md`. Treat any feature whose `Impact` argument relies on "AI will figure it out" as `Confidence ≤ 50%` until validated.
+
 ---
 
 ## 1. ICE (Impact × Confidence × Ease)
