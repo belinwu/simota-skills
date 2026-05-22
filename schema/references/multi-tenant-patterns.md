@@ -1,14 +1,27 @@
 # Multi-Tenant Database Patterns
 
-Reference for designing multi-tenant database schemas.
+Reference for designing multi-tenant database schemas. Snapshot: 2026-05.
+
+> **Scope vs other skills:** Shard owns horizontal-distribution topology (Aurora DSQL / Spanner / Citus / Vitess cluster shape and routing). This file focuses on **schema-side decisions**: tenant_id placement, RLS policies, schema-per-tenant DDL, composite-FK enforcement, and partitioning by `tenant_id`.
 
 ## Architecture Pattern Comparison
 
 | Pattern | Description | Isolation | Cost | Best for |
 |---------|-------------|-----------|------|----------|
-| **Database per Tenant** | Each tenant has a dedicated database | Highest — full schema, data, and connection isolation | Highest — one DB per tenant | Regulated industries (HIPAA, SOC 2), large enterprise tenants |
-| **Schema per Tenant** | Single cluster, one schema per tenant (PostgreSQL `search_path`) | High — separate DDL, no data sharing | Medium — shared cluster, separate objects | Mid-market SaaS, 10–500 tenants, custom schema per tenant needed |
+| **Database per Tenant** | Each tenant has a dedicated database (or Neon project / branch) | Highest — full schema, data, and connection isolation | Highest at scale — one DB per tenant | Regulated industries (HIPAA, SOC 2, PCI-DSS), large enterprise tenants, per-tenant PITR |
+| **Schema per Tenant** | Single cluster, one schema per tenant (PostgreSQL `search_path`); Citus 12+ supports schema-based sharding so each schema can live on a different worker | High — separate DDL, no data sharing | Medium — shared cluster, separate objects | Mid-market SaaS, 10–500 tenants, per-tenant DDL customisation, clean `DROP SCHEMA tenant_x` offboarding |
 | **Shared Schema + RLS** | All tenants in the same tables, isolated by Row Level Security | Medium — policy-enforced, not DDL-enforced | Lowest — fully shared infra | Consumer SaaS, thousands of small tenants, uniform schema |
+| **Shared Schema + Hash Partition by `tenant_id`** | Single tables partitioned by `HASH(tenant_id)` or composite hash-within-range | Medium-high — partition pruning enforces tenant locality at planner level | Low — same as shared, with per-partition VACUUM/index parallelism | High-volume shared-schema SaaS where RLS planner overhead becomes a problem (> 10K tenants, > 100M rows/table) |
+
+### 2026 Managed-Database Considerations
+
+| Engine | Tenant-isolation primitive | Notes |
+|--------|----------------------------|-------|
+| Aurora DSQL (GA 2025, 4 regions in 2026 Q1) | Multi-tenant via shared cluster + active-active two-region + witness region | No native branching; no read replicas (distributed by design). DPU-hour pricing. |
+| Spanner | Multi-tenant via interleaved tables + per-tenant directories | Strong consistency via TrueTime + Paxos. Database-per-tenant is rare due to cost. |
+| Citus 13 (Feb 2025, PG 17.2-based) | Distributed extension. Schema-based sharding (12+) for schema-per-tenant on workers; reference tables for shared dimensions | `MERGE` distributed-execution support; available on Azure Database for PostgreSQL Flexible Server (elastic clusters preview). |
+| Neon | Database-per-tenant practical via per-tenant **branching** (copy-on-write) + scale-to-zero | Branching makes DB-per-tenant economically viable for preview / sandbox per tenant; **does not** auto-scale to thousands of always-on tenants. |
+| Tiger Data (TimescaleDB rebrand 2025-06) | Hypertables can partition on UUIDv7 (TimescaleDB ≥ 2.23) — combine time chunking with tenant-prefixed UUIDv7 for tenant-scoped time-series | Use when audit/event volume is the multi-tenant driver. |
 
 ---
 
@@ -95,6 +108,22 @@ CREATE INDEX idx_order_items_tenant_order ON order_items(tenant_id, order_id);
 
 ---
 
+## Pattern Selection Decision Tree (2026 baseline)
+
+```
+Tenant count?
+  ├── 1-50, regulated (HIPAA/PCI/SOC2)
+  │     └── DB-per-tenant. Consider Neon branching for cheap per-tenant preview envs.
+  ├── 50-500, per-tenant DDL needed
+  │     └── Schema-per-tenant. On distributed scale: Citus 13 schema-based sharding.
+  ├── 500-10K, uniform schema, mid-volume
+  │     └── Shared schema + RLS + FORCE ROW LEVEL SECURITY.
+  └── 10K+ or > 100 M rows/table
+        └── Shared schema + HASH partition by tenant_id + RLS as backstop.
+            For globally distributed write: Aurora DSQL or Spanner.
+            For time-series-heavy tenants: Tiger Data hypertable on UUIDv7.
+```
+
 ## Design Gate
 
 Before shipping a multi-tenant schema, verify:
@@ -104,3 +133,4 @@ Before shipping a multi-tenant schema, verify:
 - `tenant_id` is the leading column in all composite indexes.
 - Tenant provisioning and deprovisioning are tested (create + delete + data verification).
 - Connection pooling (e.g., PgBouncer) is configured to reset `app.current_tenant_id` between sessions in transaction-mode pooling.
+- On PostgreSQL 18, consider pulling tenant context from a verified OAuth token claim (via `oauth_validator_libraries`) instead of an application-set GUC — closes the bypass via direct app credentials.

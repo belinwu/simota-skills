@@ -1,6 +1,8 @@
-# PostgreSQL 17/18 Features Guide
+# PostgreSQL 17 Features Guide (Legacy)
 
-Reference for PostgreSQL 17 and 18 new features relevant to schema design.
+> **2026-05 status:** PostgreSQL 18 went GA on 2025-09-25 — see `postgresql18-features.md` for current-release features (UUIDv7, virtual generated columns by default, temporal `WITHOUT OVERLAPS`, OAuth, async I/O, DDL replication). PostgreSQL 17 (GA 2024-09-26) remains community-supported through 2029-11; the features below still apply on both versions. Keep this file as the upgrade reference for clusters still on PG 17.
+
+Reference for PostgreSQL 17 features relevant to schema design. Most features remain in PG 18 unchanged.
 
 ## JSON / SQL:JSON New Features
 
@@ -130,51 +132,6 @@ New utility `pg_createsubscriber` creates a logical replication subscriber from 
 
 ---
 
-## PostgreSQL 18 Features (Released 2025-09-25)
+## PostgreSQL 18 (Released 2025-09-25)
 
-### UUIDv7 Native Support
-
-PostgreSQL 18 adds the built-in `uuidv7()` function that generates UUIDv7 values with embedded millisecond timestamps. UUIDv7 preserves global uniqueness while enabling B-tree-friendly chronological ordering.
-
-```sql
--- Use as default for new primary keys
-CREATE TABLE orders (
-  id UUID PRIMARY KEY DEFAULT uuidv7(),
-  ...
-);
-```
-
-**Design rules:**
-- Prefer `uuidv7()` over `gen_random_uuid()` (UUIDv4) for new tables — eliminates random-write amplification on B-tree indexes.
-- UUIDv7 is K-sortable: rows inserted close in time cluster on disk, improving range scans and vacuum efficiency.
-
-### OLD/NEW in RETURNING Clause
-
-INSERT, UPDATE, DELETE, and MERGE now support `OLD` and `NEW` references in `RETURNING`:
-
-```sql
--- Verify data correctness during expand-contract migration backfill
-UPDATE orders SET status_v2 = translate_status(status)
-RETURNING OLD.status AS old_val, NEW.status_v2 AS new_val;
-```
-
-**Design rules:**
-- Use during dual-write/backfill phases of expand-contract migrations to verify transformations without extra SELECT queries.
-- Useful for audit logging: capture both before and after states in a single statement.
-
-### Virtual Generated Columns (Default)
-
-Generated columns now default to `VIRTUAL` (computed on read, not stored). Use `STORED` only when the computation is expensive and frequently read.
-
-```sql
-ALTER TABLE products ADD COLUMN display_price TEXT
-  GENERATED ALWAYS AS (currency || ' ' || amount::text) VIRTUAL;
-```
-
-### B-tree Skip Scan
-
-B-tree indexes now support skip scan lookups, allowing efficient queries on non-leading columns of composite indexes without requiring a separate index.
-
-### Asynchronous I/O Subsystem
-
-PostgreSQL 18 introduces an async I/O subsystem that can improve sequential scan, bitmap heap scan, and vacuum performance by up to 3× on storage-bound workloads.
+See `postgresql18-features.md` for full coverage of UUIDv7, virtual generated columns, temporal `WITHOUT OVERLAPS` / `PERIOD`, `RETURNING OLD.*` / `NEW.*`, B-tree skip scan, async I/O, OAuth `pg_hba.conf` method, and DDL replication in logical publications.

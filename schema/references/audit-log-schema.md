@@ -119,12 +119,13 @@ Read WAL → topic → audit consumer → audit table.
 - **Cons**: eventually consistent; dual storage cost; delete-before-CDC race.
 - **Pattern**: Stream agent owns the pipeline.
 
-### 4. Postgres temporal tables (pg_temporal / period-aware tables)
+### 4. Postgres temporal tables / SQL:2011
 
 System-period temporal tables (SQL:2011-style) automatically maintain history.
 
-- **Pros**: standardized; queries via FOR SYSTEM_TIME AS OF.
-- **Cons**: less explicit actor context; tooling varies.
+- **PostgreSQL 18 status (2026-05)**: built-in `PRIMARY KEY ... WITHOUT OVERLAPS` and `FOREIGN KEY ... PERIOD` cover **application-time / valid-time**. **System-time / transaction-time** (`FOR SYSTEM_TIME AS OF`) is **not yet built in** — community proposals are in review for PG 19. Today, approximate with a `recorded_at` / `invalidated_at` pair plus an append-only audit table.
+- **Pros**: standards-aligned; valid-time uniqueness no longer needs `EXCLUDE USING gist`.
+- **Cons**: less explicit actor context; transaction-time half still DIY.
 
 ### Selection matrix
 
@@ -153,21 +154,46 @@ WORM (Write-Once-Read-Many) options:
 - GCS Bucket Lock.
 - Postgres partitioning + revoke modify on closed partitions + tape/cold storage.
 
-## Tamper Evidence (Hash Chain)
+## Tamper Evidence (Hash Chain / Merkle Tree)
 
-For high-trust contexts (financial, healthcare):
+For high-trust contexts (financial, healthcare, government, KYC) the 2026 baseline is:
+
+### Linear HMAC chain (simplest)
 
 ```
-row_hash_n = HMAC(secret, canonicalize(row_n))
+row_hash_n  = HMAC(secret, canonicalize(row_n))
 prev_hash_n = HMAC(secret, row_hash_{n-1})
 
 -- Verification: walk the chain, recompute, compare.
 ```
 
-External anchoring: periodically commit the latest row_hash to:
-- Public blockchain (heavy).
-- Trusted timestamping authority (RFC 3161).
-- Cross-region S3 Object Lock.
+- Pros: cheap to compute, append-only friendly.
+- Cons: O(N) verification; one-row corruption forces full re-verify.
+
+### Merkle tree per partition (current best practice for high-volume audit logs)
+
+Bucket rows by partition (daily / hourly), compute a Merkle root per bucket, store the root in a separate immutable `audit_merkle_roots` table.
+
+```sql
+CREATE TABLE audit_merkle_roots (
+  bucket_start TIMESTAMPTZ PRIMARY KEY,
+  root_hash    BYTEA       NOT NULL,
+  leaf_count   BIGINT      NOT NULL,
+  anchored_at  TIMESTAMPTZ,
+  anchor_ref   TEXT       -- TSA token / S3 Object Lock id / chain tx hash
+);
+```
+
+- O(log N) verification for any single row.
+- A corrupted row invalidates only the affected leaf path, not the whole log.
+- Common pattern in 2025–2026 fintech / KYC stacks; aligns with how AWS QLDB (deprecated 2024-07; AWS recommends Aurora PostgreSQL with verifiable hash chains as the replacement) modelled the journal.
+
+### External anchoring (independent third party)
+
+Periodically (hourly / daily) commit the latest root hash to:
+- **RFC 3161 Time-Stamp Authority** — lightweight, accepted by most regulators (eIDAS in EU, JIPDEC in JP).
+- **S3 Object Lock (Compliance mode)** cross-region copies — same provider but enforced retention.
+- **Public blockchain anchoring** (e.g., OpenTimestamps over Bitcoin) — heavy but maximum independence; usually reserved for KYC/AML systems.
 
 ## PII Handling
 

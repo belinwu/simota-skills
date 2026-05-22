@@ -281,6 +281,31 @@ When `event-sourcing` completes, emit:
 - **Operational** rules (privileges, archive, backup).
 - **Handoffs**: weave, stream, gateway, shard, builder.
 
+## Dedicated Event Stores (2026-05 landscape)
+
+When a Postgres `events` table outgrows OLTP — typically > 100 M events/aggregate-type or > 50 K events/s sustained — consider a purpose-built event store. Schema design implications differ from the Postgres recipe above.
+
+| Engine | Status (2026-05) | Schema model | Notes |
+|--------|------------------|--------------|-------|
+| **KurrentDB** (formerly EventStoreDB) | Rebranded Dec 2024 alongside Event Store → Kurrent (+ $12 M raise). Current major: KurrentDB 26 (late-2024 / 2025) | Streams (one per aggregate) with global position; gRPC client | KurrentDB 26 added native Kafka source connector and a Relational Sink (auto-projects to Postgres / SQL Server) — narrows the projection-layer custom code. |
+| **Marten** (.NET on Postgres) | v7 GA early-2024; v8 active in 2026 | Postgres `mt_events` table + projection tables; uses PG 12+ SQL/JSON | v7: renamed `aggregation` → `projection`, `SelfAggregate` → `Snapshot` + `LiveStreamAggregation`. Built-in Polly resiliency replaces `IRetryPolicy`. Document-by-identity tracking in async projections. Continues to be the canonical "event store on Postgres" for .NET. |
+| **Axon Server** | 2026.x | JPA-style aggregate stream | Java-only; tight Spring integration. |
+| **Postgres + outbox/CDC** | Baseline | DIY (see schema above) | Default for non-.NET, modest scale. Use Debezium for CDC, or pgvector-style direct projections. |
+
+### Migration notes if switching engines
+
+- **Domain event payload schema is portable** — JSON metadata and `event_type` strings travel cleanly. Aggregate-id format and stream-name conventions usually need a mapping function.
+- **Optimistic-concurrency model differs**: Postgres uses UNIQUE(aggregate, version); KurrentDB uses `expectedRevision`; Marten exposes both. Keep the abstraction in the application layer.
+- **Snapshots are tool-specific** — plan a re-snapshot job at migration time.
+
+### "Domain events vs. integration events" reminder (2025–2026 discourse)
+
+The current convention separates:
+- **Domain events** — past-tense facts inside an aggregate; payload is intent-only and bounded to the domain language. Stored in the event store.
+- **Integration events** — what gets published outside the bounded context via outbox/CDC; can be a transformed projection of one or many domain events.
+
+Schema design rule: never publish raw domain events on the message bus. Wrap or project to an integration-event shape on the outbox row.
+
 ## References
 
 - Greg Young — *Event Sourcing* (canonical talks, CQRS Documents)
@@ -288,8 +313,8 @@ When `event-sourcing` completes, emit:
 - Vaughn Vernon — *Implementing Domain-Driven Design*
 - Eric Evans — *Domain-Driven Design*
 - Chris Richardson — *Microservices Patterns* (saga, outbox, event-driven)
-- EventStoreDB — purpose-built event database
-- Postgres + Marten — embedded event store on Postgres
+- Kurrent / KurrentDB (kurrent.io) — formerly EventStoreDB; rebranded December 2024
+- Marten (martendb.io) — embedded event store on Postgres for .NET; v7 (2024), v8 (2026)
 - Axon Framework — Java event-sourcing toolkit
 - Debezium — CDC for outbox/event publishing
 - Pat Helland — *Immutability Changes Everything*

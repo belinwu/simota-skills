@@ -82,18 +82,22 @@ CREATE TABLE projection_checkpoints (
 
 ## pgvector / AI Schema Extensions
 
+> **2026-05 baseline:** pgvector 0.8.0 (released October 2024) is the current widely-deployed line; available on Amazon Aurora PostgreSQL, Neon, Tiger Data, Nile, and self-hosted Postgres 18. Key new capability: iterative index scans for filtered queries.
+
 ### Document Embeddings Table
 
 ```sql
 -- Requires: CREATE EXTENSION vector;
+-- On PostgreSQL 18 prefer uuidv7() for the row id when downstream consumers
+-- want time-ordered insertion.
 CREATE TABLE document_embeddings (
-  id              BIGINT      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  id              UUID        PRIMARY KEY DEFAULT uuidv7(),
   source_id       UUID        NOT NULL,
   source_type     TEXT        NOT NULL,  -- 'article', 'product', 'support_ticket'
   chunk_index     INT         NOT NULL DEFAULT 0,
   content         TEXT        NOT NULL,
-  embedding       vector(1536),          -- OpenAI text-embedding-3-small dimension
-  model_version   TEXT        NOT NULL,
+  embedding       halfvec(1536),         -- pgvector 0.8 halfvec — 50% the storage of vector
+  embedding_model TEXT        NOT NULL,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
   metadata        JSONB       NOT NULL DEFAULT '{}'
 );
@@ -141,11 +145,13 @@ LIMIT 20;
 
 ### Design Rules
 
-1. Store the `model_version` so embeddings can be invalidated and regenerated when the model changes.
-2. Use `chunk_index` to track position within a document when chunking long text.
-3. Choose `vector_cosine_ops` for normalized embeddings (OpenAI, Cohere); use `vector_l2_ops` for unnormalized embeddings.
+1. Store the `embedding_model` (provider + name + version) so embeddings can be invalidated and regenerated when the model changes — a model swap requires re-embedding all rows.
+2. Use `chunk_index` to track position within a document when chunking long text; consider `document_id + chunk_index` UNIQUE for idempotent re-ingest.
+3. Choose `vector_cosine_ops` for normalized embeddings (OpenAI text-embedding-3-*, Cohere, most sentence-transformers); use `vector_l2_ops` for unnormalized embeddings; `vector_ip_ops` (inner product) for some specialised models.
 4. Add a GIN index on `metadata` if filtering by metadata fields is frequent.
-5. On pgvector 0.8+, enable iterative index scans (`SET hnsw.iterative_scan = relaxed_order`) for filtered queries — prevents under-fetching when prefilters are highly selective. Use `strict_order` when exact distance ordering is required; `relaxed_order` for better performance with approximate ordering.
+5. **pgvector 0.8.0 iterative scans** (released Oct 2024): set `hnsw.iterative_scan = relaxed_order` (or `strict_order` when exact distance ordering matters) at the session/role level for WHERE-filtered KNN queries. Bound the work with `hnsw.max_scan_tuples` and tune `hnsw.scan_mem_multiplier` for highly-selective prefilters. Before 0.8, post-filter under-fetch was the #1 RAG quality bug.
+6. **halfvec** halves storage (float16) with negligible recall loss for most workloads and lifts the HNSW 2 000-dimension ceiling for `vector` — required for embeddings > 2 000 dims (e.g., Cohere embed-v3 4 096).
+7. Combine with structured prefilters (`tenant_id`, `language`, `source_type`) for order-of-magnitude latency gains over pure KNN; pgvector 0.8's improved planner statistics now make `WHERE tenant_id = $1 ORDER BY embedding <=> $2 LIMIT 20` plan correctly without query hints in most cases.
 
 ---
 
@@ -155,30 +161,41 @@ Bitemporal tables track two time axes independently:
 - **Valid time** (`valid_from` / `valid_to`): when the fact was true in the real world.
 - **Transaction time** (`recorded_at` / `invalidated_at`): when the database recorded the fact.
 
-### Employee Contracts (Bitemporal)
+### Employee Contracts (Bitemporal) — PostgreSQL 18 idiom
 
 ```sql
+-- PostgreSQL 18 ships SQL:2011 temporal PKs (WITHOUT OVERLAPS) and FKs (PERIOD).
+-- The valid-time uniqueness no longer needs a hand-rolled GiST exclusion constraint.
 CREATE TABLE employee_contracts (
-  id                BIGINT      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  employee_id       UUID        NOT NULL,
-  role              TEXT        NOT NULL,
+  id                UUID         PRIMARY KEY DEFAULT uuidv7(),
+  employee_id       UUID         NOT NULL,
+  role              TEXT         NOT NULL,
   salary            NUMERIC(10,2) NOT NULL,
   -- Valid time (business reality)
-  valid_from        DATE        NOT NULL,
-  valid_to          DATE        NOT NULL DEFAULT 'infinity',
+  valid_period      daterange    NOT NULL,
   -- Transaction time (audit trail)
-  recorded_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
-  invalidated_at    TIMESTAMPTZ NOT NULL DEFAULT 'infinity',
-  recorded_by       UUID        NOT NULL,
-  CONSTRAINT no_valid_overlap EXCLUDE USING gist (
-    employee_id WITH =,
-    daterange(valid_from, valid_to, '[)') WITH &&
-  ) WHERE (invalidated_at = 'infinity')
+  recorded_at       TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  invalidated_at    TIMESTAMPTZ  NOT NULL DEFAULT 'infinity',
+  recorded_by       UUID         NOT NULL,
+  -- PG 18: temporal PK rejects overlapping valid-time ranges per employee.
+  UNIQUE (employee_id, valid_period WITHOUT OVERLAPS)
 );
 
 CREATE INDEX idx_contracts_employee_valid
-  ON employee_contracts(employee_id, valid_from, valid_to)
+  ON employee_contracts (employee_id, valid_period)
   WHERE invalidated_at = 'infinity';
+```
+
+### Pre-PG-18 (PostgreSQL ≤ 17) fallback
+
+If your cluster is still on PG 17 or earlier, keep the `EXCLUDE USING gist` form below — it remains the only in-database way to enforce non-overlap.
+
+```sql
+ALTER TABLE employee_contracts
+  ADD CONSTRAINT no_valid_overlap EXCLUDE USING gist (
+    employee_id WITH =,
+    daterange(valid_from, valid_to, '[)') WITH &&
+  ) WHERE (invalidated_at = 'infinity');
 ```
 
 ### Bitemporal vs SCD Type 2

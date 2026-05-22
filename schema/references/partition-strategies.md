@@ -78,7 +78,8 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT ... FROM orders WHERE ...;
 ### Auto-create future partitions
 
 ```sql
--- pg_partman (recommended for Postgres)
+-- pg_partman 5.x (recommended for Postgres 14+)
+-- 5.0+ supports only declarative partitioning; trigger-based partitioning is removed.
 SELECT partman.create_parent(
   p_parent_table => 'public.events',
   p_control => 'created_at',
@@ -86,9 +87,15 @@ SELECT partman.create_parent(
   p_interval => '1 month',
   p_premake => 3   -- 3 months ahead
 );
+
+-- pg_partman 5.2.4+ supports UUIDv7 as partition key (and any text column
+-- decodable to a time value); pair with PostgreSQL 18 uuidv7() to combine
+-- the K-sortable PK and the partition key.
 ```
 
 Pattern without pg_partman: cron job runs daily to create next partition.
+
+**PostgreSQL 18 note:** pg_partman manages `UNLOGGED` via its template table because PG 18 removed the ability to set the `UNLOGGED` flag on a partition-set parent.
 
 ### Auto-drop old partitions
 
@@ -234,10 +241,20 @@ Per-partition target size: 10 GB – 100 GB for OLAP, 1 GB – 10 GB for OLTP.
 - Assuming global indexes — each partition has its own index, maintenance cost is per-partition
 - Forgetting VACUUM/ANALYZE on new partitions
 
+## Partitioning vs Time-Series Engines (2026-05)
+
+When the partition key is time and the workload is read-heavy analytics on append-only data, a dedicated time-series engine may outperform plain Postgres partitioning.
+
+| Option | When to choose | Schema implications |
+|--------|----------------|---------------------|
+| Native Postgres 18 partitioning + pg_partman 5.2.x | OLTP with retention; modest analytic load; want vanilla Postgres | Range by time; hash-by-tenant nested if multi-tenant |
+| Tiger Data (TimescaleDB rebrand, 2025-06-17) **Hypercore** | Time-series analytics — hybrid row/columnar storage with `add_columnstore_policy` automating row→column conversion on aged chunks | Hypertables auto-partition on first timestamp column; v2.23+ supports partitioning on UUIDv7 columns directly |
+| Citus 13 (Feb 2025, PG 17.2 base) distributed tables | Need horizontal scale beyond a single Postgres node | `create_distributed_table` with shard key = `tenant_id`; reference tables for shared dimensions; `MERGE` distributed-execution supported in 13 |
+
 ## Handoffs
 
 - **Schema → Tuner**: verify pruning via EXPLAIN after partitioning
 - **Schema → Gear**: add pg_partman cron or maintenance script
-- **Schema → Shard**: composite (hash-in-range) migrates naturally to sharded cluster
+- **Schema → Shard**: composite (hash-in-range) migrates naturally to sharded cluster (Citus 13 distributed tables, Aurora DSQL, Spanner)
 - **Schema → Beacon**: alert on partition creation failure, disk growth per-partition
 - **Schema → Stream**: time-based partitions align with ETL date-keyed pipelines

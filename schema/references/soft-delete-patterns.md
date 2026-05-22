@@ -110,11 +110,11 @@ The most common bug: forgot to filter, exposed deleted rows.
 
 Belt-and-suspenders: combine RLS + view for defense in depth.
 
-## GDPR Right-to-Erasure
+## GDPR Right-to-Erasure (2026-05 stance)
 
-Soft delete preserves PII. GDPR Article 17 may require actual erasure.
+Soft delete preserves PII. GDPR Article 17 (right to erasure) generally requires actual erasure within one month of a valid request — the soft-delete-only model is **not compliant** for production EU/UK data. Combine soft-delete-for-UX with a scheduled hard-erasure pathway. The same posture applies under CCPA/CPRA "right to delete" (15-day acknowledge + 45-day fulfil) and Japan's APPI consent-withdrawal requests.
 
-### Two-stage pathway
+### Three-stage pathway
 
 ```
 SOFT DELETE  →  scrub PII fields  →  HARD DELETE (after retention period)
@@ -123,11 +123,18 @@ SOFT DELETE  →  scrub PII fields  →  HARD DELETE (after retention period)
 ```
 
 Steps:
-1. **Soft delete** with `deleted_at` set.
-2. **PII scrub**: replace name, email, phone, address with placeholders (`[redacted]` or null).
-3. **Audit log**: record erasure (subject_id_hash, requested_at, completed_at) — no PII.
-4. **Hard delete**: after retention compliance period (financial records often 7 years).
-5. **Cascading erasure**: linked tables (sessions, comments, etc.) receive same treatment.
+1. **Soft delete** with `deleted_at` set; row is invisible to the application but still recoverable for accidental-delete UX.
+2. **PII scrub**: replace name, email, phone, address, IP with placeholders (`[redacted]` or null). Triggers downstream cache/search-index invalidation.
+3. **Audit log**: record erasure (`subject_id_hash`, `requested_at`, `completed_at`, legal basis) — no PII.
+4. **Hard delete**: after the retention-compliance overlap (financial records often 7 years; consent-withdrawal-only data should hard-delete within 30 days of the scrub).
+5. **Cascading erasure**: linked tables (sessions, comments, audit log payloads with PII, embeddings, backups, search index, BI warehouse) receive the same treatment — coordinate via Cloak.
+
+### Common 2026 violation patterns
+
+- "We soft-deleted; that satisfies GDPR" — no, PII still exists.
+- Embeddings (pgvector) of user content not scrubbed — text reconstructable from embeddings under some models; treat embeddings as PII derivatives.
+- Backups untouched — document that PITR/backup retention is the legitimate-interest exception under Art. 17(3)(b), with a documented expiry window.
+- Audit logs still hold PII after scrub — store only `subject_id_hash` going forward; rewrite historical audit rows with a one-shot scrub job.
 
 ### Subject ID continuity
 

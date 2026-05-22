@@ -1,6 +1,6 @@
 # Migration Patterns
 
-Purpose: Use this file when planning safe schema changes, rollback, or framework-specific migration commands.
+Purpose: Use this file when planning safe schema changes, rollback, or framework-specific migration commands. Tool baseline: 2026-05.
 
 Contents:
 1. Safe change decision tree
@@ -8,6 +8,7 @@ Contents:
 3. Zero-downtime index creation
 4. Framework commands
 5. Pre-migration checklist
+6. Zero-downtime DDL toolchain (Atlas / pgroll / Squawk / Strong Migrations / pg-osc / gh-ost)
 
 ## Safe Change Decision Tree
 
@@ -55,10 +56,14 @@ ALTER TABLE t
 
 | Framework | Create | Run | Rollback |
 |-----------|--------|-----|----------|
-| Prisma | `prisma migrate dev --name [name]` | `prisma migrate deploy` | Manual |
+| Prisma 7 | `prisma migrate dev --name [name]` | `prisma migrate deploy` | `prisma migrate resolve --rolled-back` |
 | TypeORM | `typeorm migration:generate -n [Name]` | `typeorm migration:run` | `typeorm migration:revert` |
-| Drizzle | `drizzle-kit generate:pg` | `drizzle-kit push:pg` | Manual |
+| Drizzle | `drizzle-kit generate` | `drizzle-kit migrate` | Manual (write reverse migration) |
 | Knex | `knex migrate:make [name]` | `knex migrate:latest` | `knex migrate:rollback` |
+| Alembic | `alembic revision --autogenerate -m "name"` | `alembic upgrade head` | `alembic downgrade -1` |
+| Liquibase 5 | changeset YAML/SQL | `liquibase update` | `liquibase rollbackCount 1` (AI-generated rollback assistance since 5.0, Sep 2025) |
+| Atlas v1 | `atlas migrate diff` | `atlas migrate apply` | `atlas migrate down` (declarative, HCL/SQL/ORM source) |
+| pgroll | `pgroll start <migration>` | `pgroll complete` | `pgroll rollback` (zero-downtime, dual-schema views) |
 
 ## Pre-Migration Checklist
 
@@ -156,3 +161,27 @@ Shadow tables allow zero-downtime schema changes on high-traffic tables by build
    ```sql
    DROP TABLE orders_old;
    ```
+
+---
+
+## Zero-Downtime DDL Toolchain (2026-05)
+
+The shadow-table / expand-contract dance is mechanical; reach for tools instead of hand-rolling it. Pick by ecosystem and risk profile.
+
+| Tool | Engine | Strategy | When to pick |
+|------|--------|----------|-------------|
+| **pgroll** (Xata) | Postgres | Dual-schema views; both old and new schema visible during rollout | Postgres app needs JSON-described migrations with explicit `pgroll start` / `pgroll complete` / `pgroll rollback` phases. Underpins Xata's web UI. |
+| **Atlas v1.0** (Ariga, Dec 2025 GA) | Postgres / MySQL / Spanner / Snowflake / ClickHouse / etc. | Declarative HCL/SQL/ORM source → diff → migration plan; canary/parallel rollouts; deployment traces | Multi-engine fleets, schema-as-code review workflows, ORM (GORM / Sequelize / Prisma) source-of-truth. |
+| **pg-osc** (shayonj) | Postgres | Trigger-based shadow table + audit-table swap | Postgres `ALTER TABLE TYPE` on > 50 GB table where `ALTER TABLE ... ALTER COLUMN ... TYPE` would hold `ACCESS EXCLUSIVE` too long. |
+| **gh-ost** (GitHub) | MySQL | Triggerless; tails binlog (requires RBR), builds ghost table, replays binlog onto ghost, atomic swap | MySQL with heavy write load where pt-osc's trigger overhead is unacceptable. Not resumable. |
+| **pt-online-schema-change** (Percona) | MySQL / MariaDB | Trigger-based; synchronous writes to ghost during copy | MySQL with `--resume` requirement (gh-ost can't resume); known/predictable trigger load. |
+| **Squawk** | Postgres (lint only) | Static analysis of migration SQL: flags `ALTER TABLE ... ADD COLUMN NOT NULL`, `CREATE INDEX` without `CONCURRENTLY`, unsafe type changes, etc. | Pre-commit hook + CI gate for every Postgres migration. Combine with the toolchain above for runtime safety. |
+| **Strong Migrations** (Ankane) | Rails / ActiveRecord (Postgres / MySQL / MariaDB) | Rails-aware static lint; educates with safer rewrite per detected anti-pattern; long migration `statement_timeout` separate from app | Rails repos — the gem of record; require `safety_assured { ... }` to bypass intentionally. |
+| **Bytebase 3.16** (Mar 2026) | Postgres / MySQL / Oracle / Spanner / SQL Server / etc. | Web UI + GitOps approval; DBA review queue; environment-staged rollout | Org-wide change-management with role-based approval (DBA gate before prod). |
+| **Liquibase 5.0** (Sep 2025) | Multi-engine | YAML/XML/SQL changesets; AI-generated rollback assistance | Java-heavy stacks and orgs already invested in Liquibase changelog format. |
+
+**Decision rules:**
+- Default to the framework migration tool (Alembic / TypeORM / Knex / ActiveRecord). Add Squawk in CI for Postgres or Strong Migrations for Rails — both are nearly free.
+- Add pgroll or Atlas when you need true dual-schema coexistence (different application versions reading/writing different shapes simultaneously).
+- pg-osc / gh-ost / pt-osc are for the single-table type-change problem, not whole-schema migrations.
+- Bytebase or Liquibase is the right answer only when org-wide approval workflow trumps tool-of-the-ecosystem.
