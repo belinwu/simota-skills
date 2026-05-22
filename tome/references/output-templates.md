@@ -134,7 +134,23 @@ Lightweight format focused on terminology:
 
 ## Decision Record Template
 
-ADR (Architecture Decision Record) style:
+Tome supports three ADR formats. Pick by decision weight, not by team preference — small reversible decisions in MADR-full waste reviewer attention; large architecture moves in Y-statement under-document the trade-offs.
+
+### Format selection
+
+| Format | When to use | Source |
+|--------|-------------|--------|
+| **Y-statement** (one-sentence) | Reversible decision whose rationale fits one sentence; can be written in ~90 seconds | adr.github.io/adr-templates — Y-statement |
+| **Nygard** (Context/Decision/Consequences) | Classic short ADR; ~1 page; default for most teams | Michael Nygard 2011 — Documenting Architecture Decisions |
+| **MADR 4.0.0** (full) | Multi-option weighing with explicit pros/cons; needs `Confirmation` step (how the decision is validated) | adr.github.io/madr — MADR 4.0.0 released Sept 2024 |
+
+### Y-statement (lightweight default)
+
+> In the context of `<use case / system component>`, facing `<concern / requirement>`, we decided for `<option>` and against `<rejected alternatives>`, to achieve `<benefits>`, accepting `<downsides / trade-offs>`.
+
+One sentence. Store inline in code, in a wiki page, or as an ADR file. Pair with Nygard/MADR for decisions large enough to need full Context and Pros/Cons sections — Y-statement is the default, not the only option. [Source: medium.com/olzzio — Y-statements by Olaf Zimmermann]
+
+### Nygard short ADR
 
 ```markdown
 # ADR-[number]: [Decision Title]
@@ -145,16 +161,6 @@ ADR (Architecture Decision Record) style:
 ## Context
 [Background and situation requiring the decision]
 
-## Options Considered
-
-### Option 1: [Name]
-- **Pros:** [Advantages]
-- **Cons:** [Disadvantages]
-
-### Option 2: [Name]
-- **Pros:** [Advantages]
-- **Cons:** [Disadvantages]
-
 ## Decision
 [Chosen option and rationale]
 
@@ -164,6 +170,62 @@ ADR (Architecture Decision Record) style:
 ## Related Commits
 - [commit hash]: [description]
 ```
+
+### MADR 4.0.0 full template
+
+MADR 4.0.0 (released Sept 2024, current as of 2026-05) is the maintained successor to MADR 3.x. Key changes vs 3.x: `Validation` renamed to `Confirmation` and nested under `Decision Outcome`; `Deciders` renamed to `Decision Maker(s)`. [Source: github.com/adr/madr/releases — MADR 4.0.0]
+
+```markdown
+---
+# These are optional metadata elements. Feel free to remove any of them.
+status: "{proposed | rejected | accepted | deprecated | superseded by ADR-NNN}"
+date: YYYY-MM-DD
+decision-makers: [list of everyone involved in the decision]
+consulted: [list of people whose opinions were sought; two-way communication]
+informed: [list of people kept up-to-date; one-way communication]
+---
+
+# [short title, representative of solved problem and found solution]
+
+## Context and Problem Statement
+[Describe the context and problem statement in 2-3 sentences. You may want to articulate the problem as a question and add links to collaboration boards or tickets.]
+
+## Decision Drivers
+- [driver 1, e.g., a force, facing concern, ...]
+- [driver 2, ...]
+
+## Considered Options
+- [option 1]
+- [option 2]
+- [option 3]
+
+## Decision Outcome
+Chosen option: "[option N]", because [justification — addresses a decision driver | resolves a force | comes out best (see Pros and Cons of the Options below)].
+
+### Consequences
+- Good, because [positive consequence, e.g., improvement of one or more desired qualities]
+- Bad, because [negative consequence, e.g., compromising one or more desired qualities]
+
+### Confirmation
+[How will the implementation of this ADR be confirmed? E.g. by review, by ArchUnit test, by automated check in CI.]
+
+## Pros and Cons of the Options
+
+### [option 1]
+- Good, because [argument a]
+- Good, because [argument b]
+- Neutral, because [argument c]
+- Bad, because [argument d]
+
+### [option 2]
+- Good, because [argument a]
+- Bad, because [argument b]
+
+## More Information
+[Links, related ADRs (`Supersedes: ADR-NNN` / `Superseded-by: ADR-MMM`), related commits.]
+```
+
+> **Supersession rule:** when an Accepted ADR must change, write a NEW ADR that supersedes it and link both directions. Never edit the accepted original — preserving the reasoning trail is the point. [Source: adr.github.io; AWS Prescriptive Guidance — ADR process]
 
 ---
 

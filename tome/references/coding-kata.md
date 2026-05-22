@@ -72,6 +72,22 @@ Gate progression on completion within time-box, not subjective satisfaction. Rep
 
 Cite the source kata when adapting; do not present folklore as new.
 
+## Platform Landscape (2026)
+
+Match the platform to the practice goal, not vice versa. As of 2026-05:
+
+| Platform | 2026 strength | Best for |
+|----------|---------------|----------|
+| **Exercism** | 82 language tracks with mentored feedback (free, volunteer mentors) | Language fluency, paradigm-shift katas, getting external feedback |
+| **Codewars** | 67 language challenges, gamified; 2026 roadmap announced platform upgrades and AI partnerships | Daily repetition, ranking-driven practice, language switching |
+| **LeetCode / HackerRank** | Interview-style problems | Interview prep — not deliberate-practice katas |
+| **Frontend Mentor** | Frontend project briefs (HTML/CSS/JS/React) | UI kata, visual-design constraints |
+| **Scrimba** | Practice-while-learning, integrated editor | Tutorial-driven warmup before kata work |
+
+[Source: scrimba.com/articles — Best Coding Practice Platforms 2026; algocademy.com — 7 Best Coding Kata Sites]
+
+**Trend signal:** consistency over intensity remains the dominant 2026 advice — daily short sessions outperform weekly marathons. Pair facilitation guidance with a platform that supports the constraint you want to train (e.g., Exercism's mentor channel for "code-as-message" katas where written explanation is part of the practice).
+
 ## Pair vs Solo vs Group
 
 | Mode | Strength | Watch out for |

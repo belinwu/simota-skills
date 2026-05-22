@@ -188,3 +188,14 @@ SECURITY_ANALYSIS:
 ## Combining Patterns
 
 When a change matches multiple patterns, select one primary pattern (based on main intent) and add secondary patterns as supplements. Connect them via Learning Points that explain how the patterns interact.
+
+---
+
+## AI-Assisted Diff Explanation (2026 baseline)
+
+Treat AI assistants as a drafting tool, not the source of truth. Always read the actual diff first, then use the assistant to surface missed angles. As of 2026:
+
+- **GitHub Copilot Chat on PRs** now includes comments, file changes, commits, and reviews as context, and can be invoked directly from a diff to walk through changes. Useful for first-pass extraction of intent before applying the 5W1H+WhyNot framework. [Source: github.blog/changelog 2026-04-23 — Copilot Chat improvements for pull requests]
+- **Copilot's March 2026 agentic code-review** rewrite moved from shallow line-by-line analysis to tool-calling that reads related files and traces cross-file dependencies. Pair the agent's findings with Tome's `Why Not` section to capture rejected alternatives the agent will not infer. [Source: github.blog/changelog 2026-03 — agentic code review]
+- **Adoption vs trust gap.** Stack Overflow's 2025 Developer Survey reports 84% of developers use or plan to use AI tools, but only 29% trust them, and 66% cite "almost-right-but-not-quite" output as the biggest frustration. Tome's `[Inference: evidence]` labelling is the explicit hedge for this gap — never copy AI-generated rationale unverified. [Source: stackoverflow.blog 2025-12-29 — 2025 Developer Survey; survey.stackoverflow.co/2025/ai]
+- **Workflow guardrail.** When AI drafts a learning doc, run the Tome Quality Scorecard against it before delivery — unverified AI claims default to `C` on the Fact/Inference Ratio axis until they are either cited or marked as inference.
