@@ -153,6 +153,8 @@ Agent disambiguation → `references/agent-disambiguation.md`
 | Proactive | `proactive` | | /Nexus with no arguments, project state scan | Scan project → recommend |
 | Apex | `apex` | | Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → ship. With no-args, also runs Phase 0 to **autonomously discover the goal** before Phase 1. For high-stakes new features with cross-team impact. | (Phase 0: project_scan + spark + rank + voice/pulse/compete/sage/magi as available, when no goal supplied) → Discovery (plea+researcher+echo?) → Ideate (riff) → Verdict (magi) → Spec (accord+void?+scribe?) → Design [Tech (atlas+gateway?+schema?) ‖ UX (vision sub-orchestrates muse+palette+prose+flow?+frame?+forge+echo)] → Risk Gate (omen+ripple+echo) → Loop (orbit drives builder+artisan?+showcase?+judge+radar+voyager?) → Ship (guardian+launch) |
 | Goal Setup | `goal` | | `/goal` autonomous long-running execution setup helper (Claude Code v2.1.139+ / Codex CLI experimental). Detects platform, classifies use case (ci-headless / long-dev / parallel-experiment / safe-bounded), audits current config, designs hooks, drafts context docs, and outputs a tailored launch command. | Hone[audit] → Latch[hooks] → Scribe?[CLAUDE.md or AGENTS.md] → DELIVER(launch recipe) |
+| Essential | `essential` | | Must-have feature discovery: identify the minimum feature set without which the product cannot exist. Subtraction-oriented (MVP definition, core feature identification, over-engineering elimination). | Plea → Spark → Magi → Rank |
+| Killer | `killer` | | Killer feature discovery: identify decisive differentiators that win the market. Addition-and-leap-oriented (competitive gaps, WOW experience, market-winning features). | Compete → Flux → Plea → Spark → Magi |
 
 ## Subcommand Dispatch
 
@@ -171,6 +173,8 @@ Execution-control Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) is applie
 - `proactive`: Follow `references/proactive-mode.md` to scan project state and recommend next actions.
 - `apex`: Full-cycle auto-implementation across 6 sequential phases (Discovery → Ideate → Verdict → Spec → Design+Risk Gate → Implement Loop → Ship) with parallel Tech/UX sub-tracks in Phase 5. Vision sub-orchestrates UX (Muse/Palette/Prose/Flow/Frame/Forge/Echo) on Claude Code. **Orbit sub-orchestrates the implementation loop on Codex CLI (fixed engine — `spawn_agent`/`wait_agent`)**, driving Builder/Artisan/Showcase/Judge/Radar/Voyager. Risk Gate is tri-axis (Omen + Ripple + Echo). With no-args, Phase 0 autonomously discovers the goal before Phase 1. Read `references/apex-recipe.md` for phase contracts, conditional inclusion rules, sub-orchestration topology, engine boundary semantics, and AUTORUN chain template. **Prerequisite**: Codex CLI must be reachable with `agents.max_depth ≥ 2` before Phase 6; otherwise Orbit fails the handoff. **Confirm with user before launch — Apex spawns 8-25 agents and is high-cost.**
 - `goal`: `/goal` autonomous long-running execution setup helper. Detects target platform (`~/.claude/` → Claude Code v2.1.139+, `~/.codex/` → Codex CLI experimental `[features] goals = true`, both → ask user). Classifies use case (ci-headless / long-dev / parallel-experiment / safe-bounded — default `safe-bounded` if unspecified). Chain: Hone audits current config and proposes Before/After diff → Latch designs Stop/PostToolUse hooks for completion verification and notifications → Scribe drafts CLAUDE.md or AGENTS.md additions when missing → DELIVER outputs the launch command and verification checklist. Read `references/goal-recipe.md` for phase contracts, use-case templates, hook templates, and launch command recipes. Lightweight: 1-3 agents, 2-4 min wall time. No code execution — produces configuration recommendations the user applies.
+- `essential`: Plea[pain-extraction] → Spark[spec] → Magi[necessity-arbitration] → Rank[MoSCoW-must] chain. Subtraction-oriented — Magi's Sophia perspective filters out "Should-have" features posing as "Must-have". Failure mode prevented: over-engineering. Output: Must-have feature list with rationale. +Void for aggressive scope cut, +Accord for atomic-unit specs. Use for MVP definition, pre-PMF core feature identification, or scope reduction.
+- `killer`: Compete[gap-analysis] → Flux[reframe] → Plea[latent-needs] → Spark[differentiation-spec] → Magi[strategic-go-no-go] chain. Addition-and-leap-oriented — Flux breaks conventional thinking and Compete filters out already-existing ideas. Failure mode prevented: mundane or already-shipped proposals. Output: Killer feature spec with strategic verdict. +Riff for iterative deep-dive, +Researcher for market trend grounding. Use for growth-phase differentiation, competitive response, or WOW-experience design.
 
 ## Workflow
 
@@ -249,24 +253,24 @@ Agent(
   mode: bypassPermissions
   model: [sonnet|opus|haiku]
   prompt: |
-    あなたは [AgentName] エージェントです。
-    まず ~/.claude/skills/[agent]/SKILL.md を読み、その指示に従ってください。
+    You are the [AgentName] agent.
+    First, read ~/.claude/skills/[agent]/SKILL.md and follow its instructions.
 
-    Recipe: [recipe-name or auto]               # P-REC: サブコマンド指定 / auto-triage
-    タスク: [task_description]
-    前ステップからのコンテキスト: [handoff_context]
-    制約: [constraints]
-    受入基準: [acceptance_criteria]            # P1: front-loaded
-    出力長エンベロープ: [length_envelope]       # P2: 例 "Output は 5-10 行以内"
-    ツール使用方針: [tool_use_directive]        # P3: 例 "対象ファイル全件を先読み" / "設計確定まで読み込み禁止"
-    思考方針: [thinking_directive]              # P5: 高ステーク "step-by-step に熟考" / 高速 "速度優先"
+    Recipe: [recipe-name or auto]               # P-REC: subcommand-specified / auto-triage
+    Task: [task_description]
+    Context from previous step: [handoff_context]
+    Constraints: [constraints]
+    Acceptance criteria: [acceptance_criteria]  # P1: front-loaded
+    Output length envelope: [length_envelope]   # P2: e.g. "Output must be 5-10 lines"
+    Tool-use directive: [tool_use_directive]    # P3: e.g. "Pre-read all target files" / "No reads until design is fixed"
+    Thinking directive: [thinking_directive]    # P5: high-stakes "deliberate step-by-step" / fast "prioritize speed"
 
-    完了時、以下のフォーマットで結果を出力してください:
+    On completion, emit the result in the following format:
     _STEP_COMPLETE:
       Agent: [AgentName]
       Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-      Output: [成果物 — 上記エンベロープを厳守]
-      Next: [推奨次エージェント or DONE]
+      Output: [deliverable — strictly within the envelope above]
+      Next: [recommended next agent or DONE]
 )
 ```
 
@@ -310,9 +314,11 @@ Detailed execution flows: `references/execution-phases.md`, `references/orchestr
 | `optimize`, `slow`, `performance` | Performance optimization chain | Performance improvement | `references/routing-matrix.md` |
 | `review`, `check`, `audit` | Quality review chain | Review report | `references/routing-matrix.md` |
 | `design system docs`, `token docs`, `component catalog` | Design system documentation chain | Token + catalog + diagrams + API docs | `references/routing-matrix.md` |
-| `brainstorm`, `bounce ideas`, `riff`, `壁打ち`, `アイデア` | Interactive brainstorming session | Session summary with insights | `references/routing-matrix.md` |
-| `apex`, `auto-impl`, `自動実装`, `フル実装`, `discovery to launch`, `最強`, `end-to-end feature` | Apex full-cycle auto-implementation (discovery → ship) | Working feature + Risk Gate report + Release plan | `references/apex-recipe.md` |
+| `brainstorm`, `bounce ideas`, `riff`, `ideate`, `sounding board` | Interactive brainstorming session | Session summary with insights | `references/routing-matrix.md` |
+| `apex`, `auto-impl`, `full implementation`, `discovery to launch`, `end-to-end feature`, `ultimate` | Apex full-cycle auto-implementation (discovery → ship) | Working feature + Risk Gate report + Release plan | `references/apex-recipe.md` |
 | `goal`, `/goal setup`, `goal recipe`, `long-running goal`, `autonomous loop setup`, `goal config` | Goal setup helper chain (`/goal` configuration) | Audit diff + hooks + context-md + launch command | `references/goal-recipe.md` |
+| `essential`, `must-have`, `MVP definition`, `core feature`, `minimum viable`, `cut scope`, `bare minimum` | Essential feature discovery chain (subtraction-oriented) | Must-have feature list + rationale | (inline in `## Subcommand Dispatch`) |
+| `killer`, `killer feature`, `differentiator`, `WOW experience`, `decisive feature`, `competitive edge`, `market-winning` | Killer feature discovery chain (addition-and-leap-oriented) | Killer feature spec + strategic verdict | (inline in `## Subcommand Dispatch`) |
 | `/Nexus` (no arguments) | Proactive mode scan | Next-work recommendations | `references/proactive-mode.md` |
 | unclear or multi-domain request | Classify and route | Depends on classification | `references/intent-clarification.md` |
 
@@ -343,6 +349,8 @@ Use the table below for common cases. Canonical matrix: `references/routing-matr
 | `OPTIMIZE` | Bolt/Tuner → Radar | `+Schema` for DB-heavy work |
 | `DESIGN_SYSTEM_DOCS` | Muse → Showcase + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
 | `DESIGN_WORKFLOW` | Atelier (orchestrates: Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas) | Full design→code loop with design-system persistence. Use when request spans direction + tokens + prototype + implementation + catalog |
+| `ESSENTIAL` | Plea → Spark → Magi → Rank | `+Void` for aggressive scope cut, `+Accord` for atomic-unit specs |
+| `KILLER` | Compete → Flux → Plea → Spark → Magi | `+Riff` for iterative deep-dive, `+Researcher` for market trend grounding |
 
 **Sherpa skip conditions** (skip Sherpa from default chain only when ALL apply):
 - Task touches ≤ 2 files
@@ -430,7 +438,7 @@ Read only the files that match the current decision point.
 | `references/official-skill-categories.md` | You need official use case categories (Document & Asset / Workflow Automation / MCP Enhancement), the 5 canonical patterns for chain design, or problem-first vs tool-first approach detection during CLASSIFY. |
 | `references/managed-agents-mapping.md` | The user mentions Claude Managed Agents, Outcomes, Dreaming, or Webhooks, or describes one of those features in plain English — covers the four-feature mapping (Multiagent Orchestration ↔ hub-and-spoke, Outcomes ↔ Evaluator Loop, Dreaming ↔ Lore, Webhooks ↔ Mend/Beacon), local-vs-managed escalation rules, and SF 2026 reference deployments (Harvey 6×, Netflix fan-out, Spiral, Wisedocs 50%). |
 | `references/apex-recipe.md` | User invoked `/nexus apex` or asks for full-cycle auto-implementation (discovery → spec → parallel design → risk gate → loop → ship). Read for phase contracts, conditional inclusion rules, sub-orchestration topology (Vision for UX, Orbit for loop), tri-axis Risk Gate criteria, and AUTORUN chain template. |
-| `references/apex-walkthrough.md` | User asks "what does apex do" / "apex で何が起きる" / requests a visual or narrative explanation of the apex pipeline. Read for Mermaid flowcharts, sequence diagrams, per-phase storyboards, parallel topology visualisation, failure-and-rollback paths, Gantt timeline, and concrete example outputs. Use this for human-facing explanation; use `apex-recipe.md` for machine contract. |
+| `references/apex-walkthrough.md` | User asks "what does apex do" / "how does apex work" / "explain the apex pipeline" / requests a visual or narrative explanation of the apex pipeline. Read for Mermaid flowcharts, sequence diagrams, per-phase storyboards, parallel topology visualisation, failure-and-rollback paths, Gantt timeline, and concrete example outputs. Use this for human-facing explanation; use `apex-recipe.md` for machine contract. |
 | `references/goal-recipe.md` | User invoked `/nexus goal` or asks to set up `/goal` autonomous long-running execution (Claude Code v2.1.139+ / Codex CLI experimental). Read for platform detection rules, use-case templates (ci-headless / long-dev / parallel-experiment / safe-bounded), chain phase contracts, hook templates (Stop / PostToolUse / notify), and launch command recipes for both CLIs. |
 | `_common/OPUS_47_AUTHORING.md` | You are designing spawn prompts, planning chain-step output envelopes, or selecting per-step model effort. Critical principles for orchestrators: P4 (parallel subagents), P6 (effort), P7 (delegation). |
 
