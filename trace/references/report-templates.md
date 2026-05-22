@@ -2,6 +2,8 @@
 
 Collection of output report templates for Trace.
 
+> **2026 evidence discipline.** Vendor AI session summaries (FullStory, LogRocket Galileo, Mouseflow Mina AI) make it tempting to ship the agent's narrative verbatim as a finding. Don't. Trace reports must show **the human-verified evidence** behind every claim — `n` sessions reviewed, timestamps cited, the actual user action sequence reproduced from replay. Use the AI summary to *find* the moment; cite the *frame* the moment happened in. A report that reads "Galileo says users are frustrated at checkout" without the underlying replay timestamps is not a Trace deliverable — it is a forwarded vendor opinion.
+
 ---
 
 ## 1. Standard Analysis Report

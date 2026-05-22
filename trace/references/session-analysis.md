@@ -2,6 +2,23 @@
 
 Methods and best practices for session replay analysis.
 
+## 2026 Tooling Landscape
+
+| Tool | 2026 strength | Notes |
+|------|----------------|-------|
+| **FullStory** | Pixel-perfect replay + **AI session summaries** + auto rage-click / dead-click detection | Default for enterprise teams that need behavioral analytics at scale |
+| **LogRocket** | Replay tightly coupled with console / network / error monitoring + **Galileo AI** issue triage | Default for engineering teams who want a single tool from "user friction" to "stack trace" |
+| **Hotjar** | Lightweight recording + surveys + feedback widgets, no dev setup | Default for marketing / small teams |
+| **Mouseflow + Mina AI** | Natural-language query over session data ("show me sessions where users abandoned checkout after seeing the discount banner") | Use when the analyst is non-technical and needs free-text discovery |
+| **PostHog** (self-hosted) | Open-source replay + product analytics + feature flags in one OSS stack | Use when data residency or self-host is a hard requirement |
+| **Amplitude / Pendo / UXCam** | Replay layered on product-analytics primary | Use when product analytics is already the system of record |
+
+### 2026 Capability Baselines
+
+- **AI session summaries** are now table stakes. FullStory, LogRocket Galileo, and Mouseflow Mina AI all generate natural-language summaries per session — use them as a first-pass filter, never as the ground truth for a finding.
+- **Auto-masking** is on by default for passwords, payment fields, and most form inputs across the leading tools. Verify the *server-side* masking config before shipping — client-side masking that fires after the keystroke leaves the DOM is not GDPR-safe.
+- **Natural-language query over sessions** changes the analyst workflow: filter-then-scrub becomes ask-then-verify. Pair with explicit hypothesis statements (`session-analysis.md` workflow) to avoid chasing AI-suggested patterns that are statistical noise.
+
 ---
 
 ## Analysis Types

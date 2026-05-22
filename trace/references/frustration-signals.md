@@ -2,6 +2,8 @@
 
 Detailed frustration detection, classification, and scoring.
 
+> **2026 detection baseline.** The leading session-replay tools (FullStory, LogRocket Galileo, Mouseflow Mina AI, Hotjar, PostHog) all ship **rage-click** and **dead-click** detection out of the box, and pair them with **AI-generated session summaries** that surface candidate frustration moments without manual filtering. Use the tool's signal as the *first-pass filter*; apply the threshold / weight tables below as the *audit gate* before pulling a finding into a report — vendor-defined "rage click" tuning varies between platforms and over-fires on UI patterns like double-tap-to-zoom or quick-checkbox-toggle that are not actual frustration.
+
 ---
 
 ## Signal Taxonomy
