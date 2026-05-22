@@ -2,6 +2,8 @@
 
 Purpose: Use this file when the task is in-app feedback capture, feedback categorization, sentiment analysis, or user-response templates.
 
+> **2026 widget landscape.** Hotjar, Zonka, Qualaroo, FullStory, LogRocket, and dozens of others ship in-app NPS / feedback widgets with `~2-minute` setup and **AI categorisation built in**. The 2026 differentiator is no longer "do you have an AI categoriser" — it is **whose codebook the categoriser uses**. Vendor-default categories almost never match how the business already discusses its product; pipe widget submissions through your team-curated taxonomy from `thematic-coding.md` before they drive routing decisions. The keyword tables below are the **fallback for low-volume / sample-of-one feedback**, not the production classifier — for any volume worth analysing, use a tuned LLM coder against the same locked codebook.
+
 Contents:
 - Widget design and event contract
 - Feedback categories and sentiment rules

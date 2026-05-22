@@ -68,6 +68,27 @@ For text feedback at scale, plot a saturation curve (cumulative unique codes vs.
 
 Below the lower bound, treat output as exploratory only. Above the upper bound, returns diminish — cohort-split instead.
 
+## 2026 LLM-Assisted Coding Stack
+
+By 2026 the discipline shifted from "code by hand" to **LLM-first / human-validated** coding for any dataset of `200+` responses. Practical tooling:
+
+| Tool | Strength | Use when |
+|------|----------|----------|
+| **Thematic** | AI theme discovery + impact scoring against NPS / churn + collaborative theme editor | Default for ongoing CX programs that want auto-routing + business-language taxonomy |
+| **Buildbetter** | Conversation / call analysis + theme extraction | Sales calls, customer interviews at volume |
+| **Perspective AI** | Mid-market default; explainable scoring | Teams that need both theme + sentiment in one pass |
+| **Zonka / Qualaroo / Qualtrics XM** | LLM theme extraction layered on traditional survey platform | Teams already on a survey platform; avoid double-import |
+| **Custom Claude / GPT-4 / Gemini pipeline** | Maximum control; pair with codebook from `Codebook Discipline` below | Highly proprietary taxonomies, regulated industries |
+
+Quality bar from published benchmarks (2026): `~90-95%` theme-detection accuracy + sentiment on English B2B feedback when the LLM is given **a team-curated codebook**. Vendor-default categories rarely match how the business already discusses its product — always start from your `phase 4` locked codebook, not the tool's defaults.
+
+### Human-in-the-Loop Discipline (mandatory)
+
+- **Codebook ownership stays human.** The LLM proposes; the analyst accepts / merges / splits / rejects each candidate code before the codebook locks.
+- **Spot-check Cohen's κ on 5-10% of LLM-assigned codes** before publishing themes. Below `κ = 0.6` agreement vs the analyst, the codebook needs another round.
+- **Negative-case search remains a human task.** LLMs over-fit to dominant patterns; the "data that contradicts the theme" rule from the Saturation Tracking section is the analyst's job, not the model's.
+- **Cite the LLM transcript ID** alongside participant ID for every quoted segment — the audit trail mirrors what Mend / Beacon require for AI-assisted artefacts.
+
 ## Codebook Discipline
 
 - One code = one analytic idea. Prefer "feels lost in onboarding" over "onboarding bad."

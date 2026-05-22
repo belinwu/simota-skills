@@ -80,3 +80,10 @@ trackEvent('nps_submitted', {
 - Extract promoter strengths, passive upgrade opportunities, and detractor pain points.
 - Flag statistically weak samples before recommending broad product changes.
 - Route recurrent feature requests to `Spark`, churn-risk themes to `Retain`, and metric instrumentation gaps to `Pulse`.
+
+## 2026 Calibration
+
+- NPS response rates across most B2B SaaS programs settle at **`5-15%`** — set sample-size expectations against this baseline before declaring a result "non-significant".
+- Open-text follow-up answers median **`4-7` words** — design the prompt to invite *one specific signal* (top reason, missing feature) rather than an open essay. A 4-word answer is the norm, not a failure.
+- AI thematic-analysis platforms (Thematic, Buildbetter, Perspective AI, Zonka, Qualtrics XM with LLM, Hotjar AI) report `~90-95%` theme-detection accuracy on English B2B feedback when the codebook is validated against grounded coding (`thematic-coding.md`). Treat the platform output as the **first pass** that still needs human-curated codebook review — see the Inter-Coder Agreement section in `thematic-coding.md`.
+- For follow-up routing, the 2026 standard is to feed verbatim into an AI coder with a *team-curated* codebook (not the vendor default) — vendor-default categories rarely match how the business already talks about its product.
