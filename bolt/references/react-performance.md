@@ -2,6 +2,14 @@
 
 React-specific optimization patterns and code examples.
 
+> **React Compiler 1.0 (stable, late 2025) — the new default in 2026.** When the project ships React `19.x` or Next.js `16+` and has `reactCompiler: true` (or the equivalent Babel/SWC plugin) enabled, **most of the manual memoization patterns in this file become anti-patterns**: the compiler inserts the equivalent of `useMemo`, `useCallback`, and `React.memo` automatically, and it can memoize at a finer granularity than humans typically do (individual JSX elements, sub-expressions within a component). Meta reports `up to ~12%` faster initial loads and `> 2.5x` faster interactions on the Meta Quest Store after enabling the compiler.
+>
+> **Posture in 2026:**
+>
+> - With the compiler on: **delete manual `useMemo` / `useCallback` / `React.memo`** unless a profiler trace shows the compiler missed a case (rare; usually a side-effect impurity issue). The compiler's analysis is sound — when it does *not* memoize, the manual version is likely wrong too.
+> - Without the compiler: the patterns below remain canonical; keep them.
+> - The Rules of React (purity, no mutation, single-render-pass) are now **load-bearing** because the compiler relies on them to memoize safely. Linting with `eslint-plugin-react-hooks` and `eslint-plugin-react-compiler` is non-negotiable.
+
 ---
 
 ## Detecting Re-renders

@@ -1,5 +1,20 @@
 # Core Web Vitals Optimization Details
 
+## 2026 Thresholds and Headline Stats
+
+| Metric | "Good" | "Needs Improvement" | "Poor" |
+|--------|--------|----------------------|--------|
+| LCP — Largest Contentful Paint | `≤ 2.5 s` | `2.5 – 4.0 s` | `> 4.0 s` |
+| INP — Interaction to Next Paint | `≤ 200 ms` | `200 – 500 ms` | `> 500 ms` |
+| CLS — Cumulative Layout Shift | `≤ 0.1` | `0.1 – 0.25` | `> 0.25` |
+
+2026 calibration anchors (use these to prioritise where Bolt spends fix budget):
+
+- **INP is the most commonly failed CWV** — `~43%` of measured sites fail the `200 ms` threshold. Treat any new feature touching the main thread as an INP risk by default.
+- **Images dominate LCP** — they are the LCP element on `~72%` of mobile pages. The LCP fight is almost always an image fight; backend TTFB is a secondary lever for that workload.
+- **WebP is the 2026 default image format** — `~97%` browser support, `25–34%` smaller than JPEG at equivalent quality, fast decode. Reserve AVIF for hero / above-the-fold assets where the extra `40–60%` payload reduction is worth the heavier decode CPU (especially on low-end mobile).
+- **Never lazy-load the LCP element.** `loading="lazy"` on the hero image is the most common regression introduced by well-meaning "performance" PRs.
+
 ## LCP Optimization
 
 ### Issue: Large hero image
@@ -48,15 +63,16 @@ Fix:
 
 ### Issue: Long JavaScript tasks
 Fix:
-- Break long tasks with `yield` or `scheduler.yield()`
+- Break long tasks with `await scheduler.yield()` (cross-browser stable in 2026; falls back via the `scheduler` polyfill)
 - Use Web Workers for heavy computation
 - Debounce/throttle event handlers
+- Split hydration with React's `prerender` / Server Components so the main thread isn't blocked rebuilding the whole client tree on first input
 
 ### Issue: Slow event handlers
 Fix:
-- Use `useTransition` for non-urgent updates
-- Virtualize long lists
-- Memoize expensive components
+- Use `useTransition` for non-urgent state updates that should not block the input
+- Virtualize long lists (`@tanstack/react-virtual`, `react-window`)
+- Rely on **React Compiler 1.0** auto-memoization rather than handwriting `React.memo` — see `react-performance.md`. Manual memoization layered on top of the compiler often regresses INP because it adds dependency-tracking work the compiler already eliminated.
 
 ### Issue: Layout thrashing
 Fix:

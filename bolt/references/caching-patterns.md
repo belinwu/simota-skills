@@ -2,6 +2,12 @@
 
 Cache-aside, LRU, HTTP caching, and Redis patterns.
 
+## 2026 Notes
+
+- **Anthropic prompt caching** is the single highest-ROI caching to enable on any LLM-backed feature in 2026: pin stable system prompts and tool definitions inside `cache_control` blocks; provider-managed KV cache delivers `up to ~90%` input-cost reduction with no application code changes. See `oracle/references/llm-application-patterns.md` for the canonical hit-rate table.
+- **Next.js 16 Cache Components** replace the implicit "cache everything by default" of earlier App Router versions — caching is now **opt-in per-component**. When migrating a Next.js codebase to `16+`, treat every previously-cached fetch as suspect until it is explicitly re-annotated; see `shift/references/framework-migration.md`.
+- **HTTP `Cache-Control: stale-while-revalidate`** is now baseline across every major CDN and origin runtime in 2026 — wire it on for any read-heavy endpoint before reaching for the in-process LRU below. The cheapest cache is one you do not run.
+
 ---
 
 ## Cache-Aside Pattern (Lazy Loading)
