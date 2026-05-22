@@ -2,6 +2,18 @@
 
 Suno AIの技術仕様・メタタグ・制約の完全リファレンス。
 
+## Model Generation Snapshot (2026-05)
+
+| Model | Released | Key change | Use when |
+|-------|----------|-----------|----------|
+| **V6** | 2026 H1 (latest) | Faster prompting, stronger style control, cleaner lyrics-to-song flow, more polished instrumentals | Default for new projects in 2026-05+ |
+| **V5.5** | 2026-03-26 | Adds **Voices** (vocal-persona cloning) — train an AI vocal persona on your own voice samples; the **Voices** button replaces the legacy **Personas** button in the Create menu (Style Personas still accessible from inside Voices) | Voice-driven consistency across releases, "AI artist" branding |
+| **V5** | Late 2025 | Production-quality audio baseline | Legacy projects; budget-constrained generation |
+| **V4.5** | 2025 | `~8 min` audio output, `44.1 kHz` | Long-form (full songs, ambient) |
+| **V4 / Legacy** | Pre-2025 | `~200` char style prompt, `~4 min` audio | Avoid for new work |
+
+Pick V6 first; fall back to V5.5 only when the Voices feature is the critical capability. Legacy V4 should not be the choice for new projects in 2026.
+
 ## Technical Constraints
 
 | Field | Limit | Notes |
@@ -17,7 +29,7 @@ Suno AIの技術仕様・メタタグ・制約の完全リファレンス。
 
 - 3,000文字超過: セクションが駆け足、または短い出力になる
 - 15行未満: 曲が短縮される傾向
-- v4.5/v5: APIレベルで最大5,000文字対応
+- v4.5/v5/v5.5/v6: APIレベルで最大5,000文字対応
 
 ## Metatag Syntax Rules
 
@@ -123,7 +135,7 @@ Rules:
 - Adding era changes sound drastically ("80s synth-pop" vs "2020s synth-pop")
 - Avoid contradictory tags (aggressive + calm)
 
-## Suno v5/v5.5 Specific
+## Suno v5 / v5.5 / v6 Specific
 
 - **Top anchor**: Put vocal role + BPM + structure summary at prompt start
 - **Syllable count**: Specify "Verse lines: 8-10 syllables"
@@ -131,4 +143,7 @@ Rules:
 - **Lyric fidelity**: Add "Do not change any words inside brackets. Sing exactly as written."
 - **Pronunciation fix**: Adjust at text level (e.g., "bahss" for "bass")
 - **Callback tag** (Studio Extend/Replace): `[Callback: <reference>]` instructs Suno to maintain feel or reference a prior section during Extend chains (e.g., `[Callback: Chorus melody]` in Outro to recall the main hook)
-- **V5.5 Voices/Custom Models**: When using a Voice, style prompt should complement the trained vocal character, not fight it. Custom Models require min 6 uploaded songs (Pro/Premier only)
+- **V5.5 Voices** (replaces Personas): trains an AI **vocal persona** on uploaded voice samples, capturing pitch / tone / timbre. The output is "recognisably similar" to the source, not an exact clone — design copy and credits accordingly. When generating, the style prompt should *complement* the trained vocal character, not fight it.
+- **Persona reuse**: from any generated track, click "Create Persona" on a vocal you like to save it as a reusable voice across an album / project.
+- **V6 improvements**: faster prompting (style locked in earlier in the request), stronger style adherence (less drift between section tags), cleaner lyrics-to-song mapping (fewer dropped syllables in dense verses), more polished instrumentals (less muddy low-mids). Carry forward the prompt-engineering rules above — V6 does not change the metatag vocabulary, it just executes it better.
+- **Custom Models** (Pro/Premier only): require min 6 uploaded songs. Use when the project needs a *distinct house sound* across releases, not just a single track.
