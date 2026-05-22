@@ -2,6 +2,12 @@
 
 Defines the calculation formulas and algorithms for Ecosystem Fitness Score (EFS), Relevance Score (RS), and lifecycle phase detection.
 
+> **2026-05 baseline notes**
+> - Failure attribution defaults: when grading Coherence and Quality, anchor on the **MAST taxonomy** (Cemri et al., ICLR 2026 — 1,600 traces across 7 frameworks, 14 failure modes, Cohen's Kappa = 0.88). Distribution: **Specification & System Design 41.8%, Inter-Agent Misalignment / Coordination 36.9%, Task Verification & Termination 21.3%**. Use these weights when allocating root-cause budget across EFS dimensions.
+> - Trace-level error amplification by topology (Towards Data Science, 2026): **SAS = 1.0× baseline, Centralized = 4.4×, Hybrid = 5.1×, Decentralized = 7.8×, Independent = 17.2×**. Independent (i.e. "bag of agents" without orchestrator) is the only architecture above the 10× cliff — penalize EFS Coherence accordingly.
+> - LangChain *State of AI Agents 2026* (May 2026): 57% of surveyed orgs run agents in production; **32% cite quality as the top deployment barrier**. Use as the external benchmark when calibrating Quality dimension scoring.
+> - Sources: `https://openreview.net/forum?id=wM521FqPvI`, `https://towardsdatascience.com/why-your-multi-agent-system-is-failing-escaping-the-17x-error-trap-of-the-bag-of-agents/`.
+
 ---
 
 ## Ecosystem Fitness Score (EFS)
@@ -56,6 +62,8 @@ Where:
 - 20: Chains rarely complete, severe handoff problems
 
 **Data sources:** Nexus execution logs, NEXUS_HANDOFF quality assessment, error/recovery entries.
+
+**Topology-aware adjustment (2026-05):** Cap Coherence at 60 when the deployed topology is *Independent* (no central orchestrator) because measured trace-level error amplification is 17.2× the single-agent baseline, well above the 10× regression cliff. Centralized (4.4×) and Hybrid (5.1×) topologies remain eligible for the full 0–100 range. Source: Towards Data Science, "Why Your Multi-Agent System is Failing" (2026).
 
 #### Activity (20%)
 

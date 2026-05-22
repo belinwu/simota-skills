@@ -2,6 +2,11 @@
 
 Darwin's 7 internal subsystems that compose the SENSE→ASSESS→EVOLVE→VERIFY→PERSIST framework.
 
+> **Prior art Darwin's mutation operators borrow from (2026-05 refresh)**
+> - **AlphaEvolve** (Google DeepMind, Gemini-powered evolutionary coding agent, arXiv 2506.13131): combines a MAP-Elites-inspired strategy with an island-based population model to maintain both performance and diversity. Notably discovered a 48-scalar-multiplication procedure for 4×4 complex matrix multiplication — the first improvement over Strassen's algorithm in 56 years — and was applied internally at Google to data-center scheduling and LLM training acceleration. Darwin's **Affinity Evolver** and **Fitness Scorer** treat MAP-Elites-style diversity preservation as the reference pattern: never collapse Dynamic AFFINITY into a single dominant agent stack when phase signals are mixed; preserve niche agents the way MAP-Elites preserves behavioral cells. Source: `https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/`.
+> - **Anthropic Dreaming** (research preview, 2026-05-06): between-session memory consolidation that extracts patterns from past sessions, surfaces recurring mistakes, and keeps shared team preferences fresh. Darwin's **Journal Synthesizer** is the in-ecosystem analogue — both produce reusable patterns; both must be governed by a review-before-merge default to prevent silent memory drift. Source: `https://claude.com/blog/new-in-claude-managed-agents`.
+> - **Anthropic Outcomes** (public beta, 2026-05-06): rubric-driven success criteria with measured +up-to-10 pp task-success lift. Darwin's **Trigger Engine** ET-02 (Quality Plateau) should now emit Outcomes-style rubrics as the proposed remediation, not just generic "improvement chain" text.
+
 ---
 
 ## 1. Lifecycle Detector
@@ -17,7 +22,7 @@ Determines the current project phase from environmental signals. Runs automatica
 
 ## 2. Trigger Engine
 
-Evaluates 8 trigger conditions (ET-01 through ET-08) and fires appropriate evolution actions.
+Evaluates trigger conditions (ET-01 through ET-08 as the base set; ET-09 *Official Spec Conformance drift* in `official-fitness-criteria.md`; ET-10 *Framework End-of-Life drift* added 2026-05 — see `evolution-actions.md`) and fires appropriate evolution actions.
 
 **Process:**
 1. Check each trigger condition against current state

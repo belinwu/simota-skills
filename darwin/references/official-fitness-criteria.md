@@ -1,8 +1,12 @@
 # Official Fitness Criteria Reference
 
-> Source: "The Complete Guide to Building Skills for Claude" (Anthropic, 2025)
+> Sources:
+> - "The Complete Guide to Building Skills for Claude" (Anthropic, 2025) — Progressive Disclosure / frontmatter / instruction structure baseline.
+> - "New in Claude Managed Agents: dreaming, outcomes, and multiagent orchestration" (Anthropic, 2026-05-06) — adds **Outcomes** rubrics as the new official success-criteria primitive. URL: `https://claude.com/blog/new-in-claude-managed-agents`.
 
 Darwin が ASSESS / EVOLVE フェーズで参照する公式基準ベースのフィットネス評価リファレンス。
+
+> **2026-05 update**: Anthropic's Managed Agents now ship a first-class `Outcomes` mechanism in public beta — agent operators write a **rubric** describing what success looks like and the agent works toward it. Internal Anthropic testing measured **up to +10 percentage points** task-success lift over a plain prompting loop (+8.4 pp on docx generation, +10.1 pp on pptx generation). Darwin treats the presence of an explicit Outcomes rubric (or local equivalent) as a positive OSC signal for the *Instruction Structure* and *Error Handling* criteria below. Conversely, an agent stuck on a plain prompting loop with no rubric — when running under Claude Managed Agents — is now an OSC penalty (≥ −10 toward the *Instruction Structure* dimension), because the +10 pp ceiling lift is freely available.
 
 ---
 

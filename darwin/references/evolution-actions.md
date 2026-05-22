@@ -2,6 +2,13 @@
 
 Defines the 8 evolution triggers, Dynamic AFFINITY calculation, and Discovery Propagation brief format.
 
+> **2026-05 industry signals to monitor as evolution evidence**
+> - **Anthropic Claude Managed Agents** (announced 2026-05-06 at *Code w/ Claude*, SF): four production-grade features now usable as Darwin's own evolution primitives — **Outcomes** (public beta; rubric-driven success criteria, measured +up to 10 percentage-point task-success lift vs. standard prompting loop, +8.4 pp on docx and +10.1 pp on pptx in Anthropic's internal benchmarks), **Webhooks** (HTTP callback on agent completion), **Multiagent Orchestration** (public beta; lead-agent decomposition), and **Dreaming** (research preview; between-session memory consolidation that extracts patterns from past sessions to reduce repeated mistakes). Treat *Outcomes* rubrics as the new external standard for Darwin's "expected impact" field on evolution proposals, and treat *Dreaming* as the upstream prior art for Pattern Card synthesis (ET-04). Source: `https://claude.com/blog/new-in-claude-managed-agents`.
+> - **Microsoft Agent Framework 1.0 GA (2026-04-03)**: production-ready convergence of Semantic Kernel + AutoGen with MCP and A2A protocol support, sequential / concurrent / handoff / group-chat / Magentic-One orchestration patterns. Semantic Kernel and the legacy AutoGen line are now in maintenance mode (security/bug fixes only). When Darwin sees `semantic_kernel` or pre-AG2 `autogen` imports during ASSESS, flag the agent for **ET-10 (framework end-of-life drift)** below. Source: `https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-version-1-0/`.
+> - **LangGraph 1.0 GA (2025-10-22)**: no breaking changes from late 0.x, battle-tested at Uber/LinkedIn/Klarna. New durable-agent contract treated as the stable baseline for Coherence scoring on graph-based ecosystems. Source: `https://changelog.langchain.com/announcements/langgraph-1-0-is-now-generally-available`.
+> - **AG2 0.12.0 (2026-04-17)** (formerly AutoGen): on the path to v1.0 with `autogen.beta` subpackage maturing through 0.13 → 0.14 → 1.0. Source: `https://github.com/ag2ai/ag2/releases`.
+> - **CrewAI Cognitive Memory** (2026): five-op model — **encode, consolidate, recall, extract, forget** — over a hierarchical scope tree (paths like `/project/alpha`, `/agent/researcher/findings`). Darwin's Journal Synthesizer (ET-04) should map Pattern Cards onto the closest CrewAI scope when the deployed framework is CrewAI ≥ 1.x. Source: `https://crewai.com/blog/how-we-built-cognitive-memory-for-agentic-systems`.
+
 ---
 
 ## Evolution Triggers
@@ -126,6 +133,32 @@ abs(current_dna_score - stored_dna_score) > 0.5
 
 **Output:** Updated culture alignment notes in ECOSYSTEM.md, potential AFFINITY adjustments.
 
+### ET-10: Framework End-of-Life Drift
+
+> ET-09 (Official Spec Conformance Drift / OSC) is defined separately in `references/official-fitness-criteria.md`. ET-10 covers external framework/model EOL rather than internal SKILL.md spec drift.
+
+**Condition:** An agent's underlying framework dependency has entered maintenance mode or has a published retirement date.
+
+**Detection:**
+```
+agent.framework IN {
+  "semantic-kernel" (maintenance from 2026-04-03),
+  "autogen<0.12" (superseded by AG2 ≥ 0.12 on 2026-04-17),
+  "openai.assistants" (API retired 2026-08-26),
+  "gpt-4o" (API retired 2026-03-31)
+}
+OR
+azure_foundry_model.retirement_date - today < 90 days
+OR
+agent_uses_model_at_or_past_provider_announced_eol
+```
+
+**Action:** Propose migration plan via Horizon (technology lifecycle) and Shift (migration orchestrator). Cite the official retirement date and the recommended successor stack (Microsoft Agent Framework 1.0 GA for SK/AutoGen, AG2 ≥ 0.12 for AutoGen, latest Claude/GPT API for retired models). Apply Microsoft Foundry's industry-standard **18-month deprecation window** (set programmatically at GA launch) as the upper bound for staged migration: communicate at **T−90 / T−30 / T−7 days** before the framework EOL date, mirroring 2026 API-deprecation best practice (Theneo, 2026).
+
+**Priority:** HIGH — unmaintained framework drift compounds with model drift (~40% of production agent failures).
+
+**Output:** Migration brief in ECOSYSTEM.md with successor stack, target date, and rollback posture. Sources: `https://devblogs.microsoft.com/agent-framework/migrate-your-semantic-kernel-and-autogen-projects-to-microsoft-agent-framework-release-candidate/`, `https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-retirements`, `https://www.theneo.io/blog/managing-api-changes-strategies`.
+
 ---
 
 ## Trigger Evaluation Order
@@ -136,12 +169,17 @@ When multiple triggers fire simultaneously:
 1. ET-05 (CRITICAL) — Always first
 2. ET-01 (HIGH) — Phase changes affect everything
 3. ET-06 (HIGH) — Recurring feedback needs immediate attention
-4. ET-07 (MEDIUM) — May cascade to ET-01
-5. ET-02 (MEDIUM) — Quality plateau
-6. ET-04 (MEDIUM) — Knowledge synthesis
-7. ET-08 (MEDIUM) — Culture drift
-8. ET-03 (LOW) — Dormancy check
+4. ET-10 (HIGH) — Framework EOL drift (2026-05): SK/AutoGen → Microsoft Agent Framework 1.0,
+                  legacy AutoGen → AG2 ≥ 0.12, retired model APIs
+5. ET-07 (MEDIUM) — May cascade to ET-01
+6. ET-02 (MEDIUM) — Quality plateau
+7. ET-04 (MEDIUM) — Knowledge synthesis
+8. ET-08 (MEDIUM) — Culture drift
+9. ET-09 (MEDIUM) — Official Spec Conformance drift (see `official-fitness-criteria.md`)
+10. ET-03 (LOW) — Dormancy check
 ```
+
+> ET-10 outranks ET-07/ET-02 because unmaintained framework drift silently inflates *all* downstream failure categories in MAST (Spec 41.8% / Coordination 36.9% / Verification 21.3%) once vendor support stops.
 
 ---
 

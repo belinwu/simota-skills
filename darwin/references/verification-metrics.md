@@ -2,6 +2,12 @@
 
 Defines how Darwin verifies that evolution actions produced positive results.
 
+> **2026-05 verification-stack baseline**
+> - **Hybrid eval is the consensus default**: Anthropic's coding/agent evaluation guidance (2026) recommends combining **unit tests for correctness** with **LLM rubrics for quality** ("readable / efficient / secure"). Darwin's VERIFY phase mirrors this: hard metrics (EFS delta, RS delta, chain success rate) plus rubric judgments (clarity of HANDOFF artifacts, justification quality of evolution proposals). Source: `https://medium.com/@vinodkrane/chapter-8-agent-evaluation-for-llms-how-to-test-tools-trajectories-and-llm-as-judge-788f6f3e0d52`.
+> - **Outcomes contract**: when an agent is evaluated against an Anthropic *Outcomes* rubric (Claude Managed Agents, public beta from 2026-05-06), record the rubric ID + measured pass/fail in the VERIFY table. Anthropic reports a **+10 pp** task-success ceiling lift vs. plain prompting loops (+8.4 pp docx, +10.1 pp pptx in internal benchmarks). Use this as the reference effect-size when validating Darwin-proposed rubric changes. Source: `https://claude.com/blog/new-in-claude-managed-agents`.
+> - **Agent-as-a-Judge** (arXiv 2508.02994): when evaluating a chain rather than a single output, prefer an *agent* judge (tool-use, memory, multi-step reasoning) over a static LLM judge. Pair with **Krippendorff's α** (AdaRubric framework) as the inter-rater reliability gate before promoting a new rubric into the VERIFY suite.
+> - **Guard against benchmark gaming**: the 2026 evaluation literature flags benchmark-gaming as an active failure mode. When Darwin's VERIFY shows EFS lift, cross-check whether the lift came from genuine outcome wins (delivery, regression-free) or from rubric exploitation. Cap rubric-only lifts at +0.5 EFS until corroborated by ≥7 days of production trace.
+
 ---
 
 ## VERIFY Phase Protocol
@@ -110,6 +116,17 @@ Failure indicators:
   - Users manually perform tasks the retired agent handled
   - Coverage dimension of EFS drops
 ```
+
+**2026 sunset window standard:** mirror the public-cloud/API deprecation cadence — a **6–18 month window** is the 2026 industry default (Microsoft Foundry programmatically sets GA-model retirement 18 months out at launch; Theneo's 2026 deprecation guide cites 6–18 months as the disruption-minimizing range). For Darwin's ecosystem-internal sunsets, the recommended cadence is:
+
+| Stage | Timing | Action |
+|---|---|---|
+| Announce | T−90 days | Mark agent `status: deprecated` in catalog, document successor |
+| Reminder | T−30 days | Alias forwarding live, dependents enumerated, migration brief in ECOSYSTEM.md |
+| Final notice | T−7 days | Replay historical traffic against successor; confirm zero RS dependents |
+| Retire | T0 | Move SKILL.md to archive scope; preserve alias for 30 more days as graceful degradation |
+
+Skipping any of the three pre-retirement notices invalidates Sunset verification. Source: `https://www.theneo.io/blog/managing-api-changes-strategies`, `https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-retirements`.
 
 ### Phase Transition Response Verification
 
