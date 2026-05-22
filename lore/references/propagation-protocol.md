@@ -126,7 +126,11 @@ Failure patterns and anti-patterns are the most valuable institutional memory �
 
 Each token added to a consuming agent's context reduces its effective attention budget. Knowledge propagation must be compact to maximize uptake.
 
-<!-- Ref: "Effective context engineering for AI agents" (Anthropic, 2025) -->
+<!-- Refs: "Effective context engineering for AI agents" (Anthropic, 2025); "Memory for Autonomous LLM Agents: Mechanisms, Evaluation, and Emerging Frontiers" (arXiv 2603.07670, 2026) -->
+
+### Why Compression Cost Matters in 2026
+
+Long-context-window models (1M+ tokens) make it tempting to dump full evidence trails into every consumer prompt. Empirically that **degrades** uptake: 2026 agent-memory surveys show that retrieval-augmented stores (which is what Lore essentially is, from a consumer perspective) outperform context-resident dumps on tasks that require acting on the knowledge rather than just citing it. Compression is not a cost-saving measure — it is a quality measure.
 
 ### Tiered Detail Levels
 
@@ -174,6 +178,9 @@ After propagation, Lore tracks effectiveness:
 | **Relevance accuracy** | ≥ 80% | Useful patterns / total propagated (per consumer) |
 | **Contradiction rate** | < 10% | Contested patterns / total patterns |
 | **Decay prevention** | ≥ 70% | Patterns kept FRESH or CURRENT / total patterns |
+| **Recall-on-action rate** | ≥ 50% | Times a consumer journal cites the pattern when applying it / total recommended-action propagations |
+
+The `Recall-on-action rate` is the consumer-impact answer to the 2026 survey question "did retrieval actually change behaviour, or did the pattern just live in the catalog?" Treat it as the single most important effectiveness signal — Uptake measures touch, Recall-on-action measures change.
 
 ---
 

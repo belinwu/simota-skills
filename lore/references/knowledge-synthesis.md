@@ -83,7 +83,21 @@ Track pattern evolution over time:
 
 Patterns stored as flat entries miss deeper insights. Explicit inter-pattern links improve contradiction detection, reveal systemic issues, and surface emergent knowledge.
 
-<!-- Ref: "A-MEM: Agentic Memory for LLM Agents" (arXiv 2502.12110, 2025) -->
+<!-- Refs: "A-MEM: Agentic Memory for LLM Agents" (arXiv 2502.12110, 2025); "Memory for Autonomous LLM Agents: Mechanisms, Evaluation, and Emerging Frontiers" (arXiv 2603.07670, 2026); "Hindsight is 20/20: Building Agent Memory that Retains, Recalls, and Reflects" (arXiv 2512.12818) -->
+
+### 2026 Memory-Architecture Framing
+
+Recent surveys formalise agent memory as a **write → manage → read** loop and group implementations into five mechanism families. Lore is opinionated about which family does the work at which phase:
+
+| Mechanism family | Phase Lore uses it in | Implementation in this skill |
+|------------------|------------------------|------------------------------|
+| Context-resident compression | Read (propagation) | `Headline / Summary / Full` compression tiers (`propagation-protocol.md`) |
+| Retrieval-augmented stores | Read | `METAPATTERNS.md` + per-agent journal lookup keyed by pattern ID |
+| Reflective self-improvement | Manage | Synthesis cycle below + Contradiction Resolution; removing reflection caused Generative Agents to degenerate within 48 simulated hours, so this phase is non-skippable |
+| Hierarchical virtual context | Write | Domain × Type × Confidence × Scope taxonomy (`pattern-taxonomy.md`) |
+| Policy-learned management | Manage | Confidence modifiers + LEARN safety rules; promotions require evidence diversity, not raw count |
+
+The lifecycle separates into **Formation → Evolution → Retrieval**. Harvest + Clustering populate Formation; Confidence Scoring + Contradiction Resolution + Decay Detection drive Evolution; Propagation owns Retrieval. Skipping any phase produces the same failure mode the surveys document: shallow snapshots that look healthy structurally but cannot inform agent behaviour.
 
 ### Link Types
 

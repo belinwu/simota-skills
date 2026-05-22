@@ -228,5 +228,27 @@ Track these alongside the Health Score to measure consumer-facing impact of deca
 |--------|-------------|-----------------|
 | **Stale retrieval rate** | queries_returning_AGING_or_STALE / total_consumer_queries | > 15% |
 | **Propagation lag** | avg(consumer_notification_time − pattern_update_time) | > 24 hours |
+| **Reflection latency** | avg(pattern_register_time − evidence_create_time) | > 7 days |
+| **Forgetting violation rate** | archived_patterns_resurrected_within_30d / total_archives | > 10% |
 
 These metrics are output-oriented (measuring consumer impact) rather than structural (measuring catalog state). A healthy catalog with high propagation lag still fails consumers.
+
+### Memory-Consolidation Backstop (Dreaming alignment, 2026)
+
+OpenClaw and related 2026 agent-memory work separate ingestion from promotion into three phases — Light (raw capture), REM (reflection / clustering), Deep (commit to long-term memory). Lore's synthesis cycle is the local equivalent and **must not skip the REM-equivalent reflection step**:
+
+- The Light-equivalent step is journal harvest (Builder / Scout / Mend / etc. writing into `.agents/*.md`). Lore reads but does not promote.
+- The REM-equivalent step is `knowledge-synthesis.md` clustering + contradiction resolution + confidence scoring.
+- Only the Deep-equivalent step — registering a `PATTERN` or higher into `METAPATTERNS.md` — writes to long-term memory.
+
+Generative-Agents-style ablation studies show that removing the reflection phase degrades coherent multi-day planning within ~48 simulated hours. Treat a missed monthly synthesis cycle as an outage, not a backlog. When `Reflection latency` exceeds the threshold above, prioritise running synthesis over expanding the catalog.
+
+### Knowledge-Decay Adversarial Signals
+
+Long-term-memory survey work in 2026 catalogs ways memory stores degrade beyond honest staleness: prompt injection that overwrites entries, poisoning that flips a high-confidence pattern's recommendation, and silent contradiction by adversarial new evidence. Lore is defensive in three concrete ways:
+
+1. **Append-only evidence list** — never delete prior evidence rows; supersede via `Archive` only.
+2. **Confidence cannot rise on a single new datapoint** — promotion requires diverse-context evidence per `knowledge-synthesis.md`.
+3. **Cross-agent corroboration is mandatory for `ECOSYSTEM` scope** — no single source can promote an ecosystem-wide pattern.
+
+These rules cost throughput but make memory store integrity auditable.
