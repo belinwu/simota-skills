@@ -20,6 +20,7 @@ Contents:
 | `Configuration Reduction` | Configuration | `3-7` | Most options stay at defaults and expand cognitive cost |
 | `Process Pruning` | Process | `4-9` | Steps are ceremonial or mostly rubber-stamp |
 | `Document Retirement` | Document | `3-8` | Content is stale, duplicated, or rarely read |
+| `AI Slop Cleanup` | Code (AI-authored) | `2-6` | An AI-authored diff added speculative helpers, dead branches, or "comprehensive" error handling that no caller needs |
 
 ## 1. Feature Sunset
 
@@ -170,6 +171,57 @@ document_analysis:
     - { doc: "Dev Guide v1", last_updated: "2023-06", views_90d: 3, action: "MERGE" }
 ```
 
+## 9. AI Slop Cleanup
+
+Use when:
+- An AI assistant (Copilot, Claude Code, Cursor auto-edit, Cody, etc.) generated the target diff or file.
+- The diff contains helpers, adapters, or "future-proofing" utilities with `0` callers in the same PR.
+- Error handling expands beyond actual system-boundary inputs (defensive `try` blocks around internal pure functions, `null` checks on values the type system already excludes).
+- Tests assert on internal call sequence rather than behavior, or pin to literal AI-generated strings instead of contract.
+
+### Entry Conditions
+
+- The PR is labelled AI-authored, or `>40%` of the lines come from an assistant.
+- The change touches code where the human author cannot fluently summarise control flow.
+- Existing similar code in the repo solves the same problem in fewer lines.
+
+### Default Cuts (in priority order)
+
+| Target | Action | Why |
+|--------|--------|-----|
+| Helpers with `0` same-diff callers | DELETE | Speculative `OE-11`; recreate when the second caller arrives |
+| Interfaces / abstract classes with one implementation | COLLAPSE | `OE-01`; merge into the concrete site |
+| `try / catch` around internal-only pure functions | DELETE catch | Defensive `OE-10`; let the framework handle it at the boundary |
+| Generated docstrings restating the obvious | TRIM | Comprehension debt, not signal |
+| Tests pinning literal AI-generated strings (e.g., snapshot of synthesised log message) | REPLACE with behavioural assertion | Snapshot churn without value |
+| Duplicated logic across files (often `2x` GitClear baseline) | DEDUPE only on Rule of Three; otherwise DELETE the speculative second copy | `OE-09` risk if forced too early |
+
+### Phased Approach
+
+```text
+1. AUDIT     — list every AI-authored addition with no caller / no test of behaviour
+2. RECONCILE — confirm with author which entries are deliberate vs reflex
+3. CUT       — delete in one commit; keep diff small enough for human review
+4. RE-TEST   — run existing suite; new gaps are evidence the cut was wrong
+5. RECORD    — annotate the journal so the same speculative shape is rejected next time
+```
+
+### Example
+
+```text
+Before: AI-authored "user service" added UserRepository interface (1 impl),
+        UserMapper helper (used once inline), UserValidationError class
+        (used by no caller), comprehensive try/catch around an internal
+        pure function, and 4 snapshot tests on synthesised log strings.
+
+After:  Direct PostgresUserStore class; inline mapping at the call site;
+        no defensive try/catch; 2 behavioural tests checking the actual
+        contract.
+
+Effect: ~60% line reduction, 0 behaviour change, comprehension debt drops
+        to "one team member explains the whole flow in 2 sentences."
+```
+
 ## Pattern Selection Guide
 
 ```text
@@ -178,4 +230,7 @@ document_analysis:
 3. Check entry conditions and exceptions
 4. Evaluate blast radius
 5. Design a phased approach when removal is not instant-safe
+6. If the target was AI-authored within the last 30 days,
+   prefer "AI Slop Cleanup" first to remove speculative shape
+   before any other pattern is applied.
 ```

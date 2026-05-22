@@ -21,6 +21,8 @@ Contents:
 | `OE-08` | Microservice overuse | Tiny services with huge operational cost | Would a modular monolith be enough? |
 | `OE-09` | DRY obsession | Coincidental similarity becomes forced coupling | Do these things change for the same reason? |
 | `OE-10` | Excessive defensive programming | Internal paths full of redundant checks | Is this actually a system boundary? |
+| `OE-11` | AI-generated over-elaboration | Helper, util, and adapter layers that no caller asks for | Does any concrete caller exist *today* for this generality? |
+| `OE-12` | Comprehension debt | Shipped code no human on the team can fully explain | Can the original requester walk the call graph without rereading? |
 
 ## YAGNI / KISS / DRY Tension
 
@@ -53,6 +55,17 @@ Rules:
 | Unchanged config options | `>50%` never changed | `OE-05` likely |
 | Design discussion vs implementation time | `>50%` of total effort is design debate | over-design likely |
 | Generics depth | `3+` nested levels | `OE-07` likely |
+| Helper functions with `0` callers in the same diff | `≥1` such helper | `OE-11` likely (AI-generated speculative utility) |
+| Duplicated code blocks in AI-touched files | `> 2x` baseline duplication for the repo | Comprehension Debt — review for `OE-12` |
+| PRs where reviewer cannot answer "what happens if you delete this branch?" | `≥1` block per PR | `OE-12` likely — fail fast before merge |
+
+### Empirical Backdrop (2026 evidence)
+
+- ~`41%` of new code shipped in 2026 is AI-generated; five independent studies (Feb 2026) report AI tooling generates code `5-7x` faster than humans can build a mental model of it. Default to a YAGNI audit on every AI-authored PR.
+- GitClear's longitudinal study found duplicated code blocks rose `~8x` between 2022 and 2024, with AI assistants doubling duplication while halving refactor commits — `OE-09` (DRY obsession) and `OE-11` (speculative helpers) both spike under AI authorship.
+- An Anthropic internal study reports developers primarily using AI for generation scored `50%` on comprehension assessments versus `67%` for those who wrote more code manually — a `17-point` gap that held across seniority. Comprehension debt (`OE-12`) is real and load-bearing.
+- Pull requests per developer rose `+20%` with AI assistance, but **incidents per PR rose `+23.5%`** — so the marginal "saved" feature is statistically a net negative once incidents are priced in.
+- Unmanaged AI-generated code is reported to drive maintenance costs to `~4x` traditional levels by year two. Treat the cost-of-keeping curve as steeper than it was in pre-2024 baselines.
 
 ## Prevention Rules
 
@@ -74,5 +87,7 @@ Quality gates:
 - `"TODO: future use"` -> flag `OE-02`
 - `3+` generic nesting levels -> consider simplification
 - `50%+` unchanged config options -> consider hardcoding defaults
+- AI-authored helper / adapter / interface with no caller in the same diff -> flag `OE-11`, propose deletion
+- AI-authored PR where the human author cannot summarise the control flow in `< 3` sentences -> flag `OE-12`, request rewrite or shrink before merge
 
-Sources: [Martin Fowler: YAGNI](https://martinfowler.com/bliki/Yagni.html) · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) · [Joel Spolsky: Things You Should Never Do](https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/)
+Sources: [Martin Fowler: YAGNI](https://martinfowler.com/bliki/Yagni.html) · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) · [Joel Spolsky: Things You Should Never Do](https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/) · [arXiv 2603.28592 — Debt Behind the AI Boom (2026)](https://arxiv.org/abs/2603.28592) · [GitClear AI Coding Trends 2024-2026](https://www.gitclear.com/coding_on_copilot) · [LeadDev — How AI-generated code accelerates technical debt (2026)](https://leaddev.com/technical-direction/how-ai-generated-code-accelerates-technical-debt) · [StepTo — Comprehension Debt (2026)](https://stepto.net/blog/comprehension-debt-ai-code-understanding-2026)

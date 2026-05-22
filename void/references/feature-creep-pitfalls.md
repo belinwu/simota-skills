@@ -20,6 +20,11 @@ Contents:
 | `FC-06` | Stakeholder pressure | Authority outruns evidence | Can the impact be quantified? |
 | `FC-07` | Sunk-cost fallacy | Prior work is used to justify more work | If starting fresh, would we still build this? |
 | `FC-08` | Feature-count illusion | Quantity is mistaken for product value | Did this improve satisfaction or adoption? |
+| `FC-09` | AI-accelerated build-rate | AI assistance makes "let's just ship it" cheaper than evaluating it; PR throughput rises `~20%` while incidents per PR rise `~23.5%` (2026 LeadDev / DORA-style data) | Has the success metric and removal criterion been written *before* writing the code? |
+
+### Empirical Anchor
+
+Microsoft's Kohavi et al. found that even with careful up-front analysis, only `~1/3` of shipped features improved the metrics they were designed to improve. Combined with 2026's `~41%` AI-generated code share and the `+23.5%` incidents-per-PR signal above, the default assumption should be that **unvalidated new functionality is more likely to harm than help** the product surface it lands on. Feature-addition gates and pruning lifecycles below are calibrated to that prior.
 
 ## Detection Signals
 
@@ -135,4 +140,4 @@ Quality gates:
 - missing gate answers -> block feature expansion
 - 3 or more feature-creep signals -> recommend `Batch Audit`
 
-Sources: [ProductPlan: Feature Creep](https://www.productplan.com/glossary/feature-creep/) · [Intercom: Managing Feature Requests](https://www.intercom.com/blog/managing-feature-requests/) · [Basecamp Shape Up](https://basecamp.com/shapeup/1.1-chapter-02)
+Sources: [ProductPlan: Feature Creep](https://www.productplan.com/glossary/feature-creep/) · [Intercom: Managing Feature Requests](https://www.intercom.com/blog/managing-feature-requests/) · [Basecamp Shape Up](https://basecamp.com/shapeup/1.1-chapter-02) · [Kohavi et al. — Online Experimentation at Microsoft (Microsoft Experimentation Platform)](https://ai.stanford.edu/~ronnyk/2009-ExPControlledExperimentsAtScaleICSE.pdf) · [LeadDev — How AI-generated code accelerates technical debt (2026)](https://leaddev.com/technical-direction/how-ai-generated-code-accelerates-technical-debt)
