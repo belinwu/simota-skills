@@ -21,7 +21,7 @@ HNDL sensitivity ranking:
 3. Short-lived signatures (JWT 1-hour, session cookies) — lowest urgency; migrate with the signature-refresh cycle.
 4. Data-at-rest under symmetric AES-256 — **no migration needed**; AES-256 is PQ-safe (Grover halves effective strength to 128-bit, still acceptable).
 
-## NIST PQC Standards (August 2024)
+## NIST PQC Standards (2026-05 snapshot)
 
 | Standard | Algorithm | Role | Replaces |
 |----------|-----------|------|----------|
@@ -29,13 +29,26 @@ HNDL sensitivity ranking:
 | FIPS 204 | ML-DSA (CRYSTALS-Dilithium) | General signatures | RSA-PSS, ECDSA, Ed25519 |
 | FIPS 205 | SLH-DSA (SPHINCS+) | Hash-based conservative signatures | — (stateless backup; large signatures) |
 | FIPS 206 (draft) | FN-DSA (FALCON) | Compact signatures | ECDSA where size matters |
-| HQC (selected Mar 2025) | Code-based KEM | Backup for ML-KEM | — (diversification against lattice break) |
+| HQC (NIST selected Mar 2025; draft 2026, final 2027) | Code-based KEM | Backup for ML-KEM | — (diversification against lattice break) |
 
 Parameter sets in practice:
 - ML-KEM-768 → NIST Category 3 (~AES-192 equivalent) — default for TLS hybrid.
 - ML-KEM-1024 → Category 5 (~AES-256) — long-term confidentiality, CNSA 2.0.
 - ML-DSA-65 → Category 3 default; ML-DSA-87 for Category 5.
 - SLH-DSA-SHA2-128s → smallest SLH-DSA, when stateless hash-based is required (firmware signing).
+
+### Library / Platform Availability (2026-05)
+
+| Surface | PQC status |
+|---------|-------------|
+| **OpenSSL 3.5+** (Apr 2025 release line) | Native `ML-KEM`, `ML-DSA`, `SLH-DSA` providers — no liboqs glue required for the standard algorithms. Default to 3.5+ for new builds; stay on 3.x + liboqs only when 3.5 cannot be deployed. |
+| **Microsoft CNG (Windows Server 2025, Windows 11 client)** | `ML-KEM` and `ML-DSA` Generally Available since the November 2025 update; Certificate APIs handle PQ certs end-to-end. AD CS (Microsoft Active Directory Certificate Services) issues `ML-DSA` certificates as of the May 2026 update. |
+| **AWS / Google / Cloudflare edge** | Hybrid `X25519MLKEM768` on by default for browser-facing TLS termination since 2024–2025; Akamai followed in **Feb 2026** (default for all customers). |
+| **Apple platforms** | `iMessage PQ3` (iOS 17.4 / iPadOS 17.4 / macOS 14.4 / watchOS 10.4): **Level 3** PQ messaging — `ML-KEM` is woven into the ongoing ratchet, not just the handshake. |
+| **Signal Protocol** | `PQXDH` (Level 2) — `ML-KEM` at session initialisation only. |
+| **HashiCorp Vault** | `ML-KEM` / `ML-DSA` available behind feature flags; `transit/encrypt` hybrid envelope (X25519+ML-KEM) is the migration target. |
+
+Apple + Signal together put PQC on **roughly 2 billion endpoints** today — the migration ecosystem has graduated from "proof of concept" to "your users already have PQ in their pocket".
 
 ## Migration Timelines
 
@@ -44,10 +57,14 @@ Match whichever applies and design to the earliest binding deadline:
 | Regime | Deadline | Source |
 |--------|----------|--------|
 | NIST general | Deprecate quantum-vulnerable by 2030; disallow by 2035 | NIST IR 8547 (draft) |
-| NSA CNSA 2.0 (US NSS) | New equipment quantum-safe by Jan 2027 | CNSA 2.0 (2022, updated 2024) |
+| NSA CNSA 2.0 (US NSS) | New equipment quantum-safe by **Jan 2027** | CNSA 2.0 (2022, updated 2024) |
 | NSA CNSA 2.0 (applications) | Migrated by 2030 | CNSA 2.0 |
 | NSA CNSA 2.0 (infra) | Migrated by 2035 | CNSA 2.0 |
 | Classical 112-bit strength | Deprecated end of 2030 (RSA-2048, 2-key TDEA) | NIST SP 800-131A Rev 3 (draft) |
+| **Google infrastructure** (public commitment, Mar 2026) | Full PQ migration by **2029** | Google PQC roadmap announcement |
+| **Cloudflare** (public commitment) | Full PQ migration by **2029** | Cloudflare PQ roadmap |
+
+The Google + Cloudflare 2029 commitments are the de-facto industry coordination point in 2026 — smaller vendors are pacing themselves against it. When a project has no explicit regulatory deadline, anchor the migration plan on **2029** rather than the looser NIST 2035 disallow date.
 
 CNSA 2.0 mandates ML-KEM and ML-DSA (does not include SLH-DSA). For non-NSS workloads, SLH-DSA is allowed and recommended where hash-based assurance is preferred (firmware, long-term archive).
 

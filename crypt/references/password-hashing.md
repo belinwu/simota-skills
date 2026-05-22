@@ -12,16 +12,18 @@ If the question is "which algorithm and what parameters?" → `password`. If it 
 
 ## Algorithm Selection
 
-Per OWASP Password Storage Cheat Sheet (2024) and NIST SP 800-63B §5.1.1.2 (memorized-secret verifier):
+Per OWASP Password Storage Cheat Sheet (latest baseline) and NIST SP 800-63B §5.1.1.2 (memorized-secret verifier):
 
-| Algorithm | Pick when | Parameters (2024 baseline) |
+| Algorithm | Pick when | Parameters (2026 baseline) |
 |-----------|-----------|----------------------------|
 | Argon2id | Greenfield, any modern runtime with libsodium / argon2-cffi / node-argon2 | m=19 MiB, t=2, p=1 (OWASP minimum); preferred m=64–128 MiB, t=3, p=1 |
 | scrypt | Memory-hard required, Argon2id unavailable | N=2^17, r=8, p=1 (OWASP) |
 | bcrypt | Legacy compat, FIPS-constrained stacks | cost ≥ 12 (72-byte input cap — pre-hash with SHA-256 if longer) |
-| PBKDF2-HMAC-SHA-256 | FIPS 140 strict, no alternative | ≥ 600,000 iterations (OWASP 2024); salt ≥ 16 bytes |
+| PBKDF2-HMAC-SHA-256 | FIPS 140 strict, no alternative | ≥ 600,000 iterations (OWASP); salt ≥ 16 bytes |
 
 Default: **Argon2id**. Every other choice needs a written reason (FIPS scope, runtime constraint, or mandated legacy compatibility).
+
+> **Passwords are quantum-safe — for now.** Symmetric KDF strength halves under Grover's algorithm, so Argon2id-128 effective security drops to 64-bit under a CRQC. Targeting `m ≥ 64 MiB` with the parameters above leaves substantial headroom even after that halving; no PQC-specific algorithm change is required for password hashing in 2026. The PQC migration scope is asymmetric crypto (`post-quantum-migration.md`), not KDFs.
 
 ## Parameter Tuning Procedure
 

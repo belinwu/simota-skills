@@ -24,6 +24,20 @@ Overlap with Gear `secret` is intentional: the same platform (e.g., Vault) serve
 
 Default: **cloud-native KMS matching the workload's primary cloud**, HSM-backed CMK only where compliance or threat model demands it.
 
+### Post-Quantum Readiness of the KMS Itself (2026-05)
+
+PQC is no longer just a TLS-layer migration; the KMS itself must be able to wrap data keys with a post-quantum-safe algorithm. As of 2026-05:
+
+| Provider | PQ envelope status |
+|----------|-----------------------|
+| AWS KMS | Hybrid `X25519MLKEM768` available for the API-layer TLS termination; native post-quantum CMK algorithms remain on the roadmap — wrap a `ML-KEM` DEK at the application layer when needed |
+| GCP Cloud KMS | Hybrid TLS to the API; PQC CMK previewing — track for production GA |
+| Azure Key Vault / Managed HSM | `ML-DSA` certificate issuance and `ML-KEM` key types in preview alongside Microsoft's CNG GA (Nov 2025) |
+| HashiCorp Vault Transit | `ML-KEM` / `ML-DSA` available behind feature flags; the practical migration is `transit/encrypt` hybrid envelope (X25519 + ML-KEM) |
+| PKCS#11 HSM (CloudHSM, Thales, etc.) | Firmware refresh cycle dominates; treat as the slowest-moving surface in the migration plan |
+
+Operational rule: keep the **KMS protocol negotiation** post-quantum-safe (hybrid TLS to the API endpoint) even when the **wrapping algorithm** is still classical. That covers the HNDL risk on the network traffic between the application and the KMS while the deeper algorithm migration is in flight. See `post-quantum-migration.md` for the broader plan.
+
 ## Envelope Encryption Pattern
 
 Never encrypt application payloads directly under the CMK. Use the standard two-tier envelope:
