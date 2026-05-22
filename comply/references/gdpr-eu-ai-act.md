@@ -41,6 +41,27 @@ If the question is "what article applies and what evidence does the DPA expect?"
 
 General-purpose AI (GPAI) models have separate transparency + copyright obligations from August 2025; systemic-risk GPAI adds evaluation, incident reporting, and cybersecurity duties.
 
+### EU AI Act Enforcement Timeline (2026-05 anchor)
+
+| Phase | Date | What is binding |
+|-------|------|------------------|
+| Prohibited practices (Art. 5) | **In force since Feb 2025** | Social scoring, real-time public biometric ID, workplace emotion recognition — no grace period |
+| GPAI transparency + copyright (Art. 53-55) | **In force since 2 Aug 2025** | Technical documentation to EU AI Office, downstream-provider support packs, copyright respect, training-data summaries |
+| **Annex III high-risk AI systems** | **2 Aug 2026** | Conformity assessment, FRIA, EU database registration, post-market monitoring, human oversight, robustness + accuracy + cybersecurity controls |
+| AI systems embedded in regulated products | 2 Aug 2027 | Full application across product-safety regulated sectors |
+
+The European Commission's *Digital Omnibus* package (proposed late 2025) may push Annex III high-risk obligations to **December 2027**, but the extension is not guaranteed. **Plan against `2026-08-02` as the binding deadline** and treat any extension as a windfall — vendor-procurement gates and customer due diligence already assume the August 2026 date.
+
+### Penalty Ladder (Art. 99)
+
+| Infringement | Cap (whichever is higher) |
+|--------------|----------------------------|
+| Prohibited AI practice | `€35M` or `7%` of worldwide annual turnover |
+| Non-compliance with high-risk obligations | `€15M` or `3%` of worldwide annual turnover |
+| Incorrect / misleading information to authorities | `€7.5M` or `1.5%` of worldwide annual turnover |
+
+GDPR penalties (Art. 83) apply **concurrently** when personal data is involved — the AI Act does not replace GDPR. An employment-screening AI processing EU residents can trigger both regimes for the same incident.
+
 ## DPIA Trigger Checklist
 
 A DPIA is required when any of the following is true. Document the reason the DPIA was or was not performed — "we did not think it applied" is an audit failure.
@@ -110,7 +131,7 @@ RESPOND   →  send within 30 days; communicate free of charge unless manifestly
 - Using Art. 49 derogations as an ongoing transfer basis instead of a one-off exception.
 - "Legitimate interest" applied to AI training on user data without LIA documentation or opt-out path — the UK ICO and EDPB have both pushed back on this pattern.
 - DPIA written after launch — Art. 35(1) requires it **prior to** processing.
-- Treating EU AI Act obligations as 2027 work — prohibited-use bans were enforceable from Feb 2025, GPAI transparency obligations from Aug 2025, and high-risk obligations phase in through Aug 2026.
+- Treating EU AI Act obligations as 2027 work — prohibited-use bans were enforceable from Feb 2025, GPAI transparency obligations from Aug 2025, Annex III high-risk obligations from **2 Aug 2026**. The Digital Omnibus extension to Dec 2027 is a *possibility*, never an *assumption* — vendor procurement gates already price in the August 2026 date.
 - Confusing DPA (controller-processor contract, Art. 28) with DPIA (impact assessment, Art. 35) — they are different instruments.
 - Running DSAR search only against the primary database and missing logs, backups, analytics warehouses, and subprocessor systems.
 

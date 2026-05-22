@@ -34,12 +34,28 @@ Every vendor that touches production systems, customer data, or regulated enviro
 
 | Tier | Criteria (any one triggers) | Controls required |
 |------|----------------------------|-------------------|
-| Critical | Processes regulated data (CHD/ePHI/special-category), part of the authentication path, outage would cause customer-visible incident in < 1h | SOC 2 Type II + pentest summary + SIG-Core, annual on-site or deep-dive, continuous monitoring, contractual right to audit |
+| Critical | Processes regulated data (CHD/ePHI/special-category), part of the authentication path, outage would cause customer-visible incident in < 1h, **or hosts a foundation model that powers a user-facing feature** (treat as a subservice organization, see AI vendor section) | SOC 2 Type II + pentest summary + SIG-Core, annual on-site or deep-dive, continuous monitoring, contractual right to audit |
 | High | Handles customer PII at rest, privileged infrastructure access (CI/CD, production IAM) | SOC 2 Type II or ISO 27001, SIG-Lite, annual review, subprocessor sync |
 | Medium | Internal corporate data, limited PII, non-production access | Attestation letter or CAIQ, biennial review |
 | Low | No data exchange, marketing tools, internal productivity | Lightweight review at onboarding, event-driven re-review |
 
 Down-tiering a vendor requires written justification from the business owner and security lead. Up-tiering is automatic when the vendor's scope changes.
+
+### AI Vendor Risk (2026 must-have)
+
+By 2026 the SOC 2 / TPRM community treats AI/LLM providers as a distinct vendor class. Two consequences for the inventory and tier matrix:
+
+1. **An LLM provider that powers production behaviour is a subservice organisation, not a "tool"**. Their SOC 2 (or equivalent) becomes part of your own SOC 2 story; their controls flow into your CSOCs. Tier them at **Critical** by default.
+2. **AI-specific questionnaire items are now standard** alongside SIG / CAIQ — auditors expect to see answers on:
+   - Model versioning policy (when did the version change; how is it pinned)
+   - Prompt + completion logging retention and access controls
+   - Training-data lineage and licence claims (Art. 53 EU AI Act for GPAI)
+   - Hallucination handling and human-in-the-loop policy
+   - Sub-processor chain for LLM hosting (cloud region, GPU tenancy, fine-tuning data residence)
+   - **AI literacy training records** mirroring Art. 4 of the EU AI Act
+   - Data-usage clause: is your input data excluded from provider training?
+
+Customer procurement teams in 2026 increasingly refuse to open commercial conversations without an in-date SOC 2 Type II that covers the AI/LLM scope explicitly — the AI questionnaire is the new gating step before commercial alignment.
 
 ## Contract Requirements
 

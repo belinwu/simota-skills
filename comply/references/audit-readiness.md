@@ -24,6 +24,22 @@ If the question is "what does the auditor ask for, in what order, and how do we 
 
 Always prefer the highest available tier. A screenshot of "access review completed" loses every time to a ticket with approver identity and timestamp, which loses to a log line stamped by the IAM provider.
 
+### SOC 2 (2026) and the AI Subservice Carve-Out
+
+By 2026 SOC 2 has shifted in two ways the audit-readiness program needs to reflect:
+
+1. **AI / LLM providers powering production behaviour count as subservice organisations.** Their controls flow into your CSOCs; an auditor will ask whether their SOC 2 (or equivalent) covers the AI scope you actually rely on. Treat their report review as a first-class audit input — same MANIFEST + hash discipline as your own evidence.
+2. **Vendor-management evidence is no longer "review the spreadsheet annually".** Auditors now expect **continuous TPRM** under SOC 2 CC9.2 — ongoing monitoring signals (security-score feeds, breach-notice cadence, subprocessor-chain syncs) in addition to the annual SOC 2 PDF review. Point-in-time assessments are graded down.
+
+AI-specific evidence the auditor will request:
+- Model version log + change tickets (when the underlying LLM version changed for your service)
+- Prompt / completion logging retention policy + access controls
+- AI literacy training records (mirrors EU AI Act Art. 4 + becomes load-bearing SOC 2 evidence)
+- "Is customer data excluded from provider training?" — contractual evidence, not just a vendor blog post
+- Hallucination handling procedure + human-in-the-loop policy for high-risk paths
+
+These items should already exist in your AI-vendor questionnaire (`vendor-risk-assessment.md`); the audit-readiness job is to **link** each to the corresponding control + period in the evidence room.
+
 ## Evidence Room Structure
 
 ```
