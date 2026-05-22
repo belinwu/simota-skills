@@ -11,17 +11,21 @@ Contents:
 
 ## When to Choose Cypress vs Playwright
 
+> Version map (as of 2026-05): Cypress current is **15.15.0** (May 2026). 15.0 shipped 2025-08-20. AI authoring (`cy.prompt`, Studio inline edit, UI Coverage Test Generation) is the main 2025-2026 storyline. Playwright current is **1.60** (May 2026).
+
 | Criteria | Cypress | Playwright |
 |----------|---------|------------|
-| **Best for** | Component testing, real-time debugging | Cross-browser, complex flows |
-| **Browser support** | Chrome, Firefox, Edge, Electron | All browsers + mobile |
-| **Parallel execution** | Paid (Cypress Cloud) | Free, built-in |
-| **Network stubbing** | Excellent (`cy.intercept`) | Good (`page.route`) |
+| **Best for** | Component testing, real-time debugging, natural-language authoring (`cy.prompt`) | Cross-browser, complex flows, agentic test loops |
+| **Browser support** | Chrome, Edge, Electron, Firefox via WebDriver (Firefox CDP dropped in 15.0) | Chromium / Firefox / WebKit + mobile emulation |
+| **Parallel execution** | Paid (Cypress Cloud) | Free, built-in (`workers`, `--shard`) |
+| **Network stubbing** | Excellent (`cy.intercept` middleware) | Good (`page.route`, `route.fetch`, `routeWebSocket`) |
 | **Learning curve** | Lower | Moderate |
-| **Iframe/multi-tab** | Limited | Full support |
-| **Architecture** | In-browser, same-origin | Out-of-process, multi-origin |
+| **Iframe / multi-tab / multi-origin** | `cy.origin` (mature in 15.15 stability fixes) | Full multi-origin support, native multi-tab |
+| **Architecture** | In-browser, automation protocols | Out-of-process via CDP / WebDriver BiDi |
+| **AI authoring** | `cy.prompt` (beta, generally available 15.13+), Studio inline edit, UI Coverage Test Generation | Test Agents (Planner / Generator / Healer 1.56+), MCP, `@playwright/cli` Skills mode |
+| **Node.js floor** | Node 20 LTS (15.0 dropped 18 and 23) | Node 18 LTS minimum (1.59+) |
 
-**Recommendation**: Playwright for new projects. Cypress if team already has expertise or needs component testing.
+**Recommendation**: Playwright is the default for new projects. Choose Cypress when (a) the team already runs a Cypress suite, (b) component testing with the Cypress Cloud dashboard / UI Coverage is in scope, or (c) `cy.prompt` natural-language authoring is desired alongside the existing Cypress workflow.
 
 ---
 
@@ -258,13 +262,17 @@ cy.intercept('**/api/**', { middleware: true }, (req) => {
 });
 ```
 
-### Cypress 15 Breaking Changes
+### Cypress 15.0 Breaking Changes (2025-08-20)
 
 - **Node.js**: Support for Node.js 18 and 23 removed (minimum: Node.js 20 LTS)
 - **glibc**: Linux glibc < 2.31 is no longer supported (affects older CentOS/Debian)
 - **`cy.stub` 3-argument form**: `cy.stub(object, method, replacerFn)` removed — use `.returns()` / `.callsFake()` instead
-- **webpack v4**: No longer supported in Component Testing — upgrade to webpack v5 or Vite
-- **Next.js 16**: Component Testing support added for Next.js 16+
+- **Webpack 4, Vite 4, Angular 17**: dropped from Component Testing — upgrade to Webpack 5 / Vite 7+ / Angular 19+
+- **Firefox via CDP**: removed — Firefox now runs through WebDriver BiDi only
+- **`Cypress.SelectorPlayground` renamed to `Cypress.ElementSelector`**; old name removed
+- **`tsx` replaces `ts-node`** as the default TypeScript config loader
+- **Component testing**: dropped `create-react-app`, `@vue/cli-service`, and older React / Vue / Angular versions
+- **Added**: Studio inline editing, React 19 / Angular 19 / Vite 7 support, Next.js 16 component testing
 
 ```typescript
 // ❌ Removed in Cypress 15
@@ -289,3 +297,118 @@ export default defineConfig({
   },
 });
 ```
+
+### Cypress 15.x Highlights Since GA
+
+| Version | Date | Highlight |
+|---------|------|-----------|
+| 15.0.0 | 2025-08-20 | Studio inline edit; Node 20 floor; SelectorPlayground → ElementSelector |
+| 15.8.0 | 2025-12-16 | Experimental fast visibility checks; Angular 21 + zoneless component testing |
+| 15.10.0 | 2026-02-03 | `Cypress.env()` deprecated → new `cy.env()` command; `Cypress.expose()` API; `allowCypressEnv` toggle |
+| 15.11.0 | 2026-02-25 | `--pass-with-no-tests` flag; Brotli compression in proxy; React SSR hydration via bootstrap injection |
+| 15.13.0 | 2026-03-24 | **`cy.prompt` reaches beta — no config required**; Studio supports adding tests while focused on a single test |
+| 15.14.0 | 2026-04-16 | TypeScript 6 + Vite 8 component testing; automatic command-log memory eviction |
+| 15.15.0 | 2026-05-12 | `cy.end()` deprecated (start a new chain instead); proxy fixes for empty-body responses with `Content-Length`; multi-origin (`cy.origin`) stability improvements |
+
+> Pin `cypress@^15.13` if you intend to use `cy.prompt` in real specs. Pin `cypress@^15.15` if you depend on multi-origin stability or TypeScript 6.
+
+### `cy.env()` / `Cypress.expose()` Migration (15.10+)
+
+```typescript
+// ❌ Deprecated in 15.10
+const apiUrl = Cypress.env('apiUrl');
+
+// ✅ New runtime-aware command
+cy.env('apiUrl').then((apiUrl) => {
+  cy.visit(`${apiUrl}/dashboard`);
+});
+
+// ✅ Cypress.expose — explicitly publish config values to the spec
+// cypress.config.ts
+export default defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      // expose only safe values; the rest stay node-side
+      return { ...config };
+    },
+  },
+});
+
+// Spec
+Cypress.expose('build', { version: process.env.BUILD_VERSION });
+```
+
+> Set `allowCypressEnv: false` in config to fail fast on the deprecated path during migration.
+
+---
+
+## `cy.prompt()` — Natural-Language Test Authoring (15.13+ beta)
+
+`cy.prompt` converts natural-language steps into executable Cypress commands at runtime. The LLM evaluates the live DOM, generates selectors, and produces Cypress code; once recorded, the generated commands run without inference cost. When a selector breaks between runs, Cypress regenerates that step automatically (self-healing).
+
+```typescript
+// cypress/e2e/checkout.cy.ts
+describe('Checkout — natural language', () => {
+  it('completes the purchase flow', () => {
+    cy.visit('/');
+    cy.prompt('Add the first product to the cart');
+    cy.prompt('Open the cart and click checkout');
+    cy.prompt('Fill in test card 4242 4242 4242 4242 with future expiry');
+    cy.prompt('Submit the order');
+    cy.contains('Order confirmed').should('be.visible');
+  });
+});
+```
+
+```typescript
+// cypress.config.ts — opt out of the prompt cache for a single spec
+export default defineConfig({
+  e2e: {
+    experimentalPrompt: {
+      cache: 'on',        // 'on' | 'off' | 'record-only'
+      provider: 'cloud',  // requests routed through Cypress Cloud
+    },
+  },
+});
+```
+
+### Review checklist for `cy.prompt`-authored tests
+
+- [ ] Each generated step has at least one explicit business assertion (`should('contain', ...)`, `should('have.length', ...)`) — `cy.prompt` validates intent, not correctness.
+- [ ] Self-heal events are surfaced in the Cypress Cloud run; silent regenerations cannot ride along.
+- [ ] Selectors that the prompt generates respect the project's `data-testid` convention before falling back to text or position.
+- [ ] No critical-path test relies *only* on `cy.prompt` — pair with a deterministic baseline assertion (URL, API state, persisted record).
+- [ ] Auth, payments, and other side-effecting steps are stubbed (`cy.intercept`) before letting `cy.prompt` drive.
+
+> `cy.prompt` is also exposed inside Cypress Studio: record a flow, right-click to add assertions, and Studio embeds the same `cy.prompt` calls into the spec. UI Coverage Test Generation closes coverage gaps by generating `cy.prompt`-based specs directly from coverage-gap reports.
+
+---
+
+## Studio + UI Coverage (Cypress 15)
+
+- **Studio inline editing**: Record interactions and edit the resulting test inside the Cypress App — no leaving for an external editor. Driven by `experimentalStudio` until 15.13+, on by default for paid Cloud tiers afterwards.
+- **UI Coverage Test Generation**: Reads the Cloud UI Coverage report and emits Cypress specs targeting screens / states the existing suite has never visited. Use it to close gaps, not as the primary authoring surface.
+- **Selector Playground (now ElementSelector)**: available to all users in open mode since 15.8.
+
+```typescript
+// cypress.config.ts — enable Studio for local exploration
+export default defineConfig({
+  e2e: {
+    experimentalStudio: true, // opt in until it ships on by default
+  },
+});
+```
+
+---
+
+## WebDriver BiDi / Firefox
+
+Cypress 15 removed Firefox-via-CDP support; Firefox runs through WebDriver BiDi. No spec changes are required, but CI images must include a BiDi-capable `geckodriver` and Firefox 128 ESR or newer. If a legacy pipeline pinned `--browser firefox` against CDP, expect an error like `firefox: cdp is no longer supported, use bidi`.
+
+---
+
+## Routing for Newer Cypress Patterns
+
+- `cy.prompt` flows → also covered in `references/ai-powered-e2e-testing.md` (cross-tool comparison with Playwright Test Agents and Stagehand).
+- Self-healing review gate → `references/ai-powered-e2e-testing.md` (shared review checklist).
+- UI Coverage delivery → coordinate with `pulse` for KPI tracking and `judge` for the quality gate.

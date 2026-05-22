@@ -286,7 +286,9 @@ test.describe('User Management', () => {
 
 ---
 
-## Playwright 1.49+ Modern Features
+## Playwright Modern Features (1.49 baseline)
+
+> Version map (as of 2026-05): **1.60 (May 2026 — current)**, 1.59 (Apr 2026), 1.58 (Mar 2026), 1.57 (Jan 2026), 1.56 (Nov 2025). Pin `@playwright/test` `^1.59` if your project already depends on screencast / browser-bind / `playwright-cli` flows; pin `^1.60` if you need HAR tracing or `locator.drop()`. Treat 1.56 as the floor for Test Agents (Planner / Generator / Healer).
 
 ### Clock API (Fake Timers)
 
@@ -731,3 +733,245 @@ export default defineConfig({
 ```
 
 > `failOnFlakyTests: true` causes the run to exit with a non-zero code when any test passes on retry. Use this in CI to prevent flaky tests from silently masking instability.
+
+---
+
+## Playwright v1.56 Features — Test Agents (Planner / Generator / Healer)
+
+Released 2025-11. Introduces the agentic test-authoring loop that Voyager now treats as the default Playwright authoring pattern for AI-driven workflows.
+
+```bash
+# 1. Planner — explores the running app and emits a Markdown plan
+npx playwright test --plan "Test the login flow"
+#   -> specs/login.md
+
+# 2. Generator — turns the plan into a real test file
+npx playwright test --generate
+#   -> tests/login.spec.ts
+
+# 3. Run + Heal — Healer either repairs the test or files a bug
+npx playwright test
+npx playwright test --heal
+
+# 4. Full loop — plan -> generate -> run -> heal, repeated
+npx playwright test --loop
+```
+
+Companion observability APIs shipped alongside agents:
+
+```typescript
+// Read structured runtime signals from inside a test without instrumenting console.log
+const messages = page.consoleMessages();   // structured console events
+const errors   = page.pageErrors();        // uncaught exceptions
+const requests = page.requests();          // navigation + fetch requests
+
+// UI Mode also gains snapshot-update controls and single-worker execution for agents.
+```
+
+> Adopt agents **after** the suite already has stable auth, locators, fixtures, and a review gate. See `ai-powered-e2e-testing.md` for the adoption ladder.
+
+---
+
+## Playwright v1.57 Features — Chrome for Testing + Speedboard
+
+Released 2026-01.
+
+- **Default channel switched to Chrome for Testing** (`chrome-headless-shell` in headless). Affects memory footprint in constrained CI runners; pin `channel: 'chromium'` if reproducibility or memory ceilings are hard requirements. Arm64 Linux still defaults to Chromium.
+- **HTML report Speedboard** ranks tests by execution time — use it before reaching for sharding.
+- **`webServer.wait`** accepts a regex against stdout/stderr so config can wait for the framework's actual ready message instead of polling a URL.
+- **Service Worker network event routing + console message support** — fixes a long-standing blind spot for PWA / offline test coverage.
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:3000',
+    wait: /ready in \d+ms/, // 1.57+ regex on dev-server stdout
+    reuseExistingServer: !process.env.CI,
+  },
+  use: {
+    channel: 'chromium', // pin if Chrome for Testing memory footprint is a problem
+  },
+});
+```
+
+---
+
+## Playwright v1.58 Features — Timeline + CLI Foundations
+
+Released 2026-03.
+
+- **Timeline tab in the HTML report Speedboard** — visualises wait bottlenecks and slow phases per test. Read this before adding shards or workers.
+- **Playwright CLI (`@playwright/cli`)** lands as an agent-friendly entry point. Snapshots and screenshots are written to disk and selectively read by the agent — measured around **~27 K tokens per task vs ~114 K via MCP** (≈4× reduction, up to 10× on longer sessions). Microsoft's 2026 guidance now prefers CLI over MCP for coding-agent integration.
+- **Removed**: legacy `_react` / `_vue` engine selectors, the `devtools` launch option, and the long-deprecated `Page#accessibility` API. Migrate to `getByRole` / `getByLabel` and to `page.accessibility.snapshot()` replacements via `toMatchAriaSnapshot`.
+
+```bash
+# Agent-friendly CLI usage
+npx playwright-cli show                # dashboard of bound browsers
+npx playwright-cli test --debug=cli    # attach a CLI debugger an agent can drive
+```
+
+---
+
+## Playwright v1.59 Features — Screencast + Browser Bind
+
+Released 2026-04. The release that turned Playwright into a first-class substrate for agentic workflows.
+
+### page.screencast — Agentic Video Receipts
+
+```typescript
+test('checkout — receipt video', async ({ page }) => {
+  const screencast = await page.screencast.start({
+    path: 'artifacts/checkout.webm',
+    showActions: true,           // highlights clicked / typed elements
+  });
+
+  await screencast.showChapter('Cart review');
+  await page.getByRole('button', { name: 'Checkout' }).click();
+
+  await screencast.showChapter('Payment');
+  await page.getByLabel('Card number').fill('4242424242424242');
+  await page.getByRole('button', { name: 'Pay' }).click();
+
+  await screencast.showOverlay({ html: '<h1>Done</h1>' });
+  await screencast.stop();
+});
+```
+
+> `recordVideo` still records the whole test. `page.screencast` gives the agent precise start/stop, action annotations, chapter overlays, and live frame streaming for vision models — use it when you need a reviewable artefact, not raw playback.
+
+### browser.bind + playwright-cli show — Distributed Observability
+
+```typescript
+// Long-lived browser an external CLI / MCP / agent can attach to
+const browser = await chromium.launch();
+await browser.bind({ name: 'voyager-shared-chrome' });
+// `playwright-cli show` lists every bound browser across hosts.
+```
+
+### Trace exploration from the command line
+
+```bash
+# Parse a trace without a UI — agent- and CI-friendly
+npx playwright trace path/to/trace.zip --json | jq '.actions[]'
+# Inspect a single step interactively from CLI
+npx playwright trace path/to/trace.zip --action=42
+```
+
+### New locator + snapshot APIs
+
+```typescript
+// Describe locators in traces / reports (improves debug readability)
+const submit = page.getByRole('button', { name: 'Submit' }).describe('checkout-submit');
+console.log(await submit.description()); // 'checkout-submit'
+
+// Match accessible description directly
+await expect(page.getByRole('img', { description: 'Profile photo' })).toBeVisible();
+
+// Snapshot the live accessibility tree
+const aria = await page.ariaSnapshot();
+
+// Normalise text (whitespace / case) for assertions
+await expect(page.getByTestId('total').normalize()).toHaveText('JPY 1,200');
+
+// Interactive locator picker (replaces deprecated `Page.pause` flows)
+await page.pickLocator();
+
+// Reset / replace storage state mid-test
+await context.setStorageState({ cookies: [], origins: [] });
+```
+
+### Async disposables
+
+```typescript
+test('auto-cleanup with await using', async ({ browser }) => {
+  await using context = await browser.newContext();
+  await using page    = await context.newPage();
+  await page.goto('/dashboard');
+  // context + page disposed automatically when the block exits
+});
+```
+
+---
+
+## Playwright v1.60 Features — HAR Tracing + Drop + Test Abort
+
+Released 2026-05 (current).
+
+### HAR as a first-class tracing primitive
+
+```typescript
+test('records HAR alongside trace', async ({ page }) => {
+  await page.tracing.startHar({ path: 'artifacts/checkout.har', mode: 'minimal' });
+  await page.goto('/checkout');
+  await page.getByRole('button', { name: 'Pay' }).click();
+  await page.tracing.stopHar();
+});
+```
+
+> HAR recording is now wired into the tracing API instead of being a context-level afterthought. Pair with `trace: 'on-first-retry'` to keep CI artefacts cheap on green runs.
+
+### locator.drop — drag-and-drop + clipboard / file
+
+```typescript
+test('drag file onto upload zone', async ({ page }) => {
+  const dropZone = page.getByTestId('upload-zone');
+  await dropZone.drop({
+    files: ['fixtures/avatar.png'],
+  });
+  await expect(page.getByText('avatar.png')).toBeVisible();
+});
+
+test('reorder list via drag', async ({ page }) => {
+  const itemA = page.getByRole('listitem', { name: 'Item A' });
+  const itemB = page.getByRole('listitem', { name: 'Item B' });
+  await itemA.drop({ target: itemB });
+});
+```
+
+### Aria snapshot bounding boxes (for vision models)
+
+```typescript
+// Include each element's bounding box in the snapshot — consumed by AI agents
+const snapshot = await page.ariaSnapshot({ boxes: true });
+```
+
+### test.abort — fail fast from fixtures or route handlers
+
+```typescript
+test('abort when backend signals broken contract', async ({ page }, testInfo) => {
+  await page.route('**/api/health', async (route) => {
+    const res = await route.fetch();
+    if (res.status() === 503) {
+      testInfo.abort('Backend reported permanent outage — no point retrying'); // 1.60+
+    }
+    return route.fulfill({ response: res });
+  });
+
+  await page.goto('/dashboard');
+});
+```
+
+### Other 1.60 changes worth noting
+
+- New cookie property `partitionKey` on `browserContext.cookies()` / `addCookies()` for partitioned-cookie save/restore.
+- `apiRequest.newContext({ maxRedirects })` to cap redirect chains in API tests.
+- `routeWebSocket` (introduced in 1.59, hardened in 1.60) intercepts, modifies, and mocks WebSocket frames from both `page` and `browserContext`.
+- `Locator.ariaRef()` is deprecated — use `getByRole({ description })` or `toMatchAriaSnapshot` with `[ref=…]`.
+
+---
+
+## Component Testing — Status by Framework (2026-05)
+
+`@playwright/experimental-ct-*` packages remain experimental. Current support tier:
+
+| Package | Status | Notes |
+|---------|--------|-------|
+| `@playwright/experimental-ct-react` | Active | Primary target; works with Vite-based React 19 setups. |
+| `@playwright/experimental-ct-vue` (Vue 3) | Active | Vite-based Vue 3 only. |
+| `@playwright/experimental-ct-svelte` | Active | Vite-based; tracks Svelte 5 runes. |
+| `@playwright/experimental-ct-vue2` | Maintenance — no new features (1.51+) | Migrate to Vue 3 or pin a 1.5x release. |
+| `@playwright/experimental-ct-solid` | Maintenance — no new features (1.51+) | Same migration advice. |
+
+See `component-testing.md` for the cross-tool comparison (Playwright CT vs Cypress CT vs Storybook Interactions).
