@@ -83,6 +83,23 @@ Alert hygiene checklist (quarterly):
   [ ] Dynamic baselines for metrics with known patterns (e.g. daily CPU cycles)
 ```
 
+### Multi-Window Multi-Burn-Rate Alerting (2026 default)
+
+Google SRE's *Alerting on SLOs* recipe is the 2026 baseline for SLO-driven paging. Each rule pairs a **long window** that catches sustained burn with a **short window** that confirms the issue is current rather than historical residue. Three tiers cover the budget spectrum:
+
+| Tier | Long window | Short window | Long burn rate | Short burn rate | Budget consumed | Action |
+|------|-------------|---------------|------------------|------------------|------------------|--------|
+| Page | `1 h` | `5 m` | `> 14.4` | `> 14.4` | `~2%` of monthly budget in `1 h` | P1 page |
+| Ticket | `6 h` | `30 m` | `> 6` | `> 6` | `~5%` of monthly budget in `6 h` | P2 ticket, work within business hours |
+| Trend | `3 d` | `6 h` | `> 1` | `> 1` | `~10%` of monthly budget in `3 d` | Weekly review, prioritise reliability work |
+
+Implementation rules:
+
+- The short window guards against alerts that linger long after the incident has cleared — both windows must be over the threshold to fire.
+- Tune *thresholds*, not the windows. Window lengths are derived from the desired detection time vs the SLO horizon (monthly / quarterly) and should change only when the SLO horizon does.
+- Pair every paging rule with a *3-day trend* rule that does not page — it is the early-warning signal that the team is eating its budget and operational work needs to be reprioritised.
+- Symptom-based SLIs (request error rate, request latency p99, business-outcome success rate) drive the burn rate. Cause metrics (CPU, GC pause, pool saturation) are diagnostic context that *attaches* to the page, never the page itself.
+
 ---
 
 ## Runbook Template

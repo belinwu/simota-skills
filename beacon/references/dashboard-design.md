@@ -33,6 +33,20 @@ RED/USE methods and Grafana dashboard-as-code reference.
 | **Errors** | Failure rate | Correctness |
 | **Saturation** | Resource fullness | Headroom |
 
+### Profiles — The Fourth OpenTelemetry Signal (2026)
+
+OpenTelemetry **Profiles** reached Alpha in March 2026, joining logs, metrics, and traces as a first-class signal. Dashboards in 2026 should reserve a panel for **continuous CPU / allocation profiles** anchored to the same time window as the RED panels above — the profile answers "*where* did the latency or saturation come from in code", which traces and metrics together cannot.
+
+Recommended wiring:
+
+| Layer | Tool | What it produces |
+|-------|------|--------------------|
+| eBPF agent | **OpenTelemetry eBPF Profiler** (OBI) | system-wide stack samples, zero code change required |
+| Ingest / storage | **Grafana Pyroscope 2.0** (rearchitected May 2026) | OTLP-compatible profile store with reduced storage cost and faster query at scale |
+| Correlation | OTel Collector with profile-trace exemplars | join a span to the profile sample taken at the same instant |
+
+A "Service Detail" dashboard should hand the on-call engineer a **flame graph that auto-scopes to the failing span** when they click an outlier on the latency panel. Without that integration, profiling exists but does not change incident response time.
+
 ---
 
 ## Dashboard Hierarchy

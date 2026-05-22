@@ -131,4 +131,23 @@ Quality gates:
   - Closure rate exceeds 80% (quarterly check)
 ```
 
-**Source:** [Google SRE: Postmortem Culture](https://sre.google/workbook/postmortem-culture/) · [PagerDuty: The Blameless Postmortem](https://postmortems.pagerduty.com/culture/blameless/) · [Atlassian: Blameless Postmortem](https://www.atlassian.com/incident-management/postmortem/blameless) · [Rootly: 2025 SRE Incident Management Best Practices](https://rootly.com/sre/2025-sre-incident-management-best-practices-checklist)
+---
+
+## 7. AI-Assisted Postmortems (2026)
+
+By 2026 the autonomous-investigation tooling that triages incidents in real time (Datadog **Bits AI SRE**, Azure **SRE Agent** + GitHub Copilot, Wiz **Green Agent** for security incidents, Resolve KG / Howie / dynamic incident knowledge graphs) also drafts the *initial* postmortem from the investigation transcript. Treat the AI-drafted artefact as a **first pass**, never as the final document.
+
+### Operating Rules
+
+1. **Human editor of record is mandatory.** The AI agent collects telemetry, candidate root causes, contributing factors, and a draft timeline; a named human owner reviews, edits, and signs the postmortem before publication. The signature does not transfer to the agent.
+2. **Blamelessness is a human judgement.** The agent can flag tone issues, but a human reviewer must confirm every BL-01 / BL-02 principle (assume good faith, ask what/how not why) before the document leaves draft.
+3. **Action items still need a single human owner.** PA-03 (multiple owners) extends to AI agents — an action item owned by "Bits AI" does not get done. Either name a human or convert the item to a runbook automation request (see `mend/references/canary-remediation.md`).
+4. **Cite the investigation source.** Postmortem appendix must include the investigation ID from the agent transcript so the chain from telemetry → diagnosis → postmortem → action items is traceable end-to-end. This is the same `investigation_source` field required in Mend's audit trail.
+
+### Quality Gates (extending §6)
+
+- Reviewer confirms every paragraph the AI drafted; no copy-paste-without-edit.
+- The draft's confidence on candidate root cause is preserved verbatim in the document — "high confidence" / "medium confidence" / "low confidence" — so future readers can calibrate the lessons against the original certainty.
+- Hallucination check: every numeric impact figure in the postmortem must trace to a metric / log query in the appendix. Unsourced numbers from an AI draft fail review.
+
+**Source:** [Google SRE: Postmortem Culture](https://sre.google/workbook/postmortem-culture/) · [PagerDuty: The Blameless Postmortem](https://postmortems.pagerduty.com/culture/blameless/) · [Atlassian: Blameless Postmortem](https://www.atlassian.com/incident-management/postmortem/blameless) · [Datadog Bits AI SRE (2026)](https://www.datadoghq.com/blog/bits-ai-sre-deeper-reasoning/) · [Azure SRE Agent + GitHub Copilot self-healing pipelines (2026)](https://stochasticcoder.com/2026/04/29/beyond-the-alert-building-self-healing-pipelines-with-azure-sre-agent-and-github-copilot/)
