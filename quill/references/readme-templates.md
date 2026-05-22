@@ -8,6 +8,33 @@ Contents:
 - `Library/Package README`: package-oriented installation, API, and config template
 - `Application README`: app onboarding, project structure, scripts, and deployment template
 - `CLI Tool README`: command-focused installation, usage, config, and examples template
+- `AI-readability companion files`: `llms.txt` / `llms-full.txt` baseline for 2026 documentation
+
+## AI Consumer is Now ~50% of Documentation Traffic (2026)
+
+By 2026 the published analytics from documentation platforms put **roughly half of documentation traffic on AI agents** — Cursor, Claude Code, ChatGPT, Perplexity, GitHub Copilot, Windsurf, Antigravity — not human browsers. Two practical rules for every README authored in 2026:
+
+1. **Lead with the *what* + the canonical install command in the first 10 lines.** AI scrapers truncate aggressively; a README that buries the install command behind a marketing intro is a `pip install`/`npm install` an AI agent will hallucinate.
+2. **Ship the `llms.txt` companion** at the repository root (and at the docs-site root for hosted docs). Mintlify / Fern / Docusaurus all auto-generate it; for hand-rolled docs use [`docusaurus-plugin-llms`](https://github.com/rachfop/docusaurus-plugin-llms) or write it by hand from the README headings.
+
+### Minimal `llms.txt`
+
+```markdown
+# Package Name
+
+> Brief description (one sentence).
+
+## Docs
+- [Quick Start](./README.md#quick-start): canonical install + first call
+- [API Reference](./docs/api.md): every public symbol with @param, @returns, @throws
+- [Migration Guide](./docs/MIGRATION.md): version-to-version breaking changes
+- [Examples](./examples/): runnable code samples
+
+## Optional
+- [Architecture](./docs/architecture.md): internal design — for contributors only
+```
+
+The companion `llms-full.txt` inlines the same documents concatenated for full-context retrieval. Treat both as **first-class artefacts** that the build pipeline regenerates on every release — stale `llms.txt` is worse than no `llms.txt` because AI agents trust what is there.
 
 ## Library/Package README
 

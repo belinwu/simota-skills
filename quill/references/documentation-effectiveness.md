@@ -87,6 +87,22 @@ Rot Rate = Documents Requiring Update / Total Documents (per quarter)
 > 0.30  = Fast decay (review accuracy, coupling to volatile code)
 ```
 
+### AI-Consumer Coverage (2026 addition)
+
+By 2026 published analytics from documentation platforms show roughly **half of documentation traffic** comes from AI agents (Cursor, Claude Code, ChatGPT, Perplexity, GitHub Copilot, Windsurf). Track an additional surface alongside the JSDoc / type coverage metrics above:
+
+```
+AI-Consumer Coverage =
+  has_llms_txt           ? 25% : 0%   # llms.txt + llms-full.txt present at repo / docs root
+  + headings_are_clean   ? 25% : 0%   # H1 = title, H2 = section, no ambiguous fragments
+  + examples_canonical   ? 25% : 0%   # at least one @example per public symbol
+  + contracts_structured ? 25% : 0%   # @returns / @throws used; null-on-failure is tagged, not prose
+
+Target: 100% for libraries / SDKs; 75%+ for applications.
+```
+
+Stale `llms.txt` is worse than a missing one — the build pipeline must regenerate it on every release. Add a CI gate: fail the build if `llms.txt` was not updated when the source README headings changed.
+
 ### Evaluation Triggers
 
 | Trigger | Check |

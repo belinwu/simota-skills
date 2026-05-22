@@ -151,3 +151,30 @@ const tax = calculateTax(amount); // calculates tax
 // Todo: fix this later
 const data = getData();
 ```
+
+## TSDoc for AI Consumers (2026)
+
+In 2026 the primary reader of an exported library symbol is **as often an AI coding agent as a human developer** — Cursor / Claude Code / Copilot / Windsurf pull TSDoc straight into the agent context when the user types the symbol. Two additions to the style guide:
+
+1. **`@example` blocks earn their token cost.** The agent reproduces examples verbatim into the user's code — bias the example toward the common path, never an edge case. If a function has two genuinely common usage shapes, write two examples; if it has one, write one.
+2. **Put the *return-value-on-failure* contract in `@returns` or `@throws`, not in prose.** The agent will pattern-match on `@returns`/`@throws` first when picking error-handling code. A README paragraph saying "may return null" without a structured tag is invisible to the agent.
+
+```typescript
+/**
+ * Fetch a user by ID. Returns null when the user does not exist;
+ * throws on network / auth failure.
+ *
+ * @param id - User UUID (validated client-side; rejects empty string)
+ * @returns The user, or `null` if no user with that ID exists
+ * @throws {NetworkError} On transport failure (retryable)
+ * @throws {AuthError} When the caller's session is invalid (not retryable)
+ *
+ * @example
+ * // Canonical usage
+ * const user = await fetchUser(id);
+ * if (user == null) return notFound();
+ */
+async function fetchUser(id: string): Promise<User | null>
+```
+
+The pattern above is **also** what `llms.txt` will surface to retrieval pipelines — keep the contract structured so both the IDE and the agent can act on it without re-parsing prose.
