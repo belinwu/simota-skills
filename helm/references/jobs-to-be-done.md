@@ -191,9 +191,15 @@ When `jtbd` completes, emit:
 
 ## References
 
-- Clayton Christensen — *Competing Against Luck* (definitive JTBD)
-- Tony Ulwick — *Jobs to Be Done: Theory to Practice* (Outcome-Driven Innovation)
-- Bob Moesta / Chris Spiek — *Demand-Side Sales 101* (forces of progress interviewing)
+- Clayton Christensen — *Competing Against Luck* (definitive JTBD). Christensen passed away **2020-01-23**; the framework is now stewarded by the **Christensen Institute** (christenseninstitute.org), which since 2024 has published a running series — `AI and Disruptive Innovation`, `Stewardship in AI`, `Navigation & Guidance in the Age of AI: 5 Trends to Watch (2025)` — applying JTBD-adjacent reasoning to GenAI products and education.
+- Tony Ulwick — *JOBS TO BE DONE: Theory to Practice* (the refined 2016+ Strategyn formulation; companion site jobs-to-be-done-book.com). Ulwick's **Outcome-Driven Innovation (ODI)** treats job statements as the *stable* unit and customer-desired outcomes as the measurable, prioritizable layer — Strategyn case studies cover Microsoft, Bosch, Abbott Medical Optics, Arm & Hammer, Kroll Ontrack, and Hussmann.
+- Bob Moesta & Greg Engle — *Demand-Side Sales 101* (Lioncrest, 2020). Reframes selling as "help the customer make progress." Re-Wired Group continues to run JTBD workshops through 2026; pair with Moesta's *Learning to Build* as the practitioner follow-up. Distinguishes **supply-side selling** (features and persuasion) from **demand-side facilitation** (understand the job, reduce switching cost).
 - Alan Klement — *When Coffee and Kale Compete* (job statement examples)
-- Harvard Business Review — "Know Your Customers' Jobs to Be Done" (Christensen et al.)
+- Harvard Business Review — "Know Your Customers' Jobs to Be Done" (Christensen et al., 2016)
 - Jim Kalbach — *The Jobs To Be Done Playbook* (practitioner guide)
+
+### AI-Era JTBD Considerations (2025-2026)
+
+- **"Job" of an AI product is unstable**: GenAI tools often get hired for a stated job (draft email) but absorb adjacent jobs (think out loud, replace a colleague conversation). Re-interview cohorts every 90 days; static job statements decay faster than in classical SaaS.
+- **The competitive set now includes the model itself**: For thin-wrapper AI products, "the model directly via chat" replaces "doing nothing" as the dominant non-consumption alternative. Map it explicitly in the competitive-set-by-job table.
+- **Forces of progress shift**: *Anxiety* now leads with hallucination risk, IP/data leakage, and audit traceability; *Habit* now includes "I already paste into ChatGPT." Reducing anxiety via grounded citations and SOC2/ISO 42001 evidence is often higher-leverage than adding pull.

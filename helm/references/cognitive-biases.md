@@ -61,3 +61,12 @@ Purpose: Use this reference to detect and reduce cognitive bias in strategic wor
 3. Feed detected patterns into `FORESIGHT`.
 4. Score scenario diversity before finalizing a strategy package.
 5. Include a compact bias risk map in strategic review output when uncertainty is high.
+
+## 2025-2026 Notes
+
+- **Daniel Kahneman (1934-2024)** — *Thinking, Fast and Slow* (2011) author and 2002 Nobel laureate — died **2024-03-27**, age 90 ([Princeton 2024-03-28](https://www.princeton.edu/news/2024/03/28/daniel-kahneman-pioneering-behavioral-psychologist-nobel-laureate-and-giant-field), [NPR 2024-03-27](https://www.npr.org/2024/03/27/1241206604/thinking-fast-slow-psychology-behavioral-economics-daniel-kahneman-obit-nobel)). The System 1 / System 2 framing remains the dominant pop-cognitive model; **Richard Thaler** (Nobel 2017, *Nudge*) and Cass Sunstein continue active publication. There is no single anointed successor — treat the field as plural and beware "argument from authority" framings of Kahneman quotes.
+- **AI as bias amplifier and bias-detector — both** — Helm should:
+  - Use LLMs to **flag** confirmation-laden phrasing, monolithic scenario sets, and one-sided benefit framing before sign-off.
+  - Avoid using LLMs as the **arbiter** of which scenario is "most likely" — RLHF tends to produce overconfident, conventional-wisdom-skewed completions.
+  - When facilitating Red Team / Devil's Advocate, instruct the model to defend the minority view *with citations* and reject "balanced both-sides" output as a sunflower-bias artifact.
+- **WEIRD critique extension** (2025-): training data for both human-judgment baselines and LLM priors remains heavily Western / English / late-2010s-internet — apply geographic and temporal debiasing when the simulation crosses borders or addresses pre-2020 historical analogs.

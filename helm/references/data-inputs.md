@@ -111,16 +111,20 @@ organization:
 
 Use only when the user does not provide data, and always disclose the substitution.
 
-| Input | Default |
-|------|---------|
-| SaaS churn | `1-2%/month` |
-| SaaS gross margin | `70-80%` |
-| Japan IT market growth | `3-5%/year` |
-| CAC payback (B2B SaaS) | `12-18 months` |
-| LTV:CAC target | `3:1+` |
-| SaaS Magic Number healthy line | `0.75+` |
-| SaaS M&A revenue multiple | `5-8× ARR` |
-| startup personnel-cost ratio | `60-70%` |
+| Input | Default (2026) | Source |
+|------|---------|------|
+| SaaS churn (classical B2B) | `1-2%/month` | Standard benchmark |
+| SaaS churn (AI-native, <$250/mo ACV) | `3-7%/month` | m3ter / SaaS Mag 2026 — disclose AI-native flag |
+| SaaS gross margin (classical) | `70-80%` | Standard benchmark |
+| SaaS gross margin (AI-native) | `60-70%` | SFAI Labs 2026 disclosure tracker; Bessemer Shooting Stars ~60% |
+| Japan IT market growth | `3-5%/year` | Standard benchmark |
+| CAC payback (B2B SaaS) | `12-18 months` | Standard benchmark |
+| LTV:CAC target | `3:1+` | Standard benchmark |
+| SaaS Magic Number healthy line | `0.75+` | Standard benchmark |
+| SaaS M&A revenue multiple | `5-8× ARR` (AI premium tier `1-3× higher` per Livmo 2026) | Standard benchmark + AI premium |
+| Startup personnel-cost ratio | `60-70%` | Standard benchmark |
+| Rule of 40 (public SaaS median) | `28%` (Q4 2025), only `~20%` clear 40 | Aventis Advisors 2026 |
+| Seed median post-money | `$24M` (Q4 2025); AI seed `+42%` vs non-AI | Carta State of Pre-Seed Q1 2026 |
 
 ## Gap Handling
 

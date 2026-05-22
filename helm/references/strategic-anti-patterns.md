@@ -21,6 +21,9 @@ Purpose: Use these anti-patterns to catch strategy quality failures before simul
 | `SP-08` | Growth Driver Error | Strategy built on untested growth assumptions | Misallocated roadmap and budget | Pilot and validate the driver first |
 | `SP-09` | Clarity Deficit | Goals are qualitative or vague | Teams interpret success differently | Convert strategy into explicit KPIs |
 | `SP-10` | Execution Neglect | Strategy exists without milestones or owners | Plan never becomes action | Add roadmap, milestones, owners, review dates |
+| `SP-11` | Vibe Strategy | "Direction" emitted from an LLM session without explicit assumptions, KPIs, or scenarios | Karpathy's Feb-2025 *vibe coding* framing migrated to strategy — "we just feel where the market is going." No falsifiability, no kill criteria | Force the 3-scenario rule + assumption table + measurable KPI per leg; if the AI cannot produce them, reject as a brainstorm output, not a strategy |
+| `SP-12` | Moat Illusion | "Like X but with AI" / thin wrapper on a frontier model | If your differentiation disappears when the underlying model ships its next feature, you have a timer, not a moat. Q4 2025 - Q1 2026 churn for thin-wrapper AI ARR runs `~65%` over 90 days vs `~35%` SaaS norm | Require at least one of: proprietary data flywheel, workflow depth, distribution lock-in, regulatory moat. Map the wrapper layer on a Wardley map — if all components are Commodity except the brand, abandon |
+| `SP-13` | Validation Debt | Team "vibe-builds" with AI before talking to customers because "we can just build and see" | Builds the wrong product faster. Erodes the talk-to-users floor of YC / Sequoia AI Ascent 2026 playbook | Reinstate Tony Ulwick-style outcome interviews and Moesta-style switch-moment interviews **before** code; gate Forge prototypes on N≥5 validation conversations |
 
 ## Strategy-Execution Gap
 
@@ -70,3 +73,9 @@ Use this bridge in roadmaps:
 | Monitoring | Reuse alignment and communication checks from `ANCHOR` and `TRACK` |
 
 When multiple anti-patterns are present, treat the output as lower-confidence even if the financial model looks clean.
+
+## 2026 AI-Era Notes
+
+- **Vibe-strategy detection signals** (any one triggers `SP-11`): no Assumption table, no KPI per option, "feels right" language without scenario branching, no kill criteria.
+- **Moat-illusion gut check**: ask "would this product still exist 6 months after OpenAI / Anthropic / Google ships v-next of their flagship?" — if the answer is "no", `SP-12` applies. Reference: industry commentary on the "demo, not business" failure mode through 2025-2026; pairs with Carta Q1 2026 data showing AI seed valuations 42% above non-AI peers (`seobrien.com`, `Carta State of Pre-Seed Q1 2026`).
+- **Karpathy 2026 evolution** (Anthropic, 2026-05-19): the same author who coined *vibe coding* explicitly retired the term in favor of *agentic engineering* — strategy work should follow the same trajectory away from "let the model decide" toward "the model is one bounded contributor in a verified pipeline."

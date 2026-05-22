@@ -155,15 +155,20 @@ bsc_effectiveness:
 | Short-term confidence | `±10%` | `±8%` | tighten when predictions are reliably close |
 | Long-term confidence | `±30%` | `±35%` | widen when uncertainty is structurally high |
 
-### Default Assumption Library
+### Default Assumption Library (2026 refresh)
 
 | Assumption | Default | Observed range | Reliability |
 |---|---|---|---|
-| SaaS churn rate | `1-2%/mo` | `0.8-3.5%/mo` | Medium |
-| SaaS gross margin | `70-80%` | `65-85%` | High |
+| Classical SaaS churn rate | `1-2%/mo` | `0.8-3.5%/mo` | Medium |
+| AI-native SaaS churn rate (< $250/mo ACV) | `3-7%/mo` | `2-10%+/mo` | Low (high cohort variance, m3ter / SaaS Mag 2026) |
+| SaaS gross margin (classical) | `70-80%` | `65-85%` | High |
+| SaaS gross margin (AI-native) | `60-70%` | `50-75%` | Medium (SFAI Labs 2026 disclosure tracker; Bessemer Shooting Stars `~60%`) |
 | Japan IT market growth | `3-5%/yr` | `2-7%/yr` | Medium |
 | CAC Payback | `12-18mo` | `8-24mo` | Medium |
 | LTV/CAC target | `3:1+` | `2.5:1-5:1` | High |
+| Public SaaS Rule of 40 median (2026) | `28%` | `15-40%` | High (Aventis Advisors 2026, n=58) |
+| Burn Multiple (early-stage) | `3.4x` | `1.5-5x` | High |
+| Burn Multiple (AI-native at scale) | `0.8-1.2x` | `0.5-1.8x` | Medium (High Alpha 2026) |
 
 ## PROPAGATE
 

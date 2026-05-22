@@ -160,3 +160,28 @@ COMPETE_TO_HELM:
 ```
 
 If this handoff data is not available, Helm should request it via `HELM_REQUEST_COMPETE` or note the gap explicitly in assumptions.
+
+## 2026 Market-Sizing Norms
+
+The 2026 default for AI and SaaS pitch reviews is **bottoms-up validation triangulated with top-down sanity-check** — top-down alone is now the #1 red flag in VC pitch reviews ([Waveup 2026](https://waveup.com/blog/tam-sam-som/)).
+
+- **Bottom-up baseline**: `Market Size = ACV × Number of Reachable Customers`, where "reachable" is defined by ICP, geography, and channel — not by industry total revenue.
+- **Common misuse to flag** (Antler, Visible.vc, Qubit Capital 2026):
+  - Quoting a customer's *total revenue* as your TAM (you can capture only the share they spend on solving the job).
+  - Confusing "industry size" with "addressable software spend on this job."
+  - Skipping SOM entirely — investors read missing SOM as inability to model customer acquisition.
+- **Triangulation effect**: Carta 2025 found founders who present both top-down and bottom-up close rounds **~40% faster** because VCs can stress-test one against the other ([Waveup 2026 TAM/SAM/SOM](https://waveup.com/blog/tam-sam-som/)).
+
+### AI-Startup Sizing Pitfalls (2026)
+
+| Pitfall | Why it fails | Fix |
+|---|---|---|
+| "AI for X" TAM = entire X industry IT spend | Ignores that AI is one feature, not the budget owner | Anchor on the **replaced budget** (specific headcount or workflow), not the industry |
+| Counting model API spend as your TAM | That is OpenAI / Anthropic's TAM, not yours | Your TAM is the *value* you generate above raw API access |
+| Per-seat ARR projected on industry-wide headcount | Assumes 100% replacement of seat-based work | Model gradual workflow capture; introduce an attainable-share cap based on adoption-lifecycle stage |
+| Carta-bench-driven sizing | Anchor on `valuation` not market reality; AI seed valuations ran `+42%` over non-AI Q1 2026, distorting TAM expectations | Disclose valuation reference separately from market sizing; do not let one inform the other |
+
+### Strategic Implication for Helm Scenarios
+
+- For AI-first opportunities, build at least one **pessimistic** scenario where the underlying model provider absorbs the wrapper feature (see `strategic-anti-patterns.md` `SP-12`) — this caps SOM at the period before absorption.
+- For incumbent industries deploying AI as *sustaining* (per Christensen Institute 2025-2026 framing in `disruption-detection.md`), SOM grows but SAM share does not — model the expansion as ARPU lift, not new logos.

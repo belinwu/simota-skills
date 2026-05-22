@@ -213,3 +213,25 @@ Disruption detection integrates into the `SURVEY` phase:
 - Include in `LONG` horizon analysis as a standard check
 - Cross-reference with Compete ecosystem mapping for convergence threats
 - Escalate to Magi (`HELM_TO_MAGI`) if disruption risk ≥ 4.0 for Go/No-Go evaluation
+
+## AI as Disruption: The 2025-2026 Christensen Institute Position
+
+After Clayton Christensen's death on **2020-01-23**, the **Christensen Institute** (christenseninstitute.org) has continued to publish on how disruption theory applies to GenAI. The institute's standing position as of 2025-2026:
+
+- **AI is not inherently disruptive or sustaining** — what matters is the *business model in which it is deployed*. The dominant tech firms (Amazon, Apple, Google, Meta, Microsoft) are largely using AI as a **sustaining innovation**, layering it onto existing offerings to keep current customers happy ([christenseninstitute.org "AI and Disruptive Innovation"](https://www.christenseninstitute.org/blog/ai-and-disruptive-innovation/)).
+- **DeepSeek (Jan 2025)** is the most-cited current candidate for a textbook **low-end / new-market disruptor**: open-weight, dramatically lower training cost, initially "good enough" performance, attacking non-consumers of frontier-model APIs ([CAI-Jun, Medium Feb 2025](https://medium.com/@aestech/deepseeks-challenge-to-recreate-christensen-s-innovator-s-dilemma-a879810e11e2)).
+- **AI in education** is now the institute's clearest disruption case — entrant schools use adaptive AI as the primary instruction channel while incumbents bolt AI onto teacher-directed models (sustaining only).
+
+### "Disruptor Detective" — AI-Assisted Disruption Scoring
+
+Imerman & Fabozzi (2025) — *Quantifying disruption in the age of AI: An AI-based approach to evaluating startup innovation and investment potential* (ScienceDirect S1544612325007500) — propose a GPT-powered tool that scores companies on seven refined Christensen criteria. Treat its output as **input**, not verdict; calibrate against the standard 5-dimension vulnerability scorecard above and require the human assessor to attach evidence per dimension.
+
+### Updated Disruption Classification Cheat Sheet (2026)
+
+| Candidate | Most likely classification | Why |
+|---|---|---|
+| GenAI APIs from incumbents (OpenAI / Anthropic / Google) priced for enterprise | Sustaining for incumbents (Microsoft, Google) | Layered onto existing offerings, sold to existing customers, defends seat ARR |
+| Open-weight frontier models (DeepSeek, Qwen, Llama derivatives) | Low-end disruption | Started "good enough" for many use cases at order-of-magnitude lower TCO; improving fast |
+| AI agents replacing seat-based SaaS | New-market disruption against headcount budgets | Tap budget that used to fund hires, not software |
+| "Like X but with AI" thin wrappers | Usually neither — feature, not disruptor | Vulnerable to incumbent platform absorbing the feature (see `strategic-anti-patterns.md` AP-19) |
+| GenAI in regulated incumbents (banking, insurance, healthcare core) | Sustaining-first, then disruption later | Compliance + brand inertia delay low-end entry by 2-4 years |

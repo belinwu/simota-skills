@@ -1,4 +1,4 @@
-Purpose: Use this reference when Helm models SaaS, growth, runway, or investment outcomes. It preserves the key modeling traps, 2025 benchmark ranges, and alert thresholds used in strategic simulation.
+Purpose: Use this reference when Helm models SaaS, growth, runway, or investment outcomes. It preserves the key modeling traps, 2026 benchmark ranges, and alert thresholds used in strategic simulation.
 
 ## Contents
 - `FM-01..FM-10`
@@ -6,7 +6,7 @@ Purpose: Use this reference when Helm models SaaS, growth, runway, or investment
 - scenario design guidance
 - Helm alert thresholds
 
-# Financial Modeling Pitfalls & SaaS Benchmarks 2025
+# Financial Modeling Pitfalls & SaaS Benchmarks 2026
 
 ## Financial Modeling Anti-Patterns
 
@@ -29,10 +29,10 @@ Purpose: Use this reference when Helm models SaaS, growth, runway, or investment
 
 | Metric | Benchmark | Interpretation |
 |---|---|---|
-| Rule of 40 | `50%+` top quartile | `<20%` is a warning |
-| Burn Multiple | `<1.0x` at `$25-50M ARR` | `>2.0x` is a red flag |
-| NRR | overall median `106%` (2026); segment: Enterprise ACV >$100K `118%`, Mid-Market `108%`, SMB `97%`; AI-native `132%`; top `120%+`; elite `130%+` | `<100%` means net shrink — apply segment context for SMB |
-| Gross Margin | `70-80%` | SaaS baseline |
+| Rule of 40 | `40%+` healthy, `50%+` top quartile, `60%+` elite. Q4 2025 public SaaS **median is only 28%**, with only `~20%` of 58 actively-traded SaaS names clearing the 40 line (Aventis Advisors 2026) | `<20%` is a warning |
+| Burn Multiple | `<1.0x` at `$25-50M ARR`; AI-native cohorts run **0.8x-1.2x** at the same scale (High Alpha 2026); early-stage default is `~3.4x` (SaaS Capital efficiency tracker 2026) | `>2.0x` is a red flag |
+| NRR | overall median `106%` (2026 broad survey); Optifai 939-company panel: Enterprise ACV >$100K `118%`, Mid-Market `108%`, SMB `97%`; Bessemer Cloud Index (public-co structural advantage) `114%`; **AI-native median `48%` with GRR `40%`** (m3ter / SaaS Mag 2026) — most AI tools below the $250/mo line have not yet reached durable PMF; AI premium tier above $250/mo: GRR `70%`, NRR `85%`; elite `130%+` | `<100%` means net shrink — apply segment context for SMB and AI-native cohorts |
+| Gross Margin | classical SaaS `70-80%`; **AI-native new normal `60-70%`** (SFAI Labs 2026 disclosure tracker; Bessemer "Shooting Stars" run `~60%` post custom-model + inference reset) | reset benchmark down for AI workloads |
 | CAC Payback | `12-18 months` | `>24 months` is weak |
 | LTV:CAC | `3:1+` | below this suggests poor unit economics |
 | Magic Number | `>0.75` | efficient sales and marketing spend |
@@ -98,3 +98,23 @@ Use this with:
 - `ST-1` / `ST-2` patterns when modeling MRR, runway, or cash flow
 - `ROADMAP` when deciding pace, investment, or hiring capacity
 - `FORESIGHT` when comparing model outputs against actual SaaS metrics
+
+## 2026 AI-Native Modeling Addendum
+
+When the business model includes AI inference as a primary cost driver, override classical SaaS assumptions:
+
+| Driver | Classical SaaS default | AI-native 2026 default | Rationale |
+|---|---|---|---|
+| Gross margin | 75% | 60-65% (worst-case 50%) | Inference COGS varies with usage; per-token margin pressure persists even after model price cuts ([SFAI Labs 2026](https://sfailabs.com/guides/the-ai-project-gross-margin-reset-every-saas-company-is-about-to-face)) |
+| NRR | 106% | Treat `<85%` as expected baseline below $250/mo ACV until PMF proven; require 90-day cohort GRR before forecasting expansion | AI-native median NRR `48%` / GRR `40%` reflects churn-driven retention |
+| CAC Payback | 12-18 months | 6-12 months (compressed by faster activation) **but** rebound risk: churn at month 12-18 if value is novelty-driven | Optimistic curve can disguise downstream cliff |
+| Per-active-user cost | rarely tracked | **mandatory**: track inference + storage cost per WAU; flag when COGS/seat > 20% of ARPU | Without this view, healthy Rule-of-40 can mask negative contribution margin per power user |
+
+### Series B Fundability Filter (Carta + Bessemer 2026 read)
+
+Bar in 2026:
+- Growth + profitability margin `>40%` (Rule of 40)
+- Burn Multiple `<2.0x`
+- Disclosed plan to reach >75% gross margin within 24 months *or* defensible reason why 60-65% is structural
+
+Companies missing all three are dropping out of the Series B-fundable pool that would have been raised in 2021 ([Aventis Advisors 2026](https://aventis-advisors.com/rule-of-40-in-saas-2026/), [High Alpha 2026](https://www.highalpha.com/blog/mastering-the-saas-tightrope-between-growth-efficiency-and-ai-costs-in-2026)).

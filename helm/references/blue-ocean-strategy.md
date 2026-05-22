@@ -212,8 +212,14 @@ When `blue-ocean` completes, emit:
 
 ## References
 
-- W. Chan Kim & Renée Mauborgne — *Blue Ocean Strategy*
-- *Blue Ocean Shift* (Kim & Mauborgne, 2017 follow-up)
+- W. Chan Kim & Renée Mauborgne — *Blue Ocean Strategy* (2005)
+- *Blue Ocean Shift* (Kim & Mauborgne, 2017 follow-up — process-oriented sequel)
 - INSEAD Blue Ocean Strategy Institute — case studies and tools
 - HBR — "Blue Ocean Strategy" (2004) — original article
 - Strategy Canvas templates — Kim/Mauborgne website
+
+## Canonical Example Status (2026)
+
+- **Cirque du Soleil** — still the canonical textbook case ([blueoceanstrategy.com teaching materials](https://www.blueoceanstrategy.com/teaching-materials/cirque-du-soleil/)). 2020-06 Chapter 15 filing followed by 2020-11 sale to Catalyst Capital Group-led creditor consortium; by 2023 revenue returned to the pre-COVID `~$1B` mark ([Fortune 2024-04-24](https://fortune.com/2024/04/24/cirque-du-soleil-bankruptcy-growth-covid/)). The recovery is itself a Blue Ocean re-application: scaled-down touring model targeting the original adult-non-circus-goer non-customer tier. Use as cautionary tail: a successful Blue Ocean strategy does **not** immunize against operating-leverage shocks (COVID closure).
+- **Southwest Airlines** and **[yellow tail] wine** — still valid as introductory ERRC cases but increasingly "red" in 2026; cite them as *historical illustrations*, not *current* Blue Oceans.
+- **AI-era Blue Ocean candidates** to use when you need a 2025-2026 example: Notion AI's "second brain" reframing of the productivity factors, Perplexity's reframing of "search" into "answers with citations", Cursor's reframing of "IDE" into "agent-collaborator." Validate ERRC for each before quoting.

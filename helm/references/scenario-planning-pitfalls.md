@@ -78,3 +78,15 @@ Use these rules with:
 - `simulation-patterns.md` for short-, mid-, and long-horizon scenario generation
 - `strategic-calibration.md` to track scenario quality over time
 - `strategy-monitoring.md` to bind scenarios to live signals and assumption drift
+
+## 2026 Generative-AI Scenario-Building Guardrails
+
+GenAI now generates scenarios at near-zero marginal cost (per `wargaming-simulation.md`'s GenWar / CSIS-Futures-Lab notes and the *Scaling Intelligent Agents in Combat Simulations* line of work). Three failure modes are now standard checks:
+
+| Failure | Signal | Mitigation |
+|---|---|---|
+| LLM "consensus future" | All N generated scenarios converge on the same trend (often the median pretraining-data view) | Force the model to defend the *minority* scenario; require historical analog citations |
+| Hallucinated probabilities | Model attaches confident `P=...%` without evidence | Strip model-emitted probabilities; reassign via human-assessed Delphi or Magi panel |
+| Narrative homogeneity | Same protagonist archetype across scenarios | Specify divergent actor roles (incumbent / disruptor / regulator / non-consumer) per scenario before generation |
+
+Treat GenAI scenario output as Tier 4 (external default) per `data-inputs.md` — usable with disclosure, never authoritative.

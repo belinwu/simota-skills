@@ -244,7 +244,22 @@ When `wardley` completes, emit:
 - Simon Wardley — *Wardley Maps* (CC-licensed book, Medium series)
 - Learn Wardley Mapping — learnwardleymapping.com (tutorial)
 - Ben Mosior — *Hired Thought* blog and YouTube
-- onlinewardleymaps.com — free browser-based mapping tool
+- onlinewardleymaps.com — free browser-based mapping tool. The **June 2025 modernisation release** ([docs.onlinewardleymaps.com 2025-06-15](https://docs.onlinewardleymaps.com/blog/2025-06-15-release-note/)) ships a TypeScript rewrite, a resizable split-pane editor, and a simplified DSL with new decorator syntax (legacy maps still parse).
 - *Topographical Intelligence for Your Business* — HBR write-up of the framework
 - LEF (Leading Edge Forum) — Wardley's original research
 - "Crossing the River by Feeling the Stones" — Wardley's essay on the doctrine
+- Mark Craddock — *Learn Wardley Mapping* (Medium, Apr 2026) — Claude Code skill benchmarked blind against 25 of Wardley's own published maps; documents the OWM-DSL-as-LLM-target pattern.
+- Mermaid Wardley Map support — community PR landed 2025; LLMs can now emit Wardley diagrams directly into Mermaid blocks for inline rendering.
+- Simon Wardley — *Craft Conference 2025* (Budapest, May 2025) keynote on mapping the AI value chain; also `Agile Meets Architecture 2025` speaker billing.
+
+## 2025-2026 AI Tooling for Wardley Maps
+
+Three classes of AI tooling now coexist; treat them as Tier 4 defaults, never as truth:
+
+| Class | Examples | Use | Risk |
+|-------|----------|-----|------|
+| Claude / GPT skills emitting OWM-DSL | `haberlah/wardley-mapping` (Claude Code skill, 2026), `IanSimon23/wardley_maps` | First-draft maps from a scenario description; export to onlinewardleymaps.com | LLM may collapse Custom and Product when the industry signal is ambiguous — always demand an evidence column |
+| LLM-in-Mermaid | community Mermaid plugin (2025) | Inline maps in chat or PR comments | No interactive editing; positions are not stable across regenerations |
+| Drag-and-drop with AI coach | `IanSimon23/wardley_maps`, MCP-market "Wardley Strategy Mapping" skill (2026) | Workshops and reviews | Coach text reflects training-set bias toward AWS / SaaS exemplars; sanity-check on non-software domains |
+
+Always require the AI to attach an **Evidence** column per component (per the Output Template) and to name the inertia it sees — otherwise the map is graph, not map.

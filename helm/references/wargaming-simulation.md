@@ -20,6 +20,15 @@ Traditional scenario planning asks "What if the market changes?" Wargaming asks 
 
 Key insight from military-to-business adaptation: AI-supported wargaming outperforms traditional methods by an average of `12.8%` in decision-making accuracy, with the most significant improvements in complex multi-actor scenarios.
 
+### 2025-2026 Generative Wargaming State-of-the-Art
+
+- **Johns Hopkins APL — GenWar / GenWar Sim** (announced 2025-03-03, dedicated GenWar Lab established 2025-11): integrates LLMs into the **Advanced Framework for Simulation, Integration and Modeling (AFSIM)** so new scenarios stand up in **under two weeks** vs months previously. Designed to "build wargames in days, analyze dozens of alternative futures at scale, and focus human attention on the scenarios that most demand thoughtful deliberation." ([JHU APL 2025-03-03](https://www.jhuapl.edu/news/news-releases/250303-generative-wargaming), [Military Times 2025-11-24](https://www.militarytimes.com/news/your-military/2025/11/24/new-lab-offers-generative-ai-for-defense-wargaming/))
+- **CSIS Futures Lab — "It Is Time to Democratize Wargaming Using Generative AI"**: argues GenAI shifts the cost of running wargames from honoraria + travel + facilitator time to data curation, enabling many more analytical games per quarter; companion executive-education course `Building Better Strategies with AI, Red Teaming, and Gaming` extends the methodology to enterprise risk management, corporate governance, and strategic planning.
+- **RAND** continues to publish on AI for wargaming and modeling (Artificial Intelligence for Wargaming and Modeling, EP68860), with a 2025 focus on guardrails for AI red-team agents to avoid escalation bias.
+- Open research line — **`Scaling Intelligent Agents in Combat Simulations for Wargaming` (arXiv:2402.06694)** — provides the LLM-agent-as-Blue/Red-player baseline most enterprise adaptations build on.
+
+For Helm, the practical takeaway: when Compete supplies competitor profiles, an LLM-agent loop can now generate the 3-5 most plausible response sequences per move at near-zero marginal cost. Use the financial scenario tree in `WG-1`/`WG-2`/`WG-3` to translate those branches into $ impact; do not trust the LLM-generated probabilities — assign them yourself or via Magi-style multi-perspective scoring.
+
 ### Helm's Role vs Compete's Role
 
 | Responsibility | Owner | Description |
