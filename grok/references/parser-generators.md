@@ -35,6 +35,14 @@
 
 **Scoring note:** Error-message quality is subjective; ★★★★★ reserved for tools that produce Elm/Rust-tier diagnostics with source spans and actionable suggestions out of the box.
 
+### 2026 State of the Tooling
+
+- **tree-sitter** has stabilised around the `0.19.x` line in 2026 with measurable performance work — `tree-sitter-language-pack` ships pre-compiled parsers for ~`305` languages, removing the per-binding compilation toil that dominated 2024 setups. Default to it for any editor / LSP target.
+- **ANTLR4** remains the de facto choice for cross-runtime grammar reuse; 2026 work focuses on its Python and Go targets reaching parity with the JVM target's error-recovery quality.
+- **Chevrotain** is the canonical JS / TS choice when you need a hand-tunable LL(k) parser without leaving Node — its error-recovery primitives still set the bar in the JS ecosystem.
+- **Lezer** (CodeMirror 6's parser generator) is the right answer when the editor itself is CodeMirror; pair with tree-sitter only when CodeMirror is not a constraint.
+- **Marpa** and **nearley** stay useful for ambiguous grammars (linguistic, partial / streaming, exploratory) — Lark + Earley covers the same ground in Python.
+
 ---
 
 ## Grammar Classification

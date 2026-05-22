@@ -20,6 +20,8 @@
 
 ReDoS is a denial-of-service attack where a carefully crafted input forces a backtracking regex engine into exponential or super-linear runtime. A single request can pin a CPU for minutes.
 
+> **2026 prevalence.** A widely-cited measurement estimates that **~`12%` of JavaScript-based web servers expose at least one ReDoS-vulnerable regex** through their request-handling path. Assume the codebase is vulnerable until proven otherwise — make ReDoS auditing a default CI gate, not an opt-in.
+
 ### The Three Root Causes
 
 Every ReDoS-vulnerable regex maps to one of these structural forms:
@@ -112,24 +114,44 @@ Trade-off: linear-time engines drop features that require NFA backtracking — n
 
 ---
 
-## Detection Tools
+## Detection Tools (2026-05 snapshot)
 
 | Tool | Language | Notes |
 |------|----------|-------|
-| `safe-regex` (npm) | JS | Simple star-height heuristic; fast but many false negatives |
-| `redos-detector` | JS/TS | More thorough analysis; integrates with ESLint |
-| `rxxr2` | OCaml / C | Academic-grade analyzer; finds pumping strings |
-| `regexploit` | Python | Finds ReDoS with concrete inputs; useful for CI |
-| ESLint `security/detect-unsafe-regex` | JS | Integrates with existing lint pipeline |
-| `recheck` | JS/Rust | Hybrid static + fuzzing; reasonable precision |
+| `safe-regex` (npm) | JS | Simple star-height heuristic; fast but many false negatives — keep only for legacy CI |
+| `redos-detector` | JS/TS, Node, Deno, browser | Path-counting analysis with per-pattern **score**; score `1` = no backtracking possible. ESLint plugin (`eslint-plugin-redos-detector`) integrates with existing lint pipelines |
+| `recheck` | JS / Rust | Hybrid static + fuzzing; reasonable precision; broadest engine coverage; used in many `npm audit`-adjacent toolchains as of 2026 |
+| `regexploit` | Python | Finds ReDoS with concrete attack inputs; ideal for CI as a fail-with-PoC step |
+| `rxxr2` | OCaml / C | Academic-grade analyser; finds pumping strings; useful for high-stakes audits |
+| ESLint `security/detect-unsafe-regex` | JS | Light backstop; pair with `redos-detector` for coverage |
 
-Usage pattern in CI:
+Usage pattern in CI (2026 default):
 
 ```yaml
 - run: npx redos-detector check "$(git diff --name-only | xargs)"
+- run: npx recheck check ./src                # second-opinion engine
+- run: regexploit ./src --score-threshold 100 # PoC on the worst remaining offenders
 ```
 
-Gate the build on detection; reviewer must justify any exceptions.
+Gate the build on detection; reviewer must justify any exceptions and attach the `redos-detector` score for the regex left in place.
+
+### How `redos-detector` Scores Work (because the score is the contract)
+
+`redos-detector` walks the input string against every path the pattern could take, finds all sibling paths that could also match the same prefix, and reports the **maximum number of backtracks** a worst-case input could force. The mapping:
+
+| Score | Meaning | Action |
+|-------|---------|--------|
+| `1` | Every input matches in exactly one way; no backtracking possible | Safe to ship |
+| `2-5` | Bounded backtracking; super-linear under contrived input but not exponential | Document the input length cap; safe behind a timeout |
+| `6-100` | Exponential paths exist within reach | Rewrite, atomic-group, or move to a linear-time engine |
+| `> 100` | Worst-case exponential, weaponisable from short inputs | **Block** — treat as a CVE-class finding |
+
+### Linear-Time Revival
+
+After ~5 years of measurable JS ReDoS incidents, there is renewed momentum behind linear-time engines that trade backreferences and lookaround for an `O(n)` worst-case guarantee. Two practical paths in 2026:
+
+- **RE2 / Rust `regex`** for new untrusted-input handlers — accept the feature-set tradeoff up front.
+- **Memoized backtracking** (academic, e.g. arXiv `2401.12639`) preserves lookaround and atomic grouping while bounding worst-case time; not yet mainstream but worth tracking before standardising on RE2 for everything.
 
 ---
 
