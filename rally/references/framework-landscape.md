@@ -1,4 +1,4 @@
-# Multi-Agent Framework Landscape (2025-2026)
+# Multi-Agent Framework Landscape (2026-05 snapshot)
 
 > Purpose: Read this when comparing Rally to other frameworks or deciding whether Rally is the correct execution layer.
 
@@ -11,14 +11,15 @@
 
 ## Comparison Matrix
 
-| Framework | Core style | State management | Parallel support | HITL style | Best fit |
-|-----------|------------|------------------|------------------|------------|----------|
-| LangGraph | graph-based workflows | graph state | fan-out and fan-in | interrupts | complex conditional workflows |
-| CrewAI | role-based crews | task chains | sequential or hierarchical | limited | role-driven collaboration |
-| AutoGen or AG2 | conversation-driven | conversation state | group chat | human proxy patterns | experimentation and research |
-| Google ADK | workflow plus LLM agents | session state | `ParallelAgent` | built-in | Google Cloud ecosystems |
-| OpenAI Agents SDK | handoff-driven | conversation and session | limited built-in support | guardrails | OpenAI-native apps |
-| Claude Agent Teams | lead + teammates | `TaskList + SendMessage` | `TeamCreate + Task` | `plan` plus approval | Rally's execution layer |
+| Framework | Core style | State management | Parallel support | HITL style | Production readiness (2026-05) | Best fit |
+|-----------|------------|------------------|------------------|------------|--------------------------------|----------|
+| LangGraph | graph-based workflows with conditional edges | graph state + checkpoints | fan-out and fan-in | interrupts | High — LangSmith observability, checkpointing, streaming; overtook CrewAI in GitHub stars in early 2026 | complex conditional workflows with audit-trail and rollback requirements |
+| CrewAI | role-based crews with process types | task chains | sequential or hierarchical | limited | Medium — rapidly growing ecosystem, limited checkpointing | rapid role-driven collaboration; intuitive abstractions |
+| AutoGen / AG2 | conversation-driven GroupChat | conversation state | group chat | human proxy patterns | Medium — AG2 rewrite is maturing in 2026 | research-grade multi-agent experimentation |
+| Google ADK | hierarchical agent trees + LLM agents | session state | `ParallelAgent` | built-in | Early — backed by Vertex AI; **native A2A protocol** lets ADK agents invoke LangGraph / CrewAI agents through a standard task interface | Google Cloud ecosystems and cross-framework interop via A2A |
+| OpenAI Agents SDK | handoff-driven | conversation and session | limited built-in support | guardrails | Medium — OpenAI-native | OpenAI-native applications |
+| Claude **Managed Agents** (API, beta `managed-agents-2026-04-01`) | managed harness with multiagent sessions, Outcomes (rubric grader), Memory + Dreaming, Webhooks | sandboxed container per agent, server-sent event streaming | platform-managed fan-out | Outcomes rubric in a separate context window | Beta — fully hosted; pay-per-session | unattended multi-day runs, cross-user knowledge persistence, audit-grade orchestration |
+| Claude Agent Teams (Claude Code CLI) | lead + teammates inside one workspace | `TaskList + SendMessage` | `TeamCreate + Task` | `plan` plus approval | Stable inside Claude Code | Rally's execution layer for interactive sessions |
 
 ## Rally Fit
 
@@ -43,11 +44,12 @@
 
 | Need | Better fit |
 |------|------------|
-| rich conditional control flow | LangGraph |
-| role-centric business collaboration | CrewAI |
+| rich conditional control flow with audit / rollback | LangGraph |
+| role-centric business collaboration; rapid POC | CrewAI |
 | research-grade multi-agent experimentation | AutoGen or AG2 |
-| Google Cloud alignment | Google ADK |
+| Google Cloud alignment, cross-framework interop via A2A | Google ADK |
 | OpenAI-native application runtime | OpenAI Agents SDK |
+| Unattended multi-day autonomous runs, cross-user memory persistence, platform-level audit | Claude Managed Agents (escalate from Nexus / Rally) |
 
 ## Cross-Framework Best Practices
 
@@ -70,11 +72,13 @@
 
 ```text
 What execution environment are you in?
-├─ Claude Code CLI -> Rally
+├─ Claude Code CLI (interactive session)             -> Rally
+├─ Anthropic API + need for unattended autonomous    -> Claude Managed Agents
+│   runs / cross-user memory / platform audit          (escalate from Rally via Nexus)
 ├─ Python application
-│  ├─ complex control flow -> LangGraph
-│  ├─ role-based collaboration -> CrewAI
-│  └─ research or experimentation -> AutoGen or AG2
-├─ Google Cloud -> Google ADK
-└─ OpenAI API -> OpenAI Agents SDK
+│  ├─ complex conditional flow + audit / rollback    -> LangGraph
+│  ├─ role-based collaboration / rapid POC           -> CrewAI
+│  └─ research or experimentation                    -> AutoGen or AG2
+├─ Google Cloud / cross-framework A2A interop        -> Google ADK
+└─ OpenAI API                                        -> OpenAI Agents SDK
 ```

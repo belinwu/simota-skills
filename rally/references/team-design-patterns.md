@@ -83,3 +83,23 @@ When worktree isolation is active, the teammate works on a separate branch. If c
 ## `auto` Mode
 
 The `auto` mode provides automatic permission handling. Use it when you want teammates to proceed without manual approval but still respect system-level safety checks. It is the most hands-off mode after `bypassPermissions`.
+
+## Evaluator + Memory Hooks (Managed Agents alignment)
+
+These extensions keep Rally compatible with Claude Managed Agents (`managed-agents-2026-04-01` beta) vocabulary so escalations stay portable.
+
+### Outcomes (rubric grader)
+
+When teammate output must pass a quality bar before downstream work, spawn a dedicated `evaluator` teammate (typically `Plan` or `Explore` subagent_type, model `opus` or `sonnet`) and pass it the same rubric the Managed Agents `Outcomes` feature would consume. The evaluator scores in its own context window — keep it free of the implementer's chain so its judgement is not anchored on the writer's reasoning.
+
+| Field | Rally implementation |
+|-------|----------------------|
+| Rubric | Markdown table inside the evaluator's prompt; one row per criterion with weight and pass threshold |
+| Grader isolation | Separate teammate, separate context, read-only access to implementer output |
+| Verdict format | `{ score, per_criterion, blockers, recommendation }` returned via `_STEP_COMPLETE` |
+
+### Memory + Dreaming
+
+Per-teammate notes belong in `.agents/{teammate-name}.md` (journal). Cross-team learnings belong in Lore's `MEMORY.md` curation — Rally hands them off via `NEXUS_TO_LORE_HANDOFF`. Do not let teammates write directly into Lore-managed files; Lore validates and propagates patterns.
+
+When the same team pattern reappears across sessions (e.g., Pattern C Pipeline used for the third time on the same repo), prefer surfacing the pattern + ownership split to Lore so it is reused without re-derivation next session. This is the local-hub equivalent of Managed Agents' `Dreaming` between-session memory refinement.

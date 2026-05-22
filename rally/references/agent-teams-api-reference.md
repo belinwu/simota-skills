@@ -82,7 +82,9 @@ Agent:
 | `opus` | highest capability |
 | `haiku` | lightest option |
 
-> Model ID reference: `sonnet` = `claude-sonnet-4-6`, `opus` = `claude-opus-4-6`, `haiku` = `claude-haiku-4-5-20251001`. Use the short names above when spawning teammates.
+> Model ID reference (2026-05 snapshot): `opus` = `claude-opus-4-7`, `sonnet` = `claude-sonnet-4-6`, `haiku` = `claude-haiku-4-5-20251001`. Use the short names above when spawning teammates so future model bumps propagate automatically.
+
+> **Opus 4.7 note for parallel work.** Opus 4.7 defaults to fewer subagent spawns and more in-line reasoning. When the lead teammate is on Opus 4.7, state the parallel-fan-out trigger explicitly in the spawn prompt (per `_common/OPUS_47_AUTHORING.md` P4) and pin an output-length envelope so completion reports stay comparable across teammates.
 
 #### `isolation`
 
@@ -276,3 +278,16 @@ Teammates must not send structured JSON status messages (e.g., `{"type":"idle",.
 ### `summary` field requirements
 
 The `summary` field is **required** for `message` and `broadcast` types. It must be a concise 5-10 word preview of the message content. The system uses `summary` in idle notifications and message previews.
+
+### Relationship to Claude Managed Agents (2026-04 beta)
+
+As of 2026-04, Anthropic ships a fully managed agent harness for running Claude as an autonomous agent through the API. Multiagent sessions and `Outcomes` are in public beta under the `managed-agents-2026-04-01` beta header. The vocabulary maps cleanly onto Rally's local hub-spoke model:
+
+| Managed Agents feature | Rally analogue | When to stay local vs escalate |
+|------------------------|------------------|--------------------------------|
+| **Multiagent Orchestration** (lead agent fan-out to specialists with their own model / prompt / tools) | `Agent` spawn with `team_name`, hub-spoke discipline | Stay local for in-session work; escalate when the workload runs unattended for days or needs platform-level audit |
+| **Outcomes** (rubric + separate grader in its own context window) | Rally's evaluator pattern + `_common/HANDOFF.md` rubric fields | Escalate when grading must be tamper-resistant or shared across user accounts |
+| **Memory + Dreaming** (per-agent memory refined between sessions, shared learnings across agents) | `_common/JOURNAL.md` + Lore's `MEMORY.md` curation | Escalate when learnings must persist across users or be audited centrally |
+| **Webhooks** (completion notifications) | `_STEP_COMPLETE` handoff back to Nexus / Mend | Escalate when external systems (incident bot, deploy gate) must be triggered without keeping a session open |
+
+Rally itself does not call the Managed Agents endpoints; Nexus surfaces the escalation recommendation in `NEXUS_COMPLETE` when the workload pattern actually justifies the managed platform.
