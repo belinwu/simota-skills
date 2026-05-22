@@ -79,8 +79,11 @@ Compute includes render layer (headless is 10-40x static). Egress includes respo
 | `robots_txt_refresh_age_max` | Stale robots → illegal crawl |
 | `domain_crawl_delay_violations` | Politeness breach — legal risk |
 | `concurrent_connections_per_domain_violations` | Same |
-| `ai_opt_out_signal_observed` | EU AI Act compliance |
+| `ai_opt_out_signal_observed` (robots.txt / X-Robots-Tag / TDMRep / ai.txt / C2PA) | EU AI Act Art. 53 compliance; GPAI fines from 2026-08-02 |
 | `tdm_reservation_respected_ratio` | Same |
+| `pay_per_crawl_402_responses` | Cloudflare Pay-Per-Crawl economic budget tracking |
+| `pay_per_crawl_charged_total_usd` | Cumulative paid-crawl spend |
+| `fleet_wide_concurrent_per_target` | Prevents DDoS-equivalent traffic (Trilegangers / OpenAI 600-IP / 39K req/min incident pattern) |
 
 ### Freshness
 
@@ -308,10 +311,12 @@ When `monitoring` completes, emit:
 
 - Google SRE Book — chapters on SLIs, SLOs, Error Budgets, Multi-Burn-Rate Alerting
 - Google SRE Workbook — practical SLO patterns
-- OpenTelemetry — spec for metrics, logs, traces (Logs signal GA 2023)
+- OpenTelemetry — spec for metrics, logs, traces (Traces/Metrics/Logs all Stable across major SDKs as of early 2026; Profiling signal RC Q1 2026, GA targeted Q3 2026)
 - Prometheus — metric naming conventions and histogram guidance
 - Brendan Gregg — USE Method for resource analysis
 - Tom Wilkie — RED Method for service-level metrics
-- Common Crawl operational blog — web-scale crawl observability learnings
+- Common Crawl operational blog — web-scale crawl observability learnings (latest dumps CC-MAIN-2026-04)
 - Google's Webmaster logs — crawler-side signals from the inverse perspective
+- Cloudflare AI Crawl Control docs — 402 Pay-Per-Crawl protocol, `crawler-price` / `crawler-exact-price` / `crawler-charged` headers
+- Cloudflare radar 2026-01: Googlebot reaches 1.76x more unique URLs than GPTBot, 2.99x more than Meta-ExternalAgent, 3.26x more than Bingbot, 167x more than PerplexityBot, 714x more than CCBot
 - Site Reliability Engineering Anti-patterns (O'Reilly, 2020)

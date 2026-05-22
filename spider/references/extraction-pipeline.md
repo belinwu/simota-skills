@@ -41,10 +41,11 @@
 | Parser | Speed | Tolerance | Memory | Best For |
 |--------|-------|-----------|--------|----------|
 | lxml | Fast (C-based) | Moderate | Low | Large-scale, well-formed HTML |
-| BeautifulSoup + html5lib | Slow | High | High | Broken/malformed HTML |
-| BeautifulSoup + lxml | Fast | Moderate | Low | General purpose (recommended default) |
+| BeautifulSoup 4.13 + html5lib | Slow | High | High | Broken/malformed HTML |
+| BeautifulSoup 4.13 + lxml | Fast | Moderate | Low | General purpose (recommended default) |
 | Streaming SAX | Fastest | Low | Minimal | Very large documents (>10 MB) |
-| Selectolax | Very fast | Moderate | Low | High-throughput extraction |
+| Selectolax (modest fork 2026) | Very fast | Moderate | Low | High-throughput extraction |
+| Trafilatura 1.x | Fast | High | Low | Article body extraction (news/blog), beats Readability in benchmarks |
 
 ### Decision Flow
 

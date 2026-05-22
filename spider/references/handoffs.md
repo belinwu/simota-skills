@@ -16,9 +16,11 @@ SPIDER_TO_NAVIGATOR_HANDOFF:
     output_format: "<JSON/CSV>"
     schema: "<expected output fields>"
   Compliance:
-    robots_txt_status: "checked — allowed | restricted | unknown"
+    robots_txt_status: "checked — allowed | restricted | unknown (RFC 9309)"
     rate_limit: "<recommended delay between requests>"
-    opt_out_signals: "<any detected opt-out signals>"
+    opt_out_signals: "<any detected: robots / X-Robots-Tag noai / TDMRep / ai.txt / C2PA / Do-Not-Train registry>"
+    edge_provider: "<Cloudflare (note default AI block since 2025-07) | Akamai | Fastly | origin>"
+    pay_per_crawl_required: "<true | false; if true, route to compliance-architecture#pay-per-crawl>"
   Notes: "<any special handling instructions>"
 ```
 

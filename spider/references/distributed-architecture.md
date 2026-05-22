@@ -94,7 +94,9 @@ Domain assignment: Kafka partition key = hash(domain)
 
 ### Web-Scale Tier: Fully Distributed
 
-**Stack:** Nutch 2.x + HDFS / Custom sharded architecture
+**Stack:** Nutch 1.20+ / Apache StormCrawler 3.x / Common Crawl-style custom (Spark-on-Kubernetes) + S3/HDFS + sharded frontier.
+
+> Note (2026): Nutch 2.x has been EOL since 2020; the active line is Nutch 1.20+ with Hadoop 3 / Spark integration. For greenfield web-scale crawlers, Common Crawl's own pipeline (Spark + WARC + S3) and StormCrawler are more common than Nutch.
 
 ```
 Components:

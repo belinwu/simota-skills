@@ -19,7 +19,9 @@ Crawl observability ensures the system is operating correctly, efficiently, and 
 | `crawler_error_total` | Counter | `domain`, `error_category` | count | Fetch errors by category |
 | `crawler_extraction_duration_seconds` | Histogram | `parser_type` | seconds | Extraction pipeline latency |
 | `crawler_dedup_hit_total` | Counter | — | count | URLs rejected by dedup (seen-set hit) |
-| `crawler_compliance_block_total` | Counter | `signal_type` | count | URLs blocked by compliance (robots.txt, opt-out) |
+| `crawler_compliance_block_total` | Counter | `signal_type` (robots / x-robots-tag / tdmrep / ai.txt / c2pa / tos / pay-per-crawl-402) | count | URLs blocked by compliance |
+| `crawler_pay_per_crawl_402_total` | Counter | `domain`, `outcome` (accepted/declined) | count | Cloudflare 402 Pay-Per-Crawl events |
+| `crawler_pay_per_crawl_charged_cents` | Counter | `domain` | cents | Cumulative paid-crawl spend |
 | `crawler_worker_active` | Gauge | `worker_id` | count | Currently active workers |
 | `crawler_checkpoint_age_seconds` | Gauge | — | seconds | Time since last frontier checkpoint |
 
@@ -193,3 +195,7 @@ Spider's observability design produces the inputs that Beacon uses for alerting.
 | `max(content_age)` | Content freshness | < freshness SLO |
 | `crawler_frontier_depth` | Frontier health | 100 < depth < 10M |
 | `crawler:cost_per_url` | Cost efficiency | < budget per URL |
+| `crawler_compliance_block_total{signal_type="pay-per-crawl-402"}` | Pay-Per-Crawl budget guard | within monthly cap |
+| `concurrent_per_target` (cross-IP) | DDoS-equivalent prevention | ≤ 10 (post-Trilegangers default) |
+
+Instrument with OpenTelemetry SDK (Traces / Metrics / Logs all Stable in early 2026; Profiling signal at RC). Use OTLP exporter to Tempo/Jaeger (traces), Prometheus/Mimir (metrics), Loki/SigNoz (logs).

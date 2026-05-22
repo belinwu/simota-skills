@@ -160,9 +160,10 @@ Decision:
 ## Use Cases
 
 ### Important Page Discovery
-- Run PageRank on the crawled link graph
+- Run PageRank on the crawled link graph (Personalized PageRank for topic-focused crawls)
 - Pages with PR > mean + 2σ are "important"
 - Use as priority boost in re-crawl scheduling
+- External authority signals: Common Crawl Webgraph (latest release `cc-main-2025-26-nov-dec-jan`, 250.8M host nodes / 10.9B edges; domain-level 121.3M / 6.2B); Open PageRank (free decile rank); Majestic Trust Flow (commercial). Use as seed-priority feature when the crawled subgraph is too sparse for in-house PageRank.
 
 ### Orphan Page Detection
 - Pages with in_link_count = 0 (no internal links pointing to them)

@@ -24,17 +24,19 @@ Each stage is independently swappable. Design for a fleet: decisions apply acros
 
 | Mode | When | Cost multiplier (vs static) |
 |------|------|------------------------------|
-| Static HTTP fetch | Content in initial HTML | 1x |
+| Static HTTP fetch (curl_cffi / httpx) | Content in initial HTML | 1x |
 | Light JS (prerender hints) | `<noscript>` fallback works | 1.2x |
-| Headless browser (Playwright/Puppeteer) | SPA, hydration required | 8-20x |
-| Remote browser farm (Browserless, Scrapfly) | Geo / CAPTCHA / detection concerns | 20-40x |
+| Headless browser (Playwright 1.49+ / Puppeteer 23+) | SPA, hydration required | 8-20x |
+| Remote browser farm (Browserless v2, Scrapfly, Bright Data Scraping Browser) | Geo / CAPTCHA / detection concerns | 20-40x |
 | Prerender.io / cached rendering service | Public SPAs with SEO prerender | 3-6x |
+| LLM-friendly crawler (Crawl4AI 0.8+, Firecrawl) | LLM/RAG output needed as Markdown | 3-8x (includes content cleaning) |
 
 ### Selection rules
 
 - Default to static HTTP. Confirm via sampled render diff.
 - If > 40% of target data arrives only post-hydration → headless.
-- If target domain uses Cloudflare/Akamai aggressive fingerprinting → stealth browser (undetected-chromedriver, Playwright-stealth).
+- If target domain uses Cloudflare/Akamai JA4 fingerprinting → curl_cffi (Python) or stealth browser (undetected-chromedriver, Playwright-stealth, patchright). Plain `requests`/`httpx`/`Scrapy` default TLS will be blocked.
+- If target is on Cloudflare with AI default-block (post 2025-07): expect HTTP 403 or HTTP 402 Pay-Per-Crawl quote — route to compliance path, not anti-detect.
 - If geo-walled → proxy-routed browser farm.
 
 ### Headless cost drivers
@@ -257,12 +259,15 @@ When `extraction` completes, emit:
 ## References
 
 - Google — *Web Crawling* (Brin & Page 1998; Najork 2009 survey)
-- Common Crawl — WARC format and pipeline
+- Common Crawl — WARC format and pipeline; CC-MAIN-2026-04 latest crawl + webgraph cc-main-2025-26-nov-dec-jan (250.8M host nodes / 10.9B edges)
 - `datasketch` — MinHash / LSH / HyperLogLog Python library
 - `simhash-py`, `simhash-java` — SimHash reference implementations
 - Manku, Jain, Das Sarma — "Detecting Near-Duplicates for Web Crawling" (Google 2007)
-- Scrapy — documentation on selectors, middleware, and pipelines
-- Playwright / Puppeteer — docs on request interception and resource blocking
+- Scrapy 2.13 — documentation on selectors, middleware, and pipelines
+- Playwright 1.49+ / Puppeteer 23+ — docs on request interception and resource blocking
 - Trafilatura — article body extraction library + benchmarks
+- Crawl4AI 0.8+ — LLM-friendly crawler, async, Markdown output for RAG (PyPI 2026-03)
+- Firecrawl — LLM-ready scraping API
 - Unstructured.io — multi-format extraction toolkit
 - `extruct` — structured-data harvester (JSON-LD/microdata/RDFa/OpenGraph)
+- curl-impersonate / curl_cffi — JA4-resistant TLS impersonation library

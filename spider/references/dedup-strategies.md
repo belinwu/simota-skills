@@ -290,7 +290,8 @@ When `dedup` completes, emit:
 - Broder — "On the resemblance and containment of documents" (MinHash, 1997)
 - Indyk, Motwani — "Approximate nearest neighbors: towards removing the curse of dimensionality" (LSH, 1998)
 - Fan et al. — "Cuckoo Filter: Practically Better Than Bloom" (2014)
+- Roaring Bitmap — RoaringBitmap project (Lemire et al.) — preferred over bare Bitmap/Bloom for dense URL-ID sets, used by Lucene, Druid, ClickHouse
 - `datasketch` Python — MinHash, LSH, HyperLogLog
-- RocksDB — LSM-tree embedded KV store (Facebook)
-- Common Crawl — operational dedup at web scale
+- RocksDB 9.x — LSM-tree embedded KV store
+- Common Crawl — operational dedup at web scale; latest dump CC-MAIN-2026-04
 - Google Webmaster — URL canonicalization guidelines

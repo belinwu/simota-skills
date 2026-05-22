@@ -55,18 +55,26 @@ Edge cases:
 - Fetch error (5xx): retry 3x with backoff, then conservative policy
 ```
 
-## EU AI Act Compliance (Full Enforcement August 2026)
+## EU AI Act Compliance (GPAI obligations live since 2025-08-02; AI Office enforcement/fines from 2026-08-02)
 
-### Opt-Out Signal Taxonomy
+GPAI Code of Practice (final 2025-07-10): 26 signatories including OpenAI, Anthropic, Google, Microsoft, Amazon, IBM, Cohere, Mistral, Aleph Alpha (xAI signed only Safety chapter). Copyright chapter Commitment 1 explicitly requires signatories to "only employ web crawlers that follow the Robot Exclusion Protocol (RFC 9309) as specified by IETF, and identify and comply with other appropriate machine-readable protocols to express opt-outs." The EU Commission opened a 2025-12 stakeholder consultation on TDM opt-out protocols (Article 53(1)(c)) and will publish a maintained list of agreed machine-readable opt-out solutions, reviewed every two years.
+
+### Opt-Out Signal Taxonomy (per EU Commission TDM consultation 2025-12)
 
 | Signal Type | Source | Detection Method | Action |
 |-------------|--------|-----------------|--------|
-| Machine-readable | `robots.txt` Disallow | robots.txt parser | Block URL/path |
-| Machine-readable | `X-Robots-Tag: noai` | HTTP header inspection | Skip content |
+| Machine-readable | `robots.txt` Disallow (RFC 9309) | robots.txt parser | Block URL/path |
+| Machine-readable | `X-Robots-Tag: noai` / `noimageai` | HTTP header inspection | Skip content |
 | Machine-readable | `<meta name="robots" content="noai">` | HTML meta parse | Skip content |
-| Machine-readable | `ai.txt` (proposed standard) | Dedicated parser | Follow directives |
+| Machine-readable | TDM Reservation Protocol (TDMRep, W3C CG) | `tdm-reservation.json` / HTTP header | Block for TDM use |
+| Machine-readable | `ai.txt` (Spawning) | Dedicated parser | Follow directives |
+| Machine-readable | C2PA TDM Assertions | Manifest inspection | Honor assertion |
+| Machine-readable | Do Not Train registry (Spawning AI) | API lookup | Block domain/URL |
+| Machine-readable | JPEG Trust core foundation v2 | Image metadata | Honor flag |
+| Machine-readable | TDM.ai protocol (Liccium) | Dedicated parser | Honor directives |
+| Editorial-curation | `llms.txt` (Answer.AI proposal) | Dedicated parser | Treat as content-guidance, NOT opt-out (10.13% adoption Q1 2026; no major AI vendor commits to it in production) |
 | Plain-text | ToS "no scraping" clause | Manual review → domain blocklist | Block domain |
-| Plain-text | ToS "no AI training" clause | Manual review → domain blocklist | Block domain |
+| Plain-text | ToS "no AI training" clause | Manual review → domain blocklist | Block domain (German courts: plain-text reservation valid under Copyright Directive 2019/790 Art 4) |
 
 ### Implementation Pattern
 
@@ -85,19 +93,29 @@ Log every opt-out decision for audit trail.
 
 | Violation | Penalty (EU AI Act) |
 |-----------|---------------------|
-| GPAI data obligations (Art. 53) | Up to €15M or 3% global revenue (Art. 101) |
+| GPAI data obligations (Art. 53) | Up to €15M or 3% global revenue (Art. 101); AI Office enforcement powers active from 2026-08-02 |
 | Copyright opt-out violation | National copyright law + EU AI Act overlay |
 | Data minimization failure (GDPR) | Up to €20M or 4% global turnover (Art. 83) |
 
-## Jurisdiction Risk Table
+### Pay-Per-Crawl economic compliance layer (Cloudflare 2025-07 GA / 2025-08-28 AI Crawl Control)
+
+For AI-training and inference crawlers targeting Cloudflare-fronted sites (~20% of public web), the architecture must include a payment-aware fetcher path:
+
+1. On HTTP 402 Payment Required + `crawler-price` header → decide via budget policy.
+2. To accept: retry with `crawler-exact-price` header matching the quote.
+3. Success returns HTTP 200 + `crawler-charged` header (Cloudflare bills aggregately as Merchant of Record).
+4. Verified-crawler registration with Cloudflare is required for the AI-bot category (`crawler-id` claim).
+5. Alternative monetized brokers: TollBit, ProRata, Vellum, Bright Data licensed feeds, Diffbot Knowledge Graph.
+
+## Jurisdiction Risk Table (2026-05)
 
 | Jurisdiction | Key Law | Risk Level | Key Requirement |
 |-------------|---------|------------|-----------------|
-| EU | AI Act + GDPR + Copyright Directive | High | Respect all opt-out signals, data minimization, DPIA for PII |
-| US | CFAA + State laws + Fair Use doctrine | Medium | No unauthorized access, respect ToS, fair use analysis |
+| EU | AI Act + GDPR + Copyright Directive 2019/790 Art 4 (TDM opt-out) | High | Respect all machine-readable opt-out signals (RFC 9309 robots.txt + TDMRep + others on EU Commission's list), data minimization, DPIA for PII; GPAI fines from 2026-08-02 (up to €15M or 3% revenue) |
+| US | CFAA (post Van Buren / hiQ Ninth Circuit 2022) + state laws + Fair Use | Medium | hiQ v. LinkedIn settled 2024-12 with permanent injunction against hiQ + $500K damages — CFAA does NOT prohibit scraping public data, but ToS + state-law + copyright + trespass-to-chattels claims remain (Reddit v. Anthropic 2025, Reddit v. Perplexity 2025-10-22, NYT v. Perplexity 2025-12-05, Anthropic-Authors $1.5B settlement 2025-09). Architecture must avoid hard-block circumvention (NYT alleged Perplexity bypassed hard-block). |
 | UK | UK GDPR + ICO guidance | Medium-High | Similar to EU, ICO enforcement actions |
-| Japan | Copyright Act Art. 30-4 (informational analysis exception) | Low-Medium | Broad research exception, but respect opt-out |
-| China | Personal Information Protection Law | High | Strict consent requirements for PII |
+| Japan | Copyright Act Art. 30-4 (informational analysis exception, 2018) | Low-Medium | Broad research/AI training exception, but commercial collection should respect opt-out signals; cultural agency 2024 guidance flagged "unjustly prejudice the interests" carve-out |
+| China | Personal Information Protection Law (PIPL) + DSL | High | Strict consent requirements for PII; cross-border transfer restrictions |
 | Australia | Privacy Act + Copyright Act | Medium | Fair dealing defense, privacy obligations |
 
 ## Sitemaps Integration

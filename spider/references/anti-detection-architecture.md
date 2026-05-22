@@ -64,39 +64,48 @@ Requirements:
 - Updated quarterly (browser versions change)
 - Rotation: per-session (not per-request — consistent UA within a session)
 
-Example distribution (Q1 2025 approximation):
-  Chrome 120-124 (Windows 10/11): 45%
-  Chrome 120-124 (macOS): 15%
-  Safari 17.x (macOS): 12%
-  Firefox 120-124 (Windows/Linux): 10%
-  Edge 120-124 (Windows): 8%
-  Chrome Mobile (Android): 7%
+Example distribution (Q2 2026 approximation, StatCounter desktop share):
+  Chrome 130-136 (Windows 10/11): 45%
+  Chrome 130-136 (macOS): 15%
+  Safari 18.x (macOS): 12%
+  Firefox 130-136 (Windows/Linux): 9%
+  Edge 130-136 (Windows): 8%
+  Chrome Mobile (Android): 8%
   Safari Mobile (iOS): 3%
 
-Anti-pattern: DO NOT use bot-like UAs (e.g., "Python-urllib/3.11")
-Best practice: Include realistic Accept, Accept-Language, Accept-Encoding headers
+Anti-pattern: DO NOT use bot-like UAs (e.g., "Python-urllib/3.12")
+Best practice: Include realistic Accept, Accept-Language, Accept-Encoding, Sec-CH-UA-* client-hint headers consistent with the chosen UA. Cloudflare Bot Management cross-checks UA vs JA4 vs client hints; mismatch is flagged.
 ```
 
 ## TLS Fingerprint Diversification
 
-### JA3/JA4 Fingerprinting
+### JA3/JA4 Fingerprinting (2026 status)
 
 ```
 What it detects:
-  TLS Client Hello → cipher suites, extensions, supported groups, signature algorithms
+  TLS Client Hello → cipher suites, extensions, supported groups, signature algorithms,
+  ALPN, GREASE values, HTTP/2 SETTINGS frame ordering.
+  As of 2026 JA4/JA4+ (FoxIO) is baked into every major bot-protection vendor
+  (Cloudflare Bot Management, Akamai Bot Manager, DataDome, PerimeterX/HUMAN);
+  JA3 is considered legacy because TLS 1.3 extension permutation made it unstable.
+  JA4 sorts extensions alphabetically before hashing → resistant to randomization.
+
   Each TLS library has a distinctive fingerprint:
-  - Python requests (urllib3): distinct JA3 hash
-  - Go net/http: distinct JA3 hash
-  - Chrome browser: distinct JA3 hash
+  - Python requests (urllib3): distinct JA4 hash
+  - Go net/http: distinct JA4 hash
+  - Chrome 130+ browser: distinct JA4 hash with GREASE
+  - curl 8.x baseline: distinct JA4 hash (NOT a browser)
 
 Mitigation strategies:
-1. curl-impersonate: Mimics Chrome/Firefox TLS fingerprints
-2. Playwright/Puppeteer: Real browser TLS stack
-3. utls (Go): Customizable TLS fingerprint
-4. Custom cipher suite ordering: Match target browser profile
+1. curl-impersonate / curl_cffi (Python binding): mimics Chrome/Firefox/Edge/Safari TLS+HTTP/2 fingerprints; default tool in 2026.
+2. Playwright / Puppeteer / undetected-chromedriver: real browser TLS stack, also handles JS fingerprinting (canvas/WebGL).
+3. utls (Go): ClientHelloID presets for Chrome/Firefox.
+4. Custom cipher suite ordering: Match target browser profile.
 
-Decision: If target uses JA3 fingerprinting (Cloudflare, Akamai), use
-curl-impersonate or browser-based fetching. Otherwise, standard TLS is fine.
+Decision: If target uses JA4/JA4+ fingerprinting (Cloudflare, Akamai, DataDome),
+use curl-impersonate/curl_cffi or browser-based fetching. Pure curl/requests/httpx
+will be flagged. curl-impersonate does NOT handle JS-layer fingerprinting
+(canvas, WebGL, font enumeration, navigator.webdriver) — that requires Playwright/stealth.
 ```
 
 ## Timing Models
@@ -152,6 +161,15 @@ Acceptable responses:
 - Escalate to human operator for decision
 - Accept data loss for that domain
 ```
+
+## Cloudflare-Fronted Sites (2026 default block)
+
+Since 2025-07-01 Cloudflare flips new sites to "Block AI crawlers by default" and offers Pay-Per-Crawl (HTTP 402 Payment Required with `crawler-price` / `crawler-exact-price` / `crawler-charged` headers). About 20% of the public web is fronted by Cloudflare. Architecture implications:
+
+- Classify each target host's edge (Cloudflare / Akamai / Fastly / origin) at DISCOVER. Cloudflare-edged targets that have not opted into your crawler will return 403 even with perfect TLS impersonation.
+- Cloudflare AI Labyrinth (2025-03) serves an infinite maze of AI-generated decoy pages to crawlers that ignore robots.txt. Detect via abnormally high in-link counts to never-before-seen URLs from a single domain → quarantine and exclude.
+- Verified Bots program: register your crawler with Cloudflare (`bot-management/verified-bots`) for legitimate access; unverified bots that mimic Googlebot UA are blocked.
+- For AI-training corpus crawls: classify target hosting and treat Cloudflare/AI-Audit fronted domains as a separate licensable tier (negotiate via Pay-Per-Crawl marketplace or skip).
 
 ## Detection Risk Assessment
 
