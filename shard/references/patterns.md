@@ -1,5 +1,7 @@
 # Shard Multi-Tenant Design Patterns
 
+> **2026 default for new PostgreSQL SaaS: shared tables + RLS + `set_config` in transaction mode.** The 2026 PostgreSQL community guidance has consolidated around three points: (1) **Row-Level Security** is the right balance of simplicity + safety for most workloads, adding only `~2-4%` overhead on properly-indexed tenant columns; (2) **PgBouncer in transaction mode** is the default connection pooler, but the tenant context must be set with **transaction-scoped `set_config(...)`** (NOT session-scoped `SET`) so the next request on the same pooled connection cannot inherit the previous tenant's context — this is the single most common multi-tenant data-leak in 2026 audits; (3) **Citus** (now native to Azure Database for PostgreSQL and available as `pgsql-citus` self-hosted) is the right tool when row-count or write-volume exceeds what a single PG node handles, with schema-based or distributed-table sharding under PgBouncer. See `tenant-quota-throttling.md` for the noisy-neighbor controls that pair with these choices.
+
 ## Isolation Strategies
 
 ### Database-per-Tenant
@@ -71,10 +73,22 @@ CREATE POLICY tenant_isolation ON orders
 
 -- Force RLS for table owner too
 ALTER TABLE orders FORCE ROW LEVEL SECURITY;
-
--- Set tenant context per request
-SET app.current_tenant = 'tenant-uuid-here';
 ```
+
+**Setting tenant context safely under PgBouncer transaction mode (2026 mandatory pattern):**
+
+```sql
+-- WRONG: session-scoped — leaks across PgBouncer-pooled connections in transaction mode
+SET app.current_tenant = 'tenant-uuid-here';
+
+-- CORRECT: transaction-scoped — cleared at COMMIT / ROLLBACK, safe under PgBouncer
+BEGIN;
+SELECT set_config('app.current_tenant', 'tenant-uuid-here', true);  -- `true` = local to transaction
+-- ... queries ...
+COMMIT;
+```
+
+The `true` third argument to `set_config` scopes the GUC to the transaction. Without it, a future request on the same pooled connection inherits the previous tenant's context — the most common 2026 multi-tenant data-leak pattern. Treat any RLS code that uses bare `SET app.current_tenant` under PgBouncer transaction mode as a `Sev-1` security finding.
 
 ### Application-Level RLS (ORM)
 
