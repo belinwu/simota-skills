@@ -14,16 +14,24 @@ Purpose: Use this file when you are choosing agent architecture, MCP design, str
 
 | ID | Pattern | Best for | Main risk |
 |----|---------|----------|-----------|
-| `AP-01` | ReAct | dynamic reasoning with tool use | loops and drift |
-| `AP-02` | Plan-and-Execute | long, auditable multi-step tasks | rigid plans |
+| `AP-01` | ReAct (Thought → Action → Observation loop) | dynamic reasoning with tool use | loops and drift |
+| `AP-02` | Plan-and-Execute (planner + separate executor) | long, auditable multi-step tasks; secure plan-then-execute resists prompt injection by isolating the executor | rigid plans |
 | `AP-03` | Specialized Multi-Agent | composite domains | handoff failure |
 | `AP-04` | Router | diverse input types | misclassification |
-| `AP-05` | Supervisor | coordinated child agents | bottlenecks |
+| `AP-05` | Supervisor / Orchestrator | coordinated child agents | bottlenecks |
+| `AP-06` | **CodeAct** (model emits Python / TS to call tools and compose actions; "code is the action") | data-shape-heavy or tool-graph-heavy tasks where token-by-token JSON tool calls become brittle | sandbox blast radius — require an isolated runtime |
+| `AP-07` | Reflexion (act → self-critique → revise) | tasks where the model can score its own output against an explicit rubric | reflection without ground truth amplifies bias |
+| `AP-08` | Tree-of-Thoughts | very hard reasoning where multiple branches must be compared | cost explosion; gate with budget |
 
-Default:
-- use Plan-and-Execute for predictable multi-step work;
-- use ReAct only for dynamic sub-tasks;
+Default (2026):
+- use **Plan-and-Execute** for predictable multi-step work; default to the "secure plan-then-execute" variant when the input can be attacker-controlled;
+- use **ReAct** only for dynamic sub-tasks bounded by a step ceiling;
+- use **CodeAct** when the same task in ReAct would require chained JSON tool calls with brittle field plumbing — emit code, run it in a sandbox, observe the result;
 - use agents when branching is dynamic, and fixed workflows when the path is predictable.
+
+### Agentic Workflows vs Agentic Loops
+
+The 2026 framing distinguishes **Agentic Loops** (open-ended Think→Act, agent decides everything) from **Agentic Workflows** (structured, stateful, verifiable software modules with bounded planning + bounded execution). Treat workflows as the default and loops as an opt-in for genuinely open-ended sub-tasks. Composio, Microsoft Agent Framework, and OpenAI Agents SDK have all converged on this distinction during 2026.
 
 ## Reliability Principles
 
@@ -117,3 +125,5 @@ Rules:
 - no per-step validation -> require validation-embedded plan
 - no cost cap -> require budget ceiling
 - multi-agent design with implicit communication -> require structured interfaces
+- attacker-controllable input feeds into a Plan-and-Execute design without a hardened executor (no tool allow-list, no I/O sandboxing) -> block; require the secure plan-then-execute variant
+- `AP-06` CodeAct without an isolated runtime (separate process, network egress controls, FS scoping) -> block; CodeAct without sandbox is `LLM-RCE-as-a-feature`

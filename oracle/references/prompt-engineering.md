@@ -45,7 +45,7 @@ You are [role] with expertise in [domain].
 <examples>...</examples>
 ```
 
-## Claude 4.x Techniques
+## Claude 4.x Techniques (Opus 4.7 / Sonnet 4.6 baseline, 2026-05)
 
 ### Adaptive Thinking
 
@@ -60,6 +60,16 @@ Rules:
 - prefer `"think thoroughly"` over brittle hand-written reasoning scripts;
 - ask Claude to self-check against explicit criteria;
 - if overthinking appears, tell it to choose and commit unless new evidence appears.
+
+### Opus 4.7 Defaults That Change Prompt Shape
+
+Opus 4.7 calibrates output length to context and restrains tool calls more aggressively than earlier 4.x. Three concrete consequences for prompt design:
+
+1. **State an output-length envelope explicitly** ("Output is `5-10` lines / ≤ `300` tokens"). Without it, Opus 4.7 will over- or under-shoot based on its own estimate of the task.
+2. **State the tool-use directive explicitly** ("Read every file in scope before answering" vs "Do not read files until the design is locked"). Opus 4.7 reads fewer files by default than Sonnet 4.x; orchestrators that assume eager reads will regress.
+3. **State the thinking nudge at high-stakes decisions** ("Think step-by-step before classifying"). Opus 4.7 already reasons internally; the nudge is a quality lever, not a workaround for a missing capability.
+
+These match `_common/OPUS_47_AUTHORING.md` principles P2 / P3 / P5.
 
 ### Structured Outputs
 
@@ -129,15 +139,25 @@ Rules:
 
 - call independent tools in parallel only when there are no dependencies;
 - call dependent tools sequentially;
-- never guess missing parameters.
+- never guess missing parameters;
+- **on Opus 4.7**: state the parallel trigger explicitly in the prompt ("Spawn each independent track as a separate subagent in the same turn"); the model fans out less aggressively than 4.6 by default.
 
 ### Autonomy vs Safety
 
 - freely take local, reversible actions;
-- ask before hard-to-reverse actions or changes to shared systems.
+- ask before hard-to-reverse actions or changes to shared systems;
+- when the agent can be reached by attacker-controlled text (RAG sources, customer messages, scraped pages), follow the **secure plan-then-execute** pattern: planning sees the untrusted text; the executor only sees the *plan*, never the raw input.
 
 ### Subagent Orchestration
 
 - light custom agents `<3k` tokens enable fluid orchestration;
 - heavy custom agents `25k+` tokens create bottlenecks;
 - use subagents for parallel or isolated work, not trivial single-step tasks.
+
+### CodeAct Prompting
+
+When the task is data-shape-heavy or tool-graph-heavy:
+- frame the assistant turn as "emit a Python (or TS) program that uses the provided tools to solve the task";
+- enumerate the available tool surface as importable functions, not as JSON tool calls;
+- require the program to print a structured result to stdout that downstream code can parse;
+- always run the emitted program in a sandboxed runtime (separate process, scoped FS, blocked network unless explicitly required).

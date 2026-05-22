@@ -19,14 +19,17 @@ Purpose: Use this file when you are choosing a RAG architecture, defining retrie
 | Self-RAG | high factuality with self-checks | Medium |
 | Corrective RAG | reliability-critical retrieval recovery | Medium |
 | GraphRAG | multi-hop reasoning and global summaries | High |
-| Agentic RAG | dynamic multi-step retrieval | High |
+| Agentic RAG | dynamic multi-step retrieval; brings irrelevant-chunk rate from ~`40%` down to `<8%` on multi-hop benchmarks (2026 surveys) | High |
 | Multi-Agent RAG | enterprise multi-domain knowledge | Very high |
 
-Decision flow:
+Decision flow (2026):
 - simple single-corpus Q&A -> Hybrid RAG
-- multi-hop reasoning or global summarization -> GraphRAG
+- multi-hop reasoning or global summarization -> GraphRAG (Microsoft GraphRAG: entity / relationship graph + multi-level community summaries)
 - dynamic strategy adaptation -> Agentic RAG
 - self-correction and factuality priority -> Self-RAG or Corrective RAG
+- entity-rich relational data -> GraphRAG; question routing across heterogeneous sources -> Agentic RAG
+
+> The 2026 industry consensus narrows production choices to three dominant shapes: **Naive (Vanilla / Hybrid) RAG**, **Agentic RAG**, and **GraphRAG**. Treat anything else as research or a specialisation of one of these three.
 
 ## Hybrid Search Default
 
@@ -50,22 +53,26 @@ Single highest-ROI improvement: reranking.
 | Paragraph | structured docs | `200-500` tokens |
 | AST-based | source code | function / class level |
 | Hierarchical | complex docs | parent summary + child chunks |
+| **Late chunking** (2026 default for context-sensitive corpora) | long docs where chunks must retain full-document context | embed the whole document; pool token-level attention into chunk embeddings; pair with a ColBERT-style late-interaction reranker for highest fidelity |
 
 Rules:
 - avoid naive fixed `512`-token splitting without heading preservation;
 - preserve document structure for semantic chunking;
-- separate indexes by domain when content differs materially.
+- separate indexes by domain when content differs materially;
+- if pronouns, definitions, or cross-references span chunk boundaries, prefer late chunking + late interaction over more aggressive overlap.
 
-### Embedding And Vector DB Selection
+### Embedding And Vector DB Selection (2026-05 snapshot)
 
 - cost-sensitive simple queries -> `text-embedding-3-small`
-- long documents -> `voyage-3`
+- long documents -> `voyage-3` (or `voyage-3-lite` for cost-bounded)
 - multilingual -> `Cohere embed-v3` or `BGE-M3`
 - highest quality -> `text-embedding-3-large`
 - self-hosted -> `BGE-M3`
+- **Matryoshka-trained embeddings** -> store at full dimension (e.g., `3072`) for retrieval-critical paths and truncate to `512` / `768` / `1024` for latency- or cost-bounded paths without re-embedding. Default to Matryoshka-compatible models when the system needs both a "premium" and "cheap" retrieval tier.
+- **Late-interaction retrievers** (ColBERT v2 family, ColPali for visual docs) -> pair with dense retrieval when reranker budget is tight; they are reranker-grade quality at retrieval-grade latency.
 
 - `<10k` docs or prototype -> `ChromaDB`
-- existing PostgreSQL -> `pgvector`
+- existing PostgreSQL -> `pgvector` (HNSW + half-precision is the default production knob)
 - managed production -> `Pinecone`
 - self-hosted production -> `Qdrant` or `Weaviate`
 - Hybrid Search native fit -> `Weaviate`
@@ -119,6 +126,8 @@ Use GraphRAG when:
 ## Oracle Gates
 
 - no Retrieval SLO -> block at `DESIGN`
-- fixed-size-only chunking -> require semantic review
-- “accuracy” as sole metric -> require 3-tier evaluation
-- no reranker -> require ROI analysis
+- fixed-size-only chunking -> require semantic review (or late chunking proposal for context-sensitive corpora)
+- "accuracy" as sole metric -> require 3-tier evaluation
+- no reranker -> require ROI analysis (consider ColBERT-style late interaction as a reranker-light alternative)
+- multi-hop questions on entity-rich data without a GraphRAG variant proposed -> require justification
+- premium + cheap retrieval tiers needed but no Matryoshka-compatible embedding selected -> require justification
