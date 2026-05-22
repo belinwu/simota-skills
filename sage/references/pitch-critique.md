@@ -123,6 +123,22 @@ Surface explicitly by ID when ≥1 signal is observed (single signal threshold �
 | `PA-12` | Q-deflection | Founder answers a different question than asked | Force the founder to repeat the question, then answer it directly |
 | `PA-13` | Metric without unit | "We grew 300%" without time period or base | Always state: metric (number) over period (time) from base (number) |
 | `PA-14` | Investor-pleasing | Pitch is shaped to what investors "want to hear" rather than what's true | Surface as P-40 (customer signal precedes investor signal) |
+| `PA-15` | Model-as-moat (2026) | Pitch leans on the foundation model (GPT-4o / Claude / Gemini) as the differentiator; no proprietary data, workflow embedment, or distribution edge | Replace with one of: proprietary dataset, signed integration into a system of record, regulated-vertical depth. Cite P-60 |
+| `PA-16` | Tool pitch instead of work pitch (2026) | Deck sells "AI-powered tool" / "copilot" / "assistant"; no replaced budget line, no per-outcome pricing, no SLA | Restructure to outcome-based: "We do JOB, customer pays per JOB completed, SLA is X." Cite P-61 (Sequoia AI Ascent 2026 thesis) |
+| `PA-17` | Inflated ARR (2026) | ARR claim mixes pilots, LOIs, credits, or consulting with recurring revenue; founder hesitates when asked for the bank-deposited number | Define ARR explicitly (contracted recurring billed last 30 days), restate every number; disclose pilots separately. Cite AP-19 / YC Apr 2026 "Be Truthful" |
+
+## 2026 AI-Era Deck Expectations
+
+Sequoia AI Ascent 2026 (Apr 2026) signaled what a current AI pitch deck must address beyond the classic arc:
+
+- **Reliability and evaluation** — show how you measure agent correctness; cite eval set, pass rate, regression cadence.
+- **Data advantage** — what proprietary signal does your agent see that the foundation lab does not?
+- **Workflow depth** — which system of record are you embedded in, and what would it cost the customer to rip out?
+- **Customer ROI** — replaced budget line in dollars or hours, not a productivity adjective.
+- **Pricing power** — per-seat is the weak default; per-outcome, per-resolved-ticket, or per-completed-job is the strong frame.
+- **Unit economics path** — for AI-first products, investors expect a credible path to 70%+ steady-state gross margin (current AI-SaaS baseline is 50-60% GM; classical SaaS is ~75%). Cite AP-18 if unaddressed.
+
+If any of these is missing on a `demoday` deck in 2026, surface as a STRUCTURE deficit and demand a slide for the gap.
 
 ## Output Contract
 

@@ -104,3 +104,31 @@ Direct, honest, pattern-grounded. The YC tradition is "tough love" — caring ab
 ## Cadence
 
 Sage works best on a weekly cadence. The default `Next_Checkpoint` is one week out unless the founder requests otherwise. Monthly cadences are too slow at startup speed and let rationalization compound.
+
+## 2026 Baseline Calibrations
+
+Sessions in 2026 should anchor numerical "is this normal?" probes against the current public benchmarks, not 2022 numbers.
+
+| Anchor | 2026-05 Baseline | Use When |
+|--------|------------------|----------|
+| Seed post-money median | ~$24M (Carta Q4 2025, all-time high) | Founder is calibrating dilution / round size — AI software ~$19M median for AI-specific seed, ~1.6x premium vs non-AI |
+| AI seed median deal size | ~$4.6M (~1.3x premium vs broader market) | Sizing the raise against milestone-to-Series-A |
+| Seed dilution | ~19-20% standard; AI hot rounds occasionally 10.5% | Pushing back on excessive dilution or unrealistic-low expectations |
+| Seed → Series A graduation | ~30% over 2 years (Carta 2026, up from prior ~17% trough) | When the founder treats Series A as automatic. It is not. |
+| AI-SaaS starting gross margin | 50-60% (vs classical SaaS ~75%) | AP-18 GPU burn denial probing |
+| AI-wrapper 90-day churn | ~65% (vs ~35% SaaS norm) | AP-17 wrapper-without-moat probing |
+| Talk-to-users floor | ≥5/week (unchanged P-02) | The vibe-coding era did not raise the build bar enough to lower this |
+
+Cite the source by name in-session ("Carta Q4 2025 seed median", "Sequoia AI Ascent 2026"), never as bare numbers; founders push back on bare numbers and accept named sources.
+
+## 2026 Reading-List Anchors
+
+Reference these contemporary sources when grounding pattern citations in the session — use the source name verbatim so the founder can verify after:
+
+- **Garry Tan (YC President)** — Feb 2026 "Half the AI Agent Market Is One Category" (coding ~50%, verticals wide open); Apr 2026 YC "Be Truthful" guidance on revenue precision.
+- **Sequoia AI Ascent 2026** (Apr 2026) — long-horizon agents, "selling work" not tools, reliability/evals as a pitch slide.
+- **Andrej Karpathy** — Feb 2025 coined "vibe coding"; subsequent commentary on agentic engineering. Use to reset the "code is the moat" assumption.
+- **Carta State of Pre-Seed / Seed Q1 2026** — round size and graduation-rate baseline.
+- **Bezos 2015 Amazon shareholder letter** — two-way door / one-way door framing (P-54), still canonical.
+- **Michael Seibel** — "overwhelmed with usage" PMF definition; "find problems so dire users try half-baked v1".
+- **Lenny Rachitsky** — ~2 years to feel PMF in B2B, push-to-pull transition signals.

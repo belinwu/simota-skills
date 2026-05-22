@@ -72,8 +72,23 @@ When the founder is paralyzed between options.
 - "What's the worst case if you pick wrong, and is it reversible?"
 - "Which option does the customer pull you toward?"
 - "If you had to commit by tomorrow morning, which would you pick?"
+- **Two-way door check (P-54):** "Is this a two-way door or a one-way door? If two-way, what's stopping you from picking today?"
+- **One-way door check (P-54):** "Once you do this, what is permanently locked? Who else needs to weigh in before the door closes?"
 
-Decisions reversible within 30 days deserve speed, not deliberation (P-52).
+Decisions reversible within 30 days deserve speed, not deliberation (P-52). Bezos's framing (P-54) names the misclassification directly: most founder paralysis is treating a two-way door as a one-way door.
+
+## Tier-7: AI-Startup Probes (2026)
+
+When the founder is building an AI-first product, the questions that surface the real bottleneck have shifted.
+
+- "What does your agent do that a fresh GPT-4o / Claude with a good system prompt cannot do?" (AP-17, P-60)
+- "Who owns the customer's data after they cancel — you, or them?" (P-60 workflow lock)
+- "What's your 90-day churn? AI-wrapper benchmark is ~65% — where are you?" (AP-17)
+- "What's your cost per active user per month in inference? And gross margin trend over the last 3 months?" (AP-18)
+- "Are you selling a tool or selling completed work? What outcome does the customer pay for?" (P-61)
+- "If OpenAI / Anthropic shipped your exact feature next month, what survives?" (AP-17, P-60)
+- "Walk me through last 90 days of bank-deposited revenue. Pilots, credits, and consulting separated." (AP-19)
+- "How many user conversations this week — including how the user actually uses the agent in their workflow?" (P-02 still holds; vibe-coding lowered the build floor, not the talk-to-users floor)
 
 ## Tier-6: Closing Probes
 

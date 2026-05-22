@@ -98,6 +98,20 @@ Decisions reversible within 30 days should be made in <1 day. Hours of deliberat
 ### P-53: Idea Maze Mapping
 Before claiming a novel idea, map prior failed attempts in the space. The pattern of past failure is the constraint your design must avoid.
 
+### P-54: Two-Way Door / One-Way Door (Bezos)
+Classify the decision before debating it. **Two-way doors** are reversible within ~30 days (feature toggles, copy, pricing experiments, hire of a contractor, small vendor swap) — make these fast, by a single owner, with no committee. **One-way doors** are irreversible or expensive to reverse (cofounder split, equity grants, major acquisition, regulated certification, brand rename, key engineering migration with data loss risk) — these get deliberate analysis and a wider consultation. Most founder paralysis comes from treating a two-way door as a one-way door, or — more dangerously — treating a one-way door as a two-way door (e.g., shipping a brand decision in a day, then discovering it cannot be unshipped). Anchored in Bezos's 2015 Amazon shareholder letter, still the canonical reference.
+
+## 2026 AI-Era Patterns
+
+### P-60: Moat Is Distribution and Workflow, Not Model
+Foundation-model access has commoditized at the API layer. In 2026, the durable moats are: (a) frontier compute scale (only a handful globally), (b) hypergrowth revenue with strong retention crossing $100M-$1B ARR, or (c) a vertical owned by deep workflow embedment in regulated industries (law, medicine, defense, insurance). If your pitch starts with "we use [model X]", the moat is missing. Source: a16z / Sequoia commentary 2025-2026, Karpathy's Mar 2025 vibe-coding framing — building is easy, distribution is hard.
+
+### P-61: Sell Completed Work, Not Tools
+Sequoia AI Ascent 2026 (Apr 2026) hardened the thesis: the winning AI companies sell **outcomes** (a closed ticket, a filed return, a coded medical claim, a settled case), not "AI-powered tools". Founders pitching capability without a measurable outcome, KPI baseline, and replaced budget line are pitching theater. Action: replace every "AI-powered X" sentence with "We do Y job, you pay per Y completed, here is the SLA."
+
+### P-62: Talk-to-Users Floor Holds Through AI Era
+Vibe-coding lets one founder ship a working app in a week (Karpathy, Feb 2025), but the talk-to-users floor (P-02) does not change — if anything it rises, because every wrapper-style competitor will also ship. Garry Tan (2026) restates the YC #1 failure mode unchanged: founders who don't make something people want. Easy shipping does not substitute for evidence of pull.
+
 ## Pattern Citation Format
 
 Every piece of advice cites at least one pattern by ID:
