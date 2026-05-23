@@ -163,9 +163,10 @@ class ElevenLabsSFXProvider(AudioProvider):
     """ElevenLabs Sound Effects API integration.
 
     Generates sound effects from text descriptions.
+    Model: eleven_text_to_sound_v2 (current default as of 2025).
     Auth: xi-api-key header via ELEVENLABS_API_KEY env var.
-    Docs: https://elevenlabs.io/docs/api-reference/sound-generation
-    Cost: ~$0.08 per generation (check current pricing).
+    Docs: https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert
+    Cost: check https://elevenlabs.io/pricing/api for current rates.
     License: Safe (licensed training data).
     """
 
@@ -258,9 +259,12 @@ class ElevenLabsTTSProvider(AudioProvider):
     """ElevenLabs Text-to-Speech API integration.
 
     High-quality multilingual voice synthesis.
+    Models: eleven_v3 (GA 2025, most expressive; inline audio tags; multi-speaker Dialogue API),
+            eleven_multilingual_v2 (broad language coverage),
+            eleven_turbo_v2_5 (low-latency English).
     Auth: xi-api-key header via ELEVENLABS_API_KEY env var.
-    Docs: https://elevenlabs.io/docs/api-reference/text-to-speech
-    Cost: ~$0.30 per 1000 characters (check current pricing).
+    Docs: https://elevenlabs.io/docs/overview/models
+    Cost: check https://elevenlabs.io/pricing/api for current rates.
     License: Safe.
     """
 
@@ -394,11 +398,14 @@ def generate_voice_elevenlabs(text: str, voice: str = "rachel",
 class StableAudioProvider(AudioProvider):
     """Stable Audio 2.5 via Replicate API.
 
-    High-quality music and sound effect generation.
+    High-quality music and sound effect generation. Up to 3 min output.
+    Supports text-to-audio, audio-to-audio, and audio inpainting.
+    Stable Audio Open Small (Nov 2025, Stability AI + Arm) available for on-device/offline.
     Auth: Bearer token via REPLICATE_API_TOKEN env var.
-    Model: stability-ai/stable-audio
-    Cost: ~$0.03-0.10 per generation (check current pricing).
-    License: Safe (licensed training data).
+    Model: stability-ai/stable-audio (via Replicate) or Stability AI API directly.
+    Cost: check https://platform.stability.ai/docs/api-reference for current rates.
+    License: Safe (licensed training data). Open Small: Stability AI Community License.
+    Docs: https://stability.ai/news-updates/stability-ai-introduces-stable-audio-25-the-first-audio-model-built-for-enterprise-sound-production-at-scale
     """
 
     provider_name = "stable_audio"
@@ -729,25 +736,37 @@ class OpenAITTSProvider(AudioProvider):
     """OpenAI Text-to-Speech API integration.
 
     Reliable, consistent voice generation with multiple voices.
+    Models: gpt-4o-mini-tts (GA 2025, lowest latency, 13 voices, max 2000 input tokens),
+            tts-1 (lower latency), tts-1-hd (higher quality).
     Auth: Bearer token via OPENAI_API_KEY env var.
     Docs: https://platform.openai.com/docs/guides/text-to-speech
-    Cost: ~$15.00/1M chars (tts-1), ~$30.00/1M chars (tts-1-hd) (check current pricing).
+          https://platform.openai.com/docs/models/gpt-4o-mini-tts
+    Cost: check https://platform.openai.com/docs/pricing for current rates.
     License: Safe.
     """
 
     provider_name = "openai_tts"
     supported_categories = ["voice"]
 
-    VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"]
+    # gpt-4o-mini-tts supports 13 built-in voices (as of 2025):
+    VOICES = ["alloy", "ash", "ballad", "coral", "echo", "fable", "nova",
+              "onyx", "sage", "shimmer", "verse", "marin", "cedar"]
 
     # Voice characteristics for game audio selection
     VOICE_GUIDE = {
         "alloy": "neutral, versatile, suitable for UI narration",
+        "ash": "clear, assertive, suitable for quest-givers",
+        "ballad": "warm, melodic, suitable for bards / storytellers",
+        "coral": "bright, friendly, suitable for shopkeepers / guides",
         "echo": "warm, conversational, suitable for friendly NPCs",
         "fable": "expressive, dramatic, suitable for storytelling/cutscenes",
-        "onyx": "deep, authoritative, suitable for villains/commanders",
         "nova": "bright, energetic, suitable for young characters",
+        "onyx": "deep, authoritative, suitable for villains/commanders",
+        "sage": "calm, measured, suitable for wise elder characters",
         "shimmer": "soft, gentle, suitable for tutorial/guide characters",
+        "verse": "versatile, natural, suitable for general NPC dialogue",
+        "marin": "neutral, clear, suitable for system/narrator VO",
+        "cedar": "warm, grounded, suitable for rural/earthen characters",
     }
 
     def __init__(self):
@@ -769,7 +788,10 @@ class OpenAITTSProvider(AudioProvider):
                 - output_format: "mp3", "opus", "aac", "flac", "wav", "pcm"
         """
         voice = config.voice_id if config.voice_id in self.VOICES else "alloy"
-        model = "tts-1-hd" if config.quality == "high" else "tts-1"
+        # gpt-4o-mini-tts: lowest latency, recommended for real-time/game use
+        # tts-1-hd: highest quality for final cinematic VO assets
+        # tts-1: lower latency, good for preview/prototype
+        model = "tts-1-hd" if config.quality == "high" else "gpt-4o-mini-tts"
 
         format_map = {
             "wav": "wav",
@@ -837,9 +859,10 @@ def generate_voice_openai(text: str, voice: str = "alloy",
     return provider.save_audio(result, output_path)
 ```
 
-**tts-1 vs tts-1-hd:**
-- `tts-1`: Lower latency, good for real-time/preview. May have audible artifacts in some cases.
-- `tts-1-hd`: Higher quality, better for final assets. 2x cost but cleaner output.
+**OpenAI TTS Model Selection (2025):**
+- `gpt-4o-mini-tts`: Recommended default. Lowest latency, 13 voices, max 2000 input tokens. Docs: https://platform.openai.com/docs/models/gpt-4o-mini-tts
+- `tts-1`: Slightly older, comparable latency. Good for preview/prototype workflows.
+- `tts-1-hd`: Highest quality; use for final cinematic VO where latency is not critical. 2x cost vs tts-1.
 
 **Rate Limits:**
 - Tier 1: 500 RPM, 10M TPM
@@ -1952,10 +1975,9 @@ COST_TABLE = {
         "notes": "CC-BY-NC training data - check commercial license",
     },
     "openai_tts": {
-        "rate_standard": 15.00,  # per 1M chars
-        "rate_hd": 30.00,        # per 1M chars
-        "unit": "per 1M characters",
-        "notes": "tts-1 vs tts-1-hd",
+        "rate": "see https://platform.openai.com/docs/pricing",
+        "unit": "per 1M characters (token-based for gpt-4o-mini-tts)",
+        "notes": "gpt-4o-mini-tts (recommended 2025) / tts-1 / tts-1-hd; verify current rates",
     },
     "google_tts": {
         "rate_standard": 4.00,   # per 1M chars

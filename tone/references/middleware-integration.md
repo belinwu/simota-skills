@@ -3,6 +3,12 @@
 Comprehensive guide to integrating game audio through middleware solutions (FMOD, Wwise)
 and native engine audio systems (Unity, Unreal, Godot, Web).
 
+> **Version context (2025-2026):**
+> - FMOD Studio: current release is 2.03 (multiband dynamics, wet/dry per-effect, seek speed modulator). Docs: https://www.fmod.com/docs/2.03/studio/
+> - Wwise: current production release cycle is 2025.1.x (2025.1.3+ is production-ready). Docs: https://www.audiokinetic.com/en/library/edge/
+> - Unity Audio Random Container: stable in Unity 6 (6000.x). Docs: https://docs.unity3d.com/6000.3/Documentation/Manual/AudioRandomContainer-fundamentals.html
+> - Unreal MetaSounds: current in UE 5.7; render-cost HUD added in UE 5.5. Docs: https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-in-unreal-engine
+
 ---
 
 ## 1. Audio Middleware Overview
