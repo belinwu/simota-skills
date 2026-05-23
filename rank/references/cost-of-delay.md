@@ -93,3 +93,7 @@ Rule of thumb: WSJF for the backlog floor; CD3 for the top quartile and any item
 - **To Spark**: opportunity-enablement-heavy items that need feature ideation before they can be sequenced.
 - **To Helm**: aggregated CD3 queue feeds strategic roadmap; flag items where CoD exceeds organizational capacity for expedite-class work.
 - **To Scribe**: CoD methodology, curve assumptions, and per-item rationale documented for finance and audit traceability.
+
+## Discovery Upstream: Opportunity Solution Tree Integration
+
+When CoD items originate from continuous discovery (Teresa Torres's Opportunity Solution Tree methodology), the opportunity node in the OST typically maps to User-Business Value and RR&OE components. In 2025–2026, AI-powered OST tooling (e.g., Vistaly AI integration) can synthesize interview data into opportunity nodes automatically — use the resulting opportunity cluster as the input set for CoD decomposition rather than HiPPO-driven feature lists. [Source: Product Talk — From Customer Interviews to an Opportunity Solution Tree https://www.producttalk.org/ai-opportunity-solution-trees/]
