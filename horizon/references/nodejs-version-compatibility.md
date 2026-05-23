@@ -54,6 +54,9 @@ Node 18 and 20 are listed for legacy reference only — both are EOL as of 2026-
 - [ ] Review experimental features that are now stable
 
 **From 22.x → 24.x LTS:**
+- [ ] **Remove all `util.is*()` calls** — `util.isArray`, `util.isBoolean`, `util.isBuffer`, `util.isDate`, `util.isError`, `util.isFunction`, `util.isNull`, `util.isNumber`, `util.isString`, etc. are **removed** (not just deprecated). Replace with native equivalents (`Array.isArray`, `typeof`, `instanceof`). Source: [nodejs.org deprecated APIs](https://nodejs.org/docs/latest-v22.x/api/deprecations.html)
+- [ ] **Replace `SlowBuffer`** with `Buffer.allocUnsafeSlow(size)` — removed in Node 24.
+- [ ] **Audit crypto key sizes** — OpenSSL 3.5 (Node 24) rejects RSA/DSA/DH < 2048 bits and ECC < 224 bits at runtime; update key generation and certificate validation logic.
 - [ ] Adopt native TypeScript stripping (drop ts-node / tsx where erasable-only syntax is used)
 - [ ] Replace `glob` package with `fs.glob` / `fs.promises.glob`
 - [ ] Replace `path-to-regexp` (route matching) with global `URLPattern`
