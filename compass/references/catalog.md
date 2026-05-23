@@ -55,7 +55,7 @@ Code implementation.
 | **Native** | Pure-native mobile implementation | iOS Swift 6.2 + SwiftUI / Android Kotlin 2.x + Jetpack Compose (RN/Flutter/KMP/CMP out of scope) | Yes |
 | **Pixel** | Mockup → code | Pixel-accurate HTML/CSS from images | Yes |
 
-## Testing (3)
+## Testing (5)
 
 Test authoring and verification.
 
@@ -64,8 +64,10 @@ Test authoring and verification.
 | **Radar** | Unit tests | Edge-case additions, flaky-test repair, coverage improvement | Yes |
 | **Voyager** | E2E tests | Playwright/Cypress configuration, Page Object design | Yes |
 | **Siege** | Load and resilience testing | Load tests, contract tests, chaos engineering | Yes |
+| **Drill** | Manual QA test-case authoring | Systematic test procedures (BVA, equivalence class, decision table) for TestRail/Zephyr/Xray/Qase | No |
+| **Vista** | Test intelligence visualization | Coverage heatmaps, test-shape views, flake dashboards, mutation overlays from junit/lcov/allure/playwright artifacts | Mixed |
 
-## Security (4)
+## Security (6)
 
 Security analysis and testing.
 
@@ -75,6 +77,8 @@ Security analysis and testing.
 | **Breach** | Red team | Attack-scenario design, MITRE ATT&CK | No |
 | **Probe** | Dynamic security testing | OWASP ZAP / Burp Suite, penetration testing | Mixed |
 | **Crypt** | Cryptographic architecture | Algorithm selection, key management, E2EE, TLS configuration | Mixed |
+| **Chain** | Skill/plugin/MCP supply-chain audit | sha256 manifests, Unicode Tag injection scan, credential-exfiltration detection, MCP tool-description rug-pull prevention | Mixed |
+| **Husk** | Supply-chain malware infection scanner | IoC-based local scan for npm/PyPI worm campaigns; eradication and credential rotation runbooks | Mixed |
 
 ## Review (7)
 
@@ -90,7 +94,7 @@ Code review and quality checks.
 | **Warden** | UX quality gate | V.A.I.R.E. evaluation, scorecard | No |
 | **Cloak** | Privacy engineering | PII detection, GDPR / CCPA compliance | Mixed |
 
-## Performance (2)
+## Performance (3)
 
 Performance optimization.
 
@@ -98,6 +102,7 @@ Performance optimization.
 |-------|------|---------|------|
 | **Bolt** | Frontend / backend optimization | Re-render reduction, N+1 fixes, caching | Yes |
 | **Tuner** | DB optimization | EXPLAIN ANALYZE, index recommendations, slow queries | Yes |
+| **Dial** | Continuous auto-tuning | profile→parameter→optimize→verify loop for GC/threadpool/pool/cache/worker settings | Mixed |
 
 ## Documentation (6)
 
@@ -314,3 +319,5 @@ Specialized skills that don't fit the categories above.
 | **Mint** | Test-data generation | Factories, boundary values, seed management | Mixed |
 | **Tempo** | Schedule design | cron, timezone / DST, retry / backoff, business calendars | Mixed |
 | **Dawn** | Daily idea proposal | One personal-project idea per invocation as an 8-section brief for morning / daily / weekend hacks | No |
+| **Hex** | Technical-debt visualization | Debt detection, severity scoring, gamified anthropomorphization (T1 Veil → T5 Calamity) + exorcism roadmap | Mixed |
+| **Lure** | Premium LP studio orchestrator | Full 9-stage LP pipeline (Discover→Audience→Strategy→Structure→Design→Build→Optimize→Verify→Launch) across existing agents | Mixed |

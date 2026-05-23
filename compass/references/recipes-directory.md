@@ -26,6 +26,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **canon**: owasp★ / wcag / openapi / iso / gap / nist / pci / gdpr
 - **canvas**: flow★ / sequence / er / journey / class / c4 / architecture / gantt
 - **cast**: generate★ / registry / evolve / distribute / archetype / segment / bias-audit
+- **chain**: intake★ / audit / mcp / scan / recover
 - **clause**: tos★ / privacy / tokushoho / gap / dpa / eula / cookie
 - **clay**: text★ / image / retopo / uv / game / rigging / baking / retarget
 - **cloak**: pii★ / flow / consent / dpia / gdpr / ccpa / appi / pseudonymize
@@ -37,8 +38,10 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **cue**: script★ / storyboard / narration / explainer / shorts / captions / localize
 - **darwin**: health★ / fitness / evolve / sunset
 - **dawn**: propose★ / morning / weekend / brief / stack / constraint / viral
+- **dial**: loop★ / sweep / objective / guardrail / drift / campaign / ci / test / devtools
 - **director**: demo★ / scenario / record / onboard / voiceover / captions / thumbnail
 - **dot**: svg★ / canvas / phaser / pillow / css / animation / palette / tilesheet
+- **drill**: author★ / regress / charter / trace / prioritize / convert
 - **echo**: walkthrough★ / confusion / emotion / persona / heuristic / sus / aloud
 - **experiment**: ab★ / cuped / switchback / analyze / guardrail / ff / srm / sequential / bayesian
 - **flow**: hover★ / loading / transition / gesture / spring / scroll / parallax
@@ -58,8 +61,10 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **haul**: catalog★ / lookup / refresh / reverse / brand / audit
 - **hearth**: zsh★ / tmux / neovim / ghostty / vscode / git / shellfn / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast / jtbd / blue-ocean / wardley
+- **hex**: summon★ / audit / exorcise
 - **hone**: audit★ / codex / agy / claude / diff
 - **horizon**: detect★ / replace / poc / refresh / codemod / strangler / sunset
+- **husk**: scan★ / shai-hulud / lockfile / eradicate / rotate / harden / propagation
 - **ink**: icon★ / illustration / system / sprite / animate / theme / a11y / optimize / pictogram / logo
 - **judge**: pr★ / security / perf / style / quick / intent
 - **latch**: configure★ / debug / pretool / posttool / notification / sessionstart / security
@@ -69,6 +74,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **levy**: classify★ / deduction / calc / file / invoice / crypto / foreign
 - **loom**: guidelines★ / analyze / prompt / validate / variants / motion / rtl
 - **lore**: curate★ / decay / propagate / extract
+- **lure**: premium★ / lead-gen / saas / ecom / event / magnet
 - **lyric**: compose★ / metatags / style / refine / verse / hook / bridge
 - **magi**: decide★ / tradeoff / arbitrate / strategic / sixhat / devil / delphi
 - **matrix**: combine★ / cover / plan / prioritize / pairwise / equiv-class / risk-cover
@@ -137,6 +143,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **tuner**: explain★ / slow / index / plan / cache / connection / vacuum
 - **vigil**: sigma★ / yara / coverage / hunt / snort / playbook / ioc
 - **vision**: direction★ / redesign / trend / system / brand / moodboard / audit
+- **vista**: coverage★ / results / trace / shape / flake / timeline / diff / mutation / ai-lens / journey / otel
 - **voice**: nps★ / review / sentiment / classify / insight / kano / thematic / csat
 - **void**: prune★ / cut / question / simplify
 - **voyager**: playwright★ / page-object / auth / a11y / visual / api / mobile / component
