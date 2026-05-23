@@ -4,6 +4,8 @@
 
 ### Overview
 SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates control design at a point in time; Type II evaluates operating effectiveness over a period (typically 6-12 months).
+Current authoritative version: **2017 Trust Service Criteria with 2022 Revised Points of Focus** + **2018 Description Criteria with 2022 Revised Implementation Guidance** — no newer revision as of 2025.
+Sources: [AICPA SOC 2 overview](https://us.aicpa.org/interestareas/frc/assuranceadvisoryservices/aicpasoc2report.html) | [AICPA-CIMA SOC resources](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services)
 
 ### Trust Service Criteria (TSC)
 
@@ -29,7 +31,10 @@ SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates con
 
 ---
 
-## PCI-DSS v4.0
+## PCI-DSS v4.0.1
+
+**Active version since January 2025. PCI-DSS v4.0 retired December 31 2024; v3.2.1 retired March 31 2024 — assessments against either retired version are audit failures.**
+Source: [PCI SSC Document Library](https://www.pcisecuritystandards.org/document_library/) | [PCI DSS v4.0.1 blog](https://blog.pcisecuritystandards.org/just-published-pci-dss-v4-0-1)
 
 ### 12 Requirements
 
@@ -48,7 +53,22 @@ SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates con
 | | 11 | Test security regularly | Vulnerability scans, penetration tests, IDS/IPS, change detection |
 | InfoSec Policy | 12 | Support information security with policies | Security awareness, incident response, risk assessment |
 
-### PCI-DSS v4.0 Key Changes from v3.2.1
+### PCI-DSS v4.0.1 Key Changes from v4.0 (June 2024 limited revision)
+- Clarified critical-vulnerability patch timeline (30 days applies only to critical vulnerabilities, reverting to v3.2.1 language)
+- Added Applicability Notes for payment page script management (Req 6.4.3)
+- Clarified MFA exemption: non-administrative CDE access authenticated with phishing-resistant factors is exempt from Req 8.3.6
+- Removed sample Customized Approach templates from Appendix E (moved to PCI SSC website)
+- No new or deleted requirements from v4.0
+
+### All 51 Future-Dated Requirements Now Mandatory (since March 31 2025)
+Key mandates enforced:
+- **Req 6.4.3**: Payment page scripts — authorized inventory + integrity check required
+- **Req 11.6.1**: Change-detection mechanism for payment page HTTP headers and scripts
+- **Req 8.3.6**: Minimum 12-character passwords for all CDE user accounts
+- **Req 8.4.2**: MFA for all CDE access including third-party remote access
+- **Req 12.3.1**: Targeted Risk Analysis (TRA) for flexible-frequency requirements
+
+### Key Changes from v3.2.1 (for historical context only — do not assess against v3.2.1)
 - Customized approach allowed as alternative to defined approach
 - Enhanced authentication requirements (Req 8.3.6: MFA for all CDE access)
 - Targeted risk analysis for flexible implementation
@@ -84,6 +104,19 @@ SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates con
 | Authentication (d) | Verify person seeking access to ePHI | Required |
 | Transmission security (e)(1) | Integrity controls, encryption for ePHI in transit | Required |
 
+### HIPAA Security Rule NPRM — Proposed Changes (2025-2026)
+NPRM published January 6 2025 in the Federal Register. Comment period closed March 7 2025 (~5,000 comments received). Finalization tracked on OCR's regulatory agenda targeting May 2026; exact date not confirmed. The Trump administration has not withdrawn the NPRM. Factor proposed changes into readiness assessments now.
+
+Key proposed changes:
+- Eliminate required/addressable distinction — all safeguards become mandatory
+- Mandate encryption at rest and in transit for all ePHI (no exceptions)
+- Business associates must report security incidents to covered entities within 24 hours
+- Mandatory technology asset inventory and network map (annual update)
+- Vulnerability scanning every 6 months; penetration testing annually
+- Anticipated compliance window: 60-day effective date + 180-day compliance period after final rule (~Q4 2026 if finalized May 2026)
+
+Sources: [Federal Register NPRM (2025-01-06)](https://www.federalregister.gov/documents/2025/01/06/2024-30983/hipaa-security-rule-to-strengthen-the-cybersecurity-of-electronic-protected-health-information) | [HHS HIPAA Security Rule NPRM](https://www.hhs.gov/hipaa/for-professionals/security/hipaa-security-rule-nprm/index.html) | [Alston & Bird: Still on Track (Nov 2025)](https://www.alston.com/en/insights/publications/2025/11/hipaa-security-rule-overhaul)
+
 ### Business Associate Agreement (BAA)
 - Required when sharing ePHI with third parties
 - Must specify permitted uses, safeguards, breach reporting
@@ -93,6 +126,9 @@ SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates con
 ---
 
 ## ISO 27001:2022
+
+**ISO 27001:2013 certificates expired October 31 2025 — assessments against the 2013 version are audit failures.**
+Sources: [ISO/IEC 27001:2022](https://www.iso.org/standard/27001) | [ISO/IEC 27002:2022 (controls guidance)](https://www.iso.org/standard/75652.html)
 
 ### Annex A Control Themes (93 controls)
 
@@ -113,3 +149,42 @@ SOC2 reports are issued by CPA firms under AICPA standards. Type I evaluates con
 - States applicability (applicable/not applicable) with justification
 - Links each control to risk treatment plan
 - Evidence of implementation for applicable controls
+
+---
+
+## NIST Cybersecurity Framework (CSF) 2.0
+
+Released February 26 2024 — first major revision in 10 years.
+Source: [NIST CSF 2.0 Final](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf) | [NIST announcement](https://www.nist.gov/news-events/news/2024/02/nist-releases-version-20-landmark-cybersecurity-framework)
+
+### Six Core Functions (added Govern in 2.0)
+
+| Function | Abbrev | Description |
+|----------|--------|-------------|
+| **Govern** (NEW) | GV | Cybersecurity risk governance — strategy, policy, roles, supply chain risk management |
+| **Identify** | ID | Understand assets, risks, and organizational context |
+| **Protect** | PR | Safeguards to limit or contain cybersecurity events |
+| **Detect** | DE | Identify cybersecurity events |
+| **Respond** | RS | Actions regarding detected cybersecurity events |
+| **Recover** | RC | Restore capabilities impaired by cybersecurity events |
+
+### Key Changes from CSF 1.1
+- Govern function added (center of the framework wheel) — treats cybersecurity governance as enterprise risk management concern for senior leadership
+- Expanded scope beyond critical infrastructure to all organizations
+- Supply chain risk management (SCRM) elevated with dedicated Govern category (GV.SC)
+- Tiers include separate descriptions for Cybersecurity Risk Governance (Govern) and Cybersecurity Risk Management (other 5 functions)
+- CSF 2.0 profiles and implementation examples available at [nist.gov/cyberframework](https://www.nist.gov/cyberframework)
+
+---
+
+## NIST SP 800-171 Rev. 3 (2024)
+
+Finalized May 14 2024. Governs protection of Controlled Unclassified Information (CUI) in nonfederal systems. Required for US federal contractors under DFARS 252.204-7012.
+Source: [NIST SP 800-171r3 Final](https://csrc.nist.gov/pubs/sp/800/171/r3/final) | [NIST SP 800-171Ar3 (Assessment)](https://csrc.nist.gov/pubs/sp/800/171/a/r3/final)
+
+### Key Changes from Rev. 2
+- Aligned to NIST SP 800-53 Rev. 5 control structure
+- Organization-Defined Parameters (ODP) introduced for tailoring requirements
+- 17 security requirement families (consistent with SP 800-53r5)
+- New tailoring criteria reduce redundancy
+- SP 800-171r2 withdrawn; do not assess against it

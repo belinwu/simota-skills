@@ -15,9 +15,13 @@ Policy as Code (PaC) translates compliance requirements into machine-executable 
 | **Checkov** | Python/YAML | IaC security scanning | Terraform, CloudFormation, Kubernetes, ARM |
 | **Sentinel** (HashiCorp) | Sentinel | Terraform policy enforcement | Terraform Cloud/Enterprise |
 | **Kyverno** | YAML | Kubernetes-native policies | Kubernetes admission controller |
+| **AWS Cedar** | Cedar | Fine-grained authorization (ABAC/RBAC) | Amazon Verified Permissions, API gateways; deny-by-default semantics |
 | **AWS Config Rules** | Python/JSON | AWS resource compliance | AWS native |
+| **AWS Audit Manager** | Console/API | Evidence collection automation | AWS native; maps to SOC2/PCI-DSS/HIPAA/ISO 27001 |
 | **Azure Policy** | JSON | Azure resource compliance | Azure native |
-| **GCP Organization Policy** | YAML | GCP resource constraints | GCP native |
+| **GCP Organization Policy / Policy Controller** | YAML/Rego | GCP resource constraints + Kubernetes | GCP native + Anthos |
+
+Sources: [OPA docs](https://www.openpolicyagent.org/docs/latest/) | [Cedar policy language](https://docs.cedarpolicy.com/) | [Amazon Verified Permissions (Cedar 4.5)](https://aws.amazon.com/about-aws/whats-new/2025/08/amazon-verified-permissions-cedar-4-5/) | [Kyverno docs](https://kyverno.io/docs/)
 
 ---
 
