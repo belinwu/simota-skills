@@ -78,7 +78,7 @@ Standard captions transcribe spoken dialogue only. SDH adds everything else a he
 | Off-screen narration | Yes | Yes, marked as `[narrator]:` |
 | Silence / pause | No | Only when narratively significant |
 
-Deliver SDH when the platform requires WCAG 1.2.2 (pre-recorded captions) and 1.2.3 (audio description or transcript) compliance.
+Deliver SDH when the platform requires WCAG 1.2.2 (pre-recorded captions) and 1.2.3 (audio description or transcript) compliance. **ADA compliance deadline**: as of April 24, 2026, US public entities serving populations over 50,000 must meet WCAG 2.1 Level AA (DOJ final rule, April 2024) — this covers video captions, audio description, and keyboard-accessible player controls [Source: testparty.ai/blog/video-captioning-requirements].
 
 ## SRT Cue Example
 

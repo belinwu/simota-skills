@@ -91,11 +91,15 @@ Next: Where to learn more
 | Platform | Aspect ratio | Max duration | Hook window | Subtitles |
 |----------|-------------|-------------|-------------|-----------|
 | YouTube | 16:9 | 10+ min | 5s | Recommended |
-| Twitter/X | 16:9 or 1:1 | 2:20 | 3s | Required (85% muted) |
-| Instagram Reels | 9:16 | 90s | 2s | Required |
+| YouTube Shorts | 9:16 | 3 min (180s) | 2s | Required (burn-in for reshare) |
+| Twitter/X | 16:9 or 1:1 | 2:20 (standard); 4h (Premium on web/iOS) | 3s | Required (85% muted) |
+| Instagram Reels | 9:16 | 20 min (in-app); <15 min uploaded | 2s | Required |
+| TikTok | 9:16 | 10 min (in-app); 60 min (upload) | 2s | Required |
 | Product Hunt | 16:9 | 60-90s | 5s | Recommended |
 | Landing page | 16:9 | 30-90s | Immediate | Required |
 | LinkedIn | 16:9 or 1:1 | 3 min | 3s | Required |
+
+Sources: [YouTube Shorts 3-min limit (support.google.com)](https://support.google.com/youtube/answer/15424877), [Instagram Reels 20-min limit (inro.social, 2025)](https://www.inro.social/blog/instagram-reels-can-now-be-20-minutes-long-new-time-limit-explained-2025), [TikTok video length (metricool.com, 2025)](https://metricool.com/tiktok-video-length/), [X/Twitter video limits (wayin.ai, 2025)](https://wayin.ai/blog/twitter-video-length-limit/)
 
 ## Transition Library
 

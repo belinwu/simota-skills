@@ -41,9 +41,9 @@ REVIEW    →  verify total ≤ platform sweet spot
 
 | Platform | Max | Sweet spot | Notes |
 |----------|-----|------------|-------|
-| TikTok | 10 min | 15-30s | 21-34s range hits ~62% completion; viral threshold 70%+ |
-| Instagram Reels | 90s | 15-30s | Feed autoplay, algorithm rewards re-watches and saves |
-| YouTube Shorts | 60s | 30-60s | Shelf placement; longer Shorts now allowed up to 3 min but 60s still outperforms |
+| TikTok | 60 min (upload) / 10 min (in-app) | 15-30s | 21-34s range hits ~62% completion; viral threshold 70%+ [Source: metricool.com, 2025] |
+| Instagram Reels | 20 min (in-app) / <15 min (upload) | 15-60s | Algorithm favours <90s for reach; 7-15s best for discovery; expanded to 20 min late 2025 [Source: inro.social, 2025] |
+| YouTube Shorts | 3 min (180s) | 15-60s | Max expanded from 60s on Oct 15, 2024; music restriction: >60s requires royalty-free only; >60s with Content ID claim blocked globally [Source: support.google.com/youtube/answer/15424877] |
 | LinkedIn video | 10 min | 30-90s | Professional tone, captions required — 80%+ watch muted |
 
 Default: write to 21-30s unless the user specifies otherwise. Going longer is a trade — more story, fewer loops.
