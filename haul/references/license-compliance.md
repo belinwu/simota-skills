@@ -66,6 +66,9 @@ Before any fetch from a non-API source, evaluate the opt-out signal surface.
 | W3C TDM Rep | TDM Reservation as a W3C Working Draft format | When present |
 | `llms.txt` | `/llms.txt` at origin | **Informational only — not enforced.** As of Q1 2026, **zero** major AI providers (OpenAI / Google / Anthropic / Meta / Mistral) honor `llms.txt` in production; the format has no W3C/IETF backing. Surface its presence in manifest but do NOT treat as legal opt-out. [Source: aeoengine.ai/blog/llms-txt-zero-usage-ai-bots-ignore, presenc.ai/research/state-of-llms-txt-2026] |
 
+| C2PA Content Credentials | Embedded manifest in image file (XMP / JUMBF) | At VERIFY phase: read C2PA manifest when present. Extract `ai_assertion` (AI-generation flag), signing identity (X.509 chain), and `training-mining` consent assertion. Record in provenance metadata. If `training-mining: prohibited`, treat as `restricted` for training use cases. Informational only for display use cases unless AI generation is confirmed and EU AI Act Art. 50 disclosure is required. [Source: contentauthenticity.org/blog/the-state-of-content-authenticity-in-2026] |
+| IPTC 2025.1 AI fields | Embedded in image IPTC/XMP metadata | At VERIFY phase: extract `AI System Used`, `AI System Version Used`, `AI Prompt Information`, `AI Prompt Writer Name` (new fields in IPTC Photo Metadata Standard 2025.1, published Nov 2025). Presence of these fields signals AI-generated content — apply same licensing constraints as C2PA AI assertion. ExifTool ≥ 13.40 (released 2025-10-24) supports all four fields. [Source: iptc.org/news/iptc-photo-metadata-standard-2025-1-adds-ai-properties/] |
+
 **Aggregation rule:** Honor any positive opt-out signal. If any of the above (except `llms.txt`) forbids the planned use, do not fetch. The most restrictive wins.
 
 **Caching:** Cache opt-out signals per origin with a `6h` TTL (reduced from 24h to align with EU AI Act 2026-08-02 enforcement window). Re-fetch at every batch start regardless of TTL. Record signal version in manifest. [F03 mitigation]
@@ -80,8 +83,10 @@ Before any fetch from a non-API source, evaluate the opt-out signal surface.
 - Article 53 requires GPAI providers to implement a copyright policy aligned with EU law and respect rights reservations expressed under the Copyright DSM Directive Article 4.
 - Article 101 penalties for GPAI violations: up to €15M or 3% of global revenue.
 - The EU Commission's GPAI Code of Practice (signatories: leading AI providers) explicitly commits to honoring `robots.txt`, IETF successor protocols, TDM Reservation Protocol, and other machine-readable opt-out signals. Signatories must "ensure that data collected via web crawling is lawfully accessible, respect machine-readable rights signals like robots.txt, and avoid accessing websites flagged for copyright infringement."
-- AI Act transparency rules (Chapter V) come into effect 2026-08.
+- AI Act transparency rules (Chapter V) come into effect 2026-08-02. **Article 50 requires that AI-generated synthetic images carry machine-readable disclosure.** C2PA Content Credentials directly satisfy Article 50 — check for C2PA manifest at VERIFY; flag images with `ai_assertion: true` as AI-generated in the manifest.
 - For Haul: when collecting product imagery for any AI training corpus or AI-feature use case (including embedding generation, retrieval-augmented systems with persistence, training data curation), opt-out compliance is structural. Refuse fetches from sources expressing reservation. The 2026-08-02 deadline means batches running after that date are subject to enforcement, not just guidance.
+- **C2PA ecosystem (2026):** 15+ major adopters including Adobe Creative Cloud (full suite), Sony Alpha mirrorless cameras (hardware-level signing), Samsung Galaxy S25, Google Pixel 10, LinkedIn, TikTok, Cloudflare; C2PA membership exceeds 6,000 as of Jan 2026. Product photography from professional and consumer hardware is increasingly C2PA-signed at capture. [Source: contentauthenticity.org/blog/the-state-of-content-authenticity-in-2026]
+- **IPTC Photo Metadata Standard 2025.1** (published Nov 2025) adds four AI-specific fields: `AI System Used`, `AI System Version Used`, `AI Prompt Information`, `AI Prompt Writer Name`. ExifTool ≥ 13.40 supports reading these fields. Presence of any field confirms AI-generated imagery. [Source: iptc.org/news/iptc-photo-metadata-standard-2025-1-adds-ai-properties/]
 
 ### EU Copyright DSM Directive (2019/790)
 
@@ -190,5 +195,9 @@ Every delivered image must record:
 | `license_evidence` | Free-text citing the basis (e.g., "Amazon Creators API Operating Agreement §X.Y" post-2026-05-15; legacy "Amazon PA-API 5.0 Operating Agreement" only valid for fetches before 2026-05-15) |
 | `attribution_required` | Boolean |
 | `attribution_text` | If required, the canonical attribution string |
+| `c2pa_present` | Boolean — whether a C2PA Content Credentials manifest was found in the image at VERIFY |
+| `c2pa_ai_generated` | Boolean or null — value of `ai_assertion` from C2PA manifest; null if no manifest present |
+| `c2pa_signing_identity` | String or null — X.509 certificate CN from C2PA manifest signer |
+| `iptc_ai_system` | String or null — `AI System Used` from IPTC 2025.1 fields (ExifTool ≥ 13.40 required) |
 
 Without these fields, the image cannot be delivered. Provenance is structural, not a footnote.

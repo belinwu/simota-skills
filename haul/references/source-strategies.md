@@ -80,8 +80,9 @@ Classify every source before query. Tier determines trust, license posture, and 
 | Auth | OAuth 2.0 application token |
 | Endpoint | `api.ebay.com/buy/browse/v1/item/{item_id}` |
 | Identifier | eBay item ID, GTIN, MPN |
-| Image fields | `image.imageUrl`, `additionalImages[].imageUrl` |
-| Rate limit | 5,000 calls/day default |
+| Image fields | `image.imageUrl`, `additionalImages[].imageUrl` (Note: `Image.height` and `Image.width` are reserved fields — only `imageUrl` is populated as of 2026) |
+| Rate limit | 5,000 calls/day default; higher limits require Application Growth Check approval via developer.ebay.com |
+| 2025 migration note | **eBay Finding API and Shopping API were decommissioned 2025-02-05** (deprecated 2024-01-04). Any Haul source allowlist entry targeting `api.ebay.com/services/search/FindingService/v1` or `open.api.ebay.com/shopping` is broken and must be removed. Successor: Browse API for product search; `searchByImage` endpoint available for reverse-image product matching. [Source: developer.ebay.com/develop/get-started/api-deprecation-status] |
 
 ### T1 — Walmart Open API
 
@@ -203,6 +204,8 @@ HAUL_TO_NAVIGATOR_HANDOFF:
 | Brave Search Image | Per Search plan (commercial tiers) | Per plan | HTTP 429 | n/a |
 | Azure AI Agents (Grounding with Bing) | Per Azure AI Agents tier | Per tier | HTTP 429 / 503 | n/a |
 | ~~Bing Image (`api.bing.microsoft.com`)~~ | **Retired 2025-08-11** | — | — | — |
+| ~~eBay Finding API~~ | **Decommissioned 2025-02-05** | — | — | — |
+| ~~eBay Shopping API~~ | **Decommissioned 2025-02-05** | — | — | — |
 | Brand canonical (T0) | 1 req/s + jitter | 1 | HTTP 429 / 5xx | Honor robots.txt `Crawl-Delay` |
 | Marketplace web (T2) | 0.5 req/s + jitter | 1 | HTTP 429 / 5xx | Honor robots.txt `Crawl-Delay` |
 
@@ -240,19 +243,22 @@ Keep the highest-tier source's copy (T0 over T1 over T2). Record alternate-sourc
 
 ---
 
-## 2026 Migration Calendar (verify at INTAKE)
+## 2026–2027 Migration Calendar (verify at INTAKE)
 
 | Date | Event | Action |
 |------|-------|--------|
+| 2025-02-05 | eBay Finding API & Shopping API decommissioned | Remove from allowlist; replace with eBay Browse API (`/buy/browse/v1/`) [Source: developer.ebay.com/develop/get-started/api-deprecation-status] |
 | 2026-01-31 | Amazon PA-API Offers V1 removed | Switch live-pricing reads to Amazon Creators API Offers V2 |
+| 2026-01 | GS1 Digital Link Resolver standard v1.2.0 released | Validate GTIN-embedded GS1 Digital Link URIs using updated conformant resolver spec (ref.gs1.org/standards/resolver/) |
 | 2026-02-10 | Rakuten `openapi.rakuten.co.jp` opens | Re-register apps; obtain UUID `applicationId` + API Access Key |
 | 2026-04-30 | Amazon PA-API 5.0 deprecation | Complete Creators API migration before retirement window |
 | 2026-05-13 | Rakuten dual-run window ends | Cut over Rakuten clients to new domain |
 | 2026-05-14 | Rakuten legacy `app.rakuten.co.jp` shutdown | Any remaining `app.rakuten.co.jp` calls fail |
 | 2026-05-15 | Amazon PA-API 5.0 endpoint retired | `webservices.amazon.*.com/paapi5/*` returns errors |
 | 2026-07 | Shopify 2026-07 release | Drop deprecated `PRIVATE`/`PUBLIC_READ` metaobject enums; remove `grams` field |
-| 2026-08-02 | EU AI Act enforcement powers activate | Opt-out compliance becomes enforceable (€15M / 3% revenue) |
+| 2026-08-02 | EU AI Act enforcement powers + Art. 50 AI-content disclosure activate | Opt-out compliance enforceable (€15M / 3% revenue); C2PA-signed AI-generated images require machine-detectable marking |
+| 2027-12-31 | GS1 Sunrise 2027 — retailer POS 2D-readiness deadline | Retail POS systems must read GTIN from GS1 Digital Link QR / DataMatrix. New packaging from 2025–2026 should carry 2D code alongside 1D EAN/UPC. Haul INTAKE must parse GS1 Digital Link URIs in product identifiers from this point. [Source: gs1us.org/industries-and-insights/by-topic/sunrise-2027, trackvision.ai GS1 Sunrise 2027 compliance deadlines] |
 
-Sources: webservices.amazon.com api-rates, blog.freshstore.com, webservice.rakuten.co.jp, 8091.info, shopify.dev/changelog, artificialintelligenceact.eu.
+Sources: webservices.amazon.com api-rates, blog.freshstore.com, webservice.rakuten.co.jp, 8091.info, shopify.dev/changelog, artificialintelligenceact.eu, developer.ebay.com, gs1us.org/industries-and-insights/by-topic/sunrise-2027, ref.gs1.org/standards/resolver/.
 
 `INTAKE` MUST verify that every entry in `sources_allowlist` is not on a retired endpoint as of the batch start date. Any legacy endpoint triggers an Ask First with migration plan.

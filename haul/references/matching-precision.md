@@ -46,6 +46,7 @@ Before scoring, normalize and validate every identifier.
 | EAN-8 | 8 digits | Check digit (mod-10 weighted); reject invalid |
 | UPC-A | 12 digits | Check digit (mod-10 weighted); reject invalid |
 | GTIN-14 | 14 digits | Check digit (mod-10 weighted); reject invalid |
+| GS1 Digital Link URI | `https://{domain}/{primary-key-AI}/{value}[/{qualifier-AIs}]` — e.g., `https://id.gs1.org/01/09521234543213/10/LOT1/21/SN1234` | Extract AI `01` (GTIN) as primary key; validate extracted GTIN with mod-10 check digit. Additional AIs (batch `10`, serial `21`, expiry `17`) are supplementary — record in manifest but do not use as sole match key. Conformant resolver spec v1.2.0 (Jan 2026): ref.gs1.org/standards/resolver/. **Sunrise 2027 note:** products with 2D barcodes (GS1 Digital Link QR / DataMatrix) should be parsed alongside legacy EAN/UPC during the dual-run period (2025–2027). [Source: gs1.org/standards/gs1-digital-link, gs1us.org/industries-and-insights/by-topic/sunrise-2027] |
 | ISBN-10 / 13 | 10 or 13 chars | Check digit (ISBN-10: mod-11; ISBN-13: mod-10) |
 | MPN | Variable | No check digit; require manufacturer + MPN pair |
 | SKU | Source-specific | No check digit; treat as marketplace-scoped |
