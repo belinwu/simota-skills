@@ -224,13 +224,13 @@ Outputs single file with `<symbol>` per icon, optimized.
 |--------|-------------|-----|-----|
 | Self-hosted SVGO'd | always works | Full control; no external dep | Requires build pipeline |
 | Lucide / Feather (treeshake) | Lucide 1.16.x (2026-05), 1600+ icons | Small per-icon; large library; React/Vue/Svelte/Solid/Preact/Angular/Flutter wrappers | Per-icon import bloat if not treeshaken |
-| Iconify | ~300k icons, 200+ icon sets (2026) | Unified API for FA / Material / Phosphor / Lucide / Tabler etc. | External dep; runtime loading |
+| Iconify | ~300k icons, 200+ icon sets (2026) | Unified API for FA / Material / Phosphor / Lucide / Tabler etc.; SVG+CSS components for React/SolidJS/Vue/Svelte (2026) with CSS variable theming | External dep; runtime loading |
 | Heroicons | v2.2.0 (2024-11), 4 styles: Outline (24px 1.5px stroke), Solid (24px), Mini (20px), Micro (16px) | Tailwind-aligned; React 19 support | Not tree-shaken in some setups |
 | Phosphor Icons | 2.1 (+268 icons), 6 weights | 6 visual weights (thin/light/regular/bold/fill/duotone) | Larger set; per-weight import discipline |
 | Tabler Icons | v3.44 (2026-05), 6,146 icons | MIT-licensed; matched outline + filled | Stroke-based — same caveats as Lucide |
 | Material Symbols | Variable Font 4 axes (FILL 0-100, wght 100-700, GRAD -50 to 200, opsz 20-48) | Single font file; per-character axis control | Font-based; not pure SVG |
 | Font Awesome 7 | 2025-07 release, 4,500+ new icons, Icon Wizard | Largest commercial set; Pro+ tiers ($75-$750/y) | Pro license required for full set; larger payload |
-| Font-icons (legacy FA, glyphicons) | declining in 2026 | Single network request | a11y issues; modern alt: SVG sprite |
+| Font-icons (legacy FA, glyphicons) | **avoid in 2026** — accessibility hazard, no semantic meaning | Single network request | Screen reader exposure requires extra ARIA; use SVG sprite instead. 78% of major sites now use SVG icons (2025). |
 
 ## Workflow
 
@@ -311,8 +311,11 @@ An SVG optimization plan is complete when:
 
 ## References
 
-- SVGO documentation — github.com/svg/svgo. v4.0.0 dropped `removeViewBox` / `removeTitle` from `preset-default` and requires Node.js >= 16. See `svgo.dev/docs/migrations/migration-from-v3-to-v4/`.
-- W3C SVG 2 — Candidate Recommendation; latest Editor's Draft 2025-09-14, working toward Proposed Recommendation (`svgwg.org/svg2-draft/`).
+- SVGO documentation — **v4.0.1** (2025, latest stable); official site at `svgo.dev`. v4.0.0 dropped `removeViewBox` / `removeTitle` from `preset-default`, requires Node.js >= 16. Migration guide: `svgo.dev/docs/migrations/migration-from-v3-to-v4/`. Source: [github.com/svg/svgo](https://github.com/svg/svgo/releases)
+- W3C SVG 2 — Candidate Recommendation (2018-10-04 official); latest Editor's Draft **2025-09-14**, actively working toward Proposed Recommendation. Source: [w3.org/TR/SVG2](https://www.w3.org/TR/SVG2/) / [svgwg.org/svg2-draft](https://svgwg.org/svg2-draft/single-page.html)
+- Iconify SVG+CSS components — React (2026-03-04), SolidJS (2026-03-06), CSS variable theming (2026-04-30). Source: [iconify.design/news/2026](https://iconify.design/news/2026.html)
+- Icon font vs SVG 2025 — 78% of major sites now use SVG icons; icon fonts flagged as accessibility hazard requiring extra ARIA work. Source: [playground.halfaccessible.com](https://playground.halfaccessible.com/blog/svg-icons-guide-web-development)
+- SMIL animation status 2025 — Chrome's 2015 deprecation intent was reversed; SMIL stable across all modern browsers, usage at 2.5% of page loads and growing. Source: [caniuse.com/svg-smil](https://caniuse.com/svg-smil) / [smashingmagazine.com](https://www.smashingmagazine.com/2025/05/smashing-animations-part-3-smil-not-dead/)
 - Sara Soueidan, *Practical SVG* (2016) and updated blog series.
 - Jake Archibald, *SVG icons FTW* — sprite vs inline trade-off classic.
 - Chris Coyier, *CSS-Tricks* — SVG optimization series.

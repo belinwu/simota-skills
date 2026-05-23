@@ -27,7 +27,7 @@ Rule: keep micro-motion (≤ 600 B added, single icon) in SVG; escalate to Lotti
 
 | Concern | SMIL | CSS | Hybrid |
 |---------|------|-----|--------|
-| Browser support | All modern evergreen; deprecated-then-unimplemented in Chrome history — now stable | Universal | Pick CSS for transforms, SMIL for path data |
+| Browser support | All modern evergreen; Chrome's 2015 deprecation intent was reversed — SMIL is stable and usage is growing (2.5% of page loads, 2025) | Universal | Pick CSS for transforms, SMIL for path data |
 | Path morphing (`d` attr) | Native (`<animate attributeName="d">`) | Not possible without JS | SMIL for `d`, CSS for color |
 | Interactivity (`:hover`, class toggle) | Possible via `begin="mouseover"` but awkward | Natural via `:hover` / class | CSS for state, SMIL for shape |
 | External standalone `.svg` (no host CSS) | Self-contained — works in `<img src>` | Requires inline `<svg>` or `<style>` inside | SMIL wins for portable loaders |
@@ -130,6 +130,12 @@ For SMIL (no media query), inline a `<script>` guard or author two asset variant
 - Embedding motion in a decorative icon marked `aria-hidden="true"` without considering that assistive-tech users still see it flicker visually if they disable AT temporarily.
 - Importing the entire `motion` (formerly framer-motion) library for a single icon spin — use `motion/react` named imports and tree-shake, or stay in CSS.
 - Shipping a Lottie JSON when a dotLottie equivalent exists — dotLottie v2 ZIP is up to 10× smaller and includes state machines.
+
+## References
+
+- SMIL browser support (2025) — Chrome's 2015 deprecation intent was reversed; SMIL is stable across all modern evergreen browsers, with usage at ~2.5% of page loads and growing. Source: [caniuse.com/svg-smil](https://caniuse.com/svg-smil) / [smashingmagazine.com — SMIL's Not Dead (2025-05)](https://www.smashingmagazine.com/2025/05/smashing-animations-part-3-smil-not-dead/)
+- Motion (formerly Framer Motion) — `motion` package on npm, `motion/react` imports. Source: [motion.dev](https://motion.dev/)
+- dotLottie v2 — theming, state machines, audio; up to 10× smaller than Lottie JSON. Source: [dotlottie.io](https://dotlottie.io/)
 
 ## Handoff
 

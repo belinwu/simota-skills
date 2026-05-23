@@ -10,10 +10,10 @@
 | Tabler Icons | 3.44.x | outline + filled | 24×24 | 2px (1.5/1 variants) | MIT | 6,146 icons (2026-05) |
 | Material Symbols | Variable Font | outlined/rounded/sharp × FILL/wght/GRAD/opsz | 20-48 | axis-controlled | Apache 2.0 | 4 axes (FILL 0-100, wght 100-700, GRAD -50 to 200, opsz 20-48) |
 | Font Awesome | 7 (2025-07) | classic/sharp/duotone/sharp-duotone + new Jelly/Whiteboard/Notdog | 16×16 base | tunable | Free MIT + Pro | 4,500+ new icons in v7; Icon Wizard mix-and-match |
-| Iconify | aggregator | unified API | varies | varies | per-source | ~300k icons, 200+ icon sets |
+| Iconify | aggregator (2026) | unified API; SVG+CSS components for React/SolidJS/Svelte/Vue | varies | varies | per-source | ~300k icons, 200+ icon sets; CSS variable theming (2026-04) |
 | Remix Icon | 4.x | outline + filled | 24×24 | 2px | Apache 2.0 | 3,000+ icons |
 
-**Rule**: prefer Lucide or Heroicons for stroke consistency in product UI; Material Symbols Variable Font for axis-controlled responsive icons; Iconify for cross-library aggregation in dashboards.
+**Rule**: prefer Lucide or Heroicons for stroke consistency in product UI; Material Symbols Variable Font for axis-controlled responsive icons; Iconify for cross-library aggregation in dashboards. **Do not use icon fonts (glyph-based)** — they require extra ARIA work for accessibility and have been superseded by SVG sprite + `<symbol>` in all modern stacks (78% of major sites use SVG icons as of 2025). Source: [playground.halfaccessible.com](https://playground.halfaccessible.com/blog/svg-icons-guide-web-development) / [iconify.design/news/2026](https://iconify.design/news/2026.html)
 
 ## SVG Icon Construction
 
