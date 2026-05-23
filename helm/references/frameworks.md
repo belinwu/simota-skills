@@ -56,6 +56,11 @@ Output requirements:
 - positive/negative direction
 - note cross-effects such as technology creating legal change
 
+**2026 priority signals (always evaluate):**
+- Political: US tariff escalation (tariffs increased >6x in 12 months), AI export controls, US-China tech bifurcation (BCG: https://www.bcg.com/publications/2025/geopolitical-forces-shaping-business-in-2026); geoeconomic confrontation is WEF #1 near-term global risk (WEF GRR 2026: https://www.weforum.org/publications/global-risks-report-2026/)
+- Environmental: IFRS S2 climate-risk disclosure effective 1 Jan 2024, adopted in 21+ jurisdictions — LONG-horizon strategies for listed/institutional clients must address transition-plan requirements (https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s2-climate-related-disclosures/)
+- Technological: AI capabilities as geopolitical asset; agentic AI shifting from task automation to multi-step workflow management (BCG AI Radar 2026)
+
 ### Porter 5 Forces
 
 Score each force `High = 3`, `Medium = 2`, `Low = 1`. Lower total = more attractive structure.
@@ -71,6 +76,8 @@ Output requirements:
 - score table
 - top structural risk
 - top structural advantage
+
+> **Limitation (2025-2026):** Porter 5 Forces is a static, industry-level snapshot. It does not assess internal capabilities, execution quality, or platform-ecosystem dynamics (e.g., network effects, AI model moats). Supplement with Wardley Mapping for technology-evolution positioning and Scenario Planning for dynamic market shifts. Source: https://www.platformexecutive.com/knowledge/business-models/competitive-intelligence/choosing-the-right-framework-when-to-use-swot-pestle-porters-five-forces-and-5c-analysis/
 
 ### BCG Matrix
 
