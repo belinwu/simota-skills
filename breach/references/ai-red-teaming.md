@@ -48,6 +48,8 @@
 
 ## MITRE ATLAS (Adversarial Threat Landscape for AI Systems)
 
+ATLAS transitioned to a **monthly release cadence** (2025+). Use the **Technique Maturity filter** in the ATLAS Matrix to prioritize emerging vs. mature threats. The OpenClaw Investigation (2026-02) added seven new techniques unique to agentic AI systems. [Source: MITRE ATLAS](https://atlas.mitre.org/)
+
 | Tactic | Techniques | Test Focus |
 |--------|-----------|------------|
 | Reconnaissance | ML model discovery, API probing | What can an attacker learn about the model? |
@@ -57,7 +59,19 @@
 | Defense Evasion | Adversarial perturbation, input transformation | Can attacks bypass input filters? |
 | Exfiltration | Model extraction, training data extraction | Can model internals or data be stolen? |
 | Impact | Denial of ML service, evasion, manipulation | Can model outputs be degraded or controlled? |
-| Agentic Execution | Publish poisoned AI agent tool, escape to host, MCP server compromise | Can agent tooling or MCP channels be weaponized? |
+| Agentic Execution | Publish poisoned AI agent tool, escape to host, MCP server compromise, indirect LLM prompt injection, AI agent tool invocation, modifying agentic configuration | Can agent tooling or MCP channels be weaponized? |
+
+---
+
+## Adversarial ML Attack Taxonomy (NIST AI 100-2 E2025)
+
+Use NIST AI 100-2 E2025 as the canonical classification framework for adversarial ML attacks. [Source: NIST AI 100-2 E2025 — csrc.nist.gov](https://csrc.nist.gov/pubs/ai/100/2/e2025/final)
+
+| Attack Class | Sub-types | Scope |
+|--------------|-----------|-------|
+| **Evasion** | Adversarial perturbation, input transformation, obfuscation | Inference-time: fool the deployed model |
+| **Poisoning** | Training data poisoning, backdoor injection, model tampering | Training/fine-tuning: compromise model behavior |
+| **Privacy** | Membership inference, model extraction, training data extraction | Extract sensitive information about model or data |
 
 ---
 
