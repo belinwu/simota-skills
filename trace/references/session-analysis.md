@@ -6,18 +6,26 @@ Methods and best practices for session replay analysis.
 
 | Tool | 2026 strength | Notes |
 |------|----------------|-------|
-| **FullStory** | Pixel-perfect replay + **AI session summaries** + auto rage-click / dead-click detection | Default for enterprise teams that need behavioral analytics at scale |
-| **LogRocket** | Replay tightly coupled with console / network / error monitoring + **Galileo AI** issue triage | Default for engineering teams who want a single tool from "user friction" to "stack trace" |
+| **FullStory** | Pixel-perfect replay + **StoryAI** (agentic AI agents proactively surface friction/conversion signals, April 2025) + auto rage-click / dead-click detection + **FullStory Anywhere** (stream behavioral data to your own data warehouse) | Default for enterprise teams that need behavioral analytics at scale. Source: globenewswire.com 2025-04-02 |
+| **LogRocket** | Replay tightly coupled with console / network / error monitoring + **Ask Galileo** (natural-language chat over sessions + Zendesk + Zoom + Jira, MCP integration for Claude/ChatGPT/Cursor, March 2026) | Default for engineering teams who want a single tool from "user friction" to "stack trace". Permanent free tier launched Aug 2025 (1,000 sessions/mo). Source: globenewswire.com 2026-03-05 |
 | **Hotjar** | Lightweight recording + surveys + feedback widgets, no dev setup | Default for marketing / small teams |
 | **Mouseflow + Mina AI** | Natural-language query over session data ("show me sessions where users abandoned checkout after seeing the discount banner") | Use when the analyst is non-technical and needs free-text discovery |
-| **PostHog** (self-hosted) | Open-source replay + product analytics + feature flags in one OSS stack | Use when data residency or self-host is a hard requirement |
-| **Amplitude / Pendo / UXCam** | Replay layered on product-analytics primary | Use when product analytics is already the system of record |
+| **PostHog** (self-hosted or cloud) | Open-source replay + product analytics + feature flags + **PostHog AI** (per-session summaries, A/B variant comparison, Session Group API `/session_group_summaries`) | Use when data residency or self-host is a hard requirement, or for integrated A/B behavior analysis. Source: posthog.com/docs/posthog-ai/session-summaries |
+| **Amplitude / Pendo / UXCam** | Replay layered on product-analytics primary; UXCam covers iOS/Android/React Native/Flutter/Xamarin | Use when product analytics is already the system of record or for mobile-first products |
+| **Sentry** | Session Replay for mobile (iOS/Android/React Native/Flutter) in open beta 2025; paired with error monitoring | Use for mobile-first teams that already use Sentry for error tracking. Source: github.com/getsentry/sentry discussions #74322 |
+| **New Relic** | Mobile session replay via native SDKs (iOS v7.5.10 Sep 2025, React Native v1.5.10 Sep 2025) | Use in observability-heavy stacks already on New Relic. Source: docs.newrelic.com |
+| **Microsoft Clarity** | Free, unlimited sessions + Copilot per-session AI summaries + React Native/Flutter support (v3.19.0+) | Use for budget-constrained teams or to baseline before investing in premium tools |
+| **OpenReplay** (OSS self-hosted) | rrweb-based open-source; private-by-default (all text nodes/images redacted pre-transmission); $5-6/mo storage at 100K sessions | Use when full data sovereignty is required and vendor lock-in is not acceptable. Source: openreplay.com |
 
 ### 2026 Capability Baselines
 
-- **AI session summaries** are now table stakes. FullStory, LogRocket Galileo, and Mouseflow Mina AI all generate natural-language summaries per session — use them as a first-pass filter, never as the ground truth for a finding.
+- **AI session summaries** are now table stakes. FullStory StoryAI, LogRocket Ask Galileo, PostHog AI, Microsoft Clarity Copilot, and Mouseflow Mina AI all generate natural-language summaries per session — use them as a first-pass filter, never as the ground truth for a finding.
+- **Agentic AI** is the next step beyond summaries: FullStory StoryAI and LogRocket Galileo proactively surface friction and conversion signals without waiting to be asked. Verify all proactive signals against raw replays before actioning.
+- **MCP integration** (LogRocket Ask Galileo, March 2026) enables querying session insights from external AI assistants (Claude, ChatGPT, Gemini, Cursor) and automating post-release monitoring via Slack/Teams. Source: blog.logrocket.com/introducing-ask-galileo
+- **Mobile session replay** has reached mainstream: Sentry (open beta), New Relic, Microsoft Clarity, UXCam, Smartlook, LogRocket, and OpenReplay all support React Native and Flutter as of 2025-2026. Use wireframe-rendering tools (Smartlook) to minimize CPU/battery impact.
 - **Auto-masking** is on by default for passwords, payment fields, and most form inputs across the leading tools. Verify the *server-side* masking config before shipping — client-side masking that fires after the keystroke leaves the DOM is not GDPR-safe.
-- **Natural-language query over sessions** changes the analyst workflow: filter-then-scrub becomes ask-then-verify. Pair with explicit hypothesis statements (`session-analysis.md` workflow) to avoid chasing AI-suggested patterns that are statistical noise.
+- **Natural-language query over sessions** changes the analyst workflow: filter-then-scrub becomes ask-then-verify. Pair with explicit hypothesis statements to avoid chasing AI-suggested patterns that are statistical noise.
+- **EU Digital Omnibus (Nov 2025)**: proposed GDPR Article 88a would require explicit consent for terminal-equipment data access (covering session replay). Enforcement expected 2026+. Design consent flows to the stricter standard now. Source: kennedyslaw.com 2026.
 
 ---
 
