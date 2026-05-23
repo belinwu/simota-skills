@@ -2,6 +2,12 @@
 
 Reference for Dawn's `constraint` recipe. Bias the daily idea around an explicit engineering constraint — single-file, no-deps, offline-only, single-binary, 100-LOC, single-language — so the proposal lands with a particular *aesthetic*. Constraints unlock creativity by removing options, not adding them.
 
+<!-- Last updated: 2026-05-23. Sources:
+  - Bun 1.2+ single-binary: https://bun.sh/docs/bundler/executables (`bun build --compile`)
+  - Deno 2.x single-binary: https://docs.deno.com/runtime/reference/cli/compile/ (`deno compile`)
+  - Tauri 2.x offline/local-first: https://v2.tauri.app/blog/tauri-20/
+-->
+
 The constraint is the headline. The idea must still satisfy at least one of utility / learning value / playful delight, but its identity is shaped by the constraint.
 
 ---
@@ -33,9 +39,9 @@ Some stacks express certain constraints naturally. Bias the pick when stack and 
 
 | Constraint | Strong fit | Weak fit |
 |------------|------------|----------|
-| `single-file` | HTML, Python, Rust + `cargo-script`, Bun | Java, .NET |
-| `no-deps` | Go, Rust, C, Zig, Deno (with `--no-remote`) | Node, Python (sometimes) |
-| `single-binary` | Go, Rust, Zig, Bun (`bun build --compile`) | Python, Ruby |
+| `single-file` | HTML, Python, Rust + `cargo-script`, Bun (single `.ts`) | Java, .NET |
+| `no-deps` | Go, Rust, C, Zig, Deno 2.x (with `--no-remote`) | Node, Python (sometimes) |
+| `single-binary` | Go, Rust, Zig, Bun 1.2+ (`bun build --compile`), Deno 2.x (`deno compile`) | Python, Ruby |
 | `100-loc` | APL, Roc, Clojure, Python | Java, C++ |
 | `offline-only` | Tauri, native CLIs, PWA with cache-first | SaaS frontends |
 | `keyboard-only` | TUI (ratatui, ink, blessed), neovim plugins | Touch-first apps |

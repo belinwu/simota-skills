@@ -4,6 +4,12 @@ Reference for Dawn's `viral` recipe. Bias the daily idea so its very first run p
 
 This is **not** marketing-think. The shareable artifact is just an honest screenshot of the build doing something delightful. If the artifact is fake, the idea fails.
 
+<!-- Last updated: 2026-05-23. Sources:
+  - Show HN LLM observability pattern: https://news.ycombinator.com/item?id=46751546 (Lumina, 2026)
+  - Vibe coding → shareable one-run tools: https://thenewstack.io/ai-engineering-trends-in-2025-agents-mcp-and-vibe-coding/
+  - Personal data artifacts (git heatmap etc.): https://news.ycombinator.com/item?id=40167461
+-->
+
 ---
 
 ## 1. The 5-Second Wow Rule
@@ -71,6 +77,18 @@ A measurement nobody has done before, on a question only this engineer thought t
 ### E. Aesthetic-first
 
 Build something where the *visual* is the entire point — generative art, type specimens, color systems, ASCII portraits.
+
+### F. AI agent trace as art (2025-2026 pattern)
+
+A tool that captures and renders AI agent execution traces (MCP tool calls, token counts, latency) in a beautiful or surprising visual form. The shareable artifact is the trace graph itself — something only an "AI-native" developer in 2025-2026 would think to build.
+
+| Seed | Artifact |
+|------|----------|
+| Render one Claude conversation's token cost as a stacked bar chart per turn | One PNG |
+| Visualize the MCP tool call sequence of a Claude Code session as a swimlane diagram | One SVG |
+| Print the LLM prompt eval results for your last 10 prompts as a CLI sparkline | Terminal cast |
+
+> Note: anti-pattern is "generic dashboard"; the artifact must be *your* data rendered in a surprising way.
 
 ---
 
