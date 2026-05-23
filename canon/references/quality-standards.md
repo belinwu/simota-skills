@@ -1,19 +1,32 @@
 # Software Quality Standards Reference
 
-## ISO/IEC 25010 - Software Quality Model
+## ISO/IEC 25010:2023 — Product Quality Model (supersedes 2011)
 
-### Quality Characteristics
+[Source: https://www.iso.org/standard/78176.html]
 
-| Characteristic | Definition | Sub-characteristics |
-|----------------|------------|---------------------|
+The 2023 revision expands from 8 to **9 characteristics** and renames several top-level items. **Do not assess against the 2011 model** — its 8-characteristic structure (Portability, Usability) is superseded.
+
+**Key changes from 2011:** Usability → **Interaction Capability** (adds Inclusivity, Self-descriptiveness); Portability → **Flexibility** (adds Scalability); **Safety** added as 9th characteristic; Reliability/Maturity → Faultlessness; User Interface Aesthetics → User Engagement; Security adds **Resistance** sub-characteristic.
+
+### Quality Characteristics (2023 — 9 characteristics)
+
+| Characteristic | Definition | Sub-characteristics (2023) |
+|----------------|------------|---------------------------|
 | **Functional Suitability** | Meets stated and implied needs | Completeness, Correctness, Appropriateness |
 | **Performance Efficiency** | Performance relative to resources | Time behavior, Resource utilization, Capacity |
 | **Compatibility** | Works with other systems | Co-existence, Interoperability |
-| **Usability** | Can be used effectively | Learnability, Operability, Accessibility |
-| **Reliability** | Performs under conditions | Maturity, Availability, Fault tolerance, Recoverability |
-| **Security** | Protects information | Confidentiality, Integrity, Non-repudiation, Accountability, Authenticity |
+| **Interaction Capability** | Can be used effectively (was: Usability) | Appropriateness recognizability, Learnability, Operability, User error protection, User engagement, Inclusivity, User assistance, Self-descriptiveness, Accessibility |
+| **Reliability** | Performs under conditions | Faultlessness, Availability, Fault tolerance, Recoverability |
+| **Security** | Protects information | Confidentiality, Integrity, Non-repudiation, Accountability, Authenticity, **Resistance** |
 | **Maintainability** | Can be modified effectively | Modularity, Reusability, Analysability, Modifiability, Testability |
-| **Portability** | Can be transferred | Adaptability, Installability, Replaceability |
+| **Flexibility** | Can be transferred/adapted (was: Portability) | Adaptability, **Scalability**, Installability, Replaceability |
+| **Safety** | Avoids unacceptable risk (new in 2023) | Operational constraint, Risk identification, Fail safe, Hazard warning, Safe integration |
+
+### ISO/IEC 25019:2023 — Quality-in-Use Model
+
+[Source: https://www.iso.org/standard/78177.html]
+
+Companion standard published November 2023 (Edition 1). Defines the Quality-in-Use model covering three characteristics: Effectiveness, Efficiency, Satisfaction (with sub-characteristics Context coverage and Flexibility-in-use). Use ISO 25019 when assessing from the end-user / operational perspective; use ISO 25010 for intrinsic product quality. Both are part of the SQuaRE family.
 
 ### Quality Metrics
 

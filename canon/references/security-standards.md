@@ -2,25 +2,27 @@
 
 ## OWASP Top 10:2025 (supersedes 2021)
 
-> **Note:** The checklist below still uses the 2021 category names. OWASP Top 10:2025 restructured significantly: Security Misconfiguration rose #5→#2; SSRF absorbed into A01; A03 expanded to Software Supply Chain Failures; A07 renamed Authentication Failures; A09 renamed Security Logging and Alerting Failures; new A10 Mishandling of Exceptional Conditions. Assess against 2025 categories; use 2021 details below as supplementary reference only.
+[Source: https://owasp.org/Top10/2025/]
+
+The OWASP Top 10:2025 restructured significantly from 2021: Security Misconfiguration rose #5→#2; SSRF absorbed into A01 Broken Access Control; A03 expanded to Software Supply Chain Failures (entire supply chain scope); A07 renamed Authentication Failures; A09 renamed Security Logging and Alerting Failures; new A10 Mishandling of Exceptional Conditions. Dataset doubled to 500k+ apps from 40+ orgs. **Always assess against 2025 categories** — the 2021 category names below are superseded.
 
 ### Overview
-The OWASP Top 10 represents the most critical security risks to web applications.
+The OWASP Top 10 represents the most critical security risks to web applications (2025 edition).
 
-| ID | Category | Risk Level |
-|----|----------|------------|
-| A01 | Broken Access Control | Critical |
-| A02 | Cryptographic Failures | Critical |
-| A03 | Injection | Critical |
-| A04 | Insecure Design | High |
-| A05 | Security Misconfiguration | High |
-| A06 | Vulnerable and Outdated Components | High |
-| A07 | Identification and Authentication Failures | High |
-| A08 | Software and Data Integrity Failures | High |
-| A09 | Security Logging and Monitoring Failures | Medium |
-| A10 | Server-Side Request Forgery (SSRF) | High |
+| ID | Category (2025) | Risk Level |
+|----|-----------------|------------|
+| A01:2025 | Broken Access Control (incl. SSRF) | Critical |
+| A02:2025 | Security Misconfiguration | Critical |
+| A03:2025 | Software Supply Chain Failures | Critical |
+| A04:2025 | Insecure Design | High |
+| A05:2025 | Cryptographic Failures | High |
+| A06:2025 | Vulnerable and Outdated Components | High |
+| A07:2025 | Authentication Failures | High |
+| A08:2025 | Software and Data Integrity Failures | High |
+| A09:2025 | Security Logging and Alerting Failures | Medium |
+| A10:2025 | Mishandling of Exceptional Conditions | High |
 
-### A01:2021 - Broken Access Control
+### A01:2025 - Broken Access Control (incl. SSRF)
 
 **Requirement:** Ensure access control policies enforce that users cannot act outside their intended permissions.
 
@@ -62,7 +64,7 @@ app.get('/orders/:id', async (req, res) => {
 });
 ```
 
-### A02:2021 - Cryptographic Failures
+### A05:2025 - Cryptographic Failures
 
 **Requirement:** Protect sensitive data at rest and in transit using appropriate cryptographic mechanisms.
 
@@ -89,7 +91,7 @@ app.get('/orders/:id', async (req, res) => {
 | Hashing | SHA-256, SHA-3 |
 | TLS | TLS 1.3 (preferred), TLS 1.2 |
 
-### A03:2021 - Injection
+### A03:2025 - Software Supply Chain Failures (incl. Injection)
 
 **Requirement:** Prevent injection by validating, sanitizing, and parameterizing all user input.
 
@@ -128,7 +130,7 @@ const user = await db.query(`SELECT * FROM users WHERE id = ${req.params.id}`);
 const user = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id]);
 ```
 
-### A04:2021 - Insecure Design
+### A04:2025 - Insecure Design
 
 **Requirement:** Use secure design patterns and threat modeling from the start.
 
@@ -146,7 +148,7 @@ const user = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id])
 - [ ] Rate limiting for resource-intensive operations
 - [ ] Business logic abuse prevention
 
-### A05:2021 - Security Misconfiguration
+### A02:2025 - Security Misconfiguration
 
 **Requirement:** Secure configuration across all application components.
 
@@ -169,7 +171,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
 ```
 
-### A06:2021 - Vulnerable and Outdated Components
+### A06:2025 - Vulnerable and Outdated Components
 
 **Requirement:** Maintain inventory of components and update vulnerable dependencies.
 
@@ -197,7 +199,7 @@ bundle audit
 mvn dependency-check:check
 ```
 
-### A07:2021 - Identification and Authentication Failures
+### A07:2025 - Authentication Failures
 
 **Requirement:** Implement robust authentication mechanisms.
 
@@ -214,7 +216,7 @@ mvn dependency-check:check
 - No character composition requirements (NIST 800-63B)
 - Rate limit authentication attempts
 
-### A08:2021 - Software and Data Integrity Failures
+### A08:2025 - Software and Data Integrity Failures
 
 **Requirement:** Ensure integrity of software and data.
 
@@ -225,7 +227,7 @@ mvn dependency-check:check
 - [ ] Review code and configuration changes
 - [ ] Validate serialized data
 
-### A09:2021 - Security Logging and Monitoring Failures
+### A09:2025 - Security Logging and Alerting Failures
 
 **Requirement:** Log security events and monitor for anomalies.
 
@@ -245,20 +247,26 @@ mvn dependency-check:check
 - Success/failure status
 - Relevant resource identifiers
 
-### A10:2021 - Server-Side Request Forgery (SSRF)
+### A10:2025 - Mishandling of Exceptional Conditions
 
-**Requirement:** Prevent server from making unintended requests.
+**Requirement:** Ensure exceptions, errors, and unexpected states are handled appropriately without leaking information or creating exploitable conditions.
 
 **Prevention Measures:**
-- [ ] Allowlist permitted URLs/hosts
-- [ ] Disable HTTP redirects
-- [ ] Validate URL schemes (https only)
-- [ ] Block private IP ranges
-- [ ] Use network segmentation
+- [ ] Do not expose stack traces or internal details in production error responses
+- [ ] Log exceptions server-side; return generic messages to clients
+- [ ] Handle all exception paths explicitly (no bare `except`/`catch` blocks)
+- [ ] Validate assumptions at system boundaries; fail securely on unexpected input
+- [ ] Test for error-injection scenarios in security testing
+
+> **Note (SSRF):** SSRF is now absorbed into A01:2025 Broken Access Control. Apply allowlist permitted URLs/hosts, disable HTTP redirects, validate URL schemes, block private IP ranges, and use network segmentation as part of A01 remediations.
 
 ---
 
-## OWASP ASVS 4.0
+## OWASP ASVS 5.0 (supersedes 4.x)
+
+[Source: https://owasp.org/www-project-application-security-verification-standard/ — released May 2025 at Global AppSec EU Barcelona]
+
+ASVS 5.0 is a major release expanding from 286 requirements (14 chapters, v4.0.3) to ~350 requirements across 17 chapters. Key additions: dedicated chapters for Web Frontend Security and Self-Contained Tokens; cryptography guidelines updated for post-quantum considerations; password rules aligned with NIST SP 800-63B.
 
 ### Verification Levels
 
@@ -378,17 +386,61 @@ mvn dependency-check:check
 
 ---
 
+## OWASP API Security Top 10:2023
+
+[Source: https://owasp.org/API-Security/editions/2023/en/0x11-t10/]
+
+The second edition (supersedes 2019). Authorization remains the dominant API risk with 3 of the top 5 items related to access control.
+
+| ID | Category | Risk Level |
+|----|----------|------------|
+| API1:2023 | Broken Object Level Authorization | Critical |
+| API2:2023 | Broken Authentication | Critical |
+| API3:2023 | Broken Object Property Level Authorization | High |
+| API4:2023 | Unrestricted Resource Consumption | High |
+| API5:2023 | Broken Function Level Authorization | High |
+| API6:2023 | Unrestricted Access to Sensitive Business Flows | High |
+| API7:2023 | Server Side Request Forgery | High |
+| API8:2023 | Security Misconfiguration | Medium |
+| API9:2023 | Improper Inventory Management | Medium |
+| API10:2023 | Unsafe Consumption of APIs | Medium |
+
+---
+
+## OWASP Top 10 for LLM Applications 2025
+
+[Source: https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/]
+
+Updated late 2024 to reflect real-world incidents, agentic AI, and RAG-specific threats. New entries include LLM09 (Vector and Embedding Weaknesses targeting RAG/vector databases) and LLM10 (System Prompt Leakage). Use alongside OWASP Top 10 for Agentic Applications (2026) when assessing LLM-backed systems.
+
+---
+
+## CWE Top 25 Most Dangerous Software Weaknesses (2025)
+
+[Source: https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html] [2024 list: https://cwe.mitre.org/top25/archive/2024/2024_cwe_top25.html]
+
+Published annually by MITRE/CISA. Top 3 in 2024: Cross-Site Scripting (CWE-79), Out-of-Bounds Write (CWE-787), SQL Injection (CWE-89). The 2025 edition is available at the above URL. Use CWE citations in violation findings for interoperability with CVE/NVD tooling.
+
+---
+
+## NIST SSDF v1.1 / v1.2 (Draft)
+
+[Source: https://csrc.nist.gov/pubs/sp/800/218/final] [v1.2 draft: https://csrc.nist.gov/pubs/sp/800/218/r1/ipd]
+
+NIST SP 800-218 v1.1 defines four practice areas: Prepare the Organization (PO), Protect the Software (PS), Produce Well-Secured Software (PW), Respond to Vulnerabilities (RV). SP 800-218A augments v1.1 with AI/generative model development practices. SSDF v1.2 is in public comment (December 2025 draft). Reference SSDF when assessing CI/CD pipeline security, dependency management, and vulnerability response processes.
+
+---
+
 ## Quick Reference: Security Standards Mapping
 
-| Requirement | OWASP Top 10 | ASVS | NIST CSF | CIS |
-|-------------|--------------|------|----------|-----|
-| Access control | A01 | V4 | PR.AC | 5, 6 |
-| Encryption | A02 | V6, V9 | PR.DS | 3 |
-| Input validation | A03 | V5 | - | - |
-| Secure design | A04 | V1 | ID.RA | - |
-| Configuration | A05 | V14 | PR.IP | 4 |
-| Dependencies | A06 | V14.2 | ID.AM | 2 |
-| Authentication | A07 | V2, V3 | PR.AC | 5 |
-| Integrity | A08 | V10 | PR.DS | - |
-| Logging | A09 | V7 | DE.CM | 8 |
-| SSRF | A10 | V12 | - | - |
+| Requirement | OWASP Top 10:2025 | ASVS 5.0 | NIST CSF | CIS |
+|-------------|-------------------|----------|----------|-----|
+| Access control (incl. SSRF) | A01:2025 | V4 | PR.AC | 5, 6 |
+| Security misconfiguration | A02:2025 | V14 | PR.IP | 4 |
+| Supply chain / dependencies | A03:2025, A06:2025 | V14.2 | ID.AM | 2 |
+| Secure design | A04:2025 | V1 | ID.RA | - |
+| Encryption | A05:2025 | V6, V9 | PR.DS | 3 |
+| Authentication | A07:2025 | V2, V3 | PR.AC | 5 |
+| Integrity | A08:2025 | V10 | PR.DS | - |
+| Logging | A09:2025 | V7 | DE.CM | 8 |
+| Error handling | A10:2025 | V7 | - | - |

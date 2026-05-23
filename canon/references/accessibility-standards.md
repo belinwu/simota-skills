@@ -1,6 +1,14 @@
 # Accessibility Standards Reference
 
-## WCAG 2.1 / 2.2 (Web Content Accessibility Guidelines)
+## WCAG 2.2 / ISO/IEC 40500:2025
+
+[Source W3C: https://www.w3.org/WAI/news/2025-10-21/wcag22-iso/] [Source ISO: https://www.iso.org/standard/91029.html]
+
+**ISO/IEC 40500:2025** was approved on 21 October 2025 — WCAG 2.2 now carries formal ISO recognition, giving it legal and regulatory weight across borders. This supersedes ISO/IEC 40500:2012 (which was WCAG 2.0). The December 2024 revision of WCAG 2.2 is expected to become ISO/IEC 40500:2026 by late 2026. Always assess against WCAG 2.2 for current compliance; WCAG 3.0 (outcome-based scoring, targeted Recommendation ~late 2029) is track-only.
+
+> **Tool coverage ceiling:** W3C-approved automated rules cover full or partial SC for only 31% of WCAG 2.2 Level A/AA Success Criteria (17/55 SC). Actual detection rates: axe-core ~57%, general range 30–57%. Always require manual expert audit for any compliance determination.
+
+## WCAG 2.2 (Web Content Accessibility Guidelines)
 
 ### Conformance Levels
 
@@ -485,7 +493,8 @@ Previously required valid HTML. Now handled by user agents.
 ### Automated Testing
 
 ```bash
-# axe-core
+# axe-core (latest: 4.11.x as of May 2026 — ~57% WCAG 2.2 A/AA SC coverage)
+# Source: https://github.com/dequelabs/axe-core
 npx @axe-core/cli http://localhost:3000
 
 # Pa11y
@@ -494,6 +503,8 @@ npx pa11y http://localhost:3000
 # Lighthouse
 npx lighthouse http://localhost:3000 --only-categories=accessibility
 ```
+
+> **Important:** No automated tool covers all WCAG 2.2 A/AA SCs. axe-core provides the highest single-tool coverage (~57%) but cannot replace manual expert review for compliance determination.
 
 ### Browser DevTools
 - Chrome: Accessibility panel, Lighthouse
@@ -512,7 +523,7 @@ npx lighthouse http://localhost:3000 --only-categories=accessibility
 
 ## JIS X 8341-3:2016 (Japan)
 
-Japanese Industrial Standard for web accessibility, based on ISO/IEC 40500:2012 (WCAG 2.0).
+Japanese Industrial Standard for web accessibility, originally based on ISO/IEC 40500:2012 (WCAG 2.0). Note: ISO/IEC 40500:2012 has been superseded by ISO/IEC 40500:2025 (WCAG 2.2, approved October 2025). JIS X 8341-3 has not yet been formally updated to WCAG 2.2 as of 2026 — assess Japanese government procurement against JIS X 8341-3:2016 Level AA, but note the international standard has moved to WCAG 2.2.
 
 ### Conformance Requirements
 

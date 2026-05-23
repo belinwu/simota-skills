@@ -1,11 +1,15 @@
 # API Standards Reference
 
-## OpenAPI Specification 3.1
+## OpenAPI Specification 3.1.x / 3.2
+
+[Source: https://spec.openapis.org/oas/] — Current stable versions: **3.1.2** (patch, Sep 2025) and **3.2.0** (minor, Sep 2025). 3.1.1 was released Oct 2024. All 3.1.x share the same structure; tooling that supports 3.1.0 works on 3.1.2 without changes. For new projects, target 3.1.2 or 3.2.0. OpenAPI 3.2 adds streaming media types, new Tag Object structure (summary, parent, kind), and expanded HTTP method support. OpenAPI 4.0 ("Moonwalk") is in exploratory design with no planned release date [Source: https://www.openapis.org/blog/2025/02/05/moonwalk-2025-update].
+
+**Deprecation notice:** OpenAPI 2.0 (Swagger 2.0) is obsolete. Assess only against OpenAPI 3.1.x or 3.2 — never 2.0.
 
 ### Specification Structure
 
 ```yaml
-openapi: 3.1.0
+openapi: 3.1.2
 info:
   title: API Title
   version: 1.0.0
@@ -128,7 +132,9 @@ components:
 
 ---
 
-## RFC 7231 - HTTP Semantics
+## RFC 9110 - HTTP Semantics (supersedes RFC 7231)
+
+[Source: https://www.rfc-editor.org/rfc/rfc9110] — RFC 9110 was published June 2022 and supersedes RFC 7231, RFC 7232, RFC 7233, RFC 7235. Always cite RFC 9110 for HTTP semantics assessments; RFC 7231 is obsolete.
 
 ### HTTP Methods
 
