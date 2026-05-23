@@ -18,6 +18,8 @@
 | 0.05-0.10 | Weak evidence |
 | > 0.10 | No significant evidence |
 
+> **Modern guidance**: Do not rely on p-value alone. Always report effect size (absolute and relative lift), confidence interval, and practical significance. For multiple metrics, apply FDR control (Benjamini-Hochberg) rather than treating each p-value independently. Sequential testing (mSPRT / confidence sequences) replaces fixed-horizon p-values when continuous monitoring is required — these yield always-valid p-values that remain valid under peeking. (Source: Johari et al. 2022, "Always Valid Inference", *Operations Research* — https://pubsonline.informs.org/doi/10.1287/opre.2021.2135)
+
 ## Common Pitfalls
 1. **Peeking**: Checking results before reaching sample size inflates false positives
 2. **Multiple comparisons**: Testing many metrics without correction
