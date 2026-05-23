@@ -162,7 +162,7 @@ records:
 
 ## asciinema Workflow
 
-Produces lightweight .cast files ideal for web embedding with an interactive player.
+Produces lightweight .cast files ideal for web embedding with an interactive player. Requires asciinema v3.0+ (Sep 2025 Rust rewrite). Config file: `~/.config/asciinema/config.toml` (TOML format; prior versions used `~/.config/asciinema/config` INI format).
 
 ### When to Use
 
@@ -174,30 +174,48 @@ Produces lightweight .cast files ideal for web embedding with an interactive pla
 ### Workflow
 
 ```bash
-# 1. Record a session
+# 1. Record a session (outputs asciicast v3 by default in v3.0+)
 asciinema rec recording.cast
 
-# 2. Play back for review
+# 2. Play back for review (prefix-matched: 'asciinema p' works too)
 asciinema play recording.cast
 
-# 3. Upload to asciinema.org (optional)
+# 3. Convert v1/v2 cast to v3 format
+asciinema convert recording.cast recording-v3.cast
+
+# 4. Upload to asciinema.org (optional)
 asciinema upload recording.cast
 
-# 4. Convert to SVG (via svg-term-cli)
+# 5. Convert to SVG (via svg-term-cli)
 npx svg-term-cli --in recording.cast --out recording.svg --window
 
-# 5. Convert to GIF (via agg)
+# 6. Convert to GIF (via agg v1.6.0+; supports asciicast v1/v2/v3)
 agg recording.cast recording.gif
 ```
+
+### asciinema v3.0 Behavioral Changes
+
+- `cat` command requires at least two arguments (concatenation only); single-file dump removed.
+- Config file moved to `~/.config/asciinema/config.toml` (TOML format).
+- Asciicast v3 uses delta-based interval timing (v2 used absolute timestamps) — not backward-compatible.
+- `--return` flag propagates session exit code to shell (useful for CI gating).
+- `--headless` flag on `rec`/`stream` disables TTY I/O for CI pipelines.
 
 ### Web Embedding
 
 ```html
-<!-- asciinema player embed -->
+<!-- asciinema.org hosted embed -->
 <script src="https://asciinema.org/a/RECORDING_ID.js" id="asciicast-RECORDING_ID" async></script>
 
-<!-- Self-hosted player -->
-<asciinema-player src="recording.cast" cols="80" rows="24" autoplay="true" loop="true"></asciinema-player>
+<!-- Self-hosted player (asciinema-player v3.x — standalone bundle) -->
+<link rel="stylesheet" type="text/css" href="/assets/asciinema-player.css" />
+<div id="player"></div>
+<script src="/assets/asciinema-player.min.js"></script>
+<script>
+  AsciinemaPlayer.create('/recordings/demo.cast', document.getElementById('player'), {
+    cols: 80, rows: 24, autoPlay: true, loop: true
+  });
+</script>
 ```
 
 ### asciinema vs VHS Decision

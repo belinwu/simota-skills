@@ -8,7 +8,7 @@ Reference for choosing and optimizing terminal recording output formats.
 |--------|------|------|----------|-------------------|
 | GIF | Universal support, auto-plays everywhere | Large files, 256 color limit, no audio | README embeds, quick demos | 2-10 MB |
 | MP4 (H.264) | Small files, excellent quality, wide support | No auto-play on GitHub, requires player | Documentation sites, marketing | 0.5-2 MB |
-| WebM (VP9) | Smaller than MP4, open format, good quality | Limited browser support (no Safari <16) | Web documentation, CI previews | 0.3-1.5 MB |
+| WebM (VP9) | Smaller than MP4, open format, good quality | No support on Safari <16 (Safari 16+ supports it; released 2022) | Web documentation, CI previews | 0.3-1.5 MB |
 | SVG | Infinite scalability, searchable text, tiny size | Requires svg-term-cli, no native animation | Technical docs, presentations | 50-200 KB |
 | PNG sequence | Lossless quality, individual frame access | Many files, requires assembly step | Post-processing pipelines | 5-20 MB |
 

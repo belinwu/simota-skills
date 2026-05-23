@@ -1,6 +1,6 @@
 # VHS Tape Patterns Reference
 
-Comprehensive reference for VHS (charmbracelet/vhs) — a terminal recording tool that uses `.tape` files to script and produce GIF/MP4/WebM recordings of terminal sessions.
+Comprehensive reference for VHS (charmbracelet/vhs) — a terminal recording tool that uses `.tape` files to script and produce GIF/MP4/WebM recordings of terminal sessions. Source: https://github.com/charmbracelet/vhs (latest stable: v0.11.0+; check releases for newer versions).
 
 ---
 
@@ -150,6 +150,26 @@ Right 3        # Move cursor right 3 characters
 ```tape
 PageUp         # Scroll up one page
 PageDown       # Scroll down one page
+```
+
+### ScrollUp / ScrollDown — Scroll Viewport (v0.11.0+)
+
+Scroll the terminal viewport up or down without sending keystrokes to the shell. Useful for showing content that scrolled off screen.
+
+```tape
+ScrollUp       # Scroll viewport up one line
+ScrollUp 5     # Scroll up 5 lines
+ScrollDown     # Scroll viewport down one line
+ScrollDown 3   # Scroll down 3 lines
+```
+
+### Ctrl+Arrow — Word Navigation (v0.11.0+)
+
+```tape
+Ctrl+Left      # Move cursor one word left
+Ctrl+Right     # Move cursor one word right
+Ctrl+Up        # Scroll terminal up (shell-dependent)
+Ctrl+Down      # Scroll terminal down (shell-dependent)
 ```
 
 ### Home / End
