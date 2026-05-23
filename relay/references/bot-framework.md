@@ -275,7 +275,14 @@ const bot = new MiddlewareChain()
 
 ## Platform-Specific Bot Patterns
 
-### Slack App (Bolt.js)
+### Slack App (Bolt.js v4+)
+
+> **2025-2026 updates:**
+> - Bolt for JavaScript v4.7.0 (2026) adds AI agent utilities: thinking status, streaming text, suggested prompts.
+> - Slack MCP Server works with Bolt Frameworks.
+> - Major agent frameworks (Claude Agent SDK, OpenAI Agents SDK, Pydantic AI, Vercel AI SDK) integrate with Bolt v4+.
+> - Requires `agents:read` / `agents:write` scopes for agent features.
+> - Source: [docs.slack.dev/tools/bolt-js/concepts/adding-agent-features](https://docs.slack.dev/tools/bolt-js/concepts/adding-agent-features/)
 
 ```typescript
 import { App } from '@slack/bolt';
@@ -303,12 +310,27 @@ app.action('approve_button', async ({ body, ack, respond }) => {
   await ack();
   await respond('Approved!');
 });
+
+// AI agent response with streaming text (Bolt v4.7+)
+// app.event('app_mention', async ({ event, client, say }) => {
+//   const agent = client.agents.respond({ channel: event.channel, thread_ts: event.ts });
+//   await agent.thinking(); // Show thinking indicator
+//   const result = await myLLM(event.text);
+//   await agent.stream(result); // Stream response tokens
+// });
 ```
 
-### Discord Bot (discord.js)
+### Discord Bot (discord.js — API v10)
+
+> **2025-2026 updates:**
+> - Discord API v10 is current; always target `/api/v10`.
+> - Components V2 (`IS_COMPONENTS_V2` flag `1 << 15`): enables Section, Container, Separator, Text Display — up to 40 components. Recommended for new apps.
+> - Permission splits (Feb 23, 2026): PIN_MESSAGES required to pin; CREATE_EVENTS required for scheduled events.
+> - Discord DAVE protocol (E2EE calls) mandatory March 1, 2026.
+> - Source: [docs.discord.com/developers/change-log](https://docs.discord.com/developers/change-log)
 
 ```typescript
-import { Client, GatewayIntentBits, SlashCommandBuilder } from 'discord.js';
+import { Client, GatewayIntentBits, SlashCommandBuilder, MessageFlags } from 'discord.js';
 
 const client = new Client({
   intents: [
@@ -325,4 +347,12 @@ client.on('interactionCreate', async (interaction) => {
     await interaction.reply('Pong!');
   }
 });
+
+// Components V2 example (recommended for new apps)
+// await channel.send({
+//   flags: MessageFlags.IsComponentsV2, // 1 << 15
+//   components: [
+//     { type: ComponentType.TextDisplay, content: 'Hello from Components V2!' },
+//   ],
+// });
 ```

@@ -95,16 +95,22 @@ interface SystemMessage extends BaseMessage {
 
 | Platform | SDK | Package | Stars | Strengths | Weaknesses |
 |----------|-----|---------|-------|-----------|------------|
-| Slack | Bolt.js | `@slack/bolt` | 2.7k+ | Official, event-driven, middleware | Slack-only, opinionated |
+| Slack | Bolt.js v4 | `@slack/bolt` | 2.7k+ | Official, event-driven, middleware, AI agent features (v4.7+) | Slack-only, opinionated |
 | Slack | WebClient | `@slack/web-api` | - | Low-level control | Manual event handling |
-| Discord | discord.js | `discord.js` | 25k+ | Feature-rich, well-maintained | Large dependency |
-| Discord | Eris | `eris` | 1.4k | Lightweight | Less features |
+| Discord | discord.js | `discord.js` | 25k+ | Feature-rich, well-maintained, Components V2 support | Large dependency |
+| Discord | Eris | `eris` | 1.4k | Lightweight | Less features, slower Components V2 adoption |
 | Telegram | grammY | `grammy` | 2k+ | TypeScript-first, middleware | Telegram-only |
 | Telegram | node-telegram-bot-api | `node-telegram-bot-api` | 8k+ | Simple, popular | Callback-based |
 | WhatsApp | Baileys | `@whiskeysockets/baileys` | 4k+ | Reverse-engineered, full access | Unofficial, risk of breakage |
 | WhatsApp | Cloud API | `whatsapp-business-api` | - | Official, stable | Limited features, cost |
-| LINE | LINE SDK | `@line/bot-sdk` | 400+ | Official | Limited ecosystem |
-| Teams | Bot Framework | `botbuilder` | 4k+ | Microsoft official | Complex, heavy |
+| LINE | LINE SDK | `@line/bot-sdk` | 400+ | Official, LIFF v2.28+ (requestFriendship, 2026) | Limited ecosystem |
+| Teams | Bot Framework | `botbuilder` | 4k+ | Microsoft official, Adaptive Cards support | Complex, heavy; new multi-tenant bot registrations discontinued after July 31, 2025 |
+
+> **Deprecation notes (2025-2026):**
+> - Slack RTM API: **legacy** — new apps must use Events API or Socket Mode. Source: [docs.slack.dev/legacy/legacy-rtm-api](https://docs.slack.dev/legacy/legacy-rtm-api/)
+> - Slack classic apps: discontinued **November 16, 2026**. Legacy custom bots: stopped **March 31, 2025**. Source: [docs.slack.dev/changelog/2024-09-legacy-custom-bots-classic-apps-deprecation](https://docs.slack.dev/changelog/2024-09-legacy-custom-bots-classic-apps-deprecation/)
+> - Discord API: current version is **v10**; always target `/api/v10`. Source: [docs.discord.com/developers/reference](https://docs.discord.com/developers/reference)
+> - Microsoft Teams: new multi-tenant bot registrations discontinued after **July 31, 2025**. Source: [learn.microsoft.com/microsoftteams/platform](https://learn.microsoft.com/en-us/microsoftteams/platform/)
 
 ## SDK Selection Decision Tree
 
@@ -125,8 +131,8 @@ Need official support + stability?
 | Feature | Slack | Discord | Telegram | WhatsApp | LINE | Teams |
 |---------|-------|---------|----------|----------|------|-------|
 | Text messages | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Rich formatting | Blocks | Embeds | HTML/MD | Limited | Flex | Adaptive Cards |
-| Buttons/Actions | ✅ | ✅ | Inline KB | Buttons | Quick Reply | ✅ |
+| Rich formatting | Blocks (Block Kit) | Embeds + Components V2 | HTML/MD | Limited | Flex Message | Adaptive Cards |
+| Buttons/Actions | ✅ | ✅ Components V2 | Inline KB | Buttons | Quick Reply | ✅ |
 | Threads | ✅ | ✅ | Reply-to | ✅ | ❌ | ✅ |
 | Reactions | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | File uploads | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -134,8 +140,11 @@ Need official support + stability?
 | Slash commands | ✅ | ✅ | Bot commands | ❌ | ❌ | Commands |
 | Message editing | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
 | Webhooks inbound | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| WebSocket | ✅ (Socket Mode) | ✅ (Gateway) | ❌ (polling) | ❌ | ❌ | ❌ |
-| Rate limits | Tier-based | Per-route | 30 msg/sec | Varies | 100k/min | Varies |
+| WebSocket | ✅ (Socket Mode) | ✅ (Gateway v10) | ❌ (polling) | ❌ | ❌ | ❌ |
+| AI/LLM agent support | ✅ (Bolt v4.7+) | ❌ native | ❌ | ❌ | ❌ | ✅ (Copilot) |
+| Rate limits | Tier-based (non-Marketplace restricted from Mar 2026) | 50 req/s global + per-route X-RateLimit-Bucket | 30 msg/sec | Varies | 100k/min | Varies |
+
+> **Discord Components V2 (2025):** Use `IS_COMPONENTS_V2` message flag (`1 << 15`) to enable Section, Container, Separator, Text Display components. Up to 40 components per message. When flag is set, `content` and `embeds` fields are disabled. Recommended for all new Discord apps. Source: [docs.discord.com/developers/components/reference](https://docs.discord.com/developers/components/reference)
 
 ## Normalization Patterns
 
