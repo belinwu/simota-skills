@@ -19,9 +19,11 @@ If the request is "enable `strict: true`" → `lang`. If it is "add types to one
 | JS → TS | Rename `.js` → `.ts`, add `tsconfig`, allowJs during transition | `any` creep, interop with untyped deps, `esModuleInterop` behavior, runtime shape vs declared type drift |
 | TS loose → `strict` | Enable flags one at a time (`noImplicitAny` → `strictNullChecks` → `strictFunctionTypes` → `strictPropertyInitialization`) | Uncovered null paths, variance in callback params, DI container init order |
 | Python 2 → 3 residual | `2to3`, `print`/`except` syntax, `unicode_literals` | `str` vs `bytes` boundary, integer division, dict ordering assumptions, `__hash__` defaults |
-| Node 18 → 20 → 22 LTS | `engines` bump, lockfile regen | `fetch` globally available, `--experimental-*` flag removals, V8 behavior (e.g., regex, Intl), deprecated OpenSSL algos, corepack behavior |
+| Node 18 → 20 → 22 LTS | `engines` bump, lockfile regen | `fetch` globally available, `--experimental-*` flag removals, V8 behavior (e.g., regex, Intl), deprecated OpenSSL algos, corepack behavior; Node 22 LTS: `require(esm)` synchronous support (behind `--experimental-require-module` until stable), native `WebSocket` client, Maglev JIT on by default |
+| Python 3.11/3.12 → 3.13 / 3.14 | `pyproject.toml` / `setup.cfg` target bump, lockfile regen | 3.13: free-threaded CPython (GIL-optional, experimental build `--disable-gil`), JIT compiler (tier-2, experimental), `locals()` semantics change; 3.14: deferred evaluation of annotations (`from __future__ import annotations` behavior becomes default) — run full async/threading test suite before promoting |
 | Go 1.N → 1.N+x | `go mod tidy`, toolchain directive | `GOPROXY` / checksum changes, loop-var scoping (1.22+), generics adoption, deprecated stdlib (`io/ioutil`) |
 | Java 8 → 17 / 21 | Module path, removed APIs (`sun.misc.Unsafe` paths) | Records / sealed types opt-in, virtual threads (21) scheduler diffs, GC default change (G1 → ZGC), strong encapsulation of JDK internals |
+| Java 17 / 21 → 25 | OpenRewrite `UpgradeToJava25` recipe (when available); `jdeps --jdk-internals` for encapsulation gaps | Virtual thread pinning audit (`synchronized` + native), Project Leyden class-data sharing, pattern matching completeness |
 
 Capture project-specific diffs you encounter in `.agents/shift.md`.
 
@@ -42,9 +44,10 @@ Never enable `strict: true` wholesale on a large codebase in one PR. A 500-error
 
 Type-system changes do not alter runtime. Runtime / version bumps do — these are the real risks:
 
-- **Node LTS**: run the full test suite on the new major *before* the `engines` bump. Watch for `punycode` removal, `util._extend` removal, weak cipher defaults, `fetch` body streaming changes.
+- **Node LTS**: run the full test suite on the new major *before* the `engines` bump. Watch for `punycode` removal, `util._extend` removal, weak cipher defaults, `fetch` body streaming changes. Node 22 LTS: `require(esm)` allows synchronous import of ES modules (reduces the CJS→ESM migration surface); native `WebSocket` eliminates `ws` dependency for simple cases; Maglev JIT changes warm-up latency profile — re-benchmark latency-sensitive paths.
 - **Go**: 1.22 loop-variable semantics change silently — `go vet` flags some cases but not all; audit goroutine-in-loop call sites manually.
 - **Java 17 / 21**: default charset is UTF-8 from 18+ (was platform-dependent) — file I/O round-trips may change. Virtual threads expose pinning on `synchronized` / native methods.
+- **Python 3.13**: free-threaded build (`--disable-gil`) is opt-in and experimental — do not enable in production without extensive concurrency testing. JIT tier-2 compiler is also experimental; disable with `PYTHON_JIT=0` if benchmarks regress. `locals()` snapshot semantics changed — code that mutated `locals()` breaks silently.
 - **Python 3**: `dict` ordering is insertion-ordered from 3.7 — code that relied on set-like ordering now silently depends on insertion order.
 
 Verification pattern: run the same deterministic workload on old and new runtimes, compare output byte-for-byte (or with a normalizer for timestamps). Diff the two. Unexplained diffs block promotion.

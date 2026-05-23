@@ -12,6 +12,7 @@
 | Go | go/ast + golang.org/x/tools | go/ast | Go API migrations |
 | Rust | syn + quote | syn | Macro-based transforms |
 | Multi-language | ast-grep | Tree-sitter | Pattern matching across languages, repo-scale scanning |
+| Java / Kotlin / Python | **OpenRewrite** | Lossless Semantic Trees (LST) | High-fidelity Java/Kotlin transforms (Spring Boot 3→4, Jakarta namespace, dependency upgrades); operates on type-resolved semantic model, not raw AST — prefer over jscodeshift for JVM migrations. Run via `./mvnw rewrite:run`. Source: [OpenRewrite Docs](https://docs.openrewrite.org/) |
 
 ### How To Pick Between jscodeshift and ast-grep / jssg
 
@@ -21,7 +22,8 @@
 | Need to **match** a pattern across hundreds of files and rewrite a localised diff | ast-grep / jssg |
 | Need to run the same transform across **JS, TS, Python, Go** with one tool | ast-grep (Tree-sitter-based) |
 | Want a visual / managed runner so non-codemod-experts can review the diff | Codemod.com Studio + Hypermod |
-| The framework ships an **official codemod** already (`react-codemod`, `vue-codemod`, `@next/codemod`) | Use the official set first; reach for the tools above only for the residual delta |
+| The framework ships an **official codemod** already (`react-codemod`, `vue-codemod`, `@next/codemod`, `npx sv migrate`, OpenRewrite recipes) | Use the official set first; reach for the tools above only for the residual delta |
+| React 19 upgrade specifically | Use [codemod.com React 18→19 guide](https://docs.codemod.com/guides/migrations/react-18-19) — React team co-published official codemods there (`Context.Provider`, `forwardRef`, `useContext→use`) |
 
 ## jscodeshift Patterns
 

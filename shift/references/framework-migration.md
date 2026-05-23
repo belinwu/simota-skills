@@ -17,12 +17,14 @@ If the request is "what should we move off?" → Horizon. If it is "we have chos
 | From → To | Mechanical (codemod-able) | Semantic (must verify manually) |
 |-----------|---------------------------|----------------------------------|
 | Vue 2 → Vue 3 | `vue-codemod` (Options API skeleton, `v-model` arg rename, filters removal) | Reactivity from `this.$set` → proxy, event API (`$on`/`$off` removed), Vuex → Pinia store shape |
-| React `18 → 19` | `react-codemod` (`Context.Provider` → `Context`, remove `forwardRef`, `React.useContext` → `use`) | Actions / `useActionState` adoption, `<Form>` semantics, Server Components migration, `ref` as prop |
+| React `18 → 19` | `react-codemod` + codemod.com official codemods (`Context.Provider` → `Context`, remove `forwardRef`, `React.useContext` → `use`) — the React team co-published these with codemod.com ([guide](https://docs.codemod.com/guides/migrations/react-18-19)) | Actions / `useActionState` adoption, `<Form>` semantics, Server Components migration, `ref` as prop |
 | React CRA → Next.js (App Router) | File moves, import path rewrites (Next.js ships official codemods via `npx @next/codemod`) | Client/Server component boundary, `useRouter` API diff, env var prefix (`REACT_APP_` → `NEXT_PUBLIC_`), SSR hydration mismatches |
-| Next.js `15 → 16` | Official `@next/codemod` set (App Router cache APIs, image / metadata rewrites) | Cache Components (Next.js 16) replacing implicit caching, async `params` / `searchParams`, partial pre-rendering boundaries |
+| Next.js `15 → 16` | `npx @next/codemod upgrade 16` — covers cache APIs, image / metadata rewrites, async dynamic APIs | Cache Components replacing implicit caching, async `params` / `searchParams`, partial pre-rendering boundaries |
+| Svelte `4 → 5` | `npx sv migrate svelte-5` (whole app) or VS Code "Migrate Component to Svelte 5 Syntax" command (per-component); Svelte 4 syntax still supported so components can be mixed | Runes reactivity model (`$state`, `$derived`, `$effect`) replacing `$:` reactive declarations; slots → snippets (passed as props); event directive syntax change ([Svelte 5 migration guide](https://svelte.dev/docs/svelte/v5-migration-guide)) |
 | Angular N → N+2 | `ng update` schematics, Ivy opt-in | Standalone components, zoneless change detection, RxJS major bumps, strict template types |
 | Rails N → N+1 | `rails app:update`, initializer regeneration | Zeitwerk autoloading, deprecation warnings, strong params edges, Active Record default changes |
-| Spring Boot 2 → 3 | Jakarta namespace rename (`javax.*` → `jakarta.*`) | Native image constraints, observability API (Micrometer → OTel), security filter chain changes |
+| Spring Boot 2 → 3 | Jakarta namespace rename (`javax.*` → `jakarta.*`); OpenRewrite `UpgradeSpringBoot_3_0` recipe automates the bulk | Native image constraints, observability API (Micrometer → OTel), security filter chain changes |
+| Spring Boot 3 → 4 | OpenRewrite `UpgradeSpringBoot_4_0` recipe (property renames, modular starters, Spring Security 7 API) — [Moderne blog 2025](https://www.moderne.ai/blog/spring-boot-4x-migration-guide); [OpenRewrite docs](https://docs.openrewrite.org/recipes/java/spring/boot4/upgradespringboot_4_0-community-edition) | **Requires Java 21 minimum**; Spring Framework 7 + Jakarta EE 11; Spring Security 7 filter chain changes; native image constraints updated |
 | Express → Fastify / Hono | Route registration shape | Middleware execution order, error-handling contract, async hook semantics, streaming response API |
 
 Record anything you hit that is *not* on this list in `.agents/shift.md` for future reuse.
@@ -31,9 +33,11 @@ Record anything you hit that is *not* on this list in `.agents/shift.md` for fut
 
 For every row above, check the framework's *official* codemod set before hand-writing a transform:
 
-- **React**: [`reactjs/react-codemod`](https://github.com/reactjs/react-codemod) (also distributed via Codemod.com migrations) — covers `Context.Provider`, `forwardRef`, `useContext → use`, and the legacy class-component path.
+- **React**: [`reactjs/react-codemod`](https://github.com/reactjs/react-codemod) (also distributed via Codemod.com migrations) — covers `Context.Provider`, `forwardRef`, `useContext → use`, and the legacy class-component path. The React team co-published React 19 codemods with [codemod.com](https://docs.codemod.com/guides/migrations/react-18-19).
 - **Vue**: [`vuejs/vue-codemod`](https://github.com/vuejs/vue-codemod) — Vue 2 → 3 API rewrites, jscodeshift-based.
-- **Next.js**: `npx @next/codemod <transform> .` — version-pinned transforms shipped with the framework.
+- **Next.js**: `npx @next/codemod upgrade <version>` (e.g., `upgrade 16`) — version-pinned transforms shipped with the framework; also covers upgrading async APIs, cache changes, and metadata rewrites.
+- **Svelte**: `npx sv migrate svelte-5` — official whole-app migrator; or VS Code Svelte extension for per-component migration. Svelte 5 supports mixing old and new syntax.
+- **Spring Boot (Java/Kotlin)**: [OpenRewrite](https://docs.openrewrite.org/) with `UpgradeSpringBoot_3_x` / `UpgradeSpringBoot_4_0` recipes — operates on Lossless Semantic Trees (LST), not raw ASTs, for higher-fidelity Java transforms. Run via `./mvnw -U rewrite:run` or Gradle equivalent.
 - **Codemod.com Studio + Hypermod**: visual / managed codemod runners that sit on top of `ast-grep` (jssg) and jscodeshift; use when the official codemods do not cover the delta.
 
 A codemod cannot replace the semantic verification column above. Treat the codemod output as a starting diff and run the dual-run validation regardless.
@@ -97,6 +101,33 @@ Tools: `diffy` for JSON, framework-specific shadow-proxy (e.g., GoReplay, Envoy 
 - Capture warnings per phase (stderr, framework logger, browser console).
 - Classify: `fix-now` (removed next minor), `defer` (file ticket, set expiry date), `accept` (third-party, pinned).
 - A deferred warning without an expiry date is not deferred — it is ignored. Block `COMPLETE` if any warning lacks classification.
+
+## LLM-Assisted Migration (2025–2026)
+
+For large Java / .NET modernization tasks, AI-assisted tooling can accelerate the assessment and fix phases:
+
+- **GitHub Copilot App Modernization** (VS Code extension): agent-mode workflow that runs assessment → solution recommendation → code fixes → validation in a guided loop. Includes automatic CVE scanning on changed dependencies and proposes safe version replacements when vulnerabilities are detected. Source: [GitHub Blog — Modernizing Java projects with Copilot agent mode](https://github.blog/ai-and-ml/github-copilot/a-step-by-step-guide-to-modernizing-java-projects-with-github-copilot-agent-mode/); [Microsoft Learn — Copilot modernization overview](https://learn.microsoft.com/en-us/dotnet/core/porting/github-copilot-app-modernization/overview).
+- **Sourcegraph Cody**: context-aware AI assistant that uses Code Graph to understand the full repository; useful for surfacing cross-cutting migration touchpoints in large monorepos. Note: as of June 2025, Cody Free/Pro new signups closed — enterprise-only for new customers.
+- **Research note**: arXiv 2025 study on Copilot Agent Mode for library migration ([2510.26699](https://arxiv.org/html/2510.26699v1)) found meaningful automation rates for dependency-level mechanical changes; semantic verification still requires human review and test harnesses.
+
+**Guardrail**: LLM-generated transforms must pass the same dual-run validation as codemod output — treat them as a draft diff, not a complete migration.
+
+## LaunchDarkly Migration Flags Pattern
+
+For data/infrastructure migrations that need staged, independently-controllable read/write cutover (beyond simple boolean rollout):
+
+LaunchDarkly Migration Flags offer 2, 4, or 6 stages. The 6-stage variant controls reads and writes independently:
+
+```
+Stage 1 (off)        → read old / write old
+Stage 2 (dualWrite)  → read old / write old+new
+Stage 3 (shadow)     → read old / write old+new, compare reads
+Stage 4 (live)       → read new / write old+new
+Stage 5 (rampDown)   → read new / write new (old passthrough)
+Stage 6 (complete)   → read new / write new
+```
+
+The SDK's `migrator` helper runs the validation function automatically in shadow stages and emits migration metrics to LaunchDarkly. Use this pattern instead of hand-rolled dual-write code when the team already uses LaunchDarkly. Source: [LaunchDarkly migration flags docs](https://launchdarkly.com/docs/guides/flags/migrations).
 
 ## Anti-Patterns
 
