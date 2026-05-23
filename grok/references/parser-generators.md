@@ -37,10 +37,11 @@
 
 ### 2026 State of the Tooling
 
-- **tree-sitter** has stabilised around the `0.19.x` line in 2026 with measurable performance work — `tree-sitter-language-pack` ships pre-compiled parsers for ~`305` languages, removing the per-binding compilation toil that dominated 2024 setups. Default to it for any editor / LSP target.
-- **ANTLR4** remains the de facto choice for cross-runtime grammar reuse; 2026 work focuses on its Python and Go targets reaching parity with the JVM target's error-recovery quality.
+- **tree-sitter** is on the **`0.25.x`** line (v0.25.8 current as of 2025-Q1). ABI 15 (introduced in v0.25.0) adds language name, version, and supertype metadata to parsers. `web-tree-sitter` was rewritten in TypeScript with CommonJS + ESM dual output and sourcemaps. `tree-sitter-language-pack` ships pre-compiled parsers for ~`305` languages, removing per-binding compilation toil. Default to it for any editor / LSP target. Source: [github.com/tree-sitter/tree-sitter/releases](https://github.com/tree-sitter/tree-sitter/releases)
+- **ANTLR4** remains the de facto choice for cross-runtime grammar reuse (4.13+ relocates the Go runtime to [github.com/antlr4-go/antlr](https://github.com/antlr4-go/antlr)); Python target continues to receive parity improvements. Source: [github.com/antlr/antlr4/releases](https://github.com/antlr/antlr4/releases)
 - **Chevrotain** is the canonical JS / TS choice when you need a hand-tunable LL(k) parser without leaving Node — its error-recovery primitives still set the bar in the JS ecosystem.
 - **Lezer** (CodeMirror 6's parser generator) is the right answer when the editor itself is CodeMirror; pair with tree-sitter only when CodeMirror is not a constraint.
+- **Rust ecosystem**: `lalrpop` 0.23.x (LR(1)) and `pest` (PEG) are both actively maintained as of 2025-Q1. Source: [crates.io/keywords/grammar](https://crates.io/keywords/grammar)
 - **Marpa** and **nearley** stay useful for ambiguous grammars (linguistic, partial / streaming, exploratory) — Lark + Earley covers the same ground in Python.
 
 ---

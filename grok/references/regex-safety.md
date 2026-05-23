@@ -119,10 +119,12 @@ Trade-off: linear-time engines drop features that require NFA backtracking — n
 | Tool | Language | Notes |
 |------|----------|-------|
 | `safe-regex` (npm) | JS | Simple star-height heuristic; fast but many false negatives — keep only for legacy CI |
-| `redos-detector` | JS/TS, Node, Deno, browser | Path-counting analysis with per-pattern **score**; score `1` = no backtracking possible. ESLint plugin (`eslint-plugin-redos-detector`) integrates with existing lint pipelines |
+| `redos-detector` | JS/TS, Node, Deno, browser | Path-counting analysis with per-pattern **score**; score `1` = no backtracking possible. ESLint plugin (`eslint-plugin-redos-detector`) integrates with existing lint pipelines. Source: [github.com/tjenkinson/redos-detector](https://github.com/tjenkinson/redos-detector) |
 | `recheck` | JS / Rust | Hybrid static + fuzzing; reasonable precision; broadest engine coverage; used in many `npm audit`-adjacent toolchains as of 2026 |
 | `regexploit` | Python | Finds ReDoS with concrete attack inputs; ideal for CI as a fail-with-PoC step |
 | `rxxr2` | OCaml / C | Academic-grade analyser; finds pumping strings; useful for high-stakes audits |
+| `Rengar` | Research | Hybrid detector with principled vulnerability modeling and disturbance-free attack-string generation; outperforms `safe-regex` on precision. Source: [ieeexplore.ieee.org/document/10179328](https://ieeexplore.ieee.org/document/10179328/) |
+| Semgrep `detect-redos` | JS (and more) | Metavariable-analysis rule in Semgrep ruleset; integrates with existing Semgrep pipelines. Source: [semgrep.dev/r?q=javascript.lang.security.audit.detect-redos](https://semgrep.dev/r?q=javascript.lang.security.audit.detect-redos) |
 | ESLint `security/detect-unsafe-regex` | JS | Light backstop; pair with `redos-detector` for coverage |
 
 Usage pattern in CI (2026 default):
@@ -255,6 +257,15 @@ Supported in ECMAScript with `/u`, in modern PCRE, Python `regex`, Rust `regex`,
 
 **Rule:** if you need to count "visible characters" for truncation or cursor movement, use grapheme segmentation APIs, not regex.
 
+### Unicode 16.0 (released September 2024)
+
+Unicode 16.0 adds 5,185 new characters (total: 154,998), including 7 new scripts (Garay, Gurung Khema, Kirat Rai, Ol Onal, Sunuwar, Todhri, Tulu Tigalari), 7 new emoji, and 686 legacy computing symbols. Source: [unicode.org/versions/Unicode16.0.0](https://www.unicode.org/versions/Unicode16.0.0/)
+
+**Impact on regex:**
+- `\p{Script=...}` values for the new scripts are available in engines that bundle Unicode 16 data (PCRE2 10.45+, Rust `regex` 1.11+, ICU 76+).
+- `\p{Emoji}` now covers the 7 new emoji; update regex-based emoji filters after an engine upgrade.
+- If your engine bundles an older Unicode version (common in older Node.js / V8 builds), property escapes for new scripts may silently miss matches. Check your engine's bundled Unicode version before relying on `\p{Script=Garay}`.
+
 ### Normalization
 
 NFC, NFD, NFKC, NFKD. A search for `"café"` might miss `"café"` unless both are normalized to the same form. Normalize at ingest.
@@ -351,8 +362,11 @@ Use a real parser. See `parser-generators.md`.
 ### ECMAScript
 
 - `/u` flag enables Unicode mode (code-point semantics, property escapes).
-- `/v` flag (ES2024) adds set notation `[[a-z]--[aeiou]]`, string properties, and atomic groups (check engine support — V8 12+, WebKit).
-- No atomic groups pre-ES2024 — rewrite or use `regex` npm package with RE2 semantics.
+- `/v` flag (ES2024) adds set notation `[[a-z]--[aeiou]]`, string properties. Browser support: V8 12+ / Chrome 112+, WebKit/Safari 17+.
+- **ES2025 new regex features** (ECMA-262 16th edition, finalized June 2025): Source: [tc39.es/ecma262/2025](https://tc39.es/ecma262/2025/multipage/)
+  - `RegExp.escape(str)` — safely escapes a raw string for use inside a regex literal; eliminates regex-injection bugs from `new RegExp(userInput)`.
+  - **Inline flag modifiers** `(?i:...)` — apply a flag (e.g. case-insensitivity) to only part of the pattern; active flag after `?`, deactivated flag after `-`.
+- No atomic groups in ECMAScript (pre-ES2025); rewrite or use `regex` npm package with RE2 semantics.
 - Named captures: `(?<name>...)`.
 - Lookbehind: `(?<=...)` / `(?<!...)` — ES2018.
 

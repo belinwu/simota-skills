@@ -25,7 +25,7 @@ Skip incremental when: batch compile only, CLI one-shot tools, data-format parse
 
 | Algorithm | Model | Reference implementation |
 |-----------|-------|--------------------------|
-| tree-sitter incremental GLR | GLR with node-reuse on unchanged byte ranges | tree-sitter `0.19.x` (Atom / Neovim / Zed / GitHub / Cursor) |
+| tree-sitter incremental GLR | GLR with node-reuse on unchanged byte ranges | tree-sitter `0.25.x` (Neovim / Zed / Helix / GitHub / Cursor) |
 | Red-green trees | Immutable "green" nodes with position-free structure + "red" wrappers carrying parent + offset | Roslyn (C# / F# / VB) |
 | Rowan (syntax tree with offsets) | Untyped green tree + typed API layer; interned text | rust-analyzer, Kotlin compiler (partial) |
 | Salsa / memoization | Query-based incremental computation; reparse is one query among many | rust-analyzer, Rowan-backed languages |
@@ -36,10 +36,11 @@ Default for new work: **tree-sitter** for editor integration, **Rowan + salsa** 
 
 ### tree-sitter Snapshot (2026-05)
 
-- Stable line is the **`0.19.x`** series; published benchmarks parse a `10k`-line C file in `< 100 ms` on a standard workstation.
+- Current stable line is **`0.25.x`** (v0.25.8); ABI 15 (v0.25.0) adds language name, version, and supertype metadata to parsers. `web-tree-sitter` was rewritten in TypeScript with CommonJS + ESM dual output and sourcemaps. Source: [github.com/tree-sitter/tree-sitter/releases](https://github.com/tree-sitter/tree-sitter/releases)
 - `tree-sitter-language-pack` ships pre-built parsers for **~`305` languages**; prefer it over per-language `cargo install` / `npm install` of individual parsers for any new editor or LSP project.
 - Empirical workloads (editor / LSP keystroke loops) report incremental reparse cutting wall-clock parse time by **~`70%`** vs full reparse on large files. Treat that as the design budget — if your incremental path does not beat full reparse by `2x`+ on a `10k`-line file, the reuse predicate is broken.
-- Tree-sitter is the default backend for AI coding tools (Cursor, Zed, recent Neovim distributions) — its query language (`.scm`) doubles as a structural-search engine, not just a syntax-highlight DSL.
+- Tree-sitter is the default backend for AI coding tools (Cursor, Zed, Helix, recent Neovim distributions) — its query language (`.scm`) doubles as a structural-search engine, not just a syntax-highlight DSL.
+- Atom is no longer maintained (archived 2022); do not reference it as a tree-sitter integration target.
 
 ## Edit-Aware State Model
 
