@@ -16,7 +16,8 @@
 | voyage-3-large | Voyage AI | 1024 | 32000 | Yes | ~67.2 | $0.18 | No |
 | voyage-3-lite | Voyage AI | 512 | 32000 | Yes | ~63.1 | $0.02 | No |
 | embed-v4 | Cohere | 1024 | 512 | Yes (100+) | ~66.5 | $0.10 | Yes |
-| embed-v3.0 | Cohere | 1024 | 512 | Yes (100+) | ~64.5 | $0.10 | No |
+
+> **Note:** `embed-v3.0` (Cohere) has been superseded by `embed-v4` which adds Matryoshka dimension reduction and int8/binary quantization. Prefer `embed-v4` for new projects.
 
 ### Open-Source Models
 
@@ -27,6 +28,8 @@
 | all-MiniLM-L6-v2 | 384 | 256 | No | ~56.3 | Apache 2.0 |
 | nomic-embed-text-v1.5 | 768 | 8192 | No | ~62.3 | Apache 2.0 |
 | gte-Qwen2-7B-instruct | 3584 | 131072 | Yes | ~67.5 | Apache 2.0 |
+
+**bge-m3 highlight:** Single model supports dense, sparse (SPLADE-style), and late-interaction (ColBERT) simultaneously — useful when a unified open-source embedding pipeline is preferred over separate models for retrieval stages.
 
 ---
 

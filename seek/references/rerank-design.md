@@ -14,14 +14,16 @@ If the question is "does the top-K contain the right answer?" → `rerank`. If i
 
 | Approach | Typical model | Strength | Weakness |
 |----------|--------------|----------|----------|
-| Cross-encoder | BGE Reranker v2-m3, Cohere Rerank 3, jina-reranker-v2 | Highest NDCG — joint query-doc attention | O(N) inference; 30-100ms for N=50 |
+| Cross-encoder | BGE Reranker v2-m3, Cohere Rerank 3.5, jina-reranker-v2 | Highest NDCG — joint query-doc attention | O(N) inference; 30-100ms for N=50 |
 | Late interaction | ColBERTv2, jina-colbert-v2 | Precomputable doc vectors, token-level match | Storage cost — multi-vector per doc |
 | Learning to Rank | LambdaMART (LightGBM LTR, XGBoost `rank:pairwise`) | Uses handcrafted features + click signals | Requires labeled / click data |
-| LLM-as-reranker | Frontier LLM (Claude Opus/Sonnet, GPT-5, Gemini 2.x) with listwise prompt | Zero-shot, explainable | Cost + latency — rarely production-viable |
-| Cohere Rerank API | Managed | No infra | Vendor dependency, per-call cost |
+| LLM-as-reranker | Frontier LLM with listwise prompt | Zero-shot, explainable | Cost + latency — rarely production-viable |
+| Cohere Rerank API | Cohere Rerank 3.5 (managed) | No infra, 100+ languages, multi-format | Vendor dependency, per-call cost |
+
+**Cohere Rerank 3.5** (released Dec 2024): SOTA on multilingual retrieval and reasoning, supports lengthy documents, tables, JSON, code, and email formats, 4096 context length, available on Azure AI Foundry — [cohere.com/blog/rerank-3pt5](https://cohere.com/blog/rerank-3pt5)
 
 Default picks:
-- Cold start / no click data → **BGE Reranker v2-m3** (open, multilingual) or Cohere Rerank 3.
+- Cold start / no click data → **BGE Reranker v2-m3** (open, multilingual) or **Cohere Rerank 3.5**.
 - Mature system with click logs → **LambdaMART** on engineered features — typically beats cross-encoder when signal is rich.
 - Very large top-N (>200) → **ColBERT late interaction** (precomputed) or 2-tier (cross-encoder over top-50 of a fast reranker).
 
