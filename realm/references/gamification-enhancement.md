@@ -11,6 +11,8 @@ Contents:
 
 ## Octalysis Mapping
 
+Yu-kai Chou's Octalysis Framework — 8 Core Drives of human motivation ([yukaichou.com/gamification-examples/octalysis-gamification-framework](https://yukaichou.com/gamification-examples/octalysis-gamification-framework/)), referenced in 4,000+ academic publications (2025).
+
 | Core Drive | Realm baseline | Enhancement direction |
 |---|---|---|
 | Epic Meaning & Calling | Chronicle | Stronger ecosystem story |
@@ -21,6 +23,21 @@ Contents:
 | Scarcity & Impatience | Not implemented | Limited-time quests and seasons |
 | Unpredictability & Curiosity | Limited | Random events and hidden badges |
 | Loss & Avoidance | XP decay | Streak pressure and recovery mechanics |
+
+## HEXAD Player Type Alignment
+
+Andrzej Marczewski's HEXAD model ([gamified.uk/user-types](https://www.gamified.uk/user-types/)) identifies six player types. Use the **HEXAD-12** assessment tool (12-item validated scale, developed with University of Waterloo, field-tested 2022–2024, n=1,246 across 107 school classes) to profile users before selecting mechanics. Each type needs different primary mechanics:
+
+| HEXAD Type | Primary motivation | Realm mechanics that fit |
+|---|---|---|
+| Philanthropist | Altruism, help others | Department mentor awards, knowledge-share badges |
+| Socialiser | Social connection | Team leaderboards, synergy awards, co-op quests |
+| Free Spirit | Autonomy, exploration | Optional side quests, custom avatar decoration |
+| Achiever | Mastery, challenge | Rank progression, difficult badge tiers, streaks |
+| Player | Rewards | XP multipliers, prize badges, seasonal loot |
+| Disruptor | Change, disruption | Random events, ecosystem-shaking boss quests |
+
+Source: [gamified.uk](https://www.gamified.uk/user-types/); HEXAD-12 first-use validation in digital learning systems: [ScienceDirect 2026](https://www.sciencedirect.com/science/article/pii/S2451958826000850).
 
 ## Leaderboard Enhancements
 

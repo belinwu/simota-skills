@@ -63,18 +63,21 @@ This is an optional upgrade path, not the baseline layout:
 | 3.80 | 2024-02 | Particle improvements |
 | 3.85 | 2024-09 | `ParticleEmitter` GameObject support |
 | 3.87 | 2025-02 | Particle and stability fixes |
-| 3.90.0 | 2025-05 | "Tsugumi" — latest stable target |
-| 4.0.0-rc7 | 2026-03 | Latest RC — TypeScript-native, Beam renderer, up to 16x mobile perf |
+| 3.90.0 | 2025-05 | "Tsugumi" — **final Phaser 3 release**; no further v3 development planned ([phaser.io/download/stable](https://phaser.io/download/stable)) |
+| 4.0.0 | 2026-04-10 | "Caladan" — first stable Phaser 4 release; TypeScript-native, RenderNode architecture, SpriteGPULayer (up to 100x faster than v3 standard rendering in single draw call) ([GitHub release](https://github.com/phaserjs/phaser/releases/tag/v4.0.0)) |
+| 4.1.0 | 2026-04-30 | "Salusa" — smarter rendering, ESM fixes, reworked Layer ([phaser.io/download/release/v4.1.0](https://phaser.io/download/release/v4.1.0)) |
 
-Action: keep the Realm game CDN on Phaser `3.90.0` unless Phaser 4 reaches stable release. Evaluate Phaser 4 RC7+ for new builds where RC risk is acceptable.
+Action: use Phaser `3.90.0` for existing Realm templates. **Use Phaser 4 (v4.1.0) for all new builds** — it is now stable. Migration from v3: standard sprite/tilemap/text scenes migrate in hours; custom WebGL pipelines must be rewritten as RenderNodes. Breaking changes: `setTintFill()` removed; `roundPixels` defaults to false; texture Y-axis orientation changed (GL-native). See [migration guide](https://phaser.io/news/2026/04/migrating-from-phaser-3-to-phaser-4-what-you-need-to-know) and [renderer deep-dive](https://phaser.io/news/2026/04/phaser-4-renderer-faster-cleaner-and-built-for-modern-games).
 
 ## Upgrade Priorities
 
 | Priority | Upgrade | Cost | Benefit |
 |---|---|---|---|
 | P0 | Object pooling | Small | Major performance improvement |
-| P0 | Phaser CDN `3.90.0` | Very small | Bug fixes and stability |
+| P0 | Existing templates: stay on Phaser `3.90.0` | Zero | Stability (final v3) |
+| P0 | New builds: use Phaser 4 (`v4.1.0`) | Small | RenderNode perf, TypeScript, SpriteGPULayer |
 | P1 | Animation state machine | Medium | Better clarity and charm |
 | P1 | Canvas/WebGL fallback | Small | Better compatibility |
+| P2 | Migrate custom v3 WebGL pipelines to v4 RenderNodes | Large | Required for v4 compatibility |
 | P2 | Tilemap migration | Large | More flexible layout |
 | P2 | Procedural sprite generation | Medium | Better rank/class differentiation |
