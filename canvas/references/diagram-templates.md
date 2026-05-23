@@ -29,6 +29,9 @@ Purpose: Read this when you need a fast, syntax-safe starter for a common diagra
 | XY Chart | Bar/line data visualization |
 | Radar | Multi-axis capability comparison |
 | Treemap | Hierarchical proportional areas |
+| Venn | Set overlap and intersection visualization (v11.12.3+) |
+| Ishikawa | Cause-and-effect / fishbone / root-cause analysis (v11.12.3+) |
+| Wardley Map | Business strategy value-chain and component-evolution map (v11.14.0+) |
 
 ## Flowchart
 
@@ -218,6 +221,54 @@ treemap-beta
             pages[pages: 30]
         tests[tests: 25]
         docs[docs: 15]
+```
+
+## Venn (v11.12.3+)
+
+[Source: Mermaid Venn syntax](https://mermaid.ai/open-source/syntax/venn.html)
+
+```mermaid
+venn-beta
+    A["Backend"]
+    B["Frontend"]
+    C["DevOps"]
+    A-B["Full-Stack"]
+    A-C["SRE"]
+    B-C["Design-Eng"]
+    A-B-C["Generalist"]
+```
+
+## Ishikawa / Fishbone (v11.12.3+)
+
+[Source: Mermaid Ishikawa syntax](https://mermaid.ai/open-source/syntax/ishikawa.html)
+
+```mermaid
+ishikawa-beta
+    effect["High Error Rate"]
+    cause1["People"]
+        subcause1["Insufficient training"]
+    cause2["Process"]
+        subcause2["No code review"]
+    cause3["Technology"]
+        subcause3["Legacy dependencies"]
+```
+
+## Wardley Map (v11.14.0+)
+
+[Source: Mermaid Wardley Maps docs](https://mermaid.js.org/syntax/wardley.html)
+
+```mermaid
+wardley-beta
+    title API Platform Strategy
+    anchor User [0.95, 0.63]
+    anchor Business [0.95, 0.40]
+    component API Gateway [0.68, 0.46]
+    component Auth Service [0.55, 0.37]
+    component Database [0.30, 0.25]
+    User -> API Gateway
+    Business -> API Gateway
+    API Gateway -> Auth Service
+    API Gateway -> Database
 ```
 
 ## draw.io Note

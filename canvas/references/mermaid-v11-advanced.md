@@ -20,9 +20,9 @@ Purpose: Read this when you need Mermaid v11-specific capabilities, advanced lay
 | Radar diagrams | `v11+` | Multi-axis comparison (skills, coverage, scores) |
 | Treemap diagrams | `v11+` | Hierarchical proportional area visualization |
 | Hand-drawn look | `v11+` | Draft or whiteboard-style diagrams |
-| Venn / Ishikawa beta | `v11.12.3+` (`venn-beta`, `ishikawa-beta`) | Set-overlap or fishbone cause-and-effect; syntax may evolve [Source: Mermaid — v11.13.0 Two New Diagram Types release blog (2026), https://mermaid.ai/blog/posts/mermaid-v11-13-0-two-new-diagram-types-and-our-most-polished-release-yet] |
+| Venn / Ishikawa beta | `v11.12.3+` (`venn-beta`, `ishikawa-beta`) | Set-overlap or fishbone cause-and-effect; syntax may evolve. [Source: Mermaid v11.13.0 blog](https://mermaid.ai/blog/posts/mermaid-v11-13-0-two-new-diagram-types-and-our-most-polished-release-yet) | [Venn syntax](https://mermaid.ai/open-source/syntax/venn.html) | [Ishikawa syntax](https://mermaid.ai/open-source/syntax/ishikawa.html) |
 | TreeView beta | `v11.14.0+` (`treeview-beta`) | Indentation-driven hierarchical tree view |
-| Wardley map beta | `v11+` (`wardley-beta`) | Value-chain / component-evolution strategy map |
+| Wardley map | `v11.14.0+` (`wardley-beta`) | Value-chain / component-evolution strategy map. [Source: Wardley Maps docs](https://mermaid.js.org/syntax/wardley.html) |
 
 ## Configuration Rule
 

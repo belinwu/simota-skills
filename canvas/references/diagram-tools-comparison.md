@@ -12,19 +12,23 @@ Purpose: Read this when Mermaid is not sufficient and you need to choose another
 | Tool | Best For | Tradeoff |
 |------|----------|----------|
 | Mermaid | Default docs-native diagrams | Limited pixel-level control |
-| draw.io | Editable diagrams, workshops, handoff artifacts | XML overhead |
-| D2 | Layout-heavy text diagrams | Extra toolchain |
-| PlantUML | UML-heavy diagrams | Less native in modern docs flows |
+| draw.io | Editable diagrams, workshops, handoff artifacts | XML overhead; PlantUML import removed end-of-2025 ([migration guide](https://www.drawio.com/blog/plantuml-to-mermaid)) |
+| D2 | Layout-heavy text diagrams; ASCII render output supported | Extra toolchain. [Docs](https://d2lang.com/) |
+| PlantUML | UML-heavy diagrams | Less native in modern docs flows; draw.io support removed end-of-2025 |
 | Structurizr | C4 at scale | Stronger setup dependency |
 | Kroki | Unified rendering API for 25+ formats (Mermaid, D2, PlantUML, BPMN, etc.) | External service dependency |
+| Excalidraw | Hand-drawn collaborative whiteboards; embeddable via `@excalidraw/excalidraw` (ESM, v0.18+) | Not suitable for formal docs [Source: excalidraw v0.18.0](https://github.com/excalidraw/excalidraw/releases/tag/v0.18.0) |
+| tldraw | Infinite-canvas SDK; AI-powered canvas apps; v5.0 ships `@tldraw/mermaid` for Mermaid-to-native-shape conversion [Source: tldraw SDK 5.0](https://tldraw.dev/blog/tldraw-sdk-5-0) | React-only; not text-based DSL |
 | ASCII | Terminal/comments/accessibility fallback | Low visual density |
 
 ## Selection Rules
 
 - Use Mermaid by default.
-- Use draw.io when the user needs editable output.
+- Use draw.io when the user needs editable output. Note: draw.io removed PlantUML import support at end of 2025; migrate PlantUML diagrams to Mermaid or draw.io XML instead.
 - Use D2 or PlantUML only when the user explicitly requests them or their feature set solves a real limitation.
 - Use Structurizr when the task is large-scale C4 architecture and the environment already supports it.
+- Use Excalidraw (`@excalidraw/excalidraw` v0.18+, ESM) when hand-drawn collaborative whiteboard output is required and the target is a React/web app.
+- Use tldraw SDK (v5.0+) when building an AI-powered or interactive infinite-canvas app; `@tldraw/mermaid` package converts Mermaid DSL to native tldraw shapes.
 - Use ASCII for plain text, comments, or fallback.
 
 ## D2 Advanced Features
