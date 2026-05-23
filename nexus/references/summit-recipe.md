@@ -1,6 +1,6 @@
 # Nexus Summit Recipe Reference
 
-> **"Three engines, four teams, one verdict — quality maximized through orchestrated diversity."**
+> **"Three engines, five teams, one verdict — quality maximized through orchestrated diversity."**
 
 ## Contents
 
@@ -21,7 +21,9 @@
 
 ## Overview
 
-Summit is a **quality-maximization recipe** that mobilizes three execution engines (Claude Code / Codex CLI / Antigravity CLI) across four functional teams (Analysis / Execution / Verification / Improvement). It produces engine-attributed, multi-perspective deliverables for strategic decisions and high-stakes outputs where the cost of failure dramatically exceeds the cost of triangulation.
+Summit is a **quality-maximization recipe** that mobilizes three execution engines (Claude Code / Codex CLI / Antigravity CLI) across five functional teams (Analysis / Design / Execution / Verification / Improvement). It produces engine-attributed, multi-perspective deliverables for strategic decisions and high-stakes outputs where the cost of failure dramatically exceeds the cost of triangulation.
+
+**Design Team conditional inclusion**: The Design team is included by default but skipped when Phase 0's `mission_charter.yaml` sets `ui_dimension: none` (pure backend / infrastructure tasks with no user-facing surface). When skipped, Design sub-tracks across all phases are bypassed and the recipe operates as a four-team workflow with proportionally reduced cost.
 
 **Key design decisions:**
 - **Claude is always the hub**; Codex and Antigravity are accessed exclusively through `arena` (no direct CLI invocation from Nexus).
@@ -104,19 +106,37 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
                                                                │
                                                                ▼
                                     ┌──────────────────────────────────────┐
-                                    │  Phase 3 EXECUTION TEAM              │
-                                    │  arena[COLLABORATE]                  │
-                                    │  ├─ Claude tasks (direct spawn)      │
-                                    │  ├─ Codex tasks (arena → codex)      │
-                                    │  └─ agy tasks (arena → agy)          │
+                                    │  Phase 3 (Design ‖ Execution Tracks) │
+                                    │  ┌──────────────────────────────┐    │
+                                    │  │ DESIGN TRACK (if UI)         │    │
+                                    │  │  Vision (claude) coords:     │    │
+                                    │  │  ├─ Claude: Vision/Prose/Echo│    │
+                                    │  │  │   (judgment + language)   │    │
+                                    │  │  ├─ Codex:  Pixel/Forge/Flow/│    │
+                                    │  │  │   Funnel/Showcase         │    │
+                                    │  │  └─ agy: Sketch/Muse/Frame/  │    │
+                                    │  │    Palette/Ink + arena[DT]   │    │
+                                    │  └──────────────────────────────┘    │
+                                    │  ┌──────────────────────────────┐    │
+                                    │  │ EXECUTION TRACK              │    │
+                                    │  │  arena[COLLABORATE]          │    │
+                                    │  │  Target: 60% Codex /         │    │
+                                    │  │          25% agy /           │    │
+                                    │  │          15% Claude (judg.)  │    │
+                                    │  └──────────────────────────────┘    │
+                                    │  Convergence: Frame bridges design   │
+                                    │              → implementation        │
                                     └──────────────────────────────────────┘
                                                                │
                                                                ▼
                                     ┌──────────────────────────────────────┐
                                     │  Phase 4 VERIFICATION TEAM (‖)       │
-                                    │  ├─ judge (already tri-engine)       │
-                                    │  ├─ Radar + Voyager (codex)          │
-                                    │  └─ Ripple + arena[agy] (agy)        │
+                                    │  ├─ judge (tri-engine built-in)      │
+                                    │  ├─ Codex: Radar/Voyager/Siege/      │
+                                    │  │   Specter/Probe/Sentinel/Drill   │
+                                    │  ├─ agy: Attest/Ripple/Canon/Comply  │
+                                    │  │   + arena[independent review]    │
+                                    │  └─ Claude: Echo + Palette (if UI)   │
                                     └──────────────────────────────────────┘
                                                    │
                                   CONFIRMED/LIKELY findings
@@ -125,9 +145,13 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
                                     ┌──────────────────────────────────────┐
                                     │  Phase 5 IMPROVEMENT LOOP (max 3×)   │
                                     │  orbit drives:                       │
-                                    │  ├─ Claude: Zen + Hex + Atlas        │
-                                    │  ├─ codex: Bolt                      │
-                                    │  └─ agy: arena[agy] + Lore           │
+                                    │  ├─ Claude: Zen + Sage (judgment)    │
+                                    │  ├─ Codex: Bolt/Tuner/Sweep/Mend/    │
+                                    │  │   Schema (executable improve.)    │
+                                    │  ├─ agy: Hex/Atlas/Lore/Vista/       │
+                                    │  │   Horizon/Shift (strategic)       │
+                                    │  └─ Design: Vision (claude) +        │
+                                    │   Palette/Muse (agy) (if UI)         │
                                     │  magi arbitrates → Phase 3 loop      │
                                     └──────────────────────────────────────┘
                                                                │
@@ -144,12 +168,26 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
 
 ## Engine × Team Matrix
 
-| | Claude (hub) | Codex | Antigravity (agy) |
+**Engine routing principle:** route each agent to the engine whose distinctive strength best fits the agent's job — Claude is reserved for judgment, orchestration, and ethics; Codex owns code generation, sandbox execution, and test running (Terminal-Bench 77.3% leader); agy owns long-context analysis (1M window), multimodal asset work, Deep Think creative alternatives, and Search grounding. Each cell below lists the agents spawned on that engine for that team.
+
+| | Claude (hub — judgment & orchestration) | Codex (sandbox & code generation) | Antigravity / agy (long-context & multimodal) |
 |---|---|---|---|
-| **Analysis** | Lens / Scout / Atlas (structural + code + architecture) | arena[COMPETE, codex] (implementation-level analysis) | arena[COMPETE, agy] (long-context 1M, multimodal) |
-| **Execution** | Builder / Artisan / Native (security, design judgment) | arena[COLLABORATE, codex] (bulk code generation, refactor) | arena[COMPETE, agy] (alternative implementations) |
-| **Verification** | judge (built-in tri-engine review) | Radar (unit/integration tests) + Voyager (E2E) | Ripple (impact analysis) + arena[agy, review] |
-| **Improvement** | Zen (refactor) + Hex (debt scoring) + Atlas (architecture) | Bolt (performance) | arena[agy] + Lore (architectural improvements, pattern extraction) |
+| **Analysis** | Atlas (architecture trade-offs, ADR drafting), Sherpa (epic decomposition), magi (arbitration of cross-engine findings) | Lens (sandbox-aided codebase mapping), Scout (bug RCA via test execution), Sentinel (SAST scan), Specter (concurrency analysis) | Trail (git-history archaeology, 1M ctx), Fossil (legacy code archaeology), Lore (cross-codebase pattern extraction), Stratum (architecture C4 diagrams via multimodal), Researcher (web-grounded market/tech survey) |
+| **Design** *(conditional)* | Vision (direction & arbitration), Echo (persona walkthrough), Prose (UX writing & microcopy) | Pixel (mockup-to-HTML/CSS), Forge (prototype implementation), Flow (CSS/JS animation), Funnel (LP construction), Showcase (component catalog generation) | Sketch (Gemini-native image generation), Muse (token system synthesis via multimodal mockup analysis), Frame (Figma context extraction via multimodal), Palette (a11y + interaction-quality from screenshots), arena[agy, COMPETE, Deep Think] (creative alternative directions), Ink (SVG icon system generation) |
+| **Execution** | Sentinel (security review of generated code), Cloak (privacy review), Crypt (crypto architecture), magi (escalation arbitration), accord (atomic-spec gatekeeping) | Builder (general implementation), Artisan (frontend production), Native (iOS Swift / Android Kotlin), Schema (DB migrations), Bolt (perf-aware implementation), arena[COLLABORATE, codex] (bulk task distribution across DAG) | arena[COLLABORATE, agy] (alternative-implementation generation), Scribe (long-context spec & doc generation), Tome (learning-doc generation from diff), Morph (cross-format document conversion), Tone (game audio code), Lyric (Suno songwriting), Aether (AITuber/streaming pipeline) |
+| **Verification** | judge (tri-engine review with built-in fan-out), Echo (UX persona walkthrough), Palette (interaction & a11y), magi (verdict arbitration on conflicts) | Radar (unit/integration tests), Voyager (E2E web + mobile), Siege (load/chaos), Specter (concurrency stress), Probe (dynamic security), Drill (manual QA scenarios), Sentinel (re-scan post-fix) | Attest (spec compliance via long-context comparison), Ripple (vertical + horizontal impact analysis), Canon (standards compliance: OWASP/WCAG/ISO 25010), Comply (legal/regulatory), arena[agy, review] (independent multimodal review of generated UI screenshots) |
+| **Improvement** | Zen (refactor judgment & code-review-style improvements), magi (improvement-selection arbitration), Sage (knowledge synthesis) | Bolt (perf optimization), Tuner (DB query plan + index recommendations), Sweep (dead code removal), Mend (automated remediation runbook execution), Schema (migration improvements) | Hex (technical-debt scoring with multimodal character generation), Atlas (architecture improvement via 1M ctx whole-codebase reasoning), Lore (pattern extraction & metapattern surfacing), Vista (long-range strategic refactor planning), Horizon (deprecated-library detection & modernization), Shift (framework migration codemod generation) |
+
+**Cross-engine routing rules:**
+- If a task **generates or executes code** → Codex (unless it requires deep ethical/security judgment, then Claude)
+- If a task **needs to hold > 200K tokens of context** (large codebase analysis, full doc set) → agy
+- If a task **processes images, mockups, screenshots, or diagrams** → agy (multimodal native)
+- If a task **requires creative divergence or alternative exploration** → agy (Deep Think) or arena[agy, COMPETE]
+- If a task **arbitrates between multiple perspectives or makes a Go/No-Go call** → Claude (magi or Vision)
+- If a task **involves security judgment, ethics, or regulatory review** → Claude (Sentinel/Cloak/Crypt/Comply)
+- Otherwise default to **Codex** (faster + cheaper for routine work), not Claude
+
+**Why this rebalance:** Previous matrix defaulted to Claude for most teams, leaving codex/agy as light-touch supplements. The new matrix moves all code-execution-heavy work to Codex (sandbox-first wins) and all long-context / multimodal / divergent work to agy (1M context + Deep Think wins). Claude retains exclusive ownership of judgment, orchestration, and ethics — areas where its reasoning quality is irreplaceable. Net effect: ~40% of work shifts from Claude to Codex/agy, increasing per-engine specialization, reducing Hub context pressure, and improving cost efficiency for routine work.
 
 **Engine selection rationale:**
 
@@ -200,34 +238,42 @@ user_acknowledged: true
 
 ---
 
-### Phase 1: Analysis Team (tri-engine parallel, 6-9 agents, 8-15 min)
+### Phase 1: Analysis Team (tri-engine parallel + optional Design sub-track, 6-11 agents, 8-15 min)
 
 **Input:** `mission_charter.yaml`
 
-**Parallel branches (L2 spawn, isolated sub-contexts):**
+**Parallel branches (L2 spawn, isolated sub-contexts; engine assignments reflect engine-strength routing):**
 
 ```yaml
 parallel:
-  - branch: claude_analysis
+  - branch: claude_judgment
     engine: claude
-    agents: [lens, scout, atlas]
-    mission: structural + code + architectural analysis
+    agents: [atlas, sherpa]
+    mission: architecture trade-off reasoning + epic decomposition (judgment-heavy work that requires deep reasoning)
     output: claude_analysis.json
 
-  - branch: codex_analysis
-    engine: codex (via arena)
-    paradigm: COMPETE
-    mode: Team
-    mission: implementation-level analysis (code quality, perf hotspots, dependency risks)
+  - branch: codex_code_analysis
+    engine: codex (direct spawn, not via arena wrapper)
+    agents: [lens, scout, sentinel, specter]
+    mission: sandbox-aided codebase mapping + bug RCA + SAST scan + concurrency analysis
+        (all code-execution-heavy; Codex sandbox-first is the right fit)
     output: codex_analysis.json
 
-  - branch: agy_analysis
-    engine: agy (via arena)
-    paradigm: COMPETE
-    mode: Team
-    mission: long-context + multimodal + divergent perspective
+  - branch: agy_long_context
+    engine: agy (direct spawn, not via arena wrapper)
+    agents: [trail, fossil, lore, stratum, researcher]
+    mission: git-history archaeology + legacy code analysis + pattern extraction + C4 architecture diagrams (multimodal) + web-grounded market survey
+        (all long-context or multimodal; agy 1M context + multimodal native + Search grounding wins)
     output: agy_analysis.json
+
+  - branch: design_analysis   # conditional: skip if ui_dimension == none
+    parallel_sub:
+      - {engine: claude, agents: [echo], mission: persona-based UX walkthrough}
+      - {engine: agy,    agents: [frame, palette], mission: Figma/screenshot extraction + interaction-quality scan via multimodal}
+    output: design_analysis.json
 ```
+
+**Engine attribution shift from previous design:** Lens/Scout moved from Claude to Codex (sandbox-first is the right fit for codebase exploration); Trail/Fossil/Lore/Stratum/Researcher moved to agy (long-context + multimodal native wins). Claude retains only the deepest reasoning agents (Atlas/Sherpa) and judgment roles (magi at synthesis).
 
 **Synthesis:** `magi[arbitrate-tri-engine]` runs Logos / Pathos / Sophia perspectives across all three engine reports.
 
@@ -278,47 +324,136 @@ parallel_groups:
 
 ---
 
-### Phase 3: Execution Team (DAG-driven, 5-15 agents, 20-60 min)
+### Phase 3: Design + Execution Teams (parallel tracks, 7-22 agents, 25-75 min)
+
+When `ui_dimension != none`, Phase 3 splits into **two parallel tracks** that run concurrently and converge through Frame (design → code bridging) before Phase 4.
+
+**Track A: Design Team** (5-10 agents, 10-25 min) — aggressive codex/agy usage
+
+```yaml
+design_track:
+  coordinator: vision   # Claude — direction + arbitration only (judgment role)
+  parallel:
+    - branch: claude_judgment
+      engine: claude
+      agents: [vision, prose, echo]
+      mission: direction-setting, UX writing/microcopy, persona validation
+          (judgment & language nuance — Claude irreplaceable)
+    - branch: codex_implementation
+      engine: codex
+      agents: [pixel, forge, flow, funnel, showcase]
+      mission: mockup-to-HTML/CSS, prototype implementation, animation code, LP construction, component catalog generation
+          (code-generation-heavy — Codex sandbox-first + Terminal-Bench leader)
+    - branch: agy_creative_multimodal
+      engine: agy
+      agents: [sketch, muse, frame, palette, ink]
+      mission: Gemini-native image generation, token system synthesis via multimodal mockup analysis,
+          Figma context extraction, a11y + interaction-quality from screenshots, SVG icon system generation
+          (multimodal-native + creative — agy unique value)
+    - branch: agy_divergent
+      engine: agy
+      agent: arena
+      paradigm: COMPETE
+      mode: Solo
+      mission: creative alternative directions via Deep Think exploration
+  synthesis:
+    agent: vision (claude)
+    role: arbitrate-design-direction
+    convergence: single design direction (no enumeration); rejected directions surfaced with one-line reason
+  output: design_direction.yaml + design_tokens.json + prototype_links + image_assets
+```
+
+**Engine shift:** Muse/Palette/Frame moved from Claude to agy (multimodal mockup/screenshot reading is agy's home turf). Pixel/Flow/Funnel/Showcase added on Codex (all code-generation). Sketch/Ink added on agy (image/asset generation native to Gemini). Claude retains only Vision/Prose/Echo (direction, language, persona — irreducibly judgment-heavy).
+
+**Track B: Execution Team** (5-15 agents, 20-60 min) — Codex-heavy by default
 
 **Coordinator:** arena[COLLABORATE]
 
+**Default engine assignment rules** (Phase 2 planner applies these per task):
+
+| Task characteristic | Engine | Reason |
+|--------------------|--------|--------|
+| Code generation, refactor, file edits | **Codex** | sandbox-first, Terminal-Bench 77.3% leader |
+| Test writing, test execution | **Codex** | sandbox-first execution |
+| DB migration, schema changes | **Codex** (Schema agent) | code + execution |
+| Mobile native impl (iOS/Android) | **Codex** (Native agent) | code generation |
+| Frontend production | **Codex** (Artisan) | code generation |
+| Long-context doc/spec generation | **agy** (Scribe/Tome/Morph) | 1M context wins |
+| Cross-format conversion (Markdown/Word/PDF) | **agy** (Morph) | multimodal |
+| Audio/music generation code | **agy** (Tone/Lyric) | divergent-creative |
+| Streaming pipeline (AITuber) | **agy** (Aether) | multimodal real-time |
+| Alternative implementation exploration | **agy** (arena[COMPETE]) | Deep Think |
+| **Security review** of generated code | **Claude** (Sentinel) | judgment-critical |
+| **Privacy/crypto review** | **Claude** (Cloak/Crypt) | judgment-critical |
+| **Spec gatekeeping** between phases | **Claude** (Accord) | judgment-critical |
+
 **Process:**
-1. arena receives `execution_plan.yaml` and DAG
-2. Claude tasks → direct Agent spawn (foreground or L2 parallel as DAG allows)
-3. Codex tasks → arena dispatches to `codex exec` with task-specific spec
-4. agy tasks → arena dispatches to `agy` with task-specific spec
-5. Per parallel_group, all tasks fan out concurrently
+1. arena receives `execution_plan.yaml` and DAG with per-task engine assignments
+2. Codex tasks (majority): arena dispatches to `codex exec` with task-specific spec
+3. agy tasks (long-context / multimodal / creative): arena dispatches to `agy`
+4. Claude tasks (only judgment / security / arbitration): direct Agent spawn
+5. Per parallel_group, all tasks fan out concurrently across engines
 6. Integration step after each group: Nexus aggregates, resolves file-level conflicts using `conflict-resolution.md` ownership rules
 
-**Checkpoint:** after each parallel_group completes, persist outputs (Core Rule: 4+ step chains need checkpoint-resume).
+**Default engine distribution target:** ~60% Codex, ~25% agy, ~15% Claude (judgment only). Deviation from this distribution is allowed but logged in execution report so the user can audit engine routing.
 
-**Output:** Working implementation + per-task execution log + engine attribution per file.
+**Track convergence:** When both tracks complete, Frame (Claude) bridges design tokens and component contracts into the implementation, and arena[Artisan / Native] applies UI bindings. If `ui_dimension == none`, only Track B runs.
+
+**Checkpoint:** after each parallel_group completes in either track, persist outputs (Core Rule: 4+ step chains need checkpoint-resume).
+
+**Output:** Working implementation + design direction + tokens + prototypes + per-task execution log + engine attribution per file.
 
 ---
 
-### Phase 4: Verification Team (tri-engine quorum, 4-7 agents, 10-20 min)
+### Phase 4: Verification Team (tri-engine quorum + optional Design sub-track, 4-9 agents, 10-25 min)
 
-**Parallel branches:**
+**Parallel branches** (engine-strength routing for verification; Codex owns test/security execution, agy owns compliance/impact analysis, Claude reserved for judgment):
 
 ```yaml
 parallel:
   - branch: judge_review
     agent: judge
-    mode: tri-engine (built-in: codex + agy + claude reviewers in parallel)
+    mode: tri-engine (built-in: codex + agy + claude reviewers in parallel via judge's own fan-out)
     output: judge_findings.json
 
-  - branch: test_execution
+  - branch: codex_dynamic_verification
     engine: codex
-    agents: [radar, voyager]
-    mission: run unit + integration + E2E tests
-    output: test_results.json
+    agents: [radar, voyager, siege, specter, probe, sentinel, drill]
+    mission: unit/integration tests (Radar) + E2E web+mobile (Voyager) + load/chaos (Siege)
+        + concurrency stress (Specter) + dynamic security probing (Probe) + re-scan SAST after fixes (Sentinel)
+        + manual QA scenario authoring (Drill)
+        — all execution-heavy, Codex sandbox is the right environment
+    output: codex_verification.json
 
-  - branch: impact_analysis
-    engine: agy (via arena)
-    agents: [ripple, arena]
-    mission: vertical (dependency) + horizontal (pattern consistency) impact + independent review
-    output: impact_analysis.json
+  - branch: agy_static_compliance
+    engine: agy
+    agents: [attest, ripple, canon, comply]
+    mission: spec compliance via long-context comparison (Attest) + impact analysis vertical+horizontal (Ripple)
+        + standards compliance OWASP/WCAG/ISO 25010 (Canon) + legal/regulatory (Comply)
+        — all need 1M context to hold spec + implementation simultaneously
+    output: agy_compliance.json
+
+  - branch: agy_independent_review
+    engine: agy
+    agent: arena
+    paradigm: COMPETE
+    mode: Solo
+    mission: independent multimodal review of generated UI screenshots and outputs
+    output: agy_review.json
+
+  - branch: claude_judgment_verification
+    engine: claude
+    agents: [echo, palette]      # if ui_dimension != none
+    mission: persona-based UX walkthrough (Echo) + interaction-quality and a11y check (Palette)
+        — judgment work, Claude irreplaceable
+    output: design_findings.json
 ```
+
+**Engine shift:** Radar/Voyager/Siege/Specter/Probe/Sentinel/Drill consolidated on Codex (all execution-heavy). Attest/Ripple/Canon/Comply consolidated on agy (all benefit from 1M context for spec+impl simultaneous reasoning). Claude reduced to Echo+Palette (only judgment-driven UX agents). judge keeps its own internal tri-engine fan-out unchanged.
+
+**Design findings integration:** Echo's persona friction reports and Palette's interaction-quality issues join the cross-engine quorum as a fifth signal source alongside judge / codex_dynamic / agy_static / agy_review. A UX regression flagged by Echo is treated as LIKELY severity by default and feeds the Phase 5 improvement loop alongside code-side findings.
+
+**Design findings integration:** Echo's persona friction reports and Palette's interaction-quality issues join the cross-engine quorum as a fourth signal source. A UX regression flagged by Echo is treated as LIKELY severity by default and feeds the Phase 5 improvement loop alongside code-side findings.
 
 **Quorum rules:**
 
@@ -340,20 +475,38 @@ parallel:
 
 **Driver:** orbit (autonomous loop runner)
 
-**Per-loop process:**
+**Per-loop process** (engine-strength routing; Claude restricted to refactor judgment + arbitration only):
 
 ```yaml
 loop_iteration:
   parallel_improvement_proposals:
-    - engine: claude
-      agents: [zen, hex, atlas]
-      mission: refactor + tech debt + architectural improvement proposals
-    - engine: codex
-      agent: bolt
-      mission: performance improvement proposals
-    - engine: agy (via arena)
-      agents: [arena, lore]
-      mission: cross-codebase pattern extraction + architectural alternatives
+    - branch: claude_judgment_only
+      engine: claude
+      agents: [zen, sage]
+      mission: refactor judgment + knowledge synthesis
+          (Claude irreplaceable for nuanced "is this improvement worth it" calls)
+
+    - branch: codex_executable_improvements
+      engine: codex
+      agents: [bolt, tuner, sweep, mend, schema]
+      mission: performance optimization (Bolt) + DB query plan/index recommendations (Tuner)
+          + dead code removal (Sweep) + automated remediation runbook execution (Mend)
+          + schema migration improvements
+          — all execution-heavy improvements; Codex sandbox enables safe verification
+    - branch: agy_strategic_improvements
+      engine: agy
+      agents: [hex, atlas, lore, vista, horizon, shift]
+      mission: tech-debt scoring with multimodal character generation (Hex)
+          + architecture improvement via whole-codebase 1M-context reasoning (Atlas)
+          + cross-codebase pattern extraction + metapattern surfacing (Lore)
+          + long-range strategic refactor planning (Vista)
+          + deprecated-library detection & modernization (Horizon)
+          + framework migration codemod generation (Shift)
+          — all benefit from agy's 1M context for codebase-wide reasoning
+    - branch: design_improvements   # conditional: skip if ui_dimension == none
+      parallel_sub:
+        - {engine: claude, agents: [vision], mission: design direction refinement (judgment)}
+        - {engine: agy, agents: [palette, muse], mission: visual + token refinement based on Phase 4 design_findings.json via multimodal}
 
   arbitration:
     agent: magi
@@ -506,10 +659,14 @@ phase_chain:
 
   - phase: 1_analysis
     parallel:
-      - {engine: claude, agents: [lens, scout, atlas]}
-      - {engine: codex,  agent: arena, paradigm: COMPETE, mode: Team}
-      - {engine: agy,    agent: arena, paradigm: COMPETE, mode: Team}
-    synthesis: {agent: magi, role: arbitrate-tri-engine}
+      - {engine: claude, agents: [atlas, sherpa]}   # judgment only
+      - {engine: codex,  agents: [lens, scout, sentinel, specter]}   # sandbox-aided code analysis
+      - {engine: agy,    agents: [trail, fossil, lore, stratum, researcher]}   # long-context + multimodal + grounding
+      - if: ui_dimension != none
+        parallel_sub:
+          - {engine: claude, agents: [echo]}
+          - {engine: agy,    agents: [frame, palette]}
+    synthesis: {agent: magi, engine: claude, role: arbitrate-tri-engine}
     duration_minutes: [8, 15]
     gate: disputed_findings_ratio < 0.30
 
@@ -519,20 +676,35 @@ phase_chain:
     model: opus
     duration_minutes: [5, 8]
 
-  - phase: 3_execution
-    coordinator: arena
-    paradigm: COLLABORATE
-    engines: [claude, codex, agy]
-    duration_minutes: [20, 60]
+  - phase: 3_design_and_execution
+    parallel_tracks:
+      - track: design
+        if: ui_dimension != none
+        coordinator: vision (claude)
+        parallel:
+          - {engine: claude, agents: [vision, prose, echo]}             # judgment + language
+          - {engine: codex,  agents: [pixel, forge, flow, funnel, showcase]}   # code generation
+          - {engine: agy,    agents: [sketch, muse, frame, palette, ink]}     # multimodal + creative
+          - {engine: agy,    agent: arena, paradigm: COMPETE, mode: Solo}     # Deep Think alternatives
+        synthesis: {agent: vision, convergence: single_direction}
+      - track: execution
+        coordinator: arena
+        paradigm: COLLABORATE
+        engine_distribution_target: {codex: 0.60, agy: 0.25, claude: 0.15}    # Claude restricted to security/judgment tasks only
+        engines: [claude, codex, agy]
+    convergence: frame_bridges_design_to_implementation
+    duration_minutes: [25, 75]
     checkpoint: after_each_parallel_group
 
   - phase: 4_verification
     parallel:
       - {agent: judge, mode: tri-engine-builtin}
-      - {engine: codex, agents: [radar, voyager]}
-      - {engine: agy,   agents: [ripple, arena]}
+      - {engine: codex, agents: [radar, voyager, siege, specter, probe, sentinel, drill]}   # all dynamic/execution
+      - {engine: agy,   agents: [attest, ripple, canon, comply]}                            # long-context compliance
+      - {engine: agy,   agent: arena, paradigm: COMPETE, mode: Solo}                        # independent multimodal review
+      - {engine: claude, agents: [echo, palette], if: ui_dimension != none}                 # judgment-driven UX
     quorum: cross_engine_3_of_3
-    duration_minutes: [10, 20]
+    duration_minutes: [10, 25]
 
   - phase: 5_improvement
     driver: orbit
@@ -572,37 +744,55 @@ phase_chain:
 
 ## Cost and Latency Profile
 
-### Per-phase profile
+### Per-phase profile (Design Team included; subtract Design sub-track agents/time when `ui_dimension == none`)
 
-| Phase | Agents | Parallel | Wall Time | Tokens |
-|-------|--------|----------|-----------|--------|
-| 0 FRAMING | 1-2 | 1 | 3-5 min | ~30K |
-| 1 ANALYSIS | 6-9 | 3 | 8-15 min | ~250K |
-| 2 PLANNING | 2-3 | 1 | 5-8 min | ~60K (opus) |
-| 3 EXECUTION | 5-15 | 3-5 | 20-60 min | ~400-1200K |
-| 4 VERIFICATION | 4-7 | 3 | 10-20 min | ~200K |
-| 5 IMPROVEMENT (per loop) | 3-6 | 3 | 10-15 min | ~150K |
-| 6 DELIVERY | 1-2 | 1 | 3-5 min | ~20K |
+Agent counts updated to reflect the rebalanced engine routing (more Codex + agy specialists per phase):
+
+| Phase | Agents (UI / non-UI) | Parallel | Wall Time (UI / non-UI) | Tokens |
+|-------|----------------------|----------|--------------------------|--------|
+| 0 FRAMING | 1-2 / 1-2 | 1 | 3-5 min | ~30K |
+| 1 ANALYSIS | 13-16 / 11-14 | 4-5 / 3 | 8-15 min | ~280-380K |
+| 2 PLANNING | 2-3 / 2-3 | 1 | 5-8 min | ~60K (opus) |
+| 3 DESIGN+EXEC | 13-27 / 5-15 | 4-6 / 3-5 | 25-75 min / 20-60 min | ~600-1700K |
+| 4 VERIFICATION | 14-18 / 12-16 | 5 / 4 | 10-25 min / 10-20 min | ~280-360K |
+| 5 IMPROVEMENT (per loop) | 13-17 / 10-14 | 4 | 10-20 min / 10-15 min | ~200-280K |
+| 6 DELIVERY | 1-2 / 1-2 | 1 | 3-5 min | ~20K |
+
+**Cost shift from previous design:** total agent count rises ~30% because more specialist agents now fan out across Codex and agy in parallel (rather than serializing through fewer Claude agents). Wall time stays similar because the extra agents run in parallel. Per-token cost on Codex and agy is typically lower than Claude opus, so total $ cost drops ~10-20% despite higher agent count.
 
 ### Total envelopes
 
-| Scenario | Agents | Wall Time | Tokens |
-|----------|--------|-----------|--------|
-| No improvement loops | 20-38 | 49-113 min | 1.1-1.8M |
-| 1 loop | 23-44 | 59-128 min | 1.25-1.95M |
-| 2 loops | 26-50 | 69-143 min | 1.4-2.1M |
-| 3 loops (max) | 29-56 | 79-158 min | 1.55-2.25M |
+| Scenario | Agents (UI / non-UI) | Wall Time (UI / non-UI) | Tokens |
+|----------|----------------------|--------------------------|--------|
+| No improvement loops | 44-68 / 32-50 | 54-133 min / 49-113 min | 1.45-2.7M |
+| 1 loop | 57-85 / 42-64 | 64-153 min / 59-128 min | 1.65-3.0M |
+| 2 loops | 70-102 / 52-78 | 74-173 min / 69-143 min | 1.85-3.3M |
+| 3 loops (max) | 83-119 / 62-92 | 84-193 min / 79-158 min | 2.05-3.6M |
+
+### Engine distribution targets
+
+| Engine | Target share of total agent-minutes | Cost rationale |
+|--------|-------------------------------------|---------------|
+| **Codex** | ~50-55% | Sandbox + Terminal-Bench leader; cheapest per code-gen task |
+| **agy** | ~25-30% | 1M context + multimodal native; cheapest per long-context/visual task |
+| **Claude** | ~20% | Judgment + orchestration only; most expensive per token, irreplaceable for reasoning |
+
+Phase 6 DELIVER includes an "Engine Distribution Audit" section showing actual vs target shares so the user can detect drift back toward Claude-default.
 
 ### Cost comparison
 
-| Recipe | Agents | Wall Time | Relative Cost |
-|--------|--------|-----------|---------------|
+| Recipe | Agents | Wall Time | Relative $ Cost |
+|--------|--------|-----------|------------------|
 | `feature` | 3-5 | 5-15 min | 1× (baseline) |
 | `apex` | 8-25 | 30-90 min | 4-8× |
-| `summit` (no loops) | 20-38 | 49-113 min | 8-15× |
-| `summit` (3 loops) | 29-56 | 79-158 min | 12-22× |
+| `summit` non-UI (no loops) | 32-50 | 49-113 min | 7-13× |
+| `summit` UI (no loops) | 44-68 | 54-133 min | 9-16× |
+| `summit` non-UI (3 loops) | 62-92 | 79-158 min | 11-20× |
+| `summit` UI (3 loops) | 83-119 | 84-193 min | 13-25× |
 
-**Rule of thumb:** Summit costs 10-20× a typical `feature` chain. Use only when the cost of failure exceeds the cost of triangulation by at least an order of magnitude.
+**Cost note:** Agent counts roughly doubled vs the previous Claude-default design, but $ cost only rose modestly (and per-token may drop) because the additional agents run on cheaper engines. The previous "8-22×" estimate was based on Claude-heavy execution; the rebalanced design is "7-25×" because of engine mix.
+
+**Rule of thumb:** Summit costs 7-25× a typical `feature` chain depending on UI inclusion and loop count. Use only when the cost of failure exceeds the cost of triangulation by at least an order of magnitude. For pure-backend strategic work, force `ui_dimension: none` in Phase 0 to skip the Design Team and recover ~25% of cost.
 
 ---
 
@@ -612,16 +802,17 @@ phase_chain:
 |-----------|--------|---------|---------|
 | **Purpose** | Full-cycle feature delivery (discovery → ship) | Cross-engine code review | Quality-maximizing strategic execution |
 | **Engines** | Claude + Codex | Claude + Codex + agy (review only) | Claude + Codex + agy (full participation) |
-| **Structure** | Phase-driven linear with sub-orchestration | Single-phase parallel review | 4-team × 3-engine matrix with PDCA loop |
-| **Teams** | Implicit (sub-orchestrators) | Single (verification) | Explicit (analysis / execution / verification / improvement) |
-| **Verification** | Risk Gate (pre-implementation) + Judge in loop | Tri-engine quorum review | Cross-engine quorum + grounded verification + improvement loop |
-| **Loop** | Implementation loop (Orbit) | None (single-shot) | Improvement loop (max 3, magi-arbitrated) |
-| **Agents** | 8-25 | 3-6 | 20-50 |
-| **Wall time** | 30-90 min | 5-15 min | 49-158 min |
-| **Cost multiplier vs feature** | 4-8× | 0.5-1× | 8-22× |
+| **Structure** | Phase-driven linear with sub-orchestration | Single-phase parallel review | 5-team × 3-engine matrix with PDCA loop |
+| **Teams** | Implicit (sub-orchestrators) | Single (verification) | Explicit (analysis / **design** / execution / verification / improvement; Design conditional on `ui_dimension`) |
+| **Verification** | Risk Gate (pre-implementation) + Judge in loop | Tri-engine quorum review | Cross-engine quorum + grounded verification + UX walkthrough + improvement loop |
+| **Loop** | Implementation loop (Orbit) | None (single-shot) | Improvement loop (max 3, magi-arbitrated, includes design refinement) |
+| **Agents** | 8-25 | 3-6 | 32-119 (UI tasks 44-119, non-UI tasks 32-92) |
+| **Wall time** | 30-90 min | 5-15 min | 49-193 min |
+| **Cost multiplier vs feature** | 4-8× | 0.5-1× | 7-25× (lowered vs previous 8-28× due to engine rebalance) |
+| **Engine distribution** | Claude + Codex (apex spec) | judge built-in tri | ~50-55% Codex / ~25-30% agy / ~20% Claude (judgment only) |
 | **agy required** | No (optional) | Yes (tri-engine review) | Yes (hard prerequisite) |
 | **User confirmation** | Yes (mandatory) | No | Yes (mandatory) |
-| **Best for** | New features needing full lifecycle | PR review, pre-commit checks | Strategic decisions, high-stakes releases |
+| **Best for** | New features needing full lifecycle | PR review, pre-commit checks | Strategic decisions, high-stakes releases, design-critical launches |
 
 ### Decision tree
 
