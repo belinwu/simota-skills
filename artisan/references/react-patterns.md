@@ -415,20 +415,49 @@ Other Next.js 16 changes that affect Artisan implementations:
 - Turbopack is the **default bundler**; opt out with `next dev --webpack` / `next build --webpack`.
 - Min Node.js 20.9, TypeScript 5.1, Chrome 111+/Edge 111+/Firefox 111+/Safari 16.4+.
 
+### Next.js 16.2 (March 18, 2026)
+
+Key improvements that affect day-to-day Artisan work:
+
+| Feature | Impact |
+|---------|--------|
+| **Server Fast Refresh** | Fine-grained server-side hot reloading — RSC tree is patched without full reload |
+| **Adapter API (stable)** | Typed, versioned output description; deploy to Cloudflare/Netlify/Vercel/AWS without vendor lock-in |
+| **Turbopack filesystem caching** | Compiler artifacts persisted across restarts; large projects see 400–900% faster compile after first build |
+| **React Compiler stable** | `reactCompiler: true` in `next.config.ts` is now stable (was experimental in 16.0) |
+| **AGENTS.md in `create-next-app`** | Auto-generated AI agent context file with version-matched Next.js docs |
+| **Hydration Diff Indicator** | Clear server/client diff in error overlay — reduces debugging time for RSC mismatches |
+
+[Source: nextjs.org/blog/next-16-2](https://nextjs.org/blog/next-16-2) · [nextjs.org/blog/next-16-2-turbopack](https://nextjs.org/blog/next-16-2-turbopack)
+
 ---
 
 ## 9. Form Handling Selection Guide
 
-| Criteria | React Hook Form | React 19 Native | Conform | TanStack Form |
+TanStack Form reached **v1 stable** (March 2025). Supports React, Vue, Angular, Solid, and Lit with type-safe field paths — misspelled field names are compiler errors. [Source: tanstack.com/blog/announcing-tanstack-form-v1](https://tanstack.com/blog/announcing-tanstack-form-v1)
+
+| Criteria | React Hook Form | React 19 Native | Conform | TanStack Form v1 |
 |----------|:---:|:---:|:---:|:---:|
 | Large/complex forms | ✅ | — | — | ✅ |
 | Server Actions first | △ | ✅ | ✅ | — |
 | Works without JS | — | ✅ | ✅ | — |
 | Dynamic field arrays | ✅ | manual | ○ | ✅ |
 | UI library integration | ✅ | — | — | ✅ |
+| Type-safe field paths | — | — | — | ✅ |
+| Cross-framework | React only | React only | React only | React/Vue/Angular/Solid/Lit |
 | Bundle size | +8.6KB | 0KB | light | +12KB |
 
-**Recommendations:** Complex forms → RHF + Zod / Simple + Server Actions → React 19 native / Remix/Next.js PE → Conform / Dynamic/nested → TanStack Form
+**Recommendations:** Complex forms → RHF + Zod v4 / Simple + Server Actions → React 19 native / Remix/Next.js PE → Conform / Dynamic/nested or cross-framework → TanStack Form v1
+
+### Schema Validation (2026)
+
+| Library | Bundle (gzip) | Speed vs Zod v3 | Best For |
+|---------|--------------|-----------------|----------|
+| **Zod v4** (Aug 2025) | 17.7KB standard / **1.9KB** `@zod/mini` | 14× faster parsing; 25k→175 TS instantiations | Default; deep ecosystem (RHF, tRPC, Drizzle). Use `"zod/mini"` import for edge/client bundles |
+| **Valibot** | ~1.37KB | Fastest; still ~30% faster than Zod v4 | Edge functions (Cloudflare Workers, Vercel Edge) |
+| **ArkType** | ~5KB | Comparable to Valibot | Advanced type inference, runtime generics |
+
+[Source: zod.dev/v4](https://zod.dev/v4) · [Zod v4 — InfoQ Aug 2025](https://www.infoq.com/news/2025/08/zod-v4-available/) · [Valibot vs Zod v4 — pkgpulse.com](https://www.pkgpulse.com/guides/valibot-vs-zod-v4-typescript-validator-2026)
 
 ---
 
@@ -455,4 +484,4 @@ Other Next.js 16 changes that affect Artisan implementations:
 | 5 | Missing `revalidate` after mutation | Stale UI | `revalidatePath`/`revalidateTag` |
 | 6 | `await` in layouts | Delays entire app | Layouts sync, data in pages |
 
-**Source:** [React 19 Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19.2 Blog](https://react.dev/blog/2025/10/01/react-19-2) · [React Compiler v1.0](https://react.dev/blog/2025/10/07/react-compiler-1) · [Server Components](https://react.dev/reference/rsc/server-components) · [Next.js 16](https://nextjs.org/blog/next-16) · [Next.js 16 Upgrade Guide](https://nextjs.org/docs/app/guides/upgrading/version-16) · [`use cache` directive](https://nextjs.org/docs/app/api-reference/directives/use-cache) · [`eslint-plugin-react-hooks@6`](https://www.npmjs.com/package/eslint-plugin-react-hooks)
+**Source:** [React 19 Blog](https://react.dev/blog/2024/12/05/react-19) · [React 19.2 Blog](https://react.dev/blog/2025/10/01/react-19-2) · [React Compiler v1.0](https://react.dev/blog/2025/10/07/react-compiler-1) · [Server Components](https://react.dev/reference/rsc/server-components) · [Next.js 16](https://nextjs.org/blog/next-16) · [Next.js 16.1](https://nextjs.org/blog/next-16-1) · [Next.js 16.2](https://nextjs.org/blog/next-16-2) · [Next.js 16 Upgrade Guide](https://nextjs.org/docs/app/guides/upgrading/version-16) · [`use cache` directive](https://nextjs.org/docs/app/api-reference/directives/use-cache) · [`eslint-plugin-react-hooks@6`](https://www.npmjs.com/package/eslint-plugin-react-hooks) · [TanStack Form v1](https://tanstack.com/blog/announcing-tanstack-form-v1) · [Zod v4](https://zod.dev/v4)

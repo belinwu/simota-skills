@@ -675,4 +675,4 @@ When building page-level components or landing pages, enforce these composition 
 - [ ] Consistent naming conventions
 - [ ] Single responsibility principle
 
-**Source:** [WCAG 2.2 W3C Recommendation](https://www.w3.org/TR/WCAG22/) · [WCAG 2.2 New Success Criteria](https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/) · [Tailwind CSS v4 Upgrade Guide](https://tailwindcss.com/docs/upgrade-guide) · [ARIA APG Patterns](https://www.w3.org/WAI/ARIA/apg/patterns/)
+**Source:** [WCAG 2.2 W3C Recommendation](https://www.w3.org/TR/WCAG22/) · [WCAG 2.2 New Success Criteria](https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/) · [Tailwind CSS v4 Upgrade Guide](https://tailwindcss.com/docs/upgrade-guide) · [ARIA APG Patterns](https://www.w3.org/WAI/ARIA/apg/patterns/) · [Zod v4 Release Notes](https://zod.dev/v4) · [TanStack Form v1 Announcement](https://tanstack.com/blog/announcing-tanstack-form-v1)
