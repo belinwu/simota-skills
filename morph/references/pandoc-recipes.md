@@ -133,13 +133,54 @@ pdf: $(PDFS)
 find . -name "*.md" | parallel pandoc {} -o {.}.pdf
 ```
 
+## Defaults Files (Pandoc 3.9+)
+
+Pandoc defaults files (YAML or JSON) centralize all conversion options. Variable interpolation now works in the `defaults` field, so defaults files can extend each other.
+
+```yaml
+# defaults/pdf-ja.yaml
+from: markdown
+to: pdf
+pdf-engine: xelatex
+toc: true
+toc-depth: 3
+metadata-file: metadata.yaml
+template: corporate-ja.tex
+variables:
+  CJKmainfont: "Hiragino Mincho ProN"
+  geometry: "margin=25mm"
+  fontsize: 12pt
+```
+
+```sh
+# Apply defaults file
+pandoc input.md -d defaults/pdf-ja.yaml -o output.pdf
+```
+
+Defaults files that extend others (variable interpolation, Pandoc 3.9+):
+
+```yaml
+# defaults/pdf-print.yaml
+defaults: pdf-ja.yaml   # extends base defaults
+variables:
+  geometry: "margin=15mm"
+```
+
+Source: https://pandoc.org/MANUAL.html#defaults-files
+
+## Pandoc 3.9 WASM
+
+Pandoc 3.9 (February 2026) compiles to WebAssembly. A full browser GUI is available at https://pandoc.org/app (includes Typst-based PDF output). Lua filters work in WASM; JSON filters do not. Use this for client-side conversion pipelines or prototyping without local Pandoc install.
+
+Source: https://github.com/jgm/pandoc/discussions/11439
+
 ## Filters And Debugging
 
 ```sh
 # Citation processing
 pandoc input.md -o output.pdf --citeproc --bibliography=refs.bib
 
-# Lua filter
+# Lua filter (preferred over JSON filters — runs in embedded interpreter, no external deps)
 pandoc input.md -o output.pdf --lua-filter=uppercase-headers.lua
 
 # Inspect intermediate LaTeX
@@ -154,3 +195,6 @@ Rules:
 - Use `pandoc` when the source is structurally clean and the target pair is supported.
 - Prefer template and metadata files over long inline flag chains when the workflow will recur.
 - For large documents or frequent builds, script or make the conversion instead of repeating ad hoc commands.
+- Use Lua filters over JSON filters — they run in Pandoc's embedded Lua interpreter with no external dependencies.
+- For speed-first PDF from Markdown, use `pandoc + weasyprint`; do NOT use `wkhtmltopdf` (EOL since 2023).
+- For Tagged PDF / PDF/UA-1 output, use `pandoc + typst` (Typst 0.14+ emits tagged PDF by default). Source: https://typst.app/blog/2025/typst-0.14/
