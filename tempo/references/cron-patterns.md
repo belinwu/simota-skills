@@ -267,15 +267,25 @@ spec:
 
 - Uses `sidekiq-cron` gem with standard cron syntax, any IANA TZ.
 - Built-in retry: 25 retries with exponential backoff (`retry_in` formula = `count^4 + 15 + rand(30)*(count+1)`).
+- **Sidekiq 8.x**: scheduler polling accuracy improved from 15s to **5s**, reducing job start latency for scheduled jobs. Source: [Sidekiq Changes.md](https://github.com/sidekiq/sidekiq/blob/main/Changes.md).
 - Failed jobs after retries exhausted → "Morgue" (dead queue), retained 6 months default.
 - Idempotency: `sidekiq-unique-jobs` gem with locks.
 
 ### BullMQ (Node.js)
 
-- `repeat: { cron: '...', tz: 'Asia/Tokyo' }` option on `Queue.add()`.
+- **v5.16.0+**: The `repeat` / repeatable-jobs API is **deprecated** in favor of **Job Schedulers** (`queue.upsertJobScheduler(schedulerId, { pattern: '...', tz: 'Asia/Tokyo' }, jobData)`). Job Schedulers provide a more robust API with named schedulers and `startDate`. Source: [BullMQ Job Schedulers](https://docs.bullmq.io/guide/job-schedulers).
 - Retry: `attempts: N, backoff: { type: 'exponential', delay: 1000 }`.
 - Failed jobs → `failed` list; can be moved to another queue manually.
 - Idempotency: set custom `jobId` (same ID = deduped).
+
+```javascript
+// v5.16.0+ recommended API
+await queue.upsertJobScheduler(
+  'nightly-report',
+  { pattern: '0 2 * * *', tz: 'Asia/Tokyo' },
+  { name: 'generate-report', data: { type: 'nightly' } }
+);
+```
 
 ### Celery Beat (Python)
 

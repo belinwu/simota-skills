@@ -71,12 +71,18 @@ Never accept user input as an abbreviation. Always normalize to IANA or reject.
 
 ### 2026 DST Policy Watch
 
-DST 2026 in the US runs **2026-03-08 (forward) → 2026-11-01 (back)**. Most of Arizona and all of Hawaii stay on standard time year-round. The **Sunshine Protection Act** has been re-introduced in every congressional term since 2018 — it passed the US Senate by unanimous consent in 2022 but expired without a House vote, and several US states have passed permanent-DST or permanent-standard-time bills contingent on federal approval that has not yet arrived.
+DST 2026 in the US runs **2026-03-08 (forward) → 2026-11-01 (back)**. Most of Arizona and all of Hawaii stay on standard time year-round.
+
+**US Sunshine Protection Act (S.29 / H.R.139, 119th Congress, 2025-2026)**: The House Energy and Commerce Committee advanced the proposal as part of the Motor Vehicle Modernization Act in May 2026, with President Trump publicly supporting permanent DST. **As of 2026-05-23, the bill has not been signed into law** — DST transitions still apply until IANA `tzdata` reflects any change. Sources: [Congress.gov S.29](https://www.congress.gov/bill/119th-congress/senate-bill/29), [Time.com 2026-05-22](https://time.com/article/2026/05/22/daylight-saving-time-permanent-sunshine-protection-act-house-senate-trump/).
+
+**EU**: The European Parliament voted to end DST in 2019, but the Council of the EU remains deadlocked — member states cannot agree on permanent summer vs standard time. As of March 2026, the European Commission considers it the Member States' responsibility to reach a common position; clock changes continue in all EU member states in 2026. Source: [timeanddate.com EU DST status](https://www.timeanddate.com/time/europe/eu-dst.html).
+
+**IANA tzdata 2026a** (released 2026-04-22): corrects Moldova's upcoming clock transition. Also note: **tzdata 2025c** added `America/Coyhaique` (Chile's Aysén Region, now permanent -03); **tzdata 2025a** reflected Paraguay adopting permanent -03. Source: [IANA tz-announce 2026a](https://lists.iana.org/hyperkitty/list/tz-announce@iana.org/thread/ASPLBE3A4BAEXIOQ3KZ6EJSJWBU6L53G/).
 
 Operational rule until the law changes:
 
 - Treat permanent DST / permanent standard time as **possible future tzdata changes**, never as current truth. A scheduler that hard-codes "US/Eastern shifts twice a year" must keep doing so until the IANA `tzdata` release flips it.
-- Subscribe to the IANA `tz-announce` mailing list. Treat a tzdata release that flips a major-country DST rule as an emergency-grade update — re-deploy containers, refresh JDK `tzdb.dat`, refresh browser bundles. Do NOT wait for the next base-image refresh cycle.
+- Subscribe to the IANA `tz-announce` mailing list ([lists.iana.org/hyperkitty/list/tz-announce@iana.org/](https://lists.iana.org/hyperkitty/list/tz-announce@iana.org/)). Treat a tzdata release that flips a major-country DST rule as an emergency-grade update — re-deploy containers, refresh JDK `tzdb.dat`, refresh browser bundles. Do NOT wait for the next base-image refresh cycle.
 - Audit hard-coded "spring/fall" boundary checks at the application layer — these become silently wrong the moment a jurisdiction abolishes DST. The correct check is always `zoneinfo` lookup, never a hand-rolled `if month == 3`.
 
 ---
@@ -140,7 +146,7 @@ A schedule set for 01:30 daily:
 
 ## Temporal API (ECMAScript)
 
-Stage 3 proposal; polyfill available (`@js-temporal/polyfill`). Expected to be the standard going forward.
+**ECMAScript Stage 4** (TC39 advanced 2026-01-20; included in ES2026 spec). Ships natively in Firefox 139+, Chrome 144+, Edge 144+, and Node.js 26 (unflagged). Safari has not shipped as of May 2026. For older runtimes, use polyfill `@js-temporal/polyfill`. Sources: [TC39 Stage 4 announcement](https://socket.dev/blog/tc39-advances-temporal-to-stage-4), [Node.js 26 release notes](https://nodejs.org/en/blog/release/v26.0.0).
 
 ### Types
 
@@ -203,27 +209,38 @@ const fromISO = DateTime.fromISO('2026-04-22T10:00:00+09:00', { setZone: true })
 
 ---
 
-## date-fns-tz
+## date-fns v4 + `@date-fns/tz`
 
-Companion to date-fns for TZ support; smaller than Luxon or Moment, tree-shakable.
+**date-fns v4.0** (released September 2024) added first-class timezone support via two new packages: `@date-fns/tz` (IANA timezone support) and `@date-fns/utc` (UTC helpers). These replace the older `date-fns-tz` companion. Source: [date-fns v4.0 announcement](https://blog.date-fns.org/v40-with-time-zone-support/).
 
 ```javascript
-import { formatInTimeZone, zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
+import { format, formatISO } from 'date-fns';
+import { TZDate, tz } from '@date-fns/tz';
 
-// Format a UTC Date in a target TZ
-formatInTimeZone(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ssXXX');
+// Create a date in a specific timezone
+const tokyoDate = new TZDate(2026, 3, 22, 10, 0, 'Asia/Tokyo');
 
-// Convert user-input local time to UTC for storage
-const utcDate = zonedTimeToUtc('2026-04-22 10:00:00', 'Asia/Tokyo');
+// Format with timezone context
+format(tokyoDate, 'yyyy-MM-dd HH:mm:ssXXX');
 
-// Convert stored UTC to user-facing local Date (for formatting)
-const localDate = utcToZonedTime(utcDate, 'America/New_York');
+// Use tz() helper to pass timezone to date-fns functions
+format(new Date(), "yyyy-MM-dd HH:mm", { in: tz('Asia/Tokyo') });
 ```
 
-### Gotchas
+### Migration from `date-fns-tz`
 
-- `utcToZonedTime` returns a `Date` whose **numeric value is shifted** to make the local wall-clock match — do NOT `.toISOString()` the result; it produces a wrong instant. Use `formatInTimeZone` for rendering instead.
-- `zonedTimeToUtc` interprets string inputs with the given TZ; interpret ISO 8601 strings with explicit offset via `new Date(iso)` + direct formatting instead.
+The `date-fns-tz` companion still works with date-fns v3 but is superseded by `@date-fns/tz` for date-fns v4+.
+
+| date-fns-tz (legacy) | @date-fns/tz (v4+) |
+|----------------------|--------------------|
+| `formatInTimeZone(date, tz, fmt)` | `format(date, fmt, { in: tz(zone) })` |
+| `zonedTimeToUtc(str, tz)` | `new TZDate(str, zone).toDate()` |
+| `utcToZonedTime(date, tz)` | `new TZDate(date, zone)` |
+
+### Legacy `date-fns-tz` notes (for pre-v4 codebases)
+
+- `utcToZonedTime` returns a `Date` whose **numeric value is shifted** — do NOT `.toISOString()` the result. Use `formatInTimeZone` for rendering instead.
+- `zonedTimeToUtc` interprets string inputs with the given TZ; use `new Date(iso)` for ISO 8601 strings with explicit offset.
 
 ---
 
