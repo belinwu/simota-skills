@@ -4,6 +4,13 @@
 
 CI/CD workflow templates, composite actions, reusable workflows, OIDC authentication, and security scanning.
 
+Runner snapshot (2026-05):
+- **arm64 Linux/Windows runners GA** (2024-09-03). Free for public repos since 2025-01-16 (`ubuntu-24.04-arm` label). [Source: [arm64 runners GA](https://github.blog/changelog/2024-09-03-github-actions-arm64-linux-and-windows-runners-are-now-generally-available/); [Free for public repos](https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/)]
+- **macOS M2 (arm64) larger runners GA**: use `macos-latest-xlarge`, `macos-15-xlarge`, or `macos-14-xlarge`. [Source: [GHA November 2025 releases](https://github.blog/changelog/2025-11-06-new-releases-for-github-actions-november-2025/)]
+- **Node.js 20 deprecated in GHA** (announced 2025-09-19): runners default to Node 24 on **2026-06-16**; Node 20 removed **2026-09-16**. Update `actions/cache` → **v5**, `actions/setup-node` → **v4**, etc. Test early with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. [Source: [Node 20 deprecation](https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/)]
+- **Action allowlisting** (GA all plans, 2026-02): define exactly which actions and reusable workflows may run per repository, now available on Free / Team / Enterprise. [Source: [Early Feb 2026 updates](https://github.blog/changelog/2026-02-05-github-actions-early-february-2026-updates/)]
+- Reusable workflows now support up to **10 nested levels** and **50 called workflows** per run (up from 4 / 20).
+
 ---
 
 ## CI Workflow (Lint, Test, Build)
@@ -199,18 +206,23 @@ steps:
 
 ## Security Scanning in CI
 
+> **WARNING — trivy-action supply-chain incident (2026-03-19)**: A threat actor force-pushed malicious code into 76/77 version tags of `aquasecurity/trivy-action`. Always pin to a **full commit SHA** (not a mutable tag). Verify the SHA against the [security advisory](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23) before use.
+
 ```yaml
-# Gitleaks (secret detection)
-- uses: gitleaks/gitleaks-action@v2
+# Gitleaks (secret detection) — pin to commit SHA, never a mutable tag
+- uses: gitleaks/gitleaks-action@<full-commit-sha>
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-# Trivy (vulnerability scan)
-- uses: aquasecurity/trivy-action@master
+# Trivy (vulnerability scan) — pin to a known-clean commit SHA post 2026-04-09
+# DEPRECATED: aquasecurity/trivy-action@master was compromised in Mar 2026
+- uses: aquasecurity/trivy-action@<full-commit-sha>
   with:
     scan-type: 'fs'
     severity: 'CRITICAL,HIGH'
 ```
+
+[Source: [Trivy supply chain incident advisory](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23); [GHA workflow security hardening post-incident](https://github.com/aquasecurity/trivy/discussions/10402)]
 
 ---
 

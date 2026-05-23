@@ -11,6 +11,10 @@ Signal-maturity snapshot (OpenTelemetry, 2026-05):
 | Logs | **Stable** in spec; SDK GA progressing through 2024-2026 | Bridge appenders for Pino/Winston/Log4j/slf4j are production-ready |
 | **Profiling (4th signal)** | **Release Candidate** Q1 2026, GA target Q3 2026 | pprof-compatible OTLP profile signal |
 
+SDK version notes (2026-05):
+- **OTel JS SDK 2.0** (released 2025-02): minimum Node.js raised to `^18.19.0 || >=20.6.0` (Node 14/16 dropped); TypeScript minimum 5.0.4; compile target ES2022. Classes/namespaces replaced with plain objects for better tree-shaking. `InstrumentationLibrary` → `InstrumentationScope`. See [migration guide](https://github.com/open-telemetry/opentelemetry-js/blob/main/doc/upgrade-to-2.x.md) before upgrading. [Source: [OTel JS SDK 2.0 announcement](https://opentelemetry.io/blog/2025/otel-js-sdk-2-0/)]
+- **OTel Collector** latest stable: v1.x line (v1.52.0 as of 2026-05). The Release SIG is targeting "epoch" releases — a tested, stable component manifest for production pinning. [Source: [OTel Collector releases](https://github.com/open-telemetry/opentelemetry-collector/releases)]
+
 [Source: [OpenTelemetry stability docs](https://opentelemetry.io/docs/concepts/signals/); [OpenTelemetry stabilization proposal](https://opentelemetry.io/blog/2025/stability-proposal-announcement/)]
 
 The OTel Collector, semantic conventions for GenAI/AI agent workloads, and declarative YAML config are detailed in the dedicated section near the end of this file. Pair this reference with `Beacon` for SLO/alert *strategy* — Gear configures the plumbing, Beacon defines what is worth alerting on.
@@ -218,7 +222,13 @@ export function metricsMiddleware(req, res, next) {
 
 ## Alert Rules (Prometheus / Alertmanager)
 
-Use **Prometheus 3.x** (Grafana Alloy bumped its embedded Prometheus from 2.55 → 3.4 in 2026); note the v3 regex change — `.` now matches newline characters in PromQL matchers, so audit existing rules that relied on the old behaviour. Grafana 13.x adds dashboards-as-code and Grafana-managed recording rules. [Source: [Grafana 12 release](https://grafana.com/blog/grafana-12-release-all-the-new-features/); [Grafana 13 release](https://grafana.com/blog/grafana-13-release-all-the-latest-features/)]
+Use **Prometheus 3.x** (GA 2024-11; Grafana Alloy bumped its embedded Prometheus from 2.55 → 3.4 in 2026). Key v3 changes to be aware of:
+- OTLP ingestion is **stable** at `/api/v1/otlp/v1/metrics`; use `otlp/http` exporter from OTel Collector directly. [Source: [Prometheus OTLP guide](https://prometheus.io/docs/guides/opentelemetry/)]
+- **Native histograms** stable from v3.8.0 (requires `scrape_native_histograms: true` in scrape config). [Source: [Prometheus 3.0 announcement](https://prometheus.io/blog/2024/11/14/prometheus-3-0/)]
+- **Remote Write 2.0**: natively transports native histograms, exemplars, metadata, and created timestamps — still experimental; enable with `send_native_histograms: true` in remote_write config. [Source: [Remote-Write 2.0 spec](https://prometheus.io/docs/specs/prw/remote_write_spec_2_0/)]
+- **Regex change**: `.` now matches newline in PromQL label matchers — audit existing rules that relied on the old behaviour.
+- UTF-8 metric/label names supported natively — no more dot-to-underscore mangling for OTel metrics.
+Grafana 13.x adds dashboards-as-code and Grafana-managed recording rules.
 
 The thresholds below are a **starter template**, not an SLO strategy — route SLO/burn-rate alert design to `Beacon`.
 
@@ -389,7 +399,7 @@ For Kubernetes workloads, eBPF gives you HTTP/gRPC/DB traces, service maps, and 
 | **Cilium Tetragon** | Runtime security observability + enforcement | You want syscall-level audit + policy enforcement |
 | **Pixie** | Auto-instrumented APM, full-request capture (8 GB rolling buffer per node) | You want zero-config APM without sampling for debugging |
 | **Coroot** | Service maps + SLO health insights from eBPF traffic | You want SRE-style health views without instrumenting code |
-| **Grafana Beyla** | App-level RED metrics from eBPF | You already run Grafana stack and want zero-touch RED metrics |
+| **Grafana Beyla 2.5 / OTel eBPF Instrumentation** | App-level RED metrics from eBPF | Beyla donated to OTel as *OpenTelemetry eBPF Instrumentation* (May 2025); Beyla 2.5 is the first release vendoring upstream OTel eBPF code directly. Works with any OTel/Prometheus backend. [Source: [Beyla OTel donation](https://grafana.com/blog/2025/05/07/opentelemetry-ebpf-instrumentation-beyla-donation/)] |
 | **Parca** | Continuous profiling (CPU/memory) | Profiling signal before OTel Profiling SDK reaches GA |
 
 eBPF is complementary to OTel, not a replacement: use eBPF for *zero-instrumentation* coverage of unowned binaries (databases, third-party sidecars), and OTel SDKs for in-process business spans.
