@@ -31,8 +31,10 @@ A single 3,000-word article should yield:
 | Level | Count | Output |
 |-------|-------|--------|
 | 1 | 1 | Canonical long-form |
-| 5 | 5 | Platform variants — note / Zenn / Qiita / dev.to / Medium (or LinkedIn long-form) |
+| 5 | 5 | Platform variants — note / Zenn / Qiita / dev.to / LinkedIn long-form |
 | 25 | 20+ | Atomic assets — X thread, LinkedIn post, quote cards (5–10), code snippets, single-tip posts, newsletter blurb, Bluesky post, Mastodon share, podcast talking point, video script outline |
+
+> **Medium note (2025-2026)**: Medium Partner Program has undergone multiple paywall/earnings restructurings since November 2025 — search-driven traffic, new-member conversion, and broader distribution to non-Boosted stories now all affect earnings. Ongoing eligibility requires 5+ stories published within the last 6 months. Source: [medium.com Partner Program blog](https://medium.com/blog/partner-program-update-starting-january-1-were-rewarding-writing-more-broadly-4907e149e38c). Evaluate Medium as a spoke carefully; `canonical_url` is supported via "Import a story". For JP-first content, Medium is generally lower priority than Zenn/Qiita.
 
 Don't aim for all 25 every time; aim for the highest-leverage 8–10 per article.
 
@@ -59,7 +61,7 @@ Real repurposing **adapts**:
 | X thread | First 6–10 sentences of canonical | Tweet 1 = hook, 2–N = beats, last = CTA + canonical link |
 | LinkedIn post | Listicle section or contrarian beat | 3 lines hook, body, "what's your take?" close |
 | Quote card | One-sentence insight | 1080×1080 image, branded, no logo dominance |
-| Bluesky / Mastodon | Hook + canonical link | < 280 chars typically |
+| Bluesky / Mastodon | Hook + canonical link | < 300 chars; Bluesky MAU ~1.5-3M (as of Oct 2025, down 40% YoY); strongest among developers, journalists, researchers |
 | Newsletter blurb | TL;DR + link | 60–120 words |
 | Code snippet card | Code block + 1-line caption | Carbon / ray.so / shiki render |
 | Single-tip post | One paragraph from the listicle | Stand-alone "did you know" framing |
@@ -206,8 +208,8 @@ A repurposing plan is complete when:
 - Gary Vaynerchuk, *Crushing It!* (2018) — content multiplication / pillar-and-cluster framework.
 - Andy Crestodina, *Orbit Media Studios* — content atomization research.
 - Ross Hudgens, *Siege Media* — repurposing playbooks for SEO-resilient cross-posting.
-- Search Engine Journal, *Canonical URL Best Practices* (2024).
-- Justin Welsh, *The Diversified Solopreneur* — solo creator repurposing systems.
-- Anne-Laure Le Cunff, *Ness Labs* — refresh / evergreen content cadence.
-- dev.to docs, *Cross-posting and `canonical_url` field*.
+- [dev.to Editor Guide](https://dev.to/p/editor_guide) — cross-posting and `canonical_url` field (official docs).
 - Ahrefs Blog, *Duplicate Content* (2024) — when canonical works and when it doesn't.
+- [Sprout Social, *Bluesky Growth Statistics 2026*](https://sproutsocial.com/insights/bluesky-statistics/) — platform reach data for distribution decisions.
+- [Semrush AI Overviews Study 2025](https://www.semrush.com/blog/semrush-ai-overviews-study/) — canonical placement vs AI citation rates.
+- [Medium Partner Program January 2026 Update](https://medium.com/blog/partner-program-update-starting-january-1-were-rewarding-writing-more-broadly-4907e149e38c) — earnings model changes affecting cross-post strategy.

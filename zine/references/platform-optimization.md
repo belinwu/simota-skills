@@ -27,6 +27,9 @@
 - **マガジン** = series container. Readers subscribe to a magazine to get notifications on new episodes. Critical for multi-episode series.
 - **目次 auto-generation** from H2/H3 headings. A clear hierarchy produces a clear TOC.
 - Paid articles, supporter tips (サポート), and magazine subscriptions are native monetization.
+- **AI学習対価還元プログラム** (started August 1, 2025): note provides creator text to partnered AI companies and returns revenue to creators. Opt-out is available. Covers free/paid articles and membership content (images/audio/video excluded). Source: [help-note.com FAQ](https://www.help-note.com/hc/ja/articles/44723422427417)
+- **AI流入**: note is ranked #2 as a source cited by AI assistants (after Wikipedia) as of 2025, due to its concentration of first-hand experience and primary-source writing. Source: [note.com/info](https://note.com/info/n/n49bbcbdefe1a)
+- Google capital tie-up (January 2025): note raised ~¥489M from Google and announced a partnership to develop features using Gemini.
 
 ### Metadata
 
@@ -37,6 +40,7 @@
 | タグ | 3-5個。1つをprimary (最も狭い粒度), 残り2-4をbroader discoverability |
 | マガジン | 連載は必ず所属させる。単発でも関連マガジンがあれば追加 |
 | 有料設定 | 全文無料 / 一部有料 / 全文有料 — 序盤200-400字は必ず無料で読めるよう配置 |
+| AI学習提供設定 | デフォルトON。提供したくないコンテンツはヘルプセンターから除外設定可 |
 
 ### Hook / Structure / CTA
 
@@ -60,8 +64,9 @@
 - Built for engineers. Technical rigor expected.
 - **GitHub-linked articles** (`zenn-cli`) = articles as `.md` files in a repo, publish via `git push`. Enables version control and collaborative editing.
 - **Article types**: `Tech` (技術記事) vs `Idea` (ポエム・考察). Pick one at publish — different discoverability pools.
-- **Scrap** = live note/thread format, separate from articles. Use for work-in-progress exploration or Q&A-style threads, not for finalized articles.
+- **Scrap** = live note/thread format, separate from articles. Use for work-in-progress exploration or Q&A-style threads, not for finalized articles. Since March 2025, scraps support **限定公開 (unlisted)** — useful for draft-stage exploration or team-internal threads. Source: [info.zenn.dev](https://info.zenn.dev/2025-03-05-release-unlisted-scrap)
 - **Book feature** = paid long-form (several chapters). For a deep series you want to monetize, a Zenn Book is often stronger than a series of articles.
+- **Publication Pro** (2025): Organization-level publications can now force-unpublish member articles (admin control). Dashboard scrap management gained filter + sort (December 2025). Source: [info.zenn.dev](https://info.zenn.dev/)
 
 ### Metadata
 
@@ -114,14 +119,14 @@ The canonical version lives in git. Useful for: series where articles reference 
 | タグ | 5個まで。1つをprimary tech (react, python 等), 残りをサブテクや問題領域 |
 | Organization | 所属している場合は選択。個人記事なら空 |
 | 限定共有 | 下書き共有に使える (URL-only access) |
-| いいね → LGTM | 2020 rename. 古い記事への言及では LGTM で統一 |
+| LGTM | いいね から改称 (2020)。現在は LGTM で統一 |
 
 ### Hook / Structure / CTA
 
 - **Hook**: Qiita readers skim heavily. A strong `## TL;DR` at the top can function as the hook — directly state the 1-3 line takeaway.
 - **Structure**: `## TL;DR` → `## 問題` → `## 解決` → `## 詳細` is the default scaffold. Deviation from this shape is fine but should be deliberate.
 - **Code blocks dominate** — Qiita articles are often 40-60% code. Use language hints (` ```typescript`, ` ```bash`) aggressively for syntax highlighting.
-- **CTA**: GitHub Gist / repo link, 関連記事 internal-link, Qiita follow, Twitter share. LGTM への誘導は逆効果 (押し付けがましい)。
+- **CTA**: GitHub Gist / repo link, 関連記事 internal-link, Qiita follow, X (Twitter) share. LGTM への誘導は逆効果 (押し付けがましい)。
 - Closing: 「以上です」「参考になれば幸いです」で締めるのが Qiita 文化 (note ほど personal tone を期待されない)。
 
 ### Archive vs Update strategy
@@ -176,7 +181,7 @@ canonical_url: https://note.com/yourname/n/primary-version
 - **Hook**: dev.to culture rewards friendliness. Question hooks that invite discussion ("am I wrong?", "what would you do?") perform well.
 - **Structure**: Scannable H2s, short paragraphs (2-4 sentences), generous code block use. Readers on mobile are common — avoid unbroken walls.
 - **Emoji is accepted** — moderate emoji use in H2 headings (🚀 Getting Started, 🔧 Setup, 🎯 Conclusion) is cultural norm, not cringe.
-- **CTA**: Discuss tag, GitHub repo, follow on dev.to, Twitter. "Let me know what you think in the comments" actually gets comments here, unlike most platforms.
+- **CTA**: Discuss tag, GitHub repo, follow on dev.to, X (Twitter), Bluesky. "Let me know what you think in the comments" actually gets comments here, unlike most platforms.
 - Closing: Conversational sign-offs ("Happy coding!", "Let me know your thoughts!") are fine on dev.to where they would feel amateur elsewhere.
 
 ### Cross-post strategy
@@ -198,7 +203,7 @@ If primary publish is note (Japanese) and you want dev.to English reach:
 
 ---
 
-## SEO Considerations for Tech Blog Platforms
+## SEO Considerations for Tech Blog Platforms (2025-2026)
 
 Tech platforms (note, Zenn, Qiita, dev.to) inherit the domain's SEO authority, so on-page SEO is less make-or-break than on a self-hosted blog. Still:
 
@@ -206,12 +211,24 @@ Tech platforms (note, Zenn, Qiita, dev.to) inherit the domain's SEO authority, s
 |-------|--------|-----------|
 | Title length + specificity | Medium | You (platform-agnostic) |
 | H-tag hierarchy (H1 → H2 → H3) | Medium | You (ensures crawl + reader parsing) |
-| First 155 chars (description) | High | You (meta description / OG fallback) |
+| First 155 chars / first 40-60 words (atomic answer) | High | You — put conclusion/answer in first 1/3 of article; 44.2% of AI citations come from this zone |
 | Internal links to other articles | Medium | You (boost within-platform navigation) |
 | Canonical URL (cross-post) | High for cross-post | You (in front-matter for dev.to; in URL settings for note/Zenn) |
 | Keywords naturally in H2s | Low | You (don't stuff, don't avoid) |
 | Schema.org JSON-LD | Medium | Platform auto (you don't control) |
 | Page load speed | Low (platform-hosted) | Platform |
+| E-E-A-T signals (author credibility, sourcing) | High (2025+) | You — cite sources, link primary docs, use real names/profiles |
+
+### Google AI Overviews & Bing Generative Search (2025-2026)
+
+AI Overviews appeared on 48% of all Google queries as of March 2026 (up from 34.5% in December 2025), reducing organic CTR by 15-46% depending on query type. However, pages that earn citations _inside_ AI Overviews can see CTR increases of up to 35%. Key tactics for earning AI citations:
+
+- Front-load a self-contained answer (40-60 words) that directly addresses the title question.
+- 85% of AI Overview citations come from content published in the last two years — freshness matters more than ever.
+- Transparent sourcing and E-E-A-T signals (first-hand experience, named author, cited sources) increase AI citation probability.
+- Keyword stuffing is actively penalized by Google's December 2025 and February 2026 updates; write for readers, not crawlers.
+
+Source: [stackmatix.com AI Overviews 2026](https://www.stackmatix.com/blog/google-ai-overview-seo-impact), [Semrush AI Overviews Study 2025](https://www.semrush.com/blog/semrush-ai-overviews-study/)
 
 **Growth handoff**: if SEO strategy matters (product launch post, evergreen educational content), hand off to Growth after draft completion with: title candidates (3-5), meta description draft, H-tag outline, target keyword list. Zine does not do keyword research.
 
