@@ -88,3 +88,9 @@ Over the 15-minute threshold -> split further.
 4. Identify the responsible agent for each step.
 5. mark dependencies before execution starts.
 6. Flag XL items immediately.
+
+## Sources
+
+- DORA 2025 report — small, frequent commits correlate with higher software delivery performance. AI-generated PRs are 51% larger on average; atomic decomposition counteracts cognitive-overload and review-skip risk. [dora.dev/research/2025/dora-report/](https://dora.dev/research/2025/dora-report/)
+- SAFe 6.0 Story hierarchy and "Reimagining SAFe" (2024-2025 updates) — Epic → Feature → Story → Task granularity. [framework.scaledagile.com/whats-new-in-safe-6-0/](https://framework.scaledagile.com/whats-new-in-safe-6-0/)
+- Linear Agent (March 2026) — AI-generated issue hierarchies as raw MAP-phase input for Sherpa validation. [linear.app/changelog/2026-03-24-introducing-linear-agent](https://linear.app/changelog/2026-03-24-introducing-linear-agent)

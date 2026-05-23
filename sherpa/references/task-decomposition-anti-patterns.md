@@ -62,7 +62,9 @@ Vertical slice (good):
 
 Prefer vertical slices because each slice produces something testable and reviewable.
 
-## WBS Checklist
+## Decomposition Checklist
+
+Note: "WBS" (Work Breakdown Structure) terminology originates from waterfall project management. Sherpa uses output-focused decomposition aligned with agile vertical-slice practices (SAFe 6.0, INVEST). The checklist below retains useful structural rigor while dropping phase-gate assumptions.
 
 ```text
 Before decomposition:
@@ -72,13 +74,14 @@ Before decomposition:
 - high-risk areas are known
 
 During decomposition:
-- 100% rule checked
+- 100% rule checked (no hidden work)
 - tasks are mutually exclusive
 - step size is 5-15 min
-- each step is testable
+- each step is testable (single observable exit criterion)
 - each step has a commit point
 - dependencies are explicit
 - owning agent is clear
+- each item is a deliverable output, not an activity
 
 After decomposition:
 - critical path identified

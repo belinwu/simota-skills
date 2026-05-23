@@ -185,3 +185,5 @@ When `atomic` completes, emit:
 - Dave Farley / Jez Humble — "Continuous Delivery" (small, reversible changes)
 - Mayer Coglan — Refactoring in ≤ 10-minute steps
 - Allen Holub — Small batch sizes in software development
+- DORA 2025 — State of AI-Assisted Software Development: PR size up 51%, review time up 441%; small atomic commits directly counteract this trend. [dora.dev/research/2025/dora-report/](https://dora.dev/research/2025/dora-report/)
+- SAFe 6.0 / "Reimagining SAFe" (2024–2025) — Story refinement: features broken into user stories with owners, acceptance criteria, estimates, tasks, risks, and dependencies. [framework.scaledagile.com/whats-new-in-safe-6-0/](https://framework.scaledagile.com/whats-new-in-safe-6-0/)
