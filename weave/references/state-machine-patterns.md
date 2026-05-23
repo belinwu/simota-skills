@@ -7,14 +7,31 @@
 
 ## FSM vs Statechart vs XState
 
-| Aspect | FSM | Statechart (Harel) | XState |
+> XState v5 source: [stately.ai/docs/actors](https://stately.ai/docs/actors), [stately.ai/docs/machines](https://stately.ai/docs/machines)
+
+| Aspect | FSM | Statechart (Harel) | XState v5 |
 |--------|-----|--------------------|----|
 | Hierarchy | Flat | Nested (compound states) | Nested |
 | Parallelism | None | Orthogonal regions | Parallel states |
-| Guards | Manual | Built-in | Built-in |
+| Guards | Manual | Built-in | Built-in (typed via `setup()`) |
 | Actions | Manual | Entry/Exit/Transition | Entry/Exit/Transition + Invoke |
 | History | None | Shallow/Deep | Shallow/Deep |
-| Use case | Simple toggle/enum | Complex business logic | UI + Business logic |
+| Concurrency | None | Orthogonal regions | Actor model (spawn / `systemId`) |
+| Input | None | None | `createActor(machine, { input })` |
+| Persistence | None | None | Deep (recursive) actor snapshot |
+| Use case | Simple toggle/enum | Complex business logic | UI + Business logic + Actor systems |
+
+### XState v5 Key API Changes (v4 → v5)
+
+| v4 (removed) | v5 replacement |
+|---|---|
+| `createMachine()` (standalone) | `setup({}).createMachine()` |
+| `interpret(machine)` | `createActor(machine)` |
+| `service.start()` | `actor.start()` |
+| No input support | `createActor(machine, { input })` |
+| Shallow actor persistence | Deep (recursive) actor persistence |
+
+> **Migration note:** XState v4 APIs are removed in v5. Always use `setup()` + `createActor()` for new designs.
 
 ---
 
