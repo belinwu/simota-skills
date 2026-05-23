@@ -214,3 +214,47 @@ Target: 95%+ for production code
 | `ReturnType<F>` | Function return type | `ReturnType<typeof fetch>` |
 | `Parameters<F>` | Function param types | `Parameters<typeof handler>` |
 | `Awaited<T>` | Unwrap Promise | `Awaited<Promise<User>>` → `User` |
+| `NoInfer<T>` | Block inference at call site (TS 5.4+) | Prevent secondary params from widening the inferred type |
+
+Source: [TypeScript Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html) · [NoInfer — TS 5.4](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html)
+
+## satisfies Operator (TS 4.9+)
+
+Use `satisfies` to validate structure while preserving literal types. Prefer it over `as` casts for config objects, route maps, and theme tokens:
+
+```typescript
+// Before (as cast erases literal types)
+const routes = {
+  home: '/',
+  about: '/about',
+} as Record<string, string>;
+
+// After (satisfies validates structure; literals preserved)
+const routes = {
+  home: '/',
+  about: '/about',
+} satisfies Record<string, string>;
+
+// routes.home is still '/' not string
+```
+
+Source: [TypeScript 4.9 — satisfies operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html)
+
+## Branded Types (Nominal Typing)
+
+Use branded types to prevent accidental value mix-ups at the type level without runtime overhead:
+
+```typescript
+type UserId = string & { __brand: 'UserId' };
+type OrderId = string & { __brand: 'OrderId' };
+
+function assertUserId(id: string): UserId {
+  // validate here
+  return id as UserId;
+}
+
+// Compiler rejects passing OrderId where UserId is expected
+function getUser(id: UserId): User { ... }
+```
+
+Source: [TypeScript Do's and Don'ts](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)

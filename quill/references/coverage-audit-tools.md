@@ -213,6 +213,29 @@ jobs:
           npx type-coverage --at-least 95
 ```
 
+### ESLint v9 + typescript-eslint (flat config)
+
+ESLint v9 made flat config the default. The legacy `.eslintrc.*` format is now deprecated. Use `eslint.config.mjs`:
+
+```javascript
+// eslint.config.mjs
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  tseslint.configs.recommended,
+  {
+    rules: {
+      // Warn on explicit `any`; auto-fix converts to `unknown`
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
+  }
+);
+```
+
+Note: `tseslint.config()` helper was deprecated in typescript-eslint 8.x in favour of ESLint core's `defineConfig()`. Check your version and migrate accordingly.
+
+Source: [ESLint v9 release](https://eslint.org/blog/2024/04/eslint-v9.0.0-released/) · [typescript-eslint no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/) · [ESLint flat config extends](https://eslint.org/blog/2025/03/flat-config-extends-define-config-global-ignores/)
+
 ## Report Template
 
 ```markdown

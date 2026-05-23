@@ -130,8 +130,9 @@ interface User {
 ```typescript
 // GOOD: Explains the business rule (The WHY)
 /**
- * Calculates tax based on 2024 regional laws.
- * @note Falls back to standard rate if region is unknown.
+ * Calculates tax using the regional rate table (updated annually).
+ * Falls back to the standard rate when region is unrecognized.
+ * @see https://example.com/docs/tax-rates for the rate table source
  */
 const tax = calculateTax(amount, region);
 
