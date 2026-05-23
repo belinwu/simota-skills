@@ -129,15 +129,19 @@ BHS = Σ (Channel_Score × Channel_Weight) / Σ Channel_Weight
 
 ## Platform Algorithm Insights
 
-### X (Twitter) — Signal Weights
+### X (Twitter) — Signal Weights (2026)
 
 | Signal | Relative Weight | Actionable Insight |
 |--------|----------------|-------------------|
 | Reply | 27× like value | Reply to others' content actively |
 | Conversation (multi-reply) | 150× like value | Engage in technical discussions |
 | Bookmark | 5× like value | Create save-worthy reference content |
-| External link | −50-90% reach | Place links in reply, not main tweet |
+| External link (technical articles) | Boosted (2026 shift) | Links to dev.to, Substack, personal blogs now algorithmically promoted — combine with thread summary for best reach |
+| Hashtags | 1-2 niche: +21% / 3+: −40% | Minimal use; algorithm relies on semantic embeddings |
 | Initial velocity | Critical (30-60 min) | Post when audience is active |
+| Premium account | ~4× reach boost vs free | Consider Premium for consistent developer content |
+
+> Note: X reversed its external link suppression policy in early 2026 specifically for article/blog links. Non-Premium accounts still see weaker median engagement on linked posts. [Source: Sprout Social — Twitter Algorithm 2026](https://sproutsocial.com/insights/twitter-algorithm/)
 
 ### YouTube — Ranking Factors
 

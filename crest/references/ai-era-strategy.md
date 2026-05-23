@@ -298,6 +298,8 @@ Supplement to core AP-1~AP-7:
 | 45% of engineering roles expect multi-domain proficiency by 2026 | Brainhub |
 | Employee posts get 8× more engagement than corporate channels | Edelman |
 | 90% of online content predicted to be AI-synthesized by 2026 | Industry estimates |
+| Bluesky reached 41.4M users by end of 2025 (+302% YoY); Threads hit 400M MAU by Aug 2025 | [Sprout Social — Bluesky Statistics](https://sproutsocial.com/insights/bluesky-statistics/) |
+| LinkedIn newsletters generate 206% more impressions than standard posts, 4.40% engagement rate | [Buffer — LinkedIn Algorithm 2026](https://buffer.com/resources/linkedin-algorithm/) |
 
 ---
 

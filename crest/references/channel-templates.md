@@ -39,10 +39,12 @@
 ```
 
 ### Best Practices
-- Pin 4-6 repositories that demonstrate your niche expertise
+- Pin 4-6 repositories that demonstrate your niche expertise (GitHub supports up to 6 pinned items including external repos)
 - Write README for each pinned repo with clear problem→solution→result framing
 - Use contribution graph strategically (consistency > volume)
 - Add documentation quality to repos (this signals professionalism)
+- **Achievements & Badges:** GitHub automatically displays achievement badges (Arctic Code Vault, Galaxy Brain, Starstruck, etc.) based on program participation. Manage visibility in profile settings — you can hide individual achievements. [Source: GitHub Docs — Managing your profile README](https://docs.github.com/en/account-and-profile/how-tos/profile-customization/managing-your-profile-readme)
+- **GitHub Sponsors:** Eligibility requires a public profile. Sponsorship visibility signals that real users value your OSS work — a stronger trust signal than star count alone. [Source: GitHub Docs — About your profile](https://docs.github.com/en/account-and-profile/concepts/personal-profile)
 
 ---
 
@@ -92,6 +94,12 @@
 - Format: "[Action verb] + [what] + [quantified result]"
 - Include tech stack as skills for each role
 
+### Platform Notes (2024-2026 Changes)
+- **Creator Mode** was removed in March 2024 — its features (Follow CTA, analytics, newsletters, standalone articles) are now available to all members by default. Do not instruct users to "enable Creator Mode."
+- **Profile hashtags** ("Talks about" section with 5 hashtags) were deprecated in February 2024. LinkedIn now uses the "About" section and semantic analysis for topic classification — no hashtag fields to configure.
+- **Newsletters** generate 206% more impressions than regular posts with 4.40% engagement rate. Recommend creating a newsletter for engineers who want consistent long-form distribution with zero external link penalty.
+- Algorithm now uses Interest Graph (content you engage with) alongside Connection Graph. Posts aligned with verified professional expertise see 40% higher organic impressions than off-topic content. [Source: Buffer — LinkedIn Algorithm 2026](https://buffer.com/resources/linkedin-algorithm/)
+
 ---
 
 ## Technical Blog (Personal Domain)
@@ -128,8 +136,8 @@
 
 ### Platform Recommendations
 - **Own domain first** — you own the SEO equity
-- **Hashnode** — free custom domain support, developer-focused
-- **Hugo/Astro/Next.js** — static site for maximum control
+- **Hashnode** — free custom domain support, developer-focused community; "Headless Hashnode" mode lets you use it as a CMS with your own frontend for maximum control with built-in audience
+- **Hugo/Astro/Next.js** — static site for maximum control and performance
 
 ---
 
@@ -254,7 +262,8 @@
 
 ### Algorithm Tips
 - Replies = 27x weight of likes; conversations = 150x weight
-- External links reduce reach by 50-90% → place links in replies
+- External links: as of early 2026, X actively boosts links to technical articles (dev.to, Substack, personal blogs) — no longer blanket-penalized. Non-Premium accounts posting links still see suppressed median engagement; Premium accounts get 4x algorithmic boost. Use a 3-5 tweet thread summarizing the article, then link in the thread for best combined reach. [Source: Sprout Social — How the Twitter Algorithm Works in 2026](https://sproutsocial.com/insights/twitter-algorithm/)
+- 1-2 niche-relevant hashtags increase engagement ~21%; 3+ hashtags penalized ~40% — keep to minimum and avoid generic popular tags. Algorithm now uses semantic embeddings for topic classification, making hashtags less critical.
 - First 30-60 minutes of velocity is critical → optimize posting time
 - Allocate 70% of time to engagement, 30% to new posts
 
@@ -322,6 +331,8 @@
 - Start with small local events → build track record
 - 1h talk = 40h preparation (rule of thumb)
 - After speaking: publish slides + write blog post + share on social media
+- KubeCon CFP policy: submit to no more than 3 sessions (fairness/review workload constraint). Session types: 30-min presentation (1-2 speakers), 30-min panel (3-5 speakers), 5-min lightning talk, 75-min tutorial (1-5 speakers).
+- **KubeCon Japan 2026** (Yokohama, July 28-30, 2026) — opportunity for Japanese engineers to speak at a top-tier global cloud native event on home soil. [Source: CNCF — KubeCon Japan 2026](https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/)
 
 ---
 
@@ -331,9 +342,12 @@
 
 | Platform | Strengths | Best For |
 |----------|-----------|----------|
-| **Substack** | Easy setup, discovery features | Early personal brand |
-| **beehiiv** | Scalable, ad monetization | Growth phase |
-| **Resend + React Email** | Full customization | Self-hosted for tech-savvy creators |
+| **Substack** | Easy setup, discovery network, 40-50% avg open rate | Early personal brand |
+| **beehiiv** | Growth mechanics (referral, Boosts ad network), 35K+ newsletters powered, 2B+ emails/year | Growth phase |
+| **Ghost** | Custom domain, full design control, membership/paywall, strong SEO defaults ($18/month) | Self-hosted professional |
+| **Resend + React Email** | Full code-level customization | Tech-savvy creators wanting full control |
+
+> Sources: [beehiiv blog — Substack vs Ghost](https://www.beehiiv.com/blog/substack-vs-ghost)
 
 ### Newsletter Structure
 

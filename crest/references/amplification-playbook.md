@@ -116,15 +116,16 @@ Pillar 4: Career & Learning Journey (personal story)
 | Frequency | 2-4 articles/month (quality > quantity) |
 | Seasonal peak | December (Advent Calendar) — plan from October |
 
-### X (Twitter) — Posting Strategy
+### X (Twitter) — Posting Strategy (2026)
 
 | Rule | Detail |
 |------|--------|
 | Frequency | 1-2 posts/day minimum |
 | Thread timing | Morning (7-9 JST) or evening (19-21 JST) |
-| Link placement | Always in reply, never in main tweet |
+| Link strategy | In 2026, X boosts technical article links (dev.to, Substack, blogs). Use a 3-5 tweet thread summarizing the article, with the link in the thread body or final tweet for best combined reach. Non-Premium: still prefer link in first comment as fallback. |
 | Engagement ratio | 70% engaging with others, 30% own content |
-| Thread structure | Hook tweet (no link) → content → CTA with link in final tweet |
+| Thread structure | Hook tweet → content summary (3-5 tweets) → article link in closing tweet |
+| Hashtags | 1-2 niche-specific maximum; 3+ penalized ~40% |
 
 ### YouTube — Upload Strategy
 
