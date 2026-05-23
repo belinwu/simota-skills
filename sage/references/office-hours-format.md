@@ -125,8 +125,11 @@ Cite the source by name in-session ("Carta Q4 2025 seed median", "Sequoia AI Asc
 
 Reference these contemporary sources when grounding pattern citations in the session — use the source name verbatim so the founder can verify after:
 
-- **Garry Tan (YC President)** — Feb 2026 "Half the AI Agent Market Is One Category" (coding ~50%, verticals wide open); Apr 2026 YC "Be Truthful" guidance on revenue precision.
-- **Sequoia AI Ascent 2026** (Apr 2026) — long-horizon agents, "selling work" not tools, reliability/evals as a pitch slide.
+- **Garry Tan (YC President)** — Spring 2025 RFS: "AI agents not as features but as the core operating system of brand-new companies and industries" (x.com/garrytan/status/1920153493492674984); Feb 2026 "Half the AI Agent Market Is One Category" (coding ~50%, verticals wide open); Apr 2026 YC "Be Truthful" guidance on revenue precision (x.com/garrytan/status/2048017824895909901).
+- **YC Requests for Startups (Spring 2025 / 2026)** — "AI-native companies that don't sell software — they sell the service" (ycombinator.com/rfs). The sell-work-not-tools thesis is now the primary YC AI frame.
+- **Sequoia AI Ascent 2026** (Apr 2026) — "Services: The New Software": outcome-based pricing, reliability/evals as a pitch requirement (sequoiacap.com/article/ai-ascent-2026/ and sequoiacap.com/article/services-the-new-software/).
+- **Sequoia Arc PMF Framework** — Three archetypes (Hair on Fire / Vitamin / Hard Fact) and "Terrifying Questions" for pre-seed/seed (sequoiacap.com/article/pmf-framework/ and sequoiacap.com/article/pmf-framework-2/). Use instead of generic "do you have PMF?" probing.
+- **a16z, "Product-User Fit Comes Before Product-Market Fit"** — Self-declared PMF without real pull from a defined user is the common trap at seed (a16z.com/product-user-fit-comes-before-product-market-fit/).
 - **Andrej Karpathy** — Feb 2025 coined "vibe coding"; subsequent commentary on agentic engineering. Use to reset the "code is the moat" assumption.
 - **Carta State of Pre-Seed / Seed Q1 2026** — round size and graduation-rate baseline.
 - **Bezos 2015 Amazon shareholder letter** — two-way door / one-way door framing (P-54), still canonical.
