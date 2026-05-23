@@ -3,7 +3,9 @@
 **Purpose:** Format-specific parser selection and schema notes for ingesting raw test artifacts.
 **Read when:** You are at INGEST or PARSE phase and need to choose the right parser or know format-specific quirks.
 
-> **2025-2026 Update:** **CTRF** (Common Test Report Format) has emerged as the de facto unifier across Jest, Playwright, JUnit5 and other runners. Allure has shipped the **Allure 3** TypeScript rewrite with a plugin system and `watch` real-time mode. **OpenTelemetry test traces** are gaining adoption for trace-based testing (Tracetest, OTel Demo). Treat CTRF as the preferred ingest path when present, and OTel spans as a supplemental signal for the `otel` Recipe.
+> **2025-2026 Update:** **CTRF** (Common Test Report Format) is the de facto unifier across Jest, Playwright, Cypress, JUnit5, and other runners. The CTRF spec (pre-v1.0, schema at `schema/ctrf.schema.json`, spec at `spec/ctrf.md` on GitHub) enforces a strict core schema with an `extra` extension object; the canonical implementation is TypeScript. Reporters exist for Playwright, Jest, Cypress, Newman, and more via the `ctrf-io` GitHub org. Allure has shipped **Allure TestOps 4.x / Allure 3** with Allure3 quality gates, unstable-test (flaky) detection (≥3 status transitions in last 10 executions), new launch graphs, and AWS SQS support. **Playwright 1.50-1.53** introduced configurable HTML report titles, "Fix with AI" GitHub Copilot integration in v1.52, `retain-on-failure-and-retries` trace mode, and Speedboard timeline in merged reports. **OpenTelemetry test traces** are gaining adoption for trace-based testing (Tracetest, OTel Demo); **Datadog Test Optimization** exposes per-test spans with Early Flake Detection (runs new tests multiple times; identifies ~75% of flakies pre-merge) and Bits AI Dev Agent for auto-PR flake fixes. **Buildkite Test Engine** (formerly Test Analytics) added workflow automation (Oct 2025) with probabilistic flakiness monitors and ClickHouse-backed real-time analytics. **CircleCI Test Insights** added MCP server integration with configurable flaky detection lookback and auto-quarantine code generation. Treat CTRF as the preferred ingest path when present, and OTel spans as a supplemental signal for the `otel` Recipe.
+>
+> Sources: CTRF spec — https://github.com/ctrf-io/ctrf/blob/main/spec/ctrf.md; Allure TestOps 4.x release notes — https://docs.qameta.io/allure-testops/release-notes/ver4/; Playwright v1.52/1.53 — https://dev.to/playwright/whats-new-in-playwright-v152-v153-fix-with-ai-describable-locators-and-more-dl9; Datadog Test Optimization Early Flake Detection — https://docs.datadoghq.com/tests/flaky_test_management/early_flake_detection/; Buildkite Test Engine Workflows — https://buildkite.com/resources/blog/introducing-test-engine-workflows/; CircleCI MCP flaky detection — https://circleci.com/changelog/mcp-server-updated-w-config-validation-and-flaky-test-detection/
 
 ## Contents
 - Format Discovery
@@ -57,11 +59,23 @@ If no artifacts are discoverable, **stop and refuse**. Do not synthesize a repor
 | Go test | `go test -json` output | `go-test-json` | Stream of events; reduce to per-test outcome |
 | pytest | `--junitxml=...` | `junit-xml-v5` | Use junit parser |
 | Cypress | `cypress/results/*.json` (mochawesome) | `mochawesome-7.x` | Convert to junit-equivalent shape |
-| **CTRF** (Common Test Report Format) | `ctrf-report.json` (or any path containing CTRF schema) | `ctrf-1.x` | Preferred unified format; many runners now emit CTRF directly. Schema: `results.tool`, `results.summary`, `results.tests[]`, `results.environment`. |
-| **Allure 3** | `allure-results/` with `meta.json` indicating v3 | `allure-3.x` | TS-rewrite, plugin system, `watch` mode; schema is similar to 2.x but with stricter typing and project-wide quality gates. |
-| **OpenTelemetry test spans** | `otel-traces.json` or OTLP endpoint | `otel-test-1.x` | Trace-based testing pattern (Tracetest, OTel Demo). One span per test step. Used by the `otel` Recipe. |
+| **CTRF** (Common Test Report Format) | `ctrf-report.json` (or any path containing CTRF schema) | `ctrf-0.x` | Preferred unified format (pre-v1.0, stabilizing); reporters available for Playwright, Jest, Cypress, Newman. Strict core schema + `extra` extension object. Schema: `results.tool`, `results.summary`, `results.tests[]`, `results.environment`. Source: https://github.com/ctrf-io/ctrf/blob/main/spec/ctrf.md |
+| **Allure 3 / TestOps 4.x** | `allure-results/` with `meta.json` indicating v3; TestOps 4.x server | `allure-3.x` | TS-rewrite, plugin system, `watch` mode; Allure3 quality gates now available in TestOps 4.x; flaky detection marks tests with ≥3 status transitions in last 10 executions as unstable. Source: https://docs.qameta.io/allure-testops/release-notes/ver4/ |
+| **OpenTelemetry test spans** | `otel-traces.json` or OTLP endpoint | `otel-test-1.x` | Trace-based testing pattern (Tracetest, OTel Demo). One span per test step. Datadog Test Optimization exposes per-test OTel spans natively. Used by the `otel` Recipe. |
+| **Playwright 1.50+** | `playwright-report/results.json`, merged reports | `playwright-1.50+` | v1.51: "copy" buttons for annotations; v1.52: configurable HTML title, `retain-on-failure-and-retries` trace mode, "Fix with AI" Copilot integration; v1.53: Speedboard timeline in merged reports, system dark/light theme. Source: https://playwright.dev/docs/release-notes |
 
 Always **declare the parser ID and version** in the output Source block. Consumers must be able to reproduce the parse.
+
+### CI Platform Native Ingest (2025-2026)
+
+| Platform | Feature | Ingest method |
+|----------|---------|---------------|
+| Datadog Test Optimization | Per-test OTel spans; Early Flake Detection; Bits AI auto-PR flake fixes | OTLP / Datadog Agent; API |
+| Buildkite Test Engine | Probabilistic flakiness monitor; workflow automation (Oct 2025); ClickHouse analytics | JUnit XML upload; REST API |
+| CircleCI Test Insights | MCP server with configurable lookback; auto-quarantine snippets (Jest/pytest/RSpec/JUnit) | JUnit XML via `store_test_results` |
+| GitHub Actions (CTRF) | `ctrf-io/github-test-reporter` publishes CTRF summaries and flake badges in PR comments | CTRF JSON artifact |
+
+When any of these platforms is the CI environment, prefer their native run-pull APIs over artifact re-parsing to get retry metadata and SHA correlation.
 
 ---
 

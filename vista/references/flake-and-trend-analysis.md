@@ -3,17 +3,22 @@
 **Purpose:** Flake rate computation, FLAKE-CLUSTER detection, and regression timeline analytics.
 **Read when:** You are running the `flake` or `timeline` Recipes.
 
-> **2025-2026 Update — Five rules to apply:**
+> **2025-2026 Update — Six rules to apply:**
 >
 > 1. **Wilson score lower-bound** is the consensus statistical method for flake rate (Wilson 95% CI lower bound). Use the lower bound, not the raw rate, to avoid over-quarantining at small `n`.
 > 2. **Confidence floor: ≥10 historical runs/test** (Trunk 2025). Below floor, declare LOW-CONFIDENCE — do not classify.
 > 3. **Infra-failure mask:** drop runs where >80% of tests failed in that run (likely infra/DNS/auth incident, not test flake). Trunk 2025 standard pre-processing step.
 > 4. **Quarantine SLA: 14 days** (Microsoft policy → 18% flakiness reduction in 6 months). Past SLA → disable or delete. Quarantine without SLA = debt accumulator.
-> 5. **E-Divisive Means** is the de-facto change-point algorithm for CI perf and pass-rate regression (MongoDB-origin, ICPE). PELT and BOCPD are also widely cited.
+> 5. **E-Divisive Means** is the de-facto change-point algorithm for CI perf and pass-rate regression (MongoDB-origin, ICPE). PELT and BOCPD are also viable alternatives (2025 PELT: ACMCISIA 2025; BOCPD: ACMCSMT 2025). For pass-rate timelines E-Divisive remains preferred; for real-time online detection BOCPD (hazard rate λ=100) outperforms GLR and K-S tests.
+> 6. **Bayesian flake scoring** (beyond Wilson lower-bound): high-maturity teams use a Beta-Binomial prior updated per run. The posterior gives a probability distribution over true flake rate, not just a point estimate. Use Bayesian posterior mean when n<30 and Wilson interval is too wide to be actionable.
 >
-> **Tag taxonomy** (Datadog 2025 standard): `is_flaky`, `is_new_flaky`, `is_known_flaky` — adopt these labels in Vista output for cross-platform compatibility.
+> **Tag taxonomy** (Datadog 2025 standard): `is_flaky`, `is_new_flaky`, `is_known_flaky` — adopt these labels in Vista output for cross-platform compatibility. Datadog Early Flake Detection runs new tests multiple times before merge and identifies ~75% of flakies. Source: https://docs.datadoghq.com/tests/flaky_test_management/early_flake_detection/
 >
-> **AI-assisted flake fix:** Datadog Bits AI Dev Agent and FlakyGuard (ASE 2025; 47.6% repair rate, 51.8% accepted) auto-PR fixes for flaky tests. Vista can hand off quarantine candidates to such agents (but Vista itself does not write fixes).
+> **Buildkite Test Engine** (2025) monitors: *transition count*, *passed on retry*, *probabilistic flakiness* — all three can be surfaced in Vista's flake dashboard as platform-native signals. Source: https://buildkite.com/resources/blog/introducing-test-engine-workflows/
+>
+> **AI-assisted flake fix:** Datadog Bits AI Dev Agent and FlakyGuard (ASE 2025; 47.6% repair rate, 51.8% accepted, 22%+ over prior SOTA) auto-PR fixes for flaky tests. Vista can hand off quarantine candidates to such agents (but Vista itself does not write fixes). Source: https://arxiv.org/abs/2511.14002
+>
+> **FlakeSync** (ICSE 2024): auto-repairs async-flaky tests; complements FlakyGuard for async/timing root causes. Source: https://dl.acm.org/doi/10.1145/3597503.3639115
 
 ## Contents
 - Flake Rate Definition
@@ -91,6 +96,8 @@ When below threshold, emit a `LOW-CONFIDENCE` warning in `Limitations` and prese
 ### Statistical note
 
 For n<100, prefer Wilson score interval over raw percentage when reporting confidence. Show both: `flake = 8% (Wilson 95%: 4-14%)`.
+
+For n<30 where the Wilson interval is too wide, supplement with the **Beta-Binomial posterior**: initialize a Beta(1,1) (uniform) prior; after observing `k` failures in `n` runs, the posterior is Beta(k+1, n-k+1) with mean `(k+1)/(n+2)` and credible interval computable via `scipy.stats.beta.interval(0.95, k+1, n-k+1)`. Report: `flake ~ 12% (Beta posterior 95% CI: 3-28%, n=18)`. Avoid hard classification below n=10 regardless of method.
 
 ---
 
@@ -239,6 +246,16 @@ finding:
   first_failure_pr: "#4521"
   recommendation: "Hand off to Trail for git-history bisection + Scout for root cause"
 ```
+
+### Change-point algorithm selection
+
+| Algorithm | When to use | Notes |
+|-----------|-------------|-------|
+| **E-Divisive** | Batch analysis over full history; exact commit pinpointing | MongoDB-origin (ICPE); preferred for pass-rate regression |
+| **PELT** | Larger datasets where E-Divisive is slow; O(n) amortized | Exact linear time; 2025 empirical evidence on S&P/CSI 300 time series confirms robustness (ACM CISIA 2025) |
+| **BOCPD** | Online / real-time streams where new runs arrive continuously | hazard rate λ=100 outperforms GLR and K-S (ACM CSMT 2025); good for live dashboards |
+
+When git SHA correlation is available, prefer E-Divisive to pinpoint the exact breaking commit. When processing a live stream (e.g., webhook-driven dashboard), use BOCPD.
 
 ### Linking to commits
 
