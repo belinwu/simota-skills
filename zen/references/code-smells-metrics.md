@@ -178,14 +178,14 @@ Automated tools for measuring complexity metrics per language.
 # ESLint complexity rule (CC per function)
 npx eslint --rule 'complexity: ["error", 10]' src/
 
-# Plato - comprehensive complexity report (HTML output)
-npx plato -r -d report src/
-
-# cr (complexity-report) - JSON/text output
-npx complexity-report --format json src/**/*.ts
-
 # TypeScript compiler strict checks
 npx tsc --noUnusedLocals --noUnusedParameters --strict
+
+# Lizard - multi-language CC calculator (preferred over plato for modern TS)
+lizard src/ --CCN 10 --length 60 --warnings_only
+
+# Note: plato (npx plato) and es6-plato are unmaintained — no active maintainer since ~2020.
+# Use lizard or ESLint complexity rule instead.
 ```
 
 ### Python
@@ -272,8 +272,10 @@ scc --by-file --sort complexity src/
 | Need | Best Tool | Languages |
 |------|-----------|-----------|
 | Quick CC check | `lizard` | All |
-| Detailed JS/TS report | `plato` | JS/TS |
+| JS/TS CC in CI | `eslint complexity rule` | JS/TS |
 | Python complexity grades | `radon cc` | Python |
 | Go CI integration | `golangci-lint` | Go |
-| Trend over time | `wily` (Python), `plato` (JS) | Varies |
+| Trend over time | `wily` (Python), `lizard` (multi) | Varies |
 | CI gate (fail on threshold) | `xenon` (Python), `eslint` (JS) | Varies |
+
+> Note: `plato` and `es6-plato` are unmaintained — no active releases since ~2020. Use `lizard` or ESLint complexity rules for JS/TS instead.

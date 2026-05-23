@@ -17,13 +17,13 @@ Comprehensive guide for detecting and safely removing dead code across languages
 
 ### TypeScript/JavaScript
 
-| Tool | Detects | Command |
-|------|---------|---------|
-| `ts-prune` | Unused exports | `npx ts-prune` |
-| `knip` | Unused files, exports, deps | `npx knip` |
-| `eslint` | Unused vars, imports | `npx eslint --rule 'no-unused-vars: error' src/` |
-| TypeScript compiler | Unreachable code | `tsc --noUnusedLocals --noUnusedParameters` |
-| `depcheck` | Unused dependencies | `npx depcheck` |
+| Tool | Detects | Command | Notes |
+|------|---------|---------|-------|
+| `knip` | Unused files, exports, deps, types | `npx knip` | **Recommended** — ~300K weekly downloads; auto-detects tooling; VSCode extension available; `--fix` flag auto-removes unused deps ([knip.dev](https://knip.dev/)) |
+| `eslint` | Unused vars, imports | `npx eslint --rule 'no-unused-vars: error' src/` | |
+| TypeScript compiler | Unreachable code | `tsc --noUnusedLocals --noUnusedParameters` | |
+| `depcheck` | Unused dependencies | `npx depcheck` | Still useful for a focused dep-only check |
+| ~~`ts-prune`~~ | ~~Unused exports~~ | ~~`npx ts-prune`~~ | **Archived Sep 19, 2025** — use `knip` instead ([comparison & migration](https://knip.dev/explanations/comparison-and-migration)) |
 
 ### Python
 
@@ -104,9 +104,14 @@ export function oldHelper() { ... }
 ### TypeScript: Find Unused Exports
 
 ```bash
-# ts-prune output format:
-# src/utils/helpers.ts:15 - unusedFunction
-npx ts-prune | grep -v "used in module"
+# knip — recommended replacement for ts-prune (archived Sep 2025)
+npx knip
+
+# Auto-fix unused deps and some exports
+npx knip --fix
+
+# CI: report findings without failing the build while cleaning up
+npx knip --no-exit-code
 ```
 
 ### Python: Remove Unused Imports
