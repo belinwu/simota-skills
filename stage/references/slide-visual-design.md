@@ -189,6 +189,7 @@ Hand off to `theme` (framework-specific theme generation) only after this contra
 - ARIA 1.3 is in W3C Working Draft as of 2026; for presentation HTML output (reveal.js, exported Marp HTML), continue authoring against WAI-ARIA 1.2 roles and the WCAG 2.2 SCs. Do not adopt 1.3-only roles until CR.
 - **reveal.js 6.0** (2026-03-11) added enforced alt tags for images/videos in the renderer — supply `alt=""` on every slide image to satisfy WCAG 1.1.1 without warnings.
 - Marp 4.4 inherits Marpit 3.2 directives; use `<!-- _backgroundImage: ... -->` with HTML `alt` in the underlying Markdown for screen-reader compatibility.
+- **PDF/UA (ISO 14289)**: When exporting slides to PDF for distribution, apply PDF/UA in addition to WCAG 2.2. PDF/UA requires tagged PDFs with reading order, alt text on all images, and artifact-tagged decorative elements. US federal WCAG 2.1 AA compliance deadline for digital content is 2026-04-24 (https://technology.berkeley.edu/news/updated-digital-accessibility-policy-requirements). Use Marp CLI's `--pdf` output with browser-based tagged PDF, or export via PowerPoint (from Marp PPTX) → Save as PDF with Document Structure Tags enabled. Marp's `--pptx-editable` flag (LibreOffice required) generates editable PPTX for further accessibility remediation before final PDF export.
 
 ## References
 

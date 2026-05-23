@@ -195,6 +195,25 @@ app.route('/api', apiRouter)
 3. Mount API routes
 ```
 
+## Diagram Embedding (Mermaid v11+)
+
+Mermaid v11.13.0 (2026-04, https://mermaid.ai/blog/posts/mermaid-v11-13-0-two-new-diagram-types-and-our-most-polished-release-yet) added new diagram types for slides:
+
+| Diagram Type | Status | Best For |
+|-------------|--------|---------|
+| Flowchart | Stable | Architecture, decision trees |
+| Sequence | Stable | API flows, request/response |
+| ER | Stable | Data model slides |
+| Gantt | Stable | Project timeline slides |
+| Venn | NEW (v11.13) | Concept overlap, audience segmentation |
+| Ishikawa | NEW (v11.13) | Root-cause analysis talks |
+| Treemap | Beta (v11.8+) | Hierarchical data visualization |
+| Wardley Map | Stable (v11+) | Strategy/vision keynotes |
+
+**Slidev:** Use fenced code blocks tagged `mermaid`; Slidev auto-renders via the Mermaid renderer plugin (available since v52.15, https://github.com/slidevjs/slidev/releases).
+**Marp:** Use `<!-- mermaid ... -->` HTML comment passthrough or inline SVG; direct fenced-code rendering is not built-in — pre-render diagrams to SVG/PNG for reliable output.
+**reveal.js:** Include Mermaid.js CDN or npm package and initialize in `Reveal.initialize()`; use `<div class="mermaid">` tags in slides.
+
 ## Slide Count Guidelines
 
 | Duration | Total slides | Content slides | Transition slides |

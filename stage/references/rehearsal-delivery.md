@@ -112,6 +112,20 @@ For every rehearsal:
 - Review with 2× speed for pacing audit, 1× for content audit.
 - Note: filler counts, pause counts, energy dips, time per section.
 
+### Teleprompter and Prompter Tools (2026-05)
+
+For remote / hybrid talks where eye contact with the lens is critical, prompter tools allow reading notes without breaking gaze:
+
+| Tool | Platform | Key Feature | Source |
+|------|----------|-------------|--------|
+| Teleprompter Pro | iOS/macOS (free) | 150K+ ratings; AirPlay mirror | https://teleprompterpro.com/ |
+| PromptSmart | iOS/Android | VoiceTrack — auto-scrolls to your pace via speech recognition | https://promptsmart.com/ |
+| BIGVU | iOS/Android/Web | AI Script Writer + live scroll; best for video creators | https://bigvu.tv/ |
+| Teleprompter.com | Web + app | Three scroll modes, 4K recording, remote control | https://www.teleprompter.com/ |
+| Presentation Prompter | macOS | Dedicated app for Keynote/PowerPoint speaker notes | https://presentationprompter.com/ |
+
+For in-person conference talks: use Slidev's built-in presenter view (double-window mode at `/presenter`) or reveal.js speaker notes view (`S` key). Marp does not have a built-in presenter view; export to PDF for Keynote/PowerPoint presenter mode.
+
 ## Workflow
 
 1. **Print speaker notes** with timing markers per beat.
@@ -188,3 +202,5 @@ A rehearsal plan is complete when:
 - Nancy Duarte, *HBR Guide to Persuasive Presentations* (2012).
 - Jerry Weissman, *Presenting to Win* (2008).
 - The Voice Foundation — vocal hygiene best practices for public speakers.
+- University of Edinburgh study on speech rate and retention — listeners at 190+ WPM retain ~30% less than at 150 WPM; cited in https://aiaudioexpert.com/tools/speech-pace.
+- TED2026, Vancouver 2026-04-13/17 ("All of Us"), 80+ talks: cluster at 130–150 WPM — https://conferences.ted.com/ted2026.
