@@ -144,11 +144,16 @@ If setup cost is high and the repo has no container pattern yet, ask first.
 
 ## Coverage Commands
 
-| Goal | Vitest | Jest |
-|------|--------|------|
+| Goal | Vitest 4.x | Jest 30 |
+|------|-----------|---------|
 | Full coverage | `pnpm test --coverage` | `pnpm jest --coverage` |
 | Specific file | `pnpm test src/foo.test.ts --coverage` | `pnpm jest src/foo.test.ts --coverage` |
 | HTML report | `pnpm test --coverage --coverage.reporter=html` | `pnpm jest --coverage --coverageReporters=html` |
+| Changed-files only | `pnpm test --coverage --coverage.changed` (Vitest 4.1+) | N/A |
+
+Version notes:
+- **Vitest 4.x** (4.0 Oct 2025 / 4.1 Mar 2026): requires Vite ≥6 and Node ≥20; `coverage.changed` limits reporting to changed files; adds custom test tags with `timeout`/`retry` config. Source: [vitest.dev/blog/vitest-4](https://vitest.dev/blog/vitest-4), [vitest.dev/blog/vitest-4-1.html](https://vitest.dev/blog/vitest-4-1.html)
+- **Jest 30** (Jun 2025): drops Node 14/16/19/21 support; jsdom upgraded to v26; native TypeScript config support; faster module resolution via `unrs-resolver`. Minimum TypeScript: 5.4. Source: [jestjs.io/blog/2025/06/04/jest-30](https://jestjs.io/blog/2025/06/04/jest-30)
 
 ## Mock Strategy Decision Tree
 

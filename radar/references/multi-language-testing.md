@@ -25,7 +25,7 @@ Contents:
 
 - Use `pytest.mark.parametrize` for boundary coverage.
 - Use fixtures for setup and cleanup.
-- Use `pytest-asyncio` for async code.
+- Use `pytest-asyncio` 1.x (GA May 2025) for async code — major version requires `asyncio_mode` configuration and drops the legacy auto-detection mode. See [pytest-asyncio.readthedocs.io](https://pytest-asyncio.readthedocs.io/) for migration guide.
 - Use `pytest-mock` or `unittest.mock` for external effects.
 
 ```python
@@ -101,7 +101,8 @@ go test ./... -cover | grep -E "coverage: [0-7][0-9]\\." && exit 1 || echo "OK"
 - Keep unit tests in-module for private behavior and integration tests in `tests/` for public API.
 - Use parameterized tests for edge matrices.
 - Use `tokio::test` for async code.
-- Prefer `cargo-nextest` in CI when the workspace is large.
+- Prefer `cargo-nextest` in CI for faster, isolated test runs (up to 3x faster than `cargo test`; RustRover 2026.1 adds native nextest IDE integration). Source: [nexte.st](https://nexte.st/)
+- `cargo-mutants` integrates with nextest: `cargo mutants --test-tool nextest` for parallel mutant runs.
 
 ```rust
 #[test_case("", true; "empty")]
@@ -124,7 +125,7 @@ cargo llvm-cov --fail-under-lines 80
 
 ### Defaults
 
-- Use JUnit 5 with `@Nested` for scenario grouping.
+- Use JUnit 5.12+ or JUnit 6 (GA Sep 2025; requires Java 17+) with `@Nested` for scenario grouping. JUnit 6 adds `@ParameterizedClass`, Kotlin `suspend fun` test support, and unified versioning. See [junit.org/junit5/docs/current/user-guide/](https://junit.org/junit5/docs/current/user-guide/) and [docs.junit.org/6.0.3/release-notes.html](https://docs.junit.org/6.0.3/release-notes.html).
 - Use parameterized tests for boundary matrices.
 - Use Mockito only at true collaboration boundaries.
 

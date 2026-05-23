@@ -13,11 +13,11 @@ Rule of thumb: if the task is "strengthen the assertions in `order-calculator.ts
 
 | Language | Tool | Runner command | Notes |
 |----------|------|----------------|-------|
-| TS / JS | Stryker Mutator | `npx stryker run` | Works with Jest, Vitest, Jasmine, Mocha; `stryker.config.mjs` |
-| Java / Kotlin | PIT | `mvn org.pitest:pitest-maven:mutationCoverage` | Pair with pitest-junit5-plugin |
+| TS / JS | StrykerJS 7.0+ | `npx stryker run` | Vitest, Jest, Node Tap, Jasmine, Mocha runners supported; `stryker.config.mjs`. Source: [stryker-mutator.io/blog/announcing-stryker-js-7](https://stryker-mutator.io/blog/announcing-stryker-js-7/) |
+| Java / Kotlin | PIT | `mvn org.pitest:pitest-maven:mutationCoverage` | Pair with pitest-junit5-plugin; JUnit 6 compat via pitest-junit5-plugin update |
 | Python | mutmut (default), cosmic-ray (advanced operators) | `mutmut run`, `cosmic-ray init` | mutmut is simpler; cosmic-ray for custom operators |
-| Rust | cargo-mutants | `cargo mutants` | Focus with `--file` and `--function` flags to keep runtime bounded |
-| .NET | Stryker.NET | `dotnet stryker` | 2026 builds include ML-based equivalent-mutant pruning (~30% noise reduction) |
+| Rust | cargo-mutants | `cargo mutants` or `cargo mutants --test-tool nextest` | Focus with `--file` and `--function` flags; nextest mode runs mutants in parallel for large workspaces. Source: [mutants.rs](https://mutants.rs/) |
+| .NET | Stryker.NET 4.13+ | `dotnet stryker` | Microsoft Testing Platform (MTP) runner support in preview (Mar 2026); ML-based equivalent-mutant pruning (~30% noise reduction). Source: [stryker-mutator.io/blog/stryker-net-mtp-runner](https://stryker-mutator.io/blog/stryker-net-mtp-runner/) |
 
 ## Workflow
 
