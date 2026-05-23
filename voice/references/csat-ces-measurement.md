@@ -144,7 +144,6 @@ Do not run relationship-level CSAT — it conflates touchpoints and dilutes sign
 - Using a 7-point CSAT or 5-point CES — non-standard scales break benchmark comparability and mid-point bias differs.
 - Bundling CSAT + CES + NPS in one survey — fatigue inflates abandonment, especially on mobile.
 - Treating CES "neutral" (4) as good — neutral is friction unacknowledged; weight to bottom-quartile for risk dashboards.
-- Comparing pre-2020 and post-2020 benchmarks without flagging — CX expectations shifted materially during the pandemic.
 - Sending CSAT from a CSM's personal email — relationship bias is real and measurable.
 - Acting on CSAT without segmenting by plan / persona / channel — segment splits often show one cohort masking another.
 - Ignoring CES while celebrating high CSAT — the "polite resignation" cohort churns silently.
@@ -162,4 +161,12 @@ Do not run relationship-level CSAT — it conflates touchpoints and dilutes sign
 - **To Beacon**: CSAT/CES drops correlated with SLO breaches → joint reliability + experience root-cause.
 - **To Helm**: cross-cohort CSAT × CES × NPS divergence → strategic positioning input.
 
-References: Dixon, Freeman & Toman (2010), "Stop Trying to Delight Your Customers" (HBR / CEB CES origin); Gartner CES 2.0 wording (2013); Zendesk CX Trends; HubSpot State of Service; ACSI sector benchmarks.
+References:
+- Dixon, Freeman & Toman (2010), "Stop Trying to Delight Your Customers" (HBR / CEB CES origin)
+- Gartner CES 2.0 canonical wording (2013)
+- Zendesk CX Trends (cite year of edition used)
+- HubSpot State of Service (cite year of edition used)
+- ACSI sector benchmarks — https://www.theacsi.org/
+- Retently CSAT benchmark report 2026 — https://www.retently.com/blog/customer-satisfaction-score-csat/
+- Gartner Magic Quadrant for Voice of the Customer Platforms 2026 — https://www.gartner.com/en/documents/6367011
+- CES predictiveness vs CSAT: Gartner research cited in Ringly.io CES statistics 2026 — https://www.ringly.io/blog/customer-effort-score-statistics-2026

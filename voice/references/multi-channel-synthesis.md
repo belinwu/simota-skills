@@ -130,3 +130,17 @@ Use the score to rank issues after normalization, not before.
 - Route competitor mentions or switching reasons to `Compete`.
 - Route bug clusters to `Scout`.
 - Route metric gaps or dashboard needs to `Pulse`.
+
+## LLM-Powered Synthesis (2025-2026)
+
+When using LLMs to synthesise cross-channel feedback at scale, apply the hybrid pipeline pattern confirmed by 2025 research:
+
+- Use few-shot LLMs for aspect identification and opinion-term extraction (~90% accuracy on B2B English feedback).
+- Use fine-tuned compact models (BERT-class) for per-aspect sentiment classification at high volume — better cost/latency profile.
+- Multimodal ABSA (combining text + behavioural signals) is emerging: the LRSA framework (2025) injects LLM-generated rationales into smaller models via dual cross-attention for improved accuracy on ambiguous feedback.
+- Always build confusion matrices per channel — systematic misclassification patterns differ by source (support tickets vs app reviews vs NPS verbatims).
+
+Sources:
+- Frontiers in AI — "Model uncertainty and variability in LLM-based sentiment analysis" (2025) — https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1609097/full
+- arXiv — "Beyond the Star Rating: Scalable ABSA Using LLMs and Text Classification" (2026) — https://arxiv.org/html/2602.21082
+- arXiv — "Enhanced Multimodal ABSA by LLM-Generated Rationales" (2025) — https://arxiv.org/abs/2505.14499
