@@ -48,10 +48,13 @@ Use for lakehouse-style pipelines with progressive refinement:
 
 By 2026 the lakehouse table format conversation has converged on **Apache Iceberg**. Greenfield lakehouse projects should default to Iceberg unless a downstream engine forces Delta or Hudi. Snowflake, BigQuery, Databricks (via Uniform), Trino, Spark, Flink, ClickHouse, and DuckDB all read or write Iceberg in 2026, so the format is no longer a vendor-lock decision.
 
-Two adjacent 2026 shifts that pair with Iceberg-on-medallion:
+**Apache Iceberg 1.10** (released 2025-09-11; latest patch 1.10.2 on 2026-05-18) delivers full Flink 2.0 support including automatic schema-evolution propagation from stream to Iceberg table, **Deletion Vectors** (V3 spec — row-level updates without costly read-modify-write), native BigQuery Metastore Catalog, and compute_partition_stats incremental refresh. **Iceberg 1.11.0** was released 2026-05-19. Source: [iceberg.apache.org/releases](https://iceberg.apache.org/releases/)
+
+Three adjacent 2026 shifts that pair with Iceberg-on-medallion:
 
 - **Kafka Iceberg Topics** (see `streaming-kafka.md`) expose closed Kafka segments as an Iceberg table on object storage, removing a copy-job step between Bronze and Silver for log-style data.
 - **dbt Fusion + Semantic Layer** (see `dbt-modeling.md`) sit above Gold to produce the metric-level contract surface, replacing one-off BI SQL.
+- **External Iceberg catalogs in dbt 1.10** (`catalogs.yml`) enable write integrations directly from dbt to Iceberg tables without a separate catalog-management layer.
 
 ### Streaming Lakehouse (Iceberg + Flink) vs Kappa
 

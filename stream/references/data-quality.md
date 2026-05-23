@@ -99,10 +99,16 @@ alert:
 
 Every check event should emit an OpenLineage `RunEvent` (or `DatasetEvent`) so that lineage graphs show not only "table A depends on table B" but "check X on table A was passing / failing at run Y". This turns lineage into an incident-debugging tool: when a Gold asset goes bad, you traverse upstream to the first failing check.
 
+OpenLineage is now at **1.40.x** (2025-2026). Notable additions: static ("design-time") lineage, batch API endpoint for multi-event ingestion, `JobDependenciesRunFacet` for job-to-job dependency tracking, and ordinal position in `SchemaDatasetFacet`. Source: [openlineage.io/docs](https://openlineage.io/docs/)
+
 - Airflow: `openlineage-airflow` provider — automatic lineage for most operators.
 - dbt: `openlineage-dbt` wrapper / Elementary's OpenLineage adapter.
 - Flink / Spark: `openlineage-flink` / `openlineage-spark` listeners.
 - Custom Python: emit events manually via `openlineage-python` client at check boundaries.
+
+## Data Contract Standard (2025-2026)
+
+The industry is converging on the **Open Data Contract Standard (ODCS) v3.1** as the primary format. The original `datacontract-specification` (datacontract-specification.com) is being deprecated in favor of ODCS; support in `datacontract-cli` and tooling continues through end-of-2026. If starting a new data contract initiative, use ODCS v3 — it covers infrastructure, schemas, quality rules, SLA agreements, team ownership, and access control in one document. Source: [datacontract-specification.com](https://datacontract-specification.com/) and [datacontract.com](https://datacontract.com/)
 
 ## Anti-Patterns
 

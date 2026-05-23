@@ -19,7 +19,7 @@ If the question is "what should the source table look like?" → `Schema`. If th
 | MongoDB | Debezium MongoDB | Oplog / Change Streams | Change Streams preferred (≥ 4.0); requires replica set. |
 | Oracle | Debezium Oracle (LogMiner or XStream) | Redo logs | XStream license-gated; LogMiner is free but heavier. |
 
-Default: **Debezium on Kafka Connect**. Confluent Cloud, Strimzi, or self-hosted Connect cluster — pick by ops posture, not by feature gap.
+Default: **Debezium on Kafka Connect**. Current stable release: **Debezium 3.4.0.Final** (2025-12-16); 3.5.x series in progress as of early 2026. Debezium 3.x requires Kafka Connect 3.x or 4.x — align with your Kafka version. Source: [debezium.io/releases](https://debezium.io/releases/). Confluent Cloud, Strimzi, or self-hosted Connect cluster — pick by ops posture, not by feature gap.
 
 ## Workflow
 

@@ -98,12 +98,14 @@ Operational guards:
 - send poison pills to a DLT/DLQ
 - track consumer lag, throughput, error rate, rebalance frequency, disk usage, and under-replicated partitions
 
-## 2026 Platform Baseline
+## 2025-2026 Platform Baseline
 
-- **KRaft mode (Zookeeper-free)** is the default for new clusters; ZooKeeper migration paths have been generally available since Kafka `3.9`. Dynamic KRaft quorums (Kafka `3.9+`) make controller-quorum changes operational rather than disruptive. Treat any new cluster on ZooKeeper in 2026 as a migration target.
-- **Tiered Storage** is production-ready (Kafka `3.9+`): hot, recent log segments stay on broker-local disk; closed segments offload to S3 / GCS / Azure Blob / HDFS via the broker's `RemoteStorageManager`. Operational implication: extend retention to weeks / months on cold storage without paying for matching broker disk, and treat broker disk as a working-set cache, not a long-term store.
-- **Iceberg Topics / Kafka-Iceberg integration**: the 2026 trend is to surface a Kafka topic as an **Apache Iceberg** table on object storage with zero-ETL and zero-copy semantics (Aiven Iceberg Topics, AutoMQ, WarpStream Iceberg-native flows). Caveat: only **closed segments** are exposed to Iceberg consumers, so this is **not** sub-second real-time — for that, keep a Flink / Kafka Streams consumer next to the broker. Use Iceberg-topic exposure when downstream is Spark / Trino / Flink batch and you want to skip a copy job.
-- **Flink as the real-time processor** is the 2026 default when the workload is more than stateless transforms. Kafka Streams remains appropriate for JVM-only, tightly-coupled topologies; Flink wins for cross-language and stateful workflows with strong watermark semantics.
+- **Kafka 4.0 (GA: 2025-03-18)** ships ZooKeeper mode fully removed — KRaft is the only supported mode. Clusters on ZooKeeper must migrate to KRaft before upgrading to 4.0+. Kafka 4.1 (GA: 2025-09-04) followed with further stability improvements. Source: [kafka.apache.org/blog](https://kafka.apache.org/blog/2025/03/18/apache-kafka-4.0.0-release-announcement/)
+- **KIP-848 (new consumer group protocol)** is GA in Kafka 4.0. The server-driven incremental rebalance protocol (opt-in via `group.protocol=consumer`) removes the global synchronization barrier, dramatically reducing rebalance time in large consumer groups. Source: [kafka.apache.org — Consumer Rebalance Protocol](https://kafka.apache.org/41/operations/consumer-rebalance-protocol/)
+- **KIP-932 — Queues for Kafka** is in preview (Kafka 4.0+). Share groups enable point-to-point queue semantics on standard Kafka topics. **Not yet production-ready**; evaluate for development workloads only.
+- **Tiered Storage** is production-ready (Kafka 3.9+, reinforced in 4.x): hot, recent log segments stay on broker-local disk; closed segments offload to S3 / GCS / Azure Blob via the broker's `RemoteStorageManager`. Extend retention to weeks/months on cold storage without matching broker disk; treat broker disk as a working-set cache.
+- **Iceberg Topics / Kafka-Iceberg integration**: surface a Kafka topic as an **Apache Iceberg** table on object storage with zero-ETL and zero-copy semantics (Aiven Iceberg Topics, AutoMQ, WarpStream Iceberg-native flows). Caveat: only **closed segments** are exposed to Iceberg consumers, so this is **not** sub-second real-time — for sub-second joins, keep a Flink / Kafka Streams consumer next to the broker.
+- **Flink as the real-time processor** is the 2026 default when the workload is more than stateless transforms. Flink 2.1 Model DDL / `ML_PREDICT` enables in-stream model inference without external ML services. Kafka Streams remains appropriate for JVM-only, tightly-coupled topologies.
 
 ### When To Reach For Each Storage Tier
 
