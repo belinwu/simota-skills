@@ -5,8 +5,8 @@ Defines the calculation formulas and algorithms for Ecosystem Fitness Score (EFS
 > **2026-05 baseline notes**
 > - Failure attribution defaults: when grading Coherence and Quality, anchor on the **MAST taxonomy** (Cemri et al., ICLR 2026 — 1,600 traces across 7 frameworks, 14 failure modes, Cohen's Kappa = 0.88). Distribution: **Specification & System Design 41.8%, Inter-Agent Misalignment / Coordination 36.9%, Task Verification & Termination 21.3%**. Use these weights when allocating root-cause budget across EFS dimensions.
 > - Trace-level error amplification by topology (Towards Data Science, 2026): **SAS = 1.0× baseline, Centralized = 4.4×, Hybrid = 5.1×, Decentralized = 7.8×, Independent = 17.2×**. Independent (i.e. "bag of agents" without orchestrator) is the only architecture above the 10× cliff — penalize EFS Coherence accordingly.
-> - LangChain *State of AI Agents 2026* (May 2026): 57% of surveyed orgs run agents in production; **32% cite quality as the top deployment barrier**. Use as the external benchmark when calibrating Quality dimension scoring.
-> - Sources: `https://openreview.net/forum?id=wM521FqPvI`, `https://towardsdatascience.com/why-your-multi-agent-system-is-failing-escaping-the-17x-error-trap-of-the-bag-of-agents/`.
+> - LangChain *State of Agent Engineering* (survey conducted Nov–Dec 2025, published 2025): 57% of surveyed orgs run agents in production; **32% cite quality as the top deployment barrier**. Use as the external benchmark when calibrating Quality dimension scoring. Source: `https://www.langchain.com/state-of-agent-engineering`.
+> - Sources: `https://arxiv.org/abs/2503.13657` (MAST paper), `https://openreview.net/forum?id=wM521FqPvI` (ICLR 2026 proceedings), `https://towardsdatascience.com/why-your-multi-agent-system-is-failing-escaping-the-17x-error-trap-of-the-bag-of-agents/`.
 
 ---
 
