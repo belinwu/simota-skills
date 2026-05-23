@@ -19,7 +19,8 @@ The supported pgvector lineage as of 2026-05:
 
 | Version | Headline change | When to choose |
 |---------|-----------------|----------------|
-| `0.8.x` | HNSW iterative scan (`hnsw.iterative_scan`), parallel HNSW build | Production default if managed service supports it (Aurora `pgvector 0.8.0` available since 2025; `https://aws.amazon.com/blogs/database/supercharging-vector-search-performance-and-relevance-with-pgvector-0-8-0-on-amazon-aurora-postgresql/`) |
+| `0.7.x` | `halfvec` (2-byte floats, up to 4000 dims), `sparsevec` (up to 1000 nonzero dims), `bit` binary vectors (up to 64000 dims); scalar quantization | Reduce storage/memory 50%+ for float32 embeddings via halfvec (`https://www.postgresql.org/about/news/pgvector-070-released-2852/`) |
+| `0.8.x` | HNSW iterative scan (`hnsw.iterative_scan`), parallel HNSW build; up to 5.7× QPS improvement for filtered queries vs 0.7.4 | Production default if managed service supports it (Aurora `pgvector 0.8.0` available since 2025; `https://aws.amazon.com/blogs/database/supercharging-vector-search-performance-and-relevance-with-pgvector-0-8-0-on-amazon-aurora-postgresql/`) |
 | `0.9.x` (early 2026) | IVFFlat improvements, sparse vector support, further speed boosts (`https://callsphere.ai/blog/vector-database-benchmarks-2026-pgvector-qdrant-weaviate-milvus-lancedb`) | When self-managing PG and the dataset has high filter selectivity, sparse-vector use cases, or large IVFFlat indexes |
 
 Benchmarks (1M vectors, ann-benchmarks-style):

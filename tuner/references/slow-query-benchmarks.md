@@ -59,6 +59,46 @@ ORDER BY SUM_TIMER_WAIT DESC
 LIMIT 20;
 ```
 
+### pt-query-digest (Percona Toolkit 3.7.1, 2026-04-17)
+
+`pt-query-digest` aggregates MySQL slow query logs by normalized fingerprint and reports P95/P99 latency, rows-examined, and query count. Latest version: **3.7.1** (released 2026-04-17) (`https://docs.percona.com/percona-toolkit/pt-query-digest.html`).
+
+```bash
+# Basic slow-log analysis
+pt-query-digest /var/log/mysql/slow.log
+
+# Review mode: save unique queries to DB, skip already-reviewed on re-run
+pt-query-digest --review h=localhost,D=review_db,t=query_review /var/log/mysql/slow.log
+
+# History mode: track per-fingerprint latency trends over time
+pt-query-digest --history h=localhost,D=review_db,t=query_history /var/log/mysql/slow.log
+
+# Top 10 by total time with explain
+pt-query-digest --limit 10 --explain h=localhost,u=root,p=pass /var/log/mysql/slow.log
+```
+
+### MySQL 9.7 Hypergraph Optimizer Validation
+
+MySQL 9.7+ ships a new Hypergraph join optimizer (GA in Community Edition, 2026-05). For multi-table join workloads, enable per session and validate with `EXPLAIN FORMAT=TREE` (`https://blogs.oracle.com/mysql/the-hypergraph-optimizer-is-now-available-in-mysql-9-7-community-edition`):
+
+```sql
+-- Enable Hypergraph optimizer for session
+SET optimizer_switch = 'hypergraph_optimizer=on';
+
+-- Validate: TREE format is the only output showing hash join nodes
+EXPLAIN FORMAT=TREE
+SELECT u.name, COUNT(o.id)
+FROM users u
+JOIN orders o ON o.user_id = u.id
+WHERE o.created_at > NOW() - INTERVAL 30 DAY
+GROUP BY u.name;
+
+-- Confirm hash join selected (look for "Hash join" in output)
+-- Benchmark: sysbench read-only-distinct shows ~26% gain with hypergraph on 9.7.0
+```
+
+MySQL 8.4 LTS note: `innodb_adaptive_hash_index` defaults to **OFF** in 8.4 (was ON in 8.0). Benchmark with and without before enabling in production. Hash joins use `join_buffer_size` for in-memory budget; spill-to-disk degrades significantly on large joins.
+
 ## Benchmarks
 
 ### PostgreSQL (`pgbench`)

@@ -37,12 +37,18 @@ These platforms layer rule + ML-driven tuning on top of `pg_stat_statements` / a
 
 | Platform | Specialisation | 2026 capability surface |
 |----------|----------------|-------------------------|
-| **pganalyze** | PostgreSQL-only; deep root-cause analysis | Query / Index / VACUUM Advisor, auto_explain integration with per-query trace correlation (`https://pganalyze.com/comparison/pganalyze-vs-datadog`) |
-| **Datadog DBM** | Multi-engine; APM correlation | Auto-collects `EXPLAIN ANALYZE` for PostgreSQL, ingests auto_explain output, DBM Recommendations surface prioritised bottlenecks (`https://www.datadoghq.com/blog/database-monitoring-explain-analyze/`, `https://www.datadoghq.com/blog/database-monitoring-recommendations/`) |
-| **EverSQL** (Datadog integration) | Automated SQL rewrite + index recommendation | One-click rewrite of slow queries surfaced in DBM (`https://docs.datadoghq.com/integrations/eversql/`) |
+| **pganalyze** | PostgreSQL-only; deep root-cause analysis | Query / Index / VACUUM Advisor, auto_explain integration with per-query trace correlation; supports PG18 `wal_buffers_full` column and new `pg_stat_io` byte metrics (`https://pganalyze.com/comparison/pganalyze-vs-datadog`, `https://pganalyze.com/blog/postgres-18-async-io`) |
+| **Datadog DBM** | Multi-engine; APM correlation | Auto-collects `EXPLAIN ANALYZE` for PostgreSQL, ingests auto_explain output, DBM Recommendations surface prioritised bottlenecks; EverSQL integration enables one-click SQL rewrite directly inside DBM (`https://www.datadoghq.com/blog/database-monitoring-explain-analyze/`, `https://docs.datadoghq.com/integrations/eversql/`) |
 | **AWS DevOps Guru for RDS** | Aurora/RDS host-level ML | Anomaly detection on host metrics + slow query log; routes to Performance Insights |
+| **Percona pg_stat_monitor** | PostgreSQL workload profiling | Bucket-based time-window aggregation, query plan capture per bucket, histogram view; compatible with PG13–18; more granular than `pg_stat_statements` for per-bucket P95/P99 (`https://docs.percona.com/pg-stat-monitor/`) |
+| **pt-query-digest (Percona Toolkit 3.7.1)** | MySQL slow-log aggregation | Normalises queries to fingerprints; reports P95/P99 latency, rows-examined; supports `--review` for ongoing review workflow and `--history` for trend analysis; latest release 2026-04-17 (`https://docs.percona.com/percona-toolkit/pt-query-digest.html`) |
+| **pg_qualstats + hypopg pipeline** | PostgreSQL index advising without builds | `pg_qualstats` tracks predicate access patterns; `pg_qualstats_index_advisor()` proposes candidates; hypopg validates each via `EXPLAIN` without building the real index; promote winners with `CREATE INDEX CONCURRENTLY` (`https://www.percona.com/blog/automatic-index-recommendations-in-postgresql-using-pg_qualstats-and-hypopg/`) |
 
 Tuner contract: AI advisors generate **candidates**, not commitments. Always re-EXPLAIN against the actual workload, quantify the write overhead, and check adjacent queries for regression before accepting an AI-recommended index DDL.
+
+### PostgreSQL 19 Forward-Look (monitoring, 2026-09 GA target)
+
+`pg_stat_statements` will gain a `last_exec_time` column for last-execution tracking, per-process-type log verbosity (reducing debug-log volume explosions), and enhanced autoanalyze statistics. Do not rely on these in production Fix Prompts until PG19 GA + 19.1 minor (`https://versionlog.com/blog/postgresql-19-whats-coming-september-2026/`).
 
 ## Alert Thresholds
 
