@@ -18,7 +18,7 @@
 
 | Language | Linter | Formatter | All-in-One |
 |----------|--------|-----------|------------|
-| **TypeScript** | ESLint | Prettier | Biome, oxlint |
+| **TypeScript** | ESLint v9+ (flat config default) | Prettier | Biome v2, oxlint |
 | **Python** | Ruff, Flake8 | Black, Ruff | Ruff |
 | **Go** | golangci-lint | gofmt | golangci-lint |
 | **Rust** | clippy | rustfmt | - |
@@ -27,11 +27,11 @@
 
 ## Biome (TypeScript/JavaScript)
 
-ESLint + Prettier replacement. Fast, single tool.
+ESLint + Prettier replacement. Fast, single tool. Biome v2 (stable, 2025+) adds embedded CSS/GraphQL linting in JS template literals, 15 HTML accessibility rules, and `--profile-rules` for CI bottleneck analysis. [Source: biomejs.dev/blog/biome-v2-4](https://biomejs.dev/blog/biome-v2-4/)
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
   "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
@@ -59,6 +59,25 @@ pnpm biome check .           # Lint + Format check
 pnpm biome check --write .   # Auto-fix
 pnpm biome ci .              # CI mode (no writes)
 ```
+
+## ESLint v9 (TypeScript/JavaScript)
+
+Flat config (`eslint.config.js`) is the default and only format since ESLint v9.0.0 (April 2024). TypeScript config files (`.ts`) are stable since v9.18.0. ESLint v9 EOL is 2026-08-06; ESLint v10 is planned for 2026. [Source: eslint.org/blog/2025/05/eslint-v9.0.0-retrospective](https://eslint.org/blog/2025/05/eslint-v9.0.0-retrospective/)
+
+```javascript
+// eslint.config.js (flat config — default in v9)
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+);
+```
+
+> **Migration note:** The legacy `.eslintrc.*` format is removed in ESLint v9. Use `npx @eslint/migrate-config .eslintrc.json` to migrate.
+
+---
 
 ## oxlint (TypeScript/JavaScript — Rust-based)
 

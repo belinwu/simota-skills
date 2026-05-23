@@ -15,26 +15,34 @@
 
 | Language | Interactive Prompts | Rich Output | Full TUI |
 |----------|---------------------|-------------|----------|
-| **Node.js** | inquirer, prompts | chalk, ora, cli-table3 | ink, blessed |
+| **Node.js** | inquirer, prompts | chalk, ora, cli-table3 | ink v7 |
 | **Python** | click, questionary | rich, colorama | textual, urwid |
-| **Go** | survey, promptui | color, tablewriter | bubbletea v2, tview |
+| **Go** | survey, promptui | color, tablewriter | bubbletea v2 (charm.land/bubbletea/v2), tview |
 | **Rust** | dialoguer, inquire | colored, prettytable | ratatui, crossterm |
 
 ## Full TUI Framework Selection
 
-| Factor | Ratatui (Rust) | BubbleTea v2 (Go) | Textual (Python) |
-|--------|---------------|-------------------|-----------------|
-| **Architecture** | Immediate-mode rendering | Elm Architecture (Model-Update-View) | Widget tree (CSS-like styling) |
-| **Performance** | 30-40% less memory, 15% lower CPU vs Go; no_std for embedded (v0.30+) | Cursed Renderer (ncurses-based, 10x faster vs v1), Mode 2026 sync output | Adequate for standard tools |
-| **Best for** | High-frequency dashboards, log monitors, editors, embedded TUIs | Standard CLI tools, rapid development | Data science tools, prototyping |
-| **Sync output** | Backend-dependent (crossterm) | Built-in Mode 2026 (flicker-free) + Mode 2027 (wide Unicode/emoji layout) | Not applicable |
-| **Extras** | Modularized architecture (v0.30+) | OSC52 clipboard (copy/paste over SSH), progressive keyboard enhancements (shift+enter, key release detection), pure Lip Gloss v2 | Built-in CSS-like theming |
+| Factor | Ink v7 (Node.js) | Ratatui v0.30+ (Rust) | BubbleTea v2 (Go) | Textual (Python) |
+|--------|-----------------|----------------------|-------------------|-----------------|
+| **Architecture** | React component tree (Yoga Flexbox) | Immediate-mode rendering | Elm Architecture (Model-Update-View) | Widget tree (CSS-like styling) |
+| **Performance** | React reconciler; suitable for interactive CLIs | 30-40% less memory, 15% lower CPU vs Go; no_std for embedded | Cursed Renderer (ncurses-based, 10x faster vs v1), Mode 2026 sync output | Adequate for standard tools |
+| **Requirements** | Node.js 22+, React 19.2+ | Rust stable | Go module path: `charm.land/bubbletea/v2` | Python 3.8+, pip |
+| **Best for** | Node.js CLIs with rich interactivity, ink-ui component library | High-frequency dashboards, log monitors, editors, embedded TUIs | Standard CLI tools, rapid development | Data science tools, prototyping |
+| **Sync output** | Not applicable | Backend-dependent (crossterm) | Built-in Mode 2026 (flicker-free) + Mode 2027 (wide Unicode/emoji layout) | Not applicable |
+| **Extras** | `ink-ui` component library, pastel framework, renderToString() | Modularized workspace crates (v0.30+), ratatui::run() API, no_std embedded support | OSC52 clipboard (copy/paste over SSH), progressive keyboard enhancements, pure Lip Gloss v2 | Built-in CSS-like theming; community-maintained open-source since 2025-05 |
+| **Source** | [github.com/vadimdemedes/ink](https://github.com/vadimdemedes/ink) | [ratatui.rs/highlights/v030](https://ratatui.rs/highlights/v030/) | [github.com/charmbracelet/bubbletea](https://github.com/charmbracelet/bubbletea/releases/tag/v2.0.0) | [textual.textualize.io](https://textual.textualize.io/) |
+
+> **Ink v7 Breaking Changes:** Requires Node.js 22 and React 19.2+. v6 required Node.js 20. For React concurrent rendering support (opt-in since v6.7), use the `concurrentMode` option. Use `npx create-ink-app` to scaffold new Ink projects. [Source: github.com/vadimdemedes/ink/releases/tag/v7.0.0](https://github.com/vadimdemedes/ink/releases/tag/v7.0.0)
 
 > **Mode 2026 (Synchronized Output):** Terminal standard (`CSI ? 2026 h/l`) that batches render updates atomically, eliminating screen tearing. Supported by Ghostty, Alacritty, and others. BubbleTea v2 enables this by default. Import path: `charm.land/bubbletea/v2`.
 >
 > **Mode 2027 (Wide Character Handling):** BubbleTea v2 auto-enables mode 2027 on supported terminals, allowing proper rendering of wide Unicode characters and emojis without breaking layout.
 
-> **BubbleTea v2 Breaking API Changes (Feb 2026):** `View()` now returns a `tea.View` struct instead of `string`, enabling declarative rendering. All imperative commands (e.g., window title, cursor control) are replaced with declarative fields on the View struct. Import path changed to `charm.land/bubbletea/v2`. Keyboard and mouse APIs were restructured. Existing v1 code requires migration — do not mix v1 patterns with the v2 import.
+> **BubbleTea v2 Breaking API Changes:** `View()` now returns a `tea.View` struct instead of `string`, enabling declarative rendering. All imperative commands (e.g., window title, cursor control) are replaced with declarative fields on the View struct. Import path changed to `charm.land/bubbletea/v2`. Keyboard and mouse APIs were restructured. Existing v1 code requires migration — do not mix v1 patterns with the v2 import. [Source: github.com/charmbracelet/bubbletea/discussions/1374](https://github.com/charmbracelet/bubbletea/discussions/1374)
+
+> **Ratatui v0.30+ Modularized Architecture:** Reorganized from a single monolithic crate into a modular workspace (ratatui-core, ratatui-widgets, etc.), reducing compilation times and enabling flexible dependency management. New `ratatui::run()` API simplifies application setup. no_std support enables use on bare-metal targets (ESP32, STM32H7, PSP, UEFI). [Source: ratatui.rs/highlights/v030](https://ratatui.rs/highlights/v030/)
+
+> **Textual Community Status (2025-05):** Textualize Inc. announced on 2025-05-07 that Textual will continue as a community open-source project. The framework is mature, battle-tested, and actively maintained by Will McGugan. No functionality changes expected. [Source: textual.textualize.io/blog/2025/05/07/the-future-of-textualize](https://textual.textualize.io/blog/2025/05/07/the-future-of-textualize/)
 
 ---
 
