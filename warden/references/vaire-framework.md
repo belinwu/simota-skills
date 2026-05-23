@@ -200,7 +200,7 @@ User doesn't get stuck facing failure and uncertainty (connection, auth, input m
 | **Retry** | Retry, queue, backoff, resend | Auto-retry logic |
 | **Data Protection** | Drafts, auto-save, idempotency | Local storage |
 | **Observability** | Logs, traces, error IDs (connect to support) | Error ID display |
-| **Accessibility** | Keyboard, contrast, screen reader, focus | WCAG AA |
+| **Accessibility** | Keyboard, contrast, screen reader, focus | WCAG 2.2 AA (ISO/IEC 40500:2025) — automated scanning via axe-core 4.10+ (https://github.com/dequelabs/axe-core/releases) |
 | **Recovery UX** | Rescue for forgot password, device change, 2FA loss, billing trouble | Recovery flows |
 
 ### Acceptance Criteria (Score 2)
@@ -208,7 +208,7 @@ User doesn't get stuck facing failure and uncertainty (connection, auth, input m
 - [ ] Main flows have "connection failure branch" designed
 - [ ] If dropped mid-input, can resume on return
 - [ ] Errors show cause/impact/next step in human language
-- [ ] Main operations completable by keyboard only
+- [ ] Main operations completable by keyboard only (WCAG 2.2 SC 2.1.1)
 
 ### Five States Checklist
 
@@ -366,3 +366,18 @@ When including billing, cancellation, identity:
 ║  5. Explanations are brief    10. Endings are designed           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
+
+---
+
+## Standards & Tools Reference (2025-2026)
+
+| Standard / Tool | Status | Source |
+|-----------------|--------|--------|
+| WCAG 2.2 | ISO/IEC 40500:2025 (approved Oct 2025); authoritative current web accessibility standard | https://www.w3.org/WAI/news/2025-10-21/wcag22-iso/ |
+| WCAG 3.0 | W3C Working Draft (Mar 2026); will not supersede WCAG 2 for several years after finalization | https://www.w3.org/WAI/news/2026-03-03/wcag3/ |
+| EN 301 549 | Harmonized EU technical standard based on WCAG 2.1 AA; underpins EAA enforcement (active Jun 28, 2025) | https://www.etsi.org/deliver/etsi_en/301500_302000/301549/ |
+| NN/G 10 Heuristics | Definitions refined Mar 2026 by Kate Moran & Feifei Liu; 10 heuristics themselves unchanged since 1994 | https://www.nngroup.com/articles/ten-usability-heuristics/ |
+| Core Web Vitals | INP (≤200ms good) replaced FID as the interactivity Core Web Vital (Mar 2024); LCP + INP now Baseline Newly Available (Dec 2025) | https://web.dev/articles/inp |
+| axe-core | v4.10 (latest); introduces HTML summary element rule; AI-assisted IGTs roadmapped for 2025 | https://docs.deque.com/axe-release-impact/4.10.0/en/release-notes/ |
+
+> **Removed from scope**: FID (First Input Delay) — deprecated and removed from Core Web Vitals program March 2024, replaced by INP. Do not reference FID in Resilience performance scoring.

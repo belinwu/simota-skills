@@ -7,7 +7,7 @@ Purpose: Standalone audit of the **A (Agency)** axis of V.A.I.R.E. — does the 
 - **Warden `agency`**: scorecard-driven audit of *user control, consent, and reversibility* against the A axis of V.A.I.R.E. Outputs a 0-3 score, evidence, and remediation path. Does not fix.
 - **Palette (elsewhere)**: implements usability-friction fixes (cognitive load, feedback, a11y) — receives Agency FAIL handoffs.
 - **Prose (elsewhere)**: authors the voice of consent copy / confirmation microcopy — Agency audits only whether the affordance exists, not the wording.
-- **Canon (elsewhere)**: standards compliance (WCAG, ISO 25010) — Agency overlaps with WCAG 2.2 SC 3.3.4/3.3.6 (error prevention) but scores against V.A.I.R.E., not WCAG gaps.
+- **Canon (elsewhere)**: standards compliance (WCAG 2.2 / ISO/IEC 40500:2025, ISO 25010) — Agency overlaps with WCAG 2.2 SC 3.3.4/3.3.6 (error prevention) and SC 3.3.7/3.3.8 (new in 2.2: redundant entry / accessible authentication) but scores against V.A.I.R.E., not WCAG gaps.
 - **Echo (elsewhere)**: persona cognitive walkthrough — Agency checks affordance presence, Echo checks whether a specific persona notices or uses it.
 
 If the question is "can the user refuse, reverse, or exit?" → `agency`. If it is "does the undo button feel clear?" → Palette. If it is "would Emi-san (mobile-novice) find the cancel?" → Echo.

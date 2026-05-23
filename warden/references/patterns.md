@@ -3,6 +3,10 @@
 Collection of evaluation patterns and best practices.
 
 > **2026 audit conditions.** Every evaluation pattern below assumes the audit is run under *realistic platform conditions* — Liquid Glass active backgrounds, Material 3 Expressive motion defaults, ambient AI surface visible *and* hidden, and accessibility settings (reduced-motion, reduced-transparency, larger text) toggled. A pattern that passes only on a static desktop screenshot of the design does not pass.
+>
+> **Accessibility standard**: Use WCAG 2.2 AA (ISO/IEC 40500:2025) as the current baseline — not WCAG 2.0 or 2.1. Automated scanning: axe-core 4.10+ (https://github.com/dequelabs/axe-core/releases). WCAG 3.0 is a Working Draft (Mar 2026) and not yet a compliance target.
+>
+> **Performance standard**: INP (Interaction to Next Paint, ≤200ms = good) is the authoritative interactivity Core Web Vital since Mar 2024. FID (First Input Delay) is deprecated and must not be used as an evaluation criterion (https://web.dev/blog/inp-cwv-march-12).
 
 ---
 
@@ -317,7 +321,7 @@ START
   │       │       │   ├─ NO → Score 2
   │       │       │   └─ YES
   │       │       │       │
-  │       │       │       ├─ Offline support + WCAG AA?
+  │       │       │       ├─ Offline support + WCAG 2.2 AA (ISO/IEC 40500:2025)?
 ...
 ```
 
