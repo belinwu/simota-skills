@@ -70,3 +70,31 @@ Quality gates:
 
 - `2-way` coverage below `100%` -> warning
 - safety-critical domain + `2-way` only -> escalate recommendation
+
+## 2025–2026 Research Updates
+
+### High-Strength CIT for Configurable Systems
+
+The ISSTA 2024 paper *"Beyond Pairwise Testing: Advancing 3-wise Combinatorial Interaction Testing for Highly Configurable Systems"* (ACM SIGSOFT) introduces **ScalableCA**, a constrained covering array generator that produces 3-wise arrays **38.9% smaller** than prior SOTA while running **1–2 orders of magnitude faster**. Techniques: fast invalidity detection, uncovering-guided sampling, remainder-aware local search.
+Source: https://dl.acm.org/doi/10.1145/3650212.3680309
+
+The ICSE 2025 paper *"Towards High-Strength Combinatorial Interaction Testing for Highly Configurable Software Systems"* extends scalable CCAG to 4-wise and 5-wise for large parameter models where prior algorithms were intractable.
+Source: https://dl.acm.org/doi/10.1109/ICSE55347.2025.00113
+
+**Implication:** For highly configurable software (feature flags, plugin systems, product-line architectures), 3-way+ CIT is now computationally feasible at production scale — escalate from 2-way sooner when historical defect patterns or domain criticality justify it.
+
+### Combinatorial Security Testing — 10 Years Later (2026)
+
+Simos, Leithner, Kuhn, Garn, Kacker & Lei published a 2026 retrospective in *IEEE Security & Privacy* documenting a decade of combinatorial security testing (CST) in practice. Key updates:
+- CST scope has expanded from input validation to cloud configurations, IoT firmware, and API security surfaces.
+- Mixed-strength models (3-way for auth × privilege × data-sensitivity, 2-way elsewhere) remain the recommended practice.
+- Constraint modeling quality is the dominant factor in CST effectiveness — over-constrained models produce false confidence.
+Source: NIST CSRC project page — https://csrc.nist.gov/projects/automated-combinatorial-testing-for-software
+
+### AI/ML Dataset Coverage (2025)
+
+Kuhn, Raunak & Kacker, *"Measuring and Visualizing Dataset Coverage for Machine Learning"*, IEEE Computer vol 58 no 4, Mar 2025 — introduces visualization methods for feature-interaction frequency distributions in training data, making data skew detectable before model training.
+Source: https://www.nist.gov/publications/combinatorial-testing-metrics-machine-learning
+
+NIST CSRC Apr 2025, *"Data Frequency Coverage Impact on AI Performance"* — pilot study shows: (1) performance may increase or decrease with data skew; (2) feature importance methods do not predict skew impact; (3) adding more data does not reliably mitigate skew effects. Use combinatorial frequency coverage, not raw dataset size, as the quality gate for ML training sets.
+Source: https://csrc.nist.gov/pubs/conference/2025/04/15/data-frequency-coverage-impact-on-ai-performance/final

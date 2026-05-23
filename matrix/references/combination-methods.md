@@ -124,3 +124,38 @@ Escalate when:
 | Uniform value counts, balanced representation needed | OA |
 | Safety-critical or higher-order evidence | `3-way+` CIT |
 | Heavy constraints plus budget | Constrained, budgeted optimization |
+| Highly configurable system, 3-way+ required at scale | ScalableCA / CCAG solver (ISSTA 2024) |
+| AI/ML input space coverage | Combinatorial frequency coverage (NIST 2025) |
+
+## Tool Landscape (2025–2026)
+
+| Tool | Maintainer | Key capability | Notes |
+|---|---|---|---|
+| ACTS (Advanced Combinatorial Testing System) | NIST | t-way CA generation, constraints, variable strength | Java; free; email acts@nist.gov. Received ICST 2023 Most Influential Paper award. Dataworks 2025 short course available. |
+| PICT (Pairwise Independent Combinatorial Tool) | Microsoft | Pairwise + constraint, CLI | Open source (GitHub microsoft/pict); CI/CD friendly via command-line |
+| Hexawise | Hexawise Inc. | GUI, n-wise, Gherkin export | 2025 AI Guidance feature (Sembi iQ): auto-generates parameter/value model from spec docs |
+| CODEX | NIST | Coverage measurement, (p,t)-completeness | Sep 2024 release; companion to ACTS for coverage gap analysis |
+| Combination Frequency Difference tool | NIST | AI/ML dataset skew detection | Sep 2024 release; measures training data frequency coverage imbalance |
+| ScalableCA | Academic (ISSTA 2024) | Scalable 3-wise CCAG | 38.9% smaller arrays than SOTA; 1–2 OOM faster; open research artifact |
+
+Sources:
+- NIST ACTS: https://csrc.nist.gov/projects/automated-combinatorial-testing-for-software
+- NIST CT for AI: https://csrc.nist.gov/projects/combinatorial-testing-for-ai-enabled-systems
+- PICT GitHub: https://github.com/microsoft/pict
+- Hexawise AI Guidance: https://app.hexawise.com/recent_updates
+- ScalableCA (ISSTA 2024): https://dl.acm.org/doi/10.1145/3650212.3680309
+
+## CI/CD Integration Pattern (2025 Best Practice)
+
+PICT (CLI) and ACTS (CLI / API) integrate directly into GitHub Actions / CI pipelines:
+
+```yaml
+# Example: PICT in GitHub Actions
+- name: Generate pairwise test matrix
+  run: pict model.txt /o:3 > test-cases.txt
+- name: Run test cases
+  run: ./run-tests.sh test-cases.txt
+```
+
+Recommended CI gate: fail the build if 2-way coverage drops below 100% after constraint application. Use CODEX tool to verify coverage post-execution.
+Source: https://github.com/microsoft/pict

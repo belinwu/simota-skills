@@ -120,3 +120,20 @@ For higher-strength plans, verify the selected `t-way` explicitly.
 | `6-10 axes`, `2-5 values` | Pairwise | `1-10s` |
 | `10-15 axes`, `2-10 values` | Pairwise or OA | `10-60s` |
 | very large or heavily constrained | specialized external tooling | context-dependent |
+
+## High-Strength CCAG at Scale (2024–2025 Research)
+
+For highly configurable systems with large parameter models where 3-way+ CIT was previously intractable:
+
+**ScalableCA** (ISSTA 2024): Constrained Covering Array Generation algorithm introducing:
+1. Fast invalidity detection — prunes impossible partial assignments early
+2. Uncovering-guided sampling — biases random search toward uncovered tuples
+3. Remainder-aware local search — repairs coverage without disrupting covered tuples
+
+Results vs. prior SOTA: **38.9% smaller** 3-wise arrays, **1–2 orders of magnitude faster** construction on large-scale benchmarks.
+Source: https://dl.acm.org/doi/10.1145/3650212.3680309
+
+**ICSE 2025 CCAG** extends similar techniques to 4-wise and 5-wise on highly configurable software, making systematic escalation from 2-way to 4-way feasible for safety-critical configurable systems.
+Source: https://dl.acm.org/doi/10.1109/ICSE55347.2025.00113
+
+**Practical implication:** When axis count ≥ 20 or values are highly non-uniform and 3-way+ is required, recommend ScalableCA or ACTS 3-way mode rather than manual OA selection. Budget for 2–3x wall-clock time vs. pairwise, not the prior 10–100x penalty.
