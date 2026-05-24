@@ -168,6 +168,7 @@ The Insight Ledger is the single source of truth for customer insights AI must c
 
 ```yaml
 insight_id: <uuid>
+category: market_insight | product_decision | friction  # v7 fold-in: single ledger, three categories; product_decision absorbs "Assumption Ledger" intent from Reflective Decision OS proposal v7 (Round 7) without creating a parallel ledger
 claim: "<one-sentence customer truth>"
 evidence_refs:
   - source: <interview / replay / survey / support-ticket / etc>
