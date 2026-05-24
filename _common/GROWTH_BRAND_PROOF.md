@@ -168,7 +168,7 @@ The Insight Ledger is the single source of truth for customer insights AI must c
 
 ```yaml
 insight_id: <uuid>
-category: market_insight | product_decision | friction  # v7 fold-in: single ledger, three categories; product_decision absorbs "Assumption Ledger" intent from Reflective Decision OS proposal v7 (Round 7) without creating a parallel ledger
+category: market_insight | product_decision | friction | metric_definition  # v7 fold-in: product_decision absorbs "Assumption Ledger" intent (Round 7); v8 fold-in: metric_definition absorbs "Data Reality / Semantic Metrics Layer" intent (Round 8) — anchors pulse.semantic_metric_schema to existing ledger without creating a parallel Metrics Ledger; bot/dupe/exclusion fields per pulse contract
 claim: "<one-sentence customer truth>"
 evidence_refs:
   - source: <interview / replay / survey / support-ticket / etc>
