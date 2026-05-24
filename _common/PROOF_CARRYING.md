@@ -8,7 +8,7 @@ Cross-skill protocol for shipping changes with **machine-verifiable evidence pac
 
 **Prerequisites**: `_common/HANDOFF.md` (handoff schema), `_common/MULTI_ENGINE_RECIPE.md` (cross-engine fan-out).
 
-**Version**: v3 — adds 3-tier structure (Foundation / Production Pipeline / Market-Brand Acceptance), cross-cutting guardrails G11 (KB Write Authority Separation) / G14 (Regulatory Envelope Pre-Flight) / G15 (Constitution Lifecycle Discipline). Layer C (Market + Research + Brand axes) lives in the separate `_common/GROWTH_BRAND_PROOF.md` companion protocol — adopt independently per Org Tier.
+**Version**: v3.1 — adds Proposal Intake Checklist (Authoring Principles section, structural deceleration against accumulated-adoption fatigue per Magi v4 C8). Otherwise unchanged from v3: 3-tier structure (Foundation / Production Pipeline / Market-Brand Acceptance), cross-cutting guardrails G11 (KB Write Authority Separation) / G14 (Regulatory Envelope Pre-Flight) / G15 (Constitution Lifecycle Discipline). Layer C (Market + Research + Brand axes) lives in the separate `_common/GROWTH_BRAND_PROOF.md` companion protocol — adopt independently per Org Tier.
 
 **v2 baseline retained**: Code axis (Layer A) + Design axis (Layer B) + G1-G10 + Dual-Implementation Oracle + Matrix Sampling + Design-Code Contract. Solo / SMB orgs operate at v2 baseline; Enterprise orgs may adopt Layer C via Phased Adoption (see GROWTH_BRAND_PROOF.md).
 
@@ -592,6 +592,88 @@ When implementing one of the above, reference this protocol rather than restatin
 | AI can write to authoritative knowledge base (spec / tokens / constitution / ledger) | Self-justification accrues; knowledge base reflects AI confirmation bias | G11 KB Write Authority Separation (AI read-only, human merge, deterministic confidence) |
 | Auto-action default-permit in regulated industries | Pharma / financial / political auto-violations; cascade on regulation changes | G14 Regulatory Envelope Pre-Flight (per-jurisdiction toggle, default OFF, quarterly Horizon Scan) |
 | Static authoritative artifact drifts unmaintained | Constitution mummification / customer mismatch / creativity lattice | G15 Constitution Lifecycle Discipline (Core / Strategic / Operational layers, forcing function expiration, 2-person edit) |
+
+---
+
+## Authoring Principles — Proposal Intake Checklist (v3.1)
+
+After 4 iterations (AAOS → Code+Design → Growth+Brand → Persona+Journey+Product) the protocol stack accumulated **116+ enumerated failure modes, 15 guardrails (G1-G15), 4 protocol files, multiple ledgers/contracts, and 30+ Proof fields**. The 4th iteration's Magi+Omen review surfaced **Cumulative Adoption Fatigue (max RPN 810)** as the dominant risk pattern: each new proposal looks individually valuable but stacking them tips the system into Proof Theater (form-filling without genuine evaluation), Contract proliferation, and operator burnout.
+
+This section is a **structural deceleration device**. Before extending this protocol (new Proof fields, new contracts, new ledgers, new guardrails, new tier, new layer), the proposer (human or AI) MUST process the Intake Checklist below. The checklist deliberately raises the bar for new additions and biases the system toward **fold-in (extend existing skill SKILL.md)** over **bolt-on (new protocol file / new contract / new ledger / new guardrail)**.
+
+### The Checklist (mandatory before any v3.x or v4.x extension)
+
+```
+1. EXISTING-SKILL ABSORPTION CHECK (must complete first)
+   For each new concept in the proposal, identify:
+   - Which existing skill's SKILL.md already covers ≥50% of this concept?
+   - What schema/section/Always-Never extension would close the gap?
+   - If ≥80% can be absorbed by existing-skill extension, REJECT new protocol/contract/ledger creation.
+
+2. CUMULATIVE-LOAD AUDIT
+   - Current Proof field count per skill (target: <10 obligations/skill)
+   - Current ledger/contract count (target: ≤3 globally)
+   - Current guardrail count (target: ≤15)
+   - If proposal pushes any threshold over target, REQUIRE explicit deprecation of existing element.
+
+3. NOVELTY RATIO
+   - True-new percentage = (concept not addressable by existing skills + existing protocols) / total proposal
+   - If True-new < 20%, REJECT as net-new protocol; absorb into existing.
+   - If True-new ≥ 20% AND ≥ 50% of existing-skill absorption tried, allow extension.
+
+4. PROOF-THEATER MONITOR
+   - Each new Proof field must declare:
+     - Who emits it (specific skill role)
+     - Who consumes it (specific gate or downstream agent)
+     - What happens on absence (block / advise / log only)
+   - Reject Proof fields with vague "ensures quality" purpose statements.
+
+5. ORG-TIER COMPATIBILITY
+   - Declare which Org Tier (Solo / SMB / Enterprise) can adopt this extension
+   - Solo-incompatible extensions belong in a companion protocol (e.g., GROWTH_BRAND_PROOF.md), not in PROOF_CARRYING.md core.
+
+6. SUNSET / REVIEW CLAUSE
+   - Every new addition must declare a review checkpoint (default: 1 quarter post-adoption)
+   - Review measures: Proof Theater rate, operator satisfaction, wired skill count, false-positive rate
+   - Threshold-breach triggers rollback, not silent persistence.
+
+7. FOLD-IN PRECEDENCE RULE
+   Default decision tree on the proposer's question "where does this go?":
+     a. Can an existing SKILL.md absorb it via schema/Always-Never extension? → Extend that SKILL.md.
+     b. Can an existing companion protocol absorb it via minor update? → Update that protocol.
+     c. Is this truly orthogonal AND ≥20% novel AND Org-Tier-incompatible with core? → New companion protocol.
+     d. Otherwise → REJECT.
+
+8. NAMING CONFLICTS
+   - Check `claude-skills` skill registry for naming collisions before proposing new skill names
+   - Avoid Ledger/Contract/Compiler proliferation: prefer "category" extension of existing Ledger over new Ledger
+```
+
+### Why this matters
+
+Without this checklist, the empirical pattern observed across v1→v4 is:
+- **v1→v2 marginal value**: HIGH (Design axis closes a real gap)
+- **v2→v3 marginal value**: MEDIUM-HIGH (Growth/Brand closes commercial gap)
+- **v3→v4 marginal value**: LOW (70% absorbable by existing skills, 30% novel)
+- **v4→v5 projection without checklist**: marginal value approaches zero while accumulated load triggers operational collapse (Proof Theater rate ≥60%, operator satisfaction <40%)
+
+The checklist's purpose is not to reject all extensions — it is to **force the proposer to do existing-skill absorption analysis first**, which converts most extensions from "new protocol" into "minor SKILL.md update", preserving the ecosystem's coherence.
+
+### Process
+
+1. Proposer (human or AI) drafts the new concept.
+2. Before opening a PR / starting implementation, run the Checklist as a self-review.
+3. Document the answer to each item in the PR description.
+4. Magi `arbitrate` or `multi` Recipe reviews the checklist output before approving the extension.
+5. Architect coordinates the fold-in vs bolt-on decision (default: fold-in).
+
+### Exemption clause
+
+The Checklist does not apply to:
+- Bug fixes / typo corrections in existing protocol text
+- Documentation-only clarifications (no schema change)
+- Sunset / deprecation of existing fields (encourages reduction)
+- Cross-references between existing skills (improves discoverability without adding obligations)
 
 ---
 

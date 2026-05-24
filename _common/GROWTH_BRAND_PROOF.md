@@ -226,6 +226,103 @@ Failure to meet category minimum auto-flags the segment as "insufficient evidenc
 
 ---
 
+## Friction Ledger — Insight Ledger Child Ledger (v4 minimum adoption)
+
+Friction Ledger is **not a new protocol file**. It is an **independent child ledger of Insight Ledger** that captures UI-operation-grained friction signals at second-level granularity. Per Magi v4 C4 + Omen v4 Top-10 recommendation: physical separation is required because update cadence differs (Insight Ledger = weekly/monthly, Friction Ledger = real-time/seconds), but logical lineage is preserved (Friction Ledger entries can be promoted to Insight Ledger claims after pattern accumulation).
+
+### Why a child ledger, not a new top-level Ledger
+
+The original proposal (Persona+Journey+Product, v4 source) treated Friction Ledger as standalone. Magi/Omen v4 review rejected that for two reasons:
+1. **Contract/Ledger proliferation** triggers Authoring Principles checklist failure (`PROOF_CARRYING.md` Proposal Intake Checklist § Item 3 Novelty Ratio)
+2. **G11 KB Write Authority Separation** can be inherited from Insight Ledger rather than re-declared
+
+### Schema
+
+```yaml
+friction_id: <uuid>
+parent_insight_id: <uuid | null>  # link to Insight Ledger if promoted
+persona_ref: <persona-id from echo Persona Contract>
+surface:
+  screen_id: <screen identifier>
+  component_id: <component identifier within screen>
+  operation: <click | tap | scroll | input | wait | navigate>
+observation:
+  duration_seconds: <numeric, time spent before action>
+  text_misread: <quoted text that caused confusion>
+  error_signature: <normalized error class if error encountered>
+  anxiety_signal: <hesitation | backtrack | help-open | abandon>
+  affected_metric: <CTR | conversion | retention | NPS | etc>
+  metric_delta: <observed change>
+captured_at: <ISO 8601>
+captured_by:
+  role: <trace | voice | echo>  # G11 — only these 3 can write
+  agent_session: <session identifier>
+  evidence_ref: <pointer to session replay / sentiment record / persona walkthrough log>
+status: <active | promoted-to-insight | resolved | stale>
+expiration:
+  valid_until: <ISO 8601>  # default: 1 quarter from captured_at
+  promotion_trigger: <N similar entries → propose Insight Ledger claim>
+```
+
+### G11 KB Write Authority Separation Application
+
+Friction Ledger inherits G11 unchanged:
+- **Write authority limited to 3 skills**: `trace` (session replay extraction), `voice` (sentiment-source pointers), `echo` (persona walkthrough observations)
+- **AI cannot directly mutate** Friction Ledger entries; the 3 writer skills queue proposed entries, only their respective human leads (UX Researcher / Product Researcher / CX Lead) merge
+- **Promotion to Insight Ledger requires Research Lead human merge** (Insight Ledger G11 enforcement)
+- **Deterministic-computed fields**: `duration_seconds`, `metric_delta`, `valid_until` are auto-derived (never hand-set per G11 confidence rule)
+
+### Promotion Path to Insight Ledger
+
+```
+Friction Ledger entry × N (similar pattern)
+  ↓ promotion_trigger fires
+Pattern Aggregator (researcher / tome)
+  ↓ generates draft Insight Ledger claim
+Research Lead human merge (G11 enforced)
+  ↓ approved
+Insight Ledger entry created with evidence_refs[] = [friction_id × N]
+```
+
+This preserves the audit chain: every Insight Ledger claim derived from friction can be traced back to raw observation entries.
+
+### Survivor Bias Mitigation (carried over from Insight Ledger)
+
+Friction Ledger MUST track minimum N per persona category (per Insight Ledger Survivor Bias rule):
+- Customer (current users) friction
+- Lost-customer (churned within 90d) friction
+- Non-customer (abandoned signup / failed activation) friction
+
+Failure to meet category minimum auto-flags the persona segment as "insufficient friction evidence" — content/UI changes for that segment cannot pass Phase 0 Research Proof.
+
+### When to Use Friction Ledger vs Insight Ledger Directly
+
+| Signal type | Target Ledger | Rationale |
+|-------------|--------------|-----------|
+| Single observation, second-scale, persona-specific UI moment | **Friction Ledger** | Raw signal; not yet a generalizable claim |
+| Pattern from N observations (N ≥ 5) generalizing to a customer truth | **Insight Ledger** (promoted from Friction) | Generalized claim with multi-source evidence |
+| Customer interview quote | **Insight Ledger** | Already a synthesized signal, not UI-operation granularity |
+| Session replay annotation | **Friction Ledger** | UI-operation granularity |
+| Sentiment aggregation across channels | **Insight Ledger** | Cross-channel synthesis level |
+
+### Adoption Tier
+
+- **Solo**: skip Friction Ledger entirely (no UX research staff)
+- **SMB**: optional, only if Step 1 Measurement Loop is operational
+- **Enterprise**: recommended at Step 2+ adoption (when Insight Ledger is operational)
+
+### Anti-Patterns Specific to Friction Ledger
+
+| Anti-Pattern | Counter-Rule |
+|--------------|--------------|
+| Treating Friction Ledger entries as Insight Ledger claims without promotion | Promotion requires pattern of N ≥ 5 entries + Research Lead merge |
+| AI agents writing directly to Friction Ledger (bypassing 3 writer skills) | G11 enforcement — only trace/voice/echo can write |
+| Indefinite retention without expiration | `valid_until` mandatory; default 1 quarter; stale entries auto-flagged |
+| Customer-only friction data (omitting lost-customer / non-customer) | Survivor Bias mitigation — mandatory 3 category minimums |
+| Manual hand-setting of `duration_seconds` or `metric_delta` | G11 deterministic-only — must be auto-derived from telemetry |
+
+---
+
 ## Incrementality Gate — Measurement Method Decision Tree
 
 `incrementality_proof` (Market Proof field) must declare its measurement method. The choice depends on Org Tier, budget, jurisdiction, and event type.
