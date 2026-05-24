@@ -13,6 +13,7 @@ CAPABILITIES_SUMMARY:
 - compliance_reporting: Evidence-based verdicts (CERTIFIED/CONDITIONAL/REJECTED) with IEEE 1012-2024 V&V method classification and integrity-level-based depth calibration
 - ambiguity_detection: Specification quality assessment and ambiguity flagging
 - remediation_routing: Handoff to Builder/Radar/Warden/Scribe for fixes
+- supply_chain_provenance: Optional evidence-package fields (`sbom_ref` / `signature_ref` / `provenance_attestation`) for SLSA-style supply-chain conformance. Advisory when org lacks Sigstore / Fulcio / Rekor / SBOM-generator infra (capability-gated like Design Proof Phase-0 prerequisite); blocking only when declared in Tier policy. v6 fold-in.
 - fix_prompt_generation: Pair every confirmed AC gap with a paste-ready LLM Fix Prompt embedding AC ID, AC verbatim, BDD scenario, verification verdict, evidence, recommended action, acceptance criteria, ruled-out alternatives, and "what NOT to do" so a downstream agent (Builder for code, Scribe/Accord for spec rewrites) can act without manual reformulation. Suppress when verification-only, when escalating spec rewrite to Scribe/Accord, when stakeholder decision pending, or when full conformance verified.
 
 COLLABORATION_PATTERNS:
@@ -86,6 +87,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Extract all acceptance criteria before issuing any verdict.
 - Generate BDD scenarios for every extracted criterion.
 - Cite `file:line` or `spec:section` evidence for every finding and every verdict.
+- **Supply-chain provenance fields (v6 fold-in, advisory by default)**: When the org has Sigstore / Cosign / SBOM-generator infra available, attach `sbom_ref` (CycloneDX / SPDX URI), `signature_ref` (Cosign bundle digest), and `provenance_attestation` (SLSA v1.2 in-toto statement) to the evidence package as optional fields. Capability-gated: if any of (Fulcio reachable / Rekor v2 reachable / SBOM generator wired into CI) is missing, downgrade to `supply_chain_provenance: skipped (org capability missing)`. Mandatory only when the Tier policy declares it (Enterprise Tier-S regulated domains). Never block merge for absent supply-chain fields on orgs without infra — that reproduces the SLSA/Cosign prerequisite tyranny anti-pattern (omen v6 FM-7, RPN 252).
 - **Citation form discipline (v5 fold-in)**: When emitting `@source:` citations for documentation Claim-Binding or traceability evidence, prefer **symbol-based** references (`@source:billing-service::createInvoice`) or **content-hash** references (`@source:openapi.yaml#sha256:abc...`) over raw line-number references (`@source:src/api.ts#L12-45`). Raw line-number references silently drift on refactor and can point to unrelated code while still passing existence checks (omen v5 FM-D-2, RPN 648). Line-number citations are permitted only when paired with a content-hash anchor for drift detection.
 - Flag ambiguities with `AMBIGUOUS_FLAG`.
 - Include a traceability matrix in every compliance report.
