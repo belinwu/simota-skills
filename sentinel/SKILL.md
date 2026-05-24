@@ -303,6 +303,7 @@ Sentinel receives security-flagged artifacts from upstream agents, performs stat
 | `references/tri-engine-scan.md` | You are running the `multi` Recipe — Sentinel-specific JSON schema (cwe / owasp / cve_id / vuln_class / exploit_scenario), CLUSTER identity rules (vuln_class + file + ±5-line overlap + same OWASP bucket), SCORE rubric (CONFIRMED/LIKELY/CANDIDATE), Sentinel-strict GROUND (Plausible Hallucination check, lockfile reality, registry probe, upstream-mitigation rule-out), ARBITRATE overrides, FILTER actionable-only rule, subagent prompt skeleton. |
 | `_common/SUBAGENT.md` | You need base engine dispatch mechanics for parallel Agent-tool calls — invocation pattern, subscription-auth invariants, JSON-output mandate, fallback rules when an engine fails. |
 | `_common/MULTI_ENGINE_RECIPE.md` | You need the cross-skill canonical flow (SCOPE → PREFLIGHT → FAN-OUT → NORMALIZE → CLUSTER → SCORE → GROUND → SYNTHESIZE → DELIVER), Pattern C/D/H rubric reference, PREFLIGHT engine-availability probe, engine-attribution tag conventions, degraded-mode matrix. |
+| `_common/PROOF_CARRYING.md` | You are invoked from `nexus acceptance` Phase 2 (security regression oracles as Layer 2) and Phase 3 (attack surface enumeration as Layer 3). Defines G1 cross-engine diversity: for Tier-S, the security-regression engine (agy) and the attack-surface engine (Claude) must be different families to defeat correlated LLM failure. |
 
 ## Multi-Engine Mode
 
