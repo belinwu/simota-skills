@@ -592,6 +592,9 @@ When implementing one of the above, reference this protocol rather than restatin
 | AI can write to authoritative knowledge base (spec / tokens / constitution / ledger) | Self-justification accrues; knowledge base reflects AI confirmation bias | G11 KB Write Authority Separation (AI read-only, human merge, deterministic confidence) |
 | Auto-action default-permit in regulated industries | Pharma / financial / political auto-violations; cascade on regulation changes | G14 Regulatory Envelope Pre-Flight (per-jurisdiction toggle, default OFF, quarterly Horizon Scan) |
 | Static authoritative artifact drifts unmaintained | Constitution mummification / customer mismatch / creativity lattice | G15 Constitution Lifecycle Discipline (Core / Strategic / Operational layers, forcing function expiration, 2-person edit) |
+| **Living Architecture Twin Tyranny** (centralized Architecture Knowledge Graph elevated to Single Source of Truth; reality codebase "corrected" to match Twin when divergence detected) | Twin out-evolves reality, then reality is forced backward to match Twin → 5-10 year architecture mummification, innovation death (omen v5 FM-V-7 RPN 1080, S=10 catastrophic) | Architecture KG stays **advisory**; when KG vs reality diverges, reality wins; KG updates to match reality (NOT the reverse). G11 + G15 applied to Architecture sub-graph in `lore` |
+| **Generated Views Only over-strict** (suppressing whiteboard / sketch / draft diagrams as "Proof violations") | Exploration phase thinking is suppressed, design discussions atrophy (omen v5 FM-V-2 / FM-GV-1, RPN 504-576) | Generated Views Only applies to final CI-gated artifacts only; exploration / sketch / draft / proposal diagrams are explicitly carved out. canvas + stratum SKILL.md Always sections enforce the carve-out |
+| **Line-based citation silent drift** (`@source:src/api.ts#L12-45` references that point to unrelated code after refactor but still pass existence checks) | False confidence in "evidence-based" docs while actually citing wrong code (omen v5 FM-D-2, RPN 648) | Prefer symbol-based (`@source:billing::createInvoice`) or content-hash (`@source:openapi.yaml#sha256:abc...`) citations. Line-number citations require paired content-hash anchor for drift detection. attest enforces. |
 
 ---
 
@@ -674,6 +677,53 @@ The Checklist does not apply to:
 - Documentation-only clarifications (no schema change)
 - Sunset / deprecation of existing fields (encourages reduction)
 - Cross-references between existing skills (improves discoverability without adding obligations)
+
+### Quarterly Compliance Tracking Report (v3.1, added by v5 fold-in)
+
+The Proposal Intake Checklist is only effective if its application is **measured continuously**. Without measurement, the Checklist degrades into a documentation artifact ignored at proposal time (this is exactly the failure pattern Magi v5 / omen v5 reviewed when scoring "Cumulative Adoption Fatigue" at RPN 810).
+
+A Quarterly Compliance Tracking Report is therefore part of the protocol. Magi (or any designated steward) MUST publish the report each quarter; threshold breaches trigger automatic Magi arbitration before the next proposal can be accepted.
+
+**Report contents (mandatory)**:
+
+```yaml
+quarterly_compliance_report:
+  quarter: <YYYY-Q[1-4]>
+  proposals_reviewed: <count>
+  outcomes:
+    rejected_at_item_1_absorption: <count>   # existing-skill absorption >=80%
+    rejected_at_item_2_cumulative_load: <count>
+    rejected_at_item_3_novelty: <count>      # True-new <20%
+    needs_rework_at_item_4_proof_theater: <count>
+    routed_to_fold_in: <count>               # existing SKILL.md extension
+    routed_to_companion_protocol: <count>    # new _common/*.md companion
+    routed_to_new_protocol: <count>          # NEW PROOF_CARRYING.md core extension (rare)
+  cumulative_metrics:
+    proof_field_total_per_skill_max: <number>  # threshold: <10/skill
+    ledger_contract_count_global: <number>     # threshold: <=3
+    guardrail_count: <number>                  # threshold: <=15 (G1-G15)
+    protocol_file_count: <number>              # threshold: <=4 (PROOF_CARRYING, GROWTH_BRAND, GIT, HANDOFF)
+  health_indicators:
+    proof_theater_rate_sample: <%>             # sampled audit of Tier-S/A PRs; target <=20%
+    operator_satisfaction_survey: <%>          # target >=60%
+    checklist_bypass_attempts: <count>         # proposals that tried to skip Checklist
+  next_proposal_block:
+    triggered: <true|false>                    # any threshold breach => true
+    reason: <which threshold>
+```
+
+**Threshold breach behavior**:
+- `proof_field_total > 40` (any skill) → next proposal MUST pass Item 2 with explicit deprecation
+- `ledger_contract_count > 5` → next proposal that adds another ledger/contract is auto-rejected
+- `guardrail_count > 18` → next proposal that adds another guardrail is auto-rejected
+- `proof_theater_rate > 30%` → freeze on new Proof field additions until rate returns to target
+- `operator_satisfaction < 40%` → mandatory Magi `multi` arbitration on regime continuation
+
+**Authoring discipline**: Steward (default: Magi at every `arbitrate` invocation) MUST refer to the most recent Quarterly Report when processing a new proposal. The Checklist is not a one-time gate at protocol introduction; it is a continuous discipline.
+
+**Audit trail**: Every accepted extension MUST cite which Quarterly Report's thresholds it was evaluated against. This enables retroactive audit if regression is detected later.
+
+**v5 baseline (initial)**: At v5 fold-in time the baseline values are: proof_field_total ~30, ledger_contract_count 4 (Spec / Design-Code / Insight / Growth-Brand), guardrail_count 15, protocol_file_count 4. These are the **soft ceiling** for v6+ proposals.
 
 ---
 

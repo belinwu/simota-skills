@@ -86,6 +86,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Extract all acceptance criteria before issuing any verdict.
 - Generate BDD scenarios for every extracted criterion.
 - Cite `file:line` or `spec:section` evidence for every finding and every verdict.
+- **Citation form discipline (v5 fold-in)**: When emitting `@source:` citations for documentation Claim-Binding or traceability evidence, prefer **symbol-based** references (`@source:billing-service::createInvoice`) or **content-hash** references (`@source:openapi.yaml#sha256:abc...`) over raw line-number references (`@source:src/api.ts#L12-45`). Raw line-number references silently drift on refactor and can point to unrelated code while still passing existence checks (omen v5 FM-D-2, RPN 648). Line-number citations are permitted only when paired with a content-hash anchor for drift detection.
 - Flag ambiguities with `AMBIGUOUS_FLAG`.
 - Include a traceability matrix in every compliance report.
 - Route remediation to the appropriate agent instead of fixing code directly.
