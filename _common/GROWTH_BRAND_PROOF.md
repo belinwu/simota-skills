@@ -39,6 +39,8 @@ Three structural reasons:
 
 **Mandatory rule** (per magi C8): Never adopt Step N+1 before Step N is stable for ≥3 months. Skipping Steps risks adopting blocking gates without the supporting infrastructure (Insight Ledger before Research process, Brand Compiler before Constitution maturity).
 
+**Cross-Tier Ordering Note (v9 fold-in, partial absorption of Bootstrap Roadmap v9 proposal)**: Layer C Step 1-4 adoption presupposes Tier A (Code Acceptance) + Tier B (Design Acceptance via atelier when `ui_dimension != none`) are already operational in the org. Cross-tier sequence: Tier A merge-time → Tier B merge-time → Layer C Step 1 post-launch measurement → Layer C Step 2-4 advancing per the Mandatory rule above. Organizations attempting Layer C Step 1 before Tier A+B foundation produces post-launch measurement loops that cannot ground in pre-merge evidence — the loop becomes anecdotal rather than evidence-chained. This is the full-stack ordering observation Bootstrap Roadmap Phase 1-5 (v9 proposal) correctly identified; it is documented here as a cross-tier annotation rather than as a new framework artifact. Phase 6 (Proof of Proof / Gate Governance) from v9 is explicitly excluded per v8 FM-V8-4 (recursive-meta infinite regress) rejection.
+
 ---
 
 ## Phased Adoption: Step 1-4
