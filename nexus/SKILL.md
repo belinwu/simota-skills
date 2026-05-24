@@ -238,6 +238,20 @@ Is spawn tool available? (Agent / spawn_agent)
 **Codex Subagent Tools:** `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent`
 **Config:** `agents.max_depth` (default: 1) controls nesting. Omitted fields inherit from parent session.
 
+#### Antigravity CLI (`agy`)
+
+| Layer | Method | When | API |
+|-------|--------|------|-----|
+| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --output-format json` |
+| **L2: Parallel Spawn** | Multiple `/agent` invocations (asynchronous subagents, each in its own context window) | 2-3 independent branches | Aggregate via `/tasks`; subagents run async, no explicit `wait` primitive |
+| **L3: Role-Driven Team** | Plugin-installed team pack (e.g. `oh-my-antigravity` — `agy plugin install <url>`) | 4+ workers, complex ownership | Community pattern — `/oma:taskboard` priority queue + explicit approval gates (no Rally equivalent documented) |
+
+**agy Subagent Tools:** `/agent`, `/tasks`, `/resume`, `/rewind`, `/btw` (read-only side question), `/schedule`, `/goal` (experimental flag status 未確認)
+**Config:** Subagent depth-cap key name **未確認** — community guidance says "cap subagent depth" but no JSON/TOML key was found in official docs. Treat as runtime/budget concern via `/usage` polling, not as a config switch.
+**Skill root:** `~/.gemini/antigravity-cli/skills/` (global) or `<repo>/.agents/skills/` (workspace, preferred).
+**Permission model:** `request-review` (default — pause for review) / `proceed-in-sandbox` (containerized auto) / `always-proceed` (host auto, production-forbidden) / `strict` (read-only).
+**Cross-CLI mapping:** see `_common/CLI_COMPATIBILITY.md` for the full Claude Code / Codex CLI / agy matrix.
+
 ### Model Selection
 
 | Agent Role | model | Rationale |
@@ -279,6 +293,34 @@ Agent(
 ```
 
 > **Opus 4.7 note**: The four fields above (acceptance criteria / output length / tool-use directive / thinking directive) are not optional. Opus 4.7 calibrates output length to context and restrains tool calls by default, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_47_AUTHORING.md`.
+
+#### agy Spawn Template
+
+For Antigravity CLI the prompt body is identical — only the invocation differs:
+
+```
+/agent [agent]-[task-slug] "You are the [AgentName] agent.
+First, read ~/.gemini/antigravity-cli/skills/[agent]/SKILL.md (or <repo>/.agents/skills/[agent]/SKILL.md) and follow its instructions.
+
+Recipe: [recipe-name or auto]
+Task: [task_description]
+Context from previous step: [handoff_context]
+Constraints: [constraints]
+Acceptance criteria: [acceptance_criteria]
+Output length envelope: [length_envelope]
+Tool-use directive: [tool_use_directive]
+Thinking directive: [thinking_directive]
+
+On completion, emit _STEP_COMPLETE with Agent / Status / Output / Next."
+```
+
+Or for headless / non-interactive:
+
+```
+agy -p "<same prompt body>" --output-format json
+```
+
+> **agy notes**: (1) Model is switched via `/model` in TUI before spawning, not per-agent — design recipes around the active model or instruct the user to switch. (2) `/usage` does not update live — for long chains (>20 min) prefer `agy -p` one-shot triggered externally over TUI-resident `/agent` invocations to avoid mid-run quota cliffs. (3) Permission mode defaults to `request-review`; recipes that assume autonomy must instruct the user to switch to `proceed-in-sandbox` before invocation (never `always-proceed` in production). (4) `request-review` is reported as occasionally ignored for file edits (forum: missing features) — treat as a runtime risk, not a configuration guarantee.
 
 Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 
