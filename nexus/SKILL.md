@@ -72,7 +72,11 @@ Route elsewhere when the task is primarily:
 
 1. **Use the minimum viable chain.** Start with a single agent and add more only when justified by: context overflow (tools/knowledge exceeds single-agent processing capacity), specialization conflicts (incompatible instructions or personas in a single prompt), or parallel processing needs (independent tracks benefiting from concurrent execution). Each additional agent multiplies coordination overhead and error surface — empirical data shows uncoordinated multi-agent systems exhibit 17x error rates versus single-agent baselines. [Source: towardsdatascience.com, learn.microsoft.com — Choosing Between Single-Agent and Multi-Agent Systems]
 2. **Keep hub-spoke routing.** All delegation and aggregation flows through Nexus; never permit direct agent-to-agent handoffs.
-3. **Spawn real agents for every chain step.** Each EXECUTE step MUST use the platform's agent spawn tool (Claude Code `Agent`, Codex CLI `spawn_agent`) to run the specialist as an independent session with its own context window and SKILL.md. This is the single most impactful rule for output quality — a spawned Scout or Builder with full expertise consistently outperforms Nexus simulating their role. Internal execution is acceptable ONLY when: (a) the task requires no specialist expertise (single file read/edit, trivial one-line fix), (b) the user explicitly requests internal execution, or (c) the spawn tool is unavailable or denied. When falling back, log the reason in Execution Report as `Execution: internal (reason: ...)`.
+3. **Spawn real agents for every chain step.** Each EXECUTE step MUST use the platform's agent spawn tool (Claude Code `Agent`, Codex CLI `spawn_agent`, agy `/agent`) to run the specialist as an independent session with its own context window and SKILL.md. This is the single most impactful rule for output quality — a spawned Scout or Builder with full expertise consistently outperforms Nexus simulating their role. Internal execution is acceptable ONLY when: (a) the task requires no specialist expertise (single file read/edit, trivial one-line fix), (b) the user explicitly requests internal execution, or (c) the spawn tool is genuinely unavailable or denied. **Before falling back, verify the actual blocker per platform:**
+   - **Codex CLI**: run `codex features list | grep multi_agent` (must be `true`) and inspect `~/.codex/config.toml` for `[agents] max_depth >= 2`. When both are satisfied, `spawn_agent` IS available — invoke it directly even if it is not pre-listed in the visible tool inventory. Treat "tool not visible" ≠ "tool not callable".
+   - **agy**: there is no tool named `spawn_agent`. Decide whether the `/agent <name> "<task>"` slash command is callable by checking: (i) is this the main TUI session? (ii) is Nexus itself NOT running as a customAgent (no own `agent.json` under `~/.gemini/antigravity-cli/brain/<session>/.agents/agents/`)? (iii) in headless mode (`agy -p`), can the chain switch to OS-level process isolation via `Bash("agy -p ...")`? Proceed with spawn if any branch succeeds.
+   - **Claude Code**: fall back only if the `Agent` tool is absent from the tool list. Normally it is always available.
+   When falling back, log the reason in Execution Report as `Execution: internal (reason: <platform-specific verified blocker, e.g. "codex [agents].max_depth=1" / "agy nested customAgent without /agent in toolNames" / "claude-code Agent tool denied by permission">)` — generic "spawn tool not found" is forbidden.
 4. **Preserve behavior before style.** Keep thresholds, modes, safety rules, handoff contracts, and output requirements explicit.
 5. **Prefer action in AUTORUN modes.** Do not ask for confirmation in `AUTORUN` or `AUTORUN_FULL` except where the rules explicitly require it.
 6. **Protect context.** Use structured handoffs, selective reference loading, and conflict-aware parallel execution. Pass only necessary state deltas between steps, not full context dumps. [Source: getdynamiq.ai]
@@ -237,6 +241,16 @@ Is spawn tool available? (Agent / spawn_agent)
 
 **Codex Subagent Tools:** `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent`
 **Config:** `agents.max_depth` (default: 1) controls nesting. Omitted fields inherit from parent session.
+**Prerequisites (must hold or Nexus internal-falls-back):**
+1. `codex features list | grep multi_agent` → `stable / true` (default true since v0.115+; verify in older builds).
+2. `~/.codex/config.toml` has `[agents]` section with `max_depth >= 2` (default `1` allows only the main session to spawn — any nested orchestrator like Nexus spawned from a slash command may already be at depth 1 and unable to recurse).
+3. If the model claims `spawn_agent` is missing from its tool inventory while both above are satisfied, attempt the call anyway — Codex exposes the tool lazily, not always in the visible system tool list. Treat "tool not visible" ≠ "tool not callable".
+
+**Minimal config snippet:**
+```toml
+[agents]
+max_depth = 3
+```
 
 #### Antigravity CLI (`agy`)
 
@@ -250,6 +264,11 @@ Is spawn tool available? (Agent / spawn_agent)
 **Config:** Subagent depth-cap key name **未確認** — community guidance says "cap subagent depth" but no JSON/TOML key was found in official docs. Treat as runtime/budget concern via `/usage` polling, not as a config switch.
 **Skill root:** `~/.gemini/antigravity-cli/skills/` (global) or `<repo>/.agents/skills/` (workspace, preferred).
 **Permission model:** `request-review` (default — pause for review) / `proceed-in-sandbox` (containerized auto) / `always-proceed` (host auto, production-forbidden) / `strict` (read-only).
+**Prerequisites (must hold or Nexus internal-falls-back — distinct from Codex conditions):**
+1. **`agy` binary is on PATH** — verify with `which agy && agy --version`.
+2. **Current session is the main TUI session** — agy launches `/agent` only as a TUI slash command. If Nexus itself runs as a customAgent (its own `agent.json` exists under `~/.gemini/antigravity-cli/brain/<session>/.agents/agents/<name>/`), nested spawn is impossible unless `customAgent.toolNames` permits a `/agent` equivalent.
+3. **Headless (`agy -p`) requires OS-level process isolation** — TUI slash commands are unavailable. Substitute with `Bash("agy -p '<spawn prompt>'")` to run a separate agy process.
+4. **No tool named `spawn_agent` exists in agy** — writing "`spawn_agent` not found" in the fallback log is incorrect. The correct form is "`/agent` slash command unavailable (reason: <not in TUI main session | toolNames does not permit | headless mode without --prompt-interactive>)".
 **Cross-CLI mapping:** see `_common/CLI_COMPATIBILITY.md` for the full Claude Code / Codex CLI / agy matrix.
 
 ### Model Selection
