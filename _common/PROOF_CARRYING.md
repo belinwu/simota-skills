@@ -8,7 +8,27 @@ Cross-skill protocol for shipping changes with **machine-verifiable evidence pac
 
 **Prerequisites**: `_common/HANDOFF.md` (handoff schema), `_common/MULTI_ENGINE_RECIPE.md` (cross-engine fan-out).
 
-**Version**: v2 — adds Design axis (Layer B), Dual-Implementation Oracle, Matrix Sampling Policy, Design-Code Contract, four additional guardrails (G4-G10).
+**Version**: v3 — adds 3-tier structure (Foundation / Production Pipeline / Market-Brand Acceptance), cross-cutting guardrails G11 (KB Write Authority Separation) / G14 (Regulatory Envelope Pre-Flight) / G15 (Constitution Lifecycle Discipline). Layer C (Market + Research + Brand axes) lives in the separate `_common/GROWTH_BRAND_PROOF.md` companion protocol — adopt independently per Org Tier.
+
+**v2 baseline retained**: Code axis (Layer A) + Design axis (Layer B) + G1-G10 + Dual-Implementation Oracle + Matrix Sampling + Design-Code Contract. Solo / SMB orgs operate at v2 baseline; Enterprise orgs may adopt Layer C via Phased Adoption (see GROWTH_BRAND_PROOF.md).
+
+---
+
+## Three-Tier Structure (v3)
+
+The protocol stack now organizes into three tiers, each adoptable independently:
+
+| Tier | Scope | Guardrails | Skills | Adoption |
+|------|-------|-----------|--------|----------|
+| **Tier A — Foundation** | LLM output integrity, evidence completeness, repair-loop safety | G1 / G2 / G3 | judge, attest, beacon, mend, sentinel | Required for any Proof-Carrying regime |
+| **Tier B — Production Pipeline** | Code merge-time + Design merge-time gates (this file's main body) | G4-G10 + Dual-Impl + Matrix + Contract | radar, voyager, vigil, atelier, frame, muse, palette, canon, showcase, prose, echo, vision, weave, flow, matrix, arena | Solo OK with subset; SMB+ full |
+| **Tier C — Market-Brand Acceptance** | Pre-design + ship-time + post-launch lifecycle gates (M / R / B axes) | G11* / G12 / G13 / G14* / G15* | researcher, voice, trace, plea, pulse, experiment, funnel, lure, compete, crest, clause, comply, ledger (FinOps), harvest, tome | Enterprise only; SMB optionally adopts Step 1 Measurement Loop |
+
+\* Cross-cutting guardrails (G11 / G14 / G15) apply to Tier A and Tier B knowledge bases as well, not only Layer C. They are documented in this file below.
+
+**Read order**: Tier A+B users read this file end-to-end. Tier C users read this file first, then `_common/GROWTH_BRAND_PROOF.md`.
+
+---
 
 ---
 
@@ -263,6 +283,64 @@ This locks the architecture against the "everyone is correct relative to everyon
 
 ---
 
+## Cross-Cutting Guardrails (v3 — apply to Tier A / B / C)
+
+These three guardrails address failure modes that span every tier: the integrity of the knowledge base AI references, the regulatory envelope that constrains autonomous action, and the lifecycle discipline of long-lived authoritative artifacts.
+
+### G11. Knowledge Base Write Authority Separation
+
+**Problem**: When AI can both **read** authoritative knowledge (specs, design tokens, brand constitutions, insight ledgers, runbooks) and **write** to it, systematic self-justification follows. Successful artifacts cause AI to silently raise the confidence of supporting entries; failed artifacts cause AI to shorten the expiration of contradicting entries. Within months the knowledge base reflects AI's confirmation bias, not reality (omen FM-F1 RPN=729).
+
+**Rule**: For any authoritative knowledge base AI references during generation:
+1. **AI is read-only** — cannot directly mutate entries
+2. **Proposed edits go to a queue** — only a human role (Research Lead / Brand Director / Architect / Spec Owner) can merge
+3. **Confidence is deterministic** — formula-derived (N × variance × age × counter-evidence weight), never hand-set
+4. **Provenance and diff are logged** — every mutation records editor identity, evidence delta, counter-evidence delta
+5. **Devil's Advocate reviewer LLM** — different LLM family from the generator; signs every human-merge
+
+**Scope**: applies to spec graphs (Tier A/B), design tokens & Constitution (Tier B/C), insight ledgers (Tier C), and any runbook / playbook AI can author.
+
+**Anti-pattern**: "AI can write with audit log" — audit is reactive, bias accrues before detection.
+
+### G14. Regulatory Envelope Pre-Flight Check
+
+**Problem**: Autonomous-action systems (auto-scale, auto-rollback, auto-generation, auto-publish) operate by default-permit unless a regulatory check intervenes. Regulated industries (medical / financial / aviation / public-sector / pharmaceutical / political) require pre-approval, content auditing, and human sign-off that conflict with default-permit. A single regulation change (iOS ATT semantics, Cookie deprecation, EU AI Act, DMA / DSA, 薬機法 / 景表法 / 金商法 / 公職選挙法) cascades into 4-system simultaneous degradation (omen FM-E6 / FM-X4 / FM-X6).
+
+**Rule**:
+1. **Every action artifact (PR / campaign / spec change) declares `regulatory_jurisdiction`** — industry + country + applicable laws
+2. **Per-jurisdiction toggle** — auto-scaling, holdout testing, AI-generated content, auto-rollback are independently enable/disable per jurisdiction; regulated default: OFF
+3. **Quarterly Regulatory Horizon Scan** — Legal + DataEng publish expected upcoming changes
+4. **Per-concept Assumption Document** — for each gate (Code/Design/Market/Research/Brand), document which signals required, which jurisdictions affected
+5. **Pre-built fallback measurement stacks** — MMM / geo-experiments / synthetic control ready to activate when primary measurement is jurisdictionally unavailable
+
+**Scope**: applies to Tier A merge gates (compliance code) + Tier B design (a11y / GDPR cookie / DMA) + Tier C all autonomous market action.
+
+**Anti-pattern**: "We're not regulated" — DMA / DSA / GDPR reach extends beyond intuition.
+
+### G15. Constitution Lifecycle Discipline
+
+**Problem**: Static authoritative artifacts (Spec Graphs, Design Systems, Brand Constitutions, Style Guides, Compliance Frameworks) drift from reality silently. Five-year-old artifacts continue blocking new work that doesn't fit the old worldview, while no one feels authorized to update them. Outcomes: customer-implementation mismatch, designer creativity lattice, brand mummification (omen FM-G2 / FM-G7 / FM-X3).
+
+**Rule**: Every authoritative artifact partitions into 3 layers with different update cadences:
+
+| Layer | Stability | Review Cadence | Editor Authority | Example |
+|-------|-----------|----------------|------------------|---------|
+| **Core** | 10-year stable | Decade challenge only | Founder / Board sign-off | "Our mission is privacy" / "All payments must be auditable" |
+| **Strategic** | 3-5 year review | Annual review + ad-hoc challenge | C-level + senior leadership | Target segment, positioning, distinctive assets |
+| **Operational** | 12-18 month review | Quarterly review mandatory | Department lead + 2-person sign-off | Tone rules, banned words, current campaign constraints, current spec versions |
+
+**Enforcement**:
+1. Operational layer auto-expires; Compiler / Gate refuses to pass new artifacts if Operational is stale (forcing function)
+2. Two-person sign-off required for any edit (no single editor authority)
+3. Emergency Override (single-editor patch) is time-boxed: 48h fast-path, must be replaced by normal-Gate within 7 days
+4. Quarterly "Constitution Health Audit" — % of Operational entries refreshed in past 6 months
+
+**Scope**: applies to spec graphs (Tier A/B), design tokens & systems (Tier B), brand constitutions & voice guides (Tier C), all "we have always said X" type artifacts.
+
+**Anti-pattern**: "Annual review meeting" — historically skipped under quarterly business pressure.
+
+---
+
 ## Spec Self-Bug Problem
 
 The spec graph is now the oracle. **What validates the oracle?** This is the classic specification-of-specification problem (omen FM-L1-1, magi Sophia S2). AAOS-style systems collapse silently when the spec is wrong, because every layer below trusts it.
@@ -511,6 +589,9 @@ When implementing one of the above, reference this protocol rather than restatin
 | Indefinite Contract v1 + v2 coexistence | Versioning hell (FM-D9) | Time-boxed (≤6 months) coexistence + tracked sunset |
 | Code Proof PASS shipped despite Design Proof FAIL | Split-merge defeats two-axis gate | Acceptance Gate rule 6 — joint verdict; either FAIL blocks |
 | Coverage metrics published alone as KPI | Goodhart drift (FM-C4 / FM-B4) | G6 paired second-axis indicators + quarterly Goodhart audit |
+| AI can write to authoritative knowledge base (spec / tokens / constitution / ledger) | Self-justification accrues; knowledge base reflects AI confirmation bias | G11 KB Write Authority Separation (AI read-only, human merge, deterministic confidence) |
+| Auto-action default-permit in regulated industries | Pharma / financial / political auto-violations; cascade on regulation changes | G14 Regulatory Envelope Pre-Flight (per-jurisdiction toggle, default OFF, quarterly Horizon Scan) |
+| Static authoritative artifact drifts unmaintained | Constitution mummification / customer mismatch / creativity lattice | G15 Constitution Lifecycle Discipline (Core / Strategic / Operational layers, forcing function expiration, 2-person edit) |
 
 ---
 
@@ -534,3 +615,6 @@ When implementing one of the above, reference this protocol rather than restatin
 - DO-178C N-version programming — regulated-industry precedent for Dual-Implementation Oracle
 - AWS S3 parallel-run (legacy compatibility verification) — production precedent for Dual-Implementation in money-domain
 - Combinatorial test theory (pairwise / orthogonal-array) — Matrix Sampling Policy basis (`matrix` skill integration)
+- Magi verdict on Growth+Brand Acceptance OS proposal (v3 cross-cutting source) — 3-0 GO-WITH-HEAVY-CONDITIONS (weighted confidence 54.7), 12 conditions C1-C12, Phased Adoption (Step 1-4), Org Tier (Solo / SMB / Enterprise) — drove the 3-tier restructure and cross-cutting G11/G14/G15 introduction
+- Omen pre-mortem on Growth+Brand Acceptance OS (v3 cross-cutting source) — 25 new failure modes, 7 S≥9 Critical (AI Self-Whitewash FM-F1 RPN=729 / Homogenization FM-E4 / Beige Output FM-G1 / Constitution Mummification FM-G2 / Stop Owner FM-H3 / Privacy Regulation Brittleness FM-X4 / Regulated Auto-Violation FM-E6) — drove G11/G14/G15 cross-cutting placement and `GROWTH_BRAND_PROOF.md` separation
+- `_common/GROWTH_BRAND_PROOF.md` — companion protocol for Layer C (Market + Research + Brand axes, lifecycle gates, Insight Ledger, Incrementality Gate, Brand Compiler 3-layer, Growth-Brand Contract). Adopted by Enterprise Tier orgs after Tier A+B foundation is stable
