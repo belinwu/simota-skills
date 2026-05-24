@@ -2,9 +2,13 @@
 
 Cross-skill protocol for shipping changes with **machine-verifiable evidence packages** that an Acceptance Gate can adjudicate without human visual confirmation. Inspired by the AAOS (Autonomous Acceptance OS) framing: encode product correctness as executable specifications, then refuse to merge any PR whose evidence package does not match the spec graph.
 
-**Audience**: Skills participating in change-shipping pipelines (`attest`, `judge`, `guardian`, `radar`, `voyager`, `sentinel`, `vigil`, `mend`, `beacon`, `nexus[acceptance]`, `nexus[apex]`, `nexus[summit]`).
+**Audience**: Skills participating in change-shipping pipelines.
+- **Code axis** (Layer A): `attest`, `judge`, `guardian`, `radar`, `voyager`, `sentinel`, `vigil`, `mend`, `beacon`, `arena` (dual-implementation), `nexus[acceptance]`, `nexus[apex]`, `nexus[summit]`.
+- **Design axis** (Layer B): `atelier` (sub-orchestrator), `muse`, `frame`, `palette`, `canon`, `showcase`, `prose`, `echo`, `vision`, `weave`, `flow`, `matrix` (pairwise sampling).
 
 **Prerequisites**: `_common/HANDOFF.md` (handoff schema), `_common/MULTI_ENGINE_RECIPE.md` (cross-engine fan-out).
+
+**Version**: v2 — adds Design axis (Layer B), Dual-Implementation Oracle, Matrix Sampling Policy, Design-Code Contract, four additional guardrails (G4-G10).
 
 ---
 
@@ -20,20 +24,33 @@ The bottleneck in AI-assisted shipping is no longer code generation — it is th
 
 The constraint that distinguishes this from "AI writes tests": AI agents are positioned as **adversarial explorers**, not approvers. Their value is "couldn't break it", not "looks fine".
 
+### Two-Axis Decomposition: Code Proof + Design Proof
+
+A Proof-Carrying PR decomposes into two parallel evidence packages that the Acceptance Gate adjudicates independently and then jointly:
+
+- **Code Proof** (Layer A): type / lint / unit / integration / contract / property / regression / security / migration / observability / rollback. Orchestrated by existing `acceptance` Phase 2-4 Layer A.
+- **Design Proof** (Layer B): token / component / state / responsive / a11y / VRT / copy / UX task / brand. Orchestrated by `atelier` as Layer B sub-orchestrator (only when `ui_dimension != none`).
+
+Both packages must be PASS for merge. Either FAIL blocks merge. A change with no UI surface skips Layer B entirely. A change with no code surface (rare — pure design token bump) skips Layer A.
+
+This separation is **orthogonal to the 5-layer pipeline**: the 5 layers are temporal (what happens when), the 2 axes are categorical (what kind of evidence). Layer 2 (oracle generation) and Layer 3 (adversarial exploration) each split into Code-axis and Design-axis sub-tracks; Layer 4 Acceptance Gate adjudicates both before issuing a single PASS/FAIL.
+
 ---
 
 ## Tier-Based Application Policy
 
 Not every PR needs full proof. Apply by criticality tier:
 
-| Tier | Scope | Required Evidence | Gate Behavior |
-|------|-------|-------------------|---------------|
-| **S** | Payment / Medical / Aviation / PII / Auth-critical | All 5 layers mandatory (spec graph + oracles + adversarial + Proof-Carrying PR + runtime oracle) | Block merge until full evidence + 2-of-3 cross-engine quorum |
-| **A** | Core revenue features / Customer-facing flows | Spec graph + generated oracles + Proof-Carrying PR (layers 1+2+4) | Block on spec mismatch; advisory on adversarial gaps |
-| **B** | Internal tools / Secondary features | Spec graph + automated tests + standard PR | Block on test failure; spec graph optional |
-| **C** | UI tweaks / Copy changes / Docs | Conventional PR + AI review | Standard CI; no spec graph required |
+| Tier | Scope | Code Proof | Design Proof | Dual-Impl | Matrix Sampling | Gate Behavior |
+|------|-------|-----------|--------------|-----------|-----------------|---------------|
+| **S** | Payment / Medical / Aviation / PII / Auth-critical | 11/11 all | 9/9 all (if UI) | mandatory (regulated domains) | full pairwise + critical-path | Block merge until full evidence + 2-of-3 cross-engine quorum |
+| **A** | Core revenue features / Customer-facing flows | 11/11 all | 9/9 all (if UI) | mandatory for money / auth / state-machine / inventory | pairwise (2-way) | Block on spec mismatch; advisory on adversarial gaps |
+| **B** | Internal tools / Secondary features | 8/11 (skip migration / observability / rollback if not applicable) | 6/9 (token / component / state / a11y / VRT / copy) | opt-in | critical-path only | Block on test failure; spec graph optional |
+| **C** | UI tweaks / Copy changes / Docs | 4/11 (type / lint / unit / security) | 3/9 (token / a11y / copy) | none | none | Standard CI; recommend `feature` recipe instead of `acceptance` |
 
-Every PR must declare its Tier at the top. Tier-S+A PRs without an evidence package are auto-rejected.
+Every PR must declare its Tier at the top. Tier-S+A PRs without an evidence package are auto-rejected. Tier-C PRs invoking `acceptance` recipe auto-downgrade to `feature`.
+
+**Design Proof exemption**: Tier-S/A PRs with `ui_dimension == none` (pure backend / infrastructure / data pipeline) skip Design Proof entirely. The exemption is recorded in the evidence package as `design_proof: skipped (no UI surface)`.
 
 **Why Tier-based**: AAOS at full scope is over-engineering for ~99% of PRs (omen FM-L4-1: evidence-completeness illusion; magi DA challenge: YAGNI for non-critical paths). Tier-based application is the DA-compelled boundary that keeps the cost-benefit positive.
 
@@ -62,15 +79,56 @@ Missing fields = automatic Gate rejection. The author cannot self-attest complet
 
 ---
 
+## Design-Side Evidence Fields (Layer B)
+
+When `ui_dimension != none`, the following 9 fields are required in addition to the 12 Code-side fields above. Orchestrated by `atelier`, evaluated by the Design Compiler (see below).
+
+| Field | What | Owner Skill |
+|-------|------|-------------|
+| `token_proof` | All colors / spacing / radii / shadows / typography resolve to allow-listed design tokens | `muse` |
+| `component_proof` | All interactive elements use design-system components, not ad-hoc `<div onClick>` (G9 4-layer detection) | `frame` |
+| `state_proof` | Every interactive component declares hover / focus / disabled / loading / error / empty states | `palette` / `weave` (state machine spec) |
+| `responsive_proof` | Layout passes at mobile / tablet / desktop viewports (320 / 768 / 1280 minimum) | `palette` |
+| `a11y_proof` | WCAG 2.2 AA via axe-core / Pa11y; keyboard navigation; focus order; aria correctness | `canon` |
+| `vrt_proof` | Visual regression diff within tolerance per Matrix Sampling Policy (see below) | `showcase` / `voyager` (visual comparison) |
+| `copy_proof` | Microcopy passes voice/tone rules, banned-word list, length constraints, locale-appropriate | `prose` |
+| `ux_task_proof` | AI user personas (impatient / first-time / screen-reader / mobile / payment-failure) complete primary tasks | `echo` / `drill` |
+| `brand_proof` | Visual identity, illustration style, motion language conform to brand rules (advisory if unspecifiable — see Carve-Out) | `vision` |
+
+Each field carries the same semantic-non-emptiness rule as Code-side: empty findings without an exploration log = rejected, not "no issues".
+
+**Prerequisite for Design Proof adoption**: organization runs Figma + design tokens (Style Dictionary / Tokens Studio) + Code Connect (or equivalent Figma↔code mapping). Organizations missing any of these three should treat Design Proof as opt-in advisory, not blocking. Without tokens, `token_proof` cannot be machine-evaluated; without Code Connect, `component_proof` requires manual audit.
+
+---
+
+## Design Compiler vs Design Reviewer
+
+A common failure pattern in 2024-2025 was deploying LLMs as "design reviewers" asked open questions like "is this design good?" — the LLM produces plausible-sounding flattery and false positives, designers lose trust, the practice is abandoned. Avoid this.
+
+**Use AI as a Design Compiler, not a Design Reviewer:**
+
+```
+INPUT  : Figma + Design Tokens + Component Library + UX Rules + Brand Rules + A11y Rules
+COMPILER: rule-based (token allow-list, AST checks, axe-core, state coverage)
+        + LLM-as-judge (advisory only, never blocking) for the residual ~20-30%
+OUTPUT : PASS / FAIL per rule, with rule-citation for every FAIL
+```
+
+The Compiler answers closed binary questions ("does this UI violate rule R?"), never open ones ("is this UI good?"). 70-80% of Design Proof fields are decidable by deterministic rules (token check, AST, axe-core, Storybook coverage); the remaining 20-30% (brand voice, motion feel, illustration quality) routes to the Unspecifiable-Quality Carve-Out.
+
+---
+
 ## Acceptance Gate — Decision Rules
 
-The Gate (typically `judge` + `attest`) is the merge authority for Tier-S/A. Rules:
+The Gate (typically `judge` + `attest` for Layer A; `atelier` + `canon` for Layer B) is the merge authority for Tier-S/A. Rules:
 
-1. **Schema completeness** — every required field above must be present and non-empty. Empty `adversarial_findings` ≠ "no findings"; require a non-trivial exploration report.
-2. **Spec consistency** — if `spec_diff` is non-empty, the spec change itself must be re-validated against meta-invariants (see Spec Self-Bug below).
+1. **Schema completeness** — every required field (12 Code + 9 Design when applicable) must be present and non-empty. Empty `adversarial_findings` or `ux_task_proof` ≠ "no findings"; require a non-trivial exploration report.
+2. **Spec consistency** — if `spec_diff` is non-empty, the spec change itself must be re-validated against meta-invariants (see Spec Self-Bug below). Design-side equivalent: Design-Code Contract changes must pass Contract Meta-Oracle (see below).
 3. **Cross-engine quorum** — for Tier-S, evidence must be produced or verified across at least 2 different engines (Claude + Codex, or Codex + agy). Single-engine evidence is CANDIDATE, not CONFIRMED.
 4. **No semantic short-circuit** — schema-valid but semantically empty outputs (e.g. "no issues found" with zero exploration) trigger a hard re-run, not a pass.
 5. **Random sampling escape valve** — see Success-PR Random Review below.
+6. **Layer A + Layer B joint verdict** — when both layers apply, PASS requires both. Either FAIL blocks merge. A common failure mode is "Code Proof PASS shipped despite Design Proof FAIL" — the Gate must not split-merge.
+7. **Unmeasurable-Quality Audit (G7)** — Compiler/Matrix/Contract PASS is not sufficient for merge when human-judgment dimensions are touched. See G7 below.
 
 If the Gate rejects, the change cannot bypass via `--no-verify` style escapes. The only legitimate bypass is the Hot-Fix Fast-Path (see below).
 
@@ -119,6 +177,92 @@ Reference: `mend/SKILL.md` (repair runbook safety tiers), `beacon/SKILL.md` (run
 
 ---
 
+## Additional Guardrails (G4-G10, v2)
+
+These extend G1-G3 with concerns surfaced when Code Proof + Design Proof two-axis decomposition is introduced. Each cites the omen failure mode it mitigates.
+
+### G4. Differential Implementation Diversity
+
+**Problem**: "Two AIs implement the same spec, CI diffs them — if diff = 0, ship." This works only when the two AIs do not share the same misreading. If both are the same LLM family, they share priors and the same statistical bias → silent agreement on a wrong reading (omen FM-A1, RPN=630, S=9). LLM-vendor diversity is not the same as training-data diversity (omen FM-A8, RPN=540).
+
+**Rule**: When Dual-Implementation Oracle is used (see §Dual-Implementation Oracle):
+1. AI-A (production) and AI-B (reference oracle) MUST run on different LLM families (Claude / Codex / agy).
+2. Prompt scaffolding MUST differ (one-shot vs few-shot, English vs Japanese spec, natural-language vs formal spec).
+3. AI-A and AI-B verdicts triangulate against Source-of-Truth Spec (see G10), not against each other only.
+4. Adversarial reviewer (AI-C) runs on yet a third engine to defeat reviewer bias toward either implementation (omen FM-A6).
+
+### G5. Diff Semantics Classifier
+
+**Problem**: VRT runs and dual-implementation runs produce diff floods. Floating-point ordering changes, 1px shifts, and locale rerenders generate hundreds of cosmetic diffs that bury the rare semantic diff. Reviewers learn to click "Approve all" — VRT formalism stays, signal dies (omen FM-B2, RPN=720; FM-A4, RPN=504).
+
+**Rule**: Every diff (code, VRT snapshot, dual-impl output) MUST be classified before reaching a reviewer:
+- `cosmetic` — floating-point trailing digits, sub-pixel shifts, deterministic re-renders → auto-approve eligible
+- `semantic` — different computed value, different state set, different rendered text → MUST be reviewed
+- `breaking` — type change, API contract break, removed UI affordance → senior review + full property-test re-run
+
+"Approve all" actions on >10 diffs are forbidden at the tool level. Diffs >50 force PR split. Classifier model is itself shadow-run before becoming Gate-blocking (per Cost & Scalability).
+
+### G6. Goodhart-Resistant Coverage Metrics
+
+**Problem**: When Compiler / VRT / Contract coverage becomes a KPI, teams optimize for "rule areas easy to coverage-up" (color tokens, padding) and neglect rule-hard areas (motion feel, brand consistency, cross-axis combinations). Coverage rises, perceived quality falls (omen FM-C4 / FM-B4).
+
+**Rule**: Coverage metrics are never published alone. Pair each coverage number with a second-axis indicator:
+- Compiler coverage % ↔ NPS or qualitative-review-hours
+- VRT coverage % ↔ user-reported visual regression count
+- Contract coverage % ↔ post-merge design-fix PRs
+- A11y rule coverage % ↔ assistive-tech user feedback
+
+Single-metric OKRs are forbidden for proof-system coverage. Quarterly audit reviews where coverage grew vs where it stayed flat — uneven growth flags Goodhart drift.
+
+### G7. Unmeasurable-Quality Audit Gate
+
+**Problem**: Design Compiler PASS ≠ "design is good". Compiler verifies what is rule-encoded. Out-of-rule dimensions (timing of a confirmation modal, emotional tone of an empty state, brand fidelity of an illustration, fairness of an interaction pattern) are not in the rule set, and a Compiler PASS bestows false confidence on dimensions never evaluated (omen FM-C1, RPN=800; FM-C3, RPN=729; FM-D3, RPN=567).
+
+**Rule**: For Tier-S/A UI changes, Compiler/Matrix/Contract PASS triggers a separate Unmeasurable-Quality Audit before merge:
+- **Tier-S UI**: human designer sign-off on "feel / timing / overall coherence" with recorded review time (≥10 min)
+- **Tier-A UI**: weekly summary review of merged changes; sampled deep-review per G2
+- The PASS badge wording MUST say "rule coverage verified" — never "quality verified" or "design approved"
+- If designer-review hours decrease >30% YoY after Compiler adoption, flag atrophy warning
+
+This is the design-side equivalent of G2 (success-PR random review) — protects against reviewer atrophy in dimensions that machines cannot judge.
+
+### G8. Design Hot-Fix Fast-Path + Component Sandbox
+
+**Problem**: Design-Code Contract rigor prevents experimentation. New components, A/B test variants, marketing LP one-offs, and emergency brand reactions all need to bypass Contract — without a sanctioned path, teams invent unofficial bypasses (omen FM-D5, FM-D6, FM-C7).
+
+**Rule**: Two sanctioned channels prevent unofficial bypass invention:
+
+1. **Component Sandbox** — Figma + Storybook region for exploratory prototypes outside Contract. Production routes cannot import from sandbox. Promotion from sandbox to Contract follows a reverse-direction flow: prototype first, contractualize after validation.
+2. **Design Hot-Fix Fast-Path** — marketing LPs, time-boxed campaigns, emergency brand reactions can deviate from token / contract under a **90-day expiration**: by day-90, the deviation is either promoted to Contract or removed. Tracked the same way as Code Hot-Fix Fast-Path (auditable, >3/month per product triggers process review).
+
+The Hot-Fix Fast-Path (existing, code-side) is extended below in its own section to cover Design side.
+
+### G9. UI-Structure Detection Layer (Swiss-Cheese 4-Layer)
+
+**Problem**: "AI builds button as `<div onClick>` instead of `<Button>` → fail" is the proposal's stated rule. Without an actual detection implementation, the rule is aspirational. A single detection layer misses something (`<span role="button">`, `<a onClick>` with no `href`, custom hooks wrapping a `div`) (omen FM-D4, RPN=512).
+
+**Rule**: Component contract enforcement requires 4 independent detection layers (Swiss-Cheese model — one layer's miss is caught by another):
+1. **AST static analysis** — ESLint custom rule: any interactive element not from the DS component allow-list fails build.
+2. **Storybook coverage** — every interactive element type must have at least one Storybook story; CI fails if production imports types absent from Storybook.
+3. **Runtime DOM trace** — E2E suites snapshot the rendered DOM; non-allow-listed interactive selectors fail.
+4. **Code Connect mapping** — every imported DS component must resolve to a Figma component via Code Connect; unmapped imports fail.
+
+Any single layer missing makes Contract enforcement Swiss cheese. All 4 layers MUST be live before `component_proof` is treated as Gate-blocking; until then it ships as advisory-only.
+
+### G10. External Spec Source-of-Truth Lock
+
+**Problem**: Without a single authoritative spec, two implementations can drift in opposite directions (each adjusting to symptoms) and oracle drift becomes invisible (omen FM-A2, RPN=512; FM-A7, RPN=448).
+
+**Rule**: Dual-Implementation, Design-Code Contract, and Design Compiler all share one Source-of-Truth Spec:
+- Spec is in executable form (formal spec / type-level / contract test / state machine DSL) — not free-text docs
+- AI-A, AI-B, Figma Component, Code Connect mapping all verify against Spec, never against each other directly
+- Spec drift (implementation evolves independently) is monitored quarterly via spec-vs-implementation diff
+- External SaaS outages (Figma / Chromatic / MCP Server) are themselves part of Spec — degraded-mode behavior is specified, not improvised
+
+This locks the architecture against the "everyone is correct relative to everyone else, but no one is correct relative to the spec" failure pattern.
+
+---
+
 ## Spec Self-Bug Problem
 
 The spec graph is now the oracle. **What validates the oracle?** This is the classic specification-of-specification problem (omen FM-L1-1, magi Sophia S2). AAOS-style systems collapse silently when the spec is wrong, because every layer below trusts it.
@@ -135,15 +279,27 @@ The spec is never trusted just because it parses. It is trusted because it passe
 
 ## Unspecifiable-Quality Carve-Out
 
-Some properties resist machine specification:
-- Brand voice, tone, cultural appropriateness
-- "Feel" of UI motion / interaction quality
-- Dark-pattern detection
-- Ethical edge cases (discrimination, fairness, manipulation)
+Some properties resist machine specification. Both Code-side and Design-side have unspecifiable dimensions:
 
-**Rule**: These are explicitly declared **out of scope** for the Acceptance Gate. Changes touching these dimensions require human review regardless of Tier. The Gate must not silently approve them on the basis that "no oracle flagged it" — absence of evidence is not evidence of absence.
+**Code-side unspecifiable**:
+- Ethical edge cases (discrimination in scoring, fairness in ranking, manipulation in recommendations)
+- Dark-pattern detection (opt-out friction, hidden costs, confirmation traps)
+- Cross-cultural appropriateness of business logic
 
-This is the Procrustes-effect mitigation (magi Sophia S7). Without it, AAOS-style systems reduce product quality to "what the spec graph can represent", and unspecifiable dimensions decay invisibly.
+**Design-side unspecifiable** (added in v2):
+- Brand voice, tone, illustration style coherence
+- "Feel" of motion / animation timing / interaction quality
+- Information density and cognitive load
+- Empty-state and error-state emotional appropriateness
+- Custom dashboards, data visualization, bespoke canvases — anything not reducible to DS components
+
+**Rule**: These are explicitly declared **out of scope** for the Acceptance Gate. Changes touching these dimensions require human review regardless of Tier. The Gate must not silently approve them on the basis that "no oracle flagged it" or "Compiler returned PASS" — absence of evidence is not evidence of absence.
+
+LLM-as-judge MAY produce advisory opinions on these dimensions but MUST NOT block merge. Advisory opinions are recorded as `unspecifiable_advisory` in the evidence package; humans choose whether to act.
+
+**Carve-out monitoring**: track the % of Tier-S/A PRs that invoke the carve-out per quarter. If >20%, this signals either (a) Design Compiler rules are under-specified — extend rules, or (b) the product is operating in genuinely unspecifiable territory — invest in human design review capacity. Either way, the trend matters.
+
+This is the Procrustes-effect mitigation (magi Sophia S7 + omen FM-C1). Without it, AAOS-style systems reduce product quality to "what the spec graph and design rules can represent", and unspecifiable dimensions decay invisibly while metrics show green.
 
 ---
 
@@ -160,6 +316,13 @@ This is the Procrustes-effect mitigation (magi Sophia S7). Without it, AAOS-styl
 
 The Fast-Path is not an escape hatch — it is the official channel that prevents escape-hatch invention.
 
+**Design Fast-Path extension (v2)**: For Design Proof, two sanctioned channels are available (per G8):
+
+1. **Component Sandbox** — Figma + Storybook prototypes outside Contract. Production cannot import from sandbox. Reverse-direction promotion: prototype first, contractualize after validation.
+2. **Time-Boxed Deviation** — marketing LPs / time-boxed campaigns / emergency brand reactions can deviate from token / contract under 90-day expiration. By day-90: promoted to Contract or removed. Same audit trail as code Hot-Fix Fast-Path.
+
+Both Design channels are tracked: >3 active Time-Boxed Deviations per product triggers a brand-system process review. Sandbox prototypes that age past 6 months without promotion or removal are flagged for cleanup.
+
 ---
 
 ## Spec Graph Versioning
@@ -172,6 +335,108 @@ Spec graph must be version-controlled alongside code:
 - Past spec versions are retained for historical-bug replay
 
 Without this, the spec graph either drifts from code (defeating the purpose) or becomes a parallel-development bottleneck.
+
+---
+
+## Dual-Implementation Oracle (PD-3)
+
+For Tier-S/A PRs touching the regulated-correctness domains below, two independent AI implementations triangulate against the Source-of-Truth Spec. This is a Code-axis-only practice (Design has no equivalent — see Matrix Sampling instead).
+
+**In-scope domains** (Tier-S/A mandatory; Tier-B opt-in):
+- Money: pricing, tax, discount, currency conversion, refund computation
+- Authorization: RBAC / ABAC, IDOR-prone resource ownership, permission propagation
+- State machines: order / booking / payment / workflow transitions, idempotency keys
+- Inventory / reservation / two-phase commit
+- Regulated-business domain logic (financial, medical, aviation, public-sector)
+
+**Out-of-scope domains** (Dual-Implementation actively harmful):
+- UI rendering (continuous 1-px diffs flood signal)
+- Text / translation generation (continuous output drift)
+- Performance-critical paths (CI cost doubles)
+- Legacy-compatibility code (spec is the legacy itself)
+
+**Required protocol** (per G4 Diversity):
+1. AI-A (production) on engine E1, AI-B (reference oracle) on engine E2, AI-C (adversarial reviewer) on engine E3 — three different LLM families
+2. AI-A receives spec in form F1 (e.g., natural-language); AI-B receives spec in form F2 (e.g., formal spec / decision table)
+3. CI runs property-based inputs + production-log replay + boundary values against both implementations
+4. Diff classifier (G5) separates cosmetic / semantic / breaking
+5. Any semantic diff blocks merge; Source-of-Truth Spec is queried to identify which implementation is correct
+6. Both-implementations-agree does NOT auto-pass; G2 success-PR random review still applies; property-based assertions over Spec (G10) MUST be the third triangulation axis
+7. `arena` skill in COMPETE mode orchestrates AI-A vs AI-B; `judge` adjudicates with AI-C input
+
+**Cost note**: Dual-Implementation effectively doubles implementation tokens for in-scope domains. Apply the per-PR compute cap (Cost & Scalability §) strictly. If cost growth exceeds 1.5× per quarter, narrow the in-scope domain list rather than removing the practice.
+
+---
+
+## Matrix Sampling Policy (PD-2)
+
+The Component State Matrix promises "every component × every state × every viewport × every theme × every locale × every density" coverage. Taken literally, this is exponential in 6 axes. A 200-component DS at 8 states × 3 viewports × 2 themes × 5 locales × 2 densities = **96,000 stories per build** — Chromatic-bankrupting and reviewer-overwhelming (omen FM-B1 / FM-B2).
+
+**Rule**: Default to pairwise (2-way coverage) sampling, escalate to higher coverage only when justified.
+
+| Tier | Default Sampling | Escalation Trigger |
+|------|------------------|---------------------|
+| **S** | Full pairwise + critical-path full-coverage | Full N-way only for components on payment / auth / PII paths |
+| **A** | Pairwise (2-way) on all DS components | 3-way for components on Tier-A critical user journey |
+| **B** | Critical-path only (top 10 user journeys) | Pairwise opt-in per component owner |
+| **C** | No Matrix sampling | (use conventional VRT only) |
+
+**Reduction techniques** (apply in order):
+1. **Equivalence partitioning** — Button variants 6× → 1 parametric story
+2. **Pairwise / orthogonal array** — `matrix` skill is the canonical implementation; 2-way coverage typically reduces story count by 10-30× vs full Cartesian product
+3. **Critical-path priority** — top user journeys sampled at higher coverage than rare paths
+4. **Visual fingerprint dedup** — perceptual-hash identical snapshots collapse into one
+
+**Targets**:
+- Story count ≤ 5,000 per build (default ceiling)
+- VRT monthly cost ≤ 1.5× existing budget
+- "Approve all" actions on >10 diffs forbidden at tool level (G5 enforcement)
+- Diff >50 forces PR split
+
+**Locale snapshot semantic limit**: VRT pixel-diff alone cannot detect translation quality, tone breakage, or cultural inappropriateness (omen FM-B4, RPN=560). For Tier-S/A multi-locale PRs, native-speaker semantic review of new copy is required in addition to VRT — pixel-match ≠ translation quality.
+
+---
+
+## Design-Code Contract (PD-4)
+
+Figma component ↔ code component must form a 1:1 typed contract. Violations block merge.
+
+**Four required layers** (all four must be present, per G9 Swiss-Cheese model):
+
+| Layer | Spec | Tooling |
+|-------|------|---------|
+| 1. Design Tokens | Colors / spacing / radii / shadows / typography in `tokens.json` | Style Dictionary / Tokens Studio |
+| 2. Component Map | Figma component ↔ code component path | Figma Code Connect |
+| 3. Motion Tokens | Animation duration / easing as tokens | CSS variables / Framer Motion config |
+| 4. State Machine Spec | Interactive state transitions (default / hover / focus / active / disabled / loading / error) | XState / `weave` skill state DSL |
+
+**Contract content** (per component):
+```
+Figma: PrimaryButton
+Code: <Button variant="primary" />
+Token: color.primary.600 / spacing.button.md / radius.md
+States: default → hover → focus → active → disabled → loading
+Motion: token motion.button.hover (150ms ease-out)
+A11y: role=button, keyboard actionable, focus ring visible (token focus.ring)
+```
+
+**Enforcement** (per G9 4-layer detection):
+- AI generates `<div onClick>` instead of `<Button>` → ESLint layer 1 fail
+- AI uses a color not in token allow-list → AST layer 1 fail
+- AI drops the focus state from a Button → Storybook layer 2 fail (state coverage gap)
+- AI ships interactive element absent from Storybook → Runtime DOM layer 3 fail
+- AI imports a DS component absent from Figma → Code Connect layer 4 fail
+
+**Contract Meta-Oracle** (parallel to Spec Self-Bug rule): Design-Code Contract changes themselves are Proof-Carrying. A Contract edit must (a) be expressed in multiple views (Figma component, token JSON, state DSL), (b) not violate existing meta-invariants (no component without states, no token without category, no orphan Code Connect mapping), (c) propose migration for affected call sites or accept v1/v2 coexistence with documented sunset.
+
+**Contract Versioning** (omen FM-D9 mitigation): v1 → v2 transitions are time-boxed (≤6 months coexistence) and tracked. Indefinite v1+v2 coexistence is a process failure flag.
+
+**External dependency notes**:
+- Figma SaaS outage (FM-D1): degraded-mode is part of Spec (G10) — CI behavior under Figma down is specified, not improvised. Default: Contract verification skips, merge allowed with banner; Figma comes back up → contract re-verified post-merge.
+- Figma API rate limit (FM-D2): caching layer (`frame` skill) batches CI verification requests; per-team rate budgeting prevents one team starving others.
+- Figma MCP version lock (FM-D7): Contract schema version pinned in `.proof-carrying.yml`; MCP breaking changes require a planned migration PR.
+
+**Off-Figma origins** (FM-D8): designs from Slack screenshots / paper sketches / external tools require an intake flow (`frame` skill) to convert into Figma components before Contract verification can proceed. Direct AI implementation from off-Figma source bypassing the intake = Gate FAIL.
 
 ---
 
@@ -189,13 +454,31 @@ Full evidence generation per PR is expensive. Without explicit bounds the regime
 
 This protocol defines the **shared concepts and vocabulary**. Skill-specific implementation lives in:
 
+**Code axis (Layer A)**:
 - `attest/SKILL.md` — spec compliance verification (Layer 1 + Layer 4 Gate)
 - `radar/` `voyager/` `drill/` `mint/` — oracle generation (Layer 2)
 - `vigil/` `sentinel/` `voyager/` — adversarial exploration (Layer 3)
 - `judge/` — Acceptance Gate adjudication (Layer 4)
 - `guardian/` — PR preparation with evidence package (Layer 4 delivery)
 - `beacon/` `mend/` — runtime oracle + repair loop (Layer 5)
-- `nexus/references/acceptance-recipe.md` — orchestrated chain
+- `arena/` — Dual-Implementation Oracle (COMPETE mode, G4 orchestration)
+
+**Design axis (Layer B, v2)**:
+- `atelier/` — Layer B sub-orchestrator (drives all design skills below)
+- `muse/` — design token allow-list + `token_proof`
+- `frame/` — Design-Code Contract + Code Connect + `component_proof` + 4-layer G9 detection coordination
+- `palette/` — `state_proof` + `responsive_proof`
+- `weave/` — state machine spec (interactive component states)
+- `flow/` — motion tokens (animation duration / easing)
+- `canon/` — `a11y_proof` (WCAG 2.2 AA verification)
+- `showcase/` — `vrt_proof` (visual regression with Matrix Sampling)
+- `prose/` — `copy_proof` (microcopy / voice / tone / banned words)
+- `echo/` — `ux_task_proof` (persona-based task walkthroughs)
+- `vision/` — `brand_proof` (creative direction, advisory for unspecifiable dimensions)
+- `matrix/` — pairwise / orthogonal-array sampling for Component State Matrix
+
+**Orchestration**:
+- `nexus/references/acceptance-recipe.md` — Layer A + Layer B orchestrated chain
 
 When implementing one of the above, reference this protocol rather than restating it. When the protocol itself changes, downstream skills inherit automatically.
 
@@ -215,6 +498,19 @@ When implementing one of the above, reference this protocol rather than restatin
 | Heavyweight Gate on hot-fixes | Invents unofficial bypasses | Hot-Fix Fast-Path with time-boxed follow-up |
 | Spec graph in a separate repo | Drift or parallel-dev bottleneck | Same-repo, same-PR, node-atomic merges |
 | Unbounded compute per PR | Fiscally unsustainable | Per-PR cap + impact-based selection + shadow-then-block |
+| Dual-Implementation with same LLM family | Correlated misreading invisible (FM-A1/A8) | G4 different LLM families + different prompt scaffolding + G10 Spec triangulation |
+| "Diff = 0 means correct" in Dual-Impl | Both can be wrong with same misreading | G10 — verdict requires Spec triangulation, not just A vs B agreement |
+| Cosmetic diff floods, "Approve all" | Reviewer fatigue masks semantic regressions (FM-B2) | G5 Diff Semantics Classifier + tool-level "Approve all" ban above 10 diffs |
+| Component State Matrix taken literally as full Cartesian product | 96,000 stories, Chromatic bankruptcy | Matrix Sampling Policy — pairwise default, full only for Tier-S critical paths |
+| Locale snapshot = translation quality | Pixel-match doesn't catch tone breakage (FM-B4) | Native-speaker semantic review required for Tier-S/A multi-locale |
+| Compiler PASS treated as "design approved" | False confidence, designer atrophy (FM-C1/C3) | G7 Unmeasurable-Quality Audit + "rule coverage verified" wording only |
+| AI optimizes for "minimum viable PASS design" | 47 identical primary buttons (FM-C5) | Component Variety scoring + brand_proof advisory + Component Sandbox for exploration |
+| "AI built button as `<div onClick>`" with single detection layer | Misses `<span role="button">`, custom hooks, etc. (FM-D4) | G9 Swiss-Cheese 4-layer (AST + Storybook + Runtime + Code Connect) — all 4 required |
+| Design-Code Contract treated as creative ceiling | Designer creativity atrophies, product museumifies (FM-D6) | G8 Component Sandbox + reverse-direction promotion flow |
+| Figma SaaS treated as runtime requirement | SPOF risk (FM-D1) | Degraded-mode in Spec (G10) + post-merge re-verification |
+| Indefinite Contract v1 + v2 coexistence | Versioning hell (FM-D9) | Time-boxed (≤6 months) coexistence + tracked sunset |
+| Code Proof PASS shipped despite Design Proof FAIL | Split-merge defeats two-axis gate | Acceptance Gate rule 6 — joint verdict; either FAIL blocks |
+| Coverage metrics published alone as KPI | Goodhart drift (FM-C4 / FM-B4) | G6 paired second-axis indicators + quarterly Goodhart audit |
 
 ---
 
@@ -228,3 +524,13 @@ When implementing one of the above, reference this protocol rather than restatin
 - Argo Rollouts / Flagger — SLO-based progressive delivery with auto-rollback (runtime oracle precedent)
 - Magi verdict on AAOS proposal — 3-0 GO-WITH-CONDITIONS, 12 conditions, 5 premise-collapse scenarios
 - Omen pre-mortem on AAOS proposal — 32 failure modes, 6 S≥9 Must-Act risks (correlated LLM failure, evidence-completeness illusion, reviewer atrophy, repair storm, spec self-bug, Goodhart inevitability)
+- Magi verdict on Code+Design Proof proposal (v2 source) — 3-0 GO-WITH-CONDITIONS (weighted confidence 67.8), 7 conditions C1-C7, orthogonal complement to AAOS
+- Omen pre-mortem on Code+Design Proof (v2 source) — 31 new failure modes (4 concepts: A Differential Implementation, B Component State Matrix, C Design Compiler, D Design-Code Contract), 0 fully absorbed by G1-G3, 7 new guardrails proposed G4-G10
+- Figma Code Connect (2024) + Figma MCP Server (2025) — Design-Code mapping prerequisites for Design Proof adoption
+- Style Dictionary / Tokens Studio — design token SoT (`muse` skill integration)
+- Chromatic / Storybook 9 — VRT + Storybook Test integration (`showcase` skill integration)
+- axe-core / Pa11y — WCAG 2.2 AA verification (`canon` skill integration)
+- XState — state machine DSL for interactive component states (`weave` skill integration)
+- DO-178C N-version programming — regulated-industry precedent for Dual-Implementation Oracle
+- AWS S3 parallel-run (legacy compatibility verification) — production precedent for Dual-Implementation in money-domain
+- Combinatorial test theory (pairwise / orthogonal-array) — Matrix Sampling Policy basis (`matrix` skill integration)

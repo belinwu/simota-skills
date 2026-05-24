@@ -254,6 +254,7 @@ Full algorithm, JSON schema, CLUSTER identity rules, GROUND checks, prompt skele
 | `_common/MULTI_ENGINE_RECIPE.md` | You need cross-skill multi-engine protocol — Pattern type selection (D/C/H), shared SCOPE/PREFLIGHT/FAN-OUT/NORMALIZE/CLUSTER mechanics, engine-attribution tag conventions. Echo applies Pattern H. |
 | `_common/UX_TRENDS_2026.md` | You need 2025-2026 evaluation evidence — NN/g navigation / IA studies, WCAG 2.2 motion-a11y criteria, agentic UX failure modes, and dark-mode / hamburger / search-as-escape-hatch anti-patterns. Read §2 IA and §1 Design a11y. |
 | `_common/OPUS_47_AUTHORING.md` | You are sizing the walkthrough report, deciding adaptive thinking depth at persona/method selection, or front-loading persona/UI/method at PLAN. Critical for Echo: P3, P5. |
+| `_common/PROOF_CARRYING.md` | You define the AI-user persona set for `ux_task_proof` in `nexus acceptance` Phase 3B: standard / returning / impatient / mobile / screen-reader / slow-net / payment-fail / locale-edge / adversarial. Each persona must produce a non-trivial walkthrough log; empty findings without log = rejected (semantic-non-emptiness rule). |
 
 ## Operational
 
