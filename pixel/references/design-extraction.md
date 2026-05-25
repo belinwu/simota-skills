@@ -299,7 +299,7 @@ Round extracted values to the nearest 8px multiple for consistency:
 | 6 items | 3x2 grid | `grid-template-columns: repeat(3, 1fr)` |
 | Uneven layout | Asymmetric | `grid-template-columns: 2fr 1fr` or similar |
 | Aligned card content across rows (title row, CTA row, etc.) | Subgrid (Baseline 2026-03) | Parent `grid-template-rows: ...`; child `grid-template-rows: subgrid` |
-| Staggered "Pinterest" layout | Treat as JS Masonry until native Masonry is Baseline | See `responsive-strategies.md` — do NOT emit `grid-template-rows: masonry` without a fallback |
+| Staggered "Pinterest" layout | Treat as JS Masonry until native Masonry is Baseline | See `responsive-design.md` — do NOT emit `grid-template-rows: masonry` without a fallback |
 
 ### Detect Subgrid Opportunities Early
 
