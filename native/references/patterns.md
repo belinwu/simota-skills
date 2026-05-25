@@ -7,6 +7,8 @@
 
 ## Navigation Patterns
 
+> For version compatibility, migration notes, and the `NavigationSplitView` regression on iOS 18, see `modern-stack.md` § Navigation — `NavigationStack` (iOS 16+) and § Type-Safe Navigation (Navigation 2.8+).
+
 ### iOS — `NavigationStack` + Coordinator
 
 ```swift
@@ -40,8 +42,6 @@ struct ContentView: View {
 }
 ```
 
-On iPad / large screens, place `NavigationSplitView` at the top. Do not nest `NavigationSplitView` inside a `NavigationStack` (regression bug still known on iOS 18).
-
 ### Android — Navigation Compose 2.8+ (type-safe)
 
 ```kotlin
@@ -67,8 +67,6 @@ fun AppNavigation() {
     }
 }
 ```
-
-Hand-written string routes (`"home"`) are legacy. Use `@Serializable` data class / data object for compile-time type checks.
 
 ---
 
@@ -156,6 +154,8 @@ class MainActivity : ComponentActivity() {
 ---
 
 ## State Management Patterns
+
+> For `@Observable` migration from `ObservableObject`, Swift 6.2 caller-isolation, Strong Skipping Mode stability rules, and `ImmutableList` guidance, see `modern-stack.md` § Observation framework — `@Observable` and § Stable Types & Strong Skipping Mode.
 
 ### iOS — `@Observable` + per-feature ViewModel
 
@@ -263,8 +263,6 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
     }
 }
 ```
-
-`collectAsStateWithLifecycle()` is mandatory (`collectAsState()` keeps collecting in the background across Lifecycle changes).
 
 ---
 
@@ -377,6 +375,8 @@ class NetworkMonitor(context: Context) {
 
 iOS / Android live in **separate codebases**. Follow each language's idioms. Where commonality is required, align the API contract / Design Tokens at a higher layer.
 
+> For Liquid Glass adoption policy (iOS 26 default, iOS 27 opt-out removal, 2026-04-28 Xcode 26 submission deadline) and the full Material 3 Expressive component catalog (`NavigationSuiteScaffold`, `PullToRefreshBox`, shape library), see `modern-stack.md` § Liquid Glass and § Material 3 Expressive.
+
 ### iOS 26 Liquid Glass
 
 ```swift
@@ -395,8 +395,6 @@ GlassEffectContainer {
     ActionRow()
 }
 ```
-
-Recompiling with Xcode 26 auto-applies Liquid Glass to standard `TabView`, `NavigationStack`, and toolbar surfaces. Provide **light / dark / tinted / clear** icon variants in the Asset Catalog / Icon Composer. The opt-out for the previous design **is removed in iOS 27** — plan migration before that cycle.
 
 ### Android Material 3 Expressive
 
@@ -424,36 +422,9 @@ fun MyScreen() {
 }
 ```
 
-Replace `CircularProgressIndicator` (indeterminate) with `LoadingIndicator` (M3 Expressive, shape morphing).
+### Edge-to-edge & Predictive Back (API 36)
 
-### Edge-to-edge (enforced at API 36)
-
-```kotlin
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
-        setContent {
-            MyTheme {
-                MyApp(modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars))
-            }
-        }
-    }
-}
-```
-
-`R.attr#windowOptOutEdgeToEdgeEnforcement` is deprecated and inert at API 36.
-
-### Predictive back (default ON at API 36)
-
-```kotlin
-@Composable
-fun MyScreen(onBack: () -> Unit) {
-    BackHandler(enabled = true) { onBack() }
-}
-```
-
-`onBackPressed()` is no longer dispatched.
+See `modern-stack.md` § Edge-to-Edge and § Predictive Back for the `enableEdgeToEdge()` + `BackHandler` snippets and the API 36 enforcement timeline. Both are mandatory wiring at `targetSdk 36` — apply once at `MainActivity` setup and per screen as needed.
 
 ---
 

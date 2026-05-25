@@ -23,7 +23,7 @@ Purpose: load this when Orbit analyzes completed loops, adapts defaults, or sync
 | `MEASURE` | evaluate effectiveness | calculate LES against recent tier history |
 | `ANALYZE` | identify patterns | detect success patterns, failure sequences, and parameter fit |
 | `IMPROVE` | propose changes | suggest parameter, template, or taxonomy changes with rationale and rollback plan |
-| `SAFEGUARD` | validate changes | check anti-patterns, pattern consistency, evidence threshold, and snapshot |
+| `SAFEGUARD` | validate changes | check failure-catalog anti-patterns, pattern consistency, evidence threshold, and snapshot |
 | `JOURNAL` | preserve learning | write journal record and sync to Lore and Judge |
 
 ## Learning Triggers
@@ -103,7 +103,7 @@ LES is valid only after `>= 3` completed loops of the same tier. Below that, rep
 | parameter default change | `3` total |
 | tier-threshold adjustment | `1` |
 | contract-template addition | `1` |
-| failure-taxonomy refinement | `1` |
+| failure-catalog refinement | `1` |
 | verification-gate tightening | `1` |
 | default-script enhancement | `1` |
 

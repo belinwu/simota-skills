@@ -95,12 +95,12 @@ Every `rerank` design ships:
 3. Feature list (for LTR) or model ID + dimensions (for neural).
 4. Latency budget table with per-stage P95.
 5. Training / re-training plan: data source, click-model debiasing, cadence.
-6. Evaluation hookup — defer metric definition and A/B stat design to `eval` + `Experiment`.
+6. Evaluation hookup — defer metric definitions (nDCG@k, MRR, MAP, Precision@k, Recall@k), golden-query curation, and click-model selection to `references/evaluation-methods.md`; A/B stat framework (power, SRM, CUPED) to `Experiment`.
 
 ## Handoff
 
 - To `Builder`: feature-extraction pipeline, model-serving API (batched inference), fallback-to-Stage-1 behavior when the re-ranker times out.
 - To `Stream`: click-log ingestion with session / position / dwell fields.
-- To `eval` (Seek): NDCG@10, MRR, and position-bias-corrected online CTR as the acceptance metric set.
+- To `eval` (Seek): NDCG@10, MRR, and position-bias-corrected online CTR as the acceptance metric set — full definitions, targets, and pipeline in `references/evaluation-methods.md` (canonical metric source).
 - To `Experiment`: A/B design — interleaving preferred over split traffic for ranking changes; reuse its CUPED variance reduction for low-traffic surfaces.
 - From Oracle `embed` (inbound): when Oracle RAG design reaches "we need a re-ranker", it routes here; return a re-ranker spec that plugs into the RAG top-K.

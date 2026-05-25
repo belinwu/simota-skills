@@ -2,6 +2,8 @@
 
 Purpose: Author network-layer detection rules in Snort 3 and Suricata dialects, map them to MITRE ATT&CK Network techniques, and wire the resulting EVE JSON alerts into the SIEM. The `snort` Recipe covers rule authoring, profiling, ET Open community rule management, and FP-aware threshold tuning. It does not cover host-process telemetry or incident response triage — those belong to `sigma` and Triage respectively.
 
+For shared Sigma / YARA rule structure, modifiers, and ATT&CK coverage mapping templates, see `detection-patterns.md`. This file covers **network-layer (Snort 3 / Suricata) specifics only** — `fast_pattern` anchoring, EVE JSON event shape, ET Open rule pinning, rule performance profiling, and Snort/Suricata dialect differences.
+
 ## Scope Boundary
 
 - **Vigil `snort`**: Network sensor rule authoring (Snort 3 / Suricata), flow / file / dns / tls keyword usage, EVE JSON shape, ET Open management, rule performance.
