@@ -2,6 +2,8 @@
 
 Purpose: Read this when choosing a TTS engine, implementing the `TTSAdapter` boundary, tuning voice parameters, or managing the audio queue.
 
+Scope: Real-time streaming pipeline for AITuber (TTSAdapter contract, AudioQueue, phoneme timing for lip-sync, low-TTFA engine matrix). For persona-driven local CLI synthesis with persona-attribute → voice-name mapping and `SPEAK` transcript format, see `cast/references/speak-engine.md`.
+
 ## Contents
 
 - [Engine comparison](#engine-comparison)

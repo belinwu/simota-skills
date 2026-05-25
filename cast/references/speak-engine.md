@@ -2,6 +2,8 @@
 
 Purpose: Define TTS engine selection, auto-derivation rules, prompt patterns, output modes, and failure handling for `SPEAK`.
 
+Scope: Persona-driven CLI/local synthesis with `engine_preference: auto` fallback and persona-attribute → voice-name mapping. For streaming-pipeline TTS (TTSAdapter interface, AudioQueue, low-TTFA cloud engines, lip-sync phoneme timing), see `aether/references/tts-engines.md`.
+
 ## Contents
 
 1. Engine architecture
