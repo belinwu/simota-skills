@@ -1,6 +1,8 @@
 # Tileset Design Reference
 
-Purpose: load this when Dot must design tilesets, autotiles, terrain transitions, or tilemap metadata. It preserves engine-agnostic tiling rules and engine-specific autotile expectations.
+Purpose: engine-agnostic tile **fundamentals** — sizes, bitmask math, terrain overlay strategy, seamless tile algorithm, palette-cycling animation, common tile categories. Read this when Dot must design tilesets, autotiles, terrain transitions, or tilemap metadata.
+
+> Engine-specific recipe workflow (Tiled `.tsx` XML, LDtk auto-rules, Phaser/Godot/Unity emission, atlas packing, deliverable contract, anti-patterns) is in `references/tilesheet-design.md`.
 
 ## Contents
 
@@ -13,7 +15,6 @@ Purpose: load this when Dot must design tilesets, autotiles, terrain transitions
 - [Seamless tiling patterns](#seamless-tiling-patterns)
 - [Common tile categories](#common-tile-categories)
 - [Engine-specific auto-tile formats](#engine-specific-auto-tile-formats)
-- [Tileset code template (Phaser 3)](#tileset-code-template-phaser-3)
 - [Tilemap metadata JSON](#tilemap-metadata-json)
 - [Design checklist](#design-checklist)
 
@@ -487,27 +488,7 @@ ground.set_cell(Vector2i(x, y), source_id, atlas_coords)
 
 ## Tileset Code Template (Phaser 3)
 
-```javascript
-// Load tileset
-this.load.image('tiles', 'tileset.png');
-this.load.tilemapTiledJSON('map', 'map.json');
-
-// Create map
-const map = this.make.tilemap({ key: 'map' });
-const tileset = map.addTilesetImage('terrain', 'tiles', 16, 16, 0, 0);
-const groundLayer = map.createLayer('ground', tileset, 0, 0);
-const objectLayer = map.createLayer('objects', tileset, 0, 0);
-
-// Collision
-objectLayer.setCollisionByProperty({ collides: true });
-// or by tile index range
-groundLayer.setCollisionBetween(48, 64);
-
-// Pixel-perfect rendering
-groundLayer.setScale(2);
-objectLayer.setScale(2);
-this.cameras.main.roundPixels = true;
-```
+> Engine emission templates (Phaser, Tiled `.tsx`, LDtk rules, Godot, Unity) live in `references/tilesheet-design.md` under "Engine Integration". This document keeps only metadata structure (next section).
 
 ---
 
