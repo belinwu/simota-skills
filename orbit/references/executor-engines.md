@@ -153,7 +153,13 @@ EXEC_CMD='agy -p "Read goal.md and complete the task described in it" --dangerou
 
 Subcommands: `changelog`, `help`, `install` (configure environment paths), `plugin` / `plugins` (list/install/uninstall/enable/disable/import/validate/link), `update`.
 
-**Not supported in Antigravity CLI** (vs Gemini CLI): `--yolo` (renamed to `--dangerously-skip-permissions`), `-e`/`--extensions` (use `agy plugin install` instead), `-o`/`--output-format` (pin output schema in the prompt), `--approval-mode`, `-m`/`--model`, `--include-directories` (use `--add-dir`), `--all-files`, `--allowed-tools`, `--checkpointing`.
+**Not supported in Antigravity CLI** (vs Gemini CLI): `--yolo` (renamed to `--dangerously-skip-permissions`), `-e`/`--extensions` (use `agy plugin install` instead), `--approval-mode`, `-m`/`--model`, `--include-directories` (use `--add-dir`), `--all-files`, `--allowed-tools`, `--checkpointing`.
+
+**Supported but hidden in `agy --help` v1.0.2** (confirmed via official Google DEV.to examples, 2026-05): `--output-format <fmt>` — use `--output-format json` for CI / programmatic consumption. Pin expected schema fields in the prompt body as a defense against future schema drift.
+
+**File context injection**: always reference files in the prompt with `@<path>` syntax (e.g. `@docs/spec.md`). Without `@`, agy treats the path as plain text and delegates the read to an internal subagent that hits the 60s timeout cap (v1.0.2 changelog: "restricted the default 60-second interaction timeout specifically to subagents"), producing the `exit 0 + empty stdout` silent-failure pattern.
+
+**⚠ Pre-flight Notification (mandatory before first headless spawn)**: emit the canonical notification per `_common/CLI_COMPATIBILITY.md §9.1`. Recommends `/update-config` to allowlist the Bash pattern in `settings.json` `permissions.allow`. Required because the agy autonomous loop + Claude Code Bash spawn combine into a two-layer approval-gate bypass.
 
 Authentication: resolved from the Google login session (interactive `agy` launch). No `agy auth login/logout/status` subcommands — manage via the IDE/CLI launch flow.
 

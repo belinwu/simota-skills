@@ -197,7 +197,7 @@ Spawn **three Agent calls in a single message** for genuine parallel execution. 
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
 | `{verb}-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `{verb}-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see §Engine Runtime Failure Detection below) |
+| `{verb}-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --output-format json --log-file <path>` (use `@<path>` to inject files; silent-failure detection mandatory — see §Engine Runtime Failure Detection below; **Pre-flight Notification required** before first spawn — see `_common/CLI_COMPATIBILITY.md §9.1`) |
 | `{verb}-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
 `{verb}` is skill-specific: `propose` (Spark), `demand` (Plea), `failure` (Omen), `deliberate` (Magi), etc.
@@ -216,13 +216,17 @@ Spawn **three Agent calls in a single message** for genuine parallel execution. 
 
 If an engine returns free-form Markdown, ask its subagent to re-emit as JSON before integrating.
 
+### 3.4.1. agy Pre-flight Notification (mandatory)
+
+Before the first `{verb}-agy` subagent of a session emits the Bash spawn, surface the **Pre-flight Notification** defined in `_common/CLI_COMPATIBILITY.md §9.1`. Reason: combining `agy --dangerously-skip-permissions` with a Claude Code `Bash` spawn produces a two-layer autonomous loop that bypasses approval gates on both sides. The notification recommends running `/update-config` once to allowlist the Bash pattern in `settings.json` `permissions.allow`. The notification is informational (does not gate AUTORUN). Subsequent spawns in the same session may downgrade to a single-line reminder if the allowlist entry is confirmed.
+
 ### 3.5. Engine Runtime Failure Detection (mandatory)
 
 Some CLIs report runtime failures (quota exhaustion, auth expiry, executor errors, MCP-config corruption) only to a log file, exiting `0` with empty stdout. A subagent that reads only stdout will misclassify the silent failure as "engine returned no findings", polluting CLUSTER / SCORE and producing fake divergence. Each engine has an explicit runtime-failure-detection rule.
 
 | Engine | Failure mode | Detection contract (subagent MUST follow) |
 |--------|--------------|--------------------------------------------|
-| `agy` v1.0.0 | `exit 0` + empty stdout on `RESOURCE_EXHAUSTED` 429 / OAuth revoked / `agent executor error` / corrupt `~/.gemini/config/mcp_config.json` | Invoke with `--log-file <path>`; on `RC=0 && stdout==0 bytes`, `grep -E "RESOURCE_EXHAUSTED\|Resets in\|error getting token\|agent executor error\|unexpected end of JSON"` against the log; report as `RUNTIME-BROKEN` with the matched log excerpt |
+| `agy` v1.0.2 | `exit 0` + empty stdout on any of: `RESOURCE_EXHAUSTED` 429 / OAuth revoked / `agent executor error` / corrupt `~/.gemini/config/mcp_config.json` / **internal subagent 60s timeout when bare file paths are used instead of `@<path>` syntax** (v1.0.2 changelog: timeout cap now restricted to subagents only — main agent escapes it, but delegated file reads still die silently) / **`--print-timeout` (default 5min) exceeded on heavy multi-file synthesis** | Invoke with `--log-file <path>` and pass file refs as `@<path>`; on `RC=0 && stdout==0 bytes`, `grep -E "RESOURCE_EXHAUSTED\|Resets in\|error getting token\|agent executor error\|unexpected end of JSON\|subagent.*timeout\|interaction timeout"` against the log; report as `RUNTIME-BROKEN` with the matched log excerpt; retry with `--print-timeout 15m` if heavy synthesis is suspected |
 | `codex` | non-zero exit code on most failures | Standard `RC != 0` check; capture stderr |
 | Claude subagent | structured Agent-tool errors | Surface verbatim |
 
@@ -232,10 +236,10 @@ Some CLIs report runtime failures (quota exhaustion, auth expiry, executor error
 LOG="$(mktemp -t agy_run.XXXXXX)"
 OUT="$(mktemp -t agy_run_out.XXXXXX)"
 trap 'rm -f "$LOG" "$OUT"' EXIT
-agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --output-format json --log-file "$LOG" --print-timeout 15m > "$OUT"
 RC=$?; OUT_BYTES=$(wc -c < "$OUT")
 if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
-  REASON=$(grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON" "$LOG" | head -5)
+  REASON=$(grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON|subagent.*timeout|interaction timeout" "$LOG" | head -5)
   echo "VERDICT: agy RUNTIME-BROKEN"
   echo "REASON: ${REASON:-unknown — inspect full log}"
   exit 42   # caller treats non-0 as RUNTIME-BROKEN; do not silently aggregate
@@ -336,7 +340,7 @@ codex exec --full-auto "$(cat /tmp/prompt.md)"
 LOG="$(mktemp -t agy_run.XXXXXX)"
 OUT="$(mktemp -t agy_run_out.XXXXXX)"
 trap 'rm -f "$LOG" "$OUT"' EXIT
-agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
+agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --output-format json --log-file "$LOG" --print-timeout 15m > "$OUT"
 RC=$?; OUT_BYTES=$(wc -c < "$OUT")
 if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
   grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON" "$LOG" | head -5

@@ -58,12 +58,13 @@ agy -p "<prompt>" [OPTIONS]
 
 Non-interactive review always uses `-p` (prompt) plus `--dangerously-skip-permissions`. The `code-review` plugin (if installed via `agy plugin install`) is auto-loaded; there is no `-e`/`--extensions` flag in Antigravity CLI.
 
-### Flag Matrix (verified against `agy --help` v1.0.0)
+### Flag Matrix (verified against `agy --help` v1.0.2 + official DEV.to examples, 2026-05)
 
 | Flag | Purpose | Required for review? |
 |------|---------|----------------------|
 | `-p, --print, --prompt <STR>` | Headless prompt — runs once and exits | Yes |
 | `--dangerously-skip-permissions` | Auto-approve all tool actions (needed for headless) | Yes for headless |
+| `--output-format <FMT>` | Structured output (e.g. `json`) — **hidden flag**, absent from `agy --help` but confirmed by Google DEV.to article | Yes for CI / programmatic consumption |
 | `--add-dir <PATH>` | Add a directory to the workspace (repeatable) | When review spans multiple repos |
 | `--sandbox` | Run in a sandbox with terminal restrictions enabled | For isolated/risky reviews |
 | `-c, --continue` | Continue the most recent conversation | For iterative review sessions |
@@ -72,7 +73,11 @@ Non-interactive review always uses `-p` (prompt) plus `--dangerously-skip-permis
 | `--log-file <PATH>` | Override CLI log file path | For debugging or audit trails |
 | `--print-timeout <DURATION>` | Timeout for print mode wait (default 5m0s) | When prompt may take >5 min |
 
-Authentication is resolved from the Google login session — do not supply API keys. There is no `-m`/`--model`, no `-o`/`--output-format`, no `--approval-mode`, no `-e`/`--extensions` flag. Plugin loading is implicit once installed via `agy plugin install`.
+Authentication is resolved from the Google login session — do not supply API keys. There is no `-m`/`--model`, no `--approval-mode`, no `-e`/`--extensions` flag. Plugin loading is implicit once installed via `agy plugin install`.
+
+**File reference syntax**: always use `@<path>` (e.g. `@docs/spec.md`) inside the prompt. Bare path strings trigger silent subagent timeouts at the 60s cap — main agent stays alive while the delegated read dies and produces `exit 0` + empty stdout. v1.0.2 changelog: "restricted the default 60-second interaction timeout specifically to subagents, preventing the main agent from being unconditionally capped."
+
+**⚠ Pre-flight Notification (mandatory)**: before the first `agy -p ... --dangerously-skip-permissions` review of a session, emit the Pre-flight Notification per `_common/CLI_COMPATIBILITY.md §9.1`. This recommends running `/update-config` once to allowlist the Bash pattern in `settings.json` `permissions.allow` — the combination of agy's autonomous tool use plus Claude Code's Bash spawn would otherwise bypass approval gates on both layers. The notification is informational and does not block headless review.
 
 ### Canonical Commands
 
@@ -83,8 +88,8 @@ agy -p "Activate the code review skill and review all code changes on the curren
 # Write the review to a file for downstream processing
 agy -p "Activate the code review skill, review the current branch diff, and write the findings to code-review.md." --dangerously-skip-permissions
 
-# Structured JSON output (for CI pipelines)
-agy -p "Review the current branch diff. Return findings as JSON with fields: severity, file, line, issue, suggested_fix." --dangerously-skip-permissions
+# Structured JSON output (for CI pipelines — hidden but supported flag)
+agy -p "Review the current branch diff. Return findings as JSON with fields: severity, file, line, issue, suggested_fix." --dangerously-skip-permissions --output-format json
 
 # Plan mode (read-only, no writes to disk)
 agy -p "Review the current branch diff and summarize risks; do not modify any files."
@@ -283,7 +288,7 @@ Always pair the prompt with `--dangerously-skip-permissions` for headless runs u
 - Don't run headless without `--dangerously-skip-permissions`; tools will block awaiting approval and the run will hang.
 - Don't rely on `/pr-code-review` unless the repo has the GitHub MCP server configured.
 - Don't use Gemini when the user explicitly asked for Codex, or vice-versa. Fall back only on explicit unavailability.
-- Don't pass flags from Gemini CLI that Antigravity CLI does not support — no `--yolo`, no `-e`/`--extensions`, no `-o`/`--output-format`, no `--approval-mode`, no `-m`/`--model`. Use `agy --help` to verify.
+- Don't pass flags from Gemini CLI that Antigravity CLI does not support — no `--yolo` (renamed to `--dangerously-skip-permissions`), no `-e`/`--extensions` (use `agy plugin install`), no `--approval-mode`, no `-m`/`--model`. Note: `--output-format` IS supported (hidden — absent from `agy --help` but documented in official Google DEV.to examples). Use `agy --help` plus DEV.to as joint references — `--help` alone is insufficient.
 
 ---
 

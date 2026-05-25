@@ -17,7 +17,9 @@ Arena (Team Leader)
 
 **Key principle:** Subagents are remote hands, not brains. They delegate all implementation work to external engines.
 
-> **Important — agy v1.0.0 silent-failure detection (mandatory).** Every subagent invoking `agy -p ...` must pass `--log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`. Subagent-level silent failures pollute variant comparison and integration.
+> **Important — agy v1.0.2 silent-failure detection (mandatory).** Every subagent invoking `agy -p ...` must pass `--dangerously-skip-permissions --log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error / silent subagent 60s timeout on bare paths). The skip-permissions flag is required because headless `agy -p` cannot interactively answer the default `request-review` gate. See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection` for the canonical command form. Schematic diagrams below show `agy -p "{spec}"` as a placeholder — actual Bash subagent invocations must include `--dangerously-skip-permissions --output-format json --log-file <path> --print-timeout 15m`. Subagent-level silent failures pollute variant comparison and integration.
+>
+> **⚠ Pre-flight Notification (mandatory before first agy variant spawn of a session).** The Arena Team Leader must emit the canonical Pre-flight Notification defined in `_common/CLI_COMPATIBILITY.md §9.1` before launching the first `variant-agy` subagent. Reason: each variant spawns `agy --dangerously-skip-permissions` via Bash, creating a two-layer autonomous loop that bypasses approval gates on both the agy side and the Claude Code Bash side. The notification recommends running `/update-config` once to allowlist the Bash pattern in `settings.json` `permissions.allow`. It is informational and does not block Team Mode execution.
 
 ---
 

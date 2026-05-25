@@ -104,6 +104,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 - Routing adaptation that would replace a high-performing chain (`CES ≥ B`).
 - Chain designs with 5+ agents.
 - First-time use of a newly registered agent in a production chain.
+- **Before the first `agy -p ... --dangerously-skip-permissions` Bash spawn of a session** — emit the Pre-flight Notification per `_common/CLI_COMPATIBILITY.md §9.1` (informational, does not block AUTORUN; recommends `/update-config` to allowlist the Bash pattern in `settings.json`).
 
 ### Never
 
@@ -303,7 +304,7 @@ max_depth = 3
 
 | Layer | Method | When | API |
 |-------|--------|------|-----|
-| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --output-format json` |
+| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --dangerously-skip-permissions --output-format json` (use `@<path>` to inject file context — see "agy headless silent-failure root causes" below) |
 | **L2: Parallel Spawn** | Multiple `/agent` invocations (async, each own context) | 2-3 independent branches | Aggregate via `/tasks`; no explicit `wait` primitive |
 | **L3: Role-Driven Team** | Plugin-installed team pack (`oh-my-antigravity` etc. via `agy plugin install <url>`) | 4+ workers, complex ownership | Community pattern — `/oma:taskboard` priority queue + approval gates (no Rally equivalent documented) |
 
@@ -315,10 +316,36 @@ max_depth = 3
 **Prereqs (must hold or internal-fall-back — distinct from Codex):**
 1. **`agy` binary is on PATH** — verify with `which agy && agy --version`.
 2. **Main TUI session** — agy launches `/agent` only as a TUI slash command. If Nexus itself runs as a customAgent (its own `agent.json` exists under `~/.gemini/antigravity-cli/brain/<session>/.agents/agents/<name>/`), nested spawn is impossible unless `customAgent.toolNames` permits a `/agent` equivalent.
-3. **Headless (`agy -p`) requires OS-level process isolation** — TUI slash commands unavailable. Substitute with `Bash("agy -p '<spawn prompt>'")` to run a separate agy process.
+3. **Headless (`agy -p`) requires OS-level process isolation** — TUI slash commands unavailable. Substitute with `Bash("agy -p '<spawn prompt>' --dangerously-skip-permissions")` to run a separate agy process. The `--dangerously-skip-permissions` flag is **required for autonomous Nexus execution** because headless `agy -p` cannot interactively respond to `request-review` prompts and will hang or fail otherwise. Treat this flag like Claude Code's `bypassPermissions` mode — never use it in production / untrusted-workspace contexts; restrict to ephemeral sandboxes, CI runners, or explicitly-authorized dev environments.
 4. **No tool named `spawn_agent` exists in agy** — the correct fallback log form is "`/agent` slash command unavailable (reason: <not in TUI main session | toolNames does not permit | headless mode without --prompt-interactive>)".
 
-**Runtime notes**: (1) Model is switched via `/model` in TUI before spawning, not per-agent — design recipes around the active model or instruct the user to switch. (2) `/usage` does not update live — for long chains (>20 min) prefer `agy -p` one-shot triggered externally over TUI-resident `/agent` to avoid mid-run quota cliffs. (3) Permission mode defaults to `request-review`; recipes assuming autonomy must instruct the user to switch to `proceed-in-sandbox` (never `always-proceed` in production). (4) `request-review` is reported as occasionally ignored for file edits — treat as runtime risk, not configuration guarantee.
+**Runtime notes**: (1) Model is switched via `/model` in TUI before spawning, not per-agent — design recipes around the active model or instruct the user to switch. (2) `/usage` does not update live — for long chains (>20 min) prefer `agy -p` one-shot triggered externally over TUI-resident `/agent` to avoid mid-run quota cliffs. (3) Permission mode defaults to `request-review`; recipes assuming autonomy must instruct the user to switch to `proceed-in-sandbox` (TUI) or pass `--dangerously-skip-permissions` (headless `agy -p`) — never use `always-proceed` or unrestricted skip in production. The headless flag is the only way to bypass the interactive review prompt that would otherwise stall a Nexus-orchestrated agy spawn. (4) `request-review` is reported as occasionally ignored for file edits — treat as runtime risk, not configuration guarantee.
+
+**⚠ MANDATORY Pre-flight Notification**: before the first `agy -p ... --dangerously-skip-permissions` spawn of a session, Nexus MUST emit the Pre-flight Notification defined in `_common/CLI_COMPATIBILITY.md §9.1`. Rationale: spawning agy headless from Claude Code's `Bash` tool creates a two-layer autonomous loop that bypasses both sides' approval gates. The notification recommends running the `update-config` skill once to allowlist the specific Bash pattern in `settings.json permissions.allow`. The notification fires in AUTORUN / AUTORUN_FULL too (informational, not a gate). See §9.1 for canonical template.
+
+**agy headless silent-failure root causes (v1.0.2, verified 2026-05)**: the `exit 0 + empty stdout` pattern detected by `_common/MULTI_ENGINE_RECIPE.md §3.5` typically has one of four root causes, with mitigations:
+
+| Root cause | Mechanism | Mitigation |
+|------------|-----------|------------|
+| **File path written as plain string** | agy treats `docs/foo.md` (no `@`) as literal text; main agent delegates the read to an internal subagent | **Always use `@<path>` syntax** to inject file context directly into the main agent (e.g. `Compare @docs/a.md and @docs/b.md ...`) |
+| **Internal subagent 60s timeout** | v1.0.2 changelog restricts the 60s timeout to subagents only (main agent is no longer capped); long-file reads via delegated subagents still die silently | `@` syntax avoids subagent delegation entirely; for unavoidable delegation, split prompt into multiple smaller `agy -p` calls |
+| **`--print-timeout` exceeded** | Default 5min on the main agent's wait; long syntheses can hit it | Pass `--print-timeout 15m` (or appropriate) for heavy reviews |
+| **Quota / OAuth expiry** | Silent runtime failure with no stderr emission | `--log-file <path>` + post-run `grep -i "quota\|auth\|expired"` per `_common/MULTI_ENGINE_RECIPE.md §3.5` |
+
+**`--output-format json` status (hidden flag, verified 2026-05)**: the flag is **not** in `agy --help` v1.0.2 output, but is demonstrated in the official Google DEV.to article (`agy -p "List all TODOs in this codebase" --output-format json`). Treat as **supported but undocumented in `--help`** — use freely, but pin schema expectations in the prompt as a defense against future schema drift.
+
+**Recommended headless template:**
+```bash
+agy -p --dangerously-skip-permissions --output-format json "$(cat <<'EOF'
+[Role and task]
+
+Primary: @<path>
+References: @<path1>, @<path2>
+
+Output: <strict schema description>
+EOF
+)" --print-timeout 15m --log-file /tmp/agy-<slug>.log 2>&1 | tee /tmp/agy-<slug>.out
+```
 
 **Cross-CLI mapping:** see `_common/CLI_COMPATIBILITY.md`.
 
@@ -366,7 +393,7 @@ Agent(
 
 **Codex CLI variant**: same prompt body; invoke via `spawn_agent(prompt=<body>)` then `wait_agent(id)`.
 
-**agy variant**: same prompt body; invoke via `/agent [agent]-[task-slug] "<body>"` (TUI) or `agy -p "<body>" --output-format json` (headless). Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
+**agy variant**: same prompt body; invoke via `/agent [agent]-[task-slug] "<body>"` (TUI) or `agy -p "<body>" --dangerously-skip-permissions --output-format json` (headless). The `--dangerously-skip-permissions` flag is mandatory in headless mode — without it, `request-review` will block the spawn. `--output-format json` is a hidden flag (absent from `--help` v1.0.2 but confirmed in official DEV.to examples). **Reference files in the prompt body with `@<path>`** (e.g. `@docs/spec.md`) to inject context into the main agent — bare path strings trigger silent subagent timeouts (60s cap, see Antigravity CLI section above). Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
 
 Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 

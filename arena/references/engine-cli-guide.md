@@ -162,15 +162,16 @@ Execute implementation tasks via Google Antigravity CLI.
 # Basic execution (YOLO mode, no confirmation prompts)
 agy -p "implement the following: {spec_prompt}" --dangerously-skip-permissions
 
-# Sandbox mode (for safer execution)
-agy -p "implement the following: {spec_prompt}" --sandbox
+# Sandbox mode (for safer execution — combine with skip-permissions for headless)
+agy -p "implement the following: {spec_prompt}" --dangerously-skip-permissions --sandbox
 ```
 
 **Key flags:**
 | Flag | Description |
 |------|-------------|
 | `-p "<prompt>"` | Non-interactive prompt mode |
-| `--dangerously-skip-permissions` | No confirmation prompts — required for Arena automation |
+| `--dangerously-skip-permissions` | No confirmation prompts — required for Arena automation. **⚠ Mandatory Pre-flight Notification** before first spawn — see `_common/CLI_COMPATIBILITY.md §9.1`. Recommends `/update-config` to allowlist the Bash pattern in `settings.json` because the agy autonomous loop + Claude Code Bash spawn create a two-layer approval-gate bypass |
+| `--output-format json` | Structured output (hidden flag — absent from `agy --help` but confirmed by official DEV.to examples) |
 | `--sandbox` | Run in sandboxed environment (safer but limited) |
 
 **Notes:**
