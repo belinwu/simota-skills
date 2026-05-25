@@ -1,20 +1,24 @@
 # Engine Deliberation Guide
 
-Engine Mode specification for Magi's three-engine deliberation system. In Engine Mode, Claude, Codex, and Gemini each provide an independent, integrated analysis rather than simulating three internal perspectives.
+Engine Mode specification for Magi's three-engine deliberation system. In Engine Mode, Claude, Codex, and Gemini each provide a **single integrated analysis** (one unified position per engine) — they do **not** each simulate three internal viewpoints.
+
+**Scope vs `tri-engine-deliberate.md`:** this file covers Engine Mode auto-activated *inside* Simple-Mode Recipes (`decide`, `tradeoff`, `arbitrate`, `strategic`) — one engine = one YAML position, aggregated as a 3-engine vote (or 2 / 1 depending on availability). The `multi` Recipe instead uses Pattern H (`tri-engine-deliberate.md`), where each engine emits **all three viewpoints** as JSON and the result is a 9-cell matrix. When a Recipe routes here, the output schema below applies; when routed to `multi`, the JSON schema in `tri-engine-deliberate.md §3` applies. Engine binaries and silent-failure detection are canonical in `_common/MULTI_ENGINE_RECIPE.md` — this file only references them.
 
 ---
 
 ## Engine Availability Check
 
-Before starting Engine Mode deliberation, verify external engine availability:
+Use the canonical probe from `_common/MULTI_ENGINE_RECIPE.md §2 PREFLIGHT` (combined `which` + `--version` + actual smoke invocation, run from Magi main context — subagent PATH is narrower). Quick reference:
 
 ```bash
 which codex && echo "codex: available" || echo "codex: not found"
 which agy && echo "agy: available" || echo "agy: not found"
 ```
 
-| Engine | Command | Role |
-|--------|---------|------|
+Engine command summary (full invocation contract lives in `_common/MULTI_ENGINE_RECIPE.md §3 FAN-OUT`):
+
+| Engine | Command | Role in Engine Mode |
+|--------|---------|---------------------|
 | **Claude** | (internal) | Primary deliberator, orchestrator |
 | **Codex** | `codex exec --full-auto "{prompt}"` | Independent external deliberator |
 | **Antigravity** | `agy -p "{prompt}" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) | Independent external deliberator |
@@ -278,3 +282,13 @@ engine_error:
    └─ Present Engine Mode MAGI display
    └─ Include risk register and next steps
 ```
+
+---
+
+## Cross-References
+
+- `_common/MULTI_ENGINE_RECIPE.md` — canonical engine binaries, PREFLIGHT probe, FAN-OUT contract, silent-failure detection
+- `magi/references/tri-engine-deliberate.md` — sibling Pattern H spec for the `multi` Recipe (each engine emits 3 viewpoints → 9-cell matrix); use that file instead when running tri-engine 9-cell deliberation
+- `magi/references/deliberation-framework.md` — perspective heuristics applied to Claude's integrated analysis
+- `magi/references/voting-mechanics.md` — vote aggregation and confidence calibration for the 3/2/1-engine consensus patterns
+
