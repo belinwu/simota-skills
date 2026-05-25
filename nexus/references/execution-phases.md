@@ -1,7 +1,9 @@
 # Nexus Execution Phases Reference
 
-**Purpose:** Phase-by-phase execution flow for AUTORUN modes.
-**Read when:** You need the exact flow for `AUTORUN_FULL`, `AUTORUN`, or proactive mode.
+**Purpose:** The **Nexus 7-phase workflow** (`PLAN → PREPARE → CHAIN_SELECT → EXECUTE → AGGREGATE → VERIFY → DELIVER`) and its AUTORUN/AUTORUN_FULL/proactive variants.
+**Read when:** You need the exact phase sequence and what happens at each phase boundary.
+
+**Boundary vs `orchestration-patterns.md`:** This file owns the **phase sequence** (what runs when, in which order, with which gates). `orchestration-patterns.md` owns the **execution-style patterns** (Sequential / Parallel / Conditional / Recovery / Escalation / Verification / Rally / Evaluator) — how spawn/handoff is shaped inside the EXECUTE phase. When a phase contract says "spawn agents", follow that file for the pattern.
 
 ## Contents
 - Phase 0: PROACTIVE_ANALYSIS (Optional)
@@ -113,7 +115,7 @@ Set up execution environment:
 2. **Rollback Point Definition** - Create git stash or branch for recovery
 3. **Guardrail Configuration** - Set appropriate levels per step
 4. **Parallel Branch Preparation** - Split independent tasks, assign file ownership
-5. **Sprint Contract Creation** (when Evaluator Loop applicable) - Define acceptance criteria, select rubric template, assign Generator and Evaluators. See `references/sprint-contract.md` for format and applicability rules. Skip for SIMPLE complexity or tasks where Evaluator Loop is disabled.
+5. **Sprint Contract Creation** (when Evaluator Loop applicable) - Define acceptance criteria, select rubric template, assign Generator and Evaluators. See `references/evaluator-loop-protocol.md` (§ Sprint Contract) for format and applicability rules. Skip for SIMPLE complexity or tasks where Evaluator Loop is disabled.
 
 ### Phase 3: CHAIN_SELECT
 Auto-select agent chain based on classification.
@@ -279,7 +281,7 @@ Merge parallel results:
    - Any REVISE (iteration >= max) → accept best result, proceed to DELIVER with quality notes
    - Any BLOCK → ESCALATE to user
 
-See `references/evaluator-loop.md` for full pattern, `references/rubric-system.md` for scoring, and `references/sprint-contract.md` for contract format.
+See `references/evaluator-loop-protocol.md` for the full end-to-end pattern (orchestration loop + Rubric scoring + Sprint Contract format).
 
 ### Phase 7: DELIVER
 Finalize and present results:

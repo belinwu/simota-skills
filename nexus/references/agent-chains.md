@@ -1,10 +1,12 @@
 # Nexus Agent Chain Templates Reference
 
-**Purpose:** Canonical chain templates and dynamic add/skip rules.
-**Read when:** You need the detailed chain pattern for a task type or need to adjust a chain safely.
+**Purpose:** Chain **variants by complexity / sub-type** (e.g., FEATURE S/M/L/UI/UX, OPTIMIZE app/db) and dynamic add/skip rules.
+**Read when:** You need to pick a variant or apply adjustment rules to an in-flight chain.
+
+**Boundary vs `routing-matrix.md`:** That file gives one *default* chain per task type with Recipe Hints (sub-skill commands) and conditional Additions. This file gives the **complexity-keyed variant catalog** and integration patterns (Forge→Builder, Rally parallel). Use them together: routing-matrix picks the task type, this file picks the right variant.
 
 ## Contents
-- Chain Templates by Task Type
+- Chain Templates by Task Type (complexity variants)
 - Forge → Builder Integration
 - Dynamic Chain Adjustment Rules
 - Rally Parallel Chain Variants

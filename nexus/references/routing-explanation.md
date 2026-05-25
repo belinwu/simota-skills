@@ -2,6 +2,7 @@
 
 **Purpose:** How to explain routing choices and alternatives clearly.
 **Read when:** You need to justify the chosen chain or present multiple candidates.
+**See also:** If the request is ambiguous, use `intent-clarification.md` first to resolve intent, then return here to present the chain and alternatives.
 
 ## Contents
 - ENHANCED_ROUTING Decision Factors

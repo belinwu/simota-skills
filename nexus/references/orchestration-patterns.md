@@ -1,7 +1,9 @@
 # Nexus Orchestration Patterns Reference
 
-**Purpose:** Reference patterns for sequential, parallel, and gated execution.
-**Read when:** You need to choose or explain an orchestration pattern.
+**Purpose:** Concrete **execution-style patterns** (Sequential / Parallel / Conditional / Recovery / Escalation / Verification / Rally / Evaluator) used inside the EXECUTE phase.
+**Read when:** You're inside the EXECUTE phase and need to shape spawn / handoff / merge for the current step group.
+
+**Boundary vs `execution-phases.md`:** That file owns the **7-phase workflow sequence** (PLAN → … → DELIVER); this file owns the **pattern catalog** used inside any phase that spawns agents. The phase contract picks the pattern; this file describes the pattern.
 
 ## Contents
 - Pattern A: Sequential Chain
@@ -392,7 +394,7 @@ close_agent(judge_id)
 close_agent(radar_id)
 ```
 
-See `references/evaluator-loop.md` for full specification, `references/sprint-contract.md` for contract format, `references/rubric-system.md` for scoring criteria.
+See `references/evaluator-loop-protocol.md` for the full end-to-end specification (loop pattern + Sprint Contract format + Rubric scoring criteria).
 
 ---
 
