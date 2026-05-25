@@ -278,6 +278,7 @@ In all suppression cases, write a one-line note in the report explaining why the
 | [orm-performance-pitfalls.md](references/orm-performance-pitfalls.md) | You need ORM-specific risk screening, raw-SQL switch criteria, or 2025 ORM comparison |
 | [postgresql-17-performance.md](references/postgresql-17-performance.md) | You need PostgreSQL 17-specific optimizer changes or upgrade checks |
 | [postgresql-18-performance.md](references/postgresql-18-performance.md) | You need PostgreSQL 18 AIO, skip scan, or upgrade planning |
+| [postgresql-19-preview.md](references/postgresql-19-preview.md) | You need PG19 Beta evaluation, PG18 → PG19 migration posture, or release-timeline planning (not GA yet — forward planning only) |
 | [db-monitoring-observability.md](references/db-monitoring-observability.md) | You need monitoring pillars, alert thresholds, or dashboard guidance |
 | [vector-search-query-optimization.md](references/vector-search-query-optimization.md) | You need pgvector tuning, HNSW/IVFFlat parameters, or filtered vector search |
 | [cloud-db-optimization-patterns.md](references/cloud-db-optimization-patterns.md) | You need Aurora QPM, Neon cold-start tuning, or cloud DB selection guidance |
