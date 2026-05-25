@@ -1,6 +1,7 @@
 # Conversion Calibration System (TRANSMUTE)
 
-Purpose: Use this reference after conversion work to record outcomes, evaluate quality trends, and update tool/template heuristics safely.
+Purpose: Use this reference after conversion work to record outcomes, evaluate quality trends, and update tool/template heuristics safely — the **cross-conversion** learning loop.
+Pair with: `quality-assurance.md` for the **per-conversion** scoring inputs that feed this loop (4-metric weights, A-F grade definitions, verification commands, report template). The Quality_Score block in the record schema below uses the metrics defined there.
 
 ## Contents
 
@@ -36,12 +37,7 @@ Downstream_Handoff: [Guardian/Nexus/Lore/None]
 
 ## EVALUATE — Quality Thresholds
 
-| Metric | Interpretation |
-|-------|----------------|
-| `> 90` | Excellent average quality |
-| `80-90` | Good quality, maintain current approach |
-| `70-80` | Moderate quality, review tool/template choice |
-| `< 70` | Low quality, investigate root causes |
+Per-conversion grade scale (A/B/C/D/F at 90/80/70/60) is defined in `quality-assurance.md`. For **trend interpretation across many conversions**, use the same boundaries: averages ≥ 90 = excellent, 80-89 = maintain current approach, 70-79 = review tool/template choice, < 70 = investigate root causes.
 
 Tool effectiveness:
 

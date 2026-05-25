@@ -2,6 +2,7 @@
 
 **Purpose:** AI/LLM specific attack vectors, frameworks, and testing methodology.
 **Read when:** Red teaming AI-powered systems including LLMs, RAG, and agentic applications.
+**Scope:** AI-specific frameworks (OWASP LLM Top 10, OWASP Agentic Top 10, MITRE ATLAS, NIST AI 100-2). For generic web/API/infrastructure/supply-chain attack playbooks (OWASP Top 10, OWASP API Top 10, MITRE ATT&CK), see `attack-playbooks.md`.
 
 ## 2026 Baseline Findings (Anchor for Test Scope)
 
