@@ -51,6 +51,8 @@ SUGGEST   →  proposed redlines, missing-clause inserts, jurisdiction-specific 
 
 ## Clause Checklist
 
+> **Canonical ToS-overlap clauses** (T-12 governing law, T-13 dispute resolution, T-15 severability, T-08 limitation of liability, T-06 IP ownership) live in `legal-checklists.md`. This table covers **EULA-specific software-license clauses only** — license-grant, restrictions, IP allocation, OSS, AI-training, license-compliance audit. For the generic governing-law/liability rows below, treat the canonical T-08/T-12/T-13 rows as primary and use these EULA rows only for the licensing-flavored gap context.
+
 | Clause | Purpose | Common gap | Risk |
 |--------|---------|------------|------|
 | Grant scope (use, copy, modify, distribute, sublicense) | Define exactly what licensee can do | Missing "internal business use" qualifier | High |
@@ -66,8 +68,9 @@ SUGGEST   →  proposed redlines, missing-clause inserts, jurisdiction-specific 
 | Termination triggers | Breach / insolvency / convenience | No cure period; no survival clause | Medium |
 | Audit rights (license compliance) | Verify deployment matches license | Surprise audits; no notice / scope | Medium |
 | Export controls / sanctions | Comply with EAR / OFAC / EU dual-use | Missing entirely | Medium |
-| Governing law and venue | Applicable law and forum | Mismatched with consumer-protection mandates | High |
 | Telemetry / usage data | What the software collects | Privacy policy reference missing | Medium |
+
+(For governing law and venue, use `legal-checklists.md` T-12 / T-13 as canonical; this file's "Jurisdiction-Specific Differences" section below covers the EULA-specific enforceability extensions.)
 
 ## Jurisdiction-Specific Differences
 

@@ -70,6 +70,8 @@ Is the cookie strictly necessary for a service the user explicitly requested?
 
 ## Clause / Banner Checklist
 
+> **Canonical privacy items** that overlap this banner checklist live in `legal-checklists.md`: P-09 (cookies / external transmission notice), P-11 / G-08 (international transfer disclosure & SCC safeguards), P-13 (children's personal information), C-01 / C-02 (CCPA opt-out and "Do Not Sell or Share" link). For those four areas, treat the canonical rows as the master statement; use the rows below for cookie-banner-specific UX gap context. The remaining rows are recipe-specific (banner UX, consent mechanics, scanner-vs-policy reconciliation) and have no equivalent in the canonical list.
+
 | Item | Source | Common gap | Risk |
 |------|--------|------------|------|
 | Banner appears before non-necessary cookies set | ePrivacy Art. 5(3); CNIL 2020 guidelines | GA4 fires on first paint before consent | High |
@@ -78,13 +80,12 @@ Is the cookie strictly necessary for a service the user explicitly requested?
 | No pre-ticked boxes for non-necessary | Planet49 (CJEU C-673/17); ePrivacy | Analytics pre-ticked | High |
 | Withdraw consent as easy as give | GDPR Art. 7(3) | "Cookie settings" link buried in footer only | Medium |
 | Cookie list with purpose, retention, vendor | ePrivacy Art. 5(3) + GDPR Art. 13 | Generic "we use cookies" without enumeration | High |
-| Third-country transfer disclosure | GDPR Art. 13(1)(f), 44 | US analytics vendor — no SCC reference | High |
 | Consent record retention | GDPR Art. 7(1) accountability | No proof-of-consent log | Medium |
 | Banner does not block essential content (UX dark pattern) | EDPB 03/2022 | "Wall" forces accept to read content | Medium-High |
 | Consistent text across languages | GDPR Art. 12 transparency | EN strict; localized versions weaker | Medium |
-| Children's cookie special handling | GDPR Art. 8; UK Children's Code | No age-gate for marketing cookies | High |
-| Do Not Track / GPC honoring (CA, CO) | CCPA/CPRA + 2024 GPC enforcement | GPC signal ignored | High |
 | Cookie scanner result matches policy | Accountability | Scanner finds 40 cookies; policy lists 12 | Medium |
+
+(Cross-border transfer disclosure → `legal-checklists.md` G-08 / P-11. Children's cookie handling → P-13. GPC / Do Not Sell honoring → C-01 / C-02. Generic cookie / external-transmission notice → P-09.)
 
 ## IAB TCF v2.3 Notes (2026 mandatory)
 

@@ -123,19 +123,7 @@ Per cluster:
 
 ### 7. GROUND — verify CANDIDATE narratives (Saga main context, never delegated)
 
-For each `CANDIDATE` narrative, the Saga main context must run the **AP-1 through AP-9 anti-pattern audit** (from `saga/SKILL.md §Anti-Pattern Checklist`):
-
-| Check | Pass criterion | If fail |
-|-------|----------------|---------|
-| AP-1 Feature Dump | Story arc exists (beats progress) | `REJECTED-NO-ARC` |
-| AP-2 Hero Product | Customer is subject, product is guide | `REJECTED-HERO-PRODUCT` |
-| AP-3 Missing Tension | Before-state has specific pain | `REJECTED-NO-TENSION` |
-| AP-4 No Transformation | Before→After observable change | `REJECTED-NO-TRANSFORMATION` |
-| AP-5 Generic Persona | Named, contextualized character | `REJECTED-GENERIC-PERSONA` |
-| AP-6 Narrative Bias | Assumptions stated, no fact distortion | `NEEDS-INFO` (request validation) |
-| AP-7 Jargon Wall | Non-technical reader can follow | `REJECTED-JARGON` |
-| AP-8 Happy Path Only | Stakes / failure scenario depicted | `REJECTED-NO-STAKES` |
-| AP-9 Ad Copy Disguise | Reads as story, not promo copy | `REJECTED-AD-COPY` |
+For each `CANDIDATE` narrative, the Saga main context must run the full **AP-1 through AP-9 anti-pattern audit** with rejection-code classification — both the check criteria and the `REJECTED-*` / `NEEDS-INFO` codes live in `references/anti-patterns.md` (§"Rejection Categories"). Do not re-implement; use that table.
 
 Also verify:
 - **Persona existence**: if `protagonist` cites a Cast registry persona, confirm the persona exists. If fabricated, downgrade or mark `REJECTED-PERSONA-FABRICATED`.

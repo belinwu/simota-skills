@@ -73,7 +73,7 @@ WRITE      →  open with concrete scene in the Ordinary World
            →  one paragraph per stage for flagship; one sentence per stage for compressed
            →  end with the Elixir: what the hero now gives back
 
-REFINE     →  AP-1~AP-9 anti-pattern check
+REFINE     →  AP-1~AP-9 anti-pattern check (see references/anti-patterns.md)
            →  specifically: AP-4 (no transformation), AP-8 (no failure), AP-2 (product as hero)
 
 DELIVER    →  include: framework stage map, named characters, measurable before/after,
@@ -142,15 +142,7 @@ A case study with only external ("they switched to our tool and shipped faster")
 12. **Return with the Elixir**: [advocacy, case study, community leadership]
 
 ### Anti-Pattern Check
-- [ ] AP-1 Feature Dump: no — arc is present
-- [ ] AP-2 Hero Product: no — customer is the hero
-- [ ] AP-3 Missing Tension: no — Ordeal beat is concrete
-- [ ] AP-4 No Transformation: no — before/after measurable
-- [ ] AP-5 Generic Persona: no — hero has name
-- [ ] AP-6 Narrative Bias: no — assumptions stated
-- [ ] AP-7 Jargon Wall: no — accessible language
-- [ ] AP-8 Happy Path Only: no — Refusal + Ordeal show struggle
-- [ ] AP-9 Ad Copy Disguise: no — focused on hero, not product
+Run the full AP-1~AP-9 checklist from `references/anti-patterns.md` and report results in the standard format. Hero's Journey emphasizes AP-2 (Hero Product), AP-4 (No Transformation), AP-8 (Happy Path Only) — these are the failure modes most common to long-form transformation arcs.
 
 ### Assumptions
 - [list unverified premises]
@@ -182,7 +174,7 @@ When `hero-journey` completes, emit:
 - **External + internal arc** with measurable change.
 - **12 or 8 stages** written out with concrete scenes.
 - **Three critical beats** (Call, Ordeal, Elixir) emphasized.
-- **Anti-pattern check** (AP-1~AP-9).
+- **Anti-pattern check** (AP-1~AP-9 per `references/anti-patterns.md`).
 - **Assumptions** section.
 - **Handoffs**: Director, Prose, Prism, Growth.
 

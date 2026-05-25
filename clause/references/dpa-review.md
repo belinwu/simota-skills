@@ -35,6 +35,8 @@ SUGGEST   →  proposed redlines, missing-clause inserts, sub-processor list tem
 
 ## Clause Checklist
 
+> **Canonical privacy clauses** (P-01–P-14 generic privacy, G-01–G-08 GDPR data-subject-facing) live in `legal-checklists.md`. This table covers **DPA-specific Art. 28 controller-processor clauses only** — items that do not appear in the canonical privacy checklist. Walk both during SCAN: the canonical list for what the data subject sees, this list for what the controller-processor contract binds.
+
 | Clause | GDPR basis | Common gap | Risk |
 |--------|------------|------------|------|
 | Subject-matter / duration / nature / purpose | Art. 28(3) chapeau | Vague "as needed" purpose; no end-of-contract trigger | High |
@@ -47,9 +49,10 @@ SUGGEST   →  proposed redlines, missing-clause inserts, sub-processor list tem
 | Assistance with Art. 32-36 (security, breach, DPIA) | Art. 28(3)(f) | Cost-shift to controller for routine support | Medium |
 | Deletion or return at end of services | Art. 28(3)(g) | Default retention; no deletion certificate | High |
 | Audit rights and information access | Art. 28(3)(h) | "Once per year, 90-day notice" — too restrictive | Medium |
-| International transfer mechanism | Art. 44-49 | No SCC module specified; no TIA reference | High |
 | Schrems II supplementary measures | EDPB 01/2020 | Encryption-in-transit only; no key custody analysis | High |
 | Breach notification SLA to controller | Art. 33(2) | "Without undue delay" undefined (target ≤24-48h) | High |
+
+(For the international-transfer safeguards clause itself, see `legal-checklists.md` G-08. This file's "Transfer Mechanism Selection" section below covers the DPA-specific module-selection extension.)
 
 ## Sub-processor Chain Management
 

@@ -142,14 +142,16 @@ Use this when sales, CS, or leadership needs fast competitive talking points.
 
 ### Sources
 
-| Source | Frequency | Notes |
-|---|---|---|
-| Competitor websites | weekly | messaging, product, pricing |
-| Crunchbase / LinkedIn | weekly | funding, hiring, executives |
-| Review sites | weekly | sentiment and complaints |
-| Google Alerts | daily | automated signal |
-| Social media | daily | campaign and messaging shifts |
-| Industry news | daily | partnership, acquisition, regulatory news |
+| Source | Frequency | Tier | Notes |
+|---|---|---|---|
+| Competitor websites | weekly | 1 | messaging, product, pricing |
+| Crunchbase / LinkedIn | weekly | 2 | funding, hiring, executives |
+| Review sites | weekly | 2 | sentiment and complaints |
+| Google Alerts | daily | 2-3 | automated signal |
+| Social media | daily | 3 | campaign and messaging shifts |
+| Industry news | daily | 2 | partnership, acquisition, regulatory news |
+
+> Tier column maps to `intelligence-gathering.md#source-tiers`. Use tier when scoring alert reliability and resolving conflicting signals.
 
 ### Alert Response
 

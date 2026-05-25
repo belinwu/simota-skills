@@ -24,7 +24,9 @@
 
 ```
 1. HOOK (100-300 chars)
-   - Contradiction / number / scene / question / stake
+   - See hook-design.md for the five hook patterns
+     (contradiction / number / scene / question / stake),
+     formulas, anti-patterns, and per-platform tuning.
 
 2. PROBLEM (200-400 chars)
    - Make the reader feel the pain
@@ -49,11 +51,7 @@
    - Optional: link to follow-up article in series
 ```
 
-**Example opener (contradiction hook + problem setup):**
-
-> CSS-in-JSは最高のDXを提供する。本番環境にデプロイするまでは。
->
-> ある日、First Contentful Paintが800ms悪化していた。原因を追ったら、emotionのruntime evaluationがcritical pathに乗っていた。
+**Pattern-1 specific guidance:** the HOOK→PROBLEM seam is the load-bearing transition. The hook foreshadows the contradiction; the PROBLEM section grounds it in concrete pain (specific incident, code path, metric). Pick a hook pattern in `hook-design.md`, then write PROBLEM so it reads as the next sentence after the hook — not a restart.
 
 **Anti-pattern:** Skipping TENSION. Going straight from PROBLEM → SOLUTION reads like documentation, not an article. The tension is what makes readers keep scrolling.
 

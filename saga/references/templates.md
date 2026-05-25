@@ -3,11 +3,13 @@
 **Purpose:** Saga の各出力タイプ別の実践テンプレート集。
 **Read when:** ナラティブを執筆する際にフォーマットと構成の参考が必要な時。
 
+> フレームワーク本体（SB7 / Pixar Story Spine / Hero's Journey / JTBD / Story Mapping / CAR / Promised Land / ABT）の構造定義・記入例・組み合わせパターンは `references/frameworks.md` を参照。本ファイルは各出力タイプへの**適用テンプレート**のみを提供する。
+
 ---
 
 ## 1. Use Case Story Template
 
-機能・シナリオのナラティブ化。JTBD + Pixar Story Spine を組み合わせた構造。
+機能・シナリオのナラティブ化。JTBD + Pixar Story Spine を組み合わせた構造（フレームワーク詳細: `references/frameworks.md` §1, §2, §4）。
 
 ```markdown
 ## Use Case Story: [機能/シナリオ名]
@@ -57,44 +59,17 @@
 
 ## 2. Product Narrative Template
 
-プロダクト全体のポジショニングナラティブ。StoryBrand SB7 を使用。
+プロダクト全体のポジショニングナラティブ。StoryBrand SB7（フレームワーク本体: `references/frameworks.md` §1 — Hero / Problem(外的・内的・哲学的) / Guide / Plan / CTA / Failure / Success の7要素と BrandScript Template を含む）を Product Narrative として運用する際の構成。
 
 ```markdown
 ## Product Narrative: [プロダクト名]
 
 ### BrandScript
-
-#### 1. Hero（ヒーロー = 顧客）
-[ターゲット顧客]は、[根本的な望み]を持っている。
-
-#### 2. Problem（問題）
-しかし、[悪役（問題の根源）]が立ちはだかる。
-
-- **外的問題:** [目に見える障壁]
-- **内的問題:** [感じている不安やフラストレーション]
-- **哲学的問題:** 「[〜であるべきだ]」
-
-#### 3. Guide（ガイド = プロダクト）
-[プロダクト名]は、[顧客の気持ちへの共感]。
-[権威を示す実績・データ]が裏付ける。
-
-#### 4. Plan（プラン）
-**3つのシンプルなステップ:**
-1. [ステップ1: 簡単な開始行動]
-2. [ステップ2: コアバリューの体験]
-3. [ステップ3: 成果の実感]
-
-#### 5. Call to Action
-- **直接CTA:** [今すぐ○○する]
-- **移行CTA:** [まずは○○を試す]
-
-#### 6. Failure（行動しなかった場合）
-[具体的な損失や悪化のシナリオ]
-
-#### 7. Success（行動した場合）
-[理想的な変容後の姿。感情面と成果面の両方]
-
----
+`references/frameworks.md §1 BrandScript Template` をそのまま埋める。Product Narrative では特に以下を意識する:
+- Hero の「根本的な望み」は機能ではなく**達成したい状態**で書く
+- Problem は3レイヤー（外的・内的・哲学的）すべて埋める
+- Plan は3ステップ以内（認知負荷を減らす）
+- Failure と Success は対比的に書く
 
 ### ワンライナー
 [問題] + [解決策] + [成果] を一文で。
@@ -102,14 +77,14 @@
 > 「[ターゲット]が[問題]に悩んでいるなら、[プロダクト]で[成果]を手に入れよう。」
 
 ### エレベーターピッチ（30秒版）
-[Pixar Story Spine で要約]
+`references/frameworks.md §2 Pixar Story Spine` の6行構造で要約。
 ```
 
 ---
 
 ## 3. Pitch Story Template
 
-投資家・ステークホルダー向け。Pixar Story Spine + 数値を組み合わせた構造。
+投資家・ステークホルダー向け。Pixar Story Spine（`references/frameworks.md` §2）に数値を組み合わせた構造。
 
 ```markdown
 ## Pitch Story: [プロダクト名]
@@ -149,7 +124,7 @@
 
 ## 4. Customer Success Story Template
 
-導入事例・変容アーク。Hero's Journey + CAR を使用。
+導入事例・変容アーク。Hero's Journey（`references/frameworks.md` §3、長尺は `references/hero-journey.md`）+ CAR（`references/frameworks.md` §6）を組み合わせ。
 
 ```markdown
 ## Customer Success Story: [顧客名]
@@ -204,7 +179,7 @@
 
 ## 5. Onboarding Narrative Template
 
-初回体験のストーリーフロー。Story Mapping を使用。
+初回体験のストーリーフロー。Story Mapping（`references/frameworks.md` §5）を使用。
 
 ```markdown
 ## Onboarding Narrative: [プロダクト名]
@@ -247,7 +222,7 @@ Welcome  →  First Value  →  Aha Moment  →  Habit Loop  →  Advocacy
 
 ## 6. Scenario Narrative Template
 
-ペルソナ別シナリオ。JTBD + コンテキスト描写を組み合わせた構造。
+ペルソナ別シナリオ。JTBD（`references/frameworks.md` §4）+ コンテキスト描写を組み合わせた構造。
 
 ```markdown
 ## Scenario Narrative: [シナリオ名]
