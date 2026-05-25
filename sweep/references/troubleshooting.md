@@ -2,6 +2,11 @@
 
 Purpose: recovery steps for false positives, build breaks, slow scans, and aborted cleanup runs.
 
+Scope boundary:
+- This file = **recovery procedures** (restore, abort, scan-perf, exclusion reporting).
+- `false-positives.md` = **detection patterns** to prevent the false positive in the first place.
+- `language-patterns.md` = **per-language tool selection** (prefer knip over ts-prune/depcheck to reduce the re-export and `@types/*` false positives handled below).
+
 ## Common Tool Issues
 
 ### `ts-prune` false positives

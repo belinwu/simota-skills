@@ -2,6 +2,11 @@
 
 Purpose: prevent accidental deletion of files that static tools often misclassify as unused.
 
+Scope boundary:
+- This file = **detection patterns** (what static tools miss and why).
+- `language-patterns.md` = **per-language tooling** (knip/vulture/staticcheck/cargo-udeps choice and fallback hierarchy).
+- `troubleshooting.md` = **recovery procedures** (restoring from backup, aborting cleanup, scan-perf fixes).
+
 ## Contents
 
 1. Dynamic loading

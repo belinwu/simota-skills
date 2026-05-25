@@ -22,9 +22,10 @@ description: [one Japanese sentence]
 ---
 ```
 
-Rules:
-- `name`: kebab-case, unique within the project, normally `2-4` words
-- `description`: one Japanese sentence, concise, routing-friendly
+Ecosystem-specific constraints (additive to the official spec — see [`official-skill-guide.md` § 2 YAML Frontmatter 完全仕様](official-skill-guide.md#2-yaml-frontmatter-完全仕様) for the canonical kebab-case / 1024-char / XML / reserved-name rules and the rationale behind them):
+
+- `name`: unique within the project, normally `2-4` words
+- `description`: one Japanese sentence, concise, routing-friendly (project guardrail — official limit is 1024 chars)
 - Add optional fields only when the generated skill truly needs them
 
 ## Type Selection
@@ -179,9 +180,10 @@ Rules:
 
 ### Naming Rules
 
-- Skill directory name: kebab-case
-- Skill file: always `SKILL.md`
-- Reference files: `references/[topic].md`
+Project-specific layout (canonical naming and file-structure rules — directory kebab-case, exact `SKILL.md` spelling, no `README.md` inside skill folders — live in [`official-skill-guide.md` § 5 File Structure Requirements](official-skill-guide.md#5-file-structure-requirements)):
+
+- Reference files: `references/[topic].md` (one hop from `SKILL.md`)
+- Skills are installed to both `.claude/skills/` and `.agents/skills/` (Sigil-specific dual-install)
 
 ### Size Guidelines
 
