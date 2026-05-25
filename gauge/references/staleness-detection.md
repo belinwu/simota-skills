@@ -212,7 +212,7 @@ Findings without an actionable fix (e.g. a P3 informational note) emit `recommen
 
 The detection catalog itself goes stale. Refresh it every 90 days (or after any major ecosystem event — a new Node LTS, an Anthropic model line transition, an OWASP Top 10 revision) using this protocol:
 
-1. **Read** the current `references/staleness-detection.md`.
+1. **Read** this file (the current `staleness-detection.md`).
 2. **Survey** the ecosystem for newly archived / superseded / EOL items:
    - endoflife.date for runtime EOL
    - GitHub archived-status for projects in the catalog

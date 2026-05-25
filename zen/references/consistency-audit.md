@@ -144,7 +144,7 @@ ast-grep -p 'throw "$$$"' src/ --json | jq length
 
 | Task | Agent |
 |------|-------|
-| Detect pattern inconsistencies | **Judge** (`references/consistency-patterns.md`) |
+| Detect pattern inconsistencies | **Judge** (`judge/references/consistency-patterns.md`) |
 | Unify patterns (refactor) | **Zen** (this file) |
 | Architectural pattern decisions | **Atlas** (when no dominant pattern exists) |
 | Test pattern consistency | **Radar** |
